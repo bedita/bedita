@@ -1,0 +1,30 @@
+<h1>My Notes</h1>
+
+<p>
+<?php echo $html->link('Add Note', '/notes/add') ?>
+</p> 
+
+<table>
+   <tr>
+       <th>Id</th>
+       <th>Title</th>
+       <th>&nbsp;</th>
+	   <th>Created</th>
+   </tr>
+   <?php foreach ($notes as $note): ?>
+   <tr>
+       <td><?php echo $note['Note']['id']; ?></td>
+       <td>
+           <a href="/notes/view/<?php echo $note['Note']['id']?>">
+               <?php echo $note['Note']['title']?>
+           </a>
+       </td>
+        <td>
+     	<?php echo $html->link($note['Note']['title'], "/notes/view/{$note['Note']['id']}")?>
+     	[<?php echo $html->link('Edit', "/notes/edit/{$note['Note']['id']}")?>,
+     	<?php echo $html->link('Delete', "/notes/delete/{$note['Note']['id']}", null, 'Are you sure?')?>]
+       </td> 	   
+       <td><?php echo $note['Note']['created']; ?></td>
+ </tr>
+   <?php endforeach; ?>
+</table>
