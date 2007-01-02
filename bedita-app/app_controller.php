@@ -85,7 +85,10 @@ class AppController extends Controller {
 			}
 			
 			// Se il valore non e' nullo, ne definisce il tipo
-			if(!is_null($args[$i][2])) settype($args[$i][2], $args[$i][1]) ;
+			if(!is_null($args[$i][2])) {
+				settype($args[$i][2], $args[$i][1]) ;
+				$this->params["url"][$args[$i][0]] = $args[$i][2] ;
+			}
 		}
 		
 	}
