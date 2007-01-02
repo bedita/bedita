@@ -23,7 +23,7 @@
 class AreasController extends AppController {
 	var $components = array('BeAuth');
 	var $helpers 	= array('Bevalidation');
-//	var $uses	 	= array();
+	var $uses	 	= array('Area');
 	
 	/**
 	 * Nome modello
@@ -50,9 +50,12 @@ class AreasController extends AppController {
 		
 		// Verifica i permessi d'accesso
 		if(!$this->checkLogin()) return ;
-	
-		$this->Session->setFlash("DA IMPLEMENTARE");
-		return ;
+		
+		$this->Area->recursive = 0 ;
+		if(($Aree = $this->Area->findAll()) === false) return false ;
+
+		// Setup dei dati da passare al template
+		$this->set('Aree', 	$Aree);
 	}
 
 }

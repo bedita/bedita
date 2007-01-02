@@ -2,11 +2,16 @@
 file include.
 visualizza i comandi di navigazione negli elenchi.
 *}
+{php}
+$vs = &$this->get_template_vars() ;
+//pr($vs["toolbar"]);
+//exit;
+{/php}
 {assign var="pagineTotali" value=$toolbar.pages}
 
 {if $sez == "menuSX"}
-	<hr>
-                <span style="white-space:nowrap">
+<hr>
+		<span style="white-space:nowrap">
                 {if $toolbar.first eq 0}pagina {else} <a title="vai alla prima pagina"  href="{$selfPlus}&amp;page={$toolbar.first}">pagina</a>{/if}
 
 				<select name="page" id="toolbarPageSX" onChange="document.location ='{$selfPlus}&amp;page='+this[this.selectedIndex].value">
@@ -36,6 +41,13 @@ visualizza i comandi di navigazione negli elenchi.
 	{if $toolbar.next}<b>&#8250; </b><a title="pagina successiva" href="{$selfPlus}&amp;page={$toolbar.next}">avanti</a>{else}{/if}
 	&nbsp;&nbsp;
 	{if $toolbar.prev}<b>&#8250;</b> <a title="pagina precednte" href="{$selfPlus}&amp;page={$toolbar.prev}">indietro</a>{else}{/if}
+	&nbsp;&nbsp;
+	Dimensioni: <select name="dim" onChange="document.location ='{$selfPlus}&amp;dim='+this[this.selectedIndex].value">
+    <option {if $dim == 10}selected{/if} value="10">10</option>
+    <option {if $dim == 20}selected{/if} value="20">20</option>
+    <option {if $dim == 50}selected{/if} value="50">50</option>
+    <option {if $dim == 100}selected{/if} value="100">100</option>
+	</select>	
 	&nbsp;&nbsp;
 	<form style="display:inline; " action="{$selfPlus}&amp;page=1">	
 		cerca:&nbsp;&nbsp;

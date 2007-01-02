@@ -23,7 +23,7 @@
 class NewsController extends AppController {
 	var $components = array('BeAuth');
 	var $helpers 	= array('Bevalidation');
-	var $uses	 	= array('Area');
+	var $uses	 	= array('ViewShortNews', 'Area');
 
 	/**
 	 * Nome modello
@@ -48,16 +48,41 @@ class NewsController extends AppController {
 	 * @param integer $dim		dimensione della pagina
 	 * @param string $order		nome campo su cui ordinare la lista. Aggiungere "desc" per invertire l'ordine
 	 * @param integer $ida		ID dell'area da selezionare. Preleva l'elenco solo di questa area
-	 * @param integer $idg		ID del gruppo da selezionare. Preleva l'elenco solo di questo gruppo
 	 * 
 	 * @todo TUTTO
 	 */
-	function index($page = 1, $dim = 10, $order = null, $ida = null, $idg = null) {
+	function index($ida = null, $page = 1, $dim = 20, $order = null) {
+		// Setup parametri
+		$this->setup_args(
+			array("ida", "integer", &$ida),
+			array("page", "integer", &$page),
+			array("dim", "integer", &$dim),
+			array("order", "string", &$order)
+		) ;
+
 		// Verifica i permessi d'accesso
 		if(!$this->checkLogin()) return ;
 		
-		$this->Session->setFlash("DA IMPLEMENTARE");
-		return ;
+		// Preleva l'elenco dei documenti richiesto
+		if(!$this->ViewShortNews->listContents($contents, $ida, null, $page, $dim , $order)) {
+			$this->Session->setFlash("Errore nel prelievo della lista delle news");
+			return ;
+		}
+		
+		// Preleva l'albero delle aree e tipologie
+		$this->Area->tree($areas, 0x0, 0x0);
+
+		// Crea l'URL dello stato corrente
+		$selfPlus = $this->createSelfURL(false,
+			array("ida", $ida), array("page", $page), 
+			array("dim", $dim), array("order", $order)
+		) ;
+
+		// Setup dei dati da passare al template
+		$this->set('Areas', 		$areas);
+		$this->set('News',			$contents);
+		$this->set('selfPlus',		$selfPlus) ;
+		$this->set('self',			($this->createSelfURL(false)."?")) ;
 	}
 
 	/**

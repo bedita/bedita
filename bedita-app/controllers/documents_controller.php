@@ -23,7 +23,7 @@
 class DocumentsController extends AppController {
 	var $components = array('BeAuth');
 	var $helpers 	= array('Bevalidation');
-	var $uses	 	= array('Area');
+	var $uses	 	= array('ViewShortDocument', 'Area');
 
 	/**
 	 * Nome modello
@@ -52,12 +52,39 @@ class DocumentsController extends AppController {
 	 * 
 	 * @todo TUTTO
 	 */
-	function index($page = 1, $dim = 10, $order = null, $ida = null, $idg = null) {
+	function index($ida = null, $idg = null, $page = 1, $dim = 20, $order = null) {
+		// Setup parametri
+		$this->setup_args(
+			array("ida", "integer", &$ida),
+			array("idg", "integer", &$idg),
+			array("page", "integer", &$page),
+			array("dim", "integer", &$dim),
+			array("order", "string", &$order)
+		) ;
+
 		// Verifica i permessi d'accesso
 		if(!$this->checkLogin()) return ;
 		
-		$this->Session->setFlash("DA IMPLEMENTARE");
-		return ;
+		// Preleva l'elenco dei documenti richiesto
+		if(!$this->ViewShortDocument->listContents($contents, $ida, $idg, $page, $dim , $order)) {
+			$this->Session->setFlash("Errore nel prelievo della lista dei documenti");
+			return ;
+		}
+		
+		// Preleva l'albero delle aree e tipologie
+		$this->Area->tree($sections, Area::SECTION, (integer)$ida);
+
+		// Crea l'URL delo stato corrente
+		$selfPlus = $this->createSelfURL(false,
+			array("ida", $ida), array("idg", $idg), 	array("page", $page), 
+			array("dim", $dim), array("order", $order)
+		) ;
+
+		// Setup dei dati da passare al template
+		$this->set('Sections', 		$sections);
+		$this->set('Documents',		$contents);
+		$this->set('selfPlus',		$selfPlus) ;
+		$this->set('self',			($this->createSelfURL(false)."?")) ;
 	}
 
 	/**

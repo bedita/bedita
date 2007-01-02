@@ -32,6 +32,14 @@ class Area extends BEAppModel
 	const SECTION 	= 4 ;
 	
 	
+    var $hasAndBelongsToMany = array('Group' =>
+                               array('className'    => 'Group',
+                                     'foreignKey'	=> 'area_id',
+									 'joinTable'	=> 'areas_contents_groups'
+                               )
+    );
+	
+	
 	function __construct() {
 		parent::__construct() ;
 	}

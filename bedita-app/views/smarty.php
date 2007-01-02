@@ -89,15 +89,17 @@
 				VIEWS
 			) ;
 						
-			$this->_sv_compile_dir = TMP . 'smarty' . DS . 'compile' . DS;
+//			$this->_sv_compile_dir = TMP . 'smarty' . DS . 'compile' . DS;
+			$this->_sv_compile_dir = TMP . 'smarty' . DS . 'compile' ;
 			$this->_sv_cache_dir = TMP . 'smarty' . DS . 'cache' . DS;
 			$this->_sv_config_dir = ROOT . APP_DIR.DS . 'config' . DS . 'smarty' . DS;
 			
 			$this->_smarty = & new Smarty();
 
 			$this->_smarty->compile_dir = $this->_sv_compile_dir;
-			$this->_smarty->cache_dir = $this->_sv_cache_dir;
-			$this->_smarty->config_dir = $this->_sv_config_dir;
+			$this->_smarty->cache_dir 	= $this->_sv_cache_dir;
+			$this->_smarty->config_dir 	= $this->_sv_config_dir;
+			$this->_smarty->compile_id	= $controller->name ;
 			
 			// Aggiunta Giangi
 			$this->_smarty->plugins_dir[] = ROOT . DS . APP_DIR . DS . 'vendors' . DS . '_smartyPlugins' ;

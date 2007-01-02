@@ -43,7 +43,7 @@ class EventsController extends AppController {
 	}
 
 	/**
-	 * Visualizza una porzione .....
+	 * Visualizza una porzione di Eventi
 	 *
 	 * @param integer $ida		ID dell'area da selezionare. Preleva l'elenco solo di questa area
 	 * @param integer $idg		ID del gruppo da selezionare. Preleva l'elenco solo di questo gruppo
@@ -53,7 +53,7 @@ class EventsController extends AppController {
 	 * 
 	 * @todo TUTTO
 	 */
-	function index($ida = null, $idg = null, $page = 1, $dim = 10, $order = null) {
+	function index($ida = null, $idg = null, $page = 1, $dim = 20, $order = null) {
 		// Setup parametri
 		$this->setup_args(
 			array("ida", "integer", &$ida),

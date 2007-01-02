@@ -1,12 +1,18 @@
 <!--
 <h1 onClick="window.location='./'" class="eventi"><a href="./">eventi</a></h1>
 -->
+{php}
+$vs = &$this->get_template_vars() ;
+//pr($vs["firstContent"]);
+//exit;
+{/php}
 <div class="inside">
 
 	<ul class="simpleMenuList" style="margin:0px 0px 10px 0px">
 		<li {if $sez=="new"}class="on"{/if}>    <b>&#8250;</b> <a href="./frmAdd">crea nuovo evento</a></li>
 		<li {if $sez=="indice"}class="on"{/if}> <b>&#8250;</b> <a href="index">elenco eventi</a></li>
-		<li {if $sez=="detail"}class="on"{/if}> <b>&#8250;</b> <a href="./frmModify/"{if $Events[0].ID}{else}#{/if}">dettaglio evento</a></li>
+		<li {if $sez=="detail"}class="on"{/if}> <b>&#8250;</b> <a href="{if $firstContent}./frmModify/{$firstContent.ID}{else}#{/if}">dettaglio evento </a></li>
+		<li {if $sez=="groups"}class="on"{/if}> <b>&#8250;</b> <a href="./frmGroups">modifica tipologie </a></li>
 	</ul>
 	
 {if $Events.toolbar}	
