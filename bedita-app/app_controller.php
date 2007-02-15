@@ -46,12 +46,34 @@ class AppController extends Controller {
 	 * 
 	 * @var unknown_type
 	 */
+	  var $beforeFilter = array('setupCommonData');
+	
+	/**
+	 * Setta i dati utilizzabili nelle diverse pagine.
+	 *
+	 * @todo VERIFICA SE INSERIRE I DIVERSI DATI IN UN FILE DI CONFIGURAZIONE
+	 */
+	function setupCommonData() {
+		// Possibili stati. versione  minimale
+		$this->set('listSimpleStatues', array("on" =>"on", "off" => "off")) ;
+		
+		// Lista delle diverse lingue applicabili
+		$this->set('listLangs', 
+			array(
+				"it"	=> "Italiano",
+				"en"	=> "English",
+				"fr"	=> "French",
+				"es"	=> "Spanish",
+				"de"	=> "German"
+			)
+		) ;
+	}
 	
 	/**
 	 * Verifica dell'accesso al modulo dell'utente.
-	 * Deve essere inserito il compenente: BeAuth.
+	 * Deve essere inserito il componente: BeAuth.
 	 * 
-	 * Preleva tutti i dati utlizzati da tutte le pagine.
+	 * Preleva l'elenco dei moduli visibili dall'utente corrente.
 	 */
 	function checkLogin() {
 		// Verifica i permessi d'accesso
@@ -130,6 +152,8 @@ class AppController extends Controller {
 	
 		return $baseURL ;
 	}
+	
+	
 }
 
 ?>

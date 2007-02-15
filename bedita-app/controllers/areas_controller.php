@@ -55,9 +55,12 @@ class AreasController extends AppController {
 		if(($Aree = $this->Area->findAll()) === false) return false ;
 
 		// Setup dei dati da passare al template
-		$this->set('Aree', 	$Aree);
+		$this->set('selfPlus',	($this->createSelfURL(false)."?")) ;
+		$this->set('self',		($this->createSelfURL(false)."?")) ;
+		$this->set('Aree', 		$Aree);
 	}
-
+	
+	
 }
 
 ?>

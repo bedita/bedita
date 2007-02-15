@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: database.php.default 3259 2006-07-14 15:10:55Z phpnut $ */
+/* SVN FILE: $Id: database.php.default 4410 2007-02-02 13:31:21Z phpnut $ */
 /**
  * This is core configuration file.
  *
@@ -7,8 +7,8 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright (c)	2006, Cake Software Foundation, Inc.
+ * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
+ * Copyright 2005-2007, Cake Software Foundation, Inc.
  *								1785 E. Sahara Avenue, Suite 490-204
  *								Las Vegas, Nevada 89104
  *
@@ -16,14 +16,14 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright (c) 2006, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP Project
+ * @copyright		Copyright 2005-2007, Cake Software Foundation, Inc.
+ * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
  * @package			cake
  * @subpackage		cake.app.config
- * @since			CakePHP v 0.2.9
- * @version			$Revision: 3259 $
+ * @since			CakePHP(tm) v 0.2.9
+ * @version			$Revision: 4410 $
  * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2006-07-14 10:10:55 -0500 (Fri, 14 Jul 2006) $
+ * @lastmodified	$Date: 2007-02-02 07:31:21 -0600 (Fri, 02 Feb 2007) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -37,20 +37,20 @@
  * You can specify multiple configurations for production, development and testing.
  *
  * driver =>
- * mysql, postgres, sqlite, adodb, pear-drivername
+ * mysql, postgres, sqlite, adodb-drivername, pear-drivername
  *
  * connect =>
  * MySQL set the connect to either mysql_pconnect of mysql_connect
  * PostgreSQL set the connect to either pg_pconnect of pg_connect
- * SQLite set the connect to sqlite_popen  sqlite_open
+ * SQLite set the connect to sqlite_popen or sqlite_open
+ * MSSQL set the connect to mssql_connect or mssql_pconnect
  * ADOdb set the connect to one of these
  *	(http://phplens.com/adodb/supported.databases.html) and
  *	append it '|p' for persistent connection. (mssql|p for example, or just mssql for not persistent)
  *
  * host =>
  * the host you connect to the database
- * MySQL 'localhost' to add a port number use 'localhost:port#'
- * PostgreSQL 'localhost' to add a port number use 'localhost port=5432'
+ * To add a port number use 'port' => #
  *
  */
 class DATABASE_CONFIG

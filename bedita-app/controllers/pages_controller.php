@@ -45,7 +45,7 @@ class PagesController extends AppController {
 	var $name = 'Pages';
 //	var $beforeFilter = array('checkLogin');
 
-	var $helpers = array('Html', 'Bevalidation');
+	var $helpers = array('Bevalidation');
 	
 	var $components = array('BeAuth');
 

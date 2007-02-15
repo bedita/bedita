@@ -13,7 +13,7 @@ class BevalidationHelper extends Helper {
 	 *
 	 * @var array
 	 */
-	var $helpers = array('Html', 'Javascript');
+	var $helpers = array('Html', 'Form', 'Javascript');
 	
 	
 	/*

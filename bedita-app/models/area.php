@@ -19,6 +19,11 @@
  * @lastmodified	
  * @license			
 */
+require_once("view_categories.php") ;
+require_once("view_sections.php") ;
+require_once("view_subject.php") ;
+require_once("view_tipologies.php") ;
+
 class Area extends BEAppModel
 {
 	var $name = 'Area';

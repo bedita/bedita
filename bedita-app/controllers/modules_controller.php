@@ -22,6 +22,9 @@
  */
 
 class ModulesController extends AppController {
+	var $components = array('BeAuth');
+	var $helpers 	= array('Bevalidation');
+
 	var $name = 'Modules';
 	
 	function __construct() {
