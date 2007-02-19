@@ -15,7 +15,29 @@ Visualizza il menu e il comando di login/logout
                 </div>
 
         {section name="m" loop=$moduleList}
-        	{if ($moduleList[m].status)}
+           {if ($moduleList[m].status)}
+               {if ($moduleList[m].allowed)}
+                       <div class="gest_menux"
+                   style="background-color:{$moduleList[m].color}; color: white; "
+                   onMouseOver     = "oldBGColor=this.style.backgroundColor; this.style.backgroundColor = '{$moduleList[m].color}'"                          onMouseOut      = "this.style.backgroundColor = oldBGColor"
+                   >
+                   {assign var='menuItemPath' value=$moduleList[m].path}
+                   {assign var='menuItemLabel' value=$moduleList[m].label}
+                   {assign_associative var='menuLinkStyle' style="background-color:$moduleList[m].color;color:white"}
+                   {if (stripos($bevalidation->here, $moduleList[m].path) !== false)}
+                       <i> * {$html->link($menuItemLabel, $menuItemPath, $menuLinkStyle)}</i>
+                       {else}
+                       {$html->link($menuItemLabel, $menuItemPath, $menuLinkStyle)}
+                       {/if}
+                   </div>
+               {else}
+                       <div class="gest_menux" style="background-color:#DDDDDD; color: white; ">
+                   {$moduleList[m].label}
+                   </div>
+               {/if}
+           {/if}
+        
+        	{*if ($moduleList[m].status)}
         		{if ($moduleList[m].allowed)}
        		 		<div class="gest_menux" 
 					style="background-color:{$moduleList[m].color}; color: white; "
@@ -34,7 +56,7 @@ Visualizza il menu e il comando di login/logout
                     {$moduleList[m].label}
                 	</div>
                 {/if}
-            {/if}
+            {/if*}
         {/section}
 </div>
 
