@@ -17,9 +17,16 @@ function smarty_function_assign_associative($params, &$smarty)
         $smarty->trigger_error("assign_array: missing 'var' parameter");
         return;
     }
-	$var = $params["var"] ;
+	$var = @$params["var"] ;
     unset($params["var"]);
-	$smarty->assign($var, $params );
+	
+	// Se l'array e' gia' presente ne aggiunge i campi
+	$vs = &$smarty->get_template_vars() ;
+	if(@is_array($vs[$var])) {
+		foreach($params as $key => $value) $vs[$var][$key] = $value ;
+	} else {
+		$smarty->assign($var, $params );
+	}
 }
 
 /* vim: set expandtab: */
