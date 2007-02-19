@@ -15,7 +15,7 @@ Visualizza il menu e il comando di login/logout
                 </div>
 
         {section name="m" loop=$moduleList}
-           {if ($moduleList[m].status)}
+           {*if ($moduleList[m].status)}
                {if ($moduleList[m].allowed)}
                        <div class="gest_menux"
                    style="background-color:{$moduleList[m].color}; color: white; "
@@ -35,13 +35,15 @@ Visualizza il menu e il comando di login/logout
                    {$moduleList[m].label}
                    </div>
                {/if}
-           {/if}
+           {/if*}
         
-        	{*if ($moduleList[m].status)}
+        	{if ($moduleList[m].status)}
         		{if ($moduleList[m].allowed)}
-       		 		<div class="gest_menux" 
+        		{assign_concat var='linkPath' 0="/" 1=$moduleList[m].path}
+        		{assign var = "link" value=$html->url($linkPath)}
+        			<div class="gest_menux" 
 					style="background-color:{$moduleList[m].color}; color: white; "
-    	            onClick = "document.location ='/{$moduleList[m].path}/'"
+    	            onClick = "document.location ='{$link}'"
         	        onMouseOver     = "oldBGColor=this.style.backgroundColor; this.style.backgroundColor = '{$moduleList[m].color}'"        
             	    onMouseOut      = "this.style.backgroundColor = oldBGColor"
                 	> 
@@ -56,7 +58,7 @@ Visualizza il menu e il comando di login/logout
                     {$moduleList[m].label}
                 	</div>
                 {/if}
-            {/if*}
+            {/if}
         {/section}
 </div>
 
