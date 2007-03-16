@@ -13,9 +13,8 @@ class BevalidationHelper extends Helper {
 	 *
 	 * @var array
 	 */
-	var $helpers = array('Html', 'Form', 'Javascript');
-	
-	
+	var $helpers = array('Html', 'Form', 'Javascript','Beurl');
+		
 	/*
 	* Inserisce i tag script con i file necessari
 	* @params string $lang	codice lingua selezioanta x YAV: it (default), en,de, es, fr, pt-BR, sk

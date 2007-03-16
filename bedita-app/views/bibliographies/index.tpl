@@ -11,7 +11,7 @@ $vs = &$this->get_template_vars() ;
 	<div id="header">
 		{include file="head.tpl"}
 	</div>
-
+{$html->link("label", "/biblio/index", "")}
 <table border="0" cellspacing="0" cellpadding="0" class="mainTable">
 	<tr>
 		<td>

@@ -3,9 +3,12 @@
 {formHelper fnc="create" args="'login', array('action' => '/users/login', 'type' => 'POST')"}
 
 {assign var="URL" value=$html->here}
+
 {formHelper fnc="hidden" args="'login/URLOK', array('value' => '$URL')"}
 {formHelper fnc="hidden" args="'login/URLERROR', array('value' => '$URL')"}
-
+<pre>
+{$beurl->here()}
+</pre>
 <fieldset>
     <legend>User Login</legend>
     
