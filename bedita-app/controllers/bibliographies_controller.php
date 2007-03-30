@@ -33,15 +33,6 @@ class BibliographiesController extends AppController {
 	var $name = 'Bibliographies' ;
 
 	/**
-	 * Definisce l'utilizzo di Smarty
-	 *
-	 */
-	function __construct() {
-		parent::__construct() ;
-		$this->view 	= 'Smarty';
-	}
-
-	/**
 	 * Visualizza una porzione .....
 	 *
 	 * @param integer $page		pagina dell'elenco richiesta

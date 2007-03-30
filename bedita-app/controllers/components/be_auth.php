@@ -114,6 +114,7 @@ class BeAuthComponent extends Object {
 	 * @return unknown
 	 */
 	function isLogged() {
+		
 		if (isset($this->Session) && $this->Session->valid() &&  $this->Session->check($this->sessionKey)) {
 			if(@empty($this->user)) $this->user 	= $this->Session->read($this->sessionKey);
 			$this->controller->set($this->sessionKey, $this->user);
@@ -124,7 +125,7 @@ class BeAuthComponent extends Object {
 			$this->allow	= false ;
 		}
 		
-//		if(!isset($this->controller)) return false ;
+		if(!isset($this->controller)) return false ;
 		
 		$this->controller->set($this->sessionKey, $this->user);
 		$this->controller->set($this->allowKey, $this->allow);

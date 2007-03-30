@@ -26,11 +26,6 @@ class UsersController extends AppController {
 	
 	var $name = 'Users';
 	
-	function __construct() {
-		parent::__construct() ;
-		$this->view 	= 'Smarty';
-	}
-	
 	/**
 	 * Visualizza una porzione degli utenti redattori/gestori presenti nel sistema.
 	 *
@@ -39,8 +34,6 @@ class UsersController extends AppController {
 	 * @param string $order		nome campo su cui ordinare la lista. Aggiungere "desc" per invertire l'ordine
 	 */
 	function index($page = 1, $dim = 10, $order = null) {
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
 
 		// Preleva l'elenco degli utenti richiesto
 		if(!$this->User->listUser($users, $page, $dim , $order)) {

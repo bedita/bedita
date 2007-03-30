@@ -33,15 +33,6 @@ class GalleriesController extends AppController {
 	var $name = 'Galleries' ;
 
 	/**
-	 * Definisce l'utilizzo di Smarty
-	 *
-	 */
-	function __construct() {
-		parent::__construct() ;
-		$this->view 	= 'Smarty';
-	}
-
-	/**
 	 * Visualizza una porzione .....
 	 *
 	 * @param integer $page		pagina dell'elenco richiesta
@@ -60,9 +51,6 @@ class GalleriesController extends AppController {
 			array("order", "string", &$order)
 		) ;
 
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
-		
 		// Preleva l'elenco dei documenti richiesto
 		if(!$this->ViewShortGallery->listContents($contents, $ida, null, $page, $dim , $order)) {
 			$this->Session->setFlash("Errore nel prelievo della lista delle gallerie");
@@ -94,8 +82,6 @@ class GalleriesController extends AppController {
 	 * @todo TUTTO
 	 */
 	function frmModify($id = null) {
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
 	
 		$this->Session->setFlash("DA IMPLEMENTARE");
 		return ;
@@ -107,8 +93,6 @@ class GalleriesController extends AppController {
 	 * @todo TUTTO
 	 */
 	function frmAdd() {
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
 
 		$this->Session->setFlash("DA IMPLEMENTARE");
 		return ;
@@ -121,8 +105,6 @@ class GalleriesController extends AppController {
 	 */
 	/*
 	function frmGroups() {
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
 
 		$this->Session->setFlash("DA IMPLEMENTARE");
 		return ;
@@ -138,8 +120,6 @@ class GalleriesController extends AppController {
 	 * @todo TUTTO
 	*/
 	function edit() {
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
 
 		if(empty($this->data)) {
 			$this->Session->setFlash("Nessun dato passato");
@@ -160,8 +140,6 @@ class GalleriesController extends AppController {
 	 * @todo TUTTO
 	 */
 	function delete($id = null) {
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
 
 		$this->Session->setFlash("DA IMPLEMENTARE");
 		return ;
@@ -176,8 +154,6 @@ class GalleriesController extends AppController {
 	 * @todo TUTTO
 	*/
 	function editGroups() {
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
 
 		if(empty($this->data)) {
 			$this->Session->setFlash("Nessun dato passato");

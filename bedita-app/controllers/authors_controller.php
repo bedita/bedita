@@ -33,15 +33,6 @@ class AuthorsController extends AppController {
 	var $name = 'Authors' ;
 
 	/**
-	 * Definisce l'utilizzo di Smarty
-	 *
-	 */
-	function __construct() {
-		parent::__construct() ;
-		$this->view 	= 'Smarty';
-	}
-
-	/**
 	 * Visualizza una porzione di Autori
 	 *
 	 * @param integer $ida		ID dell'area da selezionare. Preleva l'elenco solo di questa area

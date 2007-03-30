@@ -33,24 +33,12 @@ class UtilitiesController extends AppController {
 	var $name = 'Utilities' ;
 
 	/**
-	 * Definisce l'utilizzo di Smarty
-	 *
-	 */
-	function __construct() {
-		parent::__construct() ;
-		$this->view 	= 'Smarty';
-	}
-
-	/**
 	 * 
 	 *
 	 * @todo TUTTO
 	 */
 	function index() {
-		
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
-	
+			
 		$this->Session->setFlash("DA IMPLEMENTARE");
 		return ;
 	}

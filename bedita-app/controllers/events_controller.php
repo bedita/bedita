@@ -33,16 +33,6 @@ class EventsController extends AppController {
 	var $name = 'Events' ;
 
 	/**
-	 * Definisce l'utilizzo di Smarty
-	 *
-	 */
-	function __construct() {
-		parent::__construct() ;
-		$this->view 	= 'Smarty';
-		
-	}
-
-	/**
 	 * Visualizza una porzione di Eventi
 	 *
 	 * @param integer $ida		ID dell'area da selezionare. Preleva l'elenco solo di questa area
@@ -63,9 +53,6 @@ class EventsController extends AppController {
 			array("order", "string", &$order)
 		) ;
 
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
-		
 		// Preleva l'elenco degli eventi richiesto
 		if(!$this->ViewShortEvent->listContents($contents, $ida, $idg, $page, $dim , $order)) {
 			$this->Session->setFlash("Errore nel prelievo della lista degli eventi");
@@ -96,8 +83,6 @@ class EventsController extends AppController {
 	 * @todo TUTTO
 	 */
 	function frmModify($id = null) {
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
 	
 		$this->Session->setFlash("DA IMPLEMENTARE");
 		return ;
@@ -109,8 +94,6 @@ class EventsController extends AppController {
 	 * @todo TUTTO
 	 */
 	function frmAdd() {
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
 
 		$this->Session->setFlash("DA IMPLEMENTARE");
 		return ;
@@ -122,8 +105,6 @@ class EventsController extends AppController {
 	 * @todo TUTTO
 	 */
 	function frmGroups() {
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
 
 		$this->Session->setFlash("DA IMPLEMENTARE");
 		return ;
@@ -139,8 +120,6 @@ class EventsController extends AppController {
 	 * @todo TUTTO
 	*/
 	function edit() {
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
 
 		if(empty($this->data)) {
 			$this->Session->setFlash("Nessun dato passato");
@@ -161,8 +140,6 @@ class EventsController extends AppController {
 	 * @todo TUTTO
 	 */
 	function delete($id = null) {
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
 
 		$this->Session->setFlash("DA IMPLEMENTARE");
 		return ;
@@ -177,8 +154,6 @@ class EventsController extends AppController {
 	 * @todo TUTTO
 	*/
 	function editGroups() {
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
 
 		if(empty($this->data)) {
 			$this->Session->setFlash("Nessun dato passato");

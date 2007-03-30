@@ -33,15 +33,6 @@ class AreasController extends AppController {
 	var $name = 'Areas' ;
 
 	/**
-	 * Definisce l'utilizzo di Smarty
-	 *
-	 */
-	function __construct() {
-		parent::__construct() ;
-		$this->view 	= 'Smarty';
-	}
-
-	/**
 	 * 
 	 *
 	 * @todo TUTTO
@@ -49,7 +40,7 @@ class AreasController extends AppController {
 	function index() {
 		
 		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
+//		if(!$this->checkLogin()) return ;
 		
 		$this->Area->recursive = 0 ;
 		if(($Aree = $this->Area->findAll()) === false) return false ;

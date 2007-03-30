@@ -32,14 +32,6 @@ class CartigliController extends AppController {
 	 */
 	var $name = 'Cartigli' ;
 
-	/**
-	 * Definisce l'utilizzo di Smarty
-	 *
-	 */
-	function __construct() {
-		parent::__construct() ;
-		$this->view 	= 'Smarty';
-	}
 
 	/**
 	 * 
@@ -48,9 +40,6 @@ class CartigliController extends AppController {
 	 */
 	function index() {
 		
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
-	
 		$this->Session->setFlash("DA IMPLEMENTARE");
 		return ;
 	}

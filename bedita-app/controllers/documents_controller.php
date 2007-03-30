@@ -33,15 +33,6 @@ class DocumentsController extends AppController {
 	var $name = 'Documents' ;
 
 	/**
-	 * Definisce l'utilizzo di Smarty
-	 *
-	 */
-	function __construct() {
-		parent::__construct() ;
-		$this->view 	= 'Smarty';
-	}
-
-	/**
 	 * Visualizza una porzione .....
 	 *
 	 * @param integer $page		pagina dell'elenco richiesta
@@ -52,7 +43,8 @@ class DocumentsController extends AppController {
 	 * 
 	 * @todo TUTTO
 	 */
-	function index($ida = null, $idg = null, $page = 1, $dim = 20, $order = null) {
+	function index($ida = null, $idg = null, $page = 1, $dim = 20, $order = null) {		
+
 		// Setup parametri
 		$this->setup_args(
 			array("ida", "integer", &$ida),
@@ -63,7 +55,7 @@ class DocumentsController extends AppController {
 		) ;
 
 		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
+//		if(!$this->checkLogin()) return ;
 		
 		// Preleva l'elenco dei documenti richiesto
 		if(!$this->ViewShortDocument->listContents($contents, $ida, $idg, $page, $dim , $order)) {
@@ -74,7 +66,7 @@ class DocumentsController extends AppController {
 		// Preleva l'albero delle aree e tipologie
 		$this->Area->tree($sections, Area::SECTION, (integer)$ida);
 
-		// Crea l'URL delo stato corrente
+		// Crea l'URL dello stato corrente
 		$selfPlus = $this->createSelfURL(false,
 			array("ida", $ida), array("idg", $idg), 	array("page", $page), 
 			array("dim", $dim), array("order", $order)

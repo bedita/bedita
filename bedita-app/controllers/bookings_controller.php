@@ -33,15 +33,6 @@ class BookingsController extends AppController {
 	var $name = 'Bookings' ;
 
 	/**
-	 * Definisce l'utilizzo di Smarty
-	 *
-	 */
-	function __construct() {
-		parent::__construct() ;
-		$this->view 	= 'Smarty';
-	}
-
-	/**
 	 * 
 	 *
 	 * @todo TUTTO
