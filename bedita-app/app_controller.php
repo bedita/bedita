@@ -38,16 +38,24 @@
  * @subpackage	cake.cake
  */
 class AppController extends Controller {
-	/**
-	 * Se nn si inverte l'ordine di caricamento dei componenti e l'esecuzione 
-	 * di "beforeFilter", non e' possibile usare i componenti all'interno della funzione
-	 * 
-	 * var $beforeFilter = array('checkLogin');
-	 * 
-	 * @var unknown_type
-	 */
-	  var $beforeFilter = array('setupCommonData');
+	var $components = array('BeAuth');
+	var $helpers 	= array('Bevalidation');
 	
+	 /**
+	  * 
+	  */
+	 function beforeFilter() {
+		$this->view 	= 'Smarty';
+
+	 	$this->setupCommonData() ;
+	 	
+		if(isset($this->data["login"])) return  ;
+	 	$this->BeAuth->startup($this) ;
+			
+	 	if(!$this->checkLogin()) return ;
+	 	
+	 }
+	  
 	/**
 	 * Setta i dati utilizzabili nelle diverse pagine.
 	 *
@@ -75,12 +83,20 @@ class AppController extends Controller {
 	 * 
 	 * Preleva l'elenco dei moduli visibili dall'utente corrente.
 	 */
-	function checkLogin() {
+	function checkLogin() {				
+		static  $_test = 1 ;
+		static  $_loginRunning = false ;
+ 		
+		if($_loginRunning) return true ;
+ 		else $_loginRunning  = true ;
+		 
 		// Verifica i permessi d'accesso
-		if(!$this->BeAuth->isLogged()) { $this->render(null, null, VIEWS."pages/anoymous.tpl") ; return false ; }		
+		if(!$this->BeAuth->isLogged()) { $this->render(null, null, VIEWS."pages/anoymous.tpl") ; $_loginRunning = false; exit; }
 		
 		// Preleva lista dei moduli
         $this->set('moduleList', $this->requestAction('/modules/getListEnabledModules/'.$this->BeAuth->user["id"]));
+	
+		$_loginRunning = false ;
 		
         return true ;
 	}
