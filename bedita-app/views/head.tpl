@@ -6,9 +6,9 @@ Visualizza il menu e il comando di login/logout
 <div style="width:1000px;">
                 <div class="beditaButton" onClick = "document.location ='/'">
                         <b style="font:bold 17px Verdana">B.Edita </b>
-                        <br>
-                        {if ($BEAuthAllow)}<b>&#155;</b>{$html->link('Esci', '/Users/logout')}{/if}
-                        <br>
+                        <br/>
+                        {if ($BEAuthAllow)}<b>&#8250;</b>{$html->link('Esci', '/Users/logout')}{/if}
+                        <br/>
                         <p>
                         {$smarty.now|date_format:"%d/%m/%Y"}
                         </p>

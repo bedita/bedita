@@ -22,5 +22,5 @@
  * @lastmodified	$Date: 2007-02-02 07:31:21 -0600 (Fri, 02 Feb 2007) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-require 'webroot' . DIRECTORY_SEPARATOR . 'index.php';
+require 'bedita-web' . DIRECTORY_SEPARATOR . 'index.php';
 ?>
