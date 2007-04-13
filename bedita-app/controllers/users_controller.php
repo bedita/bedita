@@ -78,6 +78,11 @@ class UsersController extends AppController {
 			return ;
 		}
 		
+		// cripta la password
+		$password = $this->data['User']['passw'];
+		$cryptedPwd = ($password!='') ? md5($password) : $this->data['User']['crypted'];
+		$this->data['User']['passw'] = $cryptedPwd;
+		
 		// salva i dati
 		if(!$this->User->save($this->data)) {
 			$this->Session->setFlash("Errore nella modifica dei dati utente");
@@ -103,6 +108,7 @@ class UsersController extends AppController {
    function login() {
 		$userid 	= (isset($this->data["login"]["userid"])) ? $this->data["login"]["userid"] : "" ;
 		$password 	= (isset($this->data["login"]["passwd"])) ? $this->data["login"]["passwd"] : "" ;
+		$password = md5($password);
 		
 		$URLOK 		= (isset($this->data["login"]["URLOK"])) ? $this->data["login"]["URLOK"] : "/" ;
 		$URLERR		= (isset($this->data["login"]["URLERR"])) ? $this->data["login"]["URLERR"] : "/" ;

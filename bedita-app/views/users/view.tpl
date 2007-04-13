@@ -1,3 +1,28 @@
+<script type="text/javascript">
+{literal}
+<!--
+
+function cmpPasswd() {
+	var p1 = document.getElementById('UserPassw').value;
+	var p2 = document.getElementById('UserPassw2').value;
+	if (p1 == p2)
+		return null;
+	return "Le password non coincidono";
+}
+
+var rules = new Array();
+rules[0]='UserUsername:userid|required';
+rules[1]='UserEmail:Email|required';
+rules[2]='UserEmail:Email|email';
+rules[3]='cmpPasswd()|custom';
+-->
+{/literal}
+</script>
+
+</head>
+
+<body>
+
 <h1>My Users</h1>
 <div id="errorsDiv"></div>
 
@@ -9,10 +34,9 @@
 		</td>
 		<td>
 
-{*bevalidationHelper fnc="formTag" args="'frmModifyUser', null, '/users/edit', 'post'"*}
-{$bevalidation->formTag('frmModifyUser', null, '/users/edit', 'post')}
+{formHelper fnc="create" args="'login', array('action' => '/users/edit', 'type' => 'POST', 'id' => 'frmModifyUser', 'name' => 'frmModifyUser')"}
 
-{assign var="back" 		value=$html->here}
+{assign var="back" 		value=$beurl->here()}
 {assign var="id" 		value=$User.User.id}
 {assign var="status"	value=$User.User.status}
 
@@ -30,54 +54,54 @@
 		<td>
 		{assign var="value" value=$User.User.username}
 		{htmlHelper fnc="input" args="'User/username', array('style' => 'width: 250px', 'value' => '$value')"}
-		{bevalidationHelper fnc="rule" args="'frmModifyUser', 'UserUsername:userid|required'"}
 		</td>
 		
 		<td rowspan="5" valign="top">
-			TEST
 			{html_checkboxes name="data[Module][Module]" options=$moduleList selected=$User.Module}
-			{*foreach from=}
-			
-			{/foreach*}
 		</td>
 	</tr>
 	<tr>
-		<td>Nome:&nbsp;</td>
+		<td>Nome:</td>
 		<td>
 		{assign var="value" value=$User.User.nome}
 		{htmlHelper fnc="input" args="'User/nome', array('style' => 'width: 250px', 'value' => '$value')"}
 		</td>
 	</tr>
 	<tr>
-		<td>Cognome:&nbsp;</td>
+		<td>Cognome:</td>
 		<td>
 		{assign var="value" value=$User.User.cognome}
 		{htmlHelper fnc="input" args="'User/cognome', array('style' => 'width: 250px', 'value' => '$value')"}
 		</td>
 	</tr>
 	<tr>
-		<td>Password:&nbsp;</td>
+		<td style="white-space:nowrap">Nuova Password:</td>
 		<td>
 		{assign var="value" value=$User.User.passw}
-		{htmlHelper fnc="input" args="'User/passw', array('style' => 'width: 250px', 'value' => '$value')"}
-		{bevalidationHelper fnc="rule" args="'frmModifyUser', 'UserPassw:Password|required'"}
+		{htmlHelper fnc="hidden" args="'User/crypted', array('style' => 'width: 250px', 'value' => '$value')"}
+		{htmlHelper fnc="password" args="'User/passw', array('style' => 'width: 250px')"}
 		</td>
 	</tr>
-
 	<tr>
-		<td>Email:&nbsp;</td>
+		<td>Ripeti Password:</td>
+		<td>
+		{assign var="value" value=$User.User.passw}
+		{htmlHelper fnc="password" args="'User/passw2', array('style' => 'width: 250px')"}
+		<br/>(lascia vuoto per non modificarla)
+		</td>
+	</tr>
+	<tr>
+		<td>Email:</td>
 		<td>
 		{assign var="value" value=$User.User.email}
 		{htmlHelper fnc="input" args="'User/email', array('style' => 'width: 250px', 'value' => '$value')"}
-		{bevalidationHelper fnc="rule" args="'frmModifyUser', 'UserEmail:Email|required'"}
-		{bevalidationHelper fnc="rule" args="'frmModifyUser', 'UserEail:Email|email'"}
 		</td>
 	</tr>
 
 	<tr>
 		<td colspan="3">
         <label for="submit">&nbsp;</label>
-		{htmlHelper fnc="submit" args="'Modifica'"}
+		{htmlHelper fnc="submit" args="'Modifica', array('onclick' => 'if(!checkOnSubmit(\'frmModifyUser\',rules)) return false;')"}
 		</td>
 	</tr>
 </table>    
