@@ -63,7 +63,7 @@ class PagesController extends AppController {
 	 */
 	 function home() {
 		// Verifica i permessi d'accesso
-//		if(!$this->BeAuth->isLogged()) { $this->render("anoymous") ; return ; }
+//		if(!$this->BeAuth->isLogged()) { $this->render("anonymous") ; return ; }
 			
 		// Preleva lista dei moduli
 //        $this->set('moduleList', $this->requestAction('/modules/getListEnabledModules/'.$this->BeAuth->user["id"]));

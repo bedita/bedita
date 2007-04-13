@@ -10,11 +10,12 @@ rules[1]='loginPasswd:Password|minlength|6';
 
 </head>
 <body>
+
 <div id="container">
 
 <div id="content">
 
-<div id="errorsDiv"></div>
+<div id="errorsDiv">{if ($session->check('Message.flash'))}{$session->flash()}{/if}</div>
 
 {if ($errorMessage)}<h2>{$errorMessage}</h2>{/if}
 

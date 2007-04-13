@@ -13,11 +13,7 @@ $vs = &$this->get_template_vars() ;
 	<div id="header">
 		{include file="head.tpl"}
 	</div>
-
 	<div id="content">
 		{if ($session->check('Message.flash'))}{$session->flash()}{/if}
-
 	</div>
-
 </div>
-
