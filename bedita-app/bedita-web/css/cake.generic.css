@@ -18,7 +18,7 @@ BODY {
 	
 .beditaButton {
 	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer; 
-	background: #ffff00 url('/img/bedita_sfo.jpg') 0px -1px;
+	background: #ffff00 url('../img/bedita_sfo.jpg') 0px -1px;
 	color: black; 
 	height: 45px; 
 	width:136px; 
@@ -27,7 +27,7 @@ BODY {
 }
 /* IE ignores styles with [attributes], so it will skip the following. */
 .gest_menux[class] {
-  background-image: url(/img/sfo_gestUpD.png);
+  background-image: url(../img/sfo_gestUpD.png);
 }
 .gest_menux {
 	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer; 
@@ -45,7 +45,7 @@ BODY {
 }
 
 .gest_menuLeft[class] H1  {
-  background-image: url(/img/sfo_gestUpD.png);
+  background-image: url(../img/sfo_gestUpD.png);
 }
 
 .gest_menuLeft H1 {
@@ -60,7 +60,7 @@ BODY {
 }
 
 .gest_MenuHeader[class]  {
-  background-image: url(/img/sfo_gestUpD.png);
+  background-image: url(../img/sfo_gestUpD.png);
 }
 .gest_MenuHeader {
 	margin: 10px 0px 10px 1px; border:1px solid silver;
@@ -201,7 +201,7 @@ TH {
 	font-family : Verdana, sans-serif;
 	font-size : 11px;
 	color: #FFFFFF;
-	background : #7d7d7d /*url(/img/sfo_gestUpT.gif) repeat-x;*/
+	background : #7d7d7d /*url(../img/sfo_gestUpT.gif) repeat-x;*/
 }
 
 TH A {color:white;}
@@ -268,7 +268,7 @@ LI {margin-bottom:8px;}
 .order TD {
 		text-align:center;
 		background-color:gray;
-	background-image : url(/img/sfo_gestUpD.gif);
+	background-image : url(../img/sfo_gestUpD.gif);
 	}
 
 .simpleList {list-style: none;}
