@@ -8,7 +8,7 @@ $vs = &$this->get_template_vars() ;
 //exit;
 {/php}
 
-{assign_associative var="options" url=$params->filterPaginatorParams()}
+{assign_associative var="options" url=$beurl->filterPaginatorParams()}
 
 <table border="0" cellspacing="0" cellpadding="2" class="indexList">
 <tr>

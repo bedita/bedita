@@ -39,7 +39,7 @@
  */
 class AppController extends Controller {
 	var $components = array('BeAuth');
-	var $helpers 	= array('Bevalidation','Params');
+	var $helpers 	= array('Bevalidation');
 	
 	 /**
 	  * 

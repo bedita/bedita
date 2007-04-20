@@ -3,7 +3,7 @@ file include.
 visualizza gli elenchi.
 *}
 
-{assign_associative var="options" url=$params->filterPaginatorParams()}
+{assign_associative var="options" url=$beurl->filterPaginatorParams()}
 {assign var="par" value=$html->params}
 {assign_concat var="url_content" 0='/' 1 =$par.controller 2='/content/'}
 

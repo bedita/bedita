@@ -1,8 +1,8 @@
 {* set array for helper *}
 {assign var="par" value=$html->params}
 {assign var="pagParams" value=$paginator->params()}
-{assign var="pagParamsFiltered" value=$params->filterPaginatorParams()}
-{assign_associative var="optionsPag" class="pagEnable" url=$params->filterPaginatorParams()}
+{assign var="pagParamsFiltered" value=$beurl->filterPaginatorParams()}
+{assign_associative var="optionsPag" class="pagEnable" url=$beurl->filterPaginatorParams()}
 {assign_associative var="passFirst" page="1"}
 {assign_associative var="passLast" page=$pagParams.pageCount}
 
