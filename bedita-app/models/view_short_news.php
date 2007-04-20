@@ -24,7 +24,6 @@
 class ViewShortNews extends BEViewContentModel
 {
 	var $name 				= 'ViewShortNews';
-	var $useTable 			= "view_short_news" ;
 
 	protected function __setupJoinGroups() { 
 		$this->__joinFragment = "  " ; 

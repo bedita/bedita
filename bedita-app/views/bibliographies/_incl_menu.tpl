@@ -9,15 +9,13 @@ $vs = &$this->get_template_vars() ;
 <div class="inside">
 
 	<ul class="simpleMenuList" style="margin:0px 0px 10px 0px">
-		<li {if $sez=="new"}class="on"{/if}>    <b>&#8250;</b> <a href="./frmAdd">crea una nuova bibligografia</a></li>
-		<li {if $sez=="indice"}class="on"{/if}> <b>&#8250;</b> <a href="index">elenco bibliografie</a></li>
-		<li {if $sez=="detail"}class="on"{/if}> <b>&#8250;</b> <a href="{if $firstContent}./frmModify/{$firstContent.ID}{else}#{/if}">dettaglio bibliografia </a></li>
-		<li {if $sez=="groups"}class="on"{/if}> <b>&#8250;</b> <a href="./frmGroups">modifica categorie </a></li>
+		<li {if $sez=="new"}class="on"{/if}>    <b>&#8250;</b> <a href="{$html->url('/bibliographies/frmAdd')}">crea una nuova bibligografia</a></li>
+		<li {if $sez=="indice"}class="on"{/if}> <b>&#8250;</b> <a href="{$html->url('/bibliographies/index')}">elenco bibliografie</a></li>
+		<li {if $sez=="detail"}class="on"{/if}> <b>&#8250;</b> <a href="{if $firstContent}{$html->url('/bibliographies/frmModify/')}{$firstContent.ID}{else}#{/if}">dettaglio bibliografia </a></li>
+		<li {if $sez=="groups"}class="on"{/if}> <b>&#8250;</b> <a href="{$html->url('/bibliographies/frmGroups')}">modifica categorie </a></li>
 	</ul>
 	
-{if $Bibliographies.toolbar}	
-	{include file="toolbarList.tpl" sez="menuSX" toolbar=$Bibliographies.toolbar}
-{/if}
+{if !empty($paginator)}{include file="pagination.tpl" sez="menuSX"}{/if}
 
 {if $sez=="indice"}
 

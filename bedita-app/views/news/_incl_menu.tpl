@@ -6,6 +6,7 @@ $vs = &$this->get_template_vars() ;
 //pr($vs["firstContent"]);
 //exit;
 {/php}
+
 <div class="inside">
 
 	<ul class="simpleMenuList" style="margin:0px 0px 10px 0px">
@@ -14,9 +15,7 @@ $vs = &$this->get_template_vars() ;
 		<li {if $sez=="detail"}class="on"{/if}> <b>&#8250;</b> <a href="{if $firstContent}./frmModify/{$firstContent.ID}{else}#{/if}">dettaglio news </a></li>
 	</ul>
 	
-{if $Events.toolbar}	
-	{include file="toolbarList.tpl" sez="menuSX" toolbar=$News.toolbar}
-{/if}
+{if !empty($paginator)}{include file="pagination.tpl" sez="menuSX"}{/if}
 
 {if $sez=="indice"}
 

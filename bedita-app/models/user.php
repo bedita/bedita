@@ -33,17 +33,6 @@ class User extends BEAppModel
 									 'fields'		=> 'id'
                                )
                                );
-	
-	function listUser(&$recordset, $page = null, $dim = null, $order = null) {
-		if(($tmp = $this->findAll(null, null, $order, $dim, $page, 0)) === false) return false ;
-		
-		$recordset = array(
-			"items"		=> &$tmp,
-			"toolbar"	=> $this->toolbar($page, $dim)
-		) ;
-		
-		return true ;
-	}
 
 	function view(&$user, $id) {
 		$this->id 	= $id;

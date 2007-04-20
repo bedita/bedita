@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * PHP versions 4 
+ * PHP versions 5 
  *
  * CakePHP :  Rapid Development Framework <http://www.cakephp.org/>
  * Copyright (c)	2006, Cake Software Foundation, Inc.
@@ -19,10 +19,6 @@
  * @lastmodified	
  * @license			
 */
-require_once("view_categories.php") ;
-require_once("view_sections.php") ;
-require_once("view_subject.php") ;
-require_once("view_tipologies.php") ;
 
 class Area extends BEAppModel
 {
@@ -43,16 +39,16 @@ class Area extends BEAppModel
 									 'joinTable'	=> 'areas_contents_groups'
                                )
     );
+    
+    //var $hasMany = array('ViewSubject');
 	
 	
 	function __construct() {
 		parent::__construct() ;
 	}
 
-
 	/**
-	 * Torna l'elenco delle aree con i gruppi connessi
-	 * dell'area selezionata
+	 * Torna l'elenco delle aree con i gruppi connessi nell'array Groups utilizzando join con una vista
 	 *
 	 * @param mixed	$tree	Dove tornare il risultato
 	 * @param integer $type	Tipologia del gruppo da selezionare
@@ -60,68 +56,37 @@ class Area extends BEAppModel
 	 * 
 	 * @todo TUTTO
 	 */
-	function tree(&$tree, $type = Area::SUBJECT, $id = 0) {
-		$tree = array();
-		if(!($tree = $this->findAll())) return false ;
-		
-		// se nn c'e' da espandere nessuna area, torna il risultato
-		if(!$id) return true ; 
+	
+	function tree($type = Area::SUBJECT, $id = 0) {
 		
 		switch ($type) {
-			case Area::SUBJECT: {
-				$groups		= new ViewSubject() ;
-				$nameGroups	= "Groups" ;				
-			} break ;
-			case Area::TIPOLOGY: {
-				$groups		= new ViewTipology() ;
-				$nameGroups	= "Groups" ;				
-			} break ;
-			case Area::CATEGORY: {
-				$groups		= new ViewCategory() ;
-				$nameGroups	= "Groups" ;				
-			} break ;
-			case Area::SECTION: {
-				$groups		= new ViewSection() ;
-				$nameGroups	= "Groups" ;				
-			} break ;
-			default: {
-				$groups		= new ViewSubject ;
-				$nameGroups	= "Groups" ;
-			} break ;
-			
+			case Area::SUBJECT:
+				$SQLview = 'ViewSubject';
+				break;
+			case Area::TIPOLOGY:
+				$SQLview = 'ViewTipology';
+				break;
+			case Area::CATEGORY:
+				$SQLview = 'ViewCategory';
+				break;
+			case Area::SECTION:
+				$SQLview = 'ViewSection';
+				break;
+			default:
+				$SQLview = 'ViewSubject';
+				break;
 		}
 		
-		for ($i=0; $i < count($tree) ; $i++) {
-			if($id == 0xFF || $tree[$i]["Area"]["id"] == $id) {
-				$groups->findFromArea($tmp, $tree[$i]["Area"]["id"]) ;
-				$tree[$i][$nameGroups] = $tmp ;				
-			}
-		}
+		$this->unbindModel(array('hasAndBelongsToMany' => array('Group')));
+		$this->bindModel(array('hasMany' => array(
+                							'Groups' => array('className' => $SQLview)
+            							)
+        				));
+        				
+        return $this->findAll();
+		
 	}
 
 
-/*	
-	function listUser(&$recordset, $page = null, $dim = null, $order = null) {
-		if(($tmp = $this->findAll(null, null, $order, $dim, $page, 0)) === false) return false ;
-		
-		$recordset = array(
-			"items"		=> &$tmp,
-			"toolbar"	=> $this->toolbar($page, $dim)
-		) ;
-		
-		return true ;
-	}
-
-	function view(&$user, $id) {
-		$this->id 	= $id;
-		if( !($user = $this->read()) ) return false ;
-		
-		for($i=0; $i < count($user["Module"]) ; $i++) {
-			$user["Module"][$i] = $user["Module"][$i]["id"] ;
-		}
-		
-		return true ;
-	}
-*/
 }
 ?>

@@ -23,7 +23,7 @@
 
 class ViewShortAuthor extends BEViewContentModel
 {
-	var $name 				= 'ViewShortAuthors';
+	var $name 				= 'ViewShortAuthor';
 	var $useTable 			= "view_short_authors" ;
 	var $author_features 	= null ;
 
@@ -33,11 +33,11 @@ class ViewShortAuthor extends BEViewContentModel
 	}
 
 	protected function __setupJoinGroups() { 
-		$this->__joinFragment = " INNER JOIN areas_contents_groups AS ACG ON ViewShortauthors.id = ACG.content_id" ; 
+		$this->__joinFragment = " INNER JOIN areas_contents_groups AS ACG ON ViewShortAuthor.id = ACG.content_id" ; 
 	}
 
 	protected function __setupJoinAreas() { 
-		$this->__joinFragment = " INNER JOIN view_areas_contents AS ACG ON ViewShortAuthors.id = ACG.content_id" ; 
+		$this->__joinFragment = " INNER JOIN view_areas_contents AS ACG ON ViewShortAuthor.id = ACG.content_id" ; 
 	}
 }
 

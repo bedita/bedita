@@ -21,26 +21,21 @@
  * @license			
  */
 class UsersController extends AppController {
-	var $components = array('BeAuth');
-	var $helpers 	= array('Bevalidation');
 	
 	var $name = 'Users';
+	var $paginate = array("User" 	=> array("limit" => 20, 
+												   		 "order" => array("User.cognome" => "asc")
+												   )
+					);
+	
 	
 	/**
-	 * Visualizza una porzione degli utenti redattori/gestori presenti nel sistema.
+	 * lists user paginated
 	 *
-	 * @param integer $page		pagina dell'elenco richiesta
-	 * @param integer $dim		dimensione della pagina
-	 * @param string $order		nome campo su cui ordinare la lista. Aggiungere "desc" per invertire l'ordine
 	 */
-	function index($page = 1, $dim = 10, $order = null) {
+	function index() {
 
-		// Preleva l'elenco degli utenti richiesto
-		if(!$this->User->listUser($users, $page, $dim , $order)) {
-			$this->Session->setFlash("Errore nel prelievo della lista degli utenti");
-			return ;
-		}
-		
+		$users = $this->paginate('User');		
 		$this->set('Users', $users);
 	}
 
@@ -110,8 +105,8 @@ class UsersController extends AppController {
 		$password 	= (isset($this->data["login"]["passwd"])) ? $this->data["login"]["passwd"] : "" ;
 		$password = md5($password);
 		
-		$URLOK 		= (isset($this->data["login"]["URLOK"])) ? $this->data["login"]["URLOK"] : "/" ;
-		$URLERR		= (isset($this->data["login"]["URLERR"])) ? $this->data["login"]["URLERR"] : "/" ;
+		$URLOK 		= (isset($this->data["login"]["URLOK"])) ? $this->data["login"]["URLOK"] : $this->webroot ;
+		$URLERR		= (isset($this->data["login"]["URLERR"])) ? $this->data["login"]["URLERR"] : $this->webroot ;
 		
 		if(!$this->BeAuth->login($userid, $password)) {
 			$this->Session->setFlash("Username e/o password non corrette");

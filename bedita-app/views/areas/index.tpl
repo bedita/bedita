@@ -16,13 +16,13 @@ $vs = &$this->get_template_vars() ;
 	<tr>
 		<td>
 		{* Comandi a SX  *}	
-		{include file="_incl_menu.tpl" sez="indice" firstContent=$Events.items[0]}
+		{include file="_incl_menu.tpl" sez="indice" firstContent=$Aree.0.Area:default:""}
 		</td>	
 		<td>
 		{* BEGIN -- Main Content *}
 		{if ($session->check('Message.flash'))}{$session->flash()}{/if}
 
-		{$bevalidation->formTag('frmModifyAreas', null, './edit', 'post')}
+		{*$bevalidation->formTag('frmModifyAreas', null, './edit', 'post')*}
 		<table border="0" cellspacing="0" cellpadding="2" class="indexList">
 		
 		<tr>
@@ -45,7 +45,7 @@ $vs = &$this->get_template_vars() ;
 				<td>tipo</td>
 				<td>
 				<input type="text" id="data_$index_AreaName" name="data[$index][Area][name]" value="{$Aree[i].Area.name}">
-				{bevalidationHelper fnc="rule" args="'frmModifyAreas', 'data_$index_AreaName:name|required'"}
+				{*bevalidationHelper fnc="rule" args="'frmModifyAreas', 'data_$index_AreaName:name|required'"*}
 				</td>
 				<td>lingua</td>
 				<td>status</td>

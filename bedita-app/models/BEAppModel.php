@@ -25,63 +25,6 @@
 vendor('smarty/libs/Smarty.class');
 
 class BEAppModel extends AppModel {
-
-	/**
-	 * Crea una toolbar da una ricerca
-	 *
-	 * @param integer 	$page		
-	 * @param integer 	$dimPage	
-	 * @param mixed 	$condition	condizione utilizzata per la ricerca
-	 * @param boolean 	$recursive	TRUE, preleva gli ogetti connessi
-	 * @return array
-	 */
-	function toolbar($page = null, $dimPage = null, $condition = null, $recursive = null) {
-		// conta il numero di record
-		if(($size = $this->findCount($condition, $recursive)) === false) return false ;
-		
-		$toolbar = array("first" => 0, "prev" => 0, "next" => 0, "last" => 0, "size" => 0, "pages" => 0, "page" => 0) ;
-		
-		if(!$page || empty($page)) $page = 1 ;
-		if(!$dimPage || empty($dimPage)) $dimPage = $size ;
-		
-		$pageCount = $size / $dimPage ;
-		settype($pageCount,"integer");
-		if($size % $dimPage) $pageCount++ ;
-		
-		$toolbar["pages"] = $pageCount ;
-		$toolbar["page"]  = $page ;
-				
-		if($page == 1) {
-			if($page >= $pageCount) {
-				// Una sola
-				
-			} else {
-				// Prima pagina
-				$toolbar["next"] = $page+1 ;
-				$toolbar["last"] = $pageCount ;
-			} 
-		} else {
-			if($page >= $pageCount) {
-				// Ultima
-				$toolbar["first"] = 1 ;
-				$toolbar["prev"] = $page-1 ;
-			} else {
-				// Pagina di mezzo
-				$toolbar["next"] = $page+1 ;
-				$toolbar["last"] = $pageCount ;
-				$toolbar["first"] = 1 ;
-				$toolbar["prev"] = $page-1 ;
-			}
-		}
-
-		$toolbar["start"]	= (($page-1)*$dimPage)+1 ;
-		$toolbar["end"] 	= $page * $dimPage ;
-		if($toolbar["end"] > $size) $toolbar["end"] = $size ;
-		
-		$toolbar["size"] = $size ;
-		
-		return $toolbar ;	
-	}
 	
 	/**
 	 * Collassa il risultato di un record in un array unico

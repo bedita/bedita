@@ -15,14 +15,14 @@ $vs = &$this->get_template_vars() ;
 <table border="0" cellspacing="0" cellpadding="0" class="mainTable">
 	<tr>
 		<td>
-		{* Comandi a SX  *}	
-		{include file="_incl_menu.tpl" sez="indice" firstContent=$Authors.items[0]}
+		{* Comandi a SX  *}
+		{include file="_incl_menu.tpl" sez="indice" firstContent=$Authors.0|default:""}
 		</td>	
 		<td>
 		{* BEGIN -- Main Content *}
 		{if ($session->check('Message.flash'))}{$session->flash()}{/if}
 
-		{include file="toolbarList.tpl" sez="menuCentro" toolbar=$Authors.toolbar}
+		{if !empty($paginator)}{include file="pagination.tpl" sez="menuCentro"}{/if}
 		
 		<div class="gest_menuLeft" style="float:left;">
 		{include file="areeGruppiTree.tpl" Groups=$Subjects}
@@ -30,13 +30,14 @@ $vs = &$this->get_template_vars() ;
 		
 		{include file="contentsList.tpl" Lists=$Authors}
 		
-		<br><br>
-		<input type="button" onClick="document.location ='./frmAdd'" value="aggiungi un nuovo autore" style="margin:10px;">
+		<br/><br/>
+		<input type="button" onClick="document.location ='{$html->url('/authors/frmAdd')}'" value="aggiungi un nuovo autore" style="margin:10px;"/>
 		
-		{include file="toolbarList.tpl" sez="menuCentro" toolbar=$Authors.toolbar}
+		{if !empty($paginator)}{include file="pagination.tpl" sez="menuCentro"}{/if}
 		
 		{* END -- Main Content *}
 		</td>	
 	</tr>
 </table>
+
 

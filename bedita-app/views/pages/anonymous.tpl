@@ -17,9 +17,9 @@ rules[1]='loginPasswd:Password|minlength|6';
 
 <div id="errorsDiv">{if ($session->check('Message.flash'))}{$session->flash()}{/if}</div>
 
-{if ($errorMessage)}<h2>{$errorMessage}</h2>{/if}
+{if !empty($errorMessage)}<h2>{$errorMessage}</h2>{/if}
 
-{formHelper fnc="create" args="'login', array('action' => '/users/login', 'type' => 'POST', 'id' => 'loginForm', 'name' => 'loginForm')"}
+<form action="{$html->url('/users/login')}" method="post" name="loginForm" id="loginForm">
 
 {assign var="URL" value=$beurl->here()}
 

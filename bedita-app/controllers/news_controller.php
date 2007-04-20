@@ -21,56 +21,39 @@
  * @license			
  */
 class NewsController extends AppController {
-	var $components = array('BeAuth');
-	var $helpers 	= array('Bevalidation');
-	var $uses	 	= array('ViewShortNews', 'Area');
-
-	/**
-	 * Nome modello
-	 *
-	 * @var string
-	 */
+	
 	var $name = 'News' ;
+	var $uses	 	= array('ViewShortNews', 'Area');
+	var $components = array('Utils');
+	var $paginate = array("ViewShortNews" 	=> array("limit" => 20, 
+												   		 "order" => array("ViewShortNews.inizio" => "asc")
+												   )
+					);
+	
 
 	/**
-	 * Visualizza una porzione .....
+	 * lists news paginated
 	 *
-	 * @param integer $page		pagina dell'elenco richiesta
-	 * @param integer $dim		dimensione della pagina
-	 * @param string $order		nome campo su cui ordinare la lista. Aggiungere "desc" per invertire l'ordine
 	 * @param integer $ida		ID dell'area da selezionare. Preleva l'elenco solo di questa area
 	 * 
-	 * @todo TUTTO
 	 */
-	function index($ida = null, $page = 1, $dim = 20, $order = null) {
-		// Setup parametri
-		$this->setup_args(
-			array("ida", "integer", &$ida),
-			array("page", "integer", &$page),
-			array("dim", "integer", &$dim),
-			array("order", "string", &$order)
-		) ;
+	function index($ida = null) {
 
-		// Preleva l'elenco dei documenti richiesto
-		if(!$this->ViewShortNews->listContents($contents, $ida, null, $page, $dim , $order)) {
-			$this->Session->setFlash("Errore nel prelievo della lista delle news");
-			return ;
-		}
+		// set join
+		$conditions = $this->ViewShortNews->setJoin($ida);
+		$tmp = $this->paginate('ViewShortNews', $conditions);
 		
-		// Preleva l'albero delle aree e tipologie
-		$this->Area->tree($areas, 0x0, 0x0);
-
-		// Crea l'URL dello stato corrente
-		$selfPlus = $this->createSelfURL(false,
-			array("ida", $ida), array("page", $page), 
-			array("dim", $dim), array("order", $order)
-		) ;
+		// collapse record set
+		$news = $this->Utils->collapse($tmp,'ViewShortNews');
+		
+		// get areas tree
+		$areas = $this->Area->tree(0x0, 0x0);
 
 		// Setup dei dati da passare al template
 		$this->set('Areas', 		$areas);
-		$this->set('News',			$contents);
-		$this->set('selfPlus',		$selfPlus) ;
-		$this->set('self',			($this->createSelfURL(false)."?")) ;
+		$this->set('News',			$news);
+		$this->set('ida', 			$ida);
+		$this->set('hideGroups', 	true);
 	}
 
 	/**

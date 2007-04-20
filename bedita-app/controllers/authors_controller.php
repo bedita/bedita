@@ -21,61 +21,41 @@
  * @license			
  */
 class AuthorsController extends AppController {
-	var $components = array('BeAuth');
-	var $helpers 	= array('Bevalidation');
-	var $uses	 	= array('ViewShortAuthor','Area');
 	
-	/**
-	 * Nome modello
-	 *
-	 * @var string
-	 */
 	var $name = 'Authors' ;
+	var $uses	 	= array('ViewShortAuthor','Area');
+	var $components = array('Utils');
+	
+	var $paginate = array("ViewShortAuthor" 	=> array("limit" => 20, 
+												   		 "order" => array("ViewShortAuthor.cognome" => "asc")
+												   )
+					);
+	
 
 	/**
-	 * Visualizza una porzione di Autori
+	 * List authors paginated
 	 *
 	 * @param integer $ida		ID dell'area da selezionare. Preleva l'elenco solo di questa area
 	 * @param integer $idg		ID del gruppo da selezionare. Preleva l'elenco solo di questo gruppo
-	 * @param integer $page		pagina dell'elenco richiesta
-	 * @param integer $dim		dimensione della pagina
-	 * @param string $order		nome campo su cui ordinare la lista. Aggiungere "desc" per invertire l'ordine
-	 * 
-	 * @todo TUTTO
 	 */
-	function index($ida = null, $idg = null, $page = 1, $dim = 20, $order = null) {
-		// Setup parametri
-		$this->setup_args(
-			array("ida", "integer", &$ida),
-			array("idg", "integer", &$idg),
-			array("page", "integer", &$page),
-			array("dim", "integer", &$dim),
-			array("order", "string", &$order)
-		) ;
-
-		// Verifica i permessi d'accesso
-		if(!$this->checkLogin()) return ;
+	function index($ida = null, $idg = null) {
 		
-		// Preleva l'elenco degli eventi richiesto
-		if(!$this->ViewShortAuthor->listContents($contents, $ida, $idg, $page, $dim , $order)) {
-			$this->Session->setFlash("Errore nel prelievo della lista degli autori");
-			return ;
-		}
-
-		// Preleva l'albero delle aree e tipologie
-		$this->Area->tree($subjects, Area::SUBJECT, (integer)$ida);
-				
-		// Crea l'URL dello stato corrente
-		$selfPlus = $this->createSelfURL(false,
-			array("ida", $ida), array("idg", $idg), 	array("page", $page), 
-			array("dim", $dim), array("order", $order)
-		) ;
-
-		// Setup dei dati da passare al template
+		// set join
+		$conditions = $this->ViewShortAuthor->setJoin($ida, $idg);
+		$tmp = $this->paginate('ViewShortAuthor', $conditions);
+		
+		// collapse record set
+		$authors = $this->Utils->collapse($tmp,'ViewShortAuthor');
+		
+		// get areas tree
+		$subjects = $this->Area->tree(Area::SUBJECT, (integer)$ida); 
+		
+		// set tpl vars
 		$this->set('Subjects', 		$subjects);
-		$this->set('Authors', 		$contents);
-		$this->set('selfPlus',		$selfPlus) ;
-		$this->set('self',			($this->createSelfURL(false)."?")) ;
+		$this->set('Authors', 		$authors);
+		$this->set('ida', 			$ida);
+		$this->set('idg', 			$idg);
+		
 	}
 
 	/**

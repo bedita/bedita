@@ -23,15 +23,15 @@
 
 class ViewShortDocument extends BEViewContentModel
 {
-	var $name 				= 'ViewShortDocuments';
+	var $name 				= 'ViewShortDocument';
 	var $useTable 			= "view_short_documents" ;
 
 	protected function __setupJoinGroups() { 
-		$this->__joinFragment = " INNER JOIN areas_contents_groups AS ACG ON ViewShortDocuments.id = ACG.content_id" ; 
+		$this->__joinFragment = " INNER JOIN areas_contents_groups AS ACG ON ViewShortDocument.id = ACG.content_id" ; 
 	}
 
 	protected function __setupJoinAreas() { 
-		$this->__joinFragment = " INNER JOIN view_areas_contents AS ACG ON ViewShortDocuments.id = ACG.content_id" ; 
+		$this->__joinFragment = " INNER JOIN view_areas_contents AS ACG ON ViewShortDocument.id = ACG.content_id" ; 
 	}
 }
 

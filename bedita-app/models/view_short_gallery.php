@@ -23,8 +23,7 @@
 
 class ViewShortGallery extends BEViewContentModel
 {
-	var $name 				= 'ViewShortGalleries';
-	var $useTable 			= "view_short_galleries" ;
+	var $name 				= 'ViewShortGallery';
 
 	protected function __setupJoinGroups() { 
 		$this->__joinFragment = "  " ; 

@@ -19,8 +19,8 @@
  * @lastmodified	
  * @license			
 */
-class ViewTipology extends BEViewGroupModel
+class ViewSection extends BEViewGroupModel
 {
-	var $name = 'ViewTipologies';		
+	var $name = 'ViewSection';	
 }
 ?>

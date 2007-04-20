@@ -39,14 +39,13 @@
  */
 class AppController extends Controller {
 	var $components = array('BeAuth');
-	var $helpers 	= array('Bevalidation');
+	var $helpers 	= array('Bevalidation','Params');
 	
 	 /**
 	  * 
 	  */
 	 function beforeFilter() {
 		$this->view 	= 'Smarty';
-
 	 	$this->setupCommonData() ;
 	 	
 		if(isset($this->data["login"])) return  ;
@@ -145,8 +144,7 @@ class AppController extends Controller {
 	 *
 	 */
 	function createSelfURL($cake = true) {
-		$baseURL = "/" . $this->params["controller"] ."/". $this->params["action"] ;
-		
+		$baseURL = $this->webroot . $this->params["controller"] ."/". $this->params["action"] ;
 		$size  = func_num_args() ;
 		$args  = func_get_args() ;
 		
@@ -168,8 +166,7 @@ class AppController extends Controller {
 	
 		return $baseURL ;
 	}
-	
-	
+
 }
 
 ?>

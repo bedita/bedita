@@ -21,7 +21,7 @@
  * @license			
  */
 class AreasController extends AppController {
-	var $components = array('BeAuth');
+	
 	var $helpers 	= array('Bevalidation');
 	var $uses	 	= array('Area');
 	
@@ -44,10 +44,9 @@ class AreasController extends AppController {
 		
 		$this->Area->recursive = 0 ;
 		if(($Aree = $this->Area->findAll()) === false) return false ;
-
+//pr($Aree);
 		// Setup dei dati da passare al template
-		$this->set('selfPlus',	($this->createSelfURL(false)."?")) ;
-		$this->set('self',		($this->createSelfURL(false)."?")) ;
+		
 		$this->set('Aree', 		$Aree);
 	}
 	

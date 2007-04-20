@@ -23,15 +23,14 @@
 
 class ViewShortBibliography extends BEViewContentModel
 {
-	var $name 				= 'ViewShortBibliographies';
-	var $useTable 			= "view_short_bibliographies" ;
+	var $name 				= 'ViewShortBibliography';
 
 	protected function __setupJoinGroups() { 
-		$this->__joinFragment = " INNER JOIN areas_contents_groups AS ACG ON ViewShortBibliographies.id = ACG.content_id" ; 
+		$this->__joinFragment = " INNER JOIN areas_contents_groups AS ACG ON `ViewShortBibliography`.id = ACG.content_id" ; 
 	}
 
 	protected function __setupJoinAreas() { 
-		$this->__joinFragment = " INNER JOIN view_areas_contents AS ACG ON ViewShortBibliographies.id = ACG.content_id" ; 
+		$this->__joinFragment = " INNER JOIN view_areas_contents AS ACG ON `ViewShortBibliography`.id = ACG.content_id" ; 
 	}
 }
 

@@ -1,11 +1,7 @@
 {*
 Template Documents.
 *}
-{php}
-$vs = &$this->get_template_vars() ;
-//pr($vs["html"]->params);
-//exit;
-{/php}
+
 </head>
 <body>
 	<div id="header">
@@ -16,13 +12,13 @@ $vs = &$this->get_template_vars() ;
 	<tr>
 		<td>
 		{* Comandi a SX  *}	
-		{include file="_incl_menu.tpl" sez="indice" firstContent=$Documents.items[0]}
+		{include file="_incl_menu.tpl" sez="indice" firstContent=$Documents.0|default:""}
 		</td>	
 		<td>
 		{* BEGIN -- Main Content *}
 		{if ($session->check('Message.flash'))}{$session->flash()}{/if}
 
-		{include file="toolbarList.tpl" sez="menuCentro" toolbar=$Documents.toolbar dim=$html->params.url.dim}
+		{if !empty($paginator)}{include file="pagination.tpl" sez="menuCentro"}{/if}
 		
 		<div class="gest_menuLeft" style="float:left;">
 		{include file="areeGruppiTree.tpl" Groups=$Sections}
@@ -31,9 +27,9 @@ $vs = &$this->get_template_vars() ;
 		{include file="contentsList.tpl" Lists=$Documents}
 		
 		<br><br>
-		<input type="button" onClick="document.location ='./frmAdd'" value="aggiungi nuovo documento" style="margin:10px;">
+		<input type="button" onClick="document.location ='{$html->url('/documents/frmAdd')}'" value="aggiungi nuovo documento" style="margin:10px;">
 		
-		{include file="toolbarList.tpl" sez="menuCentro" toolbar=$Documents.toolbar dim=$html->params.dim}
+		{if !empty($paginator)}{include file="pagination.tpl" sez="menuCentro"}{/if}
 		
 		{* END -- Main Content *}
 		</td>	
