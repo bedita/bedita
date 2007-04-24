@@ -10,7 +10,7 @@ di porzioni di contenuti.
 
 {section name=a loop=$Groups}
 	{assign var="area" 		value=$Groups[a].Area}
-	{assign var="subaree" 	value=$Groups[a].Groups}
+	{if !empty($Groups[a].Groups)}{assign var="subaree" 	value=$Groups[a].Groups}{/if}
 	
 	<h2 
 	onClick="window.location='{$html->url($url_index)}{$area.id}'" 

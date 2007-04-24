@@ -23,7 +23,7 @@
 class AuthorsController extends AppController {
 	
 	var $name = 'Authors' ;
-	var $uses	 	= array('ViewShortAuthor','Area');
+	var $uses	 	= array('ViewShortAuthor','Area','ViewSubject');
 	var $components = array('Utils');
 	
 	var $paginate = array("ViewShortAuthor" 	=> array("limit" => 20, 
@@ -43,13 +43,13 @@ class AuthorsController extends AppController {
 		// set join
 		$conditions = $this->ViewShortAuthor->setJoin($ida, $idg);
 		$tmp = $this->paginate('ViewShortAuthor', $conditions);
-		
+
 		// collapse record set
-		$authors = $this->Utils->collapse($tmp,'ViewShortAuthor');
-		
+		$authors = $this->Utils->collapse($tmp);
+
 		// get areas tree
 		$subjects = $this->Area->tree(Area::SUBJECT, (integer)$ida); 
-		
+
 		// set tpl vars
 		$this->set('Subjects', 		$subjects);
 		$this->set('Authors', 		$authors);

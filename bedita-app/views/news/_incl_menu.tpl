@@ -10,9 +10,9 @@ $vs = &$this->get_template_vars() ;
 <div class="inside">
 
 	<ul class="simpleMenuList" style="margin:0px 0px 10px 0px">
-		<li {if $sez=="new"}class="on"{/if}>    <b>&#8250;</b> <a href="./frmAdd">crea nuova news </a></li>
-		<li {if $sez=="indice"}class="on"{/if}> <b>&#8250;</b> <a href="index">elenco news</a></li>
-		<li {if $sez=="detail"}class="on"{/if}> <b>&#8250;</b> <a href="{if $firstContent}./frmModify/{$firstContent.ID}{else}#{/if}">dettaglio news </a></li>
+		<li {if $sez=="new"}class="on"{/if}>    <b>&#8250;</b> <a href="{$html->url('/news/frmAdd')}">crea nuova news </a></li>
+		<li {if $sez=="indice"}class="on"{/if}> <b>&#8250;</b> <a href="{$html->url('/news/index')}">elenco news</a></li>
+		<li {if $sez=="detail"}class="on"{/if}> <b>&#8250;</b> <a href="{if $firstContent}{$html->url('/news/frmModify/')}{$firstContent.ID}{else}#{/if}">dettaglio news </a></li>
 	</ul>
 	
 {if !empty($paginator)}{include file="pagination.tpl" sez="menuSX"}{/if}

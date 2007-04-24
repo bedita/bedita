@@ -44,7 +44,7 @@ class NewsController extends AppController {
 		$tmp = $this->paginate('ViewShortNews', $conditions);
 		
 		// collapse record set
-		$news = $this->Utils->collapse($tmp,'ViewShortNews');
+		$news = $this->Utils->collapse($tmp);
 		
 		// get areas tree
 		$areas = $this->Area->tree(0x0, 0x0);

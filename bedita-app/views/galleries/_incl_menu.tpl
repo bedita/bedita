@@ -9,14 +9,12 @@ $vs = &$this->get_template_vars() ;
 <div class="inside">
 
 	<ul class="simpleMenuList" style="margin:0px 0px 10px 0px">
-		<li {if $sez=="new"}class="on"{/if}>    <b>&#8250;</b> <a href="./frmAdd">crea nuova galleria </a></li>
-		<li {if $sez=="indice"}class="on"{/if}> <b>&#8250;</b> <a href="index">elenco gallerie</a></li>
-		<li {if $sez=="detail"}class="on"{/if}> <b>&#8250;</b> <a href="{if $firstContent}./frmModify/{$firstContent.ID}{else}#{/if}">dettaglio galleria </a></li>
+		<li {if $sez=="new"}class="on"{/if}>    <b>&#8250;</b> <a href="{$html->url('/galleries/frmAdd')}">crea nuova galleria </a></li>
+		<li {if $sez=="indice"}class="on"{/if}> <b>&#8250;</b> <a href="{$html->url('/galleries/index')}">elenco gallerie</a></li>
+		<li {if $sez=="detail"}class="on"{/if}> <b>&#8250;</b> <a href="{if $firstContent}{$html->url('/galleries/frmModify/')}{$firstContent.ID}{else}#{/if}">dettaglio galleria </a></li>
 	</ul>
 	
-{if $Events.toolbar}	
-	{include file="toolbarList.tpl" sez="menuSX" toolbar=$Galleries.toolbar}
-{/if}
+{if !empty($paginator)}{include file="pagination.tpl" sez="menuSX"}{/if}
 
 {if $sez=="indice"}
 

@@ -49,7 +49,7 @@ class EventsController extends AppController {
 		$tmp = $this->paginate('ViewShortEvent', $conditions);
 		
 		// collapse record set
-		$events = $this->Utils->collapse($tmp,'ViewShortEvent');
+		$events = $this->Utils->collapse($tmp);
 		
 		// Preleva l'albero delle aree e tipologie
 		$tipologies = $this->Area->tree(Area::TIPOLOGY, (integer)$ida);

@@ -46,7 +46,7 @@ class DocumentsController extends AppController {
 		$tmp = $this->paginate('ViewShortDocument', $conditions);
 		
 		// collapse record set
-		$documents = $this->Utils->collapse($tmp,'ViewShortDocument');
+		$documents = $this->Utils->collapse($tmp);
 		
 		// Preleva l'albero delle aree e tipologie
 		$sections = $this->Area->tree(Area::SECTION, (integer)$ida);

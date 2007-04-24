@@ -21,56 +21,41 @@
  * @license			
  */
 class GalleriesController extends AppController {
-	var $components = array('BeAuth');
-	var $helpers 	= array('Bevalidation');
-	var $uses	 	= array('ViewShortGallery', 'Area');
-
-	/**
-	 * Nome modello
-	 *
-	 * @var string
-	 */
+	
 	var $name = 'Galleries' ;
+	var $uses	 	= array('ViewShortGallery', 'Area');
+	var $components = array('Utils');
+	var $paginate = array("ViewShortGallery" 	=> array("limit" => 20, 
+												   		 "order" => array("ViewShortGallery.inizio" => "asc")
+												   )
+					);
+	
+	
 
 	/**
-	 * Visualizza una porzione .....
+	 * lists galleries pagainated
 	 *
-	 * @param integer $page		pagina dell'elenco richiesta
-	 * @param integer $dim		dimensione della pagina
-	 * @param string $order		nome campo su cui ordinare la lista. Aggiungere "desc" per invertire l'ordine
 	 * @param integer $ida		ID dell'area da selezionare. Preleva l'elenco solo di questa area
 	 * 
 	 * @todo TUTTO
 	 */
-	function index($ida = null, $page = 1, $dim = 20, $order = null) {
-		// Setup parametri
-		$this->setup_args(
-			array("ida", "integer", &$ida),
-			array("page", "integer", &$page),
-			array("dim", "integer", &$dim),
-			array("order", "string", &$order)
-		) ;
-
-		// Preleva l'elenco dei documenti richiesto
-		if(!$this->ViewShortGallery->listContents($contents, $ida, null, $page, $dim , $order)) {
-			$this->Session->setFlash("Errore nel prelievo della lista delle gallerie");
-			return ;
-		}
+	function index($ida = null) {
+		
+		// set join
+		$conditions = $this->ViewShortGallery->setJoin($ida);
+		$tmp = $this->paginate('ViewShortGallery', $conditions);
+		
+		// collapse record set
+		$galleries = $this->Utils->collapse($tmp);
 		
 		// Preleva l'albero delle aree e tipologie
-		$this->Area->tree($areas, 0x0, 0x0);
-
-		// Crea l'URL delo stato corrente
-		$selfPlus = $this->createSelfURL(false,
-			array("ida", $ida), array("page", $page), 
-			array("dim", $dim), array("order", $order)
-		) ;
+		$areas = $this->Area->tree(0x0, 0x0);
 
 		// Setup dei dati da passare al template
 		$this->set('Areas', 		$areas);
-		$this->set('Galleries',		$contents);
-		$this->set('selfPlus',		$selfPlus) ;
-		$this->set('self',			($this->createSelfURL(false)."?")) ;
+		$this->set('Galleries',		$galleries);
+		$this->set('ida', 			$ida);
+		$this->set('hideGroups', 	true);
 	}
 
 

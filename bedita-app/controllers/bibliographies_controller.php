@@ -47,7 +47,7 @@ class BibliographiesController extends AppController {
 		$tmp = $this->paginate('ViewShortBibliography', $conditions);
 		
 		// collapse record set
-		$bibliographies = $this->Utils->collapse($tmp,'ViewShortBibliography');
+		$bibliographies = $this->Utils->collapse($tmp);
 
 		// Preleva l'albero delle aree e tipologie
 		$categories = $this->Area->tree(Area::CATEGORY, (integer)$ida);

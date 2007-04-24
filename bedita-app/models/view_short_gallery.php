@@ -30,7 +30,7 @@ class ViewShortGallery extends BEViewContentModel
 	}
 
 	protected function __setupJoinAreas() { 
-		$this->__joinFragment = " INNER JOIN view_areas_contents AS ACG ON ViewShortGalleries.id = ACG.content_id" ; 
+		$this->__joinFragment = " INNER JOIN view_areas_contents AS ACG ON `ViewShortGallery`.id = ACG.content_id" ; 
 	}
 }
 
