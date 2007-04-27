@@ -41,6 +41,13 @@ class BeurlHelper extends Helper {
  		return $paramsFiltered; 
  		
  	}
+ 	
+ 	/**
+ 	 * return controller's name
+ 	 */
+ 	 function controllerName() {
+ 	 	return $this->params["controller"];
+ 	 }
 }
 
 ?>
