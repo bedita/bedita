@@ -8,15 +8,14 @@ $vs = &$this->get_template_vars() ;
 {/php}
 </head>
 <body>
-	<div id="header">
-		{include file="head.tpl"}
-	</div>
+
+{include file="head.tpl"}
 
 <table border="0" cellspacing="0" cellpadding="0" class="mainTable">
 	<tr>
 		<td>
 		{* Comandi a SX  *}
-		{include file="_incl_menu.tpl" sez="indice" firstContent=$Authors.0|default:""}
+		<div class="gest_menuLeft">{include file="_incl_menu.tpl" sez="indice" firstContent=$Authors.0|default:""}</div>
 		</td>	
 		<td>
 		{* BEGIN -- Main Content *}

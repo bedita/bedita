@@ -20,7 +20,7 @@ visualizza gli elenchi.
 {foreach from=$Lists item="content"}
 	{assign var="now" value=$smarty.now|date_format:"%Y%m%d"}
 	<tr style="cursor:pointer;" class="{if ($content.status == 'off')}off{elseif ($content.status == 'draft')}draft{/if}" 
-		onMouseOver	= "oldBGColor=this.style.backgroundColor; this.style.backgroundColor = '#3399CC'"	
+		onMouseOver	= "oldBGColor=this.style.backgroundColor; this.style.backgroundColor = '{$moduleSelected.Module.color}'"	
 		onMouseOut 	= "this.style.backgroundColor = oldBGColor"
 		>	
 		<td onClick= "document.location ='./frmModify/{$content.ID}'">{$content.titolo|truncate:60:"...":true}</td>

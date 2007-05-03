@@ -3,7 +3,7 @@ file incluso.
 Visualizza il menu e il comando di login/logout
 *}
 {strip}
-<div style="width:1000px;">
+<div style="width:1000px;margin-bottom:0px">
                 <div class="beditaButton" onClick = "document.location ='/'">
                         <b style="font:bold 17px Verdana">B.Edita </b>
                         <br/>
@@ -20,16 +20,15 @@ Visualizza il menu e il comando di login/logout
         		{assign_concat var='linkPath' 0="/" 1=$moduleList[m].path}
         		{assign var = "link" value=$html->url($linkPath)}
         			<div class="gest_menux" 
-					style="background-color:{$moduleList[m].color}; color: white; "
+					style="{if ( strcmp($moduleList[m].path, $beurl->controllerName()) === 0 )}
+								background-color:{$moduleList[m].color}; 
+							{/if}	
+							color: white; "
     	            onClick = "document.location ='{$link}'"
         	        onMouseOver     = "oldBGColor=this.style.backgroundColor; this.style.backgroundColor = '{$moduleList[m].color}'"        
             	    onMouseOut      = "this.style.backgroundColor = oldBGColor"
                 	> 
-       		 		{if ( strcmp($moduleList[m].path, $beurl->controllerName()) === 0 )} 
-       		 		<i> * {$moduleList[m].label}</i>
-       		 		{else}
        		 		{$moduleList[m].label}
-       		 		{/if}
                 	</div>
                 {else}
        		 		<div class="gest_menux" style="background-color:#DDDDDD; color: white; ">

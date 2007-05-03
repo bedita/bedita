@@ -1,6 +1,5 @@
-<!--
-<h1 onClick="window.location='./'" class="eventi"><a href="./">eventi</a></h1>
--->
+
+<h1 onClick="window.location='{$html->url('/authors')}'" class="autori"><a href="{$html->url('/areas')}">autori</a></h1>
 
 <div class="inside">
 

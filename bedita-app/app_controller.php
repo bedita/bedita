@@ -40,6 +40,7 @@
 class AppController extends Controller {
 	var $components = array('BeAuth');
 	var $helpers 	= array('Bevalidation');
+	var $uses		= array('Module');
 	
 	 /**
 	  * 
@@ -74,6 +75,8 @@ class AppController extends Controller {
 				"de"	=> "German"
 			)
 		) ;
+	
+		if ($this->params["controller"] != "pages") $this->set("moduleSelected", $this->Module->findByPath($this->params["controller"]));
 	}
 	
 	/**

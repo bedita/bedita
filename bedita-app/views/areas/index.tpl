@@ -8,16 +8,16 @@ $vs = &$this->get_template_vars() ;
 {/php}
 </head>
 <body>
-	<div id="header">
-		{include file="head.tpl"}
-	</div>
+
+<div id="header">{include file="head.tpl"}</div>
 
 <table border="0" cellspacing="0" cellpadding="0" class="mainTable">
 	<tr>
 		<td>
 		{* Comandi a SX  *}	
-		{include file="_incl_menu.tpl" sez="indice" firstContent=$Aree.0.Area:default:""}
+		<div class="gest_menuLeft">{include file="_incl_menu.tpl" sez="indice" firstContent=$Aree.0.Area:default:""}</div>
 		</td>	
+
 		<td>
 		{* BEGIN -- Main Content *}
 		{if ($session->check('Message.flash'))}{$session->flash()}{/if}

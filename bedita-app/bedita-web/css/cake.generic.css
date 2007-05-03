@@ -4,7 +4,7 @@ BODY {
 	background-color: #CCCCCC;
 }
 .mainTable {border-spacing: 0px; clear:both;}
-.mainTable TD {border-spacing: 0px; vertical-align:top; padding:2px; margin:0px;}
+.mainTable TD {border-spacing: 0px; vertical-align:top; padding:0px; margin:0px;}
 
 
 .formtitolo {

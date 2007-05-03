@@ -1,11 +1,6 @@
-<!--
-<h1 onClick="window.location='./'" class="eventi"><a href="./">eventi</a></h1>
--->
-{php}
-$vs = &$this->get_template_vars() ;
-//pr($vs["firstContent"]);
-//exit;
-{/php}
+
+<h1 onClick="window.location='{$html->url('/galleries')}'" class="gallerie"><a href="./">gallerie</a></h1>
+
 <div class="inside">
 
 	<ul class="simpleMenuList" style="margin:0px 0px 10px 0px">

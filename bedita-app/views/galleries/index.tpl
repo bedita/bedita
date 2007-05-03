@@ -16,7 +16,7 @@ $vs = &$this->get_template_vars() ;
 	<tr>
 		<td>
 		{* Comandi a SX  *}	
-		{include file="_incl_menu.tpl" sez="indice" firstContent=$Galleries.0|default:""}
+		<div class="gest_menuLeft">{include file="_incl_menu.tpl" sez="indice" firstContent=$Galleries.0|default:""}</div>
 		</td>	
 		<td>
 		{* BEGIN -- Main Content *}

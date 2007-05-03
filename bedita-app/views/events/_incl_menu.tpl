@@ -1,6 +1,6 @@
-<!--
-<h1 onClick="window.location='./'" class="eventi"><a href="./">eventi</a></h1>
--->
+
+<h1 onClick="window.location='{$html->url('/events')}'" class="eventi"><a href="{$html->url('/events')}">eventi</a></h1>
+
 
 <div class="inside">
 

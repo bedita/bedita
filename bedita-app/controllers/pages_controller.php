@@ -51,11 +51,6 @@ class PagesController extends AppController {
 
 	// This controller does not use a model
 	 var $uses = null;
-
-	function __construct() {
-		parent::__construct() ;
-		$this->view = 'Smarty';
-	}
 	
 	/**
 	 * Home

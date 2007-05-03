@@ -1,6 +1,6 @@
-<!--
-<h1 onClick="window.location='./'" class="eventi"><a href="./">eventi</a></h1>
--->
+
+<h1 onClick="window.location='{$html->url('/news')}'" class="news"><a href="{$html->url('/news')}">news</a></h1>
+
 {php}
 $vs = &$this->get_template_vars() ;
 //pr($vs["firstContent"]);
