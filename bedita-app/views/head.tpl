@@ -2,6 +2,25 @@
 file incluso.
 Visualizza il menu e il comando di login/logout
 *}
+
+{literal}
+<script type="text/javascript">
+	modulesColor = new Array();
+	$(document).ready(function() {
+		$("div.gest_menux").click(function() {
+			location.href= "{/literal}{$html->url("/")}{literal}" + $(this).attr("id");;
+		})
+		
+		$("div.gest_menux").hover(function() {
+			oldBGColor = $(this).css("background-color");
+			$(this).css("background-color", modulesColor[$(this).attr("id")]);
+		}, function() {
+			$(this).css("background-color", oldBGColor);
+		})
+	});
+</script>
+{/literal}
+
 {strip}
 <div style="width:1000px;margin-bottom:0px">
                 <div class="beditaButton" onClick = "document.location ='/'">
@@ -17,18 +36,15 @@ Visualizza il menu e il comando di login/logout
         {section name="m" loop=$moduleList}        
         	{if ($moduleList[m].status)}
         		{if ($moduleList[m].allowed)}
-        		{assign_concat var='linkPath' 0="/" 1=$moduleList[m].path}
-        		{assign var = "link" value=$html->url($linkPath)}
-        			<div class="gest_menux" 
-					style="{if ( strcmp($moduleList[m].path, $beurl->controllerName()) === 0 )}
-								background-color:{$moduleList[m].color}; 
-							{/if}	
-							color: white; "
-    	            onClick = "document.location ='{$link}'"
-        	        onMouseOver     = "oldBGColor=this.style.backgroundColor; this.style.backgroundColor = '{$moduleList[m].color}'"        
-            	    onMouseOut      = "this.style.backgroundColor = oldBGColor"
-                	> 
-       		 		{$moduleList[m].label}
+        			<div class="gest_menux" id="{$moduleList[m].path}"
+						 style="{if ( strcmp($moduleList[m].path, $beurl->controllerName()) === 0 )}
+									background-color:{$moduleList[m].color}; 
+								{/if}	
+								color: white; ">
+	       		 		{$moduleList[m].label}
+	       		 		<script type="text/javascript">
+	       		 			modulesColor["{$moduleList[m].path}"] = "{$moduleList[m].color}";
+	       		 		</script>
                 	</div>
                 {else}
        		 		<div class="gest_menux" style="background-color:#DDDDDD; color: white; ">

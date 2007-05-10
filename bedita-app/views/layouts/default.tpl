@@ -6,6 +6,7 @@
 <link rel="shortcut icon" href="{$session->webroot}favicon.ico" type="image/x-icon" />
 {$bevalidation->setup('it')}
 {$javascript->link("common")}
+{$javascript->link("jquery")}
 {$html->css('cake.generic')}
 {$html->css('yav')}
 {$content_for_layout}		

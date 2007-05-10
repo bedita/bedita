@@ -2,16 +2,24 @@
 file include.
 visualizza gli elenchi.
 *}
-{php}
-$vs = &$this->get_template_vars() ;
-//pr($vs["Authors"]);
-//exit;
-{/php}
+
+{literal}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#contentsList tr").not("#tableHeader").hover(function() {
+			oldBGColor = $(this).css("background-color");
+			$(this).css("background-color", "{/literal}{$moduleSelected.Module.color}{literal}");
+		}, function() {
+			$(this).css("background-color", oldBGColor);
+		})
+	})
+</script>
+{/literal}
 
 {assign_associative var="options" url=$beurl->filterPaginatorParams()}
 
-<table border="0" cellspacing="0" cellpadding="2" class="indexList">
-<tr>
+<table border="0" cellspacing="0" cellpadding="2" class="indexList" id="contentsList">
+<tr id="tableHeader">
 	<th>{$paginator->sort('nome', null, $options)}</th>
 	<th>{$paginator->sort('cognome', null, $options)}</th>
 	<th>{$paginator->sort('status', null, $options)}</th>
@@ -21,12 +29,9 @@ $vs = &$this->get_template_vars() ;
 </tr>
 {foreach from=$Lists item="content"}
 	{assign var="now" value=$smarty.now|date_format:"%Y%m%d"}
-	<tr style="cursor:pointer;" class="{if ($content.status == 'off')}off{elseif ($content.status == 'draft')}draft{/if}" 
-		onMouseOver	= "oldBGColor=this.style.backgroundColor; this.style.backgroundColor = '#3399CC'"	
-		onMouseOut 	= "this.style.backgroundColor = oldBGColor"
-		>	
-		<td onClick= "document.location ='./frmModify/{$content.ID}'">{$content.nome|truncate:60:"...":true}</td>
-		<td onClick= "document.location ='./frmModify/{$content.ID}'">{$content.cognome|truncate:60:"...":true}</td>
+	<tr style="cursor:pointer;" class="{if ($content.status == 'off')}off{elseif ($content.status == 'draft')}draft{/if}">	
+		<td onClick= "document.location ='{$html->url('/authors/frmModify/')}{$content.ID}'">{$content.nome|truncate:60:"...":true}</td>
+		<td onClick= "document.location ='{$html->url('/authors/frmModify/')}{$content.ID}'">{$content.cognome|truncate:60:"...":true}</td>
 		<td align="center">{$content.status}</td>
 		<td align="center">{$content.data|date_format:"%d-%m-%Y"}</td>
 		<td align="center" class="{if (!$content.valida)}scad{/if}">{$content.fine|date_format:"%d-%m-%Y"}</td>
