@@ -214,6 +214,29 @@ class AppModel extends Model{
 			unset($this->__backInnerAssociation);
 		}
 	}
+
+
+  function unbindModelAll()
+  {
+    $unbind = array();
+    foreach ($this->belongsTo as $model=>$info)
+    {
+      $unbind['belongsTo'][] = $model;
+    }
+    foreach ($this->hasOne as $model=>$info)
+    {
+      $unbind['hasOne'][] = $model;
+    }
+    foreach ($this->hasMany as $model=>$info)
+    {
+      $unbind['hasMany'][] = $model;
+    }
+    foreach ($this->hasAndBelongsToMany as $model=>$info)
+    {
+      $unbind['hasAndBelongsToMany'][] = $model;
+    }
+    parent::unbindModel($unbind);
+  }
 }
 
 require_once(APP . 'models'. DS . 'BEAppModel.php') ;
