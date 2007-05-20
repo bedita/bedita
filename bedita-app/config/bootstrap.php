@@ -42,5 +42,25 @@
  * $controllerPaths = array('this path to controllers', 'second full path to controllers', 'etc...');
  *
  */
+$modelPaths = array();
+$controllerPaths = array();
+
+function enableSubFoldersOn($baseDir, &$var) {         
+  $cwd =getcwd();
+  chdir($baseDir);
+  $dirs = glob("*", GLOB_ONLYDIR);  
+  if(sizeof($dirs) > 0) { 
+    foreach($dirs as $dir) { 
+      $var[] = $baseDir.DS.$dir.DS;
+      
+       enableSubFoldersOn($baseDir.DS.$dir, $var) ;
+    }
+  }
+  chdir($cwd);
+}
+
+enableSubFoldersOn(ROOT.DS.APP_DIR.'/controllers', $controllerPaths);
+enableSubFoldersOn(ROOT.DS.APP_DIR.'/models', $modelPaths); 
+
 //EOF
 ?>
