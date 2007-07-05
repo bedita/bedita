@@ -1,5 +1,0 @@
-<h1><?php echo $data['Note']['title']?></h1>
-<p><small>
-Created: <?php echo $data['Note']['created']?>
-</small></p>
-<p><?php echo $data['Note']['body']?></p>
