@@ -33,7 +33,7 @@
 	define('APP_DIR', 'bedita-app');
 	define('DS', DIRECTORY_SEPARATOR);
 	define('ROOT', dirname(__FILE__));
-	define('WEBROOT_DIR', 'bedita-web');
+	define('WEBROOT_DIR',  'webroot');
 	define('WWW_ROOT', ROOT . DS . APP_DIR . DS . WEBROOT_DIR . DS);
 /**
  * This only needs to be changed if the cake installed libs are located

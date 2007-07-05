@@ -1,21 +1,10 @@
 <?
 /**
- * Short description for file.
- *
+ *  bedita.ini.php - constants and global variables for BEdita application
+ * 
  *
  * PHP versions 4 and 5
- *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2007, Cake Software Foundation, Inc.
- *							1785 E. Sahara Avenue, Suite 490-204
- *							Las Vegas, Nevada 89104
- *
- *  Licensed under The MIT License
- *  Redistributions of files must retain the above copyright notice.
- *
  * @author giangi@qwerg.com
- * 
- *  bedita.ini.php - constants and global variables for BEdita application
  * 
  */
 $config = array() ;
