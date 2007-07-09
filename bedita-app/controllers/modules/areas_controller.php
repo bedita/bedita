@@ -28,7 +28,7 @@ class AreasController extends AppController {
 	var $name = 'Areas';
 
 	var $helpers 	= array('Bevalidation');
-	var $components = array('BeAuth');
+	var $components = array('BeAuth', 'BeTree');
 
 	// This controller does not use a model
 	 var $uses = array('Area', 'Section') ;
@@ -40,15 +40,9 @@ class AreasController extends AppController {
 	 * 
 	 */
 	 function index() { 	
-		// Preleva l'albero delle aree
-		$tree = array() ;
-/*		
-		// Preleva l'albero delle aree e tipologie
-		if(!$this->Area->tree($tree)) {
-			$this->Session->setFlash("Errore nel prelievo dell'albero delle aree e sezioni");
-			return ;
-		}
-*/
+		// Preleva l'albero delle aree e sezioni
+		$tree = $this->BeTree->getSectionsTree() ;
+		
 		// Setup dei dati da passare al template
 		$this->set('Tree', 		$tree);
 		$this->set('selfPlus',	$this->createSelfURL(false)) ;
