@@ -22,6 +22,7 @@ DROP VIEW IF EXISTS `view_questionnaires`;
 DROP VIEW IF EXISTS `view_sections`;
 DROP VIEW IF EXISTS `view_attachments`;
 DROP VIEW IF EXISTS `view_permissions`;
+DROP VIEW IF EXISTS `view_trees` ;
 
 DROP TABLE IF EXISTS `links`;
 DROP TABLE IF EXISTS `documents`;

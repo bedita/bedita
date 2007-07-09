@@ -21,6 +21,7 @@ DROP VIEW IF EXISTS `view_questionnaires`;
 DROP VIEW IF EXISTS `view_sections`;
 DROP VIEW IF EXISTS `view_attachments`;
 DROP VIEW IF EXISTS `view_permissions` ;
+DROP VIEW IF EXISTS `view_trees` ;
 
 DROP TABLE IF EXISTS `links`;
 DROP TABLE IF EXISTS `documents`;
@@ -728,3 +729,21 @@ FROM
 permissions INNER JOIN groups ON permissions.ugid = groups.id AND permissions.switch = 'group' 
 )
 ;
+
+-- ------------------------------------------
+-- Tree
+-- ------------------------------------------
+CREATE  VIEW `view_trees` AS 
+SELECT
+trees.*,
+objects.object_type_id,
+objects.status,
+objects.title,
+objects.nickname,
+objects.lang
+FROM
+trees INNER JOIN objects ON trees.id = objects.id 
+ORDER BY pathParent, priority
+;
+
+
