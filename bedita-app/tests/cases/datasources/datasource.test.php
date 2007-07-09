@@ -13,8 +13,9 @@ class DataSourceTest extends DataSource {
 		$SplitterSql->parse($queries, $sql) ;
 		
 		foreach($queries as $q) {	
-			if(strlen($q)>1)
-				$db->execute(stripSlashes($q));	
+			if(strlen($q)>1) {
+				$db->execute(stripSlashes($q)) ;	
+			}
 		}
 	}
 }
@@ -52,14 +53,7 @@ class DataSourceTestCase extends CakeTestCase {
 		$this->DataSourceTest =& new DataSourceTest();		
 		$this->DataSourceTest->executeQuery($db,$script);
 	}
-/* 	
-	function testUserPerms() {	
-		$db =& ConnectionManager::getDataSource('test');
-		$script = SQL_SCRIPT_PATH . "createFunctionPrmsUser.sql";
-		$this->DataSourceTest =& new DataSourceTest();
-//		$this->DataSourceTest->executeQuery($db,$script);
-	}
-*/
+
 	function testPopulate() {	
 		$db =& ConnectionManager::getDataSource('test');
 		$script = SQL_SCRIPT_PATH . "bedita_data.sql";
