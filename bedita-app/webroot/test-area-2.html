@@ -1,0 +1,293 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+	<title>jQuery treeView</title>
+	
+	<script type="text/javascript" src="/js/jquery-latest.pack.js"></script>
+	<script type="text/javascript" src="/js/jquery.treeview.pack.js"></script>
+	<script type="text/javascript" src="/js/interface.js"></script>
+	<script type="text/javascript">
+	
+	// Crea o refresh albero
+	function designTree() {
+		$("#tree").Treeview({ 
+			control: "#treecontrol" ,
+			speed: 'fast',
+			collapsed:false
+		});
+	}
+	
+	// Resetta l'albero per ridisegnarlo
+	function resetTree() {
+		$('div', "#tree").remove();
+		$('span', "#tree").removeAttr('style');
+		$('ul', "#tree").removeAttr('style');
+
+		$("li[@class='expandable lastExpandable'], li[@class='expandable']", "#tree").attr('class', 'closed');
+		$("li[@class='collapsable lastCollapsable'], li[@class='last'], , li[@class='closed last']", "#tree").removeAttr('class');
+				
+		$('li/ul', "#tree").each(function(i){
+			if(!($('li', this).size())) {
+				$(this).remove() ;
+			}
+		});
+	}
+	
+	// Aggiunge i comandi allbero, nascosti
+	function addCommand() {
+		$("li/span[@class='SectionItem']", "#tree").before('<input type="button" name="up" value=" up " class="initCmdTree">&nbsp;<input type="button" name="down" value=" down " class="initCmdTree">&nbsp;&nbsp;');
+	}
+	
+	// Rende visibili i comandi accessibili e disabilita gli altri
+	function refreshCommand() {
+		$("li", "#tree").each(function(i){
+
+			if($(this).siblings(this).size() == 0) {
+				// figlio unico
+				$('input', this).attr({style: 'block', class: 'disabledCmdTree'}) ;
+				return ;
+				
+			} 
+
+			$("input", this).attr({style: 'block', class: 'enabledCmdTree'}) ;
+			
+			if($(this).prev(this).size() == 0) {
+				// e' il primo
+				$("input[@name='up']", this).attr({style: 'block', class: 'disabledCmdTree'}) ;
+				
+			} else if($(this).next(this).size() == 0) {
+				// e' l'ultimo
+				$("input[@name='down']", this).attr({style: 'block', class: 'disabledCmdTree'}) ;
+				
+			}			
+
+		});
+				
+	}
+
+	
+	// Assegna i comandi ai button
+	function refreshOnClick() {
+		$("input[@name='up'][@class='enabledCmdTree']", "#tree").click(function(i) { 			
+			$(this.parentNode).prev().before(this.parentNode);
+
+			$("input[@name='up'][@class='enabledCmdTree']", "#tree").unbind('click') ;
+			$("input[@name='down'][@class='enabledCmdTree']", "#tree").unbind('click') ;
+			
+			resetTree() ;
+			designTree() ;
+			refreshCommand() ;
+			refreshOnClick();
+		} );		
+
+		$("input[@name='down'][@class='enabledCmdTree']", "#tree").click(function(i) { 
+			$(this.parentNode).next().after(this.parentNode);
+					
+			$("input[@name='up'][@class='enabledCmdTree']", "#tree").unbind('click') ;
+			$("input[@name='down'][@class='enabledCmdTree']", "#tree").unbind('click') ;
+
+			resetTree() ;
+			designTree() ;
+			refreshCommand() ;
+		} );		
+	}
+	
+	$(document).ready(function(){
+		designTree() ;
+		addCommand() ;
+		refreshCommand() ;
+		refreshOnClick() ;
+		
+		$("span.SectionItem").Draggable({
+			revert:		true,
+			ghosting:	true,
+			opacity:	0.8,
+		});
+		
+		$("span.SectionItem, span.AreaItem").Droppable({
+			accept:		'SectionItem',
+			hoverclass: 'dropOver',
+			ondrop:		function(dropped) {
+				if(this == dropped) return;
+				
+				// Sposta
+				subbranch = $('ul', this.parentNode);
+				
+				if (subbranch.size() == 0) {
+					$(this).after('<ul></ul>');
+					subbranch = $('ul', this.parentNode);
+				}
+				
+				subbranch.eq(0).append(dropped.parentNode);
+				
+				// Resetta l'albero
+				resetTree() ;
+				designTree() ;
+				refreshCommand() ;
+				refreshOnClick() ;
+				
+//document.getElementById("test").innerHTML = $("#tree").html() ;
+			}
+		}) ;
+		
+	});
+	
+	</script>
+	<style type="text/css">
+		html, body {height:100%; margin: 0; padding: 0; }
+
+		body {
+			font-family: Verdana, helvetica, arial, sans-serif;
+			font-size: 11px;
+			background: #fff;
+			color: #333;
+			padding-left: 20px;
+		} /* Reset Font Size */
+		
+		.treeview, .treeview ul { 
+			padding: 0;
+			margin: 0px;
+			list-style: none;
+		}	
+
+		.treeview li { 
+			margin: 0;
+			padding: 3px 0pt 3px 16px;
+		}
+		
+		.treeview li { background: url(img/treeview/tv-item.gif) 0 0 no-repeat; }
+	  	.treeview .collapsable { background-image: url(img/treeview/tv-collapsable.gif); }
+	  	.treeview .expandable { background-image: url(img/treeview/tv-expandable.gif); }
+	  	.treeview .last { background-image: url(img/treeview/tv-item-last.gif); }
+	  	.treeview .lastCollapsable { background-image: url(img/treeview/tv-collapsable-last.gif); }
+	  	.treeview .lastExpandable { background-image: url(img/treeview/tv-expandable-last.gif); }
+
+	  	#tree.treeview li { background: url(img/treeview/area/tv-item.gif) 0 0 no-repeat; }
+	  	#tree.treeview .collapsable { background-image: url(img/treeview/area/tv-collapsable.gif); }
+	  	#tree.treeview .expandable { background-image: url(img/treeview/area/tv-expandable.gif); }
+	  	#tree.treeview .last { background-image: url(img/treeview/area/tv-item-last.gif); }
+	  	#tree.treeview .lastCollapsable { background-image: url(img/treeview/area/tv-collapsable-last.gif); }
+	  	#tree.treeview .lastExpandable { background-image: url(img/treeview/area/tv-expandable-last.gif); }
+		
+	  	#treecontrol { margin: 1em 0; }
+
+		span.dropOver
+		{
+			background-color: #00c;
+			color: #fff;
+		}	  	
+		
+		#cmdTree {
+			float:left; 
+			border:0px solid black; 
+			padding: 0px 0px 0px 0px;
+		}	
+			
+		#tree input {
+			margin: 0;
+			padding: 0px 0px 0px 0px;
+			font-family: Verdana, helvetica, arial, sans-serif;
+			font-size: 11px;
+			background: #fff;
+			color: #333;
+			border: 1px solid black;
+		}	
+
+		#tree .initCmdTree {
+			display: none ;
+			background: #fff;
+			color: black;
+			border: 1px solid gray;
+		}	
+
+		#tree .enabledCmdTree {
+			background: #fff;
+			color: black;
+			border: 1px solid gray;
+		}	
+
+		#tree .disabledCmdTree {
+			background: #fff;
+			color: gray;
+			border: 1px solid gray;
+		}	
+
+		</style>
+	</head>
+	<body>
+
+	
+	<h4>Test Areee /Sezioni</h4>
+	<div id="treecontrol">
+		<a href="#">Collapse All</a>
+		<a href="#">Expand All</a>
+		<a href="#">Toggle All</a>
+	</div>
+	
+	<div>
+	
+	<ul id="tree">
+		<li>
+			<span class="AreaItem">Area 1</span>
+			<ul>
+				<li>
+					<span class="SectionItem">Sezione 1.1</span>
+				</li>
+			</ul>
+		</li>
+		<li>
+			<span class="AreaItem">Area 2</span>
+			<ul>
+				<li>
+					<span class="SectionItem">Sezione 2.1</span>
+					<ul>
+						<li>
+							<span class="SectionItem">Sezione 2.1.1</span>
+						</li>
+						<li>
+							<span class="SectionItem">Sezione 2.1.2</span>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<span class="SectionItem">Sezione 2.2</span>
+				</li>
+				<li>
+					<span class="SectionItem">Sezione 2.3</span>
+					<ul>
+						<li>
+							<span class="SectionItem">Sezione 2.3.1</span>
+						</li>
+						<li>
+							<span class="SectionItem">Sezione 2.3.2</span>
+						</li>
+						<li>
+							<span class="SectionItem">Sezione 2.3.3</span>
+						</li>
+						<li>
+							<span class="SectionItem">Sezione 2.3.4</span>
+						</li>
+						<li>
+							<span class="SectionItem">Sezione 2.3.5</span>
+						</li>
+						<li>
+							<span class="SectionItem">Sezione 2.3.6</span>
+						</li>
+						<li>
+							<span class="SectionItem">Sezione 2.3.7</span>
+						</li>
+						<li>
+							<span class="SectionItem">Sezione 2.3.8</span>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+	</ul>
+	
+
+	</div>
+
+<!-- textarea id="test" cols="150" rows="40"></textarea -->
+</body></html>
