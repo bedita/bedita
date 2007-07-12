@@ -27,7 +27,57 @@ Visualizza il form di un' Area.
 
 		<h2 class="showHideBlockButton" onClick="$('#proprieta').toggle()">Propriet&agrave;</h2>
 		<div class="blockForm" id="proprieta">
-		Propriet&agrave;
+
+			<b>status</b>:
+			{html_radios name="status" options=$conf->statusOptions selected=$area.status|default:$conf->status separator=" "}
+			<hr>
+				<table class="tableForm" border="0">
+					<tr id="">
+						<td class="label">Lingua:</td>
+						<td>
+							<select name="lang">
+								{html_options options=$conf->langOptions selected=$area.lang|default:$conf-lang}
+							</select>							
+						</td>
+						<td>
+						&nbsp;
+						</td>
+					</tr>
+
+					<tr id="Title_TR_{$area.lang|default:$conf->lang}">
+						<td class="label">Titolo:</td>
+						<td>
+							<input  class="inputText" type="text" name="title" value="{$area.title|default:''|escape:'html'|escape:'quotes'}" >&nbsp;
+						</td>
+						{if ($area)}					
+						<td>
+							<input class="cmdField" type="button" value="lang ..." onclick="addLang('{$area.title|default:''|escape:'quotes'}', '{$area.lang|default:$conf->lang}')">
+						</td>
+						{/if}
+					</tr>
+				</table>
+				{if ($area)}
+				<hr>
+				<table class="tableForm" border="0">
+					<tr>
+						<td class="label">Alias:</td>
+						<td>{$area.nickname}</td>
+					</tr>
+					<tr>
+						<td class="label">Creata il:</td>
+						<td>{$area.created|date_format:$conf->date_format}</td>
+					</tr>
+					<tr>
+						<td class="label">Ultima modifica:</td>
+						<td>{$area.modified|date_format:$conf->date_format}</td>
+					</tr>
+					<tr>
+						<td class="label">IP:</td>
+						<td>{$area.IP_created}</td>
+					</tr>
+				</table>
+			{/if}
+		{*pr var=$area*}
 		</div>
 		
 		<h2 class="showHideBlockButton" onClick="$('#proprietaCustom').toggle()">Propriet&agrave; Custom</h2>

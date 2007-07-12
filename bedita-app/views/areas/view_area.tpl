@@ -7,6 +7,16 @@ Pagina con il form per la modifica/aggiunta di un'area.
 
 	{$javascript->link("form")}
 
+<script type="text/javascript">
+{literal}
+
+$(document).ready(function(){
+	$('#proprieta').show() ;
+});
+
+{/literal}
+</script>	
+
 </head>
 <body>
 
