@@ -56,7 +56,7 @@ class AreasController extends AppController {
 	  * @param integer $id
 	  */
 	 function viewArea($id = null) {
-/*
+
 	 	// Setup parametri
 		$this->setup_args(array("id", "integer", $id)) ;
 	 	
@@ -70,17 +70,10 @@ class AreasController extends AppController {
 			}
 		}
 		
-		// Preleva l'albero delle aree e tipologie
-		if(!$this->Area->tree($tree)) {
-			$this->Session->setFlash("Errore nel prelievo dell'albero delle aree e sezioni");
-			return ;
-		}
-
 		// Setup dei dati da passare al template
-		$this->set('Area', 		$area);
+		$this->set('area', 		$area);
 		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) )) ;
-		$this->set('self',		($this->createSelfURL(false)."?")) ;
-*/		
+		$this->set('self',		($this->createSelfURL(false)."?")) ;		
 	 }
 
 	 /**
@@ -89,8 +82,7 @@ class AreasController extends AppController {
 	  *
 	  * @param integer $id
 	  */
-	 function viewSection($id = null) {
-/*	 	
+	 function viewSection($id = null) {	 	
 		// Setup parametri
 		$this->setup_args(array("id", "integer", $id)) ;
 	 	
@@ -104,20 +96,33 @@ class AreasController extends AppController {
 			}
 		}
 		
-		// Preleva l'albero delle aree e tipologie
-		if(!$this->Area->tree($tree)) {
-			$this->Session->setFlash("Errore nel prelievo dell'albero delle aree e sezioni");
-			return ;
-		}
+		// Preleva l'albero delle aree e sezioni
+		$tree = $this->BeTree->getSectionsTree() ;
 		
 		// Setup dei dati da passare al template
-		$this->set('Tree', 		$tree);
-		$this->set('Section',	$section);
+		$this->set('tree', 		$tree);
+		$this->set('section',	$section);
 		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) )) ;
-		$this->set('self',		($this->createSelfURL(false)."?")) ;
-*/		
+		$this->set('self',		($this->createSelfURL(false)."?")) ;	
 	 }
 	
+	 /**
+	  * Salva La nuova configurazioen dell'albero dei contenuti
+	  *
+	  */
+	 function saveTree() {	 	
+	 	// URL di ritorno
+	 	$URLOK 		= (isset($this->data['URLOK'])) ? $this->data['URLOK'] : "./" ;
+	 	$URLERROR 	= (isset($this->data['URLERROR'])) ? $this->data['URLERROR'] : "./" ;
+	 	
+	 	if(empty($this->data)) {
+			$this->redirect($URLERROR);
+			return ;
+	 	}
+		
+	 	$this->redirect($URLOK);
+	 }
+
 	 /**
 	  * Aggiunge una nuova area o la modifica.
 	  * Nei dati devono essere definiti:
