@@ -393,5 +393,34 @@ H1.formazione {background-color:#6b8e23} H1.formazione A {color:#FFFFFF}
 	display:none;
 }
 
+#containerPage .tableForm  { 
+	width:570px;
+}
+
+#containerPage .tableForm TD { 
+	vertical-align:middle;
+}
+
+#containerPage .tableForm .inputText { 
+	width:350px ;
+}
+
+#containerPage .tableForm .cmdField { 
+	background: #fff;
+	color: #333;
+	border: 1px solid black;
+}
+
+			
+#containerPage .tableForm .label { 
+	width:110px;
+	font-weight: bold ;
+	text-align: right ;
+	white-space: nowrap;
+}
+
+
+
+
 /* END -- stili per  pagina con Form */
 
