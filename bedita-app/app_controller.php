@@ -3,7 +3,7 @@
 class AppController extends Controller
 {
 	
-	var $helpers 	= array("Javascript", "Html", "Bevalidation");
+	var $helpers 	= array("Javascript", "Html", "Bevalidation", "Form");
 	var $components = array('BeAuth', 'BePermissionModule');
 	
 	function beforeFilter() {
