@@ -41,7 +41,10 @@ Stili per il modulo aree.
 		
 	  	#treecontrol { margin: 1em 0; }
 
-		span.dropOver
+	  	#tree .AreaItem 	{ font-weight: bold; }
+	  	#tree .SectionItem { }
+		
+	  	span.dropOver
 		{
 			background-color: #00c;
 			color: #fff;
