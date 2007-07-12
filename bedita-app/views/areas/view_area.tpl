@@ -9,7 +9,7 @@ Pagina con il form per la modifica/aggiunta di un'area.
 
 <div id="centralPage">
 	
-	{include file="submenu.tpl" method="index"}
+	{include file="submenu.tpl" method="viewArea"}
 	
 	{include file="form_area.tpl"}
 	

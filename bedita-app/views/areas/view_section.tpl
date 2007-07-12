@@ -9,7 +9,7 @@ Pagina con il form per la modifica/aggiunta di una sezione.
 
 <div id="centralPage">
 	
-	{include file="submenu.tpl" method="index"}
+	{include file="submenu.tpl" method="viewSection"}
 	
 	{include file="form_section.tpl"}
 	

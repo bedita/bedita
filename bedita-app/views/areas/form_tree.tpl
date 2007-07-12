@@ -14,7 +14,11 @@ Visualizza il form per la gestione dell'albero aree/sezioni.
 		</div>
 	
 		<div>
+		{*pr var=$tree*}
 			<form action="" method="POST">
+				<input type="hidden" name="URLFrmArea" 		value="{$html->url('viewArea/')}">
+				<input type="hidden" name="URLFrmSezione" 	value="{$html->url('viewSection/')}">
+			
 			{$beTree->tree("tree", $tree)}
 			<br />
 			<p align="center">

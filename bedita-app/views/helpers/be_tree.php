@@ -19,8 +19,8 @@ class BeTreeHelper extends Helper {
 		'tree'		=> "<ul id=\"%s\">\n\t%s\n</ul>\n",
 		'children'	=> "<ul>%s</ul>\n",
 		
-		'area'		=> "<li>\n\t<span class=\"AreaItem\">%s</span>\n\t%s\n</li>\n",
-		'section'	=> "<li>\n\t<span class=\"SectionItem\">%s</span>\n\t%s\n</li>\n",
+		'area'		=> "<li>\n\t<input type='hidden' name='id' value='%s'>\n\t<span class=\"AreaItem\">%s</span>\n\t%s\n</li>\n",
+		'section'	=> "<li>\n\t<input type='hidden' name='id' value='%s'>\n\t<span class=\"SectionItem\">%s</span>\n\t%s\n</li>\n",
 	) ;
 	
 	/**
@@ -61,7 +61,7 @@ class BeTreeHelper extends Helper {
 		}
 		
 		// Crea l'html per il tag
-		$txt = sprintf($this->tags[$key], $item['title'], $txtChildren) ;
+		$txt = sprintf($this->tags[$key], $item['id'], $item['title'], $txtChildren) ;
 		
 		return $txt ;
 	}
