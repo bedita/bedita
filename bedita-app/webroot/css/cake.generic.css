@@ -330,3 +330,68 @@ H1.formazione {background-color:#6b8e23} H1.formazione A {color:#FFFFFF}
 .simpleMenuList LI.on  {
 	font-weight:bold;
 }
+
+/* BEGIN -- intestazione Pagina con Form */
+.FormPageHeader[class]  {
+ /* background-image: url(/img/sfo_gestUpD.png);*/
+}
+.FormPageHeader {
+	margin: 10px 0px 10px 1px; border:1px solid silver;
+	background-color: white;	background-repeat: repeat-x;
+	/* IE hacks */
+	/*filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src='/img/sfo_gestUpD.png', sizingMethod='scale');*/
+	padding:3px 3px 3px 3px;
+	color:#696969;
+	height:auto;
+	min-width:570px;
+	border: 0px solid #696969;
+}
+
+.FormPageHeader A:Hover {
+	text-decoration:none;
+}
+
+.FormPageHeader H1 {
+	font : bold 18px Arial, sans-serif;
+	color: #393939;
+}
+
+.FormPageHeader .submit {
+	width:158px; padding:2px;
+}
+
+.FormPageHeader td {
+	vertical-align:middle ;
+}
+
+.FormPageHeader td {
+	vertical-align:middle ;
+}
+/*
+.FormPageHeader #openAllBlockLabel {
+	display:block;
+}
+*/
+.FormPageHeader #closeAllBlockLabel {
+	display:none;
+}
+/* END -- intestazione Pagina con Form */
+
+/* BEGIN -- stili per i contenitori delle pagine */
+#containerPage H2, #containerPage .showHideBlockButton  {
+	color: white;
+	font: bold 12px Arial; 
+	margin: 10px 0px 10px 0px; 
+	padding:4px; 
+	background: gray none repeat-x; 
+	border:1px solid gray;
+	cursor:pointer;
+	width:570px;
+}
+
+#containerPage .blockForm  {
+	display:none;
+}
+
+/* END -- stili per  pagina con Form */
+
