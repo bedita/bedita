@@ -1,0 +1,85 @@
+/*
+Stili per il modulo aree.
+
+@author		giangi@qwerg.com
+*/
+/*
+		html, body {height:100%; margin: 0; padding: 0; }
+
+		body {
+			font-family: Verdana, helvetica, arial, sans-serif;
+			font-size: 11px;
+			background: #fff;
+			color: #333;
+			padding-left: 20px;
+		} 
+*/		
+		.treeview, .treeview ul { 
+			padding: 0;
+			margin: 0px;
+			list-style: none;
+		}	
+
+		.treeview li { 
+			margin: 0;
+			padding: 3px 0pt 3px 16px;
+		}
+		
+		.treeview li { background: url(img/treeview/tv-item.gif) 0 0 no-repeat; }
+	  	.treeview .collapsable { background-image: url(img/treeview/tv-collapsable.gif); }
+	  	.treeview .expandable { background-image: url(img/treeview/tv-expandable.gif); }
+	  	.treeview .last { background-image: url(img/treeview/tv-item-last.gif); }
+	  	.treeview .lastCollapsable { background-image: url(img/treeview/tv-collapsable-last.gif); }
+	  	.treeview .lastExpandable { background-image: url(img/treeview/tv-expandable-last.gif); }
+
+	  	#tree.treeview li { background: url(img/treeview/area/tv-item.gif) 0 0 no-repeat; }
+	  	#tree.treeview .collapsable { background-image: url(img/treeview/area/tv-collapsable.gif); }
+	  	#tree.treeview .expandable { background-image: url(img/treeview/area/tv-expandable.gif); }
+	  	#tree.treeview .last { background-image: url(img/treeview/area/tv-item-last.gif); }
+	  	#tree.treeview .lastCollapsable { background-image: url(img/treeview/area/tv-collapsable-last.gif); }
+	  	#tree.treeview .lastExpandable { background-image: url(img/treeview/area/tv-expandable-last.gif); }
+		
+	  	#treecontrol { margin: 1em 0; }
+
+		span.dropOver
+		{
+			background-color: #00c;
+			color: #fff;
+		}	  	
+		
+		#cmdTree {
+			float:left; 
+			border:0px solid black; 
+			padding: 0px 0px 0px 0px;
+		}	
+			
+		#tree input {
+			margin: 0;
+			padding: 0px 0px 0px 0px;
+			font-family: Verdana, helvetica, arial, sans-serif;
+			font-size: 11px;
+			background: #fff;
+			color: #333;
+			border: 1px solid black;
+		}	
+
+		#tree .initCmdTree {
+			display: none ;
+			background: #fff;
+			color: black;
+			border: 1px solid gray;
+		}	
+
+		#tree .enabledCmdTree {
+			background: #fff;
+			color: black;
+			border: 1px solid gray;
+		}	
+
+		#tree .disabledCmdTree {
+			background: #fff;
+			color: gray;
+			border: 1px solid gray;
+		}	
+
+
