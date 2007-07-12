@@ -50,7 +50,6 @@ class AppController extends Controller
 		if(!$this->BeAuth->isLogged()) { $this->render(null, null, VIEWS."pages/anonymous.tpl") ; $_loginRunning = false; exit; }
 		
 //		// Preleva lista dei moduli
-//        $this->set('moduleList', $this->requestAction('/modules/getListEnabledModules/'.$this->BeAuth->user["id"]));
 		$this->set('moduleList', $this->BePermissionModule->getListModules($this->BeAuth->user["userid"])) ;			
 		
 		$_loginRunning = false ;
