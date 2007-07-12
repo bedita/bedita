@@ -56,7 +56,8 @@ class AreasController extends AppController {
 	  * @param integer $id
 	  */
 	 function viewArea($id = null) {
-
+		$conf  = Configure::getInstance() ;
+		
 	 	// Setup parametri
 		$this->setup_args(array("id", "integer", $id)) ;
 	 	
@@ -73,7 +74,8 @@ class AreasController extends AppController {
 		// Setup dei dati da passare al template
 		$this->set('area', 		$area);
 		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) )) ;
-		$this->set('self',		($this->createSelfURL(false)."?")) ;		
+		$this->set('self',		($this->createSelfURL(false)."?")) ;
+		$this->set('conf',		$conf) ;
 	 }
 
 	 /**
