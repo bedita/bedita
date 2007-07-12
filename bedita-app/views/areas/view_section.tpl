@@ -2,6 +2,11 @@
 Pagina con il form per la modifica/aggiunta di una sezione.
 *}
 {php}$vs = &$this->get_template_vars() ;{/php}
+
+	{$html->css('module.area')}
+
+	{$javascript->link("form")}
+
 </head>
 <body>
 

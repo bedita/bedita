@@ -2,6 +2,11 @@
 Pagina con il form per la modifica/aggiunta di un'area.
 *}
 {php}$vs = &$this->get_template_vars() ;{/php}
+
+	{$html->css('module.area')}
+
+	{$javascript->link("form")}
+
 </head>
 <body>
 

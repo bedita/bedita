@@ -8,6 +8,7 @@ Pagina d'entrata modulo Areas.
 	{$javascript->link("jquery.treeview.pack")}
 	{$javascript->link("interface")}
 	{$javascript->link("module.area")}
+	{$javascript->link("form")}
 
 <script type="text/javascript">
 {literal}
