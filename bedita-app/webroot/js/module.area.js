@@ -14,6 +14,30 @@ treeView Aree
 			speed: 'fast',
 			collapsed:false
 		});
+		
+		// Inserisce l'URL per la modifica dell'area o della sezione
+		var URLFrmArea 		= "/" ;
+		var URLFrmSection 	= "/" ;
+		
+		try {
+			URLFrmArea 		= $("input[@name='URLFrmArea']").eq(0).attr('value') ;
+			URLFrmSection 	= $("input[@name='URLFrmSezione']").eq(0).attr('value') ;
+		} catch(e) {}
+		
+		$("li/span[@class='SectionItem']", "#tree").each(function(i){
+			// Preleva l'ID della sezione
+			var id = $("input[@name='id']", this.parentNode).eq(0).attr('value') ;
+			
+			// Crea il tag per il form
+			$(this).html('<a href="'+URLFrmSection+id+'">'+$(this).html()+'</a>') ;
+		});
+		
+		$("li/span[@class='AreaItem']", "#tree").each(function(i){
+			var id = $("input[@name='id']", this.parentNode).eq(0).attr('value') ;
+			
+			$(this).html('<a href="'+URLFrmArea+id+'">'+$(this).html()+'</a>') ;
+		});
+
 	}
 	
 	// Resetta l'albero per ridisegnarlo
