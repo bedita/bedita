@@ -1,10 +1,21 @@
 <?
 /**
- *  bedita.ini.php - constants and global variables for BEdita application
- * 
+ * Short description for file.
+ *
  *
  * PHP versions 4 and 5
+ *
+ * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
+ * Copyright 2005-2007, Cake Software Foundation, Inc.
+ *							1785 E. Sahara Avenue, Suite 490-204
+ *							Las Vegas, Nevada 89104
+ *
+ *  Licensed under The MIT License
+ *  Redistributions of files must retain the above copyright notice.
+ *
  * @author giangi@qwerg.com
+ * 
+ *  bedita.ini.php - constants and global variables for BEdita application
  * 
  */
 $config = array() ;
@@ -39,6 +50,18 @@ $config['lang'] = "it" ;
  * 'html', 'txt', 'txtParsed'
  */
 $config['formato'] = "txt" ;
+
+/**
+ * Status di default per gli oggetti da creare
+ */
+$config['status'] = "draft" ;
+
+/**
+ * Formato visualizzazione data
+ */
+$config['date_format'] = "%d-%m-%Y" ;
+
+
 
 /**
  * directory temporanea
@@ -112,5 +135,28 @@ $config['permissions'] = array(
  * 
  */
 $config['questionTypeDefault'] = BEDITA_DOMANDA_TXTSEMPLICE ;
+
+/**
+ * 
+ * Options selezione status
+ * 
+ */
+$config['statusOptions'] = array(
+	"on"	=> "ON",
+	"off"	=> "OFF",
+	"draft"	=> "DRAFT",
+) ;
+
+/**
+ * 
+ * Options selezione lingua
+ * 
+ */
+$config['langOptions'] = array(
+	"it"	=> "italiano",
+	"en"	=> "inglese",
+	"fr"	=> "francese",
+) ;
+
 
 ?>
