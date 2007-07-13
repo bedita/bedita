@@ -22,7 +22,7 @@ $(document).ready(function(){
 	$("span.SectionItem").Draggable({
 		revert:		true,
 		ghosting:	true,
-		opacity:	0.8,
+		opacity:	0.8
 	});
 		
 	$("span.SectionItem, span.AreaItem").Droppable({
