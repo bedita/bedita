@@ -56,7 +56,7 @@ treeView Aree
 		});
 	}
 
-	// Aggiunge i comandi allbero, nascosti
+	// Aggiunge i comandi albero, nascosti
 	function addCommand() {
 		$("li/span[@class='SectionItem']", "#tree").before('<input type="button" name="up" value=" up " class="initCmdTree">&nbsp;<input type="button" name="down" value=" down " class="initCmdTree">&nbsp;&nbsp;');
 	}
@@ -118,6 +118,7 @@ treeView Aree
 			resetTree() ;
 			designTree() ;
 			refreshCommand() ;
+			refreshOnClick();
 		} );		
 	}
 	
