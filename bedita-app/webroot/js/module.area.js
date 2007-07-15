@@ -64,23 +64,30 @@ treeView Aree
 	// Rende visibili i comandi accessibili e disabilita gli altri
 	function refreshCommand() {
 		$("li", "#tree").each(function(i){
-
+			var tmp = new Array() ; 
+			
 			if($(this).siblings(this).size() == 0) {
 				// figlio unico
-				$('input', this).attr({style: 'block', class: 'disabledCmdTree'}) ;
+				tmp["style"] = "block" ;
+				tmp["class"] = "disabledCmdTree" ;
+				$('input', this).attr(tmp) ;
 				return ;
 				
 			} 
 
-			$("input", this).attr({style: 'block', class: 'enabledCmdTree'}) ;
+			tmp["style"] = "block" ;
+			tmp["class"] = "enabledCmdTree" ;
+			$("input", this).attr(tmp) ;
 			
 			if($(this).prev(this).size() == 0) {
 				// e' il primo
-				$("input[@name='up']", this).attr({style: 'block', class: 'disabledCmdTree'}) ;
+				tmp["class"] = "disabledCmdTree" ;
+				$("input[@name='up']", this).attr(tmp) ;
 				
 			} else if($(this).next(this).size() == 0) {
 				// e' l'ultimo
-				$("input[@name='down']", this).attr({style: 'block', class: 'disabledCmdTree'}) ;
+				tmp["class"] = "disabledCmdTree" ;
+				$("input[@name='down']", this).attr(tmp) ;
 				
 			}			
 
