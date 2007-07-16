@@ -25,7 +25,7 @@ Visualizza il form di un' Area.
 			</table>
 		</div>
 
-		<h2 class="showHideBlockButton" onClick="$('#proprieta').toggle()">Propriet&agrave;</h2>
+		<h2 class="showHideBlockButton">Propriet&agrave;</h2>
 		<div class="blockForm" id="proprieta">
 
 			<b>status</b>:
@@ -80,12 +80,12 @@ Visualizza il form di un' Area.
 		{*pr var=$area*}
 		</div>
 		
-		<h2 class="showHideBlockButton" onClick="$('#proprietaCustom').toggle()">Propriet&agrave; Custom</h2>
+		<h2 class="showHideBlockButton">Propriet&agrave; Custom</h2>
 		<div class="blockForm" id="proprietaCustom">
 		Propriet&agrave; Custom
 		</div>
 
-		<h2 class="showHideBlockButton" onClick="$('#permessi').toggle()">Permessi</h2>
+		<h2 class="showHideBlockButton">Permessi</h2>
 		<div class="blockForm" id="permessi">
 		Permessi
 		</div>

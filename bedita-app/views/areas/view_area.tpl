@@ -12,6 +12,11 @@ Pagina con il form per la modifica/aggiunta di un'area.
 
 $(document).ready(function(){
 	$('#proprieta').show() ;
+	
+	// aggiunge i comandi per i blocchi
+	$('.showHideBlockButton').bind("click", function(){
+		$(this).next("div").toggle() ;
+	}) ;
 });
 
 {/literal}
