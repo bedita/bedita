@@ -16,7 +16,7 @@ $vs = &$this->get_template_vars() ;
 			<a href="#">Espandi tutto</a>
 		</div>
 	
-		<div>
+		<div id="test">
 		{formHelper fnc="create" args="'frmTree', array('action' => '/areas/saveTree', 'type' => 'POST')"}
 				<input type="hidden" name="URLFrmArea" 		value="{$html->url('viewArea/')}">
 				<input type="hidden" name="URLFrmSezione" 	value="{$html->url('viewSection/')}">
@@ -27,7 +27,7 @@ $vs = &$this->get_template_vars() ;
 			{formHelper fnc="submit" args="' salva le modifiche ', array('name' => 'modify')"}
 			</p>
 		</form>
-			
+
 		</div>
 	
 	</div>

@@ -36,7 +36,7 @@ Visualizza il form di un' Area.
 						<td class="label">Lingua:</td>
 						<td>
 							<select name="lang">
-								{html_options options=$conf->langOptions selected=$area.lang|default:$conf-lang}
+								{html_options options=$conf->langOptions selected=$area.lang|default:$conf->lang}
 							</select>							
 						</td>
 						<td>

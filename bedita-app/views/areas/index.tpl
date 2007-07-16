@@ -18,7 +18,6 @@ $(document).ready(function(){
 	addCommand() ;
 	refreshCommand() ;
 	refreshOnClick() ;
-		
 	$("span.SectionItem").Draggable({
 		revert:		true,
 		ghosting:	true,
