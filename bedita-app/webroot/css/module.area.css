@@ -25,19 +25,19 @@ Stili per il modulo aree.
 			padding: 3px 0pt 3px 16px;
 		}
 		
-		.treeview li { background: url(img/treeview/tv-item.gif) 0 0 no-repeat; }
-	  	.treeview .collapsable { background-image: url(img/treeview/tv-collapsable.gif); }
-	  	.treeview .expandable { background-image: url(img/treeview/tv-expandable.gif); }
-	  	.treeview .last { background-image: url(img/treeview/tv-item-last.gif); }
-	  	.treeview .lastCollapsable { background-image: url(img/treeview/tv-collapsable-last.gif); }
-	  	.treeview .lastExpandable { background-image: url(img/treeview/tv-expandable-last.gif); }
+		.treeview li { background: url(treeview/tv-item.gif) 0 0 no-repeat; }
+	  	.treeview .collapsable { background-image: url(treeview/tv-collapsable.gif); }
+	  	.treeview .expandable { background-image: url(treeview/tv-expandable.gif); }
+	  	.treeview .last { background-image: url(treeview/tv-item-last.gif); }
+	  	.treeview .lastCollapsable { background-image: url(treeview/tv-collapsable-last.gif); }
+	  	.treeview .lastExpandable { background-image: url(treeview/tv-expandable-last.gif); }
 
-	  	#tree.treeview li { background: url(img/treeview/area/tv-item.gif) 0 0 no-repeat; }
-	  	#tree.treeview .collapsable { background-image: url(img/treeview/area/tv-collapsable.gif); }
-	  	#tree.treeview .expandable { background-image: url(img/treeview/area/tv-expandable.gif); }
-	  	#tree.treeview .last { background-image: url(img/treeview/area/tv-item-last.gif); }
-	  	#tree.treeview .lastCollapsable { background-image: url(img/treeview/area/tv-collapsable-last.gif); }
-	  	#tree.treeview .lastExpandable { background-image: url(img/treeview/area/tv-expandable-last.gif); }
+	  	#tree.treeview li { background: url(treeview/area/tv-item.gif) 0 0 no-repeat; }
+	  	#tree.treeview .collapsable { background-image: url(treeview/area/tv-collapsable.gif); }
+	  	#tree.treeview .expandable { background-image: url(treeview/area/tv-expandable.gif); }
+	  	#tree.treeview .last { background-image: url(treeview/area/tv-item-last.gif); }
+	  	#tree.treeview .lastCollapsable { background-image: url(treeview/area/tv-collapsable-last.gif); }
+	  	#tree.treeview .lastExpandable { background-image: url(treeview/area/tv-expandable-last.gif); }
 		
 	  	#treecontrol { margin: 1em 0; }
 
