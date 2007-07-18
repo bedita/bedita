@@ -6,17 +6,22 @@ Pagina con il form per la modifica/aggiunta di un'area.
 	{$html->css('module.area')}
 
 	{$javascript->link("form")}
+	{$javascript->link("jquery.changealert")}
 
 <script type="text/javascript">
 {literal}
 
 $(document).ready(function(){
 	$('#proprieta').show() ;
-	
+		
 	// aggiunge i comandi per i blocchi
 	$('.showHideBlockButton').bind("click", function(){
 		$(this).next("div").toggle() ;
 	}) ;
+
+	// handler cambiamenti dati della pagina
+	$("#handlerChangeAlert").changeAlert($('input, textarea, select')) ;	
+	$('.gest_menux, #menuLeftPage a, #headerPage a').alertUnload() ;
 });
 
 {/literal}

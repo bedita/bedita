@@ -3,6 +3,7 @@ file incluso.
 Visualizza il menu e il comando di login/logout
 *}
 {strip}
+
 <div id="headerPage">
 	<div class="beditaButton" onClick = "document.location ='/'">
 		<b style="font:bold 17px Verdana">B.Edita</b><br><b>&#155;</b> 
@@ -20,11 +21,11 @@ Visualizza il menu e il comando di login/logout
     	          onClick = "javascript:document.location ='{$link}'"
         	     onMouseOver     = "oldBGColor=this.style.backgroundColor; this.style.backgroundColor = '{$moduleList[m].color}'"        
             	onMouseOut      = "this.style.backgroundColor = oldBGColor">
-       		 		{if (stripos($bevalidation->here, $moduleList[m].path) !== false)} 
+       		 	{if (stripos($bevalidation->here, $moduleList[m].path) !== false)} 
        		 		<i> * {$moduleList[m].label}</i>
        		 		{else}
        		 		{$moduleList[m].label}
-       		 		{/if}
+       		 	{/if}
                 	</div>
                 {else}
        		 		<div class="gest_menux" style="background-color:#DDDDDD; color: white; ">

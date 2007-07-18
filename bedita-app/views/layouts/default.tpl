@@ -34,8 +34,8 @@ $vs = &$this->get_template_vars() ;
 	<meta name="keywords" content="Keys" >
 
 	{$bevalidation->setup('it')}
-	{$javascript->link("common")}
 	{$javascript->link("jquery")}
+	{$javascript->link("common")}
 	{$html->css('cake.generic')}
 	{$html->css('yav')}
 

@@ -26,7 +26,7 @@ Visualizza il form di un' Area.
 		</div>
 
 		<h2 class="showHideBlockButton">Propriet&agrave;</h2>
-		<div class="blockForm" id="proprieta">
+		<div class="blockForm" id="proprieta" style="display:block;">
 
 			<b>status</b>:
 			{html_radios name="status" options=$conf->statusOptions selected=$area.status|default:$conf->status separator=" "}
