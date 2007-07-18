@@ -15,3 +15,4 @@ function hideAllBlockPage() {
 	$("#closeAllBlockLabel").hide() ;
 	$("#openAllBlockLabel").show() ;
 }
+

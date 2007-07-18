@@ -12,3 +12,17 @@ function checkOnSubmit(formName, r) {
         alert('jsErrors variable contains the array of errors:\n\n' +jsErrors + '\n\n Use this variable like you prefer!');
     }
 }
+
+jQuery.fn.extend({
+  check: function() {
+     return this.each(function() { this.checked = true; });
+   },
+  uncheck: function() {
+     return this.each(function() { this.checked = false; });
+   },
+  toggleCheck: function() {
+     return this.each(function() { this.checked = !this.checked ; });
+   }
+   
+});
+

@@ -420,7 +420,11 @@ H1.formazione {background-color:#6b8e23} H1.formazione A {color:#FFFFFF}
 }
 
 
-
+/* stile per indicare l'avvenuto cambiamento dei dati in una pagina */
+.alertChanged {
+	font-weight: bold ;
+	color:	red ;
+}
 
 /* END -- stili per  pagina con Form */
 
