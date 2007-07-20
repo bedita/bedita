@@ -19,7 +19,13 @@ class BeurlHelper extends Helper {
 	* 
 	*/
 	function here() {
-		return str_replace($this->Html->base, "", $this->Html->here) ;
+		$newUrl = str_replace($this->Html->base, "", $this->Html->here) ;
+		if($newUrl != "/") {
+			$pos = strpos($newUrl,"/");
+			if(!$pos || $pos > 0) 
+				$newUrl = "/" . $newUrl;
+		}
+		return $newUrl ;
 	}
 }
 

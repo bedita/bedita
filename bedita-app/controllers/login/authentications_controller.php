@@ -44,10 +44,11 @@ class AuthenticationsController extends AppController {
 	 *
 	 */
    function login() {
+
 		$userid 	= (isset($this->data["login"]["userid"])) ? $this->data["login"]["userid"] : "" ;
 		$password 	= (isset($this->data["login"]["passwd"])) ? $this->data["login"]["passwd"] : "" ;
-		
-		$URLOK 		= (isset($this->data["login"]["URLOK"])) ? $this->data["login"]["URLOK"] : $this->webroot ;
+				
+		$URLOK 		= (isset($this->data["login"]["URLOK"])) ? $this->data["login"]["URLOK"] : "/" ;
 		$URLERR		= (isset($this->data["login"]["URLERR"])) ? $this->data["login"]["URLERR"] : "/" ;
 		
 		if(!$this->BeAuth->login($userid, $password)) {
