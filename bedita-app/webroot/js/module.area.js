@@ -74,7 +74,6 @@ treeView Aree
 				return ;
 				
 			} 
-
 			tmp["style"] = "block" ;
 			tmp["class"] = "enabledCmdTree" ;
 			$("input", this).attr(tmp) ;
@@ -83,12 +82,10 @@ treeView Aree
 				// e' il primo
 				tmp["class"] = "disabledCmdTree" ;
 				$("input[@name='up']", this).attr(tmp) ;
-				
 			} else if($(this).next(this).size() == 0) {
 				// e' l'ultimo
 				tmp["class"] = "disabledCmdTree" ;
 				$("input[@name='down']", this).attr(tmp) ;
-				
 			}			
 
 		});
@@ -121,7 +118,3 @@ treeView Aree
 			refreshOnClick();
 		} );		
 	}
-	
-
-/* ******************************
-****************************** */
