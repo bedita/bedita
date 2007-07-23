@@ -1,0 +1,218 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="it">
+<head>
+	<title>Areas</title>          
+	<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+	<meta name="author" content="" >
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" >
+	<meta http-equiv="Content-Style-Type" content="text/css" >
+
+	<meta name="description" content="Descrizione" lang="it" >
+	<meta name="keywords" content="Keys" >
+
+	<script type="text/javascript" src="/js/yav.js"></script>
+<script type="text/javascript" src="/js/yav-config-it.js"></script>
+<script type="text/javascript" src="/js/BEValidation.js"></script>
+
+	<script type="text/javascript" src="/js/jquery-latest.js"></script>
+	<script type="text/javascript" src="/js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/common.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="/css/cake.generic.css" />
+	<link rel="stylesheet" type="text/css" href="/css/yav.css" />
+
+
+	<link rel="stylesheet" type="text/css" href="/css/module.area.css" />
+
+	<script type="text/javascript" src="/js/form.js"></script>
+	<script type="text/javascript" src="/js/jquery.changealert.js"></script>
+
+<script type="text/javascript">
+
+
+$(document).ready(function(){
+	$('#proprieta').show() ;
+		
+	// aggiunge i comandi per i blocchi
+	$('.showHideBlockButton').bind("click", function(){
+		$(this).next("div").toggle() ;
+	}) ;
+
+	// handler cambiamenti dati della pagina
+	$("#handlerChangeAlert").changeAlert($('input, textarea, select')) ;	
+	$('.gest_menux, #menuLeftPage a, #headerPage a').alertUnload() ;
+	
+	/*
+	Menu
+	*/
+	$("#admin_gest_menux").attr("style", "background-color:#000000; color: white; ") ;
+	$("#areas_gest_menux").attr("style", "background-color:#ff9933; color: white; ") ;
+
+	$("#admin_gest_menux").bind("mouseover", function(e) { oldBGColor=this.style.backgroundColor; this.style.backgroundColor = '#000000'; }) ;
+	$("#areas_gest_menux").bind("mouseover", function(e) { oldBGColor=this.style.backgroundColor; this.style.backgroundColor = '#ff9933' ; }) ;
+	
+	$("#admin_gest_menux").bind("mouseout", function(e) { this.style.backgroundColor = oldBGColor ; }) ;
+	$("#areas_gest_menux").bind("mouseout", function(e) { this.style.backgroundColor = oldBGColor ; }) ;
+
+	// URL sui menu
+	$("#admin_gest_menux").bind("click", function(e) { if(e.cancelBubble) return false  ; document.location ='/admin' ; }) ;
+	$("#areas_gest_menux").bind("click", function(e) { if(e.cancelBubble) return false ; document.location ='/areas' ; }) ;
+
+	
+});
+
+
+
+</script>	
+
+</head>
+<body>
+
+<div id="headerPage">
+	<div class="beditaButton" onClick = "document.location ='/'">
+		<b style="font:bold 17px Verdana">B.Edita</b><br><b>&#155;</b><a href="/authentications/logout">esci</a><br><br><p><b>Consorzio BEdita</b><br>2007</p>
+	</div>
+	<div class="gest_menux" id="admin_gest_menux">admin</div>
+	<div class="gest_menux" id="areas_gest_menux"><i> * areas</i></div>
+</div>
+<div id="centralPage">
+	
+		<div id="menuLeftPage">
+		<div class="menuLeft">
+
+			<h1 onClick="window.location='./'" class="aree"><a href="./">Areas</a></h1>
+	
+			<div class="inside">
+				<ul class="simpleMenuList" style="margin:10px 0px 10px 0px">
+					<li >		<b>&#8250;</b> <a href="/areas" >Albero delle Aree</a></li>
+					<li class="on">	<b>&#8250;</b> <a href="/areas/viewArea" >Nuova Area</a></li>
+
+					<li >	<b>&#8250;</b> <a href="/areas/viewSection" >Nuova Sezione</a></li>
+				</ul>	
+				<hr>
+			</div>
+		</div>
+	<p>
+	Testo a seguire
+	</p>
+
+	<hr>
+	
+	<div id="handlerChangeAlert">
+
+	</div>
+	
+	</div>	
+	
+	<div id="containerPage">
+		<form id="updateform" enctype="multipart/form-data" method="post" action="/updateforms/areas/saveArea/">
+		<div class="FormPageHeader">
+			<h1>Test site</h1>
+
+	
+			<table cellspacing="0" cellpadding="0">
+				<tr>
+					<td>
+						<a id="openAllBlockLabel" style="display:block" href="javascript:showAllBlockPage(1)"><b>&#155; </b>apri tutti i dettagli</a>
+						<a id="closeAllBlockLabel" href="javascript:hideAllBlockPage()"><b>&#155; </b>chiudi tutti i dettagli</a>
+					</td>
+					<td style="padding-left:40px">
+
+						<div class="submit"><input type="submit" name="save" class="submit" value=" salva " /></div>
+					</td>
+					<td style="padding-left:40px">
+						&nbsp;
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<h2 class="showHideBlockButton">Propriet&agrave;</h2>
+		<div class="blockForm" id="proprieta" style="display:block;">
+
+			<b>status</b>:
+			<label><input type="radio" name="status" value="on" checked="checked" />ON</label> 
+<label><input type="radio" name="status" value="off" />OFF</label> 
+<label><input type="radio" name="status" value="draft" />DRAFT</label> 
+			<hr>
+				<table class="tableForm" border="0">
+
+					<tr id="">
+						<td class="label">Lingua:</td>
+						<td>
+							<select name="lang">
+								<option label="italiano" value="it" selected="selected">italiano</option>
+<option label="inglese" value="en">inglese</option>
+<option label="francese" value="fr">francese</option>
+
+							</select>							
+						</td>
+						<td>
+						&nbsp;
+						</td>
+					</tr>
+
+					<tr id="Title_TR_it">
+						<td class="label">Titolo:</td>
+
+						<td>
+							<input  class="inputText" type="text" name="title" value="Test site" >&nbsp;
+						</td>
+											
+						<td>
+							<input class="cmdField" type="button" value="lang ..." onclick="addLang('Test site', 'it')">
+						</td>
+											</tr>
+				</table>
+								<hr>
+
+				<table class="tableForm" border="0">
+					<tr>
+						<td class="label">Alias:</td>
+						<td>TestSite</td>
+					</tr>
+					<tr>
+						<td class="label">Creata il:</td>
+
+						<td>09-07-2007</td>
+					</tr>
+					<tr>
+						<td class="label">Ultima modifica:</td>
+						<td>09-07-2007</td>
+					</tr>
+					<tr>
+
+						<td class="label">IP:</td>
+						<td>192.168.0.1</td>
+					</tr>
+				</table>
+							</div>
+		
+		<h2 class="showHideBlockButton">Propriet&agrave; Custom</h2>
+
+		<div class="blockForm" id="proprietaCustom">
+		Propriet&agrave; Custom
+		</div>
+
+		<h2 class="showHideBlockButton">Permessi</h2>
+		<div class="blockForm" id="permessi">
+		Permessi
+		</div>
+
+		</form>			
+	</div>
+	
+</div>		
+		
+<div id="footerPage">
+&nbsp;
+	<a href="http://www.cakephp.org/" target="_new">
+		<img src="/img/cake.power.png" alt="CakePHP : Rapid Development Framework" border="0" />
+	</a>
+</div>
+
+</body>
+
+</html><!-- 0.1144s -->
