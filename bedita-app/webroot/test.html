@@ -42,7 +42,7 @@ $(document).ready(function(){
 
 	// handler cambiamenti dati della pagina
 	$("#handlerChangeAlert").changeAlert($('input, textarea, select')) ;	
-	$('.gest_menux, #menuLeftPage a, #headerPage a').alertUnload() ;
+	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a').alertUnload() ;
 	
 	/*
 	Menu
@@ -60,6 +60,7 @@ $(document).ready(function(){
 	$("#admin_gest_menux").bind("click", function(e) { if(e.cancelBubble) return false  ; document.location ='/admin' ; }) ;
 	$("#areas_gest_menux").bind("click", function(e) { if(e.cancelBubble) return false ; document.location ='/areas' ; }) ;
 
+	$("#buttonLogout").bind("click", function(e) { if(e.cancelBubble) return false ; document.location ='/' ; }) ;
 	
 });
 
@@ -71,8 +72,10 @@ $(document).ready(function(){
 <body>
 
 <div id="headerPage">
-	<div class="beditaButton" onClick = "document.location ='/'">
-		<b style="font:bold 17px Verdana">B.Edita</b><br><b>&#155;</b><a href="/authentications/logout">esci</a><br><br><p><b>Consorzio BEdita</b><br>2007</p>
+	<div class="beditaButton" id="buttonLogout">
+		<b style="font:bold 17px Verdana">B.Edita</b><br><b>&#155;</b>
+		<a id="logout" href="/authentications/logout">esci</a>
+		<br><br><p><b>Consorzio BEdita</b><br>2007</p>
 	</div>
 	<div class="gest_menux" id="admin_gest_menux">admin</div>
 	<div class="gest_menux" id="areas_gest_menux"><i> * areas</i></div>
