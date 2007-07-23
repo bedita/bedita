@@ -23,9 +23,20 @@ dei dati
 		// Setup
 		_elementAlert = this.eq(0) ;
 		
+		// Scrive l'html
 		this.eq(0).html(html);
-		$("#_cmdCheck").bind("click", function() {$('#_hndChkbox').toggleCheck() ; });
-
+		
+		// Setta lo stato in base al cookie
+		$('#_hndChkbox').get(0).checked = $.cookie("handlerAlert") ;
+		
+		$("#_cmdCheck").bind("click", function() {
+			$('#_hndChkbox').toggleCheck() ; 
+			$.cookie("handlerAlert", ($('#_hndChkbox').get(0).checked) ? 1: null) ;
+		});
+		
+		// Catture l'evento di cambiamento settaggio alert e lo mette in cookie
+		$("#_hndChkbox").bind("click", function() { $.cookie("handlerAlert", (this.checked ? 1 : null)) ; });
+		
 		// Cattura l'evento onchange per ogni input, textarea, select
 		cContainers.not($('/', this.eq(0))).bind("change", _setChangedAlert) ;
 		
@@ -39,12 +50,12 @@ Indica a quali elementi va associato il controllo di uscita pagina tramite event
 	jQuery.fn.alertUnload = function(cContainers) {
 			
 		this.not($('a',_elementAlert)).bind("click", function(event) { 
-				event.stopPropagation();
-//				if(_changed && $('#_hndChkbox', _elementAlert).get(0).checked) {
+				if(_changed && $('#_hndChkbox', _elementAlert).get(0).checked) {
 					if(!confirm("i cambiamenti fatti andranno perduti.\nVuoi cotinuare?")) {
+						event.stopPropagation();
 						return false ;
 					}
-//				}
+				}
 				return true ;
 		}) ;
 	}	
