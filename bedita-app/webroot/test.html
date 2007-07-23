@@ -42,7 +42,7 @@ $(document).ready(function(){
 
 	// handler cambiamenti dati della pagina
 	$("#handlerChangeAlert").changeAlert($('input, textarea, select')) ;	
-	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a').alertUnload() ;
+	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div').alertUnload() ;
 	
 	/*
 	Menu
@@ -60,7 +60,7 @@ $(document).ready(function(){
 	$("#admin_gest_menux").bind("click", function(e) { if(e.cancelBubble) return false  ; document.location ='/admin' ; }) ;
 	$("#areas_gest_menux").bind("click", function(e) { if(e.cancelBubble) return false ; document.location ='/areas' ; }) ;
 
-	$("#buttonLogout").bind("click", function(e) { if(e.cancelBubble) return false ; document.location ='/' ; }) ;
+	$("#buttonLogout").bind("click", function(e) {  if(e.cancelBubble) return false ; document.location ='/' ; }) ;
 	
 });
 
