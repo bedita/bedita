@@ -22,7 +22,7 @@
  * @license			
  * @author 		giangi giangi@qwerg.com			
  * 
- * Ridefinisce la funzione save() per i model che rappresentano gli oggetti foglia.
+ * Ridefinisce la funzione save() per i model che rappresentano gli oggetti.
  * Permette il setp automatico del campo object_type_id.
  * 
 */
@@ -45,7 +45,23 @@ class BEAppObjectModel extends BEAppModel {
 		return parent::save($data, $validate, $fieldList) ;
 	}
 
-		
+	/**
+	 * Torna le custom properties di un oggetto come
+	 * rappresentate in DB.
+	 *
+	 * @param unknown_type $id
+	 * @return unknown
+	 */
+/*	
+	function getCustomProperties ($id = null) {
+		$ret = $this->Object->CustomProperties->findAllByObjectId($id) ;
+ 		
+ 		for($i=0; $i < count($ret) ; $i++) {
+ 			$ret[$i] = $ret[$i]["CustomProperty"] ;
+ 		}
+		return $ret ;
+	}
+*/
 }
 
 ?>
