@@ -62,6 +62,16 @@ Indica a quali elementi va associato il controllo di uscita pagina tramite event
 })(jQuery) ;
 
 
+/*
+Funzione che puo' essere chiamata per forzare il segnale di un cambiamento
+*/
+(function() {
+	jQuery.fn.alertSignal = function() {
+		_setChangedAlert() ;
+	}	
+})(jQuery) ;
+
+
 // Indica l'avvenuto cambiamento
 function _setChangedAlert() {
 	try {
