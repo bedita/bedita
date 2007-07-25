@@ -17,7 +17,7 @@ $(document).ready(function(){
 	$("#{/literal}{$path}{literal}_gest_menux").attr("style", "background-color:{/literal}{$color}{literal}; color: white; ") ;
 	$("#{/literal}{$path}{literal}_gest_menux").bind("mouseover", function(e) 	{ oldBGColor = this.style.backgroundColor; this.style.backgroundColor = "{/literal}{$color}{literal}" ; }) ;
 	$("#{/literal}{$path}{literal}_gest_menux").bind("mouseout", function(e) 	{ this.style.backgroundColor = oldBGColor ; }) ;
-	$("#{/literal}{$path}{literal}_gest_menux").bind("click", function(e) 		{ if(e.cancelBubble) return false  ; document.location ='/{/literal}{$path}{literal}' ; }) ;
+	$("#{/literal}{$path}{literal}_gest_menux").bind("click", function(e) 		{ if(e.cancelBubble) return false  ; document.location ='{/literal}{$html->url('/')}{$path}{literal}' ; }) ;
 	{/literal}
 
 	
@@ -33,7 +33,7 @@ $(document).ready(function(){
 
 
 <div id="headerPage">
-	<div class="beditaButton" onClick = "document.location ='/'">
+	<div class="beditaButton" onClick = "document.location ='{$html->url('/')}'">
 		<b style="font:bold 17px Verdana">B.Edita</b><br><b>&#155;</b> 
 		<a href="{$html->url('/authentications/logout')}">esci</a><br><br><p>
 		<b>Consorzio BEdita</b>

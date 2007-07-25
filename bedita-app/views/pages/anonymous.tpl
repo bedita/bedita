@@ -17,7 +17,7 @@ rules[1]='loginPasswd:Password|minlength|6';
 <body>
 
 <div id = "sxPageLogin">
-	<div class="beditaButton" onClick = "document.location ='/'">
+	<div class="beditaButton" onClick = "document.location =$html->url('/')">
 		<b style="font:bold 17px Verdana">B.Edita</b><br><b>&#155;</b> 
 		<a href="{$html->url('/authentications/logout')}">esci</a><br><br><p>
 		<b>Consorzio BEdita</b>

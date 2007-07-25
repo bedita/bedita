@@ -11,7 +11,7 @@ Template Home page.
 </head>
 <body>
 <div id="headerPageHome">
-	<div class="beditaButtonHome" onClick = "document.location ='/'">
+	<div class="beditaButtonHome" onClick = "document.location ='{$html->url('/')}'">
 		<b style="font:bold 17px Verdana">B.Edita</b><br><b>&#155;</b> 
 		<a href="{$html->url('/authentications/logout')}">esci</a><br><br><p>
 		<b>Consorzio BEdita</b>
@@ -21,10 +21,10 @@ Template Home page.
 		{section name="m" loop=$moduleList}
         	{if ($moduleList[m].status == 'on')}
         		{if (($moduleList[m].flag & BEDITA_PERMS_MODIFY) && $moduleList[m].status == 'on')}
-	        		{assign_concat var='linkPath' 0='/' 1=$moduleList[m].path}
+	        		{assign_concat var='linkPath' 0=$html->url('/') 1=$moduleList[m].path}
     	    		{assign var = "link" value=$html->url($linkPath)}
 
-	<h1 class="{$moduleList[m].path}" style="background-color:{$moduleList[m].color};" onClick="document.location='/{$moduleList[m].path}'">
+	<h1 class="{$moduleList[m].path}" style="background-color:{$moduleList[m].color};" onClick="document.location='{$html->url('/')}{$moduleList[m].path}'">
 	<a href="{$html->url('/')}{$moduleList[m].path}/" style="color:white;">{$moduleList[m].label}</a>
 	</h1>    	    	
                 {else}
