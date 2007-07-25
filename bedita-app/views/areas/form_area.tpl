@@ -4,6 +4,7 @@ Visualizza il form di un' Area.
 *}
 {php}$vs = &$this->get_template_vars() ;{/php}
 
+
 	<div id="containerPage">
 		{formHelper fnc="create" args="'updateform', array('id' => 'updateform', 'action' => '/areas/saveArea', 'type' => 'POST', 'enctype' => 'multipart/form-data')"}
 		<div class="FormPageHeader">
@@ -77,12 +78,11 @@ Visualizza il form di un' Area.
 					</tr>
 				</table>
 			{/if}
-		{*pr var=$area*}
 		</div>
 		
 		<h2 class="showHideBlockButton">Propriet&agrave; Custom</h2>
 		<div class="blockForm" id="proprietaCustom">
-		Propriet&agrave; Custom
+			{include file="../pages/form_custom_properties.tpl" el=$area}
 		</div>
 
 		<h2 class="showHideBlockButton">Permessi</h2>

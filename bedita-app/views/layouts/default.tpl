@@ -35,6 +35,7 @@ $vs = &$this->get_template_vars() ;
 
 	{$bevalidation->setup('it')}
 	{$javascript->link("jquery")}
+	{$javascript->link("jquery.cookie")}
 	{$javascript->link("common")}
 	{$html->css('cake.generic')}
 	{$html->css('yav')}
