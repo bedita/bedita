@@ -10,7 +10,7 @@ var postfix_customProp = "_customPropTR" ;
 
 $(document).ready(function(){
 {/literal}	
-	{foreach name="setCPForm" key="name" item="property" from=$area.CustomProperties}
+	{foreach name="setCPForm" key="name" item="property" from=$el.CustomProperties}
 		_setupCustomPropTR("{$name}"+postfix_customProp) ;
 	{/foreach}
 {literal}

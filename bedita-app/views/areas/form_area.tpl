@@ -27,7 +27,7 @@ Visualizza il form di un' Area.
 		</div>
 
 		<h2 class="showHideBlockButton">Propriet&agrave;</h2>
-		<div class="blockForm" id="proprieta" style="display:block;">
+		<div class="blockForm" id="proprieta">
 
 			<b>status</b>:
 			{html_radios name="status" options=$conf->statusOptions selected=$area.status|default:$conf->status separator=" "}
@@ -87,7 +87,7 @@ Visualizza il form di un' Area.
 
 		<h2 class="showHideBlockButton">Permessi</h2>
 		<div class="blockForm" id="permessi">
-		Permessi
+		{include file="../pages/form_permissions.tpl" el=$area}
 		</div>
 
 		</form>			

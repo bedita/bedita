@@ -229,6 +229,17 @@ class AreasController extends AppController {
 	 	$this->redirect($URLOK);
 	 }
 
+	 /**
+	  * 
+	  */
+	 function elimina() {
+	 	$result = "test1|test1\ntest2|test2\ntest3|test3" ;
+	 	
+//	 	header('Content-Type: text/plain');
+	 	
+	 	echo $result ;
+	 	exit ;
+	 }
 }
 
 	
