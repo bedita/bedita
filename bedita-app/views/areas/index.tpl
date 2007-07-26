@@ -9,6 +9,7 @@ Pagina d'entrata modulo Areas.
 	{$javascript->link("interface")}
 	{$javascript->link("module.area")}
 	{$javascript->link("form")}
+	{$javascript->link("jquery.changealert")}
 
 <script type="text/javascript">
 {literal}
@@ -46,8 +47,14 @@ $(document).ready(function(){
 			refreshCommand() ;
 			refreshOnClick() ;
 			
+			// Indica l'avvenuto cambiamento dei dati
+			try { $().alertSignal() ; } catch(e) {}
 		}
 	}) ;
+		
+	// handler cambiamenti dati della pagina
+	$("#handlerChangeAlert").changeAlert($('input, textarea, select')) ;
+	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div, #containerPage a, #containerPage span').alertUnload() ;
 });
 
 {/literal}

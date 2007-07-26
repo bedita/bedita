@@ -40,6 +40,7 @@ treeView Aree
 
 	}
 	
+	
 	// Resetta l'albero per ridisegnarlo
 	function resetTree() {
 		$('div', "#tree").remove();
@@ -104,6 +105,9 @@ treeView Aree
 			designTree() ;
 			refreshCommand() ;
 			refreshOnClick();
+			
+			// Indica l'avvenuto cambiamento dei dati
+			try { $().alertSignal() ; } catch(e) {}
 		} );		
 
 		$("input[@name='down'][@class='enabledCmdTree']", "#tree").click(function(i) { 
@@ -116,5 +120,8 @@ treeView Aree
 			designTree() ;
 			refreshCommand() ;
 			refreshOnClick();
+			
+			// Indica l'avvenuto cambiamento dei dati
+			try { $().alertSignal() ; } catch(e) {}
 		} );		
 	}
