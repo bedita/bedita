@@ -158,5 +158,30 @@ $config['langOptions'] = array(
 	"fr"	=> "francese",
 ) ;
 
+/**
+ * 
+ * Options selezione tipologia Cutom properties
+ * 
+ */
+$config['customPropTypeOptions'] = array(
+	"integer"	=> "integer",
+	"bool"		=> "boolean",
+	"float"		=> "float",
+	"string"	=> "string",
+	"stream"	=> "stream"
+) ;
+
+/**
+ * Variabili utilizzate da Smarty per definire permessi
+ * 
+ */
+/**
+ * Costanti per la definizione dei permessi
+ */
+$config['BEDITA_PERMS_READ'] 	= BEDITA_PERMS_READ ;
+$config['BEDITA_PERMS_MODIFY'] 	= BEDITA_PERMS_MODIFY ;
+$config['BEDITA_PERMS_DELETE'] 	= BEDITA_PERMS_DELETE ;
+$config['BEDITA_PERMS_CREATE'] 	= BEDITA_PERMS_CREATE ;
+
 
 ?>
