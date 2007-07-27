@@ -131,7 +131,7 @@ function formatItemListUserid(row) {
 
 function setupFieldAutocomplete() {
 	$("#inputAddPermUser").autocomplete(
-		"{/literal}{$html->url('/users/userids')}{literal}",
+		"{/literal}{$html->url('/users/userids')}{literal}/",
 		{
 			delay:10,
 			minChars:1,
@@ -147,7 +147,7 @@ function setupFieldAutocomplete() {
 	);
 	
 	$("#inputAddPermGroup").autocomplete(
-		"{/literal}{$html->url('/groups/names')}{literal}",
+		"{/literal}{$html->url('/groups/names')}{literal}/",
 		{
 			delay:10,
 			minChars:1,
