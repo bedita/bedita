@@ -13,8 +13,8 @@
 	<meta name="keywords" content="Keys" >
 
 	<script type="text/javascript" src="/js/yav.js"></script>
-	<script type="text/javascript" src="/js/yav-config-it.js"></script>
-	<script type="text/javascript" src="/js/BEValidation.js"></script>
+<script type="text/javascript" src="/js/yav-config-it.js"></script>
+<script type="text/javascript" src="/js/BEValidation.js"></script>
 
 	<script type="text/javascript" src="/js/jquery.js"></script>
 	<script type="text/javascript" src="/js/jquery.cookie.js"></script>
@@ -25,22 +25,20 @@
 
 
 	<link rel="stylesheet" type="text/css" href="/css/module.area.css" />
+	<link rel="stylesheet" type="text/css" href="/css/jquery.autocomplete.css" />
 
 	<script type="text/javascript" src="/js/form.js"></script>
-	<script type="text/javascript" src="/js/jquery.changealert.js"></script>
 
+	<script type="text/javascript" src="/js/jquery.changealert.js"></script>
 	<script type="text/javascript" src="/js/jquery.form.js"></script>
 	<script type="text/javascript" src="/js/jquery.autocomplete.js"></script>
-
-	<link rel="stylesheet" href="/css/jquery.autocomplete.css" type="text/css" />
+	<script type="text/javascript" src="/js/jquery.validate.js"></script>
 	
 <script type="text/javascript">
 
 
 $(document).ready(function(){
-//	$('#proprieta').show() ;
-//	$('#proprietaCustom').show() ;
-	$('#permessi').show() ;
+	$('#proprieta').show() ;
 			
 	// aggiunge i comandi per i blocchi
 	$('.showHideBlockButton').bind("click", function(){
@@ -48,7 +46,7 @@ $(document).ready(function(){
 	}) ;
 
 	// handler cambiamenti dati della pagina
-	$("#handlerChangeAlert").changeAlert($('input, textarea, select').not($("#addCustomPropTR TD/input, #addCustomPropTR TD/select"))) ;
+	$("#handlerChangeAlert").changeAlert($('input, textarea, select').not($("#addCustomPropTR TD/input, #addCustomPropTR TD/select, #addPermUserTR TD/input, #addPermGroupTR TD/input"))) ;
 	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div').alertUnload() ;
 	
 });
@@ -91,447 +89,80 @@ $(document).ready(function(){
 </script>
 
 <div id="headerPage"><div class="beditaButton" onClick = "document.location ='/'"><b style="font:bold 17px Verdana">B.Edita</b><br><b>&#155;</b><a href="/authentications/logout">esci</a><br><br><p><b>Consorzio BEdita</b><br>2007</p></div><div class="gest_menux" id="admin_gest_menux">admin</div><div class="gest_menux" id="areas_gest_menux"><i> * areas</i></div></div>
-
 <div id="centralPage">
 	
 		<div id="menuLeftPage">
 		<div class="menuLeft">
+
 			<h1 onClick="window.location='./'" class="aree"><a href="./">Areas</a></h1>
 	
 			<div class="inside">
 				<ul class="simpleMenuList" style="margin:10px 0px 10px 0px">
 					<li >		<b>&#8250;</b> <a href="/areas" >Albero delle Aree</a></li>
-
 					<li class="on">	<b>&#8250;</b> <a href="/areas/viewArea" >Nuova Area</a></li>
+
 					<li >	<b>&#8250;</b> <a href="/areas/viewSection" >Nuova Sezione</a></li>
 				</ul>	
 				<hr>
 			</div>
 		</div>
-
 	<p>
 	Testo a seguire
 	</p>
+
 	<hr>
 	
 	<div id="handlerChangeAlert">
-<!--	
-		<span id="hndVisualAlert"></span>
-		<input type="checkbox" id="hndChkbox">
-		<a href="#" onclick="javascript:$('#hndChkbox').toggleCheck()">Segnala</a>
-		<br/>
-		Seleziona qui se vuoi essere avvertito del cambiamento dei dati quando lasci la pagina.
--->
 	</div>
 	
 	</div>	
 	
-
-	<div id="containerPage">
-		<form id="updateform" enctype="multipart/form-data" method="post" action="/updateforms/areas/saveArea/">
-
-		<div class="FormPageHeader">
-			<h1>Test site</h1>
-	
-			<table cellspacing="0" cellpadding="0">
-				<tr>
-					<td>
-						<a id="openAllBlockLabel" style="display:block" href="javascript:showAllBlockPage(1)"><b>&#155; </b>apri tutti i dettagli</a>
-						<a id="closeAllBlockLabel" href="javascript:hideAllBlockPage()"><b>&#155; </b>chiudi tutti i dettagli</a>
-
-					</td>
-					<td style="padding-left:40px">
-						<div class="submit"><input type="submit" name="save" class="submit" value=" salva " /></div>
-					</td>
-					<td style="padding-left:40px">
-						&nbsp;
-					</td>
-				</tr>
-			</table>
-
-		</div>
-
-		<h2 class="showHideBlockButton">Propriet&agrave;</h2>
-		<div class="blockForm" id="proprieta">
-
-			<b>status</b>:
-			<label><input type="radio" name="status" value="on" checked="checked" />ON</label> 
-<label><input type="radio" name="status" value="off" />OFF</label> 
-<label><input type="radio" name="status" value="draft" />DRAFT</label> 
-			<hr>
-
-				<table class="tableForm" border="0">
-					<tr id="">
-						<td class="label">Lingua:</td>
-						<td>
-							<select name="lang">
-								<option label="italiano" value="it" selected="selected">italiano</option>
-<option label="inglese" value="en">inglese</option>
-<option label="francese" value="fr">francese</option>
-
-							</select>							
-						</td>
-						<td>
-						&nbsp;
-						</td>
-					</tr>
-
-					<tr id="Title_TR_it">
-						<td class="label">Titolo:</td>
-
-						<td>
-							<input  class="inputText" type="text" name="title" value="Test site" >&nbsp;
-						</td>
-											
-						<td>
-							<input class="cmdField" type="button" value="lang ..." onclick="addLang('Test site', 'it')">
-						</td>
-											</tr>
-				</table>
-								<hr>
-
-				<table class="tableForm" border="0">
-					<tr>
-						<td class="label">Alias:</td>
-						<td>TestSite</td>
-					</tr>
-					<tr>
-						<td class="label">Creata il:</td>
-
-						<td>23-07-2007</td>
-					</tr>
-					<tr>
-						<td class="label">Ultima modifica:</td>
-						<td>23-07-2007</td>
-					</tr>
-					<tr>
-
-						<td class="label">IP:</td>
-						<td>192.168.0.1</td>
-					</tr>
-				</table>
-					</div>
-		
-		<h2 class="showHideBlockButton">Propriet&agrave; Custom</h2>
-
-		<div class="blockForm" id="proprietaCustom">
-			<script type="text/javascript">
-
-/*
-Script per la gestione delle custom properties
-*/
-var postfix_customProp = "_customPropTR" ;
-
-$(document).ready(function(){
-	
-			_setupCustomPropTR("prova"+postfix_customProp) ;
-	
-	$('input[@name=cmdAdd]', "#frmCustomProperties").bind("click", function (e) {
-		addCustomPropTR() ;
-	}) ;
-});
-
-
-
-
-// Procedura per l'aggiunta di una proprieta'
-var htmlTemplateCustomProp = ' \
-					<tr id=""> \
-						<td><input type="hidden" name=""></td> \
-						<td><select name=""><option label="integer" value="integer">integer</option> <option label="boolean" value="bool">boolean</option> <option label="float" value="float">float</option> <option label="string" value="string">string</option> <option label="stream" value="stream">stream</option> </select></td> \
-						<td><input type="" name="" value=""> </td> \
-						<td><input type="button" name="delete" value=" x "></td> \
-					</tr> \
-' ;
-
-function addCustomPropTR() {
-	var name 	= $.trim($("#addCustomPropTR TD/input[@name=name]").fieldValue()[0].replace(/[^_a-z0-9]/g, ""));	
-	var value 	= $.trim($("#addCustomPropTR TD/input[@name=value]").fieldValue()[0]) ;
-	var type 	= $("#addCustomPropTR TD/select[@name=type]").fieldValue()[0] ;
-	
-	// Se non completa esce
-	if(!name.length || !value.length) {
-		alert("Dati non completi") ;
-		
-		return false ;
-	}
-	
-	// se gia' presente o vuota esce
-	if($("#"+name+postfix_customProp).size()) {
-		alert("Proprieta' gia' presente") ;
-		
-		return false ;
-	}
-
-	// Inserisce il nuovo elemento
-	var newTR = $("#endLineCustomPropTR").before(htmlTemplateCustomProp).prev() ;
-	
-	// Setup nomi, id e comandi degli elementi
-	newTR.attr("id", name+postfix_customProp) ;
-	$("TD:nth-child(1)/input", newTR).attr("name", "CustomProperties["+name+"][name]") ;
-	$("TD:nth-child(2)/select", newTR).attr("name", "CustomProperties["+name+"][type]") ;
-	$("TD:nth-child(3)/input", newTR).attr("name", "CustomProperties["+name+"][value]") ;
-	$('TD:nth-child(4)/input[@name=delete]', newTR).bind("click", function (e) { deleteTRCustomProp(this)}) ;
-	
-	// setup dei valori
-	$("TD:nth-child(1)/input", newTR).attr("value", name) ;
-	$("TD:nth-child(1)", newTR).append(name) ;
-	$("TD:nth-child(3)/input", newTR).attr("value", value) ;
-
-	var options = $("TD:nth-child(2)/select", newTR).get(0).options ;
-	for(var i = 0 ; i < options.length ; i++) {
-		if(options[i].value == type) options[i].selected = true ; 
-	}
-	
-	// resetta i campi per l'input di una nuova prop
-	$("#addCustomPropTR TD/input[@type=text]").attr("value", "") ;
-	$("#addCustomPropTR TD/select").get(0).options[0].selected = true ;
-	
-	// Indica l'avvenuto cambiamento dei dati
-	try {
-		$().alertSignal() ;
-	} catch(e) {}
-}
-
-
-// Setta i comandi per la gestione delle righe della tabella delle custom properites
-function _setupCustomPropTR(id) {
-	// Definisce il comando per la cancellazione
-	$('#'+id+' TD:last/input[@name=delete]').bind("click", function (e) {
-		deleteTRCustomProp(this)
-	}) ;
-}
-
-// cancella l'elemento
-function deleteTRCustomProp(el) {
-	if(!confirm("Confermi la cancellazione delle proprieta'?")) return false ;
-	$(el).parent().parent().remove() ;		
-	
-	// Indica l'avvenuto cambiamento dei dati
-	try {
-		$().alertSignal() ;
-	} catch(e) {}
-}
-
-
-</script>
-
-
-				<table class="tableForm" border="0" id="frmCustomProperties">
-					<tr>
-						<td class="label" style="text-align:left;">nome</td>
-						<td class="label" style="text-align:left;">tipo</td>
-
-						<td class="label" style="text-align:left;">valore</td>
-						<td class="label">&nbsp;</td>
-					</tr>
-										<tr id="prova_customPropTR">
-						<td>
-							<input type="hidden" name="CustomProperties[prova][name]">
-							prova
-						</td>
-						<td>
-
-						<select name="CustomProperties[prova][type]">
-						<option label="integer" value="integer" selected="selected">integer</option>
-<option label="boolean" value="bool">boolean</option>
-<option label="float" value="float">float</option>
-<option label="string" value="string">string</option>
-<option label="stream" value="stream">stream</option>
-
-						</select>
-						</td>
-
-						<td>
-							<input type="text" name="CustomProperties[prova][value]" value="10">
-						</td>
-						<td>
-							<input type="button" name="delete" value=" x ">
-						</td>
-					</tr>
-										<tr id="endLineCustomPropTR">
-						<td colspan="4"><hr></td>
-
-					</tr>
-					<tr id="addCustomPropTR">
-						<td>
-							<input type="text" name="name">
-						</td>
-						<td>
-						<select name="type">
-						<option label="integer" value="integer">integer</option>
-
-<option label="boolean" value="bool">boolean</option>
-<option label="float" value="float">float</option>
-<option label="string" value="string">string</option>
-<option label="stream" value="stream">stream</option>
-
-						</select>
-						</td>
-						<td>
-							<input type="text" name="value" value="">
-
-						</td>
-						<td>
-							<input type="button" name="cmdAdd" value=" add ">
-						</td>
-					</tr>
-				</table>		</div>
-
-		<h2 class="showHideBlockButton">Permessi</h2>
-
-		<div class="blockForm" id="permessi">
-		<script type="text/javascript">
-
-/*
-Script per la gestione dei permessi
-*/
-var postfix_customProp = "_permTR" ;
-
-$(document).ready(function(){
-	
-			_setupPermTR("administrator_group"+postfix_customProp) ;
-	
-});
-
-// Setta i comandi per la gestione delle righe della tabella dei permessi
-function _setupPermTR(id) {
-	// Definisce il comando per la cancellazione
-	$('#'+id+' TD:last/input[@name=delete]').bind("click", function (e) {
-		deleteTRPerm(this)
-	}) ;
-}
-
-// cancella l'elemento
-function deleteTRPerm(el) {
-	if(!confirm("Confermi la cancellazione del permesso?")) return false ;
-	$(el).parent().parent().remove() ;		
-	
-	// Indica l'avvenuto cambiamento dei dati
-	try {
-		$().alertSignal() ;
-	} catch(e) {}
-}
-
-
-</script>
-
-
-				<table class="tableForm" border="0" id="frmCustomProperties">
-					<tr>
-						<td class="label" style="text-align:left;">nome</td>
-						<td class="label" style="text-align:left;">tipo</td>
-
-						<td class="label" style="text-align:left;">lettura</td>
-						<td class="label" style="text-align:left;">modifica</td>
-						<td class="label" style="text-align:left;">cancella</td>
-						<td class="label">&nbsp;</td>
-					</tr>
-																							
-						<tr id="administrator_group_permTR">
-							<td>
-
-								<input type="hidden" name="Permissions[0][name]">
-								administrator
-							</td>		
-							<td>
-								<input type="hidden" name="Permissions[0][switch]">
-								group
-							</td>
-							<td>
-								<input type="checkbox" name="Permissions[0][BEDITA_PERMS_READ]" value="1" checked>
-							</td>
-
-							<td>
-								<input type="checkbox" name="Permissions[0][BEDITA_PERMS_MODIFY]" value="2" checked>
-							</td>
-							<td>
-								<input type="checkbox" name="Permissions[0][BEDITA_PERMS_DELETE]" value="4" checked>
-							</td>			
-							<td>
-															</td>
-						</tr>
-
-					
-					<tr id="">
-						<td colspan="4">
-							<input type="checkbox"  name="recursiveApplyPermissions" id="recursiveApplyPermissions" value="1">&nbsp;
-							<a href="javascript:void(0)" onclick="$('#recursiveApplyPermissions').toggleCheck() ;">
-							Applica i permessi ricorsivamente
-							</a>
-						</td>
-					</tr>
-					<tr id="endLineCustomPropTR">
-
-						<td colspan="8"><hr></td>
-					</tr>
-					<tr id="">
-						<th colspan="8" style="text-align:left ;">
-						utente:
-						</th>
-					</tr>
-					<tr id="addPermUserTR">
-						<td>
-						<!--
-							<input type="text" name="name" class="ac_input">
-						-->
-						<input type="text" style="width: 200px;" value="" id="CityAjax" class="ac_input"/>
-						</td>		
-						<td>
-							<input type="hidden" name="switch" value="user">
-						</td>
-						<td>
-							<input type="checkbox" name="flag[BEDITA_PERMS_READ]" value="1">
-						</td>
-						<td>
-
-							<input type="checkbox" name="flag[BEDITA_PERMS_MODIFY]" value="2">
-						</td>
-						<td>
-							<input type="checkbox" name="flag[BEDITA_PERMS_DELETE]" value="4">
-						</td>			
-						<td>
-							<input type="button" name="add" value=" add ">
-						</td>
-					</tr>
-
-				</table>		</div>
-
-		</form>			
-	</div>
-
 <script type="text/javascript">
-function formatItem(row) {
-	return row[0] ;
-}
 
-$("#CityAjax").autocomplete(
-"/areas/elimina",
-{
-delay:10,
-minChars:1,
-matchSubset:1,
-matchContains:1,
-cacheLength:10,
-onItemSelect:null,
-onFindValue:null,
-formatItem:formatItem,
-autoFill:true,
-maxItemsToShow:20
-}
-);
+var validateFrm = null ;
 
-</script>
+$(document).ready(function(){
+	validateFrm = $("#frmTest").validate({
+		debug:true,
+		errorLabelContainer: $("#errorForm"),
+		wrapper: "li",
+		errorClass: "errorFieldForm",
+		rules: {
+			title: "required",
+			city: "required"
+
+		},
+		messages: {
+			title: "Il titolo &egrave; obbligatorio",
+			city: "La citt&agrave;  &egrave; obbigatoria"
+		}
+	});	
+	
+	$("#frmTest").bind("submit", function() {
+		
+		// se ci sono stati errori, stampa un messaggio
+		if(validateFrm.errorList.length) {
+			alert(validateFrm.errorList[0].message) ;
+		}
+	}) ;
+	
+});
+
+</script>	
+	<div id="errorForm" style="display:none">
+	qqqq
+	</div>
+	<div id="containerPage">
+		<form id="frmTest">
+			<input type="text" name="title" value=""><br>
+			<input type="text" name="city" value=""><br>
+			
+			<input type="submit" name="invia" value="invia">
+		</form>
+		
+	</div>
+	
 </div>		
-
-<div id="footerPage">
-&nbsp;
-	<a href="http://www.cakephp.org/" target="_new">
-		<img src="/img/cake.power.png" alt="CakePHP : Rapid Development Framework" border="0" />
-	</a>
-
-</div>
-
-<?php echo $cakeDebug?>
+		
 </body>
-</html><!-- 0.121s -->
+</html><!-- 0.2387s -->

@@ -4,8 +4,38 @@ Visualizza il form di un' Area.
 *}
 {php}$vs = &$this->get_template_vars() ;{/php}
 
+<script type="text/javascript">
+{literal}
+
+var validate = null ;
+$(document).ready(function(){
+	validateFrm = $("#updateform").validate({
+		debug:true,
+		errorLabelContainer: $("#errorForm"),
+		errorClass: "errorFieldForm",
+		rules: {
+			title: "required",
+
+		},
+		messages: {
+			title: "Il titolo &egrave; obbligatorio",
+		}
+	});	
+	
+	$("#updateform").bind("submit", function() {
+		
+		// se ci sono stati errori, stampa un messaggio
+		if(validateFrm.errorList.length) {
+			alert(validateFrm.errorList[0].message) ;
+		}
+	}) ;
+});
+
+{/literal}
+</script>	
 
 	<div id="containerPage">
+		
 		{formHelper fnc="create" args="'updateform', array('id' => 'updateform', 'action' => '/areas/saveArea', 'type' => 'POST', 'enctype' => 'multipart/form-data')"}
 		<div class="FormPageHeader">
 			<h1>{$area.title|default:"nuova area"}</h1>
@@ -25,6 +55,7 @@ Visualizza il form di un' Area.
 				</tr>
 			</table>
 		</div>
+		<div class="blockForm" id="errorForm"></div>
 
 		<h2 class="showHideBlockButton">Propriet&agrave;</h2>
 		<div class="blockForm" id="proprieta">
@@ -48,7 +79,7 @@ Visualizza il form di un' Area.
 					<tr id="Title_TR_{$area.lang|default:$conf->lang}">
 						<td class="label">Titolo:</td>
 						<td>
-							<input  class="inputText" type="text" name="title" value="{$area.title|default:''|escape:'html'|escape:'quotes'}" >&nbsp;
+							<input  class="{literal}{required:true}{/literal}"  type="text" name="title" value="{$area.title|default:''|escape:'html'|escape:'quotes'}" >&nbsp;
 						</td>
 						{if ($area)}					
 						<td>

@@ -9,6 +9,7 @@ Pagina con il form per la modifica/aggiunta di un'area.
 	{$javascript->link("form")}
 	{$javascript->link("jquery.changealert")}
 	{$javascript->link("jquery.form")}
+	{$javascript->link("jquery.validate")}
 	{$javascript->link("jquery.autocomplete")}
 	
 <script type="text/javascript">

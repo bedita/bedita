@@ -426,5 +426,20 @@ H1.formazione {background-color:#6b8e23} H1.formazione A {color:#FFFFFF}
 	color:	red ;
 }
 
+.errorFieldForm {
+	border: 1px solid red;
+}
+
+#errorForm {
+	background-color: #eee; 
+	border: 1px solid red;
+	margin: 5px;
+	padding: 5px;
+}
+
+#errorForm .errorFieldForm {
+	border: 0px solid red;
+}
+
 /* END -- stili per  pagina con Form */
 
