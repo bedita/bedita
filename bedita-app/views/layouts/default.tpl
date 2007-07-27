@@ -16,16 +16,12 @@
  * @license			
  */
 *}
-{php}
-$vs = &$this->get_template_vars() ;
-{/php}
+{php}$vs = &$this->get_template_vars() ;{/php}
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="it">
 <head>
 	<title>{$title_for_layout|default:'BEdita'}</title>          
-	<link rel="icon" href="{$session->webroot}favicon.ico" type="image/x-icon" />
-	<link rel="shortcut icon" href="{$session->webroot}favicon.ico" type="image/x-icon" />
 
 	<meta name="author" content="" >
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" >
@@ -33,15 +29,19 @@ $vs = &$this->get_template_vars() ;
 	<meta name="description" content="Descrizione" lang="it" >
 	<meta name="keywords" content="Keys" >
 
-	{$bevalidation->setup('it')}
-	{$javascript->link("jquery")}
-	{$javascript->link("jquery.cookie")}
-	{$javascript->link("common")}
+	<link rel="icon" href="{$session->webroot}favicon.ico" type="image/x-icon" >
+	<link rel="shortcut icon" href="{$session->webroot}favicon.ico" type="image/x-icon" >
 	{$html->css('cake.generic')}
 	{$html->css('yav')}
 
+	{$bevalidation->setup('it')}
+	{$javascript->link("jquery")}
+	{$javascript->link("jquery.cookie")}
+	{$javascript->link("jquery.autocomplete")}
+	{$javascript->link("common")}
+
 {$content_for_layout}		
-		
+
 <div id="footerPage">
 &nbsp;
 	<a href="http://www.cakephp.org/" target="_new">
@@ -51,6 +51,5 @@ $vs = &$this->get_template_vars() ;
 	</a>
 </div>
 
-<?php echo $cakeDebug?>
 </body>
 </html>
