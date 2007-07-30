@@ -129,9 +129,10 @@ function formatItemListUserid(row) {
 	return row[0] ;
 }
 
+var test = null ;
 function setupFieldAutocomplete() {
 	$("#inputAddPermUser").autocomplete(
-		"{/literal}{$html->url('/users/userids')}{literal}/",
+		"/users/userids",
 		{
 			delay:10,
 			minChars:1,
@@ -146,8 +147,8 @@ function setupFieldAutocomplete() {
 		}
 	);
 	
-	$("#inputAddPermGroup").autocomplete(
-		"{/literal}{$html->url('/groups/names')}{literal}/",
+	test = $("#inputAddPermGroup").autocomplete(
+		"/groups/names",
 		{
 			delay:10,
 			minChars:1,
@@ -161,6 +162,13 @@ function setupFieldAutocomplete() {
 			maxItemsToShow:20
 		}
 	);
+	
+	// Visualizza tutti i gruppi con un comando
+	$('#viewListPgroups').bind("click", function(){
+		$("#inputAddPermGroup").focus() ;
+		$("#inputAddPermGroup").attr('value', " ") ;
+		$("#inputAddPermGroup").trigger("keydown") ;
+	}) ;
 }
 
 
@@ -249,8 +257,9 @@ function setupFieldAutocomplete() {
 						</th>
 					</tr>
 					<tr id="addPermGroupTR">
-						<td>
-							<input type="text" name="name" style="width: 150px;" value="" id="inputAddPermGroup" class="ac_input"/>							
+						<td nowrap>
+							<input type="text" name="name" style="width: 150px;" value="" id="inputAddPermGroup" class="ac_input"/>
+							<input type="button" id="viewListPgroups" value="...">
 						</td>		
 						<td>
 							<input type="hidden" name="switch" value="group">
