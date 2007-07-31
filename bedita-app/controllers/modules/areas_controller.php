@@ -28,10 +28,10 @@ class AreasController extends AppController {
 	var $name = 'Areas';
 
 	var $helpers 	= array('Bevalidation', 'BeTree');
-	var $components = array('BeAuth', 'BeTree');
+	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty');
 
 	// This controller does not use a model
-	 var $uses = array('Area', 'Section') ;
+	 var $uses = array('Area', 'Section', 'Tree') ;
 
 	/**
 	 * Entrata.
@@ -136,19 +136,43 @@ class AreasController extends AppController {
 	 	$URLOK 		= (isset($this->data['URLOK'])) ? $this->data['URLOK'] : "./" ;
 	 	$URLERROR 	= (isset($this->data['URLERROR'])) ? $this->data['URLERROR'] : "./" ;
 	 	
-	 	if(empty($this->data)) {
+	 	try {
+		 	if(empty($this->data)) throw new Exception("No data");
+	 		
+		 	// Formatta le custom properties
+		 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
+	
+			$this->Transaction->begin() ;
+			
+			$new = (empty($this->data['id'])) ? true : false ;
+			
+	 		// Salva i dati
+		 	if(!$this->Area->save($this->data)) throw new Exception($this->Area->validationErrors);
+		 	
+		 	// Inserisce nell'albero
+		 	if($new) {
+		 		if($this->Tree->appendChild($this->Area->id, null)) throw new Exception("Append Area in to tree");
+		 	}
+		 	
+		 	// aggiorna i permessi
+		 	if(!$this->Permission->saveFromPOST(
+		 			$this->Area->id, 
+		 			(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
+		 			(empty($this->data['recursiveApplyPermissions'])?false:true))
+		 		) {
+		 			throw new Exception("Error save permissions");
+		 	}	 	
+	 	} catch (Exception $e) {
+			$this->Session->setFlash($e->getMessage());
+			$this->Transaction->rollback() ;
+				
 			$this->redirect($URLERROR);
+			
 			return ;
 	 	}
-
-	 	// Salva i dati
-	 	if(!$this->Area->save($this->data)) {
-			$this->Session->setFlash($this->Area->validationErrors);
-	 		
-			$this->redirect($URLERROR);
-	 	}
 	 	
-	 	$this->redirect($URLOK);
+	 	$this->Transaction->commit() ;
+		$this->redirect($URLOK);
 	 }
 	 
 	 /**

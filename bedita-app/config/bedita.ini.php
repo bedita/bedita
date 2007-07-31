@@ -119,13 +119,14 @@ $config['objectTypes'] = array(
 $config['permissions'] = array(
 	'all'	=> array(
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
+		array('guest', 			'group', (BEDITA_PERMS_READ)),
 	),
 	$config['objectTypes']['area']	=> array(
-		array('guest', 			'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE)),
+		array('guest', 			'group', (BEDITA_PERMS_READ)),
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
 	),
 	$config['objectTypes']['document']	=> array(
-		array('guest', 			'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE)),
+		array('guest', 			'group', (BEDITA_PERMS_READ)),
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
 	),
 );

@@ -59,9 +59,9 @@ function addCustomPropTR() {
 	
 	// Setup nomi, id e comandi degli elementi
 	newTR.attr("id", name+postfix_customProp) ;
-	$("TD:nth-child(1)/input", newTR).attr("name", "CustomProperties["+name+"][name]") ;
-	$("TD:nth-child(2)/select", newTR).attr("name", "CustomProperties["+name+"][type]") ;
-	$("TD:nth-child(3)/input", newTR).attr("name", "CustomProperties["+name+"][value]") ;
+	$("TD:nth-child(1)/input", newTR).attr("name", "data[CustomProperties]["+name+"][name]") ;
+	$("TD:nth-child(2)/select", newTR).attr("name", "data[CustomProperties]["+name+"][type]") ;
+	$("TD:nth-child(3)/input", newTR).attr("name", "data[CustomProperties]["+name+"][value]") ;
 	$('TD:nth-child(4)/input[@name=delete]', newTR).bind("click", function (e) { deleteTRCustomProp(this)}) ;
 	
 	// setup dei valori
@@ -118,16 +118,16 @@ function deleteTRCustomProp(el) {
 					{foreach key="name" item="property" from=$el.CustomProperties}
 					<tr id="{$name}_customPropTR">
 						<td>
-							<input type="hidden" name="CustomProperties[{$name}][name]">
+							<input type="hidden" name="data[CustomProperties][{$name}][name]">
 							{$name}
 						</td>
 						<td>
-						<select name="CustomProperties[{$name}][type]">
+						<select name="data[CustomProperties][{$name}][type]">
 						{html_options options=$conf->customPropTypeOptions selected=$property|get_type}
 						</select>
 						</td>
 						<td>
-							<input type="text" name="CustomProperties[{$name}][value]" value="{$property|escape:'html'}">
+							<input type="text" name="data[CustomProperties][{$name}][value]" value="{$property|escape:'html'}">
 						</td>
 						<td>
 							<input type="button" name="delete" value=" x ">

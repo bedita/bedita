@@ -36,11 +36,10 @@ $(document).ready(function(){
 <body>
 
 {include file="head.tpl"}
-
-<div id="centralPage">
 	
+<!-- br style="clear:both;"-->
 	{include file="submenu.tpl" method="viewArea"}
 	
 	{include file="form_area.tpl"}
 	
-</div>
+<br style="clear:both">

@@ -22,13 +22,12 @@ Menu a SX valido per tutte le pagine del controller.
 	<hr>
 	
 	<div id="handlerChangeAlert">
-<!--	
-		<span id="hndVisualAlert"></span>
-		<input type="checkbox" id="hndChkbox">
-		<a href="#" onclick="javascript:$('#hndChkbox').toggleCheck()">Segnala</a>
-		<br/>
-		Seleziona qui se vuoi essere avvertito del cambiamento dei dati quando lasci la pagina.
--->
+
 	</div>
+	<br>
+<br>
+<br>
+
+	</div>
+
 	
-	</div>

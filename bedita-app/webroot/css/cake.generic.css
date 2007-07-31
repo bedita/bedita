@@ -51,48 +51,30 @@ A:hover{text-decoration: underline;}
 A IMG {border-color: black;}
 
 /* BEGIN -- Pagine interne moduli */
+
 #headerPage {
-	clear:both; 
-	display: block; 
-	width:1000px; 
-	margin-bottom:0px;
-	border:0px solid black; 
+	border:1px solid #cccccc; 
 	height: 45px;
 }
-
-#centralPage {
-	clear:both; 
-	display: block; 
-	width:100%;
-	margin-bottom:0px;
-	border:0px solid black; 
-	height: 45px;
-}
-
-#footerPage {
-	clear:both; 
-	display: block; 
-	width:1000px;
-	border:0px solid black; 
-	margin: 0px 0px;
-	padding: 0px 0px 0px 0px;
-	text-align: right;
-}
-
 #menuLeftPage {
-	width:136px; 
+	width:138px; 
 	float:left; 
 	border:0px solid black; 
 	padding: 0px 0px 0px 0px;
 }
 
 #containerPage {
-	position:absolute;
-	left:140px;
 	border:0px solid black; 
-	clear:both; 
-	display: block; 
+	margin-left:138px;	
 }
+
+#footerPage {
+	border:0px solid red; 
+	margin: 0px 0px;
+	padding: 0px 0px 0px 0px;
+	text-align: right;
+}
+
 
 /* END -- Pagine interne moduli */
 
@@ -344,6 +326,7 @@ H1.formazione {background-color:#6b8e23} H1.formazione A {color:#FFFFFF}
 	color:#696969;
 	height:auto;
 	min-width:570px;
+	width:570px;
 	border: 0px solid #696969;
 }
 
@@ -435,6 +418,7 @@ H1.formazione {background-color:#6b8e23} H1.formazione A {color:#FFFFFF}
 	border: 1px solid red;
 	margin: 5px;
 	padding: 5px;
+	width: 560px ;
 }
 
 #errorForm .errorFieldForm {

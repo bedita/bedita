@@ -31,7 +31,7 @@ class BEAppObjectModel extends BEAppModel {
 	
 	/**
  	* Sovrascrive e poi chiama la funzione del parent xch deve settare 
- 	* ove necessario, il tipo di oggetto d asalvare
+ 	* ove necessario, il tipo di oggetto da salvare
  	*/
 	function save($data = null, $validate = true, $fieldList = array()) {
 		$conf = Configure::getInstance() ;		
@@ -42,6 +42,11 @@ class BEAppObjectModel extends BEAppModel {
 			$data['object_type_id'] = $conf->objectTypes[strtolower($this->name)] ;
 		}
 
+		// Se c'e' la chiave primaria vuota la toglie
+		if(isset($data[$this->primaryKey]) && empty($data[$this->primaryKey])) {
+			unset($data[$this->primaryKey]) ;		
+		}
+		
 		return parent::save($data, $validate, $fieldList) ;
 	}
 

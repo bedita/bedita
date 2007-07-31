@@ -134,6 +134,7 @@ class PermissionTestCase extends CakeTestCase {
 		
 		// Carica i permessi creati
 		$perms = $this->Permission->load($this->Area->id) ;
+		
 		pr("Verifica permessi cancella") ;
 		$this->assertEqual($this->data['resultDeletePerms1'], $perms);
 		

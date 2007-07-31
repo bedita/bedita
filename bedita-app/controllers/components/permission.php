@@ -223,6 +223,80 @@ class PermissionComponent extends Object {
 	}
 	
 	/**
+	 * Salva i per permessi dell'oggetto  provenienti da un form _POST.
+	 * Dato l'oggetto, cancella i permessi non + presenti (ad eccezzione quelli del gruppo administrator)
+	 * e inserisce gli altri.
+	 * Se richiesto anche ricorsivamente.
+	 * Inserisce di default i permessi per il gruppo administrator
+	 *
+	 * @param integer $id			ID dell'oggetto da trattare
+	 * @param array $permissions	Array con in nuovi permessi
+	 * @param boolean $recursion	SE true applica le modifiche ai discendenti
+	 * 
+	 */
+	function saveFromPOST($id, $permissions, $recursion = false) {
+		$newPerms = array("user" => Array(), "group" => Array()) ;
+		$delPerms = array() ;
+		
+		// determina i permessi da cancellare e formatta l'array dei permessi
+		$tmp = array() ;
+		foreach ($permissions as $k => $perm) {
+			$newPerms[$perm['switch']][] = $perm['name'] ;
+			$tmp[] = $perm ;
+		}
+		$permissions = $tmp ;
+		
+		$oldPerms = $this->load($id) ;
+		for($i=0; $oldPerms && $i < count($oldPerms) ; $i++) {
+			if(in_array($oldPerms[$i][0], $newPerms[$oldPerms[$i][1]])) continue ;
+			$delPerms[] = array($oldPerms[$i][0], $oldPerms[$i][1]) ;
+		}
+		if(count($delPerms)) {
+			if($recursion) $ret = $this->removeTree($id, $delPerms) ;
+			else $ret = $this->remove($id, $delPerms) ;
+			
+			if(!$ret) return false ;
+		}
+		
+		// Formatta i nuovi permessi
+		$this->_setupDataFromPost($permissions) ;
+		
+		// Salva
+		if($recursion) $ret = $this->addTree($id, $permissions) ;
+		else $ret = $this->add($id, $permissions) ;
+		
+		return true ;	
+	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Formatta i dati provenienti da POST per il salvataggio
+	 *
+	 * @param array $data
+	 */
+	private function _setupDataFromPost(&$data) {
+		if(!is_array($data)) return false ;
+	
+		$labels = array("BEDITA_PERMS_READ", "BEDITA_PERMS_MODIFY", "BEDITA_PERMS_DELETE", "BEDITA_PERMS_CREATE");
+		for($i=0; $i < count($data) ; $i++) {
+			$flag = 0 ;
+			foreach($labels as $key) {
+				if(isset($data[$i][$key])) $flag |= (integer) $data[$i][$key] ;
+				unset($data[$i][$key]) ;
+			}
+			
+			$data[$i] = array($data[$i]["name"], $data[$i]["switch"], $flag) ;
+		}
+		
+		// inserisce per default i permessi per il gruppo administrator
+		$data[$i] = array("administrator", "group", 0xFF) ;
+		
+		return true ;
+	}
+	
+
+	/**
 	 * Trasforma un array in un array associativo x Cake
 	 *
 	 * @param array $arr	{0..N} item:

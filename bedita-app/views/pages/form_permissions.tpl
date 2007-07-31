@@ -1,6 +1,11 @@
 {*
 Frammento di codice per inserire la gestione dei permessi
 *}
+{php}
+$vs = &$this->get_template_vars() ;
+$vs['maxIDPerms'] = (isset($vs["el"]["Permissions"]))?@count($vs["el"]["Permissions"]):0 ;
+{/php}
+
 <script type="text/javascript">
 {literal}
 /*
@@ -13,7 +18,8 @@ var postfix_customProp = "_permTR" ;
 /**
 * Indica l'incremento massimo raggiunto nell'elencazione dei permessi
 */
-var maxIDPerms = 0 ;
+
+var maxIDPerms = {/literal}{$maxIDPerms}{literal} ;
 
 $(document).ready(function(){
 {/literal}	
@@ -43,13 +49,13 @@ var htmlTemplateCustomPerm = ' 													\
 								<input type="hidden" name=""> 					\
 							</td> 												\
 							<td> 												\
-								<input type="checkbox" name="" value=""> 		\
+								<input type="checkbox" name="" value="{/literal}{$conf->BEDITA_PERMS_READ}{literal}"> 		\
 							</td> 												\
 							<td> 												\
-								<input type="checkbox" name="" value=""> 		\
+								<input type="checkbox" name="" value="{/literal}{$conf->BEDITA_PERMS_MODIFY}{literal}"> 		\
 							</td> 												\
 							<td> 												\
-								<input type="checkbox" name="" value=""> 		\
+								<input type="checkbox" name="" value="{/literal}{$conf->BEDITA_PERMS_DELETE}{literal}"> 		\
 							</td>												\
 							<td> 												\
 								<input type="button" name="delete" value=" x "> \
@@ -75,11 +81,11 @@ function fncAddPermsTR(id) {
 
 	// Setup nomi, id e comandi degli elementi
 	newTR.attr("id", name+postfix_customProp) ;
-	$("TD:nth-child(1)/input", newTR).attr("name", "Permissions["+maxIDPerms+"][name]") ;
-	$("TD:nth-child(2)/input", newTR).attr("name", "Permissions["+maxIDPerms+"][switch]") ;
-	$("TD:nth-child(3)/input", newTR).attr("name", "Permissions["+maxIDPerms+"][BEDITA_PERMS_READ]") ;
-	$("TD:nth-child(4)/input", newTR).attr("name", "Permissions["+maxIDPerms+"][BEDITA_PERMS_MODIFY]") ;
-	$("TD:nth-child(5)/input", newTR).attr("name", "Permissions["+maxIDPerms+"][BEDITA_PERMS_DELETE]") ;
+	$("TD:nth-child(1)/input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][name]") ;
+	$("TD:nth-child(2)/input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][switch]") ;
+	$("TD:nth-child(3)/input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][BEDITA_PERMS_READ]") ;
+	$("TD:nth-child(4)/input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][BEDITA_PERMS_MODIFY]") ;
+	$("TD:nth-child(5)/input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][BEDITA_PERMS_DELETE]") ;
 	$('TD:nth-child(6)/input[@name=delete]', newTR).bind("click", function (e) { deleteTRPerm(this)}) ;
 
 	// setup dei valori
@@ -98,6 +104,12 @@ function fncAddPermsTR(id) {
 	try {
 		$().alertSignal() ;
 	} catch(e) {}	
+	
+	incrementCounterPerms() ;
+}
+
+function incrementCounterPerms() {
+	maxIDPerms++ ;
 }
 
 // Setta i comandi per la gestione delle righe della tabella dei permessi
@@ -191,21 +203,21 @@ function setupFieldAutocomplete() {
 						
 						<tr id="{$perm.name}_{$perm.switch}_permTR">
 							<td>
-								<input type="hidden" name="Permissions[{$i}][name]">
+								<input type="hidden" name="data[Permissions][{$i}][name]">
 								{$perm.name}
 							</td>		
 							<td>
-								<input type="hidden" name="Permissions[{$i}][switch]">
+								<input type="hidden" name="data[Permissions][{$i}][switch]">
 								{$perm.switch}
 							</td>
 							<td>
-								<input type="checkbox" name="Permissions[{$i}][BEDITA_PERMS_READ]" value="{$conf->BEDITA_PERMS_READ}" {if ($perm.flag & $conf->BEDITA_PERMS_READ)}checked{/if}>
+								<input type="checkbox" name="data[Permissions][{$i}][BEDITA_PERMS_READ]" value="{$conf->BEDITA_PERMS_READ}" {if ($perm.flag & $conf->BEDITA_PERMS_READ)}checked{/if}>
 							</td>
 							<td>
-								<input type="checkbox" name="Permissions[{$i}][BEDITA_PERMS_MODIFY]" value="{$conf->BEDITA_PERMS_MODIFY}" {if ($perm.flag & $conf->BEDITA_PERMS_MODIFY)}checked{/if}>
+								<input type="checkbox" name="data[Permissions][{$i}][BEDITA_PERMS_MODIFY]" value="{$conf->BEDITA_PERMS_MODIFY}" {if ($perm.flag & $conf->BEDITA_PERMS_MODIFY)}checked{/if}>
 							</td>
 							<td>
-								<input type="checkbox" name="Permissions[{$i}][BEDITA_PERMS_DELETE]" value="{$conf->BEDITA_PERMS_DELETE}" {if ($perm.flag & $conf->BEDITA_PERMS_DELETE)}checked{/if}>
+								<input type="checkbox" name="data[Permissions][{$i}][BEDITA_PERMS_DELETE]" value="{$conf->BEDITA_PERMS_DELETE}" {if ($perm.flag & $conf->BEDITA_PERMS_DELETE)}checked{/if}>
 							</td>			
 							<td>
 								{if !($perm.name == "administrator" && $perm.switch == 'group')}
@@ -214,15 +226,16 @@ function setupFieldAutocomplete() {
 							</td>
 						</tr>
 					{/section}
-
-					<tr id="endLineCustomPermsTR">
-						<td colspan="4">
-							<input type="checkbox"  name="recursiveApplyPermissions" id="recursiveApplyPermissions" value="1">&nbsp;
-							<a href="javascript:void(0)" onclick="$('#recursiveApplyPermissions').toggleCheck() ;">
-							Applica i permessi ricorsivamente
-							</a>
-						</td>
-					</tr>
+					{if (isset($recursion) && !empty($recursion))}
+						<tr id="endLineCustomPermsTR">
+							<td colspan="4">
+								<input type="checkbox"  name="data[recursiveApplyPermissions]" id="recursiveApplyPermissions" value="1">&nbsp;
+								<a href="javascript:void(0)" onclick="$('#recursiveApplyPermissions').toggleCheck() ;">
+								Applica i permessi ricorsivamente
+								</a>
+							</td>
+						</tr>
+					{/if}
 					<tr>
 						<td colspan="8"><hr></td>
 					</tr>

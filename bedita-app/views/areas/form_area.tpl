@@ -10,9 +10,9 @@ Visualizza il form di un' Area.
 var validate = null ;
 $(document).ready(function(){
 	validateFrm = $("#updateform").validate({
-		debug:true,
+		debug:false,
 		errorLabelContainer: $("#errorForm"),
-		errorClass: "errorFieldForm",
+		errorClass: "errorFieldForm", 
 		rules: {
 			title: "required",
 
@@ -36,7 +36,8 @@ $(document).ready(function(){
 
 	<div id="containerPage">
 		
-		{formHelper fnc="create" args="'updateform', array('id' => 'updateform', 'action' => '/areas/saveArea', 'type' => 'POST', 'enctype' => 'multipart/form-data')"}
+		{formHelper fnc="create" args="'area', array('id' => 'updateform', 'action' => 'saveArea', 'type' => 'POST', 'enctype' => 'multipart/form-data')"}
+		<input  type="hidden" name="data[id]" value="{$area.id|default:''}" >
 		<div class="FormPageHeader">
 			<h1>{$area.title|default:"nuova area"}</h1>
 	
@@ -47,7 +48,7 @@ $(document).ready(function(){
 						<a id="closeAllBlockLabel" href="javascript:hideAllBlockPage()"><b>&#155; </b>chiudi tutti i dettagli</a>
 					</td>
 					<td style="padding-left:40px">
-						{formHelper fnc="submit" args="' salva ', array('name' => 'save', 'class' => 'submit')"}
+						{formHelper fnc="submit" args="'salva', array('name' => 'save', 'class' => 'submit')"}
 					</td>
 					<td style="padding-left:40px">
 						&nbsp;
@@ -79,7 +80,7 @@ $(document).ready(function(){
 					<tr id="Title_TR_{$area.lang|default:$conf->lang}">
 						<td class="label">Titolo:</td>
 						<td>
-							<input  class="{literal}{required:true}{/literal}"  type="text" name="title" value="{$area.title|default:''|escape:'html'|escape:'quotes'}" >&nbsp;
+							<input  class="{literal}{required:true}{/literal}"  type="text" name="data[title]" value="{$area.title|default:''|escape:'html'|escape:'quotes'}" >&nbsp;
 						</td>
 						{if ($area)}					
 						<td>
@@ -118,7 +119,7 @@ $(document).ready(function(){
 
 		<h2 class="showHideBlockButton">Permessi</h2>
 		<div class="blockForm" id="permessi">
-		{include file="../pages/form_permissions.tpl" el=$area}
+		{include file="../pages/form_permissions.tpl" el=$area recursion=true}
 		</div>
 
 		</form>			

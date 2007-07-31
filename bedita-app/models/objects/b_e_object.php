@@ -131,6 +131,7 @@ class BEObject extends BEAppModel
 				$this->data[$this->name][$label] = $tmps ;
 			}
 		}
+		
 		return true ;
 	}
 	
@@ -183,7 +184,7 @@ class BEObject extends BEAppModel
 			'nickname' 			=> array('_getDefaultNickname', 	(isset($data['nickname']))?$data['nickname']:((isset($data['title']))?$data['title']:'')),
 			'lang' 				=> array('_getDefaultLang', 		(isset($data['lang']))?$data['lang']:null),
 			'IP_created' 		=> array('_getDefaultIP'),
-//			'Permission' 		=> array('_getDefaultPermission', 	(isset($data['Permission']))?$data['Permission']:null, (isset($data['object_type_id']))?$data[' object_type_id']:0),
+			'Permission' 		=> array('_getDefaultPermission', 	(isset($data['Permission']))?$data['Permission']:null, (isset($data['object_type_id']))?$data['object_type_id']:0),
 		) ;
 		
 		foreach ($default as $name => $rule) {
@@ -200,7 +201,12 @@ class BEObject extends BEAppModel
 			} 
 		}
 
-		return true ;
+		// Se c'e' la chiave primaria vuota la toglie
+		if(isset($data[$this->primaryKey]) && empty($data[$this->primaryKey]))
+			unset($data[$this->primaryKey]) ;
+			
+
+			return true ;
 	}
 	
 	/**

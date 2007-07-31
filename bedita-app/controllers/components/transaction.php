@@ -19,7 +19,7 @@ class TransactionComponent extends Object {
 		if(!isset(self::$transFS)) {
 			self::$transFS = &new transactionFS($pathTmp) ;
 		}
-		self::$dbConfig 		= $dbConfigName ;
+		self::$dbConfig 		= (isset($dbConfigName))?$dbConfigName:'default' ;
 		self::$transFS->tmpPath = $pathTmp ;
 		
 		
@@ -76,7 +76,8 @@ class TransactionComponent extends Object {
 			loadModel('ConnectionManger') ;
 		}
 		
-		self::$db =& ConnectionManager::getDataSource(self::$dbConfig);
+		if(isset(self::$dbConfig))
+			self::$db =& ConnectionManager::getDataSource(self::$dbConfig);
 	}
 
 	/**
