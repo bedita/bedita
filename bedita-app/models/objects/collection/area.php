@@ -27,6 +27,7 @@ class Area extends BEAppObjectModel
 			'CompactResult' 		=> array(),
 			'ForeignDependenceSave' => array('Object', 'Collection'),
 			'CreateIndexFields'		=> array(),
+			'DeleteDependentObject'	=> array('section', 'community'),
 			'DeleteObject' 			=> 'objects',
 	); 
 	

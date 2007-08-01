@@ -29,6 +29,7 @@ class Community extends BEAppObjectModel
 			'CompactResult' 		=> array(),
 			'CreateIndexFields'		=> array(),
 			'ForeignDependenceSave' => array('Object', 'Collection'),
+			'DeleteDependentObject'	=> array('section'),
 			'DeleteObject' 			=> 'objects',
 	); 
 	

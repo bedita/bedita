@@ -114,6 +114,28 @@ $config['objectTypes'] = array(
 ) ;
 
 /**
+ * definisce i model per i diversi tipi di oggetti
+ */
+$config['objectTypeModels'] = array(
+	1	=> 'Area',
+	2	=> 'Newsletter',
+	3	=> 'Section',
+	
+	4	=> 'Questionnaire',
+	5	=> 'Faq',
+	29	=> 'Gallery',
+	6	=> 'Cartigli',
+	
+	7	=> 'Scroll',
+	8	=> 'Timeline',
+	9	=> 'Community',
+	
+	17	=> 'ObjectUser',
+
+	// To be continued...
+) ;
+
+/**
  * Permessi di default
  */
 $config['permissions'] = array(

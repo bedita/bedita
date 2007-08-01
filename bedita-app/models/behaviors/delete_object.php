@@ -1,7 +1,7 @@
 <?php
 /**
  * 
- * Serve per cnacellare un oggetto rispettando e usando le dipendenze
+ * Serve per cancellare un oggetto rispettando e usando le dipendenze
  * imposte dalle foreign key. Viene cancellato solo il record della
  * tabella base, il resto lo fase MySQL.
  * Con Configure viene passato il nome delal tabella radice.
@@ -39,6 +39,13 @@ class DeleteObjectBehavior extends ModelBehavior {
 		
 		$model->table =  (isset($configure) && is_string($configure)) ? $configure : $model->table ;
 		
+		// Cancella i riferimenti del'oggetto nell'albero
+		if(!class_exists('Tree')){
+			loadModel('Tree');
+		}		
+		$tree = new Tree ;
+		$tree->del($model->id) ;
+
 		return true ;
 	}
 
@@ -47,12 +54,6 @@ class DeleteObjectBehavior extends ModelBehavior {
 	 *
 	 */
 	function afterDelete(&$model) {
-		// Cancella i riferimenti del'oggetto nell'albero
-		if(!class_exists('Tree')){
-			loadModel('Tree');
-		}		
-		$tree = new Tree ;
-		$tree->del($model->id) ;
 		
 		// Ripristina le associazioni
 		foreach ($model->tmpAssociations as $association => $v) {

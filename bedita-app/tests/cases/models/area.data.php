@@ -44,7 +44,20 @@ class AreaData extends Object {
 							array('lang' => 'fr', 'name' => 'title', 'text' => 'France Title'),
 					),
 				),
+			),
+			
+			'sezione'	=> array(
+				'minimo1'	=> array(
+					'title' 			=> 'Titolo Sezione 1 di test',
+				),
+				'minimo2'	=> array(
+					'title' 			=> 'Titolo Sezione 2 di test',
+				),
+				'minimo3'	=> array(
+					'title' 			=> 'Titolo Sezione 3 di test',
+				),
 			)
+			
 		)
 	) ;
 	

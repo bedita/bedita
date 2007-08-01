@@ -24,14 +24,16 @@ class AreaTest extends Area {
 */
 class AreaTestCase extends CakeTestCase {
     var $fixtures 	= array( 'area_test' );
- 	var $uses		= array('BEObject', 'Collection', 'Area') ;
+ 	var $uses		= array('BEObject', 'Collection', 'Area', 'Tree', 'Section') ;
     var $dataSource	= 'test' ;
  	
-    /**
+ 	var $components	= array('Transaction', 'Permission') ;
+
+ 	/**
      * Dati utilizzati come esempio
      */
     var $data		= null ;
-    
+/*    
 	function testInserimentoMinimo() {
 		$conf  		= Configure::getInstance() ;
 		
@@ -125,7 +127,55 @@ class AreaTestCase extends CakeTestCase {
 		$result = $this->Area->execute($SQL) ;
 		pr($result) ;
 	} 
+*/
+	function testInserimentoInTreeCancellazione() {
+		$conf  		= Configure::getInstance() ;
+		
+//		$this->Transaction->begin() ;
 
+		// Inserisce
+		$result = $this->Area->save($this->data['insert']['area']['minimo']) ;
+		$this->assertEqual($result,true);		
+		$this->Tree->appendChild($this->Area->id, null) ;
+		
+		$result = $this->Section->save($this->data['insert']['sezione']['minimo1']) ;
+		$this->assertEqual($result,true);
+		$this->Tree->appendChild($this->Section->id, $this->Area->id) ;
+		$id1 = $this->Section->id ;
+
+		$this->Section = new Section() ;
+		$result = $this->Section->save($this->data['insert']['sezione']['minimo2']) ;
+		$this->assertEqual($result,true);
+		$id2 = $this->Section->id ;
+		$this->Tree->appendChild($this->Section->id, $this->Area->id) ;
+
+		$this->Section = new Section() ;
+		$result = $this->Section->save($this->data['insert']['sezione']['minimo3']) ;
+		$this->assertEqual($result,true);
+		$id3 = $this->Section->id ;
+		$this->Tree->appendChild($this->Section->id, $id1) ;
+
+		// Preleva l'abero inserito
+		$tree = $this->Tree->getAll($this->Area->id) ;
+		
+		// Cancella l'area creata
+		$result = $this->Area->Delete($this->Area->{$this->Area->primaryKey});
+		$this->assertEqual($result,true);		
+		pr("Oggetto cancellato");
+
+		// Devono essere cancellate anche le sezioni
+		$result = $this->Section->findById($id1) ;
+		$this->assertEqual($result, false);
+		
+		$result = $this->Section->findById($id2) ;
+		$this->assertEqual($result, false);
+
+		$result = $this->Section->findById($id3) ;
+		$this->assertEqual($result, false);
+		
+//		$this->Transaction->rollback() ;
+	} 
+	
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
 	
@@ -188,6 +238,27 @@ class AreaTestCase extends CakeTestCase {
 			}
 		}
 		
+		// carica i components
+		if ($this->components) {
+			if($this->components === null || ($this->components === array())){
+				return ;
+			}
+
+			$components = is_array($this->components) ? $this->components : array($this->components);
+
+			foreach($components as $componentClass) {
+				loadComponent($componentClass);
+				
+				$className = $componentClass . 'Component' ;
+				if (class_exists($className)) {
+						$component =& new $className();
+						$this->{$componentClass} =& $component;
+				} else {
+					echo "Missing Component: $className" ;
+					return ;
+				}
+			}
+		}
 	}
 
 	/**
@@ -233,4 +304,5 @@ class AreaTestCase extends CakeTestCase {
 	}
 	
 }
+
 ?> 

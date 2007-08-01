@@ -22,8 +22,16 @@ $(document).ready(function(){
 		}
 	});	
 	
-	$("#updateform").bind("submit", function() {
+	$("#updateform//input[@name=cancella]").bind("click", function() {
+		if(!confirm("Attenzione!!! operazione potenzialmente dannosa.\nSicuro di voler continuare?")) {
+			return false ;
+		}
 		
+		document.location = "{/literal}{$html->url('deleteArea/')}{$area.id}{literal}" ;
+	}) ;
+	
+	
+	$("#updateform").bind("submit", function() {
 		// se ci sono stati errori, stampa un messaggio
 		if(validateFrm.errorList.length) {
 			alert(validateFrm.errorList[0].message) ;
@@ -47,8 +55,9 @@ $(document).ready(function(){
 						<a id="openAllBlockLabel" style="display:block" href="javascript:showAllBlockPage(1)"><b>&#155; </b>apri tutti i dettagli</a>
 						<a id="closeAllBlockLabel" href="javascript:hideAllBlockPage()"><b>&#155; </b>chiudi tutti i dettagli</a>
 					</td>
-					<td style="padding-left:40px">
-						{formHelper fnc="submit" args="'salva', array('name' => 'save', 'class' => 'submit')"}
+					<td style="padding-left:40px" nowrap>
+						{formHelper fnc="submit" args="'salva', array('name' => 'save', 'class' => 'submit', 'div' => false)"}
+						<input type="button" name="cancella" class="submit" value="cancella" />
 					</td>
 					<td style="padding-left:40px">
 						&nbsp;

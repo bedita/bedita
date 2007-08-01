@@ -166,9 +166,9 @@ class Tree extends BEAppModel
 		
 		for ($i=0; $i < $size ; $i++) {
 			if(isset($records[$i]['Tree'])){
-				$root = am($records[$i]['Tree'], $records[$i][0]) ;
+				$root = am($records[$i]['Tree'], (isset($records[$i][0])?$records[$i][0] :array())) ;
 			} else {
-				$root = am($records[$i]['trees'], $records[$i]['objects'], $records[$i][0]) ;
+				$root = am($records[$i]['trees'], $records[$i]['objects'], (isset($records[$i][0])?$records[$i][0] :array())) ;
 			}
 			
 			$root['children']	= array() ;

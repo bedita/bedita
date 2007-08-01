@@ -29,6 +29,7 @@ class Section extends BEAppObjectModel
 			'CompactResult' 		=> array(),
 			'CreateIndexFields'		=> array(),
 			'ForeignDependenceSave' => array('Object', 'Collection'),
+			'DeleteDependentObject'	=> array('section', 'community'),
 			'DeleteObject' 			=> 'objects',
 	); 
 
