@@ -11,11 +11,13 @@ Pagina con il form per la modifica/aggiunta di un'area.
 	{$javascript->link("jquery.form")}
 	{$javascript->link("jquery.validate")}
 	{$javascript->link("jquery.autocomplete")}
+	{$javascript->link("jquery.translatefield")}
 	
 <script type="text/javascript">
 {literal}
 
 $(document).ready(function(){
+
 	$('#proprieta').show() ;
 			
 	// aggiunge i comandi per i blocchi
@@ -36,7 +38,7 @@ $(document).ready(function(){
 <body>
 
 {include file="head.tpl"}
-	
+
 <!-- br style="clear:both;"-->
 	{include file="submenu.tpl" method="viewArea"}
 	

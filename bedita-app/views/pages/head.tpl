@@ -40,4 +40,3 @@
     {/section}
 
 </div>
-}

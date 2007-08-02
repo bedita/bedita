@@ -28,7 +28,7 @@ class AreasController extends AppController {
 	var $name = 'Areas';
 
 	var $helpers 	= array('Bevalidation', 'BeTree');
-	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty');
+	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText');
 
 	// This controller does not use a model
 	 var $uses = array('Area', 'Section', 'Tree') ;
@@ -70,7 +70,10 @@ class AreasController extends AppController {
 				return ;		
 			}
 		}
-		
+
+		// Formatta i campi in lingua
+		$this->BeLangText->setupForView($area["LangText"]) ;
+
 		// Setup dei dati da passare al template
 		$this->set('area', 		$area);
 		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) )) ;
@@ -139,16 +142,22 @@ class AreasController extends AppController {
 	 	try {
 		 	if(empty($this->data)) throw new Exception("No data");
 	 		
+		 	// Verifica i permessi di modifica dell'oggetto
+		 	
 		 	// Formatta le custom properties
 		 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
 	
+		 	// Formatta i campi d tradurre
+		 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
+		 	
+		 	
 			$this->Transaction->begin() ;
 			
 			$new = (empty($this->data['id'])) ? true : false ;
 			
 	 		// Salva i dati
 		 	if(!$this->Area->save($this->data)) throw new Exception($this->Area->validationErrors);
-		 	
+			
 		 	// Inserisce nell'albero
 		 	if($new) {
 		 		if($this->Tree->appendChild($this->Area->id, null)) throw new Exception("Append Area in to tree");

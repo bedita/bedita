@@ -7,8 +7,20 @@ Visualizza il form di un' Area.
 <script type="text/javascript">
 {literal}
 
+var langs = {
+{/literal}
+	{foreach name=i from=$conf->langOptions key=lang item=label}
+	"{$lang}":	"{$label}" {if !($smarty.foreach.i.last)},{/if} 
+	{/foreach}
+{literal}
+
+} ;
+
+
 var validate = null ;
+
 $(document).ready(function(){
+
 	validateFrm = $("#updateform").validate({
 		debug:false,
 		errorLabelContainer: $("#errorForm"),
@@ -37,11 +49,14 @@ $(document).ready(function(){
 			alert(validateFrm.errorList[0].message) ;
 		}
 	}) ;
+
+	// Aggiunta traduzioni linguistiche dei campi
+	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
+
 });
 
 {/literal}
 </script>	
-
 	<div id="containerPage">
 		
 		{formHelper fnc="create" args="'area', array('id' => 'updateform', 'action' => 'saveArea', 'type' => 'POST', 'enctype' => 'multipart/form-data')"}
@@ -89,14 +104,32 @@ $(document).ready(function(){
 					<tr id="Title_TR_{$area.lang|default:$conf->lang}">
 						<td class="label">Titolo:</td>
 						<td>
-							<input  class="{literal}{required:true}{/literal}"  type="text" name="data[title]" value="{$area.title|default:''|escape:'html'|escape:'quotes'}" >&nbsp;
+							<input  class="{literal}{required:true}{/literal}" id="titleInput"  type="text" name="data[title]" value="{$area.title|default:''|escape:'html'|escape:'quotes'}" >&nbsp;
 						</td>
 						{if ($area)}					
 						<td>
-							<input class="cmdField" type="button" value="lang ..." onclick="addLang('{$area.title|default:''|escape:'quotes'}', '{$area.lang|default:$conf->lang}')">
+							<input class="cmdField" id="cmdTranslateTitle" type="button" value="lang ...">
 						</td>
 						{/if}
 					</tr>
+					{if (isset($area.LangText.title))}
+					{foreach name=i from=$area.LangText.title key=lang item=text}
+						<tr id="">
+							<td class="label"></td>
+							<td>
+								<input type='hidden' value='title' name="data[LangText][{$smarty.foreach.i.iteration}][name]">
+								<input type="text" name="data[LangText][{$smarty.foreach.i.iteration}][txt]" value="{$text|escape:'html'|escape:'quotes'}" >&nbsp;
+							</td>
+							<td>
+								<select name="data[LangText][{$smarty.foreach.i.iteration}][lang]">
+								{html_options options=$conf->langOptions selected=$lang}
+								</select>
+								&nbsp;&nbsp;
+								<input type="button" name="delete" value=" x " onclick=" $('../..', this).remove() ; ">
+							</td>
+					</tr>
+					{/foreach}
+					{/if}
 				</table>
 				{if ($area)}
 				<hr>
