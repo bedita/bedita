@@ -1,5 +1,6 @@
 {literal}
 <script type="text/javascript">
+/*
 	$(document).ready(function() {
 		$("h1").fadeTo("slow", 0.3);
 		$("h1").hover(function() {
@@ -11,6 +12,7 @@
 			location.href= "{/literal}{$html->url("/")}{literal}" + $(this).attr("id");
 		})
 	});
+*/
 </script>
 {/literal}
 
@@ -38,3 +40,4 @@
     {/section}
 
 </div>
+}
