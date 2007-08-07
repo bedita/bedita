@@ -125,3 +125,45 @@ treeView Aree
 			try { $().alertSignal() ; } catch(e) {}
 		} );		
 	}
+/*
+	// evento per il submit, registra lo stato del tree
+	function submitTree(tree, contest) {
+		tree["children"] = {} ;
+		var index = 0 ;
+		
+		$("li:only-child", contest).each(function(i){
+			tree["children"][index] = {} ;
+			
+			tree["children"][index]["id"] = $("input[@name='id']", this).eq(0).val() ;
+			submitTree(tree["children"][index], this) ;
+			index++ ;
+		});
+	}	
+*/
+	// evento per il submit, registra lo stato del tree
+	function submitTree(contest) {
+		tree = new Array() ;
+
+		$("li", contest).each(function(i){
+			tree[i] = {} ;
+			
+			tree[i]["id"] = $("input[@name='id']", this).eq(0).val() ;
+			try {
+				tree[i]["parent"] = $( "../../input[@name=id]", this).eq(0).val() ;
+			} catch(e) {
+				tree[i]["parent"] = null ;
+			}
+		});
+		
+		tree.toString = function() {
+			var str = "" ;
+			for(var i=0; i < this.length ; i++) {
+				str += "id="+this[i].id + " parent=" + this[i].parent ;
+				if((i+1) < this.length) str += ";" ;
+			}
+			return str ;
+		}
+		
+		return tree ;
+	}	
+	

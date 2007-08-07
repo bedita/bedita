@@ -55,38 +55,61 @@ class Tree extends BEAppModel
 	function appendChild($id, $idParent = null) {
 		$idParent = (empty($idParent)) ? "NULL" :  $idParent ;
 		
-		return $this->query("CALL appendChildTree({$id}, {$idParent})");
+		$ret = $this->query("CALL appendChildTree({$id}, {$idParent})");
+		return (($ret === false)?false:true) ;
+		
 	}
 	
 	function moveChildUp($id, $idParent = false) {
 		if (!empty($idParent)) {
 			$this->id = $idParent ;
 		}
-		return $this->query("CALL moveChildTreeUp({$id}, {$this->id})");
+		$ret = $this->query("CALL moveChildTreeUp({$id}, {$this->id})");
+		return (($ret === false)?false:true) ;
 	}
 	
 	function moveChildDown($id, $idParent = false) {
 		if (!empty($idParent)) {
 			$this->id = $idParent ;
 		}		
-		return $this->query("CALL moveChildTreeDown({$id}, {$this->id})");
+		$ret = $this->query("CALL moveChildTreeDown({$id}, {$this->id})");
+		return (($ret === false)?false:true) ;
 	}
 
 	function moveChildFirst($id, $idParent = false) {
 		if (!empty($idParent)) {
 			$this->id = $idParent ;
 		}		
-		return $this->query("CALL moveChildTreeFirst({$id}, {$this->id})");
+		$ret = $this->query("CALL moveChildTreeFirst({$id}, {$this->id})");
+		return (($ret === false)?false:true) ;
 	}
 	
 	function moveChildLast($id, $idParent = false) {
 		if (!empty($idParent)) {
 			$this->id = $idParent ;
 		}		
-		return $this->query("CALL moveChildTreeLast({$id}, {$this->id})");
+		$ret = $this->query("CALL moveChildTreeLast({$id}, {$this->id})");
+		return (($ret === false)?false:true) ;
 	}
 
-	function move($idNewParent, $id = false) {
+	function switchChild($id, $priority, $idParent = false) {
+		if (!empty($idParent)) {
+			$this->id = $idParent ;
+		}		
+		$ret = $this->query("CALL switchChildTree({$id}, {$this->id}, {$priority})");
+		return (($ret === false)?false:true) ;
+	}
+
+	function setPriority($id, $priority, $idParent = false) {
+		if (!empty($idParent)) {
+			$this->id = $idParent ;
+		}		
+		$ret =  $this->query("UPDATE trees SET priority_s = {$priority} WHERE id = {$id} AND parent_id = {$this->id}");
+		return (($ret === false)?false:true) ;
+	}
+	
+	
+	function move($idNewParent, $idOldParent, $id = false) {
 		if (!empty($id)) {
 			$this->id = $id ;
 		}
@@ -95,9 +118,8 @@ class Tree extends BEAppModel
 		$ret = $this->query("SELECT isParentTree({$this->id}, {$idNewParent}) AS parent");
 		if(!empty($ret["parent"])) return  false ;
 		
- 		return $this->query("CALL moveTree({$this->id}, {$idNewParent})");
- 		
- 		return true ;
+ 		$ret = $this->query("CALL moveTree({$this->id}, {$idOldParent}, {$idNewParent})");
+		return (($ret === false)?false:true) ;
 	}
 	
 	/**
@@ -108,7 +130,8 @@ class Tree extends BEAppModel
 			$this->id = $id;
 		}
 		$id = $this->id;		
-		return $this->query("CALL deleteTree({$id})");
+		$ret = $this->query("CALL deleteTree({$id})");
+		return (($ret === false)?false:true) ;
 	}
 
 	/**
@@ -189,7 +212,6 @@ class Tree extends BEAppModel
 		for ($i=0; $i < count($tree) ; $i++) {
 			if(isset($id) && $tree[$i]['id'] == $id) {
 				$tmp[] = &$tree[$i] ;
-				
 				continue ;
 			}
 
@@ -203,6 +225,76 @@ class Tree extends BEAppModel
 		return $tmp ;
 	}
 	
+	/**
+	 * Riorganizza le posizioni dell'intero albero passato.
+	 *
+	 * @param array $tree	Item con l'albero.
+	 * 						{0..N}:
+	 * 							id			Id dell'elemento
+	 * 							parent		Nuovo parent
+	 * 							children	Elenco dei discendenti
+	 */
+	function moveAll(&$tree) {
+		// Cerca tutti parent_id dei rami passati e il priority
+		$IDs = array() ;
+		$this->_getIDs($tree, $IDs) ;
+		$this->_setPriority($tree) ;
+				
+		if(!count($IDs)) return true ;
+		$IDs = implode(",", $IDs) ;
+		$ret = $this->query("SELECT id, parent_id, priority FROM trees WHERE id IN ({$IDs})");
+		
+		$IDOldParents 	 = array() ;
+		$IDOldPriorities = array() ;
+		
+		for($i=0; $i < count($ret) ; $i++) {
+			$IDOldParents[$ret[$i]["trees"]["id"]] 		= $ret[$i]["trees"]["parent_id"] ;
+			$IDOldPriorities[$ret[$i]["trees"]["id"]] 	= $ret[$i]["trees"]["priority"] ;
+		}
+		unset($IDs) ;
+		unset($ret) ;
+		
+		// Salva le ramificazioni spostate
+		$ret = $this->_moveAll($tree, $IDOldParents, $IDOldPriorities) ;
+		
+		return $ret ;	
+	}
+	
+	
+	private function _moveAll(&$tree, &$IDOldParents, &$IDOldPriorities) {
+		
+		for($i=0; $i < count($tree) ; $i++) {
+			if($tree[$i]["parent"] != $IDOldParents[$tree[$i]["id"]]) { 
+				if(!$this->move($tree[$i]["parent"], $IDOldParents[$tree[$i]["id"]], $tree[$i]["id"])) return false ;
+			}
+			if($tree[$i]["priority"] != $IDOldParents[$tree[$i]["id"]] && isset($tree[$i]["parent"])) { 
+				if(!$this->switchChild($tree[$i]["id"], $tree[$i]["priority"], $tree[$i]["parent"])) return false ;
+//				if(!$this->setPriority($tree[$i]["id"], $tree[$i]["priority"], $tree[$i]["parent"])) return false ;
+			}
+			
+			if(!$this->_moveAll($tree[$i]["children"], $IDOldParents, $IDOldPriorities)) return false ;
+		}
+		
+		return true ;
+	}
+
+	private function _getIDs(&$tree, &$IDs) {
+		for($i=0; $i < count($tree) ; $i++) {
+			$IDs[] = $tree[$i]["id"] ;
+			
+			$this->_getIDs($tree[$i]["children"], $IDs) ;
+		}
+	}
+	
+	private function _setPriority(&$tree) {
+		for($i=0; $i < count($tree) ; $i++) {
+			$tree[$i]["priority"] = $i+1 ;
+			
+			$this->_setPriority($tree[$i]["children"]) ;
+		}
+	}
+	
+	
 /*	
 	function getChildren($id, $hiddenField = null, $compact = true) {
 		if (!empty($id)) {
@@ -214,6 +306,8 @@ class Tree extends BEAppModel
 		return $ret ;
 	}
 */
+
+
 }
 
 

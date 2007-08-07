@@ -17,17 +17,18 @@ $vs = &$this->get_template_vars() ;
 		</div>
 	
 		<div id="test">
-		{formHelper fnc="create" args="'frmTree', array('action' => '/areas/saveTree', 'type' => 'POST')"}
+		{formHelper fnc="create" args="'area', array('id' => 'frmTree', 'action' => 'saveTree', 'type' => 'POST')"}
 				<input type="hidden" name="URLFrmArea" 		value="{$html->url('viewArea/')}">
 				<input type="hidden" name="URLFrmSezione" 	value="{$html->url('viewSection/')}">
-			
+				<input type="hidden" id="data_tree" name="data[tree]" 			value="">
+				
 			{$beTree->tree("tree", $tree)}
 			<br />
 			<p align="center">
 			{formHelper fnc="submit" args="' salva le modifiche ', array('name' => 'modify')"}
 			</p>
 		</form>
-
+<textarea id="debug" cols="120" rows="60"></textarea>
 		</div>
 	
 	</div>

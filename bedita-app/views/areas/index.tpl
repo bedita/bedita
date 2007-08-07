@@ -55,6 +55,15 @@ $(document).ready(function(){
 	// handler cambiamenti dati della pagina
 	$("#handlerChangeAlert").changeAlert($('input, textarea, select')) ;
 	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div, #containerPage a, #containerPage span').alertUnload() ;
+
+	// formatta i dati da salvare
+	$("#frmTree").bind("submit", function() {
+		tree = submitTree("#tree") ;
+		$("#data_tree", "#frmTree").val(tree.toString()) ;
+		return true ;
+	}) ;
+	
+$("#debug").val($("#tree").parent().html()) ;
 });
 
 {/literal}
