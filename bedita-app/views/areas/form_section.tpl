@@ -39,7 +39,7 @@ $(document).ready(function(){
 			return false ;
 		}
 		
-		document.location = "{/literal}{$html->url('deleteArea/')}{$section.id}{literal}" ;
+		document.location = "{/literal}{$html->url('deleteSection/')}{$section.id}{literal}" ;
 	}) ;
 	
 	

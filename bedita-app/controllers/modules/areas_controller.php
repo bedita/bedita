@@ -359,25 +359,28 @@ class AreasController extends AppController {
 	  */
 	 function deleteSection($id = null) {
 		$this->setup_args(array("id", "integer", $id)) ;
-	 	
-	 	// URL di ritorno
+		
+		// URL di ritorno
 	 	$URLOK 		= (isset($this->data['URLOK'])) ? $this->data['URLOK'] : "./" ;
 	 	$URLERROR 	= (isset($this->data['URLERROR'])) ? $this->data['URLERROR'] : "./" ;
 	 	
-	 	if(empty($id)) {
-			$this->redirect($URLERROR);
-			return ;
-	 	}
-
-	 	// Cancellla i dati
-	 	if(!$this->Section->delete($id)) {
-			$this->Session->setFlash($this->Area->validationErrors);
+	 	try {
+		 	if(empty($id)) throw new Exception("No data");
 	 		
+		 	// Cancellla i dati
+		 	if(!$this->Section->delete($id)) throw new Exception("Error delete Section: {$id}");
+		 	
+	 	} catch (Exception $e) {
+			$this->Session->setFlash($e->getMessage());
+			$this->Transaction->rollback() ;
+				
 			$this->redirect($URLERROR);
+			
 			return ;
 	 	}
 	 	
-	 	$this->redirect($URLOK);
+	 	$this->Transaction->commit() ;
+		$this->redirect($URLOK);
 	 }
 
 	 /**
