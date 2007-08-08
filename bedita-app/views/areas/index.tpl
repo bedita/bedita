@@ -63,7 +63,7 @@ $(document).ready(function(){
 		return true ;
 	}) ;
 	
-$("#debug").val($("#tree").parent().html()) ;
+//$("#debug").val($("#tree").parent().html()) ;
 });
 
 {/literal}

@@ -28,7 +28,7 @@ $vs = &$this->get_template_vars() ;
 			{formHelper fnc="submit" args="' salva le modifiche ', array('name' => 'modify')"}
 			</p>
 		</form>
-<textarea id="debug" cols="120" rows="60"></textarea>
+<!-- textarea id="debug" cols="120" rows="60"></textarea -->
 		</div>
 	
 	</div>

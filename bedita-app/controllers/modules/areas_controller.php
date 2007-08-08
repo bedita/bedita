@@ -98,17 +98,30 @@ class AreasController extends AppController {
 		if($id) {
 			$this->Section->bviorHideFields = array('ObjectType', 'Version', 'Index', 'current') ;
 			if(!($section = $this->Section->findById($id))) {
-				$this->Session->setFlash("Errore nel prelievo dell'area: {$id}");
+				$this->Session->setFlash("Errore nel prelievo della sezione: {$id}");
 				return ;		
 			}
 		}
 		
+		// Formatta i campi in lingua
+		if(isset($section["LangText"])) {
+			$this->BeLangText->setupForView($section["LangText"]) ;
+		}
+		
 		// Preleva l'albero delle aree e sezioni
 		$tree = $this->BeTree->getSectionsTree() ;
+
+		// Preleva dov'e' inserita la sezione 
+		if(isset($id)) {
+			$parent_id = $this->Tree->getParent($id) ;
+		} else {
+			$parent_id = 0 ;
+		}	
 		
 		// Setup dei dati da passare al template
 		$this->set('tree', 		$tree);
 		$this->set('section',	$section);
+		$this->set('parent_id',	$parent_id);
 		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) )) ;
 		$this->set('self',		($this->createSelfURL(false)."?")) ;	
 	 }
@@ -259,19 +272,57 @@ class AreasController extends AppController {
 	 	$URLOK 		= (isset($this->data['URLOK'])) ? $this->data['URLOK'] : "./" ;
 	 	$URLERROR 	= (isset($this->data['URLERROR'])) ? $this->data['URLERROR'] : "./" ;
 	 	
-	 	if(empty($this->data)) {
+	 	try {
+		 	if(empty($this->data)) throw new Exception("No data");
+	 		
+			$new = (empty($this->data['id'])) ? true : false ;
+			
+		 	// Verifica i permessi di modifica dell'oggetto
+		 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+		 			throw new Exception("Error modify permissions");
+		 	
+		 	// Formatta le custom properties
+		 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
+	
+		 	// Formatta i campi d tradurre
+		 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
+		 	
+		 	
+			$this->Transaction->begin() ;
+			
+	 		// Salva i dati
+		 	if(!$this->Section->save($this->data)) throw new Exception($this->Section->validationErrors);
+			
+		 	// Inserisce la sezione nell'albero o la sposta se necessario
+		 	if($new) {
+		 		if(!$this->Tree->appendChild($this->Section->id, $this->data["destination"])) throw new Exception("Append Area in to tree");
+		 	} else {
+		 		$oldParent = $this->Tree->getParent($this->Section->id) ;
+		 		if($oldParent != $this->data["destination"]) {
+		 			$this->Tree->move($this->data["destination"], $oldParent, $this->Section->id) ;
+		 		}
+		 	}
+		 	
+		 	// aggiorna i permessi
+		 	if(!$this->Permission->saveFromPOST(
+		 			$this->Section->id, 
+		 			(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
+		 			(empty($this->data['recursiveApplyPermissions'])?false:true))
+		 		) {
+		 			throw new Exception("Error save permissions");
+		 	}	 	
+	 		$this->Transaction->commit() ;
+
+	 	} catch (Exception $e) {
+			$this->Session->setFlash($e->getMessage());
+			$this->Transaction->rollback() ;
+				
 			$this->redirect($URLERROR);
+			
 			return ;
 	 	}
-
-	 	// Salva i dati
-	 	if(!$this->Section->save($this->data)) {
-			$this->Session->setFlash($this->Section->validationErrors);
-	 		
-			$this->redirect($URLERROR);
-	 	}
 	 	
-	 	$this->redirect($URLOK);
+		$this->redirect($URLOK);
 	 }
 	 
 	 /**

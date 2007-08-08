@@ -52,6 +52,37 @@ class Tree extends BEAppModel
 		return $this->id  ;
 	}
 	
+	/**
+	 * Torna il parent/ i parent dell'albero
+	 *
+	 * @param integer $id
+	 * 
+	 * @return mixed	integer, se solo un parent
+	 * 					array, se inserito in + parent
+	 * 					false, in caso d'errore
+	 */
+	function getParent($id = null) {
+		if (isset($id)) {
+			$this->id = $id ;
+		}
+		$id = $this->id ;
+		
+		if(($ret = $this->query("SELECT parent_id FROM  trees WHERE id = {$id}")) === false) {
+			return false ;
+		}
+		
+		if(!count($ret)) return false ;
+		else if(count($ret) == 1) return $ret[0]['trees']['parent_id'] ;
+		else {
+			$tmp = array() ;
+			for($i=0; $i < count($ret) ; $i++) {
+				$tmp[] = $ret[$i]['trees']['parent_id'] ;
+			}
+			
+			return $tmp ;
+		}
+	}
+	
 	function appendChild($id, $idParent = null) {
 		$idParent = (empty($idParent)) ? "NULL" :  $idParent ;
 		

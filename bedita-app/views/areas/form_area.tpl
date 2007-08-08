@@ -16,7 +16,6 @@ var langs = {
 
 } ;
 
-
 var validate = null ;
 
 $(document).ready(function(){
@@ -26,7 +25,7 @@ $(document).ready(function(){
 		errorLabelContainer: $("#errorForm"),
 		errorClass: "errorFieldForm", 
 		rules: {
-			title: "required",
+			"data[title]": "required",
 
 		},
 		messages: {

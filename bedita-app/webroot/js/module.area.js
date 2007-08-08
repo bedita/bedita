@@ -7,6 +7,7 @@ File con la logica utilizzata nel modulo aree.
 /* ******************************
 treeView Aree
 ****************************** */
+	
 	// Crea o refresh albero
 	function designTree() {
 		$("#tree").Treeview({ 
@@ -39,8 +40,7 @@ treeView Aree
 		});
 
 	}
-	
-	
+		
 	// Resetta l'albero per ridisegnarlo
 	function resetTree() {
 		$('div', "#tree").remove();
@@ -125,21 +125,7 @@ treeView Aree
 			try { $().alertSignal() ; } catch(e) {}
 		} );		
 	}
-/*
-	// evento per il submit, registra lo stato del tree
-	function submitTree(tree, contest) {
-		tree["children"] = {} ;
-		var index = 0 ;
-		
-		$("li:only-child", contest).each(function(i){
-			tree["children"][index] = {} ;
-			
-			tree["children"][index]["id"] = $("input[@name='id']", this).eq(0).val() ;
-			submitTree(tree["children"][index], this) ;
-			index++ ;
-		});
-	}	
-*/
+
 	// evento per il submit, registra lo stato del tree
 	function submitTree(contest) {
 		tree = new Array() ;
@@ -166,4 +152,3 @@ treeView Aree
 		
 		return tree ;
 	}	
-	
