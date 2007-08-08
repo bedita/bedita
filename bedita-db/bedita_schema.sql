@@ -122,7 +122,7 @@ CREATE TABLE objects (
   modified DATETIME NULL,
   title VARCHAR(255) NULL,
   nickname VARCHAR(255) NULL,
-  current BOOL NULL,
+  current BOOL NULL DEFAULT '1',
   lang CHAR(2) NULL,
   IP_created VARCHAR(15) NULL,
   PRIMARY KEY(id),

@@ -149,6 +149,31 @@ END
 //
 delimiter ;
 
+DROP PROCEDURE  IF EXISTS switchChildTree ; 
+delimiter // 
+CREATE PROCEDURE switchChildTree (_ID INT, _IDParent INT, _PRIOR INT) 
+NOT DETERMINISTIC
+BEGIN 
+DECLARE done INT DEFAULT 0;
+DECLARE _priority INT ;
+DECLARE _old_priority INT ;
+
+
+DECLARE _maxPriority INT ;
+
+SET _maxPriority  	= (SELECT MAX(priority) FROM trees WHERE parent_id = _IDParent) ;
+SET _priority		= IF(_PRIOR > _maxPriority, _maxPriority, _PRIOR) ;
+SET _old_priority	= (SELECT priority FROM trees WHERE id = _ID AND parent_id = _IDParent) ;
+
+UPDATE trees SET priority = _old_priority 
+WHERE parent_id = _IDParent  AND priority = _priority ;
+
+UPDATE trees SET priority = _priority  WHERE id = _ID AND parent_id = _IDParent ;
+END 
+//
+delimiter ;
+
+/*
 DROP PROCEDURE  IF EXISTS moveTree ; 
 delimiter // 
 CREATE PROCEDURE moveTree (_ID INT, _IDNewParent INT) 
@@ -170,6 +195,36 @@ UPDATE trees SET parent_id = _IDNewParent WHERE id = _ID ;
 END 
 //
 delimiter ;
+*/
+DROP PROCEDURE  IF EXISTS moveTree ; 
+delimiter // 
+CREATE PROCEDURE moveTree (_ID INT, _IDOldParent INT, _IDNewParent INT) 
+NOT DETERMINISTIC
+BEGIN 
+DECLARE done INT DEFAULT 0;
+DECLARE _oldPath MEDIUMTEXT ;
+DECLARE _newPath MEDIUMTEXT ;
+DECLARE _oldPathParent MEDIUMTEXT ;
+DECLARE _newPathParent MEDIUMTEXT ;
+
+SET _oldPath 		= (SELECT path FROM trees WHERE id = _ID AND parent_id = _IDOldParent) ;
+SET _oldPathParent 	= (SELECT pathParent FROM trees WHERE id = _ID AND parent_id = _IDOldParent) ;
+SET _newPathParent 	= (SELECT path FROM trees WHERE id = _IDNewParent) ;
+SET _newPath		= REPLACE(_oldPath, _oldPathParent, _newPathParent) ;
+
+UPDATE trees SET path = _newPath, pathParent = _newPathParent, parent_id = _IDNewParent WHERE path LIKE _oldPath ;
+
+UPDATE trees SET  
+path = REPLACE(path, _oldPath, _newPath) , pathParent = REPLACE(pathParent, _oldPath, _newPath) 
+WHERE path  LIKE CONCAT(_oldPath, '%') ;
+
+END 
+//
+delimiter ;
+
+
+
+
 
 
 DROP FUNCTION  IF EXISTS isParentTree ; 
@@ -462,7 +517,7 @@ delimiter ;
 DROP FUNCTION  IF EXISTS prmsUserByID ; 
 delimiter // 
 CREATE FUNCTION prmsUserByID (_USERID VARCHAR(40), _IDOBJ VARCHAR(32), _PRMS INT) RETURNS INT
-DETERMINISTIC
+NOT DETERMINISTIC
 BEGIN 
 DECLARE prmsG INT DEFAULT 0 ;
 DECLARE prmsU INT DEFAULT 0 ;
@@ -526,7 +581,7 @@ delimiter ;
 DROP FUNCTION  IF EXISTS prmsGroupByName ; 
 delimiter // 
 CREATE FUNCTION prmsGroupByName (_GROUPNAME VARCHAR(40), _IDOBJ VARCHAR(32), _PRMS INT) RETURNS INT
-DETERMINISTIC
+NOT DETERMINISTIC
 BEGIN 
 DECLARE prmsG INT DEFAULT 0 ;
 

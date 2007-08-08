@@ -114,6 +114,11 @@ VALUES (
 2, (SELECT id FROM groups WHERE name = 'administrator'), 'group', '15'
 ) ;
 
+INSERT INTO `custom_properties` ( `id` , `object_id` , `name` , `type` , `integer` )
+VALUES (
+NULL , '2', 'prova', 'integer', '10'
+);
+
 -- 2 sezioni
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `IP_created`)  VALUES (3, 3, 'on', NOW(), NOW(), 'Sezione Home Page 1', "SezioneHomePage1", 1, 'it', '192.168.0.1');
 INSERT INTO `collections` (`id`, `create_rules`, `access_rules`) VALUES (3, NULL, NULL);
