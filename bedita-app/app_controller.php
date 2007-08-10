@@ -1,8 +1,10 @@
 <?php
 
+uses('L10n');
+
 class AppController extends Controller
 {
-	var $helpers 	= array("Javascript", "Html", "Bevalidation", "Form");
+	var $helpers 	= array("Javascript", "Html", "Bevalidation", "Form", "Tr");
 	var $components = array('BeAuth', 'BePermissionModule');
 	
 	/**
@@ -42,7 +44,7 @@ class AppController extends Controller
 	 * 		$this->data['OK'] o $this->data['ERROR']
 	 *  	seleziona.
 	 * 
-	 * Se nella classe  definito:
+	 * Se nella classe ï¿½ definito:
 	 * 		$this->REDIRECT[<nome_metodo>]['OK'] o $this->REDIRECT[<nome_metodo>]['ERROR']
 	 *  	seleziona.
 	 * 

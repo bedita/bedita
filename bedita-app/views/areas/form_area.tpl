@@ -16,6 +16,7 @@ var langs = {
 
 } ;
 
+
 var validate = null ;
 
 $(document).ready(function(){
@@ -38,7 +39,7 @@ $(document).ready(function(){
 			return false ;
 		}
 		
-		document.location = "{/literal}{$html->url('deleteArea/')}{$area.id}{literal}" ;
+		document.location = "{/literal}{$html->url('/areas/deleteArea/')}{$area.id|default:''}{literal}" ;
 	}) ;
 	
 	
@@ -105,7 +106,7 @@ $(document).ready(function(){
 						<td>
 							<input  class="{literal}{required:true}{/literal}" id="titleInput"  type="text" name="data[title]" value="{$area.title|default:''|escape:'html'|escape:'quotes'}" >&nbsp;
 						</td>
-						{if ($area)}					
+						{if isset($area)}					
 						<td>
 							<input class="cmdField" id="cmdTranslateTitle" type="button" value="lang ...">
 						</td>
@@ -130,24 +131,24 @@ $(document).ready(function(){
 					{/foreach}
 					{/if}
 				</table>
-				{if ($area)}
+				{if isset($area)}
 				<hr>
 				<table class="tableForm" border="0">
 					<tr>
 						<td class="label">Alias:</td>
-						<td>{$area.nickname}</td>
+						<td>{$area.nickname|default:""}</td>
 					</tr>
 					<tr>
 						<td class="label">Creata il:</td>
-						<td>{$area.created|date_format:$conf->date_format}</td>
+						<td>{if isset($area.created)}{$area.created|date_format:$conf->date_format}{/if}</td>
 					</tr>
 					<tr>
 						<td class="label">Ultima modifica:</td>
-						<td>{$area.modified|date_format:$conf->date_format}</td>
+						<td>{if isset($area.modified)}{$area.modified|date_format:$conf->date_format}{/if}</td>
 					</tr>
 					<tr>
 						<td class="label">IP:</td>
-						<td>{$area.IP_created}</td>
+						<td>{$area.IP_created|default:""}</td>
 					</tr>
 				</table>
 			{/if}

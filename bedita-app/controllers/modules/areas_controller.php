@@ -1,9 +1,5 @@
 <?php
-/* SVN FILE: $Id: pages_controller.php 2951 2006-05-25 22:12:33Z phpnut $ */
-
 /**
- *
- * PHP version 5
  *
  * @filesource
  * @copyright		
@@ -35,7 +31,7 @@ class AreasController extends AppController {
 
 	/**
 	 * Entrata.
-	 * Visualizza l'albero delle aree e la possibilitˆ di 
+	 * Visualizza l'albero delle aree e la possibilitï¿½ di 
 	 * gestire l'ordine delle sezioni connesse.
 	 * 
 	 */
@@ -67,7 +63,7 @@ class AreasController extends AppController {
 		if($id) {
 			$this->Area->bviorHideFields = array('ObjectType', 'Version', 'Index', 'current') ;
 			if(!($area = $this->Area->findById($id))) {
-				$this->Session->setFlash("Errore nel prelievo dell'area: {$id}");
+				$this->Session->setFlash(sprintf(__("Error loading area: %d", true), $id));
 				return ;		
 			}
 		}
@@ -99,7 +95,7 @@ class AreasController extends AppController {
 		if($id) {
 			$this->Section->bviorHideFields = array('ObjectType', 'Version', 'Index', 'current') ;
 			if(!($section = $this->Section->findById($id))) {
-				$this->Session->setFlash("Errore nel prelievo della sezione: {$id}");
+				$this->Session->setFlash(sprintf(__("Error loading section: %d", true), $id));
 				return ;		
 			}
 		}
@@ -141,7 +137,7 @@ class AreasController extends AppController {
 		 	$this->_getTreeFromPOST($this->data["tree"], $tree) ;
 
 		 	// Salva i cambiamenti
-		 	if(!$this->Tree->moveAll($tree)) throw new BEditaActionException($this, "Error save tree from _POST");
+		 	if(!$this->Tree->moveAll($tree)) throw new BEditaActionException($this, __("Error save tree from _POST", true));
 
 			$this->Transaction->commit() ;
 			
@@ -161,7 +157,7 @@ class AreasController extends AppController {
 	  */
 	 function saveArea() {	 	
 	 	try {
-		 	if(empty($this->data)) throw BEditaActionException($this, "No data");
+		 	if(empty($this->data)) throw BEditaActionException($this, __("No data", true));
 	 		
 			$new = (empty($this->data['id'])) ? true : false ;
 			
@@ -182,7 +178,7 @@ class AreasController extends AppController {
 			
 		 	// Inserisce nell'albero
 		 	if($new) {
-		 		if(!$this->Tree->appendChild($this->Area->id, null)) throw new BEditaActionException($this, "Append Area in to tree");
+		 		if(!$this->Tree->appendChild($this->Area->id, null)) throw new BEditaActionException($this, __("Append Area in to tree", true));
 		 	}
 		 	
 		 	// aggiorna i permessi
@@ -191,7 +187,7 @@ class AreasController extends AppController {
 		 			(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
 		 			(empty($this->data['recursiveApplyPermissions'])?false:true))
 		 		) {
-		 			throw BEditaActionException($this, "Error save permissions");
+		 			throw BEditaActionException($this, __("Error saving permissions", true));
 		 	}	 	
 	 		$this->Transaction->commit() ;
 
@@ -211,13 +207,13 @@ class AreasController extends AppController {
 	  */
 	 function saveSection() {
 	 	try {
-		 	if(empty($this->data)) throw BEditaActionException($this, "No data");
+		 	if(empty($this->data)) throw BEditaActionException($this,__("No data", true));
 	 		
 			$new = (empty($this->data['id'])) ? true : false ;
 			
 		 	// Verifica i permessi di modifica dell'oggetto
 		 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-		 			throw BEditaActionException($this, "Error modify permissions");
+		 			throw BEditaActionException($this, __("Error modifying permissions", true));
 		 	
 		 	// Formatta le custom properties
 		 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
@@ -247,7 +243,7 @@ class AreasController extends AppController {
 		 			(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
 		 			(empty($this->data['recursiveApplyPermissions'])?false:true))
 		 		) {
-		 			throw BEditaActionException($this, "Error save permissions");
+		 			throw BEditaActionException($this, __("Error saving permissions", true));
 		 	}	 	
 	 		$this->Transaction->commit() ;
 
@@ -266,12 +262,12 @@ class AreasController extends AppController {
 		$this->setup_args(array("id", "integer", $id)) ;
 		
 	 	try {
-		 	if(empty($id)) throw BEditaActionException($this, "No data");
+		 	if(empty($id)) throw BEditaActionException($this,__("No data", true));
 	 		
 		 	$this->Transaction->begin() ;
 	 	
 		 	// Cancellla i dati
-		 	if(!$this->Area->delete($id)) throw new BEditaActionException($this, "Error delete Area: {$id}");
+		 	if(!$this->Area->delete($id)) throw new BEditaActionException($this, sprintf(__("Error deleting area: %d", true), $id));
 		 	
 		 	$this->Transaction->commit() ;
 	 	} catch (Exception $e) {
@@ -295,7 +291,7 @@ class AreasController extends AppController {
 		 	$this->Transaction->begin() ;
 		 	
 		 	// Cancellla i dati
-		 	if(!$this->Section->delete($id)) throw new BEditaActionException($this, "Error delete Section: {$id}");
+		 	if(!$this->Section->delete($id)) throw new BEditaActionException($this, sprintf(__("Error deleting section: %d", true), $id));
 		 	
 		 	$this->Transaction->commit() ;
 	 	} catch (Exception $e) {
