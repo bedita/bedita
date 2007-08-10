@@ -2,9 +2,20 @@
 
 class AppController extends Controller
 {
-	
 	var $helpers 	= array("Javascript", "Html", "Bevalidation", "Form");
 	var $components = array('BeAuth', 'BePermissionModule');
+	
+	/**
+	 * tipologie di esito operazione e esisto dell'operazione
+	 *
+	 */
+	static $OK 		= 'OK' ;
+	static $ERROR 	= 'ERROR' ;
+	
+	var $esito 		= 'OK' ;
+	
+	/////////////////////////////////		
+	/////////////////////////////////		
 	
 	function beforeFilter() {
 		// Templater
@@ -13,7 +24,10 @@ class AppController extends Controller
 		// preleva, per il template, i dati di configurazione
 	 	$this->setupCommonData() ;
 	 	
-	 	// Se vien richiesto il login esce
+	 	// Non genera automaticamente l'output, per far eseguire prima afterFilter
+	 	$this->autoRender = false ;
+	 	
+	 	// Se viene richiesto il login esce
 		if(isset($this->data["login"])) return  ;
 		
 		// Esegue la verifca di login
@@ -21,6 +35,35 @@ class AppController extends Controller
 	 	if(!$this->checkLogin()) return ;
 		
 	}
+	
+	/**
+	 * Gestisce il redirect in base all'esito di un metodo.
+	 * Se c'e' nel form:
+	 * 		$this->data['OK'] o $this->data['ERROR']
+	 *  	seleziona.
+	 * 
+	 * Se nella classe  definito:
+	 * 		$this->REDIRECT[<nome_metodo>]['OK'] o $this->REDIRECT[<nome_metodo>]['ERROR']
+	 *  	seleziona.
+	 * 
+	 * Altrimenti non fa il redirect
+	 * 
+	 */
+	function afterFilter() {
+		if($this->autoRender) return ;
+				
+		if(isset($this->data[$this->esito])) {
+			$this->redirect($this->data[$this->esito]);
+		
+		} elseif ($URL = $this->_REDIRECT($this->action, $this->esito)) {
+			$this->redirect($URL);
+		
+		} else {
+			$this->output = $this->render($this->action);
+		}
+	}
+	
+	function _REDIRECT($action, $esito) {	return false ; }
 	
 	/**
 	 * Setta i dati utilizzabili nelle diverse pagine.
@@ -126,5 +169,27 @@ class AppController extends Controller
 	}
 	
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * 
+ * Eccezione sollevata dai controller per indicare l'esito negativo di un'action.
+ * 
+ */
+class BEditaActionException extends Exception
+{
+    // Redefine the exception so message isn't optional
+    public function __construct($controller, $message, $code  = 0) {
+        // some code
+   		$controller->esito = AppController::$ERROR ;
+        
+        // make sure everything is assigned properly
+        parent::__construct($message, $code);
+    }
+}
+
+
 
 ?>

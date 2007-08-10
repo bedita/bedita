@@ -38,13 +38,12 @@ class PagesController extends AppController {
 	 *
 	 */
 	 function home() {
-		// Esegue il render della pagina
-		$this->render("index");
+	 	$this->action = "index" ;
 	 }
 
 	 function display() {
-		// Esegue il render della pagina
-		$this->render("index");
+	 	$this->action = "index" ;
 	 }
+	 
 }
 	

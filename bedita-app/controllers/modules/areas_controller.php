@@ -56,6 +56,7 @@ class AreasController extends AppController {
 	  * @param integer $id
 	  */
 	 function viewArea($id = null) {
+	 	
 		$conf  = Configure::getInstance() ;
 		
 	 	// Setup parametri
@@ -131,34 +132,179 @@ class AreasController extends AppController {
 	  *
 	  */
 	 function saveTree() {
-	 	// URL di ritorno
-	 	$URLOK 		= (isset($this->data['URLOK'])) ? $this->data['URLOK'] : "./" ;
-	 	$URLERROR 	= (isset($this->data['URLERROR'])) ? $this->data['URLERROR'] : "./" ;
-	 	
 	 	try {
 			$this->Transaction->begin() ;
 	 		
-		 	if(@empty($this->data["tree"])) throw new Exception("No data");
+		 	if(@empty($this->data["tree"])) throw new BEditaActionException($this, "No data");
 		
 		 	// Preleva l'albero
 		 	$this->_getTreeFromPOST($this->data["tree"], $tree) ;
 
 		 	// Salva i cambiamenti
-		 	if(!$this->Tree->moveAll($tree)) throw new Exception("Error save tree from _POST");
+		 	if(!$this->Tree->moveAll($tree)) throw new BEditaActionException($this, "Error save tree from _POST");
 
 			$this->Transaction->commit() ;
 			
 	 	} catch (Exception $e) {
 			$this->Session->setFlash($e->getMessage());
 			$this->Transaction->rollback() ;
-				
-			$this->redirect($URLERROR);
 			
 			return ;
 	 	}
+	 }
+	 
+	 /**
+	  * Aggiunge una nuova area o la modifica.
+	  * Nei dati devono essere definiti:
+	  * URLOK e URLERROR.
+	  *
+	  */
+	 function saveArea() {	 	
+	 	try {
+		 	if(empty($this->data)) throw BEditaActionException($this, "No data");
+	 		
+			$new = (empty($this->data['id'])) ? true : false ;
+			
+		 	// Verifica i permessi di modifica dell'oggetto
+		 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+		 			throw BEditaActionException($this, "Error modify permissions");
+		 	
+		 	// Formatta le custom properties
+		 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
+	
+		 	// Formatta i campi d tradurre
+		 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
+		 	
+			$this->Transaction->begin() ;
+			
+	 		// Salva i dati
+		 	if(!$this->Area->save($this->data)) throw new BEditaActionException($this, $this->Area->validationErrors);
+			
+		 	// Inserisce nell'albero
+		 	if($new) {
+		 		if(!$this->Tree->appendChild($this->Area->id, null)) throw new BEditaActionException($this, "Append Area in to tree");
+		 	}
+		 	
+		 	// aggiorna i permessi
+		 	if(!$this->Permission->saveFromPOST(
+		 			$this->Area->id, 
+		 			(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
+		 			(empty($this->data['recursiveApplyPermissions'])?false:true))
+		 		) {
+		 			throw BEditaActionException($this, "Error save permissions");
+		 	}	 	
+	 		$this->Transaction->commit() ;
+
+	 	} catch (Exception $e) {
+			$this->Session->setFlash($e->getMessage());
+			$this->Transaction->rollback() ;
+			
+			return ;
+	 	}
+	 }
+	 
+	 /**
+	  * Aggiunge una nuova sezione o la modifica.
+	  * Nei dati devono essere definiti:
+	  * URLOK e URLERROR.
+	  *
+	  */
+	 function saveSection() {
+	 	try {
+		 	if(empty($this->data)) throw BEditaActionException($this, "No data");
+	 		
+			$new = (empty($this->data['id'])) ? true : false ;
+			
+		 	// Verifica i permessi di modifica dell'oggetto
+		 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+		 			throw BEditaActionException($this, "Error modify permissions");
+		 	
+		 	// Formatta le custom properties
+		 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
+	
+		 	// Formatta i campi d tradurre
+		 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
+		 	
+		 	
+			$this->Transaction->begin() ;
+			
+	 		// Salva i dati
+		 	if(!$this->Section->save($this->data)) throw new BEditaActionException($this, $this->Section->validationErrors);
+			
+		 	// Inserisce la sezione nell'albero o la sposta se necessario
+		 	if($new) {
+		 		if(!$this->Tree->appendChild($this->Section->id, $this->data["destination"])) throw BEditaActionException($this, "Append Area in to tree");
+		 	} else {
+		 		$oldParent = $this->Tree->getParent($this->Section->id) ;
+		 		if($oldParent != $this->data["destination"]) {
+		 			$this->Tree->move($this->data["destination"], $oldParent, $this->Section->id) ;
+		 		}
+		 	}
+		 	
+		 	// aggiorna i permessi
+		 	if(!$this->Permission->saveFromPOST(
+		 			$this->Section->id, 
+		 			(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
+		 			(empty($this->data['recursiveApplyPermissions'])?false:true))
+		 		) {
+		 			throw BEditaActionException($this, "Error save permissions");
+		 	}	 	
+	 		$this->Transaction->commit() ;
+
+	 	} catch (Exception $e) {
+			$this->Session->setFlash($e->getMessage());
+			$this->Transaction->rollback() ;
+			
+			return ;
+	 	}
+	 }
+	 
+	 /**
+	  * Cancella un'area.
+	  */
+	 function deleteArea($id = null) {
+		$this->setup_args(array("id", "integer", $id)) ;
+		
+	 	try {
+		 	if(empty($id)) throw BEditaActionException($this, "No data");
+	 		
+		 	$this->Transaction->begin() ;
 	 	
-	 	$this->Transaction->commit() ;
-		$this->redirect($URLOK);
+		 	// Cancellla i dati
+		 	if(!$this->Area->delete($id)) throw new BEditaActionException($this, "Error delete Area: {$id}");
+		 	
+		 	$this->Transaction->commit() ;
+	 	} catch (Exception $e) {
+			$this->Session->setFlash($e->getMessage());
+			$this->Transaction->rollback() ;
+				
+			return ;
+	 	}
+	 	
+	 }
+
+	 /**
+	  * Cancella una sezione.
+	  */
+	 function deleteSection($id = null) {
+		$this->setup_args(array("id", "integer", $id)) ;
+		
+	 	try {
+		 	if(empty($id)) throw BEditaActionException($this, "No data");
+	 		
+		 	$this->Transaction->begin() ;
+		 	
+		 	// Cancellla i dati
+		 	if(!$this->Section->delete($id)) throw new BEditaActionException($this, "Error delete Section: {$id}");
+		 	
+		 	$this->Transaction->commit() ;
+	 	} catch (Exception $e) {
+			$this->Session->setFlash($e->getMessage());
+			$this->Transaction->rollback() ;
+				
+			return ;
+	 	}
+	 	
 	 }
 
 	 /**
@@ -201,199 +347,36 @@ class AreasController extends AppController {
 		
 		unset($IDs) ;
 	 }
-	 
-	 /**
-	  * Aggiunge una nuova area o la modifica.
-	  * Nei dati devono essere definiti:
-	  * URLOK e URLERROR.
-	  *
-	  */
-	 function saveArea() {	 	
-	 	// URL di ritorno
-	 	$URLOK 		= (isset($this->data['URLOK'])) ? $this->data['URLOK'] : "./" ;
-	 	$URLERROR 	= (isset($this->data['URLERROR'])) ? $this->data['URLERROR'] : "./" ;
-	 	
-	 	try {
-		 	if(empty($this->data)) throw new Exception("No data");
-	 		
-			$new = (empty($this->data['id'])) ? true : false ;
-			
-		 	// Verifica i permessi di modifica dell'oggetto
-		 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-		 			throw new Exception("Error modify permissions");
-		 	
-		 	// Formatta le custom properties
-		 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-	
-		 	// Formatta i campi d tradurre
-		 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
-		 	
-		 	
-			$this->Transaction->begin() ;
-			
-	 		// Salva i dati
-		 	if(!$this->Area->save($this->data)) throw new Exception($this->Area->validationErrors);
-			
-		 	// Inserisce nell'albero
-		 	if($new) {
-		 		if(!$this->Tree->appendChild($this->Area->id, null)) throw new Exception("Append Area in to tree");
-		 	}
-		 	
-		 	// aggiorna i permessi
-		 	if(!$this->Permission->saveFromPOST(
-		 			$this->Area->id, 
-		 			(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
-		 			(empty($this->data['recursiveApplyPermissions'])?false:true))
-		 		) {
-		 			throw new Exception("Error save permissions");
-		 	}	 	
-	 		$this->Transaction->commit() ;
 
-	 	} catch (Exception $e) {
-			$this->Session->setFlash($e->getMessage());
-			$this->Transaction->rollback() ;
-				
-			$this->redirect($URLERROR);
-			
-			return ;
-	 	}
+	 function _REDIRECT($action, $esito) {
+	 	$REDIRECT = array(
+	 			"saveTree"	=> 	array(
+	 									"OK"	=> "./",
+	 									"ERROR"	=> "./" 
+	 								), 
+	 			"saveArea"	=> 	array(
+	 									"OK"	=> "./viewArea/{$this->Area->id}",
+	 									"ERROR"	=> "./viewArea/{$this->Area->id}" 
+	 								), 
+	 			"saveSection"	=> 	array(
+	 									"OK"	=> "./viewSection/{$this->Section->id}",
+	 									"ERROR"	=> "./viewSection/{$this->Section->id}" 
+	 								), 
+	 			"deleteArea"	=> 	array(
+	 									"OK"	=> "./",
+	 									"ERROR"	=> "./viewArea/{@$this->params['pass'][0]}" 
+	 								), 
+	 			"deleteSection"	=> 	array(
+	 									"OK"	=> "./",
+	 									"ERROR"	=> "./viewSection/{@$this->params['pass'][0]}" 
+	 								), 
+	 		) ;
 	 	
-		$this->redirect($URLOK);
+	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
+	 	
+	 	return false ;
 	 }
 	 
-	 /**
-	  * Aggiunge una nuova sezione o la modifica.
-	  * Nei dati devono essere definiti:
-	  * URLOK e URLERROR.
-	  *
-	  */
-	 function saveSection() {
-	 	// URL di ritorno
-	 	$URLOK 		= (isset($this->data['URLOK'])) ? $this->data['URLOK'] : "./" ;
-	 	$URLERROR 	= (isset($this->data['URLERROR'])) ? $this->data['URLERROR'] : "./" ;
-	 	
-	 	try {
-		 	if(empty($this->data)) throw new Exception("No data");
-	 		
-			$new = (empty($this->data['id'])) ? true : false ;
-			
-		 	// Verifica i permessi di modifica dell'oggetto
-		 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-		 			throw new Exception("Error modify permissions");
-		 	
-		 	// Formatta le custom properties
-		 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-	
-		 	// Formatta i campi d tradurre
-		 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
-		 	
-		 	
-			$this->Transaction->begin() ;
-			
-	 		// Salva i dati
-		 	if(!$this->Section->save($this->data)) throw new Exception($this->Section->validationErrors);
-			
-		 	// Inserisce la sezione nell'albero o la sposta se necessario
-		 	if($new) {
-		 		if(!$this->Tree->appendChild($this->Section->id, $this->data["destination"])) throw new Exception("Append Area in to tree");
-		 	} else {
-		 		$oldParent = $this->Tree->getParent($this->Section->id) ;
-		 		if($oldParent != $this->data["destination"]) {
-		 			$this->Tree->move($this->data["destination"], $oldParent, $this->Section->id) ;
-		 		}
-		 	}
-		 	
-		 	// aggiorna i permessi
-		 	if(!$this->Permission->saveFromPOST(
-		 			$this->Section->id, 
-		 			(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
-		 			(empty($this->data['recursiveApplyPermissions'])?false:true))
-		 		) {
-		 			throw new Exception("Error save permissions");
-		 	}	 	
-	 		$this->Transaction->commit() ;
-
-	 	} catch (Exception $e) {
-			$this->Session->setFlash($e->getMessage());
-			$this->Transaction->rollback() ;
-				
-			$this->redirect($URLERROR);
-			
-			return ;
-	 	}
-	 	
-		$this->redirect($URLOK);
-	 }
-	 
-	 /**
-	  * Cancella un'area.
-	  */
-	 function deleteArea($id = null) {
-		$this->setup_args(array("id", "integer", $id)) ;
-		
-		// URL di ritorno
-	 	$URLOK 		= (isset($this->data['URLOK'])) ? $this->data['URLOK'] : "./" ;
-	 	$URLERROR 	= (isset($this->data['URLERROR'])) ? $this->data['URLERROR'] : "./" ;
-	 	
-	 	try {
-		 	if(empty($id)) throw new Exception("No data");
-	 		
-		 	// Cancellla i dati
-		 	if(!$this->Area->delete($id)) throw new Exception("Error delete Area: {$id}");
-		 	
-	 	} catch (Exception $e) {
-			$this->Session->setFlash($e->getMessage());
-			$this->Transaction->rollback() ;
-				
-			$this->redirect($URLERROR);
-			
-			return ;
-	 	}
-	 	
-	 	$this->Transaction->commit() ;
-		$this->redirect($URLOK);
-	 }
-
-	 /**
-	  * Cancella una sezione.
-	  */
-	 function deleteSection($id = null) {
-		$this->setup_args(array("id", "integer", $id)) ;
-		
-		// URL di ritorno
-	 	$URLOK 		= (isset($this->data['URLOK'])) ? $this->data['URLOK'] : "./" ;
-	 	$URLERROR 	= (isset($this->data['URLERROR'])) ? $this->data['URLERROR'] : "./" ;
-	 	
-	 	try {
-		 	if(empty($id)) throw new Exception("No data");
-	 		
-		 	// Cancellla i dati
-		 	if(!$this->Section->delete($id)) throw new Exception("Error delete Section: {$id}");
-		 	
-	 	} catch (Exception $e) {
-			$this->Session->setFlash($e->getMessage());
-			$this->Transaction->rollback() ;
-				
-			$this->redirect($URLERROR);
-			
-			return ;
-	 	}
-	 	
-	 	$this->Transaction->commit() ;
-		$this->redirect($URLOK);
-	 }
-
-	 /**
-	  * 
-	  */
-	 function elimina() {
-	 	$result = "test1|test1\ntest2|test2\ntest3|test3" ;
-	 	
-//	 	header('Content-Type: text/plain');
-	 	
-	 	echo $result ;
-	 	exit ;
-	 }
 }
 
 	
