@@ -1,8 +1,10 @@
 <?php
 
+uses('L10n');
+
 class AppController extends Controller
 {
-	var $helpers 	= array("Javascript", "Html", "Bevalidation", "Form");
+	var $helpers 	= array("Javascript", "Html", "Bevalidation", "Form", "Tr");
 	var $components = array('BeAuth', 'BePermissionModule');
 	
 	/**
