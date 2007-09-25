@@ -125,8 +125,19 @@ CREATE TABLE objects (
   current BOOL NULL DEFAULT '1',
   lang CHAR(2) NULL,
   IP_created VARCHAR(15) NULL,
+  user_created INTEGER UNSIGNED NULL,
+  user_modified INTEGER UNSIGNED NULL,
+ fundo INTEGER UNSIGNED DEFAULT 0, 
   PRIMARY KEY(id),
-  INDEX objects_FKIndex1(object_type_id)
+  INDEX objects_FKIndex1(object_type_id),
+  FOREIGN KEY(user_created)
+    REFERENCES users(id)
+      ON DELETE NO ACTION
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(user_modified)
+    REFERENCES users(id)
+      ON DELETE NO ACTION
+      ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE collections (

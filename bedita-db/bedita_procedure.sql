@@ -173,29 +173,6 @@ END
 //
 delimiter ;
 
-/*
-DROP PROCEDURE  IF EXISTS moveTree ; 
-delimiter // 
-CREATE PROCEDURE moveTree (_ID INT, _IDNewParent INT) 
-NOT DETERMINISTIC
-BEGIN 
-DECLARE done INT DEFAULT 0;
-DECLARE _oldPath MEDIUMTEXT ;
-DECLARE _newPath MEDIUMTEXT ;
-
-SET _oldPath = (SELECT path FROM trees WHERE id = _ID) ;
-SET _newPath = (SELECT path FROM trees WHERE id = _IDNewParent) ;
-
-UPDATE trees SET  
-path = REPLACE(path, _oldPath, _newPath) , pathParent = REPLACE(pathParent, _oldPath, _newPath) 
-WHERE path  LIKE CONCAT(_oldPath, '%') ;
-
-UPDATE trees SET parent_id = _IDNewParent WHERE id = _ID ;
-
-END 
-//
-delimiter ;
-*/
 DROP PROCEDURE  IF EXISTS moveTree ; 
 delimiter // 
 CREATE PROCEDURE moveTree (_ID INT, _IDOldParent INT, _IDNewParent INT) 
@@ -222,11 +199,6 @@ END
 //
 delimiter ;
 
-
-
-
-
-
 DROP FUNCTION  IF EXISTS isParentTree ; 
 delimiter // 
 CREATE FUNCTION isParentTree (_IDParent INT, _IDChild INT) RETURNS INT 
@@ -239,6 +211,41 @@ SET _pathParent = (SELECT path FROM trees WHERE id = _IDParent) ;
 SET ret = IF((SELECT id FROM trees WHERE path LIKE CONCAT(_pathParent, '%') AND id = _IDChild) IS NULL, 1, 0) ; 
 
 RETURN ret ;
+
+END 
+//
+delimiter ;
+
+DROP PROCEDURE  IF EXISTS cloneTree ; 
+delimiter // 
+CREATE PROCEDURE cloneTree (_ID INT, _IDOLD INT) 
+NOT DETERMINISTIC
+BEGIN 
+DECLARE done INT DEFAULT 0;
+DECLARE _idparent INT ;
+DECLARE curs CURSOR FOR SELECT parent_id FROM trees WHERE path  LIKE CONCAT('%/', _IDOLD) ;
+DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done = 1;
+
+-- clona gli oggetti foglia 
+OPEN curs;
+REPEAT
+	FETCH curs INTO _idparent ;
+	IF NOT done THEN
+	 	CALL appendChildTree(_ID, _idparent) ;	
+	END IF;
+UNTIL done END REPEAT;
+
+-- clona le ramificazioni 
+INSERT INTO trees 
+SELECT 
+id, 
+_ID AS parent_id,
+REPLACE(path, _IDOLD, _ID) AS path,
+REPLACE(pathParent, _IDOLD, _ID) AS pathParent,
+priority
+FROM trees
+WHERE
+path LIKE CONCAT('%/', _IDOLD, '/%') ;
 
 END 
 //
@@ -259,6 +266,18 @@ SET _priority  	= (SELECT (MAX(priority)+1) FROM content_bases_objects WHERE obj
 SET _priority	= IF(_priority IS NULL, 1, _priority) ;
 
 INSERT INTO `content_bases_objects` ( `id` , `object_id` , `switch` , `priority` ) VALUES (_ID, _IDParent , 'BIBLIOS', _priority) ;
+
+END 
+//
+delimiter ;
+
+DROP PROCEDURE  IF EXISTS removeAllChildrenBibliography ; 
+delimiter // 
+CREATE PROCEDURE removeAllChildrenBibliography (_IDParent INT) 
+NOT DETERMINISTIC
+BEGIN 
+
+DELETE FROM content_bases_objects WHERE `object_id` = _IDParent AND switch = 'BIBLIOS' ;
 
 END 
 //
@@ -607,6 +626,18 @@ SET prmsG = (
 SET prmsG  = IF(prmsG IS NULL, 0, prmsG) ;
 
 RETURN (prmsG) ;
+
+END 
+//
+delimiter ;
+
+DROP PROCEDURE  IF EXISTS clonePermission ; 
+delimiter // 
+CREATE PROCEDURE clonePermission (_OBJID INT, _NEWID INT) 
+NOT DETERMINISTIC
+BEGIN 
+
+INSERT permissions (object_id, ugid, switch, flag) SELECT _NEWID, ugid, switch, flag FROM permissions WHERE object_id = _OBJID ;
 
 END 
 //
