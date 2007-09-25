@@ -142,8 +142,16 @@ $(document).ready(function(){
 						<td>{$section.created|date_format:$conf->date_format}</td>
 					</tr>
 					<tr>
+						<td class="label">Da:</td>
+						<td>{$section.UserCreated.userid|default:""}</td>
+					</tr>
+					<tr>
 						<td class="label">Ultima modifica:</td>
 						<td>{$section.modified|date_format:$conf->date_format}</td>
+					</tr>
+					<tr>
+						<td class="label">Da:</td>
+						<td>{$section.UserModified.userid|default:""}</td>
 					</tr>
 					<tr>
 						<td class="label">IP:</td>

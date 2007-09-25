@@ -17,7 +17,7 @@ rules[1]='loginPasswd:Password|minlength|6';
 <body>
 
 <div id = "sxPageLogin">
-	<div class="beditaButton" onClick = "document.location = {$html->url('/')}">
+	<div class="beditaButton" onClick = "document.location =$html->url('/')">
 		<b style="font:bold 17px Verdana">B.Edita</b><br><b>&#155;</b> 
 		<a href="{$html->url('/authentications/logout')}">esci</a><br><br><p>
 		<b>Consorzio BEdita</b>
@@ -31,8 +31,7 @@ rules[1]='loginPasswd:Password|minlength|6';
 <div id="dxPageLogin">
 <br/><br/><br/><br/>
 
-
-<form action="{$html->url('/authentications/login')}" method="post" name="loginForm" id="loginForm">
+{formHelper fnc="create" args="'authentication', array('action' => '/login', 'type' => 'POST')"}
 
 {assign var="URL" value=$beurl->here()}
 
@@ -42,22 +41,21 @@ rules[1]='loginPasswd:Password|minlength|6';
 <table border="0" cellspacing="8" cellpadding="0">
 <tr>
 	<td colspan="2">
-		<p>{t}Backend user restricted area{/t}</p>
+		<p>Area riservata ai gestori.</p>
 		<div id="errorsDiv">{if ($session->check('Message.flash'))}{$session->flash()}{/if}</div>
 	</td>
 </tr>
 <tr> 
-	<td>{t}Username{/t}</td>
+	<td>Username</td>
 	<td>{formHelper fnc="text" args="'login/userid', array('style' => 'width: 150px')"}</td>
 </tr>
 <tr> 
-	<td>{t}Password{/t}</td>
+	<td>Password</td>
 	<td>{formHelper fnc="password" args="'login/passwd', array('style' => 'width: 150px')"}</td>
 </tr>
 <tr>
 	<td>&nbsp;</td> 
-	<td><input type="submit" value="{t}Enter{/t}" onclick="if(!checkOnSubmit('loginForm',rules)) return false;"/>
-	</td>
+	<td>{formHelper fnc="submit" args="'entra', array('onclick' => 'if(!checkOnSubmit(\'authenticationAddForm\',rules)) return false;')"}</td>
 </tr>
 </table>
 

@@ -18,18 +18,34 @@
  * @modifiedby		
  * @lastmodified	
  * @license
- * @author 		giangi giangi@qwerg.com			
+ * @author 		giangi giangi@qwerg.com		
+ * 
+ * Una comunnity deve essere inserita in un'area o newsletter o sezione.
+ * Oltre i dati della community va inserito, nei dati per la creazione di:
+ * parent_id
+ * ID dell'oggetto contenitore.
+ * 	
 */
-class Community extends BEAppObjectModel
+class Community extends BEAppCollectionModel
 {
 	var $name 		= 'Community';
 	var $useTable 	= 'view_communities' ;
 	var $recursive 	= 2 ;
+	
+	/**
+	 * Contenitore dove inserire la community
+	 *
+	 * @var unknown_type
+	 */
+	var $validate = array(
+		'parent_id'	=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
+	) ;
+	
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'CreateIndexFields'		=> array(),
 			'ForeignDependenceSave' => array('Object', 'Collection'),
-			'DeleteDependentObject'	=> array('section'),
+			'DeleteDependentObject'	=> array('objectuser'),
 			'DeleteObject' 			=> 'objects',
 	); 
 	
@@ -84,6 +100,9 @@ class Community extends BEAppObjectModel
 			}
 		}
 		
+		if(empty($this->id)) $created = true ;
+		else $created = false ; 
+		
 		$this->setInsertID($this->Object->id);
 		$this->id = $this->Object->id ;
 		
@@ -94,13 +113,53 @@ class Community extends BEAppObjectModel
 				$this->behaviors[$behaviors[$i]]->afterSave($this, null);
 			}
 		}
-
+		
+		$this->afterSave($created) ;
 		$this->data = false;
 		$this->_clearCache();
 		$this->validationErrors = array();
 		
 		return true ;
 	}
+	
+	/**
+	 * Associa la community ad un contenitore quando viene creata
+	 */
+	function afterSave($created) {
+		if (!$created) return ;
+		
+		if(!class_exists('Tree')) loadModel('Tree');
+		$tree 	=& new Tree();
+		$tree->appendChild($this->id, $this->data[$this->name]['parent_id']) ;		
+	}
+	
+	function appendChild($id, $idParent = null) {
+		if(!class_exists('Tree')) loadModel('Tree');
+
+		$tree =& new Tree();
+		$ret = $tree->appendChild($id, (isset($idParent)?$idParent:$this->id)) ; 
+		
+		return $ret ;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Formatta i dati per la creazione di un clone, ogni tipo
+	 * di oggetto esegue operazioni specifiche richiamando.
+	 * Trova l'id del ramo in cui e' inserita
+	 *
+	 * @param array $data		Dati da formattare
+	 * @param object $source	Oggetto sorgente
+	 */
+	protected function _formatDataForClone(&$data, $source = null) {
+		if(!class_exists('Tree')) loadModel('Tree');
+
+		$tree =& new Tree();
+		
+		$data['parent_id'] = $tree->getParent($data['id'])  ;		
+		parent::_formatDataForClone($data);
+	}	
 	
 }
 ?>

@@ -40,6 +40,18 @@ class BEObject extends BEAppModel
 				'foreignKey'	=> 'object_type_id',
 				'conditions'	=> ''
 			),
+		'UserCreated' =>
+			array(
+				'className'		=> 'User',
+				'fields'		=> 'id, userid, realname',
+				'foreignKey'	=> 'user_created',
+			),
+		'UserModified' =>
+			array(
+				'className'		=> 'User',
+				'fields'		=> 'id, userid, realname',
+				'foreignKey'	=> 'user_modified',
+			),
 	) ;
 	
 	var $hasMany = array(	
@@ -75,10 +87,8 @@ class BEObject extends BEAppModel
 				'foreignKey'	=> 'object_id',
 				'dependent'		=> true
 			),
-
 	);
 
-	
 	/**
 	 * Formatta i dati specifici dopo la ricerca
 	 */	
@@ -184,6 +194,8 @@ class BEObject extends BEAppModel
 			'nickname' 			=> array('_getDefaultNickname', 	(isset($data['nickname']))?$data['nickname']:((isset($data['title']))?$data['title']:'')),
 			'lang' 				=> array('_getDefaultLang', 		(isset($data['lang']))?$data['lang']:null),
 			'IP_created' 		=> array('_getDefaultIP'),
+			'user_created'		=> array('_getIDCurrentUser', 		(isset($data[$this->primaryKey]) && empty($data[$this->primaryKey]))? (isset($data['user_created'])?$data['user_created']:true) :false),
+			'user_modified'		=> array('_getIDCurrentUser', 		(isset($data['user_modified'])?$data['user_modified']:true)), 
 			'Permission' 		=> array('_getDefaultPermission', 	(isset($data['Permission']))?$data['Permission']:null, (isset($data['object_type_id']))?$data['object_type_id']:0),
 		) ;
 		
@@ -201,6 +213,8 @@ class BEObject extends BEAppModel
 			} 
 		}
 
+		if(empty($data["user_created"])) unset($data["user_created"]) ;
+		
 		// Se c'e' la chiave primaria vuota la toglie
 		if(isset($data[$this->primaryKey]) && empty($data[$this->primaryKey]))
 			unset($data[$this->primaryKey]) ;
@@ -241,7 +255,22 @@ class BEObject extends BEAppModel
 	
 		return $IP ;
 	}
-
+	
+	private function _getIDCurrentUser($get = true) {
+		if(!$get) return null ;
+		
+		if(is_string($get)) return $get ;
+		
+		// Preleva l'utente dai dati di sessione
+		$conf = Configure::getInstance() ;		
+		$session = @(new CakeSession()) ;
+		
+		$user = $session->read($conf->session["sessionUserKey"]) ; 
+		if(!isset($user["id"])) return null ;
+		
+		return $user["id"] ;
+	}
+	
 	/**
 	 * torna un array con la variabile archiviata in un array
 	 */

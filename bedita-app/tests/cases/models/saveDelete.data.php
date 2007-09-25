@@ -18,10 +18,11 @@ class AreaData extends Object {
 	var $data =  array(
 		'minimo'	=> array('title' 			=> 'Titolo di test'),
 		
-		'domanda'	=> array('title' 			=> 'Titolo Domanda di test'),
-		'risposta1'	=> array('title' 			=> 'Titolo Risposta 1 di test'),
-		'risposta2'	=> array('title' 			=> 'Titolo Risposta 2 di test'),
-		'risposta3'	=> array('title' 			=> 'Titolo Risposta 3 di test'),
+		'questionario'	=> array('title' 			=> 'Titolo questionario'),
+		'domanda'		=> array('title' 			=> 'Titolo Domanda di test'),
+		'risposta1'		=> array('title' 			=> 'Titolo Risposta 1 di test'),
+		'risposta2'		=> array('title' 			=> 'Titolo Risposta 2 di test'),
+		'risposta3'		=> array('title' 			=> 'Titolo Risposta 3 di test'),
 
 		'emptyStream'	=> array('title' 			=> 'Titolo empty Stream'),
 
@@ -58,6 +59,11 @@ class AreaData extends Object {
 		'user'		=> array(
 				'title' 	=> 'Titolo Object user', 
 				'user_id'	=> 'bedita',
+		),
+		'community'	=> array(
+				'title' 	=> 'Comunity Test', 
+				'user_id'	=> 'bedita',
+				'parent_id'	=> 2,
 		),
 	) ;
 	

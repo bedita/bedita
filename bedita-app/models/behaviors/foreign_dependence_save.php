@@ -29,7 +29,7 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 	function beforeSave(&$model) {
 		$first 		= true ;		// true, quando processa il primo model (se necessario crea il nuovo id)
 		$id			= null ;		// Se presente e' stato creato un nuovo elemento
-		$firstModel	= null ;		// Il nome dle Model iniziale
+		$firstModel	= null ;		// Il nome del Model iniziale
 		
 		foreach ($this->config[$model->name] as $name) {
 			if(isset($model->$name)) {				

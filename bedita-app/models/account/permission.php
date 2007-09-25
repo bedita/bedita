@@ -133,5 +133,14 @@ class Permission extends BEAppModel
 		return $ret[0][0]['perms'] ;
 	}
 
+	/**
+	 * Clona i permessi di un oggetto.
+	 *
+	 * @param integer $id		ID dell'oggetto da clonare
+	 * @param integer $idnew	ID dell'oggetto che assume i permessi
+	 */
+	function clonePermissions($id, $idnew) {
+		return $this->execute("CALL clonePermission({$id}, '{$idnew}')") ;
+	}	
 }
 ?>

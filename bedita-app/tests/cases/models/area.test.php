@@ -14,6 +14,7 @@
  * @author giangi@qwerg.com
  * 
  */
+
 include_once(dirname(__FILE__) . DS . 'area.data.php') ;
 /*
 class AreaTest extends Area {
@@ -33,10 +34,10 @@ class AreaTestCase extends CakeTestCase {
      * Dati utilizzati come esempio
      */
     var $data		= null ;
-/*    
+    
 	function testInserimentoMinimo() {
 		$conf  		= Configure::getInstance() ;
-		
+	
 		$result = $this->Area->save($this->data['insert']['area']['minimo']) ;
 		$this->assertEqual($result,true);		
 		if(!$result) {
@@ -54,7 +55,6 @@ class AreaTestCase extends CakeTestCase {
 		$SQL = "SELECT * FROM `indexs`  WHERE object_id IN ({$this->Area->id})" ;
 		$result = $this->Area->execute($SQL) ;
 		pr($result) ;
-		
 	} 
 	
 	function testInserimentoConCustomProperties() {
@@ -127,11 +127,11 @@ class AreaTestCase extends CakeTestCase {
 		$result = $this->Area->execute($SQL) ;
 		pr($result) ;
 	} 
-*/
+
 	function testInserimentoInTreeCancellazione() {
 		$conf  		= Configure::getInstance() ;
 		
-//		$this->Transaction->begin() ;
+		$this->Transaction->begin() ;
 
 		// Inserisce
 		$result = $this->Area->save($this->data['insert']['area']['minimo']) ;
@@ -173,7 +173,7 @@ class AreaTestCase extends CakeTestCase {
 		$result = $this->Section->findById($id3) ;
 		$this->assertEqual($result, false);
 		
-//		$this->Transaction->rollback() ;
+		$this->Transaction->rollback() ;
 	} 
 	
 	/////////////////////////////////////////////////

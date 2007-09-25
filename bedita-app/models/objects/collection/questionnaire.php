@@ -20,7 +20,7 @@
  * @license
  * @author 		giangi giangi@qwerg.com			
 */
-class Questionnaire extends BEAppObjectModel
+class Questionnaire extends BEAppCollectionModel
 {
 	var $name 		= 'Questionnaire';
 	var $useTable 	= 'view_questionnaires' ;
@@ -29,6 +29,7 @@ class Questionnaire extends BEAppObjectModel
 			'CompactResult' 		=> array(),
 			'CreateIndexFields'		=> array(),
 			'ForeignDependenceSave' => array('Object', 'Collection'),
+			'DeleteDependentObject'	=> array('question'),
 			'DeleteObject' 			=> 'objects',
 	); 
 
@@ -82,6 +83,9 @@ class Questionnaire extends BEAppObjectModel
 			}
 		}
 		
+		if(empty($this->id)) $created = true ;
+		else $created = false ; 
+
 		$this->setInsertID($this->Object->id);
 		$this->id = $this->Object->id ;
 		
@@ -93,11 +97,84 @@ class Questionnaire extends BEAppObjectModel
 			}
 		}
 
+		$this->afterSave($created) ;
 		$this->data = false;
 		$this->_clearCache();
 		$this->validationErrors = array();
 		
 		return true ;
+	}
+	
+	/**
+	 * Inserisce nell'albero
+	 */
+	function afterSave($created) {
+		if (!$created) return ;
+		
+		if(!class_exists('Tree')) loadModel('Tree');
+		$tree 	=& new Tree();
+		$tree->appendChild($this->id, null) ;		
+	}
+	
+ 	function getQuestions($userid = null, $status = null) {
+ 		return  $this->getChildren($this->id, $userid, $status,  0xFF, 1, 1000000) ;
+ 	}
+
+	function appendChild($id, $idParent = null) {
+		return $this->handlerChildren($id, (isset($idParent)?$idParent:$this->id), 5) ;
+	}
+	
+	function moveChildUp($id, $idParent = null) {
+		return $this->handlerChildren($id, (isset($idParent)?$idParent:$this->id), 1) ;
+	}
+	
+	function moveChildDown($id, $idParent = null) {
+		return $this->handlerChildren($id, (isset($idParent)?$idParent:$this->id), 2) ;
+	}
+
+	function moveChildFirst($id, $idParent = null) {
+		return $this->handlerChildren($id, (isset($idParent)?$idParent:$this->id), 3) ;
+	}
+	
+	function moveChildLast($id, $idParent = null) {
+		return $this->handlerChildren($id, (isset($idParent)?$idParent:$this->id), 4) ;
+	}
+
+	function removeAllChildren($idParent = null) {
+		if(!$this->Faq->getItems($queries)) return false ;
+		
+		if(!class_exists('FaqQuestion')) loadModel('FaqQuestion');
+		$FaqQuestion =& new FaqQuestion();
+		
+		foreach ($queries as $query) {
+			if(!$FaqQuestion->delete($query['id'])) return false ;
+		}
+		
+		return true ;
+	}
+
+	/**
+	 * Esegue l'operazione passata
+	 *
+	 * @param unknown_type $id			id del figlio
+	 * @param unknown_type $idParent	id della FAQ
+	 * @param unknown_type $operation	operazione: 1: up, 2: down, 3:first, 4:last, 5: append
+	 */
+	private function handlerChildren($id, $idParent, $operation) {
+		if(!class_exists('Tree')){
+			loadModel('Tree');
+		}
+		$tree =& new Tree();
+		
+		switch($operation) {	
+			case 1: $ret = $tree->moveChildUp($id, $idParent) ; break ;
+			case 2: $ret = $tree->moveChildDown($id, $idParent) ; break ;
+			case 3: $ret = $tree->moveChildFirst($id, $idParent) ; break ;
+			case 4: $ret = $tree->moveChildLast($id, $idParent) ; break ;
+			case 5: $ret = $tree->appendChild($id, $idParent) ; break ;
+		}
+		
+		return $ret ;
 	}
 }
 ?>

@@ -102,12 +102,12 @@ $config['objectTypes'] = array(
 	'event'				=> 21,
 
 	'document'			=> 22,
-	'documentPTRobject'	=> 23,
-	'documentPTRextern'	=> 24,
+	'documentptrobject'	=> 23,
+	'documentptrextern'	=> 24,
 
-	'documentPTRfile'	=> 25,
-	'documentPTRservice'=> 26,
-	'documentRule'		=> 27,
+	'documentptrfile'	=> 25,
+	'documentptrservice'=> 26,
+	'documentrule'		=> 27,
 	
 	'author'			=> 28,
 	'biblioitem'		=> 30
@@ -130,10 +130,43 @@ $config['objectTypeModels'] = array(
 	8	=> 'Timeline',
 	9	=> 'Community',
 	
+	10	=> 'BEFile',
+	11	=> 'AudioVideo',
+	12	=> 'Image',
+
+	13	=> 'Comment',
+	14	=> 'FaqQuestion',
+	15	=> 'Question',
+	
+	16	=> 'Answer',
 	17	=> 'ObjectUser',
+	18	=> 'ShortNews',
+
+	19	=> 'Bibliography',
+	20	=> 'Book',
+	21	=> 'Event',
+
+	22	=> 'Document',
+	23	=> 'DocumentPtrobject',
+	24	=> 'DocumentPtrExtern',
+	
+	25	=> 'DocumentPtrFile',
+	26	=> 'DocumentPtrService',
+	27	=> 'DocumentRule',
+
+	28	=> 'Author',
+	30	=> 'BiblioItem',
 
 	// To be continued...
 ) ;
+
+/**
+ * Definisce le variabili utilizzate per la gestione delle sessioni
+ */
+$config['session'] = array(
+	"sessionUserKey"	=> "BEAuthUser", 		// Nome con cui salvato in sessione info. utente connesso
+) ;
+
 
 /**
  * Permessi di default

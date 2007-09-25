@@ -92,7 +92,7 @@ class BaseDocument extends BEAppModel
 			$switch	= $assoc['switch'] ;
 				
 			// Cancella la precedente associazione con questo commento
-			$queries[] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND {$assoc['conditions']} " ;
+			$queries[] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND {$assoc['conditions']} AND {$assoc['associationForeignKey']} = $obj_id" ;
 				
 			// Se non e' richiesta la cancellazione reinserisce il commento
 			if(!isset($this->tempData['comments'][$i]['delete'])) {

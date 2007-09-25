@@ -20,7 +20,7 @@
  * @license
  * @author 		giangi giangi@qwerg.com			
 */
-class Section extends BEAppObjectModel
+class Section extends BEAppCollectionModel
 {
 	var $name 		= 'Section';
 	var $useTable 	= 'view_sections' ;
@@ -33,6 +33,15 @@ class Section extends BEAppObjectModel
 			'DeleteObject' 			=> 'objects',
 	); 
 
+	/**
+	 * Contenitore dove inserire la community
+	 *
+	 * @var unknown_type
+	 */
+	var $validate = array(
+		'parent_id'	=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
+	) ;
+	
 	var $hasOne = array(
 			'Object' =>
 				array(
@@ -83,6 +92,9 @@ class Section extends BEAppObjectModel
 			}
 		}
 		
+		if(empty($this->id)) $created = true ;
+		else $created = false ; 
+		
 		$this->setInsertID($this->Object->id);
 		$this->id = $this->Object->id ;
 		
@@ -94,11 +106,77 @@ class Section extends BEAppObjectModel
 			}
 		}
 
+		$this->afterSave($created) ;
 		$this->data = false;
 		$this->_clearCache();
 		$this->validationErrors = array();
 		
 		return true ;
 	}
+	
+	/**
+	 * Associa la community ad un contenitore quando viene creata
+	 */
+	function afterSave($created) {
+		if (!$created) return ;
+		
+		if(!class_exists('Tree')) loadModel('Tree');
+		$tree 	=& new Tree();
+		$tree->appendChild($this->id, $this->data[$this->name]['parent_id']) ;		
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Formatta i dati per la creazione di un clone, ogni tipo
+	 * di oggetto esegue operazioni specifiche richiamando.
+	 * Trova l'id del ramo in cui e' inserita
+	 *
+	 * @param array $data		Dati da formattare
+	 * @param object $source	Oggetto sorgente
+	 */
+	protected function _formatDataForClone(&$data, $source = null) {
+		if(!class_exists('Tree')) loadModel('Tree');
+
+		$tree =& new Tree();
+		
+		$data['parent_id'] = $tree->getParent($data['id'])  ;		
+		parent::_formatDataForClone($data);
+	}	
+	
+	/**
+	 * Esegue ricorsivamente solo la clonazione dei figli di tipo: Section e Community,
+	 * gli altri reinscerisce un link
+	 *
+	 */
+	protected function insertChildrenClone() {
+		$conf  	= Configure::getInstance() ;
+		$tree 	=& new Tree();
+		
+		// Preleva l'elenco dei figli
+		$children = $tree->getChildren($this->oldID , null, null, 0xFF, 1, 10000000) ;
+		
+		// crea le nuove associazioni
+		for ($i=0; $i < count($children["items"]) ; $i++) {
+			$item = $children["items"][$i] ;
+			
+			switch($item['object_type_id']) {
+				case $conf->objectTypes['section']:
+				case $conf->objectTypes['community']: {
+					$className	= $conf->objectTypeModels[$item['object_type_id']] ;
+					
+					$tmp = new $className() ;
+					$tmp->id = $item['id'] ;
+					
+					$clone = clone $tmp ; 
+					$tree->move($this->id, $this->oldID , $clone->id) ;
+				}  break ;
+				default: {
+					$tree->appendChild($item['id'], $this->id) ;
+				}
+			}
+		}
+	}
+
 }
 ?>

@@ -20,7 +20,7 @@
  * @license
  * @author 		giangi giangi@qwerg.com			
 */
-class Timeline extends BEAppObjectModel
+class Timeline extends BEAppCollectionModel
 {
 	var $name 		= 'Timeline';
 	var $useTable 	= 'view_timelines' ;
@@ -82,6 +82,9 @@ class Timeline extends BEAppObjectModel
 			}
 		}
 		
+		if(empty($this->id)) $created = true ;
+		else $created = false ; 
+
 		$this->setInsertID($this->Object->id);
 		$this->id = $this->Object->id ;
 		
@@ -93,11 +96,24 @@ class Timeline extends BEAppObjectModel
 			}
 		}
 
+		$this->afterSave($created) ;
 		$this->data = false;
 		$this->_clearCache();
 		$this->validationErrors = array();
 		
 		return true ;
 	}
+	
+	/**
+	 * Inserisce nell'albero
+	 */
+	function afterSave($created) {
+		if (!$created) return ;
+		
+		if(!class_exists('Tree')) loadModel('Tree');
+		$tree 	=& new Tree();
+		$tree->appendChild($this->id, null) ;		
+	}
+	
 }
 ?>

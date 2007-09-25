@@ -102,7 +102,7 @@ class Question extends BEAppObjectModel
 	}
 
 	/**
-	 * Prima cancella le risposte associate
+	 * Prima cancella le domande associate
 	 *
 	 * @param unknown_type $value
 	 * @return unknown
@@ -110,7 +110,7 @@ class Question extends BEAppObjectModel
 	function beforeDelete() {
 		// Preleva l'elenco delle risposte
 		$this->bviorCompactResults 	= true ;
-		$this->bviorHideFields		= array("Index", "CustomProperties", "Permission", "Version", "langObjs") ;
+		$this->bviorHideFields		= array("Index", "CustomProperties", "Permission", "Version", "langObjs", "images", "attachments", "multimedia", "links") ;
 		$domanda = $this->findById($this->{$this->primaryKey}) ;
 		
 		for ($i=0; $i < count($domanda['answers']) ; $i++) {

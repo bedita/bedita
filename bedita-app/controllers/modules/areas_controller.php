@@ -67,7 +67,7 @@ class AreasController extends AppController {
 				return ;		
 			}
 		}
-
+		
 		// Formatta i campi in lingua
 		if(isset($area["LangText"])) {
 			$this->BeLangText->setupForView($area["LangText"]) ;
@@ -114,7 +114,8 @@ class AreasController extends AppController {
 		} else {
 			$parent_id = 0 ;
 		}	
-		
+
+
 		// Setup dei dati da passare al template
 		$this->set('tree', 		$tree);
 		$this->set('section',	$section);
@@ -163,7 +164,7 @@ class AreasController extends AppController {
 			
 		 	// Verifica i permessi di modifica dell'oggetto
 		 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-		 			throw BEditaActionException($this, "Error modify permissions");
+		 			throw new BEditaActionException($this, "Error modify permissions");
 		 	
 		 	// Formatta le custom properties
 		 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
@@ -229,7 +230,7 @@ class AreasController extends AppController {
 			
 		 	// Inserisce la sezione nell'albero o la sposta se necessario
 		 	if($new) {
-		 		if(!$this->Tree->appendChild($this->Section->id, $this->data["destination"])) throw BEditaActionException($this, "Append Area in to tree");
+		 		if(!$this->Tree->appendChild($this->Section->id, $this->data["destination"])) throw new BEditaActionException($this, "Append Area in to tree");
 		 	} else {
 		 		$oldParent = $this->Tree->getParent($this->Section->id) ;
 		 		if($oldParent != $this->data["destination"]) {
@@ -243,7 +244,7 @@ class AreasController extends AppController {
 		 			(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
 		 			(empty($this->data['recursiveApplyPermissions'])?false:true))
 		 		) {
-		 			throw BEditaActionException($this, __("Error saving permissions", true));
+ 				throw BEditaActionException($this, __("Error saving permissions", true));
 		 	}	 	
 	 		$this->Transaction->commit() ;
 
@@ -286,7 +287,7 @@ class AreasController extends AppController {
 		$this->setup_args(array("id", "integer", $id)) ;
 		
 	 	try {
-		 	if(empty($id)) throw BEditaActionException($this, "No data");
+		 	if(empty($id)) throw new BEditaActionException($this, "No data");
 	 		
 		 	$this->Transaction->begin() ;
 		 	
@@ -299,8 +300,7 @@ class AreasController extends AppController {
 			$this->Transaction->rollback() ;
 				
 			return ;
-	 	}
-	 	
+	 	}	
 	 }
 
 	 /**

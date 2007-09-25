@@ -91,7 +91,7 @@ class Event extends BEAppObjectModel
 			$db->query("DELETE FROM {$table} WHERE {$foreignK} = '{$id}'");
 			
 			// Se non ci sono dati da salvare esce
-			if (!(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name]))) continue ;
+			if (!isset($this->data[$this->name][$name]) || !(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name]))) continue ;
 			
 			// Salva le nuove associazioni
 			$size = count($this->data[$this->name][$name]) ;
@@ -114,6 +114,8 @@ class Event extends BEAppObjectModel
 	 */
 	function beforeDelete() {
 		return $this->BaseDocument->delete() ;
-	}	
+	}
+
+	
 }
 ?>

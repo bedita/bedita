@@ -192,7 +192,66 @@ class Bibliography extends BEAppObjectModel
 		$this->query("CALL moveChildBibliographyLast({$id}, {$this->id})");
 	}
 
+	function removeAllChildren($idParent = false) {
+		if (!empty($idParent)) {
+			$this->id = $idParent ;
+		}		
+		$this->query("CALL removeAllChildrenBibliography({$this->id})");
+	}
 	
-	
+	/**
+	 * Un oggetto crea un clone di se stesso.
+	 *
+	 */
+	function __clone() {
+		$conf  	= Configure::getInstance() ;
+		if(!class_exists('BiblioItem')) loadModel('BiblioItem') ;
+		
+		$idSourceObj = $this->{$this->primaryKey} ;
+		
+		// Clona l'oggetto
+		parent::__clone();
+		
+		$idNewObj = $this->id ;
+		
+		// Associa gli items
+		if(!$this->getItems($idSourceObj, $items)) {
+			throw new BEditaErrorCloneException("Bibliography::getItems") ;
+		}
+		
+		// I libri riassociati, gli item clonati
+		for ($i=0; $i < count($items) ; $i++) {
+			if($items[$i]['object_type_id'] == $conf->objectTypes['biblioitem']) {
+				$item = new BiblioItem() ;
+				$item->id 				= $items[$i]['id'] ;
+				$item->bibliography_id 	= $idNewObj ;
+				
+				$clone = clone $item ;
+				
+				$idItem = $clone->id ;
+			} else {
+				$idItem = $items[$i]['id'] ;
+				
+				// Aggiunge il libro
+				if($this->appendChild($idItem, $idNewObj)) {
+					throw new BEditaErrorCloneException("Bibliography::appendChild") ;
+				}
+			}
+			
+		}
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 ?>

@@ -61,5 +61,11 @@ class BEFile extends BEAppObjectModel
 		parent::__construct() ;
 	}
 
+	/** 
+	 * Impedisce la clonazione 
+	 */
+	function __clone() {
+		throw new BEditaCloneModelException($this);
+	}
 }
 ?>

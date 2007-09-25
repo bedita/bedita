@@ -44,6 +44,47 @@ class BEAppModel extends AppModel {
 	}
 	
 	/**
+	 * Torna una lista di contenuti. Il tipo di contenuti e' definito da $name.
+	 * Il nome pu˜ essere cambiato dalle classe derivate.
+	 *
+	 * @param array $recordset		Dove inserire il risultato
+	 * @param integer $page			Pagina dell'elenco richiesta
+	 * @param integer $dim			Dimensione della pagina
+	 * @param string $order			Campo su cui ordinare.Anche nome_campo + spazio + DESC
+	 * @return boolean
+	 */
+	
+	/**
+	 * Torna il risultato di una ricerca findAll, paginata
+	 *
+	 * @param unknown_type $conditions
+	 * @param unknown_type $fields
+	 * @param unknown_type $order
+	 * @param unknown_type $page
+	 * @param unknown_type $dim
+	 * @return boolean
+	 */
+/*	
+	function find($conditions = null, $fields = null, $order = null, $page = 1, $dim = 100000) {
+		// Esegue la ricerca
+        if(($tmp = $this->findAll($conditions, $fields, $order, $dim, $page, 0)) === false) return false ;
+
+		// Formatta il record set da tornare
+		for ($i =0; $i < count($tmp); $i++) {
+			$tmp[$i] = $this->am($tmp[$i]);
+		}
+
+		$recordset = array(
+			"items"		=> &$tmp,
+			"toolbar"	=> $this->toolbar($page, $dim, $conditions)
+		) ;
+		
+		
+		return $recordset ;
+	}
+*/	
+	
+	/**
 	 * Esegue una query in un template di smarty e torna il recordset.
 	 * la query puo' esserein un file di template o in una stringa 
 	 *
@@ -73,6 +114,62 @@ class BEAppModel extends AppModel {
 		return $recordset ;
 	}
 		
+	/**
+	 * Crea una toolbar da una ricerca
+	 *
+	 * @param integer 	$page		
+	 * @param integer 	$dimPage	
+	 * @param mixed 	$condition	condizione utilizzata per la ricerca
+	 * @param boolean 	$recursive	TRUE, preleva gli ogetti connessi
+	 * @return array
+	 */
+	function toolbar($page = null, $dimPage = null, $condition = null, $recursive = null) {
+		// conta il numero di record
+		if(($size = $this->findCount($condition, $recursive)) === false) return false ;
+		
+		$toolbar = array("first" => 0, "prev" => 0, "next" => 0, "last" => 0, "size" => 0, "pages" => 0, "page" => 0) ;
+		
+		if(!$page || empty($page)) $page = 1 ;
+		if(!$dimPage || empty($dimPage)) $dimPage = $size ;
+		
+		$pageCount = $size / $dimPage ;
+		settype($pageCount,"integer");
+		if($size % $dimPage) $pageCount++ ;
+		
+		$toolbar["pages"] = $pageCount ;
+		$toolbar["page"]  = $page ;
+				
+		if($page == 1) {
+			if($page >= $pageCount) {
+				// Una sola
+				
+			} else {
+				// Prima pagina
+				$toolbar["next"] = $page+1 ;
+				$toolbar["last"] = $pageCount ;
+			} 
+		} else {
+			if($page >= $pageCount) {
+				// Ultima
+				$toolbar["first"] = 1 ;
+				$toolbar["prev"] = $page-1 ;
+			} else {
+				// Pagina di mezzo
+				$toolbar["next"] = $page+1 ;
+				$toolbar["last"] = $pageCount ;
+				$toolbar["first"] = 1 ;
+				$toolbar["prev"] = $page-1 ;
+			}
+		}
+
+		$toolbar["start"]	= (($page-1)*$dimPage)+1 ;
+		$toolbar["end"] 	= $page * $dimPage ;
+		if($toolbar["end"] > $size) $toolbar["end"] = $size ;
+		
+		$toolbar["size"] = $size ;
+		
+		return $toolbar ;	
+	}
 }
 
 ///////////////////////////////////////////////////////////////

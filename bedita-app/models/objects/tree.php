@@ -29,6 +29,7 @@ class Tree extends BEAppModel
 	var $name 		= 'Tree';
 	var $useTable	= "view_trees" ;
 	
+	
 	/**
 	 * save.
 	 * Non fa niente
@@ -52,6 +53,24 @@ class Tree extends BEAppModel
 		return $this->id  ;
 	}
 	
+	/**
+	 * Crea il clone di una determinata ramificazione.
+	 *
+	 * @param integer $newId	Id radice ramificazione clonata
+	 * @param integer $id		Id ramificazione
+	 */
+	function cloneTree($newId, $id = null) {
+		if (isset($id)) {
+			$this->id = $id ;
+		}
+		if(!isset($this->id)) return false ;	
+		
+		$id = $this->id ;
+		
+		$ret = $this->query("CALL cloneTree({$id}, {$newId})");
+		return (($ret === false)?false:true) ;
+	}
+		
 	/**
 	 * Torna il parent/ i parent dell'albero
 	 *
@@ -172,7 +191,7 @@ class Tree extends BEAppModel
 	 * Si possono selezionare i tipi di oggetti da inserire nell'albero.
 	 * 
 	 * @param integer $id		id della radice da selezionare. 
-	 * @param string $userid	l'utente che accede. Se null: non controlla i permessi. Se '': uente guest.
+	 * @param string $userid	l'utente che accede. Se null: non controlla i permessi. Se '': utente guest.
 	 * 							Default: non verifica i permessi.
 	 * @param string $status	Prende oggetti solo con lo status passato
 	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
@@ -325,19 +344,86 @@ class Tree extends BEAppModel
 		}
 	}
 	
-	
-/*	
-	function getChildren($id, $hiddenField = null, $compact = true) {
+	/**
+	 * Preleva i figli di cui id e' radice.
+	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se ''  un utente anonimo,
+	 * altrimenti li prende tutti.
+	 * Si possono selezionare i tipi di oggetti da prelevare.
+	 * 
+	 * @param integer $id		id della radice da selezionare. 
+	 * @param string $userid	l'utente che accede. Se null: non controlla i permessi. Se '': utente guest.
+	 * 							Default: non verifica i permessi.
+	 * @param string $status	Prende oggetti solo con lo status passato
+	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
+	 * 							1 | 3 | 22 ... aree, sezioni, documenti.
+	 * 							Default: tutti.
+	 * @param integer $page		Numero di pagina da selezionare
+	 * @param integer $dim		Dimensione della pagina
+	 */
+	function getChildren($id = null, $userid = null, $status = null, $filter = 0xFF, $page = 1, $dim = 100000) {
+		$fields  = " * " ;
+		
+		// Setta l'id
 		if (!empty($id)) {
 			$this->id = $id;
 		}
-		$id = $this->id;		
-		$ret = $this->query("SELECT id, path, priority FROM tree WHERE parent_id = '{$id}' ORDER BY priority ");
-		
-		return $ret ;
-	}
-*/
 
+		// setta le condizioni di ricerca
+		$conditions = array() ;
+		if($filter) {
+			$conditions[] = array("object_type_id" => " (object_type_id & {$filter})  ") ;
+		}
+
+		if(isset($userid)) {
+			// Preleva i permessi dell'utente sugli oggetti selezionati
+			$fields 		= " Tree.*, prmsUserByID ('{$userid}', id, 15) as perms " ;
+			$conditions[] 	= " prmsUserByID ('{$userid}', id, ".BEDITA_PERMS_READ.") > 0 " ;
+		}
+			
+		if(isset($status)) {
+			$conditions[] = array('status' => $status) ;
+		}
+
+		if(isset($this->id)) $conditions[] = array("parent_id" => $this->id) ;
+		else $conditions[] = array("parent_id" => null);
+		
+		// Costruisce i criteri di ricerca
+		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
+		$sqlClausole = $db->conditions($conditions, false, true) ;
+		
+		// Crea la toolbar
+//		$toolbar = $this->toolbar($page, $dim, $sqlClausole) ;
+		
+		// Esegue la ricerca	
+		if($page > 1) $offset = ($page -1) * $dim ;
+		else $offset = null ;
+		$limit = isset($offset)? "$offset, $dim" : "$dim";
+
+		$tmp  = $this->execute("SELECT {$fields} FROM view_trees AS Tree {$sqlClausole} LIMIT {$limit}") ;
+		
+		// Torna il risultato
+		$recordset = array(
+			"items"		=> array(),
+			"toolbar"	=> $this->toolbar($page, $dim, $sqlClausole)
+		) ;
+		for ($i =0; $i < count($tmp); $i++) {
+			$recordset['items'][] = $this->am($tmp[$i]);
+		}
+		
+		return $recordset ;
+	}
+
+	function findCount($conditions = null, $recursive = null) {
+		list($data)  = $this->execute("SELECT COUNT(*) AS count FROM view_trees AS Tree {$conditions}") ;
+
+		if (isset($data[0]['count'])) {
+			return $data[0]['count'];
+		} elseif (isset($data[$this->name]['count'])) {
+			return $data[$this->name]['count'];
+		}
+
+		return false;
+	}
 
 }
 

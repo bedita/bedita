@@ -32,7 +32,8 @@ class SaveDeleteTestCase extends CakeTestCase {
  							'Document', 'Event', 'Question', 'Answer',
  							'BEFile', 'Image', 'AudioVideo',
  							'Comment', 'Book', 'Author', 'ShortNews',
- 							'Bibliography', 'FaqQuestion', 'BiblioItem', 'ObjectUser'
+ 							'Bibliography', 'FaqQuestion', 'BiblioItem', 'ObjectUser',
+ 							'Tree'
  	) ;
     var $dataSource	= 'test' ;
  	
@@ -40,6 +41,7 @@ class SaveDeleteTestCase extends CakeTestCase {
 
 	////////////////////////////////////////////////////////////////////
 	// Contenitori
+/*
 	function testInsertArea() {
 		$numRecordBegin = $this->_getNumRecordsTable($this->Area) ; 
 		
@@ -54,7 +56,7 @@ class SaveDeleteTestCase extends CakeTestCase {
 
 		$numRecordBegin = $this->_getNumRecordsTable($this->Community) ; 
 		
-		$this->_insertDelete($this->Community, $this->data['minimo']) ;
+		$this->_insertDelete($this->Community, $this->data['community']) ;
 		
 		$numRecordEnd = $this->_getNumRecordsTable($this->Community) ; 
 		
@@ -101,10 +103,11 @@ class SaveDeleteTestCase extends CakeTestCase {
 		
 		$this->assertEqual($numRecordBegin,$numRecordEnd);
 	} 
-	
+		
 	function testInsertSection() {
 		$numRecordBegin = $this->_getNumRecordsTable($this->Section) ; 
 		
+		$this->data['minimo']['parent_id'] = 2 ;
 		$this->_insertDelete($this->Section, $this->data['minimo']) ;
 		
 		$numRecordEnd = $this->_getNumRecordsTable($this->Section) ; 
@@ -288,7 +291,7 @@ class SaveDeleteTestCase extends CakeTestCase {
 
 	function testInsertBook() {
 		$numRecordBegin = $this->_getNumRecordsTable($this->Book) ; 
-		
+			
 		$this->_insertDelete($this->Book, $this->data['minimo']) ;
 		
 		$numRecordEnd = $this->_getNumRecordsTable($this->Book) ; 
@@ -382,7 +385,74 @@ class SaveDeleteTestCase extends CakeTestCase {
 		$this->assertEqual($numRecordBegin,$numRecordEnd);
 	} 
 
+	function testInsertFaqAndFaqQuestion() {
+		$numRecordBegin = $this->_getNumRecordsTable($this->FaqQuestion) ; 
+		
+		// Crea la FAQ
+		$ret = $this->Faq->save($this->data['minimo']) ;
+		$this->assertEqual($ret,true);
+		
+		$FAQID = $this->Faq->id ;
+		
+		// Crea la domanda
+		$ret = $this->FaqQuestion->save($this->data['domanda']) ;
+		$this->assertEqual($ret,true);
+		
+		// Inserisce la domanda
+		$ret = $this->Faq->appendChild($this->FaqQuestion->id) ;
+		$this->assertEqual($ret,true);
+		
+		// Preleva e stampa il risultato
+		$this->Faq->bviorHideFields = array( 'Version', 'Index', 'Permissions', 'UserCreated', 'UserModified') ;
+		$FAQ 		= $this->Faq->findById($this->Faq->id) ;
+//		$queries 	= $this->Tree->getAll($this->Faq->id) ;
+		$this->Faq->getItems($queries) ;
 
+		pr($FAQ) ;
+		pr($queries) ;
+		
+		$this->Faq->delete($this->Faq->id) ;
+			
+		$numRecordEnd = $this->_getNumRecordsTable($this->FaqQuestion) ; 
+		
+		$this->assertEqual($numRecordBegin,$numRecordEnd);
+	} 
+
+	function testInsertQuestionnaireAndQuestion() {
+		$numRecordBegin = $this->_getNumRecordsTable($this->Questionnaire) ; 
+		
+		// Crea il questionario con domande e risposte
+		$result = $this->Questionnaire->save($this->data['questionario']) ;
+		$this->assertEqual($result,true);		
+		pr("Questionario Creato: {$this->Questionnaire->id}") ;
+
+		$result = $this->Question->save($this->data['domanda']) ;
+		$this->assertEqual($result,true);		
+		pr("Domanda Creata: {$this->Question->id}") ;
+		
+		$result = $this->Questionnaire->appendChild($this->Question->id) ;
+		$this->assertEqual($result,true);		
+		
+		$this->data['risposta1']['question_id']	= $this->Question->id ;
+		
+		$result = $this->Answer->save($this->data['risposta1']) ;
+		$this->assertEqual($result,true);		
+		pr("Prima risposta: {$this->Answer->id}");
+		$this->Answer->id = false ;
+		
+		$this->Answer = new Answer ;
+		$this->data['risposta2']['question_id']	= $this->Question->id ;
+		$result = $this->Answer->save($this->data['risposta2']) ;
+		$this->assertEqual($result,true);		
+		pr("Seconda risposta: {$this->Answer->id}");
+		
+		$this->Questionnaire->delete($this->Questionnaire->id) ;
+		
+		$numRecordEnd = $this->_getNumRecordsTable($this->Questionnaire) ; 
+		
+		$this->assertEqual($numRecordBegin,$numRecordEnd);
+	}	
+*/	
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
 	private function _insertDelete(&$model, &$data) {

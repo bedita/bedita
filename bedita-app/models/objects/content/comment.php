@@ -76,5 +76,33 @@ class Comment extends BEAppObjectModel
 			({$this->id}, {$this->data[$this->name]['object_id']}, 'COMMENTS')"
 		) ;
 	}
+	
+	function getParentID($id = null) {
+		if (!isset($id)) $id = $this->id ;
+		
+		if(!($ret = $this->execute("SELECT id FROM content_bases_objects WHERE object_id = {$id}"))) return false ;
+		
+		return ($ret[0]['content_bases_objects']['id']) ;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Formatta i dati per la creazione di un clone, ogni tipo
+	 * di oggetto esegue operazioni specifiche richiamando.
+	 * Trova l'id del ramo in cui e' inserita
+	 *
+	 * @param array $data		Dati da formattare
+	 * @param object $source	Oggetto sorgente
+	 */
+	protected function _formatDataForClone(&$data, $source = null) {
+		if(!class_exists('Tree')) loadModel('Tree');
+
+		$tree =& new Tree();
+		
+		$data['object_id'] = $this->getParentID($data['id'])  ;		
+		parent::_formatDataForClone($data);
+	}	
+
 }
 ?>
