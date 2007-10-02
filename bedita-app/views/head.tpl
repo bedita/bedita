@@ -10,6 +10,7 @@ $(document).ready(function(){
 	var tempArray = new Array() ;
 {/literal}
 
+{assign var ="baseUrl"  value=$html->url('/')}
 {section name="m" loop=$moduleList}
 	{assign var ="path"  value=$moduleList[m].path}
 	{assign var ="color" value=$moduleList[m].color}
@@ -18,7 +19,7 @@ $(document).ready(function(){
 	$("#{/literal}{$path}{literal}_gest_menux").attr("style", "background-color:{/literal}{$color}{literal}; color: white; ") ;
 	$("#{/literal}{$path}{literal}_gest_menux").bind("mouseover", function(e) 	{ oldBGColor = this.style.backgroundColor; this.style.backgroundColor = "{/literal}{$color}{literal}" ; }) ;
 	$("#{/literal}{$path}{literal}_gest_menux").bind("mouseout", function(e) 	{ this.style.backgroundColor = oldBGColor ; }) ;
-	$("#{/literal}{$path}{literal}_gest_menux").bind("click", function(e) 		{ if(e.cancelBubble) return false  ; document.location ='/{/literal}{$path}{literal}' ; }) ;
+	$("#{/literal}{$path}{literal}_gest_menux").bind("click", function(e) 		{ if(e.cancelBubble) return false  ; document.location ='{/literal}{$baseUrl}{$path}{literal}' ; }) ;
 	{/literal}
 
 	

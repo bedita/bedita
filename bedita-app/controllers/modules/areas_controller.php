@@ -26,7 +26,6 @@ class AreasController extends AppController {
 	var $helpers 	= array('Bevalidation', 'BeTree');
 	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText');
 
-	// This controller does not use a model
 	 var $uses = array('Area', 'Section', 'Tree') ;
 
 	/**

@@ -44,7 +44,7 @@ class AppController extends Controller
 	 * 		$this->data['OK'] o $this->data['ERROR']
 	 *  	seleziona.
 	 * 
-	 * Se nella classe  definito:
+	 * Se nella classe ï¿½ definito:
 	 * 		$this->REDIRECT[<nome_metodo>]['OK'] o $this->REDIRECT[<nome_metodo>]['ERROR']
 	 *  	seleziona.
 	 * 
@@ -75,6 +75,8 @@ class AppController extends Controller
 	function setupCommonData() {
 		// E' necessario?
 		$conf  		= Configure::getInstance() ;
+		
+		$this->pageTitle = __($this->name, true);
 		
 		$this->set('conf', $conf) ;
 	}

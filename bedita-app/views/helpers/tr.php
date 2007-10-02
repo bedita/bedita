@@ -5,8 +5,8 @@ class TrHelper extends Helper {
 	 *
 	 * @var array
 	 */
-	var $helpers = array();
-		
+	var $helpers = array('Html');
+			
 	function t($s, $return = false) {
 		return __($s, $return);
 	}
@@ -18,6 +18,14 @@ class TrHelper extends Helper {
 		return __($s, $return);
 	}
 
+	/**
+	* translate html->link url...
+	*/
+	function link($s, $u) {
+		$tr = __($s, true);
+		return $this->Html->link($tr, $u);
+	}
+	
 	/**
 	* Normal translation using i18n in cake php
 	*/
