@@ -37,15 +37,18 @@ class BePermissionModuleComponent extends Object {
 	 * @return array|false
 	 */
 	function getListModules($userid, $all = false) {
-/*		
+		
 		$condition 	=  "prmsModuleUserByID('{$userid}', Module.path, " . (BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) . ")" ;
 //		$modules 	= $this->PermissionModule->Module->findAll($condition) ;
 		
-		$sql 	=  "SELECT * FROM modules AS Module WHERE prmsModuleUserByID('{$userid}', Module.path, " . (BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) . ")" ;
-//		$ret = $this->PermissionModule->query($sql);
-		$ret = $this->PermissionModule->query("SELECT prmsModuleUserByID('{$userid}', 'areas', " . (BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) . ")");
-pr($modules);
-*/		
+		$sql 		=  "SELECT *, {$condition} as flag FROM modules AS Module WHERE prmsModuleUserByID('{$userid}', Module.path, " . (BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) . ")" ;
+		$modules 	= $this->PermissionModule->query($sql);
+		
+		for ($i=0; $i < count($modules) ; $i++) {
+			$modules[$i]  = $this->PermissionModule->am($modules[$i]) ;
+		}
+//		$ret = $this->PermissionModule->execute("SELECT prmsModuleUserByID('{$userid}', 'areas', " . (BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) . ")");
+/*
 		// TEST 
 		$modules = array(
 			array(
@@ -66,7 +69,7 @@ pr($modules);
 				'flag'		=> 3,
 			),
 		) ;
-
+*/
 		return $modules ;
 	}
 	

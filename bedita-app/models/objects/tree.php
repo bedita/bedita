@@ -208,24 +208,11 @@ class Tree extends BEAppModel
 
 		// setta le condizioni di ricerca
 		$conditions = array() ;
-		if($filter) {
-			$conditions[] = array("object_type_id" => " (object_type_id & {$filter})  ") ;
-		}
+		$this->_getCondition_filterType($conditions, $filter) ;
+		$this->_getCondition_userid($conditions, $userid ) ;
+		$this->_getCondition_status($conditions, $status) ;
+		$this->_getCondition_parentPath($conditions, $id) ;
 
-		if(isset($userid)) {
-			// Preleva i permessi dell'utente sugli oggetti selezionati
-			$fields 		= " Tree.*, prmsUserByID ('{$userid}', id, 15) as perms " ;
-			$conditions[] 	= " prmsUserByID ('{$userid}', id, ".BEDITA_PERMS_READ.") > 0 " ;
-		}
-			
-		if(isset($status)) {
-			$conditions[] = " status = '{$status}' " ;
-		}
-
-		if(isset($id)) {
-			$conditions[] = " path LIKE (CONCAT((SELECT path FROM trees WHERE id = {$id}), '%')) " ;
-		}
-		
 		// Esegue la ricerca
 		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
 		$sqlClausole = $db->conditions($conditions, false, true) ;
@@ -361,56 +348,27 @@ class Tree extends BEAppModel
 	 * @param integer $dim		Dimensione della pagina
 	 */
 	function getChildren($id = null, $userid = null, $status = null, $filter = 0xFF, $page = 1, $dim = 100000) {
-		$fields  = " * " ;
-		
-		// Setta l'id
-		if (!empty($id)) {
-			$this->id = $id;
-		}
+		return $this->_getChildren($id, $userid, $status, $filter, $page, $dim, false) ;
+	}
 
-		// setta le condizioni di ricerca
-		$conditions = array() ;
-		if($filter) {
-			$conditions[] = array("object_type_id" => " (object_type_id & {$filter})  ") ;
-		}
-
-		if(isset($userid)) {
-			// Preleva i permessi dell'utente sugli oggetti selezionati
-			$fields 		= " Tree.*, prmsUserByID ('{$userid}', id, 15) as perms " ;
-			$conditions[] 	= " prmsUserByID ('{$userid}', id, ".BEDITA_PERMS_READ.") > 0 " ;
-		}
-			
-		if(isset($status)) {
-			$conditions[] = array('status' => $status) ;
-		}
-
-		if(isset($this->id)) $conditions[] = array("parent_id" => $this->id) ;
-		else $conditions[] = array("parent_id" => null);
-		
-		// Costruisce i criteri di ricerca
-		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
-		$sqlClausole = $db->conditions($conditions, false, true) ;
-		
-		// Crea la toolbar
-//		$toolbar = $this->toolbar($page, $dim, $sqlClausole) ;
-		
-		// Esegue la ricerca	
-		if($page > 1) $offset = ($page -1) * $dim ;
-		else $offset = null ;
-		$limit = isset($offset)? "$offset, $dim" : "$dim";
-
-		$tmp  = $this->execute("SELECT {$fields} FROM view_trees AS Tree {$sqlClausole} LIMIT {$limit}") ;
-		
-		// Torna il risultato
-		$recordset = array(
-			"items"		=> array(),
-			"toolbar"	=> $this->toolbar($page, $dim, $sqlClausole)
-		) ;
-		for ($i =0; $i < count($tmp); $i++) {
-			$recordset['items'][] = $this->am($tmp[$i]);
-		}
-		
-		return $recordset ;
+	/**
+	 * Preleva i discendenti di cui id e' radice.
+	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se ''  un utente anonimo,
+	 * altrimenti li prende tutti.
+	 * Si possono selezionare i tipi di oggetti da prelevare.
+	 * 
+	 * @param integer $id		id della radice da selezionare. 
+	 * @param string $userid	l'utente che accede. Se null: non controlla i permessi. Se '': utente guest.
+	 * 							Default: non verifica i permessi.
+	 * @param string $status	Prende oggetti solo con lo status passato
+	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
+	 * 							1 | 3 | 22 ... aree, sezioni, documenti.
+	 * 							Default: tutti.
+	 * @param integer $page		Numero di pagina da selezionare
+	 * @param integer $dim		Dimensione della pagina
+	 */
+	function getDiscendents($id = null, $userid = null, $status = null, $filter = 0xFF, $page = 1, $dim = 100000) {
+		return $this->_getChildren($id, $userid, $status, $filter, $page, $dim, true) ;
 	}
 
 	function findCount($conditions = null, $recursive = null) {
@@ -424,6 +382,101 @@ class Tree extends BEAppModel
 
 		return false;
 	}
+
+	////////////////////////////////////////////////////////////////////////
+	/**
+	 * Preleva i figli di cui id e' radice.
+	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se ''  un utente anonimo,
+	 * altrimenti li prende tutti.
+	 * Si possono selezionare i tipi di oggetti da prelevare.
+	 * 
+	 * @param integer $id		id della radice da selezionare. 
+	 * @param string $userid	l'utente che accede. Se null: non controlla i permessi. Se '': utente guest.
+	 * 							Default: non verifica i permessi.
+	 * @param string $status	Prende oggetti solo con lo status passato
+	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
+	 * 							1 | 3 | 22 ... aree, sezioni, documenti.
+	 * 							Default: tutti.
+	 * @param integer $page		Numero di pagina da selezionare
+	 * @param integer $dim		Dimensione della pagina
+	 * @param boolean $all		Se true, prende anche i discendenti
+	 */
+	function _getChildren($id, $userid, $status, $filter, $page, $dim, $all) {
+		$fields  = " * " ;
+		
+		// Setta l'id
+		if (!empty($id)) {
+			$this->id = $id;
+		}
+
+		// setta le condizioni di ricerca
+		$conditions = array() ;
+		$this->_getCondition_filterType($conditions, $filter) ;
+		$this->_getCondition_userid($conditions, $userid ) ;
+		$this->_getCondition_status($conditions, $status) ;
+		
+		if($all) $this->_getCondition_parentPath($conditions, $id) ;
+		else $this->_getCondition_parentID($conditions, $id) ;
+		
+		// Costruisce i criteri di ricerca
+		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
+		$sqlClausole = $db->conditions($conditions, false, true) ;
+		
+		// Esegue la ricerca	
+		$limit 	= $this->_getLimitClausole($page, $dim) ;
+		$tmp  	= $this->execute("SELECT {$fields} FROM view_trees AS Tree {$sqlClausole} LIMIT {$limit}") ;
+		
+		// Torna il risultato
+		$recordset = array(
+			"items"		=> array(),
+			"toolbar"	=> $this->toolbar($page, $dim, $sqlClausole)
+		) ;
+		for ($i =0; $i < count($tmp); $i++) {
+			$recordset['items'][] = $this->am($tmp[$i]);
+		}
+		
+		return $recordset ;
+	}
+
+	private function _getLimitClausole($page = 1, $dim = 100000) {
+		// Esegue la ricerca	
+		if($page > 1) $offset = ($page -1) * $dim ;
+		else $offset = null ;
+		$limit = isset($offset)? "$offset, $dim" : "$dim";
+
+		return $limit ;	
+	}
+
+	
+	private function _getCondition_filterType(&$conditions, $filter = false) {
+		if(!$filter) return ;
+		$conditions[] = array("object_type_id" => " (object_type_id & {$filter})  ") ;
+	}
+	
+	private function _getCondition_userid(&$conditions, $userid = null) {
+		if(!isset($userid)) return ;
+
+		$fields 		= " Tree.*, prmsUserByID ('{$userid}', id, 15) as perms " ;
+		$conditions[] 	= " prmsUserByID ('{$userid}', id, ".BEDITA_PERMS_READ.") > 0 " ;
+	}
+
+	private function _getCondition_status(&$conditions, $status = null) {
+		if(!isset($status)) return ;
+
+		$conditions[] = array('status' => "'$status'") ;
+	}
+
+	private function _getCondition_parentID(&$conditions, $id = null) {
+		if(isset($this->id)) $conditions[] = array("parent_id" => $this->id) ;
+		else $conditions[] = array("parent_id" => null);
+	}
+		
+	private function _getCondition_parentPath(&$conditions, $id = null) {
+		if(isset($id)) {
+			$conditions[] = " path LIKE (CONCAT((SELECT path FROM trees WHERE id = {$id}), '%')) " ;
+		}
+	}
+
 
 }
 

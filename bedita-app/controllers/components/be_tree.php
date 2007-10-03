@@ -24,7 +24,15 @@ class BeTreeComponent extends Object {
 	} 
 
 	/**
-	 * Torna l'albero delle aree e delle sezioni a cui l'utente conesso
+	 * @param object $controller
+	 */
+	function startup(&$controller)
+	{
+		$this->controller 	= $controller;
+	}
+
+	/**
+	 * Torna l'albero delle aree e delle sezioni a cui l'utente connesso
 	 * pu˜ accedere almeno in lettura.
 	 *
 	 */
@@ -38,13 +46,91 @@ class BeTreeComponent extends Object {
 		
 		return $tree ;	
 	}
-		
+
 	/**
-	 * @param object $controller
+	 * Torna l'albero con espanso solo quello dove l'oggetto selezionato  presente.
+	 * Mantiene solo i figli.
+	 *
+	 * @param integer $id
 	 */
-	function startup(&$controller)
-	{
-		$this->controller 	= $controller;
+	function expandOneBranch($id = null) {
+		$tree = $this->getSectionsTree() ;
+		
+		for($i=0; $i < count($tree) ; $i++) {
+			if(!isset($id) || !$this->_searchRootDeleteOther($tree[$i], $id)) {
+				unset($tree[$i]['children']) ;
+			} 
+		}
+		
+		return $tree ;
+	}
+	
+	/**
+	 * Torna l'elenco dei figli di un data nodo dell'albero
+	 *
+	 * @param integer $id		ID del nodo
+	 */
+	function getChildren($id = null, $status = null, $filter = 0xFF, $page = 1, $dim = 100000) {
+		$conf  = Configure::getInstance() ;
+		
+		// Preleva l'utente connesso
+		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : '' ;
+		
+		return  $this->Tree->getDiscendents($id, $userid, $status, $filter, $page, $dim) ;
+	}
+	
+	/**
+	 * Torna l'elenco dei discendenti di un data nodo dell'albero
+	 *
+	 * @param integer $id		ID del nodo
+	 */
+	function getDiscendents($id = null, $status = null, $filter = 0xFF, $page = 1, $dim = 100000) {
+		$conf  = Configure::getInstance() ;
+		
+		// Preleva l'utente connesso
+		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : '' ;
+		
+		return  $this->Tree->getDiscendents($id, $userid, $status, $filter, $page, $dim) ;
+	}
+	
+	
+	/////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Cancella i rami che non contengono id
+	 *
+	 * @param array $trees	albero dove cercare
+	 * @param integer $id	oggetto da cercare
+	 */
+	private function _searchRootDeleteOther($tree, $id) {
+		// Se la radice cercata
+		if($tree['id'] == $id) {
+			for($i=0; $i < count($tree['children']) ; $i++) {
+				unset($tree['children'][$i]['children']) ;
+			}
+			
+			return true ;
+		}
+		
+		// Cerca tra i discendenti
+		$found = null ;
+		for($i=0; $i < count($tree['children']) ; $i++) {
+			if($this->_searchRootDeleteOther($tree['children'][$i], $id)) {
+				$found = $i ;
+			} 
+		}
+		
+		// Se ha trovato cancella i rami da escludere
+		if(isset($found)) {
+			$tmp = $tree['children'][$found] ;
+			
+			unset($tree['children']) ;
+			$tree['children'] = array($tmp) ;
+			
+			return true ;
+		}
+		
+		return false ;
 	}
 	
 }

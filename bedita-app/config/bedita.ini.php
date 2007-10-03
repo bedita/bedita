@@ -110,7 +110,11 @@ $config['objectTypes'] = array(
 	'documentrule'		=> 27,
 	
 	'author'			=> 28,
-	'biblioitem'		=> 30
+	'biblioitem'		=> 30,
+	
+	
+	/* Per selezionare tutti i tipi di documenti */
+	'documentAll'		=> (22|23|24|25|26|27),
 ) ;
 
 /**

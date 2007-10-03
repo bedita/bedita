@@ -82,7 +82,7 @@ class TreeTestCase extends CakeTestCase {
 	function testBranchTree() {
 		$this->Transaction->begin() ;
 		
-		pr("Carica solo una ramificazione dell'albero co nradice la sezione id == 3") ;
+		pr("Carica solo una ramificazione dell'albero con radice la sezione id == 3") ;
 		
 		$tree = $this->Tree->getAll(3) ;
 		for($i=0 ; $i < count($tree) ; $i++) {
@@ -105,6 +105,7 @@ class TreeTestCase extends CakeTestCase {
 		pr("Carica gli oggetti con status 'off' (insieme vuoto) ") ;
 		
 		$tree = $this->Tree->getAll(null, null, 'off') ;
+pr($tree);
 		$this->assertEqual($tree, array());
 
 		$this->Transaction->rollback() ;		
@@ -117,15 +118,15 @@ class TreeTestCase extends CakeTestCase {
 			foreach ($item as $key => $value) {
 				$obj = new $key() ;
 				
-				$obj->save(array('title' => $value['title'])) ;
+				$datiNewObj = array(
+						'title' 	=> $value['title'],
+						'parent_id' => (isset($idParent))?$idParent:null,
+				) ;
+				
+				$obj->save($datiNewObj) ;
 				$id = $obj->id ;
 				unset($obj) ;
 				 
-				if(isset($idParent)) {
-					$this->Tree->appendChild($id, $idParent) ;
-				} else {
-					$this->Tree->appendChild($id, null) ;
-				}
 				if(count($value['children'])) $this->_insert($id, $value['children']);
 				
 				// Aggiunge eventuali permessi

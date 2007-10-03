@@ -39,7 +39,7 @@ class CloneTestCase extends CakeTestCase {
      * Dati utilizzati come esempio
      */
     var $data		= null ;
-/*   
+   
 	function testInserimentoMinimo() {
 		$conf  	= Configure::getInstance() ;
 	
@@ -318,7 +318,7 @@ class CloneTestCase extends CakeTestCase {
 		
 		$this->Transaction->rollback() ;
 	}		
-*/
+
 	function testClonazioneArea() {
 		$conf  	= Configure::getInstance() ;
 

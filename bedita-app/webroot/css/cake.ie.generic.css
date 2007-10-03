@@ -141,6 +141,8 @@ A IMG {border-color: black;}
 	color: white;
 	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer; 
 	background-color: transparent;	background-repeat: repeat-x;
+	/* IE hacks */
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src='/img/sfo_gestUpD.png', sizingMethod='scale');
 	height:126px;
 	width:126px;
 	float:left;
@@ -177,6 +179,8 @@ A IMG {border-color: black;}
 .gest_menux {
 	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer; 
 	background-color: transparent;	background-repeat: repeat-x;
+	/* IE hacks */
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src='/img/sfo_gestUpD.png', sizingMethod='scale');
 	height:16px;
 	width:90px;
 	float:left;
@@ -194,6 +198,8 @@ A IMG {border-color: black;}
 .gest_menuxHome {
 	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer; 
 	background-color: transparent;	background-repeat: repeat-x;
+	/* IE hacks */
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src='/img/sfo_gestUpD.png', sizingMethod='scale');
 	height:16px;
 	width:90px;
 	float:left;
@@ -227,6 +233,8 @@ A IMG {border-color: black;}
 	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer; 
 
 	background-color: transparent;	background-repeat: repeat-x;
+	/* IE hacks */
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src='/img/sfo_gestUpD.png', sizingMethod='scale');
 	font : bold 14px Arial, sans-serif;
 	padding:5px;
 	height:126px;
@@ -274,6 +282,8 @@ H1.formazione {background-color:#6b8e23} H1.formazione A {color:#FFFFFF}
 .menuContainer {
 	margin: 0px 0px 0px 0px; border:1px solid silver;
 	background-color: white;	background-repeat: repeat-x;
+	/* IE hacks */
+	/*filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src='/img/sfo_gestUpD.png', sizingMethod='scale');*/
 	padding:3px 3px 3px 3px;
 	color:#696969;
 	height:auto;
@@ -310,6 +320,8 @@ H1.formazione {background-color:#6b8e23} H1.formazione A {color:#FFFFFF}
 .FormPageHeader {
 	margin: 10px 0px 10px 1px; border:1px solid silver;
 	background-color: white;	background-repeat: repeat-x;
+	/* IE hacks */
+	/*filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src='/img/sfo_gestUpD.png', sizingMethod='scale');*/
 	padding:3px 3px 3px 3px;
 	color:#696969;
 	height:auto;

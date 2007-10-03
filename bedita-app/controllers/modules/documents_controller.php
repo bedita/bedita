@@ -17,27 +17,39 @@
 /**
  * Short description for class.
  *
- * Controller entrata modulo Aree, gestione aree e gestione sessioni
+ * Controller entrata modulo Documento e gestione documenti
  * 
  */
-class AreasController extends AppController {
-	var $name = 'Areas';
+class DocumentsController extends AppController {
+	var $name = 'Documents';
 
 	var $helpers 	= array('Bevalidation', 'BeTree');
 	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText');
 
-	 var $uses = array('Area', 'Section', 'Tree') ;
+	// This controller does not use a model
+	var $uses = array('Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Document', 'Tree') ;
 
-	/**
+	 /**
 	 * Entrata.
-	 * Visualizza l'albero delle aree e la possibilita' di 
-	 * gestire l'ordine delle sezioni connesse.
+	 * Visualizza l'albero delle aree e l'elenco dei documenti
 	 * 
 	 */
-	 function index() { 	
-		// Preleva l'albero delle aree e sezioni
-		$tree = $this->BeTree->getSectionsTree() ;
+	 function index($id = null, $page = 1, $dim = 20) {
+		$conf  = Configure::getInstance() ;
 		
+	 	// Setup parametri
+		$this->setup_args(
+			array("id", "integer", $id),
+			array("page", "integer", $page),
+			array("dim", "integer", $dim)
+		) ;
+
+		// Preleva l'albero delle aree e sezioni
+		$tree = $this->BeTree->expandOneBranch($id) ;
+		
+		$documents = $this->BeTree->getDiscendents($id, null, $conf->objectTypes['documentAll'], $page, $dim)  ;
+pr($documents);
+exit;		
 		// Setup dei dati da passare al template
 		$this->set('tree', 		$tree);
 		$this->set('selfPlus',	$this->createSelfURL(false)) ;

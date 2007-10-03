@@ -1,3 +1,7 @@
+{php}
+$vs = &$this->get_template_vars() ;
+{/php}
+{agent var="agent"}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">
@@ -18,7 +22,11 @@
 	{$javascript->link("jquery")}
 	{$javascript->link("jquery.cookie")}
 	{$javascript->link("common")}
-	{$html->css('cake.generic')}
+	{if ($agent.IE)}
+		{$html->css('cake.ie.generic')}
+	{else}
+		{$html->css('cake.generic')}
+	{/if}
 	{$html->css('yav')}
 
 {$content_for_layout}		

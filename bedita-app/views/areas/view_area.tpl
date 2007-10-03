@@ -2,9 +2,13 @@
 Pagina con il form per la modifica/aggiunta di un'area.
 *}
 {php}$vs = &$this->get_template_vars() ;{/php}
-
+{agent var="agent"}
 	{$html->css('module.area')}
-	{$html->css('jquery.autocomplete')}
+	{if ($agent.IE)}
+		{$html->css('jquery.ie.autocomplete')}
+	{else}
+		{$html->css('jquery.autocomplete')}
+	{/if}
 
 	{$javascript->link("form")}
 	{$javascript->link("jquery.changealert")}
