@@ -242,7 +242,7 @@ class CloneTestCase extends CakeTestCase {
 		}
 		
 		// Preleva gli oggetti user della community
-		$recs = $this->Community->getChildren(null, null,  null, 0xFF, 1, 100) ;
+		$recs = $this->Community->getChildren(null, null,  null, false, 1, 100) ;
 		pr($recs) ;
 		
 		// Clona la community e il suo contenuto
@@ -250,7 +250,7 @@ class CloneTestCase extends CakeTestCase {
 		pr("Community clonata: {$clone->id}") ;
 		
 		// Oggetti figli del clone
-		$recsClone = $clone->getChildren(null, null,  null, 0xFF, 1, 100) ;
+		$recsClone = $clone->getChildren(null, null,  null, false, 1, 100) ;
 		pr($recsClone) ;
 		
 		$this->Transaction->rollback() ;
@@ -349,15 +349,10 @@ class CloneTestCase extends CakeTestCase {
 			foreach ($item as $key => $value) {
 				$obj = new $key() ;
 				
-				$obj->save(array('title' => $value['title'])) ;
+				$obj->save(array('title' => $value['title'], 'parent_id' => $idParent)) ;
 				$id = $obj->id ;
 				unset($obj) ;
-				 
-				if(isset($idParent)) {
-					$this->Tree->appendChild($id, $idParent) ;
-				} else {
-					$this->Tree->appendChild($id, null) ;
-				}
+				
 				if(count($value['children'])) $this->_insertTree($id, $value['children']);
 			}
 		}

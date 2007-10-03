@@ -169,12 +169,12 @@ class BEAppCollectionModel extends BEAppObjectModel {
 	 * 							Default: non verifica i permessi.
 	 * @param string $status	Prende oggetti solo con lo status passato
 	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
-	 * 							1 | 3 | 22 ... aree, sezioni, documenti.
+	 * 							1, 3, 22 ... aree, sezioni, documenti.
 	 * 							Default: tutti.
 	 * @param integer $page		Numero di pagina da selezionare
 	 * @param integer $dim		Dimensione della pagina
 	 */
-	function getChildren($id = null, $userid = null, $status = null, $filter = 0xFF, $page = 1, $dim = 100000) {
+	function getChildren($id = null, $userid = null, $status = null, $filter = false, $page = 1, $dim = 100000) {
 		if(!class_exists('Tree')) loadModel('Tree');
 		$tree 	=& new Tree();
 		

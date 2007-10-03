@@ -195,10 +195,10 @@ class Tree extends BEAppModel
 	 * 							Default: non verifica i permessi.
 	 * @param string $status	Prende oggetti solo con lo status passato
 	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
-	 * 							1 | 3 | 22 ... aree, sezioni, documenti.
-	 * 							Default: tutti.
+	 * 							1,3, 22 ... aree, sezioni, documenti.
+	 * 							Default: tutti. (false)
 	 */
-	function getAll($id = null, $userid = null, $status = null, $filter = 0xFF) {
+	function getAll($id = null, $userid = null, $status = null, $filter = false) {
 		$fields  = " * " ;
 		
 		// Setta l'id
@@ -215,7 +215,8 @@ class Tree extends BEAppModel
 
 		// Esegue la ricerca
 		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
-		$sqlClausole = $db->conditions($conditions, false, true) ;
+//		$sqlClausole = $db->conditions($conditions, false, true) ;
+		$sqlClausole = $db->conditions($conditions, true, true) ;
 		
 		$records  = $this->execute("SELECT {$fields} FROM view_trees AS Tree {$sqlClausole}") ;
 		
@@ -342,12 +343,12 @@ class Tree extends BEAppModel
 	 * 							Default: non verifica i permessi.
 	 * @param string $status	Prende oggetti solo con lo status passato
 	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
-	 * 							1 | 3 | 22 ... aree, sezioni, documenti.
+	 * 							1, 3, 22 ... aree, sezioni, documenti.
 	 * 							Default: tutti.
 	 * @param integer $page		Numero di pagina da selezionare
 	 * @param integer $dim		Dimensione della pagina
 	 */
-	function getChildren($id = null, $userid = null, $status = null, $filter = 0xFF, $page = 1, $dim = 100000) {
+	function getChildren($id = null, $userid = null, $status = null, $filter = false, $page = 1, $dim = 100000) {
 		return $this->_getChildren($id, $userid, $status, $filter, $page, $dim, false) ;
 	}
 
@@ -362,12 +363,12 @@ class Tree extends BEAppModel
 	 * 							Default: non verifica i permessi.
 	 * @param string $status	Prende oggetti solo con lo status passato
 	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
-	 * 							1 | 3 | 22 ... aree, sezioni, documenti.
+	 * 							1, 3,  22 ... aree, sezioni, documenti.
 	 * 							Default: tutti.
 	 * @param integer $page		Numero di pagina da selezionare
 	 * @param integer $dim		Dimensione della pagina
 	 */
-	function getDiscendents($id = null, $userid = null, $status = null, $filter = 0xFF, $page = 1, $dim = 100000) {
+	function getDiscendents($id = null, $userid = null, $status = null, $filter = false, $page = 1, $dim = 100000) {
 		return $this->_getChildren($id, $userid, $status, $filter, $page, $dim, true) ;
 	}
 
@@ -395,7 +396,7 @@ class Tree extends BEAppModel
 	 * 							Default: non verifica i permessi.
 	 * @param string $status	Prende oggetti solo con lo status passato
 	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
-	 * 							1 | 3 | 22 ... aree, sezioni, documenti.
+	 * 							1, 3, 22 ... aree, sezioni, documenti.
 	 * 							Default: tutti.
 	 * @param integer $page		Numero di pagina da selezionare
 	 * @param integer $dim		Dimensione della pagina
@@ -450,7 +451,16 @@ class Tree extends BEAppModel
 	
 	private function _getCondition_filterType(&$conditions, $filter = false) {
 		if(!$filter) return ;
-		$conditions[] = array("object_type_id" => " (object_type_id & {$filter})  ") ;
+/*		
+		if (is_array($filter) && count($filter)) {
+			$conditions['object_type_id'] = $filter ;
+//			$filter = implode(",", $filter) ;
+//			$conditions[] = array("object_type_id" => " IN ({$filter})  ") ;
+		} else {
+			$conditions[] = array("object_type_id" => $filter) ;
+		}
+*/
+		$conditions['object_type_id'] = $filter ;
 	}
 	
 	private function _getCondition_userid(&$conditions, $userid = null) {

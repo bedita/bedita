@@ -154,7 +154,7 @@ class Section extends BEAppCollectionModel
 		$tree 	=& new Tree();
 		
 		// Preleva l'elenco dei figli
-		$children = $tree->getChildren($this->oldID , null, null, 0xFF, 1, 10000000) ;
+		$children = $tree->getChildren($this->oldID , null, null, false, 1, 10000000) ;
 		
 		// crea le nuove associazioni
 		for ($i=0; $i < count($children["items"]) ; $i++) {

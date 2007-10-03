@@ -117,7 +117,7 @@ class Questionnaire extends BEAppCollectionModel
 	}
 	
  	function getQuestions($userid = null, $status = null) {
- 		return  $this->getChildren($this->id, $userid, $status,  0xFF, 1, 1000000) ;
+ 		return  $this->getChildren($this->id, $userid, $status,  false, 1, 1000000) ;
  	}
 
 	function appendChild($id, $idParent = null) {

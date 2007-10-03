@@ -114,7 +114,7 @@ $config['objectTypes'] = array(
 	
 	
 	/* Per selezionare tutti i tipi di documenti */
-	'documentAll'		=> (22|23|24|25|26|27),
+	'documentAll'		=> array(22,23,24,25,26,27),
 ) ;
 
 /**

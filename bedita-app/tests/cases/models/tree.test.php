@@ -51,7 +51,7 @@ class TreeTestCase extends CakeTestCase {
 
 		$conf  = Configure::getInstance() ;
 		
-		$tree = $this->Tree->getAll(null, null, null, ($conf->objectTypes['area'] | $conf->objectTypes['section'])) ;
+		$tree = $this->Tree->getAll(null, null, null, array($conf->objectTypes['area'], $conf->objectTypes['section'])) ;
 		
 		pr("Carica l'albero con solo aree e sezioni") ;
 		$this->assertEqual($tree,unserialize($this->data['resultTree2']));
@@ -105,12 +105,12 @@ class TreeTestCase extends CakeTestCase {
 		pr("Carica gli oggetti con status 'off' (insieme vuoto) ") ;
 		
 		$tree = $this->Tree->getAll(null, null, 'off') ;
-pr($tree);
+		
 		$this->assertEqual($tree, array());
 
 		$this->Transaction->rollback() ;		
 	} 
-	
+
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
 	private function _insert($idParent, &$data) {
