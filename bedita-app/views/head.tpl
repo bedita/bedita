@@ -1,9 +1,5 @@
-{*
-file incluso.
-Visualizza il menu e il comando di login/logout
-*}
-{* Inserisce il codice javascript *}
 <script type="text/javascript">
+<!--
 {literal}
 
 $(document).ready(function(){
@@ -22,44 +18,40 @@ $(document).ready(function(){
 	$("#{/literal}{$path}{literal}_gest_menux").bind("click", function(e) 		{ if(e.cancelBubble) return false  ; document.location ='{/literal}{$baseUrl}{$path}{literal}' ; }) ;
 	{/literal}
 
-	
 {/section}
 
 {literal}
 });
 
 {/literal}
-
+//-->
 </script>
 
 {strip}
 
-
 <div id="headerPage">
-	<div class="beditaButton" onClick = "document.location ='/'">
-		<b style="font:bold 17px Verdana">B.Edita</b><br><b>&#155;</b> 
-		<a href="{$html->url('/authentications/logout')}">esci</a><br><br><p>
-		<b>Consorzio BEdita</b>
-		<br>2007</p>
+	<div class="beditaButton" onclick= "javascript:document.location ='{$html->url('/')}/'">
+		<span style="font:bold 17px Verdana">B.Edita</span><br/><b>&gt;</b>
+		<a href="{$html->url('/authentications/logout')}">esci</a><br/><br/>
+		<p><b>Consorzio BEdita</b><br/>2007</p>
 	</div>
-		{section name="m" loop=$moduleList}
-        	{if ($moduleList[m].status == 'on')}
-        		{if (($moduleList[m].flag & BEDITA_PERMS_MODIFY) && $moduleList[m].status == 'on')}
-               <div class="gest_menux" id="{$moduleList[m].path}_gest_menux">
-       		 	{if (stripos($bevalidation->here, $moduleList[m].path) !== false)} 
-       		 		<i> * {$moduleList[m].label}</i>
-       		 		{else}
-       		 		{$moduleList[m].label}
-       		 	{/if}
-                	</div>
-                {else}
-       		 		<div class="gest_menux" style="background-color:#DDDDDD; color: white; ">
-                    {$moduleList[m].label}
-                	</div>
-                {/if}
-              
-            {/if}
-        {/section}
+	{section name="m" loop=$moduleList}
+		{if ($moduleList[m].status == 'on')}
+			{if (($moduleList[m].flag & BEDITA_PERMS_MODIFY) && $moduleList[m].status == 'on')}
+	<div class="gest_menux" id="{$moduleList[m].path}_gest_menux">
+			     {if (stripos($bevalidation->here, $moduleList[m].path) !== false)}
+     	<i> * {$moduleList[m].label}</i>
+     			{else}
+     	{$moduleList[m].label}
+				{/if}
+	</div>
+			{else}
+     <div class="gest_menux" style="background-color:#DDDDDD; color: white; ">
+		{$moduleList[m].label}
+	</div>
+			{/if}
+		{/if}
+	{/section}
 </div>
 
 {/strip}

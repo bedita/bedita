@@ -135,7 +135,7 @@ function deleteTRCustomProp(el) {
 					</tr>
 					{/foreach}
 					<tr id="endLineCustomPropTR">
-						<td colspan="4"><hr></td>
+						<td colspan="4"><hr/></td>
 					</tr>
 					<tr id="addCustomPropTR">
 						<td>
