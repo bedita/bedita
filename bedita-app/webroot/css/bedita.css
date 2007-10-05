@@ -1,0 +1,193 @@
+BODY {
+	margin-left: 0px;
+	margin-top: 0px;
+	background-color: #cccccc;
+}
+
+BODY, TD, DIV, INPUT, TEXTAREA, SELECT {
+	color: #000000;
+	font: 11px Verdana, Arial, sans-serif;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	font-size-adjust: none;
+	font-stretch: normal;
+	line-height: normal;
+}
+
+H1, H2, H3, H4, H5 { font-family: Verdana, Arial, sans-serif; font-weight:bold; }
+
+H1 {font-size:17px; margin-top:4px; margin-bottom:4px; line-height:0.95em;}
+H2 {font-size:1.1em; margin-bottom:4px;}
+H3 {font-size:1.0em; font-style : italic; margin-bottom:4px;}
+
+* > H2:first-child { margin-top:0px; }
+* > H3:first-child { margin-top:0px !important}
+
+H2 + H3 {margin-top:8px;}
+
+HR {
+	border: 0px;
+	border-top: 1px solid gray;
+	height: 0px;
+}
+
+P {	margin-top: 5px;}
+
+FORM {	margin-top:0px; margin-bottom:0px;}
+
+TEXTAREA {
+	height: 100px;
+	overflow: auto;
+	width: 450px;
+}
+
+INPUT {
+	vertical-align:middle;
+}
+
+A {	color: #CC3333;	text-decoration: none;}
+A:hover{text-decoration: underline;}
+A IMG {border-color: black;}
+
+/* BEGIN -- Pagine interne moduli */
+
+#headerPage {
+	border:1px solid #cccccc;
+	height: 45px;
+}
+#menuLeftPage {
+	width:138px;
+	float:left;
+	border:0px solid black;
+	padding: 0px 0px 0px 0px;
+}
+
+#containerPage {
+	border:0px solid black;
+	margin-left:138px;
+}
+
+#footerPage {
+	border:0px solid red;
+	margin: 0px 0px;
+	padding: 0px 0px 0px 0px;
+	text-align: right;
+}
+
+
+/* END -- Pagine interne moduli */
+
+/* BEGIN -- Pagina Login */
+#loginStatusBox {
+	float:left ;
+	width:136px;
+	margin-bottom:0px;
+	border:0px solid black;
+	height: 400px;
+}
+/* END -- Pagina Login */
+
+/* BEGIN -- Home Page */
+#headerPageHome {
+	clear:both;
+	display: block;
+	width:auto;
+	margin:0px ;
+	border:0px solid black;
+}
+
+#centralPageHome {
+	clear:both;
+	display: block;
+	width:100%;
+	margin-bottom:0px;
+	border:0px solid black;
+	height: 355px;
+}
+
+/* END -- Home Page */
+
+/* BEGIN -- Header Home page */
+
+.beditaButtonHome {
+	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer;
+	background: #ffff00 url('../img/bedita_sfo.jpg') 0px -1px;
+	color: black;
+	height:136px;
+	margin-left:-1px;
+	margin-bottom:0px;
+	width:136px;
+	float:left;
+	overflow:hidden;
+	border:0px solid black;
+}
+
+/* IE ignores styles with [attributes], so it will skip the following. */
+#headerPageHome H1 {
+  background-image: url('../img/sfo_gestUpD.png');
+}
+#headerPageHome H1 {
+	color: white;
+	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer;
+	background-color: transparent;	background-repeat: repeat-x;
+	height:126px;
+	width:126px;
+	float:left;
+	font : bold 12px Arial, sans-serif;
+	padding:5px;
+	color: #ffffff;
+	text-align:center;
+	white-space: nowrap;
+}
+
+/* END -- Header Home page */
+
+/* BEGIN -- Header page */
+
+.beditaButton {
+	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer;
+	background: #ffff00 url('../img/bedita_sfo.jpg') 0px -1px;
+	color: black;
+	height: 45px;
+	width:136px;
+	float:left;
+	overflow:hidden;
+	border:1px solid black;
+}
+
+/* IE ignores styles with [attributes], so it will skip the following. */
+.gest_menux[class] {
+  background-image: url('../img/sfo_gestUpD.png');
+}
+.gest_menux {
+	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer;
+	background-color: transparent;	background-repeat: repeat-x;
+	height:16px;
+	width:90px;
+	float:left;
+	font : bold 12px Arial, sans-serif;
+	padding:4px 0px 2px 0px;
+	color: #ffffff;
+	text-align:center;
+	white-space: nowrap;
+}
+
+/* IE ignores styles with [attributes], so it will skip the following. */
+.gest_menuxHome[class] {
+  background-image: url('../img/sfo_gestUpD.png');
+}
+.gest_menuxHome {
+	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer;
+	background-color: transparent;	background-repeat: repeat-x;
+	height:16px;
+	width:90px;
+	float:left;
+	font : bold 12px Arial, sans-serif;
+	padding:4px 0px 2px 0px;
+	color: #ffffff;
+	text-align:center;
+	white-space: nowrap;
+}
+
+/* END -- Header page */

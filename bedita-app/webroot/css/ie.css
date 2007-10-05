@@ -1,0 +1,91 @@
+/* Stili da sovrascrivere quando il browser e' internet explorer */
+
+#dxPageLogin {
+	position:absolute;
+	width:860px;
+	height:400px;
+	left:140px;
+	margin-left:0px;
+	border:0px solid black;
+}
+
+#headerPageHome H1 {
+	color: white;
+	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer;
+	background-color: transparent;	background-repeat: repeat-x;
+	/* IE hacks */
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src='/img/sfo_gestUpD.png', sizingMethod='scale');
+	height:126px;
+	width:126px;
+	float:left;
+	font : bold 12px Arial, sans-serif;
+	padding:5px;
+	color: #ffffff;
+	text-align:center;
+	white-space: nowrap;
+}
+
+.gest_menux {
+	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer;
+	background-color: transparent;	background-repeat: repeat-x;
+	/* IE hacks */
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src='/img/sfo_gestUpD.png', sizingMethod='scale');
+	height:16px;
+	width:90px;
+	float:left;
+	font : bold 12px Arial, sans-serif;
+	padding:4px 0px 2px 0px;
+	color: #ffffff;
+	text-align:center;
+	white-space: nowrap;
+}
+
+.gest_menuxHome {
+	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer;
+	background-color: transparent;	background-repeat: repeat-x;
+	/* IE hacks */
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src='/img/sfo_gestUpD.png', sizingMethod='scale');
+	height:16px;
+	width:90px;
+	float:left;
+	font : bold 12px Arial, sans-serif;
+	padding:4px 0px 2px 0px;
+	color: #ffffff;
+	text-align:center;
+	white-space: nowrap;
+}
+
+.menuLeft H1 {
+	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer;
+	background-color: transparent;	background-repeat: repeat-x;
+	/* IE hacks */
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src='/img/sfo_gestUpD.png', sizingMethod='scale');
+	font : bold 14px Arial, sans-serif;
+	padding:5px;
+	height:126px;
+	width:126px;
+}
+
+.menuContainer {
+	margin: 0px 0px 0px 0px; border:1px solid silver;
+	background-color: white;	background-repeat: repeat-x;
+	/* IE hacks */
+	/*filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src='/img/sfo_gestUpD.png', sizingMethod='scale');*/
+	padding:3px 3px 3px 3px;
+	color:#696969;
+	height:auto;
+	width:572px;
+}
+
+.FormPageHeader {
+	margin: 10px 0px 10px 1px; border:1px solid silver;
+	background-color: white;	background-repeat: repeat-x;
+	/* IE hacks */
+	/*filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src='/img/sfo_gestUpD.png', sizingMethod='scale');*/
+	padding:3px 3px 3px 3px;
+	color:#696969;
+	height:auto;
+	min-width:570px;
+	width:570px;
+	border: 0px solid #696969;
+}
