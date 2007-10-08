@@ -290,8 +290,8 @@ exit;
 //MAT_SERVER_PATH 	= "/home/salaborsa/htdocs/bibliotecasalaborsa";
 //MAT_SERVER_NAME	= "http://www.salaborsa.clq";
 
-$_DST['fileFront'] 	= $params['MAT_SERVER_NAME']."/".$_DST['file'];
-$_DST['file'] 		= $params['MAT_SERVER_PATH']."/".$_DST['file'];
+$_DST['fileFront'] 	= $params['MAT_SERVER_NAME'].DS.$_DST['file'];
+$_DST['file'] 		= $params['MAT_SERVER_PATH'].DS.$_DST['file'];
 
 
 	$_DST['string']		= 'width="'.$_DST['width'].'" height="'.$_DST['height'].'"';
