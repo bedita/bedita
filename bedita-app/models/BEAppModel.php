@@ -127,7 +127,7 @@ class BEAppModel extends AppModel {
 		// conta il numero di record
 		if(($size = $this->findCount($condition, $recursive)) === false) return false ;
 		
-		$toolbar = array("first" => 0, "prev" => 0, "next" => 0, "last" => 0, "size" => 0, "pages" => 0, "page" => 0) ;
+		$toolbar = array("first" => 0, "prev" => 0, "next" => 0, "last" => 0, "size" => 0, "pages" => 0, "page" => 0, "dim" => 0) ;
 		
 		if(!$page || empty($page)) $page = 1 ;
 		if(!$dimPage || empty($dimPage)) $dimPage = $size ;
@@ -136,9 +136,10 @@ class BEAppModel extends AppModel {
 		settype($pageCount,"integer");
 		if($size % $dimPage) $pageCount++ ;
 		
-		$toolbar["pages"] = $pageCount ;
-		$toolbar["page"]  = $page ;
-				
+		$toolbar["pages"] 	= $pageCount ;
+		$toolbar["page"]  	= $page ;
+		$toolbar["dim"]  	= $dimPage ;
+		
 		if($page == 1) {
 			if($page >= $pageCount) {
 				// Una sola

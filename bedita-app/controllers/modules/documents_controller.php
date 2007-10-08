@@ -48,10 +48,11 @@ class DocumentsController extends AppController {
 		$tree = $this->BeTree->expandOneBranch($id) ;
 		
 		$documents = $this->BeTree->getDiscendents($id, null, $conf->objectTypes['documentAll'], $page, $dim)  ;
-pr($documents);
-exit;		
+		
 		// Setup dei dati da passare al template
 		$this->set('tree', 		$tree);
+		$this->set('documents', $documents['items']);
+		$this->set('toolbar', 	$documents['toolbar']);
 		$this->set('selfPlus',	$this->createSelfURL(false)) ;
 		$this->set('self',		($this->createSelfURL(false)."?")) ;
 	 }

@@ -389,7 +389,7 @@ class Tree extends BEAppModel
 
 	////////////////////////////////////////////////////////////////////////
 	/**
-	 * Preleva i figli di cui id e' radice.
+	 * Preleva i figli/discendenti di cui id e' radice.
 	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se ''  un utente anonimo,
 	 * altrimenti li prende tutti.
 	 * Si possono selezionare i tipi di oggetti da prelevare.
@@ -424,7 +424,7 @@ class Tree extends BEAppModel
 
 		// Costruisce i criteri di ricerca
 		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
-		$sqlClausole = $db->conditions($conditions, false, true) ;
+		$sqlClausole = $db->conditions($conditions, true, true) ;
 
 		// Esegue la ricerca
 		$limit 	= $this->_getLimitClausole($page, $dim) ;

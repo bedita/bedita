@@ -84,7 +84,7 @@ class BeTreeComponent extends Object {
 	 *
 	 * @param integer $id		ID del nodo
 	 */
-	function getDiscendents($id = null, $status = null, $filter = 0xFF, $page = 1, $dim = 100000) {
+	function getDiscendents($id = null, $status = null, $filter = false, $page = 1, $dim = 100000) {
 		$conf  = Configure::getInstance() ;
 		
 		// Preleva l'utente connesso
