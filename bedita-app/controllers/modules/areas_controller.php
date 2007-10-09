@@ -55,7 +55,7 @@ class AreasController extends AppController {
 		$conf  = Configure::getInstance() ;
 		
 	 	// Setup parametri
-		$this->setup_args(array("id", "integer", $id)) ;
+		$this->setup_args(array("id", "integer", &$id)) ;
 	 	
 		// Preleva l'area selezionata
 		$area = null ;
@@ -87,7 +87,7 @@ class AreasController extends AppController {
 	  */
 	 function viewSection($id = null) {	 	
 		// Setup parametri
-		$this->setup_args(array("id", "integer", $id)) ;
+		$this->setup_args(array("id", "integer", &$id)) ;
 	 	
 		// Preleva la sezione selezionata
 		$section = null ;
@@ -258,7 +258,7 @@ class AreasController extends AppController {
 	  * Cancella un'area.
 	  */
 	 function deleteArea($id = null) {
-		$this->setup_args(array("id", "integer", $id)) ;
+		$this->setup_args(array("id", "integer", &$id)) ;
 		
 	 	try {
 		 	if(empty($id)) throw BEditaActionException($this,__("No data", true));
@@ -282,7 +282,7 @@ class AreasController extends AppController {
 	  * Cancella una sezione.
 	  */
 	 function deleteSection($id = null) {
-		$this->setup_args(array("id", "integer", $id)) ;
+		$this->setup_args(array("id", "integer", &$id)) ;
 		
 	 	try {
 		 	if(empty($id)) throw new BEditaActionException($this, "No data");
