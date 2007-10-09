@@ -6,6 +6,7 @@
  *
  * @package
  * @subpackage
+ * @author  giangi@qwerg.com
  */
 class BeTreeHelper extends Helper {
 	/**

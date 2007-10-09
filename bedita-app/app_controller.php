@@ -124,14 +124,18 @@ class AppController extends Controller
 			if(isset($this->params["url"][$args[$i][0]]) && !empty($this->params["url"][$args[$i][0]])) {
 				$args[$i][2] = $this->params["url"][$args[$i][0]] ;
 				
+				$this->passedArgs[$args[$i][0]] = $this->params["url"][$args[$i][0]] ;
+				
 			} elseif(isset($this->passedArgs[$args[$i][0]])) {
 				$args[$i][2] = $this->passedArgs[$args[$i][0]] ;
 			}
 			
-			// Se il valore non e' nullo, ne definisce il tipo
+			// Se il valore non e' nullo, ne definisce il tipo e lo inserisce in namedArgs
 			if(!is_null($args[$i][2])) {
 				settype($args[$i][2], $args[$i][1]) ;
 				$this->params["url"][$args[$i][0]] = $args[$i][2] ;
+				
+				$this->namedArgs[$args[$i][0]] = $args[$i][2] ;
 			}
 		}
 		

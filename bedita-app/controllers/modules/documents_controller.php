@@ -23,7 +23,8 @@
 class DocumentsController extends AppController {
 	var $name = 'Documents';
 
-	var $helpers 	= array('Bevalidation', 'BeTree');
+	var $helpers 	= array('Bevalidation', 'BeTree', 'BeToolbar');
+//	var $helpers 	= array('Bevalidation', 'BeTree');
 	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText');
 
 	// This controller does not use a model
@@ -43,11 +44,12 @@ class DocumentsController extends AppController {
 			array("page", "integer", &$page),
 			array("dim", "integer", &$dim)
 		) ;
-
+		
 		// Preleva l'albero delle aree e sezioni
 		$tree = $this->BeTree->expandOneBranch($id) ;
 		
 		$documents = $this->BeTree->getDiscendents($id, null, $conf->objectTypes['documentAll'], $page, $dim)  ;
+		$this->params['toolbar'] = &$documents['toolbar'] ;
 		
 		// Setup dei dati da passare al template
 		$this->set('tree', 		$tree);
@@ -382,6 +384,11 @@ class DocumentsController extends AppController {
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 	 	
 	 	return false ;
+	 }
+
+	 
+	 function preRenderFilter($view, $layout) {
+	 	$i=0;
 	 }
 	 
 }
