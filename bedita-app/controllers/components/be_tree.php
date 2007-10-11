@@ -14,13 +14,16 @@
 class BeTreeComponent extends Object {
 	var $controller		= null ;
 	var $Tree			= null ;
+	var $Object			= null ;
 	
 	var $uses = array('Tree') ;
 	
 	function __construct() {
-		if(!class_exists('Tree')) 	loadModel('Tree') ;
+		if(!class_exists('Tree')) 		loadModel('Tree') ;
+		if(!class_exists('BEObject')) 	loadModel('BEObject') ;
 		
-		$this->Tree = new Tree() ;
+		$this->Tree 	= new Tree() ;
+		$this->Object 	= new BEObject() ;
 	} 
 
 	/**
@@ -76,7 +79,13 @@ class BeTreeComponent extends Object {
 		// Preleva l'utente connesso
 		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : '' ;
 		
-		return  $this->Tree->getDiscendents($id, $userid, $status, $filter, $page, $dim) ;
+		if(isset($id)) {
+			$objs = &  $this->Tree->getChildren($id, $userid, $status, $filter, $page, $dim) ;
+		} else {
+			$objs = &  $this->Object->find($userid, $status, $filter, $page, $dim) ;
+		}
+		
+		return  $objs ;
 	}
 	
 	/**
@@ -90,7 +99,13 @@ class BeTreeComponent extends Object {
 		// Preleva l'utente connesso
 		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : '' ;
 		
-		return  $this->Tree->getDiscendents($id, $userid, $status, $filter, $page, $dim) ;
+		if(isset($id)) {
+			$objs = &  $this->Tree->getDiscendents($id, $userid, $status, $filter, $page, $dim) ;
+		} else {
+			$objs = &  $this->Object->find($userid, $status, $filter, $page, $dim) ;
+		}
+		
+		return  $objs ;
 	}
 	
 	
@@ -132,7 +147,6 @@ class BeTreeComponent extends Object {
 		
 		return false ;
 	}
-	
 }
 
 ?>

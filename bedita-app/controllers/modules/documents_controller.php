@@ -24,7 +24,6 @@ class DocumentsController extends AppController {
 	var $name = 'Documents';
 
 	var $helpers 	= array('Bevalidation', 'BeTree', 'BeToolbar');
-//	var $helpers 	= array('Bevalidation', 'BeTree');
 	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText');
 
 	// This controller does not use a model

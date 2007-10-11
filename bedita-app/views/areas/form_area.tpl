@@ -69,7 +69,7 @@ $(document).ready(function(){
 
 <div class="blockForm" id="errorForm"></div>
 
-<h2 class="showHideBlockButton">{t}Proprietà{/t}</h2>
+<h2 class="showHideBlockButton">{t}Propriet&agrave;{/t}</h2>
 
 <div class="blockForm" id="proprieta">
 	<span style="font-weight:bold;">{t}status{/t}</span>:

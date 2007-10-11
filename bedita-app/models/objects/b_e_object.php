@@ -224,6 +224,75 @@ class BEObject extends BEAppModel
 	}
 	
 	/**
+	 * Esegue ricerche complesse sugli oggetti indipendentemente da dove sono collocati.
+	 * (vedere: tree->getChildren(), tree->getChildren() ).
+	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se ''  un utente anonimo,
+	 * altrimenti li prende tutti.
+	 * Si possono selezionare i tipi di oggetti da prelevare.
+	 *
+	 * @param string $userid	l'utente che accede. Se null: non controlla i permessi. Se '': utente guest.
+	 * 							Default: non verifica i permessi.
+	 * @param string $status	Prende oggetti solo con lo status passato
+	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
+	 * 							1, 3,  22 ... aree, sezioni, documenti.
+	 * 							Default: tutti.
+	 * @param integer $page		Numero di pagina da selezionare
+	 * @param integer $dim		Dimensione della pagina
+	 */	
+	function find($userid = null, $status = null, $filter = false, $page = 1, $dim = 100000) {
+		if(!isset($userid)) {
+			$fields 		= " *, prmsUserByID ('{$userid}', id, 15) as perms " ;
+		} else {
+			$fields  = " * " ;
+		}
+		
+		// setta le condizioni di ricerca
+		$conditions = array() ;
+		$this->_getCondition_filterType($conditions, $filter) ;
+		$this->_getCondition_userid($conditions, $userid ) ;
+		$this->_getCondition_status($conditions, $status) ;
+		$this->_getCondition_current($conditions, true) ;
+
+		// Costruisce i criteri di ricerca
+		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
+		$sqlClausole = $db->conditions($conditions, true, true) ;
+		
+		// costruisce il join dalle tabelle
+		$from = " objects " ;
+		
+		// Esegue la ricerca
+		$limit 	= $this->_getLimitClausole($page, $dim) ;
+		$tmp  	= $this->execute("SELECT {$fields} FROM {$from} {$sqlClausole} LIMIT {$limit}") ;
+
+		// Torna il risultato
+		$recordset = array(
+			"items"		=> array(),
+			"toolbar"	=> $this->toolbar($page, $dim, $sqlClausole)
+		) ;
+		for ($i =0; $i < count($tmp); $i++) {
+			$recordset['items'][] = $this->am($tmp[$i]);
+		}
+
+		return $recordset ;
+	}
+	
+	function findCount($conditions = null, $recursive = null) {
+		$from = " objects " ;
+		list($data)  = $this->execute("SELECT COUNT(*) AS count FROM {$from} {$conditions}") ;
+
+		if (isset($data[0]['count'])) {
+			return $data[0]['count'];
+		} elseif (isset($data[$this->name]['count'])) {
+			return $data[$this->name]['count'];
+		}
+
+		return false;
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
 	 * Setta i valori di default per i diversi campi
 	 */
 	private function _getDefaultNickname($value) {
@@ -291,11 +360,43 @@ class BEObject extends BEAppModel
 			'name'		=> $name,
 			'type'		=> $type,
 			$type		=> $val
-		) ;
-		
+		) ;	
 	}
 	
 	
+	/**
+	 * Creano le cluasole di ricerca
+	 */
+	private function _getLimitClausole($page = 1, $dim = 100000) {
+		// Esegue la ricerca
+		if($page > 1) $offset = ($page -1) * $dim ;
+		else $offset = null ;
+		$limit = isset($offset)? "$offset, $dim" : "$dim";
+
+		return $limit ;
+	}
+	
+	private function _getCondition_filterType(&$conditions, $filter = false) {
+		if(!$filter) return ;
+		$conditions['object_type_id'] = $filter ;
+	}
+
+	private function _getCondition_userid(&$conditions, $userid = null) {
+		if(!isset($userid)) return ;
+
+		$conditions[] 	= " prmsUserByID ('{$userid}', id, ".BEDITA_PERMS_READ.") > 0 " ;
+	}
+
+	private function _getCondition_status(&$conditions, $status = null) {
+		if(!isset($status)) return ;
+
+		$conditions[] = array('status' => "'$status'") ;
+	}
+
+	private function _getCondition_current(&$conditions, $current = true) {
+		if(!$current) return ;
+		$conditions[] = array("current" => 1);
+	}
 	
 }
 ?>

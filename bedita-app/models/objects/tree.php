@@ -29,7 +29,6 @@ class Tree extends BEAppModel
 	var $name 		= 'Tree';
 	var $useTable	= "view_trees" ;
 
-
 	/**
 	 * save.
 	 * Non fa niente
@@ -357,6 +356,7 @@ class Tree extends BEAppModel
 
 	/**
 	 * Preleva i discendenti di cui id e' radice.
+	 * (vedere: beobject->find(), per ricerche al di fuori dell'albero dei contenuti ).
 	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se ''  un utente anonimo,
 	 * altrimenti li prende tutti.
 	 * Si possono selezionare i tipi di oggetti da prelevare.
@@ -376,7 +376,8 @@ class Tree extends BEAppModel
 	}
 
 	function findCount($conditions = null, $recursive = null) {
-		list($data)  = $this->execute("SELECT COUNT(*) AS count FROM view_trees AS Tree {$conditions}") ;
+		$from = "view_trees AS Tree INNER JOIN objects ON Tree.id = objects.id" ;
+		list($data)  = $this->execute("SELECT COUNT(*) AS count FROM {$from} {$conditions}") ;
 
 		if (isset($data[0]['count'])) {
 			return $data[0]['count'];
@@ -406,18 +407,24 @@ class Tree extends BEAppModel
 	 * @param boolean $all		Se true, prende anche i discendenti
 	 */
 	function _getChildren($id, $userid, $status, $filter, $page, $dim, $all) {
-		$fields  = " * " ;
-
+		
 		// Setta l'id
 		if (!empty($id)) {
 			$this->id = $id;
 		}
 
+		if(!isset($userid)) {
+			$fields 		= " *, prmsUserByID ('{$userid}', id, 15) as perms " ;
+		} else {
+			$fields  = " * " ;
+		}
+		
 		// setta le condizioni di ricerca
 		$conditions = array() ;
 		$this->_getCondition_filterType($conditions, $filter) ;
 		$this->_getCondition_userid($conditions, $userid ) ;
 		$this->_getCondition_status($conditions, $status) ;
+		$this->_getCondition_current($conditions, true) ;
 
 		if($all) $this->_getCondition_parentPath($conditions, $id) ;
 		else $this->_getCondition_parentID($conditions, $id) ;
@@ -425,10 +432,14 @@ class Tree extends BEAppModel
 		// Costruisce i criteri di ricerca
 		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
 		$sqlClausole = $db->conditions($conditions, true, true) ;
-
+		
+		// costruisce il join dalle tabelle
+		$from = "view_trees AS Tree INNER JOIN objects ON Tree.id = objects.id" ;
+		
+		
 		// Esegue la ricerca
 		$limit 	= $this->_getLimitClausole($page, $dim) ;
-		$tmp  	= $this->execute("SELECT {$fields} FROM view_trees AS Tree {$sqlClausole} LIMIT {$limit}") ;
+		$tmp  	= $this->execute("SELECT {$fields} FROM {$from} {$sqlClausole} LIMIT {$limit}") ;
 
 		// Torna il risultato
 		$recordset = array(
@@ -454,23 +465,13 @@ class Tree extends BEAppModel
 
 	private function _getCondition_filterType(&$conditions, $filter = false) {
 		if(!$filter) return ;
-/*
-		if (is_array($filter) && count($filter)) {
-			$conditions['object_type_id'] = $filter ;
-//			$filter = implode(",", $filter) ;
-//			$conditions[] = array("object_type_id" => " IN ({$filter})  ") ;
-		} else {
-			$conditions[] = array("object_type_id" => $filter) ;
-		}
-*/
-		$conditions['object_type_id'] = $filter ;
+		$conditions['Tree.object_type_id'] = $filter ;
 	}
 
 	private function _getCondition_userid(&$conditions, $userid = null) {
 		if(!isset($userid)) return ;
 
-		$fields 		= " Tree.*, prmsUserByID ('{$userid}', id, 15) as perms " ;
-		$conditions[] 	= " prmsUserByID ('{$userid}', id, ".BEDITA_PERMS_READ.") > 0 " ;
+		$conditions[] 	= " prmsUserByID ('{$userid}', Tree.id, ".BEDITA_PERMS_READ.") > 0 " ;
 	}
 
 	private function _getCondition_status(&$conditions, $status = null) {
@@ -490,6 +491,10 @@ class Tree extends BEAppModel
 		}
 	}
 
+	private function _getCondition_current(&$conditions, $current = true) {
+		if(!$current) return ;
+		$conditions[] = array("objects.current" => 1);
+	}
 
 }
 

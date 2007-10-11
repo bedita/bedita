@@ -54,13 +54,15 @@ class BeTreeHelper extends Helper {
 
 		// Preleva il testo dei figli
 		$txtChildren = "" ;
-		for($i=0; $i < count($item['children']) ; $i++) {
-			$txtChildren .= $this->treeBranch($item['children'][$i]) ;
+		if(isset($item['children'])) {
+			for($i=0; $i < count($item['children']) ; $i++) {
+				$txtChildren .= $this->treeBranch($item['children'][$i]) ;
+			}
+			if(count($item['children'])) {
+				$txtChildren = sprintf($this->tags['children'], $txtChildren) ;
+			}
 		}
-		if(count($item['children'])) {
-			$txtChildren = sprintf($this->tags['children'], $txtChildren) ;
-		}
-
+		
 		// Crea l'html per il tag
 		$txt = sprintf($this->tags[$key], $item['id'], $item['title'], $txtChildren) ;
 
