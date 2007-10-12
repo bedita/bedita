@@ -1,20 +1,20 @@
 -- phpMyAdmin SQL Dump
 -- version 2.8.2.4
 -- http://www.phpmyadmin.net
--- 
+--
 -- Host: localhost
 -- Generato il: 10 Mag, 2007 at 04:02 PM
 -- Versione MySQL: 5.0.37
 -- Versione PHP: 5.2.0
--- 
+--
 -- Database: 'bedita2'
--- 
+--
 
--- 
+--
 -- Dump dei dati per la tabella 'content_types'
--- 
+--
 
-INSERT INTO object_types (id, name) VALUES 
+INSERT INTO object_types (id, name) VALUES
 (1, 'area'),
 (2, 'newsletter'),
 (3, 'section'),
@@ -56,7 +56,7 @@ INSERT INTO object_types (id, name) VALUES
 (30, 'biblioitem')
 ;
 
-INSERT INTO `question_types` (`id`, `label`) VALUES 
+INSERT INTO `question_types` (`id`, `label`) VALUES
 (1, 'scelta multipla'),
 (2, 'scelta singola'),
 (3, 'testo libero'),
@@ -80,32 +80,40 @@ INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES ((SELECT MAX(id) FR
 -- ---------------------------
 -- Dati moduli
 -- ---------------------------
-INSERT INTO `modules` (`label`, `color`, `path`, `status`) VALUES 
+INSERT INTO `modules` (`label`, `color`, `path`, `status`) VALUES
 ('admin', '#000000', 'admin', 'on'),
-('areas', '#ff9933', 'areas', 'on'), 
-('documents', '#ff9900', 'documents', 'on') ;
+('areas', '#ff9933', 'areas', 'on'),
+('documents', '#ff9900', 'documents', 'on'),
+('galleries', '#123456', 'galleries', 'on') ;
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES (
-(SELECT id FROM modules WHERE label = 'admin'), 
-(SELECT id FROM groups WHERE name = 'administrator'), 
+(SELECT id FROM modules WHERE label = 'admin'),
+(SELECT id FROM groups WHERE name = 'administrator'),
 'group', '15'
 ) ;
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES (
-(SELECT id FROM modules WHERE label = 'areas'), 
-(SELECT id FROM groups WHERE name = 'administrator'), 
+(SELECT id FROM modules WHERE label = 'areas'),
+(SELECT id FROM groups WHERE name = 'administrator'),
 'group', '15'
 ) ;
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES (
-(SELECT id FROM modules WHERE label = 'documents'), 
-(SELECT id FROM groups WHERE name = 'administrator'), 
+(SELECT id FROM modules WHERE label = 'documents'),
+(SELECT id FROM groups WHERE name = 'administrator'),
 'group', '15'
 ) ;
 
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES (
+(SELECT id FROM modules WHERE label = 'galleries'),
+(SELECT id FROM groups WHERE name = 'administrator'),
+'group', '15'
+) ;
 -- ---------------------------
 -- Dati di esempio
 -- ---------------------------
@@ -224,7 +232,7 @@ VALUES (
 -- Inserisce un author
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `IP_created`, `user_created`, `user_modified`) VALUES (11, 28, 'on', NOW(), NOW(), 'Antonio Albanese', "AntonioAlbanese", 1, 'it', '192.168.0.1', 1, 1);
 INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `testobreve` , `formato` ) VALUES (11, '2007-05-22 10:59:28', '2008-05-22 10:59:34', 'sottotitolo', 'Questo è il testo breve DI Albanese', 'txt');
-INSERT INTO `authors` ( `id` , `image_id` , `nome` , `cognome` , `search_string` ) VALUES ('11', '10', 'Antonio', 'Albanese', 'test search string') ; 
+INSERT INTO `authors` ( `id` , `image_id` , `nome` , `cognome` , `search_string` ) VALUES ('11', '10', 'Antonio', 'Albanese', 'test search string') ;
 INSERT INTO `trees` ( `id` , `parent_id` , `path`, `pathParent`, `priority` ) VALUES (11, 2, '/2/11', '/2', 4);
 INSERT INTO `permissions` ( `object_id` , `ugid` , `switch` , `flag` )
 VALUES (
@@ -246,11 +254,11 @@ VALUES (
 INSERT INTO `content_bases_objects` ( `object_id` , `id` , `switch` ) VALUES (12, 5, 'LANGS') ;
 
 -- inserisce delle categorie x documenti
-INSERT INTO `typed_object_categories` (id, `area_id` , `label` , `typed` , `priority` ) VALUES (1, '2', 'Categoria Doc # 1', 22 , '1') ; 
+INSERT INTO `typed_object_categories` (id, `area_id` , `label` , `typed` , `priority` ) VALUES (1, '2', 'Categoria Doc # 1', 22 , '1') ;
 INSERT INTO `typed_object_categories` (id, `area_id` , `label` , `typed` , `priority` ) VALUES (2, '2', 'Categoria Doc # 2', 22 , '2') ;
 INSERT INTO `typed_object_categories` (id, `area_id` , `label` , `typed` , `priority` ) VALUES (3, '2', 'Categoria Doc # 3', 22 , '3') ;
 
--- inserisce il documento 5 nelle categorie 
+-- inserisce il documento 5 nelle categorie
 INSERT INTO `contents_typed_object_categories` ( `content_id` , `typed_object_category_id`) VALUES (5, 2) ;
 INSERT INTO `contents_typed_object_categories` ( `content_id` , `typed_object_category_id`) VALUES (5, 1) ;
 

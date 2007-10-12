@@ -1,26 +1,26 @@
 --- Procedure e funzioni per l abero
-DROP PROCEDURE  IF EXISTS deleteTree ; 
-delimiter // 
-CREATE PROCEDURE deleteTree (_ID INT) 
+DROP PROCEDURE  IF EXISTS deleteTree ;
+delimiter //
+CREATE PROCEDURE deleteTree (_ID INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE pathID MEDIUMTEXT DEFAULT '' ;
 DECLARE pathDel MEDIUMTEXT DEFAULT '' ;
 
 SET pathID   = (SELECT path FROM trees WHERE id = _ID) ;
 SET pathDel  = IF(pathID IS NULL, '', CONCAT(pathID, '%')) ;
 
-DELETE FROM trees WHERE path LIKE  pathDel ; 
+DELETE FROM trees WHERE path LIKE  pathDel ;
 
-END 
+END
 //
 delimiter ;
 
-DROP PROCEDURE  IF EXISTS appendChildTree ; 
-delimiter // 
-CREATE PROCEDURE appendChildTree (_ID INT, _IDParent INT) 
+DROP PROCEDURE  IF EXISTS appendChildTree ;
+delimiter //
+CREATE PROCEDURE appendChildTree (_ID INT, _IDParent INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE pathParent MEDIUMTEXT DEFAULT '' ;
 DECLARE pathID MEDIUMTEXT DEFAULT '' ;
 DECLARE _priority INT  ;
@@ -29,20 +29,20 @@ SET pathParent  = (SELECT path FROM trees WHERE id = _IDParent) ;
 SET pathID  	= IF(pathParent IS NULL, CONCAT('/', _ID), CONCAT(pathParent, '/', _ID)) ;
 SET pathParent 	= IF(pathParent IS NULL, '/', pathParent) ;
 SET _priority  	= (SELECT (MAX(priority)+1) FROM trees WHERE id = _IDParent) ;
-SET _priority  	= IF(_priority IS NULL, 1, _priority) ; 
+SET _priority  	= IF(_priority IS NULL, 1, _priority) ;
 
 INSERT INTO `trees` ( `id` , `parent_id` , `path` , `pathParent` , `priority` ) VALUES (_ID, _IDParent , pathID, pathParent , _priority) ;
 
-END 
+END
 //
 delimiter ;
 
 
-DROP PROCEDURE  IF EXISTS moveChildTreeUp ; 
-delimiter // 
-CREATE PROCEDURE moveChildTreeUp (_ID INT, _IDParent INT) 
+DROP PROCEDURE  IF EXISTS moveChildTreeUp ;
+delimiter //
+CREATE PROCEDURE moveChildTreeUp (_ID INT, _IDParent INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE _priority INT ;
 DECLARE _minPriority INT ;
 DECLARE _pathParent MEDIUMTEXT ;
@@ -58,16 +58,16 @@ IF  _priority > _minPriority THEN
 	 END ;
 END IF ;
 
-END 
+END
 //
 delimiter ;
 
 
-DROP PROCEDURE  IF EXISTS moveChildTreeDown ; 
-delimiter // 
-CREATE PROCEDURE moveChildTreeDown (_ID INT, _IDParent INT) 
+DROP PROCEDURE  IF EXISTS moveChildTreeDown ;
+delimiter //
+CREATE PROCEDURE moveChildTreeDown (_ID INT, _IDParent INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE _priority INT ;
 DECLARE _maxPriority INT ;
 DECLARE _pathParent MEDIUMTEXT ;
@@ -83,16 +83,16 @@ IF  _priority < _maxPriority THEN
 	 END ;
 END IF ;
 
-END 
+END
 //
 delimiter ;
 
 
-DROP PROCEDURE  IF EXISTS moveChildTreeFirst ; 
-delimiter // 
-CREATE PROCEDURE moveChildTreeFirst (_ID INT, _IDParent INT) 
+DROP PROCEDURE  IF EXISTS moveChildTreeFirst ;
+delimiter //
+CREATE PROCEDURE moveChildTreeFirst (_ID INT, _IDParent INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE _priority INT ;
 DECLARE _idCurr INT ;
@@ -113,15 +113,15 @@ REPEAT
 		END IF ;
 	END IF;
 UNTIL done END REPEAT;
-END 
+END
 //
 delimiter ;
 
-DROP PROCEDURE  IF EXISTS moveChildTreeLast ; 
-delimiter // 
-CREATE PROCEDURE moveChildTreeLast (_ID INT, _IDParent INT) 
+DROP PROCEDURE  IF EXISTS moveChildTreeLast ;
+delimiter //
+CREATE PROCEDURE moveChildTreeLast (_ID INT, _IDParent INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE _priority INT ;
 DECLARE _maxPriority INT ;
@@ -145,15 +145,15 @@ REPEAT
 		END IF ;
 	END IF;
 UNTIL done END REPEAT;
-END 
+END
 //
 delimiter ;
 
-DROP PROCEDURE  IF EXISTS switchChildTree ; 
-delimiter // 
-CREATE PROCEDURE switchChildTree (_ID INT, _IDParent INT, _PRIOR INT) 
+DROP PROCEDURE  IF EXISTS switchChildTree ;
+delimiter //
+CREATE PROCEDURE switchChildTree (_ID INT, _IDParent INT, _PRIOR INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE _priority INT ;
 DECLARE _old_priority INT ;
@@ -165,19 +165,19 @@ SET _maxPriority  	= (SELECT MAX(priority) FROM trees WHERE parent_id = _IDParen
 SET _priority		= IF(_PRIOR > _maxPriority, _maxPriority, _PRIOR) ;
 SET _old_priority	= (SELECT priority FROM trees WHERE id = _ID AND parent_id = _IDParent) ;
 
-UPDATE trees SET priority = _old_priority 
+UPDATE trees SET priority = _old_priority
 WHERE parent_id = _IDParent  AND priority = _priority ;
 
 UPDATE trees SET priority = _priority  WHERE id = _ID AND parent_id = _IDParent ;
-END 
+END
 //
 delimiter ;
 
-DROP PROCEDURE  IF EXISTS moveTree ; 
-delimiter // 
-CREATE PROCEDURE moveTree (_ID INT, _IDOldParent INT, _IDNewParent INT) 
+DROP PROCEDURE  IF EXISTS moveTree ;
+delimiter //
+CREATE PROCEDURE moveTree (_ID INT, _IDOldParent INT, _IDNewParent INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE _oldPath MEDIUMTEXT ;
 DECLARE _newPath MEDIUMTEXT ;
@@ -191,54 +191,54 @@ SET _newPath		= REPLACE(_oldPath, _oldPathParent, _newPathParent) ;
 
 UPDATE trees SET path = _newPath, pathParent = _newPathParent, parent_id = _IDNewParent WHERE path LIKE _oldPath ;
 
-UPDATE trees SET  
-path = REPLACE(path, _oldPath, _newPath) , pathParent = REPLACE(pathParent, _oldPath, _newPath) 
+UPDATE trees SET
+path = REPLACE(path, _oldPath, _newPath) , pathParent = REPLACE(pathParent, _oldPath, _newPath)
 WHERE path  LIKE CONCAT(_oldPath, '%') ;
 
-END 
+END
 //
 delimiter ;
 
-DROP FUNCTION  IF EXISTS isParentTree ; 
-delimiter // 
-CREATE FUNCTION isParentTree (_IDParent INT, _IDChild INT) RETURNS INT 
+DROP FUNCTION  IF EXISTS isParentTree ;
+delimiter //
+CREATE FUNCTION isParentTree (_IDParent INT, _IDChild INT) RETURNS INT
 DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE _pathParent MEDIUMTEXT ;
 DECLARE ret INT ;
 
 SET _pathParent = (SELECT path FROM trees WHERE id = _IDParent) ;
-SET ret = IF((SELECT id FROM trees WHERE path LIKE CONCAT(_pathParent, '%') AND id = _IDChild) IS NULL, 1, 0) ; 
+SET ret = IF((SELECT id FROM trees WHERE path LIKE CONCAT(_pathParent, '%') AND id = _IDChild) IS NULL, 1, 0) ;
 
 RETURN ret ;
 
-END 
+END
 //
 delimiter ;
 
-DROP PROCEDURE  IF EXISTS cloneTree ; 
-delimiter // 
-CREATE PROCEDURE cloneTree (_ID INT, _IDOLD INT) 
+DROP PROCEDURE  IF EXISTS cloneTree ;
+delimiter //
+CREATE PROCEDURE cloneTree (_ID INT, _IDOLD INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE _idparent INT ;
 DECLARE curs CURSOR FOR SELECT parent_id FROM trees WHERE path  LIKE CONCAT('%/', _IDOLD) ;
 DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done = 1;
 
--- clona gli oggetti foglia 
+-- clona gli oggetti foglia
 OPEN curs;
 REPEAT
 	FETCH curs INTO _idparent ;
 	IF NOT done THEN
-	 	CALL appendChildTree(_ID, _idparent) ;	
+	 	CALL appendChildTree(_ID, _idparent) ;
 	END IF;
 UNTIL done END REPEAT;
 
--- clona le ramificazioni 
-INSERT INTO trees 
-SELECT 
-id, 
+-- clona le ramificazioni
+INSERT INTO trees
+SELECT
+id,
 _ID AS parent_id,
 REPLACE(path, _IDOLD, _ID) AS path,
 REPLACE(pathParent, _IDOLD, _ID) AS pathParent,
@@ -247,7 +247,7 @@ FROM trees
 WHERE
 path LIKE CONCAT('%/', _IDOLD, '/%') ;
 
-END 
+END
 //
 delimiter ;
 
@@ -255,11 +255,11 @@ delimiter ;
 -- ---------------------------------------------------
 -- ---------------------------------------------------
 
-DROP PROCEDURE  IF EXISTS appendChildBibliography ; 
-delimiter // 
-CREATE PROCEDURE appendChildBibliography (_ID INT, _IDParent INT) 
+DROP PROCEDURE  IF EXISTS appendChildBibliography ;
+delimiter //
+CREATE PROCEDURE appendChildBibliography (_ID INT, _IDParent INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE _priority INT ;
 
 SET _priority  	= (SELECT (MAX(priority)+1) FROM content_bases_objects WHERE object_id = _IDParent AND switch = 'BIBLIOS') ;
@@ -267,28 +267,28 @@ SET _priority	= IF(_priority IS NULL, 1, _priority) ;
 
 INSERT INTO `content_bases_objects` ( `id` , `object_id` , `switch` , `priority` ) VALUES (_ID, _IDParent , 'BIBLIOS', _priority) ;
 
-END 
+END
 //
 delimiter ;
 
-DROP PROCEDURE  IF EXISTS removeAllChildrenBibliography ; 
-delimiter // 
-CREATE PROCEDURE removeAllChildrenBibliography (_IDParent INT) 
+DROP PROCEDURE  IF EXISTS removeAllChildrenBibliography ;
+delimiter //
+CREATE PROCEDURE removeAllChildrenBibliography (_IDParent INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 
 DELETE FROM content_bases_objects WHERE `object_id` = _IDParent AND switch = 'BIBLIOS' ;
 
-END 
+END
 //
 delimiter ;
 
 
-DROP PROCEDURE  IF EXISTS moveChildBibliographyUp ; 
-delimiter // 
-CREATE PROCEDURE moveChildBibliographyUp (_ID INT, _IDParent INT) 
+DROP PROCEDURE  IF EXISTS moveChildBibliographyUp ;
+delimiter //
+CREATE PROCEDURE moveChildBibliographyUp (_ID INT, _IDParent INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE _priority INT ;
 DECLARE _minPriority INT ;
 
@@ -302,16 +302,16 @@ IF  _priority > _minPriority THEN
 	 END ;
 END IF ;
 
-END 
+END
 //
 delimiter ;
 
 
-DROP PROCEDURE  IF EXISTS moveChildBibliographyDown ; 
-delimiter // 
-CREATE PROCEDURE moveChildBibliographyDown (_ID INT, _IDParent INT) 
+DROP PROCEDURE  IF EXISTS moveChildBibliographyDown ;
+delimiter //
+CREATE PROCEDURE moveChildBibliographyDown (_ID INT, _IDParent INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE _priority INT ;
 DECLARE _maxPriority INT ;
 
@@ -325,16 +325,16 @@ IF  _priority < _maxPriority THEN
 	END ;
 END IF ;
 
-END 
+END
 //
 delimiter ;
 
 
-DROP PROCEDURE  IF EXISTS moveChildBibliographyFirst ; 
-delimiter // 
-CREATE PROCEDURE moveChildBibliographyFirst (_ID INT, _IDParent INT) 
+DROP PROCEDURE  IF EXISTS moveChildBibliographyFirst ;
+delimiter //
+CREATE PROCEDURE moveChildBibliographyFirst (_ID INT, _IDParent INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE _priority INT ;
 DECLARE _idCurr INT ;
@@ -355,15 +355,15 @@ REPEAT
 		END IF ;
 	END IF;
 UNTIL done END REPEAT;
-END 
+END
 //
 delimiter ;
 
-DROP PROCEDURE  IF EXISTS moveChildBibliographyLast ; 
-delimiter // 
-CREATE PROCEDURE moveChildBibliographyLast (_ID INT, _IDParent INT) 
+DROP PROCEDURE  IF EXISTS moveChildBibliographyLast ;
+delimiter //
+CREATE PROCEDURE moveChildBibliographyLast (_ID INT, _IDParent INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE _priority INT ;
 DECLARE _maxPriority INT ;
@@ -388,7 +388,7 @@ REPEAT
 		END IF ;
 	END IF;
 UNTIL done END REPEAT;
-END 
+END
 //
 delimiter ;
 
@@ -397,11 +397,11 @@ delimiter ;
 -- ---------------------------------------------------
 -- ---------------------------------------------------
 
-DROP PROCEDURE  IF EXISTS replacePermission ; 
-delimiter // 
-CREATE PROCEDURE replacePermission (_OBJID INT, _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40), _FLAG INT) 
+DROP PROCEDURE  IF EXISTS replacePermission ;
+delimiter //
+CREATE PROCEDURE replacePermission (_OBJID INT, _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40), _FLAG INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 
 DECLARE _UGID INT DEFAULT 0;
 DECLARE _idprm INT DEFAULT 0;
@@ -410,22 +410,22 @@ SET _UGID 	= IF(_SWITCH = 'user', (SELECT ID FROM users WHERE userid = _USERGROU
 
 IF _UGID > 0 THEN
 	SET _idprm	= (SELECT ID FROM permissions WHERE object_id = _OBJID AND ugid = _UGID AND switch = _SWITCH) ;
-	
+
 	IF _idprm > 0 THEN
 		UPDATE permissions SET flag = _FLAG WHERE id = _idprm ;
 	ELSE
-		INSERT permissions (object_id, ugid, switch, flag) VALUES (_OBJID, _UGID, _SWITCH, _FLAG) ;	
+		INSERT permissions (object_id, ugid, switch, flag) VALUES (_OBJID, _UGID, _SWITCH, _FLAG) ;
 	END IF ;
 END IF ;
-END 
+END
 //
 delimiter ;
 
-DROP PROCEDURE  IF EXISTS deletePermission ; 
-delimiter // 
-CREATE PROCEDURE deletePermission (_OBJID INT, _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40)) 
+DROP PROCEDURE  IF EXISTS deletePermission ;
+delimiter //
+CREATE PROCEDURE deletePermission (_OBJID INT, _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40))
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 
 DECLARE _UGID INT DEFAULT 0;
 DECLARE _idprm INT DEFAULT 0;
@@ -435,15 +435,15 @@ SET _UGID 	= IF(_SWITCH = 'user', (SELECT ID FROM users WHERE userid = _USERGROU
 IF _UGID > 0 THEN
 	DELETE FROM permissions WHERE object_id = _OBJID AND ugid = _UGID AND switch = _SWITCH ;
 END IF ;
-END 
+END
 //
 delimiter ;
 
-DROP PROCEDURE  IF EXISTS replacePermissionTree ; 
-delimiter // 
-CREATE PROCEDURE replacePermissionTree (_OBJID INT, _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40), _FLAG INT) 
+DROP PROCEDURE  IF EXISTS replacePermissionTree ;
+delimiter //
+CREATE PROCEDURE replacePermissionTree (_OBJID INT, _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40), _FLAG INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 
 DECLARE _UGID INT DEFAULT 0;
 DECLARE _idprm INT DEFAULT 0;
@@ -462,31 +462,31 @@ IF _UGID > 0 THEN
 	-- Trova gli oggetti coinvolti
 	SET pathID       = (SELECT path FROM trees WHERE id = _OBJID) ;
 	SET pathSearch   = IF(pathID IS NULL, '', CONCAT(pathID, '%')) ;
-	
+
 	OPEN curs;
 	REPEAT
 		FETCH curs INTO _idCurr ;
 
 		SET _idprm	= (SELECT ID FROM permissions WHERE object_id = _idCurr AND ugid = _UGID AND switch = _SWITCH) ;
-	
+
 		IF _idprm > 0 THEN
 			UPDATE permissions SET flag = _FLAG WHERE id = _idprm ;
 		ELSE
-			INSERT permissions (object_id, ugid, switch, flag) VALUES (_idCurr, _UGID, _SWITCH, _FLAG) ;	
+			INSERT permissions (object_id, ugid, switch, flag) VALUES (_idCurr, _UGID, _SWITCH, _FLAG) ;
 		END IF ;
 
 	UNTIL done END REPEAT;
-	
+
 END IF ;
-END 
+END
 //
 delimiter ;
 
-DROP PROCEDURE  IF EXISTS deletePermissionTree ; 
-delimiter // 
-CREATE PROCEDURE deletePermissionTree (_OBJID INT, _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40)) 
+DROP PROCEDURE  IF EXISTS deletePermissionTree ;
+delimiter //
+CREATE PROCEDURE deletePermissionTree (_OBJID INT, _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40))
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 
 DECLARE _UGID INT DEFAULT 0;
 DECLARE _idprm INT DEFAULT 0;
@@ -505,7 +505,7 @@ IF _UGID > 0 THEN
 	-- Trova gli oggetti coinvolti
 	SET pathID       = (SELECT path FROM trees WHERE id = _OBJID) ;
 	SET pathSearch   = IF(pathID IS NULL, '', CONCAT(pathID, '%')) ;
-	
+
 	OPEN curs;
 	REPEAT
 		FETCH curs INTO _idCurr ;
@@ -515,76 +515,76 @@ IF _UGID > 0 THEN
 	UNTIL done END REPEAT;
 
 END IF ;
-END 
+END
 //
 delimiter ;
 
-DROP PROCEDURE  IF EXISTS deleteAllPermissionTree ; 
-delimiter // 
-CREATE PROCEDURE deleteAllPermissionTree (_OBJID INT) 
+DROP PROCEDURE  IF EXISTS deleteAllPermissionTree ;
+delimiter //
+CREATE PROCEDURE deleteAllPermissionTree (_OBJID INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 
-DELETE FROM permissions WHERE object_id 
+DELETE FROM permissions WHERE object_id
 IN
 (SELECT id FROM trees WHERE path LIKE CONCAT((SELECT path FROM trees WHERE id = _OBJID), '%'))
 ;
-END 
+END
 //
 delimiter ;
 
-DROP FUNCTION  IF EXISTS prmsUserByID ; 
-delimiter // 
+DROP FUNCTION  IF EXISTS prmsUserByID ;
+delimiter //
 CREATE FUNCTION prmsUserByID (_USERID VARCHAR(40), _IDOBJ VARCHAR(32), _PRMS INT) RETURNS INT
-NOT DETERMINISTIC
-BEGIN 
+DETERMINISTIC
+BEGIN
 DECLARE prmsG INT DEFAULT 0 ;
 DECLARE prmsU INT DEFAULT 0 ;
 
 SET prmsG = (
 	SELECT DISTINCT
 	(permissions.flag & _PRMS) AS perms
-	FROM 
-	permissions 
+	FROM
+	permissions
 	WHERE
 	permissions.object_id = _IDOBJ
-	AND 
+	AND
 	(
-	permissions.ugid IN 
+	permissions.ugid IN
 		(
 		SELECT groups_users.`group_id`
-		FROM  
+		FROM
 		users INNER JOIN groups_users ON users.id = groups_users.user_id
 		WHERE users.userid = _USERID
 		)
 	OR
-	
-	permissions.ugid = 
+
+	permissions.ugid =
 		(
 		SELECT id FROM groups WHERE name = 'guest'
 		)
 	)
 	AND
 	permissions.switch = 'group'
-	AND 
-	(permissions.flag & _PRMS) 
+	AND
+	(permissions.flag & _PRMS)
 	) ;
 SET prmsG  = IF(prmsG IS NULL, 0, prmsG) ;
 
 SET prmsU  = (
 	SELECT DISTINCT
 	(permissions.flag & _PRMS) AS perms
-	FROM 
-	permissions 
+	FROM
+	permissions
 	WHERE
-	permissions.ugid = 
+	permissions.ugid =
 	(
 	SELECT id FROM users WHERE userid = _USERID
 	)
-	AND 
+	AND
 	permissions.switch = 'user'
-	AND 
-	(permissions.flag & _PRMS) 
+	AND
+	(permissions.flag & _PRMS)
 	AND
 	permissions.object_id = _IDOBJ
 ) ;
@@ -593,53 +593,53 @@ SET prmsU  = IF(prmsU IS NULL, 0, prmsU) ;
 
 RETURN (prmsG|prmsU) ;
 
-END 
+END
 //
 delimiter ;
 
-DROP FUNCTION  IF EXISTS prmsGroupByName ; 
-delimiter // 
+DROP FUNCTION  IF EXISTS prmsGroupByName ;
+delimiter //
 CREATE FUNCTION prmsGroupByName (_GROUPNAME VARCHAR(40), _IDOBJ VARCHAR(32), _PRMS INT) RETURNS INT
-NOT DETERMINISTIC
-BEGIN 
+DETERMINISTIC
+BEGIN
 DECLARE prmsG INT DEFAULT 0 ;
 
 SET prmsG = (
 	SELECT DISTINCT
 	(permissions.flag & _PRMS) AS perms
-	FROM 
-	permissions 
+	FROM
+	permissions
 	WHERE
 	permissions.object_id = _IDOBJ
-	AND 
-	(	
-	permissions.ugid = 
+	AND
+	(
+	permissions.ugid =
 		(
 		SELECT id FROM groups WHERE name = _GROUPNAME
 		)
 	)
 	AND
 	permissions.switch = 'group'
-	AND 
-	(permissions.flag & _PRMS) 
+	AND
+	(permissions.flag & _PRMS)
 	) ;
 SET prmsG  = IF(prmsG IS NULL, 0, prmsG) ;
 
 RETURN (prmsG) ;
 
-END 
+END
 //
 delimiter ;
 
-DROP PROCEDURE  IF EXISTS clonePermission ; 
-delimiter // 
-CREATE PROCEDURE clonePermission (_OBJID INT, _NEWID INT) 
+DROP PROCEDURE  IF EXISTS clonePermission ;
+delimiter //
+CREATE PROCEDURE clonePermission (_OBJID INT, _NEWID INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 
 INSERT permissions (object_id, ugid, switch, flag) SELECT _NEWID, ugid, switch, flag FROM permissions WHERE object_id = _OBJID ;
 
-END 
+END
 //
 delimiter ;
 
@@ -648,11 +648,11 @@ delimiter ;
 -- Permessi sui moduli
 -- ---------------------------------------------------
 
-DROP PROCEDURE  IF EXISTS replacePermissionModule ; 
-delimiter // 
-CREATE PROCEDURE replacePermissionModule (_MDL VARCHAR(255), _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40), _FLAG INT) 
+DROP PROCEDURE  IF EXISTS replacePermissionModule ;
+delimiter //
+CREATE PROCEDURE replacePermissionModule (_MDL VARCHAR(255), _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40), _FLAG INT)
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 
 DECLARE _UGID INT DEFAULT 0;
 DECLARE _idprm INT DEFAULT 0;
@@ -660,24 +660,24 @@ DECLARE _idprm INT DEFAULT 0;
 SET _UGID 	= IF(_SWITCH = 'user', (SELECT ID FROM users WHERE userid = _USERGROUP), (SELECT ID FROM groups WHERE name = _USERGROUP)) ;
 
 IF _UGID > 0 THEN
-	SET _idprm	= (SELECT id FROM permission_modules WHERE module_id = (SELECT id FROM modules WHERE label = _MDL) 
+	SET _idprm	= (SELECT id FROM permission_modules WHERE module_id = (SELECT id FROM modules WHERE label = _MDL)
 	AND ugid = _UGID AND switch = _SWITCH) ;
-	
+
 	IF _idprm > 0 THEN
 		UPDATE permission_modules SET flag = _FLAG WHERE id = _idprm ;
 	ELSE
-		INSERT permission_modules (module_id, ugid, switch, flag) VALUES ((SELECT id FROM modules WHERE label = _MDL) , _UGID, _SWITCH, _FLAG) ;	
+		INSERT permission_modules (module_id, ugid, switch, flag) VALUES ((SELECT id FROM modules WHERE label = _MDL) , _UGID, _SWITCH, _FLAG) ;
 	END IF ;
 END IF ;
-END 
+END
 //
 delimiter ;
 
-DROP PROCEDURE  IF EXISTS deletePermissionModule ; 
-delimiter // 
-CREATE PROCEDURE deletePermissionModule (_MDL VARCHAR(255), _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40)) 
+DROP PROCEDURE  IF EXISTS deletePermissionModule ;
+delimiter //
+CREATE PROCEDURE deletePermissionModule (_MDL VARCHAR(255), _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40))
 NOT DETERMINISTIC
-BEGIN 
+BEGIN
 
 DECLARE _UGID INT DEFAULT 0;
 DECLARE _idprm INT DEFAULT 0;
@@ -685,65 +685,65 @@ DECLARE _idprm INT DEFAULT 0;
 SET _UGID 	= IF(_SWITCH = 'user', (SELECT ID FROM users WHERE userid = _USERGROUP), (SELECT ID FROM groups WHERE name = _USERGROUP)) ;
 
 IF _UGID > 0 THEN
-	DELETE FROM permission_modules WHERE module_id = (SELECT id FROM modules WHERE label = _MDL) 
+	DELETE FROM permission_modules WHERE module_id = (SELECT id FROM modules WHERE label = _MDL)
 	AND ugid = _UGID AND switch = _SWITCH ;
 END IF ;
-END 
+END
 //
 delimiter ;
 
-DROP FUNCTION  IF EXISTS prmsModuleUserByID ; 
-delimiter // 
+DROP FUNCTION  IF EXISTS prmsModuleUserByID ;
+delimiter //
 CREATE FUNCTION prmsModuleUserByID (_USERID VARCHAR(40), _MDL VARCHAR(255), _PRMS INT) RETURNS INT
 DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE prmsG INT DEFAULT 0 ;
 DECLARE prmsU INT DEFAULT 0 ;
 
 SET prmsG = (
 	SELECT DISTINCT
 	(permission_modules.flag & _PRMS) AS perms
-	FROM 
-	permission_modules 
+	FROM
+	permission_modules
 	WHERE
 	permission_modules.module_id = (SELECT id FROM modules WHERE label = _MDL)
-	AND 
+	AND
 	(
-	permission_modules.ugid IN 
+	permission_modules.ugid IN
 		(
 		SELECT groups_users.`group_id`
-		FROM  
+		FROM
 		users INNER JOIN groups_users ON users.id = groups_users.user_id
 		WHERE users.userid = _USERID
 		)
 	OR
-	
-	permission_modules.ugid = 
+
+	permission_modules.ugid =
 		(
 		SELECT id FROM groups WHERE name = 'guest'
 		)
 	)
 	AND
 	permission_modules.switch = 'group'
-	AND 
-	(permission_modules.flag & _PRMS) 
+	AND
+	(permission_modules.flag & _PRMS)
 	) ;
 SET prmsG  = IF(prmsG IS NULL, 0, prmsG) ;
 
 SET prmsU  = (
 	SELECT DISTINCT
 	(permission_modules.flag & _PRMS) AS perms
-	FROM 
-	permission_modules 
+	FROM
+	permission_modules
 	WHERE
-	permission_modules.ugid = 
+	permission_modules.ugid =
 	(
 	SELECT id FROM users WHERE userid = _USERID
 	)
-	AND 
+	AND
 	permission_modules.switch = 'user'
-	AND 
-	(permission_modules.flag & _PRMS) 
+	AND
+	(permission_modules.flag & _PRMS)
 	AND
 	permission_modules.module_id = (SELECT id FROM modules WHERE label = _MDL)
 ) ;
@@ -752,41 +752,41 @@ SET prmsU  = IF(prmsU IS NULL, 0, prmsU) ;
 
 RETURN (prmsG|prmsU) ;
 
-END 
+END
 //
 delimiter ;
 
-DROP FUNCTION  IF EXISTS prmsModuleGroupByName ; 
-delimiter // 
+DROP FUNCTION  IF EXISTS prmsModuleGroupByName ;
+delimiter //
 CREATE FUNCTION prmsModuleGroupByName (_GROUPNAME VARCHAR(40), _MDL VARCHAR(255), _PRMS INT) RETURNS INT
 DETERMINISTIC
-BEGIN 
+BEGIN
 DECLARE prmsG INT DEFAULT 0 ;
 
 SET prmsG = (
 	SELECT DISTINCT
 	(permission_modules.flag & _PRMS) AS perms
-	FROM 
-	permission_modules 
+	FROM
+	permission_modules
 	WHERE
 	permission_modules.module_id = (SELECT id FROM modules WHERE label = _MDL)
-	AND 
-	(	
-	permission_modules.ugid = 
+	AND
+	(
+	permission_modules.ugid =
 		(
 		SELECT id FROM groups WHERE name = _GROUPNAME
 		)
 	)
 	AND
 	permission_modules.switch = 'group'
-	AND 
-	(permission_modules.flag & _PRMS) 
+	AND
+	(permission_modules.flag & _PRMS)
 	) ;
 SET prmsG  = IF(prmsG IS NULL, 0, prmsG) ;
 
 RETURN (prmsG) ;
 
-END 
+END
 //
 delimiter ;
 
