@@ -694,6 +694,12 @@ collections.*
 FROM objects INNER JOIN collections ON objects.id = collections.id AND objects.object_type_id = 9
 ;
 
+CREATE  VIEW `view_galleries` AS 
+SELECT 
+collections.*
+FROM objects INNER JOIN collections ON objects.id = collections.id AND objects.object_type_id = 29
+;
+
 CREATE  VIEW `view_images` AS 
 SELECT 
 streams.*, objects.title, objects.status
