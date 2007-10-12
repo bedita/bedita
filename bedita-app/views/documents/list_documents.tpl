@@ -12,7 +12,7 @@ e l'elenco dei doc. trovato con la toolbar di navigazione.
 		<div id="listDocuments">
 
 		</div>
-		<pre>{*dump var=$documents*}</pre>
+		<pre>{dump var=$documents}</pre>
 		
 		<p>
 		{$beToolbar->first()} &nbsp; {$beToolbar->prev()}  &nbsp; {$beToolbar->next()} &nbsp; {$beToolbar->last()}

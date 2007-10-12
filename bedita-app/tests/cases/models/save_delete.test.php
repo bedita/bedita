@@ -33,7 +33,7 @@ class SaveDeleteTestCase extends CakeTestCase {
  							'BEFile', 'Image', 'AudioVideo',
  							'Comment', 'Book', 'Author', 'ShortNews',
  							'Bibliography', 'FaqQuestion', 'BiblioItem', 'ObjectUser',
- 							'Tree'
+ 							'Tree', 'Gallery'
  	) ;
     var $dataSource	= 'test' ;
  	
@@ -453,6 +453,15 @@ class SaveDeleteTestCase extends CakeTestCase {
 		$this->assertEqual($numRecordBegin,$numRecordEnd);
 	}	
 */	
+	function testInsertGallery() {
+		$numRecordBegin = $this->_getNumRecordsTable($this->Gallery) ; 
+		
+		$this->_insertDelete($this->Gallery, $this->data['minimo']) ;
+		
+		$numRecordEnd = $this->_getNumRecordsTable($this->Gallery) ; 
+		
+		$this->assertEqual($numRecordBegin,$numRecordEnd);
+	} 
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
 	private function _insertDelete(&$model, &$data) {
