@@ -1,0 +1,15 @@
+/*
+Stili per il modulo documenti.
+
+@author		giangi@qwerg.com
+*/
+#listAree {
+float:left;
+border:0px solid black;
+}
+
+#listDocuments {
+	display:table-cell;
+	padding-left:5px;
+	padding-left:5px;
+}

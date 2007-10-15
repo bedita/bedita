@@ -191,3 +191,53 @@ A IMG {border-color: black;}
 }
 
 /* END -- Header page */
+
+/* BEGIN -- Toolbar */
+.toolbar {
+margin-top: 10px;
+margin-right: 0px;
+margin-bottom: 10px;
+margin-left: 1px;
+border-top-width: 1px;
+border-right-width: 1px;
+border-bottom-width: 1px;
+border-left-width: 1px;
+border-top-style: solid;
+border-right-style: solid;
+border-bottom-style: solid;
+border-left-style: solid;
+border-top-color: silver;
+border-right-color: silver;
+border-bottom-color: silver;
+border-left-color: silver;
+background-color: white;
+background-repeat: repeat-x;
+padding-top: 3px;
+padding-right: 3px;
+padding-bottom: 3px;
+padding-left: 3px;
+color: #696969;
+height: auto;
+width: 572px;
+}
+
+.toolbar a {
+color: #cc3333;
+text-decoration: none;
+}
+
+.toolbar a:hover
+{
+text-decoration: none;
+}
+
+/* END -- Toolbar */
+
+/* BEGIN -- Liste */
+
+TABLE.indexList {width:100%; margin-left:0px; empty-cells: show; border-collapse: collapse}
+.indexList TD, .indexList2 TD {vertical-align:middle; padding:4px; border:1px solid gray;}
+.indexList TH, .indexList2 TH {border-bottom:1px solid gray; text-align:left; color: black; font: bold 12px Arial; margin: 10px 0px 10px 0px; padding:4px; background: transparent none repeat-x; vertical-align:middle;}
+.indexList TH A, .indexList2 TH A {color: black}
+
+/* END -- Liste */

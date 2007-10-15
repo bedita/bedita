@@ -14,7 +14,7 @@ class BeToolbarHelper extends AppHelper {
 	 *
 	 * @var array
 	 */
-	var $helpers = array('Html');
+	var $helpers = array('Form', 'Html');
 
 	var $tags = array(
 		'with_text' => '<span %s >%s</span>',
@@ -71,6 +71,90 @@ class BeToolbarHelper extends AppHelper {
 	 */
 	function last($title = ' >| ', $options = array(), $disabledTitle = ' >| ', $disabledOption = array()) {
 		return $this->_scroll('last', $title, $options, $disabledTitle, $disabledOption) ;
+	}
+
+	/**
+	 * Torna il numero di record trovati
+	 *
+	 */
+	function size() {
+		return (isset($this->params['toolbar']['size'])?$this->params['toolbar']['size']:"" ) ;
+	}
+	
+	/**
+	 * Torna la pagina corrente
+	 *
+	 */
+	function current() {
+		return (isset($this->params['toolbar']['page'])?$this->params['toolbar']['page']:"" ) ;
+	}
+
+	/**
+	 * Torna il numero totale di pagine
+	 *
+	 */
+	function pages() {
+		return (isset($this->params['toolbar']['pages'])?$this->params['toolbar']['pages']:"" ) ;
+	}
+
+	/**
+	 * Visualizza il tag select per la selezione delle dimensioni della lista
+	 *
+	 * @param array $htmlAttributes		Array associativo con gli attributi HTML
+	 * @param arry $options				Array. Default: 1, 5, 10,20, 50, 100
+	 */
+	function changeDim($htmlAttributes = array(), $options = array(1, 5, 10, 20, 50, 100)) {
+		if(!isset($this->params['toolbar']['dim'])) return "" ;
+		
+		// Definisce lo script per il cambio di pagina
+		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;		
+		foreach ($this->namedArgs as $k => $v) {
+			$data[$k] = $v ;
+		}
+		$url = Router::url($data) ;	
+		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/dim:'+ this[this.selectedIndex].value" ;
+		
+		$tmp = array() ;
+		foreach ($options as $k) $tmp[$k] = $k ;
+		$options = $tmp ;
+		
+		return $this->Form->select("", $options, $this->params['toolbar']['dim'], $htmlAttributes, false) ;	
+	}
+	
+	/**
+	 * Cambia la pagina selezionata
+	 *
+	 * @param array $htmlAttributes		Array associativo con gli attributi HTML
+	 * @param arry $items				numero di pagine selezionabili prima e dopo la corrente. Default: 5
+	 */
+	function changePage($htmlAttributes = array(),	$items = 5) {
+		if(!isset($this->params['toolbar']['page'])) return "" ;
+		
+		// Definisce lo script per il cambio di pagina
+		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;		
+		foreach ($this->namedArgs as $k => $v) {
+			$data[$k] = $v ;
+		}
+		$url = Router::url($data) ;	
+		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/page:'+ this[this.selectedIndex].value" ;
+		
+		// Definisce il numero di pagine selezionabili
+		$pages = array() ;
+		for($i = $this->params['toolbar']['page']; $i >= 1 ; $i--) {
+			$pages[] =  $i ; 
+		}
+		
+		for($i = $this->params['toolbar']['page']; $i <= $this->params['toolbar']['pages'] ; $i++) {
+			$pages[] =  $i ; 
+		}
+		sort($pages) ;
+		
+		// Visualizza il select
+		$tmp = array() ;
+		foreach ($pages as $k) $tmp[$k] = $k ;
+		$pages = $tmp ;
+		
+		return $this->Form->select("", $pages, $this->params['toolbar']['page'], $htmlAttributes, false) ;	
 	}
 
 	/**

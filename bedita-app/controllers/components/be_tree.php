@@ -117,7 +117,7 @@ class BeTreeComponent extends Object {
 	 * @param array $trees	albero dove cercare
 	 * @param integer $id	oggetto da cercare
 	 */
-	private function _searchRootDeleteOther($tree, $id) {
+	private function _searchRootDeleteOther(&$tree, $id) {
 		// Se la radice cercata
 		if($tree['id'] == $id) {
 			for($i=0; $i < count($tree['children']) ; $i++) {

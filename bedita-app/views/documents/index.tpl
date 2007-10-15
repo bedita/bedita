@@ -3,7 +3,7 @@ Pagina d'entrata modulo Areas.
 *}
 {php}$vs = &$this->get_template_vars() ;{/php}
 
-{$html->css('module.area')}
+{$html->css('module.documents')}
 	
 {$javascript->link("jquery.treeview")}
 {$javascript->link("interface")}
@@ -12,10 +12,11 @@ Pagina d'entrata modulo Areas.
 {$javascript->link("jquery.changealert")}
 
 <script type="text/javascript">
+var URLBase = "{$html->url('index/')}" ;
 {literal}
 
 $(document).ready(function(){
-
+	designTree() ;
 });
 
 {/literal}

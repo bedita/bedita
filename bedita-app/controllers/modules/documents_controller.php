@@ -52,7 +52,7 @@ class DocumentsController extends AppController {
 		
 		// Setup dei dati da passare al template
 		$this->set('tree', 		$tree);
-		$this->set('documents', $documents);
+		$this->set('documents', $documents['items']);
 		$this->set('toolbar', 	$documents['toolbar']);
 		$this->set('selfPlus',	$this->createSelfURL(false)) ;
 		$this->set('self',		($this->createSelfURL(false)."?")) ;
