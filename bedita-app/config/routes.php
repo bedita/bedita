@@ -1,8 +1,5 @@
 <?php
-/* SVN FILE: $Id: routes.php 4410 2007-02-02 13:31:21Z phpnut $ */
 /**
- * Short description for file.
- *
  * In this file, you set up routes to your controllers and their actions.
  * Routes are very important mechanism that allows you to freely connect
  * different urls to chosen controllers and their actions (functions).
@@ -37,7 +34,9 @@
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */
-	//Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
+	Router::connect('/login', array('controller' => 'pages', 'action' => 'login'));
+	Router::connect('/logout', array('controller' => 'pages', 'action' => 'logout'));
+	
 /**
  * Then we connect url '/test' to our test controller. This is helpfull in
  * developement.

@@ -27,7 +27,9 @@ class BeAuthComponent extends Object {
 	var $controller	;
 	var $Session	= null ;
 	var $user		= null ;
-	var $allow		= null ;
+	var $allow		= null;
+	var $isValid	= true;
+	var $changePasswd	= false;
 	var $sessionKey = "BEAuthUser" ;
 	var $allowKey 	= "BEAuthAllow" ;
 	
@@ -67,7 +69,7 @@ class BeAuthComponent extends Object {
 	 * @param string $password
 	 * @return boolean 
 	 */
-	function login ($userid, $password) {
+	function login ($userid, $password, $policy=null) {
 		if(!isset($this->User)) {
 			$this->User = new User() ;
 		}
@@ -79,28 +81,113 @@ class BeAuthComponent extends Object {
 		
 		$this->User->recursive = 1;
 		$this->User->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
-		$user = $this->User->find($conditions);
+		$u = $this->User->find($conditions);
 		
+		if(!$this->loginPolicy($userid, $u, $policy))
+			return false ;
+		
+		$this->allow = $u['User']['valid'];
+		$this->User->compact($u) ;
+		$this->user = $u;
+		
+		if(isset($this->Session)) {
+			$this->Session->write($this->sessionKey, $this->user);
+			$this->Session->write($this->allowKey, $this->allow);
+		}
+
+		if(isset($this->controller)) {
+			$this->controller->set($this->sessionKey, $this->user);
+			$this->controller->set($this->allowKey, $this->allow);
+		}
+		return true ;
+	}
+	
+	/**
+	 * Check policy using $policy array or config if null
+	 * @return boolean
+	 */
+	function loginPolicy($userid, &$u, $policy) {
 		// Se fallisce esce
-		if(empty($user["User"])) {
+		if(empty($u["User"])) {
+			// look for existing user
+			$this->User->recursive = 1;
+			$this->User->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
+			$u2 = $this->User->find(array("User.userid" => $userid));
+			if(!empty($u2["User"])) {
+				$u2["User"]["last_login_err"]=date('Y-m-d H:i:s');
+				$u2["User"]["num_login_err"]=$u2["User"]["num_login_err"]+1;
+				$this->User->save($u2);
+			}
 			$this->logout() ;
-			
 			return false ;
 		}
+
+		if($policy == null) {
+			$policy = array(); // load backend defaults
+			$config = Configure::getInstance() ;
+			$policy['maxLoginAttempts'] = $config->maxLoginAttempts;
+			$policy['maxNumDaysInactivity'] = $config->maxNumDaysInactivity;
+			$policy['maxNumDaysValidity'] = $config->maxNumDaysValidity;
+			$policy['authorizedGroups'] = $config->authorizedGroups;
+		}
+
+		// check activity & validity
+		if(!isset($u["User"]["last_login"])) 
+			$u["User"]["last_login"] = date();
+		$daysFromLastLogin = (time() - strtotime($u["User"]["last_login"]))/(86400000);
+		$this->isValid = $u['User']['valid'];
 		
-		$this->User->compact($user) ;
+		if($u["User"]["num_login_err"] >= $policy['maxLoginAttempts']) {
+			$this->isValid = false;
+			$this->log("Max login attempts error, user: ".$userid);
+
+		} else if($daysFromLastLogin > $policy['maxNumDaysInactivity']) {
+			$this->isValid = false;
+			$this->log("Max num days inactivity: user: ".$userid." days: ".$daysFromLastLogin);
+			
+		} else if($daysFromLastLogin > $policy['maxNumDaysValidity']) {
+			$this->changePasswd = true;
+		}
 		
-		$this->user = $user ;
-		$this->allow = true ;
+		// check group auth
+		$groups = array();
+		foreach ($u['Group'] as $g)
+			array_push($groups, $g['name']) ;
+
+		if(count(array_intersect($groups, $policy['authorizedGroups'])) === 0) {
+			$this->log("User login not authorized: ".$userid);
+			// TODO: special message?? or not for security???
+			return false;
+		}
+
+		$u['User']['valid'] = $this->isValid; // validity may have changed
 		
-		// Inserisce i dati in sessione
-		$this->Session->write($this->sessionKey, $this->user);
-		$this->Session->write($this->allowKey, $this->allow);
+		if($this->isValid) {
+				$u["User"]["num_login_err"]=0;
+				$u["User"]["last_login"]=date('Y-m-d H:i:s');
+		}		
+		$this->User->save($u);
 		
-		$this->controller->set($this->sessionKey, $this->user);
-		$this->controller->set($this->allowKey, $this->allow);
+		if(!$this->isValid) {
+			$this->logout();
+		}
 		
-		return true ;
+		return true;
+	}
+
+	function changePassword($userid, $password) {
+		if(!isset($this->User)) {
+			$this->User = new User() ;
+		}
+		
+		$this->User->recursive = 1;
+		$this->User->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
+		$u = $this->User->find(array("User.userid" => $userid));
+		$u["User"]["passwd"] = md5($password);
+		$u["User"]["num_login_err"]=0;
+		$u["User"]["last_login"]=date('Y-m-d H:i:s');
+		$this->User->save($u);
+		$this->user = $u;
 	}
 	
 	/**
@@ -109,17 +196,19 @@ class BeAuthComponent extends Object {
 	 *
 	 * @return boolean
 	 */
-	
 	function logout() {
 		$this->user = null ;
 		$this->allow = false ;
 		
-		$this->Session->delete($this->sessionKey);
-		$this->Session->delete($this->allowKey);
+		if(isset($this->Session)) {
+			$this->Session->delete($this->sessionKey);
+			$this->Session->delete($this->allowKey);
+		}
 		
-		$this->controller->set($this->sessionKey, null);
-		$this->controller->set($this->allowKey, null);
-		
+		if(isset($this->controller)) {
+			$this->controller->set($this->sessionKey, null);
+			$this->controller->set($this->allowKey, null);
+		}		
 		return true ;
 	}
 	

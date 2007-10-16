@@ -1,4 +1,9 @@
 <?
+/**
+ * i18n - translation helper
+ * 
+ * @author ste@channelweb.it
+ */
 class TrHelper extends Helper {
 	/**
 	 * Included helpers.

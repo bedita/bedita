@@ -1,9 +1,6 @@
 <?php
-/* SVN FILE: $Id: pages_controller.php 2951 2006-05-25 22:12:33Z phpnut $ */
 
 /**
- *
- * PHP version 5
  *
  * @filesource
  * @copyright		
@@ -19,23 +16,18 @@
  */
 
 /**
- * Short description for class.
- *
- * Controller principale, d'entrata
+ * Home pages
  * 
  */
 class PagesController extends AppController {
 	var $name = 'Pages';
 
-	var $helpers = array('Bevalidation');
-	var $components = array('BeAuth');
-
-	// This controller does not use a model
-	 var $uses = null;
+	var $helpers = array();
+	var $components = array();
+	var $uses = null;
 
 	/**
 	 * Home
-	 *
 	 */
 	 function home() {
 	 	$this->action = "index" ;
@@ -43,6 +35,13 @@ class PagesController extends AppController {
 
 	 function display() {
 	 	$this->action = "index" ;
+	 }
+
+	 function login() {
+	 }
+
+	 function logout() {
+	 	$this->action = "login" ; //same login page
 	 }
 	 
 }

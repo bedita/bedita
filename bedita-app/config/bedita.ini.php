@@ -243,5 +243,15 @@ $config['BEDITA_PERMS_MODIFY'] 	= BEDITA_PERMS_MODIFY ;
 $config['BEDITA_PERMS_DELETE'] 	= BEDITA_PERMS_DELETE ;
 $config['BEDITA_PERMS_CREATE'] 	= BEDITA_PERMS_CREATE ;
 
+/**
+ * Backend default login policy
+ */
+$config['maxLoginAttempts'] = 3;
+$config['maxNumDaysInactivity'] = 180;
+$config['maxNumDaysValidity'] = 60;
+// TODO: 
+$config['passwdRegex'] = '';
+
+$config['authorizedGroups'] = array('administrator','editor');
 
 ?>

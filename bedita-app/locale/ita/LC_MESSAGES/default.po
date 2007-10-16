@@ -22,3 +22,6 @@ msgstr "Entra"
 
 msgid "No data"
 msgstr "Non ci sono dati"
+
+msgid "Wrong username/password or no authorization"
+msgstr "Nome utente/password errati o autorizzazione negata"

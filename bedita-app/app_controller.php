@@ -94,7 +94,7 @@ class AppController extends Controller
  		else $_loginRunning  = true ;
 		 
 		// Verifica i permessi d'accesso
-		if(!$this->BeAuth->isLogged()) { $this->render(null, null, VIEWS."pages/anonymous.tpl") ; $_loginRunning = false; exit; }
+		if(!$this->BeAuth->isLogged()) { $this->render(null, null, VIEWS."pages/login.tpl") ; $_loginRunning = false; exit; }
 		
 //		// Preleva lista dei moduli
 		$this->set('moduleList', $this->BePermissionModule->getListModules($this->BeAuth->user["userid"])) ;			
