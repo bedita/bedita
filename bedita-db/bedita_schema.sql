@@ -79,7 +79,13 @@ CREATE TABLE users (
   userid VARCHAR(32) NOT NULL ,
   realname VARCHAR(255) NULL,
   passwd VARCHAR(255) NULL,
-  PRIMARY KEY(id)
+  email varchar(255) default NULL,
+  valid tinyint(1) NOT NULL default '1',
+  last_login date default NULL,
+  last_login_err date default NULL,
+  num_login_err INTEGER NOT NULL default '0',
+  PRIMARY KEY  (id),
+  UNIQUE KEY userid (userid)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE groups_users (
