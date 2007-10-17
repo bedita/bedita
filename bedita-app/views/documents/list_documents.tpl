@@ -18,11 +18,11 @@ e l'elenco dei doc. trovato con la toolbar di navigazione.
 		</p>
 			<table class="indexList">
 				<tr>
-					<th>{t}id{/t}</th>
-					<th>{t}titolo{/t}</th>
-					<th>{t}status{/t}</th>
-					<th>{t}creato il{/t}</th>
-					<th>{t}lingua{/t}</th>
+					<th>{$beToolbar->order('id', 'id')}</th>
+					<th>{$beToolbar->order('title', 'titolo')}</th>
+					<th>{$beToolbar->order('status', 'status')}</th>
+					<th>{$beToolbar->order('created', 'creato il')}</th>
+					<th>{$beToolbar->order('lang', 'lingua')}</th>
 				</tr>
 				{section name="i" loop=$documents}
 					<tr>

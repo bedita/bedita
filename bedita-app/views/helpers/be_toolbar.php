@@ -109,6 +109,7 @@ class BeToolbarHelper extends AppHelper {
 		// Definisce lo script per il cambio di pagina
 		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;		
 		foreach ($this->namedArgs as $k => $v) {
+			if($k != "dim") $data[$k] = $v ;
 			$data[$k] = $v ;
 		}
 		$url = Router::url($data) ;	
@@ -158,6 +159,40 @@ class BeToolbarHelper extends AppHelper {
 	}
 
 	/**
+	 * Cambia l'ordina della lista
+	 *
+	 * @param string $field				Nome del campo su cui si fa l'ordinamento
+	 * @param string $title				Titolo al link. Default: nome del campo
+	 * @param array $htmlAttributes		Array associativo con gli attributi HTML
+	 * @param boolean $dir				Se presente impone la direzione. 1: ascendente, 0: discendente
+	 * 									altrimenti mette la direzione opposta della corrente.
+	 */
+	function order($field, $title = "", $htmlAttributes = array(),	$dir = null) {
+		if(!isset($this->params['toolbar'])) return "" ;
+		
+		if(!isset($this->namedArgs['order'])) $this->namedArgs['order'] = "" ;
+		if(!isset($this->namedArgs['dir'])) $this->namedArgs['dir'] = true ;
+		
+		if($this->namedArgs['order'] == $field) {
+			if(!isset($dir)) $dir = !$this->namedArgs['dir'] ; 
+		}  else {
+			if(!isset($dir)) $dir = true ;
+		}
+		
+		// Crea l'url
+		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;		
+		foreach ($this->namedArgs as $k => $v) {
+			if($k != "order" && $k != "dir") $data[$k] = $v ;
+		}
+		$data['order'] 	= $field ;
+		$data['dir'] 	= (integer)$dir ;
+		
+		$url = Router::url($data) ;	
+
+		return $this->Html->link(__($title, true), $url, $htmlAttributes);
+	}
+	
+	/**
 	 * Costruisce il link per la pagina indicata 
 	 *
 	 * @param string $where				pagina richiesta (next, prev, first, last)
@@ -178,13 +213,13 @@ class BeToolbarHelper extends AppHelper {
 		// Crea l'url
 		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;		
 		foreach ($this->namedArgs as $k => $v) {
-			$data[$k] = $v ;
+			if($k != "page") $data[$k] = $v ;
 		}
 		$data['page'] = $page ;
 		
 		$url = Router::url($data) ;	
 
-		return $this->Html->link($title, $url, $options);
+		return $this->Html->link(__($title, true), $url, $options);
 	}
 
 	private function _output($text, $options) {

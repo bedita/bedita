@@ -236,10 +236,12 @@ class BEObject extends BEAppModel
 	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
 	 * 							1, 3,  22 ... aree, sezioni, documenti.
 	 * 							Default: tutti.
+	 * @param string $order		Campo testuale su cui ordinare il risultato
+	 * @param boolean $dir		TRUE, ordine ascenedente, altrimenti discendente. Default: TRUE
 	 * @param integer $page		Numero di pagina da selezionare
 	 * @param integer $dim		Dimensione della pagina
 	 */	
-	function find($userid = null, $status = null, $filter = false, $page = 1, $dim = 100000) {
+	function find($userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
 		if(!isset($userid)) {
 			$fields 		= " *, prmsUserByID ('{$userid}', id, 15) as perms " ;
 		} else {
@@ -260,9 +262,15 @@ class BEObject extends BEAppModel
 		// costruisce il join dalle tabelle
 		$from = " objects " ;
 		
+		// Clausola ordinamento
+		$ordClausole  = "" ;
+		if(is_string($order) && strlen($order)) {
+			$ordClausole = " ORDER BY {$order} " . ((!$dir)? " DESC " : "") ;
+		}
+		
 		// Esegue la ricerca
 		$limit 	= $this->_getLimitClausole($page, $dim) ;
-		$tmp  	= $this->execute("SELECT {$fields} FROM {$from} {$sqlClausole} LIMIT {$limit}") ;
+		$tmp  	= $this->execute("SELECT {$fields} FROM {$from} {$sqlClausole} {$ordClausole} LIMIT {$limit}") ;
 
 		// Torna il risultato
 		$recordset = array(

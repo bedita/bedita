@@ -34,20 +34,22 @@ class DocumentsController extends AppController {
 	 * Visualizza l'albero delle aree e l'elenco dei documenti
 	 * 
 	 */
-	 function index($id = null, $page = 1, $dim = 20) {
+	 function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
 		
 	 	// Setup parametri
 		$this->setup_args(
 			array("id", "integer", &$id),
 			array("page", "integer", &$page),
-			array("dim", "integer", &$dim)
+			array("dim", "integer", &$dim),
+			array("order", "string", &$order),
+			array("dir", "boolean", &$dir)
 		) ;
 		
 		// Preleva l'albero delle aree e sezioni
 		$tree = $this->BeTree->expandOneBranch($id) ;
 		
-		$documents = $this->BeTree->getDiscendents($id, null, $conf->objectTypes['documentAll'], $page, $dim)  ;
+		$documents = $this->BeTree->getDiscendents($id, null, $conf->objectTypes['documentAll'], $order, $dir, $page, $dim)  ;
 		$this->params['toolbar'] = &$documents['toolbar'] ;
 		
 		// Setup dei dati da passare al template
