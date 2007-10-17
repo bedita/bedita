@@ -47,7 +47,13 @@ class AuthenticationsController extends AppController {
 		if($this->BeAuth->changePasswd) {
 			$this->set("user", $this->BeAuth->user);
 			$this->esito='PWD';
+			
+			return ;
 		}
+		
+		// Setup del redirect
+		$this->data['OK'] 		= (isset($this->data["login"]["URLOK"])) ? $this->data["login"]["URLOK"] : "/" ; 
+		$this->data['ERROR'] 	= (isset($this->data["login"]["URLERR"])) ? $this->data["login"]["URLERR"] : "/" ; 
    }
 
    function changePasswd() {
