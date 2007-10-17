@@ -114,7 +114,7 @@ class BeAuthComponent extends Object {
 			$this->User->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
 			$u2 = $this->User->find(array("User.userid" => $userid));
 			if(!empty($u2["User"])) {
-				$u2["User"]["last_login_err"]=date('Y-m-d H:i:s');
+				$u2["User"]["last_login_err"]= date('Y-m-d H:i:s');
 				$u2["User"]["num_login_err"]=$u2["User"]["num_login_err"]+1;
 				$this->User->save($u2);
 			}
@@ -133,7 +133,7 @@ class BeAuthComponent extends Object {
 
 		// check activity & validity
 		if(!isset($u["User"]["last_login"])) 
-			$u["User"]["last_login"] = date();
+			$u["User"]["last_login"] = date('Y-m-d H:i:s');
 		$daysFromLastLogin = (time() - strtotime($u["User"]["last_login"]))/(86400000);
 		$this->isValid = $u['User']['valid'];
 		
