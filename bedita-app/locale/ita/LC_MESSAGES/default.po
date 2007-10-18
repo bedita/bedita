@@ -25,3 +25,24 @@ msgstr "Non ci sono dati"
 
 msgid "Wrong username/password or no authorization"
 msgstr "Nome utente/password errati o autorizzazione negata"
+
+msgid "Gallery"
+msgstr "Galleria"
+
+msgid "Title"
+msgstr "Titolo"
+
+msgid "Status"
+msgstr "Stato"
+
+msgid "Created"
+msgstr "Creato"
+
+msgid "Language"
+msgstr "Lingua"
+
+msgid "Dimensions"
+msgstr "Dimensioni"
+
+msgid "Go to page"
+msgstr "Vai alla pagina"

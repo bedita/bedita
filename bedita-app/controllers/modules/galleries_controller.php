@@ -16,11 +16,13 @@
 
 class GalleriesController extends AppController {
 	var $name = 'Galleries';
-	var $helpers = array('BeTree','BeToolbar');
-	var $components = array('BeTree');
-	var $uses = array();
+	var $helpers 	= array('Bevalidation', 'BeTree', 'BeToolbar');
+	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText');
 
-	function index($id = null, $page = 1, $dim = 20) {
+	// This controller does not use a model
+	var $uses = array('Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Document', 'Tree') ;
+
+	function index($id = null, $order = "", $dir = true, $page = 1, $dim = 10) {
 
 		$conf  = Configure::getInstance() ;
 
@@ -28,11 +30,13 @@ class GalleriesController extends AppController {
 		$this->setup_args(
 			array("id", "integer", &$id),
 			array("page", "integer", &$page),
-			array("dim", "integer", &$dim)
+			array("dim", "integer", &$dim),
+			array("order", "string", &$order),
+			array("dir", "boolean", &$dir)
 		) ;
 
 		// Preleva l'albero delle aree e sezioni;
-		$galleries = $this->BeTree->getDiscendents($id, null, $conf->objectTypes['gallery'], $page, $dim)  ;
+		$galleries = $this->BeTree->getDiscendents($id, null, $conf->objectTypes['gallery'], $order, $dir, $page, $dim)  ;
 
 		$this->params['toolbar'] = &$galleries['toolbar'] ;
 
@@ -44,7 +48,7 @@ class GalleriesController extends AppController {
 		$this->set('self',		($this->createSelfURL(false)."?")) ;
 	 }
 
-	function view($id = null, $page = 1, $dim = 20) {
+	function view($id = null, $order="", $dir = true, $page = 1, $dim = 10) {
 
 		$conf  = Configure::getInstance() ;
 
@@ -52,7 +56,9 @@ class GalleriesController extends AppController {
 		$this->setup_args(
 			array("id", "integer", &$id),
 			array("page", "integer", &$page),
-			array("dim", "integer", &$dim)
+			array("dim", "integer", &$dim),
+			array("order", "string", &$order),
+			array("dir", "boolean", &$dir)
 		) ;
 
 		// Preleva l'albero delle aree e sezioni;
