@@ -61,12 +61,12 @@ class DocumentsController extends AppController {
 	 }
 
 	 /**
-	  * Preleva l'area selezionata.
-	  * Se non viene passato nessun id, presente il form per una nuova area
+	  * Preleva il documento selezionato.
+	  * Se non viene passato nessun id, presente il form per un nuovo documento
 	  *
 	  * @param integer $id
 	  */
-	 function viewArea($id = null) {
+	 function view($id = null) {
 	 	
 		$conf  = Configure::getInstance() ;
 		
@@ -74,106 +74,46 @@ class DocumentsController extends AppController {
 		$this->setup_args(array("id", "integer", &$id)) ;
 	 	
 		// Preleva l'area selezionata
-		$area = null ;
+		$obj = null ;
 		if($id) {
-			$this->Area->bviorHideFields = array('ObjectType', 'Version', 'Index', 'current') ;
-			if(!($area = $this->Area->findById($id))) {
-				$this->Session->setFlash(sprintf(__("Error loading area: %d", true), $id));
+			$this->Document->bviorHideFields = array('Version', 'Index', 'current') ;
+			if(!($obj = $this->Document->findById($id))) {
+				$this->Session->setFlash(sprintf(__("Error loading document: %d", true), $id));
 				return ;		
 			}
 		}
 		
 		// Formatta i campi in lingua
-		if(isset($area["LangText"])) {
-			$this->BeLangText->setupForView($area["LangText"]) ;
+		if(isset($obj["LangText"])) {
+			$this->BeLangText->setupForView($obj["LangText"]) ;
 		}
 		
+		// Preleva l'albero delle aree e sezioni
+		$tree = $this->BeTree->getSectionsTree() ;
+
+		// Preleva dov'e' inserito il documento 
+		if(isset($id)) $parents_id = $this->Tree->getParent($id) ;
+		else $parents_id = 0 ;
+		if(!is_array($parents_id)) $parents_id = array($parents_id) ;
+		
 		// Setup dei dati da passare al template
-		$this->set('area', 		$area);
+		$this->set('object',	$obj);
+		$this->set('tree', 		$tree);
+		$this->set('parents',	$parents_id);
 		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) )) ;
 		$this->set('self',		($this->createSelfURL(false)."?")) ;
 		$this->set('conf',		$conf) ;
 	 }
 
 	 /**
-	  * Preleva la sezione selezionata.
-	  * Se non viene passato nessun id, presenta il form per una nuova sezione
-	  *
-	  * @param integer $id
-	  */
-	 function viewSection($id = null) {	 	
-		// Setup parametri
-		$this->setup_args(array("id", "integer", &$id)) ;
-	 	
-		// Preleva la sezione selezionata
-		$section = null ;
-		if($id) {
-			$this->Section->bviorHideFields = array('ObjectType', 'Version', 'Index', 'current') ;
-			if(!($section = $this->Section->findById($id))) {
-				$this->Session->setFlash(sprintf(__("Error loading section: %d", true), $id));
-				return ;		
-			}
-		}
-		
-		// Formatta i campi in lingua
-		if(isset($section["LangText"])) {
-			$this->BeLangText->setupForView($section["LangText"]) ;
-		}
-		
-		// Preleva l'albero delle aree e sezioni
-		$tree = $this->BeTree->getSectionsTree() ;
-
-		// Preleva dov'e' inserita la sezione 
-		if(isset($id)) {
-			$parent_id = $this->Tree->getParent($id) ;
-		} else {
-			$parent_id = 0 ;
-		}	
-
-
-		// Setup dei dati da passare al template
-		$this->set('tree', 		$tree);
-		$this->set('section',	$section);
-		$this->set('parent_id',	$parent_id);
-		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) )) ;
-		$this->set('self',		($this->createSelfURL(false)."?")) ;	
-	 }
-	
-	 /**
-	  * Salva La nuova configurazione dell'albero dei contenuti
-	  *
-	  */
-	 function saveTree() {
-	 	try {
-			$this->Transaction->begin() ;
-	 		
-		 	if(@empty($this->data["tree"])) throw new BEditaActionException($this, "No data");
-		
-		 	// Preleva l'albero
-		 	$this->_getTreeFromPOST($this->data["tree"], $tree) ;
-
-		 	// Salva i cambiamenti
-		 	if(!$this->Tree->moveAll($tree)) throw new BEditaActionException($this, __("Error save tree from _POST", true));
-
-			$this->Transaction->commit() ;
-			
-	 	} catch (Exception $e) {
-			$this->Session->setFlash($e->getMessage());
-			$this->Transaction->rollback() ;
-			
-			return ;
-	 	}
-	 }
-	 
-	 /**
-	  * Aggiunge una nuova area o la modifica.
+	  * Aggiunge un nuovo documento o la modifica.
 	  * Nei dati devono essere definiti:
 	  * URLOK e URLERROR.
 	  *
 	  */
-	 function saveArea() {	 	
+	 function save() {	 	
 	 	try {
-		 	if(empty($this->data)) throw BEditaActionException($this, __("No data", true));
+		 	if(empty($this->data)) throw new BEditaActionException($this, __("No data", true));
 	 		
 			$new = (empty($this->data['id'])) ? true : false ;
 			
@@ -187,23 +127,40 @@ class DocumentsController extends AppController {
 		 	// Formatta i campi d tradurre
 		 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
 		 	
-			$this->Transaction->begin() ;
+			//$this->Transaction->begin() ;
 			
 	 		// Salva i dati
-		 	if(!$this->Area->save($this->data)) throw new BEditaActionException($this, $this->Area->validationErrors);
-/*			
-		 	// Inserisce nell'albero
-		 	if($new) {
-		 		if(!$this->Tree->appendChild($this->Area->id, null)) throw new BEditaActionException($this, __("Append Area in to tree", true));
-		 	}
-*/		 	
+		 	if(!$this->Document->save($this->data)) throw new BEditaActionException($this, $this->Document->validationErrors);
+
+			/**
+ 			* inserimento nell'albero
+ 			*/
+			if(($parents = $this->Tree->getParent($this->Document->id)) !== false) {
+				if(!is_array($parents)) $parents = array($parents) ;
+			} else {
+				$parents = array() ;
+			}
+			if(!isset($this->data['destination'])) $this->data['destination'] = array() ;
+
+			// rimuove
+			$remove = array_diff($parents, $this->data['destination']) ;
+			foreach ($remove as $parent_id) {
+				$this->Tree->removeChild($this->Document->id, $parent_id) ;
+			}
+			
+			// Inserisce
+			$add = array_diff($this->data['destination'], $parents) ;
+			foreach ($add as $parent_id) {
+				$this->Tree->appendChild($this->Document->id, $parent_id) ;
+			}
+			
 		 	// aggiorna i permessi
 		 	if(!$this->Permission->saveFromPOST(
-		 			$this->Area->id, 
+		 			$this->Document->id, 
 		 			(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
 		 			(empty($this->data['recursiveApplyPermissions'])?false:true))
 		 		) {
-		 			throw BEditaActionException($this, __("Error saving permissions", true));
+		 			throw new BEditaActionException($this, __("Error saving permissions", true));
 		 	}	 	
 	 		$this->Transaction->commit() ;
 
@@ -214,75 +171,20 @@ class DocumentsController extends AppController {
 			return ;
 	 	}
 	 }
-	 
-	 /**
-	  * Aggiunge una nuova sezione o la modifica.
-	  * Nei dati devono essere definiti:
-	  * URLOK e URLERROR.
-	  *
-	  */
-	 function saveSection() {
-	 	try {
-		 	if(empty($this->data)) throw BEditaActionException($this,__("No data", true));
-	 		
-			$new = (empty($this->data['id'])) ? true : false ;
-			
-		 	// Verifica i permessi di modifica dell'oggetto
-		 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-		 			throw BEditaActionException($this, __("Error modifying permissions", true));
-		 	
-		 	// Formatta le custom properties
-		 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-	
-		 	// Formatta i campi da tradurre
-		 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
-		 	
-		 	
-			$this->Transaction->begin() ;
-			
-	 		// Salva i dati
-	 		if($new) $this->data["parent_id"] = $this->data["destination"] ;
-		 	if(!$this->Section->save($this->data)) throw new BEditaActionException($this, $this->Section->validationErrors);
-			
-		 	// Sposta la sezione nell'albero se necessario
-		 	if(!$new) {
-		 		$oldParent = $this->Tree->getParent($this->Section->id) ;
-		 		if($oldParent != $this->data["destination"]) {
-		 			$this->Tree->move($this->data["destination"], $oldParent, $this->Section->id) ;
-		 		}
-		 	}
-		 	
-		 	// aggiorna i permessi
-		 	if(!$this->Permission->saveFromPOST(
-		 			$this->Section->id, 
-		 			(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
-		 			(empty($this->data['recursiveApplyPermissions'])?false:true))
-		 		) {
- 				throw BEditaActionException($this, __("Error saving permissions", true));
-		 	}	 	
-	 		$this->Transaction->commit() ;
-
-	 	} catch (Exception $e) {
-			$this->Session->setFlash($e->getMessage());
-			$this->Transaction->rollback() ;
-			
-			return ;
-	 	}
-	 }
-	 
+	 	 
 	 /**
 	  * Cancella un'area.
 	  */
-	 function deleteArea($id = null) {
+	 function delete($id = null) {
 		$this->setup_args(array("id", "integer", &$id)) ;
 		
 	 	try {
-		 	if(empty($id)) throw BEditaActionException($this,__("No data", true));
+		 	if(empty($id)) throw new BEditaActionException($this,__("No data", true));
 	 		
 		 	$this->Transaction->begin() ;
 	 	
 		 	// Cancellla i dati
-		 	if(!$this->Area->delete($id)) throw new BEditaActionException($this, sprintf(__("Error deleting area: %d", true), $id));
+		 	if(!$this->Document->delete($id)) throw new BEditaActionException($this, sprintf(__("Error deleting document: %d", true), $id));
 		 	
 		 	$this->Transaction->commit() ;
 	 	} catch (Exception $e) {
@@ -292,29 +194,6 @@ class DocumentsController extends AppController {
 			return ;
 	 	}
 	 	
-	 }
-
-	 /**
-	  * Cancella una sezione.
-	  */
-	 function deleteSection($id = null) {
-		$this->setup_args(array("id", "integer", &$id)) ;
-		
-	 	try {
-		 	if(empty($id)) throw new BEditaActionException($this, "No data");
-	 		
-		 	$this->Transaction->begin() ;
-		 	
-		 	// Cancellla i dati
-		 	if(!$this->Section->delete($id)) throw new BEditaActionException($this, sprintf(__("Error deleting section: %d", true), $id));
-		 	
-		 	$this->Transaction->commit() ;
-	 	} catch (Exception $e) {
-			$this->Session->setFlash($e->getMessage());
-			$this->Transaction->rollback() ;
-				
-			return ;
-	 	}	
 	 }
 
 	 /**
@@ -360,25 +239,13 @@ class DocumentsController extends AppController {
 
 	 function _REDIRECT($action, $esito) {
 	 	$REDIRECT = array(
-	 			"saveTree"	=> 	array(
+	 			"save"	=> 	array(
+	 									"OK"	=> "./view/{$this->Document->id}",
+	 									"ERROR"	=> "./view/{$this->Document->id}" 
+	 								), 
+	 			"delete"	=> 	array(
 	 									"OK"	=> "./",
-	 									"ERROR"	=> "./" 
-	 								), 
-	 			"saveArea"	=> 	array(
-	 									"OK"	=> "./viewArea/{$this->Area->id}",
-	 									"ERROR"	=> "./viewArea/{$this->Area->id}" 
-	 								), 
-	 			"saveSection"	=> 	array(
-	 									"OK"	=> "./viewSection/{$this->Section->id}",
-	 									"ERROR"	=> "./viewSection/{$this->Section->id}" 
-	 								), 
-	 			"deleteArea"	=> 	array(
-	 									"OK"	=> "./",
-	 									"ERROR"	=> "./viewArea/{@$this->params['pass'][0]}" 
-	 								), 
-	 			"deleteSection"	=> 	array(
-	 									"OK"	=> "./",
-	 									"ERROR"	=> "./viewSection/{@$this->params['pass'][0]}" 
+	 									"ERROR"	=> "./view/{@$this->params['pass'][0]}" 
 	 								), 
 	 		) ;
 	 	

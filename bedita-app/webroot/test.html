@@ -1,106 +1,45 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">
-
-
 <head>
-	<title>Areas</title>          
+	<title>B.Edita::Documents</title>
 	<link rel="icon" href="/favicon.ico" type="image/x-icon" />
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 
-	<meta name="author" content="" >
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" >
+	<meta name="author" content="" />
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
 
-	<meta http-equiv="Content-Style-Type" content="text/css" >
-	<meta name="description" content="Descrizione" lang="it" >
-	<meta name="keywords" content="Keys" >
+	<meta name="description" content="Descrizione" lang="it" />
+	<meta name="keywords" content="Keys" />
 
-	<script type="text/javascript" src="/js/yav.js"></script>
-<script type="text/javascript" src="/js/yav-config-it.js"></script>
-<script type="text/javascript" src="/js/BEValidation.js"></script>
-
-		<script type="text/javascript" src="/js/common.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="/css/cake.generic.css" />
-	<link rel="stylesheet" type="text/css" href="/css/yav.css" />
-
-
-	<link rel="stylesheet" type="text/css" href="/css/module.area.css" />
-	<link rel="stylesheet" type="text/css" href="/css/jquery.autocomplete.css" />
-
-		
 <script type="text/javascript">
 
-/*
-$(document).ready(function(){
-	$('#proprieta').show() ;
-			
-	// aggiunge i comandi per i blocchi
-	$('.showHideBlockButton').bind("click", function(){
-		$(this).next("div").toggle() ;
-	}) ;
-
-	// handler cambiamenti dati della pagina
-	$("#handlerChangeAlert").changeAlert($('input, textarea, select').not($("#addCustomPropTR TD/input, #addCustomPropTR TD/select, #addPermUserTR TD/input, #addPermGroupTR TD/input"))) ;
-	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div').alertUnload() ;
-	
-});
-*/
-
 </script>	
-
+	
 </head>
 <body>
 
 <script type="text/javascript">
+<!--
 
-/*
-$(document).ready(function(){
-	var tempArray = new Array() ;
-
-
-			
-
-	$("#admin_gest_menux").attr("style", "background-color:#000000; color: white; ") ;
-	$("#admin_gest_menux").bind("mouseover", function(e) 	{ oldBGColor = this.style.backgroundColor; this.style.backgroundColor = "#000000" ; }) ;
-	$("#admin_gest_menux").bind("mouseout", function(e) 	{ this.style.backgroundColor = oldBGColor ; }) ;
-	$("#admin_gest_menux").bind("click", function(e) 		{ if(e.cancelBubble) return false  ; document.location ='/admin' ; }) ;
-	
-
-	
-			
-
-	$("#areas_gest_menux").attr("style", "background-color:#ff9933; color: white; ") ;
-	$("#areas_gest_menux").bind("mouseover", function(e) 	{ oldBGColor = this.style.backgroundColor; this.style.backgroundColor = "#ff9933" ; }) ;
-	$("#areas_gest_menux").bind("mouseout", function(e) 	{ this.style.backgroundColor = oldBGColor ; }) ;
-	$("#areas_gest_menux").bind("click", function(e) 		{ if(e.cancelBubble) return false  ; document.location ='/areas' ; }) ;
-	
-
-	
-
-
-});
-*/
-
-
+//-->
 </script>
 
-<div id="headerPage"><div class="beditaButton" onClick = "document.location ='/'"><b style="font:bold 17px Verdana">B.Edita</b><br><b>&#155;</b><a href="/authentications/logout">esci</a><br><br><p><b>Consorzio BEdita</b><br>2007</p></div><div class="gest_menux" id="admin_gest_menux">admin</div><div class="gest_menux" id="areas_gest_menux"><i> * areas</i></div></div>
-<!-- br style="clear:both;"-->
+<div id="headerPage"><div class="beditaButton" onclick= "javascript:document.location ='//'"><span style="font:bold 17px Verdana">B.Edita</span><br/><b>&gt;</b><a href="/authentications/logout">esci</a><br/><br/><p><b>Consorzio BEdita</b><br/>2007</p></div><div class="gest_menux" id="admin_gest_menux">admin</div><div class="gest_menux" id="areas_gest_menux">areas</div><div class="gest_menux" id="documents_gest_menux"><i> * documents</i></div><div class="gest_menux" id="galleries_gest_menux">galleries</div></div>
+<div id="centralPage">
+	
 		<div id="menuLeftPage">
 		<div class="menuLeft">
-			<h1 onClick="window.location='./'" class="aree"><a href="./">Areas</a></h1>
+			<h1 onClick="window.location='/documents'" class="aree"><a href="/documents">Documenti</a></h1>
 
 	
 			<div class="inside">
 				<ul class="simpleMenuList" style="margin:10px 0px 10px 0px">
-					<li >		<b>&#8250;</b> <a href="/areas" >Albero delle Aree</a></li>
-					<li class="on">	<b>&#8250;</b> <a href="/areas/viewArea" >Nuova Area</a></li>
-					<li >	<b>&#8250;</b> <a href="/areas/viewSection" >Nuova Sezione</a></li>
-
+					<li class="on">		<b>&#8250;</b> <a href="/documents" >Documents</a></li>
+					<li >	<b>&#8250;</b> <a href="/documents/view" >Add Documents</a></li>
 				</ul>	
 				<hr>
+
 			</div>
 		</div>
 	<p>
@@ -112,717 +51,134 @@ $(document).ready(function(){
 
 	</div>
 	<br>
+
 <br>
 <br>
 
 	</div>
 
 		
-	
-<script type="text/javascript">
-
-
-var validate = null ;
-/*
-$(document).ready(function(){
-	
-	validateFrm = $("#updateform").validate({
-		debug:false,
-		errorLabelContainer: $("#errorForm"),
-		errorClass: "errorFieldForm", 
-		rules: {
-			title: "required",
-
-		},
-		messages: {
-			title: "Il titolo &egrave; obbligatorio",
-		}
-	});	
-	
-	$("#updateform//input[@name=cancella]").bind("click", function() {
-		if(!confirm("Attenzione!!! operazione potenzialmente dannosa.\nSicuro di voler continuare?")) {
-			return false ;
-		}
-		
-		document.location = "/areas/deleteArea/2" ;
-	}) ;
-	
-	
-	$("#updateform").bind("submit", function() {
-		// se ci sono stati errori, stampa un messaggio
-		if(validateFrm.errorList.length) {
-			alert(validateFrm.errorList[0].message) ;
-		}
-	}) ;
-});
-*/
-
-/*
-Inserimento di versioni linguistiche di campi specificati
-cmd			Comando che ha richiesto la traduzione
-startField	Stringa jquery che identifica il campo da tradurre
-langs		Elenco delle lingue selezioanbili
-*/
-/*
-jQuery.addTranslateField = function(cmd, startField, langs) {
-	// Create a link to self
-	var me  = this;		
-	
-	// Campo da tradurre
-	$startField = $(startField).get(0) ;
-	
-	// Aggiunge l'evento onclick sul comando
-	$(cmd)
-	.attr("lock", 0)
-	.bind("click", function() {
-		if($(this).attr("lock") > 0) return false ;
-		$(this).attr("lock", 1) ;
-		
-		// visualizza il select
-		me.showLangsSelect($(this)) ;
-		
-	}) ;
-	
-	// visualizza il menu select delle lingue
-	this.showLangsSelect  = function (cmd) {
-
-		// Inserisce il select
-//		var select = cmd.after("<p>test</p>") ;
-	}
-
-}
-
-jQuery.fn.addTranslateField = function(startField, langs) {
-	langs = langs || {"it" : "Italiano"};
-	
-	this.each(function() {
-		new jQuery.addTranslateField(this, startField, langs);
-	});
-
-	// Don't break the chain
-	return this;
-}
-
-var langs = {
-	"fr":	"francese",
-	"de":	"tedesco",
-	"es":	"spagnolo"
-} ;
-
-$(document).ready(function(){
-//	$("#cmdTranslateTitle").addTranslateField('titleInput', langs) ;
-});
-
-*/
-
-</script>	
+		<script type="text/javascript">
+	</script>	
 
 	<div id="containerPage">
-		
-		<form id="updateform" enctype="multipart/form-data" method="post" action="/areas/saveArea/">
-		<input  type="hidden" name="data[id]" value="2" >
-
-		<div class="FormPageHeader">
-			<h1>Test site</h1>
 	
-			<table cellspacing="0" cellpadding="0">
-				<tr>
-					<td>
-						<a id="openAllBlockLabel" style="display:block" href="javascript:showAllBlockPage(1)"><b>&#155; </b>apri tutti i dettagli</a>
-						<a id="closeAllBlockLabel" href="javascript:hideAllBlockPage()"><b>&#155; </b>chiudi tutti i dettagli</a>
+		<div id="listAree">
+		<ul id="tree">
+	<li>
+	<input type='hidden' name='id' value='2'/>
 
-					</td>
-					<td style="padding-left:40px" nowrap>
-						<input type="submit" name="save" class="submit" value="salva" />
-						<input type="button" name="cancella" class="submit" value="cancella" />
-					</td>
-					<td style="padding-left:40px">
-						&nbsp;
-					</td>
-				</tr>
+	<span class="AreaItem">Test site</span>
+	<ul><li>
+	<input type='hidden' name='id' value='3'/>
+	<span class="SectionItem">Sezione Home Page 1</span>
+	
+</li>
+<li>
+	<input type='hidden' name='id' value='4'/>
+	<span class="SectionItem">Sezione Home Page 2</span>
 
-			</table>
+	
+</li>
+</ul>
+
+</li>
+<li>
+	<input type='hidden' name='id' value='10000'/>
+	<span class="AreaItem">Sito 2</span>
+	
+</li>
+<li>
+	<input type='hidden' name='id' value='10001'/>
+	<span class="AreaItem">Sito 3</span>
+
+	
+</li>
+
+</ul>
+
 		</div>
-		<div class="blockForm" id="errorForm"></div>
+	
+		<div id="listDocuments" style="">
+		<p class="toolbar">
+		Documenti: 3 | pagina 1 di 1 &nbsp;
+		<span  > |< </span> &nbsp; <span  > < </span>  &nbsp; <span  > > </span> &nbsp; <span  > >| </span> &nbsp; 
+		Dimensioni: <select name="data[][]"  onchange="document.location = '/documents/index/2/page:1/dim:20/dir:1'+'/dim:'+ this[this.selectedIndex].value" id="">
 
-		<h2 class="showHideBlockButton">Propriet&agrave;</h2>
-		<div class="blockForm" id="proprieta">
+<option value="1" >1</option>
+<option value="5" >5</option>
+<option value="10" >10</option>
+<option value="20"  selected="selected">20</option>
+<option value="50" >50</option>
+<option value="100" >100</option>
+</select> &nbsp;
+		Vai alla pagina: <select name="data[][]"  onchange="document.location = '/documents/index/2/page:1/dim:20/dir:1'+'/page:'+ this[this.selectedIndex].value" id="">
 
-			<b>status</b>:
-			<label><input type="radio" name="status" value="on" checked="checked" />ON</label> 
+<option value="1"  selected="selected">1</option>
+</select>
+		</p>
+			<form>
+			<table class="indexList">
+				<tr>
+					<th><a href="/documents/index/2/page:1/dim:20/order:id/dir:1" >id</a></th>
+					<th><a href="/documents/index/2/page:1/dim:20/order:title/dir:1" >titolo</a></th>
 
-<label><input type="radio" name="status" value="off" />OFF</label> 
-<label><input type="radio" name="status" value="draft" />DRAFT</label> 
-			<hr>
-				<table class="tableForm" border="0">
-					<tr id="">
-						<td class="label">Lingua:</td>
-						<td>
-							<select name="lang">
-								<option label="italiano" value="it" selected="selected">italiano</option>
+					<th><a href="/documents/index/2/page:1/dim:20/order:status/dir:1" >status</a></th>
+					<th><a href="/documents/index/2/page:1/dim:20/order:created/dir:1" >creato il</a></th>
+					<th><a href="/documents/index/2/page:1/dim:20/order:lang/dir:1" >lingua</a></th>
+				</tr>
+									<tr class="rowList">
+						<input type="hidden" value="12" />
+						<td class="puntatore">12</td>
 
-<option label="inglese" value="en">inglese</option>
-<option label="francese" value="fr">francese</option>
+						<td>Primo Documento di Test</td>
+						<td>on</td>
+						<td>Oct 17, 2007</td>
+						<td>fr</td>
+					</tr>				
+									<tr class="rowList">
+						<input type="hidden" value="6" />
 
-							</select>							
-						</td>
-						<td>
-						&nbsp;
-						</td>
-					</tr>
+						<td class="puntatore">6</td>
+						<td>Primo Documento di Test</td>
+						<td>on</td>
+						<td>Oct 17, 2007</td>
+						<td>en</td>
+					</tr>				
+									<tr class="rowList">
 
-					<tr id="Title_TR_it">
-						<td class="label">Titolo:</td>
-						<td>
-							<input  class="{required:true}" id="titleInput"  type="text" name="data[title]" value="Test site" >&nbsp;
-						</td>
-											
-						<td>
-							<input class="cmdField" id="cmdTranslateTitle" type="button" value="lang ...">
-						</td>
+						<input type="hidden" value="5" />
+						<td class="puntatore">5</td>
+						<td>Primo Documento di Test</td>
+						<td>on</td>
+						<td>Oct 17, 2007</td>
+						<td>it</td>
 
-											</tr>
-				</table>
-								<hr>
-				<table class="tableForm" border="0">
-					<tr>
-						<td class="label">Alias:</td>
-						<td>TestSite</td>
-					</tr>
+					</tr>				
+							</table>
+			</form>
+		<p class="toolbar">
+		Documenti: 3 | pagina 1 di 1 &nbsp;
+		<span  > |< </span> &nbsp; <span  > < </span>  &nbsp; <span  > > </span> &nbsp; <span  > >| </span> &nbsp; 
+		Dimensioni: <select name="data[][]"  onchange="document.location = '/documents/index/2/page:1/dim:20/dir:1'+'/dim:'+ this[this.selectedIndex].value" id="">
 
-					<tr>
-						<td class="label">Creata il:</td>
-						<td>31-07-2007</td>
-					</tr>
-					<tr>
-						<td class="label">Ultima modifica:</td>
-						<td>31-07-2007</td>
+<option value="1" >1</option>
+<option value="5" >5</option>
+<option value="10" >10</option>
+<option value="20"  selected="selected">20</option>
+<option value="50" >50</option>
+<option value="100" >100</option>
+</select> &nbsp;
+		Vai alla pagina: <select name="data[][]"  onchange="document.location = '/documents/index/2/page:1/dim:20/dir:1'+'/page:'+ this[this.selectedIndex].value" id="">
 
-					</tr>
-					<tr>
-						<td class="label">IP:</td>
-						<td>192.168.0.1</td>
-					</tr>
-				</table>
-					</div>
+<option value="1"  selected="selected">1</option>
+</select>
+		</p>
+		</div>
 		
-		<h2 class="showHideBlockButton">Propriet&agrave; Custom</h2>
-
-		<div class="blockForm" id="proprietaCustom">
-			<script type="text/javascript">
-
-/*
-Script per la gestione delle custom properties
-*/
-var postfix_customProp = "_customPropTR" ;
-/*
-$(document).ready(function(){
-	
-			_setupCustomPropTR("prova"+postfix_customProp) ;
-	
-	$('input[@name=cmdAdd]', "#frmCustomProperties").bind("click", function (e) {
-		addCustomPropTR() ;
-	}) ;
-});
-*/
-
-
-
-// Procedura per l'aggiunta di una proprieta'
-var htmlTemplateCustomProp = ' \
-					<tr id=""> \
-						<td><input type="hidden" name=""></td> \
-						<td><select name=""><option label="integer" value="integer">integer</option> <option label="boolean" value="bool">boolean</option> <option label="float" value="float">float</option> <option label="string" value="string">string</option> <option label="stream" value="stream">stream</option> </select></td> \
-						<td><input type="" name="" value=""> </td> \
-						<td><input type="button" name="delete" value=" x "></td> \
-					</tr> \
-' ;
-
-function addCustomPropTR() {
-	var name 	= $.trim($("#addCustomPropTR TD/input[@name=name]").fieldValue()[0].replace(/[^_a-z0-9]/g, ""));	
-	var value 	= $.trim($("#addCustomPropTR TD/input[@name=value]").fieldValue()[0]) ;
-	var type 	= $("#addCustomPropTR TD/select[@name=type]").fieldValue()[0] ;
-	
-	// Se non completa esce
-	if(!name.length || !value.length) {
-		alert("Dati non completi") ;
-		
-		return false ;
-	}
-	
-	// se gia' presente o vuota esce
-	if($("#"+name+postfix_customProp).size()) {
-		alert("Proprieta' gia' presente") ;
-		
-		return false ;
-	}
-
-	// Inserisce il nuovo elemento
-	var newTR = $("#endLineCustomPropTR").before(htmlTemplateCustomProp).prev() ;
-	
-	// Setup nomi, id e comandi degli elementi
-	newTR.attr("id", name+postfix_customProp) ;
-	$("TD:nth-child(1)/input", newTR).attr("name", "data[CustomProperties]["+name+"][name]") ;
-	$("TD:nth-child(2)/select", newTR).attr("name", "data[CustomProperties]["+name+"][type]") ;
-	$("TD:nth-child(3)/input", newTR).attr("name", "data[CustomProperties]["+name+"][value]") ;
-	$('TD:nth-child(4)/input[@name=delete]', newTR).bind("click", function (e) { deleteTRCustomProp(this)}) ;
-	
-	// setup dei valori
-	$("TD:nth-child(1)/input", newTR).attr("value", name) ;
-	$("TD:nth-child(1)", newTR).append(name) ;
-	$("TD:nth-child(3)/input", newTR).attr("value", value) ;
-
-	var options = $("TD:nth-child(2)/select", newTR).get(0).options ;
-	for(var i = 0 ; i < options.length ; i++) {
-		if(options[i].value == type) options[i].selected = true ; 
-	}
-	
-	// resetta i campi per l'input di una nuova prop
-	$("#addCustomPropTR TD/input[@type=text]").attr("value", "") ;
-	$("#addCustomPropTR TD/select").get(0).options[0].selected = true ;
-	
-	// Indica l'avvenuto cambiamento dei dati
-	try {
-		$().alertSignal() ;
-	} catch(e) {}
-}
-
-
-// Setta i comandi per la gestione delle righe della tabella delle custom properites
-function _setupCustomPropTR(id) {
-	// Definisce il comando per la cancellazione
-	$('#'+id+' TD:last/input[@name=delete]').bind("click", function (e) {
-		deleteTRCustomProp(this)
-	}) ;
-}
-
-// cancella l'elemento
-function deleteTRCustomProp(el) {
-	if(!confirm("Confermi la cancellazione delle proprieta'?")) return false ;
-	$(el).parent().parent().remove() ;		
-	
-	// Indica l'avvenuto cambiamento dei dati
-	try {
-		$().alertSignal() ;
-	} catch(e) {}
-}
-
-
-</script>
-
-
-				<table class="tableForm" border="0" id="frmCustomProperties">
-					<tr>
-						<td class="label" style="text-align:left;">nome</td>
-						<td class="label" style="text-align:left;">tipo</td>
-
-						<td class="label" style="text-align:left;">valore</td>
-						<td class="label">&nbsp;</td>
-					</tr>
-										<tr id="prova_customPropTR">
-						<td>
-							<input type="hidden" name="data[CustomProperties][prova][name]">
-							prova
-						</td>
-						<td>
-
-						<select name="data[CustomProperties][prova][type]">
-						<option label="integer" value="integer" selected="selected">integer</option>
-<option label="boolean" value="bool">boolean</option>
-<option label="float" value="float">float</option>
-<option label="string" value="string">string</option>
-<option label="stream" value="stream">stream</option>
-
-						</select>
-						</td>
-
-						<td>
-							<input type="text" name="data[CustomProperties][prova][value]" value="10">
-						</td>
-						<td>
-							<input type="button" name="delete" value=" x ">
-						</td>
-					</tr>
-										<tr id="endLineCustomPropTR">
-						<td colspan="4"><hr></td>
-
-					</tr>
-					<tr id="addCustomPropTR">
-						<td>
-							<input type="text" name="name">
-						</td>
-						<td>
-						<select name="type">
-						<option label="integer" value="integer">integer</option>
-
-<option label="boolean" value="bool">boolean</option>
-<option label="float" value="float">float</option>
-<option label="string" value="string">string</option>
-<option label="stream" value="stream">stream</option>
-
-						</select>
-						</td>
-						<td>
-							<input type="text" name="value" value="">
-
-						</td>
-						<td>
-							<input type="button" name="cmdAdd" value=" add ">
-						</td>
-					</tr>
-				</table>		</div>
-
-		<h2 class="showHideBlockButton">Permessi</h2>
-
-		<div class="blockForm" id="permessi">
-		
-<script type="text/javascript">
-
-/*
-Script per la gestione dei permessi
-*/
-
-// Utilizzato per la definizione dell'ID delle righe permessi
-var postfix_customProp = "_permTR" ;
-
-/**
-* Indica l'incremento massimo raggiunto nell'elencazione dei permessi
-*/
-
-var maxIDPerms = 1 ;
-/*
-$(document).ready(function(){
-	
-			_setupPermTR("administrator_group"+postfix_customProp) ;
-		maxIDPerms++ ;
-	
-	setupFieldAutocomplete() ;
-	
-	$('input[@name=cmdAddUserPerm]', "#frmCustomPermissions").bind("click", function (e) {
-		fncAddPermsTR('addPermUserTR') ;
-	}) ;
-	$('input[@name=cmdAddGroupPerm]', "#frmCustomPermissions").bind("click", function (e) {
-		fncAddPermsTR('addPermGroupTR') ;
-	}) ;
-	
-});
-*/
-// Procedura per l'aggiunta di un permesso
-var htmlTemplateCustomPerm = ' 													\
-						<tr id=""> 												\
-							<td> 												\
-								<input type="hidden" name=""> 					\
-							</td> 												\
-							<td> 												\
-								<input type="hidden" name=""> 					\
-							</td> 												\
-							<td> 												\
-								<input type="checkbox" name="" value="1"> 		\
-							</td> 												\
-							<td> 												\
-								<input type="checkbox" name="" value="2"> 		\
-							</td> 												\
-							<td> 												\
-								<input type="checkbox" name="" value="4"> 		\
-							</td>												\
-							<td> 												\
-								<input type="button" name="delete" value=" x "> \
-							</td> 												\
-						</tr> 													\
-' ;
-
-function fncAddPermsTR(id) {
-	var name 		= $.trim($("#"+id+" TD/input[@name=name]").fieldValue()[0].replace(/[^_a-z0-9]/g, ""));	
-	var _switch 	= $("#"+id+" TD/input[@name=switch]").fieldValue()[0] ;	
-	var read 		= $("#"+id+" TD/input[@name=read]").get(0).checked ;	
-	var modify 		= $("#"+id+" TD/input[@name=modify]").get(0).checked ;	
-	var _delete 	= $("#"+id+" TD/input[@name=delete]").get(0).checked ;	
-
-	// Se non completa esce
-	if(!name.length || (!(read || modify || _delete))) {
-		alert("Dati non completi") ;
-		return false ;
-	}
-	
-	// Inserisce il nuovo elemento
-	var newTR = $("#endLineCustomPermsTR").before(htmlTemplateCustomPerm).prev() ;
-
-	// Setup nomi, id e comandi degli elementi
-	newTR.attr("id", name+postfix_customProp) ;
-	$("TD:nth-child(1)/input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][name]") ;
-	$("TD:nth-child(2)/input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][switch]") ;
-	$("TD:nth-child(3)/input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][BEDITA_PERMS_READ]") ;
-	$("TD:nth-child(4)/input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][BEDITA_PERMS_MODIFY]") ;
-	$("TD:nth-child(5)/input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][BEDITA_PERMS_DELETE]") ;
-	$('TD:nth-child(6)/input[@name=delete]', newTR).bind("click", function (e) { deleteTRPerm(this)}) ;
-
-	// setup dei valori
-	$("TD:nth-child(1)/input", newTR).attr("value", name) ;
-	$("TD:nth-child(1)", newTR).append(name) ;
-	$("TD:nth-child(2)/input", newTR).attr("value", _switch) ;
-	$("TD:nth-child(2)", newTR).append(_switch) ;
-	$("TD:nth-child(3)/input", newTR).get(0).checked = read ;
-	$("TD:nth-child(4)/input", newTR).get(0).checked = modify ;
-	$("TD:nth-child(5)/input", newTR).get(0).checked = _delete ;
-	
-	// Resetta i campi
-	$("#"+id+" TD/input").not($("#"+id+" TD/input[@name=switch]")).clearFields() ;
-	
-	// Indica l'avvenuto cambiamento dei dati
-	try {
-		$().alertSignal() ;
-	} catch(e) {}	
-	
-	incrementCounterPerms() ;
-}
-
-function incrementCounterPerms() {
-	maxIDPerms++ ;
-}
-
-// Setta i comandi per la gestione delle righe della tabella dei permessi
-function _setupPermTR(id) {
-	// Definisce il comando per la cancellazione
-	$('#'+id+' TD:last/input[@name=delete]').bind("click", function (e) {
-		deleteTRPerm(this)
-	}) ;
-}
-
-// cancella l'elemento
-function deleteTRPerm(el) {
-	if(!confirm("Confermi la cancellazione del permesso?")) return false ;
-	$(el).parent().parent().remove() ;		
-	
-	// Indica l'avvenuto cambiamento dei dati
-	try {
-		$().alertSignal() ;
-	} catch(e) {}
-}
-
-
-
-
-/**
-Autocompletamento campi userid/group
-*/
-function formatItemListUserid(row) {
-	return row[0] ;
-}
-
-var test = null ;
-function setupFieldAutocomplete() {
-	$("#inputAddPermUser").autocomplete(
-		"/users/userids",
-		{
-			delay:10,
-			minChars:1,
-			matchSubset:1,
-			matchContains:1,
-			cacheLength:10,
-			onItemSelect:null,
-			onFindValue:null,
-			formatItem:formatItemListUserid,
-			autoFill:false,
-			maxItemsToShow:20
-		}
-	);
-	
-	test = $("#inputAddPermGroup").autocomplete(
-		"/groups/names",
-		{
-			delay:10,
-			minChars:1,
-			matchSubset:1,
-			matchContains:1,
-			cacheLength:10,
-			onItemSelect:null,
-			onFindValue:null,
-			formatItem:formatItemListUserid,
-			autoFill:false,
-			maxItemsToShow:20
-		}
-	);
-	
-	// Visualizza tutti i gruppi con un comando
-	$('#viewListPgroups').bind("click", function(){
-		$("#inputAddPermGroup").focus() ;
-		$("#inputAddPermGroup").attr('value', " ") ;
-		$("#inputAddPermGroup").trigger("keydown") ;
-	}) ;
-}
-
-
-
-</script>
-
-
-				<table class="tableForm" border="0" id="frmCustomPermissions">
-					<tr>
-						<td class="label" style="text-align:left;">nome</td>
-						<td class="label" style="text-align:left;">tipo</td>
-
-						<td class="label" style="text-align:left;">lettura</td>
-						<td class="label" style="text-align:left;">modifica</td>
-						<td class="label" style="text-align:left;">cancella</td>
-						<td class="label">&nbsp;</td>
-					</tr>
-																							
-						<tr id="administrator_group_permTR">
-							<td>
-
-								<input type="hidden" name="data[Permissions][0][name]">
-								administrator
-							</td>		
-							<td>
-								<input type="hidden" name="data[Permissions][0][switch]">
-								group
-							</td>
-							<td>
-								<input type="checkbox" name="data[Permissions][0][BEDITA_PERMS_READ]" value="1" checked>
-							</td>
-
-							<td>
-								<input type="checkbox" name="data[Permissions][0][BEDITA_PERMS_MODIFY]" value="2" checked>
-							</td>
-							<td>
-								<input type="checkbox" name="data[Permissions][0][BEDITA_PERMS_DELETE]" value="4" checked>
-							</td>			
-							<td>
-															</td>
-						</tr>
-
-																<tr id="endLineCustomPermsTR">
-							<td colspan="4">
-								<input type="checkbox"  name="data[recursiveApplyPermissions]" id="recursiveApplyPermissions" value="1">&nbsp;
-								<a href="javascript:void(0)" onclick="$('#recursiveApplyPermissions').toggleCheck() ;">
-								Applica i permessi ricorsivamente
-								</a>
-							</td>
-						</tr>
-										<tr>
-
-						<td colspan="8"><hr></td>
-					</tr>
-					<tr id="">
-						<th colspan="8" style="text-align:left ;">
-						utente:
-						</th>
-					</tr>
-					<tr id="addPermUserTR">
-						<td>
-
-							<input type="text" name="name" style="width: 150px;" value="" id="inputAddPermUser" class="ac_input"/>							
-						</td>		
-						<td>
-							<input type="hidden" name="switch" value="user">
-						</td>
-						<td>
-							<input type="checkbox" name="read" value="1">
-						</td>
-						<td>
-							<input type="checkbox" name="modify" value="2">
-
-						</td>
-						<td>
-							<input type="checkbox" name="delete" value="4">
-						</td>			
-						<td>
-							<input type="button" name="cmdAddUserPerm" value=" add ">
-						</td>
-					</tr>
-					<tr id="">
-
-						<th colspan="8" style="text-align:left ;">
-						gruppo:
-						</th>
-					</tr>
-					<tr id="addPermGroupTR">
-						<td nowrap>
-							<input type="text" name="name" style="width: 150px;" value="" id="inputAddPermGroup" class="ac_input"/>
-							<input type="button" id="viewListPgroups" value="...">
-						</td>		
-						<td>
-
-							<input type="hidden" name="switch" value="group">
-						</td>
-						<td>
-							<input type="checkbox" name="read" value="1">
-						</td>
-						<td>
-							<input type="checkbox" name="modify" value="2">
-						</td>
-						<td>
-
-							<input type="checkbox" name="delete" value="4">
-						</td>			
-						<td>
-							<input type="button" name="cmdAddGroupPerm" value=" add ">
-						</td>
-					</tr>
-
-				</table>		</div>
-
-		</form>			
-	</div>
-
-	
-<br style="clear:both">		
-		
-<div id="footerPage">
-&nbsp;
-	<a href="http://www.cakephp.org/" target="_new">
-		<img src="/img/cake.power.png" alt="CakePHP : Rapid Development Framework" border="0" />
-	</a>
+	</div>	
 </div>
 
-<?php echo $cakeDebug?>
+
 </body>
-</html><!-- 0.2503s --><table class="cakeSqlLog" id="cakeSqlLog_118596191746b057bd5996a8_60337722" summary="Cake SQL Log" cellspacing="0" border = "0">
-<caption>31 queries took 67 ms</caption>
-
-<thead>
-<tr><th>Nr</th><th>Query</th><th>Error</th><th>Affected</th><th>Num. rows</th><th>Took (ms)</th></tr>
-</thead>
-<tbody>
-<tr><td>1</td><td>DESCRIBE `view_trees`</td><td></td><td style = "text-align: right">10</td><td style = "text-align: right">10</td><td style = "text-align: right">5</td></tr>
-<tr><td>2</td><td>DESCRIBE `permissions`</td><td></td><td style = "text-align: right">5</td><td style = "text-align: right">5</td><td style = "text-align: right">7</td></tr>
-
-<tr><td>3</td><td>DESCRIBE `users`</td><td></td><td style = "text-align: right">4</td><td style = "text-align: right">4</td><td style = "text-align: right">6</td></tr>
-<tr><td>4</td><td>DESCRIBE `object_users`</td><td></td><td style = "text-align: right">2</td><td style = "text-align: right">2</td><td style = "text-align: right">5</td></tr>
-<tr><td>5</td><td>DESCRIBE `objects`</td><td></td><td style = "text-align: right">10</td><td style = "text-align: right">10</td><td style = "text-align: right">3</td></tr>
-
-<tr><td>6</td><td>DESCRIBE `object_types`</td><td></td><td style = "text-align: right">2</td><td style = "text-align: right">2</td><td style = "text-align: right">2</td></tr>
-<tr><td>7</td><td>DESCRIBE `view_permissions`</td><td></td><td style = "text-align: right">4</td><td style = "text-align: right">4</td><td style = "text-align: right">4</td></tr>
-<tr><td>8</td><td>DESCRIBE `versions`</td><td></td><td style = "text-align: right">4</td><td style = "text-align: right">4</td><td style = "text-align: right">2</td></tr>
-
-<tr><td>9</td><td>DESCRIBE `custom_properties`</td><td></td><td style = "text-align: right">9</td><td style = "text-align: right">9</td><td style = "text-align: right">3</td></tr>
-<tr><td>10</td><td>DESCRIBE `indexs`</td><td></td><td style = "text-align: right">10</td><td style = "text-align: right">10</td><td style = "text-align: right">2</td></tr>
-<tr><td>11</td><td>DESCRIBE `lang_texts`</td><td></td><td style = "text-align: right">6</td><td style = "text-align: right">6</td><td style = "text-align: right">3</td></tr>
-
-<tr><td>12</td><td>DESCRIBE `content_bases`</td><td></td><td style = "text-align: right">6</td><td style = "text-align: right">6</td><td style = "text-align: right">2</td></tr>
-<tr><td>13</td><td>DESCRIBE `view_images`</td><td></td><td style = "text-align: right">7</td><td style = "text-align: right">7</td><td style = "text-align: right">3</td></tr>
-<tr><td>14</td><td>DESCRIBE `view_multimedias`</td><td></td><td style = "text-align: right">7</td><td style = "text-align: right">7</td><td style = "text-align: right">3</td></tr>
-
-<tr><td>15</td><td>DESCRIBE `view_files`</td><td></td><td style = "text-align: right">7</td><td style = "text-align: right">7</td><td style = "text-align: right">2</td></tr>
-<tr><td>16</td><td>DESCRIBE `groups`</td><td></td><td style = "text-align: right">2</td><td style = "text-align: right">2</td><td style = "text-align: right">2</td></tr>
-<tr><td>17</td><td>DESCRIBE `permission_modules`</td><td></td><td style = "text-align: right">5</td><td style = "text-align: right">5</td><td style = "text-align: right">2</td></tr>
-
-<tr><td>18</td><td>DESCRIBE `modules`</td><td></td><td style = "text-align: right">5</td><td style = "text-align: right">5</td><td style = "text-align: right">2</td></tr>
-<tr><td>19</td><td>DESCRIBE `areas`</td><td></td><td style = "text-align: right">1</td><td style = "text-align: right">1</td><td style = "text-align: right">2</td></tr>
-<tr><td>20</td><td>DESCRIBE `collections`</td><td></td><td style = "text-align: right">3</td><td style = "text-align: right">3</td><td style = "text-align: right">2</td></tr>
-
-<tr><td>21</td><td>DESCRIBE `view_sections`</td><td></td><td style = "text-align: right">3</td><td style = "text-align: right">3</td><td style = "text-align: right">3</td></tr>
-<tr><td>22</td><td>SELECT `Area`.`id`, `Object`.`id`, `Object`.`object_type_id`, `Object`.`status`, `Object`.`created`, `Object`.`modified`, `Object`.`title`, `Object`.`nickname`, `Object`.`current`, `Object`.`lang`, `Object`.`IP_created`, `Collection`.`id`, `Collection`.`create_rules`, `Collection`.`access_rules` FROM `areas` AS `Area` LEFT JOIN `objects` AS `Object` ON (`Object`.`id` = `Area`.`id`) LEFT JOIN `collections` AS `Collection` ON (`Collection`.`id` = `Area`.`id`)  WHERE `Area`.`id` =  2   LIMIT 1</td><td></td><td style = "text-align: right">1</td><td style = "text-align: right">1</td><td style = "text-align: right">1</td></tr>
-<tr><td>23</td><td>SELECT `Object`.`id`, `Object`.`object_type_id`, `Object`.`status`, `Object`.`created`, `Object`.`modified`, `Object`.`title`, `Object`.`nickname`, `Object`.`current`, `Object`.`lang`, `Object`.`IP_created` FROM `objects` AS `Object`   WHERE `Object`.`id`  =  2  </td><td></td><td style = "text-align: right">1</td><td style = "text-align: right">1</td><td style = "text-align: right">0</td></tr>
-
-<tr><td>24</td><td>SELECT `ObjectType`.`id`, `ObjectType`.`name` FROM `object_types` AS `ObjectType`   WHERE `ObjectType`.`id`  =  1  </td><td></td><td style = "text-align: right">1</td><td style = "text-align: right">1</td><td style = "text-align: right">0</td></tr>
-<tr><td>25</td><td>SELECT `Permissions`.`name`, `Permissions`.`switch`, `Permissions`.`flag`, `Permissions`.`object_id` FROM `view_permissions` AS `Permissions`   WHERE `Permissions`.`object_id` IN (2)   </td><td></td><td style = "text-align: right">1</td><td style = "text-align: right">1</td><td style = "text-align: right">1</td></tr>
-<tr><td>26</td><td>SELECT `Version`.`id`, `Version`.`object_id`, `Version`.`version_id`, `Version`.`date` FROM `versions` AS `Version`   WHERE `Version`.`object_id` IN (2)   </td><td></td><td style = "text-align: right">0</td><td style = "text-align: right">0</td><td style = "text-align: right">0</td></tr>
-
-<tr><td>27</td><td>SELECT `CustomProperties`.`id`, `CustomProperties`.`object_id`, `CustomProperties`.`name`, `CustomProperties`.`type`, `CustomProperties`.`integer`, `CustomProperties`.`bool`, `CustomProperties`.`float`, `CustomProperties`.`string`, `CustomProperties`.`stream` FROM `custom_properties` AS `CustomProperties`   WHERE `CustomProperties`.`object_id` IN (2)   </td><td></td><td style = "text-align: right">1</td><td style = "text-align: right">1</td><td style = "text-align: right">0</td></tr>
-<tr><td>28</td><td>SELECT `Index`.`id`, `Index`.`object_id`, `Index`.`name`, `Index`.`lang`, `Index`.`type`, `Index`.`integer`, `Index`.`bool`, `Index`.`float`, `Index`.`string`, `Index`.`stream` FROM `indexs` AS `Index`   WHERE `Index`.`object_id` IN (2)   </td><td></td><td style = "text-align: right">0</td><td style = "text-align: right">0</td><td style = "text-align: right">0</td></tr>
-<tr><td>29</td><td>SELECT `LangText`.`id`, `LangText`.`object_id`, `LangText`.`lang`, `LangText`.`name`, `LangText`.`text`, `LangText`.`longText` FROM `lang_texts` AS `LangText`   WHERE `LangText`.`object_id` IN (2)   </td><td></td><td style = "text-align: right">0</td><td style = "text-align: right">0</td><td style = "text-align: right">0</td></tr>
-
-<tr><td>30</td><td>SELECT `Collection`.`id`, `Collection`.`create_rules`, `Collection`.`access_rules` FROM `collections` AS `Collection`   WHERE `Collection`.`id`  =  2  </td><td></td><td style = "text-align: right">1</td><td style = "text-align: right">1</td><td style = "text-align: right">0</td></tr>
-<tr><td>31</td><td>ROLLBACK</td><td></td><td style = "text-align: right">0</td><td style = "text-align: right"></td><td style = "text-align: right">0</td></tr>
-</tbody></table>
+</html>

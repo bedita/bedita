@@ -148,6 +148,14 @@ class Tree extends BEAppModel
 		$ret = $this->query("CALL switchChildTree({$id}, {$this->id}, {$priority})");
 		return (($ret === false)?false:true) ;
 	}
+	
+	function removeChild($id, $idParent = false) {
+		if (!empty($idParent)) {
+			$this->id = $idParent ;
+		}
+		$ret = $this->query("DELETE FROM trees WHERE id = {$id} AND parent_id = {$this->id}");
+		return (($ret === false)?false:true) ;
+	}
 
 	function setPriority($id, $priority, $idParent = false) {
 		if (!empty($idParent)) {

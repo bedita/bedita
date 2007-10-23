@@ -1,5 +1,5 @@
 {*
-Pagina d'entrata modulo Areas.
+Pagina d'entrata modulo Documents.
 *}
 {php}$vs = &$this->get_template_vars() ;{/php}
 

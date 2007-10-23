@@ -3,6 +3,18 @@ template incluso.
 l'albero delle aree e sezioni per la scleta della porzione di doc. da visualizzare
 e l'elenco dei doc. trovato con la toolbar di navigazione.
 *}
+	<script type="text/javascript">
+	{literal}
+
+	$(document).ready(function(){
+		$("TABLE.indexList TR.rowList").click(function(i) { 
+			document.location = $("A", this).attr('href') ;
+		} );
+	});
+
+	{/literal}
+	</script>	
+
 	<div id="containerPage">
 	
 		<div id="listAree">
@@ -25,8 +37,8 @@ e l'elenco dei doc. trovato con la toolbar di navigazione.
 					<th>{$beToolbar->order('lang', 'lingua')}</th>
 				</tr>
 				{section name="i" loop=$documents}
-					<tr>
-						<td>{$documents[i].id}</td>
+					<tr class="rowList">
+						<td><a href="{$html->url('view/')}{$documents[i].id}">{$documents[i].id}</a></td>
 						<td>{$documents[i].title}</td>
 						<td>{$documents[i].status}</td>
 						<td>{$documents[i].created|date_format:'%b %e, %Y'}</td>
@@ -34,7 +46,6 @@ e l'elenco dei doc. trovato con la toolbar di navigazione.
 					</tr>				
 				{/section}
 			</table>
-		
 		<p class="toolbar">
 		{t}Documenti{/t}: {$beToolbar->size()} | {t}pagina{/t} {$beToolbar->current()} {t}di{/t} {$beToolbar->pages()} &nbsp;
 		{$beToolbar->first()} &nbsp; {$beToolbar->prev()}  &nbsp; {$beToolbar->next()} &nbsp; {$beToolbar->last()} &nbsp; 
