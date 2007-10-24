@@ -179,7 +179,7 @@ CREATE TABLE custom_properties (
 
 CREATE TABLE content_bases (
   id INTEGER UNSIGNED NOT NULL,
-  `start` DATETIME NOT NULL ,
+  `start` DATETIME NULL ,
   `end` DATETIME NULL,
   subtitle VARCHAR(255) NULL,
   testobreve MEDIUMTEXT NULL,
