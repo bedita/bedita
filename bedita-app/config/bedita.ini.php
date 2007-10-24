@@ -59,8 +59,14 @@ $config['status'] = "draft" ;
 /**
  * Formato visualizzazione data
  */
-$config['date_format'] = "%d-%m-%Y" ;
-
+$config['date_format'] 			= "%d-%m-%Y" ;
+$config['df_jquery_calendar'] 	= "DMY-" ;								// Per i calendari popuo di jquery
+$config['date2iso'] 			= "/(\d{2,2})-(\d{2,2})-(\d{4,4})/" ;	// Per la conversione della data di formato jquery	
+/*
+$config['match_year'] 	= "/\d{2,2}-\d{2,2}-(\d{4,4})/" ;	// Trova l'anno nel  formato sopra indicato
+$config['match_month'] 	= "/\d{2,2}-(\d{2,2})-\d{4,4}/" ;	// Trova il mese nel  formato sopra indicato
+$config['match_day'] 	= "/(\d{2,2})-\d{2,2}-\d{4,4}/" ;	// Trova il giorno nel  formato sopra indicato
+*/
 
 
 /**
@@ -230,6 +236,16 @@ $config['customPropTypeOptions'] = array(
 	"string"	=> "string",
 	"stream"	=> "stream"
 ) ;
+
+/**
+ * Options radio button tipi di documenti da seelzionare
+ */
+$config['docTypeOptions'] = array(
+	"22"	=> "Documento",
+	"23"	=> "Link oggetto BEdita",
+	"24"	=> "Link",
+) ;
+
 
 /**
  * Variabili utilizzate da Smarty per definire permessi

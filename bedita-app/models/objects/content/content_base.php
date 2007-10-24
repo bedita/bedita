@@ -141,7 +141,8 @@ class ContentBase extends BEAppModel
 		else $data = &$this->data ;
 		
 	 	$default = array(
-			'start' 			=> array('_getDefaultStartTime', (isset($data['start']))?$data['start']:time()),
+			'start' 			=> array('_getDefaultDataFormat', (isset($data['start']) && !empty($data['start']))?$data['start']:time()),
+			'end'	 			=> array('_getDefaultDataFormat', ((isset($data['end']) && !empty($data['end']))?$data['end']:null)),
 			'formato' 			=> array('_getDefaultFormato', (isset($data['formato']))?$data['formato']:null),
 		) ;
 		
@@ -168,10 +169,20 @@ class ContentBase extends BEAppModel
 	 * @param unknown_type $value
 	 * @return unknown
 	 */
-	private function _getDefaultStartTime($value = null) {
-		if(is_string($value)) return $value ;
+	private function _getDefaultDataFormat($value = null) {
+		if(is_integer($value)) return date("Y-m-d", $value) ;
 		
-		return date("Y-m-d H:i:s", $value) ;
+		if(is_string($value) && !empty($value)) {
+			$conf = Configure::getInstance() ;
+			
+			if(preg_match($conf->date2iso, $value, $matched)) {
+				$value = "{$matched[3]}-{$matched[2]}-{$matched[1]}" ;
+			} 
+			
+			return $value ;
+		}
+		
+		return null ;
 	}
 	
 	/**

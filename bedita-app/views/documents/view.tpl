@@ -25,7 +25,8 @@ Pagina d'entrata modulo Documents.
 
 <script type="text/javascript">
 <!--
-var parents = new Array({section name=i loop=$parents}{$parents[i]}{if !($smarty.section.i.last)},{/if} {/section}, 0) ;
+
+var parents = new Array({section name=i loop=$parents}{$parents[i]},{/section} 0) ;
 {literal}
 /* ****************************************************
 Albero per selezionare la collocazione della sezione

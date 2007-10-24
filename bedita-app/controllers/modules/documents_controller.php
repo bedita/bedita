@@ -94,7 +94,8 @@ class DocumentsController extends AppController {
 		// Preleva dov'e' inserito il documento 
 		if(isset($id)) $parents_id = $this->Tree->getParent($id) ;
 		else $parents_id = 0 ;
-		if(!is_array($parents_id)) $parents_id = array($parents_id) ;
+		if($parents_id && !is_array($parents_id)) $parents_id = array($parents_id) ;
+		else $parents_id = array() ;
 		
 		// Setup dei dati da passare al template
 		$this->set('object',	$obj);
@@ -128,7 +129,11 @@ class DocumentsController extends AppController {
 		 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
 		 	
 			//$this->Transaction->begin() ;
-			
+/*
+pr($_POST);
+pr($this->data);
+exit;
+*/		
 	 		// Salva i dati
 		 	if(!$this->Document->save($this->data)) throw new BEditaActionException($this, $this->Document->validationErrors);
 
