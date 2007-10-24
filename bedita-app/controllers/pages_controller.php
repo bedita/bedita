@@ -36,7 +36,10 @@ class PagesController extends AppController {
 	 function display() {
 	 	$this->action = "index" ;
 	 }
-
+	 
+	 function changePasswd() {
+	 }
+	 
 	 function login() {
 	 }
 

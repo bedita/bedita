@@ -7,54 +7,47 @@
  * 
  */
 
-include_once(dirname(__FILE__) . DS . 'be_auth.data.php') ;
-loadComponent('BeAuth');
-loadComponent('Session');
-loadController('Authentications');
+require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
-class BeAuthTestCase extends CakeTestCase {
-	
-    var $fixtures 	= array();
- 	var $user		= null;
+class BeAuthTestCase extends BeditaTestCase {
+	var $components = array('BeAuth');
+	var $uses = array('User', 'Group');
     var $dataSource = 'default' ;
- 	
-    var $data = null ;
 
 	////////////////////////////////////////////////////////////////////
-
-	function testLogin() {	
+    
+	function testLogin() {
+		$this->requiredData(array("user1","user2"));
 		$beAuth	= new BeAuthComponent();
 		
 		$this->assertTrue($beAuth->login($this->data['user1']['userid'], $this->data['user1']['passwd']));
 		$this->assertFalse($beAuth->login($this->data['user2']['userid'], $this->data['user2']['passwd']));
 		
-	} 
-
-	/////////////////////////////////////////////////
-	/////////////////////////////////////////////////
+	}
 	
-	function startCase() {
-		echo '<h1>Bedita Authorization Test</h1>';
+	function testCreateUser() {
+		$this->requiredData(array("new.user"));
+		$beAuth	= new BeAuthComponent();
+		$beAuth->createUser($this->data['new.user']);
 	}
 
-	function endCase() {
-		echo '<h1>Ending Test Case</h1>';
+	function testDeleteUser() {
 	}
 
-	function startTest($method) {
-		echo '<h3>Starting method ' . $method . '</h3>';
+	function testEditUser() {
+	}
+	
+	function testCreateGroup() {
+	}
+	
+	function testDeleteGroup() {
 	}
 
-	function endTest($method) {
-		echo '<hr />';
+	function testEditGroup() {
 	}
 	
 	public   function __construct () {
-		parent::__construct() ;
-		
-		$beAuthData 	= &new BeAuthData() ;
-		$this->data	= $beAuthData->getData() ;
- 
-	}	
+		parent::__construct('BeAuth', dirname(__FILE__)) ;
+	}
 }
 ?> 

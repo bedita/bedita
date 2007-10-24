@@ -55,6 +55,10 @@ class User extends BEAppModel
 			)
 	);
 
+	function setSimpleMode() {
+		$this->recursive=1;
+		$this->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
+	}
 	
 	/**
 	 * Viene riformattato il risultato:

@@ -32,6 +32,6 @@
 	</a>
 </div>
 
-<?php echo $cakeDebug?
+{$cakeDebug}
 </body>
 </html>

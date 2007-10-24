@@ -1,16 +1,9 @@
 <?
 /**
- * Short description for file.
- *
- * PHP versions 4 
- *
- * CakePHP :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright (c)	2006, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
- *
- * Gestisce il riconoscimento del gerstore/redattore connesso e i 
- * suoi dati di sessione.
+ * 
+ * User/group/authorization component:
+ * 	- login, session start
+ * 	- user/group creation/handling
  * 
  * @filesource
  * @copyright		Copyright (c) 2006
@@ -23,6 +16,7 @@
  * @lastmodified	
  * @license			
  */
+
 class BeAuthComponent extends Object {
 	var $controller	;
 	var $Session	= null ;
@@ -32,10 +26,14 @@ class BeAuthComponent extends Object {
 	var $changePasswd	= false;
 	var $sessionKey = "BEAuthUser" ;
 	var $allowKey 	= "BEAuthAllow" ;
+	var $authResult	= 'OK';
 	
 	function __construct() {
 		if(!class_exists('User')) {
 			loadModel('User') ;
+		}
+		if(!class_exists('Group')) {
+			loadModel('Group') ;
 		}
 		parent::__construct() ;
 	} 
@@ -236,6 +234,19 @@ class BeAuthComponent extends Object {
 		
 		return false ;
 	}
+	
+	function createUser($userData) {
+		$this->User = new User() ;
+		$this->User->setSimpleMode();
+		$u = $this->User->findByUserid($userData['User']['userid']);
+		if(!empty($u["User"])) {
+			throw new BeditaException(__("User already created",true));
+		}
+		if(!$this->User->save($userData))
+			throw new BeditaException(__("Error saving user",true));
+	}
+	
+	
 }
 
 ?>
