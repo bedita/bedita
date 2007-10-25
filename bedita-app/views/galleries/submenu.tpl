@@ -12,5 +12,6 @@
 	<hr/>
 	<br/>
 	<br/>
+	<div id="handlerChangeAlert"></div>
 	<br/>
 </div>

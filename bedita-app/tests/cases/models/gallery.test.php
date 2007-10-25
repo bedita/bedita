@@ -10,6 +10,7 @@
 include_once(dirname(__FILE__) . DS . 'gallery.data.php') ;
 loadComponent('Permission');
 loadModel('Gallery');
+loadModel('Image');
 
 class GalleryTestCase extends CakeTestCase {
 
@@ -20,20 +21,47 @@ class GalleryTestCase extends CakeTestCase {
 
 	////////////////////////////////////////////////////////////////////
 
-	function testInsertGalleries() {
+//	function testInsertGalleries() {
+//
+//		$nGalleries = 30; // number of galleries to insert
+//		$perms = array(
+//			array('bedita', 'user', (BEDITA_PERMS_CREATE | BEDITA_PERMS_DELETE | BEDITA_PERMS_MODIFY | BEDITA_PERMS_READ) )
+//		);
+//		for($i=1;$i<$nGalleries+1;$i++) {
+//			$model =& new Gallery();
+//			$this->{'Gallery'} =& $model;
+//			$permission = new PermissionComponent();
+//			$this->data['gallery']['title'] = "Gallery $i";
+//			$result = $this->Gallery->save($this->data['gallery']);
+//			$ret = $permission->add($this->Gallery->getLastInsertId(), $perms);
+//		}
+//	}
 
-		$nGalleries = 30; // number of galleries to insert
+	function testInsertImagesForGallery() {
 		$perms = array(
 			array('bedita', 'user', (BEDITA_PERMS_CREATE | BEDITA_PERMS_DELETE | BEDITA_PERMS_MODIFY | BEDITA_PERMS_READ) )
 		);
-		for($i=1;$i<$nGalleries+1;$i++) {
-			$model =& new Gallery();
-			$this->{'Gallery'} =& $model;
-			$permission = new PermissionComponent();
-			$this->data['gallery']['title'] = "Gallery $i";
-			$result = $this->Gallery->save($this->data['gallery']);
-			$ret = $permission->add($this->Gallery->getLastInsertId(), $perms);
-		}
+
+		$model =& new Gallery();
+		$this->{'Gallery'} =& $model;
+		$permission = new PermissionComponent();
+		$this->data['gallery']['title'] = "Gallery che contiene una immagine";
+		$result = $this->Gallery->save($this->data['gallery']);
+		$ret = $permission->add($this->Gallery->getLastInsertId(), $perms);
+		$image =& new Image();
+		$this->{'Image'} =& $image;
+		$permission = new PermissionComponent();
+
+		$this->data['file']= array(
+			'title' 	=> 'Immagine per la galleria test',
+			'path'		=> 'testimg.jpg',
+			'name'		=> 'test test',
+			'type'		=> 'plain/img',
+			'size'		=> 126
+		);
+		$result = $this->Image->save($this->data['file']);
+		$ret = $permission->add($this->Image->getLastInsertId(), $perms);
+		$this->Gallery->appendChild($this->Image->getLastInsertId());
 	}
 
 	/////////////////////////////////////////////////

@@ -1,3 +1,15 @@
+<script type="text/javascript">
+<!--
+{literal}
+$(document).ready(function(){
+	$("TABLE.indexList TR.rowList").click(function(i) {
+		document.location = $("A", this).attr('href') ;
+	} );
+});
+{/literal}
+//-->
+</script>
+
 <div id="containerPage">
 	<div id="listAree">
 	{$beTree->tree("tree", $tree)}
@@ -11,7 +23,8 @@
 		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
 		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
 	</p>
-	<table class="indexList">
+	<table class="indexList" cellpadding="0" cellspacing="0" style="width:578px">
+	<thead>
 	<tr>
 		<th>{$beToolbar->order('id', 'id')}</th>
 		<th>{$beToolbar->order('title', 'Title')}</th>
@@ -20,19 +33,19 @@
 		<th>{$beToolbar->order('lang', 'Language')}</th>
 		<th>-</th>
 	</tr>
+	</thead>
+	<tbody>
 	{section name="i" loop=$galleries}
-		<tr>
-			<td>{$galleries[i].id}</td>
-			<td>{$galleries[i].title}</td>
-			<td>{$galleries[i].status}</td>
-			<td>{$galleries[i].created|date_format:'%b %e, %Y'}</td>
-			<td>{$galleries[i].lang}</td>
-			<td>
-				<input type="submit" id="edit_{$galleries[i].id}" name="edit_{$galleries[i].id}" value="{t}Edit{/t}"/>
-				<input type="submit" id="del_{$galleries[i].id}" name="del_{$galleries[i].id}" value="{t}Delete{/t}"/>
-			</td>
-		</tr>
+	<tr class="rowList">
+		<td><a href="{$html->url('view/')}{$galleries[i].id}">{$galleries[i].id}</a></td>
+		<td>{$galleries[i].title}</td>
+		<td>{$galleries[i].status}</td>
+		<td>{$galleries[i].created|date_format:$conf->date_format}</td>
+		<td>{$galleries[i].lang}</td>
+		<td><a href="{$html->url('delete/')}{$galleries[i].id}">{t}Delete{/t}</a></td>
+	</tr>
 	{/section}
+	</tbody>
 	</table>
 	<p class="toolbar">
 		{t}Gallery{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;

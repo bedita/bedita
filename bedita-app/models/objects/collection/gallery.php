@@ -10,35 +10,35 @@
  *
  * @filesource
  * @copyright		Copyright (c) 2007
- * @link			
- * @package			
- * @subpackage		
- * @since			
- * @version			
- * @modifiedby		
- * @lastmodified	
+ * @link
+ * @package
+ * @subpackage
+ * @since
+ * @version
+ * @modifiedby
+ * @lastmodified
  * @license
- * @author 		giangi giangi@qwerg.com		
- * 
+ * @author 		giangi giangi@qwerg.com
+ *
  * Una comunnity deve essere inserita in un'area o newsletter o sezione.
  * Oltre i dati della community va inserito, nei dati per la creazione di:
  * parent_id
  * ID dell'oggetto contenitore.
- * 	
+ *
 */
 class Gallery extends BEAppCollectionModel
 {
 	var $name 		= 'Gallery';
 	var $useTable 	= 'view_galleries' ;
 	var $recursive 	= 2 ;
-	
+
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'CreateIndexFields'		=> array(),
 			'ForeignDependenceSave' => array('Object', 'Collection'),
 			'DeleteObject' 			=> 'objects',
-	); 
-	
+	);
+
 
 	var $hasOne = array(
 			'Object' =>
@@ -55,19 +55,19 @@ class Gallery extends BEAppCollectionModel
 					'foreignKey'	=> 'id',
 					'dependent'		=> true
 				),
-	) ;			
+	) ;
 
 	function __construct() {
 		parent::__construct() ;
 	}
-	
+
 	/**
  	* Sovrascrive completamente il save() l'oggetto non ha una tabella
  	* specifica ma una vista, non deve salvare
  	*/
 	function save($data = null, $validate = true, $fieldList = array()) {
-		$conf = Configure::getInstance() ;		
-		
+		$conf = Configure::getInstance() ;
+
 		if(isset($data['Object']) && !isset($data['Object']['object_type_id'])) {
 			$data['Object']['object_type_id'] = $conf->objectTypes[strtolower($this->name)] ;
 		} else if(!isset($data['object_type_id'])) {
@@ -89,13 +89,13 @@ class Gallery extends BEAppCollectionModel
 				}
 			}
 		}
-		
+
 		if(empty($this->id)) $created = true ;
-		else $created = false ; 
-		
+		else $created = false ;
+
 		$this->setInsertID($this->Object->id);
 		$this->id = $this->Object->id ;
-		
+
 		if (!empty($this->behaviors)) {
 			$behaviors = array_keys($this->behaviors);
 			$ct = count($behaviors);
@@ -103,33 +103,24 @@ class Gallery extends BEAppCollectionModel
 				$this->behaviors[$behaviors[$i]]->afterSave($this, null);
 			}
 		}
-		
+
 		$this->afterSave($created) ;
 		$this->data = false;
 		$this->_clearCache();
 		$this->validationErrors = array();
-		
+
 		return true ;
 	}
-	
+
 	/**
 	 * Associa la community ad un contenitore quando viene creata
 	 */
 	function afterSave($created) {
 		if (!$created) return ;
-		
+
 		if(!class_exists('Tree')) loadModel('Tree');
 		$tree 	=& new Tree();
-		$tree->appendChild($this->id, null) ;		
+		$tree->appendChild($this->id, null) ;
 	}
-	
-	function appendChild($id, $idParent = null) {
-		if(!class_exists('Tree')) loadModel('Tree');
-
-		$tree =& new Tree();
-		$ret = $tree->appendChild($id, (isset($idParent)?$idParent:$this->id)) ; 
-		
-		return $ret ;
-	}	
 }
 ?>

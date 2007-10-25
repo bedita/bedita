@@ -46,3 +46,81 @@ msgstr "Dimensioni"
 
 msgid "Go to page"
 msgstr "Vai alla pagina"
+
+msgid "page"
+msgstr "pagina"
+
+msgid "of"
+msgstr "di"
+
+msgid "Edit"
+msgstr "Modifica"
+
+msgid "Delete"
+msgstr "Elimina"
+
+msgid "Actions"
+msgstr "Azioni"
+
+msgid "New Gallery"
+msgstr "Nuova Galleria"
+
+msgid "open details"
+msgstr "apri tutti i dettagli"
+
+msgid "close details"
+msgstr "chiudi tutti i dettagli"
+
+msgid "cancel"
+msgstr "cancella"
+
+msgid "Properties"
+msgstr "Proprieta'"
+
+msgid "status"
+msgstr "stato"
+
+msgid "publication"
+msgstr "pubblicazione"
+
+msgid "start"
+msgstr "inizio"
+
+msgid "end"
+msgstr "fine"
+
+msgid "Language"
+msgstr "Lingua"
+
+msgid "Attention!!! you are deleting an item.\nAre you sure that you want to continue?"
+msgstr "Attenzione!!! stai eliminando un elemento.\nSicuro di voler continuare?"
+
+msgid "Where put the gallery into"
+msgstr "Dove inserire la galleria"
+
+msgid "Close all"
+msgstr "Chiudi tutti"
+
+msgid "Expand all"
+msgstr "Espandi tutti"
+
+msgid "Images of the gallery"
+msgstr "Immagini della galleria"
+
+msgid "Add image to the gallery"
+msgstr "Aggiungi immagine alla galleria"
+
+msgid "Available images"
+msgstr "Immagini disponibili"
+
+msgid "No images found"
+msgstr "Nessuna immagine trovata"
+
+msgid "Images"
+msgstr "Immagini"
+
+msgid "Gallery images"
+msgstr "Immagini della galleria"
+
+msgid "Thumbnail"
+msgstr "Miniatura"
