@@ -41,19 +41,6 @@ class AppModel extends Model{
 	
 }
 
-/**
- * Generic Bedita Exception for components/models.
- */
-class BeditaException extends Exception
-{
-    // Redefine the exception so message isn't optional
-    public function __construct($message, $code  = 0) {
-        parent::__construct($message, $code);
-    }
-}
-
-
-
 require_once(APP . 'models'. DS . 'BEAppModel.php') ;
 require_once(APP . 'models'. DS . 'BEAppObjectModel.php') ;
 

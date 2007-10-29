@@ -235,17 +235,76 @@ class BeAuthComponent extends Object {
 		return false ;
 	}
 	
-	function createUser($userData) {
-		$this->User = new User() ;
-		$this->User->setSimpleMode();
-		$u = $this->User->findByUserid($userData['User']['userid']);
+	/**
+	 * Create new user
+	 *
+	 * @param unknown_type $userData
+	 */
+	function createUser($userData, $groups=NULL) {
+		$user = new User() ;
+		$user->setSimpleMode();
+		$u = $user->findByUserid($userData['User']['userid']);
 		if(!empty($u["User"])) {
-			throw new BeditaException(__("User already created",true));
+			$this->log("User ".$userData['User']['userid']." already created");
+			throw new BeditaComponentException(__("User already created",true), $this);
 		}
-		if(!$this->User->save($userData))
-			throw new BeditaException(__("Error saving user",true));
+		$userData['User']['passwd'] = md5($userData['User']['passwd']);
+		$this->userGroupModel($userData, $groups);
+		if(!$user->save($userData))
+			throw new BeditaComponentException(__("Error saving user",true), $this);
+		return true;
+	}
+
+	private function userGroupModel(&$userData, $groups) {
+		if(isset($groups)) {
+			$userData['Group']= array();
+			$userData['Group']['Group']= array();
+			$groupModel = new Group() ;
+			foreach ($groups as $g) {
+				$group =  $groupModel->findByName($g);
+				array_push($userData['Group']['Group'], $group['Group']['id']) ;
+			}
+		}
 	}
 	
+	function updateUser($userData, $groups=NULL)	{
+		if(isset($userData['User']['passwd']))
+			$userData['User']['passwd'] = md5($userData['User']['passwd']);
+		$this->userGroupModel($userData, $groups);
+		$user = new User() ;
+		if(!$user->save($userData))
+			throw new BeditaComponentException(__("Error updating user",true), $this);
+		return true;
+	}
+	
+	function removeGroup($groupName) {
+		$config =& Configure::getInstance();
+		if (in_array($groupName, $config->basicGroups)) {
+			throw new BeditaComponentException(__("Immutable group",true), $this);
+		}
+		$groupModel = new Group();
+		$g =  $groupModel->findByName($groupName);
+		return $groupModel->del($g['Group']['id']);
+	}
+	
+	function editGroup($groupData) {
+		$config =& Configure::getInstance();
+		if (in_array($groupData['Group']['name'], $config->basicGroups)) {
+			throw new BeditaComponentException(__("Immutable group",true), $this);
+		}
+		$group = new Group();
+		return $group->save($groupData);
+	}
+	
+	function removeUser($userId) {
+		// TODO: come fare con oggetti associati??? sono cancellati di default??
+		$user = new User();
+		$u = $user->findByUserid($userId);
+		if(empty($u["User"])) {
+			throw new BeditaComponentException(__("User not present",true), $this);
+		}
+		return $user->delete($u["User"]['id']);
+	}	
 	
 }
 

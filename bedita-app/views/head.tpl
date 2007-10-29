@@ -54,4 +54,6 @@ $(document).ready(function(){
 	{/section}
 </div>
 
+<div id="errorsDiv">{if ($session->check('Message.flash'))}{$session->flash()}{/if}</div>
+
 {/strip}

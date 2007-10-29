@@ -2,6 +2,8 @@
 
 uses('L10n');
 
+	
+
 class AppController extends Controller
 {
 	var $helpers 	= array("Javascript", "Html", "Bevalidation", "Form", "Tr");
@@ -18,8 +20,14 @@ class AppController extends Controller
 	
 	/////////////////////////////////		
 	/////////////////////////////////		
+
+	function handleExceptions($ex) {
+		$this->log($ex->getMessage());
+		$this->Session->setFlash(__($ex->getMessage(), true));
+	}
 	
 	function beforeFilter() {
+				
 		// Templater
 		$this->view = 'Smarty';
 		
@@ -178,29 +186,34 @@ class AppController extends Controller
 	
 		return $baseURL ;
 	}
-	
+
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
- * 
- * Eccezione sollevata dai controller per indicare l'esito negativo di un'action.
- * 
+ * Exception raised by controllers.
  */
 class BEditaActionException extends Exception
 {
-    // Redefine the exception so message isn't optional
-    public function __construct($controller, $message, $code  = 0) {
+	var $controller = NULL;
+
+	public function __construct(&$ctrl, $message, $code  = 0) {
         // some code
-   		$controller->esito = AppController::$ERROR ;
+   		$this->controller=$ctrl;
+   		$this->controller->esito = AppController::$ERROR;
         
         // make sure everything is assigned properly
         parent::__construct($message, $code);
     }
 }
 
+class BeditaComponentException extends BEditaActionException {
 
+	public function __construct($message, &$component) {
+        parent::__construct($component->controller, $message);
+    }
+}
 
 ?>

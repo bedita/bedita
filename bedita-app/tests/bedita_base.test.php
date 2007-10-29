@@ -19,15 +19,23 @@ class BeditaTestCase extends CakeTestCase {
 	var $components = array();
 	var $uses = array();
 	var $testName = NULL;
-
+	var $dataFile	  = NULL ;
+	
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 	function startCase() {
-		echo '<h1>Starting '.$this->testName.' Case</h1>';
+		if(isset($this->testName)) {
+			echo '<h1>Starting '.$this->testName.' Case</h1>';
+			if(isset($this->dataFile)) {
+				echo '<h2>Data file: '.$this->dataFile.'</h2>';
+			}
+		}
 	}
 
 	function endCase() {
-		echo '<h1>Ending '.$this->testName.' Case</h1>';
+		if(isset($this->testName)) {
+			echo '<h1>Ending '.$this->testName.' Case</h1>';
+		}
 	}
 
 	function startTest($method) {
@@ -48,20 +56,21 @@ class BeditaTestCase extends CakeTestCase {
 	/**
 	 * Default constructor, loads models, components, data....
 	 */
-	public   function __construct ($t='', $phpDataDir=NULL) {
+	public   function __construct ($t=NULL, $phpDataDir=NULL) {
 		parent::__construct() ;
 
 		$this->testName = $t;
-		if(strlen($t)==0)
+		if(!isset($t))
 			return;
 		
 		// example data
 		if($phpDataDir != NULL) {
 			$basePath= $phpDataDir . DS . Inflector::underscore($t);
 			if(file_exists($basePath.".localdata.php"))  // local data test, not versioned
-				require_once($basePath.".localdata.php");
+				$this->dataFile = $basePath.".localdata.php";
 			else
-				require_once($basePath.".data.php");
+				$this->dataFile = $basePath.".data.php";
+			require_once($this->dataFile);
 		}	
 		
 		$dataClass = $this->testName."TestData";

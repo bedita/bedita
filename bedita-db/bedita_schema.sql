@@ -71,7 +71,9 @@ DROP TABLE IF EXISTS `groups`;
 CREATE TABLE groups (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(32) NULL,
-  PRIMARY KEY(id)
+  created datetime default NULL,
+  modified datetime default NULL,
+ PRIMARY KEY(id)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE users (
@@ -81,9 +83,11 @@ CREATE TABLE users (
   passwd VARCHAR(255) NULL,
   email varchar(255) default NULL,
   valid tinyint(1) NOT NULL default '1',
-  last_login date default NULL,
-  last_login_err date default NULL,
-  num_login_err INTEGER NOT NULL default '0',
+  last_login datetime default NULL,
+  last_login_err datetime default NULL,
+  num_login_err int(11) NOT NULL default '0',
+  created datetime default NULL,
+  modified datetime default NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY userid (userid)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 ;

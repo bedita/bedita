@@ -78,7 +78,14 @@
 	if (isset($_GET['url']) && $_GET['url'] === 'favicon.ico') {
 	} else {
 		 $Dispatcher=new Dispatcher();
-		 $Dispatcher->dispatch($url);
+		 try {
+		 	$Dispatcher->dispatch($url);
+		} catch (BEditaActionException $ex) {
+			if(isset($ex->controller)) {
+				$ex->controller->handleExceptions($ex);
+				$ex->controller->afterFilter();
+			}
+		}
 	}
 	if (Configure::read() > 0) {
 		 echo "<!-- " . round(getMicrotime() - $TIME_START, 4) . "s -->";

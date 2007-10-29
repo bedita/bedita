@@ -78,7 +78,7 @@ class AuthenticationsController extends AppController {
 	 function _REDIRECT($action, $esito) {
 	 	$REDIRECT = array(
 	 			"logout"	=> 	array(
-	 									"OK"	=> "/logout",
+	 									"OK"	=> "/",
 	 									"ERROR"	=> "/logout" 
 	 								),
 	 			"changePasswd"	=> 	array(

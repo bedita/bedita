@@ -269,5 +269,7 @@ $config['maxNumDaysValidity'] = 60;
 $config['passwdRegex'] = '';
 
 $config['authorizedGroups'] = array('administrator','editor');
+// immutable groups
+$config['basicGroups'] = array('administrator','editor','guest');
 
 ?>
