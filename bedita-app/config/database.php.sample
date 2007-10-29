@@ -27,7 +27,7 @@
  *
  */
 if (!defined('SQL_SCRIPT_PATH')) { // cambiare opportunamente questo path
-	define('SQL_SCRIPT_PATH', DS . ROOT . DS . "bedita-db" . DS);
+	define('SQL_SCRIPT_PATH', ROOT . DS . "bedita-db" . DS);
 }
 class DATABASE_CONFIG
 {
