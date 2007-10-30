@@ -35,21 +35,27 @@ class AuthenticationsController extends AppController {
 		$password 	= (isset($this->data["login"]["passwd"])) ? $this->data["login"]["passwd"] : "" ;
 		
 		if(!$this->BeAuth->login($userid, $password)) {
+			$this-> loginEvent('warn', $userid, "login not authorized");
 			$this->Session->setFlash(__("Wrong username/password or no authorization", true));
 			$this->esito='ERROR';
 		}
 
 		if(!$this->BeAuth->isValid) {
+			$this-> loginEvent('warn', $userid, "login blocked");
 			$this->Session->setFlash(__("User login temporary blocked", true));
 			$this->esito='ERROR';
 		}
 		
 		if($this->BeAuth->changePasswd) {
+			$this-> loginEvent('info', $userid, "change password");
 			$this->set("user", $this->BeAuth->user);
 			$this->esito='PWD';
 			
 			return ;
 		}
+		
+		if($this->esito == "OK")
+			$this->eventInfo("logged in");
 		
 		// Setup del redirect
 		$this->data['OK'] 		= (isset($this->data["login"]["URLOK"])) ? $this->data["login"]["URLOK"] : "/" ; 
@@ -71,6 +77,7 @@ class AuthenticationsController extends AppController {
 	 * logout
 	 */
 	function logout() {
+		$this->eventInfo("logged out");
 		$this->BeAuth->logout() ;
 	}
 
@@ -97,6 +104,12 @@ class AuthenticationsController extends AppController {
 	 	return false;
 	 }
 	
+	 private function loginEvent($level, $user, $msg) {
+		$event = array('EventLog'=>array("level"=>$level, 
+			"user"=>$user,"msg"=>$msg));
+		$this->EventLog->save($event);
+	}
+	 
 
 }
 

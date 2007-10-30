@@ -7,6 +7,6 @@
 <body>
 {include file="head.tpl"}
 <div id="centralPage">
-	{include file="submenu.tpl" method="groups"}
-	{include file="form_events.tpl" method="groups"}
+	{include file="submenu.tpl" method="systemInfo"}
+	{include file="form_info.tpl" method="systemInfo"}
 </div>

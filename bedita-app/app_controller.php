@@ -8,6 +8,7 @@ class AppController extends Controller
 {
 	var $helpers 	= array("Javascript", "Html", "Bevalidation", "Form", "Tr");
 	var $components = array('BeAuth', 'BePermissionModule');
+	var $uses = array('EventLog') ;
 	
 	/**
 	 * tipologie di esito operazione e esisto dell'operazione
@@ -15,8 +16,8 @@ class AppController extends Controller
 	 */
 	static $OK 		= 'OK' ;
 	static $ERROR 	= 'ERROR' ;
-	
-	var $esito 		= 'OK' ;
+		
+	protected $esito 		= 'OK' ;
 	
 	/////////////////////////////////		
 	/////////////////////////////////		
@@ -87,6 +88,22 @@ class AppController extends Controller
 		$this->pageTitle = __($this->name, true);
 		
 		$this->set('conf', $conf) ;
+	}
+
+	protected function eventLog($level, $msg) {
+		$event = array('EventLog'=>array("level"=>$level, 
+			"user"=>$this->BeAuth->user["userid"], "msg"=>$msg));
+		$this->EventLog->save($event);
+	}
+	
+	protected function eventInfo($msg) {
+		return $this->eventLog('info', $msg);
+	}
+	protected function eventWarn($msg) {
+		return $this->eventLog('warn', $msg);
+	}
+	protected function eventError($msg) {
+		return $this->eventLog('err', $msg);
 	}
 	
 	/**

@@ -3,6 +3,7 @@
 {$javascript->link("interface")}
 {$javascript->link("form")}
 {$javascript->link("jquery.changealert")}
+{$javascript->link("module.admin")}
 </head>
 <body>
 {include file="head.tpl"}

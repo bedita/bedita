@@ -66,7 +66,18 @@ DROP TABLE IF EXISTS `permission_modules`;
 DROP TABLE IF EXISTS `modules`;
 DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `groups`;
+DROP TABLE IF EXISTS `event_logs`;
 
+CREATE TABLE `event_logs` (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  user VARCHAR(32) NOT NULL,
+  created datetime NOT NULL,
+  msg VARCHAR(100) NOT NULL,
+  level set('debug','info','warn','err') NOT NULL default 'info',
+  PRIMARY KEY  (id),
+  KEY user_idx (user),
+  KEY date_idx (created)
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE groups (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,

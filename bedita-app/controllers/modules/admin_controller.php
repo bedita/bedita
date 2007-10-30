@@ -17,7 +17,6 @@
  * Administration: users, groups, eventlogs....
  */
 class AdminController extends AppController {
-	var $name = 'Admin';
 
 	 var $uses = array('User', 'Group') ;
 
@@ -25,6 +24,7 @@ class AdminController extends AppController {
 	 * show users
 	 */
 	 function index() { 	
+	 	
 		$users = $this->User->findAll() ;
 		$this->set('users', 		$users);
 	 }
@@ -40,16 +40,20 @@ class AdminController extends AppController {
 
 		if(!isset($this->data['User']['id'])) {
 			$this->BeAuth->createUser($this->data, $userGroups);
+			$this->eventInfo("user ".$this->data['User']['userid']." created");
+			
 		} else {
 			if(isset($this->data['User']['passwd-new']))
 				$this->data['User']['passwd'] = $this->data['User']['passwd-new'];
 			$this->BeAuth->updateUser($this->data, $userGroups);
+			$this->eventInfo("user ".$this->data['User']['userid']." updated");
 		}
 	 }
 	 
 	 function removeUser($userid) {
 	 	if(isset($userid)) {
-	 		$this->BeAuth->removeUser($userid); ;
+	 		$this->BeAuth->removeUser($userid);
+	 		$this->eventInfo("user ".$userid." deleted");
 	 	}
 	  }
 
@@ -98,20 +102,23 @@ class AdminController extends AppController {
 	  function saveGroup() {
 		if(!isset($this->data['Group']['id'])) {
 			$this->Group->save($this->data);
+			$this->eventInfo("group ".$this->data['Group']['name']." created");
 		} else {
 			$this->Group->save($this->data);
+			$this->eventInfo("group ".$this->data['Group']['name']." update");
 		}
 	  }
 	  
 	  function removeGroup($id) {
 	  	$this->Group->del($id);
+		$this->eventInfo("group ".$this->data['Group']['name']." deleted");
 	  }
 
 	  /**
-	 * show events
+	 * show system Info
 	 */
-	 function events() { 	
-		$this->set('events', array());
+	 public function systemInfo() { 	
+		$this->set('events', $this->EventLog->findAll(NULL, NULL, 'created DESC'));
 	 }
 	 
 	 function _REDIRECT($action, $esito) {

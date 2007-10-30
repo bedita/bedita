@@ -21,10 +21,10 @@
 		<tr>
 		 	{if isset($user)}
 			<td>{t}New password{/t}</td>
-			<td><input type="password" name="data[User][passwd-new]" value=""/>&nbsp;</td>
+			<td><input type="password" name="data[User][passwd-new]" value="" id="newPass"/>&nbsp;</td>
 		 	{else}
 			<td>{t}Password{/t}</td>
-			<td><input type="password" name="data[User][passwd]" value=""/>&nbsp;</td>
+			<td><input type="password" name="data[User][passwd]" value="" id="newPass"/>&nbsp;</td>
 			{/if}
 		</tr>
 		<tr>
@@ -45,7 +45,9 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input type="submit" name="save" class="submit" value="{if isset($user)}{t}Modify{/t}{else}{t}Create{/t}{/if}" />
+				<input type="submit" name="save" class="submit" 
+				onclick="setRulesNewUser(); if(!checkOnSubmit('userForm',rulesUser)) return false;"
+				value="{if isset($user)}{t}Modify{/t}{else}{t}Create{/t}{/if}" />
 			</td> 
 		</tr>
   		</tbody>

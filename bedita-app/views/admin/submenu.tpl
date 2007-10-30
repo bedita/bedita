@@ -6,7 +6,7 @@
 				<li {if $method eq 'index'}class="on"{/if}> <b>&#8250;</b> {$tr->link('Users list', '/admin')}</li>
 				<li {if $method eq 'viewUser'}class="on"{/if}> <b>&#8250;</b> {$tr->link('Manage user', '/admin/viewUser')}</li>
 				<li {if $method eq 'groups'}class="on"{/if}>	<b>&#8250;</b> {$tr->link('Groups', '/admin/groups')}</li>
-				<li {if $method eq 'events'}class="on"{/if}>	<b>&#8250;</b> {$tr->link('System events', '/admin/events')}</li>
+				<li {if $method eq 'systemInfo'}class="on"{/if}>	<b>&#8250;</b> {$tr->link('System Info', '/admin/systemInfo')}</li>
 			</ul>
 			<hr/>
 		</div>
