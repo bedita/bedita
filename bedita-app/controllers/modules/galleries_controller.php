@@ -16,7 +16,7 @@
 
 class GalleriesController extends AppController {
 	var $name = 'Galleries';
-	var $helpers 	= array('Bevalidation', 'BeTree', 'BeToolbar');
+	var $helpers 	= array('Beurl', 'Bevalidation', 'BeTree', 'BeToolbar');
 	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText');
 	var $uses = array('Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Gallery', 'Tree');
 
@@ -40,6 +40,9 @@ class GalleriesController extends AppController {
 	public function delete($id = null, $order = "", $dir = true, $page = 1, $dim = 10) {
 	 	$this->deleteGallery($id);
 	 	$this->loadGalleries(null,$order,$dir,$page,$dim);
+		// redirect
+		$this->params['action'] = 'index';
+		$this->params['url']['url'] = $this->params['controller'] . '/' . $this->params['action'];
 	}
 
 	/**
@@ -149,5 +152,6 @@ class GalleriesController extends AppController {
 			$this->set('msgOk','Item deleted correctly');
 		else
 			$this->set('msgErr','Item to delete not found');
+		
 	}
 }
