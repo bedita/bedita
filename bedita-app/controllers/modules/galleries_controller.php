@@ -40,9 +40,6 @@ class GalleriesController extends AppController {
 	public function delete($id = null, $order = "", $dir = true, $page = 1, $dim = 10) {
 	 	$this->deleteGallery($id);
 	 	$this->loadGalleries(null,$order,$dir,$page,$dim);
-		// redirect
-		$this->params['action'] = 'index';
-		$this->params['url']['url'] = $this->params['controller'] . '/' . $this->params['action'];
 	}
 
 	/**
@@ -87,7 +84,6 @@ class GalleriesController extends AppController {
 		$idGallery = ($id == null) ? 0 : $id;
 		$children = $this->BeTree->getDiscendents($idGallery, null, $conf->objectTypes['image'], false, null, 1, 100);
 		$imagesForGallery = (isset($children['items'])) ? $children['items'] : array();
-//		$galleryImages =
 		$this->set('object',	$obj);
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);
@@ -152,6 +148,18 @@ class GalleriesController extends AppController {
 			$this->set('msgOk','Item deleted correctly');
 		else
 			$this->set('msgErr','Item to delete not found');
-		
 	}
+	
+	function _REDIRECT($action, $esito) {
+	 	$REDIRECT = array("save"	=> 	array(
+							"OK"	=> "./view/{$this->Gallery->id}",
+							"ERROR"	=> "./view/{$this->Gallery->id}" 
+						),"delete"	=> 	array(
+							"OK"	=> "./",
+							"ERROR"	=> "./view/{@$this->params['pass'][0]}" 
+						) 
+		);
+	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito];
+	 	return false;
+	 }
 }
