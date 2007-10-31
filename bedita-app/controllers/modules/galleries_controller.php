@@ -84,7 +84,7 @@ class GalleriesController extends AppController {
 		$idGallery = ($id == null) ? 0 : $id;
 		$children = $this->BeTree->getDiscendents($idGallery, null, $conf->objectTypes['image'], false, null, 1, 100);
 		$imagesForGallery = (isset($children['items'])) ? $children['items'] : array();
-		$galleryImages =
+//		$galleryImages =
 		$this->set('object',	$obj);
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);
@@ -135,14 +135,19 @@ class GalleriesController extends AppController {
 	}
 
 	private function deleteGallery($id) {
+		$result = null;
 	 	try {
 		 	if(empty($id)) throw BEditaActionException($this,__("No data", true));
 	 		$this->Transaction->begin();
-	 		if(!$this->Gallery->delete($id)) throw new BEditaActionException($this, sprintf(__("Error deleting gallery: %d", true), $id));
+			$result = $this->Gallery->delete($id);
 		 	$this->Transaction->commit();
 	 	} catch (Exception $e) {
 			$this->Session->setFlash($e->getMessage());
 			$this->Transaction->rollback();
 		}
+		if(!empty($result))
+			$this->set('msgOk','Item deleted correctly');
+		else
+			$this->set('msgErr','Item to delete not found');
 	}
 }

@@ -136,3 +136,12 @@ msgstr "Valido"
 
 msgid "Last login"
 msgstr "Ultimo login"
+
+msgid "Item deleted correctly"
+msgstr "Elemento eliminato correttamente"
+
+msgid "Item to delete not found"
+msgstr "Elemento da eliminare non trovato"
+
+msgid "Are you sure that you want to delete the gallery?"
+msgstr "Sei sicuro di voler eliminare la galleria?"

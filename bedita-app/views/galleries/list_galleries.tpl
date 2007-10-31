@@ -6,11 +6,21 @@ $(document).ready(function(){
 		document.location = $("A", this).attr('href') ;
 	} );
 });
+
+function localConfirm(anchorElem,url) {
+	var msg = "{/literal}{t}Are you sure that you want to delete the gallery?{/t}{literal}";
+	var confirmed = confirm(msg);
+	anchorElem.href = (confirmed) ? url : "#";
+}
 {/literal}
 //-->
 </script>
 
 <div id="containerPage">
+	
+	{if !empty($msgOk)}<div id="msgOk" style="background-color:#FFF;border:solid green 1px;">{t}{$msgOk}{/t}</div>{/if}
+	{if !empty($msgErr)}<div id="msgError" style="background-color:#FFF;border:solid red 1px;">{t}{$msgErr}{/t}</div>{/if}
+	
 	<div id="listAree">
 	{$beTree->tree("tree", $tree)}
 	</div>
@@ -42,7 +52,7 @@ $(document).ready(function(){
 		<td>{$galleries[i].status}</td>
 		<td>{$galleries[i].created|date_format:$conf->date_format}</td>
 		<td>{$galleries[i].lang}</td>
-		<td><a href="{$html->url('delete/')}{$galleries[i].id}">{t}Delete{/t}</a></td>
+		<td><a href="javascript:;" onclick="javascript:localConfirm(this,'{$html->url('delete/')}{$galleries[i].id}');">{t}Delete{/t}</a></td>
 	</tr>
 	{/section}
 	</tbody>
