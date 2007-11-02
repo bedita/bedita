@@ -254,3 +254,10 @@ TABLE.indexList TR.rowList:hover {background-color:red;}
 .subtitle  { height: 50px !important; width: 410px !important; }
 
 /* END -- Form dettaglio object */
+
+/* BEGIN -- Box Image */
+
+div.imageBox { background-color:#DDD;float:left;width:150px;height:220px;border: solid #000 1px;padding:2px 2px 2px 2px }
+div.imageBoxFirst { background-color:#FFF;float:left;width:150px;height:220px;border: solid #000 1px;padding:2px 2px 2px 2px }
+
+/* END -- Box Image */

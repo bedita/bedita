@@ -18,7 +18,7 @@ class GalleriesController extends AppController {
 	var $name = 'Galleries';
 	var $helpers 	= array('Beurl', 'Bevalidation', 'BeTree', 'BeToolbar');
 	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText');
-	var $uses = array('Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Gallery', 'Tree');
+	var $uses = array('Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Gallery', 'Tree', 'Image');
 
 	/**
 	 * Public methods for the controller
@@ -79,16 +79,24 @@ class GalleriesController extends AppController {
 		$tree = $this->BeTree->getSectionsTree();
 		$parents_id = isset($id) ? $this->Tree->getParent($id) : 0;
 		if(!is_array($parents_id)) $parents_id = array($parents_id);
-		$children = $this->BeTree->getDiscendents(null, null, $conf->objectTypes['image'], false, null, 1, 100);
-		$imagesAll = (isset($children['items'])) ? $children['items'] : array();
 		$idGallery = ($id == null) ? 0 : $id;
 		$children = $this->BeTree->getDiscendents($idGallery, null, $conf->objectTypes['image'], false, null, 1, 100);
 		$imagesForGallery = (isset($children['items'])) ? $children['items'] : array();
+		$images = array();
+		foreach($imagesForGallery as $index => $image) {
+			$this->Image->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments');
+			$imageDetails = $this->Image->findById($image['id']);
+			$imageDetails['priority'] = $image['priority'];
+			$images[$index]=$imageDetails;
+		}
+//		echo "<pre>";
+//		print_r($images);
+//		echo "</pre>";
+//		die();
 		$this->set('object',	$obj);
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);
-		$this->set('images',	$imagesAll);
-		$this->set('imagesForGallery',	$imagesForGallery);
+		$this->set('images',	$images);
 		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) ));
 		$this->set('self',		($this->createSelfURL(false)."?"));
 		$this->set('conf',		$conf);

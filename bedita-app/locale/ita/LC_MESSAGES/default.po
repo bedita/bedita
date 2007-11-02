@@ -107,8 +107,8 @@ msgstr "Espandi tutti"
 msgid "Images of the gallery"
 msgstr "Immagini della galleria"
 
-msgid "Add image to the gallery"
-msgstr "Aggiungi immagine alla galleria"
+msgid "Add image"
+msgstr "Aggiungi immagine"
 
 msgid "Available images"
 msgstr "Immagini disponibili"
@@ -145,3 +145,9 @@ msgstr "Elemento da eliminare non trovato"
 
 msgid "Are you sure that you want to delete the gallery?"
 msgstr "Sei sicuro di voler eliminare la galleria?"
+
+msgid "New Item"
+msgstr "Nuovo Elemento"
+
+msgid "Size"
+msgstr "Dimensione"
