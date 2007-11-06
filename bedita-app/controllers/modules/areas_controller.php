@@ -342,8 +342,8 @@ class AreasController extends AppController {
 		unset($IDs) ;
 	 }
 
-	 function _REDIRECT($action, $esito) {
-	 	$REDIRECT = array(
+	 protected function forward($action, $esito) {
+	 	 	$REDIRECT = array(
 	 			"saveTree"	=> 	array(
 	 									"OK"	=> "./",
 	 									"ERROR"	=> "./" 

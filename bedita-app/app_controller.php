@@ -2,29 +2,39 @@
 
 uses('L10n');
 
-	
-
 class AppController extends Controller
 {
 	var $helpers 	= array("Javascript", "Html", "Bevalidation", "Form", "Tr");
-	var $components = array('BeAuth', 'BePermissionModule');
+	var $components = array('BeAuth', 'BePermissionModule','Transaction');
 	var $uses = array('EventLog') ;
 	
 	/**
 	 * tipologie di esito operazione e esisto dell'operazione
 	 *
 	 */
-	static $OK 		= 'OK' ;
-	static $ERROR 	= 'ERROR' ;
-		
-	protected $esito 		= 'OK' ;
+	const OK 		= 'OK' ;
+	const ERROR 	= 'ERROR' ;
+	const VIEW_FWD = 'view://'; // 
+	
+	public $result 		= 'OK' ;
 	
 	/////////////////////////////////		
 	/////////////////////////////////		
 
-	function handleExceptions($ex) {
+	public function handleExceptions($ex) {
+		// TODO: aggiungere stack trace e altre info nel log su file
 		$this->log($ex->getMessage());
+		$this->eventError($ex->getMessage());
+		// end transactions if necessary
+		if(isset($this->Transaction)) {
+			if($this->Transaction->started())
+				$this->Transaction->rollback();
+		}
 		$this->Session->setFlash(__($ex->getMessage(), true));
+	}
+	
+	public function setResult($r) {
+		$this->result=$r;
 	}
 	
 	function beforeFilter() {
@@ -35,7 +45,7 @@ class AppController extends Controller
 		// preleva, per il template, i dati di configurazione
 	 	$this->setupCommonData() ;
 	 	
-	 	// Non genera automaticamente l'output, per far eseguire prima afterFilter
+	 	// don't generate output, done in afterFilter
 	 	$this->autoRender = false ;
 	 	
 	 	// Se viene richiesto il login esce
@@ -62,19 +72,29 @@ class AppController extends Controller
 	 */
 	function afterFilter() {
 		if($this->autoRender) return ;
-				
-		if(isset($this->data[$this->esito])) {
-			$this->redirect($this->data[$this->esito]);
+
+		if(isset($this->data[$this->result])) {
+			$this->redirUrl($this->data[$this->result]);
 		
-		} elseif ($URL = $this->_REDIRECT($this->action, $this->esito)) {
-			$this->redirect($URL);
+		} elseif ($URL = $this->forward($this->action, $this->result)) {
+			$this->redirUrl($URL);
 		
 		} else {
 			$this->output = $this->render($this->action);
 		}
+		
 	}
 	
-	function _REDIRECT($action, $esito) {	return false ; }
+	private function redirUrl($url) {
+		if(strpos($url, self::VIEW_FWD) === 0) {
+			$this->action=substr($url, strlen(self::VIEW_FWD));
+			$this->output = $this->render($this->action);
+		} else {
+			$this->redirect($url);
+		}
+	}
+	
+	protected function forward($action, $outcome) {	return false ; }
 	
 	/**
 	 * Setta i dati utilizzabili nelle diverse pagine.
@@ -92,7 +112,7 @@ class AppController extends Controller
 
 	protected function eventLog($level, $msg) {
 		$event = array('EventLog'=>array("level"=>$level, 
-			"user"=>$this->BeAuth->user["userid"], "msg"=>$msg));
+			"user"=>$this->BeAuth->user["userid"], "msg"=>$msg, "context"=>strtolower($this->name)));
 		$this->EventLog->save($event);
 	}
 	
@@ -219,7 +239,7 @@ class BEditaActionException extends Exception
 	public function __construct(&$ctrl, $message, $code  = 0) {
         // some code
    		$this->controller=$ctrl;
-   		$this->controller->esito = AppController::$ERROR;
+   		$this->controller->setResult(AppController::ERROR);
         
         // make sure everything is assigned properly
         parent::__construct($message, $code);

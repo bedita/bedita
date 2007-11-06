@@ -37,24 +37,24 @@ class AuthenticationsController extends AppController {
 		if(!$this->BeAuth->login($userid, $password)) {
 			$this-> loginEvent('warn', $userid, "login not authorized");
 			$this->Session->setFlash(__("Wrong username/password or no authorization", true));
-			$this->esito='ERROR';
+			$this->result=self::ERROR;
 		}
 
 		if(!$this->BeAuth->isValid) {
 			$this-> loginEvent('warn', $userid, "login blocked");
 			$this->Session->setFlash(__("User login temporary blocked", true));
-			$this->esito='ERROR';
+			$this->result=self::ERROR;
 		}
 		
 		if($this->BeAuth->changePasswd) {
 			$this-> loginEvent('info', $userid, "change password");
 			$this->set("user", $this->BeAuth->user);
-			$this->esito='PWD';
+			$this->result='PWD';
 			
 			return ;
 		}
 		
-		if($this->esito == "OK")
+		if($this->result == "OK")
 			$this->eventInfo("logged in");
 		
 		// Setup del redirect
@@ -69,7 +69,7 @@ class AuthenticationsController extends AppController {
 		
 		if(!$this->BeAuth->changePasswd($userid, $password)) {
 			$this->Session->setFlash(__("Error changing password", true));
-			$this->esito='ERROR';
+			$this->result=self::ERROR;
 		}
    }
    
@@ -82,7 +82,7 @@ class AuthenticationsController extends AppController {
 	}
 
 	
-	 function _REDIRECT($action, $esito) {
+	 protected function forward($action, $esito) {
 	 	$REDIRECT = array(
 	 			"logout"	=> 	array(
 	 									"OK"	=> "/",
@@ -103,10 +103,11 @@ class AuthenticationsController extends AppController {
 	 	
 	 	return false;
 	 }
+	 
 	
 	 private function loginEvent($level, $user, $msg) {
 		$event = array('EventLog'=>array("level"=>$level, 
-			"user"=>$user,"msg"=>$msg));
+			"user"=>$user,"msg"=>$msg, "context"=>strtolower($this->name)));
 		$this->EventLog->save($event);
 	}
 	 

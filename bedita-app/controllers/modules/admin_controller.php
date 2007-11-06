@@ -18,7 +18,7 @@
  */
 class AdminController extends AppController {
 
-	 var $uses = array('User', 'Group') ;
+	 var $uses = array('User', 'Group','Module') ;
 
 	/**
 	 * show users
@@ -43,8 +43,9 @@ class AdminController extends AppController {
 			$this->eventInfo("user ".$this->data['User']['userid']." created");
 			
 		} else {
-			if(isset($this->data['User']['passwd-new']))
-				$this->data['User']['passwd'] = $this->data['User']['passwd-new'];
+			$pass = $this->data['User']['passwd']; 
+			if($pass === null || strlen(trim($pass)) < 1 )
+				unset($this->data['User']['passwd']);
 			$this->BeAuth->updateUser($this->data, $userGroups);
 			$this->eventInfo("user ".$this->data['User']['userid']." updated");
 		}
@@ -91,27 +92,66 @@ class AdminController extends AppController {
 		$groups = $this->Group->findAll() ;
 		$this->set('groups', 	$groups);
 		$this->set('group',  NULL);
+		$this->set('modules', $this->allModulesWithFlag());
 	 }
 	 
 	  function viewGroup($id) {
-		$this->action = 'groups';
 	  	$this->set('groups', $this->Group->findAll());
 		$this->set('group', $this->Group->findById($id));
+		
+		$modules = $this->allModulesWithFlag();
+		$permsMod = $this->BePermissionModule->getPermissionModulesForGroup($id);
+		foreach ($permsMod as $p) {
+			$modId = $p['PermissionModule']['module_id'];
+			foreach ($modules as &$mod) {
+				if($mod['Module']['id'] === $modId)
+					$mod['Module']['flag'] = $p['PermissionModule']['flag'];
+			}
+		}
+		$this->set('modules', $modules);
 	  }
 	 
+	  private function allModulesWithFlag() {
+		$modules = $this->Module->findAll();
+		foreach ($modules as &$mod) 
+			$mod['Module']['flag'] = 0;
+	  	return $modules;
+	  }
+	  
 	  function saveGroup() {
-		if(!isset($this->data['Group']['id'])) {
+
+	  	$this->Transaction->begin();
+	  	$groupId = NULL;
+	  	if(!isset($this->data['Group']['id'])) {
 			$this->Group->save($this->data);
+			$groupId = $this->Group->getLastInsertID();
 			$this->eventInfo("group ".$this->data['Group']['name']." created");
 		} else {
 			$this->Group->save($this->data);
+			$groupId = $this->Group->getID();
 			$this->eventInfo("group ".$this->data['Group']['name']." update");
 		}
+	  	if(isset($this->data['Module'])) {
+	  		$moduleFlags=array();
+	  		foreach ($this->data['Module'] as $key=>$val) {
+	  			$flag = 0;
+				foreach ($val as $flagVal) 
+					$flag += $flagVal;
+				$moduleFlags[$key]=$flagVal;
+	  		}
+	  		$this->BePermissionModule->updateGroupPermission($groupId, $moduleFlags);
+	  	}
+	  	$this->Transaction->end();
 	  }
 	  
 	  function removeGroup($id) {
-	  	$this->Group->del($id);
-		$this->eventInfo("group ".$this->data['Group']['name']." deleted");
+	  	$groupName="";
+	  	$g = $this->Group->findById($id);
+	  	if(isset($g)) {
+	  		$groupName=$g['Group']['name'];
+	  	}
+	  	$this->BeAuth->removeGroup($groupName);
+		$this->eventInfo("group ".$groupName." deleted");
 	  }
 
 	  /**
@@ -121,9 +161,13 @@ class AdminController extends AppController {
 		$this->set('events', $this->EventLog->findAll(NULL, NULL, 'created DESC'));
 	 }
 	 
-	 function _REDIRECT($action, $esito) {
-	 	$REDIRECT = array(
- 				"saveUser" => 	array(
+	 protected function forward($action, $esito) {
+	 	 	$REDIRECT = array(
+				"viewGroup" => 	array(
+ 								"OK"	=> self::VIEW_FWD.'groups',
+	 							"ERROR"	=> self::VIEW_FWD.'groups'
+	 						),
+	 	 		"saveUser" => 	array(
  								"OK"	=> "/admin/index",
 	 							"ERROR"	=> "/admin/viewUser" 
 	 						),

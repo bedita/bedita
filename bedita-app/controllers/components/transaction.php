@@ -9,7 +9,12 @@ class TransactionComponent extends Object {
 	
 	private static $dbConfig	= 'default' ;
 	private static $db			= null ;
-	private static $transFS		= null ;
+	private static $transFS		= null;
+	const INIT=0;
+	const START=10;
+	const ROLLBACK=20;
+	const COMMIT=30;
+	private $status = NULL;
 	
 	function __construct($dbConfigName = 'default', $pathTmp = '/tmp') {
 		$this->init($dbConfigName, $pathTmp) ;
@@ -22,10 +27,13 @@ class TransactionComponent extends Object {
 		self::$dbConfig 		= (isset($dbConfigName))?$dbConfigName:'default' ;
 		self::$transFS->tmpPath = $pathTmp ;
 		
-		
 		$this->setupDB() ;
+		$this->status = self::INIT;
 		
-		
+	}
+
+	public function started() {
+		return ($this->status === self::START);
 	}
 
 	/**
@@ -35,13 +43,22 @@ class TransactionComponent extends Object {
 	 */
 	public function begin() {
 		$this->setupDB() ;
-		
 		self::$transFS->begin() ;
 		if(!self::$db->execute('START TRANSACTION')) return false ;
-		
+		$this->status = self::START;
+
 		return true  ;
 	}
 	
+	public function end() {
+		// status should be START, COMMIT or ROLLBACK
+		if($this->status === self::START)
+			return $this->commit();
+		if($this->status === self::COMMIT || $this->status === self::ROLLBACK)
+			return true;
+		else 
+			throw new BeditaComponentException(__("Bad transaction state",true), $this);
+	}
 	/**
 	 * Fine positiva di una transazione
 	 *
@@ -52,6 +69,8 @@ class TransactionComponent extends Object {
 		
 		self::$transFS->commit() ;
 		if(!self::$db->execute('COMMIT')) return false ;
+		$this->status = self::COMMIT;
+		return true;
 	}
 
 	/**
@@ -61,10 +80,11 @@ class TransactionComponent extends Object {
 	 */
 	public function rollback() {
 		$this->setupDB() ;
-		
 		self::$transFS->rollback() ;
 		
 		if(!self::$db->execute('ROLLBACK')) return false ;
+		$this->status = self::ROLLBACK;
+		return true;
 	}
 	
 	//////////////////////////////////////////

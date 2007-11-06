@@ -74,6 +74,7 @@ CREATE TABLE `event_logs` (
   created datetime NOT NULL,
   msg VARCHAR(100) NOT NULL,
   level set('debug','info','warn','err') NOT NULL default 'info',
+  context VARCHAR(32) DEFAULT NULL,
   PRIMARY KEY  (id),
   KEY user_idx (user),
   KEY date_idx (created)

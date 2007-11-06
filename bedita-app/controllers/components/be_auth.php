@@ -280,11 +280,13 @@ class BeAuthComponent extends Object {
 	function removeGroup($groupName) {
 		$config =& Configure::getInstance();
 		if (in_array($groupName, $config->basicGroups)) {
-			throw new BeditaComponentException(__("Immutable group",true), $this);
+			throw new BeditaComponentException(sprintf(__("Immutable group %s", true),$groupName), $this);
 		}
 		$groupModel = new Group();
 		$g =  $groupModel->findByName($groupName);
-		return $groupModel->del($g['Group']['id']);
+		if(!$groupModel->del($g['Group']['id'])) {
+			throw new BeditaComponentException(__("Error removing group",true), $this);
+		}
 	}
 	
 	function editGroup($groupData) {

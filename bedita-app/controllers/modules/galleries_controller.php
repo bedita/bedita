@@ -158,8 +158,8 @@ class GalleriesController extends AppController {
 			$this->set('msgErr','Item to delete not found');
 	}
 	
-	function _REDIRECT($action, $esito) {
-	 	$REDIRECT = array("save"	=> 	array(
+	 protected function forward($action, $esito) {
+		 	$REDIRECT = array("save"	=> 	array(
 							"OK"	=> "./view/{$this->Gallery->id}",
 							"ERROR"	=> "./view/{$this->Gallery->id}" 
 						),"delete"	=> 	array(

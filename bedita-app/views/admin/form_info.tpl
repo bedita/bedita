@@ -6,6 +6,7 @@
 				<th>{t}Level{/t}</th>
 				<th>{t}User{/t}</th>
 				<th>{t}Msg{/t}</th>
+				<th>{t}Context{/t}</th>
 				</tr>
 		</thead>
 		<tbody>
@@ -15,6 +16,7 @@
 			<td><em>{$e.EventLog.level}</em></td>
 			<td>{$e.EventLog.user}</td>
 			<td>{$e.EventLog.msg}</td>
+			<td>{$e.EventLog.context}</td>
 		</tr>
 		{/foreach}
 		</table>

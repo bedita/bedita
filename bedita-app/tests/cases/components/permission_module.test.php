@@ -1,35 +1,21 @@
 <?php 
 /**
- * 
- * Short description for file.
- *
- * Long description for file
- *
- * PHP versions 4 and 5
-
- *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
- *
- * @author giangi@qwerg.com
+  * @author giangi@qwerg.com
  * 
  * Verifica il componente Permission
  * 
  */
 
-include_once(dirname(__FILE__) . DS . 'permissionModule.data.php') ;
+require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
-
-class PermissionModuleTestCase extends CakeTestCase {
+class PermissionModuleTestCase extends BeditaTestCase {
 	
     var $fixtures 	= array( 'area_test' );
- 	var $uses		= array() ;
+ 	var $uses		= array('Group') ;
  	var $components	= array('Transaction', 'BePermissionModule') ;
     var $dataSource	= 'test' ;
- 	
-    var $data		= null ;
 
-	////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////
 
 	function testAddSingleModule() {	
 		$this->Transaction->begin() ;
@@ -154,7 +140,26 @@ class PermissionModuleTestCase extends CakeTestCase {
 
 		$this->Transaction->rollback() ;
 	} 
-	
+
+	function testUpdateGroupPermissions() {	
+		$this->Transaction->begin();
+		
+		$groupName = $this->data['updateGroupName'];
+		$g = $this->Group->findByName($groupName);
+		$groupId = $g['Group']['id'];
+		$moduleFlags = $this->data['updateGroupModules'];
+		
+		$this->BePermissionModule->updateGroupPermission($groupId, $moduleFlags);
+		
+		pr("Verifica permessi inseriti \n");
+		pr($moduleFlags);
+		foreach ($moduleFlags as $k=>$v) {
+			$this->assertEqual($this->BePermissionModule->verifyGroup($k, $groupName, $v), true);
+		}
+		
+		$this->Transaction->rollback() ;
+	} 
+		
 	function testGetListModuleReadableByUserid() {	
 		$this->Transaction->begin() ;
 		
@@ -195,129 +200,8 @@ pr($ret);
 
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
-	
-	function startCase() {
-		echo '<h1>Creazione, gestione, cancellazione permessi sui moduli Case</h1>';
-	}
-
-	function endCase() {
-		echo '<h1>Ending Test Case</h1>';
-	}
-
-	function startTest($method) {
-		echo '<h3>Starting method ' . $method . '</h3>';
-	}
-
-	function endTest($method) {
-		echo '<hr />';
-	}
-
-	/**
- 	* Loads and instantiates models required by this controller.
- 	* If Controller::persistModel; is true, controller will create cached model instances on first request,
- 	* additional request will used cached models
- 	*
- 	*/
 	public   function __construct () {
-		parent::__construct() ;
-		
-		// Carica i dati d'esempio
-		$PermissionData = &new PermissionModuleData() ;
-		$this->data		= $PermissionData->getData() ;
-
-		// Cambia il dataSource di default
-		if(isset($this->dataSource)) $this->setDefaultDataSource($this->dataSource) ;
-
-		// Carica i Models
-		if ($this->uses) {
-			if($this->uses === null || ($this->uses === array())){
-				return ;
-			}
-
-			$uses = is_array($this->uses) ? $this->uses : array($this->uses);
-
-			foreach($uses as $modelClass) {
-				$modelKey = Inflector::underscore($modelClass);
-
-				if(!class_exists($modelClass)){
-					loadModel($modelClass);
-				}
-
-				if (class_exists($modelClass)) {
-						$model =& new $modelClass();
-						$this->modelNames[] = $modelClass;
-						$this->{$modelClass} =& $model;
-				} else {
-					echo "Missing Model: $modelClass" ;
-					return ;
-				}
-			}
-		}
-		
-		// carica i components
-		if ($this->components) {
-			if($this->components === null || ($this->components === array())){
-				return ;
-			}
-
-			$components = is_array($this->components) ? $this->components : array($this->components);
-
-			foreach($components as $componentClass) {
-				loadComponent($componentClass);
-				
-				$className = $componentClass . 'Component' ;
-				if (class_exists($className)) {
-						$component =& new $className();
-						$this->{$componentClass} =& $component;
-				} else {
-					echo "Missing Component: $className" ;
-					return ;
-				}
-			}
-		}
-		
-	}
-
-	/**
- 	* Cambio il data source di default
- 	*/
-	protected function setDefaultDataSource($name) {		
-		$_this =& ConnectionManager::getInstance();
-
-		if (in_array($name, array_keys($_this->_dataSources))) {
-			return $_this->_dataSources[$name];
-		}
-
-		$connections = $_this->enumConnectionObjects();
-		if (in_array($name, array_keys($connections))) {
-			$conn = $connections[$name];
-			$class = $conn['classname'];
-			$_this->loadDataSource($name);
-			
-			$this->_originalDefaultDB = &$_this->_dataSources['default'] ;
-			
-			$_this->_dataSources['default'] =& new $class($_this->config->{$name});
-			$_this->_dataSources['default']->configKeyName = $name;
-		} else {
-			trigger_error(sprintf(__("ConnectionManager::getDataSource - Non-existent data source %s", true), $name), E_USER_ERROR);
-			return null;
-		}
-
-		return $_this->_dataSources['default'];		
-	}
-
-	/**
- 	* Resetta data source di default
- 	*/
-	protected function resetDefaultDataSource($name) {
-		
-		if(!isset($this->_originalDefaultDB)) return ;
-		$_this->_dataSources['default'] = &$this->_originalDefaultDB  ;
-		
-		unset($this->_originalDefaultDB);
-		
-		return $_this->_dataSources['default'];
-	}
-	
+		parent::__construct('PermissionModule', dirname(__FILE__)) ;
+	}		
 }
 ?> 

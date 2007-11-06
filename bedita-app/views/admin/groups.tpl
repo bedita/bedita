@@ -2,7 +2,9 @@
 {$javascript->link("jquery.treeview.pack")}
 {$javascript->link("interface")}
 {$javascript->link("form")}
+{$javascript->link("jquery.form")}
 {$javascript->link("jquery.changealert")}
+{$javascript->link("jquery.validate")}
 </head>
 <body>
 {include file="head.tpl"}

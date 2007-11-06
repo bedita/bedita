@@ -1,3 +1,21 @@
+<script type="text/javascript">
+{literal}
+$(document).ready(function(){
+	validateFrm = $("#groupForm").validate({
+		errorLabelContainer: $("#errorForm"),
+		rules: {
+			"data[Group][name]"		: "required"
+		},
+		messages: {
+{/literal}
+			"data[Group][name]"		: "{t}group name required{/t}"
+{literal}
+		}
+	});
+});
+{/literal}
+</script>
+
 <div id="containerPage">
 	<div class="FormPageHeader"><h1>{t}Groups admin{/t}</h1></div>
 	<div id="mainForm">
@@ -31,16 +49,41 @@
 		</table>
 				
 		<h2 class="showHideBlockButton">{t}Group properties{/t}</h2>
+			
+		<div class="blockForm" id="errorForm"></div>
 		
 		<div id="groupForm">
-			<table border="0" cellspacing="8" cellpadding="0">
-			<tr>
+			<fieldset>
 				 	{if isset($group)}
 					<input type="hidden" name="data[Group][id]" value="{$group.Group.id}"/>
 					{/if}
-					<td>{t}Name{/t}</td>
-					<td><input type="text" name="data[Group][name]" value="{$group.Group.name}"/>&nbsp;</td>
-			</tr>
+					<p>{t}Name{/t} &nbsp; <input type="text" name="data[Group][name]" title="{t}Insert group name{/t}"
+						value="{$group.Group.name}" class="{ldelim}required:true{rdelim}"/>&nbsp;
+					</p>
+			</fieldset>
+			<table class="indexList">
+			<thead><tr>
+						<th>{t}Module{/t}</th>
+						<th>{t}Read{/t}</th>
+						<th>{t}Modify{/t}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$modules item=mod}
+					<tr class="rowList" id="{$mod.Module.id}">
+						<td><input type="text" readonly="readonly" value="" maxlength="6" style="height:20px; background-color:{$mod.Module.color}; width:60px">
+						&nbsp;<b>{$mod.Module.label}</b>
+						</td>
+						<td>
+							<input type="checkbox" name="data[Module][{$mod.Module.label}][read]" value="{$conf->BEDITA_PERMS_READ}" {if ($mod.Module.flag & $conf->BEDITA_PERMS_READ)}checked{/if}/>
+						</td>
+						<td>
+							<input type="checkbox" name="data[Module][{$mod.Module.label}][write]" value="{$conf->BEDITA_PERMS_MODIFY}" {if ($mod.Module.flag & $conf->BEDITA_PERMS_MODIFY)}checked{/if}/>
+						</td>
+					</tr>
+				{/foreach}
+			</tbody>
+			</table>
 			<tr>
 			<td colspan="2">
 				<input type="submit" name="save" class="submit" value="{if isset($group)}{t}Modify{/t}{else}{t}Create group{/t}{/if}" />

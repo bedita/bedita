@@ -11,20 +11,23 @@
  * 
  */
 class BePermissionModuleComponent extends Object {
-	static $SWITCH_USER		= 'user' ;
-	static $SWITCH_GROUP	= 'group' ;
+	const SWITCH_USER		= 'user' ;
+	const SWITCH_GROUP	   = 'group' ;
 	
 	var $controller			= null ;
 	var $Permission 		= null ;
 	
 	var $PermissionModule	= null ;
-	
-	var $uses = array('Module', 'PermissionModule') ;
+	private $groupModel	= null ;
 	
 	function __construct() {
 		if(!class_exists('PermissionModule')) 	loadModel('PermissionModule') ;
+		if(!class_exists('Group')) loadModel('Group') ;
 		
 		$this->PermissionModule = new PermissionModule() ;
+		$this->groupModel = new Group() ;
+		parent::__construct() ;
+		
 	} 
 	
 	
@@ -73,6 +76,28 @@ class BePermissionModuleComponent extends Object {
 		return $modules ;
 	}
 	
+	public function getPermissionModulesForGroup($groupId) {
+		$conditions=array("ugid"=>$groupId, "switch"=>self::SWITCH_GROUP);
+		return $this->PermissionModule->findAll($conditions);
+	}
+
+/**
+ * change module permissions for a group
+ *
+ * @param $groupId
+ * @param $moduleFlags array ('module' => flag,....)
+ */
+	public function updateGroupPermission($groupId, $moduleFlags) {
+		$conditions=array("ugid"=>$groupId, "switch"=>self::SWITCH_GROUP);
+		$this->PermissionModule->deleteAll($conditions);
+	  	
+		$g = $this->groupModel->findById($groupId);
+		$groupName = $g['Group']['name'];
+		foreach ($moduleFlags as $mod=>$flag) {
+			$perms =  array(array($groupName, self::SWITCH_GROUP, $flag));
+			$this->add($mod, $perms);
+		}
+	}
 	
 	/**
 	 * @param object $controller
@@ -228,7 +253,7 @@ class BePermissionModuleComponent extends Object {
 		$arr = array() ;
 		foreach ($perms as $item) {
 			$arr[] = array(
-				(($item['PermissionModule']['switch'] == BePermissionModuleComponent::$SWITCH_USER)? $item['User']['userid'] : $item['Group']['name']),
+				(($item['PermissionModule']['switch'] == BePermissionModuleComponent::SWITCH_USER)? $item['User']['userid'] : $item['Group']['name']),
 				$item['PermissionModule']['switch'],
 				$item['PermissionModule']['flag']
 			) ;

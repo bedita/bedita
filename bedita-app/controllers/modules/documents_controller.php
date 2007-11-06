@@ -242,8 +242,8 @@ exit;
 		unset($IDs) ;
 	 }
 
-	 function _REDIRECT($action, $esito) {
-	 	$REDIRECT = array(
+	 protected function forward($action, $esito) {
+	  	$REDIRECT = array(
 	 			"save"	=> 	array(
 	 									"OK"	=> "./view/{$this->Document->id}",
 	 									"ERROR"	=> "./view/{$this->Document->id}" 
