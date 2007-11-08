@@ -3,7 +3,7 @@
  * @author giangi@qwerg.com
  * 
  * API.
- * Accesse e gesione dell'albero dei contenuti.
+ * Accesse e gestione dell'albero dei contenuti.
  * 
  * I permessi sono espressi in un integer che raprresenta una combinazione 
  * di bit definiti nel file di configurazione (bedita.ini.php):
@@ -82,7 +82,7 @@ class BeTreeComponent extends Object {
 		if(isset($id)) {
 			$objs = &  $this->Tree->getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
 		} else {
-			$objs = &  $this->Object->find($userid, $status, $filter, $order, $dir, $page, $dim) ;
+			$objs = &  $this->Object->findObjs($userid, $status, $filter, $order, $dir, $page, $dim) ;
 		}
 		
 		return  $objs ;
@@ -102,7 +102,7 @@ class BeTreeComponent extends Object {
 		if(isset($id)) {
 			$objs = &  $this->Tree->getDiscendents($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
 		} else {
-			$objs = &  $this->Object->find($userid, $status, $filter, $order, $dir, $page, $dim) ;
+			$objs = &  $this->Object->findObjs($userid, $status, $filter, $order, $dir, $page, $dim) ;
 		}
 		
 		return  $objs ;
