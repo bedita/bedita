@@ -241,7 +241,7 @@ class BEObject extends BEAppModel
 	 * @param integer $page		Numero di pagina da selezionare
 	 * @param integer $dim		Dimensione della pagina
 	 */	
-	function find($userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
+	function findObjs($userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
 		if(!isset($userid)) {
 			$fields 		= " *, prmsUserByID ('{$userid}', id, 15) as perms " ;
 		} else {
@@ -296,7 +296,21 @@ class BEObject extends BEAppModel
 
 		return false;
 	}
-
+	
+	/**
+	 * Torna il nome del Model dell'id passato
+	 *
+	 * @param unknown_type $modelName
+	 */
+	function getType($id) {
+		$conf = Configure::getInstance() ;
+		
+		if(!($obj = $this->findById($id))) return false ;
+		$type_id =  $this->read("object_type_id", $id) ;
+		
+		return $conf->objectTypeModels[$type_id] ;
+	}
+	
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	
