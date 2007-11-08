@@ -35,7 +35,7 @@ class TransactionTestCase extends CakeTestCase {
  							'Bibliography', 'FaqQuestion', 'BiblioItem', 'ObjectUser'
  	) ;
  	var $components	= array('Transaction') ;
-    var $dataSource	= 'default' ;
+    var $dataSource	= 'test' ;
  	
     var $data		= null ;
 
