@@ -257,7 +257,7 @@ TABLE.indexList TR.rowList:hover {background-color:red;}
 
 /* BEGIN -- Box Image */
 
-div.imageBox { background-color:#DDD;float:left;width:150px;height:220px;border: solid #000 1px;padding:2px 2px 2px 2px }
-div.imageBoxFirst { background-color:#FFF;float:left;width:150px;height:220px;border: solid #000 1px;padding:2px 2px 2px 2px }
-
+div.imageBox { background-color:#E9E9E9;border:solid #FFF 1px;float:left;width:178px;height:416px;padding:2px 2px 2px 2px }
+div.imageBoxFirst { background-color:#E9E9E9;border:solid #FFF 1px;float:left;width:178px;height:416px;padding:2px 2px 2px 2px }
+.priority { font-weight:bold;font-size:20px; background-color:#E9E9E9; border: solid #E9E9E9 0px; }
 /* END -- Box Image */

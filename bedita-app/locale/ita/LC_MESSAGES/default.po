@@ -149,5 +149,8 @@ msgstr "Sei sicuro di voler eliminare la galleria?"
 msgid "New Item"
 msgstr "Nuovo Elemento"
 
+msgid "New Image"
+msgstr "Nuova Immagine"
+
 msgid "Size"
 msgstr "Dimensione"

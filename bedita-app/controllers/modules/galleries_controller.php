@@ -16,8 +16,8 @@
 
 class GalleriesController extends AppController {
 	var $name = 'Galleries';
-	var $helpers 	= array('Beurl', 'Bevalidation', 'BeTree', 'BeToolbar');
-	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText');
+	var $helpers 	= array('Beurl', 'BeTree', 'BeToolbar');
+	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
 	var $uses = array('Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Gallery', 'Tree', 'Image');
 	protected $moduleName = 'galleries';
 	
@@ -90,77 +90,59 @@ class GalleriesController extends AppController {
 			$imageDetails['priority'] = $image['priority'];
 			$images[$index]=$imageDetails;
 		}
-//		echo "<pre>";
-//		print_r($images);
-//		echo "</pre>";
-//		die();
 		$this->set('object',	$obj);
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);
 		$this->set('images',	$images);
 		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) ));
 		$this->set('self',		($this->createSelfURL(false)."?"));
-		$this->set('conf',		$conf);
+		$this->set('conf',		$conf);		
+		$this->set('cache_path',CACHE);
 	}
 
 	private function saveGallery($id) {
-		try {
-			if(empty($this->data)) throw new BEditaActionException($this, __("No data", true));
-			$new = (empty($this->data['id'])) ? true : false;
-		 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY))
-		 			throw new BEditaActionException($this, "Error modify permissions");
-		 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]);
-		 	$this->BeLangText->setupForSave($this->data["LangText"]);
-			$this->Transaction->begin();
-		 	if(!$this->Gallery->save($this->data)) throw new BEditaActionException($this, $this->Gallery->validationErrors);
-			if(($parents = $this->Tree->getParent($this->Gallery->id)) !== false) {
-				if(!is_array($parents)) $parents = array($parents);
-			} else {
-				$parents = array();
-			}
-			if(!isset($this->data['destination'])) $this->data['destination'] = array();
-			$remove = array_diff($parents, $this->data['destination']);
-			foreach ($remove as $parent_id) {
-				$this->Tree->removeChild($this->Gallery->id, $parent_id);
-			}
-			$add = array_diff($this->data['destination'], $parents);
-			foreach ($add as $parent_id) {
-				$this->Tree->appendChild($this->Gallery->id, $parent_id);
-			}
-		 	if(!$this->Permission->saveFromPOST(
-		 			$this->Gallery->id,
-		 			(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
-		 			(empty($this->data['recursiveApplyPermissions'])?false:true))
-		 		) {
-		 			throw new BEditaActionException($this, __("Error saving permissions", true));
-		 	}
-	 		$this->Transaction->commit();
-	 	} catch (Exception $e) {
-			$this->Session->setFlash($e->getMessage());
-			$this->Transaction->rollback();
-	 	}
+		if(empty($this->data)) 
+			throw new BEditaActionException($this, __("No data", true));
+		$new = (empty($this->data['id'])) ? true : false;
+		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY))
+			throw new BEditaActionException($this, "Error modify permissions");
+		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]);
+		$this->BeLangText->setupForSave($this->data["LangText"]);
+		
+		$this->Transaction->begin();
+		if(!$this->Gallery->save($this->data)) throw new BEditaActionException($this, $this->Gallery->validationErrors);
+		if(($parents = $this->Tree->getParent($this->Gallery->id)) !== false) {
+			if(!is_array($parents)) $parents = array($parents);
+		} else {
+			$parents = array();
+		}
+		if(!isset($this->data['destination'])) $this->data['destination'] = array();
+		$remove = array_diff($parents, $this->data['destination']);
+		foreach ($remove as $parent_id) { $this->Tree->removeChild($this->Gallery->id, $parent_id); }
+		$add = array_diff($this->data['destination'], $parents);
+		foreach ($add as $parent_id) { $this->Tree->appendChild($this->Gallery->id, $parent_id); }
+		if(!$this->Permission->saveFromPOST(
+			$this->Gallery->id,
+		 	(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
+		 	(empty($this->data['recursiveApplyPermissions'])?false:true))) {
+				throw new BEditaActionException($this, __("Error saving permissions", true));
+		}
+	 	$this->Transaction->end();
 	 	return $this->Gallery->id;
 	}
 
 	private function deleteGallery($id) {
-		$result = null;
-	 	try {
-		 	if(empty($id)) throw BEditaActionException($this,__("No data", true));
-	 		$this->Transaction->begin();
-			$result = $this->Gallery->delete($id);
-		 	$this->Transaction->commit();
-	 	} catch (Exception $e) {
-			$this->Session->setFlash($e->getMessage());
-			$this->Transaction->rollback();
+	 	if(empty($id)) {
+	 		$this->log("TEST");
+			throw new BEditaActionException($this,__("No data", true));
 		}
-		if(!empty($result))
-			$this->set('msgOk','Item deleted correctly');
-		else
-			$this->set('msgErr','Item to delete not found');
+	 	$this->Transaction->begin();
+		$this->Gallery->delete($id);
+		$this->Transaction->end();
 	}
 	
-	 protected function forward($action, $esito) {
-		 	$REDIRECT = array("save"	=> 	array(
+	protected function forward($action, $esito) {
+		$REDIRECT = array("save"	=> 	array(
 							"OK"	=> "./view/{$this->Gallery->id}",
 							"ERROR"	=> "./view/{$this->Gallery->id}" 
 						),"delete"	=> 	array(
@@ -170,5 +152,5 @@ class GalleriesController extends AppController {
 		);
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito];
 	 	return false;
-	 }
+	}
 }

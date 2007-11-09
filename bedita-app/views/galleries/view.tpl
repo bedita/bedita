@@ -1,6 +1,7 @@
 {agent var="agent"}
 {$html->css('module.gallery.css')}
 {$html->css("jquery-calendar")}
+{$html->css("jquery.thickbox")}
 {if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
 {$javascript->link("jquery.treeview.pack")}
 {$javascript->link("interface")}
@@ -12,6 +13,7 @@
 {$javascript->link("jquery.validate")}
 {$javascript->link("jquery.autocomplete")}
 {$javascript->link("jquery.translatefield")}
+{$javascript->link("jquery.thickbox")}
 <script type="text/javascript">
 <!--
 
