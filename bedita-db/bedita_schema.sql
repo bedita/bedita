@@ -198,7 +198,7 @@ CREATE TABLE content_bases (
   `start` DATETIME NULL ,
   `end` DATETIME NULL,
   subtitle VARCHAR(255) NULL,
-  testobreve MEDIUMTEXT NULL,
+  shortDesc MEDIUMTEXT NULL,
   formato ENUM('html','txt','txtParsed') DEFAULT 'txt',
   PRIMARY KEY(id),
   INDEX content_bases_FKIndex1(id),
@@ -463,6 +463,8 @@ CREATE TABLE files (
 
 CREATE TABLE images (
   id INTEGER UNSIGNED NOT NULL,
+  width INT(5) UNSIGNED NULL,
+  height INT(5) UNSIGNED NULL,
   PRIMARY KEY(id),
   INDEX images_FKIndex1(id),
   FOREIGN KEY(id)
@@ -494,7 +496,7 @@ CREATE TABLE contents (
   id INTEGER UNSIGNED NOT NULL,
   audio_video_id INTEGER UNSIGNED NULL,
   image_id INTEGER UNSIGNED NULL,
-  testoLungo MEDIUMTEXT NULL,
+  longDesc MEDIUMTEXT NULL,
   PRIMARY KEY(id),
   INDEX contents_FKIndex1(id),
   INDEX contents_FKIndex2(audio_video_id),
