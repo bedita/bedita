@@ -19,7 +19,8 @@ class GalleriesController extends AppController {
 	var $helpers 	= array('Beurl', 'Bevalidation', 'BeTree', 'BeToolbar');
 	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText');
 	var $uses = array('Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Gallery', 'Tree', 'Image');
-
+	protected $moduleName = 'galleries';
+	
 	/**
 	 * Public methods for the controller
 	 */

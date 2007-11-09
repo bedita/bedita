@@ -1,0 +1,74 @@
+/*
+** box messaggi
+*/
+#messagesDiv {
+	position: relative;
+	top: 0px;
+	left: 160px;
+	width: 508px;
+	min-height: 40px;
+	font-size: 10pt;
+	color: #000;
+	text-align: left;
+	margin-bottom: -50px;
+	overflow: visible;
+}
+
+/* TRICK per interpretare il seguente codice solo con IE5 + */
+* html #messagesDiv {
+	left: 22px;
+	height: 50px;
+}
+
+.message-error {
+	background-color: #FFB3B3;
+	padding: 5px;
+}
+
+.message-warn {
+	background: #FFFFDB;
+	padding: 5px;
+}
+
+.message-info {
+	background: #E5EBE5;
+	padding: 5px;
+}
+
+.message-result {
+	background: #E5EBE5;
+	padding: 5px;
+}
+
+/*
+** icone messaggi
+*/
+#error-img {
+	background-image: url(../img/iconWarning.gif);
+	background-repeat: no-repeat;
+	background-color: transparent;
+}
+
+#warn-img {
+	background-image: url(../img/iconWarning.gif);
+	background-repeat: no-repeat;
+	background-color: transparent;
+}
+
+#info-img {
+	background-image: url(../img/iconInformation.gif);
+	background-repeat: no-repeat;
+	background-color: transparent;
+}
+
+#result-img {
+	background-image: url(../img/iconOk.gif);
+	background-repeat: no-repeat;
+	background-color: transparent;
+}
+
+#pdf-img,.pdf-img {
+	background-image: url(../img/iconPdf.gif);
+	background-repeat: no-repeat;
+	background-color: transparent;
+}

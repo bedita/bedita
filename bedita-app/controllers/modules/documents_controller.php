@@ -28,7 +28,8 @@ class DocumentsController extends AppController {
 
 	// This controller does not use a model
 	var $uses = array('Stream', 'Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Document', 'Tree') ;
-
+	protected $moduleName = 'documents';
+	
 	 /**
 	 * Entrata.
 	 * Visualizza l'albero delle aree e l'elenco dei documenti

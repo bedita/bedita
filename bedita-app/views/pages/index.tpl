@@ -16,7 +16,7 @@
 
 {section name="m" loop=$moduleList}
 	{if ($moduleList[m].status == 'on')}
-		{if (($moduleList[m].flag & BEDITA_PERMS_MODIFY) && $moduleList[m].status == 'on')}
+		{if ($moduleList[m].flag & BEDITA_PERMS_READ) }
 			{assign_concat var='linkPath' 0=$html->url('/') 1=$moduleList[m].path}
 			{assign var = "link" value=$html->url($linkPath)}
 
@@ -29,6 +29,7 @@
 	{/if}
 {/section}
 </div>
+{include file="../messages.tpl"}
 <div id="centralPageHome">
 TESTO HOME O ANCHE NIENTE
 </div>

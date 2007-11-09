@@ -278,9 +278,9 @@ $config['maxNumDaysValidity'] = 60;
 // TODO: 
 $config['passwdRegex'] = '';
 
-$config['authorizedGroups'] = array('administrator','editor');
+$config['authorizedGroups'] = array('administrator','editor','reader');
 // immutable groups
-$config['basicGroups'] = array('administrator','editor','guest');
+$config['basicGroups'] = array('administrator','editor','reader','guest');
 
 /**
  * Variabili utilizza per il riconscimento e gestione URL remoti e file remoti

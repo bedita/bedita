@@ -19,6 +19,7 @@
 	{$html->css('bedita')}
 	{$html->css('menu')}
 	{$html->css('form')}
+	{$html->css('message')}
 	{if ($agent.IE)}
 		{$html->css('ie')}
 	{/if}

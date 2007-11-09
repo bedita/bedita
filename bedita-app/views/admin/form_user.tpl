@@ -87,6 +87,22 @@ $(document).ready(function(){
 			<td><input type="password" name="data[User][passwd]" value=""/>&nbsp;</td>
 		</tr>
 		<tr>
+			<td>{t}Status{/t}</td>
+				{if isset($user)}
+					{assign var='valid' value=$user.User.valid}
+				{else}
+					{assign var='valid' value='1' }
+				{/if}
+			<td>
+				<input type="radio" name="data[User][valid]"  id="userValid" 
+					value="1" {if $valid}checked="checked"{/if}/ >
+					<label for="userValid">{t}Valid{/t}</label>&nbsp;
+				<input type="radio" name="data[User][valid]"  id="userNotValid" 
+					value="0" {if !$valid}checked="checked"{/if}/ >
+					<label for="userNotValid">{t}Blocked{/t}</label>&nbsp;
+			</td>
+		</tr>
+		<tr>
 			<td>{t}Groups{/t}</td>
 			<td><table>
 				{foreach from=$formGroups key=gname item=u}

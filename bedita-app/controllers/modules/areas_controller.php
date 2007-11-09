@@ -27,7 +27,8 @@ class AreasController extends AppController {
 	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText');
 
 	 var $uses = array('Area', 'Section', 'Tree') ;
-
+	 protected $moduleName = 'areas';
+	 
 	/**
 	 * Entrata.
 	 * Visualizza l'albero delle aree e la possibilita' di 

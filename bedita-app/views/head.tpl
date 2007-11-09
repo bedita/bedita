@@ -37,7 +37,7 @@ $(document).ready(function(){
 	</div>
 	{section name="m" loop=$moduleList}
 		{if ($moduleList[m].status == 'on')}
-			{if (($moduleList[m].flag & BEDITA_PERMS_MODIFY) && $moduleList[m].status == 'on')}
+			{if ($moduleList[m].flag & BEDITA_PERMS_READ)}
 	<div class="gest_menux" id="{$moduleList[m].path}_gest_menux">
 			     {if (stripos($bevalidation->here, $moduleList[m].path) !== false)}
      	<i> * {$moduleList[m].label}</i>
@@ -54,6 +54,5 @@ $(document).ready(function(){
 	{/section}
 </div>
 
-<div id="errorsDiv">{if ($session->check('Message.flash'))}{$session->flash()}{/if}</div>
-
+{include file="messages.tpl"}
 {/strip}

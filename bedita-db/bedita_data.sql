@@ -284,12 +284,12 @@ INSERT INTO `users` ( id, `userid` , `realname` , `passwd` ) VALUES (2, 'giangi'
 INSERT INTO `users` ( id, `userid` , `realname` , `passwd` ) VALUES (3, 'alberto', 'Alberto', MD5( 'alberto' ));
 INSERT INTO `users` ( id, `userid` , `realname` , `passwd` ) VALUES (4, 'torto', 'Paolo Rossi', MD5( 'torto' ));
 
-INSERT INTO `groups` ( `name` ) VALUES ('redattori');
-INSERT INTO `groups` ( `name` ) VALUES ('revisori');
-INSERT INTO `groups` ( `name` ) VALUES ('utenti');
+INSERT INTO `groups` ( `name` ) VALUES ('editor');
+INSERT INTO `groups` ( `name` ) VALUES ('reader');
+INSERT INTO `groups` ( `name` ) VALUES ('frontend');
 
 INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES ((SELECT MAX(id) FROM users WHERE userid = 'giangi'), (SELECT id FROM groups WHERE name = 'administrator'));
-INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES ((SELECT MAX(id) FROM users WHERE userid = 'giangi'), (SELECT id FROM groups WHERE name = 'revisori'));
-INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES ((SELECT MAX(id) FROM users WHERE userid = 'giangi'), (SELECT id FROM groups WHERE name = 'redattori'));
-INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES ((SELECT MAX(id) FROM users WHERE userid = 'alberto'),(SELECT id FROM groups WHERE name = 'redattori'));
-INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES ((SELECT MAX(id) FROM users WHERE userid = 'torto'),  (SELECT id FROM groups WHERE name = 'utenti'));
+INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES ((SELECT MAX(id) FROM users WHERE userid = 'giangi'), (SELECT id FROM groups WHERE name = 'reader'));
+INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES ((SELECT MAX(id) FROM users WHERE userid = 'giangi'), (SELECT id FROM groups WHERE name = 'editor'));
+INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES ((SELECT MAX(id) FROM users WHERE userid = 'alberto'),(SELECT id FROM groups WHERE name = 'editor'));
+INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES ((SELECT MAX(id) FROM users WHERE userid = 'torto'),  (SELECT id FROM groups WHERE name = 'frontend'));

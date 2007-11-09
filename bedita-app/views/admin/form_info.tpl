@@ -1,5 +1,8 @@
 <div id="containerPage">
-	<div class="FormPageHeader"><h1>{t}System events{/t}</h1></div>
+	<form action="{$html->url('/admin/deleteEventLog')}" method="post">
+	<div class="FormPageHeader"><h1>{t}System events{/t}</h1><input type="submit" value="{t}Delete all events{/t}"/>
+	</div>
+	</form>
 	<div id="mainForm">
 		<table class="indexList">
 		<thead><tr><th>{t}Date{/t}</th>

@@ -19,7 +19,8 @@
 class AdminController extends AppController {
 
 	 var $uses = array('User', 'Group','Module') ;
-
+	 protected $moduleName = 'admin';
+	 
 	/**
 	 * show users
 	 */
@@ -27,10 +28,12 @@ class AdminController extends AppController {
 	 	
 		$users = $this->User->findAll() ;
 		$this->set('users', 		$users);
-	 }
+	}
 
 	 
 	 function saveUser() {
+
+	 	$this->checkWriteModulePermission();
 
 	 	$userGroups=array();
 		if(isset($this->data['groups'] )) {
@@ -41,17 +44,19 @@ class AdminController extends AppController {
 		if(!isset($this->data['User']['id'])) {
 			$this->BeAuth->createUser($this->data, $userGroups);
 			$this->eventInfo("user ".$this->data['User']['userid']." created");
-			
+			$this->userInfoMessage(__("User created",true));
 		} else {
 			$pass = $this->data['User']['passwd']; 
 			if($pass === null || strlen(trim($pass)) < 1 )
 				unset($this->data['User']['passwd']);
 			$this->BeAuth->updateUser($this->data, $userGroups);
 			$this->eventInfo("user ".$this->data['User']['userid']." updated");
+			$this->userInfoMessage(__("User updated",true));
 		}
 	 }
 	 
 	 function removeUser($userid) {
+	 	$this->checkWriteModulePermission();
 	 	if(isset($userid)) {
 	 		$this->BeAuth->removeUser($userid);
 	 		$this->eventInfo("user ".$userid." deleted");
@@ -59,13 +64,14 @@ class AdminController extends AppController {
 	  }
 
 	  function viewUser($id=NULL) {
+	  	
 	 	if(isset($id)) {
 	 		$user = $this->User->findById($id) ;
 		} else {
 			$user = NULL;
 		}
 
-		$allGroups = $this->Group->findAll() ;
+		$allGroups = $this->Group->findAll();
 		$userGroups = array();
 		if(isset($user)) {
 			foreach ($user['Group'] as $g) {
@@ -89,7 +95,7 @@ class AdminController extends AppController {
 	 * show groups
 	 */
 	 function groups() { 	
-		$groups = $this->Group->findAll() ;
+	  	$groups = $this->Group->findAll() ;
 		$this->set('groups', 	$groups);
 		$this->set('group',  NULL);
 		$this->set('modules', $this->allModulesWithFlag());
@@ -119,32 +125,38 @@ class AdminController extends AppController {
 	  }
 	  
 	  function saveGroup() {
+	 	$this->checkWriteModulePermission();
 
 	  	$this->Transaction->begin();
 	  	$groupId = NULL;
+	  	$newGroup = false;
 	  	if(!isset($this->data['Group']['id'])) {
 			$this->Group->save($this->data);
 			$groupId = $this->Group->getLastInsertID();
 			$this->eventInfo("group ".$this->data['Group']['name']." created");
-		} else {
+	  		$newGroup = true;
+	  	} else {
 			$this->Group->save($this->data);
 			$groupId = $this->Group->getID();
 			$this->eventInfo("group ".$this->data['Group']['name']." update");
 		}
-	  	if(isset($this->data['Module'])) {
+		if(isset($this->data['Module'])) {
 	  		$moduleFlags=array();
 	  		foreach ($this->data['Module'] as $key=>$val) {
 	  			$flag = 0;
 				foreach ($val as $flagVal) 
-					$flag += $flagVal;
-				$moduleFlags[$key]=$flagVal;
+					$flag = $flag | $flagVal;
+				$moduleFlags[$key]=$flag;
 	  		}
 	  		$this->BePermissionModule->updateGroupPermission($groupId, $moduleFlags);
 	  	}
-	  	$this->Transaction->end();
+		
+	  	$this->userInfoMessage(__("Group ".($newGroup? "created":"updated"),true));
+	  	$this->Transaction->commit();
 	  }
 	  
 	  function removeGroup($id) {
+	 	$this->checkWriteModulePermission();
 	  	$groupName="";
 	  	$g = $this->Group->findById($id);
 	  	if(isset($g)) {
@@ -152,6 +164,7 @@ class AdminController extends AppController {
 	  	}
 	  	$this->BeAuth->removeGroup($groupName);
 		$this->eventInfo("group ".$groupName." deleted");
+		$this->userInfoMessage(__("Group deleted",true));
 	  }
 
 	  /**
@@ -159,6 +172,12 @@ class AdminController extends AppController {
 	 */
 	 public function systemInfo() { 	
 		$this->set('events', $this->EventLog->findAll(NULL, NULL, 'created DESC'));
+	 }
+
+	 public function deleteEventLog() { 	
+	 	$this->checkWriteModulePermission();
+		$this->EventLog->deleteAll("id > 0");
+		$this->set('events', array());
 	 }
 	 
 	 protected function forward($action, $esito) {
@@ -179,7 +198,11 @@ class AdminController extends AppController {
  								"OK"	=> "/admin/groups",
 	 							"ERROR"	=> "/admin/groups" 
 	 						),
-				"removeGroup" => 	array(
+				"deleteEventLog" => 	array(
+ 								"OK"	=> self::VIEW_FWD.'systemInfo',
+	 							"ERROR"	=> self::VIEW_FWD.'systemInfo'
+	 						),
+	 			"removeGroup" => 	array(
  								"OK"	=> "/admin/groups",
 	 							"ERROR"	=> "/admin/groups" 
 	 						)

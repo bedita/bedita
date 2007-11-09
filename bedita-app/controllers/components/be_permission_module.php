@@ -206,7 +206,7 @@ class BePermissionModuleComponent extends Object {
 	 * Torna true se l'operazione richiesta è permesse su un dato
 	 * modulo per un dato utente interno al sistema.
 	 *
-	 * @param string $name		Modulo da verificare.
+	 * @param string $name	Modulo da verificare.
 	 * @param string $userid	Userid utente da verificare
 	 * @param integer $op		Operazione richiesta
 	 * @return boolean

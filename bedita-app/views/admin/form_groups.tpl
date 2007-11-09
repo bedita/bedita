@@ -13,6 +13,19 @@ $(document).ready(function(){
 		}
 	});
 });
+
+
+function moduleReadPerms(check, writeId) {
+	if(!check) {
+		document.getElementById(writeId).checked=false;
+	}
+}
+
+function moduleWritePerms(check, readId) {
+	if(check) {
+		document.getElementById(readId).checked=true;
+	}
+}
 {/literal}
 </script>
 
@@ -75,10 +88,10 @@ $(document).ready(function(){
 						&nbsp;<b>{$mod.Module.label}</b>
 						</td>
 						<td>
-							<input type="checkbox" name="data[Module][{$mod.Module.label}][read]" value="{$conf->BEDITA_PERMS_READ}" {if ($mod.Module.flag & $conf->BEDITA_PERMS_READ)}checked{/if}/>
+							<input type="checkbox" id="{$mod.Module.id}-read" onclick="moduleReadPerms(this.checked, '{$mod.Module.id}-write')" name="data[Module][{$mod.Module.label}][read]" value="{$conf->BEDITA_PERMS_READ}" {if ($mod.Module.flag & $conf->BEDITA_PERMS_READ)}checked{/if}/>
 						</td>
 						<td>
-							<input type="checkbox" name="data[Module][{$mod.Module.label}][write]" value="{$conf->BEDITA_PERMS_MODIFY}" {if ($mod.Module.flag & $conf->BEDITA_PERMS_MODIFY)}checked{/if}/>
+							<input type="checkbox" id="{$mod.Module.id}-write" onclick="moduleWritePerms(this.checked, '{$mod.Module.id}-read')" name="data[Module][{$mod.Module.label}][write]" value="{$conf->BEDITA_PERMS_MODIFY}" {if ($mod.Module.flag & $conf->BEDITA_PERMS_MODIFY)}checked{/if}/>
 						</td>
 					</tr>
 				{/foreach}

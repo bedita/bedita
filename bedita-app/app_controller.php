@@ -8,6 +8,8 @@ class AppController extends Controller
 	var $components = array('BeAuth', 'BePermissionModule','Transaction');
 	var $uses = array('EventLog') ;
 	
+	protected $moduleName = NULL;
+	private $modulePerms = NULL;
 	/**
 	 * tipologie di esito operazione e esisto dell'operazione
 	 *
@@ -21,27 +23,34 @@ class AppController extends Controller
 	/////////////////////////////////		
 	/////////////////////////////////		
 
-	public function handleExceptions($ex) {
+	public function handleExceptions(Exception $ex) {
 		// TODO: aggiungere stack trace e altre info nel log su file
-		$this->log($ex->getMessage());
-		$this->eventError($ex->getMessage());
+		$errTrace =    $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+		$this->log($errTrace);
+		// TODO: different event/log messages and user messages
+		$this->handleError($ex->getMessage(), $ex->getMessage());
+	}
+
+	public function handleError($eventMsg, $userMsg) {
+		$this->eventError($eventMsg);
 		// end transactions if necessary
 		if(isset($this->Transaction)) {
 			if($this->Transaction->started())
 				$this->Transaction->rollback();
 		}
-		$this->Session->setFlash(__($ex->getMessage(), true));
+		$this->userErrorMessage($userMsg);
 	}
 	
 	public function setResult($r) {
 		$this->result=$r;
 	}
+
 	
 	function beforeFilter() {
 				
 		// Templater
 		$this->view = 'Smarty';
-		
+				
 		// preleva, per il template, i dati di configurazione
 	 	$this->setupCommonData() ;
 	 	
@@ -116,12 +125,52 @@ class AppController extends Controller
 		$this->EventLog->save($event);
 	}
 	
+	/**
+	 * User error message (will appear in messages div)
+	 * @param string $msg
+	 */
+	protected function userErrorMessage($msg) {
+		$this->Session->setFlash($msg, NULL, NULL, 'error');
+	}
+
+	/**
+	 * User warning message (will appear in messages div)
+	 * @param string $msg
+	 */
+	protected function userWarnMessage($msg) {
+		$this->Session->setFlash($msg, NULL, NULL, 'warn');
+	}
+
+	/**
+	 * User info message (will appear in messages div)
+	 * @param string $msg
+	 */
+	protected function userInfoMessage($msg) {
+		$this->Session->setFlash($msg, NULL, NULL, 'info');
+	}
+	
+	/**
+	 * Info message in system event logs
+	 * @param string $msg
+	 */
 	protected function eventInfo($msg) {
 		return $this->eventLog('info', $msg);
 	}
+	
+	/**
+	 * Warning message in system event logs
+	 *
+	 * @param string $msg
+	 */
 	protected function eventWarn($msg) {
 		return $this->eventLog('warn', $msg);
 	}
+
+	/**
+	 * Error message in system event logs
+	 *
+	 * @param string $msg
+	 */
 	protected function eventError($msg) {
 		return $this->eventLog('err', $msg);
 	}
@@ -139,15 +188,39 @@ class AppController extends Controller
  		else $_loginRunning  = true ;
 		 
 		// Verifica i permessi d'accesso
-		if(!$this->BeAuth->isLogged()) { $this->render(null, null, VIEWS."pages/login.tpl") ; $_loginRunning = false; exit; }
+		if(!$this->BeAuth->isLogged()) { 
+			$this->render(null, null, VIEWS."pages/login.tpl") ; $_loginRunning = false; exit; 
+		}
 		
-//		// Preleva lista dei moduli
-		$this->set('moduleList', $this->BePermissionModule->getListModules($this->BeAuth->user["userid"])) ;			
+		// module list
+		$moduleList = $this->BePermissionModule->getListModules($this->BeAuth->user["userid"]);
+		$this->set('moduleList', $moduleList) ;			
+		
+		// verify basic access
+		if(isset($this->moduleName)) { 
+			 foreach ($moduleList as $mod) {
+			 	if($this->moduleName == $mod['label']) 
+			 		$this->modulePerms = $mod['flag'];
+			 }
+			if(!isset($this->modulePerms) || !($this->modulePerms & BEDITA_PERMS_READ)) {
+					$logMsg = "Module [". $this->moduleName.  "] access not authorized";
+					$this->log($logMsg);
+					$this->handleError($logMsg, __("Module access not authorized",true));
+					$this->redirect("/");
+			}
+		}
 		
 		$_loginRunning = false ;
 		
         return true ;
 	}
+
+	protected function checkWriteModulePermission() {
+		if(isset($this->moduleName) && !($this->modulePerms & BEDITA_PERMS_MODIFY)) {
+				throw new BEditaActionException($this, __("No write permissions in module", true));
+		}
+	}
+	
 	
 	/**
 	 * Esegue il setup delle variabili passate ad una funzione del controller.
@@ -180,8 +253,8 @@ class AppController extends Controller
 				settype($args[$i][2], $args[$i][1]) ;
 				$this->params["url"][$args[$i][0]] = $args[$i][2] ;
 				
-				$this->namedArgs[$args[$i][0]]  = $args[$i][2] ;
- 			}
+				$this->namedArgs[$args[$i][0]] = $args[$i][2] ;
+			}
 		}
 		
 	}
