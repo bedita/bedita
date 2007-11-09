@@ -31,7 +31,7 @@ class Stream extends BEAppModel
 		'path' 		=> array(array('rule' => VALID_NOT_EMPTY, 	'required' => true)),
 		'name' 		=> array(array('rule' => VALID_NOT_EMPTY, 	'required' => true)),
 		'type' 		=> array(array('rule' => VALID_NOT_EMPTY, 	'required' => true)),
-		'size' 		=> array(array('rule' => VALID_NUMBER, 		'required' => true)),
+//		'size' 		=> array(array('rule' => VALID_NUMBER, 		'required' => true)),
 	) ;
 
 

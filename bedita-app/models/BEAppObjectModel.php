@@ -48,7 +48,18 @@ class BEAppObjectModel extends BEAppModel {
 			unset($data[$this->primaryKey]) ;
 		}
 
-		return parent::save($data, $validate, $fieldList) ;
+		$result = parent::save($data, $validate, $fieldList) ;
+		
+		/**
+		 * @todo VERIFICARE se nn da problemi.
+		 * azzero il valore di BEObject->{BEObject->primaryKey} per 
+		 * permettere salvataggi sucessivi.
+		 */
+		if(isset($this->BEObject)) {
+			$this->BEObject->{$this->BEObject->primaryKey} = false ;
+		}
+		
+		return $result ;
 	}
 
 	/**

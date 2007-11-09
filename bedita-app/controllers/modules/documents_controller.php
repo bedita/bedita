@@ -24,10 +24,10 @@ class DocumentsController extends AppController {
 	var $name = 'Documents';
 
 	var $helpers 	= array('Bevalidation', 'BeTree', 'BeToolbar');
-	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText');
+	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
 	// This controller does not use a model
-	var $uses = array('Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Document', 'Tree') ;
+	var $uses = array('Stream', 'Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Document', 'Tree') ;
 
 	 /**
 	 * Entrata.

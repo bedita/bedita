@@ -39,6 +39,16 @@ define("BEDITA_DOMANDA_CHECKOPEN",		0x4) ;
 define("BEDITA_DOMANDA_GRADO",			0x5) ;
 define("BEDITA_DOMANDA_TXTSEMPLICE",	0x6) ;
 
+
+/**
+ * Indica la directory dove sono salvati i file
+ */
+define("MEDIA_ROOT",	ROOT . DS . APP_DIR."/media") ;
+
+/**
+ * Indica il prefisso per gli URL dei file
+ */
+define("MEDIA_URL",	"http://bedita/media") ;
 /**
  * Codice lingua di default
  */
@@ -91,7 +101,7 @@ $config['objectTypes'] = array(
 	'timeline'			=> 8,
 	'community'			=> 9,
 
-	'file'				=> 10,
+	'befile'			=> 10,
 	'audiovideo'		=> 11,
 	'image'				=> 12,
 	
@@ -272,4 +282,32 @@ $config['authorizedGroups'] = array('administrator','editor');
 // immutable groups
 $config['basicGroups'] = array('administrator','editor','guest');
 
+/**
+ * Variabili utilizza per il riconscimento e gestione URL remoti e file remoti
+ */
+$config['validate_resorce'] = array(
+	'paranoid'	=> true,	/**
+							 * Se true, non accetta remote URL se 'allow_url_fopen'
+							 * e' a false.
+							 * 
+							 * False, usa l'URL passato e il MIME type viene passato con i dati. Size non
+							 * puo' essere determinata. Opzione utilizzabile nei casi in cui allow_url_fopen
+							 * non permette l'uso di file remoti.
+							 **/
+							
+	'URL'	=> '/^\s*[a-z\d\+\-\.]+\:\/\//i',
+	'allow'	=> array( // Inserire tutte le regole che si vogliono. L'URL non e' accettato se non passa almeno 1 regola data
+				'/^\s*http:\/\/(.*)\.(html|htm)$/',
+				'/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/'
+			   ),
+	'mime'	=> array(	// ELenco dei MIME accettati per i diversi tipi di oggetti
+				'Image'			=> array('/image\/jpeg/', '/image\/gif/', '/image\/png/'),
+				'AudioVideo'	=> array('/audio\/\.*/', '/video\/\.+/'),
+				'File'			=> array('/application\/msword/', '/application\/pdf/', '/application\/postscript/', 
+										  '/application\/x-tar/', '/application\/zip/', '/text\/.+/'
+								   ),
+			   ),
+	'mime.types'	=> dirname(__FILE__).DS."mime.types" ,
+	'magic'			=> dirname(__FILE__).DS."magic" ,
+) ;
 ?>

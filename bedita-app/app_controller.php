@@ -180,8 +180,8 @@ class AppController extends Controller
 				settype($args[$i][2], $args[$i][1]) ;
 				$this->params["url"][$args[$i][0]] = $args[$i][2] ;
 				
-				$this->namedArgs[$args[$i][0]] = $args[$i][2] ;
-			}
+				$this->namedArgs[$args[$i][0]]  = $args[$i][2] ;
+ 			}
 		}
 		
 	}

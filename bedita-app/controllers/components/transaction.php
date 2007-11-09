@@ -166,6 +166,37 @@ class TransactionComponent extends Object {
 		return self::$transFS->cpFile($newPath, $pathSource) ;
 	}
 	
+	/**
+	 * Crea una directory
+	 *
+	 * @param unknown_type $newDir
+	 * @param unknown_type $mode
+	 * @return unknown
+	 */
+	function mkdir($newDir, $mode = 0775) {
+		return self::$transFS->mkdir($newDir, $mode) ;
+	}
+
+	/**
+	 * Cancella una directory
+	 *
+	 * @param unknown_type $rmDir
+	 * @return unknown
+	 */
+	function rmdir($rmDir) {
+		return self::$transFS->rmdir($rmDir) ;
+	}
+
+	/**
+	 * Sposta una directory e il suo contenuto
+	 *
+	 * @param unknown_type $pathNewParent
+	 * @param unknown_type $oldPath
+	 * @return unknown
+	 */
+	function mvDir($pathNewParent, $oldPath) {
+		return self::$transFS->mvDir($pathNewParent, $oldPath) ;
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -353,6 +384,106 @@ class transactionFS {
 		return true ;
 	}
 	
+	/**
+	 * 
+	 * Cambia directory
+	 *
+	 * @param string $newDir
+	 * @return unknown
+	 */
+	function chdir($newDir) {
+		$oldDir = getcwd() ;
+		if(!chdir($newDir)) return false ;
+		$newDir = getcwd() ;
+		
+		// Salva l'operazione
+		$item = array("cmd"	=> "chdir", "rollCmd" => "_rollChdir", 	"params" => array("path" => $oldDir)) ;
+		if(!array_push($this->commands, $item)) return false ;
+		
+		return true ;
+	}
+	
+	/**
+	 * Crea una directory
+	 *
+	 * @param unknown_type $newDir
+	 * @param unknown_type $mode
+	 * @return unknown
+	 */
+	function mkdir($newDir, $mode = 0775) {
+		if(!mkdir($newDir, $mode)) return false ;
+
+		$oldDir = getcwd() ;
+		if(!chdir($newDir)) return false ;
+		$newDir = getcwd() ;
+		if(!chdir($oldDir)) return false ;
+
+		// Salva l'operazione
+		$item = array("cmd"	=> "mkdir", "rollCmd" => "_rollMkdir", 	"params" => array("path" => $newDir)) ;
+		if(!array_push($this->commands, $item)) return false ;
+		
+		return true ;
+	}
+
+	/**
+	 * Cancella una directory
+	 *
+	 * @param unknown_type $rmDir
+	 * @return unknown
+	 */
+	function rmdir($rmDir) {
+
+		// Preleva il path assoluto della dir da cancellare e i supi permessi
+		$oldDir = getcwd() ;
+		if(!chdir($rmDir)) return false ;
+		$rmDir = getcwd() ;
+		if(!chdir($oldDir)) return false ;
+		$rmPerms = fileperms($rmDir);
+		
+		// Cancella
+		if(!rmdir($rmDir)) return false ;
+
+		// Salva l'operazione
+		$item = array("cmd"	=> "rmdir", "rollCmd" => "_rollRmdir", 	"params" => array("path" => $rmDir, "perms" => $rmPerms)) ;
+		if(!array_push($this->commands, $item)) return false ;
+		
+		return true ;
+	}
+
+	/**
+	 * Sposta una directory e il suo contenuto
+	 *
+	 * @param unknown_type $pathNewParent
+	 * @param unknown_type $oldPath
+	 * @return unknown
+	 */
+	function mvDir($pathNewParent, $oldPath) {
+
+		// Preleva il path assoluto della vecchia dir parent
+		$pathDir = getcwd() ;
+		if(!chdir($oldPath)) return false ;
+		if(!chdir("..")) return false ;
+		$oldParentPath = getcwd() ;
+		if(!chdir($pathDir)) return false ;
+		
+		// Sposta
+		$args = array() ; $ret = 0 ;
+		exec("mv $oldPath $pathNewParent", $args, $ret) ;
+		if($ret) return false ;
+
+		// Produce il nuovo path
+		$name = basename($oldPath) ;
+		if(substr($pathNewParent, -1) == "/") $newPath = "$oldParentPath"."$name" ;
+		else $newPath = "$oldParentPath/$name" ;
+		
+		// Salva l'operazione
+		$item = array("cmd"	=> "mvDir", "rollCmd" => "_rollMvDir", 	"params" => array("path" => $newPath, "target" => $oldParentPath)) ;
+		if(!array_push($this->commands, $item)) return false ;
+		
+		return $newPath ;
+	}
+
+
 	//////////////////////////////////////////////////
 	/**
 	 * Funzioni di rollback
@@ -385,6 +516,28 @@ class transactionFS {
 		return true ;
 	}
 
+	function _rollChdir($path) {
+		if(!chdir($path)) return false ;
+		return true ;
+	}
+
+	function _rollMkdir($path) {
+		if(!rmdir($path)) return false ;
+		return true ;
+	}
+	
+	function _rollRmdir($path, $perms) {
+		if(!mkdir($path, $perms)) return false ;
+		return true ;
+	}
+
+	function _rollMvDir($path, $target) {
+		// Sposta
+		$args = array() ; $ret = 0 ;
+		exec("mv $path $target", $args, $ret) ;
+		if($ret) return false ;
+		return true ;
+	}
 }
 
 ?>
