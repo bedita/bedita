@@ -110,8 +110,10 @@ class GalleriesController extends AppController {
 		$this->BeLangText->setupForSave($this->data["LangText"]);
 		
 		$this->Transaction->begin();
-		if(!$this->Gallery->save($this->data)) throw new BEditaActionException($this, $this->Gallery->validationErrors);
-		if(($parents = $this->Tree->getParent($this->Gallery->id)) !== false) {
+		if(!$this->Gallery->save($this->data)) 
+//			throw new BEditaActionException($this, $this->Gallery->validationErrors);
+			throw new BEditaActionException($this, __("Error saving gallery", true));
+			if(($parents = $this->Tree->getParent($this->Gallery->id)) !== false) {
 			if(!is_array($parents)) $parents = array($parents);
 		} else {
 			$parents = array();

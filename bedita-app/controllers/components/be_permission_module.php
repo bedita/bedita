@@ -94,8 +94,10 @@ class BePermissionModuleComponent extends Object {
 		$g = $this->groupModel->findById($groupId);
 		$groupName = $g['Group']['name'];
 		foreach ($moduleFlags as $mod=>$flag) {
-			$perms =  array(array($groupName, self::SWITCH_GROUP, $flag));
-			$this->add($mod, $perms);
+			if(!empty($flag)) {
+				$perms =  array(array($groupName, self::SWITCH_GROUP, $flag));
+				$this->add($mod, $perms);
+			}
 		}
 	}
 	

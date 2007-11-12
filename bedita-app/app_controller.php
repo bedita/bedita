@@ -309,11 +309,14 @@ class BEditaActionException extends Exception
 {
 	var $controller = NULL;
 
-	public function __construct(&$ctrl, $message, $code  = 0) {
+	public function __construct(&$ctrl, $message = NULL, $code  = 0) {
         // some code
    		$this->controller=$ctrl;
    		$this->controller->setResult(AppController::ERROR);
         
+   		if(empty($message)) {
+   			$message = __("Unexpected error, operation failed",true);
+   		}
         // make sure everything is assigned properly
         parent::__construct($message, $code);
     }

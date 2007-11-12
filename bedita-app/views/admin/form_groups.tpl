@@ -14,18 +14,6 @@ $(document).ready(function(){
 	});
 });
 
-
-function moduleReadPerms(check, writeId) {
-	if(!check) {
-		document.getElementById(writeId).checked=false;
-	}
-}
-
-function moduleWritePerms(check, readId) {
-	if(check) {
-		document.getElementById(readId).checked=true;
-	}
-}
 {/literal}
 </script>
 
@@ -37,6 +25,7 @@ function moduleWritePerms(check, readId) {
 		<thead><tr><th>{t}Id{/t}</th>
 					<th>{t}Name{/t}</th>
 					<th>{t}Created{/t}</th>
+					<th>{t}Modified{/t}</th>
 					<th>{t}Actions{/t}</th>
 			</tr>
 		</thead>
@@ -47,12 +36,14 @@ function moduleWritePerms(check, readId) {
 			{if $g.Group.id gt 10003}
 				<td><a href="{$html->url('/admin/viewGroup/')}{$g.Group.id}">{$g.Group.name}</a></td>
 				<td>{$g.Group.created}</td>
+				<td>{$g.Group.modified}</td>
 				<td>
 					<a href="{$html->url('/admin/viewGroup/')}{$g.Group.id}">{t}Modify{/t}</a>
 					<a href="{$html->url('/admin/removeGroup/')}{$g.Group.id}">{t}Remove{/t}</a>
 				</td>
 			{else}
 				<td>{$g.Group.name}</td>
+				<td>-</td>
 				<td>-</td>
 				<td>-</td>
 			{/if}
@@ -73,12 +64,17 @@ function moduleWritePerms(check, readId) {
 					<p>{t}Name{/t} &nbsp; <input type="text" name="data[Group][name]" title="{t}Insert group name{/t}"
 						value="{$group.Group.name}" class="{ldelim}required:true{rdelim}"/>&nbsp;
 					</p>
+					{if isset($group)}
+					<p><b>{t}Users of this group{/t}:</b> {foreach from=$group.User item=u}{$u.userid}&nbsp;{/foreach}
+					</p>
+					{/if}
 			</fieldset>
 			<table class="indexList">
 			<thead><tr>
 						<th>{t}Module{/t}</th>
-						<th>{t}Read{/t}</th>
-						<th>{t}Modify{/t}</th>
+						<th>{t}No access{/t}</th>
+						<th>{t}Read only{/t}</th>
+						<th>{t}Read and modify{/t}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -88,15 +84,22 @@ function moduleWritePerms(check, readId) {
 						&nbsp;<b>{$mod.Module.label}</b>
 						</td>
 						<td>
-							<input type="checkbox" id="{$mod.Module.id}-read" onclick="moduleReadPerms(this.checked, '{$mod.Module.id}-write')" name="data[Module][{$mod.Module.label}][read]" value="{$conf->BEDITA_PERMS_READ}" {if ($mod.Module.flag & $conf->BEDITA_PERMS_READ)}checked{/if}/>
+							<input type="radio" 
+								name="data[ModuleFlags][{$mod.Module.label}]" value="" {if !isset($group)}checked="checked"{elseif ($mod.Module.flag == 0)}checked="checked"{/if}/>
 						</td>
 						<td>
-							<input type="checkbox" id="{$mod.Module.id}-write" onclick="moduleWritePerms(this.checked, '{$mod.Module.id}-read')" name="data[Module][{$mod.Module.label}][write]" value="{$conf->BEDITA_PERMS_MODIFY}" {if ($mod.Module.flag & $conf->BEDITA_PERMS_MODIFY)}checked{/if}/>
+							<input type="radio" name="data[ModuleFlags][{$mod.Module.label}]" value="{$conf->BEDITA_PERMS_READ}" 
+									{if ($mod.Module.flag == $conf->BEDITA_PERMS_READ)}checked="checked"{/if}/>
+						</td>
+						<td>
+							<input type="radio" name="data[ModuleFlags][{$mod.Module.label}]" value="{$conf->BEDITA_PERMS_READ_MODIFY}" 
+									{if ($mod.Module.flag & $conf->BEDITA_PERMS_MODIFY)}checked="checked"{/if} />
 						</td>
 					</tr>
 				{/foreach}
 			</tbody>
 			</table>
+			<tr></tr>
 			<tr>
 			<td colspan="2">
 				<input type="submit" name="save" class="submit" value="{if isset($group)}{t}Modify{/t}{else}{t}Create group{/t}{/if}" />

@@ -28,6 +28,8 @@ define("BEDITA_PERMS_MODIFY",	0x2) ;
 define("BEDITA_PERMS_DELETE",	0x4) ;
 define("BEDITA_PERMS_CREATE",	0x8) ;
 
+define("BEDITA_PERMS_READ_MODIFY",	BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) ;
+
 /**
  * Costanti per la definizione delel tipologie
  * di domande
@@ -268,6 +270,7 @@ $config['BEDITA_PERMS_READ'] 	= BEDITA_PERMS_READ ;
 $config['BEDITA_PERMS_MODIFY'] 	= BEDITA_PERMS_MODIFY ;
 $config['BEDITA_PERMS_DELETE'] 	= BEDITA_PERMS_DELETE ;
 $config['BEDITA_PERMS_CREATE'] 	= BEDITA_PERMS_CREATE ;
+$config['BEDITA_PERMS_READ_MODIFY'] = BEDITA_PERMS_READ_MODIFY;
 
 /**
  * Backend default login policy

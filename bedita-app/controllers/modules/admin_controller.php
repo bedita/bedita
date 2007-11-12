@@ -103,7 +103,12 @@ class AdminController extends AppController {
 	 
 	  function viewGroup($id) {
 	  	$this->set('groups', $this->Group->findAll());
-		$this->set('group', $this->Group->findById($id));
+	  	$g = $this->Group->findById($id);
+	  	foreach($g['User'] as &$user) {
+	  		$u = $this->User->findById($user['id']);
+	  		$user['userid'] = $u['User']['userid'];
+	  	}
+		$this->set('group', $g);
 		
 		$modules = $this->allModulesWithFlag();
 		$permsMod = $this->BePermissionModule->getPermissionModulesForGroup($id);
@@ -115,6 +120,7 @@ class AdminController extends AppController {
 			}
 		}
 		$this->set('modules', $modules);
+	  
 	  }
 	 
 	  private function allModulesWithFlag() {
@@ -140,17 +146,19 @@ class AdminController extends AppController {
 			$groupId = $this->Group->getID();
 			$this->eventInfo("group ".$this->data['Group']['name']." update");
 		}
-		if(isset($this->data['Module'])) {
-	  		$moduleFlags=array();
-	  		foreach ($this->data['Module'] as $key=>$val) {
-	  			$flag = 0;
-				foreach ($val as $flagVal) 
-					$flag = $flag | $flagVal;
-				$moduleFlags[$key]=$flag;
-	  		}
-	  		$this->BePermissionModule->updateGroupPermission($groupId, $moduleFlags);
+		if(isset($this->data['ModuleFlags'])) {
+//			$moduleFlags=array();
+//	  		foreach ($this->data['ModuleFlags'] as $key=>$val) {
+//	  			$flag = 0;
+//				foreach ($val as $flagVal) 
+//					$flag = $flag | $flagVal;
+//				$moduleFlags[$key]=$flag;
+//	  		}
+	  		$this->BePermissionModule->updateGroupPermission($groupId, $this->data['ModuleFlags']);
 	  	}
-		
+//pr($this->data['ModuleFlags']);
+//die("bb");
+	  	
 	  	$this->userInfoMessage(__("Group ".($newGroup? "created":"updated"),true));
 	  	$this->Transaction->commit();
 	  }
