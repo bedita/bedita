@@ -67,8 +67,13 @@ class AdminController extends AppController {
 	  	
 	 	if(isset($id)) {
 	 		$user = $this->User->findById($id) ;
+		  	if(empty($user))
+		  		throw new BEditaActionException($this, __("bad data",true));
+	 		$userModules = $this->BePermissionModule->getListModules($user['User']['userid']);
+	 		
 		} else {
 			$user = NULL;
+			$userModules = NULL;
 		}
 
 		$allGroups = $this->Group->findAll();
@@ -88,6 +93,7 @@ class AdminController extends AppController {
 		
 		$this->set('user',  $user);
 		$this->set('formGroups',  $formGroups);
+		$this->set('userModules', $userModules) ;
 	 }
 
 	 
@@ -104,6 +110,8 @@ class AdminController extends AppController {
 	  function viewGroup($id) {
 	  	$this->set('groups', $this->Group->findAll());
 	  	$g = $this->Group->findById($id);
+	  	if(empty($g))
+	  		throw new BEditaActionException($this, __("bad data",true));
 	  	foreach($g['User'] as &$user) {
 	  		$u = $this->User->findById($user['id']);
 	  		$user['userid'] = $u['User']['userid'];
@@ -134,30 +142,17 @@ class AdminController extends AppController {
 	 	$this->checkWriteModulePermission();
 
 	  	$this->Transaction->begin();
-	  	$groupId = NULL;
 	  	$newGroup = false;
+		$groupId = $this->BeAuth->saveGroup($this->data);
 	  	if(!isset($this->data['Group']['id'])) {
-			$this->Group->save($this->data);
-			$groupId = $this->Group->getLastInsertID();
 			$this->eventInfo("group ".$this->data['Group']['name']." created");
 	  		$newGroup = true;
 	  	} else {
-			$this->Group->save($this->data);
-			$groupId = $this->Group->getID();
-			$this->eventInfo("group ".$this->data['Group']['name']." update");
+	  		$this->eventInfo("group ".$this->data['Group']['name']." update");
 		}
 		if(isset($this->data['ModuleFlags'])) {
-//			$moduleFlags=array();
-//	  		foreach ($this->data['ModuleFlags'] as $key=>$val) {
-//	  			$flag = 0;
-//				foreach ($val as $flagVal) 
-//					$flag = $flag | $flagVal;
-//				$moduleFlags[$key]=$flag;
-//	  		}
 	  		$this->BePermissionModule->updateGroupPermission($groupId, $this->data['ModuleFlags']);
 	  	}
-//pr($this->data['ModuleFlags']);
-//die("bb");
 	  	
 	  	$this->userInfoMessage(__("Group ".($newGroup? "created":"updated"),true));
 	  	$this->Transaction->commit();

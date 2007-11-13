@@ -23,8 +23,8 @@ $(document).ready(function(){
 			"data[User][userid]"		: "required",
 			"data[User][realname]"	: "required",
 			"data[User][email]"			: { email : true },
-			"data[User][passwd]"	:  { equalTo : "#passwd"},					
-			"passwd"			:  { 
+			"data[User][passwd]"	:  { equalTo : "#pwd"},					
+			"pwd"			:  { 
 {/literal}{if !isset($user)}
 					required : true,
 			{/if}
@@ -38,7 +38,7 @@ $(document).ready(function(){
 			"data[User][realname]"	: "{t}real name required{/t}",			
 			"data[User][email]"			: "{t}use a valid email{/t}",
 			"data[User][passwd]" : {ldelim} equalTo : "{t}passwords should be equal{/t}" {rdelim},
-			"passwd"		:  {ldelim}
+			"pwd"		:  {ldelim}
 			{if !isset($user)}
 				required : "{t}password is required{/t}",
 			{/if}
@@ -76,10 +76,10 @@ $(document).ready(function(){
 		<tr>
 		 	{if isset($user)}
 			<td>{t}New password{/t}</td>
-			<td><input type="password" name="passwd" value="" id="passwd" />&nbsp;</td>
+			<td><input type="password" name="pwd" value="" id="pwd" />&nbsp;</td>
 		 	{else}
 			<td>{t}Password{/t}</td>
-			<td><input type="password" name="passwd" value="" id="passwd" />&nbsp;</td>
+			<td><input type="password" name="pwd" value="" id="pwd" />&nbsp;</td>
 			{/if}
 		</tr>
 		<tr>
@@ -114,6 +114,24 @@ $(document).ready(function(){
 				</table>
 			</td>
 		</tr>
+		<tr></tr>
+		{if isset($userModules)}
+		<tr>
+			<td>{t}Module access{/t}</td>
+			<td><table>
+				{foreach from=$userModules item=mod}
+				<tr>
+					<td><em>{$mod.label}</em></td>
+					<td>{if ($mod.flag == $conf->BEDITA_PERMS_READ)}{t}Read only{/t}
+						   {elseif ($mod.flag & $conf->BEDITA_PERMS_MODIFY)}{t}Read and modify{/t}
+						   {/if}</td>
+				</tr>
+				{/foreach}
+				</table>
+			</td>
+		</tr>
+		{/if}
+		<tr></tr>
 		<tr>
 			<td colspan="2">
 				<input type="submit" name="save" class="submit" value="{if isset($user)}{t}Modify{/t}{else}{t}Create{/t}{/if}" />

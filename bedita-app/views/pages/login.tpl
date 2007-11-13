@@ -11,6 +11,7 @@ rules[1]='loginPasswd:Password|minlength|6';
 </head>
 <body>
 
+
 <div id="loginStatusBox">
 	<div class="beditaButton" onClick = "document.location ='{$html->url('/')}'">
 		<span style="font:bold 17px Verdana">{t}B.Edita{/t}</span><br/><b>&gt;</b>
@@ -21,6 +22,7 @@ rules[1]='loginPasswd:Password|minlength|6';
 	<div class="menuLeft">
 		<h1 onClick="window.location='./'" class="login"><a href="./">{t}Login{/t}</a></h1>
 	</div>
+{include file="messages.tpl"}
 </div>
 
 <form action="{$html->url('/authentications/login')}" method="post" name="loginForm" id="loginForm">
@@ -28,7 +30,6 @@ rules[1]='loginPasswd:Password|minlength|6';
 {assign var="URL" value=$beurl->here()}
 
 {formHelper fnc="hidden" args="'login/URLOK', array('value' => '$URL')"}
-{formHelper fnc="hidden" args="'login/URLERROR', array('value' => '$URL')"}
 
 <table border="0" cellspacing="8" cellpadding="0">
 <tr>

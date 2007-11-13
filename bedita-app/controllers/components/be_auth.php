@@ -215,7 +215,7 @@ class BeAuthComponent extends Object {
 	 *
 	 * @return unknown
 	 */
-	function isLogged() {
+	public function isLogged() {
 		
 		if (isset($this->Session) && $this->Session->valid() &&  $this->Session->check($this->sessionKey)) {
 			if(@empty($this->user)) $this->user 	= $this->Session->read($this->sessionKey);
@@ -240,7 +240,7 @@ class BeAuthComponent extends Object {
 	 *
 	 * @param unknown_type $userData
 	 */
-	function createUser($userData, $groups=NULL) {
+	public function createUser($userData, $groups=NULL) {
 		$user = new User() ;
 		$user->setSimpleMode();
 		$u = $user->findByUserid($userData['User']['userid']);
@@ -267,7 +267,7 @@ class BeAuthComponent extends Object {
 		}
 	}
 	
-	function updateUser($userData, $groups=NULL)	{
+	public function updateUser($userData, $groups=NULL)	{
 		if(isset($userData['User']['passwd']))
 			$userData['User']['passwd'] = md5($userData['User']['passwd']);
 		$this->userGroupModel($userData, $groups);
@@ -277,7 +277,7 @@ class BeAuthComponent extends Object {
 		return true;
 	}
 	
-	function removeGroup($groupName) {
+	public function removeGroup($groupName) {
 		$config =& Configure::getInstance();
 		if (in_array($groupName, $config->basicGroups)) {
 			throw new BeditaComponentException(sprintf(__("Immutable group %s", true),$groupName), $this);
@@ -287,18 +287,23 @@ class BeAuthComponent extends Object {
 		if(!$groupModel->del($g['Group']['id'])) {
 			throw new BeditaComponentException(__("Error removing group",true), $this);
 		}
+		return true;
 	}
 	
-	function editGroup($groupData) {
+	public function saveGroup($groupData) {
 		$config =& Configure::getInstance();
 		if (in_array($groupData['Group']['name'], $config->basicGroups)) {
 			throw new BeditaComponentException(__("Immutable group",true), $this);
 		}
 		$group = new Group();
-		return $group->save($groupData);
+		if(!$group->save($groupData))
+			throw new BeditaComponentException(__("Error saving group",true), $this);
+		if(!isset($groupData['Group']['id']))
+			return $group->getLastInsertID();
+		return $group->getID();
 	}
 	
-	function removeUser($userId) {
+	public function removeUser($userId) {
 		// TODO: come fare con oggetti associati??? sono cancellati di default??
 		$user = new User();
 		$u = $user->findByUserid($userId);

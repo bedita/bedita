@@ -36,8 +36,8 @@ class BeAuthTestCase extends BeditaTestCase {
 		$this->requiredData(array("new.user","policy","new.user.groups","new.group"));
 		$beAuth = new BeAuthComponent();
 		$this->removeIfPresent($this->data['new.user'], $this->data['new.group']);
-		$group = new Group();
-		$this->assertTrue($group->save($this->data['new.group']));
+		$id = $beAuth->saveGroup($this->data['new.group']);
+		$this->assertTrue(!empty($id));
 		$this->assertTrue($beAuth->createUser($this->data['new.user'], $this->data['new.user.groups']));
 		$this->assertTrue($beAuth->login($this->data['new.user']['User']['userid'], $this->data['new.user']['User']['passwd'], $this->data['policy']));
 		$this->assertTrue($beAuth->removeUser($this->data['new.user']['User']['userid']));
@@ -45,11 +45,17 @@ class BeAuthTestCase extends BeditaTestCase {
 	}
 	
 	function testGroup() {
-//		$this->requiredData(array("new.group","policy"));
-//		$beAuth	= new BeAuthComponent();
-//		$group = new 
-//		$this->assertTrue($beAuth->createUser($this->data['new.user'], $this->data['new.user.groups']));
-		
+		$this->requiredData(array("new.group","new.user","new.group.name"));
+		$beAuth	= new BeAuthComponent();
+		$this->removeIfPresent($this->data['new.user'], $this->data['new.group']);
+		$id = $beAuth->saveGroup($this->data['new.group']);
+		$this->assertTrue(!empty($id));
+		$groupModel = new Group();
+		$g = $groupModel->findById($id);
+		$g['Group']['name'] = $this->data['new.group.name'];
+		$id2 = $beAuth->saveGroup($g);
+		$this->assertTrue($id2 === $id);
+		$this->assertTrue($beAuth->removeGroup($this->data['new.group.name']));
 	}
 	
 	

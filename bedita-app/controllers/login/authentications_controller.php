@@ -19,15 +19,12 @@
  * 
  */
 class AuthenticationsController extends AppController {
-	var $name = 'Authentications';
 
-	var $helpers = array();
-	var $components = array('Session');
-	var $uses = array();
-
+	public $components = array('Session');
+	public $uses = array();
+	
 	/**
 	 *  login through POST with redirection 
-	 * 
 	 */
    function login() {
 
@@ -36,13 +33,13 @@ class AuthenticationsController extends AppController {
 		
 		if(!$this->BeAuth->login($userid, $password)) {
 			$this-> loginEvent('warn', $userid, "login not authorized");
-			$this->Session->setFlash(__("Wrong username/password or no authorization", true));
+			$this->userWarnMessage(__("Wrong username/password or no authorization", true));
 			$this->result=self::ERROR;
 		}
 
 		if(!$this->BeAuth->isValid) {
 			$this-> loginEvent('warn', $userid, "login blocked");
-			$this->Session->setFlash(__("User login temporary blocked", true));
+			$this->userWarnMessage(__("User login temporary blocked", true));
 			$this->result=self::ERROR;
 		}
 		
@@ -54,12 +51,12 @@ class AuthenticationsController extends AppController {
 			return ;
 		}
 		
-		if($this->result == "OK")
+		if($this->result === self::OK)
 			$this->eventInfo("logged in");
 		
-		// Setup del redirect
-		$this->data['OK'] 		= (isset($this->data["login"]["URLOK"])) ? $this->data["login"]["URLOK"] : "/" ; 
-		$this->data['ERROR'] 	= (isset($this->data["login"]["URLERR"])) ? $this->data["login"]["URLERR"] : "/" ; 
+		// redirect setup
+		if(isset($this->data["login"]["URLOK"])) 
+		 		$this->data['OK'] = $this->data["login"]["URLOK"];
    }
 
    function changePasswd() {
@@ -68,7 +65,7 @@ class AuthenticationsController extends AppController {
 		$password 	= (isset($this->data["login"]["passwd"])) ? $this->data["login"]["passwd"] : "" ;
 		
 		if(!$this->BeAuth->changePasswd($userid, $password)) {
-			$this->Session->setFlash(__("Error changing password", true));
+			$this->userErrorMessage(__("Error changing password", true));
 			$this->result=self::ERROR;
 		}
    }
@@ -95,7 +92,7 @@ class AuthenticationsController extends AppController {
 	 			"login"	=> 	array(
 	 									"OK"	=> "/",
 	 									"PWD"	=> "/pages/changePasswd",
-	 									"ERROR"	=> "/logout" 
+	 									"ERROR"	=> "/authentications/logout" 
 	 								)
 	 	);
 	 	
