@@ -88,6 +88,7 @@ class GalleriesController extends AppController {
 			$this->Image->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments');
 			$imageDetails = $this->Image->findById($image['id']);
 			$imageDetails['priority'] = $image['priority'];
+			$imageDetails['filename'] = substr($imageDetails['path'],strripos($imageDetails['path'],"/")+1);
 			$images[$index]=$imageDetails;
 		}
 		$this->set('object',	$obj);
@@ -96,8 +97,10 @@ class GalleriesController extends AppController {
 		$this->set('images',	$images);
 		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) ));
 		$this->set('self',		($this->createSelfURL(false)."?"));
-		$this->set('conf',		$conf);		
-		$this->set('cache_path',CACHE);
+		$this->set('conf',		$conf);
+		$this->set('CACHE',		'imgcache/');
+		$this->set('MEDIA_URL',	MEDIA_URL);
+		$this->set('MEDIA_ROOT',MEDIA_ROOT);
 	}
 
 	private function saveGallery($id) {

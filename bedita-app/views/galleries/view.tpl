@@ -1,5 +1,5 @@
 {agent var="agent"}
-{$html->css('module.gallery.css')}
+{$html->css('module.gallery')}
 {$html->css("jquery-calendar")}
 {$html->css("jquery.thickbox")}
 {if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}

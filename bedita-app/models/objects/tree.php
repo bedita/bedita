@@ -161,7 +161,7 @@ class Tree extends BEAppModel
 		if (!empty($idParent)) {
 			$this->id = $idParent ;
 		}
-		$ret =  $this->query("UPDATE trees SET priority_s = {$priority} WHERE id = {$id} AND parent_id = {$this->id}");
+		$ret =  $this->query("UPDATE trees SET priority = {$priority} WHERE id = {$id} AND parent_id = {$this->id}");
 		return (($ret === false)?false:true) ;
 	}
 

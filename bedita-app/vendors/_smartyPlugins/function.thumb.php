@@ -97,7 +97,7 @@ MAT_SERVER_NAME	= "http://www.salaborsa.clq";
 function smarty_function_thumb($params, &$smarty)
 	{
 	// Start time measurement
-	if ($params['dev'])
+	if (isset($params['dev']))
 		{
 		if (!function_exists('getmicrotime'))
 			{
@@ -186,13 +186,13 @@ function smarty_function_thumb($params, &$smarty)
 
 	$_CONFIG['types'] = array('','.gif','.jpg','.png');
 	
-	//echo $params['file']; exit;
+	//echo $params['file']; echo file_exists($params['file']); exit;
 	### Übergebene Parameter auswerten und verifizieren
 	if (empty($params['cache'])) $_CONFIG['cache'] = 'imgcache/';
 	else $_CONFIG['cache'] = $params['cache'];
 //	if (empty($params['file']) OR !file_exists($params['file'])) { $smarty->_trigger_fatal_error("thumb: parameter 'file' cannot be empty and must exist");	return;	}
 //	if (empty($params['file']) OR !file_exists($params['file'])) { $smarty->trigger_error("thumb: parameter 'file' cannot be empty and must exist");	return;	}
-	if (empty($params['file']) OR !file_exists($params['file'])) { echo("*Thumb error*"); return;	}	
+//	if (empty($params['file']) OR !file_exists($params['file'])) { echo("*Thumb error*"); return;	}	
 	if (empty($params['link'])) $params['link'] = true;
 	if (empty($params['window'])) $params['window'] = true;
 	if (empty($params['hint'])) $params['hint'] = true;
@@ -292,7 +292,6 @@ exit;
 
 $_DST['fileFront'] 	= $params['MAT_SERVER_NAME'].DS.$_DST['file'];
 $_DST['file'] 		= $params['MAT_SERVER_PATH'].DS.$_DST['file'];
-
 
 	$_DST['string']		= 'width="'.$_DST['width'].'" height="'.$_DST['height'].'"';
 

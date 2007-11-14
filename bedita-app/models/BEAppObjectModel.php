@@ -234,12 +234,13 @@ class BEAppCollectionModel extends BEAppObjectModel {
 
 	}
 
-	function appendChild($id, $idParent = null) {
+	function appendChild($id, $idParent = null, $priority = null) {
 		if(!class_exists('Tree')) loadModel('Tree');
 
 		$tree =& new Tree();
 		$ret = $tree->appendChild($id, (isset($idParent)?$idParent:$this->id)) ;
-
+		if($priority!=null)
+			$tree->setPriority($id,$priority,(isset($idParent)?$idParent:$this->id)) ;
 		return $ret ;
 	}
 }
