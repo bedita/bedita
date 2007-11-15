@@ -6,7 +6,7 @@ class FilesController extends AppController {
 //	var $components = array('Transaction', 'BeFileHandler');
 //	function upload () {
 //		if(empty($this->data))
-//			throw new BEditaActionException($this, __("No data", true));
+//			throw new BeditaException(__("No data", true));
 //
 //		$this->Transaction->begin() ;
 //		$this->BeFileHandler->save($this->data) ;

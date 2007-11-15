@@ -4,7 +4,7 @@ uses('L10n');
 
 class AppController extends Controller
 {
-	var $helpers 	= array("Javascript", "Html", "Bevalidation", "Form", "Tr");
+	var $helpers 	= array("Javascript", "Html", "Bevalidation", "Form", "Tr", "Msg");
 	var $components = array('BeAuth', 'BePermissionModule','Transaction');
 	var $uses = array('EventLog') ;
 	
@@ -20,25 +20,40 @@ class AppController extends Controller
 	
 	public $result 		= 'OK' ;
 	
+	private static $current = NULL;
+
 	/////////////////////////////////		
 	/////////////////////////////////		
 
-	public function handleExceptions(Exception $ex) {
+	public static function handleExceptions(BeditaException $ex) {
 		// TODO: aggiungere stack trace e altre info nel log su file
 		$errTrace =    $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
-		$this->log($errTrace);
-		// TODO: different event/log messages and user messages
-		$this->handleError($ex->getMessage(), $ex->getMessage());
+		if(isset(self::$current)) {
+			// TODO: different event/log messages and user messages
+			self::$current->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
+			self::$current->setResult($ex->result);
+			self::$current->afterFilter();
+		} else {
+			// TODO: default error page!!
+			self::defaultError($ex);
+		}
 	}
 
-	public function handleError($eventMsg, $userMsg) {
-		$this->eventError($eventMsg);
+	public static function defaultError(Exception $ex) {
+	}
+	
+	public function handleError($eventMsg, $userMsg, $errTrace) {
+		$this->log($errTrace);
 		// end transactions if necessary
 		if(isset($this->Transaction)) {
 			if($this->Transaction->started())
 				$this->Transaction->rollback();
 		}
+		$this->eventError($eventMsg);
 		$this->userErrorMessage($userMsg);
+		/** 
+		 * @todo : send mail in some cases.....
+		 */
 	}
 	
 	public function setResult($r) {
@@ -48,6 +63,7 @@ class AppController extends Controller
 	
 	function beforeFilter() {
 				
+		self::$current = $this;
 		// Templater
 		$this->view = 'Smarty';
 				
@@ -217,7 +233,7 @@ class AppController extends Controller
 
 	protected function checkWriteModulePermission() {
 		if(isset($this->moduleName) && !($this->modulePerms & BEDITA_PERMS_MODIFY)) {
-				throw new BEditaActionException($this, __("No write permissions in module", true));
+				throw new BeditaException(__("No write permissions in module", true));
 		}
 	}
 	
@@ -303,29 +319,18 @@ class AppController extends Controller
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
- * Exception raised by controllers.
+ * Beadita basic exception
  */
-class BEditaActionException extends Exception
+class BeditaException extends Exception
 {
-	var $controller = NULL;
-
-	public function __construct(&$ctrl, $message = NULL, $code  = 0) {
-        // some code
-   		$this->controller=$ctrl;
-   		$this->controller->setResult(AppController::ERROR);
-        
+	public $result;
+	
+	public function __construct($message = NULL, $res  = AppController::ERROR, $code = 0) {
    		if(empty($message)) {
    			$message = __("Unexpected error, operation failed",true);
    		}
-        // make sure everything is assigned properly
+	 	$this->result = $res;
         parent::__construct($message, $code);
-    }
-}
-
-class BeditaComponentException extends BEditaActionException {
-
-	public function __construct($message, &$component) {
-        parent::__construct($component->controller, $message);
     }
 }
 

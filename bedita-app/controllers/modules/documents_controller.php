@@ -115,13 +115,13 @@ class DocumentsController extends AppController {
 	  */
 	 function save() {	 	
 	 	try {
-		 	if(empty($this->data)) throw new BEditaActionException($this, __("No data", true));
+		 	if(empty($this->data)) throw new BeditaException( __("No data", true));
 	 		
 			$new = (empty($this->data['id'])) ? true : false ;
 			
 		 	// Verifica i permessi di modifica dell'oggetto
 		 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-		 			throw new BEditaActionException($this, "Error modify permissions");
+		 			throw new BeditaException(__("Error modify permissions", true));
 		 	
 		 	// Formatta le custom properties
 		 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
@@ -136,7 +136,7 @@ pr($this->data);
 exit;
 */		
 	 		// Salva i dati
-		 	if(!$this->Document->save($this->data)) throw new BEditaActionException($this, $this->Document->validationErrors);
+		 	if(!$this->Document->save($this->data)) throw new BeditaException( $this->Document->validationErrors);
 
 			/**
  			* inserimento nell'albero
@@ -166,7 +166,7 @@ exit;
 		 			(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
 		 			(empty($this->data['recursiveApplyPermissions'])?false:true))
 		 		) {
-		 			throw new BEditaActionException($this, __("Error saving permissions", true));
+		 			throw new BeditaException( __("Error saving permissions", true));
 		 	}	 	
 	 		$this->Transaction->commit() ;
 
@@ -185,12 +185,12 @@ exit;
 		$this->setup_args(array("id", "integer", &$id)) ;
 		
 	 	try {
-		 	if(empty($id)) throw new BEditaActionException($this,__("No data", true));
+		 	if(empty($id)) throw new BeditaException(__("No data", true));
 	 		
 		 	$this->Transaction->begin() ;
 	 	
 		 	// Cancellla i dati
-		 	if(!$this->Document->delete($id)) throw new BEditaActionException($this, sprintf(__("Error deleting document: %d", true), $id));
+		 	if(!$this->Document->delete($id)) throw new BeditaException(sprintf(__("Error deleting document: %d", true), $id));
 		 	
 		 	$this->Transaction->commit() ;
 	 	} catch (Exception $e) {

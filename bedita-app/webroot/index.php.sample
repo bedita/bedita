@@ -80,11 +80,10 @@
 		 $Dispatcher=new Dispatcher();
 		 try {
 		 	$Dispatcher->dispatch($url);
-		} catch (BEditaActionException $ex) {
-			if(isset($ex->controller)) {
-				$ex->controller->handleExceptions($ex);
-				$ex->controller->afterFilter();
-			}
+		} catch (BeditaException $ex) {
+			AppController::handleExceptions($ex);
+		} catch (Exception $e) {
+			AppController::defaultError($e);
 		}
 	}
 	if (Configure::read() > 0) {

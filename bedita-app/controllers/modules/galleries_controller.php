@@ -105,17 +105,17 @@ class GalleriesController extends AppController {
 
 	private function saveGallery($id) {
 		if(empty($this->data)) 
-			throw new BEditaActionException($this, __("No data", true));
+			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false;
 		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY))
-			throw new BEditaActionException($this, "Error modify permissions");
+			throw new BeditaException(__("Error modify permissions", true));
 		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]);
 		$this->BeLangText->setupForSave($this->data["LangText"]);
 		
 		$this->Transaction->begin();
 		if(!$this->Gallery->save($this->data)) 
-//			throw new BEditaActionException($this, $this->Gallery->validationErrors);
-			throw new BEditaActionException($this, __("Error saving gallery", true));
+//			throw new BeditaException( $this->Gallery->validationErrors);
+			throw new BeditaException( __("Error saving gallery", true));
 			if(($parents = $this->Tree->getParent($this->Gallery->id)) !== false) {
 			if(!is_array($parents)) $parents = array($parents);
 		} else {
@@ -130,7 +130,7 @@ class GalleriesController extends AppController {
 			$this->Gallery->id,
 		 	(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
 		 	(empty($this->data['recursiveApplyPermissions'])?false:true))) {
-				throw new BEditaActionException($this, __("Error saving permissions", true));
+				throw new BeditaException( __("Error saving permissions", true));
 		}
 	 	$this->Transaction->end();
 	 	return $this->Gallery->id;
@@ -139,7 +139,7 @@ class GalleriesController extends AppController {
 	private function deleteGallery($id) {
 	 	if(empty($id)) {
 	 		$this->log("TEST");
-			throw new BEditaActionException($this,__("No data", true));
+			throw new BeditaException(__("No data", true));
 		}
 	 	$this->Transaction->begin();
 		$this->Gallery->delete($id);

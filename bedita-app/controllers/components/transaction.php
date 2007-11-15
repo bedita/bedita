@@ -57,7 +57,7 @@ class TransactionComponent extends Object {
 		if($this->status === self::COMMIT || $this->status === self::ROLLBACK)
 			return true;
 		else 
-			throw new BeditaComponentException(__("Bad transaction state",true), $this);
+			throw new BeditatException(__("Bad transaction state",true));
 	}
 	/**
 	 * Fine positiva di una transazione

@@ -246,12 +246,12 @@ class BeAuthComponent extends Object {
 		$u = $user->findByUserid($userData['User']['userid']);
 		if(!empty($u["User"])) {
 			$this->log("User ".$userData['User']['userid']." already created");
-			throw new BeditaComponentException(__("User already created",true), $this);
+			throw new BeditaException(__("User already created",true));
 		}
 		$userData['User']['passwd'] = md5($userData['User']['passwd']);
 		$this->userGroupModel($userData, $groups);
 		if(!$user->save($userData))
-			throw new BeditaComponentException(__("Error saving user",true), $this);
+			throw new BeditaException(__("Error saving user",true));
 		return true;
 	}
 
@@ -273,19 +273,19 @@ class BeAuthComponent extends Object {
 		$this->userGroupModel($userData, $groups);
 		$user = new User() ;
 		if(!$user->save($userData))
-			throw new BeditaComponentException(__("Error updating user",true), $this);
+			throw new BeditaException(__("Error updating user",true));
 		return true;
 	}
 	
 	public function removeGroup($groupName) {
 		$config =& Configure::getInstance();
 		if (in_array($groupName, $config->basicGroups)) {
-			throw new BeditaComponentException(sprintf(__("Immutable group %s", true),$groupName), $this);
+			throw new BeditaException(sprintf(__("Immutable group %s", true),$groupName));
 		}
 		$groupModel = new Group();
 		$g =  $groupModel->findByName($groupName);
 		if(!$groupModel->del($g['Group']['id'])) {
-			throw new BeditaComponentException(__("Error removing group",true), $this);
+			throw new BeditaException(__("Error removing group",true));
 		}
 		return true;
 	}
@@ -293,11 +293,11 @@ class BeAuthComponent extends Object {
 	public function saveGroup($groupData) {
 		$config =& Configure::getInstance();
 		if (in_array($groupData['Group']['name'], $config->basicGroups)) {
-			throw new BeditaComponentException(__("Immutable group",true), $this);
+			throw new BeditaException(__("Immutable group",true));
 		}
 		$group = new Group();
 		if(!$group->save($groupData))
-			throw new BeditaComponentException(__("Error saving group",true), $this);
+			throw new BeditaException(__("Error saving group",true));
 		if(!isset($groupData['Group']['id']))
 			return $group->getLastInsertID();
 		return $group->getID();
@@ -308,7 +308,7 @@ class BeAuthComponent extends Object {
 		$user = new User();
 		$u = $user->findByUserid($userId);
 		if(empty($u["User"])) {
-			throw new BeditaComponentException(__("User not present",true), $this);
+			throw new BeditaException(__("User not present",true));
 		}
 		return $user->delete($u["User"]['id']);
 	}	

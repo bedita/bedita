@@ -68,7 +68,7 @@ class AdminController extends AppController {
 	 	if(isset($id)) {
 	 		$user = $this->User->findById($id) ;
 		  	if(empty($user))
-		  		throw new BEditaActionException($this, __("bad data",true));
+		  		throw new BeditaException(__("Bad data",true));
 	 		$userModules = $this->BePermissionModule->getListModules($user['User']['userid']);
 	 		
 		} else {
@@ -111,7 +111,7 @@ class AdminController extends AppController {
 	  	$this->set('groups', $this->Group->findAll());
 	  	$g = $this->Group->findById($id);
 	  	if(empty($g))
-	  		throw new BEditaActionException($this, __("bad data",true));
+	  		throw new BeditaException(__("Bad data",true));
 	  	foreach($g['User'] as &$user) {
 	  		$u = $this->User->findById($user['id']);
 	  		$user['userid'] = $u['User']['userid'];
