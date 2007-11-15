@@ -120,149 +120,42 @@ function activePortionsForm(objectType) {
 
 <div class="blockForm" id="errorForm"></div>
 
-<h2 class="showHideBlockButton">{t}Proprieta'{/t}</h2>
-
-<div class="blockForm" id="proprieta">
-	<span style="font-weight:bold;">{t}status{/t}</span>:
-	{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator=" "}
-	<br />
-	<span style="font-weight:bold;">{t}pubblicazione{/t}. {t}inizio{/t}:</span>
-	<input type="text" name="data[start]" id="start" value="{$object.start|date_format:$conf->date_format}"/>
-	<span style="font-weight:bold;">{t}fine{/t}:</span>
-	<input type="text" name="data[end]" id="end" value="{$object.end|date_format:$conf->date_format}"/>
-	<hr/>
-	<span style="font-weight:bold;">{t}Scegli il tipo di documento{/t}:</span>
-	{html_radios name="data[object_type_id]" options=$conf->docTypeOptions selected=$object.object_type_id|default:'22' separator="&nbsp;"}
-	<hr/>
-	
-	<table class="tableForm" border="0">
-	<tr>
-		<td class="label">{t}Lingua{/t}:</td>
-		<td>
-			<select name="data[lang]">
-			{html_options options=$conf->langOptions selected=$object.lang|default:$conf->lang}
-			</select>
-		</td>
-		<td>&nbsp;</td>
-	</tr>
-	<tr id="Title_TR_{$object.lang|default:$conf->lang}">
-		<td class="label">{t}Titolo{/t}:</td>
-		<td>
-			<input  class="{literal}{required:true}{/literal}" id="titleInput"  type="text" name="data[title]" value="{$object.title|default:''|escape:'html'|escape:'quotes'}"/>&nbsp;
-		</td>
-		{if ($object)}
-		<td><input class="cmdField" id="cmdTranslateTitle" type="button" value="lang ..."/></td>
-		{/if}
-	</tr>
-	{if (isset($object.LangText.title))}
-	{foreach name=i from=$object.LangText.title key=lang item=text}
-	<tr>
-		<td class="label">&#160;</td>
-		<td>
-			<input type='hidden' value='title' name="data[LangText][{$smarty.foreach.i.iteration}][name]"/>
-			<input type="text" name="data[LangText][{$smarty.foreach.i.iteration}][txt]" value="{$text|escape:'html'|escape:'quotes'}"/>&nbsp;
-		</td>
-		<td>
-			<select name="data[LangText][{$smarty.foreach.i.iteration}][lang]">
-			{html_options options=$conf->langOptions selected=$lang}
-			</select>
-			&nbsp;&nbsp;
-			<input type="button" name="delete" value=" x " onclick="$('../..', this).remove() ;"/>
-		</td>
-	</tr>
-	{/foreach}
-	{/if}
-	</table>
-	{if ($object)}
-	<hr/>
-	<table class="tableForm" border="0">
-	<tr>
-		<td class="label">{t}Alias{/t}:</td><td>{$object.nickname}</td>
-		<td class="label">{t}IP{/t}:</td><td>{$object.IP_created}</td>
-	</tr>
-	<tr>
-		<td class="label">{t}Creato il{/t}:</td><td>{$object.created|date_format:$conf->date_format}</td>
-		<td class="label">{t}Da{/t}:</td><td>{$object.UserCreated.userid|default:""}</td>
-	</tr>
-	<tr>
-		<td class="label">{t}Ultima modifica{/t}:</td><td>{$object.modified|date_format:$conf->date_format}</td>
-		<td class="label">{t}Da{/t}:</td><td>{$object.UserModified.userid|default:""}</td>
-	</tr>
-	</table>
-	{/if}
+<h2 class="showHideBlockButton">{t}Properties{/t}</h2>
+<div class="blockForm" id="properties">
+{include file="../pages/form_properties.tpl" doctype=true}
 </div>
 
-<h2 class="showHideBlockButton">{t}Sotto titolo, descrizione{/t}</h2>
-
+<h2 class="showHideBlockButton">{t}Subtitle, description{/t}</h2>
 <div class="blockForm" style="display:none" id="subtitle">
-
-	<table class="tableForm" border="0">
-	<tr id="SubTitle_TR_{$object.lang|default:$conf->lang}">
-		<td></td>
-		<td>
-			<textarea name="data[subtitle]" class="subtitle">{$object.subtitle|default:''|escape:'html'}</textarea>
-		</td>
-		{if ($object)}
-		<td><input class="cmdField" id="cmdTranslateSubtitle" type="button" value="lang ..."/></td>
-		{/if}
-	</tr>
-	{if (isset($object.LangText.subtitle))}
-	{foreach name=i from=$object.LangText.subtitle key=lang item=text}
-	<tr>
-		<td></td>
-		<td>
-			<input type='hidden' value='subtitle' name="data[LangText][{$smarty.foreach.i.iteration}][name]"/>
-			<textarea class="subtitle" name="data[LangText][{$smarty.foreach.i.iteration}][txt]">{$text|escape:'html'}</textarea>
-		</td>
-		<td>
-			<select name="data[LangText][{$smarty.foreach.i.iteration}][lang]">
-			{html_options options=$conf->langOptions selected=$lang}
-			</select>
-			&nbsp;&nbsp;
-			<input type="button" name="delete" value=" x " onclick="$('../..', this).remove() ;"/>
-		</td>
-	</tr>
-	{/foreach}
-	{/if}
-	</table>
+{include file="../pages/form_subtitle_desc.tpl"}
 </div>
 
-<h2 class="showHideBlockButton">{t}Dove inserire il documento{/t}</h2>
-
-<div class="blockForm" id="dove">
-	<div id="treecontrol">
-		<a href="#">{t}Chiudi tutti{/t}</a>
-		<a href="#">{t}Espandi tutto{/t}</a>
-	</div>
-	{$beTree->tree("treeWhere", $tree)}
+<h2 class="showHideBlockButton">{t}Where put the document into{/t}</h2>
+<div class="blockForm" id="whereto">
+{include file="../pages/form_tree.tpl"}
 </div>
 
 <div id="divLinkExtern"  style="display: none">
-	<h2 class="showHideBlockButton">{t}Inserisci un link esterno{/t}</h2>
-
-	<div class="blockForm" id="linkEsterno" style="display: block">
-		LINK ESTERNO
-	</div>
+<h2 class="showHideBlockButton">{t}External links{/t}</h2>
+<div class="blockForm" id="linkEsterno" style="display: block">
+	LINK ESTERNO
+</div>
 </div>
 
 <div id="divLinkIntern"  style="display: none">
-	<h2 class="showHideBlockButton">{t}Seleziona un oggetto{/t}</h2>
-
-	<div class="blockForm" id="linkInterno"  style="display: block">
-		LINK INTERNO
-	</div>
+<h2 class="showHideBlockButton">{t}Objects{/t}</h2>
+<div class="blockForm" id="linkInterno"  style="display: block">
+	LINK INTERNO
+</div>
 </div>
 
-
-
-<h2 class="showHideBlockButton">{t}Proprieta' Custom{/t}</h2>
-
-<div class="blockForm" id="proprietaCustom">
+<h2 class="showHideBlockButton">{t}Custom Properties{/t}</h2>
+<div class="blockForm" id="customProperties">
 {include file="../pages/form_custom_properties.tpl" el=$object}
 </div>
 
-<h2 class="showHideBlockButton">{t}Permessi{/t}</h2>
-<div class="blockForm" id="permessi">
+<h2 class="showHideBlockButton">{t}Permissions{/t}</h2>
+<div class="blockForm" id="permissions">
 {include file="../pages/form_permissions.tpl" el=$object recursion=true}
 </div>
 

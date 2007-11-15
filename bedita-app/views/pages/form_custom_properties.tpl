@@ -1,6 +1,3 @@
-{*
-Frammento di codice per inserire la gestioen delle custom properties
-*}
 <script type="text/javascript">
 {literal}
 /*
@@ -27,12 +24,12 @@ $(document).ready(function(){
 {literal}
 // Procedura per l'aggiunta di una proprieta'
 var htmlTemplateCustomProp = ' \
-					<tr id=""> \
-						<td><input type="hidden" name=""></td> \
-						<td><select name="">{/literal}{$smarty.capture.i|strip}{literal}</select></td> \
-						<td><input type="" name="" value=""> </td> \
-						<td><input type="button" name="delete" value=" x "></td> \
-					</tr> \
+	<tr id=""> \
+		<td><input type="hidden" name=""></td> \
+		<td><select name="">{/literal}{$smarty.capture.i|strip}{literal}</select></td> \
+		<td><input type="" name="" value=""> </td> \
+		<td><input type="button" name="delete" value=" x "></td> \
+	</tr> \
 ' ;
 
 function addCustomPropTR() {
@@ -42,15 +39,13 @@ function addCustomPropTR() {
 	
 	// Se non completa esce
 	if(!name.length || !value.length) {
-		alert("Dati non completi") ;
-		
+		alert("{/literal}{t}Data uncomplete{/t}{literal}") ;
 		return false ;
 	}
 	
 	// se gia' presente o vuota esce
 	if($("#"+name+postfix_customProp).size()) {
-		alert("Proprieta' gia' presente") ;
-		
+		alert("{/literal}{t}Property already present{/t}{literal}") ;
 		return false ;
 	}
 
@@ -95,7 +90,7 @@ function _setupCustomPropTR(id) {
 
 // cancella l'elemento
 function deleteTRCustomProp(el) {
-	if(!confirm("Confermi la cancellazione delle proprieta'?")) return false ;
+	if(!confirm("{/literal}{t}Do you really want to delete the property{/t}{literal}'?")) return false ;
 	$(el).parent().parent().remove() ;		
 	
 	// Indica l'avvenuto cambiamento dei dati
@@ -107,50 +102,32 @@ function deleteTRCustomProp(el) {
 {/literal}
 </script>
 
-
-				<table class="tableForm" border="0" id="frmCustomProperties">
-					<tr>
-						<td class="label" style="text-align:left;">nome</td>
-						<td class="label" style="text-align:left;">tipo</td>
-						<td class="label" style="text-align:left;">valore</td>
-						<td class="label">&nbsp;</td>
-					</tr>
-					{foreach key="name" item="property" from=$el.CustomProperties}
-					<tr id="{$name}_customPropTR">
-						<td>
-							<input type="hidden" name="data[CustomProperties][{$name}][name]">
-							{$name}
-						</td>
-						<td>
-						<select name="data[CustomProperties][{$name}][type]">
-						{html_options options=$conf->customPropTypeOptions selected=$property|get_type}
-						</select>
-						</td>
-						<td>
-							<input type="text" name="data[CustomProperties][{$name}][value]" value="{$property|escape:'html'}">
-						</td>
-						<td>
-							<input type="button" name="delete" value=" x ">
-						</td>
-					</tr>
-					{/foreach}
-					<tr id="endLineCustomPropTR">
-						<td colspan="4"><hr/></td>
-					</tr>
-					<tr id="addCustomPropTR">
-						<td>
-							<input type="text" name="name">
-						</td>
-						<td>
-						<select name="type">
-						{html_options options=$conf->customPropTypeOptions}
-						</select>
-						</td>
-						<td>
-							<input type="text" name="value" value="">
-						</td>
-						<td>
-							<input type="button" name="cmdAdd" value=" add ">
-						</td>
-					</tr>
-				</table>
+<table class="tableForm" border="0" id="frmCustomProperties">
+<tr>
+	<td class="label" style="text-align:left;">{t}name{/t}</td>
+	<td class="label" style="text-align:left;">{t}type{/t}</td>
+	<td class="label" style="text-align:left;">{t}value{/t}</td>
+	<td class="label">&nbsp;</td>
+</tr>
+{foreach key="name" item="property" from=$el.CustomProperties}
+<tr id="{$name}_customPropTR">
+	<td><input type="hidden" name="data[CustomProperties][{$name}][name]"/>{$name}</td>
+	<td>
+		<select name="data[CustomProperties][{$name}][type]">
+		{html_options options=$conf->customPropTypeOptions selected=$property|get_type}
+		</select>
+	</td>
+	<td><input type="text" name="data[CustomProperties][{$name}][value]" value="{$property|escape:'html'}"/></td>
+	<td><input type="button" name="delete" value=" x "/></td>
+</tr>
+{/foreach}
+<tr id="endLineCustomPropTR">
+	<td colspan="4"><hr/></td>
+</tr>
+<tr id="addCustomPropTR">
+	<td><input type="text" name="name"/></td>
+	<td><select name="type">{html_options options=$conf->customPropTypeOptions}</select></td>
+	<td><input type="text" name="value" value=""></td>
+	<td><input type="button" name="cmdAdd" value=" {t}add{/t} "></td>
+</tr>
+</table>

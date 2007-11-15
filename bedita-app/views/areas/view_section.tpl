@@ -34,8 +34,8 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 
-	$('#proprieta').show() ;
-	if(!current_id) $('#dove').show() ;
+	$('#properties').show() ;
+	if(!current_id) $('#whereto').show() ;
 
 	// aggiunge i comandi per i blocchi
 	$('.showHideBlockButton').bind("click", function(){
@@ -90,6 +90,7 @@ function addCommand() {
 <body>
 {include file="head.tpl"}
 <div id="centralPage">
-	{include file="submenu.tpl" method="viewSection"}
-	{include file="form_section.tpl"}
+{include file="submenu.tpl" method="viewSection"}
+{assign var='object' value=$section}
+{include file="form_section.tpl"}
 </div>

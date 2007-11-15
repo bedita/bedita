@@ -23,7 +23,7 @@ var parents = new Array({foreach item=i from=$parents}{if $i != ''}{$i},{/if}{/f
 
 $(document).ready(function(){
 
-	$('#proprieta').show() ;
+	$('#properties').show() ;
 
 	// aggiunge i comandi per i blocchi
 	$('.showHideBlockButton').bind("click", function(){

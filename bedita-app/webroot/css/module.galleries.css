@@ -1,5 +1,6 @@
+/*
 #listAree {
-float:left;
+	float:left;
 	border: ridge #DDD 3px;
 }
 
@@ -10,7 +11,7 @@ float:left;
 	padding-left:5px;
 	padding-left:5px;
 }
-
+*/
 #treeWhere, .treeWhere ul { padding: 0; margin: 2px; list-style: none;}
 #treeWhere li { margin: 0; padding: 3px 0pt 3px 18px; list-style: none; }
 #treeWhere li { background: url(treeview/tv-item.gif) 0 0 no-repeat; }

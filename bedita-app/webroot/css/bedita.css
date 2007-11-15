@@ -237,7 +237,7 @@ text-decoration: none;
 
 TABLE.indexList {width:100%; margin-left:0px; empty-cells: show; border-collapse: collapse}
 .indexList TR {cursor:pointer;}
-TABLE.indexList TR.rowList:hover {background-color:red;}
+/*TABLE.indexList TR.rowList:hover {background-color:red;}*/
 
 .indexList TD {vertical-align:middle; padding:4px; border:1px solid gray;}
 .indexList TH {border-bottom:1px solid gray; text-align:left; color: black; font: bold 12px Arial; margin: 10px 0px 10px 0px; padding:4px; background: transparent none repeat-x; vertical-align:middle;}

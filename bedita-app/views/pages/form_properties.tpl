@@ -7,6 +7,11 @@
 	<span style="font-weight:bold;">{t}end{/t}:</span>
 	<input type="text" name="data[end]" id="end" value="{if !empty($object.end)}{$object.end|date_format:$conf->date_format}{/if}"/>
 	<hr/>
+	{if (isset($doctype) && !empty($doctype))}
+	<span style="font-weight:bold;">{t}Choose document type{/t}:</span>
+	{html_radios name="data[object_type_id]" options=$conf->docTypeOptions selected=$object.object_type_id|default:'22' separator="&nbsp;"}
+	<hr/>
+	{/if}
 	<table class="tableForm" border="0">
 	<tr>
 		<td class="label">{t}Language{/t}:</td>
@@ -48,12 +53,18 @@
 	{if ($object)}
 	<hr/>
 	<table class="tableForm" border="0">
-	<tr><td class="label">{t}Alias{/t}:</td><td>{$object.nickname}</td></tr>
-	<tr><td class="label">{t}Creato il{/t}:</td><td>{$object.created|date_format:$conf->date_format}</td></tr>
-	<tr><td class="label">{t}Da{/t}:</td><td>{$object.UserCreated.userid|default:""}</td></tr>
-	<tr><td class="label">{t}Ultima modifica{/t}:</td><td>{$object.modified|date_format:$conf->date_format}</td></tr>
-	<tr><td class="label">{t}Da{/t}:</td><td>{$object.UserModified.userid|default:""}</td></tr>
-	<tr><td class="label">{t}IP{/t}:</td><td>{$object.IP_created}</td></tr>
+	<tr>
+		<td class="label">{t}Alias{/t}:</td><td>{$object.nickname}</td>
+		<td class="label">{t}IP{/t}:</td><td>{$object.IP_created}</td>
+	</tr>
+	<tr>
+		<td class="label">{t}Creato il{/t}:</td><td>{$object.created|date_format:$conf->date_format}</td>
+		<td class="label">{t}Da{/t}:</td><td>{$object.UserCreated.userid|default:""}</td>
+	</tr>
+	<tr>
+		<td class="label">{t}Ultima modifica{/t}:</td><td>{$object.modified|date_format:$conf->date_format}</td>
+		<td class="label">{t}Da{/t}:</td><td>{$object.UserModified.userid|default:""}</td>
+	</tr>
 	</table>
 	{/if}
 </fieldset>

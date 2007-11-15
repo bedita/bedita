@@ -34,8 +34,8 @@ Albero per selezionare la collocazione della sezione
 
 $(document).ready(function(){
 
-	$('#proprieta').show() ;
-//	$('#dove').show() ;
+	$('#properties').show() ;
+//	$('#whereto').show() ;
 
 	// aggiunge i comandi per i blocchi
 	$('.showHideBlockButton').bind("click", function(){

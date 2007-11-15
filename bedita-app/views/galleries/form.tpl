@@ -65,17 +65,17 @@ $(document).ready(function(){
 <div class="blockForm" id="errorForm"></div>
 
 <h2 class="showHideBlockButton">{t}Properties{/t}</h2>
-<div class="blockForm" id="proprieta">
+<div class="blockForm" id="properties">
 {include file="../pages/form_properties.tpl"}
 </div>
 
-<h2 class="showHideBlockButton">{t}Sotto titolo, descrizione{/t}</h2>
+<h2 class="showHideBlockButton">{t}Subtitle, description{/t}</h2>
 <div class="blockForm" style="display:none" id="subtitle">
 {include file="../pages/form_subtitle_desc.tpl"}
 </div>
 
 <h2 class="showHideBlockButton">{t}Where put the gallery into{/t}</h2>
-<div class="blockForm" id="dove">
+<div class="blockForm" id="whereto">
 {include file="../pages/form_tree.tpl"}
 </div>
 
@@ -84,13 +84,13 @@ $(document).ready(function(){
 {include file="../pages/form_images.tpl"}
 </div>
 
-<h2 class="showHideBlockButton">{t}Proprieta' Custom{/t}</h2>
-<div class="blockForm" id="proprietaCustom">
+<h2 class="showHideBlockButton">{t}Custom Properties{/t}</h2>
+<div class="blockForm" id="customProperties">
 {include file="../pages/form_custom_properties.tpl" el=$object}
 </div>
 
-<h2 class="showHideBlockButton">{t}Permessi{/t}</h2>
-<div class="blockForm" id="permessi">
+<h2 class="showHideBlockButton">{t}Permissions{/t}</h2>
+<div class="blockForm" id="permissions">
 {include file="../pages/form_permissions.tpl" el=$object recursion=true}
 </div>
 

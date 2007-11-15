@@ -1,6 +1,7 @@
 <script type="text/javascript">
 <!--
 {literal}
+
 $(document).ready(function(){
 	$("TABLE.indexList TR.rowList").click(function(i) {
 		document.location = $("A", this).attr('href') ;
@@ -17,9 +18,6 @@ function localConfirm(anchorElem,url) {
 </script>
 
 <div id="containerPage">
-	
-	{if !empty($msgOk)}<div id="msgOk" style="background-color:#FFF;border:solid green 1px;">{t}{$msgOk}{/t}</div>{/if}
-	{if !empty($msgErr)}<div id="msgError" style="background-color:#FFF;border:solid red 1px;">{t}{$msgErr}{/t}</div>{/if}
 	
 	<div id="listAree">
 	{$beTree->tree("tree", $tree)}

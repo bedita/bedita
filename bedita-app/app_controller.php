@@ -10,6 +10,7 @@ class AppController extends Controller
 	
 	protected $moduleName = NULL;
 	private $modulePerms = NULL;
+	private $moduleColor = NULL;
 	/**
 	 * tipologie di esito operazione e esisto dell'operazione
 	 *
@@ -96,8 +97,8 @@ class AppController extends Controller
 	 * 
 	 */
 	function afterFilter() {
+		$this->set('moduleColor',$this->moduleColor);
 		if($this->autoRender) return ;
-
 		if(isset($this->data[$this->result])) {
 			$this->redirUrl($this->data[$this->result]);
 		
@@ -215,8 +216,10 @@ class AppController extends Controller
 		// verify basic access
 		if(isset($this->moduleName)) { 
 			 foreach ($moduleList as $mod) {
-			 	if($this->moduleName == $mod['label']) 
+			 	if($this->moduleName == $mod['label']) { 
 			 		$this->modulePerms = $mod['flag'];
+			 		$this->moduleColor = $mod['color'];
+			 	}
 			 }
 			if(!isset($this->modulePerms) || !($this->modulePerms & BEDITA_PERMS_READ)) {
 					$logMsg = "Module [". $this->moduleName.  "] access not authorized";

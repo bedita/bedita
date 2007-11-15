@@ -154,3 +154,72 @@ msgstr "Nuova Immagine"
 
 msgid "Size"
 msgstr "Dimensione"
+
+msgid "Custom Properties"
+msgstr "Proprieta' Ad Hoc"
+
+msgid "name"
+msgstr "nome"
+
+msgid "type"
+msgstr "tipo"
+
+msgid "value"
+msgstr "valore"
+
+msgid "add"
+msgstr "aggiungi"
+
+msgid "Permissions"
+msgstr "Permessi"
+
+msgid "read"
+msgstr "lettura"
+
+msgid "modify"
+msgstr "modifica"
+
+msgid "delete"
+msgstr "eliminazione"
+
+msgid "Apply permissions recursively"
+msgstr "Applica i permessi ricorsivamente"
+
+msgid "Do you really want to delete the permission"
+msgstr "Vuoi davvero eliminare il permesso"
+
+msgid "user"
+msgstr "utente"
+
+msgid "group"
+msgstr "gruppo"
+
+msgid "From"
+msgstr "Da"
+
+msgid "Last modified"
+msgstr "Ultima modifica"
+
+msgid "Do you really want to delete the property"
+msgstr "Vuoi davvero eliminare la proprieta'"
+
+msgid "Data uncomplete"
+msgstr "Dati incompleti"
+
+msgid "Property already present"
+msgstr "Proprieta' gia' presente"
+
+msgid "Where put the section into"
+msgstr "Dove inserire la sezione"
+
+msgid "Choose document type"
+msgstr "Scegli il tipo documento"
+
+msgid "External links"
+msgstr "Link esterni"
+
+msgid "Objects"
+msgstr "Oggetti"
+
+msgid "Where put the document into"
+msgstr "Dove inserire il documento"

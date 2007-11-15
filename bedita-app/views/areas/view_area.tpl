@@ -19,7 +19,7 @@
 
 $(document).ready(function(){
 
-	$('#proprieta').show() ;
+	$('#properties').show() ;
 
 	// aggiunge i comandi per i blocchi
 	$('.showHideBlockButton').bind("click", function(){
@@ -40,5 +40,6 @@ $(document).ready(function(){
 <body>
 {include file="head.tpl"}
 {include file="submenu.tpl" method="viewArea"}
+{assign var='object' value=$area}
 {include file="form_area.tpl"}
 <br style="clear:both"/>

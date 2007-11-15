@@ -1,17 +1,15 @@
 /*
 ** box messaggi
 */
-#messagesDiv {
+
+#messagesDiv {	
 	position: relative;
 	top: 0px;
-	left: 160px;
-	width: 508px;
-	min-height: 40px;
+	left: 0px;
+	/*min-height: 40px;*/
 	font-size: 10pt;
 	color: #000;
 	text-align: left;
-	margin-bottom: -50px;
-	overflow: visible;
 }
 
 /* TRICK per interpretare il seguente codice solo con IE5 + */

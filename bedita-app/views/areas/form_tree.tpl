@@ -1,10 +1,10 @@
 <div id="containerPage">
 	<div class="FormPageHeader">
-	<h1>{t}albero delle aree{/t}</h1>
+	<h1>{t}Tree of Areas{/t}</h1>
 	</div>
 	<div id="treecontrol">
-		<a href="#">{t}Chiudi tutti{/t}</a>
-		<a href="#">{t}Espandi tutto{/t}</a>
+		<a href="#">{t}Close all{/t}</a>
+		<a href="#">{t}Open all{/t}</a>
 	</div>
 	<div id="test">
 	{formHelper fnc="create" args="'area', array('id' => 'frmTree', 'action' => 'saveTree', 'type' => 'POST')"}

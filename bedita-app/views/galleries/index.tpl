@@ -1,6 +1,5 @@
 {$html->css('module.galleries')}
 {$javascript->link("jquery.treeview.pack")}
-{$javascript->link("interface")}
 {$javascript->link("module.galleries")}
 {$javascript->link("form")}
 {$javascript->link("jquery.changealert")}

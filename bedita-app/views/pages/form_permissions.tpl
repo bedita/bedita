@@ -1,6 +1,3 @@
-{*
-Frammento di codice per inserire la gestione dei permessi
-*}
 {php}
 $vs = &$this->get_template_vars() ;
 $vs['maxIDPerms'] = (isset($vs["el"]["Permissions"]))?@count($vs["el"]["Permissions"]):0 ;
@@ -41,26 +38,26 @@ $(document).ready(function(){
 
 // Procedura per l'aggiunta di un permesso
 var htmlTemplateCustomPerm = ' 													\
-						<tr> 												\
-							<td> 												\
-								<input type="hidden" name=""/> 					\
-							</td> 												\
-							<td> 												\
-								<input type="hidden" name=""/> 					\
-							</td> 												\
-							<td> 												\
-								<input type="checkbox" name="" value="{/literal}{$conf->BEDITA_PERMS_READ}{literal}"/> 		\
-							</td> 												\
-							<td> 												\
-								<input type="checkbox" name="" value="{/literal}{$conf->BEDITA_PERMS_MODIFY}{literal}"/> 		\
-							</td> 												\
-							<td> 												\
-								<input type="checkbox" name="" value="{/literal}{$conf->BEDITA_PERMS_DELETE}{literal}"/> 		\
-							</td>												\
-							<td> 												\
-								<input type="button" name="delete" value=" x "/> \
-							</td> 												\
-						</tr> 													\
+<tr> 												\
+	<td> 												\
+		<input type="hidden" name=""/> 					\
+	</td> 												\
+	<td> 												\
+		<input type="hidden" name=""/> 					\
+	</td> 												\
+	<td> 												\
+		<input type="checkbox" name="" value="{/literal}{$conf->BEDITA_PERMS_READ}{literal}"/> 		\
+	</td> 												\
+	<td> 												\
+		<input type="checkbox" name="" value="{/literal}{$conf->BEDITA_PERMS_MODIFY}{literal}"/> 		\
+	</td> 												\
+	<td> 												\
+		<input type="checkbox" name="" value="{/literal}{$conf->BEDITA_PERMS_DELETE}{literal}"/> 		\
+	</td>												\
+	<td> 												\
+		<input type="button" name="delete" value=" x "/> \
+	</td> 												\
+</tr> 													\
 ' ;
 
 function fncAddPermsTR(id) {
@@ -122,7 +119,7 @@ function _setupPermTR(id) {
 
 // cancella l'elemento
 function deleteTRPerm(el) {
-	if(!confirm("Confermi la cancellazione del permesso?")) return false ;
+	if(!confirm("{/literal}{t}Do you really want to delete the permission{/t}{literal}?")) return false ;
 	$(el).parent().parent().remove() ;
 
 	// Indica l'avvenuto cambiamento dei dati
@@ -187,108 +184,57 @@ function setupFieldAutocomplete() {
 {/literal}
 </script>
 
-
-				<table class="tableForm" border="0" id="frmCustomPermissions">
-					<tr>
-						<td class="label" style="text-align:left;">nome</td>
-						<td class="label" style="text-align:left;">tipo</td>
-						<td class="label" style="text-align:left;">lettura</td>
-						<td class="label" style="text-align:left;">modifica</td>
-						<td class="label" style="text-align:left;">cancella</td>
-						<td class="label">&nbsp;</td>
-					</tr>
-					{section name=i loop=$el.Permissions}
-						{assign var="perm" 	value=$el.Permissions[i]}
-						{assign var="i" 	value=$smarty.section.i.index}
-
-						<tr id="{$perm.name}_{$perm.switch}_permTR">
-							<td>
-								<input type="hidden" name="data[Permissions][{$i}][name]"/>
-								{$perm.name}
-							</td>
-							<td>
-								<input type="hidden" name="data[Permissions][{$i}][switch]"/>
-								{$perm.switch}
-							</td>
-							<td>
-								<input type="checkbox" name="data[Permissions][{$i}][BEDITA_PERMS_READ]" value="{$conf->BEDITA_PERMS_READ}" {if ($perm.flag & $conf->BEDITA_PERMS_READ)}checked{/if}/>
-							</td>
-							<td>
-								<input type="checkbox" name="data[Permissions][{$i}][BEDITA_PERMS_MODIFY]" value="{$conf->BEDITA_PERMS_MODIFY}" {if ($perm.flag & $conf->BEDITA_PERMS_MODIFY)}checked{/if}/>
-							</td>
-							<td>
-								<input type="checkbox" name="data[Permissions][{$i}][BEDITA_PERMS_DELETE]" value="{$conf->BEDITA_PERMS_DELETE}" {if ($perm.flag & $conf->BEDITA_PERMS_DELETE)}checked{/if}/>
-							</td>
-							<td>
-								{if !($perm.name == "administrator" && $perm.switch == 'group')}
-								<input type="button" name="delete" value=" x "/>
-								{/if}
-							</td>
-						</tr>
-					{/section}
-					{if (isset($recursion) && !empty($recursion))}
-						<tr id="endLineCustomPermsTR">
-							<td colspan="4">
-								<input type="checkbox"  name="data[recursiveApplyPermissions]" id="recursiveApplyPermissions" value="1"/>&nbsp;
-								<a href="javascript:void(0)" onclick="$('#recursiveApplyPermissions').toggleCheck() ;">
-								Applica i permessi ricorsivamente
-								</a>
-							</td>
-						</tr>
-					{/if}
-					<tr>
-						<td colspan="8"><hr/></td>
-					</tr>
-					<tr>
-						<th colspan="8" style="text-align:left ;">
-						utente:
-						</th>
-					</tr>
-					<tr id="addPermUserTR">
-						<td>
-							<input type="text" name="name" style="width: 150px;" value="" id="inputAddPermUser" class="ac_input"/>
-						</td>
-						<td>
-							<input type="hidden" name="switch" value="user"/>
-						</td>
-						<td>
-							<input type="checkbox" name="read" value="{$conf->BEDITA_PERMS_READ}"/>
-						</td>
-						<td>
-							<input type="checkbox" name="modify" value="{$conf->BEDITA_PERMS_MODIFY}"/>
-						</td>
-						<td>
-							<input type="checkbox" name="delete" value="{$conf->BEDITA_PERMS_DELETE}"/>
-						</td>
-						<td>
-							<input type="button" name="cmdAddUserPerm" value=" add "/>
-						</td>
-					</tr>
-					<tr>
-						<th colspan="8" style="text-align:left ;">
-						gruppo:
-						</th>
-					</tr>
-					<tr id="addPermGroupTR">
-						<td style="white-space:nowrap">
-							<input type="text" name="name" style="width: 150px;" value="" id="inputAddPermGroup" class="ac_input"/>
-							<input type="button" id="viewListPgroups" value="..."/>
-						</td>
-						<td>
-							<input type="hidden" name="switch" value="group"/>
-						</td>
-						<td>
-							<input type="checkbox" name="read" value="{$conf->BEDITA_PERMS_READ}"/>
-						</td>
-						<td>
-							<input type="checkbox" name="modify" value="{$conf->BEDITA_PERMS_MODIFY}"/>
-						</td>
-						<td>
-							<input type="checkbox" name="delete" value="{$conf->BEDITA_PERMS_DELETE}"/>
-						</td>
-						<td>
-							<input type="button" name="cmdAddGroupPerm" value=" add "/>
-						</td>
-					</tr>
-
-				</table>
+<table class="tableForm" border="0" id="frmCustomPermissions">
+<tr>
+	<td class="label" style="text-align:left;">{t}name{/t}</td>
+	<td class="label" style="text-align:left;">{t}type{/t}</td>
+	<td class="label" style="text-align:left;">{t}read{/t}</td>
+	<td class="label" style="text-align:left;">{t}modify{/t}</td>
+	<td class="label" style="text-align:left;">{t}delete{/t}</td>
+	<td class="label">&nbsp;</td>
+</tr>
+{section name=i loop=$el.Permissions}
+{assign var="perm" 	value=$el.Permissions[i]}
+{assign var="i" 	value=$smarty.section.i.index}
+<tr id="{$perm.name}_{$perm.switch}_permTR">
+	<td><input type="hidden" name="data[Permissions][{$i}][name]"/>{$perm.name}</td>
+	<td><input type="hidden" name="data[Permissions][{$i}][switch]"/>{$perm.switch}</td>
+	<td><input type="checkbox" name="data[Permissions][{$i}][BEDITA_PERMS_READ]" value="{$conf->BEDITA_PERMS_READ}" {if ($perm.flag & $conf->BEDITA_PERMS_READ)}{literal}checked="checked"{/literal}{/if}/></td>
+	<td><input type="checkbox" name="data[Permissions][{$i}][BEDITA_PERMS_MODIFY]" value="{$conf->BEDITA_PERMS_MODIFY}" {if ($perm.flag & $conf->BEDITA_PERMS_MODIFY)}{literal}checked="checked"{/literal}{/if}/></td>
+	<td><input type="checkbox" name="data[Permissions][{$i}][BEDITA_PERMS_DELETE]" value="{$conf->BEDITA_PERMS_DELETE}" {if ($perm.flag & $conf->BEDITA_PERMS_DELETE)}{literal}checked="checked"{/literal}{/if}/></td>
+	<td>{if !($perm.name == "administrator" && $perm.switch == 'group')}<input type="button" name="delete" value=" x "/>{/if}</td>
+</tr>
+{/section}
+{if (isset($recursion) && !empty($recursion))}
+<tr id="endLineCustomPermsTR">
+	<td colspan="4">
+		<input type="checkbox"  name="data[recursiveApplyPermissions]" id="recursiveApplyPermissions" value="1"/>&nbsp;
+		<a href="javascript:void(0)" onclick="$('#recursiveApplyPermissions').toggleCheck() ;">
+		{t}Apply permissions recursively{/t}
+		</a>
+	</td>
+</tr>
+{/if}
+<tr><td colspan="8"><hr/></td></tr>
+<tr><th colspan="8" style="text-align:left ;">{t}user{/t}</th></tr>
+<tr id="addPermUserTR">
+	<td><input type="text" name="name" style="width: 150px;" value="" id="inputAddPermUser" class="ac_input"/></td>
+	<td><input type="hidden" name="switch" value="{t}user{/t}"/></td>
+	<td><input type="checkbox" name="read" value="{$conf->BEDITA_PERMS_READ}"/></td>
+	<td><input type="checkbox" name="modify" value="{$conf->BEDITA_PERMS_MODIFY}"/></td>
+	<td><input type="checkbox" name="delete" value="{$conf->BEDITA_PERMS_DELETE}"/></td>
+	<td><input type="button" name="cmdAddUserPerm" value=" {t}add{/t} "/></td>
+</tr>
+<tr><th colspan="8" style="text-align:left ;">{t}group{/t}:</th></tr>
+<tr id="addPermGroupTR">
+	<td style="white-space:nowrap">
+		<input type="text" name="name" style="width: 150px;" value="" id="inputAddPermGroup" class="ac_input"/>
+		<input type="button" id="viewListPgroups" value="..."/>
+	</td>
+	<td><input type="hidden" name="switch" value="group"/></td>
+	<td><input type="checkbox" name="read" value="{$conf->BEDITA_PERMS_READ}"/></td>
+	<td><input type="checkbox" name="modify" value="{$conf->BEDITA_PERMS_MODIFY}"/></td>
+	<td><input type="checkbox" name="delete" value="{$conf->BEDITA_PERMS_DELETE}"/></td>
+	<td><input type="button" name="cmdAddGroupPerm" value=" {t}add{/t} "/></td>
+</tr>
+</table>

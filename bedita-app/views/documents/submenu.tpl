@@ -5,7 +5,7 @@ Menu a SX valido per tutte le pagine del controller.
 {assign var='method' value=$method|default:'index'}
 	<div id="menuLeftPage">
 		<div class="menuLeft">
-			<h1 onClick="window.location='{$html->url('/documents')}'" class="aree"><a href="{$html->url('/documents')}">{t}Documenti{/t}</a></h1>
+			<h1 onClick="window.location='{$html->url('/documents')}'" class="documenti"><a href="{$html->url('/documents')}">{t}Documenti{/t}</a></h1>
 	
 			<div class="inside">
 				<ul class="simpleMenuList" style="margin:10px 0px 10px 0px">
