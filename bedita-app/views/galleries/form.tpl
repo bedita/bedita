@@ -80,7 +80,7 @@ $(document).ready(function(){
 </div>
 
 <h2 class="showHideBlockButton">{t}Images of the gallery{/t}</h2>
-<div class="blockForm" id="imgs">
+<div class="blockForm" id="imgs" style="display:block">
 {include file="../pages/form_images.tpl"}
 </div>
 

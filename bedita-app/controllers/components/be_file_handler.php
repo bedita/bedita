@@ -8,11 +8,11 @@
  * 
  * Dati da passare per salvare/modificare un oggetto co n un file:
  * 
- * 		path	Indica dove il file temporaneo con i dati
- * 				o l'URL dove risiede il file.
- * 		name	Nome del file originale
- * 		type	MIME type, se assente cerca di ricavarlo dal nome file o dall'intestazione (@todo)
- * 		size	Dimensione del file se un URL tenta di leggerla da remoto 
+ * 		path		Indica dove il file temporaneo con i dati
+ * 					o l'URL dove risiede il file.
+ * 		name		Nome del file originale
+ * 		type		MIME type, se assente cerca di ricavarlo dal nome file o dall'intestazione (@todo)
+ * 		size		Dimensione del file se un URL tenta di leggerla da remoto 
  *  
  * Se le operazioni di salvataggio e cancellazione vanno fate utilizzando questo componente:
  * - Gestisce i file in modo transazionale (modifiche definitive con un $Transaction->commit() )
@@ -25,7 +25,7 @@
  * 		BEditaMIMEException				// MIME type del file non trovato o non corrispondente al tipo di obj
  * 		BEditaURLRxception				// Violazione regole dell'URL
  * 		BEditaSaveStreamObjException	// Errore creazione/ modifica oggetto 
- * 		BEditaDeleteStreasmObjException	// Errore cancellazione obj
+ * 		BEditaDeleteStreamObjException	// Errore cancellazione obj
  * 
  * Se paranoid == false. Non tenta di prelevare le informazioni da remoto e quindi non serve
  * 'allow_php_fopen'. Le informazioni di MIME devono essere passate con i dati per gli URL.
@@ -82,8 +82,8 @@ class BeFileHandlerComponent extends Object {
 	 * 	path	o un path locale o un URL (\.+//:\.+), in questo caso indica un file remoto
 	 * 			la sua accettazione dipende dalla variabile "allow_url_fopen" e attivata
 	 * name		Nome del file originale. Assente se path == URL
-	 * type		MIME type. Assente se path == URL
-	 * size		Dimensione del file. Assente se path == URL
+	 * type		MIME type. Puo' essere assente se path == URL
+	 * size		Dimensione del file. Puo' essere assente se path == URL
 	 *
 	 * @param array $dati	dati dell'oggetto
 	 * @param string $model	Se presente crea l'oggetto di tipo specifico
@@ -96,15 +96,17 @@ class BeFileHandlerComponent extends Object {
 			// Modifica
 			if(!isset($dati['path']) || @empty($dati['path'])) {
 				return $this->_modify($dati['id'], $dati) ;
+				
 			} else if($this->_isURL($dati['path'])) {
 				return $this->_modifyFromURL($dati['id'], $dati) ;
+				
 			} else {
 				return $this->_modifyFromFile($dati['id'], $dati) ;
 			}
 		} else {
 			// Creazione
 			if($this->_isURL($dati['path'])) {
-				return $this->_createFromURL($dati, $model) ;			
+				return $this->_createFromURL($dati, $model) ;	
 			} else {
 				return $this->_createFromFile($dati, $model) ;
 			}
@@ -130,7 +132,9 @@ class BeFileHandlerComponent extends Object {
 		}
 		$mod = new $model() ;
 		
-		return $mod->del($id) ;
+	 	if(!$mod->del($id)) {
+			throw new BEditaDeleteStreamObjException() ;	
+	 	}
 	}
 	
 	/**
@@ -150,6 +154,28 @@ class BeFileHandlerComponent extends Object {
 		}
 	}
 	
+	/**
+	 * Torna l'id dell'oggetto che contiene il file passato, se presente
+	 *
+	 * @param string $path	Nome del file o URL
+	 * 
+	 * @todo DA VERIFICARE
+	 */
+	function isPresent($path) {
+		if(!$this->_isURL($path)) {
+			$path = $this->_getPathTargetFile($path);
+		}
+		
+		$clausoles = array() ;
+		$clausoles[] = array("path" => trim($path)) ;
+		if(isset($id)) $clausoles[] = array("id " => "not {$id}") ;
+		
+		$ret = $this->Stream->find($clausoles, 'id') ;
+		if(!count($ret)) return false ;
+		
+		return $ret[0]['Stream']['id'] ;
+	}
+	
 	////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -167,7 +193,7 @@ class BeFileHandlerComponent extends Object {
 			if(!$this->_getInfoURL($dati['path'], $dati)) throw new BEditaInfoException($this->controller) ;
 		}
 			
-		// Il file non deve essere presente
+		// Il file/URL non deve essere presente
 		if($this->_isPresent($dati['path'])) throw new BEditaFileExistException($this->controller) ;
 		
 		return $this->_create($dati, $model) ;
@@ -207,7 +233,8 @@ class BeFileHandlerComponent extends Object {
 		
 		if(!($ret = $this->{$model}->save($dati))) {
 			$this->validateErrors = $this->{$model}->validateErrors ;
-			return false ;
+			
+			throw new BEditaSaveStreamObjException($this->controller) ;
 		}
 		
 		return ($this->{$model}->{$this->{$model}->primaryKey}) ;
@@ -275,7 +302,9 @@ class BeFileHandlerComponent extends Object {
 		$model = $conf->objectTypeModels[$ret['Object']['object_type_id']] ;
 		
 		$this->{$model}->id =  $id ;
-		$ret = $this->{$model}->save($dati) ;
+		if(!($ret = $this->{$model}->save($dati))) {
+			throw new BEditaSaveStreamObjException($this->controller) ;
+		}
 		
 		return $ret ;
 	}	
@@ -334,6 +363,10 @@ class BeFileHandlerComponent extends Object {
 		return false ;
 	}
 
+	function getInfoURL($path, &$dati) {
+		return $this->_getInfoURL($path, $dati) ;
+	}
+	
 	/**
 	 * Preleva il MIME type e le dimensioni da un URL remoto e il nome del file
 	 */
@@ -519,7 +552,7 @@ class MimeByMagic {
 	
 	function getMime($path) {
 		
-		return false ;
+		return "application/octet-stream" ;
 	}
 } ;
 
@@ -531,11 +564,16 @@ class MimeByMagic {
 class BEditaAllowURLException extends Exception
 {
     // Redefine the exception so message isn't optional
-    public function __construct($controller, $message = "", $code  = 0) {
+    public function __construct(&$controller, $message = "", $code  = 0) {
         // some code
-   		$controller->esito = AppController::$ERROR ;
+   		$this->controller = $controller;
+        $this->controller->setResult(AppController::ERROR);
         
-        // make sure everything is assigned properly
+   		if(empty($message)) {
+   			$message = __("Unexpected error, operation failed",true);
+   		}
+
+   		// make sure everything is assigned properly
         parent::__construct($message, $code);
     }
 } ;
@@ -546,11 +584,16 @@ class BEditaAllowURLException extends Exception
 class BEditaFileExistException extends Exception
 {
     // Redefine the exception so message isn't optional
-    public function __construct($controller, $message = "", $code  = 0) {
+    public function __construct(&$controller, $message = "", $code  = 0) {
         // some code
-   		$controller->esito = AppController::$ERROR ;
+   		$this->controller = $controller;
+        $this->controller->setResult(AppController::ERROR);
         
-        // make sure everything is assigned properly
+   		if(empty($message)) {
+   			$message = __("Unexpected error, operation failed",true);
+   		}
+
+   		// make sure everything is assigned properly
         parent::__construct($message, $code);
     }
 } ;
@@ -562,11 +605,16 @@ class BEditaFileExistException extends Exception
 class BEditaMIMEException extends Exception
 {
     // Redefine the exception so message isn't optional
-    public function __construct($controller, $message = "", $code  = 0) {
+    public function __construct(&$controller, $message = "", $code  = 0) {
         // some code
-   		$controller->esito = @AppController::$ERROR ;
+   		$this->controller = $controller;
+        $this->controller->setResult(AppController::ERROR);
         
-        // make sure everything is assigned properly
+   		if(empty($message)) {
+   			$message = __("Unexpected error, operation failed",true);
+   		}
+
+   		// make sure everything is assigned properly
         parent::__construct($message, $code);
     }
 }
@@ -577,11 +625,16 @@ class BEditaMIMEException extends Exception
 class BEditaURLException extends Exception
 {
     // Redefine the exception so message isn't optional
-    public function __construct($controller, $message = "", $code  = 0) {
+    public function __construct(&$controller, $message = "", $code  = 0) {
         // some code
-   		$controller->esito = AppController::$ERROR ;
+   		$this->controller = $controller;
+        $this->controller->setResult(AppController::ERROR);
         
-        // make sure everything is assigned properly
+   		if(empty($message)) {
+   			$message = __("Unexpected error, operation failed",true);
+   		}
+
+   		// make sure everything is assigned properly
         parent::__construct($message, $code);
     }
 } ;
@@ -592,11 +645,16 @@ class BEditaURLException extends Exception
 class BEditaInfoException extends Exception
 {
     // Redefine the exception so message isn't optional
-    public function __construct($controller, $message = "", $code  = 0) {
+    public function __construct(&$controller, $message = "", $code  = 0) {
         // some code
-   		$controller->esito = AppController::$ERROR ;
+   		$this->controller = $controller;
+        $this->controller->setResult(AppController::ERROR);
         
-        // make sure everything is assigned properly
+   		if(empty($message)) {
+   			$message = __("Unexpected error, operation failed",true);
+   		}
+
+   		// make sure everything is assigned properly
         parent::__construct($message, $code);
     }
 } ;
@@ -607,11 +665,16 @@ class BEditaInfoException extends Exception
 class BEditaDeleteStreamObjException extends Exception
 {
     // Redefine the exception so message isn't optional
-    public function __construct($controller, $message = "", $code  = 0) {
+    public function __construct(&$controller, $message = "", $code  = 0) {
         // some code
-   		$controller->esito = AppController::$ERROR ;
+   		$this->controller = $controller;
+        $this->controller->setResult(AppController::ERROR);
         
-        // make sure everything is assigned properly
+   		if(empty($message)) {
+   			$message = __("Unexpected error, operation failed",true);
+   		}
+
+   		// make sure everything is assigned properly
         parent::__construct($message, $code);
     }
 }

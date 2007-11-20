@@ -1,5 +1,5 @@
 {agent var="agent"}
-{$html->css('module.gallery')}
+{$html->css('module.galleries')}
 {$html->css("jquery-calendar")}
 {$html->css("jquery.thickbox")}
 {if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
@@ -74,6 +74,19 @@ function addCommandWhere() {
 
 	}) ;
 }
+
+/* 
+funzione che preleva i dati passati dalla finestra modale
+con i file scaricati sul server
+*/
+function commitUploadImage(files) {	
+	tb_remove() ;
+}
+
+function rollbackUploadImage() {
+	tb_remove() ;
+}
+
 {/literal}
 //-->
 </script>
@@ -83,4 +96,5 @@ function addCommandWhere() {
 <div id="centralPage">
 {include file="submenu.tpl" method="index"}
 {include file="form.tpl"}
+<textarea id="test"></textarea>
 </div>

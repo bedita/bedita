@@ -35,6 +35,7 @@ function uploadFileStart(file, position, queuelength) {
 }
 
 function uploadError(errno) {
+//alert(errno) ;	
 	//SWFUpload.debug(errno);
 	alert("ERROR DURING UPLOAD");
 }

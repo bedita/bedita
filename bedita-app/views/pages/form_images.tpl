@@ -1,16 +1,15 @@
 <fieldset>
-{if !empty($images)}
+{assign var="thumbWidth" 		value=100}
+{assign var="thumbHeight" 		value=100}
+{assign var="thumbCache" 		value=$CACHE}
+{assign var="thumbPath"         value=$MEDIA_ROOT}
+{assign var="thumbBaseUrl"      value=$MEDIA_URL}
+{assign var="thumbLside"		value=""}
+{assign var="thumbSside"		value=""}
+{assign var="thumbHtml"			value=""}
+{assign var="thumbDev"			value=""}
 
-	{assign var="thumbWidth" 		value=100}
-	{assign var="thumbHeight" 		value=100}
-	{assign var="thumbCache" 		value=$CACHE}
-	{assign var="thumbPath"         value=$MEDIA_ROOT}
-	{assign var="thumbBaseUrl"      value=$MEDIA_URL}
-	{assign var="thumbLside"		value=""}
-	{assign var="thumbSside"		value=""}
-	{assign var="thumbHtml"			value=""}
-	{assign var="thumbDev"			value=""}
-	
+{if !empty($images)}
 	{section name="i" loop=$images}
 	
 	{assign var="imagePath" 	value=$images[i].path}
@@ -74,7 +73,8 @@
 		<br/>
 		x: - y: -
 		<div align="right" style="padding-top:4px; margin-top:4px; border-top:1px solid silver">
-		<a href="{$html->url('/images')}/index/keepThis:true/TB_iframe:true/height:480/width:640" title="{t}New Image{/t}" class="thickbox">{t}Add image{/t}</a>
+		{*		<a href="{$html->url('/images')}/index/keepThis:true/TB_iframe:true/height:480/width:640/modal:true" title="{t}New Image{/t}" class="thickbox">{t}Add image{/t}</a> *}
+		<a href="{$html->url('/images')}/index/?keepThis=true&TB_iframe=true&height=480&width=640&modal=true" title="{t}New Image{/t}" class="thickbox">{t}Add image{/t}</a>
 		</div>
 	</div>
 </fieldset>

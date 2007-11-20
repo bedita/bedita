@@ -30,7 +30,7 @@ $(document).ready(function(){
 			</tr>
 		</thead>
 		<tbody>
-		{foreach from=$groups item=g}
+		{foreach from=$groups|default:'' item=g}
 		<tr class="rowList">
 				<td>{$g.Group.id}</td>
 			{if $g.Group.immutable}
@@ -62,7 +62,7 @@ $(document).ready(function(){
 					<input type="hidden" name="data[Group][id]" value="{$group.Group.id}"/>
 					{/if}
 					<p>{t}Name{/t} &nbsp; <input type="text" name="data[Group][name]" title="{t}Insert group name{/t}"
-						value="{$group.Group.name}" class="{ldelim}required:true{rdelim}"/>&nbsp;
+						value="{$group.Group.name|default:''}" class="{ldelim}required:true{rdelim}"/>&nbsp;
 					</p>
 					{if isset($group)}
 					<p><b>{t}Users of this group{/t}:</b> {foreach from=$group.User item=u}{$u.userid}&nbsp;{/foreach}
@@ -78,7 +78,7 @@ $(document).ready(function(){
 				</tr>
 			</thead>
 			<tbody>
-				{foreach from=$modules item=mod}
+				{foreach from=$modules|default:false item=mod}
 					<tr class="rowList" id="{$mod.Module.id}">
 						<td><input type="text" readonly="readonly" value="" maxlength="6" style="height:20px; background-color:{$mod.Module.color}; width:60px">
 						&nbsp;<b>{$mod.Module.label}</b>

@@ -31,6 +31,52 @@ class BeFileHandlerTestCase extends CakeTestCase {
 
 	////////////////////////////////////////////////////////////////////
 
+	function index() {	
+		$this->Transaction->begin() ;
+		
+		// Crea un array unico tra i dati dell'oggetto e il file uploadato
+		$data = $this->data + $_FILES['images'] ;
+		try {
+			$ret = $this->BeFileHandler->save($data) ;						
+		} catch (BEditaFileExistException $e) {
+			pr("File gia' asssociato ad un altro oggetto");
+			$this->Transaction->rollback() ;
+			
+			return ;
+		} catch (BEditaInfoException $e) {
+			/**
+			* Quando si usa un file Remoto e non e' possibile accedervi
+			* usando:$conf->validate_resorce['paranoid'] = false
+			* viene saltato il controllo ma le informazioni devono essere inserite form
+			* (mimetype, name, etc...)
+			*/ 
+			pr("Informazioni del file non accessibili");
+			$this->Transaction->rollback() ;
+		
+		} catch (BEditaInfoException $e) {
+			pr("Nessun oggetto accetta questo MIME type") ;
+			$this->Transaction->rollback() ;
+			
+		} catch (BEditaURLRxception $e) {
+			/**
+			 * Questo controllo e' sempre presente anche con:
+			 * $conf->validate_resorce['paranoid'] = false
+			 */
+			pr("Violazione regole dell'URL") ;
+			$this->Transaction->rollback() ;
+			
+		} catch (BEditaSaveStreamObjException $e) {
+			pr(" Errore creazione/ modifica oggetto") ;
+			$this->Transaction->rollback() ;
+
+		} catch (BEditaDeleteStreasmObjException $e) {
+			pr(" Errore creazione/ modifica oggetto") ;
+			$this->Transaction->rollback() ;
+		} 
+		
+		$this->Transaction->commit() ;
+	} 
+	
 	function testCreateImageFromFile() {	
 		$this->Transaction->begin() ;
 		

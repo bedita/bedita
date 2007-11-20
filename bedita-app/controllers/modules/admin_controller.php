@@ -117,7 +117,7 @@ class AdminController extends AppController {
 		$this->set('modules', $this->allModulesWithFlag());
 	 }
 	 
-	  function viewGroup($id) {
+	  function viewGroup($id = null) {
 		$this->set('groups', $this->loadGroups());
 	  	$g = $this->Group->findById($id);
 	  	if(empty($g))

@@ -136,7 +136,11 @@ class SwfUploadComponent extends Object {
 	function validate() {
 		$post_ok = isset($this->params['form']['Filedata']);
 		$upload_error = $this->params['form']['Filedata']['error'];
-		$got_data = (is_uploaded_file($this->params['form']['Filedata']['tmp_name']));
+		/**
+		 * Per debug
+		 */
+		// $got_data = (is_uploaded_file($this->params['form']['Filedata']['tmp_name']));
+		$got_data = (is_file($this->params['form']['Filedata']['tmp_name']));
 
 		if (!$post_ok){
 			$this->setError(2000, 'Validation failed.', 'Expected file upload field to be named "Filedata."');

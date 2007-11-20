@@ -2,46 +2,48 @@
 class FilesController extends AppController {
 	var $name = 'Images';
 	var $helpers = array('Html');
-	var $components = array('SwfUpload');
-//	var $components = array('Transaction', 'BeFileHandler');
-//	function upload () {
-//		if(empty($this->data))
-//			throw new BeditaException(__("No data", true));
-//
-//		$this->Transaction->begin() ;
-//		$this->BeFileHandler->save($this->data) ;
-//		$this->Transaction->end();
-//	}
+	var $components = array('Transaction', 'SwfUpload', 'BeUploadToObj');
 
 	function upload () {
-		if (isset($this->params['form']['Filedata'])) {
-			// upload the file
-			// use these to configure the upload path, web path, and overwrite settings if necessary
-			$this->SwfUpload->uploadpath = MEDIA_ROOT . DS;
-			$this->SwfUpload->webpath = MEDIA_URL . DS;
-			//$this->SwfUpload->overwrite = true;  //by default, SwfUploadComponent does NOT overwrite files
+//		fwrite(fopen("/tmp/out.txt", "w+"), print_r(serialize($_POST), true) . "\n\n" . print_r(serialize($_FILES), true)) ;
+		fwrite(fopen("/tmp/out.txt", "w+"), print_r($_POST, true) . "\n\n" . print_r($_FILES, true)) ;
 
-			if ($this->SwfUpload->upload()) {
-				// save the file to the db, or do whateve ryou want to do with the data
-				$this->params['form']['Filedata']['name'] = $this->SwfUpload->filename;
-				$this->params['form']['Filedata']['path'] = $this->SwfUpload->webpath;
-				$this->params['form']['Filedata']['fspath'] = $this->SwfUpload->uploadpath . $this->SwfUpload->filename;
-				$this->data['File'] = $this->params['form']['Filedata'];
-				if (!($file = $this->Image->save($this->data))) {
-					$this->Session->setFlash('Database save failed');
-				} else {
-					$this->Session->setFlash('File Uploaded: ' . $this->SwfUpload->filename . '; Database id is ' . $this->File->getLastInsertId() . '.');
-				}
-			} else {
-	    			$this->Session->setFlash($this->SwfUpload->errorMessage);
-			}
+//$errorCode = 500 + BeUploadToObjComponent::BEDITA_FILE_EXISIST ;
+//header("HTTP/1.0 $errorCode Internal Server Error");
+return ;
+			
+		if (!isset($this->params['form']['Filedata'])) return ;
+		
+		$this->Transaction->begin() ;
+		try {
+			$id = $this->BeUploadToObj->upload($this->params['form']['Filedata']) ;
+			
+		} catch(Exception $e) {
+			header("HTTP/1.0 " . $this->BeUploadToObj->errorCode . " Internal Server Error");
+			
+			$this->Session->setFlash($this->SwfUpload->errorMessage);
+			
+			$this->Transaction->rollback();
+			return ; 
 		}
+		
+		$this->Transaction->commit();
 	}
 
+	/**
+	 * Cancella un oggetto di tipo stream a partire da lnome del file
+ 	 * passato via _POST.
+	 */
+	function deleteFile() {
+		fwrite(fopen("/tmp/out.txt", "w+"), print_r($_POST, true) . "\n\n" . print_r($_FILES, true)) ;
+return ;
+		
+	}
+	
 	function open($id) {
 	    $file = $this->get($id);
 	    if (isset($file)) {
-	        $this->redirect($file['File']['path'] . $file['File']['name']);
+	        $this->redirect($file['File'	]['path'] . $file['File']['name']);
 	        exit();
 	    }
 	}

@@ -19,6 +19,7 @@ class ImagesController extends AppController {
 	var $name = 'Images';
 	
 	function index() {
-		
+//		$this->render(null, "empty", null) ;
+//		exit;
 	}
 }
