@@ -33,7 +33,12 @@ $(document).ready(function(){
 		{foreach from=$groups item=g}
 		<tr class="rowList">
 				<td>{$g.Group.id}</td>
-			{if $g.Group.id gt 10003}
+			{if $g.Group.immutable}
+				<td>{$g.Group.name}</td>
+				<td>-</td>
+				<td>-</td>
+				<td>-</td>
+			{else}
 				<td><a href="{$html->url('/admin/viewGroup/')}{$g.Group.id}">{$g.Group.name}</a></td>
 				<td>{$g.Group.created}</td>
 				<td>{$g.Group.modified}</td>
@@ -41,11 +46,6 @@ $(document).ready(function(){
 					<a href="{$html->url('/admin/viewGroup/')}{$g.Group.id}">{t}Modify{/t}</a>
 					<a href="{$html->url('/admin/removeGroup/')}{$g.Group.id}">{t}Remove{/t}</a>
 				</td>
-			{else}
-				<td>{$g.Group.name}</td>
-				<td>-</td>
-				<td>-</td>
-				<td>-</td>
 			{/if}
 		</tr>
   		{/foreach}

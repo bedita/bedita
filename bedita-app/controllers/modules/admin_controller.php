@@ -96,19 +96,29 @@ class AdminController extends AppController {
 		$this->set('userModules', $userModules) ;
 	 }
 
+	private function loadGroups() {
+		$config =& Configure::getInstance();
+		$groups = $this->Group->findAll() ;
+		foreach ($groups as &$g) {
+			$immutable=false;
+			if (in_array($g['Group']['name'], $config->basicGroups))
+				$immutable=true;
+			$g['Group']['immutable'] = $immutable;
+		}
+	  	return $groups;
+	}
 	 
 	/**
 	 * show groups
 	 */
 	 function groups() { 	
-	  	$groups = $this->Group->findAll() ;
-		$this->set('groups', 	$groups);
+		$this->set('groups', $this->loadGroups());
 		$this->set('group',  NULL);
 		$this->set('modules', $this->allModulesWithFlag());
 	 }
 	 
 	  function viewGroup($id) {
-	  	$this->set('groups', $this->Group->findAll());
+		$this->set('groups', $this->loadGroups());
 	  	$g = $this->Group->findById($id);
 	  	if(empty($g))
 	  		throw new BeditaException(__("Bad data",true));
