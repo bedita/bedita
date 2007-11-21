@@ -1,16 +1,28 @@
+{$javascript->link("form")}
+{$javascript->link("jquery.form")}
+{$javascript->link("jquery.cmxforms")}
+{$javascript->link("jquery.metadata")}
+{$javascript->link("jquery.validate")}
+
 <script type="text/javascript">
 {literal}
 <!--
-var rules = new Array();
-rules[0]='loginUserid:Login|required';
-rules[1]='loginPasswd:Password|minlength|6';
+$.validator.setDefaults({ 
+	/*submitHandler: function() { alert("submitted!"); },*/
+	success: function(label) {
+		// set &nbsp; as text for IE
+		label.html("&nbsp;").addClass("checked");
+	}
+});
+$().ready(function() { 
+	$("#loginForm").validate(); 
+});
 //-->
 {/literal}
 </script>
 
 </head>
 <body>
-
 
 <div id="loginStatusBox">
 	<div class="beditaButton" onClick = "document.location ='{$html->url('/')}'">
@@ -22,34 +34,37 @@ rules[1]='loginPasswd:Password|minlength|6';
 	<div class="menuLeft">
 		<h1 onClick="window.location='./'" class="login"><a href="./">{t}Login{/t}</a></h1>
 	</div>
-{include file="messages.tpl"}
 </div>
 
-<form action="{$html->url('/authentications/login')}" method="post" name="loginForm" id="loginForm">
+<form action="{$html->url('/authentications/login')}" method="post" name="loginForm" id="loginForm" class="cmxform">
+<fieldset>
 
-{assign var="URL" value=$beurl->here()}
-
-{formHelper fnc="hidden" args="'login/URLOK', array('value' => '$URL')"}
+<input type="hidden" name="data[login][URLOK]" value="{$beurl->here()}" id="loginURLOK" />
 
 <table border="0" cellspacing="8" cellpadding="0">
 <tr>
-	<td colspan="2">
+	<td colspan="3">
 		<p>{t}Backend user restricted area{/t}</p>
 		<div id="errorsDiv">{if ($session->check('Message.flash'))}{$session->flash()}{/if}</div>
 	</td>
 </tr>
 <tr>
-	<td>{t}Username{/t}</td>
-	<td>{formHelper fnc="text" args="'login/userid', array('style' => 'width: 150px')"}</td>
+	<td class="label"><label id="luserid" for="userid">{t}Username{/t}</label></td>
+	<td class="field"><input type="text" name="data[login][userid]" id="userid" class="{literal}{required:true}{/literal}" title="{t}Username is required{/t}"/></td>
+	<td class="status">&#160;</td>
 </tr>
 <tr>
-	<td>{t}Password{/t}</td>
-	<td>{formHelper fnc="password" args="'login/passwd', array('style' => 'width: 150px')"}</td>
+	<td class="label"><label id="lpasswd" for="passwd">{t}Password{/t}</label></td>
+	<td class="field"><input type="password" name="data[login][passwd]" id="passwd" class="{literal}{required:true}{/literal}" title="{t}Password is required{/t}"/></td>
+	<td class="status">&#160;</td>
 </tr>
 <tr>
-	<td>&nbsp;</td>
-	<td><input type="submit" value="{t}Enter{/t}" onclick="if(!checkOnSubmit('loginForm',rules)) return false;"/></td>
+	<td class="label">&nbsp;</td>
+	<td class="field" colspan="2"><input class="submit" type="submit" value="{t}Enter{/t}"/></td>
 </tr>
 </table>
 
+</fieldset>
 </form>
+
+{include file="messages.tpl"}

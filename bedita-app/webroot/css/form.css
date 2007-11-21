@@ -111,4 +111,57 @@
 
 label.iumd { color:red; }
 
+/**
+ * Login Form
+ */
+
+#loginForm fieldset {
+	border: solid transparent 0px;
+}
+
+#loginForm label.error {
+  background:url(../img/unchecked.gif) no-repeat 0px 0px;
+  padding-left: 16px;
+  padding-bottom: 2px;
+  font-weight: bold;
+  color: #EA5200;
+}
+
+#loginForm label.checked {
+  background:url(../img/checked.gif) no-repeat 0px 0px;
+}
+
+#loginForm .label {
+  padding-top: 2px;
+  padding-right: 8px;
+  vertical-align: top;
+  text-align: right;
+  width: 125px;
+  white-space: nowrap;
+}
+
+#loginForm .field {
+  padding-bottom: 10px;
+  white-space: nowrap;
+}
+
+#loginForm .status {
+  padding-top: 2px;
+  padding-left: 8px;
+  vertical-align: top;
+  width: 246px;
+  white-space: nowrap;
+}
+
+#loginForm .success_msg {
+  font-weight: bold;
+  color: #0060BF;
+  margin-left: 19px;
+}
+
+#loginForm table {
+  border-spacing: 0px;
+  border-collapse: collapse;
+  empty-cells: show;
+}
 /* END -- stili per  pagina con Form */

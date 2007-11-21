@@ -1,11 +1,11 @@
 /*
- * Form Validation: jQuery form validation plug-in v1.1
+ * Form Validation: jQuery form validation plug-in v1.1.1
  *
  * http://bassistance.de/jquery-plugins/jquery-plugin-validation/
  *
- * Copyright (c) 2006 J枚rn Zaefferer
+ * Copyright (c) 2006 J鰎n Zaefferer
  *
- * $Id: jquery.validate.js 2133 2007-06-21 18:50:13Z joern.zaefferer $
+ * $Id: jquery.validate.js 3675 2007-10-18 09:32:44Z joern.zaefferer $
  *
  * Dual licensed under the MIT and GPL licenses:
  *   http://www.opensource.org/licenses/mit-license.php
@@ -248,7 +248,7 @@ jQuery.extend(jQuery.fn, {
 		
 			// allow suppresing validation by adding a cancel class to the submit button
 			this.find("input.cancel:submit").click(function() {
-				this.form.cancel = true;
+				validator.cancelSubmit = true;
 			});
 		
 			// validate the form on submit
@@ -257,35 +257,27 @@ jQuery.extend(jQuery.fn, {
 					// prevent form submit to be able to see console output
 					event.preventDefault();
 					
-				// prevent submit for invalid forms or custom submit handlers
-				if ( this.cancel || validator.form() ) {
-					this.cancel = false;
+				function handle() {
 					if ( validator.settings.submitHandler ) {
-						validator.settings.submitHandler( validator.currentForm );
+						validator.settings.submitHandler.call( validator, validator.currentForm );
 						return false;
 					}
 					return true;
+				}
+					
+				// prevent submit for invalid forms or custom submit handlers
+				if ( validator.cancelSubmit ) {
+					validator.cancelSubmit = false;
+					return handle();
+				}
+				if ( validator.form() ) {
+					return handle();
 				} else {
 					validator.focusInvalid();
 					return false;
 				}
 			});
 		}
-		
-		validator.settings.onblur && validator.elements.blur( function() {
-			validator.settings.onblur.call( validator, this );
-		});
-		validator.settings.onkeyup && validator.elements.keyup(function() {
-			validator.settings.onkeyup.call( validator, this );
-		});
-		var checkables = jQuery([]);
-		validator.elements.each(function() {
-			if ( validator.checkable( this ) )
-				checkables.push( validator.checkableGroup( this ) );
-		});
-		validator.settings.onchange && checkables.click(function() {
-			validator.settings.onchange.call( validator, this );
-		});
 		
 		return validator;
 	},
@@ -371,15 +363,19 @@ jQuery.extend(jQuery.expr[":"], {
  */
 String.format = function(source, params) {
 	if ( arguments.length == 1 ) 
-		return function( param ) {
-			return String.format( source, param );
+		return function() {
+			var args = jQuery.makeArray(arguments);
+			args.unshift(source);
+			return String.format.apply( this, args );
 		};
-	if ( arguments.length > 2 )
+	if ( arguments.length > 2 && params.constructor != Array  ) {
 		params = jQuery.makeArray(arguments).slice(1);
-	if ( params.constructor != Array )
+	}
+	if ( params.constructor != Array ) {
 		params = [ params ];
+	}
 	jQuery.each(params, function(i, n) {
-		source = source.replace(new RegExp("\\{" + i + "\\}"), n);
+		source = source.replace(new RegExp("\\{" + i + "\\}", "g"), n);
 	});
 	return source;
 };
@@ -393,6 +389,7 @@ jQuery.validator = function( options, form ) {
 	this.errorContext = this.labelContainer.length && this.labelContainer || jQuery(form);
 	this.containers = this.settings.errorContainer.add( this.settings.errorLabelContainer );
 	this.submitted = {};
+	this.invalid = {};
 	this.reset();
 	this.refresh();
 };
@@ -418,7 +415,7 @@ jQuery.extend(jQuery.validator, {
 				this.element(element);
 			}
 		},
-		onchange: function(element) {
+		onclick: function(element) {
 			if ( element.name in this.submitted )
 				this.element(element);
 		}
@@ -459,7 +456,7 @@ jQuery.extend(jQuery.validator, {
 		url: "Please enter a valid URL.",
 		date: "Please enter a valid date.",
 		dateISO: "Please enter a valid date (ISO).",
-		dateDE: "Bitte geben Sie ein g眉ltiges Datum ein.",
+		dateDE: "Bitte geben Sie ein g黮tiges Datum ein.",
 		number: "Please enter a valid number.",
 		numberDE: "Bitte geben Sie eine Nummer ein.",
 		digits: "Please enter only digits",
@@ -488,10 +485,13 @@ jQuery.extend(jQuery.validator, {
 		 */
 		form: function() {
 			this.prepareForm();
-			for ( var i = 0, element; element = this.elements[i]; i++ ) {
-				this.check( element );
+			for ( var i = 0; this.elements[i]; i++ ) {
+				this.check( this.elements[i] );
 			}
 			jQuery.extend(this.submitted, this.errorMap);
+			this.invalid = jQuery.extend({}, this.errorMap);
+			this.settings.invalidHandler && this.settings.invalidHandler.call(this);
+			this.showErrors();
 			return this.valid();
 		},
 
@@ -512,6 +512,11 @@ jQuery.extend(jQuery.validator, {
 			this.lastElement = element;
 			this.prepareElement( element );
 			var result = this.check( element );
+			if ( result ) {
+				delete this.invalid[element.name];
+			} else {
+				this.invalid[element.name] = true;
+			}
 			this.showErrors();
 			return result;
 		},
@@ -523,7 +528,7 @@ jQuery.extend(jQuery.validator, {
 		 * validator.showErrors({"firstname": "I know that your firstname is Pete, Pete!"});
 		 * @desc Adds and shows error message programmatically.
 		 *
-		 * @param Map errors One or more key/value pairs of input names and messages
+		 * @param Map errors (optional) One or more key/value pairs of input names and messages
 		 *
 		 * @name jQuery.validator.protoype.showErrors
 		 * @cat Plugins/Validate
@@ -535,7 +540,7 @@ jQuery.extend(jQuery.validator, {
 				for ( name in errors ) {
 					this.errorList.push({
 						message: errors[name],
-						element: jQuery("[@name=" + name + "]:first", this.currentForm)[0]
+						element: jQuery("[@name='" + name + "']:first", this.currentForm)[0]
 					});
 				}
 				// remove items from success list
@@ -561,20 +566,57 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate
 		 */
 		resetForm: function() {
-			if( jQuery.fn.resetForm )
+			if ( jQuery.fn.resetForm )
 				jQuery( this.currentForm ).resetForm();
 			this.prepareForm();
 			this.hideErrors();
 			this.elements.removeClass( this.settings.errorClass );
 		},
 		
+		/**
+		 * Returns the number of invalid elements in the form.
+		 * 
+		 * @example $("#myform").validate({
+		 * 	showErrors: function() {
+		 * 		$("#summary").html("Your form contains " + this.numberOfInvalids() + " errors, see details below.");
+		 * 		this.defaultShowErrors();
+		 * 	}
+		 * });
+		 * @desc Specifies a custom showErrors callback that updates the number of invalid elements each
+		 * time the form or a single element is validated.
+		 * 
+		 * @name jQuery.validator.prototype.numberOfInvalids
+		 * @type Number
+		 */
+		numberOfInvalids: function() {
+			var count = 0;
+			for ( i in this.invalid )
+				count++;
+			return count;
+		},
+		
+		/**
+		 * Hides all error messages in this form.
+		 * 
+		 * @example var validator = $("#myform").validate();
+		 * $(".cancel").click(function() {
+		 * 	validator.hideErrors();
+		 * });
+		 * @desc Specifies a custom showErrors callback that updates the number of invalid elements each
+		 * time the form or a single element is validated.
+		 * 
+		 * @name jQuery.validator.prototype.hideErrors
+		 */
 		hideErrors: function() {
 			this.addWrapper( this.toHide ).hide();
 		},
 		
 		valid: function() {
-			this.showErrors();
-			return this.errorList.length == 0;
+			return this.size() == 0;
+		},
+		
+		size: function() {
+			return this.errorList.length;
 		},
 		
 		focusInvalid: function() {
@@ -592,15 +634,39 @@ jQuery.extend(jQuery.validator, {
 			}).length == 1 && lastActive;
 		},
 		
+		/**
+		 * Call to refresh a form after new elements have been added or rules changed.
+		 * 
+		 * Accepts an optional argument to refresh only a part of the form, eg. only the newly added element.
+		 * 
+		 * @example var validator = $("#myform").validate();
+		 * $(".cancel").click(function() {
+		 * 	validator.hideErrors();
+		 * });
+		 * @desc Specifies a custom showErrors callback that updates the number of invalid elements each
+		 * time the form or a single element is validated.
+		 * 
+		 * @name jQuery.validator.prototype.hideErrors
+		 */
 		refresh: function() {
 			var validator = this;
 			validator.rulesCache = {};
 			
+			function focused() {
+				validator.lastActive = this;
+				
+				// hide error label and remove error class on focus if enabled
+				if ( validator.settings.focusCleanup && !validator.blockFocusCleanup ) {
+					jQuery(this).removeClass( validator.settings.errorClass );
+					validator.errorsFor(this).hide();
+				}
+			}
+
 			// select all valid inputs inside the form (no submit or reset buttons)
 			this.elements = jQuery(this.currentForm)
-			.find("input, select, textarea, button")
-			.not(":submit")
-			.not(":reset")
+			.find("input, select, textarea")
+			.not(":submit, :reset")
+			.not("[@disabled]")
 			.not( this.settings.ignore )
 			.filter(function() {
 				!this.name && validator.settings.debug && window.console && console.error( "%o has no name assigned", this);
@@ -615,15 +681,25 @@ jQuery.extend(jQuery.validator, {
 			
 			
 			// and listen for focus events to save reference to last focused element
-			this.elements.focus(function() {
-				validator.lastActive = this;
-				
-				// hide error label and remove error class on focus if enabled
-				if ( validator.settings.focusCleanup ) {
-					jQuery(this).removeClass( validator.settings.errorClass );
-					validator.errorsFor(this).hide();
-				}
+			this.elements.focus(focused);
+			
+			validator.settings.onblur && validator.elements.blur( function() {
+				validator.settings.onblur.call( validator, this );
 			});
+			validator.settings.onkeyup && validator.elements.keyup(function() {
+				validator.settings.onkeyup.call( validator, this );
+			});
+			
+			if ( validator.settings.onclick ) {
+				var checkables = jQuery([]);
+				validator.elements.each(function() {
+					if ( validator.checkable( this ) )
+						checkables.push( validator.checkableGroup( this ) );
+				});
+				checkables.click(function() {
+					validator.settings.onclick.call( validator, this );
+				});
+			}
 		},
 		
 		clean: function( selector ) {
@@ -644,7 +720,6 @@ jQuery.extend(jQuery.validator, {
 		
 		prepareForm: function() {
 			this.reset();
-			//this.submitted = {};
 			this.toHide = this.errors().push( this.containers );
 		},
 		
@@ -658,7 +733,8 @@ jQuery.extend(jQuery.validator, {
 			jQuery( element ).removeClass( this.settings.errorClass );
 			//var rules = this.rules( element );
 			var rules = this.rulesCache[ element.name ];
-			for( var i = 0, rule; rule = rules[i++]; ) {
+			for( var i = 0; rules[i]; i++) {
+				var rule = rules[i];
 				try {
 					var result = jQuery.validator.methods[rule.method].call( this, jQuery.trim(element.value), element, rule.parameters );
 					if( result === -1 )
@@ -680,19 +756,22 @@ jQuery.extend(jQuery.validator, {
 			return true;
 		},
 		
-		message: function( id, method ) {
+		configuredMessage: function( id, method ) {
 			var m = this.settings.messages[id];
 			return m && (m.constructor == String
 				? m
 				: m[method]);
 		},
 		
-		formatAndAdd: function( rule, element) {
-			var message = 
-				this.message(element.name, rule.method)
+		defaultMessage: function( element, method) {
+			return this.configuredMessage( element.name, method )
 				|| element.title
-				|| jQuery.validator.messages[rule.method]
+				|| jQuery.validator.messages[method]
 				|| "<strong>Warning: No message defined for " + element.name + "</strong>";
+		},
+		
+		formatAndAdd: function( rule, element) {
+			var message = this.defaultMessage( element, rule.method );
 			if ( typeof message == "function" ) 
 				message = message.call(this, rule.parameters, element);
 			this.errorList.push({
@@ -710,14 +789,15 @@ jQuery.extend(jQuery.validator, {
 		},
 		
 		defaultShowErrors: function() {
-			for ( var i = 0, error; error = this.errorList[i]; i++ ) {
+			for ( var i = 0; this.errorList[i]; i++ ) {
+				var error = this.errorList[i];
 				this.showLabel( error.element, error.message );
 			}
 			if( this.errorList.length ) {
 				this.toShow.push( this.containers );
 			}
-			for ( var i = 0, element; element = this.successList[i]; i++ ) {
-				this.showLabel( element );
+			for ( var i = 0; this.successList[i]; i++ ) {
+				this.showLabel( this.successList[i] );
 			}
 			this.toHide = this.toHide.not( this.toShow );
 			this.hideErrors();
@@ -736,7 +816,7 @@ jQuery.extend(jQuery.validator, {
 				}
 			} else {
 				// create label
-				label = jQuery("<" + this.settings.errorElement + ">")
+				label = jQuery("<" + this.settings.errorElement + "/>")
 					.attr({"for":  this.idOrName(element), generated: true})
 					.addClass(this.settings.errorClass)
 					.html(message || "");
@@ -760,7 +840,7 @@ jQuery.extend(jQuery.validator, {
 		},
 		
 		errorsFor: function(element) {
-			return this.errors().filter("[@for=" + this.idOrName(element) + "]");
+			return this.errors().filter("[@for='" + this.idOrName(element) + "']");
 		},
 		
 		idOrName: function(element) {
@@ -847,7 +927,7 @@ jQuery.extend(jQuery.validator, {
 	 * it refers to input elements of type text, password and file and textareas.
 	 *
 	 * @param String value The trimmed value of the element, eg. the text of a text input (trimmed: whitespace removed at start and end)
-	 * @param Element element the input element itself, to check for content of attributes other then value
+	 * @param Element element the input element itself, to check for content of attributes other than value
 	 * @param Object paramater Some parameter, like a number for min/max rules
 	 *
 	 * @property
@@ -914,7 +994,7 @@ jQuery.extend(jQuery.validator, {
 		 * @param Element element The element to check
 		 * @param Boolean|String|Function param A boolean "true" makes a field always required; An expression (String)
 		 * is evaluated in the context of the element's form, making the field required only if the expression returns
-		 * more then one element. The function is executed with the element as it's only argument: If it returns true,
+		 * more than one element. The function is executed with the element as it's only argument: If it returns true,
 		 * the element is required.
 		 *
 		 * @name jQuery.validator.methods.required
@@ -1030,7 +1110,7 @@ jQuery.extend(jQuery.validator, {
 		 * 	<option value="vw_p">VW Polo</option>
 		 * 	<option value="t_s">Titanic Skoda</option>
 		 * </select>
-		 * @desc Specifies a select that must have at least two but no more then three options selected.
+		 * @desc Specifies a select that must have at least two but no more than three options selected.
 		 *
 	     * @param Array<Number> min/max
 	     * @name jQuery.validator.methods.rangeLength
@@ -1118,7 +1198,7 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate/Methods
 		 */
 		email: function(value, element) {
-			return this.required(element) || /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(value);
+			return this.required(element) || /^[\w-+\.]+@([\w-]+\.)+[\w-]{2,}$/i.test(value);
 		},
 	
 		/**
@@ -1139,7 +1219,7 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate/Methods
 		 */
 		url: function(value, element) {
-			return this.required(element) || /^(https?|ftp):\/\/[A-Z0-9](\.?[A-Z0-9脛脺脰][A-Z0-9_\-脛脺脰]*)*(\/([A-Z0-9脛脺脰][A-Z0-9_\-\.脛脺脰]*)?)*(\?([A-Z0-9脛脺脰][A-Z0-9_\-\.%\+=&脛脺脰]*)?)?$/i.test(value);
+			return this.required(element) || /^(https?|ftp):\/\/[A-Z0-9](\.?[A-Z0-9能謁[A-Z0-9_\-能謁*)*(\/([A-Z0-9能謁[A-Z0-9_\-\.能謁*)?)*(\?([A-Z0-9能謁[A-Z0-9_\-\.%\+=&能謁*)?)?$/i.test(value);
 		},
         
 		/**
@@ -1167,13 +1247,13 @@ jQuery.extend(jQuery.validator, {
 		 *
 		 * Works with all kind of text inputs.
 		 *
-		 * @example jQuery.validator.methods.date("1990/01/01")
+		 * @example jQuery.validator.methods.dateISO("1990/01/01")
 		 * @result true
 		 *
-		 * @example jQuery.validator.methods.date("1990-01-01")
+		 * @example jQuery.validator.methods.dateISO("1990-01-01")
 		 * @result true
 		 *
-		 * @example jQuery.validator.methods.date("01.01.1990")
+		 * @example jQuery.validator.methods.dateISO("01.01.1990")
 		 * @result false
 		 *
 		 * @example <input name="birthdate" class="{dateISO:true}" />
@@ -1193,13 +1273,13 @@ jQuery.extend(jQuery.validator, {
 		 *
 		 * Works with all kind of text inputs.
 		 *
-		 * @example jQuery.validator.methods.date("1990/01/01")
+		 * @example jQuery.validator.methods.dateDE("1990/01/01")
 		 * @result false
 		 *
-		 * @example jQuery.validator.methods.date("01.01.1990")
+		 * @example jQuery.validator.methods.dateDE("01.01.1990")
 		 * @result true
 		 *
-		 * @example jQuery.validator.methods.date("0.1.2345")
+		 * @example jQuery.validator.methods.dateDE("0.1.2345")
 		 * @result true
 		 *
 		 * @example <input name="geburtstag" class="{dateDE:true}" />
@@ -1338,7 +1418,7 @@ jQuery.extend(jQuery.validator, {
 		 * expression used via jQuery to select the element.
 		 *
 		 * @param String selection A jQuery expression
-		 * @name jQuery.validator.methods.digits
+		 * @name jQuery.validator.methods.equalTo
 		 * @type Boolean
 		 * @cat Plugins/Validate/Methods
 		 */

@@ -23,7 +23,6 @@
 	{if ($agent.IE)}
 		{$html->css('ie')}
 	{/if}
-	{$html->css('yav')}
 
 {$content_for_layout}
 

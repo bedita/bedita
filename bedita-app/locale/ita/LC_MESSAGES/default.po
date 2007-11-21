@@ -14,6 +14,15 @@ msgstr ""
 msgid "Username"
 msgstr "Nome utente"
 
+msgid "Username is required"
+msgstr "Nome utente obbligatorio"
+
+msgid "Password is required"
+msgstr "Password obbligatorio"
+
+msgid "This field is required"
+msgstr "Campo obbligatorio"
+
 msgid "Backend user restricted area"
 msgstr "Area riservata ai gestori"
 
