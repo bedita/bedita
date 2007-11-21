@@ -27,10 +27,6 @@ $(document).ready(function(){
 //-->
 </script>
 
-<style type="text/css">
-{literal}TABLE.indexList TR.rowList:hover {background-color:{/literal}{if empty($moduleColor)}#FF6600{else}{$moduleColor}{/if}{literal};}{/literal}
-</style>
-
 {strip}
 
 <div id="headerPage">

@@ -112,14 +112,14 @@
 label.iumd { color:red; }
 
 /**
- * Login Form
+ * Form Validation
  */
 
-#loginForm fieldset {
+fieldset {
 	border: solid transparent 0px;
 }
 
-#loginForm label.error {
+label.error {
   background:url(../img/unchecked.gif) no-repeat 0px 0px;
   padding-left: 16px;
   padding-bottom: 2px;
@@ -127,11 +127,11 @@ label.iumd { color:red; }
   color: #EA5200;
 }
 
-#loginForm label.checked {
+label.checked {
   background:url(../img/checked.gif) no-repeat 0px 0px;
 }
 
-#loginForm .label {
+.label {
   padding-top: 2px;
   padding-right: 8px;
   vertical-align: top;
@@ -140,12 +140,12 @@ label.iumd { color:red; }
   white-space: nowrap;
 }
 
-#loginForm .field {
+.field {
   padding-bottom: 10px;
   white-space: nowrap;
 }
 
-#loginForm .status {
+.status {
   padding-top: 2px;
   padding-left: 8px;
   vertical-align: top;
@@ -153,13 +153,19 @@ label.iumd { color:red; }
   white-space: nowrap;
 }
 
-#loginForm .success_msg {
+.success_msg {
   font-weight: bold;
   color: #0060BF;
   margin-left: 19px;
 }
 
 #loginForm table {
+  border-spacing: 0px;
+  border-collapse: collapse;
+  empty-cells: show;
+}
+
+#userForm table {
   border-spacing: 0px;
   border-collapse: collapse;
   empty-cells: show;

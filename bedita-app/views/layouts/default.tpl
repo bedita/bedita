@@ -24,6 +24,12 @@
 		{$html->css('ie')}
 	{/if}
 
+{literal}
+<style type="text/css">
+TABLE.indexList TR.rowList:hover {background-color:{/literal}{if empty($moduleColor)}#FF6600{else}{$moduleColor}{/if}{literal};}
+</style>
+{/literal}
+
 {$content_for_layout}
 
 <div id="footerPage">

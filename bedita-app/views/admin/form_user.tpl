@@ -15,38 +15,37 @@ function checkPassword(checkNull) {
 	return true;
 }
 
-$(document).ready(function(){
-
-	validateFrm = $("#userForm").validate({
-		errorLabelContainer: $("#errorForm"),
-		rules: {
-			"data[User][userid]"		: "required",
-			"data[User][realname]"	: "required",
-			"data[User][email]"			: { email : true },
-			"data[User][passwd]"	:  { equalTo : "#pwd"},					
-			"pwd"			:  { 
-{/literal}{if !isset($user)}
-					required : true,
-			{/if}
-{literal}
-					minLength : 6
+function localUpdateGroupsChecked(chkElem) {
+	if(chkElem.checked) {
+		document.getElementById("groups").value="true";
+	} else {
+		var nchecked = 0;
+		var formElem = document.getElementById("userForm");
+		for(i=0;i<formElem.lenght;i++) {
+			if(i<3) alert('test');
+			name = formElem.elements[i].name;
+			if(name.indexOf('group_') != -1) {
+				if(formElem.elements[i].checked) {
+					nchecked = 1;
+					break;
+				}
 			}
-		},
-		messages: {
-{/literal}
-			"data[User][userid]"		: "{t}user name required{/t}",
-			"data[User][realname]"	: "{t}real name required{/t}",			
-			"data[User][email]"			: "{t}use a valid email{/t}",
-			"data[User][passwd]" : {ldelim} equalTo : "{t}passwords should be equal{/t}" {rdelim},
-			"pwd"		:  {ldelim}
-			{if !isset($user)}
-				required : "{t}password is required{/t}",
-			{/if}
-				minLength : "{t 1='6'}Password should be %1 chars long{/t}"
-{literal}	}
 		}
-	});
+		document.getElementById("groups").value = (nchecked>0) ? "checked" : "";
+	}
+}
+
+$.validator.setDefaults({ 
+	submitHandler: function() { alert("submitted!"); },
+	success: function(label) {
+		// set &nbsp; as text for IE
+		label.html("&nbsp;").addClass("checked");
+	}
 });
+$().ready(function() { 
+	$("#userForm").validate(); 
+});
+
 {/literal}
 </script>
 
@@ -54,71 +53,88 @@ $(document).ready(function(){
 	<div class="FormPageHeader"><h1>{if isset($user)}{t}User settings{/t}{else}{t}New user{/t}{/if}</h1></div>
 	<div class="blockForm" id="errorForm"></div>
 	<div id="mainForm">
-		<form action="{$html->url('/admin/saveUser')}" method="post" name="userForm" id="userForm">
+		<form action="{$html->url('/admin/saveUser')}" method="post" name="userForm" id="userForm" class="cmxform">
+		<fieldset>
 		<table border="0" cellspacing="8" cellpadding="0">
 		<tr>
-		 	{if isset($user)}
-			<input type="hidden" name="data[User][id]" value="{$user.User.id}"/>
-			{/if}
-			<td>{t}User name{/t}</td>
-			<td><input type="text" id="username" name="data[User][userid]" 
-				value="{$user.User.userid}" />&nbsp;</td>
+			<td class="label">
+				<label id="lusername" for="username">{t}User name{/t}</label>
+				{if isset($user)}<input type="hidden" name="data[User][id]" value="{$user.User.id}"/>{/if}
+			</td>
+			<td class="field"><input type="text" id="username" name="data[User][userid]" class="{literal}{required:true}{/literal}" 
+				value="{$user.User.userid}" title="{t}User name is required{/t}"/>&nbsp;</td>
+			<td class="status">&#160;</td>
 		</tr>
 		<tr>
-			<td>{t}Real name{/t}</td>
-			<td><input type="text" name="data[User][realname]" 
-			value="{$user.User.realname}" />&nbsp;</td>
+			<td class="label"><label id="lrealname" for="realname">{t}Real name{/t}</label></td>
+			<td class="field">
+				<input type="text" id="realname" name="data[User][realname]" value="{$user.User.realname}"
+				class="{literal}{required:true}{/literal}" title="{t}Real name is required{/t}"/>&nbsp;</td>
+			<td class="status">&#160;</td>
 		</tr>
 		<tr>
-			<td>{t}Email{/t}</td>
-			<td><input type="text" name="data[User][email]" value="{$user.User.email}"/>&nbsp;</td>
+			<td class="label"><label id="lemail" for="email">{t}Email{/t}</label></td>
+			<td class="field"><input type="text" id="email" name="data[User][email]" value="{$user.User.email}"
+			class="{literal}{email:true}{/literal}" title="{t}Use a valid email{/t}"/>&nbsp;</td>
+			<td class="status">&#160;</td>
+		</tr>
+		
+		<tr>
+		 	<td class="label">{if isset($user)}{t}New password{/t}{else}{t}Password{/t}{/if}</td>
+			<td class="field"><input type="password" name="pwd" value="" id="pwd" 
+			class="{if isset($user)}{literal}{required:true,minLength:6}{/literal}{else}{literal}{minLength:6}{/literal}{/if}" title="{t 1='6'}Password is required (at least %1 chars){/t}"/>&nbsp;</td>
+			<td class="status">&#160;</td>
 		</tr>
 		<tr>
-		 	{if isset($user)}
-			<td>{t}New password{/t}</td>
-			<td><input type="password" name="pwd" value="" id="pwd" />&nbsp;</td>
-		 	{else}
-			<td>{t}Password{/t}</td>
-			<td><input type="password" name="pwd" value="" id="pwd" />&nbsp;</td>
-			{/if}
+			<td class="label">{t}Confirm password{/t}</td>
+			<td class="field"><input type="password" name="data[User][passwd]" value=""
+			class="{literal}{equalTo:'#pwd'}{/literal}" title="{t}Passwords should be equal{/t}"/>&nbsp;</td>
+			<td class="status">&#160;</td>
 		</tr>
 		<tr>
-			<td>{t}Confirm password{/t}</td>
-			<td><input type="password" name="data[User][passwd]" value=""/>&nbsp;</td>
-		</tr>
-		<tr>
-			<td>{t}Status{/t}</td>
+			<td class="label">{t}Status{/t}</td>
 				{if isset($user)}
 					{assign var='valid' value=$user.User.valid}
 				{else}
 					{assign var='valid' value='1' }
 				{/if}
-			<td>
+			<td class="field">
 				<input type="radio" name="data[User][valid]"  id="userValid" 
-					value="1" {if $valid}checked="checked"{/if}/ >
+					value="1" {if $valid}checked="checked"{/if} />
 					<label for="userValid">{t}Valid{/t}</label>&nbsp;
 				<input type="radio" name="data[User][valid]"  id="userNotValid" 
-					value="0" {if !$valid}checked="checked"{/if}/ >
+					value="0" {if !$valid}checked="checked"{/if} />
 					<label for="userNotValid">{t}Blocked{/t}</label>&nbsp;
 			</td>
+			<td class="status">&#160;</td>
 		</tr>
 		<tr>
-			<td>{t}Groups{/t}</td>
-			<td><table>
+			<td class="label"><label id="lgroups" for="groups">{t}Groups{/t}</label></td>
+			<td class="field"><input type="hidden" name="groups" id="groups"
+				class="{literal}{required:true}{/literal}" title="{t}Check at least one group{/t}"/></td>
+			<td class="status">&#160;</td>
+		</tr>
+		<tr>
+			<td class="label">&#160;</td>
+			<td class="field">
+				<table>
 				{foreach from=$formGroups key=gname item=u}
 				<tr>
-					<td><input type="checkbox" name="data[groups][{$gname}]" {if $u == 1}checked="checked"{/if}></td>
-					<td>{$gname}</td>
+					<td class="field"><input type="checkbox" id="group_{$gname}" name="data[$gname]" {if $u == 1}checked="checked"{/if}
+					onclick="javascript:localUpdateGroupsChecked(this);"/></td>
+					<td class="label"><label id="lgroup{$gname}" for="group{$gname}">{$gname}</label></td>
+					<td class="status">&#160;</td>
 				</tr>
 				{/foreach}
 				</table>
 			</td>
+			<td class="status">&#160;</td>
 		</tr>
-		<tr></tr>
 		{if isset($userModules)}
 		<tr>
-			<td>{t}Module access{/t}</td>
-			<td><table>
+			<td class="label">{t}Module access{/t}</td>
+			<td class="field">
+				<table>
 				{foreach from=$userModules item=mod}
 				<tr>
 					<td><em>{$mod.label}</em></td>
@@ -129,17 +145,17 @@ $(document).ready(function(){
 				{/foreach}
 				</table>
 			</td>
+			<td class="status">&#160;</td>
 		</tr>
 		{/if}
-		<tr></tr>
 		<tr>
-			<td colspan="2">
+			<td class="label">&#160;</td>
+			<td class="field" colspan="2">
 				<input type="submit" name="save" class="submit" value="{if isset($user)}{t}Modify{/t}{else}{t}Create{/t}{/if}" />
-				<!--  onclick="setRulesNewUser(); if(!checkOnSubmit('userForm',rulesUser)) return false;" /> -->
 			</td> 
 		</tr>
-  		</tbody>
 		</table>
+		</fieldset>
 		</form>
 	</div>
 </div>
