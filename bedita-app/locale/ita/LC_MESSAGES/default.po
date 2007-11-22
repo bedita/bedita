@@ -232,3 +232,99 @@ msgstr "Oggetti"
 
 msgid "Where put the document into"
 msgstr "Dove inserire il documento"
+
+msgid "User settings"
+msgstr "Impostazioni utente"
+
+msgid "User name"
+msgstr "Nome utente"
+
+msgid "User name is required (at least %1 alphanumerical chars)"
+msgstr "Nome utente obbligatorio (almeno %1 caratteri alfanumerici)"
+
+msgid "Real name"
+msgstr "Nome reale"
+
+msgid "Real name is required (at least %1 alphanumerical chars)"
+msgstr "Nome reale obbligatorio (almeno %1 caratteri alfanumerici)"
+
+msgid "Use a valid email"
+msgstr "Utilizza un email valido"
+
+msgid "New password"
+msgstr "Nuova password"
+
+msgid "Password is required (at least %1 alphanumerical chars: %2 special chars and %3 numbers)"
+msgstr "Password obbligatoria (Almento %1 caratteri alfanumerici: %2 caratteri speciali e %3 numerici)"
+
+msgid "Confirm password"
+msgstr "Conferma password"
+
+msgid "Passwords should be equal"
+msgstr "Le password devono essere uguali"
+
+msgid "Strength"
+msgstr "Sicurezza"
+
+msgid "Blocked"
+msgstr "Bloccato"
+
+msgid "Groups"
+msgstr "Gruppi"
+
+msgid "Module access"
+msgstr "Accesso ai moduli"
+
+msgid "Read only"
+msgstr "Sola lettura"
+
+msgid "Read and modify"
+msgstr "Lettura e modifica"
+
+msgid "Check at least one group"
+msgstr "Indica almeno un gruppo"
+
+msgid "Users list"
+msgstr "Lista utenti"
+
+msgid "Manage user"
+msgstr "Opzioni utente"
+
+msgid "New user"
+msgstr "Nuovo utente"
+
+msgid "Create"
+msgstr "Crea"
+
+msgid "User"
+msgstr "Utente"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "System Info"
+msgstr "Info Sistema"
+
+msgid "Users admin"
+msgstr "Amministrazione utenti"
+
+msgid "Groups admin"
+msgstr "Amministrazione gruppi"
+
+msgid "Module"
+msgstr "Modulo"
+
+msgid "No access"
+msgstr "Nessun accesso"
+
+msgid "Group properties"
+msgstr "Proprieta' gruppi"
+
+msgid "Create group"
+msgstr "Crea gruppo"
+
+msgid "Insert group name"
+msgstr "Inserire nome gruppo"
+
+msgid "Users of this group"
+msgstr "Utenti di questo gruppo"

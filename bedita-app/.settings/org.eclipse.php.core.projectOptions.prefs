@@ -1,0 +1,3 @@
+#Wed Nov 14 14:13:06 CET 2007
+eclipse.preferences.version=1
+org.eclipse.php.core.includePath=<?xml version\="1.0" encoding\="UTF-8"?>\n<includepath>\n\t<includepathentry kind\="prj" path\="/cake core" resource\="cake core" createdReference\="true" contentKind\="source">\n</includepathentry>\n</includepath>\n

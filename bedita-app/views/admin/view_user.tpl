@@ -5,6 +5,7 @@
 {$javascript->link("jquery.metadata")}
 {$javascript->link("jquery.validate")}
 {$javascript->link("jquery.changealert")}
+{$javascript->link("jquery.pwdstrengthmeter")}
 </head>
 <body>
 {include file="head.tpl"}

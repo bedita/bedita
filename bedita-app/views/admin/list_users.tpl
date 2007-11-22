@@ -15,7 +15,7 @@
 		<tbody>
 		{foreach from=$users item=u}
 		<tr class="rowList">
-			<td><a href="{$html->url('/admin/viewUser/')}{$u.User.id}">{$u.User.userid}</td>
+			<td><a href="{$html->url('/admin/viewUser/')}{$u.User.id}">{$u.User.userid}</a></td>
 			<td>{$u.User.realname}</td>
 			<td>{$u.User.email}</td>
 			<td>{$u.User.valid}</td>

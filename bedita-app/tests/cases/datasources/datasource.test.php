@@ -61,7 +61,6 @@ class DataSourceTestCase extends CakeTestCase {
 		$this->DataSourceTest =& new DataSourceTest();
 		$this->DataSourceTest->executeQuery($db,$script);
 	}
-
 }
 
 ?>
