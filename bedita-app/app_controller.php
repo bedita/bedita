@@ -130,7 +130,7 @@ class AppController extends Controller
 	function setupCommonData() {
 		// E' necessario?
 		$conf  		= Configure::getInstance() ;
-		
+
 		$this->pageTitle = __($this->name, true);
 		
 		$this->set('conf', $conf) ;
@@ -198,7 +198,7 @@ class AppController extends Controller
 	 * 
 	 * Preleva l'elenco dei moduli visibili dall'utente corrente.
 	 */
-	function checkLogin() {				
+	protected function checkLogin() {				
 		static  $_loginRunning = false ;
  		
 		if($_loginRunning) return true ;
