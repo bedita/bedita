@@ -22,7 +22,7 @@ function localUpdateGroupsChecked(chkElem) {
 }
 
 $.validator.setDefaults({ 
-	//submitHandler: function() { alert("submitted!"); },
+//	submitHandler: function() { alert("submitted!"); },
 	success: function(label) {
 		// set &nbsp; as text for IE
 		label.html("&nbsp;").addClass("checked");
@@ -32,7 +32,7 @@ $(document).ready(function() {
 	$('#pwd').keyup(function(){
 		$('#result').html(passwordStrength($('#pwd').val(),$('#username').val()));
 		$('#strength').html(pwdStrenFeedback($('#pwd').val(),$('#username').val()));
-	});
+});
 
 	jQuery.validator.addMethod(
 		"password", 
@@ -46,7 +46,7 @@ $(document).ready(function() {
   Password should contain at least one alphabet(either in downcase or upcase).
   Password can have special characters from 20 to 7E ascii values.
   Password should be minimum of 6 and maximum of 40 cahracters long.
-  
+
   regexp: /^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){6,40}$/
 */
 {/literal}
@@ -80,7 +80,7 @@ $(document).ready(function() {
 			<td class="label"><label id="lemail" for="email">{t}Email{/t}</label></td>
 			<td class="field">
 				<input type="text" id="email" name="data[User][email]" value="{$user.User.email}"
-					class="{literal}{email:true}{/literal}" title="{t}Use a valid email{/t}"/>&nbsp;</td>
+			class="{literal}{email:true}{/literal}" title="{t}Use a valid email{/t}"/>&nbsp;</td>
 			<td class="status">&#160;</td>
 		</tr>
 		
@@ -96,7 +96,7 @@ $(document).ready(function() {
 			<td class="label">{t}Confirm password{/t}</td>
 			<td class="field">
 				<input type="password" name="data[User][passwd]" value=""
-					class="{literal}{equalTo:'#pwd'}{/literal}" title="{t}Passwords should be equal{/t}"/>&nbsp;</td>
+			class="{literal}{equalTo:'#pwd'}{/literal}" title="{t}Passwords should be equal{/t}"/>&nbsp;</td>
 			<td class="status">&#160;</td>
 		</tr>
 		<tr>
@@ -109,15 +109,19 @@ $(document).ready(function() {
 			</td>
 		</tr>
 		<tr>
-			<td class="label">{t}Status{/t}</td>
-			{if isset($user)}{assign var='valid' value=$user.User.valid}{else}{assign var='valid' value='1'}{/if}
+			<td class="label">{t}User blocked{/t}</td>
+				{if isset($user)}
+					{assign var='valid' value=$user.User.valid}
+				{else}
+					{assign var='valid' value='1' }
+				{/if}
 			<td class="field">
 				<input type="radio" name="data[User][valid]"  id="userValid" 
 					value="1" {if $valid}checked="checked"{/if} />
-					<label for="userValid">{t}Valid{/t}</label>&nbsp;
+					<label for="userValid">{t}No{/t}</label>&nbsp;
 				<input type="radio" name="data[User][valid]"  id="userNotValid" 
 					value="0" {if !$valid}checked="checked"{/if} />
-					<label for="userNotValid">{t}Blocked{/t}</label>&nbsp;
+					<label for="userNotValid">{t}Yes{/t}</label>&nbsp;
 			</td>
 			<td class="status">&#160;</td>
 		</tr>
@@ -125,7 +129,7 @@ $(document).ready(function() {
 			<td class="label"><label id="lgroups" for="groups">{t}Groups{/t}</label></td>
 			<td class="field">
 				<input type="hidden" name="groups" id="groups"
-					class="{literal}{required:true}{/literal}" title="{t}Check at least one group{/t}"/></td>
+				class="{literal}{required:true}{/literal}" title="{t}Check at least one group{/t}"/></td>
 			<td class="status">&#160;</td>
 		</tr>
 		{if !empty($formGroups)}
@@ -137,7 +141,7 @@ $(document).ready(function() {
 				<tr>
 					<td class="field">
 						<input type="checkbox" id="group_{$gname}" name="data[$gname]" {if $u == 1}checked="checked"{/if}
-							onclick="javascript:localUpdateGroupsChecked(this);"/></td>
+					onclick="javascript:localUpdateGroupsChecked(this);"/></td>
 					<td class="label"><label id="lgroup{$gname}" for="group{$gname}">{$gname}</label></td>
 					<td class="status">&#160;</td>
 				</tr>
