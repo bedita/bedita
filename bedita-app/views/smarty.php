@@ -1,4 +1,4 @@
-<?
+<?php
 	/* 
 	 * This is a drop-in class to support smarty templating engine
 	 * from within CakePHP.
@@ -103,6 +103,8 @@
 			
 			// Aggiunta Giangi
 			$this->_smarty->plugins_dir[] = ROOT . DS . APP_DIR . DS . 'vendors' . DS . '_smartyPlugins' ;
+			if(defined('BEDITA_CORE_PATH'))
+				$this->_smarty->plugins_dir[] = BEDITA_CORE_PATH . DS . 'vendors' . DS . '_smartyPlugins';
 			
 			$svckResFuncs = array(
 				__CLASS__ . "::svck_get_template",
