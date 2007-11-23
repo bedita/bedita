@@ -122,7 +122,7 @@ function activePortionsForm(objectType) {
 
 <h2 class="showHideBlockButton">{t}Properties{/t}</h2>
 <div class="blockForm" id="properties">
-{include file="../pages/form_properties.tpl" doctype=true}
+{include file="../pages/form_properties.tpl" doctype=false}
 </div>
 
 <h2 class="showHideBlockButton">{t}Subtitle, description{/t}</h2>
