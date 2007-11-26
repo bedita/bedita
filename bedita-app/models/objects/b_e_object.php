@@ -181,6 +181,28 @@ class BEObject extends BEAppModel
 			}
 		}
 		
+		// Salva eventuali permessi
+		$permissions = false ;
+		if(isset($this->data["Permissions"])) $permissions = $this->data["Permissions"] ;
+		else if(isset($this->data[$this->name]["Permissions"])) $permissions = $this->data[$this->name]["Permissions"] ;
+		
+		if(!$permissions) return true ;
+		
+		if(!class_exists('Permission')) {
+			loadModel('Permission') ;
+		}
+		$Permission = new Permission() ;		
+		// Aggiunge
+		$this->_array2perms($permissions, $formatedPerms) ;
+		for($i=0; $i < count($formatedPerms) ; $i++) {
+			$item = &$formatedPerms[$i] ;
+				
+			if($Permission->replace($this->{$this->primaryKey}, $item['name'], $item['switch'], $item['flag']) === false) {
+				return false ;
+			}				
+		}
+		
+		return true ;
 	}
 	
 	/**
@@ -196,7 +218,7 @@ class BEObject extends BEAppModel
 			'IP_created' 		=> array('_getDefaultIP'),
 			'user_created'		=> array('_getIDCurrentUser', 		((isset($data[$this->primaryKey]) && empty($data[$this->primaryKey])) || !isset($data[$this->primaryKey]))? (isset($data['user_created'])?$data['user_created']:true) :false),
 			'user_modified'		=> array('_getIDCurrentUser', 		(isset($data['user_modified'])?$data['user_modified']:true)), 
-			'Permission' 		=> array('_getDefaultPermission', 	(isset($data['Permission']))?$data['Permission']:null, (isset($data['object_type_id']))?$data['object_type_id']:0),
+			'Permissions' 		=> array('_getDefaultPermission', 	(isset($data['Permission']))?$data['Permission']:null, (isset($data['object_type_id']))?$data['object_type_id']:0),
 		) ;
 		
 		foreach ($default as $name => $rule) {
@@ -222,7 +244,7 @@ class BEObject extends BEAppModel
 
 			return true ;
 	}
-	
+
 	/**
 	 * Esegue ricerche complesse sugli oggetti indipendentemente da dove sono collocati.
 	 * (vedere: tree->getChildren(), tree->getChildren() ).
@@ -305,9 +327,9 @@ class BEObject extends BEAppModel
 	function getType($id) {
 		$conf = Configure::getInstance() ;
 		
-		if(!($obj = $this->findById($id))) return false ;
-		$type_id =  $this->read("object_type_id", $id) ;
-		
+		if(!($type_id =  $this->read("object_type_id", $id))) return false ;
+		 
+		$type_id = (isset($type_id['Object']['object_type_id']))?$type_id['Object']['object_type_id']:$type_id;
 		return $conf->objectTypeModels[$type_id] ;
 	}
 	
@@ -333,6 +355,9 @@ class BEObject extends BEAppModel
 		
 		$conf = Configure::getInstance() ;
 		$permissions = &$conf->permissions ;
+		
+		// Aggiunge i permessi di default solo se sta creando un nuovo oggetto
+		if(isset($this->data[$this->name][$this->primaryKey])) return null ;
 		
 		// Seleziona i permessi in base al tipo di oggetti
 		if(isset($permissions[$object_type_id])) 	return $permissions[$object_type_id] ;
@@ -420,5 +445,26 @@ class BEObject extends BEAppModel
 		$conditions[] = array("current" => 1);
 	}
 	
+	/**
+	 * Trasforma un array di permessi da aggiungere in un array associativo x Cake
+	 *
+	 * @param array $arr	{0..N} item:
+	 * 						0:ugid, 1:switch, 2:flag 
+	 * @param array $perms	dove torna l'array associativo:
+	 * 						ugid => ; switch => ; flag => 
+	 */
+
+	private function _array2perms(&$arr, &$perms) {
+		$perms = array() ;
+		if(!count($arr))  return ;
+
+		foreach ($arr as $item) {
+			$perms[] = array(
+					'name'		=> $item[0],
+					'switch'	=> $item[1],
+					'flag'		=> (isset($item[2]))?$item[2]:null,
+			) ;
+		}
+	}
 }
 ?>
