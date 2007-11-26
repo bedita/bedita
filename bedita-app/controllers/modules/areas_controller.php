@@ -179,32 +179,7 @@ class AreasController extends AppController {
 		 	}	 	
 	 		$this->Transaction->commit() ;
 
-	 	$new = (empty($this->data['id'])) ? true : false ;
-
-	 	// Verifica i permessi di modifica dell'oggetto
-	 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY))
-	 	throw new BEditaActionException($this, "Error modify permissions");
-
-	 	// Formatta le custom properties
-	 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-
-	 	// Formatta i campi d tradurre
-	 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
-
-	 	$this->Transaction->begin() ;
-
-	 	// Salva i dati
-	 	if(!$this->Area->save($this->data)) throw new BEditaActionException(__($this->Area->validationErrors));
-
-	 	// aggiorna i permessi
-	 	if(!$this->Permission->saveFromPOST(
-		 	$this->Area->id,
-		 	(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
-	 	(empty($this->data['recursiveApplyPermissions'])?false:true))
-	 	) {
-	 		throw BEditaActionException(__("Error saving permissions", true));
-	 	}
-	 	$this->Transaction->commit() ;
+echo 1;	 	
 	 }
 
 	 /**
