@@ -168,7 +168,7 @@ class AreasController extends AppController {
 			
 	 		// Salva i dati
 		 	if(!$this->Area->save($this->data))
-				throw new BeditaException( __("Error saving area", true) );
+				throw new BeditaException( __("Error saving area", true),  $this->Area->validationErrors);
 
 		 	// aggiorna i permessi
 		 	if(isset($this->data["Permissions"])) {
@@ -210,7 +210,7 @@ class AreasController extends AppController {
 	 		// Salva i dati
 	 		if($new) $this->data["parent_id"] = $this->data["destination"] ;
 		 	if(!$this->Section->save($this->data))
-				throw new BeditaException( __("Error saving section", true) );
+				throw new BeditaException( __("Error saving section", true), $this->Section->validationErrors );
 
 		 	// Sposta la sezione nell'albero se necessario
 		 	if(!$new) {

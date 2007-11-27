@@ -251,7 +251,7 @@ class BeAuthComponent extends Object {
 		$userData['User']['passwd'] = md5($userData['User']['passwd']);
 		$this->userGroupModel($userData, $groups);
 		if(!$user->save($userData))
-			throw new BeditaException(__("Error saving user",true));
+			throw new BeditaException(__("Error saving user",true), $user->validationErrors);
 		return true;
 	}
 
@@ -273,7 +273,7 @@ class BeAuthComponent extends Object {
 		$this->userGroupModel($userData, $groups);
 		$user = new User() ;
 		if(!$user->save($userData))
-			throw new BeditaException(__("Error updating user",true));
+			throw new BeditaException(__("Error updating user",true), $user->validationErrors);
 		return true;
 	}
 	
@@ -297,7 +297,7 @@ class BeAuthComponent extends Object {
 		}
 		$group = new Group();
 		if(!$group->save($groupData))
-			throw new BeditaException(__("Error saving group",true));
+			throw new BeditaException(__("Error saving group",true), $group->validationErrors);
 		if(!isset($groupData['Group']['id']))
 			return $group->getLastInsertID();
 		return $group->getID();

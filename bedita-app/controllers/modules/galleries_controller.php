@@ -114,8 +114,7 @@ class GalleriesController extends AppController {
 		
 		$this->Transaction->begin();
 		if(!$this->Gallery->save($this->data)) 
-//			throw new BeditaException( $this->Gallery->validationErrors);
-			throw new BeditaException( __("Error saving gallery", true));
+			throw new BeditaException( __("Error saving gallery", true), $this->Gallery->validationErrors);
 			if(($parents = $this->Tree->getParent($this->Gallery->id)) !== false) {
 			if(!is_array($parents)) $parents = array($parents);
 		} else {

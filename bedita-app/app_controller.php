@@ -27,11 +27,9 @@ class AppController extends Controller
 	/////////////////////////////////		
 
 	public static function handleExceptions(BeditaException $ex) {
-		// TODO: aggiungere stack trace e altre info nel log su file
-		$errTrace =    $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+		$errTrace =    $ex->getDetails()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 		if(isset(self::$current)) {
-			// TODO: different event/log messages and user messages
-			self::$current->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
+			self::$current->handleError($ex->getDetails(), $ex->getMessage(), $errTrace);
 			self::$current->setResult($ex->result);
 			self::$current->afterFilter();
 		} else {
@@ -327,13 +325,28 @@ class AppController extends Controller
 class BeditaException extends Exception
 {
 	public $result;
+	protected $errorDetails; // details for log file
 	
-	public function __construct($message = NULL, $res  = AppController::ERROR, $code = 0) {
+	public function __construct($message = NULL, $details = NULL, $res  = AppController::ERROR, $code = 0) {
    		if(empty($message)) {
    			$message = __("Unexpected error, operation failed",true);
    		}
-	 	$this->result = $res;
+   		$this->errorDetails = $message;
+   		if(!empty($details)) {
+   			if(is_array($details)) {
+   				foreach ($details as $k => $v) {
+					$this->errorDetails .= "; [$k] => $v";
+				}
+   			} else {
+   				$this->errorDetails = $this->errorDetails . ": ".$details; 
+   			}
+   		}
+   		$this->result = $res;
         parent::__construct($message, $code);
+    }
+    
+    public function  getDetails() {
+    	return $this->errorDetails;
     }
 }
 

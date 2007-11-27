@@ -136,7 +136,8 @@ pr($this->data);
 exit;
 */		
 	 		// Salva i dati
-		 	if(!$this->Document->save($this->data)) throw new BeditaException( $this->Document->validationErrors);
+		 	if(!$this->Document->save($this->data)) 
+		 		throw new BeditaException(__("Error saving document", true), $this->Document->validationErrors);
 
 			/**
  			* inserimento nell'albero
