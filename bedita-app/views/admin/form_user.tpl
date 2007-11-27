@@ -22,7 +22,6 @@ function localUpdateGroupsChecked(chkElem) {
 }
 
 $.validator.setDefaults({ 
-//	submitHandler: function() { alert("submitted!"); },
 	success: function(label) {
 		// set &nbsp; as text for IE
 		label.html("&nbsp;").addClass("checked");
@@ -36,8 +35,8 @@ $(document).ready(function() {
 
 	jQuery.validator.addMethod(
 		"password", 
-		function( value, element, param ) {return /^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){6,40}$/.test(value);}, 
-    	"{/literal}{t}Your password must be at least 6 characters long and contain at least one number and one special character.{/t}{literal}");
+		function( value, element, param ) {return {/literal}{$conf->passwdRegex}{literal}.test(value);}, 
+    	"{/literal}{$tr->t($conf->passwdRegexMsg)}{literal}");
 	$("#userForm").validate(); 
 });
 
@@ -89,7 +88,7 @@ $(document).ready(function() {
 			<td class="field">
 				<input type="password" name="pwd" value="" id="pwd"
 					class="{if isset($user)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}" 
-					title="{t 1='6' 2='1' 3='1'}Password is required (at least %1 alphanumerical chars: %2 special chars and %3 numbers){/t}"/>&nbsp;</td>
+			    	title="{$tr->t($conf->passwdRegexMsg)}"/>&nbsp;</td>
 			<td class="status">&#160;</td>
 		</tr>
 		<tr>
