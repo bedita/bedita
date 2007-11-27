@@ -24,7 +24,7 @@
  * 
  */
 class TestsController extends AppController {
-	var $helpers 	= array('Bevalidation');
+	var $helpers 	= array();
 	var $uses	 	= array('BEObject', 'ContentBase', 'ViewImage', 'Content', 'BaseDocument', 'Document');
 //	var $uses	 	= array('BEObject', 'Collection', 'Area', 'Newsletter', 'Section', 'Community');	
 	var $name 		= 'Tests' ;

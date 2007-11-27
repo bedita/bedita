@@ -24,8 +24,8 @@
 class GroupsController extends AppController {
 	var $name = 'Groups';
 
-	var $helpers = array('Bevalidation', 'Form');
-	var $components = array('Session', 'BeAuth');
+	var $helpers = array();
+	var $components = array('Session');
 
 	// This controller does not use a model
 	 var $uses = array("Group");

@@ -12,7 +12,6 @@
 	<meta name="description" content="Descrizione" lang="it" />
 	<meta name="keywords" content="Keys" />
 
-	{$bevalidation->setup('it')}
 	{$javascript->link("jquery")}
 	{$javascript->link("jquery.cookie")}
 	{$javascript->link("common")}

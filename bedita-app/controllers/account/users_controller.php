@@ -24,8 +24,8 @@
 class UsersController extends AppController {
 	var $name = 'Users';
 
-	var $helpers = array('Bevalidation', 'Form');
-	var $components = array('Session', 'BeAuth');
+	var $helpers = array();
+	var $components = array('Session');
 
 	// This controller does not use a model
 	 var $uses = array("User");

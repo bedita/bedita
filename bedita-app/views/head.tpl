@@ -39,7 +39,7 @@ $(document).ready(function(){
 		{if ($moduleList[m].status == 'on')}
 			{if ($moduleList[m].flag & BEDITA_PERMS_READ)}
 	<div class="gest_menux" id="{$moduleList[m].path}_gest_menux">
-			     {if (stripos($bevalidation->here, $moduleList[m].path) !== false)}
+			     {if (stripos($html->here, $moduleList[m].path) !== false)}
      	<i> * {$moduleList[m].label}</i>
      			{else}
      	{$moduleList[m].label}

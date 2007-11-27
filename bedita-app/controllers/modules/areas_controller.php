@@ -23,8 +23,8 @@
 class AreasController extends AppController {
 	var $name = 'Areas';
 
-	var $helpers 	= array('Bevalidation', 'BeTree');
-	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText');
+	var $helpers 	= array('BeTree');
+	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
 
 	 var $uses = array('Area', 'Section', 'Tree') ;
 	 protected $moduleName = 'areas';

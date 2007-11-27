@@ -170,6 +170,9 @@ msgstr "Proprieta' Ad Hoc"
 msgid "name"
 msgstr "nome"
 
+msgid "Name"
+msgstr "Nome"
+
 msgid "type"
 msgstr "tipo"
 
@@ -206,8 +209,17 @@ msgstr "gruppo"
 msgid "From"
 msgstr "Da"
 
+msgid "Yes"
+msgstr "Si"
+
 msgid "Last modified"
 msgstr "Ultima modifica"
+
+msgid "Modified"
+msgstr "Modificato"
+
+msgid "User blocked"
+msgstr "Utente bloccato"
 
 msgid "Do you really want to delete the property"
 msgstr "Vuoi davvero eliminare la proprieta'"
