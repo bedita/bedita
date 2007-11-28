@@ -218,6 +218,22 @@ $config['permissions'] = array(
 		array('guest', 			'group', (BEDITA_PERMS_READ)),
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
 	),
+	$config['objectTypes']['image']	=> array(
+		array('guest', 			'group', (BEDITA_PERMS_READ)),
+		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
+	),
+	$config['objectTypes']['audiovideo']	=> array(
+		array('guest', 			'group', (BEDITA_PERMS_READ)),
+		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
+	),
+	$config['objectTypes']['befile']	=> array(
+		array('guest', 			'group', (BEDITA_PERMS_READ)),
+		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
+	),
+	$config['objectTypes']['gallery']	=> array(
+		array('guest', 			'group', (BEDITA_PERMS_READ)),
+		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
+	),
 );
 
 /**
@@ -296,17 +312,27 @@ $config['validate_resorce'] = array(
 							 **/
 							
 	'URL'	=> '/^\s*[a-z\d\+\-\.]+\:\/\//i',
-	'allow'	=> array( // Inserire tutte le regole che si vogliono. L'URL non e' accettato se non passa almeno 1 regola data
+	/**
+	 *  Inserire tutte le regole che si vogliono. L'URL non e' accettato se non passa almeno 1 regola data
+	 */
+	'allow'	=> array( 
 				'/^\s*http:\/\/(.*)\.(html|htm)$/',
 				'/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/'
 			   ),
-	'mime'	=> array(	// ELenco dei MIME accettati per i diversi tipi di oggetti
+	/**
+	 * ELenco dei MIME accettati per i diversi tipi di oggetti
+	 */
+	'mime'	=> array(
 				'Image'			=> array('/image\/jpeg/', '/image\/gif/', '/image\/png/'),
 				'AudioVideo'	=> array('/audio\/\.*/', '/video\/\.+/'),
 				'File'			=> array('/application\/msword/', '/application\/pdf/', '/application\/postscript/', 
 										  '/application\/x-tar/', '/application\/zip/', '/text\/.+/'
 								   ),
 			   ),
+	/**
+	 * Possono essere usati i file che accompagnano l'associazione oppure indicare fiel diversi
+	 * cambiando il path
+	 */
 	'mime.types'	=> dirname(__FILE__).DS."mime.types" ,
 	'magic'			=> dirname(__FILE__).DS."magic" ,
 ) ;
