@@ -31,7 +31,7 @@ $(document).ready(function() {
 	$('#pwd').keyup(function(){
 		$('#result').html(passwordStrength($('#pwd').val(),$('#username').val()));
 		$('#strength').html(pwdStrenFeedback($('#pwd').val(),$('#username').val()));
-});
+	});
 
 	jQuery.validator.addMethod(
 		"password", 
