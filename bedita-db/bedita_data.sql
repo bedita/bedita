@@ -83,8 +83,11 @@ INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES ((SELECT MAX(id) FR
 INSERT INTO `modules` (`label`, `color`, `path`, `status`) VALUES
 ('admin', '#000000', 'admin', 'on'),
 ('areas', '#ff9933', 'areas', 'on'),
-('documents', '#ff6600', 'documents', 'on'),
-('galleries', '#ffcc33', 'galleries', 'on') ;
+
+('documents', '#ff9900', 'documents', 'on'),
+('galleries', '#123456', 'galleries', 'on') ,
+('multimedia', '#ff3456', 'multimedia', 'on') ;
+
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES (
@@ -107,10 +110,16 @@ VALUES (
 'group', '15'
 ) ;
 
-
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES (
 (SELECT id FROM modules WHERE label = 'galleries'),
+(SELECT id FROM groups WHERE name = 'administrator'),
+'group', '15'
+) ;
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES (
+(SELECT id FROM modules WHERE label = 'multimedia'),
 (SELECT id FROM groups WHERE name = 'administrator'),
 'group', '15'
 ) ;
