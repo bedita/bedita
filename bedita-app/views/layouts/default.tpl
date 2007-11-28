@@ -12,7 +12,7 @@
 	<meta name="description" content="Descrizione" lang="it" />
 	<meta name="keywords" content="Keys" />
 
-	{$javascript->link("jquery")}
+	{$javascript->link("jquery-latest")}
 	{$javascript->link("jquery.cookie")}
 	{$javascript->link("common")}
 	{$html->css('bedita')}

@@ -1,18 +1,17 @@
 <?php
 class FilesController extends AppController {
 	var $name = 'Images';
-	var $helpers = array('Html');
+	var $helpers 	= array('Html');
+	var $uses		= array('Stream') ;
 	var $components = array('Transaction', 'SwfUpload', 'BeUploadToObj');
 
 	function upload () {
-/*
 //		fwrite(fopen("/tmp/out.txt", "w+"), print_r(serialize($_POST), true) . "\n\n" . print_r(serialize($_FILES), true)) ;
-		fwrite(fopen("/tmp/out.txt", "w+"), print_r($_POST, true) . "\n\n" . print_r($_FILES, true)) ;
 
 //$errorCode = 500 + BeUploadToObjComponent::BEDITA_FILE_EXISIST ;
 //header("HTTP/1.0 $errorCode Internal Server Error");
-return ;
-*/		
+//return ;
+		
 		if (!isset($this->params['form']['Filedata'])) return ;
 		
 		$this->Transaction->begin() ;
@@ -32,19 +31,33 @@ return ;
 	}
 
 	/**
-	 * Cancella un oggetto di tipo stream a partire da lnome del file
+	 * Cancella un oggetto di tipo stream a partire dal nome del file
  	 * passato via _POST.
 	 */
 	function deleteFile() {
-		fwrite(fopen("/tmp/out.txt", "w+"), print_r($_POST, true) . "\n\n" . print_r($_FILES, true)) ;
-return ;
+// fwrite(fopen("/tmp/out.txt", "w+"), print_r($_POST, true) . "\n\n" . print_r(serialize($_POST), true)) ;
+// return ;
+ fwrite(fopen("/tmp/out.txt", "w+"), print_r($this->params['form'], true) . "\n\n") ;
+
+ 		if(!isset($this->params['form']['filename'])) throw new BeditaException(sprintf(__("No data", true), $id));
 		
+	 	$this->Transaction->begin() ;
+		
+	 	// Preleva l'id dell'oggetto a partire dal filename
+		if(!($id = $this->Stream->getIdFromFilename($this->params['form']['filename']))) throw new BeditaException(sprintf(__("Error get id object: %s", true), $this->params['form']['filename']));
+	 
+	 	// Cancellla i dati
+	 	if(!$this->BeFileHandler->del($id)) throw new BeditaException(sprintf(__("Error deleting object: %d", true), $id));
+		 	
+	 	$this->Transaction->commit() ;
+	 	
+	 	$this->layout = "empty" ;
 	}
 	
 	function open($id) {
 	    $file = $this->get($id);
 	    if (isset($file)) {
-	        $this->redirect($file['File'	]['path'] . $file['File']['name']);
+	        $this->redirect($file['File']['path'] . $file['File']['name']);
 	        exit();
 	    }
 	}

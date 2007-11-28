@@ -120,10 +120,11 @@ class BeFileHandlerComponent extends Object {
 	 */
 	function del($id) {
 		if(!($path = $this->Stream->read("path", $id))) return true ;
+		$path = (isset($path['Stream']['path']))?$path['Stream']['path']:$path ;
 		
 		// Se il path punta ad un file su file locale, cancella
 		if(!$this->_isURL($path)) {
-			if(!$this->Transaction->rm($path)) return false ;
+			if(!$this->Transaction->rm(MEDIA_ROOT.$path)) return false ;
 		}
 		
 		$model = $this->BEObject->getType($id) ;
@@ -135,6 +136,8 @@ class BeFileHandlerComponent extends Object {
 	 	if(!$mod->del($id)) {
 			throw new BEditaDeleteStreamObjException() ;	
 	 	}
+	 	
+	 	return true ;
 	}
 	
 	/**
@@ -154,6 +157,24 @@ class BeFileHandlerComponent extends Object {
 		}
 	}
 	
+	/**
+	 * Torna il path completo dell'oggetto se e' un ifle remoto
+	 * tonra l'URL
+	 *
+	 * @param integer $id		ID dell'oggetto
+	 */
+	function path($id) {
+		if(!($ret = $this->Stream->read("path", $id))) return false ;
+		$path = $ret['Stream']['path'] ;
+		
+		// Se il path punta ad un file su file locale, cancella
+		if($this->_isURL($path)) {
+			return $path ;
+		} else {
+			return (MEDIA_ROOT.$path) ;
+		}
+	}
+
 	/**
 	 * Torna l'id dell'oggetto che contiene il file passato, se presente
 	 *

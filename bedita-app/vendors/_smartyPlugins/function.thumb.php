@@ -330,7 +330,7 @@ $_DST['file'] 		= $params['MAT_SERVER_PATH'].DS.$_DST['file'];
 		$_TMP['height'] = round($_DST['height']*4);
 		
 		$_TMP['image'] = imagecreatetruecolor($_TMP['width'], $_TMP['height']);
-		imagecopyresized($_TMP['image'], $_SRC['image'], 0, 0, $_DST['offset_w'], $_DST['offset_h'], $_TMP['width'], $_TMP['height'], $_SRC['width'], $_SRC['height']);
+		imagecopyresized($_TMP['image'], $_SRC['image'], 0, 0, $_DST['offset_w'], @$_DST['offset_h'], $_TMP['width'], $_TMP['height'], $_SRC['width'], $_SRC['height']);
 		$_SRC['image'] = $_TMP['image'];
 		$_SRC['width'] = $_TMP['width'];
 		$_SRC['height'] = $_TMP['height'];
@@ -343,14 +343,14 @@ $_DST['file'] 		= $params['MAT_SERVER_PATH'].DS.$_DST['file'];
 
 	// DST erstellen
 	$_DST['image'] = imagecreatetruecolor($_DST['width'], $_DST['height']);
-	imagecopyresampled($_DST['image'], $_SRC['image'], 0, 0, $_DST['offset_w'], $_DST['offset_h'], $_DST['width'], $_DST['height'], $_SRC['width'], $_SRC['height']);
-	if ($params['sharpen'] != "false") $_DST['image'] = UnsharpMask($_DST['image'],80,.5,3);
+	imagecopyresampled($_DST['image'], $_SRC['image'], 0, 0, @$_DST['offset_w'], @$_DST['offset_h'], $_DST['width'], $_DST['height'], $_SRC['width'], $_SRC['height']);
+	if (@$params['sharpen'] != "false") $_DST['image'] = UnsharpMask($_DST['image'],80,.5,3);
 
 	// Soll eine Lupe eingefügt werden?
 	if ($params['hint'] == "true" AND $params['link'] == "true")
 		{
 		//Soll der weiße Balken wirklich hinzugefügt werden?
-		if ($params['addgreytohint'] != 'false')
+		if (@$params['addgreytohint'] != 'false')
 			{
 			$trans = imagecolorallocatealpha($_DST['image'], 255, 255, 255, 25);
 			imagefilledrectangle($_DST['image'], 0, $_DST['height']-9, $_DST['width'], $_DST['height'], $trans);

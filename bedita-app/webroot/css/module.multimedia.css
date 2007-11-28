@@ -1,0 +1,34 @@
+/*
+Stili per il modulo documenti.
+
+@author		giangi@qwerg.com
+*/
+#listAree {
+/*float:left;*/
+border:0px solid black;
+}
+
+#listMultimedia {
+	display:table-cell;
+	padding-left:5px;
+	padding-left:5px;
+}
+
+#treeWhere, .treeWhere ul { padding: 0; margin: 2px; list-style: none;}	
+#treeWhere li { margin: 0; padding: 3px 0pt 3px 18px; list-style: none; }
+
+#treeWhere li { background: url(treeview/tv-item.gif) 0 0 no-repeat; }
+#treeWhere .collapsable { background-image: url(treeview/tv-collapsable.gif); }
+#treeWhere .expandable { background-image: url(treeview/tv-expandable.gif); }
+#treeWhere .last { background-image: url(treeview/tv-item-last.gif); }
+#treeWhere .lastCollapsable { background-image: url(treeview/tv-collapsable-last.gif); }
+#treeWhere .lastExpandable { background-image: url(treeview/tv-expandable-last.gif); }
+
+/*
+#treeWhere.treeview li { background: url(treeview/area/tv-folder-item.gif) 0 0 no-repeat; }
+#treeWhere.treeview .collapsable { background-image: url(treeview/area/tv-folder-collapsable.gif); }
+#treeWhere.treeview .expandable { background-image: url(treeview/area/tv-folder-expandable.gif); }
+#treeWhere.treeview .last { background-image: url(treeview/area/tv-folder-item.gif); }
+#treeWhere.treeview .lastCollapsable { background-image: url(treeview/area/tv-folder-collapsable.gif); }
+#treeWhere.treeview .lastExpandable { background-image: url(treeview/area/tv-folder-expandable.gif); }
+*/  	

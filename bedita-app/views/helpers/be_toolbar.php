@@ -113,7 +113,7 @@ class BeToolbarHelper extends AppHelper {
 			$data[$k] = $v ;
 		}
 		$url = Router::url($data) ;
-		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/dim:'+ this[this.selectedIndex].value" ;
+		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/dim:'+ this[this.selectedIndex].value +'/page:1'" ;
 
 		$tmp = array() ;
 		foreach ($options as $k) $tmp[$k] = $k ;

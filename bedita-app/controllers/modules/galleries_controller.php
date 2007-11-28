@@ -18,7 +18,7 @@ class GalleriesController extends AppController {
 	var $name = 'Galleries';
 	var $helpers 	= array('Beurl', 'BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
-	var $uses = array('Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Gallery', 'Tree', 'Image');
+	var $uses = array('Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Gallery', 'Tree', 'Image', 'AudioVideo');
 	protected $moduleName = 'galleries';
 	
 	/**
@@ -81,20 +81,27 @@ class GalleriesController extends AppController {
 		$parents_id = isset($id) ? $this->Tree->getParent($id) : 0;
 		if(!is_array($parents_id)) $parents_id = array($parents_id);
 		$idGallery = ($id == null) ? 0 : $id;
-		$children = $this->BeTree->getDiscendents($idGallery, null, $conf->objectTypes['image'], false, null, 1, 100);
-		$imagesForGallery = (isset($children['items'])) ? $children['items'] : array();
-		$images = array();
-		foreach($imagesForGallery as $index => $image) {
-			$this->Image->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments');
-			$imageDetails = $this->Image->findById($image['id']);
-			$imageDetails['priority'] = $image['priority'];
-			$imageDetails['filename'] = substr($imageDetails['path'],strripos($imageDetails['path'],"/")+1);
-			$images[$index]=$imageDetails;
+		
+		$types 		= array($conf->objectTypes['image'], $conf->objectTypes['audiovideo']) ;
+		$children 	= $this->BeTree->getDiscendents($idGallery, null, $types, "priority", true, 1, 100);
+		
+		$imagesForGallery = &$children['items'] ;
+		$multimedia = array();
+		foreach($imagesForGallery as $index => $obj) {
+			$type = $conf->objectTypeModels[$obj['object_type_id']] ;
+			
+			$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments');
+			if(!($Details = $this->{$type}->findById($image['id']))) continue ;
+
+			$Details['priority'] = $obj['priority'];
+			$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
+			
+			$obj[$index]=$Details;
 		}
 		$this->set('object',	$obj);
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);
-		$this->set('images',	$images);
+		$this->set('multimedia',$multimedia);
 		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) ));
 		$this->set('self',		($this->createSelfURL(false)."?"));
 		$this->set('conf',		$conf);

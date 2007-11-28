@@ -19,17 +19,37 @@ var files = {} ;	// file in coda
 
 // funzione per la chiusura della finestra modale confermando le operazioni
 function closeOK() {
+	var tmp = new Array() ;
+	
+	$(".uploadCompleted").each(function() {
+		// Preleva il nome del file
+		var item = this ;
+		var id = $(this).attr("id") ; 
+		try {
+			if(files[id].length) {
+				tmp[tmp.length] = files[id] ;
+				
+			}
+		} catch(e) {
+			
+		}
+		
+	}) ;
+	
 	try {
-		commitUploadImage(files) ;
+		commitUploadImage(tmp) ;
 	} catch(e) {
-		parent.commitUploadImage(files) ;
+		parent.commitUploadImage(tmp) ;
 	}
 }
 
 // funzione per la chiusura della finestra modale annullando le operazioni le operazioni
 var counter = 0 ;
 function closeEsc() {
-	if(!confirm("Sicuro di voler continuare?")) return ;
+	// Se non sono stati fatti upload esce senza avvisi
+	if($(".uploadCompleted").size()) {
+		if(!confirm("Sicuro di voler continuare?")) return ;	
+	}
 
 	$(".uploadCompleted").each(function() {
 		// Preleva il nome del file
@@ -241,12 +261,6 @@ th.boxNotSelected {border:solid #000 1px;background-color:#DDD; height: 20px;}
 <body>
 
 <table cellpadding="0" cellspacing="0" style="width:100%">
-<thead>
-<tr>
-	<th id="uploadBoxTh" class="boxSelected"><a href="#" onclick="javascript:localShowHideBox('uploadBox');">{t}Upload{/t}</a></th>
-	<th id="searchBoxTh" class="boxNotSelected"><a href="#" onclick="javascript:localShowHideBox('searchBox');">{t}Search{/t}</a></th>
-	<th id="linkBoxTh" class="boxNotSelected"><a href="#" onclick="javascript:localShowHideBox('linkBox');">{t}Link{/t}</a></th></tr>
-</thead>
 <tbody>
 <tr>
 	<td colspan="3">
@@ -268,12 +282,6 @@ th.boxNotSelected {border:solid #000 1px;background-color:#DDD; height: 20px;}
 					<a class="swfuploadbtn" id="annullaqueuebtn" href="javascript:closeEsc();" style="display:block">Annulla</a>					
 				</div>
 			</div>
-		</div>
-		<div id="searchBox" style="display:none;padding:5px 5px 5px 5px">{t}Search{/t} ...
-			<input type="text" name="data[searchkey]"/><input type="submit" value="{t}Search{/t}"/>
-		</div>
-		<div id="linkBox" style="display:none;padding:5px 5px 5px 5px">Link ...
-			<input type="text" name="data[imageurl]"/><input type="submit" value="{t}Add{/t}"/>
 		</div>
 	</td>
 </tr>

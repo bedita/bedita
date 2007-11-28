@@ -34,7 +34,26 @@ class Stream extends BEAppModel
 //		'size' 		=> array(array('rule' => VALID_NUMBER, 		'required' => true)),
 	) ;
 
-
+	
+	/**
+	 * Dato il nome di un file torna l'oggetto corrispondente
+	 *
+	 * @param string $filename
+	 */
+	function getIdFromFilename($filename) {
+		if(!isset($filename)) return false ;
+		
+		$rec = $this->recursive ;
+		$this->recursive = -1 ;
+		if(!($ret = $this->findByName($filename))) return false ;
+		$this->recursive = $rec ;
+		
+		if(!isset($ret['Stream']['id'])) return false ;
+		
+		return $ret['Stream']['id'] ;		
+	}
+	
+	
 }
 
 ?>

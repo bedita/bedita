@@ -75,18 +75,6 @@ function addCommandWhere() {
 	}) ;
 }
 
-/* 
-funzione che preleva i dati passati dalla finestra modale
-con i file scaricati sul server
-*/
-function commitUploadImage(files) {	
-	tb_remove() ;
-}
-
-function rollbackUploadImage() {
-	tb_remove() ;
-}
-
 {/literal}
 //-->
 </script>
