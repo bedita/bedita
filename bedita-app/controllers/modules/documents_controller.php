@@ -23,7 +23,7 @@
 class DocumentsController extends AppController {
 	var $name = 'Documents';
 
-	var $helpers 	= array('BeTree', 'BeToolbar');
+	var $helpers 	= array('BeTree', 'BeToolbar', 'Fck');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
 	// This controller does not use a model
