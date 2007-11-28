@@ -38,18 +38,6 @@ $(document).ready(function(){
 		if(validateFrm.errorList.length) {
 			alert(validateFrm.errorList[0].message) ;
 		}
-/*		
-		// Formatta le date start, end
-		var Year 	= $("#updateform//input[@name='data[start]']").val().match({/literal}{$conf->match_year}{literal})[1] ;
-		var Month 	= $("#updateform//input[@name='data[start]']").val().match({/literal}{$conf->match_month}{literal})[1] ;
-		var Day 	= $("#updateform//input[@name='data[start]']").val().match({/literal}{$conf->match_day}{literal})[1] ;
-		$("#updateform//input[@name='data[start]']").val(Year+"-"+Month+"-"+Day) ;
-		
-		var Year 	= $("#updateform//input[@name='data[end]']").val().match({/literal}{$conf->match_year}{literal})[1] ;
-		var Month 	= $("#updateform//input[@name='data[end]']").val().match({/literal}{$conf->match_month}{literal})[1] ;
-		var Day 	= $("#updateform//input[@name='data[end]']").val().match({/literal}{$conf->match_day}{literal})[1] ;
-		$("#updateform//input[@name='data[end]']").val(Year+"-"+Month+"-"+Day) ;
-*/
 	}) ;
 
 	// Conferma cancellazione
@@ -73,7 +61,7 @@ $(document).ready(function(){
 	var type = {/literal}{$object.object_type_id|default:'22'}{literal} ;
 	activePortionsForm(type) ;
 	
-	$("#updateform//input[@name='data[object_type_id]'][@value='"+type+"']").get(0).checked = true ;
+	//$("#updateform//input[@name='data[object_type_id]'][@value='"+type+"']").get(0).checked = true ;
 });
 
 objectTypeDiv = {
@@ -133,6 +121,11 @@ function activePortionsForm(objectType) {
 <h2 class="showHideBlockButton">{t}Where put the document into{/t}</h2>
 <div class="blockForm" id="whereto">
 {include file="../pages/form_tree.tpl"}
+</div>
+
+<h2 class="showHideBlockButton">{t}Long Text{/t}</h2>
+<div class="blockForm" id="fckeditor">
+{include file="../pages/form_longdesc.tpl"}
 </div>
 
 <div id="divLinkExtern"  style="display: none">

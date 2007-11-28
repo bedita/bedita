@@ -340,3 +340,9 @@ msgstr "Inserire nome gruppo"
 
 msgid "Users of this group"
 msgstr "Utenti di questo gruppo"
+
+msgid "Subtitle, description"
+msgstr "Sottotitolo, descrizione"
+
+msgid "Long Text"
+msgstr "Testo Esteso"

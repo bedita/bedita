@@ -1,4 +1,5 @@
 {$html->css('module.galleries')}
+{$html->css('tree')}
 {$javascript->link("jquery.treeview.pack")}
 {$javascript->link("module.galleries")}
 {$javascript->link("form")}

@@ -17,20 +17,19 @@ $(document).ready(function(){
 });
 
 {/literal}
-{capture name=i}
-{html_options options=$conf->customPropTypeOptions}
-{/capture}
 
 {literal}
+var htmlTdInputHiddenEmpty = "<td><input type=\"hidden\" name=\"none\"\/><\/td>";
+var htmlOptions="{/literal}{foreach key=key item=item from=$conf->customPropTypeOptions}<option label=\"{$key}\" value=\"{$item}\">{$item}<\/option>{/foreach}{literal}";
+var htmlTdSelect="<td><select name=\"none\">"+htmlOptions+"<\/select><\/td>";
+var htmlTdSubmit="<td><input type=\"button\" name=\"delete\" value=\" x \"\/><\/td>";
 // Procedura per l'aggiunta di una proprieta'
-var htmlTemplateCustomProp = ' \
-	<tr id=""> \
-		<td><input type="hidden" name=""></td> \
-		<td><select name="">{/literal}{$smarty.capture.i|strip}{literal}</select></td> \
-		<td><input type="" name="" value=""> </td> \
-		<td><input type="button" name="delete" value=" x "></td> \
-	</tr> \
-' ;
+var htmlTemplateCustomProp = '<tr>' 
++ htmlTdInputHiddenEmpty
++ htmlTdSelect
++ htmlTdInputHiddenEmpty
++ htmlTdSubmit
++ "<\/tr>";
 
 function addCustomPropTR() {
 	var name 	= $.trim($("#addCustomPropTR TD/input[@name=name]").fieldValue()[0].replace(/[^_a-z0-9]/g, ""));	
@@ -127,7 +126,7 @@ function deleteTRCustomProp(el) {
 <tr id="addCustomPropTR">
 	<td><input type="text" name="name"/></td>
 	<td><select name="type">{html_options options=$conf->customPropTypeOptions}</select></td>
-	<td><input type="text" name="value" value=""></td>
-	<td><input type="button" name="cmdAdd" value=" {t}add{/t} "></td>
+	<td><input type="text" name="value" value=""/></td>
+	<td><input type="button" name="cmdAdd" value=" {t}add{/t} "/></td>
 </tr>
 </table>
