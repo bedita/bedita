@@ -1,4 +1,5 @@
 {agent var="agent"}
+{$html->css('tree')}
 {$html->css('module.galleries')}
 {$html->css("jquery-calendar")}
 {$html->css("jquery.thickbox")}

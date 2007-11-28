@@ -1,6 +1,6 @@
 <script type="text/javascript">
+var urlIcoCalendar = '{$html->url('../img/calendar.gif')}' ;
 {literal}
-
 var langs = {
 {/literal}
 	{foreach name=i from=$conf->langOptions key=lang item=label}
@@ -12,6 +12,10 @@ var langs = {
 var validate = null ;
 
 $(document).ready(function(){
+
+	// Visualizzazione campi con  calendario
+	$('#start').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar'});
+	$('#end').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar'});
 
 	validateFrm = $("#updateform").validate({
 		debug:false,
@@ -43,6 +47,7 @@ $(document).ready(function(){
 
 	// Aggiunta traduzioni linguistiche dei campi
 	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
+	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
 });
 
 {/literal}

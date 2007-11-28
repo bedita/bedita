@@ -1,13 +1,14 @@
 {agent var="agent"}
+{$html->css('tree')}
 {$html->css('module.area')}
 {$html->css("jquery-calendar")}
-{$html->css('tree')}
-{$html->css("jquery.thickbox")}
 {if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
 {$javascript->link("jquery.treeview.pack")}
 {$javascript->link("interface")}
+{$javascript->link("module.areas")}
 {$javascript->link("form")}
 {$javascript->link("jquery.changealert")}
+{$javascript->link("jquery-calendar")}
 {$javascript->link("jquery.form")}
 {$javascript->link("jquery.validate")}
 {$javascript->link("jquery.autocomplete")}
@@ -66,7 +67,7 @@ function addCommandWhere() {
 			$(this).before('<input type="checkbox" name="data[destination][]" value="' +id+'"/>&nbsp;');
 		}
 
-		$(this).html('<a href="javascript:;">'+$(this).html()+'</a>') ;
+		$(this).html('<a href="javascript:;">'+$(this).html()+"<\/a>") ;
 
 		$("a", this).bind("click", function(e) {
 			// Indica l'avvenuto cambiamento dei dati
