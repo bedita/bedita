@@ -11,38 +11,26 @@ var langs = {
 
 var validate = null ;
 
+$.validator.setDefaults({ 
+	success: function(label) {
+		// set &nbsp; as text for IE
+		label.html("&nbsp;").addClass("checked");
+	}
+});
+
 $(document).ready(function(){
 
 	// Visualizzazione campi con  calendario
 	$('#start').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar'});
 	$('#end').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar'});
+	
+	$("#updateForm").validate(); 
 
-	validateFrm = $("#updateform").validate({
-		debug:false,
-		errorLabelContainer: $("#errorForm"),
-		errorClass: "errorFieldForm",
-		rules: {
-			"data[title]"		: "required",
-			"data[destination]" : "required"
-		},
-		messages: {
-			"data[title]"		: "{/literal}{t}Title is required{/t}{literal}",
-			"data[destination]" : "{/literal}{t}Select destination for section{/t}{literal}",
-		}
-	});
-
-	$("#updateform//input[@name=cancella]").bind("click", function() {
+	$("#updateForm//input[@name=cancella]").bind("click", function() {
 		if(!confirm("{/literal}{t}Pay attention!!! the operation is potentially dangerous.\nDo you really want to continue?{/t}{literal}")) {
 			return false ;
 		}
 		document.location = "{/literal}{$html->url('deleteSection/')}{$section.id}{literal}" ;
-	}) ;
-
-	$("#updateform").bind("submit", function() {
-		// se ci sono stati errori, stampa un messaggio
-		if(validateFrm.errorList.length) {
-			alert(validateFrm.errorList[0].message) ;
-		}
 	}) ;
 
 	// Aggiunta traduzioni linguistiche dei campi
@@ -55,9 +43,10 @@ $(document).ready(function(){
 
 <div id="containerPage">
 
-{formHelper fnc="create" args="'area', array('id' => 'updateform', 'action' => 'saveSection', 'type' => 'POST', 'enctype' => 'multipart/form-data')"}
-
-<input  type="hidden" name="data[id]" value="{$section.id|default:''}" />
+<form action="{$html->url('/areas/saveSection')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+<fieldset>
+	<input  type="hidden" name="data[id]" value="{$section.id|default:''}" />
+</fieldset>
 
 <div class="FormPageHeader">
 {include file="../pages/form_header.tpl"}

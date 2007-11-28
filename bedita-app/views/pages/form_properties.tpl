@@ -24,12 +24,13 @@
 	</tr>
 	<tr id="Title_TR_{$object.lang|default:$conf->lang}">
 		<td class="label">{t}Title{/t}:</td>
-		<td>
-			<input  class="{literal}{required:true}{/literal}" id="titleInput"  type="text" name="data[title]" value="{$object.title|default:''|escape:'html'|escape:'quotes'}"/>&nbsp;
+		<td class="field">
+			<input  class="{literal}{required:true,minLenght:1}{/literal}" title="{t 1='1'}Title is required (at least %1 alphanumerical char){/t}" id="titleInput"  type="text" 
+				name="data[title]" value="{$object.title|default:''|escape:'html'|escape:'quotes'}"/>&nbsp;
 		</td>
-		{if ($object)}
-		<td><input class="cmdField" id="cmdTranslateTitle" type="button" value="lang ..."/></td>
-		{/if}
+		<td class="status">
+		{if ($object)}<input class="cmdField" id="cmdTranslateTitle" type="button" value="lang ..."/>{/if}
+		</td>
 	</tr>
 	{if (isset($object.LangText.title))}
 	{foreach name=i from=$object.LangText.title key=lang item=text}

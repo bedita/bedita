@@ -10,6 +10,8 @@
 {$javascript->link("jquery.changealert")}
 {$javascript->link("jquery-calendar")}
 {$javascript->link("jquery.form")}
+{$javascript->link("jquery.cmxforms")}
+{$javascript->link("jquery.metadata")}
 {$javascript->link("jquery.validate")}
 {$javascript->link("jquery.autocomplete")}
 {$javascript->link("jquery.translatefield")}

@@ -346,3 +346,6 @@ msgstr "Sottotitolo, descrizione"
 
 msgid "Long Text"
 msgstr "Testo Esteso"
+
+msgid "Title is required (at least %1 alphanumerical char)"
+msgstr "Titolo obbligatorio (almeno %1 carattere alfanumerico)"
