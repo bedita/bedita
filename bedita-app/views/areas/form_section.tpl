@@ -71,7 +71,6 @@ $(document).ready(function(){
 </div>
 
 <h2 class="showHideBlockButton">{t}Custom Properties{/t}</h2>
-
 <div class="blockForm" id="customProperties">
 {include file="../pages/form_custom_properties.tpl" el=$section}
 </div>

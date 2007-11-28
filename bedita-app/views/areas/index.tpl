@@ -1,11 +1,10 @@
 {$html->css('module.area')}
-
-{$javascript->link("jquery.treeview.pack")}
+{$html->css('tree')}
+{$javascript->link("jquery.treeview")}
 {$javascript->link("interface")}
 {$javascript->link("module.area")}
 {$javascript->link("form")}
 {$javascript->link("jquery.changealert")}
-
 <script type="text/javascript">
 <!--
 {literal}
@@ -65,11 +64,10 @@ $(document).ready(function(){
 {/literal}
 //-->
 </script>
-
 </head>
 <body>
 {include file="head.tpl"}
 <div id="centralPage">
-	{include file="submenu.tpl" method="index"}
-	{include file="form_tree.tpl" method="index"}
+{include file="submenu.tpl" method="index"}
+{include file="form_tree.tpl" method="index"}
 </div>

@@ -1,14 +1,12 @@
 {agent var="agent"}
-
 {$html->css('module.area')}
-{if ($agent.IE)}
-	{$html->css('jquery.ie.autocomplete')}
-{else}
-	{$html->css('jquery.autocomplete')}
-{/if}
-
-{$javascript->link("form")}
+{$html->css("jquery-calendar")}
+{$html->css('tree')}
+{$html->css("jquery.thickbox")}
+{if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
 {$javascript->link("jquery.treeview.pack")}
+{$javascript->link("interface")}
+{$javascript->link("form")}
 {$javascript->link("jquery.changealert")}
 {$javascript->link("jquery.form")}
 {$javascript->link("jquery.validate")}
@@ -19,19 +17,13 @@
 <!--
 var parent_id 	= {$parent_id} ;
 var current_id	= {$section.id|default:0} ;
+var parents = new Array({foreach item=i from=$parent_id}{if $i != ''}{$i},{/if}{/foreach}0) ;
 
 {literal}
 
 /* ****************************************************
 Albero per selezionare la collocazione della sezione
 **************************************************** */
-$(document).ready(function(){
-	designTree() ;
-	addCommand() ;
-
-//	$("#debug").val($("#tree").parent().html()) ;
-});
-
 $(document).ready(function(){
 
 	$('#properties').show() ;
@@ -45,13 +37,18 @@ $(document).ready(function(){
 	// handler cambiamenti dati della pagina
 	$("#handlerChangeAlert").changeAlert($('input, textarea, select').not($("#addCustomPropTR TD/input, #addCustomPropTR TD/select, #addPermUserTR TD/input, #addPermGroupTR TD/input"))) ;
 	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div').alertUnload() ;
+});
 
+
+$(document).ready(function(){
+	designTreeWhere() ;
+	addCommandWhere() ;
 });
 
 
 // Crea o refresh albero
-function designTree() {
-	$("#tree").Treeview({
+function designTreeWhere() {
+	$("#treeWhere").Treeview({
 		control: "#treecontrol" ,
 		speed: 'fast',
 		collapsed:false
@@ -59,25 +56,23 @@ function designTree() {
 }
 
 // Aggiunge il radio button
-function addCommand() {
-	$("li/span[@class='SectionItem'], li/span[@class='AreaItem']", "#tree").each(function(i) {
+function addCommandWhere() {
+	$("li/span[@class='SectionItem'], li/span[@class='AreaItem']", "#treeWhere").each(function(i) {
 		var id = $("input[@name='id']", this.parentNode).eq(0).attr('value') ;
 
-		// Se l'elemento da inserire e' il corrente, non inserisc ei comandi
-		if(current_id == id) return ;
-
-		if(id != parent_id) {
-			$(this).before('<input type="radio" name="data[destination]" value="'+id+'"/>&nbsp;');
+		if(parents.indexOf(parseInt(id)) > -1) {
+			$(this).before('<input type="checkbox" name="data[destination][]" value="'+id+'" checked="checked"/>&nbsp;');
 		} else {
-			$(this).before('<input type="radio" name="data[destination]" value="'+id+'" checked="checked"/>&nbsp;');
+			$(this).before('<input type="checkbox" name="data[destination][]" value="' +id+'"/>&nbsp;');
 		}
+
 		$(this).html('<a href="javascript:;">'+$(this).html()+'</a>') ;
 
 		$("a", this).bind("click", function(e) {
 			// Indica l'avvenuto cambiamento dei dati
-			try { if(!$("../../input[@type=radio]", this).get(0).checked) $().alertSignal() ; } catch(e) {}
+			try { if(!$("../../input[@type=checkbox]", this).get(0).checked) $().alertSignal() ; } catch(e) {}
 
-			$("../../input[@type=radio]", this).get(0).checked = true ;
+			$("../../input[@type=checkbox]", this).get(0).checked = true ;
 		}) ;
 
 	}) ;
