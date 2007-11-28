@@ -69,6 +69,8 @@ $config['authorizedGroups'] = array('administrator','editor','reader');
 // immutable groups
 $config['basicGroups'] = array('administrator','editor','reader','guest');
 
+// fckeditor (enabled|disabled) for longText: comment to disable
+$config['fckeditor'] = true;
 
 ///////////////////////////////////////////////////////
 // DO NOT EDIT BELOW THIS LINE//
