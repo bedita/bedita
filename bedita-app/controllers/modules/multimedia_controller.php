@@ -132,8 +132,8 @@ class MultimediaController extends AppController {
 	 * 
 	 * @param string $filename	Il nome del file da visualizare nel form
 	 */
-	function get_item_form($filename = null) {
-		$filename = $this->params['form']['filename'] ;
+	function get_item_form($filename = null) {		
+		$filename = urldecode($this->params['form']['filename']) ;
 		
 		// Preleva l'id dell'oggetto a partire dal filename
 		if(!($id = $this->Stream->getIdFromFilename($filename))) throw new BeditaException(sprintf(__("Error get id object: %d", true), $id));
