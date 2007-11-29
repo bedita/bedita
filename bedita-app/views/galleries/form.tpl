@@ -1,5 +1,6 @@
 <script type="text/javascript">
-var urlIcoCalendar = '{$html->url('../img/calendar.gif')}' ;
+var urlIcoCalendar 	= '{$html->url('../img/calendar.gif')}' ;
+urlDelete 			=  "{$html->url('delete/')}{$object.id}" ;
 {literal}
 var langs = {
 {/literal}
@@ -30,11 +31,18 @@ $(document).ready(function(){
 		}
 	});
 
+		
+	
 	$("#updateform//input[@name=cancella]").bind("click", function() {
 		if(!confirm("{/literal}{t}Attention!!! you are deleting an item.\nAre you sure that you want to continue?{/t}{literal}")) {
 			return false ;
 		}
-		document.location = "{/literal}{$html->url('delete/')}{$object.id}{literal}" ;
+		$("#frmDelete //input[@name='data[id]']").attr("value", $(this).attr("name")) ;
+		
+		$("#updateform").attr("action", urlDelete) ;
+		$("#updateform").get(0).submit() ;
+
+		return false ;	
 	}) ;
 
 	$("#updateform").bind("submit", function() {

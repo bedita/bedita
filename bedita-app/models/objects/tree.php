@@ -173,7 +173,7 @@ class Tree extends BEAppModel
 		for ($i =0; $i < count($children); $i++) {
 			$tmp = $this->am($children[$i]);
 			
-			if($this->query("CALL deleteTree({$tmp['id']})") === false) return false ;
+			if($this->query("CALL deleteTreeWithParent({$tmp['id']}, {$this->id})") === false) return false ;
 		}
 				
 		return true ;
@@ -204,12 +204,14 @@ class Tree extends BEAppModel
 	/**
 	 * Cancella il ramo con la root con un determinato id.
 	 */
-	function del($id = null, $cascade = true) {
+	function del($id = null, $idParent = null) {
 		if (!empty($id)) {
 			$this->id = $id;
 		}
 		$id = $this->id;
-		$ret = $this->query("CALL deleteTree({$id})");
+		if(isset($idParent)) $ret = $this->query("CALL deleteTreeWithParent({$id}, {$idParent})");
+		else $ret = $this->query("CALL deleteTree({$id})");
+		
 		return (($ret === false)?false:true) ;
 	}
 

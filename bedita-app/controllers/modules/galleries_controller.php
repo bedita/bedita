@@ -58,7 +58,7 @@ class GalleriesController extends AppController {
 		// aggiorna i permessi
 		if(isset($this->data["Permissions"])) {
 		 	if(!$this->Permission->saveFromPOST(
-				$this->Area->id, 
+				$this->Gallery->id, 
 				$this->data["Permissions"],
 				(empty($this->data['recursiveApplyPermissions'])?false:true))
 			) {
