@@ -22,8 +22,8 @@
 			<td>{$u.User.created}</td>
 			<td>{$u.User.last_login}</td>
 			<td>
-				<a href="{$html->url('/admin/viewUser/')}{$u.User.id}">{t}Modify{/t}</a>
-				<a href="{$html->url('/admin/removeUser/')}{$u.User.userid}">{t}Remove{/t}</a>
+				<input type="button" name="modifyUser" value="{t}Modify{/t}" id="view_{$u.User.id}" onclick="javascript:viewUser({$u.User.id});"/>
+				<input type="button" name="deleteUser" value="{t}Remove{/t}" id="user_{$u.User.id}" onclick="javascript:delUserDialog('{$u.User.userid}',{$u.User.id});"/>
 			</td>
 		</tr>
   		{/foreach}

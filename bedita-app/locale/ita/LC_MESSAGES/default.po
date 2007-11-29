@@ -394,3 +394,6 @@ msgstr "giu"
 
 msgid "Areas Tree"
 msgstr "Albero Aree"
+
+msgid "Do you really want to remove user"
+msgstr "Vuoi davvero eliminare l'utente"
