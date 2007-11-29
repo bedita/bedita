@@ -67,7 +67,7 @@ class AppController extends Controller
 		$this->view = 'Smarty';
 				
 		// preleva, per il template, i dati di configurazione
-	 	$this->setupCommonData() ;
+	 	$this->beditaBeforeFilter() ;
 	 	
 	 	// don't generate output, done in afterFilter
 	 	$this->autoRender = false ;
@@ -122,11 +122,10 @@ class AppController extends Controller
 	
 	/**
 	 * Setta i dati utilizzabili nelle diverse pagine.
+	 * E' il nostro beforeFilter locale alla singola applicazione (backend o frontend)
 	 * 
-	 * @todo DATI SPECIFICI AREA SELEZIONATA
 	 */
-	function setupCommonData() {
-		// E' necessario?
+	protected function beditaBeforeFilter() {
 		$conf  		= Configure::getInstance() ;
 
 		$this->pageTitle = __($this->name, true);
