@@ -84,8 +84,8 @@ INSERT INTO `modules` (`label`, `color`, `path`, `status`) VALUES
 ('admin', '#000000', 'admin', 'on'),
 ('areas', '#ff9933', 'areas', 'on'),
 
-('documents', '#ff9900', 'documents', 'on'),
-('galleries', '#123456', 'galleries', 'on') ,
+('documents', '#ff6600', 'documents', 'on'),
+('galleries', '#ffcc33', 'galleries', 'on'),
 ('multimedia', '#ff3456', 'multimedia', 'on') ;
 
 
