@@ -43,7 +43,7 @@ function localConfirm(anchorElem,url) {
 	<form method="POST" action="" id="frmDelete"><input type="hidden" name="data[id]"/></form>
 	{if $galleries}
 	<p class="toolbar">
-		{t}Gallery{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
+		{t}Galleries{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
 		{$beToolbar->first()} &nbsp; {$beToolbar->prev()}  &nbsp; {$beToolbar->next()} &nbsp; {$beToolbar->last()} &nbsp;
 		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
 		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
@@ -73,7 +73,7 @@ function localConfirm(anchorElem,url) {
 	</tbody>
 	</table>
 	<p class="toolbar">
-		{t}Gallery{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
+		{t}Galleries{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
 		{$beToolbar->first()} &nbsp; {$beToolbar->prev()}  &nbsp; {$beToolbar->next()} &nbsp; {$beToolbar->last()} &nbsp;
 		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('dimSelectBottom')} &nbsp;
 		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
