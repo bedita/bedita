@@ -1,4 +1,5 @@
 <script type="text/javascript">
+<!--
 var urlIcoCalendar = '{$html->url('../img/calendar.gif')}' ;
 {literal}
 var langs = {
@@ -39,6 +40,7 @@ $(document).ready(function(){
 });
 
 {/literal}
+//-->
 </script>
 
 <div id="containerPage">

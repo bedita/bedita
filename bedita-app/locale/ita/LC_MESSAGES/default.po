@@ -71,9 +71,6 @@ msgstr "Elimina"
 msgid "Actions"
 msgstr "Azioni"
 
-msgid "New Gallery"
-msgstr "Nuova Galleria"
-
 msgid "open details"
 msgstr "apri tutti i dettagli"
 
@@ -349,3 +346,51 @@ msgstr "Testo Esteso"
 
 msgid "Title is required (at least %1 alphanumerical char)"
 msgstr "Titolo obbligatorio (almeno %1 carattere alfanumerico)"
+
+msgid "Areas"
+msgstr "Aree"
+
+msgid "Documents"
+msgstr "Documenti"
+
+msgid "Galleries"
+msgstr "Gallerie"
+
+msgid "Sections"
+msgstr "Sezioni"
+
+msgid "New Area"
+msgstr "Nuova Area"
+
+msgid "New Document"
+msgstr "Nuovo Documento"
+
+msgid "New Gallery"
+msgstr "Nuova Galleria"
+
+msgid "New Section"
+msgstr "Nuova Sezione"
+
+msgid "areas"
+msgstr "aree"
+
+msgid "documents"
+msgstr "documenti"
+
+msgid "galleries"
+msgstr "gallerie"
+
+msgid "sections"
+msgstr "sezioni"
+
+msgid "Tree of Areas"
+msgstr "Albero delle Aree"
+
+msgid "up"
+msgstr "su"
+
+msgid "down"
+msgstr "giu"
+
+msgid "Areas Tree"
+msgstr "Albero Aree"

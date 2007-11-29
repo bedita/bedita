@@ -59,6 +59,12 @@ $(document).ready(function(){
 	}) ;
 
 //$("#debug").val($("#tree").parent().html()) ;
+
+	// localize up/down buttons
+	var buttonUpArr = document.getElementsByName('up');
+	var buttonDownArr = document.getElementsByName('down');
+	for(i=0;i<buttonUpArr.length;i++) { buttonUpArr[i].value = '{/literal}{t}up{/t}{literal}'; }
+	for(i=0;i<buttonDownArr.length;i++) { buttonDownArr[i].value = '{/literal}{t}down{/t}{literal}'; }
 });
 
 {/literal}

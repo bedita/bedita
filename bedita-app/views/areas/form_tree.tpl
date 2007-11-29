@@ -4,10 +4,10 @@
 	</div>
 	<div id="treecontrol">
 		<a href="#">{t}Close all{/t}</a>
-		<a href="#">{t}Open all{/t}</a>
+		<a href="#">{t}Expand all{/t}</a>
 	</div>
 	<div id="test">
-	{formHelper fnc="create" args="'area', array('id' => 'frmTree', 'action' => 'saveTree', 'type' => 'POST')"}
+	<form id="frmTree" method="post" action="{$html->url('/areas/saveTree')}">
 		<input type="hidden" name="URLFrmArea" 		value="{$html->url('viewArea/')}"/>
 		<input type="hidden" name="URLFrmSezione" 	value="{$html->url('viewSection/')}"/>
 		<input type="hidden" id="data_tree" name="data[tree]" 			value=""/>

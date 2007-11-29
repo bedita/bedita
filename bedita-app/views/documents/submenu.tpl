@@ -9,7 +9,7 @@ Menu a SX valido per tutte le pagine del controller.
 		<div class="inside">
 			<ul class="simpleMenuList" style="margin:10px 0px 10px 0px">
 				<li {if $method eq 'index'}class="on"{/if}>		<b>&#8250;</b> {$tr->link('Documents', '/documents')}</li>
-				<li {if $method eq 'viewArea'}class="on"{/if}>	<b>&#8250;</b> {$tr->link('Add Documents', '/documents/view')}</li>
+				<li {if $method eq 'viewArea'}class="on"{/if}>	<b>&#8250;</b> {$tr->link('New Document', '/documents/view')}</li>
 			</ul>	
 			<hr/>
 		</div>

@@ -40,14 +40,14 @@ $(document).ready(function(){
 			{if ($moduleList[m].flag & BEDITA_PERMS_READ)}
 	<div class="gest_menux" id="{$moduleList[m].path}_gest_menux">
 			     {if (stripos($html->here, $moduleList[m].path) !== false)}
-     	<i> * {$moduleList[m].label}</i>
+     	<i> * {t}{$moduleList[m].label}{/t}</i>
      			{else}
-     	{$moduleList[m].label}
+     	{t}{$moduleList[m].label}{/t}
 				{/if}
 	</div>
 			{else}
      <div class="gest_menux" style="background-color:#DDDDDD; color: white; ">
-		{$moduleList[m].label}
+		{t}{$moduleList[m].label}{/t}
 	</div>
 			{/if}
 		{/if}

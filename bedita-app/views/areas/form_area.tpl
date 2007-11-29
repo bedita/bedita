@@ -1,5 +1,6 @@
 <script type="text/javascript">
 <!--
+var urlIcoCalendar = '{$html->url('../img/calendar.gif')}' ;
 {literal}
 var langs = {
 {/literal}
@@ -11,33 +12,31 @@ var langs = {
 
 var validate = null ;
 
+$.validator.setDefaults({ 
+	success: function(label) {
+		// set &nbsp; as text for IE
+		label.html("&nbsp;").addClass("checked");
+	}
+});
+
 $(document).ready(function(){
 
-	validateFrm = $("#updateform").validate({
-		debug:false,
-		errorLabelContainer: $("#errorForm"),
-		errorClass: "errorFieldForm",
-		rules: { "data[title]": "required", },
-		messages: { title: "Il titolo &egrave; obbligatorio",}
-	});
+	// Visualizzazione campi con  calendario
+	$('#start').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar'});
+	$('#end').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar'});
 
-	$("#updateform//input[@name=cancella]").bind("click", function() {
-		if(!confirm("Attenzione!!! operazione potenzialmente dannosa.\nSicuro di voler continuare?")) {
+	$("#updateForm").validate();
+
+	$("#updateForm//input[@name=cancella]").bind("click", function() {
+		if(!confirm("{/literal}{t}Pay attention!!! the operation is potentially dangerous.\nDo you really want to continue?{/t}{literal}")) {
 			return false ;
 		}
 		document.location = "{/literal}{$html->url('deleteArea/')}{$area.id}{literal}" ;
 	}) ;
 
-
-	$("#updateform").bind("submit", function() {
-		// se ci sono stati errori, stampa un messaggio
-		if(validateFrm.errorList.length) {
-			alert(validateFrm.errorList[0].message) ;
-		}
-	}) ;
-
 	// Aggiunta traduzioni linguistiche dei campi
 	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
+	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
 });
 
 {/literal}
@@ -46,9 +45,11 @@ $(document).ready(function(){
 
 <div id="containerPage">
 
-{formHelper fnc="create" args="'area', array('id' => 'updateform', 'action' => 'saveArea', 'type' => 'POST', 'enctype' => 'multipart/form-data')"}
+<form action="{$html->url('/areas/saveArea')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 
+<fieldset>
 <input  type="hidden" name="data[id]" value="{$area.id|default:''}"/>
+</fieldset>
 
 <div class="FormPageHeader">
 {include file="../pages/form_header.tpl"}
