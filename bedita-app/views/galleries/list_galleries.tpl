@@ -1,11 +1,27 @@
 <script type="text/javascript">
 <!--
+var urlDelete 	= "{$html->url('delete/')}" ;
+var messaggio	= "{t}Are you sure that you want to delete the gallery?{/t}" ;
+
 {literal}
 
 $(document).ready(function(){
 	$("TABLE.indexList TR.rowList").click(function(i) {
 		document.location = $("A", this).attr('href') ;
 	} );
+	
+	// conferma per la cancellazione di un oggetto direttamente dalal lista
+	$(".delete").bind("click", function(e) {
+		if(!confirm(messaggio)) return false ;
+		
+		$("#frmDelete //input[@name='data[id]']").attr("value", $(this).attr("name")) ;
+		
+		$("#frmDelete").attr("action", urlDelete) ;
+		$("#frmDelete").get(0).submit() ;
+		
+		return false ;
+	}) ;
+		
 });
 
 function localConfirm(anchorElem,url) {
@@ -24,9 +40,10 @@ function localConfirm(anchorElem,url) {
 	</div>
 
 	<div id="listGalleries">
+	<form method="POST" action="" id="frmDelete"><input type="hidden" name="data[id]"/></form>
 	{if $galleries}
 	<p class="toolbar">
-		{t}Galleries{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
+		{t}Gallery{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
 		{$beToolbar->first()} &nbsp; {$beToolbar->prev()}  &nbsp; {$beToolbar->next()} &nbsp; {$beToolbar->last()} &nbsp;
 		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
 		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
@@ -50,13 +67,13 @@ function localConfirm(anchorElem,url) {
 		<td>{$galleries[i].status}</td>
 		<td>{$galleries[i].created|date_format:$conf->date_format}</td>
 		<td>{$galleries[i].lang}</td>
-		<td><a href="javascript:;" onclick="javascript:localConfirm(this,'{$html->url('delete/')}{$galleries[i].id}');">{t}Delete{/t}</a></td>
+		<td><a href="javascript:void(0);" class="delete" name="{$galleries[i].id}">{t}Delete{/t}</a></td>
 	</tr>
 	{/section}
 	</tbody>
 	</table>
 	<p class="toolbar">
-		{t}Galleries{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
+		{t}Gallery{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
 		{$beToolbar->first()} &nbsp; {$beToolbar->prev()}  &nbsp; {$beToolbar->next()} &nbsp; {$beToolbar->last()} &nbsp;
 		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('dimSelectBottom')} &nbsp;
 		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
