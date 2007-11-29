@@ -1,4 +1,30 @@
 --- Procedure e funzioni per l abero
+DROP PROCEDURE  IF EXISTS deleteTreeWithParent ;
+delimiter //
+CREATE PROCEDURE deleteTreeWithParent (_ID INT, _IDPARENT INT)
+NOT DETERMINISTIC
+BEGIN
+DECLARE pathID MEDIUMTEXT DEFAULT '' ;
+DECLARE pathDel MEDIUMTEXT DEFAULT '' ;
+
+DECLARE done INT DEFAULT 0;
+DECLARE curs CURSOR FOR SELECT path FROM trees WHERE id = _ID AND parent_id = _IDPARENT ;
+DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done = 1;
+
+OPEN curs;
+
+REPEAT
+	FETCH curs INTO pathID ;
+	IF NOT done THEN
+		SET pathDel  = IF(pathID IS NULL, '', CONCAT(pathID, '%')) ;
+		DELETE FROM trees WHERE path LIKE  pathDel ;
+	END IF;
+UNTIL done END REPEAT;
+
+END
+//
+delimiter ;
+
 DROP PROCEDURE  IF EXISTS deleteTree ;
 delimiter //
 CREATE PROCEDURE deleteTree (_ID INT)
@@ -7,14 +33,34 @@ BEGIN
 DECLARE pathID MEDIUMTEXT DEFAULT '' ;
 DECLARE pathDel MEDIUMTEXT DEFAULT '' ;
 
-SET pathID   = (SELECT path FROM trees WHERE id = _ID) ;
-SET pathDel  = IF(pathID IS NULL, '', CONCAT(pathID, '%')) ;
+DECLARE done INT DEFAULT 0;
+DECLARE curs CURSOR FOR SELECT path FROM trees WHERE id = _ID ;
+DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done = 1;
 
-DELETE FROM trees WHERE path LIKE  pathDel ;
+OPEN curs;
+
+REPEAT
+	FETCH curs INTO pathID ;
+	IF NOT done THEN
+		SET pathDel  = IF(pathID IS NULL, '', CONCAT(pathID, '%')) ;
+		DELETE FROM trees WHERE path LIKE  pathDel ;
+	END IF;
+UNTIL done END REPEAT;
 
 END
 //
 delimiter ;
+
+
+
+
+
+
+
+
+
+
+
 
 DROP PROCEDURE  IF EXISTS appendChildTree ;
 delimiter //
