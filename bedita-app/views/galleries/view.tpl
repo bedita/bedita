@@ -1,5 +1,4 @@
 {agent var="agent"}
-{$html->css('tree')}
 {$html->css('module.galleries')}
 {$html->css("jquery-calendar")}
 {$html->css("jquery.thickbox")}
@@ -17,8 +16,6 @@
 {$javascript->link("jquery.thickbox")}
 <script type="text/javascript">
 <!--
-
-var parents = new Array({foreach item=i from=$parents}{if $i != ''}{$i},{/if}{/foreach}0) ;
 
 {literal}
 

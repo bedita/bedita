@@ -157,6 +157,28 @@ class Tree extends BEAppModel
 		return (($ret === false)?false:true) ;
 	}
 
+	function removeChildren($idParent = false) {
+		if (!empty($idParent)) {
+			$this->id = $idParent ;
+		}
+		
+		// preleva i figli
+		$conditions = array() ;
+		$this->_getCondition_parentID($conditions, $this->id) ;
+		$sqlClausole = ConnectionManager::getDataSource($this->useDbConfig)->conditions($conditions, true, true) ;
+		
+		$children = $this->execute("SELECT id FROM view_trees {$sqlClausole}") ;
+		
+		// Cancella i rami di cui i figli sono radice
+		for ($i =0; $i < count($children); $i++) {
+			$tmp = $this->am($children[$i]);
+			
+			if($this->query("CALL deleteTree({$tmp['id']})") === false) return false ;
+		}
+				
+		return true ;
+	}
+
 	function setPriority($id, $priority, $idParent = false) {
 		if (!empty($idParent)) {
 			$this->id = $idParent ;
@@ -361,7 +383,7 @@ class Tree extends BEAppModel
 	 * @param integer $dim		Dimensione della pagina
 	 */
 	function getChildren($id = null, $userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
-		return $this->_getChildren($id, $userid, $status, $filter, $page, $dim, false) ;
+		return $this->_getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim, false) ;
 	}
 
 	/**

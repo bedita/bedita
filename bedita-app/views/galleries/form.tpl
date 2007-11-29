@@ -74,11 +74,6 @@ $(document).ready(function(){
 {include file="../pages/form_subtitle_desc.tpl"}
 </div>
 
-<h2 class="showHideBlockButton">{t}Where put the gallery into{/t}</h2>
-<div class="blockForm" id="whereto">
-{include file="../pages/form_tree.tpl"}
-</div>
-
 <h2 class="showHideBlockButton">{t}Images of the gallery{/t}</h2>
 <div class="blockForm" id="imgs" style="display:block">
 {include file="../pages/form_multimedia.tpl" multimedia=$multimedia}

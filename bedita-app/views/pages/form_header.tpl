@@ -7,7 +7,7 @@
 	</td>
 	<td style="padding-left:40px;" nowrap>
 		{formHelper fnc="submit" args="' salva ', array('name' => 'save', 'class' => 'submit', 'div' => false)"}
-		<input type="button" name="cancella" class="submit" value="{t}cancel{/t}" />
+		<input type="button" name="cancella" class="submit" value="{t}cancel{/t}" {if !($object.id|default:false)}disabled="1"{/if}/>
 	</td>
 	<td style="padding-left:40px">&nbsp;</td>
 </tr>

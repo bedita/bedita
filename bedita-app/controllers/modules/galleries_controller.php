@@ -135,16 +135,16 @@ class GalleriesController extends AppController {
 			$children = $this->BeTree->getChildren($id, null, $types, "priority") ;
 			$imagesForGallery = &$children['items'] ;
 			
-			foreach($imagesForGallery as $index => $obj) {
-				$type = $conf->objectTypeModels[$obj['object_type_id']] ;
+			foreach($imagesForGallery as $index => $object) {
+				$type = $conf->objectTypeModels[$object['object_type_id']] ;
 			
 				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments');
-				if(!($Details = $this->{$type}->findById($obj['id']))) continue ;
+				if(!($Details = $this->{$type}->findById($object['id']))) continue ;
 
-				$Details['priority'] = $obj['priority'];
+				$Details['priority'] = $object['priority'];
 				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
 			
-				$obj[$index]=$Details;
+				$multimedia[$index]=$Details;
 			}
 		}
 		

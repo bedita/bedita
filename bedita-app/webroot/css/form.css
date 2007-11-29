@@ -28,6 +28,11 @@
 	width:158px; padding:2px;
 }
 
+.FormPageHeader .submit:disabled {
+	width:158px; padding:2px;
+	color:white;
+}
+
 .FormPageHeader td {
 	vertical-align:middle ;
 }

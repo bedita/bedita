@@ -73,7 +73,10 @@ class Gallery extends BEAppCollectionModel
 		} else if(!isset($data['object_type_id'])) {
 			$data['object_type_id'] = $conf->objectTypes[strtolower($this->name)] ;
 		}
-
+		
+		// Se l'id e' presente ma vuoto, lo toglie dai dati puo' dare problemi
+		if(isset($data['id']) && empty($data['id'])) unset($data['id']) ;
+		
 		$this->set($data);
 
 		if ($validate && !$this->validates()) {
