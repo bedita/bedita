@@ -23,7 +23,7 @@
 class MultimediaController extends AppController {
 	var $name = 'Multimedia';
 
-	var $helpers 	= array('Bevalidation', 'BeTree', 'BeToolbar');
+	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
 	// This controller does not use a model
