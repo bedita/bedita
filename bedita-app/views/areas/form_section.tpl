@@ -37,6 +37,8 @@ $(document).ready(function(){
 	// Aggiunta traduzioni linguistiche dei campi
 	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
 	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
+	$("#cmdTranslateShortDesc").addTranslateField('shortdesc', langs) ;
+	$("#cmdTranslateLongDesc").addTranslateField('longdesc', langs) ;
 });
 
 {/literal}

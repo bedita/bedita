@@ -40,7 +40,7 @@ function localConfirm(anchorElem,url) {
 	</div>
 
 	<div id="listGalleries">
-	<form method="POST" action="" id="frmDelete"><input type="hidden" name="data[id]"/></form>
+	<form method="post" action="" id="frmDelete"><input type="hidden" name="data[id]"/></form>
 	{if $galleries}
 	<p class="toolbar">
 		{t}Galleries{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;

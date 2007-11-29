@@ -82,5 +82,4 @@ function addCommandWhere() {
 <div id="centralPage">
 {include file="submenu.tpl" method="index"}
 {include file="form.tpl"}
-<textarea id="test"></textarea>
 </div>

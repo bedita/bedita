@@ -19,42 +19,25 @@ $(document).ready(function(){
 	$('#end').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar'});
 
 	// Validazione al submit
-	validateFrm = $("#updateform").validate({
-		debug:false,
-		errorLabelContainer: $("#errorForm"),
-		errorClass: "errorFieldForm",
-		rules: {
-			"data[title]"		: "required",
-		},
-		messages: {
-			"data[title]"		: "Il titolo &egrave; obbligatorio",
-		}
-	});
+	$("#updateForm").validate();
 
-		
-	
-	$("#updateform//input[@name=cancella]").bind("click", function() {
+	$("#updateForm//input[@name=cancella]").bind("click", function() {
 		if(!confirm("{/literal}{t}Attention!!! you are deleting an item.\nAre you sure that you want to continue?{/t}{literal}")) {
 			return false ;
 		}
 		$("#frmDelete //input[@name='data[id]']").attr("value", $(this).attr("name")) ;
 		
-		$("#updateform").attr("action", urlDelete) ;
-		$("#updateform").get(0).submit() ;
+		$("#updateForm").attr("action", urlDelete) ;
+		$("#updateForm").get(0).submit() ;
 
 		return false ;	
 	}) ;
 
-	$("#updateform").bind("submit", function() {
-		// se ci sono stati errori, stampa un messaggio
-		if(validateFrm.errorList.length) {
-			alert(validateFrm.errorList[0].message) ;
-		}
-	}) ;
-
 	// Aggiunta traduzioni linguistiche dei campi
 	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
-	$("#cmdTranslateSubtitle").addTranslateField('subtitle', langs) ;
+	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
+	$("#cmdTranslateShortDesc").addTranslateField('shortdesc', langs) ;
+	$("#cmdTranslateLongDesc").addTranslateField('longdesc', langs) ;
 });
 
 {/literal}
@@ -62,7 +45,7 @@ $(document).ready(function(){
 
 <div id="containerPage">
 
-{formHelper fnc="create" args="'galleries', array('id' => 'updateform', 'action' => 'save', 'type' => 'POST', 'enctype' => 'multipart/form-data')"}
+<form action="{$html->url('/galleries/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 
 <input  type="hidden" name="data[id]" value="{$object.id|default:''}" />
 

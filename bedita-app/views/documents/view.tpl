@@ -2,15 +2,10 @@
 Pagina d'entrata modulo Documents.
 *}
 {php}$vs = &$this->get_template_vars() ;{/php}
-
 {agent var="agent"}
-
 {$html->css('module.documents')}
 {$html->css("jquery-calendar")}
-{if ($agent.IE)} 	{$html->css('jquery.ie.autocomplete')}
-{else}				{$html->css('jquery.autocomplete')}
-{/if}
-
+{if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
 {$javascript->link("form")}
 {$javascript->link("jquery.treeview.pack")}
 {$javascript->link("jquery.changealert")}
@@ -21,7 +16,6 @@ Pagina d'entrata modulo Documents.
 {$javascript->link("module.documents")}
 {$javascript->link("interface")}
 {$javascript->link("jquery-calendar")}
-
 
 <script type="text/javascript">
 <!--
@@ -52,8 +46,6 @@ $(document).ready(function(){
 $(document).ready(function(){
 	designTreeWhere() ;
 	addCommandWhere() ;
-
-//	$("#debug").val($("#tree").parent().html()) ;
 });
 
 
@@ -92,17 +84,10 @@ function addCommandWhere() {
 {/literal}
 //-->
 </script>
-
 </head>
 <body>
-
 {include file="head.tpl"}
-
-<div id="centralPage">
-	
-	{include file="submenu.tpl" method="index"}
-	
-	{include file="form.tpl"}	
+<div id="centralPage">	
+{include file="submenu.tpl" method="index"}	
+{include file="form.tpl"}	
 </div>
-
-

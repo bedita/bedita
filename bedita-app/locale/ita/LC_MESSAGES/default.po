@@ -397,3 +397,9 @@ msgstr "Albero Aree"
 
 msgid "Do you really want to remove user"
 msgstr "Vuoi davvero eliminare l'utente"
+
+msgid "Description"
+msgstr "Descrizione"
+
+msgid "Subtitle"
+msgstr "Sottotitolo"

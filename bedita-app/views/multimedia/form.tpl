@@ -53,7 +53,9 @@ $(document).ready(function(){
 
 	// Aggiunta traduzioni linguistiche dei campi
 	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
-	$("#cmdTranslateSubtitle").addTranslateField('subtitle', langs) ;
+	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
+	$("#cmdTranslateShortDesc").addTranslateField('shortdesc', langs) ;
+	$("#cmdTranslateLongDesc").addTranslateField('longdesc', langs) ;
 	
 	// TEmporaneo
 	$("input[@name='save']").attr("disabled", 1) ;

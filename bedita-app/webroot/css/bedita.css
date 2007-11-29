@@ -252,6 +252,7 @@ TABLE.indexList {width:100%; margin-left:0px; empty-cells: show; border-collapse
 .tableForm TD 		{vertical-align:top !important; padding:4px; border:0px solid gray;}
 
 .subtitle  { height: 50px !important; width: 410px !important; }
+.shortdesc  { height: 100px !important; width: 410px !important; }
 
 /* END -- Form dettaglio object */
 

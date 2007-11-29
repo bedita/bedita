@@ -21,7 +21,7 @@ $(document).ready(function(){
 	$('#end').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar', dateFormat:formatDateCalendar});
 	
 	// Validazione al submit
-	validateFrm = $("#updateform").validate({
+	validateFrm = $("#updateForm").validate({
 		debug:false,
 		errorLabelContainer: $("#errorForm"),
 		errorClass: "errorFieldForm",
@@ -33,7 +33,7 @@ $(document).ready(function(){
 		}
 	});
 
-	$("#updateform").bind("submit", function() {
+	$("#updateForm").bind("submit", function() {
 		// se ci sono stati errori, stampa un messaggio
 		if(validateFrm.errorList.length) {
 			alert(validateFrm.errorList[0].message) ;
@@ -41,7 +41,7 @@ $(document).ready(function(){
 	}) ;
 
 	// Conferma cancellazione
-	$("#updateform//input[@name=cancella]").bind("click", function() {
+	$("#updateForm//input[@name=cancella]").bind("click", function() {
 		if(!confirm("Attenzione!!! operazione potenzialmente dannosa.\nSicuro di voler continuare?")) {
 			return false ;
 		}
@@ -50,10 +50,12 @@ $(document).ready(function(){
 
 	// Aggiunta traduzioni linguistiche dei campi
 	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
-	$("#cmdTranslateSubtitle").addTranslateField('subtitle', langs) ;
+	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
+	$("#cmdTranslateShortDesc").addTranslateField('shortdesc', langs) ;
+	$("#cmdTranslateLongDesc").addTranslateField('longdesc', langs) ;
 	
 	// Dal tipo di documento selezionato, visualizza o no parti di form
-	$("#updateform//input[@name='data[object_type_id]']").bind("click", function() {
+	$("#updateForm//input[@name='data[object_type_id]']").bind("click", function() {
 		activePortionsForm(this.value) ;	
 	}) ;
 	
@@ -61,7 +63,7 @@ $(document).ready(function(){
 	var type = {/literal}{$object.object_type_id|default:'22'}{literal} ;
 	activePortionsForm(type) ;
 	
-	//$("#updateform//input[@name='data[object_type_id]'][@value='"+type+"']").get(0).checked = true ;
+	//$("#updateForm//input[@name='data[object_type_id]'][@value='"+type+"']").get(0).checked = true ;
 });
 
 objectTypeDiv = {
@@ -86,24 +88,12 @@ function activePortionsForm(objectType) {
 
 <div id="containerPage">
 
-{formHelper fnc="create" args="'documents', array('id' => 'updateform', 'action' => 'save', 'type' => 'POST', 'enctype' => 'multipart/form-data')"}
+<form action="{$html->url('/documents/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+
 <input  type="hidden" name="data[id]" value="{$object.id|default:''}" />
 
 <div class="FormPageHeader">
-	<h1>{$object.title|default:"nuovo documento"}</h1>
-	<table border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td>
-			<a id="openAllBlockLabel" style="display:block;" href="javascript:showAllBlockPage(1)"><span style="font-weight:bold;">&gt;</span> {t}apri tutti i dettagli{/t}</a>
-			<a id="closeAllBlockLabel" href="javascript:hideAllBlockPage()"><span style="font-weight:bold;">&gt;</span> {t}chiudi tutti i dettagli{/t}</a>
-		</td>
-		<td style="padding-left:40px;" nowrap>
-			{formHelper fnc="submit" args="' salva ', array('name' => 'save', 'class' => 'submit', 'div' => false)"}
-			<input type="button" name="cancella" class="submit" value="cancella" />
-		</td>
-		<td style="padding-left:40px">&nbsp;</td>
-	</tr>
-	</table>
+{include file="../pages/form_header.tpl"}
 </div>
 
 <div class="blockForm" id="errorForm"></div>

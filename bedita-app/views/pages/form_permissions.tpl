@@ -36,29 +36,21 @@ $(document).ready(function(){
 
 });
 
+
+var htmlTdInputHiddenEmpty = "<td><input type=\"hidden\" name=\"none\"\/><\/td>";
+var htmlTdCheckboxRead="<td><input type=\"checkbox\" name=\"none\" value=\"{/literal}{$conf->BEDITA_PERMS_READ}{literal}\"\/><\/td>";
+var htmlTdCheckboxModify="<td><input type=\"checkbox\" name=\"none\" value=\"{/literal}{$conf->BEDITA_PERMS_MODIFY}{literal}\"\/><\/td>";
+var htmlTdCheckboxDelete="<td><input type=\"checkbox\" name=\"none\" value=\"{/literal}{$conf->BEDITA_PERMS_DELETE}{literal}\"\/><\/td>";
+var htmlTdSubmit="<td><input type=\"button\" name=\"delete\" value=\" x \"\/><\/td>";
 // Procedura per l'aggiunta di un permesso
-var htmlTemplateCustomPerm = ' 													\
-<tr> 												\
-	<td> 												\
-		<input type="hidden" name=""/> 					\
-	</td> 												\
-	<td> 												\
-		<input type="hidden" name=""/> 					\
-	</td> 												\
-	<td> 												\
-		<input type="checkbox" name="" value="{/literal}{$conf->BEDITA_PERMS_READ}{literal}"/> 		\
-	</td> 												\
-	<td> 												\
-		<input type="checkbox" name="" value="{/literal}{$conf->BEDITA_PERMS_MODIFY}{literal}"/> 		\
-	</td> 												\
-	<td> 												\
-		<input type="checkbox" name="" value="{/literal}{$conf->BEDITA_PERMS_DELETE}{literal}"/> 		\
-	</td>												\
-	<td> 												\
-		<input type="button" name="delete" value=" x "/> \
-	</td> 												\
-</tr> 													\
-' ;
+var htmlTemplateCustomPerm = '<tr>' 
++ htmlTdInputHiddenEmpty
++ htmlTdInputHiddenEmpty 
++ htmlTdCheckboxRead
++ htmlTdCheckboxModify
++ htmlTdCheckboxDelete
++ htmlTdSubmit
++ "<\/tr>";
 
 function fncAddPermsTR(id) {
 	var name 		= $.trim($("#"+id+" TD/input[@name=name]").fieldValue()[0].replace(/[^_a-z0-9]/g, ""));
