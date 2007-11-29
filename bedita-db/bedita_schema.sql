@@ -168,7 +168,6 @@ CREATE TABLE collections (
   create_rules MEDIUMBLOB NULL,
   access_rules MEDIUMBLOB NULL,
   PRIMARY KEY(id),
-  INDEX containers_FKIndex1(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
       ON DELETE CASCADE
@@ -308,8 +307,6 @@ CREATE TABLE permissions (
   switch SET('user','group') NOT NULL,
   flag INTEGER UNSIGNED NULL,
   PRIMARY KEY(`id`),
-  INDEX permissions_FKIndex1(id),
-  INDEX permissions_FKIndex2(id),
   INDEX permissions_FKIndex3(object_id),
   INDEX permissions_FKIndex4(`ugid`, `switch`),
   FOREIGN KEY(object_id)

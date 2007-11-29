@@ -114,8 +114,8 @@ class DocumentsController extends AppController {
 	  *
 	  */
 	 function save() {	 	
-	 	try {
-		 	if(empty($this->data)) throw new BeditaException( __("No data", true));
+
+	 	 	if(empty($this->data)) throw new BeditaException( __("No data", true));
 	 		
 			$new = (empty($this->data['id'])) ? true : false ;
 			
@@ -129,12 +129,8 @@ class DocumentsController extends AppController {
 		 	// Formatta i campi d tradurre
 		 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
 		 	
-			//$this->Transaction->begin() ;
-/*
-pr($_POST);
-pr($this->data);
-exit;
-*/		
+			$this->Transaction->begin() ;
+
 	 		// Salva i dati
 		 	if(!$this->Document->save($this->data)) 
 		 		throw new BeditaException(__("Error saving document", true), $this->Document->validationErrors);
@@ -162,21 +158,15 @@ exit;
 			}
 			
 		 	// aggiorna i permessi
-		 	if(!$this->Permission->saveFromPOST(
-		 			$this->Document->id, 
-		 			(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
-		 			(empty($this->data['recursiveApplyPermissions'])?false:true))
+			$perms = isset($this->data["Permissions"])?$this->data["Permissions"]:array();
+			if(!$this->Permission->saveFromPOST(
+		 			$this->Document->id, $perms,
+		 			(empty($this->data['recursiveApplyPermissions'])?false:true), 'document')
 		 		) {
 		 			throw new BeditaException( __("Error saving permissions", true));
 		 	}	 	
 	 		$this->Transaction->commit() ;
 
-	 	} catch (Exception $e) {
-			$this->Session->setFlash($e->getMessage());
-			$this->Transaction->rollback() ;
-			
-			return ;
-	 	}
 	 }
 	 	 
 	 /**

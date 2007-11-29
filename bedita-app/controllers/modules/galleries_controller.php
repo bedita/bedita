@@ -53,17 +53,15 @@ class GalleriesController extends AppController {
 		
 		if(!$this->Gallery->save($this->data)) {
 			throw new BeditaException( __("Error saving gallery", true), $this->Gallery->validationErrors);
-		}
+		}		
 		
 		// aggiorna i permessi
-		if(isset($this->data["Permissions"])) {
-		 	if(!$this->Permission->saveFromPOST(
-				$this->Gallery->id, 
-				$this->data["Permissions"],
-				(empty($this->data['recursiveApplyPermissions'])?false:true))
+		$perms = isset($this->data["Permissions"])?$this->data["Permissions"]:array();
+		if(!$this->Permission->saveFromPOST(
+				$this->Gallery->id, $perms,
+				(empty($this->data['recursiveApplyPermissions'])?false:true), 'gallery')
 			) {
 				throw new BeditaException( __("Error saving permissions", true));
-		 	}
 		}
 		
 		// Inserisce gli oggetti multimediali selezionati, cancellando le precedenti associazioni

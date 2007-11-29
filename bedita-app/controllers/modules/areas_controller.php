@@ -95,8 +95,7 @@ class AreasController extends AppController {
 		if($id) {
 			$this->Section->bviorHideFields = array('ObjectType', 'Version', 'Index', 'current') ;
 			if(!($section = $this->Section->findById($id))) {
-				$this->Session->setFlash(sprintf(__("Error loading section: %d", true), $id));
-				return ;		
+				throw new BeditaException(sprintf(__("Error loading section: %d", true), $id));
 			}
 		}
 		
@@ -171,14 +170,10 @@ class AreasController extends AppController {
 				throw new BeditaException( __("Error saving area", true),  $this->Area->validationErrors);
 
 		 	// aggiorna i permessi
-		 	if(isset($this->data["Permissions"])) {
-			 	if(!$this->Permission->saveFromPOST(
-			 			$this->Area->id, 
-			 			$this->data["Permissions"],
-		 				(empty($this->data['recursiveApplyPermissions'])?false:true))
-		 			) {
+			$perms = isset($this->data["Permissions"])?$this->data["Permissions"]:array();
+			if(!$this->Permission->saveFromPOST($this->Area->id, $perms,
+		 				(empty($this->data['recursiveApplyPermissions'])?false:true), 'area'))  {
 		 				throw BeditaException( __("Error saving permissions", true));
-			 	}
 		 	}
 	 		$this->Transaction->commit() ;
 	 }
@@ -196,7 +191,7 @@ class AreasController extends AppController {
 			
 		 	// Verifica i permessi di modifica dell'oggetto
 		 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-		 			throw BeditaException( __("Error modifying permissions", true));
+		 			throw new BeditaException( __("Error modifying permissions", true));
 		 	
 		 	// Formatta le custom properties
 		 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
@@ -204,31 +199,32 @@ class AreasController extends AppController {
 		 	// Formatta i campi da tradurre
 		 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
 		 	
-		 	
 			$this->Transaction->begin() ;
 			
-	 		// Salva i dati
-	 		if($new) $this->data["parent_id"] = $this->data["destination"] ;
+	 		// data["destination"] should be 1 element
+	 		if(count($this->data["destination"]) != 1)
+				throw new BeditaException( __("Bad data", true));
+			
+			$destinationId = $this->data["destination"][0];
+	 		if($new) 
+	 			$this->data["parent_id"] = $destinationId;
 		 	if(!$this->Section->save($this->data))
 				throw new BeditaException( __("Error saving section", true), $this->Section->validationErrors );
-
+				
 		 	// Sposta la sezione nell'albero se necessario
 		 	if(!$new) {
 		 		$oldParent = $this->Tree->getParent($this->Section->id) ;
-		 		if($oldParent != $this->data["destination"]) {
-		 			$this->Tree->move($this->data["destination"], $oldParent, $this->Section->id) ;
+		 		if($oldParent != $destinationId) {
+		 			if(!$this->Tree->move($destinationId, $oldParent, $this->Section->id))
+						throw new BeditaException( __("Error saving section", true));
 		 		}
 		 	}
 		 	
 		 	// aggiorna i permessi
-		 	if(isset($this->data["Permissions"])) {
-			 	if(!$this->Permission->saveFromPOST(
-			 			$this->Area->id, 
-			 			$this->data["Permissions"],
-		 				(empty($this->data['recursiveApplyPermissions'])?false:true))
-		 			) {
-		 				throw BeditaException( __("Error saving permissions", true));
-			 	}
+			$perms = isset($this->data["Permissions"]) ? $this->data["Permissions"] : array();
+		 	if(!$this->Permission->saveFromPOST($this->Section->id, $perms,	 
+				(empty($this->data['recursiveApplyPermissions'])?false:true), 'section')) {
+		 			throw new BeditaException( __("Error saving permissions", true));
 		 	}
 	 		$this->Transaction->commit() ;
 	 }

@@ -1,26 +1,15 @@
 <?php 
 /**
  * 
- * Short description for file.
- *
- * Long description for file
- *
- * PHP versions 4 and 5
-
- *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
- *
  * @author giangi@qwerg.com
  * 
  * Verifica il componente Permission
  * 
  */
 
-include_once(dirname(__FILE__) . DS . 'permission.data.php') ;
+require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
-
-class PermissionTestCase extends CakeTestCase {
+class PermissionTestCase extends BeditaTestCase {
 	
     var $fixtures 	= array( 'area_test' );
  	var $uses		= array(
@@ -36,8 +25,6 @@ class PermissionTestCase extends CakeTestCase {
  	) ;
  	var $components	= array('Transaction', 'Permission') ;
     var $dataSource	= 'test' ;
- 	
-    var $data		= null ;
 
 	////////////////////////////////////////////////////////////////////
 
@@ -46,6 +33,7 @@ class PermissionTestCase extends CakeTestCase {
 		
 		$this->_insert($this->Area, $this->data['minimo']) ;
 
+		sort($this->data['addPerms1']);
 		// Aggiunge i permessi
 		$ret = $this->Permission->add($this->Area->id, $this->data['addPerms1']) ;
 		pr("Aggiunta permessi") ;
@@ -54,19 +42,26 @@ class PermissionTestCase extends CakeTestCase {
 		// Carica i permessi creati
 		$perms = $this->Permission->load($this->Area->id) ;
 		pr("Verifica permessi aggiunti") ;
+		sort($perms);
 		$this->assertEqual($this->data['addPerms1'], $perms);
+
+		$this->_delete($this->Area) ;
 		
 		$this->Transaction->rollback() ;
 	} 
+
 
 	function testAddMultipleObject() {	
 		$this->Transaction->begin() ;
 		
 		// Inserisce i diversi oggetti
 		$this->_insert($this->Area, $this->data['minimo']) ;
+		$this->data['minimo']['parent_id'] = $this->Area->id;
 		$this->_insert($this->Section, $this->data['minimo']) ;
+		$this->data['minimo']['parent_id'] = $this->Section->id;
 		$this->_insert($this->Document, $this->data['minimo']) ;
 
+		sort($this->data['addPerms1']);
 		// Aggiunge i permessi
 		$ret = $this->Permission->add(array($this->Area->id, $this->Section->id, $this->Document->id), $this->data['addPerms1']) ;
 		pr("Aggiunta permessi") ;
@@ -74,19 +69,26 @@ class PermissionTestCase extends CakeTestCase {
 		
 		// Carica i permessi creati e verifica
 		$perms = $this->Permission->load($this->Area->id) ;
+		sort($perms);
 		pr("Verifica permessi aggiunti Area") ;
 		$this->assertEqual($this->data['addPerms1'], $perms);
 		
 		$perms = $this->Permission->load($this->Section->id) ;
+		sort($perms);
 		pr("Verifica permessi aggiunti Section") ;
 		$this->assertEqual($this->data['addPerms1'], $perms);
 
 		$perms = $this->Permission->load($this->Document->id) ;
+		sort($perms);
 		pr("Verifica permessi aggiunti Document") ;
 		$this->assertEqual($this->data['addPerms1'], $perms);
 
+		$this->_delete($this->Document) ;
+		$this->_delete($this->Section) ;
+		$this->_delete($this->Area) ;
 		$this->Transaction->rollback() ;
 	} 
+
 
 	function testDefaultPermissionByObject() {	
 		$conf  		= Configure::getInstance() ;
@@ -95,6 +97,7 @@ class PermissionTestCase extends CakeTestCase {
 				
 		// Preleva i permessi
 		$perms = $this->Permission->getDefaultByType($conf->objectTypes['area']) ; 
+		sort($perms);
 		pr("Permessi di default per un oggetto Area") ;
 		$this->assertEqual(count($perms) > 0,true);
 		
@@ -109,11 +112,11 @@ class PermissionTestCase extends CakeTestCase {
 	
 		// Carica i permessi
 		$permsObj = $this->Permission->load($this->Area->id) ;
+		sort($permsObj);
 		pr("Verifica permessi aggiunti Area") ;
 		$this->assertEqual($perms, $permsObj);
 
-//$obj = $this->Area->findById($this->Area->id) ;
-//pr($obj);		
+		$this->_delete($this->Area) ;
 		$this->Transaction->rollback() ;
 	} 
 
@@ -134,9 +137,11 @@ class PermissionTestCase extends CakeTestCase {
 		
 		// Carica i permessi creati
 		$perms = $this->Permission->load($this->Area->id) ;
+		sort($perms);
 		
 		pr("Verifica permessi cancella") ;
-		$this->assertEqual($this->data['resultDeletePerms1'], $perms);
+		$this->assertEqual(sort($this->data['resultDeletePerms1']), $perms);
+		$this->_delete($this->Area) ;
 		
 		$this->Transaction->rollback() ;
 	} 
@@ -161,12 +166,14 @@ class PermissionTestCase extends CakeTestCase {
 		pr("Verifica permessi cancellati") ;
 		$this->assertEqual(array(), $perms);
 		
+		$this->_delete($this->Area) ;
 		$this->Transaction->rollback() ;
 	} 
 
 	function testReplaceByRootTree() {	
 		$this->Transaction->begin() ;
 		
+		sort($this->data['addPerms1']);
 		// aggiunge/sosstituisce per una ramificazione (3, 6, 5, 8, 12)
 		$ret = $this->Permission->addTree(3, $this->data['addPerms1']) ;
 		pr("aggiunge/sostituisce per una ramificazione (3, 6, 5, 8, 12)") ;
@@ -174,14 +181,17 @@ class PermissionTestCase extends CakeTestCase {
 		
 		// Carica i permessi creati e verifica
 		$perms = $this->Permission->load(3) ;
+		sort($perms);
 		pr("Verifica permessi creati (3)") ;
 		$this->assertEqual($this->data['addPerms1'], $perms);
 		
 		$perms = $this->Permission->load(5) ;
+		sort($perms);
 		pr("Verifica permessi creati (5)") ;
 		$this->assertEqual($this->data['addPerms1'], $perms);
 
 		$perms = $this->Permission->load(12) ;
+		sort($perms);
 		pr("Verifica permessi creati (12)") ;
 		$this->assertEqual($this->data['addPerms1'], $perms);
 		
@@ -191,6 +201,7 @@ class PermissionTestCase extends CakeTestCase {
 	function testDeleteByRootTree() {	
 		$this->Transaction->begin() ;
 		
+		sort($this->data['addPerms1']);
 		// aggiunge/sosstituisce per una ramificazione (3, 6, 5, 8, 12)
 		$ret = $this->Permission->addTree(3, $this->data['addPerms1']) ;
 		pr("aggiunge/sostituisce per una ramificazione (3, 6, 5, 8, 12)") ;
@@ -203,14 +214,17 @@ class PermissionTestCase extends CakeTestCase {
 		
 		// Carica i permessi creati e verifica
 		$perms = $this->Permission->load(3) ;
+		sort($perms);
 		pr("Verifica permessi cancellati (3)") ;
 		$this->assertEqual($this->data['resultDeletePerms1'], $perms);
 		
 		$perms = $this->Permission->load(5) ;
+		sort($perms);
 		pr("Verifica permessi cancellati (5)") ;
 		$this->assertEqual($this->data['resultDeletePerms1'], $perms);
 
 		$perms = $this->Permission->load(12) ;
+		sort($perms);
 		pr("Verifica permessi cancellati (12)") ;
 		$this->assertEqual($this->data['resultDeletePerms1'], $perms);
 		
@@ -220,6 +234,7 @@ class PermissionTestCase extends CakeTestCase {
 	function testDeleteAllByRootTree() {	
 		$this->Transaction->begin() ;
 		
+		sort($this->data['addPerms1']);
 		// aggiunge/sosstituisce per una ramificazione (3, 6, 5, 8, 12)
 		$ret = $this->Permission->addTree(3, $this->data['addPerms1']) ;
 		pr("aggiunge/sostituisce per una ramificazione (3, 6, 5, 8, 12)") ;
@@ -232,15 +247,18 @@ class PermissionTestCase extends CakeTestCase {
 		
 		// Carica i permessi creati e verifica
 		$perms = $this->Permission->load(3) ;
+		sort($perms);
 		pr("Verifica permessi cancellati (3)") ;
 		
 		$this->assertEqual(array(), $perms);
 		
 		$perms = $this->Permission->load(5) ;
+		sort($perms);
 		pr("Verifica permessi cancellati (5)") ;
 		$this->assertEqual(array(), $perms);
 
 		$perms = $this->Permission->load(12) ;
+		sort($perms);
 		pr("Verifica permessi cancellati (12)") ;
 		$this->assertEqual(array(), $perms);
 		
@@ -250,6 +268,7 @@ class PermissionTestCase extends CakeTestCase {
 	function testPermissionsByUserid() {	
 		$this->Transaction->begin() ;
 		
+		sort($this->data['addPerms1']);
 		// aggiunge/sosstituisce per una ramificazione (3, 6, 5, 8, 12)
 		$ret = $this->Permission->addTree(3, $this->data['addPerms1']) ;
 		pr("aggiunge/sostituisce per una ramificazione (3, 6, 5, 8, 12)") ;
@@ -274,6 +293,7 @@ class PermissionTestCase extends CakeTestCase {
 	function testPermissionsByGroup() {	
 		$this->Transaction->begin() ;
 		
+		sort($this->data['addPerms1']);
 		// aggiunge/sosstituisce per una ramificazione (3, 6, 5, 8, 12)
 		$ret = $this->Permission->addTree(3, $this->data['addPerms1']) ;
 		pr("aggiunge/sostituisce per una ramificazione (3, 6, 5, 8, 12)") ;
@@ -292,9 +312,7 @@ class PermissionTestCase extends CakeTestCase {
 	} 
 
 	/////////////////////////////////////////////////
-	private function _insert(&$model, &$data) {
-		$conf  		= Configure::getInstance() ;
-		
+	private function _insert($model, $data) {
 		// Crea
 		$result = $model->save($data) ;
 		$this->assertEqual($result,true);		
@@ -302,144 +320,20 @@ class PermissionTestCase extends CakeTestCase {
 		// Visualizza
 		$obj = $model->findById($model->id) ;
 		pr("Oggetto Creato: {$model->id}") ;
-//		pr($obj) ;
 		
 	} 
 	
-	private function _delete(&$model) {
-		$conf  		= Configure::getInstance() ;
-		
-		// Cancella
+	private function _delete($model) {
+		$id = $model->id;
 		$result = $model->Delete($model->{$model->primaryKey});
 		$this->assertEqual($result,true);		
-		pr("Oggetto cancellato");
+		pr("Oggetto cancellato: $id");
 	} 
 
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
-	
-	function startCase() {
-		echo '<h1>Creazione, gestione, cancellazione permessi Case</h1>';
-	}
-
-	function endCase() {
-		echo '<h1>Ending Test Case</h1>';
-	}
-
-	function startTest($method) {
-		echo '<h3>Starting method ' . $method . '</h3>';
-	}
-
-	function endTest($method) {
-		echo '<hr />';
-	}
-
-	/**
- 	* Loads and instantiates models required by this controller.
- 	* If Controller::persistModel; is true, controller will create cached model instances on first request,
- 	* additional request will used cached models
- 	*
- 	*/
 	public   function __construct () {
-		parent::__construct() ;
-		
-		// Carica i dati d'esempio
-		$PermissionData = &new PermissionData() ;
-		$this->data		= $PermissionData->getData() ;
-
-		// Cambia il dataSource di default
-		if(isset($this->dataSource)) $this->setDefaultDataSource($this->dataSource) ;
-
-		// Carica i Models
-		if ($this->uses) {
-			if($this->uses === null || ($this->uses === array())){
-				return ;
-			}
-
-			$uses = is_array($this->uses) ? $this->uses : array($this->uses);
-
-			foreach($uses as $modelClass) {
-				$modelKey = Inflector::underscore($modelClass);
-
-				if(!class_exists($modelClass)){
-					loadModel($modelClass);
-				}
-
-				if (class_exists($modelClass)) {
-						$model =& new $modelClass();
-						$this->modelNames[] = $modelClass;
-						$this->{$modelClass} =& $model;
-				} else {
-					echo "Missing Model: $modelClass" ;
-					return ;
-				}
-			}
-		}
-		
-		// carica i components
-		if ($this->components) {
-			if($this->components === null || ($this->components === array())){
-				return ;
-			}
-
-			$components = is_array($this->components) ? $this->components : array($this->components);
-
-			foreach($components as $componentClass) {
-				loadComponent($componentClass);
-				
-				$className = $componentClass . 'Component' ;
-				if (class_exists($className)) {
-						$component =& new $className();
-						$this->{$componentClass} =& $component;
-				} else {
-					echo "Missing Component: $className" ;
-					return ;
-				}
-			}
-		}
-		
+		parent::__construct('Permission', dirname(__FILE__)) ;
 	}
-
-	/**
- 	* Cambio il data source di default
- 	*/
-	protected function setDefaultDataSource($name) {		
-		$_this =& ConnectionManager::getInstance();
-
-		if (in_array($name, array_keys($_this->_dataSources))) {
-			return $_this->_dataSources[$name];
-		}
-
-		$connections = $_this->enumConnectionObjects();
-		if (in_array($name, array_keys($connections))) {
-			$conn = $connections[$name];
-			$class = $conn['classname'];
-			$_this->loadDataSource($name);
-			
-			$this->_originalDefaultDB = &$_this->_dataSources['default'] ;
-			
-			$_this->_dataSources['default'] =& new $class($_this->config->{$name});
-			$_this->_dataSources['default']->configKeyName = $name;
-		} else {
-			trigger_error(sprintf(__("ConnectionManager::getDataSource - Non-existent data source %s", true), $name), E_USER_ERROR);
-			return null;
-		}
-
-		return $_this->_dataSources['default'];		
-	}
-
-	/**
- 	* Resetta data source di default
- 	*/
-	protected function resetDefaultDataSource($name) {
-		
-		if(!isset($this->_originalDefaultDB)) return ;
-		$_this->_dataSources['default'] = &$this->_originalDefaultDB  ;
-		
-		unset($this->_originalDefaultDB);
-		
-		return $_this->_dataSources['default'];
-	}
-	
 }
 ?> 

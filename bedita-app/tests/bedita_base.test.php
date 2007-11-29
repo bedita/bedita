@@ -36,6 +36,7 @@ class BeditaTestCase extends CakeTestCase {
 		if(isset($this->testName)) {
 			echo '<h1>Ending '.$this->testName.' Case</h1>';
 		}
+		$this->cleanUp();
 	}
 
 	function startTest($method) {
@@ -181,6 +182,7 @@ class BeditaTestCase extends CakeTestCase {
 		return $_this->_dataSources['default'];
 	}
 
+	protected function cleanUp() {}
 }
 
 ?>

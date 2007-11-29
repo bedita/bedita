@@ -212,6 +212,10 @@ $config['permissions'] = array(
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
 		array('guest', 			'group', (BEDITA_PERMS_READ)),
 	),
+	$config['objectTypes']['section']	=> array(
+		array('guest', 			'group', (BEDITA_PERMS_READ)),
+		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
+	),
 	$config['objectTypes']['area']	=> array(
 		array('guest', 			'group', (BEDITA_PERMS_READ)),
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),

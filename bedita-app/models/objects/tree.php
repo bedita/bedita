@@ -188,16 +188,16 @@ class Tree extends BEAppModel
 	}
 
 
-	function move($idNewParent, $idOldParent, $id = false) {
-		if (!empty($id)) {
-			$this->id = $id ;
+	function move($idNewParent, $idOldParent, $id = NULL) {
+		if (empty($id)) {
+			$id = $this->id;
 		}
 
 		// Verifica che il nuovo parent non sia un discendente dell'albero da spostare
-		$ret = $this->query("SELECT isParentTree({$this->id}, {$idNewParent}) AS parent");
+		$ret = $this->query("SELECT isParentTree({$id}, {$idNewParent}) AS parent");
 		if(!empty($ret["parent"])) return  false ;
 
- 		$ret = $this->query("CALL moveTree({$this->id}, {$idOldParent}, {$idNewParent})");
+ 		$ret = $this->query("CALL moveTree({$id}, {$idOldParent}, {$idNewParent})");
 		return (($ret === false)?false:true) ;
 	}
 

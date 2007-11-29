@@ -232,12 +232,19 @@ class PermissionComponent extends Object {
 	 * @param integer $id			ID dell'oggetto da trattare
 	 * @param array $permissions	Array con in nuovi permessi
 	 * @param boolean $recursion	SE true applica le modifiche ai discendenti
-	 * 
+	 * @param boolean $objectType	tipo di oggetto su cui cercare permessi di default se non sono passati
+	 * 	 
 	 */
-	function saveFromPOST($id, $permissions, $recursion = false) {
+	function saveFromPOST($id, $permissions, $recursion = false, $objType = NULL) {
 		$newPerms = array("user" => Array(), "group" => Array()) ;
 		$delPerms = array() ;
 		
+		if(!isset($objType))
+			$objType='all';
+
+		if(!isset($permissions))
+			$permissions = array();
+			
 		// determina i permessi da cancellare e formatta l'array dei permessi
 		$tmp = array() ;
 		foreach ($permissions as $k => $perm) {
@@ -259,10 +266,11 @@ class PermissionComponent extends Object {
 		}
 		
 		// Formatta i nuovi permessi
-		$this->_setupDataFromPost($permissions) ;
-		
-		// Salva
-		if($recursion) $ret = $this->addTree($id, $permissions) ;
+		$permissions =  $this->_setupDataFromPost($permissions, $objType) ;
+
+		if($recursion) 
+			$ret = $this->addTree($id, $permissions) ;
+
 		else $ret = $this->add($id, $permissions) ;
 		
 		return true ;	
@@ -275,24 +283,28 @@ class PermissionComponent extends Object {
 	 *
 	 * @param array $data
 	 */
-	private function _setupDataFromPost(&$data) {
-		if(!is_array($data)) return false ;
+	private function _setupDataFromPost($data, $objType) {
+		if(!is_array($data))
+			throw new BeditaException(__("Bad data", true), $data);
 	
-		$labels = array("BEDITA_PERMS_READ", "BEDITA_PERMS_MODIFY", "BEDITA_PERMS_DELETE", "BEDITA_PERMS_CREATE");
-		for($i=0; $i < count($data) ; $i++) {
-			$flag = 0 ;
-			foreach($labels as $key) {
-				if(isset($data[$i][$key])) $flag |= (integer) $data[$i][$key] ;
-				unset($data[$i][$key]) ;
+		if(!empty($data)) {
+			$labels = array("BEDITA_PERMS_READ", "BEDITA_PERMS_MODIFY", "BEDITA_PERMS_DELETE", "BEDITA_PERMS_CREATE");
+			for($i=0; $i < count($data) ; $i++) {
+				$flag = 0 ;
+				foreach($labels as $key) {
+					if(isset($data[$i][$key])) $flag |= (integer) $data[$i][$key] ;
+					unset($data[$i][$key]) ;
+				}
+				
+				$data[$i] = array($data[$i]["name"], $data[$i]["switch"], $flag) ;
 			}
 			
-			$data[$i] = array($data[$i]["name"], $data[$i]["switch"], $flag) ;
+			// inserisce per default i permessi per il gruppo administrator
+			$data[$i] = array("administrator", "group", 0xFF) ;
+		} else {
+			$data = $this->getDefaultByType($objType);
 		}
-		
-		// inserisce per default i permessi per il gruppo administrator
-		$data[$i] = array("administrator", "group", 0xFF) ;
-		
-		return true ;
+		return $data;
 	}
 	
 
