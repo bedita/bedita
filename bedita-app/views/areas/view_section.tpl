@@ -64,18 +64,18 @@ function addCommandWhere() {
 		var id = $("input[@name='id']", this.parentNode).eq(0).attr('value') ;
 
 		if(parents.indexOf(parseInt(id)) > -1) {
-			$(this).before('<input type="checkbox" name="data[destination][]" value="'+id+'" checked="checked"/>&nbsp;');
+			$(this).before('<input type="radio" name="data[destination][]" value="'+id+'" checked="checked"/>&nbsp;');
 		} else {
-			$(this).before('<input type="checkbox" name="data[destination][]" value="' +id+'"/>&nbsp;');
+			$(this).before('<input type="radio" name="data[destination][]" value="' +id+'"/>&nbsp;');
 		}
 
 		$(this).html('<a href="javascript:;">'+$(this).html()+"<\/a>") ;
 
 		$("a", this).bind("click", function(e) {
 			// Indica l'avvenuto cambiamento dei dati
-			try { if(!$("../../input[@type=checkbox]", this).get(0).checked) $().alertSignal() ; } catch(e) {}
+			try { if(!$("../../input[@type=radio]", this).get(0).checked) $().alertSignal() ; } catch(e) {}
 
-			$("../../input[@type=checkbox]", this).get(0).checked = true ;
+			$("../../input[@type=radio]", this).get(0).checked = true ;
 		}) ;
 
 	}) ;

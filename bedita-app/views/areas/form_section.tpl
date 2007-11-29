@@ -45,7 +45,8 @@ $(document).ready(function(){
 
 <form action="{$html->url('/areas/saveSection')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <fieldset>
-	<input  type="hidden" name="data[id]" value="{$section.id|default:''}" />
+	<input type="hidden" name="data[id]" value="{$section.id|default:''}" />
+	{if isset($parent_id)}<input type="hidden" name="data[parent_id]" value="{$parent_id}" />{/if}
 </fieldset>
 
 <div class="FormPageHeader">
@@ -61,7 +62,7 @@ $(document).ready(function(){
 
 <h2 class="showHideBlockButton">{t}Where put the section into{/t}</h2>
 <div class="blockForm" id="whereto">
-{include file="../pages/form_tree.tpl"}
+{include file="../pages/form_tree.tpl" excludedSubTreeId=$section.id}
 </div>
 
 <h2 class="showHideBlockButton">{t}Custom Properties{/t}</h2>

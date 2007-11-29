@@ -25,7 +25,7 @@
 	<tr id="Title_TR_{$object.lang|default:$conf->lang}">
 		<td class="label">{t}Title{/t}:</td>
 		<td class="field">
-			<input  class="{literal}{required:true,minLenght:1}{/literal}" title="{t 1='1'}Title is required (at least %1 alphanumerical char){/t}" id="titleInput"  type="text" 
+			<input  class="{literal}{required:true,minLength:1}{/literal}" title="{t 1='1'}Title is required (at least %1 alphanumerical char){/t}" id="titleInput"  type="text" 
 				name="data[title]" value="{$object.title|default:''|escape:'html'|escape:'quotes'}"/>&nbsp;
 		</td>
 		<td class="status">

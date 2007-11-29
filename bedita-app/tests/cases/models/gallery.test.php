@@ -54,7 +54,7 @@ class GalleryTestCase extends CakeTestCase {
 		$permission = new PermissionComponent();
 		$this->data['file']= array(
 			'title' 	=> 'Lo scimparpente',
-			'path'		=> '/var/www/media/img/scimparpente.jpg',
+			'path'		=> 'img/scimparpente.jpg',
 			'shortDesc' => 'Lo scimparpente e\' davvero tremendo',
 			'longDesc'  => 'Lo scimparpente e\' davvero tremendo tremendissimo, ne fa di tutti i colori porca troia... minchia lo scimparpente!',
 			'width'     => '350',
@@ -72,7 +72,7 @@ class GalleryTestCase extends CakeTestCase {
 		$permission = new PermissionComponent();
 		$this->data['file']= array(
 			'title' 	=> 'La mosca cavallina',
-			'path'		=> '/var/www/media/img/moscacavallina.jpg',
+			'path'		=> 'img/moscacavallina.jpg',
 			'shortDesc' => 'La mosca cavallina ronza dappertutto al galoppo',
 			'longDesc'  => 'Ronza dappertutto al galoppo, e non si ferma mai, proprio per questo \'e tanto pericolosa!',
 			'width'     => '800',
@@ -90,7 +90,7 @@ class GalleryTestCase extends CakeTestCase {
 		$permission = new PermissionComponent();
 		$this->data['file']= array(
 			'title' 	=> 'Il leorpente',
-			'path'		=> '/var/www/media/img/leorpente.jpg',
+			'path'		=> 'img/leorpente.jpg',
 			'shortDesc' => 'Il leorpente e\' il serpente piu\' velenoso tra i felini...',
 			'longDesc'  => 'Velenoso re della foresta! Il leorpente caccia le sue prede nella savana, un po\' strisciando, un po\' correndo.',
 			'width'     => '969',
@@ -108,7 +108,7 @@ class GalleryTestCase extends CakeTestCase {
 		$permission = new PermissionComponent();
 		$this->data['file']= array(
 			'title' 	=> 'L\'ippotigre',
-			'path'		=> '/var/www/media/img/ippotigre.jpg',
+			'path'		=> 'img/ippotigre.jpg',
 			'shortDesc' => 'L\'ippotigre - uno su un milione di abitanti',
 			'longDesc'  => 'Uno su un milione di abitanti!',
 			'width'     => '800',

@@ -25,19 +25,20 @@ class BeTreeHelper extends Helper {
 	) ;
 
 	/**
-	 * Scrive l'abero dei contenuti.
+	 * Scrive l'albero dei contenuti.
 	 * Per il formato dell'albero vedere il:
 	 *		BeTreeComponent::getSectionsTree()
 	 *
 	 * @param array $id		ID da assegnare al tag UL radice della treeView
 	 * @param array $data	array con i dati
+	 * @param 		$excludeSubTreeId	ID dell'oggetto/sottoalbero da escludere
 	 * @return string
 	 */
-	function tree($id, &$data) {
+	function tree($id, &$data, $excludeSubTreeId = null) {
 		$html = "" ;
 
 		for ($i=0; $i < count($data) ; $i++) {
-			$html .= $this->treeBranch($data[$i]) ;
+			$html .= $this->treeBranch($data[$i],$excludeSubTreeId) ;
 		}
 
 		$html = sprintf($this->tags['tree'], $id, $html) ;
@@ -45,7 +46,10 @@ class BeTreeHelper extends Helper {
 		return $html ;
 	}
 
-	private function treeBranch(&$item)  {
+	private function treeBranch(&$item, $excludeSubTreeId = null)  {
+		if( ($excludeSubTreeId != null) && ($item['id'] == $excludeSubTreeId) )
+			return "";
+		
 		$conf = Configure::getInstance() ;
 
 		$key = array_search($item['object_type_id'], $conf->objectTypes) ;
@@ -56,7 +60,7 @@ class BeTreeHelper extends Helper {
 		$txtChildren = "" ;
 		if(isset($item['children'])) {
 			for($i=0; $i < count($item['children']) ; $i++) {
-				$txtChildren .= $this->treeBranch($item['children'][$i]) ;
+				$txtChildren .= $this->treeBranch($item['children'][$i], $excludeSubTreeId) ;
 			}
 			if(count($item['children'])) {
 				$txtChildren = sprintf($this->tags['children'], $txtChildren) ;
