@@ -116,34 +116,48 @@ function reorderListMultimendia() {
 }
 
 function setupDragDropItem(el) {
-	$("span.label img", el).Draggable({
+
+	$(el).Draggable({
 		revert:		true,
 		ghosting:	true,
 		opacity:	0.8
 	});
 
 	$(el).Droppable({
-		accept:		'span.label img',
+		accept:		'imageBox',
 		hoverclass: 'dropOver',
 		ondrop:		function(dropped) {
-alert(0)			
 			if(this == dropped) return;
-/*
-			// Sposta
-			subbranch = $('ul', this.parentNode);
+			
+			// sposta un elemento al posto del precedente
+			if(this == $(dropped).prev().get(0)) {
+				$(this).insertAfter($(dropped)) ;
+				
+				reorderListMultimendia() ;
+				return ;
+			
+			// sposta un elemento al posto del sucessivo	
+			} else if(this == $(dropped).next().get(0)) {
+				$(dropped).insertAfter($(this)) ;
 
-			if (subbranch.size() == 0) {
-				$(this).after("<ul><\/ul>");
-				subbranch = $('ul', this.parentNode);
+				reorderListMultimendia() ;
+				return ;
+			}
+			
+			// Se sis posta verso l'inizio si inserisce prima
+			var pDropped 	= parseInt($(".priority", dropped).attr("value")) ;
+			var pThis 		= parseInt($(".priority", this).attr("value")) ;
+			
+			if(pDropped > pThis) {
+				$(dropped).insertBefore($(this)) ;
+			} else {
+				$(dropped).insertAfter($(this)) ;
 			}
 
-			subbranch.eq(0).append(dropped.parentNode);
-*/
-			// Indica l'avvenuto cambiamento dei dati
-			try { $().alertSignal() ; } catch(e) {}
+			reorderListMultimendia() ;
 		}
 	}) ;
-	
+
 }
 
 {/literal}
