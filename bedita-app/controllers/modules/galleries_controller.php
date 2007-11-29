@@ -33,14 +33,64 @@ class GalleriesController extends AppController {
 		$this->loadGallery($id);
 	}
 
-	public function save($id = null, $order = "", $dir = true, $page = 1, $dim = 10) {
-		$savedGalleryId=$this->saveGallery($id);
-		$this->loadGallery($savedGalleryId);
+	public function save() {
+		if(empty($this->data))  throw new BeditaException( __("No data", true));
+		
+		$new = (empty($this->data['id'])) ? true : false;
+		
+		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) {
+			throw new BeditaException(__("Error modify permissions", true));
+		}
+		 
+		// Formattazione dei dati da salvare
+		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]);
+		$this->BeLangText->setupForSave($this->data["LangText"]);
+		
+		$images = (isset($this->data['images']))?$this->data['images']:array() ;
+		unset($this->data['images']);
+		
+		$this->Transaction->begin();
+		
+		if(!$this->Gallery->save($this->data)) {
+			throw new BeditaException( __("Error saving gallery", true), $this->Gallery->validationErrors);
+		}
+		
+		// aggiorna i permessi
+		if(isset($this->data["Permissions"])) {
+		 	if(!$this->Permission->saveFromPOST(
+				$this->Area->id, 
+				$this->data["Permissions"],
+				(empty($this->data['recursiveApplyPermissions'])?false:true))
+			) {
+				throw new BeditaException( __("Error saving permissions", true));
+		 	}
+		}
+		
+		// Inserisce gli oggetti multimediali selezionati, cancellando le precedenti associazioni
+		if(!$this->Gallery->removeChildren()) throw new BeditaException( __("Remove children", true));
+		
+		for($i=0; $i < count($images) ; $i++) {
+			if(!$this->Gallery->appendChild($images[$i]['id'],null,$images[$i]['priority'])) {
+				throw new BeditaException( __("Append child", true));
+			}
+		}
+		
+	 	$this->Transaction->commit();
 	}
 
-	public function delete($id = null, $order = "", $dir = true, $page = 1, $dim = 10) {
-	 	$this->deleteGallery($id);
-	 	$this->loadGalleries(null,$order,$dir,$page,$dim);
+	public function delete() {
+	 	if(empty($this->data['id'])) throw new BeditaException(__("No data", true));
+	 		
+		if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
+			throw new BeditaException(__("Error delete permissions", true));
+		}
+	 	
+	 	$this->Transaction->begin() ;
+	 	
+		// Cancellla i dati
+	 	if(!$this->Gallery->delete($this->data['id'])) throw new BeditaException( sprintf(__("Error deleting area: %d", true), $this->data['id']));
+		 	
+	 	$this->Transaction->commit() ;
 	}
 
 	/**
@@ -66,41 +116,41 @@ class GalleriesController extends AppController {
 	}
 
 	private function loadGallery($id) {
-	 	$conf = Configure::getInstance();
 		$this->setup_args(array("id", "integer", &$id));
-		$obj = null;
+
+		$conf 		= Configure::getInstance();
+		$obj 		= null;
+		$multimedia = array();
+		
+		// preleva la galleria selezionata e gli oggetti associati
 		if($id) {
 			$this->Gallery->bviorHideFields = array('Version', 'Index', 'current');
 			if(!($obj = $this->Gallery->findById($id))) {
-				$this->Session->setFlash(sprintf(__("Error loading gallery: %d", true), $id));
+				throw new BeditaException( sprintf(__("Error loading area: %d", true), $id));
 				return;
 			}
-		}
-		if(isset($obj["LangText"])) $this->BeLangText->setupForView($obj["LangText"]);
-		$tree = $this->BeTree->getSectionsTree();
-		$parents_id = isset($id) ? $this->Tree->getParent($id) : 0;
-		if(!is_array($parents_id)) $parents_id = array($parents_id);
-		$idGallery = ($id == null) ? 0 : $id;
-		
-		$types 		= array($conf->objectTypes['image'], $conf->objectTypes['audiovideo']) ;
-		$children 	= $this->BeTree->getDiscendents($idGallery, null, $types, "priority", true, 1, 100);
-		
-		$imagesForGallery = &$children['items'] ;
-		$multimedia = array();
-		foreach($imagesForGallery as $index => $obj) {
-			$type = $conf->objectTypeModels[$obj['object_type_id']] ;
 			
-			$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments');
-			if(!($Details = $this->{$type}->findById($image['id']))) continue ;
+			// Preleva i contentuti della galleria
+			$types = array($conf->objectTypes['image'], $conf->objectTypes['audiovideo']) ;
+			$children = $this->BeTree->getChildren($id, null, $types, "priority") ;
+			$imagesForGallery = &$children['items'] ;
+			
+			foreach($imagesForGallery as $index => $obj) {
+				$type = $conf->objectTypeModels[$obj['object_type_id']] ;
+			
+				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments');
+				if(!($Details = $this->{$type}->findById($obj['id']))) continue ;
 
-			$Details['priority'] = $obj['priority'];
-			$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
+				$Details['priority'] = $obj['priority'];
+				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
 			
-			$obj[$index]=$Details;
+				$obj[$index]=$Details;
+			}
 		}
+		
+		if(isset($obj["LangText"])) $this->BeLangText->setupForView($obj["LangText"]);
+		
 		$this->set('object',	$obj);
-		$this->set('tree', 		$tree);
-		$this->set('parents',	$parents_id);
 		$this->set('multimedia',$multimedia);
 		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) ));
 		$this->set('self',		($this->createSelfURL(false)."?"));
@@ -110,48 +160,6 @@ class GalleriesController extends AppController {
 		$this->set('MEDIA_ROOT',MEDIA_ROOT);
 	}
 
-	private function saveGallery($id) {
-		if(empty($this->data)) 
-			throw new BeditaException( __("No data", true));
-		$new = (empty($this->data['id'])) ? true : false;
-		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY))
-			throw new BeditaException(__("Error modify permissions", true));
-		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]);
-		$this->BeLangText->setupForSave($this->data["LangText"]);
-		
-		$this->Transaction->begin();
-		if(!$this->Gallery->save($this->data)) 
-			throw new BeditaException( __("Error saving gallery", true), $this->Gallery->validationErrors);
-			if(($parents = $this->Tree->getParent($this->Gallery->id)) !== false) {
-			if(!is_array($parents)) $parents = array($parents);
-		} else {
-			$parents = array();
-		}
-		if(!isset($this->data['destination'])) $this->data['destination'] = array();
-		$remove = array_diff($parents, $this->data['destination']);
-		foreach ($remove as $parent_id) { $this->Tree->removeChild($this->Gallery->id, $parent_id); }
-		$add = array_diff($this->data['destination'], $parents);
-		foreach ($add as $parent_id) { $this->Tree->appendChild($this->Gallery->id, $parent_id); }
-		if(!$this->Permission->saveFromPOST(
-			$this->Gallery->id,
-		 	(isset($this->data["Permissions"]))?$this->data["Permissions"]:array(),
-		 	(empty($this->data['recursiveApplyPermissions'])?false:true))) {
-				throw new BeditaException( __("Error saving permissions", true));
-		}
-	 	$this->Transaction->end();
-	 	return $this->Gallery->id;
-	}
-
-	private function deleteGallery($id) {
-	 	if(empty($id)) {
-	 		$this->log("TEST");
-			throw new BeditaException(__("No data", true));
-		}
-	 	$this->Transaction->begin();
-		$this->Gallery->delete($id);
-		$this->Transaction->end();
-	}
-	
 	protected function forward($action, $esito) {
 		$REDIRECT = array("save"	=> 	array(
 							"OK"	=> "./view/{$this->Gallery->id}",
