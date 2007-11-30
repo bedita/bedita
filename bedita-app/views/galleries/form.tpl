@@ -12,6 +12,13 @@ var langs = {
 
 var validate = null ;
 
+$.validator.setDefaults({ 
+	success: function(label) {
+		// set &nbsp; as text for IE
+		label.html("&nbsp;").addClass("checked");
+	}
+});
+
 $(document).ready(function(){
 
 	// Visualizzazione campi con  calendario
@@ -47,7 +54,9 @@ $(document).ready(function(){
 
 <form action="{$html->url('/galleries/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 
+<fieldset>
 <input  type="hidden" name="data[id]" value="{$object.id|default:''}" />
+</fieldset>
 
 <div class="FormPageHeader">
 {include file="../pages/form_header.tpl"}
