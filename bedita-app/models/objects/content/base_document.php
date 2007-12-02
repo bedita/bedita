@@ -46,7 +46,7 @@ class BaseDocument extends BEAppModel
 					'associationForeignKey'	=> 'object_id',
 					'unique'				=> true,
 					'fields'				=> 'comments.id, comments.status',
-					'conditions'			=> "content_bases_objects.switch ='COMMENTS'",
+					'conditions'			=> "ContentBasesObject.switch ='COMMENTS'",
 					'switch'				=> "COMMENTS",
 				),
 		) ;			

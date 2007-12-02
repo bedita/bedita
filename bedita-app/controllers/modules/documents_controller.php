@@ -93,11 +93,14 @@ class DocumentsController extends AppController {
 		$tree = $this->BeTree->getSectionsTree() ;
 
 		// Preleva dov'e' inserito il documento 
-		if(isset($id)) $parents_id = $this->Tree->getParent($id) ;
-		else $parents_id = 0 ;
-		if($parents_id && !is_array($parents_id)) $parents_id = array($parents_id) ;
-		else $parents_id = array() ;
-		
+		if(isset($id)) {
+			$parents_id = $this->Tree->getParent($id) ;
+			if(!is_array($parents_id))
+				$parents_id = array($parents_id);
+		} else {
+			$parents_id = array();
+		}
+
 		// Setup dei dati da passare al template
 		$this->set('object',	$obj);
 		$this->set('tree', 		$tree);

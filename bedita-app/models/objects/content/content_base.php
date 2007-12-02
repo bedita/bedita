@@ -36,7 +36,7 @@ class ContentBase extends BEAppModel
 					'associationForeignKey'	=> 'object_id',
 					'unique'				=> true,
 					'fields'				=> 'langObjs.id, langObjs.status, langObjs.lang, langObjs.title',
-					'conditions'			=> "content_bases_objects.switch ='LANGS'",
+					'conditions'			=> "ContentBasesObject.switch ='LANGS'",
 					'switch'				=> "LANGS",
 				),
 			'images' =>
@@ -47,7 +47,7 @@ class ContentBase extends BEAppModel
 					'associationForeignKey'	=> 'object_id',
 					'unique'				=> true,
 //					'fields'				=> 'images.id, images.status',
-					'conditions'				=> "content_bases_objects.switch ='IMGS'",
+					'conditions'			=> "ContentBasesObject.switch ='IMGS'",
 					'switch'				=> "IMGS",
 				),
 				
@@ -59,7 +59,7 @@ class ContentBase extends BEAppModel
 					'associationForeignKey'	=> 'object_id',
 					'unique'				=> true,
 					'fields'				=> 'multimedia.id, multimedia.status',
-					'conditions'			=> "content_bases_objects.switch ='MULTIMS'",
+					'conditions'			=> "ContentBasesObject.switch ='MULTIMS'",
 					'switch'				=> "MULTIMS",
 				),
 			'attachments' =>
@@ -69,7 +69,7 @@ class ContentBase extends BEAppModel
 					'foreignKey'   			=> 'id',
 					'associationForeignKey'	=> 'object_id',
 					'unique'				=> true,
-					'conditions'			=> "content_bases_objects.switch ='ATTACHS'",
+					'conditions'			=> "ContentBasesObject.switch ='ATTACHS'",
 					'switch'				=> "ATTACHS",
 				),
 		) ;			
