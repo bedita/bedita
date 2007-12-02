@@ -108,9 +108,11 @@ class BeToolbarHelper extends AppHelper {
 
 		// Definisce lo script per il cambio di pagina
 		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;
-		foreach ($this->namedArgs as $k => $v) {
-			if($k != "dim") $data[$k] = $v ;
-			$data[$k] = $v ;
+		if(!empty($this->namedArgs)) {
+			foreach ($this->namedArgs as $k => $v) {
+				if($k != "dim") $data[$k] = $v ;
+				$data[$k] = $v ;
+			}
 		}
 		$url = Router::url($data) ;
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/dim:'+ this[this.selectedIndex].value +'/page:1'" ;
@@ -127,9 +129,11 @@ class BeToolbarHelper extends AppHelper {
 
 		// Definisce lo script per il cambio di pagina
 		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;
-		foreach ($this->namedArgs as $k => $v) {
-			if($k != "dim") $data[$k] = $v ;
-			$data[$k] = $v ;
+		if(!empty($this->namedArgs)) {
+			foreach ($this->namedArgs as $k => $v) {
+				if($k != "dim") $data[$k] = $v ;
+				$data[$k] = $v ;
+			}
 		}
 		$url = Router::url($data) ;
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/dim:'+ this[this.selectedIndex].value" ;
@@ -182,10 +186,11 @@ class BeToolbarHelper extends AppHelper {
 
 		// Definisce lo script per il cambio di pagina
 		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;
-		foreach ($this->namedArgs as $k => $v) {
-			$data[$k] = $v ;
+		if(!empty($this->namedArgs)) {
+			foreach ($this->namedArgs as $k => $v) {
+				$data[$k] = $v ;
+			}
 		}
-
 		$url = Router::url($data) ;
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/page:'+ this[this.selectedIndex].value" ;
 
@@ -263,8 +268,10 @@ class BeToolbarHelper extends AppHelper {
 
 		// Crea l'url
 		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;
-		foreach ($this->namedArgs as $k => $v) {
-			if($k != "page") $data[$k] = $v ;
+		if(!empty($this->namedArgs)) {
+			foreach ($this->namedArgs as $k => $v) {
+				if($k != "page") $data[$k] = $v ;
+			}
 		}
 		$data['page'] = $page ;
 
