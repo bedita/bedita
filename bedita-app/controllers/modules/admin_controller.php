@@ -55,10 +55,16 @@ class AdminController extends AppController {
 		}
 	 }
 	 
-	 function removeUser($userid) {
+	 function removeUser($id) {
 	 	$this->checkWriteModulePermission();
-	 	if(isset($userid)) {
-	 		$this->BeAuth->removeUser($userid);
+	 	if(isset($id)) {
+	  		$u = $this->User->findById($id);
+		  	if(empty($u))
+		  		throw new BeditaException(__("Bad data",true));
+		  	$userid = $u['User']['userid'];
+		  	if($userid === $this->BeAuth->user["userid"])
+		  		throw new BeditaException(__("Auto-remove forbidden",true));
+		  	$this->BeAuth->removeUser($userid);
 	 		$this->eventInfo("user ".$userid." deleted");
 	 	}
 	  }
