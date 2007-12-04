@@ -1,10 +1,9 @@
-{agent var="agent"}
 {$html->docType('xhtml-trans')}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">
 <head>
 	<title>B.Edita::{$title_for_layout}</title>
-	<link rel="icon" href="{$session->webroot}favicon.ico" type="image/x-icon" />
-	<link rel="shortcut icon" href="{$session->webroot}favicon.ico" type="image/x-icon" />
+	<link rel="icon" href="{$html->webroot}favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="{$html->webroot}favicon.ico" type="image/x-icon" />
 
 	<meta name="author" content="" />
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -12,6 +11,8 @@
 	<meta name="description" content="Descrizione" lang="it" />
 	<meta name="keywords" content="Keys" />
 
+
+	{agent var="agent"}
 	{$javascript->link("jquery-latest")}
 	{$javascript->link("jquery.cookie")}
 	{$javascript->link("common")}
@@ -29,11 +30,11 @@ TABLE.indexList TR.rowList:hover {background-color:{/literal}{if empty($moduleCo
 </style>
 {/literal}
 
-{$content_for_layout}
+{$content_for_layout} 
 
 <div id="footerPage">
 	<a href="http://www.cakephp.org/" target="_blank">
-	{htmlHelper fnc="image" args="'cake.power.png', array('alt' => 'CakePHP : Rapid Development Framework', 'border' => '0')"}
+	<img src="{$html->webroot}img/cake.power.png" alt="CakePHP Rapid Development Framework" border="0"/>
 	</a>
 </div>
 

@@ -73,23 +73,20 @@
 		function __construct (&$controller)
 		{
 			parent::__construct($controller);
-			
+
 			$this->ext = ".tpl";
 			
-//			$this->_sv_template_dir = VIEWS . $this->viewPath . DS . $this->subDir;
 			$this->_sv_template_dir = array(
 				VIEWS . $this->viewPath . DS . $this->subDir,
 				VIEWS . $this->viewPath,
 				VIEWS
 			);
 			
-//			$this->_sv_layout_dir = LAYOUTS . $this->subDir;
 			$this->_sv_layout_dir = array(
 				LAYOUTS . $this->subDir,
 				VIEWS
 			) ;
 						
-//			$this->_sv_compile_dir = TMP . 'smarty' . DS . 'compile' . DS;
 			$this->_sv_compile_dir = TMP . 'smarty' . DS . 'compile' ;
 			$this->_sv_cache_dir = TMP . 'smarty' . DS . 'cache' . DS;
 			$this->_sv_config_dir = ROOT . APP_DIR.DS . 'config' . DS . 'smarty' . DS;
@@ -117,9 +114,6 @@
 
 			$this->_smarty->sv_this = &$this;
 			
-			if(method_exists($this->controller, "postViewContstructFilter"))
-				$this->controller->postViewContstructFilter($this);
-			
 			return;
 		}
 		
@@ -134,6 +128,7 @@
 		function getTemplateDir() {
 			return $this->_sv_template_dir ;
 		}
+
 		
 		function _render($___viewFn, $___data_for_view, $___play_safe = true, $loadHelpers = true)
 		{
@@ -141,32 +136,36 @@
 			// clears all assigned variables to the smarty class
 			$this->_smarty->clear_all_assign();
 
-			// let's load the helpers through the assign variables method in smarty
-			if (is_array($this->helpers) && count($this->helpers) > 0 && $loadHelpers === true)
-			{
-				$loadedHelpers =  array();
+			if ($this->helpers != false && $loadHelpers === true) {
+				$loadedHelpers = array();
 				$loadedHelpers = $this->_loadHelpers($loadedHelpers, $this->helpers);
-	
-				foreach(array_keys($loadedHelpers) as $helper)
-				{
+		
+				foreach (array_keys($loadedHelpers) as $helper) {
 					$replace = strtolower(substr($helper, 0, 1));
 					$camelBackedHelper = preg_replace('/\\w/', $replace, $helper, 1);
 	
 					${$camelBackedHelper} =& $loadedHelpers[$helper];
 	
-					if(isset(${$camelBackedHelper}->helpers) && is_array(${$camelBackedHelper}->helpers))
-					{
-						foreach(${$camelBackedHelper}->helpers as $subHelper)
-						{
+					if (is_array(${$camelBackedHelper}->helpers) && !empty(${$camelBackedHelper}->helpers)) {
+						$subHelpers = ${$camelBackedHelper}->helpers;
+						foreach ($subHelpers as $subHelper) {
 							${$camelBackedHelper}->{$subHelper} =& $loadedHelpers[$subHelper];
 						}
 					}
-					
-					$this->loaded[$camelBackedHelper] = (${$camelBackedHelper});
-					
+					$this->loaded[$camelBackedHelper] =& ${$camelBackedHelper};
 					// this part loads the helpers are registered objects to smarty
 					// good thing the register_object, passes the variable via reference :)
 					$this->_smarty->assign_by_ref($camelBackedHelper, ${$camelBackedHelper});
+				}
+			}
+
+			if ($this->helpers != false && $loadHelpers === true) {
+				foreach ($loadedHelpers as $helper) {
+					if (is_object($helper)) {
+						if (is_subclass_of($helper, 'Helper') || is_subclass_of($helper, 'helper')) {
+							$helper->beforeRender();
+						}
+					}
 				}
 			}
 			
@@ -189,28 +188,12 @@
 				$this->_smarty->assign_by_ref($k, $___data_for_view[$k]);
 			$this->_smarty->assign_by_ref("view", $this);
 
-			// okay, this is a new sh*t, added to support additional
-			// custom manipulation to the smarty object, before the 
-			// final render
-			if(method_exists($this->controller, 'preRenderFilter'))
-				$this->controller->preRenderFilter($this, $layout);
-			
-			/*
-			if($this->sv_processedTpl !== NULL)
-				$out = $this->_smarty->fetch('svck:' . basename($___viewFn));
-			else 
-				$out = $this->_smarty->fetch(basename($___viewFn));
-			*/
 			// modifica, giangi
 			if($this->sv_processedTpl !== NULL)
 				$out = $this->_smarty->fetch('svck:' . basename($___viewFn));
 			else {
-//				$out = $this->_smarty->fetch(basename($___viewFn));
 				$out = $this->_smarty->fetch($___viewFn);
 			}
-			// post filter, as well; to balance this thing
-			if(method_exists($this->controller, 'postRenderFilter'))
-				$this->controller->postRenderFilter($this, $layout);
 			
 			return $out;
 		}
