@@ -20,7 +20,8 @@ class PagesController extends AppController {
 
 		$this->set('galleries', $galleries['items']);
 		$this->set('documents', $documents['items']);
-		$this->set('shopname', "barrow!!");
+		$this->set('test1', "rocks");
+		$this->set('test2', "sucks");
 	}
 }
 

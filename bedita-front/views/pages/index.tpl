@@ -1,1 +1,1 @@
-Example
+bedita <b>{$test1}</b> or <b>{$test2}</b> ??
