@@ -32,7 +32,7 @@ class AuthenticationsController extends AppController {
 		$password 	= (isset($this->data["login"]["passwd"])) ? $this->data["login"]["passwd"] : "" ;
 		
 		if(!$this->BeAuth->login($userid, $password)) {
-			$this-> loginEvent('warn', $userid, "login not authorized");
+			$this->loginEvent('warn', $userid, "login not authorized");
 			$this->userWarnMessage(__("Wrong username/password or no authorization", true));
 			$this->result=self::ERROR;
 		}
@@ -83,11 +83,11 @@ class AuthenticationsController extends AppController {
 	 	$REDIRECT = array(
 	 			"logout"	=> 	array(
 	 									"OK"	=> "/",
-	 									"ERROR"	=> "/logout" 
+	 									"ERROR"	=> "/authentications/logout" 
 	 								),
 	 			"changePasswd"	=> 	array(
 	 									"OK"	=> "/",
-	 									"ERROR"	=> "/logout" 
+	 									"ERROR"	=> "/authentications/logout" 
 	 								),
 	 			"login"	=> 	array(
 	 									"OK"	=> "/",

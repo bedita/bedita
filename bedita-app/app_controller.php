@@ -72,9 +72,10 @@ class AppController extends Controller
 	 	// don't generate output, done in afterFilter
 	 	$this->autoRender = false ;
 	 	
-	 	// Se viene richiesto il login esce
-		if(isset($this->data["login"])) return  ;
-		
+	 	// Exit on login/logout
+	 	if(isset($this->data["login"]) || $this->name === 'Authentications') {
+			return;
+		}
 		// Esegue la verifca di login
 		$this->BeAuth->startup($this) ;	
 	 	if(!$this->checkLogin()) return ;
@@ -134,8 +135,9 @@ class AppController extends Controller
 	}
 
 	protected function eventLog($level, $msg) {
+		$u = isset($this->BeAuth->user["userid"])? $this->BeAuth->user["userid"] : "-";
 		$event = array('EventLog'=>array("level"=>$level, 
-			"user"=>$this->BeAuth->user["userid"], "msg"=>$msg, "context"=>strtolower($this->name)));
+			"user"=>$u, "msg"=>$msg, "context"=>strtolower($this->name)));
 		$this->EventLog->save($event);
 	}
 	

@@ -42,10 +42,6 @@ class PagesController extends AppController {
 	 
 	 function login() {
 	 }
-
-	 function logout() {
-	 	$this->action = "login" ; //same login page
-	 }
 	 
 }
 	

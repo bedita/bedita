@@ -83,7 +83,7 @@ class BeAuthComponent extends Object {
 		
 		if(!$this->loginPolicy($userid, $u, $policy))
 			return false ;
-		
+			
 		$this->allow = $u['User']['valid'];
 		$this->User->compact($u) ;
 		$this->user = $u;
@@ -104,7 +104,7 @@ class BeAuthComponent extends Object {
 	 * Check policy using $policy array or config if null
 	 * @return boolean
 	 */
-	function loginPolicy($userid, &$u, $policy) {
+	function loginPolicy($userid, $u, $policy) {
 		// Se fallisce esce
 		if(empty($u["User"])) {
 			// look for existing user
