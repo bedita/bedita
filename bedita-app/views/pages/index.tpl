@@ -21,10 +21,10 @@
 			{assign var = "link" value=$html->url($linkPath)}
 
 	<h1 class="{$moduleList[m].path}" style="background-color:{$moduleList[m].color};" onClick="document.location='{$html->url('/')}{$moduleList[m].path}'">
-	<a href="{$html->url('/')}{$moduleList[m].path}/" style="color:white;">{$moduleList[m].label}</a>
+	<a href="{$html->url('/')}{$moduleList[m].path}/" style="color:white;">{t}{$moduleList[m].label}{/t}</a>
 	</h1>
 		{else}
-	<div class="gest_menuxHome" style="background-color:#DDDDDD;">{$moduleList[m].label}</div>
+	<div class="gest_menuxHome" style="background-color:#DDDDDD;">{t}{$moduleList[m].label}{/t}</div>
 		{/if}
 	{/if}
 {/section}

@@ -1,7 +1,7 @@
 <script type="text/javascript">
 <!--
 var urlDelete 	= "{$html->url('delete/')}" ;
-var messaggio	= "{t}Are you sure that you want to delete the gallery?{/t}" ;
+var message	= "{t}Are you sure that you want to delete the gallery?{/t}" ;
 
 {literal}
 
@@ -12,10 +12,8 @@ $(document).ready(function(){
 	
 	// conferma per la cancellazione di un oggetto direttamente dalal lista
 	$(".delete").bind("click", function(e) {
-		if(!confirm(messaggio)) return false ;
-		
-		$("#frmDelete //input[@name='data[id]']").attr("value", $(this).attr("name")) ;
-		
+		if(!confirm(message)) return false ;
+		$("#frmDelete //input[@name='data[id]']").attr("value", $(this).attr("id").substring(1)) ;
 		$("#frmDelete").attr("action", urlDelete) ;
 		$("#frmDelete").get(0).submit() ;
 		
@@ -67,7 +65,7 @@ function localConfirm(anchorElem,url) {
 		<td>{$galleries[i].status}</td>
 		<td>{$galleries[i].created|date_format:$conf->date_format}</td>
 		<td>{$galleries[i].lang}</td>
-		<td><a href="javascript:void(0);" class="delete" name="{$galleries[i].id}">{t}Delete{/t}</a></td>
+		<td><a href="javascript:void(0);" class="delete" id="g{$galleries[i].id}">{t}Delete{/t}</a></td>
 	</tr>
 	{/section}
 	</tbody>

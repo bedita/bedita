@@ -11,20 +11,20 @@ Menu a SX valido per tutte le pagine del controller.
 				<ul class="simpleMenuList" style="margin:10px 0px 10px 0px">
 					<li {if $method eq 'index'}class="on"{/if}>		<b>&#8250;</b> {$tr->link('Multimedia', '/multimedia')}</li>
 				</ul>	
-				<hr>
+				<hr/>
 			</div>
 		</div>
 	<p>
 	Testo a seguire
 	</p>
-	<hr>
+	<hr/>
 	
 	<div id="handlerChangeAlert">
 
 	</div>
-	<br>
-<br>
-<br>
+	<br/>
+<br/>
+<br/>
 
 	</div>
 

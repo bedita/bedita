@@ -1,24 +1,25 @@
 <script type="text/javascript">
 {literal}
 
-function localUpdateGroupsChecked(chkElem) {
-	if(chkElem.checked) {
-		document.getElementById("groups").value="true";
-	} else {
-		var nchecked = 0;
-		var formElem = document.getElementById("userForm");
-		for(i=0;i<formElem.lenght;i++) {
-			if(i<3) alert('test');
-			name = formElem.elements[i].name;
-			if(name.indexOf('group_') != -1) {
-				if(formElem.elements[i].checked) {
-					nchecked = 1;
-					break;
-				}
+function localGroupChecked() {
+	var formElem = document.getElementById("userForm");
+	for(i=0;i<formElem.length;i++) {
+		id = formElem.elements[i].id;
+		if(id.indexOf('group_') != -1) {
+			if(formElem.elements[i].checked) {
+				return true;
 			}
 		}
-		document.getElementById("groups").value = (nchecked>0) ? "checked" : "";
 	}
+	return false;
+}
+
+function localSetGroupChecked() {
+	document.getElementById("groups").value = localGroupChecked() ? "checked" : "";
+}
+
+function localUpdateGroupsChecked(chkElem) {
+	document.getElementById("groups").value = (chkElem.checked || localGroupChecked()) ? "checked" : "";
 }
 
 $.validator.setDefaults({ 
@@ -32,12 +33,18 @@ $(document).ready(function() {
 		$('#result').html(passwordStrength($('#pwd').val(),$('#username').val()));
 		$('#strength').html(pwdStrenFeedback($('#pwd').val(),$('#username').val()));
 	});
-
 	jQuery.validator.addMethod(
 		"password", 
 		function( value, element, param ) {return {/literal}{$conf->passwdRegex}{literal}.test(value);}, 
     	"{/literal}{$tr->t($conf->passwdRegexMsg)}{literal}");
-	$("#userForm").validate(); 
+    
+    jQuery.validator.addMethod(
+		"nowhitespace",
+		function(value) {return /^[a-z]+$/i.test(value);},
+		"{/literal}{t}No white space please{/t}{literal}");
+
+    $("#userForm").validate();
+    $("#submit").click(function(){localSetGroupChecked()});
 });
 
 /**
@@ -65,7 +72,7 @@ $(document).ready(function() {
 			</td>
 			<td class="field">
 				<input type="text" id="username" name="data[User][userid]" value="{$user.User.userid}" 
-					class="{literal}{required:true,minLength:6}{/literal}" title="{t 1='6'}User name is required (at least %1 alphanumerical chars){/t}"/>&nbsp;</td>
+					class="{literal}{required:true,nowhitespace:true,minLength:6}{/literal}" title="{t 1='6'}User name is required (at least %1 alphanumerical chars, without white spaces){/t}"/>&nbsp;</td>
 			<td class="status">&#160;</td>
 		</tr>
 		<tr>
@@ -171,7 +178,7 @@ $(document).ready(function() {
 		<tr>
 			<td class="label">&#160;</td>
 			<td class="field" colspan="2">
-				<input type="submit" name="save" class="submit" value="{if isset($user)}{t}Modify{/t}{else}{t}Create{/t}{/if}" />
+				<input type="submit" id="submit" name="save" class="submit" value="{if isset($user)}{t}Modify{/t}{else}{t}Create{/t}{/if}" />
 			</td> 
 		</tr>
 		</table>
