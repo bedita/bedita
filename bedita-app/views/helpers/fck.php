@@ -3,7 +3,7 @@ class FckHelper extends AppHelper
 {
     var $helpers = array('Javascript');
 
-    function load( $template = 'default', $height = '300', $width = '750', $toolbar = 'Default' ) {
+    function load( $template = 'default', $height = '300', $width = '750', $toolbar = 'Basic' ) {
         $jsDS = '/'; //because \' only suxx in javascript
         $js = $this->webroot . 'js' . $jsDS . 'fckeditor' . $jsDS;
         $skinDir = $js . 'editor' . $jsDS . 'skins' . $jsDS;
