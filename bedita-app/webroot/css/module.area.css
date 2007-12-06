@@ -1,3 +1,26 @@
+#tree, .tree ul { padding: 0; margin: 2px; list-style: none;}
+#tree li { margin: 0; padding: 3px 0pt 3px 18px; list-style: none; }
+#tree li { background: url(treeview/tv-item.gif) 0 0 no-repeat; }
+#tree .collapsable { background-image: url(treeview/tv-collapsable.gif); }
+#tree .expandable { background-image: url(treeview/tv-expandable.gif); }
+#tree .last { background-image: url(treeview/tv-item-last.gif); }
+#tree .lastCollapsable { background-image: url(treeview/tv-collapsable-last.gif); }
+#tree .lastExpandable { background-image: url(treeview/tv-expandable-last.gif); }
+
+.treeview li { background: url(treeview/tv-item.gif) 0 0 no-repeat; }
+.treeview .collapsable { background-image: url(treeview/tv-collapsable.gif); }
+.treeview .expandable { background-image: url(treeview/tv-expandable.gif); }
+.treeview .last { background-image: url(treeview/tv-item-last.gif); }
+.treeview .lastCollapsable { background-image: url(treeview/tv-collapsable-last.gif); }
+.treeview .lastExpandable { background-image: url(treeview/tv-expandable-last.gif); }
+
+#tree.treeview li { background: url(treeview/area/tv-folder-item.gif) 0 0 no-repeat; }
+#tree.treeview .collapsable { background-image: url(treeview/area/tv-folder-collapsable.gif); }
+#tree.treeview .expandable { background-image: url(treeview/area/tv-folder-expandable.gif); }
+#tree.treeview .last { background-image: url(treeview/area/tv-folder-item.gif); }
+#tree.treeview .lastCollapsable { background-image: url(treeview/area/tv-folder-collapsable.gif); }
+#tree.treeview .lastExpandable { background-image: url(treeview/area/tv-folder-expandable.gif); }
+
 #treecontrol { margin: 1em 0; }
 #tree .AreaItem 	{ font-weight: bold; }
 #tree .SectionItem { }
