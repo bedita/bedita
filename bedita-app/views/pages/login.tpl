@@ -5,20 +5,17 @@
 {$javascript->link("jquery.validate")}
 
 <script type="text/javascript">
-{literal}
 <!--
+{literal}
 $.validator.setDefaults({ 
 	/*submitHandler: function() { alert("submitted!"); },*/
-	success: function(label) {
-		// set &nbsp; as text for IE
-		label.html("&nbsp;").addClass("checked");
-	}
+	success: function(label) { label.html("&nbsp;").addClass("checked");}
 });
 $().ready(function() { 
 	$("#loginForm").validate(); 
 });
-//-->
 {/literal}
+//-->
 </script>
 
 </head>

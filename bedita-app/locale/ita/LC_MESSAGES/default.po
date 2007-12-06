@@ -248,8 +248,8 @@ msgstr "Impostazioni utente"
 msgid "User name"
 msgstr "Nome utente"
 
-msgid "User name is required (at least %1 alphanumerical chars, without white spaces)"
-msgstr "Nome utente obbligatorio (almeno %1 caratteri alfanumerici, senza spazi)"
+msgid "User name is required (at least %1 chars, without white spaces and special chars)"
+msgstr "Nome utente obbligatorio (almeno %1 caratteri, senza spazi e caratteri speciali)"
 
 msgid "Real name"
 msgstr "Nome reale"

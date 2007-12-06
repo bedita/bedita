@@ -4,7 +4,7 @@ Pagina d'entrata modulo Documents.
 {php}$vs = &$this->get_template_vars() ;{/php}
 {agent var="agent"}
 {$html->css('module.documents')}
-{$html->css("jquery-calendar")}
+{$html->css("jquery.calendar")}
 {if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
 {$javascript->link("form")}
 {$javascript->link("jquery.treeview.pack")}
@@ -15,7 +15,7 @@ Pagina d'entrata modulo Documents.
 {$javascript->link("jquery.translatefield")}
 {$javascript->link("module.documents")}
 {$javascript->link("interface")}
-{$javascript->link("jquery-calendar")}
+{$javascript->link("jquery.calendar")}
 
 <script type="text/javascript">
 <!--

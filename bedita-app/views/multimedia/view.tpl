@@ -6,7 +6,7 @@ Pagina entrata modifica/creazioen multimedia.
 {agent var="agent"}
 
 {$html->css('module.multimedia')}
-{$html->css("jquery-calendar")}
+{$html->css("jquery.calendar")}
 {if ($agent.IE)} 	{$html->css('jquery.ie.autocomplete')}
 {else}				{$html->css('jquery.autocomplete')}
 {/if}
@@ -20,7 +20,7 @@ Pagina entrata modifica/creazioen multimedia.
 {$javascript->link("jquery.translatefield")}
 {$javascript->link("module.multimedia")}
 {$javascript->link("interface")}
-{$javascript->link("jquery-calendar")}
+{$javascript->link("jquery.calendar")}
 
 
 <script type="text/javascript">

@@ -1,11 +1,12 @@
 /*
- * Form Validation: jQuery form validation plug-in v1.1.1
+ * Form Validation: jQuery form validation plug-in v1.2
  *
  * http://bassistance.de/jquery-plugins/jquery-plugin-validation/
+ * http://docs.jquery.com/Plugins/Validation
  *
- * Copyright (c) 2006 J鰎n Zaefferer
+ * Copyright (c) 2006 J枚rn Zaefferer
  *
- * $Id: jquery.validate.js 3675 2007-10-18 09:32:44Z joern.zaefferer $
+ * $Id: jquery.validate.js 3981 2007-11-29 20:27:45Z joern.zaefferer $
  *
  * Dual licensed under the MIT and GPL licenses:
  *   http://www.opensource.org/licenses/mit-license.php
@@ -65,7 +66,7 @@
  * 				return "Your password is required because with " + $("#age").val() + ", you are not old enough yet."
  * 			},
  * 			minLength: "Please enter a password at least 5 characters long.",
- * 			maxLength: "Please enter a password no longer then 32 characters long."
+ * 			maxLength: "Please enter a password no longer than 32 characters long."
  * 		},
  *		age: "Please specify your age as a number (at least 3)."
  * 	}
@@ -73,9 +74,9 @@
  * @desc Validate a form on submit and each element on keyup. Rules are specified
  * for three elements, and a message is customized for the "password" and the
  * "age" elements. Inline rules are ignored. The password is only required when the age is lower
- * then 18. The age is only required when the firstname is blank. Note that "first-name" is quoted, because
+ * than 18. The age is only required when the firstname is blank. Note that "first-name" is quoted, because
  * it isn't a valid javascript identifier. "first-name": "required" also uses a shortcut replacement for
- * { required: true }. That works for all trivial validations that expect no more then a boolean-true argument.
+ * { required: true }. That works for all trivial validations that expect no more than a boolean-true argument.
  * The required-message for password is specified as a function to use runtime customization.
  *
  * @example $("#myform").validate({
@@ -100,52 +101,44 @@
  *   <label>Lastname</label>
  *   <input name="lname" title="Your lastname, please!" class="{required:true} invalid" />
  * </form>
- * @desc Validates a form on submit. The class used to search, create and display
- * error labels is changed to "invalid". This is also added to invalid elements.
- *
- * All error labels are displayed inside an unordered list with the ID "messageBox", as
- * specified by the jQuery object passed as errorContainer option. All error elements
- * are wrapped inside an li element, to create a list of messages.
- *
- * To ease the setup of the form, debug option is set to true, preventing a submit
- * of the form no matter of being valid or not.
+ * @desc All error labels are displayed inside an unordered list with the ID "messageBox", as specified by the jQuery object passed as errorContainer option. All error elements are wrapped inside an li element, to create a list of messages.
  *
  *
  * @example $("#myform").validate({
- * 	errorPlacement: function(error, element) {
- * 		error.appendTo( element.parent("td").next("td") );
- * 	},
+errorPlacement: function(error, element) {
+	error.appendTo( element.parent("td").next("td") );
+},
  * 	success: function(label) {
  * 		label.text("ok!").addClass("success");
  * 	}
  * });
  * @before <form id="myform" action="/login" method="post">
- * 	<table>
- * 		<tr>
- * 			<td><label>Firstname</label>
- * 			<td><input name="fname" class="{required:true}" value="Pete" /></td>
- * 			<td></td>
- * 		</tr>
- * 		<tr>
- * 			<td><label>Lastname</label></td>
- * 			<td><input name="lname" title="Your lastname, please!" class="{required:true}" /></td>
- * 			<td></td>
- * 		</tr>
- * 	</table>
- * </form>
+<table>
+	<tr>
+		<td><label>Firstname</label>
+		<td><input name="fname" class="{required:true}" value="Pete" /></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><label>Lastname</label></td>
+		<td><input name="lname" title="Your lastname, please!" class="{required:true}" /></td>
+		<td></td>
+	</tr>
+</table>
+</form>
  * @result <form id="myform" action="/login" method="post">
- * 	<table>
- * 		<tr>
- * 			<td><label>Firstname</label>
- * 			<td><input name="fname" class="{required:true}" value="Pete" /></td>
- * 			<td><label for="fname" class="invalid success">ok!</label></td>
- * 		</tr>
- * 		<tr>
- * 			<td><label>Lastname</label></td>
- * 			<td><input name="lname" title="Your lastname, please!" class="{required:true}" /></td>
- * 			<td><label for="lname" class="invalid">Your lastname, please!</label></td>
- * 		</tr>
- * 	</table>
+<table>
+	<tr>
+		<td><label>Firstname</label>
+		<td><input name="fname" class="{required:true}" value="Pete" /></td>
+		<td><label for="fname" class="invalid success">ok!</label></td>
+	</tr>
+	<tr>
+		<td><label>Lastname</label></td>
+		<td><input name="lname" title="Your lastname, please!" class="{required:true}" /></td>
+		<td><label for="lname" class="invalid">Your lastname, please!</label></td>
+	</tr>
+</table>
  * </form>
  * @desc Validates a form on submit. Customizes the placement of the generated labels
  * by appending them to the next table cell. Displays "ok!" for valid elements and adds a class
@@ -186,54 +179,31 @@
  * also wrapped into li elements (wrapper option).
  *
  * @param Map options Optional settings to configure validation
- * @option String errorClass Use this class to look for existing error labels and add it to
- *		invalid elements. Default: "error"
+ * @option String errorClass Use this class to look for existing error labels and add it toinvalid elements. Default: "error"
  * @option String wrapper Wrap error labels with the specified element, eg "li". Default: none
  * @option Boolean debug If true, the form is not submitted and certain errors are display on the console (requires Firebug or Firebug lite). Default: none
  * @option Boolean focusInvalid Focus the last active or first invalid element on submit or via validator.focusInvalid(). Default: true
- * @option Function submitHandler Callback for handling the actual
- *		submit when the form is valid. Gets the form as the only argmument. Default: normal form submit
- * @option Map<String, Object> messages Key/value pairs defining custom messages.
- *		Key is the name of an element, value the message to display for that element. Instead of
- *		a plain message	another map with specific messages for each rule can be used.
- *		Can be specified for one or more elements. Overrides the title attribute of an element.
- *		Each message can be a String or a Function. The Function is called with the element
- * 		as the first and the validator as the second argument and must return a String to display as the message
- * 		for that element.
- *      Default: none, the default message for the method is used.
- * @option Map<String, Object> rules Key/value pairs defining custom rules.
- *		Key is the ID or name (for radio/checkbox inputs) of an element,
- *		value is an object consisting of rule/parameter pairs, eg. {required: true, min: 3}.
- *   	Once specified, metadata rules are completely ignored.
- *		Default: none, rules are read from metadata via metadata plugin
- * @option Boolean onsubmit Validate the form on submit. Set to false to use only other
- *		events for validation (option event). Default: true
- * @option String meta In case you use metadata for other plugins, too, you
- *		want to wrap your validation rules
- *		into their own object that can be specified via this option. Default: none
+ * @option Function submitHandler Callback for handling the actual submit when the form is valid. Gets the form as the only argmument. Default: normal form submit
+ * @option Map<String, Object> messages Key/value pairs defining custom messages. Key is the name of an element, value the message to display for that element. Instead of a plain message	another map with specific messages for each rule can be used. Can be specified for one or more elements. Overrides the title attribute of an element. Each message can be a String or a Function. The Function is called with the element as the first and the validator as the second argument and must return a String to display as the message for that element. Default: none, the default message for the method is used.
+ * @option Map<String, Object> rules Key/value pairs defining custom rules. Key is the ID or name (for radio/checkbox inputs) of an element, value is an object consisting of rule/parameter pairs, eg. {required: true, min: 3}. Once specified, metadata rules are completely ignored. Default: none, rules are read from metadata via metadata plugin
+ * @option Boolean onsubmit Validate the form on submit. Set to false to use only other events for validation (option event). Default: true
+ * @option String meta In case you use metadata for other plugins, too, you want to wrap your validation rules into their own object that can be specified via this option. Default: none
  * @option jQuery errorContainer Hide and show this container when validating. Default: none
  * @option jQuery errorLabelContainer Search and append error labels to this container, and show and hide it accordingly. Default: none
- * @option Function showErrors A custom message display handler. Gets the map of errors as the
- *		first argument and a refernce to the validator object as the second.
- * 		You can trigger (in addition to your own messages) the default behaviour by calling
- * 		the defaultShowErrors() method of the validator.
- * 		Default: none, uses built-in message disply.
- * @option Function errorPlacement Used to customize placement of created error labels.
- *		First argument: jQuery object containing the created error label
- *		Second argument: jQuery object containing the invalid element
- *		Default: Places the error label after the invalid element
+ * @option Function showErrors A custom message display handler. Gets the map of errors as the first argument and a refernce to the validator object as the second. You can trigger (in addition to your own messages) the default behaviour by calling the defaultShowErrors() method of the validator. Default: none, uses built-in message disply.
+ * @option Function errorPlacement Used to customize placement of created error labels. First argument: jQuery object containing the created error label Second argument: jQuery object containing the invalid element Default: Places the error label after the invalid element
  * @option String errorElement The element to use for generated error messages. Default: "label"
- * @option String|Function If specified, the error label is displayed to show a valid element. If 
- * 		a String is given, its added as a class to the label. If a Function is given, its called with
- *		the label (as a jQuery object) as its only argument. That can be used to add a text like "ok!".
- *		Default: none
- * @option Boolean focusCleanup If enabled, removes the errorClass from the invalid elements and hides
- * 		all errors messages whenever the element is focused. Avoid combination with focusInvalid. Default: false
- * @option String|Element ignore Elements to ignore when validating, simply filtering them out. jQuery's not-method
- * 		is used, there everything that is accepted by not() can be passed as this option. Default: None, though inputs of type
- *		submit and reset are always ignored.
- * @opton Boolean onblur Validate elements on blur. If nothing is entered, all rules are skipped, 
- * 		except when the field was already marked as invalid. Default: true
+ * @option String|Function success If specified, the error label is displayed to show a valid element. If a String is given, its added as a class to the label. If a Function is given, its called with the label (as a jQuery object) as its only argument. That can be used to add a text like "ok!". Default: none
+ * @option Boolean focusCleanup If enabled, removes the errorClass from the invalid elements and hides all errors messages whenever the element is focused. Avoid combination with focusInvalid. Default: false
+ * @option String|Element ignore Elements to ignore when validating, simply filtering them out. jQuery's not-method is used, therefore everything that is accepted by not() can be passed as this option. Inputs of type submit and reset are always ignored, so are disabled elements. Default: None
+ * @opton Boolean onblur Validate elements on blur. If nothing is entered, all rules are skipped, except when the field was already marked as invalid. Default: true
+ * @option Callback subformRequired Called to determine if a subform is required. An input is passed as the argument, and a boolean is expected to return: If it returns false, the input is part of an optional subform, therefore not required. Default: none
+ * @option Function highlight Function that "highlights" errored fields. By default, it adds the current 'errorClass' setting
+ *      directly to the errored element. Replace this with your own function when you want to modify how or which elements get
+ *      highlighted when a field is invalid. Accepts two parameters: a reference to the error element, and the current errorClass.
+ * @option Function unHighlight Function that undoes the highlighting by the above function. By default, it removes the current
+ *      'errorClass' setting from the errored element. Accepts two parameters: a reference to the error element, and the
+ *      current errorClass.
  *
  * @name validate
  * @type $.validator
@@ -271,6 +241,10 @@ jQuery.extend(jQuery.fn, {
 					return handle();
 				}
 				if ( validator.form() ) {
+					if ( this.pendingRequest ) {
+						this.formSubmitted = true;
+						return false;
+					}
 					return handle();
 				} else {
 					validator.focusInvalid();
@@ -343,30 +317,30 @@ jQuery.extend(jQuery.expr[":"], {
  * If the second argument is ommited, a function is returned that expects the value-argument
  * to return the formatted value (see example).
  *
- * @example String.format("Please enter a value no longer then {0} characters.", 0)
- * @result "Please enter a value no longer then 0 characters."
+ * @example jQuery.format("Please enter a value no longer than {0} characters.", 0)
+ * @result "Please enter a value no longer than 0 characters."
  * @desc Formats a string with a single argument.
  *
- * @example String.format("Please enter a value between {0} and {1}.", 0, 1)
+ * @example jQuery.format("Please enter a value between {0} and {1}.", 0, 1)
  * @result "Please enter a value between 0 and 1."
- * @desc Formats a string with two arguments. Same as String.format("...", [0, 1]);
+ * @desc Formats a string with two arguments. Same as jQuery.format("...", [0, 1]);
  *
- * @example String.format("Please enter a value no longer then {0} characters.")(0);
- * @result "Please enter a value no longer then 0 characters."
- * @desc String.format is called at first without the second argument, returning a function that is called immediately
+ * @example jQuery.format("Please enter a value no longer than {0} characters.")(0);
+ * @result "Please enter a value no longer than 0 characters."
+ * @desc jQuery.format is called at first without the second argument, returning a function that is called immediately
  * 		 with the value argument. Useful to defer the actual formatting to a later point without explicitly 
  *		 writing the function.
  *
  * @type String
- * @name String.format
+ * @name jQuery.format
  * @cat Plugins/Validate
  */
-String.format = function(source, params) {
+jQuery.format = function(source, params) {
 	if ( arguments.length == 1 ) 
 		return function() {
 			var args = jQuery.makeArray(arguments);
 			args.unshift(source);
-			return String.format.apply( this, args );
+			return jQuery.format.apply( this, args );
 		};
 	if ( arguments.length > 2 && params.constructor != Array  ) {
 		params = jQuery.makeArray(arguments).slice(1);
@@ -385,10 +359,12 @@ jQuery.validator = function( options, form ) {
 	this.settings = jQuery.extend( {}, jQuery.validator.defaults, options );
 
 	this.currentForm = form;
-	this.labelContainer = this.settings.errorLabelContainer;
+	this.labelContainer = jQuery(this.settings.errorLabelContainer);
 	this.errorContext = this.labelContainer.length && this.labelContainer || jQuery(form);
-	this.containers = this.settings.errorContainer.add( this.settings.errorLabelContainer );
+	this.containers = jQuery(this.settings.errorContainer).add( this.settings.errorLabelContainer );
 	this.submitted = {};
+	this.valueCache = {};
+	this.pendingRequest = 0;
 	this.invalid = {};
 	this.reset();
 	this.refresh();
@@ -406,7 +382,7 @@ jQuery.extend(jQuery.validator, {
 		onsubmit: true,
 		ignore: [],
 		onblur: function(element) {
-			if ( !this.checkable(element) && (element.name in this.submitted || !this.required(element)) ) {
+			if ( !this.checkable(element) && (element.name in this.submitted || !this.optional(element)) ) {
 				this.element(element);
 			}
 		},
@@ -418,6 +394,12 @@ jQuery.extend(jQuery.validator, {
 		onclick: function(element) {
 			if ( element.name in this.submitted )
 				this.element(element);
+		},
+		highlight: function( element, errorClass ) {
+			jQuery( element ).addClass( errorClass );
+		},
+		unhighlight: function( element, errorClass ) {
+			jQuery( element ).removeClass( errorClass );
 		}
 	},
 
@@ -452,23 +434,24 @@ jQuery.extend(jQuery.validator, {
 	 */
 	messages: {
 		required: "This field is required.",
+		remote: "Please fix this field.",
 		email: "Please enter a valid email address.",
 		url: "Please enter a valid URL.",
 		date: "Please enter a valid date.",
 		dateISO: "Please enter a valid date (ISO).",
-		dateDE: "Bitte geben Sie ein g黮tiges Datum ein.",
+		dateDE: "Bitte geben Sie ein g眉ltiges Datum ein.",
 		number: "Please enter a valid number.",
 		numberDE: "Bitte geben Sie eine Nummer ein.",
 		digits: "Please enter only digits",
 		creditcard: "Please enter a valid credit card.",
 		equalTo: "Please enter the same value again.",
 		accept: "Please enter a value with a valid extension.",
-		maxLength: String.format("Please enter a value no longer than {0} characters."),
-		minLength: String.format("Please enter a value of at least {0} characters."),
-		rangeLength: String.format("Please enter a value between {0} and {1} characters long."),
-		rangeValue: String.format("Please enter a value between {0} and {1}."),
-		maxValue: String.format("Please enter a value less than or equal to {0}."),
-		minValue: String.format("Please enter a value greater than or equal to {0}.")
+		maxLength: jQuery.format("Please enter a value no longer than {0} characters."),
+		minLength: jQuery.format("Please enter a value of at least {0} characters."),
+		rangeLength: jQuery.format("Please enter a value between {0} and {1} characters long."),
+		rangeValue: jQuery.format("Please enter a value between {0} and {1}."),
+		maxValue: jQuery.format("Please enter a value less than or equal to {0}."),
+		minValue: jQuery.format("Please enter a value greater than or equal to {0}.")
 	},
 	
 	prototype: {
@@ -494,7 +477,7 @@ jQuery.extend(jQuery.validator, {
 			this.showErrors();
 			return this.valid();
 		},
-
+		
 		/**
 		 * Validate on instant a single element.
 		 *
@@ -517,6 +500,10 @@ jQuery.extend(jQuery.validator, {
 			} else {
 				this.invalid[element.name] = true;
 			}
+			if ( !this.numberOfInvalids() ) {
+				// Hide error containers on last error
+				this.toHide.push( this.containers );
+			}
 			this.showErrors();
 			return result;
 		},
@@ -537,6 +524,7 @@ jQuery.extend(jQuery.validator, {
 			if(errors) {
 				// add items to error list and map
 				jQuery.extend( this.errorMap, errors );
+				this.errorList = [];
 				for ( name in errors ) {
 					this.errorList.push({
 						message: errors[name],
@@ -638,17 +626,12 @@ jQuery.extend(jQuery.validator, {
 		 * Call to refresh a form after new elements have been added or rules changed.
 		 * 
 		 * Accepts an optional argument to refresh only a part of the form, eg. only the newly added element.
+		 *
 		 * 
-		 * @example var validator = $("#myform").validate();
-		 * $(".cancel").click(function() {
-		 * 	validator.hideErrors();
-		 * });
-		 * @desc Specifies a custom showErrors callback that updates the number of invalid elements each
-		 * time the form or a single element is validated.
-		 * 
+		 * @param Selector selection (optional) A selector or jQuery object or DOM element to refresh
 		 * @name jQuery.validator.prototype.hideErrors
 		 */
-		refresh: function() {
+		refresh: function(selection) {
 			var validator = this;
 			validator.rulesCache = {};
 			
@@ -662,6 +645,16 @@ jQuery.extend(jQuery.validator, {
 				}
 			}
 
+			// check for partial refresh
+			if ( selection ) {
+				jQuery(selection).each(function() {
+					if ( validator.elements.index(this)  > -1 ) {
+						validator.elements.add(this);
+					}
+					validator.rulesCache[this.name] = validator.rules(this);
+				}).focus(focused);
+			}
+			
 			// select all valid inputs inside the form (no submit or reset buttons)
 			this.elements = jQuery(this.currentForm)
 			.find("input, select, textarea")
@@ -716,6 +709,7 @@ jQuery.extend(jQuery.validator, {
 			this.errorMap = {};
 			this.toShow = jQuery( [] );
 			this.toHide = jQuery( [] );
+			this.formSubmitted = false;
 		},
 		
 		prepareForm: function() {
@@ -730,7 +724,7 @@ jQuery.extend(jQuery.validator, {
 	
 		check: function( element ) {
 			element = this.clean( element );
-			jQuery( element ).removeClass( this.settings.errorClass );
+			this.settings.unhighlight.call( this, element, this.settings.errorClass );
 			//var rules = this.rules( element );
 			var rules = this.rulesCache[ element.name ];
 			for( var i = 0; rules[i]; i++) {
@@ -740,12 +734,12 @@ jQuery.extend(jQuery.validator, {
 					if( result === -1 )
 						break;
 					if( !result ) {
-						jQuery( element ).addClass( this.settings.errorClass );
+						this.settings.highlight.call( this, element, this.settings.errorClass );
 						this.formatAndAdd( rule, element);
 						return false;
 					}
 				} catch(e) {
-					this.settings.debug && window.console && console.error("exception occured when checking element " + element.id
+					this.settings.debug && window.console && console.warn("exception occured when checking element " + element.id
 						 + ", check the '" + rule.method + "' method");
 					throw e;
 				}
@@ -871,8 +865,8 @@ jQuery.extend(jQuery.validator, {
 			return this.settings.rules
 				? this.settings.rules[ element.name ]
 				: this.settings.meta
-					? jQuery(element).data()[ this.settings.meta ]
-					: jQuery(element).data();
+					? jQuery(element).metadata()[ this.settings.meta ]
+					: jQuery(element).metadata();
 		},
 		
 		checkable: function( element ) {
@@ -895,6 +889,10 @@ jQuery.extend(jQuery.validator, {
 		},
 	
 		depend: function(param, element) {
+			if ( this.settings.subformRequired ) {
+				if ( this.settings.subformRequired(jQuery(element)) )
+					return false; 
+			}
 			return this.dependTypes[typeof param]
 				? this.dependTypes[typeof param](param, element)
 				: true;
@@ -912,8 +910,19 @@ jQuery.extend(jQuery.validator, {
 			}
 		},
 		
-		required: function(element) {
+		optional: function(element) {
 			return !jQuery.validator.methods.required.call(this, jQuery.trim(element.value), element);
+		},
+		
+		startRequest: function() {
+			this.pendingRequest++;
+		},
+		
+		stopRequest: function(valid) {
+			this.pendingRequest--;
+			if ( valid && this.pendingRequest == 0 && this.formSubmitted && this.form() ) {
+				jQuery(this.currentForm).submit();
+			}
 		}
 		
 	},
@@ -1016,6 +1025,46 @@ jQuery.extend(jQuery.validator, {
 				return value.length > 0;
 			}
 		},
+		
+		remote: function(value, element, param) {
+			if ( this.optional(element) )
+				return true;
+				
+			var cached = this.valueCache[element.name];
+			if(!cached) {
+				this.valueCache[element.name] = cached = {
+					old: null,
+					valid: true,
+					message: this.defaultMessage( element, "remote" )
+				};
+			}
+			this.settings.messages[element.name].remote = typeof cached.message == "function" ? cached.message(value) : cached.message;
+			if ( cached.old !== value ) {
+				cached.old = value;
+				var validator = this;
+				this.startRequest();
+				var data = {};
+				data[element.name] = value;
+				jQuery.ajax({
+					url: param,
+					mode: "abort",
+					port: "validate",
+					dataType: "json",
+					data: data,
+					success: function(response) {
+						if ( !response ) {
+							var errors = {};
+							errors[element.name] =  validator.defaultMessage( element, "remote" );
+							validator.showErrors(errors);
+						}
+						cached.valid = response;
+						validator.stopRequest(response);
+					}
+				});
+				return false;
+			}
+			return cached.valid;
+		},
 
 		/**
 		 * Return false, if the element is
@@ -1058,7 +1107,7 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate/Methods
 		 */
 		minLength: function(value, element, param) {
-			return this.required(element) || this.getLength(value, element) >= param;
+			return this.optional(element) || this.getLength(value, element) >= param;
 		},
 	
 		/**
@@ -1084,7 +1133,7 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate/Methods
 		 */
 		maxLength: function(value, element, param) {
-			return this.required(element) || this.getLength(value, element) <= param;
+			return this.optional(element) || this.getLength(value, element) <= param;
 		},
 		
 		/**
@@ -1119,7 +1168,7 @@ jQuery.extend(jQuery.validator, {
 	     */
 		rangeLength: function(value, element, param) {
 			var length = this.getLength(value, element);
-			return this.required(element) || ( length >= param[0] && length <= param[1] );
+			return this.optional(element) || ( length >= param[0] && length <= param[1] );
 		},
 	
 		/**
@@ -1139,7 +1188,7 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate/Methods
 		 */
 		minValue: function( value, element, param ) {
-			return this.required(element) || value >= param;
+			return this.optional(element) || value >= param;
 		},
 		
 		/**
@@ -1159,7 +1208,7 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate/Methods
 		 */
 		maxValue: function( value, element, param ) {
-			return this.required(element) || value <= param;
+			return this.optional(element) || value <= param;
 		},
 		
 		/**
@@ -1179,7 +1228,7 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate/Methods
 		 */
 		rangeValue: function( value, element, param ) {
-			return this.required(element) || ( value >= param[0] && value <= param[1] );
+			return this.optional(element) || ( value >= param[0] && value <= param[1] );
 		},
 		
 		/**
@@ -1198,7 +1247,7 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate/Methods
 		 */
 		email: function(value, element) {
-			return this.required(element) || /^[\w-+\.]+@([\w-]+\.)+[\w-]{2,}$/i.test(value);
+			return this.optional(element) || /^[^\s,;]+@([^\s.,;]+\.)+[\w-]{2,}$/i.test(value);
 		},
 	
 		/**
@@ -1219,7 +1268,9 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate/Methods
 		 */
 		url: function(value, element) {
-			return this.required(element) || /^(https?|ftp):\/\/[A-Z0-9](\.?[A-Z0-9能謁[A-Z0-9_\-能謁*)*(\/([A-Z0-9能謁[A-Z0-9_\-\.能謁*)?)*(\?([A-Z0-9能謁[A-Z0-9_\-\.%\+=&能謁*)?)?$/i.test(value);
+			// instead of whitelisting all valid unicode characters we'll blacklist all invalid characters: whitespace and . , ;
+			// please contribute any valid URLs that don't match for the testsuite
+			return this.optional(element) || /^(https?|ftp):\/\/[^\s.,;]+(\.?[^\s.,;]+)*(\/([^\s.,;]+)?)*(\?([^\s.,;]+)?)?$/i.test(value);
 		},
         
 		/**
@@ -1239,7 +1290,7 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate/Methods
 		 */
 		date: function(value, element) {
-			return this.required(element) || !/Invalid|NaN/.test(new Date(value));
+			return this.optional(element) || !/Invalid|NaN/.test(new Date(value));
 		},
 	
 		/**
@@ -1264,7 +1315,7 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate/Methods
 		 */
 		dateISO: function(value, element) {
-			return this.required(element) || /^\d{4}[\/-]\d{1,2}[\/-]\d{1,2}$/.test(value);
+			return this.optional(element) || /^\d{4}[\/-]\d{1,2}[\/-]\d{1,2}$/.test(value);
 		},
 	
 		/**
@@ -1290,7 +1341,7 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate/Methods
 		 */
 		dateDE: function(value, element) {
-			return this.required(element) || /^\d\d?\.\d\d?\.\d\d\d?\d?$/.test(value);
+			return this.optional(element) || /^\d\d?\.\d\d?\.\d\d\d?\d?$/.test(value);
 		},
 	
 		/**
@@ -1307,7 +1358,7 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate/Methods
 		 */
 		number: function(value, element) {
-			return this.required(element) || /^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(value);
+			return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(value);
 		},
 	
 		/**
@@ -1325,7 +1376,7 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate/Methods
 		 */
 		numberDE: function(value, element) {
-			return this.required(element) || /^-?(?:\d+|\d{1,3}(?:\.\d{3})+)(?:,\d+)?$/.test(value);
+			return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:\.\d{3})+)(?:,\d+)?$/.test(value);
 		},
 		
 		/**
@@ -1341,10 +1392,10 @@ jQuery.extend(jQuery.validator, {
 		 * @cat Plugins/Validate/Methods
 		 */
 		digits: function(value, element) {
-			return this.required(element) || /^\d+$/.test(value);
+			return this.optional(element) || /^\d+$/.test(value);
 		},
 		
-		 /**
+		/**
          * Return true, if the value is a valid credit card number.
          *
          * Works with all kind of text inputs.
@@ -1360,7 +1411,7 @@ jQuery.extend(jQuery.validator, {
          * @cat Plugins/Validate/Methods
          */
 		creditcard: function(value, element) {
-			if ( this.required(element) )
+			if ( this.optional(element) )
 				return true;
 			var nCheck = 0,
 				nDigit = 0,
@@ -1400,7 +1451,7 @@ jQuery.extend(jQuery.validator, {
 		 */
 		accept: function(value, element, param) {
 			param = typeof param == "string" ? param : "png|jpe?g|gif";
-			return this.required(element) || value.match(new RegExp(".(" + param + ")$")); 
+			return this.optional(element) || value.match(new RegExp(".(" + param + ")$", "i")); 
 		},
 		
 		/**
@@ -1446,7 +1497,7 @@ jQuery.extend(jQuery.validator, {
 	 * @desc Adds a method that checks if the value starts with http://mycorporatedomain.com
 	 *
 	 * @example jQuery.validator.addMethod("math", function(value, element, params) {
-	 *  return this.required(value, element) || value == params[0] + params[1];
+	 *  return this.optional(value, element) || value == params[0] + params[1];
 	 * }, "Please enter the correct value for this simple question.");
 	 * @desc Adds a not-required method...
 	 *

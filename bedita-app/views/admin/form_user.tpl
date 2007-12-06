@@ -1,6 +1,16 @@
 <script type="text/javascript">
 {literal}
 
+function cutBlank(elem) {
+	if (elem.value.length > 0) {
+		var i = elem.value.length - 1;
+		var c = elem.value.charAt(i);
+		if (c == ' ') {
+			elem.value = elem.value.substring(0,i);
+		}
+	}
+}
+
 function localGroupChecked() {
 	var formElem = document.getElementById("userForm");
 	for(i=0;i<formElem.length;i++) {
@@ -33,16 +43,44 @@ $(document).ready(function() {
 		$('#result').html(passwordStrength($('#pwd').val(),$('#username').val()));
 		$('#strength').html(pwdStrenFeedback($('#pwd').val(),$('#username').val()));
 	});
+/*
+jQuery.validator.addMethod("letterswithbasicpunc", function(value, element) {
+	return !jQuery.validator.methods.required(value, element) || /^[a-z-.,()'\"s]+$/i.test(value);
+
+}, "Letters or punctuation only please");  
+
+jQuery.validator.addMethod("alphanumeric", function(value, element) {
+	return !jQuery.validator.methods.required(value, element) || /^w+$/i.test(value);
+}, "Letters, numbers, spaces or underscores only please");  
+
+jQuery.validator.addMethod("lettersonly", function(value, element) {
+	return !jQuery.validator.methods.required(value, element) || /^[a-z]+$/i.test(value);
+}, "Letters only please"); 
+
+jQuery.validator.addMethod("nowhitespace", function(value, element) {
+	return !jQuery.validator.methods.required(value, element) || /^S+$/i.test(value);
+}, "No white space please"); 
+
+jQuery.validator.addMethod("anything", function(value, element) {
+	return !jQuery.validator.methods.required(value, element) || /^.+$/i.test(value);
+}, "May contain any characters."); 
+
+jQuery.validator.addMethod("integer", function(value, element) {
+	return !jQuery.validator.methods.required(value, element) || /^d+$/i.test(value);
+}, "Numbers only please");
+
+jQuery.validator.addMethod("phone", function(value, element) {
+	return !jQuery.validator.methods.required(value, element) || /^d{3}-d{3}-d{4}$/.test(value);
+}, "Must be XXX-XXX-XXXX");
+*/
+	jQuery.validator.addMethod(
+		"lettersonly",
+		function(value, element) { return /^[a-z]+$/i.test(value); },
+		"{/literal}{t}Letters only please{/t}{literal}");
 	jQuery.validator.addMethod(
 		"password", 
-		function( value, element, param ) {return {/literal}{$conf->passwdRegex}{literal}.test(value);}, 
+		function( value, element, param ) {return this.optional(element) || {/literal}{$conf->passwdRegex}{literal}.test(value);}, 
     	"{/literal}{$tr->t($conf->passwdRegexMsg)}{literal}");
-    
-    jQuery.validator.addMethod(
-		"nowhitespace",
-		function(value) {return /^[a-z]+$/i.test(value);},
-		"{/literal}{t}No white space please{/t}{literal}");
-
     $("#userForm").validate();
     $("#submit").click(function(){localSetGroupChecked()});
 });
@@ -71,8 +109,8 @@ $(document).ready(function() {
 				{if isset($user)}<input type="hidden" name="data[User][id]" value="{$user.User.id}"/>{/if}
 			</td>
 			<td class="field">
-				<input type="text" id="username" name="data[User][userid]" value="{$user.User.userid}" 
-					class="{literal}{required:true,nowhitespace:true,minLength:6}{/literal}" title="{t 1='6'}User name is required (at least %1 alphanumerical chars, without white spaces){/t}"/>&nbsp;</td>
+				<input type="text" id="username" name="data[User][userid]" value="{$user.User.userid}" onkeyup="cutBlank(this);" 
+					class="{literal}{required:true,lettersonly:true,minLength:6}{/literal}" title="{t 1='6'}User name is required (at least %1 chars, without white spaces and special chars){/t}"/>&nbsp;</td>
 			<td class="status">&#160;</td>
 		</tr>
 		<tr>

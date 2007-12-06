@@ -1,6 +1,6 @@
 {agent var="agent"}
 {$html->css('module.galleries')}
-{$html->css("jquery-calendar")}
+{$html->css("jquery.calendar")}
 {$html->css("jquery.thickbox")}
 {if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
 {$javascript->link("jquery.treeview.pack")}
@@ -8,7 +8,7 @@
 {$javascript->link("module.galleries")}
 {$javascript->link("form")}
 {$javascript->link("jquery.changealert")}
-{$javascript->link("jquery-calendar")}
+{$javascript->link("jquery.calendar")}
 {$javascript->link("jquery.form")}
 {$javascript->link("jquery.cmxforms")}
 {$javascript->link("jquery.metadata")}
