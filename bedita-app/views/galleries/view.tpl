@@ -3,7 +3,7 @@
 {$html->css("jquery.calendar")}
 {$html->css("jquery.thickbox")}
 {if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
-{$javascript->link("jquery.treeview.pack")}
+{$javascript->link("jquery.treeview")}
 {$javascript->link("interface")}
 {$javascript->link("module.galleries")}
 {$javascript->link("form")}

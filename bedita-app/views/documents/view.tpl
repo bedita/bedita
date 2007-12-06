@@ -7,7 +7,7 @@ Pagina d'entrata modulo Documents.
 {$html->css("jquery.calendar")}
 {if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
 {$javascript->link("form")}
-{$javascript->link("jquery.treeview.pack")}
+{$javascript->link("jquery.treeview")}
 {$javascript->link("jquery.changealert")}
 {$javascript->link("jquery.form")}
 {$javascript->link("jquery.validate")}

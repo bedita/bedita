@@ -1,5 +1,5 @@
 {$html->css('module.superadmin')}
-{$javascript->link("jquery.treeview.pack")}
+{$javascript->link("jquery.treeview")}
 {$javascript->link("interface")}
 {$javascript->link("form")}
 {$javascript->link("jquery.changealert")}

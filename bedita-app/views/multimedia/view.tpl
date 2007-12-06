@@ -12,7 +12,7 @@ Pagina entrata modifica/creazioen multimedia.
 {/if}
 
 {$javascript->link("form")}
-{$javascript->link("jquery.treeview.pack")}
+{$javascript->link("jquery.treeview")}
 {$javascript->link("jquery.changealert")}
 {$javascript->link("jquery.form")}
 {$javascript->link("jquery.validate")}

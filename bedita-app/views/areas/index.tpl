@@ -1,6 +1,6 @@
 {$html->css('module.area')}
 {$html->css('tree')}
-{$javascript->link("jquery.treeview.pack")}
+{$javascript->link("jquery.treeview")}
 {$javascript->link("interface")}
 {$javascript->link("module.area")}
 {$javascript->link("form")}

@@ -5,7 +5,7 @@
 {$javascript->link("jquery.metadata")}
 {$javascript->link("jquery.validate")}
 {$javascript->link("jquery.changealert")}
-{$javascript->link("jquery.treeview.pack")}
+{$javascript->link("jquery.treeview")}
 </head>
 <body>
 {include file="head.tpl"}

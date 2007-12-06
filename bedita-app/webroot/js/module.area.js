@@ -11,7 +11,7 @@ treeView Aree
 	// Crea o refresh albero
 	function designTree() {
 		$("#tree").Treeview({ 
-			control: "#treecontrol" ,
+			control: "#treecontrol",
 			speed: 'fast',
 			collapsed:false
 		});
