@@ -5,7 +5,7 @@ Pagina d'entrata modulo Documents.
 
 {$html->css('module.multimedia')}
 	
-{$javascript->link("jquery.treeview")}
+{$javascript->link("jquery.treeview.pack")}
 {$javascript->link("interface")}
 {$javascript->link("module.multimedia")}
 {$javascript->link("form")}

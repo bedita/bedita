@@ -60,7 +60,7 @@ function designTreeWhere() {
 
 // Aggiunge il radio button
 function addCommandWhere() {
-	$("li/span[@class='SectionItem'], li/span[@class='AreaItem']", "#treeWhere").each(function(i) {
+	$("span[@class='SectionItem'], span[@class='AreaItem']", "#treeWhere").each(function(i) {
 		var id = $("input[@name='id']", this.parentNode).eq(0).attr('value') ;
 
 		if(parents.indexOf(parseInt(id)) > -1) {

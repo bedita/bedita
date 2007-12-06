@@ -6,7 +6,7 @@
 		<a href="#">{t}Close all{/t}</a>
 		<a href="#">{t}Expand all{/t}</a>
 	</div>
-	<div id="test">
+	<div id="treeContainer">
 	<form id="frmTree" method="post" action="{$html->url('/areas/saveTree')}">
 		<input type="hidden" name="URLFrmArea" 		value="{$html->url('viewArea/')}"/>
 		<input type="hidden" name="URLFrmSezione" 	value="{$html->url('viewSection/')}"/>
