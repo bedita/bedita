@@ -25,7 +25,7 @@ treeView Aree
 			URLFrmSection 	= $("input[@name='URLFrmSezione']").eq(0).attr('value') ;
 		} catch(e) {}
 		
-		$("li/span[@class='SectionItem']", "#tree").each(function(i){
+		$("span[@class='SectionItem']", "#tree").each(function(i){
 			// Preleva l'ID della sezione
 			var id = $("input[@name='id']", this.parentNode).eq(0).attr('value') ;
 			
@@ -33,7 +33,7 @@ treeView Aree
 			$(this).html('<a href="'+URLFrmSection+id+'">'+$(this).html()+'</a>') ;
 		});
 		
-		$("li/span[@class='AreaItem']", "#tree").each(function(i){
+		$("span[@class='AreaItem']", "#tree").each(function(i){
 			var id = $("input[@name='id']", this.parentNode).eq(0).attr('value') ;
 			
 			$(this).html('<a href="'+URLFrmArea+id+'">'+$(this).html()+'</a>') ;

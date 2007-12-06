@@ -262,3 +262,6 @@ div.imageBox { background-color:#E9E9E9;border:solid #FFF 1px;float:left;padding
 div.imageBoxFirst { background-color:#E9E9E9;border:solid #FFF 1px;float:left;padding:2px 2px 2px 2px }
 .priority { font-weight:bold;font-size:20px; background-color:#E9E9E9; border: solid #E9E9E9 0px; }
 /* END -- Box Image */
+
+label.section {color:red;text-decoration:none}
+label.section:hover {color:red;text-decoration:underline}
