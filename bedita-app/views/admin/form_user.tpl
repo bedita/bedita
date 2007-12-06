@@ -184,7 +184,7 @@ jQuery.validator.addMethod("phone", function(value, element) {
 				{foreach from=$formGroups key=gname item=u}
 				<tr>
 					<td class="field">
-						<input type="checkbox" id="group_{$gname}" name="data[$gname]" {if $u == 1}checked="checked"{/if}
+						<input type="checkbox" id="group_{$gname}" name="data[groups][{$gname}]" {if $u == 1}checked="checked"{/if}
 					onclick="javascript:localUpdateGroupsChecked(this);"/></td>
 					<td class="label"><label id="lgroup{$gname}" for="group{$gname}">{$gname}</label></td>
 					<td class="status">&#160;</td>
