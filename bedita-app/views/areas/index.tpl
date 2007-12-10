@@ -10,7 +10,16 @@
 {literal}
 
 $(document).ready(function(){
+/*
+		$("#tree").treeview({
+			persist: "location",
+			collapsed: true,
+			unique: true
+		});	
+*/
+	
 	designTree() ;
+
 	addCommand() ;
 	refreshCommand() ;
 	refreshOnClick() ;
@@ -65,6 +74,7 @@ $(document).ready(function(){
 	var buttonDownArr = document.getElementsByName('down');
 	for(i=0;i<buttonUpArr.length;i++) { buttonUpArr[i].value = '{/literal}{t}up{/t}{literal}'; }
 	for(i=0;i<buttonDownArr.length;i++) { buttonDownArr[i].value = '{/literal}{t}down{/t}{literal}'; }
+
 });
 
 {/literal}

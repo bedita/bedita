@@ -12,6 +12,7 @@
 		<input type="hidden" name="URLFrmSezione" 	value="{$html->url('viewSection/')}"/>
 		<input type="hidden" id="data_tree" name="data[tree]" 			value=""/>
 		{$beTree->tree("tree", $tree)}
+		
 		<br/>
 		<input type="submit" value="{t}Save{/t}" name="modify"/>
 	</form>

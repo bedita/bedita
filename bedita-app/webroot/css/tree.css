@@ -1,3 +1,4 @@
+/*
 #treeWhere, .treeWhere ul { padding: 0; margin: 2px; list-style: none;}
 #treeWhere li { margin: 0; padding: 3px 0pt 3px 18px; list-style: none; }
 #treeWhere li { background: url(treeview/tv-item.gif) 0 0 no-repeat; }
@@ -6,3 +7,75 @@
 #treeWhere .last { background-image: url(treeview/tv-item-last.gif); }
 #treeWhere .lastCollapsable { background-image: url(treeview/tv-collapsable-last.gif); }
 #treeWhere .lastExpandable { background-image: url(treeview/tv-expandable-last.gif); }
+*/
+treeview ul { background-color: white; }
+
+
+
+.treeview, .treeview ul { 
+
+	padding: 0;
+
+	margin: 0;
+
+	list-style: none;
+
+}
+
+
+
+.treeview div.hitarea {
+
+	height: 15px;
+
+	width: 15px;
+
+	margin-left: -15px;
+
+	float: left;
+
+	cursor: pointer;
+
+}
+
+/* fix for IE6 */
+
+* html div.hitarea {
+
+	background: #fff;
+
+	filter: alpha(opacity=0);
+
+	display: inline;
+
+	float:none;
+
+}
+
+
+
+.treeview li { 
+
+	margin: 0;
+
+	padding: 3px 0pt 3px 16px;
+
+}
+
+
+
+.treeview a.selected {
+
+	background-color: #eee;
+
+}
+
+
+
+#treecontrol { margin: 1em 0; }
+
+
+
+.treeview .hover { color: red; cursor: pointer; }
+
+

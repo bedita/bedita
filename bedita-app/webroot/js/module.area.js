@@ -36,7 +36,7 @@ treeView Aree
 		$("span[@class='AreaItem']", "#tree").each(function(i){
 			var id = $("input[@name='id']", this.parentNode).eq(0).attr('value') ;
 			
-			$(this).html('<a href="'+URLFrmArea+id+'">'+$(this).html()+'</a>') ;
+			$(this).html('<a href="'+URLFrmArea+id+'">&nbsp;'+$(this).html()+'</a>') ;
 		});
 
 	}
@@ -59,7 +59,7 @@ treeView Aree
 
 	// Aggiunge i comandi albero, nascosti
 	function addCommand() {
-		$("span[@class='SectionItem']", "#tree").before('<input type="button" name="up" value=" up " class="initCmdTree"/>&nbsp;<input type="button" name="down" value=" down " class="initCmdTree"/>&nbsp;&nbsp;');
+		$("span[@class='SectionItem']", "#tree").before('&nbsp;<input type="button" name="up" value=" up " class="initCmdTree"/>&nbsp;<input type="button" name="down" value=" down " class="initCmdTree"/>&nbsp;&nbsp;');
 	}
 	
 	// Rende visibili i comandi accessibili e disabilita gli altri
