@@ -1,22 +1,5 @@
-function designTree() {
-	$("#tree").Treeview({
-		control: false ,
-		speed: 'fast',
-		collapsed:false
-	});
+/*
+File con la logica utilizzata nel modulo galleries.
 
-	var url = "" ;
-	try {
-		url = URLBase ;
-	} catch(e) {
-		url = "/galleries/index/" ;
-	}
-
-	$("li/span", "#tree").each(function(i){
-		// Preleva l'ID della sezione
-		var id = $("input[@name='id']", this.parentNode).eq(0).attr('value') ;
-
-		// Crea il tag per il form
-		$(this).html('<a href="'+url+"id:"+id+'">'+$(this).html()+'</a>') ;
-	});
-}
+@author		giangi@qwerg.com
+*/

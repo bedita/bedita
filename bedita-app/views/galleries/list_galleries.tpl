@@ -33,10 +33,6 @@ function localConfirm(anchorElem,url) {
 
 <div id="containerPage">
 	
-	<div id="listAree">
-	{$beTree->tree("tree", $tree)}
-	</div>
-
 	<div id="listGalleries">
 	<form method="post" action="" id="frmDelete"><input type="hidden" name="data[id]"/></form>
 	{if $galleries}

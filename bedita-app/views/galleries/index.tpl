@@ -1,5 +1,6 @@
 {$html->css('module.galleries')}
 {$html->css('tree')}
+
 {$javascript->link("jquery.treeview")}
 {$javascript->link("module.galleries")}
 {$javascript->link("form")}
@@ -8,7 +9,7 @@
 var URLBase = "{$html->url('index/')}" ;
 {literal}
 $(document).ready(function(){
-	designTree() ;
+
 });
 {/literal}
 </script>
