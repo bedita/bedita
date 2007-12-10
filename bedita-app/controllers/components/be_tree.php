@@ -108,6 +108,23 @@ class BeTreeComponent extends Object {
 		return  $objs ;
 	}
 	
+	/**
+	 * Stante un path "/<...>/<...>/..." torna l'idi dell'oggetto puntato
+	 * 
+	 * @param integer $path	Path dell'oggetto da trovare
+	 */
+	function getIdFromNickname($path) {
+		return $this->_getIdFromNickname($path) ;
+	}
+	
+	private function _getIdFromNickname($path) {
+		$nickname = basename($path) ;
+		if(@empty($nickname)) return null ;
+		
+		$parent_id = $this->_getIdFromNickname(dirname($path)) ;
+		
+		return $this->Tree->getIdFromNickname($nickname,  $parent_id) ;
+	}
 	
 	/////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////

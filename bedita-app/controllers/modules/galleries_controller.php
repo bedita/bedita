@@ -158,6 +158,19 @@ class GalleriesController extends AppController {
 		$this->set('MEDIA_ROOT',MEDIA_ROOT);
 	}
 
+	function test() {
+		$conf 		= Configure::getInstance();
+
+		
+		$galleria = $this->Gallery->findById(
+			$this->BeTree->getIdFromNickname($conf->pathGallery1)
+		) ;
+		
+		
+		pr($id) ;
+exit;		
+	} 
+	
 	protected function forward($action, $esito) {
 		$REDIRECT = array("save"	=> 	array(
 							"OK"	=> "./view/{$this->Gallery->id}",

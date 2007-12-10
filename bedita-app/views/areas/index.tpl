@@ -76,4 +76,5 @@ $(document).ready(function(){
 <div id="centralPage">
 {include file="submenu.tpl" method="index"}
 {include file="form_tree.tpl" method="index"}
+
 </div>

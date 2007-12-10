@@ -424,6 +424,33 @@ class Tree extends BEAppModel
 		return false;
 	}
 
+	/**
+	 * Torna l'ID delll'oggetto con un determinato nickname che ha come parent.
+	 * Se ci sono + figli con lo stesso nick, torna il primo
+	 * parent_id
+	 *
+	 * @param string $nickname
+	 * @param integer $parent_id		
+	 */
+	function getIdFromNickname($nickname, $parent_id = null) {
+		if(isset($parent_id)) {
+			$sql = "SELECT trees.id FROM
+					trees INNER JOIN Objects ON trees.id = Objects.id AND parent_id = {$parent_id}
+					WHERE
+					nickname = '{$nickname}' LIMIT 1
+			" ;
+		} else {
+			$sql = "SELECT trees.* FROM
+					trees INNER JOIN Objects ON trees.id = Objects.id AND parent_id IS NULL 
+					WHERE
+					nickname = '{$nickname}' LIMIT 1
+			" ;
+		}
+		
+		$tmp  	= $this->execute($sql) ;
+		return ((isset($tmp[0]['trees']['id'])) ? $tmp[0]['trees']['id'] : null) ;
+	}
+	
 	////////////////////////////////////////////////////////////////////////
 	/**
 	 * Preleva i figli/discendenti di cui id e' radice.
