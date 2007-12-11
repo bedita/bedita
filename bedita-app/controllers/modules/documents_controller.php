@@ -95,7 +95,8 @@ class DocumentsController extends AppController {
 		// Preleva dov'e' inserito il documento 
 		if(isset($id)) {
 			$parents_id = $this->Tree->getParent($id) ;
-			if(!is_array($parents_id))
+			if($parents_id === false) array() ;
+			elseif(!is_array($parents_id))
 				$parents_id = array($parents_id);
 		} else {
 			$parents_id = array();
