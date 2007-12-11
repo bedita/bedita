@@ -41,7 +41,7 @@ $(document).ready(function(){
 	}) ;
 
 	// Conferma cancellazione
-	$("#updateform//input[@name=cancella]").bind("click", function() {
+	$("#updateForm input[@name=cancella]").bind("click", function() {
 		if(!confirm("Attenzione!!! operazione potenzialmente dannosa.\nSicuro di voler continuare?")) {
 			return false ;
 		}

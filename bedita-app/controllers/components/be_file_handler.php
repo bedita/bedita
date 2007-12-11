@@ -365,7 +365,7 @@ class BeFileHandlerComponent extends Object {
 		$conf 		= Configure::getInstance() ;
 		
 		if(@empty($mime))	return false ;
-		
+
 		if(isset($model) && isset($conf->validate_resorce['mime'][$model] )) {
 			$regs = $conf->validate_resorce['mime'][$model] ;
 
@@ -528,9 +528,9 @@ class BeFileHandlerComponent extends Object {
   		if(!function_exists("finfo_open")) return false ;
 
   		$conf 	= Configure::getInstance() ;
-		$finfo 	= finfo_open(FILEINFO_MIME, $conf->validate_resorce['magic']); // return mime type ala mimetype extension
+		$finfo 	= finfo_open(FILEINFO_MIME, $conf->validate_resorce['magic']); // return mime type alla mimetype extension
 		if (!$finfo) return false ;
-		
+				
 		$mime = finfo_file($finfo, $file);
 		finfo_close($finfo);
         

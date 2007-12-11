@@ -28,7 +28,7 @@ $(document).ready(function(){
 	// Validazione al submit
 	$("#updateForm").validate();
 
-	$("#updateForm//input[@name=cancella]").bind("click", function() {
+	$("#updateForm input[@name=cancella]").bind("click", function() {
 		if(!confirm("{/literal}{t}Attention!!! you are deleting an item.\nAre you sure that you want to continue?{/t}{literal}")) {
 			return false ;
 		}

@@ -41,7 +41,7 @@ $(document).ready(function(){
 	}) ;
 
 	// Conferma cancellazione
-	$("#updateForm//input[@name=cancella]").bind("click", function() {
+	$("#updateForm input[@name=cancella]").bind("click", function() {
 		if(!confirm("Attenzione!!! operazione potenzialmente dannosa.\nSicuro di voler continuare?")) {
 			return false ;
 		}
@@ -116,6 +116,11 @@ function activePortionsForm(objectType) {
 <h2 class="showHideBlockButton">{t}Long Text{/t}</h2>
 <div class="blockForm" id="fckeditor">
 {include file="../pages/form_longdesc.tpl"}
+</div>
+
+<h2 class="showHideBlockButton">{t}Images of the gallery{/t}</h2>
+<div class="blockForm" id="imgs" style="display:block">
+{include file="../pages/form_multimedia.tpl" multimedia=$multimedia}
 </div>
 
 <div id="divLinkExtern"  style="display: none">

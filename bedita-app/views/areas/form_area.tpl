@@ -27,7 +27,7 @@ $(document).ready(function(){
 
 	$("#updateForm").validate();
 
-	$("#updateForm//input[@name=cancella]").bind("click", function() {
+	$("#updateForm input[@name=cancella]").bind("click", function() {
 		if(!confirm("{/literal}{t}Pay attention!!! the operation is potentially dangerous.\nDo you really want to continue?{/t}{literal}")) {
 			return false ;
 		}
