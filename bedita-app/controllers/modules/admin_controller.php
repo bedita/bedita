@@ -190,12 +190,25 @@ class AdminController extends AppController {
 	 * show system Info
 	 */
 	 public function systemInfo() { 	
+	 	$this->beditaVersion();
 		$this->set('events', $this->EventLog->findAll(NULL, NULL, 'created DESC'));
 	 }
 
+	 private function beditaVersion() {
+	 	$c = Configure::getInstance();
+		if (!isset($c->Bedita['version'])) {
+			$versionFile = ROOT . DS . APP_DIR . DS . 'config' . DS . 'bedita.version.php';
+			if(file_exists($versionFile))
+				require($versionFile);
+			else
+				$config['Bedita.version'] = "--";
+			$c->write($config);
+		}
+	 }
 	 public function deleteEventLog() { 	
 	 	$this->checkWriteModulePermission();
-		$this->EventLog->deleteAll("id > 0");
+	 	$this->beditaVersion();
+	 	$this->EventLog->deleteAll("id > 0");
 		$this->set('events', array());
 	 }
 	 

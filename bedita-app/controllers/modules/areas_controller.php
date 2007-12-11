@@ -63,8 +63,7 @@ class AreasController extends AppController {
 		if($id) {
 			$this->Area->bviorHideFields = array('ObjectType', 'Version', 'Index', 'current') ;
 			if(!($area = $this->Area->findById($id))) {
-				$this->Session->setFlash(sprintf(__("Error loading area: %d", true), $id));
-				return ;		
+				 throw new BeditaException(sprintf(__("Error loading area: %d", true), $id));
 			}
 		}
 		
@@ -185,7 +184,7 @@ class AreasController extends AppController {
 	  *
 	  */
 	 function saveSection() {
-		 	if(empty($this->data)) throw BeditaException(__("No data", true));
+		 	if(empty($this->data)) throw new BeditaException(__("No data", true));
 	 		
 			$new = (empty($this->data['id'])) ? true : false ;
 			

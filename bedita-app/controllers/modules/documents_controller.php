@@ -79,8 +79,7 @@ class DocumentsController extends AppController {
 		if($id) {
 			$this->Document->bviorHideFields = array('Version', 'Index', 'current') ;
 			if(!($obj = $this->Document->findById($id))) {
-				$this->Session->setFlash(sprintf(__("Error loading document: %d", true), $id));
-				return ;		
+				 throw new BeditaException(sprintf(__("Error loading document: %d", true), $id));
 			}
 		}
 		
@@ -179,22 +178,16 @@ class DocumentsController extends AppController {
 	 function delete($id = null) {
 		$this->setup_args(array("id", "integer", &$id)) ;
 		
-	 	try {
-		 	if(empty($id)) throw new BeditaException(__("No data", true));
+	 	if(empty($id)) 
+	 		throw new BeditaException(__("No data", true));
 	 		
-		 	$this->Transaction->begin() ;
+	 	$this->Transaction->begin() ;
 	 	
-		 	// Cancellla i dati
-		 	if(!$this->Document->delete($id)) throw new BeditaException(sprintf(__("Error deleting document: %d", true), $id));
+	 	// Cancellla i dati
+	 	if(!$this->Document->delete($id)) 
+	 		throw new BeditaException(sprintf(__("Error deleting document: %d", true), $id));
 		 	
-		 	$this->Transaction->commit() ;
-	 	} catch (Exception $e) {
-			$this->Session->setFlash($e->getMessage());
-			$this->Transaction->rollback() ;
-				
-			return ;
-	 	}
-	 	
+	 	$this->Transaction->commit() ;
 	 }
 
 	 /**

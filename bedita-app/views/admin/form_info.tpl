@@ -1,5 +1,11 @@
 <div id="containerPage">
 	<form action="{$html->url('/admin/deleteEventLog')}" method="post">
+	<div class="FormPageHeader"><h1>{t}System info{/t}</h1>
+		<ul>
+		<li><b>bedita: {$conf->Bedita.version}</b></li>
+		<li><b>cake:  {$conf->Cake.version}</b></li>
+		</ul>
+	</div>
 	<div class="FormPageHeader"><h1>{t}System events{/t}</h1><input type="submit" value="{t}Delete all events{/t}"/>
 	</div>
 	</form>

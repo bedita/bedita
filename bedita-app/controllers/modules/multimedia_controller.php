@@ -24,7 +24,7 @@ class MultimediaController extends AppController {
 	var $name = 'Multimedia';
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeAuth', 'BeTree', 'Transaction', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
+	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
 	// This controller does not use a model
 	var $uses = array('Stream', 'Image', 'AudioVideo', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Tree') ;
@@ -87,8 +87,7 @@ class MultimediaController extends AppController {
 			
 			$this->{$model}->bviorHideFields = array('Version', 'Index', 'current', 'images', 'multimedia', 'attachments') ;
 			if(!($obj = $this->{$model}->findById($id))) {
-				$this->Session->setFlash(sprintf(__("Error loading object: %d", true), $id));
-				return ;		
+				 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
 			}
 			
 			$imagePath 	= $this->BeFileHandler->path($id) ;
@@ -132,7 +131,7 @@ class MultimediaController extends AppController {
 	 * 
 	 * @param string $filename	Il nome del file da visualizare nel form
 	 */
-	function get_item_form($filename = null) {		
+	function get_item_form($filename = null) {
 		$filename = urldecode($this->params['form']['filename']) ;
 		
 		// Preleva l'id dell'oggetto a partire dal filename
@@ -168,8 +167,7 @@ class MultimediaController extends AppController {
 			
 		$this->{$model}->bviorHideFields = array('Version', 'Index', 'current', 'images', 'multimedia', 'attachments') ;
 		if(!($obj = $this->{$model}->findById($id))) {
-			$this->Session->setFlash(sprintf(__("Error loading object: %d", true), $id));
-			return ;		
+			 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
 		}
 		
 		$imagePath 	= $this->BeFileHandler->path($id) ;
