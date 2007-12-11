@@ -392,6 +392,7 @@ class BeFileHandlerComponent extends Object {
 	 * Preleva il MIME type e le dimensioni da un URL remoto e il nome del file
 	 */
 	private function _getInfoURL($path, &$dati) {
+		
 		if(!(isset($dati['name']) && !empty($dati['name']))) {
 			$dati['name']  = basename($path) ;
 		}
@@ -411,6 +412,7 @@ class BeFileHandlerComponent extends Object {
 				}
 				if(@empty($extension)) return false ;
 				$dati['type']= $this->_mimeByExtension($extension) ;	
+
 			}
 			
 			if(!(isset($dati['type']) && !empty($dati['type']))) {

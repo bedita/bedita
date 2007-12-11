@@ -18,8 +18,8 @@ index			Indice posizionamento obj nell'elenco
 priority		priorita' dell'oggetto 
 cols			numero di colonne
 *}
-{assign var="thumbWidth" 		value=$thumbWidth|default:100}
-{assign var="thumbHeight" 		value=$thumbHeight|default:100}
+{assign var="thumbWidth" 		value=$thumbWidth|default:200}
+{assign var="thumbHeight" 		value=$thumbHeight|default:200}
 {assign var="thumbCache" 		value=$CACHE}
 {assign var="thumbPath"         value=$MEDIA_ROOT}
 {assign var="thumbBaseUrl"      value=$MEDIA_URL}

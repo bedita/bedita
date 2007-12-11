@@ -339,7 +339,7 @@ $config['validate_resorce'] = array(
 	 * Possono essere usati i file che accompagnano l'associazione oppure indicare fiel diversi
 	 * cambiando il path
 	 */
-	'mime.types'	=> dirname(__FILE__).DS."mime.types" ,
-	'magic'			=> dirname(__FILE__).DS."magic" ,
+	'mime.types'	=> dirname(__FILE__)."\\mime.types" ,
+	'magic'			=> dirname(__FILE__)."\\magic" ,
 ) ;
 ?>

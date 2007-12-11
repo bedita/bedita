@@ -410,9 +410,8 @@ class transactionFS {
 	 * @param unknown_type $mode
 	 * @return unknown
 	 */
-	function mkdir($newDir, $mode = 0775) {
+	function mkdir($newDir, $mode = 0777) {
 		if(!mkdir($newDir, $mode)) return false ;
-
 		$oldDir = getcwd() ;
 		if(!chdir($newDir)) return false ;
 		$newDir = getcwd() ;

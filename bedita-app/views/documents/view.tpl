@@ -18,10 +18,17 @@ Pagina d'entrata modulo Documents.
 {$javascript->link("interface")}
 {$javascript->link("jquery.calendar")}
 
+
 <script type="text/javascript">
 <!--
 
-var parents = new Array({section name=i loop=$parents}{$parents[i]},{/section} 0) ;
+{* Avoid Javascript errors when a document have no 'parents' *}
+{if is_array($parents) && count($parents) > 1}
+	var parents = new Array({section name=i loop=$parents}{$parents[i]},{/section} 0) ;
+{else}
+	var parents = new Array() ;
+{/if}
+
 {literal}
 /* ****************************************************
 Albero per selezionare la collocazione della sezione
