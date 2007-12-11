@@ -1,5 +1,6 @@
 {$html->css('module.superadmin')}
 {$javascript->link("interface")}
+{$javascript->link("form")}
 {$javascript->link("jquery.form")}
 {$javascript->link("jquery.cmxforms")}
 {$javascript->link("jquery.metadata")}

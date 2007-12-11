@@ -9,6 +9,10 @@ $.validator.setDefaults({
 		}
 	});
 
+jQuery.validator.addMethod("lettersonly", 
+		function(value, element) { return /^[a-z]+$/i.test(value); },
+		"{t}Letters only please{/t}");
+
 $(document).ready(function() {
 	$("#groupForm").validate(); 
 });
@@ -61,8 +65,8 @@ $(document).ready(function() {
 					{/if}
 					<span class="label"><label id="lgroupname" for="groupname">{t}Name{/t}</label></span>
 					<span class="field">
-						<input type="text" id="groupname" name="data[Group][name]" value="{$group.Group.name|default:''}"
-							class="{literal}{required:true,minLength:6}{/literal}" title="{t 1='6'}Group name is required (at least %1 alphanumerical chars){/t}"/>
+						<input type="text" id="groupname" name="data[Group][name]" value="{$group.Group.name|default:''}" onkeyup="cutBlank(this);"
+							class="{literal}{required:true,lettersonly:true,minLength:6}{/literal}" title="{t 1='6'}Group name is required (at least %1 chars, no white spaces and special chars){/t}"/>
 					</span>
 					<span class="status">&#160;</span>
 					{if isset($group)}
@@ -80,7 +84,7 @@ $(document).ready(function() {
 				</tr>
 			</thead>
 			<tbody>
-				{foreach from=$modules|default:false item=mod}
+			{foreach from=$modules|default:false item=mod}
 			<tr class="rowList" id="tr_{$mod.Module.id}">
 				<td><input type="text" readonly="readonly" value="" maxlength="6" style="height:20px; background-color:{$mod.Module.color}; width:60px"/>
 						&nbsp;<b>{$mod.Module.label}</b>
@@ -96,11 +100,11 @@ $(document).ready(function() {
 						<td>
 							<input type="radio" name="data[ModuleFlags][{$mod.Module.label}]" value="{$conf->BEDITA_PERMS_READ_MODIFY}" 
 									{if ($mod.Module.flag & $conf->BEDITA_PERMS_MODIFY)}checked="checked"{/if} />
-						</td>
-					</tr>
-				{/foreach}
+				</td>
+			</tr>
+			{/foreach}
 			<tr>
-			<td colspan="2">
+			<td colspan="4">
 				<input type="submit" name="save" class="submit" value="{if isset($group)}{t}Modify{/t}{else}{t}Create group{/t}{/if}" />
 			</td> 
 		</tr>

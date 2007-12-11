@@ -3,7 +3,6 @@
 {$javascript->link("interface")}
 {$javascript->link("form")}
 {$javascript->link("jquery.changealert")}
-{$javascript->link("module.admin")}
 <script type="text/javascript">
 <!--
 {literal}

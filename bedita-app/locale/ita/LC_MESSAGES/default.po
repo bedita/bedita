@@ -263,14 +263,17 @@ msgstr "Utilizza un email valido"
 msgid "New password"
 msgstr "Nuova password"
 
-msgid "Password is required (at least %1 alphanumerical chars: %2 special chars and %3 numbers)"
-msgstr "Password obbligatoria (Almento %1 caratteri alfanumerici: %2 caratteri speciali e %3 numerici)"
+msgid "Your password must be at least 6 characters long and contain at least one number"
+msgstr "La password deve essere di almeno 6 caratteri e contenere almeno un numero"
 
 msgid "Confirm password"
 msgstr "Conferma password"
 
 msgid "Passwords should be equal"
 msgstr "Le password devono essere uguali"
+
+msgid "Group name is required (at least %1 chars, no white spaces and special chars)"
+msgstr "Nome gruppo obbligatorio (almeno %1 caratteri, niente spazi e caratteri speciali)"
 
 msgid "Strength"
 msgstr "Sicurezza"

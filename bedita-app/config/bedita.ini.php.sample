@@ -63,7 +63,7 @@ $config['maxNumDaysInactivity'] = 180;
 $config['maxNumDaysValidity'] = 60;
 
 $config['passwdRegex'] = "/^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){6,40}$/";
-$config['passwdRegexMsg'] = "Your password must be at least 6 characters long and contain at least one number and one special character.";
+$config['passwdRegexMsg'] = "Your password must be at least 6 characters long and contain at least one number";
 
 $config['authorizedGroups'] = array('administrator','editor','reader');
 // immutable groups
