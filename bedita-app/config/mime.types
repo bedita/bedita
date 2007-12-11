@@ -10,6 +10,147 @@ image/jpeg			jpeg jpg jpe
 # registry is at <http://www.iana.org/assignments/media-types/>.
 
 # MIME type			Extensions
+image/bmp			bmp
+image/cgm			cgm
+image/g3fax
+image/gif			gif
+image/ief			ief
+image/jpeg			jpeg jpg jpe
+image/naplps
+image/png			png
+image/prs.btif
+image/prs.pti
+image/svg+xml			svg
+image/t38
+image/tiff			tiff tif
+image/tiff-fx
+image/vnd.cns.inf2
+image/vnd.djvu			djvu djv
+image/vnd.dwg
+image/vnd.dxf
+image/vnd.fastbidsheet
+image/vnd.fpx
+image/vnd.fst
+image/vnd.fujixerox.edmics-mmr
+image/vnd.fujixerox.edmics-rlc
+image/vnd.globalgraphics.pgb
+image/vnd.mix
+image/vnd.ms-modi
+image/vnd.net-fpx
+image/vnd.svf
+image/vnd.wap.wbmp		wbmp
+image/vnd.xiff
+image/x-cmu-raster		ras
+image/x-icon			ico
+image/x-portable-anymap		pnm
+image/x-portable-bitmap		pbm
+image/x-portable-graymap	pgm
+image/x-portable-pixmap		ppm
+image/x-rgb			rgb
+image/x-xbitmap			xbm
+image/x-xpixmap			xpm
+image/x-xwindowdump		xwd
+message/delivery-status
+message/disposition-notification
+message/external-body
+message/http
+message/news
+message/partial
+message/rfc822
+message/s-http
+message/sip
+message/sipfrag
+model/iges			igs iges
+model/mesh			msh mesh silo
+model/vnd.dwf
+model/vnd.flatland.3dml
+model/vnd.gdl
+model/vnd.gs-gdl
+model/vnd.gtw
+model/vnd.mts
+model/vnd.parasolid.transmit.binary
+model/vnd.parasolid.transmit.text
+model/vnd.vtu
+model/vrml			wrl vrml
+multipart/alternative
+multipart/appledouble
+multipart/byteranges
+multipart/digest
+multipart/encrypted
+multipart/form-data
+multipart/header-set
+multipart/mixed
+multipart/parallel
+multipart/related
+multipart/report
+multipart/signed
+multipart/voice-message
+text/calendar			ics ifb
+text/css			css
+text/directory
+text/enriched
+text/html			html htm
+text/parityfec
+text/plain			asc txt
+text/prs.lines.tag
+text/rfc822-headers
+text/richtext			rtx
+text/rtf			rtf
+text/sgml			sgml sgm
+text/t140
+text/tab-separated-values	tsv
+text/uri-list
+text/vnd.abc
+text/vnd.curl
+text/vnd.dmclientscript
+text/vnd.fly
+text/vnd.fmi.flexstor
+text/vnd.in3d.3dml
+text/vnd.in3d.spot
+text/vnd.iptc.nitf
+text/vnd.iptc.newsml
+text/vnd.latex-z
+text/vnd.motorola.reflex
+text/vnd.ms-mediapackage
+text/vnd.net2phone.commcenter.command
+text/vnd.sun.j2me.app-descriptor
+text/vnd.wap.si
+text/vnd.wap.sl
+text/vnd.wap.wml		wml
+text/vnd.wap.wmlscript		wmls
+text/x-setext			etx
+text/xml
+text/xml-external-parsed-entity
+video/bmpeg
+video/bt656
+video/celb
+video/dv
+video/h261
+video/h263
+video/h263-1998
+video/h263-2000
+video/jpeg
+video/mp1s
+video/mp2p
+video/mp2t
+video/mp4v-es
+video/mpv
+video/mpeg			mpeg mpg mpe
+video/nv
+video/parityfec
+video/pointer
+video/quicktime			qt mov
+video/smpte292m
+video/vnd.fvt
+video/vnd.motorola.video
+video/vnd.motorola.videop
+video/vnd.mpegurl		mxu m4u
+video/vnd.nokia.interleaved-multimedia
+video/vnd.objectvideo
+video/vnd.vivo
+video/x-msvideo			avi
+video/x-sgi-movie		movie
+x-conference/x-cooltalk		ice
 application/activemessage
 application/andrew-inset	ez
 application/applefile
@@ -450,144 +591,3 @@ application/vnd.rn-realmedia	rm
 audio/x-wav			wav
 chemical/x-pdb			pdb
 chemical/x-xyz			xyz
-image/bmp			bmp
-image/cgm			cgm
-image/g3fax
-image/gif			gif
-image/ief			ief
-image/jpeg			jpeg jpg jpe
-image/naplps
-image/png			png
-image/prs.btif
-image/prs.pti
-image/svg+xml			svg
-image/t38
-image/tiff			tiff tif
-image/tiff-fx
-image/vnd.cns.inf2
-image/vnd.djvu			djvu djv
-image/vnd.dwg
-image/vnd.dxf
-image/vnd.fastbidsheet
-image/vnd.fpx
-image/vnd.fst
-image/vnd.fujixerox.edmics-mmr
-image/vnd.fujixerox.edmics-rlc
-image/vnd.globalgraphics.pgb
-image/vnd.mix
-image/vnd.ms-modi
-image/vnd.net-fpx
-image/vnd.svf
-image/vnd.wap.wbmp		wbmp
-image/vnd.xiff
-image/x-cmu-raster		ras
-image/x-icon			ico
-image/x-portable-anymap		pnm
-image/x-portable-bitmap		pbm
-image/x-portable-graymap	pgm
-image/x-portable-pixmap		ppm
-image/x-rgb			rgb
-image/x-xbitmap			xbm
-image/x-xpixmap			xpm
-image/x-xwindowdump		xwd
-message/delivery-status
-message/disposition-notification
-message/external-body
-message/http
-message/news
-message/partial
-message/rfc822
-message/s-http
-message/sip
-message/sipfrag
-model/iges			igs iges
-model/mesh			msh mesh silo
-model/vnd.dwf
-model/vnd.flatland.3dml
-model/vnd.gdl
-model/vnd.gs-gdl
-model/vnd.gtw
-model/vnd.mts
-model/vnd.parasolid.transmit.binary
-model/vnd.parasolid.transmit.text
-model/vnd.vtu
-model/vrml			wrl vrml
-multipart/alternative
-multipart/appledouble
-multipart/byteranges
-multipart/digest
-multipart/encrypted
-multipart/form-data
-multipart/header-set
-multipart/mixed
-multipart/parallel
-multipart/related
-multipart/report
-multipart/signed
-multipart/voice-message
-text/calendar			ics ifb
-text/css			css
-text/directory
-text/enriched
-text/html			html htm
-text/parityfec
-text/plain			asc txt
-text/prs.lines.tag
-text/rfc822-headers
-text/richtext			rtx
-text/rtf			rtf
-text/sgml			sgml sgm
-text/t140
-text/tab-separated-values	tsv
-text/uri-list
-text/vnd.abc
-text/vnd.curl
-text/vnd.dmclientscript
-text/vnd.fly
-text/vnd.fmi.flexstor
-text/vnd.in3d.3dml
-text/vnd.in3d.spot
-text/vnd.iptc.nitf
-text/vnd.iptc.newsml
-text/vnd.latex-z
-text/vnd.motorola.reflex
-text/vnd.ms-mediapackage
-text/vnd.net2phone.commcenter.command
-text/vnd.sun.j2me.app-descriptor
-text/vnd.wap.si
-text/vnd.wap.sl
-text/vnd.wap.wml		wml
-text/vnd.wap.wmlscript		wmls
-text/x-setext			etx
-text/xml
-text/xml-external-parsed-entity
-video/bmpeg
-video/bt656
-video/celb
-video/dv
-video/h261
-video/h263
-video/h263-1998
-video/h263-2000
-video/jpeg
-video/mp1s
-video/mp2p
-video/mp2t
-video/mp4v-es
-video/mpv
-video/mpeg			mpeg mpg mpe
-video/nv
-video/parityfec
-video/pointer
-video/quicktime			qt mov
-video/smpte292m
-video/vnd.fvt
-video/vnd.motorola.video
-video/vnd.motorola.videop
-video/vnd.mpegurl		mxu m4u
-video/vnd.nokia.interleaved-multimedia
-video/vnd.objectvideo
-video/vnd.vivo
-video/x-msvideo			avi
-video/x-sgi-movie		movie
-x-conference/x-cooltalk		ice

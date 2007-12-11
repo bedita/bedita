@@ -6,7 +6,7 @@ class FilesController extends AppController {
 	var $components = array('Transaction', 'SwfUpload', 'BeUploadToObj');
 
 	function upload () {
-//		fwrite(fopen("/tmp/out.txt", "w+"), print_r(serialize($_POST), true) . "\n\n" . print_r(serialize($_FILES), true)) ;
+//		fwrite(fopen("/tmp/out.txt", "w+"), print_r(($_POST), true) . "\n\n" . print_r(($_FILES), true)) ;
 
 //$errorCode = 500 + BeUploadToObjComponent::BEDITA_FILE_EXISIST ;
 //header("HTTP/1.0 $errorCode Internal Server Error");
@@ -37,7 +37,7 @@ class FilesController extends AppController {
 	function deleteFile() {
 // fwrite(fopen("/tmp/out.txt", "w+"), print_r($_POST, true) . "\n\n" . print_r(serialize($_POST), true)) ;
 // return ;
- fwrite(fopen("/tmp/out.txt", "w+"), print_r($this->params['form'], true) . "\n\n") ;
+ //fwrite(fopen("/tmp/out.txt", "w+"), print_r($this->params['form'], true) . "\n\n") ;
 
  		if(!isset($this->params['form']['filename'])) throw new BeditaException(sprintf(__("No data", true), $id));
 		

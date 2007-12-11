@@ -392,15 +392,24 @@ class BeFileHandlerComponent extends Object {
 	 * Preleva il MIME type e le dimensioni da un URL remoto e il nome del file
 	 */
 	private function _getInfoURL($path, &$dati) {
+		if(!(isset($dati['name']) && !empty($dati['name']))) {
+			$dati['name']  = basename($path) ;
+		}
+		
 		/**
 		 * Preleva il MIME type
 		 */
-		if(!(isset($dati['type']) && !empty($dati['type']))) {
+		if(!(isset($dati['type']) && !empty($dati['type']))) {			
 			// Cerca tramite l'estensione del path
 			$dati['type']= $this->_mimeByFInfo($path) ;
-
+			
 			if(!(isset($dati['type']) && !empty($dati['type']))) {
-				$extension = pathinfo(parse_url($path, PHP_URL_PATH), PATHINFO_EXTENSION);
+				if(!@empty($dati['name'])) {
+					$extension = pathinfo($dati['name'], PATHINFO_EXTENSION);
+				} else {
+					$extension = pathinfo(parse_url($path, PHP_URL_PATH), PATHINFO_EXTENSION);
+				}
+				if(@empty($extension)) return false ;
 				$dati['type']= $this->_mimeByExtension($extension) ;	
 			}
 			
@@ -416,10 +425,6 @@ class BeFileHandlerComponent extends Object {
 			if(($info = @stat($path))) {
 				$dati['size'] = $info[7] ;
 			}
-		}
-		
-		if(!(isset($dati['name']) && !empty($dati['name']))) {
-			$dati['name']  = basename($path) ;
 		}
 		
 		return $dati['type'] ;
@@ -518,7 +523,7 @@ class BeFileHandlerComponent extends Object {
   		$lines = file($conf->validate_resorce['mime.types']) ;
     	foreach($lines as $line) {
       		if(preg_match('/^([^#]\S+)\s+.*'.$ext.'.*$/',$line,$m)) {
-        		return $m[1];
+      			return $m[1];
       		}
     	}
     	return false ;
@@ -526,9 +531,9 @@ class BeFileHandlerComponent extends Object {
 
   	private function _mimeByFInfo($file) {
   		if(!function_exists("finfo_open")) return false ;
-
+		
   		$conf 	= Configure::getInstance() ;
-		$finfo 	= finfo_open(FILEINFO_MIME, $conf->validate_resorce['magic']); // return mime type alla mimetype extension
+  		$finfo 	= finfo_open(FILEINFO_MIME, $conf->validate_resorce['magic']); // return mime type alla mimetype extension
 		if (!$finfo) return false ;
 				
 		$mime = finfo_file($finfo, $file);
