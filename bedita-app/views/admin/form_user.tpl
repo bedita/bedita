@@ -64,9 +64,9 @@ jQuery.validator.addMethod("phone", function(value, element) {
 }, "Must be XXX-XXX-XXXX");
 */
 	jQuery.validator.addMethod(
-		"lettersonly",
-		function(value, element) { return /^[a-z]+$/i.test(value); },
-		"{/literal}{t}Letters only please{/t}{literal}");
+		"lettersnumbersonly",
+		function(value, element) { return /^[a-z0-9]+$/i.test(value); },
+		"{/literal}{t}Letters or numbers only please{/t}{literal}");
 	jQuery.validator.addMethod(
 		"password", 
 		function( value, element, param ) {return this.optional(element) || {/literal}{$conf->passwdRegex}{literal}.test(value);}, 
@@ -100,7 +100,7 @@ jQuery.validator.addMethod("phone", function(value, element) {
 			</td>
 			<td class="field">
 				<input type="text" id="username" name="data[User][userid]" value="{$user.User.userid}" onkeyup="cutBlank(this);" 
-					class="{literal}{required:true,lettersonly:true,minLength:6}{/literal}" title="{t 1='6'}User name is required (at least %1 chars, without white spaces and special chars){/t}"/>&nbsp;</td>
+					class="{literal}{required:true,lettersnumbersonly:true,minLength:6}{/literal}" title="{t 1='6'}User name is required (at least %1 chars, without white spaces and special chars){/t}"/>&nbsp;</td>
 			<td class="status">&#160;</td>
 		</tr>
 		<tr>

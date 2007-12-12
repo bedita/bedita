@@ -8,11 +8,10 @@ $.validator.setDefaults({
 		label.html("&nbsp;").addClass("checked");
 		}
 	});
-
-jQuery.validator.addMethod("lettersonly", 
-		function(value, element) { return /^[a-z]+$/i.test(value); },
-		"{t}Letters only please{/t}");
-
+jQuery.validator.addMethod(
+		"lettersnumbersonly",
+		function(value, element) { return /^[a-z0-9]+$/i.test(value); },
+		"{/literal}{t}Letters or numbers only please{/t}{literal}");
 $(document).ready(function() {
 	$("#groupForm").validate(); 
 });
@@ -66,7 +65,7 @@ $(document).ready(function() {
 					<span class="label"><label id="lgroupname" for="groupname">{t}Name{/t}</label></span>
 					<span class="field">
 						<input type="text" id="groupname" name="data[Group][name]" value="{$group.Group.name|default:''}" onkeyup="cutBlank(this);"
-							class="{literal}{required:true,lettersonly:true,minLength:6}{/literal}" title="{t 1='6'}Group name is required (at least %1 chars, no white spaces and special chars){/t}"/>
+							class="{literal}{required:true,lettersnumbersonly:true,minLength:6}{/literal}" title="{t 1='6'}Group name is required (at least %1 chars, no white spaces and special chars){/t}"/>
 					</span>
 					<span class="status">&#160;</span>
 					{if isset($group)}
