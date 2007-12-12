@@ -46,8 +46,8 @@ class GalleriesController extends AppController {
 		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]);
 		$this->BeLangText->setupForSave($this->data["LangText"]);
 		
-		$images = (isset($this->data['images']))?$this->data['images']:array() ;
-		unset($this->data['images']);
+		$multimedia = (isset($this->data['multimedia']))?$this->data['multimedia']:array() ;
+		unset($this->data['multimedia']);
 		
 		$this->Transaction->begin();
 		
@@ -67,8 +67,8 @@ class GalleriesController extends AppController {
 		// Inserisce gli oggetti multimediali selezionati, cancellando le precedenti associazioni
 		if(!$this->Gallery->removeChildren()) throw new BeditaException( __("Remove children", true));
 		
-		for($i=0; $i < count($images) ; $i++) {
-			if(!$this->Gallery->appendChild($images[$i]['id'],null,$images[$i]['priority'])) {
+		for($i=0; $i < count($multimedia) ; $i++) {
+			if(!$this->Gallery->appendChild($multimedia[$i]['id'],null,$multimedia[$i]['priority'])) {
 				throw new BeditaException( __("Append child", true));
 			}
 		}
@@ -131,9 +131,9 @@ class GalleriesController extends AppController {
 			// Preleva i contentuti della galleria
 			$types = array($conf->objectTypes['image'], $conf->objectTypes['audio'], $conf->objectTypes['video']) ;
 			$children = $this->BeTree->getChildren($id, null, $types, "priority") ;
-			$imagesForGallery = &$children['items'] ;
+			$objForGallery = &$children['items'] ;
 			
-			foreach($imagesForGallery as $index => $object) {
+			foreach($objForGallery as $index => $object) {
 				$type = $conf->objectTypeModels[$object['object_type_id']] ;
 			
 				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments');

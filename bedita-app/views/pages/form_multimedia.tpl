@@ -2,6 +2,11 @@
 params:		
 multimedia		elenco oggetti associati ad un oggetto o all'interno di una galleria
 *}
+{php}
+$vs = &$this->get_template_vars() ;
+$vs['empty'] = array() ;
+{/php}
+
 <script type="text/javascript">
 var URLGetObjMultimedia 	= '{$html->url('/multimedia/get_item_form')}' ;
 var URLGetObjMultimediaId 	= '{$html->url('/multimedia/get_item_form_by_id')}' ;
@@ -31,7 +36,9 @@ function commitUploadImage(files) {
 		$("<div></div>").load(URLGetObjMultimedia, {'filename': filename, 'priority':priority, 'index':index, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
 			$("#containerMultimedia").append(this) ; 
 			
-			setupDragDropItem(this) ;
+			$(".imageBox", this).each(function() {
+				setupDragDropItem(this) ;				
+			}) ;
 
 			counter-- ;
 			if(!counter)  {
@@ -71,7 +78,10 @@ function commitUploadImageById(IDs) {
 		$("<div></div>").load(URLGetObjMultimediaId, {'id': id, 'priority':priority, 'index':index, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
 			$("#containerMultimedia").append(this) ; 
 			
-			setupDragDropItem(this) ;
+			$(".imageBox", this).each(function() {
+				setupDragDropItem(this) ;				
+			}) ;
+			
 			
 			counter-- ;
 			if(!counter)  {
@@ -109,8 +119,8 @@ function removeItemMultimedia(DivId) {
 function reorderListMultimendia() {
 	$(".imageBox").each(function (index) {
 		$("input[@name='index']", this).attr("value", index) ;
-		$(".id", this).attr("name", "data[images]["+index+"][id]") ;
-		$(".priority", this).attr("name", "data[images]["+index+"][priority]") ;
+		$(".id", this).attr("name", "data[multimedia]["+index+"][id]") ;
+		$(".priority", this).attr("name", "data[multimedia]["+index+"][priority]") ;
 		$(".priority", this).attr("value", index+1) ;
 	}) ;
 }
@@ -177,7 +187,7 @@ var cols 		= 5 ;
 
 {assign var="newPriority" 	value=1}
 {assign var="index" 		value=0}
-{foreach key=index item=obj from=$multimedia}
+{foreach key=index item=obj from=$multimedia|default:$empty}
 	{include file="../pages/item_form_multimedia.tpl" 
 		obj			= $obj
 		CACHE		= $CACHE

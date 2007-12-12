@@ -108,6 +108,10 @@ class DocumentsController extends AppController {
 		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) )) ;
 		$this->set('self',		($this->createSelfURL(false)."?")) ;
 		$this->set('conf',		$conf) ;
+		$this->set('CACHE',		'imgcache/');
+		$this->set('MEDIA_URL',	MEDIA_URL);
+		$this->set('MEDIA_ROOT',MEDIA_ROOT);
+		
 	 }
 
 	 /**

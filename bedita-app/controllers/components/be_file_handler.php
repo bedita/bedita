@@ -91,7 +91,7 @@ class BeFileHandlerComponent extends Object {
 	 * 
 	 * @return integer o false l'id dell'oggetto creato o salvato
 	 */
-	function save(&$dati, $model = null) {
+	function save(&$dati, $model = null) {		
 		if(isset($dati['id']) && !empty($dati['id'])) {
 			// Modifica
 			if(!isset($dati['path']) || @empty($dati['path'])) {
@@ -241,7 +241,7 @@ class BeFileHandlerComponent extends Object {
 	private function _create(&$dati, $model = null) {
 		// Crea
 		$model = false ;
-
+		
 		switch($this->_getTypeFromMIME($dati['type'], $model)) {
 			case 'BEFile':		$model = 'BEFile' ; break ;
 			case 'Image':		$model = 'Image' ; break ;
@@ -392,8 +392,7 @@ class BeFileHandlerComponent extends Object {
 	/**
 	 * Preleva il MIME type e le dimensioni da un URL remoto e il nome del file
 	 */
-	private function _getInfoURL($path, &$dati) {
-		
+	private function _getInfoURL($path, &$dati) {		
 		if(!(isset($dati['name']) && !empty($dati['name']))) {
 			$dati['name']  = basename($path) ;
 		}
@@ -410,9 +409,9 @@ class BeFileHandlerComponent extends Object {
 					$extension = pathinfo($dati['name'], PATHINFO_EXTENSION);
 				} else {
 					$extension = pathinfo(parse_url($path, PHP_URL_PATH), PATHINFO_EXTENSION);
-				}
+				}					
 				if(@empty($extension)) return false ;
-				$dati['type']= $this->_mimeByExtension($extension) ;	
+				$dati['type']= $this->_mimeByExtension($extension) ;						
 
 			}
 			
@@ -522,7 +521,7 @@ class BeFileHandlerComponent extends Object {
 	
   	private function _mimeByExtension($ext) {
   		$conf 		= Configure::getInstance() ;
-		
+			
   		$lines = file($conf->validate_resorce['mime.types']) ;
     	foreach($lines as $line) {
       		if(preg_match('/^([^#]\S+)\s+.*'.$ext.'.*$/',$line,$m)) {

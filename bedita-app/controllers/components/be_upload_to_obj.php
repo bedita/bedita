@@ -87,7 +87,7 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 		unset($data['tmp_name']) ;
 		unset($data['error']) ;
 		
-		// FLASH come MIME type torna sempre application/octect-stream
+		// FLASH come MIME type torna sempre application/octect-stream		
 		if($data['type'] == "application/octet-stream") { 
 			$old  = $data['type'] ;
 			unset($data['type']) ;

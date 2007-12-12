@@ -6,6 +6,8 @@ Pagina d'entrata modulo Documents.
 {$html->css('tree')}
 {$html->css('module.documents')}
 {$html->css("jquery.calendar")}
+{$html->css("jquery.thickbox")}
+
 {if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
 {$javascript->link("form")}
 {$javascript->link("jquery.treeview")}
@@ -17,7 +19,7 @@ Pagina d'entrata modulo Documents.
 {$javascript->link("module.documents")}
 {$javascript->link("interface")}
 {$javascript->link("jquery.calendar")}
-
+{$javascript->link("jquery.thickbox")}
 
 <script type="text/javascript">
 <!--

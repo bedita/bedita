@@ -42,7 +42,8 @@ function closeEsc() {
 
 $(document).ready(function(){
 	$(".selMultimedia").bind("click", function(){
-		$("../..//input[@type='checkbox']", this).get(0).checked = !$("../..//input[@type='checkbox']", this).get(0).checked ;
+		var check = $("input:checkbox",$(this).parent().parent()).get(0).checked ;
+		$("input:checkbox",$(this).parent().parent()).get(0).checked = !check ;
 	}) ;
 
 });

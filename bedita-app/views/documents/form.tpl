@@ -120,7 +120,7 @@ function activePortionsForm(objectType) {
 
 <h2 class="showHideBlockButton">{t}Images of the gallery{/t}</h2>
 <div class="blockForm" id="imgs" style="display:block">
-{include file="../pages/form_multimedia.tpl" multimedia=$multimedia}
+{include file="../pages/form_multimedia.tpl" multimedia=$object.multimedia}
 </div>
 
 <div id="divLinkExtern"  style="display: none">
