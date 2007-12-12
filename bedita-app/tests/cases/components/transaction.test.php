@@ -30,7 +30,7 @@ class TransactionTestCase extends CakeTestCase {
  							
  							'ContentBase', 'ViewImage', 'Content', 'BaseDocument', 
  							'Document', 'Event', 'Question', 'Answer',
- 							'BEFile', 'Image', 'AudioVideo',
+ 							'BEFile', 'Image', 'Audio', 'Video',
  							'Comment', 'Book', 'Author', 'ShortNews',
  							'Bibliography', 'FaqQuestion', 'BiblioItem', 'ObjectUser'
  	) ;

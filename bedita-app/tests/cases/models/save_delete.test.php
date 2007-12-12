@@ -30,7 +30,7 @@ class SaveDeleteTestCase extends CakeTestCase {
  							
  							'ContentBase', 'ViewImage', 'Content', 'BaseDocument', 
  							'Document', 'Event', 'Question', 'Answer',
- 							'BEFile', 'Image', 'AudioVideo',
+ 							'BEFile', 'Image', 'Audio','Video',
  							'Comment', 'Book', 'Author', 'ShortNews',
  							'Bibliography', 'FaqQuestion', 'BiblioItem', 'ObjectUser',
  							'Tree', 'Gallery'
@@ -205,17 +205,27 @@ class SaveDeleteTestCase extends CakeTestCase {
 		
 		$this->assertEqual($numRecordBegin,$numRecordEnd);
 	} 
-
-	function testInsertAudioVideo() {
-		$numRecordBegin = $this->_getNumRecordsTable($this->AudioVideo) ; 
+*/
+	function testInsertAudio() {
+		$numRecordBegin = $this->_getNumRecordsTable($this->Audio) ; 
 		
-		$this->_insertDelete($this->AudioVideo, $this->data['file']) ;
+		$this->_insertDelete($this->Audio, $this->data['file']) ;
 		
-		$numRecordEnd = $this->_getNumRecordsTable($this->AudioVideo) ; 
+		$numRecordEnd = $this->_getNumRecordsTable($this->Audio) ; 
 		
 		$this->assertEqual($numRecordBegin,$numRecordEnd);
 	} 
 
+	function testInsertVideo() {
+		$numRecordBegin = $this->_getNumRecordsTable($this->Audio) ; 
+		
+		$this->_insertDelete($this->Video, $this->data['file']) ;
+		
+		$numRecordEnd = $this->_getNumRecordsTable($this->Video) ; 
+		
+		$this->assertEqual($numRecordBegin,$numRecordEnd);
+	} 
+/*
 	function testInsertDocumentAndComments() {
 		$numRecordBegin = $this->_getNumRecordsTable($this->Comment) ; 
 		

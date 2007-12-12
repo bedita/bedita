@@ -17,7 +17,7 @@
 /**
  * Short description for class.
  *
- * Controller entrata modulo Multimedia e gestione degli oggetti Image e AudioVideo
+ * Controller entrata modulo Multimedia e gestione degli oggetti Image, Audio, Video
  * 
  */
 class MultimediaController extends AppController {
@@ -27,7 +27,7 @@ class MultimediaController extends AppController {
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
 	// This controller does not use a model
-	var $uses = array('Stream', 'Image', 'AudioVideo', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Tree') ;
+	var $uses = array('Stream', 'Image', 'Audio', 'Video', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Tree') ;
 	protected $moduleName = 'multimedia';
 	
 	 /**
@@ -51,7 +51,7 @@ class MultimediaController extends AppController {
 		$tree = $this->BeTree->expandOneBranch($id) ;
 		
 		$ot = &$conf->objectTypes ; 
-		$multimedia = $this->BeTree->getDiscendents($id, null, array($ot['image'], $ot['audiovideo']), $order, $dir, $page, $dim)  ;
+		$multimedia = $this->BeTree->getDiscendents($id, null, array($ot['image'], $ot['audio'], $ot['video']), $order, $dir, $page, $dim)  ;
 		$this->params['toolbar'] = &$documents['toolbar'] ;
 		
 		// Setup dei dati da passare al template
@@ -85,7 +85,7 @@ class MultimediaController extends AppController {
 			$this->BEObject->recursive = $rec ;
 			$model = $conf->objectTypeModels[$ret['Object']['object_type_id']] ;
 			
-			$this->{$model}->bviorHideFields = array('Version', 'Index', 'current', 'images', 'multimedia', 'attachments') ;
+			$this->{$model}->bviorHideFields = array('Version', 'Index', 'current', 'multimedia', 'attachments') ;
 			if(!($obj = $this->{$model}->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
 			}
@@ -214,7 +214,7 @@ class MultimediaController extends AppController {
 		) ;
 		
 		$ot = &$conf->objectTypes ; 
-		$multimedia = $this->BeTree->getDiscendents(null, null, array($ot['image'], $ot['audiovideo']), $order, $dir, $page, $dim)  ;
+		$multimedia = $this->BeTree->getDiscendents(null, null, array($ot['image'], $ot['audio'], $ot['video']), $order, $dir, $page, $dim)  ;
 		for($i=0; $i < count($multimedia['items']) ; $i++) {
 			$id = $multimedia['items'][$i]['id'] ;
 			$ret = $this->Stream->findById($id) ;

@@ -18,7 +18,7 @@ class GalleriesController extends AppController {
 	var $name = 'Galleries';
 	var $helpers 	= array('Beurl', 'BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
-	var $uses = array('Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Gallery', 'Tree', 'Image', 'AudioVideo');
+	var $uses = array('Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Gallery', 'Tree', 'Image', 'Audio', 'Video');
 	protected $moduleName = 'galleries';
 	
 	/**
@@ -129,7 +129,7 @@ class GalleriesController extends AppController {
 			}
 			
 			// Preleva i contentuti della galleria
-			$types = array($conf->objectTypes['image'], $conf->objectTypes['audiovideo']) ;
+			$types = array($conf->objectTypes['image'], $conf->objectTypes['audio'], $conf->objectTypes['video']) ;
 			$children = $this->BeTree->getChildren($id, null, $types, "priority") ;
 			$imagesForGallery = &$children['items'] ;
 			

@@ -100,7 +100,7 @@ class DocumentsController extends AppController {
 		} else {
 			$parents_id = array();
 		}
-
+		
 		// Setup dei dati da passare al template
 		$this->set('object',	$obj);
 		$this->set('tree', 		$tree);

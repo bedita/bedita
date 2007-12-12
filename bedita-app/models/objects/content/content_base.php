@@ -40,18 +40,6 @@ class ContentBase extends BEAppModel
 //					'conditions'			=> "switch ='LANGS'",
 					'switch'				=> "LANGS",
 				),
-			'images' =>
-				array(
-					'className'				=> 'ViewImage',
-					'joinTable'    			=> 'content_bases_objects',
-					'foreignKey'   			=> 'id',
-					'associationForeignKey'	=> 'object_id',
-					'unique'				=> true,
-//					'fields'				=> 'images.id, images.status',
-//					'conditions'			=> "ContentBasesObject.switch ='IMGS'",
-					'conditions'			=> "switch ='IMGS'",
-					'switch'				=> "IMGS",
-				),
 				
 			'multimedia' =>
 				array(

@@ -35,7 +35,7 @@
  */
 class BeFileHandlerComponent extends Object {
 
-	var $uses 		= array('BEObject', 'Stream', 'BEFile', 'Image', 'AudioVideo') ;
+	var $uses 		= array('BEObject', 'Stream', 'BEFile', 'Image', 'Audio', 'Video') ;
 	var $components = array('Transaction');
 	var $paranoid 	= true ;
 	
@@ -245,7 +245,8 @@ class BeFileHandlerComponent extends Object {
 		switch($this->_getTypeFromMIME($dati['type'], $model)) {
 			case 'BEFile':		$model = 'BEFile' ; break ;
 			case 'Image':		$model = 'Image' ; break ;
-			case 'AudioVideo':	$model = 'AudioVideo' ; break ;
+			case 'Audio':		$model = 'Audio' ; break ;
+			case 'Video':		$model = 'Video' ; break ;
 			default:
 				throw new BEditaMIMEException($this->controller) ;
 		}

@@ -28,18 +28,6 @@ class Content extends BEAppModel
 	var $name 		= 'Content';
 
 	var $belongsTo = array(
-		'Image' =>
-			array(
-				'className'		=> 'ViewImage',
-				'foreignKey'	=> 'image_id',
-				'conditions'	=> ''
-			),
-		'AudioVideo' =>
-			array(
-				'className'		=> 'ViewMultimedia',
-				'foreignKey'	=> 'audio_video_id',
-				'conditions'	=> ''
-			),
 	) ;
 
 	var $hasAndBelongsToMany = array(

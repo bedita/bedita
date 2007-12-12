@@ -22,10 +22,11 @@
  * 		
  * 						
 */
-class AudioVideo extends BEAppObjectModel
+class Video extends BEAppObjectModel
 {
-	var $name 		= 'AudioVideo';
+	var $name 		= 'Video';
 	var $recursive 	= 2 ;
+	var $useTable 	= 'video' ;
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'CreateIndexFields'		=> array(),
