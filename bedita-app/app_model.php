@@ -38,7 +38,9 @@
  * @subpackage	cake.cake
  */
 class AppModel extends Model{
-	
+	// choose database to use (defined in config/database.php,
+	// if undefined defaults to $default
+	// var $useDbConfig = 'test';
 }
 
 require_once(APP . 'models'. DS . 'BEAppModel.php') ;
