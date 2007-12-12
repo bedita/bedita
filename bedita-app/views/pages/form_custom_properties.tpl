@@ -32,8 +32,8 @@ var htmlTemplateCustomProp = '<tr>'
 + "<\/tr>";
 
 function addCustomPropTR() {
-	var name 	= $.trim($("#addCustomPropTR TD/input[@name=name]").fieldValue()[0].replace(/[^_a-z0-9]/g, ""));	
-	var value 	= $.trim($("#addCustomPropTR TD/input[@name=value]").fieldValue()[0]) ;
+	var name 	= $.trim($("#addCustomPropTR input[@name=name]").fieldValue()[0].replace(/[^_a-z0-9]/g, ""));	
+	var value 	= $.trim($("#addCustomPropTR input[@name=value]").fieldValue()[0]) ;
 	var type 	= $("#addCustomPropTR TD/select[@name=type]").fieldValue()[0] ;
 	
 	// Se non completa esce
@@ -53,24 +53,24 @@ function addCustomPropTR() {
 	
 	// Setup nomi, id e comandi degli elementi
 	newTR.attr("id", name+postfix_customProp) ;
-	$("TD:nth-child(1)/input", newTR).attr("name", "data[CustomProperties]["+name+"][name]") ;
-	$("TD:nth-child(2)/select", newTR).attr("name", "data[CustomProperties]["+name+"][type]") ;
-	$("TD:nth-child(3)/input", newTR).attr("name", "data[CustomProperties]["+name+"][value]") ;
-	$('TD:nth-child(4)/input[@name=delete]', newTR).bind("click", function (e) { deleteTRCustomProp(this)}) ;
+	$("TD:nth-child(1) input", newTR).attr("name", "data[CustomProperties]["+name+"][name]") ;
+	$("TD:nth-child(2) select", newTR).attr("name", "data[CustomProperties]["+name+"][type]") ;
+	$("TD:nth-child(3) input", newTR).attr("name", "data[CustomProperties]["+name+"][value]") ;
+	$('TD:nth-child(4) input[@name=delete]', newTR).bind("click", function (e) { deleteTRCustomProp(this)}) ;
 	
 	// setup dei valori
-	$("TD:nth-child(1)/input", newTR).attr("value", name) ;
+	$("TD:nth-child(1) input", newTR).attr("value", name) ;
 	$("TD:nth-child(1)", newTR).append(name) ;
-	$("TD:nth-child(3)/input", newTR).attr("value", value) ;
+	$("TD:nth-child(3) input", newTR).attr("value", value) ;
 
-	var options = $("TD:nth-child(2)/select", newTR).get(0).options ;
+	var options = $("TD:nth-child(2) select", newTR).get(0).options ;
 	for(var i = 0 ; i < options.length ; i++) {
 		if(options[i].value == type) options[i].selected = true ; 
 	}
 	
 	// resetta i campi per l'input di una nuova prop
-	$("#addCustomPropTR TD/input[@type=text]").attr("value", "") ;
-	$("#addCustomPropTR TD/select").get(0).options[0].selected = true ;
+	$("#addCustomPropTR input[@type=text]").attr("value", "") ;
+	$("#addCustomPropTR select").get(0).options[0].selected = true ;
 	
 	// Indica l'avvenuto cambiamento dei dati
 	try {

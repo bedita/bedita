@@ -53,11 +53,11 @@ var htmlTemplateCustomPerm = '<tr>'
 + "<\/tr>";
 
 function fncAddPermsTR(id) {
-	var name 		= $.trim($("#"+id+" TD/input[@name=name]").fieldValue()[0].replace(/[^_a-z0-9]/g, ""));
-	var _switch 	= $("#"+id+" TD/input[@name=switch]").fieldValue()[0] ;
-	var read 		= $("#"+id+" TD/input[@name=read]").get(0).checked ;
-	var modify 		= $("#"+id+" TD/input[@name=modify]").get(0).checked ;
-	var _delete 	= $("#"+id+" TD/input[@name=delete]").get(0).checked ;
+	var name 		= $.trim($("#"+id+" TD input[@name=name]").fieldValue()[0].replace(/[^_a-z0-9]/g, ""));
+	var _switch 	= $("#"+id+" TD input[@name=switch]").fieldValue()[0] ;
+	var read 		= $("#"+id+" TD input[@name=read]").get(0).checked ;
+	var modify 		= $("#"+id+" TD input[@name=modify]").get(0).checked ;
+	var _delete 	= $("#"+id+" TD input[@name=delete]").get(0).checked ;
 
 	// Se non completa esce
 	if(!name.length || (!(read || modify || _delete))) {
@@ -70,24 +70,24 @@ function fncAddPermsTR(id) {
 
 	// Setup nomi, id e comandi degli elementi
 	newTR.attr("id", name+postfix_customProp) ;
-	$("TD:nth-child(1)/input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][name]") ;
-	$("TD:nth-child(2)/input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][switch]") ;
-	$("TD:nth-child(3)/input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][BEDITA_PERMS_READ]") ;
-	$("TD:nth-child(4)/input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][BEDITA_PERMS_MODIFY]") ;
-	$("TD:nth-child(5)/input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][BEDITA_PERMS_DELETE]") ;
-	$('TD:nth-child(6)/input[@name=delete]', newTR).bind("click", function (e) { deleteTRPerm(this)}) ;
+	$("TD:nth-child(1) input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][name]") ;
+	$("TD:nth-child(2) input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][switch]") ;
+	$("TD:nth-child(3) input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][BEDITA_PERMS_READ]") ;
+	$("TD:nth-child(4) input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][BEDITA_PERMS_MODIFY]") ;
+	$("TD:nth-child(5) input", newTR).attr("name", "data[Permissions]["+maxIDPerms+"][BEDITA_PERMS_DELETE]") ;
+	$('TD:nth-child(6) input[@name=delete]', newTR).bind("click", function (e) { deleteTRPerm(this)}) ;
 
 	// setup dei valori
-	$("TD:nth-child(1)/input", newTR).attr("value", name) ;
+	$("TD:nth-child(1) input", newTR).attr("value", name) ;
 	$("TD:nth-child(1)", newTR).append(name) ;
-	$("TD:nth-child(2)/input", newTR).attr("value", _switch) ;
+	$("TD:nth-child(2) input", newTR).attr("value", _switch) ;
 	$("TD:nth-child(2)", newTR).append(_switch) ;
-	$("TD:nth-child(3)/input", newTR).get(0).checked = read ;
-	$("TD:nth-child(4)/input", newTR).get(0).checked = modify ;
-	$("TD:nth-child(5)/input", newTR).get(0).checked = _delete ;
+	$("TD:nth-child(3) input", newTR).get(0).checked = read ;
+	$("TD:nth-child(4) input", newTR).get(0).checked = modify ;
+	$("TD:nth-child(5) input", newTR).get(0).checked = _delete ;
 
 	// Resetta i campi
-	$("#"+id+" TD/input").not($("#"+id+" TD/input[@name=switch]")).clearFields() ;
+	$("#"+id+" TD input").not($("#"+id+" TD input[@name=switch]")).clearFields() ;
 
 	// Indica l'avvenuto cambiamento dei dati
 	try {
@@ -206,9 +206,9 @@ function setupFieldAutocomplete() {
 		<input type="hidden" name="data[Permissions][{$i}][BEDITA_PERMS_DELETE]" value="{$conf->BEDITA_PERMS_DELETE}" />
 		</td>
 		<td><input type="hidden" name="data[Permissions][{$i}][switch]" value="{$perm.switch|escape:'quotes'}"/>{$perm.switch}</td>
-		<td><input type="checkbox" disabled="1" name="" value="{$conf->BEDITA_PERMS_READ}" {if ($perm.flag & $conf->BEDITA_PERMS_READ)}{literal}checked="checked"{/literal}{/if}/></td>
-		<td><input type="checkbox" disabled="1" name="" value="{$conf->BEDITA_PERMS_MODIFY}" {if ($perm.flag & $conf->BEDITA_PERMS_MODIFY)}{literal}checked="checked"{/literal}{/if}/></td>
-		<td><input type="checkbox" disabled="1" name="" value="{$conf->BEDITA_PERMS_DELETE}" {if ($perm.flag & $conf->BEDITA_PERMS_DELETE)}{literal}checked="checked"{/literal}{/if}/></td>
+		<td><input type="checkbox" disabled="1" name="permr" value="{$conf->BEDITA_PERMS_READ}" {if ($perm.flag & $conf->BEDITA_PERMS_READ)}{literal}checked="checked"{/literal}{/if}/></td>
+		<td><input type="checkbox" disabled="1" name="permw" value="{$conf->BEDITA_PERMS_MODIFY}" {if ($perm.flag & $conf->BEDITA_PERMS_MODIFY)}{literal}checked="checked"{/literal}{/if}/></td>
+		<td><input type="checkbox" disabled="1" name="permd" value="{$conf->BEDITA_PERMS_DELETE}" {if ($perm.flag & $conf->BEDITA_PERMS_DELETE)}{literal}checked="checked"{/literal}{/if}/></td>
 		<td></td>
 	</tr>	
 	{/if}
