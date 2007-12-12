@@ -118,7 +118,7 @@ function activePortionsForm(objectType) {
 {include file="../pages/form_longdesc.tpl"}
 </div>
 
-<h2 class="showHideBlockButton">{t}Images of the gallery{/t}</h2>
+<h2 class="showHideBlockButton">{t}Images{/t}</h2>
 <div class="blockForm" id="imgs" style="display:block">
 {include file="../pages/form_multimedia.tpl" multimedia=$object.multimedia}
 </div>
