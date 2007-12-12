@@ -12,6 +12,8 @@ SET FOREIGN_KEY_CHECKS=0;
 
 DROP VIEW IF EXISTS `view_files`;
 DROP VIEW IF EXISTS `view_multimedias`;
+DROP VIEW IF EXISTS `view_video`;
+DROP VIEW IF EXISTS `view_audio`;
 DROP VIEW IF EXISTS `view_images`;
 DROP VIEW IF EXISTS `view_communities`;
 DROP VIEW IF EXISTS `view_timelines`;
@@ -42,6 +44,8 @@ DROP TABLE IF EXISTS `typed_object_categories`;
 DROP TABLE IF EXISTS `answers`;
 DROP TABLE IF EXISTS `faq_questions`;
 DROP TABLE IF EXISTS `audio_videos`;
+DROP TABLE IF EXISTS `audio`;
+DROP TABLE IF EXISTS `video`;
 DROP TABLE IF EXISTS `areas`;
 DROP TABLE IF EXISTS `streams`;
 DROP TABLE IF EXISTS `short_news`;
@@ -168,6 +172,7 @@ CREATE TABLE collections (
   create_rules MEDIUMBLOB NULL,
   access_rules MEDIUMBLOB NULL,
   PRIMARY KEY(id),
+  INDEX containers_FKIndex1(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
       ON DELETE CASCADE
@@ -307,6 +312,8 @@ CREATE TABLE permissions (
   switch SET('user','group') NOT NULL,
   flag INTEGER UNSIGNED NULL,
   PRIMARY KEY(`id`),
+  INDEX permissions_FKIndex1(id),
+  INDEX permissions_FKIndex2(id),
   INDEX permissions_FKIndex3(object_id),
   INDEX permissions_FKIndex4(`ugid`, `switch`),
   FOREIGN KEY(object_id)
@@ -393,10 +400,20 @@ CREATE TABLE areas (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE audio_videos (
+CREATE TABLE audio (
   id INTEGER UNSIGNED NOT NULL,
   PRIMARY KEY(id),
-  INDEX audio_videos_FKIndex1(id),
+  INDEX audio_FKIndex1(id),
+  FOREIGN KEY(id)
+    REFERENCES streams(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE video (
+  id INTEGER UNSIGNED NOT NULL,
+  PRIMARY KEY(id),
+  INDEX video_FKIndex1(id),
   FOREIGN KEY(id)
     REFERENCES streams(id)
       ON DELETE CASCADE
@@ -491,31 +508,19 @@ CREATE TABLE authors (
 
 CREATE TABLE contents (
   id INTEGER UNSIGNED NOT NULL,
-  audio_video_id INTEGER UNSIGNED NULL,
-  image_id INTEGER UNSIGNED NULL,
   longDesc MEDIUMTEXT NULL,
   PRIMARY KEY(id),
   INDEX contents_FKIndex1(id),
-  INDEX contents_FKIndex2(audio_video_id),
-  INDEX contents_FKIndex3(image_id),
   FOREIGN KEY(id)
     REFERENCES content_bases(id)
       ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(audio_video_id)
-    REFERENCES audio_videos(id)
-      ON DELETE SET NULL
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(image_id)
-    REFERENCES images(id)
-      ON DELETE SET NULL
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE content_bases_objects (
   object_id INTEGER UNSIGNED NOT NULL,
   id INTEGER UNSIGNED NOT NULL,
-  switch ENUM('LANGS','IMGS','ATTACHS','MULTIMS', 'ALIAS', 'COMMENTS', 'BIBLIOS') NULL,
+  switch ENUM('LANGS','ATTACHS','MULTIMS', 'ALIAS', 'COMMENTS', 'BIBLIOS') NULL,
   priority INTEGER NULL,
   PRIMARY KEY(object_id, id),
   INDEX content_bases_has_objects_FKIndex1(id),
@@ -724,17 +729,32 @@ FROM objects INNER JOIN collections ON objects.id = collections.id AND objects.o
 
 CREATE  VIEW `view_images` AS 
 SELECT 
-streams.*, objects.title, objects.status
+streams.*, objects.title, objects.status, objects.object_type_id
 FROM 
 images INNER JOIN streams ON images.id = streams.id
 INNER JOIN objects ON images.id = objects.id ;
 
-CREATE  VIEW `view_multimedias` AS 
+CREATE  VIEW `view_audio` AS 
 SELECT 
-streams.*, objects.title, objects.status
+streams.*, objects.title, objects.status, objects.object_type_id
 FROM 
-audio_videos INNER JOIN streams ON audio_videos.id = streams.id
-INNER JOIN objects ON audio_videos.id = objects.id ;
+audio INNER JOIN streams ON audio.id = streams.id
+INNER JOIN objects ON audio.id = objects.id ;
+
+CREATE  VIEW `view_video` AS 
+SELECT 
+streams.*, objects.title, objects.status, objects.object_type_id
+FROM 
+video INNER JOIN streams ON video.id = streams.id
+INNER JOIN objects ON video.id = objects.id ;
+
+CREATE  VIEW `view_multimedias` AS 
+SELECT * FROM view_images
+UNION
+SELECT * FROM view_audio
+UNION
+SELECT * FROM view_video ;
+
 
 CREATE  VIEW `view_files` AS 
 SELECT 

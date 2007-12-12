@@ -13,6 +13,8 @@ SET FOREIGN_KEY_CHECKS=0;
 
 DROP VIEW IF EXISTS `view_files`;
 DROP VIEW IF EXISTS `view_multimedias`;
+DROP VIEW IF EXISTS `view_audio`;
+DROP VIEW IF EXISTS `view_video`;
 DROP VIEW IF EXISTS `view_images`;
 DROP VIEW IF EXISTS `view_communities`;
 DROP VIEW IF EXISTS `view_timelines`;
@@ -42,6 +44,8 @@ DROP TABLE IF EXISTS `typed_object_categories`;
 DROP TABLE IF EXISTS `answers`;
 DROP TABLE IF EXISTS `faq_questions`;
 DROP TABLE IF EXISTS `audio_videos`;
+DROP TABLE IF EXISTS `audio`;
+DROP TABLE IF EXISTS `video`;
 DROP TABLE IF EXISTS `areas`;
 DROP TABLE IF EXISTS `streams`;
 DROP TABLE IF EXISTS `short_news`;
