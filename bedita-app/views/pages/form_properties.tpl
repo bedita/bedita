@@ -2,7 +2,7 @@
 	<span style="font-weight:bold;">{t}status{/t}</span>:
 	{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator=" "}
 	<br />
-	{if !(isset($publication) || $publication)}
+	{if !(isset($publication)) || $publication}
 	<span style="font-weight:bold;">{t}publication{/t}. {t}start{/t}:</span>
 	<input type="text" name="data[start]" id="start" value="{if !empty($object.start)}{$object.start|date_format:$conf->date_format}{/if}"/>
 	<span style="font-weight:bold;">{t}end{/t}:</span>
