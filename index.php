@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: index.php 4410 2007-02-02 13:31:21Z phpnut $ */
+/* SVN FILE: $Id: index.php 5811 2007-10-20 06:39:14Z phpnut $ */
 /**
  * Requests collector.
  *
@@ -22,9 +22,9 @@
  * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
  * @package			cake
  * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 4410 $
+ * @version			$Revision: 5811 $
  * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2007-02-02 07:31:21 -0600 (Fri, 02 Feb 2007) $
+ * @lastmodified	$Date: 2007-10-20 01:39:14 -0500 (Sat, 20 Oct 2007) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -35,6 +35,7 @@
 	define('ROOT', dirname(__FILE__));
 	define('WEBROOT_DIR',  'webroot');
 	define('WWW_ROOT', ROOT . DS . APP_DIR . DS . WEBROOT_DIR . DS);
+	
 /**
  * This only needs to be changed if the cake installed libs are located
  * outside of the distributed directory structure.
@@ -52,26 +53,13 @@
 		define('CORE_PATH', CAKE_CORE_INCLUDE_PATH . DS);
 	}
 	require CORE_PATH . 'cake' . DS . 'basics.php';
-	require APP_PATH . 'config' . DS . 'core.php';
+	$TIME_START = getMicrotime();
 	require CORE_PATH . 'cake' . DS . 'config' . DS . 'paths.php';
-	$bootstrap=true;
-	$uri      =setUri();
-/**
- * As mod_rewrite (or .htaccess files) is not working, we need to take care
- * of what would normally be rewritten, i.e. the static files in app/webroot/
- */
-	if ($uri === '/' || $uri === '/index.php') {
-		$_GET['url'] = '/';
-		require APP_DIR . DS . WEBROOT_DIR . DS . 'index.php';
-	} else {
-		$elements=explode('/index.php', $uri);
+	require LIBS . 'object.php';
+	require LIBS . 'inflector.php';
+	require LIBS . 'configure.php';
 
-		if (!empty($elements[1])) {
-			$path = $elements[1];
-		} else {
-			$path = '/';
-		}
-		$_GET['url']=$path;
-		require APP_DIR . DS . WEBROOT_DIR . DS . 'index.php';
-	}
-?>
+	$bootstrap = true;
+	$url = null;
+	require APP_DIR . DS . WEBROOT_DIR . DS . 'index.php';
+?>	
