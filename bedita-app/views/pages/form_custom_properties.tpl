@@ -22,19 +22,20 @@ $(document).ready(function(){
 var htmlTdInputHiddenEmpty = "<td><input type=\"hidden\" name=\"none\"\/><\/td>";
 var htmlOptions="{/literal}{foreach key=key item=item from=$conf->customPropTypeOptions}<option label=\"{$key}\" value=\"{$item}\">{$item}<\/option>{/foreach}{literal}";
 var htmlTdSelect="<td><select name=\"none\">"+htmlOptions+"<\/select><\/td>";
+var htmlTdInputTextEmpty = "<td><input type=\"text\" readonly=\"readonly\" name=\"none\"\/><\/td>";
 var htmlTdSubmit="<td><input type=\"button\" name=\"delete\" value=\" x \"\/><\/td>";
 // Procedura per l'aggiunta di una proprieta'
 var htmlTemplateCustomProp = '<tr>' 
 + htmlTdInputHiddenEmpty
 + htmlTdSelect
-+ htmlTdInputHiddenEmpty
++ htmlTdInputTextEmpty
 + htmlTdSubmit
 + "<\/tr>";
 
 function addCustomPropTR() {
 	var name 	= $.trim($("#addCustomPropTR input[@name=name]").fieldValue()[0].replace(/[^_a-z0-9]/g, ""));	
 	var value 	= $.trim($("#addCustomPropTR input[@name=value]").fieldValue()[0]) ;
-	var type 	= $("#addCustomPropTR TD/select[@name=type]").fieldValue()[0] ;
+	var type 	= $("#addCustomPropTR TD select[@name=type]").fieldValue()[0] ;
 	
 	// Se non completa esce
 	if(!name.length || !value.length) {
@@ -82,7 +83,7 @@ function addCustomPropTR() {
 // Setta i comandi per la gestione delle righe della tabella delle custom properites
 function _setupCustomPropTR(id) {
 	// Definisce il comando per la cancellazione
-	$('#'+id+' TD:last/input[@name=delete]').bind("click", function (e) {
+	$('TD input[@name=delete]').bind("click", function (e) {
 		deleteTRCustomProp(this)
 	}) ;
 }

@@ -31,14 +31,16 @@
 				name="data[title]" value="{$object.title|default:''|escape:'html'|escape:'quotes'}"/>&nbsp;
 		</td>
 		<td class="status">
+		{* commentato temporaneamente: bug da fissare
 		{if ($object)}<input class="cmdField" id="cmdTranslateTitle" type="button" value="lang ..."/>{/if}
+		*}
 		</td>
 	</tr>
 	{if (isset($object.LangText.title))}
 	{foreach name=i from=$object.LangText.title key=lang item=text}
 	<tr>
 		<td class="label">&#160;</td>
-		<td>
+		<td class="field">
 			<input type='hidden' value='title' name="data[LangText][{$smarty.foreach.i.iteration}][name]"/>
 			<input type="text" name="data[LangText][{$smarty.foreach.i.iteration}][txt]" value="{$text|escape:'html'|escape:'quotes'}"/>&nbsp;
 		</td>

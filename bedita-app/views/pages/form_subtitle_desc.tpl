@@ -11,8 +11,12 @@
 	</tr>
 	<tr id="SubTitle_TR_{$object.lang|default:$conf->lang}">
 		<td class="label">{t}Subtitle{/t}:</td>
-		<td class="field"><textarea class="subtitle" name="data[subtitle]" class="subtitle">{$object.subtitle|default:''|escape:'html'}</textarea></td>
-		<td class="status">{if ($object)}<input class="cmdField" id="cmdTranslateSubTitle" type="button" value="lang ..."/>{/if}</td>
+		<td class="field"><textarea class="subtitle" name="data[subtitle]">{$object.subtitle|default:''|escape:'html'}</textarea></td>
+		<td class="status">
+		{* commentato temporaneamente: bug da fissare
+		{if ($object)}<input class="cmdField" id="cmdTranslateSubTitle" type="button" value="lang ..."/>{/if}
+		*}
+		</td>
 	</tr>
 	{if (isset($object.LangText.subtitle))}
 	{foreach name=i from=$object.LangText.subtitle key=lang item=text}
@@ -35,7 +39,11 @@
 	<tr id="ShortDesc_TR_{$object.lang|default:$conf->lang}">
 		<td class="label">{t}Description{/t}:</td>
 		<td class="field"><textarea class="shortdesc" name="data[shortDesc]">{$object.shortDesc|default:''|escape:'html'}</textarea></td>
-		<td class="status">{if ($object)}<input class="cmdField" id="cmdTranslateShortDesc" type="button" value="lang ..."/>{/if}</td>
+		<td class="status">
+		{* commentato temporaneamente: bug da fissare
+		{if ($object)}<input class="cmdField" id="cmdTranslateShortDesc" type="button" value="lang ..."/>{/if}
+		*}
+		</td>
 	</tr>
 	{if (isset($object.LangText.shortDesc))}
 	{foreach name=i from=$object.LangText.shortDesc key=lang item=text}
