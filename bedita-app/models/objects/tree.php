@@ -435,13 +435,13 @@ class Tree extends BEAppModel
 	function getIdFromNickname($nickname, $parent_id = null) {
 		if(isset($parent_id)) {
 			$sql = "SELECT trees.id FROM
-					trees INNER JOIN Objects ON trees.id = Objects.id AND parent_id = {$parent_id}
+					trees INNER JOIN objects ON trees.id = objects.id AND parent_id = {$parent_id}
 					WHERE
 					nickname = '{$nickname}' LIMIT 1
 			" ;
 		} else {
 			$sql = "SELECT trees.* FROM
-					trees INNER JOIN Objects ON trees.id = Objects.id AND parent_id IS NULL 
+					trees INNER JOIN objects ON trees.id = objects.id AND parent_id IS NULL 
 					WHERE
 					nickname = '{$nickname}' LIMIT 1
 			" ;
@@ -508,7 +508,7 @@ class Tree extends BEAppModel
 				$obj = new BEObject() ;
 				
 				if($obj->hasField($order)) {
-					$order = "Objects.{$order}" ;
+					$order = "objects.{$order}" ;
 				}
 			}
 			
