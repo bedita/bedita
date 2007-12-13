@@ -1,8 +1,8 @@
 <!-- inizio blocco upload -->
-<div>
 {$html->css('swfupload')}
 {$javascript->link("swfupload/SWFUpload-src")}
 {$javascript->link("swfupload/callbacks")}
+<div>
 <script type="text/javascript">
 <!--
 
