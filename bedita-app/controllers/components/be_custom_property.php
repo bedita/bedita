@@ -63,7 +63,7 @@ class BeCustomPropertyComponent extends Object {
 		if(!@count($data)) return ;
 		
 		foreach($data as $name => $value) {
-			if(!(isset($value["name"])  && isset($value["type"]) && isset($value["value"]))) continue ;
+//			if(!(isset($value["name"])  && isset($value["type"]) && isset($value["value"]))) continue ;
 			
 			switch($value["type"]) {
 				case "integer" : 	{ settype($value["value"], "integer") ; } break ;
@@ -72,7 +72,7 @@ class BeCustomPropertyComponent extends Object {
 				case "string" :		{ settype($value["value"], "string") ; } break ;
 			}
 			
-			$tmp[$value["name"]] = $value["value"] ;
+			$tmp[$name] = $value["value"] ;
 		}
 		
 		$data = $tmp ;
