@@ -748,11 +748,11 @@ DECLARE prmsU INT DEFAULT 0 ;
 
 SET prmsG = (
 	SELECT DISTINCT
-	(permission_modules.flag & _PRMS) AS perms
+	BIT_AND(permission_modules.flag & _PRMS) AS perms
 	FROM
 	permission_modules
 	WHERE
-	permission_modules.module_id = (SELECT id FROM modules WHERE label = _MDL)
+	permission_modules.module_id = (SELECT id FROM modules WHERE path = _MDL)
 	AND
 	(
 	permission_modules.ugid IN
@@ -778,7 +778,7 @@ SET prmsG  = IF(prmsG IS NULL, 0, prmsG) ;
 
 SET prmsU  = (
 	SELECT DISTINCT
-	(permission_modules.flag & _PRMS) AS perms
+	BIT_AND(permission_modules.flag & _PRMS) AS perms
 	FROM
 	permission_modules
 	WHERE
@@ -791,7 +791,7 @@ SET prmsU  = (
 	AND
 	(permission_modules.flag & _PRMS)
 	AND
-	permission_modules.module_id = (SELECT id FROM modules WHERE label = _MDL)
+	permission_modules.module_id = (SELECT id FROM modules WHERE path = _MDL)
 ) ;
 SET prmsU  = IF(prmsU IS NULL, 0, prmsU) ;
 
@@ -811,11 +811,11 @@ DECLARE prmsG INT DEFAULT 0 ;
 
 SET prmsG = (
 	SELECT DISTINCT
-	(permission_modules.flag & _PRMS) AS perms
+	BIT_AND(permission_modules.flag & _PRMS) AS perms
 	FROM
 	permission_modules
 	WHERE
-	permission_modules.module_id = (SELECT id FROM modules WHERE label = _MDL)
+	permission_modules.module_id = (SELECT id FROM modules WHERE path = _MDL)
 	AND
 	(
 	permission_modules.ugid =
