@@ -48,7 +48,8 @@ class ContentBase extends BEAppModel
 					'foreignKey'   			=> 'id',
 					'associationForeignKey'	=> 'object_id',
 					'unique'				=> true,
-					'fields'				=> 'multimedia.id, multimedia.status',
+					'fields'				=> 'multimedia.id, multimedia.status, multimedia.object_type_id, content_bases_objects.priority',
+					'fields'				=> 'multimedia.id, multimedia.status, multimedia.object_type_id, content_bases_objects.priority',
 //					'conditions'			=> "ContentBasesObject.switch ='MULTIMS'",
 					'switch'				=> "MULTIMS",
 				),
@@ -99,17 +100,18 @@ class ContentBase extends BEAppModel
 		foreach ($this->tempData as $k => $values) {
 			$assoc 	= $this->hasAndBelongsToMany[$k] ;
 			$table 	= $db->name($db->fullTableName($assoc['joinTable']));
-			$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch"  ;
+			$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch, priority"  ;
 			
 			// Cancella le precedenti associazioni
-			$queries[] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND {$assoc['conditions']} " ;
+			$queries[] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND switch = '{$assoc['switch']}' " ;
 			
 			for($i=0; $i < count($values); $i++) {
 				$id 	= $this->id ;
-				$obj_id	= $values[$i]['id'] ;
-				$switch	= $assoc['switch'] ;
+				$obj_id		= $values[$i]['id'] ;
+				$switch		= $assoc['switch'] ;
+				$priority	= isset($assoc['priority']) ? "'{$assoc['priority']}'" : 'NULL' ;
 				
-				$queries[] = "INSERT INTO {$table} ({$fields}) VALUES ({$id}, {$obj_id}, '{$switch}')" ;
+				$queries[] = "INSERT INTO {$table} ({$fields}) VALUES ({$id}, {$obj_id}, '{$switch}', {$priority})" ;
 			}
 		}
 		

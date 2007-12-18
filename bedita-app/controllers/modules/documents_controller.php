@@ -27,7 +27,10 @@ class DocumentsController extends AppController {
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
 	// This controller does not use a model
-	var $uses = array('Stream', 'Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Document', 'Tree') ;
+	var $uses = array(
+		'Stream', 'Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Document', 'Tree',
+		'Image', 'Video', 'Audio'
+		) ;
 	protected $moduleName = 'documents';
 	
 	 /**
@@ -80,6 +83,21 @@ class DocumentsController extends AppController {
 			$this->Document->bviorHideFields = array('Version', 'Index', 'current') ;
 			if(!($obj = $this->Document->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading document: %d", true), $id));
+			}
+			
+			// Se presenti, preleva le immagini del documento
+			for($i=0; $i < @count($obj['multimedia']) ; $i++) {
+				$m = $this->Document->am($obj['multimedia'][$i]) ;
+				
+				$type = $conf->objectTypeModels[$m['object_type_id']] ;
+				
+				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments');
+				if(!($Details = $this->{$type}->findById($m['id']))) continue ;
+
+				$Details['priority'] = $m['priority'];
+				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
+			
+				$obj['multimedia'][$i]= $Details;
 			}
 		}
 		
