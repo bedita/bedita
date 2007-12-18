@@ -51,8 +51,18 @@ Indica a quali elementi va associato il controllo di uscita pagina tramite event
 			
 		this.not($('a',_elementAlert)).bind("click", function(event) { 
 				if(_changed && $('#_hndChkbox', _elementAlert).get(0).checked) {
-					if(!confirm("i cambiamenti fatti andranno perduti.\nVuoi cotinuare?")) {
+					var msg = "" ;
+					try {
+					msg = changeAlertMessage ;
+					} catch(e) {
+						msg = "i cambiamenti fatti andranno perduti.\nVuoi continuare?" ;
+					}
+					if(!confirm(msg)) {
+						try {
+						event.cancelBubble = true ;
 						event.stopPropagation();
+						} catch(e) {}
+						
 						return false ;
 					}
 				}
