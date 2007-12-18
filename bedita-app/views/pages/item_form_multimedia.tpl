@@ -35,8 +35,8 @@ cols			numero di colonne
 		
 	<div id="m_{$obj.id}" class="imageBox">
 		<input type="hidden" class="index" 	name="index" value="{$index}" />
-		<input type="hidden" class="id" 	name="data[multimedia][$index][id]" value="{$obj.id}" />
-		<input type="text" class="priority" name="data[multimedia][$index][priority]" value="{$obj.priority|default:$priority}" size="3" maxlength="3"/>
+		<input type="hidden" class="id" 	name="data[multimedia][{$index}][id]" value="{$obj.id}" />
+		<input type="text" class="priority" name="data[multimedia][{$index}][priority]" value="{$obj.priority|default:$priority}" size="3" maxlength="3"/>
 		<span class="label">{$imageFile}</span>
 		<div style="width:{$thumbWidth}px; height:{$thumbHeight}px; overflow:hidden;">
 		{if !empty($imageFile) && strtolower($obj.ObjectType.name) == "image"}
