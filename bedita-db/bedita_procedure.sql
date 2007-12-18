@@ -748,7 +748,7 @@ DECLARE prmsU INT DEFAULT 0 ;
 
 SET prmsG = (
 	SELECT DISTINCT
-	BIT_AND(permission_modules.flag & _PRMS) AS perms
+	BIT_OR(permission_modules.flag & _PRMS) AS perms
 	FROM
 	permission_modules
 	WHERE
@@ -778,7 +778,7 @@ SET prmsG  = IF(prmsG IS NULL, 0, prmsG) ;
 
 SET prmsU  = (
 	SELECT DISTINCT
-	BIT_AND(permission_modules.flag & _PRMS) AS perms
+	(permission_modules.flag & _PRMS) AS perms
 	FROM
 	permission_modules
 	WHERE
@@ -811,7 +811,7 @@ DECLARE prmsG INT DEFAULT 0 ;
 
 SET prmsG = (
 	SELECT DISTINCT
-	BIT_AND(permission_modules.flag & _PRMS) AS perms
+	BIT_OR(permission_modules.flag & _PRMS) AS perms
 	FROM
 	permission_modules
 	WHERE
