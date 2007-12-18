@@ -11,6 +11,7 @@ class BeditaTestData extends Object {
 	function &getData() { return $this->data ;  }
 }
 
+loadController("App"); // base controller, beditaexcepion... 
 
 class BeditaTestCase extends CakeTestCase {
 

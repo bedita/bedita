@@ -10,18 +10,29 @@ class PermissionModuleTestData extends BeditaTestData {
 	var $data =  array(
 		'minimo'	=> array('title' 			=> 'Titolo di test'),
 		'removePerms1' => array(
-				array('alberto', 		'user'),
-				array('torto', 			'user')
-			),
+				array('bedita', 		'user')
+		),
 		'resultDeletePerms1' => array(
-				array('administrator', 	'group', BEDITA_PERMS_MODIFY),
+				array('administrator', 	'group', MODIFY_READ),
 				array('guest', 			'group', BEDITA_PERMS_READ),
 		),
 		'addPerms1' => array(
 				array('administrator', 	'group', MODIFY_READ),
-				array('guest', 			'group', BEDITA_PERMS_READ),
-				array('torto', 			'user',  MODIFY_READ)
+				array('guest', 			'group', BEDITA_PERMS_READ)
 			),
+		'user.test'	=> array('User' => array('userid' => 'nuovoutente', 'passwd' => 'nuovapass')), 
+		'add.perms.user' => array(
+				array('nuovoutente', 	'user', BEDITA_PERMS_READ)
+		),
+		'remove.perms.user' => array(
+				array('nuovoutente', 		'user')
+		),
+		'add.perms.guest' => array(
+				array('guest', 			'group', BEDITA_PERMS_READ)
+		),
+		'remove.perms.guest' => array(
+				array('guest', 			'group')
+		),
 		'updateGroupName' => 'guest',
 		'updateGroupModules' => array('areas'=>3, 'documents'=>1, 'galleries'=>15)
 	);

@@ -44,8 +44,8 @@ $(document).ready(function() {
 				<td>{$g.Group.created}</td>
 				<td>{$g.Group.modified}</td>
 				<td>
-					<a href="{$html->url('/admin/viewGroup/')}{$g.Group.id}">{t}Modify{/t}</a>
-					<a href="{$html->url('/admin/removeGroup/')}{$g.Group.id}">{t}Remove{/t}</a>
+					<input type="button" name="modifyGroup" value="{t}Modify{/t}" onclick="javascript:viewGroup({$g.Group.id});"/>
+					<input type="button" name="deleteGroup" value="{t}Remove{/t}" onclick="javascript:delGroupDialog('{$g.Group.name}',{$g.Group.id});"/>
 				</td>
 			{/if}
 		</tr>
@@ -111,6 +111,5 @@ $(document).ready(function() {
 			</table>		
 		</div>
 		</form>
-				
 	</div>
 </div>
