@@ -130,21 +130,27 @@ treeView Aree
 	function submitTree(contest) {
 		tree = new Array() ;
 
-		$("li", contest).each(function(i){
-			tree[i] = {} ;
+		$("li", contest).each(function(idx){
+			tree[idx] = {} ;
 			
-			tree[i]["id"] = $("input[@name='id']", this).eq(0).val() ;
+			tree[idx]["id"] = $("input[@name='id']", this).eq(0).val() ;
 			try {
-				tree[i]["parent"] = $( "../../input[@name=id]", this).eq(0).val() ;
+				if(!$("span[@class=AreaItem]", this).size()) {
+					var parent_id = $( "input[@name=id]", this.parentNode.parentNode).eq(0).val() ;
+					tree[idx]["parent"] = parent_id ;
+				}
 			} catch(e) {
-				tree[i]["parent"] = null ;
+				tree[idx]["parent"] = null ;
 			}
 		});
 		
 		tree.toString = function() {
 			var str = "" ;
 			for(var i=0; i < this.length ; i++) {
-				str += "id="+this[i].id + " parent=" + this[i].parent ;
+				if(this[i].parent != undefined)
+					str += "id="+this[i].id + " parent=" + this[i].parent ;
+				else
+					str += "id="+this[i].id + " parent=null" ;
 				if((i+1) < this.length) str += ";" ;
 			}
 			return str ;
