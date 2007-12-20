@@ -48,10 +48,10 @@ class ContentBase extends BEAppModel
 					'foreignKey'   			=> 'id',
 					'associationForeignKey'	=> 'object_id',
 					'unique'				=> true,
-					'fields'				=> 'multimedia.id, multimedia.status, multimedia.object_type_id, ContentBasesObject.priority',
-					'fields'				=> 'multimedia.id, multimedia.status, multimedia.object_type_id, ContentBasesObject.priority',
+					'fields'				=> 'multimedia.id, multimedia.status, multimedia.object_type_id, content_bases_objects.priority',
 //					'conditions'			=> "ContentBasesObject.switch ='MULTIMS'",
 					'switch'				=> "MULTIMS",
+					'order'					=> "content_bases_objects.priority"
 				),
 			'attachments' =>
 				array(
@@ -109,7 +109,7 @@ class ContentBase extends BEAppModel
 				$id 	= $this->id ;
 				$obj_id		= $values[$i]['id'] ;
 				$switch		= $assoc['switch'] ;
-				$priority	= isset($assoc['priority']) ? "'{$assoc['priority']}'" : 'NULL' ;
+				$priority	= isset($values[$i]['priority']) ? "'{$values[$i]['priority']}'" : 'NULL' ;
 				
 				$queries[] = "INSERT INTO {$table} ({$fields}) VALUES ({$id}, {$obj_id}, '{$switch}', {$priority})" ;
 			}
