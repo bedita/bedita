@@ -44,6 +44,7 @@ $(document).ready(function(){
 
 	$('#properties').show() ;
 //	$('#whereto').show() ;
+	$('#extendedtext').show() ;
 
 	// aggiunge i comandi per i blocchi
 	$('.showHideBlockButton').bind("click", function(){

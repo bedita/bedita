@@ -114,7 +114,7 @@ function activePortionsForm(objectType) {
 </div>
 
 <h2 class="showHideBlockButton">{t}Long Text{/t}</h2>
-<div class="blockForm" id="fckeditor">
+<div class="blockForm" id="extendedtext">
 {include file="../pages/form_longdesc.tpl"}
 </div>
 

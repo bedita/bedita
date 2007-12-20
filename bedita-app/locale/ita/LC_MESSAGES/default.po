@@ -410,3 +410,5 @@ msgstr "Sottotitolo"
 msgid "The change will be lost.DO you want continue"
 msgstr "I cambiamenti andranno perduti. Vuoi continuare"
 
+msgid "Only text"
+msgstr "Solo testo"
