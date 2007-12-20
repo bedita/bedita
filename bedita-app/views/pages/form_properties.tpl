@@ -54,14 +54,17 @@
 	</tr>
 	{/foreach}
 	{/if}
+	<tr id="">
+		<td class="label">{t}Nickname{/t}:</td>
+		<td class="field">
+			<input  class="" type="text" name="data[nickname]" value="{$object.nickname|default:''|escape:'html'|escape:'quotes'}"/>&nbsp;
+		</td>
+	</tr>
+	
 	</table>
 	{if ($object)}
 	<hr/>
 	<table class="tableForm" border="0">
-	<tr>
-		<td class="label">{t}Alias{/t}:</td><td>{$object.nickname}</td>
-		<td class="label">{t}IP{/t}:</td><td>{$object.IP_created}</td>
-	</tr>
 	<tr>
 		<td class="label">{t}Creato il{/t}:</td><td>{$object.created|date_format:$conf->date_format}</td>
 		<td class="label">{t}Da{/t}:</td><td>{$object.UserCreated.userid|default:""}</td>
@@ -69,6 +72,9 @@
 	<tr>
 		<td class="label">{t}Ultima modifica{/t}:</td><td>{$object.modified|date_format:$conf->date_format}</td>
 		<td class="label">{t}Da{/t}:</td><td>{$object.UserModified.userid|default:""}</td>
+	</tr>
+	<tr>
+		<td class="label">{t}IP{/t}:</td><td>{$object.IP_created}</td>
 	</tr>
 	</table>
 	{/if}

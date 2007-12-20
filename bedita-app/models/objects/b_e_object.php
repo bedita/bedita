@@ -214,7 +214,7 @@ class BEObject extends BEAppModel
 		else $data = &$this->data ;
 		
 	 	$default = array(
-			'nickname' 			=> array('_getDefaultNickname', 	(isset($data['nickname']))?$data['nickname']:((isset($data['title']))?$data['title']:'')),
+			'nickname' 			=> array('_getDefaultNickname', 	(isset($data['nickname']) && !@empty($data['nickname']))?$data['nickname']:((isset($data['title']))?$data['title']:'')),
 			'lang' 				=> array('_getDefaultLang', 		(isset($data['lang']))?$data['lang']:null),
 			'IP_created' 		=> array('_getDefaultIP'),
 			'user_created'		=> array('_getIDCurrentUser', 		((isset($data[$this->primaryKey]) && empty($data[$this->primaryKey])) || !isset($data[$this->primaryKey]))? (isset($data['user_created'])?$data['user_created']:true) :false),
@@ -341,7 +341,31 @@ class BEObject extends BEAppModel
 	 * Setta i valori di default per i diversi campi
 	 */
 	private function _getDefaultNickname($value) {
-		return preg_replace("/[^0-9A-Za-z\-_.]/i", "", $value) ;
+		$nickname = $nickname_base = preg_replace("/[^0-9A-Za-z\-_.]/i", "", $value) ;
+		if(@empty($nickname)) return $nickname ;
+		
+		// Verifica l'assenza del nickname selezionato
+		$tentativi 	= 100 ;
+		$unico 		= false ;
+		for($i=0 ; $i < $tentativi && !$unico; $i++ ) {
+			$count = $this->findCount("WHERE nickname = '{$nickname}'") ;
+			
+			// Se crea un nuovo obj deve essere assente 
+			if (!$count || ($count == 1 && $this->id)) {
+				$unico = true ;
+				continue ;
+			}
+			
+			// Prova con un nuovo nickname
+			srand(time());
+			$num = rand(100, 9999);
+			$nickname = "{$nickname_base}_{$num}" ;
+		}
+		
+		// Se non ha trovato un nickname libeo esce
+		if(!$unico) return "" ;
+		
+		return $nickname ;
 	}
 	
 	private function _getDefaultLang($value = null) {
