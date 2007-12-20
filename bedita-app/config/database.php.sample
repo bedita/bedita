@@ -37,7 +37,8 @@ class DATABASE_CONFIG
 								'login' => 'pippo',
 								'password' => 'baudo',
 								'database' => 'BEDITA',
-								'prefix' => '');
+								'prefix' => '',
+							'encoding' => 'utf8');
 
 	var $test = array('driver' => 'mysql',
 							'connect' => 'mysql_connect',
@@ -45,6 +46,7 @@ class DATABASE_CONFIG
 							'login' => 'pippo',
 							'password' => 'baudo',
 							'database' => 'BEDITA_TEST',
-							'prefix' => '');
+							'prefix' => '',
+							'encoding' => 'utf8');
 }
 ?>
