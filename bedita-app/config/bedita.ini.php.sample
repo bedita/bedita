@@ -27,6 +27,11 @@ define("MEDIA_URL",	"http://bedita/media") ;
 $config['lang'] = "it" ;
 
 /**
+ * uncomment to set default interface language
+ */
+//$config['Config']['language'] = "ita"; // or "eng", "spa", "por"
+
+/**
  * Formato di default per i testi dei diversi tipi di contenuto.
  * Valori possibili:
  * 'html', 'txt', 'txtParsed'

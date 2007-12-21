@@ -42,12 +42,6 @@
  */
 	Configure::write('debug', 3);
 
-// Uncomment a line to set language for backend app
-//	Configure::write('Config.language', 'ita');
-//	Configure::write('Config.language', 'eng');
-//	Configure::write('Config.language', 'spa');
-//	Configure::write('Config.language', 'por');
-//	Configure::write('Config.language', 'fin');
 /**
  * To configure CakePHP *not* to use mod_rewrite and to
  * use CakePHP pretty URLs, remove these .htaccess
