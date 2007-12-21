@@ -1,0 +1,417 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Bedita\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-12-21 10:53+0100\n"
+"Last-Translator: dante <didojunior@gmail.com>\n"
+"Language-Team: Bedita I18N & I10N Team\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Username"
+msgstr "Usuário"
+
+msgid "Username is required"
+msgstr "Nome usuário obligatório"
+
+msgid "Password is required"
+msgstr "Password obligatório"
+
+msgid "This field is required"
+msgstr "Campo obligatório"
+
+msgid "Backend user restricted area"
+msgstr "Area reservada aos gestores"
+
+msgid "Enter"
+msgstr "Entrar"
+
+msgid "No data"
+msgstr "Não ha datos"
+
+msgid "Wrong username/password or no authorization"
+msgstr "Nome usuário/password errados ou autorização negada"
+
+msgid "Gallery"
+msgstr "Galeria"
+
+msgid "Title"
+msgstr "Títolo"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Created"
+msgstr "Creado"
+
+msgid "Language"
+msgstr "Língua"
+
+msgid "Dimensions"
+msgstr "Dimensões"
+
+msgid "Go to page"
+msgstr "Va a la página"
+
+msgid "page"
+msgstr "página"
+
+msgid "of"
+msgstr "de"
+
+msgid "Edit"
+msgstr "Guardar"
+
+msgid "Delete"
+msgstr "Borrar"
+
+msgid "Actions"
+msgstr "Ações"
+
+msgid "open details"
+msgstr "abrir todos os detalhes"
+
+msgid "close details"
+msgstr "fechar todos os detalhes"
+
+msgid "cancel"
+msgstr "cancelar"
+
+msgid "Properties"
+msgstr "Propriedades"
+
+msgid "status"
+msgstr "estado"
+
+msgid "publication"
+msgstr "publicação"
+
+msgid "start"
+msgstr "início"
+
+msgid "end"
+msgstr "fim"
+
+msgid ""
+"Attention!!! you are deleting an item.\n"
+"Are you sure that you want to continue?"
+msgstr ""
+"Atenção!!! está borrando um elemento.\n"
+"Quer continuar?"
+
+msgid "Where put the gallery into"
+msgstr "Posição da galeria"
+
+msgid "Close all"
+msgstr "Fechar todos"
+
+msgid "Expand all"
+msgstr "Abrir todos"
+
+msgid "Images of the gallery"
+msgstr "Imagens da galeria"
+
+msgid "Add image"
+msgstr "Juntar imagem"
+
+msgid "Available images"
+msgstr "Imagens disponíveis"
+
+msgid "No images found"
+msgstr "Nenhuma imagem encontrada"
+
+msgid "Images"
+msgstr "Imagens"
+
+msgid "Gallery images"
+msgstr "Imagens da galeria"
+
+msgid "Thumbnail"
+msgstr "Minuatura"
+
+msgid "Modify"
+msgstr "Editar"
+
+msgid "Remove"
+msgstr "Borrar"
+
+msgid "Valid"
+msgstr "Válido"
+
+msgid "Last login"
+msgstr "Último aceso"
+
+msgid "Item deleted correctly"
+msgstr "Elemento borrado correctamente"
+
+msgid "Item to delete not found"
+msgstr "Elemento não encontrado"
+
+msgid "Are you sure that you want to delete the gallery?"
+msgstr "Quer borrar a galeria?"
+
+msgid "New Item"
+msgstr "Novo Elemento"
+
+msgid "New Image"
+msgstr "Nova Imagem"
+
+msgid "Size"
+msgstr "Dimensão"
+
+msgid "Custom Properties"
+msgstr "Propriedade Ad Hoc"
+
+msgid "name"
+msgstr "nome"
+
+msgid "type"
+msgstr "tipo"
+
+msgid "value"
+msgstr "valor"
+
+msgid "add"
+msgstr "junta"
+
+msgid "Permissions"
+msgstr "Permisos"
+
+msgid "read"
+msgstr "lectura"
+
+msgid "modify"
+msgstr "editar"
+
+msgid "delete"
+msgstr "borrar"
+
+msgid "Apply permissions recursively"
+msgstr "Aplicar permisos recorsivamente"
+
+msgid "Do you really want to delete the permission"
+msgstr "Quer borrar o permiso"
+
+msgid "user"
+msgstr "usuário"
+
+msgid "group"
+msgstr "grupo"
+
+msgid "From"
+msgstr "De"
+
+msgid "Yes"
+msgstr "Sim"
+
+msgid "Last modified"
+msgstr "Última editação"
+
+msgid "Modified"
+msgstr "Guardado"
+
+msgid "User blocked"
+msgstr "Usuário bloqueado"
+
+msgid "Do you really want to delete the property"
+msgstr "Quer borrar a propriedade"
+
+msgid "Data uncomplete"
+msgstr "Datos não completos"
+
+msgid "Property already present"
+msgstr "Propriedade ja existente"
+
+msgid "Where put the section into"
+msgstr "Colocação da seção"
+
+msgid "Choose document type"
+msgstr "Escolher tipo de documento"
+
+msgid "External links"
+msgstr "Enlaces exteriores"
+
+msgid "Objects"
+msgstr "Objetos"
+
+msgid "Where put the document into"
+msgstr "Posição do documento"
+
+msgid "User settings"
+msgstr "Impostações usuário"
+
+msgid "User name"
+msgstr "Nome usuário"
+
+msgid "User name is required (at least %1 chars, without white spaces and special chars)"
+msgstr "Nome usuário obligatório (%1 carácteres, sem espaço e carácteres especiais)"
+
+msgid "Real name"
+msgstr "Nome real"
+
+msgid "Real name is required (at least %1 alphanumerical chars)"
+msgstr "Nome real obligatório (%1 carácteres alfanuméricos)"
+
+msgid "Use a valid email"
+msgstr "Utiliza um email válido"
+
+msgid "New password"
+msgstr "Nova password"
+
+msgid "Your password must be at least 6 characters long and contain at least one number"
+msgstr "A password deve ser não menos de 6 carácteres e conter não menos de um número"
+
+msgid "Confirm password"
+msgstr "Confirmar password"
+
+msgid "Passwords should be equal"
+msgstr "As password devem ser iguais"
+
+msgid "Group name is required (at least %1 chars, no white spaces and special chars)"
+msgstr "Nome grupo obligatório (%1 carácteres, sem espaços e carácteres especiais)"
+
+msgid "Strength"
+msgstr "Nivel de segurança"
+
+msgid "Blocked"
+msgstr "Bloqueado"
+
+msgid "Groups"
+msgstr "Grupos"
+
+msgid "Module access"
+msgstr "Aceso aos módulos"
+
+msgid "Read only"
+msgstr "So leitura"
+
+msgid "Read and modify"
+msgstr "Leitura e editação"
+
+msgid "Check at least one group"
+msgstr "Indicar não menos de um grupo"
+
+msgid "Users list"
+msgstr "Lista usuários"
+
+msgid "Manage user"
+msgstr "Opções usuário"
+
+msgid "New user"
+msgstr "Novo usuário"
+
+msgid "Create"
+msgstr "Crear"
+
+msgid "User"
+msgstr "Usuário"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "System Info"
+msgstr "Info Sistema"
+
+msgid "Users admin"
+msgstr "Usuário"
+
+msgid "Groups admin"
+msgstr "Administração grupos"
+
+msgid "Module"
+msgstr "Módulo"
+
+msgid "No access"
+msgstr "Nenhum aceso"
+
+msgid "Group properties"
+msgstr "Propriedades grupos"
+
+msgid "Create group"
+msgstr "Crear grupo"
+
+msgid "Insert group name"
+msgstr "Indicar nome grupo"
+
+msgid "Users of this group"
+msgstr "Usuários do grupo"
+
+msgid "Subtitle, description"
+msgstr "Subtítolo, descrição"
+
+msgid "Long Text"
+msgstr "Texto Extenso"
+
+msgid "Title is required (at least %1 alphanumerical char)"
+msgstr "Títolo obligatório (não menos de %1 carácter alfanumérico)"
+
+msgid "Areas"
+msgstr "Áreas"
+
+msgid "Documents"
+msgstr "Documentos"
+
+msgid "Galleries"
+msgstr "Galerias"
+
+msgid "Sections"
+msgstr "Seções"
+
+msgid "New Area"
+msgstr "Nova Área"
+
+msgid "New Document"
+msgstr "Novo Documento"
+
+msgid "New Gallery"
+msgstr "Nova Galeria"
+
+msgid "New Section"
+msgstr "Nova Seção"
+
+msgid "areas"
+msgstr "áreas"
+
+msgid "documents"
+msgstr "documentos"
+
+msgid "galleries"
+msgstr "galerias"
+
+msgid "sections"
+msgstr "seções"
+
+msgid "Tree of Areas"
+msgstr "Álbero das Áreas"
+
+msgid "up"
+msgstr "sobre"
+
+msgid "down"
+msgstr "abaixo"
+
+msgid "Areas Tree"
+msgstr "Álbero Áreas"
+
+msgid "Do you really want to remove user"
+msgstr "Quer borrar o usuário"
+
+msgid "Description"
+msgstr "Descrição"
+
+msgid "Subtitle"
+msgstr "Subtítolo"
+
+msgid "The change will be lost.DO you want continue"
+msgstr "Se perderão as mudações. Quer continuar"
+
+msgid "Only text"
+msgstr "So texto"
+
+msgid "No"
+msgstr "Não"
+
+msgid "Save"
+msgstr "Guardar"
