@@ -415,3 +415,18 @@ msgstr "Não"
 
 msgid "Save"
 msgstr "Guardar"
+
+msgid "Exit"
+msgstr "Sair"
+
+msgid "Access to Backend"
+msgstr"Aceso ao Backend"
+
+msgid "Authorized"
+msgstr "Autorizado"
+
+msgid "Não Autorizado"
+msgstr "Non Autorizzato"
+
+msgid "Group authorized to Backend"
+msgstr "Grupo autorizado ao Backend"

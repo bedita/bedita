@@ -95,9 +95,6 @@ msgstr "inizio"
 msgid "end"
 msgstr "fine"
 
-msgid "Language"
-msgstr "Lingua"
-
 msgid "Attention!!! you are deleting an item.\nAre you sure that you want to continue?"
 msgstr "Attenzione!!! stai eliminando un elemento.\nSicuro di voler continuare?"
 
@@ -167,9 +164,6 @@ msgstr "Proprieta' Ad Hoc"
 msgid "name"
 msgstr "nome"
 
-msgid "Name"
-msgstr "Nome"
-
 msgid "type"
 msgstr "tipo"
 
@@ -189,7 +183,7 @@ msgid "modify"
 msgstr "modifica"
 
 msgid "delete"
-msgstr "eliminazione"
+msgstr "elimina"
 
 msgid "Apply permissions recursively"
 msgstr "Applica i permessi ricorsivamente"
@@ -412,3 +406,18 @@ msgstr "I cambiamenti andranno perduti. Vuoi continuare"
 
 msgid "Only text"
 msgstr "Solo testo"
+
+msgid "Exit"
+msgstr "Esci"
+
+msgid "Access to Backend"
+msgstr "Accesso al Backend"
+
+msgid "Authorized"
+msgstr "Autorizzato"
+
+msgid "Not Authorized"
+msgstr "Non Autorizzato"
+
+msgid "Group authorized to Backend"
+msgstr "Gruppo autorizzato al Backend"
