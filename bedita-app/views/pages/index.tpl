@@ -31,4 +31,12 @@
 </div>
 {include file="../messages.tpl"}
 <div id="centralPageHome">
+{if $conf->multilang}
+<form action="{$html->url('/authentications/switchlang')}" method="post" name="switchLangForm" id="switchLangForm" class="cmxform">
+{t}Language{/t}:
+<select name="data[lang]" onchange="javascript:document.getElementById('switchLangForm').submit();">
+{html_options options=$conf->langsSystem selected=$conf->Config.language}
+</select>
+</form>
+{/if}
 </div>

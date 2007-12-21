@@ -78,6 +78,9 @@ class AuthenticationsController extends AppController {
 		$this->BeAuth->logout() ;
 	}
 
+	function switchlang() {
+		$_SESSION['Config']['language']=$this->data['lang'];
+	}
 	
 	 protected function forward($action, $esito) {
 	 	$REDIRECT = array(
@@ -92,6 +95,10 @@ class AuthenticationsController extends AppController {
 	 			"login"	=> 	array(
 	 									"OK"	=> "/",
 	 									"PWD"	=> "/pages/changePasswd",
+	 									"ERROR"	=> "/authentications/logout" 
+	 								),
+	 			"switchlang"	=> 	array(
+	 									"OK"	=> "/",
 	 									"ERROR"	=> "/authentications/logout" 
 	 								)
 	 	);

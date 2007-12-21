@@ -77,6 +77,9 @@ $config['basicGroups'] = array('administrator','editor','reader','guest');
 // fckeditor (enabled|disabled) for longText: comment to disable
 $config['fckeditor'] = true;
 
+// abilita la combo di scelta della lingua del backend
+$config['multilang'] = true;
+
 ///////////////////////////////////////////////////////
 // DO NOT EDIT BELOW THIS LINE//
 ///////////////////////////////////////////////////////
@@ -280,6 +283,13 @@ $config['langOptions'] = array(
 	"pt"	=> "portugu&ecirc;s",
 	"fr"	=> "fran&ccedil;oise",
 	"de"	=> "deutsch"
+) ;
+
+$config['langsSystem'] = array(
+	"ita"	=> "italiano",
+	"eng"	=> "english",
+	"por"	=> "portugu&ecirc;s",
+	"deu"	=> "deutsch"
 ) ;
 
 /**
