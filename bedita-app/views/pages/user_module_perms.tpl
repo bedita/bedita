@@ -1,0 +1,1 @@
+{t}Permissions{/t}: <ul><li><b>&#8250;</b> <b>{if $module_modify eq '1'}{t}Modify{/t}{else}{t}Read{/t}{/if}</b></li></ul>
