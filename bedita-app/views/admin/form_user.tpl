@@ -177,13 +177,14 @@ jQuery.validator.addMethod("phone", function(value, element) {
 						<input type="checkbox" id="group_{$gname}" name="data[groups][{$gname}]" {if $u == 1}checked="checked"{/if}
 					onclick="javascript:localUpdateGroupsChecked(this);"/></td>
 					<td class="label"><label id="lgroup{$gname}" for="group{$gname}">{$gname}</label></td>
-					<td class="status">&#160;</td>
+					<td class="status">{if in_array($gname,$conf->authorizedGroups)}(*){/if}</td>
 				</tr>
 				{/foreach}
 				</table>
 			</td>
 			<td class="status">&#160;</td>
 		</tr>
+		<tr><td class="label">&#160;</td><td class="field" colspan="2">(*) {t}Group authorized to Backend{/t}</td></tr>
 		{/if}
 		{if !empty($userModules)}
 		<tr>

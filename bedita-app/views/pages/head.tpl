@@ -20,7 +20,7 @@
 
 	<div class="beditaButton" style="height:136px; margin-left:-1px; margin-bottom:0px;" onClick = "document.location ='$html->url('/')'">
 		<span style="font:bold 17px Verdana">B.Edita</span>
-		{if ($BEAuthAllow)}<br/><b>&#8250;</b>&nbsp;{$html->link('esci', '/authentications/logout')}{/if}
+		{if ($BEAuthAllow)}<br/><b>&#8250;</b>&nbsp;<a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a>{/if}
         <br/><br/>
         <p>
         {$smarty.now|date_format:"%d/%m/%Y"}

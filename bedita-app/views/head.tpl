@@ -35,7 +35,7 @@ $(document).ready(function(){
 <div id="headerPage">
 	<div class="beditaButton" onclick= "javascript:document.location ='{$html->url('/')}'">
 		<span style="font:bold 17px Verdana">B.Edita</span><br/><b>&gt;</b>
-		<a href="{$html->url('/authentications/logout')}">esci</a><br/><br/>
+		<a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a><br/><br/>
 		<p><b>Consorzio BEdita</b><br/>2007</p>
 	</div>
 	{section name="m" loop=$moduleList}

@@ -270,8 +270,11 @@ $config['statusOptions'] = array(
  */
 $config['langOptions'] = array(
 	"it"	=> "italiano",
-	"en"	=> "inglese",
-	"fr"	=> "francese",
+	"en"	=> "english",
+	"es"	=> "espa&ntilde;ol",
+	"pt"	=> "portugu&ecirc;s",
+	"fr"	=> "fran&ccedil;oise",
+	"de"	=> "deutsch"
 ) ;
 
 /**

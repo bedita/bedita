@@ -9,7 +9,7 @@
 <div id="headerPageHome">
 	<div class="beditaButtonHome" onClick = "document.location ='{$html->url('/')}'">
 		<span style="font:bold 17px Verdana">B.Edita</span><br/><b>&gt;</b>
-		<a href="{$html->url('/authentications/logout')}">esci</a><br/><br/><p>
+		<a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a><br/><br/><p>
 		<b>Consorzio BEdita</b>
 		<br/>2007</p>
 	</div>

@@ -24,7 +24,7 @@ $().ready(function() {
 <div id="loginStatusBox">
 	<div class="beditaButton" onClick = "document.location ='{$html->url('/')}'">
 		<span style="font:bold 17px Verdana">{t}B.Edita{/t}</span><br/><b>&gt;</b>
-		<a href="{$html->url('/authentications/logout')}">esci</a><br/><br/><p>
+		<a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a><br/><br/><p>
 		<b>{t}Consorzio BEdita{/t}</b>
 		<br/>2007</p>
 	</div>

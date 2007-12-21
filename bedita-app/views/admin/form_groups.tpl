@@ -24,23 +24,27 @@ $(document).ready(function() {
 	<div id="mainForm">
 		<form action="{$html->url('/admin/saveGroup')}" method="post" name="groupForm" id="groupForm" class="cmxform">
 		<table class="indexList">
-		<thead><tr>
-					<th>{t}Name{/t}</th>
-					<th>{t}Created{/t}</th>
-					<th>{t}Modified{/t}</th>
-					<th>{t}Actions{/t}</th>
-			</tr>
+		<thead>
+		<tr>
+			<th>{t}Name{/t}</th>
+			<th>{t}Access to Backend{/t}</th>	
+			<th>{t}Created{/t}</th>
+			<th>{t}Modified{/t}</th>
+			<th>{t}Actions{/t}</th>
+		</tr>
 		</thead>
 		<tbody>
 		{foreach from=$groups|default:'' item=g}
 		<tr class="rowList">
 			{if $g.Group.immutable}
 				<td>{$g.Group.name}</td>
+				<td>{if in_array($g.Group.name,$conf->authorizedGroups)}{t}Authorized{/t}{else}{t}Not Authorized{/t}{/if}</td>
 				<td>-</td>
 				<td>-</td>
 				<td>-</td>
 			{else}
 				<td><a href="{$html->url('/admin/viewGroup/')}{$g.Group.id}">{$g.Group.name}</a></td>
+				<td>{if in_array($g.Group.name,$conf->authorizedGroups)}{t}Authorized{/t}{else}{t}Not Authorized{/t}{/if}</td>
 				<td>{$g.Group.created}</td>
 				<td>{$g.Group.modified}</td>
 				<td>
@@ -80,29 +84,29 @@ $(document).ready(function() {
 			<table class="indexList">
 			<thead>
 			<tr>
-						<th>{t}Module{/t}</th>
-						<th>{t}No access{/t}</th>
-						<th>{t}Read only{/t}</th>
-						<th>{t}Read and modify{/t}</th>
-				</tr>
+				<th>{t}Module{/t}</th>
+				<th>{t}No access{/t}</th>
+				<th>{t}Read only{/t}</th>
+				<th>{t}Read and modify{/t}</th>
+			</tr>
 			</thead>
 			<tbody>
 			{foreach from=$modules|default:false item=mod}
 			<tr class="rowList" id="tr_{$mod.Module.id}">
 				<td><input type="text" readonly="readonly" value="" maxlength="6" style="height:20px; background-color:{$mod.Module.color}; width:60px"/>
 						&nbsp;<b>{$mod.Module.label}</b>
-						</td>
-						<td>
-							<input type="radio" 
-								name="data[ModuleFlags][{$mod.Module.label}]" value="" {if !isset($group)}checked="checked"{elseif ($mod.Module.flag == 0)}checked="checked"{/if}/>
-						</td>
-						<td>
-							<input type="radio" name="data[ModuleFlags][{$mod.Module.label}]" value="{$conf->BEDITA_PERMS_READ}" 
-									{if ($mod.Module.flag == $conf->BEDITA_PERMS_READ)}checked="checked"{/if}/>
-						</td>
-						<td>
-							<input type="radio" name="data[ModuleFlags][{$mod.Module.label}]" value="{$conf->BEDITA_PERMS_READ_MODIFY}" 
-									{if ($mod.Module.flag & $conf->BEDITA_PERMS_MODIFY)}checked="checked"{/if} />
+				</td>				
+				<td>
+					<input type="radio" 
+						name="data[ModuleFlags][{$mod.Module.label}]" value="" {if !isset($group)}checked="checked"{elseif ($mod.Module.flag == 0)}checked="checked"{/if}/>
+				</td>
+				<td>
+					<input type="radio" name="data[ModuleFlags][{$mod.Module.label}]" value="{$conf->BEDITA_PERMS_READ}" 
+							{if ($mod.Module.flag == $conf->BEDITA_PERMS_READ)}checked="checked"{/if}/>
+				</td>
+				<td>
+					<input type="radio" name="data[ModuleFlags][{$mod.Module.label}]" value="{$conf->BEDITA_PERMS_READ_MODIFY}" 
+							{if ($mod.Module.flag & $conf->BEDITA_PERMS_MODIFY)}checked="checked"{/if} />
 				</td>
 			</tr>
 			{/foreach}
