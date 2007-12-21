@@ -22,8 +22,12 @@
 			<td>{$u.User.created}</td>
 			<td>{$u.User.last_login}</td>
 			<td>
+			{if $module_modify eq '1'}
 				<input type="button" name="modifyUser" value="{t}Modify{/t}" id="view_{$u.User.id}" onclick="javascript:viewUser({$u.User.id});"/>
 				<input type="button" name="deleteUser" value="{t}Remove{/t}" id="user_{$u.User.id}" onclick="javascript:delUserDialog('{$u.User.userid}',{$u.User.id});"/>
+			{else}
+				-
+			{/if}						
 			</td>
 		</tr>
   		{/foreach}

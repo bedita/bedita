@@ -5,10 +5,14 @@
 		<a id="openAllBlockLabel" style="display:block;" href="javascript:showAllBlockPage(1)"><span style="font-weight:bold;">&gt;</span> {t}open details{/t}</a>
 		<a id="closeAllBlockLabel" href="javascript:hideAllBlockPage()"><span style="font-weight:bold;">&gt;</span> {t}close details{/t}</a>
 	</td>
+	{if $module_modify eq '1'}
 	<td style="padding-left:40px;" nowrap>
-		{formHelper fnc="submit" args="' salva ', array('name' => 'save', 'class' => 'submit', 'div' => false)"}
-		<input type="button" name="cancella" class="submit" value="{t}cancel{/t}" {if !($object.id|default:false)}disabled="1"{/if}/>
+		<input class="submit" type="submit" value=" salva " name="save"/>	
+		<input type="button" name="elimina" class="submit" value="{t}delete{/t}" {if !($object.id|default:false)}disabled="1"{/if}/>
 	</td>
+	{else}
+	<td style="padding-left:40px;" nowrap>&#160;</td>
+	{/if}
 	<td style="padding-left:40px">&nbsp;</td>
 </tr>
 </table>

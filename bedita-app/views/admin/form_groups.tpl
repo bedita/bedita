@@ -44,8 +44,12 @@ $(document).ready(function() {
 				<td>{$g.Group.created}</td>
 				<td>{$g.Group.modified}</td>
 				<td>
+					{if $module_modify eq '1'}
 					<input type="button" name="modifyGroup" value="{t}Modify{/t}" onclick="javascript:viewGroup({$g.Group.id});"/>
 					<input type="button" name="deleteGroup" value="{t}Remove{/t}" onclick="javascript:delGroupDialog('{$g.Group.name}',{$g.Group.id});"/>
+					{else}
+					-
+					{/if}
 				</td>
 			{/if}
 		</tr>
@@ -102,11 +106,13 @@ $(document).ready(function() {
 				</td>
 			</tr>
 			{/foreach}
+			{if $module_modify eq '1'}
 			<tr>
-			<td colspan="4">
-				<input type="submit" name="save" class="submit" value="{if isset($group)}{t}Modify{/t}{else}{t}Create group{/t}{/if}" />
-			</td> 
-		</tr>
+				<td colspan="4">
+					<input type="submit" name="save" class="submit" value="{if isset($group)}{t}Modify{/t}{else}{t}Create group{/t}{/if}" />
+				</td> 
+			</tr>
+			{/if}
 			</tbody>
 			</table>		
 		</div>

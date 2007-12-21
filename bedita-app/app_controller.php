@@ -214,12 +214,13 @@ class AppController extends Controller
 		
 		// verify basic access
 		if(isset($this->moduleName)) { 
-			 foreach ($moduleList as $mod) {
+			foreach ($moduleList as $mod) {
 			 	if($this->moduleName == $mod['label']) { 
 			 		$this->modulePerms = $mod['flag'];
 			 		$this->moduleColor = $mod['color'];
-			 	}
-			 }
+				}
+			}
+			$this->set("module_modify",(isset($this->moduleName) && ($this->modulePerms & BEDITA_PERMS_MODIFY)) ? "1" : "0");
 			if(!isset($this->modulePerms) || !($this->modulePerms & BEDITA_PERMS_READ)) {
 					$logMsg = "Module [". $this->moduleName.  "] access not authorized";
 					$this->log($logMsg);

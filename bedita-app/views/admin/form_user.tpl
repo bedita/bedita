@@ -203,12 +203,14 @@ jQuery.validator.addMethod("phone", function(value, element) {
 			<td class="status">&#160;</td>
 		</tr>
 		{/if}
+		{if $module_modify eq '1'}
 		<tr>
 			<td class="label">&#160;</td>
 			<td class="field" colspan="2">
-				<input type="submit" id="submit" name="save" class="submit" value="{if isset($user)}{t}Modify{/t}{else}{t}Create{/t}{/if}" />
+				<input type="submit" id="submit" name="save" class="submit" value="{if isset($user)}{t}Save{/t}{else}{t}Create{/t}{/if}" />
 			</td> 
 		</tr>
+		{/if}
 		</table>
 		</fieldset>
 		</form>

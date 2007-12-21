@@ -138,7 +138,9 @@ class DocumentsController extends AppController {
 	  * URLOK e URLERROR.
 	  *
 	  */
-	 function save() {	 	
+	 function save() {
+	 	
+	 		$this->checkWriteModulePermission();
 
 	 	 	if(empty($this->data)) throw new BeditaException( __("No data", true));
 	 		
@@ -196,9 +198,12 @@ class DocumentsController extends AppController {
 	 }
 	 	 
 	 /**
-	  * Cancella un'area.
+	  * Delete a document.
 	  */
 	 function delete($id = null) {
+	 	
+	 	$this->checkWriteModulePermission();
+	 	
 		$this->setup_args(array("id", "integer", &$id)) ;
 		
 	 	if(empty($id)) 

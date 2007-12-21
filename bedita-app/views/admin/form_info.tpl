@@ -6,7 +6,9 @@
 		<li><b>cake:  {$conf->Cake.version}</b></li>
 		</ul>
 	</div>
-	<div class="FormPageHeader"><h1>{t}System events{/t}</h1><input type="submit" value="{t}Delete all events{/t}"/>
+	<div class="FormPageHeader">
+		<h1>{t}System events{/t}</h1>
+		{if $module_modify eq '1'}<input type="submit" value="{t}Delete all events{/t}"/>{/if}
 	</div>
 	</form>
 	<div id="mainForm">

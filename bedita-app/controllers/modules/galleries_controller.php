@@ -34,6 +34,7 @@ class GalleriesController extends AppController {
 	}
 
 	public function save() {
+		$this->checkWriteModulePermission();
 		if(empty($this->data))  throw new BeditaException( __("No data", true));
 		
 		$new = (empty($this->data['id'])) ? true : false;
@@ -77,6 +78,7 @@ class GalleriesController extends AppController {
 	}
 
 	public function delete() {
+		$this->checkWriteModulePermission();
 	 	if(empty($this->data['id'])) throw new BeditaException(__("No data", true));
 	 		
 		if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {

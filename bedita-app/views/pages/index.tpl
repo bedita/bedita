@@ -31,5 +31,4 @@
 </div>
 {include file="../messages.tpl"}
 <div id="centralPageHome">
-TESTO HOME O ANCHE NIENTE
 </div>

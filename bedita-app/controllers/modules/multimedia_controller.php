@@ -115,6 +115,7 @@ class MultimediaController extends AppController {
 	  * Cancella un'area.
 	  */
 	 function delete($id = null) {
+	 	$this->checkWriteModulePermission();
 	 	if(!isset($this->data['id'])) throw new BeditaException(sprintf(__("No data", true), $id));
 		
 	 	$this->Transaction->begin() ;

@@ -127,6 +127,8 @@ class AreasController extends AppController {
 	  *
 	  */
 	 function saveTree() {
+	 	$this->checkWriteModulePermission();
+	 	
 		$this->Transaction->begin() ;
 	 		
 		if(@empty($this->data["tree"])) throw new BeditaException(__("No data", true));
@@ -147,7 +149,10 @@ class AreasController extends AppController {
 	  * URLOK e URLERROR.
 	  *
 	  */
-	 function saveArea() {	 	
+	 function saveArea() {
+
+	 		$this->checkWriteModulePermission();
+	 		
 		 	if(empty($this->data)) throw BeditaException( __("No data", true));
 	 		
 			$new = (empty($this->data['id'])) ? true : false ;
@@ -184,6 +189,9 @@ class AreasController extends AppController {
 	  *
 	  */
 	 function saveSection() {
+	 	
+	 		$this->checkWriteModulePermission();
+	 		
 		 	if(empty($this->data)) throw new BeditaException(__("No data", true));
 	 		
 			$new = (empty($this->data['id'])) ? true : false ;
@@ -232,7 +240,10 @@ class AreasController extends AppController {
 	  * Cancella un'area.
 	  */
 	 function deleteArea($id = null) {
-		$this->setup_args(array("id", "integer", &$id)) ;
+	 	
+	 	$this->checkWriteModulePermission();
+		
+	 	$this->setup_args(array("id", "integer", &$id)) ;
 		
 	 	if(empty($id)) throw BeditaException(__("No data", true));
 	 		
@@ -248,6 +259,9 @@ class AreasController extends AppController {
 	  * Cancella una sezione.
 	  */
 	 function deleteSection($id = null) {
+	 	
+	 	$this->checkWriteModulePermission();
+	 	
 		$this->setup_args(array("id", "integer", &$id)) ;
 		
 	 	if(empty($id)) throw new BeditaException(__("No data",true));
