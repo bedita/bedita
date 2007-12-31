@@ -24,10 +24,10 @@
  * It loads the correct integration file based on the PHP version (avoinding
  * strict error messages with PHP 5).
  */
-
+/*
 if ( version_compare( phpversion(), '5', '<' ) )
 	include_once( 'fckeditor_php4.php' ) ;
 else
 	include_once( 'fckeditor_php5.php' ) ;
-
+*/
 ?>

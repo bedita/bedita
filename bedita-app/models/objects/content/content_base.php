@@ -51,7 +51,7 @@ class ContentBase extends BEAppModel
 					'fields'				=> 'multimedia.id, multimedia.status, multimedia.object_type_id, ContentBasesObject.priority',
 //					'conditions'			=> "ContentBasesObject.switch ='MULTIMS'",
 					'switch'				=> "MULTIMS",
-					'order'					=> "ContentBasesObject.priority"
+					'order'					=> "priority"
 				),
 			'attachments' =>
 				array(
@@ -67,7 +67,6 @@ class ContentBase extends BEAppModel
 
 	function __construct() {
 		parent::__construct() ;
-
 	}
 
 	

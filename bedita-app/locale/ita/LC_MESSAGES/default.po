@@ -421,3 +421,14 @@ msgstr "Non Autorizzato"
 
 msgid "Group authorized to Backend"
 msgstr "Gruppo autorizzato al Backend"
+
+msgid "html"
+msgstr "html"
+
+msgid "only text"
+msgstr "solo testo"
+
+msgid "text with conversion space and link"
+msgstr "testo con conversione spazi e link"
+
+

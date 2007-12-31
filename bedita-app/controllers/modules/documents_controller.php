@@ -81,6 +81,7 @@ class DocumentsController extends AppController {
 		$obj = null ;
 		if($id) {
 			$this->Document->bviorHideFields = array('Version', 'Index', 'current') ;
+
 			if(!($obj = $this->Document->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading document: %d", true), $id));
 			}
@@ -194,7 +195,6 @@ class DocumentsController extends AppController {
 		 			throw new BeditaException( __("Error saving permissions", true));
 		 	}	 	
 	 		$this->Transaction->commit() ;
-
 	 }
 	 	 
 	 /**
