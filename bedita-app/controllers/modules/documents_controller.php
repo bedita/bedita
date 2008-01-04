@@ -85,7 +85,7 @@ class DocumentsController extends AppController {
 			if(!($obj = $this->Document->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading document: %d", true), $id));
 			}
-			
+						
 			// Se presenti, preleva le immagini del documento
 			for($i=0; $i < @count($obj['multimedia']) ; $i++) {
 				$m = $this->Document->am($obj['multimedia'][$i]) ;

@@ -27,27 +27,44 @@ class BaseDocument extends BEAppModel
 	var $name 		= 'BaseDocument';
 	var $recursive 	= 2 ;
 
+	var $belongsTo = array(
+		'Gallery' =>
+			array(
+				'className'	=> 'BEObject',
+				'conditions'   	=> '',
+				'foreignKey'	=> 'gallery_id',
+				'dependent'	=> false
+			),
+		'Question' =>
+			array(
+				'className'	=> 'BEObject',
+				'conditions'   	=> '',
+				'foreignKey'	=> 'question_id',
+				'dependent'	=> false
+			),
+	) ;			
+
 	var $hasMany = array(
 		'links' =>
 				array(
-					'className'		=> 'Link',
+					'className'	=> 'Link',
 					'foreignKey'	=> 'object_id',
 //					'fields'		=> 'id, start, end',
-					'dependent'		=> true
+					'dependent'	=> true
 				),
 		) ;	
 
 	var $hasAndBelongsToMany = array(
 			'comments' =>
 				array(
-					'className'				=> 'BEObject',
+					'className'			=> 'BEObject',
 					'joinTable'    			=> 'content_bases_objects',
 					'foreignKey'   			=> 'id',
 					'associationForeignKey'	=> 'object_id',
 					'unique'				=> true,
 					'fields'				=> 'comments.id, comments.status',
 //					'conditions'			=> "ContentBasesObject.switch ='COMMENTS'",
-					'switch'				=> "COMMENTS",
+					'switch'			=> "COMMENTS",
 				),
 		) ;			
 

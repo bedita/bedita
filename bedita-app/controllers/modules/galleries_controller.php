@@ -33,6 +33,10 @@ class GalleriesController extends AppController {
 		$this->loadGallery($id);
 	}
 
+	function select_from_list($id = null, $order = "", $dir = true, $page = 1, $dim = 10) {
+		$this->loadGalleries($id,$order,$dir,$page,$dim);
+	}	
+	
 	public function save() {
 		$this->checkWriteModulePermission();
 		if(empty($this->data))  throw new BeditaException( __("No data", true));
@@ -159,19 +163,6 @@ class GalleriesController extends AppController {
 		$this->set('MEDIA_URL',	MEDIA_URL);
 		$this->set('MEDIA_ROOT',MEDIA_ROOT);
 	}
-
-	function test() {
-		$conf 		= Configure::getInstance();
-
-		
-		$galleria = $this->Gallery->findById(
-			$this->BeTree->getIdFromNickname($conf->pathGallery1)
-		) ;
-		
-		
-		pr($id) ;
-exit;		
-	} 
 	
 	protected function forward($action, $esito) {
 		$REDIRECT = array("save"	=> 	array(

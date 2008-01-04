@@ -30,7 +30,7 @@ class AuthenticationsController extends AppController {
 
 		$userid 	= (isset($this->data["login"]["userid"])) ? $this->data["login"]["userid"] : "" ;
 		$password 	= (isset($this->data["login"]["passwd"])) ? $this->data["login"]["passwd"] : "" ;
-		
+	
 		if(!$this->BeAuth->login($userid, $password)) {
 			$this->loginEvent('warn', $userid, "login not authorized");
 			$this->userWarnMessage(__("Wrong username/password or no authorization", true));

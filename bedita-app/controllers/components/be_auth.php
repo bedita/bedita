@@ -46,7 +46,7 @@ class BeAuthComponent extends Object {
 	 */
 	function startup(&$controller)
 	{
-		$conf = Configure::getInstance() ;
+		$conf = Configure::getInstance() ;		
 		$this->sessionKey = $conf->session["sessionUserKey"] ;
 		
 		$this->controller 	= $controller;

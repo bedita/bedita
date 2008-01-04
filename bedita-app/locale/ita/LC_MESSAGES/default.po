@@ -134,6 +134,9 @@ msgstr "Modifica"
 msgid "Remove"
 msgstr "Rimuovi"
 
+msgid "Select"
+msgstr "Seleziona"
+
 msgid "Valid"
 msgstr "Valido"
 
@@ -431,4 +434,8 @@ msgstr "solo testo"
 msgid "text with conversion space and link"
 msgstr "testo con conversione spazi e link"
 
+msgid "Connect to multimedia gallery"
+msgstr "Collega ad una galleria multimediale"
 
+msgid "Current gallery"
+msgstr "Galleria selezionata"

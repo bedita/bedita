@@ -104,35 +104,80 @@ function activePortionsForm(objectType) {
 </div>
 
 <h2 class="showHideBlockButton">{t}Subtitle, description{/t}</h2>
-<div class="blockForm" style="display:none" id="subtitle">
+<div class="blockForm" style="display:none" id="subtitle" style="display: none">
 {include file="../pages/form_subtitle_desc.tpl"}
 </div>
 
 <h2 class="showHideBlockButton">{t}Where put the document into{/t}</h2>
-<div class="blockForm" id="whereto">
+<div class="blockForm" id="whereto" style="display: none">
 {include file="../pages/form_tree.tpl"}
 </div>
 
 <h2 class="showHideBlockButton">{t}Long Text{/t}</h2>
-<div class="blockForm" id="extendedtext">
+<div class="blockForm" id="extendedtext" style="display: none">
 {include file="../pages/form_longdesc.tpl"}
 </div>
 
 <h2 class="showHideBlockButton">{t}Images{/t}</h2>
-<div class="blockForm" id="imgs" style="display:block">
+<div class="blockForm" id="imgs" style="display:none">
 {include file="../pages/form_multimedia.tpl" multimedia=$object.multimedia}
 </div>
 
+<h2 class="showHideBlockButton">{t}Connect to multimedia gallery{/t}</h2>
+<div class="blockForm" id="frmgallery" style="display:none">
+<script type="text/javascript">
+var sBasePathGallery  = "{$html->url('/galleries/view/id:')}" ;
+{literal}
+function commitSelectGalleryById(id, title) {
+	if(id) {
+		$("#gallery_id").attr("value", id) ;
+		$("#current_gallery_title").html(title) ;
+		
+		// Indica l'avvenuto cambiamento dei dati
+		try { $().alertSignal() ; } catch(e) {}
+	}
+		
+	tb_remove() ;	
+}
+
+function rollbackSelectGallery() {
+	tb_remove() ;
+}
+
+$(document).ready(function(){
+	$("#remove_gallery").bind("click", function(index) {
+		$("#gallery_id").attr("value", "") ;
+		$("#current_gallery_title").html("") ;
+		
+		// Indica l'avvenuto cambiamento dei dati
+		try { $().alertSignal() ; } catch(e) {}
+	}) ;
+});
+
+{/literal}
+</script>
+
+<fieldset>
+<input type="hidden" id="gallery_id" name="data[gallery_id]" value="{$object.gallery_id}" />
+<p>
+<a href="{$html->url('/galleries')}/select_from_list/?keepThis=true&TB_iframe=true&height=480&width=640&modal=true" title="{t}Select{/t}" class="thickbox">{t}Select{/t} &gt;&gt;</a>&nbsp;&nbsp; 
+<a id="remove_gallery" href="javascript:void(0)">{t}Remove{/t}</a><br/>
+{t}Current gallery{/t}: <a id="current_gallery_title" href="$html->url('/galleries/view/id:'){$object.gallery_id}">{$object.Gallery.title|default:''|escape:'html'}</a>
+</p>
+</fieldset>
+</div>
+
+
 <div id="divLinkExtern"  style="display: none">
 <h2 class="showHideBlockButton">{t}External links{/t}</h2>
-<div class="blockForm" id="linkEsterno" style="display: block">
+<div class="blockForm" id="linkEsterno" style="display: none">
 	LINK ESTERNO
 </div>
 </div>
 
 <div id="divLinkIntern"  style="display: none">
 <h2 class="showHideBlockButton">{t}Objects{/t}</h2>
-<div class="blockForm" id="linkInterno"  style="display: block">
+<div class="blockForm" id="linkInterno"  style="display: none">
 	LINK INTERNO
 </div>
 </div>

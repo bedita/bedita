@@ -61,7 +61,7 @@ class AppController extends Controller
 
 	
 	function beforeFilter() {
-				
+//exit;
 		self::$current = $this;
 		// Templater
 		$this->view = 'Smarty';
@@ -78,7 +78,8 @@ class AppController extends Controller
 		}
 		// Esegue la verifca di login
 		$this->BeAuth->startup($this) ;	
-	 	if(!$this->checkLogin()) return ;
+		
+		if(!$this->checkLogin()) return ;
 		
 	}
 	
