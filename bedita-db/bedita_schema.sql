@@ -557,6 +557,8 @@ CREATE TABLE base_documents (
   desc_author MEDIUMTEXT NULL,
   flagComments BOOL NULL,
   credits VARCHAR(255) NULL,
+  `gallery_id` INT NULL ,
+  `question_id` INT NULL ,
   PRIMARY KEY(id),
   INDEX base_documents_FKIndex1(id),
   FOREIGN KEY(id)
