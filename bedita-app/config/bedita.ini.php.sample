@@ -356,7 +356,7 @@ $config['validate_resorce'] = array(
 				'Image'			=> array('/image\/jpeg/', '/image\/gif/', '/image\/png/'),
 				'Audio'			=> array('/audio\/\.*/'),
 				'Video'			=> array('/video\/\.+/'),
-				'File'			=> array('/application\/msword/', '/application\/pdf/', '/application\/postscript/', 
+				'BEFile'		=> array('/application\/msword/', '/application\/pdf/', '/application\/postscript/', 
 										  '/application\/x-tar/', '/application\/zip/', '/text\/.+/'
 								   ),
 			   ),
