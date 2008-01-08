@@ -42,7 +42,8 @@ Albero per selezionare la collocazione della sezione
 
 $(document).ready(function(){
 
-	$('#properties').show() ;
+	$('#properties').show() ;	
+	$('#attachments').show() ;
 	
 	// aggiunge i comandi per i blocchi
 	$('.showHideBlockButton').bind("click", function(){

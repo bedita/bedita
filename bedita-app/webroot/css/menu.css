@@ -39,7 +39,8 @@ H1.news {background-color:#CC00FF} H1.news A {color:#FFFFFF}
 H1.eventi {background-color:#3399CC} H1.eventi A {color:#FFFFFF}
 H1.percorsi {background-color:#cc9900} H1.percorsi A {color:#FFFFFF}
 H1.documenti {background-color:#ff6600} H1.documenti A {color:#FFFFFF}
-H1.multimedia {background-color:#ff3456} H1.documenti A {color:#FFFFFF}
+H1.multimedia {background-color:#ff3456} H1.multimedia A {color:#FFFFFF}
+H1.attachments {background-color: 	#ff34aa} H1.attachments A {color:#FFFFFF}
 H1.areas {background-color:#ff9933} H1.areas A {color:#FFFFFF}
 H1.commenti {background-color:#F08080} H1.commenti A {color:#FFFFFF}
 H1.questionari {background-color:#999966} H1.questionari A {color:#FFFFFF}

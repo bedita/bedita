@@ -123,6 +123,11 @@ function activePortionsForm(objectType) {
 {include file="../pages/form_multimedia.tpl" multimedia=$object.multimedia}
 </div>
 
+<h2 class="showHideBlockButton">{t}Attachments{/t}</h2>
+<div class="blockForm" id="attachments" style="display:none">
+{include file="../pages/form_attachments.tpl" attachments=$object.attachments}
+</div>
+
 <h2 class="showHideBlockButton">{t}Connect to multimedia gallery{/t}</h2>
 <div class="blockForm" id="frmgallery" style="display:none">
 <script type="text/javascript">

@@ -133,12 +133,12 @@ class ContentBase extends BEAppModel
 		
 	 	$default = array(
 			'start' 			=> array('_getDefaultDataFormat', (isset($data['start']) && !empty($data['start']))?$data['start']:time()),
-			'end'	 			=> array('_getDefaultDataFormat', ((isset($data['end']) && !empty($data['end']))?$data['end']:null)),
-			'formato' 			=> array('_getDefaultFormato', (isset($data['formato']))?$data['formato']:null),
+			'end'	 		=> array('_getDefaultDataFormat', ((isset($data['end']) && !empty($data['end']))?$data['end']:null)),
+			'formato' 		=> array('_getDefaultFormato', (isset($data['formato']))?$data['formato']:null),
 		) ;
 		
 		foreach ($default as $name => $rule) {
-			if(!is_array($rule)) {
+			if(!is_array($rule) || !count($rule)) {
 				$data[$name] = $rule ;
 				continue ;
 			}

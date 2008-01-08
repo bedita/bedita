@@ -356,6 +356,9 @@ msgstr "Documenti"
 msgid "Galleries"
 msgstr "Gallerie"
 
+msgid "attachments"
+msgstr "allegati"
+
 msgid "Sections"
 msgstr "Sezioni"
 
@@ -439,3 +442,30 @@ msgstr "Collega ad una galleria multimediale"
 
 msgid "Current gallery"
 msgstr "Galleria selezionata"
+
+msgid "Attachments"
+msgstr "Allegati"
+
+msgid "No attachments item found"
+msgstr "Nessun allegato"
+
+msgid "Add multimedia by upload"
+msgstr "Aggiungi oggetti multimediali via upload"
+
+msgid "Add multimedia by URL"
+msgstr "Aggiungi oggetti multimediali via URL"
+
+msgid "Add multimedia by BEdita"
+msgstr "Associa oggetti multimediali gia' presenti"
+
+msgid "Add attachments by upload"
+msgstr "Aggiungi allegati via upload"
+
+msgid "Add attachments by URL"
+msgstr "Aggiungi allegati via URL"
+
+msgid "Add attachments by BEdita"
+msgstr "Associa allegati gia' presenti"
+
+
+

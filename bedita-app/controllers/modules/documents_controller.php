@@ -29,7 +29,7 @@ class DocumentsController extends AppController {
 	// This controller does not use a model
 	var $uses = array(
 		'Stream', 'Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Document', 'Tree',
-		'Image', 'Video', 'Audio'
+		'Image', 'Video', 'Audio', 'BEFile'
 		) ;
 	protected $moduleName = 'documents';
 	
@@ -85,20 +85,37 @@ class DocumentsController extends AppController {
 			if(!($obj = $this->Document->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading document: %d", true), $id));
 			}
-						
-			// Se presenti, preleva le immagini del documento
+					
+			// Se presenti, preleva gli oggetti multimediali del documento
 			for($i=0; $i < @count($obj['multimedia']) ; $i++) {
 				$m = $this->Document->am($obj['multimedia'][$i]) ;
 				
 				$type = $conf->objectTypeModels[$m['object_type_id']] ;
 				
-				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments');
-				if(!($Details = $this->{$type}->findById($m['id']))) continue ;
-
+				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments', 'LangText');
+				if(!($Details = $this->{$type}->findById($obj['multimedia'][$i]['id']))) {
+					continue ;
+				}
 				$Details['priority'] = $m['priority'];
 				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
 			
 				$obj['multimedia'][$i]= $Details;
+			}
+
+			// Se presenti, preleva gli allegati al documento
+			for($i=0; $i < @count($obj['attachments']) ; $i++) {
+				$m = $this->Document->am($obj['attachments'][$i]) ;
+				 
+				$type = $conf->objectTypeModels[$m['object_type_id']] ;
+				
+				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments', 'LangText');
+				if(!($Details = $this->{$type}->findById($obj['attachments'][$i]['id']))) {
+					continue ;
+				}
+				$Details['priority'] = $m['priority'];
+				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
+			
+				$obj['attachments'][$i]= $Details;
 			}
 		}
 		
@@ -140,6 +157,15 @@ class DocumentsController extends AppController {
 	  *
 	  */
 	 function save() {
+/*
+pr(serialize($this->data)) ;
+exit;
+*/
+//$this->data = unserialize('a:16:{s:2:"id";s:1:"5";s:6:"status";s:2:"on";s:5:"start";s:10:"22-05-2007";s:3:"end";s:10:"22-05-2008";s:4:"lang";s:2:"it";s:5:"title";s:23:"Primo Documento di Test";s:8:"nickname";s:25:"PrimoDocumentoDiTest_7583";s:8:"subtitle";s:11:"sottotitolo";s:9:"shortDesc";s:0:"";s:11:"destination";a:1:{i:0;s:1:"3";}s:8:"longDesc";s:0:"";s:7:"formato";s:3:"txt";s:10:"multimedia";a:1:{i:0;a:2:{s:2:"id";s:5:"10003";s:8:"priority";s:1:"1";}}s:10:"gallery_id";s:1:"0";s:16:"CustomProperties";a:2:{s:4:"test";a:3:{s:4:"name";s:0:"";s:4:"type";s:7:"integer";s:5:"value";s:2:"10";}s:8:"testBool";a:3:{s:4:"name";s:0:"";s:4:"type";s:4:"bool";s:5:"value";s:1:"1";}}s:11:"Permissions";a:1:{i:0;a:5:{s:4:"name";s:13:"administrator";s:17:"BEDITA_PERMS_READ";s:1:"4";s:19:"BEDITA_PERMS_MODIFY";s:1:"2";s:19:"BEDITA_PERMS_DELETE";s:1:"4";s:6:"switch";s:5:"group";}}}') ;
+/*
+pr($this->data);
+exit;
+*/
 	 	
 	 		$this->checkWriteModulePermission();
 
@@ -157,9 +183,12 @@ class DocumentsController extends AppController {
 		 	// Formatta i campi d tradurre
 		 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
 		 	
+		 	if(!isset($this->data["attachments"])) $this->data["attachments"] = array() ;
+		 	if(!isset($this->data["multimedia"])) $this->data["multimedia"] = array() ;
+		 	
 			$this->Transaction->begin() ;
-
-	 		// Salva i dati
+	 		
+			// Salva i dati
 		 	if(!$this->Document->save($this->data)) {
 		 		throw new BeditaException(__("Error saving document", true), $this->Document->validationErrors);
 		 	}

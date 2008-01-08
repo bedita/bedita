@@ -156,8 +156,10 @@ class BeToolbarHelper extends AppHelper {
 
 		// Definisce lo script per il cambio di pagina
 		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;
-		foreach ($this->namedArgs as $k => $v) {
-			$data[$k] = $v ;
+		if(@is_array($this->namedArgs)) {
+			foreach ($this->namedArgs as $k => $v) {
+				$data[$k] = $v ;
+			}
 		}
 		$url = Router::url($data) ;
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/page:'+ this[this.selectedIndex].value" ;
