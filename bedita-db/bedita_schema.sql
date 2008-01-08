@@ -760,7 +760,7 @@ SELECT * FROM view_video ;
 
 CREATE  VIEW `view_files` AS 
 SELECT 
-streams.*, objects.title, objects.status
+streams.*, objects.title, objects.status, objects.object_type_id
 FROM 
 files INNER JOIN streams ON files.id = streams.id
 INNER JOIN objects ON files.id = objects.id ;
