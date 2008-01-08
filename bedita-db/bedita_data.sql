@@ -89,6 +89,8 @@ INSERT INTO `modules` (`label`, `color`, `path`, `status`) VALUES
 ('galleries', '#ffcc33', 'galleries', 'on'),
 ('multimedia', '#ff3456', 'multimedia', 'on') ;
 
+INSERT INTO `modules` (`label`, `color`, `path`, `status`) VALUES ('attachments', '#ff34aa', 'attachments', 'on') ;
+
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES (
@@ -124,6 +126,14 @@ VALUES (
 (SELECT id FROM groups WHERE name = 'administrator'),
 'group', '15'
 ) ;
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES (
+(SELECT id FROM modules WHERE label = 'attachment'),
+(SELECT id FROM groups WHERE name = 'administrator'),
+'group', '15'
+) ;
+
 -- ---------------------------
 -- Dati di esempio
 -- ---------------------------
