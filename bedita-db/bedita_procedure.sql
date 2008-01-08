@@ -2,7 +2,7 @@
 DROP PROCEDURE  IF EXISTS deleteTreeWithParent ;
 delimiter //
 CREATE PROCEDURE deleteTreeWithParent (_ID INT, _IDPARENT INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 DECLARE pathID MEDIUMTEXT DEFAULT '' ;
 DECLARE pathDel MEDIUMTEXT DEFAULT '' ;
@@ -28,7 +28,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS deleteTree ;
 delimiter //
 CREATE PROCEDURE deleteTree (_ID INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 DECLARE pathID MEDIUMTEXT DEFAULT '' ;
 DECLARE pathDel MEDIUMTEXT DEFAULT '' ;
@@ -65,7 +65,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS appendChildTree ;
 delimiter //
 CREATE PROCEDURE appendChildTree (_ID INT, _IDParent INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 DECLARE pathParent MEDIUMTEXT DEFAULT '' ;
 DECLARE pathID MEDIUMTEXT DEFAULT '' ;
@@ -87,7 +87,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS moveChildTreeUp ;
 delimiter //
 CREATE PROCEDURE moveChildTreeUp (_ID INT, _IDParent INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 DECLARE _priority INT ;
 DECLARE _minPriority INT ;
@@ -112,7 +112,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS moveChildTreeDown ;
 delimiter //
 CREATE PROCEDURE moveChildTreeDown (_ID INT, _IDParent INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 DECLARE _priority INT ;
 DECLARE _maxPriority INT ;
@@ -137,7 +137,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS moveChildTreeFirst ;
 delimiter //
 CREATE PROCEDURE moveChildTreeFirst (_ID INT, _IDParent INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE _priority INT ;
@@ -166,7 +166,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS moveChildTreeLast ;
 delimiter //
 CREATE PROCEDURE moveChildTreeLast (_ID INT, _IDParent INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE _priority INT ;
@@ -198,7 +198,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS switchChildTree ;
 delimiter //
 CREATE PROCEDURE switchChildTree (_ID INT, _IDParent INT, _PRIOR INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE _priority INT ;
@@ -222,7 +222,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS moveTree ;
 delimiter //
 CREATE PROCEDURE moveTree (_ID INT, _IDOldParent INT, _IDNewParent INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE _oldPath MEDIUMTEXT ;
@@ -265,7 +265,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS cloneTree ;
 delimiter //
 CREATE PROCEDURE cloneTree (_ID INT, _IDOLD INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE _idparent INT ;
@@ -304,7 +304,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS appendChildBibliography ;
 delimiter //
 CREATE PROCEDURE appendChildBibliography (_ID INT, _IDParent INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 DECLARE _priority INT ;
 
@@ -320,7 +320,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS removeAllChildrenBibliography ;
 delimiter //
 CREATE PROCEDURE removeAllChildrenBibliography (_IDParent INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 
 DELETE FROM content_bases_objects WHERE `object_id` = _IDParent AND switch = 'BIBLIOS' ;
@@ -333,7 +333,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS moveChildBibliographyUp ;
 delimiter //
 CREATE PROCEDURE moveChildBibliographyUp (_ID INT, _IDParent INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 DECLARE _priority INT ;
 DECLARE _minPriority INT ;
@@ -356,7 +356,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS moveChildBibliographyDown ;
 delimiter //
 CREATE PROCEDURE moveChildBibliographyDown (_ID INT, _IDParent INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 DECLARE _priority INT ;
 DECLARE _maxPriority INT ;
@@ -379,7 +379,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS moveChildBibliographyFirst ;
 delimiter //
 CREATE PROCEDURE moveChildBibliographyFirst (_ID INT, _IDParent INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE _priority INT ;
@@ -408,7 +408,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS moveChildBibliographyLast ;
 delimiter //
 CREATE PROCEDURE moveChildBibliographyLast (_ID INT, _IDParent INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE _priority INT ;
@@ -446,7 +446,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS replacePermission ;
 delimiter //
 CREATE PROCEDURE replacePermission (_OBJID INT, _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40), _FLAG INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 
 DECLARE _UGID INT DEFAULT 0;
@@ -470,7 +470,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS deletePermission ;
 delimiter //
 CREATE PROCEDURE deletePermission (_OBJID INT, _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40))
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 
 DECLARE _UGID INT DEFAULT 0;
@@ -488,7 +488,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS replacePermissionTree ;
 delimiter //
 CREATE PROCEDURE replacePermissionTree (_OBJID INT, _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40), _FLAG INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 
 DECLARE _UGID INT DEFAULT 0;
@@ -531,7 +531,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS deletePermissionTree ;
 delimiter //
 CREATE PROCEDURE deletePermissionTree (_OBJID INT, _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40))
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 
 DECLARE _UGID INT DEFAULT 0;
@@ -568,7 +568,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS deleteAllPermissionTree ;
 delimiter //
 CREATE PROCEDURE deleteAllPermissionTree (_OBJID INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 
 DELETE FROM permissions WHERE object_id
@@ -680,7 +680,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS clonePermission ;
 delimiter //
 CREATE PROCEDURE clonePermission (_OBJID INT, _NEWID INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 
 INSERT permissions (object_id, ugid, switch, flag) SELECT _NEWID, ugid, switch, flag FROM permissions WHERE object_id = _OBJID ;
@@ -697,7 +697,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS replacePermissionModule ;
 delimiter //
 CREATE PROCEDURE replacePermissionModule (_MDL VARCHAR(255), _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40), _FLAG INT)
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 
 DECLARE _UGID INT DEFAULT 0;
@@ -722,7 +722,7 @@ delimiter ;
 DROP PROCEDURE  IF EXISTS deletePermissionModule ;
 delimiter //
 CREATE PROCEDURE deletePermissionModule (_MDL VARCHAR(255), _USERGROUP VARCHAR(255), _SWITCH VARCHAR(40))
-NOT DETERMINISTIC
+DETERMINISTIC
 BEGIN
 
 DECLARE _UGID INT DEFAULT 0;
