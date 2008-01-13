@@ -6,8 +6,10 @@
 <script type="text/javascript">
 var typeFormatting		= '{$object.formato|default:'html'}' ;
 var formattingHTMLTextDoc 	= {if ($object.formato|default:'html' == "html")} true {else} false {/if} ;
-var sBasePath 		= "{$html->url('/js/fckeditor/')}" ;
-var sConfigurePath		= "{$html->url('/js/descrizioni.fckeditor.config.js')}" ;
+//var sBasePath 		= "{$html->url('/js/fckeditor/')}" ;
+//var sConfigurePath		= "{$html->url('/js/descrizioni.fckeditor.config.js')}" ;
+var sBasePath = "{$html->webroot}js/fckeditor/" ;
+var sConfigurePath	 = "{$html->webroot}js/descrizioni.fckeditor.config.js" ;
 var sMsgCofirm		= "{t}Se continui puoi perdere la formattazione inserita, gli 'a capo'.\nVuoi continuare?{/t}" ;
 
 {literal}
@@ -18,8 +20,10 @@ var bFCKLoaded		= false ;
 var bFCKShowed		= false ;
 
 $(document).ready(function(){
+	var app = formattingHTMLTextDoc ;
 	setupEditor() ;
-		
+	formattingHTMLTextDoc = app ;
+	
 	// Inizializza lo stato degli editor
 	if(formattingHTMLTextDoc) {
 		$("#containerTestoTextarea, #containerTestoLTextarea").hide() ;
@@ -66,6 +70,24 @@ $(document).ready(function(){
 		
 		return true ;
 	}) ;
+/*	
+	// Setup stato iniziale editor
+	var val = $(".formatting ").attr("value") ;
+	if(val == 'html') {
+		$("#containerTestoTextarea, #containerTestoLTextarea").hide() ;
+
+		var oEditor = FCKeditorAPI.GetInstance(oFCKeditorTesto.InstanceName) ;
+		oEditor.SetHTML($("#testo").get(0).value) ;
+	
+		oEditor = FCKeditorAPI.GetInstance(oFCKeditorTestoL.InstanceName) ;
+		oEditor.SetHTML($("#testoL").get(0).value) ;
+	
+		$("#containerTestoFCKEditor, #containerTestoLFCKEditor").show() ;
+
+		formattingHTMLTextDoc = true ;	
+		bFCKShowed = true ;
+	}
+*/
 }) ;
 
 /**
