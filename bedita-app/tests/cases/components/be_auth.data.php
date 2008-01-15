@@ -14,10 +14,10 @@ class BeAuthTestData extends BeditaTestData {
 		'new.group' => array('Group' => array('name' => 'frustrated')), 
 		'new.user'	=> array('User' => array('userid' => 'nuovoutente', 'passwd' => 'nuovapass')), 
         'new.user.bad.pass' => 'wrongpassword',
-	    'new.user.groups' =>array('guest','calcettari'),
+	    'new.user.groups' =>array('guest','frustrated'),
 		'new.group.name' => 'supergeeks',
 		'policy'  => array(
-			'maxLoginAttempts' => 1,
+			'maxLoginAttempts' => 5,
 			'maxNumDaysInactivity' => 30,
 			'maxNumDaysValidity' => 4,
 			'authorizedGroups' => array('administrator', 'guest'))

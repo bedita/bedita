@@ -29,12 +29,14 @@ class TestsControllerTest extends CakeTestCase {
 	////////////////////////////////////////////////////////////////
 	function testLoginOk() {
 		pr("Esegue un login con successo.") ;
-		pr("NOTA:\n2 Warning, sono un tentativo di redirect del controller.") ;
 		
-		$this->testAction('/authentications/login',	array('data' => $this->data['login'], 'method' => 'post'));
+		$ret = $this->testAction('/authentications/login',	array('data' => $this->data['login'], 'method' => 'post'));
+		pr($ret);
+		
 		$user 	= $this->Session->read('BEAuthUser') ;
 		$allow 	= $this->Session->read('BEAuthAllow') ;
-		$this->assertEqual(serialize($user), $this->data['loginOKResult']);
+		
+		$this->assertEqual($user['userid'], $this->data['login']['login']['userid']);
 	} 
 
 	function testLogout() {

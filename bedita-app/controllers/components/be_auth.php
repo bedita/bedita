@@ -108,7 +108,9 @@ class BeAuthComponent extends Object {
 		// Se fallisce esce
 		if(empty($u["User"])) {
 			// look for existing user
-            $this->User->setSimpleMode();
+			
+			$this->User->recursive = 1;
+			$this->User->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
 			$u2 = $this->User->find(array("User.userid" => $userid));
 			if(!empty($u2["User"])) {
 				$u2["User"]["last_login_err"]= date('Y-m-d H:i:s');
@@ -246,7 +248,8 @@ class BeAuthComponent extends Object {
 	 */
 	public function createUser($userData, $groups=NULL) {
 		$user = new User() ;
-		$user->setSimpleMode();
+		$user->recursive = 1;
+		$user->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
 		$u = $user->findByUserid($userData['User']['userid']);
 		if(!empty($u["User"])) {
 			$this->log("User ".$userData['User']['userid']." already created");
@@ -310,6 +313,7 @@ class BeAuthComponent extends Object {
 	public function removeUser($userId) {
 		// TODO: come fare con oggetti associati??? sono cancellati di default??
 		$user = new User();
+		$user->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
 		$u = $user->findByUserid($userId);
 		if(empty($u["User"])) {
 			throw new BeditaException(__("User not present",true));

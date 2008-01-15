@@ -56,12 +56,7 @@ class User extends BEAppModel
 	);
 
 	private $hBTM = null; 
-	
-	function setSimpleMode() {
-		$this->recursive=1;
-		$this->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
-	}
-	
+		
     function unbindGroups() {
         $this->hBTM = $this->hasAndBelongsToMany;
     	$this->unbindModel(array('hasAndBelongsToMany' => array('Group')), false);
