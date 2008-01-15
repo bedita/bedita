@@ -19,8 +19,10 @@ class BeTreeComponent extends Object {
 	var $uses = array('Tree') ;
 	
 	function __construct() {
-		if(!class_exists('Tree')) 		loadModel('Tree') ;
-		if(!class_exists('BEObject')) 	loadModel('BEObject') ;
+		if(!class_exists('Tree')) 	
+		  App::import('Model', 'Tree') ;
+		if(!class_exists('BEObject')) 	
+		  App::import('Model', 'BEObject') ;
 		
 		$this->Tree 	= new Tree() ;
 		$this->Object 	= new BEObject() ;

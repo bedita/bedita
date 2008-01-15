@@ -39,6 +39,7 @@ class BeAuthTestCase extends BeditaTestCase {
 		$id = $beAuth->saveGroup($this->data['new.group']);
 		$this->assertTrue(!empty($id));
 		$this->assertTrue($beAuth->createUser($this->data['new.user'], $this->data['new.user.groups']));
+        $this->assertFalse($beAuth->login($this->data['new.user']['User']['userid'], $this->data['new.user.bad.pass'], $this->data['policy']));
 		$this->assertTrue($beAuth->login($this->data['new.user']['User']['userid'], $this->data['new.user']['User']['passwd'], $this->data['policy']));
 		$this->assertTrue($beAuth->removeUser($this->data['new.user']['User']['userid']));
 		$this->assertTrue($beAuth->removeGroup($this->data['new.group']['Group']['name']));

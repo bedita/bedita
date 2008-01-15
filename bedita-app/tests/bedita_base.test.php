@@ -11,7 +11,7 @@ class BeditaTestData extends Object {
 	function &getData() { return $this->data ;  }
 }
 
-loadController("App"); // base controller, beditaexcepion... 
+App::import('Controller', 'App'); // base controller, beditaexcepion... 
 
 class BeditaTestCase extends CakeTestCase {
 
@@ -101,7 +101,7 @@ class BeditaTestCase extends CakeTestCase {
 					$modelKey = Inflector::underscore($modelClass);
 					
 					if(!class_exists($modelClass)){
-						loadModel($modelClass);
+						App::import('Model',$modelClass);
 					}
 
 					if (class_exists($modelClass)) {
@@ -123,7 +123,7 @@ class BeditaTestCase extends CakeTestCase {
 				$components = is_array($this->components) ? $this->components : array($this->components);
 
 				foreach($components as $componentClass) {
-					loadComponent($componentClass);
+					App::import('Component',$componentClass);
 
 					$className = $componentClass . 'Component' ;
 					if (class_exists($className)) {

@@ -48,7 +48,8 @@ class BeFileHandlerComponent extends Object {
 	
 	function __construct() {
 		foreach ($this->uses as $model) {
-			if(!class_exists($model)) loadModel($model) ;
+			if(!class_exists($model)) 
+			     App::import('Model', $model) ;
 			$this->{$model} = new $model() ;
 		}
 				
@@ -56,7 +57,8 @@ class BeFileHandlerComponent extends Object {
 			if(isset($this->{$component}))	continue;
 			
 			$className = $component . 'Component' ;
-			if(!class_exists($className)) loadComponent($component);
+			if(!class_exists($className)) 
+			     App::import('Component', $component);
 			$this->{$component} = new $className() ;
 		}
 	} 

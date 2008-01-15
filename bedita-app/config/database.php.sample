@@ -32,20 +32,24 @@ if (!defined('SQL_SCRIPT_PATH')) { // cambiare opportunamente questo path
 class DATABASE_CONFIG
 {
 	var $default = array('driver' => 'mysql',
-								'connect' => 'mysql_connect',
-								'host' => 'localhost',
-								'login' => 'pippo',
-								'password' => 'baudo',
-								'database' => 'BEDITA',
-								'prefix' => '',
+							'persistent' => false,
+							'connect' => 'mysql_connect',
+							'host' => 'localhost',
+							'login' => 'pippo',
+							'password' => 'baudo',
+							'database' => 'BEDITA',
+							'schema' => '',
+							'prefix' => '',
 							'encoding' => 'utf8');
 
 	var $test = array('driver' => 'mysql',
+							'persistent' => false,
 							'connect' => 'mysql_connect',
 							'host' => 'localhost',
 							'login' => 'pippo',
 							'password' => 'baudo',
 							'database' => 'BEDITA_TEST',
+							'schema' => '',
 							'prefix' => '',
 							'encoding' => 'utf8');
 }

@@ -68,7 +68,7 @@ Configure::load("bedita.ini") ;
  * Registrazione funzioni di shutdown e gestione transazioni.
  */
 function shutdownTransation() {
-	loadComponent('Transaction');
+	App::import('Component','Transaction');
 	$Transaction =& new TransactionComponent();
 	
 	$Transaction->init() ;

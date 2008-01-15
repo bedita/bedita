@@ -25,8 +25,8 @@ class User extends BEAppModel
 	var $name = 'User';
 
 	var $validate = array(
-	'userid'  => VALID_NOT_EMPTY,
-	'pasword'  => VALID_NOT_EMPTY,
+		'userid'  => VALID_NOT_EMPTY,
+		'pasword'  => VALID_NOT_EMPTY,
 	);
 
 	var $hasAndBelongsToMany = array(
@@ -55,12 +55,23 @@ class User extends BEAppModel
 			)
 	);
 
+	private $hBTM = null; 
+	
 	function setSimpleMode() {
 		$this->recursive=1;
 		$this->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
 	}
 	
-	/**
+    function unbindGroups() {
+        $this->hBTM = $this->hasAndBelongsToMany;
+    	$this->unbindModel(array('hasAndBelongsToMany' => array('Group')), false);
+    }
+    	
+    function rebindGroups() {
+        $this->bindModel(array('hasAndBelongsToMany' => $this->hBTM));
+    }
+        
+    /**
 	 * Viene riformattato il risultato:
 	 * 		id => ; passwd => ; realname => ; userid => ; groups => array({1..N} nomi_grupppi)
 	 *

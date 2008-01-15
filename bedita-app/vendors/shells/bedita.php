@@ -1,6 +1,6 @@
 <?php 
 
-loadModel('DataSource');
+App::import('Model', 'DataSource');
 vendor('splitter_sql');
 
 class DataSourceTest extends DataSource {

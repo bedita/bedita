@@ -112,8 +112,6 @@ CREATE TABLE groups_users (
   user_id INTEGER UNSIGNED NOT NULL,
   group_id INTEGER UNSIGNED NOT NULL,
   PRIMARY KEY(user_id, group_id),
-  INDEX users_has_groups_FKIndex1(user_id),
-  INDEX users_has_groups_FKIndex2(group_id),
   INDEX groups_users_FKIndex1(user_id),
   INDEX groups_users_FKIndex2(group_id),
   FOREIGN KEY(user_id)

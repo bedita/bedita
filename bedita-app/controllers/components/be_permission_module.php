@@ -21,8 +21,10 @@ class BePermissionModuleComponent extends Object {
 	private $groupModel	= null ;
 	
 	function __construct() {
-		if(!class_exists('PermissionModule')) 	loadModel('PermissionModule') ;
-		if(!class_exists('Group')) loadModel('Group') ;
+		if(!class_exists('PermissionModule')) 	
+			App::import('Model', 'PermissionModule');
+		if(!class_exists('Group'))
+			App::import('Model', 'Group');
 		
 		$this->PermissionModule = new PermissionModule() ;
 		$this->groupModel = new Group() ;

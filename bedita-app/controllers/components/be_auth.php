@@ -30,10 +30,10 @@ class BeAuthComponent extends Object {
 	
 	function __construct() {
 		if(!class_exists('User')) {
-			loadModel('User') ;
+			App::import('Model', 'User') ;
 		}
 		if(!class_exists('Group')) {
-			loadModel('Group') ;
+			App::import('Model', 'Group') ;
 		}
 		parent::__construct() ;
 	} 
@@ -108,13 +108,14 @@ class BeAuthComponent extends Object {
 		// Se fallisce esce
 		if(empty($u["User"])) {
 			// look for existing user
-			$this->User->recursive = 1;
-			$this->User->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
+            $this->User->setSimpleMode();
 			$u2 = $this->User->find(array("User.userid" => $userid));
 			if(!empty($u2["User"])) {
 				$u2["User"]["last_login_err"]= date('Y-m-d H:i:s');
 				$u2["User"]["num_login_err"]=$u2["User"]["num_login_err"]+1;
+                $this->User->unbindGroups();
 				$this->User->save($u2);
+                $this->User->rebindGroups();
 			}
 			$this->logout() ;
 			return false ;
@@ -164,8 +165,11 @@ class BeAuthComponent extends Object {
 				$u["User"]["num_login_err"]=0;
 				$u["User"]["last_login"]=date('Y-m-d H:i:s');
 		}		
-		$this->User->save($u);
-		
+        
+        $this->User->unbindGroups();
+        $this->User->save($u); //, true, array('num_login_err','last_login_err','valid','last_login'));
+        $this->User->rebindGroups();
+        
 		if(!$this->isValid) {
 			$this->logout();
 		}
