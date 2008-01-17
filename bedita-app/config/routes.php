@@ -42,4 +42,40 @@
  * developement.
  */
 	Router::connect('/tests', array('controller' => 'tests', 'action' => 'index'));
+
+/**
+ * route to switch locale
+ */
+	Router::connect('/lang/*', array('controller' => 'p28n', 'action' => 'change'));
+	
+	//forgiving routes that allow users to change the lang of any page
+	Router::connect('/eng?/*', array(
+	    'controller' => "p28n",
+	    'action' => "shuntRequest",
+	    'lang' => 'en-gb'
+	));
+
+	Router::connect('/ita/*', array(
+	    'controller' => "p28n",
+	    'action' => "shuntRequest",
+	    'lang' => 'it'
+	));
+	
+	Router::connect('/spa/*', array(
+	    'controller' => "p28n",
+	    'action' => "shuntRequest",
+	    'lang' => 'es'
+	));
+	
+	Router::connect('/por/*', array(
+	    'controller' => "p28n",
+	    'action' => "shuntRequest",
+	    'lang' => 'pt'
+	));
+	
+	Router::connect('/deu/*', array(
+	    'controller' => "p28n",
+	    'action' => "shuntRequest",
+	    'lang' => 'de'
+	));
 ?>

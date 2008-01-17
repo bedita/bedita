@@ -77,10 +77,6 @@ class AuthenticationsController extends AppController {
 		$this->eventInfo("logged out");
 		$this->BeAuth->logout() ;
 	}
-
-	function switchlang() {
-		$_SESSION['Config']['language']=$this->data['lang'];
-	}
 	
 	 protected function forward($action, $esito) {
 	 	$REDIRECT = array(

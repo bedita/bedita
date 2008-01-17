@@ -32,11 +32,9 @@
 {include file="../messages.tpl"}
 <div id="centralPageHome">
 {if $conf->multilang}
-<form action="{$html->url('/authentications/switchlang')}" method="post" name="switchLangForm" id="switchLangForm" class="cmxform">
 {t}Language{/t}:
-<select name="data[lang]" onchange="javascript:document.getElementById('switchLangForm').submit();">
-{html_options options=$conf->langsSystem selected=$conf->Config.language}
-</select>
-</form>
+{foreach key=key item=item name=l from=$conf->langsSystem}
+<a href="{$html->base}/lang/{$key}">{$item}</a>{if !$smarty.foreach.l.last} | {/if}
+{/foreach} 
 {/if}
 </div>

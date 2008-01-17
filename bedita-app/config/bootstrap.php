@@ -42,6 +42,9 @@
  * $controllerPaths = array('this path to controllers', 'second full path to controllers', 'etc...');
  *
  */
+
+define(DEFAULT_LANGUAGE, 'it'); 
+
 $modelPaths = array();
 $controllerPaths = array();
 
