@@ -246,11 +246,12 @@ $(document).ready(function(){
 			<textarea name="data[shortDesc]" id="testo" style="font-size:13px; width:510px; height:150px;">{$object.shortDesc|default:''}</textarea>
 			<br/>
 			<b>{t}Long text{/t}:</b>
+
 			<br/>
 			<textarea name="data[longDesc]" id="testoL" style="font-size:13px; width:510px; height:150px;">{$object.longDesc|default:''}</textarea>
 			<br/>
 			<b>{t}Text type{/t}:</b>
-			&nbsp;&nbsp;
+			&nbsp;&nbsp; 
 			<input type="radio" name="data[formato]" class="formatting" value="html" /> <span class="labelFormating">{t}html{/t}</span>
 			<input type="radio" name="data[formato]" class="formatting" value="txt"/> <span class="labelFormating">{t}only text{/t}</span>
 			<input type="radio" name="data[formato]" class="formatting" value="txtParsed" /> <span class="labelFormating">{t}text with conversion space and link{/t}</span>
@@ -258,5 +259,5 @@ $(document).ready(function(){
 
 </fieldset>
 
-	{*  END -- SENZA FCKEDITOR *}
+	{*  END -- SENZA FCKEDITOR prova  *}
 {/if}
