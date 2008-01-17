@@ -22,14 +22,11 @@ define("MEDIA_ROOT",	ROOT . DS . APP_DIR . DS . "media") ;
 define("MEDIA_URL",	"http://bedita/media") ;
 
 /**
- * default language
- */
-$config['lang'] = "it" ;
-
-/**
- * uncomment to set default interface language
+ * uncomment to set default interface language, set 'multilang' true for user choice
+ * set 'multilang' true if $config['Config']['language'] is set
  */
 //$config['Config']['language'] = "ita"; // or "eng", "spa", "por"
+$config['multilang'] = true;
 
 /**
  * Formato di default per i testi dei diversi tipi di contenuto.
@@ -76,9 +73,6 @@ $config['basicGroups'] = array('administrator','editor','reader','guest');
 
 // fckeditor (enabled|disabled) for longText: comment to disable
 $config['fckeditor'] = true;
-
-// abilita la combo di scelta della lingua del backend
-$config['multilang'] = true;
 
 ///////////////////////////////////////////////////////
 // DO NOT EDIT BELOW THIS LINE//

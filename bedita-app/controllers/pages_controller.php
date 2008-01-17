@@ -23,7 +23,7 @@ class PagesController extends AppController {
 	var $name = 'Pages';
 
 	var $helpers = array();
-	var $components = array();
+	var $components = array('Session', 'Cookie');
 	var $uses = null;
 
 	/**
@@ -39,6 +39,14 @@ class PagesController extends AppController {
 	 
 	 function changePasswd() {
 	 }
+	
+	function changeLang($lang = null) {
+		if (!empty($lang)) {
+			$this->Session->write('Config.language', $lang);
+			$this->Cookie->write('lang', $lang, null, '+350 day'); 
+		}
+		$this->redirect($this->referer(null, true));
+	}
 	 
 	 function login() {
 	 }

@@ -43,8 +43,6 @@
  *
  */
 
-define(DEFAULT_LANGUAGE, 'it'); 
-
 $modelPaths = array();
 $controllerPaths = array();
 

@@ -5,7 +5,7 @@ uses('L10n');
 class AppController extends Controller
 {
 	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "Msg");
-	var $components = array('BeAuth', 'BePermissionModule','Transaction','P28n');
+	var $components = array('BeAuth', 'BePermissionModule','Transaction');
 	var $uses = array('EventLog') ;
 	
 	protected $moduleName = NULL;
