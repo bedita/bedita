@@ -173,8 +173,9 @@ class BeditaTestCase extends CakeTestCase {
 	/**
 	 * Resetta data source di default
 	 */
-	protected function resetDefaultDataSource($name) {
-
+	protected function resetDefaultDataSource() {
+		$_this =& ConnectionManager::getInstance();
+		
 		if(!isset($this->_originalDefaultDB)) return ;
 		$_this->_dataSources['default'] = &$this->_originalDefaultDB  ;
 

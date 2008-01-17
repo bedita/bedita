@@ -93,7 +93,7 @@ class TransactionComponent extends Object {
 		if(isset(self::$db)) return ;
 		
 		if(!class_exists('ConnectionManager')) {
-			loadModel('ConnectionManger') ;
+			App::import('Model', 'ConnectionManger') ;
 		}
 		
 		if(isset(self::$dbConfig))
