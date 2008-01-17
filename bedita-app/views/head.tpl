@@ -25,7 +25,17 @@ $(document).ready(function(){
 
 {literal}
 });
-
+// variables for jquery.changealert.js
+// i18n
+var html = " \
+		<span id='_hndVisualAlert'><\/span> \
+		<input type='checkbox' id='_hndChkbox'> \
+		<a id='_cmdCheck' href='#'>{/literal}{t}Remind{/t}{literal}<\/a> \
+		<br/> \
+		{/literal}{t}Check if you want be notified, whenever you try to leave the page and you changed some data in the form{/t} ({t}changes would be lost if you leave the page{/t}){literal}.\
+";
+var datachanged = "* {/literal}{t}data changed{/t}{literal}<br/>";
+var changeAlertMessage = "{/literal}{t}The change will be lost. Do you want to continue{/t}{literal}?" ;
 {/literal}
 //-->
 </script>

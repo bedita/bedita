@@ -14,6 +14,13 @@ var langs = {
 
 var validate = null ;
 
+$.validator.setDefaults({ 
+	success: function(label) {
+		// set &nbsp; as text for IE
+		label.html("&nbsp;").addClass("checked");
+	}
+});
+
 $(document).ready(function(){
 
 	// Visualizzazione campi con  calendario
@@ -21,33 +28,16 @@ $(document).ready(function(){
 	$('#end').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar', dateFormat:formatDateCalendar});
 	
 	// Validazione al submit
-	validateFrm = $("#updateForm").validate({
-		debug:false,
-		errorLabelContainer: $("#errorForm"),
-		errorClass: "errorFieldForm",
-		rules: {
-			"data[title]"		: "required",
-		},
-		messages: {
-			"data[title]"		: "Il titolo &egrave; obbligatorio",
-		}
-	});
-
-	$("#updateForm").bind("submit", function() {
-		// se ci sono stati errori, stampa un messaggio
-		if(validateFrm.errorList.length) {
-			alert(validateFrm.errorList[0].message) ;
-		}
-	}) ;
+	$("#updateForm").validate();
 
 	// Conferma cancellazione
 	$("#updateForm input[@name=cancella]").bind("click", function() {
-		if(!confirm("Attenzione!!! operazione potenzialmente dannosa.\nSicuro di voler continuare?")) {
+		if(!confirm("{/literal}{t}Attention!!! you are deleting an item.\nAre you sure that you want to continue?{/t}{literal}")) {
 			return false ;
 		}
 		document.location = "{/literal}{$html->url('delete/')}{$object.id}{literal}" ;
 	}) ;
-
+	
 	// Aggiunta traduzioni linguistiche dei campi
 	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
 	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
@@ -104,7 +94,7 @@ function activePortionsForm(objectType) {
 </div>
 
 <h2 class="showHideBlockButton">{t}Subtitle, description{/t}</h2>
-<div class="blockForm" style="display:none" id="subtitle" style="display: none">
+<div class="blockForm" id="subtitle" style="display: none">
 {include file="../pages/form_subtitle_desc.tpl"}
 </div>
 
@@ -130,63 +120,23 @@ function activePortionsForm(objectType) {
 
 <h2 class="showHideBlockButton">{t}Connect to multimedia gallery{/t}</h2>
 <div class="blockForm" id="frmgallery" style="display:none">
-<script type="text/javascript">
-var sBasePathGallery  = "{$html->url('/galleries/view/id:')}" ;
-{literal}
-function commitSelectGalleryById(id, title) {
-	if(id) {
-		$("#gallery_id").attr("value", id) ;
-		$("#current_gallery_title").html(title) ;
-		
-		// Indica l'avvenuto cambiamento dei dati
-		try { $().alertSignal() ; } catch(e) {}
-	}
-		
-	tb_remove() ;	
-}
-
-function rollbackSelectGallery() {
-	tb_remove() ;
-}
-
-$(document).ready(function(){
-	$("#remove_gallery").bind("click", function(index) {
-		$("#gallery_id").attr("value", "") ;
-		$("#current_gallery_title").html("") ;
-		
-		// Indica l'avvenuto cambiamento dei dati
-		try { $().alertSignal() ; } catch(e) {}
-	}) ;
-});
-
-{/literal}
-</script>
-
-<fieldset>
-<input type="hidden" id="gallery_id" name="data[gallery_id]" value="{$object.gallery_id}" />
-<p>
-<a href="{$html->url('/galleries')}/select_from_list/?keepThis=true&TB_iframe=true&height=480&width=640&modal=true" title="{t}Select{/t}" class="thickbox">{t}Select{/t} &gt;&gt;</a>&nbsp;&nbsp; 
-<a id="remove_gallery" href="javascript:void(0)">{t}Remove{/t}</a><br/>
-{t}Current gallery{/t}: <a id="current_gallery_title" href="$html->url('/galleries/view/id:'){$object.gallery_id}">{$object.Gallery.title|default:''|escape:'html'}</a>
-</p>
-</fieldset>
+{include file="../pages/form_galleries.tpl"}
 </div>
-
-
-<div id="divLinkExtern"  style="display: none">
+{*
+<div id="divLinkExtern">
 <h2 class="showHideBlockButton">{t}External links{/t}</h2>
 <div class="blockForm" id="linkEsterno" style="display: none">
 	LINK ESTERNO
 </div>
 </div>
 
-<div id="divLinkIntern"  style="display: none">
+<div id="divLinkIntern">
 <h2 class="showHideBlockButton">{t}Objects{/t}</h2>
 <div class="blockForm" id="linkInterno"  style="display: none">
 	LINK INTERNO
 </div>
 </div>
-
+*}
 <h2 class="showHideBlockButton">{t}Custom Properties{/t}</h2>
 <div class="blockForm" id="customProperties">
 {include file="../pages/form_custom_properties.tpl" el=$object}

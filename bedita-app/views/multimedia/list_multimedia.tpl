@@ -49,7 +49,7 @@ $(document).ready(function(){
 			{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
 		</p>
 		{else}
-			No multimedia item found
+			{t}No multimedia item found{/t}
 		{/if}
 		</div>
 		

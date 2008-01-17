@@ -20,12 +20,6 @@
 {$html->css('message')}
 {if ($agent.IE)}{$html->css('ie')}{/if}
 
-{* Messagio per il change alert. *}
-<script type="text/javascript">
-var changeAlertMessage = "{t}The change will be lost.DO you want continue{/t}?" ;
-</script>	
-
-
 {literal}
 <style type="text/css">
 TABLE.indexList TR.rowList:hover {background-color:{/literal}{if empty($moduleColor)}#FF6600{else}{$moduleColor}{/if}{literal};}

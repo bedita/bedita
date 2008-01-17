@@ -1,11 +1,23 @@
 <fieldset>
-	<div id="treecontrol">
-		<a href="#">{t}Close all{/t}</a>
-		<a href="#">{t}Expand all{/t}</a>
-	</div>
 	{if isset($excludedSubTreeId)}
-	{$beTree->tree("treeWhere", $tree, $excludedSubTreeId)}
+		{if empty($tree)}
+			{t}No tree found{/t}
+		{else}
+			<div id="treecontrol">
+				<a href="#">{t}Close all{/t}</a>
+				<a href="#">{t}Expand all{/t}</a>
+			</div>
+			{$beTree->tree("treeWhere", $tree, $excludedSubTreeId)}	
+		{/if}
 	{else}
-	{$beTree->tree("treeWhere", $tree)}
+		{if empty($tree)}
+			{t}No tree found{/t}
+		{else}
+			<div id="treecontrol">
+				<a href="#">{t}Close all{/t}</a>
+				<a href="#">{t}Expand all{/t}</a>
+			</div>
+			{$beTree->tree("treeWhere", $tree)}
+		{/if}
 	{/if}
 </fieldset>

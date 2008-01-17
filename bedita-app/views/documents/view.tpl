@@ -13,6 +13,8 @@ Pagina d'entrata modulo Documents.
 {$javascript->link("jquery.treeview")}
 {$javascript->link("jquery.changealert")}
 {$javascript->link("jquery.form")}
+{$javascript->link("jquery.cmxforms")}
+{$javascript->link("jquery.metadata")}
 {$javascript->link("jquery.validate")}
 {$javascript->link("jquery.autocomplete")}
 {$javascript->link("jquery.translatefield")}
@@ -42,7 +44,8 @@ Albero per selezionare la collocazione della sezione
 
 $(document).ready(function(){
 
-	$('#properties').show() ;	
+	$('#properties').show() ;
+	$('#extendedtext').show() ;
 	$('#attachments').show() ;
 	
 	// aggiunge i comandi per i blocchi

@@ -29,11 +29,11 @@ con i file scaricati sul server e inserisce i nuovi oggetti nel form.
 */
 var counter =  0 ;
 function commitUploadImage(files) {	
-	
+	var emptyDiv = "<div><\/div>"; 
 	for(var i=0 ; i < files.length ; i++) {
 		var filename	= escape(files[i]) ;
 		counter++ ;
-		$("<div></div>").load(URLGetObjMultimedia, {'filename': filename, 'priority':priority, 'index':index, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
+		$(emptyDiv).load(URLGetObjMultimedia, {'filename': filename, 'priority':priority, 'index':index, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
 			$("#containerMultimedia").append(this) ; 
 			
 			$(".imageBox", this).each(function() {
@@ -71,11 +71,12 @@ function rollbackUploadImage() {
 
 // Per gli oggetti gia' registrati
 var counter =  0 ;
-function commitUploadImageById(IDs) {	
+function commitUploadImageById(IDs) {
+	var emptyDiv = "<div><\/div>"; 
 	for(var i=0 ; i < IDs.length ; i++) {
 		var id	= escape(IDs[i]) ;
 		counter++ ;
-		$("<div></div>").load(URLGetObjMultimediaId, {'id': id, 'priority':priority, 'index':index, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
+		$(emptyDiv).load(URLGetObjMultimediaId, {'id': id, 'priority':priority, 'index':index, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
 			$("#containerMultimedia").append(this) ; 
 			
 			$(".imageBox", this).each(function() {
@@ -179,11 +180,11 @@ var cols 		= 5 ;
 
 <fieldset id="containerMultimedia">
 {* NON cambiare la notazione degli URL qui sotto (?....) altrimenti non funzia il plugin che apre la finestra modale !!!!! *}
-<a href="{$html->url('/multimedia')}/frm_upload/?keepThis=true&TB_iframe=true&height=480&width=640&modal=true" title="{t}Add multimedia by upload{/t}" class="thickbox">{t}Add multimedia by upload{/t}</a>
+<a href="{$html->url('/multimedia')}/frm_upload/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{t}Add multimedia by upload{/t}" class="thickbox">{t}Add multimedia by upload{/t}</a>
 |
-<a href="{$html->url('/multimedia')}/frm_upload_bedita/?keepThis=true&TB_iframe=true&height=480&width=640&modal=true" title="{t}Add multimedia by BEdita{/t}" class="thickbox">{t}Add multimedia by BEdita{/t}</a>
+<a href="{$html->url('/multimedia')}/frm_upload_bedita/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{t}Add multimedia by BEdita{/t}" class="thickbox">{t}Add multimedia by BEdita{/t}</a>
 
-{* | <a href="{$html->url('/multimedia')}/frm_upload_url/?keepThis=true&TB_iframe=true&height=480&width=640&modal=true" title="{t}Add multimedia by URL{/t}" class="thickbox">{t}Add multimedia by URL{/t}</a>*}
+{* | <a href="{$html->url('/multimedia')}/frm_upload_url/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{t}Add multimedia by URL{/t}" class="thickbox">{t}Add multimedia by URL{/t}</a>*}
 
 {assign var="newPriority" 	value=1}
 {assign var="index" 		value=0}

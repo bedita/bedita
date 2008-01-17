@@ -6,11 +6,9 @@
 <script type="text/javascript">
 var typeFormatting		= '{$object.formato|default:'html'}' ;
 var formattingHTMLTextDoc 	= {if ($object.formato|default:'html' == "html")} true {else} false {/if} ;
-//var sBasePath 		= "{$html->url('/js/fckeditor/')}" ;
-//var sConfigurePath		= "{$html->url('/js/descrizioni.fckeditor.config.js')}" ;
-var sBasePath = "{$html->webroot}js/fckeditor/" ;
-var sConfigurePath	 = "{$html->webroot}js/descrizioni.fckeditor.config.js" ;
-var sMsgCofirm		= "{t}Se continui puoi perdere la formattazione inserita, gli 'a capo'.\nVuoi continuare?{/t}" ;
+var sBasePath 		= "{$html->webroot}js/fckeditor/" ;
+var sConfigurePath		= "{$html->webroot}js/descrizioni.fckeditor.config.js" ;
+var sMsgConfirm		= "{t}If you continue, you loose the formatting type, new line.\nDo you want to continue?{/t}" ;
 
 {literal}
 var oFCKeditorTesto 	= false ;
@@ -166,7 +164,7 @@ function changeFormattingText(sentHtml) {
 	// Se nn e' completo il caricamento, esce
 	if(!bFCKLoaded) return ;
 	
-	if(sentHtml && !confirm(sMsgCofirm)) return ;
+	if(sentHtml && !confirm(sMsgConfirm)) return ;
 	
 	if(sentHtml) {
 		if(!bFCKShowed) viewFCK() ;
@@ -174,13 +172,13 @@ function changeFormattingText(sentHtml) {
 		if(bFCKShowed) unviewFCK() ;
 	}
 }
-
 {/literal}
+
 </script>
 
 <fieldset>
-			<b>Testo breve:</b>
-			<br>
+			<b>{t}Short text{/t}:</b>
+			<br/>
 			<div id="containerTestoTextarea" style="display:none;">
 			<textarea name="data[shortDesc]" id="testo" style="font-size:13px; width:510px; height:150px;">{$object.shortDesc|default:''}</textarea>
 			</div>
@@ -188,8 +186,8 @@ function changeFormattingText(sentHtml) {
 			<textarea name="testoFCK" id="testoFCK" style="font-size:13px; width:510px; height:150px;">{$object.shortDesc|default:''}</textarea>
 			</div>
 			<p>
-			<b>Testo lungo:</b>
-			<br>
+			<b>{t}Long text{/t}:</b>
+			<br/>
 			<div id="containerTestoLTextarea" style="display:none;">
 			<textarea name="data[longDesc]" id="testoL" style="font-size:13px; width:510px; height:150px;">{$object.longDesc|default:''}</textarea>
 			</div>
@@ -197,13 +195,12 @@ function changeFormattingText(sentHtml) {
 			<textarea name="testoLFCK" id="testoLFCK" style="font-size:13px; width:510px; height:150px;">{$object.longDesc|default:''}</textarea>
 			</div>
 			<p>
-			<b>Formattazione:</b>
+			<b>{t}Text type{/t}:</b>
 			&nbsp;&nbsp;
 			<input type="radio" name="data[formato]" class="formatting" value="html" /> <span class="labelFormating">{t}html{/t}</span>
 			<input type="radio" name="data[formato]" class="formatting" value="txt"/> <span class="labelFormating">{t}only text{/t}</span>
 			<input type="radio" name="data[formato]" class="formatting" value="txtParsed" /> <span class="labelFormating">{t}text with conversion space and link{/t}</span>
 			</p>
-
 </fieldset>
 
 	{*  END -- CON FCKEDITOR *}
@@ -216,7 +213,7 @@ var typeFormatting		= '{$object.formato|default:'html'}' ;
 var formattingHTMLTextDoc 	= {if ($object.formato|default:'html' == "html")} true {else} false {/if} ;
 var sBasePath 		= "{$html->url('/js/fckeditor/')}" ;
 var sConfigurePath		= "{$html->url('/js/descrizioni.fckeditor.config.js')}" ;
-var sMsgCofirm		= "{t}Se continui puoi perdere la formattazione inserita, gli 'a capo'.\nVuoi continuare?{/t}" ;
+var sMsgConfirm		= "{t}If you continue, you loose the formatting type, new line.\nDo you want to continue?{/t}" ;
 
 {literal}
 var oFCKeditorTesto 	= false ;
@@ -244,15 +241,15 @@ $(document).ready(function(){
 </script>
 	
 <fieldset>
-			<b>Testo breve:</b>
-			<br>
+			<b>{t}Short text{/t}:</b>
+			<br/>
 			<textarea name="data[shortDesc]" id="testo" style="font-size:13px; width:510px; height:150px;">{$object.shortDesc|default:''}</textarea>
 			<br/>
-			<b>Testo lungo:</b>
+			<b>{t}Long text{/t}:</b>
 			<br/>
 			<textarea name="data[longDesc]" id="testoL" style="font-size:13px; width:510px; height:150px;">{$object.longDesc|default:''}</textarea>
 			<br/>
-			<b>Formattazione:</b>
+			<b>{t}Text type{/t}:</b>
 			&nbsp;&nbsp;
 			<input type="radio" name="data[formato]" class="formatting" value="html" /> <span class="labelFormating">{t}html{/t}</span>
 			<input type="radio" name="data[formato]" class="formatting" value="txt"/> <span class="labelFormating">{t}only text{/t}</span>
@@ -263,4 +260,3 @@ $(document).ready(function(){
 
 	{*  END -- SENZA FCKEDITOR *}
 {/if}
-

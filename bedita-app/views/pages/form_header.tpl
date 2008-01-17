@@ -7,8 +7,8 @@
 	</td>
 	{if $module_modify eq '1'}
 	<td style="padding-left:40px;" nowrap>
-		<input class="submit" type="submit" value=" salva " name="save"/>	
-		<input type="button" name="elimina" class="submit" value="{t}delete{/t}" {if !($object.id|default:false)}disabled="1"{/if}/>
+		<input class="submit" type="submit" value=" {t}Save{/t} " name="save"/>	
+		<input type="button" name="elimina" class="submit" value="{t}Delete{/t}" {if !($object.id|default:false)}disabled="1"{/if}/>
 	</td>
 	{else}
 	<td style="padding-left:40px;" nowrap>&#160;</td>

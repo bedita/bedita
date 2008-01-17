@@ -407,7 +407,7 @@ msgstr "Descrizione"
 msgid "Subtitle"
 msgstr "Sottotitolo"
 
-msgid "The change will be lost.DO you want continue"
+msgid "The change will be lost. Do you want to continue"
 msgstr "I cambiamenti andranno perduti. Vuoi continuare"
 
 msgid "Only text"
@@ -467,5 +467,38 @@ msgstr "Aggiungi allegati via URL"
 msgid "Add attachments by BEdita"
 msgstr "Associa allegati gia' presenti"
 
+msgid "Short text"
+msgstr "Testo breve"
 
+msgid "Long text"
+msgstr "Testo lungo"
 
+msgid "Text type"
+msgstr "Tipo di testo"
+
+msgid "No galleries found"
+msgstr "Nessuna galleria trovata"
+
+msgid "No tree found"
+msgstr "Albero di elementi non trovato"
+
+msgid "No documents found"
+msgstr "Nessun documento trovato"
+
+msgid "No areas"
+msgstr "Nessuna area presente"
+
+msgid "No multimedia item found"
+msgstr "Nessun elemento multimediale trovato"
+
+msgid "Remind"
+msgstr "Segnala"
+
+msgid "Check if you want be notified, whenever you try to leave the page and you changed some data in the form"
+msgstr "Seleziona qui se vuoi essere avvertito del cambiamento dei dati quando lasci la pagina"
+
+msgid "changes would be lost if you leave the page"
+msgstr "i cambiamenti andrebbero persi, lasciando la pagina"
+
+msgid "data changed"
+msgstr "dati cambiati"

@@ -6,14 +6,6 @@ Handler per la gestione del cambiamento nelle pagine.
 var _changed = false ;
 var _elementAlert = null ;
 
-var html = " \
-		<span id='_hndVisualAlert'></span> \
-		<input type='checkbox' id='_hndChkbox'> \
-		<a id='_cmdCheck' href='#'>Segnala</a> \
-		<br/> \
-		Seleziona qui se vuoi essere avvertito del cambiamento dei dati quando lasci la pagina. \
-" ;
-
 /*
 Scrive nel primo elemento trovato il codice per visualizzare l'avvenuto cambiamento
 dei dati
@@ -55,7 +47,7 @@ Indica a quali elementi va associato il controllo di uscita pagina tramite event
 					try {
 					msg = changeAlertMessage ;
 					} catch(e) {
-						msg = "i cambiamenti fatti andranno perduti.\nVuoi continuare?" ;
+						msg = changeAlertMessage ;
 					}
 					if(!confirm(msg)) {
 						try {
@@ -89,7 +81,7 @@ function _setChangedAlert() {
 		else _changed = true ;
 
 		$("#_hndVisualAlert").attr('class', 'alertChanged');
-		$("#_hndVisualAlert").html("* dati cambiati<br />") ;
+		$("#_hndVisualAlert").html(datachanged) ;
 	} catch(e) {}
 }
 

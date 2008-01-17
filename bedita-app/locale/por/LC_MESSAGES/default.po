@@ -404,7 +404,7 @@ msgstr "Descrição"
 msgid "Subtitle"
 msgstr "Subtítolo"
 
-msgid "The change will be lost.DO you want continue"
+msgid "The change will be lost. Do you want to continue"
 msgstr "Se perderão as mudações. Quer continuar"
 
 msgid "Only text"
@@ -430,3 +430,81 @@ msgstr "Non Autorizzato"
 
 msgid "Group authorized to Backend"
 msgstr "Grupo autorizado ao Backend"
+
+msgid "html"
+msgstr "html"
+
+msgid "only text"
+msgstr "solo texto"
+
+msgid "text with conversion space and link"
+msgstr "texto com conversão dos espaços e dos link"
+
+msgid "Connect to multimedia gallery"
+msgstr "Liga a uma galeria multimedial"
+
+msgid "Current gallery"
+msgstr "Galleia selecionada"
+
+msgid "Attachments"
+msgstr "Anexos"
+
+msgid "No attachments item found"
+msgstr "Nenhum anexo"
+
+msgid "Add multimedia by upload"
+msgstr "Junta objetos multimediais por upload"
+
+msgid "Add multimedia by URL"
+msgstr "Junta objetos multimediais por URL"
+
+msgid "Add multimedia by BEdita"
+msgstr "Junta objetos multimediais que ja existem no sistema"
+
+msgid "Add attachments by upload"
+msgstr "Anexa arquivos por upload"
+
+msgid "Add attachments by URL"
+msgstr "Anexa arquivos por URL"
+
+msgid "Add attachments by BEdita"
+msgstr "Anexa arquivos que ja existem no sistema"
+
+msgid "Short text"
+msgstr "Texto breve"
+
+msgid "Long text"
+msgstr "Texto comprido"
+
+msgid "Text type"
+msgstr "Tipo de texto"
+
+msgid "No tree found"
+msgstr "Elementos não encontrados"
+
+msgid "No galleries found"
+msgstr "Nenhuma galeria encontrada"
+
+msgid "attachments"
+msgstr "anexos"
+
+msgid "No documents found"
+msgstr "Nenhum documento encontrado"
+
+msgid "No areas"
+msgstr "Nenhuma área encontrada"
+
+msgid "No multimedia item found"
+msgstr "Nenhum elemento multimedial encontrado"
+
+msgid "Remind"
+msgstr "Alerta"
+
+msgid "Check if you want be notified, whenever you try to leave the page and you changed some data in the form"
+msgstr "Selecciona aqui si quiser ser alarmado, quando cambia a pagina"
+
+msgid "changes would be lost if you leave the page"
+msgstr "os cambios perdem-se deixando a pagina"
+
+msgid "data changed"
+msgstr "datos cambiados"
