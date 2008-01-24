@@ -6,10 +6,10 @@ class FilesController extends AppController {
 	var $components = array('Transaction', 'SwfUpload', 'BeUploadToObj');
 
 	function upload () {
-		fwrite(fopen("/tmp/out.txt", "w+"), print_r(serialize($_POST), true) . "\n\n" . print_r(serialize($_FILES), true)) ;
-//$errorCode = 500 + BeUploadToObjComponent::BEDITA_FILE_EXISIST ;
-//header("HTTP/1.0 $errorCode Internal Server Error");
-//return ;
+		//fwrite(fopen("/tmp/out.txt", "w+"), print_r(serialize($_POST), true) . "\n\n" . print_r(serialize($_FILES), true)) ;
+		//$errorCode = 500 + BeUploadToObjComponent::BEDITA_FILE_EXIST ;
+		//header("HTTP/1.0 $errorCode Internal Server Error");
+		//return ;
 		
 		if (!isset($this->params['form']['Filedata'])) return ;
 		
