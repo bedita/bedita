@@ -26,13 +26,6 @@ class PagesController extends AppController {
 	var $components = array('Session', 'Cookie');
 	var $uses = null;
 
-	/**
-	 * Home
-	 */
-	 function home() {
-	 	$this->action = "index" ;
-	 }
-
 	 function display() {
 	 	$this->action = "index" ;
 	 }

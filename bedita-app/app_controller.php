@@ -60,13 +60,13 @@ class AppController extends Controller
 	}
 
 	
-	function beforeFilter() {
-//exit;
+	final function beforeFilter() {
+
 		self::$current = $this;
 		// Templater
 		$this->view = 'Smarty';
 				
-		// preleva, per il template, i dati di configurazione
+		// convienience methods for frontends
 	 	$this->beditaBeforeFilter() ;
 	 	
 	 	// don't generate output, done in afterFilter
@@ -96,8 +96,13 @@ class AppController extends Controller
 	 * Altrimenti non fa il redirect
 	 * 
 	 */
-	function afterFilter() {
+	final function afterFilter() {
+        // setup Configure class and title for templates
+		$this->set('conf', Configure::getInstance());
+        $this->pageTitle = __($this->name, true);
 		$this->set('moduleColor',$this->moduleColor);
+        // convienience methods for frontends [like afterFilter]
+        $this->beditaAfterFilter() ;
 		if($this->autoRender) return ;
 		if(isset($this->data[$this->result])) {
 			$this->redirUrl($this->data[$this->result]);
@@ -123,19 +128,18 @@ class AppController extends Controller
 	protected function forward($action, $outcome) {	return false ; }
 	
 	/**
-	 * Setta i dati utilizzabili nelle diverse pagine.
-	 * E' il nostro beforeFilter locale alla singola applicazione (backend o frontend)
-	 * 
+	 *  local 'beforeFilter' (for backend or frontend)
 	 */
 	protected function beditaBeforeFilter() {
-		$conf  		= Configure::getInstance() ;
-
-		$this->pageTitle = __($this->name, true);
-		
-		$this->set('conf', $conf) ;
 	}
 
-	protected function eventLog($level, $msg) {
+    /**
+     *  local 'afterFilter' (for backend or frontend)
+     */
+    protected function beditaAfterFilter() {
+    }
+	
+    protected function eventLog($level, $msg) {
 		$u = isset($this->BeAuth->user["userid"])? $this->BeAuth->user["userid"] : "-";
 		$event = array('EventLog'=>array("level"=>$level, 
 			"user"=>$u, "msg"=>$msg, "context"=>strtolower($this->name)));
