@@ -1,5 +1,6 @@
 <?php
-loadModel('DataSource');
+
+App::import('Model', 'DataSource');
 vendor('splitter_sql');
 
 class DataSourceTest extends DataSource {
@@ -23,26 +24,10 @@ class DataSourceTest extends DataSource {
 
 class DataSourceTestCase extends CakeTestCase {
 
-	function testDelete() {
-		// esecuzione script di eliminazione dati
-		$db =& ConnectionManager::getDataSource('test');
-		$script = SQL_SCRIPT_PATH . "bedita_delete.sql";
-		$this->DataSourceTest =& new DataSourceTest();
-		//$this->DataSourceTest->executeQuery($db,$script);
-	}
-
  	function testCreate() {
  		// esecuzione script di creazione schema
 		$db =& ConnectionManager::getDataSource('test');
 		$script = SQL_SCRIPT_PATH . "bedita_schema.sql";
-		$this->DataSourceTest =& new DataSourceTest();
-		$this->DataSourceTest->executeQuery($db,$script);
-	}
-
-	function testTruncate() {
-		// esecuzione script di eliminazione dati
-		$db =& ConnectionManager::getDataSource('test');
-		$script = SQL_SCRIPT_PATH . "bedita_truncate.sql";
 		$this->DataSourceTest =& new DataSourceTest();
 		$this->DataSourceTest->executeQuery($db,$script);
 	}
