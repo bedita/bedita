@@ -5,7 +5,7 @@ uses('L10n');
 class AppController extends Controller
 {
 	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "Msg");
-	var $components = array('BeAuth', 'BePermissionModule','Transaction');
+	var $components = array('BeAuth', 'BePermissionModule','Transaction', 'Cookie', 'Session');
 	var $uses = array('EventLog') ;
 	
 	protected $moduleName = NULL;
@@ -79,8 +79,15 @@ class AppController extends Controller
 		// Esegue la verifca di login
 		$this->BeAuth->startup($this) ;	
 		
-		if(!$this->checkLogin()) return ;
-		
+		if(!$this->checkLogin()) return ;		
+	}
+	
+	private function checkLocale() {
+		$lang = $this->Cookie->read('bedita.lang');
+		$conf = Configure::getInstance();
+		if(isset($lang) && $conf->multilang === true) {
+			$this->Session->write('Config.language', $lang);
+		}
 	}
 	
 	/**
@@ -97,7 +104,9 @@ class AppController extends Controller
 	 * 
 	 */
 	final function afterFilter() {
-        // setup Configure class and title for templates
+		// check localization
+		$this->checkLocale();	
+		// setup Configure class and title for templates
 		$this->set('conf', Configure::getInstance());
         $this->pageTitle = __($this->name, true);
 		$this->set('moduleColor',$this->moduleColor);

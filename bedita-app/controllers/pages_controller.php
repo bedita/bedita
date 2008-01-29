@@ -36,7 +36,7 @@ class PagesController extends AppController {
 	function changeLang($lang = null) {
 		if (!empty($lang)) {
 			$this->Session->write('Config.language', $lang);
-			$this->Cookie->write('lang', $lang, null, '+350 day'); 
+			$this->Cookie->write('bedita.lang', $lang, null, '+350 day'); 
 		}
 		$this->redirect($this->referer(null, true));
 	}
