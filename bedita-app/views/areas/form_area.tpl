@@ -18,12 +18,21 @@ $.validator.setDefaults({
 		label.html("&nbsp;").addClass("checked");
 	}
 });
+	
 
 $(document).ready(function(){
-
-	// Visualizzazione campi con  calendario
-	$('#start').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar'});
-	$('#end').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar'});
+	
+	$.datepicker.setDefaults({
+		showOn: 'both', 
+		buttonImageOnly: true, 
+	    buttonImage: urlIcoCalendar, 
+	    buttonText: 'Calendar',
+	    dateFormat: '{/literal}{$conf->dateFormatValidation|replace:'yyyy':'yy'}{literal}',
+	    beforeShow: customRange
+	}); 
+	
+	$('#start').attachDatepicker();
+	$('#end').attachDatepicker();
 
 	$("#updateForm").validate();
 

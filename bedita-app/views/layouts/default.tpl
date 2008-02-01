@@ -19,7 +19,9 @@
 {$html->css('form')}
 {$html->css('message')}
 {if ($agent.IE)}{$html->css('ie')}{/if}
-
+<script type="text/javascript">
+	var dateFormat = "{$conf->dateFormatValidation}";
+</script>
 {literal}
 <style type="text/css">
 TABLE.indexList TR.rowList:hover {background-color:{/literal}{if empty($moduleColor)}#FF6600{else}{$moduleColor}{/if}{literal};}

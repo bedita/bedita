@@ -4,9 +4,9 @@
 	<br />
 	{if !(isset($publication)) || $publication}
 	<span style="font-weight:bold;">{t}publication{/t}. {t}start{/t}:</span>
-	<input type="text" name="data[start]" id="start" value="{if !empty($object.start)}{$object.start|date_format:$conf->date_format}{/if}"/>
+	<input type="text" class="{literal}{checkDate:true}{/literal}" title="{t}start has to be a valid date and in the following format:{/t} {$conf->dateFormatValidation}" name="data[start]" id="start" value="{if !empty($object.start)}{$object.start|date_format:$conf->date_format}{/if}"/>
 	<span style="font-weight:bold;">{t}end{/t}:</span>
-	<input type="text" name="data[end]" id="end" value="{if !empty($object.end)}{$object.end|date_format:$conf->date_format}{/if}"/>
+	<input type="text" class="{literal}{checkDate:true}{/literal}" title="{t}end has to be a valid date and in the following format:{/t} {$conf->dateFormatValidation}" name="data[end]" id="end" value="{if !empty($object.end)}{$object.end|date_format:$conf->date_format}{/if}"/>
 	{/if}
 	<hr/>
 	{if (isset($doctype) && !empty($doctype))}

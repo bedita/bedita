@@ -21,11 +21,18 @@ $.validator.setDefaults({
 
 $(document).ready(function(){
 
-	// Visualizzazione campi con  calendario
-	$('#start').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar'});
-	$('#end').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar'});
-
-	// Validazione al submit
+	$.datepicker.setDefaults({
+		showOn: 'both', 
+		buttonImageOnly: true, 
+	    buttonImage: urlIcoCalendar, 
+	    buttonText: 'Calendar',
+	    dateFormat: '{/literal}{$conf->dateFormatValidation|replace:'yyyy':'yy'}{literal}',
+	    beforeShow: customRange
+	}); 
+	
+	$('#start').attachDatepicker();
+	$('#end').attachDatepicker();
+	
 	$("#updateForm").validate();
 
 	$("#updateForm input[@name=cancella]").bind("click", function() {

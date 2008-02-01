@@ -5,7 +5,7 @@ Pagina d'entrata modulo Documents.
 {agent var="agent"}
 {$html->css('tree')}
 {$html->css('module.documents')}
-{$html->css("jquery.calendar")}
+{$html->css("ui.datepicker")}
 {$html->css("jquery.thickbox")}
 
 {if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
@@ -15,12 +15,14 @@ Pagina d'entrata modulo Documents.
 {$javascript->link("jquery.form")}
 {$javascript->link("jquery.cmxforms")}
 {$javascript->link("jquery.metadata")}
+{$javascript->link("jquery.delegate")}
 {$javascript->link("jquery.validate")}
+{$javascript->link("validate.tools")}
 {$javascript->link("jquery.autocomplete")}
 {$javascript->link("jquery.translatefield")}
 {$javascript->link("module.documents")}
 {$javascript->link("interface")}
-{$javascript->link("jquery.calendar")}
+{$javascript->link("ui.datepicker")}
 {$javascript->link("jquery.thickbox")}
 
 <script type="text/javascript">
