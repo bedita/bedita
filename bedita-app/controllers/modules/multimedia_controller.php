@@ -81,9 +81,9 @@ class MultimediaController extends AppController {
 			// Preleva il tipo di oggetto
 			$rec = $this->BEObject->recursive ;
 			$this->BEObject->recursive = -1 ;
-			if(!($ret = $this->BEObject->read('object_type_id', $id))) throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
+				if(!($ret = $this->BEObject->read('object_type_id', $id))) throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
 			$this->BEObject->recursive = $rec ;
-			$model = $conf->objectTypeModels[$ret['Object']['object_type_id']] ;
+			$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
 			
 			$this->{$model}->bviorHideFields = array('Version', 'Index', 'current', 'multimedia', 'attachments') ;
 			if(!($obj = $this->{$model}->findById($id))) {
@@ -164,7 +164,7 @@ class MultimediaController extends AppController {
 		$this->BEObject->recursive = -1 ;
 		if(!($ret = $this->BEObject->read('object_type_id', $id))) throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
 		$this->BEObject->recursive = $rec ;
-		$model = $conf->objectTypeModels[$ret['Object']['object_type_id']] ;
+		$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
 			
 		$this->{$model}->bviorHideFields = array('Version', 'Index', 'current', 'images', 'multimedia', 'attachments') ;
 		if(!($obj = $this->{$model}->findById($id))) {

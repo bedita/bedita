@@ -27,7 +27,7 @@ class AttachmentsController extends AppController {
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
 	// This controller does not use a model
-	var $uses = array('Stream', 'File', 'BEFile', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Tree') ;
+	var $uses = array('Stream', 'BEFile', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Tree') ;
 	protected $moduleName = 'attachments';
 	
 	 /**
@@ -83,7 +83,7 @@ class AttachmentsController extends AppController {
 			$this->BEObject->recursive = -1 ;
 			if(!($ret = $this->BEObject->read('object_type_id', $id))) throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
 			$this->BEObject->recursive = $rec ;
-			$model = $conf->objectTypeModels[$ret['Object']['object_type_id']] ;
+			$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
 			
 			$this->{$model}->bviorHideFields = array('Version', 'Index', 'current', 'multimedia', 'attachments') ;
 			if(!($obj = $this->{$model}->findById($id))) {
@@ -164,7 +164,7 @@ $this->params['form']['id'] = 10005 ;
 		$this->BEObject->recursive = -1 ;
 		if(!($ret = $this->BEObject->read('object_type_id', $id))) throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
 		$this->BEObject->recursive = $rec ;
-		$model = $conf->objectTypeModels[$ret['Object']['object_type_id']] ;
+		$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
 			
 		$this->{$model}->bviorHideFields = array('Version', 'Index', 'current', 'images', 'multimedia', 'attachments') ;
 		if(!($obj = $this->{$model}->findById($id))) {
