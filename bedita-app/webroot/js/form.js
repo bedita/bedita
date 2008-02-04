@@ -2,9 +2,9 @@
 Funzioni comuni ai form di tutti i moduli
 */
 
-// Rende visibili tutti i blocchi di form messi dentro a DIV di classe 'blockForm'
+// Rende visibili tutti i blocchi di form messi dentro a DIV di classe 'blockForm' escluso quello degli errori
 function showAllBlockPage() {
-	$("DIV[@class='blockForm']").show() ;
+	$("DIV[@class='blockForm']:not('#errorForm')").show() ;
 	$("#openAllBlockLabel").hide() ;
 	$("#closeAllBlockLabel").show() ;
 }
