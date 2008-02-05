@@ -95,7 +95,7 @@ class AppController extends Controller
 		$this->pageTitle = __($this->name, true);
 		// setup Configure class and title for templates
 		$currLang = $conf->Config['language'];
-		if(!in_array($currLang, $conf->langsSystem)) {
+		if(!array_key_exists($currLang, $conf->langsSystem)) {
 			if(isset( $conf->langsSystemMap[$currLang])) {
 				$currLang = $conf->langsSystemMap[$currLang];
 			} else { // use default

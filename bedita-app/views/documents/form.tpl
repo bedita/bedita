@@ -29,7 +29,7 @@ $(document).ready(function(){
 	    buttonText: 'Calendar',
 	    dateFormat: '{/literal}{$conf->dateFormatValidation|replace:'yyyy':'yy'}{literal}',
 	    beforeShow: customRange
-	}); 
+	}, $.datepicker.regional['{$currLang}']); 
 	
 	$('#start').attachDatepicker();
 	$('#end').attachDatepicker();

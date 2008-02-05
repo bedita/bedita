@@ -8,7 +8,6 @@
 {$javascript->link("module.galleries")}
 {$javascript->link("form")}
 {$javascript->link("jquery.changealert")}
-{$javascript->link("ui.datepicker")}
 {$javascript->link("jquery.form")}
 {$javascript->link("jquery.cmxforms")}
 {$javascript->link("jquery.metadata")}

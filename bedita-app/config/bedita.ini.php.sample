@@ -43,11 +43,16 @@ $config['status'] = "draft" ;
 
 /**
  * Formato visualizzazione data
+ * @date_format: visualization format.
+ *		format used by strftime function
+ * @dateFormatValidation: 
+ *		validation format: day=dd, month=mm, year=yyyy 
+ *
+ * date_format and dateFormatValidation have to be in the same format
  */
-$config['date_format'] 			= "%d-%m-%Y" ;
-$config['df_jquery_calendar'] 	= "DMY-" ;								// Per i calendari popuo di jquery
-$config['date2iso'] 			= "/(\d{2,2})-(\d{2,2})-(\d{4,4})/" ;	// Per la conversione della data di formato jquery
-$config['dateFormatValidation'] = "dd/mm/yyyy" ;						// date format for validation and calendar	
+$config['date_format'] 			= "%d/%m/%Y" ;
+$config['dateFormatValidation'] = "dd/mm/yyyy" ;
+	
 /*
 $config['match_year'] 	= "/\d{2,2}-\d{2,2}-(\d{4,4})/" ;	// Trova l'anno nel  formato sopra indicato
 $config['match_month'] 	= "/\d{2,2}-(\d{2,2})-\d{4,4}/" ;	// Trova il mese nel  formato sopra indicato

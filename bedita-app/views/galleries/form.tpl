@@ -20,18 +20,6 @@ $.validator.setDefaults({
 });
 
 $(document).ready(function(){
-
-	$.datepicker.setDefaults({
-		showOn: 'both', 
-		buttonImageOnly: true, 
-	    buttonImage: urlIcoCalendar, 
-	    buttonText: 'Calendar',
-	    dateFormat: '{/literal}{$conf->dateFormatValidation|replace:'yyyy':'yy'}{literal}',
-	    beforeShow: customRange
-	}); 
-	
-	$('#start').attachDatepicker();
-	$('#end').attachDatepicker();
 	
 	$("#updateForm").validate();
 
@@ -73,7 +61,7 @@ $(document).ready(function(){
 
 <h2 class="showHideBlockButton">{t}Properties{/t}</h2>
 <div class="blockForm" id="properties">
-{include file="../pages/form_properties.tpl"}
+{include file="../pages/form_container_properties.tpl"}
 </div>
 
 <h2 class="showHideBlockButton">{t}Subtitle, description{/t}</h2>

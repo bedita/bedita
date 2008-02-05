@@ -64,7 +64,7 @@ class ContentBase extends BEAppModel
 					'switch'				=> "ATTACHS",
 				),
 		) ;			
-
+	
 	function __construct() {
 		parent::__construct() ;
 	}
@@ -164,12 +164,11 @@ class ContentBase extends BEAppModel
 		if(is_integer($value)) return date("Y-m-d", $value) ;
 		
 		if(is_string($value) && !empty($value)) {
-			$conf = Configure::getInstance() ;
-			
-			if(preg_match($conf->date2iso, $value, $matched)) {
-				$value = "{$matched[3]}-{$matched[2]}-{$matched[1]}" ;
-			} 
-			
+			$conf = Configure::getInstance() ;			
+			$d_pos = strpos($conf->dateFormatValidation,'dd');
+			$m_pos = strpos($conf->dateFormatValidation,'mm');
+			$y_pos = strpos($conf->dateFormatValidation,'yyyy');
+			$value = substr($value, $y_pos, 4) . "-" . substr($value, $m_pos, 2) . "-" . substr($value, $d_pos, 2);
 			return $value ;
 		}
 		

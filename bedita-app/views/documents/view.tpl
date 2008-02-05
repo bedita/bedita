@@ -22,9 +22,9 @@ Pagina d'entrata modulo Documents.
 {$javascript->link("jquery.translatefield")}
 {$javascript->link("module.documents")}
 {$javascript->link("interface")}
-{$javascript->link("ui.datepicker")}
+{$javascript->link("datepicker/ui.datepicker")}
+{$javascript->link("datepicker/ui.datepicker-$currLang.js")}
 {$javascript->link("jquery.thickbox")}
-
 <script type="text/javascript">
 <!--
 
