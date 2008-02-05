@@ -27,6 +27,7 @@ define("MEDIA_URL",	"http://bedita/media") ;
  */
 //$config['Config']['language'] = "ita"; // or "eng", "spa", "por"
 $config['multilang'] = true;
+$config['defaultLang'] = "ita"; // default fallback
 
 /**
  * Formato di default per i testi dei diversi tipi di contenuto.
@@ -280,11 +281,20 @@ $config['langOptions'] = array(
 	"de"	=> "deutsch"
 ) ;
 
+// ISO-639-3 codes
 $config['langsSystem'] = array(
 	"ita"	=> "italiano",
 	"eng"	=> "english",
 	"por"	=> "portugu&ecirc;s",
 	"deu"	=> "deutsch"
+) ;
+
+// maps ISO-639-2 known codes ti ISO-639-3
+$config['langsSystemMap'] = array(
+	"it"	=> "ita",
+	"en"	=> "eng",
+	"en_us"	=> "eng",
+	"en_gb"	=> "eng"
 ) ;
 
 /**

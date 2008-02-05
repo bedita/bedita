@@ -84,12 +84,25 @@ class AppController extends Controller
 		if(!$this->checkLogin()) return ;		
 	}
 	
-	private function checkLocale() {
+	private function setupLocale() {
+		// read Cookie
 		$lang = $this->Cookie->read('bedita.lang');
 		$conf = Configure::getInstance();
 		if(isset($lang) && $conf->multilang === true) {
 			$this->Session->write('Config.language', $lang);
 		}
+        // translate and check locale
+		$this->pageTitle = __($this->name, true);
+		// setup Configure class and title for templates
+		$currLang = $conf->Config['language'];
+		if(!in_array($currLang, $conf->langsSystem)) {
+			if(isset( $conf->langsSystemMap[$currLang])) {
+				$currLang = $conf->langsSystemMap[$currLang];
+			} else { // use default
+				$currLang = $conf->defaultLang;
+			}
+		}
+		$this->set('currLang', $currLang);
 	}
 	
 	/**
@@ -106,11 +119,8 @@ class AppController extends Controller
 	 * 
 	 */
 	final function afterFilter() {
-		// check localization
-		$this->checkLocale();
-        $this->pageTitle = __($this->name, true);
-		// setup Configure class and title for templates
-        $this->set('currLang', Configure::getInstance()->Config['language']);
+		// check/setup localization
+		$this->setupLocale();
 		$this->set('moduleColor',$this->moduleColor);
         // convienience methods for frontends [like afterFilter]
         $this->beditaAfterFilter() ;
