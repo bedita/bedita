@@ -1,6 +1,5 @@
 {agent var="agent"}
 {$html->css('module.galleries')}
-{$html->css("ui.datepicker")}
 {$html->css("jquery.thickbox")}
 {if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
 {$javascript->link("jquery.treeview")}

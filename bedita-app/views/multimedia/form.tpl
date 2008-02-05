@@ -1,6 +1,5 @@
 <script type="text/javascript">
 var urlIcoCalendar 		= '{$html->url('../img/calendar.gif')}' ;
-var formatDateCalendar	= '{$conf->df_jquery_calendar}' ;
 
 {literal}
 
@@ -16,9 +15,17 @@ var validate = null ;
 
 $(document).ready(function(){
 
-	// Visualizzazione campi con  calendario
-	$('#start').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar', dateFormat:formatDateCalendar});
-	$('#end').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar', dateFormat:formatDateCalendar});
+	$.datepicker.setDefaults({
+		showOn: 'both', 
+		buttonImageOnly: true, 
+	    buttonImage: urlIcoCalendar, 
+	    buttonText: 'Calendar',
+	    dateFormat: '{/literal}{$conf->dateFormatValidation|replace:'yyyy':'yy'}{literal}',
+	    beforeShow: customRange
+	}, $.datepicker.regional['{$currLang}']); 
+	
+	$('#start').attachDatepicker();
+	$('#end').attachDatepicker();
 	
 	// Validazione al submit
 	validateFrm = $("#updateform").validate({
