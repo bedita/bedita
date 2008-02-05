@@ -1,6 +1,5 @@
 <script type="text/javascript">
 <!--
-var urlIcoCalendar = '{$html->url('../img/calendar.gif')}' ;
 {literal}
 var langs = {
 {/literal}
@@ -21,10 +20,6 @@ $.validator.setDefaults({
 
 $(document).ready(function(){
 
-	// Visualizzazione campi con  calendario
-	$('#start').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar'});
-	$('#end').calendar({autoPopUp: 'both', buttonImageOnly: true, buttonImage: urlIcoCalendar , buttonText: 'Calendar'});
-	
 	$("#updateForm").validate(); 
 
 	$("#updateForm input[@name=cancella]").bind("click", function() {
@@ -61,7 +56,7 @@ $(document).ready(function(){
 
 <h2 class="showHideBlockButton">{t}Properties{/t}</h2>
 <div class="blockForm" id="properties">
-{include file="../pages/form_properties.tpl"}
+{include file="../pages/form_container_properties.tpl"}
 </div>
 
 <h2 class="showHideBlockButton">{t}Where put the section into{/t}</h2>
