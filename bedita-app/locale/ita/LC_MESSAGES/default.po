@@ -29,6 +29,9 @@ msgstr "Area riservata ai gestori"
 msgid "Enter"
 msgstr "Entra"
 
+msgid "Save"
+msgstr "Salva"
+
 msgid "No data"
 msgstr "Non ci sono dati"
 

@@ -79,6 +79,8 @@ class AppController extends Controller
 		// Esegue la verifca di login
 		$this->BeAuth->startup($this) ;	
 		
+		$this->set('conf',  Configure::getInstance());
+		
 		if(!$this->checkLogin()) return ;		
 	}
 	
@@ -105,10 +107,10 @@ class AppController extends Controller
 	 */
 	final function afterFilter() {
 		// check localization
-		$this->checkLocale();	
-		// setup Configure class and title for templates
-		$this->set('conf', Configure::getInstance());
+		$this->checkLocale();
         $this->pageTitle = __($this->name, true);
+		// setup Configure class and title for templates
+        $this->set('currLang', Configure::getInstance()->Config['language']);
 		$this->set('moduleColor',$this->moduleColor);
         // convienience methods for frontends [like afterFilter]
         $this->beditaAfterFilter() ;
