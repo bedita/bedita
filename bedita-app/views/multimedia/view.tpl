@@ -24,7 +24,9 @@ Pagina entrata modifica/creazioen multimedia.
 {$javascript->link("module.multimedia")}
 {$javascript->link("interface")}
 {$javascript->link("datepicker/ui.datepicker")}
-{$javascript->link("datepicker/ui.datepicker-$currLang.js")}
+{if $currLang != "eng"}
+	{$javascript->link("datepicker/ui.datepicker-$currLang.js")}
+{/if}
 
 
 <script type="text/javascript">

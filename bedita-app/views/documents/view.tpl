@@ -23,7 +23,9 @@ Pagina d'entrata modulo Documents.
 {$javascript->link("module.documents")}
 {$javascript->link("interface")}
 {$javascript->link("datepicker/ui.datepicker")}
-{$javascript->link("datepicker/ui.datepicker-$currLang.js")}
+{if $currLang != "eng"}
+	{$javascript->link("datepicker/ui.datepicker-$currLang.js")}
+{/if}
 {$javascript->link("jquery.thickbox")}
 <script type="text/javascript">
 <!--
