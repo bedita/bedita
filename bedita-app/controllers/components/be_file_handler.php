@@ -689,6 +689,24 @@ class BEditaInfoException extends Exception
     }
 } ;
 
+
+class BEditaSaveStreamObjException extends Exception
+{
+    // Redefine the exception so message isn't optional
+    public function __construct(&$controller, $message = "", $code  = 0) {
+        // some code
+   		$this->controller = $controller;
+        $this->controller->setResult(AppController::ERROR);
+        
+   		if(empty($message)) {
+   			$message = __("Unexpected error, operation failed",true);
+   		}
+
+   		// make sure everything is assigned properly
+        parent::__construct($message, $code);
+    }
+} ;
+
 /**
  * 		BEditaDeleteStreamObjException	// Errore cancellazione obj
  */
