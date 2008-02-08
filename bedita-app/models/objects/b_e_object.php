@@ -372,7 +372,7 @@ class BEObject extends BEAppModel
 		if(isset($value)) return $value ;
 
 		$conf = Configure::getInstance() ;
-		return ((isset($conf->lang))?$conf->lang:'') ;
+		return ((isset($conf->defaultLang))?$conf->defaultLang:'') ;
 	}
 	
 	private function _getDefaultPermission($value, $object_type_id) {
