@@ -274,16 +274,15 @@ $config['statusOptions'] = array(
 ) ;
 
 /**
- * Options selezione lingua
- * 
+ * Lang selection options ISO-639-3
  */
 $config['langOptions'] = array(
-	"it"	=> "italiano",
-	"en"	=> "english",
-	"es"	=> "espa&ntilde;ol",
-	"pt"	=> "portugu&ecirc;s",
-	"fr"	=> "fran&ccedil;oise",
-	"de"	=> "deutsch"
+	"ita"	=> "italiano",
+	"eng"	=> "english",
+	"spa"	=> "espa&ntilde;ol",
+	"por"	=> "portugu&ecirc;s",
+	"fra"	=> "fran&ccedil;oise",
+	"deu"	=> "deutsch"
 ) ;
 
 // ISO-639-3 codes
@@ -294,12 +293,15 @@ $config['langsSystem'] = array(
 	"deu"	=> "deutsch"
 ) ;
 
-// maps ISO-639-2 known codes ti ISO-639-3
+// maps ISO-639-2 known codes to ISO-639-3
 $config['langsSystemMap'] = array(
 	"it"	=> "ita",
 	"en"	=> "eng",
 	"en_us"	=> "eng",
-	"en_gb"	=> "eng"
+	"en_gb"	=> "eng",
+	"es"	=> "spa",
+	"pt"	=> "por",
+	"pt_br"	=> "por"
 ) ;
 
 /**

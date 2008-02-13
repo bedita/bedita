@@ -19,12 +19,12 @@
 		<td class="label">{t}Language{/t}:</td>
 		<td>
 			<select name="data[lang]">
-			{html_options options=$conf->langOptions selected=$object.lang|default:$conf->lang}
+			{html_options options=$conf->langOptions selected=$object.lang|default:$conf->defaultLang}
 			</select>
 		</td>
 		<td>&nbsp;</td>
 	</tr>
-	<tr id="Title_TR_{$object.lang|default:$conf->lang}">
+	<tr id="Title_TR_{$object.lang|default:$conf->defaultLang}">
 		<td class="label">{t}Title{/t}:</td>
 		<td class="field">
 			<input class="{literal}{required:true,minLength:1}{/literal}" title="{t 1='1'}Title is required (at least %1 alphanumerical char){/t}" id="titleInput"  type="text" 
@@ -66,12 +66,12 @@
 	<hr/>
 	<table class="tableForm" border="0">
 	<tr>
-		<td class="label">{t}Creato il{/t}:</td><td>{$object.created|date_format:$conf->date_format}</td>
-		<td class="label">{t}Da{/t}:</td><td>{$object.UserCreated.userid|default:""}</td>
+		<td class="label">{t}Created{/t}:</td><td>{$object.created|date_format:$conf->date_format}</td>
+		<td class="label">{t}From{/t}:</td><td>{$object.UserCreated.userid|default:""}</td>
 	</tr>
 	<tr>
-		<td class="label">{t}Ultima modifica{/t}:</td><td>{$object.modified|date_format:$conf->date_format}</td>
-		<td class="label">{t}Da{/t}:</td><td>{$object.UserModified.userid|default:""}</td>
+		<td class="label">{t}Last modified{/t}:</td><td>{$object.modified|date_format:$conf->date_format}</td>
+		<td class="label">{t}From{/t}:</td><td>{$object.UserModified.userid|default:""}</td>
 	</tr>
 	<tr>
 		<td class="label">{t}IP{/t}:</td><td>{$object.IP_created}</td>

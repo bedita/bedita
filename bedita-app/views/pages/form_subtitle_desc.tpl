@@ -1,15 +1,17 @@
 <fieldset>
 	<table class="tableForm" border="0">
+{* da modificare, e' in conflitto con la definizione della lingua del documento
 	<tr>
 		<td class="label">{t}Language{/t}:</td>
 		<td class="field">
 			<select name="data[lang]">
-			{html_options options=$conf->langOptions selected=$object.lang|default:$conf->lang}
+			{html_options options=$conf->langOptions selected=$object.lang|default:$conf->defaultLang}
 			</select>
 		</td>
 		<td class="status">&nbsp;</td>
 	</tr>
-	<tr id="SubTitle_TR_{$object.lang|default:$conf->lang}">
+*}
+	<tr id="SubTitle_TR_{$object.lang|default:$conf->defaultLang}">
 		<td class="label">{t}Subtitle{/t}:</td>
 		<td class="field"><textarea class="subtitle" name="data[subtitle]">{$object.subtitle|default:''|escape:'html'}</textarea></td>
 		<td class="status">
@@ -36,7 +38,7 @@
 	</tr>
 	{/foreach}
 	{/if}
-	<tr id="ShortDesc_TR_{$object.lang|default:$conf->lang}">
+	<tr id="ShortDesc_TR_{$object.lang|default:$conf->defaultLang}">
 		<td class="label">{t}Description{/t}:</td>
 		<td class="field"><textarea class="shortdesc" name="data[shortDesc]">{$object.shortDesc|default:''|escape:'html'}</textarea></td>
 		<td class="status">

@@ -26,7 +26,6 @@ class DocumentsController extends AppController {
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Fck');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
-	// This controller does not use a model
 	var $uses = array(
 		'Stream', 'Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Document', 'Tree',
 		'Image', 'Video', 'Audio', 'BEFile'
@@ -34,9 +33,7 @@ class DocumentsController extends AppController {
 	protected $moduleName = 'documents';
 	
 	 /**
-	 * Entrata.
-	 * Visualizza l'albero delle aree e l'elenco dei documenti
-	 * 
+	 * Show content tree and doc list
 	 */
 	 function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
@@ -159,7 +156,7 @@ class DocumentsController extends AppController {
 	 function save() {
 	 	
  		$this->checkWriteModulePermission();
-
+ 		
  	 	if(empty($this->data)) throw new BeditaException( __("No data", true));
  		
 		$new = (empty($this->data['id'])) ? true : false ;
@@ -176,12 +173,10 @@ class DocumentsController extends AppController {
 	 	
 	 	if(!isset($this->data["attachments"])) $this->data["attachments"] = array() ;
 	 	if(!isset($this->data["multimedia"])) $this->data["multimedia"] = array() ;
-//	 	pr(($this->data)) ;
-//		exit;
 		$this->Transaction->begin() ;
  		
 		// Salva i dati
-	 	if(!$this->Document->save($this->data)) {
+		if(!$this->Document->save($this->data)) {
 	 		throw new BeditaException(__("Error saving document", true), $this->Document->validationErrors);
 	 	}
 
