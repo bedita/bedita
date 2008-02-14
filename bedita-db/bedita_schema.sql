@@ -149,7 +149,7 @@ CREATE TABLE objects (
   nickname VARCHAR(255) NULL,
   current BOOL NULL DEFAULT '1',
   lang CHAR(3) NULL,
-  IP_created VARCHAR(15) NULL,
+  ip_created VARCHAR(15) NULL,
   user_created INTEGER UNSIGNED NULL,
   user_modified INTEGER UNSIGNED NULL,
  fundo INTEGER UNSIGNED DEFAULT 0, 
@@ -200,8 +200,8 @@ CREATE TABLE content_bases (
   `start` DATETIME NULL ,
   `end` DATETIME NULL,
   subtitle VARCHAR(255) NULL,
-  shortDesc MEDIUMTEXT NULL,
-  formato ENUM('html','txt','txtParsed') DEFAULT 'txt',
+  short_desc MEDIUMTEXT NULL,
+  type ENUM('html','txt','txtParsed') DEFAULT 'txt',
   PRIMARY KEY(id),
   INDEX content_bases_FKIndex1(id),
   FOREIGN KEY(id)
@@ -240,7 +240,7 @@ CREATE TABLE trees (
   id INTEGER UNSIGNED NOT NULL,
   parent_id INTEGER UNSIGNED NULL,
   path MEDIUMTEXT NOT NULL,
-  pathParent MEDIUMTEXT NULL,
+  parent_path MEDIUMTEXT NULL,
   priority INTEGER UNSIGNED NULL,
   INDEX Table_36_FKIndex1(id),
   INDEX Table_36_FKIndex2(parent_id),
@@ -342,10 +342,10 @@ CREATE TABLE indexs (
 CREATE TABLE lang_texts (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   object_id INTEGER UNSIGNED NOT NULL,
-  lang CHAR(3) NOT NULL,
+  lang CHAR(2) NOT NULL,
   `name` VARCHAR(255) NULL,
   `text` VARCHAR(255) NULL,
-  `longText` MEDIUMTEXT NULL,
+  `long_text` MEDIUMTEXT NULL,
   PRIMARY KEY(id),
   INDEX lang_texts_FKIndex1(object_id),
   FOREIGN KEY(object_id)
@@ -420,10 +420,10 @@ CREATE TABLE video (
 
 CREATE TABLE faq_questions (
   id INTEGER UNSIGNED NOT NULL,
-  questionText MEDIUMTEXT NULL,
-  answerText MEDIUMTEXT NULL,
-  nome VARCHAR(50) NULL,
-  cognome VARCHAR(50) NULL,
+  question_text MEDIUMTEXT NULL,
+  answer_text MEDIUMTEXT NULL,
+  name VARCHAR(50) NULL,
+  surname VARCHAR(50) NULL,
   PRIMARY KEY(id),
   INDEX faq_questions_FKIndex1(id),
   FOREIGN KEY(id)
@@ -488,8 +488,8 @@ CREATE TABLE images (
 CREATE TABLE authors (
   id INTEGER UNSIGNED NOT NULL,
   image_id INTEGER UNSIGNED NULL,
-  nome VARCHAR(60) NULL,
-  cognome VARCHAR(60) NULL,
+  name VARCHAR(60) NULL,
+  surname VARCHAR(60) NULL,
   search_string VARCHAR(255) NULL,
   PRIMARY KEY(id),
   INDEX authors_FKIndex1(id),
@@ -506,7 +506,7 @@ CREATE TABLE authors (
 
 CREATE TABLE contents (
   id INTEGER UNSIGNED NOT NULL,
-  longDesc MEDIUMTEXT NULL,
+  long_desc MEDIUMTEXT NULL,
   PRIMARY KEY(id),
   INDEX contents_FKIndex1(id),
   FOREIGN KEY(id)
@@ -553,7 +553,7 @@ CREATE TABLE contents_typed_object_categories (
 CREATE TABLE base_documents (
   id INTEGER UNSIGNED NOT NULL,
   desc_author MEDIUMTEXT NULL,
-  flagComments BOOL NULL,
+  flag_comments BOOL NULL,
   credits VARCHAR(255) NULL,
   `gallery_id` INT NULL ,
   `question_id` INT NULL ,
@@ -598,10 +598,10 @@ CREATE TABLE event_date_items (
 
 CREATE TABLE documents (
   id INTEGER UNSIGNED NOT NULL,
-  ptrURL VARCHAR(255) NULL,
-  ptrObj INTEGER UNSIGNED NULL,
-  ptrFile VARCHAR(255) NULL,
-  ptrRule MEDIUMTEXT NULL,
+  url VARCHAR(255) NULL,
+  obj INTEGER UNSIGNED NULL,
+  file VARCHAR(255) NULL,
+  rule MEDIUMTEXT NULL,
   switch ENUM('alias','url','file','service','rule','doc') NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(id)
@@ -613,19 +613,19 @@ CREATE TABLE documents (
 
 CREATE TABLE books (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  autore TINYTEXT NULL,
-  autore2 TINYTEXT NULL,
+  author_1 TINYTEXT NULL,
+  author_2 TINYTEXT NULL,
   isbn VARCHAR(32) NULL,
-  editore VARCHAR(64) NULL,
-  anno DATE NULL,
-  luogo VARCHAR(255) NULL,
-  lingua VARCHAR(60) NULL,
-  peso DOUBLE NULL,
-  dimensioniX DOUBLE NULL,
-  dimensioniY DOUBLE NULL,
+  editor VARCHAR(64) NULL,
+  year DATE NULL,
+  place VARCHAR(255) NULL,
+  lang VARCHAR(60) NULL,
+  weight DOUBLE NULL,
+  dim_x DOUBLE NULL,
+  dim_y DOUBLE NULL,
   note TINYTEXT NULL,
-  collana VARCHAR(255) NULL,
-  collocazione VARCHAR(255) NULL,
+  category VARCHAR(255) NULL,
+  position VARCHAR(255) NULL,
   inv VARCHAR(255) NULL,
   PRIMARY KEY(id),
   INDEX books_FKIndex1(id),
@@ -641,13 +641,13 @@ CREATE TABLE links (
   object_id INTEGER UNSIGNED NOT NULL,
   switch ENUM('url','topic','google','coordinate') NULL,
   url VARCHAR(255) NULL,
-  coord_1 DOUBLE NULL,
-  coord_2 DOUBLE NULL,
-  coord_3 DOUBLE NULL,
-  strCoord_1 VARCHAR(255) NULL,
-  strCoord_2 VARCHAR(255) NULL,
-  strCoord_3 VARCHAR(255) NULL,
-  googleRef MEDIUMBLOB NULL,
+  x DOUBLE NULL,
+  y DOUBLE NULL,
+  z DOUBLE NULL,
+  str_x VARCHAR(255) NULL,
+  str_y VARCHAR(255) NULL,
+  str_z VARCHAR(255) NULL,
+  google_ref MEDIUMBLOB NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(object_id)
     REFERENCES objects(id)
@@ -802,7 +802,7 @@ objects.nickname,
 objects.lang
 FROM
 trees INNER JOIN objects ON trees.id = objects.id 
-ORDER BY pathParent, priority
+ORDER BY parent_path, priority
 ;
 
 
