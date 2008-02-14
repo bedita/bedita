@@ -29,7 +29,7 @@ class Answer extends BEAppObjectModel
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('Question'),
 			'CreateIndexFields'		=> array(),
-			'ForeignDependenceSave' => array('Object', 'ContentBase'),
+			'ForeignDependenceSave' => array('BEObject', 'ContentBase'),
 			'DeleteObject' 			=> 'objects',
 	); 
 
@@ -38,7 +38,7 @@ class Answer extends BEAppObjectModel
 	) ;
 
 	var $hasOne = array(
-			'Object' =>
+			'BEObject' =>
 				array(
 					'className'		=> 'BEObject',
 					'conditions'   => '',

@@ -1,7 +1,5 @@
-{php}
-$vs = &$this->get_template_vars() ;
-$vs['maxIDPerms'] = (isset($vs["el"]["Permissions"]))?@count($vs["el"]["Permissions"]):0 ;
-{/php}
+<h2 class="showHideBlockButton">{t}Permissions{/t}</h2>
+<div class="blockForm" id="permissions">
 
 <script type="text/javascript">
 {literal}
@@ -16,7 +14,7 @@ var postfix_customProp = "_permTR" ;
 * Indica l'incremento massimo raggiunto nell'elencazione dei permessi
 */
 
-var maxIDPerms = {/literal}{$maxIDPerms}{literal} ;
+var maxIDPerms = {/literal}{if empty($maxIDPerms)}0{else}{$maxIDPerms}{/if}{literal} ;
 
 $(document).ready(function(){
 {/literal}
@@ -176,6 +174,7 @@ function setupFieldAutocomplete() {
 {/literal}
 </script>
 
+<fieldset>
 <table class="tableForm" border="0" id="frmCustomPermissions">
 <tr>
 	<td class="label" style="text-align:left;">{t}name{/t}</td>
@@ -246,3 +245,5 @@ function setupFieldAutocomplete() {
 	<td><input type="button" name="cmdAddGroupPerm" value=" {t}add{/t} "/></td>
 </tr>
 </table>
+</fieldset>
+</div>

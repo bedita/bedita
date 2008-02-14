@@ -1,11 +1,5 @@
-{*
-params:		
-attachments		elenco oggetti associati ad un oggetto
-*}
-{php}
-$vs = &$this->get_template_vars() ;
-$vs['empty'] = array() ;
-{/php}
+<h2 class="showHideBlockButton">{t}Attachments{/t}</h2>
+<div class="blockForm" id="attachments" style="display:none">
 
 <script type="text/javascript">
 var URLGetObjAttachment 	= '{$html->url('/attachments/get_item_form')}' ;
@@ -35,33 +29,25 @@ function commitUploadAttachment(files) {
 		counter++ ;
 		$(emptyDiv).load(URLGetObjAttachment, {'filename': filename, 'priority':priority, 'index':index, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
 			$("#containerAttachment").append(this) ; 
-			
 			$(".attachBox", this).each(function() {
-				setupDragDropItemAttach(this) ;				
+				setupDragDropItemAttach(this) ;
 			}) ;
-
 			counter-- ;
 			if(!counter)  {
 				reorderListAttachments() ;
-		
 				// Indica l'avvenuto cambiamento dei dati
 				try { $().alertSignal() ; } catch(e) {}
-		
 				tb_remove() 
 			}
 		}) ;
-		
 		priority++ ;
 		index++ ;
 	}
-	
 	if(!counter)  {
 		reorderListAttachments();
-		
-		// Indica l'avvenuto cambiamento dei dati
+		// Show that data changed
 		try { $().alertSignal() ; } catch(e) {}
-		
-		tb_remove() ;	
+		tb_remove() ;
 	}
 }
 
@@ -78,45 +64,35 @@ function commitUploadAttachById(IDs) {
 		counter++ ;
 		$(emptyDiv).load(URLGetObjAttachmentId, {'id': id, 'priority':priority, 'index':index, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
 			$("#containerAttachment").append(this) ; 
-			
 			$(".attachBox", this).each(function() {
-				setupDragDropItemAttach(this) ;				
+				setupDragDropItemAttach(this) ;
 			}) ;
-			
-			
 			counter-- ;
 			if(!counter)  {
 				reorderListAttachments() ;
-		
-				// Indica l'avvenuto cambiamento dei dati
+				// Show that data changed
 				try { $().alertSignal() ; } catch(e) {}
-		
 				tb_remove() 
 			}
 		}) ;
-		
 		priority++ ;
 		index++ ;
 	}
-	
 	if(!counter)  {
 		reorderListAttachments() ;
-		
-		// Indica l'avvenuto cambiamento dei dati
+		// Show that data changed
 		try { $().alertSignal() ; } catch(e) {}
-		
-		tb_remove() ;	
+		tb_remove() ;
 	}
 }
 
-// Elimina un elemento dalla lista degli oggetti multimendiali
+// Remove item from queue
 function removeItemAttachment(DivId) {
 	$("#"+DivId , this).remove() ;
-	
 	reorderListAttachments();
 }
 
-// Riordina i dati della lista degli oggetti selezionati
+// Reorder queue items
 function reorderListAttachments() {
 	$(".attachBox").each(function (index) {
 		$("input[@name='index']", this).attr("value", index) ;
@@ -127,44 +103,35 @@ function reorderListAttachments() {
 }
 
 function setupDragDropItemAttach(el) {
-
 	$(el).Draggable({
 		revert:		true,
 		ghosting:	true,
 		opacity:	0.8
 	});
-
 	$(el).Droppable({
 		accept:		'attachBox',
 		hoverclass: 'dropOver',
 		ondrop:		function(dropped) {
 			if(this == dropped) return;
-			
-			// sposta un elemento al posto del precedente
+			// swap position of an item (to the position of the previous)
 			if(this == $(dropped).prev().get(0)) {
 				$(this).insertAfter($(dropped)) ;
-				
 				reorderListAttachments() ;
 				return ;
-			
-			// sposta un elemento al posto del sucessivo	
+			// swap position of an item (to the position of the next)
 			} else if(this == $(dropped).next().get(0)) {
 				$(dropped).insertAfter($(this)) ;
-
 				reorderListAttachments() ;
 				return ;
 			}
-			
-			// Se sis posta verso l'inizio si inserisce prima
+			// If put at the beginning, insert before
 			var pDropped 	= parseInt($(".priority", dropped).attr("value")) ;
 			var pThis 		= parseInt($(".priority", this).attr("value")) ;
-			
 			if(pDropped > pThis) {
 				$(dropped).insertBefore($(this)) ;
 			} else {
 				$(dropped).insertAfter($(this)) ;
 			}
-
 			reorderListAttachments() ;
 		}
 	}) ;
@@ -185,7 +152,6 @@ var cols 		= 5 ;
 <a href="{$html->url('/attachments')}/frm_upload_bedita/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{t}Add attachments by BEdita{/t}" class="thickbox">{t}Add attachments by BEdita{/t}</a>
 
 {* | <a href="{$html->url('/attachments')}/frm_upload_url/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{t}Add attachments by URL{/t}" class="thickbox">{t}Add attachments by URL{/t}</a>*}
-
 {assign var="newPriority" 	value=1}
 {assign var="index" 		value=0}
 {foreach key=index item=obj from=$attachments|default:$empty}
@@ -207,3 +173,4 @@ priority 	= {$newPriority} ;
 </script>
 
 </fieldset>
+</div>

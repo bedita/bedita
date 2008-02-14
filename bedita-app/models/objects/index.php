@@ -26,7 +26,7 @@ class Index extends BEAppModel
 	var $useTable = 'indexs' ;
 
 	var $belongsTo = array(
-		'Object' =>
+		'BEObject' =>
 			array(
 				'className'		=> 'BEObject',
 				'fields'		=> 'id',

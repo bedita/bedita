@@ -57,7 +57,10 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 					if(!$first) {
 						$model->$firstModel->delete($id) ;
 					}
-					
+					echo '<pre>';
+					print_r($model->$name);
+					echo '</pre>';
+					die();
 					return false ;
 				}
 				

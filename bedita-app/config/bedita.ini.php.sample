@@ -34,7 +34,7 @@ $config['defaultLang'] = "ita"; // default fallback
  * Valori possibili:
  * 'html', 'txt', 'txtParsed'
  */
-$config['formato'] = "txt" ;
+$config['type'] = "txt" ;
 
 /**
  * Status di default per gli oggetti da creare
@@ -78,7 +78,7 @@ $config['authorizedGroups'] = array('administrator','editor','reader');
 // immutable groups
 $config['basicGroups'] = array('administrator','editor','reader','guest');
 
-// fckeditor (enabled|disabled) for longText: comment to disable
+// fckeditor (enabled|disabled) for long_text: comment to disable
 $config['fckeditor'] = true;
 
 ///////////////////////////////////////////////////////

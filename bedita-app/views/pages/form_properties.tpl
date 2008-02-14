@@ -1,6 +1,9 @@
+<h2 class="showHideBlockButton">{t}Properties{/t}</h2>
+<div class="blockForm" id="properties">
 <fieldset>
 	<span style="font-weight:bold;">{t}status{/t}</span>:
 	{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator=" "}
+	{if isset($comments)}<br /><span style="font-weight:bold;">{t}comments{/t}</span>:<input type="radio"/>{t}No{/t} <input type="radio"/>{t}Yes{/t}{/if}
 	<br />
 	{if !(isset($publication)) || $publication}
 	<span style="font-weight:bold;">{t}publication{/t}. {t}start{/t}:</span>
@@ -60,7 +63,6 @@
 			<input type="text" name="data[nickname]" value="{$object.nickname|default:''|escape:'html'|escape:'quotes'}"/>&nbsp;
 		</td>
 	</tr>
-	
 	</table>
 	{if ($object)}
 	<hr/>
@@ -73,9 +75,8 @@
 		<td class="label">{t}Last modified{/t}:</td><td>{$object.modified|date_format:$conf->date_format}</td>
 		<td class="label">{t}From{/t}:</td><td>{$object.UserModified.userid|default:""}</td>
 	</tr>
-	<tr>
-		<td class="label">{t}IP{/t}:</td><td>{$object.IP_created}</td>
-	</tr>
+	<tr><td class="label">{t}IP{/t}:</td><td>{$object.ip_created}</td></tr>
 	</table>
 	{/if}
 </fieldset>
+</div>

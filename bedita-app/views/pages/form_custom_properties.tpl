@@ -1,3 +1,6 @@
+<h2 class="showHideBlockButton">{t}Custom Properties{/t}</h2>
+<div class="blockForm" id="customProperties">
+
 <script type="text/javascript">
 {literal}
 /*
@@ -101,7 +104,7 @@ function deleteTRCustomProp(el) {
 
 {/literal}
 </script>
-
+<fieldset>
 <table class="tableForm" border="0" id="frmCustomProperties">
 <tr>
 	<td class="label" style="text-align:left;">{t}name{/t}</td>
@@ -131,3 +134,5 @@ function deleteTRCustomProp(el) {
 	<td><input type="button" name="cmdAdd" value=" {t}add{/t} "/></td>
 </tr>
 </table>
+</fieldset>
+</div>

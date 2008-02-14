@@ -63,7 +63,7 @@ function addCommandWhere() {
 			$(this).before('<input type="checkbox" name="data[destination][]" value="' +id+'"/>&nbsp;');
 		}
 
-		$(this).html('<a href="javascript:;">'+$(this).html()+'</a>') ;
+		$(this).html('<a href="javascript:;">'+$(this).html()+"<\/a>") ;
 
 		$("a", this).bind("click", function(e) {
 			// Indica l'avvenuto cambiamento dei dati

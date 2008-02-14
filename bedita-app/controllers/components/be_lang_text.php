@@ -35,9 +35,9 @@ class BeLangTextComponent extends Object {
 			if(!(isset($value["name"])  && isset($value["lang"]))) continue ;
 
 			$value["text"] 		= isset($value["text"])?trim($value["text"]) : null ;
-			$value["longText"] 	= isset($value["longText"])?trim($value["longText"]) : null ;
+			$value["long_text"] 	= isset($value["long_text"])?trim($value["long_text"]) : null ;
 			
-			if(empty($value["text"])  && empty($value["longText"])) continue ;
+			if(empty($value["text"])  && empty($value["long_text"])) continue ;
 			
 			$formatted[$value["lang"]] = $value ;
 		}
@@ -67,7 +67,7 @@ class BeLangTextComponent extends Object {
 			$item = &$data[$i] ;
 			
 			if(!isset($tmp[$item["name"]]))	$tmp[$item["name"]] = array() ;
-			$tmp[$item["name"]][$item["lang"]] = (!@empty($item["text"])) ? @$item["text"] : @$item["longText"] ;
+			$tmp[$item["name"]][$item["lang"]] = (!@empty($item["text"])) ? @$item["text"] : @$item["long_text"] ;
 		}
 		
 		$data = $tmp ;

@@ -1,11 +1,5 @@
-{*
-params:		
-multimedia		elenco oggetti associati ad un oggetto o all'interno di una galleria
-*}
-{php}
-$vs = &$this->get_template_vars() ;
-$vs['empty'] = array() ;
-{/php}
+<h2 class="showHideBlockButton">{t}Images{/t}</h2>
+<div class="blockForm" id="imgs" style="display:none">
 
 <script type="text/javascript">
 var URLGetObjMultimedia 	= '{$html->url('/multimedia/get_item_form')}' ;
@@ -209,3 +203,4 @@ priority 	= {$newPriority} ;
 </script>
 
 </fieldset>
+</div>

@@ -1,4 +1,6 @@
+<div class="FormPageHeader">
 <h1>{t}{$object.title|default:"New Item"}{/t}</h1>
+<fieldset>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
 	<td>
@@ -16,3 +18,5 @@
 	<td style="padding-left:40px">&nbsp;</td>
 </tr>
 </table>
+</fieldset>
+</div>

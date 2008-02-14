@@ -72,7 +72,7 @@ class TreeTestCase extends CakeTestCase {
 		
 		pr("Carica l'albero a cui puo' accede l'utente 'torto'") ;
 		for($i=0 ; $i < count($tree) ; $i++) {
-			$this->_eliminaFields($tree[$i], $fields = array('id', 'parent_id', 'path', 'pathParent', 'priority', 'object_type_id', 'status', 'lang')) ;
+			$this->_eliminaFields($tree[$i], $fields = array('id', 'parent_id', 'path', 'parent_path', 'priority', 'object_type_id', 'status', 'lang')) ;
 		}
 		$this->assertEqual($tree, unserialize($this->data['resultTree3']));
 

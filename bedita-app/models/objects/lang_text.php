@@ -25,7 +25,7 @@ class LangText extends BEAppModel
 	var $name = 'LangText';
 
 	var $belongsTo = array(
-		'Object' =>
+		'BEObject' =>
 			array(
 				'className'		=> 'BEObject',
 				'fields'		=> 'id',

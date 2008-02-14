@@ -31,7 +31,7 @@
 </div>
 {include file="../messages.tpl"}
 <div id="centralPageHome">
-{if $conf->multilang}
+{if !empty($conf->multilang) && $conf->multilang}
 {t}Language{/t}{if $session->check('Config.language')} [{$session->read('Config.language')}]{/if}:
 {foreach key=key item=item name=l from=$conf->langsSystem}
 <a href="{$html->base}/lang/{$key}">{$item}</a>{if !$smarty.foreach.l.last} | {/if}

@@ -29,12 +29,12 @@ class FaqQuestion extends BEAppObjectModel
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'CreateIndexFields'		=> array(),
-			'ForeignDependenceSave' => array('Object', 'ContentBase'),
+			'ForeignDependenceSave' => array('BEObject', 'ContentBase'),
 			'DeleteObject' 			=> 'objects',
 	); 
 
 	var $hasOne = array(
-			'Object' =>
+			'BEObject' =>
 				array(
 					'className'		=> 'BEObject',
 					'conditions'   => '',

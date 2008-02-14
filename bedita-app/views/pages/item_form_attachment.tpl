@@ -43,7 +43,7 @@ cols			numero di colonne
 		{$attachTitle|escape:'htmlall'}
 		<br/>
 		{t}Description{/t}:<br/>
-		{$obj.shortDesc|escape:'htmlall'}
+		{$obj.short_desc|escape:'htmlall'}
 		<br/>
 		{t}Size{/t}:<br/>
 		{$obj.size/1000} Kb

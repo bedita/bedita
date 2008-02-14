@@ -29,12 +29,12 @@ class Image extends BEAppObjectModel
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'CreateIndexFields'		=> array(),
-			'ForeignDependenceSave' => array('Object', 'ContentBase', 'Stream'),
+			'ForeignDependenceSave' => array('BEObject', 'ContentBase', 'Stream'),
 			'DeleteObject' 			=> 'objects',
 	); 
 
 	var $hasOne= array(
-			'Object' =>
+			'BEObject' =>
 				array(
 					'className'		=> 'BEObject',
 					'conditions'   => '',

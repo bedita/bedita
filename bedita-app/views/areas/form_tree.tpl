@@ -8,6 +8,7 @@
 		<a href="#">{t}Expand all{/t}</a>
 	</div>
 	<div id="test">
+	<fieldset>
 	<form id="frmTree" method="post" action="{$html->url('/areas/saveTree')}">
 		<input type="hidden" name="URLFrmArea" 		value="{$html->url('viewArea/')}"/>
 		<input type="hidden" name="URLFrmSezione" 	value="{$html->url('viewSection/')}"/>
@@ -18,6 +19,7 @@
 		<input type="submit" value="{t}Save{/t}" name="modify"/>
 		{/if}
 	</form>
+	</fieldset>
 	</div>
 	{else}
 		{t}No areas{/t}

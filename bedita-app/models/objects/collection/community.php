@@ -44,17 +44,17 @@ class Community extends BEAppCollectionModel
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'CreateIndexFields'		=> array(),
-			'ForeignDependenceSave' => array('Object', 'Collection'),
+			'ForeignDependenceSave' => array('BEObject', 'Collection'),
 			'DeleteDependentObject'	=> array('objectuser'),
 			'DeleteObject' 			=> 'objects',
 	); 
 	
 
 	var $hasOne = array(
-			'Object' =>
+			'BEObject' =>
 				array(
 					'className'		=> 'BEObject',
-					'conditions'   => 'Object.object_type_id = 9',
+					'conditions'   => 'BEObject.object_type_id = 9',
 					'foreignKey'	=> 'id',
 					'dependent'		=> true
 				),
@@ -78,8 +78,8 @@ class Community extends BEAppCollectionModel
 	function save($data = null, $validate = true, $fieldList = array()) {
 		$conf = Configure::getInstance() ;		
 		
-		if(isset($data['Object']) && !isset($data['Object']['object_type_id'])) {
-			$data['Object']['object_type_id'] = $conf->objectTypes[strtolower($this->name)] ;
+		if(isset($data['BEObject']) && !isset($data['BEObject']['object_type_id'])) {
+			$data['BEObject']['object_type_id'] = $conf->objectTypes[strtolower($this->name)] ;
 		} else if(!isset($data['object_type_id'])) {
 			$data['object_type_id'] = $conf->objectTypes[strtolower($this->name)] ;
 		}
@@ -103,8 +103,8 @@ class Community extends BEAppCollectionModel
 		if(empty($this->id)) $created = true ;
 		else $created = false ; 
 		
-		$this->setInsertID($this->Object->id);
-		$this->id = $this->Object->id ;
+		$this->setInsertID($this->BEObject->id);
+		$this->id = $this->BEObject->id ;
 		
 		if (!empty($this->behaviors)) {
 			$behaviors = array_keys($this->behaviors);

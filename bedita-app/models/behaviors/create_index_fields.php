@@ -73,7 +73,7 @@ class CreateIndexFieldsBehavior extends ModelBehavior {
 
 	private function InspectionLangText(&$data, &$value, &$Index) {
 		for($i=0 ; $i < count($value) ; $i++) {
-			$v = ((isset($value[$i]['text']))?$value[$i]['text']:$value[$i]['longText']) ;
+			$v = ((isset($value[$i]['text']))?$value[$i]['text']:$value[$i]['long_text']) ;
 			$this->_value2array($value[$i]['name'], $v, $value[$i]['object_id'], $value[$i]['lang'], $Index) ;
 		}
 	}

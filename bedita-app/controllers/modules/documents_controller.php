@@ -27,7 +27,7 @@ class DocumentsController extends AppController {
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
 	var $uses = array(
-		'Stream', 'Area', 'Section',  'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Document', 'Tree',
+		'Stream', 'Area', 'Section', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Document', 'Tree',
 		'Image', 'Video', 'Audio', 'BEFile'
 		) ;
 	protected $moduleName = 'documents';

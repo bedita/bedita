@@ -25,7 +25,7 @@ class Version extends BEAppModel
 	var $name = 'Version';
 
 	var $hasMany = array(
-		'Object' =>
+		'BEObject' =>
 			array(
 				'className'		=> 'BEObject',
 				'fields'		=> 'id',

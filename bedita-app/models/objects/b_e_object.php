@@ -22,7 +22,7 @@
 */
 class BEObject extends BEAppModel
 {
-	var $name = 'Object';
+	var $name = 'BEObject';
 	var $useTable	= "objects" ;
 	
 	var $validate = array(
@@ -30,7 +30,7 @@ class BEObject extends BEAppModel
 		'object_type_id' 	=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
 		'nickname' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
 		'lang' 				=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
-		'IP_created' 		=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
+		'ip_created' 		=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
 
 	) ;
 
@@ -216,7 +216,7 @@ class BEObject extends BEAppModel
 	 	$default = array(
 			'nickname' 			=> array('_getDefaultNickname', 	(isset($data['nickname']) && !@empty($data['nickname']))?$data['nickname']:((isset($data['title']))?$data['title']:'')),
 			'lang' 				=> array('_getDefaultLang', 		(isset($data['lang']))?$data['lang']:null),
-			'IP_created' 		=> array('_getDefaultIP'),
+			'ip_created' 		=> array('_getDefaultIP'),
 			'user_created'		=> array('_getIDCurrentUser', 		((isset($data[$this->primaryKey]) && empty($data[$this->primaryKey])) || !isset($data[$this->primaryKey]))? (isset($data['user_created'])?$data['user_created']:true) :false),
 			'user_modified'		=> array('_getIDCurrentUser', 		(isset($data['user_modified'])?$data['user_modified']:true)), 
 			'Permissions' 		=> array('_getDefaultPermission', 	(isset($data['Permission']))?$data['Permission']:null, (isset($data['object_type_id']))?$data['object_type_id']:0),
@@ -330,7 +330,7 @@ class BEObject extends BEAppModel
 		
 		if(!($type_id =  $this->read("object_type_id", $id))) return false ;
 		 
-		$type_id = (isset($type_id['Object']['object_type_id']))?$type_id['Object']['object_type_id']:$type_id;
+		$type_id = (isset($type_id['BEObject']['object_type_id']))?$type_id['BEObject']['object_type_id']:$type_id;
 		return $conf->objectTypeModels[$type_id] ;
 	}
 	

@@ -125,7 +125,7 @@ class AttachmentsController extends AppController {
 		 	
 	 	$this->Transaction->commit() ;
 	 }
-	
+
 	/**
 	 * Accesso via Ajax.
 	 * Utilizzato per visualizzare l'item di un oggetto file in un form
@@ -134,10 +134,7 @@ class AttachmentsController extends AppController {
 	 */
 	function get_item_form($filename = null) {
 		$filename = urldecode($this->params['form']['filename']) ;
-		
-		// Preleva l'id dell'oggetto a partire dal filename
 		if(!($id = $this->Stream->getIdFromFilename($filename))) throw new BeditaException(sprintf(__("Error get id object: %d", true), $id));
-		
 		$this->_get_item_form($id) ;
 	}
 	 
@@ -154,27 +151,22 @@ $this->params['form']['id'] = 10005 ;
 
 	private function _get_item_form($id) {
 		$conf  = Configure::getInstance() ;
-		
 		foreach ($this->params['form'] as $k =>$v) {
 			$$k = $v ;
 		}
-		
-		// Preleva il tipo di oggetto
+		// Get object type
 		$rec = $this->BEObject->recursive ;
 		$this->BEObject->recursive = -1 ;
 		if(!($ret = $this->BEObject->read('object_type_id', $id))) throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
 		$this->BEObject->recursive = $rec ;
 		$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
-			
 		$this->{$model}->bviorHideFields = array('Version', 'Index', 'current', 'images', 'multimedia', 'attachments') ;
 		if(!($obj = $this->{$model}->findById($id))) {
 			 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
 		}
-		
 		$imagePath 	= $this->BeFileHandler->path($id) ;
 		$imageURL 	= $this->BeFileHandler->url($id) ;
-	
-		// Setup dei dati da passare al template
+		// data for template
 		$this->set('object',	@$obj);
 		$this->set('imagePath',	@$imagePath);
 		$this->set('imageUrl',	@$imageURL);
@@ -187,7 +179,6 @@ $this->params['form']['id'] = 10005 ;
 		$this->set('CACHE',		'imgcache/');
 		$this->set('MEDIA_URL',	MEDIA_URL);
 		$this->set('MEDIA_ROOT',MEDIA_ROOT);
-		
 		$this->layout = "empty" ;
 	}
 

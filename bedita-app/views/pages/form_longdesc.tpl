@@ -1,11 +1,14 @@
+<h2 class="showHideBlockButton">{t}Long Text{/t}</h2>
+<div class="blockForm" id="extendedtext" style="display: none">
+
 {if ($conf->fckeditor|default:false)}
 	{*  BEGIN -- CON FCKEDITOR *}
 
 {$javascript->link('fckeditor/fckeditor.js')}
 
 <script type="text/javascript">
-var typeFormatting		= '{$object.formato|default:'html'}' ;
-var formattingHTMLTextDoc 	= {if ($object.formato|default:'html' == "html")} true {else} false {/if} ;
+var typeFormatting		= '{$object.type|default:'html'}' ;
+var formattingHTMLTextDoc 	= {if ($object.type|default:'html' == "html")} true {else} false {/if} ;
 var sBasePath 		= "{$html->webroot}js/fckeditor/" ;
 var sConfigurePath		= "{$html->webroot}js/descrizioni.fckeditor.config.js" ;
 var sMsgConfirm		= "{t}If you continue, you loose the formatting type, new line.\nDo you want to continue?{/t}" ;
@@ -180,26 +183,26 @@ function changeFormattingText(sentHtml) {
 			<b>{t}Short text{/t}:</b>
 			<br/>
 			<div id="containerTestoTextarea" style="display:none;">
-			<textarea name="data[shortDesc]" id="testo" style="font-size:13px; width:510px; height:150px;">{$object.shortDesc|default:''}</textarea>
+			<textarea name="data[short_desc]" id="testo" style="font-size:13px; width:510px; height:150px;">{$object.short_desc|default:''}</textarea>
 			</div>
 			<div id="containerTestoFCKEditor" style="display:none;">
-			<textarea name="testoFCK" id="testoFCK" style="font-size:13px; width:510px; height:150px;">{$object.shortDesc|default:''}</textarea>
+			<textarea name="testoFCK" id="testoFCK" style="font-size:13px; width:510px; height:150px;">{$object.short_desc|default:''}</textarea>
 			</div>
 			<p>
 			<b>{t}Long text{/t}:</b>
 			<br/>
 			<div id="containerTestoLTextarea" style="display:none;">
-			<textarea name="data[longDesc]" id="testoL" style="font-size:13px; width:510px; height:150px;">{$object.longDesc|default:''}</textarea>
+			<textarea name="data[long_desc]" id="testoL" style="font-size:13px; width:510px; height:150px;">{$object.long_desc|default:''}</textarea>
 			</div>
 			<div id="containerTestoLFCKEditor" style="display:none;">
-			<textarea name="testoLFCK" id="testoLFCK" style="font-size:13px; width:510px; height:150px;">{$object.longDesc|default:''}</textarea>
+			<textarea name="testoLFCK" id="testoLFCK" style="font-size:13px; width:510px; height:150px;">{$object.long_desc|default:''}</textarea>
 			</div>
 			<p>
 			<b>{t}Text type{/t}:</b>
 			&nbsp;&nbsp;
-			<input type="radio" name="data[formato]" class="formatting" value="html" /> <span class="labelFormating">{t}html{/t}</span>
-			<input type="radio" name="data[formato]" class="formatting" value="txt"/> <span class="labelFormating">{t}only text{/t}</span>
-			<input type="radio" name="data[formato]" class="formatting" value="txtParsed" /> <span class="labelFormating">{t}text with conversion space and link{/t}</span>
+			<input type="radio" name="data[type]" class="formatting" value="html" /> <span class="labelFormating">{t}html{/t}</span>
+			<input type="radio" name="data[type]" class="formatting" value="txt"/> <span class="labelFormating">{t}only text{/t}</span>
+			<input type="radio" name="data[type]" class="formatting" value="txtParsed" /> <span class="labelFormating">{t}text with conversion space and link{/t}</span>
 			</p>
 </fieldset>
 
@@ -209,8 +212,8 @@ function changeFormattingText(sentHtml) {
 	{*  BEGIN -- SENZA FCKEDITOR *}
 
 <script type="text/javascript">
-var typeFormatting		= '{$object.formato|default:'html'}' ;
-var formattingHTMLTextDoc 	= {if ($object.formato|default:'html' == "html")} true {else} false {/if} ;
+var typeFormatting		= '{$object.type|default:'html'}' ;
+var formattingHTMLTextDoc 	= {if ($object.type|default:'html' == "html")} true {else} false {/if} ;
 var sBasePath 		= "{$html->url('/js/fckeditor/')}" ;
 var sConfigurePath		= "{$html->url('/js/descrizioni.fckeditor.config.js')}" ;
 var sMsgConfirm		= "{t}If you continue, you loose the formatting type, new line.\nDo you want to continue?{/t}" ;
@@ -243,21 +246,22 @@ $(document).ready(function(){
 <fieldset>
 			<b>{t}Short text{/t}:</b>
 			<br/>
-			<textarea name="data[shortDesc]" id="testo" style="font-size:13px; width:510px; height:150px;">{$object.shortDesc|default:''}</textarea>
+			<textarea name="data[short_desc]" id="testo" style="font-size:13px; width:510px; height:150px;">{$object.short_desc|default:''}</textarea>
 			<br/>
 			<b>{t}Long text{/t}:</b>
 
 			<br/>
-			<textarea name="data[longDesc]" id="testoL" style="font-size:13px; width:510px; height:150px;">{$object.longDesc|default:''}</textarea>
+			<textarea name="data[long_desc]" id="testoL" style="font-size:13px; width:510px; height:150px;">{$object.long_desc|default:''}</textarea>
 			<br/>
 			<b>{t}Text type{/t}:</b>
 			&nbsp;&nbsp; 
-			<input type="radio" name="data[formato]" class="formatting" value="html" /> <span class="labelFormating">{t}html{/t}</span>
-			<input type="radio" name="data[formato]" class="formatting" value="txt"/> <span class="labelFormating">{t}only text{/t}</span>
-			<input type="radio" name="data[formato]" class="formatting" value="txtParsed" /> <span class="labelFormating">{t}text with conversion space and link{/t}</span>
+			<input type="radio" name="data[type]" class="formatting" value="html" /> <span class="labelFormating">{t}html{/t}</span>
+			<input type="radio" name="data[type]" class="formatting" value="txt"/> <span class="labelFormating">{t}only text{/t}</span>
+			<input type="radio" name="data[type]" class="formatting" value="txtParsed" /> <span class="labelFormating">{t}text with conversion space and link{/t}</span>
 			</p>
 
 </fieldset>
 
 	{*  END -- SENZA FCKEDITOR prova  *}
 {/if}
+</div>

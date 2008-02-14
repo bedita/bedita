@@ -39,166 +39,120 @@ class BeFileHandlerComponent extends Object {
 	var $components = array('Transaction');
 	var $paranoid 	= true ;
 	
-	/**
-	 * Contiene gli errori di salvataggio del modulo
-	 *
-	 * @var unknown_type
-	 */
+	// Errors on save
 	var $validateErrors = false ;
-	
+
 	function __construct() {
 		foreach ($this->uses as $model) {
-			if(!class_exists($model)) 
-			     App::import('Model', $model) ;
+			if(!class_exists($model))
+				App::import('Model', $model) ;
 			$this->{$model} = new $model() ;
 		}
-				
 		foreach ($this->components as $component) {
-			if(isset($this->{$component}))	continue;
-			
+			if(isset($this->{$component})) continue;
 			$className = $component . 'Component' ;
-			if(!class_exists($className)) 
-			     App::import('Component', $component);
+			if(!class_exists($className))
+				App::import('Component', $component);
 			$this->{$component} = new $className() ;
 		}
 	} 
-	
-	/**
-	 * @param object $controller
-	 */
+
 	function startup(&$controller)
 	{
 		$conf = Configure::getInstance() ;
-		
 		$this->controller 	= $controller;
-		
 		if(isset($conf->validate_resorce['paranoid'])) $this->paranoid  = (boolean) $conf->validate_resorce['paranoid'] ;
 	}
 
 	/**
-	 * Salva l'oggetto indicato.
-	 * Se presente l'id, modifica altrimenti crea. 
-	 * Se il file da inserire con un nuovo oggetto  gia' presente torna un'eccezione, accettato 
-	 * se sostituisce se stesso.
-	 * I dati del file sono:
-	 * 	path	o un path locale o un URL (\.+//:\.+), in questo caso indica un file remoto
-	 * 			la sua accettazione dipende dalla variabile "allow_url_fopen" e attivata
-	 * name		Nome del file originale. Assente se path == URL
-	 * type		MIME type. Puo' essere assente se path == URL
-	 * size		Dimensione del file. Puo' essere assente se path == URL
+	 * Save object $data
+	 * If $data['id'] modify otherwise create
+	 * If file is already present, throw an exception.
+	 * File data:
+	 * 	path: local path or URL (\.+//:\.+) [remote file]
+	 * 			if "allow_url_fopen" is not activated, remote file is not accepted
+	 * name		Name of file. Empty if path == URL
+	 * type		MIME type. Empty if path == URL
+	 * size		File size. Empty if path == URL
 	 *
-	 * @param array $dati	dati dell'oggetto
-	 * @param string $model	Se presente crea l'oggetto di tipo specifico
-	 * 						altrimenti usa il MIME type
-	 * 
-	 * @return integer o false l'id dell'oggetto creato o salvato
+	 * @param array $dati	object data
+	 * @param string $model	Create object of specified type, otherwise use MIME type
+	 *
+	 * @return integer or false (id of the object created or modified)
 	 */
-	function save(&$dati, $model = null) {		
-		if(isset($dati['id']) && !empty($dati['id'])) {
-			// Modifica
+	function save(&$dati, $model = null) {
+		if(isset($dati['id']) && !empty($dati['id'])) { // modify
 			if(!isset($dati['path']) || @empty($dati['path'])) {
 				return $this->_modify($dati['id'], $dati) ;
-				
 			} else if($this->_isURL($dati['path'])) {
 				return $this->_modifyFromURL($dati['id'], $dati) ;
-				
 			} else {
 				return $this->_modifyFromFile($dati['id'], $dati) ;
 			}
-		} else {
-			// Creazione
-			if($this->_isURL($dati['path'])) {
-				return $this->_createFromURL($dati, $model) ;	
-			} else {
-				return $this->_createFromFile($dati, $model) ;
-			}
+		} else { // create
+			return ($this->_isURL($dati['path'])) ? $this->_createFromURL($dati, $model) : $this->_createFromFile($dati, $model);
 		}
 	}	
 
 	/**
-	 * Cancella l'oggetto indicato
-	 *
-	 * @param integer $id	ID dell'oggetto
+	 * Delete object
+	 * @param integer $id	object id
 	 */
 	function del($id) {
 		if(!($path = $this->Stream->read("path", $id))) return true ;
 		$path = (isset($path['Stream']['path']))?$path['Stream']['path']:$path ;
-		
-		// Se il path punta ad un file su file locale, cancella
+		// If file path is local, delete
 		if(!$this->_isURL($path)) {
 			if(!$this->Transaction->rm(MEDIA_ROOT.$path)) return false ;
 		}
-		
 		$model = $this->BEObject->getType($id) ;
 		if(!class_exists($model)) {
 			loadModel($model) ;
 		}
 		$mod = new $model() ;
-		
 	 	if(!$mod->del($id)) {
 			throw new BEditaDeleteStreamObjException() ;	
 	 	}
-	 	
 	 	return true ;
 	}
-	
+
 	/**
-	 * Torna l'URL al file dell'oggetto
-	 *
-	 * @param integer $id		ID dell'oggetto
+	 * Return URL of file object
+	 * @param integer $id	object id
 	 */
 	function url($id) {
 		if(!($ret = $this->Stream->read("path", $id))) return false ;
 		$path = $ret['Stream']['path'] ;
-		
-		// Se il path punta ad un file su file locale, cancella
-		if($this->_isURL($path)) {
-			return $path ;
-		} else {
-			return (MEDIA_URL.$path) ;
-		}
+		return ($this->_isURL($path)) ? $path : (MEDIA_URL.$path);
 	}
-	
+
 	/**
-	 * Torna il path completo dell'oggetto se e' un ifle remoto
-	 * tonra l'URL
-	 *
-	 * @param integer $id		ID dell'oggetto
+	 * Return object path, URL if remote file
+	 * @param integer $id	object id
 	 */
 	function path($id) {
 		if(!($ret = $this->Stream->read("path", $id))) return false ;
 		$path = $ret['Stream']['path'] ;
-		
-		// Se il path punta ad un file su file locale, cancella
-		if($this->_isURL($path)) {
-			return $path ;
-		} else {
-			return (MEDIA_ROOT.$path) ;
-		}
+		return ($this->_isURL($path)) ? $path : (MEDIA_URL.$path);
 	}
 
 	/**
-	 * Torna l'id dell'oggetto che contiene il file passato, se presente
-	 *
-	 * @param string $path	Nome del file o URL
-	 * 
-	 * @todo DA VERIFICARE
+	 * Return object id (object that contains file $path)
+	 * @param string $path	File name or URL
+	 * @todo VERIFY
 	 */
 	function isPresent($path) {
 		if(!$this->_isURL($path)) {
 			$path = $this->_getPathTargetFile($path);
 		}
-		
 		$clausoles = array() ;
 		$clausoles[] = array("path" => trim($path)) ;
 		if(isset($id)) $clausoles[] = array("id " => "not {$id}") ;
-		
 		$ret = $this->Stream->find($clausoles, 'id') ;
 		if(!count($ret)) return false ;
-		
 		return $ret[0]['Stream']['id'] ;
 	}
-	
+
 	////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -224,26 +178,20 @@ class BeFileHandlerComponent extends Object {
 
 	private function _createFromFile(&$dati, $model = null) {
 		if(!isset($dati['path'])) return false ;
-		
-		// Crea il path dove inserire il file
+		// Create destination path
 		$sourcePath = $dati['path'] ;
 		$targetPath	= $this->_getPathTargetFile($dati['name']); 
-		
-		// Il file non deve essere presente
+		// File should not exist
 		if($this->_isPresent($targetPath)) throw new BEditaFileExistException($this->controller) ;
-		
-		// Crea il file
+		// Create file
 		if(!$this->_putFile($sourcePath, $targetPath)) return false ;
 		$dati['path'] = $targetPath ;
-		
-		// Crea l'oggetto
+		// Create object
 		return $this->_create($dati, $model) ;
 	}
 
 	private function _create(&$dati, $model = null) {
-		// Crea
 		$model = false ;
-		
 		switch($this->_getTypeFromMIME($dati['type'], $model)) {
 			case 'BEFile':		$model = 'BEFile' ; break ;
 			case 'Image':		$model = 'Image' ; break ;
@@ -252,18 +200,13 @@ class BeFileHandlerComponent extends Object {
 			default:
 				throw new BEditaMIMEException($this->controller) ;
 		}
-		
 		$this->{$model}->id = false ;
-		
 		if(!($ret = $this->{$model}->save($dati))) {
 			$this->validateErrors = $this->{$model}->validateErrors ;
-			
 			throw new BEditaSaveStreamObjException($this->controller) ;
 		}
-		
 		return ($this->{$model}->{$this->{$model}->primaryKey}) ;
 	}
-	
 
 	private function _modifyFromURL($id, &$dati) {
 		// URL accettabile
@@ -323,7 +266,7 @@ class BeFileHandlerComponent extends Object {
 		$this->BEObject->recursive = -1 ;
 		if(!($ret = $this->BEObject->read('object_type_id', $id)))  throw new BEditaMIMEException($this->controller) ;
 		$this->BEObject->recursive = $rec ;
-		$model = $conf->objectTypeModels[$ret['Object']['object_type_id']] ;
+		$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
 		
 		$this->{$model}->id =  $id ;
 		if(!($ret = $this->{$model}->save($dati))) {

@@ -29,14 +29,14 @@ class Event extends BEAppObjectModel
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('calendars'),
 			'CreateIndexFields'		=> array(),
-			'ForeignDependenceSave' => array('Object', 'ContentBase', 'Content', 'BaseDocument'),
+			'ForeignDependenceSave' => array('BEObject', 'ContentBase', 'Content', 'BaseDocument'),
 			'DeleteObject' 			=> 'objects',
 	); 
 	 
 	var $transactional 	= true ;
 
 	var $hasOne= array(
-			'Object' =>
+			'BEObject' =>
 				array(
 					'className'		=> 'BEObject',
 					'conditions'   => '',

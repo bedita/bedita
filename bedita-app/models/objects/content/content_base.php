@@ -64,7 +64,7 @@ class ContentBase extends BEAppModel
 					'switch'				=> "ATTACHS",
 				),
 		) ;			
-	
+
 	function __construct() {
 		parent::__construct() ;
 	}
@@ -134,7 +134,7 @@ class ContentBase extends BEAppModel
 	 	$default = array(
 			'start' 			=> array('_getDefaultDataFormat', (isset($data['start']) && !empty($data['start']))?$data['start']:time()),
 			'end'	 		=> array('_getDefaultDataFormat', ((isset($data['end']) && !empty($data['end']))?$data['end']:null)),
-			'formato' 		=> array('_getDefaultFormato', (isset($data['formato']))?$data['formato']:null),
+			'type' 		=> array('_getDefaultFormato', (isset($data['type']))?$data['type']:null),
 		) ;
 		
 		foreach ($default as $name => $rule) {
@@ -186,7 +186,7 @@ class ContentBase extends BEAppModel
 		if(isset($value) && in_array($value, $labels)) return $value ;
 
 		$conf = Configure::getInstance() ;
-		return ((isset($conf->formato))?$conf->formato:'') ;
+		return ((isset($conf->type))?$conf->type:'') ;
 	}
 }
 ?>

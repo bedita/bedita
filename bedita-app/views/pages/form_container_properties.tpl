@@ -1,3 +1,5 @@
+<h2 class="showHideBlockButton">{t}Properties{/t}</h2>
+<div class="blockForm" id="properties">
 <fieldset>
 	<span style="font-weight:bold;">{t}status{/t}</span>:
 	{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator=" "}
@@ -67,8 +69,9 @@
 		<td class="label">{t}From{/t}:</td><td>{$object.UserModified.userid|default:""}</td>
 	</tr>
 	<tr>
-		<td class="label">{t}IP{/t}:</td><td>{$object.IP_created}</td>
+		<td class="label">{t}IP{/t}:</td><td>{$object.ip_created}</td>
 	</tr>
 	</table>
 	{/if}
 </fieldset>
+</div>

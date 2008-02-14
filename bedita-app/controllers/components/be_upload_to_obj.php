@@ -1,34 +1,35 @@
 <?
 /**
- * Il componente estende:
+ * This component extends:
  * 
  * SwfUploadComponent - A CakePHP Component to use with SWFUpload
  * Copyright (C) 2006-2007 James Revillini <james at revillini dot com>
  * 
- * Per poter salvare in un oggetto di BEDita il file uploadato.
+ * Save uploaded file into BEDITA object.
  * 
- * L'estensione riguarda:
- * - Creazione di un oggetto con il file uploadato
- * 		L'ogetto viene creato con il titolo definito dal filename
- * - Ritorno di codici d'errore html : 5XX
- *   Uno per ogni tipologia d'errore
- * - Aggiunta dei seguenti errori:
- * 	 	file gia' presente
- *   	MIME type non corretto
- * 		salvatggio oggetto
- * - aggiunge la possibilita' di cancellare gli oggetti creati (annulla) 
+ * Functions:
  * 
- * Dati passati via _FILES in $this->params['Filedata']:
- * name			nome del file
- * tmp_name		nome del file temporaneo dove ci sono i dati
- * error		eventuale errore di upload
- * size			dimensione del file scaricato
+ * - Creation of uploaded file object
+ * 		Object created with title defined by filename
+ * - Html error codes handling: 5XX
+ * 		One message for each error type
+ * - New error codes (bedita):
+ * 		File already uploaded/present
+ * 		wrong MIME type
+ * 		object saved
+ * - Delete objects created (undo) 
  * 
- * via _POST viene passata anche l'informazione:
- * override		true se e' possibile sovrascrivere un file con lo stesso nome gia' presente
+ * Data passed through _FILES in $this->params['Filedata']:
+ * 	name			file name
+ * 	tmp_name		temporary file name (containing data)
+ * 	error			upload error
+ * 	size			uploaded file size
+ * 
+ * through _POST:
+ * 	override		true if you want allow to rewrite a file (a file with same filename already exists)
  * 
  * 
- * Torna i seguenti codici d'errore, 500 +:
+ * Error codes, 500 +:
  * 	UPLOAD_ERR_INI_SIZE		1
  * 	UPLOAD_ERR_FORM_SIZE	2
  * 	UPLOAD_ERR_PARTIAL		3
@@ -37,17 +38,17 @@
  * 	UPLOAD_ERR_CANT_WRITE	7
  * 	UPLOAD_ERR_EXTENSION	8
  *  
- *  BEDITA_FILE_EXISIST		30		File gia' presente		
- * 	BEDITA_MIME				31		MIME type non riconosciuto o non accettato
- * 	BEDITA_SAVE_STREAM		32		Errore creazione oggetto
- * 	BEDITA_DELETE_STREAM	33		Errore cancellazione oggetto
+ *  BEDITA_FILE_EXIST		30		File exists
+ * 	BEDITA_MIME				31		wrong MIME type (not recognized or not allowed)
+ * 	BEDITA_SAVE_STREAM		32		Object creation error
+ * 	BEDITA_DELETE_STREAM	33		Object delete error
  * 
  */
 
 class BeUploadToObjComponent extends SwfUploadComponent {
 	var $components	= array('BeFileHandler') ;
-	
- 	const BEDITA_FILE_EXISIST	= 30 ;
+
+	const BEDITA_FILE_EXIST	= 30 ;
  	const BEDITA_MIME			= 31 ;
  	const BEDITA_SAVE_STREAM 	= 32;
  	const BEDITA_DELETE_STREAM 	= 33	;
@@ -64,74 +65,61 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 
 	/**
 	 * Uploads a file to location.
-	 * NOTA.
-	 * FLASH torna come MIME type : application/octect-stream da verificare quello effettivo da estensione
-	 * o magic file.
+	 * FLASH returns application/octect-stream as MIME type
+	 * @todo: verify MIME type returned by extension or magic file.
 	 * @return boolean true if upload was successful, false otherwise.
 	 */
 	function upload() {
 		$result = false ;
-		
 		if(!$this->validate()) {
 			$this->errorCode = 500 + $this->params['form']['Filedata']['error'] ;
-			
 			return $result ;
 		}
-		
-		// Scrive l'oggetto
+		// Prepare data
 		$data = &$this->params['form']['Filedata'] ;
 		$override = (isset($this->params['form']['override'])) ? ((boolean)$this->params['form']['override']) : false ;
 		$data['title']	= $data['name'] ;
 		$data['path']	= $data['tmp_name'] ;
-		
+		$data['lang']   = $this->params['form']['lang'];
 		unset($data['tmp_name']) ;
 		unset($data['error']) ;
-		
-		// FLASH come MIME type torna sempre application/octect-stream		
+		// FLASH returns application/octect-stream as MIME type
 		if($data['type'] == "application/octet-stream") { 
 			$old  = $data['type'] ;
 			unset($data['type']) ;
-			
 			$this->BeFileHandler->getInfoURL($data['path'], $data) ;
 		}
-		
 		try {
 			$result = $this->BeFileHandler->save($data) ;
-		
-		} catch (BEditaFileExistException $e) {			
+		} catch (BEditaFileExistException $e) {
 			if($override) {
-				// Non crea un oggetto nuovo ma modifica quello esistente aggiornandone i dati
+				// Modify existing object (doesn't create a new one)
 				if(!($id = $this->BeFileHandler->isPresent($this->params['form']['Filedata']['path']))) return false ;
 				$this->params['form']['Filedata']['id'] = $id ;
-				
 				try {
 					$this->BeFileHandler->save($data) ;
 				} catch (BEditaSaveStreamObjException $e) {
 					$this->errorCode = 500 + self::BEDITA_SAVE_STREAM ;
-					throw $e ;
+					throw $e;
 				}
 			} else {
-				$this->errorCode = 500 + self::BEDITA_FILE_EXISIST ;
+				$this->errorCode = 500 + self::BEDITA_FILE_EXIST ;
 				throw $e ;
 			}
-			
 		} catch (BEditaMIMEException $e) {
-				$this->errorCode = 500 + self::BEDITA_MIME ;
-				throw $e ;
-		
+			$this->errorCode = 500 + self::BEDITA_MIME ;
+			throw $e ;
 		} catch (BEditaInfoException $e) {
-				$this->errorCode = 500 + self::BEDITA_MIME ;
-				throw $e ;
-		
+			$this->errorCode = 500 + self::BEDITA_MIME ;
+			throw $e ;
 		} catch (BEditaSaveStreamObjException $e) {
-				$this->errorCode = 500 + self::BEDITA_SAVE_STREAM ;
-				throw $e ;
+			$this->errorCode = 500 + self::BEDITA_SAVE_STREAM ;
+			throw $e ;
 		} catch (Exception $e) {
 			$this->errorCode = 500 ;
 			throw $e ;
 		}
-		
 		return ($result);
-	}	
+	}
 } ;
 ?>

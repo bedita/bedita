@@ -25,7 +25,7 @@ class BeTreeComponent extends Object {
 		  App::import('Model', 'BEObject') ;
 		
 		$this->Tree 	= new Tree() ;
-		$this->Object 	= new BEObject() ;
+		$this->BEObject 	= new BEObject() ;
 	} 
 
 	/**
@@ -84,7 +84,7 @@ class BeTreeComponent extends Object {
 		if(isset($id)) {
 			$objs = &  $this->Tree->getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
 		} else {
-			$objs = &  $this->Object->findObjs($userid, $status, $filter, $order, $dir, $page, $dim) ;
+			$objs = &  $this->BEObject->findObjs($userid, $status, $filter, $order, $dir, $page, $dim) ;
 		}
 		
 		return  $objs ;
@@ -104,7 +104,7 @@ class BeTreeComponent extends Object {
 		if(isset($id)) {
 			$objs = &  $this->Tree->getDiscendents($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
 		} else {
-			$objs = &  $this->Object->findObjs($userid, $status, $filter, $order, $dir, $page, $dim) ;
+			$objs = &  $this->BEObject->findObjs($userid, $status, $filter, $order, $dir, $page, $dim) ;
 		}
 		
 		return  $objs ;

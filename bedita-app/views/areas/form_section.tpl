@@ -39,41 +39,17 @@ $(document).ready(function(){
 {/literal}
 //-->
 </script>
-
 <div id="containerPage">
-
 <form action="{$html->url('/areas/saveSection')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <fieldset>
 	<input type="hidden" name="data[id]" value="{$section.id|default:''}" />
 	{if isset($parent_id)}<input type="hidden" name="data[parent_id]" value="{$parent_id}" />{/if}
 </fieldset>
-
-<div class="FormPageHeader">
 {include file="../pages/form_header.tpl"}
-</div>
-
 <div class="blockForm" id="errorForm"></div>
-
-<h2 class="showHideBlockButton">{t}Properties{/t}</h2>
-<div class="blockForm" id="properties">
 {include file="../pages/form_container_properties.tpl"}
-</div>
-
-<h2 class="showHideBlockButton">{t}Where put the section into{/t}</h2>
-<div class="blockForm" id="whereto">
 {include file="../pages/form_tree.tpl" excludedSubTreeId=$section.id}
-</div>
-
-<h2 class="showHideBlockButton">{t}Custom Properties{/t}</h2>
-<div class="blockForm" id="customProperties">
 {include file="../pages/form_custom_properties.tpl" el=$section}
-</div>
-
-<h2 class="showHideBlockButton">{t}Permissions{/t}</h2>
-<div class="blockForm" id="permissions">
 {include file="../pages/form_permissions.tpl" el=$section recursion=true}
-</div>
-
 </form>
-
 </div>

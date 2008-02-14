@@ -17,7 +17,6 @@ $.validator.setDefaults({
 		label.html("&nbsp;").addClass("checked");
 	}
 });
-	
 
 $(document).ready(function(){
 
@@ -40,36 +39,13 @@ $(document).ready(function(){
 {/literal}
 //-->
 </script>
-
 <div id="containerPage">
-
 <form action="{$html->url('/areas/saveArea')}" method="post" name="updateForm" id="updateForm" class="cmxform">
-
-<fieldset>
-<input  type="hidden" name="data[id]" value="{$area.id|default:''}"/>
-</fieldset>
-
-<div class="FormPageHeader">
+<fieldset><input  type="hidden" name="data[id]" value="{$area.id|default:''}"/></fieldset>
 {include file="../pages/form_header.tpl"}
-</div>
-
 <div class="blockForm" id="errorForm"></div>
-
-<h2 class="showHideBlockButton">{t}Properties{/t}</h2>
-<div class="blockForm" id="properties">
 {include file="../pages/form_container_properties.tpl"}
-</div>
-
-<h2 class="showHideBlockButton">{t}Custom Properties{/t}</h2>
-<div class="blockForm" id="customProperty">
 {include file="../pages/form_custom_properties.tpl" el=$object}
-</div>
-
-<h2 class="showHideBlockButton">{t}Permissions{/t}</h2>
-<div class="blockForm" id="permissions">
 {include file="../pages/form_permissions.tpl" el=$object recursion=true}
-</div>
-
 </form>
-
 </div>

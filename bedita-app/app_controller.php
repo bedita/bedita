@@ -20,6 +20,7 @@ class AppController extends Controller
 	const VIEW_FWD = 'view://'; // 
 	
 	public $result 		= 'OK' ;
+	protected $skipCheck = false;
 	
 	private static $current = NULL;
 
@@ -65,25 +66,20 @@ class AppController extends Controller
 		self::$current = $this;
 		// Templater
 		$this->view = 'Smarty';
-				
 		// convienience methods for frontends
 	 	$this->beditaBeforeFilter() ;
-	 	
 	 	// don't generate output, done in afterFilter
 	 	$this->autoRender = false ;
-	 	
 	 	// Exit on login/logout
 	 	if(isset($this->data["login"]) || $this->name === 'Authentications') {
 			return;
 		}
-		// Esegue la verifca di login
-		$this->BeAuth->startup($this) ;	
-		
+		// Check login
+		$this->BeAuth->startup($this) ;
 		$this->set('conf',  Configure::getInstance());
-		
-		if(!$this->checkLogin()) return ;		
+		if(!$this->checkLogin($this->skipCheck)) return ;
 	}
-	
+
 	private function setupLocale() {
 		// read Cookie
 		$lang = $this->Cookie->read('bedita.lang');
@@ -91,7 +87,7 @@ class AppController extends Controller
 		if(isset($lang) && $conf->multilang === true) {
 			$this->Session->write('Config.language', $lang);
 		}
-        // translate and check locale
+		// translate and check locale
 		$this->pageTitle = __($this->name, true);
 		// setup Configure class and title for templates
 		$currLang = $conf->Config['language'];
@@ -223,13 +219,16 @@ class AppController extends Controller
 	 * 
 	 * Preleva l'elenco dei moduli visibili dall'utente corrente.
 	 */
-	protected function checkLogin() {				
+	protected function checkLogin() {
 		static  $_loginRunning = false ;
- 		
+
 		if($_loginRunning) return true ;
- 		else $_loginRunning  = true ;
-		 
-		// Verifica i permessi d'accesso
+		else $_loginRunning = true ;
+
+		// skip authorization check, if specific controller set skipCheck = true
+		if($this->skipCheck) return true;
+
+		// Verify authorization
 		if(!$this->BeAuth->isLogged()) { 
 			$this->render(null, null, VIEWS."pages/login.tpl") ; $_loginRunning = false; exit; 
 		}
@@ -256,8 +255,8 @@ class AppController extends Controller
 		}
 		
 		$_loginRunning = false ;
-		
-        return true ;
+
+		return true ;
 	}
 
 	protected function checkWriteModulePermission() {

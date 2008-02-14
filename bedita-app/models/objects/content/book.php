@@ -29,12 +29,12 @@ class Book extends BEAppObjectModel
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'CreateIndexFields'		=> array(),
-			'ForeignDependenceSave' => array('Object', 'ContentBase', 'Content'),
+			'ForeignDependenceSave' => array('BEObject', 'ContentBase', 'Content'),
 			'DeleteObject' 			=> 'objects',
 	); 
 
 	var $hasOne= array(
-			'Object' =>
+			'BEObject' =>
 				array(
 					'className'		=> 'BEObject',
 					'conditions'   => '',

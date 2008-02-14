@@ -1,3 +1,6 @@
+<h2 class="showHideBlockButton">{t}Connect to multimedia gallery{/t}</h2>
+<div class="blockForm" id="frmgallery" style="display:none">
+
 {if !empty($object.gallery_id)}
 <script type="text/javascript">
 var sBasePathGallery  = "{$html->url('/galleries/view/id:')}" ;
@@ -40,3 +43,4 @@ $(document).ready(function(){
 {else}
 {t}No galleries found{/t}
 {/if}
+</div>

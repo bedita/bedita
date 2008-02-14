@@ -25,7 +25,7 @@ class CustomProperty extends BEAppModel
 	var $name = 'CustomProperty';
 
 	var $belongsTo = array(
-		'Object' =>
+		'BEObject' =>
 			array(
 				'className'		=> 'BEObject',
 				'fields'		=> 'id',

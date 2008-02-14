@@ -25,7 +25,7 @@ class Area extends BEAppCollectionModel
 	var $name 		= 'Area';
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
-			'ForeignDependenceSave' => array('Object', 'Collection'),
+			'ForeignDependenceSave' => array('BEObject', 'Collection'),
 			'CreateIndexFields'		=> array(),
 			'DeleteDependentObject'	=> array('section', 'community'),
 			'DeleteObject' 			=> 'objects',
@@ -33,7 +33,7 @@ class Area extends BEAppCollectionModel
 	var $recursive 	= 2 ;
 
 	var $hasOne = array(
-			'Object' =>
+			'BEObject' =>
 				array(
 					'className'		=> 'BEObject',
 					'conditions'   => '',

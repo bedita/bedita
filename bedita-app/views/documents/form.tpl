@@ -82,78 +82,19 @@ function activePortionsForm(objectType) {
 
 {/literal}
 </script>
-
 <div id="containerPage">
-
 <form action="{$html->url('/documents/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
-
-<input  type="hidden" name="data[id]" value="{$object.id|default:''}" />
-
-<div class="FormPageHeader">
+<fieldset><input  type="hidden" name="data[id]" value="{$object.id|default:''}"/></fieldset>
 {include file="../pages/form_header.tpl"}
-</div>
-
 <div class="blockForm" id="errorForm"></div>
-
-<h2 class="showHideBlockButton">{t}Properties{/t}</h2>
-<div class="blockForm" id="properties">
-{include file="../pages/form_properties.tpl" doctype=false}
-</div>
-
-<h2 class="showHideBlockButton">{t}Subtitle, description{/t}</h2>
-<div class="blockForm" id="subtitle" style="display: none">
+{include file="../pages/form_properties.tpl" doctype=false comments=true}
 {include file="../pages/form_subtitle_desc.tpl"}
-</div>
-
-<h2 class="showHideBlockButton">{t}Where put the document into{/t}</h2>
-<div class="blockForm" id="whereto" style="display: none">
 {include file="../pages/form_tree.tpl"}
-</div>
-
-<h2 class="showHideBlockButton">{t}Long Text{/t}</h2>
-<div class="blockForm" id="extendedtext" style="display: none">
 {include file="../pages/form_longdesc.tpl"}
-</div>
-
-<h2 class="showHideBlockButton">{t}Images{/t}</h2>
-<div class="blockForm" id="imgs" style="display:none">
 {include file="../pages/form_multimedia.tpl" multimedia=$object.multimedia}
-</div>
-
-<h2 class="showHideBlockButton">{t}Attachments{/t}</h2>
-<div class="blockForm" id="attachments" style="display:none">
 {include file="../pages/form_attachments.tpl" attachments=$object.attachments}
-</div>
-
-<h2 class="showHideBlockButton">{t}Connect to multimedia gallery{/t}</h2>
-<div class="blockForm" id="frmgallery" style="display:none">
 {include file="../pages/form_galleries.tpl"}
-</div>
-{*
-<div id="divLinkExtern">
-<h2 class="showHideBlockButton">{t}External links{/t}</h2>
-<div class="blockForm" id="linkEsterno" style="display: none">
-	LINK ESTERNO
-</div>
-</div>
-
-<div id="divLinkIntern">
-<h2 class="showHideBlockButton">{t}Objects{/t}</h2>
-<div class="blockForm" id="linkInterno"  style="display: none">
-	LINK INTERNO
-</div>
-</div>
-*}
-<h2 class="showHideBlockButton">{t}Custom Properties{/t}</h2>
-<div class="blockForm" id="customProperties">
 {include file="../pages/form_custom_properties.tpl" el=$object}
-</div>
-
-<h2 class="showHideBlockButton">{t}Permissions{/t}</h2>
-<div class="blockForm" id="permissions">
 {include file="../pages/form_permissions.tpl" el=$object recursion=true}
-</div>
-
 </form>
-
 </div>

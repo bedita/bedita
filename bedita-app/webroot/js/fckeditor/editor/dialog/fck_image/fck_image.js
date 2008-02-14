@@ -1,4 +1,4 @@
-﻿/*
+/*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
  * Copyright (C) 2003-2007 Frederico Caldeira Knabben
  *
@@ -166,7 +166,7 @@ function LoadSelection()
 	GetE('cmbAttLangDir').value		= oImage.dir ;
 	GetE('txtAttLangCode').value	= oImage.lang ;
 	GetE('txtAttTitle').value		= oImage.title ;
-	GetE('txtLongDesc').value		= oImage.longDesc ;
+	GetE('txtLongDesc').value		= oImage.long_desc ;
 
 	if ( oEditor.FCKBrowserInfo.IsIE )
 	{
@@ -286,7 +286,7 @@ function UpdateImage( e, skipId )
 	SetAttribute( e, 'dir'		, GetE('cmbAttLangDir').value ) ;
 	SetAttribute( e, 'lang'		, GetE('txtAttLangCode').value ) ;
 	SetAttribute( e, 'title'	, GetE('txtAttTitle').value ) ;
-	SetAttribute( e, 'longDesc'	, GetE('txtLongDesc').value ) ;
+	SetAttribute( e, 'long_desc'	, GetE('txtLongDesc').value ) ;
 
 	if ( oEditor.FCKBrowserInfo.IsIE )
 	{
