@@ -4,6 +4,7 @@
 <script type="text/javascript">
 var urlGetObj 	= '{$html->url("/$controller/get_item_form")}' ;
 var urlGetObjId 	= '{$html->url("/$controller/get_item_form_by_id")}' ;
+var containerItem = "#{$containerId}";
 <!--
 {literal}
 // set draggable list items
@@ -19,7 +20,7 @@ function commitUploadItem(files) {
 		var filename = escape(files[i]) ;
 		counter++ ;
 		$(emptyDiv).load(urlGetObj, {'filename': filename, 'priority':priority, 'index':index, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
-			$("#containerItem").append(this) ; 
+			$(containerItem).append(this) ; 
 			$(".itemBox", this).each(function() {
 				setup_drag_drop_item(this) ;
 			}) ;
@@ -54,7 +55,7 @@ function commitUploadById(IDs) {
 		var id	= escape(IDs[i]) ;
 		counter++ ;
 		$(emptyDiv).load(urlGetObjId, {'id': id, 'priority':priority, 'index':index, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
-			$("#containerItem").append(this) ; 
+			$(containerItem).append(this) ; 
 			$(".itemBox", this).each(function() {
 				setup_drag_drop_item(this) ;
 			}) ;
@@ -137,16 +138,14 @@ var cols 		= 5 ;
 </script>
 
 <fieldset id="{$containerId}">
-<a href="{$html->url("/$controller")}/frm_upload/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640" title="{$title} -{t}add by upload{/t}" class="thickbox">TEST</a> |
-
 <a href="{$html->url("/$controller")}/frm_upload/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} -{t}add by upload{/t}" class="thickbox">{$title} - {t}add by upload{/t}</a> |
 <a href="{$html->url("/$controller")}/frm_upload_bedita/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} - {t}add by BEdita{/t}" class="thickbox">{$title} - {t}add by BEdita{/t}</a>
 {* | <a href="{$html->url("/$controller")}/frm_upload_url/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} - {t}add by URL{/t}" class="thickbox">{$title} - {t}add by URL{/t}</a>*}
 
 {assign var="newPriority" 	value=1}
 {assign var="index" 		value=0}
-{foreach key=index item=obj from=$items|default:$empty}
-	{include file="../pages/form_file_item.tpl"}
+{foreach key=index item=ob from=$items|default:$empty}
+	{include file="../pages/form_file_item.tpl" obj=$ob}
 {/foreach}
 <script type="text/javascript">
 <!--

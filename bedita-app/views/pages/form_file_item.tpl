@@ -1,3 +1,4 @@
+{if empty($obj)}{assign var="obj" value=$object}{/if}
 {assign var="thumbWidth" 		value=100}
 {assign var="thumbHeight" 		value=100}
 {assign var="thumbCache" 		value=$CACHE}
@@ -7,18 +8,18 @@
 {assign var="thumbSside"		value=""}
 {assign var="thumbHtml"			value=""}
 {assign var="thumbDev"			value=""}
-{assign var="imagePath" 		value=$object.path}
-{assign var="imageFile" 		value=$object.filename|default:$object.name}
-{assign var="imageTitle" 		value=$object.title}
-{assign var="newPriority" 		value=$object.priority+1|default:$priority}
-<div id="m_{$object.id}" class="itemBox">
+{assign var="imagePath" 		value=$obj.path}
+{assign var="imageFile" 		value=$obj.filename|default:$obj.name}
+{assign var="imageTitle" 		value=$obj.title}
+{assign var="newPriority" 		value=$obj.priority+1|default:$priority}
+<div id="m_{$obj.id}" class="itemBox">
 	<input type="hidden" class="index" 	name="index" value="{$index}" />
-	<input type="hidden" class="id" 	name="data[{$controller}][{$index}][id]" value="{$object.id}" />
-	<input type="text" class="priority" name="data[{$controller}][{$index}][priority]" value="{$object.priority|default:$priority}" size="3" maxlength="3"/>
+	<input type="hidden" class="id" 	name="data[{$controller}][{$index}][id]" value="{$obj.id}" />
+	<input type="text" class="priority" name="data[{$controller}][{$index}][priority]" value="{$obj.priority|default:$priority}" size="3" maxlength="3"/>
 	<span class="label">{$imageFile}</span>
 	<div style="width:{$thumbWidth}px; height:{$thumbHeight}px; overflow:hidden;">
-	{$imageFile} : {$object.ObjectType.name}
-	{if !empty($imageFile) && strtolower($object.ObjectType.name) == "image"}
+	{$imageFile} : {$obj.ObjectType.name}
+	{if !empty($imageFile) && strtolower($obj.ObjectType.name) == "image"}
 		{thumb 
 			width="$thumbWidth" 
 			height="$thumbHeight" 
@@ -32,19 +33,19 @@
 			html="$thumbHtml"
 			dev="$thumbDev"} 
 	{else}
-		{if strtolower($object.ObjectType.name) == "image"}
+		{if strtolower($obj.ObjectType.name) == "image"}
 		<img src="{$session->webroot}/img/image-missing.jpg" width="160"/>
 		{else}
-			type: {$object.ObjectType.name}
+		{$obj.ObjectType.name}
 		{/if}
 	{/if}
 	</div>
 	<br/>
 	{t}Title{/t}:<br/>{$imageTitle|escape:'htmlall'}<br/>
-	{t}Description{/t}:<br/>{$object.short_desc|escape:'htmlall'}<br/>
-	{t}Size{/t}:<br/>{$object.size/1000} Kb<br/>
-	{if !empty($imageFile) && $object.name == "Image"}x: {$object.width} y: {$object.height}{/if}
+	{t}Description{/t}:<br/>{$obj.short_desc|escape:'htmlall'}<br/>
+	{t}Size{/t}:<br/>{$obj.size/1000} Kb<br/>
+	{if !empty($imageFile) && $obj.name == "Image"}x: {$obj.width} y: {$obj.height}{/if}
 	<div align="right" style="padding-top:4px; margin-top:4px; border-top:1px solid silver">
-	<input type="button" onclick="removeItem('m_{$object.id}')" value="{t}Delete{/t}" />
+	<input type="button" onclick="removeItem('m_{$obj.id}')" value="{t}Delete{/t}" />
 	</div>
 </div>
