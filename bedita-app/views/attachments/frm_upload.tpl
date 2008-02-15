@@ -1,1 +1,1 @@
-{include file="../pages/form_upload.tpl"}
+{include file="../pages/form_upload.tpl" controller='attachments'}

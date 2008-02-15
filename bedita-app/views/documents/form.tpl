@@ -92,7 +92,7 @@ function activePortionsForm(objectType) {
 {include file="../pages/form_tree.tpl"}
 {include file="../pages/form_longdesc.tpl"}
 {include file="../pages/form_file_list.tpl" containerId='multimediaContainer' controller='multimedia' title='Multimedia' items=$object.multimedia}
-{*include file="../pages/form_file_list.tpl" containerId='attachContainer' controller='attachments' title='Attachments' items=$object.attachments*}
+{include file="../pages/form_file_list.tpl" containerId='attachContainer' controller='attachments' title='Attachments' items=$object.attachments}
 {include file="../pages/form_galleries.tpl"}
 {include file="../pages/form_custom_properties.tpl" el=$object}
 {include file="../pages/form_permissions.tpl" el=$object recursion=true}

@@ -16,17 +16,17 @@ var files = {} ;	// file queue
 
 function commitFileUpload(tmp) {
 	try {
-		commitUploadItem(tmp) ;
+		{/literal}{$controller}{literal}CommitUploadItem(tmp) ;
 	} catch(e) {
-		parent.commitUploadItem(tmp) ;
+		parent.{/literal}{$controller}{literal}CommitUploadItem(tmp) ;
 	}
 }
 
 function rollbackFileUpload() {
 	try {
-		rollbackUploadItem() ;
+		{/literal}{$controller}{literal}RollbackUploadItem() ;
 	} catch(e) {
-		parent.rollbackUploadItem() ;
+		parent.{/literal}{$controller}{literal}RollbackUploadItem() ;
 	}
 }
 

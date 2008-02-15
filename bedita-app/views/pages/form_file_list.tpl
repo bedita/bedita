@@ -14,7 +14,7 @@ $(document).ready(function(){
 
 // Get data from modal window, uploaded files and insert new object in the form
 var counter =  0 ;
-function commitUploadItem(files) {	
+function {/literal}{$controller}{literal}CommitUploadItem(files) {	
 	var emptyDiv = "<div><\/div>"; 
 	for(var i=0 ; i < files.length ; i++) {
 		var filename = escape(files[i]) ;
@@ -43,13 +43,13 @@ function commitUploadItem(files) {
 	}
 }
 
-function rollbackUpload() {
+function {/literal}{$controller}{literal}RollbackUploadItem() {
 	tb_remove() ;
 }
 
 // Per gli oggetti gia' registrati
 var counter =  0 ;
-function commitUploadById(IDs) {
+function {/literal}{$controller}{literal}CommitUploadById(IDs) {
 	var emptyDiv = "<div><\/div>"; 
 	for(var i=0 ; i < IDs.length ; i++) {
 		var id	= escape(IDs[i]) ;
