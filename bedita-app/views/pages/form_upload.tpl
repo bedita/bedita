@@ -14,6 +14,22 @@ var URLDelete		= '{$html->url('/files/deleteFile')}' ;
 var swfu;			// upload object
 var files = {} ;	// file queue
 
+function commitFileUpload(tmp) {
+	try {
+		commitUploadItem(tmp) ;
+	} catch(e) {
+		parent.commitUploadItem(tmp) ;
+	}
+}
+
+function rollbackFileUpload() {
+	try {
+		rollbackUploadItem() ;
+	} catch(e) {
+		parent.rollbackUploadItem() ;
+	}
+}
+
 // close modal window, confirming options
 function closeOK() {
 	var tmp = new Array() ;
@@ -26,9 +42,11 @@ function closeOK() {
 				tmp[tmp.length] = files[id] ;
 			}
 		} catch(e) {
+			alert("Error on id " + id);
+			alert(e);
 		}
 	}) ;
-	commitFileUpload(tmp) ; {/literal}{* function implemented in /views/{module}/frm_upload.tpl *}{literal}
+	commitFileUpload(tmp) ;
 }
 
 // close modal window, reset operations (cancel)
@@ -54,9 +72,11 @@ function closeEsc() {
 				}) ;
 			}
 		} catch(e) {
+			alert("Error on id " + id);
+			alert(e);
 		}
 	}) ;
-	rollbackFileUpload() ; {/literal}{* function implemented in /views/{module}/frm_upload.tpl *}{literal}
+	rollbackFileUpload() ;
 }
 
 function showHideBox(boxId,showIt) {
@@ -212,7 +232,6 @@ th.boxNotSelected {border:solid #000 1px;background-color:#DDD; height: 20px;}
 
 </head>
 <body>
-
 <table cellpadding="0" cellspacing="0" style="width:100%">
 <tbody>
 <tr>

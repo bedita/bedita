@@ -1,6 +1,6 @@
 <script type="text/javascript">
-var urlIcoCalendar 	= '{$html->url('../img/calendar.gif')}' ;
-urlDelete 			=  "{$html->url('delete/')}{$object.id}" ;
+var urlIcoCalendar = '{$html->url('../img/calendar.gif')}' ;
+urlDelete = "{$html->url('delete/')}{$object.id}" ;
 {literal}
 var langs = {
 {/literal}
@@ -9,9 +9,7 @@ var langs = {
 	{/foreach}
 {literal}
 } ;
-
 var validate = null ;
-
 $.validator.setDefaults({ 
 	success: function(label) {
 		// set &nbsp; as text for IE
@@ -20,28 +18,22 @@ $.validator.setDefaults({
 });
 
 $(document).ready(function(){
-	
 	$("#updateForm").validate();
-
 	$("#updateForm input[@name=cancella]").bind("click", function() {
 		if(!confirm("{/literal}{t}Attention!!! you are deleting an item.\nAre you sure that you want to continue?{/t}{literal}")) {
 			return false ;
 		}
 		$("#frmDelete //input[@name='data[id]']").attr("value", $(this).attr("name")) ;
-		
 		$("#updateForm").attr("action", urlDelete) ;
 		$("#updateForm").get(0).submit() ;
-
 		return false ;	
 	}) ;
-
 	// Aggiunta traduzioni linguistiche dei campi
 	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
 	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
 	$("#cmdTranslateShortDesc").addTranslateField('shortdesc', langs) ;
 	$("#cmdTranslateLongDesc").addTranslateField('longdesc', langs) ;
 });
-
 {/literal}
 </script>
 <div id="containerPage">
@@ -51,7 +43,7 @@ $(document).ready(function(){
 <div class="blockForm" id="errorForm"></div>
 {include file="../pages/form_container_properties.tpl"}
 {include file="../pages/form_subtitle_desc.tpl"}
-{include file="../pages/form_multimedia.tpl" multimedia=$multimedia}
+{include file="../pages/form_file_list.tpl" containerId='multimediaContainer' controller='multimedia' title='Multimedia' items=$object.multimedia}
 {include file="../pages/form_custom_properties.tpl" el=$object}
 {include file="../pages/form_permissions.tpl" el=$object recursion=true}
 </form>

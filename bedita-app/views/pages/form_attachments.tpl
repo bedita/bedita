@@ -7,20 +7,14 @@ var URLGetObjAttachmentId 	= '{$html->url('/attachments/get_item_form_by_id')}' 
 <!--
 {literal}
 
-/*
-funzioni che rende draggable gli item della lista
-*/
+// set draggable list items
 $(document).ready(function(){
 	$("div.attachBox").each(function(index) {
 		setupDragDropItemAttach(this) ;
 	}) ;
 });
 
-
-/* 
-funzione che preleva i dati passati dalla finestra modale
-con i file scaricati sul server e inserisce i nuovi oggetti nel form.
-*/
+// Get data from modal window, uploaded files and insert new object in the form
 var counter =  0 ;
 function commitUploadAttachment(files) {	
 	var emptyDiv = "<div><\/div>";	
@@ -35,7 +29,7 @@ function commitUploadAttachment(files) {
 			counter-- ;
 			if(!counter)  {
 				reorderListAttachments() ;
-				// Indica l'avvenuto cambiamento dei dati
+				// Show that data changed
 				try { $().alertSignal() ; } catch(e) {}
 				tb_remove() 
 			}

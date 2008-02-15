@@ -258,7 +258,8 @@ TABLE.indexList {width:100%; margin-left:0px; empty-cells: show; border-collapse
 /* END -- Form dettaglio object */
 
 /* BEGIN -- Box Image */
-
+div.itemBox { background-color:#E9E9E9;border:solid #FFF 1px;float:left;padding:2px 2px 2px 2px }
+div.itemBoxFirst { background-color:#E9E9E9;border:solid #FFF 1px;float:left;padding:2px 2px 2px 2px }
 div.imageBox { background-color:#E9E9E9;border:solid #FFF 1px;float:left;padding:2px 2px 2px 2px }
 div.imageBoxFirst { background-color:#E9E9E9;border:solid #FFF 1px;float:left;padding:2px 2px 2px 2px }
 .priority { font-weight:bold;font-size:20px; background-color:#E9E9E9; border: solid #E9E9E9 0px; }
