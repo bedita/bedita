@@ -9,7 +9,7 @@ var containerItem = "#{$containerId}";
 {literal}
 // set draggable list items
 $(document).ready(function(){
-	$("div.itemBox").each(function(index) { etup_drag_drop_item(this) ;}) ;
+	$("div.itemBox").each(function(index) { setup_drag_drop_item(this) ;}) ;
 });
 
 // Get data from modal window, uploaded files and insert new object in the form
