@@ -139,7 +139,7 @@ VALUES (
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `IP_created`, `user_created`, `user_modified`)  VALUES  (2, 1, 'on', NOW(), NOW(), 'Test site', "TestSite", 1, 'it', '192.168.0.1', 1, 1);
 INSERT INTO `collections` (`id`, `create_rules`, `access_rules`) VALUES (2, NULL, NULL);
 INSERT INTO `areas` (`id`) VALUES (2);
-INSERT INTO `trees` ( `id` , `parent_id` , `path`, `pathParent`, `priority` ) VALUES (2, NULL, '/2', '/', 1);
+INSERT INTO `trees` ( `id` , `parent_id` , `path`, `parent_path`, `priority` ) VALUES (2, NULL, '/2', '/', 1);
 
 INSERT INTO `permissions` ( `object_id` , `ugid` , `switch` , `flag` )
 VALUES (
@@ -154,7 +154,7 @@ NULL , '2', 'prova', 'integer', '10'
 -- 2 sezioni
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `IP_created`, `user_created`, `user_modified`)  VALUES (3, 3, 'on', NOW(), NOW(), 'Sezione Home Page 1', "SezioneHomePage1", 1, 'it', '192.168.0.1', 1, 1);
 INSERT INTO `collections` (`id`, `create_rules`, `access_rules`) VALUES (3, NULL, NULL);
-INSERT INTO `trees` ( `id` , `parent_id` , `path`, `pathParent`, `priority` ) VALUES (3, 2, '/2/3', '/2', 1);
+INSERT INTO `trees` ( `id` , `parent_id` , `path`, `parent_path`, `priority` ) VALUES (3, 2, '/2/3', '/2', 1);
 INSERT INTO `permissions` ( `object_id` , `ugid` , `switch` , `flag` )
 VALUES (
 3, (SELECT id FROM groups WHERE name = 'administrator'), 'group', '15'
@@ -162,7 +162,7 @@ VALUES (
 
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `IP_created`, `user_created`, `user_modified`)  VALUES (4, 3, 'on', NOW(), NOW(), 'Sezione Home Page 2', "SezioneHomePage2", 1, 'it', '192.168.0.1', 1, 1);
 INSERT INTO `collections` (`id`, `create_rules`, `access_rules`) VALUES (4, NULL, NULL);
-INSERT INTO `trees` ( `id` , `parent_id` , `path`, `pathParent`, `priority` ) VALUES (4, 2, '/2/4', '/2', 2);
+INSERT INTO `trees` ( `id` , `parent_id` , `path`, `parent_path`, `priority` ) VALUES (4, 2, '/2/4', '/2', 2);
 INSERT INTO `permissions` ( `object_id` , `ugid` , `switch` , `flag` )
 VALUES (
 4, (SELECT id FROM groups WHERE name = 'administrator'), 'group', '15'
@@ -174,7 +174,7 @@ INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `shortDesc` 
 INSERT INTO `contents` ( `id` , `longDesc` ) VALUES (6, 'testo lungo');
 INSERT INTO `base_documents` ( `id` , `desc_author` , `flagComments` , `credits` ) VALUES (6, 'descrizione autore', '1', 'credits');
 INSERT INTO `documents` ( `id` , `ptrURL` , `ptrObj` , `ptrFile` , `ptrRule` , `switch` ) VALUES (6, NULL , NULL , NULL , NULL , 'doc');
-INSERT INTO `trees` ( `id` , `parent_id` , `path`, `pathParent`, `priority` ) VALUES (6, 3, '/2/3/6', '/2/3', 1);
+INSERT INTO `trees` ( `id` , `parent_id` , `path`, `parent_path`, `priority` ) VALUES (6, 3, '/2/3/6', '/2/3', 1);
 INSERT INTO `permissions` ( `object_id` , `ugid` , `switch` , `flag` )
 VALUES (
 6, (SELECT id FROM groups WHERE name = 'administrator'), 'group', '15'
@@ -198,7 +198,7 @@ INSERT INTO `base_documents` ( `id` , `desc_author` , `flagComments` , `credits`
 INSERT INTO `documents` ( `id` , `ptrURL` , `ptrObj` , `ptrFile` , `ptrRule` , `switch` ) VALUES (5, NULL , NULL , NULL , NULL , 'doc');
 INSERT INTO `custom_properties` ( `object_id` , `name` , `type` , `integer` , `bool` , `float` , `string` , `stream` ) VALUES ('5', 'test', 'integer', '10', NULL , NULL , NULL , NULL);
 INSERT INTO `custom_properties` ( `object_id` , `name` , `type` , `integer` , `bool` , `float` , `string` , `stream` )VALUES ('5', 'testBool', 'bool', NULL , '1', NULL , NULL , NULL);
-INSERT INTO `trees` ( `id` , `parent_id` , `path`, `pathParent`, `priority` ) VALUES (5, 3, '/2/3/5', '/2/3', 2);
+INSERT INTO `trees` ( `id` , `parent_id` , `path`, `parent_path`, `priority` ) VALUES (5, 3, '/2/3/5', '/2/3', 2);
 INSERT INTO `permissions` ( `object_id` , `ugid` , `switch` , `flag` )
 VALUES (
 5, (SELECT id FROM groups WHERE name = 'administrator'), 'group', '15'
@@ -213,7 +213,7 @@ INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `shortDesc` 
 INSERT INTO `contents` ( `id` , `longDesc` ) VALUES (8, 'testo lungo');
 INSERT INTO `base_documents` ( `id` , `desc_author` , `flagComments` , `credits` ) VALUES (8, 'descrizione autore', '1', 'credits');
 INSERT INTO `events` ( `id` ) VALUES (8);
-INSERT INTO `trees` ( `id` , `parent_id` , `path`, `pathParent`, `priority` ) VALUES (8, 3, '/2/3/8', '/2/3', 3);
+INSERT INTO `trees` ( `id` , `parent_id` , `path`, `parent_path`, `priority` ) VALUES (8, 3, '/2/3/8', '/2/3', 3);
 INSERT INTO `permissions` ( `object_id` , `ugid` , `switch` , `flag` )
 VALUES (
 8, (SELECT id FROM groups WHERE name = 'administrator'), 'group', '15'
@@ -226,7 +226,7 @@ INSERT INTO `event_date_items` ( `id` , `event_id`, `start` , `end`) VALUES (2, 
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `IP_created`, `user_created`, `user_modified`) VALUES (9, 18, 'on', NOW(), NOW(), 'Prima Notizia di Test', "PrimaNotiziaDiTest", 1, 'it', '192.168.0.1', 1, 1);
 INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `shortDesc` , `formato` ) VALUES (9, '2007-05-22 10:59:28', '2008-05-22 10:59:34', 'sottotitolo', 'Questo è il testo breve', 'txt');
 INSERT INTO `short_news` ( `id`) VALUES (9) ;
-INSERT INTO `trees` ( `id` , `parent_id` , `path`, `pathParent`, `priority` ) VALUES (9, 2, '/2/9', '/2', 3);
+INSERT INTO `trees` ( `id` , `parent_id` , `path`, `parent_path`, `priority` ) VALUES (9, 2, '/2/9', '/2', 3);
 INSERT INTO `permissions` ( `object_id` , `ugid` , `switch` , `flag` )
 VALUES (
 9, (SELECT id FROM groups WHERE name = 'administrator'), 'group', '15'
@@ -250,7 +250,7 @@ VALUES (
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `IP_created`, `user_created`, `user_modified`) VALUES (11, 28, 'on', NOW(), NOW(), 'Antonio Albanese', "AntonioAlbanese", 1, 'it', '192.168.0.1', 1, 1);
 INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `shortDesc` , `formato` ) VALUES (11, '2007-05-22 10:59:28', '2008-05-22 10:59:34', 'sottotitolo', 'Questo è il testo breve DI Albanese', 'txt');
 INSERT INTO `authors` ( `id` , `image_id` , `nome` , `cognome` , `search_string` ) VALUES ('11', '10', 'Antonio', 'Albanese', 'test search string') ;
-INSERT INTO `trees` ( `id` , `parent_id` , `path`, `pathParent`, `priority` ) VALUES (11, 2, '/2/11', '/2', 4);
+INSERT INTO `trees` ( `id` , `parent_id` , `path`, `parent_path`, `priority` ) VALUES (11, 2, '/2/11', '/2', 4);
 INSERT INTO `permissions` ( `object_id` , `ugid` , `switch` , `flag` )
 VALUES (
 11, (SELECT id FROM groups WHERE name = 'administrator'), 'group', '15'
@@ -262,7 +262,7 @@ INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `shortDesc` 
 INSERT INTO `contents` ( `id` , `longDesc` ) VALUES (12, 'testo lungo');
 INSERT INTO `base_documents` ( `id` , `desc_author` , `flagComments` , `credits` ) VALUES (12, 'descrizione autore', '1', 'credits');
 INSERT INTO `documents` ( `id` , `ptrURL` , `ptrObj` , `ptrFile` , `ptrRule` , `switch` ) VALUES (12, NULL , NULL , NULL , NULL , 'doc');
-INSERT INTO `trees` ( `id` , `parent_id` , `path`, `pathParent`, `priority` ) VALUES (12, 3, '/2/3/12', '/2/12', 1);
+INSERT INTO `trees` ( `id` , `parent_id` , `path`, `parent_path`, `priority` ) VALUES (12, 3, '/2/3/12', '/2/12', 1);
 INSERT INTO `permissions` ( `object_id` , `ugid` , `switch` , `flag` )
 VALUES (
 12, (SELECT id FROM groups WHERE name = 'administrator'), 'group', '15'

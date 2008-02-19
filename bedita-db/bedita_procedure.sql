@@ -77,7 +77,7 @@ SET pathParent 	= IF(pathParent IS NULL, '/', pathParent) ;
 SET _priority  	= (SELECT (MAX(priority)+1) FROM trees WHERE id = _IDParent) ;
 SET _priority  	= IF(_priority IS NULL, 1, _priority) ;
 
-INSERT INTO `trees` ( `id` , `parent_id` , `path` , `pathParent` , `priority` ) VALUES (_ID, _IDParent , pathID, pathParent , _priority) ;
+INSERT INTO `trees` ( `id` , `parent_id` , `path` , `parent_path` , `priority` ) VALUES (_ID, _IDParent , pathID, pathParent , _priority) ;
 
 END
 //
@@ -99,7 +99,7 @@ SET _minPriority  	= (SELECT MIN(priority) FROM trees WHERE id = _ID AND parent_
 
 IF  _priority > _minPriority THEN
 	BEGIN
-	 UPDATE trees SET priority = _priority WHERE pathParent = _pathParent AND priority = (_priority - 1) ;
+	 UPDATE trees SET priority = _priority WHERE parent_path = _pathParent AND priority = (_priority - 1) ;
 	 UPDATE trees SET priority = (_priority - 1) WHERE id = _ID AND parent_id = _IDParent ;
 	 END ;
 END IF ;
@@ -124,7 +124,7 @@ SET _maxPriority  	= (SELECT MAX(priority) FROM trees WHERE id = _ID AND parent_
 
 IF  _priority < _maxPriority THEN
 	BEGIN
-	 UPDATE trees SET priority = _priority WHERE pathParent = _pathParent AND priority = (_priority + 1) ;
+	 UPDATE trees SET priority = _priority WHERE parent_path = _pathParent AND priority = (_priority + 1) ;
 	 UPDATE trees SET priority = (_priority + 1) WHERE id = _ID AND parent_id = _IDParent ;
 	 END ;
 END IF ;
@@ -231,14 +231,14 @@ DECLARE _oldPathParent MEDIUMTEXT ;
 DECLARE _newPathParent MEDIUMTEXT ;
 
 SET _oldPath 		= (SELECT path FROM trees WHERE id = _ID AND parent_id = _IDOldParent) ;
-SET _oldPathParent 	= (SELECT pathParent FROM trees WHERE id = _ID AND parent_id = _IDOldParent) ;
+SET _oldPathParent 	= (SELECT parent_path FROM trees WHERE id = _ID AND parent_id = _IDOldParent) ;
 SET _newPathParent 	= (SELECT path FROM trees WHERE id = _IDNewParent) ;
 SET _newPath		= REPLACE(_oldPath, _oldPathParent, _newPathParent) ;
 
-UPDATE trees SET path = _newPath, pathParent = _newPathParent, parent_id = _IDNewParent WHERE path LIKE _oldPath ;
+UPDATE trees SET path = _newPath, parent_path = _newPathParent, parent_id = _IDNewParent WHERE path LIKE _oldPath ;
 
 UPDATE trees SET
-path = REPLACE(path, _oldPath, _newPath) , pathParent = REPLACE(pathParent, _oldPath, _newPath)
+path = REPLACE(path, _oldPath, _newPath) , parent_path = REPLACE(parent_path, _oldPath, _newPath)
 WHERE path  LIKE CONCAT(_oldPath, '%') ;
 
 END
@@ -287,7 +287,7 @@ SELECT
 id,
 _ID AS parent_id,
 REPLACE(path, _IDOLD, _ID) AS path,
-REPLACE(pathParent, _IDOLD, _ID) AS pathParent,
+REPLACE(parent_path, _IDOLD, _ID) AS parent_path,
 priority
 FROM trees
 WHERE
