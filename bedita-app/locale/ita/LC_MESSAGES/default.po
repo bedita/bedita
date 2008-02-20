@@ -505,3 +505,39 @@ msgstr "i cambiamenti andrebbero persi, lasciando la pagina"
 
 msgid "data changed"
 msgstr "dati cambiati"
+
+msgid "Public name is required (at least %1 alphanumerical char)"
+msgstr "Nome pubblico obbligatorio (almeno %1 carattere alfanumerico)"
+
+msgid "Description is required (at least %1 alphanumerical char)"
+msgstr "Descrizione obbligatorio (almeno %1 carattere alfanumerico)"
+
+msgid "Creator is required (at least %1 alphanumerical char)"
+msgstr "Creatore obbligatorio (almeno %1 carattere alfanumerico)"
+
+msgid "Publisher is required (at least %1 alphanumerical char)"
+msgstr "Pubblicatore obbligatorio (almeno %1 carattere alfanumerico)"
+
+msgid "Rights is required (at least %1 alphanumerical char)"
+msgstr "Diritti obbligatorio (almeno %1 carattere alfanumerico)"
+
+msgid "License is required (at least %1 alphanumerical char)"
+msgstr "Licenza obbligatorio (almeno %1 carattere alfanumerico)"
+
+msgid "Public name"
+msgstr "Nome pubblico"
+
+msgid "Contact email"
+msgstr "Contatto email"
+
+msgid "Creator"
+msgstr "Creatore"
+
+msgid "Publisher"
+msgstr "Pubblicatore"
+
+msgid "Rights"
+msgstr "Diritti"
+
+msgid "License"
+msgstr "Licenza"

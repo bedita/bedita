@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Bedita\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-12-21 10:53+0100\n"
+"PO-Revision-Date: 2008-02-20 16:04+0100\n"
 "Last-Translator: dante <didojunior@gmail.com>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
 "MIME-Version: 1.0\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Username"
-msgstr "Usuário"
+msgstr "Nome publico"
 
 msgid "Username is required"
 msgstr "Nome usuário obligatório"
@@ -419,9 +419,6 @@ msgstr "Guardar"
 msgid "Exit"
 msgstr "Sair"
 
-msgid "Access to Backend"
-msgstr"Aceso ao Backend"
-
 msgid "Authorized"
 msgstr "Autorizado"
 
@@ -508,3 +505,40 @@ msgstr "os cambios perdem-se deixando a pagina"
 
 msgid "data changed"
 msgstr "datos cambiados"
+
+msgid "Public name is required (at least %1 alphanumerical char)"
+msgstr "Nome publico obligatório (não menos de %1 carácter alfanumérico)"
+
+msgid "Description is required (at least %1 alphanumerical char)"
+msgstr "Descrição obligatório (não menos de %1 carácter alfanumérico)"
+
+msgid "Creator is required (at least %1 alphanumerical char)"
+msgstr "Criador obligatório (não menos de %1 carácter alfanumérico)"
+
+msgid "Publisher is required (at least %1 alphanumerical char)"
+msgstr "Publicador obligatório (não menos de %1 carácter alfanumérico)"
+
+msgid "Rights is required (at least %1 alphanumerical char)"
+msgstr "Direitos obligatório (não menos de %1 carácter alfanumérico)"
+
+msgid "License is required (at least %1 alphanumerical char)"
+msgstr "Licença obligatório (não menos de %1 carácter alfanumérico)"
+
+msgid "Public name"
+msgstr "Nome publico"
+
+msgid "Contact email"
+msgstr "Contato email"
+
+msgid "Creator"
+msgstr "Criador"
+
+msgid "Publisher"
+msgstr "Publicador"
+
+msgid "Rights"
+msgstr "Direitos"
+
+msgid "License"
+msgstr "Licença"
+
