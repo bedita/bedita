@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Username"
-msgstr "Nome publico"
+msgstr "Usuário"
 
 msgid "Username is required"
 msgstr "Nome usuário obligatório"
