@@ -141,6 +141,8 @@ class AreasController extends AppController {
 	 	if(!$this->Tree->moveAll($tree)) throw new BeditaException( __("Error save tree from _POST", true));
 
 		$this->Transaction->commit() ;
+	 	$this->userInfoMessage(__("Area tree saved", true));
+	 	$this->eventInfo("area tree saved");
 	 }
 	 
 	 /**
@@ -180,6 +182,8 @@ class AreasController extends AppController {
 		 				throw new BeditaException( __("Error saving permissions", true));
 		 	}
 	 		$this->Transaction->commit() ;
+	 		$this->userInfoMessage(__("Area saved", true)." - ".$this->data["title"]);
+	 		$this->eventInfo("area ". $this->data["title"]."saved");
 	 }
 
 	 /**
@@ -234,6 +238,8 @@ class AreasController extends AppController {
 		 			throw new BeditaException( __("Error saving permissions", true));
 		 	}
 	 		$this->Transaction->commit() ;
+	 		$this->userInfoMessage(__("Section saved", true)." - ".$this->data["title"]);
+	 		$this->eventInfo("section [". $this->data["title"]."] saved");
 	 }
 
 	 /**
@@ -245,14 +251,18 @@ class AreasController extends AppController {
 		
 	 	$this->setup_args(array("id", "integer", &$id)) ;
 		
-	 	if(empty($id)) throw BeditaException(__("No data", true));
+	 	if(empty($id)) 
+	 		throw BeditaException(__("No data", true));
 	 		
 	 	$this->Transaction->begin() ;
 	 	
 		// Cancellla i dati
-	 	if(!$this->Area->delete($id)) throw new BeditaException( sprintf(__("Error deleting area: %d", true), $id));
+	 	if(!$this->Area->delete($id)) 
+	 		throw new BeditaException( sprintf(__("Error deleting area: %d", true), $id));
 		 	
 	 	$this->Transaction->commit() ;
+	 	$this->userInfoMessage(__("Area removed", true)." - ".$id);
+	 	$this->eventInfo("area ". $id." removed");
 	 }
 
 	 /**
@@ -269,9 +279,12 @@ class AreasController extends AppController {
 	 	$this->Transaction->begin() ;
 		 	
 		// Cancellla i dati
-	 	if(!$this->Section->delete($id)) throw new BeditaException( sprintf(__("Error deleting section: %d", true), $id));
+	 	if(!$this->Section->delete($id)) 
+	 		throw new BeditaException( sprintf(__("Error deleting section: %d", true), $id));
 		 	
 	 	$this->Transaction->commit() ;
+	 	$this->userInfoMessage(__("Section removed", true)." - ".$id);
+	 	$this->eventInfo("section ". $id." removed");
 	 }
 
 	 /**
