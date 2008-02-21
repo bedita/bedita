@@ -177,7 +177,7 @@ class AreasController extends AppController {
 			$perms = isset($this->data["Permissions"])?$this->data["Permissions"]:array();
 			if(!$this->Permission->saveFromPOST($this->Area->id, $perms,
 		 				(empty($this->data['recursiveApplyPermissions'])?false:true), 'area'))  {
-		 				throw BeditaException( __("Error saving permissions", true));
+		 				throw new BeditaException( __("Error saving permissions", true));
 		 	}
 	 		$this->Transaction->commit() ;
 	 }

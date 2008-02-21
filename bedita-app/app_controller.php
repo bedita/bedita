@@ -34,12 +34,23 @@ class AppController extends Controller
 			self::$current->setResult($ex->result);
 			self::$current->afterFilter();
 		} else {
-			// TODO: default error page!!
-			self::defaultError($ex);
+			// TODO: what else??
+			$obj = new AppController();
+			$obj->log($errTrace);
 		}
 	}
 
 	public static function defaultError(Exception $ex) {
+		$errTrace =    $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+		if(isset(self::$current)) {
+			self::$current->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
+			self::$current->setResult(self::ERROR);
+			self::$current->afterFilter();
+		} else {
+			// TODO: what else??
+			$obj = new AppController();
+			$obj->log($errTrace);
+		}
 	}
 	
 	public function handleError($eventMsg, $userMsg, $errTrace) {
