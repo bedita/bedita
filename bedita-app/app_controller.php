@@ -28,7 +28,7 @@ class AppController extends Controller
 	/////////////////////////////////		
 
 	public static function handleExceptions(BeditaException $ex) {
-		$errTrace =    $ex->getDetails()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+		$errTrace =  $ex->getClassName()." - ".$ex->getDetails()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 		if(isset(self::$current)) {
 			self::$current->handleError($ex->getDetails(), $ex->getMessage(), $errTrace);
 			self::$current->setResult($ex->result);
@@ -41,7 +41,8 @@ class AppController extends Controller
 	}
 
 	public static function defaultError(Exception $ex) {
-		$errTrace =    $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+		$r = new ReflectionObject($ex);
+		$errTrace =  $r->getName()." -  ". $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 		if(isset(self::$current)) {
 			self::$current->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
 			self::$current->setResult(self::ERROR);
@@ -386,6 +387,12 @@ class BeditaException extends Exception
     public function  getDetails() {
     	return $this->errorDetails;
     }
+    
+    public function  getClassName() {
+    	$r = new ReflectionObject($this);
+		return $r->getName();
+    }
+    
 }
 
 ?>
