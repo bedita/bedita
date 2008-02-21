@@ -10,10 +10,11 @@ class FilesController extends AppController {
 		$this->Transaction->begin() ;
 		try {
 			$id = $this->BeUploadToObj->upload($this->params['form']['Filedata']) ;
-		} catch(Exception $e) {
+		} catch(Exception $ex) {
 			header("HTTP/1.0 " . $this->BeUploadToObj->errorCode . " Internal Server Error");
-			$this->Session->setFlash($this->SwfUpload->errorMessage);
-			$this->Transaction->rollback();
+			$errTrace =    $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
+			$this->setResult(self::ERROR);
 			return ; 
 		}
 		$this->Transaction->commit();

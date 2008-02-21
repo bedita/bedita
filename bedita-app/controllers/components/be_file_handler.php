@@ -182,7 +182,9 @@ class BeFileHandlerComponent extends Object {
 		$sourcePath = $dati['path'] ;
 		$targetPath	= $this->_getPathTargetFile($dati['name']); 
 		// File should not exist
-		if($this->_isPresent($targetPath)) throw new BEditaFileExistException($this->controller) ;
+		if($this->_isPresent($targetPath)) {
+			throw new BEditaFileExistException() ;
+		}
 		// Create file
 		if(!$this->_putFile($sourcePath, $targetPath)) return false ;
 		$dati['path'] = $targetPath ;
@@ -526,140 +528,48 @@ class MimeByMagic {
 /**
  * 		BEditaAllowURLException		// Non  permesso l'uso di file remoti
  */
-class BEditaAllowURLException extends Exception
+class BEditaAllowURLException extends BeditaException
 {
-    // Redefine the exception so message isn't optional
-    public function __construct(&$controller, $message = "", $code  = 0) {
-        // some code
-   		$this->controller = $controller;
-        $this->controller->setResult(AppController::ERROR);
-        
-   		if(empty($message)) {
-   			$message = __("Unexpected error, operation failed",true);
-   		}
-
-   		// make sure everything is assigned properly
-        parent::__construct($message, $code);
-    }
 } ;
 
 /**
  * 		BEditaFileExistException		// File gia' presente in sistema - nella creazione
  */
-class BEditaFileExistException extends Exception
+class BEditaFileExistException extends BeditaException
 {
-    // Redefine the exception so message isn't optional
-    public function __construct(&$controller, $message = "", $code  = 0) {
-        // some code
-   		$this->controller = $controller;
-        $this->controller->setResult(AppController::ERROR);
-        
-   		if(empty($message)) {
-   			$message = __("Unexpected error, operation failed",true);
-   		}
-
-   		// make sure everything is assigned properly
-        parent::__construct($message, $code);
-    }
 } ;
-
 
 /**
  * 		BEditaMIMEException				// MIME type del file non trovato o non corrispondente al tipo di obj
  */
-class BEditaMIMEException extends Exception
+class BEditaMIMEException extends BeditaException
 {
-    // Redefine the exception so message isn't optional
-    public function __construct(&$controller, $message = "", $code  = 0) {
-        // some code
-   		$this->controller = $controller;
-        $this->controller->setResult(AppController::ERROR);
-        
-   		if(empty($message)) {
-   			$message = __("Unexpected error, operation failed",true);
-   		}
-
-   		// make sure everything is assigned properly
-        parent::__construct($message, $code);
-    }
 }
 
 /**
  * 		BEditaURLException				// Violazione regole dell'URL
  */
-class BEditaURLException extends Exception
+class BEditaURLException extends BeditaException
 {
-    // Redefine the exception so message isn't optional
-    public function __construct(&$controller, $message = "", $code  = 0) {
-        // some code
-   		$this->controller = $controller;
-        $this->controller->setResult(AppController::ERROR);
-        
-   		if(empty($message)) {
-   			$message = __("Unexpected error, operation failed",true);
-   		}
-
-   		// make sure everything is assigned properly
-        parent::__construct($message, $code);
-    }
 } ;
 
 /**
  * 		BEditaInfoException				// Informazioni non accessibili
  */
-class BEditaInfoException extends Exception
+class BEditaInfoException extends BeditaException
 {
-    // Redefine the exception so message isn't optional
-    public function __construct(&$controller, $message = "", $code  = 0) {
-        // some code
-   		$this->controller = $controller;
-        $this->controller->setResult(AppController::ERROR);
-        
-   		if(empty($message)) {
-   			$message = __("Unexpected error, operation failed",true);
-   		}
-
-   		// make sure everything is assigned properly
-        parent::__construct($message, $code);
-    }
 } ;
 
 
-class BEditaSaveStreamObjException extends Exception
+class BEditaSaveStreamObjException extends BeditaException
 {
-    // Redefine the exception so message isn't optional
-    public function __construct(&$controller, $message = "", $code  = 0) {
-        // some code
-   		$this->controller = $controller;
-        $this->controller->setResult(AppController::ERROR);
-        
-   		if(empty($message)) {
-   			$message = __("Unexpected error, operation failed",true);
-   		}
-
-   		// make sure everything is assigned properly
-        parent::__construct($message, $code);
-    }
 } ;
 
 /**
  * 		BEditaDeleteStreamObjException	// Errore cancellazione obj
  */
-class BEditaDeleteStreamObjException extends Exception
+class BEditaDeleteStreamObjException extends BeditaException
 {
-    // Redefine the exception so message isn't optional
-    public function __construct(&$controller, $message = "", $code  = 0) {
-        // some code
-   		$this->controller = $controller;
-        $this->controller->setResult(AppController::ERROR);
-        
-   		if(empty($message)) {
-   			$message = __("Unexpected error, operation failed",true);
-   		}
-
-   		// make sure everything is assigned properly
-        parent::__construct($message, $code);
-    }
 }
 
 ?>
