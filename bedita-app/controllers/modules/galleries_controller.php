@@ -89,7 +89,8 @@ class GalleriesController extends AppController {
 		// Delete data
 		$gToDel = split(",",$galleries_to_del);
 		for($i=0;$i<count($gToDel);$i++) {
-			if(!$this->Gallery->delete($gToDel[$i])) throw new BeditaException( sprintf(__("Error deleting area: %d", true), $this->data['id']));
+			if(!$this->Gallery->delete($gToDel[$i]))
+				throw new BeditaException( sprintf(__("Error deleting gallery: %d", true), $gToDel[$i]));
 		}
 		$this->Transaction->commit() ;
 		$this->userInfoMessage(__("Galleries deleted", true) . " -  " . $galleries_to_del);

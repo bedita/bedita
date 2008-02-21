@@ -576,7 +576,13 @@ msgid "Delete selected items"
 msgstr "Borrar todos os elementos selecionados"
 
 msgid "Are you sure that you want to delete selected galleries?"
-msgstr "Quer borrar todas as galerias?"
+msgstr "Quer borrar as galerias selecionadas?"
 
 msgid "Galleries deleted"
 msgstr "Galerias borradas"
+
+msgid "Documents deleted"
+msgstr "Documentos borrados"
+
+msgid "Are you sure that you want to delete selected documents?"
+msgstr "Quer borrar os documentos selecionados?"

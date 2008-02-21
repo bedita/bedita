@@ -205,17 +205,26 @@ class DocumentsController extends AppController {
 	  * Delete a document.
 	  */
 	function delete($id = null) {
-		$this->checkWriteModulePermission();
-		$this->setup_args(array("id", "integer", &$id)) ;
-		if(empty($id)) 
-			throw new BeditaException(__("No data", true));
+		$documents_to_del = array();
+		if(!empty($this->params['form']['documents_to_del'])) {
+			$documents_to_del = $this->params['form']['documents_to_del'];
+		} else {
+			if(empty($this->data['id'])) throw new BeditaException(__("No data", true));
+			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
+				throw new BeditaException(__("Error delete permissions", true));
+			}
+			$documents_to_del = $this->data['id'];
+		}
 		$this->Transaction->begin() ;
 		// Delete data
-		if(!$this->Document->delete($id))
-			throw new BeditaException(sprintf(__("Error deleting document: %d", true), $id));
+		$dToDel = split(",",$documents_to_del);
+		for($i=0;$i<count($dToDel);$i++) {
+			if(!$this->Document->delete($dToDel[$i]))
+				throw new BeditaException( sprintf(__("Error deleting document: %d", true), $dToDel[$i]));
+		}
 		$this->Transaction->commit() ;
-		$this->userInfoMessage(__("Document deleted", true)." - ".$this->data["title"]);
-		$this->eventInfo("document ". $this->data["title"]." deleted");
+		$this->userInfoMessage(__("Documents deleted", true) . " -  " . $documents_to_del);
+		$this->eventInfo("documents $documents_to_del deleted");
 	}
 
 	 /**

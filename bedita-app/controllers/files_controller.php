@@ -10,9 +10,9 @@ class FilesController extends AppController {
 		$this->Transaction->begin() ;
 		try {
 			$id = $this->BeUploadToObj->upload($this->params['form']['Filedata']) ;
-		} catch(Exception $ex) {
+		} catch(BeditaException $ex) {
 			header("HTTP/1.0 " . $this->BeUploadToObj->errorCode . " Internal Server Error");
-			$errTrace =    $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+			$errTrace = $ex->getClassName() . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
 			$this->setResult(self::ERROR);
 			return ; 
