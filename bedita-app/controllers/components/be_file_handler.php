@@ -160,18 +160,18 @@ class BeFileHandlerComponent extends Object {
 		if(!isset($dati['path'])) return false ;
 		
 		// URL accettabile
-		if(!$this->_regularURL($dati['path'])) throw new BEditaURLException($this->controller) ;
+		if(!$this->_regularURL($dati['path'])) throw new BEditaURLException() ;
 
 		if($this->paranoid) {
 			// Permesso di usare file remoti
-			if(!ini_get('allow_url_fopen')) throw  new BEditaAllowURLException($this->controller) ;
+			if(!ini_get('allow_url_fopen')) throw  new BEditaAllowURLException() ;
 			
 			// Preleva MIME type e dimensioni
-			if(!$this->_getInfoURL($dati['path'], $dati)) throw new BEditaInfoException($this->controller) ;
+			if(!$this->_getInfoURL($dati['path'], $dati)) throw new BEditaInfoException() ;
 		}
 			
 		// Il file/URL non deve essere presente
-		if($this->_isPresent($dati['path'])) throw new BEditaFileExistException($this->controller) ;
+		if($this->_isPresent($dati['path'])) throw new BEditaFileExistException() ;
 		
 		return $this->_create($dati, $model) ;
 	}
@@ -200,30 +200,30 @@ class BeFileHandlerComponent extends Object {
 			case 'Audio':		$model = 'Audio' ; break ;
 			case 'Video':		$model = 'Video' ; break ;
 			default:
-				throw new BEditaMIMEException($this->controller) ;
+				throw new BEditaMIMEException() ;
 		}
 		$this->{$model}->id = false ;
 		if(!($ret = $this->{$model}->save($dati))) {
 			$this->validateErrors = $this->{$model}->validateErrors ;
-			throw new BEditaSaveStreamObjException($this->controller) ;
+			throw new BEditaSaveStreamObjException() ;
 		}
 		return ($this->{$model}->{$this->{$model}->primaryKey}) ;
 	}
 
 	private function _modifyFromURL($id, &$dati) {
 		// URL accettabile
-		if(!$this->_regularURL($dati['path'])) throw new BEditaURLException($this->controller) ;
+		if(!$this->_regularURL($dati['path'])) throw new BEditaURLException() ;
 			
 		if($this->paranoid) {
 			// Permesso di usare file remoti
-			if(!ini_get('allow_url_fopen')) throw  new BEditaAllowURLException($this->controller) ;
+			if(!ini_get('allow_url_fopen')) throw  new BEditaAllowURLException() ;
 			
 			// Preleva MIME type e dimensioni
-			if(!$this->_getInfoURL($dati['path'], $dati)) throw new BEditaInfoException($this->controller) ;
+			if(!$this->_getInfoURL($dati['path'], $dati)) throw new BEditaInfoException() ;
 		}
 	
 		// se il file e' presente in un altro oggetto torna un eccezione
-		if(!$this->_isPresent($dati['path'], $id)) throw new BEditaFileExistException($this->controller) ;
+		if(!$this->_isPresent($dati['path'], $id)) throw new BEditaFileExistException() ;
 		
 		// Se e' presente un path ad file su file system, cancella
 		if(($ret = $this->Stream->read('path', $id) && !$this->_isURL($ret['path']))) {
@@ -238,7 +238,7 @@ class BeFileHandlerComponent extends Object {
 		$targetPath	= $this->_getPathTargetFile($dati['name']); 
 		
 		// se il file e' presente in un altro oggetto torna un eccezione
-		if(!$this->_isPresent($targetPath, $id)) throw new BEditaFileExistException($this->controller) ;
+		if(!$this->_isPresent($targetPath, $id)) throw new BEditaFileExistException() ;
 		
 		// Se e' presente un path ad file su file system, cancella
 		if(($ret = $this->Stream->read('path', $id) && !$this->_isURL($ret['path']))) {
@@ -260,19 +260,19 @@ class BeFileHandlerComponent extends Object {
 			$ret = $this->Stream->read('type', $id) ;
 			if(!isset($ret['type']) || empty($ret['type'])) break ;
 			
-			if($ret['type'] != $dati['type']) throw new BEditaMIMEException($this->controller) ;
+			if($ret['type'] != $dati['type']) throw new BEditaMIMEException() ;
 		}
 		
 		// Preleva il tipo di oggetto da salvare e salva
 		$rec = $this->BEObject->recursive ;
 		$this->BEObject->recursive = -1 ;
-		if(!($ret = $this->BEObject->read('object_type_id', $id)))  throw new BEditaMIMEException($this->controller) ;
+		if(!($ret = $this->BEObject->read('object_type_id', $id)))  throw new BEditaMIMEException() ;
 		$this->BEObject->recursive = $rec ;
 		$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
 		
 		$this->{$model}->id =  $id ;
 		if(!($ret = $this->{$model}->save($dati))) {
-			throw new BEditaSaveStreamObjException($this->controller) ;
+			throw new BEditaSaveStreamObjException() ;
 		}
 		
 		return $ret ;
