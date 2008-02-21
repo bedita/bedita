@@ -24,8 +24,9 @@
 */
 class BEFile extends BEAppObjectModel
 {
-	var $name 		= 'File';
+	var $name 		= 'BEFile';
 	var $recursive 	= 2 ;
+	var $useTable	= "files" ;
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'CreateIndexFields'		=> array(),
