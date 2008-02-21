@@ -138,6 +138,7 @@ var cols 		= 5 ;
 </script>
 
 <fieldset id="{$containerId}">
+<a href="{$html->url("/$controller")}/frm_upload/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640" title="{$title} -{t}Test{/t}" class="thickbox">{$title} - {t}Test{/t}</a> |
 <a href="{$html->url("/$controller")}/frm_upload/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} -{t}add by upload{/t}" class="thickbox">{$title} - {t}add by upload{/t}</a> |
 <a href="{$html->url("/$controller")}/frm_upload_bedita/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} - {t}add by BEdita{/t}" class="thickbox">{$title} - {t}add by BEdita{/t}</a>
 {* | <a href="{$html->url("/$controller")}/frm_upload_url/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} - {t}add by URL{/t}" class="thickbox">{$title} - {t}add by URL{/t}</a>*}
@@ -145,7 +146,7 @@ var cols 		= 5 ;
 {assign var="newPriority" 	value=1}
 {assign var="index" 		value=0}
 {foreach key=index item=ob from=$items|default:$empty}
-	{include file="../pages/form_file_item.tpl" obj=$ob}
+	{include file="../pages/form_file_item.tpl" obj=$ob controller=$controller}
 {/foreach}
 <script type="text/javascript">
 <!--

@@ -136,6 +136,8 @@ class DocumentsController extends AppController {
 		
 		// Setup dei dati da passare al template
 		$this->set('object',	$obj);
+		$this->set('multimedia',$obj['multimedia']);
+		$this->set('attachments',$obj['attachments']);
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);
 		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) )) ;

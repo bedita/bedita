@@ -42,7 +42,7 @@ class FilesController extends AppController {
 	}
 
 	function get($id) {
-		return $this->File->findById($id);
+		return $this->BEFile->findById($id);
 	}
 
 	function beditaBeforeFilter() {

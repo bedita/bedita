@@ -2,7 +2,6 @@
 {$html->css('swfupload')}
 {$javascript->link("swfupload/SWFUpload-src")}
 {$javascript->link("swfupload/callbacks")}
-<div>
 <script type="text/javascript">
 <!--
 
@@ -219,6 +218,12 @@ function beCancelQueue() {
 	$("cancelqueuebtn").hide() ;
 }
 
+function disableButtons() {
+	$("#okqueuebtn").attr("disabled","disabled");
+	$("#cancelqueuebtn").attr("disabled","disabled");
+	$("#annullaqueuebtn").attr("disabled","disabled");
+}
+
 //-->
 {/literal}
 </script>
@@ -250,9 +255,9 @@ th.boxNotSelected {border:solid #000 1px;background-color:#DDD; height: 20px;}
 					<h4 id="queueinfo">{t}Queue is empty{/t}</h4>
 					<div id="SWFUploadFileListingFiles"></div>
 					<br class="clr" />
-					<a class="swfuploadbtn" id="cancelqueuebtn" href="javascript:beCancelQueue();">{t}Cancel queue{/t}</a>
-					<a class="swfuploadbtn" id="okqueuebtn" href="javascript:closeOK();" style="display:block">{t}Ok{/t}</a>
-					<a class="swfuploadbtn" id="annullaqueuebtn" href="javascript:closeEsc();" style="display:block">{t}Cancel{/t}</a>
+					<input type="button" id="cancelqueuebtn" onclick="javascript:beCancelQueue();disableButtons();" value="{t}Cancel queue{/t}"/>
+					<input type="button" id="okqueuebtn" onclick="javascript:closeOK();disableButtons();" value="{t}Ok{/t}"/>
+					<input type="button" id="annullaqueuebtn" onclick="javascript:closeEsc();disableButtons();" value="{t}Cancel{/t}"/>
 				</div>
 			</div>
 		</div>
@@ -260,5 +265,4 @@ th.boxNotSelected {border:solid #000 1px;background-color:#DDD; height: 20px;}
 </tr>
 </tbody>
 </table>
-</div>
 <!-- end upload block -->

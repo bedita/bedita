@@ -27,7 +27,7 @@ class AttachmentsController extends AppController {
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
 	// This controller does not use a model
-	var $uses = array('Stream', 'BEFile', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Tree') ;
+	var $uses = array('Stream', 'BEFile', 'Image', 'Audio', 'Video', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Tree') ;
 	protected $moduleName = 'attachments';
 	
 	 /**

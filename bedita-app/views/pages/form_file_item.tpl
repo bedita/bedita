@@ -1,7 +1,9 @@
 {if empty($obj)}{assign var="obj" value=$object}{/if}
+{assign var="controller" 		value=$controller|default:multimedia}
+{assign var="index" 			value=$index|default:1}
 {assign var="thumbWidth" 		value=100}
 {assign var="thumbHeight" 		value=100}
-{assign var="thumbCache" 		value=$CACHE}
+{assign var="thumbCache" 		value=$CACHE|default:imgcache}
 {assign var="thumbPath"         value=$MEDIA_ROOT}
 {assign var="thumbBaseUrl"      value=$MEDIA_URL}
 {assign var="thumbLside"		value=""}
@@ -17,29 +19,31 @@
 	<input type="hidden" class="id" 	name="data[{$controller}][{$index}][id]" value="{$obj.id}" />
 	<input type="text" class="priority" name="data[{$controller}][{$index}][priority]" value="{$obj.priority|default:$priority}" size="3" maxlength="3"/>
 	<span class="label">{$imageFile}</span>
+	{if strtolower($obj.ObjectType.name) == "image"}
 	<div style="width:{$thumbWidth}px; height:{$thumbHeight}px; overflow:hidden;">
-	{$imageFile} : {$obj.ObjectType.name}
-	{if !empty($imageFile) && strtolower($obj.ObjectType.name) == "image"}
-		{thumb 
-			width="$thumbWidth" 
-			height="$thumbHeight" 
-			file=$thumbPath$imagePath
-			cache="$thumbCache" 
-			MAT_SERVER_PATH=$thumbPath 
-			MAT_SERVER_NAME=$thumbBaseUrl
-			linkurl="$thumbBaseUrl/$imageFile"
-			longside="$thumbLside"
-			shortside="$thumbSside"
-			html="$thumbHtml"
-			dev="$thumbDev"} 
-	{else}
-		{if strtolower($obj.ObjectType.name) == "image"}
-		<img src="{$session->webroot}/img/image-missing.jpg" width="160"/>
+		{$imageFile} : {$obj.ObjectType.name}
+		{if !empty($imageFile) && strtolower($obj.ObjectType.name) == "image"}
+			{thumb 
+				width="$thumbWidth" 
+				height="$thumbHeight" 
+				file=$thumbPath$imagePath
+				cache="$thumbCache" 
+				MAT_SERVER_PATH=$thumbPath 
+				MAT_SERVER_NAME=$thumbBaseUrl
+				linkurl="$thumbBaseUrl/$imageFile"
+				longside="$thumbLside"
+				shortside="$thumbSside"
+				html="$thumbHtml"
+				dev="$thumbDev"} 
 		{else}
-		{$obj.ObjectType.name}
+			{if strtolower($obj.ObjectType.name) == "image"}
+			<img src="{$session->webroot}/img/image-missing.jpg" width="160"/>
+			{/if}
 		{/if}
-	{/if}
 	</div>
+	{else}
+	<div>BEObject</div>
+	{/if}
 	<br/>
 	{t}Title{/t}:<br/>{$imageTitle|escape:'htmlall'}<br/>
 	{t}Description{/t}:<br/>{$obj.short_desc|escape:'htmlall'}<br/>
