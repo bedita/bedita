@@ -541,3 +541,16 @@ msgstr "Diritti"
 
 msgid "License"
 msgstr "Licenza"
+
+msgid "Area saved"
+msgstr "Area salvata"
+
+msgid "Area removed"
+msgstr "Area eliminata"
+
+msgid "Section saved"
+msgstr "Sezione salvata"
+
+msgid "Section removed"
+msgstr "Sezione eliminata"
+
