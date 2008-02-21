@@ -6,12 +6,9 @@
 {$javascript->link("form")}
 {$javascript->link("jquery.changealert")}
 <script type="text/javascript">
+<!--
 var URLBase = "{$html->url('index/')}" ;
-{literal}
-$(document).ready(function(){
-
-});
-{/literal}
+//-->
 </script>
 </head>
 <body>

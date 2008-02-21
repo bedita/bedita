@@ -68,19 +68,32 @@ class GalleriesController extends AppController {
 				throw new BeditaException( __("Append child", true));
 			}
 		}
-	 	$this->Transaction->commit();
+		$this->Transaction->commit();
+		$this->userInfoMessage(__("Gallery saved", true)." - ".$this->data["title"]);
+		$this->eventInfo("gallery ". $this->data["title"]."saved");
 	}
 
 	public function delete() {
 		$this->checkWriteModulePermission();
-		if(empty($this->data['id'])) throw new BeditaException(__("No data", true));
-		if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
-			throw new BeditaException(__("Error delete permissions", true));
+		$galleries_to_del = array();
+		if(!empty($this->params['form']['galleries_to_del'])) {
+			$galleries_to_del = $this->params['form']['galleries_to_del'];
+		} else {
+			if(empty($this->data['id'])) throw new BeditaException(__("No data", true));
+			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
+				throw new BeditaException(__("Error delete permissions", true));
+			}
+			$galleries_to_del = $this->data['id'];
 		}
 		$this->Transaction->begin() ;
 		// Delete data
-		if(!$this->Gallery->delete($this->data['id'])) throw new BeditaException( sprintf(__("Error deleting area: %d", true), $this->data['id']));
+		$gToDel = split(",",$galleries_to_del);
+		for($i=0;$i<count($gToDel);$i++) {
+			if(!$this->Gallery->delete($gToDel[$i])) throw new BeditaException( sprintf(__("Error deleting area: %d", true), $this->data['id']));
+		}
 		$this->Transaction->commit() ;
+		$this->userInfoMessage(__("Galleries deleted", true) . " -  " . $galleries_to_del);
+		$this->eventInfo("galleries $galleries_to_del deleted");
 	}
 
 	/**

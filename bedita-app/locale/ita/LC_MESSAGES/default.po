@@ -554,3 +554,29 @@ msgstr "Sezione salvata"
 msgid "Section removed"
 msgstr "Sezione eliminata"
 
+msgid "Gallery associated to this document"
+msgstr "Galleria associata al documento"
+
+msgid "No gallery"
+msgstr "Nessuna galleria"
+
+msgid "Document saved"
+msgstr "Documento salvato"
+
+msgid "Gallery saved"
+msgstr "Galleria salvata"
+
+msgid "Select all"
+msgstr "Seleziona tutto"
+
+msgid "Unselect all"
+msgstr "Deseleziona tutto"
+
+msgid "Delete selected items"
+msgstr "Elimina gli elementi selezionati"
+
+msgid "Are you sure that you want to delete selected galleries?"
+msgstr "Sei sicuro di voler eliminare le gallerie selezionate?"
+
+msgid "Galleries deleted"
+msgstr "Gallerie eliminate"

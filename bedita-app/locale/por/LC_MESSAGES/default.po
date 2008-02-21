@@ -542,3 +542,41 @@ msgstr "Direitos"
 msgid "License"
 msgstr "Licença"
 
+msgid "Area saved"
+msgstr "Area guardada"
+
+msgid "Area removed"
+msgstr "Area borrada"
+
+msgid "Section saved"
+msgstr "Seção guardada"
+
+msgid "Section removed"
+msgstr "Seção borrada"
+
+msgid "Gallery associated to this document"
+msgstr "Galeria asociada ao documento"
+
+msgid "No gallery"
+msgstr "Nenhuma galeria"
+
+msgid "Document saved"
+msgstr "Documento guardado"
+
+msgid "Gallery saved"
+msgstr "Galeria guardada"
+
+msgid "Select all"
+msgstr "Selecionas todos"
+
+msgid "Unselect all"
+msgstr "Deselecionar todos"
+
+msgid "Delete selected items"
+msgstr "Borrar todos os elementos selecionados"
+
+msgid "Are you sure that you want to delete selected galleries?"
+msgstr "Quer borrar todas as galerias?"
+
+msgid "Galleries deleted"
+msgstr "Galerias borradas"

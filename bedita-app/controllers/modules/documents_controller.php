@@ -68,38 +68,27 @@ class DocumentsController extends AppController {
 	  * @param integer $id
 	  */
 	 function view($id = null) {
-	 	
 		$conf  = Configure::getInstance() ;
-		
-	 	// Setup parametri
 		$this->setup_args(array("id", "integer", &$id)) ;
-	 	
-		// Preleva l'area selezionata
 		$obj = null ;
 		if($id) {
 			$this->Document->bviorHideFields = array('Version', 'Index', 'current') ;
-
 			if(!($obj = $this->Document->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading document: %d", true), $id));
 			}
-					
-			// Se presenti, preleva gli oggetti multimediali del documento
+			// Get multimedia objects
 			for($i=0; $i < @count($obj['multimedia']) ; $i++) {
 				$m = $this->Document->am($obj['multimedia'][$i]) ;
-				
 				$type = $conf->objectTypeModels[$m['object_type_id']] ;
-				
 				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments', 'LangText');
 				if(!($Details = $this->{$type}->findById($obj['multimedia'][$i]['id']))) {
 					continue ;
 				}
 				$Details['priority'] = $m['priority'];
 				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
-			
 				$obj['multimedia'][$i]= $Details;
 			}
-
-			// Se presenti, preleva gli allegati al documento
+			// Get attachments
 			for($i=0; $i < @count($obj['attachments']) ; $i++) {
 				$m = $this->Document->am($obj['attachments'][$i]) ;
 				 
@@ -115,16 +104,10 @@ class DocumentsController extends AppController {
 				$obj['attachments'][$i]= $Details;
 			}
 		}
-		
-		// Formatta i campi in lingua
 		if(isset($obj["LangText"])) {
 			$this->BeLangText->setupForView($obj["LangText"]) ;
 		}
-		
-		// Preleva l'albero delle aree e sezioni
 		$tree = $this->BeTree->getSectionsTree() ;
-
-		// Preleva dov'e' inserito il documento 
 		if(isset($id)) {
 			$parents_id = $this->Tree->getParent($id) ;
 			if($parents_id === false) array() ;
@@ -133,11 +116,12 @@ class DocumentsController extends AppController {
 		} else {
 			$parents_id = array();
 		}
-		
-		// Setup dei dati da passare al template
+		$galleries = $this->BeTree->getDiscendents(null, null, $conf->objectTypes['gallery'], "", true, 1, 10000);
+
 		$this->set('object',	$obj);
 		$this->set('multimedia',$obj['multimedia']);
 		$this->set('attachments',$obj['attachments']);
+		$this->set('galleries', (count($galleries['items'])==0) ? array() : $galleries['items']);
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);
 		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) )) ;
@@ -213,28 +197,26 @@ class DocumentsController extends AppController {
 	 			throw new BeditaException( __("Error saving permissions", true));
 	 	}	 	
  		$this->Transaction->commit() ;
+ 		$this->userInfoMessage(__("Document saved", true)." - ".$this->data["title"]);
+		$this->eventInfo("document ". $this->data["title"]."saved");
 	 }
 	 	 
 	 /**
 	  * Delete a document.
 	  */
-	 function delete($id = null) {
-	 	
-	 	$this->checkWriteModulePermission();
-	 	
+	function delete($id = null) {
+		$this->checkWriteModulePermission();
 		$this->setup_args(array("id", "integer", &$id)) ;
-		
-	 	if(empty($id)) 
-	 		throw new BeditaException(__("No data", true));
-	 		
-	 	$this->Transaction->begin() ;
-	 	
-	 	// Cancellla i dati
-	 	if(!$this->Document->delete($id)) 
-	 		throw new BeditaException(sprintf(__("Error deleting document: %d", true), $id));
-		 	
-	 	$this->Transaction->commit() ;
-	 }
+		if(empty($id)) 
+			throw new BeditaException(__("No data", true));
+		$this->Transaction->begin() ;
+		// Delete data
+		if(!$this->Document->delete($id))
+			throw new BeditaException(sprintf(__("Error deleting document: %d", true), $id));
+		$this->Transaction->commit() ;
+		$this->userInfoMessage(__("Document deleted", true)." - ".$this->data["title"]);
+		$this->eventInfo("document ". $this->data["title"]." deleted");
+	}
 
 	 /**
 	  * Torna un'array associativo che rappresneta l'albero aree/sezioni

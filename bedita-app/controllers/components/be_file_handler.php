@@ -309,12 +309,9 @@ class BeFileHandlerComponent extends Object {
 	 */
 	private function _getTypeFromMIME($mime, $model = null) {
 		$conf 		= Configure::getInstance() ;
-		
 		if(@empty($mime))	return false ;
-
 		if(isset($model) && isset($conf->validate_resorce['mime'][$model] )) {
 			$regs = $conf->validate_resorce['mime'][$model] ;
-
 			foreach ($regs as $reg) {
 				if(preg_match($reg, $path)) return $model ;
 			}
@@ -323,10 +320,9 @@ class BeFileHandlerComponent extends Object {
 			foreach ($models as $model => $regs) {
 				foreach ($regs as $reg) {
 					if(preg_match($reg, $mime)) return $model ;
-				}	
+				}
 			}
 		}
-			
 		return false ;
 	}
 
@@ -464,30 +460,26 @@ class BeFileHandlerComponent extends Object {
 		return ((is_array($ret))?((boolean)count($ret)):false) ;
 	}
 	
-  	private function _mimeByExtension($ext) {
-  		$conf 		= Configure::getInstance() ;
-			
-  		$lines = file($conf->validate_resorce['mime.types']) ;
-    	foreach($lines as $line) {
-      		if(preg_match('/^([^#]\S+)\s+.*'.$ext.'.*$/',$line,$m)) {
-      			return $m[1];
-      		}
-    	}
-    	return false ;
-  	}		
+	private function _mimeByExtension($ext) {
+		$conf 		= Configure::getInstance() ;
+		$lines = file($conf->validate_resorce['mime.types']) ;
+		foreach($lines as $line) {
+			if(preg_match('/^([^#]\S+)\s+.*'.strtolower($ext).'.*$/',$line,$m)) {
+				return $m[1];
+			}
+		}
+		return false ;
+	}
 
-  	private function _mimeByFInfo($file) {
-  		if(!function_exists("finfo_open")) return false ;
-		
-  		$conf 	= Configure::getInstance() ;
-  		$finfo 	= finfo_open(FILEINFO_MIME, $conf->validate_resorce['magic']); // return mime type alla mimetype extension
+	private function _mimeByFInfo($file) {
+		if(!function_exists("finfo_open")) return false ;
+		$conf 	= Configure::getInstance() ;
+		$finfo 	= finfo_open(FILEINFO_MIME, $conf->validate_resorce['magic']); // return mime type alla mimetype extension
 		if (!$finfo) return false ;
-				
 		$mime = finfo_file($finfo, $file);
 		finfo_close($finfo);
-        
-	    return $mime ;
-  	}		
+		return $mime ;
+	}
 
   	/**
   	 * Torna il path dove inserire il file uploadato

@@ -1,40 +1,47 @@
 <script type="text/javascript">
 <!--
-var urlDelete 	= "{$html->url('delete/')}" ;
-var message	= "{t}Are you sure that you want to delete the gallery?{/t}" ;
-
+var urlDelete = "{$html->url('delete/')}" ;
+var message = "{t}Are you sure that you want to delete the gallery?{/t}" ;
+var messageSelected = "{t}Are you sure that you want to delete selected galleries?{/t}" ;
 {literal}
-
 $(document).ready(function(){
-	$("TABLE.indexList TR.rowList").click(function(i) {
+	$("TABLE.indexList TD.cellList").click(function(i) {
 		document.location = $("A", this).attr('href') ;
 	} );
-	
-	// conferma per la cancellazione di un oggetto direttamente dalal lista
-	$(".delete").bind("click", function(e) {
-		if(!confirm(message)) return false ;
-		$("#frmDelete //input[@name='data[id]']").attr("value", $(this).attr("id").substring(1)) ;
-		$("#frmDelete").attr("action", urlDelete) ;
-		$("#frmDelete").get(0).submit() ;
-		
-		return false ;
+	$("#selectAll").bind("click", function(e) {
+		$(".galleryCheck").each(function() { this.checked = true; });
 	}) ;
-		
+	$("#unselectAll").bind("click", function(e) {
+		$(".galleryCheck").each(function() { this.checked = false; });
+	}) ;
 });
-
-function localConfirm(anchorElem,url) {
-	var msg = "{/literal}{t}Are you sure that you want to delete the gallery?{/t}{literal}";
-	var confirmed = confirm(msg);
-	anchorElem.href = (confirmed) ? url : "#";
+function delGallery(id) {
+	if(!confirm(message)) return false ;
+	$("#galleries_to_del").attr("value",id);
+	$("#formGallery").attr("action", urlDelete) ;
+	$("#formGallery").get(0).submit() ;
+	return false ;
+}
+function delGalleries() {
+	if(!confirm(messageSelected)) return false ;
+	var gToDel = "";
+	var checkElems = document.getElementsByName('gallery_chk');
+	for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) gToDel+= ","+checkElems[i].title; }
+	gToDel = (gToDel=="") ? "" : gToDel.substring(1);
+	$("#galleries_to_del").attr("value",gToDel);
+	$("#formGallery").attr("action", urlDelete) ;
+	$("#formGallery").get(0).submit() ;
+	return false ;
 }
 {/literal}
 //-->
 </script>
-
 <div id="containerPage">
-	
 	<div id="listGalleries">
-	<form method="post" action="" id="frmDelete"><input type="hidden" name="data[id]"/></form>
+	<form method="post" action="" id="formGallery">
+	<fieldset>
+	<input type="hidden" name="data[id]"/>
+	<input type="hidden" name="galleries_to_del" id="galleries_to_del"/>
 	{if $galleries}
 	<p class="toolbar">
 		{t}Galleries{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
@@ -45,6 +52,7 @@ function localConfirm(anchorElem,url) {
 	<table class="indexList" cellpadding="0" cellspacing="0" style="width:578px">
 	<thead>
 	<tr>
+		<th>&nbsp;</th>
 		<th>{$beToolbar->order('id', 'id')}</th>
 		<th>{$beToolbar->order('title', 'Title')}</th>
 		<th>{$beToolbar->order('status', 'Status')}</th>
@@ -55,15 +63,18 @@ function localConfirm(anchorElem,url) {
 	</thead>
 	<tbody>
 	{section name="i" loop=$galleries}
-	<tr class="rowList">
-		<td><a href="{$html->url('view/')}{$galleries[i].id}">{$galleries[i].id}</a></td>
-		<td>{$galleries[i].title}</td>
-		<td>{$galleries[i].status}</td>
-		<td>{$galleries[i].created|date_format:$conf->date_format}</td>
-		<td>{$galleries[i].lang}</td>
-		<td><a href="javascript:void(0);" class="delete" id="g{$galleries[i].id}">{t}Delete{/t}</a></td>
+	<tr>
+		<td><input type="checkbox" name="gallery_chk" class="galleryCheck" title="{$galleries[i].id}"/></td>
+		<td class="cellList"><a href="{$html->url('view/')}{$galleries[i].id}">{$galleries[i].id}</a></td>
+		<td class="cellList">{$galleries[i].title}</td>
+		<td class="cellList">{$galleries[i].status}</td>
+		<td class="cellList">{$galleries[i].created|date_format:$conf->date_format}</td>
+		<td class="cellList">{$galleries[i].lang}</td>
+		<td><a href="javascript:void(0);" class="delete" id="g{$galleries[i].id}" onclick="javascript:delGallery('{$galleries[i].id}');">{t}Delete{/t}</a></td>
 	</tr>
 	{/section}
+	<tr><td colspan="7"><input id="selectAll" type="button" value="O - {t}Select all{/t}"/><input id="unselectAll" type="button" value="/ - {t}Unselect all{/t}"/></td></tr>
+	<tr><td colspan="7"><input id="deleteSelected" type="button" value="X - {t}Delete selected items{/t}" onclick="javascript:delGalleries();"/></td></tr>
 	</tbody>
 	</table>
 	<p class="toolbar">
@@ -72,9 +83,10 @@ function localConfirm(anchorElem,url) {
 		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('dimSelectBottom')} &nbsp;
 		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
 	</p>
-  	{else}
-  	{t}No galleries found{/t}
-  	{/if}
+	{else}
+	{t}No galleries found{/t}
+	{/if}
+	</fieldset>
+	</form>
 	</div>
-
 </div>
