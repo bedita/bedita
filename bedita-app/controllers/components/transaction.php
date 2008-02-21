@@ -411,15 +411,18 @@ class transactionFS {
 	 * @return unknown
 	 */
 	function mkdir($newDir, $mode = 0777) {
-		if(!mkdir($newDir, $mode)) return false ;
+		if(!mkdir($newDir, $mode)) 
+			throw new BEditaIOException("Error creating dir $newDir");
 		$oldDir = getcwd() ;
-		if(!chdir($newDir)) return false ;
+		if(!chdir($newDir)) 
+			throw new BEditaIOException("Error changing dir $newDir");
 		$newDir = getcwd() ;
-		if(!chdir($oldDir)) return false ;
+		if(!chdir($oldDir)) 
+			throw new BEditaIOException("Error changing dir $oldDir");
 
 		// Salva l'operazione
 		$item = array("cmd"	=> "mkdir", "rollCmd" => "_rollMkdir", 	"params" => array("path" => $newDir)) ;
-		if(!array_push($this->commands, $item)) return false ;
+		array_push($this->commands, $item); 
 		
 		return true ;
 	}

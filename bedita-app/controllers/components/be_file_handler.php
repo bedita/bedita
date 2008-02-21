@@ -526,7 +526,14 @@ class MimeByMagic {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
- * 		BEditaAllowURLException		// Non è permesso l'uso di file remoti
+ * 		BEditaIOException		// Generic I/O Error
+ */
+class BEditaIOException extends BeditaException
+{
+} ;
+
+/**
+ * 		BEditaAllowURLException		// Non ÔøΩ permesso l'uso di file remoti
  */
 class BEditaAllowURLException extends BeditaException
 {
