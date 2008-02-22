@@ -27,7 +27,7 @@
 	{/if}
 	<tr><td class="label">{t}File name{/t}:</td><td>{$object.name|default:""}</td></tr>
 	<tr><td class="label">{t}File type{/t}:</td><td>{$object.type|default:""}</td></tr>
-	<tr><td class="label">{t}File size{/t}:</td><td>{$object.size|default:""}</td></tr>
+	<tr><td class="label">{t}File size{/t}:</td><td>{math equation="x/y" x=$object.size y=1024 format="%d"|default:""} KB</td></tr>
 	</table>
 {/if}
 </fieldset>

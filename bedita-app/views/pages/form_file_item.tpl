@@ -30,7 +30,7 @@
 				cache="$thumbCache" 
 				MAT_SERVER_PATH=$thumbPath 
 				MAT_SERVER_NAME=$thumbBaseUrl
-				linkurl="$thumbBaseUrl/$imageFile"
+				linkurl="$thumbBaseUrl$imagePath"
 				longside="$thumbLside"
 				shortside="$thumbSside"
 				html="$thumbHtml"
@@ -47,7 +47,7 @@
 	<br/>
 	{t}Title{/t}:<br/>{$imageTitle|escape:'htmlall'}<br/>
 	{t}Description{/t}:<br/>{$obj.short_desc|escape:'htmlall'}<br/>
-	{t}Size{/t}:<br/>{$obj.size/1000} Kb<br/>
+	{t}Size{/t}:<br/>{math equation="x/y" x=$obj.size y=1024 format="%d"} KB<br/>
 	{if !empty($imageFile) && $obj.name == "Image"}x: {$obj.width} y: {$obj.height}{/if}
 	<div align="right" style="padding-top:4px; margin-top:4px; border-top:1px solid silver">
 	<input type="button" onclick="removeItem('m_{$obj.id}')" value="{t}Delete{/t}" />
