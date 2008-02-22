@@ -1,5 +1,8 @@
 <script type="text/javascript">
 <!--
+var urlDelete = "{$html->url('deleteSection/')}" ;
+var message = "{t}Are you sure that you want to delete the section?{/t}" ;
+
 {literal}
 var langs = {
 {/literal}
@@ -22,11 +25,13 @@ $(document).ready(function(){
 
 	$("#updateForm").validate(); 
 
-	$("#updateForm input[@name=cancella]").bind("click", function() {
-		if(!confirm("{/literal}{t}Pay attention!!! the operation is potentially dangerous.\nDo you really want to continue?{/t}{literal}")) {
+	// submit delete
+	$("#delBEObject").bind("click", function() {
+		if(!confirm(message)) {
 			return false ;
 		}
-		document.location = "{/literal}{$html->url('deleteSection/')}{$section.id}{literal}" ;
+		$("#updateForm").attr("action", urlDelete)
+		$("#updateForm").submit();
 	}) ;
 
 	// Aggiunta traduzioni linguistiche dei campi

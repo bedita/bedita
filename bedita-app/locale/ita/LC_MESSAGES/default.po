@@ -586,3 +586,12 @@ msgstr "Documenti eliminati"
 
 msgid "Are you sure that you want to delete selected documents?"
 msgstr "Sei sicuro di voler eliminare i documenti selezionati?"
+
+msgid "Are you sure that you want to delete the document?"
+msgstr "Sei sicuro di voler eliminare il documento?"
+
+msgid "Are you sure that you want to delete the publication?"
+msgstr "Sei sicuro di voler eliminare la pubblicazione?"
+
+msgid "Are you sure that you want to delete the section?"
+msgstr "Sei sicuro di voler eliminare la sezione?"

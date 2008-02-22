@@ -1,5 +1,7 @@
 <script type="text/javascript">
 var urlIcoCalendar 		= '{$html->url('../img/calendar.gif')}' ;
+var urlDelete = "{$html->url('delete/')}" ;
+var message = "{t}Are you sure that you want to delete the document?{/t}" ;
 
 {literal}
 
@@ -38,11 +40,12 @@ $(document).ready(function(){
 	$("#updateForm").validate();
 
 	// Conferma cancellazione
-	$("#updateForm input[@name=cancella]").bind("click", function() {
-		if(!confirm("{/literal}{t}Attention!!! you are deleting an item.\nAre you sure that you want to continue?{/t}{literal}")) {
+	$("#delBEObject").bind("click", function() {
+		if(!confirm(message)) {
 			return false ;
 		}
-		document.location = "{/literal}{$html->url('delete/')}{$object.id}{literal}" ;
+		$("#updateForm").attr("action", urlDelete)
+		$("#updateForm").submit();
 	}) ;
 	
 	// Aggiunta traduzioni linguistiche dei campi

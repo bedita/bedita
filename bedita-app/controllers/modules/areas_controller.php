@@ -245,46 +245,51 @@ class AreasController extends AppController {
 	 /**
 	  * Cancella un'area.
 	  */
-	 function deleteArea($id = null) {
+	 function deleteArea() {
 	 	
 	 	$this->checkWriteModulePermission();
 		
-	 	$this->setup_args(array("id", "integer", &$id)) ;
-		
-	 	if(empty($id)) 
-	 		throw BeditaException(__("No data", true));
+		if(empty($this->data['id'])) {
+			throw new BeditaException(__("No data", true));
+		}
+		if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
+			throw new BeditaException(__("Error delete permissions", true));
+		}
 	 		
 	 	$this->Transaction->begin() ;
 	 	
-		// Cancellla i dati
-	 	if(!$this->Area->delete($id)) 
-	 		throw new BeditaException( sprintf(__("Error deleting area: %d", true), $id));
-		 	
+		// delete data
+	 	if(!$this->Area->delete($this->data['id'])) {
+	 		throw new BeditaException( sprintf(__("Error deleting area: %d", true), $this->data['id']));
+	 	}
 	 	$this->Transaction->commit() ;
-	 	$this->userInfoMessage(__("Area removed", true)." - ".$id);
-	 	$this->eventInfo("area ". $id." removed");
+	 	$this->userInfoMessage(__("Area deleted", true)." - ".$this->data['id']);
+	 	$this->eventInfo("area [". $this->data['id']."] deleted");
 	 }
 
 	 /**
 	  * Cancella una sezione.
 	  */
-	 function deleteSection($id = null) {
+	 function deleteSection() {
 	 	
 	 	$this->checkWriteModulePermission();
-	 	
-		$this->setup_args(array("id", "integer", &$id)) ;
 		
-	 	if(empty($id)) throw new BeditaException(__("No data",true));
+		if(empty($this->data['id'])) {
+			throw new BeditaException(__("No data", true));
+		}
+		if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
+			throw new BeditaException(__("Error delete permissions", true));
+		}
 	 		
 	 	$this->Transaction->begin() ;
-		 	
-		// Cancellla i dati
-	 	if(!$this->Section->delete($id)) 
-	 		throw new BeditaException( sprintf(__("Error deleting section: %d", true), $id));
-		 	
+	 	
+		// delete section
+	 	if(!$this->Section->delete($this->data['id'])) {
+	 		throw new BeditaException( sprintf(__("Error deleting section: %d", true), $this->data['id']));
+	 	}
 	 	$this->Transaction->commit() ;
-	 	$this->userInfoMessage(__("Section removed", true)." - ".$id);
-	 	$this->eventInfo("section ". $id." removed");
+	 	$this->userInfoMessage(__("Section deleted", true)." - ".$this->data['id']);
+	 	$this->eventInfo("section [". $this->data['id']."] deleted");
 	 }
 
 	 /**

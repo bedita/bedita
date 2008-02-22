@@ -1,5 +1,8 @@
 <script type="text/javascript">
 <!--
+var urlDelete = "{$html->url('deleteArea/')}" ;
+var message = "{t}Are you sure that you want to delete the publication?{/t}" ;
+
 {literal}
 var langs = {
 {/literal}
@@ -20,12 +23,16 @@ $.validator.setDefaults({
 
 $(document).ready(function(){
 	$("#updateForm").validate();
-	$("#updateForm input[@name=cancella]").bind("click", function() {
-		if(!confirm("{/literal}{t}Pay attention!!! the operation is potentially dangerous.\nDo you really want to continue?{/t}{literal}")) {
+	
+	// submit delete
+	$("#delBEObject").bind("click", function() {
+		if(!confirm(message)) {
 			return false ;
 		}
-		document.location = "{/literal}{$html->url('deleteArea/')}{$object.id}{literal}" ;
+		$("#updateForm").attr("action", urlDelete)
+		$("#updateForm").submit();
 	}) ;
+	
 	// Aggiunta traduzioni linguistiche dei campi
 	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
 	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;

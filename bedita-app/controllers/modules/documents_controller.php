@@ -198,13 +198,14 @@ class DocumentsController extends AppController {
 	 	}	 	
  		$this->Transaction->commit() ;
  		$this->userInfoMessage(__("Document saved", true)." - ".$this->data["title"]);
-		$this->eventInfo("document ". $this->data["title"]."saved");
+		$this->eventInfo("document [". $this->data["title"]."] saved");
 	 }
-	 	 
+	
 	 /**
 	  * Delete a document.
 	  */
-	function delete($id = null) {
+	function delete() {
+		$this->checkWriteModulePermission();
 		$documents_to_del = array();
 		if(!empty($this->params['form']['documents_to_del'])) {
 			$documents_to_del = $this->params['form']['documents_to_del'];
@@ -271,12 +272,12 @@ class DocumentsController extends AppController {
 	 protected function forward($action, $esito) {
 	  	$REDIRECT = array(
 	 			"save"	=> 	array(
-	 									"OK"	=> "./view/{$this->Document->id}",
-	 									"ERROR"	=> "./view/{$this->Document->id}" 
+	 									"OK"	=> "/documents/view/{$this->Document->id}",
+	 									"ERROR"	=> "/documents/view/{$this->Document->id}" 
 	 								), 
-	 			"delete"	=> 	array(
-	 									"OK"	=> "./",
-	 									"ERROR"	=> "./view/{@$this->params['pass'][0]}" 
+	 			"delete" =>	array(
+	 									"OK"	=> "/documents",
+	 									"ERROR"	=> "/documents/view/{@$this->params['pass'][0]}" 
 	 								), 
 	 		) ;
 	 	
