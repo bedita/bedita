@@ -369,7 +369,7 @@ $config['validate_resorce'] = array(
 				'Audio'			=> array('/audio\/\.*/'),
 				'Video'			=> array('/video\/\.+/'),
 				'BEFile'		=> array('/application\/msword/', '/application\/pdf/', '/application\/postscript/', 
-										  '/application\/x-tar/', '/application\/zip/', '/text\/.+/'
+										  '/application\/x-tar/', '/application\/zip/', '/text\/.+/', '/application\/vnd.oasis.opendocument/'
 								   ),
 			   ),
 	/**

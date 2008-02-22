@@ -45,17 +45,23 @@ class SchemaTestCase extends BeditaTestCase {
 			$tabDb2 = $tableDetails2[$t];
 
 			foreach ($tabDb1 as $k=>$v) {
-				$diff = array_diff_assoc($v, $tabDb2[$k]);
-	    		$this->assertTrue(empty($diff), "Campo $t.$k su $db1 diverso da $db2!");
-				if(!empty($diff)) {
-					pr($diff);
+	    		$this->assertNotNull($tabDb2[$k], "Campo $t.$k mancante su $db2!");
+				if(isset($tabDb2[$k])) {
+		    		$diff = array_diff_assoc($v, $tabDb2[$k]);
+		    		$this->assertTrue(empty($diff), "Campo $t.$k su $db1 diverso da $db2!");
+					if(!empty($diff)) {
+						pr($diff);
+					}
 				}
 			}
 			foreach ($tabDb2 as $k=>$v) {
-				$diff = array_diff_assoc($v, $tabDb1[$k]);
-	    		$this->assertTrue(empty($diff), "Campo $t.$k su $db2 diverso da $db1!");
-				if(!empty($diff)) {
-					pr($diff);
+	    		$this->assertNotNull($tabDb1[$k], "Campo $t.$k mancante su $db1!");
+				if(isset($tabDb1[$k])) {
+		    		$diff = array_diff_assoc($v, $tabDb1[$k]);
+		    		$this->assertTrue(empty($diff), "Campo $t.$k su $db2 diverso da $db1!");
+					if(!empty($diff)) {
+						pr($diff);
+					}
 				}
 			}
 		}

@@ -147,6 +147,7 @@ CREATE TABLE objects (
   modified DATETIME NULL,
   title VARCHAR(255) NULL,
   nickname VARCHAR(255) NULL,
+  description TINYTEXT NULL,
   current BOOL NULL DEFAULT '1',
   lang CHAR(3) NULL,
   ip_created VARCHAR(15) NULL,
@@ -201,8 +202,8 @@ CREATE TABLE content_bases (
   id INTEGER UNSIGNED NOT NULL,
   `start` DATETIME NULL ,
   `end` DATETIME NULL,
-  subtitle VARCHAR(255) NULL,
-  short_desc MEDIUMTEXT NULL,
+  subject VARCHAR(255) NULL,
+  abstract MEDIUMTEXT NULL,
   type ENUM('html','txt','txtParsed') DEFAULT 'txt',
   PRIMARY KEY(id),
   INDEX content_bases_FKIndex1(id),
@@ -393,7 +394,6 @@ CREATE TABLE streams (
 CREATE TABLE areas (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   public_name VARCHAR(255) NULL,
-  description VARCHAR(255) NULL,
   creator VARCHAR(255) NULL,
   email VARCHAR(255) NULL,
   publisher VARCHAR(255) NULL,
@@ -513,7 +513,7 @@ CREATE TABLE authors (
 
 CREATE TABLE contents (
   id INTEGER UNSIGNED NOT NULL,
-  long_desc MEDIUMTEXT NULL,
+  body MEDIUMTEXT NULL,
   PRIMARY KEY(id),
   INDEX contents_FKIndex1(id),
   FOREIGN KEY(id)

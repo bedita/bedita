@@ -39,7 +39,8 @@ class GalleriesController extends AppController {
 	
 	public function save() {
 		$this->checkWriteModulePermission();
-		if(empty($this->data))  throw new BeditaException( __("No data", true));
+		if(empty($this->data))  
+			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false;
 		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) {
 			throw new BeditaException(__("Error modify permissions", true));

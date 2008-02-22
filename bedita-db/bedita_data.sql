@@ -170,8 +170,8 @@ VALUES (
 
 -- suo omologo in inglese
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `ip_created`, `user_created`, `user_modified`)  VALUES (6, 22, 'on', NOW(), NOW(), 'Primo Documento di Test', "PrimoDocumentoDiTest", 1, 'en', '192.168.0.1', 1, 1);
-INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `short_desc` , `type` ) VALUES (6, '2007-05-22 10:59:28', '2008-05-22 10:59:34', 'sottotitolo', 'Questo è il testo breve', 'txt');
-INSERT INTO `contents` ( `id` , `long_desc` ) VALUES (6, 'testo lungo');
+INSERT INTO `content_bases` ( `id` , `start` , `end` , `subject` , `abstract` , `type` ) VALUES (6, '2007-05-22 10:59:28', '2008-05-22 10:59:34', 'sottotitolo', 'Questo è il testo breve', 'txt');
+INSERT INTO `contents` ( `id` , `body` ) VALUES (6, 'testo lungo');
 INSERT INTO `base_documents` ( `id` , `desc_author` , `flag_comments` , `credits` ) VALUES (6, 'descrizione autore', '1', 'credits');
 INSERT INTO `documents` ( `id` , `url` , `obj` , `file` , `rule` , `switch` ) VALUES (6, NULL , NULL , NULL , NULL , 'doc');
 INSERT INTO `trees` ( `id` , `parent_id` , `path`, `parent_path`, `priority` ) VALUES (6, 3, '/2/3/6', '/2/3', 1);
@@ -182,7 +182,7 @@ VALUES (
 
 -- aggiunta di una immagine
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `ip_created`, `user_created`, `user_modified`)  VALUES (7, 12, 'on', NOW(), NOW(), 'Immagine di test', "ImmagineDiTest", 1, 'it', '192.168.0.1', 1, 1);
-INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `short_desc` , `type` ) VALUES (7, '2007-05-22 10:59:28', '2008-05-22 10:59:34', NULL, NULL, 'txt');
+INSERT INTO `content_bases` ( `id` , `start` , `end` , `subject` , `abstract` , `type` ) VALUES (7, '2007-05-22 10:59:28', '2008-05-22 10:59:34', NULL, NULL, 'txt');
 INSERT INTO `streams` ( `id` , `path` , `name` , `type` , `size` ) VALUES ('7', '/test/test.jpg', 'test.jpg', 'image/jpeg', '34564');
 INSERT INTO `images` ( `id` ) VALUES ('7');
 INSERT INTO `permissions` ( `object_id` , `ugid` , `switch` , `flag` )
@@ -192,8 +192,8 @@ VALUES (
 
 -- un oggetto di tipo document (22) inserito in home page
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `ip_created`, `user_created`, `user_modified`)  VALUES (5, 22, 'on', NOW(), NOW(), 'Primo Documento di Test', "PrimoDocumentoDiTest", 1, 'it', '192.168.0.1', 1, 1);
-INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `short_desc` , `type` ) VALUES (5, '2007-05-22 10:59:28', '2008-05-22 10:59:34', 'sottotitolo', 'Questo è il testo breve', 'txt');
-INSERT INTO `contents` ( `id` , `long_desc` ) VALUES (5,  'testo lungo');
+INSERT INTO `content_bases` ( `id` , `start` , `end` , `subject` , `abstract` , `type` ) VALUES (5, '2007-05-22 10:59:28', '2008-05-22 10:59:34', 'sottotitolo', 'Questo è il testo breve', 'txt');
+INSERT INTO `contents` ( `id` , `body` ) VALUES (5,  'testo lungo');
 INSERT INTO `base_documents` ( `id` , `desc_author` , `flag_comments` , `credits` ) VALUES (5, 'descrizione autore', '1', 'credits');
 INSERT INTO `documents` ( `id` , `url` , `obj` , `file` , `rule` , `switch` ) VALUES (5, NULL , NULL , NULL , NULL , 'doc');
 INSERT INTO `custom_properties` ( `object_id` , `name` , `type` , `integer` , `bool` , `float` , `string` , `stream` ) VALUES ('5', 'test', 'integer', '10', NULL , NULL , NULL , NULL);
@@ -209,8 +209,8 @@ INSERT INTO `content_bases_objects` ( `object_id` , `id` , `switch` ) VALUES (6,
 
 -- Inserisce un oggetto di tipo evento con un calendario
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `ip_created`, `user_created`, `user_modified`) VALUES (8, 21, 'on', NOW(), NOW(), 'Primo Evento di Test', "PrimoEventoDiTest", 1, 'it', '192.168.0.1', 1, 1);
-INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `short_desc` , `type` ) VALUES (8, '2007-05-22 10:59:28', '2008-05-22 10:59:34', 'sottotitolo', 'Questo è il testo breve', 'txt');
-INSERT INTO `contents` ( `id` , `long_desc` ) VALUES (8, 'testo lungo');
+INSERT INTO `content_bases` ( `id` , `start` , `end` , `subject` , `abstract` , `type` ) VALUES (8, '2007-05-22 10:59:28', '2008-05-22 10:59:34', 'sottotitolo', 'Questo è il testo breve', 'txt');
+INSERT INTO `contents` ( `id` , `body` ) VALUES (8, 'testo lungo');
 INSERT INTO `base_documents` ( `id` , `desc_author` , `flag_comments` , `credits` ) VALUES (8, 'descrizione autore', '1', 'credits');
 INSERT INTO `events` ( `id` ) VALUES (8);
 INSERT INTO `trees` ( `id` , `parent_id` , `path`, `parent_path`, `priority` ) VALUES (8, 3, '/2/3/8', '/2/3', 3);
@@ -224,7 +224,7 @@ INSERT INTO `event_date_items` ( `id` , `event_id`, `start` , `end`) VALUES (2, 
 
 -- Inserisce una short_news
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `ip_created`, `user_created`, `user_modified`) VALUES (9, 18, 'on', NOW(), NOW(), 'Prima Notizia di Test', "PrimaNotiziaDiTest", 1, 'it', '192.168.0.1', 1, 1);
-INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `short_desc` , `type` ) VALUES (9, '2007-05-22 10:59:28', '2008-05-22 10:59:34', 'sottotitolo', 'Questo è il testo breve', 'txt');
+INSERT INTO `content_bases` ( `id` , `start` , `end` , `subject` , `abstract` , `type` ) VALUES (9, '2007-05-22 10:59:28', '2008-05-22 10:59:34', 'sottotitolo', 'Questo è il testo breve', 'txt');
 INSERT INTO `short_news` ( `id`) VALUES (9) ;
 INSERT INTO `trees` ( `id` , `parent_id` , `path`, `parent_path`, `priority` ) VALUES (9, 2, '/2/9', '/2', 3);
 INSERT INTO `permissions` ( `object_id` , `ugid` , `switch` , `flag` )
@@ -238,7 +238,7 @@ INSERT INTO `links` ( `id`, `object_id`, `switch`, `url`) VALUES (2, 9, 'url', '
 
 -- aggiunta di una immagine x un author
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `ip_created`, `user_created`, `user_modified`) VALUES (10, 12, 'on', NOW(), NOW(), 'Immagine Albanese', "ImmagineAlbanese", 1, 'it', '192.168.0.1', 1, 1);
-INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `short_desc` , `type` ) VALUES (10, '2007-05-22 10:59:28', '2008-05-22 10:59:34', NULL, NULL, 'txt');
+INSERT INTO `content_bases` ( `id` , `start` , `end` , `subject` , `abstract` , `type` ) VALUES (10, '2007-05-22 10:59:28', '2008-05-22 10:59:34', NULL, NULL, 'txt');
 INSERT INTO `streams` ( `id` , `path` , `name` , `type` , `size` ) VALUES (10, '/test/albanese.jpg', 'test.jpg', 'image/jpeg', '34564');
 INSERT INTO `images` ( `id` ) VALUES (10);
 INSERT INTO `permissions` ( `object_id` , `ugid` , `switch` , `flag` )
@@ -248,7 +248,7 @@ VALUES (
 
 -- Inserisce un author
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `ip_created`, `user_created`, `user_modified`) VALUES (11, 28, 'on', NOW(), NOW(), 'Antonio Albanese', "AntonioAlbanese", 1, 'it', '192.168.0.1', 1, 1);
-INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `short_desc` , `type` ) VALUES (11, '2007-05-22 10:59:28', '2008-05-22 10:59:34', 'sottotitolo', 'Questo è il testo breve DI Albanese', 'txt');
+INSERT INTO `content_bases` ( `id` , `start` , `end` , `subject` , `abstract` , `type` ) VALUES (11, '2007-05-22 10:59:28', '2008-05-22 10:59:34', 'sottotitolo', 'Questo è il testo breve DI Albanese', 'txt');
 INSERT INTO `authors` ( `id` , `image_id` , `name` , `surname` , `search_string` ) VALUES ('11', '10', 'Antonio', 'Albanese', 'test search string') ;
 INSERT INTO `trees` ( `id` , `parent_id` , `path`, `parent_path`, `priority` ) VALUES (11, 2, '/2/11', '/2', 4);
 INSERT INTO `permissions` ( `object_id` , `ugid` , `switch` , `flag` )
@@ -258,8 +258,8 @@ VALUES (
 
 -- omologo del 5  in francese
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `ip_created`, `user_created`, `user_modified`)  VALUES (12, 22, 'on', NOW(), NOW(), 'Primo Documento di Test', "PrimoDocumentoDiTest", 1, 'fr', '192.168.0.1', 1, 1);
-INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `short_desc` , `type` ) VALUES (12, '2007-05-22 10:59:28', '2008-05-22 10:59:34', 'sottotitolo', 'Questo è il testo breve', 'txt');
-INSERT INTO `contents` ( `id` , `long_desc` ) VALUES (12, 'testo lungo');
+INSERT INTO `content_bases` ( `id` , `start` , `end` , `subject` , `abstract` , `type` ) VALUES (12, '2007-05-22 10:59:28', '2008-05-22 10:59:34', 'sottotitolo', 'Questo è il testo breve', 'txt');
+INSERT INTO `contents` ( `id` , `body` ) VALUES (12, 'testo lungo');
 INSERT INTO `base_documents` ( `id` , `desc_author` , `flag_comments` , `credits` ) VALUES (12, 'descrizione autore', '1', 'credits');
 INSERT INTO `documents` ( `id` , `url` , `obj` , `file` , `rule` , `switch` ) VALUES (12, NULL , NULL , NULL , NULL , 'doc');
 INSERT INTO `trees` ( `id` , `parent_id` , `path`, `parent_path`, `priority` ) VALUES (12, 3, '/2/3/12', '/2/12', 1);
@@ -281,12 +281,12 @@ INSERT INTO `contents_typed_object_categories` ( `content_id` , `typed_object_ca
 
 -- Inserisce commenti al 5
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `ip_created`, `user_created`, `user_modified`)  VALUES (13, 13, 'on', NOW(), NOW(), 'Commento 1', "Commento1", 1, 'it', '192.168.0.1', 1, 1);
-INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `short_desc` , `type` ) VALUES (13, '2007-05-22 10:59:28', '2008-05-22 10:59:34', '', 'Questo è il commento 1', 'txt');
+INSERT INTO `content_bases` ( `id` , `start` , `end` , `subject` , `abstract` , `type` ) VALUES (13, '2007-05-22 10:59:28', '2008-05-22 10:59:34', '', 'Questo è il commento 1', 'txt');
 INSERT INTO `comments` ( `id` , `author` , `email` ) VALUES (13, 'giangi', 'example@example.com')  ;
 INSERT INTO `content_bases_objects` ( `object_id` , `id` , `switch` ) VALUES (13, 5, 'COMMENTS') ;
 
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `created`, `modified`, `title`, `nickname`, `current`, `lang`, `ip_created`, `user_created`, `user_modified`)  VALUES (14, 13, 'on', NOW(), NOW(), 'Commento 1', "Commento1", 1, 'it', '192.168.0.1', 1, 1);
-INSERT INTO `content_bases` ( `id` , `start` , `end` , `subtitle` , `short_desc` , `type` ) VALUES (14, '2007-05-22 10:59:28', '2008-05-22 10:59:34', '', 'Questo è il commento 1', 'txt');
+INSERT INTO `content_bases` ( `id` , `start` , `end` , `subject` , `abstract` , `type` ) VALUES (14, '2007-05-22 10:59:28', '2008-05-22 10:59:34', '', 'Questo è il commento 1', 'txt');
 INSERT INTO `comments` ( `id` , `author` , `email` ) VALUES (14, 'giangi', 'example@example.com')  ;
 INSERT INTO `content_bases_objects` ( `object_id` , `id` , `switch` ) VALUES (14, 5, 'COMMENTS') ;
 

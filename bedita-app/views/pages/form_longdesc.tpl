@@ -183,19 +183,19 @@ function changeFormattingText(sentHtml) {
 			<b>{t}Short text{/t}:</b>
 			<br/>
 			<div id="containerTestoTextarea" style="display:none;">
-			<textarea name="data[short_desc]" id="testo" style="font-size:13px; width:510px; height:150px;">{$object.short_desc|default:''}</textarea>
+			<textarea name="data[abstract]" id="testo" style="font-size:13px; width:510px; height:150px;">{$object.abstract|default:''}</textarea>
 			</div>
 			<div id="containerTestoFCKEditor" style="display:none;">
-			<textarea name="testoFCK" id="testoFCK" style="font-size:13px; width:510px; height:150px;">{$object.short_desc|default:''}</textarea>
+			<textarea name="testoFCK" id="testoFCK" style="font-size:13px; width:510px; height:150px;">{$object.abstract|default:''}</textarea>
 			</div>
 			<p>
 			<b>{t}Long text{/t}:</b>
 			<br/>
 			<div id="containerTestoLTextarea" style="display:none;">
-			<textarea name="data[long_desc]" id="testoL" style="font-size:13px; width:510px; height:150px;">{$object.long_desc|default:''}</textarea>
+			<textarea name="data[body]" id="testoL" style="font-size:13px; width:510px; height:150px;">{$object.body|default:''}</textarea>
 			</div>
 			<div id="containerTestoLFCKEditor" style="display:none;">
-			<textarea name="testoLFCK" id="testoLFCK" style="font-size:13px; width:510px; height:150px;">{$object.long_desc|default:''}</textarea>
+			<textarea name="testoLFCK" id="testoLFCK" style="font-size:13px; width:510px; height:150px;">{$object.body|default:''}</textarea>
 			</div>
 			<p>
 			<b>{t}Text type{/t}:</b>
@@ -246,19 +246,18 @@ $(document).ready(function(){
 <fieldset>
 			<b>{t}Short text{/t}:</b>
 			<br/>
-			<textarea name="data[short_desc]" id="testo" style="font-size:13px; width:510px; height:150px;">{$object.short_desc|default:''}</textarea>
+			<textarea name="data[abstract]" id="testo" style="font-size:13px; width:510px; height:150px;">{$object.abstract|default:''}</textarea>
 			<br/>
 			<b>{t}Long text{/t}:</b>
 
 			<br/>
-			<textarea name="data[long_desc]" id="testoL" style="font-size:13px; width:510px; height:150px;">{$object.long_desc|default:''}</textarea>
+			<textarea name="data[body]" id="testoL" style="font-size:13px; width:510px; height:150px;">{$object.body|default:''}</textarea>
 			<br/>
 			<b>{t}Text type{/t}:</b>
 			&nbsp;&nbsp; 
 			<input type="radio" name="data[type]" class="formatting" value="html" /> <span class="labelFormating">{t}html{/t}</span>
 			<input type="radio" name="data[type]" class="formatting" value="txt"/> <span class="labelFormating">{t}only text{/t}</span>
 			<input type="radio" name="data[type]" class="formatting" value="txtParsed" /> <span class="labelFormating">{t}text with conversion space and link{/t}</span>
-			</p>
 
 </fieldset>
 

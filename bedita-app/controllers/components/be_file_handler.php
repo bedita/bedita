@@ -200,7 +200,7 @@ class BeFileHandlerComponent extends Object {
 			case 'Audio':		$model = 'Audio' ; break ;
 			case 'Video':		$model = 'Video' ; break ;
 			default:
-				throw new BEditaMIMEException() ;
+				throw new BEditaMIMEException("MIME type not found") ;
 		}
 		$this->{$model}->id = false ;
 		if(!($ret = $this->{$model}->save($dati))) {
