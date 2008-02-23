@@ -69,7 +69,74 @@ class BeditaShell extends Shell {
 		pr($this->params);
 		pr($this->args);
     }
+
+    private function __clean($path) {
+        
+        $folder=& new Folder($path);
+        $tree=$folder->tree($path, false);
+        foreach ($tree as $files) {
+            foreach ($files as $file) {
+                if (!is_dir($file)) {
+                    $file=& new File($file);
+                    if(!$file->delete()) {
+                        $this->out("Error deleting file: ".$file->pwd());
+                    }
+                }
+                
+            }
+        }
+        return ;
+    }    
     
+    function checkIni() {
+        @include APP. DS . 'config' . DS . 'bedita.ini.php.sample';
+        $cfgSample = $config;
+        @include APP. DS . 'config' . DS . 'bedita.ini.php';
+        $sampleDiff = array_diff_key($cfgSample, $config);
+        if(!empty($sampleDiff)) {
+        	$this->out("Config to add [not in bedita.ini.php]: \n");
+        	foreach ($sampleDiff as $k=>$v) {
+                if(is_array($v)) {
+                    $this->out("\$confg['$k']=");
+                    print_r($v);
+                } else {
+                    $this->out("\$config['$k']=$v");
+                }
+        	}
+        }
+        
+        $iniDiff = array_diff_key($config, $cfgSample);
+        if(!empty($iniDiff)) {
+            $this->out("\nConfig to remove [no more bedita.ini.php.sample]: \n");
+            foreach ($iniDiff as $k=>$v) {
+                if(is_array($v)) {
+                    $this->out("\$confg['$k']=");
+                    print_r($v);
+                } else {
+                    $this->out("\$config['$k']=$v");
+                }
+            }
+        }
+        
+        if(empty($iniDiff) && empty($sampleDiff)) {
+            $this->out("\nNo config key difference.");
+        }
+    }
+    
+    function cleanup() {
+        if (!isset($this->params['nologs'])) {
+    	   $this->__clean(TMP . 'logs');
+            $this->out('Logs cleaned.');
+        }
+        $this->__clean(TMP . 'cache' . DS . 'models');
+        $this->__clean(TMP . 'cache' . DS . 'persistent');        
+        $this->__clean(TMP . 'cache' . DS . 'views');        
+        $this->out('Cache cleaned.');
+        $this->__clean(TMP . 'smarty' . DS . 'compile');
+        $this->__clean(TMP . 'smarty' . DS . 'cache');
+        $this->out('Smarty compiled/cache cleaned.');
+    }    
+
 	function help() {
         $this->out('Available functions:');
         $this->out('1. updateDb: update database with bedita-db sql scripts');
@@ -78,6 +145,12 @@ class BeditaShell extends Shell {
   		$this->out(' ');
   		$this->out("    -db <dbname>\t use db configuration <dbname> specified in config/database.php");
   		$this->out("    -data <sql>     \t use <sql> data dump, use absolute path if not in bedita-db/");
+        $this->out(' ');
+  		$this->out('2. cleanup: cleanup cahe, compile, log files');
+        $this->out(' ');
+        $this->out('    Usage: cleanup [-nologs]');
+        $this->out(' ');
+        $this->out("    -nologs \t don't clean log files");
 	}
 }
 
