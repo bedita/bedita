@@ -28,7 +28,7 @@ class AppController extends Controller
 	/////////////////////////////////		
 
 	public static function handleExceptions(BeditaException $ex) {
-		$errTrace =  $ex->getClassName()." - ".$ex->getDetails()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+		$errTrace =  $ex->errorTrace();   
 		if(isset(self::$current)) {
 			self::$current->handleError($ex->getDetails(), $ex->getMessage(), $errTrace);
 			self::$current->setResult($ex->result);
@@ -393,6 +393,11 @@ class BeditaException extends Exception
 		return $r->getName();
     }
     
+    public function errorTrace() {
+        return $this->getClassName()." - ".$this->getDetails()."\nFile: ". 
+            $this->getFile()." - line: ".$this->getLine()."\nTrace:\n".
+            $this->getTraceAsString();   
+    }
 }
 
 ?>
