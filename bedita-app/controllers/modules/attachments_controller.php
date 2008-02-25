@@ -58,8 +58,6 @@ class AttachmentsController extends AppController {
 		$this->set('tree', 			$tree);
 		$this->set('multimedia', 	$multimedia['items']);
 		$this->set('toolbar', 		$multimedia['toolbar']);
-		$this->set('selfPlus',		$this->createSelfURL(false)) ;
-		$this->set('self',			($this->createSelfURL(false)."?")) ;
 	 }
 
 
@@ -103,14 +101,51 @@ class AttachmentsController extends AppController {
 		$this->set('object',	@$obj);
 		$this->set('imagePath',	@$imagePath);
 		$this->set('imageUrl',	@$imageURL);
-		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) )) ;
-		$this->set('self',		($this->createSelfURL(false)."?")) ;
-		$this->set('conf',		$conf) ;
-		$this->set('CACHE',		'imgcache/');
-		$this->set('MEDIA_URL',	MEDIA_URL);
-		$this->set('MEDIA_ROOT',MEDIA_ROOT);
+        $this->selfUrlParams = array("id", $id);    
+
 	 }
 
+    function save() {
+       
+        $this->checkWriteModulePermission();
+        
+        if(empty($this->data) || empty($this->data['id'])) 
+            throw new BeditaException( __("Bad data", true));
+        
+        // Verifica i permessi di modifica dell'oggetto
+        if(!$this->Permission->verify($this->data['id'], 
+            $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+                throw new BeditaException(__("Error modify permissions", true));
+        
+        // Format custom properties
+        $this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
+
+        // Format lang text fields
+        $this->BeLangText->setupForSave($this->data["LangText"]) ;
+        
+        $this->Transaction->begin() ;
+        
+        // save
+        if(!$this->BEObject->save($this->data)) {
+            throw new BeditaException(__("Error saving attachment", true), 
+                $this->BEObject->validationErrors);
+        }
+
+        // permissions
+        $perms = isset($this->data["Permissions"])?$this->data["Permissions"]:array();
+        if(!$this->Permission->saveFromPOST(
+                $this->BEObject->id, $perms,
+                (empty($this->data['recursiveApplyPermissions'])?false:true), 'document')
+            ) {
+                throw new BeditaException( __("Error saving permissions", true));
+        }       
+
+        $this->Transaction->commit() ;
+        $this->userInfoMessage(__("Attachment saved", true)." - ".$this->data["title"]);
+        $this->eventInfo("Attachment [". $this->data["title"]."] saved");
+    }
+	 
+	 
 	 /**
 	  * Cancella un'area.
 	  */
@@ -173,12 +208,8 @@ $this->params['form']['id'] = 10005 ;
 		$this->set('priority',	@$priority);
 		$this->set('index',		@$index);
 		$this->set('cols',		@$cols);
-		$this->set('selfPlus',	$this->createSelfURL(false, array("id", @$id) )) ;
-		$this->set('self',		($this->createSelfURL(false)."?")) ;
-		$this->set('conf',		$conf) ;
-		$this->set('CACHE',		'imgcache/');
-		$this->set('MEDIA_URL',	MEDIA_URL);
-		$this->set('MEDIA_ROOT',MEDIA_ROOT);
+		$this->selfUrlParams = array("id", @$id);    
+
 		$this->layout = "empty" ;
 	}
 
@@ -219,8 +250,6 @@ $this->params['form']['id'] = 10005 ;
 		// Setup dei dati da passare al template
 		$this->set('attachments', 	$attachments['items']);
 		$this->set('toolbar', 		$attachments['toolbar']);
-		$this->set('selfPlus',		$this->createSelfURL(false)) ;
-		$this->set('self',		($this->createSelfURL(false)."?")) ;
 	}
 
 	/**
@@ -273,26 +302,20 @@ $this->params['form']['id'] = 10005 ;
 
 	 protected function forward($action, $esito) {
 	  	$REDIRECT = array(
-/*	  	
-	 			"save"	=> 	array(
-	 									"OK"	=> "./view/{$this->Document->id}",
-	 									"ERROR"	=> "./view/{$this->Document->id}" 
-	 								), 
-*/	 								
-	 			"delete"	=> 	array(
-	 									"OK"	=> "./",
-	 									"ERROR"	=> "./view/{@$this->params['pass'][0]}" 
-	 								), 
+		      "save"  =>  array(
+                    "OK"    => "/attachments/view/{$this->BEObject->id}",
+                    "ERROR" => "/attachments/" 
+              ), 
+
+              "delete"	=> 	array(
+	 				"OK"	=> "./",
+	 				"ERROR"	=> "./view/{@$this->params['pass'][0]}" 
+	 		    ) 
 	 		) ;
 	 	
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 	 	
 	 	return false ;
-	 }
-
-	 
-	 function preRenderFilter($view, $layout) {
-	 	$i=0;
 	 }
 	 
 }

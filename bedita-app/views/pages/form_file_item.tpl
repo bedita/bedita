@@ -4,8 +4,8 @@
 {assign var="thumbWidth" 		value=100}
 {assign var="thumbHeight" 		value=100}
 {assign var="thumbCache" 		value=$CACHE|default:imgcache}
-{assign var="thumbPath"         value=$MEDIA_ROOT}
-{assign var="thumbBaseUrl"      value=$MEDIA_URL}
+{assign var="thumbPath"         value=$conf->mediaRoot}
+{assign var="thumbBaseUrl"      value=$conf->mediaUrl}
 {assign var="thumbLside"		value=""}
 {assign var="thumbSside"		value=""}
 {assign var="thumbHtml"			value=""}
@@ -45,7 +45,7 @@
 	</div>
 	{else}
 	<div>
-		<a href="{$MEDIA_URL}{$filePath}" target="_blank">
+		<a href="{$conf->mediaUrl}{$filePath}" target="_blank">
 			<img src="{$session->webroot}/img/mime/{$obj.type}.gif" />
 		</a> 
 	</div>

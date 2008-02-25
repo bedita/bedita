@@ -21,6 +21,8 @@ define("MEDIA_ROOT",	ROOT . DS . APP_DIR . DS . "media") ;
  */
 define("MEDIA_URL",	"http://bedita/media") ;
 
+$config['imgCache'] = 'imgcache'.DS;
+
 /**
  * uncomment to set default interface language, set 'multilang' true for user choice
  * set 'multilang' true if $config['Config']['language'] is set
@@ -84,6 +86,10 @@ $config['fckeditor'] = true;
 ///////////////////////////////////////////////////////
 // DO NOT EDIT BELOW THIS LINE//
 ///////////////////////////////////////////////////////
+
+// config for templates
+$config['mediaUrl'] = MEDIA_URL ;
+$config['mediaRoot'] = MEDIA_ROOT ;
 
 
 /**

@@ -50,8 +50,6 @@ class MultimediaController extends AppController {
 		$this->set('tree', 			$tree);
 		$this->set('multimedia', 	$multimedia['items']);
 		$this->set('toolbar', 		$multimedia['toolbar']);
-		$this->set('selfPlus',		$this->createSelfURL(false)) ;
-		$this->set('self',			($this->createSelfURL(false)."?")) ;
 	 }
 
 	 /**
@@ -67,7 +65,8 @@ class MultimediaController extends AppController {
 		if($id) {
 			$rec = $this->BEObject->recursive ;
 			$this->BEObject->recursive = -1 ;
-				if(!($ret = $this->BEObject->read('object_type_id', $id))) throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
+			if(!($ret = $this->BEObject->read('object_type_id', $id))) 
+			     throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
 			$this->BEObject->recursive = $rec ;
 			$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
 			$this->{$model}->bviorHideFields = array('Version', 'Index', 'current', 'multimedia', 'attachments') ;
@@ -85,22 +84,60 @@ class MultimediaController extends AppController {
 		$this->set('object',	@$obj);
 		$this->set('imagePath',	@$imagePath);
 		$this->set('imageUrl',	@$imageURL);
-		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) )) ;
-		$this->set('self',		($this->createSelfURL(false)."?")) ;
-		$this->set('conf',		$conf) ;
-		$this->set('CACHE',		'imgcache/');
-		$this->set('MEDIA_URL',	MEDIA_URL);
-		$this->set('MEDIA_ROOT',MEDIA_ROOT);
+		$this->selfUrlParams = array("id", $id);    
 	 }
 
-	/**
+     function save() {
+	   
+     	$this->checkWriteModulePermission();
+        
+        if(empty($this->data) || empty($this->data['id'])) 
+            throw new BeditaException( __("Bad data", true));
+        
+        // Verifica i permessi di modifica dell'oggetto
+        if(!$this->Permission->verify($this->data['id'], 
+            $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+                throw new BeditaException(__("Error modify permissions", true));
+        
+        // Formatta le custom properties
+        $this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
+
+        // Formatta i campi d tradurre
+        $this->BeLangText->setupForSave($this->data["LangText"]) ;
+        
+        $this->Transaction->begin() ;
+        
+        // save
+        if(!$this->BEObject->save($this->data)) {
+            throw new BeditaException(__("Error saving multimedia object", true), 
+                $this->BEObject->validationErrors);
+        }
+
+        // aggiorna i permessi
+        $perms = isset($this->data["Permissions"])?$this->data["Permissions"]:array();
+        if(!$this->Permission->saveFromPOST(
+                $this->BEObject->id, $perms,
+                (empty($this->data['recursiveApplyPermissions'])?false:true), 'document')
+            ) {
+                throw new BeditaException( __("Error saving permissions", true));
+        }       
+
+        $this->Transaction->commit() ;
+        $this->userInfoMessage(__("Multimedia object saved", true)." - ".$this->data["title"]);
+        $this->eventInfo("multimedia object [". $this->data["title"]."] saved");
+    }
+	 
+
+	 /**
 	 * Delete multimedia object
 	 */
 	function delete($id = null) {
 		$this->checkWriteModulePermission();
-		if(!isset($this->data['id'])) throw new BeditaException(sprintf(__("No data", true), $id));
+		if(!isset($this->data['id'])) 
+		  throw new BeditaException(sprintf(__("No data", true), $id));
 		$this->Transaction->begin() ;
-		if(!$this->BeFileHandler->del($this->data['id'])) throw new BeditaException(sprintf(__("Error deleting object: %d", true), $id));
+		if(!$this->BeFileHandler->del($this->data['id'])) 
+		  throw new BeditaException(sprintf(__("Error deleting object: %d", true), $id));
 		$this->Transaction->commit() ;
 	}
 
@@ -147,13 +184,8 @@ class MultimediaController extends AppController {
 		$this->set('imageUrl',	@$imageURL);
 		$this->set('priority',	@$priority);
 		$this->set('index',		@$index);
-		$this->set('cols',		@$cols);
-		$this->set('selfPlus',	$this->createSelfURL(false, array("id", @$id) )) ;
-		$this->set('self',		($this->createSelfURL(false)."?")) ;
-		$this->set('conf',		$conf) ;
-		$this->set('CACHE',		'imgcache/');
-		$this->set('MEDIA_URL',	MEDIA_URL);
-		$this->set('MEDIA_ROOT',MEDIA_ROOT);
+		$this->set('cols',		@$cols);		
+		$this->selfUrlParams = array("id", @$id);    
 		$this->layout = "empty" ;
 	}
 
@@ -187,8 +219,6 @@ class MultimediaController extends AppController {
 		// Data for template
 		$this->set('multimedia', 	$multimedia['items']);
 		$this->set('toolbar', 		$multimedia['toolbar']);
-		$this->set('selfPlus',		$this->createSelfURL(false)) ;
-		$this->set('self',			($this->createSelfURL(false)."?")) ;
 	}
 
 	/**
@@ -232,14 +262,20 @@ class MultimediaController extends AppController {
 		unset($IDs) ;
 	}
 
+
 	protected function forward($action, $esito) {
-		$REDIRECT = array("delete"	=> 	array("OK"	=> "./","ERROR"	=> "./view/{@$this->params['pass'][0]}")) ;
+		$REDIRECT = array(
+		      "save"  =>  array(
+                    "OK"    => "/multimedia/view/{$this->BEObject->id}",
+                    "ERROR" => "/multimedia/" 
+              ), 
+		
+		      "delete"	=> 	array(
+		              "OK"	=> "./",
+                      "ERROR"	=> "./view/{@$this->params['pass'][0]}")
+	              ) ;
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;
 	}
 
-	
-	function preRenderFilter($view, $layout) {
-		$i=0;
-	}
 }

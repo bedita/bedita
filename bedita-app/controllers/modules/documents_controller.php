@@ -57,8 +57,6 @@ class DocumentsController extends AppController {
 		$this->set('tree', 		$tree);
 		$this->set('documents', $documents['items']);
 		$this->set('toolbar', 	$documents['toolbar']);
-		$this->set('selfPlus',	$this->createSelfURL(false)) ;
-		$this->set('self',		($this->createSelfURL(false)."?")) ;
 	 }
 
 	 /**
@@ -123,27 +121,19 @@ class DocumentsController extends AppController {
 		$this->set('attachments',$obj['attachments']);
 		$this->set('galleries', (count($galleries['items'])==0) ? array() : $galleries['items']);
 		$this->set('tree', 		$tree);
-		$this->set('parents',	$parents_id);
-		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) )) ;
-		$this->set('self',		($this->createSelfURL(false)."?")) ;
-		$this->set('conf',		$conf) ;
-		$this->set('CACHE',		'imgcache/');
-		$this->set('MEDIA_URL',	MEDIA_URL);
-		$this->set('MEDIA_ROOT',MEDIA_ROOT);
-		
+		$this->set('parents',	$parents_id);		
+		$this->selfUrlParams = array("id", $id);    		
 	 }
 
 	 /**
-	  * Aggiunge un nuovo documento o la modifica.
-	  * Nei dati devono essere definiti:
-	  * URLOK e URLERROR.
-	  *
+	  * Creates/updates new document
 	  */
 	 function save() {
 	 	
  		$this->checkWriteModulePermission();
  		
- 	 	if(empty($this->data)) throw new BeditaException( __("No data", true));
+ 	 	if(empty($this->data)) 
+ 	 	    throw new BeditaException( __("No data", true));
  		
 		$new = (empty($this->data['id'])) ? true : false ;
 		

@@ -24,6 +24,8 @@ class AppController extends Controller
 	
 	private static $current = NULL;
 
+	protected $selfUrlParams = NULL;
+	
 	/////////////////////////////////		
 	/////////////////////////////////		
 
@@ -130,7 +132,16 @@ class AppController extends Controller
 		// check/setup localization
 		$this->setupLocale();
 		$this->set('moduleColor',$this->moduleColor);
-        // convienience methods for frontends [like afterFilter]
+
+		// setup return URL (if session expires)
+		if(empty($this->selfUrlParams)) {
+            $this->set('selfPlus', $this->createSelfURL(false)) ;
+		} else {
+            $this->set('selfPlus', $this->createSelfURL(false, $this->selfUrlParams));
+		}
+        $this->set('self',          ($this->createSelfURL(false)."?")) ;
+		
+		// convienience methods for frontends [like afterFilter]
         $this->beditaAfterFilter() ;
 		if($this->autoRender) return ;
 		if(isset($this->data[$this->result])) {
@@ -328,7 +339,7 @@ class AppController extends Controller
 	 * 		2	valore
 	 *
 	 */
-	function createSelfURL($cake = true) {
+	protected function createSelfURL($cake = true) {
 		$baseURL = "/" . $this->params["controller"] ."/". $this->params["action"] ;
 		
 		$size  = func_num_args() ;

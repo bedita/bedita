@@ -21,7 +21,7 @@ $(document).ready(function(){
 	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
 	$("#cmdTranslateShortDesc").addTranslateField('shortdesc', langs) ;
 	$("#cmdTranslateLongDesc").addTranslateField('longdesc', langs) ;
-	$("input[@name='save']").attr("disabled", 1) ;
+
 });
 {/literal}
 //-->
@@ -29,6 +29,7 @@ $(document).ready(function(){
 <div id="containerPage">
 <form action="{$html->url('/multimedia/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input  type="hidden" name="data[id]" value="{$object.id|default:''}" />
+<input  type="hidden" name="data[object_type_id]" value="{$object.object_type_id|default:''}" />
 {include file="../pages/form_header.tpl"}
 <div class="blockForm" id="errorForm"></div>
 {include file="../pages/form_properties.tpl" doctype=false publication=false}

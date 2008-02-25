@@ -116,8 +116,6 @@ class GalleriesController extends AppController {
 		$this->set('tree', 		$this->BeTree->expandOneBranch($id));
 		$this->set('galleries', (count($galleries['items'])==0) ? array() : $galleries['items']);
 		$this->set('toolbar', 	$galleries['toolbar']);
-		$this->set('selfPlus',	$this->createSelfURL(false));
-		$this->set('self',		($this->createSelfURL(false)."?"));
 	}
 
 	private function loadGallery($id) {
@@ -148,12 +146,7 @@ class GalleriesController extends AppController {
 		if(isset($obj["LangText"])) $this->BeLangText->setupForView($obj["LangText"]);
 		$this->set('object',	$obj);
 		$this->set('multimedia',$multimedia);
-		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) ));
-		$this->set('self',		($this->createSelfURL(false)."?"));
-		$this->set('conf',		$conf);
-		$this->set('CACHE',		'imgcache/');
-		$this->set('MEDIA_URL',	MEDIA_URL);
-		$this->set('MEDIA_ROOT',MEDIA_ROOT);
+		$this->selfUrlParams = array("id", $id);    
 	}
 
 	protected function forward($action, $esito) {

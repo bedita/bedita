@@ -41,8 +41,6 @@ class AreasController extends AppController {
 		
 		// Setup dei dati da passare al template
 		$this->set('tree', 		$tree);
-		$this->set('selfPlus',	$this->createSelfURL(false)) ;
-		$this->set('self',		($this->createSelfURL(false)."?")) ;
 	 }
 
 	 /**
@@ -53,8 +51,6 @@ class AreasController extends AppController {
 	  */
 	 function viewArea($id = null) {
 	 	
-		$conf  = Configure::getInstance() ;
-		
 	 	// Setup parametri
 		$this->setup_args(array("id", "integer", &$id)) ;
 	 	
@@ -74,9 +70,7 @@ class AreasController extends AppController {
 		
 		// Setup dei dati da passare al template
 		$this->set('area', 		$area);
-		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) )) ;
-		$this->set('self',		($this->createSelfURL(false)."?")) ;
-		$this->set('conf',		$conf) ;
+		$this->selfUrlParams = array("id", $id);
 	 }
 
 	 /**
@@ -118,8 +112,7 @@ class AreasController extends AppController {
 		$this->set('tree', 		$tree);
 		$this->set('section',	$section);
 		$this->set('parent_id',	$parent_id);
-		$this->set('selfPlus',	$this->createSelfURL(false, array("id", $id) )) ;
-		$this->set('self',		($this->createSelfURL(false)."?")) ;	
+		$this->selfUrlParams = array("id", $id);	
 	 }
 	
 	 /**

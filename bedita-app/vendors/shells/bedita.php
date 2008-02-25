@@ -135,6 +135,19 @@ class BeditaShell extends Shell {
         $this->__clean(TMP . 'smarty' . DS . 'compile');
         $this->__clean(TMP . 'smarty' . DS . 'cache');
         $this->out('Smarty compiled/cache cleaned.');
+
+        if (isset($this->params['media'])) {
+       
+           $this->__clean(MEDIA_ROOT . DS. 'imgcache');
+           $folder= new Folder(MEDIA_ROOT);
+           $dirs = $folder->ls();
+           foreach ($dirs[0] as $d) {
+           	    if($d !== 'imgcache') {
+           	    	$folder->delete(MEDIA_ROOT . DS. $d);
+           	    }
+           }
+           $this->out('Media files cleaned.');
+        }
     }    
 
 	function help() {
@@ -148,9 +161,10 @@ class BeditaShell extends Shell {
         $this->out(' ');
   		$this->out('2. cleanup: cleanup cahe, compile, log files');
         $this->out(' ');
-        $this->out('    Usage: cleanup [-nologs]');
+        $this->out('    Usage: cleanup [-nologs] [-media]');
         $this->out(' ');
         $this->out("    -nologs \t don't clean log files");
+        $this->out("    -media  \t clean media files in MEDIA_ROOT");
 	}
 }
 
