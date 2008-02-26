@@ -2,8 +2,7 @@
 <script type="text/javascript">
 <!--
 {literal}
-// close modal window, confirming options
-function closeOK() {
+function addItemsToParent() {
 	var tmp = new Array() ;
 	$(":checkbox").each(function() {
 		try {
@@ -17,17 +16,6 @@ function closeOK() {
 		parent.{/literal}{$controller}{literal}CommitUploadById(tmp) ;
 	}
 }
-function closeEsc() {
-	try {
-		{/literal}{$controller}{literal}RollbackUploadItem();
-	} catch(e) {
-		parent.{/literal}{$controller}{literal}RollbackUploadItem();
-	}
-}
-function disableButtons() {
-	$("#okqueuebtn").attr("disabled","disabled");
-	$("#annullaqueuebtn").attr("disabled","disabled");
-}
 $(document).ready(function(){
 	$(".selMultimedia").bind("click", function(){
 		var check = $("input:checkbox",$(this).parent().parent()).get(0).checked ;
@@ -40,7 +28,6 @@ $(document).ready(function(){
 </head>
 <body>
 <div>
-<form action="{$html->url('/')}">
 	<fieldset>
 		{if !empty($items)}
 		<p class="toolbar">
@@ -87,8 +74,6 @@ $(document).ready(function(){
 		{t}No {$itemType} found{/t}
 		{/if}
 	</fieldset>
-</form>
-<input type="button" id="okqueuebtn" onclick="javascript:closeOK();disableButtons();" value="{t}Ok{/t}"/>
-<input type="button" id="annullaqueuebtn" onclick="javascript:closeEsc();disableButtons();" value="{t}Cancel{/t}"/>
+<input type="button" id="beassoc_okqueuebtn" onclick="javascript:addItemsToParent();" value="{t}Add{/t}"/>
 </div>
 <!-- end upload block -->
