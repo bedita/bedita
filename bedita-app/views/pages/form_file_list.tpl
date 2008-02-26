@@ -80,8 +80,7 @@ function {/literal}{$controller}{literal}CommitUploadById(IDs) {
 
 // Remove item from queue
 function removeItem(DivId) {
-	alert('delete ' + DivId);
-	$("#"+DivId , this).remove() ;
+	$("#"+DivId).remove() ;
 	reorderListItem();
 }
 
@@ -138,7 +137,6 @@ var cols 		= 5 ;
 </script>
 
 <fieldset id="{$containerId}">
-<a href="{$html->url("/$controller")}/frm_upload/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640" title="{$title} -{t}Test{/t}" class="thickbox">{$title} - {t}Test{/t}</a> |
 <a href="{$html->url("/$controller")}/frm_upload/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} -{t}add by upload{/t}" class="thickbox">{$title} - {t}add by upload{/t}</a> |
 <a href="{$html->url("/$controller")}/frm_upload_bedita/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} - {t}add by BEdita{/t}" class="thickbox">{$title} - {t}add by BEdita{/t}</a>
 {* | <a href="{$html->url("/$controller")}/frm_upload_url/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} - {t}add by URL{/t}" class="thickbox">{$title} - {t}add by URL{/t}</a>*}

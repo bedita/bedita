@@ -15,7 +15,6 @@ $(document).ready(function(){
 	}, $.datepicker.regional['{$currLang}']); 
 	$('#start').attachDatepicker();
 	$('#end').attachDatepicker();
-
 	// Field translate
 	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
 	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
