@@ -29,8 +29,7 @@ function rollbackFileUpload() {
 	}
 }
 
-// close modal window, confirming options
-function closeOK() {
+function createThumbnails() {
 	var tmp = new Array() ;
 	$(".uploadCompleted").each(function() {
 		// Get filename
@@ -204,11 +203,14 @@ function beUploadQueueComplete(file) {
 		var className = $(this).attr("class") ; 
 		if(!className.match(/uploadError/)) ok++ ;
 	}) ;
-	if(ok) {
-		$("#okqueuebtn").show() ;
-		$("#annullaqueuebtn").show() ;
+	
+	if(ok>0) {
+		$("#queueinfo").html("{/literal}{t}Upload end{/t}{literal}") ;
+		createThumbnails();
+		$('#container-1').triggerTab(1);
+	} else {
+		$("#queueinfo").html("{/literal}{t}Errors during upload{/t}{literal}") ;
 	}
-	$("#queueinfo").html("Upload end ") ;
 }
 
 // Delete queue
@@ -217,13 +219,6 @@ function beCancelQueue() {
 	$(swfu.movieName + "UploadBtn").hide() ;
 	$("cancelqueuebtn").hide() ;
 }
-
-function disableButtons() {
-	$("#okqueuebtn").attr("disabled","disabled");
-	$("#cancelqueuebtn").attr("disabled","disabled");
-	$("#annullaqueuebtn").attr("disabled","disabled");
-}
-
 //-->
 {/literal}
 </script>
@@ -255,9 +250,7 @@ th.boxNotSelected {border:solid #000 1px;background-color:#DDD; height: 20px;}
 					<h4 id="queueinfo">{t}Queue is empty{/t}</h4>
 					<div id="SWFUploadFileListingFiles"></div>
 					<br class="clr" />
-					<input type="button" id="cancelqueuebtn" onclick="javascript:beCancelQueue();disableButtons();" value="{t}Cancel queue{/t}"/>
-					<input type="button" id="okqueuebtn" onclick="javascript:closeOK();disableButtons();" value="{t}Ok{/t}"/>
-					<input type="button" id="annullaqueuebtn" onclick="javascript:closeEsc();disableButtons();" value="{t}Cancel{/t}"/>
+					<input type="button" id="cancelqueuebtn" onclick="javascript:beCancelQueue();" value="{t}Cancel queue{/t}"/>
 				</div>
 			</div>
 		</div>

@@ -3,21 +3,21 @@
 <!--
 {literal}
 function addItemsToParent() {
-	var tmp = new Array() ;
+	var itemsIds = new Array() ;
 	$(":checkbox").each(function() {
 		try {
-			if(this.checked) { tmp[tmp.length] = $(this).attr("value") ;}
+			if(this.checked) { itemsIds[itemsIds.length] = $(this).attr("value") ;}
 		} catch(e) {
 		}
 	}) ;
 	try {
-		{/literal}{$controller}{literal}CommitUploadById(tmp) ;
+		{/literal}{$controller}{literal}CommitUploadById(itemsIds) ;
 	} catch(e) {
-		parent.{/literal}{$controller}{literal}CommitUploadById(tmp) ;
+		parent.{/literal}{$controller}{literal}CommitUploadById(itemsIds) ;
 	}
 }
 $(document).ready(function(){
-	$(".selMultimedia").bind("click", function(){
+	$(".selItems").bind("click", function(){
 		var check = $("input:checkbox",$(this).parent().parent()).get(0).checked ;
 		$("input:checkbox",$(this).parent().parent()).get(0).checked = !check ;
 	}) ;
@@ -52,7 +52,7 @@ $(document).ready(function(){
 		{section name="i" loop=$items}
 		<tr class="rowList">
 			<td><input type="checkbox" value="{$items[i].id}"/></td>
-			<td><a class="selMultimedia" href="javascript:void(0);">{$items[i].id}</a></td>
+			<td><a class="selItems" href="javascript:void(0);">{$items[i].id}</a></td>
 			<td>{$items[i].title}</td>
 			<td>{$items[i].status}</td>
 			<td>{$items[i].created|date_format:'%b %e, %Y'}</td>
