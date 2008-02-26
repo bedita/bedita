@@ -163,8 +163,8 @@ var cols 		= 5 ;
 		{include file="../pages/form_upload.tpl" controller=$controller}
 	</div>
 	<div id="fragment-3">
-		{*include file="../pages/form_multimedia_assoc.tpl" itemType='Multimedia' items=$multimedia controller='multimedia'*}
-<a href="{$html->url("/$controller")}/frm_upload_bedita/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} - {t}add by BEdita{/t}" class="thickbox">{$title} - {t}add by BEdita{/t}</a>
+		{include file="../pages/form_multimedia_assoc.tpl" itemType=$controller items=$bedita_items controller=$controller}
+{*<a href="{$html->url("/$controller")}/frm_upload_bedita/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} - {t}add by BEdita{/t}" class="thickbox">{$title} - {t}add by BEdita{/t}</a>*}
 	</div>
 </div>
 

@@ -144,6 +144,13 @@ class GalleriesController extends AppController {
 			}
 		}
 		if(isset($obj["LangText"])) $this->BeLangText->setupForView($obj["LangText"]);
+		// begin#bedita_items
+		$ot = &$conf->objectTypes ; 
+		$bedita_items = $this->BeTree->getDiscendents(null, null, array($ot['image'], $ot['audio'], $ot['video']))  ;
+		$this->params['toolbar'] = &$bedita_items['toolbar'] ;
+		$this->set('bedita_items', 	$bedita_items['items']);
+		$this->set('toolbar', 		$bedita_items['toolbar']);
+		// end#bedita_items
 		$this->set('object',	$obj);
 		$this->set('multimedia',$multimedia);
 		$this->selfUrlParams = array("id", $id);    

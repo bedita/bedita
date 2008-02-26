@@ -115,7 +115,13 @@ class DocumentsController extends AppController {
 			$parents_id = array();
 		}
 		$galleries = $this->BeTree->getDiscendents(null, null, $conf->objectTypes['gallery'], "", true, 1, 10000);
-
+		// begin#bedita_items
+		$ot = &$conf->objectTypes ; 
+		$bedita_items = $this->BeTree->getDiscendents(null, null, array($ot['image'], $ot['audio'], $ot['video']))  ;
+		$this->params['toolbar'] = &$bedita_items['toolbar'] ;
+		$this->set('bedita_items', 	$bedita_items['items']);
+		$this->set('toolbar', 		$bedita_items['toolbar']);
+		// end#bedita_items
 		$this->set('object',	$obj);
 		$this->set('multimedia',$obj['multimedia']);
 		$this->set('attachments',$obj['attachments']);
