@@ -165,6 +165,8 @@ class BeditaShell extends Shell {
         $this->out(' ');
         $this->out("    -nologs \t don't clean log files");
         $this->out("    -media  \t clean media files in MEDIA_ROOT");
+  		$this->out('3. checkIni: check difference between bedita.ini.php and .sample');
+        $this->out(' ');
 	}
 }
 
