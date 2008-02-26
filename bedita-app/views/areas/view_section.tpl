@@ -69,6 +69,11 @@ function addCommandWhere() {
 
 		$(this).html('<label class="section" for="s_'+id+'">'+$(this).html()+"<\/label>") ;
 	}) ;
+	
+	// if there isn't any radio button checked it checks the first 
+	if ($("input[name*='destination']:checked").length == 0) {
+		$("input[name*='destination']:first").attr("checked", "checked"); 
+	}
 }
 
 {/literal}
