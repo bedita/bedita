@@ -1,4 +1,5 @@
 {* controller = 'attachments' or 'multimedia' *}
+
 <h2 class="showHideBlockButton">{$title}</h2>
 <div class="blockForm" id="imgs" style="display:none">
 <script type="text/javascript">
@@ -10,6 +11,7 @@ var containerItem = "#{$containerId}";
 // set draggable list items
 $(document).ready(function(){
 	$("div.itemBox").each(function(index) { setup_drag_drop_item(this) ;}) ;
+	$('#container-1').tabs();
 });
 
 // Get data from modal window, uploaded files and insert new object in the form
@@ -136,21 +138,34 @@ var cols 		= 5 ;
 //-->
 </script>
 
-<fieldset id="{$containerId}">
-<a href="{$html->url("/$controller")}/frm_upload/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} -{t}add by upload{/t}" class="thickbox">{$title} - {t}add by upload{/t}</a> |
+<div id="container-1">
+	<ul>
+		<li><a href="#fragment-1"><span>{t}Items associated to this document{/t}</span></a></li>
+		<li><a href="#fragment-2"><span>{t}Upload{/t}</span></a></li>
+		<li><a href="#fragment-3"><span>{t}Items already uploaded{/t}</span></a></li>
+	</ul>
+	<div id="fragment-1">
+		<fieldset id="{$containerId}">
+		{assign var="newPriority" 	value=1}
+		{assign var="index" 		value=0}
+		{foreach key=index item=ob from=$items|default:$empty}
+		{include file="../pages/form_file_item.tpl" obj=$ob controller=$controller}
+		{/foreach}
+		<script type="text/javascript">
+		<!--
+		index = {$index} ;
+		priority = {$newPriority} ;
+		//-->
+		</script>
+		</fieldset>
+	</div>
+	<div id="fragment-2">
+		{include file="../pages/form_upload.tpl" controller=$controller}
+	</div>
+	<div id="fragment-3">
+		{*include file="../pages/form_multimedia_assoc.tpl" itemType='Multimedia' items=$multimedia controller='multimedia'*}
 <a href="{$html->url("/$controller")}/frm_upload_bedita/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} - {t}add by BEdita{/t}" class="thickbox">{$title} - {t}add by BEdita{/t}</a>
-{* | <a href="{$html->url("/$controller")}/frm_upload_url/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} - {t}add by URL{/t}" class="thickbox">{$title} - {t}add by URL{/t}</a>*}
+	</div>
+</div>
 
-{assign var="newPriority" 	value=1}
-{assign var="index" 		value=0}
-{foreach key=index item=ob from=$items|default:$empty}
-	{include file="../pages/form_file_item.tpl" obj=$ob controller=$controller}
-{/foreach}
-<script type="text/javascript">
-<!--
-index = {$index} ;
-priority = {$newPriority} ;
-//-->
-</script>
-</fieldset>
 </div>

@@ -1,14 +1,11 @@
-{*
-Pagina d'entrata modulo Documents.
-*}
-{php}$vs = &$this->get_template_vars() ;{/php}
 {agent var="agent"}
 {$html->css('tree')}
 {$html->css('module.documents')}
 {$html->css("ui.datepicker")}
 {$html->css("jquery.thickbox")}
-
 {if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
+{if ($agent.IE)}{$html->css('jquery.tabs-ie')}{else}{$html->css('jquery.tabs')}{/if}
+{$javascript->link("jquery.tabs.pack")}
 {$javascript->link("form")}
 {$javascript->link("jquery.treeview")}
 {$javascript->link("jquery.changealert")}
