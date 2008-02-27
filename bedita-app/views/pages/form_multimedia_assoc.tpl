@@ -40,52 +40,94 @@ $(document).ready(function(){
 <div>
 	<fieldset>
 		{if !empty($items)}
-		<p class="toolbar">
-		{t}{$itemType}{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
-		{$beToolbar->first()} &nbsp; {$beToolbar->prev()}  &nbsp; {$beToolbar->next()} &nbsp; {$beToolbar->last()} &nbsp;
-		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
-		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
-		</p>
+		<p class="toolbar">{t}{$itemType}{/t}: {$beToolbar->size()}</p>
 		<table class="indexList">
+		<tr>
+			<td colspan="10">
+				<input class="selectAll" type="button" value="O - {t}Select all{/t}"/>
+				<input class="unselectAll" type="button" value="/ - {t}Unselect all{/t}"/>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10">
+				<input type="button" onclick="javascript:addItemsToParent();" value=" (+) {t}Add selected items{/t}"/>
+			</td>
+		</tr>
 		<tr>
 			<th>&nbsp;</th>
 			<th>{$beToolbar->order('id', 'id')}</th>
+			{*
 			<th>{$beToolbar->order('title', 'Title')}</th>
 			<th>{$beToolbar->order('status', 'Status')}</th>
 			<th>{$beToolbar->order('created', 'Created')}</th>
 			<th>{t}Type{/t}</th>
+			*}
+			<th>{t}Thumb{/t}</th>
 			<th>{t}File name{/t}</th>
-			<th>{t}MIME type{/t}</th>
+			{*<th>{t}MIME type{/t}</th>*}
 			<th>{t}File size{/t}</th>
 			<th>{$beToolbar->order('lang', 'Language')}</th>
 		</tr>
-		<tr><td colspan="10"><input class="selectAll" type="button" value="O - {t}Select all{/t}"/><input class="unselectAll" type="button" value="/ - {t}Unselect all{/t}"/></td></tr>
 		{foreach from=$items item='mobj' key='mkey'}
 		<tr class="rowList" id="tr_{$mobj.id}">
 			<td><input type="checkbox" value="{$mobj.id}" name="chk_bedita_item" class="itemCheck"/></td>
 			<td><a class="selItems" href="javascript:void(0);">{$mobj.id}</a></td>
+			{*
 			<td>{$mobj.title}</td>
 			<td>{$mobj.status}</td>
 			<td>{$mobj.created|date_format:'%b %e, %Y'}</td>
 			<td>{$mobj.bedita_type|default:""}</td>
+			*}
+			<td>
+{assign var="thumbWidth" 		value=30}
+{assign var="thumbHeight" 		value=30}
+{assign var="thumbPath"         value=$conf->mediaRoot}
+{assign var="thumbBaseUrl"      value=$conf->mediaUrl}
+{assign var="thumbLside"		value=""}
+{assign var="thumbSside"		value=""}
+{assign var="thumbHtml"			value=""}
+{assign var="thumbDev"			value=""}
+{assign var="filePath"			value=$mobj.path}
+{if strtolower($mobj.ObjectType.name) == "image"}
+	{thumb 
+		width="$thumbWidth" 
+		height="$thumbHeight"
+		file=$thumbPath$filePath
+		cache=$conf->imgCache 
+		MAT_SERVER_PATH=$conf->mediaRoot 
+		MAT_SERVER_NAME=$conf->mediaUrl
+		linkurl="$thumbBaseUrl$filePath"
+		longside="$thumbLside"
+		shortside="$thumbSside"
+		html="$thumbHtml"
+		dev="$thumbDev"}
+{else}
+	<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$obj.type}.gif" /></a> </div>
+{/if}
+			</td>
 			<td>{$mobj.name|default:""}</td>
-			<td>{$mobj.type|default:""}</td>
+			{*<td>{$mobj.type|default:""}</td>*}
 			<td>{$mobj.size|default:""}</td>
 			<td>{$mobj.lang}</td>
 		</tr>
 		{/foreach}
-		<tr><td colspan="10"><input class="selectAll" type="button" value="O - {t}Select all{/t}"/><input class="unselectAll" type="button" value="/ - {t}Unselect all{/t}"/></td></tr>
+		<tr>
+			<td colspan="10">
+				<input class="selectAll" type="button" value="O - {t}Select all{/t}"/>
+				<input class="unselectAll" type="button" value="/ - {t}Unselect all{/t}"/>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10">
+				<input type="button" onclick="javascript:addItemsToParent();" value=" (+) {t}Add selected items{/t}"/>
+			</td>
+		</tr>
 		</table>
-		<p class="toolbar">
-		{t}{$itemType}{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
-		{$beToolbar->first()} &nbsp; {$beToolbar->prev()}  &nbsp; {$beToolbar->next()} &nbsp; {$beToolbar->last()} &nbsp;
-		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('dimSelectBottom')} &nbsp;
-		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
-		</p>
+		<p class="toolbar">{t}{$itemType}{/t}: {$beToolbar->size()}</p>
 		{else}
 		{t}No {$itemType} found{/t}
 		{/if}
 	</fieldset>
-<input type="button" id="beassoc_okqueuebtn" onclick="javascript:addItemsToParent();" value="{t}Add{/t}"/>
+	
 </div>
 <!-- end upload block -->
