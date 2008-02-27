@@ -25,6 +25,12 @@ $(document).ready(function(){
 		var check = $("input:checkbox",$(this).parent().parent()).get(0).checked ;
 		$("input:checkbox",$(this).parent().parent()).get(0).checked = !check ;
 	}) ;
+	$(".selectAll").bind("click", function(e) {
+		$(".itemCheck").each(function() { this.checked = true; });
+	}) ;
+	$(".unselectAll").bind("click", function(e) {
+		$(".itemCheck").each(function() { this.checked = false; });
+	}) ;
 });
 //-->
 {/literal}
@@ -53,9 +59,10 @@ $(document).ready(function(){
 			<th>{t}File size{/t}</th>
 			<th>{$beToolbar->order('lang', 'Language')}</th>
 		</tr>
+		<tr><td colspan="10"><input class="selectAll" type="button" value="O - {t}Select all{/t}"/><input class="unselectAll" type="button" value="/ - {t}Unselect all{/t}"/></td></tr>
 		{foreach from=$items item='mobj' key='mkey'}
 		<tr class="rowList" id="tr_{$mobj.id}">
-			<td><input type="checkbox" value="{$mobj.id}" name="chk_bedita_item"/></td>
+			<td><input type="checkbox" value="{$mobj.id}" name="chk_bedita_item" class="itemCheck"/></td>
 			<td><a class="selItems" href="javascript:void(0);">{$mobj.id}</a></td>
 			<td>{$mobj.title}</td>
 			<td>{$mobj.status}</td>
@@ -67,6 +74,7 @@ $(document).ready(function(){
 			<td>{$mobj.lang}</td>
 		</tr>
 		{/foreach}
+		<tr><td colspan="10"><input class="selectAll" type="button" value="O - {t}Select all{/t}"/><input class="unselectAll" type="button" value="/ - {t}Unselect all{/t}"/></td></tr>
 		</table>
 		<p class="toolbar">
 		{t}{$itemType}{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
