@@ -1,7 +1,7 @@
 <script type="text/javascript">
 <!--
 var urlDelete = "{$html->url('deleteSection/')}" ;
-var message = "{t}Are you sure that you want to delete the section?{/t}" ;
+var messageDel = "{t}Are you sure that you want to delete the section?{/t}" ;
 
 {literal}
 var langs = {
@@ -26,13 +26,10 @@ $(document).ready(function(){
 	$("#updateForm").validate(); 
 
 	// submit delete
-	$("#delBEObject").bind("click", function() {
-		if(!confirm(message)) {
-			return false ;
-		}
-		$("#updateForm").attr("action", urlDelete)
-		$("#updateForm").submit();
-	}) ;
+	$("#delBEObject").submitConfirm({
+		action: urlDelete,
+		message: messageDel
+	});
 
 	// Aggiunta traduzioni linguistiche dei campi
 	$("#cmdTranslateTitle").addTranslateField('title', langs) ;

@@ -5,13 +5,22 @@ function customRange(input) {
 }
 
 jQuery.fn.extend({
-  check: function() {
-     return this.each(function() { this.checked = true; });
-   },
-  uncheck: function() {
-     return this.each(function() { this.checked = false; });
-   },
-  toggleCheck: function() {
-     return this.each(function() { this.checked = !this.checked ; });
+	check: function() {
+		return this.each(function() { this.checked = true; });
+	},
+	uncheck: function() {
+		return this.each(function() { this.checked = false; });
+	},
+	toggleCheck: function() {
+		return this.each(function() { this.checked = !this.checked ; });
+	},
+	submitConfirm: function(params) {
+		$(this).bind("click", function() {
+			if(!confirm(params.message)) {
+				return false ;
+			}
+			$(this).parents("form").attr("action", params.action);
+			$(this).parents("form").submit();
+		})
    }
 });

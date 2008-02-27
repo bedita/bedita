@@ -1,8 +1,4 @@
 <script type="text/javascript">
-var urlIcoCalendar = '{$html->url('../img/calendar.gif')}' ;
-var urlDelete = "{$html->url('delete/')}" ;
-var message = "{t}Are you sure that you want to delete the gallery?{/t}" ;
-
 {literal}
 var langs = {
 {/literal}
@@ -21,15 +17,13 @@ $.validator.setDefaults({
 
 $(document).ready(function(){
 	$("#updateForm").validate();
-	
 	// submit delete
-	$("#delBEObject").bind("click", function() {
-		if(!confirm(message)) {
-			return false ;
-		}
-		$("#updateForm").attr("action", urlDelete)
-		$("#updateForm").submit();
-	}) ;
+	$("#delBEObject").submitConfirm({
+		{/literal}
+		action: "{$html->url('delete/')}",
+		message: "{t}Are you sure that you want to delete the gallery?{/t}"
+		{literal}
+	});
 	// Aggiunta traduzioni linguistiche dei campi
 	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
 	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;

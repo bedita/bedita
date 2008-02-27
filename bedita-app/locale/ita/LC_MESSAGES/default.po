@@ -595,3 +595,9 @@ msgstr "Sei sicuro di voler eliminare la pubblicazione?"
 
 msgid "Are you sure that you want to delete the section?"
 msgstr "Sei sicuro di voler eliminare la sezione?"
+
+msgid "Are you sure that you want to delete the attachment?"
+msgstr "Sei sicuro di voler cancellare l'allegato?"
+
+msgid "Are you sure that you want to delete the multimedia?"
+msgstr "Sei sicuro di voler cancellare il multimedia?"

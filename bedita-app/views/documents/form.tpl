@@ -1,10 +1,5 @@
 <script type="text/javascript">
-var urlIcoCalendar 		= '{$html->url('../img/calendar.gif')}' ;
-var urlDelete = "{$html->url('delete/')}" ;
-var message = "{t}Are you sure that you want to delete the document?{/t}" ;
-
 {literal}
-
 var langs = {
 {/literal}
 	{foreach name=i from=$conf->langOptions key=lang item=label}
@@ -27,11 +22,11 @@ $(document).ready(function(){
 	$.datepicker.setDefaults({
 		showOn: 'both', 
 		buttonImageOnly: true, 
-	    buttonImage: urlIcoCalendar, 
+	    buttonImage: '{/literal}{$html->url('../img/calendar.gif')}{literal}', 
 	    buttonText: 'Calendar',
 	    dateFormat: '{/literal}{$conf->dateFormatValidation|replace:'yyyy':'yy'}{literal}',
 	    beforeShow: customRange
-	}, $.datepicker.regional['{$currLang}']); 
+	}, $.datepicker.regional['{/literal}{$currLang}{literal}']); 
 	
 	$('#start').attachDatepicker();
 	$('#end').attachDatepicker();
@@ -39,14 +34,13 @@ $(document).ready(function(){
 	// Validazione al submit
 	$("#updateForm").validate();
 
-	// Conferma cancellazione
-	$("#delBEObject").bind("click", function() {
-		if(!confirm(message)) {
-			return false ;
-		}
-		$("#updateForm").attr("action", urlDelete)
-		$("#updateForm").submit();
-	}) ;
+	// submit delete
+	$("#delBEObject").submitConfirm({
+		{/literal}
+		action: "{$html->url('delete/')}",
+		message: "{t}Are you sure that you want to delete the document?{/t}"
+		{literal}
+	});
 	
 	// Aggiunta traduzioni linguistiche dei campi
 	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
