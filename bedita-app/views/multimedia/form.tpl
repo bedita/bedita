@@ -1,6 +1,8 @@
 <script type="text/javascript">
 <!--
 var urlIcoCalendar = '{$html->url('../img/calendar.gif')}' ;
+var urlDelete = "{$html->url('delete/')}" ;
+var message = "{t}Are you sure that you want to delete the multimedia?{/t}" ;
 {literal}
 var langs = {{/literal}{foreach name=i from=$conf->langOptions key=lang item=label}"{$lang}":	"{$label}" {if !($smarty.foreach.i.last)},{/if}{/foreach}{literal}} ;
 var validate = null ;
@@ -20,7 +22,13 @@ $(document).ready(function(){
 	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
 	$("#cmdTranslateShortDesc").addTranslateField('shortdesc', langs) ;
 	$("#cmdTranslateLongDesc").addTranslateField('longdesc', langs) ;
-
+	$("#delBEObject").bind("click", function() {
+	if(!confirm(message)) {
+		return false ;
+	}
+	$("#updateForm").attr("action", urlDelete)
+	$("#updateForm").submit();
+}) ;
 });
 {/literal}
 //-->

@@ -16,7 +16,8 @@ $(document).ready(function(){
 
 // Get data from modal window, uploaded files and insert new object in the form
 var counter =  0 ;
-function {/literal}{$controller}{literal}CommitUploadItem(files) {	
+function {/literal}{$controller}{literal}CommitUploadItem(files) {
+	$("#loading").show();
 	var emptyDiv = "<div><\/div>"; 
 	for(var i=0 ; i < files.length ; i++) {
 		var filename = escape(files[i]) ;
@@ -33,6 +34,7 @@ function {/literal}{$controller}{literal}CommitUploadItem(files) {
 				try { $().alertSignal() ; } catch(e) {}
 				tb_remove() 
 			}
+			$("#loading").hide();
 		}) ;
 		priority++ ;
 		index++ ;
@@ -52,6 +54,7 @@ function {/literal}{$controller}{literal}RollbackUploadItem() {
 // Per gli oggetti gia' registrati
 var counter =  0 ;
 function {/literal}{$controller}{literal}CommitUploadById(IDs) {
+	$("#loading").show();
 	var emptyDiv = "<div><\/div>"; 
 	for(var i=0 ; i < IDs.length ; i++) {
 		var id	= escape(IDs[i]) ;
@@ -68,6 +71,7 @@ function {/literal}{$controller}{literal}CommitUploadById(IDs) {
 				try { $().alertSignal() ; } catch(e) {}
 				tb_remove() 
 			}
+			$("#loading").hide();
 		}) ;
 		priority++ ;
 		index++ ;
@@ -137,7 +141,7 @@ var index 		= 0 ;
 var cols 		= 5 ;
 //-->
 </script>
-
+<div id="loading">{t}Loading data{/t}...</div>
 <div id="container-1">
 	<ul>
 		<li><a href="#fragment-1"><span>{t}Items associated to this document{/t}</span></a></li>

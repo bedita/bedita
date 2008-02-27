@@ -10,11 +10,15 @@ function addItemsToParent() {
 		} catch(e) {
 		}
 	}) ;
+	for(i=0;i<itemsIds.length;i++) {
+		$("tr_"+itemsIds[i]).remove();
+	}
 	try {
 		{/literal}{$controller}{literal}CommitUploadById(itemsIds) ;
 	} catch(e) {
 		parent.{/literal}{$controller}{literal}CommitUploadById(itemsIds) ;
 	}
+	$('#container-1').triggerTab(1);
 }
 $(document).ready(function(){
 	$(".selItems").bind("click", function(){
@@ -49,20 +53,20 @@ $(document).ready(function(){
 			<th>{t}File size{/t}</th>
 			<th>{$beToolbar->order('lang', 'Language')}</th>
 		</tr>
-		{section name="i" loop=$items}
-		<tr class="rowList">
-			<td><input type="checkbox" value="{$items[i].id}" name="chk_bedita_item"/></td>
-			<td><a class="selItems" href="javascript:void(0);">{$items[i].id}</a></td>
-			<td>{$items[i].title}</td>
-			<td>{$items[i].status}</td>
-			<td>{$items[i].created|date_format:'%b %e, %Y'}</td>
-			<td>{$items[i].bedita_type}</td>
-			<td>{$items[i].name}</td>
-			<td>{$items[i].type}</td>
-			<td>{$items[i].size}</td>
-			<td>{$items[i].lang}</td>
+		{foreach from=$items item='mobj' key='mkey'}
+		<tr class="rowList" id="tr_{$mobj.id}">
+			<td><input type="checkbox" value="{$mobj.id}" name="chk_bedita_item"/></td>
+			<td><a class="selItems" href="javascript:void(0);">{$mobj.id}</a></td>
+			<td>{$mobj.title}</td>
+			<td>{$mobj.status}</td>
+			<td>{$mobj.created|date_format:'%b %e, %Y'}</td>
+			<td>{$mobj.bedita_type}</td>
+			<td>{$mobj.name}</td>
+			<td>{$mobj.type}</td>
+			<td>{$mobj.size}</td>
+			<td>{$mobj.lang}</td>
 		</tr>
-		{/section}
+		{/foreach}
 		</table>
 		<p class="toolbar">
 		{t}{$itemType}{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;

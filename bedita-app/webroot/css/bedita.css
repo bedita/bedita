@@ -275,3 +275,5 @@ div.attachBoxFirst { background-color:#E9E9E9;border:solid #FFF 1px;float:left;p
 
 label.section {color:red;text-decoration:none}
 label.section:hover {color:red;text-decoration:underline}
+
+div#loading {background-image:url(../img/loading.gif);display:none;background-repeat: no-repeat;}
