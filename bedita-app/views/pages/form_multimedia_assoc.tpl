@@ -6,7 +6,7 @@ function addItemsToParent() {
 	var itemsIds = new Array() ;
 	$(":checkbox").each(function() {
 		try {
-			if(this.checked) { itemsIds[itemsIds.length] = $(this).attr("value") ;}
+			if(this.checked && this.name == 'chk_bedita_item') { itemsIds[itemsIds.length] = $(this).attr("value") ;}
 		} catch(e) {
 		}
 	}) ;
@@ -51,7 +51,7 @@ $(document).ready(function(){
 		</tr>
 		{section name="i" loop=$items}
 		<tr class="rowList">
-			<td><input type="checkbox" value="{$items[i].id}"/></td>
+			<td><input type="checkbox" value="{$items[i].id}" name="chk_bedita_item"/></td>
 			<td><a class="selItems" href="javascript:void(0);">{$items[i].id}</a></td>
 			<td>{$items[i].title}</td>
 			<td>{$items[i].status}</td>
