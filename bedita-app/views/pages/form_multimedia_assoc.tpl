@@ -11,7 +11,7 @@ function addItemsToParent() {
 		}
 	}) ;
 	for(i=0;i<itemsIds.length;i++) {
-		$("tr_"+itemsIds[i]).remove();
+		$("#tr_"+itemsIds[i]).remove();
 	}
 	try {
 		{/literal}{$controller}{literal}CommitUploadById(itemsIds) ;

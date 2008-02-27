@@ -180,7 +180,6 @@ class AttachmentsController extends AppController {
 	 * @param integer $id	Id dell'oggetto da linkare
 	 */
 	function get_item_form_by_id($id =null) {
-$this->params['form']['id'] = 10005 ;
 		$this->_get_item_form($this->params['form']['id']) ;
 	}
 

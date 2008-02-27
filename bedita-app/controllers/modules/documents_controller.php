@@ -74,6 +74,7 @@ class DocumentsController extends AppController {
 			if(!($obj = $this->Document->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading document: %d", true), $id));
 			}
+			$multimedia_id = array();
 			// Get multimedia objects
 			for($i=0; $i < @count($obj['multimedia']) ; $i++) {
 				$m = $this->Document->am($obj['multimedia'][$i]) ;
@@ -85,6 +86,7 @@ class DocumentsController extends AppController {
 				$Details['priority'] = $m['priority'];
 				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
 				$obj['multimedia'][$i]= $Details;
+				$multimedia_id[]=$obj['multimedia'][$i]['id'];
 			}
 			// Get attachments
 			for($i=0; $i < @count($obj['attachments']) ; $i++) {
@@ -100,6 +102,7 @@ class DocumentsController extends AppController {
 				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
 			
 				$obj['attachments'][$i]= $Details;
+				$multimedia_id[]=$obj['attachments'][$i]['id'];
 			}
 		}
 		if(isset($obj["LangText"])) {
@@ -117,14 +120,21 @@ class DocumentsController extends AppController {
 		$galleries = $this->BeTree->getDiscendents(null, null, $conf->objectTypes['gallery'], "", true, 1, 10000);
 		// begin#bedita_items
 		$ot = &$conf->objectTypes ; 
-		$bedita_items = $this->BeTree->getDiscendents(null, null, array($ot['image'], $ot['audio'], $ot['video']))  ;
+		$bedita_items = $this->BeTree->getDiscendents(null, null, array($ot['befile'], $ot['image'], $ot['audio'], $ot['video']))  ;
+		if(!empty($multimedia_id)) {
+			foreach($bedita_items['items'] as $key => $value) {
+				if(in_array($value['id'],$multimedia_id)) {
+					unset($bedita_items['items'][$key]);
+				}
+			}
+		}
 		$this->params['toolbar'] = &$bedita_items['toolbar'] ;
 		$this->set('bedita_items', 	$bedita_items['items']);
 		$this->set('toolbar', 		$bedita_items['toolbar']);
 		// end#bedita_items
 		$this->set('object',	$obj);
-		$this->set('multimedia',$obj['multimedia']);
-		$this->set('attachments',$obj['attachments']);
+		//$this->set('multimedia',$obj['multimedia']);
+		$this->set('attachments',array_merge($obj['attachments'],$obj['multimedia']));
 		$this->set('galleries', (count($galleries['items'])==0) ? array() : $galleries['items']);
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);		
