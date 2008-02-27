@@ -67,10 +67,10 @@ $(document).ready(function(){
 			<td>{$mobj.title}</td>
 			<td>{$mobj.status}</td>
 			<td>{$mobj.created|date_format:'%b %e, %Y'}</td>
-			<td>{$mobj.bedita_type}</td>
-			<td>{$mobj.name}</td>
-			<td>{$mobj.type}</td>
-			<td>{$mobj.size}</td>
+			<td>{$mobj.bedita_type|default:""}</td>
+			<td>{$mobj.name|default:""}</td>
+			<td>{$mobj.type|default:""}</td>
+			<td>{$mobj.size|default:""}</td>
 			<td>{$mobj.lang}</td>
 		</tr>
 		{/foreach}
