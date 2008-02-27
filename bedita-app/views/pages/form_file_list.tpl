@@ -1,6 +1,6 @@
 {* controller = 'attachments' or 'multimedia' *}
 
-<h2 class="showHideBlockButton">{$title}</h2>
+<h2 class="showHideBlockButton">{t}{$title}{/t}</h2>
 <div class="blockForm" id="imgs" style="display:none">
 <script type="text/javascript">
 var urlGetObj 	= '{$html->url("/$controller/get_item_form")}' ;

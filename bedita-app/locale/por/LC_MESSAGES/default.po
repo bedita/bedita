@@ -586,3 +586,39 @@ msgstr "Documentos borrados"
 
 msgid "Are you sure that you want to delete selected documents?"
 msgstr "Quer borrar os documentos selecionados?"
+
+msgid "Items already uploaded"
+msgstr "Elementos ja anexados"
+
+msgid "Add selected items"
+msgstr "Juntar elementos selecionados"
+
+msgid "Upload"
+msgstr "Anexar"
+
+msgid "Items associated to this document"
+msgstr "Elementos relacionados a este documento"
+
+msgid "Browse"
+msgstr "Procura"
+
+msgid "Queue is empty"
+msgstr "Lista vacia"
+
+msgid "Upload end"
+msgstr "Anexar terminado"
+
+msgid "Errors during upload"
+msgstr "Errores no anexar"
+
+msgid "files queued"
+msgstr "arquivos na lista"
+
+msgid "Cancel queue"
+msgstr "Anular lista"
+
+msgid "Uploading file"
+msgstr "Anexando o arquivo"
+
+msgid "Thumb"
+msgstr "Imagem"

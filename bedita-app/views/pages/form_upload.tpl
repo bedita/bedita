@@ -106,8 +106,8 @@ window.onload = function() {
 		upload_script : "{/literal}{$html->url('/files/upload')}{literal}",
 		target : "SWFUploadTarget",
 		flash_path : "{/literal}{$session->webroot}{literal}js/swfupload/SWFUpload.swf",
-		browse_link_innerhtml : "Browse",
-		upload_link_innerhtml : "Upload queue",
+		browse_link_innerhtml : "{/literal}{t}Browse{/t}{literal}",
+		upload_link_innerhtml : "{/literal}{t}Upload queue{/t}{literal}",
 		browse_link_class : "swfuploadbtn browsebtn",
 		upload_link_class : "swfuploadbtn uploadbtn",
 		flash_loaded_callback : 'swfu.flashLoaded',
@@ -147,7 +147,7 @@ function beuploadFileCancelled(file, queuelength) {
 // start upload
 function beuploadFileStart(file, position, queuelength) {
 	$("#"+file.id+"").attr("class", $("#"+file.id+"").attr("class") + " fileUploading") ;
-	$("#queueinfo").html("Uploading file " + position + " of " + queuelength) ;
+	$("#queueinfo").html("{/literal}{t}Uploading file{/t}{literal} " + position + "/" + queuelength) ;
 }
 
 function beuploadFileComplete(file) {

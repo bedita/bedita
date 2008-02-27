@@ -601,3 +601,39 @@ msgstr "Sei sicuro di voler cancellare l'allegato?"
 
 msgid "Are you sure that you want to delete the multimedia?"
 msgstr "Sei sicuro di voler cancellare il multimedia?"
+
+msgid "Items already uploaded"
+msgstr "Elementi presenti nel sistema"
+
+msgid "Add selected items"
+msgstr "Aggiungere elementi selezionati"
+
+msgid "Upload"
+msgstr "Carica file"
+
+msgid "Items associated to this document"
+msgstr "Elementi associati a questo documento"
+
+msgid "Browse"
+msgstr "Cerca"
+
+msgid "Queue is empty"
+msgstr "Coda vuota"
+
+msgid "Upload end"
+msgstr "Caricamento terminato"
+
+msgid "Errors during upload"
+msgstr "Errori durante il caricamento file"
+
+msgid "files queued"
+msgstr "file in coda"
+
+msgid "Cancel queue"
+msgstr "Annullare coda"
+
+msgid "Uploading file"
+msgstr "File in caricamento"
+
+msgid "Thumb"
+msgstr "Miniatura"
