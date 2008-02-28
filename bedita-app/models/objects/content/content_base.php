@@ -49,7 +49,7 @@ class ContentBase extends BEAppModel
 					'associationForeignKey'	=> 'object_id',
 					'unique'				=> true,
 					'fields'				=> 'multimedia.id, multimedia.status, multimedia.object_type_id, ContentBasesObject.priority',
-//					'conditions'			=> "ContentBasesObject.switch ='MULTIMS'",
+					'conditions'			=> "ContentBasesObject.switch ='MULTIMS'",
 					'switch'				=> "MULTIMS",
 					'order'					=> "priority"
 				),
@@ -60,8 +60,9 @@ class ContentBase extends BEAppModel
 					'foreignKey'   			=> 'id',
 					'associationForeignKey'	=> 'object_id',
 					'unique'				=> true,
-//					'conditions'			=> "ContentBasesObject.switch ='ATTACHS'",
+					'conditions'			=> "ContentBasesObject.switch ='ATTACHS'",
 					'switch'				=> "ATTACHS",
+					'order'					=> "priority"
 				),
 		) ;			
 

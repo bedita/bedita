@@ -63,7 +63,8 @@ class GalleriesController extends AppController {
 				throw new BeditaException( __("Error saving permissions", true));
 		}
 		// Insert new multimedia items (remove previous associations)
-		if(!$this->Gallery->removeChildren()) throw new BeditaException( __("Remove children", true));
+		if(!$this->Gallery->removeChildren()) 
+			throw new BeditaException( __("Remove children", true));
 		for($i=0; $i < count($multimedia) ; $i++) {
 			if(!$this->Gallery->appendChild($multimedia[$i]['id'],null,$multimedia[$i]['priority'])) {
 				throw new BeditaException( __("Append child", true));

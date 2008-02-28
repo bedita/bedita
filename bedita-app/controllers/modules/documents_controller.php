@@ -91,7 +91,6 @@ class DocumentsController extends AppController {
 			// Get attachments
 			for($i=0; $i < @count($obj['attachments']) ; $i++) {
 				$m = $this->Document->am($obj['attachments'][$i]) ;
-				 
 				$type = $conf->objectTypeModels[$m['object_type_id']] ;
 				
 				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments', 'LangText');
@@ -139,8 +138,8 @@ class DocumentsController extends AppController {
 		$this->set('toolbar', 		$bedita_items['toolbar']);
 		// end#bedita_items
 		$this->set('object',	$obj);
-		//$this->set('multimedia',$obj['multimedia']);
-		$this->set('attachments',array_merge($obj['attachments'],$obj['multimedia']));
+		$this->set('multimedia',$obj['multimedia']);
+		$this->set('attachments', $obj['attachments']);
 		$this->set('galleries', (count($galleries['items'])==0) ? array() : $galleries['items']);
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);		
@@ -172,7 +171,7 @@ class DocumentsController extends AppController {
 	 	if(!isset($this->data["attachments"])) $this->data["attachments"] = array() ;
 	 	if(!isset($this->data["multimedia"])) $this->data["multimedia"] = array() ;
 		$this->Transaction->begin() ;
- 		
+
 		// Salva i dati
 		if(!$this->Document->save($this->data)) {
 	 		throw new BeditaException(__("Error saving document", true), $this->Document->validationErrors);

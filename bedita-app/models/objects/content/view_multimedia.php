@@ -24,11 +24,5 @@
 */
 class ViewMultimedia extends BEAppModel
 {
-	var $name = 'ViewMultimedia';
-
-		function __construct() {
-		parent::__construct() ;
-
-	}
 }
 ?>

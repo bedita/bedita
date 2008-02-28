@@ -15,6 +15,7 @@ DROP VIEW IF EXISTS `view_multimedias`;
 DROP VIEW IF EXISTS `view_video`;
 DROP VIEW IF EXISTS `view_audio`;
 DROP VIEW IF EXISTS `view_images`;
+DROP VIEW IF EXISTS `view_streams`;
 DROP VIEW IF EXISTS `view_communities`;
 DROP VIEW IF EXISTS `view_timelines`;
 DROP VIEW IF EXISTS `view_scrolls`;
@@ -25,6 +26,7 @@ DROP VIEW IF EXISTS `view_attachments`;
 DROP VIEW IF EXISTS `view_permissions` ;
 DROP VIEW IF EXISTS `view_trees` ;
 DROP VIEW IF EXISTS `view_galleries` ;
+DROP VIEW IF EXISTS `view_streams`;
 
 DROP TABLE IF EXISTS `links`;
 DROP TABLE IF EXISTS `documents`;
@@ -769,6 +771,12 @@ streams.*, objects.title, objects.status, objects.object_type_id
 FROM 
 files INNER JOIN streams ON files.id = streams.id
 INNER JOIN objects ON files.id = objects.id ;
+
+CREATE  VIEW `view_streams` AS 
+SELECT 
+streams.*, objects.title, objects.status, objects.object_type_id
+FROM 
+streams INNER JOIN objects ON streams.id = objects.id ;
 
 -- ------------------------------------------
 -- Permessi
