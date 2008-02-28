@@ -30,7 +30,6 @@ $(document).ready(function(){
 		{literal}
 	});
 }) ;
-});
 {/literal}
 //-->
 </script>
