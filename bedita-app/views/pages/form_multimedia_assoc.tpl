@@ -102,7 +102,7 @@ $(document).ready(function(){
 		html="$thumbHtml"
 		dev="$thumbDev"}
 {else}
-	<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$obj.type}.gif" /></a> </div>
+	<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$mobj.type}.gif" /></a> </div>
 {/if}
 			</td>
 			<td>{$mobj.name|default:""}</td>
