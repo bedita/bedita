@@ -121,6 +121,21 @@ class BeditaShell extends Shell {
         if(empty($iniDiff) && empty($sampleDiff)) {
             $this->out("\nNo config key difference.");
         }
+
+        $valDiff = array_diff($config, $cfgSample);
+        if(empty($valDiff)) {
+            $this->out("\nNo config values difference.");
+        } else {
+            $this->out("\nConfig values that are different in bedita.ini.php:\n");
+            foreach ($valDiff as $k=>$v) {
+                if(is_array($v)) {
+                    $this->out("\$confg['$k']=");
+                    print_r($v);
+                } else {
+                    $this->out("\$config['$k']=$v");
+                }
+            }
+        }        
     }
     
     function cleanup() {
@@ -165,7 +180,8 @@ class BeditaShell extends Shell {
         $this->out(' ');
         $this->out("    -nologs \t don't clean log files");
         $this->out("    -media  \t clean media files in MEDIA_ROOT");
-  		$this->out('3. checkIni: check difference between bedita.ini.php and .sample');
+        $this->out(' ');
+        $this->out('3. checkIni: check difference between bedita.ini.php and .sample');
         $this->out(' ');
 	}
 }
