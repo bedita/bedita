@@ -1,8 +1,5 @@
 <script type="text/javascript">
 <!--
-var urlIcoCalendar = '{$html->url('../img/calendar.gif')}' ;
-var urlDelete = "{$html->url('delete/')}" ;
-var messageDel = "{t}Are you sure that you want to delete the multimedia?{/t}" ;
 {literal}
 var langs = {{/literal}{foreach name=i from=$conf->langOptions key=lang item=label}"{$lang}":	"{$label}" {if !($smarty.foreach.i.last)},{/if}{/foreach}{literal}} ;
 var validate = null ;
