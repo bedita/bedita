@@ -46,7 +46,4 @@ class AppModel extends Model{
 require_once(APP . 'models'. DS . 'BEAppModel.php') ;
 require_once(APP . 'models'. DS . 'BEAppObjectModel.php') ;
 
-require_once(APP . 'models'. DS . 'BEViewContentModel.php') ;
-require_once(APP . 'models'. DS . 'BEViewGroupModel.php') ;
-
 ?>
