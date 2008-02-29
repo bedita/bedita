@@ -605,6 +605,12 @@ msgstr "Vuoto"
 msgid "To populate this gallery switch to the 'Upload new items' tab or the 'Multimedia items repository' tab"
 msgstr "X DANTE DA TRADURRE - Per popolare questa galleria, passa alla scheda 'Carica nuovi oggetti' o alla scheda 'Archivio oggetti Multimediali'"
 
+msgid "Total number of"
+msgstr "X DANTE - Numero totale di"
+
+msgid "multimedia items"
+msgstr "X DANTE - oggetti multimediali"
+
 msgid "Browse"
 msgstr "Procura"
 

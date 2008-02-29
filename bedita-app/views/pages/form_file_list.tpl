@@ -152,9 +152,10 @@ var cols 		= 5 ;
 		<fieldset id="{$containerId}">
 		{assign var="newPriority" 	value=1}
 		{assign var="index" 		value=0}
-		{if !$items}{t}Empty{/t}.<br />{t}To populate this gallery switch to the 'Upload new items' tab or the 'Multimedia items repository' tab{/t}.{/if}
 		{foreach key=index item=ob from=$items|default:$empty}
-		{include file="../pages/form_file_item.tpl" obj=$ob controller=$controller}
+			{include file="../pages/form_file_item.tpl" obj=$ob controller=$controller}
+		{foreachelse}
+			{t}Empty{/t}.<br />{t}To populate this gallery switch to the 'Upload new items' tab or the 'Multimedia items repository' tab{/t}.
 		{/foreach}
 		<script type="text/javascript">
 		<!--
