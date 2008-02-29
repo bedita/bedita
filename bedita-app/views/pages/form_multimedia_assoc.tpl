@@ -1,4 +1,4 @@
-∑<!-- start upload block-->
+<!-- start upload block-->
 <script type="text/javascript">
 <!--
 {literal}
@@ -29,9 +29,6 @@ $(document).ready(function(){
 		var status = this.checked;
 		$(".itemCheck").each(function() { this.checked = status; });
 	}) ;
-	$(".unselectAll").bind("click", function(e) {
-		$(".itemCheck").each(function() { this.checked = false; });
-	}) ;
 });
 //-->
 {/literal}
@@ -45,8 +42,6 @@ $(document).ready(function(){
 		<table class="indexList">
 		<tr>
 			<td colspan="10">
-				<input class="selectAll" type="button" value="O - {t}Select all{/t}"/>
-				<input class="unselectAll" type="button" value="/ - {t}Unselect all{/t}"/>
 				<input type="button" onclick="javascript:addItemsToParent();" value=" (+) {t}Add selected items{/t}"/>
 			</td>
 		</tr>
@@ -110,13 +105,6 @@ $(document).ready(function(){
 			<td>{$mobj.lang}</td>
 		</tr>
 		{/foreach}
-
-		<tr>
-			<td colspan="10">
-				<input class="selectAll" type="button" value="O - {t}Select all{/t}"/>
-				<input class="unselectAll" type="button" value="/ - {t}Unselect all{/t}"/>
-			</td>
-		</tr>
 
 		<tr>
 			<td colspan="10">
