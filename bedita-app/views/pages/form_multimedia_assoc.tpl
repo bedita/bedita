@@ -25,9 +25,16 @@ $(document).ready(function(){
 		var check = $("input:checkbox",$(this).parent().parent()).get(0).checked ;
 		$("input:checkbox",$(this).parent().parent()).get(0).checked = !check ;
 	}) ;
+	/* select/unselect each item's checkbox */
 	$(".selectAll").bind("click", function(e) {
 		var status = this.checked;
 		$(".itemCheck").each(function() { this.checked = status; });
+	}) ;
+	/* select/unselect main checkbox if all item's checkboxes are checked */
+	$(".itemCheck").bind("click", function(e) {
+		var status = true;
+		$(".itemCheck").each(function() { if (!this.checked) return status = false;});
+		$(".selectAll").each(function() { this.checked = status;});
 	}) ;
 });
 //-->
@@ -38,16 +45,13 @@ $(document).ready(function(){
 <div>
 	<fieldset>
 		{if !empty($items)}
-		<p class="toolbar">{t}{$itemType}{/t}: {$beToolbar->size()}</p>
+		<p>{t}Total number of{/t} {t}{$itemType} items{/t}: {$beToolbar->size()}</p>
+<p>&nbsp;</p>{*		DA INSERIRE TOOLBAR DI NAVIGAZIONE
+<p class="toolbar">{t}{$itemType}{/t}: {$beToolbar->size()}</p>
+*}
 		<table class="indexList">
 		<tr>
-			<td colspan="10">
-				<input type="button" onclick="javascript:addItemsToParent();" value=" (+) {t}Add selected items{/t}"/>
-			</td>
-		</tr>
-
-		<tr>
-			<th><input type="checkbox" class="selectAll" name="selectAll"><label for="selectAll"> (Un)Select All</label></th>
+			<th><input type="checkbox" class="selectAll" id="selectAll"><label for="selectAll"> (Un)Select All</label></th>
 			<th>{$beToolbar->order('id', 'id')}</th>
 			{*
 			<th>{$beToolbar->order('title', 'Title')}</th>
@@ -105,14 +109,25 @@ $(document).ready(function(){
 			<td>{$mobj.lang}</td>
 		</tr>
 		{/foreach}
-
+{*
+		<tr>
+			<td colspan="10">
+				<input class="selectAll" type="button" value="O - {t}Select all{/t}"/>
+				<input class="unselectAll" type="button" value="/ - {t}Unselect all{/t}"/>
+			</td>
+		</tr>
+*}
 		<tr>
 			<td colspan="10">
 				<input type="button" onclick="javascript:addItemsToParent();" value=" (+) {t}Add selected items{/t}"/>
 			</td>
 		</tr>
 		</table>
-		<p class="toolbar">{t}{$itemType}{/t}: {$beToolbar->size()}</p>
+		
+{*		DA INSERIRE TOOLBAR DI NAVIGAZIONE
+<p class="toolbar">{t}{$itemType}{/t}: {$beToolbar->size()}</p>
+*}
+
 		{else}
 		{t}No {$itemType} found{/t}
 		{/if}
