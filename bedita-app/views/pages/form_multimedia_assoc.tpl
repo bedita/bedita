@@ -1,4 +1,4 @@
-<!-- start upload block-->
+∑<!-- start upload block-->
 <script type="text/javascript">
 <!--
 {literal}
@@ -26,7 +26,8 @@ $(document).ready(function(){
 		$("input:checkbox",$(this).parent().parent()).get(0).checked = !check ;
 	}) ;
 	$(".selectAll").bind("click", function(e) {
-		$(".itemCheck").each(function() { this.checked = true; });
+		var status = this.checked;
+		$(".itemCheck").each(function() { this.checked = status; });
 	}) ;
 	$(".unselectAll").bind("click", function(e) {
 		$(".itemCheck").each(function() { this.checked = false; });
@@ -46,15 +47,12 @@ $(document).ready(function(){
 			<td colspan="10">
 				<input class="selectAll" type="button" value="O - {t}Select all{/t}"/>
 				<input class="unselectAll" type="button" value="/ - {t}Unselect all{/t}"/>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="10">
 				<input type="button" onclick="javascript:addItemsToParent();" value=" (+) {t}Add selected items{/t}"/>
 			</td>
 		</tr>
+
 		<tr>
-			<th>&nbsp;</th>
+			<th><input type="checkbox" class="selectAll" name="selectAll"><label for="selectAll"> (Un)Select All</label></th>
 			<th>{$beToolbar->order('id', 'id')}</th>
 			{*
 			<th>{$beToolbar->order('title', 'Title')}</th>
@@ -68,6 +66,7 @@ $(document).ready(function(){
 			<th>{t}File size{/t}</th>
 			<th>{$beToolbar->order('lang', 'Language')}</th>
 		</tr>
+
 		{foreach from=$items item='mobj' key='mkey'}
 		<tr class="rowList" id="tr_{$mobj.id}">
 			<td><input type="checkbox" value="{$mobj.id}" name="chk_bedita_item" class="itemCheck"/></td>
@@ -111,12 +110,14 @@ $(document).ready(function(){
 			<td>{$mobj.lang}</td>
 		</tr>
 		{/foreach}
+
 		<tr>
 			<td colspan="10">
 				<input class="selectAll" type="button" value="O - {t}Select all{/t}"/>
 				<input class="unselectAll" type="button" value="/ - {t}Unselect all{/t}"/>
 			</td>
 		</tr>
+
 		<tr>
 			<td colspan="10">
 				<input type="button" onclick="javascript:addItemsToParent();" value=" (+) {t}Add selected items{/t}"/>

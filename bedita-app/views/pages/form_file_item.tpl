@@ -28,7 +28,7 @@
 			width="$thumbWidth" 
 			height="$thumbHeight"
 			file=$thumbPath$filePath
-			cache=$conf->imgCache 
+			cache=$conf->imgCache
 			MAT_SERVER_PATH=$conf->mediaRoot 
 			MAT_SERVER_NAME=$conf->mediaUrl
 			linkurl="$thumbBaseUrl$filePath"

@@ -587,17 +587,23 @@ msgstr "Documentos borrados"
 msgid "Are you sure that you want to delete selected documents?"
 msgstr "Quer borrar os documentos selecionados?"
 
-msgid "Items already uploaded"
+msgid "Multimedia items repository"
 msgstr "Elementos ja anexados"
 
 msgid "Add selected items"
 msgstr "Juntar elementos selecionados"
 
-msgid "Upload"
+msgid "Upload new items"
 msgstr "Anexar"
 
-msgid "Items associated to this document"
+msgid "Gallery items"
 msgstr "Elementos relacionados a este documento"
+
+msgid "Empty"
+msgstr "Vuoto"
+
+msgid "To populate this gallery switch to the 'Upload new items' tab or the 'Multimedia items repository' tab"
+msgstr "X DANTE DA TRADURRE - Per popolare questa galleria, passa alla scheda 'Carica nuovi oggetti' o alla scheda 'Archivio oggetti Multimediali'"
 
 msgid "Browse"
 msgstr "Procura"
