@@ -45,8 +45,10 @@
 	<br/>
 	{t}Title{/t}: {$fileTitle|escape:'htmlall'}<br/>
 	{t}Object type{/t}: {$obj.ObjectType.name}<br/>
+	{if $obj.description}
 	{t}Description{/t}:<br/>{$obj.description|escape:'htmlall'}<br/>
-	{t}Size{/t}:<br/>{math equation="x/y" x=$obj.size y=1024 format="%d"} KB<br/>
+	{/if}
+	{t}Size{/t}: {math equation="x/y" x=$obj.size y=1024 format="%d"} KB<br/>
 	{if !empty($fileName) && $obj.name == "Image"}x: {$obj.width} y: {$obj.height}{/if}
 	<div align="right" style="padding-top:4px; margin-top:4px; border-top:1px solid silver">
 	<input type="button" onclick="removeItem('m_{$obj.id}')" value="{t}Delete{/t}" />
