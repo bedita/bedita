@@ -5,8 +5,8 @@ var message = "{t}Are you sure that you want to delete the gallery?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected galleries?{/t}" ;
 {literal}
 $(document).ready(function(){
-	$("TABLE.indexList TD.cellList").click(function(i) {
-		document.location = $("A", this).attr('href') ;
+	$("TABLE.indexList TD.cellList").click(function(i) { 
+		document.location = $(this).parent().find("a:first").attr("href"); 
 	} );
 	$("#selectAll").bind("click", function(e) {
 		$(".galleryCheck").each(function() { this.checked = true; });
@@ -63,7 +63,7 @@ function delGalleries() {
 	</thead>
 	<tbody>
 	{section name="i" loop=$galleries}
-	<tr>
+	<tr class="rowList">
 		<td><input type="checkbox" name="gallery_chk" class="galleryCheck" title="{$galleries[i].id}"/></td>
 		<td class="cellList"><a href="{$html->url('view/')}{$galleries[i].id}">{$galleries[i].id}</a></td>
 		<td class="cellList">{$galleries[i].title}</td>

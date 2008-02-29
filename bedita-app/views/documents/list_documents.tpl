@@ -6,7 +6,7 @@ var messageSelected = "{t}Are you sure that you want to delete selected document
 {literal}
 $(document).ready(function(){
 	$("TABLE.indexList TD.cellList").click(function(i) { 
-		document.location = $("A", this).attr('href') ;
+		document.location = $(this).parent().find("a:first").attr("href"); 
 	} );
 	$("#selectAll").bind("click", function(e) {
 		$(".documentCheck").each(function() { this.checked = true; });
@@ -66,7 +66,7 @@ function delDocuments() {
 	</thead>
 	<tbody>
 	{section name="i" loop=$documents}
-	<tr>
+	<tr class="rowList">
 		<td><input type="checkbox" name="document_chk" class="documentCheck" title="{$documents[i].id}"/></td>
 		<td class="cellList"><a href="{$html->url('view/')}{$documents[i].id}">{$documents[i].id}</a></td>
 		<td class="cellList">{$documents[i].title}</td>
