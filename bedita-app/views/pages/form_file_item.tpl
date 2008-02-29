@@ -19,23 +19,22 @@
 	<input type="text" class="priority" name="data[{$controller}][{$index}][priority]" value="{$obj.priority|default:$priority}" size="3" maxlength="3"/>
 	<span class="label"><b>{$fileName}</b></span>
 	<br/>
-	{$obj.ObjectType.name}
-	<br/>
+
 	{if strtolower($obj.ObjectType.name) == "image"}
 	<div style="width:{$thumbWidth}px; height:{$thumbHeight}px; overflow:hidden;">
 		{if !empty($fileName) }
 		{thumb 
-			width="$thumbWidth" 
-			height="$thumbHeight"
-			file=$thumbPath$filePath
-			cache=$conf->imgCache
-			MAT_SERVER_PATH=$conf->mediaRoot 
-			MAT_SERVER_NAME=$conf->mediaUrl
-			linkurl="$thumbBaseUrl$filePath"
-			longside="$thumbLside"
-			shortside="$thumbSside"
-			html="$thumbHtml"
-			dev="$thumbDev"} 
+			width			= "$thumbWidth" 
+			height			= "$thumbHeight"
+			file			= $thumbPath$filePath
+			cache			= $conf->imgCache
+			MAT_SERVER_PATH	= $conf->mediaRoot 
+			MAT_SERVER_NAME	= $conf->mediaUrl
+			linkurl			= "$thumbBaseUrl$filePath"
+			longside		= "$thumbLside"
+			shortside		= "$thumbSside"
+			html			= "$thumbHtml"
+			dev				= "$thumbDev"} 
 		{else}
 		{if strtolower($obj.ObjectType.name) == "image"}<img src="{$session->webroot}img/image-missing.jpg" width="160"/>{/if}
 		{/if}
@@ -44,7 +43,8 @@
 	<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$obj.type}.gif" /></a> </div>
 	{/if}
 	<br/>
-	{t}Title{/t}:<br/>{$fileTitle|escape:'htmlall'}<br/>
+	{t}Title{/t}: {$fileTitle|escape:'htmlall'}<br/>
+	{t}Object type{/t}: {$obj.ObjectType.name}<br/>
 	{t}Description{/t}:<br/>{$obj.description|escape:'htmlall'}<br/>
 	{t}Size{/t}:<br/>{math equation="x/y" x=$obj.size y=1024 format="%d"} KB<br/>
 	{if !empty($fileName) && $obj.name == "Image"}x: {$obj.width} y: {$obj.height}{/if}

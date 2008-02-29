@@ -600,16 +600,22 @@ msgid "Gallery items"
 msgstr "Elementos relacionados a este documento"
 
 msgid "Empty"
-msgstr "Vuoto"
+msgstr "X DANTE - Vuoto"
 
 msgid "To populate this gallery switch to the 'Upload new items' tab or the 'Multimedia items repository' tab"
-msgstr "X DANTE DA TRADURRE - Per popolare questa galleria, passa alla scheda 'Carica nuovi oggetti' o alla scheda 'Archivio oggetti Multimediali'"
+msgstr "X DANTE - Per popolare questa galleria, passa alla scheda 'Carica nuovi oggetti' o alla scheda 'Archivio oggetti Multimediali'"
+
+msgid "Object type"
+msgstr "X DANTE - Tipo di oggetto"
 
 msgid "Total number of"
 msgstr "X DANTE - Numero totale di"
 
 msgid "multimedia items"
 msgstr "X DANTE - oggetti multimediali"
+
+msgid "(Un)Select All"
+msgstr "X DANTE - (De)Seleziona tutto"
 
 msgid "Browse"
 msgstr "Procura"
