@@ -640,3 +640,6 @@ msgstr "Anexando o arquivo"
 
 msgid "Thumb"
 msgstr "Imagem"
+
+msgid "Select at least one"
+msgstr "Selezionane almeno uno"

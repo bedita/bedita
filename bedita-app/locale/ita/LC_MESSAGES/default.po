@@ -655,3 +655,6 @@ msgstr "File in caricamento"
 
 msgid "Thumb"
 msgstr "Miniatura"
+
+msgid "Select at least one"
+msgstr "Selezionane almeno uno"

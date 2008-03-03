@@ -26,7 +26,7 @@ class MultimediaController extends AppController {
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
 	// This controller does not use a model
-	var $uses = array('Stream', 'Image', 'Audio', 'Video', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Tree') ;
+	var $uses = array('Stream', 'Image', 'Audio', 'Video', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Tree', 'User', 'Group') ;
 	protected $moduleName = 'multimedia';
 	
 	 /**
@@ -85,6 +85,10 @@ class MultimediaController extends AppController {
 		$this->set('imagePath',	@$imagePath);
 		$this->set('imageUrl',	@$imageURL);
 		$this->selfUrlParams = array("id", $id);    
+		// get users and groups list. 
+		$this->User->displayField = 'userid';
+		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
+		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
 	 }
 
      function save() {

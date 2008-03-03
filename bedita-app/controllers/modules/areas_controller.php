@@ -26,7 +26,7 @@ class AreasController extends AppController {
 	var $helpers 	= array('BeTree');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
 
-	 var $uses = array('Area', 'Section', 'Tree') ;
+	 var $uses = array('Area', 'Section', 'Tree', 'User', 'Group') ;
 	 protected $moduleName = 'areas';
 	 
 	/**
@@ -71,6 +71,10 @@ class AreasController extends AppController {
 		// Setup dei dati da passare al template
 		$this->set('area', 		$area);
 		$this->selfUrlParams = array("id", $id);
+		// get users and groups list. 
+		$this->User->displayField = 'userid';
+		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
+		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
 	 }
 
 	 /**
@@ -113,6 +117,10 @@ class AreasController extends AppController {
 		$this->set('section',	$section);
 		$this->set('parent_id',	$parent_id);
 		$this->selfUrlParams = array("id", $id);	
+		// get users and groups list. 
+		$this->User->displayField = 'userid';
+		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
+		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
 	 }
 	
 	 /**

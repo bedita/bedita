@@ -21,9 +21,12 @@ $(document).ready(function(){
 	{section name=i loop=$el.Permissions}
 		_setupPermTR("{$el.Permissions[i].name}_{$el.Permissions[i].switch}"+postfix_customProp) ;
 		maxIDPerms++ ;
+		if ($("#inputAddPermUser").containsOption("{$el.Permissions[i].name}")) 
+			$("#inputAddPermUser").removeOption("{$el.Permissions[i].name}");	
+		if ($("#inputAddPermGroup").containsOption("{$el.Permissions[i].name}")) 
+			$("#inputAddPermGroup").removeOption("{$el.Permissions[i].name}");		
 	{/section}
 {literal}
-	setupFieldAutocomplete() ;
 
 	$('input[@name=cmdAddUserPerm]', "#frmCustomPermissions").bind("click", function (e) {
 		fncAddPermsTR('addPermUserTR') ;
@@ -31,6 +34,16 @@ $(document).ready(function(){
 	$('input[@name=cmdAddGroupPerm]', "#frmCustomPermissions").bind("click", function (e) {
 		fncAddPermsTR('addPermGroupTR') ;
 	}) ;
+	$("#addPermUserTR :checkbox").bind("click", function() {
+		if ($("#addPermUserTR :checkbox:checked").length > 0) {
+			$("#addPermUserTR").find('label').remove();
+		}
+	});
+	$("#addPermGroupTR :checkbox").bind("click", function() {
+		if ($("#addPermGroupTR :checkbox:checked").length > 0) {
+			$("#addPermGroupTR").find('label').remove();
+		}
+	});
 
 });
 
@@ -51,18 +64,22 @@ var htmlTemplateCustomPerm = '<tr>'
 + "<\/tr>";
 
 function fncAddPermsTR(id) {
-	var name 		= $.trim($("#"+id+" TD input[@name=name]").fieldValue()[0].replace(/[^_a-z0-9]/g, ""));
+	
+	var name = $("#"+id+" TD select[@name=name]").val();
 	var _switch 	= $("#"+id+" TD input[@name=switch]").fieldValue()[0] ;
 	var read 		= $("#"+id+" TD input[@name=read]").get(0).checked ;
 	var modify 		= $("#"+id+" TD input[@name=modify]").get(0).checked ;
 	var _delete 	= $("#"+id+" TD input[@name=delete]").get(0).checked ;
 
 	// Se non completa esce
-	if(!name.length || (!(read || modify || _delete))) {
-		alert("Dati non completi") ;
+	if(!name || (!(read || modify || _delete))) {
+		$("#"+id+" TD:last").find("label").remove();
+		$("#"+id+" TD:last").append("<label class='error'>{/literal}{t}Select at least one{/t}{literal}</label>")
 		return false ;
+	} else {
+		$("#"+id+" TD:last").find("label").remove();
 	}
-
+	
 	// Inserisce il nuovo elemento
 	var newTR = $("#endLineCustomPermsTR").before(htmlTemplateCustomPerm).prev() ;
 
@@ -84,6 +101,14 @@ function fncAddPermsTR(id) {
 	$("TD:nth-child(4) input", newTR).get(0).checked = modify ;
 	$("TD:nth-child(5) input", newTR).get(0).checked = _delete ;
 
+	// remove selected element from select tag
+	$("#"+id+" TD select[@name=name]").removeOption(name);
+	if ($("#"+id+" TD select[@name=name]").selectedValues().length == 0) {
+		$("#"+id+" TD input[@type=button]").attr("disabled","disabled");
+		$("#"+id+" TD select[@name=name]").attr("disabled","disabled");
+		$("#"+id+" :checkbox").attr("disabled","disabled");
+	}
+
 	// Resetta i campi
 	$("#"+id+" TD input").not($("#"+id+" TD input[@name=switch]")).clearFields() ;
 
@@ -102,7 +127,7 @@ function incrementCounterPerms() {
 // Setta i comandi per la gestione delle righe della tabella dei permessi
 function _setupPermTR(id) {
 	// Definisce il comando per la cancellazione
-	$('#'+id+' TD:last/input[@name=delete]').bind("click", function (e) {
+	$('#'+id+' input[@name=delete]').bind("click", function (e) {
 		deleteTRPerm(this)
 	}) ;
 }
@@ -110,66 +135,27 @@ function _setupPermTR(id) {
 // cancella l'elemento
 function deleteTRPerm(el) {
 	if(!confirm("{/literal}{t}Do you really want to delete the permission{/t}{literal}?")) return false ;
-	$(el).parent().parent().remove() ;
+	var trToDelete = $(el).parents("tr");
+	var valueToaddToSelect = $("TD:nth-child(1) input", trToDelete).val();
+	var type = $("TD:nth-child(2) input", trToDelete).val();
+	if (type == "user") {
+		selectElement = $("#inputAddPermUser");
+	} else if (type == "group") {
+		selectElement = $("#inputAddPermGroup");
+	}
+	selectElement.addOption(valueToaddToSelect, valueToaddToSelect);
+	selectElement.sortOptions();
+	// enable add button, checkbox and select
+	selectElement.parents("tr").find("input[@type=button]").attr("disabled","");
+	selectElement.attr("disabled","");
+	selectElement.parents("tr").find(":checkbox").attr("disabled","");
+	trToDelete.remove();
 
 	// Indica l'avvenuto cambiamento dei dati
 	try {
 		$().alertSignal() ;
 	} catch(e) {}
 }
-
-
-
-
-/**
-Autocompletamento campi userid/group
-*/
-function formatItemListUserid(row) {
-	return row[0] ;
-}
-
-var test = null ;
-function setupFieldAutocomplete() {
-	$("#inputAddPermUser").autocomplete(
-		"/users/userids",
-		{
-			delay:10,
-			minChars:1,
-			matchSubset:1,
-			matchContains:1,
-			cacheLength:10,
-			onItemSelect:null,
-			onFindValue:null,
-			formatItem:formatItemListUserid,
-			autoFill:false,
-			maxItemsToShow:20
-		}
-	);
-
-	test = $("#inputAddPermGroup").autocomplete(
-		"/groups/names",
-		{
-			delay:10,
-			minChars:1,
-			matchSubset:1,
-			matchContains:1,
-			cacheLength:10,
-			onItemSelect:null,
-			onFindValue:null,
-			formatItem:formatItemListUserid,
-			autoFill:false,
-			maxItemsToShow:20
-		}
-	);
-
-	// Visualizza tutti i gruppi con un comando
-	$('#viewListPgroups').bind("click", function(){
-		$("#inputAddPermGroup").focus() ;
-		$("#inputAddPermGroup").attr('value', " ") ;
-		$("#inputAddPermGroup").trigger("keydown") ;
-	}) ;
-}
-
 
 {/literal}
 </script>
@@ -225,7 +211,13 @@ function setupFieldAutocomplete() {
 <tr><td colspan="8"><hr/></td></tr>
 <tr><th colspan="8" style="text-align:left ;">{t}user{/t}</th></tr>
 <tr id="addPermUserTR">
-	<td><input type="text" name="name" style="width: 150px;" value="" id="inputAddPermUser" class="ac_input"/></td>
+	<td>
+		<select id="inputAddPermUser" name="name">
+		{foreach from=$usersList key="id_user" item="username"}
+			<option value="{$username}">{$username}</option>
+		{/foreach}
+		</select>
+	</td>
 	<td><input type="hidden" name="switch" value="{t}user{/t}"/></td>
 	<td><input type="checkbox" name="read" value="{$conf->BEDITA_PERMS_READ}"/></td>
 	<td><input type="checkbox" name="modify" value="{$conf->BEDITA_PERMS_MODIFY}"/></td>
@@ -235,8 +227,11 @@ function setupFieldAutocomplete() {
 <tr><th colspan="8" style="text-align:left ;">{t}group{/t}:</th></tr>
 <tr id="addPermGroupTR">
 	<td style="white-space:nowrap">
-		<input type="text" name="name" style="width: 150px;" value="" id="inputAddPermGroup" class="ac_input"/>
-		<input type="button" id="viewListPgroups" value="..."/>
+		<select id="inputAddPermGroup" name="name">
+		{foreach from=$groupsList key="id_group" item="groupname"}
+			<option value="{$groupname}">{$groupname}</option>
+		{/foreach}
+		</select>
 	</td>
 	<td><input type="hidden" name="switch" value="group"/></td>
 	<td><input type="checkbox" name="read" value="{$conf->BEDITA_PERMS_READ}"/></td>

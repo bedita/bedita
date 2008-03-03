@@ -18,7 +18,7 @@ class GalleriesController extends AppController {
 	var $name = 'Galleries';
 	var $helpers 	= array('Beurl', 'BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
-	var $uses = array('Area', 'Section', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Gallery', 'Tree', 'Image', 'Audio', 'Video');
+	var $uses = array('Area', 'Section', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Gallery', 'Tree', 'Image', 'Audio', 'Video', 'User', 'Group');
 	protected $moduleName = 'galleries';
 	
 	/**
@@ -170,6 +170,10 @@ class GalleriesController extends AppController {
 		$this->set('object',	$obj);
 		$this->set('multimedia',$multimedia);
 		$this->selfUrlParams = array("id", $id);    
+		// get users and groups list. 
+		$this->User->displayField = 'userid';
+		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
+		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
 	}
 
 	protected function forward($action, $esito) {

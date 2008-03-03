@@ -28,7 +28,7 @@ class DocumentsController extends AppController {
 
 	var $uses = array(
 		'Stream', 'Area', 'Section', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Document', 'Tree',
-		'Image', 'Video', 'Audio', 'BEFile'
+		'Image', 'Video', 'Audio', 'BEFile', 'User', 'Group'
 		) ;
 	protected $moduleName = 'documents';
 	
@@ -143,7 +143,11 @@ class DocumentsController extends AppController {
 		$this->set('galleries', (count($galleries['items'])==0) ? array() : $galleries['items']);
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);		
-		$this->selfUrlParams = array("id", $id);    		
+		$this->selfUrlParams = array("id", $id);
+		// get users and groups list. 
+		$this->User->displayField = 'userid';
+		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
+		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
 	 }
 
 	 /**

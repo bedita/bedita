@@ -10,6 +10,7 @@
 {$javascript->link("jquery.treeview")}
 {$javascript->link("jquery.changealert")}
 {$javascript->link("jquery.form")}
+{$javascript->link("jquery.selectboxes.pack")}
 {$javascript->link("jquery.cmxforms")}
 {$javascript->link("jquery.metadata")}
 {$javascript->link("jquery.delegate")}
