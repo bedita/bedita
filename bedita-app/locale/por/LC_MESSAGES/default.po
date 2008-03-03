@@ -641,5 +641,5 @@ msgstr "Anexando o arquivo"
 msgid "Thumb"
 msgstr "Imagem"
 
-msgid "Select at least one"
-msgstr "Selezionane almeno uno"
+msgid "Select at least one type of permission"
+msgstr "Selezionane almeno un tipo di permesso"
