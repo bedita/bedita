@@ -131,7 +131,8 @@ class AppController extends Controller
 	final function afterFilter() {
 		// check/setup localization
 		$this->setupLocale();
-		$this->set('moduleColor',$this->moduleColor);
+		$this->set('moduleColor', $this->moduleColor);
+		$this->set('moduleName', $this->moduleName);
 
 		// setup return URL (if session expires)
 		if(empty($this->selfUrlParams)) {
