@@ -11,7 +11,7 @@ var containerItem	= "#{$containerId}";
 // set draggable list items
 $(document).ready(function(){
 	$("div.itemBox").each(function(index) { setup_drag_drop_item(this) ;}) ;
-	$('#container-1').tabs();
+	$('#container-1 > ul').tabs();
 });
 
 // Get data from modal window, uploaded files and insert new object in the form

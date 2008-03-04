@@ -42,12 +42,6 @@ $(document).ready(function(){
 		{literal}
 	});
 	
-	// Aggiunta traduzioni linguistiche dei campi
-	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
-	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
-	$("#cmdTranslateShortDesc").addTranslateField('shortdesc', langs) ;
-	$("#cmdTranslateLongDesc").addTranslateField('longdesc', langs) ;
-	
 	// Dal tipo di documento selezionato, visualizza o no parti di form
 	$("#updateForm//input[@name='data[object_type_id]']").bind("click", function() {
 		activePortionsForm(this.value) ;	
@@ -56,9 +50,13 @@ $(document).ready(function(){
 	// Selezionano la tipologia di documento
 	var type = {/literal}{$object.object_type_id|default:'22'}{literal} ;
 	activePortionsForm(type) ;
-	
-	//$("#updateForm//input[@name='data[object_type_id]'][@value='"+type+"']").get(0).checked = true ;
 });
+
+function localTriggerTabs(index) {
+	$('#properties_langs_container').triggerTab(index);
+	$('#subtitle_langs_container').triggerTab(index);
+	$('#long_desc_langs_container').triggerTab(index);
+}
 
 objectTypeDiv = {
 	"22" : "",
@@ -89,6 +87,7 @@ function activePortionsForm(objectType) {
 {include file="../pages/form_tree.tpl"}
 {*include file="../pages/form_lang_version.tpl"*}
 {include file="../pages/form_longdesc.tpl"}
+{*include file="../pages/form_long_desc_lang.tpl"*}
 {*include file="../pages/form_file_list.tpl" containerId='multimediaContainer' controller='multimedia' title='Multimedia' items=$multimedia*}
 {include file="../pages/form_file_list.tpl" containerId='attachContainer' controller='attachments' title='Attachments' items=$attachments}
 {include file="../pages/form_galleries.tpl"}

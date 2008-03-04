@@ -24,11 +24,6 @@ $(document).ready(function(){
 		message: "{t}Are you sure that you want to delete the gallery?{/t}"
 		{literal}
 	});
-	// Aggiunta traduzioni linguistiche dei campi
-	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
-	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
-	$("#cmdTranslateShortDesc").addTranslateField('shortdesc', langs) ;
-	$("#cmdTranslateLongDesc").addTranslateField('longdesc', langs) ;
 });
 {/literal}
 </script>
