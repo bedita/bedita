@@ -34,9 +34,9 @@ class NewsController extends AppController {
 
 		$obj = null ;
 		if(isset($id)) {
-pr($id);		
+			
+			$this->ShortNews->bviorHideFields = array('Version', 'Index', 'current') ;
 			$obj = $this->ShortNews->find($id);
-pr($obj);		
 			if($obj == null || $obj === false) {
 				 throw new BeditaException(__("Error loading news: ", true).$id);
 			}
