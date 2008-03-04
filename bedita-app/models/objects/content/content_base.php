@@ -133,9 +133,9 @@ class ContentBase extends BEAppModel
 		else $data = &$this->data ;
 		
 	 	$default = array(
-			'start' 			=> array('_getDefaultDataFormat', (isset($data['start']) && !empty($data['start']))?$data['start']:time()),
-			'end'	 		=> array('_getDefaultDataFormat', ((isset($data['end']) && !empty($data['end']))?$data['end']:null)),
-			'type' 		=> array('_getDefaultFormato', (isset($data['type']))?$data['type']:null),
+			'start' 			=> array('getDefaultDateFormat', (isset($data['start']) && !empty($data['start']))?$data['start']:time()),
+			'end'	 		=> array('getDefaultDateFormat', ((isset($data['end']) && !empty($data['end']))?$data['end']:null)),
+			'type' 		=> array('getDefaultTextFormat', (isset($data['type']))?$data['type']:null),
 		) ;
 		
 		foreach ($default as $name => $rule) {
@@ -155,39 +155,5 @@ class ContentBase extends BEAppModel
 		return true ;
 	}
 	
-	/**
-	 * Torna la data nel formato SQL
-	 *
-	 * @param unknown_type $value
-	 * @return unknown
-	 */
-	private function _getDefaultDataFormat($value = null) {
-		if(is_integer($value)) return date("Y-m-d", $value) ;
-		
-		if(is_string($value) && !empty($value)) {
-			$conf = Configure::getInstance() ;			
-			$d_pos = strpos($conf->dateFormatValidation,'dd');
-			$m_pos = strpos($conf->dateFormatValidation,'mm');
-			$y_pos = strpos($conf->dateFormatValidation,'yyyy');
-			$value = substr($value, $y_pos, 4) . "-" . substr($value, $m_pos, 2) . "-" . substr($value, $d_pos, 2);
-			return $value ;
-		}
-		
-		return null ;
-	}
-	
-	/**
-	 * Torna il formato di default per i testi
-	 *
-	 * @param unknown_type $value
-	 * @return unknown
-	 */
-	private function _getDefaultFormato($value = null) {
-		$labels = array('html', 'txt', 'txtParsed') ;
-		if(isset($value) && in_array($value, $labels)) return $value ;
-
-		$conf = Configure::getInstance() ;
-		return ((isset($conf->type))?$conf->type:'') ;
-	}
 }
 ?>

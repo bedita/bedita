@@ -24,12 +24,16 @@
 */
 class EventDateItem extends BEAppModel 
 {
-	var $name = 'EventDateItem';
 	var $useTable = 'event_date_items' ;
 	var $recursive = 0 ;
 	
-		function __construct() {
-		parent::__construct() ;
+	public function beforeValidate() {
+		if(isset($this->data[$this->name])) 
+			$data = $this->data[$this->name] ;
+		else 
+			$data = $this->data ;
+		$data['start'] = isset($data['start']) ? $this->getDefaultDateFormat($data['start']) : null;
+		$data['end'] = isset($data['end']) ? $this->getDefaultDateFormat($data['end']) : null;
 	}
 }
 ?>

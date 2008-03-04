@@ -239,6 +239,9 @@ class PermissionComponent extends Object {
 		$newPerms = array("user" => Array(), "group" => Array()) ;
 		$delPerms = array() ;
 		
+		if(!isset($recursion))
+			$recursion=false;
+		
 		if(!isset($objType))
 			$objType='all';
 
@@ -262,7 +265,8 @@ class PermissionComponent extends Object {
 			if($recursion) $ret = $this->removeTree($id, $delPerms) ;
 			else $ret = $this->remove($id, $delPerms) ;
 			
-			if(!$ret) return false ;
+			if(!$ret) 
+				throw new BeditaException( __("Error saving permissions", true));
 		}
 		
 		// Formatta i nuovi permessi

@@ -5,7 +5,7 @@ uses('L10n');
 class AppController extends Controller
 {
 	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "Msg");
-	var $components = array('BeAuth', 'BePermissionModule','Transaction', 'Cookie', 'Session');
+	var $components = array('BeAuth', 'BeTree', 'BePermissionModule','Transaction', 'Cookie', 'Session');
 	var $uses = array('EventLog') ;
 	
 	protected $moduleName = NULL;
@@ -131,7 +131,7 @@ class AppController extends Controller
 	final function afterFilter() {
 		// check/setup localization
 		$this->setupLocale();
-		$this->set('moduleColor', $this->moduleColor);
+		$this->set('moduleColor',$this->moduleColor);
 		$this->set('moduleName', $this->moduleName);
 
 		// setup return URL (if session expires)
@@ -282,14 +282,56 @@ class AppController extends Controller
 
 		return true ;
 	}
-
+	
+	
 	protected function checkWriteModulePermission() {
 		if(isset($this->moduleName) && !($this->modulePerms & BEDITA_PERMS_MODIFY)) {
 				throw new BeditaException(__("No write permissions in module", true));
 		}
 	}
 	
+	/**
+	 * Method for paginated objects, used in ModuleController::index()...
+	 *
+	 * @param unknown_type $id
+	 * @param unknown_type $typesArray
+	 * @param unknown_type $order
+	 * @param unknown_type $dir
+	 * @param unknown_type $page
+	 * @param unknown_type $dim
+	 */
+	protected function paginatedList($id, $typesArray, $order, $dir, $page, $dim) {
+		$this->setup_args(
+			array("id", "integer", &$id),
+			array("page", "integer", &$page),
+			array("dim", "integer", &$dim),
+			array("order", "string", &$order),
+			array("dir", "boolean", &$dir)
+		) ;
+		// sections tree
+		$tree = $this->BeTree->expandOneBranch($id);
+		$objects = $this->BeTree->getDiscendents($id, null, $typesArray, $order, $dir, $page, $dim)  ;	
+		// template data
+		$this->set('tree', $tree);
+		$this->set('objects', $objects['items']);
+		$this->set('toolbar', 	$objects['toolbar']);
+	}
 	
+	protected function setUsersAndGroups() {
+		if(!class_exists('User')) {
+			App::import('Model', 'User') ;
+		}
+		if(!class_exists('Group')) {
+			App::import('Model', 'Group') ;
+		}
+		$this->User = new User();
+		$this->Group = new Group();
+		// get users and groups list. 
+		$this->User->displayField = 'userid';
+		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
+		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
+	 }
+		
 	/**
 	 * Esegue il setup delle variabili passate ad una funzione del controller.
 	 * Se la viarbile e' nul, usa il valore in $this->params[url] che contiene i
@@ -301,7 +343,7 @@ class AppController extends Controller
 	 * 		2	reference alla variabile da modificare
 	 *
 	 */
-	function setup_args() {
+	protected function setup_args() {
 		$size = func_num_args() ;
 		$args = func_get_args() ;
 		

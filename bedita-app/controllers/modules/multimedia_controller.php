@@ -231,42 +231,6 @@ class MultimediaController extends AppController {
 	function frm_upload_url() {
 	}
 	 
-	 /**
-	  * Return tree of areas/sections (associative array)
-	  * using POST.data to retrieve tree data
-	  * @param array $data
-	  * @param array $tree
-	  */
-	private function _getTreeFromPOST(&$data, &$tree) {
-		$tree = array() ;
-		$IDs  = array() ;
-		// Create branches
-		$arr = preg_split("/;/", $data) ;
-		for($i = 0 ; $i < count($arr) ; $i++) {
-			$item = array() ;
-			$tmp = split(" ", $arr[$i] ) ;
-			foreach($tmp as $val) {
-				$t  = split("=", $val) ;
-				$item[$t[0]] = ($t[1] == "null") ? null : ((integer)$t[1]) ; 
-			}
-			$IDs[$item["id"]] 				= $item ;
-			$IDs[$item["id"]]["children"] 	= array() ;
-		}
-		// Create tree
-		foreach ($IDs as $id => $item) {
-			if(!isset($item["parent"])) {
-				$tree[] = $item ;
-				$IDs[$id] = &$tree[count($tree)-1] ;
-			}
-			if(isset($IDs[$item["parent"]])) {
-				$IDs[$item["parent"]]["children"][] = $item ;
-				$IDs[$id] = &$IDs[$item["parent"]]["children"][count($IDs[$item["parent"]]["children"])-1] ;
-			}
-		}
-		unset($IDs) ;
-	}
-
-
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 		      "save"  =>  array(

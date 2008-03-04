@@ -27,7 +27,7 @@ class Event extends BEAppObjectModel
 	var $name 		= 'Event';
 	var $recursive 	= 2 ;
 	var $actsAs 	= array(
-			'CompactResult' 		=> array('calendars'),
+			'CompactResult' 		=> array('EventDateItem'),
 			'CreateIndexFields'		=> array(),
 			'ForeignDependenceSave' => array('BEObject', 'ContentBase', 'Content', 'BaseDocument'),
 			'DeleteObject' 			=> 'objects',
@@ -67,7 +67,7 @@ class Event extends BEAppObjectModel
 		) ;			
 
 		var $hasMany = array(
-			'calendars' =>
+			'EventDateItem' =>
 				array(
 					'className'		=> 'EventDateItem',
 					'foreignKey'	=> 'event_id',

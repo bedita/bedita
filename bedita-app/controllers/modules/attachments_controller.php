@@ -262,48 +262,7 @@ class AttachmentsController extends AppController {
 	function frm_upload_url() {
 	}
 	 
-	 /**
-	  * Torna un'array associativo che rappresenta l'albero aree/sezioni
-	  * a partire dai dati passati via POST.
-	  *
-	  * @param unknown_type $data
-	  * @param unknown_type $tree
-	  */
-	 private function _getTreeFromPOST(&$data, &$tree) {
-	 	$tree = array() ;
-	 	$IDs  = array() ;
-	 	
-	 	// Crea i diversi rami
-	 	$arr = preg_split("/;/", $data) ;
-	 	for($i = 0 ; $i < count($arr) ; $i++) {
-	 		$item = array() ;
-	 		$tmp = split(" ", $arr[$i] ) ;
-	 		foreach($tmp as $val) {
-	 			$t  = split("=", $val) ;
-	 			$item[$t[0]] = ($t[1] == "null") ? null : ((integer)$t[1]) ; 
-	 		}
-	 		
-	 		$IDs[$item["id"]] 				= $item ;
-	 		$IDs[$item["id"]]["children"] 	= array() ;
-	 	}
-
-		// Crea l'albero
-		foreach ($IDs as $id => $item) {
-			if(!isset($item["parent"])) {
-				$tree[] = $item ;
-				$IDs[$id] = &$tree[count($tree)-1] ;
-			}
-			
-			if(isset($IDs[$item["parent"]])) {
-				$IDs[$item["parent"]]["children"][] = $item ;
-				$IDs[$id] = &$IDs[$item["parent"]]["children"][count($IDs[$item["parent"]]["children"])-1] ;
-			}
-		}
-		
-		unset($IDs) ;
-	 }
-
-	 protected function forward($action, $esito) {
+	protected function forward($action, $esito) {
 	  	$REDIRECT = array(
 		      "save"  =>  array(
                     "OK"    => "/attachments/view/{$this->BEObject->id}",

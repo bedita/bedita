@@ -119,6 +119,45 @@ class BeTreeComponent extends Object {
 		return $this->_getIdFromNickname($path) ;
 	}
 	
+	/**
+	 * Array of parent objects of $id...
+	 *
+	 * @param integer $id
+	 */
+	public function getParents($id = null) {
+		$parents_id = array();
+		if(isset($id)) {
+			$parents_id = $this->Tree->getParent($id) ;
+			if($parents_id === false) 
+				$parents_id = array(); // ???
+			elseif(!is_array($parents_id))
+				$parents_id = array($parents_id);
+		}
+		return $parents_id;
+	}
+
+	/**
+	 * update tree position of object $id with new $destination array
+	 *
+	 * @param integer $id
+	 * @param array $destination
+	 */
+	public function updateTree($id, $destination) {
+
+		$currParents = $this->getParents($id);
+		// remove
+		$remove = array_diff($currParents, $destination) ;
+		foreach ($remove as $parent_id) {
+			$this->Tree->removeChild($id, $parent_id) ;
+		}
+		// insert
+		$add = array_diff($destination, $currParents) ;
+		foreach ($add as $parent_id) {
+			$this->Tree->appendChild($id, $parent_id) ;
+		}
+
+	}
+	
 	private function _getIdFromNickname($path) {
 		$nickname = basename($path) ;
 		if(@empty($nickname)) return null ;

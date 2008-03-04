@@ -42,47 +42,42 @@ class BEAppModel extends AppModel {
 		
 		return $tmp ;
 	}
-	
-	/**
-	 * Torna una lista di contenuti. Il tipo di contenuti e' definito da $name.
-	 * Il nome pu˜ essere cambiato dalle classe derivate.
-	 *
-	 * @param array $recordset		Dove inserire il risultato
-	 * @param integer $page			Pagina dell'elenco richiesta
-	 * @param integer $dim			Dimensione della pagina
-	 * @param string $order			Campo su cui ordinare.Anche nome_campo + spazio + DESC
-	 * @return boolean
-	 */
-	
-	/**
-	 * Torna il risultato di una ricerca findAll, paginata
-	 *
-	 * @param unknown_type $conditions
-	 * @param unknown_type $fields
-	 * @param unknown_type $order
-	 * @param unknown_type $page
-	 * @param unknown_type $dim
-	 * @return boolean
-	 */
-/*	
-	function find($conditions = null, $fields = null, $order = null, $page = 1, $dim = 100000) {
-		// Esegue la ricerca
-        if(($tmp = $this->findAll($conditions, $fields, $order, $dim, $page, 0)) === false) return false ;
 
-		// Formatta il record set da tornare
-		for ($i =0; $i < count($tmp); $i++) {
-			$tmp[$i] = $this->am($tmp[$i]);
+		
+	/**
+	 * Get SQL date format
+	 *
+	 * @param unknown_type $value
+	 * @return unknown
+	 */
+	protected function getDefaultDateFormat($value = null) {
+		if(is_integer($value)) return date("Y-m-d", $value) ;
+		
+		if(is_string($value) && !empty($value)) {
+			$conf = Configure::getInstance() ;			
+			$d_pos = strpos($conf->dateFormatValidation,'dd');
+			$m_pos = strpos($conf->dateFormatValidation,'mm');
+			$y_pos = strpos($conf->dateFormatValidation,'yyyy');
+			$value = substr($value, $y_pos, 4) . "-" . substr($value, $m_pos, 2) . "-" . substr($value, $d_pos, 2);
+			return $value ;
 		}
-
-		$recordset = array(
-			"items"		=> &$tmp,
-			"toolbar"	=> $this->toolbar($page, $dim, $conditions)
-		) ;
 		
-		
-		return $recordset ;
+		return null ;
 	}
-*/	
+	
+	/**
+	 * Default text format
+	 *
+	 * @param unknown_type $value
+	 * @return unknown
+	 */
+	protected function getDefaultTextFormat($value = null) {
+		$labels = array('html', 'txt', 'txtParsed') ;
+		if(isset($value) && in_array($value, $labels)) 
+			return $value ;
+		$conf = Configure::getInstance() ;
+		return ((isset($conf->type))?$conf->type:'') ;
+	}
 	
 	/**
 	 * Esegue una query in un template di smarty e torna il recordset.

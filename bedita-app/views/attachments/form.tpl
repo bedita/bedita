@@ -7,7 +7,7 @@ $(document).ready(function(){
     $.datepicker.setDefaults({
         showOn: 'both', 
         buttonImageOnly: true, 
-        buttonImage: '{/literal}{$html->url('../img/calendar.gif')}{literal}', 
+	    buttonImage: '{/literal}{$html->webroot}img/calendar.gif{literal}', 
         buttonText: 'Calendar',
         dateFormat: '{/literal}{$conf->dateFormatValidation|replace:'yyyy':'yy'}{literal}',
         beforeShow: customRange
