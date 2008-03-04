@@ -602,6 +602,12 @@ msgstr "Elementos relacionados a este documento"
 msgid "Empty"
 msgstr "X DANTE - Vuoto"
 
+msgid "File name"
+msgstr "X DANTE - Nome del file"
+
+msgid "image"
+msgstr "X DANTE - immagine"
+
 msgid "To populate this gallery switch to the 'Upload new items' tab or the 'Multimedia items repository' tab"
 msgstr "X DANTE - Per popolare questa galleria, passa alla scheda 'Carica nuovi oggetti' o alla scheda 'Archivio oggetti Multimediali'"
 
