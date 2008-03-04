@@ -42,8 +42,11 @@ function addCustomPropTR() {
 	
 	// Se non completa esce
 	if(!name.length || !value.length) {
-		alert("{/literal}{t}Data uncomplete{/t}{literal}") ;
+		$("#addCustomPropTR TD:last").find("label").remove();
+		$("#addCustomPropTR TD:last").append("<label class='error'>{/literal}{t}Incompleted data{/t}{literal}</label>")
 		return false ;
+	} else {
+		$("#addCustomPropTR TD:last").find("label").remove();
 	}
 	
 	// se gia' presente o vuota esce

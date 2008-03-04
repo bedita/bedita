@@ -661,3 +661,5 @@ msgstr "Miniatura"
 msgid "Select at least one type of permission"
 msgstr "Seleziona almeno un tipo di permesso"
 
+msgid "Incompleted data"
+msgstr "Dati incompleti"
