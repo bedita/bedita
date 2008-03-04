@@ -637,6 +637,9 @@ msgstr "Cerca"
 msgid "Queue is empty"
 msgstr "Coda vuota"
 
+msgid "Upload queue"
+msgstr "Avvia caricamento"
+
 msgid "Upload end"
 msgstr "Caricamento terminato"
 

@@ -623,6 +623,9 @@ msgstr "Procura"
 msgid "Queue is empty"
 msgstr "Lista vacia"
 
+msgid "Upload queue"
+msgstr "Anexar lista"
+
 msgid "Upload end"
 msgstr "Anexar terminado"
 
