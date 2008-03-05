@@ -2,10 +2,10 @@
 {$html->css('tree')}
 {$html->css('module.events')}
 {$html->css("ui.datepicker")}
-{$html->css("jquery.thickbox")}
 {if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
-{if ($agent.IE)}{$html->css('jquery.tabs-ie')}{else}{$html->css('jquery.tabs')}{/if}
-{$javascript->link("jquery.tabs.pack")}
+{$html->css('ui.tabs')}
+{$javascript->link("ui/jquery.dimensions")}
+{$javascript->link("ui/ui.tabs")}
 {$javascript->link("form")}
 {$javascript->link("jquery.treeview")}
 {$javascript->link("jquery.changealert")}
@@ -17,14 +17,12 @@
 {$javascript->link("jquery.validate")}
 {$javascript->link("validate.tools")}
 {$javascript->link("jquery.autocomplete")}
-{$javascript->link("jquery.translatefield")}
 {$javascript->link("module.events")}
 {$javascript->link("interface")}
 {$javascript->link("datepicker/ui.datepicker")}
 {if $currLang != "eng"}
 	{$javascript->link("datepicker/ui.datepicker-$currLang.js")}
 {/if}
-{$javascript->link("jquery.thickbox")}
 <script type="text/javascript">
 <!--
 

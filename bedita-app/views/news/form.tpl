@@ -18,7 +18,6 @@ $.validator.setDefaults({
 });
 
 $(document).ready(function(){
-	
 	$.datepicker.setDefaults({
 		showOn: 'both', 
 		buttonImageOnly: true, 
@@ -27,43 +26,32 @@ $(document).ready(function(){
 	    dateFormat: '{/literal}{$conf->dateFormatValidation|replace:'yyyy':'yy'}{literal}',
 	    beforeShow: customRange
 	}, $.datepicker.regional['{/literal}{$currLang}{literal}']); 
-	
 	$('#start').attachDatepicker();
 	$('#end').attachDatepicker();
-	
-	// Validazione al submit
 	$("#updateForm").validate();
-
-	// submit delete
 	$("#delBEObject").submitConfirm({
 		{/literal}
 		action: "{$html->url('delete/')}",
 		message: "{t}Are you sure that you want to delete the news?{/t}"
 		{literal}
 	});
-	
-	// Aggiunta traduzioni linguistiche dei campi
-	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
-	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
-	$("#cmdTranslateShortDesc").addTranslateField('shortdesc', langs) ;
-	$("#cmdTranslateLongDesc").addTranslateField('longdesc', langs) ;
-	
-	// Dal tipo di documento selezionato, visualizza o no parti di form
 	$("#updateForm//input[@name='data[object_type_id]']").bind("click", function() {
 		activePortionsForm(this.value) ;	
 	}) ;
-	
-	// Selezionano la tipologia di documento
 	var type = {/literal}{$object.object_type_id|default:'22'}{literal} ;
 	activePortionsForm(type) ;
-	
-	//$("#updateForm//input[@name='data[object_type_id]'][@value='"+type+"']").get(0).checked = true ;
 });
 
 objectTypeDiv = {
 	"22" : "",
 	"24" : "#divLinkExtern",
 	"23" : "#divLinkIntern"
+}
+
+function localTriggerTabs(id) {
+	var index = $("#" + id + " > ul").data('selected.ui-tabs');
+	$('#properties_langs_container > ul').tabs("select",index);
+	$('#subtitle_langs_container > ul').tabs("select",index);
 }
 
 function activePortionsForm(objectType) {
