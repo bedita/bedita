@@ -75,7 +75,9 @@ INSERT INTO `modules` (`label`, `color`, `path`, `status`) VALUES
 ('documents', '#ff6600', 'documents', 'on'),
 ('galleries', '#ffcc33', 'galleries', 'on'),
 ('multimedia', '#ff3456', 'multimedia', 'on'),
-('attachments', '#ff34aa', 'attachments', 'on') ;
+('attachments', '#ff34aa', 'attachments', 'on'),
+('news', '#cc00ff', 'news', 'on'),
+('events', '#3399CC', 'events', 'on');
 
 -- administrator permissions
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
@@ -96,6 +98,12 @@ VALUES ((SELECT id FROM modules WHERE label = 'multimedia'), (SELECT id FROM gro
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'attachments'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' ) ;
 
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'news'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' ) ;
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'events'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' ) ;
+
 -- editor perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'areas'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' ) ;
@@ -112,6 +120,12 @@ VALUES ((SELECT id FROM modules WHERE label = 'multimedia'), (SELECT id FROM gro
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'attachments'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' ) ;
 
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'news'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' ) ;
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'events'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' ) ;
+
 -- reader perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'areas'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' ) ;
@@ -127,3 +141,10 @@ VALUES ((SELECT id FROM modules WHERE label = 'multimedia'), (SELECT id FROM gro
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'attachments'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' ) ;
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'news'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' ) ;
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'events'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' ) ;
+
