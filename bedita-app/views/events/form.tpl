@@ -27,40 +27,30 @@ $(document).ready(function(){
 	    dateFormat: '{/literal}{$conf->dateFormatValidation|replace:'yyyy':'yy'}{literal}',
 	    beforeShow: customRange
 	}, $.datepicker.regional['{/literal}{$currLang}{literal}']); 
-	
 	$('#start').attachDatepicker();
 	$('#end').attachDatepicker();
 	$('#eventStart').attachDatepicker();
 	$('#eventEnd').attachDatepicker();
-	
-	// Validazione al submit
 	$("#updateForm").validate();
-
-	// submit delete
 	$("#delBEObject").submitConfirm({
 		{/literal}
 		action: "{$html->url('delete/')}",
 		message: "{t}Are you sure that you want to delete the event?{/t}"
 		{literal}
 	});
-	
-	// Aggiunta traduzioni linguistiche dei campi
-	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
-	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
-	$("#cmdTranslateShortDesc").addTranslateField('shortdesc', langs) ;
-	$("#cmdTranslateLongDesc").addTranslateField('longdesc', langs) ;
-	
-	// Dal tipo di documento selezionato, visualizza o no parti di form
 	$("#updateForm//input[@name='data[object_type_id]']").bind("click", function() {
 		activePortionsForm(this.value) ;	
 	}) ;
-	
-	// Selezionano la tipologia di documento
 	var type = {/literal}{$object.object_type_id|default:'22'}{literal} ;
 	activePortionsForm(type) ;
-	
-	//$("#updateForm//input[@name='data[object_type_id]'][@value='"+type+"']").get(0).checked = true ;
 });
+
+function localTriggerTabs(id) {
+	var index = $("#" + id + " > ul").data('selected.ui-tabs');
+	$('#properties_langs_container > ul').tabs("select",index);
+	$('#subtitle_langs_container > ul').tabs("select",index);
+	$('#long_desc_langs_container > ul').tabs("select",index);
+}
 
 objectTypeDiv = {
 	"22" : "",
@@ -90,7 +80,7 @@ function activePortionsForm(objectType) {
 {include file="../pages/form_subtitle_desc.tpl"}
 {include file="event_dates.tpl"}
 {include file="../pages/form_tree.tpl"}
-{include file="../pages/form_longdesc.tpl"}
+{include file="../pages/form_long_desc_lang.tpl"}
 {include file="../pages/form_custom_properties.tpl" el=$object}
 {include file="../pages/form_permissions.tpl" el=$object recursion=true}
 </form>
