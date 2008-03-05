@@ -1,3 +1,11 @@
+<script type="text/javascript">
+{literal}
+$(document).ready(function(){
+	$('#properties_langs_container > ul').tabs();
+	$('#properties_langs_container > ul > li > a').click( function() { localTriggerTabs('properties_langs_container'); } );
+});
+{/literal}
+</script>
 <h2 class="showHideBlockButton">{t}Properties{/t}</h2>
 <div class="blockForm" id="properties">
 <fieldset>
@@ -19,51 +27,46 @@
 	{/if}
 	<table class="tableForm" border="0">
 	<tr>
-		<td class="label">{t}Language{/t}:</td>
-		<td>
-			<select name="data[lang]">
-			{html_options options=$conf->langOptions selected=$object.lang|default:$conf->defaultLang}
-			</select>
-		</td>
-		<td>&nbsp;</td>
-	</tr>
-	<tr id="Title_TR_{$object.lang|default:$conf->defaultLang}">
-		<td class="label">{t}Title{/t}:</td>
-		<td class="field">
-			<input class="{literal}{required:true,minLength:1}{/literal}" title="{t 1='1'}Title is required (at least %1 alphanumerical char){/t}" id="titleInput"  type="text" 
-				name="data[title]" value="{$object.title|default:''|escape:'html'|escape:'quotes'}"/>&nbsp;
-		</td>
-		<td class="status">
-		{* commentato temporaneamente: bug da fissare
-		{if ($object)}<input class="cmdField" id="cmdTranslateTitle" type="button" value="lang ..."/>{/if}
-		*}
-		</td>
-	</tr>
-	{if (isset($object.LangText.title))}
-	{foreach name=i from=$object.LangText.title key=lang item=text}
-	<tr>
-		<td class="label">&#160;</td>
-		<td class="field">
-			<input type='hidden' value='title' name="data[LangText][{$smarty.foreach.i.iteration}][name]"/>
-			<input type="text" name="data[LangText][{$smarty.foreach.i.iteration}][txt]" value="{$text|escape:'html'|escape:'quotes'}"/>&nbsp;
-		</td>
-		<td>
-			<select name="data[LangText][{$smarty.foreach.i.iteration}][lang]">
-			{html_options options=$conf->langOptions selected=$lang}
-			</select>
-			&nbsp;&nbsp;
-			<input type="button" name="delete" value=" x " onclick="$('../..', this).remove() ;"/>
-		</td>
-	</tr>
-	{/foreach}
-	{/if}
-	<tr>
 		<td class="label">{t}Nickname{/t}:</td>
 		<td class="field">
 			<input type="text" name="data[nickname]" value="{$object.nickname|default:''|escape:'html'|escape:'quotes'}"/>&nbsp;
 		</td>
+		<td class="status">&nbsp;</td>
+	</tr>
+	<tr>
+		<td class="label">{t}Language{/t}:</td>
+		<td class="field">
+			<select name="data[lang]">
+			{assign var=object_lang value=$object.lang|default:$conf->defaultLang}{html_options options=$conf->langOptions selected=$object_lang}
+			</select>
+		</td>
+		<td class="status">&nbsp;</td>
 	</tr>
 	</table>
+	<hr/>
+	<div id="properties_langs_container">
+		<ul>
+			{foreach key=val item=label from=$conf->langOptions}
+			<li><a href="#property_lang_{$val}"><span>{$label}</span></a></li>
+			{/foreach}
+		</ul>
+		{foreach key=val item=label from=$conf->langOptions}
+		<div id="property_lang_{$val}">
+		<h3><img src="{$html->webroot}img/flags/{$val}.png" border="0"/></h3>
+		<table class="tableForm" border="0">
+		<tr>
+			<td class="label">{t}Title{/t}:</td>
+			<td class="field">
+				<input {if $val==$object_lang}class="{literal}{required:true,minLength:1}{/literal}" title="{t 1='1'}Title is required (at least %1 alphanumerical char){/t}"{/if}
+					type="text" name="data[LangText][{$val}][title]"
+					value="{$object.LangText.title[$val]|default:''|escape:'html'|escape:'quotes'}"/>&nbsp;
+			</td>
+			<td class="status">&nbsp;</td>
+		</tr>
+		</table>
+		</div>
+		{/foreach}
+	</div>
 	{if ($object)}
 	<hr/>
 	<table class="tableForm" border="0">

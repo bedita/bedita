@@ -11,7 +11,7 @@
  * @modifiedby		
  * @lastmodified	
  * @license			
- * @author 			giangi@qwerg.com d.domenico@channelweb.it ste@channelweb.it
+ * @author 			giangi@qwerg.com d.domenico@channelweb.it
  */
 
 class DocumentsController extends AppController {
@@ -37,22 +37,18 @@ class DocumentsController extends AppController {
 			array("order", "string", &$order),
 			array("dir", "boolean", &$dir)
 		) ;
-		
-		// Preleva l'albero delle aree e sezioni
 		$tree = $this->BeTree->expandOneBranch($id) ;
-		
 		$documents = $this->BeTree->getDiscendents($id, null, $conf->objectTypes['documentAll'], $order, $dir, $page, $dim)  ;
 		$this->params['toolbar'] = &$documents['toolbar'] ;
-		
-		// Setup dei dati da passare al template
+		// Data for template
 		$this->set('tree', 		$tree);
 		$this->set('documents', $documents['items']);
 		$this->set('toolbar', 	$documents['toolbar']);
 	 }
 
 	 /**
-	  * Preleva il documento selezionato.
-	  * Se non viene passato nessun id, presente il form per un nuovo documento
+	  * Get document.
+	  * If id is null, empty document
 	  *
 	  * @param integer $id
 	  */
@@ -138,47 +134,40 @@ class DocumentsController extends AppController {
 		$this->setUsersAndGroups();
 	 }
 
-	 /**
-	  * Creates/updates new document
-	  */
-	 function save() {
-	 	
- 		$this->checkWriteModulePermission();
- 		
- 	 	if(empty($this->data)) 
- 	 	    throw new BeditaException( __("No data", true));
- 		
+	/**
+	 * Creates/updates new document
+	 */
+	function save() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data)) 
+		    throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
-		
-	 	// Verifica i permessi di modifica dell'oggetto
-	 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-	 			throw new BeditaException(__("Error modify permissions", true));
-	 	
-	 	// Formatta le custom properties
-	 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-
-	 	// Formatta i campi d tradurre
-	 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
-	 	
-	 	if(!isset($this->data["attachments"])) $this->data["attachments"] = array() ;
-	 	if(!isset($this->data["multimedia"])) $this->data["multimedia"] = array() ;
+		// Verify object permits
+		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+				throw new BeditaException(__("Error modify permissions", true));
+		// Format custom properties
+		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
+		// Format translations for fields
+		$this->data['title'] = $this->data['LangText'][$this->data['lang']]['title'];
+		$this->data['description'] = $this->data['LangText'][$this->data['lang']]['description'];
+		$this->data['abstract'] = $this->data['LangText'][$this->data['lang']]['abstract'];
+		$this->data['body'] = $this->data['LangText'][$this->data['lang']]['body'];
+		$this->BeLangText->setupForSave($this->data["LangText"]) ;
+		if(!isset($this->data["attachments"])) $this->data["attachments"] = array() ;
+		if(!isset($this->data["multimedia"])) $this->data["multimedia"] = array() ;
 		$this->Transaction->begin() ;
-
-		// Salva i dati
+		// Save data
 		if(!$this->Document->save($this->data)) {
 	 		throw new BeditaException(__("Error saving document", true), $this->Document->validationErrors);
 	 	}
-
 		if(!isset($this->data['destination'])) 
 			$this->data['destination'] = array() ;
 		$this->BeTree->updateTree($this->Document->id, $this->data['destination']);
-		
 	 	// update permissions
 		if(!isset($this->data['Permissions'])) 
 			$this->data['Permissions'] = array() ;
 		$this->Permission->saveFromPOST($this->Document->id, $this->data['Permissions'], 
 	 			!empty($this->data['recursiveApplyPermissions']), 'event');
-
  		$this->Transaction->commit() ;
  		$this->userInfoMessage(__("Document saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("document [". $this->data["title"]."] saved");

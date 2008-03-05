@@ -16,38 +16,28 @@ class BeLangTextComponent extends Object {
 	/**
 	 * @param object $controller
 	 */
-	function startup(&$controller)
-	{
+	function startup(&$controller) {
 		$this->controller 	= $controller;
 	}
 	
-	/**
-	 * Formatta, per salvataggio, i campi in lingua passati
-	 * via POST.
-	 *
-	 * @param unknown_type $data
-	 */
 	function setupForSave(&$data) {
-		$formatted = array() ;
+		$result = array() ;
 		if(!@count($data)) return ;
-		
-		foreach($data as $id => $value) {
-			if(!(isset($value["name"])  && isset($value["lang"]))) continue ;
-
-			$value["text"] 		= isset($value["text"])?trim($value["text"]) : null ;
-			$value["long_text"] 	= isset($value["long_text"])?trim($value["long_text"]) : null ;
-			
-			if(empty($value["text"])  && empty($value["long_text"])) continue ;
-			
-			$formatted[$value["lang"]] = $value ;
+		foreach($data as $lang => $attributes) {
+			foreach($attributes as $attribute => $value) {
+				if($attribute != 'type') {
+					$formatted = array() ;
+					$formatted['lang'] = $lang ;
+					$formatted['name'] = $attribute ;
+					if(strlen($value) <= 255)
+						$formatted['text'] = $value ;
+					else
+						$formatted['long_text'] = $value ;
+					$translation[]=$formatted;
+				}
+			}
 		}
-		
-		$tmp = array() ;
-		foreach($formatted as $lang => $value) {
-			$tmp[] = $value ;
-		}	
-		
-		$data = $tmp ;
+		$data = $translation ;
 	}
 	
 	/**

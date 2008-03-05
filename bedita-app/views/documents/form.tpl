@@ -52,10 +52,11 @@ $(document).ready(function(){
 	activePortionsForm(type) ;
 });
 
-function localTriggerTabs(index) {
-	$('#properties_langs_container').triggerTab(index);
-	$('#subtitle_langs_container').triggerTab(index);
-	$('#long_desc_langs_container').triggerTab(index);
+function localTriggerTabs(id) {
+	var index = $("#" + id + " > ul").data('selected.ui-tabs');
+	$('#properties_langs_container > ul').tabs("select",index);
+	$('#subtitle_langs_container > ul').tabs("select",index);
+	$('#long_desc_langs_container > ul').tabs("select",index);
 }
 
 objectTypeDiv = {
@@ -86,9 +87,8 @@ function activePortionsForm(objectType) {
 {include file="../pages/form_subtitle_desc.tpl"}
 {include file="../pages/form_tree.tpl"}
 {*include file="../pages/form_lang_version.tpl"*}
-{include file="../pages/form_longdesc.tpl"}
-{*include file="../pages/form_long_desc_lang.tpl"*}
-{*include file="../pages/form_file_list.tpl" containerId='multimediaContainer' controller='multimedia' title='Multimedia' items=$multimedia*}
+{*include file="../pages/form_longdesc.tpl"*}
+{include file="../pages/form_long_desc_lang.tpl"}
 {include file="../pages/form_file_list.tpl" containerId='attachContainer' controller='attachments' title='Attachments' items=$attachments}
 {include file="../pages/form_galleries.tpl"}
 {include file="../pages/form_custom_properties.tpl" el=$object}
