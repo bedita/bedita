@@ -616,6 +616,12 @@ msgstr "Oggetti nella galleria"
 msgid "Empty"
 msgstr "Vuoto"
 
+msgid "File name"
+msgstr "Nome del file"
+
+msgid "image"
+msgstr "immagine"
+
 msgid "To populate this gallery switch to the 'Upload new items' tab or the 'Multimedia items repository' tab"
 msgstr "Per popolare questa galleria, passa alla scheda 'Carica nuovi oggetti' o alla scheda 'Archivio oggetti Multimediali'"
 
