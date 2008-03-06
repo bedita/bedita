@@ -14,7 +14,7 @@
  * @author 			giangi@qwerg.com d.domenico@channelweb.it
  */
 
-class DocumentsController extends AppController {
+class DocumentsController extends ModulesController {
 	var $name = 'Documents';
 
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Fck');

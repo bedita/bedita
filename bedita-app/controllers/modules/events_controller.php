@@ -17,7 +17,7 @@
 /**
  * Events handling
  */
-class EventsController extends AppController {
+class EventsController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Fck');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
@@ -70,7 +70,7 @@ class EventsController extends AppController {
 		$this->data['description'] = $this->data['LangText'][$this->data['lang']]['description'];
 		$this->data['abstract'] = $this->data['LangText'][$this->data['lang']]['abstract'];
 		$this->data['body'] = $this->data['LangText'][$this->data['lang']]['body'];
-		$this->BeLangText->setupForSave($this->data["LangText"]) ;
+	 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
 	 	
 		$this->Transaction->begin() ;
 

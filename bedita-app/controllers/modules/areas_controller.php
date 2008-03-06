@@ -20,7 +20,7 @@
  * Controller entrata modulo Aree, gestione aree e gestione sessioni
  * 
  */
-class AreasController extends AppController {
+class AreasController extends ModulesController {
 	var $name = 'Areas';
 
 	var $helpers 	= array('BeTree');

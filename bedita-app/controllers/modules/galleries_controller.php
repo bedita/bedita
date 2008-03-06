@@ -14,7 +14,7 @@
  * @author 			d.domenico@channelweb.it
  */
 
-class GalleriesController extends AppController {
+class GalleriesController extends ModulesController {
 	var $name = 'Galleries';
 	var $helpers 	= array('Beurl', 'BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');

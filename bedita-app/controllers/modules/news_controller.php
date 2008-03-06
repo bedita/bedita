@@ -17,7 +17,7 @@
 /**
  * Short news handling
  */
-class NewsController extends AppController {
+class NewsController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');

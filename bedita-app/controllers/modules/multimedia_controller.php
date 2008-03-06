@@ -19,7 +19,7 @@
  *
  * Module Multimedia: management of Image, Audio, Video objects
  */
-class MultimediaController extends AppController {
+class MultimediaController extends ModulesController {
 	var $name = 'Multimedia';
 
 	var $helpers 	= array('BeTree', 'BeToolbar');

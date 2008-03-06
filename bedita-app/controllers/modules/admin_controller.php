@@ -16,7 +16,7 @@
 /**
  * Administration: users, groups, eventlogs....
  */
-class AdminController extends AppController {
+class AdminController extends ModulesController {
 
 	 var $uses = array('User', 'Group','Module') ;
 	 protected $moduleName = 'admin';

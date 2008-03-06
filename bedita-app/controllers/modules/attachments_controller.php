@@ -20,7 +20,7 @@
  * Controller entrata modulo Allegati e gestione degli oggetti File
  * 
  */
-class AttachmentsController extends AppController {
+class AttachmentsController extends ModulesController {
 	var $name = 'Attachments';
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
