@@ -49,7 +49,7 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 				}
 				
 				// salva il/i parent
-				$run = true ;			
+				$run = true ;
 				if(!$model->$name->save($data)) {
 					$model->validationErrors = $model->$name->validationErrors ;
 					
@@ -57,10 +57,6 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 					if(!$first) {
 						$model->$firstModel->delete($id) ;
 					}
-					echo '<pre>';
-					print_r($model->$name);
-					echo '</pre>';
-					die();
 					return false ;
 				}
 				
@@ -107,14 +103,12 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 		
 		if(isset($model->data[$name])) {
 			$data = $model->data[$name] ;
-			
 		} elseif (isset($model->data[$model->name])) {
 			if(isset($model->data[$model->name][$name])) {
 				$data = $model->data[$model->name][$name] ;
 			} else {
 				$data = $model->data[$model->name] ;
 			}
-					
 		} elseif (Set::countDim($model->data) == 1) {
 //			$data = array($name => $model->data) ;
 			$data = $model->data ;
