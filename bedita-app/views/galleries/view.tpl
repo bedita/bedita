@@ -1,5 +1,5 @@
 {agent var="agent"}
-{$html->css('tree')}*
+{$html->css('tree')}
 {$html->css('module.galleries')}
 {$html->css("ui.datepicker")}
 {if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}

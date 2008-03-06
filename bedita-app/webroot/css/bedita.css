@@ -76,6 +76,15 @@ A IMG {border-color: black;}
 	text-align: right;
 }
 
+#listAreas {
+	border:0px solid black;
+}
+
+#listElements {
+	display:table-cell;
+	padding-left:5px;
+	padding-left:5px;
+}
 
 /* END -- Pagine interne moduli */
 

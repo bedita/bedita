@@ -37,27 +37,8 @@ class AttachmentsController extends ModulesController {
 	 */
 	 function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
-		
-	 	// Setup parametri
-		$this->setup_args(
-			array("id", "integer", &$id),
-			array("page", "integer", &$page),
-			array("dim", "integer", &$dim),
-			array("order", "string", &$order),
-			array("dir", "boolean", &$dir)
-		) ;
-		
-		// Preleva l'albero delle aree e sezioni
-		$tree = $this->BeTree->expandOneBranch($id) ;
-		
-		$ot = &$conf->objectTypes ; 
-		$multimedia = $this->BeTree->getDiscendents($id, null, array($ot['befile']), $order, $dir, $page, $dim)  ;
-		$this->params['toolbar'] = &$documents['toolbar'] ;
-		
-		// Setup dei dati da passare al template
-		$this->set('tree', 			$tree);
-		$this->set('multimedia', 	$multimedia['items']);
-		$this->set('toolbar', 		$multimedia['toolbar']);
+		$types = array($conf->objectTypes['befile']);
+		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
 	 }
 
 

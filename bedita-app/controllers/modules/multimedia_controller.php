@@ -34,22 +34,8 @@ class MultimediaController extends ModulesController {
 	 */
 	 function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
-	 	// Pagination parameters
-		$this->setup_args(
-			array("id", "integer", &$id),
-			array("page", "integer", &$page),
-			array("dim", "integer", &$dim),
-			array("order", "string", &$order),
-			array("dir", "boolean", &$dir)
-		) ;
-		$tree = $this->BeTree->expandOneBranch($id) ;
-		$ot = &$conf->objectTypes ; 
-		$multimedia = $this->BeTree->getDiscendents($id, null, array($ot['image'], $ot['audio'], $ot['video']), $order, $dir, $page, $dim)  ;
-		$this->params['toolbar'] = &$multimedia['toolbar'] ;
-		// Data for template
-		$this->set('tree', 			$tree);
-		$this->set('multimedia', 	$multimedia['items']);
-		$this->set('toolbar', 		$multimedia['toolbar']);
+		$types = array($conf->objectTypes['image'],$conf->objectTypes['audio'],$conf->objectTypes['video']);
+		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
 	 }
 
 	 /**

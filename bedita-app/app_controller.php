@@ -393,11 +393,46 @@ abstract class ModulesController extends AppController {
 		) ;
 		// sections tree
 		$tree = $this->BeTree->expandOneBranch($id);
-		$objects = $this->BeTree->getDiscendents($id, null, $typesArray, $order, $dir, $page, $dim)  ;	
+		$objects = $this->BeTree->getDiscendents($id, null, $typesArray, $order, $dir, $page, $dim)  ;
+		$this->params['toolbar'] = &$objects['toolbar'] ;
 		// template data
 		$this->set('tree', $tree);
 		$this->set('objects', $objects['items']);
-		$this->set('toolbar', 	$objects['toolbar']);
+	}
+	
+	/**
+	 * Delete objects
+	 *
+	 * @param model name
+	 * @return string of objects'ids deleted
+	 */
+	protected function deleteObjects($model) {
+		$objectsToDel = array();
+		$objectsListDesc = "";
+		if(!empty($this->params['form']['objects_to_del'])) {
+			
+			$objectsListDesc = $this->params['form']['objects_to_del'];
+			$objectsToDel = split(",",$objectsListDesc);
+			
+		} else {
+			if(empty($this->data['id'])) 
+				throw new BeditaException(__("No data", true));
+			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
+				throw new BeditaException(__("Error delete permissions", true));
+			}
+			$objectsToDel = array($this->data['id']);
+			$objectsListDesc = $this->data['id'];
+		}
+
+		$this->Transaction->begin() ;
+
+		foreach ($objectsToDel as $id) {
+			if(!$this->{$model}->delete($id))
+				throw new BeditaException(__("Error deleting object: ", true) . $id);
+		}
+		
+		$this->Transaction->commit() ;
+		return $objectsListDesc;
 	}
 	
 	protected function setUsersAndGroups() {

@@ -1,5 +1,4 @@
 /*
-File con la logica utilizzata nel modulo galleries.
-
+galleries custom js
 @author		giangi@qwerg.com
 */

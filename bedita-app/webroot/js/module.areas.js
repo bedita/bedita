@@ -1,7 +1,6 @@
-/*
-File con la logica utilizzata nel modulo aree.
-
-@author		giangi@qwerg.com
+/**
+areas custom js
+@author giangi@qwerg.com 	
 */
 
 /* ******************************
@@ -9,7 +8,7 @@ treeView Aree
 ****************************** */
 	
 	// Crea o refresh albero
-	function designTree() {
+	function designAreaTree() {
 		$("#tree").Treeview({ 
 			control: "#treecontrol",
 			speed: 'fast',
@@ -36,7 +35,7 @@ treeView Aree
 		$("span[@class='AreaItem']", "#tree").each(function(i){
 			var id = $("input[@name='id']", this.parentNode).eq(0).attr('value') ;
 			
-			$(this).html('<a href="'+URLFrmArea+id+'">&nbsp;'+$(this).html()+'</a>') ;
+			$(this).html('<a href="'+URLFrmArea+id+'">'+$(this).html()+'</a>') ;
 		});
 
 	}
@@ -102,7 +101,7 @@ treeView Aree
 			$("input[@name='down'][@class='enabledCmdTree']", "#tree").unbind('click') ;
 			
 			resetTree() ;
-			designTree() ;
+			designAreaTree() ;
 			refreshCommand() ;
 			refreshOnClick();
 			
@@ -117,7 +116,7 @@ treeView Aree
 			$("input[@name='down'][@class='enabledCmdTree']", "#tree").unbind('click') ;
 
 			resetTree() ;
-			designTree() ;
+			designAreaTree() ;
 			refreshCommand() ;
 			refreshOnClick();
 			

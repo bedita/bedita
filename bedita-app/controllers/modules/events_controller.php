@@ -96,34 +96,9 @@ class EventsController extends ModulesController {
 
 	 public function delete() {
 		$this->checkWriteModulePermission();
-		
-		$objectsToDel = array();
-		$objectsListDesc = "";
-		if(!empty($this->params['form']['objects_to_del'])) {
-			
-			$objectsListDesc = $this->params['form']['objects_to_del'];
-			$objectsToDel = split(",",$objectsListDesc);
-			
-		} else {
-			if(empty($this->data['id'])) 
-				throw new BeditaException(__("No data", true));
-			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
-				throw new BeditaException(__("Error delete permissions", true));
-			}
-			$objectsToDel = array($this->data['id']);
-			$objectsListDesc = $this->data['id'];
-		}
-
-		$this->Transaction->begin() ;
-
-		foreach ($objectsToDel as $id) {
-			if(!$this->Event->delete($id))
-				throw new BeditaException(__("Error deleting event: ", true) . $id);
-		}
-		
-		$this->Transaction->commit() ;
-		$this->userInfoMessage(__("Events deleted", true) . " -  " . $objectsListDesc);
-		$this->eventInfo("Events $objectsListDesc deleted");
+		$objectsListDeleted = $this->deleteObjects("Event");
+		$this->userInfoMessage(__("Events deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("Events $objectsListDeleted deleted");
 	}
 
 	protected function forward($action, $esito) {

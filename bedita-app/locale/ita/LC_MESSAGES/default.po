@@ -669,3 +669,9 @@ msgstr "Seleziona almeno un tipo di permesso"
 
 msgid "Incompleted data"
 msgstr "Dati incompleti"
+
+msgid "Are you sure that you want to delete selected items?"
+msgstr "Sei sicuro di voler eliminare gli elementi selezionati?"
+
+msgid "Are you sure that you want to delete the item?"
+msgstr "Sei sicuro di voler eliminare l'elemento?"

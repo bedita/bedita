@@ -1,8 +1,6 @@
-{$html->css('module.area')}
 {$html->css('tree')}
 {$javascript->link("jquery.treeview")}
 {$javascript->link("interface")}
-{$javascript->link("module.area")}
 {$javascript->link("form")}
 {$javascript->link("jquery.changealert")}
 <script type="text/javascript">
@@ -10,15 +8,8 @@
 {literal}
 
 $(document).ready(function(){
-/*
-		$("#tree").treeview({
-			persist: "location",
-			collapsed: true,
-			unique: true
-		});	
-*/
 	
-	designTree() ;
+	designAreaTree() ;
 
 	addCommand() ;
 	refreshCommand() ;
@@ -47,7 +38,7 @@ $(document).ready(function(){
 
 			// Resetta l'albero
 			resetTree() ;
-			designTree() ;
+			designAreaTree() ;
 			refreshCommand() ;
 			refreshOnClick() ;
 

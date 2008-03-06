@@ -1,6 +1,10 @@
 <script type="text/javascript">
+var URLBase = "{$html->url('index/')}" ;
 {literal}
 $(document).ready(function(){
+
+	$("#tree").designTree(URLBase) ;
+
 	$("TABLE.indexList TR.rowList").click(function(i) { 
 		document.location = $("A", this).attr('href') ;
 	} );
@@ -11,13 +15,13 @@ $(document).ready(function(){
 	<div id="containerPage">
 	
 		{if !empty($tree)}
-		<div id="listAree">
+		<div id="listAreas">
 		{$beTree->tree("tree", $tree)}
 		</div>
 		{/if}
 	
-		<div id="listAttachments">
-		{if !empty($multimedia)}
+		<div id="listElements">
+		{if !empty($objects)}
 		<p class="toolbar">
 			{t}Attachments{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
 			{$beToolbar->first()} &nbsp; {$beToolbar->prev()}  &nbsp; {$beToolbar->next()} &nbsp; {$beToolbar->last()} &nbsp;
@@ -32,13 +36,13 @@ $(document).ready(function(){
 			<th>{$beToolbar->order('created', 'Created')}</th>
 			<th>{$beToolbar->order('lang', 'Language')}</th>
 		</tr>
-		{section name="i" loop=$multimedia}
+		{section name="i" loop=$objects}
 		<tr class="rowList">
-			<td><a href="{$html->url('view/')}{$multimedia[i].id}">{$multimedia[i].id}</a></td>
-			<td>{$multimedia[i].title}</td>
-			<td>{$multimedia[i].status}</td>
-			<td>{$multimedia[i].created|date_format:'%b %e, %Y'}</td>
-			<td>{$multimedia[i].lang}</td>
+			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].id}</a></td>
+			<td>{$objects[i].title}</td>
+			<td>{$objects[i].status}</td>
+			<td>{$objects[i].created|date_format:'%b %e, %Y'}</td>
+			<td>{$objects[i].lang}</td>
 		</tr>				
 		{/section}
 		</table>

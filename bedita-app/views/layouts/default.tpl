@@ -18,6 +18,10 @@
 {$html->css('menu')}
 {$html->css('form')}
 {$html->css('message')}
+{if $moduleName}
+	<link rel="stylesheet" type="text/css" href="{$html->webroot}css/module.{$moduleName}.css" />
+	<script type="text/javascript" src="{$html->webroot}js/module.{$moduleName}.js"></script>
+{/if}
 {if ($agent.IE)}{$html->css('ie')}{/if}
 <script type="text/javascript">
 	var dateFormat = "{$conf->dateFormatValidation}";

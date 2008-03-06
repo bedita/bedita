@@ -28,22 +28,8 @@ class DocumentsController extends ModulesController {
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
-		
-	 	// Setup parametri
-		$this->setup_args(
-			array("id", "integer", &$id),
-			array("page", "integer", &$page),
-			array("dim", "integer", &$dim),
-			array("order", "string", &$order),
-			array("dir", "boolean", &$dir)
-		) ;
-		$tree = $this->BeTree->expandOneBranch($id) ;
-		$documents = $this->BeTree->getDiscendents($id, null, $conf->objectTypes['documentAll'], $order, $dir, $page, $dim)  ;
-		$this->params['toolbar'] = &$documents['toolbar'] ;
-		// Data for template
-		$this->set('tree', 		$tree);
-		$this->set('documents', $documents['items']);
-		$this->set('toolbar', 	$documents['toolbar']);
+		$types = $conf->objectTypes['documentAll'];
+		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
 	 }
 
 	 /**
@@ -178,26 +164,9 @@ class DocumentsController extends ModulesController {
 	  */
 	function delete() {
 		$this->checkWriteModulePermission();
-		$documents_to_del = array();
-		if(!empty($this->params['form']['documents_to_del'])) {
-			$documents_to_del = $this->params['form']['documents_to_del'];
-		} else {
-			if(empty($this->data['id'])) throw new BeditaException(__("No data", true));
-			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
-				throw new BeditaException(__("Error delete permissions", true));
-			}
-			$documents_to_del = $this->data['id'];
-		}
-		$this->Transaction->begin() ;
-		// Delete data
-		$dToDel = split(",",$documents_to_del);
-		for($i=0;$i<count($dToDel);$i++) {
-			if(!$this->Document->delete($dToDel[$i]))
-				throw new BeditaException( sprintf(__("Error deleting document: %d", true), $dToDel[$i]));
-		}
-		$this->Transaction->commit() ;
-		$this->userInfoMessage(__("Documents deleted", true) . " -  " . $documents_to_del);
-		$this->eventInfo("documents $documents_to_del deleted");
+		$objectsListDeleted = $this->deleteObjects("Document");
+		$this->userInfoMessage(__("Documents deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("documents $objectsListDeleted deleted");
 	}
 
 	 protected function forward($action, $esito) {

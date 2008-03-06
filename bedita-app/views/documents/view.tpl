@@ -13,10 +13,8 @@
 {$javascript->link("jquery.selectboxes.pack")}
 {$javascript->link("jquery.cmxforms")}
 {$javascript->link("jquery.metadata")}
-{$javascript->link("jquery.delegate")}
 {$javascript->link("jquery.validate")}
 {$javascript->link("validate.tools")}
-{$javascript->link("jquery.autocomplete")}
 {$javascript->link("module.documents")}
 {$javascript->link("interface")}
 {$javascript->link("datepicker/ui.datepicker")}

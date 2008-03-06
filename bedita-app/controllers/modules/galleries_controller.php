@@ -26,7 +26,9 @@ class GalleriesController extends ModulesController {
 	 */
 
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 10) {
-		$this->loadGalleries($id,$order,$dir,$page,$dim);
+		$conf  = Configure::getInstance() ;
+		$types = array($conf->objectTypes['gallery']);
+		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
 	}
 
 	public function view($id = null) {
@@ -77,47 +79,14 @@ class GalleriesController extends ModulesController {
 
 	public function delete() {
 		$this->checkWriteModulePermission();
-		$galleries_to_del = array();
-		if(!empty($this->params['form']['galleries_to_del'])) {
-			$galleries_to_del = $this->params['form']['galleries_to_del'];
-		} else {
-			if(empty($this->data['id'])) throw new BeditaException(__("No data", true));
-			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
-				throw new BeditaException(__("Error delete permissions", true));
-			}
-			$galleries_to_del = $this->data['id'];
-		}
-		$this->Transaction->begin() ;
-		// Delete data
-		$gToDel = split(",",$galleries_to_del);
-		for($i=0;$i<count($gToDel);$i++) {
-			if(!$this->Gallery->delete($gToDel[$i]))
-				throw new BeditaException( sprintf(__("Error deleting gallery: %d", true), $gToDel[$i]));
-		}
-		$this->Transaction->commit() ;
-		$this->userInfoMessage(__("Galleries deleted", true) . " -  " . $galleries_to_del);
-		$this->eventInfo("galleries $galleries_to_del deleted");
+		$objectsListDeleted = $this->deleteObjects("Gallery");
+		$this->userInfoMessage(__("Galleries deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("galleries $objectsListDeleted deleted");
 	}
 
 	/**
 	 * Private methods
 	 */
-
-	private function loadGalleries($id,$order,$dir,$page,$dim) {
- 		$conf = Configure::getInstance();
-		$this->setup_args(
-			array("id", "integer", &$id),
-			array("order", "string", &$order),
-			array("dir", "boolean", &$dir),
-			array("page", "integer", &$page),
-			array("dim", "integer", &$dim)
-		);
-		$galleries = $this->BeTree->getDiscendents($id, null, $conf->objectTypes['gallery'], $order, $dir, $page, $dim);
-		$this->params['toolbar'] = &$galleries['toolbar'];
-		$this->set('tree', 		$this->BeTree->expandOneBranch($id));
-		$this->set('galleries', (count($galleries['items'])==0) ? array() : $galleries['items']);
-		$this->set('toolbar', 	$galleries['toolbar']);
-	}
 
 	private function loadGallery($id) {
 		$this->setup_args(array("id", "integer", &$id));

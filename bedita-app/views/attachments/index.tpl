@@ -1,17 +1,11 @@
 {$html->css('module.attachments')}
+{$html->css('tree')}
 {$javascript->link("jquery.treeview")}
 {$javascript->link("interface")}
-{$javascript->link("module.multimedia")}
+{$javascript->link("module.general")}
 {$javascript->link("form")}
 {$javascript->link("jquery.changealert")}
-<script type="text/javascript">
-var URLBase = "{$html->url('index/')}" ;
-{literal}
-$(document).ready(function(){
-	designTree() ;
-});
-{/literal}
-</script>	
+
 </head>
 <body>
 {include file="head.tpl"}
