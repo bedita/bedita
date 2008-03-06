@@ -17,7 +17,7 @@ $(document).ready(function(){
 		</ul>
 		{foreach key=val item=label from=$conf->langOptions}
 		<div id="subtitle_lang_{$val}">
-		<h3><img src="{$html->webroot}img/flags/{$val}.png" border="0"/></h3>
+		<h3><img src="{$html->webroot}img/flags/{$val}.png" border="0" alt="{$val}"/></h3>
 		<table class="tableForm" border="0">
 		<tr>
 			<td class="label">{t}Description{/t}:</td>

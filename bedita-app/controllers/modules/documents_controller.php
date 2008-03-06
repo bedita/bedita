@@ -126,11 +126,11 @@ class DocumentsController extends ModulesController {
 	function save() {
 		$this->checkWriteModulePermission();
 		if(empty($this->data)) 
-		    throw new BeditaException( __("No data", true));
+			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
 		// Verify object permits
 		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-				throw new BeditaException(__("Error modify permissions", true));
+			throw new BeditaException(__("Error modify permissions", true));
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
 		// Format translations for fields

@@ -32,7 +32,7 @@
 {include file="../messages.tpl"}
 <div id="centralPageHome">
 {if !empty($conf->multilang) && $conf->multilang}
-{t}Language{/t}{if $session->check('Config.language')} [{$session->read('Config.language')}]{/if}:
+{t}Language{/t}{if $session->check('Config.language')} [{$session->read('Config.language')}] <img src="{$html->webroot}img/flags/{$session->read('Config.language')}.png" border="0" alt="{$session->read('Config.language')}"/>{/if}:
 {foreach key=key item=item name=l from=$conf->langsSystem}
 <a href="{$html->base}/lang/{$key}">{$item}</a>{if !$smarty.foreach.l.last} | {/if}
 {/foreach} 

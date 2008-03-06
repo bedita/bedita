@@ -2,24 +2,19 @@
 /**
  * @author giangi@qwerg.com
  * 
- * Componente per la manipolazione delle proprieta' in lingue diverse
- * dall'oggetto di cui fanno parte.
+ * Translation properties manipulation
  * 
  */
 class BeLangTextComponent extends Object {
-	
-	var $controller			= null ;
-	
-	function __construct() {
-	} 
-	
-	/**
-	 * @param object $controller
-	 */
+
+	var $controller = null ;
+
+	function __construct() {} 
+
 	function startup(&$controller) {
 		$this->controller 	= $controller;
 	}
-	
+
 	function setupForSave(&$data) {
 		$result = array() ;
 		if(!@count($data)) return ;
@@ -39,30 +34,15 @@ class BeLangTextComponent extends Object {
 		}
 		$data = $translation ;
 	}
-	
-	/**
-	 * Formatta, per la vista, i campi in lingua.
-	 * Forma un array:
-	 * 	nome_campo array:
-	 * 				lingua_1 testo
-	 * 				...............
-	 * 				lingua_n testo
-	 *
-	 * @param unknown_type $data
-	 */
+
 	function setupForView(&$data) {
 		$tmp = array() ;
-		
 		for($i=0; $i < count($data) ; $i++) {
 			$item = &$data[$i] ;
-			
 			if(!isset($tmp[$item["name"]]))	$tmp[$item["name"]] = array() ;
 			$tmp[$item["name"]][$item["lang"]] = (!@empty($item["text"])) ? @$item["text"] : @$item["long_text"] ;
 		}
-		
 		$data = $tmp ;
 	}
-
 }
-
 ?>

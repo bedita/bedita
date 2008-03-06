@@ -22,20 +22,11 @@ $.validator.setDefaults({
 });
 
 $(document).ready(function(){
-
 	$("#updateForm").validate(); 
-
-	// submit delete
 	$("#delBEObject").submitConfirm({
 		action: urlDelete,
 		message: messageDel
 	});
-
-	// Aggiunta traduzioni linguistiche dei campi
-	$("#cmdTranslateTitle").addTranslateField('title', langs) ;
-	$("#cmdTranslateSubTitle").addTranslateField('subtitle', langs) ;
-	$("#cmdTranslateShortDesc").addTranslateField('shortdesc', langs) ;
-	$("#cmdTranslateLongDesc").addTranslateField('longdesc', langs) ;
 });
 
 {/literal}

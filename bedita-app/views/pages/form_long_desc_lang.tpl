@@ -136,7 +136,7 @@ $(document).ready(function(){
 		</ul>
 		{foreach key=val item=label from=$conf->langOptions}
 		<div id="long_desc_lang_{$val}">
-			<h3><img src="{$html->webroot}img/flags/{$val}.png" border="0"/></h3>
+			<h3><img src="{$html->webroot}img/flags/{$val}.png" border="0" alt="{$val}"/></h3>
 			<b>{t}Short text{/t}:</b>
 			<br/>
 			{if ($conf->fckeditor|default:false)}

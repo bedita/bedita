@@ -26,7 +26,7 @@ class BEObject extends BEAppModel
 	var $useTable	= "objects" ;
 	
 	var $validate = array(
-		'title' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true, 'message' => 'Campo vuoto')),
+		'title' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
 		'object_type_id' 	=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
 		'nickname' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
 		'lang' 				=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),

@@ -2,6 +2,9 @@
 {$html->css('tree')}
 {$html->css('module.area')}
 {if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
+{$html->css('ui.tabs')}
+{$javascript->link("ui/jquery.dimensions")}
+{$javascript->link("ui/ui.tabs")}
 {$javascript->link("jquery.treeview")}
 {$javascript->link("interface")}
 {$javascript->link("module.area")}
@@ -13,7 +16,6 @@
 {$javascript->link("jquery.metadata")}
 {$javascript->link("jquery.validate")}
 {$javascript->link("jquery.autocomplete")}
-{$javascript->link("jquery.translatefield")}
 
 <script type="text/javascript">
 <!--
@@ -27,20 +29,12 @@ var parents = new Array({foreach item=i from=$parent_id}{if $i != ''}{$i},{/if}{
 Albero per selezionare la collocazione della sezione
 **************************************************** */
 $(document).ready(function(){
-
 	$('#properties').show() ;
 	if(!current_id) $('#whereto').show() ;
-
-	// aggiunge i comandi per i blocchi
-	$('.showHideBlockButton').bind("click", function(){
-		$(this).next("div").toggle() ;
-	}) ;
-
-	// handler cambiamenti dati della pagina
+	$('.showHideBlockButton').bind("click", function(){ $(this).next("div").toggle() ; }) ;
 	$("#handlerChangeAlert").changeAlert($('input, textarea, select').not($("#addCustomPropTR TD/input, #addCustomPropTR TD/select, #addPermUserTR TD/input, #addPermGroupTR TD/input"))) ;
 	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div').alertUnload() ;
 });
-
 
 $(document).ready(function(){
 	designTreeWhere() ;
@@ -48,7 +42,6 @@ $(document).ready(function(){
 });
 
 
-// Crea o refresh albero
 function designTreeWhere() {
 	$("#treeWhere").Treeview({
 		control: "#treecontrol" ,
