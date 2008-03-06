@@ -50,7 +50,7 @@ class BEAppModel extends AppModel {
 	 * @param unknown_type $value
 	 * @return unknown
 	 */
-	protected function getDefaultDateFormat($value = null) {
+	public function getDefaultDateFormat($value = null) {
 		if(is_integer($value)) return date("Y-m-d", $value) ;
 		
 		if(is_string($value) && !empty($value)) {

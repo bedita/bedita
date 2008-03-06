@@ -72,8 +72,10 @@ class EventsController extends ModulesController {
 		$this->data['body'] = $this->data['LangText'][$this->data['lang']]['body'];
 	 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
 	 	
+		$this->checkEventCalendar();
+	 	
 		$this->Transaction->begin() ;
-
+		
 		if(!$this->Event->save($this->data)) {
 	 		throw new BeditaException(__("Error saving event", true), $this->Event->validationErrors);
 	 	}
@@ -92,7 +94,16 @@ class EventsController extends ModulesController {
  		$this->userInfoMessage(__("Event saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("event [". $this->data["title"]."] saved");
 	 }
-	
+
+	 private function checkEventCalendar() {
+	 	
+	 	if(isset($this->data['EventDateItem'])) {
+	 		foreach ($this->data['EventDateItem'] as $k => &$v) {
+	 			$v['start'] = $this->Event->getDefaultDateFormat($v['start']);
+	 			$v['end'] = $this->Event->getDefaultDateFormat($v['end']);
+	 		}	 		
+	 	}
+	 }
 
 	 public function delete() {
 		$this->checkWriteModulePermission();

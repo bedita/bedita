@@ -1,13 +1,6 @@
 <?php
 /**
  *
- * PHP versions 5
- *
- * CakePHP :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright (c)	2006, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
- *
  * @filesource
  * @copyright		Copyright (c) 2007
  * @link			
@@ -26,14 +19,12 @@ class EventDateItem extends BEAppModel
 {
 	var $useTable = 'event_date_items' ;
 	var $recursive = 0 ;
+
+	var $validate = array(
+		'start' 		=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
+		'end' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true))
+	) ;
 	
-	public function beforeValidate() {
-		if(isset($this->data[$this->name])) 
-			$data = $this->data[$this->name] ;
-		else 
-			$data = $this->data ;
-		$data['start'] = isset($data['start']) ? $this->getDefaultDateFormat($data['start']) : null;
-		$data['end'] = isset($data['end']) ? $this->getDefaultDateFormat($data['end']) : null;
-	}
+
 }
 ?>

@@ -71,11 +71,11 @@ class Event extends BEAppObjectModel
 				array(
 					'className'		=> 'EventDateItem',
 					'foreignKey'	=> 'event_id',
-					'fields'		=> 'id, start, end',
 					'dependent'		=> true
-				),
+				)
 		) ;
-	
+
+
 	function afterSave() {
 		
 		// Scorre le associazioni hasMany
@@ -91,7 +91,8 @@ class Event extends BEAppObjectModel
 			$db->query("DELETE FROM {$table} WHERE {$foreignK} = '{$id}'");
 			
 			// Se non ci sono dati da salvare esce
-			if (!isset($this->data[$this->name][$name]) || !(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name]))) continue ;
+			if (!isset($this->data[$this->name][$name]) || !(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name]))) 
+				continue ;
 			
 			// Salva le nuove associazioni
 			$size = count($this->data[$this->name][$name]) ;
@@ -99,7 +100,8 @@ class Event extends BEAppObjectModel
 				$modelTmp	 	 = new $assoc['className']() ; 
 				$data 			 = &$this->data[$this->name][$name][$i] ;
 				$data[$foreignK] = $id ; 
-				if(!$modelTmp->save($data)) return false ;
+				if(!$modelTmp->save($data)) 
+					return false ;
 				
 				unset($modelTmp);
 			}
