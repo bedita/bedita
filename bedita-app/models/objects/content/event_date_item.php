@@ -25,6 +25,16 @@ class EventDateItem extends BEAppModel
 		'end' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true))
 	) ;
 	
+	function beforeValidate() {
+		if(isset($this->data[$this->name])) 
+			$data = &$this->data[$this->name] ;
+		else 
+			$data = &$this->data ;
+		
+		$data['start'] = $this->getDefaultDateFormat($data['start']);
+	 	$data['end'] = $this->getDefaultDateFormat($data['end']);
 
+		return true;
+	}
 }
 ?>

@@ -79,6 +79,7 @@ function activePortionsForm(objectType) {
 {include file="../pages/form_properties.tpl" doctype=false comments=true}
 {include file="../pages/form_subtitle_desc.tpl"}
 {include file="event_dates.tpl"}
+{include file="../pages/form_categories.tpl"}
 {include file="../pages/form_tree.tpl"}
 {include file="../pages/form_long_desc_lang.tpl"}
 {include file="../pages/form_custom_properties.tpl" el=$object}

@@ -21,7 +21,7 @@ class EventsController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Fck');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
-	var $uses = array('Event') ;
+	var $uses = array('Event','ObjectCategory') ;
 	protected $moduleName = 'events';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -45,7 +45,12 @@ class EventsController extends ModulesController {
 
 		$this->set('object',	$obj);
 		$this->set('tree', 		$this->BeTree->getSectionsTree());
-		$this->set('parents',	$this->BeTree->getParents($id));		
+		$this->set('parents',	$this->BeTree->getParents($id));
+
+		$conf  = Configure::getInstance() ;
+		$ot = $conf->objectTypes['event'];
+		$this->set('categories', $this->ObjectCategory->findAll("ObjectCategory.object_type_id=$ot"));
+		
 		$this->selfUrlParams = array("id", $id);
 		$this->setUsersAndGroups();
 	 }
@@ -72,8 +77,6 @@ class EventsController extends ModulesController {
 		$this->data['body'] = $this->data['LangText'][$this->data['lang']]['body'];
 	 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
 	 	
-		$this->checkEventCalendar();
-	 	
 		$this->Transaction->begin() ;
 		
 		if(!$this->Event->save($this->data)) {
@@ -93,16 +96,6 @@ class EventsController extends ModulesController {
 	 	$this->Transaction->commit();
  		$this->userInfoMessage(__("Event saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("event [". $this->data["title"]."] saved");
-	 }
-
-	 private function checkEventCalendar() {
-	 	
-	 	if(isset($this->data['EventDateItem'])) {
-	 		foreach ($this->data['EventDateItem'] as $k => &$v) {
-	 			$v['start'] = $this->Event->getDefaultDateFormat($v['start']);
-	 			$v['end'] = $this->Event->getDefaultDateFormat($v['end']);
-	 		}	 		
-	 	}
 	 }
 
 	 public function delete() {
