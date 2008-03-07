@@ -14,10 +14,17 @@ $(document).ready(function(){
 	{if isset($comments)}<br /><span style="font-weight:bold;">{t}comments{/t}</span>:<input type="radio"/>{t}No{/t} <input type="radio"/>{t}Yes{/t}{/if}
 	<br />
 	{if !(isset($publication)) || $publication}
-	<span style="font-weight:bold;">{t}publication{/t}. {t}start{/t}:</span>
-	<input type="text" class="{literal}{checkDate:true}{/literal}" title="{t}start has to be a valid date in the following format:{/t} {$conf->dateFormatValidation}" name="data[start]" id="start" value="{if !empty($object.start)}{$object.start|date_format:$conf->date_format}{/if}"/>
-	<span style="font-weight:bold;">{t}end{/t}:</span>
-	<input type="text" class="{literal}{checkDate:true}{/literal}" title="{t}end has to be a valid date in the following format:{/t} {$conf->dateFormatValidation}" name="data[end]" id="end" value="{if !empty($object.end)}{$object.end|date_format:$conf->date_format}{/if}"/>
+		<span style="font-weight:bold;">{t}publication{/t}. {t}start{/t}:</span>
+		<input type="text" class="{literal}{{/literal}checkDate:'{$conf->dateFormatValidation}'{literal}}{/literal}" title="{t 1=$conf->dateFormatValidation}Please enter a valid date in the %1 format{/t}" name="data[start]" id="start" value="{if !empty($object.start)}{$object.start|date_format:$conf->date_format}{/if}"/>
+		<span style="font-weight:bold;">{t}end{/t}:</span>
+		{strip}
+		<input type="text" class="{literal}{{/literal}
+										checkDate:'{$conf->dateFormatValidation}', 
+										dateGreaterThen: new Array('{$conf->dateFormatValidation}','start')
+								  {literal}}{/literal}" 
+							title="{t 1=$conf->dateFormatValidation}Please enter a valid date in the %1 format and greater than the previous date{/t}" 
+							name="data[end]" id="end" value="{if !empty($object.end)}{$object.end|date_format:$conf->date_format}{/if}"/>
+		{/strip}
 	{/if}
 	<hr/>
 	{if (isset($doctype) && !empty($doctype))}

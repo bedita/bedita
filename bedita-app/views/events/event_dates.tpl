@@ -17,11 +17,17 @@
 	<span style="font-weight:bold;">{t}Add event date{/t}</span>
 	<br/>
 	<span style="font-weight:bold;">{t}start{/t}</span>
-	<input type="text" class="{literal}{checkDate:true}{/literal}" title="{t}start has to be a valid date in the following format:{/t} {$conf->dateFormatValidation}" 
+	<input type="text" class="{literal}{{/literal}checkDate:'{$conf->dateFormatValidation}'{literal}}{/literal}" title="{t 1=$conf->dateFormatValidation}Please enter a valid date in the %1 format{/t}" 
 		name="data[EventDateItem][{$idx}][start]" id="eventStart" value="{if !empty($d.start)}{$d.start|date_format:$conf->date_format}{/if}"/>
 	<span style="font-weight:bold;">{t}end{/t}:</span>
-	<input type="text" class="{literal}{checkDate:true}{/literal}" title="{t}end has to be a valid date in the following format:{/t} {$conf->dateFormatValidation}" 
+	{strip}
+	<input type="text" class="{literal}{{/literal}
+									checkDate: '{$conf->dateFormatValidation}',
+									dateGreaterThen: new Array('{$conf->dateFormatValidation}','eventStart')
+							  {literal}}{/literal}" 
+						title="{t 1=$conf->dateFormatValidation}Please enter a valid date in the %1 format and greater than the previous date{/t}" 
 		name="data[EventDateItem][{$idx}][end]" id="eventEnd" value="{if !empty($d.end)}{$d.end|date_format:$conf->date_format}{/if}"/>
+	{/strip}
 	<hr/>
 </fieldset>
 </div>

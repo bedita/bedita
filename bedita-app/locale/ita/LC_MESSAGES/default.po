@@ -675,3 +675,11 @@ msgstr "Sei sicuro di voler eliminare gli elementi selezionati?"
 
 msgid "Are you sure that you want to delete the item?"
 msgstr "Sei sicuro di voler eliminare l'elemento?"
+
+msgid "Please enter a valid date in the %1 format and greater than the previous date"
+msgstr "Inserisci una data valida nel formato %1 e maggiore della data precedente"
+
+msgid "Please enter a valid date in the %1 format"
+msgstr "Inserisci una data nel formato %1"
+msgid "Please enter a valid date in the %1 format and greater than the previous date"
+msgstr "Inserisci una data valida nel formato %1 e maggiore della data precedente"

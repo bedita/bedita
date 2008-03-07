@@ -1,4 +1,3 @@
-
 {$html->docType('xhtml-trans')}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">
 <head>
@@ -23,15 +22,13 @@
 	<script type="text/javascript" src="{$html->webroot}js/module.{$moduleName}.js"></script>
 {/if}
 {if ($agent.IE)}{$html->css('ie')}{/if}
-<script type="text/javascript">
-	var dateFormat = "{$conf->dateFormatValidation}";
-</script>
+
 {literal}
 <style type="text/css">
 TABLE.indexList TR.rowList:hover {background-color:{/literal}{if empty($moduleColor)}#FF6600{else}{$moduleColor}{/if}{literal};}
 </style>
 {/literal}
-{$content_for_layout} 
+{$content_for_layout}
 <div id="footerPage">
 	<a href="http://www.cakephp.org/" target="_blank">
 	<img src="{$html->webroot}img/cake.power.png" alt="CakePHP Rapid Development Framework" border="0"/>
