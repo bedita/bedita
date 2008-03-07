@@ -27,7 +27,7 @@ $(document).ready(function(){
 	
 	$("#deleteSelected").bind("click", delObjects);
 	$("a.delete").bind("click", function() {
-		delObject($(this).attr("id"));
+		delObject($(this).attr("title"));
 	});
 	
 });
@@ -71,7 +71,7 @@ function delObjects() {
 	<table class="indexList">
 	<thead>
 	<tr>
-		<th><input type="checkbox" class="selectAll" id="selectAll"><label for="selectAll"> {t}(Un)Select All{/t}</label></th>
+		<th><input type="checkbox" class="selectAll" id="selectAll"/><label for="selectAll"> {t}(Un)Select All{/t}</label></th>
 		<th>{$beToolbar->order('id', 'id')}</th>
 		<th>{$beToolbar->order('title', 'Title')}</th>
 		<th>{$beToolbar->order('status', 'Status')}</th>
@@ -89,7 +89,7 @@ function delObjects() {
 		<td class="cellList">{$objects[i].status}</td>
 		<td class="cellList">{$objects[i].created|date_format:'%b %e, %Y'}</td>
 		<td class="cellList">{$objects[i].lang}</td>
-		<td><a href="javascript:void(0);" class="delete" id="{$objects[i].id}">{t}Delete{/t}</a></td>
+		<td><a href="javascript:void(0);" class="delete" title="{$objects[i].id}">{t}Delete{/t}</a></td>
 	</tr>
 	{/section}
 	<tr><td colspan="7"><input id="deleteSelected" type="button" value="X - {t}Delete selected items{/t}"/></td></tr>
