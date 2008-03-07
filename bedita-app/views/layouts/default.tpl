@@ -18,7 +18,7 @@
 {$html->css('menu')}
 {$html->css('form')}
 {$html->css('message')}
-{if $moduleName}
+{if $moduleName|default:""}
 	<link rel="stylesheet" type="text/css" href="{$html->webroot}css/module.{$moduleName}.css" />
 	<script type="text/javascript" src="{$html->webroot}js/module.{$moduleName}.js"></script>
 {/if}
