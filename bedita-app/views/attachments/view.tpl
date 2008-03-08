@@ -1,26 +1,16 @@
-{agent var="agent"}
-{$html->css('module.attachments')}
 {$html->css("ui.datepicker")}
-{if ($agent.IE)}    {$html->css('jquery.ie.autocomplete')}
-{else}              {$html->css('jquery.autocomplete')}
-{/if}
-
 {$javascript->link("form")}
 {$javascript->link("jquery.treeview")}
 {$javascript->link("jquery.changealert")}
 {$javascript->link("jquery.form")}
 {$javascript->link("jquery.selectboxes.pack")}
-{$javascript->link("jquery.delegate")}
 {$javascript->link("jquery.metadata")}
 {$javascript->link("jquery.validate")}
 {$javascript->link("validate.tools")}
-{$javascript->link("jquery.autocomplete")}
-{$javascript->link("jquery.translatefield")}
-{$javascript->link("module.attachments")}
 {$javascript->link("interface")}
-{$javascript->link("datepicker/ui.datepicker")}
+{$javascript->link("ui/datepicker/ui.datepicker")}
 {if $currLang != "eng"}
-    {$javascript->link("datepicker/ui.datepicker-$currLang.js")}
+    {$javascript->link("ui/datepicker/ui.datepicker-$currLang.js")}
 {/if}
 
 <script type="text/javascript">

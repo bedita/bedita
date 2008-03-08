@@ -1,6 +1,5 @@
 {$html->css('tree')}
 {$javascript->link("jquery.treeview")}
-{$javascript->link("interface")}
 {$javascript->link("form")}
 {$javascript->link("jquery.changealert")}
 

@@ -1,9 +1,3 @@
-{literal}
-<style type="text/css">
-	H1 {float:left;}
-	#footerPage {width:auto; margin:0px !important;}
-</style>
-{/literal}
 </head>
 <body>
 <div id="headerPageHome">

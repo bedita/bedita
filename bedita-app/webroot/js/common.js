@@ -4,7 +4,35 @@ function customRange(input) {
         	maxDate: (input.id == 'start' ? $('#end').getDatepickerDate() : null)}; 
 }
 
-// jquery functions
+// build or refresh tree
+function designTreeWhere() {
+	$("#treeWhere").Treeview({
+		control: "#treecontrol" ,
+		speed: 'fast',
+		collapsed:false
+	});
+}
+
+// add checkbutton in areas'tree
+function addCommandWhere() {
+	$("span[@class='SectionItem'], span[@class='AreaItem']", "#treeWhere").each(function(i) {
+		var id = $("input[@name='id']", this.parentNode).eq(0).attr('value') ;
+		
+		if(parents.indexOf(parseInt(id)) > -1) {
+			$(this).before('<input type="checkbox" name="data[destination][]" id="s_'+id+'" value="'+id+'" checked="checked"/>&nbsp;');
+		} else {
+			$(this).before('<input type="checkbox" name="data[destination][]" id="s_'+id+'" value="'+id+'"/>&nbsp;');			
+		}
+		
+		$(this).html('<label class="section" for="s_'+id+'">'+$(this).html()+"<\/label>") ;
+	}) ;
+}
+
+
+/*
+*	jQuery functions
+*
+*/
 jQuery.fn.extend({
 	check: function() {
 		return this.each(function() { this.checked = true; });

@@ -1,8 +1,4 @@
-{agent var="agent"}
 {$html->css('tree')}
-{$html->css('module.galleries')}
-{$html->css("ui.datepicker")}
-{if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
 {$html->css('ui.tabs')}
 {$javascript->link("ui/jquery.dimensions")}
 {$javascript->link("ui/ui.tabs")}
@@ -13,16 +9,10 @@
 {$javascript->link("jquery.selectboxes.pack")}
 {$javascript->link("jquery.cmxforms")}
 {$javascript->link("jquery.metadata")}
-{$javascript->link("jquery.delegate")}
 {$javascript->link("jquery.validate")}
 {$javascript->link("validate.tools")}
-{$javascript->link("jquery.autocomplete")}
-{$javascript->link("module.galleries")}
 {$javascript->link("interface")}
-{$javascript->link("datepicker/ui.datepicker")}
-{if $currLang != "eng"}
-	{$javascript->link("datepicker/ui.datepicker-$currLang.js")}
-{/if}
+
 <script type="text/javascript">
 <!--
 
@@ -42,45 +32,6 @@ $(document).ready(function(){
 	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div').alertUnload() ;
 
 });
-
-
-$(document).ready(function(){
-	designTreeWhere() ;
-	addCommandWhere() ;
-});
-
-
-// Crea o refresh albero
-function designTreeWhere() {
-	$("#treeWhere").Treeview({
-		control: "#treecontrol" ,
-		speed: 'fast',
-		collapsed:false
-	});
-}
-
-// Aggiunge il radio button
-function addCommandWhere() {
-	$("span[@class='SectionItem'], span[@class='AreaItem']", "#treeWhere").each(function(i) {
-		var id = $("input[@name='id']", this.parentNode).eq(0).attr('value') ;
-
-		if(parents.indexOf(parseInt(id)) > -1) {
-			$(this).before('<input type="checkbox" name="data[destination][]" value="'+id+'" checked="checked"/>&nbsp;');
-		} else {
-			$(this).before('<input type="checkbox" name="data[destination][]" value="' +id+'"/>&nbsp;');
-		}
-
-		$(this).html('<a href="javascript:;">'+$(this).html()+"<\/a>") ;
-
-		$("a", this).bind("click", function(e) {
-			// Indica l'avvenuto cambiamento dei dati
-			try { if(!$("../../input[@type=checkbox]", this).get(0).checked) $().alertSignal() ; } catch(e) {}
-
-			$("../../input[@type=checkbox]", this).get(0).checked = true ;
-		}) ;
-
-	}) ;
-}
 
 {/literal}
 

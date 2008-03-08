@@ -1,3 +1,14 @@
+<script type="text/javascript">
+<!--
+{literal}
+$(document).ready(function(){
+	designTreeWhere() ;
+	addCommandWhere() ;
+});
+{/literal}
+//-->
+</script>
+
 <h2 class="showHideBlockButton">{t}Where put the document into{/t}</h2>
 <div class="blockForm" id="whereto" style="display: none">
 <fieldset>
