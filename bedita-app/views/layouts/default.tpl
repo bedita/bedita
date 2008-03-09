@@ -23,6 +23,11 @@
 {/if}
 {if ($agent.IE)}{$html->css('ie')}{/if}
 
+{* correctly handle PNG transparency in IE 5.5/6 - added by xho - remove this comment in future *}
+<!--[if lt IE 7]>
+<script defer type="text/javascript" src="js/pngfix.js"></script>
+<![endif]-->
+
 {literal}
 <style type="text/css">
 TABLE.indexList TR.rowList:hover {background-color:{/literal}{if empty($moduleColor)}#FF6600{else}{$moduleColor}{/if}{literal};}
