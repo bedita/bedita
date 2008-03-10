@@ -7,7 +7,7 @@ var URLBase = "{$html->url('index/')}" ;
 {literal}
 $(document).ready(function(){
 	
-	$("#tree").designTree(URLBase) ;
+	$("#tree").designTree({url: URLBase}) ;
 
 	$("TABLE.indexList TD.cellList").click(function(i) { 
 		document.location = $(this).parent().find("a:first").attr("href"); 

@@ -19,18 +19,6 @@
 {/if}
 <script type="text/javascript">
 <!--
-
-{* Avoid Javascript errors when a document have no 'parents' *}
-{if is_array($parents) && count($parents) > 1}
-	var parents = new Array({section name=i loop=$parents}{$parents[i]}{if !($smarty.section.i.last)},{/if}{/section}) ;
-
-{elseif is_array($parents) && count($parents) == 1}
-	var parents = new Array() ;
-	parents[0] = {$parents[0]} ;
-{else}
-	var parents = new Array() ;
-{/if}
-
 {literal}
 $(document).ready(function(){
 	$('#properties').show() ;

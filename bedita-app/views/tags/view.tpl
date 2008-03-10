@@ -1,8 +1,5 @@
-{agent var="agent"}
 {$html->css('tree')}
-{$html->css('module.tags')}
 {$html->css("ui.datepicker")}
-{if ($agent.IE)}{$html->css('jquery.ie.autocomplete')}{else}{$html->css('jquery.autocomplete')}{/if}
 {$html->css('ui.tabs')}
 {$javascript->link("ui/jquery.dimensions")}
 {$javascript->link("ui/ui.tabs")}
@@ -13,29 +10,16 @@
 {$javascript->link("jquery.selectboxes.pack")}
 {$javascript->link("jquery.cmxforms")}
 {$javascript->link("jquery.metadata")}
-{$javascript->link("jquery.delegate")}
 {$javascript->link("jquery.validate")}
 {$javascript->link("validate.tools")}
-{$javascript->link("jquery.autocomplete")}
-{$javascript->link("module.tags")}
 {$javascript->link("interface")}
-{$javascript->link("datepicker/ui.datepicker")}
+{$javascript->link("ui/datepicker/ui.datepicker")}
 {if $currLang != "eng"}
-	{$javascript->link("datepicker/ui.datepicker-$currLang.js")}
+	{$javascript->link("ui/datepicker/ui.datepicker-$currLang.js")}
 {/if}
 <script type="text/javascript">
 <!--
-
-{if is_array($parents) && count($parents) > 1}
-	var parents = new Array({section name=i loop=$parents}{$parents[i]}{if !($smarty.section.i.last)},{/if}{/section}) ;
-{elseif is_array($parents) && count($parents) == 1}
-	var parents = new Array() ;
-	parents[0] = {$parents[0]} ;
-{else}
-	var parents = new Array() ;
-{/if}
 {literal}
-
 $(document).ready(function() {
 	$('.showHideBlockButton').bind("click", function(){
 		$(this).next("div").toggle() ;

@@ -4,31 +4,6 @@ function customRange(input) {
         	maxDate: (input.id == 'start' ? $('#end').getDatepickerDate() : null)}; 
 }
 
-// build or refresh tree
-function designTreeWhere() {
-	$("#treeWhere").Treeview({
-		control: "#treecontrol" ,
-		speed: 'fast',
-		collapsed:false
-	});
-}
-
-// add checkbutton in areas'tree
-function addCommandWhere() {
-	$("span[@class='SectionItem'], span[@class='AreaItem']", "#treeWhere").each(function(i) {
-		var id = $("input[@name='id']", this.parentNode).eq(0).attr('value') ;
-		
-		if(parents.indexOf(parseInt(id)) > -1) {
-			$(this).before('<input type="checkbox" name="data[destination][]" id="s_'+id+'" value="'+id+'" checked="checked"/>&nbsp;');
-		} else {
-			$(this).before('<input type="checkbox" name="data[destination][]" id="s_'+id+'" value="'+id+'"/>&nbsp;');			
-		}
-		
-		$(this).html('<label class="section" for="s_'+id+'">'+$(this).html()+"<\/label>") ;
-	}) ;
-}
-
-
 /*
 *	jQuery functions
 *
@@ -50,12 +25,19 @@ jQuery.fn.extend({
 			}
 			$(this).parents("form").attr("action", params.action);
 			$(this).parents("form").submit();
-		})
+		});
 	},
-	// require treeview plugin
-	designTree: function(url) {
+	/*
+	*	build the tree
+	*	@params: params is a JSON object with values:
+	*				- @id_control: div's id that contains "close all" and "expand all" anchors
+	*				- @url: target base url of area/section
+	*				- @inputTypt: input type to add to the item's tree (i.e. checkbox, radio)
+	*/
+	designTree: function(params) {
+		controlElem = (params.id_control)? "#" + params.id_control : false ;
 		$(this).Treeview({
-			control: false ,
+			control: controlElem,
 			speed: 'fast',
 			collapsed:false
 		});
@@ -63,9 +45,21 @@ jQuery.fn.extend({
 		$("li span", this).each(function(i){
 			// get ID section 
 			var id = $("input[@name='id']", this.parentNode).eq(0).attr('value') ;
-	
-			// add anchor
-			$(this).html('<a href="'+url+"id:"+id+'">'+$(this).html()+'</a>') ;
+			if (params.url) {
+				// add anchor
+				$(this).html('<a href="'+params.url+"id:"+id+'">'+$(this).html()+'</a>') ;
+			} 
+			if (params.inputType) {
+				// add input
+				$(this).before('<input type="' + params.inputType  + '" name="data[destination][]" id="s_'+id+'" value="'+id+'"/>&nbsp;');
+				$(this).html('<label class="section" for="s_'+id+'">'+$(this).html()+"<\/label>") ;
+				// if there isn't any radio button checked it checks the first
+				if (params.inputType == "radio") { 
+					if ($("input[name*='destination']:checked").length == 0) {
+						$("input[name*='destination']:first").attr("checked", "checked"); 
+					}
+				}
+			}
 		});
 	}
 });

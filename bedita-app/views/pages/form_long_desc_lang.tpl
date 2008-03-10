@@ -114,7 +114,7 @@ $(document).ready(function(){
 		$(this).prev("input.formatting_{/literal}{$val}{literal}").get(0).checked = true ;
 	}) ; 
 	$($("#text_l_{/literal}{$val}{literal}")[0].form).bind("submit", function() {
-		if(!formatting_html_text_doc[{/literal}{$val}{literal}]) return true ;
+		if(!formatting_html_text_doc['{/literal}{$val}{literal}']) return true ;
 		var fck_editor_instance = FCKeditorAPI.GetInstance(fck_text['{/literal}{$val}{literal}'].InstanceName) ;
 		$("#text_{/literal}{$val}{literal}").attr("value", fck_editor_instance.GetHTML()) ;
 		fck_editor_instance = FCKeditorAPI.GetInstance(fck_text_l['{/literal}{$val}{literal}'].InstanceName) ;

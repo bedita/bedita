@@ -14,15 +14,8 @@
 
 <script type="text/javascript">
 <!--
-var parent_id 	= {$parent_id} ;
 var current_id	= {$section.id|default:0} ;
-var parents = new Array({foreach item=i from=$parent_id}{if $i != ''}{$i},{/if}{/foreach}0) ;
-
 {literal}
-
-/* ****************************************************
-Albero per selezionare la collocazione della sezione
-**************************************************** */
 $(document).ready(function(){
 	$('#properties').show() ;
 	if(!current_id) $('#whereto').show() ;
@@ -30,41 +23,6 @@ $(document).ready(function(){
 	$("#handlerChangeAlert").changeAlert($('input, textarea, select').not($("#addCustomPropTR TD/input, #addCustomPropTR TD/select, #addPermUserTR TD/input, #addPermGroupTR TD/input"))) ;
 	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div').alertUnload() ;
 });
-
-$(document).ready(function(){
-	designTreeWhere() ;
-	addCommandWhere() ;
-});
-
-
-function designTreeWhere() {
-	$("#treeWhere").Treeview({
-		control: "#treecontrol" ,
-		speed: 'fast',
-		collapsed:false
-	});
-}
-
-// Aggiunge il radio button
-function addCommandWhere() {
-	$("span[@class='SectionItem'], span[@class='AreaItem']", "#treeWhere").each(function(i) {
-		var id = $("input[@name='id']", this.parentNode).eq(0).attr('value') ;
-
-		if(parents.indexOf(parseInt(id)) > -1) {
-			$(this).before('<input type="radio" name="data[destination][]" id="s_'+id+'" value="'+id+'" checked="checked"/>&nbsp;');
-		} else {
-			$(this).before('<input type="radio" name="data[destination][]" id="s_'+id+'" value="' +id+'"/>&nbsp;');
-		}
-
-		$(this).html('<label class="section" for="s_'+id+'">'+$(this).html()+"<\/label>") ;
-	}) ;
-	
-	// if there isn't any radio button checked it checks the first 
-	if ($("input[name*='destination']:checked").length == 0) {
-		$("input[name*='destination']:first").attr("checked", "checked"); 
-	}
-}
-
 {/literal}
 //-->
 </script>

@@ -2,8 +2,17 @@
 <!--
 {literal}
 $(document).ready(function(){
-	designTreeWhere() ;
-	addCommandWhere() ;
+	$("#treeWhere").designTree({
+		id_control: "treecontrol", 
+		inputType: "{/literal}{$inputTreeType|default:"checkbox"}"{literal}
+	});
+	{/literal}
+	{if $parents|default:""}
+		{foreach from=$parents item="id_parent"}
+			$("#s_{$id_parent}").attr("checked", "checked");
+		{/foreach}
+	{/if}
+	{literal}
 });
 {/literal}
 //-->

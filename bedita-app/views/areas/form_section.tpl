@@ -41,7 +41,7 @@ $(document).ready(function(){
 {include file="../pages/form_header.tpl"}
 <div class="blockForm" id="errorForm"></div>
 {include file="../pages/form_container_properties.tpl"}
-{include file="../pages/form_tree.tpl" excludedSubTreeId=$section.id}
+{include file="../pages/form_tree.tpl" excludedSubTreeId=$section.id inputTreeType="radio" parents=$parent_id}
 {include file="../pages/form_custom_properties.tpl" el=$section}
 {include file="../pages/form_permissions.tpl" el=$section recursion=true}
 </form>
