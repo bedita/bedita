@@ -13,8 +13,9 @@
  * @license
  * @author 		ste ste@channelweb.it			
 */
-class ObjectCategory extends BEAppModel
-{
-
+class ObjectCategory extends BEAppModel {
+	var $actsAs = array(
+			'CompactResult' 		=> array()
+	);
 }
 ?>

@@ -51,7 +51,7 @@ $(document).ready(function(){
 *}
 		<table class="indexList">
 		<tr>
-			<th><input type="checkbox" class="selectAll" id="selectAll"><label for="selectAll"> {t}(Un)Select All{/t}</label></th>
+			<th><input type="checkbox" class="selectAll" id="selectAll"/><label for="selectAll"> {t}(Un)Select All{/t}</label></th>
 			<th>{$beToolbar->order('id', 'id')}</th>
 			{*
 			<th>{$beToolbar->order('title', 'Title')}</th>

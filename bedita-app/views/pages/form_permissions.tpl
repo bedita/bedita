@@ -74,7 +74,7 @@ function fncAddPermsTR(id) {
 	// Se non completa esce
 	if(!name || (!(read || modify || _delete))) {
 		$("#"+id+" TD:last").find("label").remove();
-		$("#"+id+" TD:last").append("<label class='error'>{/literal}{t}Select at least one type of permission{/t}{literal}</label>")
+		$("#"+id+" TD:last").append("<label class='error'>{/literal}{t}Select at least one type of permission{/t}{literal}<\/label>")
 		return false ;
 	} else {
 		$("#"+id+" TD:last").find("label").remove();
