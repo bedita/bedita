@@ -49,6 +49,8 @@ class GalleriesController extends ModulesController {
 		}
 		// Data to save
 		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]);
+		$this->data['title'] = $this->data['LangText'][$this->data['lang']]['title'];
+		$this->data['description'] = $this->data['LangText'][$this->data['lang']]['description'];
 		$this->BeLangText->setupForSave($this->data["LangText"]);
 		$multimedia = (isset($this->data['multimedia']))?$this->data['multimedia']:array() ;
 		unset($this->data['multimedia']);
