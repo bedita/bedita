@@ -463,6 +463,7 @@ CREATE TABLE object_categories (
   `label` varchar(255) default NULL,
   `object_type_id` int(10) unsigned NOT NULL,
   `priority` int(10) unsigned default NULL,
+  `status` ENUM('on','off','draft','staging') DEFAULT 'draft',
   PRIMARY KEY  (`id`),
   KEY `object_type_id` (`object_type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=100 ;

@@ -16,8 +16,7 @@ INSERT INTO object_types (id, name) VALUES
 (8, 'timeline'),
 (9, 'community'),
 
-(10, 'file'),
-(11, 'audiovideo'),
+(10, 'befile'),
 (12, 'image'),
 
 (13, 'comment'),
@@ -25,7 +24,7 @@ INSERT INTO object_types (id, name) VALUES
 (15, 'question'),
 
 (16, 'answer'),
-(17, 'user'),
+(17, 'objectuser'),
 (18, 'shortnews'),
 
 (19, 'bibliography'),
@@ -41,7 +40,10 @@ INSERT INTO object_types (id, name) VALUES
 (27, 'documentrule'),
 
 (28, 'author'),
-(30, 'biblioitem')
+(30, 'biblioitem'),
+
+(31, 'audio'),
+(32, 'video')
 ;
 
 INSERT INTO `question_types` (`id`, `label`) VALUES
@@ -77,7 +79,8 @@ INSERT INTO `modules` (`label`, `color`, `path`, `status`) VALUES
 ('multimedia', '#ff3456', 'multimedia', 'on'),
 ('attachments', '#ff34aa', 'attachments', 'on'),
 ('news', '#cc00ff', 'news', 'on'),
-('events', '#3399CC', 'events', 'on');
+('events', '#3399CC', 'events', 'on'),
+('tags', '#888888', 'tags', 'on');
 
 -- administrator permissions
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
@@ -104,6 +107,9 @@ VALUES ((SELECT id FROM modules WHERE label = 'news'), (SELECT id FROM groups WH
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'events'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' ) ;
 
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'tags'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' ) ;
+
 -- editor perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'areas'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' ) ;
@@ -126,6 +132,9 @@ VALUES ((SELECT id FROM modules WHERE label = 'news'), (SELECT id FROM groups WH
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'events'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' ) ;
 
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'tags'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' ) ;
+
 -- reader perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'areas'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' ) ;
@@ -147,4 +156,7 @@ VALUES ((SELECT id FROM modules WHERE label = 'news'), (SELECT id FROM groups WH
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'events'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' ) ;
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'tags'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' ) ;
 
