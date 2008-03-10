@@ -600,28 +600,28 @@ msgid "Gallery items"
 msgstr "Elementos relacionados a este documento"
 
 msgid "Empty"
-msgstr "X DANTE - Vuoto"
+msgstr "Vacio"
 
 msgid "File name"
-msgstr "X DANTE - Nome del file"
+msgstr "Nome do arquivo"
 
 msgid "image"
-msgstr "X DANTE - immagine"
+msgstr "imagem"
 
 msgid "To populate this gallery switch to the 'Upload new items' tab or the 'Multimedia items repository' tab"
-msgstr "X DANTE - Per popolare questa galleria, passa alla scheda 'Carica nuovi oggetti' o alla scheda 'Archivio oggetti Multimediali'"
+msgstr "Para inserir datos na galeria, vai a 'Cargar novos objetos' ou a 'Arquivos objetos Multimediais'"
 
 msgid "Object type"
-msgstr "X DANTE - Tipo di oggetto"
+msgstr "Tipo de objeto"
 
 msgid "Total number of"
-msgstr "X DANTE - Numero totale di"
+msgstr "Numero total de"
 
 msgid "multimedia items"
-msgstr "X DANTE - oggetti multimediali"
+msgstr "objetos multimediais"
 
 msgid "(Un)Select All"
-msgstr "X DANTE - (De)Seleziona tutto"
+msgstr "(De)Selecionar todos"
 
 msgid "Browse"
 msgstr "Procura"
@@ -651,19 +651,43 @@ msgid "Thumb"
 msgstr "Imagem"
 
 msgid "Select at least one type of permission"
-msgstr "X DANTE - Selezionane almeno un tipo di permesso"
+msgstr "Selecionar um tipo de permiso"
 
 msgid "Incompleted data"
-msgstr "X DANTE - Dati incompleti"
+msgstr "Datos insuficientes"
 
 msgid "Are you sure that you want to delete selected items?"
-msgstr "X DANTE - Sei sicuro di voler eliminare gli elementi selezionati?"
+msgstr "Quer borrar todos os elementos selecionados?"
 
 msgid "Are you sure that you want to delete the item?"
-msgstr "X DANTE - Sei sicuro di voler eliminare l'elemento?"
+msgstr "Quer borrar o elemento?"
+
+msgid "Are you sure that you want to delete the tag?"
+msgstr "Quer borrar o tag?"
+
+msgid "Tag"
+msgstr "Tag"
+
+msgid "Tag saved"
+msgstr "Tag guardado"
+
+msgid "Tag deleted"
+msgstr "Tag borrado"
+
+msgid "Tags"
+msgstr "Tag"
+
+msgid "New Tag"
+msgstr "Novo Tag"
+
+msgid "No tags found"
+msgstr "Nenhum tag encontrado"
+
+msgid "categories"
+msgstr "categorias"
 
 msgid "Please enter a valid date in the %1 format and greater than the previous date"
-msgstr "X DANTE - Inserisci una data valida nel formato %1 e maggiore della data precedente"
+msgstr "Indicar uma data no formato %1 e maior da data anterior"
 
 msgid "Please enter a valid date in the %1 format"
-msgstr "X DANTE - Inserisci una data nel formato %1"
+msgstr "Inserir data no formato %1"

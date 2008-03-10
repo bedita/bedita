@@ -676,10 +676,35 @@ msgstr "Sei sicuro di voler eliminare gli elementi selezionati?"
 msgid "Are you sure that you want to delete the item?"
 msgstr "Sei sicuro di voler eliminare l'elemento?"
 
+msgid "Are you sure that you want to delete the tag?"
+msgstr "Sei sicuro di voler eliminare il tag?"
+
+msgid "Tag"
+msgstr "tag"
+
+msgid "Tag saved"
+msgstr "Tag salvato"
+
+msgid "Tag deleted"
+msgstr "Tag eliminato"
+
+msgid "Tags"
+msgstr "Tag"
+
+msgid "New Tag"
+msgstr "Nuovo Tag"
+
+msgid "No tags found"
+msgstr "Nessun tag trovato"
+
+msgid "tags"
+msgstr "tag"
+
 msgid "Please enter a valid date in the %1 format and greater than the previous date"
 msgstr "Inserisci una data valida nel formato %1 e maggiore della data precedente"
 
 msgid "Please enter a valid date in the %1 format"
 msgstr "Inserisci una data nel formato %1"
+
 msgid "Please enter a valid date in the %1 format and greater than the previous date"
 msgstr "Inserisci una data valida nel formato %1 e maggiore della data precedente"
