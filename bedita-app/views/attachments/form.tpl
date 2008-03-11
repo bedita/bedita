@@ -4,24 +4,9 @@
 var langs = {{/literal}{foreach name=i from=$conf->langOptions key=lang item=label}"{$lang}":   "{$label}" {if !($smarty.foreach.i.last)},{/if}{/foreach}{literal}} ;
 var validate = null ;
 $(document).ready(function(){
-    $.datepicker.setDefaults({
-        showOn: 'both', 
-        buttonImageOnly: true, 
-	    buttonImage: '{/literal}{$html->webroot}img/calendar.gif{literal}', 
-        buttonText: 'Calendar',
-        dateFormat: '{/literal}{$conf->dateFormatValidation|replace:'yyyy':'yy'}{literal}',
-        beforeShow: customRange
-    }, $.datepicker.regional['{/literal}{$currLang}{literal}']); 
-    $('#start').attachDatepicker();
-    $('#end').attachDatepicker();
-    // submit delete
-	$("#delBEObject").submitConfirm({
-		{/literal}
-		action: "{$html->url('delete/')}",
-		message: "{t}Are you sure that you want to delete the attachment?{/t}"
-		{literal}
-	});
-
+	$("#updateForm").validate();
+    $('div.tabsContainer > ul').tabs();
+	$('div.tabsContainer > ul > li > a').changeActiveTabs();
 });
 {/literal}
 //-->

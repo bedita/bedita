@@ -286,3 +286,7 @@ label.section {color:red;text-decoration:none}
 label.section:hover {color:red;text-decoration:underline}
 
 div#loading {background-image:url(../img/loading.gif);display:none;background-repeat: no-repeat;}
+
+/* tabs container, used by jquery selectors*/
+div.tabsContainer {
+}

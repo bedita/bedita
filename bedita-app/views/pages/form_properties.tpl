@@ -1,11 +1,14 @@
-<script type="text/javascript">
-{literal}
-$(document).ready(function(){
-	$('#properties_langs_container > ul').tabs();
-	$('#properties_langs_container > ul > li > a').click( function() { localTriggerTabs('properties_langs_container'); } );
-});
-{/literal}
-</script>
+{if !(isset($publication)) || $publication}
+	{literal}
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$('#start').attachDatepicker();
+		$('#end').attachDatepicker();
+	});
+	</script>
+	{/literal}
+{/if}
+
 <h2 class="showHideBlockButton">{t}Properties{/t}</h2>
 <div class="blockForm" id="properties">
 <fieldset>
@@ -51,7 +54,7 @@ $(document).ready(function(){
 	</tr>
 	</table>
 	<hr/>
-	<div id="properties_langs_container">
+	<div id="properties_langs_container" class="tabsContainer">
 		<ul>
 			{foreach key=val item=label from=$conf->langOptions}
 			<li><a href="#property_lang_{$val}"><span>{$label}</span></a></li>

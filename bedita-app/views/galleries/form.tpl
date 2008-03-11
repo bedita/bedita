@@ -24,6 +24,8 @@ $(document).ready(function(){
 		message: "{t}Are you sure that you want to delete the gallery?{/t}"
 		{literal}
 	});
+	$('div.tabsContainer > ul').tabs();
+	$('div.tabsContainer > ul > li > a').changeActiveTabs();
 });
 {/literal}
 </script>
@@ -32,7 +34,7 @@ $(document).ready(function(){
 <fieldset><input  type="hidden" name="data[id]" value="{$object.id|default:''}" /></fieldset>
 {include file="../pages/form_header.tpl"}
 <div class="blockForm" id="errorForm"></div>
-{include file="../pages/form_container_properties.tpl"}
+{include file="../pages/form_properties.tpl" publication=false}
 {include file="../pages/form_subtitle_desc.tpl"}
 {include file="../pages/form_file_list.tpl" containerId='multimediaContainer' controller='multimedia' title='Multimedia' items=$multimedia}
 {include file="../pages/form_custom_properties.tpl" el=$object}

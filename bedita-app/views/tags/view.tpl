@@ -1,22 +1,10 @@
 {$html->css('tree')}
-{$html->css("ui.datepicker")}
-{$html->css('ui.tabs')}
-{$javascript->link("ui/jquery.dimensions")}
-{$javascript->link("ui/ui.tabs")}
 {$javascript->link("form")}
-{$javascript->link("jquery.treeview")}
 {$javascript->link("jquery.changealert")}
 {$javascript->link("jquery.form")}
-{$javascript->link("jquery.selectboxes.pack")}
 {$javascript->link("jquery.cmxforms")}
 {$javascript->link("jquery.metadata")}
 {$javascript->link("jquery.validate")}
-{$javascript->link("validate.tools")}
-{$javascript->link("interface")}
-{$javascript->link("ui/datepicker/ui.datepicker")}
-{if $currLang != "eng"}
-	{$javascript->link("ui/datepicker/ui.datepicker-$currLang.js")}
-{/if}
 <script type="text/javascript">
 <!--
 {literal}

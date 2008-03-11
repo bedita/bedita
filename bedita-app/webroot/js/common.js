@@ -61,5 +61,15 @@ jQuery.fn.extend({
 				}
 			}
 		});
+	},
+	/*
+	*	change focus of each tab element in div (class="tabsContainer")
+	*	require ui.tabs
+	*/
+	changeActiveTabs: function() {
+		$(this).bind("click", function(){
+			var index = $(this).parents("ul").data('selected.ui-tabs');
+			$('div.tabsContainer > ul').tabs("select",index);
+		});
 	}
 });

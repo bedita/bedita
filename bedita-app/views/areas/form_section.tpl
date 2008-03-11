@@ -1,8 +1,5 @@
 <script type="text/javascript">
 <!--
-var urlDelete = "{$html->url('deleteSection/')}" ;
-var messageDel = "{t}Are you sure that you want to delete the section?{/t}" ;
-
 {literal}
 var langs = {
 {/literal}
@@ -23,10 +20,8 @@ $.validator.setDefaults({
 
 $(document).ready(function(){
 	$("#updateForm").validate(); 
-	$("#delBEObject").submitConfirm({
-		action: urlDelete,
-		message: messageDel
-	});
+	$('div.tabsContainer > ul').tabs();
+	$('div.tabsContainer > ul > li > a').changeActiveTabs();
 });
 
 {/literal}
@@ -40,7 +35,7 @@ $(document).ready(function(){
 </fieldset>
 {include file="../pages/form_header.tpl"}
 <div class="blockForm" id="errorForm"></div>
-{include file="../pages/form_container_properties.tpl"}
+{include file="../pages/form_properties.tpl" publication=false}
 {include file="../pages/form_tree.tpl" excludedSubTreeId=$section.id inputTreeType="radio" parents=$parent_id}
 {include file="../pages/form_custom_properties.tpl" el=$section}
 {include file="../pages/form_permissions.tpl" el=$section recursion=true}

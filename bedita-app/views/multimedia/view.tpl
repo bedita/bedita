@@ -1,4 +1,5 @@
-{$html->css("ui.datepicker")}
+{$html->css('ui.tabs')}
+{$javascript->link("ui/ui.tabs")}
 {$javascript->link("form")}
 {$javascript->link("jquery.treeview")}
 {$javascript->link("jquery.changealert")}
@@ -8,8 +9,6 @@
 {$javascript->link("jquery.validate")}
 {$javascript->link("validate.tools")}
 {$javascript->link("interface")}
-{$javascript->link("ui/datepicker/ui.datepicker")}
-{if $currLang != "eng"}{$javascript->link("ui/datepicker/ui.datepicker-$currLang.js")}{/if}
 <script type="text/javascript">
 <!--
 {literal}

@@ -18,16 +18,6 @@ $.validator.setDefaults({
 });
 
 $(document).ready(function(){
-	$.datepicker.setDefaults({
-		showOn: 'both', 
-		buttonImageOnly: true, 
-	    buttonImage: '{/literal}{$html->webroot}img/calendar.gif{literal}', 
-	    buttonText: 'Calendar',
-	    dateFormat: '{/literal}{$conf->dateFormatValidation|replace:'yyyy':'yy'}{literal}',
-	    beforeShow: customRange
-	}, $.datepicker.regional['{/literal}{$currLang}{literal}']); 
-	$('#start').attachDatepicker();
-	$('#end').attachDatepicker();
 	$("#updateForm").validate();
 	$("#delBEObject").submitConfirm({
 		{/literal}

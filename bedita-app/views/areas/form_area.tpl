@@ -21,14 +21,8 @@ $.validator.setDefaults({
 
 $(document).ready(function(){
 	$("#updateForm").validate();
-	// submit delete
-	$("#delBEObject").submitConfirm({
-		{/literal}
-		action: "{$html->url('deleteArea/')}",
-		message: "{t}Are you sure that you want to delete the publication?{/t}"
-		{literal}
-	});
-	$('#area_langs_container > ul').tabs();
+	$('div.tabsContainer > ul').tabs();
+	$('div.tabsContainer > ul > li > a').changeActiveTabs();
 });
 
 {/literal}
@@ -43,7 +37,7 @@ $(document).ready(function(){
 <fieldset>
 	<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 	<input type="hidden" name="data[title]" value="{$object.title|default:''}"/>
-	<div id="area_langs_container">
+	<div id="area_langs_container" class="tabsContainer">
 		<ul>
 			{foreach key=val item=label from=$conf->langOptions}
 			<li><a href="#area_lang_{$val}"><span>{$label}</span></a></li>

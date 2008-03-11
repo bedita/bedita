@@ -3,8 +3,6 @@
 <script type="text/javascript">
 {literal}
 $(document).ready(function() {
-	$('#long_desc_langs_container > ul').tabs();
-	$('#long_desc_langs_container > ul > li > a').click( function() { localTriggerTabs('long_desc_langs_container'); } );
 	{/literal}{foreach key=val item=label from=$conf->langOptions}{literal}
 	var type_formatting_{/literal}{$val}{literal} = '{/literal}{$object.LangText.$val.type|default:'html'}{literal}' ;
 	$(".formatting_{/literal}{$val}{literal}").each(function(i){		
@@ -128,7 +126,7 @@ $(document).ready(function(){
 </script>
 {if ($conf->fckeditor|default:false)}{$javascript->link('fckeditor/fckeditor.js')}{/if}
 <fieldset>
-	<div id="long_desc_langs_container">
+	<div id="long_desc_langs_container" class="tabsContainer">
 		<ul>
 			{foreach key=val item=label from=$conf->langOptions}
 			<li><a href="#long_desc_lang_{$val}"><span>{$label}</span></a></li>

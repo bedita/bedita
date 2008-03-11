@@ -1,15 +1,7 @@
-<script type="text/javascript">
-{literal}
-$(document).ready(function(){
-	$('#subtitle_langs_container > ul').tabs();
-	$('#subtitle_langs_container > ul > li > a').click( function() { localTriggerTabs('subtitle_langs_container'); } );
-});
-{/literal}
-</script>
 <h2 class="showHideBlockButton">{t}Subtitle, description{/t}</h2>
 <div class="blockForm" id="subtitle" style="display: none">
 <fieldset>
-	<div id="subtitle_langs_container">
+	<div id="subtitle_langs_container" class="tabsContainer">
 		<ul>
 			{foreach key=val item=label from=$conf->langOptions}
 			<li><a href="#subtitle_lang_{$val}"><span>{$label}</span></a></li>

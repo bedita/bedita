@@ -1,3 +1,16 @@
+{literal}
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#delBEObject").submitConfirm({
+		{/literal}
+		action: "{$html->url('delete/')}",
+		message: "{t}Are you sure that you want to delete the item?{/t}"
+		{literal}
+	});
+});
+</script>
+{/literal}
+
 <div class="FormPageHeader">
 <h1>{t}{$object.title|default:"New Item"}{/t}</h1>
 <fieldset>

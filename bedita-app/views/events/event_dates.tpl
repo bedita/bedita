@@ -1,3 +1,11 @@
+{literal}
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#eventStart').attachDatepicker();
+	$('#eventEnd').attachDatepicker();
+});
+</script>
+{/literal}
 <h2 class="showHideBlockButton">{t}Event calendar{/t}</h2>
 <div class="blockForm" id="eventDates">
 <fieldset>
