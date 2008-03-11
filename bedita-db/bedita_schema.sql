@@ -460,13 +460,15 @@ CREATE TABLE answers (
 CREATE TABLE object_categories (
   `id` int(10) unsigned NOT NULL auto_increment,
   `area_id` int(10) unsigned default NULL,
-  `label` varchar(255) default NULL,
-  `object_type_id` int(10) unsigned NOT NULL,
+  `label` varchar(255) NOT NULL,
+  `object_type_id` int(10) unsigned default NULL,
   `priority` int(10) unsigned default NULL,
-  `status` ENUM('on','off','draft','staging') DEFAULT 'draft',
+  `status` enum('on','off','draft','staging') NOT NULL default 'draft',
   PRIMARY KEY  (`id`),
-  KEY `object_type_id` (`object_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=100 ;
+  UNIQUE KEY `area_label_type` (`area_id`,`label`,`object_type_id`),
+  KEY `object_type_id` (`object_type_id`),
+  KEY `index_label` (`label`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE files (
