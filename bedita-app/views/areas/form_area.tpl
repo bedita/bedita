@@ -23,6 +23,15 @@ $(document).ready(function(){
 	$("#updateForm").validate();
 	$('div.tabsContainer > ul').tabs();
 	$('div.tabsContainer > ul > li > a').changeActiveTabs();
+	$('.lang_flags').enableDisableTabs();
+	$('#main_lang').mainLang();
+	{/literal}
+	{foreach key=val item=label from=$conf->langOptions name=langfe}
+	{if $val!=$object_lang || empty($object.LangText.title[$val])}
+		{literal}$('#area_langs_container > ul').tabs("disable",{/literal}{$smarty.foreach.langfe.iteration}{literal});{/literal}
+	{/if}
+	{/foreach}
+	{literal}
 });
 
 {/literal}
@@ -93,11 +102,25 @@ $(document).ready(function(){
 		<td class="status">&nbsp;</td>
 	</tr>
 	<tr>
-		<td class="label">{t}Language{/t}:</td>
+		<td class="label">{t}Main language{/t}:</td>
 		<td class="field">
-			<select name="data[lang]">
-			{html_options options=$conf->langOptions selected=$object.lang|default:$conf->defaultLang}
+			<select name="data[lang]" id="main_lang">
+			{foreach key=val item=label from=$conf->langOptions name=langfe}
+			<option {if $val==$object_lang}selected="selected"{/if} value="{$val}">{$label}</option>
+			{/foreach}
 			</select>
+		</td>
+		<td class="status">&nbsp;</td>
+	</tr>
+	<tr>
+		<td class="label">{t}Languages versions{/t}:</td>
+		<td class="field">
+			{foreach key=val item=label from=$conf->langOptions name=langfe}
+				<input type="checkbox" name="data[lang_version]" class="lang_flags" title="{$smarty.foreach.langfe.index}" id="flag_{$val}"
+					{if $val==$object_lang || !empty($object.LangText.title[$val])} checked="checked"{/if}
+					{if $val==$object_lang} disabled="disabled"{/if}/>
+				<img src="{$html->webroot}img/flags/{$val}.png" border="0" alt="{$val}"/>&nbsp;
+			{/foreach}
 		</td>
 		<td class="status">&nbsp;</td>
 	</tr>
