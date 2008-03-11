@@ -708,3 +708,9 @@ msgstr "Inserisci una data nel formato %1"
 
 msgid "Please enter a valid date in the %1 format and greater than the previous date"
 msgstr "Inserisci una data valida nel formato %1 e maggiore della data precedente"
+
+msgid "Main language"
+msgstr "Lingua principale"
+
+msgid "Languages versions"
+msgstr "Versioni linguistiche"

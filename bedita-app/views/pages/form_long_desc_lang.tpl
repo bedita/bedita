@@ -1,10 +1,11 @@
+{assign var=object_lang value=$object.lang|default:$conf->defaultLang}
 <h2 class="showHideBlockButton">{t}Long Text{/t}</h2>
 <div class="blockForm" id="extendedtext" style="display: none">
 <script type="text/javascript">
 {literal}
 $(document).ready(function() {
-	{/literal}{foreach key=val item=label from=$conf->langOptions}{literal}
-	var type_formatting_{/literal}{$val}{literal} = '{/literal}{$object.LangText.$val.type|default:'html'}{literal}' ;
+	{/literal}{foreach key=val item=label from=$conf->langOptions name=langfe}{literal}
+	var type_formatting_{/literal}{$val}{literal} = '{/literal}{$object.LangText.type[$val]|default:'html'}{literal}' ;
 	$(".formatting_{/literal}{$val}{literal}").each(function(i){		
 	 	if(type_formatting_{/literal}{$val}{literal} == this.value) this.checked = true ; 
 	}) ;
@@ -12,7 +13,11 @@ $(document).ready(function() {
 		if($(this).prev("input.formatting_{/literal}{$val}{literal}").get(0).checked) return ;
 		$(this).prev("input.formatting_{/literal}{$val}{literal}").get(0).checked = true ;
 	}) ;
-	{/literal}{/foreach}{literal}
+	{/literal}
+	{if $val!=$object_lang || empty($object.LangText.body[$val])}
+		{literal}$('#long_desc_langs_container > ul').tabs("disable",{/literal}{$smarty.foreach.langfe.iteration}{literal});{/literal}
+	{/if}
+	{/foreach}{literal}
 }) ;
 {/literal}
 {if ($conf->fckeditor|default:false)}

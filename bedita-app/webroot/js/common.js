@@ -71,5 +71,21 @@ jQuery.fn.extend({
 			var index = $(this).parents("ul").data('selected.ui-tabs');
 			$('div.tabsContainer > ul').tabs("select",index);
 		});
+	},
+	enableDisableTabs: function() {
+		$(this).bind("click", function(){
+			var action = ($(this).attr('checked')) ? "enable" : "disable";
+			var index = Number($(this).attr('title'));
+			$('div.tabsContainer > ul').tabs(action,index);
+		});
+	},
+	mainLang: function() {
+		$(this).bind("change", function(){
+			$('.lang_flags').attr('disabled',false);
+			$('#flag_'+$(this).val()).attr('checked','checked');
+			$('#flag_'+$(this).val()).attr('disabled','disabled');
+			var index = Number($(this)[0].selectedIndex);
+			$('div.tabsContainer > ul').tabs('enable',index);
+		});
 	}
 });

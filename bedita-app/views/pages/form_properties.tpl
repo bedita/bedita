@@ -1,14 +1,23 @@
-{if !(isset($publication)) || $publication}
-	{literal}
-	<script type="text/javascript">
-	$(document).ready(function(){
-		$('#start').attachDatepicker();
-		$('#end').attachDatepicker();
-	});
-	</script>
+{assign var=object_lang value=$object.lang|default:$conf->defaultLang}
+<script type="text/javascript">
+{literal}
+$(document).ready(function(){
+	$('.lang_flags').enableDisableTabs();
+	$('#main_lang').mainLang();
 	{/literal}
-{/if}
-
+	{foreach key=val item=label from=$conf->langOptions name=langfe}
+	{if $val!=$object_lang || empty($object.LangText.title[$val])}
+		{literal}$('#properties_langs_container > ul').tabs("disable",{/literal}{$smarty.foreach.langfe.iteration}{literal});{/literal}
+	{/if}
+	{/foreach}
+	{if !(isset($publication)) || $publication}
+	$('#start').attachDatepicker();
+	$('#end').attachDatepicker();
+	{/if}
+	{literal}
+});
+{/literal}
+</script>
 <h2 class="showHideBlockButton">{t}Properties{/t}</h2>
 <div class="blockForm" id="properties">
 <fieldset>
@@ -44,11 +53,25 @@
 		<td class="status">&nbsp;</td>
 	</tr>
 	<tr>
-		<td class="label">{t}Language{/t}:</td>
+		<td class="label">{t}Main language{/t}:</td>
 		<td class="field">
-			<select name="data[lang]">
-			{assign var=object_lang value=$object.lang|default:$conf->defaultLang}{html_options options=$conf->langOptions selected=$object_lang}
+			<select name="data[lang]" id="main_lang">
+			{foreach key=val item=label from=$conf->langOptions name=langfe}
+			<option {if $val==$object_lang}selected="selected"{/if} value="{$val}">{$label}</option>
+			{/foreach}
 			</select>
+		</td>
+		<td class="status">&nbsp;</td>
+	</tr>
+	<tr>
+		<td class="label">{t}Languages versions{/t}:</td>
+		<td class="field">
+			{foreach key=val item=label from=$conf->langOptions name=langfe}
+				<input type="checkbox" name="data[lang_version]" class="lang_flags" title="{$smarty.foreach.langfe.index}" id="flag_{$val}"
+					{if $val==$object_lang || !empty($object.LangText.title[$val])} checked="checked"{/if}
+					{if $val==$object_lang} disabled="disabled"{/if}/>
+				<img src="{$html->webroot}img/flags/{$val}.png" border="0" alt="{$val}"/>&nbsp;
+			{/foreach}
 		</td>
 		<td class="status">&nbsp;</td>
 	</tr>

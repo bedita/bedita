@@ -1,3 +1,17 @@
+{assign var=object_lang value=$object.lang|default:$conf->defaultLang}
+<script type="text/javascript">
+{literal}
+$(document).ready(function(){
+	{/literal}
+	{foreach key=val item=label from=$conf->langOptions name=langfe}
+	{if $val!=$object_lang || empty($object.LangText.description[$val])}
+		{literal}$('#subtitle_langs_container > ul').tabs("disable",{/literal}{$smarty.foreach.langfe.iteration}{literal});{/literal}
+	{/if}
+	{/foreach}
+	{literal}
+});
+{/literal}
+</script>
 <h2 class="showHideBlockButton">{t}Subtitle, description{/t}</h2>
 <div class="blockForm" id="subtitle" style="display: none">
 <fieldset>

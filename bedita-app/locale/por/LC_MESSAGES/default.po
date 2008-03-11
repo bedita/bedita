@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Bedita\n"
-"POT-Creation-Date: \n"
 "PO-Revision-Date: 2008-02-20 16:04+0100\n"
-"Last-Translator: dante <didojunior@gmail.com>\n"
-"Language-Team: Bedita I18N & I10N Team\n"
-"MIME-Version: 1.0\n"
+"POT-Creation-Date: \n"
 "Content-Type: text/plain; charset=utf-8\n"
+"MIME-Version: 1.0\n"
+"Language-Team: Bedita I18N & I10N Team\n"
+"Last-Translator: dante <didojunior@gmail.com>\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -94,11 +94,9 @@ msgstr "início"
 msgid "end"
 msgstr "fim"
 
-msgid ""
-"Attention!!! you are deleting an item.\n"
+msgid "Attention!!! you are deleting an item.\n"
 "Are you sure that you want to continue?"
-msgstr ""
-"Atenção!!! está borrando um elemento.\n"
+msgstr "Atenção!!! está borrando um elemento.\n"
 "Quer continuar?"
 
 msgid "Where put the gallery into"
@@ -690,4 +688,11 @@ msgid "Please enter a valid date in the %1 format and greater than the previous 
 msgstr "Indicar uma data no formato %1 e maior da data anterior"
 
 msgid "Please enter a valid date in the %1 format"
-msgstr "Inserir data no formato %1"
+msgstr "Indicar data no formato %1"
+
+msgid "Main language"
+msgstr "Lingua principal"
+
+msgid "Languages versions"
+msgstr "Versões linguisticas"
+
