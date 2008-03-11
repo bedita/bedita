@@ -20,7 +20,7 @@ class BeLangTextComponent extends Object {
 		if(!@count($data)) return ;
 		foreach($data as $lang => $attributes) {
 			foreach($attributes as $attribute => $value) {
-				if($attribute != 'type') {
+				if($attribute != 'type' && $value != '') {
 					$formatted = array() ;
 					$formatted['lang'] = $lang ;
 					$formatted['name'] = $attribute ;
