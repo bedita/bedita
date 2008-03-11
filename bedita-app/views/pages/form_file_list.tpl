@@ -32,7 +32,6 @@ function {/literal}{$controller}{literal}CommitUploadItem(files) {
 				reorderListItem() ;
 				// Show that data changed
 				try { $().alertSignal() ; } catch(e) {}
-				tb_remove() 
 			}
 			$("#loading").hide();
 		}) ;
@@ -43,12 +42,10 @@ function {/literal}{$controller}{literal}CommitUploadItem(files) {
 		reorderListItem();
 		// Show that data changed
 		try { $().alertSignal() ; } catch(e) {}
-		tb_remove() ;	
 	}
 }
 
 function {/literal}{$controller}{literal}RollbackUploadItem() {
-	tb_remove() ;
 }
 
 // Per gli oggetti gia' registrati
@@ -69,7 +66,6 @@ function {/literal}{$controller}{literal}CommitUploadById(IDs) {
 				reorderListItem() ;
 				// Show that data changed
 				try { $().alertSignal() ; } catch(e) {}
-				tb_remove() 
 			}
 			$("#loading").hide();
 		}) ;
@@ -80,7 +76,6 @@ function {/literal}{$controller}{literal}CommitUploadById(IDs) {
 		reorderListItem() ;
 		// Show that data changed
 		try { $().alertSignal() ; } catch(e) {}
-		tb_remove() ;	
 	}
 }
 
@@ -101,6 +96,7 @@ function reorderListItem() {
 }
 
 function setup_drag_drop_item(el) {
+	if(!$(el)) return;
 	$(el).Draggable({
 		revert:		true,
 		ghosting:	true,

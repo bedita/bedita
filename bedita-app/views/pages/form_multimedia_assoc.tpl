@@ -18,7 +18,7 @@ function addItemsToParent() {
 	} catch(e) {
 		parent.{/literal}{$controller}{literal}CommitUploadById(itemsIds) ;
 	}
-	$('#container-1').triggerTab(1);
+	$('#container-1 > ul').tabs('select',0);
 }
 $(document).ready(function(){
 	$(".selItems").bind("click", function(){

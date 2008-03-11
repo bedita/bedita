@@ -207,7 +207,7 @@ function beUploadQueueComplete(file) {
 	if(ok>0) {
 		$("#queueinfo").html("{/literal}{t}Upload end{/t}{literal}") ;
 		createThumbnails();
-		$('#container-1').triggerTab(1);
+		$('#container-1 > ul').tabs('select',0);
 	} else {
 		$("#queueinfo").html("{/literal}{t}Errors during upload{/t}{literal}") ;
 	}
