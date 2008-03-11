@@ -46,6 +46,31 @@ $(document).ready(function(){
 <fieldset>
 	<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 	<input type="hidden" name="data[title]" value="{$object.title|default:''}"/>
+	<table class="tableForm" border="0">
+	<tr>
+		<td class="label">{t}Main language{/t}:</td>
+		<td class="field">
+			<select name="data[lang]" id="main_lang">
+			{foreach key=val item=label from=$conf->langOptions name=langfe}
+			<option {if $val==$object_lang}selected="selected"{/if} value="{$val}">{$label}</option>
+			{/foreach}
+			</select>
+		</td>
+		<td class="status">&nbsp;</td>
+	</tr>
+	<tr>
+		<td class="label">{t}Languages versions{/t}:</td>
+		<td class="field">
+			{foreach key=val item=label from=$conf->langOptions name=langfe}
+				<input type="checkbox" name="data[lang_version]" class="lang_flags" title="{$smarty.foreach.langfe.index}" id="flag_{$val}"
+					{if $val==$object_lang || !empty($object.LangText.title[$val])} checked="checked"{/if}
+					{if $val==$object_lang} disabled="disabled"{/if}/>
+				<img src="{$html->webroot}img/flags/{$val}.png" border="0" alt="{$val}"/>&nbsp;
+			{/foreach}
+		</td>
+		<td class="status">&nbsp;</td>
+	</tr>
+	</table>
 	<div id="area_langs_container" class="tabsContainer">
 		<ul>
 			{foreach key=val item=label from=$conf->langOptions}
@@ -98,29 +123,6 @@ $(document).ready(function(){
 		<td class="label">{t}status{/t}:</td>
 		<td class="field">
 			{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator=" "}
-		</td>
-		<td class="status">&nbsp;</td>
-	</tr>
-	<tr>
-		<td class="label">{t}Main language{/t}:</td>
-		<td class="field">
-			<select name="data[lang]" id="main_lang">
-			{foreach key=val item=label from=$conf->langOptions name=langfe}
-			<option {if $val==$object_lang}selected="selected"{/if} value="{$val}">{$label}</option>
-			{/foreach}
-			</select>
-		</td>
-		<td class="status">&nbsp;</td>
-	</tr>
-	<tr>
-		<td class="label">{t}Languages versions{/t}:</td>
-		<td class="field">
-			{foreach key=val item=label from=$conf->langOptions name=langfe}
-				<input type="checkbox" name="data[lang_version]" class="lang_flags" title="{$smarty.foreach.langfe.index}" id="flag_{$val}"
-					{if $val==$object_lang || !empty($object.LangText.title[$val])} checked="checked"{/if}
-					{if $val==$object_lang} disabled="disabled"{/if}/>
-				<img src="{$html->webroot}img/flags/{$val}.png" border="0" alt="{$val}"/>&nbsp;
-			{/foreach}
 		</td>
 		<td class="status">&nbsp;</td>
 	</tr>

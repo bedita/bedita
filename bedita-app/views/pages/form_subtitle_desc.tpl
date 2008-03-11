@@ -4,8 +4,10 @@
 $(document).ready(function(){
 	{/literal}
 	{foreach key=val item=label from=$conf->langOptions name=langfe}
-	{if $val!=$object_lang || empty($object.LangText.description[$val])}
-		{literal}$('#subtitle_langs_container > ul').tabs("disable",{/literal}{$smarty.foreach.langfe.iteration}{literal});{/literal}
+	{if $val!=$object_lang && empty($object.LangText.description[$val])}
+		{literal}$('#subtitle_langs_container > ul').tabs("disable",{/literal}{$smarty.foreach.langfe.index}{literal});{/literal}
+	{elseif $val==$object_lang}
+		{literal}$('#subtitle_langs_container > ul').tabs("select",{/literal}{$smarty.foreach.langfe.index}{literal});{/literal}
 	{/if}
 	{/foreach}
 	{literal}

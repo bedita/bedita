@@ -6,8 +6,10 @@ $(document).ready(function(){
 	$('#main_lang').mainLang();
 	{/literal}
 	{foreach key=val item=label from=$conf->langOptions name=langfe}
-	{if $val!=$object_lang || empty($object.LangText.title[$val])}
-		{literal}$('#properties_langs_container > ul').tabs("disable",{/literal}{$smarty.foreach.langfe.iteration}{literal});{/literal}
+	{if $val!=$object_lang && empty($object.LangText.title[$val])}
+		{literal}$('#properties_langs_container > ul').tabs("disable",{/literal}{$smarty.foreach.langfe.index}{literal});{/literal}
+	{elseif $val==$object_lang}
+		{literal}$('#properties_langs_container > ul').tabs("select",{/literal}{$smarty.foreach.langfe.index}{literal});{/literal}
 	{/if}
 	{/foreach}
 	{if !(isset($publication)) || $publication}

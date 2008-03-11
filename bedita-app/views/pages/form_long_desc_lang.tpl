@@ -14,8 +14,10 @@ $(document).ready(function() {
 		$(this).prev("input.formatting_{/literal}{$val}{literal}").get(0).checked = true ;
 	}) ;
 	{/literal}
-	{if $val!=$object_lang || empty($object.LangText.body[$val])}
-		{literal}$('#long_desc_langs_container > ul').tabs("disable",{/literal}{$smarty.foreach.langfe.iteration}{literal});{/literal}
+	{if $val!=$object_lang && empty($object.LangText.body[$val])}
+		{literal}$('#long_desc_langs_container > ul').tabs("disable",{/literal}{$smarty.foreach.langfe.index}{literal});{/literal}
+	{elseif $val==$object_lang}
+		{literal}$('#long_desc_langs_container > ul').tabs("select",{/literal}{$smarty.foreach.langfe.index}{literal});{/literal}
 	{/if}
 	{/foreach}{literal}
 }) ;
