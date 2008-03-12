@@ -72,7 +72,7 @@ class AreasController extends ModulesController {
 	  *
 	  * @param integer $id
 	  */
-	function viewSection($id = null) {	 	
+	function viewSection($id = null) {
 		$this->setup_args(array("id", "integer", &$id)) ;
 		// Get selected section
 		$section = null ;
@@ -93,10 +93,14 @@ class AreasController extends ModulesController {
 		} else {
 			$parent_id = 0 ;
 		}
+		$conf  = Configure::getInstance() ;
+		$ot = &$conf->objectTypes ; 
+		$contents = $this->BeTree->getDiscendents($id, null, $ot['documentAll']);
 		// Data for template
 		$this->set('tree',$tree);
 		$this->set('section',$section);
 		$this->set('parent_id',$parent_id);
+		$this->set('contents',$contents['items']);
 		$this->selfUrlParams = array("id", $id);	
 		// get users and groups list
 		$this->User->displayField = 'userid';
@@ -154,48 +158,57 @@ class AreasController extends ModulesController {
 		$this->eventInfo("area ". $this->data["title"]."saved");
 	}
 
-	 /**
-	  * Save/modify section.
-	  * URLOK and URLERROR should be defined.
-	  */
+	/**
+	 * Save/modify section.
+	 * URLOK and URLERROR should be defined.
+	 */
 	function saveSection() {
-			$this->checkWriteModulePermission();
-			if(empty($this->data)) throw new BeditaException(__("No data", true));
-			$new = (empty($this->data['id'])) ? true : false ;
-			// Verify permits for the object
-			if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-					throw new BeditaException( __("Error modifying permissions", true));
-			// Format custom properties
-			$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-			// Format translation data
-			$this->data['title'] = $this->data['LangText'][$this->data['lang']]['title'];
-			$this->BeLangText->setupForSave($this->data["LangText"]) ;
-			$this->Transaction->begin() ;
-			// data["destination"] should be 1 element
-			if(count($this->data["destination"]) != 1)
-				throw new BeditaException( __("Bad data", true));
-			$destinationId = $this->data["destination"][0];
-			if($new) 
-				$this->data["parent_id"] = $destinationId;
-			if(!$this->Section->save($this->data))
-				throw new BeditaException( __("Error saving section", true), $this->Section->validationErrors );
-			// Move section in the right tree position, if necessary
-			if(!$new) {
-				$oldParent = $this->Tree->getParent($this->Section->id) ;
-				if($oldParent != $destinationId) {
-					if(!$this->Tree->move($destinationId, $oldParent, $this->Section->id))
-						throw new BeditaException( __("Error saving section", true));
-				}
+		$this->checkWriteModulePermission();
+		if(empty($this->data)) throw new BeditaException(__("No data", true));
+		$new = (empty($this->data['id'])) ? true : false ;
+		// Verify permits for the object
+		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+				throw new BeditaException( __("Error modifying permissions", true));
+		// Format custom properties
+		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
+		// Format translation data
+		$this->data['title'] = $this->data['LangText'][$this->data['lang']]['title'];
+		$this->BeLangText->setupForSave($this->data["LangText"]) ;
+		$this->Transaction->begin() ;
+		// data["destination"] should be 1 element
+		if(count($this->data["destination"]) != 1)
+			throw new BeditaException( __("Bad data", true));
+		$destinationId = $this->data["destination"][0];
+		if($new) 
+			$this->data["parent_id"] = $destinationId;
+		if(!$this->Section->save($this->data))
+			throw new BeditaException( __("Error saving section", true), $this->Section->validationErrors );
+		// Move section in the right tree position, if necessary
+		if(!$new) {
+			$oldParent = $this->Tree->getParent($this->Section->id) ;
+			if($oldParent != $destinationId) {
+				if(!$this->Tree->move($destinationId, $oldParent, $this->Section->id))
+					throw new BeditaException( __("Error saving section", true));
 			}
-			// update permits
-			$perms = isset($this->data["Permissions"]) ? $this->data["Permissions"] : array();
-			if(!$this->Permission->saveFromPOST($this->Section->id, $perms,	 
-				(empty($this->data['recursiveApplyPermissions'])?false:true), 'section')) {
-					throw new BeditaException( __("Error saving permissions", true));
+		}
+		// Insert new contents (remove previous associations)
+		$contents = $this->data['contents'];
+		if(!$this->Section->removeChildren()) 
+			throw new BeditaException( __("Remove children", true));
+		for($i=0; $i < count($contents) ; $i++) {
+			if(!$this->Section->appendChild($contents[$i]['id'],null,$contents[$i]['priority'])) {
+				throw new BeditaException( __("Append child", true));
 			}
-			$this->Transaction->commit() ;
-			$this->userInfoMessage(__("Section saved", true)." - ".$this->data["title"]);
-			$this->eventInfo("section [". $this->data["title"]."] saved");
+		}
+		// update permits
+		$perms = isset($this->data["Permissions"]) ? $this->data["Permissions"] : array();
+		if(!$this->Permission->saveFromPOST($this->Section->id, $perms,	 
+			(empty($this->data['recursiveApplyPermissions'])?false:true), 'section')) {
+				throw new BeditaException( __("Error saving permissions", true));
+		}
+		$this->Transaction->commit() ;
+		$this->userInfoMessage(__("Section saved", true)." - ".$this->data["title"]);
+		$this->eventInfo("section [". $this->data["title"]."] saved");
 	}
 
 	 /**

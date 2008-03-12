@@ -83,7 +83,7 @@ msgid "cancel"
 msgstr "cancella"
 
 msgid "Properties"
-msgstr "Proprieta'"
+msgstr "Proprietà"
 
 msgid "status"
 msgstr "stato"
@@ -164,7 +164,7 @@ msgid "Size"
 msgstr "Dimensione"
 
 msgid "Custom Properties"
-msgstr "Proprieta' Ad Hoc"
+msgstr "Proprietà Ad Hoc"
 
 msgid "name"
 msgstr "nome"
@@ -218,13 +218,13 @@ msgid "User blocked"
 msgstr "Utente bloccato"
 
 msgid "Do you really want to delete the property"
-msgstr "Vuoi davvero eliminare la proprieta'"
+msgstr "Vuoi davvero eliminare la proprietà"
 
 msgid "Data uncomplete"
 msgstr "Dati incompleti"
 
 msgid "Property already present"
-msgstr "Proprieta' gia' presente"
+msgstr "Proprietà già presente"
 
 msgid "Where put the section into"
 msgstr "Dove inserire la sezione"
@@ -329,7 +329,7 @@ msgid "No access"
 msgstr "Nessun accesso"
 
 msgid "Group properties"
-msgstr "Proprieta' gruppi"
+msgstr "Proprietà gruppi"
 
 msgid "Create group"
 msgstr "Crea gruppo"
@@ -458,7 +458,7 @@ msgid "Add multimedia by URL"
 msgstr "Aggiungi oggetti multimediali via URL"
 
 msgid "Add multimedia by BEdita"
-msgstr "Associa oggetti multimediali gia' presenti"
+msgstr "Associa oggetti multimediali già presenti"
 
 msgid "Add attachments by upload"
 msgstr "Aggiungi allegati via upload"
@@ -467,7 +467,7 @@ msgid "Add attachments by URL"
 msgstr "Aggiungi allegati via URL"
 
 msgid "Add attachments by BEdita"
-msgstr "Associa allegati gia' presenti"
+msgstr "Associa allegati già presenti"
 
 msgid "Short text"
 msgstr "Testo breve"
@@ -714,3 +714,9 @@ msgstr "Lingua principale"
 
 msgid "Languages versions"
 msgstr "Versioni linguistiche"
+
+msgid "Where the section is"
+msgstr "Dove si colloca la sezione"
+
+msgid "Contents for the section"
+msgstr "Contenuti per la sezione"

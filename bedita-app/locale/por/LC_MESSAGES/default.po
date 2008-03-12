@@ -696,3 +696,8 @@ msgstr "Lingua principal"
 msgid "Languages versions"
 msgstr "Versões linguisticas"
 
+msgid "Where the section is"
+msgstr "Colocação da seçção"
+
+msgid "Contents for the section"
+msgstr "Contenidos para a seçção"

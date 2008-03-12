@@ -18,7 +18,7 @@ $(document).ready(function(){
 //-->
 </script>
 
-<h2 class="showHideBlockButton">{t}Where put the document into{/t}</h2>
+<h2 class="showHideBlockButton">{t}{if empty($tpl_title)}Where put the document into{else}{$tpl_title}{/if}{/t}</h2>
 <div class="blockForm" id="whereto" style="display: none">
 <fieldset>
 	{if isset($excludedSubTreeId)}

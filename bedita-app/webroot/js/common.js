@@ -87,5 +87,56 @@ jQuery.fn.extend({
 			var index = Number($(this)[0].selectedIndex);
 			$('div.tabsContainer > ul').tabs('enable',index);
 		});
+	},
+	setupDragDrop: function() {
+		el = this;
+		if(!$(el)) return;
+		$(el).Draggable({
+			revert:true,
+			ghosting:true,
+			opacity:0.8
+		});
+		$(el).Droppable({
+			accept:'itemBox',
+			hoverclass:'dropOver',
+			ondrop: function(dropped) {
+				if(this == dropped) return;
+				// swap position of an item (to the position of the previous)
+				if(this == $(dropped).prev().get(0)) {
+					$(this).insertAfter($(dropped)) ;
+					$(".itemBox").each(function (index) {
+						$("input[@name='index']", this).attr("value", index) ;
+						$(".id", this).attr("name", "data[contents]["+index+"][id]") ;
+						$(".priority", this).attr("name", "data[contents]["+index+"][priority]") ;
+						$(".priority", this).attr("value", index+1) ;
+					}) ;
+					return ;
+				// swap position of an item (to the position of the next)
+				} else if(this == $(dropped).next().get(0)) {
+					$(dropped).insertAfter($(this)) ;
+					$(".itemBox").each(function (index) {
+						$("input[@name='index']", this).attr("value", index) ;
+						$(".id", this).attr("name", "data[contents]["+index+"][id]") ;
+						$(".priority", this).attr("name", "data[contents]["+index+"][priority]") ;
+						$(".priority", this).attr("value", index+1) ;
+					}) ;
+					return ;
+				}
+				// If put at the beginning, insert before
+				var pDropped 	= parseInt($(".priority", dropped).attr("value")) ;
+				var pThis 		= parseInt($(".priority", this).attr("value")) ;
+				if(pDropped > pThis) {
+					$(dropped).insertBefore($(this)) ;
+				} else {
+					$(dropped).insertAfter($(this)) ;
+				}
+				$(".itemBox").each(function (index) {
+					$("input[@name='index']", this).attr("value", index) ;
+					$(".id", this).attr("name", "data[contents]["+index+"][id]") ;
+					$(".priority", this).attr("name", "data[contents]["+index+"][priority]") ;
+					$(".priority", this).attr("value", index+1) ;
+				}) ;
+			}
+		}) ;
 	}
 });

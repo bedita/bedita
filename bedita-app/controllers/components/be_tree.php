@@ -91,22 +91,19 @@ class BeTreeComponent extends Object {
 	}
 	
 	/**
-	 * Torna l'elenco dei discendenti di un data nodo dell'albero
+	 * Return discendents of a tree node
 	 *
-	 * @param integer $id		ID del nodo
+	 * @param integer $id		node ID
 	 */
 	function getDiscendents($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
 		$conf  = Configure::getInstance() ;
-		
-		// Preleva l'utente connesso
+		// Get user data
 		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : '' ;
-		
 		if(isset($id)) {
 			$objs = &  $this->Tree->getDiscendents($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
 		} else {
 			$objs = &  $this->BEObject->findObjs($userid, $status, $filter, $order, $dir, $page, $dim) ;
 		}
-		
 		return  $objs ;
 	}
 	
