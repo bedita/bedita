@@ -190,8 +190,6 @@ class AreasController extends ModulesController {
 				if(!$this->Tree->move($destinationId, $oldParent, $this->Section->id))
 					throw new BeditaException( __("Error saving section", true));
 			}
-		}
-		if(!$new) {
 			// Insert new contents (remove previous associations)
 			$contents = (!empty($this->data['contents'])) ? $this->data['contents'] : array();
 			if(!$this->Section->removeChildren()) 
