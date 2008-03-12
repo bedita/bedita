@@ -191,13 +191,15 @@ class AreasController extends ModulesController {
 					throw new BeditaException( __("Error saving section", true));
 			}
 		}
-		// Insert new contents (remove previous associations)
-		$contents = $this->data['contents'];
-		if(!$this->Section->removeChildren()) 
-			throw new BeditaException( __("Remove children", true));
-		for($i=0; $i < count($contents) ; $i++) {
-			if(!$this->Section->appendChild($contents[$i]['id'],null,$contents[$i]['priority'])) {
-				throw new BeditaException( __("Append child", true));
+		if(!empty($id)) {
+			// Insert new contents (remove previous associations)
+			$contents = (!empty($this->data['contents'])) ? $this->data['contents'] : array();
+			if(!$this->Section->removeChildren()) 
+				throw new BeditaException( __("Remove children", true));
+			for($i=0; $i < count($contents) ; $i++) {
+				if(!$this->Section->appendChild($contents[$i]['id'],null,$contents[$i]['priority'])) {
+					throw new BeditaException( __("Append child", true));
+				}
 			}
 		}
 		// update permits
@@ -245,6 +247,7 @@ class AreasController extends ModulesController {
 		}
 		$this->Transaction->begin() ;
 		// delete section
+		die();
 		if(!$this->Section->delete($this->data['id'])) {
 			throw new BeditaException( sprintf(__("Error deleting section: %d", true), $this->data['id']));
 		}
