@@ -74,7 +74,7 @@ DECLARE _priority INT  ;
 SET pathParent  = (SELECT path FROM trees WHERE id = _IDParent) ;
 SET pathID  	= IF(pathParent IS NULL, CONCAT('/', _ID), CONCAT(pathParent, '/', _ID)) ;
 SET pathParent 	= IF(pathParent IS NULL, '/', pathParent) ;
-SET _priority  	= (SELECT (MAX(priority)+1) FROM trees WHERE id = _IDParent) ;
+SET _priority  	= (SELECT (MAX(priority)+1) FROM trees WHERE parent_id = _IDParent) ;
 SET _priority  	= IF(_priority IS NULL, 1, _priority) ;
 
 INSERT INTO `trees` ( `id` , `parent_id` , `path` , `parent_path` , `priority` ) VALUES (_ID, _IDParent , pathID, pathParent , _priority) ;
