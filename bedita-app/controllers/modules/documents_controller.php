@@ -169,23 +169,43 @@ class DocumentsController extends ModulesController {
 		$this->eventInfo("documents $objectsListDeleted deleted");
 	}
 
-	 protected function forward($action, $esito) {
-	  	$REDIRECT = array(
-	 			"save"	=> 	array(
-	 									"OK"	=> "/documents/view/{$this->Document->id}",
-	 									"ERROR"	=> "/documents/view/{$this->Document->id}" 
-	 								), 
-	 			"delete" =>	array(
-	 									"OK"	=> "/documents",
-	 									"ERROR"	=> "/documents/view/{@$this->params['pass'][0]}" 
-	 								), 
-	 		) ;
-	 	
-	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-	 	
-	 	return false ;
-	 }
+	function addToAreaSection() {
+		$this->checkWriteModulePermission();
+		if(!empty($this->params['form']['objects_to_del'])) {
+			$objects_to_assoc = split(",",$this->params['form']['objects_to_del']);
+			$destination = $this->data['destination'];
+			$this->Section->bviorHideFields = array('ObjectType', 'Version', 'Index', 'current') ;
+			if(!($section = $this->Section->findById($destination))) {
+				throw new BeditaException(sprintf(__("Error loading section: %d", true), $destination));
+			}
+			$this->Transaction->begin() ;
+			for($i=0; $i < count($objects_to_assoc) ; $i++) {
+				if(!$this->Section->appendChild($objects_to_assoc[$i],null,0)) {
+					throw new BeditaException( __("Append child", true));
+				}
+			}
+			$this->Transaction->commit() ;
+			$this->userInfoMessage(__("Documents associated to area/section", true) . " - " . $section['title']);
+			$this->eventInfo("documents associated to area " . $section['id']);
+		}
+	}
 
-}
-
-	
+	protected function forward($action, $esito) {
+		$REDIRECT = array(
+			"save"	=> 	array(
+							"OK"	=> "/documents/view/{$this->Document->id}",
+							"ERROR"	=> "/documents/view/{$this->Document->id}" 
+							), 
+			"delete" =>	array(
+							"OK"	=> "/documents",
+							"ERROR"	=> "/documents/view/{@$this->params['pass'][0]}" 
+							),
+			"addToAreaSection"	=> 	array(
+							"OK"	=> "/documents",
+							"ERROR"	=> "/documents" 
+							)
+		);
+		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
+		return false ;
+	}
+}	

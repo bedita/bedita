@@ -29,7 +29,6 @@ $(document).ready(function(){
 	$("a.delete").bind("click", function() {
 		delObject($(this).attr("title"));
 	});
-	
 });
 function delObject(id) {
 	if(!confirm(message)) return false ;
@@ -50,6 +49,20 @@ function delObjects() {
 	return false ;
 }
 {/literal}
+{if !empty($areasectiontree)}
+{literal}
+function assocObjectsToAreaSection(id) {
+	var oToDel = "";
+	var checkElems = document.getElementsByName('object_chk');
+	for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
+	oToDel = (oToDel=="") ? "" : oToDel.substring(1);
+	$("#objects_to_del").attr("value",oToDel);
+	$("#formObject").attr("action", '{/literal}{$html->url('addToAreaSection/')}{literal}') ;
+	$("#formObject").get(0).submit() ;
+	return false ;
+}
+{/literal}
+{/if}
 //-->
 </script>	
 <div id="containerPage">
@@ -92,7 +105,29 @@ function delObjects() {
 		<td><a href="javascript:void(0);" class="delete" title="{$objects[i].id}">{t}Delete{/t}</a></td>
 	</tr>
 	{/section}
-	<tr><td colspan="7"><input id="deleteSelected" type="button" value="X - {t}Delete selected items{/t}"/></td></tr>
+	<tr><td colspan="7"><input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/></td></tr>
+	{if !empty($areasectiontree)}
+	<tr>
+		<td colspan="7">
+			<input id="deleteSelected" type="button" value="(+) {t}Add selected items to area/section{/t}" onclick="javascript:assocObjectsToAreaSection();"/>
+			<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
+			{foreach from=$areasectiontree item=i}
+				<option value="{$i.id}">{$i.title}</option>
+				{if !empty($i.children)}
+					{foreach from=$i.children item=ii}
+					<option value="{$ii.id}">-- {$ii.title}</option>
+					{if !empty($ii.children)}
+						{foreach from=$ii.children item=iii}
+						<option value="{$iii.id}">--- {$iii.title}</option>
+						{/foreach}
+					{/if}
+					{/foreach}
+				{/if}
+			{/foreach}
+			</select>
+		</td>
+	</tr>
+	{/if}
 	</tbody>
 	</table>
 	<p class="toolbar">

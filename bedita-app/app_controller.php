@@ -397,6 +397,7 @@ abstract class ModulesController extends AppController {
 		$this->params['toolbar'] = &$objects['toolbar'] ;
 		// template data
 		$this->set('tree', $tree);
+		$this->set('areasectiontree',$this->BeTree->getSectionsTree());
 		$this->set('objects', $objects['items']);
 	}
 	
