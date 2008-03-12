@@ -39,7 +39,7 @@ $(document).ready(function(){
 </script>
 <div id="containerPage">
 <form action="{$html->url('/areas/saveArea')}" method="post" name="updateForm" id="updateForm" class="cmxform">
-{include file="../pages/form_header.tpl"}
+{include file="../pages/form_header.tpl" delparam="deleteArea/"}
 <div class="blockForm" id="errorForm"></div>
 <h2 class="showHideBlockButton">{t}Properties{/t}</h2>
 <div class="blockForm" id="properties">

@@ -247,7 +247,6 @@ class AreasController extends ModulesController {
 		}
 		$this->Transaction->begin() ;
 		// delete section
-		die();
 		if(!$this->Section->delete($this->data['id'])) {
 			throw new BeditaException( sprintf(__("Error deleting section: %d", true), $this->data['id']));
 		}

@@ -45,7 +45,7 @@ $(document).ready(function(){
 	<input type="hidden" name="data[id]" value="{$section.id|default:''}" />
 	{if isset($parent_id)}<input type="hidden" name="data[parent_id]" value="{$parent_id}" />{/if}
 </fieldset>
-{include file="../pages/form_header.tpl"}
+{include file="../pages/form_header.tpl" delparam="deleteSection/"}
 <div class="blockForm" id="errorForm"></div>
 {include file="../pages/form_properties.tpl" publication=false}
 {include file="../pages/form_tree.tpl" excludedSubTreeId=$section.id inputTreeType="radio" parents=$parent_id tpl_title="Where the section is"}
