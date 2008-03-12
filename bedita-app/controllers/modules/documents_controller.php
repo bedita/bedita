@@ -180,7 +180,7 @@ class DocumentsController extends ModulesController {
 			}
 			$this->Transaction->begin() ;
 			for($i=0; $i < count($objects_to_assoc) ; $i++) {
-				if(!$this->Section->appendChild($objects_to_assoc[$i],null,0)) {
+				if(!$this->Section->appendChild($objects_to_assoc[$i],$section['id'])) {
 					throw new BeditaException( __("Append child", true));
 				}
 			}
