@@ -191,7 +191,7 @@ class AreasController extends ModulesController {
 					throw new BeditaException( __("Error saving section", true));
 			}
 		}
-		if(!empty($id)) {
+		if(!$new) {
 			// Insert new contents (remove previous associations)
 			$contents = (!empty($this->data['contents'])) ? $this->data['contents'] : array();
 			if(!$this->Section->removeChildren()) 
