@@ -53,14 +53,10 @@ class EventsController extends ModulesController {
 		$this->set('object',	$obj);
 		$this->set('tree', 		$this->BeTree->getSectionsTree());
 		$this->set('parents',	$this->BeTree->getParents($id));
-
 		$conf  = Configure::getInstance() ;
 		$ot = $conf->objectTypes['event'];
 		$areaCategory = $this->ObjectCategory->getCategoriesByArea($ot);
 		$this->set("areaCategory", $areaCategory);
-		
-		
-		//$this->set("objCat", $objCat);
 		$this->Area->displayField = 'public_name';
 		$this->set("areasList", $this->Area->find('list', array("order" => "public_name")));
 		$this->selfUrlParams = array("id", $id);
@@ -88,8 +84,7 @@ class EventsController extends ModulesController {
 		$this->data['abstract'] = $this->data['LangText'][$this->data['lang']]['abstract'];
 		$this->data['body'] = $this->data['LangText'][$this->data['lang']]['body'];
 	 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
-	 	
-	 	// if none Category is checked set an empty array to delete association between events and category
+	 	// if no Category is checked set an empty array to delete association between events and category
 	 	if (!isset($this->data["ObjectCategory"])) $this->data["ObjectCategory"] = array();
 	 	
 		$this->Transaction->begin() ;

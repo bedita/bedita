@@ -16,28 +16,6 @@
  */
 class Content extends BEAppModel
 {
-	var $hasAndBelongsToMany = array(
-			'ObjectCategory' =>
-				array(
-					'className'				=> 'ObjectCategory',
-					'joinTable'    			=> 'contents_object_categories',
-					'foreignKey'   			=> 'content_id',
-					'associationForeignKey'	=> 'object_category_id',
-					'unique'				=> true
-				)
-		) ;			
-	
-	function beforeSave() {
-		foreach ($this->hasAndBelongsToMany as $k => $assoc) {
-			$model = new $assoc['className']() ;
-			
-			if(!isset($this->data[$k][$k]) || !is_array($this->data[$k][$k])) continue ;
-			
-			foreach ($this->data[$k][$k] as $key => $value) {
-				$this->data[$k][$k][$key] = $this->data[$k][$k][$key][$model->primaryKey];
-			}
-		}
-		return true ;
-	}
+
 }
 ?>

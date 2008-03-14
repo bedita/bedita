@@ -30,7 +30,7 @@ class ShortNews extends BEAppObjectModel
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('links'),
 			'CreateIndexFields'		=> array(),
-			'ForeignDependenceSave' => array('BEObject', 'ContentBase', 'Content'),
+			'ForeignDependenceSave' => array('BEObject', 'ContentBase'),
 			'DeleteObject' 			=> 'objects',
 	); 
 

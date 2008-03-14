@@ -21,7 +21,7 @@ class NewsController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
-	var $uses = array('ShortNews') ;
+	var $uses = array('ShortNews','ObjectCategory','Area') ;
 	protected $moduleName = 'news';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -43,11 +43,24 @@ class NewsController extends ModulesController {
 			if(isset($obj["LangText"])) {
 				$this->BeLangText->setupForView($obj["LangText"]) ;
 			}
+			if (isset($obj["ObjectCategory"])) {
+				$objCat = array();
+				foreach ($obj["ObjectCategory"] as $oc) {
+					$objCat[] = $oc["id"];
+				}
+				$obj["ObjectCategory"] = $objCat;
+			}
 		}
 
 		$this->set('object',	$obj);
 		$this->set('tree', 		$this->BeTree->getSectionsTree());
-		$this->set('parents',	$this->BeTree->getParents($id));		
+		$this->set('parents',	$this->BeTree->getParents($id));	
+		$conf  = Configure::getInstance() ;
+		$ot = $conf->objectTypes['shortnews'];
+		$areaCategory = $this->ObjectCategory->getCategoriesByArea($ot);
+		$this->set("areaCategory", $areaCategory);
+		$this->Area->displayField = 'public_name';
+		$this->set("areasList", $this->Area->find('list', array("order" => "public_name")));	
 		$this->selfUrlParams = array("id", $id);
 		$this->setUsersAndGroups();
 	 }
@@ -71,6 +84,8 @@ class NewsController extends ModulesController {
 		$this->data['title'] = $this->data['LangText'][$this->data['lang']]['title'];
 		$this->data['description'] = $this->data['LangText'][$this->data['lang']]['description'];
 		$this->BeLangText->setupForSave($this->data["LangText"]) ;
+	 	// if no Category is checked set an empty array to delete association between news and category
+	 	if (!isset($this->data["ObjectCategory"])) $this->data["ObjectCategory"] = array();
 	 	
 		$this->Transaction->begin() ;
 
@@ -101,6 +116,41 @@ class NewsController extends ModulesController {
 		$this->eventInfo("News $objectsListDeleted deleted");
 	}
 
+	public function categories() {
+		$conf  = Configure::getInstance() ;
+		$type = $conf->objectTypes['shortnews'];
+		$this->set("categories", $this->ObjectCategory->findAll("ObjectCategory.object_type_id=".$type));
+		$this->set("object_type_id", $type);
+		$this->Area->displayField = 'public_name';
+		$this->set("areasList", $this->Area->find('list', array("order" => "public_name")));
+	}
+	
+	public function saveCategories() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data["label"])) 
+ 	 	    throw new BeditaException( __("No data", true));
+		$this->Transaction->begin() ;
+		if(!$this->ObjectCategory->save($this->data)) {
+			throw new BeditaException(__("Error saving tag", true), $this->ObjectCategory->validationErrors);
+		}
+		$this->Transaction->commit();
+		$this->userInfoMessage(__("Category saved", true)." - ".$this->data["label"]);
+		$this->eventInfo("category [" .$this->data["label"] . "] saved");
+	}
+	
+	public function deleteCategories() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data["id"])) 
+ 	 	    throw new BeditaException( __("No data", true));
+ 	 	$this->Transaction->begin() ;
+		if(!$this->ObjectCategory->del($this->data["id"])) {
+			throw new BeditaException(__("Error saving tag", true), $this->ObjectCategory->validationErrors);
+		}
+		$this->Transaction->commit();
+		$this->userInfoMessage(__("Category deleted", true) . " -  " . $this->data["label"]);
+		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
+	}
+	
 	protected function forward($action, $esito) {
 	  	$REDIRECT = array(
 	 			"save"	=> 	array(
@@ -111,6 +161,14 @@ class NewsController extends ModulesController {
 	 									"OK"	=> "/news",
 	 									"ERROR"	=> "/news/view/{@$this->params['pass'][0]}" 
 	 								), 
+	 			"saveCategories" 	=> array(
+	 										"OK"	=> "/news/categories",
+	 										"ERROR"	=> "/news/categories"
+	 									),
+	 			"deleteCategories" 	=> array(
+	 										"OK"	=> "/news/categories",
+	 										"ERROR"	=> "/news/categories"
+	 									)
 	 		) ;
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 	 	return false ;

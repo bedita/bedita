@@ -64,6 +64,14 @@ class ContentBase extends BEAppModel
 					'switch'				=> "ATTACHS",
 					'order'					=> "priority"
 				),
+			'ObjectCategory' =>
+				array(
+					'className'				=> 'ObjectCategory',
+					'joinTable'    			=> 'content_bases_object_categories',
+					'foreignKey'   			=> 'content_base_id',
+					'associationForeignKey'	=> 'object_category_id',
+					'unique'				=> true
+				)
 		) ;			
 
 	function __construct() {
@@ -84,7 +92,7 @@ class ContentBase extends BEAppModel
 		$this->tempData = array() ;
 		 
 		foreach ($this->hasAndBelongsToMany as $k => $assoc) {
-			if(!isset($this->data[$k][$k])) continue ;
+			if(!isset($this->data[$k][$k]) || $k == "ObjectCategory") continue ;
 			
 			$this->tempData[$k] = &$this->data[$k][$k] ;
 			unset($this->data[$k][$k]) ;

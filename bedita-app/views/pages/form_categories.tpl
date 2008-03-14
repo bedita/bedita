@@ -4,6 +4,7 @@
 	<div id="categories_container">
 	{if !empty($areaCategory)}
 		<table class="indexList" style="width: 570px;">
+		{if !empty($areaCategory.area)}
 		{foreach key="areaName" item="areaC" from=$areaCategory.area}
 			<tr>
 				<th style="background-color:white; font-weight: bold; border:1px solid grey;">{$areaName}</th>
@@ -19,7 +20,7 @@
 			</tr>
 			{/foreach}
 		{/foreach}
-
+		{/if}
 		{if !empty($areaCategory.noarea)}
 			<tr>
 				<td style="border: 0px; padding-top:15px;">{t}Categories with no area associated{/t}</td>
