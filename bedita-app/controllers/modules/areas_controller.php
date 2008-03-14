@@ -93,14 +93,19 @@ class AreasController extends ModulesController {
 		} else {
 			$parent_id = 0 ;
 		}
-		$conf  = Configure::getInstance() ;
-		$ot = &$conf->objectTypes ; 
-		$contents = $this->BeTree->getDiscendents($id, null, $ot['documentAll']);
+		if($id) {
+			$conf  = Configure::getInstance() ;
+			$ot = &$conf->objectTypes ; 
+			$contents = $this->BeTree->getDiscendents($id, null, $ot['documentAll']);
+			$content_items = $contents['items'];
+		} else {
+			$content_items=array();
+		}
 		// Data for template
 		$this->set('tree',$tree);
 		$this->set('section',$section);
 		$this->set('parent_id',$parent_id);
-		$this->set('contents',$contents['items']);
+		$this->set('contents',$content_items);
 		$this->selfUrlParams = array("id", $id);	
 		// get users and groups list
 		$this->User->displayField = 'userid';
