@@ -2,7 +2,7 @@
 <div class="blockForm" id="category" style="display: none">
 <fieldset>
 	<div id="categories_container">
-	{if isset($areaCategory)}
+	{if !empty($areaCategory)}
 		<table class="indexList" style="width: 570px;">
 		{foreach key="areaName" item="areaC" from=$areaCategory.area}
 			<tr>
