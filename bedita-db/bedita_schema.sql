@@ -30,7 +30,7 @@ DROP TABLE IF EXISTS `object_users`;
 DROP TABLE IF EXISTS `bibliographies`;
 DROP TABLE IF EXISTS `base_documents`;
 DROP TABLE IF EXISTS `content_bases_objects`;
-DROP TABLE IF EXISTS `contents_object_categories`;
+DROP TABLE IF EXISTS `content_bases_object_categories`;
 DROP TABLE IF EXISTS `contents`;
 DROP TABLE IF EXISTS `authors`;
 DROP TABLE IF EXISTS `images`;
@@ -535,14 +535,14 @@ CREATE TABLE content_bases_objects (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE contents_object_categories (
-  content_id INTEGER UNSIGNED NOT NULL,
+CREATE TABLE content_bases_object_categories (
+  content_base_id INTEGER UNSIGNED NOT NULL,
   object_category_id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(content_id, object_category_id),
-  INDEX contents_has_object_caegories_FKIndex1(content_id),
-  INDEX contents_has_object_caegories_FKIndex2(object_category_id),
-  FOREIGN KEY(content_id)
-    REFERENCES contents(id)
+  PRIMARY KEY(content_base_id, object_category_id),
+  INDEX content_bases_has_object_caegories_FKIndex1(content_base_id),
+  INDEX content_bases_has_object_caegories_FKIndex2(object_category_id),
+  FOREIGN KEY(content_base_id)
+    REFERENCES content_bases(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
   FOREIGN KEY(object_category_id)
