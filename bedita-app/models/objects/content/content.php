@@ -23,8 +23,8 @@ class Content extends BEAppModel
 					'joinTable'    			=> 'contents_object_categories',
 					'foreignKey'   			=> 'content_id',
 					'associationForeignKey'	=> 'object_category_id',
-					'unique'				=> true,
-				),
+					'unique'				=> true
+				)
 		) ;			
 	
 	function beforeSave() {
@@ -33,11 +33,10 @@ class Content extends BEAppModel
 			
 			if(!isset($this->data[$k][$k]) || !is_array($this->data[$k][$k])) continue ;
 			
-			for($i=0; $i < count($this->data[$k][$k]); $i++) {
-				$this->data[$k][$k][$i] = $this->data[$k][$k][$i][$model->primaryKey] ;
+			foreach ($this->data[$k][$k] as $key => $value) {
+				$this->data[$k][$k][$key] = $this->data[$k][$k][$key][$model->primaryKey];
 			}
 		}
-
 		return true ;
 	}
 }

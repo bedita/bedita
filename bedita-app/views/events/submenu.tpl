@@ -9,6 +9,7 @@
 				{if $module_modify eq '1'}
 				<li {if $method eq 'view'}class="on"{/if}>	<b>&#8250;</b> {$tr->link('New Event', '/events/view')}</li>
 				{/if}
+				<li {if $method eq 'categories'}class="on"{/if}>	<b>&#8250;</b> {$tr->link('Categories', '/events/categories')}</li>
 			</ul>	
 			<hr/>
 		</div>

@@ -2,18 +2,42 @@
 <div class="blockForm" id="category" style="display: none">
 <fieldset>
 	<div id="categories_container">
-	{if isset($categories)}
-		<table class="tableForm" border="0">
-		{foreach key=val item=cat from=$categories}
+	{if isset($areaCategory)}
+		<table class="indexList" style="width: 570px;">
+		{foreach key="areaName" item="areaC" from=$areaCategory.area}
 			<tr>
-				<td class="field">
-					<input type="checkbox" id="cat_{$cat.ObjectCategory.id}" 
-						name="cat_{$cat.ObjectCategory.id}"/></td>
-				<td class="label"><label for="cat_{$cat.ObjectCategory.id}">{$cat.ObjectCategory.label}</label></td>
-				<td class="status">&nbsp;</td>
+				<th style="background-color:white; font-weight: bold; border:1px solid grey;">{$areaName}</th>
 			</tr>
+			{foreach from=$areaC item="cat" name="fc"}
+			<tr>
+				<td class="cellList">
+				<input type="checkbox" id="cat_{$cat.id}" 
+					name="data[ObjectCategory][]" value="{$cat.id}"
+					{if $object && in_array($cat.id, $object.ObjectCategory)}checked="checked"{/if}/>
+				<label for="cat_{$cat.id}">{$cat.label}</label>
+				</td>
+			</tr>
+			{/foreach}
 		{/foreach}
+
+		{if !empty($areaCategory.noarea)}
+			<tr>
+				<td style="border: 0px; padding-top:15px;">{t}Categories with no area associated{/t}</td>
+			</tr>
+			{foreach item="noareaC" from=$areaCategory.noarea}
+			<tr>
+				<td class="cellList">
+				<input type="checkbox" id="cat_{$noareaC.id}" 
+					name="data[ObjectCategory][]" value="{$noareaC.id}"
+					{if $object && in_array($noareaC.id, $object.ObjectCategory)}checked="checked"{/if}/>
+				<label for="cat_{$noareaC.id}">{$noareaC.label}</label>
+				</td>
+			</tr>
+			{/foreach}
+		{/if}
 		</table>
+	{else}
+		{t}No categories found{/t}
 	{/if}
 	</div>
 </fieldset>
