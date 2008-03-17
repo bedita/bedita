@@ -90,3 +90,18 @@ jQuery.validator.addMethod("dateGreaterThen", function(value, element, params) {
 	}
 
 }, jQuery.format("Please enter a date greater than {2}."));
+
+
+jQuery.validator.addMethod("checkTime", function(value, element, params) {
+	if (value) {
+		retVal = false;
+		var strReg = "(2[0-3]|1\\d|0\\d)[:]?[0-5]\\d";
+    	var reg = new RegExp("^" + strReg + "$");
+		if (reg.test(value)) {
+			retVal = true;
+		}		
+		return retVal;
+
+	} else return this.optional(element);
+
+}, jQuery.format("Please enter a valid time in the hh:mm format"));

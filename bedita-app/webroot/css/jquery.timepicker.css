@@ -1,0 +1,35 @@
+div.time-holder {
+	position: relative;
+	display: none;
+	z-index: 99;
+	width: 100px;
+}
+
+div.time-holder div.times {
+	position: absolute;
+	top: 0;
+	height: 120px;
+	overflow: auto;
+	background: #fff;
+	border: 1px solid #000;
+}
+
+div.time-holder div.times ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	width: 80px;
+}
+
+div.time-holder div.times li {
+	padding: 1px;
+}
+ 
+div.time-holder div.times li.selected {
+	background: #316AC5;
+	color: #fff;
+}
+
+div.time-picker {
+	margin-top: 1.1em;
+}

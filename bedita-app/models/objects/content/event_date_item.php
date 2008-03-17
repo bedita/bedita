@@ -33,7 +33,14 @@ class EventDateItem extends BEAppModel
 		
 		$data['start'] = $this->getDefaultDateFormat($data['start']);
 	 	$data['end'] = $this->getDefaultDateFormat($data['end']);
-
+		
+	 	if (!empty($data['start']) && !empty($data['timeStart'])) {
+	 		$data['start'] .= " " . $data['timeStart'];
+	 	}
+		if (!empty($data['end']) && !empty($data['timeEnd'])) {
+	 		$data['end'] .= " " . $data['timeEnd'];
+	 	}
+	 	
 		return true;
 	}
 }
