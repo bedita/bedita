@@ -162,7 +162,11 @@ var cols 		= 5 ;
 		</fieldset>
 	</div>
 	<div id="fragment-2">
-		{include file="../pages/form_upload.tpl" controller=$controller}
+		{if $conf->uploadType == "ajax"}
+			{include file="../pages/form_upload_ajax.tpl" controller=$controller}
+		{else if $conf->uploadType == "flash"}
+			{include file="../pages/form_upload.tpl" controller=$controller}
+		{/if}
 	</div>
 	<div id="fragment-3">
 		{include file="../pages/form_multimedia_assoc.tpl" itemType=$controller items=$bedita_items controller=$controller}

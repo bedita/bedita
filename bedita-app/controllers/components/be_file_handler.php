@@ -111,7 +111,7 @@ class BeFileHandlerComponent extends Object {
 		}
 		$mod = new $model() ;
 	 	if(!$mod->del($id)) {
-			throw new BEditaDeleteStreamObjException() ;	
+			throw new BEditaDeleteStreamObjException(__("Error deleting stream object",true)) ;	
 	 	}
 	 	return true ;
 	}
@@ -160,18 +160,18 @@ class BeFileHandlerComponent extends Object {
 		if(!isset($dati['path'])) return false ;
 		
 		// URL accettabile
-		if(!$this->_regularURL($dati['path'])) throw new BEditaURLException() ;
+		if(!$this->_regularURL($dati['path'])) throw new BEditaURLException(__("URL not valid",true)) ;
 
 		if($this->paranoid) {
 			// Permesso di usare file remoti
-			if(!ini_get('allow_url_fopen')) throw  new BEditaAllowURLException() ;
+			if(!ini_get('allow_url_fopen')) throw  new BEditaAllowURLException(__("You can't use remote file",true)) ;
 			
 			// Preleva MIME type e dimensioni
 			if(!$this->_getInfoURL($dati['path'], $dati)) throw new BEditaInfoException() ;
 		}
 			
 		// Il file/URL non deve essere presente
-		if($this->_isPresent($dati['path'])) throw new BEditaFileExistException() ;
+		if($this->_isPresent($dati['path'])) throw new BEditaFileExistException(__("File already exists in the filesystem",true)) ;
 		
 		return $this->_create($dati, $model) ;
 	}
@@ -183,7 +183,7 @@ class BeFileHandlerComponent extends Object {
 		$targetPath	= $this->_getPathTargetFile($dati['name']); 
 		// File should not exist
 		if($this->_isPresent($targetPath)) {
-			throw new BEditaFileExistException() ;
+			throw new BEditaFileExistException(__("File already exists in the filesystem",true)) ;
 		}
 		// Create file
 		if(!$this->_putFile($sourcePath, $targetPath)) return false ;
@@ -200,30 +200,31 @@ class BeFileHandlerComponent extends Object {
 			case 'Audio':		$model = 'Audio' ; break ;
 			case 'Video':		$model = 'Video' ; break ;
 			default:
-				throw new BEditaMIMEException("MIME type not found") ;
+				throw new BEditaMIMEException(__("MIME type not found",true)) ;
 		}
 		$this->{$model}->id = false ;
 		if(!($ret = $this->{$model}->save($dati))) {
 			$this->validateErrors = $this->{$model}->validateErrors ;
-			throw new BEditaSaveStreamObjException() ;
+			throw new BEditaSaveStreamObjException(__("Error saving stream object",true)) ;
 		}
 		return ($this->{$model}->{$this->{$model}->primaryKey}) ;
 	}
 
 	private function _modifyFromURL($id, &$dati) {
 		// URL accettabile
-		if(!$this->_regularURL($dati['path'])) throw new BEditaURLException() ;
+		if(!$this->_regularURL($dati['path'])) 
+			throw new BEditaURLException(__("URL not valid",true)) ;
 			
 		if($this->paranoid) {
 			// Permesso di usare file remoti
-			if(!ini_get('allow_url_fopen')) throw  new BEditaAllowURLException() ;
+			if(!ini_get('allow_url_fopen')) throw  new BEditaAllowURLException(__("You can't use remote file",true)) ;
 			
 			// Preleva MIME type e dimensioni
 			if(!$this->_getInfoURL($dati['path'], $dati)) throw new BEditaInfoException() ;
 		}
 	
 		// se il file e' presente in un altro oggetto torna un eccezione
-		if(!$this->_isPresent($dati['path'], $id)) throw new BEditaFileExistException() ;
+		if(!$this->_isPresent($dati['path'], $id)) throw new BEditaFileExistException(__("File is already associated to another object",true)) ;
 		
 		// Se e' presente un path ad file su file system, cancella
 		if(($ret = $this->Stream->read('path', $id) && !$this->_isURL($ret['path']))) {
@@ -238,7 +239,7 @@ class BeFileHandlerComponent extends Object {
 		$targetPath	= $this->_getPathTargetFile($dati['name']); 
 		
 		// se il file e' presente in un altro oggetto torna un eccezione
-		if(!$this->_isPresent($targetPath, $id)) throw new BEditaFileExistException() ;
+		if(!$this->_isPresent($targetPath, $id)) throw new BEditaFileExistException(__("File is already associated to another object",true)) ;
 		
 		// Se e' presente un path ad file su file system, cancella
 		if(($ret = $this->Stream->read('path', $id) && !$this->_isURL($ret['path']))) {
@@ -260,19 +261,19 @@ class BeFileHandlerComponent extends Object {
 			$ret = $this->Stream->read('type', $id) ;
 			if(!isset($ret['type']) || empty($ret['type'])) break ;
 			
-			if($ret['type'] != $dati['type']) throw new BEditaMIMEException() ;
+			if($ret['type'] != $dati['type']) throw new BEditaMIMEException(__("MIME type not found", true)) ;
 		}
 		
 		// Preleva il tipo di oggetto da salvare e salva
 		$rec = $this->BEObject->recursive ;
 		$this->BEObject->recursive = -1 ;
-		if(!($ret = $this->BEObject->read('object_type_id', $id)))  throw new BEditaMIMEException() ;
+		if(!($ret = $this->BEObject->read('object_type_id', $id)))  throw new BEditaMIMEException(__("MIME type not found", true)) ;
 		$this->BEObject->recursive = $rec ;
 		$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
 		
 		$this->{$model}->id =  $id ;
 		if(!($ret = $this->{$model}->save($dati))) {
-			throw new BEditaSaveStreamObjException() ;
+			throw new BEditaSaveStreamObjException(__("Error saving stream object",true)) ;
 		}
 		
 		return $ret ;
@@ -544,7 +545,7 @@ class BEditaAllowURLException extends BeditaException
  */
 class BEditaFileExistException extends BeditaException
 {
-} ;
+}
 
 /**
  * 		BEditaMIMEException				// MIME type del file non trovato o non corrispondente al tipo di obj

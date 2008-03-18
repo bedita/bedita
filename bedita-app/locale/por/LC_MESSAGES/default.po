@@ -701,3 +701,24 @@ msgstr "Colocação da seçção"
 
 msgid "Contents for the section"
 msgstr "Contenidos para a seçção"
+
+msgid "File already exists in the filesystem"
+msgstr "X DANTE - Il file è già presente sul filesystem"
+
+msgid "File is already associated to another object"
+msgstr "X DANTE - Il file è già associato ad un altro oggetto"
+
+msgid "MIME type not found"
+msgstr "X DANTE - MIME type non trovato"
+
+msgid "Error saving stream object"
+msgstr "X DANTE - Errore salvando l'oggetto stream"
+
+msgid "Error deleting stream object"
+msgstr "X DANTE - Errore durante la cancellazione dell'oggetto stream" 
+
+msgid "URL not valid"
+msgstr "X DANTE - URL non valido"
+
+msgid "You can't use remote file"
+msgstr "X DANTE - Non puoi usare file remoti"

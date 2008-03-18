@@ -720,3 +720,24 @@ msgstr "Dove si colloca la sezione"
 
 msgid "Contents for the section"
 msgstr "Contenuti per la sezione"
+
+msgid "File already exists in the filesystem"
+msgstr "Il file è già presente sul filesystem"
+
+msgid "File is already associated to another object"
+msgstr "Il file è già associato ad un altro oggetto"
+
+msgid "MIME type not found"
+msgstr "MIME type non trovato"
+
+msgid "Error saving stream object"
+msgstr "Errore salvando l'oggetto stream"
+
+msgid "Error deleting stream object"
+msgstr "Errore durante la cancellazione dell'oggetto stream" 
+
+msgid "URL not valid"
+msgstr "URL non valido"
+
+msgid "You can't use remote file"
+msgstr "Non puoi usare file remoti"

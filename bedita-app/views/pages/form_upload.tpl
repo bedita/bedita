@@ -2,6 +2,7 @@
 {$html->css('swfupload')}
 {$javascript->link("swfupload/SWFUpload-src")}
 {$javascript->link("swfupload/callbacks")}
+
 <script type="text/javascript">
 <!--
 
@@ -219,6 +220,7 @@ function beCancelQueue() {
 	$(swfu.movieName + "UploadBtn").hide() ;
 	$("cancelqueuebtn").hide() ;
 }
+ 
 //-->
 {/literal}
 </script>

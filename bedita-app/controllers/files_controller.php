@@ -1,23 +1,39 @@
 <?php
 class FilesController extends AppController {
-	var $name = 'Images';
+	
 	var $helpers 	= array('Html');
 	var $uses		= array('Stream') ;
 	var $components = array('Transaction', 'SwfUpload', 'BeUploadToObj');
 
 	function upload () {
-		if (!isset($this->params['form']['Filedata'])) return ;
-		$this->Transaction->begin() ;
+		if (!isset($this->params['form']['Filedata'])) 
+			return ;
 		try {
+			$this->Transaction->begin() ;
 			$id = $this->BeUploadToObj->upload($this->params['form']['Filedata']) ;
+			$this->Transaction->commit();
 		} catch(BeditaException $ex) {
 			header("HTTP/1.0 " . $this->BeUploadToObj->errorCode . " Internal Server Error");
 			$errTrace = $ex->getClassName() . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
 			$this->setResult(self::ERROR);
-			return ; 
 		}
-		$this->Transaction->commit();
+	}
+	
+	function uploadAjax () {
+		if (!isset($this->params['form']['Filedata'])) return ;
+		$this->layout = "empty";
+		try {
+			$this->Transaction->begin() ;
+			$id = $this->BeUploadToObj->upload($this->params['form']['Filedata']) ;
+			$this->Transaction->commit();
+			$this->set("fileName", $this->params['form']['Filedata']["name"]);
+		} catch(BeditaException $ex) {
+			$errTrace = $ex->getClassName() . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
+			$this->setResult(self::ERROR);
+			$this->set("errorMsg", $ex->getMessage());
+		}
 	}
 
 	/**
@@ -47,9 +63,33 @@ class FilesController extends AppController {
 	}
 
 	function beditaBeforeFilter() {
+		//die("aho");
 		if(isset($this->params['form']['Filedata'])) { // skip auth check, to avoid session error with swfupload via flash
 			$this->skipCheck = true;
 		}
 	}
+
+	/**
+	 * Override AppController handleError to not save message in session
+	 */
+	public function handleError($eventMsg, $userMsg, $errTrace) {
+		$this->log($errTrace);
+		// end transactions if necessary
+		if($this->Transaction->started()) {
+			$this->Transaction->rollback();
+		}
+	}
+	
+	protected function forward($action, $esito) {
+		$REDIRECT = array(
+			"uploadAjax" =>	array(
+	 			"OK"	=> self::VIEW_FWD.'upload_ajax_response',
+		 		"ERROR"	=> self::VIEW_FWD.'upload_ajax_response'
+		 	)
+       );
+       if(isset($REDIRECT[$action][$esito])) 
+          return $REDIRECT[$action][$esito] ;
+       return false;
+     }
 }
 ?>
