@@ -140,9 +140,9 @@ var cols 		= 5 ;
 <div id="loading">{t}Loading data{/t}...</div>
 <div id="container-1">
 	<ul>
-		<li><a href="#fragment-1"><span>{t}Gallery items{/t}</span></a></li>
+		<li><a href="#fragment-1"><span>{t}{$title} items{/t}</span></a></li>
 		<li><a href="#fragment-2"><span>{t}Upload new items{/t}</span></a></li>
-		<li><a href="#fragment-3"><span>{t}Multimedia items repository{/t}</span></a></li>
+		<li><a href="#fragment-3"><span>{t}{$title} items repository{/t}</span></a></li>
 	</ul>
 	<div id="fragment-1">
 		<fieldset id="{$containerId}">
@@ -151,7 +151,7 @@ var cols 		= 5 ;
 		{foreach key=index item=ob from=$items|default:$empty}
 			{include file="../pages/form_file_item.tpl" obj=$ob controller=$controller}
 		{foreachelse}
-			{t}Empty{/t}.<br />{t}To populate this gallery switch to the 'Upload new items' tab or the 'Multimedia items repository' tab{/t}.
+			{t}Empty{/t}.<br />{t}To insert item here, switch to the 'Upload new items' tab or the '{$title} items repository' tab{/t}.
 		{/foreach}
 		<script type="text/javascript">
 		<!--

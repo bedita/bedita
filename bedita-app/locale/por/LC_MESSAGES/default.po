@@ -703,22 +703,40 @@ msgid "Contents for the section"
 msgstr "Contenidos para a seçção"
 
 msgid "File already exists in the filesystem"
-msgstr "X DANTE - Il file è già presente sul filesystem"
+msgstr "Arquivo ja presente no filesystem"
 
 msgid "File is already associated to another object"
-msgstr "X DANTE - Il file è già associato ad un altro oggetto"
+msgstr "Arquivo ja relacionado com outro objeto"
 
 msgid "MIME type not found"
-msgstr "X DANTE - MIME type non trovato"
+msgstr "MIME type não encontrado"
 
 msgid "Error saving stream object"
-msgstr "X DANTE - Errore salvando l'oggetto stream"
+msgstr "Error guardando o objeto stream"
 
 msgid "Error deleting stream object"
-msgstr "X DANTE - Errore durante la cancellazione dell'oggetto stream" 
+msgstr "Errore borrando o objeto stream" 
 
 msgid "URL not valid"
-msgstr "X DANTE - URL non valido"
+msgstr "URL não valido"
 
 msgid "You can't use remote file"
-msgstr "X DANTE - Non puoi usare file remoti"
+msgstr "Não è possivel utilizar arquivos remotos"
+
+msgid "Attachments items"
+msgstr "Anexos"
+
+msgid "Attachments items repository"
+msgstr "Arquivo anexos"
+
+msgid "To insert item here, switch to the 'Upload new items' tab or the 'Attachments items repository' tab"
+msgstr "Para juntar elementos, vai para o tab 'Anexar' ou para o tab 'Arquivo anexos'"
+
+msgid "Multimedia items"
+msgstr "Multimedia"
+
+msgid "Multimedia items repository"
+msgstr "Arquivo multimedial"
+
+msgid "To insert item here, switch to the 'Upload new items' tab or the 'Multimedia items repository' tab"
+msgstr "Para juntar elementos, vai para o tab 'Anexar' ou para o tab 'Arquivo multimedial'"

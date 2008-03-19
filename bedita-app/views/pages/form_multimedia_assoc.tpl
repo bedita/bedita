@@ -129,7 +129,7 @@ $(document).ready(function(){
 *}
 
 		{else}
-		{t}No {$itemType} found{/t}
+		{t}No {$itemType} item found{/t}
 		{/if}
 	</fieldset>
 	
