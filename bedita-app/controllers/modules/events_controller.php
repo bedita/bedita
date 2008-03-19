@@ -21,7 +21,7 @@ class EventsController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Fck');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
-	var $uses = array('Event','ObjectCategory','Area','Image', 'Video', 'Audio', 'BEFile') ;
+	var $uses = array('Event','ObjectCategory','Area','Section','Tree','Image', 'Video', 'Audio', 'BEFile') ;
 	protected $moduleName = 'events';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -32,9 +32,10 @@ class EventsController extends ModulesController {
 
 	public function view($id = null) {
 
+		$conf  = Configure::getInstance() ;
 		$obj = null ;
+		$parents_id = array();
 		if(isset($id)) {
-			$conf  = Configure::getInstance() ;
 			$this->Event->bviorHideFields = array('Version', 'Index', 'current') ;
 			if(!($obj = $this->Event->findById($id))) {
 				 throw new BeditaException(__("Error loading event: ", true).$id);
@@ -62,6 +63,10 @@ class EventsController extends ModulesController {
 				$obj['attachments'][$i]= $Details;
 				$attach_id[]=$obj['attachments'][$i]['id'];
 			}
+			$parents_id = $this->Tree->getParent($id) ;
+			if($parents_id === false) array() ;
+			elseif(!is_array($parents_id))
+				$parents_id = array($parents_id);
 		}
 		// begin#bedita_items
 		$ot = &$conf->objectTypes ; 
@@ -85,11 +90,10 @@ class EventsController extends ModulesController {
 		// end#bedita_items		
 		$this->set('object',	$obj);
 		$this->set('attachments', $obj['attachments']);
-		$this->set('tree', 		$this->BeTree->getSectionsTree());
-		$this->set('parents',	$this->BeTree->getParents($id));
-		$conf  = Configure::getInstance() ;
-		$ot = $conf->objectTypes['event'];
-		$areaCategory = $this->ObjectCategory->getCategoriesByArea($ot);
+		$tree = $this->BeTree->getSectionsTree() ;
+		$this->set('tree', 		$tree);
+		$this->set('parents',	$parents_id);
+		$areaCategory = $this->ObjectCategory->getCategoriesByArea($ot['event']);
 		$this->set("areaCategory", $areaCategory);
 		$this->Area->displayField = 'public_name';
 		$this->set("areasList", $this->Area->find('list', array("order" => "public_name")));

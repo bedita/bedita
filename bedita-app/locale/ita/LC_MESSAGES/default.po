@@ -798,3 +798,6 @@ msgstr "Evento salvato"
 
 msgid "Event deleted"
 msgstr "Evento eliminato"
+
+msgid "Where the event is"
+msgstr "Posizione dell'evento"
