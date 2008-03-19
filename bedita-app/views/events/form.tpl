@@ -11,6 +11,7 @@
 {include file="../pages/form_categories.tpl"}
 {include file="../pages/form_tree.tpl"}
 {include file="../pages/form_long_desc_lang.tpl"}
+{include file="../pages/form_file_list.tpl" containerId='attachContainer' controller='attachments' title='Attachments' items=$attachments}
 {include file="../pages/form_custom_properties.tpl" el=$object}
 {include file="../pages/form_permissions.tpl" el=$object recursion=true}
 </form>

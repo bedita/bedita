@@ -21,7 +21,7 @@ class EventsController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Fck');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
-	var $uses = array('Event','ObjectCategory','Area') ;
+	var $uses = array('Event','ObjectCategory','Area','Image', 'Video', 'Audio', 'BEFile') ;
 	protected $moduleName = 'events';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -34,6 +34,7 @@ class EventsController extends ModulesController {
 
 		$obj = null ;
 		if(isset($id)) {
+			$conf  = Configure::getInstance() ;
 			$this->Event->bviorHideFields = array('Version', 'Index', 'current') ;
 			if(!($obj = $this->Event->findById($id))) {
 				 throw new BeditaException(__("Error loading event: ", true).$id);
@@ -48,9 +49,42 @@ class EventsController extends ModulesController {
 				}
 				$obj["ObjectCategory"] = $objCat;
 			}
+			// Get attachments
+			for($i=0; $i < @count($obj['attachments']) ; $i++) {
+				$m = $this->Event->am($obj['attachments'][$i]) ;
+				$type = $conf->objectTypeModels[$m['object_type_id']] ;
+				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments', 'LangText');
+				if(!($Details = $this->{$type}->findById($obj['attachments'][$i]['id']))) {
+					continue ;
+				}
+				$Details['priority'] = $m['priority'];
+				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
+				$obj['attachments'][$i]= $Details;
+				$attach_id[]=$obj['attachments'][$i]['id'];
+			}
 		}
-		
+		// begin#bedita_items
+		$ot = &$conf->objectTypes ; 
+		$bedita_items = $this->BeTree->getDiscendents(null, null, array($ot['befile'], $ot['image'], $ot['audio'], $ot['video']))  ;
+		foreach($bedita_items['items'] as $key => $value) {
+			if(!empty($attach_id) && in_array($value['id'],$attach_id)) {
+				unset($bedita_items['items'][$key]);
+			} else {
+				// get details
+				$type = $conf->objectTypeModels[$value['object_type_id']];
+				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments');
+				if(($Details = $this->{$type}->findById($value['id']))) {
+					$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
+					$bedita_items['items'][$key] = array_merge($bedita_items['items'][$key], $Details);	
+				}
+			}
+		}
+		$this->params['toolbar'] = &$bedita_items['toolbar'] ;
+		$this->set('bedita_items', 	$bedita_items['items']);
+		$this->set('toolbar', 		$bedita_items['toolbar']);
+		// end#bedita_items		
 		$this->set('object',	$obj);
+		$this->set('attachments', $obj['attachments']);
 		$this->set('tree', 		$this->BeTree->getSectionsTree());
 		$this->set('parents',	$this->BeTree->getParents($id));
 		$conf  = Configure::getInstance() ;

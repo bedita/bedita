@@ -740,3 +740,42 @@ msgstr "Arquivo multimedial"
 
 msgid "To insert item here, switch to the 'Upload new items' tab or the 'Multimedia items repository' tab"
 msgstr "Para juntar elementos, vai para o tab 'Anexar' ou para o tab 'Arquivo multimedial'"
+
+msgid "comments"
+msgstr "comentarios"
+
+msgid "Add selected items to area/section"
+msgstr "Juntar os elementos selecionados  a area/seçção"
+
+msgid "Loading data"
+msgstr "Cargando datos"
+
+msgid "events"
+msgstr "eventos"
+
+msgid "Events"
+msgstr "Eventos"
+
+msgid "New Event"
+msgstr "Novo evento"
+
+msgid "Categories"
+msgstr "Categorias"
+
+msgid "Event calendar"
+msgstr "Calendario evento"
+
+msgid "Add event date"
+msgstr "Juntar data evento"
+
+msgid "No categories found"
+msgstr "Nenhuma categoria encontrada"
+
+msgid "No events found"
+msgstr "Nenhum evento encontrado"
+
+msgid "Event saved"
+msgstr "Evento guardado"
+
+msgid "Event deleted"
+msgstr "Evento borrado"
