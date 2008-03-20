@@ -8,11 +8,18 @@
 class BeLangTextComponent extends Object {
 
 	var $controller = null ;
+	var $uses = array('LangText');
 
-	function __construct() {} 
+	function __construct() {
+		foreach ($this->uses as $model) {
+			if(!class_exists($model))
+				App::import('Model', $model) ;
+			$this->{$model} = new $model() ;
+		}
+	} 
 
 	function startup(&$controller) {
-		$this->controller 	= $controller;
+		$this->controller = $controller;
 	}
 
 	function setupForSave(&$data) {
@@ -43,6 +50,21 @@ class BeLangTextComponent extends Object {
 			$tmp[$item["name"]][$item["lang"]] = (!@empty($item["text"])) ? @$item["text"] : @$item["long_text"] ;
 		}
 		$data = $tmp ;
+	}
+	
+	function objectForLang($id,$lang,&$object) {
+		$result=array();
+		$tmpobj = $this->LangText->find('all',
+			array(
+				'fields'=>array('name','text','long_text'),
+				'conditions'=>array("LangText.object_id = '$id'","LangText.lang = '$lang'")
+			)
+		);
+		foreach($tmpobj as $k => $v) {
+			$key = $v['LangText']['name'];
+			$value= (!empty($v['LangText']['text']))?$v['LangText']['text']:$v['LangText']['long_text'];
+			if(!empty($value)) $object[$key]=$value;
+		}
 	}
 }
 ?>

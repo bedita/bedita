@@ -22,6 +22,7 @@
 */
 class BEObject extends BEAppModel
 {
+	var $actsAs = array('Bindable');
 	var $name = 'BEObject';
 	var $useTable	= "objects" ;
 	
