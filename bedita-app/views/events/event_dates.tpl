@@ -7,7 +7,7 @@
 $(document).ready(function(){
 	$('#eventStart').attachDatepicker();
 	$('#eventEnd').attachDatepicker();
-	$("#timeStart, #timeEnd").timePicker();
+	$("#timeStart, #timeEnd").timePicker({startTime: "00:00", endTime: "23:30"});
 });
 </script>
 {/literal}
