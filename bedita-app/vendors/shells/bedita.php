@@ -1,6 +1,7 @@
 <?php 
 
 App::import('Model', 'DataSource');
+App::import('Model', 'Stream');
 vendor('splitter_sql');
 
 class DataSourceTest extends DataSource {
@@ -61,15 +62,77 @@ class BeditaShell extends Shell {
         
 		$this->out("Load data from $sqlDataDump");
 		$this->DataSourceTest->executeQuery($db, $sqlDataDump);
-		
-       $this->out("$dbCfg database updated, bye!");
+    	
+		if (isset($this->params['media'])) {
+            $this->extractMediaZip($this->params['media']);
+    	}
+       $this->out("$dbCfg database updated");
+       
+       $this->out("checking media files");
+       $this->checkMedia();
+       $this->out("bye");
+       
     }
 
+    private function extractMediaZip($zipFile) {
+		$zip = new ZipArchive;
+		if ($zip->open($zipFile) === TRUE) {
+			$zip->extractTo(MEDIA_ROOT);
+			$zip->close();
+  			$this->out("Media files extracted");
+		} else {
+  			$this->out("Error media file $zipFile not found!!");
+		}
+    }
+    
     function test() {
 		pr($this->params);
 		pr($this->args);
     }
 
+	public function checkMedia() {
+
+		$stream = new Stream();
+        // check filesystem
+		$this->out("checkMedia - checking filesystem");
+		$folder=& new Folder(MEDIA_ROOT);
+        $tree= $folder->tree(MEDIA_ROOT, false);
+		$mediaOk = true;
+        foreach ($tree as $files) {
+            foreach ($files as $file) {
+                if (!is_dir($file)) {
+                    $file=& new File($file);
+					$p = substr($file->pwd(), strlen(MEDIA_ROOT));
+					if(stripos($p, "/imgcache/") !== 0) {
+						$f = $stream->findByPath($p);
+						if($f === false) {
+							$this->out("File $p not found on db!!");
+							$mediaOk = false;
+						}
+					}
+                }
+            }
+        }
+        if($mediaOk) {
+			$this->out("checkMedia - filesystem OK");
+        }
+        // check db
+		$this->out("checkMedia - checking database");
+        $allStream = $stream->findAll();
+		$mediaOk = true;
+        foreach ($allStream as $v) {
+        	$p = $v['Stream']['path'];
+        	if(!file_exists(MEDIA_ROOT.$p)) {
+					$this->out("File $p not found on filesystem!!");
+					$mediaOk = false;
+        	}
+        }
+        if($mediaOk) {
+			$this->out("checkMedia - database OK");
+        }
+	}    
+    
+    
     private function __clean($path) {
         
         $folder=& new Folder($path);
@@ -169,19 +232,22 @@ class BeditaShell extends Shell {
         $this->out('Available functions:');
         $this->out('1. updateDb: update database with bedita-db sql scripts');
   		$this->out(' ');
-        $this->out('    Usage: updateDb [-db <dbname>] [-data <sql>]');
+        $this->out('    Usage: updateDb [-db <dbname>] [-data <sql>] [-media <zipfile>]');
   		$this->out(' ');
   		$this->out("    -db <dbname>\t use db configuration <dbname> specified in config/database.php");
   		$this->out("    -data <sql>     \t use <sql> data dump, use absolute path if not in bedita-db/");
-        $this->out(' ');
+  		$this->out("    -media <zipfile> \t restore media files in <zipfile>");
+  		$this->out(' ');
   		$this->out('2. cleanup: cleanup cahe, compile, log files');
         $this->out(' ');
         $this->out('    Usage: cleanup [-nologs] [-media]');
         $this->out(' ');
         $this->out("    -nologs \t don't clean log files");
-        $this->out("    -media  \t clean media files in MEDIA_ROOT");
+        $this->out("    -media  \t clean media files in MEDIA_ROOT (default no)");
         $this->out(' ');
         $this->out('3. checkIni: check difference between bedita.ini.php and .sample');
+        $this->out(' ');
+        $this->out('4. checkMedia: check media files on db and filesystem');
         $this->out(' ');
 	}
 }
