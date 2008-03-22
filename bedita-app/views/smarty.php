@@ -89,7 +89,7 @@
 						
 			$this->_sv_compile_dir = TMP . 'smarty' . DS . 'compile' ;
 			$this->_sv_cache_dir = TMP . 'smarty' . DS . 'cache' . DS;
-			$this->_sv_config_dir = ROOT . APP_DIR.DS . 'config' . DS . 'smarty' . DS;
+			$this->_sv_config_dir = ROOT . APP_DIR . DS . 'config' . DS . 'smarty' . DS;
 			
 			$this->_smarty = & new Smarty();
 
@@ -98,11 +98,21 @@
 			$this->_smarty->config_dir 	= $this->_sv_config_dir;
 			$this->_smarty->compile_id	= $controller->name ;
 			
-			// Aggiunta Giangi
+			// Add by BEdita team - Giangi
 			$this->_smarty->plugins_dir[] = ROOT . DS . APP_DIR . DS . 'vendors' . DS . '_smartyPlugins' ;
 			if(defined('BEDITA_CORE_PATH'))
 				$this->_smarty->plugins_dir[] = BEDITA_CORE_PATH . DS . 'vendors' . DS . '_smartyPlugins';
 			
+
+			// Add by BEdita team - xho
+			// inherit error_reporting level upon cake debug settings
+			// ("if condition" in first 3 lines is useless, it's there just for further customization/improvements)
+			if ( empty(Configure::getInstance()->debug) )
+				$this->_smarty->error_reporting = false ;
+			else
+				$this->_smarty->error_reporting = error_reporting () ;
+
+
 			$svckResFuncs = array(
 				__CLASS__ . "::svck_get_template",
 				__CLASS__ . "::svck_get_timestamp",
@@ -117,7 +127,8 @@
 			return;
 		}
 		
-		// Aggiunta Giangi, cambia la directory template 
+		// Add by BEdita team - Giangi
+		// Change template dir 
 		function setTemplateDir($path = VIEW) {
 			$old = $this->_sv_template_dir ;
 			$this->_sv_template_dir  = $path ;
@@ -188,7 +199,7 @@
 				$this->_smarty->assign_by_ref($k, $___data_for_view[$k]);
 			$this->_smarty->assign_by_ref("view", $this);
 
-			// modifica, giangi
+			// Add by BEdita team (modify) - giangi
 			if($this->sv_processedTpl !== NULL)
 				$out = $this->_smarty->fetch('svck:' . basename($___viewFn));
 			else {
