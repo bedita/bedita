@@ -41,7 +41,7 @@ class AppModel extends Model{
 	// choose database to use (defined in config/database.php,
 	// if undefined defaults to $default
 	// var $useDbConfig = 'test';
-	var $actsAs = array('Bindable');
+	var $actsAs 	= array("Bindable");
 }
 
 require_once(APP . 'models'. DS . 'BEAppModel.php') ;

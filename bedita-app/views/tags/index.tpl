@@ -1,8 +1,6 @@
-{$html->css('module.tags')}
 {$html->css('tree')}
 {$javascript->link("jquery.treeview")}
 {$javascript->link("interface")}
-{$javascript->link("module.tags")}
 {$javascript->link("form")}
 {$javascript->link("jquery.changealert")}
 

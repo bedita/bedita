@@ -1,9 +1,11 @@
 {$html->css('tree')}
 {$html->css("ui.datepicker")}
 {$html->css('ui.tabs')}
+{$html->css('jquery.thickbox')}
 {$javascript->link("ui/jquery.dimensions")}
 {$javascript->link("ui/ui.tabs")}
 {$javascript->link("form")}
+{$javascript->link("jquery.thickbox")}
 {$javascript->link("jquery.treeview")}
 {$javascript->link("jquery.changealert")}
 {$javascript->link("jquery.form")}

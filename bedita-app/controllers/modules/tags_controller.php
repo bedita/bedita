@@ -73,6 +73,16 @@ class TagsController extends ModulesController {
 		$this->eventInfo("Tag $objectsListDeleted deleted");
 	}
 
+	public function listAllTags() {
+		$this->layout = "empty";
+		$this->set("listTags",$this->ObjectCategory->find("all", 
+										array(
+											"conditions" => "ObjectCategory.object_type_id is null",
+											"order"		=> array("ObjectCategory.label" => "asc")						
+										))
+					);
+	}
+	
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"save"	=> 	array(

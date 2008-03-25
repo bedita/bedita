@@ -57,7 +57,7 @@ jQuery.validator.addMethod("checkDate", function(value, element, dateFormat) {
 
 
 /*
-*	check if date2 > date1
+*	check if date2 >= date1
 *
 *	@params params = Array(dateFormat, idRif)
 */
@@ -80,7 +80,7 @@ jQuery.validator.addMethod("dateGreaterThen", function(value, element, params) {
 		params[2] = $("#"+idRef).val();
 		
 		retVal = true;
-		if (date_1.getTime() >= date_2.getTime()) {
+		if (date_1.getTime() > date_2.getTime()) {
 			retVal = false;
 		}
 		

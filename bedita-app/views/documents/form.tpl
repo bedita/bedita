@@ -13,6 +13,9 @@
 {include file="../pages/form_long_desc_lang.tpl"}
 {include file="../pages/form_file_list.tpl" containerId='attachContainer' controller='attachments' title='Attachments' items=$attachments}
 {include file="../pages/form_galleries.tpl"}
+{foreach from=$moduleList item="mod"}
+	{if $mod.label == "tags"}{include file="../pages/form_tags.tpl"}{/if}
+{/foreach}
 {include file="../pages/form_custom_properties.tpl" el=$object}
 {include file="../pages/form_permissions.tpl" el=$object recursion=true}
 </form>

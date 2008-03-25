@@ -46,5 +46,40 @@ class ObjectCategory extends BEAppModel {
 		
 		return $areaCategory;
 	}
+	
+	/**
+	 * save a list of comma separated tag
+	 *
+	 * @param comma separated string $tagList 
+	 * @return array of tags' id
+	 */
+	public function saveTagList($tagList) {
+		$arrIdTag = array();
+		if (!empty($tagList)) {
+			$tags = explode(",",$tagList);
+			foreach ($tags as $tag) {
+				$tag = trim($tag);
+				if (!empty($tag))  {
+					$tagDB = $this->find("first", array(
+													"conditions" => "label='".$tag."' AND object_type_id IS NULL"
+													)
+									);
+					if (empty($tagDB)) {
+						$tagDB["label"] = $tag;
+						$tagDB["status"] = "on";
+						$this->create();
+						if (!$this->save($tagDB)) {
+							throw new BeditaException(__("Error saving tags", true));
+						}
+					}
+					$id_tag = (!empty($tagDB["id"]))? $tagDB["id"] : $this->getLastInsertID();
+					if (!in_array($id_tag,$arrIdTag)) {
+						$arrIdTag[] = $id_tag;
+					}
+				}  
+			}
+		}
+		return $arrIdTag;
+	}
 }
 ?>
