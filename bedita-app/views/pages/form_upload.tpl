@@ -120,7 +120,8 @@ window.onload = function() {
 		upload_queue_complete_callback : 'beUploadQueueComplete',
 		upload_file_error_callback : 'beuploadError',
 		upload_cancel_callback : 'uploadCancel',
-		auto_upload : false
+		auto_upload : false,
+		allowed_filesize: 13000
 	});
 };
 
@@ -241,11 +242,10 @@ th.boxNotSelected {border:solid #000 1px;background-color:#DDD; height: 20px;}
 		<div id="uploadBox" style="padding:5px 5px 5px 5px">
 			<div id="wrapper">
 				<div id="content">
+					<input type="hidden" name="lang" value="{if $session->check('Config.language')}{$session->read('Config.language')}{else}ita{/if}"/>
 					<div id="SWFUploadTarget">
 						<form id="uploadForm" action="{$html->url('/files/upload')}" method="post" enctype="multipart/form-data">
 							<input type="file" name="Filedata" />
-							<input type="hidden" name="MAX_FILE_SIZE" value="3000" />
-							<input type="hidden" name="lang" value="{if $session->check('Config.language')}{$session->read('Config.language')}{else}ita{/if}"/>
 							<input type="submit" value="{t}Upload{/t}"/>
 						</form>
 					</div>
