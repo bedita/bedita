@@ -8,7 +8,7 @@ $(document).ready(function(){
 		if (!showTagsFirst) {
 			$("#loadingTags").show();
 			$("#listExistingTags").load("{/literal}{$html->url('/tags/listAllTags')}{literal}", function() {
-				$("#loadingTags").hide();
+				$("#loadingTags").slideUp("fast");
 				$("#listExistingTags").slideDown("fast");
 				$("#callTags").text("{/literal}{t}Hide system tags{/t}{literal}");
 				showTagsFirst = true;
@@ -35,7 +35,7 @@ $(document).ready(function(){
 	<fieldset>
 	{t}Add comma separated words{/t}<br/>
 	{strip}
-	<textarea name="tags" id="tagsArea" rows="2" cols="50">
+	<textarea name="tags" id="tagsArea">
 	{if !empty($object.ObjectCategory)}
 		{foreach from=$object.ObjectCategory item="tag" name="ft"}
 			{$tag.label}{if !$smarty.foreach.ft.last},&nbsp;{/if}

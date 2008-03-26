@@ -3,7 +3,7 @@
 	$(document).ready(function() {
 		$("#listTags a").bind("click", function() {
 			var sep = ", ";
-			if ($("#tagsArea").text() == "") {
+			if ($("#tagsArea").val() == "") {
 				sep = "";
 			}
 			// check if tag already exists in textarea
