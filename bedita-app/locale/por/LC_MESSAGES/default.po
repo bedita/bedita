@@ -782,3 +782,12 @@ msgstr "Evento borrado"
 
 msgid "Where the event is"
 msgstr "Posição do evento"
+
+msgid "Add comma separated words"
+msgstr "X Dante - Aggiungi parole separate da virgola"
+
+msgid "Show system tags"
+msgstr "X Dante - Mostra i tag presenti nel sistema"
+
+msgid "Hide system tags"
+msgstr "X Dante - Nascondi i tag presenti nel sistema"

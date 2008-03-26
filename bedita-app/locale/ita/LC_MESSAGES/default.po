@@ -801,3 +801,12 @@ msgstr "Evento eliminato"
 
 msgid "Where the event is"
 msgstr "Posizione dell'evento"
+
+msgid "Add comma separated words"
+msgstr "Aggiungi parole separate da virgola"
+
+msgid "Show system tags"
+msgstr "Mostra i tag presenti nel sistema"
+
+msgid "Hide system tags"
+msgstr "Nascondi i tag presenti nel sistema"

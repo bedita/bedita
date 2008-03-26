@@ -6,11 +6,22 @@
 			if ($("#tagsArea").text() == "") {
 				sep = "";
 			}
-			$("#tagsArea").val(
-				$("#tagsArea").val() 
-				+ sep 
-				+ jQuery.trim($(this).text())
-			);
+			// check if tag already exists in textarea
+			var tagInTextArea = false;
+			var words = $("#tagsArea").val().split(",");
+			for (i=0; i<words.length; i++) {
+				if (jQuery.trim(words[i]) == jQuery.trim($(this).text())) {
+					var tagInTextArea = true;
+					break;
+				}
+			}
+			if (!tagInTextArea) {
+				$("#tagsArea").val(
+					$("#tagsArea").val() 
+					+ sep 
+					+ jQuery.trim($(this).text())
+				);
+			}
 		});
 	});
 </script>

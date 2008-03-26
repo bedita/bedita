@@ -10,17 +10,17 @@ $(document).ready(function(){
 			$("#listExistingTags").load("{/literal}{$html->url('/tags/listAllTags')}{literal}", function() {
 				$("#loadingTags").hide();
 				$("#listExistingTags").slideDown("fast");
-				$("#callTags").text("{/literal}{t}Hide systems'tags{/t}{literal}");
+				$("#callTags").text("{/literal}{t}Hide system tags{/t}{literal}");
 				showTagsFirst = true;
 				showTags = true;
 			});
 		} else {
 			if (showTags) {
 				$("#listExistingTags").slideUp("fast");
-				$("#callTags").text("{/literal}{t}Show systems'tags{/t}{literal}");
+				$("#callTags").text("{/literal}{t}Show system tags{/t}{literal}");
 			} else {
 				$("#listExistingTags").slideDown("fast");
-				$("#callTags").text("{/literal}{t}Hide systems'tags{/t}{literal}");
+				$("#callTags").text("{/literal}{t}Hide system tags{/t}{literal}");
 			}
 			showTags = !showTags;
 		}
@@ -44,7 +44,7 @@ $(document).ready(function(){
 	</textarea>
 	{/strip}
 	<br/>
-	<a id="callTags" href="javascript: void(0);">{t}Show systems'tags{/t}</a>
+	<a id="callTags" href="javascript: void(0);">{t}Show system tags{/t}</a>
 	</fieldset>
 	<div id="loadingTags" class="loading">{t}Loading data{/t}...</div>
 	<div id="listExistingTags" style="display: none;"></div>
