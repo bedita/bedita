@@ -137,7 +137,7 @@ var index 		= 0 ;
 var cols 		= 5 ;
 //-->
 </script>
-<div id="loading">{t}Loading data{/t}...</div>
+<div id="loading" class="loading">{t}Loading data{/t}...</div>
 <div id="container-1">
 	<ul>
 		<li><a href="#fragment-1"><span>{t}{$title} items{/t}</span></a></li>

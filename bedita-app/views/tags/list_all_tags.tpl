@@ -6,14 +6,22 @@
 			if ($("#tagsArea").text() == "") {
 				sep = "";
 			}
-			$("#tagsArea").append(sep + jQuery.trim($(this).text()));
+			$("#tagsArea").val(
+				$("#tagsArea").val() 
+				+ sep 
+				+ jQuery.trim($(this).text())
+			);
 		});
 	});
 </script>
 {/literal}
 
 <div id="listTags">
-{foreach from=$listTags item="tag"}
-	<a href="javascript: void(0)">{$tag.label}&nbsp;</a>
-{/foreach}
+{if !empty($listTags)}
+	{foreach from=$listTags item="tag"}
+		<a href="javascript: void(0)">{$tag.label}&nbsp;</a>
+	{/foreach}
+{else}
+	{t}No tags found.{/t}
+{/if}
 </div>

@@ -141,9 +141,10 @@ class DocumentsController extends ModulesController {
 		$this->BeLangText->setupForSave($this->data["LangText"]) ;
 		if(!isset($this->data["attachments"])) $this->data["attachments"] = array() ;
 		if(!isset($this->data["multimedia"])) $this->data["multimedia"] = array() ;
-		$this->data["ObjectCategory"] = $this->ObjectCategory->saveTagList($this->params["form"]["tags"]);
+		
 		$this->Transaction->begin() ;
 		// Save data
+		$this->data["ObjectCategory"] = $this->ObjectCategory->saveTagList($this->params["form"]["tags"]);
 		if(!$this->Document->save($this->data)) {
 	 		throw new BeditaException(__("Error saving document", true), $this->Document->validationErrors);
 	 	}
