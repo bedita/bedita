@@ -21,7 +21,7 @@ class EventsController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Fck');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
-	var $uses = array('Event','ObjectCategory','Area','Section','Tree','Image', 'Video', 'Audio', 'BEFile') ;
+	var $uses = array('Event','ObjectCategory','Area','Section','Tree', 'Image', 'Audio', 'Video', 'BEFile') ;
 	protected $moduleName = 'events';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -35,6 +35,7 @@ class EventsController extends ModulesController {
 		$conf  = Configure::getInstance() ;
 		$obj = null ;
 		$parents_id = array();
+		$relations = array();
 		if(isset($id)) {
 			$this->Event->bviorHideFields = array('Version', 'Index', 'current') ;
 			if(!($obj = $this->Event->findById($id))) {
@@ -43,25 +44,15 @@ class EventsController extends ModulesController {
 			if(isset($obj["LangText"])) {
 				$this->BeLangText->setupForView($obj["LangText"]) ;
 			}
+			
+			$relations = $this->objectRelationArray($obj['ObjectRelation']);
+			
 			if (isset($obj["ObjectCategory"])) {
 				$objCat = array();
 				foreach ($obj["ObjectCategory"] as $oc) {
 					$objCat[] = $oc["id"];
 				}
 				$obj["ObjectCategory"] = $objCat;
-			}
-			// Get attachments
-			for($i=0; $i < @count($obj['attachments']) ; $i++) {
-				$m = $this->Event->am($obj['attachments'][$i]) ;
-				$type = $conf->objectTypeModels[$m['object_type_id']] ;
-				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments', 'LangText');
-				if(!($Details = $this->{$type}->findById($obj['attachments'][$i]['id']))) {
-					continue ;
-				}
-				$Details['priority'] = $m['priority'];
-				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
-				$obj['attachments'][$i]= $Details;
-				$attach_id[]=$obj['attachments'][$i]['id'];
 			}
 			$parents_id = $this->Tree->getParent($id) ;
 			if($parents_id === false) array() ;
@@ -89,7 +80,7 @@ class EventsController extends ModulesController {
 		$this->set('toolbar', 		$bedita_items['toolbar']);
 		// end#bedita_items		
 		$this->set('object',	$obj);
-		$this->set('attachments', $obj['attachments']);
+		$this->set('attach', isset($relations['attach']) ? $relations['attach'] : array());
 		$tree = $this->BeTree->getSectionsTree() ;
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);

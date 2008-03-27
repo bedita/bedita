@@ -1,10 +1,8 @@
-{* controller = 'attachments' or 'multimedia' *}
-
 <h2 class="showHideBlockButton">{t}{$title}{/t}</h2>
 <div class="blockForm" id="imgs" style="display:none">
 <script type="text/javascript">
-var urlGetObj		= '{$html->url("/$controller/get_item_form")}' ;
-var urlGetObjId 	= '{$html->url("/$controller/get_item_form_by_id")}' ;
+var urlGetObj		= '{$html->url("/multimedia/get_item_form")}' ;
+var urlGetObjId 	= '{$html->url("/multimedia/get_item_form_by_id")}' ;
 var containerItem	= "#{$containerId}";
 <!--
 {literal}
@@ -16,13 +14,13 @@ $(document).ready(function(){
 
 // Get data from modal window, uploaded files and insert new object in the form
 var counter =  0 ;
-function {/literal}{$controller}{literal}CommitUploadItem(files) {
+function {/literal}{$relation}{literal}CommitUploadItem(files, rel) {
 	$("#loading").show();
 	var emptyDiv = "<div><\/div>"; 
 	for(var i=0 ; i < files.length ; i++) {
 		var filename = escape(files[i]) ;
 		counter++ ;
-		$(emptyDiv).load(urlGetObj, {'filename': filename, 'priority':priority, 'index':index, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
+		$(emptyDiv).load(urlGetObj, {'filename': filename, 'priority':priority, 'index':index,  'relation':rel, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
 			$(containerItem).append(this) ; 
 			$(".itemBox", this).each(function() {
 				setup_drag_drop_item(this) ;
@@ -45,18 +43,18 @@ function {/literal}{$controller}{literal}CommitUploadItem(files) {
 	}
 }
 
-function {/literal}{$controller}{literal}RollbackUploadItem() {
+function {/literal}{$relation}{literal}RollbackUploadItem() {
 }
 
 // Per gli oggetti gia' registrati
 var counter =  0 ;
-function {/literal}{$controller}{literal}CommitUploadById(IDs) {
+function {/literal}{$relation}{literal}CommitUploadById(IDs, rel) {
 	$("#loading").show();
 	var emptyDiv = "<div><\/div>"; 
 	for(var i=0 ; i < IDs.length ; i++) {
 		var id	= escape(IDs[i]) ;
 		counter++ ;
-		$(emptyDiv).load(urlGetObjId, {'id': id, 'priority':priority, 'index':index, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
+		$(emptyDiv).load(urlGetObjId, {'id': id, 'priority':priority, 'index':index, 'relation':rel, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
 			$(containerItem).append(this) ; 
 			$(".itemBox", this).each(function() {
 				setup_drag_drop_item(this) ;
@@ -89,8 +87,9 @@ function removeItem(DivId) {
 function reorderListItem() {
 	$(".itemBox").each(function (index) {
 		$("input[@name='index']", this).attr("value", index) ;
-		$(".id", this).attr("name", "data[{/literal}{$controller}{literal}]["+index+"][id]") ;
-		$(".priority", this).attr("name", "data[{/literal}{$controller}{literal}]["+index+"][priority]") ;
+		$(".id", this).attr("name", "data[ObjectRelation]["+index+"][id]") ;
+		$(".switch", this).attr("name", "data[ObjectRelation]["+index+"][switch]") ;
+		$(".priority", this).attr("name", "data[ObjectRelation]["+index+"][priority]") ;
 		$(".priority", this).attr("value", index+1) ;
 	}) ;
 }
@@ -148,8 +147,9 @@ var cols 		= 5 ;
 		<fieldset id="{$containerId}">
 		{assign var="newPriority" 	value=1}
 		{assign var="index" 		value=0}
-		{foreach key=index item=ob from=$items|default:$empty}
-			{include file="../pages/form_file_item.tpl" obj=$ob controller=$controller}
+		{foreach item=ob from=$items|default:$empty}
+			{include file="../pages/form_file_item.tpl" obj=$ob}
+			{math equation="x+y" x=$objIndex y=1 assign=objIndex}
 		{foreachelse}
 			{t}Empty{/t}.<br />{t}To insert item here, switch to the 'Upload new items' tab or the '{$title} items repository' tab{/t}.
 		{/foreach}
@@ -163,14 +163,13 @@ var cols 		= 5 ;
 	</div>
 	<div id="fragment-2">
 		{if $conf->uploadType == "ajax"}
-			{include file="../pages/form_upload_ajax.tpl" controller=$controller}
+			{include file="../pages/form_upload_ajax.tpl"}
 		{else if $conf->uploadType == "flash"}
-			{include file="../pages/form_upload.tpl" controller=$controller}
+			{include file="../pages/form_upload.tpl"}
 		{/if}
 	</div>
 	<div id="fragment-3">
-		{include file="../pages/form_multimedia_assoc.tpl" itemType=$controller items=$bedita_items controller=$controller}
-{*<a href="{$html->url("/$controller")}/frm_upload_bedita/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} - {t}add by BEdita{/t}" class="thickbox">{$title} - {t}add by BEdita{/t}</a>*}
+		{include file="../pages/form_multimedia_assoc.tpl" itemType=$relation items=$bedita_items}
 	</div>
 </div>
 

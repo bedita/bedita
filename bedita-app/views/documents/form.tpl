@@ -1,5 +1,5 @@
 {include file="../pages/form_common_js.tpl"}
-
+{assign var=objIndex value=0}
 <div id="containerPage">
 <form action="{$html->url('/documents/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <fieldset><input  type="hidden" name="data[id]" value="{$object.id|default:''}"/></fieldset>
@@ -11,7 +11,7 @@
 {*include file="../pages/form_lang_version.tpl"*}
 {*include file="../pages/form_longdesc.tpl"*}
 {include file="../pages/form_long_desc_lang.tpl"}
-{include file="../pages/form_file_list.tpl" containerId='attachContainer' controller='attachments' title='Attachments' items=$attachments}
+{include file="../pages/form_file_list.tpl" containerId='attachContainer' relation='attach' title='Attachments' items=$attach}
 {include file="../pages/form_galleries.tpl"}
 {foreach from=$moduleList item="mod"}
 	{if $mod.label == "tags"}{include file="../pages/form_tags.tpl"}{/if}

@@ -15,19 +15,11 @@ var swfu;			// upload object
 var files = {} ;	// file queue
 
 function commitFileUpload(tmp) {
-	try {
-		{/literal}{$controller}{literal}CommitUploadItem(tmp) ;
-	} catch(e) {
-		parent.{/literal}{$controller}{literal}CommitUploadItem(tmp) ;
-	}
+	{/literal}{$relation}CommitUploadItem(tmp, '{$relation}'){literal} ;
 }
 
 function rollbackFileUpload() {
-	try {
-		{/literal}{$controller}{literal}RollbackUploadItem() ;
-	} catch(e) {
-		parent.{/literal}{$controller}{literal}RollbackUploadItem() ;
-	}
+	{/literal}{$relation}{literal}RollbackUploadItem() ;
 }
 
 function createThumbnails() {

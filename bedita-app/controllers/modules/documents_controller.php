@@ -32,6 +32,7 @@ class DocumentsController extends ModulesController {
 		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
 	 }
 
+	
 	 /**
 	  * Get document.
 	  * If id is null, empty document
@@ -42,40 +43,14 @@ class DocumentsController extends ModulesController {
 		$conf  = Configure::getInstance() ;
 		$this->setup_args(array("id", "integer", &$id)) ;
 		$obj = null ;
+		$relations = array();
 		if($id) {
 			$this->Document->bviorHideFields = array('Version', 'Index', 'current') ;
 			if(!($obj = $this->Document->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading document: %d", true), $id));
 			}
 			$multimedia_id = array();
-			// Get multimedia objects
-			for($i=0; $i < @count($obj['multimedia']) ; $i++) {
-				$m = $this->Document->am($obj['multimedia'][$i]) ;
-				$type = $conf->objectTypeModels[$m['object_type_id']] ;
-				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments', 'LangText');
-				if(!($Details = $this->{$type}->findById($obj['multimedia'][$i]['id']))) {
-					continue ;
-				}
-				$Details['priority'] = $m['priority'];
-				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
-				$obj['multimedia'][$i]= $Details;
-				$multimedia_id[]=$obj['multimedia'][$i]['id'];
-			}
-			// Get attachments
-			for($i=0; $i < @count($obj['attachments']) ; $i++) {
-				$m = $this->Document->am($obj['attachments'][$i]) ;
-				$type = $conf->objectTypeModels[$m['object_type_id']] ;
-				
-				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments', 'LangText');
-				if(!($Details = $this->{$type}->findById($obj['attachments'][$i]['id']))) {
-					continue ;
-				}
-				$Details['priority'] = $m['priority'];
-				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
-			
-				$obj['attachments'][$i]= $Details;
-				$multimedia_id[]=$obj['attachments'][$i]['id'];
-			}
+			$relations = $this->objectRelationArray($obj['ObjectRelation']);
 		}
 		if(isset($obj["LangText"])) {
 			$this->BeLangText->setupForView($obj["LangText"]) ;
@@ -111,8 +86,7 @@ class DocumentsController extends ModulesController {
 		$this->set('toolbar', 		$bedita_items['toolbar']);
 		// end#bedita_items
 		$this->set('object',	$obj);
-		$this->set('multimedia',$obj['multimedia']);
-		$this->set('attachments', $obj['attachments']);
+		$this->set('attach', isset($relations['attach']) ? $relations['attach'] : array());
 		$this->set('galleries', (count($galleries['items'])==0) ? array() : $galleries['items']);
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);		
@@ -139,8 +113,6 @@ class DocumentsController extends ModulesController {
 		$this->data['abstract'] = $this->data['LangText'][$this->data['lang']]['abstract'];
 		$this->data['body'] = $this->data['LangText'][$this->data['lang']]['body'];
 		$this->BeLangText->setupForSave($this->data["LangText"]) ;
-		if(!isset($this->data["attachments"])) $this->data["attachments"] = array() ;
-		if(!isset($this->data["multimedia"])) $this->data["multimedia"] = array() ;
 		
 		$this->Transaction->begin() ;
 		// Save data

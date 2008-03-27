@@ -13,11 +13,8 @@ function addItemsToParent() {
 	for(i=0;i<itemsIds.length;i++) {
 		$("#tr_"+itemsIds[i]).remove();
 	}
-	try {
-		{/literal}{$controller}{literal}CommitUploadById(itemsIds) ;
-	} catch(e) {
-		parent.{/literal}{$controller}{literal}CommitUploadById(itemsIds) ;
-	}
+
+	{/literal}{$relation}CommitUploadById(itemsIds, '{$relation}'){literal};
 	$('#container-1 > ul').tabs('select',0);
 }
 $(document).ready(function(){

@@ -2,11 +2,7 @@
 {literal}
 
 function commitFileUpload(tmp) {
-	try {
-		{/literal}{$controller}{literal}CommitUploadItem(tmp) ;
-	} catch(e) {
-		parent.{/literal}{$controller}{literal}CommitUploadItem(tmp) ;
-	}
+	{/literal}{$relation}CommitUploadItem(tmp, '{$relation}'){literal} ;
 }
 
 function showResponse(data) {

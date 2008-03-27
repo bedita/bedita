@@ -1,6 +1,4 @@
 {if empty($obj)}{assign var="obj" value=$object}{/if}
-{assign var="controller" 		value=$controller|default:multimedia}
-{assign var="index" 			value=$index|default:1}
 {assign var="thumbWidth" 		value=100}
 {assign var="thumbHeight" 		value=100}
 {assign var="thumbPath"         value=$conf->mediaRoot}
@@ -14,9 +12,10 @@
 {assign var="fileTitle"			value=$obj.title}
 {assign var="newPriority"		value=$obj.priority+1|default:$priority}
 <div id="m_{$obj.id}" class="itemBox">
-	<input type="hidden" class="index" 	name="index" value="{$index}" />
-	<input type="hidden" class="id" 	name="data[{$controller}][{$index}][id]" value="{$obj.id}" />
-	<input type="text" class="priority" name="data[{$controller}][{$index}][priority]" value="{$obj.priority|default:$priority}" size="3" maxlength="3"/>
+	<input type="hidden" class="index" 	name="index" value="{$objIndex}" />
+	<input type="hidden" class="id" 	name="data[ObjectRelation][{$objIndex}][id]" value="{$obj.id}" />
+	<input type="hidden" class="switch" name="data[ObjectRelation][{$objIndex}][switch]" value="{$relation}" />
+	<input type="text" class="priority" name="data[ObjectRelation][{$objIndex}][priority]" value="{$obj.priority|default:$priority}" size="3" maxlength="3"/>
 	<span class="label"><b>{$fileName}</b></span>
 	<br/>
 

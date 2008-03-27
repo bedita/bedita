@@ -28,41 +28,14 @@ class ContentBase extends BEAppModel
 	var $name = 'ContentBase';
 
 	var $hasAndBelongsToMany = array(
-			'langObjs' =>
+			'ObjectRelation' =>
 				array(
 					'className'				=> 'BEObject',
 					'joinTable'    			=> 'content_bases_objects',
 					'foreignKey'   			=> 'id',
 					'associationForeignKey'	=> 'object_id',
 					'unique'				=> true,
-					'fields'				=> 'langObjs.id, langObjs.status, langObjs.lang, langObjs.title',
-//					'conditions'			=> "ContentBasesObject.switch ='LANGS'",
-//					'conditions'			=> "switch ='LANGS'",
-					'switch'				=> "LANGS",
-				),
-				
-			'multimedia' =>
-				array(
-					'className'				=> 'ViewMultimedia',
-					'joinTable'    			=> 'content_bases_objects',
-					'foreignKey'   			=> 'id',
-					'associationForeignKey'	=> 'object_id',
-					'unique'				=> true,
-					'fields'				=> 'multimedia.id, multimedia.status, multimedia.object_type_id, ContentBasesObject.priority',
-					'conditions'			=> "ContentBasesObject.switch ='MULTIMS'",
-					'switch'				=> "MULTIMS",
-					'order'					=> "priority"
-				),
-			'attachments' =>
-				array(
-					'className'				=> 'ViewAttachment',
-					'joinTable'    			=> 'content_bases_objects',
-					'foreignKey'   			=> 'id',
-					'associationForeignKey'	=> 'object_id',
-					'unique'				=> true,
-					'conditions'			=> "ContentBasesObject.switch ='ATTACHS'",
-					'switch'				=> "ATTACHS",
-					'order'					=> "priority"
+					'order'		=> 'priority'
 				),
 			'ObjectCategory' =>
 				array(
@@ -74,11 +47,6 @@ class ContentBase extends BEAppModel
 				)
 		) ;			
 
-	function __construct() {
-		parent::__construct() ;
-	}
-
-	
 	/**
 	 * Le associazioni di tipo HABTM di questo modello non possono essere
 	 * salvate con i metodi di cakePHP (la tabella di unione utilizza 
@@ -90,46 +58,39 @@ class ContentBase extends BEAppModel
 	 */
 	function beforeSave() {
 		$this->tempData = array() ;
-		 
-		foreach ($this->hasAndBelongsToMany as $k => $assoc) {
-			if(!isset($this->data[$k][$k]) || $k == "ObjectCategory") continue ;
-			
-			$this->tempData[$k] = &$this->data[$k][$k] ;
-			unset($this->data[$k][$k]) ;
-		}
-		
+		$this->tempData['ObjectRelation'] = &$this->data['ObjectRelation']['ObjectRelation'] ;
+		unset($this->data['ObjectRelation']['ObjectRelation']) ;
 		return true ;
 	}
 	
 	function afterSave() {
 		$db 		= &ConnectionManager::getDataSource($this->useDbConfig);
-		$queries 	= array() ;
+		$queriesDelete 	= array() ;
+		$queriesInsert = array() ;
 		
-		foreach ($this->tempData as $k => $values) {
-			$assoc 	= $this->hasAndBelongsToMany[$k] ;
+		foreach ($this->tempData as $values) {
+			$assoc 	= $this->hasAndBelongsToMany['ObjectRelation'] ;
 			$table 	= $db->name($db->fullTableName($assoc['joinTable']));
 			$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch, priority"  ;
 			
-			// Cancella le precedenti associazioni
-			$queries[] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND switch = '{$assoc['switch']}' " ;
-			
 			for($i=0; $i < count($values); $i++) {
-				$id 	= $this->id ;
 				$obj_id		= $values[$i]['id'] ;
-				$switch		= $assoc['switch'] ;
+				$switch		= $values[$i]['switch'] ;
 				$priority	= isset($values[$i]['priority']) ? "'{$values[$i]['priority']}'" : 'NULL' ;
 				
-				$queries[] = "INSERT INTO {$table} ({$fields}) VALUES ({$id}, {$obj_id}, '{$switch}', {$priority})" ;
+				// Delete old associations
+				$queriesDelete[$switch] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND switch = '{$switch}' ";
+				$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
 			}
 		}
 		
-		// Esegue le query
-		for($i=0; $i < count($queries); $i++) {
-			$db->query($queries[$i]);
+		foreach ($queriesDelete as $qDel) {
+			$db->query($qDel);
 		}
-
+		foreach ($queriesInsert as $qIns) {
+			$db->query($qIns);
+		}
 		unset($this->tempData);
-		
 		return true ;
 	}
 	

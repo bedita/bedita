@@ -519,12 +519,12 @@ CREATE TABLE contents (
 CREATE TABLE content_bases_objects (
   object_id INTEGER UNSIGNED NOT NULL,
   id INTEGER UNSIGNED NOT NULL,
-  switch ENUM('LANGS','ATTACHS','MULTIMS', 'ALIAS', 'COMMENTS', 'BIBLIOS') NULL,
-  priority INTEGER NULL,
-  PRIMARY KEY(object_id, id),
-  INDEX content_bases_has_objects_FKIndex1(id),
-  INDEX content_bases_has_objects_FKIndex2(object_id),
-  INDEX content_bases_has_objects_FKIndex3(id),
+  switch varchar(16) NOT NULL default 'attach',
+  priority int(11) default NULL,
+  PRIMARY KEY  (`object_id`,`id`),
+  UNIQUE KEY `id_object_id_switch` (`id`,`object_id`,`switch`),
+  INDEX `content_bases_has_objects_FKIndex1` (`id`),
+  INDEX `content_bases_has_objects_FKIndex2` (`object_id`)
   FOREIGN KEY(id)
     REFERENCES content_bases(id)
       ON DELETE CASCADE
@@ -533,7 +533,7 @@ CREATE TABLE content_bases_objects (
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE content_bases_object_categories (
   content_base_id INTEGER UNSIGNED NOT NULL,
