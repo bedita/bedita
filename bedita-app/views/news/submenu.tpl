@@ -7,7 +7,7 @@
 			<ul class="simpleMenuList" style="margin:10px 0px 10px 0px">
 				<li {if $method eq 'index'}class="on"{/if}>		<b>&#8250;</b> {$tr->link('News', '/news')}</li>
 				{if $module_modify eq '1'}
-				<li {if $method eq 'view'}class="on"{/if}>	<b>&#8250;</b> {$tr->link('Create News', '/news/view')}</li>
+				<li {if $method eq 'view'}class="on"{/if}>	<b>&#8250;</b> {$tr->link('Create news', '/news/view')}</li>
 				{/if}
 				<li {if $method eq 'categories'}class="on"{/if}>	<b>&#8250;</b> {$tr->link('Categories', '/news/categories')}</li>
 			</ul>	
