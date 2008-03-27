@@ -112,7 +112,7 @@ msgid "Images of the gallery"
 msgstr "Imagens da galeria"
 
 msgid "Add image"
-msgstr "Juntar imagem"
+msgstr "Adicionar imagem"
 
 msgid "Available images"
 msgstr "Imagens disponíveis"
@@ -127,7 +127,7 @@ msgid "Gallery images"
 msgstr "Imagens da galeria"
 
 msgid "Thumbnail"
-msgstr "Minuatura"
+msgstr "Miniatura"
 
 msgid "Modify"
 msgstr "Editar"
@@ -382,7 +382,7 @@ msgid "sections"
 msgstr "seções"
 
 msgid "Tree of Areas"
-msgstr "Álbero das Áreas"
+msgstr "Árvore das Áreas"
 
 msgid "up"
 msgstr "sobre"
@@ -391,7 +391,7 @@ msgid "down"
 msgstr "abaixo"
 
 msgid "Areas Tree"
-msgstr "Álbero Áreas"
+msgstr "Árvore Áreas"
 
 msgid "Do you really want to remove user"
 msgstr "Quer borrar o usuário"
@@ -541,7 +541,7 @@ msgid "License"
 msgstr "Licença"
 
 msgid "Area saved"
-msgstr "Area guardada"
+msgstr "Área guardada"
 
 msgid "Area removed"
 msgstr "Area borrada"
@@ -589,7 +589,7 @@ msgid "Multimedia items repository"
 msgstr "Elementos ja anexados"
 
 msgid "Add selected items"
-msgstr "Juntar elementos selecionados"
+msgstr "Adicionar elementos selecionados"
 
 msgid "Upload new items"
 msgstr "Anexar"
@@ -697,10 +697,10 @@ msgid "Languages versions"
 msgstr "Versões linguisticas"
 
 msgid "Where the section is"
-msgstr "Colocação da seçção"
+msgstr "Colocação da seção"
 
 msgid "Contents for the section"
-msgstr "Contenidos para a seçção"
+msgstr "Contenidos para a seção"
 
 msgid "File already exists in the filesystem"
 msgstr "Arquivo ja presente no filesystem"
@@ -730,7 +730,7 @@ msgid "Attachments items repository"
 msgstr "Arquivo anexos"
 
 msgid "To insert item here, switch to the 'Upload new items' tab or the 'Attachments items repository' tab"
-msgstr "Para juntar elementos, vai para o tab 'Anexar' ou para o tab 'Arquivo anexos'"
+msgstr "Para adicionar elementos, vai para o tab 'Anexar' ou para o tab 'Arquivo anexos'"
 
 msgid "Multimedia items"
 msgstr "Multimedia"
@@ -739,13 +739,13 @@ msgid "Multimedia items repository"
 msgstr "Arquivo multimedial"
 
 msgid "To insert item here, switch to the 'Upload new items' tab or the 'Multimedia items repository' tab"
-msgstr "Para juntar elementos, vai para o tab 'Anexar' ou para o tab 'Arquivo multimedial'"
+msgstr "Para adicionar elementos, vai para o tab 'Anexar' ou para o tab 'Arquivo multimedial'"
 
 msgid "comments"
-msgstr "comentarios"
+msgstr "comentários"
 
 msgid "Add selected items to area/section"
-msgstr "Juntar os elementos selecionados  a area/seçção"
+msgstr "Adicionar os elementos selecionados  a area/seção"
 
 msgid "Loading data"
 msgstr "Cargando datos"
@@ -766,7 +766,7 @@ msgid "Event calendar"
 msgstr "Calendario evento"
 
 msgid "Add event date"
-msgstr "Juntar data evento"
+msgstr "Adicionar data evento"
 
 msgid "No categories found"
 msgstr "Nenhuma categoria encontrada"
@@ -783,11 +783,23 @@ msgstr "Evento borrado"
 msgid "Where the event is"
 msgstr "Posição do evento"
 
+msgid "No news found"
+msgstr "Nenhuma news encontrada"
+
+msgid "Create news"
+msgstr "Nova news"
+
+msgid "Area tree saved"
+msgstr "Árvore areas guardado"
+
+msgid "Section deleted"
+msgstr "Seção borrada"
+
 msgid "Add comma separated words"
-msgstr "X Dante - Aggiungi parole separate da virgola"
+msgstr "Adicionar palavras separadas por vírgulas"
 
 msgid "Show system tags"
-msgstr "X Dante - Mostra i tag presenti nel sistema"
+msgstr "Mostrar os tag no sistema"
 
 msgid "Hide system tags"
-msgstr "X Dante - Nascondi i tag presenti nel sistema"
+msgstr "Esconder os tag no sistema"

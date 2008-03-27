@@ -802,6 +802,19 @@ msgstr "Evento eliminato"
 msgid "Where the event is"
 msgstr "Posizione dell'evento"
 
+msgid "No news found"
+msgstr "Nessuna news trovata"
+
+msgid "Create news"
+msgstr "Nuova news"
+
+msgid "Area tree saved"
+msgstr "Albero aree salvato"
+
+msgid "Section deleted"
+msgstr "Sezione eliminata"
+msgstr "Posizione dell'evento"
+
 msgid "Add comma separated words"
 msgstr "Aggiungi parole separate da virgola"
 
