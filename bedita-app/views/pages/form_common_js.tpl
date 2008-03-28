@@ -19,11 +19,14 @@ $.validator.setDefaults({
 
 $(document).ready(function(){
 	$.datepicker.setDefaults({
-		showOn: 'both', 
+		speed: 'fast', 
+		showOn: 'both',
+		closeAtTop: false, 
 		buttonImageOnly: true, 
-	    buttonImage: '{/literal}{$html->webroot}img/calendar.gif{literal}', 
-	    buttonText: 'Calendar',
+	    buttonImage: '{/literal}{$html->webroot}img/iconCalendar.gif{literal}', 
+	    buttonText: '{t}Open Calendar{/t}',
 	    dateFormat: '{/literal}{$conf->dateFormatValidation|replace:'yyyy':'yy'}{literal}',
+		firstDay: 1,
 	    beforeShow: customRange
 	}, $.datepicker.regional['{/literal}{$currLang}{literal}']); 
 	

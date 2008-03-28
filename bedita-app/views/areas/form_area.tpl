@@ -84,7 +84,7 @@ $(document).ready(function(){
 		<tr>
 			<td class="label">{t}Title{/t}:</td>
 			<td class="field">
-				<input {if $val==$object_lang}class="{literal}{required:true,minLength:1}{/literal}" title="{t 1='1'}Title is required (at least %1 alphanumerical char){/t}"{/if}
+				<input {if $val==$object_lang}class="{literal}{required:true,minLength:1}{/literal}" title="{t}Title is required{/t}"{/if}
 					type="text" name="data[LangText][{$val}][title]"
 					value="{$object.LangText.title[$val]|default:''|escape:'html'|escape:'quotes'}"/>&nbsp;
 			</td>

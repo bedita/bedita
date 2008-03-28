@@ -1,7 +1,7 @@
 /* Main Style Sheet for jQuery UI date picker */
 #datepicker_div, .datepicker_inline {
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 14px;
+	font-size: 11px;
 	padding: 0;
 	margin: 0;
 	background: #ddd;
@@ -28,7 +28,7 @@ button.datepicker_trigger {
 	width: 25px;
 }
 img.datepicker_trigger {
-	margin: 2px;
+	margin: 7px;
 	vertical-align: middle;
 }
 .datepicker_prompt {
@@ -47,7 +47,7 @@ img.datepicker_trigger {
 	color: #fff;
 }
 .datepicker_control {
-	background: #400;
+	background: #000;
 	padding: 2px 0px;
 }
 .datepicker_links {
@@ -55,7 +55,7 @@ img.datepicker_trigger {
 	padding: 2px 0px;
 }
 .datepicker_control, .datepicker_links {
-	font-weight: bold;
+	/* font-weight: bold; */
 	font-size: 80%;
 	letter-spacing: 1px;
 }
@@ -89,19 +89,19 @@ img.datepicker_trigger {
 	padding: 1px 0 3px;
 	background: #333;
 	text-align: center;
-	font-weight: bold;
+	/* font-weight: bold; */
 	height: 1.3em;
 }
 .datepicker_header select {
 	background: #333;
 	color: #fff;
 	border: 0px;
-	font-weight: bold;
+	/* font-weight: bold; */
 }
 .datepicker {
 	background: #ccc;
 	text-align: center;
-	font-size: 100%;
+	font-size: 80%;
 }
 .datepicker a {
 	display: block;

@@ -137,13 +137,9 @@ var cols 		= 5 ;
 //-->
 </script>
 <div id="loading" class="loading">{t}Loading data{/t}...</div>
-<div id="container-1">
-	<ul>
-		<li><a href="#fragment-1"><span>{t}{$title} items{/t}</span></a></li>
-		<li><a href="#fragment-2"><span>{t}Upload new items{/t}</span></a></li>
-		<li><a href="#fragment-3"><span>{t}{$title} items repository{/t}</span></a></li>
-	</ul>
-	<div id="fragment-1">
+<div id="container-2">
+	{* t}Gallery items{/t *}
+	<div id="container-2-items">
 		<fieldset id="{$containerId}">
 		{assign var="newPriority" 	value=1}
 		{assign var="index" 		value=0}
@@ -151,7 +147,7 @@ var cols 		= 5 ;
 			{include file="../pages/form_file_item.tpl" obj=$ob}
 			{math equation="x+y" x=$objIndex y=1 assign=objIndex}
 		{foreachelse}
-			{t}Empty{/t}.<br />{t}To insert item here, switch to the 'Upload new items' tab or the '{$title} items repository' tab{/t}.
+			<div id="galleryMsg">{t}Empty{/t}.<br />{t}To populate this gallery 'Upload new items', 'Insert new audio/video' or use the 'Multimedia items repository' tab{/t}.</div>
 		{/foreach}
 		<script type="text/javascript">
 		<!--
@@ -161,15 +157,26 @@ var cols 		= 5 ;
 		</script>
 		</fieldset>
 	</div>
-	<div id="fragment-2">
+</div>
+<div id="container-1">
+	<ul>
+		<li><a href="#fragment-1"><span>{t}Upload new images{/t}</span></a></li>
+		<li><a href="#fragment-2"><span>{t}Insert new audio/video{/t}</span></a></li>
+		<li><a href="#fragment-3"><span>{t}Multimedia items repository{/t}</span></a></li>
+	</ul>
+	<div id="fragment-1">
 		{if $conf->uploadType == "ajax"}
 			{include file="../pages/form_upload_ajax.tpl"}
 		{else if $conf->uploadType == "flash"}
 			{include file="../pages/form_upload.tpl"}
 		{/if}
 	</div>
+	<div id="fragment-2">
+		{include file="../pages/form_external_audiovideo.tpl"}
+	</div>
 	<div id="fragment-3">
 		{include file="../pages/form_multimedia_assoc.tpl" itemType=$relation items=$bedita_items}
+{*<a href="{$html->url("/$controller")}/frm_upload_bedita/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} - {t}add by BEdita{/t}" class="thickbox">{$title} - {t}add by BEdita{/t}</a>*}
 	</div>
 </div>
 

@@ -19,7 +19,6 @@
 	{literal}
 	$(document).ready ( function () {
 		$("#messagesDiv")
-			.hide()												// hide
 			.fadeTo(1000, 0.8)									// fade in msg
 			.pause( {/literal} {$conf->msgPause} {literal} )	// pause 4 secs
 			.fadeOut(1000);										// fade out msg
@@ -37,7 +36,7 @@
 {/if}
 </script>
 
-<div id="messagesDiv" style="display: none;">
+<div id="messagesDiv" style="">
 	{if ($msg->check('Message.error'))}
 	<div class="message-error">
 		<span id="error-img">&#160;&#160;&#160;</span> <span id="err-msg">{t}Error{/t}</span>

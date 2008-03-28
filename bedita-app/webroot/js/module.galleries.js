@@ -1,4 +1,4 @@
 /*
-galleries custom js
-@author		giangi@qwerg.com
+** galleries custom js
+** author ChannelWeb srl
 */

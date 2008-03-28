@@ -12,16 +12,26 @@ $config = array() ;
 //////////////////////////////////////////////////////
 
 /**
- * Multimedia files root on filesystem
+ * Multimedia files root on filesystem (use DS as Directory Separator, without trailing slash)
  */
-define("MEDIA_ROOT",	ROOT . DS . APP_DIR . DS . "media") ;
+define("MEDIA_ROOT", ROOT . DS . APP_DIR . DS . "media") ;
 
 /**
- * Multimedia URL prefix
+ * Multimedia URL prefix (without trailing slash)
  */
-define("MEDIA_URL",	"http://bedita/media") ;
+define("MEDIA_URL", "http://www.mydomain.com/media") ;
 
-$config['imgCache'] = 'imgcache'.DS;
+/**
+ * Media cache folder (without trailing slashes, inside MEDIA_ROOT)
+ */
+$config['imgCache'] = 'imgcache';
+
+/**
+ * Import PHP constant
+ * (maybe should put this elsewhere, it's usefull inside smarty templates, since you cannot access def constants) 
+ */
+$config['DS'] = DS;
+
 
 /**
  * uncomment to set default interface language, set 'multilang' true for user choice
@@ -42,6 +52,13 @@ $config['type'] = "txt" ;
  * Status di default per gli oggetti da creare
  */
 $config['status'] = "draft" ;
+
+
+/**
+ * Default settings for messages
+ */
+$config['msgPause'] = 3000;		// milliseconds
+
 
 /**
  * Formato visualizzazione data

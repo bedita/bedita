@@ -68,11 +68,12 @@
 }
 
 #containerPage .tableForm  {
-	width:570px;
+	width: 570px;
 }
 
 #containerPage .tableForm TD {
-	vertical-align:middle;
+	vertical-align: middle;
+	padding-bottom: 10px;
 }
 
 #containerPage .tableForm .inputText {
@@ -85,12 +86,6 @@
 	border: 1px solid black;
 }
 
-#containerPage .tableForm .label {
-	width:110px;
-	font-weight: bold ;
-	text-align: right ;
-	white-space: nowrap;
-}
 
 /* stile per indicare l'avvenuto cambiamento dei dati in una pagina */
 .alertChanged {
@@ -125,37 +120,38 @@ fieldset {
 }
 
 label.error {
-  background:url(../img/unchecked.gif) no-repeat 0px 0px;
-  padding-left: 16px;
-  padding-bottom: 2px;
-  font-weight: bold;
-  color: #EA5200;
+	background: transparent url(../img/iconUnchecked.png) no-repeat 0 0;
+	color: #F00;
+	padding: 0 15px;
+	margin: 2px;
 }
 
 label.checked {
-  background:url(../img/checked.gif) no-repeat 0px 0px;
+	background: transparent url(../img/iconChecked.png) no-repeat 0 0;
+	padding: 0 15px;
+	margin: 3px;
+}
+
+TD.label {
+  padding-right: 8px;
+  text-align: right;
+  width: 250px;
+  white-space: nowrap;
+}
+
+TD.field {
+  white-space: nowrap;
+}
+
+TD.status {
+  padding-top: 2px;
+  padding-left: 8px;
+  width: 246px;
+  white-space: nowrap;
 }
 
 .label {
-  padding-top: 2px;
-  padding-right: 8px;
-  vertical-align: top;
-  text-align: right;
-  width: 125px;
-  white-space: nowrap;
-}
-
-.field {
-  padding-bottom: 10px;
-  white-space: nowrap;
-}
-
-.status {
-  padding-top: 2px;
-  padding-left: 8px;
-  vertical-align: top;
-  width: 246px;
-  white-space: nowrap;
+	font-weight: bold;
 }
 
 .success_msg {

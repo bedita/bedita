@@ -7,8 +7,7 @@
 	top: 10px;
 	right: 10px;
 	z-index: 100;
-	min-height: 40px;
-	max-width: 200px;
+	display: none;
 
 	font: 10px Trebuchet, Verdana, Arial, sans-serif;
 	text-align: left;
@@ -23,7 +22,7 @@
 
 /* TRICK per interpretare il seguente codice solo con IE5 + */
 * html #messagesDiv {
-	height: 50px;
+	height: 40px;
 }
 
 * html #messagesDiv:hover {
@@ -40,16 +39,17 @@
 	padding: 5px;
 }
 
-.message-info {
+.message-info, .message-result {
+	position: relative;
+	top: 0;
 	background-color: #333333;
 	color: #FFF;
+	min-height: 30px;
+	min-width: 200px;
 	padding: 4px;
 }
 
-.message-result {
-	background: #E5EBE5;
-	padding: 5px;
-}
+
 
 /*
 ** icone messaggi

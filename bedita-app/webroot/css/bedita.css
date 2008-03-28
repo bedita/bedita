@@ -1,6 +1,8 @@
 BODY {
-	margin-left: 0px;
-	margin-top: 0px;
+	margin-left: 0;
+	margin-top: 0;
+	padding-top: 0;		/* Opera sets a default padding of 8px */
+	padding-left: 0;
 	background-color: #cccccc;
 }
 
@@ -16,14 +18,14 @@ BODY, TD, DIV, INPUT, TEXTAREA, SELECT {
 	line-height: normal;
 }
 
-H1, H2, H3, H4, H5 { font-family: Verdana, Arial, sans-serif; font-weight:bold; }
+H1, H2, H3, H4, H5 { font-family: Verdana, Arial, sans-serif; font-weight: bold; }
 
-H1 {font-size:17px; margin-top:4px; margin-bottom:4px; line-height:0.95em;}
-H2 {font-size:1.1em; margin-bottom:4px;}
-H3 {font-size:1.0em; font-style : italic; margin-bottom:4px;}
+H1 { font-size: 17px; margin-top: 4px; margin-bottom: 4px; line-height: 0.95em; }
+H2 { font-size: 1.1em; margin-bottom: 4px; }
+H3 { font-size: 1.0em; font-style: italic; margin-bottom: 4px; }
 
-* > H2:first-child { margin-top:0px; }
-* > H3:first-child { margin-top:0px !important}
+* > H2:first-child { margin-top: 0; }
+* > H3:first-child { margin-top: 0 !important }
 
 H2 + H3 {margin-top:8px;}
 
@@ -48,45 +50,46 @@ INPUT {
 }
 
 A {	color: #CC3333;	text-decoration: none;}
-A:hover{text-decoration: underline;}
-A IMG {border-color: black;}
+A:hover {text-decoration: underline;}
+A IMG {border: 1px solid #333;}
 
 /* BEGIN -- Pagine interne moduli */
 
 #headerPage {
-	border:1px solid #cccccc;
+	border: 1px solid #cccccc;
 	height: 45px;
 }
 #menuLeftPage {
-	width:138px;
-	float:left;
-	border:0px solid black;
-	padding: 0px 0px 0px 0px;
+	float: left;
+	width: 138px;
+	border: 0px solid black;
+	padding: 0;
 }
 
 #containerPage {
-	border:0px solid black;
-	margin-left:138px;
+	border: 0 solid black;
+	margin-left: 138px;
 }
 
 #footerPage {
-	border:0px solid red;
-	margin: 0px 0px;
-	padding: 0px 0px 0px 0px;
+	border: 0 solid red;
+	margin: 0;
+	padding: 0;
 	text-align: right;
 }
 
 #listAreas {
-	border:0px solid black;
+	border: 0 solid black;
 }
 
 #listElements {
-	display:table-cell;
-	padding-left:5px;
-	padding-left:5px;
+	display: table-cell;
+	padding-left: 5px;
+	padding-left: 5px;
 }
 
 /* END -- Pagine interne moduli */
+
 
 /* BEGIN -- Pagina Login */
 #loginStatusBox {
@@ -245,7 +248,7 @@ text-decoration: none;
 
 /* BEGIN -- Liste */
 
-TABLE.indexList {width:100%; margin-left:0px; empty-cells: show; border-collapse: collapse}
+TABLE.indexList {width:100%; margin-left:0; empty-cells: show; border-collapse: collapse}
 .indexList TR {cursor:pointer;}
 /*TABLE.indexList TR.rowList:hover {background-color:red;}*/
 
@@ -259,26 +262,106 @@ TABLE.indexList {width:100%; margin-left:0px; empty-cells: show; border-collapse
 /* BEGIN -- Form dettaglio object */
 
 .tableForm TEXTAREA { height: 100px; overflow: auto; width: 450px; }
-.tableForm TD 		{vertical-align:top !important; padding:4px; border:0px solid gray;}
+.tableForm TD 		{vertical-align:top; padding:4px; border: 0 solid gray;}
 
 .subtitle  { height: 50px !important; width: 410px !important; }
 .shortdesc  { height: 100px !important; width: 410px !important; }
 
 /* END -- Form dettaglio object */
 
+
+
 /* BEGIN -- Box Image */
-div.itemBox { background-color:#E9E9E9;border:solid #FFF 1px;float:left;padding:2px 2px 2px 2px }
-div.itemBoxFirst { background-color:#E9E9E9;border:solid #FFF 1px;float:left;padding:2px 2px 2px 2px }
-div.imageBox { background-color:#E9E9E9;border:solid #FFF 1px;float:left;padding:2px 2px 2px 2px }
-div.imageBoxFirst { background-color:#E9E9E9;border:solid #FFF 1px;float:left;padding:2px 2px 2px 2px }
-.priority { font-weight:bold;font-size:20px; background-color:#E9E9E9; border: solid #E9E9E9 0px; }
+div.itemBox, div.itemBoxFirst
+{
+	padding: 0 4px 2px 3px;
+	margin: 2px;
+	width: 210px;
+	background-color: #E9E9E9;
+	border: 1px solid #999;
+	float: left;
+	position: relative; /* without offset is like normal flow, needed for pos absolute inside */
+}
+div.itemBoxFirst {  }
+
+
+div.itemBox .priority
+{
+	display: inline;
+	position: absolute;
+	left: 2px;
+	top: 0;
+	padding: 0;
+	width: 20px;
+	height: 28px;
+	background-color: #E9E9E9;
+	font-size: 20px;
+	font-weight: bold;
+	overflow: hidden;
+	border: 0 solid #000; /* just for reference */
+}
+
+div.itemBox .label
+{
+	display: inline;
+	position: absolute;
+	right: 2px;
+	top: 1px;
+	padding: 0;
+	width: 170px;
+	height: 28px;
+	font-weight: bold;
+	white-space: normal;
+	text-align: right;
+	overflow: hidden;
+	border: 0 solid red; /* just for reference */
+}
+
+div.itemBox .itemInfo
+{
+	width: 100%;
+
+	font-size: 0.9em;
+	line-height: 1.5em;
+	white-space: normal;
+	border: 0 solid yellow; /* just for reference */
+}
+
+div.itemBox .itemInfo .title
+{
+	font-weight: bold;
+}
+
+div.itemBox .itemButtons
+{
+	position: relative;
+	text-align: right;
+	margin-top: -10px;
+}
+
+div.imageBox, div.imageBoxFirst
+{
+	background-color: #E9E9E9;
+	border: 1px solid #FFF;
+	float: left;
+	padding: 2px;
+}
+div.imageBoxFirst 	{ }
 /* END -- Box Image */
+
+
 
 /* BEGIN -- Box Attach */
 
-div.attachBox { background-color:#E9E9E9;border:solid #FFF 1px;float:left;padding:2px 2px 2px 2px }
-div.attachBoxFirst { background-color:#E9E9E9;border:solid #FFF 1px;float:left;padding:2px 2px 2px 2px }
-.priority { font-weight:bold;font-size:20px; background-color:#E9E9E9; border: solid #E9E9E9 0px; }
+div.attachBox { background-color:#E9E9E9;border:solid #FFF 1px;float:left;padding:2px 2px 2px 2px; }
+div.attachBoxFirst { background-color:#E9E9E9;border:solid #FFF 1px;float:left;padding:2px 2px 2px 2px; }
+.priority
+{
+	font-size: 20px;
+	font-weight: bold;
+	background-color: #E9E9E9;
+	border: 0 solid #000;
+}
 
 /* END -- Box Attach */
 

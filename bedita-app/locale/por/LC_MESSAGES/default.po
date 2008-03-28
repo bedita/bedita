@@ -40,6 +40,9 @@ msgstr "Galeria"
 msgid "Title"
 msgstr "Títolo"
 
+msgid "Univocal Nickname"
+msgstr "X DANTE - Nome univoco"
+
 msgid "Status"
 msgstr "Estado"
 
@@ -48,6 +51,9 @@ msgstr "Creado"
 
 msgid "Language"
 msgstr "Língua"
+
+msgid "Default language"
+msgstr "X DANTE - Lingua predefinita"
 
 msgid "Dimensions"
 msgstr "Dimensões"
@@ -82,17 +88,20 @@ msgstr "cancelar"
 msgid "Properties"
 msgstr "Propriedades"
 
-msgid "status"
-msgstr "estado"
+msgid "Status"
+msgstr "Estado"
 
-msgid "publication"
-msgstr "publicação"
+msgid "Publication"
+msgstr "Publicação"
 
-msgid "start"
-msgstr "início"
+msgid "Publication schedule"
+msgstr "X DANTE - Pubblicazione programmata"
 
-msgid "end"
-msgstr "fim"
+msgid "Start"
+msgstr "Início"
+
+msgid "End"
+msgstr "Fim"
 
 msgid "Attention!!! you are deleting an item.\n"
 "Are you sure that you want to continue?"
@@ -200,6 +209,9 @@ msgstr "grupo"
 
 msgid "From"
 msgstr "De"
+
+msgid "Author"
+msgstr "X DANTE - Autore"
 
 msgid "Yes"
 msgstr "Sim"
@@ -342,8 +354,11 @@ msgstr "Subtítolo, descrição"
 msgid "Long Text"
 msgstr "Texto Extenso"
 
-msgid "Title is required (at least %1 alphanumerical char)"
-msgstr "Títolo obligatório (não menos de %1 carácter alfanumérico)"
+msgid "Title is required"
+msgstr "Títolo obligatório"
+
+msgid "at least %1 alphanumerical char"
+msgstr "não menos de %1 carácter alfanumérico"
 
 msgid "Areas"
 msgstr "Áreas"
@@ -693,8 +708,14 @@ msgstr "Indicar data no formato %1"
 msgid "Main language"
 msgstr "Lingua principal"
 
-msgid "Languages versions"
+msgid "Language versions"
 msgstr "Versões linguisticas"
+
+msgid "Versions"
+msgstr "Versões"
+
+msgid "Enable / Disable"
+msgstr "X DANTE - Abilita / Disabilita"
 
 msgid "Where the section is"
 msgstr "Colocação da seção"
@@ -745,7 +766,7 @@ msgid "comments"
 msgstr "comentários"
 
 msgid "Add selected items to area/section"
-msgstr "Adicionar os elementos selecionados  a area/seção"
+msgstr "Adicionar os elementos selecionados a area/seção"
 
 msgid "Loading data"
 msgstr "Cargando datos"
@@ -764,6 +785,9 @@ msgstr "Categorias"
 
 msgid "Event calendar"
 msgstr "Calendario evento"
+
+msgid "Open calendar"
+msgstr "X DANTE - Apri calendario"
 
 msgid "Add event date"
 msgstr "Adicionar data evento"

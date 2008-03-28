@@ -75,7 +75,7 @@ class GalleriesController extends ModulesController {
 			}
 		}
 		$this->Transaction->commit();
-		$this->userInfoMessage(__("Gallery saved", true)." - ".$this->data["title"]);
+		$this->userInfoMessage(__("Gallery saved", true) . "<br />" . $this->data["title"]);
 		$this->eventInfo("gallery ". $this->data["title"]."saved");
 	}
 

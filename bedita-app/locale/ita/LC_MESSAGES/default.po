@@ -43,6 +43,9 @@ msgstr "Galleria"
 msgid "Title"
 msgstr "Titolo"
 
+msgid "Univocal Nickname"
+msgstr "Nome univoco"
+
 msgid "Status"
 msgstr "Stato"
 
@@ -51,6 +54,9 @@ msgstr "Creato"
 
 msgid "Language"
 msgstr "Lingua"
+
+msgid "Default language"
+msgstr "Lingua predefinita"
 
 msgid "Dimensions"
 msgstr "Dimensioni"
@@ -85,17 +91,20 @@ msgstr "cancella"
 msgid "Properties"
 msgstr "Proprietà"
 
-msgid "status"
-msgstr "stato"
+msgid "Status"
+msgstr "Stato"
 
-msgid "publication"
-msgstr "pubblicazione"
+msgid "Publication"
+msgstr "Pubblicazione"
 
-msgid "start"
-msgstr "inizio"
+msgid "Publication schedule"
+msgstr "Pubblicazione programmata"
 
-msgid "end"
-msgstr "fine"
+msgid "Start"
+msgstr "Inizio"
+
+msgid "End"
+msgstr "Fine"
 
 msgid "Attention!!! you are deleting an item.\nAre you sure that you want to continue?"
 msgstr "Attenzione!!! stai eliminando un elemento.\nSicuro di voler continuare?"
@@ -204,6 +213,9 @@ msgstr "gruppo"
 
 msgid "From"
 msgstr "Da"
+
+msgid "Author"
+msgstr "Autore"
 
 msgid "Yes"
 msgstr "Si"
@@ -346,8 +358,11 @@ msgstr "Sottotitolo, descrizione"
 msgid "Long Text"
 msgstr "Testo Esteso"
 
-msgid "Title is required (at least %1 alphanumerical char)"
-msgstr "Titolo obbligatorio (almeno %1 carattere alfanumerico)"
+msgid "Title is required"
+msgstr "Titolo obbligatorio"
+
+msgid "at least %1 alphanumerical char"
+msgstr "almeno %1 carattere alfanumerico"
 
 msgid "Areas"
 msgstr "Aree"
@@ -610,6 +625,12 @@ msgstr "Aggiungere elementi selezionati"
 msgid "Upload new items"
 msgstr "Carica nuovi oggetti"
 
+msgid "Upload new images"
+msgstr "Carica nuovi immagini"
+
+msgid "Insert new audio/video"
+msgstr "Inserisci nuovi file audio/video"
+
 msgid "Gallery items"
 msgstr "Oggetti nella galleria"
 
@@ -622,8 +643,8 @@ msgstr "Nome del file"
 msgid "image"
 msgstr "immagine"
 
-msgid "To populate this gallery switch to the 'Upload new items' tab or the 'Multimedia items repository' tab"
-msgstr "Per popolare questa galleria, passa alla scheda 'Carica nuovi oggetti' o alla scheda 'Archivio oggetti Multimediali'"
+msgid "To populate this gallery 'Upload new items', 'Insert new audio/video' or use the 'Multimedia items repository' tab"
+msgstr "Per popolare questa galleria, 'Carica nuovi oggetti', 'Inserisci nuovi file audio/video' o usa la scheda 'Archivio oggetti Multimediali'"
 
 msgid "Object type"
 msgstr "Tipo di oggetto"
@@ -712,8 +733,14 @@ msgstr "Inserisci una data valida nel formato %1 e maggiore della data precedent
 msgid "Main language"
 msgstr "Lingua principale"
 
-msgid "Languages versions"
+msgid "Language versions"
 msgstr "Versioni linguistiche"
+
+msgid "Versions"
+msgstr "Versioni"
+
+msgid "Enable / Disable"
+msgstr "Abilita / Disabilita"
 
 msgid "Where the section is"
 msgstr "Dove si colloca la sezione"
@@ -784,6 +811,9 @@ msgstr "Categorie"
 msgid "Event calendar"
 msgstr "Calendario evento"
 
+msgid "Open calendar"
+msgstr "Apri calendario"
+
 msgid "Add event date"
 msgstr "Aggiungi data evento"
 
@@ -813,7 +843,6 @@ msgstr "Albero aree salvato"
 
 msgid "Section deleted"
 msgstr "Sezione eliminata"
-msgstr "Posizione dell'evento"
 
 msgid "Add comma separated words"
 msgstr "Aggiungi parole separate da virgola"

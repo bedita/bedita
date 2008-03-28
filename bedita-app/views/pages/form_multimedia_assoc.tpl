@@ -43,7 +43,7 @@ $(document).ready(function(){
 	<fieldset>
 		{if !empty($items)}
 		<p>{t}Total number of{/t} {t}{$itemType} items{/t}: {$beToolbar->size()}</p>
-<p>&nbsp;</p>{*		DA INSERIRE TOOLBAR DI NAVIGAZIONE
+{*		DA INSERIRE TOOLBAR DI NAVIGAZIONE
 <p class="toolbar">{t}{$itemType}{/t}: {$beToolbar->size()}</p>
 *}
 		<table class="indexList">
@@ -73,32 +73,26 @@ $(document).ready(function(){
 			<td>{$mobj.created|date_format:'%b %e, %Y'}</td>
 			<td>{$mobj.bedita_type|default:""}</td>
 			*}
+
 			<td>
-{assign var="thumbWidth" 		value=30}
-{assign var="thumbHeight" 		value=30}
-{assign var="thumbPath"         value=$conf->mediaRoot}
-{assign var="thumbBaseUrl"      value=$conf->mediaUrl}
-{assign var="thumbLside"		value=""}
-{assign var="thumbSside"		value=""}
-{assign var="thumbHtml"			value=""}
-{assign var="thumbDev"			value=""}
-{assign var="filePath"			value=$mobj.path}
-{if strtolower($mobj.ObjectType.name) == "image"}
-	{thumb 
-		width="$thumbWidth" 
-		height="$thumbHeight"
-		file=$thumbPath$filePath
-		cache=$conf->imgCache 
-		MAT_SERVER_PATH=$conf->mediaRoot 
-		MAT_SERVER_NAME=$conf->mediaUrl
-		linkurl="$thumbBaseUrl$filePath"
-		longside="$thumbLside"
-		shortside="$thumbSside"
-		html="$thumbHtml"
-		dev="$thumbDev"}
-{else}
-	<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$mobj.type}.gif" /></a> </div>
-{/if}
+			{assign var="thumbWidth" 		value = 30}
+			{assign var="thumbHeight" 		value = 30}
+			{assign var="filePath"			value = $mobj.path}
+			{assign var="mediaPath"         value = $conf->mediaRoot}
+			{assign_concat var="mediaCacheBaseURL"	0=$conf->mediaUrl  1="/" 2=$conf->imgCache 3="/"}
+			{assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
+
+			{if strtolower($mobj.ObjectType.name) == "image"}
+				{thumb 
+					width			= $thumbWidth
+					height			= $thumbHeight
+					file			= $mediaPath$filePath
+					cache			= $mediaCacheBaseURL
+					cachePATH		= $mediaCachePATH
+				}
+			{else}
+				<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$mobj.type}.gif" /></a></div>
+			{/if}
 			</td>
 			<td>{$mobj.name|default:""}</td>
 			{*<td>{$mobj.type|default:""}</td>*}
@@ -106,14 +100,7 @@ $(document).ready(function(){
 			<td>{$mobj.lang}</td>
 		</tr>
 		{/foreach}
-{*
-		<tr>
-			<td colspan="10">
-				<input class="selectAll" type="button" value="O - {t}Select all{/t}"/>
-				<input class="unselectAll" type="button" value="/ - {t}Unselect all{/t}"/>
-			</td>
-		</tr>
-*}
+
 		<tr>
 			<td colspan="10">
 				<input type="button" onclick="javascript:addItemsToParent();" value=" (+) {t}Add selected items{/t}"/>
