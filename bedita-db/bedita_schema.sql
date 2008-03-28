@@ -524,7 +524,7 @@ CREATE TABLE content_bases_objects (
   PRIMARY KEY  (`object_id`,`id`),
   UNIQUE KEY `id_object_id_switch` (`id`,`object_id`,`switch`),
   INDEX `content_bases_has_objects_FKIndex1` (`id`),
-  INDEX `content_bases_has_objects_FKIndex2` (`object_id`)
+  INDEX `content_bases_has_objects_FKIndex2` (`object_id`),
   FOREIGN KEY(id)
     REFERENCES content_bases(id)
       ON DELETE CASCADE
