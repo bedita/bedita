@@ -57,40 +57,44 @@ class ContentBase extends BEAppModel
 	 * 
 	 */
 	function beforeSave() {
-		$this->tempData = array() ;
-		$this->tempData['ObjectRelation'] = &$this->data['ObjectRelation']['ObjectRelation'] ;
-		unset($this->data['ObjectRelation']['ObjectRelation']) ;
+		if (!empty($this->data['ObjectRelation']['ObjectRelation'])) {
+			$this->tempData = array() ;
+			$this->tempData['ObjectRelation'] = &$this->data['ObjectRelation']['ObjectRelation'] ;
+			unset($this->data['ObjectRelation']['ObjectRelation']) ;
+		}
 		return true ;
 	}
 	
 	function afterSave() {
-		$db 		= &ConnectionManager::getDataSource($this->useDbConfig);
-		$queriesDelete 	= array() ;
-		$queriesInsert = array() ;
-		
-		foreach ($this->tempData as $values) {
-			$assoc 	= $this->hasAndBelongsToMany['ObjectRelation'] ;
-			$table 	= $db->name($db->fullTableName($assoc['joinTable']));
-			$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch, priority"  ;
+		if (!empty($this->tempData)) {
+			$db 		= &ConnectionManager::getDataSource($this->useDbConfig);
+			$queriesDelete 	= array() ;
+			$queriesInsert = array() ;
 			
-			for($i=0; $i < count($values); $i++) {
-				$obj_id		= $values[$i]['id'] ;
-				$switch		= $values[$i]['switch'] ;
-				$priority	= isset($values[$i]['priority']) ? "'{$values[$i]['priority']}'" : 'NULL' ;
+			foreach ($this->tempData as $values) {
+				$assoc 	= $this->hasAndBelongsToMany['ObjectRelation'] ;
+				$table 	= $db->name($db->fullTableName($assoc['joinTable']));
+				$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch, priority"  ;
 				
-				// Delete old associations
-				$queriesDelete[$switch] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND switch = '{$switch}' ";
-				$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
+				for($i=0; $i < count($values); $i++) {
+					$obj_id		= $values[$i]['id'] ;
+					$switch		= $values[$i]['switch'] ;
+					$priority	= isset($values[$i]['priority']) ? "'{$values[$i]['priority']}'" : 'NULL' ;
+					
+					// Delete old associations
+					$queriesDelete[$switch] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND switch = '{$switch}' ";
+					$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
+				}
 			}
+			
+			foreach ($queriesDelete as $qDel) {
+				$db->query($qDel);
+			}
+			foreach ($queriesInsert as $qIns) {
+				$db->query($qIns);
+			}
+			unset($this->tempData);
 		}
-		
-		foreach ($queriesDelete as $qDel) {
-			$db->query($qDel);
-		}
-		foreach ($queriesInsert as $qIns) {
-			$db->query($qIns);
-		}
-		unset($this->tempData);
 		return true ;
 	}
 	

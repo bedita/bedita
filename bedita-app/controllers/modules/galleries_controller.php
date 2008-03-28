@@ -52,7 +52,7 @@ class GalleriesController extends ModulesController {
 		$this->data['title'] = $this->data['LangText'][$this->data['lang']]['title'];
 		$this->data['description'] = $this->data['LangText'][$this->data['lang']]['description'];
 		$this->BeLangText->setupForSave($this->data["LangText"]);
-		$multimedia = (isset($this->data['multimedia']))?$this->data['multimedia']:array() ;
+		$multimedia = (isset($this->data['ObjectRelation']))? $this->data['ObjectRelation'] : array() ;
 		unset($this->data['multimedia']);
 		$this->Transaction->begin();
 		if(!$this->Gallery->save($this->data)) {

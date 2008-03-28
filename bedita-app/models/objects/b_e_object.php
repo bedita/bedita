@@ -22,7 +22,6 @@
 */
 class BEObject extends BEAppModel
 {
-	var $actsAs = array('Bindable');
 	var $name = 'BEObject';
 	var $useTable	= "objects" ;
 	
@@ -250,7 +249,7 @@ class BEObject extends BEAppModel
 	/**
 	 * Esegue ricerche complesse sugli oggetti indipendentemente da dove sono collocati.
 	 * (vedere: tree->getChildren(), tree->getChildren() ).
-	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se ''  un utente anonimo,
+	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se '' ï¿½ un utente anonimo,
 	 * altrimenti li prende tutti.
 	 * Si possono selezionare i tipi di oggetti da prelevare.
 	 *
