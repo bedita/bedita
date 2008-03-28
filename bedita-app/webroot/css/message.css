@@ -3,19 +3,31 @@
 */
 
 #messagesDiv {	
-	position: relative;
-	top: 0px;
-	left: 0px;
-	/*min-height: 40px;*/
-	font-size: 10pt;
-	color: #000;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	z-index: 100;
+	min-height: 40px;
+	max-width: 200px;
+
+	font: 10px Trebuchet, Verdana, Arial, sans-serif;
 	text-align: left;
 }
 
+
+.messagesDivOver {
+	border: 3px solid #FFF;
+	margin: -3px;
+}
+
+
 /* TRICK per interpretare il seguente codice solo con IE5 + */
 * html #messagesDiv {
-	left: 22px;
 	height: 50px;
+}
+
+* html #messagesDiv:hover {
+	margin: 0;
 }
 
 .message-error {
@@ -29,8 +41,9 @@
 }
 
 .message-info {
-	background: #E5EBE5;
-	padding: 5px;
+	background-color: #333333;
+	color: #FFF;
+	padding: 4px;
 }
 
 .message-result {
@@ -41,32 +54,23 @@
 /*
 ** icone messaggi
 */
+#info-img, #result-img {
+	position: relative;
+	top: -10px;
+	left: -10px;
+	background: transparent url(../img/iconOkay_16x16.png) no-repeat;
+	width: 16px;
+	height: 16px;
+}
+
 #error-img {
-	background-image: url(../img/iconWarning.gif);
-	background-repeat: no-repeat;
-	background-color: transparent;
+	background: transparent url(../img/iconWarning.gif) no-repeat;
 }
 
 #warn-img {
-	background-image: url(../img/iconWarning.gif);
-	background-repeat: no-repeat;
-	background-color: transparent;
-}
-
-#info-img {
-	background-image: url(../img/iconInformation.gif);
-	background-repeat: no-repeat;
-	background-color: transparent;
-}
-
-#result-img {
-	background-image: url(../img/iconOk.gif);
-	background-repeat: no-repeat;
-	background-color: transparent;
+	background: transparent url(../img/iconWarning.gif) no-repeat;
 }
 
 #pdf-img,.pdf-img {
-	background-image: url(../img/iconPdf.gif);
-	background-repeat: no-repeat;
-	background-color: transparent;
+	background: transparent url(../img/iconPdf.gif) no-repeat;
 }
