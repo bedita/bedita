@@ -26,3 +26,6 @@ function cutBlank(elem) {
 		}
 	}
 }
+
+// auto-grow textareas styled with autogrow class
+$('textarea.autogrow').autogrow();

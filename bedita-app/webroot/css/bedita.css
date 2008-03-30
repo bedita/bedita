@@ -1,21 +1,21 @@
 BODY {
-	margin-left: 0;
-	margin-top: 0;
-	padding-top: 0;		/* Opera sets a default padding of 8px */
+	margin-left:  0;
+	margin-top:   0;
+	padding-top:  0;		/* Opera sets a default padding of 8px */
 	padding-left: 0;
-	background-color: #cccccc;
+	background-color: #d4d4d4;
 }
 
 
 BODY, TD, DIV, INPUT, TEXTAREA, SELECT {
-	color: #000000;
-	font: 11px Verdana, Arial, sans-serif;
-	font-style: normal;
+	font-style:   normal;
 	font-variant: normal;
-	font-weight: normal;
-	font-size-adjust: none;
+	font-weight:  normal;
 	font-stretch: normal;
-	line-height: normal;
+	font-size-adjust: none;
+	line-height:  normal;
+	font: 11px Verdana, Arial, sans-serif;
+	color: #000000;
 }
 
 H1, H2, H3, H4, H5 { font-family: Verdana, Arial, sans-serif; font-weight: bold; }
@@ -30,14 +30,14 @@ H3 { font-size: 1.0em; font-style: italic; margin-bottom: 4px; }
 H2 + H3 {margin-top:8px;}
 
 HR {
-	border: 0px;
+	border: 0;
 	border-top: 1px solid gray;
-	height: 0px;
+	height: 0;
 }
 
 P {	margin-top: 5px;}
 
-FORM {	margin-top:0px; margin-bottom:0px;}
+FORM {	margin-top: 0; margin-bottom: 0;}
 
 TEXTAREA {
 	height: 100px;
@@ -46,7 +46,7 @@ TEXTAREA {
 }
 
 INPUT {
-	vertical-align:middle;
+	vertical-align: middle;
 }
 
 A {	color: #CC3333;	text-decoration: none;}
@@ -56,13 +56,14 @@ A IMG {border: 1px solid #333;}
 /* BEGIN -- Pagine interne moduli */
 
 #headerPage {
-	border: 1px solid #cccccc;
+	border: 1px solid #d4d4d4;
 	height: 45px;
 }
+
 #menuLeftPage {
 	float: left;
 	width: 138px;
-	border: 0px solid black;
+	border: 0 solid black;
 	padding: 0;
 }
 
@@ -85,7 +86,6 @@ A IMG {border: 1px solid #333;}
 #listElements {
 	display: table-cell;
 	padding-left: 5px;
-	padding-left: 5px;
 }
 
 /* END -- Pagine interne moduli */
@@ -93,10 +93,10 @@ A IMG {border: 1px solid #333;}
 
 /* BEGIN -- Pagina Login */
 #loginStatusBox {
-	float:left ;
-	width:136px;
-	margin-bottom:0px;
-	border:0px solid black;
+	float: left ;
+	width: 136px;
+	margin-bottom: 0;
+	border: 0 solid black;
 	height: 400px;
 }
 /* END -- Pagina Login */
@@ -106,16 +106,16 @@ A IMG {border: 1px solid #333;}
 	clear:both;
 	display: block;
 	width:auto;
-	margin:0px ;
-	border:0px solid black;
+	margin: 0 ;
+	border: 0 solid black;
 }
 
 #centralPageHome {
-	clear:both;
+	clear: both;
 	display: block;
-	width:100%;
-	margin-bottom:0px;
-	border:0px solid black;
+	width: 100%;
+	margin-bottom: 0;
+	border: 0px solid black;
 	height: 355px;
 }
 
@@ -124,33 +124,38 @@ A IMG {border: 1px solid #333;}
 /* BEGIN -- Header Home page */
 
 .beditaButtonHome {
-	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer;
+	margin: -1px 0 0 -1px;
+	border: 1px solid silver;
+	cursor: pointer;
 	background: #ffff00 url('../img/bedita_sfo.jpg') 0px -1px;
 	color: black;
-	height:136px;
-	margin-left:-1px;
-	margin-bottom:0px;
-	width:136px;
-	float:left;
-	overflow:hidden;
-	border:0px solid black;
+	height: 136px;
+	margin-left: -1px;
+	margin-bottom: 0;
+	width: 136px;
+	float: left;
+	overflow: hidden;
+	border: 0 solid black;
 }
 
 /* IE ignores styles with [attributes], so it will skip the following. */
 #headerPageHome H1 {
   background-image: url('../img/sfo_gestUpD.png');
 }
+
 #headerPageHome H1 {
-	color: white;
-	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer;
-	background-color: transparent;	background-repeat: repeat-x;
-	height:126px;
-	width:126px;
-	float:left;
+	margin: -1px 0 0 -1px;
+	border: 1px solid silver;
+	cursor: pointer;
+	padding: 5px;
+	background-color: transparent;
+	background-repeat: repeat-x;
+	height: 126px;
+	width: 126px;
+	float: left;
 	font : bold 12px Arial, sans-serif;
-	padding:5px;
 	color: #ffffff;
-	text-align:center;
+	text-align: center;
 	white-space: nowrap;
 }
 
@@ -159,14 +164,16 @@ A IMG {border: 1px solid #333;}
 /* BEGIN -- Header page */
 
 .beditaButton {
-	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer;
-	background: #ffff00 url('../img/bedita_sfo.jpg') 0px -1px;
+	margin: -1px 0 0 -1px;
+	border: 1px solid silver;
+	cursor: pointer;
+	background: #ffff00 url('../img/bedita_sfo.jpg') 0 -1px;
 	color: black;
 	height: 45px;
-	width:136px;
-	float:left;
-	overflow:hidden;
-	border:1px solid black;
+	width: 136px;
+	float: left;
+	overflow: hidden;
+	border: 1px solid black;
 }
 
 /* IE ignores styles with [attributes], so it will skip the following. */
@@ -174,13 +181,16 @@ A IMG {border: 1px solid #333;}
   background-image: url('../img/sfo_gestUpD.png');
 }
 .gest_menux {
-	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer;
-	background-color: transparent;	background-repeat: repeat-x;
-	height:16px;
-	width:90px;
-	float:left;
+	margin: -1px 0 0 -1px;
+	padding: 4px 0 2px 0;
+	border: 1px solid silver;
+	cursor: pointer;
+	background-color: transparent;
+	background-repeat: repeat-x;
+	height: 16px;
+	width: 90px;
+	float: left;
 	font : bold 12px Arial, sans-serif;
-	padding:4px 0px 2px 0px;
 	color: #ffffff;
 	text-align:center;
 	white-space: nowrap;
@@ -191,15 +201,18 @@ A IMG {border: 1px solid #333;}
   background-image: url('../img/sfo_gestUpD.png');
 }
 .gest_menuxHome {
-	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer;
-	background-color: transparent;	background-repeat: repeat-x;
-	height:16px;
-	width:90px;
-	float:left;
+	margin: -1px 0 0 -1px;
+	padding: 4px 0 2px 0;
+	border: 1px solid silver;
+	cursor: pointer;
+	background-color: transparent;
+	background-repeat: repeat-x;
+	height: 16px;
+	width: 90px;
+	float: left;
 	font : bold 12px Arial, sans-serif;
-	padding:4px 0px 2px 0px;
 	color: #ffffff;
-	text-align:center;
+	text-align: center;
 	white-space: nowrap;
 }
 
@@ -207,31 +220,19 @@ A IMG {border: 1px solid #333;}
 
 /* BEGIN -- Toolbar */
 .toolbar {
-margin-top: 10px;
-margin-right: 0px;
-margin-bottom: 10px;
-margin-left: 1px;
-border-top-width: 1px;
-border-right-width: 1px;
-border-bottom-width: 1px;
-border-left-width: 1px;
-border-top-style: solid;
-border-right-style: solid;
-border-bottom-style: solid;
-border-left-style: solid;
-border-top-color: silver;
-border-right-color: silver;
-border-bottom-color: silver;
-border-left-color: silver;
-background-color: white;
-background-repeat: repeat-x;
-padding-top: 3px;
-padding-right: 3px;
-padding-bottom: 3px;
-padding-left: 3px;
-color: #696969;
-height: auto;
-width: 572px;
+	margin-top: 10px;
+	margin-right: 0;
+	margin-bottom: 10px;
+	margin-left: 1px;
+	padding: 3px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: silver;
+	background-color: white;
+	background-repeat: repeat-x;
+	color: #696969;
+	height: auto;
+	width: 572px;
 }
 
 .toolbar a {
@@ -271,82 +272,86 @@ TABLE.indexList {width:100%; margin-left:0; empty-cells: show; border-collapse: 
 
 
 
-/* BEGIN -- Box Image */
-div.itemBox, div.itemBoxFirst
+/* BEGIN -- itemBox (Multimedia Containers) */
+.itemBox
 {
-	padding: 0 4px 2px 3px;
+	padding: 3px;
 	margin: 2px;
-	width: 210px;
+	/* min-width: 150px; to prevent wrong behaviours in moz */
+	width: 130px;
 	background-color: #E9E9E9;
 	border: 1px solid #999;
 	float: left;
+	cursor: move;
+	text-align: center;
+	overflow: hidden;
 	position: relative; /* without offset is like normal flow, needed for pos absolute inside */
 }
-div.itemBoxFirst {  }
 
+.itemBoxSmall
+{
+	padding: 1px;
+	width: 108px;
+}
 
-div.itemBox .priority
+.itemBox .priority
 {
 	display: inline;
 	position: absolute;
-	left: 2px;
+	left: 4px;
 	top: 0;
 	padding: 0;
-	width: 20px;
-	height: 28px;
+	width: 24px;
+	height: 18px;
 	background-color: #E9E9E9;
-	font-size: 20px;
+	font-size: 1.5em;
 	font-weight: bold;
 	overflow: hidden;
-	border: 0 solid #000; /* just for reference */
+	border: 0 solid #ddd; /* just for reference */
 }
 
-div.itemBox .label
+.itemBox #imageBox
 {
-	display: inline;
-	position: absolute;
-	right: 2px;
-	top: 1px;
-	padding: 0;
-	width: 170px;
-	height: 28px;
-	font-weight: bold;
-	white-space: normal;
-	text-align: right;
 	overflow: hidden;
-	border: 0 solid red; /* just for reference */
+	margin: 18px auto 4px; /* center image box horizontally, also need text-align: center for IE in parent DIV itemBox */
 }
 
-div.itemBox .itemInfo
+.itemBox .itemInfo
 {
-	width: 100%;
+	width: 96%;
+	margin: 0 auto; /* center info box horizontally, also need text-align: center for IE in parent DIV itemBox */
+	text-align: left;
+}
 
+.itemInfo div {
+	font-face: verdana;
 	font-size: 0.9em;
-	line-height: 1.5em;
-	white-space: normal;
-	border: 0 solid yellow; /* just for reference */
+	margin: 5px 0;
 }
 
-div.itemBox .itemInfo .title
-{
-	font-weight: bold;
+.itemInfo div .title { font-weight: bold; }
+
+.itemInfo input, .itemInfo textarea  {
+	width: 99%;
+	height: 12px;
+	padding: 1px;
+	font-size: inherit;
+	border: 1px solid #ccc;
+}
+.itemInfo textarea  { height: 26px; line-height: 0.9em; }
+
+.itemInfoSmall {
+	font-size: 0.9em;
+	margin: 0 0 2px;
 }
 
-div.itemBox .itemButtons
+.itemBox .itemButtons
 {
 	position: relative;
 	text-align: right;
-	margin-top: -10px;
+	margin-top: -5px;
 }
 
-div.imageBox, div.imageBoxFirst
-{
-	background-color: #E9E9E9;
-	border: 1px solid #FFF;
-	float: left;
-	padding: 2px;
-}
-div.imageBoxFirst 	{ }
 /* END -- Box Image */
 
 
@@ -368,11 +373,55 @@ div.attachBoxFirst { background-color:#E9E9E9;border:solid #FFF 1px;float:left;p
 label.section {color:red;text-decoration:none}
 label.section:hover {color:red;text-decoration:underline}
 
-div.loading {
-	background-image:url(../img/loading.gif);
-	display:none;
-	padding-left: 20px;
-	background-repeat: no-repeat;
+div.multimediaToolbar
+{
+	position: relative;
+	padding: 0;
+	margin: -4px 0 0;
+	width: 580px;
+	height: 20px;
+	border: 0 solid red;
+}
+
+.multimediaToolbar div.loading {
+	display: none;
+	position: absolute;
+	right: 0;
+	top: 2px;
+	height: 16px;
+	width: 18px;
+	background: transparent url(../img/iconLoading.gif) no-repeat;
+}
+
+
+.multimediaToolbar #displaySmallIconsDisabled {
+	position: absolute;
+	left: 22px;
+	top: 0;
+	height: 16px;
+	width: 16px;
+	cursor: pointer;
+}
+.displaySmallIconsDisabled {
+	background: url(../img/IconSmallIconsDisabled.gif) no-repeat;
+}
+.displaySmallIcons {
+	background: url(../img/IconSmallIcons.gif) no-repeat;
+}
+
+.multimediaToolbar #displayLargeIcons {
+	position: absolute;
+	left: 4px;
+	top: 0;
+	height: 16px;
+	width: 16px;
+	cursor: pointer;
+}
+.displayLargeIcons {
+	background: url(../img/IconLargeIcons.gif) no-repeat;
+}
+.displayLargeIconsDisabled {
+	background: url(../img/IconLargeIconsDisabled.gif) no-repeat;
 }
 
 /* tabs container, used by jquery selectors*/

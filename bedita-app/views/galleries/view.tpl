@@ -2,6 +2,7 @@
 {$html->css('ui.tabs')}
 {$javascript->link("ui/jquery.dimensions")}
 {$javascript->link("ui/ui.tabs")}
+{$javascript->link("jquery.autogrow")}
 {$javascript->link("form")}
 {$javascript->link("jquery.treeview")}
 {$javascript->link("jquery.changealert")}
@@ -20,7 +21,7 @@
 
 $(document).ready(function(){
 
-	$('#properties').show() ;
+	$('#multimedia').show() ;
 
 	// aggiunge i comandi per i blocchi
 	$('.showHideBlockButton').bind("click", function(){

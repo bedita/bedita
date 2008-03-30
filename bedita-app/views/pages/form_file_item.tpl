@@ -20,10 +20,9 @@
 	<input type="hidden" class="switch" name="data[ObjectRelation][{$objIndex}][switch]" value="{$relation}" />
 
 	<input type="text" class="priority" name="data[ObjectRelation][{$objIndex}][priority]" value="{$obj.priority|default:$priority}" size="3" maxlength="3"/>
-	<div class="label">{$fileTitle}</div>
 
 	{if strtolower($obj.ObjectType.name) == "image"}
-	<div style="width: {$thumbWidth+2}px; height: {$thumbHeight+2}px; overflow: hidden; position: relative; top: 40px; margin-bottom: 40px;">
+	<div style="width: {$thumbWidth+2}px; height: {$thumbHeight+2}px;" id="imageBox">
 		{if !empty($fileName) }
 		{thumb 
 			width			= $thumbWidth
@@ -42,16 +41,20 @@
 	{else}
 	<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$obj.type}.gif" /></a></div>
 	{/if}
+
 	<div class="itemInfo">
-		<span class="title">{t}File name{/t}:</span> {$fileName|escape:'htmlall'}<br/>
-		<span class="title">{t}Object type{/t}:</span> {t}{$obj.ObjectType.name}{/t}<br/>
-		{if $obj.description|default:""}
-		<span class="title">{t}Description{/t}:</span> {$obj.description|default:""|escape:'htmlall'}<br/>
-		{/if}
-		<span class="title">{t}Size{/t}</span>: {math equation="x/y" x=$obj.size y=1024 format="%d"} KB<br/>
-		{if !empty($fileName) && $obj.name == "Image"}x: {$obj.width} y: {$obj.height}{/if}
+		<div><span class="title">{t}Title{/t}:</span><input type="text" value="{$fileTitle|escape:'htmlall'}" /></div>
+		<div><span class="title">{t}Description{/t}:</span><textarea class="autogrow">{$obj.description|default:""|escape:'htmlall'}</textarea></div>
+		<div style="border-bottom: 1px solid #999;"></div>
+		<div><span class="title">{t}File{/t}:</span> {$fileName|escape:'htmlall'}</div>
+		<div><span class="title">{t}Type{/t}:</span> {t}{$obj.type}{/t}</div>
+		<div><span class="title">{t}Size{/t}</span>: {math equation="x/y" x=$obj.size y=1024 format="%d"} KB</div>
+		{if $obj.width && $obj.height}<div>{$obj.width}px X {$obj.height}px</div>{/if}
 	</div>
+
+	<div class="itemInfoSmall" style="display: none;">{$fileTitle|escape:'htmlall'}</div>
+	
 	<div class="itemButtons">
-		<input type="button" onclick="removeItem('m_{$obj.id}')" value="{t}Delete{/t}" />
+		<input type="button" onclick="removeItem('m_{$obj.id}')" value="{t}X{/t}" />
 	</div>
 </div>

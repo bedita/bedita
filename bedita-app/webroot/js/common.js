@@ -94,7 +94,7 @@ jQuery.fn.extend({
 		$(el).Draggable({
 			revert:true,
 			ghosting:true,
-			opacity:0.8
+			opacity:0.7
 		});
 		$(el).Droppable({
 			accept:'itemBox',

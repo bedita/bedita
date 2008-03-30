@@ -1,5 +1,3 @@
-<h2 class="showHideBlockButton">{t}{$title}{/t}</h2>
-<div class="blockForm" id="imgs" style="display:none">
 <script type="text/javascript">
 var urlGetObj		= '{$html->url("/multimedia/get_item_form")}' ;
 var urlGetObjId 	= '{$html->url("/multimedia/get_item_form_by_id")}' ;
@@ -10,6 +8,33 @@ var containerItem	= "#{$containerId}";
 $(document).ready(function(){
 	$("div.itemBox").each(function(index) { setup_drag_drop_item(this) ;}) ;
 	$('#container-1 > ul').tabs();
+
+	
+
+	$("input").blur(function () {
+       // $("div.itemBox").each(function(index) { enable_drag_drop_item(this) ;}) ;
+    });
+
+	// toggle small/large icons views
+	$('div#displaySmallIconsDisabled').bind ('click', function () {
+		//$('.itemBox').removeClass ('itemBox');
+		$('.itemBox').addClass ('itemBoxSmall');
+		$('.itemInfo').hide();
+		$('.itemInfoSmall').show();
+		$('.itemButtons').hide();
+		$('div#displaySmallIconsDisabled').removeClass ('displaySmallIconsDisabled').addClass ('displaySmallIcons');
+		$('div#displayLargeIcons').removeClass ('displayLargeIcons').addClass ('displayLargeIconsDisabled');
+	});
+	
+	$('div#displayLargeIcons').bind ('click', function () {
+		$('.itemBox').removeClass ('itemBoxSmall');
+		$('.itemInfoSmall').hide();
+		$('.itemInfo').show();
+		$('.itemButtons').show();
+		$('div#displaySmallIconsDisabled').removeClass ('displaySmallIcons').addClass ('displaySmallIconsDisabled');
+		$('div#displayLargeIcons').removeClass ('displayLargeIconsDisabled').addClass ('displayLargeIcons');
+	});
+	
 });
 
 // Get data from modal window, uploaded files and insert new object in the form
@@ -90,7 +115,7 @@ function reorderListItem() {
 		$(".id", this).attr("name", "data[ObjectRelation]["+index+"][id]") ;
 		$(".switch", this).attr("name", "data[ObjectRelation]["+index+"][switch]") ;
 		$(".priority", this).attr("name", "data[ObjectRelation]["+index+"][priority]") ;
-		$(".priority", this).attr("value", index+1) ;
+		$(".priority", this).attr("value", index+1).hide().fadeIn(100).fadeOut(100).fadeIn('fast') ;
 	}) ;
 }
 
@@ -130,17 +155,35 @@ function setup_drag_drop_item(el) {
 	}) ;
 }
 
+function disable_drag_drop_item(el) {
+	if(!$(el)) return;
+		alert (el + ' disabled');
+	$(el).Draggable("disable");
+}
+
+function enable_drag_drop_item(el) {
+	if(!$(el)) return;
+	$(el).Draggable("enable");
+}
+
 {/literal}
 var priority 	= 1 ;
 var index 		= 0 ;
 var cols 		= 5 ;
 //-->
 </script>
-<div id="loading" class="loading">{t}Loading data{/t}...</div>
-<div id="container-2">
-	{* t}Gallery items{/t *}
-	<div id="container-2-items">
-		<fieldset id="{$containerId}">
+
+
+<h2 class="showHideBlockButton">{t}{$title}{/t}</h2>
+<div class="blockForm" id="multimedia" style="display:none">
+
+	<div class="multimediaToolbar">
+		<div id="displayLargeIcons" class="displayLargeIcons" title="{t}Large Icons{/t}"><span></span></div>
+		<div id="displaySmallIconsDisabled" class="displaySmallIconsDisabled" title="{t}Small Icons{/t}"><span></span></div>
+		<div id="loading" class="loading" title="{t}Loading data{/t}"><span></span></div>
+	</div>
+
+	<div id="{$containerId}"> {* mutimediacontainer *}
 		{assign var="newPriority" 	value=1}
 		{assign var="index" 		value=0}
 		{foreach item=ob from=$items|default:$empty}
@@ -149,35 +192,35 @@ var cols 		= 5 ;
 		{foreachelse}
 			<div id="galleryMsg">{t}Empty{/t}.<br />{t}To populate this gallery 'Upload new items', 'Insert new audio/video' or use the 'Multimedia items repository' tab{/t}.</div>
 		{/foreach}
+
 		<script type="text/javascript">
 		<!--
 		index = {$index} ;
 		priority = {$newPriority} ;
 		//-->
 		</script>
-		</fieldset>
 	</div>
-</div>
-<div id="container-1">
-	<ul>
-		<li><a href="#fragment-1"><span>{t}Upload new images{/t}</span></a></li>
-		<li><a href="#fragment-2"><span>{t}Insert new audio/video{/t}</span></a></li>
-		<li><a href="#fragment-3"><span>{t}Multimedia items repository{/t}</span></a></li>
-	</ul>
-	<div id="fragment-1">
-		{if $conf->uploadType == "ajax"}
-			{include file="../pages/form_upload_ajax.tpl"}
-		{else if $conf->uploadType == "flash"}
-			{include file="../pages/form_upload.tpl"}
-		{/if}
+
+	<div id="container-1" style="clear: both;">
+		<ul>
+			<li><a href="#fragment-1"><span>{t}Upload new images{/t}</span></a></li>
+			<li><a href="#fragment-2"><span>{t}Insert new audio/video{/t}</span></a></li>
+			<li><a href="#fragment-3"><span>{t}Multimedia items repository{/t}</span></a></li>
+		</ul>
+		<div id="fragment-1">
+			{if $conf->uploadType == "ajax"}
+				{include file="../pages/form_upload_ajax.tpl"}
+			{else if $conf->uploadType == "flash"}
+				{include file="../pages/form_upload.tpl"}
+			{/if}
+		</div>
+		<div id="fragment-2">
+			{include file="../pages/form_external_audiovideo.tpl"}
+		</div>
+		<div id="fragment-3">
+			{include file="../pages/form_multimedia_assoc.tpl" itemType=$relation items=$bedita_items}
+	{*<a href="{$html->url("/$controller")}/frm_upload_bedita/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} - {t}add by BEdita{/t}" class="thickbox">{$title} - {t}add by BEdita{/t}</a>*}
+		</div>
 	</div>
-	<div id="fragment-2">
-		{include file="../pages/form_external_audiovideo.tpl"}
-	</div>
-	<div id="fragment-3">
-		{include file="../pages/form_multimedia_assoc.tpl" itemType=$relation items=$bedita_items}
-{*<a href="{$html->url("/$controller")}/frm_upload_bedita/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} - {t}add by BEdita{/t}" class="thickbox">{$title} - {t}add by BEdita{/t}</a>*}
-	</div>
-</div>
 
 </div>

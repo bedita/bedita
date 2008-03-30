@@ -52,15 +52,15 @@
 
 /* BEGIN -- stili per i contenitori delle pagine */
 
-#containerPage H2, #containerPage .showHideBlockButton  {
+#containerPage H2.showHideBlockButton  { /* was wrong: #containerPage H2, #containerPage .showHideBlockButton */
 	color: white;
 	font: bold 12px Arial;
-	margin: 10px 0px 10px 0px;
-	padding:4px;
+	margin: 10px 0;
+	padding: 4px;
 	background: gray none repeat-x;
-	border:1px solid gray;
-	cursor:pointer;
-	width:570px;
+	border: 1px solid gray;
+	cursor: pointer;
+	width: 570px;
 }
 
 #containerPage .blockForm  {
@@ -128,7 +128,7 @@ label.error {
 
 label.checked {
 	background: transparent url(../img/iconChecked.png) no-repeat 0 0;
-	padding: 0 15px;
+	padding: 0 5px;
 	margin: 3px;
 }
 

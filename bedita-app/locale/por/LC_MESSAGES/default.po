@@ -177,6 +177,9 @@ msgstr "nome"
 msgid "type"
 msgstr "tipo"
 
+msgid "Type"
+msgstr "Tipo"
+
 msgid "value"
 msgstr "valor"
 
@@ -614,6 +617,9 @@ msgstr "Elementos relacionados a este documento"
 
 msgid "Empty"
 msgstr "Vacio"
+
+msgid "File"
+msgstr "Arquivo"
 
 msgid "File name"
 msgstr "Nome do arquivo"

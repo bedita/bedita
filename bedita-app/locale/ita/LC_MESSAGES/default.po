@@ -181,6 +181,9 @@ msgstr "nome"
 msgid "type"
 msgstr "tipo"
 
+msgid "Type"
+msgstr "Tipo"
+
 msgid "value"
 msgstr "valore"
 
@@ -636,6 +639,9 @@ msgstr "Oggetti nella galleria"
 
 msgid "Empty"
 msgstr "Vuoto"
+
+msgid "File"
+msgstr "File"
 
 msgid "File name"
 msgstr "Nome del file"
