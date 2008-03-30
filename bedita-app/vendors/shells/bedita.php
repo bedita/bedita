@@ -15,7 +15,10 @@ class DataSourceTest extends DataSource {
 		
 		foreach($queries as $q) {	
 			if(strlen($q)>1) {
-				$db->execute(stripSlashes($q)) ;	
+				$res = $db->execute(stripSlashes($q));
+				if($res === false) {
+					throw new Exception("Error executing query: ".$q."\n");
+				}
 			}
 		}
 	}
