@@ -22,7 +22,7 @@ class EventDateItem extends BEAppModel
 
 	var $validate = array(
 		'start' 		=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
-		'end' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true))
+		'end' 		=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true))
 	) ;
 	
 	function beforeValidate() {
@@ -39,8 +39,10 @@ class EventDateItem extends BEAppModel
 	 	}
 		if (!empty($data['end']) && !empty($data['timeEnd'])) {
 	 		$data['end'] .= " " . $data['timeEnd'];
+	 	} else if(empty($data['end'])) {
+	 		$data['end'] = $data['start']  ;
 	 	}
-	 	
+ 	 	
 		return true;
 	}
 }
