@@ -3,25 +3,44 @@ var urlGetObj		= '{$html->url("/multimedia/get_item_form")}' ;
 var urlGetObjId 	= '{$html->url("/multimedia/get_item_form_by_id")}' ;
 var containerItem	= "#{$containerId}";
 <!--
+
+{*
+/* x quando metteremo ui al posto di interface x il drag
+function disable_drag_drop_item(el) {
+	if(!$(el)) return;
+	$(el).Draggable("disable");
+}
+
+function enable_drag_drop_item(el) {
+	if(!$(el)) return;
+	$(el).Draggable("enable");
+}
+
+	$("input").bind('click', function () {
+		$("div.itemBox").each(function(index) { disable_drag_drop_item(this) ;}) ;
+	});
+	$("input").blur(function () {
+       // $("div.itemBox").each(function(index) { enable_drag_drop_item(this) ;}) ;
+    });
+*/
+*}
+
 {literal}
 // set draggable list items
 $(document).ready(function(){
 	$("div.itemBox").each(function(index) { setup_drag_drop_item(this) ;}) ;
 	$('#container-1 > ul').tabs();
 
-	
-
-	$("input").blur(function () {
-       // $("div.itemBox").each(function(index) { enable_drag_drop_item(this) ;}) ;
-    });
+	$("input").bind('click', function () { this.focus(); });
+	$("textarea").bind('click', function () { this.focus(); });
 
 	// toggle small/large icons views
 	$('div#displaySmallIconsDisabled').bind ('click', function () {
 		//$('.itemBox').removeClass ('itemBox');
 		$('.itemBox').addClass ('itemBoxSmall');
+		$('.itemFooter').hide();
 		$('.itemInfo').hide();
 		$('.itemInfoSmall').show();
-		$('.itemButtons').hide();
 		$('div#displaySmallIconsDisabled').removeClass ('displaySmallIconsDisabled').addClass ('displaySmallIcons');
 		$('div#displayLargeIcons').removeClass ('displayLargeIcons').addClass ('displayLargeIconsDisabled');
 	});
@@ -30,7 +49,7 @@ $(document).ready(function(){
 		$('.itemBox').removeClass ('itemBoxSmall');
 		$('.itemInfoSmall').hide();
 		$('.itemInfo').show();
-		$('.itemButtons').show();
+		$('.itemFooter').show();
 		$('div#displaySmallIconsDisabled').removeClass ('displaySmallIcons').addClass ('displaySmallIconsDisabled');
 		$('div#displayLargeIcons').removeClass ('displayLargeIconsDisabled').addClass ('displayLargeIcons');
 	});
@@ -124,7 +143,8 @@ function setup_drag_drop_item(el) {
 	$(el).Draggable({
 		revert:		true,
 		ghosting:	true,
-		opacity:	0.8
+		opacity:	0.7,
+		containment : '#mutimediacontainer'
 	});
 	$(el).Droppable({
 		accept:		'itemBox',
@@ -155,18 +175,8 @@ function setup_drag_drop_item(el) {
 	}) ;
 }
 
-function disable_drag_drop_item(el) {
-	if(!$(el)) return;
-		alert (el + ' disabled');
-	$(el).Draggable("disable");
-}
-
-function enable_drag_drop_item(el) {
-	if(!$(el)) return;
-	$(el).Draggable("enable");
-}
-
 {/literal}
+
 var priority 	= 1 ;
 var index 		= 0 ;
 var cols 		= 5 ;

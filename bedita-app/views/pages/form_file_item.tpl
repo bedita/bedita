@@ -19,7 +19,9 @@
 	<input type="hidden" class="id" 	name="data[ObjectRelation][{$objIndex}][id]" value="{$obj.id}" />
 	<input type="hidden" class="switch" name="data[ObjectRelation][{$objIndex}][switch]" value="{$relation}" />
 
-	<input type="text" class="priority" name="data[ObjectRelation][{$objIndex}][priority]" value="{$obj.priority|default:$priority}" size="3" maxlength="3"/>
+	<div class="itemHeader">
+		<input type="text" class="priority" name="data[ObjectRelation][{$objIndex}][priority]" value="{$obj.priority|default:$priority}" size="3" maxlength="3"/>
+	</div>
 
 	{if strtolower($obj.ObjectType.name) == "image"}
 	<div style="width: {$thumbWidth+2}px; height: {$thumbHeight+2}px;" id="imageBox">
@@ -54,7 +56,7 @@
 
 	<div class="itemInfoSmall" style="display: none;">{$fileTitle|escape:'htmlall'}</div>
 	
-	<div class="itemButtons">
+	<div class="itemFooter">
 		<input type="button" onclick="removeItem('m_{$obj.id}')" value="{t}X{/t}" />
 	</div>
 </div>

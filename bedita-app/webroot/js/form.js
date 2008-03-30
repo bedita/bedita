@@ -28,4 +28,4 @@ function cutBlank(elem) {
 }
 
 // auto-grow textareas styled with autogrow class
-$('textarea.autogrow').autogrow();
+//$('textarea.autogrow').autogrow(); sistemare non funziona correttamente

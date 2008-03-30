@@ -122,14 +122,14 @@ fieldset {
 label.error {
 	background: transparent url(../img/iconUnchecked.png) no-repeat 0 0;
 	color: #F00;
+	margin: 0;
 	padding: 0 15px;
-	margin: 2px;
 }
 
 label.checked {
 	background: transparent url(../img/iconChecked.png) no-repeat 0 0;
-	padding: 0 5px;
-	margin: 3px;
+	margin: 0;
+	padding: 0 7px;
 }
 
 TD.label {

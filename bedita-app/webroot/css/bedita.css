@@ -275,10 +275,10 @@ TABLE.indexList {width:100%; margin-left:0; empty-cells: show; border-collapse: 
 /* BEGIN -- itemBox (Multimedia Containers) */
 .itemBox
 {
-	padding: 3px;
+	padding: 0;
 	margin: 2px;
-	/* min-width: 150px; to prevent wrong behaviours in moz */
-	width: 130px;
+	/* min-width: 140px; to prevent wrong behaviours in moz */
+	width: 140px;
 	background-color: #E9E9E9;
 	border: 1px solid #999;
 	float: left;
@@ -290,68 +290,71 @@ TABLE.indexList {width:100%; margin-left:0; empty-cells: show; border-collapse: 
 
 .itemBoxSmall
 {
-	padding: 1px;
-	width: 108px;
+	width: 110px;
+}
+
+.itemBox .itemHeader
+{
+	width: 94%;
+	margin: 0 auto; /* center info box horizontally, also need text-align: center for IE in parent DIV itemBox */
+	text-align: left;
+	border: 0 solid #ccc; /* just for reference */
 }
 
 .itemBox .priority
 {
-	display: inline;
-	position: absolute;
-	left: 4px;
-	top: 0;
 	padding: 0;
-	width: 24px;
+	margin: 0;
 	height: 18px;
+	width: 26px;
 	background-color: #E9E9E9;
+	border: 0;
 	font-size: 1.5em;
 	font-weight: bold;
 	overflow: hidden;
-	border: 0 solid #ddd; /* just for reference */
 }
 
 .itemBox #imageBox
 {
 	overflow: hidden;
-	margin: 18px auto 4px; /* center image box horizontally, also need text-align: center for IE in parent DIV itemBox */
+	margin: 1px auto; /* center image box horizontally, also need text-align: center for IE in parent DIV itemBox */
 }
 
 .itemBox .itemInfo
 {
-	width: 96%;
+	width: 94%;
 	margin: 0 auto; /* center info box horizontally, also need text-align: center for IE in parent DIV itemBox */
 	text-align: left;
 }
 
 .itemInfo div {
-	font-face: verdana;
 	font-size: 0.9em;
 	margin: 5px 0;
 }
 
 .itemInfo div .title { font-weight: bold; }
 
-.itemInfo input, .itemInfo textarea  {
+.itemInfo input, .itemInfo textarea
+{
 	width: 99%;
 	height: 12px;
 	padding: 1px;
 	font-size: inherit;
 	border: 1px solid #ccc;
 }
-.itemInfo textarea  { height: 26px; line-height: 0.9em; }
+.itemInfo textarea { min-height: 26px; line-height: 0.9em; } /* still to add min-height for explorer */
 
-.itemInfoSmall {
-	font-size: 0.9em;
-	margin: 0 0 2px;
-}
-
-.itemBox .itemButtons
+.itemInfoSmall
 {
-	position: relative;
-	text-align: right;
-	margin-top: -5px;
+	font-size: 0.9em;
+	margin: 5px 0;
 }
 
+.itemBox .itemFooter
+{
+	text-align: right;
+	margin: -15px 3px 3px;
+}
 /* END -- Box Image */
 
 
