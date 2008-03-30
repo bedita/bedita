@@ -7,6 +7,7 @@
 {assign var="fileTitle"			value = $obj.title}
 {assign var="newPriority"		value = $obj.priority+1|default:$priority}
 {assign var="mediaPath"         value = $conf->mediaRoot}
+{assign var="mediaUrl"          value = $conf->mediaUrl}
 {assign_concat var="imageAltAttribute"	0="alt='"  1=$obj.title 2="'"}
 {assign_concat var="mediaCacheBaseURL"	0=$conf->mediaUrl  1="/" 2=$conf->imgCache 3="/"}
 {assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
@@ -30,6 +31,7 @@
 			width			= $thumbWidth
 			height			= $thumbHeight
 			file			= $mediaPath$filePath
+			linkurl			= $mediaUrl$filePath
 			cache			= $mediaCacheBaseURL
 			cachePATH		= $mediaCachePATH
 			hint			= "false"

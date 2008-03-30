@@ -36,7 +36,6 @@ $(document).ready(function(){
 
 	// toggle small/large icons views
 	$('div#displaySmallIconsDisabled').bind ('click', function () {
-		//$('.itemBox').removeClass ('itemBox');
 		$('.itemBox').addClass ('itemBoxSmall');
 		$('.itemFooter').hide();
 		$('.itemInfo').hide();
