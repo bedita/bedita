@@ -8,9 +8,9 @@
 	right: 10px;
 	z-index: 100;
 	display: none;
-
 	font: 10px Trebuchet, Verdana, Arial, sans-serif;
-	text-align: left;
+	cursor: pointer;
+	text-align: center;
 }
 
 
@@ -21,59 +21,38 @@
 
 
 /* TRICK per interpretare il seguente codice solo con IE5 + */
-* html #messagesDiv {
-	height: 40px;
-}
+* html #messagesDiv { height: 30px; width: 200px; }
+* html #messagesDiv:hover {	margin: 0; }
 
-* html #messagesDiv:hover {
-	margin: 0;
-}
 
-.message-error {
-	background-color: #FFB3B3;
-	color: #FFF;
-	min-height: 30px;
-	min-width: 200px;
-	padding: 4px;
-}
-
-.message-warn {
-	background: #FFFFDB;
-	padding: 5px;
-}
-
-.message-info, .message-result {
+.message-error, .message-warn, .message-info, .message-result {
 	position: relative;
 	top: 0;
-	background-color: #333333;
 	color: #FFF;
 	min-height: 30px;
 	min-width: 200px;
-	padding: 4px;
+	padding: 8px 5px;
 }
+
+.message-error { background-color: #FF3333; }
+.message-warn { background: #FF9922; }
+.message-info, .message-result { background-color: #333333; }
 
 
 
 /*
 ** icone messaggi
 */
-#info-img, #result-img {
-	position: relative;
-	top: -10px;
+#info-img, #result-img, #error-img, #warn-img, #pdf-img, .pdf-img {
+	position: absolute;
+	top: -8px;
 	left: -10px;
-	background: transparent url(../img/iconOkay_16x16.png) no-repeat;
 	width: 16px;
 	height: 16px;
 }
 
-#error-img {
-	background: transparent url(../img/iconWarning.gif) no-repeat;
-}
+#info-img, #result-img { background: transparent url(../img/iconOkay_16x16.png) no-repeat; }
+#error-img { background: transparent url(../img/iconAlert_16x16.png) no-repeat; }
+#warn-img { background: transparent url(../img/iconAlert_16x16.png) no-repeat; }
 
-#warn-img {
-	background: transparent url(../img/iconWarning.gif) no-repeat;
-}
-
-#pdf-img,.pdf-img {
-	background: transparent url(../img/iconPdf.gif) no-repeat;
-}
+#pdf-img,.pdf-img { background: transparent url(../img/iconPdf.gif) no-repeat; }
