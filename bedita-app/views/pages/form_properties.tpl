@@ -37,7 +37,7 @@ $(document).ready(function(){
 		
 		<span class="label" style="margin-left: 16px;">{t}Versions{/t}:</span>
 		<span class="field">{foreach key=val item=label from=$conf->langOptions name=langfe}
-				<input type="checkbox" name="data[lang_version]" class="lang_flags" title="{*$smarty.foreach.langfe.index*}Enable / Disable {$label}" id="flag_{$val}"
+				<input type="checkbox" name="data[lang_version]" class="lang_flags" title="{$smarty.foreach.langfe.index}" id="flag_{$val}"
 					{if $val==$object_lang || !empty($object.LangText.title[$val])} checked="checked"{/if}
 					{if $val==$object_lang} disabled="disabled"{/if}/>
 				<img src="{$html->webroot}img/flags/{$val}.png" border="0" alt="{$val}" style="vertical-align: middle;" />&nbsp;
@@ -124,7 +124,7 @@ $(document).ready(function(){
 	</tr>
 	</table>
 
-	{*<div style="background: #F00 url('img/calendar.gif') repeat-x; width: 600px; height: 1px; display: inline;"><span></span></div>*}
+	{*<div style="background: #F00 url('img/calendar.gif') repeat-x; width: 600px; height: 1px; display: inline;"><span>&nbsp;</span></div>*}
 
 	{if ($object)}
 	<table class="tableForm" border="0">

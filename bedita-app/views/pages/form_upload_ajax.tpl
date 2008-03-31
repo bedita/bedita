@@ -43,7 +43,7 @@ $(document).ready(function() {
 </script>
 <div>
 	<input type="file" name="Filedata" />
-	<input type="hidden" name="MAX_FILE_SIZE" value="3000" />
+	<input type="hidden" name="MAX_FILE_SIZE" value="13000" />
 	<input type="hidden" name="lang" value="{if $session->check('Config.language')}{$session->read('Config.language')}{else}ita{/if}"/>
 	<input type="button" id="uploadForm" value="{t}Upload{/t}"/>
 <div id="msgUpload"></div>

@@ -187,9 +187,9 @@ var cols 		= 5 ;
 <div class="blockForm" id="multimedia" style="display:none">
 
 	<div class="multimediaToolbar">
-		<div id="displayLargeIcons" class="displayLargeIcons" title="{t}Large Icons{/t}"><span></span></div>
-		<div id="displaySmallIconsDisabled" class="displaySmallIconsDisabled" title="{t}Small Icons{/t}"><span></span></div>
-		<div id="loading" class="loading" title="{t}Loading data{/t}"><span></span></div>
+		<div id="displayLargeIcons" class="displayLargeIcons" title="{t}Large Icons{/t}"><span>&nbsp;</span></div>
+		<div id="displaySmallIconsDisabled" class="displaySmallIconsDisabled" title="{t}Small Icons{/t}"><span>&nbsp;</span></div>
+		<div id="loading" class="loading" title="{t}Loading data{/t}"><span>&nbsp;</span></div>
 	</div>
 
 	<div id="{$containerId}"> {* mutimediacontainer *}
