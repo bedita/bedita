@@ -42,21 +42,21 @@ $(document).ready ( function () {literal} { {/literal}
 <div id="messagesDiv">
 	{if ($msg->check('Message.error'))}
 	<div class="message-error">
-		<div id="error-img"><span></span></div>
+		<div id="error-img"><span>&nbsp;</span></div>
 		{* the word error already appear in msgs <span id="err-msg">{t}Error{/t}</span>*}
 		<p>{$msg->userMsg('error')|capitalize}</p>
 	</div>
 	{/if}
 	{if ($msg->check('Message.warn'))}
 	<div class="message-warn">
-		<div id="warn-img"><span></span></div>
+		<div id="warn-img"><span>&nbsp;</span></div>
 		<span id="warn-msg">{t}Warning{/t}</span>
 		<p>{$msg->userMsg('warn')}</p>
 	</div>
 	{/if}
 	{if ($msg->check('Message.info'))}
 	<div class="message-info">
-		<div id="info-img"><span></span></div>
+		<div id="info-img"><span>&nbsp;</span></div>
 		<span id="info-msg">{*t}Info{/t*}</span>
 		<p>{$msg->userMsg('info')|capitalize}</p>
 	</div>
