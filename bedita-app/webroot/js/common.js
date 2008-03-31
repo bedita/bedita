@@ -75,7 +75,7 @@ jQuery.fn.extend({
 	enableDisableTabs: function() {
 		$(this).bind("click", function(){
 			var action = ($(this).attr('checked')) ? "enable" : "disable";
-			var index = Number($(this).attr('title'));
+			var index = Number($(this).attr('tabindex'));
 			$('div.tabsContainer > ul').tabs(action,index);
 		});
 	},
