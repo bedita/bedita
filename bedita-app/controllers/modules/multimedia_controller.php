@@ -92,9 +92,11 @@ class MultimediaController extends ModulesController {
         // Formatta le custom properties
         $this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
 
-        // Formatta i campi d tradurre
+        // Formatta i campi da tradurre
+		$this->data['title'] = $this->data['LangText'][$this->data['lang']]['title'];
+		$this->data['description'] = $this->data['LangText'][$this->data['lang']]['description'];
         $this->BeLangText->setupForSave($this->data["LangText"]) ;
-        
+		
         $this->Transaction->begin() ;
         
         // save
