@@ -41,10 +41,8 @@ $(document).ready(function(){
 	<fieldset>
 		{if !empty($items)}
 		<p>{t}Total number of{/t} {t}{$itemType} items{/t}: {$beToolbar->size()}</p>
-<p>&nbsp;</p>{*		DA INSERIRE TOOLBAR DI NAVIGAZIONE
-<p class="toolbar">{t}{$itemType}{/t}: {$beToolbar->size()}</p>
-*}
-		<table class="indexList">
+		<div><input type="text" name="searchMultimediaItems" value="search"><input type="button" value="Search"> </div>
+		<table class="indexList" style="clear: left;">
 		<tr>
 			<th><input type="checkbox" class="selectAll" id="selectAll"/><label for="selectAll"> {t}(Un)Select All{/t}</label></th>
 			<th>{$beToolbar->order('id', 'id')}</th>
@@ -104,10 +102,6 @@ $(document).ready(function(){
 			</td>
 		</tr>
 		</table>
-		
-{*		DA INSERIRE TOOLBAR DI NAVIGAZIONE
-<p class="toolbar">{t}{$itemType}{/t}: {$beToolbar->size()}</p>
-*}
 
 		{else}
 		{t}No {$itemType} item found{/t}
