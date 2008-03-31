@@ -5,14 +5,13 @@
 }
 
 .FormPageHeader {
-	margin: 10px 0px 10px 1px; border:1px solid silver;
-	background-color: white;	background-repeat: repeat-x;
-	padding:3px 3px 3px 3px;
-	color:#696969;
-	height:auto;
-	min-width:570px;
-	width:570px;
-	border: 0px solid #696969;
+	margin: 0;
+	padding: 3px;
+	background-color: white;
+	color: #696969;
+	min-width: 570px;
+	width: 570px;
+	border: 0 solid red;
 }
 
 .FormPageHeader A:Hover {
@@ -57,7 +56,7 @@
 	font: bold 12px Arial;
 	margin: 10px 0;
 	padding: 4px;
-	background: gray none repeat-x;
+	background: gray url(../img/bg_graytab.png) no-repeat scroll right top;
 	border: 1px solid gray;
 	cursor: pointer;
 	width: 570px;

@@ -2,13 +2,13 @@
 
 .menuLeft	{
 	color: #000000;
-	width:136px;
-	margin: 0px 10px 0px 0px;
-	padding: 0px 0px 0px 0px;
+	width: 136px;
+	margin: 0 10px 0 0;
+	padding: 0;
 }
 
-.menuLeft, .menuLeft .inside {
-	font : normal 12px Arial, sans-serif;
+.menuLeft .inside {
+	padding: 4px;
 }
 
 .menuLeft[class] H1  {
@@ -16,11 +16,14 @@
 }
 
 .menuLeft H1 {
-	margin: -1px 0px 0px -1px; border:1px solid silver; cursor:pointer;
+	margin: -2px 0px 0px -1px;
+	padding: 5px;
+	border: 1px solid gray;
+	cursor: pointer;
 
-	background-color: transparent;	background-repeat: repeat-x;
+	background-color: transparent;
+	background-repeat: repeat-x;
 	font : bold 14px Arial, sans-serif;
-	padding:5px;
 	height:126px;
 	width:126px;
 }

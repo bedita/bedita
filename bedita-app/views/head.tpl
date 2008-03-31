@@ -48,27 +48,27 @@ var changeAlertMessage = "{/literal}{t}The change will be lost. Do you want to c
 
 <div id="headerPage">
 	<div class="beditaButton" onclick= "javascript:document.location ='{$html->url('/')}'">
-		<span style="font:bold 17px Verdana">B.Edita</span><br/><b>&gt;</b>
-		<a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a><br/><br/>
+		<span style="font:bold 17px Verdana">B.Edita</span><br/>
+		<b>›</b> <a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a><br/><br/>
 		<p><b>Consorzio BEdita</b><br/>2007</p>
 	</div>
-	{section name="m" loop=$moduleList}
-		{if ($moduleList[m].status == 'on')}
-			{if ($moduleList[m].flag & BEDITA_PERMS_READ)}
-				<div class="gest_menux" id="{$moduleList[m].path}_gest_menux">
-			     {if (stripos($html->here, $moduleList[m].path) !== false)}
-     				<i> * {t}{$moduleList[m].label}{/t}</i>
-     			{else}
-     				{t}{$moduleList[m].label}{/t}
-				{/if}
-				</div>
-			{else}
-    			 <div class="gest_menux" style="background-color:#DDDDDD; color: white; ">
-				{t}{$moduleList[m].label}{/t}
-				</div>
+{section name="m" loop=$moduleList}
+	{if ($moduleList[m].status == 'on')}
+		{if ($moduleList[m].flag & BEDITA_PERMS_READ)}
+			<div class="gest_menux" id="{$moduleList[m].path}_gest_menux">
+		     {if (stripos($html->here, $moduleList[m].path) !== false)}
+ 				<i> * {t}{$moduleList[m].label}{/t}</i>
+ 			{else}
+ 				{t}{$moduleList[m].label}{/t}
 			{/if}
+			</div>
+		{else}
+			 <div class="gest_menux" style="background-color:#DDDDDD; color: white; ">
+			{t}{$moduleList[m].label}{/t}
+			</div>
 		{/if}
-	{/section}
+	{/if}
+{/section}
 </div>
 
 {include file="messages.tpl"}

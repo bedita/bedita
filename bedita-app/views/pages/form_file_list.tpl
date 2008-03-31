@@ -199,7 +199,6 @@ var cols 		= 5 ;
 			{include file="../pages/form_file_item.tpl" obj=$ob}
 			{math equation="x+y" x=$objIndex y=1 assign=objIndex}
 		{foreachelse}
-			<div id="galleryMsg">{t}Empty{/t}.<br />{t}To populate this gallery 'Upload new items', 'Insert new audio/video' or use the 'Multimedia items repository' tab{/t}.</div>
 		{/foreach}
 
 		<script type="text/javascript">
@@ -210,7 +209,7 @@ var cols 		= 5 ;
 		</script>
 	</div>
 
-	<div id="container-1" style="clear: both;">
+	<div id="container-1" style="padding-top: 10px;clear: both;">
 		<ul>
 			<li><a href="#fragment-1"><span>{t}Upload new images{/t}</span></a></li>
 			<li><a href="#fragment-2"><span>{t}Insert new audio/video{/t}</span></a></li>

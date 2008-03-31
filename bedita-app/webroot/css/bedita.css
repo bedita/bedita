@@ -53,6 +53,8 @@ A {	color: #CC3333;	text-decoration: none;}
 A:hover {text-decoration: underline;}
 A IMG {border: 1px solid #333;}
 
+LI { line-height: 1.5em; }
+
 /* BEGIN -- Pagine interne moduli */
 
 #headerPage {
@@ -68,8 +70,10 @@ A IMG {border: 1px solid #333;}
 }
 
 #containerPage {
+	margin: 0 10px;
+	margin-left: 148px;
+	padding-top: 10px;
 	border: 0 solid black;
-	margin-left: 138px;
 }
 
 #footerPage {
@@ -124,18 +128,15 @@ A IMG {border: 1px solid #333;}
 /* BEGIN -- Header Home page */
 
 .beditaButtonHome {
-	margin: -1px 0 0 -1px;
-	border: 1px solid silver;
+	margin: -1px;
 	cursor: pointer;
 	background: #ffff00 url('../img/bedita_sfo.jpg') 0px -1px;
 	color: black;
-	height: 136px;
-	margin-left: -1px;
-	margin-bottom: 0;
-	width: 136px;
+	height: 135px;
+	width: 135px;
 	float: left;
 	overflow: hidden;
-	border: 0 solid black;
+	border: 1px solid gray;
 }
 
 /* IE ignores styles with [attributes], so it will skip the following. */
@@ -164,7 +165,7 @@ A IMG {border: 1px solid #333;}
 /* BEGIN -- Header page */
 
 .beditaButton {
-	margin: -1px 0 0 -1px;
+	margin: -2px 0 0 -2px;
 	border: 1px solid silver;
 	cursor: pointer;
 	background: #ffff00 url('../img/bedita_sfo.jpg') 0 -1px;

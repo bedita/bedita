@@ -34,8 +34,8 @@ $(document).ready(function(){
 			{/foreach}
 			</select>
 		</span>
-		&nbsp;&nbsp;&nbsp;
-		<span class="label">{t}Versions{/t}:</span>
+		
+		<span class="label" style="margin-left: 16px;">{t}Versions{/t}:</span>
 		<span class="field">{foreach key=val item=label from=$conf->langOptions name=langfe}
 				<input type="checkbox" name="data[lang_version]" class="lang_flags" title="{*$smarty.foreach.langfe.index*}Enable / Disable {$label}" id="flag_{$val}"
 					{if $val==$object_lang || !empty($object.LangText.title[$val])} checked="checked"{/if}
@@ -134,7 +134,7 @@ $(document).ready(function(){
 	</tr>
 	<tr>
 		<td class="label">{t}Last modified{/t}:</td>
-		<td class="field">{$object.modified|date_format:$conf->date_format} [{t}Author{/t} {$object.UserModified.userid|default:""}]</td>
+		<td class="field">{$object.modified|date_format:$conf->date_format} [{t}Author{/t}: {$object.UserModified.userid|default:""}]</td>
 	</tr>
 	<tr><td class="label">{t}IP{/t}:</td>
 		<td class="field">{$object.ip_created}</td>

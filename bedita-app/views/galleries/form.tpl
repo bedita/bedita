@@ -16,7 +16,9 @@ $.validator.setDefaults({
 });
 
 $(document).ready(function(){
-	$("#updateForm").validate();
+	$("#updateForm").validate({
+		ignore: ".priority"
+	});
 	// submit delete
 	$("#delBEObject").submitConfirm({
 		{/literal}
@@ -32,7 +34,7 @@ $(document).ready(function(){
 {assign var=objIndex value=0}
 <div id="containerPage">
 <form action="{$html->url('/galleries/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
-<fieldset><input  type="hidden" name="data[id]" value="{$object.id|default:''}" /></fieldset>
+<input  type="hidden" name="data[id]" value="{$object.id|default:''}" />
 {include file="../pages/form_header.tpl"}
 <div class="blockForm" id="errorForm"></div>
 {include file="../pages/form_properties.tpl" publication=false}
