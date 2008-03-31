@@ -146,56 +146,6 @@ class AttachmentsController extends ModulesController {
 	 	$this->Transaction->commit() ;
 	 }
 
-	/**
-	 * Accesso via Ajax.
-	 * Utilizzato per visualizzare l'item di un oggetto file in un form
-	 * 
-	 * @param string $filename	Il nome del file da visualizare nel form
-	 */
-	function get_item_form($filename = null) {
-		$filename = urldecode($this->params['form']['filename']) ;
-		if(!($id = $this->Stream->getIdFromFilename($filename))) throw new BeditaException(sprintf(__("Error get id object: %d", true), $id));
-		$this->_get_item_form($id) ;
-	}
-	 
-	/**
-	 * Accesso via Ajax.
-	 * Utilizzato per visualizzare l'item di un oggetto file in un form
-	 * 
-	 * @param integer $id	Id dell'oggetto da linkare
-	 */
-	function get_item_form_by_id($id =null) {
-		$this->_get_item_form($this->params['form']['id']) ;
-	}
-
-	private function _get_item_form($id) {
-		$conf  = Configure::getInstance() ;
-		foreach ($this->params['form'] as $k =>$v) {
-			$$k = $v ;
-		}
-		// Get object type
-		$rec = $this->BEObject->recursive ;
-		$this->BEObject->recursive = -1 ;
-		if(!($ret = $this->BEObject->read('object_type_id', $id))) throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
-		$this->BEObject->recursive = $rec ;
-		$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
-		$this->{$model}->bviorHideFields = array('Version', 'Index', 'current', 'images', 'multimedia', 'attachments') ;
-		if(!($obj = $this->{$model}->findById($id))) {
-			 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
-		}
-		$imagePath 	= $this->BeFileHandler->path($id) ;
-		$imageURL 	= $this->BeFileHandler->url($id) ;
-		// data for template
-		$this->set('object',	@$obj);
-		$this->set('imagePath',	@$imagePath);
-		$this->set('imageUrl',	@$imageURL);
-		$this->set('priority',	@$priority);
-		$this->set('index',		@$index);
-		$this->set('cols',		@$cols);
-		$this->selfUrlParams = array("id", @$id);    
-
-		$this->layout = "empty" ;
-	}
 
 	/**
 	 * Presenta il form per l'upload di oggetti multimedia

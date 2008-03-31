@@ -1,1 +1,0 @@
-{include file="../pages/form_file_item.tpl" obj=$object}

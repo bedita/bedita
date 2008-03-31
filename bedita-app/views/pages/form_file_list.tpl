@@ -1,7 +1,8 @@
 <script type="text/javascript">
-var urlGetObj		= '{$html->url("/multimedia/get_item_form")}' ;
-var urlGetObjId 	= '{$html->url("/multimedia/get_item_form_by_id")}' ;
+var urlGetObj		= '{$html->url("/streams/get_item_form")}' ;
+var urlGetObjId 	= '{$html->url("/streams/get_item_form_by_id")}' ;
 var containerItem	= "#{$containerId}";
+var urlGetAllItemNoAssoc = "{$html->url("/streams/showStreams")}/{$object.id|default:''}/{$collection|default:''}";
 <!--
 
 {*
@@ -30,7 +31,17 @@ function enable_drag_drop_item(el) {
 $(document).ready(function(){
 	$("div.itemBox").each(function(index) { setup_drag_drop_item(this) ;}) ;
 	$('#container-1 > ul').tabs();
-
+	var multimAlreadyShow = false;
+	$("#itemRepository").bind("click", function() {
+		if (!multimAlreadyShow) {
+			$("#loading").show();
+			$("#fragment-3").load(urlGetAllItemNoAssoc, function() {
+				$("#loading").hide();
+			});
+			multimAlreadyShow = true;
+		}
+	});
+	
 	$("input").bind('click', function () { this.focus(); });
 	$("textarea").bind('click', function () { this.focus(); });
 
@@ -52,7 +63,6 @@ $(document).ready(function(){
 		$('div#displaySmallIconsDisabled').removeClass ('displaySmallIcons').addClass ('displaySmallIconsDisabled');
 		$('div#displayLargeIcons').removeClass ('displayLargeIconsDisabled').addClass ('displayLargeIcons');
 	});
-	
 });
 
 // Get data from modal window, uploaded files and insert new object in the form
@@ -182,7 +192,6 @@ var cols 		= 5 ;
 //-->
 </script>
 
-
 <h2 class="showHideBlockButton">{t}{$title}{/t}</h2>
 <div class="blockForm" id="multimedia" style="display:none">
 
@@ -213,7 +222,7 @@ var cols 		= 5 ;
 		<ul>
 			<li><a href="#fragment-1"><span>{t}Upload new images{/t}</span></a></li>
 			<li><a href="#fragment-2"><span>{t}Insert new audio/video{/t}</span></a></li>
-			<li><a href="#fragment-3"><span>{t}Multimedia items repository{/t}</span></a></li>
+			<li><a href="#fragment-3" id="itemRepository"><span>{t}Multimedia items repository{/t}</span></a></li>
 		</ul>
 		<div id="fragment-1">
 			{if $conf->uploadType == "ajax"}
@@ -225,10 +234,7 @@ var cols 		= 5 ;
 		<div id="fragment-2">
 			{include file="../pages/form_external_audiovideo.tpl"}
 		</div>
-		<div id="fragment-3">
-			{include file="../pages/form_multimedia_assoc.tpl" itemType=$relation items=$bedita_items}
-	{*<a href="{$html->url("/$controller")}/frm_upload_bedita/?keepThis=true&amp;TB_iframe=true&amp;height=480&amp;width=640&amp;modal=true" title="{$title} - {t}add by BEdita{/t}" class="thickbox">{$title} - {t}add by BEdita{/t}</a>*}
-		</div>
+		<div id="fragment-3"></div>
 	</div>
 
 </div>

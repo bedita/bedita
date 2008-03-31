@@ -15,7 +15,6 @@ function addItemsToParent() {
 	}
 
 	{/literal}{$relation}CommitUploadById(itemsIds, '{$relation}'){literal};
-	$('#container-1 > ul').tabs('select',0);
 }
 $(document).ready(function(){
 	$(".selItems").bind("click", function(){
@@ -37,13 +36,12 @@ $(document).ready(function(){
 //-->
 {/literal}
 </script>
-</head>
-<body>
-<div>
+
+<div id="formMultimediaAssoc">
 	<fieldset>
 		{if !empty($items)}
 		<p>{t}Total number of{/t} {t}{$itemType} items{/t}: {$beToolbar->size()}</p>
-{*		DA INSERIRE TOOLBAR DI NAVIGAZIONE
+<p>&nbsp;</p>{*		DA INSERIRE TOOLBAR DI NAVIGAZIONE
 <p class="toolbar">{t}{$itemType}{/t}: {$beToolbar->size()}</p>
 *}
 		<table class="indexList">
@@ -73,7 +71,6 @@ $(document).ready(function(){
 			<td>{$mobj.created|date_format:'%b %e, %Y'}</td>
 			<td>{$mobj.bedita_type|default:""}</td>
 			*}
-
 			<td>
 			{assign var="thumbWidth" 		value = 30}
 			{assign var="thumbHeight" 		value = 30}

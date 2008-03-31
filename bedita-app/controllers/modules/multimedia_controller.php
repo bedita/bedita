@@ -133,54 +133,6 @@ class MultimediaController extends ModulesController {
 		$this->Transaction->commit() ;
 	}
 
-	/**
-	 * Called by Ajax.
-	 * Show multimedia object in the form page
-	 * @param string $filename	File to show in the form page
-	 */
-	function get_item_form($filename = null) {
-		$filename = urldecode($this->params['form']['filename']) ;
-		if(!($id = $this->Stream->getIdFromFilename($filename))) throw new BeditaException(sprintf(__("Error get id object: %d", true), $id));
-		$this->_get_item_form($id) ;
-	}
-
-	 
-	/**
-	 * Called by Ajax.
-	 * Show multimedia object in the form page
-	 * @param integer $id	Id dell'oggetto da linkare
-	 */
-	function get_item_form_by_id($id =null) {
-		$this->_get_item_form($this->params['form']['id']) ;
-	}
-
-	private function _get_item_form($id) {
-		$conf  = Configure::getInstance() ;
-		foreach ($this->params['form'] as $k =>$v) {
-			$$k = $v ;
-		}
-		$rec = $this->BEObject->recursive ;
-		$this->BEObject->recursive = -1 ;
-		if(!($ret = $this->BEObject->read('object_type_id', $id))) throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
-		$this->BEObject->recursive = $rec ;
-		$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
-		$this->{$model}->bviorHideFields = array('Version', 'Index', 'current', 'images', 'multimedia', 'attachments') ;
-		if(!($obj = $this->{$model}->findById($id))) {
-			 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
-		}
-		$imagePath 	= $this->BeFileHandler->path($id) ;
-		$imageURL 	= $this->BeFileHandler->url($id) ;
-		// data for template
-		$this->set('object',	@$obj);
-		$this->set('imagePath',	@$imagePath);
-		$this->set('imageUrl',	@$imageURL);
-		$this->set('priority',	@$priority);
-		$this->set('objIndex',		@$index);
-		$this->set('relation',	@$relation);
-		$this->set('cols',		@$cols);
-		$this->selfUrlParams = array("id", @$id);    
-		$this->layout = "empty" ;
-	}
 
 	/**
 	 * Form page to upload multimedia objects

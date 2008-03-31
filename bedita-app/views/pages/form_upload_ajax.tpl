@@ -16,7 +16,6 @@ function showResponse(data) {
 	    	tmp[countFile++] = entry['filename'];
 	    });
 		commitFileUpload(tmp);
-		$('#container-1 > ul').tabs('select',0);
 	}
 }
 

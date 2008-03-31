@@ -118,26 +118,7 @@ class GalleriesController extends ModulesController {
 			}
 		}
 		if(isset($obj["LangText"])) $this->BeLangText->setupForView($obj["LangText"]);
-		// begin#bedita_items
-		$ot = &$conf->objectTypes ; 
-		$bedita_items = $this->BeTree->getDiscendents(null, null, array($ot['image'], $ot['audio'], $ot['video']))  ;
-		foreach($bedita_items['items'] as $key => $value) {
-			if(!empty($multimedia_id) && in_array($value['id'],$multimedia_id)) {
-				unset($bedita_items['items'][$key]);
-			} else {
-				// get details
-				$type = $conf->objectTypeModels[$value['object_type_id']];
-				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments');
-				if(($Details = $this->{$type}->findById($value['id']))) {
-					$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
-					$bedita_items['items'][$key] = array_merge($bedita_items['items'][$key], $Details);	
-				}
-			}
-		}
-		$this->params['toolbar'] = &$bedita_items['toolbar'] ;
-		$this->set('bedita_items', 	$bedita_items['items']);
-		$this->set('toolbar', 		$bedita_items['toolbar']);
-		// end#bedita_items
+		
 		$this->set('object',	$obj);
 		$this->set('multimedia',$multimedia);
 		$this->selfUrlParams = array("id", $id);    

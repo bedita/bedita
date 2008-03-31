@@ -39,7 +39,7 @@ $(document).ready(function(){
 <div class="blockForm" id="errorForm"></div>
 {include file="../pages/form_properties.tpl" publication=false}
 {include file="../pages/form_subtitle_desc.tpl"}
-{include file="../pages/form_file_list.tpl" containerId='multimediaContainer' relation='attach' title='Multimedia' items=$multimedia}
+{include file="../pages/form_file_list.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia' items=$multimedia}
 {include file="../pages/form_custom_properties.tpl" el=$object}
 {include file="../pages/form_permissions.tpl" el=$object recursion=true}
 </form>
