@@ -31,7 +31,10 @@
 
 .message-error {
 	background-color: #FFB3B3;
-	padding: 5px;
+	color: #FFF;
+	min-height: 30px;
+	min-width: 200px;
+	padding: 4px;
 }
 
 .message-warn {
