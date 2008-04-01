@@ -412,6 +412,8 @@ CREATE TABLE audio (
 
 CREATE TABLE video (
   id INTEGER UNSIGNED NOT NULL,
+  provider VARCHAR( 255 ) NULL ,
+  uid VARCHAR( 255 ) NULL,
   PRIMARY KEY(id),
   INDEX video_FKIndex1(id),
   FOREIGN KEY(id)
@@ -730,21 +732,21 @@ FROM objects INNER JOIN collections ON objects.id = collections.id AND objects.o
 
 CREATE  VIEW `view_images` AS 
 SELECT 
-streams.*, objects.title, objects.status, objects.object_type_id
+streams.*, objects.title, objects.status, objects.object_type_id, null as provider, null as uid
 FROM 
 images INNER JOIN streams ON images.id = streams.id
 INNER JOIN objects ON images.id = objects.id ;
 
 CREATE  VIEW `view_audio` AS 
 SELECT 
-streams.*, objects.title, objects.status, objects.object_type_id
+streams.*, objects.title, objects.status, objects.object_type_id, null as provider, null as uid
 FROM 
 audio INNER JOIN streams ON audio.id = streams.id
 INNER JOIN objects ON audio.id = objects.id ;
 
 CREATE  VIEW `view_video` AS 
 SELECT 
-streams.*, objects.title, objects.status, objects.object_type_id
+streams.*, objects.title, objects.status, objects.object_type_id, video.provider, video.uid
 FROM 
 video INNER JOIN streams ON video.id = streams.id
 INNER JOIN objects ON video.id = objects.id ;
