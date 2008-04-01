@@ -46,5 +46,7 @@
 	<tr><td class="label">{t}File size{/t}:</td><td>{math equation="x/y" x=$object.size|default:0 y=1024 format="%d"|default:""} KB</td></tr>
 	</table>
 {/if}
+<br>
+
 </fieldset>
 </div>

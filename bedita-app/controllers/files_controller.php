@@ -36,7 +36,7 @@ class FilesController extends AppController {
 		}
 	}
 
-	function uploadAjaxMediaProvider () {
+	function uploadAjaxMediaProvider () {	
 		if (!isset($this->params['form']['url']) || !isset($this->params['form']['title'])) return ;
 		$this->params['form']['title'] = trim($this->params['form']['title']) ;
 		$this->layout = "empty";

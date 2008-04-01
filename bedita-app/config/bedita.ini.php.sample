@@ -416,4 +416,11 @@ $config['media_providers'] = array(
 	) 
 ) ;
 
+/**
+ *  file conf for media provider
+ */
+$config['media_providers_default_conf']  = array(
+	"youtube"	=> "mediaprovider.youtube.ini.php",
+) ;
+
 ?>
