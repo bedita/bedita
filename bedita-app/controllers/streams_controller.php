@@ -13,7 +13,7 @@ class StreamsController extends AppController {
 	 * @param $collection, if it's set works on collection object (gallery,...)
 	 * 					   else works on content object (document,... )
 	 */
-	public function showStreams($obj_id = null, $collection=false) {
+	public function showStreams($obj_id=null, $collection=0) {
 		$conf = Configure::getInstance();
 		$ot  = array($conf->objectTypes['image'],
 					$conf->objectTypes['audio'],
@@ -34,25 +34,17 @@ class StreamsController extends AppController {
 				unset($bedita_items['items'][$key]);
 			} else {
 				// get details
-				$modelClass = $conf->objectTypeModels[$value['object_type_id']];
-				if(!class_exists($modelClass)){
-					App::import('Model',$modelClass);
-				}
-				if (!class_exists($modelClass)) {
-					throw new BeditaException(__("Object type not found - ", true).$modelClass);			
-				}
-				$this->{$modelClass} = new $modelClass();
+				$modelLoaded = $this->loadModelByObjectTypeId($value['object_type_id']);
 				
-				$this->{$modelClass}->restrict(array(
+				$modelLoaded->restrict(array(
 										"BEObject" => array("ObjectType", 
-															
 															"LangText"
 															),
 										"ContentBase" => array("*"),
 										"Stream"
 										)
 									);
-				if(($Details = $this->{$modelClass}->findById($value['id']))) {
+				if(($Details = $modelLoaded->findById($value['id']))) {
 					$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
 					$bedita_items['items'][$key] = array_merge($bedita_items['items'][$key], $Details);	
 				}
@@ -62,8 +54,30 @@ class StreamsController extends AppController {
 		$this->layout = "empty";
 		$this->set("bedita_items",$bedita_items['items']);
 		$this->set('toolbar', 		$bedita_items['toolbar']);
+		$this->set("collection", $collection);
+		$this->set("object_id", $obj_id);
 	}
 	
+	public function searchStreams($obj_id=null, $collection=0, $text=null) {
+		$conf = Configure::getInstance();
+		$ot  = array($conf->objectTypes['image'],
+					$conf->objectTypes['audio'],
+					$conf->objectTypes['video']
+				);
+		if (empty($collection)) {
+			$ot[] = $conf->objectTypes['befile'];
+		}
+		$relations_id = array();
+		if (!empty($obj_id)) {
+			$relations_id = $this->getRelatedStreamIDs($obj_id, $ot, $collection);
+		}
+		$bedita_items = $this->Stream->search($text, $ot, $relations_id);
+		$this->layout = "empty";
+		$this->set("bedita_items", $bedita_items);
+		$this->set("streamSearched", $text);
+		$this->set("collection", $collection);
+		$this->set("object_id", $obj_id);
+	}
 	
 	/* Called by Ajax.
 	 * Show multimedia object in the form page
@@ -142,18 +156,11 @@ class StreamsController extends AppController {
 													)
 										);
 		if (!$collection) {
-			$modelClass = $conf->objectTypeModels[$object["BEObject"]["object_type_id"]];
-			if(!class_exists($modelClass)){
-				App::import('Model',$modelClass);
-			}
-			if (!class_exists($modelClass)) {
-				throw new BeditaException(__("Object type not found - ", true).$modelClass);			
-			}
-			$this->{$modelClass} = new $modelClass();
-			$objRel = $this->{$modelClass}->find("first",array(
-															"restrict" => array("ContentBase" => "ObjectRelation"),
-															"conditions" => $modelClass.".id=".$obj_id
-														)
+			$modelLoaded = $this->loadModelByObjectTypeId($object["BEObject"]["object_type_id"]);
+			$objRel = $modelLoaded->find("first",array(
+													"restrict" => array("ContentBase" => "ObjectRelation"),
+													"conditions" => "ContentBase.id=".$obj_id
+												)
 											);
 			if (!empty($objRel["ObjectRelation"])) {
 				foreach ($objRel["ObjectRelation"] as $rel) {
@@ -170,6 +177,17 @@ class StreamsController extends AppController {
 		
 		return $relations_id;
 	}
-		
+	
+	
+	protected function forward($action, $esito) {
+	 	 	$REDIRECT = array(
+				"searchStreams" => array(
+ 								"OK"	=> self::VIEW_FWD.'show_streams',
+	 							"ERROR"	=> self::VIEW_FWD.'show_streams'
+	 						)
+	 			);
+	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
+	 	return false;
+	 }
 }
 ?>

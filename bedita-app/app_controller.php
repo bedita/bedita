@@ -357,6 +357,18 @@ class AppController extends Controller
 	
 		return $baseURL ;
 	}
+	
+	protected function loadModelByObjectTypeId($obj_type_id) {
+		$conf  = Configure::getInstance();
+		$modelClass = $conf->objectTypeModels[$obj_type_id];
+		if(!class_exists($modelClass)){
+			App::import('Model',$modelClass);
+		}
+		if (!class_exists($modelClass)) {
+			throw new BeditaException(__("Object type not found - ", true).$modelClass);			
+		}
+		return new $modelClass();
+	}
 
 }
 

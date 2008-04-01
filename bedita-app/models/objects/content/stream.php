@@ -46,5 +46,39 @@ class Stream extends BEAppModel
 		if(!isset($ret['Stream']['id'])) return false ;
 		return $ret['Stream']['id'] ;
 	}
+	
+	/**
+	 * search filename and title in streams
+	 *
+	 * @param string $text, string to search
+	 * @param array $ot stream object type to search
+	 * @return unknown
+	 */
+	public function search($text, $ot, $excluded_ids=array()) {
+		$streams = array(); 
+		$this->bindModel( array('hasOne' => array('BEObject' => array(
+																	'className'		=> 'BEObject',
+																	'conditions'   => '',
+																	'foreignKey'	=> 'id',
+																	'dependent'		=> true
+																)
+														) ) );
+		 $findedStreams = $this->find("all", array(
+		 								"restrict" => array("BEObject" => "ObjectType"),
+										"conditions" => array(
+														"title LIKE '%" .$text. "%'", 
+														"object_type_id" => $ot,
+		 												"NOT" => array("BEObject.id" => $excluded_ids)			
+		 												)
+												)
+										)  ; 
+		if (!empty($findedStreams)) {
+			foreach ($findedStreams as $stream) {
+				$stream["Stream"]["filename"] = substr($stream["Stream"]["path"],strripos($stream["Stream"]["path"],"/")+1);
+				$streams[] = array_merge($stream["Stream"], $stream["BEObject"]);
+			}
+		}
+		return $streams;
+	}
 }
 ?>

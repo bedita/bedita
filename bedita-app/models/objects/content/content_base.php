@@ -35,7 +35,7 @@ class ContentBase extends BEAppModel
 					'foreignKey'   			=> 'id',
 					'associationForeignKey'	=> 'object_id',
 					'unique'				=> true,
-					'order'		=> 'priority'
+					'order'					=> 'priority'
 				),
 			'ObjectCategory' =>
 				array(
