@@ -18,6 +18,7 @@ function addItemsToParent() {
 }
 
 function loadMultimediaAssoc(urlSearch, showAll) {
+	$("#loading").show();
 	$("#fragment-3").load(urlSearch, function() {
 		$("#loading").hide();
 		if (showAll) 
@@ -46,7 +47,6 @@ $(document).ready(function(){
 	
 	$("#searchMultimedia").bind("click", function() {
 		var textToSearch = $(this).prev().val();
-		$("#loading").show();
 		loadMultimediaAssoc(
 			"{/literal}{$html->url("/streams/searchStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{literal}" + textToSearch,
 			true
@@ -56,7 +56,6 @@ $(document).ready(function(){
 		$(this).val("");
 	});
 	$("#searchMultimediaShowAll").click(function() {
-		$("#loading").show();
 		loadMultimediaAssoc(
 			"{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{literal}",
 			false
