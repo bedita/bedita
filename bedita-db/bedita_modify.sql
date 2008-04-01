@@ -19,3 +19,18 @@ streams.*, objects.title, objects.status, objects.object_type_id
 FROM 
 files INNER JOIN streams ON files.id = streams.id
 INNER JOIN objects ON files.id = objects.id ;
+
+
+ALTER TABLE `video` 
+ADD `provider` VARCHAR( 255 ) NULL ,
+ADD `uid` VARCHAR( 255 ) NULL ;
+
+DROP VIEW IF EXISTS `view_video`;
+CREATE  VIEW `view_video` AS 
+SELECT 
+streams.*, objects.title, objects.status, objects.object_type_id,
+video.provider, video.uid
+FROM 
+video INNER JOIN streams ON video.id = streams.id
+INNER JOIN objects ON video.id = objects.id ;
+
