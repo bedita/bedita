@@ -17,10 +17,13 @@ function addItemsToParent() {
 	{/literal}{$relation}CommitUploadById(itemsIds, '{$relation}'){literal};
 }
 
-function loadMultimediaAssoc(urlSearch) {
+function loadMultimediaAssoc(urlSearch, showAll) {
 	$("#fragment-3").load(urlSearch, function() {
 		$("#loading").hide();
-		$("#searchMultimediaShowAll").show();
+		if (showAll) 
+			$("#searchMultimediaShowAll").show();
+		else
+			$("#searchMultimediaShowAll").hide();
 	});
 }
 
@@ -44,14 +47,20 @@ $(document).ready(function(){
 	$("#searchMultimedia").bind("click", function() {
 		var textToSearch = $(this).prev().val();
 		$("#loading").show();
-		loadMultimediaAssoc("{/literal}{$html->url("/streams/searchStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{literal}" + textToSearch);
+		loadMultimediaAssoc(
+			"{/literal}{$html->url("/streams/searchStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{literal}" + textToSearch,
+			true
+		);
 	});
 	$("#searchMultimediaText").focus(function() {
 		$(this).val("");
 	});
 	$("#searchMultimediaShowAll").click(function() {
 		$("#loading").show();
-		loadMultimediaAssoc("{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{literal}");
+		loadMultimediaAssoc(
+			"{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{literal}",
+			false
+		);
 	});
 });
 //-->
