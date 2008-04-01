@@ -143,41 +143,25 @@ $this->params['form']['lang'] = "ita" ;
 	
 		// Prepare data
 		$data['title']		= trim($this->params['form']['title']) ;
-		$data['name']		= $data['title'] ;
+		$data['name']		= preg_replace("/[\'\"]/", "", $data['title']) ;
 		$data['type']		= "video/$provider" ;
 		$data['path']		= $this->params['form']['url'];
 		$data['lang'] 	  	= $this->params['form']['lang'];
 		$data['provider']	=  $provider ;
 		$data['uid']  	 	=  $name ;
-		try {
-			if($this->BeFileHandler->isPresent($data['path'])) throw new BEditaFileExistException(__("File already exists in the filesystem",true)) ;
 
-			App::import('Model', 'Video') ;
-			$Video = new Video() ;
+		if($this->BeFileHandler->isPresent($data['path'])) throw new BEditaFileExistException(__("File already exists in the filesystem",true)) ;
+
+		App::import('Model', 'Video') ;
+		$Video = new Video() ;
 			
-			$Video->id = false ;
-			if(!($ret = $Video->save($data))) {
-				$this->validateErrors = $Video->validationErrors ;
-				throw new BEditaSaveStreamObjException(__("Error saving stream object",true)) ;
-			}
-			$result =  ($Video->{$Video->primaryKey}) ;
-			
-		} catch (BEditaFileExistException $e) {
-			$this->errorCode = 500 + self::BEDITA_FILE_EXIST ;
-			throw $e ;
-		} catch (BEditaMIMEException $e) {
-			$this->errorCode = 500 + self::BEDITA_MIME ;
-			throw $e ;
-		} catch (BEditaInfoException $e) {
-			$this->errorCode = 500 + self::BEDITA_MIME ;
-			throw $e ;
-		} catch (BEditaSaveStreamObjException $e) {
-			$this->errorCode = 500 + self::BEDITA_SAVE_STREAM ;
-			throw $e ;
-		} catch (Exception $e) {
-			$this->errorCode = 500 ;
-			throw $e ;
+		$Video->id = false ;
+		if(!($ret = $Video->save($data))) {
+			$this->validateErrors = $Video->validationErrors ;
+			throw new BEditaSaveStreamObjException(__("Error saving stream object",true)) ;
 		}
+		$result =  ($data['name']) ;
+
 		return ($result);
 	}
 	

@@ -150,7 +150,8 @@ class BeFileHandlerComponent extends Object {
 		if(isset($id)) $clausoles[] = array("id " => "not {$id}") ;
 		$ret = $this->Stream->find($clausoles, 'id') ;
 		if(!count($ret)) return false ;
-		return $ret[0]['Stream']['id'] ;
+				
+		return $ret['Stream']['id'] ;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////

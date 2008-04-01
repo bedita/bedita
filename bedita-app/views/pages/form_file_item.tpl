@@ -44,6 +44,9 @@
 		{if strtolower($obj.ObjectType.name) == "image"}<img src="{$session->webroot}img/image-missing.jpg" width="160"/>{/if}
 		{/if}
 	</div>
+	{elseif ($obj.provider|default:false)}
+		{assign_associative var="attributes" style="width:30px;heigth:30px;"}
+		<div><a href="{$filePath}" target="_blank">{$mediaProvider->thumbnail($obj, $attributes) }</a></div>
 	{else}
 	<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$obj.type}.gif" /></a></div>
 	{/if}
@@ -54,8 +57,8 @@
 		<div style="border-bottom: 1px solid #999;"></div>
 		<div><span class="title">{t}File{/t}:</span> {$fileName|escape:'htmlall'}</div>
 		<div><span class="title">{t}Type{/t}:</span> {t}{$obj.type}{/t}</div>
-		<div><span class="title">{t}Size{/t}</span>: {math equation="x/y" x=$obj.size y=1024 format="%d"} KB</div>
-		{if $obj.width && $obj.height}<div>{$obj.width}px X {$obj.height}px</div>{/if}
+		<div><span class="title">{t}Size{/t}</span>: {math equation="x/y" x=$obj.size|default:0 y=1024 format="%d"} KB</div>
+		{if $obj.width|default:false && $obj.height}<div>{$obj.width}px X {$obj.height}px</div>{/if}
 	</div>
 
 	<div class="itemInfoSmall" style="display: none;">{$fileTitle|escape:'htmlall'}</div>

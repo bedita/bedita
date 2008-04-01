@@ -42,9 +42,10 @@ class FilesController extends AppController {
 		$this->layout = "empty";
 		try {
 			$this->Transaction->begin() ;
-			$id = $this->BeUploadToObj->uploadFromMediaProvider($uid) ;
+			$filename = $this->BeUploadToObj->uploadFromMediaProvider($uid) ;
 			$this->Transaction->commit();
-			$this->set("fileName", $uid);
+			$this->set("filename", $filename);
+			
 		} catch(BeditaException $ex) {
 			$errTrace = $ex->getClassName() . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);

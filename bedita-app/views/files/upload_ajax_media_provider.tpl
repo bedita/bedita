@@ -4,15 +4,15 @@
 *}
 
 {strip}
-<textarea>
+
 {if $errorMsg|default:""}
 	{literal}{{/literal}UploadErrorMsg: "{$errorMsg}"{literal}}{/literal}
 {else}
-	[
+
 		{literal}{{/literal}
-			filename:	"{$fileName}"
+			filename:	"{$filename|default:''}"
 		{literal}}{/literal}
-	]
+
 {/if}
-</textarea>
+
 {/strip}

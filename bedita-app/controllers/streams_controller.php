@@ -89,7 +89,7 @@ class StreamsController extends AppController {
 	 * Show multimedia object in the form page
 	 * @param integer $id	Id dell'oggetto da linkare
 	 */
-	public function get_item_form_by_id($id =null) {
+	public function get_item_form_by_id($id =null) {	
 		$this->_get_item_form($this->params['form']['id']) ;
 	}
 
