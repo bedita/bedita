@@ -36,6 +36,23 @@ class FilesController extends AppController {
 		}
 	}
 
+	function uploadAjaxMediaProvider () {
+		if (!isset($this->params['form']['url']) || !isset($this->params['form']['title'])) return ;
+		$this->params['form']['title'] = trim($this->params['form']['title']) ;
+		$this->layout = "empty";
+		try {
+			$this->Transaction->begin() ;
+			$id = $this->BeUploadToObj->uploadFromMediaProvider($uid) ;
+			$this->Transaction->commit();
+			$this->set("fileName", $uid);
+		} catch(BeditaException $ex) {
+			$errTrace = $ex->getClassName() . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
+			$this->setResult(self::ERROR);
+			$this->set("errorMsg", $ex->getMessage());
+		}
+	}
+	
 	/**
 	 * Delete a Stream object (using _POST filename to find stream)
 	 */

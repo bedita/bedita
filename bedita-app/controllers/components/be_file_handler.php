@@ -141,7 +141,7 @@ class BeFileHandlerComponent extends Object {
 	 * @param string $path	File name or URL
 	 * @todo VERIFY
 	 */
-	function isPresent($path) {
+	function isPresent($path, $id = null) {
 		if(!$this->_isURL($path)) {
 			$path = $this->_getPathTargetFile($path);
 		}

@@ -223,6 +223,7 @@ var cols 		= 5 ;
 			<li><a href="#fragment-1"><span>{t}Upload new images{/t}</span></a></li>
 			<li><a href="#fragment-2"><span>{t}Insert new audio/video{/t}</span></a></li>
 			<li><a href="#fragment-3" id="itemRepository"><span>{t}Multimedia items repository{/t}</span></a></li>
+			<li><a href="#fragment-4"><span>{t}Multimedia Provider{/t}</span></a></li>
 		</ul>
 		<div id="fragment-1">
 			{if $conf->uploadType == "ajax"}
@@ -235,6 +236,10 @@ var cols 		= 5 ;
 			{include file="../pages/form_external_audiovideo.tpl"}
 		</div>
 		<div id="fragment-3"></div>
+		<div id="fragment-4">
+			{*include file="../pages/form_external_audiovideo.tpl"*}
+		</div>
+		
 	</div>
 
 </div>

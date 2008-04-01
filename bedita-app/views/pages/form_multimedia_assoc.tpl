@@ -76,7 +76,6 @@ $(document).ready(function(){
 			{assign var="mediaPath"         value = $conf->mediaRoot}
 			{assign_concat var="mediaCacheBaseURL"	0=$conf->mediaUrl  1="/" 2=$conf->imgCache 3="/"}
 			{assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
-
 			{if strtolower($mobj.ObjectType.name) == "image"}
 				{thumb 
 					width			= $thumbWidth
@@ -85,6 +84,9 @@ $(document).ready(function(){
 					cache			= $mediaCacheBaseURL
 					cachePATH		= $mediaCachePATH
 				}
+			{elseif ($mobj.provider|default:false)}
+				{assign_associative var="attributes" style="width:30px;heigth:30px;"}
+				<div><a href="{$filePath}" target="_blank">{$mediaProvider->thumbnail($mobj, $attributes) }</a></div>
 			{else}
 				<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$mobj.type}.gif" /></a></div>
 			{/if}

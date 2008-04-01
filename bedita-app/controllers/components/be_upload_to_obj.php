@@ -42,7 +42,8 @@
  * 	BEDITA_MIME				31		wrong MIME type (not recognized or not allowed)
  * 	BEDITA_SAVE_STREAM		32		Object creation error
  * 	BEDITA_DELETE_STREAM	33		Object delete error
- * 
+  * 	BEDITA_PROVIDER_NOT_FOUND	34	Provider (not recognized or not allowed)
+* 
  */
 
 class BeUploadToObjComponent extends SwfUploadComponent {
@@ -52,6 +53,7 @@ class BeUploadToObjComponent extends SwfUploadComponent {
  	const BEDITA_MIME			= 31 ;
  	const BEDITA_SAVE_STREAM 	= 32;
  	const BEDITA_DELETE_STREAM 	= 33	;
+ 	const BEDITA_PROVIDER_NOT_FOUND	= 34 ;
 
  	/**
 	 * Contructor function
@@ -120,6 +122,82 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 			throw $e ;
 		}
 		return ($result);
+	}
+	
+	/**
+	 * Create obj stream from media provider.
+	 * Form must to have: url, title, lang.
+	 * @return boolean true if upload was successful, false otherwise.
+	 */
+	function uploadFromMediaProvider(&$name) {
+/*		
+$this->params['form']['url'] = "http://youtube.com/watch?v=xCH-GocD_aM" ;
+$this->params['form']['title'] = "test" ;
+$this->params['form']['lang'] = "ita" ;	
+*/
+		$result = false ;
+		if(!$this->recognizeMediaProvider($this->params['form']['url'], $provider, $name)) {
+			$this->errorCode = 500 + self::BEDITA_PROVIDER_NOT_FOUND ;
+			return $result ;
+		}
+	
+		// Prepare data
+		$data['title']		= trim($this->params['form']['title']) ;
+		$data['name']		= $data['title'] ;
+		$data['type']		= "video/$provider" ;
+		$data['path']		= $this->params['form']['url'];
+		$data['lang'] 	  	= $this->params['form']['lang'];
+		$data['provider']	=  $provider ;
+		$data['uid']  	 	=  $name ;
+		try {
+			if($this->BeFileHandler->isPresent($data['path'])) throw new BEditaFileExistException(__("File already exists in the filesystem",true)) ;
+
+			App::import('Model', 'Video') ;
+			$Video = new Video() ;
+			
+			$Video->id = false ;
+			if(!($ret = $Video->save($data))) {
+				$this->validateErrors = $Video->validationErrors ;
+				throw new BEditaSaveStreamObjException(__("Error saving stream object",true)) ;
+			}
+			$result =  ($Video->{$Video->primaryKey}) ;
+			
+		} catch (BEditaFileExistException $e) {
+			$this->errorCode = 500 + self::BEDITA_FILE_EXIST ;
+			throw $e ;
+		} catch (BEditaMIMEException $e) {
+			$this->errorCode = 500 + self::BEDITA_MIME ;
+			throw $e ;
+		} catch (BEditaInfoException $e) {
+			$this->errorCode = 500 + self::BEDITA_MIME ;
+			throw $e ;
+		} catch (BEditaSaveStreamObjException $e) {
+			$this->errorCode = 500 + self::BEDITA_SAVE_STREAM ;
+			throw $e ;
+		} catch (Exception $e) {
+			$this->errorCode = 500 ;
+			throw $e ;
+		}
+		return ($result);
+	}
+	
+	/**
+	 * recognize provider from url
+	 */
+	private function recognizeMediaProvider($url, &$provider, &$uid) {
+		$conf 		= Configure::getInstance() ;
+		
+		foreach($conf->media_providers as $provider => $expressions) {
+			foreach($expressions as $expression) {
+				if(preg_match($expression, $url, $matched)) {
+					$uid = $matched[1] ;
+					
+					return true ;
+				}	
+			}
+		}
+		
+		return false ;
 	}
 } ;
 ?>

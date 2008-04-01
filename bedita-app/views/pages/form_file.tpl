@@ -28,8 +28,14 @@
 		html			= $imageAltAttribute
 		frame			= ""
 	}
+{elseif ($object.provider|default:false)}
+	{assign_associative var="attributes" style="width:30px;heigth:30px;"}
+	<a href="{$object.path}" target="_blank">
+	{$mediaProvider->thumbnail($object, $attributes) }
+           </a>
+	
 {else}
-	       <a href="{$conf->mediaUrl}{$object.path}" target="_blank">
+	<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
            <img src="{$session->webroot}img/mime/{$object.type}.gif" />
            </a>
 {/if}
@@ -37,7 +43,7 @@
 		<td class="label">{t}File name{/t}:</td><td>{$object.name|default:""}</td>
 	</tr>
 	<tr><td class="label">{t}File type{/t}:</td><td>{$object.type|default:""}</td></tr>
-	<tr><td class="label">{t}File size{/t}:</td><td>{math equation="x/y" x=$object.size y=1024 format="%d"|default:""} KB</td></tr>
+	<tr><td class="label">{t}File size{/t}:</td><td>{math equation="x/y" x=$object.size|default:0 y=1024 format="%d"|default:""} KB</td></tr>
 	</table>
 {/if}
 </fieldset>

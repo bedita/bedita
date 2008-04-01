@@ -405,4 +405,15 @@ $config['validate_resorce'] = array(
 	'mime.types'	=> dirname(__FILE__) . DS . "mime.types" ,
 	'magic'			=> dirname(__FILE__) . DS . "magic" ,
 ) ;
+
+/**
+ *  For insert video from external media provider
+ */
+$config['media_providers'] = array(
+	"youtube"	=> array(
+			'/^http:\/\/\w+\.youtube\.com\/watch\?v=(.+)\s*/',
+			'/http:\/\/youtube\.com\/watch\?v=(.+)\s*/'
+	) 
+) ;
+
 ?>
