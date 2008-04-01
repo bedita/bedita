@@ -370,6 +370,40 @@ class AppController extends Controller
 		return new $modelClass();
 	}
 
+
+	/**
+	 * Reorder content objects relations in array where keys are relation names
+	 *
+	 * @param array $objectArray
+	 * @return array
+	 */
+	protected function objectRelationArray($objectArray) {
+		$conf  = Configure::getInstance() ;
+		$relationArray = array();
+		foreach ($objectArray as $obj) {
+			$rel = $obj['ContentBasesObject']['switch'];
+			$modelClass = $conf->objectTypeModels[$obj['object_type_id']] ;
+			if(!class_exists($modelClass)){
+				App::import('Model',$modelClass);
+			}
+			if (!class_exists($modelClass)) {
+				throw new BeditaException(__("Object type not found - ", true).$modelClass);			
+			}
+			$this->{$modelClass} = new $modelClass();
+			$this->{$modelClass}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments', 'LangText');
+
+			if(!($objDetail = $this->{$modelClass}->findById($obj['id']))) {
+				continue ;
+			}
+			$objDetail['priority'] = $obj['ContentBasesObject']['priority'];
+			
+			if(isset($objDetail['path']))
+				$objDetail['filename'] = substr($objDetail['path'],strripos($objDetail['path'],"/")+1);
+
+			$relationArray[$rel][] = $objDetail;
+		}
+		return $relationArray;
+	}
 }
 
 /**
@@ -412,41 +446,6 @@ abstract class ModulesController extends AppController {
 		$this->set('areasectiontree',$this->BeTree->getSectionsTree());
 		$this->set('objects', $objects['items']);
 	}
-
-	/**
-	 * Reorder content objects relations in array where keys are relation names
-	 *
-	 * @param array $objectArray
-	 * @return array
-	 */
-	protected function objectRelationArray($objectArray) {
-		$conf  = Configure::getInstance() ;
-	 	$relationArray = array();
-	 	foreach ($objectArray as $obj) {
-	 		$rel = $obj['ContentBasesObject']['switch'];
-			$modelClass = $conf->objectTypeModels[$obj['object_type_id']] ;
-			if(!class_exists($modelClass)){
-				App::import('Model',$modelClass);
-			}
-			if (!class_exists($modelClass)) {
-				throw new BeditaException(__("Object type not found - ", true).$modelClass);			
-			}
-			$this->{$modelClass} = new $modelClass();
-			$this->{$modelClass}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments', 'LangText');
-
-			if(!($objDetail = $this->{$modelClass}->findById($obj['id']))) {
-				continue ;
-			}
-			$objDetail['priority'] = $obj['ContentBasesObject']['priority'];
-			
-			if(isset($objDetail['path']))
-				$objDetail['filename'] = substr($objDetail['path'],strripos($objDetail['path'],"/")+1);
-
-			$relationArray[$rel][] = $objDetail;
-	 	}
-	 	return $relationArray;
-	 }
-	 
 	
 	/**
 	 * Delete objects
