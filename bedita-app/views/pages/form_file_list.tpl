@@ -237,7 +237,7 @@ var cols 		= 5 ;
 		</div>
 		<div id="fragment-3"></div>
 		<div id="fragment-4">
-			{*include file="../pages/form_external_audiovideo.tpl"*}
+			{include file="../pages/form_media_provider_audiovideo.tpl"}
 		</div>
 		
 	</div>
