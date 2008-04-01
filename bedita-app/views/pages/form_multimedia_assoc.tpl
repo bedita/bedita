@@ -62,6 +62,40 @@ $(document).ready(function(){
 			false
 		);
 	});
+	
+	{/literal}
+	{if $toolbar|default:""}
+	{literal}
+		$("#streamPagList").tablesorter({
+			headers: {  
+				0: {sorter: false},
+				2: {sorter: false}
+			}
+		});
+		 
+		$("#streamNextPage").click(function() {
+			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{$toolbar.next}/{$toolbar.dim}{literal}";
+			loadMultimediaAssoc(urlReq,	false);
+		});
+		$("#streamPrevPage").click(function() {
+			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{$toolbar.prev}/{$toolbar.dim}{literal}";
+			loadMultimediaAssoc(urlReq,	false);
+		});
+		$("#streamFirstPage").click(function() {
+			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{$toolbar.first}/{$toolbar.dim}{literal}";
+			loadMultimediaAssoc(urlReq,	false);
+		});
+		$("#streamLastPage").click(function() {
+			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{$toolbar.last}/{$toolbar.dim}{literal}";
+			loadMultimediaAssoc(urlReq,	false);
+		});
+		$("#streamPagDim").change(function() {
+			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{$toolbar.first}/{literal}" + $(this).val();
+			loadMultimediaAssoc(urlReq,	false);
+		});
+	{/literal}
+	{/if}
+	{literal}
 });
 //-->
 {/literal}
@@ -75,35 +109,56 @@ $(document).ready(function(){
 			<input type="button" id="searchMultimediaShowAll" value="{t}Show all{/t}" style="display: none;" />
 		</div>
 		{if !empty($items)}
-			<p>{t}Total number of{/t} {t}{$itemType} items{/t}: {$beToolbar->size()}</p>
-			<table class="indexList" style="clear: left;">
+			{if $toolbar|default:""}
+				<p class="toolbar">
+	
+					{t}Itmes{/t}: {$toolbar.size} | {t}page{/t} {$toolbar.page} {t}of{/t} {$toolbar.pages} &nbsp;
+					
+					{if $toolbar.prev > 0}
+						<span><a href="javascript: void(0);" id="streamFirstPage" title="{t}first page{/t}">|<</a></span>
+						<span><a href="javascript: void(0);" id="streamPrevPage" title="{t}previous page{/t}"><</a></span>
+					{else}
+						<span>|<</span>
+						<span><</span>
+					{/if}
+					&nbsp;
+					{if $toolbar.page != $toolbar.pages}
+						<span><a href="javascript: void(0);" id="streamNextPage" title="{t}next page{/t}">></a></span>
+						<span><a href="javascript: void(0);" id="streamLastPage" title="{t}last page{/t}">>|</a></span>
+					{else}
+						<span>></span>
+						<span>>|</span>
+					{/if}		
+					{t}Dimensions{/t}: 
+					<select name="streamPagDim" id="streamPagDim">
+						<option value="1"{if $toolbar.dim == 1} selected="selected"{/if}>1</option>
+						<option value="5"{if $toolbar.dim == 5} selected="selected"{/if}>5</option>
+						<option value="10"{if $toolbar.dim == 10} selected="selected"{/if}>10</option>
+						<option value="20"{if $toolbar.dim == 20} selected="selected"{/if}>20</option>
+						<option value="50"{if $toolbar.dim == 50} selected="selected"{/if}>50</option>
+						<option value="100"{if $toolbar.dim == 100} selected="selected"{/if}>100</option>
+					</select>
+				</p>
+			{/if}
+			
+			<table class="indexList" id="streamPagList" style="clear: left;">
+			<thead>
 			<tr>
 				<th><input type="checkbox" class="selectAll" id="selectAll"/><label for="selectAll"> {t}(Un)Select All{/t}</label></th>
-				<th>{$beToolbar->order('id', 'id')}</th>
-				{*
-				<th>{$beToolbar->order('title', 'Title')}</th>
-				<th>{$beToolbar->order('status', 'Status')}</th>
-				<th>{$beToolbar->order('created', 'Created')}</th>
-				<th>{t}Type{/t}</th>
-				*}
+				<th>id</th>
 				<th>{t}Thumb{/t}</th>
 				<th>{t}Title{/t}</th>
 				<th>{t}File name{/t}</th>
-				{*<th>{t}MIME type{/t}</th>*}
 				<th>{t}File size{/t}</th>
-				<th>{$beToolbar->order('lang', 'Language')}</th>
+				<th>{t}Language{/t}</th>
 			</tr>
-	
+			</thead>
+
+			<tbody>
 			{foreach from=$items item='mobj' key='mkey'}
 			<tr class="rowList" id="tr_{$mobj.id}">
 				<td><input type="checkbox" value="{$mobj.id}" name="chk_bedita_item" class="itemCheck"/></td>
 				<td><a class="selItems" href="javascript:void(0);">{$mobj.id}</a></td>
-				{*
-				<td>{$mobj.title}</td>
-				<td>{$mobj.status}</td>
-				<td>{$mobj.created|date_format:'%b %e, %Y'}</td>
-				<td>{$mobj.bedita_type|default:""}</td>
-				*}
 				<td>
 				{assign var="thumbWidth" 		value = 30}
 				{assign var="thumbHeight" 		value = 30}
@@ -111,7 +166,7 @@ $(document).ready(function(){
 				{assign var="mediaPath"         value = $conf->mediaRoot}
 				{assign_concat var="mediaCacheBaseURL"	0=$conf->mediaUrl  1="/" 2=$conf->imgCache 3="/"}
 				{assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
-	
+
 				{if strtolower($mobj.ObjectType.name) == "image"}
 					{thumb 
 						width			= $thumbWidth
@@ -129,19 +184,13 @@ $(document).ready(function(){
 				</td>
 				<td>{$mobj.title|default:""}</td>
 				<td>{$mobj.name|default:""}</td>
-				{*<td>{$mobj.type|default:""}</td>*}
 				<td>{$mobj.size|default:""}</td>
 				<td>{$mobj.lang}</td>
 			</tr>
 			{/foreach}
-	
-			<tr>
-				<td colspan="10">
-					<input type="button" onclick="javascript:addItemsToParent();" value=" (+) {t}Add selected items{/t}"/>
-				</td>
-			</tr>
+			</tbody>
 			</table>
-
+			<input type="button" onclick="javascript:addItemsToParent();" value=" (+) {t}Add selected items{/t}"/>
 		{else}
 			{t}No {$itemType} item found{/t}
 		{/if}

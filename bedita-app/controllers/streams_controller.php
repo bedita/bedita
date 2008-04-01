@@ -13,7 +13,7 @@ class StreamsController extends AppController {
 	 * @param $collection, if it's set works on collection object (gallery,...)
 	 * 					   else works on content object (document,... )
 	 */
-	public function showStreams($obj_id=null, $collection=0) {
+	public function showStreams($obj_id=null, $collection=0, $page = 1, $dim = 20) {
 		$conf = Configure::getInstance();
 		$ot  = array($conf->objectTypes['image'],
 					$conf->objectTypes['audio'],
@@ -22,32 +22,27 @@ class StreamsController extends AppController {
 		if (empty($collection)) {
 			$ot[] = $conf->objectTypes['befile'];
 		}
-		
+		$relations_id = array();
 		if (!empty($obj_id)) {
 			$relations_id = $this->getRelatedStreamIDs($obj_id, $ot, $collection);
 		}
 		
-		$bedita_items = $this->BEObject->findObjs(null, null, $ot)  ;
+		$bedita_items = $this->BEObject->findObjs(null, null, $ot, $order=null, $dir=true, $page, $dim, $relations_id)  ;
 
 		foreach($bedita_items['items'] as $key => $value) {
-			if(!empty($relations_id) && in_array($value['id'],$relations_id)) {
-				unset($bedita_items['items'][$key]);
-			} else {
-				// get details
-				$modelLoaded = $this->loadModelByObjectTypeId($value['object_type_id']);
-				
-				$modelLoaded->restrict(array(
-										"BEObject" => array("ObjectType", 
-															"LangText"
-															),
-										"ContentBase" => array("*"),
-										"Stream"
-										)
-									);
-				if(($Details = $modelLoaded->findById($value['id']))) {
-					$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
-					$bedita_items['items'][$key] = array_merge($bedita_items['items'][$key], $Details);	
-				}
+			$modelLoaded = $this->loadModelByObjectTypeId($value['object_type_id']);
+			
+			$modelLoaded->restrict(array(
+									"BEObject" => array("ObjectType", 
+														"LangText"
+														),
+									"ContentBase" => array("*"),
+									"Stream"
+									)
+								);
+			if(($Details = $modelLoaded->findById($value['id']))) {
+				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
+				$bedita_items['items'][$key] = array_merge($bedita_items['items'][$key], $Details);	
 			}
 		}
 		

@@ -264,7 +264,7 @@ class BEObject extends BEAppModel
 	 * @param integer $page		Numero di pagina da selezionare
 	 * @param integer $dim		Dimensione della pagina
 	 */	
-	function findObjs($userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
+	function findObjs($userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000, $excludeIds=array()) {
 		if(!isset($userid)) {
 			$fields 		= " *, prmsUserByID ('{$userid}', id, 15) as perms " ;
 		} else {
@@ -277,7 +277,8 @@ class BEObject extends BEAppModel
 		$this->_getCondition_userid($conditions, $userid ) ;
 		$this->_getCondition_status($conditions, $status) ;
 		$this->_getCondition_current($conditions, true) ;
-
+		$this->getCondition_excludeIds($conditions, $excludeIds) ;
+		
 		// Costruisce i criteri di ricerca
 		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
 		$sqlClausole = $db->conditions($conditions, true, true) ;
@@ -468,6 +469,11 @@ class BEObject extends BEAppModel
 	private function _getCondition_current(&$conditions, $current = true) {
 		if(!$current) return ;
 		$conditions[] = array("current" => 1);
+	}
+	
+	private function getCondition_excludeIds(&$conditions, $excludeIds) {
+		if(empty($excludeIds)) return ;
+		$conditions["NOT"] = array(array("id" => $excludeIds));
 	}
 	
 	/**
