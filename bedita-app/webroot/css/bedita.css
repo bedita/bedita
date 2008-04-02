@@ -431,3 +431,8 @@ div.multimediaToolbar
 /* tabs container, used by jquery selectors*/
 div.tabsContainer {
 }
+
+div.generalLoading {
+	display: none;
+	background: transparent url(../img/iconLoading.gif) no-repeat;
+}

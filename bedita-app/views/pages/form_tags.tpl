@@ -46,7 +46,7 @@ $(document).ready(function(){
 	<br/>
 	<a id="callTags" href="javascript:void(0);">{t}Show system tags{/t}</a>
 	</fieldset>
-	<div id="loadingTags" class="loading">{t}Loading data{/t}...</div>
+	<div id="loadingTags" class="generalLoading" title="{t}Loading data{/t}"><span>&nbsp;</span></div>
 	<div id="listExistingTags" style="display: none;"></div>
 </div>
 
