@@ -858,3 +858,6 @@ msgstr "Mostra i tag presenti nel sistema"
 
 msgid "Hide system tags"
 msgstr "Nascondi i tag presenti nel sistema"
+
+msgid "Multimedia provider unsupported"
+msgstr "Multimedia provider non supportato"

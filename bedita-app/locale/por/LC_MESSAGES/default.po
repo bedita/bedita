@@ -833,3 +833,6 @@ msgstr "Mostrar os tag no sistema"
 
 msgid "Hide system tags"
 msgstr "Esconder os tag no sistema"
+
+msgid "Multimedia provider unsupported"
+msgstr "x DANTE - Multimedia provider non supportato"

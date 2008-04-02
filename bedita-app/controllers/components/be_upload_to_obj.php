@@ -130,15 +130,9 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 	 * @return boolean true if upload was successful, false otherwise.
 	 */
 	function uploadFromMediaProvider(&$name) {
-/*		
-$this->params['form']['url'] = "http://youtube.com/watch?v=xCH-GocD_aM" ;
-$this->params['form']['title'] = "test" ;
-$this->params['form']['lang'] = "ita" ;	
-*/
 		$result = false ;
 		if(!$this->recognizeMediaProvider($this->params['form']['url'], $provider, $name)) {
-			$this->errorCode = 500 + self::BEDITA_PROVIDER_NOT_FOUND ;
-			return $result ;
+			throw new BEditaMediaProviderException(__("Multimedia provider unsupported",true)) ;
 		}
 	
 		// Prepare data
@@ -150,7 +144,8 @@ $this->params['form']['lang'] = "ita" ;
 		$data['provider']	=  $provider ;
 		$data['uid']  	 	=  $name ;
 
-		if($this->BeFileHandler->isPresent($data['path'])) throw new BEditaFileExistException(__("File already exists in the filesystem",true)) ;
+		if($this->BeFileHandler->isPresent($data['path'])) 
+			throw new BEditaFileExistException(__("Video url is already in the system",true)) ;
 
 		App::import('Model', 'Video') ;
 		$Video = new Video() ;

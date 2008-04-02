@@ -581,4 +581,8 @@ class BEditaDeleteStreamObjException extends BeditaException
 {
 }
 
+class BEditaMediaProviderException extends BeditaException
+{
+}
+
 ?>
