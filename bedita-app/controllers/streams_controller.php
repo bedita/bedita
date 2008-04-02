@@ -36,7 +36,7 @@ class StreamsController extends AppController {
 									"BEObject" => array("ObjectType", 
 														"LangText"
 														),
-									"ContentBase" => array("*"),
+									"ContentBase",
 									"Stream"
 									)
 								);
@@ -144,14 +144,9 @@ class StreamsController extends AppController {
 	private function getRelatedStreamIDs($obj_id, $ot=null, $collection=false) {
 		$conf = Configure::getInstance();
 		$relations_id = array();
-		$object = $this->BEObject->find("first", array(
-														"restrict" 	=> array(),
-														"fields" 	=> "object_type_id",
-														"conditions" => "id=".$obj_id
-													)
-										);
+		$object_type_id = $this->BEObject->findObjectTypeId($destination);
 		if (!$collection) {
-			$modelLoaded = $this->loadModelByObjectTypeId($object["BEObject"]["object_type_id"]);
+			$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
 			$objRel = $modelLoaded->find("first",array(
 													"restrict" => array("ContentBase" => "ObjectRelation"),
 													"conditions" => "ContentBase.id=".$obj_id

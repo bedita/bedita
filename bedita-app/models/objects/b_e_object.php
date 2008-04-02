@@ -321,6 +321,20 @@ class BEObject extends BEAppModel
 		return false;
 	}
 	
+	function findObjectTypeId($id) {
+		$object = $this->find("first", array(
+									"restrict" 	=> array(),
+									"fields" 	=> "object_type_id",
+									"conditions" => "id=".$id
+								)
+						);
+		if (!empty($object)) {
+			return $object["BEObject"]["object_type_id"];
+		} else {
+			return false;
+		}
+	}
+	
 	/**
 	 * Torna il nome del Model dell'id passato
 	 *

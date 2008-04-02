@@ -20,10 +20,7 @@ class DocumentsController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Fck');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
-	var $uses = array(
-		'Stream', 'Area', 'Section', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Document', 'Tree',
-		'Image', 'Video', 'Audio', 'BEFile', 'User', 'Group', 'ObjectCategory'
-		) ;
+	var $uses = array('BEObject', 'Document', 'Tree', 'ObjectCategory') ;
 	protected $moduleName = 'documents';
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -134,19 +131,25 @@ class DocumentsController extends ModulesController {
 		$this->eventInfo("documents $objectsListDeleted deleted");
 	}
 
+
 	function addToAreaSection() {
 		$this->checkWriteModulePermission();
 		if(!empty($this->params['form']['objects_to_del'])) {
 			$objects_to_assoc = split(",",$this->params['form']['objects_to_del']);
 			$destination = $this->data['destination'];
-			$this->Section->bviorHideFields = array('ObjectType', 'Version', 'Index', 'current') ;
-			if(!($section = $this->Section->findById($destination))) {
+			$object_type_id = $this->BEObject->findObjectTypeId($destination);
+			$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
+			$modelLoaded->restrict("BEObject");
+			if(!($section = $modelLoaded->findById($destination))) {
 				throw new BeditaException(sprintf(__("Error loading section: %d", true), $destination));
 			}
 			$this->Transaction->begin() ;
 			for($i=0; $i < count($objects_to_assoc) ; $i++) {
-				if(!$this->Section->appendChild($objects_to_assoc[$i],$section['id'])) {
-					throw new BeditaException( __("Append child", true));
+				$parents = $this->BeTree->getParents($objects_to_assoc[$i]);
+				if (!in_array($section['id'], $parents)) { 
+					if(!$modelLoaded->appendChild($objects_to_assoc[$i],$section['id'])) {
+						throw new BeditaException( __("Append child", true));
+					}
 				}
 			}
 			$this->Transaction->commit() ;

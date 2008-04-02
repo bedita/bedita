@@ -18,7 +18,6 @@ class GalleriesController extends ModulesController {
 	var $name = 'Galleries';
 	var $helpers 	= array('Beurl', 'BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
-	var $uses = array('Area', 'Section', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Gallery', 'Tree', 'Image', 'Audio', 'Video', 'User', 'Group');
 	protected $moduleName = 'galleries';
 	
 	/**
@@ -97,7 +96,17 @@ class GalleriesController extends ModulesController {
 		$multimedia = array();
 		// get Gallery data
 		if($id) {
-			$this->Gallery->bviorHideFields = array('Version', 'Index', 'current');
+			$this->Gallery->restrict(array(
+										"BEObject" => array("ObjectType", 
+															"UserCreated", 
+															"UserModified", 
+															"Permissions",
+															"CustomProperties",
+															"LangText"
+															),
+										"Collection"
+										)
+									);
 			if(!($obj = $this->Gallery->findById($id))) {
 				throw new BeditaException( sprintf(__("Error loading gallery: %d", true), $id));
 				return;
@@ -109,8 +118,16 @@ class GalleriesController extends ModulesController {
 			$multimedia_id=array();
 			foreach($objForGallery as $index => $object) {
 				$type = $conf->objectTypeModels[$object['object_type_id']] ;
-				$this->{$type}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments');
-				if(!($Details = $this->{$type}->findById($object['id']))) continue ;
+				$modelLoaded = $this->loadModelByObjectTypeId($object['object_type_id']);
+				$modelLoaded->restrict(array(
+									"BEObject" => array("ObjectType", 
+														"LangText"
+														),
+									"ContentBase", 
+									"Stream"
+									)
+								);
+				if(!($Details = $modelLoaded->findById($object['id']))) continue ;
 				$Details['priority'] = $object['priority'];
 				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
 				$multimedia[$index]=$Details;
@@ -122,10 +139,7 @@ class GalleriesController extends ModulesController {
 		$this->set('object',	$obj);
 		$this->set('multimedia',$multimedia);
 		$this->selfUrlParams = array("id", $id);    
-		// get users and groups list. 
-		$this->User->displayField = 'userid';
-		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
-		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
+		$this->setUsersAndGroups();
 	}
 
 	protected function forward($action, $esito) {
