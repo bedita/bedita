@@ -56,7 +56,6 @@ class DocumentsController extends ModulesController {
 			if(!($obj = $this->Document->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading document: %d", true), $id));
 			}
-			$multimedia_id = array();
 			$relations = $this->objectRelationArray($obj['ObjectRelation']);
 		}
 		if(isset($obj["LangText"])) {

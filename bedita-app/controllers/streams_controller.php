@@ -144,7 +144,7 @@ class StreamsController extends AppController {
 	private function getRelatedStreamIDs($obj_id, $ot=null, $collection=false) {
 		$conf = Configure::getInstance();
 		$relations_id = array();
-		$object_type_id = $this->BEObject->findObjectTypeId($destination);
+		$object_type_id = $this->BEObject->findObjectTypeId($obj_id);
 		if (!$collection) {
 			$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
 			$objRel = $modelLoaded->find("first",array(
