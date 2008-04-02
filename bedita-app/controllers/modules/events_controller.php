@@ -45,7 +45,9 @@ class EventsController extends ModulesController {
 															"LangText"
 															),
 										"ContentBase" => array("*"),
-										"Content","BaseDocument"
+										"Content",
+										"BaseDocument", 
+										"EventDateItem"
 										)
 									);
 			if(!($obj = $this->Event->findById($id))) {
