@@ -8,7 +8,7 @@ function commitFileUploadMedia(tmp) {
 function showResponseMedia(data) {
 	$("#loading").hide();
 	if (data.UploadErrorMsg) {
-    	$("#msgUpload").html("<label class='error'>"+data.UploadErrorMsg+"<\/label>").addClass("error");
+    	$("#msgUploadMediaProvider").html("<label class='error'>"+data.UploadErrorMsg+"<\/label>").addClass("error");
     } else {
     	if(data['filename'] == undefined) return ;
 	
@@ -20,7 +20,7 @@ function showResponseMedia(data) {
 }
 
 function resetErrorMedia() {
-	$("#msgUpload").empty();
+	$("#msgUploadMediaProvider").empty();
 	$("#loading").show();
 }
 
@@ -47,5 +47,5 @@ $(document).ready(function() {
 	{t}Url{/t}: <input type="text" name="url" />&nbsp;
 	{t}Title{/t}: <input type="text" name="title" />&nbsp;
 	<input type="button" id="uploadFormMedia" value="{t}uploadForm{/t}"/>
-<div id="msgUpload"></div>
+<div id="msgUploadMediaProvider"></div>
 </div>

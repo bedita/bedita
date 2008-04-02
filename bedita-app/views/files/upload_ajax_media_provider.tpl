@@ -16,3 +16,4 @@
 {/if}
 
 {/strip}
+{php}exit;{/php}
