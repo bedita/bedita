@@ -3,43 +3,43 @@
 <fieldset>
 {if (isset($object))}
 
-<div style="width: 210px; float: left;">
-{if ($object.ObjectType.name == "image")}
-	{assign var="thumbWidth" 		value = 200}
-	{assign var="thumbHeight" 		value = 200}
-	{assign var="filePath"			value = $object.path}
-	{assign var="fileName"			value = $object.filename|default:$obj.name}
-	{assign var="fileTitle"			value = $object.title}
-	{assign var="mediaPath"         value = $conf->mediaRoot}
-	{assign var="mediaUrl"          value = $conf->mediaUrl}
-	{assign_concat var="imageAltAttribute"	0="alt='"  1=$object.title 2="'"}
-	{assign_concat var="mediaCacheBaseURL"	0=$conf->mediaUrl  1="/" 2=$conf->imgCache 3="/"}
-	{assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
-
-	{thumb 
-		width			= $thumbWidth
-		height			= $thumbHeight
-		file			= $mediaPath$filePath
-		linkurl			= $mediaUrl$filePath
-		cache			= $mediaCacheBaseURL
-		cachePATH		= $mediaCachePATH
-		hint			= "false"
-		html			= $imageAltAttribute
-		frame			= ""
-	}
-
-{elseif ($object.provider|default:false)}
-	{assign_associative var="attributes" style="width:30px;heigth:30px;"}
+<div style="width: 210px; height: 210px; float: left;">
+	{if ($object.ObjectType.name == "image")}
+		{assign var="thumbWidth" 		value = 200}
+		{assign var="thumbHeight" 		value = 200}
+		{assign var="filePath"			value = $object.path}
+		{assign var="fileName"			value = $object.filename|default:$obj.name}
+		{assign var="fileTitle"			value = $object.title}
+		{assign var="mediaPath"         value = $conf->mediaRoot}
+		{assign var="mediaUrl"          value = $conf->mediaUrl}
+		{assign_concat var="imageAltAttribute"	0="alt='"  1=$object.title 2="'"}
+		{assign_concat var="mediaCacheBaseURL"	0=$conf->mediaUrl  1="/" 2=$conf->imgCache 3="/"}
+		{assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
+	
+		{thumb 
+			width			= $thumbWidth
+			height			= $thumbHeight
+			file			= $mediaPath$filePath
+			linkurl			= $mediaUrl$filePath
+			cache			= $mediaCacheBaseURL
+			cachePATH		= $mediaCachePATH
+			hint			= "false"
+			html			= $imageAltAttribute
+			frame			= ""
+		}
+	
+		{elseif ($object.provider|default:false)}
+		{assign_associative var="attributes" style="width:30px;heigth:30px;"}
 
 	<a href="{$object.path}" target="_blank">
 		{$mediaProvider->thumbnail($object, $attributes) }
 	</a>
 	
-{else}
+	{else}
 	<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
 		<img src="{$session->webroot}img/mime/{$object.type}.gif" />
 	</a>
-{/if}
+	{/if}
 
 </div>
 
@@ -57,12 +57,14 @@
 	<span class="label">{t}Channels{/t}:</span> {$imageInfo.channels}
 </div>
 
+	{if $imageInfo.hrtype eq "JPG"}
 <div style="line-height: 1.4em; clear: left;">
 	<h3>Main EXIF data</h3>
 	{foreach from=$imageInfo.exif.main item="value" key="key"}
 		<span class="label">{$key}</span>: {$value}<br />
 	{/foreach}
 </div>
+	{/if}
 {/if}
 
 </fieldset>
