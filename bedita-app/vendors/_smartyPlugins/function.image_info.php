@@ -61,7 +61,7 @@ function smarty_function_image_info ($params, &$smarty)
 
 
 	// sanitize file path & name (why does not work?)
-	$_image_path			= $file ; // rawurlencode( $file );
+	$_image_path			= str_replace(' ','%20', $file); ; // rawurlencode( $file );
 
 
 	/*
