@@ -29,7 +29,7 @@ function enable_drag_drop_item(el) {
 {literal}
 // set draggable list items
 $(document).ready(function(){
-	$("div.itemBox").each(function(index) { setup_drag_drop_item(this) ;}) ;
+	$(containerItem + " div.itemBox").each(function(index) { setup_drag_drop_item(this) ;}) ;
 	$('#container-1 > ul').tabs();
 	var multimAlreadyShow = false;
 	$("#itemRepository").bind("click", function() {
@@ -80,7 +80,7 @@ function {/literal}{$relation}{literal}CommitUploadItem(files, rel) {
 			}) ;
 			counter-- ;
 			if(!counter) {
-				reorderListItem() ;
+				$(containerItem).reorderListItem() ;
 				// Show that data changed
 				try { $().alertSignal() ; } catch(e) {}
 			}
@@ -90,7 +90,7 @@ function {/literal}{$relation}{literal}CommitUploadItem(files, rel) {
 		index++ ;
 	}
 	if(!counter)  {
-		reorderListItem();
+		$(containerItem).reorderListItem();
 		// Show that data changed
 		try { $().alertSignal() ; } catch(e) {}
 	}
@@ -114,7 +114,7 @@ function {/literal}{$relation}{literal}CommitUploadById(IDs, rel) {
 			}) ;
 			counter-- ;
 			if(!counter)  {
-				reorderListItem() ;
+				$(containerItem).reorderListItem() ;
 				// Show that data changed
 				try { $().alertSignal() ; } catch(e) {}
 			}
@@ -124,7 +124,7 @@ function {/literal}{$relation}{literal}CommitUploadById(IDs, rel) {
 		index++ ;
 	}
 	if(!counter)  {
-		reorderListItem() ;
+		$(containerItem).reorderListItem() ;
 		// Show that data changed
 		try { $().alertSignal() ; } catch(e) {}
 	}
@@ -133,19 +133,20 @@ function {/literal}{$relation}{literal}CommitUploadById(IDs, rel) {
 // Remove item from queue
 function removeItem(DivId) {
 	$("#"+DivId).remove() ;
-	reorderListItem();
+	$(containerItem).reorderListItem();
 }
 
 // Reorder queue list
-function reorderListItem() {
-	$(".itemBox").each(function (index) {
-		$("input[@name='index']", this).attr("value", index) ;
-		$(".id", this).attr("name", "data[ObjectRelation]["+index+"][id]") ;
-		$(".switch", this).attr("name", "data[ObjectRelation]["+index+"][switch]") ;
-		$(".priority", this).attr("name", "data[ObjectRelation]["+index+"][priority]") ;
-		$(".priority", this).attr("value", index+1).hide().fadeIn(100).fadeOut(100).fadeIn('fast') ;
-	}) ;
-}
+//function reorderListItem() {
+//	$(".itemBox").each(function (index) {
+//		$("input[@name='index']", this).attr("value", index) ;
+//		$(".id", this).attr("name", "data[ObjectRelation]["+index+"][id]") ;
+//		$(".switch", this).attr("name", "data[ObjectRelation]["+index+"][switch]") ;
+//		$(".priority", this).attr("name", "data[ObjectRelation]["+index+"][priority]") ;
+//		//$(".priority", this).attr("value", index+1).hide().fadeIn(100).fadeOut(100).fadeIn('fast') ;
+//	}) ;
+//	$(containerItem).reorderListItem();
+//}
 
 function setup_drag_drop_item(el) {
 	if(!$(el)) return;
@@ -163,12 +164,12 @@ function setup_drag_drop_item(el) {
 			// swap position of an item (to the position of the previous)
 			if(this == $(dropped).prev().get(0)) {
 				$(this).insertAfter($(dropped)) ;
-				reorderListItem() ;
+				$(containerItem).reorderListItem() ;
 				return ;
 			// swap position of an item (to the position of the next)
 			} else if(this == $(dropped).next().get(0)) {
 				$(dropped).insertAfter($(this)) ;
-				reorderListItem() ;
+				$(containerItem).reorderListItem() ;
 				return ;
 			}
 			// If put at the beginning, insert before
@@ -179,14 +180,14 @@ function setup_drag_drop_item(el) {
 			} else {
 				$(dropped).insertAfter($(this)) ;
 			}
-			reorderListItem() ;
+			$(containerItem).reorderListItem() ;
 		}
 	}) ;
 }
 
 {/literal}
 
-var priority 	= 1 ;
+//var priority 	= 1 ;
 var index 		= 0 ;
 var cols 		= 5 ;
 //-->

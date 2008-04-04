@@ -12,6 +12,7 @@ $(document).ready(function(){
 {/literal}	
 	{foreach name="setCPForm" key="name" item="property" from=$el.CustomProperties}
 		_setupCustomPropTR("{$name}"+postfix_customProp) ;
+	{foreachelse}
 	{/foreach}
 {literal}
 	$('input[@name=cmdAdd]', "#frmCustomProperties").bind("click", function (e) {
@@ -126,6 +127,7 @@ function deleteTRCustomProp(el) {
 	<td><input type="text" name="data[CustomProperties][{$name}][value]" value="{$property|escape:'html'}"/></td>
 	<td><input type="button" name="delete" value=" x "/></td>
 </tr>
+{foreachelse}
 {/foreach}
 <tr id="endLineCustomPropTR">
 	<td colspan="4"><hr/></td>

@@ -26,7 +26,7 @@ class AreasController extends ModulesController {
 	var $helpers 	= array('BeTree');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
 
-	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group') ;
+	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType') ;
 	protected $moduleName = 'areas';
 	 
 	/**
@@ -111,6 +111,35 @@ class AreasController extends ModulesController {
 		$this->User->displayField = 'userid';
 		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
+	}
+	
+	/**
+	 * used via ajax
+	 * Show all objects in a section/area
+	 *
+	 * @param int $id area/section id
+	 */
+	public function showObjects($id) {
+		$conf = Configure::getInstance();
+		$ot  = $conf->objectTypes['relationated'];
+		$objects = $this->BeTree->getChildren($id, null, $ot, "priority") ;
+		foreach ($objects["items"] as $key => $obj) {
+			$objects["items"][$key]["relation"] = $this->ObjectType->field("name", array("id" => $obj["object_type_id"]));
+		}
+		$this->set("objectsToAssoc", $objects);
+		$this->layout = "empty";
+	}
+	
+	public function loadObjectToAssoc($id, $indexAssoc=0) {
+		$object = $this->BEObject->find("first", array(
+													"restrict" => "ObjectType",
+													"conditions" => array("BEObject.id" => $id)
+												)
+										) ;
+		$this->set("objRelated", $object["BEObject"]);
+		$this->set("rel", $object["ObjectType"]["name"]);
+		$this->set('objIndex', $indexAssoc);
+		$this->layout = "empty";
 	}
 	
 	 /**

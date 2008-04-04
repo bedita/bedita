@@ -32,6 +32,7 @@ jQuery.fn.extend({
 	*	@params: params is a JSON object with values:
 	*				- @id_control: div's id that contains "close all" and "expand all" anchors
 	*				- @url: target base url of area/section
+	*				- @urlVoid: if it's true insert javascript:void(0) in every node
 	*				- @inputTypt: input type to add to the item's tree (i.e. checkbox, radio)
 	*/
 	designTree: function(params) {
@@ -48,7 +49,10 @@ jQuery.fn.extend({
 			if (params.url) {
 				// add anchor
 				$(this).html('<a href="'+params.url+"id:"+id+'">'+$(this).html()+'</a>') ;
-			} 
+			}
+			if (params.urlVoid) {
+				$(this).html('<a href="javascript:void(0)">'+$(this).html()+'</a>') ;
+			}
 			if (params.inputType) {
 				// add input
 				$(this).before('<input type="' + params.inputType  + '" name="data[destination][]" id="s_'+id+'" value="'+id+'"/>&nbsp;');
@@ -138,5 +142,18 @@ jQuery.fn.extend({
 				}) ;
 			}
 		}) ;
+	},
+	reorderListItem: function() {
+		$(".itemBox").each(function (index) {
+			$("input[@name='index']", this).attr("value", index) ;
+			$(".id", this).attr("name", "data[ObjectRelation]["+index+"][id]") ;
+			$(".switch", this).attr("name", "data[ObjectRelation]["+index+"][switch]") ;
+			$(".priority", this).attr("name", "data[ObjectRelation]["+index+"][priority]") ;
+		}) ;
+		var priority = 1;
+		$(this).find(".itemBox").each(function () {
+			$(this).find("input[@class='priority']").val(priority++)	// update priority
+				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');		// effects
+		});
 	}
 });

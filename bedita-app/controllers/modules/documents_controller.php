@@ -35,7 +35,7 @@ class DocumentsController extends ModulesController {
 	  *
 	  * @param integer $id
 	  */
-	 function view($id = null) {
+	function view($id = null) {
 		$conf  = Configure::getInstance() ;
 		$this->setup_args(array("id", "integer", &$id)) ;
 		$obj = null ;
@@ -74,6 +74,7 @@ class DocumentsController extends ModulesController {
 
 		$this->set('object',	$obj);
 		$this->set('attach', isset($relations['attach']) ? $relations['attach'] : array());
+		$this->set('relObjects', isset($relations) ? $relations : array());
 		$this->set('galleries', (count($galleries['items'])==0) ? array() : $galleries['items']);
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);		
@@ -85,6 +86,7 @@ class DocumentsController extends ModulesController {
 	 * Creates/updates new document
 	 */
 	function save() {
+		//pr($this->data);exit;
 		$this->checkWriteModulePermission();
 		if(empty($this->data)) 
 			throw new BeditaException( __("No data", true));
