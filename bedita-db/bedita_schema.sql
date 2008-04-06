@@ -3,11 +3,6 @@
 -- 
 SET FOREIGN_KEY_CHECKS=0;
 
-DROP VIEW IF EXISTS `view_files`;
-DROP VIEW IF EXISTS `view_multimedias`;
-DROP VIEW IF EXISTS `view_video`;
-DROP VIEW IF EXISTS `view_audio`;
-DROP VIEW IF EXISTS `view_images`;
 DROP VIEW IF EXISTS `view_streams`;
 DROP VIEW IF EXISTS `view_communities`;
 DROP VIEW IF EXISTS `view_timelines`;
@@ -15,7 +10,6 @@ DROP VIEW IF EXISTS `view_scrolls`;
 DROP VIEW IF EXISTS `view_faqs`;
 DROP VIEW IF EXISTS `view_questionnaires`;
 DROP VIEW IF EXISTS `view_sections`;
-DROP VIEW IF EXISTS `view_attachments`;
 DROP VIEW IF EXISTS `view_permissions` ;
 DROP VIEW IF EXISTS `view_trees` ;
 DROP VIEW IF EXISTS `view_galleries` ;
@@ -360,7 +354,7 @@ CREATE TABLE newsletters (
     REFERENCES collections(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...' ;
 
 CREATE TABLE short_news (
   id INTEGER UNSIGNED NOT NULL,
@@ -370,7 +364,7 @@ CREATE TABLE short_news (
     REFERENCES content_bases(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...or removed';
 
 CREATE TABLE streams (
   id INTEGER UNSIGNED NOT NULL,
@@ -408,7 +402,7 @@ CREATE TABLE audio (
     REFERENCES streams(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...' ;
 
 CREATE TABLE video (
   id INTEGER UNSIGNED NOT NULL,
@@ -474,7 +468,7 @@ CREATE TABLE files (
     REFERENCES streams(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...or removed' ;
 
 CREATE TABLE images (
   id INTEGER UNSIGNED NOT NULL,
@@ -576,7 +570,7 @@ CREATE TABLE bibliographies (
     REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...' ;
 
 CREATE TABLE events (
   id INTEGER UNSIGNED NOT NULL,
@@ -585,7 +579,7 @@ CREATE TABLE events (
     REFERENCES base_documents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...or removed' ;
 
 CREATE TABLE event_date_items (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -730,42 +724,6 @@ collections.*
 FROM objects INNER JOIN collections ON objects.id = collections.id AND objects.object_type_id = 29
 ;
 
-CREATE  VIEW `view_images` AS 
-SELECT 
-streams.*, objects.title, objects.status, objects.object_type_id, null as provider, null as uid
-FROM 
-images INNER JOIN streams ON images.id = streams.id
-INNER JOIN objects ON images.id = objects.id ;
-
-CREATE  VIEW `view_audio` AS 
-SELECT 
-streams.*, objects.title, objects.status, objects.object_type_id, null as provider, null as uid
-FROM 
-audio INNER JOIN streams ON audio.id = streams.id
-INNER JOIN objects ON audio.id = objects.id ;
-
-CREATE  VIEW `view_video` AS 
-SELECT 
-streams.*, objects.title, objects.status, objects.object_type_id, video.provider, video.uid
-FROM 
-video INNER JOIN streams ON video.id = streams.id
-INNER JOIN objects ON video.id = objects.id ;
-
-CREATE  VIEW `view_multimedias` AS 
-SELECT * FROM view_images
-UNION
-SELECT * FROM view_audio
-UNION
-SELECT * FROM view_video ;
-
-
-CREATE  VIEW `view_files` AS 
-SELECT 
-streams.*, objects.title, objects.status, objects.object_type_id
-FROM 
-files INNER JOIN streams ON files.id = streams.id
-INNER JOIN objects ON files.id = objects.id ;
-
 CREATE  VIEW `view_streams` AS 
 SELECT 
 streams.*, objects.title, objects.status, objects.object_type_id
@@ -813,5 +771,3 @@ FROM
 trees INNER JOIN objects ON trees.id = objects.id 
 ORDER BY parent_path, priority
 ;
-
-
