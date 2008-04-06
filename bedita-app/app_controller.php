@@ -26,6 +26,12 @@ class AppController extends Controller
 
 	protected $selfUrlParams = NULL;
 	
+	/**
+	 * Specific per-controller model bindings
+	 *
+	 * @var array
+	 */
+	protected $modelBindings = array();
 	/////////////////////////////////		
 	/////////////////////////////////		
 
@@ -361,6 +367,10 @@ class AppController extends Controller
 	protected function loadModelByObjectTypeId($obj_type_id) {
 		$conf  = Configure::getInstance();
 		$modelClass = $conf->objectTypeModels[$obj_type_id];
+		return $this->loadModelByType($modelClass);
+	}
+
+	protected function loadModelByType($modelClass) {
 		if(!class_exists($modelClass)){
 			App::import('Model',$modelClass);
 		}
@@ -369,8 +379,17 @@ class AppController extends Controller
 		}
 		return new $modelClass();
 	}
-
-
+	
+	public function modelBindings(Model $modelObj) {
+		$conf = Configure::getInstance();
+		$name = $modelObj->name;
+		if(isset ($this->modelBindings[$name])) {
+			$modelObj->restrict($this->modelBindings[$name]);
+		} else if(isset ($conf->modelBindings[$name])) {
+			$modelObj->restrict($conf->modelBindings[$name]);
+		}
+	}	
+		
 	/**
 	 * Reorder content objects relations in array where keys are relation names
 	 *

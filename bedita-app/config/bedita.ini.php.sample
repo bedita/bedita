@@ -425,4 +425,20 @@ $config['media_providers_default_conf']  = array(
 	"youtube"	=> "mediaprovider.youtube.ini.php",
 ) ;
 
+/**
+ *  Default model bindings for Bindable Behaviour 
+ */
+$config['modelBindings'] = array(
+
+	'Area' => array("BEObject" => array("CustomProperties", "LangText")),
+	'Section' => array("BEObject" => array("CustomProperties", "LangText")),
+ 	'Document' => array("BEObject" => array("CustomProperties", "LangText" ),
+				"ContentBase" => array("*"), "Content","BaseDocument"),
+	'Event' => array("BEObject" => array("CustomProperties", "LangText"),
+				"ContentBase" => array("*"), "Content","BaseDocument"),
+	'Image' => array("BEObject" => array("CustomProperties", "LangText"),
+				"ContentBase", "Stream")
+
+) ;
+
 ?>
