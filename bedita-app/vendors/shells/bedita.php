@@ -63,8 +63,12 @@ class BeditaShell extends Shell {
 		$this->out("Create procedures from $script");
         $this->DataSourceTest->executeQuery($db,$script);
         
-		$this->out("Load data from $sqlDataDump");
-		$this->DataSourceTest->executeQuery($db, $sqlDataDump);
+		if (isset($this->params['nodata'])) {
+			$this->out("No data inserted");
+		} else {
+	        $this->out("Load data from $sqlDataDump");
+			$this->DataSourceTest->executeQuery($db, $sqlDataDump);
+		}
     	
 		if (isset($this->params['media'])) {
             $this->extractMediaZip($this->params['media']);
@@ -238,6 +242,7 @@ class BeditaShell extends Shell {
         $this->out('    Usage: updateDb [-db <dbname>] [-data <sql>] [-media <zipfile>]');
   		$this->out(' ');
   		$this->out("    -db <dbname>\t use db configuration <dbname> specified in config/database.php");
+  		$this->out("    -nodata <sql>   \t don't insert data");
   		$this->out("    -data <sql>     \t use <sql> data dump, use absolute path if not in bedita-db/");
   		$this->out("    -media <zipfile> \t restore media files in <zipfile>");
   		$this->out(' ');
