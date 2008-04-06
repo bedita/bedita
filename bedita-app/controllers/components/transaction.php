@@ -42,11 +42,11 @@ class TransactionComponent extends Object {
 	 * @return unknown
 	 */
 	public function begin() {
+		Configure::write("bedita.transaction",1);
 		$this->setupDB() ;
 		self::$transFS->begin() ;
 		if(!self::$db->execute('START TRANSACTION')) return false ;
 		$this->status = self::START;
-
 		return true  ;
 	}
 	
@@ -70,6 +70,7 @@ class TransactionComponent extends Object {
 		self::$transFS->commit() ;
 		if(!self::$db->execute('COMMIT')) return false ;
 		$this->status = self::COMMIT;
+		Configure::delete("bedita.transaction");
 		return true;
 	}
 
@@ -100,7 +101,8 @@ class TransactionComponent extends Object {
        	
         }
 					
-		return $ret;
+		Configure::delete("bedita.transaction");
+        return $ret;
 	}
 	
 	//////////////////////////////////////////
