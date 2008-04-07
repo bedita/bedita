@@ -619,8 +619,8 @@ msgstr "Sei sicuro di voler cancellare l'allegato?"
 msgid "Are you sure that you want to delete the multimedia?"
 msgstr "Sei sicuro di voler cancellare il multimedia?"
 
-msgid "Multimedia items repository"
-msgstr "Archivio oggetti Multimediali"
+msgid "Multimedia archive"
+msgstr "Archivio Multimediale"
 
 msgid "Add selected items"
 msgstr "Aggiungere elementi selezionati"

@@ -603,8 +603,8 @@ msgstr "Documentos borrados"
 msgid "Are you sure that you want to delete selected documents?"
 msgstr "Quer borrar os documentos selecionados?"
 
-msgid "Multimedia items repository"
-msgstr "Elementos ja anexados"
+msgid "Multimedia archive"
+msgstr "X DANTE: Elementos ja anexados"
 
 msgid "Add selected items"
 msgstr "Adicionar elementos selecionados"
