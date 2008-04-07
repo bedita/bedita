@@ -9,7 +9,7 @@
  * Author:   Christiano Presutti - aka xho - ChanelWeb srl
  * Purpose:  get several information from an image file
  * Input:    fileURI = string pointer to file - (yet to be made access file path on filesystem)
- * Returns:  filename, w, h, hrtype, attr, mimetype, bits, channels [ todo: , exif as array () ]
+ * Returns:  filename, w, h, hrtype, attr, mimetype, bits, channels, orientation [ todo: , exif as array () ]
  * -------------------------------------------------------------
  */
 function smarty_function_image_info ($params, &$smarty)
@@ -24,6 +24,9 @@ function smarty_function_image_info ($params, &$smarty)
 		"mimetype"	=> "",
 		"bits"		=> "",
 		"channels"	=> "",
+		"orientation"	=> "",
+		"portrait"	=> "",
+		"landscape"	=> "",
 		"exif"		=> array ()
 	);
 
@@ -90,15 +93,26 @@ function smarty_function_image_info ($params, &$smarty)
 	/*
 	 * EXIF build up
 	 */
-	if ( _getHumanReadableType ( $_image_data[2] ) == "JPG" )
+	if ( _getHumanReadableType ( $_image_data[2] ) != "JPG" )
 	{
-		$exifRawData	= _raw_extract_exif ( $_image_path );
+		$imageInfo["exif"] = false;
+	}
+	else
+	{
+		if ( ! $exifRawData	= _raw_extract_exif ( $_image_path ) )
+		{
+			$exifRawData['main'] = false;
+		}
+
+		if ( ! $exifRawData ['XMP'] = _ee_extract_exif_from_pscs_xmp ( $_image_path ) )
+		{
+			$exifRawData ['XMP'] = false;
+		}
+
+		$imageInfo["exif"]		= $exifRawData;
 	}
 
-	if ( $exifXMP = @_ee_extract_exif_from_pscs_xmp ( $_image_path ) )
-	{
-		$exifRawData ['XMP'] = $exifXMP;
-	}
+		
 
 
 
@@ -115,7 +129,20 @@ function smarty_function_image_info ($params, &$smarty)
 	$imageInfo["mimetype"]	= $_image_data ['mime'];
 	$imageInfo["bits"]		= $_image_data ['bits'];
 	$imageInfo["channels"]	= $_image_data ['channels'];
-	$imageInfo["exif"]		= $exifRawData;
+	if ($imageInfo["w"] > $imageInfo["h"])
+	{
+		$imageInfo["orientation"]	= "landscape";
+		$imageInfo["landscape"]		= true;
+		$imageInfo["portrait"]		= false;
+	}
+	else
+	{
+		$imageInfo["orientation"]	= "portrait";
+		$imageInfo["landscape"]		= false;
+		$imageInfo["portrait"]		= true;
+	}
+		
+
 
 	// assign to defined var
  	$smarty -> assign ( $var, $imageInfo );
@@ -201,7 +228,7 @@ function _getHumanReadableType ( $type )
 function _raw_extract_exif ( $file )
 {
 	$exif = exif_read_data( $file, 'IFD0');
-	if ( $exif===false ) return false; // "No header data found in image file.";
+	if ( $exif === false ) return false; // "No header data found in image file.";
 
 	$exif = exif_read_data( $file, 0, true);
 
@@ -253,14 +280,17 @@ function _ee_extract_exif_from_pscs_xmp ( $file ) {
 	// inspired by code by Pekka Saarinen http://photography-on-the.net
 
 	ob_start();
-	readfile($filename);
+	readfile( $file );
 	$source = ob_get_contents();
 	ob_end_clean();
 
 	$xmpdata_start = strpos($source,"<x:xmpmeta");
 	$xmpdata_end = strpos($source,"</x:xmpmeta>");
-	$xmplenght = $xmpdata_end-$xmpdata_start;
-	$xmpdata = substr($source,$xmpdata_start,$xmplenght+12);
+	$xmplenght = $xmpdata_end - $xmpdata_start;
+	
+	if ( empty( $xmplenght ) ) return false;
+	
+	$xmpdata = substr($source, $xmpdata_start, $xmplenght+12);
 	$xmp_parsed = array();
 
 	$regexps = array(
@@ -286,14 +316,14 @@ function _ee_extract_exif_from_pscs_xmp ( $file ) {
 		unset ($r);
 		preg_match ($regexp, $xmpdata, $r);
 		$xmp_item = "";
-		$xmp_item = @$r[0];
+		$xmp_item = @trim ( strip_tags( $r[0] ) );
 		array_push ( $xmp_parsed, array ("item" => $name, "value" => $xmp_item ) );
 	}
 
 	/*
 	 * printout
 	 * 
-		echo "XML lenght: " . $xmplenght;
+		echo "XML lenght: " . $xmplenght; exit;
 
 		foreach ($xmp_parsed as $key => $k)
 		{
@@ -301,6 +331,7 @@ function _ee_extract_exif_from_pscs_xmp ( $file ) {
 			$value	= $k["value"];
 			print "<br><b>" . $item . ":</b> " . $value;
 		}
+		exit;
 	 */
 
 	return ($xmp_parsed);
