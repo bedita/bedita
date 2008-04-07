@@ -186,7 +186,7 @@ var cols 		= 5 ;
 
 <h2 class="showHideBlockButton">{t}{$title}{/t}</h2>
 <div class="blockForm" id="multimedia" style="display:none">
-
+	<input type="hidden" name="data[ObjectRelation][{$relation}][switch]" value="{$relation}" />
 	<div class="multimediaToolbar">
 		<div class="displaySizeToggle">
 			<div id="displayLargeIcons"			class="displayLargeIcons"			title="{t}Large Icons{/t}"><span>&nbsp;</span></div>
@@ -226,7 +226,10 @@ var cols 		= 5 ;
 	<div id="addItemsContainer" style="position: relative; margin: 8px 0; padding: 4px; background-color: #dddddd; border: 1px solid #666; display: none;">
 		<div style="position: absolute; top: 5px; right: 5px; z-index:9999; cursor: pointer;" id="addItemsContainerClose">close</div>
 		<div id="ajaxSubcontainer"></div>
-		<div id="staticSubcontainer-1" style="display: none;">{include file="../pages/form_media_provider_audiovideo.tpl"}</div>
+		<div id="staticSubcontainer-1" style="display: none;">
+			{*include file="../pages/form_upload_ajax.tpl"*}
+			{include file="../pages/form_media_provider_audiovideo.tpl"}
+		</div>
 		<div id="staticSubcontainer-2" style="display: none;">{include file="../pages/form_upload.tpl"}</div>
 	</div>
 

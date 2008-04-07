@@ -22,12 +22,6 @@
  * 		
  * 				Esprime un link		
 */
-class Link extends BEAppModel 
-{
-	var $name = 'Link';
-	
-		function __construct() {
-		parent::__construct() ;
-	}
+class Link extends BEAppModel {
 }
 ?>

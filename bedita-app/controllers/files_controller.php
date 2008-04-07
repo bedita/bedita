@@ -81,7 +81,6 @@ class FilesController extends AppController {
 	}
 
 	function beditaBeforeFilter() {
-		//die("aho");
 		if(isset($this->params['form']['Filedata'])) { // skip auth check, to avoid session error with swfupload via flash
 			$this->skipCheck = true;
 		}

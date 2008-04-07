@@ -114,7 +114,7 @@ class AreasController extends ModulesController {
 	}
 	
 	/**
-	 * used via ajax
+	 * called via ajax
 	 * Show all objects in a section/area
 	 *
 	 * @param int $id area/section id
@@ -130,15 +130,16 @@ class AreasController extends ModulesController {
 		$this->layout = "empty";
 	}
 	
-	public function loadObjectToAssoc($id, $indexAssoc=0) {
+	public function loadObjectToAssoc($id, $relType) {
 		$object = $this->BEObject->find("first", array(
 													"restrict" => "ObjectType",
 													"conditions" => array("BEObject.id" => $id)
 												)
 										) ;
-		$this->set("objRelated", $object["BEObject"]);
-		$this->set("rel", $object["ObjectType"]["name"]);
-		$this->set('objIndex', $indexAssoc);
+										
+		$objRelated = array_merge($object["BEObject"], array("ObjectType" => $object["ObjectType"]));
+		$this->set("objRelated", $objRelated);
+		$this->set("rel", $relType);
 		$this->layout = "empty";
 	}
 	

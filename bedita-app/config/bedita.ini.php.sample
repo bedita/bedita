@@ -441,4 +441,9 @@ $config['modelBindings'] = array(
 
 ) ;
 
+/**
+ * object relation type
+ */
+$config["objRelationType"] = array("time", "place");
+
 ?>

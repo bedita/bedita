@@ -48,7 +48,7 @@ class ContentBase extends BEAppModel
 		) ;			
 
 	/**
-	 * Le associazioni di tipo HABTM di questo modello non possono essere
+	 * Le associazioni di tipo HABTM ObjectRelation di questo modello non possono essere
 	 * salvate con i metodi di cakePHP (la tabella di unione utilizza 
 	 * 3 capi: id, object_id e swtich che determina il tipo di unione).
 	 * 
@@ -57,43 +57,47 @@ class ContentBase extends BEAppModel
 	 * 
 	 */
 	function beforeSave() {
-		if (!empty($this->data['ObjectRelation']['ObjectRelation'])) {
-			$this->tempData = array() ;
-			$this->tempData['ObjectRelation'] = &$this->data['ObjectRelation']['ObjectRelation'] ;
-			unset($this->data['ObjectRelation']['ObjectRelation']) ;
-		}
+		$this->restoreObjectRelation = $this->hasAndBelongsToMany['ObjectRelation'];
+		$this->unbindModel( array('hasAndBelongsToMany' => array('ObjectRelation')) );
 		return true ;
 	}
 	
 	function afterSave() {
-		if (!empty($this->tempData)) {
+		if (!empty($this->data['ObjectRelation'])) {
+			$this->bindModel( array(
+				'hasAndBelongsToMany' => array(
+						'ObjectRelation' => $this->restoreObjectRelation
+							)
+				) 
+			);
 			$db 		= &ConnectionManager::getDataSource($this->useDbConfig);
 			$queriesDelete 	= array() ;
 			$queriesInsert = array() ;
-			
-			foreach ($this->tempData as $values) {
+			foreach ($this->data['ObjectRelation'] as $values) {
 				$assoc 	= $this->hasAndBelongsToMany['ObjectRelation'] ;
 				$table 	= $db->name($db->fullTableName($assoc['joinTable']));
-				$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch, priority"  ;
-				
-				for($i=0; $i < count($values); $i++) {
-					$obj_id		= $values[$i]['id'] ;
-					$switch		= $values[$i]['switch'] ;
-					$priority	= isset($values[$i]['priority']) ? "'{$values[$i]['priority']}'" : 'NULL' ;
+				$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch, priority"  ;	
+				foreach($values as $val) {
+					$obj_id		= isset($val['id'])? $val['id'] : false;
+					$switch		= $val['switch'] ;
+					$priority	= isset($val['priority']) ? "'{$val['priority']}'" : 'NULL' ;
 					
 					// Delete old associations
-					$queriesDelete[$switch] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND switch = '{$switch}' ";
-					$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
+					$queriesDelete[$switch] = "DELETE FROM {$table} 
+											   WHERE ({$assoc['foreignKey']} = '{$this->id}' OR {$assoc['associationForeignKey']} = '{$this->id}')  
+											   AND switch = '{$switch}' ";
+					if (!empty($obj_id)) {
+						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
+						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$switch}', NULL)" ;
+					}
 				}
 			}
-			
 			foreach ($queriesDelete as $qDel) {
 				$db->query($qDel);
 			}
 			foreach ($queriesInsert as $qIns) {
 				$db->query($qIns);
 			}
-			unset($this->tempData);
 		}
 		return true ;
 	}
