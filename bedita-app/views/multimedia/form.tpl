@@ -1,3 +1,8 @@
+{*
+** multimedia form template
+** @author ChannelWeb srl
+*}
+
 <script type="text/javascript">
 <!--
 {literal}
@@ -18,8 +23,8 @@ $(document).ready(function(){
 {include file="../pages/form_header.tpl"}
 <div class="blockForm" id="errorForm"></div>
 {include file="../pages/form_properties.tpl" doctype=false publication=false}
-{include file="../pages/form_file.tpl"}
 {include file="../pages/form_subtitle_desc.tpl"}
+{include file="../pages/form_file.tpl"}
 {include file="../pages/form_custom_properties.tpl" el=$object}
 {include file="../pages/form_permissions.tpl" el=$object recursion=true}
 </form>

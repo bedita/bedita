@@ -54,7 +54,7 @@
 #containerPage H2.showHideBlockButton  { /* was wrong: #containerPage H2, #containerPage .showHideBlockButton */
 	color: white;
 	font: bold 12px Arial;
-	margin: 10px 0;
+	margin: 5px 0;
 	padding: 4px;
 	background: gray url(../img/bg_graytab.png) no-repeat scroll right top;
 	border: 1px solid gray;
@@ -63,6 +63,8 @@
 }
 
 #containerPage .blockForm  {
+	margin: 0;
+	padding: 0;
 	display:none;
 }
 
@@ -72,11 +74,11 @@
 
 #containerPage .tableForm TD {
 	vertical-align: middle;
-	padding-bottom: 10px;
+	padding-bottom: 6px;
 }
 
 #containerPage .tableForm .inputText {
-	width:350px ;
+	width: 350px ;
 }
 
 #containerPage .tableForm .cmdField {
@@ -116,6 +118,8 @@ label.iumd { color:red; }
 
 fieldset {
 	border: solid transparent 0px;
+	margin: 0;
+	padding: 0;
 }
 
 label.error {
@@ -134,7 +138,7 @@ label.checked {
 TD.label {
   padding-right: 8px;
   text-align: right;
-  width: 250px;
+  width: 180px;
   white-space: nowrap;
 }
 

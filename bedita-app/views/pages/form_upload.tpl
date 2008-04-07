@@ -201,7 +201,6 @@ function beUploadQueueComplete(file) {
 	if(ok>0) {
 		$("#queueinfo").html("{/literal}{t}Upload end{/t}{literal}") ;
 		createThumbnails();
-		$('#container-1 > ul').tabs('select',0);
 	} else {
 		$("#queueinfo").html("{/literal}{t}Errors during upload{/t}{literal}") ;
 	}
@@ -231,7 +230,7 @@ th.boxNotSelected {border:solid #000 1px;background-color:#DDD; height: 20px;}
 <tbody>
 <tr>
 	<td colspan="3">
-		<div id="uploadBox" style="padding:5px 5px 5px 5px">
+		<div id="uploadBox" style="padding:5px;">
 			<div id="wrapper">
 				<div id="content">
 					<input type="hidden" name="lang" value="{if $session->check('Config.language')}{$session->read('Config.language')}{else}ita{/if}"/>

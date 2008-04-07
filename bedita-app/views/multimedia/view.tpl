@@ -1,3 +1,8 @@
+{*
+** multimedia view template
+** @author ChannelWeb srl
+*}
+
 {$html->css('ui.tabs')}
 {$javascript->link("ui/ui.tabs")}
 {$javascript->link("form")}
@@ -13,7 +18,8 @@
 <!--
 {literal}
 $(document).ready(function(){
-	$('#properties').show() ;
+	$('#title').show() ;
+	$('#multimediaitem').show() ;
 	$('.showHideBlockButton').bind("click", function(){
 		$(this).next("div").toggle() ;
 	}) ;

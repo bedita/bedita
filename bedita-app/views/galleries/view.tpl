@@ -1,3 +1,8 @@
+{*
+** galleries view template
+** @author ChannelWeb srl
+*}
+
 {$html->css('tree')}
 {$html->css('ui.tabs')}
 {$javascript->link("ui/jquery.dimensions")}

@@ -19,7 +19,7 @@ function addItemsToParent() {
 
 function loadMultimediaAssoc(urlSearch, showAll) {
 	$("#loading").show();
-	$("#fragment-3").load(urlSearch, function() {
+	$("#ajaxSubcontainer").load(urlSearch, function() {
 		$("#loading").hide();
 		if (showAll) 
 			$("#searchMultimediaShowAll").show();
@@ -139,7 +139,7 @@ $(document).ready(function(){
 					</select>
 				</p>
 			{/if}
-			
+			<input type="button" onclick="javascript:addItemsToParent();" value=" (+) {t}Add selected items{/t}"/>
 			<table class="indexList" id="streamPagList" style="clear: left;">
 			<thead>
 			<tr>

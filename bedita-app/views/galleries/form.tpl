@@ -1,3 +1,8 @@
+{*
+** galleries form template
+** @author ChannelWeb srl
+*}
+
 <script type="text/javascript">
 {literal}
 var langs = {

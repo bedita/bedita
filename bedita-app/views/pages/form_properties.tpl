@@ -21,12 +21,12 @@ $(document).ready(function(){
 {/literal}
 </script>
 
-<h2 class="showHideBlockButton">{t}Properties{/t}</h2>
-<div class="blockForm" id="properties">
+{* title and languages *}
+<h2 class="showHideBlockButton">{t}Title{/t}</h2>
+<div class="blockForm" id="title">
 <fieldset>
-
-	<div id="properties_langs_choice">
-		<span class="label">{t}Main language{/t}:</span>
+	<div id="properties_langs_choice" class="tabsContainer">
+		<span class="label">&nbsp;{t}Main language{/t}:</span>
 		<span class="field">
 			<select name="data[lang]" id="main_lang">
 			{foreach key=val item=label from=$conf->langOptions name=langfe}
@@ -39,14 +39,11 @@ $(document).ready(function(){
 		<span class="field">{foreach key=val item=label from=$conf->langOptions name=langfe}
 				<input type="checkbox" name="data[lang_version]" class="lang_flags" title="Enable / Disable {$label}" tabindex="{$smarty.foreach.langfe.index}" id="flag_{$val}"
 					{if $val==$object_lang || !empty($object.LangText.title[$val])} checked="checked"{/if}
-					{if $val==$object_lang} disabled="disabled"{/if}/>
+					{if $val==$object_lang} disabled="disabled"{/if} />
 				<img src="{$html->webroot}img/flags/{$val}.png" border="0" alt="{$val}" style="vertical-align: middle;" />&nbsp;
 			{/foreach}
 		</span>
 	</div>
-
-	<br />
-
 	<div id="properties_langs_container" class="tabsContainer">
 		<ul>
 			{foreach key=val item=label from=$conf->langOptions}
@@ -55,14 +52,14 @@ $(document).ready(function(){
 		</ul>
 		{foreach key=val item=label from=$conf->langOptions}
 		<div id="property_lang_{$val}">
-		<h3><img src="{$html->webroot}img/flags/{$val}.png" border="0" alt="{$val}"/></h3>
-		<table class="tableForm" border="0">
+		<table border="0">
 		<tr>
+			<td><img src="{$html->webroot}img/flags/{$val}.png" border="0" alt="{$val}"/></td>
 			<td class="label">{t}Title{/t}:</td>
 			<td class="field">
 				<input {if $val==$object_lang}class="{literal}{required:true,minLength:1}{/literal}" title="{t}Title is required{/t}"{/if}
 					type="text" name="data[LangText][{$val}][title]"
-					value="{$object.LangText.title[$val]|default:''|escape:'html'|escape:'quotes'}"/>&nbsp;
+					value="{$object.LangText.title[$val]|default:''|escape:'html'|escape:'quotes'}" />&nbsp;
 			</td>
 			<td class="status">&nbsp;</td>
 		</tr>
@@ -70,7 +67,13 @@ $(document).ready(function(){
 		</div>
 		{/foreach}
 	</div>
+</fieldset>
+</div>
 
+
+<h2 class="showHideBlockButton">{t}Properties{/t}</h2>
+<div class="blockForm" id="properties">
+<fieldset>
 
 	<table class="tableForm" border="0">
 	<tr>

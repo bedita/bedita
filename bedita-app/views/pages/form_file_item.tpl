@@ -1,6 +1,6 @@
 
 {if empty($obj)} {assign var="obj" value=$object} {/if}
-{assign var="thumbWidth" 		value = 100}
+{assign var="thumbWidth" 		value = 110}
 {assign var="thumbHeight" 		value = 100}
 {assign var="filePath"			value = $obj.path}
 {assign var="fileName"			value = $obj.filename|default:$obj.name}
@@ -26,7 +26,7 @@
 	</div>
 
 	{if strtolower($obj.ObjectType.name) == "image"}
-	<div style="width: {$thumbWidth+2}px; height: {$thumbHeight+2}px;" id="imageBox">
+	<div id="imageBox">
 		{if !empty($fileName) }
 		{thumb 
 			width			= $thumbWidth
@@ -52,8 +52,8 @@
 	{/if}
 
 	<div class="itemInfo">
-		<div><span class="title">{t}Title{/t}:</span><input type="text" value="{$fileTitle|escape:'htmlall'}" /></div>
-		<div><span class="title">{t}Description{/t}:</span><textarea class="autogrow">{$obj.description|default:""|escape:'htmlall'}</textarea></div>
+		<div><span class="title">{t}Title{/t}:</span><br /><input type="text" value="{$fileTitle|escape:'htmlall'}" /></div>
+		<div><span class="title">{t}Description{/t}:</span><br /><textarea class="autogrow">{$obj.description|default:""|escape:'htmlall'}</textarea></div>
 		<div style="border-bottom: 1px solid #999;"></div>
 		<div><span class="title">{t}File{/t}:</span> {$fileName|escape:'htmlall'}</div>
 		<div><span class="title">{t}Type{/t}:</span> {t}{$obj.type}{/t}</div>
@@ -61,7 +61,7 @@
 		{if $obj.width|default:false && $obj.height}<div>{$obj.width}px X {$obj.height}px</div>{/if}
 	</div>
 
-	<div class="itemInfoSmall" style="display: none;">{$fileTitle|escape:'htmlall'}</div>
+	<div class="itemInfoSmall" style="display: none;">{$fileTitle|escape:'htmlall'|wordwrap:13:"\n":true}</div>
 	
 	<div class="itemFooter">
 		<input type="button" onclick="removeItem('m_{$obj.id}')" value="{t}X{/t}" />

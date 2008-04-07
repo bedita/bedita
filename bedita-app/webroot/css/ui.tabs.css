@@ -13,14 +13,14 @@
 }
 
 /* Skin */
-.ui-tabs-nav { height: 19px }
+.ui-tabs-nav { height: 16px }
 .ui-tabs-nav, .ui-tabs-panel {
-    font-size: 12px;
+    font-size: 10px;
 }
 .ui-tabs-nav {
     list-style: none;
-    margin: 0;
-    padding: 0 0 0 2px;
+    margin: 0 0 0 -2px;
+    padding: 0;
 }
 .ui-tabs-nav:after { /* clearing without presentational markup, IE gets extra treatment */
     display: block;
@@ -29,12 +29,12 @@
 }
 .ui-tabs-nav li {
     float: left;
-    margin: 0 0 0 1px;
+    margin: 0 0 0 2px;
     min-width: 84px; /* be nice to Opera */
 }
 .ui-tabs-nav a, .ui-tabs-nav a span {
 	display: block;
-    padding: 0 18px;
+    padding: 0 5px;
     background: url(../img/tab.png) no-repeat;
 }
 .ui-tabs-nav a {
@@ -43,7 +43,7 @@
     z-index: 2;
     padding-left: 0;
     color: #666;
-    font-size: 11px;
+    font-size: 10px;
     /*font-weight: bold;*/
     line-height: 1.2em;
     text-align: center;
@@ -72,9 +72,9 @@
 .ui-tabs-nav a span {
     width: 64px; /* IE 6 treats width as min-width */
     min-width: 64px;
-    height: 15px; /* IE 6 treats height as min-height */
-    min-height: 15px;
-    padding-top: 3px;
+    height: 13px; /* IE 6 treats height as min-height */
+    min-height: 13px;
+    padding-top: 2px;
     padding-right: 0;
 }
 *>.ui-tabs-nav a span { /* hide from IE 6 */
@@ -82,7 +82,8 @@
     height: auto;
 }
 .ui-tabs-nav .ui-tabs-selected a span {
-    padding-top: 4px;
+    padding-top: 2px;
+	padding-bottom: 1px;
 }
 .ui-tabs-nav .ui-tabs-selected a span,
 .ui-tabs-nav a:hover span,
@@ -120,8 +121,9 @@
 	border: 1px solid #555555;
     padding: 1em 8px;
 	margin: 0 1em 0 0;
-	min-height: 40px;
+	min-height: 30px;
 	min-width: 562px;
+	width: 560px;
 	background-color: #FFF; /* declare background color for container to avoid distorted fonts in IE while fading */
 }
 .ui-tabs-loading em {

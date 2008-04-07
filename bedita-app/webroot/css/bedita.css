@@ -51,9 +51,20 @@ INPUT {
 
 A {	color: #CC3333;	text-decoration: none;}
 A:hover {text-decoration: underline;}
-A IMG {border: 1px solid #333;}
+A IMG {border: 1px solid #666666;}
 
 LI { line-height: 1.5em; }
+
+/* BEGIN -- Classi generiche */
+UL.noBulletList
+{
+	list-style-type: none;
+	padding: 0;
+}
+
+/* END -- Classi generiche */
+
+
 
 /* BEGIN -- Pagine interne moduli */
 
@@ -280,6 +291,7 @@ TABLE.indexList {width:100%; margin-left:0; empty-cells: show; border-collapse: 
 	margin: 2px;
 	/* min-width: 140px; to prevent wrong behaviours in moz */
 	width: 140px;
+	height: 270px;
 	background-color: #E9E9E9;
 	border: 1px solid #999;
 	float: left;
@@ -288,12 +300,11 @@ TABLE.indexList {width:100%; margin-left:0; empty-cells: show; border-collapse: 
 	overflow: hidden;
 	position: relative; /* without offset is like normal flow, needed for pos absolute inside */
 }
+.itemBoxSmall     { width: 88px; height: 104px; }
+.itemBoxSmall img { width: 78px;  height: 56px; }
 
-.itemBoxSmall
-{
-	width: 110px;
-}
 
+/* < begin - itemBox sub elements */
 .itemBox .itemHeader
 {
 	width: 94%;
@@ -318,7 +329,13 @@ TABLE.indexList {width:100%; margin-left:0; empty-cells: show; border-collapse: 
 .itemBox #imageBox
 {
 	overflow: hidden;
+	height: 102px;
 	margin: 1px auto; /* center image box horizontally, also need text-align: center for IE in parent DIV itemBox */
+}
+.itemBoxSmall #imageBox
+{
+	width: auto;
+	height: auto;
 }
 
 .itemBox .itemInfo
@@ -327,12 +344,15 @@ TABLE.indexList {width:100%; margin-left:0; empty-cells: show; border-collapse: 
 	margin: 0 auto; /* center info box horizontally, also need text-align: center for IE in parent DIV itemBox */
 	text-align: left;
 }
+/* > end - itemBox sub elements */
 
+
+/* < begin - itemInfo */
 .itemInfo div {
 	font-size: 0.9em;
 	margin: 5px 0;
+	white-space: nowrap;
 }
-
 .itemInfo div .title { font-weight: bold; }
 
 .itemInfo input, .itemInfo textarea
@@ -348,8 +368,11 @@ TABLE.indexList {width:100%; margin-left:0; empty-cells: show; border-collapse: 
 .itemInfoSmall
 {
 	font-size: 0.9em;
-	margin: 5px 0;
+	margin: 2px;
+	overflow: hidden;
 }
+/* > end - itemInfo */
+
 
 .itemBox .itemFooter
 {
@@ -377,66 +400,77 @@ div.attachBoxFirst { background-color:#E9E9E9;border:solid #FFF 1px;float:left;p
 label.section {color:red;text-decoration:none}
 label.section:hover {color:red;text-decoration:underline}
 
+
+
+/* BEGIN -- Multimedia toolbar */
+
 div.multimediaToolbar
 {
 	position: relative;
 	padding: 0;
-	margin: -4px 0 0;
+	margin: -5px 0 4px;
 	width: 580px;
 	height: 20px;
-	border: 0 solid red;
+	overflow: hidden;
+	border-bottom: 1px dotted gray;
+}
+.multimediaToolbar span { position: relative; top: 2px; } /* adjust vertical alignment of texts */
+
+/*
+ * .multimediaToolbar #displayLargeIcons, .multimediaToolbar #displaySmallIconsDisabled,
+ * .multimediaToolbar .addItem, .multimediaToolbar .addMultipleItems, .multimediaToolbar .addRepositoryItems, .multimediaToolbar div.loading
+*/
+.multimediaToolbar div
+{
+	float: left;
+	position: relative;
+	top: 0;
+	height: 16px;
+	min-width: 20px; width: auto;
+	cursor: pointer;
+	text-align: center;
+}
+
+/* < Large / Small Boxes Switch */
+.multimediaToolbar #displayLargeIcons {	left: 2px; }
+.multimediaToolbar #displaySmallIconsDisabled { left: 0; }
+.displayLargeIcons { background: url(../img/IconLargeIcons.gif) no-repeat; }
+.displayLargeIconsDisabled { background: url(../img/IconLargeIconsDisabled.gif) no-repeat; }
+.displaySmallIconsDisabled { background: url(../img/IconSmallIconsDisabled.gif) no-repeat; }
+.displaySmallIcons { background: url(../img/IconSmallIcons.gif) no-repeat; }
+/* > Large / Small Boxes Switch */
+
+.multimediaToolbar .addItem
+{
+	left: 0;
+	padding: 0 20px;
+	background: transparent url(../img/IconAddItem.gif) no-repeat;
+}
+
+.multimediaToolbar .addMultipleItems
+{
+	padding: 0 20px;
+	background: transparent url(../img/IconAddMultipleItems.gif) no-repeat;
+}
+
+.multimediaToolbar .addRepositoryItems
+{
+	padding: 0 20px;
+	background: transparent url(../img/IconAddItemFromRepo.gif) no-repeat;
 }
 
 .multimediaToolbar div.loading {
 	display: none;
 	position: absolute;
-	right: 0;
-	top: 2px;
-	height: 16px;
-	width: 18px;
+	right: -5px;
 	background: transparent url(../img/iconLoading.gif) no-repeat;
 }
 
 
-.multimediaToolbar #displaySmallIconsDisabled {
-	position: absolute;
-	left: 22px;
-	top: 0;
-	height: 16px;
-	width: 16px;
-	cursor: pointer;
-}
-.displaySmallIconsDisabled {
-	background: url(../img/IconSmallIconsDisabled.gif) no-repeat;
-}
-.displaySmallIcons {
-	background: url(../img/IconSmallIcons.gif) no-repeat;
-}
+/* END -- Multimedia toolbar */
 
-.multimediaToolbar #displayLargeIcons {
-	position: absolute;
-	left: 4px;
-	top: 0;
-	height: 16px;
-	width: 16px;
-	cursor: pointer;
-}
-.displayLargeIcons {
-	background: url(../img/IconLargeIcons.gif) no-repeat;
-}
-.displayLargeIconsDisabled {
-	background: url(../img/IconLargeIconsDisabled.gif) no-repeat;
-}
 
 /* tabs container, used by jquery selectors*/
 div.tabsContainer {
-}
-
-div.generalLoading {
-	display: none;
-	background: transparent url(../img/iconLoading.gif) no-repeat;
-}
-
-div.assocItemSection {
-	float: right;
+	margin: 15px 0;
 }

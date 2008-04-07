@@ -4,42 +4,43 @@ var urlGetObjId 	= '{$html->url("/streams/get_item_form_by_id")}' ;
 var containerItem	= "#{$containerId}";
 var urlGetAllItemNoAssoc = "{$html->url("/streams/showStreams")}/{$object.id|default:'0'}/{$collection|default:''}";
 <!--
+
+{*
+/* x quando metteremo ui al posto di interface x il drag
+function disable_drag_drop_item(el) {
+	if(!$(el)) return;
+	$(el).Draggable("disable");
+}
+
+function enable_drag_drop_item(el) {
+	if(!$(el)) return;
+	$(el).Draggable("enable");
+}
+
+	$("input").bind('click', function () {
+		$("div.itemBox").each(function(index) { disable_drag_drop_item(this) ;}) ;
+	});
+	$("input").blur(function () {
+       // $("div.itemBox").each(function(index) { enable_drag_drop_item(this) ;}) ;
+    });
+*/
+*}
+
 {literal}
 // set draggable list items
 $(document).ready(function(){
 	$(containerItem + " div.itemBox").each(function(index) { setup_drag_drop_item(this) ;}) ;
-
-	$("#addItemsContainerClose").click( function () {
-		$('#addItemsContainer').hide();
-	});
-
-	$("#addRepositoryItems").click( function () {
+	$('#container-1 > ul').tabs();
+	var multimAlreadyShow = false;
+	$("#itemRepository").bind("click", function() {
+		if (!multimAlreadyShow) {
 			$("#loading").show();
-			$("#addItemsContainer").hide();
-			$("#staticSubcontainer-1").hide();
-			$("#staticSubcontainer-2").hide();
-			$("#ajaxSubcontainer").show();
-			$("#ajaxSubcontainer").load(urlGetAllItemNoAssoc, function() {
+			$("#fragment-3").load(urlGetAllItemNoAssoc, function() {
 				$("#loading").hide();
-				$("#addItemsContainer").show();
-				});
-		});
-	
-	$("#addItem").click ( function() {
-			$("#addItemsContainer").hide();
-			$("#ajaxSubcontainer").hide();
-			$("#staticSubcontainer-2").hide();
-			$("#staticSubcontainer-1").show();
-			$("#addItemsContainer").show();
-		});
-	
-	$("#addMultipleItems").click ( function() {
-			$("#addItemsContainer").hide();
-			$("#ajaxSubcontainer").hide();
-			$("#staticSubcontainer-1").hide();
-			$("#staticSubcontainer-2").show();
-			$("#addItemsContainer").show();
-		});
+			});
+			multimAlreadyShow = true;
+		}
+	});
 	
 	$("input").bind('click', function () { this.focus(); });
 	$("textarea").bind('click', function () { this.focus(); });
@@ -139,6 +140,18 @@ function removeItem(DivId) {
 	$(containerItem).reorderListItem();
 }
 
+// Reorder queue list
+//function reorderListItem() {
+//	$(".itemBox").each(function (index) {
+//		$("input[@name='index']", this).attr("value", index) ;
+//		$(".id", this).attr("name", "data[ObjectRelation]["+index+"][id]") ;
+//		$(".switch", this).attr("name", "data[ObjectRelation]["+index+"][switch]") ;
+//		$(".priority", this).attr("name", "data[ObjectRelation]["+index+"][priority]") ;
+//		//$(".priority", this).attr("value", index+1).hide().fadeIn(100).fadeOut(100).fadeIn('fast') ;
+//	}) ;
+//	$(containerItem).reorderListItem();
+//}
+
 function setup_drag_drop_item(el) {
 	if(!$(el)) return;
 	$(el).Draggable({
@@ -221,13 +234,29 @@ var cols 		= 5 ;
 		</script>
 		*}
 	</div>
-	<div style="clear: left;"></div>
 
-	<div id="addItemsContainer" style="position: relative; margin: 8px 0; padding: 4px; background-color: #dddddd; border: 1px solid #666; display: none;">
-		<div style="position: absolute; top: 5px; right: 5px; z-index:9999; cursor: pointer;" id="addItemsContainerClose">close</div>
-		<div id="ajaxSubcontainer"></div>
-		<div id="staticSubcontainer-1" style="display: none;">{include file="../pages/form_media_provider_audiovideo.tpl"}</div>
-		<div id="staticSubcontainer-2" style="display: none;">{include file="../pages/form_upload.tpl"}</div>
+	<div id="container-1" style="margin-top: 10px; clear: left;">
+		<ul>
+			<li><a href="#fragment-1"><span>{t}Upload new images{/t}</span></a></li>
+			<li><a href="#fragment-2"><span>{t}Insert new audio/video{/t}</span></a></li>
+			<li><a href="#fragment-3" id="itemRepository"><span>{t}Multimedia archive{/t}</span></a></li>
+			<li><a href="#fragment-4"><span>{t}Multimedia Provider{/t}</span></a></li>
+		</ul>
+		<div id="fragment-1">
+			{if $conf->uploadType == "ajax"}
+				{include file="../pages/form_upload_ajax.tpl"}
+			{else if $conf->uploadType == "flash"}
+				{include file="../pages/form_upload.tpl"}
+			{/if}
+		</div>
+		<div id="fragment-2">
+			{include file="../pages/form_external_audiovideo.tpl"}
+		</div>
+		<div id="fragment-3"></div>
+		<div id="fragment-4">
+			{include file="../pages/form_media_provider_audiovideo.tpl"}
+		</div>
+		
 	</div>
 
 </div>
