@@ -9,5 +9,5 @@
 {include file="head.tpl"}
 <div id="centralPage">	
 {include file="submenu.tpl" method="index"}	
-{include file="../pages/list_objects.tpl" method="index"}
+{include file="../pages/list_objects.tpl" method="index" assocToSections=true}
 </div>

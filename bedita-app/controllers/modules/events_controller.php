@@ -199,9 +199,9 @@ class EventsController extends ModulesController {
 	 										"ERROR"	=> "/events/categories"
 	 									),
 	 			"addToAreaSection"	=> 	array(
-							"OK"	=> "/events",
-							"ERROR"	=> "/events" 
-							)
+										"OK"	=> "/events",
+										"ERROR"	=> "/events" 
+										)
 	 		) ;
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 	 	return false ;

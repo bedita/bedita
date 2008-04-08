@@ -49,7 +49,7 @@ function delObjects() {
 	return false ;
 }
 {/literal}
-{if !empty($areasectiontree)}
+{if !empty($areasectiontree) && !empty($assocToSections) && $assocToSections}
 {literal}
 function assocObjectsToAreaSection(id) {
 	var oToDel = "";
@@ -106,7 +106,7 @@ function assocObjectsToAreaSection(id) {
 	</tr>
 	{/section}
 	<tr><td colspan="7"><input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/></td></tr>
-	{if !empty($areasectiontree)}
+	{if !empty($areasectiontree) && !empty($assocToSections) && $assocToSections}
 	<tr>
 		<td colspan="7">
 			<input id="deleteSelected" type="button" value="(+) {t}Add selected items to area/section{/t}" onclick="javascript:assocObjectsToAreaSection();"/>

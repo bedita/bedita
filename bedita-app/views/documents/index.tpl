@@ -8,5 +8,5 @@
 {include file="head.tpl"}
 <div id="centralPage">	
 {include file="submenu.tpl" method="index"}	
-{include file="../pages/list_objects.tpl" method="index" areasectiontree=$areasectiontree}
+{include file="../pages/list_objects.tpl" method="index" areasectiontree=$areasectiontree assocToSections=true}
 </div>

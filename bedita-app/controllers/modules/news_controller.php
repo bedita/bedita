@@ -21,7 +21,7 @@ class NewsController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
-	var $uses = array('ShortNews','ObjectCategory','Area') ;
+	var $uses = array('BEObject','ShortNews','ObjectCategory','Area') ;
 	protected $moduleName = 'news';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -150,26 +150,38 @@ class NewsController extends ModulesController {
 		$this->userInfoMessage(__("Category deleted", true) . " -  " . $this->data["label"]);
 		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
 	}
-	
+
+	function addToAreaSection() {
+		if(!empty($this->params['form']['objects_to_del'])) {
+			$objects_to_assoc = split(",",$this->params['form']['objects_to_del']);
+			$destination = $this->data['destination'];
+			$this->addItemsToAreaSection($objects_to_assoc,$destination);
+		}
+	}
+
 	protected function forward($action, $esito) {
-	  	$REDIRECT = array(
-	 			"save"	=> 	array(
-	 									"OK"	=> "/news/view/{$this->ShortNews->id}",
-	 									"ERROR"	=> "/news" 
-	 								), 
-	 			"delete" =>	array(
-	 									"OK"	=> "/news",
-	 									"ERROR"	=> "/news/view/{@$this->params['pass'][0]}" 
-	 								), 
-	 			"saveCategories" 	=> array(
-	 										"OK"	=> "/news/categories",
-	 										"ERROR"	=> "/news/categories"
-	 									),
-	 			"deleteCategories" 	=> array(
-	 										"OK"	=> "/news/categories",
-	 										"ERROR"	=> "/news/categories"
-	 									)
-	 		) ;
+		$REDIRECT = array(
+				"save"	=> 	array(
+										"OK"	=> "/news/view/{$this->ShortNews->id}",
+										"ERROR"	=> "/news" 
+									), 
+				"delete" =>	array(
+										"OK"	=> "/news",
+										"ERROR"	=> "/news/view/{@$this->params['pass'][0]}" 
+									), 
+				"saveCategories" 	=> array(
+											"OK"	=> "/news/categories",
+											"ERROR"	=> "/news/categories"
+										),
+				"deleteCategories" 	=> array(
+												"OK"	=> "/news/categories",
+											"ERROR"	=> "/news/categories"
+										),
+				"addToAreaSection"	=> 	array(
+										"OK"	=> "/news",
+										"ERROR"	=> "/news" 
+										)
+		) ;
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 	 	return false ;
 	 }
