@@ -3,6 +3,7 @@
 {if ($conf->mce|default:false)}
 	{$javascript->link("tiny_mce/tiny_mce")}
 	<script language="javascript" type="text/javascript">
+		{* PER PERSONALIZZARE LA TOOLBAR: http://wiki.moxiecode.com/index.php/TinyMCE:Configuration#Advanced_theme *}
 		{literal}
 		tinyMCE.init({
 			mode : "textareas",
@@ -17,12 +18,12 @@
 			theme_advanced_buttons2: "",
 			theme_advanced_buttons3: "",
 			theme_advanced_toolbar_location: "bottom",
-			/*theme_advanced_path_location : "bottom",*/
+			/*theme_advanced_path_location : "top",*/
 			theme_advanced_resizing : true,
-			content_css : "/style/editable.css",
-			theme_advanced_blockformats : "p,h2,h3,blockquote",
+			/*content_css : "/style/editable.css",*/
+			theme_advanced_blockformats : "p,h1,h2,h3,blockquote",
 		});
-		$(document).ready(function(){
+		$(document).ready(function() {
 		{/literal}
 		{foreach key=val item=label from=$conf->langOptions name=langfe}
 		{if $val!=$object_lang && empty($object.LangText.abstract[$val])}
@@ -36,13 +37,14 @@
 			{literal}$('#long_desc_langs_container > ul').tabs("select",{/literal}{$smarty.foreach.langfe.index}{literal});{/literal}
 		{/if}
 		{/foreach}
-		{literal}});{/literal}
+		{literal}
+		});
+		{/literal}
 	</script>
 {/if}
 </script>
 <h2 class="showHideBlockButton">{t}Long Text{/t}</h2>
-<div class="blockForm" id="extendedtext" style="display: none">
-
+<div class="blockForm" id="extendedtext" style="display:none">
 <fieldset>
 	<div id="long_desc_langs_container" class="tabsContainer">
 		<ul>
