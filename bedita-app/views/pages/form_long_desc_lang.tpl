@@ -7,8 +7,20 @@
 		tinyMCE.init({
 			mode : "textareas",
 			editor_selector : "mce",
-			theme : "simple",
-			convert_urls : false 
+			convert_urls : false,
+			theme: "advanced",
+			button_title_map: false,
+			apply_source_formatting: true,
+			plugins: "table,contextmenu,advimage,advlink,paste,fullscreen,imagepopup",
+			theme_advanced_toolbar_align: "left",
+			theme_advanced_buttons1: "formatselect,outdent,indent,seperator,undo,redo,justifyleft,justifycenter,justifyright,separator,bold,italic,separator,bullist,numlist,link,separator,imagepopup,table,separator,sub,sup",
+			theme_advanced_buttons2: "",
+			theme_advanced_buttons3: "",
+			theme_advanced_toolbar_location: "bottom",
+			/*theme_advanced_path_location : "bottom",*/
+			theme_advanced_resizing : true,
+			content_css : "/style/editable.css",
+			theme_advanced_blockformats : "p,h2,h3,blockquote",
 		});
 		$(document).ready(function(){
 		{/literal}
