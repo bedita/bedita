@@ -29,7 +29,6 @@
 	<script defer type="text/javascript" src="js/pngfix_ielt7.js"></script>
 	<![endif]-->
 	
-
 	{* DA SPOSTARE IN UN ALTRO POSTO QUESTA SCHIFEZZA QUA SOTTO *}
 	{literal}
 	<style type="text/css">

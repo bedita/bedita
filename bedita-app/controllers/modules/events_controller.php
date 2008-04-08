@@ -11,7 +11,7 @@
  * @modifiedby		
  * @lastmodified	
  * @license			
- * @author 			ste@channelweb.it
+ * @author 			ChannelWeb srl
  */
 
 /**
@@ -19,7 +19,7 @@
  */
 class EventsController extends ModulesController {
 
-	var $helpers 	= array('BeTree', 'BeToolbar', 'Fck');
+	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
 	var $uses = array('BEObject','Event','ObjectCategory','Area','Tree') ;
 	protected $moduleName = 'events';

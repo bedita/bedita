@@ -8,8 +8,6 @@
 	{include file="../pages/form_properties.tpl" doctype=false comments=true}
 	{include file="../pages/form_subtitle_desc.tpl"}
 	{include file="../pages/form_tree.tpl"}
-	{*include file="../pages/form_lang_version.tpl"*}
-	{*include file="../pages/form_longdesc.tpl"*}
 	{include file="../pages/form_long_desc_lang.tpl"}
 	{include file="../pages/form_file_list.tpl" containerId='attachContainer' relation='attach' title='Attachments' items=$attach}
 	{include file="../pages/form_galleries.tpl"}

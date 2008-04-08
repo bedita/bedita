@@ -17,7 +17,7 @@
 class DocumentsController extends ModulesController {
 	var $name = 'Documents';
 
-	var $helpers 	= array('BeTree', 'BeToolbar', 'Fck');
+	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
 	var $uses = array('BEObject', 'Document', 'Tree', 'ObjectCategory') ;
