@@ -68,9 +68,12 @@ class GalleriesController extends ModulesController {
 		// Insert new multimedia items (remove previous associations)
 		if(!$this->Gallery->removeChildren()) 
 			throw new BeditaException( __("Remove children", true));
-		for($i=0; $i < count($multimedia) ; $i++) {
-			if(!$this->Gallery->appendChild($multimedia[$i]['id'],null,$multimedia[$i]['priority'])) {
-				throw new BeditaException( __("Append child", true));
+		
+		foreach($multimedia as $m) {
+			if (!empty($m['id'])) {
+				if(!$this->Gallery->appendChild($m['id'],null,$m['priority'])) {
+					throw new BeditaException( __("Append child", true));
+				}
 			}
 		}
 		$this->Transaction->commit();
