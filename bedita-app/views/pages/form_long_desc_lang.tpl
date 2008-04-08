@@ -26,12 +26,7 @@
 		$(document).ready(function() {
 		{/literal}
 			{foreach key=val item=label from=$conf->langOptions name=langfe}
-			{if $val!=$object_lang && empty($object.LangText.abstract[$val])}
-				{literal}$('#long_desc_langs_container > ul').tabs("disable",{/literal}{$smarty.foreach.langfe.index}{literal});{/literal}
-			{elseif $val==$object_lang}
-				{literal}$('#long_desc_langs_container > ul').tabs("select",{/literal}{$smarty.foreach.langfe.index}{literal});{/literal}
-			{/if}
-			{if $val!=$object_lang && empty($object.LangText.body[$val])}
+			{if $val!=$object_lang && empty($object.LangText.title[$val])}
 				{literal}$('#long_desc_langs_container > ul').tabs("disable",{/literal}{$smarty.foreach.langfe.index}{literal});{/literal}
 			{elseif $val==$object_lang}
 				{literal}$('#long_desc_langs_container > ul').tabs("select",{/literal}{$smarty.foreach.langfe.index}{literal});{/literal}

@@ -126,13 +126,6 @@ abstract class FrontendController extends AppController {
 						$this->BeLangText->setupForView($Details["LangText"]) ;
 					}
 					$this->BeLangText->objectForLang($Details['id'],$lang,$Details);
-					if(!empty($Details) && !empty($Details['EventDateItem'])) {
-						$Details['time'] = substr($Details['EventDateItem'][0]['start'],11,5);
-						$Details['date'] = substr($Details['EventDateItem'][0]['start'],0,10);
-					}
-					if(!empty($Details) && !empty($Details['ObjectCategory'])) {
-						$Details['category'] = $Details['ObjectCategory'][0]['label'];
-					}
 					$fullitems[]=$Details;
 				}
 				$this->set($tplvar,$fullitems);
