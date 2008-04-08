@@ -103,6 +103,11 @@ $config['mce'] = true;
 // upload type: flash, ajax
 $config['uploadType'] = "ajax";
 
+/**
+ * object relation type
+ */
+$config["objRelationType"] = array("time", "place");
+
 ///////////////////////////////////////////////////////
 // DO NOT EDIT BELOW THIS LINE//
 ///////////////////////////////////////////////////////
@@ -440,10 +445,5 @@ $config['modelBindings'] = array(
 				"ContentBase", "Stream")
 
 ) ;
-
-/**
- * object relation type
- */
-$config["objRelationType"] = array("time", "place");
 
 ?>
