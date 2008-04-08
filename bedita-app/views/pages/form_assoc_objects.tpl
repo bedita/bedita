@@ -132,7 +132,7 @@ $(document).ready(function() {
 	<div class="itemAssocTree" style="clear: both;">
 		<div class="assocItemSection" id="assocItemSection"></div>
 		<div>
-			{t}Realtion type:{/t}
+			{t}Relation type:{/t}
 			<select name="relationType" id="selectRelationType">
 			{foreach from=$conf->objRelationType item="relType"}
 				<option value="{$relType}">{$relType}</option>
