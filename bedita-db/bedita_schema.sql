@@ -635,18 +635,11 @@ CREATE TABLE books (
 
 CREATE TABLE links (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  object_id INTEGER UNSIGNED NOT NULL,
-  switch ENUM('url','topic','google','coordinate') NULL,
-  url VARCHAR(255) NULL,
-  x DOUBLE NULL,
-  y DOUBLE NULL,
-  z DOUBLE NULL,
-  str_x VARCHAR(255) NULL,
-  str_y VARCHAR(255) NULL,
-  str_z VARCHAR(255) NULL,
-  google_ref MEDIUMBLOB NULL,
+  `url` varchar(255) default NULL,
+  `target` enum('_self','_blank','parent','top','popup') default NULL,
   PRIMARY KEY(id),
-  FOREIGN KEY(object_id)
+  KEY `idx_url` (`url`),
+  FOREIGN KEY(id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
