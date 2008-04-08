@@ -21,7 +21,7 @@ class EventsController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Fck');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
-	var $uses = array('Event','ObjectCategory','Area','Tree') ;
+	var $uses = array('BEObject','Event','ObjectCategory','Area','Tree') ;
 	protected $moduleName = 'events';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -171,7 +171,15 @@ class EventsController extends ModulesController {
 		$this->userInfoMessage(__("Category deleted", true) . " -  " . $this->data["label"]);
 		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
 	}
-	
+
+	function addToAreaSection() {
+		if(!empty($this->params['form']['objects_to_del'])) {
+			$objects_to_assoc = split(",",$this->params['form']['objects_to_del']);
+			$destination = $this->data['destination'];
+			$this->addItemsToAreaSection($objects_to_assoc,$destination);
+		}
+	}
+
 	protected function forward($action, $esito) {
 	  	$REDIRECT = array(
 	 			"save"				=> 	array(
@@ -189,7 +197,11 @@ class EventsController extends ModulesController {
 	 			"deleteCategories" 	=> array(
 	 										"OK"	=> "/events/categories",
 	 										"ERROR"	=> "/events/categories"
-	 									)
+	 									),
+	 			"addToAreaSection"	=> 	array(
+							"OK"	=> "/events",
+							"ERROR"	=> "/events" 
+							)
 	 		) ;
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 	 	return false ;

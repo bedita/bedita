@@ -132,30 +132,11 @@ class DocumentsController extends ModulesController {
 		$this->eventInfo("documents $objectsListDeleted deleted");
 	}
 
-
 	function addToAreaSection() {
-		$this->checkWriteModulePermission();
 		if(!empty($this->params['form']['objects_to_del'])) {
 			$objects_to_assoc = split(",",$this->params['form']['objects_to_del']);
 			$destination = $this->data['destination'];
-			$object_type_id = $this->BEObject->findObjectTypeId($destination);
-			$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
-			$modelLoaded->restrict("BEObject");
-			if(!($section = $modelLoaded->findById($destination))) {
-				throw new BeditaException(sprintf(__("Error loading section: %d", true), $destination));
-			}
-			$this->Transaction->begin() ;
-			for($i=0; $i < count($objects_to_assoc) ; $i++) {
-				$parents = $this->BeTree->getParents($objects_to_assoc[$i]);
-				if (!in_array($section['id'], $parents)) { 
-					if(!$modelLoaded->appendChild($objects_to_assoc[$i],$section['id'])) {
-						throw new BeditaException( __("Append child", true));
-					}
-				}
-			}
-			$this->Transaction->commit() ;
-			$this->userInfoMessage(__("Documents associated to area/section", true) . " - " . $section['title']);
-			$this->eventInfo("documents associated to area " . $section['id']);
+			$this->addItemsToAreaSection($objects_to_assoc,$destination);
 		}
 	}
 
