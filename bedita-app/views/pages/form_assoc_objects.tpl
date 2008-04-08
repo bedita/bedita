@@ -120,9 +120,8 @@ $(document).ready(function() {
 				<span style="font-weight: bold">{$rel}</span>
 				<input type="hidden" class="relationTypeHidden" name="data[ObjectRelation][{$rel}][switch]" value="{$rel}" />			
 				{if !empty($relObjects.$rel)}
-					{foreach from=$relObjects.$rel item="objRelated"}
+					{foreach from=$relObjects.$rel item="objRelated" name="assocForeach"}
 						{include file="../pages/form_assoc_object.tpl"}
-						{math equation="x+y" x=$objIndex y=1 assign=objIndex}
 					{/foreach}
 				{/if}
 			</div>

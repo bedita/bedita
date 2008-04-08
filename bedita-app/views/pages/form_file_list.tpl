@@ -201,25 +201,12 @@ var cols 		= 5 ;
 	</div>
 
 
-	<div id="{$containerId}"> {* mutimediacontainer *}
-		{* DA ELIMINARE assign var="newPriority" 	value=1}
-		{assign var="index" 		value=0 *}
+	<div id="{$containerId}">
 		{foreach item=ob from=$items|default:$empty name=multimediaItems}
 			{assign var="objIndex" value=$smarty.foreach.multimediaItems.index} 
 			{include file="../pages/form_file_item.tpl" obj=$ob}
-			
-			{* DA ELIMINARE? (ho messo l'assign objindex sopra) math equation="x+y" x=$objIndex y=1 assign=objIndex*}
-
 		{foreachelse}
 		{/foreach}
-		{* DA ELIMINARE  ma a che serve sta roba?
-		<script type="text/javascript">
-		<!--
-		index = {$index} ;
-		priority = {$newPriority} ;
-		//-->
-		</script>
-		*}
 	</div>
 	<div style="clear: left;"></div>
 
@@ -227,7 +214,6 @@ var cols 		= 5 ;
 		<div style="position: absolute; top: 5px; right: 5px; z-index:9999; cursor: pointer;" id="addItemsContainerClose">close</div>
 		<div id="ajaxSubcontainer"></div>
 		<div id="staticSubcontainer-1" style="display: none;">
-			{*include file="../pages/form_upload_ajax.tpl"*}
 			{include file="../pages/form_media_provider_audiovideo.tpl"}
 		</div>
 		<div id="staticSubcontainer-2" style="display: none;">{include file="../pages/form_upload.tpl"}</div>

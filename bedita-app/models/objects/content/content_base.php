@@ -88,7 +88,9 @@ class ContentBase extends BEAppModel
 											   AND switch = '{$switch}' ";
 					if (!empty($obj_id)) {
 						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
-						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$switch}', NULL)" ;
+						$mp = $this->query("SELECT MAX(priority)+1 AS priority FROM {$table} WHERE id={$obj_id} AND switch='{$switch}'");
+						$maxPriority = (empty($mp[0][0]["priority"]))? 1 : $mp[0][0]["priority"];
+						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$switch}', ". $maxPriority .")" ;
 					}
 				}
 			}

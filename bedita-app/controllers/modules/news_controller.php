@@ -40,6 +40,7 @@ class NewsController extends ModulesController {
 			if($obj == null || $obj === false) {
 				 throw new BeditaException(__("Error loading news: ", true).$id);
 			}
+			$relations = $this->objectRelationArray($obj['ObjectRelation']);
 			if(isset($obj["LangText"])) {
 				$this->BeLangText->setupForView($obj["LangText"]) ;
 			}
@@ -55,6 +56,7 @@ class NewsController extends ModulesController {
 		$this->set('object',	$obj);
 		$this->set('tree', 		$this->BeTree->getSectionsTree());
 		$this->set('parents',	$this->BeTree->getParents($id));	
+		$this->set('relObjects', isset($relations) ? $relations : array());
 		$conf  = Configure::getInstance() ;
 		$ot = $conf->objectTypes['shortnews'];
 		$areaCategory = $this->ObjectCategory->getCategoriesByArea($ot);

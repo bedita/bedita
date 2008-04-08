@@ -74,6 +74,7 @@ class EventsController extends ModulesController {
 		$ot = &$conf->objectTypes ; 
 		$this->set('object',	$obj);
 		$this->set('attach', isset($relations['attach']) ? $relations['attach'] : array());
+		$this->set('relObjects', isset($relations) ? $relations : array());
 		$tree = $this->BeTree->getSectionsTree() ;
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);
