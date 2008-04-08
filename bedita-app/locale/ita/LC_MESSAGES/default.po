@@ -861,3 +861,9 @@ msgstr "Nascondi i tag presenti nel sistema"
 
 msgid "Multimedia provider unsupported"
 msgstr "Multimedia provider non supportato"
+
+msgid "Error during upload, missing file"
+msgstr "Errore durante l'upload: file assente"
+
+msgid "Error during upload, error number"
+msgstr "Errore durante l'upload: errore numero"

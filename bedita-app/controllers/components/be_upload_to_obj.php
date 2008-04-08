@@ -71,7 +71,7 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 	 * @todo: verify MIME type returned by extension or magic file.
 	 * @return boolean true if upload was successful, false otherwise.
 	 */
-	function upload() {
+	function upload($dataStream=null) {
 		$result = false ;
 		if(!$this->validate()) {
 			$this->errorCode = 500 + $this->params['form']['Filedata']['error'] ;
@@ -80,7 +80,10 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 		// Prepare data
 		$data = &$this->params['form']['Filedata'] ;
 		$override = (isset($this->params['form']['override'])) ? ((boolean)$this->params['form']['override']) : false ;
-		$data['title']	= $data['name'] ;
+		$data['title']	= (empty($dataStream['title']))? $data['name'] : $dataStream['title'];
+		if (!empty($dataStream['description'])) {
+			$data["description"] = $dataStream['description'];
+		}
 		$data['path']	= $data['tmp_name'] ;
 		$data['lang']   = $this->params['form']['lang'];
 		unset($data['tmp_name']) ;

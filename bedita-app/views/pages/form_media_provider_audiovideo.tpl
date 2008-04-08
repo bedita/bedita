@@ -1,7 +1,7 @@
 <script type="text/javascript">
 {literal}
 
-function commitFileUploadMedia(tmp) {
+function commitFileUpload(tmp) {
 	{/literal}{$relation}CommitUploadItem(tmp, '{$relation}'){literal} ;
 }
 
@@ -15,16 +15,15 @@ function showResponse(data) {
 	    $.each(data, function(entryIndex, entry) {
 	    	tmp[countFile++] = entry['filename'];
 	    });
+	    // clear input form
+	    $("#uploadMediaProvider").find("input[@type=text]").attr("value", "");
+	    $("#uploadMediaProvider").find("input[@type=file]").attr("value", "");
+	    $("#uploadMediaProvider").find("textarea").attr("value", "");
 		commitFileUpload(tmp);
 	}
 }
 
 function resetError() {
-	$("#msgUpload").empty();
-	$("#loading").show();
-}
-
-function resetErrorMedia() {
 	$("#msgUpload").empty();
 	$("#loading").show();
 }
@@ -58,7 +57,7 @@ $(document).ready(function() {
 
 
 	var optionsFormMedia = {
-		beforeSubmit:		resetErrorMedia,
+		beforeSubmit:		resetError,
        		 success:    	showResponseMedia,  // post-submit callback 
         		url:       	"{/literal}{$html->url('/files/uploadAjaxMediaProvider')}{literal}",       // override for form's 'action' attribute 
         		dataType:  	'json'        // 'xml', 'script', or 'json' (expected server response type) 
@@ -111,21 +110,19 @@ $(document).ready(function() {
 			<td style="padding-left:20px;"><strong>didascalia:</strong></td>
 		</tr>
 		<tr>
-			<td><input type="text" name="titolo" class="formtitolo" value=""></td>
+			<td><input type="text" name="streamUploaded[title]" class="formtitolo" value=""></td>
 			<td style="padding-left:20px;" rowspan="4">
-				<textarea name="didascalia" style="width:280px; height:90px;"></textarea>
+				<textarea name="streamUploaded[description]" style="width:280px; height:90px;"></textarea>
 			</td>
 		</tr>
 		<tr>
 			<td><strong>file:</strong></td>
 		</tr>
 		<tr>
-			<input type="hidden" name="MAX_FILE_SIZE" value="13000" />
-			<input type="hidden" name="lang" value="{if $session->check('Config.language')}{$session->read('Config.language')}{else}ita{/if}"/>
 			<td>
+				<input type="hidden" name="lang" value="{if $session->check('Config.language')}{$session->read('Config.language')}{else}ita{/if}"/>
 				<input type="file" name="Filedata" />
 				<input type="button" id="uploadForm" value="{t}Upload{/t}"/>
-				{*include file="../pages/form_upload_ajax.tpl"*}
 			</td>
 		</tr>
 	</table>

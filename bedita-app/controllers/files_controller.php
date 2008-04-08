@@ -2,7 +2,7 @@
 class FilesController extends AppController {
 	
 	var $helpers 	= array('Html');
-	var $uses		= array('Stream') ;
+	var $uses		= array('Stream','BEObject') ;
 	var $components = array('Transaction', 'SwfUpload', 'BeUploadToObj');
 
 	function upload () {
@@ -10,7 +10,7 @@ class FilesController extends AppController {
 			return ;
 		try {
 			$this->Transaction->begin() ;
-			$id = $this->BeUploadToObj->upload($this->params['form']['Filedata']) ;
+			$id = $this->BeUploadToObj->upload() ;
 			$this->Transaction->commit();
 		} catch(BeditaException $ex) {
 			header("HTTP/1.0 " . $this->BeUploadToObj->errorCode . " Internal Server Error");
@@ -21,11 +21,14 @@ class FilesController extends AppController {
 	}
 	
 	function uploadAjax () {
-		if (!isset($this->params['form']['Filedata'])) return ;
 		$this->layout = "empty";
 		try {
 			$this->Transaction->begin() ;
-			$id = $this->BeUploadToObj->upload($this->params['form']['Filedata']) ;
+			if (!isset($this->params['form']['Filedata']))
+				throw new BEditaException(__("Error during upload: missing file",true)) ;
+			if (!empty($this->params['form']['Filedata']["error"]))
+				throw new BEditaException(__("Error during upload: error number" ." ". $this->params['form']['Filedata']["error"],true)) ;
+			$id = $this->BeUploadToObj->upload($this->params["form"]["streamUploaded"]) ;
 			$this->Transaction->commit();
 			$this->set("fileName", $this->params['form']['Filedata']["name"]);
 		} catch(BeditaException $ex) {

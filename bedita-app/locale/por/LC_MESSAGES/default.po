@@ -836,3 +836,9 @@ msgstr "Esconder os tag no sistema"
 
 msgid "Multimedia provider unsupported"
 msgstr "x DANTE - Multimedia provider non supportato"
+
+msgid "Error during upload, missing file"
+msgstr "x DANTE - Errore durante l'upload: file assente"
+
+msgid "Error during upload, error number"
+msgstr "x DANTE - Errore durante l'upload: errore numero"
