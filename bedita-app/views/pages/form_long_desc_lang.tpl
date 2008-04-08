@@ -1,7 +1,7 @@
 {assign var=object_lang value=$object.lang|default:$conf->defaultLang}
 
 {if ($conf->mce|default:false)}
-	<script language="javascript" type="text/javascript" src="/js/tiny_mce/tiny_mce.js"></script>
+	{$javascript->link("tiny_mce/tiny_mce")}
 	<script language="javascript" type="text/javascript">
 		{literal}
 		tinyMCE.init({
@@ -10,6 +10,7 @@
 			theme : "simple",
 			convert_urls : false 
 		});
+		$(document).ready(function(){
 		{/literal}
 		{foreach key=val item=label from=$conf->langOptions name=langfe}
 		{if $val!=$object_lang && empty($object.LangText.abstract[$val])}
@@ -23,6 +24,7 @@
 			{literal}$('#long_desc_langs_container > ul').tabs("select",{/literal}{$smarty.foreach.langfe.index}{literal});{/literal}
 		{/if}
 		{/foreach}
+		{literal}});{/literal}
 	</script>
 {/if}
 </script>
