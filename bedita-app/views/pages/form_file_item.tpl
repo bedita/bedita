@@ -8,7 +8,7 @@
 {assign var="newPriority"		value = $obj.priority+1|default:$priority}
 {assign var="mediaPath"         value = $conf->mediaRoot}
 {assign var="mediaUrl"          value = $conf->mediaUrl}
-{assign_concat var="linkUrl"            0="/multimedia/view" 1="/" 2=$obj.id}    {* vecchio lunkurl $mediaUrl$filePath - forse c'è un modo migliore x astrarre il link al modulo in multimedia *}
+{assign_concat var="linkUrl"            0=$html->url('/multimedia/view/') 1=$obj.id}    {* vecchio lunkurl $mediaUrl$filePath - forse c'è un modo migliore x astrarre il link al modulo in multimedia *}
 {assign_concat var="imageAltAttribute"	0="alt='"  1=$obj.title 2="'"}
 {assign_concat var="mediaCacheBaseURL"	0=$conf->mediaUrl  1="/" 2=$conf->imgCache 3="/"}
 {assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
