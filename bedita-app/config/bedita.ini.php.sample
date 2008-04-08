@@ -97,8 +97,8 @@ $config['authorizedGroups'] = array('administrator','editor','reader');
 // immutable groups
 $config['basicGroups'] = array('administrator','editor','reader','guest');
 
-// fckeditor (enabled|disabled) for long_text: comment to disable
-$config['fckeditor'] = true;
+// mce (enabled|disabled) for long_text: comment to disable
+$config['mce'] = true;
 
 // upload type: flash, ajax
 $config['uploadType'] = "ajax";
