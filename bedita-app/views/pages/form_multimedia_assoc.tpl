@@ -111,7 +111,7 @@ $(document).ready(function(){
 			{if $toolbar|default:""}
 				<p class="toolbar">
 	
-					{t}Itmes{/t}: {$toolbar.size} | {t}page{/t} {$toolbar.page} {t}of{/t} {$toolbar.pages} &nbsp;
+					{t}Items{/t}: {$toolbar.size} | {t}page{/t} {$toolbar.page} {t}of{/t} {$toolbar.pages} &nbsp;
 					
 					{if $toolbar.prev > 0}
 						<span><a href="javascript: void(0);" id="streamFirstPage" title="{t}first page{/t}">|<</a></span>
