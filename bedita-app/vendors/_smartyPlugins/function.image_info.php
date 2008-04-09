@@ -126,9 +126,9 @@ function smarty_function_image_info ($params, &$smarty)
 	$imageInfo["h"]			= $_image_data [1];
 	$imageInfo["hrtype"]	= _getHumanReadableType ( ( $_image_data[2] ) );
 	$imageInfo["attr"]		= $_image_data [3];
-	$imageInfo["mimetype"]	= $_image_data ['mime'];
-	$imageInfo["bits"]		= $_image_data ['bits'];
-	$imageInfo["channels"]	= $_image_data ['channels'];
+	$imageInfo["mimetype"]	= (!empty($_image_data ['mime']))?$_image_data ['mime']:'';
+	$imageInfo["bits"]		= (!empty($_image_data ['bits']))?$_image_data ['bits']:'';
+	$imageInfo["channels"]	= (!empty($_image_data ['channels']))?$_image_data ['channels']:'';
 	if ($imageInfo["w"] > $imageInfo["h"])
 	{
 		$imageInfo["orientation"]	= "landscape";
