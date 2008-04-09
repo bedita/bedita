@@ -73,21 +73,21 @@ $(document).ready(function() {
 	{
 		if ( $("input[@value='image']").is(":checked") )
 		{
-			$("#addAudioform").hide();
-			$("#addVideoform").hide();
-			$("#addImageform").show();
+			$("#addAudioForm").hide();
+			$("#addVideoForm").hide();
+			$("#addImageForm").show();
 		}
 		else if ( $("input[@value='video']").is(":checked") )
 		{
-			$("#addAudioform").hide();
-			$("#addImageform").hide();
-			$("#addVideoform").show();
+			$("#addAudioForm").hide();
+			$("#addImageForm").hide();
+			$("#addVideoForm").show();
 		}
 		else if ( $("input[@value='audio']").is(":checked") )
 		{
-			$("#addVideoform").hide();
-			$("#addImageform").hide();
-			$("#addAudioform").show();
+			$("#addVideoForm").hide();
+			$("#addImageForm").hide();
+			$("#addAudioForm").show();
 		}
 	})
 });

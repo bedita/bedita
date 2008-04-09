@@ -21,7 +21,7 @@
 <!--
 {literal}
 $(document).ready(function(){
-	$('#properties').show() ;
+	$('#title').show() ;
 	$('#extendedtext').show() ;
 	$('#attachments').show() ;
 	$('.showHideBlockButton').bind("click", function(){
