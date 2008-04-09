@@ -3,20 +3,19 @@
 	<div class="menuLeft">
 		<h1 onClick="window.location='{$html->url('/areas')}'" class="areas"><a href="{$html->url('/areas')}">{t}Areas{/t}</a></h1>
 		<div class="inside">
-			{include file="../pages/user_module_perms.tpl"}
-			<ul class="simpleMenuList" style="margin:10px 0px 10px 0px">
-				<li {if $method eq 'index'}class="on"{/if}>		<b>&#8250;</b> {$tr->link('Areas Tree', '/areas')}</li>
+			<ul class="simpleMenuList" style="margin: 15px 0;">
+				<li {if $method eq 'index'}class="on"{/if}> <b>&#8250;</b> {$tr->link('Areas Tree', '/areas')}</li>
 				{if $module_modify eq '1'}
-				<li {if $method eq 'viewArea'}class="on"{/if}>	<b>&#8250;</b> {$tr->link('New Area', '/areas/viewArea')}</li>
-				<li {if $method eq 'viewSection'}class="on"{/if}>	<b>&#8250;</b> {$tr->link('New Section', '/areas/viewSection')}</li>
+				<li {if $method eq 'viewArea'}class="on"{/if}> <b>&#8250;</b> {$tr->link('New Area', '/areas/viewArea')}</li>
+				<li {if $method eq 'viewSection'}class="on"{/if}> <b>&#8250;</b> {$tr->link('New Section', '/areas/viewSection')}</li>
 				{/if}
 			</ul>
 			<hr/>
+			{include file="../pages/user_module_perms.tpl"}
+			<hr/>
 		</div>
 	</div>
-	<hr/>
+	<br/>
 	<div id="handlerChangeAlert"></div>
-	<br/>
-	<br/>
 	<br/>
 </div>

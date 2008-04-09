@@ -1,5 +1,5 @@
 <script type="text/javascript">
-var urlGetObj		= '{$html->url("/streams/get_item_form")}' ;
+var urlGetObj		= '{$html->url("/streams/get_item_form", false)}' ;
 var urlGetObjId 	= '{$html->url("/streams/get_item_form_by_id")}' ;
 var containerItem	= "#{$containerId}";
 var urlGetAllItemNoAssoc = "{$html->url("/streams/showStreams")}/{$object.id|default:'0'}/{$collection|default:''}";

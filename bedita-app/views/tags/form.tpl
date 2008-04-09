@@ -18,7 +18,7 @@ $.validator.setDefaults({
 });
 
 $(document).ready(function(){
-	$("#updateForm").validate();
+	$("#updateform", false).validate();
 	$("#delBEObject").submitConfirm({
 		{/literal}
 		action: "{$html->url('delete/')}",

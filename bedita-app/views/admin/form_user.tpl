@@ -2,7 +2,7 @@
 {literal}
 
 function localGroupChecked() {
-	var formElem = document.getElementById("userForm");
+	var formElem = document.getElementById("userform", false);
 	for(i=0;i<formElem.length;i++) {
 		id = formElem.elements[i].id;
 		if(id.indexOf('group_') != -1) {
@@ -71,7 +71,7 @@ jQuery.validator.addMethod("phone", function(value, element) {
 		"password", 
 		function( value, element, param ) {return this.optional(element) || {/literal}{$conf->passwdRegex}{literal}.test(value);}, 
     	"{/literal}{$tr->t($conf->passwdRegexMsg)}{literal}");
-    $("#userForm").validate();
+    $("#userform", false).validate();
     $("#submit").click(function(){localSetGroupChecked()});
 });
 

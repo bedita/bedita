@@ -1,8 +1,8 @@
-{$javascript->link("form")}
-{$javascript->link("jquery.form")}
-{$javascript->link("jquery.cmxforms")}
-{$javascript->link("jquery.metadata")}
-{$javascript->link("jquery.validate")}
+{$javascript->link("form", false)}
+{$javascript->link("jquery/jquery.form", false)}
+{$javascript->link("jquery/jquery.cmxforms", false)}
+{$javascript->link("jquery/jquery.metadata", false)}
+{$javascript->link("jquery/jquery.validate", false)}
 
 <script type="text/javascript">
 <!--
@@ -12,7 +12,7 @@ $.validator.setDefaults({
 	success: function(label) { label.html("&nbsp;").addClass("checked");}
 });
 $().ready(function() { 
-	$("#loginForm").validate(); 
+	$("#loginform", false).validate(); 
 });
 {/literal}
 //-->

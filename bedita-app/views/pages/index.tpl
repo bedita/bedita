@@ -23,7 +23,7 @@
 	{/if}
 {/section}
 </div>
-{include file="../messages.tpl"}
+{include file="../layout_parts/messages.tpl"}
 <div id="centralPageHome">
 {if !empty($conf->multilang) && $conf->multilang}
 {t}Language{/t}{if $session->check('Config.language')} [{$session->read('Config.language')}] <img src="{$html->webroot}img/flags/{$session->read('Config.language')}.png" border="0" alt="{$session->read('Config.language')}"/>{/if}:

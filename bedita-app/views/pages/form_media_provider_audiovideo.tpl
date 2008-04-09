@@ -50,7 +50,7 @@ $(document).ready(function() {
         dataType:  		'json'        // 'xml', 'script', or 'json' (expected server response type) 
     }; 
 
-    $("#uploadForm").click( function() {
+    $("#uploadform", false).click( function() {
     	$('#updateForm').ajaxSubmit(optionsForm);
     	return false;
     }); 
@@ -73,21 +73,21 @@ $(document).ready(function() {
 	{
 		if ( $("input[@value='image']").is(":checked") )
 		{
-			$("#addAudioForm").hide();
-			$("#addVideoForm").hide();
-			$("#addImageForm").show();
+			$("#addAudioform", false).hide();
+			$("#addVideoform", false).hide();
+			$("#addImageform", false).show();
 		}
 		else if ( $("input[@value='video']").is(":checked") )
 		{
-			$("#addAudioForm").hide();
-			$("#addImageForm").hide();
-			$("#addVideoForm").show();
+			$("#addAudioform", false).hide();
+			$("#addImageform", false).hide();
+			$("#addVideoform", false).show();
 		}
 		else if ( $("input[@value='audio']").is(":checked") )
 		{
-			$("#addVideoForm").hide();
-			$("#addImageForm").hide();
-			$("#addAudioForm").show();
+			$("#addVideoform", false).hide();
+			$("#addImageform", false).hide();
+			$("#addAudioform", false).show();
 		}
 	})
 });

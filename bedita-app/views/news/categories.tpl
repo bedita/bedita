@@ -1,4 +1,4 @@
-{$javascript->link("jquery.changealert")}
+{$javascript->link("jquery/jquery.changealert", false)}
 
 </head>
 <body>

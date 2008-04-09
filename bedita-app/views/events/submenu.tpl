@@ -3,21 +3,19 @@
 	<div class="menuLeft">
 		<h1 onClick="window.location='{$html->url('/events')}'" class="eventi"><a href="{$html->url('/events')}">{t}Events{/t}</a></h1>
 		<div class="inside">
-			{include file="../pages/user_module_perms.tpl"}
-			<ul class="simpleMenuList" style="margin:10px 0px 10px 0px">
-				<li {if $method eq 'index'}class="on"{/if}>		<b>&#8250;</b> {$tr->link('Events', '/events')}</li>
+			<ul class="simpleMenuList" style="margin: 15px 0;">
+				<li {if $method eq 'index'}class="on"{/if}> <b>&#8250;</b> {$tr->link('Events', '/events')}</li>
+				<li {if $method eq 'categories'}class="on"{/if}> <b>&#8250;</b> {$tr->link('Categories', '/events/categories')}</li>
 				{if $module_modify eq '1'}
-				<li {if $method eq 'view'}class="on"{/if}>	<b>&#8250;</b> {$tr->link('New Event', '/events/view')}</li>
+				<li {if $method eq 'view'}class="on"{/if}> <b>&#8250;</b> {$tr->link('New Event', '/events/view')}</li>
 				{/if}
-				<li {if $method eq 'categories'}class="on"{/if}>	<b>&#8250;</b> {$tr->link('Categories', '/events/categories')}</li>
 			</ul>	
+			<hr/>
+			{include file="../pages/user_module_perms.tpl"}
 			<hr/>
 		</div>
 	</div>
-	<hr/>
-	<div id="handlerChangeAlert">
-	</div>
 	<br/>
-	<br/>
+	<div id="handlerChangeAlert"></div>
 	<br/>
 </div>

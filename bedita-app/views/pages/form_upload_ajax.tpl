@@ -32,7 +32,7 @@ $(document).ready(function() {
         dataType:  		'json'        // 'xml', 'script', or 'json' (expected server response type) 
     }; 
 
-    $("#uploadForm").bind("click", function() {
+    $("#uploadform", false).bind("click", function() {
     	$('#updateForm').ajaxSubmit(optionsForm);
     	return false;
     }); 

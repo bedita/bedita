@@ -3,25 +3,27 @@
 {if ($conf->mce|default:false)}
 	{$javascript->link("tiny_mce/tiny_mce")}
 	<script language="javascript" type="text/javascript">
-		{* PER PERSONALIZZARE LA TOOLBAR: http://wiki.moxiecode.com/index.php/TinyMCE:Configuration#Advanced_theme *}
+		{* PER PERSONALIZZARE LA TOOLBAR: http://wiki.moxiecode.com/index.php/TinyMCE:Configuration#Advanced_theme | http://wiki.moxiecode.com/index.php/TinyMCE:Plugins *}
 		{literal}
 		tinyMCE.init({
 			mode : "textareas",
 			editor_selector : "mce",
 			convert_urls : false,
 			theme: "advanced",
-			button_title_map: false,
 			apply_source_formatting: true,
-			plugins: "table,contextmenu,advimage,advlink,paste,fullscreen,imagepopup",
+			plugins: "table,contextmenu,paste,fullscreen",
 			theme_advanced_toolbar_align: "left",
-			theme_advanced_buttons1: "formatselect,outdent,indent,seperator,undo,redo,justifyleft,justifycenter,justifyright,separator,bold,italic,separator,bullist,numlist,link,separator,imagepopup,table,separator,sub,sup",
+			theme_advanced_buttons1 : "bold,italic,underline,strikethrough, |, p,h1,h2,h3, |, bullist,numlist,hr,table,blockquote, |, link,unlink,pastetext,pasteword, |, charmap,code, |, undo,redo, |, fullscreen",
+//			theme_advanced_buttons1: "formatselect,outdent,indent,seperator,undo,redo,justifyleft,justifycenter,justifyright,separator,bold,italic,separator,bullist,numlist,link,separator,imagepopup,table,separator,sub,sup",
 			theme_advanced_buttons2: "",
 			theme_advanced_buttons3: "",
 			theme_advanced_toolbar_location: "bottom",
-			/*theme_advanced_path_location : "top",*/
 			theme_advanced_resizing : true,
+			theme_advanced_resize_horizontal : false,
+			theme_advanced_link_targets : "_blank",
+			entity_encoding : "raw",
 			/*content_css : "/style/editable.css",*/
-			theme_advanced_blockformats : "p,h1,h2,h3,blockquote",
+			/*theme_advanced_blockformats : "p,h1,h2,h3,blockquote",*/
 		});
 		$(document).ready(function() {
 		{/literal}

@@ -48,9 +48,9 @@ var changeAlertMessage = "{/literal}{t}The change will be lost. Do you want to c
 
 <div id="headerPage">
 	<div class="beditaButton" onclick= "javascript:document.location ='{$html->url('/')}'">
-		<span style="font:bold 17px Verdana">B.Edita</span><br/>
-		<b>›</b> <a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a><br/><br/>
-		<p><b>Consorzio BEdita</b><br/>2007</p>
+		<span style="font:bold 17px Verdana">B.Edita</span>
+		<p><b>›</b> <a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a></p>
+		<p><b>BEdita</b><br/>2007</p>
 	</div>
 {section name="m" loop=$moduleList}
 	{if ($moduleList[m].status == 'on')}
@@ -71,5 +71,5 @@ var changeAlertMessage = "{/literal}{t}The change will be lost. Do you want to c
 {/section}
 </div>
 
-{include file="messages.tpl"}
+{include file="layout_parts/messages.tpl"}
 {/strip}

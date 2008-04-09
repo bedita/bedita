@@ -1,12 +1,12 @@
 {$html->css('module.superadmin')}
-{$javascript->link("interface")}
-{$javascript->link("form")}
-{$javascript->link("jquery.form")}
-{$javascript->link("jquery.cmxforms")}
-{$javascript->link("jquery.metadata")}
-{$javascript->link("jquery.validate")}
-{$javascript->link("jquery.changealert")}
-{$javascript->link("jquery.pwdstrengthmeter")}
+{$javascript->link("jquery/interface", false)}
+{$javascript->link("form", false)}
+{$javascript->link("jquery/jquery.form", false)}
+{$javascript->link("jquery/jquery.cmxforms", false)}
+{$javascript->link("jquery/jquery.metadata", false)}
+{$javascript->link("jquery/jquery.validate", false)}
+{$javascript->link("jquery/jquery.changealert", false)}
+{$javascript->link("jquery/jquery.pwdstrengthmeter")}
 </head>
 <body>
 {include file="head.tpl"}
