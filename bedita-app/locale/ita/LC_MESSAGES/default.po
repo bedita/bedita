@@ -85,6 +85,9 @@ msgstr "apri tutti i dettagli"
 msgid "close details"
 msgstr "chiudi tutti i dettagli"
 
+msgid "close"
+msgstr "chiudi"
+
 msgid "cancel"
 msgstr "cancella"
 
@@ -633,6 +636,24 @@ msgstr "Carica nuovi immagini"
 
 msgid "Insert new audio/video"
 msgstr "Inserisci nuovi file audio/video"
+
+msgid "Display size"
+msgstr "Mostra"
+
+msgid "Large icons"
+msgstr "Icone grandi"
+
+msgid "Small icons"
+msgstr "Icone piccole"
+
+msgid "Add item"
+msgstr "Aggiungi"
+
+msgid "Upload several images"
+msgstr "Carica molte immagini"
+
+msgid "Add from Archive"
+msgstr "Archivio"
 
 msgid "Gallery items"
 msgstr "Oggetti nella galleria"

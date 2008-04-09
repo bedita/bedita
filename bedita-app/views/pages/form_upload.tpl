@@ -120,7 +120,7 @@ window.onload = function() {
 // Append file in the queue
 function befileQueued(file, queuelength) {
 	if(!$("#SWFUploadFileListingFiles ul").size()) {
-		$("#SWFUploadFileListingFiles").append("<h4>"+title_dialog+"<\/h4>").append("<ul><\/ul>")  ;
+		$("#SWFUploadFileListingFiles").append("<ul><\/ul>")  ;
 	}
 	// New item text
 	var addFileItemListHtml = "<li id='"+file.id+"' class='SWFUploadFileItem'>"+file.name +" <span class='progressBar' id='" + file.id + "progress'><\/span><a id='" + file.id + "deletebtn' class='cancelbtn' href='javascript:swfu.cancelFile(\"" + file.id + "\");'><!-- IE --><\/a><\/li>" ;
@@ -234,13 +234,13 @@ th.boxNotSelected {border:solid #000 1px;background-color:#DDD; height: 20px;}
 			<div id="wrapper">
 				<div id="content">
 					<input type="hidden" name="lang" value="{if $session->check('Config.language')}{$session->read('Config.language')}{else}ita{/if}"/>
-					<div id="SWFUploadTarget">
+					<div id="SWFUploadTarget" style="height: 50px; line-height: 18px; margin: 10px 0;">
 						<form id="uploadForm" action="{$html->url('/files/upload')}" method="post" enctype="multipart/form-data">
 							<input type="file" name="Filedata" />
 							<input type="submit" value="{t}Upload{/t}"/>
 						</form>
 					</div>
-					<h4 id="queueinfo">{t}Queue is empty{/t}</h4>
+					<p id="queueinfo">{t}Queue is empty{/t}</p>
 					<div id="SWFUploadFileListingFiles"></div>
 					<br class="clr" />
 					<input type="button" id="cancelqueuebtn" onclick="javascript:beCancelQueue();" value="{t}Cancel queue{/t}"/>

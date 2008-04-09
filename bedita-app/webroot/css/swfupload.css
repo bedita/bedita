@@ -4,10 +4,10 @@
 	padding: 0 0 0 20px;
 }
 
-.browsebtn { background: url(../img/swfupload/add.png) no-repeat 0 4px; }
+.browsebtn { /*background: url(../img/swfupload/add.png) no-repeat 0 4px; */ }
 .uploadbtn {
 	display: none;
-	background: url(../img/swfupload/accept.png) no-repeat 0 4px;
+	/*background: url(../img/swfupload/accept.png) no-repeat 0 4px;*/
 }
 
 .cancelbtn {
@@ -15,13 +15,13 @@
 	width: 16px;
 	height: 16px;
 	float: right;
-	background: url(../img/swfupload/cancel.png) no-repeat;
+	/*background: url(../img/swfupload/cancel.png) no-repeat;*/
 }
 
 #cancelqueuebtn {
 	display: block;
 	display: none;
-	background: url(../img/swfupload/cancel.png) no-repeat 0 4px;
+	/*background: url(../img/swfupload/cancel.png) no-repeat 0 4px;*/
 	margin: 10px 0;
 }
 

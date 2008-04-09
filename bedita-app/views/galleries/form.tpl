@@ -21,7 +21,7 @@ $.validator.setDefaults({
 });
 
 $(document).ready(function(){
-	$("#updateform", false).validate({
+	$("#updateform").validate({
 		ignore: ".priority"
 	});
 	// submit delete

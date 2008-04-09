@@ -30,7 +30,7 @@ $(document).ready(function(){
 	    beforeShow: customRange
 	}, $.datepicker.regional['{/literal}{$currLang}{literal}']); 
 	
-	$("#updateform", false).validate();
+	$("#updateform").validate();
 	
 	$("#updateForm//input[@name='data[object_type_id]']").bind("click", function() {
 		activePortionsForm(this.value) ;	

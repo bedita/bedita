@@ -50,7 +50,7 @@ $(document).ready(function() {
         dataType:  		'json'        // 'xml', 'script', or 'json' (expected server response type) 
     }; 
 
-    $("#uploadform", false).click( function() {
+    $("#uploadform").click( function() {
     	$('#updateForm').ajaxSubmit(optionsForm);
     	return false;
     }); 
@@ -68,26 +68,26 @@ $(document).ready(function() {
     	return false;
     });
 	
-	/* image/video/audio switch */
+	/* image/video/audio switch - xho */
 	$("input[@name='itemType']").change(function ()
 	{
 		if ( $("input[@value='image']").is(":checked") )
 		{
-			$("#addAudioform", false).hide();
-			$("#addVideoform", false).hide();
-			$("#addImageform", false).show();
+			$("#addAudioform").hide();
+			$("#addVideoform").hide();
+			$("#addImageform").show();
 		}
 		else if ( $("input[@value='video']").is(":checked") )
 		{
-			$("#addAudioform", false).hide();
-			$("#addImageform", false).hide();
-			$("#addVideoform", false).show();
+			$("#addAudioform").hide();
+			$("#addImageform").hide();
+			$("#addVideoform").show();
 		}
 		else if ( $("input[@value='audio']").is(":checked") )
 		{
-			$("#addVideoform", false).hide();
-			$("#addImageform", false).hide();
-			$("#addAudioform", false).show();
+			$("#addVideoform").hide();
+			$("#addImageform").hide();
+			$("#addAudioform").show();
 		}
 	})
 });

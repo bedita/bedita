@@ -12,7 +12,7 @@ $.validator.setDefaults({
 	success: function(label) { label.html("&nbsp;").addClass("checked");}
 });
 $().ready(function() { 
-	$("#loginform", false).validate(); 
+	$("#loginform").validate(); 
 });
 {/literal}
 //-->

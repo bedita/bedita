@@ -13,7 +13,7 @@ jQuery.validator.addMethod(
 		function(value, element) { return /^[a-z0-9]+$/i.test(value); },
 		"{/literal}{t}Letters or numbers only please{/t}{literal}");
 $(document).ready(function() {
-	$("#groupform", false).validate(); 
+	$("#groupform").validate(); 
 });
 
 {/literal}
