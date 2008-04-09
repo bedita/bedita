@@ -106,7 +106,7 @@ $config['uploadType'] = "ajax";
 /**
  * object relation type
  */
-$config["objRelationType"] = array("time", "place");
+$config["objRelationType"] = array("event_place","relators","moderators");
 
 ///////////////////////////////////////////////////////
 // DO NOT EDIT BELOW THIS LINE//
