@@ -50,7 +50,7 @@ $(document).ready(function() {
         dataType:  		'json'        // 'xml', 'script', or 'json' (expected server response type) 
     }; 
 
-    $("#uploadform").click( function() {
+    $("#uploadForm").click( function() {
     	$('#updateForm').ajaxSubmit(optionsForm);
     	return false;
     }); 
@@ -106,8 +106,8 @@ $(document).ready(function() {
 	<div id="addImageForm">
 	<table border="0" cellspacing="0" cellpadding="2">
 		<tr>
-			<td><strong>titolo:</strong></td>
-			<td style="padding-left:20px;"><strong>didascalia:</strong></td>
+			<td><strong>{t}Titolo{/t}</strong></td>
+			<td style="padding-left:20px;"><strong>{t}Description{/t}</strong></td>
 		</tr>
 		<tr>
 			<td><input type="text" name="streamUploaded[title]" class="formtitolo" value=""></td>
