@@ -20,7 +20,7 @@
 	
 	{include file="../layout_parts/inline_js.tpl"}
 	{* collect linked scripts around *}
-	<!-- -1- -->{$scripts_for_layout}<!-- -2- -->
+	{$scripts_for_layout}
 
 
 {*
