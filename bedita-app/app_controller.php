@@ -409,7 +409,7 @@ class AppController extends Controller
 				throw new BeditaException(__("Object type not found - ", true).$modelClass);			
 			}
 			$this->{$modelClass} = new $modelClass();
-			$this->{$modelClass}->bviorHideFields = array('UserCreated','UserModified','Permissions','Version','CustomProperties','Index','langObjs', 'images', 'multimedia', 'attachments', 'LangText');
+			$this->modelBindings($this->{$modelClass});
 
 			if(!($objDetail = $this->{$modelClass}->findById($obj['id']))) {
 				continue ;
