@@ -42,17 +42,7 @@ class BaseDocument extends BEAppModel
 				'foreignKey'	=> 'question_id',
 				'dependent'	=> false
 			),
-	) ;			
-
-	var $hasMany = array(
-		'links' =>
-				array(
-					'className'	=> 'Link',
-					'foreignKey'	=> 'object_id',
-//					'fields'		=> 'id, start, end',
-					'dependent'	=> true
-				),
-		) ;	
+	) ;				
 
 	var $hasAndBelongsToMany = array(
 			'comments' =>
