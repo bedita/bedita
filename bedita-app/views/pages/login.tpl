@@ -64,4 +64,4 @@ $().ready(function() {
 </fieldset>
 </form>
 
-{include file="messages.tpl"}
+{include file="../layout_parts/messages.tpl"}
