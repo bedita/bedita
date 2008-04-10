@@ -1,7 +1,7 @@
 <script type="text/javascript">
 <!--
 
-var urlBaseAddItem = "{$html->url('/documents/addLink/')}";
+var urlBaseAddItem = "{$addLinkUrl}";
 
 {literal}
 
