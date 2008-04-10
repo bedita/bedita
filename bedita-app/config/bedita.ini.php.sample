@@ -443,7 +443,7 @@ $config['modelBindings'] = array(
 				"ContentBase" => array("*"), "Content","BaseDocument"),
 	'Event' => array("BEObject" => array("CustomProperties", "LangText"),
 				"ContentBase" => array("*"), "Content","BaseDocument","EventDateItem"),
-	'Image' => array("BEObject" => array("CustomProperties", "LangText"),
+	'Image' => array("BEObject" => array("CustomProperties", "LangText", "ObjectType"),
 				"ContentBase", "Stream")
 
 ) ;
