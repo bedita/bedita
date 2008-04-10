@@ -86,7 +86,6 @@ class EventsController extends ModulesController {
 		$this->setUsersAndGroups();
 	 }
 
-
 	public function save() {
 	 	
  		$this->checkWriteModulePermission();

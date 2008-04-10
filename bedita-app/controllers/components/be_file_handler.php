@@ -203,6 +203,7 @@ class BeFileHandlerComponent extends Object {
 			default:
 				throw new BEditaMIMEException(__("MIME type not found",true)) ;
 		}
+		// TODO: add user, IP & lang_text info
 		$this->{$model}->id = false ;
 		if(!($ret = $this->{$model}->save($dati))) {
 			$this->validateErrors = $this->{$model}->validateErrors ;

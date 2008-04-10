@@ -35,12 +35,7 @@ $pos = strpos($file, '..');
 if ($pos === false) {
 	if(is_file('../../vendors/js/'.$file) && (preg_match('/(\/.+)\\.js/', $file)))
 	{
-		readfile('../../vendors/js1/'.$file);
-	}
-	if(strpos($file, 'tiny_mce'))
-	{
-		echo $file;exit;
-		readfile('../../vendors/js/tiny_mce/'.$file);
+		readfile('../../vendors/js/'.$file);
 	}
 } else {
 	header('HTTP/1.1 404 Not Found');

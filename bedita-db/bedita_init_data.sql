@@ -43,7 +43,9 @@ INSERT INTO object_types (id, name) VALUES
 (30, 'biblioitem'),
 
 (31, 'audio'),
-(32, 'video')
+(32, 'video'),
+
+(33, 'link')
 ;
 
 INSERT INTO `question_types` (`id`, `label`) VALUES

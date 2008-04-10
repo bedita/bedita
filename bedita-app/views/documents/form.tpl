@@ -15,6 +15,7 @@
 	{foreach from=$moduleList item="mod"}
 		{if $mod.label == "tags"}{include file="../pages/form_tags.tpl"}{/if}
 	{/foreach}
+	{include file="../pages/form_links.tpl"}
 	{include file="../pages/form_custom_properties.tpl" el=$object}
 	{include file="../pages/form_permissions.tpl" el=$object recursion=true}
 	</form>

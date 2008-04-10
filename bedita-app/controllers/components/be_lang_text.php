@@ -25,6 +25,7 @@ class BeLangTextComponent extends Object {
 	function setupForSave(&$data) {
 		$result = array() ;
 		if(!@count($data)) return ;
+		$translation = array();
 		foreach($data as $lang => $attributes) {
 			foreach($attributes as $attribute => $value) {
 				if($attribute != 'type' && $value != '') {

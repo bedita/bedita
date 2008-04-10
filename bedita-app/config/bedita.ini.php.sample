@@ -186,6 +186,8 @@ $config['objectTypes'] = array(
 	'audio'				=> 31,
 	'video'				=> 32,
 	
+	'link'				=> 33,
+	
 	/* Per selezionare tutti i tipi di documenti */
 	'documentAll'		=> array(22,23,24,25,26,27),
 	

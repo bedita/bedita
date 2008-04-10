@@ -88,20 +88,23 @@ class ContentBase extends BEAppModel
 											   AND switch = '{$switch}' ";
 					if (!empty($obj_id)) {
 						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
-						// find priority of inverse relation
-						$inverseRel = $this->query("SELECT priority 
-													  FROM {$table} 
-													  WHERE id={$obj_id} 
-													  AND object_id={$this->id} 
-													  AND switch='{$switch}'");
 						
-						if (empty($inverseRel[0]["content_bases_objects"]["priority"])) {
-							$inverseRel = $this->query("SELECT MAX(priority)+1 AS priority FROM {$table} WHERE id={$obj_id} AND switch='{$switch}'");
-							$inversePriority = (empty($inverseRel[0][0]["priority"]))? 1 : $inverseRel[0][0]["priority"];
-						} else {
-							$inversePriority = $inverseRel[0]["content_bases_objects"]["priority"];
-						}						
-						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$switch}', ". $inversePriority  .")" ;
+						if($switch != "link") {	
+							// find priority of inverse relation
+							$inverseRel = $this->query("SELECT priority 
+														  FROM {$table} 
+														  WHERE id={$obj_id} 
+														  AND object_id={$this->id} 
+														  AND switch='{$switch}'");
+							
+							if (empty($inverseRel[0]["content_bases_objects"]["priority"])) {
+								$inverseRel = $this->query("SELECT MAX(priority)+1 AS priority FROM {$table} WHERE id={$obj_id} AND switch='{$switch}'");
+								$inversePriority = (empty($inverseRel[0][0]["priority"]))? 1 : $inverseRel[0][0]["priority"];
+							} else {
+								$inversePriority = $inverseRel[0]["content_bases_objects"]["priority"];
+							}						
+							$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$switch}', ". $inversePriority  .")" ;
+						}
 					}
 				}
 			}

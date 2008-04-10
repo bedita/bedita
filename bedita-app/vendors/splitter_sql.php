@@ -26,8 +26,6 @@ class SplitterSql {
 	var $LEX_ERROR 	= 1000 ;
 	var $LEX_EOF	= 2000 ;
 	
-	
-	
 	function parse(&$queries, $SQL) {
 		$queries = array() ;
 		while(strlen($SQL)) {		
@@ -72,7 +70,6 @@ class SplitterSql {
 		
 		return true ;
 	}
-	
 
 	function lex(&$expression) {
 	
@@ -98,11 +95,11 @@ class SplitterSql {
 		}
 		
 		// Se e' un commento a + linee
-		if(preg_match("/\*.*?\*\// si", $expression, $matches)) {
-			$expression = substr($expression, strlen($matches[0])+2) ;
-			$this->_LEX_INSIDE_COMMENT = true ;
-			return $this->LEX_COMMENT ;
-		}
+//		if(preg_match("/\*.*?\*\// si", $expression, $matches)) {
+//			$expression = substr($expression, strlen($matches[0])+2) ;
+//			$this->_LEX_INSIDE_COMMENT = true ;
+//			return $this->LEX_COMMENT ;
+//		}
 
 		// Cerca il comando che delimita 
 		if(preg_match("/^\s* delimiter \s+ (.+)/xi", $expression, $matches)) {

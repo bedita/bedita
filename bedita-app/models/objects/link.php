@@ -15,7 +15,7 @@
  * @author 		giangi giangi@qwerg.com,	ste ste@channelweb.it
  * 		
 */
-class Link extends BEAppModel {
+class Link extends BEAppObjectModel {
 
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
