@@ -203,8 +203,23 @@ class BeFileHandlerComponent extends Object {
 			default:
 				throw new BEditaMIMEException(__("MIME type not found",true)) ;
 		}
-		// TODO: add user, IP & lang_text info
 		$this->{$model}->id = false ;
+		// add lang_text
+		if (empty($dati["LangText"])) {
+			if (!empty($dati['lang'])) {
+				$langObj = $dati['lang'];
+			} else {
+				$conf = Configure::getInstance() ;
+				$langObj = $conf->defaultLang;
+			}
+			$langArr[] = array("lang" => $langObj, "name" => "title", "text" => $dati["title"]);
+			if (!empty($dati["description"])) {
+				$langArr[] = array("lang" => $langObj, "name" => "description", "text" => $dati["description"]);
+			}
+			
+			$dati["LangText"] = $langArr;
+		}
+		
 		if(!($ret = $this->{$model}->save($dati))) {
 			$this->validateErrors = $this->{$model}->validateErrors ;
 			throw new BEditaSaveStreamObjException(__("Error saving stream object",true)) ;
