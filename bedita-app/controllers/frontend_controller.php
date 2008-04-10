@@ -22,35 +22,42 @@ abstract class FrontendController extends AppController {
 		}
 		
 	}
-	
+
 	protected function loadSections($area_id) {
 		$this->initAttributes();
+		$conf = Configure::getInstance() ;
+		$draft = ($conf->draft != null) ? $conf->draft : false;
 		$areas_sections = array();
 		$areas_sections_source = $this->BeTree->getSectionsTree() ;
-		
+
 		foreach($areas_sections_source as $index => $area) {
 			if(empty($area_id) || ($area_id == $area['id'])) {
-				if(!empty($area['children'])) {
+				
+				if( ( ($area['status'] == 'on') || ($draft && ($area['status'] == 'draft'))) && !empty($area['children'])) {
 					$children_arr = array();
 					foreach($area['children'] as $section_index => $s) {
-							$this->modelBindings($this->Section);
-							$section = $this->Section->findById($s['id']);
+						$this->modelBindings($this->Section);
+						$section = $this->Section->findById($s['id']);
+						if( ($section['status'] == 'on') || ($draft && ($section['status'] == 'draft'))) {
 							if(isset($section["LangText"])) {
 								$this->BeLangText->setupForView($section["LangText"]) ;
 							}
-						if(!empty($s['children'])) {
-							$c_arr = array();
-							foreach($s['children'] as $ss_index => $ss) {
-								$this->modelBindings($this->Section);
-								$s_section = $this->Section->findById($ss['id']);
-								if(isset($s_section["LangText"])) {
-									$this->BeLangText->setupForView($s_section["LangText"]) ;
+							if(!empty($s['children'])) {
+								$c_arr = array();
+								foreach($s['children'] as $ss_index => $ss) {
+									$this->modelBindings($this->Section);
+									$s_section = $this->Section->findById($ss['id']);
+									if( ($s_section['status'] == 'on') || ($draft && ($s_section['status'] == 'draft'))) {
+										if(isset($s_section["LangText"])) {
+											$this->BeLangText->setupForView($s_section["LangText"]) ;
+										}
+										$c_arr[] = $s_section;
+									}
 								}
-								$c_arr[] = $s_section;
+								$section['children'] = $c_arr;
 							}
-							$section['children'] = $c_arr;
+							$children_arr[] = $section;
 						}
-						$children_arr[] = $section;
 					}
 					$a['id'] = $area['id'];
 					$a['title'] = $area['title'];
@@ -65,42 +72,55 @@ abstract class FrontendController extends AppController {
 	protected function loadObj($obj_id,$ot) {
 		$this->initAttributes();
 		$conf = Configure::getInstance() ;
+		$draft = ($conf->draft != null) ? $conf->draft : false;
 		$lang = $this->Session->read('Config.language');
 		if($lang==null) 
 			$lang = $conf->frontendLang;
 		if($obj_id == null) {
 			$objects = $this->BeTree->getDiscendents(null, null, $conf->objectTypes[$ot]);
 			if(!empty($objects) && !empty($objects['items'])) {
-				$obj_id = $objects['items'][0]['id'];
+				$found = false;
+				for($i = 0; $i<sizeof($objects['items']) && !$found; $i++) {
+					if( ($object[$items][$i]['status'] == 'on') || ($draft && ($object[$items][$i]['status'] == 'draft'))) {
+						$obj_id = $objects['items'][0]['id'];
+						$found = true;
+					}
+				}
 			}
 		}
+		if($obj_id==null)
+			return null;
 		$model = $this->loadModelByObjectTypeId($conf->objectTypes[$ot]);
 		$this->modelBindings($model);
 		$obj = $model->findById($obj_id);
-		if(!empty($obj) && !empty($obj["LangText"])) {
-			$this->BeLangText->setupForView($obj["LangText"]) ;
-		}
-		if(!empty($obj) && !empty($obj["ObjectRelation"])) {
-			$relations = $this->objectRelationArray($obj['ObjectRelation']);
-			$obj['relations'] = $relations;
-		}
-		$this->BeLangText->objectForLang($obj_id,$lang,$obj);
-		if(!empty($obj['gallery_id'])) {
-			$gid = $obj['gallery_id'];
-			$types = array($conf->objectTypes['image'], $conf->objectTypes['audio'], $conf->objectTypes['video']) ;
-			$children = $this->BeTree->getChildren($gid, null, $types, "priority") ;
-			$objForGallery = &$children['items'] ;
-			$multimedia=array();
-			foreach($objForGallery as $index => $object) {
-				$model = $this->loadModelByObjectTypeId($object['object_type_id']);
-				$this->modelBindings($model);
-				if(!($Details = $model->findById($object['id']))) 
-					continue ;
-				$Details['priority'] = $object['priority'];
-				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
-				$multimedia[$index]=$Details;
+		if( ($obj['status'] == 'on') || ($draft && ($obj['status'] == 'draft'))) {
+			if(!empty($obj) && !empty($obj["LangText"])) {
+				$this->BeLangText->setupForView($obj["LangText"]) ;
 			}
-			$obj['gallery_items'] = $multimedia;
+			if(!empty($obj) && !empty($obj["ObjectRelation"])) {
+				$relations = $this->objectRelationArray($obj['ObjectRelation']);
+				$obj['relations'] = $relations;
+			}
+			$this->BeLangText->objectForLang($obj_id,$lang,$obj);
+			if(!empty($obj['gallery_id'])) {
+				$gid = $obj['gallery_id'];
+				$types = array($conf->objectTypes['image'], $conf->objectTypes['audio'], $conf->objectTypes['video']) ;
+				$children = $this->BeTree->getChildren($gid, null, $types, "priority") ;
+				$objForGallery = &$children['items'] ;
+				$multimedia=array();
+				foreach($objForGallery as $index => $object) {
+					$model = $this->loadModelByObjectTypeId($object['object_type_id']);
+					$this->modelBindings($model);
+					if(!($Details = $model->findById($object['id']))) 
+						continue ;
+					if( ($Details['status'] == 'on') || ($draft && ($Details['status'] == 'draft'))) {
+						$Details['priority'] = $object['priority'];
+						$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
+						$multimedia[$index]=$Details;
+					}
+				}
+				$obj['gallery_items'] = $multimedia;
+			}
 		}
 		$this->set($ot,$obj);
 		return $obj;
@@ -110,6 +130,7 @@ abstract class FrontendController extends AppController {
 		$this->initAttributes();
 		$result = array();
 		$conf = Configure::getInstance();
+		$draft = ($conf->draft != null) ? $conf->draft : false;
 		$lang = $this->Session->read('Config.language');
 		if($lang==null) 
 			$lang = $conf->frontendLang;
@@ -122,11 +143,17 @@ abstract class FrontendController extends AppController {
 					$this->modelBindings($model);
 					if(!($Details = $model->findById($item['id']))) 
 						continue ;
-					if(!empty($Details) && !empty($Details["LangText"])) {
-						$this->BeLangText->setupForView($Details["LangText"]) ;
+					if( ($Details['status'] == 'on') || ($draft && ($Details['status'] == 'draft'))) {
+						if(!empty($Details) && !empty($Details["LangText"])) {
+							$this->BeLangText->setupForView($Details["LangText"]) ;
+						}
+						$this->BeLangText->objectForLang($Details['id'],$lang,$Details);
+						if(!empty($Details) && !empty($Details["ObjectRelation"])) {
+							$relations = $this->objectRelationArray($Details['ObjectRelation']);
+							$Details['relations'] = $relations;
+						}
+						$fullitems[]=$Details;
 					}
-					$this->BeLangText->objectForLang($Details['id'],$lang,$Details);
-					$fullitems[]=$Details;
 				}
 				$this->set($tplvar,$fullitems);
 				$result[$tplvar] = $fullitems;
@@ -138,25 +165,30 @@ abstract class FrontendController extends AppController {
 	protected function loadGalleries() {
 		$this->initAttributes();
 		$conf = Configure::getInstance();
+		$draft = ($conf->draft != null) ? $conf->draft : false;
 		$types = array($conf->objectTypes['gallery']);
+		$result = array();
 		$objects = $this->BeTree->getDiscendents(null, null, $types, "", true, 1, 10) ;
 		if(!empty($objects) && !empty($objects['items'])) {
 			$galleries = $objects['items'];
 			$ot  = array($conf->objectTypes['image'],$conf->objectTypes['audio'],$conf->objectTypes['video']);
 			foreach($galleries as $key => $gallery) {
-				$multimedia_items = $this->BeTree->getChildren($gallery['id'], null, $ot, "priority") ;
-				if(!empty($multimedia_items) && !empty($multimedia_items['items'])) {
-					$items = array();
-					foreach($multimedia_items['items'] as $i) {
-						$this->modelBindings($this->Stream);
-						$obj = $this->Stream->findById($i['id']);
-						$items = $i;
-						$items['Stream'] =$obj['Stream'];
-						$galleries[$key]['items'][] = $items;
+				if( ($gallery['status'] == 'on') || ($draft && ($gallery['status'] == 'draft'))) {
+					$result[$key] = $gallery;
+					$multimedia_items = $this->BeTree->getChildren($gallery['id'], null, $ot, "priority") ;
+					if(!empty($multimedia_items) && !empty($multimedia_items['items'])) {
+						$items = array();
+						foreach($multimedia_items['items'] as $i) {
+							$this->modelBindings($this->Stream);
+							$obj = $this->Stream->findById($i['id']);
+							$items = $i;
+							$items['Stream'] =$obj['Stream'];
+							$result[$key]['items'][] = $items;
+						}
 					}
 				}
 			}
-			$this->set('galleries',$galleries);
+			$this->set('galleries',$result);
 		}
 	}
 }
