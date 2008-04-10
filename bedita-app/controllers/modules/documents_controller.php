@@ -20,7 +20,7 @@ class DocumentsController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
-	var $uses = array('BEObject', 'Document', 'Tree', 'ObjectCategory','Link') ;
+	var $uses = array('BEObject', 'Document', 'Tree', 'ObjectCategory') ;
 	protected $moduleName = 'documents';
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -121,20 +121,7 @@ class DocumentsController extends ModulesController {
  		$this->userInfoMessage(__("Document saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("document [". $this->data["title"]."] saved");
 	 }
-	 	 
-	
-	 public function addLink() {
-		$this->layout="empty";
-	 	$this->data = $this->params['form'];
-		$this->Transaction->begin() ;
-		if(!$this->Link->save($this->data)) {
-	 		throw new BeditaException(__("Error saving link", true), $this->Link->validationErrors);
-	 	}
- 		$this->Transaction->commit() ;
-		$this->eventInfo("link [". $this->data["title"]."] saved");
-		$this->data["id"] = $this->Link->id;
-		$this->set("objRelated", $this->data);
-	 }
+
 	 /**
 	  * Delete a document.
 	  */

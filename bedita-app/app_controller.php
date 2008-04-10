@@ -432,7 +432,6 @@ class AppController extends Controller
 abstract class ModulesController extends AppController {
 
 	protected function checkWriteModulePermission() {
-		$this->log($this->moduleName." - " . $this->modulePerms);
 		if(isset($this->moduleName) && !($this->modulePerms & BEDITA_PERMS_MODIFY)) {
 				throw new BeditaException(__("No write permissions in module", true));
 		}
@@ -516,6 +515,24 @@ abstract class ModulesController extends AppController {
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
 	}
 
+	 /**
+	  * Add Link with Ajax...
+	  */
+	
+	 public function addLink() {
+		$this->layout="empty";
+	 	$this->data = $this->params['form'];
+		$this->Transaction->begin() ;
+		$linkModel = $this->loadModelByType("Link");
+		if(!$linkModel->save($this->data)) {
+	 		throw new BeditaException(__("Error saving link", true), $linkModel->validationErrors);
+	 	}
+ 		$this->Transaction->commit() ;
+		$this->eventInfo("link [". $this->data["title"]."] saved");
+		$this->data["id"] = $linkModel->id;
+		$this->set("objRelated", $this->data);
+	 }
+	 	
 	protected function addItemsToAreaSection($objects_to_assoc,$destination) {
 		$this->checkWriteModulePermission();
 		$object_type_id = $this->BEObject->findObjectTypeId($destination);
