@@ -181,9 +181,11 @@ abstract class FrontendController extends AppController {
 						foreach($multimedia_items['items'] as $i) {
 							$this->modelBindings($this->Stream);
 							$obj = $this->Stream->findById($i['id']);
-							$items = $i;
-							$items['Stream'] =$obj['Stream'];
-							$result[$key]['items'][] = $items;
+							if( ($i['status'] == 'on') || ($draft && ($i['status'] == 'draft'))) {
+								$items = $i;
+								$items['Stream'] =$obj['Stream'];
+								$result[$key]['items'][] = $items;
+							}
 						}
 					}
 				}
