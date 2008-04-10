@@ -49,12 +49,13 @@ class BeditaShell extends Shell {
             }
     	}
     	
-    	$this->out("Updating bedita db config: $dbCfg");
+		$db =& ConnectionManager::getDataSource($dbCfg);
+    	$hostName = $db->config['host'];
+    	$dbName = $db->config['database'];
+		$this->out("Updating bedita db config: $dbCfg - [host=".$hostName.", database=".$dbName."]");
         $this->hr();
 	
-		$db =& ConnectionManager::getDataSource($dbCfg);
-		$this->DataSourceTest =& new DataSourceTest();
-		
+        $this->DataSourceTest =& new DataSourceTest();
 		$script = SQL_SCRIPT_PATH . "bedita_schema.sql";
 		$this->out("Update schema from $script");
 		$this->DataSourceTest->executeQuery($db,$script);
