@@ -7,7 +7,7 @@
 	</div>
 	<div class="itemInfo">
 		<div><span class="title">{t}Title{/t}: </span>{$objRelated.title|default:''}</div>
-		<div><span class="title">{t}Type{/t}: </span>{$objRelated.ObjectType.name|default:''}</div>
+		<div><span class="title">{t}Type{/t}: </span>{$conf->objectTypeModels[$objRelated.object_type_id]|default:''}</div>
 	</div>
 	<div class="itemFooter">
 		<input type="button" value="{t}X{/t}" />

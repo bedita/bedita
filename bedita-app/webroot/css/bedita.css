@@ -474,3 +474,12 @@ div.multimediaToolbar
 div.tabsContainer {
 	margin: 15px 0;
 }
+
+div.generalLoading {
+	display: none;
+	background: transparent url(../img/iconLoading.gif) no-repeat;
+}
+
+div.assocItemSection {
+	float: right;
+}

@@ -92,13 +92,15 @@ $(document).ready(function() {
 			$("#loadingAssoc").hide();
 		});
 	});
-	$(".itemBox").each(function(index) { 
-		setup_drag_drop_item_assoc(this) ;
+	
+	$(".itemBox").each(function (index) {
 		$("input[@name='index']", this).attr("value", index) ;
 		$(".id", this).attr("name", "data[ObjectRelation]["+index+"][id]") ;
 		$(".switch", this).attr("name", "data[ObjectRelation]["+index+"][switch]") ;
 		$(".priority", this).attr("name", "data[ObjectRelation]["+index+"][priority]") ;
 	}) ;
+			
+	$("#itemsAssociated .itemBox").each(function() {setup_drag_drop_item_assoc(this) }) ;
 	$("#itemsAssociated").find("input[@type='button']").click(function() {
 		$(this).parents(".itemBox").remove();
 		$("#itemsAssociated .relationType").each(function(){

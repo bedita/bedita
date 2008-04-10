@@ -239,6 +239,7 @@ $config['objectTypeModels'] = array(
 	28	=> 'Author',
 	30	=> 'BiblioItem',
 
+	33 	=> 'Link'
 	// To be continued...
 ) ;
 
