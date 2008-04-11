@@ -37,8 +37,34 @@ class AttachmentsController extends ModulesController {
 	 */
 	 function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
-		$types = array($conf->objectTypes['befile']);
-		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
+		$this->setup_args(
+			array("id", "integer", &$id),
+			array("page", "integer", &$page),
+			array("dim", "integer", &$dim),
+			array("order", "string", &$order),
+			array("dir", "boolean", &$dir)
+		) ;
+		$typesArray = array($conf->objectTypes['befile']);
+		
+		$bedita_items = $this->BeTree->getDiscendents($id, null, $typesArray, $order, $dir, $page, $dim)  ;
+		
+		foreach($bedita_items['items'] as $key => $value) {
+			$modelLoaded = $this->loadModelByObjectTypeId($value['object_type_id']);
+			$modelLoaded->restrict(array(
+									"BEObject" => array("ObjectType"),
+									"ContentBase",
+									"Stream"
+									)
+								);
+			if(($Details = $modelLoaded->findById($value['id']))) {
+				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
+				$bedita_items['items'][$key] = array_merge($bedita_items['items'][$key], $Details);	
+			}
+		}
+		$this->params['toolbar'] = &$bedita_items['toolbar'] ;
+		// template data
+		$this->set('areasectiontree',$this->BeTree->getSectionsTree());
+		$this->set('objects', $bedita_items['items']);
 	 }
 
 
@@ -131,18 +157,13 @@ class AttachmentsController extends ModulesController {
     }
 	 
 	 
-	 /**
-	  * Cancella un'area.
-	  */
-	 function delete($id = null) {
+	function delete($id = null) {
 	 	$this->checkWriteModulePermission();
-	 	if(!isset($this->data['id'])) throw new BeditaException(sprintf(__("No data", true), $id));
-		
-	 	$this->Transaction->begin() ;
-		 	
-	 	// Cancellla i dati
-	 	if(!$this->BeFileHandler->del($this->data['id'])) throw new BeditaException(sprintf(__("Error deleting object: %d", true), $id));
-		 	
+	 	if(!isset($this->data['id'])) 
+	 		throw new BeditaException(sprintf(__("No data", true), $id));
+	 	$this->Transaction->begin() ;	
+	 	if(!$this->BeFileHandler->del($this->data['id'])) 
+	 		throw new BeditaException(sprintf(__("Error deleting object: %d", true), $id));
 	 	$this->Transaction->commit() ;
 	 }
 

@@ -9,7 +9,7 @@
 var langs = {{/literal}{foreach name=i from=$conf->langOptions key=lang item=label}"{$lang}":	"{$label}" {if !($smarty.foreach.i.last)},{/if}{/foreach}{literal}} ;
 var validate = null ;
 $(document).ready(function(){
-	$("#updateform").validate();
+	$("#updateForm").validate();
 	$('div.tabsContainer > ul').tabs();
 	$('div.tabsContainer > ul > li > a').changeActiveTabs();
 }) ;

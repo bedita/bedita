@@ -1,8 +1,6 @@
-{$html->css('module.multimedia')}
 {$html->css('tree')}
 {$javascript->link("jquery/jquery.treeview", false)}
 {$javascript->link("jquery/interface", false)}
-{$javascript->link("module.general", false)}
 {$javascript->link("form", false)}
 {$javascript->link("jquery/jquery.changealert", false)}
 
@@ -11,5 +9,5 @@
 {include file="head.tpl"}
 <div id="centralPage">
 {include file="submenu.tpl" method="index"}
-{include file="list_multimedia.tpl" method="index"}
+{include file="../pages/list_streams.tpl" method="index" streamTitle="multimedia"}
 </div>

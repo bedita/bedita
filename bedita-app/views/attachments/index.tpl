@@ -11,5 +11,5 @@
 {include file="head.tpl"}
 <div id="centralPage">
 {include file="submenu.tpl" method="index"}
-{include file="list_attachments.tpl" method="index"}
+{include file="../pages/list_streams.tpl" method="index" streamTitle="attachments"}
 </div>

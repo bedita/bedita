@@ -34,8 +34,34 @@ class MultimediaController extends ModulesController {
 	 */
 	 function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
-		$types = array($conf->objectTypes['image'],$conf->objectTypes['audio'],$conf->objectTypes['video']);
-		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
+		$this->setup_args(
+			array("id", "integer", &$id),
+			array("page", "integer", &$page),
+			array("dim", "integer", &$dim),
+			array("order", "string", &$order),
+			array("dir", "boolean", &$dir)
+		) ;
+		$typesArray = array($conf->objectTypes['image'],$conf->objectTypes['audio'],$conf->objectTypes['video']);
+				
+		$bedita_items = $this->BeTree->getDiscendents($id, null, $typesArray, $order, $dir, $page, $dim)  ;
+		
+	 	foreach($bedita_items['items'] as $key => $value) {
+			$modelLoaded = $this->loadModelByObjectTypeId($value['object_type_id']);
+			$modelLoaded->restrict(array(
+									"BEObject" => array("ObjectType"),
+									"ContentBase",
+									"Stream"
+									)
+								);
+			if(($Details = $modelLoaded->findById($value['id']))) {
+				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
+				$bedita_items['items'][$key] = array_merge($bedita_items['items'][$key], $Details);	
+			}
+		}
+		$this->params['toolbar'] = &$bedita_items['toolbar'] ;
+		// template data
+		$this->set('areasectiontree',$this->BeTree->getSectionsTree());
+		$this->set('objects', $bedita_items['items']);
 	 }
 
 	 /**
