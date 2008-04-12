@@ -27,7 +27,7 @@ H3 { font-size: 1.0em; font-style: italic; margin-bottom: 4px; }
 * > H2:first-child { margin-top: 0; }
 * > H3:first-child { margin-top: 0 !important }
 
-H2 + H3 {margin-top:8px;}
+H2 + H3 { margin-top: 8px; }
 
 HR {
 	border: 0;
@@ -61,7 +61,6 @@ UL.noBulletList
 	list-style-type: none;
 	padding: 0;
 }
-
 /* END -- Classi generiche */
 
 
@@ -408,7 +407,7 @@ div.multimediaToolbar
 {
 	position: relative;
 	padding: 0;
-	margin: -5px 0 4px;
+	margin: -3px 0 4px;
 	width: 580px;
 	height: 20px;
 	overflow: hidden;
