@@ -65,7 +65,10 @@ $(document).ready(function(){
 		}
 	);
 	
-	
+	// flag change into item file
+	$(".info_file_item").bind("change", function() {
+		$(".modified", $(this).parents(".itemBox")).attr("value", 1) ;
+	}) ;
 });
 
 // Get data from modal window, uploaded files and insert new object in the form

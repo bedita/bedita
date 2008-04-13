@@ -20,6 +20,7 @@
 	<input type="hidden" class="index" 	name="index" value="{$objIndex}" />
 	<input type="hidden" class="id" 	name="data[ObjectRelation][{$objIndex}][id]" value="{$obj.id}" />
 	<input type="hidden" class="switch" name="data[ObjectRelation][{$objIndex}][switch]" value="{$relation}" />
+	<input type="hidden" class="modified" name="data[ObjectRelation][{$objIndex}][modified]" value="0" />
 
 	<div class="itemHeader">
 		<input type="text" class="priority" name="data[ObjectRelation][{$objIndex}][priority]" value="{$obj.priority|default:$priority}" size="3" maxlength="3"/>
@@ -52,8 +53,8 @@
 	{/if}
 
 	<div class="itemInfo">
-		<div><span class="title">{t}Title{/t}:</span><br /><input type="text" value="{$fileTitle|escape:'htmlall'}" /></div>
-		<div><span class="title">{t}Description{/t}:</span><br /><textarea class="autogrow">{$obj.description|default:""|escape:'htmlall'}</textarea></div>
+		<div><span class="title">{t}Title{/t}:</span><br /><input type="text" class="info_file_item" value="{$fileTitle|escape:'htmlall'}" name="data[ObjectRelation][{$objIndex}][title]" /></div>
+		<div><span class="title">{t}Description{/t}:</span><br /><textarea class="autogrow info_file_item" name="data[ObjectRelation][{$objIndex}][description]">{$obj.description|default:""|escape:'htmlall'}</textarea></div>
 		<div style="border-bottom: 1px solid #999;"></div>
 		<div><span class="title">{t}File{/t}:</span> {$fileName|escape:'htmlall'}</div>
 		<div><span class="title">{t}Type{/t}:</span> {t}{$obj.type}{/t}</div>

@@ -72,7 +72,9 @@ class ContentBase extends BEAppModel
 			);
 			$db 		= &ConnectionManager::getDataSource($this->useDbConfig);
 			$queriesDelete 	= array() ;
-			$queriesInsert = array() ;
+			$queriesInsert 	= array() ;
+			$queriesModified 	= array() ;
+			
 			foreach ($this->data['ObjectRelation'] as $values) {
 				$assoc 	= $this->hasAndBelongsToMany['ObjectRelation'] ;
 				$table 	= $db->name($db->fullTableName($assoc['joinTable']));
@@ -105,6 +107,17 @@ class ContentBase extends BEAppModel
 							}						
 							$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$switch}', ". $inversePriority  .")" ;
 						}
+						
+						/**
+						 * Proposta x salvare le modifiche a title e description di oggetto relazionato se ci sono i dati sufficenti. (giangi) 
+						 */
+						$modified = (isset($val['modified']))? ((boolean)$val['modified']) : false;
+						if($modified && $obj_id) {
+							$title 		= isset($val['title']) ? addslashes($val['title']) : "" ;
+							$description 	= isset($val['description']) ? addslashes($val['description']) : "" ;
+							
+							$queriesModified[] = "UPDATE objects  SET title = '{$title}', description = '{$description}' WHERE id = {$obj_id} " ;
+						}
 					}
 				}
 			}
@@ -112,6 +125,9 @@ class ContentBase extends BEAppModel
 				$db->query($qDel);
 			}
 			foreach ($queriesInsert as $qIns) {
+				$db->query($qIns);
+			}
+			foreach ($queriesModified as $qIns) {
 				$db->query($qIns);
 			}
 		}
