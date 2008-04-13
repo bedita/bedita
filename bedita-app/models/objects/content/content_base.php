@@ -74,6 +74,7 @@ class ContentBase extends BEAppModel
 			$queriesDelete 	= array() ;
 			$queriesInsert 	= array() ;
 			$queriesModified 	= array() ;
+			$lang			= (isset($this->data['ContentBase']['lang'])) ? $this->data['ContentBase']['lang']: null ;
 			
 			foreach ($this->data['ObjectRelation'] as $values) {
 				$assoc 	= $this->hasAndBelongsToMany['ObjectRelation'] ;
@@ -117,6 +118,10 @@ class ContentBase extends BEAppModel
 							$description 	= isset($val['description']) ? addslashes($val['description']) : "" ;
 							
 							$queriesModified[] = "UPDATE objects  SET title = '{$title}', description = '{$description}' WHERE id = {$obj_id} " ;
+							
+							// save lang text							
+							$this->saveLangTextObjectRelation($obj_id, $lang, $title, "title") ;
+							$this->saveLangTextObjectRelation($obj_id, $lang, $description, "description") ;
 						}
 					}
 				}
@@ -163,6 +168,33 @@ class ContentBase extends BEAppModel
 
 		return true ;
 	}
+	
+	/**
+	 * save lang text
+	 */
+	private function saveLangTextObjectRelation($obj_id, $lang, $value, $field) {
+		if(!isset($lang)) return false ;
+		
+		$id = $this->ObjectRelation->LangText->field("id", "object_id = {$obj_id} AND name= '{$field}' ");	
+		if(@empty($value)) {;			
+			if($id) $this->ObjectRelation->LangText->delete($id) ;
+			
+			return false ;
+		}
+		
+		$data = array(
+			"object_id"	=> $obj_id,
+			"lang"		=> $lang,
+			"name"		=> $field,
+			"text"		=> $value
+		) ;
+		if($id) $data["id"] = $id;
+		
+		$this->ObjectRelation->LangText->id = false ;
+		
+		return $this->ObjectRelation->LangText->save($data) ;
+	}
+	
 	
 }
 ?>
