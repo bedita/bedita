@@ -233,7 +233,6 @@ th.boxNotSelected {border:solid #000 1px;background-color:#DDD; height: 20px;}
 		<div id="uploadBox" style="padding:5px;">
 			<div id="wrapper">
 				<div id="content">
-					<input type="hidden" name="lang" value="{if $session->check('Config.language')}{$session->read('Config.language')}{else}ita{/if}"/>
 					<div id="SWFUploadTarget" style="height: 50px; line-height: 18px; margin: 10px 0;">
 						<form id="uploadForm" action="{$html->url('/files/upload')}" method="post" enctype="multipart/form-data">
 							<input type="file" name="Filedata" />

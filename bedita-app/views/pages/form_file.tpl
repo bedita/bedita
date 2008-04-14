@@ -58,7 +58,7 @@
 		flashvars = "file={$object.path}&backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0xFF9900&overstretch=true&searchbar=false&autostart=false"
 	/>
 	
-	{else}
+	{elseif strtolower($object.ObjectType.name) == "audio"}
 	<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
 		<img src="{$session->webroot}img/mime/{$object.type}.gif" />
 	</a>
@@ -71,6 +71,10 @@
 		allowfullscreen = "true"
 		flashvars = "file={$conf->mediaUrl}{$object.path}&backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0xFF9900&overstretch=true&searchbar=false&autostart=false"
 	/>
+	{else}
+	<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
+		<img src="{$session->webroot}img/mime/{$object.type}.gif" />
+	</a>
 	{/if}
 
 </div>

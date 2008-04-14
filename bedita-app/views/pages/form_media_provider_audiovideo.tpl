@@ -86,15 +86,14 @@ $(document).ready(function() {
 		else if ( $("input[@value='audio']").is(":checked") )
 		{
 			$("#addVideoForm").hide();
-			$("#addImageForm").hide();
-			$("#addAudioForm").show();
+			$("#addImageForm").show();
+			$("#addAudioForm").hide();
 		}
 	})
 });
 {/literal}
 </script>
 <div id="uploadMediaProvider">
-
 	<div style="float: left; width: 140px;"><span class="label">Item Type</span>
 	<ul class="noBulletList">
 		<li><input type="radio" name="itemType" id="itemTypeImage" value="image" checked=> <label for="itemTypeImage">{t}image{/t}</label></li>
@@ -120,7 +119,6 @@ $(document).ready(function() {
 		</tr>
 		<tr>
 			<td>
-				<input type="hidden" name="lang" value="{if $session->check('Config.language')}{$session->read('Config.language')}{else}ita{/if}"/>
 				<input type="file" name="Filedata" />
 				<input type="button" id="uploadForm" value="{t}Upload{/t}"/>
 			</td>
@@ -141,7 +139,6 @@ $(document).ready(function() {
 			<td class="status">&nbsp;</td>
 		</tr>
 		<tr>
-			<input type="hidden" name="lang" value="{if $session->check('Config.language')}{$session->read('Config.language')}{else}ita{/if}"/>
 			<td class="label"></td>
 			<td class="field"><input type="button" id="uploadFormMedia" value="{t}Create{/t}"/></td>
 			<td class="status">&nbsp;</td>

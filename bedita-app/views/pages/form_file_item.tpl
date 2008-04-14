@@ -46,10 +46,13 @@
 		{/if}
 	</div>
 	{elseif ($obj.provider|default:false)}
-		{assign_associative var="attributes" style="width:30px;heigth:30px;"}
+		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="; " 3="height:" 4=$conf->videoThumbHeight}
+		{assign_associative var="attributes" style=$myStyle}
 		<div><a href="{$linkUrl}" target="_blank">{$mediaProvider->thumbnail($obj, $attributes) }</a></div>
+	{elseif strtolower($obj.ObjectType.name) == "audio"}
+		<div><a href="{$linkUrl}"><img src="{$session->webroot}img/mime/{$obj.type}.gif" /></a></div>	
 	{else}
-	<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$obj.type}.gif" /></a></div>
+		<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$obj.type}.gif" /></a></div>
 	{/if}
 
 	<div class="itemInfo">

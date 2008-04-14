@@ -69,6 +69,13 @@ $(document).ready(function(){
 	$(".info_file_item").bind("change", function() {
 		$(".modified", $(this).parents(".itemBox")).attr("value", 1) ;
 	}) ;
+	
+	// set file language to default object language [for upload file]
+	$("#multimedia input[@name=lang]").attr("value", $("#main_lang").val());
+	$("#main_lang").bind("change", function() {
+		$("#multimedia input[@name=lang]").attr("value", $("#main_lang").val());
+	});
+	
 });
 
 // Get data from modal window, uploaded files and insert new object in the form
@@ -190,6 +197,7 @@ var cols 		= 5 ;
 <h2 class="showHideBlockButton">{t}{$title}{/t}</h2>
 <div class="blockForm" id="multimedia" style="display:none">
 	<input type="hidden" name="data[ObjectRelation][{$relation}][switch]" value="{$relation}" />
+	<input type="hidden" name="lang" value=""/>
 	<div class="multimediaToolbar">
 		<div class="displaySizeToggle">
 			<div id="displayLargeIcons"			class="displayLargeIcons"			title="{t}Large Icons{/t}"><span>&nbsp;</span></div>
