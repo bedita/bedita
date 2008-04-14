@@ -49,26 +49,30 @@ function delObjects() {
 	return false ;
 }
 {/literal}
-{if !empty($areasectiontree) && !empty($assocToSections) && $assocToSections}
-{literal}
-function assocObjectsToAreaSection(id) {
-	var oToDel = "";
-	var checkElems = document.getElementsByName('object_chk');
-	for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
-	oToDel = (oToDel=="") ? "" : oToDel.substring(1);
-	$("#objects_to_del").attr("value",oToDel);
-	$("#formObject").attr("action", '{/literal}{$html->url('addToAreaSection/')}{literal}') ;
-	$("#formObject").get(0).submit() ;
-	return false ;
-}
-{/literal}
+{if $moduleName ne "galleries"} {* no area tree in galleries, to be improved *}
+	{if !empty($areasectiontree) && !empty($assocToSections) && $assocToSections}
+	{literal}
+	function assocObjectsToAreaSection(id) {
+		var oToDel = "";
+		var checkElems = document.getElementsByName('object_chk');
+		for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
+		oToDel = (oToDel=="") ? "" : oToDel.substring(1);
+		$("#objects_to_del").attr("value",oToDel);
+		$("#formObject").attr("action", '{/literal}{$html->url('addToAreaSection/')}{literal}') ;
+		$("#formObject").get(0).submit() ;
+		return false ;
+	}
+	{/literal}
+	{/if}
 {/if}
 //-->
 </script>	
 <div id="containerPage">
+	{if $moduleName ne "galleries"}
 	<div id="listAreas">
 	{$beTree->tree("tree", $tree)}
 	</div>
+	{/if}
 	<div id="listElements">
 	<form method="post" action="" id="formObject">
 	<fieldset>

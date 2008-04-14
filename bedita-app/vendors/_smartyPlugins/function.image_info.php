@@ -227,7 +227,10 @@ function _getHumanReadableType ( $type )
 // raw exif read through PHP exif_read_data
 function _raw_extract_exif ( $file )
 {
-	if(!function_exists('exif_read_data')) return false ;	
+	if(!function_exists('exif_read_data')) {
+		// $smarty->trigger_error($pluginName . ": function 'exif_read_data' is missing in your PHP setup");
+		return false ;
+	}
 	$exif = exif_read_data( $file, 'IFD0');
 	
 	if ( $exif === false ) return false; // "No header data found in image file.";
