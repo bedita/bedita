@@ -61,6 +61,17 @@ $config['msgPause'] = 3000;		// milliseconds
 
 
 /**
+ * Default dimensions for images and videos
+ */
+$config['videoWidth']       = 300;		// px
+$config['videoHeight']      = 250;		// px
+$config['videoThumbWidth']  = 110;		// px
+$config['videoThumbHeight'] = 83;		// px
+$config['audioWidth']       = 300;		// px
+$config['audioHeight']      = 20;		// px
+
+
+/**
  * Formato visualizzazione data
  * @date_format: visualization format.
  *		format used by strftime function
