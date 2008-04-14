@@ -47,7 +47,7 @@
 	</div>
 	{elseif ($obj.provider|default:false)}
 		{assign_associative var="attributes" style="width:30px;heigth:30px;"}
-		<div><a href="{$filePath}" target="_blank">{$mediaProvider->thumbnail($obj, $attributes) }</a></div>
+		<div><a href="{$linkUrl}" target="_blank">{$mediaProvider->thumbnail($obj, $attributes) }</a></div>
 	{else}
 	<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$obj.type}.gif" /></a></div>
 	{/if}

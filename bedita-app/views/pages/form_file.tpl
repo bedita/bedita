@@ -41,17 +41,36 @@
 			frame			= ""
 		}
 	
-		{elseif ($object.provider|default:false)}
-		{assign_associative var="attributes" style="width:30px;heigth:30px;"}
+	{elseif ($object.provider|default:false)}
+		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="; " 3="height:" 4=$conf->videoThumbHeight}
+		{assign_associative var="attributes" style=$myStyle}
 
 	<a href="{$object.path}" target="_blank">
 		{$mediaProvider->thumbnail($object, $attributes) }
 	</a>
 	
+	<embed 
+		src		= "/swf/mediaplayer.swf" 
+		width	= "{$conf->videoWidth}"
+		height	= "{$conf->videoHeight}"
+		allowscriptaccess = "always"
+		allowfullscreen = "true"
+		flashvars = "file={$object.path}&backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0xFF9900&overstretch=true&searchbar=false&autostart=false"
+	/>
+	
 	{else}
 	<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
 		<img src="{$session->webroot}img/mime/{$object.type}.gif" />
 	</a>
+
+	<embed 
+		src		= "/swf/mediaplayer.swf" 
+		width	= "{$conf->audioWidth}"
+		height	= "{$conf->audioHeight}"
+		allowscriptaccess = "always"
+		allowfullscreen = "true"
+		flashvars = "file={$conf->mediaUrl}{$object.path}&backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0xFF9900&overstretch=true&searchbar=false&autostart=false"
+	/>
 	{/if}
 
 </div>
@@ -59,20 +78,24 @@
 
 <div style="line-height: 1.6em;">
 	<span class="label">{t}Name{/t}:</span> {$object.name|default:""}<br />
-	<span class="label">{t}Human readable type{/t}:</span> {$imageInfo.hrtype}<br />
 	<span class="label">{t}Mime type{/t}:</span> {$object.type|default:""}<br />
+	{if ($object.ObjectType.name == "image")}
 	<span class="label">{t}Size{/t}:</span> {math equation="x/y" x=$object.size|default:0 y=1024 format="%d"|default:""} KB<br />
+	<span class="label">{t}Human readable type{/t}:</span> {$imageInfo.hrtype}<br />
 	<span class="label">{t}Width{/t}:</span> {$imageInfo.w}<br />
 	<span class="label">{t}Height{/t}:</span> {$imageInfo.h}<br />
 	<span class="label">{t}Bit depth{/t}:</span> {$imageInfo.bits}<br />
 	<span class="label">{t}Channels{/t}:</span> {$imageInfo.channels}<br />
 	<span class="label">{t}Orientation{/t}:</span> {$imageInfo.orientation}
+	{/if}
 </div>
 
 </fieldset>
 </div>
 
-{if $imageInfo.hrtype eq "JPG"}
+
+{* EXIF *}
+{if $object.ObjectType.name == "image" && $imageInfo.hrtype eq "JPG"}
 <h2 class="showHideBlockButton">{t}Exif - Main Data{/t}</h2>
 <div class="blockForm" id="exifdata">
 <fieldset>
