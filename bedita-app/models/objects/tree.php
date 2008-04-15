@@ -216,8 +216,8 @@ class Tree extends BEAppModel
 	}
 
 	/**
-	 * Preleva l'abero di cui id  la radice.
-	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se ''  un utente anonimo,
+	 * Preleva l'abero di cui id ï¿½ la radice.
+	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se '' ï¿½ un utente anonimo,
 	 * altrimenti li prende tutti.
 	 * Si possono selezionare i tipi di oggetti da inserire nell'albero.
 	 *
@@ -368,7 +368,7 @@ class Tree extends BEAppModel
 
 	/**
 	 * Preleva i figli di cui id e' radice.
-	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se ''  un utente anonimo,
+	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se '' ï¿½ un utente anonimo,
 	 * altrimenti li prende tutti.
 	 * Si possono selezionare i tipi di oggetti da prelevare.
 	 *
@@ -391,7 +391,7 @@ class Tree extends BEAppModel
 	/**
 	 * Preleva i discendenti di cui id e' radice.
 	 * (vedere: beobject->find(), per ricerche al di fuori dell'albero dei contenuti ).
-	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se ''  un utente anonimo,
+	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se '' ï¿½ un utente anonimo,
 	 * altrimenti li prende tutti.
 	 * Si possono selezionare i tipi di oggetti da prelevare.
 	 *
@@ -454,7 +454,7 @@ class Tree extends BEAppModel
 	////////////////////////////////////////////////////////////////////////
 	/**
 	 * Preleva i figli/discendenti di cui id e' radice.
-	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se ''  un utente anonimo,
+	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se '' ï¿½ un utente anonimo,
 	 * altrimenti li prende tutti.
 	 * Si possono selezionare i tipi di oggetti da prelevare.
 	 *
@@ -557,9 +557,9 @@ class Tree extends BEAppModel
 	}
 
 	private function _getCondition_status(&$conditions, $status = null) {
-		if(!isset($status)) return ;
-
-		$conditions[] = array('status' => "'$status'") ;
+		if(!isset($status)) 
+			return ;
+		$conditions[] = array('Tree.status' => $status) ;
 	}
 
 	private function _getCondition_parentID(&$conditions, $id = null) {

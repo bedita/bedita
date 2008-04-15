@@ -475,9 +475,9 @@ class BEObject extends BEAppModel
 	}
 
 	private function _getCondition_status(&$conditions, $status = null) {
-		if(!isset($status)) return ;
-
-		$conditions[] = array('status' => "'$status'") ;
+		if(!isset($status)) 
+			return ;
+		$conditions[] = array('status' => $status) ;
 	}
 
 	private function _getCondition_current(&$conditions, $current = true) {
