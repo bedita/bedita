@@ -39,9 +39,12 @@ class FilesController extends AppController {
 		}
 	}
 
-	function uploadAjaxMediaProvider () {	
-		if (!isset($this->params['form']['url']) || !isset($this->params['form']['title'])) return ;
-		$this->params['form']['title'] = trim($this->params['form']['title']) ;
+	function uploadAjaxMediaProvider () {
+//fwrite(fopen(ROOT.DS.APP_DIR.DS."tmp".DS."out.txt","w"), $this->params['form']['title']) ;
+		if (!isset($this->params['form']['url'])) return ;
+		if (isset($this->params['form']['title'])) {
+			$this->params['form']['title'] = trim($this->params['form']['title']) ;
+		}
 		$this->layout = "empty";
 		try {
 			$this->Transaction->begin() ;

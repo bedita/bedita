@@ -47,7 +47,7 @@
  */
 
 class BeUploadToObjComponent extends SwfUploadComponent {
-	var $components	= array('BeFileHandler') ;
+	var $components	= array('BeFileHandler', 'BeBlipTv') ;
 
 	const BEDITA_FILE_EXIST	= 30 ;
  	const BEDITA_MIME			= 31 ;
@@ -133,19 +133,43 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 	 * @return boolean true if upload was successful, false otherwise.
 	 */
 	function uploadFromMediaProvider(&$name) {
+/*
+$this->params['form']['url']   =  "http://www.blip.tv/file/829287?utm_source=featured_ep&utm_medium=featured_ep" ; 
+//$this->params['form']['title']  =  "title" ; 
+$this->params['form']['lang']  =  "ita" ; 
+*/
 		$result = false ;
 		if(!$this->recognizeMediaProvider($this->params['form']['url'], $provider, $name)) {
 			throw new BEditaMediaProviderException(__("Multimedia provider unsupported",true)) ;
 		}
 	
 		// Prepare data
-		$data['title']		= trim($this->params['form']['title']) ;
-		$data['name']		= preg_replace("/[\'\"]/", "", $data['title']) ;
-		$data['type']		= "video/$provider" ;
-		$data['path']		= $this->params['form']['url'];
-		$data['lang'] 	  	= $this->params['form']['lang'];
-		$data['provider']	=  $provider ;
-		$data['uid']  	 	=  $name ;
+		switch($provider) {
+			case 'youtube': {
+				$data['title']		= trim($this->params['form']['title']) ;
+				$data['name']		= preg_replace("/[\'\"]/", "", $data['title']) ;
+				$data['type']		= "video/$provider" ;
+				$data['path']		= $this->params['form']['url'] ;
+				$data['lang'] 	  	= $this->params['form']['lang'];
+				$data['provider']	=  $provider ;
+				$data['uid']  	 	=  $name ;
+			} break ;
+			case 'blip': {
+				if(!($this->BeBlipTv->getInfoVideo($name) )) {
+					throw new BEditaMediaProviderException(__("Multimedia  not found",true)) ;
+				}
+				
+				if(@empty($this->params['form']['title'])) $data['title'] = $this->BeBlipTv->info['title'] ;
+				else $data['title'] = trim($this->params['form']['title']) ;
+								
+				$data['name']		= preg_replace("/[\'\"]/", "", $data['title']) ;
+				$data['type']		= "video/$provider" ;
+				$data['path']		= $this->BeBlipTv->info['url'] ;
+				$data['lang'] 	  	= $this->params['form']['lang'];
+				$data['provider']	=  $provider ;
+				$data['uid']  	 	=  $name ;
+			} break ;
+		}
 
 		if($this->BeFileHandler->isPresent($data['path'])) 
 			throw new BEditaFileExistException(__("Video url is already in the system",true)) ;
