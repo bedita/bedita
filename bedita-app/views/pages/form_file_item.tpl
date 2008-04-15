@@ -46,7 +46,7 @@
 		{/if}
 	</div>
 	{elseif ($obj.provider|default:false)}
-		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="; " 3="height:" 4=$conf->videoThumbHeight}
+		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="px; " 3="height:" 4=$conf->videoThumbHeight 5="px;"}
 		{assign_associative var="attributes" style=$myStyle}
 		<div><a href="{$linkUrl}" target="_blank">{$mediaProvider->thumbnail($obj, $attributes) }</a></div>
 	{elseif strtolower($obj.ObjectType.name) == "audio"}
