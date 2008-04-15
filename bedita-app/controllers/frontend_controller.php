@@ -165,6 +165,31 @@ abstract class FrontendController extends AppController {
 						$relations = $this->objectRelationArray($Details['ObjectRelation']);
 						$Details['relations'] = $relations;
 					}
+					
+					if(!empty($Details['gallery_id'])) {
+						$gid = $Details['gallery_id'];
+						$types = array($conf->objectTypes['image'], $conf->objectTypes['audio'], $conf->objectTypes['video']) ;
+						$children = $this->BeTree->getChildren($gid, $this->status, $types, "priority") ;
+						$objForGallery = &$children['items'] ;
+						$multimedia=array();
+						foreach($objForGallery as $index => $object) {
+							$model = $this->loadModelByObjectTypeId($object['object_type_id']);
+							$this->modelBindings($model);
+							$obj_data = $model->find("first", array(
+												"conditions" => array(
+													"BEObject.id" => $object['id'],
+													"status" => $this->status
+													)
+												)
+											);
+							if (!$obj_data) 
+								continue ;
+							$obj_data['priority'] = $object['priority'];
+							$obj_data['filename'] = substr($obj_data['path'],strripos($obj_data['path'],"/")+1);
+							$multimedia[$index]=$obj_data;
+						}
+						$Details['gallery_items'] = $multimedia;
+					}
 					$fullitems[]=$Details;
 				}
 				$this->set($tplvar,$fullitems);
