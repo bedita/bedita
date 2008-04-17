@@ -146,7 +146,7 @@ $(document).ready(function() {
 		</tr>
 		<tr>
 			<td class="label">{t}Url{/t}:</td>
-			<td class="field"><input type="text" name="url" /></td>
+			<td class="field"><input type="text" name="url" size="60"/></td>
 			<td class="status">&nbsp;</td>
 		</tr>
 		<tr>
