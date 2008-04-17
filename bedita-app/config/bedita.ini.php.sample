@@ -445,8 +445,8 @@ $config['media_providers'] = array(
  *  file conf for media provider
  */
 $config['media_providers_default_conf']  = array(
-	"youtube"	=> "mediaprovider.youtube.ini.php",
-	"blip"		=> "mediaprovider.blip.ini.php"
+	"youtube"	=> "mediaprovider.youtube.ini",
+	"blip"		=> "mediaprovider.blip.ini"
 ) ;
 
 /**
