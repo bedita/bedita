@@ -96,8 +96,8 @@ $(document).ready(function() {
 		{
 			$("#addAudioForm").hide();
 			$("#addVideoForm").hide();
-			$("#addImageForm").hide();
-			$("#addOtherForm").show();
+			$("#addImageForm").show();
+			$("#addOtherForm").hide();
 		}
 	})
 });
@@ -162,27 +162,7 @@ $(document).ready(function() {
 	</div>
 	
 	<div id="addOtherForm" style="display:none">
-	<table border="0" cellspacing="0" cellpadding="2">
-		<tr>
-			<td><strong>{t}Title{/t}</strong></td>
-			<td style="padding-left:20px;"><strong>{t}Description{/t}</strong></td>
-		</tr>
-		<tr>
-			<td><input type="text" name="streamUploaded[title]" class="formtitolo" value=""></td>
-			<td style="padding-left:20px;" rowspan="4">
-				<textarea name="streamUploaded[description]" style="width:280px; height:90px;"></textarea>
-			</td>
-		</tr>
-		<tr>
-			<td><strong>{t}file{/t}:</strong></td>
-		</tr>
-		<tr>
-			<td>
-				<input type="file" name="Filedata" />
-				<input type="button" id="uploadForm" value="{t}Upload{/t}"/>
-			</td>
-		</tr>
-	</table>
+		empty
 	</div>
 	<div style="clear: left;"></div>
 
