@@ -45,6 +45,7 @@ class MediaProviderHelper extends AppHelper {
 		$media = null ;
 		switch ($obj['provider']) {
 			case 'youtube': $media = new YoutubeMedia($this) ; break ;
+			case 'blip': 	 $media = new BlipMedia($this) ; break ;
 			default: "" ;
 		}
 		return $media->embed($obj, $attributes) ;
@@ -60,11 +61,7 @@ class YoutubeMedia {
 	
 	var $thumbTag	= "http://i.ytimg.com/vi/%s/default.jpg" ;
 	var $embedTag	= '
-<object width="%d" height="%d">
-<param name="movie" value="http://www.youtube.com/v/%s%s"></param>
-<param name="wmode" value="transparent"></param>
-<embed src="http://www.youtube.com/v/%s%s" type="application/x-shockwave-flash" wmode="transparent" width="%d" height="%d"></embed>
-</object>	
+<embed src="http://www.youtube.com/v/%s%s" type="application/x-shockwave-flash" wmode="transparent" width="%d" height="%d"></embed>	
 	';
 	
 	function __construct(&$helper) {
@@ -117,13 +114,6 @@ class BlipMedia {
 	var $helper = null ;
 	
 	var $thumbTag	= "http://i.ytimg.com/vi/%s/default.jpg" ;
-	var $embedTag	= '
-<object width="%d" height="%d">
-<param name="movie" value="http://www.youtube.com/v/%s%s"></param>
-<param name="wmode" value="transparent"></param>
-<embed src="http://www.youtube.com/v/%s%s" type="application/x-shockwave-flash" wmode="transparent" width="%d" height="%d"></embed>
-</object>	
-	';
 	
 	function __construct(&$helper) {		
 		$this->helper = $helper ;		
@@ -135,7 +125,7 @@ class BlipMedia {
 		}
 		$Component = new BeBlipTvComponent();
 		$Component->getInfoVideo($obj['uid']) ;
-
+		
 		return $this->helper->Html->image(sprintf($Component->info['thumbnailUrl'], $obj['uid']), $htmlAttributes) ;
 	}
 	
@@ -149,27 +139,13 @@ class BlipMedia {
 	function embed(&$obj, &$attributes) {
 		$this->conf 	= Configure::getInstance() ;
 		
-		// Definisce il file di configurazione da caricare
-		$config = $this->conf->media_providers_default_conf['youtube'] ;
-		if(isset($attributes["configure"])) {
-			$config = $attributes["configure"] ;
+		if(!class_exists("BeBlipTvComponent")){
+			App::import('Component', "BeBlipTv");
 		}
-		Configure::load($config) ;
-		if(!isset($this->conf->youtube)) return "" ;
-		
-		// formatta le variabili
-		$attributes = array_merge($this->conf->youtube, $attributes) ;
-		$widht = $attributes['width'] ;
-		$height = $attributes['height'] ;
-		unset($attributes['conf']) ;
-		unset($attributes['width']) ;
-		unset($attributes['height']) ;
-		$params = "" ;
-		foreach ($attributes as $key => $value) {
-			$params .= "&$key=$value" ;
-		}
-
-		return trim(sprintf($this->embedTag, $widht, $height, $obj['uid'], $params,  $obj['uid'], $params, $widht, $height)) ;
+		$Component = new BeBlipTvComponent();
+		$Component->getEmbedVideo($obj['uid']) ;
+	
+		return $Component->embed ;
 	}
 	
 }  ;

@@ -17,6 +17,7 @@
 class BeBlipTvComponent extends Object {
 	var $controller	;
 	var $info = null ;
+	var $embed = null ;
 	
 	function __construct() {
 		parent::__construct() ;
@@ -46,7 +47,10 @@ class BeBlipTvComponent extends Object {
 		
 		// Preleva le informazioni
 		$fp = fopen(sprintf($conf->blip['urlinfo'], $id), "r") ;
-		$json = fread($fp, 16*1024) ;
+		$json = "" ;
+		while(!feof($fp)) {
+			$json .= fread($fp, 1024) ;
+		}	
 		@fclose($fp) ;
 		if(!$json) return false ;
 		
@@ -69,6 +73,38 @@ class BeBlipTvComponent extends Object {
 		$this->info = $ret['Post'] ;
 		
 		return $this->info  ;
+	}
+	
+	/**
+	 * Torna il codice embed
+	 *
+	 * @return unknown
+	 */
+	public function getEmbedVideo($id) {
+		$conf = Configure::getInstance() ;
+		$this->embed = null ;
+		
+		if(!isset($this->info)) {
+			if(!$this->getInfovideo($id) ) return false ;
+		}
+		
+		Configure::load($conf->media_providers_default_conf['blip']) ;
+		if(!isset($conf->blip)) return false ;
+				
+		// Preleva le informazioni
+		$fp = fopen(sprintf($conf->blip['urlembed'], $this->info['postsId']), "r") ;
+		$json = "" ;
+		while(!feof($fp)) {
+			$json .= fread($fp, 1024) ;
+		}	
+		@fclose($fp) ;
+		if(!$json) return false ;
+
+		// Eliina i commenti, danno errore
+		$json = preg_replace('/^[^\']+\'/mi', '', $json) ;
+		$this->embed = stripslashes(substr($json, 0, stripos($json, "'"))) ;
+		
+		return $this->embed  ;
 	}
 	
 }

@@ -42,21 +42,22 @@
 		}
 	
 	{elseif ($object.provider|default:false)}
-		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="; " 3="height:" 4=$conf->videoThumbHeight}
+		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="px; " 3="height:" 4=$conf->videoThumbHeight 5="px;"}
 		{assign_associative var="attributes" style=$myStyle}
 
 	<a href="{$object.path}" target="_blank">
 		{$mediaProvider->thumbnail($object, $attributes) }
 	</a>
 	
-	<embed 
-		src		= "/swf/mediaplayer.swf" 
+		{$mediaProvider->embed($object, $attributes) }
+	<!-- embed 
+		src	= "/swf/mediaplayer.swf" 
 		width	= "{$conf->videoWidth}"
 		height	= "{$conf->videoHeight}"
 		allowscriptaccess = "always"
 		allowfullscreen = "true"
 		flashvars = "file={$object.path}&backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0x000000&overstretch=true&searchbar=false&autostart=false"
-	/>
+	/ -->
 	
 	{elseif strtolower($object.ObjectType.name) == "audio"}
 	<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
