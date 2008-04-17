@@ -102,27 +102,27 @@ class Section extends BEAppCollectionModel
 			$behaviors = array_keys($this->behaviors);
 			$ct = count($behaviors);
 			for ($i = 0; $i < $ct; $i++) {
-				$this->behaviors[$behaviors[$i]]->afterSave($this, null);
+				if($this->behaviors[$behaviors[$i]]->afterSave($this, null) === false)
+					return false;
 			}
 		}
 
-		$this->afterSave($created) ;
+		if($this->afterSave($created)===false)
+			return false;
 		$this->data = false;
 		$this->_clearCache();
 		$this->validationErrors = array();
 		
 		return true ;
 	}
-	
-	/**
-	 * Associa la community ad un contenitore quando viene creata
-	 */
+
 	function afterSave($created) {
-		if (!$created) return ;
-		
+		if (!$created) return true;
 		if(!class_exists('Tree')) loadModel('Tree');
 		$tree 	=& new Tree();
-		$tree->appendChild($this->id, $this->data[$this->name]['parent_id']) ;		
+		if($tree->appendChild($this->id, $this->data[$this->name]['parent_id'])===false)
+			return false;
+		return true;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////

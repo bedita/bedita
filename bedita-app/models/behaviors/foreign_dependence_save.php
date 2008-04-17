@@ -32,9 +32,9 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 		$firstModel	= null ;		// Il nome del Model iniziale
 		
 		foreach ($this->config[$model->name] as $name) {
-			if(isset($model->$name)) {				
-				$this->_data4Parent($model, $name, $data) ;				
-				
+			if(isset($model->$name)) {
+				$this->_data4Parent($model, $name, $data) ;
+
 				// Se il model ha delle associazioni hasAndBelongsToMany, formatta l'array di dati
 				if(count($model->$name->hasAndBelongsToMany))  {
 					$tmp = array("$name" => &$data) ;
@@ -122,14 +122,15 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 	 * 
 	 */
 	private function _insertNewID(&$model, $id) {
-		if($id === null)	return ;
+		if($id === null)
+			return ;
 		
 		if (Set::countDim($model->data) == 1) {
 			$model->data['id'] = $id ;
 		} else {
 			$keys = array_keys($model->data) ;
 			foreach ($keys as $k) {
-				if(!isset($model->data[$k]['id'])) {
+				if(empty($model->data[$k]['id'])) {
 					$model->data[$k]['id'] = $id ;
 				}
 			}
