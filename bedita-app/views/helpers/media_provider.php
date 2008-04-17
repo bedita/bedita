@@ -51,6 +51,20 @@ class MediaProviderHelper extends AppHelper {
 		return $media->embed($obj, $attributes) ;
 	}
 	
+	/**
+	 * getsource embed url
+	 */
+	function sourceEmbed(&$obj ) {
+		if(!isset($obj['provider'])) return "" ;
+		
+		$media = null ;
+		switch ($obj['provider']) {
+			case 'youtube': $media = new YoutubeMedia($this) ; break ;
+			case 'blip': 	 $media = new BlipMedia($this) ; break ;
+			default: "" ;
+		}
+		return $media->sourceEmbed($obj) ;
+	}
 };
 
 /**
@@ -105,6 +119,15 @@ class YoutubeMedia {
 		return trim(sprintf($this->embedTag, $widht, $height, $obj['uid'], $params,  $obj['uid'], $params, $widht, $height)) ;
 	}
 	
+	/**
+	 * For change config file, set "conf" in attributes
+	 *
+	 * @param unknown_type $obj
+	 * @return unknown
+	 */
+	function sourceEmbed(&$obj) {
+		return $obj['path'] ;
+	}
 }  ;
 
 /**
@@ -146,6 +169,28 @@ class BlipMedia {
 		$Component->getEmbedVideo($obj['uid']) ;
 	
 		return $Component->embed ;
+	}
+	
+	/**
+	 * For change config file, set "conf" in attributes
+	 *
+	 * @param unknown_type $obj
+	 * @return unknown
+	 */
+	function sourceEmbed(&$obj) {
+		$this->conf 	= Configure::getInstance() ;
+		
+		if(!class_exists("BeBlipTvComponent")){
+			App::import('Component', "BeBlipTv");
+		}
+		$Component = new BeBlipTvComponent();
+		$Component->getEmbedVideo($obj['uid']) ;
+	
+		if(preg_match("/src\=\"([^\"]+)/i",$Component->embed,$matched)) {
+			return $matched[1] ;
+		}
+
+		return "" ;
 	}
 	
 }  ;
