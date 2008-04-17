@@ -50,14 +50,14 @@
 	</a>
 	
 		{$mediaProvider->embed($object, $attributes) }
-	<!-- embed 
+	<embed 
 		src	= "/swf/mediaplayer.swf" 
 		width	= "{$conf->videoWidth}"
 		height	= "{$conf->videoHeight}"
 		allowscriptaccess = "always"
 		allowfullscreen = "true"
 		flashvars = "file={$object.path}&backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0x000000&overstretch=true&searchbar=false&autostart=false"
-	/ -->
+	/>
 	
 	{elseif strtolower($object.ObjectType.name) == "audio"}
 	<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
