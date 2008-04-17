@@ -27,8 +27,10 @@ $(document).ready(function(){
 	$('#main_lang').mainLang();
 	{/literal}
 	{foreach key=val item=label from=$conf->langOptions name=langfe}
-	{if $val!=$object_lang || empty($object.LangText.title[$val])}
-		{literal}$('#area_langs_container > ul').tabs("disable",{/literal}{$smarty.foreach.langfe.iteration}{literal});{/literal}
+	{if $val!=$object_lang && empty($object.LangText.title[$val])}
+		{literal}$('#area_langs_container > ul').tabs("disable",{/literal}{$smarty.foreach.langfe.index}{literal});{/literal}
+	{elseif $val==$object_lang}
+		{literal}$('#area_langs_container > ul').tabs("select",{/literal}{$smarty.foreach.langfe.index}{literal});{/literal}
 	{/if}
 	{/foreach}
 	{literal}
@@ -46,31 +48,24 @@ $(document).ready(function(){
 <fieldset>
 	<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 	<input type="hidden" name="data[title]" value="{$object.title|default:''}"/>
-	<table class="tableForm" border="0">
-	<tr>
-		<td class="label">{t}Main language{/t}:</td>
-		<td class="field">
+	<div id="properties_langs_choice" class="tabsContainer">
+		<span class="label">&nbsp;{t}Main language{/t}:</span>
+		<span class="field">
 			<select name="data[lang]" id="main_lang">
 			{foreach key=val item=label from=$conf->langOptions name=langfe}
 			<option {if $val==$object_lang}selected="selected"{/if} value="{$val}">{$label}</option>
 			{/foreach}
 			</select>
-		</td>
-		<td class="status">&nbsp;</td>
-	</tr>
-	<tr>
-		<td class="label">{t}Languages versions{/t}:</td>
-		<td class="field">
-			{foreach key=val item=label from=$conf->langOptions name=langfe}
-				<input type="checkbox" name="data[lang_version]" class="lang_flags" title="{$smarty.foreach.langfe.index}" id="flag_{$val}"
+		</span>
+		<span class="label" style="margin-left: 16px;">{t}Versions{/t}:</span>
+		<span class="field">{foreach key=val item=label from=$conf->langOptions name=langfe}
+				<input type="checkbox" name="data[lang_version]" class="lang_flags" title="Enable / Disable {$label}" tabindex="{$smarty.foreach.langfe.index}" id="flag_{$val}"
 					{if $val==$object_lang || !empty($object.LangText.title[$val])} checked="checked"{/if}
-					{if $val==$object_lang} disabled="disabled"{/if}/>
-				<img src="{$html->webroot}img/flags/{$val}.png" border="0" alt="{$val}"/>&nbsp;
+					{if $val==$object_lang} disabled="disabled"{/if} />
+				<img src="{$html->webroot}img/flags/{$val}.png" border="0" alt="{$val}" style="vertical-align: middle;" />&nbsp;
 			{/foreach}
-		</td>
-		<td class="status">&nbsp;</td>
-	</tr>
-	</table>
+		</span>
+	</div>
 	<div id="area_langs_container" class="tabsContainer">
 		<ul>
 			{foreach key=val item=label from=$conf->langOptions}
