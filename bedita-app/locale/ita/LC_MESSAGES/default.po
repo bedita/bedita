@@ -888,3 +888,15 @@ msgstr "Errore durante l'upload: file assente"
 
 msgid "Error during upload, error number"
 msgstr "Errore durante l'upload: errore numero"
+
+msgid "other"
+msgstr "altro"
+
+msgid "Item Type"
+msgstr "Tipo"
+
+msgid "file"
+msgstr "file"
+
+msgid "connect to other items"
+msgstr "collega ad altri elementi"

@@ -835,10 +835,22 @@ msgid "Hide system tags"
 msgstr "Esconder os tag no sistema"
 
 msgid "Multimedia provider unsupported"
-msgstr "x DANTE - Multimedia provider non supportato"
+msgstr "x DANTE - Multimedia provider não suportado"
 
 msgid "Error during upload, missing file"
-msgstr "x DANTE - Errore durante l'upload: file assente"
+msgstr "Erro no upload: arquivo não encontrado"
 
 msgid "Error during upload, error number"
-msgstr "x DANTE - Errore durante l'upload: errore numero"
+msgstr "Erro no upload: error numero"
+
+msgid "other"
+msgstr "outro"
+
+msgid "Item Type"
+msgstr "Tipo"
+
+msgid "file"
+msgstr "arquivo"
+
+msgid "connect to other items"
+msgstr "relacionar a outros elementos"
