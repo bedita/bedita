@@ -40,9 +40,8 @@ class FilesController extends AppController {
 	}
 
 	function uploadAjaxMediaProvider () {
-//fwrite(fopen(ROOT.DS.APP_DIR.DS."tmp".DS."out.txt","w"), $this->params['form']['title']) ;
 		if (!isset($this->params['form']['url'])) return ;
-		if (isset($this->params['form']['title'])) {
+		if (!empty($this->params['form']['title'])) {
 			$this->params['form']['title'] = trim($this->params['form']['title']) ;
 		}
 		$this->layout = "empty";

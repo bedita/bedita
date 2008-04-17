@@ -48,8 +48,9 @@ $(document).ready(function(){
 		<th>{$beToolbar->order('id', 'id')}</th>
 		<th>{t}Thumb{/t}</th>
 		<th>{$beToolbar->order('title', 'Title')}</th>
-		<th>{t}File name{/t}</th>
-		<th>{t}File size{/t}</th>
+		<th>{t}Name{/t}</th>
+		<th>{t}Type{/t}</th>
+		<th>{t}Size{/t}</th>
 		<th>{$beToolbar->order('status', 'Status')}</th>
 		<th>{$beToolbar->order('created', 'Created')}</th>
 		<th>{$beToolbar->order('lang', 'Language')}</th>
@@ -83,6 +84,7 @@ $(document).ready(function(){
 		</td>
 		<td class="cellList">{$objects[i].title}</td>
 		<td class="cellList">{$objects[i].name}</td>
+		<td class="cellList">{$objects[i].ObjectType.name}</td>
 		<td class="cellList">{math equation="x/y" x=$objects[i].size|default:0 y=1024 format="%d"|default:""} KB</td>
 		<td class="cellList">{$objects[i].status}</td>
 		<td class="cellList">{$objects[i].created|date_format:'%b %e, %Y'}</td>

@@ -59,7 +59,7 @@ $(document).ready(function(){
 			<td class="field">
 				<input {if $val==$object_lang}class="{literal}{required:true,minLength:1}{/literal}" title="{t}Title is required{/t}"{/if}
 					type="text" name="data[LangText][{$val}][title]"
-					value="{$object.LangText.title[$val]|default:''|escape:'html'|escape:'quotes'}" />&nbsp;
+					value="{if $val==$object_lang}{$object.LangText.title[$val]|default:$object.title|escape:'html'|escape:'quotes'}{else}{$object.LangText.title[$val]|default:''|escape:'html'|escape:'quotes'}{/if}" />&nbsp;
 			</td>
 			<td class="status">&nbsp;</td>
 		</tr>

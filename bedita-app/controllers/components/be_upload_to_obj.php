@@ -146,7 +146,7 @@ $this->params['form']['lang']  =  "ita" ;
 		// Prepare data
 		switch($provider) {
 			case 'youtube': {
-				$data['title']		= trim($this->params['form']['title']) ;
+				$data['title']		= (!empty($this->params['form']['title'])) ? trim($this->params['form']['title']) : 'youtube video';
 				$data['name']		= preg_replace("/[\'\"]/", "", $data['title']) ;
 				$data['type']		= "video/$provider" ;
 				$data['path']		= $this->params['form']['url'] ;

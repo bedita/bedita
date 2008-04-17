@@ -51,7 +51,7 @@
 	
 		{$mediaProvider->embed($object, $attributes) }
 	<embed 
-		src	= "/swf/mediaplayer.swf" 
+		src	= "{$html->webroot}swf/mediaplayer.swf" 
 		width	= "{$conf->videoWidth}"
 		height	= "{$conf->videoHeight}"
 		allowscriptaccess = "always"
@@ -65,7 +65,7 @@
 	</a>
 
 	<embed 
-		src		= "/swf/mediaplayer.swf" 
+		src		= "{$html->webroot}swf/mediaplayer.swf" 
 		width	= "{$conf->audioWidth}"
 		height	= "{$conf->audioHeight}"
 		allowscriptaccess = "always"
