@@ -356,8 +356,9 @@ class BEObject extends BEAppModel
 	 * Setta i valori di default per i diversi campi
 	 */
 	private function _getDefaultNickname($value) {
-		$nickname = $nickname_base = preg_replace("/[^0-9A-Za-z\-_.]/i", "", $value) ;
-		if(@empty($nickname)) return $nickname ;
+		$nickname = $nickname_base = strtolower(preg_replace("/[^0-9A-Za-z\-_.]/i", "", $value)) ;
+		if(@empty($nickname)) 
+			return $nickname ;
 		
 		// Verifica l'assenza del nickname selezionato
 		$tentativi 	= 100 ;
