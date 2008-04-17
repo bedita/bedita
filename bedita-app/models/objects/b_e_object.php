@@ -517,5 +517,11 @@ class BEObject extends BEAppModel
 		$tmp  	= $this->execute($sql) ;
 		return ((isset($tmp[0]['BEObject']['id'])) ? $tmp[0]['BEObject']['id'] : null) ;
 	}
+
+	function getNicknameFromId($id) {
+		$sql = "SELECT objects.nickname FROM objects WHERE id = '{$id}' LIMIT 1" ;
+		$tmp  	= $this->execute($sql) ;
+		return ((isset($tmp[0]['BEObject']['nickname'])) ? $tmp[0]['BEObject']['nickname'] : null) ;
+	}
 }
 ?>

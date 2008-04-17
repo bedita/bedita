@@ -17,6 +17,7 @@
 var current_id	= {$section.id|default:0} ;
 {literal}
 $(document).ready(function(){
+	$('#title').show() ;
 	$('#properties').show() ;
 	if(!current_id) $('#whereto').show() ;
 	$('.showHideBlockButton').bind("click", function(){ $(this).next("div").toggle() ; }) ;
