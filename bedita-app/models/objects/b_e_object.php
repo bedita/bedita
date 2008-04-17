@@ -349,6 +349,19 @@ class BEObject extends BEAppModel
 		return $conf->objectTypeModels[$type_id] ;
 	}
 	
+	/**
+	* update title e description only.
+	**/
+	public function updateTitleDescription($id, $title, $description) {
+		if(@empty($id) || @empty($title)) return false ;
+		
+		$db 		= &ConnectionManager::getDataSource($this->useDbConfig);
+		
+		$db->query("UPDATE objects  SET title = '{$title}', description = '{$description}' WHERE id = {$id} " ) ;
+		
+		return true ;
+	}	
+	
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	

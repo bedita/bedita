@@ -172,7 +172,7 @@ class ContentBase extends BEAppModel
 	/**
 	 * save lang text
 	 */
-	private function saveLangTextObjectRelation($obj_id, $lang, $value, $field) {
+	public function saveLangTextObjectRelation($obj_id, $lang, $value, $field) {
 		if(!isset($lang)) return false ;
 		
 		$id = $this->ObjectRelation->LangText->field("id", "object_id = {$obj_id} AND name= '{$field}' ");	
@@ -194,7 +194,6 @@ class ContentBase extends BEAppModel
 		
 		return $this->ObjectRelation->LangText->save($data) ;
 	}
-	
 	
 }
 ?>

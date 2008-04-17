@@ -39,6 +39,7 @@ class GalleriesController extends ModulesController {
 	}	
 	
 	public function save() {
+		
 		$this->checkWriteModulePermission();
 		if(empty($this->data))  
 			throw new BeditaException( __("No data", true));
@@ -53,6 +54,7 @@ class GalleriesController extends ModulesController {
 		$this->BeLangText->setupForSave($this->data["LangText"]);
 		$multimedia = (isset($this->data['ObjectRelation']))? $this->data['ObjectRelation'] : array() ;
 		unset($this->data['multimedia']);
+	
 		$this->Transaction->begin();
 		if(!$this->Gallery->save($this->data)) {
 			throw new BeditaException( __("Error saving gallery", true), $this->Gallery->validationErrors);
@@ -66,6 +68,7 @@ class GalleriesController extends ModulesController {
 				throw new BeditaException( __("Error saving permissions", true));
 		}
 		// Insert new multimedia items (remove previous associations)
+		
 		if(!$this->Gallery->removeChildren()) 
 			throw new BeditaException( __("Remove children", true));
 		
@@ -74,9 +77,24 @@ class GalleriesController extends ModulesController {
 				if(!$this->Gallery->appendChild($m['id'],null,$m['priority'])) {
 					throw new BeditaException( __("Append child", true));
 				}
+				// save modified title and description 
+				if((integer)$m['modified']) {	
+					if(!class_exists('ContentBase')) {
+						App::import('Model', 'ContentBase') ;
+						
+						$this->ContentBase = new ContentBase() ;
+					}
+									
+					if(!$this->Gallery->BEObject->updateTitleDescription($m['id'] , $m['title'], $m['description'])) {
+						throw new BeditaException( __("Save info child", true));
+					}
+					$this->ContentBase->saveLangTextObjectRelation($m['id'], $this->data['lang'], $m['title'], "title") ;
+					$this->ContentBase->saveLangTextObjectRelation($m['id'], $this->data['lang'], $m['description'], "description") ;
+				}
 			}
 		}
 		$this->Transaction->commit();
+	
 		$this->userInfoMessage(__("Gallery saved", true) . "<br />" . $this->data["title"]);
 		$this->eventInfo("gallery ". $this->data["title"]."saved");
 	}
