@@ -64,6 +64,7 @@ $(document).ready(function(){
 			{assign var="thumbHeight" 		value = 30}
 			{assign var="filePath"			value = $objects[i].path}
 			{assign var="mediaPath"         value = $conf->mediaRoot}
+			{assign var="mediaUrl"         value = $conf->mediaUrl}
 			{assign_concat var="mediaCacheBaseURL"	0=$conf->mediaUrl  1="/" 2=$conf->imgCache 3="/"}
 			{assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
 
@@ -71,6 +72,7 @@ $(document).ready(function(){
 				{thumb 
 					width			= $thumbWidth
 					height			= $thumbHeight
+					linkurl                 = $mediaUrl$filePath
 					file			= $mediaPath$filePath
 					cache			= $mediaCacheBaseURL
 					cachePATH		= $mediaCachePATH
