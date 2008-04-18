@@ -134,7 +134,7 @@ abstract class FrontendController extends AppController {
 		return $obj;
 	}
 
-	protected function loadObjects($parent_id,$obj_to_view) {
+	protected function loadObjects($parent_id,$obj_to_view, $conditions=array()) {
 		$this->initAttributes();
 		$result = array();
 		$conf = Configure::getInstance();
@@ -148,11 +148,13 @@ abstract class FrontendController extends AppController {
 				foreach($items['items'] as $index => $item) {
 					$model = $this->loadModelByObjectTypeId($item['object_type_id']);
 					$this->modelBindings($model);
-					$Details = $model->find("first", array(
-									"conditions" => array(
+					$cond = array_merge(array(
 										"BEObject.id" => $item['id'],
 										"status" => $this->status
-										)
+										), $conditions
+									);
+					$Details = $model->find("first", array(
+									"conditions" => $cond
 									)
 								);
 					if(!$Details) 
@@ -202,30 +204,26 @@ abstract class FrontendController extends AppController {
 	protected function loadGalleries() {
 		$this->initAttributes();
 		$conf = Configure::getInstance();
-		$draft = ($conf->draft != null) ? $conf->draft : false;
 		$types = array($conf->objectTypes['gallery']);
 		$result = array();
-		$objects = $this->BeTree->getDiscendents(null, null, $types, "", true, 1, 10) ;
+		$objects = $this->BeTree->getDiscendents(null, $this->status, $types) ;
 		if(!empty($objects) && !empty($objects['items'])) {
 			$galleries = $objects['items'];
 			$ot  = array($conf->objectTypes['image'],$conf->objectTypes['audio'],$conf->objectTypes['video']);
 			foreach($galleries as $key => $gallery) {
-				if( ($gallery['status'] == 'on') || ($draft && ($gallery['status'] == 'draft'))) {
-					$result[$key] = $gallery;
-					$multimedia_items = $this->BeTree->getChildren($gallery['id'], null, $ot, "priority") ;
-					if(!empty($multimedia_items) && !empty($multimedia_items['items'])) {
-						$items = array();
-						foreach($multimedia_items['items'] as $i) {
-							$this->modelBindings($this->Stream);
-							$obj = $this->Stream->findById($i['id']);
-							if( ($i['status'] == 'on') || ($draft && ($i['status'] == 'draft'))) {
-								$items = $i;
-								$items['Stream'] =$obj['Stream'];
-								$result[$key]['items'][] = $items;
-							}
-						}
+				$result[$key] = $gallery;
+				$multimedia_items = $this->BeTree->getChildren($gallery['id'], $this->status, $ot, "priority") ;
+				if(!empty($multimedia_items) && !empty($multimedia_items['items'])) {
+					$items = array();
+					foreach($multimedia_items['items'] as $i) {
+						$this->modelBindings($this->Stream);
+						$obj = $this->Stream->findById($i['id']);
+						$items = $i;
+						$items['Stream'] =$obj['Stream'];
+						$result[$key]['items'][] = $items;
+			
 					}
-				}
+				}				
 			}
 			$this->set('galleries',$result);
 		}
@@ -233,6 +231,10 @@ abstract class FrontendController extends AppController {
 	
 	protected function showDraft() {
 		$this->status[] = "draft";
+	}
+	
+	public function getStatus() {
+		return $this->status;
 	}
 }
 ?>
