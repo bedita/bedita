@@ -27,7 +27,14 @@ abstract class FrontendController extends AppController {
 			$this->status[] = "draft";
 	}
 
-	protected function loadSections($area_id) {
+	/**
+	* Get area's section
+	* 
+	* @param integer $area_id			area parent
+	* @param  string $var_name			name result in to template_ vars
+	* @params array $exclude_nicknames	list exclude sections 
+	* */
+	protected function loadSections($area_id, $var_name = null, $exclude_nicknames = null) {
 		$this->initAttributes();
 		$conf = Configure::getInstance() ;
 		$draft = ($conf->draft != null) ? $conf->draft : false;
@@ -40,6 +47,8 @@ abstract class FrontendController extends AppController {
 				if( ( ($area['status'] == 'on') || ($draft && ($area['status'] == 'draft'))) && !empty($area['children'])) {
 					$children_arr = array();
 					foreach($area['children'] as $section_index => $s) {
+						if(is_array($exclude_nicknames) && in_array($s['nickname'], $exclude_nicknames)) continue ;
+						
 						$this->modelBindings($this->Section);
 						$section = $this->Section->findById($s['id']);
 						if( ($section['status'] == 'on') || ($draft && ($section['status'] == 'draft'))) {
@@ -70,10 +79,10 @@ abstract class FrontendController extends AppController {
 				}
 			}
 		}
-		$this->set('sections',$areas_sections);
+		$this->set((isset($var_name)?$var_name:'sections'), $areas_sections);
 	}
 
-	protected function loadObj($obj_id,$ot) {
+	protected function loadObj($obj_id,$ot, $var_name = null) {
 		$this->initAttributes();
 		$conf = Configure::getInstance() ;
 		$lang = $this->Session->read('Config.language');
@@ -130,7 +139,7 @@ abstract class FrontendController extends AppController {
 			$obj['gallery_items'] = $multimedia;
 		}
 		
-		$this->set($ot,$obj);
+		$this->set((isset($var_name)?$var_name:$ot),$obj);
 		return $obj;
 	}
 
