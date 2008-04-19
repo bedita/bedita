@@ -8,7 +8,7 @@
  * Version:  1.0
  * Author:   Christiano Presutti - aka xho - ChanelWeb srl
  * Purpose:  get several information from an image file
- * Input:    fileURI = string pointer to file - (yet to be made access file path on filesystem)
+ * Input:    fileURI = string pointer to file - (yet to be made access file path on filesystem), var = name of the array that will store gathered informations
  * Returns:  filename, w, h, hrtype, attr, mimetype, bits, channels, orientation [ todo: , exif as array () ]
  * -------------------------------------------------------------
  */

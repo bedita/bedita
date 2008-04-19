@@ -41,7 +41,7 @@
 {/if}
 </script>
 <h2 class="showHideBlockButton">{t}Long Text{/t}</h2>
-<div class="blockForm" id="extendedtext" style="display:none">
+<div class="blockForm" id="extendedtext" style="display: none;">
 <fieldset>
 	<div id="long_desc_langs_container" class="tabsContainer">
 		<ul>
@@ -50,15 +50,13 @@
 			{/foreach}
 		</ul>
 		{foreach key=val item=label from=$conf->langOptions}
-		<div id="long_desc_lang_{$val}">
-			<h3><img src="{$html->webroot}img/flags/{$val}.png" border="0" alt="{$val}"/></h3>
-			<b>{t}Short text{/t}:</b>
-			<br/>
-			<textarea name="data[LangText][{$val}][abstract]" id="text_{$val}" class="mce" style="font-size:13px; width:510px; height:150px;">{$object.LangText.abstract[$val]|default:''}</textarea>
-			<br/>
-			<b>{t}Long text{/t}:</b>
-			<br/>
-			<textarea name="data[LangText][{$val}][body]" id="text_l_{$val}" class="mce" style="font-size:13px; width:510px; height:150px;">{$object.LangText.body[$val]|default:''}</textarea>
+		<div id="long_desc_lang_{$val}" style="position: relative;">
+			<span style="position: absolute; top: 2px; right: 2px; z-index: 2;"><img src="{$html->webroot}img/flags/{$val}.png" border="0" alt="{$val}"/></span>
+			<h4>{t}Short text{/t}:</h4>
+			<textarea name="data[LangText][{$val}][abstract]" id="text_{$val}" class="mce" style="font-size:13px; width:520px; height:100px;">{$object.LangText.abstract[$val]|default:''}</textarea>
+			<br />
+			<h4>{t}Long text{/t}:</h4>
+			<textarea name="data[LangText][{$val}][body]" id="text_l_{$val}" class="mce" style="font-size:13px; width:520px; height:150px;">{$object.LangText.body[$val]|default:''}</textarea>
 		</div>
 		{/foreach}
 	</div>

@@ -17,7 +17,7 @@
 <!--
 {literal}
 $(document).ready(function(){
-	$('#properties').show() ;
+	$('#title').show() ;
 	$('.showHideBlockButton').bind("click", function(){ $(this).next("div").toggle() ; }) ;
 	$("#handlerChangeAlert").changeAlert($('input, textarea, select').not($("#addCustomPropTR TD/input, #addCustomPropTR TD/select, #addPermUserTR TD/input, #addPermGroupTR TD/input"))) ;
 	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div').alertUnload() ;
