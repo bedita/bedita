@@ -221,14 +221,27 @@ abstract class FrontendController extends AppController {
 			$ot  = array($conf->objectTypes['image'],$conf->objectTypes['audio'],$conf->objectTypes['video']);
 			foreach($galleries as $key => $gallery) {
 				$result[$key] = $gallery;
+				// get language version
+				$model = $this->loadModelByObjectTypeId($gallery['object_type_id']);
+				$this->modelBindings($model);
+				$Details = $model->findById($gallery["id"]);
+				if(!empty($Details) && !empty($Details["LangText"])) {
+					$this->BeLangText->setupForView($Details["LangText"]) ;
+				}
+				$result[$key]["LangText"] = $Details["LangText"];
+				// get gallery items
 				$multimedia_items = $this->BeTree->getChildren($gallery['id'], $this->status, $ot, "priority") ;
 				if(!empty($multimedia_items) && !empty($multimedia_items['items'])) {
 					$items = array();
 					foreach($multimedia_items['items'] as $i) {
-						$this->modelBindings($this->Stream);
-						$obj = $this->Stream->findById($i['id']);
+						$model = $this->loadModelByObjectTypeId($i['object_type_id']);
+						$this->modelBindings($model);
+						$obj = $model->findById($i['id']);
+						if(!empty($obj) && !empty($obj["LangText"])) {
+							$this->BeLangText->setupForView($obj["LangText"]) ;
+						}
 						$items = $i;
-						$items['Stream'] =$obj['Stream'];
+						$items['Stream'] =$obj;
 						$result[$key]['items'][] = $items;
 			
 					}
