@@ -50,7 +50,7 @@ class ShortNews extends BEAppObjectModel
 					'dependent'		=> true
 				),
 		) ;			
-
+/*
 	var $hasMany = array(
 		'links' =>
 				array(
@@ -60,7 +60,7 @@ class ShortNews extends BEAppObjectModel
 					'dependent'		=> true
 				),
 		) ;	
-
+*/
 	function afterSave() {
 		// Scorre le associazioni hasMany
 		foreach ($this->hasMany as $name => $assoc) {
