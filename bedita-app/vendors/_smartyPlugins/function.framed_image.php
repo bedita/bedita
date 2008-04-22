@@ -75,12 +75,18 @@ function smarty_function_framed_image ($params, &$smarty)
 	/*
 	 *  Get data or trigger errors
 	 */	
-	if ( !$_image_data = getimagesize($_imageInfo['path']) )
+	if ( !$_image_data =@ getimagesize($_imageInfo['path']) )
 	{
 
 		if ( !file_exists($_imageInfo['path']) )
 		{
-			return false;
+			// don't display errors (DA FARE + MEGLIO)
+			$_path					= parse_url ( $_imageInfo['path'], PHP_URL_PATH );
+			$_filename	= end ( explode ( '/', $_path ) );
+			$_html 					= "<img src=\"doesnotexist_" . $_filename . "\" width=\"50\" alt=\"missing image\" title=\"image is missing:" . $_filename . "\">";
+			if ( empty($var) ) return $_html;
+			else $smarty -> assign ( $var, $_html );
+			return;
 		}
 		else if ( !is_readable($_imageInfo['path']) )
 		{
