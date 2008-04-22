@@ -143,7 +143,7 @@ abstract class FrontendController extends AppController {
 		return $obj;
 	}
 
-	protected function loadObjects($parent_id,$obj_to_view, $conditions=array()) {
+	protected function loadObjects($parent_id,$obj_to_view, $conditions=array(),$children=false) {
 		$this->initAttributes();
 		$result = array();
 		$conf = Configure::getInstance();
@@ -152,7 +152,7 @@ abstract class FrontendController extends AppController {
 			$lang = $conf->frontendLang;
 		foreach($obj_to_view as $tplvar => $ot) {
 			$fullitems = array();
-			$items = $this->BeTree->getDiscendents($parent_id, $this->status, $conf->objectTypes[$ot])  ;
+			$items = ($children) ? $this->BeTree->getChildren($parent_id, $this->status, $conf->objectTypes[$ot]) : $this->BeTree->getDiscendents($parent_id, $this->status, $conf->objectTypes[$ot])  ;
 			if(!empty($items) && !empty($items['items'])) {
 				foreach($items['items'] as $index => $item) {
 					$model = $this->loadModelByObjectTypeId($item['object_type_id']);
