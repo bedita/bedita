@@ -308,9 +308,12 @@ class AppController extends Controller
 			// Se il parametro e' in params o in pass, lo preleva e lo inserisce
 			if(isset($this->params["url"][$args[$i][0]]) && !empty($this->params["url"][$args[$i][0]])) {
 				$args[$i][2] = $this->params["url"][$args[$i][0]] ;
-				
 				$this->passedArgs[$args[$i][0]] = $this->params["url"][$args[$i][0]] ;
 				
+			} elseif(isset($this->params["named"][$args[$i][0]]) && !empty($this->params["named"][$args[$i][0]])) {
+				$args[$i][2] = $this->params["named"][$args[$i][0]] ;
+				$this->passedArgs[$args[$i][0]] = $this->params["named"][$args[$i][0]] ;
+
 			} elseif(isset($this->passedArgs[$args[$i][0]])) {
 				$args[$i][2] = $this->passedArgs[$args[$i][0]] ;
 			}

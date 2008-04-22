@@ -175,6 +175,8 @@
 					if (is_object($helper)) {
 						if (is_subclass_of($helper, 'Helper') || is_subclass_of($helper, 'helper')) {
 							$helper->beforeRender();
+							
+							$helper->namedArgs = $this->passedArgs ;
 						}
 					}
 				}

@@ -135,7 +135,12 @@ class BeToolbarHelper extends AppHelper {
 				$data[$k] = $v ;
 			}
 		}
+		
+		/**
+		 * se action == index Router::url non lo inserisce nell'url
+		 */
 		$url = Router::url($data) ;
+		if($this->params["action"] == "index" && !preg_match("/\/index/i", $url )) $url .= "/".$this->params["action"] ;
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/dim:'+ this[this.selectedIndex].value" ;
 
 		$tmp = array() ;
@@ -194,6 +199,7 @@ class BeToolbarHelper extends AppHelper {
 			}
 		}
 		$url = Router::url($data) ;
+		if($this->params["action"] == "index" && !preg_match("/\/index/i", $url )) $url .= "/".$this->params["action"] ;		
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/page:'+ this[this.selectedIndex].value" ;
 
 		// Definisce il numero di pagine selezionabili
@@ -228,25 +234,23 @@ class BeToolbarHelper extends AppHelper {
 		$title = __($title, true);
 		if(!isset($this->params['toolbar'])) return "" ;
 
-		if(!isset($this->namedArgs['order'])) $this->namedArgs['order'] = "" ;
-		if(!isset($this->namedArgs['dir'])) $this->namedArgs['dir'] = true ;
-
-		if($this->namedArgs['order'] == $field) {
-			if(!isset($dir)) $dir = !$this->namedArgs['dir'] ;
+		if(isset($this->namedArgs['order']) && $this->namedArgs['order'] == $field) {
+			if(!isset($dir)) $dir = (isset($this->namedArgs['dir']))  ? (!$this->namedArgs['dir']) : true  ;
 		}  else {
 			if(!isset($dir)) $dir = true ;
 		}
 
 		// Crea l'url
 		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;
-		foreach ($this->namedArgs as $k => $v) {
-			if($k != "order" && $k != "dir") $data[$k] = $v ;
+		if(!empty($this->namedArgs)) {
+			foreach ($this->namedArgs as $k => $v) {
+				if($k != "order" && $k != "dir") $data[$k] = $v ;
+			}
 		}
 		$data['order'] 	= $field ;
 		$data['dir'] 	= (integer)$dir ;
 
 		$url = Router::url($data) ;
-
 		return $this->Html->link(__($title, true), $url, $htmlAttributes);
 	}
 
