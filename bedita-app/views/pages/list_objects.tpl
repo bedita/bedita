@@ -90,6 +90,7 @@ function delObjects() {
 	<tr>
 		<th><input type="checkbox" class="selectAll" id="selectAll"/><label for="selectAll"> {t}(Un)Select All{/t}</label></th>
 		<th>{$beToolbar->order('id', 'id')}</th>
+		<th>{$beToolbar->order('nickname', 'Nickname')}</th>
 		<th>{$beToolbar->order('title', 'Title')}</th>
 		<th>{$beToolbar->order('status', 'Status')}</th>
 		<th>{$beToolbar->order('created', 'Created')}</th>
@@ -102,6 +103,7 @@ function delObjects() {
 	<tr class="rowList">
 		<td><input type="checkbox" name="object_chk" class="objectCheck" title="{$objects[i].id}"/></td>
 		<td class="cellList"><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].id}</a></td>
+		<td class="cellList">{$objects[i].nickname}</td>
 		<td class="cellList">{$objects[i].title}</td>
 		<td class="cellList">{$objects[i].status}</td>
 		<td class="cellList">{$objects[i].created|date_format:'%b %e, %Y'}</td>
@@ -112,7 +114,7 @@ function delObjects() {
 	<tr><td colspan="7"><input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/></td></tr>
 	{if !empty($areasectiontree) && !empty($assocToSections) && $assocToSections}
 	<tr>
-		<td colspan="7">
+		<td colspan="8">
 			<input id="deleteSelected" type="button" value="(+) {t}Add selected items to area/section{/t}" onclick="javascript:assocObjectsToAreaSection();"/>
 			<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
 			{foreach from=$areasectiontree item=i}
