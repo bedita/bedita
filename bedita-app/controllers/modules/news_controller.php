@@ -56,6 +56,7 @@ class NewsController extends ModulesController {
 		$this->set('object',	$obj);
 		$this->set('tree', 		$this->BeTree->getSectionsTree());
 		$this->set('parents',	$this->BeTree->getParents($id));	
+		$this->set('attach', isset($relations['attach']) ? $relations['attach'] : array());		
 		$this->set('relObjects', isset($relations) ? $relations : array());
 		$conf  = Configure::getInstance() ;
 		$ot = $conf->objectTypes['shortnews'];
@@ -71,7 +72,9 @@ class NewsController extends ModulesController {
 	public function save() {
 	 	
  		$this->checkWriteModulePermission();
- 		
+ //echo serialize($this->data) ;
+ //exit;
+ //$this->data = unserialize('a:8:{s:2:"id";s:0:"";s:4:"lang";s:3:"ita";s:8:"LangText";a:6:{s:3:"ita";a:2:{s:5:"title";s:7:"kjkjkjk";s:11:"description";s:9:"jkjkhjhjh";}s:3:"eng";a:2:{s:5:"title";s:0:"";s:11:"description";s:0:"";}s:3:"spa";a:2:{s:5:"title";s:0:"";s:11:"description";s:0:"";}s:3:"por";a:2:{s:5:"title";s:0:"";s:11:"description";s:0:"";}s:3:"fra";a:2:{s:5:"title";s:0:"";s:11:"description";s:0:"";}s:3:"deu";a:2:{s:5:"title";s:0:"";s:11:"description";s:0:"";}}s:6:"status";s:5:"draft";s:5:"start";s:0:"";s:3:"end";s:0:"";s:8:"nickname";s:0:"";s:14:"ObjectRelation";a:3:{s:11:"event_place";a:1:{s:6:"switch";s:11:"event_place";}s:8:"relators";a:1:{s:6:"switch";s:8:"relators";}s:10:"moderators";a:1:{s:6:"switch";s:10:"moderators";}}}') ;
  	 	if(empty($this->data)) 
  	 	    throw new BeditaException( __("No data", true));
  		
