@@ -898,5 +898,5 @@ msgstr "Tipo"
 msgid "file"
 msgstr "file"
 
-msgid "connect to other items"
-msgstr "collega ad altri elementi"
+msgid "Connect to other items"
+msgstr "Collega ad altri elementi"

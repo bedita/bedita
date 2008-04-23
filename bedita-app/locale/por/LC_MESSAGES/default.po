@@ -852,5 +852,5 @@ msgstr "Tipo"
 msgid "file"
 msgstr "arquivo"
 
-msgid "connect to other items"
-msgstr "relacionar a outros elementos"
+msgid "Connect to other items"
+msgstr "Relacionar a outros elementos"
