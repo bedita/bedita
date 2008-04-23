@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * Bedita model base class
  * 

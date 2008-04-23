@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * @author giangi@qwerg.com
  * 
@@ -38,7 +38,7 @@ class BeTreeComponent extends Object {
 
 	/**
 	 * Torna l'albero delle aree e delle sezioni a cui l'utente connesso
-	 * pu˜ accedere almeno in lettura.
+	 * puï¿½ accedere almeno in lettura.
 	 *
 	 */
 	function getSectionsTree() {
@@ -53,7 +53,7 @@ class BeTreeComponent extends Object {
 	}
 
 	/**
-	 * Torna l'albero con espanso solo quello dove l'oggetto selezionato  presente.
+	 * Torna l'albero con espanso solo quello dove l'oggetto selezionato ï¿½ presente.
 	 * Mantiene solo i figli.
 	 *
 	 * @param integer $id

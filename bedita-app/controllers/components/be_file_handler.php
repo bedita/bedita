@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * @author giangi@qwerg.com
  * 

@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * @author giangi@qwerg.com
  * 
@@ -207,7 +207,7 @@ class BePermissionModuleComponent extends Object {
 	}
 	
 	/**
-	 * Torna true se l'operazione richiesta  permesse su un dato
+	 * Torna true se l'operazione richiesta ï¿½ permesse su un dato
 	 * modulo per un dato utente interno al sistema.
 	 *
 	 * @param string $name	Modulo da verificare.
@@ -220,7 +220,7 @@ class BePermissionModuleComponent extends Object {
 	}
 	
 	/**
-	 * Torna true se l'operazione richiesta  permesse su un dato
+	 * Torna true se l'operazione richiesta ï¿½ permesse su un dato
 	 * oggetto per un dato gruppo di utenti.
 	 *
 	 * @param string $name		Modulo da verificare.

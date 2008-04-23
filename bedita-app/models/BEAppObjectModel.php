@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  *
  * Estende la classe AppModel.
@@ -31,7 +31,7 @@
 class BEAppObjectModel extends BEAppModel {
 
 	/**
- 	* Sovrascrive e poi chiama la funzione del parent xchŽ deve settare
+ 	* Sovrascrive e poi chiama la funzione del parent xchï¿½ deve settare
  	* ove necessario, il tipo di oggetto da salvare
  	*/
 	function save($data = null, $validate = true, $fieldList = array()) {
@@ -172,7 +172,7 @@ class BEAppCollectionModel extends BEAppObjectModel {
 
 	/**
 	 * Preleva i figli di cui id e' radice.
-	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se ''  un utente anonimo,
+	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se '' ï¿½ un utente anonimo,
 	 * altrimenti li prende tutti.
 	 * Si possono selezionare i tipi di oggetti da prelevare.
 	 *

@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * @author giangi@qwerg.com
  * 
@@ -90,7 +90,7 @@ class PermissionComponent extends Object {
 	
 	/**
 	 * Come add ma per tutti gli oggetti all'interno dell'abero dei contenuti
-	 * dove ID  la radice. Ad esempio, un''area o una sezione intera. 
+	 * dove ID ï¿½ la radice. Ad esempio, un''area o una sezione intera. 
 	 *
 	 * @param integer $ID		ID oggetto radice albero dei contenuti
 	 * @param array				{1..N} Permessi
@@ -112,7 +112,7 @@ class PermissionComponent extends Object {
 	
 	/**
 	 * Come remove ma per tutti gli oggetti all'interno dell'abero dei contenuti
-	 * dove ID  la radice.
+	 * dove ID ï¿½ la radice.
 	 *
 	 * @param integer $ID		ID oggetto radice albero dei contenuti
 	 * @param array				{1..N} Permessi
@@ -152,7 +152,7 @@ class PermissionComponent extends Object {
 	
 	/**
 	 * Come removeAll ma per tutti gli oggetti all'interno dell'abero dei contenuti
-	 * dove ID  la radice.
+	 * dove ID ï¿½ la radice.
 	 *
 	 * @param integer $ID		ID oggetto radice albero dei contenuti
 	 * @return boolean
@@ -180,7 +180,7 @@ class PermissionComponent extends Object {
 	}
 	
 	/**
-	 * Torna true se l'operazione richiesta  permesse su un dato
+	 * Torna true se l'operazione richiesta ï¿½ permesse su un dato
 	 * oggetto per un dato utente interno al sistema.
 	 *
 	 * @param integer $ID		Oggetto da verificare.
@@ -193,7 +193,7 @@ class PermissionComponent extends Object {
 	}
 	
 	/**
-	 * Torna true se l'operazione richiesta  permesse su un dato
+	 * Torna true se l'operazione richiesta ï¿½ permesse su un dato
 	 * oggetto per un dato gruppo di utenti.
 	 *
 	 * @param integer $ID		Oggetto da verificare.
