@@ -20,7 +20,7 @@
  *           imagealign   = optional, string, image alignment into the containing frame
  *           alt          = optional, string, alt attribute for <img> tag
  *           title        = optional, string, title attribute for <img> tag
- *           noscale      = optional, bool, scale image or not
+ *           noscale      = optional, bool, scale image or not (if image bigger than frame overflow hidden)
  *           var          = optional, string, return HTML into $var generating no output
  *           
  *           inherited from frontend.ini (or bedita.ini) conf
@@ -146,8 +146,13 @@ function smarty_function_framed_image ($params, &$smarty)
 		$_noscale = $noscale;
 	}
 
-	if ( !$_noscale )
-		{
+	if ( $_noscale )
+	{
+		$_image_target_w = $_imageInfo["w"];
+		$_image_target_h = $_imageInfo["h"];
+	}
+	else
+	{
 		if ( !empty ($width) && !empty ($height) )
 		{
 			// compare frame size ratio vs image size ratio
@@ -180,19 +185,6 @@ function smarty_function_framed_image ($params, &$smarty)
 			$width = $_image_target_w;
 		}
 	}
-	else
-	{
-		if ($width < $_imageInfo["w"])
-		{
-			$width = $_imageInfo["w"];
-		}
-		if ($height < $_imageInfo["h"])
-		{
-			$height = $_imageInfo["h"];
-		}	
-		$_image_target_w = $_imageInfo["w"];
-		$_image_target_h = $_imageInfo["h"];
-	}
 
 
 
@@ -200,7 +192,7 @@ function smarty_function_framed_image ($params, &$smarty)
 	/*
 	 * frame style
 	 */
-	$_framestyle = "position: relative; overflow: visible; width: " . $width . "px; height: " . $height . "px; ";
+	$_framestyle = "position: relative; overflow: hidden; width: " . $width . "px; height: " . $height . "px; ";
 
 	// dafaults from bedita conf
 	$_bedita_framestyle   =@ Configure::getInstance()->smarty ['framed_images']['framestyle'];
