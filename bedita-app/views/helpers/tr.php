@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * i18n - translation helper
  * 

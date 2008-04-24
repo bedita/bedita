@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * Session user msg helper
  * 

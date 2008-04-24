@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  *
  * Create thumbnail and embed code for Video From external media provider

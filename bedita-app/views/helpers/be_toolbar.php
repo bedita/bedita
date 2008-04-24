@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  *
  * Torna l'html per creare i link di paginazione di un recordset.
