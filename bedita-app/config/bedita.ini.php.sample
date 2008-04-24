@@ -328,7 +328,7 @@ $config['langOptions'] = array(
 	"eng"	=> "english",
 	"spa"	=> "espa&ntilde;ol",
 	"por"	=> "portugu&ecirc;s",
-	"fra"	=> "fran&ccedil;oise",
+	"fra"	=> "fran&ccedil;ais",
 	"deu"	=> "deutsch"
 ) ;
 
