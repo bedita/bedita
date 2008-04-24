@@ -132,6 +132,9 @@ abstract class FrontendController extends AppController {
 								);
 				if (!$Details) 
 					continue ;
+				if(!empty($Details["LangText"])) {
+					$this->BeLangText->setupForView($Details["LangText"]) ;
+				}
 				$Details['priority'] = $object['priority'];
 				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
 				$multimedia[$index]=$Details;

@@ -418,6 +418,9 @@ class AppController extends Controller
 				continue ;
 			}
 			$objDetail['priority'] = $obj['ContentBasesObject']['priority'];
+			if(!empty($objDetail["LangText"])) {
+				$this->BeLangText->setupForView($objDetail["LangText"]) ;
+			}
 			
 			if(isset($objDetail['path']))
 				$objDetail['filename'] = substr($objDetail['path'],strripos($objDetail['path'],"/")+1);
