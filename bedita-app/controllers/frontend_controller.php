@@ -82,6 +82,25 @@ abstract class FrontendController extends AppController {
 		$this->set((isset($var_name)?$var_name:'sections'), $areas_sections);
 	}
 
+	/**
+	 * check if current date is compatible with required pubblication dates (start/end date)
+	 *
+	 * @param array $obj
+	 * @return true if content may be published, false otherwise
+	 */
+	protected function checkPubblicationDate(array $obj) {
+		$currDate = strftime("%Y-%m-%d");
+		if(isset($obj["start"])) {
+			if(strncmp($currDate, $obj["start"], 10) < 0)
+				return false;
+		}
+		if(isset($obj["end"])) {
+			if(strncmp($currDate, $obj["end"], 10) > 0)
+				return false;
+		}
+		return true;
+	}
+	
 	protected function loadObj($obj_id,$ot, $var_name = null) {
 		$this->initAttributes();
 		$conf = Configure::getInstance() ;
@@ -105,7 +124,10 @@ abstract class FrontendController extends AppController {
 									)
 								)
 							);
-		
+
+		if(!$this->checkPubblicationDate($obj)) {
+			return null;
+		}
 		if(!empty($obj) && !empty($obj["LangText"])) {
 			$this->BeLangText->setupForView($obj["LangText"]) ;
 		}
@@ -170,7 +192,11 @@ abstract class FrontendController extends AppController {
 									)
 								);
 					if(!$Details) 
-						continue ;
+						continue;
+					if(!$this->checkPubblicationDate($Details)) {
+						continue;
+					}
+								
 					if(!empty($Details) && !empty($Details["LangText"])) {
 						$this->BeLangText->setupForView($Details["LangText"]) ;
 					}
