@@ -20,6 +20,7 @@
  *           imagealign   = optional, string, image alignment into the containing frame
  *           alt          = optional, string, alt attribute for <img> tag
  *           title        = optional, string, title attribute for <img> tag
+ *           noscale      = optional, bool, scale image or not
  *           var          = optional, string, return HTML into $var generating no output
  *           
  *           inherited from frontend.ini (or bedita.ini) conf
@@ -43,6 +44,7 @@ function smarty_function_framed_image ($params, &$smarty)
 	$_html		   = "";
 	$_framestyle   = "";
 	$_captionstyle = "";
+	$_noscale      = false;
 	$_imageInfo	   = array (
 						"filename"		=> "",
 						"path"			=> "",
@@ -137,36 +139,59 @@ function smarty_function_framed_image ($params, &$smarty)
 
 
 	// set up image resize strategy
-	if ( !empty ($width) && !empty ($height) )
+
+	// image scale
+	if ( !@empty($noscale) )
 	{
-		// compare frame size ratio vs image size ratio
-		if ( ( $width / $height ) > ( $_imageInfo["w"] / $_imageInfo["h"] ) )
+		$_noscale = $noscale;
+	}
+
+	if ( !$_noscale )
 		{
-			$_image_target_h = $height;
-			$_image_target_w = round ( $_image_target_h * ( $_imageInfo["w"] / $_imageInfo["h"] ) );
+		if ( !empty ($width) && !empty ($height) )
+		{
+			// compare frame size ratio vs image size ratio
+			if ( ( $width / $height ) > ( $_imageInfo["w"] / $_imageInfo["h"] ) )
+			{
+				$_image_target_h = $height;
+				$_image_target_w = round ( $_image_target_h * ( $_imageInfo["w"] / $_imageInfo["h"] ) );
+			}
+			else if ( ( $width / $height ) < ( $_imageInfo["w"] / $_imageInfo["h"] ) )
+			{
+				$_image_target_w = $width;
+				$_image_target_h = round ( $_image_target_w * ( $_imageInfo["h"] / $_imageInfo["w"] ) );
+			}
+			else if ( ( $width / $height ) == ( $_imageInfo["w"] / $_imageInfo["h"] ) )
+			{
+				$_image_target_w = $width;
+				$_image_target_h = $height;
+			}
 		}
-		else if ( ( $width / $height ) < ( $_imageInfo["w"] / $_imageInfo["h"] ) )
+		else if ( !empty ($width) )
 		{
 			$_image_target_w = $width;
 			$_image_target_h = round ( $_image_target_w * ( $_imageInfo["h"] / $_imageInfo["w"] ) );
+			$height = $_image_target_h;
 		}
-		else if ( ( $width / $height ) == ( $_imageInfo["w"] / $_imageInfo["h"] ) )
+		else if ( !empty ($height) )
 		{
-			$_image_target_w = $width;
 			$_image_target_h = $height;
+			$_image_target_w = round ( $_image_target_h * ( $_imageInfo["w"] / $_imageInfo["h"] ) );
+			$width = $_image_target_w;
 		}
 	}
-	else if ( !empty ($width) )
+	else
 	{
-		$_image_target_w = $width;
-		$_image_target_h = round ( $_image_target_w * ( $_imageInfo["h"] / $_imageInfo["w"] ) );
-		$height = $_image_target_h;
-	}
-	else if ( !empty ($height) )
-	{
-		$_image_target_h = $height;
-		$_image_target_w = round ( $_image_target_h * ( $_imageInfo["w"] / $_imageInfo["h"] ) );
-		$width = $_image_target_w;
+		if ($width < $_imageInfo["w"])
+		{
+			$width = $_imageInfo["w"];
+		}
+		if ($height < $_imageInfo["h"])
+		{
+			$height = $_imageInfo["h"];
+		}	
+		$_image_target_w = $_imageInfo["w"];
+		$_image_target_h = $_imageInfo["h"];
 	}
 
 
@@ -213,7 +238,7 @@ function smarty_function_framed_image ($params, &$smarty)
 	// also add user style (eventually overrides some of the attributes already set) 
 	if ( !empty($imagealign) )
 	{
-		$_framestyle .= " text-align: " . $imagealign;
+		$_framestyle .= " text-align: " . $imagealign . "; ";
 	}
 	if ( !empty($framestyle) )
 	{
@@ -228,6 +253,7 @@ function smarty_function_framed_image ($params, &$smarty)
 	// so build html attribute
 	$_framestyle = "style ='" . $_framestyle . "'";
 	
+
 
 
 	/*
