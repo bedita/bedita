@@ -171,7 +171,9 @@ $this->params['form']['lang']  =  "ita" ;
 				$data['uid']  	 	=  $name ;
 			} break ;
 		}
-
+		
+		$data['status'] = "on";
+		
 		if($this->BeFileHandler->isPresent($data['path'])) 
 			throw new BEditaFileExistException(__("Video url is already in the system",true)) ;
 
