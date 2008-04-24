@@ -297,7 +297,12 @@ function smarty_function_thumb_imp($params, &$smarty) {/*{{{*/
 		$_CONFIG['cache']		= $params['cache'];
 	}
 	if (empty($params['file'])) { $smarty->_trigger_fatal_error("thumb: parameter 'file' cannot be empty");return; }
-	if (!file_exists($params['file'])) { $smarty->_trigger_fatal_error("thumb: image file does not exist");return; }
+	if (!file_exists($params['file']))
+	{
+		// XHO: nopn da fatal error se l'immagine non esiste, ma un notice
+		$smarty->trigger_error ( $pluginName . ": thumb: image file does not exist '" . $params['file'] . "'", E_USER_NOTICE ) ;
+		//$smarty->_trigger_fatal_error("thumb: image file does not exist");return;
+	}
 	if (empty($params['link'])) $params['link'] = true;
 	if (empty($params['window'])) $params['window'] = true;
 	if (empty($params['hint'])) $params['hint'] = true;

@@ -83,7 +83,7 @@ function smarty_function_framed_image ($params, &$smarty)
 			// don't display errors (DA FARE + MEGLIO)
 			$_path					= parse_url ( $_imageInfo['path'], PHP_URL_PATH );
 			$_filename	= end ( explode ( '/', $_path ) );
-			$_html 					= "<img src=\"doesnotexist_" . $_filename . "\" width=\"50\" alt=\"missing image\" title=\"image is missing:" . $_filename . "\">";
+			$_html 					= "<img src=\"" . $_filename . "\" width=\"50\" alt=\"missing image\" title=\"image is missing:" . $_filename . "\">";
 			if ( empty($var) ) return $_html;
 			else $smarty -> assign ( $var, $_html );
 			return;
