@@ -86,6 +86,7 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 		}
 		$data['path']	= $data['tmp_name'] ;
 		$data['lang']   = $this->params['form']['lang'];
+		$data["status"] = "on";
 		unset($data['tmp_name']) ;
 		unset($data['error']) ;
 		// FLASH returns application/octect-stream as MIME type
