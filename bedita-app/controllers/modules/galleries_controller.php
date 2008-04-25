@@ -78,7 +78,8 @@ class GalleriesController extends ModulesController {
 					throw new BeditaException( __("Append child", true));
 				}
 				// save modified title and description 
-				if((integer)$m['modified']) {	
+				if( isset ( $m['modified'] ) )
+				{
 					if(!class_exists('ContentBase')) {
 						App::import('Model', 'ContentBase') ;
 						
