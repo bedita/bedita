@@ -149,6 +149,10 @@ jQuery.fn.extend({
 			$(".id", this).attr("name", "data[ObjectRelation]["+index+"][id]") ;
 			$(".switch", this).attr("name", "data[ObjectRelation]["+index+"][switch]") ;
 			$(".priority", this).attr("name", "data[ObjectRelation]["+index+"][priority]") ;
+			$(".modified", this).attr("name", "data[ObjectRelation]["+index+"][modified]") ;
+			
+			$(".title", this).attr("name", "data[ObjectRelation]["+index+"][title]") ;
+			$(".description", this).attr("name", "data[ObjectRelation]["+index+"][description]") ;
 		}) ;
 		var priority = 1;
 		$(this).find(".itemBox").each(function () {
