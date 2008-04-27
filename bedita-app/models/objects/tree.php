@@ -332,7 +332,100 @@ class Tree extends BEAppModel
 		return $ret ;
 	}
 
+	/**
+	 * Preleva i path dell'oggetto passato dove al posto degli id
+ 	 * ci sono i nickname
+ 	 *
+ 	 * @param integer  $id
+	 * @return array/string
+	 */
+	function getPathNickname($id) {
+		if (isset($id)) {
+			$this->id = $id ;
+		}
+		$id = $this->id ;
 
+		if(($ret = $this->query("SELECT path FROM  trees WHERE id = {$id}")) === false) {
+			return false ;
+		}
+
+		$IDs = array() ;
+		$paths = array() ;
+		
+		// Preleva gli ID 
+		if(!count($ret)) return false ;
+		else if(count($ret) == 1) {
+			$paths[] = $ret[0]['trees']['path'] ;
+			$tmp = explode("/", $ret[0]['trees']['path']) ;
+			foreach ($tmp as $id) {
+				if(@empty($id)) continue ;
+				$IDs[$id] = null ;
+			}
+		}
+		else {
+			$tmp = array() ;
+			for($i=0; $i < count($ret) ; $i++) {
+				$paths[] = $ret[$i]['trees']['path'] ;
+				$tmp = explode("/", $ret[$i]['trees']['path']) ;
+				foreach ($tmp as $id) {
+					if(@empty($id)) continue ;
+					$IDs[$id] = null ;
+				}
+			}
+		}
+		
+		// Preleva i nickname
+		$tmp = array() ;
+		foreach ($IDs as $id => $value) {
+			$tmp[] = $id ;
+		}
+		$tmp = implode(",", $tmp);
+		if(($ret = $this->query("SELECT id, nickname FROM  objects WHERE id IN({$tmp}) ")) === false) {
+			return false ;
+		}
+		for($i=0; $i < count($ret) ; $i++) {
+			$IDs[$ret[$i]['objects']['id']] = $ret[$i]['objects']['nickname'] ;
+		}
+		
+		// Trasforma i path
+		for($i=0; $i < count($paths) ; $i++) {
+			$tmp = explode("/", $paths[$i]);
+		
+			for($x=0; $x < count($tmp) ; $x++) {
+				if(!isset($IDs[$tmp[$x]])) continue ;
+				$tmp[$x] = $IDs[$tmp[$x]] ;
+			}
+			$paths[$i] = implode("/", $tmp) ;
+		}
+		
+		return $paths ;
+	}	
+
+	function isParent($idParent, $id = NULL) {
+		if (empty($id)) {
+			$id = $this->id;
+		}
+
+		// Verifica che il nuovo parent non sia un discendente dell'albero da spostare
+		$ret = $this->query("SELECT isParentTree({$idParent}, {$id}) AS parent");
+		if(empty($ret[0][0]["parent"])) return  false ;
+
+		return (($ret[0][0]["parent"])?true:false) ;
+	}
+	
+	function isParentByNickname($nickname, $id = NULL) {
+		if (empty($id)) {
+			$id = $this->id;
+		}
+
+		// Verifica che il nuovo parent non sia un discendente dell'albero da spostare
+		$ret = $this->query("SELECT id FROM objects where nickname = '{$nickname}' ");
+		if(!isset($ret[0]['objects']["id"])) return  false ;
+
+		return $this->isParent($ret[0]['objects']["id"] , $id) ;
+	}
+	
+	
 	private function _moveAll(&$tree, &$IDOldParents, &$IDOldPriorities) {
 
 		for($i=0; $i < count($tree) ; $i++) {
