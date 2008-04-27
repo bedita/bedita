@@ -357,7 +357,7 @@ class BEObject extends BEAppModel
 		
 		$db 		= &ConnectionManager::getDataSource($this->useDbConfig);
 		
-		$db->query("UPDATE objects  SET title = '{$title}', description = '{$description}' WHERE id = {$id} " ) ;
+		$db->query("UPDATE objects  SET title =  '".addslashes($title)."', description = '".addslashes($description)."' WHERE id = {$id} " ) ;
 		
 		return true ;
 	}	
