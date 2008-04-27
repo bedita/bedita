@@ -254,7 +254,7 @@ DECLARE _pathParent MEDIUMTEXT ;
 DECLARE ret INT ;
 
 SET _pathParent = (SELECT path FROM trees WHERE id = _IDParent) ;
-SET ret = IF((SELECT id FROM trees WHERE path LIKE CONCAT(_pathParent, '%') AND id = _IDChild) IS NULL, 1, 0) ;
+SET ret = IF((SELECT id FROM trees WHERE path LIKE CONCAT(_pathParent, '%') AND id = _IDChild) IS NULL, 0, 1) ;
 
 RETURN ret ;
 
@@ -835,5 +835,4 @@ RETURN (prmsG) ;
 END
 //
 delimiter ;
-
 
