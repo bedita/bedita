@@ -39,7 +39,16 @@ class GalleriesController extends ModulesController {
 	}	
 	
 	public function save() {
-		
+/*
+pr($this->data) ;
+pr(serialize($this->data));
+exit;
+
+$this->data = unserialize('a:7:{s:2:"id";s:2:"17";s:4:"lang";s:3:"ita";s:8:"LangText";a:6:{s:3:"ita";a:2:{s:5:"title";s:5:"aaaaa";s:11:"description";s:0:"";}s:3:"eng";a:2:{s:5:"title";s:0:"";s:11:"description";s:0:"";}s:3:"spa";a:2:{s:5:"title";s:0:"";s:11:"description";s:0:"";}s:3:"por";a:2:{s:5:"title";s:0:"";s:11:"description";s:0:"";}s:3:"fra";a:2:{s:5:"title";s:0:"";s:11:"description";s:0:"";}s:3:"deu";a:2:{s:5:"title";s:0:"";s:11:"description";s:0:"";}}s:6:"status";s:5:"draft";s:8:"nickname";s:5:"aaaaa";s:14:"ObjectRelation";a:4:{s:6:"attach";a:1:{s:6:"switch";s:6:"attach";}i:0;a:6:{s:2:"id";s:1:"1";s:6:"switch";s:6:"attach";s:8:"modified";s:1:"1";s:8:"priority";s:1:"1";s:5:"title";s:5:"title";s:11:"description";s:4:"desc";}i:1;a:6:{s:2:"id";s:1:"2";s:6:"switch";s:6:"attach";s:8:"modified";s:1:"0";s:8:"priority";s:1:"2";s:5:"title";s:4:"test";s:11:"description";s:10:"desc 1 AAA";}i:2;a:6:{s:2:"id";s:1:"3";s:6:"switch";s:6:"attach";s:8:"modified";s:1:"0";s:8:"priority";s:1:"3";s:5:"title";s:44:"artwork_images_119642_301467_ansel-adams.jpg";s:11:"description";s:6:"test 3";}}s:11:"Permissions";a:2:{i:0;a:5:{s:4:"name";s:13:"administrator";s:17:"BEDITA_PERMS_READ";s:1:"4";s:19:"BEDITA_PERMS_MODIFY";s:1:"2";s:19:"BEDITA_PERMS_DELETE";s:1:"4";s:6:"switch";s:5:"group";}i:1;a:3:{s:4:"name";s:5:"guest";s:6:"switch";s:5:"group";s:17:"BEDITA_PERMS_READ";s:1:"1";}}}') ;
+$this->data['ObjectRelation'] [0]['description'] = "'test" ;
+// pr($this->data) ;
+// exit;
+*/
 		$this->checkWriteModulePermission();
 		if(empty($this->data))  
 			throw new BeditaException( __("No data", true));
@@ -77,9 +86,10 @@ class GalleriesController extends ModulesController {
 				if(!$this->Gallery->appendChild($m['id'],null,$m['priority'])) {
 					throw new BeditaException( __("Append child", true));
 				}
+				
 				// save modified title and description 
-				if( isset ( $m['modified'] ) )
-				{
+				$m['modified'] = (!isset($m['modified']))?0:((integer)$m['modified']) ;
+				if($m['modified']) {
 					if(!class_exists('ContentBase')) {
 						App::import('Model', 'ContentBase') ;
 						
