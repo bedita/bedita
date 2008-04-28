@@ -7,6 +7,7 @@
 abstract class FrontendController extends AppController {
 
 	private $status = array('on');
+	protected $checkPubDate = true;
 	
 	/**
 	 * $uses & $components array don't work... (abstract class ??)
@@ -125,7 +126,7 @@ abstract class FrontendController extends AppController {
 								)
 							);
 
-		if(!$this->checkPubblicationDate($obj)) {
+		if($this->checkPubDate && !$this->checkPubblicationDate($obj)) {
 			return null;
 		}
 		if(!empty($obj) && !empty($obj["LangText"])) {
@@ -193,7 +194,7 @@ abstract class FrontendController extends AppController {
 								);
 					if(!$Details) 
 						continue;
-					if(!$this->checkPubblicationDate($Details)) {
+					if($this->checkPubDate && !$this->checkPubblicationDate($Details)) {
 						continue;
 					}
 								
