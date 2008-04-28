@@ -210,16 +210,22 @@ class BeditaShell extends Shell {
     }
     
     function cleanup() {
+		$basePath = TMP;
+    	if (isset($this->params['frontend'])) {
+    		$basePath = $this->params['frontend'].DS."tmp".DS;
+            $this->out('Cleaning dir: '.$basePath);
+    		
+    	}
         if (!isset($this->params['nologs'])) {
-    	   $this->__clean(TMP . 'logs');
+    	   $this->__clean($basePath . 'logs');
             $this->out('Logs cleaned.');
         }
-        $this->__clean(TMP . 'cache' . DS . 'models');
-        $this->__clean(TMP . 'cache' . DS . 'persistent');        
-        $this->__clean(TMP . 'cache' . DS . 'views');        
+        $this->__clean($basePath . 'cache' . DS . 'models');
+        $this->__clean($basePath . 'cache' . DS . 'persistent');        
+        $this->__clean($basePath . 'cache' . DS . 'views');        
         $this->out('Cache cleaned.');
-        $this->__clean(TMP . 'smarty' . DS . 'compile');
-        $this->__clean(TMP . 'smarty' . DS . 'cache');
+        $this->__clean($basePath . 'smarty' . DS . 'compile');
+        $this->__clean($basePath . 'smarty' . DS . 'cache');
         $this->out('Smarty compiled/cache cleaned.');
 
         if (isset($this->params['media'])) {
@@ -240,7 +246,7 @@ class BeditaShell extends Shell {
         $this->out('Available functions:');
         $this->out('1. updateDb: update database with bedita-db sql scripts');
   		$this->out(' ');
-        $this->out('    Usage: updateDb [-db <dbname>] [-data <sql>] [-media <zipfile>]');
+        $this->out('    Usage: updateDb [-db <dbname>] [-data <sql>] [-nodata] [-media <zipfile>]');
   		$this->out(' ');
   		$this->out("    -db <dbname>\t use db configuration <dbname> specified in config/database.php");
   		$this->out("    -nodata <sql>   \t don't insert data");
@@ -249,8 +255,9 @@ class BeditaShell extends Shell {
   		$this->out(' ');
   		$this->out('2. cleanup: cleanup cahe, compile, log files');
         $this->out(' ');
-        $this->out('    Usage: cleanup [-nologs] [-media]');
+        $this->out('    Usage: cleanup [-frontend <frontend path>] [-nologs] [-media]');
         $this->out(' ');
+        $this->out("    -frontend \t clean files in <frontend path> [use frontend /app path]");
         $this->out("    -nologs \t don't clean log files");
         $this->out("    -media  \t clean media files in MEDIA_ROOT (default no)");
         $this->out(' ');
