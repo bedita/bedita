@@ -127,13 +127,16 @@ class ContentBase extends BEAppModel
 				}
 			}
 			foreach ($queriesDelete as $qDel) {
-				$db->query($qDel);
+				if ($db->query($qDel) === false)
+					throw new BeditaException(__("Error deleting associations", true), $qDel);
 			}
 			foreach ($queriesInsert as $qIns) {
-				$db->query($qIns);
+				if ($db->query($qIns)  === false)
+					throw new BeditaException(__("Error inserting associations", true), $qIns);
 			}
-			foreach ($queriesModified as $qIns) {
-				$db->query($qIns);
+			foreach ($queriesModified as $qMod) {
+				if ($db->query($qMod)  === false)
+					throw new BeditaException(__("Error modifing title and description", true), $qMod);
 			}
 		}
 		return true ;
