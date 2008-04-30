@@ -9,10 +9,11 @@
  * Author:   Christiano Presutti - aka xho - ChanelWeb srl
  * Purpose:  display an image file in a frame with bg color, ignoring orientation
  * 
- * Input:    fileURI = required, string, string pointer to file (URI),
+ * Input:    file    = required, string, string pointer to file (URI),
  *           width   = required if missing height, int number, frame width,
  *           height  = required if missing width, int number, frame height,
  *           
+ *           filepath     = optional, string, path on filesystem to file (if missing assumed relative so URI)
  *           caption      = optional, string, put a caption under the framed image
  *           captionstyle = optional, string, css used to display caption
  *           framestyle   = optional, string, the css style applied to the frame containing image
@@ -20,7 +21,10 @@
  *           imagealign   = optional, string, image alignment into the containing frame
  *           alt          = optional, string, alt attribute for <img> tag
  *           title        = optional, string, title attribute for <img> tag
- *           noscale      = optional, bool, scale image or not (if image bigger than frame overflow hidden)
+ *           imagetype    = optional, string, force jpg, png or gif creation during resample
+ *           imagequality = optional, int,    quality for jpeg compression (defaults to 80%)
+ *           noscale      = optional, bool,   scale image or not (if image bigger than frame overflow hidden)
+ *           noresample   = optional, bool,   do not resample image (if noscale true, do client side resize)
  *           var          = optional, string, return HTML into $var generating no output
  *           
  *           inherited from frontend.ini (or bedita.ini) conf
@@ -28,7 +32,7 @@
  *           $config['smarty']['framed_images']['imagealign'],   overwrites $_default_imagealign
  *           $config['smarty']['framed_images']['captionstyle'], overwrites $_default_captionstyle
  *           
- * Returns:  ready XHTML to embed the framed image directly to output or in $var (if present) 
+ * Returns:  ready XHTML to embed the framed image directly into output or, if present, in $var ie {framed_image var=foo...}
  * ----------------------------------------------------------------------------
  */
 
@@ -39,20 +43,35 @@ function smarty_function_framed_image ($params, &$smarty)
 	$_default_framestyle   = "border: 0; background-color: #FFF;";
 	$_default_imagealign   = "left";
 	$_default_captionstyle = "color: black; font-size: 0.9em;";
+	$_DS = "/";
 
 	// empties
 	$_html		   = "";
 	$_framestyle   = "";
 	$_captionstyle = "";
 	$_noscale      = false;
+	$_resample     = false;
 	$_imageInfo	   = array (
 						"filename"		=> "",
+						"file"			=> "",
 						"path"			=> "",
 						"filesize"		=> "",
 						"w"				=> "",
 						"h"				=> "",
-						"orientation"	=> ""
+						"orientation"	=> "",
+						"imagetype"		=> ""
 					);
+
+	$_imageTarget   = array (
+						"file"			=> "",
+						"path"			=> "",
+						"w"				=> "",
+						"h"				=> "",
+						"offsetx"		=> 0,	// OFFSETS SET AT 0 - FUTURE IMPLEMENTATIONS
+						"offsety"		=> 0,
+						"imagetype"		=> "",
+					);
+
 
 	extract($params);
 
@@ -70,8 +89,9 @@ function smarty_function_framed_image ($params, &$smarty)
 
 
 
-	// sanitize file path & name (why does not work?)
-	$_imageInfo['path'] = str_replace(' ','%20', $file); ; // rawurlencode( $file );
+	// sanitize file path & name
+	$_imageInfo['path'] = str_replace (' ','%20', $file); ; // rawurlencode( $file ) does not work, why?!;
+
 
 
 	/*
@@ -83,9 +103,9 @@ function smarty_function_framed_image ($params, &$smarty)
 		if ( !file_exists($_imageInfo['path']) )
 		{
 			// don't display errors (DA FARE + MEGLIO)
-			$_path					= parse_url ( $_imageInfo['path'], PHP_URL_PATH );
+			$_path		= parse_url ( $_imageInfo['path'], PHP_URL_PATH );
 			$_filename	= end ( explode ( '/', $_path ) );
-			$_html 					= "<img src=\"" . $_filename . "\" width=\"50\" alt=\"missing image\" title=\"image is missing:" . $_filename . "\">";
+			$_html 		= "<img src=\"" . $_filename . "\" width=\"50\" alt=\"missing image\" title=\"image is missing:" . $_filename . "\">";
 			if ( empty($var) ) return $_html;
 			else $smarty -> assign ( $var, $_html );
 			return;
@@ -103,6 +123,9 @@ function smarty_function_framed_image ($params, &$smarty)
 	}
 
 
+	// compatibility with different syntax (to be removed)
+	if ( !@empty($filePATH) ) $filepath = $filePATH;
+
 
 	/*********************************
 	 * got everything, proceed
@@ -114,42 +137,45 @@ function smarty_function_framed_image ($params, &$smarty)
 	/*
 	 * set up image info array
 	 */
-	$_path					= parse_url ( $_imageInfo['path'], PHP_URL_PATH );
-	$_imageInfo['filename']	= end ( explode ( '/', $_path ) );
-	$_imageInfo["w"]		= $_image_data [0];
-	$_imageInfo["h"]		= $_image_data [1];
+	$_path					 = parse_url ( $_imageInfo['path'], PHP_URL_PATH );
+	$_imageInfo['filename']	 = end ( explode ( '/', $_path ) );
+	$_imageInfo['file']		 = $_path;
+	$_imageInfo['filepath']	 = (@empty($filepath))? $_SERVER['DOCUMENT_ROOT'] . $_path : $filepath; // if missing parameter filepath assume filesystem path from SERVER env
+	$_imageInfo["w"]		 = $_image_data [0];
+	$_imageInfo["h"]		 = $_image_data [1];
+	$_imageInfo['imagetype'] = $_image_data [2]; // 1=GIF, 2=JPG, 3=PNG, SWF=4
+	$_imageInfo["string"]	 = $_image_data [1];
+	$_imageInfo["filename"]	 = $_image_data [1];
 
-	if ($_imageInfo["w"] == $_imageInfo["h"])
+
+
+	// destination image type
+	$_imagetype = array ("", "gif", "jpg", "png", "swf");
+	if ( !@empty($imagetype) )
 	{
-		$_imageInfo["portrait"]		= true;
-		$_imageInfo["landscape"]	= true;
-	}
-	else if ($_imageInfo["w"] > $_imageInfo["h"])
-	{
-		$_imageInfo["portrait"]		= false;
-		$_imageInfo["landscape"]	= true;
-	}
-	else
-	{
-		$_imageInfo["portrait"]		= true;
-		$_imageInfo["landscape"]	= false;
+		$_imageTarget['imagetype'] = $params['imagetype'];
+	} else {
+		$_imageTarget['imagetype'] = $_imageInfo['imagetype'];
 	}
 
 
-
-
-	// set up image resize strategy
-
-	// image scale
+	// destination scale
 	if ( !@empty($noscale) )
 	{
 		$_noscale = $noscale;
 	}
+	
 
+
+
+
+	/*
+	 * image resize strategy
+	 */
 	if ( $_noscale )
 	{
-		$_image_target_w = $_imageInfo["w"];
-		$_image_target_h = $_imageInfo["h"];
+		$_imageTarget['w'] = $_imageInfo["w"];
+		$_imageTarget['h'] = $_imageInfo["h"];
 	}
 	else
 	{
@@ -158,33 +184,251 @@ function smarty_function_framed_image ($params, &$smarty)
 			// compare frame size ratio vs image size ratio
 			if ( ( $width / $height ) > ( $_imageInfo["w"] / $_imageInfo["h"] ) )
 			{
-				$_image_target_h = $height;
-				$_image_target_w = round ( $_image_target_h * ( $_imageInfo["w"] / $_imageInfo["h"] ) );
+				$_imageTarget['h'] = $height;
+				$_imageTarget['w'] = round ( $_imageTarget['h'] * ( $_imageInfo["w"] / $_imageInfo["h"] ) );
 			}
 			else if ( ( $width / $height ) < ( $_imageInfo["w"] / $_imageInfo["h"] ) )
 			{
-				$_image_target_w = $width;
-				$_image_target_h = round ( $_image_target_w * ( $_imageInfo["h"] / $_imageInfo["w"] ) );
+				$_imageTarget['w'] = $width;
+				$_imageTarget['h'] = round ( $_imageTarget['w'] * ( $_imageInfo["h"] / $_imageInfo["w"] ) );
 			}
 			else if ( ( $width / $height ) == ( $_imageInfo["w"] / $_imageInfo["h"] ) )
 			{
-				$_image_target_w = $width;
-				$_image_target_h = $height;
+				$_imageTarget['w'] = $width;
+				$_imageTarget['h'] = $height;
 			}
 		}
 		else if ( !empty ($width) )
 		{
-			$_image_target_w = $width;
-			$_image_target_h = round ( $_image_target_w * ( $_imageInfo["h"] / $_imageInfo["w"] ) );
-			$height = $_image_target_h;
+			$_imageTarget['w'] = $width;
+			$_imageTarget['h'] = round ( $_imageTarget['w'] * ( $_imageInfo["h"] / $_imageInfo["w"] ) );
+			$height = $_imageTarget['h'];
 		}
 		else if ( !empty ($height) )
 		{
-			$_image_target_h = $height;
-			$_image_target_w = round ( $_image_target_h * ( $_imageInfo["w"] / $_imageInfo["h"] ) );
-			$width = $_image_target_w;
+			$_imageTarget['h'] = $height;
+			$_imageTarget['w'] = round ( $_imageTarget['h'] * ( $_imageInfo["w"] / $_imageInfo["h"] ) );
+			$width = $_imageTarget['w'];
 		}
 	}
+
+
+
+	/*
+	 * if resample, set cache file name and path
+	 */
+	if ( is_readable ($_imageInfo['filepath']) && @empty($noresample) )
+	{
+		// build hash on file modification time
+		$_imageInfo['modified'] = filemtime ($_imageInfo['filepath']);
+		$_imageInfo['hash']     = md5 ($_imageInfo['file'] . $_imageInfo['modified'] . implode('', $params));
+
+
+		// destination filename = orig_filename + "_" + w + "x" + h + "_" + hash + "." + ext
+		$_imageTarget['filename'] =	pathinfo ( $_imageInfo['filepath'], PATHINFO_FILENAME) . "_" .
+									$_imageTarget['w'] . "x" . $_imageTarget['h']      . "_" .
+									$_imageInfo['hash'] . "." . $_imagetype[$_imageTarget['imagetype']];
+
+
+		if ( @empty($cachepath) )
+		{
+			// path dir
+			$_imageTarget['file'] =	dirname ($_imageInfo['filepath']) . $_DS . $_imageTarget['filename'];
+		}
+		else
+		{
+			$cachepath = str_replace (' ','\ ', $cachepath);
+			if ( substr($cachepath, -1, 1) != "/" ) $cachepath = $cachepath . "/"; // add trailing slash if missing
+			$_imageTarget['file'] = $cachepath . $_imageTarget['filename'];
+		}
+
+		// if file exist (with same hash it's not modified)
+		if ( file_exists ($_imageTarget['file']) )
+		{
+			// set image path to resampled cached file
+			$_imageInfo['path'] = switch_file_in_url ($_imageInfo['path'], $_imageTarget['filename']);
+
+			// and avoid the resample process
+			$_resample = false;
+		}
+		else
+		{
+			// verify if directory is writable
+			if ( is_writable ( dirname ($_imageTarget['file']) ) )
+			{
+				$_resample = true;
+			} else {
+				$_resample = false;
+			}
+		}
+	}
+	else
+	{
+		// cannot access file on filesystem so skip caching and resample => switch to simple client side resize
+		$_resample = false;
+	}
+
+
+
+	/*
+	 * if $_resample == true; proceed
+	 * first create proper image resource
+	 */
+
+	if ($_resample)
+	{
+		// GIF
+	    if ($_imageInfo['imagetype'] == 1)
+		{
+	        $_imageInfo['image']				= imagecreatefromgif    ($_imageInfo['path']);
+	        $_imageInfo['gif_colorstotal']		= imagecolorstotal      ($_imageInfo['image']);
+	        $_imageInfo['gif_transparent_index']= imagecolortransparent ($_imageInfo['image']);
+	
+	        // if transparent color in GIF
+	        if ( ($_imageInfo['gif_transparent_index'] >= 0) && ($_imageInfo['gif_transparent_index'] < $_imageInfo['gif_colorstotal']) )
+			{
+				//get the actual transparent color
+	            $gif_rgb = imagecolorsforindex ($_imageInfo['image'], $_imageInfo['gif_transparent_index']);
+	            $_imageInfo['gif_original_transparency_rgb'] = ($gif_rgb['red'] << 16) | ($gif_rgb['green'] << 8) | $gif_rgb['blue'];
+	
+	            //change the transparent color to black, since transparent goes to black anyways (no way to remove transparency in GIF)
+	            imagecolortransparent ( $_imageInfo['image'], imagecolorallocate($_imageInfo['image'], 0, 0, 0) );
+	        }
+	    }
+	
+	
+		// JPEG
+		if ($_imageInfo['imagetype'] == 2)
+		{
+			$_imageInfo['image'] = imagecreatefromjpeg ($_imageInfo['path']);
+		}
+	
+	
+		// PNG
+		if ($_imageInfo['imagetype'] == 3)
+		{
+			$_imageInfo['image'] = imagecreatefrompng ($_imageInfo['path']);
+		}
+
+	
+	
+	
+	    /*
+	     * image pre-processing (if the image is very large)
+	     * scale linear to 4x target size and overwrite source
+	     */
+		if ($_imageTarget['w'] * 4 < $_imageInfo['w'] AND $_imageTarget['h'] * 4 < $_imageInfo['h'])
+		{
+			$_TMP['width']  = round ($_imageTarget['w'] * 4);
+			$_TMP['height'] = round ($_imageTarget['h'] * 4);
+	        $_TMP['image']  = imagecreatetruecolor ($_TMP['width'], $_TMP['height']);
+	
+			imagecopyresized ($_TMP['image'], $_imageInfo['image'], 0, 0, $_imageTarget['offsetx'], $_imageTarget['offsety'], $_TMP['width'], $_TMP['height'], $_imageInfo['w'], $_imageInfo['h']);
+	
+			$_imageInfo['image']  = $_TMP['image'];
+			$_imageInfo['w']      = $_TMP['width'];
+			$_imageInfo['h']      = $_TMP['height'];
+	
+			unset ($_TMP['image']);
+		}
+
+
+
+		// create resampled
+		$_imageTarget['image'] = imagecreatetruecolor($_imageTarget['w'], $_imageTarget['h']);
+		
+		
+	
+		if ( ($_imageInfo['imagetype'] == 1) && ($_imageInfo['gif_transparent_index'] >= 0) )
+		{
+			// only for transparent gif:
+			imagealphablending ($_imageInfo['image'], false);
+			imagesavealpha     ($_imageInfo['image'], true);
+			imagecopyresized   ($_imageTarget['image'], $_imageInfo['image'], 0, 0, $_imageTarget['offsetx'], $_imageTarget['offsety'], $_imageTarget['w'], $_imageTarget['h'], $_imageInfo['w'], $_imageInfo['h']);
+		} else {
+			imagecopyresampled ($_imageTarget['image'], $_imageInfo['image'], 0, 0, $_imageTarget['offsetx'], $_imageTarget['offsety'], $_imageTarget['w'], $_imageTarget['h'], $_imageInfo['w'], $_imageInfo['h']);
+			if ( !function_exists('UnsharpMask') )
+			{
+				$_imageTarget['image'] = UnsharpMask($_imageTarget['image'], 80, .5, 3);
+			}
+		}
+
+
+
+		/*
+		 * store file (or reuse)
+		 */
+	
+		// GIF
+		if ($_imageTarget['imagetype'] == 1)
+		{
+	        // rebuild transparency (if there was transparency)
+	        if ($_imageInfo['gif_transparent_index'] >= 0)
+			{
+	            imagealphablending ($_imageTarget['image'], false);
+	            imagesavealpha     ($_imageTarget['image'], true);
+	
+	            for ($x = 0; $x < $_imageTarget['w']; $x++)
+				{
+	                for ($y = 0; $y < $_imageTarget['h']; $y++)
+					{
+	                    if (imagecolorat ($_imageTarget['image'], $x, $y) == $_imageInfo['gif_original_transparency_rgb'])
+						{
+	                        $merkx = $x;
+	                        $merky = $y;
+	                        $x = $_imageTarget['w'];
+	                        $y = $_imageTarget['h'];
+	                    }
+	                }
+	            }
+	        }
+	
+	        imagetruecolortopalette ($_imageTarget['image'], false, $_imageInfo['gif_colorstotal']);
+	
+	        if ($_imageInfo['gif_transparent_index'] >= 0)
+			{
+	            $id = imagecolorat ($_imageTarget['image'], $merkx, $merky);
+	            if ($id >= 0)
+				{
+	                imagecolortransparent ($_imageTarget['image'], $id);
+	            }
+	        }
+	
+			imagegif($_imageTarget['image'], $_imageTarget['file']);
+	    }
+	
+	
+		// JPEG
+	    if ($_imageTarget['imagetype'] == 2)
+		{
+			imageinterlace ($_imageTarget['image'], 1);
+			if ( empty($params['quality']) )
+			{
+				$params['quality'] = 80;
+			}
+			imagejpeg ($_imageTarget['image'], $_imageTarget['file'], $params['quality']);
+	    }
+	
+	
+	
+		// PNG
+		if ($_imageTarget['imagetype'] == 3)
+		{
+			imagepng($_imageTarget['image'], $_imageTarget['file']);
+	    }
+
+
+
+		// free resources
+		imagedestroy ($_imageTarget['image']);
+		imagedestroy ($_imageInfo['image']);
+	
+
+		// set image path to resampled cached file
+		$_imageInfo['path'] = switch_file_in_url ($_imageInfo['path'], $_imageTarget['filename']);
+
+	} // end if ( $_resample )
+
 
 
 
@@ -252,7 +496,7 @@ function smarty_function_framed_image ($params, &$smarty)
 	 * finally build up HTML code
 	 */
 	$_html  = "<div " . $_framestyle . ">" . "\n";
-	$_html .= "<img src='" . $_imageInfo['path'] . "' alt='" . $alt . "' title='" . $title . "' width='" . $_image_target_w . "' height='" . $_image_target_h . "' />" . "\n";
+	$_html .= "<img src='" . $_imageInfo['path'] . "' alt='" . $alt . "' title='" . $title . "' width='" . $_imageTarget['w'] . "' height='" . $_imageTarget['h'] . "' />" . "\n";
 	if ( !empty($caption) )
 	{
 		$_html .= "<div style='position: absolute; bottom: -15px; left: 1px; " . $_captionstyle . "'>" . $caption . "</div>" . "\n";
@@ -276,7 +520,114 @@ function smarty_function_framed_image ($params, &$smarty)
  * helper functions
  */
 
+// unsharp mask [taken from thumb_imp by Christoph Erdmann (CE), Wolfgang Krane (WK)]
+	if (!function_exists('UnsharpMask')) {
+		function UnsharpMask($img, $amount, $radius, $threshold) {
+            // Unsharp mask algorithm by Torstein H�nsi 2003 (thoensi_at_netcom_dot_no)
+            // Christoph Erdmann: changed it a little, 
+            // cause i could not reproduce the darker blurred image, 
+            // now it is up to 15% faster with same results
+			// Attempt to calibrate the parameters to Photoshop:
+            
+            if ($amount > 500) $amount = 500;
+			$amount = $amount * 0.016;
+			if ($radius > 50) $radius = 50;
+			$radius = $radius * 2;
+			if ($threshold > 255) $threshold = 255;
+	
+			$radius = abs(round($radius)); 	// Only integers make sense.
+			if ($radius == 0) {	return $img; imagedestroy($img); break;	}
+			$w = imagesx($img); $h = imagesy($img);
+			$imgCanvas = $img;
+			$imgCanvas2 = $img;
+			$imgBlur = imagecreatetruecolor($w, $h);
+	
+			// Gaussian blur matrix:
+			//	1	2	1		
+			//	2	4	2		
+			//	1	2	1		
+
+			// Move copies of the image around one pixel at the time and merge them with weight
+			// according to the matrix. The same matrix is simply repeated for higher radii.
+			for ($i = 0; $i < $radius; $i++) {
+				imagecopy	  ($imgBlur, $imgCanvas, 0, 0, 1, 1, $w - 1, $h - 1); // up left
+				imagecopymerge ($imgBlur, $imgCanvas, 1, 1, 0, 0, $w, $h, 50); // down right
+				imagecopymerge ($imgBlur, $imgCanvas, 0, 1, 1, 0, $w - 1, $h, 33.33333); // down left
+				imagecopymerge ($imgBlur, $imgCanvas, 1, 0, 0, 1, $w, $h - 1, 25); // up right
+				imagecopymerge ($imgBlur, $imgCanvas, 0, 0, 1, 0, $w - 1, $h, 33.33333); // left
+				imagecopymerge ($imgBlur, $imgCanvas, 1, 0, 0, 0, $w, $h, 25); // right
+				imagecopymerge ($imgBlur, $imgCanvas, 0, 0, 0, 1, $w, $h - 1, 20 ); // up
+				imagecopymerge ($imgBlur, $imgCanvas, 0, 1, 0, 0, $w, $h, 16.666667); // down
+				imagecopymerge ($imgBlur, $imgCanvas, 0, 0, 0, 0, $w, $h, 50); // center
+            }
+			$imgCanvas = $imgBlur;	
+				
+			// Calculate the difference between the blurred pixels and the original
+			// and set the pixels
+			for ($x = 0; $x < $w; $x++) { // each row
+				for ($y = 0; $y < $h; $y++) { // each pixel
+					$rgbOrig = ImageColorAt($imgCanvas2, $x, $y);
+					$rOrig = (($rgbOrig >> 16) & 0xFF);
+					$gOrig = (($rgbOrig >> 8) & 0xFF);
+					$bOrig = ($rgbOrig & 0xFF);
+					$rgbBlur = ImageColorAt($imgCanvas, $x, $y);
+					$rBlur = (($rgbBlur >> 16) & 0xFF);
+					$gBlur = (($rgbBlur >> 8) & 0xFF);
+					$bBlur = ($rgbBlur & 0xFF);
+
+					// When the masked pixels differ less from the original
+					// than the threshold specifies, they are set to their original value.
+					$rNew = (abs($rOrig - $rBlur) >= $threshold) ? max(0, min(255, ($amount * ($rOrig - $rBlur)) + $rOrig)) : $rOrig;
+					$gNew = (abs($gOrig - $gBlur) >= $threshold) ? max(0, min(255, ($amount * ($gOrig - $gBlur)) + $gOrig)) : $gOrig;
+					$bNew = (abs($bOrig - $bBlur) >= $threshold) ? max(0, min(255, ($amount * ($bOrig - $bBlur)) + $bOrig)) : $bOrig;
+					
+					if (($rOrig != $rNew) || ($gOrig != $gNew) || ($bOrig != $bNew)) {
+						$pixCol = ImageColorAllocate($img, $rNew, $gNew, $bNew);
+						ImageSetPixel($img, $x, $y, $pixCol);
+                    }
+                }
+            }
+			return $img;
+        }
+    }
 
 
+
+function switch_file_in_url ($url, $newfile)
+{
+	$_parsed = parse_url ($url);
+	$_parsedplus = parseURLplus ($url);
+
+    if ( !is_array($_parsed) ) return false;
+
+    $uri =  isset ($_parsed['scheme']) ? $_parsed['scheme'] . ':' . ( ( strtolower ($_parsed['scheme']) == 'mailto' ) ? '' : '//' ) : '';
+    $uri .= isset ($_parsed['user']) ?   $_parsed['user'] . ( isset($_parsed['pass']) ? ':'.$_parsed['pass'] : '') . '@' : '';
+    $uri .= isset ($_parsed['host']) ?   $_parsed['host'] : '';
+    $uri .= isset ($_parsed['port']) ?   ':'.$_parsed['port'] : '';
+
+/*  old behaviour
+    if ( isset ($parsed['path']) )
+    {
+        $uri .= (substr($parsed['path'], 0, 1) == '/') ? $parsed['path'] : ('/' . $parsed['path']);
+    }
+*/
+	$uri .= $_parsedplus['dir'] . "/" . $newfile;
+	
+    $uri .= isset ($parsed['query']) ? '?'.$parsed['query'] : '';
+    $uri .= isset ($parsed['fragment']) ? '#' . $parsed['fragment'] : '';
+
+    return $uri;
+}
+
+
+function parseURLplus ($url)
+{
+	$URLpcs = parse_url ($url);
+	$PathPcs = explode ("/", $URLpcs['path']);
+	$URLpcs['file'] = end ($PathPcs);
+	unset ($PathPcs[key($PathPcs)]);
+	$URLpcs['dir'] = implode ("/", $PathPcs);
+	return ($URLpcs);
+}
 
 ?>
