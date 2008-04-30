@@ -462,6 +462,8 @@ $config['modelBindings'] = array(
 	'Event' => array("BEObject" => array("CustomProperties", "LangText"),
 				"ContentBase" => array("*"), "Content","BaseDocument","EventDateItem"),
 	'Image' => array("BEObject" => array("CustomProperties", "LangText", "ObjectType"),
+				"ContentBase", "Stream"),
+	'Video' => array("BEObject" => array("CustomProperties", "LangText", "ObjectType"),
 				"ContentBase", "Stream")
 
 ) ;
