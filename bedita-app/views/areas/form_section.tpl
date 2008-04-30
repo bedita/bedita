@@ -29,7 +29,7 @@ function localRemoveItem(itemId) {
 }
 
 $(document).ready(function(){
-	$("#updateform").validate(); 
+	$("#updateForm").validate(); 
 	$('div.tabsContainer > ul').tabs();
 	$('div.tabsContainer > ul > li > a').changeActiveTabs();
 	{/literal}{foreach key=index item=obj from=$contents|default:$empty name=contentsfe}{literal}

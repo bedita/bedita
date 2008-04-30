@@ -20,7 +20,7 @@ $.validator.setDefaults({
 });
 
 $(document).ready(function(){
-	$("#updateform").validate();
+	$("#updateForm").validate();
 	$('div.tabsContainer > ul').tabs();
 	$('div.tabsContainer > ul > li > a').changeActiveTabs();
 	$('.lang_flags').enableDisableTabs();
