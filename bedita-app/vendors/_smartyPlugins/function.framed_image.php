@@ -13,6 +13,8 @@
  *           width   = required if missing height, int number, frame width,
  *           height  = required if missing width, int number, frame height,
  *           
+ *           imageonly     = optional, bool, return only image URI (eventually resampled and cached)
+ *           
  *           filepath     = optional, string, path on filesystem to file (if missing assumed relative so URI)
  *           caption      = optional, string, put a caption under the framed image
  *           captionstyle = optional, string, css used to display caption
@@ -429,6 +431,15 @@ function smarty_function_framed_image ($params, &$smarty)
 
 	} // end if ( $_resample )
 
+
+
+	/*
+	 * if $imageonly, return image
+	 */
+	if ( !@empty($imageonly) )
+	{
+		return $_imageInfo['path'];
+	}
 
 
 
