@@ -11,8 +11,8 @@ $.validator.setDefaults({
 	/*submitHandler: function() { alert("submitted!"); },*/
 	success: function(label) { label.html("&nbsp;").addClass("checked");}
 });
-$().ready(function() { 
-	$("#loginform").validate(); 
+$(document).ready(function() { 
+	$("#loginForm").validate(); 
 });
 {/literal}
 //-->
