@@ -113,7 +113,7 @@ function smarty_function_framed_image ($params, &$smarty)
 				$html = $_filename;
 			}
 			else {
-				$_html 		= '<img src="' . $_filename . '" width="50" alt="missing image" title="image is missing:' . $_filename . '">';
+				$_html = '<img src="' . $_filename . '" width="50" alt="missing image" title="image is missing:' . $_filename . '">';
 			}
 
 
@@ -516,10 +516,10 @@ function smarty_function_framed_image ($params, &$smarty)
 	 * finally build up HTML code
 	 */
 	$_html  = "<div " . $_framestyle . ">" . "\n";
-	$_html .= '<img src="' . $_imageInfo['path'] . '" alt="' . $alt . '" title="' . $title . '" width="' . $_imageTarget['w'] . '" height="' . $_imageTarget['h'] . '" />' . '\n';
+	$_html .= '<img src="' . $_imageInfo['path'] . '" alt="' . $alt . '" title="' . $title . '" width="' . $_imageTarget['w'] . '" height="' . $_imageTarget['h'] . '" />' . "\n";
 	if ( !empty($caption) )
 	{
-		$_html .= '<div style="position: absolute; bottom: -15px; left: 1px; ' . $_captionstyle . '">' . $caption . '</div>' . '\n';
+		$_html .= '<div style="position: absolute; bottom: -15px; left: 1px; ' . $_captionstyle . '">' . $caption . '</div>' . "\n";
 	}
 
 	$_html .= "</div>" . "\n";
