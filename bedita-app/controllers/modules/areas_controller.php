@@ -360,3 +360,5 @@ class AreasController extends ModulesController {
 		return false ;
 	}
 }	
+
+?>

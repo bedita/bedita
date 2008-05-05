@@ -192,3 +192,5 @@ class NewsController extends ModulesController {
 	 }
 
 }
+
+?>

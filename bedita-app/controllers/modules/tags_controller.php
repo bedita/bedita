@@ -98,3 +98,5 @@ class TagsController extends ModulesController {
 		return false ;
 	}
 }
+
+?>

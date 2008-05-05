@@ -245,3 +245,4 @@ class AdminController extends ModulesController {
 	 
 }
 
+?>

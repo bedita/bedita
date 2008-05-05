@@ -214,3 +214,5 @@ class MultimediaController extends ModulesController {
 	}
 
 }
+
+?>

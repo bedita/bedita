@@ -160,3 +160,5 @@ class DocumentsController extends ModulesController {
 		return false ;
 	}
 }	
+
+?>

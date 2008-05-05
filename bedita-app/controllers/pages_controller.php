@@ -45,4 +45,5 @@ class PagesController extends AppController {
 	 }
 	 
 }
-	
+
+?>
