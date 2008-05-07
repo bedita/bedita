@@ -571,11 +571,7 @@ class Tree extends BEAppModel
 			$this->id = $id;
 		}
 
-		if(!isset($userid)) {
-			$fields 		= " *, prmsUserByID ('{$userid}', id, 15) as perms " ;
-		} else {
-			$fields  = " * " ;
-		}
+		$fields  = " * " ;
 		
 		// setta le condizioni di ricerca
 		$conditions = array() ;
@@ -662,7 +658,7 @@ class Tree extends BEAppModel
 
 	private function _getCondition_parentPath(&$conditions, $id = null) {
 		if(isset($id)) {
-			$conditions[] = " path LIKE (CONCAT((SELECT path FROM trees WHERE id = {$id}), '%')) " ;
+			$conditions[] = " path LIKE (CONCAT((SELECT path FROM trees WHERE id = {$id}), '/%')) " ;
 		}
 	}
 

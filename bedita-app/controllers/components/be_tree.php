@@ -75,11 +75,11 @@ class BeTreeComponent extends Object {
 	 *
 	 * @param integer $id		ID del nodo
 	 */
-	function getChildren($id = null, $status = null, $filter = 0xFF, $order = null, $dir  = true, $page = 1, $dim = 100000) {
+	function getChildren($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
 		$conf  = Configure::getInstance() ;
 		
 		// Preleva l'utente connesso
-		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : '' ;
+		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : null ;
 		
 		if(isset($id)) {
 			$objs = &  $this->Tree->getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
@@ -98,7 +98,7 @@ class BeTreeComponent extends Object {
 	function getDiscendents($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
 		$conf  = Configure::getInstance() ;
 		// Get user data
-		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : '' ;
+		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : null ;
 		if(isset($id)) {
 			$objs = &  $this->Tree->getDiscendents($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
 		} else {
