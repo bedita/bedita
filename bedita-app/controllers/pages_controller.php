@@ -12,7 +12,7 @@
  * @modifiedby		
  * @lastmodified	
  * @license			
- * @author 			giangi@qwerg.com
+ * @author
  */
 
 /**
@@ -21,7 +21,6 @@
  */
 class PagesController extends AppController {
 	var $name = 'Pages';
-
 	var $helpers = array();
 	var $components = array('Session', 'Cookie');
 	var $uses = null;
