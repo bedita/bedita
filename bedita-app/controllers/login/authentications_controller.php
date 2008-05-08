@@ -33,13 +33,13 @@ class AuthenticationsController extends AppController {
 	
 		if(!$this->BeAuth->login($userid, $password)) {
 			$this->loginEvent('warn', $userid, "login not authorized");
-			$this->userWarnMessage(__("Wrong username/password or no authorization", true));
+			$this->userErrorMessage(__("Wrong username/password or no authorization", true));
 			$this->result=self::ERROR;
 		}
 
 		if(!$this->BeAuth->isValid) {
 			$this-> loginEvent('warn', $userid, "login blocked");
-			$this->userWarnMessage(__("User login temporary blocked", true));
+			$this->userErrorMessage(__("User login temporary blocked", true));
 			$this->result=self::ERROR;
 		}
 		
