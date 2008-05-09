@@ -195,13 +195,15 @@ class BeFileHandlerComponent extends Object {
 
 	private function _create(&$dati, $model = null) {
 		$model = false ;
-		switch($this->_getTypeFromMIME($dati['type'], $model)) {
+		$modelType = $this->_getTypeFromMIME($dati['type'], $model);
+		switch($modelType) {
 			case 'BEFile':		$model = 'BEFile' ; break ;
 			case 'Image':		$model = 'Image' ; break ;
 			case 'Audio':		$model = 'Audio' ; break ;
 			case 'Video':		$model = 'Video' ; break ;
 			default:
-				throw new BEditaMIMEException(__("MIME type not found",true)) ;
+				throw new BEditaMIMEException(__("MIME type not found",true).": ".$dati['type'].
+					" - matches: ".$modelType) ;
 		}
 		$this->{$model}->id = false ;
 		// add lang_text
@@ -278,13 +280,15 @@ class BeFileHandlerComponent extends Object {
 			$ret = $this->Stream->read('type', $id) ;
 			if(!isset($ret['type']) || empty($ret['type'])) break ;
 			
-			if($ret['type'] != $dati['type']) throw new BEditaMIMEException(__("MIME type not found", true)) ;
+			if($ret['type'] != $dati['type']) 
+				throw new BEditaMIMEException(__("MIME type not found", true)) ;
 		}
 		
 		// Preleva il tipo di oggetto da salvare e salva
 		$rec = $this->BEObject->recursive ;
 		$this->BEObject->recursive = -1 ;
-		if(!($ret = $this->BEObject->read('object_type_id', $id)))  throw new BEditaMIMEException(__("MIME type not found", true)) ;
+		if(!($ret = $this->BEObject->read('object_type_id', $id)))  
+			throw new BEditaMIMEException(__("MIME type not found", true)) ;
 		$this->BEObject->recursive = $rec ;
 		$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
 		
@@ -329,17 +333,20 @@ class BeFileHandlerComponent extends Object {
 	 */
 	private function _getTypeFromMIME($mime, $model = null) {
 		$conf 		= Configure::getInstance() ;
-		if(@empty($mime))	return false ;
+		if(@empty($mime))	
+			return false ;
 		if(isset($model) && isset($conf->validate_resorce['mime'][$model] )) {
 			$regs = $conf->validate_resorce['mime'][$model] ;
 			foreach ($regs as $reg) {
-				if(preg_match($reg, $path)) return $model ;
+				if(preg_match($reg, $path)) 
+					return $model ;
 			}
 		} else {
 			$models = $conf->validate_resorce['mime'] ;
 			foreach ($models as $model => $regs) {
 				foreach ($regs as $reg) {
-					if(preg_match($reg, $mime)) return $model ;
+					if(preg_match($reg, $mime)) 
+						return $model ;
 				}
 			}
 		}
