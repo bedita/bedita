@@ -260,7 +260,9 @@ class AppController extends Controller
 
 		// Verify authorization
 		if(!$this->BeAuth->isLogged()) {
-			$this->render(null, null, "login") ; $_loginRunning = false; exit; 
+			$this->render(null, null, VIEWS."pages".DS."login.tpl") ; 
+			$_loginRunning = false; 
+			exit; 
 		}
 		
 		// module list
