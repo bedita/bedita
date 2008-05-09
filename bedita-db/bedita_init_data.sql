@@ -2,50 +2,50 @@
 -- Basic initialization data
 --
 
-INSERT INTO object_types (id, name) VALUES
-(1, 'area'),
-(2, 'newsletter'),
-(3, 'section'),
+INSERT INTO object_types (id, name, module) VALUES
+(1, 'area', 'areas'),
+(2, 'newsletter', NULL),
+(3, 'section', 'areas'),
 
-(4, 'questionnaire'),
-(5, 'faq'),
-(29, 'gallery'),
-(6, 'cartigli'),
+(4, 'questionnaire', NULL),
+(5, 'faq', NULL),
+(29, 'gallery', 'galleries'),
+(6, 'cartigli', NULL),
 
-(7, 'scroll'),
-(8, 'timeline'),
-(9, 'community'),
+(7, 'scroll', NULL),
+(8, 'timeline', NULL),
+(9, 'community', NULL),
 
-(10, 'befile'),
-(12, 'image'),
+(10, 'befile', 'attachments'),
+(12, 'image', 'multimedia'),
 
-(13, 'comment'),
-(14, 'faqquestion'),
-(15, 'question'),
+(13, 'comment', NULL),
+(14, 'faqquestion', NULL),
+(15, 'question', NULL),
 
-(16, 'answer'),
-(17, 'objectuser'),
-(18, 'shortnews'),
+(16, 'answer', NULL),
+(17, 'objectuser', NULL),
+(18, 'shortnews', 'news'),
 
-(19, 'bibliography'),
-(20, 'book'),
-(21, 'event'),
+(19, 'bibliography', NULL),
+(20, 'book', NULL),
+(21, 'event', 'events'),
 
-(22, 'document'),
-(23, 'documentptrobject'),
-(24, 'documentptrextern'),
+(22, 'document', 'documents'),
+(23, 'documentptrobject', NULL),
+(24, 'documentptrextern', NULL),
 
-(25, 'documentptrfile'),
-(26, 'documentptrservice'),
-(27, 'documentrule'),
+(25, 'documentptrfile', NULL),
+(26, 'documentptrservice', NULL),
+(27, 'documentrule', NULL),
 
-(28, 'author'),
-(30, 'biblioitem'),
+(28, 'author', NULL),
+(30, 'biblioitem', NULL),
 
-(31, 'audio'),
-(32, 'video'),
+(31, 'audio', 'multimedia'),
+(32, 'video', 'multimedia'),
 
-(33, 'link')
+(33, 'link', NULL)
 ;
 
 INSERT INTO `question_types` (`id`, `label`) VALUES
