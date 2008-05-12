@@ -3,7 +3,7 @@
 *	Add methods to jquery validation plugin. 
 *	Require validation plugin
 *
-*	@author: a.pagliarini@channelweb.it
+*	@author: channelweb srl
 */
 
 
