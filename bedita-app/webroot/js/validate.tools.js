@@ -95,7 +95,7 @@ jQuery.validator.addMethod("dateGreaterThen", function(value, element, params) {
 jQuery.validator.addMethod("checkTime", function(value, element, params) {
 	if (value) {
 		retVal = false;
-		var strReg = "(2[0-3]|1\\d|0\\d)[:]?[0-5]\\d";
+		var strReg = "(2[0-3]|1\\d|0\\d)[:][0-5]\\d([:][0-5]\\d|\\b)";
     	var reg = new RegExp("^" + strReg + "$");
 		if (reg.test(value)) {
 			retVal = true;
