@@ -321,7 +321,7 @@ class BEObject extends BEAppModel
 		return false;
 	}
 	
-	function findObjectTypeId($id) {
+	public function findObjectTypeId($id) {
 		$object = $this->find("first", array(
 									"restrict" 	=> array(),
 									"fields" 	=> "object_type_id",
@@ -336,17 +336,16 @@ class BEObject extends BEAppModel
 	}
 	
 	/**
-	 * Torna il nome del Model dell'id passato
+	 * Model name/type from id
 	 *
-	 * @param unknown_type $modelName
+	 * @param unknown_type $id
 	 */
-	function getType($id) {
-		$conf = Configure::getInstance() ;
-		
-		if(!($type_id =  $this->read("object_type_id", $id))) return false ;
-		 
-		$type_id = (isset($type_id['BEObject']['object_type_id']))?$type_id['BEObject']['object_type_id']:$type_id;
-		return $conf->objectTypeModels[$type_id] ;
+	public function getType($id) {
+		$type_id = $this->findObjectTypeId($id);
+		if($type_id === false) {
+			return false;
+		}		
+		return Configure::getInstance()->objectTypeModels[$type_id] ;
 	}
 	
 	/**
