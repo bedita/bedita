@@ -83,7 +83,11 @@
 	if (isset($_GET['url']) && $_GET['url'] === 'favicon.ico') {
 	} else {
 		 $Dispatcher=new Dispatcher();
-		 $Dispatcher->dispatch($url);
+		 try {
+		 	$Dispatcher->dispatch($url);
+		} catch (Exception $ex) {
+			FrontendController::handleExceptions($ex);
+		}
 	}
 	if (Configure::read() > 0) {
 		 echo "<!-- " . round(getMicrotime() - $TIME_START, 4) . "s -->";

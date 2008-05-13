@@ -1,27 +1,27 @@
 <?php
 
-class PagesController extends AppController {
+class PagesController extends FrontendController {
 
 	var $helpers 	= array();
 	var $components = array('BeTree');
-	var $uses	 	= array();
-
+	var $uses = array('BEObject','Tree') ;
+	
 	protected function checkLogin() {
-		// uncomment to define a default user for frontend operations 
-//		$this->BeAuth->user=Configure::getInstance()->frontendUser; 
-		return true; // no control access...
+		$this->BeAuth->user=Configure::getInstance()->frontendUser; 
+		return true;
 	}	
 
+	/**
+	 * load common data, for all frontend pages...
+	 */ 
+	protected function beditaBeforeFilter() {
+		$this->set('pageTitle', "test page");
+	}
+	
 	public function index() {
-		// test: retrieve all documents & galleries...
 		$conf  = Configure::getInstance() ;
-		$documents = $this->BeTree->getDiscendents(null, null, $conf->objectTypes['documentAll'])  ;
-		$galleries = $this->BeTree->getDiscendents(null, null, $conf->objectTypes['gallery']);
-
-		$this->set('galleries', $galleries['items']);
-		$this->set('documents', $documents['items']);
-		$this->set('test1', "rocks");
-		$this->set('test2', "sucks");
+		$sectionsTree = $this->loadSectionsTree($conf->frontendAreaId);
+		$this->set('sections', $sectionsTree);
 	}
 }
 

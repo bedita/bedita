@@ -44,6 +44,7 @@ abstract class FrontendController extends AppController {
 				$this->currLang = Configure::getInstance()->frontendLang;
 			}
 		}
+		$this->set('currLang', $this->currLang);
 	}
 
 	public function changeLang($lang, $forward = null) {
