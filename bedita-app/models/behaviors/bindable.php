@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: bindable.php 43 2008-05-03 20:25:21Z mgiglesias $ */
+/* SVN FILE: $Id: bindable.php 46 2008-05-09 13:39:22Z mgiglesias $ */
 
 /**
  * Bindable Behavior class file.
@@ -11,7 +11,7 @@
  * @filesource
  * @author Mariano Iglesias
  * @link http://cake-syrup.sourceforge.net/ingredients/bindable-behavior/
- * @version	$Revision: 43 $
+ * @version	$Revision: 46 $
  * @license	http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package app
  * @subpackage app.models.behaviors
@@ -43,12 +43,15 @@ class BindableBehavior extends ModelBehavior {
 	 * - notices:	(boolean, optional) issues E_NOTICES for bindings referenced in a
 	 * 				bindable call that are not valid. DEFAULTS TO: false
 	 *
+	 * - autoFields: (boolean, optional) auto-add needed fields to fetch requested
+	 * 				bindings. DEFAULTS TO: true
+	 *
 	 * @param object $Model Model using the behavior
 	 * @param array $settings Settings to override for model.
 	 * @access public
 	 */
 	function setup(&$Model, $settings = array()) {
-		$default = array('recursive' => true, 'notices' => false);
+		$default = array('recursive' => true, 'notices' => false, 'autoFields' => true);
 
 		if (!isset($this->settings[$Model->alias])) {
 			$this->settings[$Model->alias] = $default;
@@ -86,12 +89,9 @@ class BindableBehavior extends ModelBehavior {
 			}
 		}
 
-		// Special ways to specify
+		// Process arguments into a set of models to include
 
 		$arguments = array_slice($arguments, $shift);
-
-		// Merge all parameters into an array
-
 		foreach($arguments as $index => $argument) {
 			if (is_array($argument)) {
 				if (!empty($argument)) {
@@ -102,15 +102,13 @@ class BindableBehavior extends ModelBehavior {
 			}
 		}
 
-		// Process arguments into a set of models to include
-
 		$models = array();
 		if (!$innerCall) {
-			$models = $this->__models($Model, $arguments, $this->settings[$Model->alias]['notices']);
+			$models = $this->__models($Model, $arguments, $this->settings[$Model->alias]['notices'], $this->settings[$Model->alias]['autoFields']);
 			$recursive = -1;
 
 			if (!empty($models)) {
-				$recursive = Set::countDim($models, true);
+				$recursive = $this->__recursivity($models);
 			}
 		} else if (!empty($arguments)) {
 			$models = $arguments;
@@ -123,10 +121,6 @@ class BindableBehavior extends ModelBehavior {
 				if (isset($children['__settings__'])) {
 					foreach($this->__bindings as $relation) {
 						if (isset($Model->{$relation}[$name])) {
-							if (isset($children['__settings__']['fields']) && !in_array($Model->$name->primaryKey, $children['__settings__']['fields'])) {
-								$children['__settings__']['fields'][] = $Model->$name->primaryKey;
-							}
-
 							if (!$reset) {
 								$this->__backupAssociations($Model);
 							}
@@ -151,31 +145,31 @@ class BindableBehavior extends ModelBehavior {
 			}
 		}
 
+		// Setup mandatory fields
+
+		if (!$innerCall && $this->settings[$Model->alias]['autoFields'] && isset($models['__settings__'])) {
+			if (!empty($models['__settings__']['fields'])) {
+				if (empty($this->__fields[$Model->alias])) {
+					$this->__fields[$Model->alias] = array();
+				}
+				$this->__fields[$Model->alias] = $models['__settings__']['fields'];
+			}
+			unset($models['__settings__']);
+		}
+
 		// Unbind unneeded models
 
 		$unbind = array();
 		$models = array_keys($models);
 		$bindings = $Model->getAssociated();
-		$fields = array();
 
 		foreach($bindings as $bindingName => $relation) {
 			if (!in_array($bindingName, $models)) {
 				$unbind[$relation][] = $bindingName;
-			} else if($relation == 'belongsTo') {
-				$fields[] = $Model->{$relation}[$bindingName]['foreignKey'];
-			} else {
-				$fields[] = $Model->primaryKey;
 			}
 		}
 
-		if (!empty($fields)) {
-			if (empty($this->__fields[$Model->alias])) {
-				$this->__fields[$Model->alias] = array();
-			}
-			$this->__fields[$Model->alias] = array_merge($this->__fields[$Model->alias], $fields);
-		}
-
-		if (!empty($unbind)) {
+   		if (!empty($unbind)) {
 			if (!$reset) {
 				$this->__backupAssociations($Model);
 			}
@@ -238,6 +232,10 @@ class BindableBehavior extends ModelBehavior {
 			unset($Model->__backRecursive);
 		}
 
+		if (isset($this->__fields[$Model->alias])) {
+			unset($this->__fields[$Model->alias]);
+		}
+
 		foreach($innerAssociations as $currentModel) {
 			$this->resetBindable($Model->$currentModel, $resetOriginal);
 		}
@@ -272,9 +270,8 @@ class BindableBehavior extends ModelBehavior {
 			$this->restrict($Model, $query['reset'], false, $query['restrict']);
 		}
 
-		if (!empty($this->__fields[$Model->alias]) && !empty($query['fields'])) {
+		if ($Model->findQueryType != 'list' && is_array($query['fields']) && !empty($this->__fields[$Model->alias]) && !empty($query['fields'])) {
 			$query['fields'] = array_unique(array_merge($query['fields'], $this->__fields[$Model->alias]));
-			unset($this->__fields[$Model->alias]);
 		}
 		return $query;
 	}
@@ -320,11 +317,12 @@ class BindableBehavior extends ModelBehavior {
 	 * @param object $Model Model being processed
 	 * @param array $arguments Set of arguments to convert
 	 * @param boolean $notices Set to true to throw a notice when a binding does not exist
+	 * @param boolean $autoFields Discover and add fields needed to fetch requested bindings
 	 * @param boolean $inner Set to true to indicate inner call, false otherwise
 	 * @return array Converted arguments
 	 * @access private
 	 */
-	function __models(&$Model, $arguments, $notices = false, $inner = false) {
+	function __models(&$Model, $arguments, $notices = false, $autoFields = true, $inner = false) {
 		$models = array();
 		$bindings = $Model->getAssociated();
 		$settings = array('conditions', 'fields', 'limit', 'offset', 'order');
@@ -400,46 +398,106 @@ class BindableBehavior extends ModelBehavior {
 						}
 						$children['fields'] = array_merge($children['fields'], $fields);
 					}
-					$models[$name] = array_merge($models[$name], $this->__models($Model->$name, $children, $notices, true));
+					$models[$name] = array_merge($models[$name], $this->__models($Model->$name, $children, $notices, $autoFields, true));
 				} else if ($notices) {
 					trigger_error(sprintf(__('%s.%s is not a valid binding', true), $Model->alias, $name), E_USER_NOTICE);
 				}
 			}
 		}
 
-		$mandatoryFields = array();
-		if (isset($models['__settings__']) && isset($models['__settings__']['fields'])) {
-			foreach($models as $name => $children) {
-				if ($name != '__settings__' && isset($bindings[$name])) {
-					$relation = $bindings[$name];
-					switch($relation) {
-							case 'belongsTo':
-								$mandatoryInnerFields = array($Model->$name->primaryKey);
-								$mandatoryFields[] = $Model->{$relation}[$name]['foreignKey'];
-								break;
-							case 'hasOne':
-							case 'hasMany':
-								$mandatoryInnerFields = array($Model->{$relation}[$name]['foreignKey']);
-								$mandatoryFields[] = $Model->primaryKey;
-								break;
-							case 'hasAndBelongsToMany':
-								$mandatoryInnerFields = array($Model->$name->primaryKey);
-								$mandatoryFields[] = $Model->primaryKey;
-								break;
-					}
-
-					if (isset($children['__settings__']) && isset($children['__settings__']['fields']) && !empty($mandatoryInnerFields)) {
-						$models[$name]['__settings__']['fields'] = array_unique(array_merge($children['__settings__']['fields'], $mandatoryInnerFields));
-					}
-				}
-			}
-
-			if (!empty($mandatoryFields)) {
-				$models['__settings__']['fields'] = array_unique(array_merge($models['__settings__']['fields'], $mandatoryFields));
-			}
+		if (!$inner && $autoFields) {
+			$models = $this->__fields($Model, $models);
 		}
 
 		return $models;
+	}
+
+	/**
+	 * Compute mandatory fields for fetching required bindings.
+	 *
+	 * @param object $Model Model to start from
+	 * @param array $models Bindings for this model
+	 * @param array $mandatory Include these mandatory fields
+	 * @param bool $inner Set to true if on inner call, false otherwise
+	 * @return array Modified bindings with mandatory fields included
+	 * @access private
+	 */
+	function __fields(&$Model, $models, $mandatory = array(), $inner = false) {
+		$bindings = $Model->getAssociated();
+
+		$fields = (!empty($mandatory) ? $mandatory : array());
+		foreach($models as $name => $data) {
+			if ($name == '__settings__' || empty($bindings[$name])) {
+				continue;
+			}
+			$mandatory = array();
+			$relation = $bindings[$name];
+			switch($relation) {
+				case 'belongsTo':
+					$mandatory[] = $Model->$name->alias . '.' . $Model->$name->primaryKey;
+					$fields[] = $Model->alias . '.' . $Model->{$relation}[$name]['foreignKey'];
+					break;
+				case 'hasOne':
+				case 'hasMany':
+					$mandatory[] = $Model->$name->alias . '.' . $Model->{$relation}[$name]['foreignKey'];
+					$fields[] = $Model->alias . '.' . $Model->primaryKey;
+					break;
+				case 'hasAndBelongsToMany':
+					$mandatory[] = $Model->$name->alias . '.' . $Model->$name->primaryKey;
+					$fields[] = $Model->alias . '.' . $Model->primaryKey;
+					break;
+			}
+			if (is_object($Model->$name)) {
+				$models[$name] = $this->__fields($Model->$name, $models[$name], $mandatory, true);
+			}
+		}
+
+		if ((!$inner && !empty($fields)) || (!empty($fields) && isset($models['__settings__']) && isset($models['__settings__']['fields']))) {
+			if (!$inner) {
+				foreach($models as $name => $data) {
+					if ($name != '__settings__' && $bindings[$name] == 'belongsTo' && !empty($data['__settings__']) && !empty($data['__settings__']['fields'])) {
+						$innerFields = $data['__settings__']['fields'];
+						foreach($innerFields as $index => $field) {
+							if (strpos($field, '.') === false) {
+								$innerFields[$index] = $Model->$name->alias . '.' . $field;
+							}
+						}
+						$fields = array_merge($fields, $innerFields);
+					}
+				}
+			}
+			if (!isset($models['__settings__'])) {
+				$models['__settings__'] = array();
+			}
+			if (!isset($models['__settings__']['fields'])) {
+				$models['__settings__']['fields'] = array();
+			}
+			$models['__settings__']['fields'] = array_unique(array_merge($models['__settings__']['fields'], $fields));
+		}
+
+		return $models;
+	}
+
+	/**
+	 * Calculate the minimum recursivity required for fetching the bindings
+	 *
+	 * @param array $models Bindings
+	 * @param bool $inner Set to true if on inner call, false otherwise
+	 * @return int Recursivity level
+	 * @access private
+	 */
+	function __recursivity($models, $inner = false) {
+		if ($inner) {
+			if (isset($models['__settings__'])) {
+				unset($models['__settings__']);
+			}
+			foreach($models as $key => $value) {
+				$models[$key] = $this->__recursivity($models[$key], true);
+			}
+			return $models;
+		}
+
+		return Set::countDim($this->__recursivity($models, true), true);
 	}
 }
 
