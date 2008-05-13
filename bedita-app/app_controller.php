@@ -22,7 +22,7 @@ class AppController extends Controller
 	public $result 		= 'OK' ;
 	protected $skipCheck = false;
 	
-	private static $current = NULL;
+	protected static $current = NULL;
 
 	protected $selfUrlParams = NULL;
 	
@@ -80,6 +80,7 @@ class AppController extends Controller
 		$this->result=$r;
 	}
 
+	protected function initAttributes() {}	
 	
 	final function beforeFilter() {
 
@@ -87,6 +88,7 @@ class AppController extends Controller
 		// Templater
 		$this->view = 'Smarty';
 		// convienience methods for frontends
+		$this->initAttributes();
 	 	$this->beditaBeforeFilter() ;
 	 	// don't generate output, done in afterFilter
 	 	$this->autoRender = false ;
@@ -100,7 +102,7 @@ class AppController extends Controller
 		if(!$this->checkLogin($this->skipCheck)) return ;
 	}
 
-	private function setupLocale() {
+	protected function setupLocale() {
 		// read Cookie
 		$lang = $this->Cookie->read('bedita.lang');
 		$conf = Configure::getInstance();
