@@ -325,7 +325,7 @@ class BEObject extends BEAppModel
 		$object = $this->find("first", array(
 									"restrict" 	=> array(),
 									"fields" 	=> "object_type_id",
-									"conditions" => "id=".$id
+									"conditions" => "BEObject.id=".$id
 								)
 						);
 		if (!empty($object)) {
