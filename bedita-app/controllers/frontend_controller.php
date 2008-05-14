@@ -304,7 +304,7 @@ abstract class FrontendController extends AppController {
 	}
 	
 	
-	public function content(string $name) {
+	public function content($name) {
 		if(empty($name))
 			throw new BeditaException(__("Content not found"));
 		
@@ -317,7 +317,7 @@ abstract class FrontendController extends AppController {
 		$this->section($section_id, $content_id);	
 	}
 
-	public function section(string $secName, string $contentName=null) {
+	public function section($secName, $contentName=null) {
 		
 		$sectionId = is_numeric($secName) ? $secName : $this->BEObject->getIdFromNickname($secName);		
 		$section = $this->loadObj($sectionId);
