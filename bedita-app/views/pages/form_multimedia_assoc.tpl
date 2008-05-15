@@ -55,6 +55,18 @@ $(document).ready(function(){
 	$("#searchMultimediaText").focus(function() {
 		$(this).val("");
 	});
+	
+	// manage enter key on search text to prevent default submit
+	$("#searchMultimediaText").keypress(function(event) {
+		if (event.keyCode == 13 && $(this).val() != "") {
+			event.preventDefault();
+			loadMultimediaAssoc(
+				"{/literal}{$html->url("/streams/searchStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{literal}" + $(this).val(),
+				true
+			);
+		}
+	});
+	
 	$("#searchMultimediaShowAll").click(function() {
 		loadMultimediaAssoc(
 			"{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{literal}",
