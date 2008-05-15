@@ -129,7 +129,7 @@ class AppController extends Controller
 	 * 		$this->data['OK'] o $this->data['ERROR']
 	 *  	seleziona.
 	 * 
-	 * Se nella classe � definito:
+	 * Se nella classe è definito:
 	 * 		$this->REDIRECT[<nome_metodo>]['OK'] o $this->REDIRECT[<nome_metodo>]['ERROR']
 	 *  	seleziona.
 	 * 
