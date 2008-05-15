@@ -105,7 +105,6 @@ abstract class FrontendController extends AppController {
 	
 	/**
 	* Get area's section recursively
-	* TODO:....da rifare
 	* 
 	* @param integer $area_id			area parent
 	* @param  string $var_name			name result in to template_ vars
@@ -156,7 +155,7 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
-	 * Load bedita Object, set view var with $var_name or object type (e.g. "document", "event"..)
+	 * Load bedita Object, set view var with $var_name or object type (e.g. "Document", "Event"..)
 	 * Returns object loaded
 	 * Throws Exception on errors
 	 *
