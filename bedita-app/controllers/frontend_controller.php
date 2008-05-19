@@ -9,6 +9,7 @@ abstract class FrontendController extends AppController {
 	private $status = array('on');
 	protected $checkPubDate = true;
 	private $currLang = null; // selected lang -- move in AppController?
+	protected $showAllContents = false;
 	
 	/**
 	 * $uses & $components array don't work... (abstract class ??)
@@ -316,18 +317,52 @@ abstract class FrontendController extends AppController {
 		$this->section($section_id, $content_id);	
 	}
 
+	/**
+	 * find section and contents from section nick or section id and set template vars
+	 * 
+	 * Set section and:
+	 * if $contentName=null set all contents in section
+	 * if $contentName is defined set single content (default)
+	 * if $contentName is defined and $this->showAllContents=true set content and other contents too
+	 * 
+	 * Execute 'sectionNickname'BeforeFilter and/or 'sectionNickName'AfterFilter 
+	 * if they're set in the controller (i.e. pages_controller.php)				
+	 *
+	 * @param string/int $secName: section nick or section id
+	 * @param string/int $contentName: content nick or content id
+	 */
 	public function section($secName, $contentName=null) {
 		
-		$sectionId = is_numeric($secName) ? $secName : $this->BEObject->getIdFromNickname($secName);		
+		if (is_numeric($secName)) {
+			$sectionId = $secName;
+			$secName = $this->BEObject->getNicknameFromId($sectionId);
+		} else {
+			$sectionId = $this->BEObject->getIdFromNickname($secName);
+		}		
+		
+		$secNameFilter = str_replace("-","_",$secName);
+		// section before filter
+		if (method_exists($this, $secNameFilter . "BeforeFilter")) {
+			$this->{$secNameFilter . "BeforeFilter"}();
+		}
+		
 		$section = $this->loadObj($sectionId);
 		
 		if(!empty($contentName)) {
 			$content_id = is_numeric($contentName) ? $contentName : $this->BEObject->getIdFromNickname($contentName);
 			$section['content'] = $this->loadObj($content_id);
+			if ($this->showAllContents) {
+				$section['contents'] = $this->loadSectionObjects($sectionId);
+			}
 		} else {
 			$section['contents'] = $this->loadSectionObjects($sectionId);
 		}
 		$this->set('section', $section);
+		
+		// section after filter
+		if (method_exists($this, $secNameFilter . "AfterFilter")) {
+			$this->{$secNameFilter . "AfterFilter"}();
+		}
 	}
 	
 	
