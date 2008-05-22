@@ -8,8 +8,11 @@ abstract class FrontendController extends AppController {
 
 	private $status = array('on');
 	protected $checkPubDate = true;
-	private $currLang = null; // selected lang -- move in AppController?
 	protected $showAllContents = false;
+
+	protected function checkLogin() {
+		return false; // every frontend has to implement checkLogin
+	}
 	
 	/**
 	 * $uses & $components array don't work... (abstract class ??)
@@ -38,12 +41,27 @@ abstract class FrontendController extends AppController {
 	 *
 	 */
 	protected function setupLocale() {
-		// setup curr lang
+
+		$this->currLang = $this->Session->read('Config.language');
 		if($this->currLang === null) {
-			$this->currLang = $this->Session->read('Config.language');
-			if($this->currLang === null) {
-				$this->currLang = Configure::getInstance()->frontendLang;
+			$conf = Configure::getInstance();
+			$lang = $this->Cookie->read($conf->cookieName["langSelect"]);
+			if(isset($lang)) {
+				$this->currLang = $lang;
+			} else {
+				// HTTP autodetect
+				I18n::getInstance();
+				$this->currLang = $conf->Config['language'];			
+				if(!array_key_exists($this->currLang, $conf->frontendLangs) && isset($conf->frontendLangsMap)) {
+					$this->currLang = $conf->frontendLangsMap[$this->currLang];
+				}
+				if($this->currLang === null) {
+					$this->currLang = $conf->frontendLang;
+				}
 			}
+			$this->Session->write('Config.language', $this->currLang);
+			Configure::write('Config.language', $this->currLang);
+			// TODO: write cookie??
 		}
 		$this->set('currLang', $this->currLang);
 	}
@@ -55,11 +73,12 @@ abstract class FrontendController extends AppController {
 		}
 		$conf = Configure::getInstance();
 		if (!array_key_exists($lang, $conf->frontendLangs)) {
-			throw new BeditaException(" lang selected");
+			throw new BeditaException("wrong lang selected: ".$lang);
 		}
 		$this->Session->write('Config.language', $lang);
 		$this->Cookie->write($conf->cookieName["langSelect"], $lang, null, '+350 day'); 
-
+		$this->currLang = $lang;
+		
 		if(!empty($forward)) {
 			$this->redirect($forward);
 		} else {

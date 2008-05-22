@@ -1,6 +1,6 @@
 <?php
 
-uses('L10n');
+App::import('Core', 'i18n');
 
 class AppController extends Controller
 {
@@ -25,6 +25,8 @@ class AppController extends Controller
 	protected static $current = NULL;
 
 	protected $selfUrlParams = NULL;
+
+	protected $currLang = NULL; // selected UI lang - 
 	
 	/**
 	 * Specific per-controller model bindings
@@ -85,7 +87,6 @@ class AppController extends Controller
 	final function beforeFilter() {
 
 		self::$current = $this;
-		// Templater
 		$this->view = 'Smarty';
 		// convienience methods for frontends
 		$this->initAttributes();
@@ -99,7 +100,11 @@ class AppController extends Controller
 		// Check login
 		$this->BeAuth->startup($this) ;
 		$this->set('conf',  Configure::getInstance());
-		if(!$this->checkLogin($this->skipCheck)) return ;
+		// check/setup localization
+		$this->setupLocale();
+		
+		if(!$this->checkLogin($this->skipCheck)) 
+			return;
 	}
 
 	protected function setupLocale() {
@@ -109,18 +114,16 @@ class AppController extends Controller
 		if(isset($lang) && $conf->multilang === true) {
 			$this->Session->write('Config.language', $lang);
 		}
-		// translate and check locale
-		$this->pageTitle = __($this->name, true);
-		// setup Configure class and title for templates
-		$currLang = $conf->Config['language'];
-		if(!array_key_exists($currLang, $conf->langsSystem)) {
-			if(isset( $conf->langsSystemMap[$currLang])) {
-				$currLang = $conf->langsSystemMap[$currLang];
+		I18n::getInstance();
+		$this->currLang = $conf->Config['language'];
+		if(!array_key_exists($this->currLang, $conf->langsSystem)) {
+			if(isset( $conf->langsSystemMap[$this->currLang])) {
+				$this->currLang = $conf->langsSystemMap[$this->currLang];
 			} else { // use default
-				$currLang = $conf->defaultLang;
+				$this->currLang = $conf->defaultLang;
 			}
 		}
-		$this->set('currLang', $currLang);
+		$this->set('currLang', $this->currLang);
 	}
 	
 	/**
@@ -137,10 +140,6 @@ class AppController extends Controller
 	 * 
 	 */
 	final function afterFilter() {
-		// check/setup localization
-		$this->setupLocale();
-		$this->set('moduleColor',$this->moduleColor);
-		$this->set('moduleName', $this->moduleName);
 
 		// setup return URL (if session expires)
 		if(empty($this->selfUrlParams)) {
@@ -148,7 +147,7 @@ class AppController extends Controller
 		} else {
             $this->set('selfPlus', $this->createSelfURL(false, $this->selfUrlParams));
 		}
-        $this->set('self',          ($this->createSelfURL(false)."?")) ;
+        $this->set('self',  ($this->createSelfURL(false)."?")) ;
 		
 		// convienience methods for frontends [like afterFilter]
         $this->beditaAfterFilter() ;
@@ -286,6 +285,8 @@ class AppController extends Controller
 					$this->handleError($logMsg, __("Module access not authorized",true));
 					$this->redirect("/");
 			}
+			$this->set('moduleColor',$this->moduleColor);
+			$this->set('moduleName', $this->moduleName);
 		}
 		
 		$_loginRunning = false ;
