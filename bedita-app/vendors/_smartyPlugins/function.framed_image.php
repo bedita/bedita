@@ -15,7 +15,9 @@
  *           
  *           imageonly     = optional, bool, return only image URI (eventually resampled and cached)
  *           
- *           filepath     = optional, string, path on filesystem to file (if missing assumed relative so URI)
+ *           filepath     = optional, string, path on filesystem to file (if missing assumed relative to URI)
+ *           origwidth    = optional, original image width (if available) so to avoid the "time consuming" getimagesize()
+ *           origheight   = optional, original image width (if available) so to avoid the "time consuming" getimagesize()
  *           caption      = optional, string, put a caption under the framed image
  *           captionstyle = optional, string, css used to display caption
  *           framestyle   = optional, string, the css style applied to the frame containing image
@@ -47,6 +49,10 @@ function smarty_function_framed_image ($params, &$smarty)
 	$_default_captionstyle = "color: black; font-size: 0.9em;";
 	$_DS = "/";
 
+	// supported image types (used after getimagesize)
+	$_imagetype = array ("", "gif", "jpg", "png", "swf");
+	$_defaultimagetype = 2; // defaults to 2 [= JPG]
+
 	// empties
 	$_html		   = "";
 	$_framestyle   = "";
@@ -75,6 +81,9 @@ function smarty_function_framed_image ($params, &$smarty)
 					);
 
 
+	/*
+	 * get parameters or trigger error (notice)
+	 */
 	extract($params);
 
 	if ( empty($file) )
@@ -90,79 +99,76 @@ function smarty_function_framed_image ($params, &$smarty)
 	}
 
 
+	// compatibility with different syntax (to be removed)
+	if ( !@empty($filePATH) ) $filepath = $filePATH;
 
 	// sanitize file path & name
 	$_imageInfo['path'] = str_replace (' ','%20', $file); ; // rawurlencode( $file ) does not work, why?!;
+
+	$_path					 = parse_url ( $_imageInfo['path'], PHP_URL_PATH );
+	$_imageInfo['filename']	 = end ( explode ( '/', $_path ) );
+	$_imageInfo['ext']		 = end ( explode ( '.', $_imageInfo['filename'] ) );
+	$_imageInfo['file']		 = $_path;
+	$_imageInfo['filepath']	 = (@empty($filepath))? $_SERVER['DOCUMENT_ROOT'] . $_path : $filepath; // if missing parameter filepath assume filesystem path from SERVER env
 
 
 
 	/*
 	 *  Get data or trigger errors
 	 */	
-	if ( !$_image_data =@ getimagesize($_imageInfo['path']) )
+	if ( !file_exists($_imageInfo['filepath']) )
 	{
-
-		if ( !file_exists($_imageInfo['path']) )
-		{
 			// don't display errors (DA FARE + MEGLIO)
-			$_path		= parse_url ( $_imageInfo['path'], PHP_URL_PATH );
-			$_filename	= end ( explode ( '/', $_path ) );
-			
+
 			if ( !@empty($imageonly) )
 			{
-				$html = $_filename;
+				$html = $_imageInfo['filename'];
 			}
 			else {
-				$_html = '<img src="' . $_filename . '" width="50" alt="missing image" title="image is missing:' . $_filename . '">';
+				$_html = '<img src="' . $_imageInfo['filename'] . '" width="50" alt="missing image" title="image is missing:' . $_imageInfo['filename'] . '">';
 			}
-
 
 			if ( empty($var) ) return $_html;
 			else $smarty -> assign ( $var, $_html );
 			return;
-		}
-		else if ( !is_readable($_imageInfo['path']) )
-		{
-			$smarty -> trigger_error ( $pluginName . ": unable to read '" . $_imageInfo['path'] . "'", E_USER_NOTICE ) ;
-			return;
-		}
-		else
+	}
+	else if ( !is_readable($_imageInfo['filepath']) )
+	{
+		$smarty -> trigger_error ( $pluginName . ": unable to read '" . $_imageInfo['path'] . "'", E_USER_NOTICE ) ;
+		return;
+	}
+
+
+	// build _image_data with getimagesize() or available parameters
+	if ( empty($origwidth) || empty($origheight) )
+	{
+		if ( !$_image_data =@ getimagesize($_imageInfo['path']) )
 		{
 			$smarty -> trigger_error ( $pluginName . ": '" . $_imageInfo['path'] . "' is not a valid image file", E_USER_NOTICE ) ;
 			return;
 		}
+		
+		// set up the rest of image info array
+		$_imageInfo["w"]		 = $_image_data [0];
+		$_imageInfo["h"]		 = $_image_data [1];
+		$_imageInfo['imagetype'] = $_image_data [2]; // 1=GIF, 2=JPG, 3=PNG, SWF=4
 	}
+	else
+	{
+		$_imageInfo["w"]		 = $origwidth;
+		$_imageInfo["h"]		 = $origheight;
 
-
-	// compatibility with different syntax (to be removed)
-	if ( !@empty($filePATH) ) $filepath = $filePATH;
-
-
-	/*********************************
-	 * got everything, proceed
-	 *********************************
-	 */
-
-
-
-	/*
-	 * set up image info array
-	 */
-	$_path					 = parse_url ( $_imageInfo['path'], PHP_URL_PATH );
-	$_imageInfo['filename']	 = end ( explode ( '/', $_path ) );
-	$_imageInfo['file']		 = $_path;
-	$_imageInfo['filepath']	 = (@empty($filepath))? $_SERVER['DOCUMENT_ROOT'] . $_path : $filepath; // if missing parameter filepath assume filesystem path from SERVER env
-	$_imageInfo["w"]		 = $_image_data [0];
-	$_imageInfo["h"]		 = $_image_data [1];
-	$_imageInfo['imagetype'] = $_image_data [2]; // 1=GIF, 2=JPG, 3=PNG, SWF=4
-	$_imageInfo["string"]	 = $_image_data [1];
-	$_imageInfo["filename"]	 = $_image_data [1];
+		// since not using getimagesize(), try to get image type from file extension
+		if ( !( $_imageInfo['imagetype'] =@ array_isearch($_imageInfo['ext'], $_imagetype) ) )
+		{
+			$_imageInfo['imagetype'] = $_defaultimagetype; // defaults to 2 [= JPG]
+		}
+	}
 
 
 
 	// destination image type
-	$_imagetype = array ("", "gif", "jpg", "png", "swf");
-	if ( !@empty($imagetype) )
+	if ( !@empty($params['imagetype']) )
 	{
 		$_imageTarget['imagetype'] = $params['imagetype'];
 	} else {
@@ -176,6 +182,14 @@ function smarty_function_framed_image ($params, &$smarty)
 		$_noscale = $noscale;
 	}
 	
+
+
+
+
+	/*********************************
+	 * got everything, proceed
+	 *********************************
+	 */
 
 
 
@@ -648,6 +662,17 @@ function parseURLplus ($url)
 	unset ($PathPcs[key($PathPcs)]);
 	$URLpcs['dir'] = implode ("/", $PathPcs);
 	return ($URLpcs);
+}
+
+
+// case insensitive array search
+function array_isearch ($str, $array)
+{
+	foreach ($array as $k => $v)
+	{
+		if (strcasecmp ($str, $v) == 0) return $k;
+	}
+	return false;
 }
 
 ?>
