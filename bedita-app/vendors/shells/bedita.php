@@ -2,6 +2,7 @@
 
 App::import('Model', 'DataSource');
 App::import('Model', 'Stream');
+App::import('Model', 'BEObject');
 vendor('splitter_sql');
 
 class DataSourceTest extends DataSource {
@@ -22,6 +23,41 @@ class DataSourceTest extends DataSource {
 			}
 		}
 	}
+}
+
+class DbDump {
+	
+	private $model = NULL;
+	
+	public function __construct() {
+		$this->model = new BEObject();
+	}
+	
+	public function tableList() {
+   		$tables = $this->model->execute("show tables");
+    	$res = array();
+    	foreach ($tables as $k=>$v) {
+    		$t1 = array_values($v);
+    		$t2 = array_values($t1[0]);
+    		if (strncasecmp($t2[0], 'view_', 5) !== 0) // exclude views
+    			$res[]=$t2[0] ;
+    	}
+    	return $res;
+    }
+    
+    public function tableDetails($tables) {
+    	$res = array();
+    	foreach ($tables as $t) {
+    		$fields = $this->model->execute("describe $t");
+    		$columns = array();
+    		foreach($fields as $c) {
+    			$columns[$c['COLUMNS']['Field']] = $c['COLUMNS'];
+    		}
+    		$res[$t] = $columns;
+    	}
+    	return $res;
+    }
+	
 }
 
 class BeditaShell extends Shell {
@@ -140,7 +176,6 @@ class BeditaShell extends Shell {
         }
 	}    
     
-    
     private function __clean($path) {
         
         $folder=& new Folder($path);
@@ -242,6 +277,21 @@ class BeditaShell extends Shell {
         }
     }    
 
+    public function export() {
+        $expFile = 'bedita-export.zip';
+    	if (isset($this->params['f'])) {
+            $expFile = $this->params['f'];
+    	}
+       	$this->out("Exporting to $expFile");
+//		$zip = new ZipArchive($expFile, ZIPARCHIVE::CREATE);
+		$dbDump = new DbDump();
+		$tables = $dbDump->tableList();
+		$tabDetails = $dbDump->tableDetails($tables);
+pr($tabDetails);			
+
+//		$zip->close();
+    }
+    
 	function help() {
         $this->out('Available functions:');
         $this->out('1. updateDb: update database with bedita-db sql scripts');
@@ -264,6 +314,10 @@ class BeditaShell extends Shell {
         $this->out('3. checkIni: check difference between bedita.ini.php and .sample');
         $this->out(' ');
         $this->out('4. checkMedia: check media files on db and filesystem');
+        $this->out(' ');
+        $this->out('5. export: export media files and data dump');
+  		$this->out(' ');
+        $this->out('    Usage: export -f <zip-filename>');
         $this->out(' ');
 	}
 }
