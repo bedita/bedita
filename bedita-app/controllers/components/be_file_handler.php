@@ -197,10 +197,25 @@ class BeFileHandlerComponent extends Object {
 		$model = false ;
 		$modelType = $this->_getTypeFromMIME($dati['type'], $model);
 		switch($modelType) {
-			case 'BEFile':		$model = 'BEFile' ; break ;
-			case 'Image':		$model = 'Image' ; break ;
-			case 'Audio':		$model = 'Audio' ; break ;
-			case 'Video':		$model = 'Video' ; break ;
+			case 'BEFile':
+				$model = 'BEFile' ;
+				break ;
+			case 'Image':
+				$model = 'Image' ;
+				if ( $imageSize =@ getimagesize(MEDIA_ROOT . $dati['path']) )
+				{
+					if (!empty($imageSize[0]))
+						$dati["width"] = $imageSize[0];
+					if (!empty($imageSize[1]))
+						$dati["height"] = $imageSize[1];
+				}
+				break ;
+			case 'Audio':
+				$model = 'Audio' ; 
+				break ;
+			case 'Video':
+				$model = 'Video' ; 
+				break ;
 			default:
 				throw new BEditaMIMEException(__("MIME type not found",true).": ".$dati['type'].
 					" - matches: ".$modelType) ;
