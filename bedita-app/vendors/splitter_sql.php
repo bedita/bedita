@@ -30,7 +30,6 @@ class SplitterSql {
 		$queries = array() ;
 		while(strlen($SQL)) {		
 			$result = $this->lex($SQL) ;
-
 			switch($result) {
 				case $this->LEX_STRING: 	break ;
 				case $this->LEX_COMMENT: 	break ;
@@ -75,12 +74,11 @@ class SplitterSql {
 	
 		// Se e' all'interno di una stringa torna tutti i caratteri fino a fine stringa
 		if($this->_LEX_INSIDE_STRING) {
-			$regexp = "/^([^(?!\\\\)\\". $this->_LEX_START_STRING ."]*)/xi" ;
+			$regexp = "/^([^\\". $this->_LEX_START_STRING ."]*)/xi" ;
 			if(preg_match($regexp, $expression, $matches)) {
 				$expression = substr($expression, strlen($matches[0])+1) ;
 				$this->_LEX_BUFFER = $matches[1] ;
 				$this->_LEX_INSIDE_STRING = false ;
-				
 				return $this->LEX_END_STRING ;
 			} else {			
 				return $this->LEX_ERROR_STRING ;

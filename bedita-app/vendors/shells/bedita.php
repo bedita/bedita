@@ -10,18 +10,64 @@ class DataSourceTest extends DataSource {
 	function executeQuery($db,$script) {
 		$sql = file_get_contents($script);
 		$queries = array();
-		
 		$SplitterSql = new SplitterSql() ;
 		$SplitterSql->parse($queries, $sql) ;
-		
 		foreach($queries as $q) {	
 			if(strlen($q)>1) {
-				$res = $db->execute(stripSlashes($q));
+				$res = $db->execute($q);
 				if($res === false) {
 					throw new Exception("Error executing query: ".$q."\n");
 				}
 			}
 		}
+	}
+	
+	function executeInsert($db,$script) {
+		// split in blocks
+		$blocks = $this->createChunks($script);
+
+		// call query to avoid foreign key checks, on data insert
+		$res = $db->execute("SET FOREIGN_KEY_CHECKS=0");
+		
+		// call parse on every block and populate $queries array
+		$queries = array();
+		$SplitterSql = new SplitterSql() ;
+		foreach($blocks as $key => $block) {
+			$SplitterSql->parse($queries, $block) ;
+			// call queries (except for views creation)
+			foreach($queries as $q) {	
+				if(strlen($q)>1) {
+					if(strpos($q,"CREATE ALGORITHM") === false) {
+						//echo "executing query " . $q . "\n";
+						$res = $db->execute($q);
+						if($res === false) {
+							throw new Exception("Error executing query: ".$q."\n");
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	function createChunks($script) {
+		$chunks = array();
+		$handle = fopen($script, "r");
+		$data = "";
+		$counter=0;$ccounter=0;
+		$endchar = ");\n";
+		while (!feof($handle)) {
+		   $buffer = fgets($handle, 4096);
+		   $data.=$buffer;
+		   if($counter>500 && ( substr( $buffer, strlen( $buffer ) - strlen( $endchar ) ) == $endchar ) ) { // check if $counter > 500 and $buffer ends with );
+		   		$counter=0;
+				$chunks[$ccounter++]=$data;
+				$data="";
+		   } else {
+				$counter++;
+		   }
+		}
+		fclose($handle);
+		return $chunks;
 	}
 }
 
@@ -62,7 +108,7 @@ class DbDump {
 
 class BeditaShell extends Shell {
 
-    function updateDb() {
+	function updateDb() {
         $dbCfg = 'default';
     	if (isset($this->params['db'])) {
             $dbCfg = $this->params['db'];
@@ -104,7 +150,7 @@ class BeditaShell extends Shell {
 			$this->out("No data inserted");
 		} else {
 	        $this->out("Load data from $sqlDataDump");
-			$this->DataSourceTest->executeQuery($db, $sqlDataDump);
+			$this->DataSourceTest->executeInsert($db, $sqlDataDump);
 		}
     	
 		if (isset($this->params['media'])) {
