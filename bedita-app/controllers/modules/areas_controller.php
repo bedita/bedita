@@ -96,7 +96,8 @@ class AreasController extends ModulesController {
 		if($id) {
 			$conf  = Configure::getInstance() ;
 			$ot = &$conf->objectTypes ; 
-			$contents = $this->BeTree->getChildren($id, null, $ot['documentAll']);
+			$objType = array_merge( $ot["documentAll"], array($ot["shortnews"], $ot["event"]) );
+			$contents = $this->BeTree->getChildren($id, null, $objType);
 			$content_items = $contents['items'];
 		} else {
 			$content_items=array();
