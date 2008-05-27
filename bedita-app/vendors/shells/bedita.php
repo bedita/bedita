@@ -2,7 +2,7 @@
 
 App::import('Model', 'DataSource');
 App::import('Model', 'Stream');
-App::import('Model', 'BEObject');
+App::import('Component', 'Transaction');
 vendor('splitter_sql');
 
 class DataSourceTest extends DataSource {
@@ -48,6 +48,36 @@ class DataSourceTest extends DataSource {
 			}
 		}
 	}
+
+	function simpleInsert($db, $sqlFileName) {
+		$handle = fopen($sqlFileName, "r");
+		if($handle === FALSE) 
+			throw new Exception("Error opening file: ".$sqlFileName);
+		$q = "";
+		while(!feof($handle)) {
+			$line = fgets($handle);
+			if($line === FALSE && !feof($handle)) {
+				throw new Exception("Error reading file line");
+			}
+			if(strncmp($line, "INSERT INTO ", 12) == 0) {
+				if(strlen($q) > 0) {
+					$res = $db->execute($q);
+					if($res === false) {
+						throw new Exception("Error executing query: ".$q."\n");
+					}
+				}
+				$q="";
+			}
+			$q .= $line;
+		}
+		// last query...
+		if(strlen($q) > 0) {
+			$res = $db->execute($q);
+			if($res === false) {
+				throw new Exception("Error executing query: ".$q."\n");
+			}
+		}
+	}
 	
 	function createChunks($script) {
 		$chunks = array();
@@ -71,12 +101,16 @@ class DataSourceTest extends DataSource {
 	}
 }
 
+class DumpModel extends AppModel {
+	var $useTable = "objects";
+};
+
 class DbDump {
 	
 	private $model = NULL;
 	
 	public function __construct() {
-		$this->model = new BEObject();
+		$this->model = new DumpModel();
 	}
 	
 	public function tableList() {
@@ -91,15 +125,32 @@ class DbDump {
     	return $res;
     }
     
-    public function tableDetails($tables) {
-    	$res = array();
+    public function tableDetails($tables, $handle) {
+
+    	fwrite($handle, "SET FOREIGN_KEY_CHECKS=0;\n");
+    	
     	foreach ($tables as $t) {
-    		$fields = $this->model->execute("describe $t");
-    		$columns = array();
-    		foreach($fields as $c) {
-    			$columns[$c['COLUMNS']['Field']] = $c['COLUMNS'];
-    		}
-    		$res[$t] = $columns;
+    		$this->model->setSource($t); 
+    		$select = $this->model->find('all');
+			foreach ($select as $sel) {
+				$fields = "";
+				$values = "";
+				$count = 0;
+				foreach ($sel['DumpModel'] as $k=>$v) {
+					if($count > 0) {
+						$fields .= ",";
+						$values .= ",";
+					}
+					$fields .= "`$k`";
+					if($v == NULL)
+						$values .= "NULL";					
+					else 
+						$values .= "'".addslashes($v)."'";
+					$count++;
+				}
+				$res = "INSERT INTO $t (".$fields.") VALUES ($values);\n";
+    			fwrite($handle, $res);
+			}
     	}
     	return $res;
     }
@@ -108,6 +159,8 @@ class DbDump {
 
 class BeditaShell extends Shell {
 
+	const DEFAULT_ZIP_FILE 		= 'bedita-export.zip' ;
+	
 	function updateDb() {
         $dbCfg = 'default';
     	if (isset($this->params['db'])) {
@@ -136,7 +189,10 @@ class BeditaShell extends Shell {
     	$dbName = $db->config['database'];
 		$this->out("Updating bedita db config: $dbCfg - [host=".$hostName.", database=".$dbName."]");
         $this->hr();
-	
+
+        $transaction = new TransactionComponent($dbCfg);
+		$transaction->begin();
+        
         $this->DataSourceTest =& new DataSourceTest();
 		$script = SQL_SCRIPT_PATH . "bedita_schema.sql";
 		$this->out("Update schema from $script");
@@ -152,11 +208,12 @@ class BeditaShell extends Shell {
 	        $this->out("Load data from $sqlDataDump");
 			$this->DataSourceTest->executeInsert($db, $sqlDataDump);
 		}
-    	
+       	$this->out("$dbCfg database updated");
+		$transaction->commit();
+		
 		if (isset($this->params['media'])) {
             $this->extractMediaZip($this->params['media']);
     	}
-       $this->out("$dbCfg database updated");
        
        $this->out("checking media files");
        $this->checkMedia();
@@ -164,6 +221,135 @@ class BeditaShell extends Shell {
        
     }
 
+    function import() {
+        $dbCfg = 'default';
+    	if (isset($this->params['db'])) {
+            $dbCfg = $this->params['db'];
+    	}
+		if (!defined('SQL_SCRIPT_PATH')) { // cambiare opportunamente questo path
+	        $this->out("SQL_SCRIPT_PATH has to be defined in ".APP_DIR."/config/database.php");
+			return;
+		}
+
+		$basePath = $this->setupTempDir();
+		
+		$zipFile = self::DEFAULT_ZIP_FILE;
+    	if (isset($this->params['f'])) {
+            $zipFile = $this->params['f'];
+    	}
+  		$this->out("Importing file $zipFile");
+    	$zip = new ZipArchive;
+		if ($zip->open($zipFile) === TRUE) {
+			$zip->extractTo($basePath);
+			$zip->close();
+  			$this->out("Export files extracted...");
+		} else {
+  			$this->out("Error opening zip file $zipFile!!");
+		}
+		$sqlFileName = $basePath.DS."bedita-data.sql";
+		
+		$db =& ConnectionManager::getDataSource($dbCfg);
+    	$hostName = $db->config['host'];
+    	$dbName = $db->config['database'];
+		$this->out("Importing data using bedita db config: $dbCfg - [host=".$hostName.", database=".$dbName."]");
+        $this->hr();
+
+        $transaction = new TransactionComponent($dbCfg);
+		$transaction->begin();
+        
+        $this->DataSourceTest =& new DataSourceTest();
+		$script = SQL_SCRIPT_PATH . "bedita_schema.sql";
+		$this->out("Update schema from $script");
+		$this->DataSourceTest->executeQuery($db,$script);
+
+		$script = SQL_SCRIPT_PATH . "bedita_procedure.sql";
+		$this->out("Create procedures from $script");
+        $this->DataSourceTest->executeQuery($db,$script);
+        
+		$this->out("Load data from $sqlFileName");
+        $this->DataSourceTest->simpleInsert($db, $sqlFileName);
+		unlink($sqlFileName);
+		$this->out("$dbCfg database updated");
+		$transaction->commit();
+		
+		$this->out("bye");
+    }
+
+    
+    public function export() {
+        $expFile = self::DEFAULT_ZIP_FILE;
+    	if (isset($this->params['f'])) {
+            $expFile = $this->params['f'];
+    	}
+		if(file_exists($expFile)) {
+			$res = $this->in("$expFile exists, overwrite? [y/n]");
+			if($res == "y") {
+				if(!unlink($expFile)){
+					throw new Exception("Error deleting $expFile");
+				}
+			} else {
+				$this->out("Export aborted. Bye.");
+				return;
+			}
+		}
+
+		$dbDump = new DbDump();
+		$tables = $dbDump->tableList();
+		
+		$basePath = $this->setupTempDir();
+//		$basePath = getcwd().DS."export-tmp".DS;
+		$sqlFileName = $basePath."bedita-data.sql";
+		
+		$this->out("Creating SQL dump....");
+		$handle = fopen($sqlFileName, "w");
+		if($handle === FALSE) 
+			throw new Exception("Error opening file: ".$sqlFileName);
+		$dbDump->tableDetails($tables, $handle);
+		fclose($handle);
+       	$this->out("Exporting to $expFile");
+		$zip = new ZipArchive;
+		$res = $zip->open($expFile, ZIPARCHIVE::CREATE);
+		if($res === TRUE) {
+			if(!$zip->addFile($sqlFileName, "bedita-data.sql"))
+				throw new Exception("Error adding SQL file to zip");
+		} else {
+			throw new Exception("Error opening zip file $expFile - error code $res");
+		}
+       	$this->out("SQL data exported");
+       	$this->out("Exporting media files");
+       	
+       	$folder=& new Folder(MEDIA_ROOT);
+        $tree= $folder->tree(MEDIA_ROOT, false);
+        foreach ($tree as $files) {
+            foreach ($files as $file) {
+                if (!is_dir($file)) {
+       				$contents = file_get_contents($file);
+        			if ( $contents === false ) {
+						throw new Exception("Error reading file content: $file");
+        			}
+					$p = substr($file, strlen(MEDIA_ROOT));
+					if(!$zip->addFromString("media".DS.$p, $contents )) {
+						throw new Exception("Error adding $p to zip file");
+					}
+					unset($contents);
+                }
+            }
+        }
+		$zip->close();
+       	$this->out("$expFile created");
+    }
+    
+    private function setupTempDir() {
+    	$basePath = getcwd().DS."export-tmp".DS;
+		if(!is_dir($basePath)) {
+			if(!mkdir($basePath))
+				throw new Exception("Error creating temp dir: ".$basePath);
+		} else {
+    		$this->__clean($basePath);
+		}
+    	return $basePath;
+    }
+    
     private function extractMediaZip($zipFile) {
 		$zip = new ZipArchive;
 		if ($zip->open($zipFile) === TRUE) {
@@ -225,21 +411,22 @@ class BeditaShell extends Shell {
     private function __clean($path) {
         
         $folder=& new Folder($path);
-        $tree=$folder->tree($path, false);
-        foreach ($tree as $files) {
-            foreach ($files as $file) {
-                if (!is_dir($file)) {
-                    $file=& new File($file);
-                    if(!$file->delete()) {
-                        $this->out("Error deleting file: ".$file->pwd());
-                    }
-                }
-                
+        $list = $folder->ls();
+
+        foreach ($list[0] as $d) {
+        	if(!$folder->delete($folder->path.DS.$d)) {
+                throw new Exception("Error deleting dir $d");
+            }
+        }
+        foreach ($list[1] as $f) {
+        	$file = new File($folder->path.DS.$f);
+        	if(!$file->delete()) {
+                throw new Exception("Error deleting file $f");
             }
         }
         return ;
     }    
-    
+        
     function checkIni() {
         @include APP. DS . 'config' . DS . 'bedita.ini.php.sample';
         $cfgSample = $config;
@@ -323,21 +510,6 @@ class BeditaShell extends Shell {
         }
     }    
 
-    public function export() {
-        $expFile = 'bedita-export.zip';
-    	if (isset($this->params['f'])) {
-            $expFile = $this->params['f'];
-    	}
-       	$this->out("Exporting to $expFile");
-//		$zip = new ZipArchive($expFile, ZIPARCHIVE::CREATE);
-		$dbDump = new DbDump();
-		$tables = $dbDump->tableList();
-		$tabDetails = $dbDump->tableDetails($tables);
-pr($tabDetails);			
-
-//		$zip->close();
-    }
-    
 	function help() {
         $this->out('Available functions:');
         $this->out('1. updateDb: update database with bedita-db sql scripts');
@@ -364,6 +536,15 @@ pr($tabDetails);
         $this->out('5. export: export media files and data dump');
   		$this->out(' ');
         $this->out('    Usage: export -f <zip-filename>');
+        $this->out(' ');
+  		$this->out("    -f <zip-filename>\t file to export, default ".self::DEFAULT_ZIP_FILE);
+        $this->out(' ');
+        $this->out('6. import: import media files and data dump');
+  		$this->out(' ');
+  		$this->out('    Usage: import [-f <zip-filename>] [-db <dbname>]');
+        $this->out(' ');
+  		$this->out("    -f <zip-filename>\t file to import, default ".self::DEFAULT_ZIP_FILE);
+        $this->out("    -db <dbname>\t use db configuration <dbname> specified in config/database.php");
         $this->out(' ');
 	}
 }
