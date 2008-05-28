@@ -414,9 +414,11 @@ class BeditaShell extends Shell {
         $list = $folder->ls();
 
         foreach ($list[0] as $d) {
-        	if(!$folder->delete($folder->path.DS.$d)) {
-                throw new Exception("Error deleting dir $d");
-            }
+        	if($d[0] != '.') { // don't delete hidden dirs (.svn,...)
+	        	if(!$folder->delete($folder->path.DS.$d)) {
+	                throw new Exception("Error deleting dir $d");
+	            }
+        	}
         }
         foreach ($list[1] as $f) {
         	$file = new File($folder->path.DS.$f);
