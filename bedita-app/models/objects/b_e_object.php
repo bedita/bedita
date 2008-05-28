@@ -368,18 +368,37 @@ class BEObject extends BEAppModel
 	 * Setta i valori di default per i diversi campi
 	 */
 	private function _getDefaultNickname($value) {
-		$nickname = $nickname_base = strtolower(preg_replace("/[^0-9A-Za-z\-_.]/i", "", $value)) ;
+		
+		if (is_numeric($value)) {
+			$value = "n" . $value;
+		}
+		
+		$value = htmlentities( strtolower($value), ENT_NOQUOTES, "UTF-8" );
+		
+		// replace accent, uml, tilde,... with letter after & in html entities
+		$value = preg_replace("/&(.)(uml);/", "$1e", $value);
+		$value = preg_replace("/&(.)(acute|grave|cedil|circ|ring|tilde|uml);/", "$1", $value);
+		// replace special chars and space with dash (first decode html entities)
+		$value = preg_replace("/[^a-z0-9\-_]/i", "-", html_entity_decode($value,ENT_NOQUOTES,"UTF-8" ) ) ;
+		// remove digits and dashes in the beginning 
+		$value = preg_replace("/^[0-9\-]{1,}/", "", $value);
+		// replace two or more consecutive dashes with one dash
+		$nickname = $nickname_base = preg_replace("/[\-]{2,}/", "-", $value);
 		if(@empty($nickname)) 
 			return $nickname ;
-		
+		 
 		// Verifica l'assenza del nickname selezionato
 		$tentativi 	= 100 ;
 		$unico 		= false ;
 		for($i=0 ; $i < $tentativi && !$unico; $i++ ) {
-			$count = $this->findCount("WHERE nickname = '{$nickname}'") ;
+			$cond = "WHERE nickname = '{$nickname}'";
+			if ($this->id) {
+				$cond .= " AND id<>".$this->id;
+			}
+			$count = $this->findCount($cond) ;
 			
 			// Se crea un nuovo obj deve essere assente 
-			if (!$count || ($count == 1 && $this->id)) {
+			if (!$count) {
 				$unico = true ;
 				continue ;
 			}
