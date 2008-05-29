@@ -386,31 +386,27 @@ class BEObject extends BEAppModel
 		$nickname = $nickname_base = preg_replace("/[\-]{2,}/", "-", $value);
 		if(@empty($nickname)) 
 			return $nickname ;
-		 
-		// Verifica l'assenza del nickname selezionato
-		$tentativi 	= 100 ;
-		$unico 		= false ;
-		for($i=0 ; $i < $tentativi && !$unico; $i++ ) {
+
+		$nickOk = false;
+		$countNick = 1;
+		$conf = Configure::getInstance() ;
+		
+		while (!$nickOk) {
+			
 			$cond = "WHERE nickname = '{$nickname}'";
 			if ($this->id) {
 				$cond .= " AND id<>".$this->id;
 			}
-			$count = $this->findCount($cond) ;
+			$numNickDb = $this->findCount($cond);
 			
-			// Se crea un nuovo obj deve essere assente 
-			if (!$count) {
-				$unico = true ;
-				continue ;
+			// check nickname in db and in reservedWords
+			if ($numNickDb == 0 && !in_array($nickname, $conf->reservedWords)) {
+				$nickOk = true;
+			} else {
+				$nickname = $nickname_base . "_" . $countNick++;
 			}
 			
-			// Prova con un nuovo nickname
-			srand(time());
-			$num = rand(100, 9999);
-			$nickname = "{$nickname_base}_{$num}" ;
 		}
-		
-		// Se non ha trovato un nickname libeo esce
-		if(!$unico) return "" ;
 		
 		return $nickname ;
 	}

@@ -119,6 +119,9 @@ $config['uploadType'] = "ajax";
  */
 $config["objRelationType"] = array("event_place","relators","moderators");
 
+// reserved words, nickname dosen't use them
+$config["appReservedWords"] = array();
+
 ///////////////////////////////////////////////////////
 // DO NOT EDIT BELOW THIS LINE//
 ///////////////////////////////////////////////////////
@@ -468,4 +471,9 @@ $config['modelBindings'] = array(
 
 ) ;
 
+// reserved words
+$config["reservedWords"] = array_merge(
+								array("section","content"),
+								$config["appReservedWords"]
+);
 ?>
