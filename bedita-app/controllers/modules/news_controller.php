@@ -35,8 +35,18 @@ class NewsController extends ModulesController {
 		$obj = null ;
 		if(isset($id)) {
 			
-			$this->ShortNews->bviorHideFields = array('Version', 'Index', 'current') ;
-			$obj = $this->ShortNews->find($id);
+			$this->ShortNews->restrict(array(
+										"BEObject" => array("ObjectType", 
+															"UserCreated", 
+															"UserModified", 
+															"Permissions",
+															"CustomProperties",
+															"LangText"
+															),
+										"ContentBase" => array("*")
+										)
+									);
+			$obj = $this->ShortNews->findById($id);
 			if($obj == null || $obj === false) {
 				 throw new BeditaException(__("Error loading news: ", true).$id);
 			}

@@ -28,7 +28,7 @@ class ShortNews extends BEAppObjectModel
 	var $useTable 	= 'short_news' ;
 	var $recursive 	= 2 ;
 	var $actsAs 	= array(
-			'CompactResult' 		=> array('links'),
+			'CompactResult' 		=> array(),
 			'CreateIndexFields'		=> array(),
 			'ForeignDependenceSave' => array('BEObject', 'ContentBase'),
 			'DeleteObject' 			=> 'objects',
