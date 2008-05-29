@@ -270,6 +270,20 @@ class BeditaShell extends Shell {
         $this->DataSourceTest->simpleInsert($db, $sqlFileName);
 		unlink($sqlFileName);
 		$this->out("$dbCfg database updated");
+
+		// update media root dir
+		$folder = new Folder(MEDIA_ROOT);
+		$ls = $folder->ls();
+		if(count($ls[0]) > 0 || count($dls[1]) > 0) {
+			$res = $this->in(MEDIA_ROOT. " is not empty, remove files and folders? [y/n]");
+			if($res == "y") {
+       			$this->removeMediaFiles();
+			} else {
+				$this->out(MEDIA_ROOT. " not clean!");
+			}
+		}
+//		$folder->copy(MEDIA_ROOT, )
+		
 		$transaction->commit();
 		
 		$this->out("bye");
@@ -499,7 +513,11 @@ class BeditaShell extends Shell {
         $this->out('Smarty compiled/cache cleaned.');
 
         if (isset($this->params['media'])) {
-       
+       		$this->removeMediaFiles();
+        }
+    }    
+
+    private function removeMediaFiles() {
            $this->__clean(MEDIA_ROOT . DS. 'imgcache');
            $folder= new Folder(MEDIA_ROOT);
            $dirs = $folder->ls();
@@ -509,9 +527,9 @@ class BeditaShell extends Shell {
            	    }
            }
            $this->out('Media files cleaned.');
-        }
-    }    
-
+    	
+    }
+    
 	function help() {
         $this->out('Available functions:');
         $this->out('1. updateDb: update database with bedita-db sql scripts');
