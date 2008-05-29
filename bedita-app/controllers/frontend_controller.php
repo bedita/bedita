@@ -116,6 +116,7 @@ abstract class FrontendController extends AppController {
 				"\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 		}
 		self::$current->handleError($ex->getDetails(), $ex->getMessage(), $errTrace);
+		header('HTTP/1.1 404 Not Found');
 		self::$current->render(null, "error", VIEWS."errors/error404.tpl");
 	}
 	
