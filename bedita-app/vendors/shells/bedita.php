@@ -214,11 +214,10 @@ class BeditaShell extends Shell {
 		if (isset($this->params['media'])) {
             $this->extractMediaZip($this->params['media']);
     	}
-       
-       $this->out("checking media files");
-       $this->checkMedia();
-       $this->out("bye");
-       
+
+		$this->out("checking media files");
+		$this->checkMedia();
+		$this->out("bye");       
     }
 
     function import() {
@@ -245,8 +244,8 @@ class BeditaShell extends Shell {
   			$this->out("Export files extracted...");
 		} else {
   			$this->out("Error opening zip file $zipFile!!");
-		}
-		$sqlFileName = $basePath.DS."bedita-data.sql";
+		}		
+		$sqlFileName = $basePath."bedita-data.sql";
 		
 		$db =& ConnectionManager::getDataSource($dbCfg);
     	$hostName = $db->config['host'];
@@ -270,7 +269,7 @@ class BeditaShell extends Shell {
         $this->DataSourceTest->simpleInsert($db, $sqlFileName);
 		unlink($sqlFileName);
 		$this->out("$dbCfg database updated");
-
+		
 		// update media root dir
 		$folder = new Folder(MEDIA_ROOT);
 		$ls = $folder->ls();
@@ -282,7 +281,12 @@ class BeditaShell extends Shell {
 				$this->out(MEDIA_ROOT. " not clean!");
 			}
 		}
-//		$folder->copy(MEDIA_ROOT, )
+		
+		// copy files from tmp dir to media_root
+		$copts=array('to'=>MEDIA_ROOT,'from'=>$basePath.'media','chmod'=>0755);
+		$this->out("copying from " . $copts['from'] . " to " . $copts['to']);
+		$res = $folder->copy($copts);
+		$this->out("done");
 		
 		$transaction->commit();
 		
@@ -345,7 +349,9 @@ class BeditaShell extends Shell {
 					if(!$zip->addFromString("media".DS.$p, $contents )) {
 						throw new Exception("Error adding $p to zip file");
 					}
+					echo 'At this point, '. memory_get_usage().' bytes of RAM is being used.';
 					unset($contents);
+					echo 'At this point, '. memory_get_usage().' bytes of RAM is being used.';
                 }
             }
         }
