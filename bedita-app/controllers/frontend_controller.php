@@ -43,25 +43,31 @@ abstract class FrontendController extends AppController {
 	protected function setupLocale() {
 
 		$this->currLang = $this->Session->read('Config.language');
-		if($this->currLang === null) {
+
+		if($this->currLang === null || empty($this->currLang)) {
 			$conf = Configure::getInstance();
-			$lang = $this->Cookie->read($conf->cookieName["langSelect"]);
-			if(isset($lang)) {
+			if (isset($conf->cookieName["langSelect"])) {
+				$lang = $this->Cookie->read($conf->cookieName["langSelect"]);
+			}
+			if(!empty($lang)) {
 				$this->currLang = $lang;
 			} else {
 				// HTTP autodetect
 				I18n::getInstance();
-				$this->currLang = $conf->Config['language'];			
-				if(!array_key_exists($this->currLang, $conf->frontendLangs) && isset($conf->frontendLangsMap)) {
-					$this->currLang = $conf->frontendLangsMap[$this->currLang];
-				}
-				if($this->currLang === null) {
+				$this->currLang = $conf->Config['language'];
+
+				if(!array_key_exists($this->currLang, $conf->frontendLangs)) {
+					if (isset($conf->frontendLangsMap)) {
+						$lang = $conf->frontendLangsMap[$this->currLang];
+						$this->currLang = (!empty($lang))? $lang : $conf->frontendLang;						
+					}
+					
 					$this->currLang = $conf->frontendLang;
 				}
 			}
+
 			$this->Session->write('Config.language', $this->currLang);
 			Configure::write('Config.language', $this->currLang);
-			// TODO: write cookie??
 		}
 		$this->set('currLang', $this->currLang);
 	}
