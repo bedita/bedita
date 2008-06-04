@@ -16,7 +16,7 @@ class DataSourceTest extends DataSource {
 			if(strlen($q)>1) {
 				$res = $db->execute($q);
 				if($res === false) {
-					throw new Exception("Error executing query: ".$q."\n");
+					throw new Exception("Error executing query: ".$q."\n" . "db error msg: " . $db->error ."\n");
 				}
 			}
 		}
@@ -283,7 +283,7 @@ class BeditaShell extends Shell {
 		}
 		
 		// copy files from tmp dir to media_root
-		$copts=array('to'=>MEDIA_ROOT,'from'=>$basePath.'media','chmod'=>0755);
+		$copts=array('to'=>MEDIA_ROOT,'from'=>$basePath.'media','mode'=>0777);
 		$this->out("copying from " . $copts['from'] . " to " . $copts['to']);
 		$res = $folder->copy($copts);
 		$this->out("done");

@@ -13,7 +13,6 @@ DROP VIEW IF EXISTS `view_sections`;
 DROP VIEW IF EXISTS `view_permissions` ;
 DROP VIEW IF EXISTS `view_trees` ;
 DROP VIEW IF EXISTS `view_galleries` ;
-DROP VIEW IF EXISTS `view_streams`;
 
 DROP TABLE IF EXISTS `links`;
 DROP TABLE IF EXISTS `documents`;
