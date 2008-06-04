@@ -160,6 +160,7 @@ class DbDump {
 
 class BeditaShell extends Shell {
 
+	const DEFAULT_TAR_FILE 	= 'bedita-export.tar' ;
 	const DEFAULT_ARCHIVE_FILE 	= 'bedita-export.tar.gz' ;
 	
 	function updateDb() {
@@ -240,7 +241,8 @@ class BeditaShell extends Shell {
     	}
   		$this->out("Importing file $archFile");
 
-  		$tar = new Archive_Tar($archFile, 'gz');
+  		$compress = (substr($archFile, strlen($archFile)-3) == ".gz") ? "gz" : null;
+  		$tar = new Archive_Tar($archFile, $compress);
        	if($tar === FALSE) {
        		$this->out("Error opening archive $archFile!!");
        	}
@@ -300,8 +302,10 @@ class BeditaShell extends Shell {
         $expFile = self::DEFAULT_ARCHIVE_FILE;
     	if (isset($this->params['f'])) {
             $expFile = $this->params['f'];
+    	} else if(isset($this->params['nocompress'])) {
+        	$expFile = self::DEFAULT_TAR_FILE;
     	}
-		if(file_exists($expFile)) {
+    	if(file_exists($expFile)) {
 			$res = $this->in("$expFile exists, overwrite? [y/n]");
 			if($res == "y") {
 				if(!unlink($expFile)){
@@ -326,8 +330,12 @@ class BeditaShell extends Shell {
 		$dbDump->tableDetails($tables, $handle);
 		fclose($handle);
        	$this->out("Exporting to $expFile");
-
-       	$tar = new Archive_Tar($expFile, 'gz');
+       	
+       	$compress = "gz";
+    	if (isset($this->params['nocompress']) || (substr($expFile, strlen($expFile)-3) != ".gz")) {
+            $compress = null;
+    	}
+       	$tar = new Archive_Tar($expFile, $compress);
        	if($tar === FALSE) {
 			throw new Exception("Error opening archive $expFile");
        	}
@@ -363,7 +371,7 @@ class BeditaShell extends Shell {
     }
     
     private function setupTempDir() {
-    	$basePath = sys_get_temp_dir().DS."export-tmp".DS;
+    	$basePath = sys_get_temp_dir().DS."bedita-export-tmp".DS;
 		if(!is_dir($basePath)) {
 			if(!mkdir($basePath))
 				throw new Exception("Error creating temp dir: ".$basePath);
@@ -572,10 +580,11 @@ class BeditaShell extends Shell {
         $this->out(' ');
         $this->out('5. export: export media files and data dump');
   		$this->out(' ');
-        $this->out('    Usage: export -f <tar-gz-filename>');
+        $this->out('    Usage: export [-f <tar-gz-filename>] [-nocompress]');
         $this->out(' ');
   		$this->out("    -f <tar-gz-filename>\t file to export, default ".self::DEFAULT_ARCHIVE_FILE);
-        $this->out(' ');
+        $this->out("    -nocompress \t don't compress, plain tar");
+  		$this->out(' ');
         $this->out('6. import: import media files and data dump');
   		$this->out(' ');
   		$this->out('    Usage: import [-f <tar-gz-filename>] [-db <dbname>]');
