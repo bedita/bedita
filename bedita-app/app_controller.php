@@ -260,10 +260,10 @@ class AppController extends Controller
 		if($this->skipCheck) return true;
 
 		// Verify authorization
-		if(!$this->BeAuth->isLogged()) {
-			$this->render(null, null, VIEWS."pages".DS."login.tpl") ; 
+		if(!$this->BeAuth->isLogged()) { 
+			$this->render(null, null, VIEWS."home".DS."login.tpl") ; 
 			$_loginRunning = false; 
-			exit; 
+			exit;
 		}
 		
 		// module list

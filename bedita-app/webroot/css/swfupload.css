@@ -2,9 +2,11 @@
 	display: block;
 	width: 100px;
 	padding: 0 0 0 20px;
+	border: 5px solid blue
 }
 
 .browsebtn { /*background: url(../img/swfupload/add.png) no-repeat 0 4px; */ }
+
 .uploadbtn {
 	display: none;
 	/*background: url(../img/swfupload/accept.png) no-repeat 0 4px;*/
@@ -12,9 +14,6 @@
 
 .cancelbtn {
 	display: block;
-	width: 16px;
-	height: 16px;
-	float: right;
 	/*background: url(../img/swfupload/cancel.png) no-repeat;*/
 }
 
@@ -26,20 +25,10 @@
 }
 
 #SWFUploadFileListingFiles ul {
-	margin: 0;
-	padding: 0;
-	list-style: none;
+
 }
 
 .SWFUploadFileItem {
-
-	display: block;
-	width: 230px;
-	height: 70px;
-	float: left;
-	background: #eaefea;
-	margin: 0 10px 10px 0;
-	padding: 5px;
 
 }
 
@@ -52,13 +41,9 @@
 }
 
 span.progressBar {
-	width: 200px;
-	display: block;
-	font-size: 10px;
+	width: 100px;
 	height: 4px;
-	margin-top: 2px;
-	margin-bottom: 10px;
-	background-color: #CCC;
+	background-color: red;
 }
 
 /* SWFUpload CSS */

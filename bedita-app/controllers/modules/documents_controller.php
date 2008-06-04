@@ -87,7 +87,6 @@ class DocumentsController extends ModulesController {
 	 * Creates/updates new document
 	 */
 	function save() {
-		//pr($this->data);exit;
 		$this->checkWriteModulePermission();
 		if(empty($this->data)) 
 			throw new BeditaException( __("No data", true));
@@ -97,12 +96,6 @@ class DocumentsController extends ModulesController {
 			throw new BeditaException(__("Error modify permissions", true));
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-		// Format translations for fields
-		$this->data['title'] = $this->data['LangText'][$this->data['lang']]['title'];
-		$this->data['description'] = $this->data['LangText'][$this->data['lang']]['description'];
-		$this->data['abstract'] = $this->data['LangText'][$this->data['lang']]['abstract'];
-		$this->data['body'] = $this->data['LangText'][$this->data['lang']]['body'];
-		$this->BeLangText->setupForSave($this->data["LangText"]) ;
 		
 		$this->Transaction->begin() ;
 		// Save data

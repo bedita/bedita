@@ -1,33 +1,39 @@
 {agent var="agent"}{$html->docType('xhtml-trans')}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">
 <head>
-	<title>B.Edita::{$title_for_layout}</title>
-	{include file="../layout_parts/meta.tpl"}
-
+	<title>BEdita | {$title_for_layout}</title>
+	{include file="inc/meta.tpl"}
+	
+	{$html->css('beditaNew')}
+	{*$html->css('bedita')*}
+	{*$html->css('menu')*}
+	{*$html->css('form')*}
+	{*$html->css('message')*}	
+	
 	{$javascript->link("jquery/jquery")}
 	{$javascript->link("jquery/jquery.cookie")}
 	{$javascript->link("common")}
-	{$html->css('bedita')}
-	{$html->css('menu')}
-	{$html->css('form')}
-	{$html->css('message')}
-
-	{if $moduleName|default:""}
-		<link rel="stylesheet" type="text/css" href="{$html->webroot}css/module.{$moduleName}.css" />
-		<script type="text/javascript" src="{$html->webroot}js/module.{$moduleName}.js"></script>
-	{/if}
-	{if ($agent.IE)}{$html->css('ie')}{/if}
+	{$javascript->link("beditaUI")}
 	
-	{include file="../layout_parts/inline_js.tpl"}
+	{* include file="../layout_parts/inline_js.tpl" *}
 	{* collect linked scripts around *}
+	
 	{$scripts_for_layout}
+
+
 
 
 {*
 ** Page Specific Content
 ** contains </head> tag, closed inside each module's view
 *}
+
+
+
 {$content_for_layout}
+
+
+
 
 
 
@@ -36,9 +42,11 @@
 ** Page Footer
 *}
 <div id="footerPage">
-	{*<a href="http://www.cakephp.org/" target="_blank">
-	<img src="{$html->webroot}img/cake.power.png" alt="CakePHP Rapid Development Framework" border="0"/>
-	</a>*}
+
+{include file="../pages/user_module_perms.tpl"}
+
+	<div id="handlerChangeAlert"></div>
+
 </div>
 
 

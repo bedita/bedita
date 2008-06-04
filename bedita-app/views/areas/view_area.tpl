@@ -13,22 +13,30 @@
 {$javascript->link("jquery/jquery.validate", false)}
 {$javascript->link("validate.tools", false)}
 
-<script type="text/javascript">
-<!--
-{literal}
-$(document).ready(function(){
-	$('#title').show() ;
-	$('.showHideBlockButton').bind("click", function(){ $(this).next("div").toggle() ; }) ;
-	$("#handlerChangeAlert").changeAlert($('input, textarea, select').not($("#addCustomPropTR TD/input, #addCustomPropTR TD/select, #addPermUserTR TD/input, #addPermGroupTR TD/input"))) ;
-	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div').alertUnload() ;
-});
-{/literal}
-//-->
-</script>
+
+
 </head>
+
 <body>
-{include file="head.tpl"}
-{include file="submenu.tpl" method="viewArea"}
+
+{include file="../common_inc/modulesmenu.tpl"}
+
+{include file="inc/menuleft.tpl" method="viewArea"}
+
+<div class="head">
+		
+	<h2>{t}Tree of Areas{/t}</h2>
+
+</div> 
+
+{include file="inc/menucommands.tpl" method="viewArea" fixed=true}
+
 {assign var='object' value=$area}
-{include file="form_area.tpl"}
-<br style="clear:both"/>
+
+<div class="main">
+
+	{include file="inc/form_area.tpl"}
+	
+</div>
+
+

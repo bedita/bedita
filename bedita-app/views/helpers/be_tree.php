@@ -17,7 +17,7 @@ class BeTreeHelper extends Helper {
 	var $helpers = array();
 
 	var $tags = array(
-		'tree'		=> "<ul id=\"%s\">\n\t%s\n</ul>\n",
+		'tree'		=> "<ul class=\"publishingtree\" id=\"%s\">\n\t%s\n</ul>\n",
 		'children'	=> "<ul>%s</ul>\n",
 
 		'area'		=> "<li>\n\t<input type='hidden' name='id' value='%s'/>\n\t<span class=\"AreaItem\">%s</span>\n\t%s\n</li>\n",

@@ -7,6 +7,7 @@
 {$javascript->link("jquery/jquery.validate", false)}
 {$javascript->link("jquery/jquery.changealert", false)}
 {$javascript->link("jquery/jquery.treeview", false)}
+
 <script type="text/javascript">
 <!--
 {literal}
@@ -22,10 +23,29 @@ function delGroupDialog(name,objectid) {
 {/literal}
 //-->
 </script>
+
 </head>
+
 <body>
-{include file="head.tpl"}
-<div id="centralPage">
-	{include file="submenu.tpl" method="groups"}
-	{include file="form_groups.tpl" method="groups"}
+
+{include file="modulesmenu.tpl"}
+
+{include file="inc/menuleft.tpl" method="groups"}
+
+<div class="head">
+	
+	<h2>{t}Groups admin{/t}</h2>
+
 </div>
+
+<form action="{$html->url('/admin/saveGroup')}" method="post" name="groupForm" id="groupForm" class="cmxform">
+
+{include file="inc/menucommands.tpl" method="groups" fixed=true}
+
+<div class="main">
+
+	{include file="inc/form_groups.tpl"}
+
+</div>
+
+</form>

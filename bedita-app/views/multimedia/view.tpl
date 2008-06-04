@@ -29,10 +29,27 @@ $(document).ready(function(){
 {/literal}
 //-->
 </script>
+
 </head>
+
 <body>
-{include file="head.tpl"}
-<div id="centralPage">
-{include file="submenu.tpl" method="index"}
-{include file="form.tpl"}	
+
+{include file="../modulesmenu.tpl"}
+
+{include file="inc/menuleft.tpl" method="view"}
+
+<div class="head">
+	
+	<h1>{t}{$object.title|default:"New Item"}{/t}</h1>
+
 </div>
+
+{include file="inc/menucommands.tpl" method="view" fixed=true}
+
+<div class="main">
+	
+	{include file="inc/form.tpl"}	
+
+</div>
+
+

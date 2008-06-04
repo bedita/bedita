@@ -54,9 +54,7 @@ class AreasController extends ModulesController {
 				 throw new BeditaException(sprintf(__("Error loading area: %d", true), $id));
 			}
 		}
-		if(isset($area["LangText"])) {
-			$this->BeLangText->setupForView($area["LangText"]) ;
-		}
+		
 		// Data for template
 		$this->set('area',$area);
 		$this->selfUrlParams = array("id", $id);
@@ -73,7 +71,6 @@ class AreasController extends ModulesController {
 	  * @param integer $id
 	  */
 	function viewSection($id = null) {
-		$this->setup_args(array("id", "integer", &$id)) ;
 		// Get selected section
 		$section = null ;
 		if($id) {
@@ -81,9 +78,6 @@ class AreasController extends ModulesController {
 			if(!($section = $this->Section->findById($id))) {
 				throw new BeditaException(sprintf(__("Error loading section: %d", true), $id));
 			}
-		}
-		if(isset($section["LangText"])) {
-			$this->BeLangText->setupForView($section["LangText"]) ;
 		}
 		// Get area/section tree
 		$tree = $this->BeTree->getSectionsTree() ;
@@ -175,10 +169,7 @@ class AreasController extends ModulesController {
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
 		// Format translations for fields
-		$this->data['title'] = $this->data['LangText'][$this->data['lang']]['title'];
-		$this->data['public_name'] = $this->data['LangText'][$this->data['lang']]['public_name'];
-		$this->data['description'] = $this->data['LangText'][$this->data['lang']]['description'];
-		$this->BeLangText->setupForSave($this->data["LangText"]) ;
+		
 		$this->Transaction->begin() ;
 		// Save data
 		if(!$this->Area->save($this->data))
@@ -207,9 +198,7 @@ class AreasController extends ModulesController {
 				throw new BeditaException( __("Error modifying permissions", true));
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-		// Format translation data
-		$this->data['title'] = $this->data['LangText'][$this->data['lang']]['title'];
-		$this->BeLangText->setupForSave($this->data["LangText"]) ;
+		
 		$this->Transaction->begin() ;
 		// data["destination"] should be 1 element
 		if(count($this->data["destination"]) != 1)

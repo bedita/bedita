@@ -23,42 +23,35 @@ $(document).ready(function(){
 {/literal}
 </script>	
 
-<div id="containerPage">
-{*	{if !empty($tree)}
-	<div id="listAreas">
-	{$beTree->tree("tree", $tree)}
-	</div>
-	{/if}
-*}
-	<div id="listElements">
-	{if !empty($objects)}
+
+		
+{if !empty($objects)}
 	<form method="post" action="" id="formObject">
-	<fieldset>
+
 	<input type="hidden" id="multimToDel" name="data[id]"/>
-	</fieldset>
+
 	</form>
-	<p class="toolbar">
-		{t}{$streamTitle|capitalize}{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
-		{$beToolbar->first()} &nbsp; {$beToolbar->prev()}  &nbsp; {$beToolbar->next()} &nbsp; {$beToolbar->last()} &nbsp;
-		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
-		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
-	</p>
-	<table class="indexList">
+{/if}
+	
+<table class="indexlist">
+
 	<tr>
+		
+		<th style="width:155px" nowrap>
+			{*t}Thumb{/t*} 
+			<img class="multimediaitemToolbar" src="/img/px.gif" />
+			order by:</th>
 		<th>{$beToolbar->order('id', 'id')}</th>
-		<th>{t}Thumb{/t}</th>
 		<th>{$beToolbar->order('title', 'Title')}</th>
 		<th>{t}Name{/t}</th>
 		<th>{t}Type{/t}</th>
 		<th>{t}Size{/t}</th>
 		<th>{$beToolbar->order('status', 'Status')}</th>
 		<th>{$beToolbar->order('created', 'Created')}</th>
-		<th>{$beToolbar->order('lang', 'Language')}</th>
-		<th>&nbsp;</th>
 	</tr>
+	
 	{section name="i" loop=$objects}
-	<tr class="rowList">
-		<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].id}</a></td>
+	<tr class="rowList" rel="{$html->url('view/')}{$objects[i].id}">
 		<td>
 			{assign var="thumbWidth" 		value = 30}
 			{assign var="thumbHeight" 		value = 30}
@@ -72,7 +65,7 @@ $(document).ready(function(){
 				{thumb 
 					width			= $thumbWidth
 					height			= $thumbHeight
-					linkurl                 = $mediaUrl$filePath
+					linkurl         = $mediaUrl$filePath
 					file			= $mediaPath$filePath
 					cache			= $mediaCacheBaseURL
 					cachePATH		= $mediaCachePATH
@@ -84,25 +77,55 @@ $(document).ready(function(){
 				<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$objects[i].type}.gif" /></a></div>
 			{/if}
 		</td>
-		<td class="cellList">{$objects[i].title}</td>
-		<td class="cellList">{$objects[i].name}</td>
-		<td class="cellList">{$objects[i].ObjectType.name}</td>
-		<td class="cellList">{math equation="x/y" x=$objects[i].size|default:0 y=1024 format="%d"|default:""} KB</td>
-		<td class="cellList">{$objects[i].status}</td>
-		<td class="cellList">{$objects[i].created|date_format:'%b %e, %Y'}</td>
-		<td class="cellList">{$objects[i].lang}</td>
-		<td><a href="javascript:void(0);" class="delete" title="{$objects[i].id}">{t}Delete{/t}</a></td>
+		<td>{$objects[i].id}</td>
+		<td>{$objects[i].title}</td>
+		<td>{$objects[i].name}</td>
+		<td>{$objects[i].ObjectType.name}</td>
+		<td>{math equation="x/y" x=$objects[i].size|default:0 y=1024 format="%d"|default:""} KB</td>
+		<td>{$objects[i].status}</td>
+		<td>{$objects[i].created|date_format:'%b %e, %Y'}</td>
 	</tr>				
-	{/section}
+		{sectionelse}
+		{*
+			<td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td>
+		*}
+		{/section}
 	</table>
-	<p class="toolbar">
-		{t}{$streamTitle|capitalize}{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
-		{$beToolbar->first()} &nbsp; {$beToolbar->prev()}  &nbsp; {$beToolbar->next()} &nbsp; {$beToolbar->last()} &nbsp;
-		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('dimSelectBottom')} &nbsp;
-		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
-	</p>
-	{else}
-		{t}No item found{/t}
-	{/if}
-	</div>
+
+
+<fieldset style="padding-bottom:15px;" id="multimediaitems">
+
+<div style="margin-top:10px;">
+{section name=e loop=4}
+<div class="multimediaitem">
+	<img src="img/thumb2.jpg" />
+	<ul>
+		<li>titolo dell'immagine</li>
+		<li>thumb2.jpg</li>
+		<li>80 Kb</li>
+	</ul>
 </div>
+
+<div class="multimediaitem">
+	<img src="img/thumb.jpg" />
+	<ul>
+		<li>io sono il titolo dell'immagine</li>
+		<li>thumb.jpg</li>
+		<li>780 Kb</li>
+	</ul>
+</div>
+{/section}
+</div>
+
+</fieldset>
+
+<div class="tab"><h2>Operazioni sui 3 records selezionati</h2></div>
+<div>
+	<input type="checkbox" class="selectAll" id="selectAll"/><label for="selectAll"> {t}(Un)Select All{/t}</label>
+	<hr />
+	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
+</div>
+
+
+
+

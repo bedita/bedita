@@ -6,9 +6,21 @@
 {$javascript->link("jquery/jquery.changealert", false)}
 
 </head>
+
 <body>
-{include file="head.tpl"}
-<div id="centralPage">
-{include file="submenu.tpl" method="index"}
-{include file="../pages/list_objects.tpl" method="index" assocToSections=false}
+
+{include file="modulesmenu.tpl"}
+
+{include file="inc/menuleft.tpl" method="index"}
+
+{include file="inc/menucommands.tpl" method="index"}
+
+{include file="../toolbar.tpl"}
+
+<div class="mainfull">
+
+	{include file="../pages/list_objects.tpl" method="index" assocToSections=false}
+
 </div>
+
+

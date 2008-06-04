@@ -18,19 +18,38 @@ var current_id	= {$section.id|default:0} ;
 {literal}
 $(document).ready(function(){
 	$('#title').show() ;
+	$('#properties').show() ;
 	if(!current_id) $('#whereto').show() ;
-	$('.showHideBlockButton').bind("click", function(){ $(this).next("div").toggle() ; }) ;
-	$("#handlerChangeAlert").changeAlert($('input, textarea, select').not($("#addCustomPropTR TD/input, #addCustomPropTR TD/select, #addPermUserTR TD/input, #addPermGroupTR TD/input"))) ;
-	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div').alertUnload() ;
 });
 {/literal}
 //-->
 </script>
+
 </head>
+
 <body>
-{include file="head.tpl"}
-<div id="centralPage">
-{include file="submenu.tpl" method="viewSection"}
+
+{include file="../common_inc/modulesmenu.tpl"}
+
+{include file="inc/menuleft.tpl" method="viewSection"}
+
+<div class="head">
+		
+	<h2>{t}Section{/t}</h2>
+
+</div> 
+
+{include file="inc/menucommands.tpl" method="viewSection"}
+
 {assign var='object' value=$section}
-{include file="form_section.tpl"}
+
+<div class="main">
+
+	{include file="inc/form_section.tpl"}
+	
 </div>
+
+
+
+
+

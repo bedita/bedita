@@ -19,34 +19,35 @@
 {$javascript->link("validate.tools")}
 {$javascript->link("jquery/interface")}
 
-<script type="text/javascript">
-<!--
 
-{literal}
-
-$(document).ready(function(){
-
-	$('#multimedia').show() ;
-
-	// aggiunge i comandi per i blocchi
-	$('.showHideBlockButton').bind("click", function(){
-		$(this).next("div").toggle() ;
-	}) ;
-
-	// handler cambiamenti dati della pagina
-	$("#handlerChangeAlert").changeAlert($('input, textarea, select').not($("#addCustomPropTR TD/input, #addCustomPropTR TD/select, #addPermUserTR TD/input, #addPermGroupTR TD/input"))) ;
-	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div').alertUnload() ;
-
-});
-
-{/literal}
-
-//-->
-</script>
 </head>
 <body>
-{include file="head.tpl"}
-<div id="centralPage">
-{include file="submenu.tpl" method="index"}
-{include file="form.tpl"}
+	
+
+
+{include file="modulesmenu.tpl" method="view"}	
+
+{include file="inc/menuleft.tpl" method="view"}
+
+
+
+<div class="head">
+	
+	<h1>{t}{$object.title|default:"New Item"}{/t}</h1>
+
 </div>
+
+{assign var=objIndex value=0}
+
+
+<form action="{$html->url('/galleries/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+<input  type="hidden" name="data[id]" value="{$object.id|default:''}" />
+
+{include file="inc/menucommands.tpl" fixed=true}
+
+
+
+<div class="main">
+{include file="inc/form.tpl"}
+</div>
+

@@ -1,0 +1,17 @@
+﻿@charset "utf-8";
+/* CSS Document */
+
+body, td, pre {
+	font-family: Helvetica, Arial, sans-serif;	
+	font-size:14px;
+	line-height:1.5em;
+}
+
+
+H1 {font-size: 1.5em; font-weight:normal; margin: 10px 0px 10px 0px}
+
+H2 {font-size: 1.2em; font-weight:normal;}
+
+H3 {font-size:1em; font-weight:normal; margin:0px}
+
+H4 {line-height:1.2em; margin: 5px 0px 0px 0px}

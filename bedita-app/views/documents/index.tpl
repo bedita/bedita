@@ -1,12 +1,26 @@
 {$html->css('tree')}
-{$javascript->link("jquery/jquery.treeview", false)}
-{$javascript->link("jquery/interface", false)}
-{$javascript->link("jquery/jquery.changealert", false)}
+{$javascript->link("jquery.treeview")}
+{$javascript->link("interface")}
+{$javascript->link("jquery.changealert")}
 
 </head>
+
 <body>
-{include file="head.tpl"}
-<div id="centralPage">	
-{include file="submenu.tpl" method="index"}	
-{include file="../pages/list_objects.tpl" method="index" areasectiontree=$areasectiontree assocToSections=true}
+
+{include file="../common_inc/modulesmenu.tpl"}
+
+{include file="inc/menuleft.tpl" method="index"}
+
+{include file="inc/menucommands.tpl" method="index"}
+
+{include file="../common_inc/toolbar.tpl"}
+
+
+
+<div class="mainfull">
+
+	{include file="../pages/list_objects.tpl" method="index" areasectiontree=$areasectiontree}
+	
 </div>
+
+

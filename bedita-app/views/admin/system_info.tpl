@@ -4,9 +4,25 @@
 {$javascript->link("form", false)}
 {$javascript->link("jquery/jquery.changealert", false)}
 </head>
+
+
+
 <body>
-{include file="head.tpl"}
-<div id="centralPage">
-	{include file="submenu.tpl" method="systemInfo"}
-	{include file="form_info.tpl" method="systemInfo"}
+
+{include file="modulesmenu.tpl"}
+
+{include file="inc/menuleft.tpl" method="systemInfo"}
+
+{include file="inc/menucommands.tpl" method="systemInfo" fixed=true}
+
+<div class="head">
+	
+	<h2>{t}System info{/t}</h2>
+
+</div>
+
+<div class="main">
+	
+	{include file="inc/form_info.tpl" method="systemInfo"}
+
 </div>

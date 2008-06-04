@@ -1,8 +1,6 @@
 {$html->css('tree')}
-{$javascript->link("jquery/jquery.treeview", false)}
-{$javascript->link("jquery/interface", false)}
-{$javascript->link("form", false)}
-{$javascript->link("jquery/jquery.changealert", false)}
+{$javascript->link("jquery/jquery.treeview", true)}
+
 <script type="text/javascript">
 <!--
 {literal}
@@ -71,11 +69,39 @@ $(document).ready(function(){
 {/literal}
 //-->
 </script>
-</head>
-<body>
-{include file="head.tpl"}
-<div id="centralPage">
-{include file="submenu.tpl" method="index"}
-{include file="form_tree.tpl" method="index"}
 
+</head>
+
+<body>
+
+{include file="../common_inc/modulesmenu.tpl"}
+
+{include file="inc/menuleft.tpl" method="index"}
+
+{include file="inc/menucommands.tpl"}
+
+<div class="head">
+		
+	<h2>{t}Tree of Areas{/t}</h2>
+
+</div> 
+
+<div class="mainfull" style="border: 1px solid red;">
+
+	{include file="inc/form_tree.tpl" method="index"}
+	
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

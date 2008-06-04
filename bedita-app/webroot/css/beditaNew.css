@@ -1,0 +1,860 @@
+@charset "utf-8";
+
+/*
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+CSS Created by the Chialab.it
+
+http://www.chialab.it 2007
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+*/
+
+
+
+/*...........................................    
+
+    General, elements
+
+...........................................*/
+
+* { margin:0; padding:0; list-style:none;}
+
+BODY {
+	background:#cccccc url(../img/sfomain.png) repeat-x fixed;
+}
+
+
+TD, INPUT, TEXTAREA, SELECT {padding:2px;}
+
+TD {vertical-align:top}
+
+HR {height:0px; border:0px; margin:10px 0px 10px 0px; border-top:1px solid gray}
+
+A {color:#000000}
+
+a img {border:0px;}
+
+a:focus, a:active {outline:0px;}
+
+a:link, a:visited, a:active {text-decoration: none; }
+
+a:hover {text-decoration: none;}
+
+UL UL {margin-left:20px;}
+
+/*...........................................    
+
+    General, states
+
+...........................................*/
+
+.on, LI.on {font-weight:bold;}
+.info {background-color:green}
+.warn {background-color:yellow}
+.err  {background-color:red}
+
+
+/*...........................................
+ 
+    Structure
+
+...........................................*/
+
+
+.modulesmenu, .head, .main, .mainfull  {position:absolute; left:300px; margin-right:0px;}
+
+
+.head {
+	top:50px;
+	height:110px;
+	padding-left:20px; width: 660px;
+
+}
+
+
+.primacolonna {
+	float:left;	
+	width:170px;
+
+}
+
+.primacolonna .insidecol {
+	margin:0px 10px 0px 30px;
+}
+
+
+.secondacolonna {
+	position:absolute;
+	float:left;	
+	width:180px;
+	left:140px;
+	}
+
+.secondacolonna .insidecol {
+	margin: 0px 30px 0px 30px;
+}
+
+.terzacolonna {
+	position:absolute;
+	float:left;	
+	width:180px;
+	left:280px;
+	}
+	
+
+.fixed {
+	
+	position:fixed;
+	
+}
+
+
+.quartacolonna {
+	position:absolute; 
+	left:820px;
+	width:170px;
+	top:160px;
+	min-height:400px;
+}
+
+.main {
+	top:160px;
+	width: 500px;  
+}
+
+.mainfull {
+	top:160px;
+	min-width: 660px;
+	padding-right:20px;
+}
+
+
+/*...........................................
+ 
+    Kind of columns
+
+...........................................*/
+
+
+.doppia {
+	width: 260px;
+	padding-right:20px;
+}
+
+.singola {
+	width: 140px;
+	padding-right:0px;
+	float:left;
+}
+
+.singolapadded {
+	padding:20px;
+	width: 100px;
+	float:left;
+}
+
+.doppia, .singola, .singolapadded {margin-bottom:10px}
+
+
+	
+/*...........................................
+ 
+    Headings and general typography
+
+...........................................*/
+
+BODY {font-size:12px; font-family: Arial, Helvetica, sans-serif; line-height:1.5em;}
+
+H1 {font:normal 2em Georgia, "Times New Roman", Times, serif; line-height:1em}
+
+H2 {font:normal 1.5em Georgia, "Times New Roman", Times, serif; line-height:1em}
+
+
+/*...........................................
+ 
+    Modules
+
+...........................................*/
+
+.modules {
+	background:transparent url(../img/shadowpattern160.png);
+	/*background:transparent url(../img/shadowh2-small.png) repeat-y top left ;*/
+	/*shadowpattern140*/
+	/* width:280px; */
+	width:auto;
+	height:140px;
+	padding:10px; margin:10px;
+}
+
+UL.modules {
+	background:transparent url(../img/shadowh2-small.png) repeat-y top left ;
+}
+
+.modules LI, .modules label {
+	display:block;
+	font-size: 1.16em ;
+	width:119px; height:119px; 
+	padding:10px;
+	margin: 0px 1px 1px 0px;
+	background-color:#CCCCCC; 
+	background-image: url(../img/sfomodulo.png);
+	background-repeat:repeat-x;
+	color:#FFFFFF;
+	float:left;
+/*
+	cursor:pointer;
+*/
+}
+
+
+.modules .save {
+	background-image:url(../img/iconset.png);
+	background-repeat:no-repeat !important;
+	background-position: 50px 45px;
+}
+
+.modules .alert {
+	background-image:url(../img/iconset.png);
+	background-repeat:no-repeat !important;
+	background-position: -110px 45px;
+}
+
+.modules .lock {
+	background-image:url(../img/iconset.png);
+	background-repeat:no-repeat !important;
+	background-position: -430px 45px;
+}
+
+.modules .error {
+	background-image:url(../img/iconset.png);
+	background-repeat:no-repeat !important;
+	background-position: -760px 45px;
+}
+
+
+.modulesmiddle {
+	background: transparent url(../img/shadowpattern240.png);
+	width:220px;
+	min-height:220px;
+	padding:10px;	
+}
+
+.modulesmiddle DIV {
+	width:200px;
+	min-height:195px;
+	padding:10px;
+}
+
+
+/*...........................................
+ 
+    Each Modules appearence
+
+...........................................*/
+
+.areas 			{background-color:#333333 !important;}
+.documents 		{background-color:#ff6600 !important;}
+.galleries 		{background-color:#FFBF00 !important;}
+.events			{background-color:#0099CC !important;}
+.newsletter 	{background-color:#99cc33 !important;}
+.multimedia 	{background-color:#ff0033 !important;}
+.admin 			{background-color:#003366 !important;}
+.ecommerce 		{background-color:#999966 !important;}
+.attachments 	{background-color:#999966 !important;}
+.news 			{background-color:#C900FF !important;}
+.tags 			{background-color:#5F9EA0 !important;}
+
+
+.bedita 		{background-color:#FFFFFF !important; 
+			font:normal 1.75em Georgia, "Times New Roman", Times, serif !important; ; 
+			line-height:0.75em !important;
+			color:#996600  !important;
+			}
+
+.default 		{background-color:#CCCCCC !important; color:#000000 !important}
+
+
+/*...........................................
+ 
+    MENU SMALL Modules 
+
+...........................................*/
+
+UL.modulesmenu {
+	top:0px;
+	margin-right:15px; 
+	width:680px;
+	background:transparent url(../img/shadowh2-small.png) no-repeat;
+	background-position: 520px 10px ;
+	padding:20px 0px 10px 0px;
+}
+
+.modulesmenu LI {
+	height:25px; width:15px;
+	float:right; margin-left:1px;
+	cursor:pointer;
+	background-image: url(../img/sfomodulo.png);
+	background-repeat:repeat-x;
+	background-position: left -5px;
+	padding:0px 5px 0px 5px;
+	color:white;
+}
+
+
+.modulesmenu .over {
+	border-bottom:5px solid #CCCCCC;
+}
+
+.modulesmenu .on {
+	border-bottom:5px solid #CCCCCC;
+}
+
+
+.modulesmenucaption {
+	display:none;
+	white-space:nowrap;
+	position:absolute;
+	top:0px;
+	height:20px;
+	text-align:right; 
+	font: normal 14px Georgia, "Times New Roman", Times, serif; color:#000000;
+}
+
+.modulesmenucaption A {
+	color:#FFFFFF; font:normal 14px Arial, Helvetica, sans-serif;
+	text-decoration:none;
+}
+
+
+
+
+
+/*...........................................
+ 
+    Head
+
+...........................................*/
+
+
+.head H1 {margin-top:25px;}
+
+
+
+/*...........................................    
+
+    Main TABs
+
+...........................................*/
+
+
+.tab  {
+	height:25px;
+	background:transparent url(../img/shadowh2-small.png) repeat left top;
+	padding:10px 0px 10px 0px;
+	margin-top:-10px;
+
+}
+
+.tab H2 {
+	cursor:pointer;
+	color: white; 
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:1em; font-weight:normal; 
+	background:#808080 url(../img/piumeno.gif) no-repeat;
+	background-position:right 0px ;
+	height:20px; padding:5px 10px 0px 10px;
+
+}
+
+
+.tab + DIV {
+	margin-bottom:15px; 
+}
+
+.tab + fieldset {
+	padding:0px 10px 15px 10px;
+}
+
+.tab:first-child {
+	margin-top:-10px;
+}
+
+
+/*...........................................    
+
+    horizontal TABs
+
+...........................................*/
+
+
+
+.htab {
+	width:100%;
+	background: transparent url(../img/shadowhtab.png) no-repeat center bottom;
+	display:table;
+}
+
+.htab LI, .htab TD {
+	text-align:center;
+	padding:2px;
+	cursor:pointer;
+	display:table-cell;
+}
+
+.htab LI.on, .htab LI:Hover, .htab TD.on, .htab TD:Hover {
+	background-color:#FFFFFF;
+	font-weight:normal;
+}
+
+.htabcontent {
+	clear:left;
+	display:none;
+	background:transparent url(../img/sfohtabscontent.png) repeat-x;
+	padding:2%;
+	width:96%;
+	min-height:150px;
+	display:none;
+}
+
+
+
+/*...........................................    
+
+   Tree
+
+...........................................*/
+
+.publishingtree {
+	width:250px;
+}
+
+.publishingtree H2 {
+	margin:10px 0px 10px 0px;
+	color:#ff6600;
+
+}
+
+.publishingtree UL {
+	margin-left:20px;
+	border-left:1px solid #999999;
+}
+
+.publishingtree LI  {
+	border-bottom:1px solid #999999;
+	padding:5px 0px 5px 10px;
+}
+
+
+/*
+.publishingtree UL LI:last-child {
+	border-bottom:0px solid red;
+}
+*/
+
+/*...........................................    
+
+   Toolbar
+
+...........................................*/
+
+.toolbar {
+	font:normal 1.2em Georgia, "Times New Roman", Times, serif;
+}
+
+.toolbar .evidence {
+	/* view simple ".evidence" below */
+}
+
+.toolbar A {
+	color:#FFFFFF;
+}
+
+.toolbar H2 {font-size: 1.1em; margin-top:20px; margin-bottom:10px;}
+
+.toolbar LI {
+	border-right:1px solid gray;
+	padding:15px;
+	vertical-align:middle;
+	display:table-cell;
+}
+
+.toolbar LI:last-child {
+	border-right:0px solid gray;
+}
+.toolbar LI:first-child {
+	padding-left:0px;
+}
+
+/*...........................................    
+
+   Custom Lists
+
+...........................................*/
+
+
+UL.bordered LI  {
+
+	border-top:1px solid #999999;
+	padding:5px 0px 5px 10px;
+
+}
+
+UL.bordered LI:first-child {padding-top:0px; border-top:0px solid red}
+
+
+UL.bulleted {
+	padding-left:20px;
+}
+
+UL.bulleted LI {
+	list-style-type: disc;
+}
+
+/*...........................................    
+
+   Tables
+
+...........................................*/
+
+TABLE {empty-cells:show; border-spacing:0px;  border-collapse:collapse; }
+
+TD, TH {padding:5px; text-align:left}
+
+TH {text-transform:lowercase}
+
+TD.center, TH.center {
+	text-align:center;
+	vertical-align:middle;
+}
+
+.bordered TD, .bordered TH  {
+	border-color:#999999; 
+	border-style:solid;
+	border-width:0px 0px 1px 1px; 
+}
+
+.bordered TD:first-child, .bordered TH:first-child {
+	border-left:0px;
+	padding-left:10px;
+}
+
+
+.indexlist TR {
+	border-bottom:1px solid #d8d8d8;
+}
+
+.indexlist TR:first-child, .indexlist TR:last-child  {
+	border-bottom:0px solid #d8d8d8;
+}
+
+
+
+TABLE.indexlist {
+	width:100%;
+}
+ 
+.indexlist TH  {
+	background-color:#FFFFFF;
+}
+
+
+
+.indexlist TR[rel] {
+	cursor:pointer;
+}
+
+.indexlist.bordered TH {
+	background-color:transparent;
+	
+}
+
+
+/*...........................................    
+
+    States
+
+...........................................*/
+
+.over  {
+	background-color:#d8d8d8;
+/* 	background-color:#FFFFFF; opacity:0.25; */
+	
+}
+
+
+/*...........................................    
+
+    MultimediaItems
+
+...........................................*/
+
+
+.multimediaitem {
+	width:130px;
+	background-color:#FFFFFF;
+/*
+	min-height:200px;
+	background: transparent url(../img/sfohtabscontent.png) repeat-x;
+*/
+	border:0px solid white;
+	padding:10px;
+	margin-right:10px;
+	margin-bottom:10px;
+	float:left;
+}
+.multimediaitem input, .multimediaitem textarea, .multimediaitem LI {
+	font-size:0.9em;
+}
+
+
+.multimediaitem IMG {
+	width:130px;
+	height:85px;
+}
+
+.multimediaitem UL {
+	display:none;
+}
+
+.multimediaitem LI {
+	border-bottom:0px solid #999999;
+	padding:2px 0px 0px 0px;
+}
+
+.multimediaitem LI:last-child{
+	border-width:0px; padding-bottom:0px;
+}
+
+.multimediaitem .evidence {
+ font: normal 1.5em "Georgia";	
+}
+
+.dark {
+	background-color:#000000;
+	color: silver;
+	border-color: #999999;
+}
+
+
+.gold LI {
+	border-color: silver;
+}
+
+.multimediaitem.off {
+	
+	opacity:0.33
+	
+}
+
+.multimediaitem.small {
+	width:90px;
+	line-height:1em;
+	padding:6px;
+	margin-right:7px;
+	margin-bottom:7px;
+}
+
+.multimediaitem.small IMG {
+	width:90px;
+	height:60px;
+	overflow:hidden;
+}
+
+
+.multimediaitem input, .multimediaitem textarea {
+	width:120px;
+	border:1px solid silver;
+	background: transparent;
+}
+
+.multimediaitem textarea {
+	height:60px;
+	overflow: auto;
+}
+
+.multimediaitem.small input, .multimediaitem.small textarea {
+	width:80px;
+	border:0px solid silver;
+}
+
+
+.multimediaitemToolbar {
+	vertical-align:middle;
+	background: transparent url(../img/iconML.png) no-repeat;	
+	width:74px;
+	height:18px;
+	cursor:pointer;
+}
+
+.multimediaitem input {
+	border:1px solid silver;
+	
+}
+
+
+.progressBar {
+	width:100px;
+	background-color: red;
+	float:left;
+	margin-right:5px;
+}
+
+
+/*...........................................    
+
+    Specific template layouts: home
+
+...........................................*/
+
+.home UL.modules {
+	width:710px;
+	height:280px;
+}
+
+LI.welcome {
+	width: 260px;
+	background:transparent none;
+	font-size:1em; 
+	color:#000000;
+	padding-top:5px;
+	padding-bottom:15px;
+}
+
+LI.colophon {
+	background:transparent none;
+	font-size:1em; color:#000000;
+}
+
+
+.dashboard {
+	position:absolute;
+	left:740px;
+	top:25px;
+	width: 240px;
+	height: 120px;
+}
+
+.dashboard H1 {
+	margin-bottom:5px;
+}
+
+
+/*...........................................    
+
+    Forms
+
+...........................................*/
+
+label {font-weight:bold;}
+
+label.block {display:block; margin-top:4px; margin-bottom:2px}
+
+fieldset {border:0}
+
+textarea#description, textarea#title, textarea#addtaglist, textarea.longtext {
+	width:480px; overflow:auto;
+}
+
+input#title, textarea#subtitle {
+	width:240px; 
+}
+
+.insidecol input {
+	width:100px;
+	margin:2px 5px 2px 5px;
+}
+
+
+.bemaincommands {
+	width:110px !important;
+	padding:2px;
+	text-transform:lowercase;
+	display:block; 
+	margin:5px 0px 0px 0px !important;
+}
+
+input[type=radio] {
+	
+	margin-right:5px; vertical-align:middle;
+}
+
+/*...........................................    
+
+    footer
+
+...........................................*/
+
+#footerPage {clear:both; width:160px; padding:100px 0px 0px 20px; }
+
+
+/*...........................................    
+
+    messages
+
+...........................................*/
+
+#messagesDiv {
+	background:transparent url(../img/shadowpattern160.png);
+	padding:10px; margin:10px;
+	width:140px; height:auto; 
+	display: none;
+}
+
+.message {
+	font-weight:lighter;
+	line-height:1.2em;
+	width:119px; height:119px; 
+	padding:10px;
+	margin: 0px 0px 1px 1px;
+	background-color:#000000; 
+
+}
+
+.message.error {
+	color:red;
+}
+
+.message.warn {
+	color:gold;
+}
+
+.message.info {
+	color:white;
+}
+
+.message LABEL {
+	display:block;
+	font-size: 1.16em ;
+}
+
+/*...........................................    
+
+    accessori e varie
+
+...........................................*/
+
+.evidence {
+	font-size: 1.3em;
+}
+
+.messageboard {
+	font-size:1em;
+	line-height:1.2em;
+	overflow:auto; 
+	background-color:#FFFFFF; 
+	border:0px solid #999999;
+	height:120px;
+	
+}
+
+.messageboard HR {
+	border-color: silver;
+	border-style:dotted;
+	
+}
+
+
+

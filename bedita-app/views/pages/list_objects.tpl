@@ -49,73 +49,78 @@ function delObjects() {
 	return false ;
 }
 {/literal}
-{if $moduleName ne "galleries"} {* no area tree in galleries, to be improved *}
-	{if !empty($areasectiontree) && !empty($assocToSections) && $assocToSections}
-	{literal}
-	function assocObjectsToAreaSection(id) {
-		var oToDel = "";
-		var checkElems = document.getElementsByName('object_chk');
-		for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
-		oToDel = (oToDel=="") ? "" : oToDel.substring(1);
-		$("#objects_to_del").attr("value",oToDel);
-		$("#formObject").attr("action", '{/literal}{$html->url('addToAreaSection/')}{literal}') ;
-		$("#formObject").get(0).submit() ;
-		return false ;
-	}
-	{/literal}
-	{/if}
+{if !empty($areasectiontree)}
+{literal}
+function assocObjectsToAreaSection(id) {
+	var oToDel = "";
+	var checkElems = document.getElementsByName('object_chk');
+	for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
+	oToDel = (oToDel=="") ? "" : oToDel.substring(1);
+	$("#objects_to_del").attr("value",oToDel);
+	$("#formObject").attr("action", '{/literal}{$html->url('addToAreaSection/')}{literal}') ;
+	$("#formObject").get(0).submit() ;
+	return false ;
+}
+{/literal}
 {/if}
 //-->
 </script>	
-<div id="containerPage">
-	{if $moduleName ne "galleries"}
-	<div id="listAreas">
-	{$beTree->tree("tree", $tree)}
-	</div>
-	{/if}
-	<div id="listElements">
+
+
+	
+	
 	<form method="post" action="" id="formObject">
-	<fieldset>
+
 	<input type="hidden" name="data[id]"/>
 	<input type="hidden" name="objects_to_del" id="objects_to_del"/>
-	{if $objects}
-	<p class="toolbar">
-		{t}{$moduleName|capitalize}{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
-		{$beToolbar->first()} &nbsp; {$beToolbar->prev()}  &nbsp; {$beToolbar->next()} &nbsp; {$beToolbar->last()} &nbsp;
-		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
-		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
-	</p>
-	<table class="indexList">
-	<thead>
-	<tr>
-		<th><input type="checkbox" class="selectAll" id="selectAll"/><label for="selectAll"> {t}(Un)Select All{/t}</label></th>
-		<th>{$beToolbar->order('id', 'id')}</th>
-		<th>{$beToolbar->order('nickname', 'Nickname')}</th>
-		<th>{$beToolbar->order('title', 'Title')}</th>
-		<th>{$beToolbar->order('status', 'Status')}</th>
-		<th>{$beToolbar->order('created', 'Created')}</th>
-		<th>{$beToolbar->order('lang', 'Language')}</th>
-		<th>&nbsp;</th>
-	</tr>
-	</thead>
-	<tbody>
-	{section name="i" loop=$objects}
-	<tr class="rowList">
-		<td><input type="checkbox" name="object_chk" class="objectCheck" title="{$objects[i].id}"/></td>
-		<td class="cellList"><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].id}</a></td>
-		<td class="cellList">{$objects[i].nickname}</td>
-		<td class="cellList">{$objects[i].title}</td>
-		<td class="cellList">{$objects[i].status}</td>
-		<td class="cellList">{$objects[i].created|date_format:'%b %e, %Y'}</td>
-		<td class="cellList">{$objects[i].lang}</td>
-		<td><a href="javascript:void(0);" class="delete" title="{$objects[i].id}">{t}Delete{/t}</a></td>
-	</tr>
-	{/section}
-	<tr><td colspan="7"><input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/></td></tr>
-	{if !empty($areasectiontree) && !empty($assocToSections) && $assocToSections}
-	<tr>
-		<td colspan="8">
-			<input id="deleteSelected" type="button" value="(+) {t}Add selected items to area/section{/t}" onclick="javascript:assocObjectsToAreaSection();"/>
+
+
+	<table class="indexlist">
+
+		<tr>
+			<th></th>
+			<th>{$beToolbar->order('title', 'Title')}</th>
+			<th>{$beToolbar->order('id', 'id')}</th>
+			<th>{$beToolbar->order('status', 'Status')}</th>
+			<th>{$beToolbar->order('modified', 'Modified')}</th>		
+			<th>{$beToolbar->order('lang', 'Language')}</th>
+		</tr>
+	
+	
+		{section name="i" loop=$objects}
+		
+		<tr>
+			<td style="width:15px; padding:7px 0px 0px 0px;">
+				<input  type="checkbox" 
+				name="object_chk" class="objectCheck" title="{$objects[i].id}" />
+			</td>
+			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64}</a></td>
+			<td>{$objects[i].id}</td>
+			<td>{$objects[i].status}</td>
+			<td>{$objects[i].modified|date_format:'%d %B %Y %H:%M'}</td>
+			<td>{$objects[i].lang}</td>
+		</tr>
+		
+		{sectionelse}
+		
+			<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>
+		
+		{/section}
+		
+	
+</table>
+
+
+	
+<div class="tab"><h2>Operazioni sui 3 records selezionati</h2></div>
+<div>
+	<input type="checkbox" class="selectAll" id="selectAll"/><label for="selectAll"> {t}(Un)Select All{/t}</label>
+	<hr />
+	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
+
+	{if !empty($areasectiontree)}
+			<input id="deleteSelected" type="button" value="(+) {t}Add selected items to area/section{/t}" 
+			onclick="javascript:assocObjectsToAreaSection();"/>
 			<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
 			{foreach from=$areasectiontree item=i}
 				<option value="{$i.id}">{$i.title}</option>
@@ -131,21 +136,11 @@ function delObjects() {
 				{/if}
 			{/foreach}
 			</select>
-		</td>
-	</tr>
 	{/if}
-	</tbody>
-	</table>
-	<p class="toolbar">
-	{t}{$moduleName|capitalize}{/t}: {$beToolbar->size()} | {t}page{/t} {$beToolbar->current()} {t}of{/t} {$beToolbar->pages()} &nbsp;
-	{$beToolbar->first()} &nbsp; {$beToolbar->prev()}  &nbsp; {$beToolbar->next()} &nbsp; {$beToolbar->last()} &nbsp;
-	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('dimSelectBottom')} &nbsp;
-	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
-	</p>
-	{else}
-	{t}No {$moduleName} found{/t}
-	{/if}
-	</fieldset>
-	</form>
-	</div>
 </div>
+	
+	</form>
+
+
+
+
