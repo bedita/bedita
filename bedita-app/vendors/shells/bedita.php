@@ -4,6 +4,7 @@ App::import('Model', 'DataSource');
 App::import('Model', 'Stream');
 App::import('Component', 'Transaction');
 vendor('splitter_sql');
+vendor('Tar');
 
 class DataSourceTest extends DataSource {
 	
@@ -159,7 +160,7 @@ class DbDump {
 
 class BeditaShell extends Shell {
 
-	const DEFAULT_ZIP_FILE 		= 'bedita-export.zip' ;
+	const DEFAULT_ARCHIVE_FILE 	= 'bedita-export.tar.gz' ;
 	
 	function updateDb() {
         $dbCfg = 'default';
@@ -230,22 +231,22 @@ class BeditaShell extends Shell {
 			return;
 		}
 
-		$basePath = $this->setupTempDir();
+		$tmpBasePath = $this->setupTempDir();
+       	$this->out("Using temp dir: $tmpBasePath");
 		
-		$zipFile = self::DEFAULT_ZIP_FILE;
+		$archFile = self::DEFAULT_ARCHIVE_FILE;
     	if (isset($this->params['f'])) {
-            $zipFile = $this->params['f'];
+            $archFile = $this->params['f'];
     	}
-  		$this->out("Importing file $zipFile");
-    	$zip = new ZipArchive;
-		if ($zip->open($zipFile) === TRUE) {
-			$zip->extractTo($basePath);
-			$zip->close();
-  			$this->out("Export files extracted...");
-		} else {
-  			$this->out("Error opening zip file $zipFile!!");
-		}		
-		$sqlFileName = $basePath."bedita-data.sql";
+  		$this->out("Importing file $archFile");
+
+  		$tar = new Archive_Tar($archFile, 'gz');
+       	if($tar === FALSE) {
+       		$this->out("Error opening archive $archFile!!");
+       	}
+		$tar->extract($tmpBasePath);
+       	
+		$sqlFileName = $tmpBasePath."bedita-data.sql";
 		
 		$db =& ConnectionManager::getDataSource($dbCfg);
     	$hostName = $db->config['host'];
@@ -283,19 +284,20 @@ class BeditaShell extends Shell {
 		}
 		
 		// copy files from tmp dir to media_root
-		$copts=array('to'=>MEDIA_ROOT,'from'=>$basePath.'media','mode'=>0777);
+		$copts=array('to'=>MEDIA_ROOT,'from'=>$tmpBasePath.'media','mode'=>0777);
 		$this->out("copying from " . $copts['from'] . " to " . $copts['to']);
 		$res = $folder->copy($copts);
+		$this->out("Cleaning temp dir $tmpBasePath");
+		$this->cleanTempDir();
 		$this->out("done");
 		
-		$transaction->commit();
-		
+		$transaction->commit();		
 		$this->out("bye");
     }
 
     
     public function export() {
-        $expFile = self::DEFAULT_ZIP_FILE;
+        $expFile = self::DEFAULT_ARCHIVE_FILE;
     	if (isset($this->params['f'])) {
             $expFile = $this->params['f'];
     	}
@@ -314,9 +316,8 @@ class BeditaShell extends Shell {
 		$dbDump = new DbDump();
 		$tables = $dbDump->tableList();
 		
-		$basePath = $this->setupTempDir();
-//		$basePath = getcwd().DS."export-tmp".DS;
-		$sqlFileName = $basePath."bedita-data.sql";
+		$tmpBasePath = $this->setupTempDir();
+		$sqlFileName = $tmpBasePath."bedita-data.sql";
 		
 		$this->out("Creating SQL dump....");
 		$handle = fopen($sqlFileName, "w");
@@ -325,14 +326,16 @@ class BeditaShell extends Shell {
 		$dbDump->tableDetails($tables, $handle);
 		fclose($handle);
        	$this->out("Exporting to $expFile");
-		$zip = new ZipArchive;
-		$res = $zip->open($expFile, ZIPARCHIVE::CREATE);
-		if($res === TRUE) {
-			if(!$zip->addFile($sqlFileName, "bedita-data.sql"))
-				throw new Exception("Error adding SQL file to zip");
-		} else {
-			throw new Exception("Error opening zip file $expFile - error code $res");
-		}
+
+       	$tar = new Archive_Tar($expFile, 'gz');
+       	if($tar === FALSE) {
+			throw new Exception("Error opening archive $expFile");
+       	}
+       	
+		$contents = file_get_contents($sqlFileName);
+		if(!$tar->addString("bedita-data.sql", $contents))
+			throw new Exception("Error adding SQL file to archive");
+		unset($contents);
        	$this->out("SQL data exported");
        	$this->out("Exporting media files");
        	
@@ -341,26 +344,26 @@ class BeditaShell extends Shell {
         foreach ($tree as $files) {
             foreach ($files as $file) {
                 if (!is_dir($file)) {
-       				$contents = file_get_contents($file);
+     				$contents = file_get_contents($file);
         			if ( $contents === false ) {
 						throw new Exception("Error reading file content: $file");
-        			}
-					$p = substr($file, strlen(MEDIA_ROOT));
-					if(!$zip->addFromString("media".DS.$p, $contents )) {
-						throw new Exception("Error adding $p to zip file");
+       				}
+					$p = substr($file, strlen(MEDIA_ROOT));	
+					if(!$tar->addString("media".$p, $contents)) {
+						throw new Exception("Error adding $file to tar file");
 					}
-					echo 'At this point, '. memory_get_usage().' bytes of RAM is being used.';
+//					echo "before unset ". memory_get_usage()." RAM used.\n";
 					unset($contents);
-					echo 'At this point, '. memory_get_usage().' bytes of RAM is being used.';
+//					echo 'after unset  '. memory_get_usage()." RAM used.\n";
                 }
             }
         }
-		$zip->close();
-       	$this->out("$expFile created");
+		$this->cleanTempDir();
+        $this->out("$expFile created");
     }
     
     private function setupTempDir() {
-    	$basePath = getcwd().DS."export-tmp".DS;
+    	$basePath = sys_get_temp_dir().DS."export-tmp".DS;
 		if(!is_dir($basePath)) {
 			if(!mkdir($basePath))
 				throw new Exception("Error creating temp dir: ".$basePath);
@@ -368,6 +371,14 @@ class BeditaShell extends Shell {
     		$this->__clean($basePath);
 		}
     	return $basePath;
+    }
+
+    private function cleanTempDir() {
+    	$exportPath = sys_get_temp_dir().DS."export-tmp".DS;
+    	$folder= new Folder();
+    	if(!$folder->delete($exportPath)) {
+			throw new Exception("Error deleting dir $exportPath");
+        }
     }
     
     private function extractMediaZip($zipFile) {
@@ -561,15 +572,15 @@ class BeditaShell extends Shell {
         $this->out(' ');
         $this->out('5. export: export media files and data dump');
   		$this->out(' ');
-        $this->out('    Usage: export -f <zip-filename>');
+        $this->out('    Usage: export -f <tar-gz-filename>');
         $this->out(' ');
-  		$this->out("    -f <zip-filename>\t file to export, default ".self::DEFAULT_ZIP_FILE);
+  		$this->out("    -f <tar-gz-filename>\t file to export, default ".self::DEFAULT_ARCHIVE_FILE);
         $this->out(' ');
         $this->out('6. import: import media files and data dump');
   		$this->out(' ');
-  		$this->out('    Usage: import [-f <zip-filename>] [-db <dbname>]');
+  		$this->out('    Usage: import [-f <tar-gz-filename>] [-db <dbname>]');
         $this->out(' ');
-  		$this->out("    -f <zip-filename>\t file to import, default ".self::DEFAULT_ZIP_FILE);
+  		$this->out("    -f <tar-gz-filename>\t file to import, default ".self::DEFAULT_ARCHIVE_FILE);
         $this->out("    -db <dbname>\t use db configuration <dbname> specified in config/database.php");
         $this->out(' ');
 	}
