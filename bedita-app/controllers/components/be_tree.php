@@ -23,9 +23,15 @@ class BeTreeComponent extends Object {
 		  App::import('Model', 'Tree') ;
 		if(!class_exists('BEObject')) 	
 		  App::import('Model', 'BEObject') ;
+		if(!class_exists('Area')) 	
+		  App::import('Model', 'Area') ;
+		if(!class_exists('Section')) 	
+		  App::import('Model', 'Section') ;
 		
 		$this->Tree 	= new Tree() ;
 		$this->BEObject 	= new BEObject() ;
+		$this->Area = new Area();
+		$this->Section = new Section();
 	} 
 
 	/**
@@ -50,6 +56,15 @@ class BeTreeComponent extends Object {
 		$tree = $this->Tree->getAll(null, $userid, null, array($conf->objectTypes['area'],$conf->objectTypes['section'])) ;
 		
 		return $tree ;	
+	}
+	
+	function getAreaForSection($section_id) {
+		$area_id = $this->Tree->getRootForSection($section_id);
+		if(empty($area_id)) {
+			$this->log("No area found for section ".$section_id);
+			throw new BeditaException(__("No area found for section $section_id",true));
+		}
+		return $this->Area->findById($area_id);
 	}
 
 	/**

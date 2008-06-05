@@ -101,6 +101,17 @@ class Tree extends BEAppModel
 		}
 	}
 
+	function getRootForSection($id) {
+		if(($ret = $this->query("SELECT path FROM trees WHERE id = {$id}")) === false) {
+			return null;
+		}
+		$path = $ret[0]['trees']['path'];
+		if(empty($path))
+			return null;
+		$path = substr($path,1);
+		return substr($path,0,strpos($path,"/"));
+	}
+
 	function appendChild($id, $idParent = null) {
 		$idParent = (empty($idParent)) ? "NULL" :  $idParent ;
 

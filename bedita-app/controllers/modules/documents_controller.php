@@ -72,13 +72,15 @@ class DocumentsController extends ModulesController {
 			$parents_id = array();
 		}
 		$galleries = $this->BeTree->getDiscendents(null, null, $conf->objectTypes['gallery'], "", true, 1, 10000);
+		$previews = (isset($id)) ? $this->previewsForObject($parents_id,$id) : array();
 
 		$this->set('object',	$obj);
 		$this->set('attach', isset($relations['attach']) ? $relations['attach'] : array());
 		$this->set('relObjects', isset($relations) ? $relations : array());
 		$this->set('galleries', (count($galleries['items'])==0) ? array() : $galleries['items']);
 		$this->set('tree', 		$tree);
-		$this->set('parents',	$parents_id);		
+		$this->set('parents',	$parents_id);
+		$this->set('previews',	$previews);
 		$this->selfUrlParams = array("id", $id);
 		$this->setUsersAndGroups();
 	 }

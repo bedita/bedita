@@ -383,6 +383,8 @@ CREATE TABLE streams (
 CREATE TABLE areas (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   public_name VARCHAR(255) NULL,
+  public_url VARCHAR(255) NULL,
+  staging_url VARCHAR(255) NULL,
   creator VARCHAR(255) NULL,
   email VARCHAR(255) NULL,
   publisher VARCHAR(255) NULL,

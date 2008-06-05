@@ -565,13 +565,35 @@ abstract class ModulesController extends AppController {
 		$this->userInfoMessage(__("Items associated to area/section", true) . " - " . $section['title']);
 		$this->eventInfo("items associated to area/section " . $section['id']);
 	}
-}
 
+	/**
+	 * Return preview links for $obj_id in $sections
+	 * 
+	 * @return array of previews - single preview is like array('url'=>'...','desc'=>'...')
+	 * @param $sections array of section id
+	 * @param $obj_id object id
+	 */
+	public function previewsForObject($sections,$obj_id) {
+		$previews = array();
+		if(empty($sections))
+			return $previews;
+		foreach($sections as $section_id) {
+			$a = $this->BeTree->getAreaForSection($section_id);
+			if(!empty($a) && !empty($a['public_url'])) { // if public_url is null, no preview
+				$desc = $this->BEObject->field('title',array("id=$section_id"));
+				$previews[]=array(
+					'url'=>$a['public_url']."/section/$section_id/$obj_id",
+					'desc'=>$desc);
+			}
+		}
+		return $previews;
+	}
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
- * Beadita basic exception
+ * Bedita basic exception
  */
 class BeditaException extends Exception
 {
