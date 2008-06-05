@@ -189,11 +189,16 @@ class BeditaShell extends Shell {
             }
     	}
     	
-		$db =& ConnectionManager::getDataSource($dbCfg);
+    	$db = ConnectionManager::getDataSource($dbCfg);
     	$hostName = $db->config['host'];
     	$dbName = $db->config['database'];
 		$this->out("Updating bedita db config: $dbCfg - [host=".$hostName.", database=".$dbName."]");
-        $this->hr();
+		$res = $this->in("ACHTUNG! Database $dbName will be replaced, proceed? [y/n]");
+		if($res != "y") {
+       		$this->out("Bye");
+			return;
+		}
+		$this->hr();
 
         $transaction = new TransactionComponent($dbCfg);
 		$transaction->begin();
@@ -263,7 +268,7 @@ class BeditaShell extends Shell {
     	$hostName = $db->config['host'];
     	$dbName = $db->config['database'];
 		$this->out("Importing data using bedita db config: $dbCfg - [host=".$hostName.", database=".$dbName."]");
-		$res = $this->in("ATTENTION: database $dbName will be replaced, proceed? [y/n]");
+		$res = $this->in("ACHTUNG! Database $dbName will be replaced, proceed? [y/n]");
 		if($res != "y") {
        		$this->out("Bye");
 			return;
