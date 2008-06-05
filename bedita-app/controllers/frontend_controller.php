@@ -31,6 +31,9 @@ abstract class FrontendController extends AppController {
 		if(!isset($this->Tree)) {
 			$this->Tree = $this->loadModelByType('Tree');
 		}
+		if(!isset($this->BEObject)) {
+			$this->BEObject = $this->loadModelByType('BEObject');
+		}
 		$conf = Configure::getInstance() ;
 		if (!empty($conf->draft))
 			$this->status[] = "draft";

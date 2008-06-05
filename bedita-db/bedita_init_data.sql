@@ -80,7 +80,8 @@ INSERT INTO `modules` (`label`, `color`, `path`, `status`) VALUES
 ('attachments', '#ff34aa', 'attachments', 'on'),
 ('news', '#cc00ff', 'news', 'on'),
 ('events', '#3399CC', 'events', 'on'),
-('tags', '#888888', 'tags', 'on');
+('tags', '#888888', 'tags', 'on'),
+('comments', '#F08080', 'comments', 'on');
 
 -- administrator permissions
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
@@ -110,6 +111,9 @@ VALUES ((SELECT id FROM modules WHERE label = 'events'), (SELECT id FROM groups 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'tags'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'comments'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+
 -- editor perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'areas'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
@@ -135,6 +139,9 @@ VALUES ((SELECT id FROM modules WHERE label = 'events'), (SELECT id FROM groups 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'tags'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'comments'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+
 -- reader perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'areas'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
@@ -159,3 +166,7 @@ VALUES ((SELECT id FROM modules WHERE label = 'events'), (SELECT id FROM groups 
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'tags'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'comments'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+
