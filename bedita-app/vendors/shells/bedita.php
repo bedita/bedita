@@ -98,6 +98,9 @@ class DataSourceTest extends DataSource {
 		   }
 		}
 		fclose($handle);
+		if(empty($chunks)) {
+			$chunks[0]=$data;
+		}
 		return $chunks;
 	}
 }
@@ -208,7 +211,7 @@ class BeditaShell extends Shell {
 			$this->out("No data inserted");
 		} else {
 	        $this->out("Load data from $sqlDataDump");
-			$this->DataSourceTest->executeQuery($db, $sqlDataDump);
+			$this->DataSourceTest->executeInsert($db, $sqlDataDump);
 		}
        	$this->out("$dbCfg database updated");
 		$transaction->commit();
