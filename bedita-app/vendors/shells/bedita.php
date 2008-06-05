@@ -208,7 +208,7 @@ class BeditaShell extends Shell {
 			$this->out("No data inserted");
 		} else {
 	        $this->out("Load data from $sqlDataDump");
-			$this->DataSourceTest->executeInsert($db, $sqlDataDump);
+			$this->DataSourceTest->executeQuery($db, $sqlDataDump);
 		}
        	$this->out("$dbCfg database updated");
 		$transaction->commit();
@@ -239,23 +239,34 @@ class BeditaShell extends Shell {
     	if (isset($this->params['f'])) {
             $archFile = $this->params['f'];
     	}
-  		$this->out("Importing file $archFile");
+
+    	if(!file_exists($archFile)) {
+    		$this->out("$archFile not found, bye");
+    		return;
+    	}
+    	$this->out("Importing file $archFile");
 
   		$compress = (substr($archFile, strlen($archFile)-3) == ".gz") ? "gz" : null;
   		$tar = new Archive_Tar($archFile, $compress);
        	if($tar === FALSE) {
        		$this->out("Error opening archive $archFile!!");
        	}
-		$tar->extract($tmpBasePath);
+       	$tar->extract($tmpBasePath);
        	
 		$sqlFileName = $tmpBasePath."bedita-data.sql";
 		
+        $this->hr();
 		$db =& ConnectionManager::getDataSource($dbCfg);
     	$hostName = $db->config['host'];
     	$dbName = $db->config['database'];
 		$this->out("Importing data using bedita db config: $dbCfg - [host=".$hostName.", database=".$dbName."]");
+		$res = $this->in("ATTENTION: database $dbName will be replaced, proceed? [y/n]");
+		if($res != "y") {
+       		$this->out("Bye");
+			return;
+		}
         $this->hr();
-
+				
         $transaction = new TransactionComponent($dbCfg);
 		$transaction->begin();
         
