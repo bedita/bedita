@@ -290,7 +290,7 @@ class BeditaShell extends Shell {
 		// update media root dir
 		$folder = new Folder(MEDIA_ROOT);
 		$ls = $folder->ls();
-		if(count($ls[0]) > 0 || count($dls[1]) > 0) {
+		if(count($ls[0]) > 0 || count($ls[1]) > 0) {
 			$res = $this->in(MEDIA_ROOT. " is not empty, remove files and folders? [y/n]");
 			if($res == "y") {
        			$this->removeMediaFiles();
