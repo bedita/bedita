@@ -99,7 +99,8 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 */
 	private function _data4Parent(&$model, $name, &$data) {
 		//se nn ci sono dati continua
-		if (is_array($model->data) && !count($model->data)) $data = array() ;
+		if (is_array($model->data) && !count($model->data))
+			$data = array() ;
 		
 		if(isset($model->data[$name])) {
 			$data = $model->data[$name] ;

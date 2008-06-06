@@ -395,6 +395,33 @@ abstract class FrontendController extends AppController {
 	}
 	
 	
+	public function saveComment() {
+		if (!empty($this->data)) {
+			if(!isset($this->Comment)) {
+				$this->Comment = $this->loadModelByType("Comment");
+			}
+			$this->data["title"] = substr($this->data["abstract"],0,30) . "...";
+			$this->data["status"] = "on";
+			
+			try {
+				$this->Transaction->begin();
+				if (!$this->Comment->save($this->data)) {
+					throw new BeditaException(__("Error saving comment", true), $this->Comment->validationErrors);
+				}
+				$this->Transaction->commit();
+				$this->userInfoMessage(__("Comment saved", true));
+			} catch (BeditaException $ex) {
+				$this->Transaction->rollback();
+				$errTrace = $ex->getClassName() . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+				$this->log($errTrace);
+				$this->userErrorMessage($ex->getMessage());
+			}
+	
+		}
+		$this->redirect($this->referer());
+
+	}
+	
 	protected function showDraft() {
 		$this->status[] = "draft";
 	}

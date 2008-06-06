@@ -23,8 +23,13 @@ jQuery.fn.extend({
 			if(!confirm(params.message)) {
 				return false ;
 			}
-			$(this).parents("form").attr("action", params.action);
-			$(this).parents("form").submit();
+			if (params.formId) {
+				$("#" + params.formId).attr("action", params.action);
+				$("#" + params.formId).submit(); 
+			} else {
+				$(this).parents("form").attr("action", params.action);
+				$(this).parents("form").submit();
+			}
 		});
 	},
 	/*

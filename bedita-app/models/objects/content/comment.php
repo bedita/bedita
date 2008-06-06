@@ -25,15 +25,6 @@
 class Comment extends BEAppObjectModel
 {
 	var $recursive 	= 2 ;
-	
-	/**
-	 * Oggetto da commentare
-	 *
-	 * @var unknown_type
-	 */
-	var $validate = array(
-		'object_id'	=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
-	) ;
 
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
@@ -42,6 +33,19 @@ class Comment extends BEAppObjectModel
 			'DeleteObject' 			=> 'objects',
 	); 
 
+	var $transactional 	= true ;
+	
+//	var $validate = array(
+//			'author' => array(
+//				'required' => true,
+//	   		),
+//	   		'email' => array(
+//	   			'rule' => 'email',
+//				'required' => true,
+//	   			'message' => 'email not valid'
+//	   		)
+//	   );
+	   
 	var $hasOne = array(
 			'BEObject' =>
 				array(
@@ -57,8 +61,8 @@ class Comment extends BEAppObjectModel
 					'foreignKey'	=> 'id',
 					'dependent'		=> true
 				),
-		) ;			
+		) ;
 
-
+		
 }
 ?>

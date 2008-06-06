@@ -9,7 +9,8 @@ $(document).ready(function(){
 	$("#delBEObject").submitConfirm({
 		{/literal}
 		action: "{if !empty($delparam)}{$html->url($delparam)}{else}{$html->url('delete/')}{/if}",
-		message: "{t}Are you sure that you want to delete the item?{/t}"
+		message: "{t}Are you sure that you want to delete the item?{/t}",
+		formId: "updateForm"
 		{literal}
 	});
 	

@@ -19,7 +19,7 @@ INSERT INTO object_types (id, name, module) VALUES
 (10, 'befile', 'attachments'),
 (12, 'image', 'multimedia'),
 
-(13, 'comment', NULL),
+(13, 'comment', 'comments'),
 (14, 'faqquestion', NULL),
 (15, 'question', NULL),
 
