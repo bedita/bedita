@@ -33,9 +33,11 @@ Menu a SX valido per tutte le pagine del controller.
 {if (!empty($method)) && $method eq "index"}
 
 		<div class="insidecol">
-		
-		{$beTree->view($tree)}
-		
+			
+			<div class="publishingtree">
+				{$beTree->view($tree)}
+			</div>
+			
 		</div>
 
 {/if}

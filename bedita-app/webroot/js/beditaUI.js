@@ -178,17 +178,25 @@
 
 
 
-	$(".publishingtree UL").hide();
+	$(".publishingtree DIV UL").hide();
 
 	
 
-	$(".publishingtree:has(>ul)").click(function () {
+	$(".publishingtree DIV:has(>ul)").click(function () {
 
 			$("ul", this).toggle();	
 
 	});
 
+	$(".publishingtree LI").click(function () {
 
+			if ($(this).attr("rel")) {
+				window.location = $(this).attr("rel");
+			}
+
+	});
+	
+	
 
 /*...........................................    
 

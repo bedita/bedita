@@ -758,12 +758,16 @@ label.block {display:block; margin-top:4px; margin-bottom:2px}
 
 fieldset {border:0}
 
+textarea {
+	overflow:auto;
+}
+
 textarea#description, textarea#title, textarea#addtaglist, textarea.longtext {
-	width:480px; overflow:auto;
+	width:480px; 
 }
 
 input#title, textarea#subtitle {
-	width:240px; 
+	width:380px; 
 }
 
 .insidecol input {
