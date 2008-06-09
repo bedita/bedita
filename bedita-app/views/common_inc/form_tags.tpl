@@ -2,6 +2,7 @@
 <script type="text/javascript">
 <!--
 $(document).ready(function(){
+	
 	var showTagsFirst = false;
 	var showTags = false;
 	$("#callTags").bind("click", function() {
@@ -24,8 +25,12 @@ $(document).ready(function(){
 			}
 			showTags = !showTags;
 		}
-	});
+	});	
 });
+
+
+
+
 //-->
 </script>
 {/literal}
@@ -37,7 +42,7 @@ $(document).ready(function(){
 	{t}Add comma separated words{/t}<br/>
 	
 	{strip}
-	<textarea name="tags" id="tagsArea">
+	<textarea name="tags" style="display:block; width:470px" id="tagsArea">
 	{if !empty($object.ObjectCategory)}
 		{foreach from=$object.ObjectCategory item="tag" name="ft"}
 			{$tag.label}{if !$smarty.foreach.ft.last},&nbsp;{/if}
@@ -47,10 +52,13 @@ $(document).ready(function(){
 	{/strip}
 
 
-	<a id="callTags" href="javascript:void(0);">{t}Show system tags{/t}</a>
-
+	<a class="BEbutton" id="callTags" href="javascript:void(0);">{t}Show system tags{/t}</a>
+	
+	<hr />
+	
 	<div id="loadingTags" class="generalLoading" title="{t}Loading data{/t}">&nbsp;</div>
-	<div id="listExistingTags" style="display: none;"></div>
+	<div id="listExistingTags" class="tag graced" style="display: none;"></div>
+
 
 </fieldset>
 

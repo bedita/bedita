@@ -5,14 +5,12 @@ Menu a SX valido per tutte le pagine del controller.
 
 {assign var='method' value=$method|default:'index'}
 
-<div class="secondacolonna {if $fixed}fixed{/if}">
+<div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 	<div class="modules">
 	   <label class="events" rel="{$html->url('/events')}">{t}Events{/t}</label>
 	</div> 
 	
-	
-	{include file="../messages.tpl"}
 	
 	
 	{if $method == "view" && $module_modify eq '1'}

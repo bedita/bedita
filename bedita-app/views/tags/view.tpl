@@ -6,23 +6,13 @@
 {$javascript->link("jquery/jquery.metadata", false)}
 {$javascript->link("jquery/jquery.validate", false)}
 
-<script type="text/javascript">
-<!--
-{literal}
-$(document).ready(function() {
-	$("#handlerChangeAlert").changeAlert($('input, textarea, select').not($("#addCustomPropTR TD/input, #addCustomPropTR TD/select, #addPermUserTR TD/input, #addPermGroupTR TD/input"))) ;
-	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div').alertUnload() ;
-});
 
-{/literal}
-//-->
-</script>
 
 </head>
 
 <body>
 
-{include file="../modulesmenu.tpl"}
+{include file="../common_inc/modulesmenu.tpl"}
 
 {include file="inc/menuleft.tpl" method="view"}
 

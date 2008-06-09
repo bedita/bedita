@@ -1,7 +1,4 @@
-{$html->css('tree')}
-{$javascript->link("jquery.treeview")}
-{$javascript->link("interface")}
-{$javascript->link("jquery.changealert")}
+
 
 </head>
 
@@ -19,7 +16,7 @@
 
 <div class="mainfull">
 
-	{include file="../pages/list_objects.tpl" method="index" areasectiontree=$areasectiontree}
+	{include file="../common_inc/list_objects.tpl" method="index" areasectiontree=$areasectiontree}
 	
 </div>
 

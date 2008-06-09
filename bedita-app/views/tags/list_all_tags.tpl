@@ -36,3 +36,7 @@
 	{t}No tags found.{/t}
 {/if}
 </div>
+
+<pre>
+	{dump var=$listTags}
+</pre>

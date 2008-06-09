@@ -4,7 +4,7 @@
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-CSS Created by the Chialab.it
+CSS Created by Chialab.it
 
 http://www.chialab.it 2007
 
@@ -171,6 +171,8 @@ BODY {font-size:12px; font-family: Arial, Helvetica, sans-serif; line-height:1.5
 H1 {font:normal 2em Georgia, "Times New Roman", Times, serif; line-height:1em}
 
 H2 {font:normal 1.5em Georgia, "Times New Roman", Times, serif; line-height:1em}
+
+.graced {font-family: Georgia, "Times New Roman", Times, serif;}
 
 
 /*...........................................
@@ -704,6 +706,7 @@ TABLE.indexlist {
 }
 
 
+
 /*...........................................    
 
     Specific template layouts: home
@@ -858,4 +861,25 @@ input[type=radio] {
 }
 
 
+/*...........................................    
 
+    Buttons
+
+...........................................*/
+
+.BEbutton {
+
+
+}
+
+/*...........................................    
+
+    Tags
+
+...........................................*/
+
+.tag {
+	font-weight: bold;
+	line-height:1.2em;
+	
+}

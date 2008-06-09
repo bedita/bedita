@@ -5,19 +5,15 @@
 	{include file="inc/meta.tpl"}
 	
 	{$html->css('beditaNew')}
-	{*$html->css('bedita')*}
-	{*$html->css('menu')*}
-	{*$html->css('form')*}
-	{*$html->css('message')*}	
+	
 	
 	{$javascript->link("jquery/jquery")}
 	{$javascript->link("jquery/jquery.cookie")}
+	{*$javascript->link("jquery.changealert")*}
 	{$javascript->link("common")}
 	{$javascript->link("beditaUI")}
-	
-	{* include file="../layout_parts/inline_js.tpl" *}
+
 	{* collect linked scripts around *}
-	
 	{$scripts_for_layout}
 
 

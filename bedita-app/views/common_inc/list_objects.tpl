@@ -111,7 +111,9 @@ function assocObjectsToAreaSection(id) {
 </table>
 
 
-	
+<br />
+<br />
+
 <div class="tab"><h2>Operazioni sui 3 records selezionati</h2></div>
 <div>
 	<input type="checkbox" class="selectAll" id="selectAll"/><label for="selectAll"> {t}(Un)Select All{/t}</label>
@@ -137,6 +139,7 @@ function assocObjectsToAreaSection(id) {
 			{/foreach}
 			</select>
 	{/if}
+	
 </div>
 	
 	</form>

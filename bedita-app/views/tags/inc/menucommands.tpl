@@ -5,14 +5,15 @@ Menu a SX valido per tutte le pagine del controller.
 
 {assign var='method' value=$method|default:'index'}
 
-<div class="secondacolonna {if $fixed}fixed{/if}">
+<div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 	<div class="modules">
 	   <label class="tags" rel="{$html->url('/tags')}">{t}Tags{/t}</label>
 	</div> 
 	
 	
-	{include file="../messages.tpl"}
+	{include file="../common_inc/messages.tpl"}
+	
 	
 	{if $method == "view" && $module_modify eq '1'}
 	<div class="insidecol">

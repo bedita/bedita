@@ -1,20 +1,17 @@
-{$html->css('tree')}
-{$javascript->link("jquery/jquery.treeview", false)}
-{$javascript->link("jquery/interface", false)}
+
 {$javascript->link("form", false)}
-{$javascript->link("jquery/jquery.changealert", false)}
 
 </head>
 
 <body>
-
+{literal}
 <script type="text/javascript">
 <!--
 var urlDelete = "{$html->url('delete/')}" ;
 var message = "{t}Are you sure that you want to delete the tag?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected tags?{/t}" ;
 var URLBase = "{$html->url('index/')}" ;
-{literal}
+
 $(document).ready(function() {
 
 	/* select/unselect each item's checkbox */
@@ -52,17 +49,18 @@ function delObjects() {
 	$("#formObject").get(0).submit() ;
 	return false ;
 }
-{/literal}
+
 //-->
 </script>
+{/literal}
 
-{include file="modulesmenu.tpl"}
+{include file="../common_inc/modulesmenu.tpl"}
 
 {include file="inc/menuleft.tpl" method="index"}
 
 {include file="inc/menucommands.tpl" method="index"}
 
-{include file="../toolbar.tpl"}
+{include file="../common_inc/toolbar.tpl"}
 
 <div class="main">
 
