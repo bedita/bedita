@@ -180,7 +180,6 @@
 
 	$(".publishingtree DIV UL").hide();
 
-	
 
 	$(".publishingtree DIV:has(>ul)").click(function () {
 

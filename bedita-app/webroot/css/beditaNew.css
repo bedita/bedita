@@ -431,13 +431,22 @@ UL.modulesmenu {
 ...........................................*/
 
 .publishingtree {
-	width:250px;
+	width:260px;
+}
+
+.publishingtree DIV {
+	margin-left: -20px;
 }
 
 .publishingtree H2 {
 	margin:10px 0px 10px 0px;
-	color:#ff6600;
+	/* color:#ff6600; */
+	cursor:pointer;
 
+}
+
+.publishingtree *[rel] {
+	cursor:pointer;
 }
 
 .publishingtree UL {
@@ -447,9 +456,13 @@ UL.modulesmenu {
 
 .publishingtree LI  {
 	border-bottom:1px solid #999999;
-	padding:5px 0px 5px 10px;
+	padding:3px 0px 3px 5px;
 }
 
+.publishingtree LI:Hover  {
+	background-color:#d8d8d8;
+
+}
 
 /*
 .publishingtree UL LI:last-child {
@@ -552,7 +565,6 @@ TD.center, TH.center {
 .indexlist TR:first-child, .indexlist TR:last-child  {
 	border-bottom:0px solid #d8d8d8;
 }
-
 
 
 TABLE.indexlist {
