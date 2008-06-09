@@ -81,7 +81,7 @@ class BeTreeHelper extends Helper {
 	 * @return html for simple view tree
 	 */
 	public function view($tree=array()) {
-		
+	
 		$output = "";
 		if (!empty($tree)) {
 			
@@ -107,7 +107,10 @@ class BeTreeHelper extends Helper {
 	private function designBranch($branch) {
 		$res = "<ul>";
 		foreach ($branch as $section) {
-			$res .= "<li rel='" . $this->Html->url('/') . $this->params["controller"] . "/index/id:" . $section["id"] . "'>" . $section["title"] . "</li>";
+			$url = $this->Html->url('/') . $this->params["controller"] . "/index/id:" . $section["id"];
+			
+			$class = (!empty($this->params["url"]["id"]) && $this->params["url"]["id"] == $section["id"])? " class='on'" : "" ;
+			$res .= "<li rel='" . $url . "'" . $class . ">" . $section["title"] . "</li>";
 			if (!empty($section["children"])) {
 				$res .= $this->designBranch($section["children"]);
 			}
