@@ -181,9 +181,9 @@ $(document).ready(function(){
 	$(".publishingtree DIV UL").hide();
 
 
-	$(".publishingtree DIV:has(>ul)").click(function () {
-
-			$("ul", this).toggle();	
+	$(".publishingtree h2").click(function () {
+	
+			$(this).parent("div").find("ul").toggle();
 
 	});
 
