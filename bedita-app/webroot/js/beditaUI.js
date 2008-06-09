@@ -1,4 +1,4 @@
-﻿$(document).ready(function(){
+$(document).ready(function(){
 
 
 
@@ -195,8 +195,7 @@
 
 	});
 	
-	//$(".publishingtree LI.on").parents("DIV *").children().show();
-	$(".publishingtree LI.on").parents("DIV").find("UL").show();
+	$(".publishingtree LI.on").parents("DIV:first").find("UL").show();
 	
 
 /*...........................................    
