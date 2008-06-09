@@ -461,7 +461,10 @@ UL.modulesmenu {
 
 .publishingtree LI:Hover  {
 	background-color:#d8d8d8;
+}
 
+.publishingtree LI.on  {
+	background-color:white;
 }
 
 /*

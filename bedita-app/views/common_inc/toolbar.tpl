@@ -2,7 +2,7 @@
 	
 	<div class="toolbar">
 		
-		<h2>in "nomesezione" &nbsp;</h2>
+		<h2>in {$sectionSel.title|default:"section"} &nbsp;</h2>
 		
 		<ul>
 	

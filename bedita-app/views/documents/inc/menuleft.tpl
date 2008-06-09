@@ -10,6 +10,19 @@ Menu a SX valido per tutte le pagine del controller.
 		<div class="modules"><label class="bedita" rel="{$html->url('/')}">BEdita 3.0</label></div>
 
 
+{if (!empty($method)) && $method eq "index"}
+
+		<div class="insidecol publishingtree">
+			
+				{$beTree->view($tree)}
+			
+		</div>
+
+{/if}
+
+
+		<hr />
+		
 		<ul class="insidecol">
 			<li><a href="{$html->url('/documents')}">{t}Documents{/t}</a></li>
 
@@ -30,15 +43,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 	
 	
-{if (!empty($method)) && $method eq "index"}
 
-		<div class="insidecol publishingtree">
-			
-				{$beTree->view($tree)}
-			
-		</div>
-
-{/if}
 
 
 <div id="handlerChangeAlert"></div>

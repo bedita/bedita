@@ -195,6 +195,8 @@
 
 	});
 	
+	//$(".publishingtree LI.on").parents("DIV *").children().show();
+	$(".publishingtree LI.on").parents("DIV").find("UL").show();
 	
 
 /*...........................................    
