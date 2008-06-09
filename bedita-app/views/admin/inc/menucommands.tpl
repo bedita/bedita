@@ -6,13 +6,13 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 
 
 
-<div class="secondacolonna {if $fixed}fixed{/if}">
+<div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 	<div class="modules">
 	   <label class="admin" rel="{$html->url('/admin')}">{t}Admin{/t}</label>
 	</div> 
 	
-	{include file="../messages.tpl"}
+	{include file="../common_inc/messages.tpl"}
 	
 	
 	{if $module_modify eq '1'}

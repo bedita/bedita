@@ -9,7 +9,7 @@
 
 <body>
 
-{include file="modulesmenu.tpl"}
+{include file="../common_inc/modulesmenu.tpl"}
 
 {include file="inc/menuleft.tpl" method="systemInfo"}
 

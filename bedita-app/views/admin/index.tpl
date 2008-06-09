@@ -24,13 +24,13 @@
 
 <body>
 
-{include file="modulesmenu.tpl"}
+{include file="../common_inc/modulesmenu.tpl"}
 
 {include file="inc/menuleft.tpl" method="index"}
 
-{include file="inc/menucommands.tpl"}
+{include file="inc/menucommands.tpl" method="index"}
 
-{include file="toolbar.tpl"}
+{include file="../common_inc/toolbar.tpl"}
 
 <div class="mainfull">
 
