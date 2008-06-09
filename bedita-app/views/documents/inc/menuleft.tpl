@@ -33,9 +33,8 @@ Menu a SX valido per tutte le pagine del controller.
 {if (!empty($method)) && $method eq "index"}
 
 		<div class="insidecol">
-		{include file="../common_inc/tree_view.tpl"}
 		
-		{*$beTree->tree("tree", $tree)*}
+		{$beTree->view($tree)}
 		
 		</div>
 

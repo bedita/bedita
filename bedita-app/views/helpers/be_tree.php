@@ -14,7 +14,7 @@ class BeTreeHelper extends Helper {
 	 *
 	 * @var array
 	 */
-	var $helpers = array();
+	var $helpers = array("Html");
 
 	var $tags = array(
 		'tree'		=> "<ul class=\"publishingtree\" id=\"%s\">\n\t%s\n</ul>\n",
@@ -72,6 +72,52 @@ class BeTreeHelper extends Helper {
 
 		return $txt ;
 	}
+	
+	
+	/**
+	 * output a tree
+	 *
+	 * @param array $tree, publications tree
+	 * @return html for simple view tree
+	 */
+	public function view($tree=array()) {
+		
+		$output = "";
+		if (!empty($tree)) {
+			
+			foreach ($tree as $publication) {
+				$output .= "<div><h2>+ ". $publication["title"] . "</h2>";
+				if (!empty($publication["children"])) {
+					$output .= $this->designBranch($publication["children"]);
+				}
+				$output .= "</div>";
+			}
+			
+		}
+		return $this->output($output);
+		
+	}
+	
+	/**
+	 * get html section
+	 *
+	 * @param array $branch, section
+	 * @return html for section simple tree
+	 */
+	private function designBranch($branch) {
+		$res = "<ul>";
+		foreach ($branch as $section) {
+			$res .= "<li rel='" . $this->Html->url('/') . $this->params["controller"] . "/index/id:" . $section["id"] . "'>" . $section["title"] . "</li>";
+			if (!empty($section["children"])) {
+				$res .= $this->designBranch($section["children"]);
+			}
+		}
+		$res .= "</ul>";
+		return $res;
+	}
+	
+	
+	
 }
 
 ?>

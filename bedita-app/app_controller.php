@@ -467,7 +467,7 @@ abstract class ModulesController extends AppController {
 			array("dir", "boolean", &$dir)
 		) ;
 		// sections tree
-		$tree = $this->BeTree->expandOneBranch($id);
+		$tree = $this->BeTree->getSectionsTree();
 		$objects = $this->BeTree->getDiscendents($id, null, $typesArray, $order, $dir, $page, $dim)  ;
 		$this->params['toolbar'] = &$objects['toolbar'] ;
 		// template data
