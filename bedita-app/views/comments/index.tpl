@@ -18,7 +18,7 @@
 
 <div class="mainfull">
 
-	{include file="../pages/list_objects.tpl" method="index" areasectiontree=$areasectiontree}
+	{include file="../pages/list_objects.tpl" method="index"}
 	
 </div>
 

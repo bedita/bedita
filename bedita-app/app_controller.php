@@ -466,13 +466,20 @@ abstract class ModulesController extends AppController {
 			array("order", "string", &$order),
 			array("dir", "boolean", &$dir)
 		) ;
-		// sections tree
-		$tree = $this->BeTree->getSectionsTree();
+
+		// get section selected
+		$section = $this->loadModelByType("section");
+		$this->modelBindings['Section'] = array("BEObject");
+		$this->modelBindings($section);
+		$sectionSel = $section->findById($id);
+		unset($this->modelBindings['Section']);
+		
 		$objects = $this->BeTree->getDiscendents($id, null, $typesArray, $order, $dir, $page, $dim)  ;
 		$this->params['toolbar'] = &$objects['toolbar'] ;
 		// template data
-		$this->set('tree', $tree);
-		$this->set('areasectiontree',$this->BeTree->getSectionsTree());
+		$this->set('tree', $this->BeTree->getSectionsTree());
+	
+		$this->set('sectionSel',$sectionSel);
 		$this->set('objects', $objects['items']);
 	}
 	
@@ -530,7 +537,7 @@ abstract class ModulesController extends AppController {
 	  * Add Link with Ajax...
 	  */
 	
-	 public function addLink() {
+	public function addLink() {
 		$this->layout="empty";
 	 	$this->data = $this->params['form'];
 		$this->Transaction->begin() ;
