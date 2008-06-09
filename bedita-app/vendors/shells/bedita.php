@@ -615,6 +615,53 @@ class BeditaShell extends Shell {
            $this->out('Media files cleaned.');
     	
     }
+
+    public function checkApp() {
+        $appPath = $this->params['app'];
+        if (isset($this->params['frontend'])) {
+        	$appPath = $this->params['frontend'];
+        }
+        $this->out('Checking cake app dir: '.$appPath);
+        // config/core.php
+        $this->checkAppFile($appPath.DS."config".DS."core.php");
+        // config/database.php
+        $this->checkAppFile($appPath.DS."config".DS."database.php");
+        // config/bedita.ini.php
+        $this->checkAppFile($appPath.DS."config".DS."bedita.ini.php");
+        // index.php
+        $this->checkAppFile($appPath.DS."index.php");
+        // webroot/index.php
+        $this->checkAppFile($appPath.DS."webroot".DS."index.php");
+        // webroot/test.php
+        $this->checkAppFile($appPath.DS."webroot".DS."test.php");
+        // tmp/cache
+        $this->checkAppDirPerms($appPath.DS."tmp".DS."cache");
+        // tmp/smarty/compile
+        $this->checkAppDirPerms($appPath.DS."tmp".DS."smarty".DS."compile");
+        // tmp/logs
+        $this->checkAppDirPerms($appPath.DS."tmp".DS."logs");
+    }
+
+    private function checkAppDirPerms($dirPath) {
+       $this->out("$dirPath - perms: ".sprintf("%o",(fileperms($dirPath) & 511)));
+    }
+
+    private function checkAppFile($filePath) {
+        if(!file_exists($filePath)) {
+        	$this->out("$filePath: NOT FOUND!");
+            $sampleFile = $filePath.".sample";
+        	if(file_exists($sampleFile)) {
+                $res = $this->in("$sampleFile found, create copy? [y/n]");
+                if($res == "y") {
+                    if(!copy($sampleFile, $filePath)) {
+                        throw new Exception("Unable to copy $sampleFile to $filePath");
+                    }                	
+                }
+        	}
+        } else {
+            $this->out("$filePath: ok.");
+        }
+    }
     
 	function help() {
         $this->out('Available functions:');
@@ -652,6 +699,12 @@ class BeditaShell extends Shell {
         $this->out(' ');
   		$this->out("    -f <tar-gz-filename>\t file to import, default ".self::DEFAULT_ARCHIVE_FILE);
         $this->out("    -db <dbname>\t use db configuration <dbname> specified in config/database.php");
+        $this->out(' ');
+        $this->out('7. checkApp: check app files ... (core.php/database.php/index.php...)');
+        $this->out(' ');
+        $this->out('    Usage: checkApp [-frontend <app-path>]');
+        $this->out(' ');
+        $this->out("    -frontend \t check files in <frontend path> [use frontend /app path]");
         $this->out(' ');
 	}
 }
