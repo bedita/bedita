@@ -2,7 +2,8 @@
 	
 	<div class="toolbar">
 		
-		<h2>in {$sectionSel.title|default:"section"} &nbsp;</h2>
+		<h2>{if !empty($sectionSel)}{$moduleName} in “ <span style="color:white" class="evidence">{$sectionSel.title}</span> ”
+		{else} all {$moduleName}{/if}</h2>
 		
 		<ul>
 	

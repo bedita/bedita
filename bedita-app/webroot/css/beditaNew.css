@@ -358,7 +358,6 @@ UL.modulesmenu {
 	background:transparent url(../img/shadowh2-small.png) repeat left top;
 	padding:10px 0px 10px 0px;
 	margin-top:-10px;
-
 }
 
 .tab H2 {
@@ -370,6 +369,10 @@ UL.modulesmenu {
 	background-position:right 0px ;
 	height:20px; padding:5px 10px 0px 10px;
 
+}
+
+.tab + * {
+	display:none; 
 }
 
 
@@ -681,6 +684,9 @@ TABLE.indexlist {
 	overflow:hidden;
 }
 
+.multimediaitem.small .description {
+	display:none;
+}
 
 .multimediaitem input, .multimediaitem textarea {
 	width:120px;
