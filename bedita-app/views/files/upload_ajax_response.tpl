@@ -10,7 +10,7 @@
 {else}
 	[
 		{literal}{{/literal}
-			filename:	"{$fileName|escape:'javascript':'UTF-8'}"
+			fileId:	"{$fileId}"
 		{literal}}{/literal}
 	]
 {/if}

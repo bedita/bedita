@@ -128,7 +128,7 @@ class StreamsController extends AppController {
 		$this->set('priority',	@$priority);
 		$this->set('objIndex',		@$index);
 		$this->set('relation',	@$relation);
-		$this->set('cols',		@$cols);
+		//$this->set('cols',		@$cols);
 		$this->selfUrlParams = array("id", @$id);    
 		$this->layout = "empty" ;
 	}

@@ -148,21 +148,22 @@ jQuery.fn.extend({
 			}
 		}) ;
 	},
+	
 	reorderListItem: function() {
 		$(".itemBox").each(function (index) {
 			$("input[@name='index']", this).attr("value", index) ;
-			$(".id", this).attr("name", "data[ObjectRelation]["+index+"][id]") ;
-			$(".switch", this).attr("name", "data[ObjectRelation]["+index+"][switch]") ;
-			$(".priority", this).attr("name", "data[ObjectRelation]["+index+"][priority]") ;
-			$(".modified", this).attr("name", "data[ObjectRelation]["+index+"][modified]") ;
-			
-			$(".title", this).attr("name", "data[ObjectRelation]["+index+"][title]") ;
-			$(".description", this).attr("name", "data[ObjectRelation]["+index+"][description]") ;
+			$("input[@name*='[id]']", this).attr("name", "data[ObjectRelation]["+index+"][id]") ;
+			$("input[@name*='[switch]']", this).attr("name", "data[ObjectRelation]["+index+"][switch]") ;
+			$("input[@name*='[priority]']", this).attr("name", "data[ObjectRelation]["+index+"][priority]") ;
+			$("input[@name*='[modified]']", this).attr("name", "data[ObjectRelation]["+index+"][modified]") ;
+			$("input[@name*='[title]']", this).attr("name", "data[ObjectRelation]["+index+"][title]") ;
+			$("textarea[@name*='[description]']", this).attr("name", "data[ObjectRelation]["+index+"][description]") ;
 		}) ;
-		var priority = 1;
-		$(this).find(".itemBox").each(function () {
-			$(this).find("input[@class='priority']").val(priority++)	// update priority
+		
+		$(this).find(".itemBox").each(function (priority) {
+			$(this).find("input[@name*='[priority]']").val(priority+1)	// update priority
 				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');		// effects
 		});
 	}
+
 });

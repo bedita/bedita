@@ -634,7 +634,7 @@ TABLE.indexlist {
 }
 
 .multimediaitem UL {
-	display:none;
+	display:block;
 }
 
 .multimediaitem LI {

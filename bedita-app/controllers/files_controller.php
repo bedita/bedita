@@ -30,7 +30,7 @@ class FilesController extends AppController {
 				throw new BEditaException(__("Error during upload: error number" ." ". $this->params['form']['Filedata']["error"],true)) ;
 			$id = $this->BeUploadToObj->upload($this->params["form"]["streamUploaded"]) ;
 			$this->Transaction->commit();
-			$this->set("fileName", $this->params['form']['Filedata']["name"]);
+			$this->set("fileId", $id);
 		} catch(BeditaException $ex) {
 			$errTrace = $ex->getClassName() . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);

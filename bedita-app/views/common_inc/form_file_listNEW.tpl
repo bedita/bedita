@@ -5,63 +5,11 @@
 
 <hr />
 	
-		<div class="multimediaitem">
-			<img src="/img/thumb.jpg" />
-			<label class="evidence">1</label>
-			<ul>
-				<li>titolo:
-					<input type="text" value="titolo dell'immagine" /></li>
-				<li>didascalia:
-					<textarea>io sono la didascalia</textarea></li>
-			</ul>
-		</div>
-		
-		<div class="multimediaitem">
-			<img src="/img/thumb2.jpg" />
-			<label class="evidence">2</label>
-			<ul>
-				<li>titolo:
-					<input type="text" value="titolo dell'immagine" /></li>
-				<li>didascalia:
-					<textarea>io sono la didascalia</textarea></li>
-			</ul>
-		</div>	
-
-		<div class="multimediaitem off">
-			
-			
-			<img src="/img/thumb2.jpg" />
-			
-			<label class="evidence">3</label>
-			<ul>
-				<li>titolo:
-					<input type="text" value="titolo dell'immagine" /></li>
-				<li>didascalia:
-					<textarea>io sono la didascalia</textarea></li>
-			</ul>
-		</div>	
-		
-		<div class="multimediaitem">
-			<img src="/img/thumb2.jpg" />
-			<label class="evidence">4</label>
-			<ul>
-				<li>titolo:
-					<input type="text" value="titolo dell'immagine" /></li>
-				<li>didascalia:
-					<textarea>io sono la didascalia</textarea></li>
-			</ul>
-		</div>
-		
-		<div class="multimediaitem">
-			<img src="/img/thumb2.jpg" />
-			<label class="evidence">5</label>
-			<ul>
-				<li>titolo:
-					<input type="text" value="titolo dell'immagine" /></li>
-				<li>didascalia:
-					<textarea>io sono la didascalia</textarea></li>
-			</ul>
-		</div>
+{foreach from=$attach item="obj"}
+	<div class="multimediaitem itemBox{if $obj.status == "off"} off{/if}">
+	{include file="../common_inc/form_file_item.tpl"}
+	</div>
+{/foreach}
 
 </fieldset>
 
@@ -78,6 +26,7 @@
 	
 	
 	<div class="htabcontent" id="uploadItems">
+		{*
 		<table class="bordered" style="width:100%; margin-bottom:20px;">
 			<th colspan="4" id="queueinfo">uploading file <span class="evidence">2</span> of 3... </th>
 			<tr id="7441_0">
@@ -97,6 +46,8 @@
 			</td>
 		</table>
 		<input type="button" class="swfuploadbtn browsebtn" id="SWFUpload_0BrowseBtn" value="browse your hard disk again"  />
+		*}
+		{include file="../common_inc/form_upload_ajax.tpl"}
 	</div>
 
 	
