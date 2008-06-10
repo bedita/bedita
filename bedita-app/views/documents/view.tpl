@@ -1,14 +1,13 @@
 {$html->css("ui.datepicker")}
 
-{$javascript->link("jquery/jquery.form")}
+
 {$javascript->link("jquery/jquery.treeview")}
-{$javascript->link("jquery/jquery.selectboxes.pack")}
+
 {$javascript->link("jquery/ui/datepicker/ui.datepicker")}
 {if $currLang != "eng"}
 	{$javascript->link("jquery/ui/datepicker/ui.datepicker-$currLang.js")}
 {/if}
 
-{include file="../common_inc/form_common_js.tpl"}
 
 </head>
 
