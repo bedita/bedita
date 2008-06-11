@@ -1,6 +1,6 @@
 {$html->css("ui.datepicker")}
 
-
+{$javascript->link("jquery/jquery.form")}
 {$javascript->link("jquery/jquery.treeview")}
 
 {$javascript->link("jquery/ui/datepicker/ui.datepicker")}
