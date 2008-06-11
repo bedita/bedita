@@ -60,10 +60,6 @@ class BeTreeComponent extends Object {
 	
 	function getAreaForSection($section_id) {
 		$area_id = $this->Tree->getRootForSection($section_id);
-		if(empty($area_id)) {
-			$this->log("No area found for section ".$section_id);
-			throw new BeditaException(__("No area found for section $section_id",true));
-		}
 		return $this->Area->findById($area_id);
 	}
 

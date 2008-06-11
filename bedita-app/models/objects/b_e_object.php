@@ -321,8 +321,23 @@ class BEObject extends BEAppModel
 	
 	function findCount($sqlConditions = null, $recursive = null) {
 		$from = " objects as `BEObject` " ;
-
-		list($data)  = $this->execute("SELECT COUNT(DISTINCT `BEObject`.`id`) AS count FROM {$from} {$sqlConditions}") ;
+		$query = "SELECT COUNT(DISTINCT `BEObject`.`id`) AS count FROM {$from}";
+		if(is_array($sqlConditions)) {
+			$where = " WHERE ";
+			$first = true;
+			foreach ($sqlConditions as $k => $v) {
+				if(!$first) {
+					$where .= " AND ";
+				}
+				$where .= " $k = $v";
+				$first = false;
+			}
+			$query .= $where;
+			
+		} else if(!empty($sqlConditions)) {
+			$query .= $sqlConditions;
+		}
+		list($data)  = $this->execute($query) ;
 
 		if (isset($data[0]['count'])) {
 			return $data[0]['count'];

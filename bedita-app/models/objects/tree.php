@@ -102,14 +102,16 @@ class Tree extends BEAppModel
 	}
 
 	function getRootForSection($id) {
-		if(($ret = $this->query("SELECT path FROM trees WHERE id = {$id}")) === false) {
-			return null;
+		$path = $this->field("path", array("id"=>$id));
+		if($path === false) {
+			$this->log("No path found in Tree for id ".$id);
+			throw new BeditaException(__("No path found in Tree for id", true)." ".$id);
 		}
-		$path = $ret[0]['trees']['path'];
-		if(empty($path))
-			return null;
 		$path = substr($path,1);
-		return substr($path,0,strpos($path,"/"));
+		$pos = strpos($path,"/");
+		if($pos == -1)
+			return $path;
+		return substr($path,0, $pos);
 	}
 
 	function appendChild($id, $idParent = null) {
@@ -227,21 +229,14 @@ class Tree extends BEAppModel
 	}
 
 	/**
-	 * Preleva l'abero di cui id � la radice.
-	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se '' � un utente anonimo,
-	 * altrimenti li prende tutti.
-	 * Si possono selezionare i tipi di oggetti da inserire nell'albero.
-	 *
-	 * @param integer $id		id della radice da selezionare.
-	 * @param string $userid	l'utente che accede. Se null: non controlla i permessi. Se '': utente guest.
-	 * 							Default: non verifica i permessi.
-	 * @param string $status	Prende oggetti solo con lo status passato
-	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
-	 * 							1,3, 22 ... aree, sezioni, documenti.
-	 * 							Default: tutti. (false)
+	 * Get Tree where 'id' is root.
+	 * @param integer $id		root id.
+	 * @param string $userid	user. if null: no permission check (default); if '': guest user
+	 * @param string $status	only objs with this status 
+	 * @param array $filter		object types id (no "search" text query!!), default: false (all)
 	 */
 	function getAll($id = null, $userid = null, $status = null, $filter = false) {
-		$fields  = " * " ;
+		$fields  = " distinct * " ;
 
 		// Setta l'id
 		if (!empty($id)) {
@@ -260,7 +255,8 @@ class Tree extends BEAppModel
 //		$sqlClausole = $db->conditions($conditions, false, true) ;
 		$sqlClausole = $db->conditions($conditions, true, true) ;
 
-		$records  = $this->execute("SELECT {$fields} FROM view_trees AS Tree {$sqlClausole}") ;
+		$from = " view_trees AS Tree ";
+		$records  = $this->execute("SELECT {$fields} FROM {$from} {$sqlClausole}") ;
 
 		// Costruisce l'albero
 		$roots 	= array() ;
@@ -515,9 +511,26 @@ class Tree extends BEAppModel
 		return $this->_getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim, true) ;
 	}
 
-	function findCount($conditions = null, $recursive = null) {
-		$from = "view_trees AS Tree INNER JOIN objects ON Tree.id = objects.id" ;
-		list($data)  = $this->execute("SELECT COUNT(*) AS count FROM {$from} {$conditions}") ;
+	function findCount($sqlConditions = null, $recursive = null) {
+		$from = " trees AS Tree INNER JOIN objects as BEObject ON Tree.id = BEObject.id " ;
+		$query = "SELECT COUNT(DISTINCT `Tree`.`id`) AS count FROM {$from}";
+		if(is_array($sqlConditions)) {
+			$where = " WHERE ";
+			$first = true;
+			foreach ($sqlConditions as $k => $v) {
+				if(!$first) {
+					$where .= " AND ";
+				}
+				$where .= " $k = $v";
+				$first = false;
+			}
+			$query .= $where;
+			
+		} else if(!empty($sqlConditions)) {
+			$query .= $sqlConditions;
+		}
+
+		list($data)  = $this->execute($query);
 
 		if (isset($data[0]['count'])) {
 			return $data[0]['count'];
@@ -575,14 +588,14 @@ class Tree extends BEAppModel
 	 * @param integer $dim		Dimensione della pagina
 	 * @param boolean $all		Se true, prende anche i discendenti
 	 */
-	function _getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim, $all) {
+	private function _getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim, $all) {
 		
 		// Setta l'id
 		if (!empty($id)) {
 			$this->id = $id;
 		}
 
-		$fields  = " * " ;
+		$fields  = " distinct `Tree`.*, `BEObject`.* " ;
 		
 		// setta le condizioni di ricerca
 		$conditions = array() ;
@@ -598,8 +611,23 @@ class Tree extends BEAppModel
 		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
 		$sqlClausole = $db->conditions($conditions, true, true) ;
 		
-		// Clausola ordinamento
+		$fromSearchText = "";
 		$ordClausole  = "" ;
+		$groupClausole  = "" ;
+		$searchFields = "" ;
+		$searchText = false;
+		$searchClausole = ""; 
+		// text search conditions?
+		if(is_array($filter) && isset($filter['search'])) {
+			$s = $filter['search'];
+			$searchFields = ", SUM( MATCH (`SearchText`.`content`) AGAINST ('$s') * `SearchText`.`relevance` ) AS `points` ";
+			$searchText = true;
+			$fromSearchText = " INNER JOIN search_texts as `SearchText` ON `SearchText`.`object_id` = `BEObject`.`id` ";
+			$searchClausole = " AND MATCH (`SearchText`.`content`) AGAINST ('$s')";
+			$groupClausole  = "  GROUP BY `SearchText`.`object_id`";
+			$ordClausole = " ORDER BY points DESC ";
+		}
+		
 		if(is_string($order) && strlen($order)) {
 			if($this->hasField($order)) {
 				$order = "Tree.{$order}" ;
@@ -611,23 +639,25 @@ class Tree extends BEAppModel
 					$order = "objects.{$order}" ;
 				}
 			}
-			
-			$ordClausole = " ORDER BY {$order} " . ((!$dir)? " DESC " : "") ;
+			$ordItem = "{$order} " . ((!$dir)? " DESC " : "");
+			if($searchText) {
+				$ordClausole .= ", ".$ordItem;
+			} else {
+				$ordClausole = " ORDER BY {$order} " . ((!$dir)? " DESC " : "") ;
+			}
 		}
-
+		
 		// costruisce il join dalle tabelle
-		$from = "view_trees AS Tree INNER JOIN objects ON Tree.id = objects.id" ;
+		$from = "trees AS `Tree` INNER JOIN objects as `BEObject` ON `Tree`.`id` = `BEObject`.`id`" ;
 		
-		
-		// Esegue la ricerca
 		$limit 	= $this->_getLimitClausole($page, $dim) ;
-		$tmp  	= $this->execute("SELECT {$fields} FROM {$from} {$sqlClausole} {$ordClausole} LIMIT {$limit}") ;
-		
+		$query = "SELECT {$fields} {$searchFields} FROM {$from} {$fromSearchText} {$sqlClausole} {$searchClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
+		$tmp  	= $this->execute($query) ;
+				
 		// Torna il risultato
 		$recordset = array(
 			"items"		=> array(),
-			"toolbar"	=> $this->toolbar($page, $dim, $sqlClausole)
-		) ;
+			"toolbar"	=> $this->toolbar($page, $dim, $fromSearchText.$sqlClausole.$searchClausole) );
 		for ($i =0; $i < count($tmp); $i++) {
 			$recordset['items'][] = $this->am($tmp[$i]);
 		}
@@ -646,8 +676,19 @@ class Tree extends BEAppModel
 
 
 	private function _getCondition_filterType(&$conditions, $filter = false) {
-		if(!$filter) return ;
-		$conditions['Tree.object_type_id'] = $filter ;
+		if(!$filter) 
+			return;
+		// exclude search query from object_type_id list
+		if(is_array($filter)) {
+			$types = array();
+			foreach ($filter as $k => $v) {
+				if($k !== "search")
+					$types[] = $v;
+			}
+			$conditions['object_type_id'] = $types;
+		} else {
+			$conditions['object_type_id'] = $filter;
+		}	
 	}
 
 	private function _getCondition_userid(&$conditions, $userid = null) {
@@ -659,7 +700,7 @@ class Tree extends BEAppModel
 	private function _getCondition_status(&$conditions, $status = null) {
 		if(!isset($status)) 
 			return ;
-		$conditions[] = array('Tree.status' => $status) ;
+		$conditions[] = array('status' => $status) ;
 	}
 
 	private function _getCondition_parentID(&$conditions, $id = null) {
@@ -675,7 +716,7 @@ class Tree extends BEAppModel
 
 	private function _getCondition_current(&$conditions, $current = true) {
 		if(!$current) return ;
-		$conditions[] = array("objects.current" => 1);
+		$conditions[] = array("current" => 1);
 	}
 
 }
