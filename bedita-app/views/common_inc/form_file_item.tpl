@@ -16,11 +16,9 @@
 
 
 
-
-	<input type="hidden" name="index" value="{$objIndex}" />
-	<input type="hidden" name="data[ObjectRelation][{$objIndex}][id]" value="{$obj.id}" />
-	<input type="hidden" name="data[ObjectRelation][{$objIndex}][switch]" value="{$relation}" />
-	<input type="hidden" name="data[ObjectRelation][{$objIndex}][modified]" value="0" />
+	<input type="hidden" name="data[ObjectRelation][{$obj.id}][id]" value="{$obj.id}" />
+	<input type="hidden" name="data[ObjectRelation][{$obj.id}][switch]" value="{$relation}" />
+	<input type="hidden" name="data[ObjectRelation][{$obj.id}][modified]" value="0" />
 
 	{if strtolower($obj.ObjectType.name) == "image"}
 		{if !empty($fileName) }
@@ -50,13 +48,13 @@
 	{/if}
 	
 	<label class="evidence">
-		<input type="text" name="data[ObjectRelation][{$objIndex}][priority]" value="{$obj.priority|default:$priority}" size="3" maxlength="3"/>
+		<input type="text" name="data[ObjectRelation][{$obj.id}][priority]" value="{$obj.priority|default:$priority}" size="3" maxlength="3"/>
 	</label>
 	<ul>
 		<li>{t}title{/t}:
-			<input type="text" class="info_file_item" value="{$fileTitle|escape:'htmlall'}" name="data[ObjectRelation][{$objIndex}][title]" /></li>
+			<input type="text" class="info_file_item" value="{$fileTitle|escape:'htmlall'}" name="data[ObjectRelation][{$obj.id}][title]" /></li>
 		<li>{t}Description{/t}:
-			<textarea class="autogrow info_file_item" name="data[ObjectRelation][{$objIndex}][description]">{$obj.description|default:""|escape:'htmlall'}</textarea></li>
+			<textarea class="autogrow info_file_item" name="data[ObjectRelation][{$obj.id}][description]">{$obj.description|default:""|escape:'htmlall'}</textarea></li>
 	</ul>
 	
 

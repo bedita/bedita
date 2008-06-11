@@ -150,16 +150,6 @@ jQuery.fn.extend({
 	},
 	
 	reorderListItem: function() {
-		$(".itemBox").each(function (index) {
-			$("input[@name='index']", this).attr("value", index) ;
-			$("input[@name*='[id]']", this).attr("name", "data[ObjectRelation]["+index+"][id]") ;
-			$("input[@name*='[switch]']", this).attr("name", "data[ObjectRelation]["+index+"][switch]") ;
-			$("input[@name*='[priority]']", this).attr("name", "data[ObjectRelation]["+index+"][priority]") ;
-			$("input[@name*='[modified]']", this).attr("name", "data[ObjectRelation]["+index+"][modified]") ;
-			$("input[@name*='[title]']", this).attr("name", "data[ObjectRelation]["+index+"][title]") ;
-			$("textarea[@name*='[description]']", this).attr("name", "data[ObjectRelation]["+index+"][description]") ;
-		}) ;
-		
 		$(this).find(".itemBox").each(function (priority) {
 			$(this).find("input[@name*='[priority]']").val(priority+1)	// update priority
 				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');		// effects
