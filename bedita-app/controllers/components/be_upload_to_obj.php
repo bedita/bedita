@@ -169,6 +169,8 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 		}
 		
 		$data['status'] = "on";
+		if (!empty($dataURL['description']))
+			$data['description'] = $dataURL['description'];
 		
 		if($this->BeFileHandler->isPresent($data['path'])) 
 			throw new BEditaFileExistException(__("Video url is already in the system",true)) ;

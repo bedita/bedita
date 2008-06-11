@@ -54,7 +54,7 @@ $(document).ready(function() {
     	return false;
     });
     
-    $("#uploadFormMedia").click(function() {alert("go");
+    $("#uploadFormMedia").click(function() {
     	optionsForm.url = "{/literal}{$html->url('/files/uploadAjaxMediaProvider')}{literal}"; // override form action
     	$('#updateForm').ajaxSubmit(optionsForm);
     	return false;
@@ -156,7 +156,7 @@ $(document).ready(function() {
 		</tr>
 		<tr>
 			<td>{t}Description{/t}:</td>
-			<td><textarea name="uploadByUrl[desc]"></textarea></td>
+			<td><textarea name="uploadByUrl[description]"></textarea></td>
 		</tr>
 		<tr>
 			<td></td>
