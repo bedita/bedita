@@ -28,9 +28,12 @@ class FilesController extends AppController {
 				throw new BEditaException(__("Error during upload: missing file",true)) ;
 			if (!empty($this->params['form']['Filedata']["error"]))
 				throw new BEditaException(__("Error during upload: error number" ." ". $this->params['form']['Filedata']["error"],true)) ;
+			
+			$this->params['form']['streamUploaded']['lang'] = $this->data["lang"];
 			$id = $this->BeUploadToObj->upload($this->params["form"]["streamUploaded"]) ;
 			$this->Transaction->commit();
 			$this->set("fileId", $id);
+			$this->set("fileUploaded", true);
 		} catch(BeditaException $ex) {
 			$errTrace = $ex->getClassName() . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
@@ -40,16 +43,17 @@ class FilesController extends AppController {
 	}
 
 	function uploadAjaxMediaProvider () {
-		if (!isset($this->params['form']['url'])) return ;
-		if (!empty($this->params['form']['title'])) {
-			$this->params['form']['title'] = trim($this->params['form']['title']) ;
-		}
 		$this->layout = "empty";
 		try {
+			if (!isset($this->params['form']['uploadByUrl']['url']))
+				throw new BEditaException(__("Error during upload: missing url",true)) ;
+		
+			$this->params['form']['uploadByUrl']['lang'] = $this->data["lang"];
+			
 			$this->Transaction->begin() ;
-			$filename = $this->BeUploadToObj->uploadFromMediaProvider($uid) ;
+			$id = $this->BeUploadToObj->uploadFromMediaProvider($this->params['form']['uploadByUrl']) ;
 			$this->Transaction->commit();
-			$this->set("filename", $filename);
+			$this->set("fileId", $id);
 			
 		} catch(BeditaException $ex) {
 			$errTrace = $ex->getClassName() . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
@@ -105,6 +109,10 @@ class FilesController extends AppController {
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"uploadAjax" =>	array(
+	 			"OK"	=> self::VIEW_FWD.'upload_ajax_response',
+		 		"ERROR"	=> self::VIEW_FWD.'upload_ajax_response'
+		 	),
+		 	"uploadAjaxMediaProvider" => array(
 	 			"OK"	=> self::VIEW_FWD.'upload_ajax_response',
 		 		"ERROR"	=> self::VIEW_FWD.'upload_ajax_response'
 		 	)

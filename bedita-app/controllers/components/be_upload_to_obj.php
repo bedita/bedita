@@ -85,7 +85,7 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 			$data["description"] = $dataStream['description'];
 		}
 		$data['path']	= $data['tmp_name'] ;
-		$data['lang']   = $this->params['form']['lang'];
+		$data['lang']   = $dataStream['lang'];
 		$data["status"] = "on";
 		unset($data['tmp_name']) ;
 		unset($data['error']) ;
@@ -133,25 +133,21 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 	 * Form must to have: url, title, lang.
 	 * @return boolean true if upload was successful, false otherwise.
 	 */
-	function uploadFromMediaProvider(&$name) {
-/*
-$this->params['form']['url']   =  "http://www.blip.tv/file/829287?utm_source=featured_ep&utm_medium=featured_ep" ; 
-//$this->params['form']['title']  =  "title" ; 
-$this->params['form']['lang']  =  "ita" ; 
-*/
+	function uploadFromMediaProvider($dataURL) {
+
 		$result = false ;
-		if(!$this->recognizeMediaProvider($this->params['form']['url'], $provider, $name)) {
+		if(!$this->recognizeMediaProvider($dataURL['url'], $provider, $name)) {
 			throw new BEditaMediaProviderException(__("Multimedia provider unsupported",true)) ;
 		}
 	
 		// Prepare data
 		switch($provider) {
 			case 'youtube': {
-				$data['title']		= (!empty($this->params['form']['title'])) ? trim($this->params['form']['title']) : 'youtube video';
+				$data['title']		= (!empty($dataURL['title'])) ? trim($dataURL['title']) : 'youtube video';
 				$data['name']		= preg_replace("/[\'\"]/", "", $data['title']) ;
 				$data['type']		= "video/$provider" ;
-				$data['path']		= $this->params['form']['url'] ;
-				$data['lang'] 	  	= $this->params['form']['lang'];
+				$data['path']		= $dataURL['url'] ;
+				$data['lang'] 	  	= $dataURL['lang'];
 				$data['provider']	=  $provider ;
 				$data['uid']  	 	=  $name ;
 			} break ;
@@ -160,13 +156,13 @@ $this->params['form']['lang']  =  "ita" ;
 					throw new BEditaMediaProviderException(__("Multimedia  not found",true)) ;
 				}
 				
-				if(@empty($this->params['form']['title'])) $data['title'] = $this->BeBlipTv->info['title'] ;
-				else $data['title'] = trim($this->params['form']['title']) ;
+				if(@empty($dataURL['title'])) $data['title'] = $this->BeBlipTv->info['title'] ;
+				else $data['title'] = trim($dataURL['title']) ;
 								
 				$data['name']		= preg_replace("/[\'\"]/", "", $data['title']) ;
 				$data['type']		= "video/$provider" ;
 				$data['path']		= $this->BeBlipTv->info['url'] ;
-				$data['lang'] 	  	= $this->params['form']['lang'];
+				$data['lang'] 	  	= $dataURL['lang'];
 				$data['provider']	=  $provider ;
 				$data['uid']  	 	=  $name ;
 			} break ;
@@ -185,9 +181,9 @@ $this->params['form']['lang']  =  "ita" ;
 			$this->validateErrors = $Video->validationErrors ;
 			throw new BEditaSaveStreamObjException(__("Error saving stream object",true)) ;
 		}
-		$result =  ($data['name']) ;
-
-		return ($result);
+		
+		$id = (!empty($ret["Video"]["id"]))? $ret["Video"]["id"] : $Video->getLastInsertID();
+		return $id;
 	}
 	
 	/**
