@@ -41,11 +41,17 @@ class DeleteObjectBehavior extends ModelBehavior {
 		
 		// Cancella i riferimenti del'oggetto nell'albero
 		if(!class_exists('Tree')){
-			loadModel('Tree');
+			App::import('Model','Tree');
 		}		
 		$tree = new Tree ;
 		$tree->del($model->id) ;
 
+		if(!class_exists('SearchText')){
+			App::import('Model','SearchText');
+		}		
+		$st = new SearchText ;
+		$st->deleteAll("object_id=".$model->id) ;
+		
 		return true ;
 	}
 

@@ -59,6 +59,7 @@ DROP TABLE IF EXISTS `modules`;
 DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `groups`;
 DROP TABLE IF EXISTS `event_logs`;
+DROP TABLE IF EXISTS `search_texts`;
 
 CREATE TABLE `event_logs` (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -671,6 +672,18 @@ CREATE TABLE `permission_modules` (
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+
+CREATE TABLE `search_texts` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `object_id` int(10) unsigned NOT NULL,
+  `lang` varchar(3) NOT NULL,
+  `content` mediumtext NOT NULL,
+  `relevance` tinyint(4) NOT NULL default '1' COMMENT 'importance (1-10) range',
+  PRIMARY KEY  (`id`),
+  KEY `object_id` (`object_id`,`lang`),
+  FULLTEXT KEY `content` (`content`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='search texts table';
 
 -- ------------------------------------------
 -- Creazione viste singoli tipi di oggetti

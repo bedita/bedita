@@ -100,17 +100,18 @@ class BEAppModel extends AppModel {
 	}
 		
 	/**
-	 * Crea una toolbar da una ricerca
+	 * Object search Toolbar
 	 *
 	 * @param integer 	$page		
 	 * @param integer 	$dimPage	
-	 * @param mixed 	$condition	condizione utilizzata per la ricerca
-	 * @param boolean 	$recursive	TRUE, preleva gli ogetti connessi
+	 * @param mixed 	$sqlCondition	sql search condition
+	 * @param boolean 	$recursive	TRUE, retrieve connected objects
+	 * @param mixed 	$sqlCondition	sql search condition
 	 * @return array
 	 */
-	function toolbar($page = null, $dimPage = null, $condition = null, $recursive = null) {
+	function toolbar($page = null, $dimPage = null, $sqlCondition = null, $recursive = null, $searchText = null) {
 		// conta il numero di record
-		if(($size = $this->findCount($condition, $recursive)) === false) return false ;
+		if(($size = $this->findCount($sqlCondition, $recursive)) === false) return false ;
 		
 		$toolbar = array("first" => 0, "prev" => 0, "next" => 0, "last" => 0, "size" => 0, "pages" => 0, "page" => 0, "dim" => 0) ;
 		

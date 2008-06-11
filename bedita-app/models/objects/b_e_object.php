@@ -76,9 +76,8 @@ class BEObject extends BEAppModel
 				'foreignKey'	=> 'object_id',
 				'dependent'		=> true
 			),			
-		'Index' =>
+		'SearchText' =>
 			array(
-				'className'		=> 'Index',
 				'foreignKey'	=> 'object_id',
 				'dependent'		=> true
 			),
@@ -122,27 +121,23 @@ class BEObject extends BEAppModel
 		return $result ;
 	}
 
-	/**
-	 * Formatta i dati specifici prima di salvare
-	 */
 	function beforeSave() {
-		// Formatta le custom properties e i campi da indicizzare
-		$labels = array('CustomProperties', 'Index');
+		// format custom properties and searchable text fields
+		$labels = array('CustomProperties', 'SearchText');
 		foreach ($labels as $label) {
-			if(!isset($this->data[$this->name][$label])) continue ;
+		  if(!isset($this->data[$this->name][$label])) 
+			continue ;
 			
-			if(is_array($this->data[$this->name][$label]) && count($this->data[$this->name][$label])) {
-				$tmps 	= array() ;
-
-				foreach($this->data[$this->name][$label]  as $k => $v) {
+		  if(is_array($this->data[$this->name][$label]) && count($this->data[$this->name][$label])) {
+		      $tmps = array() ;
+		      foreach($this->data[$this->name][$label]  as $k => $v) {
 					$this->_value2array($k, $v, $arr) ;
 					$tmps[] = $arr ;
 
 				}
-				$this->data[$this->name][$label] = $tmps ;
-			}
+			$this->data[$this->name][$label] = $tmps ;
+		  }
 		}
-		
 		return true ;
 	}
 	
@@ -265,11 +260,9 @@ class BEObject extends BEAppModel
 	 * @param integer $dim		Dimensione della pagina
 	 */	
 	function findObjs($userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000, $excludeIds=array()) {
-		if(!isset($userid)) {
-			$fields 		= " *, prmsUserByID ('{$userid}', id, 15) as perms " ;
-		} else {
-			$fields  = " * " ;
-		}
+
+		$searchFields = ""; 
+		$fields  = " `BEObject`.* " ;
 		
 		// setta le condizioni di ricerca
 		$conditions = array() ;
@@ -279,27 +272,45 @@ class BEObject extends BEAppModel
 		$this->_getCondition_current($conditions, true) ;
 		$this->getCondition_excludeIds($conditions, $excludeIds) ;
 		
-		// Costruisce i criteri di ricerca
+		// standard sql where for BEObject
 		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
 		$sqlClausole = $db->conditions($conditions, true, true) ;
 		
-		// costruisce il join dalle tabelle
-		$from = " objects " ;
+		$from = " objects as `BEObject` " ;
 		
-		// Clausola ordinamento
+		$fromSearchText = "";
 		$ordClausole  = "" ;
-		if(is_string($order) && strlen($order)) {
-			$ordClausole = " ORDER BY {$order} " . ((!$dir)? " DESC " : "") ;
+		$groupClausole  = "" ;
+		$searchText = false;
+		$searchClausole = ""; 
+		// text search conditions?
+		if(is_array($filter) && isset($filter['search'])) {
+			$s = $filter['search'];
+			$searchFields = "DISTINCT `SearchText`.`object_id` AS `oid`, SUM( MATCH (`SearchText`.`content`) AGAINST ('$s') * `SearchText`.`relevance` ) AS `points`, ";
+			$searchText = true;
+			$fromSearchText = ", search_texts as `SearchText` ";
+			$searchClausole = " AND `SearchText`.`object_id` = `BEObject`.`id` AND MATCH (`SearchText`.`content`) AGAINST ('$s')";
+			$groupClausole  = "  GROUP BY `SearchText`.`object_id`";
+			$ordClausole = " ORDER BY points DESC ";
 		}
 		
-		// Esegue la ricerca
+		if(is_string($order) && strlen($order)) {
+			$ordItem = "{$order} " . ((!$dir)? " DESC " : "");
+			if($searchText) {
+				$ordClausole .= ", ".$ordItem;
+			} else {
+				$ordClausole = " ORDER BY {$order} " . ((!$dir)? " DESC " : "") ;
+			}
+		}
+		
 		$limit 	= $this->_getLimitClausole($page, $dim) ;
-		$tmp  	= $this->execute("SELECT {$fields} FROM {$from} {$sqlClausole} {$ordClausole} LIMIT {$limit}") ;
+		$query = "SELECT {$searchFields}{$fields} FROM {$from} {$fromSearchText} {$sqlClausole} {$searchClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
+		$tmp  	= $this->execute($query) ;
 
-		// Torna il risultato
+		// build items and toolbar
 		$recordset = array(
 			"items"		=> array(),
-			"toolbar"	=> $this->toolbar($page, $dim, $sqlClausole)
+			"toolbar"	=> $this->toolbar($page, $dim, $fromSearchText.$sqlClausole.$searchClausole)
 		) ;
 		for ($i =0; $i < count($tmp); $i++) {
 			$recordset['items'][] = $this->am($tmp[$i]);
@@ -308,9 +319,10 @@ class BEObject extends BEAppModel
 		return $recordset ;
 	}
 	
-	function findCount($conditions = null, $recursive = null) {
-		$from = " objects " ;
-		list($data)  = $this->execute("SELECT COUNT(*) AS count FROM {$from} {$conditions}") ;
+	function findCount($sqlConditions = null, $recursive = null) {
+		$from = " objects as `BEObject` " ;
+
+		list($data)  = $this->execute("SELECT COUNT(DISTINCT `BEObject`.`id`) AS count FROM {$from} {$sqlConditions}") ;
 
 		if (isset($data[0]['count'])) {
 			return $data[0]['count'];
@@ -492,10 +504,21 @@ class BEObject extends BEAppModel
 	}
 	
 	private function _getCondition_filterType(&$conditions, $filter = false) {
-		if(!$filter) return ;
-		$conditions['object_type_id'] = $filter ;
+		if(!$filter) 
+			return ;
+		// exclude search query from object_type_id list
+		if(is_array($filter)) {
+			$types = array();
+			foreach ($filter as $k => $v) {
+				if($k !== "search")
+					$types[] = $v;
+			}
+			$conditions['object_type_id'] = $types;
+		} else {
+			$conditions['object_type_id'] = $filter;
+		}
 	}
-
+	
 	private function _getCondition_userid(&$conditions, $userid = null) {
 		if(!isset($userid)) return ;
 
