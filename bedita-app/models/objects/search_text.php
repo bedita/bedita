@@ -28,16 +28,18 @@ class SearchText extends BEAppModel
 		$relevance = array("title" => 10 , "description" => 5);
 		foreach ($data as $k => $v) {
 			if($k === 'title' || $k === 'description') {
-                $sText = array(
-	                'object_id' => $data['id'],
-	                'lang'      => $data['lang'], 
-	                'content'   => $v,
-	                'relevance' => $relevance[$k]
-                );
-                
-                if(!$this->save($sText)) 
-                    throw new BeditaException("Error saving search text {$model}: $k => $v");
-            	$this->id = null ;
+                if (!empty($v)) {
+					$sText = array(
+		                'object_id' => $data['id'],
+		                'lang'      => $data['lang'], 
+		                'content'   => $v,
+		                'relevance' => $relevance[$k]
+	                );
+	                
+	                $this->create();
+	                if(!$this->save($sText)) 
+	                    throw new BeditaException("Error saving search text {$model}: $k => $v");
+                }
 			}
 		}
 

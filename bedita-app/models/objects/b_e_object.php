@@ -537,7 +537,7 @@ class BEObject extends BEAppModel
 	private function _getCondition_userid(&$conditions, $userid = null) {
 		if(!isset($userid)) return ;
 
-		$conditions[] 	= " prmsUserByID ('{$userid}', id, ".BEDITA_PERMS_READ.") > 0 " ;
+		$conditions[] 	= " prmsUserByID ('{$userid}', `BEObject`.id, ".BEDITA_PERMS_READ.") > 0 " ;
 	}
 
 	private function _getCondition_status(&$conditions, $status = null) {

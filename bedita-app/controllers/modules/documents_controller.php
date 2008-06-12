@@ -27,7 +27,13 @@ class DocumentsController extends ModulesController {
 		$conf  = Configure::getInstance() ;
 		$types = $conf->objectTypes['documentAll'];
 		
+		if (!empty($this->params["form"]["searchstring"])) {
+			$types["search"] = addslashes($this->params["form"]["searchstring"]);
+			$this->set("stringSearched", $this->params["form"]["searchstring"]);
+		}
+		
 		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
+		
 	 }
 
 	 /**

@@ -2,7 +2,7 @@
 	
 	<div class="toolbar">
 		
-		<h2>{if !empty($sectionSel)}{$moduleName} in “ <span style="color:white" class="evidence">{$sectionSel.title}</span> ”
+		<h2>{if !empty($sectionSel)}{t}{$moduleName}{/t} in “ <span style="color:white" class="evidence">{$sectionSel.title}</span> ”
 		{else} all {$moduleName}{/if}</h2>
 		
 		<ul>
@@ -23,8 +23,12 @@
 			<li> prev <span class="evidence"> &nbsp;</span></li>
 			
 			<li>
+			
+				<form action="{$html->url('/')}{$moduleName}/index{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">				
+				search : &nbsp;&nbsp;<input type="text" name="searchstring" value="{$stringSearched|default:""}"/>
 				
-				search : &nbsp;&nbsp;<input type="text" name="searchstring" />
+				<input type="submit" value="{t}go{/t}"/>
+				</form>
 				
 			</li>
 			{*
