@@ -160,7 +160,7 @@ $(document).ready(function() {
 		</tr>
 		<tr>
 			<td></td>
-			<td><input type="button" id="uploadFormMedia" value="{t}Create{/t}"/></td>
+			<td><input type="button" id="uploadFormMedia" value="{t}Add{/t}"/></td>
 		</tr>
 		</table>
 	</div>

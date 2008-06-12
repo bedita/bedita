@@ -436,11 +436,11 @@ $config['validate_resorce'] = array(
  */
 $config['media_providers'] = array(
 	"youtube"	=> array(
-			'/^http:\/\/\w+\.youtube\.com\/watch\?v=(.+)&{0,1}.*/',
-			'/http:\/\/youtube\.com\/watch\?v=(.+)&{0,1}.*/'
+			'/^http:\/\/\w{3}\.youtube\.com\/watch\?v=(.[^&]+)/',
+			'/http:\/\/youtube\.com\/watch\?v=(.[^&]+)/'
 	) ,
 	"blip"	=> array(
-			'/^http:\/\/\w+\.blip\.tv\/file\/(\d+)\?{0,1}.*/',
+			'/^http:\/\/\w{3}\.blip\.tv\/file\/(\d+)\?{0,1}.*/',
 			'/http:\/\/blip\.tv\/file\/(\d+)\?{0,1}.*/'
 	) 
 ) ;
