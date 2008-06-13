@@ -59,5 +59,33 @@ class HomeController extends AppController {
 	 	$this->set("lastMod", $lastMod);
 	 }
 	 
+	 public function search($page=1, $dim=5) {
+	 	$this->layout = "empty";
+	 	
+	 	
+	 	if (!empty($this->params["form"]["searchstring"])) {
+		 	$conf  = Configure::getInstance();
+		 	$filter = array($conf->objectTypes['gallery'], 
+		 					$conf->objectTypes['document'], 
+		 					$conf->objectTypes['shortnews'], 
+		 					$conf->objectTypes['event'],
+		 					"search" => addslashes($this->params["form"]["searchstring"])		
+		 			);
+		 	
+		 	$user = $this->Session->read("BEAuthUser");
+		 
+		 	$objects = $this->BEObject->findObjs($user["id"], null, $filter, null, true, $page, $dim);
+		 	// get objects module
+		 	foreach ($objects["items"] as $key => $o) {
+		 		$objects["items"][$key]["module"] = $this->BEObject->ObjectType->field("module", array(
+		 						"conditions" => array("id" => $o["object_type_id"])
+		 					) 
+		 				);
+		 	}
+		 
+		 	$this->set("objects", $objects);
+	 	}
+	 }
+	 
 }
 

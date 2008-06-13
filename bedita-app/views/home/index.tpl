@@ -1,3 +1,31 @@
+<script type="text/javascript">
+<!--
+var urlToSearch = "{$html->url('/home/search')}" 
+{literal}
+function loadSearch() {
+	$("#searchResult").load(urlToSearch, {searchstring: $("input[@name='searchstring']").val()}, function() {
+			
+	});
+}
+
+$(document).ready(function() {
+	
+	$("#searchButton").click(function() {
+		loadSearch();
+	});
+	
+	$("input[@name='searchstring']").keypress(function(event) {
+		if (event.keyCode == 13 && $(this).val() != "") {
+			event.preventDefault();
+			loadSearch();
+		}
+	});
+	
+});
+{/literal}
+//-->
+</script>
+
 </head>
 
 <body class="home">
@@ -76,10 +104,11 @@
 	<div style="padding:0px 10px 0px 10px">
 		<form>
 			<label class="block" for="searchstring">{t}search string:{/t}</label>
-			<input type="text" name="searchstring" />
-			&nbsp;<input type="submit" value="go" />
+			<input type="text" name="searchstring" value=""/>
+			&nbsp;<input id="searchButton" type="button" value="go" />
 			<hr />
 		</form>
+	<div id="searchResult"></div>
 	</div>
 
 
