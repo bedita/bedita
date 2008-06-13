@@ -323,16 +323,19 @@ class BeAuthComponent extends Object {
 	
 	public function connectedUser() {
 		$connectedUser = array();
-		$db =& ConnectionManager::getDataSource(Configure::read('Session.database'));
-		$table = $db->fullTableName(Configure::read('Session.table'), false);
-		$res = $db->query("SELECT " . $db->name($table.'.data') . " FROM " . $db->name($table) . " WHERE " . $db->name($table.'.expires') . " >= " . time(), false);
-		if (empty($res)) {
-			return $connectedUser;
-		}
-		foreach($res as $key => $val) {
-			$unserialized_data = $this->unserializesession($val[$table]['data']);
-			if(!empty($unserialized_data) && !empty($unserialized_data['BEAuthUser']) && !empty($unserialized_data['BEAuthUser']['userid'])) {
-				$connectedUser[]=$unserialized_data['BEAuthUser']['userid'];
+		$sessionDb = Configure::read('Session.database');
+		if (!empty($sessionDb)) {
+			$db =& ConnectionManager::getDataSource($sessionDb);
+			$table = $db->fullTableName(Configure::read('Session.table'), false);
+			$res = $db->query("SELECT " . $db->name($table.'.data') . " FROM " . $db->name($table) . " WHERE " . $db->name($table.'.expires') . " >= " . time(), false);
+			if (empty($res)) {
+				return $connectedUser;
+			}
+			foreach($res as $key => $val) {
+				$unserialized_data = $this->unserializesession($val[$table]['data']);
+				if(!empty($unserialized_data) && !empty($unserialized_data['BEAuthUser']) && !empty($unserialized_data['BEAuthUser']['userid'])) {
+					$connectedUser[]=$unserialized_data['BEAuthUser']['userid'];
+				}
 			}
 		}
 		return $connectedUser;
