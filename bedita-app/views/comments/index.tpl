@@ -18,7 +18,7 @@
 
 <div class="mainfull">
 
-	{include file="../pages/list_objects.tpl" method="index"}
+	{include file="../common_inc/list_objects.tpl" method="index"}
 	
 </div>
 
