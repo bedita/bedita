@@ -122,11 +122,10 @@ $(document).ready(function() {
 
 <div class="tab"><h2>{t}connected user{/t}</h2></div>
 	<ul class="bordered">
-		<li>Marcantonio</li>
-		<li>Bruto</li>
-		<li>Cassio</li>
+	{section name="i" loop=$connectedUser}
+		<li>{$connectedUser[i]}</li>
+	{/section}
 	</ul>
-
 	
 <div class="tab"><h2>{t}message board{/t}</h2></div>
 <form>
@@ -161,11 +160,19 @@ $(document).ready(function() {
 		<textarea style="margin-bottom:5px; height:28px; width:210px;" id="messageboard" name="messageboard"></textarea>
 		<input type="submit" value="send" />
 	</fieldset>
-</from>	
+</form>	
 	
 	
 
 </div>
+
+
+{if !empty($conf->multilang) && $conf->multilang}
+{t}Language{/t}{if $session->check('Config.language')} [{$session->read('Config.language')}] {/if}:
+{foreach key=key item=item name=l from=$conf->langsSystem}
+<a href="{$html->base}/lang/{$key}">{$item}</a>{if !$smarty.foreach.l.last} | {/if}
+{/foreach} 
+{/if}
 
 	
 <p style="clear:both; margin-bottom:20px;" />

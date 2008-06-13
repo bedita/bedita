@@ -321,6 +321,29 @@ class BeAuthComponent extends Object {
 		return $user->delete($u["User"]['id']);
 	}	
 	
+	public function connectedUser() {
+		$connectedUser = array();
+		$db =& ConnectionManager::getDataSource(Configure::read('Session.database'));
+		$table = $db->fullTableName(Configure::read('Session.table'), false);
+		$res = $db->query("SELECT " . $db->name($table.'.data') . " FROM " . $db->name($table) . " WHERE " . $db->name($table.'.expires') . " >= " . time(), false);
+		if (empty($res)) {
+			return $connectedUser;
+		}
+		foreach($res as $key => $val) {
+			$unserialized_data = $this->unserializesession($val[$table]['data']);
+			if(!empty($unserialized_data) && !empty($unserialized_data['BEAuthUser']) && !empty($unserialized_data['BEAuthUser']['userid'])) {
+				$connectedUser[]=$unserialized_data['BEAuthUser']['userid'];
+			}
+		}
+		return $connectedUser;
+	}
+	
+	function unserializesession($data) {
+		$vars=preg_split('/([a-zA-Z0-9]+)\|/',$data,-1,PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+		for($i=0; @$vars[$i]; $i++) {
+			$result[$vars[$i++]]=unserialize($vars[$i]);
+		}
+		return $result;
+	}
 }
-
 ?>

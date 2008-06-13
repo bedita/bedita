@@ -54,9 +54,10 @@ class HomeController extends AppController {
 		 								"limit"			=> 10
 	 								)
 	 						);
-	 	
+	 	$connectedUser = $this->BeAuth->connectedUser();
 	 	$this->set("lastModBYUser", $lastModBYUser);
 	 	$this->set("lastMod", $lastMod);
+		$this->set("connectedUser", $connectedUser);
 	 }
 	 
 	 public function search($page=1, $dim=5) {

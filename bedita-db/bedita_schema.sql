@@ -14,6 +14,7 @@ DROP VIEW IF EXISTS `view_permissions` ;
 DROP VIEW IF EXISTS `view_trees` ;
 DROP VIEW IF EXISTS `view_galleries` ;
 
+DROP TABLE IF EXISTS `cake_sessions`;
 DROP TABLE IF EXISTS `links`;
 DROP TABLE IF EXISTS `documents`;
 DROP TABLE IF EXISTS `books`;
@@ -60,6 +61,13 @@ DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `groups`;
 DROP TABLE IF EXISTS `event_logs`;
 DROP TABLE IF EXISTS `search_texts`;
+
+CREATE TABLE cake_sessions (
+  id varchar(255) NOT NULL default '',
+  data text,
+  expires int(11) default NULL,
+  PRIMARY KEY  (id)
+);
 
 CREATE TABLE `event_logs` (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
