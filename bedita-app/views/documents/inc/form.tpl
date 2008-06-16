@@ -11,9 +11,7 @@
 
 	{include file="../common_inc/form_long_desc_lang.tpl"}
 	
-	{*include file="../common_inc/form_file_list.tpl" containerId='attachContainer' relation='attach' title='Attachments' items=$attach*}
-
-	{include file="../common_inc/form_file_listNEW.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia' items=$attach}
+	{include file="../common_inc/form_file_list.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
 
 	{*include file="../common_inc/form_galleries.tpl"*}
 	

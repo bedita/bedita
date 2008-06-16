@@ -1,160 +1,173 @@
 <script type="text/javascript">
-var urlGetObj		= '{$html->url("/streams/get_item_form")}' ;
-var urlGetObjId 	= '{$html->url("/streams/get_item_form_by_id")}' ;
-var containerItem	= "#{$containerId}";
-var urlGetAllItemNoAssoc = "{$html->url("/streams/showStreams")}/{$object.id|default:'0'}/{$collection|default:''}";
-<!--
+var urlGetObj		= '{$html->url("/streams/get_item_form_by_id")}' ;
+var containerItem = "#multimediaItems";
+
 {literal}
-
-$(document).ready(function(){
-	
-	$("#addRepositoryItems").click( function () {
-			$("#loading").show();
-			$("#repositoryItems").load(urlGetAllItemNoAssoc, function() {
-				$("#loading").hide();
-			});
-		});
-
-	
-	// toggle small/large icons views
-	$('.displaySizeToggle').toggle (
-		function () {
-			$('.itemBox').addClass('itemBoxSmall');
-			$('.itemFooter').hide();
-			$('.itemInfo').hide();
-			$('.itemInfoSmall').show();
-			$('div#displaySmallIconsDisabled').removeClass('displaySmallIconsDisabled').addClass('displaySmallIcons');
-			$('div#displayLargeIcons').removeClass('displayLargeIcons').addClass('displayLargeIconsDisabled');
-			$('#displaySizeToggle').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(200);
-		}, function () {
-			$('.itemBox').removeClass ('itemBoxSmall');
-			$('.itemInfoSmall').hide();
-			$('.itemInfo').show();
-			$('.itemFooter').show();
-			$('div#displaySmallIconsDisabled').removeClass ('displaySmallIcons').addClass ('displaySmallIconsDisabled');
-			$('div#displayLargeIcons').removeClass ('displayLargeIconsDisabled').addClass ('displayLargeIcons');
-			$('#displaySizeToggle').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(200);
-		}
-	);
-
-	// set file language to default object language [for upload file]
-	$("#multimedia input[@name=lang]").attr("value", $("#main_lang").val());
-	$("#main_lang").bind("change", function() {
-		$("#multimedia input[@name=lang]").attr("value", $("#main_lang").val());
-	});
-	
-});
-
-// Get data from modal window, uploaded files and insert new object in the form
-var counter =  0 ;
-function {/literal}{$relation}{literal}CommitUploadItem(files, rel) {
-	$("#loading").show();
-	var emptyDiv = "<div><\/div>"; 
-	for(var i=0 ; i < files.length ; i++) {
-		var filename = escape(files[i]) ;
-		counter++ ;
-		$(emptyDiv).load(urlGetObj, {'filename': filename, 'priority':priority, 'index':index,  'relation':rel, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
-			$(containerItem).append(this) ; 
-			counter-- ;
-			if(!counter) {
-				$(containerItem).reorderListItem() ;
-			}
-			$("#loading").hide();
-		}) ;
-		priority++ ;
-		index++ ;
-	}
-	if(!counter)  {
-		$(containerItem).reorderListItem();
-	}
-}
-
-
-
-// Per gli oggetti gia' registrati
-var counter =  0 ;
-function {/literal}{$relation}{literal}CommitUploadById(IDs, rel) {
-	$("#loading").show();
-	var emptyDiv = "<div><\/div>"; 
+function commitUploadItem(IDs, rel) {
+	//$("#loading").show();
+	var emptyDiv = "<div  class=\"multimediaitem itemBox\"><\/div>";
 	for(var i=0 ; i < IDs.length ; i++) {
-		var id	= escape(IDs[i]) ;
-		counter++ ;
-		$(emptyDiv).load(urlGetObjId, {'id': id, 'priority':priority, 'index':index, 'relation':rel, 'cols':cols}, function (responseText, textStatus, XMLHttpRequest) {
-			$(containerItem).append(this) ; 
-			counter-- ;
-			if(!counter)  {
-				$(containerItem).reorderListItem() ;
-			}
-			$("#loading").hide();
+		var id = escape(IDs[i]) ;
+		$(emptyDiv).load(urlGetObj, {'id': id, 'relation':rel}, function (responseText, textStatus, XMLHttpRequest) {
+			$(containerItem).append(this).reorderListItem() ; 
+			//$("#loading").hide();
 		}) ;
-		priority++ ;
-		index++ ;
-	}
-	if(!counter)  {
-		$(containerItem).reorderListItem() ;
-	}
-}
-
-// Remove item from queue
-function removeItem(DivId) {
-	$("#"+DivId).remove() ;
-	$(containerItem).reorderListItem();
+	}	
 }
 
 
+function showResponse(data) {
+	$("#loading").hide();
 
+	if (data.UploadErrorMsg) {
+    	$("#addmultimedia").append("<label class='error'>"+data.UploadErrorMsg+"<\/label>").addClass("error");
+    } else {
+	    var tmp = new Array() ;
+	    var countFile = 0; 
+	    $.each(data, function(entryIndex, entry) {
+	    	tmp[countFile++] = entry['fileId'];
+	    });
+	    
+	    $("#addmultimedia").find("input[@type=text]").attr("value", "");
+	    $("#addmultimedia").find("input[@type=file]").attr("value", "");
+	    $("#addmultimedia").find("textarea").attr("value", "");
+	    
+		commitUploadItem(tmp, "attach");
+	}
+}
+
+function resetError() {
+	$("#addmultimedia").find("label").remove();
+	//$("#loading").show();
+}
+
+$(document).ready(function() {  
+	var optionsForm = {
+		beforeSubmit:	resetError,
+        success:    	showResponse,  // post-submit callback  
+        dataType:  		'json'        // 'xml', 'script', or 'json' (expected server response type) 
+    }; 
+
+    $("#uploadForm").click(function() {
+    	optionsForm.url = "{/literal}{$html->url('/files/uploadAjax')}{literal}"; // override form action
+    	$('#updateForm').ajaxSubmit(optionsForm);
+    	return false;
+    });
+    
+    $("#uploadFormMedia").click(function() {
+    	optionsForm.url = "{/literal}{$html->url('/files/uploadAjaxMediaProvider')}{literal}"; // override form action
+    	$('#updateForm').ajaxSubmit(optionsForm);
+    	return false;
+    });
+	 
+});
 {/literal}
-
-var priority 	= 1 ;
-var index 		= 0 ;
-var cols 		= 5 ;
-//-->
 </script>
 
-<div class="tab"><h2>{t}{$title}{/t}</h2></div>
-{*
-		<div class="displaySizeToggle">
-			<div id="displayLargeIcons"			class="displayLargeIcons"			title="{t}Large Icons{/t}"><span>&nbsp;</span></div>
-			<div id="displaySmallIconsDisabled"	class="displaySmallIconsDisabled"	title="{t}Small Icons{/t}"><span>&nbsp;</span></div>
-			<div id="displaySizeToggle"><span>{t}Display size{/t}</span></div>
-		</div>
-*}	
-		
-<fieldset id="multimedia">
-	
-	<input type="hidden" name="data[ObjectRelation][{$relation}][switch]" value="{$relation}" />
-	<input type="hidden" name="lang" value=""/>
 
-	<div id="{$containerId}">
-		{foreach item=ob from=$items|default:$empty name=multimediaItems}
-			{assign var="objIndex" value=$smarty.foreach.multimediaItems.index} 
-			{include file="../common_inc/form_file_item.tpl" obj=$ob}
-		{foreachelse}
-		{/foreach}
+<div class="tab"><h2>{t}Multimedia items{/t}</h2></div>	
+<fieldset id="multimediaItems">	
+
+<img class="multimediaitemToolbar" src="/img/px.gif" />
+
+<hr />
+	
+{foreach from=$attach item="item"}
+	<div class="multimediaitem itemBox{if $obj.status == "off"} off{/if}">
+	{include file="../common_inc/form_file_item.tpl"}
 	</div>
-	
-	<hr style="clear: left;" />
-	
-	<div id="loading"	class="loading"	title="{t}Loading data{/t}">&nbsp;</div>
-	
-	<ul class="htab" id="multimediaToolbar">
+{/foreach}
 
-		<li rel="urlItems">{t}Add item{/t}</li>
-		<li rel="uploadItems">{t}Upload several images{/t}</li>
-		<li rel="repositoryItems" id="addRepositoryItems">{t}Add from Archive{/t}</li>
+</fieldset>
 
+
+<div class="tab"><h2>{t}Add multimedia items{/t}</h2></div>
+
+<fieldset id="addmultimedia">
+	
+	<ul class="htab">
+		<li rel="uploadItems">	{t}upload new items{/t}</li>
+		<li rel="urlItems">		{t}add by url{/t}</li>
+		<li rel="repositoryItems">	{t}select from archive{/t}</li>
 	</ul>
+	
+	
+	<div class="htabcontent" id="uploadItems">
+		{*
+		<table class="bordered" style="width:100%; margin-bottom:20px;">
+			<th colspan="4" id="queueinfo">uploading file <span class="evidence">2</span> of 3... </th>
+			<tr id="7441_0">
+				<td>immag288.jpg</td> 
+				<td style="white-space:nowrap"><div class="progressBar" id="7441_0progress">&nbsp;</div>100% ready</td>
+				<td><a id="7441_0deletebtn" class="cancelbtn" href='javascript:swfu.cancelFile("7441_0");'>cancel</a></td>
+			</td>
+			<tr id="7441_0">
+				<td>aadadimmagsds288.jpg</td> 
+				<td nowrap><div class="progressBar" style="width:25px" id="7441_0progress">&nbsp;</div>25% loading</td>
+				<td><a id="7441_0deletebtn" class="cancelbtn" href='javascript:swfu.cancelFile("7441_0");'>cancel</a></td>
+			</td>
+			<tr id="7441_0">
+				<td>qwewfdghjk_900_addd[2].png</td> 
+				<td nowrap><div class="progressBar" style="width:1px" id="7441_0progress">&nbsp;</div>0% waiting</td>
+				<td><a id="7441_0deletebtn" class="cancelbtn" href='javascript:swfu.cancelFile("7441_0");'>cancel</a></td>
+			</td>
+		</table>
+		<input type="button" class="swfuploadbtn browsebtn" id="SWFUpload_0BrowseBtn" value="browse your hard disk again"  />
+		*}
+		{include file="../common_inc/form_upload_ajax.tpl"}
+	</div>
 
 	
 	<div class="htabcontent" id="urlItems">
-		{include file="../common_inc/form_media_provider_audiovideo.tpl"}
+		{*<table>
+			<tr>
+				<th>direct url / feed / podcast</th>
+			</tr>
+			<tr>
+				<td><input style="width:270px" name="url" type="text" /></td>
+				<td><b>OK</b></td><td>video/bliptv</td>
+				<td>cancel</td>
+			</tr>
+			<tr>
+				<td><input style="width:270px"  name="url" type="text" /></td>
+				<td><b>OK</b></td><td>video/youtube</td>
+				<td>cancel</td>
+			</tr>
+			<tr>
+				<td><input style="width:270px"  name="url" type="text" /></td>
+				<td><b>ERR</b></td><td>feed/podcast</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td><input style="width:270px"  name="url" type="text" /></td>
+				<td><strong></strong></td><td></td>
+				<td></td>
+			</tr>
+		</table>
+		*}
+		<table>
+		<tr>
+			<td>{t}Url{/t}:</td>
+			<td><input type="text" name="uploadByUrl[url]" size="40"/></td>
+		</tr>
+		<tr>
+			<td>{t}Title{/t}:</td>
+			<td><input type="text" name="uploadByUrl[title]" /></td>
+		</tr>
+		<tr>
+			<td>{t}Description{/t}:</td>
+			<td><textarea name="uploadByUrl[description]"></textarea></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><input type="button" id="uploadFormMedia" value="{t}Add{/t}"/></td>
+		</tr>
+		</table>
 	</div>
-		
-	<div class="htabcontent" id="uploadItems">
-		{include file="../common_inc/form_upload.tpl"}
+	
+	
+	<div class="htabcontent" id="repositoryItems">
+		Lla awfwe wetrewt ert 
 	</div>
-		
-	<div class="htabcontent" id="repositoryItems"></div>
-
 
 </fieldset>
