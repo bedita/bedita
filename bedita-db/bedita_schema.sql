@@ -565,6 +565,7 @@ CREATE TABLE base_documents (
   credits VARCHAR(255) NULL,
   `gallery_id` INT NULL ,
   `question_id` INT NULL ,
+  `flag_comments` BOOL NULL ,
   PRIMARY KEY(id),
   INDEX base_documents_FKIndex1(id),
   FOREIGN KEY(id)
