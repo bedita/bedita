@@ -30,7 +30,11 @@ class Document extends BEAppObjectModel
 			'CompactResult' 		=> array(),
 			'SearchTextSave'		=> array(),
 			'ForeignDependenceSave' => array('BEObject', 'ContentBase', 'Content', 'BaseDocument'),
-			'DeleteObject' 			=> 'objects',
+			'DeleteObject' 			=> array(
+										'objects' => array(
+											"relatedObjects" => array("comment")
+											)
+										) 
 	); 
 
 	var $transactional 	= true ;
@@ -70,9 +74,9 @@ class Document extends BEAppObjectModel
 	 * Per cancellare le associazioni con i commenti
 	 *
 	 */
-	function beforeDelete() {
-		return $this->BaseDocument->delete() ;
-	}	
+//	function beforeDelete() {
+//		return $this->BaseDocument->delete() ;
+//	}	
 }
 
 

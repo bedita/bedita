@@ -68,7 +68,7 @@ class CommentsController extends ModulesController {
 		$REDIRECT = array(
 			"save"	=> 	array(
 							"OK"	=> "/comments/view/{$this->Comment->id}",
-							"ERROR"	=> "/comments/view/{$this->Comment->id}" 
+							"ERROR"	=> "/comments/view" 
 							), 
 			"delete" =>	array(
 							"OK"	=> "/comments",

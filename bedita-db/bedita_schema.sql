@@ -203,6 +203,7 @@ CREATE TABLE content_bases (
   subject VARCHAR(255) NULL,
   abstract MEDIUMTEXT NULL,
   type ENUM('html','txt','txtParsed') DEFAULT 'txt',
+  comments ENUM('on','off') DEFAULT 'off',
   PRIMARY KEY(id),
   INDEX content_bases_FKIndex1(id),
   FOREIGN KEY(id)
@@ -226,6 +227,7 @@ CREATE TABLE comments (
   id INTEGER UNSIGNED NOT NULL,
   author VARCHAR(255) NULL,
   email VARCHAR(255) NULL,
+  url VARCHAR(255) NULL,
   PRIMARY KEY(id),
   INDEX comments_FKIndex1(id),
   FOREIGN KEY(id)
@@ -560,7 +562,6 @@ CREATE TABLE content_bases_object_categories (
 CREATE TABLE base_documents (
   id INTEGER UNSIGNED NOT NULL,
   desc_author MEDIUMTEXT NULL,
-  flag_comments BOOL NULL,
   credits VARCHAR(255) NULL,
   `gallery_id` INT NULL ,
   `question_id` INT NULL ,

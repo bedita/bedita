@@ -23,6 +23,7 @@ class DeleteObjectBehavior extends ModelBehavior {
 	 * Dati i vincoli (foreignKey)  tra le tabelle in DB, viene forzata la 
 	 * cancellazione del record della tabella iniziale, objects
 	 *
+	 * if specified delete related object too
 	 * @return unknown
 	 */
 	
@@ -37,8 +38,26 @@ class DeleteObjectBehavior extends ModelBehavior {
 		}
 		$configure = $this->config[$model->name] ;
 		
-		$model->table =  (isset($configure) && is_string($configure)) ? $configure : $model->table ;
+		if (!empty($configure)) {
+			if (is_string($configure)) {
+				$model->table = $configure;
+			} elseif (is_array($configure) && count($configure) == 1) {
+				
+				if (is_string(key($configure))) {
+					
+					$model->table = key($configure);
+					if (!empty($configure[$model->table]["relatedObjects"])) {
+						$this->delRelatedObjects($configure[$model->table]["relatedObjects"], $model->id);
+					}
+					
+				} else {
+					$model->table = array_shift($configure);
+				}
+			}
+		}
 		
+		$model->table =  (isset($configure) && is_string($configure)) ? $configure : $model->table ;
+
 		// Cancella i riferimenti del'oggetto nell'albero
 		if(!class_exists('Tree')){
 			App::import('Model','Tree');
@@ -71,5 +90,40 @@ class DeleteObjectBehavior extends ModelBehavior {
 		unset($model->tmpTable) ;
 	}
 
+	/**
+	 * Delete related objects
+	 *
+	 * @param array $relations: array of relations type. 
+	 * 							The object related to main object by a relation in $relations will be deleted 
+	 * @param int $object_id: main object that has to be deleted
+	 */
+	private function delRelatedObjects($relations, $object_id) {
+
+		$cb = ClassRegistry::init('ContentBase') ;
+		
+		$res = $cb->find("first", array(
+									"restrict" => array("ObjectRelation"),
+									"conditions" => array("`ContentBase`.id" => $object_id)
+									)
+							);
+		if (!empty($res["ObjectRelation"])) {
+			
+			$conf = Configure::getInstance();
+			foreach ($res["ObjectRelation"] as $obj) {
+				
+				if (in_array($obj["ContentBasesObject"]["switch"],$relations)) {
+					$modelClass = $conf->objectTypeModels[$obj["object_type_id"]];
+
+					$model = ClassRegistry::init($modelClass);
+				
+					if (!$model->del($obj["id"])) 
+						throw new BeditaException(__("Error deleting related object ", true), "id: ". $obj["id"] . ", switch: " . $obj["ContentBasesObject"]["switch"]);
+				}
+				
+			}
+			
+		}
+		
+	}
 }
 ?>

@@ -37,7 +37,7 @@ class Comment extends BEAppObjectModel
 	
 //	var $validate = array(
 //			'author' => array(
-//				'required' => true,
+//				'required' => true
 //	   		),
 //	   		'email' => array(
 //	   			'rule' => 'email',

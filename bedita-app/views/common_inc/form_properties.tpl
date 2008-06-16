@@ -51,7 +51,10 @@
 	{if isset($comments)}
 	<tr>
 		<th>{t}Comments{/t}:</th>
-		<td><input type="radio"/>{t}No{/t} <input type="radio"/>{t}Yes{/t}</td>
+		<td>
+			<input type="radio" name="data[comments]" value="off"{if empty($object.comments) || $object.comments=='off'} checked{/if}/>{t}No{/t} 
+			<input type="radio" name="data[comments]" value="on"{if !empty($object.comments) && $object.comments=='on'} checked{/if}/>{t}Yes{/t}
+		</td>
 	</tr>
 	{/if}
 </table>
