@@ -35,16 +35,24 @@ class Comment extends BEAppObjectModel
 
 	var $transactional 	= true ;
 	
-//	var $validate = array(
-//			'author' => array(
-//				'required' => true
-//	   		),
-//	   		'email' => array(
-//	   			'rule' => 'email',
-//				'required' => true,
-//	   			'message' => 'email not valid'
-//	   		)
-//	   );
+	var $validate = array(
+			'author' => array(
+				'rule' 			=> 'alphaNumeric',
+				'required' 		=> true				
+	   		),
+	   		'email' => array(
+	   			'rule' 			=> 'email',
+				'required' 		=> true,
+	   			'message' 		=> 'email is not valid'
+	   		),
+	   		'url' => array (
+	   			'rule' 		 	=> 'url',
+	   			'required' 		=> false,
+	   			'allowEmpty'	=> true,
+	   			'message' 		=> 'url is not valid'
+	   		)
+	   );
+
 	   
 	var $hasOne = array(
 			'BEObject' =>
