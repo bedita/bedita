@@ -467,45 +467,41 @@ class Tree extends BEAppModel
 	}
 
 	/**
-	 * Preleva i figli di cui id e' radice.
-	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se '' � un utente anonimo,
-	 * altrimenti li prende tutti.
-	 * Si possono selezionare i tipi di oggetti da prelevare.
+	 * Children of id element (only 1 level in tree).
+	 * If userid != null, only objects with read permissione for user, if ' ' - use guest/anonymous user,
+	 * if userid = null -> no permission check.
+	 * Filter: object types, search text query.
 	 *
-	 * @param integer $id		id della radice da selezionare.
-	 * @param string $userid	l'utente che accede. Se null: non controlla i permessi. Se '': utente guest.
-	 * 							Default: non verifica i permessi.
-	 * @param string $status	Prende oggetti solo con lo status passato
-	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
-	 * 							1, 3, 22 ... aree, sezioni, documenti.
-	 * 							Default: tutti.
-	 * @param string $order		Campo testuale su cui ordinare il risultato
-	 * @param boolean $dir		TRUE, ordine ascenedente, altrimenti discendente. Default: TRUE
-	 * @param integer $page		Numero di pagina da selezionare
-	 * @param integer $dim		Dimensione della pagina
+	 * @param integer $id		root id
+	 * @param string $userid	user: null (default) => no permission check. ' ' => guest/anonymous user,
+	 * @param string $status	object status
+	 * @param array  $filter	Filter: object types, search text query, eg. array(21, 22, "search" => "text to search").
+	 * 							Default: all object types
+	 * @param string $order		field to order result (id, status, modified..)
+	 * @param boolean $dir		true (default), ascending, otherwiese descending.
+	 * @param integer $page		Page number (for pagination)
+	 * @param integer $dim		Page dim (for pagination)
 	 */
 	function getChildren($id = null, $userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
 		return $this->_getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim, false) ;
 	}
 
 	/**
-	 * Preleva i discendenti di cui id e' radice.
-	 * (vedere: beobject->find(), per ricerche al di fuori dell'albero dei contenuti ).
-	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se '' � un utente anonimo,
-	 * altrimenti li prende tutti.
-	 * Si possono selezionare i tipi di oggetti da prelevare.
+	 * Discendents of id element (all elements in tree).
+	 * (see: beobject->find(), to search not using content tree ).
+	 * If userid present, only objects with read permissione, if ' ' - guest/anonymous user,
+	 * if userid = null -> no permission check.
+	 * Filter: object types, search text query.
 	 *
-	 * @param integer $id		id della radice da selezionare.
-	 * @param string $userid	l'utente che accede. Se null: non controlla i permessi. Se '': utente guest.
-	 * 							Default: non verifica i permessi.
-	 * @param string $status	Prende oggetti solo con lo status passato
-	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
-	 * 							1, 3,  22 ... aree, sezioni, documenti.
-	 * 							Default: tutti.
-	 * @param string $order		Campo testuale su cui ordinare il risultato
-	 * @param boolean $dir		TRUE, ordine ascenedente, altrimenti discendente. Default: TRUE
-	 * @param integer $page		Numero di pagina da selezionare
-	 * @param integer $dim		Dimensione della pagina
+	 * @param integer $id		root id
+	 * @param string $userid	user: null (default) => no permission check. ' ' => guest/anonymous user,
+	 * @param string $status	object status
+	 * @param array  $filter	Filter: object types, search text query, eg. array(21, 22, "search" => "text to search").
+	 * 							Default: all object types
+	 * @param string $order		field to order result (id, status, modified..)
+	 * @param boolean $dir		true (default), ascending, otherwiese descending.
+	 * @param integer $page		Page number (for pagination)
+	 * @param integer $dim		Page dim (for pagination)
 	 */
 	function getDiscendents($id = null, $userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
 		return $this->_getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim, true) ;
@@ -570,23 +566,19 @@ class Tree extends BEAppModel
 	
 	////////////////////////////////////////////////////////////////////////
 	/**
-	 * Preleva i figli/discendenti di cui id e' radice.
-	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se '' � un utente anonimo,
-	 * altrimenti li prende tutti.
-	 * Si possono selezionare i tipi di oggetti da prelevare.
-	 *
-	 * @param integer $id		id della radice da selezionare.
-	 * @param string $userid	l'utente che accede. Se null: non controlla i permessi. Se '': utente guest.
-	 * 							Default: non verifica i permessi.
-	 * @param string $status	Prende oggetti solo con lo status passato
-	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
-	 * 							1, 3, 22 ... aree, sezioni, documenti.
-	 * 							Default: tutti.
-	 * @param string $order		Campo testuale su cui ordinare il risultato
-	 * @param boolean $dir		TRUE, ordine ascenedente, altrimenti discendente. Default: TRUE
-	 * @param integer $page		Numero di pagina da selezionare
-	 * @param integer $dim		Dimensione della pagina
-	 * @param boolean $all		Se true, prende anche i discendenti
+	 * children/discendents of id.
+	 * See: getChildren/getDiscendents
+	 * 
+	 * @param integer $id		root id
+	 * @param string $userid	user: null (default) => no permission check. ' ' => guest/anonymous user,
+	 * @param string $status	object status
+	 * @param array  $filter	Filter: object types, search text query, eg. array(21, 22, "search" => "text to search").
+	 * 							Default: all object types
+	 * @param string $order		field to order result (id, status, modified..)
+	 * @param boolean $dir		true (default), ascending, otherwiese descending.
+	 * @param integer $page		Page number (for pagination)
+	 * @param integer $dim		Page dim (for pagination)
+	 * @param boolean $all		true: all tree levels (discendents), false: only first level (children)
 	 */
 	private function _getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim, $all) {
 		
@@ -629,16 +621,7 @@ class Tree extends BEAppModel
 		}
 		
 		if(is_string($order) && strlen($order)) {
-			if($this->hasField($order)) {
-				$order = "Tree.{$order}" ;
-			} else {
-				loadModel("BEObject") ;			
-				$obj = new BEObject() ;
-				
-				if($obj->hasField($order)) {
-					$order = "objects.{$order}" ;
-				}
-			}
+			$order = " `BEObject`.`{$order}`";
 			$ordItem = "{$order} " . ((!$dir)? " DESC " : "");
 			if($searchText) {
 				$ordClausole .= ", ".$ordItem;
@@ -673,7 +656,6 @@ class Tree extends BEAppModel
 
 		return $limit ;
 	}
-
 
 	private function _getCondition_filterType(&$conditions, $filter = false) {
 		if(!$filter) 

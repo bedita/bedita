@@ -242,22 +242,22 @@ class BEObject extends BEAppModel
 	}
 
 	/**
-	 * Esegue ricerche complesse sugli oggetti indipendentemente da dove sono collocati.
-	 * (vedere: tree->getChildren(), tree->getChildren() ).
-	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se '' � un utente anonimo,
-	 * altrimenti li prende tutti.
-	 * Si possono selezionare i tipi di oggetti da prelevare.
+	 * Search objects not using content tree.
+	 * (see: Tre::getChildren(), Tree::getDiscendents()  for searches using content tree).
+	 * 
+	 * If userid != null, only objects with read permissione for user, if ' ' - use guest/anonymous user,
+	 * if userid = null -> no permission check.
+	 * Filter: object types, search text query.
 	 *
-	 * @param string $userid	l'utente che accede. Se null: non controlla i permessi. Se '': utente guest.
-	 * 							Default: non verifica i permessi.
-	 * @param string $status	Prende oggetti solo con lo status passato
-	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
-	 * 							1, 3,  22 ... aree, sezioni, documenti.
-	 * 							Default: tutti.
-	 * @param string $order		Campo testuale su cui ordinare il risultato
-	 * @param boolean $dir		TRUE, ordine ascenedente, altrimenti discendente. Default: TRUE
-	 * @param integer $page		Numero di pagina da selezionare
-	 * @param integer $dim		Dimensione della pagina
+	 * @param string $userid	user: null (default) => no permission check. ' ' => guest/anonymous user,
+	 * @param string $status	object status
+	 * @param array  $filter	Filter: object types, search text query, eg. array(21, 22, "search" => "text to search").
+	 * 							Default: all object types
+	 * @param string $order		field to order result (id, status, modified..)
+	 * @param boolean $dir		true (default), ascending, otherwiese descending.
+	 * @param integer $page		Page number (for pagination)
+	 * @param integer $dim		Page dim (for pagination)
+	 * @param array $excludeIds Array of id's to exclude
 	 */	
 	function findObjs($userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000, $excludeIds=array()) {
 
@@ -557,14 +557,13 @@ class BEObject extends BEAppModel
 	}
 	
 	/**
-	 * Trasforma un array di permessi da aggiungere in un array associativo x Cake
+	 * Transform permission array ==> cake-style associative array
 	 *
 	 * @param array $arr	{0..N} item:
 	 * 						0:ugid, 1:switch, 2:flag 
 	 * @param array $perms	dove torna l'array associativo:
 	 * 						ugid => ; switch => ; flag => 
 	 */
-
 	private function _array2perms(&$arr, &$perms) {
 		$perms = array() ;
 		if(!count($arr))  return ;
