@@ -49,6 +49,15 @@
 	
 	</tr>
 	
+	<tr>
+	
+		<th>{t}web site{/t}:</th>
+		<td colspan="3">
+		<input type="text" name="data[url]" value="{$object.url|default:''}"/>
+		</td>
+	
+	</tr>
+
 	{if !empty($object.ip_created)}
 	<tr>
 	
