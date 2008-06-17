@@ -1,15 +1,11 @@
 <?php
 /**
- *
- * PHP versions 5
- *
- * CakePHP :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright (c)	2006, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
- *
+ *	Bedita Tree operations:
+ * 		* insert, remove, move....
+ * 		* re-define save and delete
+ * 
  * @filesource
- * @copyright		Copyright (c) 2007
+ * @copyright		Copyright (c) 2008
  * @link
  * @package
  * @subpackage
@@ -18,21 +14,14 @@
  * @modifiedby
  * @lastmodified
  * @license
- * @author 		giangi giangi@qwerg.com
+ * @author 		giangi giangi@qwerg.com, ste ste@channelweb.it
  *
- * 				Implementa le operazioni di:
- * 				Inserimento nell'albero, cancellazione, spostamento di ramificazione
- * 				Le operazioni di save e delete vengono completamente  ridefinite.
 */
 class Tree extends BEAppModel
 {
-	var $name 		= 'Tree';
-	var $useTable	= "view_trees" ;
 
 	/**
-	 * save.
-	 * Non fa niente
-	 *
+	 * save: do nothing
 	 */
 	function save($data = null, $validate = true, $fieldList = array()) {
 		return true ;
@@ -621,7 +610,11 @@ class Tree extends BEAppModel
 		}
 		
 		if(is_string($order) && strlen($order)) {
-			$order = " `BEObject`.`{$order}`";
+			if($this->hasField($order)) {
+				$order = " `Tree`.`{$order}`";
+			} else {
+				$order = " `BEObject`.`{$order}`";
+			}
 			$ordItem = "{$order} " . ((!$dir)? " DESC " : "");
 			if($searchText) {
 				$ordClausole .= ", ".$ordItem;
