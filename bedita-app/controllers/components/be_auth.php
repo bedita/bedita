@@ -324,7 +324,7 @@ class BeAuthComponent extends Object {
 	public function connectedUser() {
 		$connectedUser = array();
 		$sessionDb = Configure::read('Session.database');
-		if (!empty($sessionDb)) {
+		if ( (Configure::read('Session.save') == "database") && !empty($sessionDb) ) {
 			$db =& ConnectionManager::getDataSource($sessionDb);
 			$table = $db->fullTableName(Configure::read('Session.table'), false);
 			$res = $db->query("SELECT " . $db->name($table.'.data') . " FROM " . $db->name($table) . " WHERE " . $db->name($table.'.expires') . " >= " . time(), false);
