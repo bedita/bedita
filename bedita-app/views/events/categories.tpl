@@ -4,7 +4,7 @@
 
 <body>
 	
-{include file="../modulesmenu.tpl" method="categories"}
+{include file="../common_inc/modulesmenu.tpl" method="categories"}
 
 {include file="inc/menuleft.tpl" method="categories"}
 

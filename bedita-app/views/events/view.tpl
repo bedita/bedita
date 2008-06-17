@@ -46,6 +46,6 @@
 
 
 
-{include file="menuright.tpl"}
+{include file="../common_inc/menuright.tpl"}
 
 

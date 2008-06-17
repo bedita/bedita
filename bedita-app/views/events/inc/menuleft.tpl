@@ -16,6 +16,15 @@ Menu a SX valido per tutte le pagine del controller.
 									
 	</ul>
 
+{if (!empty($method)) && $method eq "index"}
+
+		<div class="insidecol publishingtree">
+			
+				{$beTree->view($tree)}
+		
+		</div>
+
+{/if}
 
 <div id="handlerChangeAlert"></div>
 
