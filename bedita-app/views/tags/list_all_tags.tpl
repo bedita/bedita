@@ -30,13 +30,9 @@
 <div id="listTags">
 {if !empty($listTags)}
 	{foreach from=$listTags item="tag"}
-		<a href="javascript: void(0)">{$tag.label}&nbsp;</a>
+		<a href="javascript: void(0)">{$tag.label} </a>
 	{/foreach}
 {else}
 	{t}No tags found.{/t}
 {/if}
 </div>
-
-<pre>
-	{dump var=$listTags}
-</pre>

@@ -45,7 +45,7 @@ $(document).ready(function(){
 	<textarea name="tags" style="display:block; width:470px" id="tagsArea">
 	{if !empty($object.ObjectCategory)}
 		{foreach from=$object.ObjectCategory item="tag" name="ft"}
-			{$tag.label}{if !$smarty.foreach.ft.last},&nbsp;{/if}
+			{$tag.label}{if !$smarty.foreach.ft.last}, {/if}
 		{/foreach}
 	{/if}
 	</textarea>
