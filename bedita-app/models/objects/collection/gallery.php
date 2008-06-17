@@ -34,7 +34,7 @@ class Gallery extends BEAppCollectionModel
 
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
-			'CreateIndexFields'		=> array(),
+			'SearchTextSave'		=> array(),
 			'ForeignDependenceSave' => array('BEObject', 'Collection'),
 			'DeleteObject' 			=> 'objects',
 	);

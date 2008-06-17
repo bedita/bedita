@@ -28,7 +28,7 @@ class Author extends BEAppObjectModel
 	var $recursive 	= 2 ;
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('Image'),
-			'CreateIndexFields'		=> array(),
+			'SearchTextSave'		=> array(),
 			'ForeignDependenceSave' => array('BEObject', 'ContentBase'),
 			'DeleteObject' 			=> 'objects',
 	); 

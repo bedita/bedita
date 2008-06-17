@@ -27,7 +27,6 @@ class Section extends BEAppCollectionModel
 	var $recursive 	= 2 ;
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
-			'CreateIndexFields'		=> array(),
 			'ForeignDependenceSave' => array('BEObject', 'Collection'),
 			'DeleteDependentObject'	=> array('section', 'community'),
 			'DeleteObject' 			=> 'objects',

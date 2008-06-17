@@ -29,7 +29,7 @@ class Video extends BEAppObjectModel
 	var $useTable 	= 'video' ;
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
-			'CreateIndexFields'		=> array(),
+			'SearchTextSave'		=> array(),
 			'ForeignDependenceSave' => array('BEObject', 'ContentBase', 'Stream'),
 			'DeleteObject' 			=> 'objects',
 	); 

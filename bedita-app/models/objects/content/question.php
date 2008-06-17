@@ -28,7 +28,6 @@ class Question extends BEAppObjectModel
 	var $recursive 	= 2 ;
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('QuestionType','answers'),
-			'CreateIndexFields'		=> array(),
 			'ForeignDependenceSave' => array('BEObject', 'ContentBase'),
 			'DeleteObject' 			=> 'objects',
 	); 

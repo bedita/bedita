@@ -28,7 +28,7 @@ class Event extends BEAppObjectModel
 	var $recursive 	= 2 ;
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('EventDateItem'),
-			'CreateIndexFields'		=> array(),
+			'SearchTextSave'		=> array(),
 			'ForeignDependenceSave' => array('BEObject', 'ContentBase', 'Content', 'BaseDocument'),
 			'DeleteObject' 			=> 'objects',
 	); 

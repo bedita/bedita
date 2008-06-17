@@ -28,7 +28,7 @@ class Image extends BEAppObjectModel
 	var $recursive 	= 2 ;
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
-			'CreateIndexFields'		=> array(),
+			'SearchTextSave'		=> array(),
 			'ForeignDependenceSave' => array('BEObject', 'ContentBase', 'Stream'),
 			'DeleteObject' 			=> 'objects',
 	); 

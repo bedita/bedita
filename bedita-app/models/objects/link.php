@@ -19,7 +19,6 @@ class Link extends BEAppObjectModel {
 
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
-			'CreateIndexFields'		=> array(),
 			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteObject' 			=> 'objects',
 	); 

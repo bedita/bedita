@@ -1,7 +1,7 @@
 <?php
 /**
  * 
- * Update/create searchable text, indexed by mysql
+ * Update/create searchable text, indexed by mysql fulltext
  */
 
 class SearchTextSaveBehavior extends ModelBehavior {

@@ -29,7 +29,7 @@ class BEFile extends BEAppObjectModel
 	var $useTable	= "files" ;
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
-			'CreateIndexFields'		=> array(),
+			'SearchTextSave'		=> array(),
 			'ForeignDependenceSave' => array('BEObject', 'ContentBase', 'Stream'),
 			'DeleteObject' 			=> 'objects',
 	); 
