@@ -900,3 +900,6 @@ msgstr "file"
 
 msgid "Connect to other items"
 msgstr "Collega ad altri elementi"
+
+msgid "Text doesn't match image"
+msgstr "Il testo non corrisponde all'immagine"

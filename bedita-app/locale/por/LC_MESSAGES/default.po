@@ -854,3 +854,6 @@ msgstr "arquivo"
 
 msgid "Connect to other items"
 msgstr "Relacionar a outros elementos"
+
+msgid "Text doesn't match image"
+msgstr "X DANTE - Il testo non corrisponde all'immagine"

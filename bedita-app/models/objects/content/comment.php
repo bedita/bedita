@@ -43,13 +43,13 @@ class Comment extends BEAppObjectModel
 	   		'email' => array(
 	   			'rule' 			=> 'email',
 				'required' 		=> true,
-	   			'message' 		=> 'email is not valid'
+	   			'message' 		=> 'email not valid'
 	   		),
 	   		'url' => array (
 	   			'rule' 		 	=> 'url',
 	   			'required' 		=> false,
 	   			'allowEmpty'	=> true,
-	   			'message' 		=> 'url is not valid'
+	   			'message' 		=> 'URL not valid'
 	   		)
 	   );
 

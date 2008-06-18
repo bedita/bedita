@@ -395,6 +395,21 @@ abstract class FrontendController extends AppController {
 	}
 	
 	
+	/**
+	 * show image for captch
+	 *
+	 */
+	public function captchaImage() {	
+		if(!isset($this->Captcha)) {
+			App::import('Component', 'Captcha');
+			$this->Captcha = new CaptchaComponent();
+			$this->Captcha->startup($this);
+		}
+		$this->layout = null;
+		$this->Captcha->image();
+		$this->render = false;
+	}
+	
 	public function saveComment() {
 		if (!empty($this->data)) {
 			if(!isset($this->Comment)) {
@@ -402,8 +417,17 @@ abstract class FrontendController extends AppController {
 			}
 			$this->data["title"] = substr($this->data["abstract"],0,30) . "...";
 			$this->data["status"] = "on";
+			$this->data["ObjectRelation"][0]["switch"] = "comment";
 			
 			try {
+				// check captcha				
+				if(!isset($this->Captcha)) {
+					App::import('Component', 'Captcha');
+					$this->Captcha = new CaptchaComponent();
+					$this->Captcha->startup($this);
+				}
+				$this->Captcha->checkCaptcha();
+				
 				$this->Transaction->begin();
 				if (!$this->Comment->save($this->data)) {
 					throw new BeditaException(__("Error saving comment", true), $this->Comment->validationErrors);
