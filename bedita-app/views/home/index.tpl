@@ -115,7 +115,7 @@ $(document).ready(function() {
 <div class="tab"><h2>{t}all recent items{/t}</h2></div>
 	<ul class="bordered">
 	{section name="n" loop=$lastMod}
-		<li><a title="{$lastMod[n].BEObject.modified}" href="{$html->url('/')}{$lastMod[n].ObjectType.module}/view/{$lastMod[n].BEObject.id}">{$lastMod[n].BEObject.title}</a></li>
+		<li><span class="{$lastMod[n].ObjectType.module}">&nbsp;&nbsp;</span>&nbsp;<a title="{$lastMod[n].BEObject.modified}" href="{$html->url('/')}{$lastMod[n].ObjectType.module}/view/{$lastMod[n].BEObject.id}">{$lastMod[n].BEObject.title}</a></li>
 	{/section}
 	</ul>
 
