@@ -178,16 +178,17 @@ class BlipMedia {
 	 * @return unknown
 	 */
 	function sourceEmbed(&$obj) {
-		$this->conf 	= Configure::getInstance() ;
+		$this->conf = Configure::getInstance() ;
 		
 		if(!class_exists("BeBlipTvComponent")){
 			App::import('Component', "BeBlipTv");
 		}
 		$Component = new BeBlipTvComponent();
-		$Component->getEmbedVideo($obj['uid']) ;
+		
+		$info = $Component->getInfoVideo($obj['uid']);
 	
-		if(preg_match("/src\=\"([^\"]+)/i",$Component->embed,$matched)) {
-			return $matched[1] ;
+		if(preg_match("/^http:\/\/blip.tv\/file\/get\/.*\.flv/",$info["mediaUrl"],$matched)) {
+			return $matched[0] ;
 		}
 
 		return "" ;
