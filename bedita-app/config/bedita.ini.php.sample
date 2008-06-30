@@ -473,7 +473,7 @@ $config['modelBindings'] = array(
 
 // reserved words
 $config["reservedWords"] = array_merge(
-								array("section","content"),
+								array("section","content","tag"),
 								$config["appReservedWords"]
 );
 ?>

@@ -394,6 +394,111 @@ abstract class FrontendController extends AppController {
 		}
 	}
 	
+	/**
+	 * build archive tree
+	 *
+	 * Array(
+	 * 		"Document" => Array(
+	 * 				"2008" => Array(
+	 * 					"January" => Array(
+	 * 						0 => document,
+	 * 						1 => document,
+	 * 						...
+	 * 						"total" => number of document in january
+	 * 						),
+	 *	 				"February" => Array(...),
+	 * 					....
+	 * 					"total" => numeber of document in 2008
+	 * 				),
+	 * 				"2007" => Array(...),
+	 * 		"ShortNews" => ....
+	 * 		)
+	 * 
+	 * @param unknown_type $secName section id or section nickname
+	 * @return array
+	 */
+	public function loadArchiveTree($secName) {
+		
+		$section_id = (is_numeric($secName))? $secName : $this->BEObject->getIdFromNickname($secName);
+		
+		$monthName = array("01" => "January", "02" => "February", "03" => "March", "04" => "April", "05" => "May",
+						   "06" => "June", "07" => "July", "08" => "August", "09" => "September", "10" => "October",
+						   "11" => "November", "12" => "December");
+	
+		$this->modelBindings['Document'] = array("BEObject" => array("LangText"), "ContentBase");
+		$this->modelBindings['ShortNews'] = array("BEObject" => array("LangText"), "ContentBase");
+		$this->modelBindings['Event'] = array("BEObject" => array("LangText"), "ContentBase","EventDateItem");
+		
+		$items = $this->loadSectionObjects($section_id);
+		
+		unset($this->modelBindings);
+		
+		$archive = array();
+		
+		foreach ($items as $type => $itemGroup) {
+		
+			foreach ($itemGroup as $item) {
+		
+				$data = explode("-", $item["start"]);
+				$year = $data[0];
+				$month = $monthName[$data[1]];
+				$id = $item["id"];
+				$item["title"] = (!empty($item["LangText"]["title"][$this->currLang]))? $item["LangText"]["title"][$this->currLang] : $item["title"];
+				$archive[$type][$year][$month][] = $item;
+			
+			}
+			
+			// add number of items for month and year
+			$countYear = 0;
+			foreach ($archive[$type] as $year => $month) {
+				
+				$countYear = 0;
+				foreach ($month as $key => $i) {
+					$countYear += count($i);
+					$archive[$type][$year][$key]["total"] = count($i);
+				}
+				$archive[$type][$year]["total"] = $countYear;
+				
+			}
+	
+		}
+
+		return $archive;
+	}
+	
+	
+	/**
+	 * load all tag
+	 *
+	 * @param string $tplVar
+	 */
+	public function loadTags($tplVar=null) {
+		$tplVar = (empty($tplVar))? "listTags" : $tplVar;
+		$objectCategory = ClassRegistry::init("ObjectCategory");
+		$this->set($tplVar, $objectCategory->find("all", 
+									array(
+										"conditions" => "ObjectCategory.object_type_id is null",
+										"order"		=> array("ObjectCategory.label" => "asc")						
+									))
+				); 
+	}
+	
+	/**
+	 * return contents for a specific tag
+	 *
+	 * @param string $tag tag label 
+	 * @return array
+	 */
+	protected function loadContentsByTag($tag) {
+		$objectCategory = ClassRegistry::init("ObjectCategory");
+		$contents = $objectCategory->getContentsByTag($tag);
+		$result = array();
+		foreach ($contents as $c) {
+			$object = $this->loadObj($c["id"]);
+			$result[$object['object_type']][] = $object;
+		}
+		return $result;
+	}
 	
 	/**
 	 * show image for captch

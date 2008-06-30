@@ -16,7 +16,6 @@ class CaptchaComponent extends Object {
 	}
 	
 	public function image() {
-		
 		// Create a random string, leaving out 'o' to avoid confusion with '0'
 		$char = strtoupper(substr(str_shuffle('abcdefghjkmnpqrstuvwxyz'), 0, 2));
 		
@@ -29,7 +28,8 @@ class CaptchaComponent extends Object {
 		
 		// Set the content type
 		header('Content-type: image/png');
-		header('Cache-control: no-cache');
+		header('Cache-control: no-cache, must-revalidate');
+		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 					
 		// Create a background image
 		if (is_dir(APP . "webroot/captcha/img/")) {

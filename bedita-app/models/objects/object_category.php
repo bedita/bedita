@@ -56,9 +56,11 @@ class ObjectCategory extends BEAppModel {
 	public function saveTagList($tagList) {
 		$arrIdTag = array();
 		if (!empty($tagList)) {
-			$tags = explode(",",$tagList);
+			$tags = explode(",", $tagList);
+			
 			foreach ($tags as $tag) {
 				$tag = trim($tag);
+				
 				if (!empty($tag))  {
 					$tagDB = $this->find("first", array(
 													"conditions" => "label='".$tag."' AND object_type_id IS NULL"
@@ -80,6 +82,70 @@ class ObjectCategory extends BEAppModel {
 			}
 		}
 		return $arrIdTag;
+	}
+	
+	public function getWeighedTags() {
+
+		$sql = "SELECT DISTINCT object_categories.id, object_categories.label, 
+					   COUNT(content_bases_object_categories.object_category_id) AS weight
+				FROM object_categories,content_bases_object_categories
+				WHERE object_categories.object_type_id IS NULL
+				AND object_categories.id = content_bases_object_categories.object_category_id
+				GROUP BY object_categories.id
+				ORDER BY object_categories.label ASC
+				";
+		$res = $this->query($sql);
+		$tags = array();
+		if (!empty($res)) {
+			foreach ($res as $t) {
+				$tags[] = array_merge($t["object_categories"],$t[0]);
+			}
+		}
+
+		return $tags;
+	}
+	
+	public function getContentsByTag($label) {
+		// bind association on th fly
+		$hasAndBelongsToMany = array(
+			'ContentBase' =>
+				array(
+					'className'				=> 'ContentBase',
+					'joinTable'    			=> 'content_bases_object_categories',
+					'foreignKey'   			=> 'object_category_id',
+					'associationForeignKey'	=> 'content_base_id',
+					'unique'				=> true
+						)
+				);
+				
+		$this->bindModel( array(
+				'hasAndBelongsToMany' 	=> $hasAndBelongsToMany
+				) 
+			);
+		
+		// don't compact find result
+		$this->bviorCompactResults = false;
+		
+		$tag = $this->find("first", array("conditions" => array("label" => $label, "object_type_id IS NULL")));
+		
+		$beObject = ClassRegistry::init("BEObject");
+		
+		foreach ($tag["ContentBase"] as $c) {
+			
+			$o = $beObject->find("first", array(
+									"conditions" => array("BEObject.id" => $c["id"]),
+									"restrict"	=> array("ObjectType")
+									)
+							);
+			
+			$contents[] = array_merge( $c, $o["BEObject"], array("ObjectType" => $o["ObjectType"]) ) ; 
+			
+		}
+		
+		// reset to default compact result
+		$this->bviorCompactResults = true;
+		
+		return $contents;
 	}
 }
 ?>
