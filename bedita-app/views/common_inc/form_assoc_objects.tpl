@@ -124,7 +124,7 @@ $(document).ready(function() {
 				<input type="hidden" class="relationTypeHidden" name="data[ObjectRelation][{$rel}][switch]" value="{$rel}" />			
 				{if !empty($relObjects.$rel)}
 					{foreach from=$relObjects.$rel item="objRelated" name="assocForeach"}
-						{include file="../pages/form_assoc_object.tpl"}
+						{include file="../common_inc/form_assoc_object.tpl"}
 					{/foreach}
 				{/if}
 			</div>
@@ -132,21 +132,6 @@ $(document).ready(function() {
 		{/foreach}
 	</div>
 	
-	<div class="itemAssocTree" style="clear: both;">
-		<div class="assocItemSection" id="assocItemSection"></div>
-		<div>
-			{t}Relation type:{/t}
-			<select name="relationType" id="selectRelationType">
-			{foreach from=$conf->objRelationType item="relType"}
-				<option value="{$relType}">{$relType}</option>
-			{/foreach}
-			</select>
-		</div>
-		<div id="assocTreeControl">
-			<a href="#">{t}Close all{/t}</a>
-			<a href="#">{t}Expand all{/t}</a>
-		</div>
-		{$beTree->tree("assocTree", $tree)}
-	</div>
+
 	
 </fieldset>

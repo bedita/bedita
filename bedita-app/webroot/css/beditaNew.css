@@ -27,9 +27,7 @@ BODY {
 }
 
 
-TD, INPUT, TEXTAREA, SELECT {padding:2px;}
-
-TD {vertical-align:top}
+TD {padding:2px; vertical-align:top}
 
 HR {height:0px; border:0px; margin:10px 0px 10px 0px; border-top:1px solid gray}
 
@@ -173,6 +171,10 @@ H1 {font:normal 2em Georgia, "Times New Roman", Times, serif; line-height:1em}
 H2 {font:normal 1.5em Georgia, "Times New Roman", Times, serif; line-height:1em}
 
 .graced {font-family: Georgia, "Times New Roman", Times, serif;}
+
+INPUT[type=text], TEXTAREA {
+	font-size:12px; font-family: Verdana, sans-serif; line-height:1.5em;
+}
 
 
 /*...........................................
@@ -445,7 +447,6 @@ UL.modulesmenu {
 	margin:10px 0px 10px 0px;
 	/* color:#ff6600; */
 	cursor:pointer;
-
 }
 
 .publishingtree *[rel] {
@@ -475,6 +476,45 @@ UL.modulesmenu {
 	border-bottom:0px solid red;
 }
 */
+
+#treecontrol {
+	text-transform:lowercase;
+	border-bottom:1px solid gray;
+}
+
+.publishingtree#treeWhere {
+	width:auto;
+	margin:0px; padding:0px
+}
+
+.publishingtree#treeWhere LI.area {
+	width:230px; float:left;
+	margin:4px 4px 4px 0px;
+	border-bottom:1px solid gray;
+
+}
+
+.publishingtree#treeWhere LI.section .last {
+
+}
+
+.publishingtree#treeWhere LI.section {
+	margin-left:-10px;
+	border-left:1px solid gray;
+
+}
+
+.publishingtree#treeWhere .AreaItem {
+	font:normal 18px "Georgia", "Times New Roman", Times, serif; line-height:1em;
+}
+
+
+.publishingtree#treeWhere LI, .publishingtree#treeWhere UL {
+	border:0px;
+}
+
+
+
 
 /*...........................................    
 
@@ -593,6 +633,8 @@ TABLE.indexlist {
 }
 
 
+
+
 /*...........................................    
 
     States
@@ -649,20 +691,6 @@ TABLE.indexlist {
 	border-width:0px; padding-bottom:0px;
 }
 
-.multimediaitem .evidence {
- font: normal 1.5em "Georgia";	
-}
-
-.dark {
-	background-color:#000000;
-	color: silver;
-	border-color: #999999;
-}
-
-
-.gold LI {
-	border-color: silver;
-}
 
 .multimediaitem.off {
 	
@@ -684,24 +712,18 @@ TABLE.indexlist {
 	overflow:hidden;
 }
 
-.multimediaitem.small .description {
+.multimediaitem.small .info_file_item {
 	display:none;
 }
 
 .multimediaitem input, .multimediaitem textarea {
 	width:120px;
-	border:1px solid silver;
 	background: transparent;
 }
 
 .multimediaitem textarea {
 	height:60px;
 	overflow: auto;
-}
-
-.multimediaitem.small input, .multimediaitem.small textarea {
-	width:80px;
-	border:0px solid silver;
 }
 
 
@@ -713,11 +735,31 @@ TABLE.indexlist {
 	cursor:pointer;
 }
 
-.multimediaitem input {
-	border:1px solid silver;
+
+.dark.multimediaitem {
+	background-color:#000000;
+	color: #999999;
+	border-color: #333333;
+}
+
+
+.dark.multimediaitem input, .dark textarea  {
+	border-color: #333333;
+	color: #999999;
 	
 }
 
+
+.priority {
+	color: #000000;
+	border:0px !important;
+	font: normal 1.66em "Georgia" !important;
+	padding:0px; margin:0px;
+}
+
+.dark.multimediaitem .priority {
+	color: #FFFFFF;
+}
 
 .progressBar {
 	width:100px;
@@ -772,6 +814,13 @@ LI.colophon {
     Forms
 
 ...........................................*/
+
+INPUT, TEXTAREA, SELECT {
+	padding:2px;
+}
+INPUT[type=text], INPUT[type=file], TEXTAREA {
+	border:1px solid gray;
+}
 
 label {font-weight:bold;}
 
@@ -847,7 +896,7 @@ input[type=radio] {
 }
 
 .message.warn {
-	color:gold;
+  color:gold;
 }
 
 .message.info {
@@ -904,7 +953,19 @@ input[type=radio] {
 ...........................................*/
 
 .tag {
-	font-weight: bold;
+	font-size:1.2em;
+	font-weight: normal;
 	line-height:1.2em;
 	
 }
+
+#listTags A:Hover {
+	font-size:1.9em;
+	
+}
+
+
+
+
+
+

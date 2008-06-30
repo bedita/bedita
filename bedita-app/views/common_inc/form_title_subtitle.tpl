@@ -11,10 +11,10 @@
 	</tr>
 	<tr>
 		<th>{t}Description{/t}</th>
-		<td><textarea id="subtitle" class="shortdesc" name="data[description]">{$object.description|default:''|escape:'html'}</textarea></td>
+		<td><textarea id="subtitle" style="height:30px" class="shortdesc autogrowarea" name="data[description]">{$object.description|default:''|escape:'html'}</textarea></td>
 	</tr>
 	
 </table>
 
-	
+
 </fieldset>

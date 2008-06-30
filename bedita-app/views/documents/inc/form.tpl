@@ -1,3 +1,19 @@
+{$html->css("ui.datepicker")}
+
+{$javascript->link("jquery/jquery.form")}
+{$javascript->link("jquery/jquery.treeview")}
+{$javascript->link("jquery/jquery.autogrow")}
+
+
+{$javascript->link("jquery/ui/datepicker/ui.datepicker")}
+{if $currLang != "eng"}
+	{$javascript->link("jquery/ui/datepicker/ui.datepicker-$currLang.js")}
+{/if}
+
+{include file="../common_inc/form_common_js.tpl"}
+
+
+
 <form action="{$html->url('/documents/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
@@ -7,22 +23,30 @@
 	
 	{include file="../common_inc/form_tree.tpl"}
 	
-	{*include file="../common_inc/form_lang_version.tpl"*}
-
 	{include file="../common_inc/form_long_desc_lang.tpl"}
 	
 	{include file="../common_inc/form_file_list.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
 
-	{*include file="../common_inc/form_galleries.tpl"*}
-	
 	{include file="../common_inc/form_tags.tpl"}
 	
+	{include file="../common_inc/form_links.tpl"}
+			
+	{include file="../common_inc/form_geotag.tpl"}
+	
 	{include file="../common_inc/form_translations.tpl"}
+	
+	{include file="../common_inc/form_assoc_objects.tpl"}
 	
 	{include file="../common_inc/form_advanced_properties.tpl" el=$object}
 	
 	{include file="../common_inc/form_custom_properties.tpl" el=$object}
 	
 	{include file="../common_inc/form_permissions.tpl" el=$object recursion=true}
-
+	
+	
 </form>
+	
+
+{*include file="../common_inc/form_lang_version.tpl"*}
+{*include file="../common_inc/form_galleries.tpl"*}
+

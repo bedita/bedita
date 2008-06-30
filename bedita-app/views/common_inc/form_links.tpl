@@ -89,10 +89,12 @@ $(document).ready(function() {
 //-->
 </script>
 
+<div class="tab"><h2>{t}Links{/t}</h2></div>
 
-<h2 class="showHideBlockButton">{t}Links{/t}</h2>
-<div class="blockForm" id="links">
-	<div id="listExistingLinks" style="min-height:100px">
+<fieldset id="links">
+	
+
+	<div id="listExistingLinks">
 	<input type="hidden" name="data[ObjectRelation]['link'][switch]" value="link" />
 	{if isset($relObjects.link)}
 	{foreach from=$relObjects.link item="objRelated" name="linkForeach"}
@@ -100,16 +102,19 @@ $(document).ready(function() {
 	{/foreach}
 	{/if}
 	</div>
-	<div id="newLink">
-	<fieldset>
-	{t}Title{/t}: <input type="text" name="linkTitle" id="linkTitle"/>
-	{t}Url{/t}: <input type="text" name="linkUrl" id="linkUrl"/>
-	{t}Type{/t}: <select name="targetType" id="linkTarget"> 
-		<option value="_self">_self</option>
-		<option value="_blank">_blank</option>
-	</select>
-	<input type="button" value="{t}Add{/t}" id="addLink"/>
-	</fieldset>
+	
+	<div id="newLink" style="white-space:nowrap">
+		{t}Title{/t}: 	<input type="text" style="width:100px" name="linkTitle" id="linkTitle" />
+		{t}Url{/t}: 	<input type="text" name="linkUrl" id="linkUrl" />
+		{t}Type{/t}: 	<select name="targetType" id="linkTarget"> 
+						<option value="_self">_self</option>
+						<option value="_blank">_blank</option>
+						</select>
+		<input type="button" value="{t}Add{/t}" id="addLink"/>
 	</div>
+	
 	<div id="loadingLinks" class="generalLoading" title="{t}Loading data{/t}"><span>&nbsp;</span></div>
-</div>
+
+
+	
+</fieldset>

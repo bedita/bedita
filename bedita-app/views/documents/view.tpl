@@ -1,21 +1,14 @@
-{$html->css("ui.datepicker")}
-
-{$javascript->link("jquery/jquery.form")}
-{$javascript->link("jquery/jquery.treeview")}
-
-{$javascript->link("jquery/ui/datepicker/ui.datepicker")}
-{if $currLang != "eng"}
-	{$javascript->link("jquery/ui/datepicker/ui.datepicker-$currLang.js")}
-{/if}
+{*
+** document view template
+*}
 
 
 </head>
-
 <body>
 
 {include file="../common_inc/modulesmenu.tpl"}
 
-{include file="inc/menuleft.tpl"}
+{include file="inc/menuleft.tpl" method="view"}
 
 <div class="head">
 	
@@ -26,7 +19,8 @@
 {assign var=objIndex value=0}
 
 
-{include file="inc/menucommands.tpl" fixed=true method="view"}
+{include file="inc/menucommands.tpl" method="view" fixed = true}
+
 
 <div class="main">	
 	
@@ -36,8 +30,3 @@
 
 
 {include file="../common_inc/menuright.tpl"}
-
-
-
-
-

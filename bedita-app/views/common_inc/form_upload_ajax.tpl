@@ -1,26 +1,28 @@
 
 <div>
 	
-	<table border="0" cellspacing="0" cellpadding="2">
+	
+		<table style="margin-bottom:20px">
 		<tr>
-			<td colspan="2">
-			<strong>{t}file{/t}:</strong>
-			<input type="file" name="Filedata" />
-			<input type="button" id="uploadForm" value="{t}Upload{/t}"/>
-			</td>
+			<td>{t}file{/t}:</td>
+			<td><input style="width:270px;" type="file" name="Filedata" /></td>
 		</tr>
 		
 		<tr>
-			<td><strong>{t}Title{/t}</strong></td>
-			<td><strong>{t}Description{/t}</strong></td>
+			<td>{t}Title{/t}:</td>
+			<td><input style="width:270px;" type="text" name="streamUploaded[title]" class="formtitolo" value=""></td>
+		</tr>
+		
+		<tr>
+			<td>{t}Description{/t}:</td>
+			<td><textarea name="streamUploaded[description]" class="autogrowarea" style="width:270px; min-height:16px; height:16px;"></textarea></td>
 		</tr>
 		<tr>
-			<td><input type="text" name="streamUploaded[title]" class="formtitolo" value=""></td>
-			<td>
-				<textarea name="streamUploaded[description]" style="width:280px; height:90px;"></textarea>
-			</td>
+			<td></td>
+			<td><input type="button" style="width:160px; margin-top:15px" id="uploadForm" value="{t}Upload{/t}"/></td>
 		</tr>
-	</table>
+		</table>
 	
 <div id="msgUpload"></div>
+
 </div>

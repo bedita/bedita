@@ -8,7 +8,7 @@
 		{if !empty($areaCategory.area)}
 		{foreach key="areaName" item="areaC" from=$areaCategory.area}
 			<tr>
-				<th>{$areaName}</th>
+				<td><h2 style="color:white; margin-left:-10px">{$areaName}</h2></td>
 			</tr>
 			{foreach from=$areaC item="cat" name="fc"}
 			<tr>
@@ -27,7 +27,7 @@
 	{if !empty($areaCategory.noarea)}
 			
 			<tr>
-				<th>{t}Categories with no area associated{/t}</th>
+				<th><h2 style="color:white; margin-left:-10px">{t}Categories with no area associated{/t}</h2></th>
 			</tr>
 			{foreach item="noareaC" from=$areaCategory.noarea}
 			<tr>

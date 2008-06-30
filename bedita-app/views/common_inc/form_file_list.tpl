@@ -78,12 +78,13 @@ $(document).ready(function() {
 	</div>
 {/foreach}
 
-</fieldset>
+{* </fieldset> *}
 
+<p style="margin-top:20px; clear:both;" />
 
-<div class="tab"><h2>{t}Add multimedia items{/t}</h2></div>
+{*  <h2>{t}Add multimedia items{/t}</h2>  *}
 
-<fieldset id="addmultimedia">
+<div id="addmultimedia">
 	
 	<ul class="htab">
 		<li rel="uploadItems">	{t}upload new items{/t}</li>
@@ -145,29 +146,32 @@ $(document).ready(function() {
 			</tr>
 		</table>
 		*}
-		<table>
+		<table style="margin-bottom:20px">
 		<tr>
 			<td>{t}Url{/t}:</td>
-			<td><input type="text" name="uploadByUrl[url]" size="40"/></td>
+			<td><input type="text" style="width:270px;" name="uploadByUrl[url]" /></td>
 		</tr>
 		<tr>
 			<td>{t}Title{/t}:</td>
-			<td><input type="text" name="uploadByUrl[title]" /></td>
+			<td><input type="text" style="width:270px;" name="uploadByUrl[title]" /></td>
 		</tr>
 		<tr>
 			<td>{t}Description{/t}:</td>
-			<td><textarea name="uploadByUrl[description]"></textarea></td>
+			<td><textarea style="width:270px; min-height:16px; height:16px;" class="autogrowarea" name="uploadByUrl[description]"></textarea></td>
 		</tr>
 		<tr>
 			<td></td>
-			<td><input type="button" id="uploadFormMedia" value="{t}Add{/t}"/></td>
+			<td>
+				<input type="button" style="width:160px; margin-top:15px" id="uploadFormMedia" value="{t}Add{/t}"/>
+			</td>
 		</tr>
 		</table>
 	</div>
 	
 	
-	<div class="htabcontent" id="repositoryItems">
+	<div class="htabcontent" id="repositoryItems" table style="margin-bottom:20px">
 		Lla awfwe wetrewt ert 
 	</div>
 
+</div>
 </fieldset>

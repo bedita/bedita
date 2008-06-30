@@ -9,6 +9,7 @@
 	
 	{$javascript->link("jquery/jquery")}
 	{$javascript->link("jquery/jquery.cookie")}
+	
 	{*$javascript->link("jquery.changealert")*}
 	{$javascript->link("common")}
 	{$javascript->link("beditaUI")}
