@@ -252,6 +252,9 @@ UL.modules {
 	padding:10px;
 }
 
+.listrecent {
+	display:block; height:15px; width:4px; margin-left:-5px; margin-right:5px; float:left;
+}
 
 /*...........................................
  
@@ -271,7 +274,7 @@ UL.modules {
 .news 			{background-color:#C900FF !important;}
 .tags 			{background-color:#5F9EA0 !important;}
 .comments		{background-color:#F08080 !important;}
-
+.translations	{background-color:#FF00FF !important;}
 
 .bedita 		{background-color:#FFFFFF !important; 
 			font:normal 1.75em Georgia, "Times New Roman", Times, serif !important; ; 

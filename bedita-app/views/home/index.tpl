@@ -37,7 +37,7 @@ $(document).ready(function() {
 	
 
 {section name="m" loop=$moduleList}
-	{if ($moduleList[m].status == 'on')}
+	{*if ($moduleList[m].status == 'on')*}
 		{if ($moduleList[m].flag & BEDITA_PERMS_READ) }
 			{assign_concat var='linkPath' 0=$html->url('/') 1=$moduleList[m].path}
 
@@ -45,7 +45,7 @@ $(document).ready(function() {
 		{else}
 			<li class="{$moduleList[m].path} off" rel="{$linkPath}">{t}{$moduleList[m].label}{/t}</li>
 		{/if}
-	{/if}
+	{*/if*}
 	
 	{if $smarty.section.m.iteration == 2}
 	
@@ -61,18 +61,24 @@ $(document).ready(function() {
 {/section}
 	
 
-	<li class="colophon">
+	<li class="colophon" style="width:240px">
 
 		<h2>BEdita</h2>
 	
-		<a href="css-class.html">› sed diam nonum</a>
-		<br />
-		<a href="testinside.html">› nibh euismod</a>
-		<br />
-		<a href="testinside2.html">› nonummy nibh</a>
-		<hr />
 		un software di <strong>Chialab</strong> and <strong>Channelweb</strong>
-	 	<br />
+
+		<hr />
+{if !empty($conf->multilang) && $conf->multilang}
+	 {*
+	{t}Language{/t}{if $session->check('Config.language')} [{$session->read('Config.language')}] {/if}:
+	<br />
+	*}
+	{foreach key=key item=item name=l from=$conf->langsSystem}
+		<a {if $session->read('Config.language') == $key}class="on"{/if} href="{$html->base}/lang/{$key}">› {$item}</a>
+		<br />
+	{/foreach} 
+{/if}	
+		<hr />
 		<a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a>
 	</li>
 	
@@ -94,7 +100,7 @@ $(document).ready(function() {
 	
 	<ul class="bordered">
 	{section name="n" loop=$lastModBYUser}
-		<li><span class="{$lastModBYUser[n].ObjectType.module}">&nbsp;&nbsp;</span>&nbsp;<a title="{$lastModBYUser[n].BEObject.modified}" href="{$html->url('/')}{$lastModBYUser[n].ObjectType.module}/view/{$lastModBYUser[n].BEObject.id}">{$lastModBYUser[n].BEObject.title}</a></li>
+		<li><span class="listrecent {$lastModBYUser[n].ObjectType.module}">&nbsp;</span><a title="{$lastModBYUser[n].BEObject.modified}" href="{$html->url('/')}{$lastModBYUser[n].ObjectType.module}/view/{$lastModBYUser[n].BEObject.id}">{$lastModBYUser[n].BEObject.title}</a></li>
 	{/section}
 	</ul>
 	
@@ -115,7 +121,7 @@ $(document).ready(function() {
 <div class="tab"><h2>{t}all recent items{/t}</h2></div>
 	<ul class="bordered">
 	{section name="n" loop=$lastMod}
-		<li><span class="{$lastMod[n].ObjectType.module}">&nbsp;&nbsp;</span>&nbsp;<a title="{$lastMod[n].BEObject.modified}" href="{$html->url('/')}{$lastMod[n].ObjectType.module}/view/{$lastMod[n].BEObject.id}">{$lastMod[n].BEObject.title}</a></li>
+		<li><span class="listrecent {$lastMod[n].ObjectType.module}">&nbsp;&nbsp;</span>&nbsp;<a title="{$lastMod[n].BEObject.modified}" href="{$html->url('/')}{$lastMod[n].ObjectType.module}/view/{$lastMod[n].BEObject.id}">{$lastMod[n].BEObject.title}</a></li>
 	{/section}
 	</ul>
 
@@ -126,7 +132,7 @@ $(document).ready(function() {
 		<li>{$connectedUser[i]}</li>
 	{/section}
 	</ul>
-	
+
 <div class="tab"><h2>{t}message board{/t}</h2></div>
 <form>
 	
@@ -167,12 +173,7 @@ $(document).ready(function() {
 </div>
 
 
-{if !empty($conf->multilang) && $conf->multilang}
-{t}Language{/t}{if $session->check('Config.language')} [{$session->read('Config.language')}] {/if}:
-{foreach key=key item=item name=l from=$conf->langsSystem}
-<a href="{$html->base}/lang/{$key}">{$item}</a>{if !$smarty.foreach.l.last} | {/if}
-{/foreach} 
-{/if}
+
 
 	
 <p style="clear:both; margin-bottom:20px;" />

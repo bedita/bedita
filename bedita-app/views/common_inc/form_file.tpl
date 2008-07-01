@@ -3,9 +3,9 @@
 ** @author ChannelWeb srl
 *}
 
-<h2 class="showHideBlockButton">{t}File{/t}</h2>
-<div class="blockForm" id="multimediaitem">
-<fieldset>
+<div class="tab"><h2>{t}File{/t}</h2></div>
+<fieldset id="multimediaitem">
+
 {if (isset($object))}
 
 <div style="margin: 0 5px 5px 0; float: left;">
@@ -81,29 +81,34 @@
 </div>
 
 
-<div style="line-height: 1.6em;">
-	<span class="label">{t}Name{/t}:</span> {$object.name|default:""}<br />
-	<span class="label">{t}Mime type{/t}:</span> {$object.type|default:""}<br />
-	{if ($object.ObjectType.name == "image")}
-	<span class="label">{t}Size{/t}:</span> {math equation="x/y" x=$object.size|default:0 y=1024 format="%d"|default:""} KB<br />
-	<span class="label">{t}Human readable type{/t}:</span> {$imageInfo.hrtype}<br />
-	<span class="label">{t}Width{/t}:</span> {$imageInfo.w}<br />
-	<span class="label">{t}Height{/t}:</span> {$imageInfo.h}<br />
-	<span class="label">{t}Bit depth{/t}:</span> {$imageInfo.bits}<br />
-	<span class="label">{t}Channels{/t}:</span> {$imageInfo.channels}<br />
-	<span class="label">{t}Orientation{/t}:</span> {$imageInfo.orientation}
-	{/if}
-</div>
+<table class="bordered">
+	
+	<tr><th>{t}Name{/t}:</th><td>{$object.name|default:""}</td></tr>
+	<tr><th>{t}Mime type{/t}:</th><td>{$object.type|default:""}</td></tr>
+	<tr><th>{t}Size{/t}:</th><td>{math equation="x/y" x=$object.size|default:0 y=1024 format="%d"|default:""} KB</td></tr>
+	
+{if ($object.ObjectType.name == "image")}
+	
+	<tr><th>{t}Human readable type{/t}:</th><td>{$imageInfo.hrtype}</td></tr>
+	<tr>th>{t}Width{/t}:</th><td>{$imageInfo.w}</td></tr>
+	<tr><th>{t}Height{/t}:</th><td>{$imageInfo.h}</td></tr>
+	<tr><th>{t}Bit depth{/t}:</th><td>{$imageInfo.bits}</td></tr>
+	<tr><th>{t}Channels{/t}:</th><td>{$imageInfo.channels}</td></tr>
+	<tr><th>{t}Orientation{/t}:</th><td>{$imageInfo.orientation}</td></tr>
+	
+{/if}
+	
+</table>
 
 </fieldset>
-</div>
+
 
 
 {* EXIF *}
 {if $object.ObjectType.name == "image" && $imageInfo.hrtype eq "JPG"}
-<h2 class="showHideBlockButton">{t}Exif - Main Data{/t}</h2>
-<div class="blockForm" id="exifdata">
-<fieldset>
+<div class="tab"><h2>{t}Exif - Main Data{/t}</h2></div>
+
+<fieldset id="exifdata">
 
 	<div style="line-height: 1.4em;">
 	{if $imageInfo.exif.main}
@@ -127,7 +132,7 @@
 	</div>
 
 </fieldset>
-</div>
+
 {/if}
 
 {/if} {* if $obj, line 4 *}

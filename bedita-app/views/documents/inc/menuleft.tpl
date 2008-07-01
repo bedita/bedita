@@ -31,6 +31,7 @@ Menu a SX valido per tutte le pagine del controller.
 {/if}
 
 
+
 		{if !empty($previews)}
 		<div class="insidecol"><label>{t}Previews{/t}</label></div>
 		<ul class="insidecol">
@@ -38,13 +39,6 @@ Menu a SX valido per tutte le pagine del controller.
 		</ul>
 		{/if}
 
-	
-	
-
-
-
-<div id="handlerChangeAlert"></div>
-	
+		<div id="handlerChangeAlert"></div>
 
 </div>
-

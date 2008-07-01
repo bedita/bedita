@@ -11,16 +11,28 @@ $(document).ready(function(){
 {/literal}
 //-->
 </script>
-<div id="containerPage">
+
+{$javascript->link("jquery/jquery.form")}
+{$javascript->link("jquery/jquery.autogrow")}
+{include file="../common_inc/form_common_js.tpl"}
+
 <form action="{$html->url('/attachments/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+
 <input  type="hidden" name="data[id]" value="{$object.id|default:''}" />
 <input  type="hidden" name="data[object_type_id]" value="{$object.object_type_id|default:''}" />
-{include file="../pages/form_header.tpl"}
-<div class="blockForm" id="errorForm"></div>
-{include file="../pages/form_properties.tpl" doctype=false publication=false}
-{include file="../pages/form_file.tpl"}
-{include file="../pages/form_subtitle_desc.tpl"}
-{include file="../pages/form_custom_properties.tpl" el=$object}
-{include file="../pages/form_permissions.tpl" el=$object recursion=true}
+
+
+{include file="../common_inc/form_properties.tpl" doctype=false publication=false}
+
+{include file="../common_inc/form_file.tpl"}
+
+{include file="../common_inc/form_title_subtitle.tpl"}
+
+
+{include file="../common_inc/form_custom_properties.tpl" el=$object}
+
+{include file="../common_inc/form_permissions.tpl" el=$object recursion=true}
+
+
 </form>
-</div>
+

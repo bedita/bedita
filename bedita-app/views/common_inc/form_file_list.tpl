@@ -169,7 +169,7 @@ $(document).ready(function() {
 	</div>
 	
 	
-	<div class="htabcontent" id="repositoryItems" table style="margin-bottom:20px">
+	<div class="htabcontent" id="repositoryItems" style="margin-bottom:20px">
 		Lla awfwe wetrewt ert 
 	</div>
 

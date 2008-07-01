@@ -1,20 +1,34 @@
-{*
-** galleries form template
-** @author ChannelWeb srl
-*}
+{$html->css("ui.datepicker")}
+
+{$javascript->link("jquery/jquery.form")}
+{$javascript->link("jquery/jquery.treeview")}
+{$javascript->link("jquery/jquery.autogrow")}
+
+
+{$javascript->link("jquery/ui/datepicker/ui.datepicker")}
+{if $currLang != "eng"}
+	{$javascript->link("jquery/ui/datepicker/ui.datepicker-$currLang.js")}
+{/if}
+
+{include file="../common_inc/form_common_js.tpl"}
+
+
+
+<form action="{$html->url('/galleries/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
 
 {include file="../common_inc/form_title_subtitle.tpl"}
-{include file="../common_inc/form_properties.tpl" publication=false}
 
-{*include file="../pages/form_file_list.tpl" 
-containerId='multimediaContainer' 
-collection="true" relation='attach' title='Multimedia' items=$multimedia*}
+{include file="../common_inc/form_properties.tpl" doctype=false comments=true}
 
-{include file="../common_inc/form_file_listNEW.tpl" 
-containerId='multimediaContainer' 
-collection="true" relation='attach' title='Multimedia' items=$multimedia}
+{include file="../common_inc/form_file_list.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
 
+{include file="../common_inc/form_tags.tpl"}
+
+{include file="../common_inc/form_long_desc_lang.tpl"}
+	
+{include file="../common_inc/form_translations.tpl"}
 
 {include file="../common_inc/form_advanced_properties.tpl" el=$object}
 {include file="../common_inc/form_custom_properties.tpl" el=$object}

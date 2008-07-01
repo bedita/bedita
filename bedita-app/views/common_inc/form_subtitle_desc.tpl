@@ -3,11 +3,11 @@
 <fieldset>
 	<div id="subtitle_langs_container" class="tabsContainer">
 		
-		<table class="tableForm" border="0">
+		<table>
 		<tr>
-			<td class="label">{t}Description{/t}:</td>
-			<td class="field">
-				<textarea class="shortdesc" name="data[description]">{$object.description|default:''|escape:'html'}</textarea>
+			<th>{t}Description{/t}:</th>
+			<td>
+				<textarea style="width:320px; min-height:16px;" class="shortdesc autogrowarea" name="data[description]">{$object.description|default:''|escape:'html'}</textarea>
 			</td>
 		</tr>
 		</table>

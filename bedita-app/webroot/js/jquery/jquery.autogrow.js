@@ -1,5 +1,5 @@
 /* 
- * Auto Expanding Text Area (1.02)
+ * Auto Expanding Text Area (1.2.2)
  * by Chrys Bader (www.chrysbader.com)
  * chrysb@gmail.com
  *
@@ -9,7 +9,7 @@
  *
  * Copyright (c) 2008 Chrys Bader (www.chrysbader.com)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
- * and GPL (GPL-LICENSE.txt) licenses. 
+ * and GPL (GPL-LICENSE.txt) licenses.
  *
  *
  * NOTE: This script requires jQuery to work.  Download jQuery at www.jquery.com
@@ -40,21 +40,23 @@
 	
 	jQuery.autogrow = function (e, o)
 	{
-		this.dummy			  = null;
-		this.interval	 	  = null;
-		this.line_height	= 0, parseInt(jQuery(e).css('line-height'));
+		this.options		  	= o || {};
+		this.dummy			  	= null;
+		this.interval	 	  	= null;
+		this.line_height	  	= this.options.lineHeight || parseInt(jQuery(e).css('line-height'));
+		this.min_height		  	= this.options.minHeight || parseInt(jQuery(e).css('min-height'));
+		this.max_height		  	= this.options.maxHeight || parseInt(jQuery(e).css('max-height'));;
+		this.textarea		  	= jQuery(e);
+		
 		if(this.line_height == NaN)
 		  this.line_height = 0;
-		this.min_height		= parseInt(jQuery(e).css('min-height'));
-		this.options		  = o;
-		this.textarea		  = jQuery(e);
 		
 		// Only one textarea activated at a time, the one being used
 		this.init();
 	};
 	
 	jQuery.autogrow.fn = jQuery.autogrow.prototype = {
-    autogrow: '1.1'
+    autogrow: '1.2.2'
   };
 	
  	jQuery.autogrow.fn.extend = jQuery.autogrow.extend = jQuery.extend;
@@ -64,7 +66,7 @@
 		init: function() {			
 			var self = this;			
 			this.textarea.css({overflow: 'hidden', display: 'block'});
-			this.textarea.bind('focus', function() { self.startExpand() } ).bind('blur', function() { self.stopExpand });
+			this.textarea.bind('focus', function() { self.startExpand() } ).bind('blur', function() { self.stopExpand() });
 			this.checkExpand();	
 		},
 						 
@@ -87,25 +89,42 @@
 												'font-family': this.textarea.css('font-family'),
 												'width'      : this.textarea.css('width'),
 												'padding'    : this.textarea.css('padding'),
-												'line-height': this.textarea.css('line-height'),
+												'line-height': this.line_height + 'px',
 												'overflow-x' : 'hidden',
-												'display'    : 'none',
 												'position'   : 'absolute',
 												'top'        : 0,
-												'left'       : '-9999px'
+												'left'		 : -9999
 												}).appendTo('body');
 			}
 			
+			// Strip HTML tags
+			var html = this.textarea.val().replace(/(<|>)/g, '');
 			
-			var html = this.textarea.val().replace(/\n/g, '<br>new');
+			// IE is different, as per usual
+			if ($.browser.msie)
+			{
+				html = html.replace(/\n/g, '<BR>new');
+			}
+			else
+			{
+				html = html.replace(/\n/g, '<br>new');
+			}
 			
 			if (this.dummy.html() != html)
 			{
 				this.dummy.html(html);	
 				
-				if (this.textarea.height() != this.dummy.height() + this.line_height)
+				if (this.max_height > 0 && (this.dummy.height() + this.line_height > this.max_height))
 				{
-					this.textarea.animate({height: (this.dummy.height() + this.line_height) + 'px'}, 100);	
+					this.textarea.css('overflow-y', 'auto');	
+				}
+				else
+				{
+					this.textarea.css('overflow-y', 'hidden');
+					if (this.textarea.height() < this.dummy.height() + this.line_height || (this.dummy.height() < this.textarea.height()))
+					{	
+						this.textarea.animate({height: (this.dummy.height() + this.line_height) + 'px'}, 100);	
+					}
 				}
 			}
 		}

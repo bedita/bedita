@@ -1,5 +1,5 @@
 {*
-** gallery view template
+** translations view template
 *}
 
 
@@ -30,4 +30,3 @@
 
 
 {include file="../common_inc/menuright.tpl"}
-
