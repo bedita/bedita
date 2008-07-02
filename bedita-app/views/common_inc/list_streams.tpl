@@ -50,7 +50,7 @@ $(document).ready(function(){
 		<th>{$beToolbar->order('created', 'Created')}</th>
 	</tr>
 	
-	{section name="i" loop=$objects max=2}
+	{section name="i" loop=$objects}
 	<tr class="rowList" rel="{$html->url('view/')}{$objects[i].id}">
 		<td>
 			{assign var="thumbWidth" 		value = 90}
