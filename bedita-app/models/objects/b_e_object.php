@@ -410,7 +410,9 @@ class BEObject extends BEAppModel
 		// remove digits and dashes in the beginning 
 		$value = preg_replace("/^[0-9\-]{1,}/", "", $value);
 		// replace two or more consecutive dashes with one dash
-		$nickname = $nickname_base = preg_replace("/[\-]{2,}/", "-", $value);
+		$value = preg_replace("/[\-]{2,}/", "-", $value);
+		// trim dashes in the beginning and in the end of nickname
+		$nickname = $nickname_base = trim($value,"-");
 		if(@empty($nickname)) 
 			return $nickname ;
 
