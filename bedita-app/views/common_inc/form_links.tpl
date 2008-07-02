@@ -1,10 +1,10 @@
 <script type="text/javascript">
 <!--
 
-var urlBaseAddItem = "{$addLinkUrl}";
+var urlBaseAddItem = "{$addLinkUrl|default:''}";
 
 {literal}
-
+/*
 function setup_drag_drop_item_link(el) {
 	if(!$(el)) return;
 	$(el).Draggable({
@@ -42,7 +42,7 @@ function setup_drag_drop_item_link(el) {
 		}
 	}) ;
 }
-
+*/
 // Get data from modal window, uploaded files and insert new object in the form
 function addItem() {
 	var divToFill = "#listExistingLinks";
@@ -67,17 +67,11 @@ function addItem() {
 	try { $().alertSignal() ; } catch(e) {}
 }
 
-
+/*
 $(document).ready(function() {
 	$("#addLink").click(function () {
 		addItem();
 	});
-	$(".itemBox").each(function (index) {
-		$("input[@name='index']", this).attr("value", index) ;
-		$(".id", this).attr("name", "data[ObjectRelation]["+index+"][id]") ;
-		$(".switch", this).attr("name", "data[ObjectRelation]["+index+"][switch]") ;
-		$(".priority", this).attr("name", "data[ObjectRelation]["+index+"][priority]") ;
-	}) ;
 	$("#listExistingLinks .itemBox").each(function() {setup_drag_drop_item_link(this) }) ;
 	$("#listExistingLinks").find("input[@type='button']").click(function() {
 		$(this).parents(".itemBox").remove();
@@ -85,6 +79,7 @@ $(document).ready(function() {
 	});
 	
 });
+*/
 {/literal}
 //-->
 </script>

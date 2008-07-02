@@ -208,11 +208,11 @@ $(document).ready(function(){
 
 	$(".multimediaitem").mouseover(function () {
 
-		$(this).addClass("dark");
+		// $(this).addClass("dark");
 
 	}).mouseout(function () {
 
-		$(this).removeClass("dark");
+		// 	$(this).removeClass("dark");
 
 	});
 
@@ -231,19 +231,6 @@ $(document).ready(function(){
 
 
 	});
-
-
-/*...........................................    
-
-   classe per l'autogrow
-   http://www.aclevercookie.com/demos/autogrow_textarea.html
-	richiede line-height
-
-...........................................*/
-
-	$('textarea.autogrowarea').css("line-height","1em").autogrow();
-
-
 
 
 

@@ -1,7 +1,4 @@
 {$html->css('tree')}
-{$html->css('ui.tabs')}
-{$javascript->link("jquery/ui/jquery.dimensions", false)}
-{$javascript->link("jquery/ui/ui.tabs", false)}
 {$javascript->link("jquery/jquery.treeview", false)}
 {$javascript->link("jquery/interface", false)}
 {$javascript->link("form", false)}

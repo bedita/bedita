@@ -26,6 +26,7 @@
 				width			= $thumbWidth
 				height			= $thumbHeight
 				file			= $mediaPath$filePath
+				link = "false"
 				linkurl			= $linkUrl
 				cache			= $mediaCacheBaseURL
 				cachePATH		= $mediaCachePATH

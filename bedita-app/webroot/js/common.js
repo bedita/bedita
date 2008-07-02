@@ -71,88 +71,17 @@ jQuery.fn.extend({
 			}
 		});
 	},
+
+
 	/*
-	*	change focus of each tab element in div (class="tabsContainer")
-	*	require ui.tabs
+	*	reorder items
 	*/
-	changeActiveTabs: function() {
-		$(this).bind("click", function(){
-			var index = $(this).parents("ul").data('selected.ui-tabs');
-			$('div.tabsContainer > ul').tabs("select",index);
-		});
-	},
-	enableDisableTabs: function() {
-		$(this).bind("click", function(){
-			var action = ($(this).attr('checked')) ? "enable" : "disable";
-			var index = Number($(this).attr('tabindex'));
-			$('div.tabsContainer > ul').tabs(action,index);
-		});
-	},
-	mainLang: function() {
-		$(this).bind("change", function(){
-			$('.lang_flags').attr('disabled',false);
-			$('#flag_'+$(this).val()).attr('checked','checked');
-			$('#flag_'+$(this).val()).attr('disabled','disabled');
-			var index = Number($(this)[0].selectedIndex);
-			$('div.tabsContainer > ul').tabs('enable',index);
-		});
-	},
-	setupDragDrop: function() {
-		el = this;
-		if(!$(el)) return;
-		$(el).Draggable({
-			revert:true,
-			ghosting:true,
-			opacity:0.7
-		});
-		$(el).Droppable({
-			accept:'itemBox',
-			hoverclass:'dropOver',
-			ondrop: function(dropped) {
-				if(this == dropped) return;
-				// swap position of an item (to the position of the previous)
-				if(this == $(dropped).prev().get(0)) {
-					$(this).insertAfter($(dropped)) ;
-					$(".itemBox").each(function (index) {
-						$("input[@name='index']", this).attr("value", index) ;
-						$(".id", this).attr("name", "data[contents]["+index+"][id]") ;
-						$(".priority", this).attr("name", "data[contents]["+index+"][priority]") ;
-						$(".priority", this).attr("value", index+1) ;
-					}) ;
-					return ;
-				// swap position of an item (to the position of the next)
-				} else if(this == $(dropped).next().get(0)) {
-					$(dropped).insertAfter($(this)) ;
-					$(".itemBox").each(function (index) {
-						$("input[@name='index']", this).attr("value", index) ;
-						$(".id", this).attr("name", "data[contents]["+index+"][id]") ;
-						$(".priority", this).attr("name", "data[contents]["+index+"][priority]") ;
-						$(".priority", this).attr("value", index+1) ;
-					}) ;
-					return ;
-				}
-				// If put at the beginning, insert before
-				var pDropped 	= parseInt($(".priority", dropped).attr("value")) ;
-				var pThis 		= parseInt($(".priority", this).attr("value")) ;
-				if(pDropped > pThis) {
-					$(dropped).insertBefore($(this)) ;
-				} else {
-					$(dropped).insertAfter($(this)) ;
-				}
-				$(".itemBox").each(function (index) {
-					$("input[@name='index']", this).attr("value", index) ;
-					$(".id", this).attr("name", "data[contents]["+index+"][id]") ;
-					$(".priority", this).attr("name", "data[contents]["+index+"][priority]") ;
-					$(".priority", this).attr("value", index+1) ;
-				}) ;
-			}
-		}) ;
-	},
-	
-	reorderListItem: function() {
-		$(this).find(".itemBox").each(function (priority) {
-			$(this).find("input[@name*='[priority]']").val(priority+1)	// update priority
-				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');		// effects
+	reorderListItem: function ()
+	{
+		$(this).find(".itemBox").each(function (priority)
+		{
+			$(this).find ("input[@name*='[priority]']").val (priority+1)	// update priority
+				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');			// effects
 		});
 	}
 

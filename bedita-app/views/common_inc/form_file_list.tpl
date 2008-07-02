@@ -33,7 +33,7 @@ function showResponse(data) {
 	    $("#addmultimedia").find("textarea").attr("value", "");
 	    
 		commitUploadItem(tmp, "attach");
-	}
+	} 
 }
 
 function resetError() {
@@ -41,7 +41,9 @@ function resetError() {
 	//$("#loading").show();
 }
 
-$(document).ready(function() {  
+
+$(document).ready(function()
+{  
 	var optionsForm = {
 		beforeSubmit:	resetError,
         success:    	showResponse,  // post-submit callback  
@@ -59,7 +61,12 @@ $(document).ready(function() {
     	$('#updateForm').ajaxSubmit(optionsForm);
     	return false;
     });
-	 
+	
+	$("#multimediaItems").sortable ({
+		distance: 20,
+		opacity:0.7,
+		update: $(this).reorderListItem
+	});
 });
 {/literal}
 </script>
@@ -71,7 +78,7 @@ $(document).ready(function() {
 <img class="multimediaitemToolbar" src="/img/px.gif" />
 
 <hr />
-	
+
 {foreach from=$attach item="item"}
 	<div class="multimediaitem itemBox{if $item.status == "off"} off{/if}">
 	{include file="../common_inc/form_file_item.tpl"}
@@ -169,7 +176,7 @@ $(document).ready(function() {
 	</div>
 	
 	
-	<div class="htabcontent" id="repositoryItems" style="margin-bottom:20px">
+	<div class="htabcontent" id="repositoryItems">
 		Lla awfwe wetrewt ert 
 	</div>
 

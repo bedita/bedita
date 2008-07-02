@@ -5,58 +5,6 @@ var urlBaseSearchItem = "{$html->url('/areas/showObjects/')}";
 var urlBaseAssocItem = "{$html->url('/areas/loadObjectToAssoc/')}";
 
 {literal}
-
-function setup_drag_drop_item_assoc(el) {
-	if(!$(el)) return;
-	$(el).Draggable({
-		revert:		true,
-		ghosting:	true,
-		opacity:	0.7,
-		containment : 'itemsAssociated'
-	});
-	$(el).Droppable({
-		accept:		'itemBox',
-		hoverclass: 'dropOver',
-		ondrop:		function(dropped) {
-			if(this == dropped) return;
-
-			// swap position of an item (to the position of the previous)
-			if(this == $(dropped).prev().get(0)) {
-				$(this).insertAfter($(dropped)) ;
-				$(this).parents(".relationType").reorderListItem();
-				return ;
-			// swap position of an item (to the position of the next)
-			} else if(this == $(dropped).next().get(0)) {
-				$(dropped).insertAfter($(this)) ;
-				$(this).parents(".relationType").reorderListItem();
-				return ;
-			}
-			// If put at the beginning, insert before
-			var pDropped 	= parseInt($(".priority", dropped).attr("value")) ;
-			var pThis 		= parseInt($(".priority", this).attr("value")) ;
-			if(pDropped > pThis) {
-				$(dropped).insertBefore($(this)) ;
-			} else {
-				$(dropped).insertAfter($(this)) ;
-			}
-
-			var switchEl = $(dropped).children(".switch").val();
-			var switchDiv = $(this).parents(".relationType").children("input[@class='relationTypeHidden']").val();  
-			if (switchEl != switchDiv) {
-				$(dropped).children(".switch").val(
-					$(this).parents(".relationType").children("input[@class='relationTypeHidden']").val()
-				);
-				$("#itemsAssociated .relationType").each(function(){
-					$(this).reorderListItem();
-				});				
-			} else {
-				$(this).parents(".relationType").reorderListItem();
-			}
-		}
-	}) ;
-}
-
-
 // Get data from modal window, uploaded files and insert new object in the form
 function uploadItemById(id, rel) {
 	var divToFill = "#relationType_" + rel;
@@ -78,7 +26,7 @@ function uploadItemById(id, rel) {
 	try { $().alertSignal() ; } catch(e) {}
 }
 
-
+/*
 $(document).ready(function() {
 	$("#assocTree").designTree({
 		id_control: "assocTreeControl",
@@ -108,6 +56,7 @@ $(document).ready(function() {
 		});				
 	});
 });
+*/
 {/literal}
 //-->
 </script>

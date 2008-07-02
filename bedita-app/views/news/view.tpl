@@ -6,7 +6,6 @@
 {$html->css('tree')}
 {$html->css("ui.datepicker")}
 {$html->css('ui.tabs')}
-{$javascript->link("jquery/ui/jquery.dimensions", false)}
 {$javascript->link("jquery/ui/ui.tabs", false)}
 {$javascript->link("form", false)}
 {$javascript->link("jquery/jquery.treeview", false)}

@@ -1,17 +1,9 @@
-{$html->css("ui.datepicker")}
+{*
+** document form template
+*}
 
-{$javascript->link("jquery/jquery.form")}
-{$javascript->link("jquery/jquery.treeview")}
-{$javascript->link("jquery/jquery.autogrow")}
-
-
-{$javascript->link("jquery/ui/datepicker/ui.datepicker")}
-{if $currLang != "eng"}
-	{$javascript->link("jquery/ui/datepicker/ui.datepicker-$currLang.js")}
-{/if}
 
 {include file="../common_inc/form_common_js.tpl"}
-
 
 
 <form action="{$html->url('/documents/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
@@ -41,7 +33,7 @@
 	
 	{include file="../common_inc/form_custom_properties.tpl" el=$object}
 	
-	{include file="../common_inc/form_permissions.tpl" el=$object recursion=true}
+	{*include file="../common_inc/form_permissions.tpl" el=$object recursion=true*}
 	
 	
 </form>
