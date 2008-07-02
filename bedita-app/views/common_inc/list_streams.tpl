@@ -19,8 +19,8 @@ $(document).ready(function(){
 		$("#formObject").get(0).submit() ;
 	});
 });
-//-->
 {/literal}
+//-->
 </script>	
 
 
@@ -50,32 +50,49 @@ $(document).ready(function(){
 		<th>{$beToolbar->order('created', 'Created')}</th>
 	</tr>
 	
-	{section name="i" loop=$objects}
+	{section name="i" loop=$objects max=2}
 	<tr class="rowList" rel="{$html->url('view/')}{$objects[i].id}">
 		<td>
-			{assign var="thumbWidth" 		value = 30}
-			{assign var="thumbHeight" 		value = 30}
+			{assign var="thumbWidth" 		value = 90}
+			{assign var="thumbHeight" 		value = 60}
 			{assign var="filePath"			value = $objects[i].path}
 			{assign var="mediaPath"         value = $conf->mediaRoot}
 			{assign var="mediaUrl"         value = $conf->mediaUrl}
 			{assign_concat var="mediaCacheBaseURL"	0=$conf->mediaUrl  1="/" 2=$conf->imgCache 3="/"}
 			{assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
 
-			{if strtolower($objects[i].ObjectType.name) == "image"}
-				{thumb 
-					width			= $thumbWidth
-					height			= $thumbHeight
-					linkurl         = $mediaUrl$filePath
-					file			= $mediaPath$filePath
-					cache			= $mediaCacheBaseURL
-					cachePATH		= $mediaCachePATH
-				}
-			{elseif ($objects[i].provider|default:false)}
+				
+		<div class="multimediaitem">
+		
+		{if strtolower($objects[i].ObjectType.name) == "image"}	
+		
+		{thumb 
+			longside 		= 90
+			width			= $thumbWidth
+			height			= $thumbHeight
+			sharpen			= "false"
+			file			= $mediaPath$filePath
+			link			= "false"
+			linkurl			= $mediaUrl$filePath
+			window 			= "false"
+			cache			= $mediaCacheBaseURL
+			cachePATH		= $mediaCachePATH
+			hint			= "false"
+			html			= ""
+			frame			= ""
+		}	
+			
+				
+	{elseif ($objects[i].provider|default:false)}
+	
 				{assign_associative var="attributes" style="width:30px;heigth:30px;"}
-				<div><a href="{$filePath}" target="_blank">{$mediaProvider->thumbnail($objects[i], $attributes) }</a></div>
-			{else}
-				<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$objects[i].type}.gif" /></a></div>
-			{/if}
+				<a href="{$filePath}" target="_blank">{$mediaProvider->thumbnail($objects[i], $attributes) }</a>
+	
+	{else}
+				<a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$objects[i].type}.gif" /></a>
+	{/if}
+		</div>
+			
 		</td>
 		<td>{$objects[i].id}</td>
 		<td>{$objects[i].title}</td>
@@ -86,9 +103,9 @@ $(document).ready(function(){
 		<td>{$objects[i].created|date_format:'%b %e, %Y'}</td>
 	</tr>				
 		{sectionelse}
-		{*
+		
 			<td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td>
-		*}
+		
 		{/section}
 	</table>
 

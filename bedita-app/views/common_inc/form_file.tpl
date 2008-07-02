@@ -22,7 +22,7 @@
 		{assign_concat var="fileUrl"  0=$conf->mediaUrl  1=$object.path}
 		{image_info var="imageInfo" file=$fileUrl}
 		{if $imageInfo.landscape}
-			{assign var="thumbWidth" 		value = 300}
+			{assign var="thumbWidth" 		value = 470}
 			{assign var="thumbHeight" 		value = 200}
 		{else}
 			{assign var="thumbWidth" 		value = 200}
@@ -30,8 +30,10 @@
 		{/if}
 
 		{thumb 
+			longside 		= 480
 			width			= $thumbWidth
 			height			= $thumbHeight
+			sharpen			= "false"
 			file			= $mediaPath$filePath
 			linkurl			= $mediaUrl$filePath
 			cache			= $mediaCacheBaseURL
@@ -81,20 +83,27 @@
 </div>
 
 
-<table class="bordered">
+<table class="bordered" style="clear:both">
 	
-	<tr><th>{t}Name{/t}:</th><td>{$object.name|default:""}</td></tr>
-	<tr><th>{t}Mime type{/t}:</th><td>{$object.type|default:""}</td></tr>
-	<tr><th>{t}Size{/t}:</th><td>{math equation="x/y" x=$object.size|default:0 y=1024 format="%d"|default:""} KB</td></tr>
+	<tr><th>{t}Name{/t}:</th><td colspan="3">{$object.name|default:""}</td></tr>
+	<tr>
+		<th>{t}Mime type{/t}:</th><td>{$object.type|default:""}</td>
+		<th>{t}Size{/t}:</th><td>{math equation="x/y" x=$object.size|default:0 y=1024 format="%d"|default:""} KB</td>
+	</tr>
 	
 {if ($object.ObjectType.name == "image")}
 	
-	<tr><th>{t}Human readable type{/t}:</th><td>{$imageInfo.hrtype}</td></tr>
-	<tr>th>{t}Width{/t}:</th><td>{$imageInfo.w}</td></tr>
-	<tr><th>{t}Height{/t}:</th><td>{$imageInfo.h}</td></tr>
-	<tr><th>{t}Bit depth{/t}:</th><td>{$imageInfo.bits}</td></tr>
-	<tr><th>{t}Channels{/t}:</th><td>{$imageInfo.channels}</td></tr>
-	<tr><th>{t}Orientation{/t}:</th><td>{$imageInfo.orientation}</td></tr>
+	<tr>
+		<th>{t}Human readable type{/t}:</th><td>{$imageInfo.hrtype}</td>
+		<th>{t}Orientation{/t}:</th><td>{$imageInfo.orientation}</td>
+	</tr>
+	<tr>
+		<th>{t}Width{/t}:</th><td>{$imageInfo.w}</td>
+		<th>{t}Height{/t}:</th><td>{$imageInfo.h}</td></tr>
+	<tr>
+		<th>{t}Bit depth{/t}:</th><td>{$imageInfo.bits}</td>
+		<th>{t}Channels{/t}:</th><td>{$imageInfo.channels}</td>
+	</tr>
 	
 {/if}
 	

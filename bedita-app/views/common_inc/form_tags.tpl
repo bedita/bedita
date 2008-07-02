@@ -42,7 +42,7 @@ $(document).ready(function(){
 	{t}Add comma separated words{/t}<br/>
 	
 	{strip}
-	<textarea name="tags" style="display:block; width:470px" id="tagsArea">
+	<textarea name="tags" class="autogrowarea" style="display:block; width:470px" id="tagsArea">
 	{if !empty($object.ObjectCategory)}
 		{foreach from=$object.ObjectCategory item="tag" name="ft"}
 			{$tag.label}{if !$smarty.foreach.ft.last}, {/if}
