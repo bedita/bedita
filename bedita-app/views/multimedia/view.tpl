@@ -3,38 +3,21 @@
 ** @author ChannelWeb srl
 *}
 
-{$html->css('ui.tabs')}
-{$javascript->link("jquery/ui/ui.tabs", false)}
-{$javascript->link("form", false)}
-{$javascript->link("jquery/jquery.treeview", false)}
-{$javascript->link("jquery/jquery.changealert", false)}
-{$javascript->link("jquery/jquery.form", false)}
-{$javascript->link("jquery/jquery.selectboxes.pack", false)}
-{$javascript->link("jquery/jquery.metadata", false)}
-{$javascript->link("jquery/jquery.validate", false)}
-{$javascript->link("validate.tools", false)}
-{$javascript->link("jquery/interface", false)}
+{literal}
 <script type="text/javascript">
 <!--
-{literal}
 $(document).ready(function(){
 	$('#title').show() ;
 	$('#multimediaitem').show() ;
-	$('.showHideBlockButton').bind("click", function(){
-		$(this).next("div").toggle() ;
-	}) ;
-	$("#handlerChangeAlert").changeAlert($('input, textarea, select').not($("#addCustomPropTR TD/input, #addCustomPropTR TD/select, #addPermUserTR TD/input, #addPermGroupTR TD/input"))) ;
-	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div').alertUnload() ;
 });
-{/literal}
 //-->
 </script>
-
+{/literal}
 </head>
 
 <body>
 
-{include file="../modulesmenu.tpl"}
+{include file="../common_inc/modulesmenu.tpl"}
 
 {include file="inc/menuleft.tpl" method="view"}
 
@@ -52,4 +35,4 @@ $(document).ready(function(){
 
 </div>
 
-
+{include file="../common_inc/menuright.tpl"}
