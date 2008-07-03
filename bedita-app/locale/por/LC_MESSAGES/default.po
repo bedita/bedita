@@ -639,8 +639,8 @@ msgstr "Numero total de"
 msgid "multimedia items"
 msgstr "objetos multimediais"
 
-msgid "(Un)Select All"
-msgstr "(De)Selecionar todos"
+msgid "(un)select all"
+msgstr "(de)selecionar todos"
 
 msgid "Browse"
 msgstr "Procura"

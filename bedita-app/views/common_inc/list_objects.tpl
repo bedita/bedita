@@ -77,7 +77,7 @@ function assocObjectsToAreaSection(id) {
 
 
 	<table class="indexlist">
-
+	{capture name="theader"}
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('title', 'Title')}</th>
@@ -86,7 +86,9 @@ function assocObjectsToAreaSection(id) {
 			<th>{$beToolbar->order('modified', 'Modified')}</th>		
 			<th>{$beToolbar->order('lang', 'Language')}</th>
 		</tr>
-	
+	{/capture}
+		
+		{$smarty.capture.theader}
 	
 		{section name="i" loop=$objects}
 		
@@ -102,49 +104,115 @@ function assocObjectsToAreaSection(id) {
 			<td>{$objects[i].lang}</td>
 		</tr>
 		
+		
+		
 		{sectionelse}
 		
 			<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>
 		
 		{/section}
 		
-	
+{if ($smarty.section.i.total) >= 10}
+		
+			{$smarty.capture.theader}
+			
+{/if}
+
+
 </table>
 
 
+
+{*
+<pre>
+			
+{$beToolbar->current()}
+{$beToolbar->size()}
+{$beToolbar->pages()}
+{$beToolbar->first()} 
+{$beToolbar->prev()}  
+{$beToolbar->next()} 
+{$beToolbar->last()}
+</pre
+*}
+
 <br />
+	
+{if !empty($objects)}
+
+<div style="white-space:nowrap">
+	
+	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
+	&nbsp;&nbsp;&nbsp;
+	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
+	&nbsp;&nbsp;&nbsp
+	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
+
+	
+</div>
+
 <br />
 
-<div class="tab"><h2>Operazioni sui 3 records selezionati</h2></div>
+<div class="tab"><h2>Operazioni sui <span class="selecteditems evidence"></span> records selezionati</h2></div>
 <div>
-	<input type="checkbox" class="selectAll" id="selectAll"/><label for="selectAll"> {t}(Un)Select All{/t}</label>
-	<hr />
-	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
 
+{t}change status to:{/t} 	<select style="width:75px">
+									<option value=""> -- </option>
+									<option> ON </option>
+									<option> OFF </option>
+									<option> DRAFT </option>
+								</select>
+	
+	<hr />
+	
 	{if !empty($tree)}
-			<input id="deleteSelected" type="button" value="(+) {t}Add selected items to area/section{/t}" 
-			onclick="javascript:assocObjectsToAreaSection();"/>
+			
+
+			
+			<select style="width:75px">
+				<option> {t}copy{/t} </option>
+				<option> {t}move{/t} </option>
+			</select>
+			
+			  &nbsp;to:  &nbsp;
+			
 			<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
+				<option value=""> -- </option>
 			{foreach from=$tree item=i}
 				<option value="{$i.id}">{$i.title}</option>
 				{if !empty($i.children)}
 					{foreach from=$i.children item=ii}
-					<option value="{$ii.id}">-- {$ii.title}</option>
+					<option value="{$ii.id}">&nbsp;&nbsp;&nbsp; {$ii.title}</option>
 					{if !empty($ii.children)}
 						{foreach from=$ii.children item=iii}
-						<option value="{$iii.id}">--- {$iii.title}</option>
+						<option value="{$iii.id}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {$iii.title}</option>
 						{/foreach}
 					{/if}
 					{/foreach}
 				{/if}
 			{/foreach}
 			</select>
+			
+			<input id="deleteSelected" type="button" value=" ok " 
+			onclick="javascript:assocObjectsToAreaSection();" />
+	<hr />
 	{/if}
+
+	
+	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
 	
 </div>
-	
-	</form>
 
+{/if}
+
+</form>
+
+<br />
+<br />
+<br />
+<br />
+	
+	
 
 
 

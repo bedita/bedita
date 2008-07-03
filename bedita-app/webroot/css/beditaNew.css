@@ -517,7 +517,11 @@ UL.modulesmenu {
 }
 
 
+.areaSectionAssociation OPTION {
 
+	border-bottom:1px solid gray;
+	
+}
 
 /*...........................................    
 
@@ -828,6 +832,10 @@ INPUT, TEXTAREA, SELECT {
 }
 INPUT[type=text], INPUT[type=file], TEXTAREA {
 	border:1px solid gray;
+}
+
+INPUT[type=checkbox] {
+	vertical-align:middle;
 }
 
 label {font-weight:bold;}

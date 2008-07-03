@@ -24,10 +24,11 @@
 			
 			<li> {$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span></li>
 			
-			<li>
+			<li> 
 			
 				<form action="{$html->url('/')}{$moduleName}/index{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">				
-				search : &nbsp;&nbsp;<input type="text" name="searchstring" value="{$stringSearched|default:""}"/>
+				<span>{t}search{/t}</span> : <span class="evidence"> &nbsp;</span>
+				<input type="text" name="searchstring" value="{$stringSearched|default:""}"/>
 				
 				<input type="submit" value="{t}go{/t}"/>
 				</form>
