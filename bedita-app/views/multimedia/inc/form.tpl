@@ -14,8 +14,8 @@
 
 
 {include file="../common_inc/form_properties.tpl" doctype=false publication=false}
-{include file="../common_inc/form_file.tpl"}
 {include file="../common_inc/form_title_subtitle.tpl"}
+{include file="../common_inc/form_file.tpl"}
 {include file="../common_inc/form_tags.tpl"}
 {include file="../common_inc/form_custom_properties.tpl" el=$object}
 {include file="../common_inc/form_permissions.tpl" el=$object recursion=true}

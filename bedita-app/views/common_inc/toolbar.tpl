@@ -1,6 +1,6 @@
 <div class="head">
 	
-	<div class="toolbar">
+	<div class="toolbar" style="white-space:nowrap">
 		
 		<h2>{if !empty($sectionSel)}{t}{$moduleName}{/t} in “ <span style="color:white" class="evidence">{$sectionSel.title}</span> ”
 		{else} all {$moduleName}{/if}</h2>
@@ -8,19 +8,21 @@
 		<ul>
 	
 			<li>
-			<span class="evidence">14&nbsp;</span> <a href="">{t}{$moduleName}{/t}</a>
+			<span class="evidence">{$beToolbar->size()}&nbsp;</span> {t}{$moduleName}{/t}
 			</li>
 			
 			<li>
-				{t}page{/t}
-				<span class="evidence"> 1 </span> 
+				{$beToolbar->first('page','','page')}
+				<span class="evidence"> {$beToolbar->current()} </span> 
 				{t}of{/t} 
-				<span class="evidence"> 12 </span>
+				<span class="evidence"> 
+					{$beToolbar->last($beToolbar->pages(),'',$beToolbar->pages())}
+				</span>
 			</li>
 			
-			<li>next <span class="evidence"> &nbsp;</span></li>
+			<li>{$beToolbar->next('next','','next')}  <span class="evidence"> &nbsp;</span></li>
 			
-			<li> prev <span class="evidence"> &nbsp;</span></li>
+			<li> {$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span></li>
 			
 			<li>
 			
@@ -31,23 +33,14 @@
 				</form>
 				
 			</li>
-			{*
-			
-			{$beToolbar->current()}
-			{$beToolbar->size()}
-			{$beToolbar->pages()}
-			
-			{$beToolbar->first()} 
-			{$beToolbar->prev()}  
-			{$beToolbar->next()} 
-			{$beToolbar->last()}
-			
-			<li>{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}</li>
-			
-			<li>{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;</li>
-			*}
+
+
 		</ul>
+
+
+
 
 	</div>
 
 </div> 
+

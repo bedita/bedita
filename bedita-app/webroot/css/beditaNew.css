@@ -760,6 +760,11 @@ TABLE.indexlist {
 	padding:0px; margin:0px;
 }
 
+input.priority {
+	width: 42px;
+}
+
+
 .dark.multimediaitem .priority {
 	color: #FFFFFF;
 }

@@ -1,6 +1,6 @@
-<ul class="bordered" style="margin-top:100px">
+<ul class="bordered singola" style="margin-top:100px">
 {if !empty($BEAuthUser.userid)}
-	<li>{t}User{/t}: {$BEAuthUser.realname}</li>
+	<li>{t}User{/t}: <span class="on">{$BEAuthUser.realname}</span></li>
 	{if isset($module_modify)}
 		<li>{t}Permission{/t}: 
 			{if $module_modify eq '1'}
@@ -20,4 +20,4 @@
 	
 	<li><a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a></li>
 	
-</ul> 
+</ul>

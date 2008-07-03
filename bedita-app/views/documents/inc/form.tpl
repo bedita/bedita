@@ -33,7 +33,7 @@
 	
 	{include file="../common_inc/form_custom_properties.tpl" el=$object}
 	
-	{*include file="../common_inc/form_permissions.tpl" el=$object recursion=true*}
+	{include file="../common_inc/form_permissions.tpl" el=$object recursion=true}
 	
 	
 </form>

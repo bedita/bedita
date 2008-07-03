@@ -69,7 +69,7 @@
 		</li>
 		{t}Description{/t}:		*}
 		<li>
-			<textarea class="info_file_item" style="border-left:0px; border-right:0px" name="data[ObjectRelation][{$item.id}][description]">{$item.description|default:""|escape:'htmlall'}</textarea>
+			<textarea class="info_file_item" style="border-left:0px; border-right:0px" name="data[ObjectRelation][{$item.id}][description]">{$item.description|default:""}</textarea>
 			<br />
 			<a href="{$linkUrl}">details</a>
 		</li>

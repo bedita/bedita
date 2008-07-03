@@ -7,7 +7,6 @@
 <script type="text/javascript">
 <!--
 $(document).ready(function(){
-	$('#title').show() ;
 	$('#multimediaitem').show() ;
 	$('textarea.autogrowarea').css("line-height","1.2em").autogrow();
 });

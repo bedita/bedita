@@ -11,7 +11,7 @@ tinyMCE.init({
 	plugins : "safari,pagebreak,paste,fullscreen",
 
 	// Theme options
-	theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist,blockquote, | ,link,unlink,pastetext,pasteword, | ,hr,pagebreak, | ,removeformat,charmap,code,fullscreen",
+	theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
 	theme_advanced_buttons2 : "",
 	theme_advanced_buttons3 : "", 
 	theme_advanced_toolbar_location : "top",

@@ -10,6 +10,7 @@
 
 <div style="margin: 0 5px 5px 0; float: left;">
 	{if ($object.ObjectType.name == "image")}
+	
 		{assign var="filePath"			value = $object.path}
 		{assign var="fileName"			value = $object.filename|default:$obj.name}
 		{assign var="fileTitle"			value = $object.title}
@@ -29,8 +30,7 @@
 			{assign var="thumbHeight" 		value = 300}
 		{/if}
 
-		{thumb 
-			longside 		= 480
+		{thumb longside 	= 480
 			width			= $thumbWidth
 			height			= $thumbHeight
 			sharpen			= "false"

@@ -4,10 +4,11 @@
 <fieldset id="geotag">
 	
 
-<table class="xbordered">
+<table>
 <tr>
 	<td>indirizzo</td>
 	<td colspan=3><input type="text" style="width:300px;" name="topoi[0][address]" value=""></td>
+	<td style="vertical-align:middle;" rowspan="3"><input type="submit" value="add"></td>
 </tr>
 <tr>
 	<td>latitudine</td>

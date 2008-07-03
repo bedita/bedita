@@ -66,7 +66,7 @@ $(document).ready(function()
 		distance: 20,
 		opacity:0.7,
 		update: $(this).reorderListItem
-	});
+	}).css("cursor","move");
 });
 {/literal}
 </script>
