@@ -67,9 +67,12 @@
 		<li>{t}title{/t}:
 			<input type="text" class="info_file_item" value="{$fileTitle|escape:'htmlall'}" name="data[ObjectRelation][{$item.id}][title]" />
 		</li>
-{t}Description{/t}:		*}
+		{t}Description{/t}:		*}
 		<li>
-			<textarea class="info_file_item Xautogrowarea" name="data[ObjectRelation][{$item.id}][description]">{$item.description|default:""|escape:'htmlall'}</textarea></li>
+			<textarea class="info_file_item" style="border-left:0px; border-right:0px" name="data[ObjectRelation][{$item.id}][description]">{$item.description|default:""|escape:'htmlall'}</textarea>
+			<br />
+			<a href="{$linkUrl}">details</a>
+		</li>
 	</ul>
 	
 

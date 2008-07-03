@@ -115,6 +115,7 @@
 
 {* EXIF *}
 {if $object.ObjectType.name == "image" && $imageInfo.hrtype eq "JPG"}
+
 <div class="tab"><h2>{t}Exif - Main Data{/t}</h2></div>
 
 <fieldset id="exifdata">

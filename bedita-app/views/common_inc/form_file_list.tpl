@@ -80,8 +80,10 @@ $(document).ready(function()
 <hr />
 
 {foreach from=$attach item="item"}
-	<div class="multimediaitem itemBox{if $item.status == "off"} off{/if}">
-	{include file="../common_inc/form_file_item.tpl"}
+	<div class="multimediaitem itemBox{if $item.status == "off"} off{/if} small">
+		
+			{include file="../common_inc/form_file_item.tpl"}
+			
 	</div>
 {/foreach}
 

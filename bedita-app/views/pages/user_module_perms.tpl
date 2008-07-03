@@ -1,6 +1,23 @@
+<ul class="bordered" style="margin-top:100px">
 {if !empty($BEAuthUser.userid)}
-<ul class="bordered">
-	<li>{t}User{/t}: {$BEAuthUser.userid|upper}</li>
-	{if isset($module_modify)}<li>{t}Permission{/t}: {if $module_modify eq '1'}{t}Modify{/t}{else}{t}Read{/t}{/if}</li>{/if}
-</ul>
+	<li>{t}User{/t}: {$BEAuthUser.realname}</li>
+	{if isset($module_modify)}
+		<li>{t}Permission{/t}: 
+			{if $module_modify eq '1'}
+				{t}Modify{/t}
+			{else}
+				{t}Read{/t}
+			{/if}
+		</li>
+	{/if}
 {/if}
+	<li>
+	{foreach key=key item=item name=l from=$conf->langsSystem}
+		<a {if $session->read('Config.language') == $key}class="on"{/if} href="{$html->base}/lang/{$key}">› {$item}</a>
+		<br />
+	{/foreach}
+	</li>
+	
+	<li><a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a></li>
+	
+</ul> 
