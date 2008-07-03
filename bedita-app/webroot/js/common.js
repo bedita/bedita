@@ -1,7 +1,7 @@
 // Customize two date pickers to work as a date range 
 function customRange(input) { 
-    return {minDate: (input.id == 'end' ? $('#start').getDatepickerDate() : null), 
-        	maxDate: (input.id == 'start' ? $('#end').getDatepickerDate() : null)}; 
+    return {minDate: (input.id == 'end' ? $('#start').datepicker( "getDate" ) : null), 
+        	maxDate: (input.id == 'start' ? $('#end').datepicker( "getDate" )  : null)}; 
 }
 
 /*

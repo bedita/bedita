@@ -101,11 +101,7 @@ class EventsController extends ModulesController {
 	 	
 	 	// format custom properties
 	 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-		$this->data['title'] = $this->data['LangText'][$this->data['lang']]['title'];
-		$this->data['description'] = $this->data['LangText'][$this->data['lang']]['description'];
-		$this->data['abstract'] = $this->data['LangText'][$this->data['lang']]['abstract'];
-		$this->data['body'] = $this->data['LangText'][$this->data['lang']]['body'];
-	 	$this->BeLangText->setupForSave($this->data["LangText"]) ;
+	 	
 	 	// if no Category is checked set an empty array to delete association between events and category
 	 	if (!isset($this->data["ObjectCategory"])) $this->data["ObjectCategory"] = array();
 	 	
