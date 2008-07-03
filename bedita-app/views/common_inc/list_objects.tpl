@@ -115,26 +115,12 @@ function assocObjectsToAreaSection(id) {
 {if ($smarty.section.i.total) >= 10}
 		
 			{$smarty.capture.theader}
-				
+			
 {/if}
 
 
 </table>
 
-
-
-{*
-<pre>
-			
-{$beToolbar->current()}
-{$beToolbar->size()}
-{$beToolbar->pages()}
-{$beToolbar->first()} 
-{$beToolbar->prev()}  
-{$beToolbar->next()} 
-{$beToolbar->last()}
-</pre
-*}
 
 <br />
 	
@@ -177,20 +163,7 @@ function assocObjectsToAreaSection(id) {
 			  &nbsp;to:  &nbsp;
 			
 			<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
-				<option value=""> -- </option>
-			{foreach from=$tree item=i}
-				<option value="{$i.id}">{$i.title}</option>
-				{if !empty($i.children)}
-					{foreach from=$i.children item=ii}
-					<option value="{$ii.id}">&nbsp;&nbsp;&nbsp; {$ii.title}</option>
-					{if !empty($ii.children)}
-						{foreach from=$ii.children item=iii}
-						<option value="{$iii.id}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {$iii.title}</option>
-						{/foreach}
-					{/if}
-					{/foreach}
-				{/if}
-			{/foreach}
+			{$beTree->option($tree)}
 			</select>
 			
 			<input id="deleteSelected" type="button" value=" ok " 

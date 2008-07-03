@@ -22,6 +22,8 @@ class BeTreeHelper extends Helper {
 
 		'area'		=> "<li class=\"area\">\n\t<input type='hidden' name='id' value='%s'/>\n\t<span class=\"AreaItem\">%s</span>\n\t%s\n</li>\n",
 		'section'	=> "<li class=\"section\">\n\t<input type='hidden' name='id' value='%s'/>\n\t<span class=\"SectionItem\">%s</span>\n\t%s\n</li>\n",
+	
+		'option'	=> "<option value=\"%s\">%s</option>"
 	) ;
 
 	/**
@@ -119,6 +121,53 @@ class BeTreeHelper extends Helper {
 		return $res;
 	}
 	
+	
+	/**
+	 * build option for select
+	 *
+	 * @param array $tree
+	 * @return String 	<option value="">...</option>
+	 * 		   			<option value="">...</option>
+	 * 					....
+	 */
+	public function option($tree) {
+		
+		$output = "<option value=\"\"> -- </option>";
+		foreach ($tree as $publication) {
+			$output .= sprintf($this->tags['option'], $publication["id"], mb_strtoupper($publication["title"])) ;
+			if (!empty($publication["children"])) {
+				$output .= $this->optionBranch($publication["children"], 3);
+			}
+		}
+		
+		return $this->output($output);
+		
+	}
+	
+	/**
+	 * build branch
+	 *
+	 * @param  $branch
+	 * @param int $nbsp number of nbsp; for indentation
+	 * @return string of option
+	 */
+	private function optionBranch($branch, $nbsp) {
+		
+		for ($i = 1; $i <= $nbsp; $i++) {
+			$space .= "&nbsp;";
+		}
+		
+		foreach ($branch as $section) {
+			
+			$res .= sprintf($this->tags['option'], $section["id"], $space.$section["title"]) ;
+			if (!empty($section["children"])) {
+				$res .= $this->optionBranch($section["children"], $nbsp+3);
+			}
+			
+		}
+		
+		return $res;
+	}
 	
 	
 }
