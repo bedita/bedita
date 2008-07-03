@@ -144,6 +144,10 @@ class DocumentsController extends ModulesController {
 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
+			"cloneObject"	=> 	array(
+							"OK"	=> "/documents/view/{$this->Document->id}",
+							"ERROR"	=> "/documents/view/{$this->Document->id}" 
+							),
 			"save"	=> 	array(
 							"OK"	=> "/documents/view/{$this->Document->id}",
 							"ERROR"	=> "/documents/view/{$this->Document->id}" 

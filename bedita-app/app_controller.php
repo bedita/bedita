@@ -595,6 +595,12 @@ abstract class ModulesController extends AppController {
 		}
 		return $previews;
 	}
+	
+	public function cloneObject() {
+		unset($this->data['id']);
+		$this->data['status']='draft';
+		$this->save();
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

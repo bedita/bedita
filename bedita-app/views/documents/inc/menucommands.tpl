@@ -17,6 +17,13 @@ $(document).ready(function(){
 	$("div.insidecol input[@name='save']").click(function() {
 		$("#updateForm").submit();
 	});
+	
+	$("div.insidecol input[@name='clone']").click(function() {
+		$("#updateForm").attr("action","{/literal}{$html->url('/documents/cloneObject')}{literal}");
+		var cloneTitle=prompt("{/literal}{t}Title{/t}{literal}",$("input[@name='data[title]']").val()+"-copy");
+		$("input[@name='data[title]']").attr("value",cloneTitle);
+		$("#updateForm").submit();
+	});
 });
 </script>
 {/literal}
@@ -36,7 +43,7 @@ $(document).ready(function(){
 	<div class="insidecol">
 		{if ($perms->isWritable($user.userid,$user.groups,$object.Permissions))}
 		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />
-		<input class="bemaincommands" type="submit" value=" {t}clone{/t} " name="clone" />
+		<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" />
 		{/if}
 		{if ($perms->isDeletable($user.userid,$user.groups,$object.Permissions))}
 		<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" {if !($object.id|default:false)}disabled="1"{/if} />
