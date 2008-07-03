@@ -115,7 +115,7 @@ function assocObjectsToAreaSection(id) {
 {if ($smarty.section.i.total) >= 10}
 		
 			{$smarty.capture.theader}
-			
+				
 {/if}
 
 
@@ -162,7 +162,7 @@ function assocObjectsToAreaSection(id) {
 									<option> OFF </option>
 									<option> DRAFT </option>
 								</select>
-	
+			<input id="changestatusSelected" type="button" value=" ok " />
 	<hr />
 	
 	{if !empty($tree)}

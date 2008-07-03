@@ -2,24 +2,24 @@
 var urlGetObj		= '{$html->url("/streams/get_item_form_by_id")}' ;
 var containerItem = "#multimediaItems";
 
+
 {literal}
 function commitUploadItem(IDs, rel) {
-	//$("#loading").show();
 	var emptyDiv = "<div  class=\"multimediaitem itemBox\"><\/div>";
 	for(var i=0 ; i < IDs.length ; i++) {
 		var id = escape(IDs[i]) ;
 		$(emptyDiv).load(urlGetObj, {'id': id, 'relation':rel}, function (responseText, textStatus, XMLHttpRequest) {
-			$(containerItem).append(this).reorderListItem() ; 
-			//$("#loading").hide();
-		}) ;
+			$("#loading").hide();
+			$(containerItem).append(this).reorderListItem(); 
+		})
 	}	
 }
 
 
 function showResponse(data) {
-	$("#loading").hide();
 
 	if (data.UploadErrorMsg) {
+		$("#loading").hide();
     	$("#addmultimedia").append("<label class='error'>"+data.UploadErrorMsg+"<\/label>").addClass("error");
     } else {
 	    var tmp = new Array() ;
@@ -27,18 +27,18 @@ function showResponse(data) {
 	    $.each(data, function(entryIndex, entry) {
 	    	tmp[countFile++] = entry['fileId'];
 	    });
-	    
-	    $("#addmultimedia").find("input[@type=text]").attr("value", "");
-	    $("#addmultimedia").find("input[@type=file]").attr("value", "");
-	    $("#addmultimedia").find("textarea").attr("value", "");
-	    
+ 
 		commitUploadItem(tmp, "attach");
 	} 
+	
+		    $("#addmultimedia").find("input[@type=text]").attr("value", "");
+	    $("#addmultimedia").find("input[@type=file]").attr("value", "");
+	    $("#addmultimedia").find("textarea").attr("value", "");
 }
 
 function resetError() {
 	$("#addmultimedia").find("label").remove();
-	//$("#loading").show();
+	$("#loading").show();
 }
 
 
@@ -183,4 +183,8 @@ $(document).ready(function()
 	</div>
 
 </div>
+
+
+<div id="loading" class="loading"></div>
+
 </fieldset>

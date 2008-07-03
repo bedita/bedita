@@ -982,6 +982,26 @@ input[type=radio] {
 
 
 
+/*...........................................    
+
+    Ajax
+
+...........................................*/
+
+
+.loading {
+	background: gold url(../img/loadingAnimation.gif) center no-repeat;
+	min-height: 50px; min-width: 50px;
+	display:none;
+}
+
+
+
+
+
+
+
+
 
 
 
