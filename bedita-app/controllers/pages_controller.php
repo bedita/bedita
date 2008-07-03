@@ -19,11 +19,12 @@
  * Home pages
  * 
  */
-class PagesController extends AppController {
-	var $name = 'Pages';
+class PagesController extends ModulesController {
+	
 	var $helpers = array();
 	var $components = array('Session', 'Cookie');
-	var $uses = null;
+	
+	var $uses = array();
 
 	 function display() {
 	 	$this->action = "index" ;
@@ -42,6 +43,7 @@ class PagesController extends AppController {
 	 
 	 function login() {
 	 }
+	 
 	 
 }
 
