@@ -100,6 +100,31 @@ class BeTreeHelper extends Helper {
 		
 	}
 	
+/**
+	 * build option for select
+	 *
+	 * @param array $tree
+	 * @param int $numInd number of repetition on $indentation string foreach branch
+	 * @param string $indentation string to use for indentation
+	 * 
+	 * @return String 	<option value="">...</option>
+	 * 		   			<option value="">...</option>
+	 * 					....
+	 */
+	public function option($tree, $numInd=3, $indentation="&nbsp;") {
+		
+		$output = "<option value=\"\"> -- </option>";
+		foreach ($tree as $publication) {
+			$output .= sprintf($this->tags['option'], $publication["id"], mb_strtoupper($publication["title"])) ;
+			if (!empty($publication["children"])) {
+				$output .= $this->optionBranch($publication["children"], $numInd, $indentation);
+			}
+		}
+		
+		return $this->output($output);
+		
+	}
+	
 	/**
 	 * get html section
 	 *
@@ -123,45 +148,29 @@ class BeTreeHelper extends Helper {
 	
 	
 	/**
-	 * build option for select
-	 *
-	 * @param array $tree
-	 * @return String 	<option value="">...</option>
-	 * 		   			<option value="">...</option>
-	 * 					....
-	 */
-	public function option($tree) {
-		
-		$output = "<option value=\"\"> -- </option>";
-		foreach ($tree as $publication) {
-			$output .= sprintf($this->tags['option'], $publication["id"], mb_strtoupper($publication["title"])) ;
-			if (!empty($publication["children"])) {
-				$output .= $this->optionBranch($publication["children"], 3);
-			}
-		}
-		
-		return $this->output($output);
-		
-	}
-	
-	/**
 	 * build branch
 	 *
-	 * @param  $branch
-	 * @param int $nbsp number of nbsp; for indentation
+	 * @param $branch
+	 * @param int $numInd number of repetition on $indentation string foreach branch
+	 * @param string $indentation string to use for indentation
+	 * 
 	 * @return string of option
 	 */
-	private function optionBranch($branch, $nbsp) {
+	private function optionBranch($branch, $numInd, $indentation) {
 		
-		for ($i = 1; $i <= $nbsp; $i++) {
-			$space .= "&nbsp;";
+		if (!isset($this->numInd)) {
+			$this->numInd = $numInd;
+		}
+		
+		for ($i = 1; $i <= $numInd; $i++) {
+			$space .= $indentation;
 		}
 		
 		foreach ($branch as $section) {
 			
 			$res .= sprintf($this->tags['option'], $section["id"], $space.$section["title"]) ;
 			if (!empty($section["children"])) {
-				$res .= $this->optionBranch($section["children"], $nbsp+3);
+				$res .= $this->optionBranch($section["children"], $numInd+$this->numInd, $indentation);
 			}
 			
 		}
