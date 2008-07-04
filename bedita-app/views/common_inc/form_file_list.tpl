@@ -5,7 +5,10 @@ var containerItem = "#multimediaItems";
 
 {literal}
 function commitUploadItem(IDs, rel) {
-	var emptyDiv = "<div  class=\"multimediaitem itemBox\"><\/div>";
+
+	var currClass =  $(".multimediaitem:last").attr("class");
+	//alert(currClass);
+	var emptyDiv = "<div  class=\' " + currClass + " \ gold '><\/div>";
 	for(var i=0 ; i < IDs.length ; i++) {
 		var id = escape(IDs[i]) ;
 		$(emptyDiv).load(urlGetObj, {'id': id, 'relation':rel}, function (responseText, textStatus, XMLHttpRequest) {
@@ -31,7 +34,7 @@ function showResponse(data) {
 		commitUploadItem(tmp, "attach");
 	} 
 	
-		    $("#addmultimedia").find("input[@type=text]").attr("value", "");
+		$("#addmultimedia").find("input[@type=text]").attr("value", "");
 	    $("#addmultimedia").find("input[@type=file]").attr("value", "");
 	    $("#addmultimedia").find("textarea").attr("value", "");
 }
@@ -73,6 +76,9 @@ $(document).ready(function()
 
 
 <div class="tab"><h2>{t}Multimedia items{/t}</h2></div>	
+
+<div>
+	
 <fieldset id="multimediaItems">	
 
 <img class="multimediaitemToolbar" src="/img/px.gif" />
@@ -87,14 +93,16 @@ $(document).ready(function()
 	</div>
 {/foreach}
 
-{* </fieldset> *}
-
-<p style="margin-top:20px; clear:both;" />
-
-{*  <h2>{t}Add multimedia items{/t}</h2>  *}
-
-<div id="addmultimedia">
 	
+
+
+</fieldset>
+
+
+<fieldset id="addmultimedia">	
+
+<div id="loading" style="clear:both" class="multimediaitem itemBox small">&nbsp;</div>
+
 	<ul class="htab">
 		<li rel="uploadItems">	{t}upload new items{/t}</li>
 		<li rel="urlItems">		{t}add by url{/t}</li>
@@ -182,9 +190,10 @@ $(document).ready(function()
 		Lla awfwe wetrewt ert 
 	</div>
 
+</fieldset>
+
 </div>
 
 
-<div id="loading" class="loading"></div>
 
-</fieldset>
+

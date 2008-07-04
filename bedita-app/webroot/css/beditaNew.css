@@ -665,10 +665,6 @@ TABLE.indexlist {
 .multimediaitem {
 	width:130px;
 	background-color:#FFFFFF;
-/*
-	min-height:200px;
-	background: transparent url(../img/sfohtabscontent.png) repeat-x;
-*/
 	border:0px solid white;
 	padding:10px;
 	margin-right:10px;
@@ -681,8 +677,7 @@ TABLE.indexlist {
 
 
 .multimediaitem IMG {
-	width:130px;
-	height:85px;
+
 }
 
 .multimediaitem UL {
@@ -706,18 +701,21 @@ TABLE.indexlist {
 }
 
 .multimediaitem.small {
-	width:90px;
+	width:75px;
 	line-height:1em;
 	padding:6px;
 	margin-right:7px;
 	margin-bottom:7px;
 }
 
-.multimediaitem.small IMG {
-	width:90px;
-	height:60px;
-	overflow:hidden;
+.multimediaitem.small .imagebox {
+	width:75px !important;
+	height:75px !important;
+	overflow:hidden !important;
 }
+
+
+
 
 .multimediaitem.small .info_file_item {
 	display:none;
@@ -754,6 +752,10 @@ TABLE.indexlist {
 	border-color: #333333;
 	color: #999999;
 	
+}
+
+.gold.multimediaitem   {
+	background-color:gold;	
 }
 
 
@@ -989,10 +991,11 @@ input[type=radio] {
 ...........................................*/
 
 
-.loading {
-	background: gold url(../img/loadingAnimation.gif) center no-repeat;
-	min-height: 50px; min-width: 50px;
+#loading {
+	background: transparent url(../img/loadingAnimation.gif) left no-repeat;
 	display:none;
+	min-height:48px;
+	min-width:48px;
 }
 
 
