@@ -492,9 +492,9 @@ abstract class ModulesController extends AppController {
 	protected function deleteObjects($model) {
 		$objectsToDel = array();
 		$objectsListDesc = "";
-		if(!empty($this->params['form']['objects_to_del'])) {
+		if(!empty($this->params['form']['objects_selected'])) {
 			
-			$objectsListDesc = $this->params['form']['objects_to_del'];
+			$objectsListDesc = $this->params['form']['objects_selected'];
 			$objectsToDel = split(",",$objectsListDesc);
 			
 		} else {
@@ -512,6 +512,34 @@ abstract class ModulesController extends AppController {
 		foreach ($objectsToDel as $id) {
 			if(!$this->{$model}->delete($id))
 				throw new BeditaException(__("Error deleting object: ", true) . $id);
+		}
+		
+		$this->Transaction->commit() ;
+		return $objectsListDesc;
+	}
+	
+	public function changeStatusObjects($newStatus) {
+		$objectsToModify = array();
+		$objectsListDesc = "";
+		if(!empty($this->params['form']['objects_selected'])) {
+			$objectsListDesc = $this->params['form']['objects_selected'];
+			$objectsToModify = split(",",$objectsListDesc);
+		} else {
+			if(empty($this->data['id'])) 
+				throw new BeditaException(__("No data", true));
+			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) {
+				throw new BeditaException(__("Error saving status for objects", true));
+			}
+			$objectsToModify = array($this->data['id']);
+			$objectsListDesc = $this->data['id'];
+		}
+
+		$this->Transaction->begin() ;
+		foreach ($objectsToModify as $id) {
+			$this->BEObject =& new BEObject(); 
+			$this->BEObject->id = $id;
+			if(!$this->BEObject->saveField('status',$newStatus))
+				throw new BeditaException(__("Error saving status for object: ", true) . $id);
 		}
 		
 		$this->Transaction->commit() ;

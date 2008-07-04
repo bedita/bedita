@@ -36,7 +36,7 @@ $(document).ready(function() {
 });
 function delObject(id) {
 	if(!confirm(message)) return false ;
-	$("#objects_to_del").attr("value",id);
+	$("#objects_selected").attr("value",id);
 	$("#formObject").attr("action", urlDelete) ;
 	$("#formObject").get(0).submit() ;
 	return false ;
@@ -47,7 +47,7 @@ function delObjects() {
 	var checkElems = document.getElementsByName('object_chk');
 	for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
 	oToDel = (oToDel=="") ? "" : oToDel.substring(1);
-	$("#objects_to_del").attr("value",oToDel);
+	$("#objects_selected").attr("value",oToDel);
 	$("#formObject").attr("action", urlDelete) ;
 	$("#formObject").get(0).submit() ;
 	return false ;
@@ -69,7 +69,7 @@ function delObjects() {
 <form method="post" action="" id="formObject">
 
 	<input type="hidden" name="data[id]"/>
-	<input type="hidden" name="objects_to_del" id="objects_to_del"/>
+	<input type="hidden" name="objects_selected" id="objects_selected"/>
 
 	
 	{assign var="pagParams" value=$paginator->params()}
