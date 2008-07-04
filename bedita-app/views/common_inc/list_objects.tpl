@@ -30,6 +30,8 @@ $(document).ready(function(){
 	$("a.delete").bind("click", function() {
 		delObject($(this).attr("title"));
 	});
+	
+	$("#assocObjects").bind("click",assocObjectsToAreaSection);
 });
 function delObject(id) {
 	if(!confirm(message)) return false ;
@@ -166,8 +168,7 @@ function assocObjectsToAreaSection(id) {
 			{$beTree->option($tree)}
 			</select>
 			
-			<input id="deleteSelected" type="button" value=" ok " 
-			onclick="javascript:assocObjectsToAreaSection();" />
+			<input id="assocObjects" type="button" value=" ok " />
 	<hr />
 	{/if}
 
