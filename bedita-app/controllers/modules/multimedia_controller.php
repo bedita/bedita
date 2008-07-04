@@ -200,15 +200,27 @@ class MultimediaController extends ModulesController {
 	 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
-		      "save"  =>  array(
-                    "OK"    => "/multimedia/view/{$this->BEObject->id}",
-                    "ERROR" => "/multimedia/" 
-              ), 
-		
-		      "delete"	=> 	array(
-		              "OK"	=> "./",
-                      "ERROR"	=> "./view/{@$this->params['pass'][0]}")
-	              ) ;
+			"cloneObject"	=> 	array(
+							"OK"	=> "/multimedia/view/{$this->BEObject->id}",
+							"ERROR"	=> "/multimedia/view/{$this->BEObject->id}" 
+							),
+			"save"  =>  array(
+							"OK"    => "/multimedia/view/{$this->BEObject->id}",
+							"ERROR" => "/multimedia/" 
+							), 
+			"delete"	=> 	array(
+							"OK"	=> "./",
+							"ERROR"	=> "./view/{@$this->params['pass'][0]}"
+							),
+			"addToAreaSection"	=> 	array(
+							"OK"	=> "/multimedia",
+							"ERROR"	=> "/multimedia" 
+							),
+			"changeStatusObjects"	=> 	array(
+							"OK"	=> "/multimedia",
+							"ERROR"	=> "/multimedia"
+							)
+						);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;
 	}
