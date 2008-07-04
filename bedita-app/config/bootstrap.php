@@ -65,8 +65,9 @@ enableSubFoldersOn(ROOT.DS.APP_DIR.'/models', $modelPaths);
 
 
 
+
 /**
- ** Load BEdita settings
+ ** Load BEdita settings and define constants
  */
 
 // load defaults
@@ -76,6 +77,13 @@ Configure::load("bedita.ini") ;
 if ( file_exists (ROOT.DS.APP_DIR.DS."config/bedita.cfg.php") ) {
 	Configure::load("bedita.cfg") ;	
 }
+
+
+// Import constants MEDIA_ROOT & MEDIA_URL
+define("MEDIA_ROOT", Configure::read('mediaRoot')) ;
+define("MEDIA_URL",	Configure::read('mediaUrl')) ;
+
+
 
 
 

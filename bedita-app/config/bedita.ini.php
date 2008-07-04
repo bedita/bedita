@@ -21,11 +21,11 @@ $config = array() ;
  */
 
 // Multimedia - files' root folder on filesystem (use DS as Directory Separator, without trailing slash)
-define("MEDIA_ROOT", ROOT . DS . "media") ;
+$config['mediaRoot'] = ROOT . DS . "media";
 
 
 // Multimedia - URL prefix (without trailing slash)
-define("MEDIA_URL",	"http://localhost/media") ;
+$config['mediaUrl'] = 'http://localhost/media';
 
 
 // Multimedia - cache folder (without trailing slashes, inside MEDIA_ROOT)
@@ -187,8 +187,6 @@ $config["cfgReservedWords"] = array();
  ** Import PHP constants for smarty templates
  ** (since you cannot access php constants with smarty) 
  */
-$config['mediaUrl']  = MEDIA_URL ;
-$config['mediaRoot'] = MEDIA_ROOT ;
 $config['DS']        = DS;
 
 
