@@ -721,6 +721,12 @@ TABLE.indexlist {
 	display:none;
 }
 
+.multimediaitem .info_file_item LI {
+	color:gray;
+	padding:0px; 
+	border-top:1px solid silver;
+}
+
 .multimediaitem input, .multimediaitem textarea {
 	width:120px;
 	background: transparent;
@@ -732,13 +738,21 @@ TABLE.indexlist {
 }
 
 
-.multimediaitemToolbar {
+IMG.multimediaitemToolbar  {
 	vertical-align:middle;
-	background: transparent url(../img/iconML.png) no-repeat;	
-	width:74px;
-	height:18px;
 	cursor:pointer;
 }
+
+
+IMG.multimediaitemToolbar.viewsmall {
+	background-position: -18px;
+}
+
+IMG.multimediaitemToolbar.viewthumb {
+	background-position: -36px;
+}
+
+
 
 
 .dark.multimediaitem {

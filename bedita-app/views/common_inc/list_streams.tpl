@@ -1,60 +1,112 @@
 <script type="text/javascript">
-var URLBase = "{$html->url('index/')}" ;
-var urlDelete = "{$html->url('delete/')}";
-var message = "{t}Are you sure that you want to delete the item?{/t}";
 <!--
+var urlDelete = "{$html->url('delete/')}" ;
+var message = "{t}Are you sure that you want to delete the item?{/t}" ;
+var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
+var URLBase = "{$html->url('index/')}" ;
 {literal}
 $(document).ready(function(){
-	//$("#tree").designTree({url:URLBase}) ;
-	
+
+
 	$("TABLE.indexList TD.cellList").click(function(i) { 
 		document.location = $(this).parent().find("a:first").attr("href"); 
 	} );
 	
+	/* select/unselect each item's checkbox */
+	$(".selectAll").bind("click", function(e) {
+		var status = this.checked;
+		$(".objectCheck").each(function() { this.checked = status; });
+	}) ;
+	/* select/unselect main checkbox if all item's checkboxes are checked */
+	$(".objectCheck").bind("click", function(e) {
+		var status = true;
+		$(".objectCheck").each(function() { if (!this.checked) return status = false;});
+		$(".selectAll").each(function() { this.checked = status;});
+	}) ;
+	
+	$("#deleteSelected").bind("click", delObjects);
 	$("a.delete").bind("click", function() {
-		if(!confirm(message)) return false ;
-		var idToDel = $(this).attr("title");
-		$("#multimToDel").attr("value",idToDel);
-		$("#formObject").attr("action", urlDelete) ;
-		$("#formObject").get(0).submit() ;
+		delObject($(this).attr("title"));
 	});
 });
+function delObject(id) {
+	if(!confirm(message)) return false ;
+	$("#objects_to_del").attr("value",id);
+	$("#formObject").attr("action", urlDelete) ;
+	$("#formObject").get(0).submit() ;
+	return false ;
+}
+function delObjects() {
+	if(!confirm(messageSelected)) return false ;
+	var oToDel = "";
+	var checkElems = document.getElementsByName('object_chk');
+	for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
+	oToDel = (oToDel=="") ? "" : oToDel.substring(1);
+	$("#objects_to_del").attr("value",oToDel);
+	$("#formObject").attr("action", urlDelete) ;
+	$("#formObject").get(0).submit() ;
+	return false ;
+}
 {/literal}
 //-->
 </script>	
 
 
-		
-{if !empty($objects)}
-	<form method="post" action="" id="formObject">
+<form method="post" action="" id="formObject">
 
-	<input type="hidden" id="multimToDel" name="data[id]"/>
+<input type="hidden" name="data[id]"/>
+<input type="hidden" name="objects_to_del" id="objects_to_del"/>
 
-	</form>
-{/if}
 	
-<table class="indexlist">
-
-	<tr>
+	<table class="indexlist">
+	{capture name="theader"}
+		<tr>
+			<th colspan="2" nowrap>
+				<img class="multimediaitemToolbar viewlist" src="/img/iconML-list.png" />
+				<img class="multimediaitemToolbar viewsmall" src="/img/iconML-small.png" />
+				<img class="multimediaitemToolbar viewthumb" src="/img/iconML-thumb.png" />
+				
+				
+				order by:
+			</th>
+			<th>{$beToolbar->order('id', 'id')}</th>
+			<th>{$beToolbar->order('title', 'Title')}</th>
+			<th>{$beToolbar->order('name', 'Name')}</th>
+			<th>type</th>
+			<th>size</th>
+			
+			<th>{$beToolbar->order('status', 'Status')}</th>
+			<th>{$beToolbar->order('modified', 'Modified')}</th>		
+		</tr>
+	{/capture}
 		
-		<th style="width:155px" nowrap>
-			{*t}Thumb{/t*} 
-			<img class="multimediaitemToolbar" src="/img/px.gif" />
-			order by:</th>
-		<th>{$beToolbar->order('id', 'id')}</th>
-		<th>{$beToolbar->order('title', 'Title')}</th>
-		<th>{t}Name{/t}</th>
-		<th>{t}Type{/t}</th>
-		<th>{t}Size{/t}</th>
-		<th>{$beToolbar->order('status', 'Status')}</th>
-		<th>{$beToolbar->order('created', 'Created')}</th>
-	</tr>
+		{$smarty.capture.theader}
+
+	</table>
+
+	<br style="clear:both" />
 	
+		<div id="viewthumb">
+		{foreach from=$objects item="item"}
+			<div class="multimediaitem itemBox{if $item.status == "off"} off{/if}">
+				
+				{include file="../common_inc/file_item.tpl"}
+					
+			</div>
+		{/foreach}
+		</div>
+		
+	<br style="margin:0px; line-height:0px; clear:both" />
+	
+	<table class="indexlist" id="viewlist" style="display:none;">
 	{section name="i" loop=$objects}
-	<tr class="rowList" rel="{$html->url('view/')}{$objects[i].id}">
-		<td>
-			{assign var="thumbWidth" 		value = 90}
-			{assign var="thumbHeight" 		value = 60}
+	<tr>
+
+{strip}
+		<td style="width:50px">
+			
+			{assign var="thumbWidth" 		value = 50}
+			{assign var="thumbHeight" 		value = 25}
 			{assign var="filePath"			value = $objects[i].path}
 			{assign var="mediaPath"         value = $conf->mediaRoot}
 			{assign var="mediaUrl"         value = $conf->mediaUrl}
@@ -62,38 +114,47 @@ $(document).ready(function(){
 			{assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
 
 				
-		<div class="multimediaitem">
-		
-		{if strtolower($objects[i].ObjectType.name) == "image"}	
-		
-		{thumb 
-			longside 		= 90
-			width			= $thumbWidth
-			height			= $thumbHeight
-			sharpen			= "false"
-			file			= $mediaPath$filePath
-			link			= "false"
-			linkurl			= $mediaUrl$filePath
-			window 			= "false"
-			cache			= $mediaCacheBaseURL
-			cachePATH		= $mediaCachePATH
-			hint			= "false"
-			html			= ""
-			frame			= ""
-		}	
+			<div>		
 			
-				
-	{elseif ($objects[i].provider|default:false)}
-	
+			{if strtolower($objects[i].ObjectType.name) == "image"}	
+			<a href="{$html->url('view/')}{$objects[i].id}">
+				{thumb 
+					width			= $thumbWidth
+					height			= $thumbHeight
+					sharpen			= "false"
+					file			= $mediaPath$filePath
+					link			= "false"
+					linkurl			= $mediaUrl$filePath
+					window 			= "false"
+					cache			= $mediaCacheBaseURL
+					cachePATH		= $mediaCachePATH
+					hint			= "false"
+					html			= "style='border:4px solid white'"
+					frame			= ""
+				}	
+			</a>
+						
+			{elseif ($objects[i].provider|default:false)}
+			
 				{assign_associative var="attributes" style="width:30px;heigth:30px;"}
 				<a href="{$filePath}" target="_blank">{$mediaProvider->thumbnail($objects[i], $attributes) }</a>
-	
-	{else}
+			
+			{else}
+			
 				<a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$objects[i].type}.gif" /></a>
-	{/if}
+			
+			{/if}
+		
 		</div>
 			
 		</td>
+{/strip}
+	
+		<td style="width:15px;">
+			<input  type="checkbox" 
+			name="object_chk" class="objectCheck" title="{$objects[i].id}" />
+		</td>
+		
 		<td>{$objects[i].id}</td>
 		<td>{$objects[i].title}</td>
 		<td>{$objects[i].name}</td>
@@ -101,48 +162,61 @@ $(document).ready(function(){
 		<td>{math equation="x/y" x=$objects[i].size|default:0 y=1024 format="%d"|default:""} KB</td>
 		<td>{$objects[i].status}</td>
 		<td>{$objects[i].created|date_format:'%b %e, %Y'}</td>
+	
 	</tr>				
+	
 		{sectionelse}
 		
 			<td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td>
 		
 		{/section}
+
+		{if ($smarty.section.i.total) >= 10}
+				
+					{$smarty.capture.theader}
+					
+		{/if}
+
 	</table>
 
 
-<fieldset style="padding-bottom:15px;" id="multimediaitems">
+{if !empty($objects)}
 
-<div style="margin-top:10px;">
-{section name=e loop=4}
-<div class="multimediaitem">
-	<img src="img/thumb2.jpg" />
-	<ul>
-		<li>titolo dell'immagine</li>
-		<li>thumb2.jpg</li>
-		<li>80 Kb</li>
-	</ul>
+<div style="border-top: 1px solid gray; padding-top:10px; margin-top:10px; white-space:nowrap">
+	
+	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
+	&nbsp;&nbsp;&nbsp;
+	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
+	&nbsp;&nbsp;&nbsp
+	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
+
+	
 </div>
 
-<div class="multimediaitem">
-	<img src="img/thumb.jpg" />
-	<ul>
-		<li>io sono il titolo dell'immagine</li>
-		<li>thumb.jpg</li>
-		<li>780 Kb</li>
-	</ul>
-</div>
-{/section}
-</div>
+<br />
 
-</fieldset>
-
-<div class="tab"><h2>Operazioni sui 3 records selezionati</h2></div>
+<div class="tab"><h2>Operazioni sui <span class="selecteditems evidence"></span> records selezionati</h2></div>
 <div>
-	<input type="checkbox" class="selectAll" id="selectAll"/><label for="selectAll"> {t}(Un)Select All{/t}</label>
+
+{t}change status to:{/t} 	<select style="width:75px">
+									<option value=""> -- </option>
+									<option> ON </option>
+									<option> OFF </option>
+									<option> DRAFT </option>
+								</select>
+			<input id="changestatusSelected" type="button" value=" ok " />
 	<hr />
+
+	
 	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
+	
 </div>
 
+{/if}
 
+</form>
 
-
+<br />
+<br />
+<br />
+<br />

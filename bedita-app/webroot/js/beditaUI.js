@@ -225,12 +225,32 @@ $(document).ready(function(){
 
 
 
-	$(".multimediaitemToolbar").click(function () {
-
-		$(".multimediaitem").toggleClass("small");
-
-
+	$(".multimediaitemToolbar.viewlist").click(function () {
+		
+		$("#viewlist").toggle();
+		$("#viewthumb").toggle();
 	});
+	
+	$(".multimediaitemToolbar.viewsmall").click(function () {
+		$("#viewlist").hide();
+		$("#viewthumb").show();
+		$(".multimediaitem").addClass("small");
+	});
+
+	$(".multimediaitemToolbar.viewthumb").click(function () {
+		$("#viewlist").hide();
+		$("#viewthumb").show();
+		$(".multimediaitem").removeClass("small");
+	});
+	
+	
+		/*
+		else if (cosa = "viewsmall") $(".multimediaitem").addClass("small");	
+		else if (cosa = "viewthumb") $(".multimediaitem").removeClass("small");
+		*/
+
+
+
 
 
 

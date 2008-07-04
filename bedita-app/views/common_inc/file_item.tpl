@@ -15,11 +15,9 @@
 
 {strip}
 
-	<input type="hidden" name="data[ObjectRelation][{$item.id}][id]" value="{$item.id}" />
-	<input type="hidden" name="data[ObjectRelation][{$item.id}][switch]" value="{$relation}" />
-	<input type="hidden" name="data[ObjectRelation][{$item.id}][modified]" value="0" />
 	
-	<div style="width:{$thumbWidth}px; height:{$thumbHeight}px" class="imagebox">
+	<div style="overflow:hidden; width:{$thumbWidth}px; height:{$thumbHeight}px" class="imagebox">
+	<a href="{$linkUrl}">
 	{if strtolower($item.ObjectType.name) == "image"}
 	
 		{if !empty($fileName) }
@@ -49,43 +47,38 @@
 		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="px; " 3="height:" 4=$conf->videoThumbHeight 5="px;"}
 		{assign_associative var="attributes" style=$myStyle}
 	
-		<a href="{$linkUrl}" target="_blank">{$mediaProvider->thumbnail($item, $attributes) }</a>
+		{$mediaProvider->thumbnail($item, $attributes) }
 	
 	{elseif strtolower($item.ObjectType.name) == "audio"}
 	
-		<a href="{$linkUrl}"><img src="{$session->webroot}img/mime/{$item.type}.gif" /></a>	
+		<img src="{$session->webroot}img/mime/{$item.type}.gif" />
 	
 	{else}
 	
-		<a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$item.type}.gif" /></a>
+		<img src="{$session->webroot}img/mime/{$item.type}.gif" />
 	
 	{/if}
-	
+	</a>
 	</div>
 	
+	
+	<ul class="info_file_item bordered">
 
-	
-	<label class="evidence">
-		<input type="text" class="priority" name="data[ObjectRelation][{$item.id}][priority]" value="{$item.priority|default:$priority}" size="3" maxlength="3"/>
-	</label>
-	
-	<ul class="info_file_item">
-		{*
-		<li>{t}title{/t}:
-			<input type="text" class="info_file_item" value="{$fileTitle|escape:'htmlall'}" name="data[ObjectRelation][{$item.id}][title]" />
-		</li>
-		{t}Description{/t}:	
-		*}
 		<li>
-			<textarea class="info_file_item" style="border:0px; border-bottom:1px solid silver;" name="data[ObjectRelation][{$item.id}][description]">{$item.description|default:""}</textarea>
-			<br />
-			<a href="{$linkUrl}">details</a>
-			<a style="margin-left:60px" href="">
-				delete
-				<!-- <img style="vertical-align:middle;" src="{$session->webroot}img/iconClose.png" > -->
-			</a>
+			{$fileTitle}
+		</li>
+		<li>
+			{$item.width}x{$item.height}px, {math equation="x/y" x=$item.size|default:0 y=1024 format="%d"|default:""} KB
+		</li>
+		<li>
+			{$item.created|date_format:'%b %e, %Y'}
 		</li>
 	</ul>
+
+
+
+
+
 
 
 {/strip}
