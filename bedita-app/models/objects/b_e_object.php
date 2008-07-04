@@ -419,6 +419,8 @@ class BEObject extends BEAppModel
 		$nickOk = false;
 		$countNick = 1;
 		$conf = Configure::getInstance() ;
+		$reservedWords = array_merge ( $conf->defaultReservedWords, $conf->cfgReservedWords );
+
 		
 		while (!$nickOk) {
 			
@@ -429,7 +431,7 @@ class BEObject extends BEAppModel
 			$numNickDb = $this->findCount($cond);
 			
 			// check nickname in db and in reservedWords
-			if ($numNickDb == 0 && !in_array($nickname, $conf->reservedWords)) {
+			if ($numNickDb == 0 && !in_array($nickname, $reservedWords)) {
 				$nickOk = true;
 			} else {
 				$nickname = $nickname_base . "_" . $countNick++;
