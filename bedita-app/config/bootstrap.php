@@ -63,7 +63,21 @@ function enableSubFoldersOn($baseDir, &$var) {
 enableSubFoldersOn(ROOT.DS.APP_DIR.'/controllers', $controllerPaths);
 enableSubFoldersOn(ROOT.DS.APP_DIR.'/models', $modelPaths); 
 
+
+
+/**
+ ** Load BEdita settings
+ */
+
+// load defaults
 Configure::load("bedita.ini") ;
+
+// load local installation specific settings
+if ( file_exists (ROOT.DS.APP_DIR.DS."config/bedita.cfg.php") ) {
+	Configure::load("bedita.cfg") ;	
+}
+
+
 
 /**
  * Registrazione funzioni di shutdown e gestione transazioni.

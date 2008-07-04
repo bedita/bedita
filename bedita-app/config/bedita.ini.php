@@ -1,68 +1,113 @@
 <?php
 /**
-  * @author giangi@qwerg.com ste@channelweb.it
- * 
- *  bedita.ini.php - constants and global variables for BEdita application
- * 
+ ** @author ChannelWeb srl - BEdita staff
+ ** 
+ ** bedita.ini.php - settings, constants, variables for BEdita local installation
+ ** 
  */
 $config = array() ;
  
+ 
+ 
 //////////////////////////////////////////////////////
-// EDITABLE STUFF         ///////////////
+// EDITABLE STUFF                      ///////////////
 //////////////////////////////////////////////////////
 
-/**
- * Multimedia files root on filesystem (use DS as Directory Separator, without trailing slash)
- */
-define("MEDIA_ROOT", ROOT . DS . APP_DIR . DS . "media") ;
 
 /**
- * Multimedia URL prefix (without trailing slash)
+ ** ******************************************
+ **  FileSystem Paths, URIs, Files defaults
+ ** ******************************************
  */
-define("MEDIA_URL", "http://www.mydomain.com/media") ;
 
-/**
- * Media cache folder (without trailing slashes, inside MEDIA_ROOT)
- */
+// Multimedia - files' root folder on filesystem (use DS as Directory Separator, without trailing slash)
+define("MEDIA_ROOT", ROOT . DS . "media") ;
+
+
+// Multimedia - URL prefix (without trailing slash)
+define("MEDIA_URL",	"http://localhost/media") ;
+
+
+// Multimedia - cache folder (without trailing slashes, inside MEDIA_ROOT)
 $config['imgCache'] = 'imgcache';
 
-/**
- * Import PHP constant
- * (maybe should put this elsewhere, it's usefull inside smarty templates, since you cannot access def constants) 
- */
-$config['DS'] = DS;
+
+// Multimedia - image file substituting missing content (as now used in thumb smarty plugin)
+$config['imgMissingFile'] = "/img/iconMissingImage_130x85.gif" ;
 
 
+// FileSystem directory for temporary file storage
+$config['tmp'] = "/tmp" ;
+
+
+
+
+
+
+
 /**
- * uncomment to set default interface language, set 'multilang' true for user choice
- * set 'multilang' true if $config['Config']['language'] is set
+ ** ******************************************
+ **  Content and UI Elements defaults
+ ** ******************************************
  */
+
+// User Interface default language [see also 'multilang' below]
 //$config['Config']['language'] = "ita"; // or "eng", "spa", "por"
+
+// Set 'multilang' true for user choice [also set 'multilang' true if $config['Config']['language'] is set]
 $config['multilang'] = true;
 $config['defaultLang'] = "ita"; // default fallback
 
-/**
- * Formato di default per i testi dei diversi tipi di contenuto.
- * Valori possibili:
- * 'html', 'txt', 'txtParsed'
- */
-$config['type'] = "txt" ;
 
-/**
- * Status di default per gli oggetti da creare
- */
-$config['status'] = "draft" ;
+// Dates - default presentation format [syntax used by strftime php function]
+$config['date_format'] 			= "%d/%m/%Y" ;  // ------ SISTEMARE IL NOME NON E' CAMELCASE ------------
 
 
-/**
- * Default settings for messages
- */
+// Dates - validation format [day=dd, month=mm, year=yyyy]
+$config['dateFormatValidation'] = "dd/mm/yyyy" ;
+
+/*
+$config['match_year'] 	= "/\d{2,2}-\d{2,2}-(\d{4,4})/" ;	// Trova l'anno nel  formato sopra indicato
+$config['match_month'] 	= "/\d{2,2}-(\d{2,2})-\d{4,4}/" ;	// Trova il mese nel  formato sopra indicato
+$config['match_day'] 	= "/(\d{2,2})-\d{2,2}-\d{4,4}/" ;	// Trova il giorno nel  formato sopra indicato
+*/
+
+
+// Texts in documents ['html', 'txt', 'txtParsed']
+$config['type'] = "txt" ;  // ------ SISTEMARE ------------
+//$config['defaultTxtType'] = "txt" ;
+
+
+// Status of new objects
+$config['status'] = "draft" ;  // ------ SISTEMARE ------------
+//$config['defaultStatus'] = "draft" ;
+
+
+// TinyMCE Rich Text Editor for long_text ['true' to enable]
+$config['mce'] = true;
+
+
+// Application messages - temporary messages duration
 $config['msgPause'] = 3000;		// milliseconds
 
 
+// Upload mode ['flash', 'ajax']
+$config['uploadType'] = "flash";
+
+
+
+
+
+
+
 /**
- * Default dimensions for images and videos
+ ** ******************************************
+ **  Image and Video defaults
+ ** ******************************************
  */
+
+$config['thumbWidth']       = 300;		// px
+$config['thumbHeight']      = 300;		// px
 $config['videoWidth']       = 300;		// px
 $config['videoHeight']      = 250;		// px
 $config['videoThumbWidth']  = 110;		// px
@@ -71,64 +116,80 @@ $config['audioWidth']       = 300;		// px
 $config['audioHeight']      = 20;		// px
 
 
-/**
- * Formato visualizzazione data
- * @date_format: visualization format.
- *		format used by strftime function
- * @dateFormatValidation: 
- *		validation format: day=dd, month=mm, year=yyyy 
- *
- * date_format and dateFormatValidation have to be in the same format
- */
-$config['date_format'] 			= "%d/%m/%Y" ;
-$config['dateFormatValidation'] = "dd/mm/yyyy" ;
-	
-/*
-$config['match_year'] 	= "/\d{2,2}-\d{2,2}-(\d{4,4})/" ;	// Trova l'anno nel  formato sopra indicato
-$config['match_month'] 	= "/\d{2,2}-(\d{2,2})-\d{4,4}/" ;	// Trova il mese nel  formato sopra indicato
-$config['match_day'] 	= "/(\d{2,2})-\d{2,2}-\d{4,4}/" ;	// Trova il giorno nel  formato sopra indicato
-*/
+
+
+
+
 
 /**
- * directory temporanea
+ ** ******************************************
+ **  Login (backend) and Security Policies
+ ** ******************************************
  */
-$config['tmp'] = "/tmp" ;
 
-/**
- * Backend default login policy
- */
-$config['maxLoginAttempts'] = 3;
+$config['maxLoginAttempts']     = 3;
 $config['maxNumDaysInactivity'] = 180;
-$config['maxNumDaysValidity'] = 60;
+$config['maxNumDaysValidity']   = 60;
 
-$config['passwdRegex'] = "/^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){6,40}$/";
+// Password
+$config['passwdRegex']    = "/^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){6,40}$/";
 $config['passwdRegexMsg'] = "Your password must be at least 6 characters long and contain at least one number";
 
-$config['authorizedGroups'] = array('administrator','editor','reader');
-// immutable groups
-$config['basicGroups'] = array('administrator','editor','reader','guest');
 
-// mce (enabled|disabled) for long_text: comment to disable
-$config['mce'] = true;
+// Groups
+$config['authorizedGroups'] = array ('administrator', 'editor', 'reader');
 
-// upload type: flash, ajax
-$config['uploadType'] = "ajax";
+// Predefined groups
+$config['basicGroups']      = array ('administrator', 'editor', 'reader', 'guest');
+
+
+
+
+
+
 
 /**
- * object relation type
+ ** ******************************************
+ **  More specific settings
+ ** ******************************************
  */
-$config["objRelationType"] = array("event_place","relators","moderators");
 
-// reserved words, nickname dosen't use them
-$config["appReservedWords"] = array();
+// Relations - local objects' relation types
+$config["objRelationType"] = array ();
+
+
+// Default reserved words [avoided in nickname creation]
+$config["defaultReservedWords"] = array("section","content");
+
+
+// Cfg reserved words (as in local cfg)
+$config["cfgReservedWords"] = array();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ///////////////////////////////////////////////////////
 // DO NOT EDIT BELOW THIS LINE//
 ///////////////////////////////////////////////////////
 
-// config for templates
-$config['mediaUrl'] = MEDIA_URL ;
+/**
+ ** Import PHP constants for smarty templates
+ ** (since you cannot access php constants with smarty) 
+ */
+$config['mediaUrl']  = MEDIA_URL ;
 $config['mediaRoot'] = MEDIA_ROOT ;
+$config['DS']        = DS;
 
 
 /**
@@ -148,9 +209,9 @@ define("BEDITA_PERMS_READ_MODIFY",	BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) ;
 define("BEDITA_DOMANDA_MULTIPLA",		0x1) ;
 define("BEDITA_DOMANDA_SINGOLA",		0x2) ;
 define("BEDITA_DOMANDA_TXTLIBERO",		0x3) ;
-define("BEDITA_DOMANDA_CHECKOPEN",	0x4) ;
+define("BEDITA_DOMANDA_CHECKOPEN",		0x4) ;
 define("BEDITA_DOMANDA_GRADO",			0x5) ;
-define("BEDITA_DOMANDA_TXTSEMPLICE",0x6) ;
+define("BEDITA_DOMANDA_TXTSEMPLICE",	0x6) ;
 
 
 
@@ -260,7 +321,7 @@ $config['objectTypeModels'] = array(
 /**
  * Definisce le variabili utilizzate per la gestione delle sessioni
  */
-$config['session'] = array(
+$config['session'] = array (
 	"sessionUserKey"	=> "BEAuthUser", 		// Nome con cui salvato in sessione info. utente connesso
 ) ;
 
@@ -307,6 +368,7 @@ $config['permissions'] = array(
 	),
 );
 
+
 /**
  * Tipologia di default, domande
  */
@@ -329,10 +391,10 @@ $config['statusOptions'] = array(
 $config['langOptions'] = array(
 	"ita"	=> "italiano",
 	"eng"	=> "english",
-	"spa"	=> "espa&ntilde;ol",
+	/*"spa"	=> "espa&ntilde;ol",*/
 	"por"	=> "portugu&ecirc;s",
-	"fra"	=> "fran&ccedil;ais",
-	"deu"	=> "deutsch"
+	/*"fra"	=> "fran&ccedil;ais",
+	"deu"	=> "deutsch"*/
 ) ;
 
 // ISO-639-3 codes
@@ -471,9 +533,4 @@ $config['modelBindings'] = array(
 
 ) ;
 
-// reserved words
-$config["reservedWords"] = array_merge(
-								array("section","content","tag"),
-								$config["appReservedWords"]
-);
 ?>

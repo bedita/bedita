@@ -1,0 +1,88 @@
+<?php
+/**
+ ** @author ChannelWeb srl - BEdita staff
+ ** 
+ ** bedita.cfg.php - local installation specific settings,
+ **                  overrides settings in bedita.ini
+ ** 
+ */
+
+
+/**
+ ** ******************************************
+ **  FileSystem Paths, URIs, Files defaults
+ ** ******************************************
+ */
+
+// Multimedia - files' root folder on filesystem (use DS as Directory Separator, without trailing slash)
+// define("MEDIA_ROOT", ROOT . DS . "media") ;
+
+
+// Multimedia - URL prefix (without trailing slash)
+// define("MEDIA_URL",	"http://localhost/media") ;
+
+
+// Multimedia - cache folder (without trailing slashes, inside MEDIA_ROOT)
+// $config['imgCache'] = 'imgcache';
+
+
+// FileSystem directory for temporary file storage
+// $config['tmp'] = "/tmp" ;
+
+
+
+
+
+
+
+/**
+ ** ******************************************
+ **  Content and UI Elements defaults
+ ** ******************************************
+ */
+
+// User Interface default language [see also 'multilang' below]
+//$config['Config']['language'] = "ita"; // or "eng", "spa", "por"
+
+// Set 'multilang' true for user choice [also set 'multilang' true if $config['Config']['language'] is set]
+// $config['multilang'] = true;
+// $config['defaultLang'] = "ita"; // default fallback
+
+
+// Texts in documents ['html', 'txt', 'txtParsed']
+// $config['type'] = "txt" ;  // ------ SISTEMARE IL NOME FA CA'  ------------
+//$config['defaultTxtType'] = "txt" ;
+
+
+// Status of new objects
+// $config['status'] = "draft" ;  // ------ SISTEMARE IL NOME FA CA' ------------
+//$config['defaultStatus'] = "draft" ;
+
+
+// TinyMCE Rich Text Editor for long_text ['false' to disable - defaults true]
+// $config['mce'] = true;
+
+
+// Upload mode ['flash', 'ajax']
+// $config['uploadType'] = "flash";
+
+
+
+
+
+/**
+ ** ******************************************
+ **  Local installation specific settings
+ ** ******************************************
+ */
+
+// Relations - local objects' relation types
+// $config["objRelationType"] = array ("language", "parent");
+
+
+// Reserved words [avoided in nickname creation]
+// $config["cfgReservedWords"] = array();
+
+
+
+?>
