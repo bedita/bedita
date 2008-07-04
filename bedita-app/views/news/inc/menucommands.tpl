@@ -19,7 +19,7 @@ $(document).ready(function(){
 	});
 	
 	$("div.insidecol input[@name='clone']").click(function() {
-		$("#updateForm").attr("action","{/literal}{$html->url('/events/cloneObject')}{literal}");
+		$("#updateForm").attr("action","{/literal}{$html->url('/news/cloneObject')}{literal}");
 		var cloneTitle=prompt("{/literal}{t}Title{/t}{literal}",$("input[@name='data[title]']").val()+"-copy");
 		$("input[@name='data[title]']").attr("value",cloneTitle);
 		$("#updateForm").submit();
@@ -31,12 +31,11 @@ $(document).ready(function(){
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 	<div class="modules">
-	   <label class="events" rel="{$html->url('/events')}">{t}Events{/t}</label>
+	   <label class="news" rel="{$html->url('/news')}">{t}News{/t}</label>
 	</div> 
 	
 	
 	{include file="../common_inc/messages.tpl"}
-
 	
 	{assign var="user" value=$session->read('BEAuthUser')}
 	

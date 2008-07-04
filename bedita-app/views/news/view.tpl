@@ -1,53 +1,63 @@
 {*
-** news view template
-** @author ChannelWeb srl
+** document view template
 *}
 
-{$html->css('tree')}
 {$html->css("ui.datepicker")}
-{$html->css('ui.tabs')}
-{$javascript->link("jquery/ui/ui.tabs", false)}
-{$javascript->link("form", false)}
-{$javascript->link("jquery/jquery.treeview", false)}
-{$javascript->link("jquery/jquery.changealert", false)}
+
 {$javascript->link("jquery/jquery.form", false)}
-{$javascript->link("jquery/jquery.selectboxes.pack", false)}
-{$javascript->link("jquery/jquery.cmxforms", false)}
-{$javascript->link("jquery/jquery.metadata", false)}
-{$javascript->link("jquery/jquery.validate", false)}
-{$javascript->link("validate.tools", false)}
-{$javascript->link("jquery/interface", false)}
-{$javascript->link("jquery/ui/datepicker/ui.datepicker", false)}
+{$javascript->link("jquery/jquery.treeview", false)}
+{$javascript->link("jquery/jquery.autogrow")}
+{$javascript->link("jquery/jquery.selectboxes.pack")}
+
+{$javascript->link("jquery/ui/ui.core.min", false)}
+{$javascript->link("jquery/ui/ui.sortable.min", false)}
+{$javascript->link("jquery/ui/ui.datepicker.min", false)}
 {if $currLang != "eng"}
-	{$javascript->link("jquery/ui/datepicker/ui.datepicker-$currLang.js", false)}
+	{$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
 
-<script type="text/javascript">
-<!--
-{literal}
-$(document).ready(function(){
 
-	$('#properties').show() ;
-	$('#extendedtext').show() ;
-	$('#attachments').show() ;
-	
-	// aggiunge i comandi per i blocchi
-	$('.showHideBlockButton').bind("click", function(){
-		$(this).next("div").toggle() ;
-	}) ;
-
-	// handler cambiamenti dati della pagina
-	$("#handlerChangeAlert").changeAlert($('input, textarea, select').not($("#addCustomPropTR TD/input, #addCustomPropTR TD/select, #addPermUserTR TD/input, #addPermGroupTR TD/input"))) ;
-	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div').alertUnload() ;
-	
-});
-{/literal}
-//-->
+<script language="JavaScript">
+	{literal}
+	$(document).ready( function ()
+	{
+		$('#multimediaItems').show() ;
+		$('textarea.autogrowarea').css("line-height","1.2em").autogrow();
+		
+	});
+	{/literal}
 </script>
+
+
 </head>
 <body>
-{include file="head.tpl"}
-<div id="centralPage">	
-{include file="submenu.tpl" method="index"}	
-{include file="form.tpl"}	
+
+{include file="../common_inc/modulesmenu.tpl"}
+
+{include file="inc/menuleft.tpl" method="view"}
+
+<div class="head">
+	
+	<h1>{t}{$object.title|default:"New Item"}{/t}</h1>
+
 </div>
+
+{assign var=objIndex value=0}
+
+
+{include file="inc/menucommands.tpl" method="view" fixed = true}
+
+
+<div class="main">	
+	
+	{include file="inc/form.tpl"}
+		
+</div>
+
+
+{include file="../common_inc/menuright.tpl"}
+
+
+
+
+

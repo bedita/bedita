@@ -80,44 +80,29 @@ class NewsController extends ModulesController {
 
 
 	public function save() {
-	 	
  		$this->checkWriteModulePermission();
- //echo serialize($this->data) ;
- //exit;
- //$this->data = unserialize('a:8:{s:2:"id";s:0:"";s:4:"lang";s:3:"ita";s:8:"LangText";a:6:{s:3:"ita";a:2:{s:5:"title";s:7:"kjkjkjk";s:11:"description";s:9:"jkjkhjhjh";}s:3:"eng";a:2:{s:5:"title";s:0:"";s:11:"description";s:0:"";}s:3:"spa";a:2:{s:5:"title";s:0:"";s:11:"description";s:0:"";}s:3:"por";a:2:{s:5:"title";s:0:"";s:11:"description";s:0:"";}s:3:"fra";a:2:{s:5:"title";s:0:"";s:11:"description";s:0:"";}s:3:"deu";a:2:{s:5:"title";s:0:"";s:11:"description";s:0:"";}}s:6:"status";s:5:"draft";s:5:"start";s:0:"";s:3:"end";s:0:"";s:8:"nickname";s:0:"";s:14:"ObjectRelation";a:3:{s:11:"event_place";a:1:{s:6:"switch";s:11:"event_place";}s:8:"relators";a:1:{s:6:"switch";s:8:"relators";}s:10:"moderators";a:1:{s:6:"switch";s:10:"moderators";}}}') ;
  	 	if(empty($this->data)) 
  	 	    throw new BeditaException( __("No data", true));
- 		
 		$new = (empty($this->data['id'])) ? true : false ;
-		
 	 	// verify object permissions
 	 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
 	 			throw new BeditaException(__("Error modify permissions", true));
-	 	
 	 	// format custom properties
 	 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-		$this->data['title'] = $this->data['LangText'][$this->data['lang']]['title'];
-		$this->data['description'] = $this->data['LangText'][$this->data['lang']]['description'];
-		$this->BeLangText->setupForSave($this->data["LangText"]) ;
 	 	// if no Category is checked set an empty array to delete association between news and category
 	 	if (!isset($this->data["ObjectCategory"])) $this->data["ObjectCategory"] = array();
-	 	
 		$this->Transaction->begin() ;
-
 		if(!$this->ShortNews->save($this->data)) {
 	 		throw new BeditaException(__("Error saving news", true), $this->ShortNews->validationErrors);
 	 	}
-
 		if(!isset($this->data['destination'])) 
 			$this->data['destination'] = array() ;
 		$this->BeTree->updateTree($this->ShortNews->id, $this->data['destination']);
-		
 	 	// update permissions
 		if(!isset($this->data['Permissions'])) 
 			$this->data['Permissions'] = array() ;
 		$this->Permission->saveFromPOST($this->ShortNews->id, $this->data['Permissions'], 
 	 			!empty($this->data['recursiveApplyPermissions']), 'news');
-	 			
 	 	$this->Transaction->commit();
  		$this->userInfoMessage(__("News saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("news [". $this->data["title"]."] saved");
@@ -176,6 +161,10 @@ class NewsController extends ModulesController {
 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
+				"cloneObject"	=> 	array(
+										"OK"	=> "/news/view/{$this->ShortNews->id}",
+										"ERROR"	=> "/news/view/{$this->ShortNews->id}" 
+										),
 				"save"	=> 	array(
 										"OK"	=> "/news/view/{$this->ShortNews->id}",
 										"ERROR"	=> "/news" 
@@ -185,14 +174,18 @@ class NewsController extends ModulesController {
 										"ERROR"	=> "/news/view/{@$this->params['pass'][0]}" 
 									), 
 				"saveCategories" 	=> array(
-											"OK"	=> "/news/categories",
-											"ERROR"	=> "/news/categories"
+										"OK"	=> "/news/categories",
+										"ERROR"	=> "/news/categories"
 										),
 				"deleteCategories" 	=> array(
-												"OK"	=> "/news/categories",
-											"ERROR"	=> "/news/categories"
+										"OK"	=> "/news/categories",
+										"ERROR"	=> "/news/categories"
 										),
 				"addToAreaSection"	=> 	array(
+										"OK"	=> "/news",
+										"ERROR"	=> "/news" 
+										),
+				"changeStatusObjects"	=> 	array(
 										"OK"	=> "/news",
 										"ERROR"	=> "/news" 
 										)

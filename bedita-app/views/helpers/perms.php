@@ -26,7 +26,9 @@ class PermsHelper extends Helper {
 	}
 
 	private function checkPerm($u,$g_arr,$p_arr,$p) {
-		$res = false;;
+		if(empty($p_arr))
+			return true;
+		$res = false;
 		foreach($p_arr as $k => $v) {
 			if($v['switch']=='user' && $v['name']==$u) {
 				if($v['flag'] & $p) {

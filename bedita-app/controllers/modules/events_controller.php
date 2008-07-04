@@ -178,6 +178,10 @@ class EventsController extends ModulesController {
 
 	protected function forward($action, $esito) {
 	  	$REDIRECT = array(
+				"cloneObject"	=> 	array(
+										"OK"	=> "/events/view/{$this->Event->id}",
+										"ERROR"	=> "/events/view/{$this->Event->id}" 
+										),
 	 			"save"				=> 	array(
 	 										"OK"	=> "/events/view/{$this->Event->id}",
 	 										"ERROR"	=> "/events" 
@@ -195,6 +199,10 @@ class EventsController extends ModulesController {
 	 										"ERROR"	=> "/events/categories"
 	 									),
 	 			"addToAreaSection"	=> 	array(
+										"OK"	=> "/events",
+										"ERROR"	=> "/events" 
+										),
+				"changeStatusObjects"	=> 	array(
 										"OK"	=> "/events",
 										"ERROR"	=> "/events" 
 										)
