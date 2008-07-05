@@ -277,7 +277,7 @@ UL.modules {
 .admin 			{background-color:#003366 !important;}
 .ecommerce 		{background-color:#999966 !important;}
 .attachments 	{background-color:#999966 !important;}
-.news 			{background-color:#C900FF !important;}
+.news 			{background-color:#6666FF !important;}
 .tags 			{background-color:#5F9EA0 !important;}
 .comments		{background-color:#F08080 !important;}
 .translations	{background-color:#FF00FF !important;}
@@ -997,12 +997,15 @@ input[type=radio] {
 	
 }
 
-#listTags A:Hover {
+.tag A:Hover {
 	font-size:1.9em;
-	
+	text-decoration:underline;
 }
 
-
+.tagToolbar {
+	cursor:pointer;
+	vertical-align:middle;
+}
 
 /*...........................................    
 

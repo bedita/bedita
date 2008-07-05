@@ -29,8 +29,20 @@ $(document).ready(function() {
 	$("a.delete").bind("click", function() {
 		delObject($(this).attr("title"));
 	});
+
+	$("#taglist").hide();
 	
+	$(".tagToolbar.viewlist").click(function () {
+		$("#taglist").show();
+		$("#tagcloud").hide();
+	});
+	$(".tagToolbar.viewcloud").click(function () {
+		$("#taglist").hide();
+		$("#tagcloud").show();
+	});
+
 });
+
 function delObject(id) {
 	if(!confirm(message)) return false ;
 	$("#objects_selected").attr("value",id);
@@ -49,6 +61,8 @@ function delObjects() {
 	$("#formObject").get(0).submit() ;
 	return false ;
 }
+
+
 
 //-->
 </script>
@@ -74,22 +88,34 @@ function delObjects() {
 	{assign_associative var="optionsPag" class=""}
 	{assign_associative var="optionsPagDisable" class=""}
 
-	
+		
+				
 	<table class="indexlist">
 
 	<tr>
-		<th>{$paginator->sort('Name', 'label')}</th>
+		
+		<th style="width:45px;">
+			
+			<img class="tagToolbar viewcloud" src="/img/iconML-cloud.png" />
+			<img class="tagToolbar viewlist" src="/img/iconML-list.png" />
+			
+		</th>
+		
+		<th>
+			{$paginator->sort('Name', 'label')}
+		</th>
 		<th>{$paginator->sort('Status', 'status')}</th>
 		<th class="center">{$paginator->sort('Ocurrences', 'occurences')}</th>
 		<th>Id</th>
 		<th></th>
 	</tr>
-
+	<tbody id="taglist">
 	{section name="i" loop=$objects}
 		<tr>
-			<td>
+			<td style="width:36px; text-align:center">
 				<input type="checkbox" name="object_chk" class="objectCheck" title="{$objects[i].id}"/>
-				&nbsp;&nbsp;
+			</td>
+			<td>
 				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].label}</a>
 				
 			</td>
@@ -103,19 +129,47 @@ function delObjects() {
 		<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>
 	
 	{/section}
-
+	</tbody>
+	
+	<tbody id="tagcloud">
+		<tr>
+			<td colspan="10" class="tag graced" style="text-align:justify; line-height:1.5em; padding:20px;">
+				{section name="i" loop=$objects}
+				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].label}</a>
+				{/section}
+			</td>
+		</tr>
+		
+	</tbody>
+	
 	</table>
 
 
+	<br />
 	<div class="tab"><h2>{t}operazioni{/t}</h2></div>
 	<div>
-		<input type="checkbox" class="selectAll" id="selectAll"/><label for="selectAll"> {t}(Un)Select All{/t}</label>
-		<hr />
+
+		<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
 		
-		<input id="deleteSelected" type="button" value="{t}Delete selected items{/t}"/>
+	&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
+	&nbsp;&nbsp;&nbsp;
+	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
+	&nbsp;&nbsp;&nbsp
 		
-		<input id="changeStatus" type="button" value="{t}change status{/t}"/>
-		
+		<hr>
+{t}change status to:{/t} 	<select style="width:75px" id="newStatus" data="newStatus">
+									<option value=""> -- </option>
+									<option> ON </option>
+									<option> OFF </option>
+									<option> DRAFT </option>
+								</select>
+			<input id="changestatusSelected" type="button" value=" ok " />
+	<hr />
+
+
+	
+	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
 		<hr />
 		
 		<textarea name="addtaglist" id="addtaglist"></textarea>

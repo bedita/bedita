@@ -18,6 +18,7 @@ $.validator.setDefaults({
 });
 
 $(document).ready(function(){
+	$('#tagdetails').show() ;
 	$("#updateform").validate();
 	$("#delBEObject").submitConfirm({
 		{/literal}
@@ -34,7 +35,7 @@ $(document).ready(function(){
 <input  type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 	
 <div class="tab"><h2>{t}Tag details{/t}</h2></div>
-
+<fieldset id="tagdetails">
 	<table class="bordered">
 		<tr>
 			<th>{t}Name{/t}:</th>
@@ -70,4 +71,4 @@ $(document).ready(function(){
 		</tr>
 	</table>
 
-
+</fieldset>

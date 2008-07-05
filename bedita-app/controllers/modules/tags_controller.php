@@ -24,7 +24,7 @@ class TagsController extends ModulesController {
 	var $uses = array('ObjectCategory') ;
 	var $paginate = array("ObjectCategory" 	=>
 						array(
-							"limit" => 10, 
+							"limit" => 250, 
 							"conditions" => "ObjectCategory.object_type_id is null", 
 							"order" => array("ObjectCategory.label" => "asc")
 						)
