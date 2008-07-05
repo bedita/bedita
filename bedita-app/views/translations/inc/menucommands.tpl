@@ -17,6 +17,7 @@ $(document).ready(function(){
 	$("div.insidecol input[@name='save']").click(function() {
 		$("#updateForm").submit();
 	});
+	
 });
 </script>
 {/literal}
@@ -30,14 +31,16 @@ $(document).ready(function(){
 	
 	{include file="../common_inc/messages.tpl"}
 	
+	{assign var="user" value=$session->read('BEAuthUser')}
 	
-	{if !empty($method) && $method != "index" && $module_modify eq '1'}
+	{if !empty($method) && $method != "index" && $module_modify|default:'' eq '1'}
 	<div class="insidecol">
-		
-		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />	
-		<input class="bemaincommands" type="submit" value=" {t}clone{/t} " name="clone" />	
+		{if ($perms->isWritable($user.userid,$user.groups,$object.Permissions))}
+		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />
+		{/if}
+		{if ($perms->isDeletable($user.userid,$user.groups,$object.Permissions))}
 		<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" {if !($object.id|default:false)}disabled="1"{/if} />
-
+		{/if}
 	</div>
 	
 	{/if}

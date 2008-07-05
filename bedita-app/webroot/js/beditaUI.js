@@ -208,11 +208,11 @@ $(document).ready(function(){
 
 	$(".multimediaitem").mouseover(function () {
 
-		// $(this).addClass("dark");
+	 	//$(this).addClass("dark");
 
 	}).mouseout(function () {
-
-		// 	$(this).removeClass("dark");
+		
+		//$(this).removeClass("dark");
 
 	});
 
@@ -243,14 +243,6 @@ $(document).ready(function(){
 		$(".multimediaitem").removeClass("small");
 	});
 	
-	
-		/*
-		else if (cosa = "viewsmall") $(".multimediaitem").addClass("small");	
-		else if (cosa = "viewthumb") $(".multimediaitem").removeClass("small");
-		*/
-
-
-
 
 
 

@@ -81,7 +81,8 @@ $(document).ready(function()
 	
 <fieldset id="multimediaItems">	
 
-<img class="multimediaitemToolbar" src="/img/px.gif" />
+				<img class="multimediaitemToolbar viewsmall" src="/img/iconML-small.png" />
+				<img class="multimediaitemToolbar viewthumb" src="/img/iconML-thumb.png" />
 
 <hr />
 

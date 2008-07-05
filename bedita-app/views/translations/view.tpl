@@ -12,7 +12,9 @@
 
 <div class="head">
 	
-	<h1>{t}{$object.title|default:"New Item"}{/t}</h1>
+	<h1>I see trees of green, red roses too...</h1>
+	translation of
+	<h1 style="margin-top:0px">Vedo alberi verdi e rose rosse..</h1>
 
 </div>
 
@@ -22,11 +24,11 @@
 {include file="inc/menucommands.tpl" method="view" fixed = true}
 
 
-<div class="main">	
+<div class="mainfull">	
 	
 	{include file="inc/form.tpl"}
 		
 </div>
 
 
-{include file="../common_inc/menuright.tpl"}
+{*include file="../common_inc/menuright.tpl"*}

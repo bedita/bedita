@@ -129,6 +129,12 @@ UL UL {margin-left:20px;}
 	padding-right:20px;
 }
 
+.mainhalf {
+	width: 340px;
+	margin-right:10px;
+	float:left;
+}
+
 
 /*...........................................
  
@@ -358,14 +364,14 @@ UL.modulesmenu {
 ...........................................*/
 
 
-.tab  {
+.tab, .tab2  {
 	height:25px;
 	background:transparent url(../img/shadowh2-small.png) repeat left top;
 	padding:10px 0px 10px 0px;
 	margin-top:-10px;
 }
 
-.tab H2 {
+.tab H2,  .tab2 H2 {
 	cursor:pointer;
 	color: white; 
 	font-family:Arial, Helvetica, sans-serif;
@@ -376,20 +382,20 @@ UL.modulesmenu {
 
 }
 
-.tab + * {
+.tab + *, .tab2 + * {
 	display:none; 
 }
 
 
-.tab + DIV {
+.tab + DIV, .tab2 + DIV {
 	margin-bottom:15px; 
 }
 
-.tab + fieldset {
+.tab + fieldset, .tab2 + fieldset {
 	padding:0px 10px 15px 10px;
 }
 
-.tab:first-child {
+.tab:first-child, .tab2:first-child {
 	margin-top:-10px;
 }
 
@@ -776,7 +782,7 @@ IMG.multimediaitemToolbar.viewthumb {
 .priority {
 	color: #000000;
 	border:0px !important;
-	font: normal 1.66em "Georgia" !important;
+	font: normal 1.2em "Georgia" !important;
 	padding:0px; margin:0px;
 }
 
