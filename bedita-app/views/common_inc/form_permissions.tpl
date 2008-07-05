@@ -1,9 +1,4 @@
 
-<div class="tab"><h2>{t}Permissions{/t}</h2></div>
-<fieldset id="permissions">
-
-
-
 <script type="text/javascript">
 {literal}
 /*
@@ -163,15 +158,19 @@ function deleteTRPerm(el) {
 {/literal}
 </script>
 
-<fieldset>
-<table class="tableForm" border="0" id="frmCustomPermissions">
+
+
+<div class="tab"><h2>{t}Permissions{/t}</h2></div>
+<fieldset id="permissions">
+	
+<table class="indexlist" id="frmCustomPermissions">
 <tr>
-	<td class="label" style="text-align:left;">{t}name{/t}</td>
-	<td class="label" style="text-align:left;">{t}type{/t}</td>
-	<td class="label" style="text-align:left;">{t}read{/t}</td>
-	<td class="label" style="text-align:left;">{t}modify{/t}</td>
-	<td class="label" style="text-align:left;">{t}delete{/t}</td>
-	<td class="label">&nbsp;</td>
+	<th>{t}name{/t}</th>
+	<th>{t}type{/t}</th>
+	<th>{t}read{/t}</th
+	<th>{t}modify{/t}</th>
+	<th>{t}delete{/t}</th>
+	<th>&nbsp;</th>
 </tr>
 {section name=i loop=$el.Permissions}
 {assign var="perm" 	value=$el.Permissions[i]}
@@ -203,7 +202,7 @@ function deleteTRPerm(el) {
 {/section}
 {if (isset($recursion) && !empty($recursion))}
 <tr id="endLineCustomPermsTR">
-	<td colspan="4">
+	<td colspan="18">
 		<input type="checkbox"  name="data[recursiveApplyPermissions]" id="recursiveApplyPermissions" value="1"/>&nbsp;
 		<a href="javascript:void(0)" onclick="$('#recursiveApplyPermissions').toggleCheck() ;">
 		{t}Apply permissions recursively{/t}
@@ -211,8 +210,17 @@ function deleteTRPerm(el) {
 	</td>
 </tr>
 {/if}
-<tr><td colspan="8"><hr/></td></tr>
-<tr><th colspan="8" style="text-align:left ;">{t}user{/t}</th></tr>
+
+
+
+<tr>
+	<th colspan="2">{t}add user{/t}</th>
+	<th>{t}read{/t}</th
+	<th>{t}modify{/t}</th>
+	<th>{t}delete{/t}</th>
+	<th>&nbsp;</th>
+</tr>
+
 <tr id="addPermUserTR">
 	<td>
 		<select id="inputAddPermUser" name="name">
@@ -227,7 +235,15 @@ function deleteTRPerm(el) {
 	<td><input type="checkbox" name="delete" value="{$conf->BEDITA_PERMS_DELETE}"/></td>
 	<td><input type="button" name="cmdAddUserPerm" value=" {t}add{/t} "/></td>
 </tr>
-<tr><th colspan="8" style="text-align:left ;">{t}group{/t}:</th></tr>
+
+<tr>
+	<th colspan="2">{t}add group{/t}:</th>
+	<th>{t}read{/t}</th
+	<th>{t}modify{/t}</th>
+	<th>{t}delete{/t}</th>
+	<th>&nbsp;</th>
+</tr>
+
 <tr id="addPermGroupTR">
 	<td style="white-space:nowrap">
 		<select id="inputAddPermGroup" name="name">

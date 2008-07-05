@@ -1,9 +1,4 @@
-
-
-<div class="tab"><h2>{t}Custom Properties{/t}</h2></div>
-<fieldset id="customProperties">
-	
-	
+		
 <script type="text/javascript">
 {literal}
 /*
@@ -111,13 +106,15 @@ function deleteTRCustomProp(el) {
 {/literal}
 </script>
 
-
-<table class="tableForm" border="0" id="frmCustomProperties">
+<div class="tab"><h2>{t}Custom Properties{/t}</h2></div>
+<fieldset id="customProperties">
+	
+<table class="indexlist" id="frmCustomProperties">
 	<tr>
-		<td class="label" style="text-align:left;">{t}name{/t}</td>
-		<td class="label" style="text-align:left;">{t}type{/t}</td>
-		<td class="label" style="text-align:left;">{t}value{/t}</td>
-		<td class="label">&nbsp;</td>
+		<th>{t}name{/t}</th>
+		<th>{t}type{/t}</th>
+		<th>{t}value{/t}</th>
+		<th>&nbsp;</th>
 	</tr>
 	{foreach key="name" item="property" from=$el.CustomProperties}
 	<tr id="{$name}_customPropTR">
@@ -131,9 +128,13 @@ function deleteTRCustomProp(el) {
 		<td><input type="button" name="delete" value=" x "/></td>
 	</tr>
 	{/foreach}
+	
+	
 	<tr id="endLineCustomPropTR">
-		<td colspan="4"><hr/></td>
+		<td colspan="4"><label>{t}add new property{/t}</label></td>
 	</tr>
+
+	
 	<tr id="addCustomPropTR">
 		<td><input type="text" name="name"/></td>
 		<td><select name="type">{html_options options=$conf->customPropTypeOptions}</select></td>

@@ -1,8 +1,3 @@
-{$html->css('module.superadmin')}
-{$javascript->link("jquery/jquery.treeview", false)}
-{$javascript->link("jquery/interface", false)}
-{$javascript->link("form", false)}
-{$javascript->link("jquery/jquery.changealert", false)}
 
 <script type="text/javascript">
 <!--
@@ -30,7 +25,8 @@
 
 {include file="inc/menucommands.tpl" method="index"}
 
-{include file="../common_inc/toolbar.tpl"}
+{* da correggere e riabilitare *}
+{*include file="../common_inc/toolbar.tpl"*}
 
 <div class="mainfull">
 
