@@ -1,12 +1,14 @@
-{$html->css('tree')}
 {$javascript->link("jquery/jquery.treeview", true)}
+{$javascript->link("jquery/jquery.form", false)}
+{$javascript->link("jquery/ui/ui.core.min", false)}
+{$javascript->link("jquery/ui/ui.sortable.min", false)}
+
 
 <script type="text/javascript">
 <!--
 {literal}
-
 $(document).ready(function(){
-	
+	/*
 	designAreaTree() ;
 
 	addCommand() ;
@@ -18,57 +20,26 @@ $(document).ready(function(){
 		opacity:	0.8
 	});
 
-	$("span.SectionItem, span.AreaItem").Droppable({
-		accept:		'SectionItem',
-		hoverclass: 'dropOver',
-		ondrop:		function(dropped) {
-			if(this == dropped) return;
+	*/
+	$("#areacontent").sortable ({
+		distance: 20,
+		opacity:0.7,
+		update: $(this).reorderListItem
+	}).css("cursor","move");
+		
+	$(".pubmodule").sortable ({
+		distance: 20,
+		opacity:0.7,
+		//update: $(this).reorderListItem
+	}).css("cursor","move");
 
-			// Sposta
-			subbranch = $('ul', this.parentNode);
-
-			if (subbranch.size() == 0) {
-				$(this).after("<ul><\/ul>");
-				subbranch = $('ul', this.parentNode);
-			}
-
-			subbranch.eq(0).append(dropped.parentNode);
-
-			// Resetta l'albero
-			resetTree() ;
-			designAreaTree() ;
-			refreshCommand() ;
-			refreshOnClick() ;
-
-			// Indica l'avvenuto cambiamento dei dati
-			try { $().alertSignal() ; } catch(e) {}
-		}
-	}) ;
-
-	// handler cambiamenti dati della pagina
-	$("#handlerChangeAlert").changeAlert($('input, textarea, select')) ;
-	$('.gest_menux, #menuLeftPage a, #headerPage a, #buttonLogout a, #headerPage div, #containerPage a, #containerPage span').alertUnload() ;
-
-	// formatta i dati da salvare
-	$("#frmTree").bind("submit", function() {
-		tree = submitTree("#tree") ;
-		$("#data_tree", "#frmTree").val(tree.toString()) ;
-		return true ;
-	}) ;
-
-//$("#debug").val($("#tree").parent().html()) ;
-
-	// localize up/down buttons
-	var buttonUpArr = document.getElementsByName('up');
-	var buttonDownArr = document.getElementsByName('down');
-	for(i=0;i<buttonUpArr.length;i++) { buttonUpArr[i].value = '{/literal}{t}up{/t}{literal}'; }
-	for(i=0;i<buttonDownArr.length;i++) { buttonDownArr[i].value = '{/literal}{t}down{/t}{literal}'; }
 
 });
 
 {/literal}
 //-->
 </script>
+
 
 </head>
 
@@ -78,19 +49,59 @@ $(document).ready(function(){
 
 {include file="inc/menuleft.tpl" method="index"}
 
-{include file="inc/menucommands.tpl"}
+{include file="inc/menucommands.tpl" fixed=true}
 
 <div class="head">
 		
-	<h2>{t}Tree of Areas{/t}</h2>
+	<h2>{t}Publishing tree{/t}</h2>
 
 </div> 
 
-<div class="mainfull" style="border: 1px solid red;">
+<div class="main" style="width:325px;">
 
-	{include file="inc/form_tree.tpl" method="index"}
-	
+
+		{include file="inc/form_tree.tpl"}
+
+
 </div>
+
+
+<div style="width:325px; position:absolute; top:180px; left:640px">
+
+	<a href="{$html->url('viewSection/')}"><h2>"Programma"</h2></a>					
+	<hr >
+	<ul class="htab">
+		<li rel="areacontentC">contenuti</li>
+		<li rel="areapropertiesC">prorietà</li>
+	</ul>				
+	
+	<div id="areacontentC" class="htabcontent" style="clear:none">
+		<ul style="margin-top:10px; display: block;" id="areacontent" class="bordered">
+			{section name=m loop=14}
+			<li>
+				<input type="text" class="priority" 
+				style="text-align:right; margin-left: -30px; margin-right:10px; width:35px; float:left; background-color:transparent" 
+				name="" value="{$smarty.section.m.iteration}" size="3" maxlength="3"/>
+		
+				<span class="listrecent documents" style="margin-left:0px">&nbsp;&nbsp;</span>
+				<a title="2008-05-20 10:28:54" href="/documents/view/691">Nasce la Ctv</a>
+				
+			</li>
+			{/section}
+		</ul>		
+		<hr>	
+		<a href="#" class="graced" style="font-size:3em">‹ ›</a>
+	</div>
+	
+	<div id="areapropertiesC" class="htabcontent" style="clear:none">					
+			{*include file="inc/form_section.tpl"*}					
+			<a href="{$html->url('viewArea/')}">› prorietà della sezione</a>
+			<br>
+			<a href="{$html->url('viewArea/')}">› contenuti della sezione</a>
+	</div>
+								
+</div>
+
 
 
 

@@ -259,7 +259,7 @@ UL.modules {
 }
 
 .listrecent {
-	display:block; height:15px; width:4px; margin-left:-5px; margin-right:5px; float:left;
+	display:block; height:15px; width:8px; margin-left:-10px; margin-right:5px; float:left;
 }
 
 /*...........................................
@@ -472,13 +472,43 @@ UL.modulesmenu {
 	padding:3px 0px 3px 5px;
 }
 
-.publishingtree LI:Hover  {
+.publishingtree LI:Hover {
 	background-color:#d8d8d8;
 }
 
 .publishingtree LI.on  {
 	background-color:white;
 }
+
+
+.publishingtree.pubmodule:Hover {
+	/*
+background-color:#d8d8d8;
+*/
+}
+
+.publishingtree.pubmodule LI:Hover, .publishingtree.pubmodule LI.on {
+	background: transparent url(../img/sfo_gestDownD.png) bottom repeat-x;
+	cursor:pointer;
+}
+
+.publishingtree.pubmodule {
+	margin:-10px 20px 20px -10px; 
+	border:1px solid #999999; 
+	border-bottom:0px;
+	border-top:0px;
+	width:320px;
+	float:left;
+}
+
+
+
+.pubmodule.detail {
+	margin:0px 0px 0px 340px; 
+	width:320px;
+}
+
+
 
 /*
 .publishingtree UL LI:last-child {
