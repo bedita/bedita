@@ -38,12 +38,17 @@ class PagesController extends ModulesController {
 			$this->Session->write('Config.language', $lang);
 			$this->Cookie->write('bedita.lang', $lang, null, '+350 day'); 
 		}
-		$this->redirect($this->referer(null, true));
+		$this->redirect($this->referer());
 	}
 	 
 	 function login() {
 	 }
-	 
+
+	 protected	function beditaBeforeFilter() {
+		if($this->action === 'changeLang') { // skip auth check, on lang change
+			$this->skipCheck = true;
+		}
+	}	 
 	 
 }
 
