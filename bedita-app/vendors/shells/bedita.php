@@ -292,20 +292,22 @@ class BeditaShell extends Shell {
 		unlink($sqlFileName);
 		$this->out("$dbCfg database updated");
 		
+		$mediaRoot = Configure::read("mediaRoot");
+		
 		// update media root dir
-		$folder = new Folder(MEDIA_ROOT);
+		$folder = new Folder($mediaRoot);
 		$ls = $folder->ls();
 		if(count($ls[0]) > 0 || count($ls[1]) > 0) {
-			$res = $this->in(MEDIA_ROOT. " is not empty, remove files and folders? [y/n]");
+			$res = $this->in($mediaRoot. " is not empty, remove files and folders? [y/n]");
 			if($res == "y") {
        			$this->removeMediaFiles();
 			} else {
-				$this->out(MEDIA_ROOT. " not clean!");
+				$this->out($mediaRoot. " not clean!");
 			}
 		}
 		
 		// copy files from tmp dir to media_root
-		$copts=array('to'=>MEDIA_ROOT,'from'=>$tmpBasePath.'media','mode'=>0777);
+		$copts=array('to'=>$mediaRoot,'from'=>$tmpBasePath.'media','mode'=>0777);
 		$this->out("copying from " . $copts['from'] . " to " . $copts['to']);
 		$res = $folder->copy($copts);
 		$this->out("Cleaning temp dir $tmpBasePath");
@@ -366,8 +368,9 @@ class BeditaShell extends Shell {
        	$this->out("SQL data exported");
        	$this->out("Exporting media files");
        	
-       	$folder=& new Folder(MEDIA_ROOT);
-        $tree= $folder->tree(MEDIA_ROOT, false);
+		$mediaRoot = Configure::read("mediaRoot");
+       	$folder=& new Folder($mediaRoot);
+        $tree= $folder->tree($mediaRoot, false);
         foreach ($tree as $files) {
             foreach ($files as $file) {
                 if (!is_dir($file)) {
@@ -375,7 +378,7 @@ class BeditaShell extends Shell {
         			if ( $contents === false ) {
 						throw new Exception("Error reading file content: $file");
        				}
-					$p = substr($file, strlen(MEDIA_ROOT));	
+					$p = substr($file, strlen($mediaRoot));	
 					if(!$tar->addString("media".$p, $contents)) {
 						throw new Exception("Error adding $file to tar file");
 					}
@@ -453,7 +456,7 @@ class BeditaShell extends Shell {
     private function extractMediaZip($zipFile) {
 		$zip = new ZipArchive;
 		if ($zip->open($zipFile) === TRUE) {
-			$zip->extractTo(MEDIA_ROOT);
+			$zip->extractTo(Configure::read("mediaRoot"));
 			$zip->close();
   			$this->out("Media files extracted");
 		} else {
@@ -471,14 +474,15 @@ class BeditaShell extends Shell {
 		$stream = new Stream();
         // check filesystem
 		$this->out("checkMedia - checking filesystem");
-		$folder=& new Folder(MEDIA_ROOT);
-        $tree= $folder->tree(MEDIA_ROOT, false);
+		$mediaRoot = Configure::read("mediaRoot");
+		$folder=& new Folder($mediaRoot);
+        $tree= $folder->tree($mediaRoot, false);
 		$mediaOk = true;
         foreach ($tree as $files) {
             foreach ($files as $file) {
                 if (!is_dir($file)) {
                     $file=& new File($file);
-					$p = substr($file->pwd(), strlen(MEDIA_ROOT));
+					$p = substr($file->pwd(), strlen($mediaRoot));
 					if(stripos($p, "/imgcache/") !== 0) {
 						$f = $stream->findByPath($p);
 						if($f === false) {
@@ -498,7 +502,7 @@ class BeditaShell extends Shell {
 		$mediaOk = true;
         foreach ($allStream as $v) {
         	$p = $v['Stream']['path'];
-        	if(!file_exists(MEDIA_ROOT.$p)) {
+        	if(!file_exists($mediaRoot.$p)) {
 					$this->out("File $p not found on filesystem!!");
 					$mediaOk = false;
         	}
@@ -604,15 +608,16 @@ class BeditaShell extends Shell {
     }    
 
     private function removeMediaFiles() {
-           $this->__clean(MEDIA_ROOT . DS. 'imgcache');
-           $folder= new Folder(MEDIA_ROOT);
-           $dirs = $folder->ls();
-           foreach ($dirs[0] as $d) {
-           	    if($d !== 'imgcache') {
-           	    	$folder->delete(MEDIA_ROOT . DS. $d);
-           	    }
-           }
-           $this->out('Media files cleaned.');
+		$mediaRoot = Configure::read("mediaRoot");
+    	$this->__clean($mediaRoot . DS. 'imgcache');
+		$folder= new Folder($mediaRoot);
+        $dirs = $folder->ls();
+        foreach ($dirs[0] as $d) {
+            if($d !== 'imgcache') {
+            	$folder->delete($mediaRoot . DS. $d);
+            }
+        }
+        $this->out('Media files cleaned.');
     	
     }
 
@@ -680,7 +685,7 @@ class BeditaShell extends Shell {
         $this->out(' ');
         $this->out("    -frontend \t clean files in <frontend path> [use frontend /app path]");
         $this->out("    -nologs \t don't clean log files");
-        $this->out("    -media  \t clean media files in MEDIA_ROOT (default no)");
+        $this->out("    -media  \t clean media files in 'mediaRoot' (default no)");
         $this->out(' ');
         $this->out('3. checkIni: check difference between bedita.ini.php and .sample');
         $this->out(' ');

@@ -28,7 +28,7 @@ $config['mediaRoot'] = ROOT . DS . "media";
 $config['mediaUrl'] = 'http://localhost/media';
 
 
-// Multimedia - cache folder (without trailing slashes, inside MEDIA_ROOT)
+// Multimedia - cache folder (without trailing slashes, inside 'mediaRoot')
 $config['imgCache'] = 'imgcache';
 
 

@@ -30,7 +30,7 @@
  * Se paranoid == false. Non tenta di prelevare le informazioni da remoto e quindi non serve
  * 'allow_php_fopen'. Le informazioni di MIME devono essere passate con i dati per gli URL.
  * 
- * I path dei file salvati in locale, sono registrati in DB relativi alla costante MEDIA_ROOT
+ * File paths saved on DB are relative to $config['mediaRoot']
  * 
  */
 class BeFileHandlerComponent extends Object {
@@ -103,7 +103,7 @@ class BeFileHandlerComponent extends Object {
 		$path = (isset($path['Stream']['path']))?$path['Stream']['path']:$path ;
 		// If file path is local, delete
 		if(!$this->_isURL($path)) {
-			if(!$this->Transaction->rm(MEDIA_ROOT.$path)) return false ;
+			if(!$this->Transaction->rm(Configure::read("mediaRoot").$path)) return false ;
 		}
 		$model = $this->BEObject->getType($id) ;
 		if(!class_exists($model)) {
@@ -123,7 +123,7 @@ class BeFileHandlerComponent extends Object {
 	function url($id) {
 		if(!($ret = $this->Stream->read("path", $id))) return false ;
 		$path = $ret['Stream']['path'] ;
-		return ($this->_isURL($path)) ? $path : (MEDIA_URL.$path);
+		return ($this->_isURL($path)) ? $path : (Configure::read("mediaUrl").$path);
 	}
 
 	/**
@@ -133,7 +133,7 @@ class BeFileHandlerComponent extends Object {
 	function path($id) {
 		if(!($ret = $this->Stream->read("path", $id))) return false ;
 		$path = $ret['Stream']['path'] ;
-		return ($this->_isURL($path)) ? $path : (MEDIA_URL.$path);
+		return ($this->_isURL($path)) ? $path : (Configure::read("mediaUrl").$path);
 	}
 
 	/**
@@ -202,7 +202,7 @@ class BeFileHandlerComponent extends Object {
 				break ;
 			case 'Image':
 				$model = 'Image' ;
-				if ( $imageSize =@ getimagesize(MEDIA_ROOT . $dati['path']) )
+				if ( $imageSize =@ getimagesize(Configure::read("mediaRoot") . $dati['path']) )
 				{
 					if (!empty($imageSize[0]))
 						$dati["width"] = $imageSize[0];
@@ -425,11 +425,11 @@ class BeFileHandlerComponent extends Object {
 		if(@empty($targetPath)) return false ;
 		
 		// Determina quali directory creare per registrare il file
-		$tmp = MEDIA_ROOT . $targetPath ;
+		$tmp = Configure::read("mediaRoot") . $targetPath ;
 		$stack = array() ;
 		$dir = dirname($tmp) ;
 		
-		while($dir != MEDIA_ROOT) {
+		while($dir != Configure::read("mediaRoot")) {
 			if(is_dir($dir)) break ;
 			
 			array_push($stack, $dir) ;
@@ -452,14 +452,14 @@ class BeFileHandlerComponent extends Object {
 	 * @param string $path
 	 */
 	private function _removeFile($path) {
-		$path = MEDIA_ROOT . $path ;
+		$path = Configure::read("mediaRoot") . $path ;
 		
 		// Cancella
 		if(!$this->Transaction->rm($path)) return false ;
 		
 		// Se la directory contenitore e' vuota, la cancella
 		$dir = dirname($path) ;
-		while($dir != MEDIA_ROOT) {
+		while($dir != Configure::read("mediaRoot")) {
 			// Verifica che sia vuota
 			$vuota = true ;
 			if($handle = opendir($dir)) {

@@ -79,14 +79,6 @@ if ( file_exists (ROOT.DS.APP_DIR.DS."config/bedita.cfg.php") ) {
 }
 
 
-// Import constants MEDIA_ROOT & MEDIA_URL
-define("MEDIA_ROOT", Configure::read('mediaRoot')) ;
-define("MEDIA_URL",	Configure::read('mediaUrl')) ;
-
-
-
-
-
 /**
  * Registrazione funzioni di shutdown e gestione transazioni.
  */
