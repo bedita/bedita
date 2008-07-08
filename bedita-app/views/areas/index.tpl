@@ -77,7 +77,7 @@ $(document).ready(function(){
 	
 	<div id="areacontentC" class="htabcontent" style="clear:none">
 		<ul style="margin-top:10px; display: block;" id="areacontent" class="bordered">
-			{section name=m loop=14}
+			{section name=m loop=20}
 			<li>
 				<input type="text" class="priority" 
 				style="text-align:right; margin-left: -30px; margin-right:10px; width:35px; float:left; background-color:transparent" 
