@@ -354,7 +354,7 @@ abstract class FrontendController extends AppController {
 	 * if $contentName is defined set single content (default)
 	 * if $contentName is defined and $this->showAllContents=true set content and other contents too
 	 * 
-	 * Execute 'sectionNickname'BeforeFilter and/or 'sectionNickName'AfterFilter 
+	 * Execute 'sectionNickname'BeforeFilter and/or 'sectionNickName'BeforeRender 
 	 * if they're set in the controller (i.e. pages_controller.php)				
 	 *
 	 * @param string/int $secName: section nick or section id
@@ -389,8 +389,8 @@ abstract class FrontendController extends AppController {
 		$this->set('section', $section);
 		
 		// section after filter
-		if (method_exists($this, $secNameFilter . "AfterFilter")) {
-			$this->{$secNameFilter . "AfterFilter"}();
+		if (method_exists($this, $secNameFilter . "BeforeRender")) {
+			$this->{$secNameFilter . "BeforeRender"}();
 		}
 	}
 	

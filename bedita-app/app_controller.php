@@ -42,7 +42,7 @@ class AppController extends Controller
 		if(isset(self::$current)) {
 			self::$current->handleError($ex->getDetails(), $ex->getMessage(), $errTrace);
 			self::$current->setResult($ex->result);
-			self::$current->afterFilter();
+			self::$current->beforeRender();
 		} else {
 			// TODO: what else??
 			$obj = new AppController();
@@ -56,7 +56,7 @@ class AppController extends Controller
 		if(isset(self::$current)) {
 			self::$current->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
 			self::$current->setResult(self::ERROR);
-			self::$current->afterFilter();
+			self::$current->beforeRender();
 		} else {
 			// TODO: what else??
 			$obj = new AppController();
@@ -91,8 +91,7 @@ class AppController extends Controller
 		// convienience methods for frontends
 		$this->initAttributes();
 	 	$this->beditaBeforeFilter() ;
-	 	// don't generate output, done in afterFilter
-	 	$this->autoRender = false ;
+
 	 	// Exit on login/logout
 	 	if(isset($this->data["login"]) || $this->name === 'Authentications') {
 			return;
@@ -139,7 +138,7 @@ class AppController extends Controller
 	 * Altrimenti non fa il redirect
 	 * 
 	 */
-	final function afterFilter() {
+	final function beforeRender() {
 
 		// setup return URL (if session expires)
 		if(empty($this->selfUrlParams)) {
@@ -149,23 +148,22 @@ class AppController extends Controller
 		}
         $this->set('self',  ($this->createSelfURL(false)."?")) ;
 		
-		// convienience methods for frontends [like afterFilter]
-        $this->beditaAfterFilter() ;
-		if($this->autoRender) return ;
+		// convienience methods for frontends [like beforeRender]
+        $this->beditaBeforeRender() ;
+		
 		if(isset($this->data[$this->result])) {
 			$this->redirUrl($this->data[$this->result]);
 		
 		} elseif ($URL = $this->forward($this->action, $this->result)) {
 			$this->redirUrl($URL);
 		
-		} else {
-			$this->output = $this->render($this->action);
 		}
 		
 	}
 	
 	private function redirUrl($url) {
 		if(strpos($url, self::VIEW_FWD) === 0) {
+			$this->autoRender = false;
 			$this->action=substr($url, strlen(self::VIEW_FWD));
 			$this->output = $this->render($this->action);
 		} else {
@@ -182,9 +180,9 @@ class AppController extends Controller
 	}
 
     /**
-     *  local 'afterFilter' (for backend or frontend)
+     *  local 'beforeRender' (for backend or frontend)
      */
-    protected function beditaAfterFilter() {
+    protected function beditaBeforeRender() {
     }
 	
     protected function eventLog($level, $msg) {
