@@ -80,7 +80,7 @@
 			<textarea class="info_file_item" style="border:0px; border-bottom:1px solid silver;" name="data[ObjectRelation][{$item.id}][description]">{$item.description|default:""}</textarea>
 			<br />
 			<a href="{$linkUrl}">details</a>
-			<a style="margin-left:60px" href="">
+			<a style="margin-left:60px" href="javascript: void(0);" onclick="removeItem('item_{$item.id}')" >
 				delete
 				<!-- <img style="vertical-align:middle;" src="{$session->webroot}img/iconClose.png" > -->
 			</a>

@@ -45,6 +45,16 @@ function resetError() {
 }
 
 
+
+// Remove item from queue
+function removeItem(divId) {
+	$("#" + divId).remove() ;
+	$("#multimediaItems").reorderListItem();
+}
+
+
+
+// JQuery stuff
 $(document).ready(function()
 {  
 	var optionsForm = {
@@ -77,7 +87,7 @@ $(document).ready(function()
 
 <div class="tab"><h2>{t}Multimedia items{/t}</h2></div>	
 
-<div>
+<div id="multimedia">
 	
 <fieldset id="multimediaItems">	
 
@@ -87,7 +97,7 @@ $(document).ready(function()
 <hr />
 
 {foreach from=$attach item="item"}
-	<div class="multimediaitem itemBox{if $item.status == "off"} off{/if} small">
+	<div class="multimediaitem itemBox{if $item.status == "off"} off{/if} small" id="item_{$item.id}">
 		
 			{include file="../common_inc/form_file_item.tpl"}
 			
@@ -112,27 +122,6 @@ $(document).ready(function()
 	
 	
 	<div class="htabcontent" id="uploadItems">
-		{*
-		<table class="bordered" style="width:100%; margin-bottom:20px;">
-			<th colspan="4" id="queueinfo">uploading file <span class="evidence">2</span> of 3... </th>
-			<tr id="7441_0">
-				<td>immag288.jpg</td> 
-				<td style="white-space:nowrap"><div class="progressBar" id="7441_0progress">&nbsp;</div>100% ready</td>
-				<td><a id="7441_0deletebtn" class="cancelbtn" href='javascript:swfu.cancelFile("7441_0");'>cancel</a></td>
-			</td>
-			<tr id="7441_0">
-				<td>aadadimmagsds288.jpg</td> 
-				<td nowrap><div class="progressBar" style="width:25px" id="7441_0progress">&nbsp;</div>25% loading</td>
-				<td><a id="7441_0deletebtn" class="cancelbtn" href='javascript:swfu.cancelFile("7441_0");'>cancel</a></td>
-			</td>
-			<tr id="7441_0">
-				<td>qwewfdghjk_900_addd[2].png</td> 
-				<td nowrap><div class="progressBar" style="width:1px" id="7441_0progress">&nbsp;</div>0% waiting</td>
-				<td><a id="7441_0deletebtn" class="cancelbtn" href='javascript:swfu.cancelFile("7441_0");'>cancel</a></td>
-			</td>
-		</table>
-		<input type="button" class="swfuploadbtn browsebtn" id="SWFUpload_0BrowseBtn" value="browse your hard disk again"  />
-		*}
 		{include file="../common_inc/form_upload_ajax.tpl"}
 	</div>
 
