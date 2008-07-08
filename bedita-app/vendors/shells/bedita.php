@@ -533,56 +533,6 @@ class BeditaShell extends Shell {
         return ;
     }    
         
-    function checkIni() {
-        @include APP. DS . 'config' . DS . 'bedita.ini.php.sample';
-        $cfgSample = $config;
-        @include APP. DS . 'config' . DS . 'bedita.ini.php';
-        $sampleDiff = array_diff_key($cfgSample, $config);
-        if(!empty($sampleDiff)) {
-        	$this->out("Config to add [not in bedita.ini.php]: \n");
-        	foreach ($sampleDiff as $k=>$v) {
-                if(is_array($v)) {
-                    $this->out("\$confg['$k']=");
-                    print_r($v);
-                } else {
-                    $this->out("\$config['$k']=$v");
-                }
-        	}
-        }
-        
-        $iniDiff = array_diff_key($config, $cfgSample);
-        if(!empty($iniDiff)) {
-            $this->out("\nConfig to remove [no more bedita.ini.php.sample]: \n");
-            foreach ($iniDiff as $k=>$v) {
-                if(is_array($v)) {
-                    $this->out("\$confg['$k']=");
-                    print_r($v);
-                } else {
-                    $this->out("\$config['$k']=$v");
-                }
-            }
-        }
-        
-        if(empty($iniDiff) && empty($sampleDiff)) {
-            $this->out("\nNo config key difference.");
-        }
-
-        $valDiff = array_diff($config, $cfgSample);
-        if(empty($valDiff)) {
-            $this->out("\nNo config values difference.");
-        } else {
-            $this->out("\nConfig values that are different in bedita.ini.php:\n");
-            foreach ($valDiff as $k=>$v) {
-                if(is_array($v)) {
-                    $this->out("\$confg['$k']=");
-                    print_r($v);
-                } else {
-                    $this->out("\$config['$k']=$v");
-                }
-            }
-        }        
-    }
-    
     function cleanup() {
 		$basePath = TMP;
     	if (isset($this->params['frontend'])) {
@@ -631,8 +581,8 @@ class BeditaShell extends Shell {
         $this->checkAppFile($appPath.DS."config".DS."core.php");
         // config/database.php
         $this->checkAppFile($appPath.DS."config".DS."database.php");
-        // config/bedita.ini.php
-        $this->checkAppFile($appPath.DS."config".DS."bedita.ini.php");
+        // config/bedita.cfg.php
+        $this->checkAppFile($appPath.DS."config".DS."bedita.cfg.php");
         // index.php
         $this->checkAppFile($appPath.DS."index.php");
         // webroot/index.php
@@ -687,25 +637,23 @@ class BeditaShell extends Shell {
         $this->out("    -nologs \t don't clean log files");
         $this->out("    -media  \t clean media files in 'mediaRoot' (default no)");
         $this->out(' ');
-        $this->out('3. checkIni: check difference between bedita.ini.php and .sample');
+        $this->out('3. checkMedia: check media files on db and filesystem');
         $this->out(' ');
-        $this->out('4. checkMedia: check media files on db and filesystem');
-        $this->out(' ');
-        $this->out('5. export: export media files and data dump');
+        $this->out('4. export: export media files and data dump');
   		$this->out(' ');
         $this->out('    Usage: export [-f <tar-gz-filename>] [-nocompress]');
         $this->out(' ');
   		$this->out("    -f <tar-gz-filename>\t file to export, default ".self::DEFAULT_ARCHIVE_FILE);
         $this->out("    -nocompress \t don't compress, plain tar");
   		$this->out(' ');
-        $this->out('6. import: import media files and data dump');
+        $this->out('5. import: import media files and data dump');
   		$this->out(' ');
   		$this->out('    Usage: import [-f <tar-gz-filename>] [-db <dbname>]');
         $this->out(' ');
   		$this->out("    -f <tar-gz-filename>\t file to import, default ".self::DEFAULT_ARCHIVE_FILE);
         $this->out("    -db <dbname>\t use db configuration <dbname> specified in config/database.php");
         $this->out(' ');
-        $this->out('7. checkApp: check app files ... (core.php/database.php/index.php...)');
+        $this->out('6. checkApp: check app files ... (core.php/database.php/index.php...)');
         $this->out(' ');
         $this->out('    Usage: checkApp [-frontend <app-path>]');
         $this->out(' ');
