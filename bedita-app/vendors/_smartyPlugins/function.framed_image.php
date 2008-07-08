@@ -9,9 +9,10 @@
  * Author:   Christiano Presutti - aka xho - ChanelWeb srl
  * Purpose:  display an image file in a frame with bg color, ignoring orientation
  * 
- * Input:    file    = required, string, string pointer to file (URI),
- *           width   = required if missing height, int number, frame width,
- *           height  = required if missing width, int number, frame height,
+ * Input:    file      = required, string, string pointer to file (URI),
+ *           width     = required if missing height or longside, int number, frame width,
+ *           height    = required if missing width or longside, int number, frame height,
+ *           longside  = required if missing width or height, int number, frame width or height (longer),
  *           
  *           imageonly     = optional, bool, return only image URI (eventually resampled and cached)
  *           
@@ -461,9 +462,13 @@ function smarty_function_framed_image ($params, &$smarty)
 	 */
 	if ( !@empty($imageonly) )
 	{
-		return $_imageInfo['path'];
+		// assign to defined var or return
+		if ( empty($var) )
+		{
+			return $_imageInfo['path'];
+		}
+		else $smarty -> assign ( $var, $_imageInfo['path'] );
 	}
-
 
 
 
