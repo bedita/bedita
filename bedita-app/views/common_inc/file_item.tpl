@@ -67,9 +67,11 @@
 		<li>
 			{$fileTitle}
 		</li>
+{if strtolower($item.ObjectType.name) == "image"}
 		<li>
 			{$item.width}x{$item.height}px, {math equation="x/y" x=$item.size|default:0 y=1024 format="%d"|default:""} KB
 		</li>
+{/if}
 		<li>
 			{$item.created|date_format:'%b %e, %Y'}
 		</li>

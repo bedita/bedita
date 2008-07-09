@@ -502,7 +502,8 @@ class BeditaShell extends Shell {
 		$mediaOk = true;
         foreach ($allStream as $v) {
         	$p = $v['Stream']['path'];
-        	if(!file_exists($mediaRoot.$p)) {
+        	// if $p is a local path check existence
+        	if((stripos($p, "/") === 0) && !file_exists($mediaRoot.$p)) {
 					$this->out("File $p not found on filesystem!!");
 					$mediaOk = false;
         	}
