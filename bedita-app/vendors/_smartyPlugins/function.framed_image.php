@@ -469,8 +469,7 @@ function smarty_function_framed_image ($params, &$smarty)
 		}
 		else
 		{
-			$smarty -> assign ( $var, $_imageInfo['path'] );
-			return true;
+			return $smarty -> assign ( $var, $_imageInfo['path'] );
 		}
 	}
 
