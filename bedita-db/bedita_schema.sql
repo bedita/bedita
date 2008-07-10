@@ -145,7 +145,7 @@ CREATE TABLE objects (
   modified DATETIME NULL,
   title VARCHAR(255) NULL,
   nickname VARCHAR(255) NULL,
-  description TINYTEXT NULL,
+  description MEDIUMTEXT NULL,
   current BOOL NULL DEFAULT '1',
   lang CHAR(3) NULL,
   ip_created VARCHAR(15) NULL,
