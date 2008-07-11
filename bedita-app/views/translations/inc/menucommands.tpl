@@ -21,7 +21,7 @@ $(document).ready(function(){
 	
 	var urlBack = '{/literal}{$html->url("$back_url")}{literal}';
 	$("#backBEObject").click(function() {
-		location.href = urlBack;
+		document.location = urlBack;
 	});
 });
 </script>

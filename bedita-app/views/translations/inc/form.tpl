@@ -146,7 +146,7 @@ $(document).ready(function(){
 	</fieldset>
 	{/if}
 
-TODO: commentati "multimedia descriptions" e "advanced properties" - decidere se implementare o no
+TODO: "multimedia descriptions" (per ora commentato)
 {*
 	<div class="tab2"><h2>{t}multimedia descriptions{/t}</h2></div>
     <fieldset rel="multimedia">
@@ -180,30 +180,50 @@ TODO: commentati "multimedia descriptions" e "advanced properties" - decidere se
         </table>
     </fieldset>
 
-    
-    <div class="tab2"><h2>{t}advanced properties{/t}</h2></div>
-    <fieldset rel="advancedproperties">
-    <table class="bordered">
-        <tr>
-            <th>{t}created on{/t}:</th>
-            <td>{$smarty.now|date_format:"%d-%m-%Y  | %H:%M:%S"}</td>
-        </tr>
-        <tr>
-            <th>{t}last modified on{/t}:</th>
-            <td>{$smarty.now|date_format:"%d-%m-%Y | %H:%M:%S"}</td>
-        </tr>
-        <tr>
-            <th>{t}created by{/t}:</th>
-            <td></td>
-        </tr>
-        <tr>
-            <th>{t}last modified by{/t}:</th>
-            <td></td>
-        </tr>
-    </table>
-    </fieldset>
 
 *}
+
+	<div class="tab2"><h2>{t}advanced properties{/t}</h2></div>
+	<fieldset rel="advancedproperties">
+	<table class="bordered">
+		<tr>
+			<th>{t}created on{/t}:</th>
+			<td>
+				{if !empty($object_translation.created_on)}{$object_translation.created_on|date_format:"%d-%m-%Y  | %H:%M:%S"}{else}-{/if}
+				<input type="hidden" name="data[LangText][5][text]" value="{if !empty($object_translation.created_on)}{$object_translation.created_on}{/if}"/>
+				<input type="hidden" name="data[LangText][5][name]" value="created_on"/>
+				{if !empty($object_translation.id.created_on)}<input type="hidden" name="data[LangText][5][id]" value="{$object_translation.id.created_on}"/>{/if}
+			</td>
+		</tr>
+		<tr>
+			<th>{t}last modified on{/t}:</th>
+			<td>
+				{if !empty($object_translation.modified_on)}{$object_translation.modified_on|date_format:"%d-%m-%Y  | %H:%M:%S"}{else}-{/if}
+				<input type="hidden" name="data[LangText][6][text]" value="{if !empty($object_translation.modified_on)}{$object_translation.modified_on}{/if}"/>
+				<input type="hidden" name="data[LangText][6][name]" value="modified_on"/>
+				{if !empty($object_translation.id.modified_on)}<input type="hidden" name="data[LangText][6][id]" value="{$object_translation.id.modified_on}"/>{/if}
+			</td>
+		</tr>
+		<tr>
+			<th>{t}created by{/t}:</th>
+			<td>
+				{if !empty($object_translation.created_by)}{$object_translation.created_by}{else}-{/if}
+				<input type="hidden" name="data[LangText][7][text]" value="{if !empty($object_translation.created_by)}{$object_translation.created_by}{/if}"/>
+				<input type="hidden" name="data[LangText][7][name]" value="created_by"/>
+				{if !empty($object_translation.id.created_by)}<input type="hidden" name="data[LangText][7][id]" value="{$object_translation.id.created_by}"/>{/if}
+			</td>
+		</tr>
+		<tr>
+			<th>{t}last modified by{/t}:</th>
+			<td>
+				{if !empty($object_translation.modified_by)}{$object_translation.modified_by}{else}-{/if}
+				<input type="hidden" name="data[LangText][8][text]" value="{if !empty($object_translation.modified_by)}{$object_translation.modified_by}{/if}"/>
+				<input type="hidden" name="data[LangText][8][name]" value="modified_by"/>
+				{if !empty($object_translation.id.modified_by)}<input type="hidden" name="data[LangText][8][id]" value="{$object_translation.id.modified_by}"/>{/if}
+			</td>
+		</tr>
+	</table>
+	</fieldset>
 
 </div>
 
@@ -253,7 +273,7 @@ TODO: commentati "multimedia descriptions" e "advanced properties" - decidere se
 	{/if}
 
 
-TODO: commentati "multimedia descriptions" e "advanced properties" - decidere se implementare o no
+TODO: "multimedia descriptions" (per ora commentato)
 {*
 	<div class="tab2"><h2>{t}multimedia descriptions{/t}</h2></div>
     <fieldset rel="multimedia">
@@ -286,33 +306,30 @@ TODO: commentati "multimedia descriptions" e "advanced properties" - decidere se
         </tr>
         </table>
     </fieldset>
-    
-    <div class="tab2"><h2>{t}advanced properties{/t}</h2></div>
-    <fieldset rel="advancedproperties">
-    
-    <table class="bordered">
-        <tr>
-            <th>{t}created on{/t}:</th>
-            <td>{$smarty.now|date_format:"%d-%m-%Y  | %H:%M:%S"}</td>
-        </tr>
-        <tr>
-            <th>{t}last modified on{/t}:</th>
-            <td>{$smarty.now|date_format:"%d-%m-%Y | %H:%M:%S"}</td>
-        </tr>
-        <tr>
-            <th>{t}created by{/t}:</th>
-            <td></td>
-        </tr>
-        <tr>
-            <th>{t}last modified by{/t}:</th>
-            <td></td>
-        </tr>
-    </table>
-        
-    </fieldset>
-    
-</div>
 *}
+	<div class="tab2"><h2>{t}advanced properties{/t}</h2></div>
+	<fieldset rel="advancedproperties">
+
+	<table class="bordered">
+		<tr>
+			<th>{t}created on{/t}:</th>
+			<td>{$object_master.created|date_format:"%d-%m-%Y  | %H:%M:%S"}</td>
+		</tr>
+		<tr>
+			<th>{t}last modified on{/t}:</th>
+			<td>{$object_master.modified|date_format:"%d-%m-%Y | %H:%M:%S"}</td>
+		</tr>
+		<tr>
+			<th>{t}created by{/t}:</th>
+			<td>{$object_master.UserCreated.userid}</td>
+		</tr>
+		<tr>
+			<th>{t}last modified by{/t}:</th>
+			<td>{$object_master.UserModified.userid}</td>
+		</tr>
+	</table>
+
+	</fieldset>
 
 </div>
 

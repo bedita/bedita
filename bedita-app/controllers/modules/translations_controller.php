@@ -67,6 +67,11 @@ class TranslationsController extends ModulesController {
 		foreach($this->data['LangText'] as $k => $v) {
 			$this->data['LangText'][$k]['lang'] = $this->data['translation_lang'];
 			$this->data['LangText'][$k]['object_id'] = $this->data['master_id'];
+			if( ($new && ($this->data['LangText'][$k]['name'] == 'created_on')) || ($this->data['LangText'][$k]['name'] == 'modified_on') ) {
+				$this->data['LangText'][$k]['text'] = time();
+			} else if( ($new && ($this->data['LangText'][$k]['name'] == 'created_by')) || ($this->data['LangText'][$k]['name'] == 'modified_by') ) {
+				$this->data['LangText'][$k]['text'] = $this->BeAuth->user['userid'];
+			}
 		}
 		$this->Transaction->begin();
 		$this->LangText->unbindModel(array('belongsTo'=>array('BEObject')));
