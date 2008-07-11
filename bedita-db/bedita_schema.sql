@@ -528,7 +528,7 @@ CREATE TABLE contents (
 CREATE TABLE content_bases_objects (
   object_id INTEGER UNSIGNED NOT NULL,
   id INTEGER UNSIGNED NOT NULL,
-  switch varchar(16) NOT NULL default 'attach',
+  switch varchar(63) NOT NULL default 'attach',
   priority int(11) default NULL,
   PRIMARY KEY  (`object_id`,`id`,`switch`),
   INDEX `content_bases_has_objects_FKIndex1` (`id`),
