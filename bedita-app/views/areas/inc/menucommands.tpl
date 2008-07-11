@@ -19,7 +19,7 @@ $(document).ready(function(){
 </script>
 {/literal}
 
-<div class="secondacolonna {if !empty($fixed)}fixed{/if}">
+<div class="secondacolonna {if !empty($fixed)}fixed{/if}" style="z-index:10">
 	
 	<div class="modules">
 	   <label class="areas" href="{$html->url('/areas')}">{t}Publishing{/t}</label>
@@ -36,12 +36,6 @@ $(document).ready(function(){
 	
 	</div>
 
-	<br>
-	
-	<ul class="insidecol">
-		<li><a href="#">{t}Close all{/t}</a></li>
-		<li><a href="#">{t}Expand all{/t}</a></li>
-	</ul>
 
 
 
