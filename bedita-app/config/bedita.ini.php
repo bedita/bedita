@@ -389,10 +389,10 @@ $config['statusOptions'] = array(
 $config['langOptions'] = array(
 	"ita"	=> "italiano",
 	"eng"	=> "english",
-	/*"spa"	=> "espa&ntilde;ol",*/
+	"spa"	=> "espa&ntilde;ol",
 	"por"	=> "portugu&ecirc;s",
-	/*"fra"	=> "fran&ccedil;ais",
-	"deu"	=> "deutsch"*/
+	"fra"	=> "fran&ccedil;ais",
+	"deu"	=> "deutsch"
 ) ;
 
 // ISO-639-3 codes

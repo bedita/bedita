@@ -15,6 +15,26 @@
 
 
 <div class="mainfull">
+	
+	<table class="indexlist bordered">	
+	<tr>
+		<th>{t}Id{/t}</th>
+		<th>{t}Title{/t}</th>
+		<th>{t}Lang{/t}</th>
+		<th>{t}Status{/t}</th>
+	</tr>
+	{foreach from=$translations item=i key=k}
+	<tr class="rowList" rel="{$html->url('/translations/view/')}{$i.LangText.object_id}/{$i.LangText.lang}">
+		<td>{$i.LangText.object_id}</td>
+		<td>{$translations_title[$i.LangText.object_id]}</td>
+		<td>{$i.LangText.lang}</td>
+		<td>{$i.LangText.text}</td>
+	</tr>
+	{/foreach}
+	</table>
+
+
+<br/><br/>
 	<h2>TODO</h2>
 	qui un  list di tutti gli objects che possidono una traduzione 
 	finita o meno

@@ -23,7 +23,6 @@ class BeLangTextComponent extends Object {
 	}
 
 	function setupForSave(&$data) {
-		$result = array() ;
 		if(!@count($data)) return ;
 		$translation = array();
 		foreach($data as $lang => $attributes) {
@@ -53,8 +52,18 @@ class BeLangTextComponent extends Object {
 		$data = $tmp ;
 	}
 	
+	function setupForViewLangText(&$data) {
+		$tmp = array() ;
+		for($i=0; $i < count($data) ; $i++) {
+			$item = &$data[$i]['LangText'] ;
+			if(!isset($tmp[$item["name"]]))	$tmp[$item["name"]] = array() ;
+			$tmp[$item["name"]] = (!@empty($item["text"])) ? @$item["text"] : @$item["long_text"] ;
+			$tmp['id'][$item["name"]]=$item['id'];
+		}
+		$data = $tmp ;
+	}
+	
 	function objectForLang($id,$lang,&$object) {
-		$result=array();
 		$tmpobj = $this->LangText->find('all',
 			array(
 				'fields'=>array('name','text','long_text'),

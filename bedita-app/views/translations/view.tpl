@@ -11,10 +11,9 @@
 {include file="inc/menuleft.tpl" method="view"}
 
 <div class="head">
-	
-	<h1>I see trees of green, red roses too...</h1>
-	translation of
-	<h1 style="margin-top:0px">Vedo alberi verdi e rose rosse..</h1>
+	{if !empty($object_translation.title)}<h1>{$object_translation.title}</h1>{/if}
+	{t}translation of{/t}
+	<h1 style="margin-top:0px">{$object_master.title}</h1>
 
 </div>
 
@@ -25,9 +24,9 @@
 
 
 <div class="mainfull">	
-	
+
 	{include file="inc/form.tpl"}
-		
+
 </div>
 
 

@@ -606,17 +606,20 @@ abstract class ModulesController extends AppController {
 	 * @param $sections array of section id
 	 * @param $obj_id object id
 	 */
-	public function previewsForObject($sections,$obj_id) {
+	public function previewsForObject($sections,$obj_id,$status) {
 		$previews = array();
-		if(empty($sections))
+		if(empty($obj_id) || empty($sections))
 			return $previews;
 		foreach($sections as $section_id) {
 			$a = $this->BeTree->getAreaForSection($section_id);
-			if(!empty($a) && !empty($a['public_url'])) { // if public_url is null, no preview
+			if(!empty($a)) {
 				$desc = $this->BEObject->field('title',array("id=$section_id"));
-				$previews[]=array(
-					'url'=>$a['public_url']."/section/$section_id/$obj_id",
-					'desc'=>$desc);
+				$field = ($status=='on') ? 'public_url' : 'staging_url';
+				if(!empty($a[$field])) {
+					$previews[]=array(
+						'url'=>$a[$field]."/section/$section_id/$obj_id",
+						'desc'=>$desc);
+				}
 			}
 		}
 		return $previews;
