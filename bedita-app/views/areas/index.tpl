@@ -27,13 +27,14 @@ $(document).ready(function(){
 		update: $(this).reorderListItem
 	}).css("cursor","move");
 		
-	$(".pubmodule").sortable ({
+	$("#areasections").sortable ({
 		distance: 20,
 		opacity:0.7,
 		//update: $(this).reorderListItem
 	}).css("cursor","move");
 
 
+	
 });
 
 {/literal}
@@ -65,6 +66,7 @@ $(document).ready(function(){
 {else}
 	{include file="inc/form_tree.tpl"}
 {/if}
+
 </div>
 
 
@@ -79,6 +81,7 @@ $(document).ready(function(){
 	
 	<ul class="htab">
 		<li rel="areacontentC">contenuti</li>
+		<li rel="areasectionsC">sezioni</li>
 		<li rel="areapropertiesC">prorietà</li>
 	</ul>				
 	
@@ -87,12 +90,21 @@ $(document).ready(function(){
 			{include file="inc/list_content_ajax.tpl"}
 			
 	</div>
+
+	<div id="areasectionsC" class="htabcontent" style="clear:none">
+						
+			{include file="inc/list_sections_ajax.tpl"}
+
+	</div>
+	
 	
 	<div id="areapropertiesC" class="htabcontent" style="clear:none">
 						
 			{include file="inc/form_section_ajax.tpl"}
 
 	</div>
+	
+	
 </fieldset>	
 							
 </div>
