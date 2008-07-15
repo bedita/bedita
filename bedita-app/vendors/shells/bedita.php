@@ -582,14 +582,18 @@ class BeditaShell extends Shell {
         $this->checkAppFile($appPath.DS."config".DS."core.php");
         // config/database.php
         $this->checkAppFile($appPath.DS."config".DS."database.php");
-        // config/bedita.cfg.php
-        $this->checkAppFile($appPath.DS."config".DS."bedita.cfg.php");
+        if (!isset($this->params['frontend'])) {
+	        // config/bedita.cfg.php
+	        $this->checkAppFile($appPath.DS."config".DS."bedita.cfg.php");
+        }
         // index.php
         $this->checkAppFile($appPath.DS."index.php");
         // webroot/index.php
         $this->checkAppFile($appPath.DS."webroot".DS."index.php");
-        // webroot/test.php
-        $this->checkAppFile($appPath.DS."webroot".DS."test.php");
+        if (!isset($this->params['frontend'])) {
+	        // webroot/test.php
+	        $this->checkAppFile($appPath.DS."webroot".DS."test.php");
+        }
         // tmp/cache
         $this->checkAppDirPerms($appPath.DS."tmp".DS."cache");
         // tmp/smarty/compile
