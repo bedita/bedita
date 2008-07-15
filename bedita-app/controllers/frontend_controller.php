@@ -163,6 +163,60 @@ abstract class FrontendController extends AppController {
 		return $result;
 	}
 
+	/**
+	* Get sections levels
+	* 
+	* Find all ancestors from secName and build an array of levels 
+	* Each key in array returned is a level:
+	* 	0 is the first level
+	* 	1 is the second level
+	* 	etc...
+	* 
+	* set selected = true in a section if it's an ancestor (parent) of $secName
+	* 
+	* @param  $secName					nickname or section id
+	* @param  bool $loadContents		true meaning it loads all contents of each section 
+	* @param array $exclude_nicknames	list exclude sections 
+	* 
+	* @return array of level selected 
+	* 							
+	* */
+	protected function loadSectionsLevels($secName, $loadContents = false, array $exclude_nicknames = null) {
+		$conf = Configure::getInstance(); 
+		$result = array();
+		
+		$section_id = is_numeric($secName) ? $secName : $this->BEObject->getIdFromNickname($secName);
+		
+		$path = $this->Tree->field("path", array("id" => $section_id));
+		$parents = explode("/", trim($path,"/"));
+		
+		$level = 0;
+		foreach ($parents as $p_id) {
+			$sections = $this->BeTree->getChildren($p_id, $this->status, 
+				array($conf->objectTypes['section']), "priority") ;
+
+			foreach ($sections["items"] as $s) {
+				
+				if(!empty($exclude_nicknames) && in_array($s['nickname'], $exclude_nicknames)) 
+					continue ;
+				
+				$sectionObject = $this->loadObj($s['id']);
+				
+				if (in_array($s["id"], $parents)) {
+				 	$sectionObject["selected"] = true;
+				}
+				
+				if($loadContents) {
+					$sectionObject['objects'] = $this->loadSectionObjects($s['id']);	
+				}
+				$result[$level][] = $sectionObject;
+				
+			}
+
+			$level++;
+		}
+		return $result;
+	}
 
 	/**
 	 * Like loadObj using nickname
