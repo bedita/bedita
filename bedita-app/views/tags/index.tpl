@@ -96,8 +96,8 @@ function delObjects() {
 		
 		<th style="width:45px;">
 			
-			<img class="tagToolbar viewcloud" src="/img/iconML-cloud.png" />
-			<img class="tagToolbar viewlist" src="/img/iconML-list.png" />
+			<img class="tagToolbar viewcloud" src="{$html->webroot}img/iconML-cloud.png" />
+			<img class="tagToolbar viewlist" src="{$html->webroot}img/iconML-list.png" />
 			
 		</th>
 		

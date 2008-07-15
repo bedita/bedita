@@ -62,9 +62,9 @@ function delObjects() {
 	{capture name="theader"}
 		<tr>
 			<th colspan="2" nowrap>
-				<img class="multimediaitemToolbar viewlist" src="/img/iconML-list.png" />
-				<img class="multimediaitemToolbar viewsmall" src="/img/iconML-small.png" />
-				<img class="multimediaitemToolbar viewthumb" src="/img/iconML-thumb.png" />
+				<img class="multimediaitemToolbar viewlist" src="{$html->webroot}img/iconML-list.png" />
+				<img class="multimediaitemToolbar viewsmall" src="{$html->webroot}img/iconML-small.png" />
+				<img class="multimediaitemToolbar viewthumb" src="{$html->webroot}img/iconML-thumb.png" />
 				
 				
 				order by:
