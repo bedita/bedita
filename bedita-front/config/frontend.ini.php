@@ -32,7 +32,14 @@ $config['frontendLangs']    = array (
 									"deu"	=> "deutsch"
 								*/
 								);
-
+								
+$config['frontendLangsMap'] = array(
+	"it"	=> "ita",
+	"en"	=> "eng",
+	"en_us"	=> "eng",
+	"en_gb"	=> "eng"
+) ;
+								
 /*
  * model bindings
  */
