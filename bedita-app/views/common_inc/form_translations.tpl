@@ -1,4 +1,4 @@
-
+{if isset($moduleList.translations) }
 <div class="tab"><h2>{t}Translations{/t}</h2></div>
 <fieldset id="translations">
 
@@ -22,6 +22,9 @@
 {/if}
 
 <br />
+{if $moduleList.translations.flag & $conf->BEDITA_PERMS_MODIFY}
 <input type="button" value="{t}add new translation{/t}" onclick="javascript:document.location='{$html->url('/translations/view/')}{$object.id}';"/>
+{/if}
 
 </fieldset>
+{/if}

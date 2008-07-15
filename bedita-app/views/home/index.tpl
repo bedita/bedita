@@ -36,18 +36,19 @@ $(document).ready(function() {
     <li class="bedita" rel="{$html->url('/')}">BEdita 3.0</li>
 	
 
-{section name="m" loop=$moduleList}
-	{*if ($moduleList[m].status == 'on')*}
-		{if ($moduleList[m].flag & BEDITA_PERMS_READ) }
-			{assign_concat var='linkPath' 0=$html->url('/') 1=$moduleList[m].path}
 
-			<li class="{$moduleList[m].path}" rel="{$linkPath}">{t}{$moduleList[m].label}{/t}</li>
-		{else}
-			<li class="{$moduleList[m].path} off" rel="{$linkPath}">{t}{$moduleList[m].label}{/t}</li>
+{foreach name=module1 from=$moduleList key=k item=mod}
+	{*if ($mod.status == 'on')*}
+        {if ($mod.flag & BEDITA_PERMS_READ) }
+
+            {assign_concat var='linkPath' 0=$html->url('/') 1=$mod.path}
+            <li class="{$mod.path}" rel="{$linkPath}">{t}{$mod.label}{/t}</li>
+        {else}
+            <li class="{$mod.path} off" rel="{$linkPath}">{t}{$mod.label}{/t}</li>
 		{/if}
 	{*/if*}
 	
-	{if $smarty.section.m.iteration == 2}
+    {if $smarty.foreach.module1.iteration == 2}
 	
 	<li class="welcome">
 		<h1>welcome</h1>
@@ -58,7 +59,7 @@ $(document).ready(function() {
 	
 	{/if}
 	
-{/section}
+{/foreach}
 	
 
 	<li class="colophon" style="width:240px">

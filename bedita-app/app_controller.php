@@ -278,9 +278,8 @@ class AppController extends Controller
 			}
 			$this->set("module_modify",(isset($this->moduleName) && ($this->modulePerms & BEDITA_PERMS_MODIFY)) ? "1" : "0");
 			if(!isset($this->modulePerms) || !($this->modulePerms & BEDITA_PERMS_READ)) {
-					$logMsg = "Module [". $this->moduleName.  "] access not authorized";
-					$this->log($logMsg);
-					$this->handleError($logMsg, __("Module access not authorized",true));
+				    $msg = $this->moduleName.": ".__("module access not authorized",true);
+					$this->handleError($msg, $msg, "[".$this->BeAuth->user["userid"]."] ".$msg);
 					$this->redirect("/");
 			}
 			$this->set('moduleColor',$this->moduleColor);

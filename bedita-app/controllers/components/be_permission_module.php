@@ -44,38 +44,15 @@ class BePermissionModuleComponent extends Object {
 	function getListModules($userid, $all = false) {
 		
 		$condition 	=  "prmsModuleUserByID('{$userid}', Module.path, " . (BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) . ")" ;
-//		$modules 	= $this->PermissionModule->Module->findAll($condition) ;
-		
 		$sql 		=  "SELECT *, {$condition} as flag FROM modules AS Module WHERE prmsModuleUserByID('{$userid}', Module.path, " . (BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) . ")" ;
 		$modules 	= $this->PermissionModule->query($sql);
 		
+		$resModules = array();
 		for ($i=0; $i < count($modules) ; $i++) {
-			$modules[$i]  = $this->PermissionModule->am($modules[$i]) ;
+            $modules[$i]  = $this->PermissionModule->am($modules[$i]);
+            $resModules[$modules[$i]['label']] = $modules[$i];
 		}
-//		$ret = $this->PermissionModule->execute("SELECT prmsModuleUserByID('{$userid}', 'areas', " . (BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) . ")");
-/*
-		// TEST 
-		$modules = array(
-			array(
-				'id'		=> 1,
-				'label'		=> 'admin',
-				'path'		=> 'admin',
-				'color'		=> '#000000',
-				'status'	=> 'on',
-				'flag'		=> 3,
-			),
-
-			array(
-				'id'		=> 2,
-				'label'		=> 'areas',
-				'path'		=> 'areas',
-				'color'		=> '#ff9933',
-				'status'	=> 'on',
-				'flag'		=> 3,
-			),
-		) ;
-*/
-		return $modules ;
+		return $resModules ;
 	}
 	
 	public function getPermissionModulesForGroup($groupId) {

@@ -4,13 +4,13 @@
 
 <ul class="modulesmenu">
 
-{section name="m" loop=$moduleList} 
-	
-	{assign_concat var='linkPath' 0=$html->url('/') 1=$moduleList[m].path}
-	<li href="{$linkPath}" title="{t}{$moduleList[m].label}{/t}" class="{$moduleList[m].path} {if (stripos($html->here, $moduleList[m].path) !== false)} on{/if}"></li>
-    
-{/section}
+{foreach from=$moduleList key=k item=mod}
 
-    <li href="{$html->url('/')}" title="Bedita3 main dashboard" class="bedita"></li>
+	{assign_concat var='link' 0=$html->url('/') 1=$mod.path}
+	<li href="{$link}" title="{t}{$mod.label}{/t}" class="{$mod.path} {if (stripos($html->here, $mod.path) !== false)} on{/if}"></li>
+   
+{/foreach}
+
+    <li href="{$html->url('/')}" title="{t}Bedita3 main dashboard{/t}" class="bedita"></li>
 
 </ul>
