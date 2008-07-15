@@ -114,10 +114,13 @@ class BeTreeHelper extends Helper {
 	public function option($tree, $numInd=3, $indentation="&nbsp;") {
 		
 		$output = "<option value=\"\"> -- </option>";
-		foreach ($tree as $publication) {
-			$output .= sprintf($this->tags['option'], $publication["id"], mb_strtoupper($publication["title"])) ;
-			if (!empty($publication["children"])) {
-				$output .= $this->optionBranch($publication["children"], $numInd, $indentation);
+		
+		if (!empty($tree)) {
+			foreach ($tree as $publication) {
+				$output .= sprintf($this->tags['option'], $publication["id"], mb_strtoupper($publication["title"])) ;
+				if (!empty($publication["children"])) {
+					$output .= $this->optionBranch($publication["children"], $numInd, $indentation);
+				}
 			}
 		}
 		
@@ -134,9 +137,13 @@ class BeTreeHelper extends Helper {
 	private function designBranch($branch) {
 		$res = "<ul>";
 		foreach ($branch as $section) {
-			$url = $this->Html->url('/') . $this->params["controller"] . "/index/id:" . $section["id"];
+			$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $section["id"];
+			$class = "";
+			if ( (!empty($this->params["named"]["id"]) && $this->params["named"]["id"] == $section["id"]) 
+					|| !empty($this->params["pass"][0]) && $this->params["pass"][0] == $section["id"]) {
+				$class = " class='on'";
+			}
 			
-			$class = (!empty($this->params["url"]["id"]) && $this->params["url"]["id"] == $section["id"])? " class='on'" : "" ;
 			$res .= "<li rel='" . $url . "'" . $class . ">" . $section["title"] . "</li>";
 			if (!empty($section["children"])) {
 				$res .= $this->designBranch($section["children"]);
@@ -160,6 +167,14 @@ class BeTreeHelper extends Helper {
 		
 		if (!isset($this->numInd)) {
 			$this->numInd = $numInd;
+		}
+		
+		if (empty($space)) {
+			$space = "";
+		}
+		
+		if (empty($res)) {
+			$res = "";
 		}
 		
 		for ($i = 1; $i <= $numInd; $i++) {

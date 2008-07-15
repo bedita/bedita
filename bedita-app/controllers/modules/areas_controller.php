@@ -33,7 +33,31 @@ class AreasController extends ModulesController {
 	 * Area tree and sections
 	 * 
 	 */
-	function index() { 	
+	function index($id=null) {
+		
+		if (!empty($this->params["named"]["id"])) {
+			$id = $this->params["named"]["id"]; 	
+		}
+		
+		if (!empty($id)) {
+			// get content
+			$ot = Configure::read("objectTypes");
+			$objType = array( $ot["document"], $ot["shortnews"], $ot["event"] );
+			$contents = $this->BeTree->getChildren($id, null, $objType);
+			foreach ($contents["items"] as $key => $item) {
+				$contents["items"][$key]["module"]= $this->ObjectType->field("module", array(
+																"conditions" => array("id" => $item["object_type_id"])
+																)
+															);
+			}
+			$this->set("contents", $contents);
+			
+			// get sections children
+			$this->set("sections", $this->BeTree->getChildren($id, null, Configure::read("objectTypes.section")));
+		}
+		
+		
+		
 		$tree = $this->BeTree->getSectionsTree() ;
 		$this->set('tree',$tree);
 	}
@@ -108,35 +132,6 @@ class AreasController extends ModulesController {
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
 	}
 	
-	/**
-	 * called via ajax
-	 * Show all objects in a section/area
-	 *
-	 * @param int $id area/section id
-	 */
-	public function showObjects($id) {
-		$conf = Configure::getInstance();
-		$ot  = $conf->objectTypes['relationated'];
-		$objects = $this->BeTree->getChildren($id, null, $ot, "priority") ;
-		foreach ($objects["items"] as $key => $obj) {
-			$objects["items"][$key]["relation"] = $this->ObjectType->field("name", array("id" => $obj["object_type_id"]));
-		}
-		$this->set("objectsToAssoc", $objects);
-		$this->layout = "empty";
-	}
-	
-	public function loadObjectToAssoc($id, $relType) {
-		$object = $this->BEObject->find("first", array(
-													"restrict" => "ObjectType",
-													"conditions" => array("BEObject.id" => $id)
-												)
-										) ;
-										
-		$objRelated = array_merge($object["BEObject"], array("ObjectType" => $object["ObjectType"]));
-		$this->set("objRelated", $objRelated);
-		$this->set("rel", $relType);
-		$this->layout = "empty";
-	}
 	
 	 /**
 	  * Save data tree
@@ -288,6 +283,78 @@ class AreasController extends ModulesController {
 		$this->eventInfo("section [". $this->data['id']."] deleted");
 	}
 
+	/* AJAX CALLED */
+	/**
+	 * load content for a section
+	 *
+	 * @param int $id
+	 */
+	public function listContentAjax($id) {
+		$this->layout = null;
+		if (!empty($id)) {
+			// get content
+			$ot = Configure::read("objectTypes");
+			$objType = array( $ot["document"], $ot["shortnews"], $ot["event"] );
+			$contents = $this->BeTree->getChildren($id, null, $objType);
+			foreach ($contents["items"] as $key => $item) {
+				$contents["items"][$key]["module"]= $this->ObjectType->field("module", array(
+																"conditions" => array("id" => $item["object_type_id"])
+																)
+															);
+			}
+			$this->set("contents", $contents);
+			
+		}
+		
+		$this->render(null, null, VIEWS."areas/inc/list_content_ajax.tpl");
+		
+	}
+	
+	/**
+	 * load children section 
+	 *
+	 * @param int $id
+	 */
+	public function listSectionAjax($id) {
+		$this->layout = null;
+		if (!empty($id)) {
+			// get sections children
+			$this->set("sections", $this->BeTree->getChildren($id, null, Configure::read("objectTypes.section")));
+		}
+		$this->render(null, null, VIEWS."areas/inc/list_sections_ajax.tpl");
+	}
+	
+	
+	/**
+	 * called via ajax
+	 * Show all objects in a section/area
+	 *
+	 * @param int $id area/section id
+	 */
+	public function showObjects($id) {
+		$conf = Configure::getInstance();
+		$ot  = $conf->objectTypes['relationated'];
+		$objects = $this->BeTree->getChildren($id, null, $ot, "priority") ;
+		foreach ($objects["items"] as $key => $obj) {
+			$objects["items"][$key]["relation"] = $this->ObjectType->field("name", array("id" => $obj["object_type_id"]));
+		}
+		$this->set("objectsToAssoc", $objects);
+		$this->layout = "empty";
+	}
+	
+	public function loadObjectToAssoc($id, $relType) {
+		$object = $this->BEObject->find("first", array(
+													"restrict" => "ObjectType",
+													"conditions" => array("BEObject.id" => $id)
+												)
+										) ;
+										
+		$objRelated = array_merge($object["BEObject"], array("ObjectType" => $object["ObjectType"]));
+		$this->set("objRelated", $objRelated);
+		$this->set("rel", $relType);
+		$this->layout = "empty";
+	}
+	
 	 /**
 	  * Return associative array representing areas/sections tree
 	  *
@@ -344,7 +411,7 @@ class AreasController extends ModulesController {
 			"deleteSection"	=> 	array(
 									"OK"	=> "./",
 									"ERROR"	=> "./viewSection/{@$this->params['pass'][0]}" 
-								), 
+								)
 		) ;
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;

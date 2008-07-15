@@ -8,19 +8,7 @@
 <!--
 {literal}
 $(document).ready(function(){
-	/*
-	designAreaTree() ;
-
-	addCommand() ;
-	refreshCommand() ;
-	refreshOnClick() ;
-	$("span.SectionItem").Draggable({
-		revert:		true,
-		ghosting:	true,
-		opacity:	0.8
-	});
-
-	*/
+	
 	$("#areacontent").sortable ({
 		distance: 20,
 		opacity:0.7,
@@ -77,7 +65,9 @@ $(document).ready(function(){
 
 <fieldset style="padding:0px" id="properties">		
 	
-	<h2 style="margin-bottom:5px">Nome sezione di cui stiamo vedendo il dettaglio</h2>
+	<h2 id="sectionTitle" style="margin-bottom:5px"></h2>
+	
+	<div id="loading" style="clear:both">&nbsp;</div>
 	
 	<ul class="htab">
 		<li rel="areacontentC">contenuti</li>
