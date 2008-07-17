@@ -241,7 +241,7 @@ class AreasController extends ModulesController {
 			$this->loadSectionDetails($id);
 		}
 		
-		$this->render(null, null, VIEWS."areas/inc/form_section_ajax.tpl");
+		$this->render(null, null, VIEWS."areas/inc/form_section.tpl");
 		
 	}
 	

@@ -33,7 +33,7 @@ $(document).ready(function() {
 			style="text-align:right; margin-left: -30px; margin-right:10px; width:35px; float:left; background-color:transparent" 
 			name="reorder[{$s.id}][priority]" value="{$s.priority}" size="3" maxlength="3"/>
 	
-			<a title="{$s.created}" href="{$html->url('/')}/areas/index/id:{$s.id}">{$s.title}</a>
+			<a title="{$s.created}" href="{$html->url('/')}areas/index/{$s.id}">{$s.title}</a>
 			
 		</li>
 		{/foreach}
