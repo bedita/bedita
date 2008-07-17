@@ -75,8 +75,6 @@ $(document).ready(function(){
 
 {include file="../common_inc/form_common_js.tpl"}
 
-
-
 <form action="{$html->url('/translations/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object_translation.id.status|default:''}"/>
 <input type="hidden" name="data[master_id]" value="{$object_master.id|default:''}"/>
@@ -146,42 +144,41 @@ $(document).ready(function(){
 	</fieldset>
 	{/if}
 
-TODO: "multimedia descriptions" (per ora commentato)
-{*
+{if !empty($object_master.relations.attach)}
 	<div class="tab2"><h2>{t}multimedia descriptions{/t}</h2></div>
-    <fieldset rel="multimedia">
-        <table style="margin-left:-10px; margin-bottom:20px;" border="0" cellpadding="0" cellspacing="2">
-        <tr>
-            <td>
-                <a href="" target="_blank">
-                    <img src="/img/thumb.jpg" style='width:100px; height:100px; border:5px solid white; margin-bottom:0px;'   />
-                </a>
-            </td>
-            <td>
-                <label>titolo</label>
-                <input type="text" style="width:210px !important" name="" value="" />
-                <label>dida</label>
-                <textarea style="height:38px; width:210px !important" name=""></textarea>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a href="" target="_blank">
-                    <img src="/img/thumb2.jpg" style='width:100px; height:100px; border:5px solid white; margin-bottom:0px;'   />
-                </a>
-            </td>
-            <td>
-                <label>titolo</label>
-                <input type="text" style="width:210px !important" name="" value="" />
-                <label>dida</label>
-                <textarea style="height:38px; width:210px !important" name=""></textarea>
-            </td>
-        </tr>
-        </table>
-    </fieldset>
-
-
-*}
+	<fieldset rel="multimedia">
+		<table style="margin-left:-10px; margin-bottom:20px;" border="0" cellpadding="0" cellspacing="2">
+		{assign var='lang_text_index' value=10}
+		{foreach from=$object_master.relations.attach item='image' name=attachfe}
+		<tr>
+			<td>
+				<a href="{$conf->mediaUrl}{$image.path}">
+					<img src="{$conf->mediaUrl}{$image.path}" style='width:100px; height:100px; border:5px solid white; margin-bottom:0px;'/>
+				</a>
+			</td>
+			<td>
+				{assign var='l1' value=$lang_text_index++}
+				{assign var='image_title' value=$image.LangText.title[$object_translation.lang]|default:''}
+				<label>{t}Title{/t}</label>
+				<input type="hidden" name="data[LangText][{$lang_text_index}][name]" value="title"/>
+				<input type="text" name="data[LangText][{$lang_text_index}][text]" style="width:210px !important" value="{$image_title}" />
+				<input type="hidden" name="data[LangText][{$lang_text_index}][object_id]" value="{$image.id}"/>
+				{if !empty($image.LangTextExtended)}<input type="hidden" name="data[LangText][{$lang_text_index}][id]" value="{$image.LangTextExtended[$image.id][$object_translation.lang].title}"/>{/if}
+				
+				{assign var='l2' value=$lang_text_index++}
+				{assign var='image_description' value=$image.LangText.description[$object_translation.lang]|default:''}
+				<label>{t}Description{/t}</label>
+				<input type="hidden" name="data[LangText][{$lang_text_index}][name]" value="description"/>
+				<textarea style="height:38px; width:210px !important" name="data[LangText][{$lang_text_index}][text]">{$image_description}</textarea>
+				<input type="hidden" name="data[LangText][{$lang_text_index}][object_id]" value="{$image.id}"/>
+				{if !empty($image.LangTextExtended)}<input type="hidden" name="data[LangText][{$lang_text_index}][id]" value="{$image.LangTextExtended[$image.id][$object_translation.lang].description}"/>{/if}
+			
+			</td>
+		</tr>
+		{/foreach}
+		</table>
+	</fieldset>
+{/if}
 
 	<div class="tab2"><h2>{t}advanced properties{/t}</h2></div>
 	<fieldset rel="advancedproperties">
@@ -249,7 +246,7 @@ TODO: "multimedia descriptions" (per ora commentato)
 	<div class="tab2"><h2>{t}Original Title{/t}</h2></div>
 	<fieldset rel="title">
 		<label>{t}Title{/t}</label><br />
-		<input type="text" id="title" name="" value="{$object_master.title}" /><br />
+		<input type="text" id="title_master" name="" value="{$object_master.title}" readonly="readonly"/><br />
 		{if !empty($object_master.description)}
 		<label>{t}Description{/t}</label><br />
 		<textarea id="subtitle" style="height:30px" class="shortdesc autogrowarea" name="">{$object_master.description}</textarea>
@@ -273,40 +270,30 @@ TODO: "multimedia descriptions" (per ora commentato)
 	{/if}
 
 
-TODO: "multimedia descriptions" (per ora commentato)
-{*
+{if !empty($object_master.relations.attach)}
 	<div class="tab2"><h2>{t}multimedia descriptions{/t}</h2></div>
-    <fieldset rel="multimedia">
-        <table style="margin-left:-10px; margin-bottom:20px;" border="0" cellpadding="0" cellspacing="2">
-        <tr>
-            <td>
-                <a href="" target="_blank">
-                    <img src="/img/thumb.jpg" style='width:100px; height:100px; border:5px solid white; margin-bottom:0px;'   />
-                </a>
-            </td>
-            <td>
-                <label>titolo</label>
-                <input type="text" style="width:210px !important" name="" value="" />
-                <label>dida</label>
-                <textarea style="height:38px; width:210px !important" name=""></textarea>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a href="" target="_blank">
-                    <img src="/img/thumb2.jpg" style='width:100px; height:100px; border:5px solid white; margin-bottom:0px;'   />
-                </a>
-            </td>
-            <td>
-                <label>titolo</label>
-                <input type="text" style="width:210px !important" name="" value="wqwqwqwqwq qww" />
-                <label>dida</label>
-                <textarea style="height:38px; width:210px !important" name=""></textarea>
-            </td>
-        </tr>
-        </table>
-    </fieldset>
-*}
+	<fieldset rel="multimedia">
+		
+		<table style="margin-left:-10px; margin-bottom:20px;" border="0" cellpadding="0" cellspacing="2">
+		{foreach from=$object_master.relations.attach item='image'}
+		<tr>
+			<td>
+				<a href="{$conf->mediaUrl}{$image.path}">
+					<img src="{$conf->mediaUrl}{$image.path}" style='width:100px; height:100px; border:5px solid white; margin-bottom:0px;'/>
+				</a>
+			</td>
+			<td>
+				<label>{t}Title{/t}</label>
+				<input type="text" style="width:210px !important" name="" value="{$image.title}" />
+				<label>{t}Description{/t}</label>
+				<textarea style="height:38px; width:210px !important" name="">{$image.description}</textarea>
+			</td>
+		</tr>
+		{/foreach}
+		</table>
+	</fieldset>
+{/if}
+
 	<div class="tab2"><h2>{t}advanced properties{/t}</h2></div>
 	<fieldset rel="advancedproperties">
 

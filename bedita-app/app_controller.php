@@ -402,7 +402,7 @@ class AppController extends Controller
 	 * @param array $objectArray
 	 * @return array
 	 */
-	protected function objectRelationArray($objectArray) {
+	protected function objectRelationArray($objectArray,$langTextExtended=false) {
 		$conf  = Configure::getInstance() ;
 		$relationArray = array();
 		foreach ($objectArray as $obj) {
@@ -422,6 +422,10 @@ class AppController extends Controller
 			}
 			$objDetail['priority'] = $obj['ContentBasesObject']['priority'];
 			if(!empty($objDetail["LangText"])) {
+				if($langTextExtended) {
+					$objDetail["LangTextExtended"] = $objDetail["LangText"];
+					$this->BeLangText->setupForViewExtended($objDetail["LangTextExtended"]) ;
+				}
 				$this->BeLangText->setupForView($objDetail["LangText"]) ;
 			}
 			

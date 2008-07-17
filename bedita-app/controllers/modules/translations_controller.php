@@ -27,14 +27,17 @@ class TranslationsController extends ModulesController {
 	}
 
 	public function view($id=null,$lang=null) {
+		$lang_view = ($lang) ? true : false;
 		if($id) {
 			$object_type_id = $this->BEObject->findObjectTypeId($id);
 			$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
+			
 			if(!($obj = $modelLoaded->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
 			}
+			$obj['relations']=$this->objectRelationArray($obj['ObjectRelation'],$lang_view);
 			$this->set("object_master",$obj);
-			if(!$lang) {
+			if(!$lang_view) {
 				$langs = $this->LangText->langsForObject($id);
 				$langs[] = $obj['lang'];
 				$this->set("object_master_langs",$langs);
@@ -42,7 +45,7 @@ class TranslationsController extends ModulesController {
 		} else {
 			throw new BeditaException(sprintf(__("No object id specified", true)));
 		}
-		if($lang) {
+		if($lang_view) {
 			$translation = array();
 			$lang_text=$this->LangText->find('all',
 				array(
@@ -66,7 +69,9 @@ class TranslationsController extends ModulesController {
 			throw new BeditaException(__("Error modify permissions", true));
 		foreach($this->data['LangText'] as $k => $v) {
 			$this->data['LangText'][$k]['lang'] = $this->data['translation_lang'];
-			$this->data['LangText'][$k]['object_id'] = $this->data['master_id'];
+			if(empty($this->data['LangText'][$k]['object_id'])) { // if object_id is defined => it's a translation for an attach
+				$this->data['LangText'][$k]['object_id'] = $this->data['master_id'];
+			}
 			if( ($new && ($this->data['LangText'][$k]['name'] == 'created_on')) || ($this->data['LangText'][$k]['name'] == 'modified_on') ) {
 				$this->data['LangText'][$k]['text'] = time();
 			} else if( ($new && ($this->data['LangText'][$k]['name'] == 'created_by')) || ($this->data['LangText'][$k]['name'] == 'modified_by') ) {

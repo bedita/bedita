@@ -52,6 +52,16 @@ class BeLangTextComponent extends Object {
 		$data = $tmp ;
 	}
 	
+	function setupForViewExtended(&$data) {
+		$tmp = array() ;
+		for($i=0; $i < count($data) ; $i++) {
+			$item = &$data[$i] ;
+			if(!isset($tmp[$item["name"]]))	$tmp[$item["name"]] = array() ;
+			$tmp[$item["object_id"]][$item["lang"]][$item["name"]] = $item["id"] ;
+		}
+		$data = $tmp ;
+	}
+	
 	function setupForViewLangText(&$data) {
 		$tmp = array() ;
 		for($i=0; $i < count($data) ; $i++) {
