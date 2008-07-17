@@ -415,7 +415,7 @@ class AreasController extends ModulesController {
 								), 
 			"saveSection"	=> 	array(
 									"OK"	=> "./index/{$this->Section->id}",
-									"ERROR"	=> "./index/{$this->Section->id}" 
+									"ERROR"	=> "./viewSection" 
 								), 
 			"deleteArea"	=> 	array(
 									"OK"	=> "./",
