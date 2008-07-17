@@ -2,7 +2,7 @@
 <div class="tab"><h2>{t}Translations{/t}</h2></div>
 <fieldset id="translations">
 
-{if !empty($object.LangText)}
+{if !empty($object.LangText.status)}
 <table class="indexlist bordered">	
 <tr>
 	<th>{t}Lang{/t}</th>
