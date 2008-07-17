@@ -1,6 +1,5 @@
 <?php
-	
-/*
+/**
  * BEdita Thumbnail helper
  * ------------------------------------------------------------------------------------
  * Name:     be_thumb
@@ -25,7 +24,7 @@ class BeThumbHelper extends AppHelper {
 
 
 	// supported image types (order is important)
-	private $_imagetype = array ("", "gif", "jpg", "png", "swf", "jpeg");
+	private $_imagetype = array ("", "gif", "jpg", "png", "jpeg");
 	private $_defaultimagetype = 2; // defaults to 2 [= JPG]
 
 
@@ -76,7 +75,8 @@ class BeThumbHelper extends AppHelper {
 	 *         
 	 *         NB: optionally the second argument may be the associative array of said parameters
 	 *         
-	 * return: output complete image tag (using $html helper)
+	 * return: resampled and cached image URI (using $html helper)
+	 * 
 	 */
 	public function image ($be_obj, $params = null) //$width = false, $height = false, $longside = null, $mode = null, $modeparam = null, $type = null, $upscale = null)
 	{
@@ -94,10 +94,6 @@ class BeThumbHelper extends AppHelper {
 		if ( func_num_args() == 2 && is_array( func_get_arg(1) ) )
 		{
 			extract ($params);
-		    for ($i = 0; $i < sizeof($expectedArgs); $i++)
-			{
-		        if ( !isset ($$expectedArgs[$i]) ) unset ($$expectedArgs[$i]);
-		    }
 		}
 		else
 		{
@@ -166,7 +162,7 @@ class BeThumbHelper extends AppHelper {
 			// set up the rest of image info array
 			$this->_imageInfo["w"]		= $_image_data [0];
 			$this->_imageInfo["h"]		= $_image_data [1];
-			$this->_imageInfo['type']	= $_image_data [2]; // 1=GIF, 2=JPG, 3=PNG, SWF=4
+			$this->_imageInfo['type']	= $_image_data [2]; // 1=GIF, 2=JPG, 3=PNG
 			unset ($_image_data);
 		}
 		else
@@ -183,7 +179,7 @@ class BeThumbHelper extends AppHelper {
 				}
 			}
 			
-			if ($this->_imageInfo['ntype'] == 5)
+			if ($this->_imageInfo['ntype'] == 4)
 				$this->_imageInfo['ntype'] = 2; // JPEG == JPG
 			
 			// set string type
@@ -245,8 +241,10 @@ class BeThumbHelper extends AppHelper {
 
 		if ( empty($this->_imageTarget['cached']) )
 		{
-			if ( !$this->_resample() || !$this->_resample )
+			if ( !$this->_resample() )
+			{
 				return $this->_conf['imgMissingFile'];
+			}
 		}
 		else
 		{
@@ -396,8 +394,6 @@ class BeThumbHelper extends AppHelper {
 			// if file exist (with same hash it's not been modified)
 			if ( file_exists ($this->_imageTarget['filepath']) )
 			{
-				// and avoid the resample process
-				$this->_resample = false;
 				return true;
 			}
 			else return false;

@@ -4,7 +4,7 @@ App::import('Core', 'i18n');
 
 class AppController extends Controller
 {
-	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "Msg", "MediaProvider", "Perms", 'BeThumb');
+	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "Msg", "MediaProvider", "Perms", 'BeEmbedMedia', 'BeThumb');
 	var $components = array('BeAuth', 'BeTree', 'BePermissionModule','Transaction', 'Cookie', 'Session');
 	var $uses = array('EventLog') ;
 	

@@ -20,7 +20,10 @@
 	<div style="width:{$thumbWidth}px; height:{$thumbHeight}px" class="imagebox">
 	{if strtolower($item.ObjectType.name) == "image"}
 	
-		<img src="{$beThumb->image($item)}" title="{$item.filename}" />
+		{assign_associative var="par" width=88 height=70 mode="fill" modeparam="FFFF00"}
+		<img src="{$beThumb->image($item, $par)}" title="{$item.filename}" />
+		
+		{$beEmbedMedia->object($item)}
 		
 	{elseif ($item.provider|default:false)}
 	
@@ -49,16 +52,13 @@
 
 
 	<ul class="info_file_item">
-{*<input type="text" class="info_file_item" value="{$fileTitle|escape:'htmlall'}" name="data[ObjectRelation][{$item.id}][title]" />*}
-		<li><input class="info_file_item" style="border:0px; border-bottom:1px solid silver;" type="text" value="{$item.title|default:""}" name="data[ObjectRelation][{$item.id}][title]" /></li>
+		<li><input class="info_file_item" style="border:0px; border-bottom:1px solid silver;" type="text" value="{$item.title|escape:'htmlall'|default:""}" name="data[ObjectRelation][{$item.id}][title]" /></li>
 		<li>
 			<textarea class="info_file_item" style="border:0px; border-bottom:1px solid silver;" name="data[ObjectRelation][{$item.id}][description]">{$item.description|default:""}</textarea>
 			<br />
 			<a href="{$linkUrl}">details</a>
-			<a style="margin-left:60px" href="javascript: void(0);" onclick="removeItem('item_{$item.id}')" >
-				delete
-				<!-- <img style="vertical-align:middle;" src="{$session->webroot}img/iconClose.png" > -->
-			</a>
+			<a style="margin-left:60px" href="javascript: void(0);" onclick="removeItem('item_{$item.id}')" >delete</a>
+			<!-- <img style="vertical-align:middle;" src="{$session->webroot}img/iconClose.png" > -->
 		</li>
 	</ul>
 
