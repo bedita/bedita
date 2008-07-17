@@ -1,13 +1,4 @@
-{$html->css('tree')}
-{$javascript->link("jquery/jquery.treeview", false)}
-{$javascript->link("jquery/interface", false)}
-{$javascript->link("form", false)}
-{$javascript->link("jquery/jquery.changealert", false)}
-{$javascript->link("jquery/jquery.form", false)}
 {$javascript->link("jquery/jquery.selectboxes.pack", false)}
-{$javascript->link("jquery/jquery.cmxforms", false)}
-{$javascript->link("jquery/jquery.metadata", false)}
-{$javascript->link("jquery/jquery.validate", false)}
 
 <script type="text/javascript">
 <!--
@@ -38,12 +29,10 @@ $(document).ready(function(){
 
 {include file="inc/menucommands.tpl" method="viewSection"}
 
-{assign var='object' value=$section}
-
 <div class="main">
-
-	{include file="inc/form_section.tpl"}
-	
+	<form action="{$html->url('/areas/saveSection')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+	{include file="inc/form_section_ajax.tpl"}
+	</form>
 </div>
 
 

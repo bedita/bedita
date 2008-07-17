@@ -116,6 +116,7 @@ function deleteTRCustomProp(el) {
 		<th>{t}value{/t}</th>
 		<th>&nbsp;</th>
 	</tr>
+	
 	{foreach key="name" item="property" from=$el.CustomProperties}
 	<tr id="{$name}_customPropTR">
 		<td><input type="hidden" name="data[CustomProperties][{$name}][name]"/>{$name}</td>

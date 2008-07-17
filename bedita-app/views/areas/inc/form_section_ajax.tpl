@@ -1,3 +1,4 @@
+<input type="hidden" name="data[id]" value="{$section.id|default:null}"/>
 <table>
 			
 			<tr>
@@ -5,14 +6,14 @@
 					<th>{t}Status{/t}:</th>
 					<td>
 						{html_radios name="data[status]" options=$conf->statusOptions 
-						selected=$object.status|default:$conf->status separator="&nbsp;"}
+						selected=$section.status|default:$conf->status separator="&nbsp;"}
 					</td>
 			
 				</tr>
 			<tr>
 					<th>{t}language{/t}:</th>
 					<td>
-					{assign var=object_lang value=$object.lang|default:$conf->defaultLang}
+					{assign var=object_lang value=$section.lang|default:$conf->defaultLang}
 					<select name="data[lang]" id="main_lang">
 						{foreach key=val item=label from=$conf->langOptions name=langfe}
 						<option {if $val==$object_lang}selected="selected"{/if} value="{$val}">{$label}</option>
@@ -22,18 +23,24 @@
 				</tr>
 				<tr>
 					<th>{t}Title{/t}</th>
-					<td><input type="text" name="data[title]" value="" /></td>
+					<td><input type="text" name="data[title]" value="{$section.title|default:""}" /></td>
 				</tr>
 				<tr>
 					<th>{t}Description{/t}</th>
-					<td><textarea style="height:30px" class="autogrowarea" name="data[description]"></textarea></td>
+					<td><textarea style="height:30px" class="autogrowarea" name="data[description]">{$section.description|default:""}</textarea></td>
 			</tr>
 
 			<tr>
 				<td><label>reside in</label></td>
-				<td><select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
-			{$beTree->option($tree)}
-			</select></td>
+				<td>
+					<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[parent_id]">
+					{if !empty($parent_id)}
+						{$beTree->option($tree, $parent_id)}
+					{else}
+						{$beTree->option($tree)}
+					{/if}
+					</select>
+				</td>
 			</tr>
 			
 			<tr>
@@ -60,13 +67,17 @@
 			    </td>
 			</tr>
 			
+			<tr>
+				<th>{t}Nickname{/t}</th>
+				<td><input type="text" name="data[nickname]" value="{$section.nickname|default:""}" /></td>
+			</tr>
 			
 			</table>         
 			
 			<br>
-			{assign var="section" value=quipewrproer}
-			{include file="../common_inc/form_permissions.tpl" el=$section recursion=true}
-			{include file="../common_inc/form_custom_properties.tpl" el=$section}
+			
+			{include file="../common_inc/form_permissions.tpl" el=$section|default:null recursion=true}
+			{include file="../common_inc/form_custom_properties.tpl" el=$section|default:null}
 			
 			
 			<hr />

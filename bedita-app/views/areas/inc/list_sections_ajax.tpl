@@ -1,11 +1,37 @@
+<script type="text/javascript">
+<!--
+{literal}
+$(document).ready(function() {
+
+	$("#areasections").sortable ({
+		distance: 20,
+		opacity:0.7,
+		update: $(this).reorderListItem
+	}).css("cursor","move");
+
+	$("#sections_nav a").click(function() {
+			
+		$("#loading").show();
+		$("#areasectionsC").load(urlS, {page:$(this).attr("rel")}, function() {
+			$("#loading").hide();
+		});
+		
+	});
+
+});
+{/literal}
+//-->
+</script>
+
 {if !empty($sections.items)}
 
 	<ul style="margin-top:10px; display: block;" id="areasections" class="bordered">
 		{foreach from=$sections.items item=s}
-		<li>
+		<li class="itemBox">
+			<input type="hidden" class="id" 	name="reorder[{$s.id}][id]" value="{$s.id}" />
 			<input type="text" class="priority" 
 			style="text-align:right; margin-left: -30px; margin-right:10px; width:35px; float:left; background-color:transparent" 
-			name="" value="{$s.priority}" size="3" maxlength="3"/>
+			name="reorder[{$s.id}][priority]" value="{$s.priority}" size="3" maxlength="3"/>
 	
 			<a title="{$s.created}" href="{$html->url('/')}/areas/index/id:{$s.id}">{$s.title}</a>
 			
@@ -13,7 +39,14 @@
 		{/foreach}
 	</ul>		
 	
-	<a href="#" class="graced" style="font-size:3em">‹ ›</a>
+	<div id="sections_nav">
+	{if $sections.toolbar.prev > 0}
+		<a href="javascript:void(0);" rel="{$sections.toolbar.prev}" class="graced" style="font-size:3em">‹</a>
+	{/if}
+	{if $sections.toolbar.next > 0}
+		<a href="javascript:void(0);" rel="{$sections.toolbar.next}" class="graced" style="font-size:3em">›</a>
+	{/if}
+	</div>
 
 {else}
 	{t}no sections{/t}

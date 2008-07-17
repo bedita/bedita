@@ -23,7 +23,7 @@
 class AreasController extends ModulesController {
 	var $name = 'Areas';
 
-	var $helpers 	= array('BeTree');
+	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
 
 	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType') ;
@@ -34,32 +34,14 @@ class AreasController extends ModulesController {
 	 * 
 	 */
 	function index($id=null) {
-		
-		if (!empty($this->params["named"]["id"])) {
-			$id = $this->params["named"]["id"]; 	
-		}
-		
 		if (!empty($id)) {
-			// get content
-			$ot = Configure::read("objectTypes");
-			$objType = array( $ot["document"], $ot["shortnews"], $ot["event"] );
-			$contents = $this->BeTree->getChildren($id, null, $objType);
-			foreach ($contents["items"] as $key => $item) {
-				$contents["items"][$key]["module"]= $this->ObjectType->field("module", array(
-																"conditions" => array("id" => $item["object_type_id"])
-																)
-															);
-			}
-			$this->set("contents", $contents);
-			
-			// get sections children
-			$this->set("sections", $this->BeTree->getChildren($id, null, Configure::read("objectTypes.section")));
+			$this->loadSectionDetails($id);
+			$this->loadContents($id);
+			$this->loadSections($id);
+		} else {
+			$tree = $this->BeTree->getSectionsTree() ;
+			$this->set('tree',$tree);
 		}
-		
-		
-		
-		$tree = $this->BeTree->getSectionsTree() ;
-		$this->set('tree',$tree);
 	}
 
 	 /**
@@ -89,47 +71,13 @@ class AreasController extends ModulesController {
 	}
 
 	 /**
-	  * Get selected section.
-	  * If id is null, empty section
+	  * empty form for a new section
 	  *
 	  * @param integer $id
 	  */
-	function viewSection($id = null) {
-		// Get selected section
-		$section = null ;
-		if($id) {
-			$this->Section->bviorHideFields = array('ObjectType', 'Version', 'Index', 'current') ;
-			if(!($section = $this->Section->findById($id))) {
-				throw new BeditaException(sprintf(__("Error loading section: %d", true), $id));
-			}
-		}
-		// Get area/section tree
-		$tree = $this->BeTree->getSectionsTree() ;
-		// Get section position
-		if(isset($id)) {
-			$parent_id = $this->Tree->getParent($id) ;
-		} else {
-			$parent_id = 0 ;
-		}
-		if($id) {
-			$conf  = Configure::getInstance() ;
-			$ot = &$conf->objectTypes ; 
-			$objType = array_merge( $ot["documentAll"], array($ot["shortnews"], $ot["event"]) );
-			$contents = $this->BeTree->getChildren($id, null, $objType);
-			$content_items = $contents['items'];
-		} else {
-			$content_items=array();
-		}
-		// Data for template
-		$this->set('tree',$tree);
-		$this->set('section',$section);
-		$this->set('parent_id',$parent_id);
-		$this->set('contents',$content_items);
-		$this->selfUrlParams = array("id", $id);	
-		// get users and groups list
-		$this->User->displayField = 'userid';
-		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
-		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
+	function viewSection() {
+		$this->set('tree',$this->BeTree->getSectionsTree());
+		$this->setUsersAndGroups();
 	}
 	
 	
@@ -185,50 +133,46 @@ class AreasController extends ModulesController {
 	 * URLOK and URLERROR should be defined.
 	 */
 	function saveSection() {
+		
 		$this->checkWriteModulePermission();
-		if(empty($this->data)) throw new BeditaException(__("No data", true));
+		if(empty($this->data)) 
+			throw new BeditaException(__("No data", true));
+			
 		$new = (empty($this->data['id'])) ? true : false ;
-		// Verify permits for the object
+		// Verify permissions for the object
 		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
 				throw new BeditaException( __("Error modifying permissions", true));
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
 		
 		$this->Transaction->begin() ;
-		// data["destination"] should be 1 element
-		if(count($this->data["destination"]) != 1)
-			throw new BeditaException( __("Bad data", true));
-		$destinationId = $this->data["destination"][0];
-		if($new) 
-			$this->data["parent_id"] = $destinationId;
+	
+		if(empty($this->data["parent_id"]))
+			throw new BeditaException( __("Missing parent", true));
+		
 		if(!$this->Section->save($this->data))
 			throw new BeditaException( __("Error saving section", true), $this->Section->validationErrors );
+		
 		// Move section in the right tree position, if necessary
 		if(!$new) {
 			$oldParent = $this->Tree->getParent($this->Section->id) ;
-			if($oldParent != $destinationId) {
-				if(!$this->Tree->move($destinationId, $oldParent, $this->Section->id))
+			if($oldParent != $this->data["parent_id"]) {
+				if(!$this->Tree->move($this->data["parent_id"], $oldParent, $this->Section->id))
 					throw new BeditaException( __("Error saving section", true));
 			}
-			$conf  = Configure::getInstance() ;
-			$subsections = $this->BeTree->getChildren($this->Section->id, null, $conf->objectTypes['section']);
-			// Insert new contents (remove previous associations)
-			$contents = (!empty($this->data['contents'])) ? $this->data['contents'] : array();
-			if(!$this->Section->removeChildren()) 
-				throw new BeditaException( __("Remove children", true));
-			if(!empty($subsections) && !empty($subsections['items'])) {
-				$subs = $subsections['items'];
-				for($i=0; $i < count($subs); $i++) {
-					if(!$this->Section->appendChild($subs[$i]['id'],null,$subs[$i]['priority'])) {
-						throw new BeditaException( __("Append child", true));
-					}
+
+			// update contents and children sections priority
+			$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
+			
+			foreach ($reorder as $r) {
+
+				if (!$this->Tree->setPriority($r['id'], $r['priority'], $this->Section->id)) {
+					throw new BeditaException( __("Error during reorder children priority", true), $r["id"]);
 				}
+				
 			}
-			for($i=0; $i < count($contents) ; $i++) {
-				if(!$this->Section->appendChild($contents[$i]['id'],null,$contents[$i]['priority'])) {
-					throw new BeditaException( __("Append child", true));
-				}
-			}
+			
+			
 		}
 		// update permits
 		$perms = isset($this->data["Permissions"]) ? $this->data["Permissions"] : array();
@@ -283,43 +227,52 @@ class AreasController extends ModulesController {
 		$this->eventInfo("section [". $this->data['id']."] deleted");
 	}
 
-	/* AJAX CALLED */
+	/* AJAX CALLS */
+	
 	/**
-	 * load content for a section
+	 * load section object
 	 *
 	 * @param int $id
 	 */
+	public function loadSectionAjax($id) {
+		$this->layout = null;
+		
+		if (!empty($id)) {
+			$this->loadSectionDetails($id);
+		}
+		
+		$this->render(null, null, VIEWS."areas/inc/form_section_ajax.tpl");
+		
+	}
+	
+	
+	/**
+	 * load contents for a section
+	 *
+	 * @param int $id
+	 * 
+	 */
 	public function listContentAjax($id) {
 		$this->layout = null;
+	
 		if (!empty($id)) {
-			// get content
-			$ot = Configure::read("objectTypes");
-			$objType = array( $ot["document"], $ot["shortnews"], $ot["event"] );
-			$contents = $this->BeTree->getChildren($id, null, $objType);
-			foreach ($contents["items"] as $key => $item) {
-				$contents["items"][$key]["module"]= $this->ObjectType->field("module", array(
-																"conditions" => array("id" => $item["object_type_id"])
-																)
-															);
-			}
-			$this->set("contents", $contents);
-			
+			$this->loadContents($id);
 		}
 		
 		$this->render(null, null, VIEWS."areas/inc/list_content_ajax.tpl");
-		
 	}
+	
 	
 	/**
 	 * load children section 
 	 *
 	 * @param int $id
+	 * 
 	 */
 	public function listSectionAjax($id) {
 		$this->layout = null;
 		if (!empty($id)) {
-			// get sections children
-			$this->set("sections", $this->BeTree->getChildren($id, null, Configure::read("objectTypes.section")));
+			$this->loadSections($id);
 		}
 		$this->render(null, null, VIEWS."areas/inc/list_sections_ajax.tpl");
 	}
@@ -390,6 +343,66 @@ class AreasController extends ModulesController {
 		unset($IDs) ;
 	}
 
+	
+	/**
+	 * get section details and set for template, get all tree
+	 *
+	 * @param int $id
+	 */
+	private function loadSectionDetails($id) {
+		$this->Section->restrict(array(
+									"BEObject" => array("ObjectType", 
+														"UserCreated", 
+														"UserModified", 
+														"Permissions",
+														"CustomProperties",
+														"LangText"
+														)
+									));
+		if(!($section = $this->Section->findById($id))) {
+			throw new BeditaException(sprintf(__("Error loading section: %d", true), $id));
+		}
+		
+		$this->set('section',$section);
+		$this->set('tree', $this->BeTree->getSectionsTree());
+		$this->set('parent_id', $this->Tree->getParent($id));
+		$this->setUsersAndGroups();
+	}
+	
+	/**
+	 * get contents for a section/publication
+	 *
+	 * @param unknown_type $id
+	 */
+	private function loadContents($id) {
+		// set pagination
+		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
+		$dim = (!empty($this->params["form"]["dim"]))? $this->params["form"]["dim"] : 20; 
+		
+		// get content
+		$ot = Configure::read("objectTypes");
+		$objType = array( $ot["document"], $ot["shortnews"], $ot["event"] );
+		$contents = $this->BeTree->getChildren($id, null, $objType, "priority", true, $page, $dim);
+		
+		foreach ($contents["items"] as $key => $item) {
+			$contents["items"][$key]["module"]= $this->ObjectType->field("module", array(
+															"conditions" => array("id" => $item["object_type_id"])
+															)
+														);
+		}
+		
+		$this->set("contents", $contents);
+	}
+	
+	private function loadSections($id) {
+		// set pagination
+		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
+		$dim = (!empty($this->params["form"]["dim"]))? $this->params["form"]["dim"] : 20; 
+		
+		// get sections children
+		$this->set("sections", $this->BeTree->getChildren($id, null, Configure::read("objectTypes.section"), "priority", true, $page, $dim));
+	}
+	
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"saveTree"	=> 	array(
@@ -401,8 +414,8 @@ class AreasController extends ModulesController {
 									"ERROR"	=> "./viewArea/{$this->Area->id}" 
 								), 
 			"saveSection"	=> 	array(
-									"OK"	=> "./viewSection/{$this->Section->id}",
-									"ERROR"	=> "./viewSection/{$this->Section->id}" 
+									"OK"	=> "./index/{$this->Section->id}",
+									"ERROR"	=> "./index/{$this->Section->id}" 
 								), 
 			"deleteArea"	=> 	array(
 									"OK"	=> "./",

@@ -1,32 +1,27 @@
-{$javascript->link("jquery/jquery.treeview", true)}
 {$javascript->link("jquery/jquery.form", false)}
 {$javascript->link("jquery/ui/ui.core.min", false)}
 {$javascript->link("jquery/ui/ui.sortable.min", false)}
+{$javascript->link("jquery/jquery.selectboxes.pack", false)}
 
 
 <script type="text/javascript">
 <!--
-{literal}
-$(document).ready(function(){
-	
-	$("#areacontent").sortable ({
-		distance: 20,
-		opacity:0.7,
-		update: $(this).reorderListItem
-	}).css("cursor","move");
-		
-	$("#areasections").sortable ({
-		distance: 20,
-		opacity:0.7,
-		//update: $(this).reorderListItem
-	}).css("cursor","move");
 
-
-	
-});
-
-{/literal}
+/* define urls for ajax calls. Used in module.areas.js */
+var ajaxContentsUrl = "{$html->url('/areas/listContentAjax')}";
+var ajaxSectionsUrl = "{$html->url('/areas/listSectionAjax')}";
+var ajaxSectionObjectUrl = "{$html->url('/areas/loadSectionAjax')}";
 //-->
+
+{if !empty($section)}
+
+{literal}
+$(document).ready(function() {
+	$(".tab:first").click();
+});
+{/literal}
+
+{/if}
 </script>
 
 
@@ -57,6 +52,7 @@ $(document).ready(function(){
 
 </div>
 
+<form action="{$html->url('/areas/saveSection')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 
 <div style="width:360px; position:absolute; top:160px; left:640px">
 
@@ -98,6 +94,8 @@ $(document).ready(function(){
 </fieldset>	
 							
 </div>
+
+</form>
 
 
 

@@ -14,6 +14,14 @@
 	{$javascript->link("common")}
 	{$javascript->link("beditaUI")}
 
+	{if $moduleName|default:""}
+		{assign_concat var="cssfile" 0=$smarty.const.APP 1="webroot/css/module." 2=$moduleName 3=".css"}
+		{assign_concat var="jsfile" 0=$smarty.const.APP 1="webroot/js/module." 2=$moduleName 3=".js"}
+		
+		{if file_exists($cssfile)}<link rel="stylesheet" type="text/css" href="{$html->webroot}css/module.{$moduleName}.css" />{/if}
+		{if file_exists($jsfile)}<script type="text/javascript" src="{$html->webroot}js/module.{$moduleName}.js"></script>{/if}
+	{/if}
+
 	{* collect linked scripts around *}
 	{$scripts_for_layout}
 

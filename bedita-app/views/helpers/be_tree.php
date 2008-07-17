@@ -23,7 +23,7 @@ class BeTreeHelper extends Helper {
 		'area'		=> "<li class=\"area\">\n\t<input type='hidden' name='id' value='%s'/>\n\t<span class=\"AreaItem\">%s</span>\n\t%s\n</li>\n",
 		'section'	=> "<li class=\"section\">\n\t<input type='hidden' name='id' value='%s'/>\n\t<span class=\"SectionItem\">%s</span>\n\t%s\n</li>\n",
 	
-		'option'	=> "<option value=\"%s\">%s</option>"
+		'option'	=> "<option value=\"%s\"%s>%s</option>"
 	) ;
 
 	/**
@@ -104,22 +104,23 @@ class BeTreeHelper extends Helper {
 	 * build option for select
 	 *
 	 * @param array $tree
-	 * @param int $numInd number of repetition on $indentation string foreach branch
+	 * @param int $numInd number of $indentation repetition foreach branch
 	 * @param string $indentation string to use for indentation
 	 * 
 	 * @return String 	<option value="">...</option>
 	 * 		   			<option value="">...</option>
 	 * 					....
 	 */
-	public function option($tree, $numInd=3, $indentation="&nbsp;") {
+	public function option($tree, $selId=null, $numInd=3, $indentation="&nbsp;") {
 		
 		$output = "<option value=\"\"> -- </option>";
 		
 		if (!empty($tree)) {
 			foreach ($tree as $publication) {
-				$output .= sprintf($this->tags['option'], $publication["id"], mb_strtoupper($publication["title"])) ;
+				$selected = ($selId == $publication["id"])? " selected" : "";
+				$output .= sprintf($this->tags['option'], $publication["id"], $selected, mb_strtoupper($publication["title"])) ;
 				if (!empty($publication["children"])) {
-					$output .= $this->optionBranch($publication["children"], $numInd, $indentation);
+					$output .= $this->optionBranch($publication["children"], $selId, $numInd, $indentation);
 				}
 			}
 		}
@@ -163,7 +164,7 @@ class BeTreeHelper extends Helper {
 	 * 
 	 * @return string of option
 	 */
-	private function optionBranch($branch, $numInd, $indentation) {
+	private function optionBranch($branch, $selId, $numInd, $indentation) {
 		
 		if (!isset($this->numInd)) {
 			$this->numInd = $numInd;
@@ -182,10 +183,10 @@ class BeTreeHelper extends Helper {
 		}
 		
 		foreach ($branch as $section) {
-			
-			$res .= sprintf($this->tags['option'], $section["id"], $space.$section["title"]) ;
+			$selected = ($selId == $section["id"])? " selected" : "";
+			$res .= sprintf($this->tags['option'], $section["id"], $selected, $space.$section["title"]) ;
 			if (!empty($section["children"])) {
-				$res .= $this->optionBranch($section["children"], $numInd+$this->numInd, $indentation);
+				$res .= $this->optionBranch($section["children"], $selId, $numInd+$this->numInd, $indentation);
 			}
 			
 		}
