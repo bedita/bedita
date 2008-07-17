@@ -1,13 +1,29 @@
-// Customize two date pickers to work as a date range 
-function customRange(input) { 
+/**
+ * Common JavaScript functions
+ * 
+ * (some to be moved to beditaUI.js)
+ *  
+ */
+
+
+/*
+ * General functions
+ */
+
+// Date - force two date pickers to work as a date range 
+function customRange(input)
+{
     return {minDate: (input.id == 'end' ? $('#start').datepicker( "getDate" ) : null), 
         	maxDate: (input.id == 'start' ? $('#end').datepicker( "getDate" )  : null)}; 
 }
 
+
+
+
 /*
-*	jQuery functions
-*
-*/
+ * Extend JQuery
+ */
+ 
 jQuery.fn.extend({
 	check: function() {
 		return this.each(function() { this.checked = true; });
@@ -86,3 +102,4 @@ jQuery.fn.extend({
 	}
 
 });
+

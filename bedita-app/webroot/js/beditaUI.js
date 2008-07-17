@@ -1,3 +1,9 @@
+/**
+ * BeditaUI - javascript UI functions and methods 
+ * @param {Object} ".modules *[rel]"
+ */
+
+
 $(document).ready(function(){
 
 

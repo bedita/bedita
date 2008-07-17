@@ -106,17 +106,46 @@ $config['uploadType'] = "flash";
  ** ******************************************
  */
 
-$config['thumbWidth']       = 300;		// px
-$config['thumbHeight']      = 300;		// px
-$config['videoWidth']       = 300;		// px
-$config['videoHeight']      = 250;		// px
-$config['videoThumbWidth']  = 110;		// px
-$config['videoThumbHeight'] = 83;		// px
-$config['audioWidth']       = 300;		// px
-$config['audioHeight']      = 20;		// px
+$config['media']['image']['thumbWidth']  = 130;      // px - was $config['thumbWidth']
+$config['media']['image']['thumbHeight'] = 85;       // px - was $config['thumbHeight']
+$config['media']['image']['thumbMode']   = "crop";   // crop, fill, croponly, stretch - thumb mode
+$config['media']['image']['thumbFill']   = "FFFFFF"; // hex - fill color when thumb mode is fill
+$config['media']['image']['thumbCrop']   = "C";      // string, crop mode when thumb mode is crop/croponly 'C', 'T', 'B', 'L', 'R', 'TL', 'TR', 'BL', 'BR'
+$config['media']['image']['thumbQ']      = 75;       // int, JPEG thumbnail image quality [1-100]
+$config['media']['image']['thumbUpscale']= true;     // bool, allow thumbnail upscale
+$config['media']['image']['imagemagick'] = "";       // string, path to image_magick executable
+$config['media']['image']['over']        = "";       // string, path to overlay image
+$config['media']['image']['wmi']['f']    = "";       // string, path to watermark image file
+$config['media']['image']['wmi']['a']    = "C";      // string, wm alignment B=bottom, T=top, L=left, R=right, C=centre, *=tile, 2 letters ie TL, or absolute position in px
+$config['media']['image']['wmi']['o']    = 100;      // int, wm opacity 0 (transparent) to 100 (opaque)
+ 
+$config['media']['video']['width']       = 300;      // px - was $config['videoWidth']
+$config['media']['video']['height']      = 250;      // px - was $config['videoHeight']
+$config['media']['video']['thumbWidth']  = 110;      // px - was $config['videoThumbWidth']
+$config['media']['video']['thumbHeight'] = 83;       // px - was $config['videoThumbHeight']
+
+$config['media']['audio']['width']       = 300;      // px - was $config['audioWidth']
+$config['media']['audio']['height']      = 20;       // px - was $config['audioHeight']
 
 
 
+
+/************************************************************
+ * COMPATIBILITA' - RIMUOVERE - START
+************************************************************/
+
+$config['thumbWidth']       = $config['media']['image']['thumbWidth'] ;
+$config['thumbHeight']      = $config['media']['image']['thumbHeight'] ;
+$config['videoWidth']       = $config['media']['video']['width'];
+$config['videoHeight']      = $config['media']['video']['height'] ;
+$config['videoThumbWidth']  = $config['media']['video']['thumbWidth'] ;
+$config['videoThumbHeight'] = $config['media']['video']['thumbHeight'] ;	
+$config['audioWidth']       = $config['media']['audio']['width'] ;	
+$config['audioHeight']      = $config['media']['audio']['height'] ;	
+
+/************************************************************
+ * COMPATIBILITA' - RIMUOVERE - END
+************************************************************/
 
 
 
@@ -185,7 +214,7 @@ $config["cfgReservedWords"] = array();
 
 /**
  ** Import PHP constants for smarty templates
- ** (since you cannot access php constants with smarty) 
+ ** (since you cannot access php constants within Smarty) 
  */
 $config['DS']        = DS;
 
@@ -201,7 +230,7 @@ define("BEDITA_PERMS_CREATE",	0x8) ;
 define("BEDITA_PERMS_READ_MODIFY",	BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) ;
 
 /**
- * Costanti per la definizione delel tipologie
+ * Costanti per la definizione delle tipologie
  * di domande
  */
 define("BEDITA_DOMANDA_MULTIPLA",		0x1) ;

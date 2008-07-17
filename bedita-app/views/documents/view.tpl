@@ -21,9 +21,8 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		$('#multimediaItems').show() ;
-		$('textarea.autogrowarea').css("line-height","1.2em").autogrow();
-		
+		$('#multimedia').show() ;
+		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
 	});
 	{/literal}
 </script>

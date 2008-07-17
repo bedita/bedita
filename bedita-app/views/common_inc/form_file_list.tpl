@@ -9,12 +9,18 @@ function commitUploadItem(IDs, rel) {
 	var currClass =  $(".multimediaitem:last").attr("class");
 	//alert(currClass);
 	var emptyDiv = "<div  class=\' " + currClass + " \ gold '><\/div>";
-	for(var i=0 ; i < IDs.length ; i++) {
+	for(var i=0 ; i < IDs.length ; i++)
+	{
 		var id = escape(IDs[i]) ;
-		$(emptyDiv).load(urlGetObj, {'id': id, 'relation':rel}, function (responseText, textStatus, XMLHttpRequest) {
-			$("#loading").hide();
-			$(containerItem).append(this).reorderListItem(); 
-		})
+
+		$(emptyDiv).load(
+			urlGetObj, {'id': id, 'relation':rel}, function (responseText, textStatus, XMLHttpRequest)
+			{
+				$("#loading").hide();
+				$(containerItem).append(this).reorderListItem(); 
+				$(containerItem).sortable("refresh");
+			}
+		)
 	}	
 }
 
@@ -75,7 +81,7 @@ $(document).ready(function()
     	return false;
     });
 	
-	$("#multimediaItems").sortable ({
+	$(containerItem).sortable ({
 		distance: 20,
 		opacity:0.7,
 		update: $(this).reorderListItem

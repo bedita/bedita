@@ -4,7 +4,7 @@ App::import('Core', 'i18n');
 
 class AppController extends Controller
 {
-	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "Msg", "MediaProvider", "Perms");
+	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "Msg", "MediaProvider", "Perms", 'BeThumb');
 	var $components = array('BeAuth', 'BeTree', 'BePermissionModule','Transaction', 'Cookie', 'Session');
 	var $uses = array('EventLog') ;
 	
@@ -278,8 +278,9 @@ class AppController extends Controller
 			}
 			$this->set("module_modify",(isset($this->moduleName) && ($this->modulePerms & BEDITA_PERMS_MODIFY)) ? "1" : "0");
 			if(!isset($this->modulePerms) || !($this->modulePerms & BEDITA_PERMS_READ)) {
-				    $msg = $this->moduleName.": ".__("module access not authorized",true);
-					$this->handleError($msg, $msg, "[".$this->BeAuth->user["userid"]."] ".$msg);
+					$logMsg = "Module [". $this->moduleName.  "] access not authorized";
+					$this->log($logMsg);
+					$this->handleError($logMsg, __("Module access not authorized",true));
 					$this->redirect("/");
 			}
 			$this->set('moduleColor',$this->moduleColor);

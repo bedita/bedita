@@ -1,1 +1,1 @@
-{include file="../common_inc/form_file_item.tpl" obj=$object}
+{include file="../common_inc/form_file_item.tpl"}

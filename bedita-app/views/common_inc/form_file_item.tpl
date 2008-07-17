@@ -1,5 +1,3 @@
-{if empty($item)} {assign var="item" value=$object} {/if}
-
 {assign var="thumbWidth" 		value = 130}
 {assign var="thumbHeight" 		value = 85}
 {assign var="filePath"			value = $item.path}
@@ -22,34 +20,14 @@
 	<div style="width:{$thumbWidth}px; height:{$thumbHeight}px" class="imagebox">
 	{if strtolower($item.ObjectType.name) == "image"}
 	
-		{if !empty($fileName) }
-			{thumb 
-				longside			= $thumbWidth
-				width			= $thumbWidth
-				height			= $thumbHeight
-				file			= $mediaPath$filePath
-				link = "false"
-				linkurl			= $linkUrl
-				cache			= $mediaCacheBaseURL
-				cachePATH		= $mediaCachePATH
-				hint			= "false"
-				html			= $imageAltAttribute
-				frame			= ""
-				window			= "false"
-			}
-		{else}
+		<img src="{$beThumb->image($item)}" title="{$item.filename}" />
 		
-			{if strtolower($item.ObjectType.name) == "image"}
-			<img src="{$session->webroot}img/image-missing.jpg" width="{$thumbWidth}" />{/if}
-			
-		{/if}
-
 	{elseif ($item.provider|default:false)}
 	
 		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="px; " 3="height:" 4=$conf->videoThumbHeight 5="px;"}
 		{assign_associative var="attributes" style=$myStyle}
 	
-		<a href="{$linkUrl}" target="_blank">{$mediaProvider->thumbnail($item, $attributes) }</a>
+		{$mediaProvider->thumbnail($item, $attributes) }
 	
 	{elseif strtolower($item.ObjectType.name) == "audio"}
 	
@@ -68,14 +46,11 @@
 	<label class="evidence">
 		<input type="text" class="priority" name="data[ObjectRelation][{$item.id}][priority]" value="{$item.priority|default:$priority}" size="3" maxlength="3"/>
 	</label>
-	
+
+
 	<ul class="info_file_item">
-		{*
-		<li>{t}title{/t}:
-			<input type="text" class="info_file_item" value="{$fileTitle|escape:'htmlall'}" name="data[ObjectRelation][{$item.id}][title]" />
-		</li>
-		{t}Description{/t}:	
-		*}
+{*<input type="text" class="info_file_item" value="{$fileTitle|escape:'htmlall'}" name="data[ObjectRelation][{$item.id}][title]" />*}
+		<li><input class="info_file_item" style="border:0px; border-bottom:1px solid silver;" type="text" value="{$item.title|default:""}" name="data[ObjectRelation][{$item.id}][title]" /></li>
 		<li>
 			<textarea class="info_file_item" style="border:0px; border-bottom:1px solid silver;" name="data[ObjectRelation][{$item.id}][description]">{$item.description|default:""}</textarea>
 			<br />

@@ -79,6 +79,7 @@ function smarty_function_framed_image ($params, &$smarty)
 						"offsetx"		=> 0,	// OFFSETS SET AT 0 - FUTURE IMPLEMENTATIONS
 						"offsety"		=> 0,
 						"imagetype"		=> "",
+						"mode"			=> 1	// resample mode crop = 0 or fill = 1 (default fill) 
 					);
 
 
@@ -177,6 +178,13 @@ function smarty_function_framed_image ($params, &$smarty)
 	}
 
 
+	// resample mode (fill=1/crop=0)
+	if ( isset($mode) )
+	{
+		$_imageTarget['mode'] = $mode;
+	}
+	
+
 	// destination scale
 	if ( !@empty($noscale) )
 	{
@@ -207,21 +215,35 @@ function smarty_function_framed_image ($params, &$smarty)
 	{
 		if ( !empty ($width) && !empty ($height) )
 		{
-			// compare frame size ratio vs image size ratio
-			if ( ( $width / $height ) > ( $_imageInfo["w"] / $_imageInfo["h"] ) )
-			{
-				$_imageTarget['h'] = $height;
-				$_imageTarget['w'] = round ( $_imageTarget['h'] * ( $_imageInfo["w"] / $_imageInfo["h"] ) );
-			}
-			else if ( ( $width / $height ) < ( $_imageInfo["w"] / $_imageInfo["h"] ) )
-			{
-				$_imageTarget['w'] = $width;
-				$_imageTarget['h'] = round ( $_imageTarget['w'] * ( $_imageInfo["h"] / $_imageInfo["w"] ) );
-			}
-			else if ( ( $width / $height ) == ( $_imageInfo["w"] / $_imageInfo["h"] ) )
+			// special -> same ratio or mode croponly/stretch (2/3)
+			if ( ( $width / $height ) == ( $_imageInfo["w"] / $_imageInfo["h"] ) || $_imageTarget['mode'] > 1 )
 			{
 				$_imageTarget['w'] = $width;
 				$_imageTarget['h'] = $height;
+			}
+			else 
+			{
+				// compare target size ratio vs original size ratio
+				if ( ( $width / $height ) < ( $_imageInfo["w"] / $_imageInfo["h"] ) )
+					$_temp = 1;
+				else
+					$_temp = 0;
+	
+				// invert if fill
+				if ( $_imageTarget['mode'] )  $_temp = 1 - $_temp;
+	
+	
+				// set target size
+				if ( $_temp )
+				{
+					$_imageTarget['h'] = $height;
+					$_imageTarget['w'] = floor ( $_imageTarget['h'] * ( $_imageInfo["w"] / $_imageInfo["h"] ) );
+				}
+				else
+				{
+					$_imageTarget['w'] = $width;
+					$_imageTarget['h'] = floor ( $_imageTarget['w'] * ( $_imageInfo["h"] / $_imageInfo["w"] ) );
+				}
 			}
 		}
 		else if ( !empty ($width) )
