@@ -86,7 +86,7 @@ $(document).ready(function() {
 	
 	<div id="areapropertiesC" class="htabcontent" style="clear:none">
 						
-			{include file="inc/form_section_ajax.tpl"}
+			{include file="inc/form_section.tpl"}
 
 	</div>
 	

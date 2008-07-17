@@ -31,7 +31,7 @@ $(document).ready(function(){
 
 <div class="main">
 	<form action="{$html->url('/areas/saveSection')}" method="post" name="updateForm" id="updateForm" class="cmxform">
-	{include file="inc/form_section_ajax.tpl"}
+	{include file="inc/form_section.tpl"}
 	</form>
 </div>
 
