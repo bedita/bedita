@@ -9,7 +9,7 @@
 
 		<th>{t}nickname{/t}:</th>
 		<td colspan="5">
-			<input type="text" name="data[nickname]" value="{$object.nickname|escape:'html'|escape:'quotes'}" />
+			<input type="text" name="data[nickname]" value="{$object.nickname|escape:'html'|escape:'quotes'}" {if ($object.status=='fixed')}readonly="readonly"{/if}/>{if ($object.status=='fixed')} (readonly){/if}
 		</td>
 
 	</tr>		
@@ -33,7 +33,7 @@
 		<tr>
 			<th>{t}created on{/t}:</th>
 			<td>{$object.created|date_format:"%d-%m-%Y  | %H:%M:%S"}</td>				
-		</tr>	
+		</tr>	 
 		<tr>
 			<th>{t}last modified on{/t}:</th>
 			<td>{$object.modified|date_format:"%d-%m-%Y | %H:%M:%S"}</td>
