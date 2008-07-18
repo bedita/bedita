@@ -20,9 +20,6 @@
 	<div style="width:{$thumbWidth}px; height:{$thumbHeight}px" class="imagebox">
 	{if strtolower($item.ObjectType.name) == "image"}
 	
-		{assign_associative var="par" width=88 height=70 mode="fill" modeparam="FFFF00"}
-		<img src="{$beThumb->image($item, $par)}" title="{$item.name}" />
-		
 		{$beEmbedMedia->object($item)}
 		
 	{elseif ($item.provider|default:false)}
