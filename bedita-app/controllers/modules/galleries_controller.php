@@ -49,9 +49,7 @@ class GalleriesController extends ModulesController {
 		}
 		// Data to save
 		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]);
-		$this->data['title'] = $this->data['LangText'][$this->data['lang']]['title'];
-		$this->data['description'] = $this->data['LangText'][$this->data['lang']]['description'];
-		$this->BeLangText->setupForSave($this->data["LangText"]);
+		
 		$multimedia = (isset($this->data['ObjectRelation']))? $this->data['ObjectRelation'] : array() ;
 		unset($this->data['multimedia']);
 	
@@ -96,8 +94,7 @@ class GalleriesController extends ModulesController {
 						if(!$this->Gallery->BEObject->updateTitleDescription($m['id'] , $m['title'], $m['description'])) {
 							throw new BeditaException( __("Save info child", true));
 						}
-						$this->ContentBase->saveLangTextObjectRelation($m['id'], $this->data['lang'], $m['title'], "title") ;
-						$this->ContentBase->saveLangTextObjectRelation($m['id'], $this->data['lang'], $m['description'], "description") ;
+						
 					}
 				}
 				
@@ -168,7 +165,7 @@ class GalleriesController extends ModulesController {
 		if(isset($obj["LangText"])) $this->BeLangText->setupForView($obj["LangText"]);
 		
 		$this->set('object',	$obj);
-		$this->set('multimedia',$multimedia);
+		$this->set('attach',$multimedia);
 		$this->selfUrlParams = array("id", $id);    
 		$this->setUsersAndGroups();
 	}
