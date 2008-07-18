@@ -35,7 +35,9 @@ class TranslationsController extends ModulesController {
 			if(!($obj = $modelLoaded->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
 			}
-			$obj['relations']=$this->objectRelationArray($obj['ObjectRelation'],$lang_view);
+			if(!empty($obj['ObjectRelation'])) {
+				$obj['relations']=$this->objectRelationArray($obj['ObjectRelation'],$lang_view);
+			}
 			$this->set("object_master",$obj);
 			if(!$lang_view) {
 				$langs = $this->LangText->langsForObject($id);

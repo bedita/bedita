@@ -8,9 +8,9 @@
 <!--
 
 /* define urls for ajax calls. Used in module.areas.js */
-var ajaxContentsUrl = "{$html->url('/areas/listContentAjax')}";
-var ajaxSectionsUrl = "{$html->url('/areas/listSectionAjax')}";
-var ajaxSectionObjectUrl = "{$html->url('/areas/loadSectionAjax')}";
+ajaxContentsUrl = "{$html->url('/areas/listContentAjax')}";
+ajaxSectionsUrl = "{$html->url('/areas/listSectionAjax')}";
+ajaxSectionObjectUrl = "{$html->url('/areas/loadSectionAjax')}";
 //-->
 
 {if !empty($section)}
@@ -66,9 +66,9 @@ $(document).ready(function() {
 	<div id="loading" style="clear:both">&nbsp;</div>
 	
 	<ul class="htab">
-		<li rel="areacontentC">contenuti</li>
-		<li rel="areasectionsC">sezioni</li>
-		<li rel="areapropertiesC">prorietà</li>
+		<li rel="areacontentC">{t}contents{/t}</li>
+		<li rel="areasectionsC">{t}sections{/t}</li>
+		<li rel="areapropertiesC">{t}properties{/t}</li>
 	</ul>				
 	
 	<div id="areacontentC" class="htabcontent" style="clear:none">

@@ -38,14 +38,20 @@
 	Router::connect('/logout', array('controller' => 'authentications', 'action' => 'logout'));
 	
 /**
+ * route to switch locale
+ */
+	Router::connect('/lang/*', array('controller' => 'pages', 'action' => 'changeLang'));
+
+/**
+ * route for areas/sections
+ */
+	Router::connect('/areas/view', array('controller' => 'areas', 'action' => 'index'));
+	Router::connect('/areas/view/*', array('controller' => 'areas', 'action' => 'index'));
+
+/**
  * Then we connect url '/test' to our test controller. This is helpfull in
  * developement.
  */
 	Router::connect('/tests', array('controller' => 'tests', 'action' => 'index'));
-
-/**
- * route to switch locale
- */
-	Router::connect('/lang/*', array('controller' => 'pages', 'action' => 'changeLang'));
 
 ?>

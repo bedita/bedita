@@ -72,10 +72,12 @@
 				<td><input type="text" name="data[nickname]" value="{$section.nickname|default:""}" /></td>
 			</tr>
 			
-			</table>         
+			</table>
 			
-			<br>
-			
+			<br/>
+			<div class="indexlist">
+			{include file="../common_inc/form_translations.tpl" object=$section|default:null}
+			</div>
 			{include file="../common_inc/form_permissions.tpl" el=$section|default:null recursion=true}
 			{include file="../common_inc/form_custom_properties.tpl" el=$section|default:null}
 			

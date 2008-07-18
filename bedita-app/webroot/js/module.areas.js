@@ -8,6 +8,10 @@
 *	ajaxSectionObjectUrl = url to ajax calls for load a section object
 */
 
+var ajaxContentsUrl = "/areas/listContentAjax";
+var ajaxSectionsUrl = "/areas/listSectionAjax";
+var ajaxSectionObjectUrl = "/areas/loadSectionAjax";
+
 $(document).ready(function() {
 
 	// unbind default behavior on tree
