@@ -157,7 +157,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	{
 		$html  = "<img src='";
 		$html .= $this->BeThumb->image ($obj, $params);
-		$html .= "' title='" . $obj['filename'];
+		$html .= "' title='" . $obj['name'];
 		$html .= "' />";
 
 		return $html;

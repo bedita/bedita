@@ -109,7 +109,7 @@ class BeThumbHelper extends AppHelper {
 
 		// sanitize file path & name
 		$this->_imageInfo['path']		= str_replace (' ','%20', $be_obj['path']);
-		$this->_imageInfo['filename']	= str_replace (' ','%20', $be_obj['filename']);
+		$this->_imageInfo['filename']	= str_replace (' ','%20', $be_obj['name']);
 		$this->_imageInfo['ext']		= end ( explode ( '.', $this->_imageInfo['filename'] ) );
 		$this->_imageInfo['filepath']	= $this->_conf['root'] . $this->_imageInfo['path'];  // absolute
 
