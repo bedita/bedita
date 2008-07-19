@@ -114,6 +114,13 @@ class BeThumbHelper extends AppHelper {
 		$this->_imageInfo['filepath']	= $this->_conf['root'] . $this->_imageInfo['path'];  // absolute
 
 
+		// test source file
+		if ( !$this->_testForSource () )
+		{
+			return $this->_conf['imgMissingFile'];
+		}
+
+
 		// upscale
 		if ( isset ($upscale) )	$this->_imageTarget['upscale'] = $upscale;
 		else 					$this->_imageTarget['upscale'] = $this->_conf['image']['thumbUpscale'];
@@ -274,6 +281,37 @@ class BeThumbHelper extends AppHelper {
 
 
 
+
+
+	/**************************************************************************
+	** private methods follow
+	**************************************************************************/
+
+
+
+
+	/*
+	 * test source file for existance and correctness
+	 */
+	private function _testForSource ()
+	{
+		if ( !file_exists($this->_imageInfo['filepath']) )
+		{
+			// file does not exist
+			$this->_triggerError ($this->_helpername . ": file '" . $this->_imageInfo['filepath'] . "' does not exist");
+			return false;
+		}
+		elseif ( !is_readable ($this->_imageInfo['filepath']) )
+		{
+			// cannot access source file on filesystem
+			$this->_triggerError ($this->_helpername . ": cannot read file '" . $this->_imageInfo['filepath'] . "' on filesystem");
+			return false;
+		}
+		else return true;
+	}
+
+
+
 	/*
 	 * image resize strategy, set $this->_imageTarget['w'] & $this->_imageTarget['h']
 	 * input param $width and/or height must be set
@@ -389,21 +427,12 @@ class BeThumbHelper extends AppHelper {
 	 */
 	private function _testForCache ()
 	{
-		if ( is_readable ($this->_imageInfo['filepath']) )
+		// if file exist (with same hash it's not been modified)
+		if ( file_exists ($this->_imageTarget['filepath']) )
 		{
-			// if file exist (with same hash it's not been modified)
-			if ( file_exists ($this->_imageTarget['filepath']) )
-			{
-				return true;
-			}
-			else return false;
+			return true;
 		}
-		else
-		{
-			// cannot access file on filesystem
-			$this->_triggerError ($this->_helpername . ": cannot access file '" . $this->_imageInfo['filepath'] . "' on filesystem");
-			return false;
-		}
+		else return false;
 	}
 
 
@@ -576,7 +605,7 @@ class BeThumbHelper extends AppHelper {
 									"type"			=> "",
 									"ntype"			=> 0,
 									"modified"		=> false,
-									"hash"			=> "",
+									"hash"			=> ""
 								);
 	
 		$this->_imageTarget = array (
