@@ -107,9 +107,9 @@ class BeThumbHelper extends AppHelper {
 		}
 
 
-		// sanitize file path & name
-		$this->_imageInfo['path']		= str_replace (' ','%20', $be_obj['path']);
-		$this->_imageInfo['filename']	= str_replace (' ','%20', $be_obj['name']);
+		// filepath & name
+		$this->_imageInfo['path']		= $be_obj['path'];
+		$this->_imageInfo['filename']	= $be_obj['name'];
 		$this->_imageInfo['ext']		= end ( explode ( '.', $this->_imageInfo['filename'] ) );
 		$this->_imageInfo['filepath']	= $this->_conf['root'] . $this->_imageInfo['path'];  // absolute
 
@@ -416,8 +416,8 @@ class BeThumbHelper extends AppHelper {
 	 */
 	private function _targetUri ()
 	{
-		// set target image uri to resampled cached file
-		return $this->_conf['url'] . $this->_change_file_in_url ($this->_imageInfo['path'], $this->_imageTarget['filename']);
+		// set target image uri to resampled cached file (also urlencode filename here)
+		return $this->_conf['url'] . $this->_change_file_in_url ($this->_imageInfo['path'], rawurlencode($this->_imageTarget['filename']));
 	}
 
 
