@@ -162,15 +162,15 @@ jQuery.validator.addMethod("phone", function(value, element) {
 		</tr>
 		<tr>
 			<th>{t}last login{/t}</th>
-			<td>{$user.User.last_login|date_format:"%d %B %Y   %H:%M"}</td>
+			<td>{$user.User.last_login|date_format:$conf->dateTimePattern}</td>
 		</tr>
 		<tr>
 			<th>{t}created{/t}</th>
-			<td>{$user.User.created|date_format:"%d %B %Y   %H:%M"}</td>
+			<td>{$user.User.created|date_format:$conf->dateTimePattern}</td>
 		</tr
 		<tr>
 			<th>{t}modified{/t}</th>
-			<td>{$user.User.modified|date_format:"%d %B %Y   %H:%M"}</td>
+			<td>{$user.User.modified|date_format:$conf->dateTimePattern}</td>
 		</tr>
 
 </table>
