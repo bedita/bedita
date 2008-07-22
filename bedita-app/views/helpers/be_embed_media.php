@@ -104,7 +104,7 @@ class BeEmbedMediaHelper extends AppHelper {
 				}
 				else $this->_arguments = $params;
 				unset ($params);
-				$this->_output = $this->_image (&$obj, $this->_arguments);
+				$this->_output = $this->_image ($obj, $this->_arguments);
 				break;
 
 
