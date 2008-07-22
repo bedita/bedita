@@ -8,9 +8,8 @@ class SearchText extends BEAppModel
 	var $belongsTo = array(
 		'BEObject' =>
 			array(
-				'className'		=> 'BEObject',
 				'fields'		=> 'id',
-				'foreignKey'	=> 'id',
+				'foreignKey'	=> 'object_id'
 			)
 	);
 

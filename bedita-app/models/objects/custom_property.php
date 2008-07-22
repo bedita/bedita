@@ -1,14 +1,6 @@
 <?php
 /**
  *
- * PHP versions 5
- *
- * CakePHP :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright (c)	2006, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
- *
- * @filesource
  * @copyright		Copyright (c) 2007
  * @link			
  * @package			
@@ -18,22 +10,18 @@
  * @modifiedby		
  * @lastmodified	
  * @license
- * @author 		giangi giangi@qwerg.com			
+ * @author 		giangi giangi@qwerg.com, ste ste@channelweb.it	
 */
 class CustomProperty extends BEAppModel
 {
-	var $name = 'CustomProperty';
-
 	var $belongsTo = array(
 		'BEObject' =>
 			array(
-				'className'		=> 'BEObject',
 				'fields'		=> 'id',
-				'foreignKey'	=> 'id',
+				'foreignKey'	=> 'object_id',
 			),
 			
-	);
-				
+	);				
 }
 
 ?>
