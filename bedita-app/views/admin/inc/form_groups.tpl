@@ -29,6 +29,7 @@ $(document).ready(function() {
 			<th>{t}Access to Backend{/t}</th>	
 			<th>{t}Created{/t}</th>
 			<th>{t}Modified{/t}</th>
+			<th></th>
 		</tr>
 		
 	{foreach from=$groups|default:'' item=g}
@@ -43,11 +44,16 @@ $(document).ready(function() {
 				
 					<td>-</td>
 					<td>-</td>
-					
+					<td>-</td>
 				{else}
 				
 					<td>{$g.Group.created}</td>
 					<td>{$g.Group.modified}</td>
+					<td>{if ($module_modify eq '1')}
+						<input type="button" name="deleteGroup" value="{t}Remove{/t}" 
+						onclick="javascript:delGroupDialog('{$g.Group.name}',{$g.Group.id});"/>
+						{else}-{/if}
+					</td>
 				
 				{/if}
 				
@@ -56,7 +62,6 @@ $(document).ready(function() {
   	{/foreach}
 
 </table>
-
 
 <div class="tab"><h2>{t}Group properties {/t}</h2></div>
 
