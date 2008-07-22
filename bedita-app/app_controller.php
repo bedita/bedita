@@ -40,9 +40,20 @@ class AppController extends Controller
 	public static function handleExceptions(BeditaException $ex) {
 		$errTrace =  $ex->errorTrace();   
 		if(isset(self::$current)) {
-			self::$current->handleError($ex->getDetails(), $ex->getMessage(), $errTrace);
-			self::$current->setResult($ex->result);
-			self::$current->beforeRender();
+			try {
+				self::$current->handleError($ex->getDetails(), $ex->getMessage(), $errTrace);
+				self::$current->setResult($ex->result);
+				self::$current->beforeRender();
+			} catch (Exception $e) { // error 500 if another exception is thrown here
+				header('HTTP/1.1 500 Internal Server Error');
+				// log error
+				$errTrace = get_class($e). ": ". $e->getMessage()."\nFile: ".$e->getFile().
+					" - line: ".$e->getLine()."\nTrace:\n". $e->getTraceAsString();
+				self::$current->log($errTrace);
+				App::import('View', "Smarty");
+				$viewObj = new SmartyView(self::$current);
+				return $viewObj->render(null, "error", VIEWS."errors/error500.tpl");				
+			}
 		} else {
 			// TODO: what else??
 			$obj = new AppController();
@@ -346,6 +357,9 @@ class AppController extends Controller
 	 *
 	 */
 	protected function createSelfURL($cake = true) {
+		if(!isset($this->params["controller"]) || !isset($this->params["action"]))
+			throw new BeditaException("Configuration error", "cake params controller/action missing!!");
+		
 		$baseURL = "/" . $this->params["controller"] ."/". $this->params["action"] ;
 		
 		$size  = func_num_args() ;
