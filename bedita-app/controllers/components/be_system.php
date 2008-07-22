@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Component for importing/exporting bedita data: database, media.
+ * Component for low level operations
  * 
- * Functions:
+ *  - importing/exporting bedita data: database, media.
+ *  - system information
+ *  - .....
  * 
- * $SnapshotComponent::import($file) - import data from compressed file $file
- * $SnapshotComponent::export() - export data from snapshot of bedita (database and media) into compressed file
  */
 
-class SnapshotComponent extends Object {
+class BeSystemComponent extends Object {
 	
 	//var $uses = array('BEObject', 'Stream');
 	//var $components = array('Transaction');
@@ -17,26 +17,22 @@ class SnapshotComponent extends Object {
 	private $basepath;
 	
 	function __construct() {
-		foreach ($this->uses as $model) {
-			if(!class_exists($model))
-				App::import('Model', $model) ;
-			$this->{$model} = new $model() ;
-		}
-		foreach ($this->components as $component) {
-			if(isset($this->{$component})) continue;
-			$className = $component . 'Component' ;
-			if(!class_exists($className))
-				App::import('Component', $component);
-			$this->{$component} = new $className() ;
-		}
-		if (!defined('SQL_SCRIPT_PATH')) {
-			throw new Exception("SQL_SCRIPT_PATH has to be defined in ".APP_DIR."/config/database.php");
-		}
-		if (!defined('MEDIA_ROOT')) {
-			throw new Exception("MEDIA_ROOT has to be defined in ".APP_DIR."/config/bedita.ini.php");
-		}
 	}
 
+	
+	public function systemInfo() {
+		$res = array();
+	    $db = ConnectionManager::getDataSource('default');
+		if ($cid = @mysqli_connect($db->config['host'], $db->config['login'], $db->config['password'])) {
+			$res['mysqlServer'] = @mysqli_get_server_info($cid);
+			$res['mysqlClient'] = @mysqli_get_client_info();
+        	@mysql_close($cid);		
+		}
+		$res['phpVersion'] = phpversion();
+		return $res;
+	}
+	
+/*	
 	public function update($sqlDataFile=null,$media=null) {
 		// update database (schema,procedure,data)
 		$this->executeScript(SQL_SCRIPT_PATH . "bedita_schema.sql");
@@ -53,12 +49,6 @@ class SnapshotComponent extends Object {
 		$this->checkMedia();
 	}
 
-	/**
-	 * 3 steps import:
-	 * 1 - extract compressed file
-	 * 2 - execute sql (schema,procedure,data)
-	 * 3 - copy media data folder into media_root folder
-	 */
 	public function import($exportFile) {
 		
 		$this->$basepath = $this->setupTempDir();
@@ -75,12 +65,6 @@ class SnapshotComponent extends Object {
 		$this->copyFolder($this->basepath.'media',MEDIA_ROOT);
 	}
 	
-	/**
-	 * 3 steps export:
-	 * 1 - create sql data dump in export folder
-	 * 2 - save media_root to export folder
-	 * 3 - zip export folder
-	 */
 	public function export() {
 		
 		$this->$basepath = $this->setupTempDir();
@@ -324,5 +308,6 @@ class DbDump {
     	}
     	return $res;
     }
+*/
 }
 ?>

@@ -1,11 +1,12 @@
-
 <div class="tab"><h2>{t}System info {/t}</h2></div>
 
 <div>	
 	
 		<ul class="bordered">
-			<li><label>bedita: {$conf->Bedita.version}</label></li>
-			<li><label>cake:  {$conf->Cake.version}</label></li>
+			<li><label>bedita:</label>  {$conf->Bedita.version}</li>
+			<li><label>cake:</label>   {$conf->Cake.version}</li>
+			<li><label>php:</label>    {$sys.phpVersion}</li>
+			<li><label>mysql:</label>  server {$sys.mysqlServer} - client {$sys.mysqlClient}</li>
 		</ul>
 
 </div>

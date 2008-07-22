@@ -20,10 +20,12 @@ function smarty_function_dump($params, &$smarty)
 	
 	// Stampa
 	ob_start();
+	echo "<pre>";
 	print_r($vars);
 	$_output = ob_get_contents(); 
 	ob_end_clean();
 	echo htmlentities($_output);
+	echo "</pre>";
 }
 
 /* vim: set expandtab: */

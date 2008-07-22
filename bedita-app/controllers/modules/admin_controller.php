@@ -19,6 +19,7 @@
 class AdminController extends ModulesController {
 
 	 var $uses = array('User', 'Group','Module') ;
+	 var $components = array('BeSystem');
 	 protected $moduleName = 'admin';
 	 
 	/**
@@ -192,6 +193,7 @@ class AdminController extends ModulesController {
 	 public function systemInfo() { 	
 	 	$this->beditaVersion();
 		$this->set('events', $this->EventLog->findAll(NULL, NULL, 'created DESC'));
+		$this->set('sys', $this->BeSystem->systemInfo());
 	 }
 
 	 private function beditaVersion() {
