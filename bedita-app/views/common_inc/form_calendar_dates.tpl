@@ -18,12 +18,12 @@ $(document).ready(function(){
 {assign var=d value=$object.EventDateItem.0}
 
 	<label>{t}start{/t}</label>
-	<input size=10 type="text" class="dateinput" name="data[EventDateItem][{$idx}][start]" id="eventStart" value="{if !empty($d.start)}{$d.start|date_format:$conf->date_format}{/if}"/>
+	<input size=10 type="text" class="dateinput" name="data[EventDateItem][{$idx}][start]" id="eventStart" value="{if !empty($d.start)}{$d.start|date_format:$conf->datePattern}{/if}"/>
 	<input size=5 type="text" id="timeStart" name="data[EventDateItem][{$idx}][timeStart]" value="{if !empty($d.start)}{$d.start|date_format:"%H:%M"}{/if}" size="10"/>
 	
 	<label>{t}end{/t}:</label>
 	{strip}
-	<input size=10 type="text" class="dateinput" name="data[EventDateItem][{$idx}][end]" id="eventEnd" value="{if !empty($d.end)}{$d.end|date_format:$conf->date_format}{/if}"/>
+	<input size=10 type="text" class="dateinput" name="data[EventDateItem][{$idx}][end]" id="eventEnd" value="{if !empty($d.end)}{$d.end|date_format:$conf->datePattern}{/if}"/>
 	{/strip}
 	<input size=5 id="timeEnd" name="data[EventDateItem][{$idx}][timeEnd]" type="text" size="10"/>
 

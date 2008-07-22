@@ -60,18 +60,22 @@ $config['defaultLang'] = "ita"; // default fallback
 
 
 // Dates - default presentation format [syntax used by strftime php function]
-$config['date_format'] 			= "%d/%m/%Y" ;  // ------ SISTEMARE IL NOME NON E' CAMELCASE ------------
+$config['datePattern'] 	= "%d/%m/%Y" ;  //
 
+// Date patterns for different locales (here language codes.... not completely correct)
+$config['datePatternLocale'] = array(
+	"eng"	=> "%m-%d-%Y",
+);
+
+// Default date time pattern
+$config['dateTimePattern'] 	= "%d/%m/%Y %H:%M:%S" ;  //
+
+$config['dateTimePatternLocale'] = array(
+	"eng"	=> "%m-%d-%Y  %H:%M:%S"
+);
 
 // Dates - validation format [day=dd, month=mm, year=yyyy]
 $config['dateFormatValidation'] = "dd/mm/yyyy" ;
-
-/*
-$config['match_year'] 	= "/\d{2,2}-\d{2,2}-(\d{4,4})/" ;	// Trova l'anno nel  formato sopra indicato
-$config['match_month'] 	= "/\d{2,2}-(\d{2,2})-\d{4,4}/" ;	// Trova il mese nel  formato sopra indicato
-$config['match_day'] 	= "/(\d{2,2})-\d{2,2}-\d{4,4}/" ;	// Trova il giorno nel  formato sopra indicato
-*/
-
 
 // Texts in documents ['html', 'txt', 'txtParsed']
 $config['type'] = "txt" ;  // ------ SISTEMARE ------------

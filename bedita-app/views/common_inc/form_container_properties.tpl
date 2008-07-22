@@ -64,11 +64,11 @@ $(document).ready(function(){
 	<hr/>
 	<table class="tableForm" border="0">
 	<tr>
-		<td class="label">{t}Created{/t}:</td><td>{$object.created|date_format:$conf->date_format}</td>
+		<td class="label">{t}Created{/t}:</td><td>{$object.created|date_format:$conf->datePattern}</td>
 		<td class="label">{t}From{/t}:</td><td>{$object.UserCreated.userid|default:""}</td>
 	</tr>
 	<tr>
-		<td class="label">{t}Last modified{/t}:</td><td>{$object.modified|date_format:$conf->date_format}</td>
+		<td class="label">{t}Last modified{/t}:</td><td>{$object.modified|date_format:$conf->datePattern}</td>
 		<td class="label">{t}From{/t}:</td><td>{$object.UserModified.userid|default:""}</td>
 	</tr>
 	<tr>

@@ -24,12 +24,12 @@
 		<td>
 			<label>{t}Start{/t} </label>
 			
-			<input size="10" type="text" class="dateinput" name="data[start]" id="start" value="{if !empty($object.start)}{$object.start|date_format:$conf->date_format}{/if}"/>
+			<input size="10" type="text" class="dateinput" name="data[start]" id="start" value="{if !empty($object.start)}{$object.start|date_format:$conf->datePattern}{/if}"/>
 			&nbsp;&nbsp;
 			
 			<label>{t}End{/t} </label>{strip}
 			
-			<input size="10" type="text" class="dateinput" name="data[end]" id="end" value="{if !empty($object.end)}{$object.end|date_format:$conf->date_format}{/if}"/>
+			<input size="10" type="text" class="dateinput" name="data[end]" id="end" value="{if !empty($object.end)}{$object.end|date_format:$conf->datePattern}{/if}"/>
 		{/strip}
 		</td>
 	</tr>

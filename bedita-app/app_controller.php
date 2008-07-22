@@ -134,6 +134,13 @@ class AppController extends Controller
 			}
 		}
 		$this->set('currLang', $this->currLang);
+		if(isset( $conf->datePatternLocale[$this->currLang])) {
+			Configure::write('datePattern', $conf->datePatternLocale[$this->currLang]);
+		}
+		if(isset( $conf->dateTimePatternLocale[$this->currLang])) {
+			Configure::write('dateTimePattern', $conf->dateTimePatternLocale[$this->currLang]);
+		}
+
 	}
 	
 	/**

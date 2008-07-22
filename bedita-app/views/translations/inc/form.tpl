@@ -186,7 +186,7 @@ $(document).ready(function(){
 		<tr>
 			<th>{t}created on{/t}:</th>
 			<td>
-				{if !empty($object_translation.created_on)}{$object_translation.created_on|date_format:"%d-%m-%Y  | %H:%M:%S"}{else}-{/if}
+				{if !empty($object_translation.created_on)}{$object_translation.created_on|date_format:$conf->dateTimePattern}{else}-{/if}
 				<input type="hidden" name="data[LangText][5][text]" value="{if !empty($object_translation.created_on)}{$object_translation.created_on}{/if}"/>
 				<input type="hidden" name="data[LangText][5][name]" value="created_on"/>
 				{if !empty($object_translation.id.created_on)}<input type="hidden" name="data[LangText][5][id]" value="{$object_translation.id.created_on}"/>{/if}
@@ -195,7 +195,7 @@ $(document).ready(function(){
 		<tr>
 			<th>{t}last modified on{/t}:</th>
 			<td>
-				{if !empty($object_translation.modified_on)}{$object_translation.modified_on|date_format:"%d-%m-%Y  | %H:%M:%S"}{else}-{/if}
+				{if !empty($object_translation.modified_on)}{$object_translation.modified_on|date_format:$conf->dateTimePattern}{else}-{/if}
 				<input type="hidden" name="data[LangText][6][text]" value="{if !empty($object_translation.modified_on)}{$object_translation.modified_on}{/if}"/>
 				<input type="hidden" name="data[LangText][6][name]" value="modified_on"/>
 				{if !empty($object_translation.id.modified_on)}<input type="hidden" name="data[LangText][6][id]" value="{$object_translation.id.modified_on}"/>{/if}
@@ -300,11 +300,11 @@ $(document).ready(function(){
 	<table class="bordered">
 		<tr>
 			<th>{t}created on{/t}:</th>
-			<td>{$object_master.created|date_format:"%d-%m-%Y  | %H:%M:%S"}</td>
+			<td>{$object_master.created|date_format:$conf->dateTimePattern}</td>
 		</tr>
 		<tr>
 			<th>{t}last modified on{/t}:</th>
-			<td>{$object_master.modified|date_format:"%d-%m-%Y | %H:%M:%S"}</td>
+			<td>{$object_master.modified|date_format:$conf->dateTimePattern}</td>
 		</tr>
 		<tr>
 			<th>{t}created by{/t}:</th>

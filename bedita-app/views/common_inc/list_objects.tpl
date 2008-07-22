@@ -116,7 +116,7 @@ function changeStatusObjects() {
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64}</a></td>
 			<td>{$objects[i].id}</td>
 			<td>{$objects[i].status}</td>
-			<td>{$objects[i].modified|date_format:'%d %B %Y %H:%M'}</td>
+			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
 			<td>{$objects[i].lang}</td>
 		</tr>
 		

@@ -13,7 +13,7 @@
 	<option value="{$galleries[i].id}" {if $gallery_id eq $galleries[i].id}selected="selected"{/if}>
 		{$galleries[i].title|escape:'quote'} - 
 		{$galleries[i].status} - 
-		{$galleries[i].created|date_format:$conf->date_format} - 
+		{$galleries[i].created|date_format:$conf->datePattern} - 
 		{$galleries[i].lang}
 	</option>
 	{/section}

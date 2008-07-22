@@ -32,11 +32,11 @@
 		</tr>	
 		<tr>
 			<th>{t}created on{/t}:</th>
-			<td>{$object.created|date_format:"%d-%m-%Y  | %H:%M:%S"}</td>				
+			<td>{$object.created|date_format:$conf->dateTimePattern}</td>				
 		</tr>	 
 		<tr>
 			<th>{t}last modified on{/t}:</th>
-			<td>{$object.modified|date_format:"%d-%m-%Y | %H:%M:%S"}</td>
+			<td>{$object.modified|date_format:$conf->dateTimePattern}</td>
 		</tr>
 		<tr>
 			<th>{t}last modified by{/t}:</th>
