@@ -181,9 +181,7 @@ class AppController extends Controller
 	
 	private function redirUrl($url) {
 		if(strpos($url, self::VIEW_FWD) === 0) {
-			$this->autoRender = false;
 			$this->action=substr($url, strlen(self::VIEW_FWD));
-			$this->output = $this->render($this->action);
 		} else {
 			$this->redirect($url);
 		}
