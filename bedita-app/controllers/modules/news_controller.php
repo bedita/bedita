@@ -80,25 +80,27 @@ class NewsController extends ModulesController {
 
 
 	public function save() {
- 		$this->checkWriteModulePermission();
- 	 	if(empty($this->data)) 
- 	 	    throw new BeditaException( __("No data", true));
+		$this->checkWriteModulePermission();
+		if(empty($this->data)) 
+		    throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
-	 	// verify object permissions
-	 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-	 			throw new BeditaException(__("Error modify permissions", true));
-	 	// format custom properties
-	 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-	 	// if no Category is checked set an empty array to delete association between news and category
-	 	if (!isset($this->data["ObjectCategory"])) $this->data["ObjectCategory"] = array();
+		// verify object permissions
+		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+				throw new BeditaException(__("Error modify permissions", true));
+		// format custom properties
+		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
+		// if no Category is checked set an empty array to delete association between news and category
+		if (!isset($this->data["ObjectCategory"])) $this->data["ObjectCategory"] = array();
 		$this->Transaction->begin() ;
 		if(!$this->ShortNews->save($this->data)) {
-	 		throw new BeditaException(__("Error saving news", true), $this->ShortNews->validationErrors);
-	 	}
-		if(!isset($this->data['destination'])) 
-			$this->data['destination'] = array() ;
-		$this->BeTree->updateTree($this->ShortNews->id, $this->data['destination']);
-	 	// update permissions
+			throw new BeditaException(__("Error saving news", true), $this->ShortNews->validationErrors);
+		}
+		if(!($this->data['status']=='fixed')) {
+			if(!isset($this->data['destination'])) 
+				$this->data['destination'] = array() ;
+			$this->BeTree->updateTree($this->Document->id, $this->data['destination']);
+		}
+		// update permissions
 		if(!isset($this->data['Permissions'])) 
 			$this->data['Permissions'] = array() ;
 		$this->Permission->saveFromPOST($this->ShortNews->id, $this->data['Permissions'], 

@@ -10,8 +10,12 @@
 
 		<th>{t}Status{/t}:</th>
 		<td colspan="4">
-			{html_radios name="data[status]" options=$conf->statusOptions 
-			selected=$object.status|default:$conf->status separator="&nbsp;"}
+			{if ($object.status == 'fixed')}
+			{t}This object is fixed - some data is readonly{/t}
+			<input type="hidden" name="data[status]" value="fixed"/>
+			{else}
+			{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator="&nbsp;"}
+			{/if}
 		</td>
 
 	</tr>

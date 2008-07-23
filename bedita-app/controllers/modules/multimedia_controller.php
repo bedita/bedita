@@ -131,7 +131,7 @@ class MultimediaController extends ModulesController {
                 $this->BEObject->validationErrors);
         }
 
-        // aggiorna i permessi
+        // update permissions
         $perms = isset($this->data["Permissions"])?$this->data["Permissions"]:array();
         if(!$this->Permission->saveFromPOST(
                 $this->BEObject->id, $perms,

@@ -9,7 +9,7 @@
 
 		<th>{t}nickname{/t}:</th>
 		<td colspan="5">
-			<input type="text" name="data[nickname]" value="{$object.nickname|escape:'html'|escape:'quotes'}" {if ($object.status=='fixed')}readonly="readonly"{/if}/>{if ($object.status=='fixed')} (readonly){/if}
+			<input type="text" name="data[nickname]" value="{$object.nickname|escape:'html'|escape:'quotes'}" {if ($object.status=='fixed')}readonly="readonly"{/if}/>
 		</td>
 
 	</tr>		

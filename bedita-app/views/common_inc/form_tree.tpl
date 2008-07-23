@@ -12,6 +12,9 @@ $(document).ready(function(){
 			$("#s_{$id_parent}").attr("checked", "checked");
 		{/foreach}
 	{/if}
+	{if $object.status == 'fixed'}
+	$("#whereto input[@type=checkbox]").attr("disabled","disabled");
+	{/if}
 	{literal}
 });
 {/literal}
@@ -22,7 +25,7 @@ $(document).ready(function(){
 <div class="tab"><h2>{t}{if empty($tpl_title)}Where put the document into{else}{$tpl_title}{/if}{/t}</h2></div>
 
 <fieldset id="whereto">
-	
+	{if $object.status == 'fixed'}{t}The content is fixed: it's not possible to change the position in the tree{/t}{/if}
 	{if isset($excludedSubTreeId)}
 		{if empty($tree)}
 			{t}No tree found{/t}

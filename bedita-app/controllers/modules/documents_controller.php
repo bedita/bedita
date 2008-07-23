@@ -110,11 +110,13 @@ class DocumentsController extends ModulesController {
 		// Save data
 		$this->data["ObjectCategory"] = $this->ObjectCategory->saveTagList($this->params["form"]["tags"]);
 		if(!$this->Document->save($this->data)) {
-	 		throw new BeditaException(__("Error saving document", true), $this->Document->validationErrors);
-	 	}
-		if(!isset($this->data['destination'])) 
-			$this->data['destination'] = array() ;
-		$this->BeTree->updateTree($this->Document->id, $this->data['destination']);
+			throw new BeditaException(__("Error saving document", true), $this->Document->validationErrors);
+		}
+		if(!($this->data['status']=='fixed')) {
+			if(!isset($this->data['destination'])) 
+				$this->data['destination'] = array() ;
+			$this->BeTree->updateTree($this->Document->id, $this->data['destination']);
+		}
 	 	// update permissions
 		if(!isset($this->data['Permissions'])) 
 			$this->data['Permissions'] = array() ;

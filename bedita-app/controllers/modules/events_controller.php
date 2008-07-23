@@ -111,9 +111,11 @@ class EventsController extends ModulesController {
 	 		throw new BeditaException(__("Error saving event", true), $this->Event->validationErrors);
 	 	}
 
-		if(!isset($this->data['destination'])) 
-			$this->data['destination'] = array() ;
-		$this->BeTree->updateTree($this->Event->id, $this->data['destination']);
+		if(!($this->data['status']=='fixed')) {
+			if(!isset($this->data['destination'])) 
+				$this->data['destination'] = array() ;
+			$this->BeTree->updateTree($this->Document->id, $this->data['destination']);
+		}
 		
 	 	// update permissions
 		if(!isset($this->data['Permissions'])) 
