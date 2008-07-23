@@ -140,7 +140,7 @@ CREATE TABLE question_types (
 CREATE TABLE objects (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   object_type_id INTEGER UNSIGNED NOT NULL,
-  `status` ENUM('on','off','draft','staging') DEFAULT 'draft',
+  `status` ENUM('on','off','draft','staging','fixed') DEFAULT 'draft',
   created DATETIME NULL,
   modified DATETIME NULL,
   title VARCHAR(255) NULL,
