@@ -75,12 +75,7 @@ class TagsController extends ModulesController {
 
 	public function listAllTags() {
 		$this->layout = "empty";
-		$this->set("listTags",$this->ObjectCategory->find("all", 
-										array(
-											"conditions" => "ObjectCategory.object_type_id is null",
-											"order"		=> array("ObjectCategory.label" => "asc")						
-										))
-					);
+		$this->set("listTags",$this->ObjectCategory->getTags(true));
 	}
 	
 	protected function forward($action, $esito) {

@@ -84,7 +84,14 @@ class ObjectCategory extends BEAppModel {
 		return $arrIdTag;
 	}
 	
-	public function getWeighedTags() {
+	/**
+	 * return list of tags with their weight
+	 *
+	 * @param bool $cloud, if it's true return css class for cloud view
+	 * @param int $coeff, coeffiecient for calculate the distribution
+	 * @return array
+	 */
+	public function getTags($cloud=false, $coeff=12) {
 
 		$sql = "SELECT DISTINCT object_categories.id, object_categories.label, 
 					   COUNT(content_bases_object_categories.object_category_id) AS weight
@@ -95,13 +102,36 @@ class ObjectCategory extends BEAppModel {
 				ORDER BY object_categories.label ASC
 				";
 		$res = $this->query($sql);
+		
+		if ($cloud) {
+			$sqlMax = "SELECT MAX(weight) AS max, MIN(weight) AS min FROM (" . $sql . ") tab";
+			$maxmin = $this->query($sqlMax);
+			$max = $maxmin[0][0]["max"];		
+			$min = $maxmin[0][0]["min"];
+			$distribution = ($max - $min) / $coeff;
+		}
+		
 		$tags = array();
 		if (!empty($res)) {
-			foreach ($res as $t) {
-				$tags[] = array_merge($t["object_categories"],$t[0]);
+			foreach ($res as $key => $t) {
+				$tags[$key] = array_merge($t["object_categories"],$t[0]);
+				
+				if ($cloud) {
+					if ($t[0]["weight"] == $min)
+						$tags[$key]['class'] = "smallestTag";
+					elseif ($t[0]["weight"] == $max)
+						$tags[$key]['class']  = "largestTag";
+					elseif ($t[0]["weight"] > ($min + ($distribution * 2)))
+						$tags[$key]['class']  = "largeTag";
+					elseif ($t[0]["weight"] > ($min + $distribution))
+						$tags[$key]['class']  = "mediumTag";
+					else 
+						$tags[$key]['class']  = "smallTag";
+				}
+				
 			}
-		}
-
+		}		
+		
 		return $tags;
 	}
 	
