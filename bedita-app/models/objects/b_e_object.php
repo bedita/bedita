@@ -138,6 +138,7 @@ class BEObject extends BEAppModel
 			$this->data[$this->name][$label] = $tmps ;
 		  }
 		}
+		$this->unbindModel(array("hasMany"=>array("LangText")));
 		return true ;
 	}
 	
