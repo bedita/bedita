@@ -955,7 +955,7 @@ input[type=radio] {
 	width:119px; height:119px; 
 	padding:10px;
 	margin: 0px 0px 1px 1px;
-	background-color:#000000; 
+	background-color:#FFFFFF; 
 
 }
 
@@ -968,7 +968,7 @@ input[type=radio] {
 }
 
 .message.info {
-	color:white;
+	color:#000000;
 }
 
 .message LABEL {
