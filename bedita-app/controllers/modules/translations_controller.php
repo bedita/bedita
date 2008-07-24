@@ -7,10 +7,23 @@ class TranslationsController extends ModulesController {
 	protected $moduleName = 'translations';
 	
 	public function index() {
+		$conditions = array("LangText.name = 'status'");
+		if(!empty($this->data['translation_lang'])) {
+			$clang = $this->data['translation_lang'];
+			$conditions[]="LangText.lang = '$clang'";
+		}
+		if(!empty($this->data['translation_status'])) {
+			$cstatus = $this->data['translation_status'];
+			$conditions[]="LangText.text = '$cstatus'";
+		}
+		if(!empty($this->data['translation_object_id'])) {
+			$cobjid = $this->data['translation_object_id'];
+			$conditions[]="LangText.object_id = '$cobjid'";
+		}
 		$objects_status=$this->LangText->find('all',
 			array(
 				'fields'=>array('id','object_id','name','text','long_text','lang'),
-				'conditions'=>array("LangText.name = 'status'")
+				'conditions'=>$conditions
 			)
 		);
 		$res=$this->LangText->find('all',
@@ -19,9 +32,17 @@ class TranslationsController extends ModulesController {
 				'conditions'=>array("LangText.name = 'title'")
 			)
 		);
+		$objects = array();
+		$objects_title = array();
 		foreach($res as $k => $v) {
-			$objects_title[$v['LangText']['object_id']] = $v['LangText']['text'];
+			$objects_title[$v['LangText']['object_id']][$v['LangText']['lang']] = $v['LangText']['text'];
+			$this->BEObject->restrict(array("BEObject" => array()));
+			if(!($obj = $this->BEObject->findById($v['LangText']['object_id']))) {
+				 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
+			}
+			$objects[$v['LangText']['object_id']][$v['LangText']['lang']] = $obj;
 		}
+		$this->set("objects_translated",$objects);
 		$this->set("translations",$objects_status);
 		$this->set("translations_title",$objects_title);
 	}

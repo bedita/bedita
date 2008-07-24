@@ -158,20 +158,27 @@ $(document).ready(function(){
 			</td>
 			<td>
 				{assign var='l1' value=$lang_text_index++}
+				{assign var='image_status' value=$image.LangText.status[$object_translation.lang]|default:$image.status}
+				<input type="hidden" name="data[LangText][{$l1}][name]" value="status"/>
+				<input type="hidden" name="data[LangText][{$l1}][object_id]" value="{$image.id}"/>
+				<input type="hidden" name="data[LangText][{$l1}][text]" value="{$image_status}"/>
+				{if !empty($image.LangTextExtended) && !empty($image.LangTextExtended[$image.id][$object_translation.lang].status)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangTextExtended[$image.id][$object_translation.lang].status}"/>{/if}
+
+				{assign var='l1' value=$lang_text_index++}
 				{assign var='image_title' value=$image.LangText.title[$object_translation.lang]|default:''}
 				<label>{t}Title{/t}</label>
-				<input type="hidden" name="data[LangText][{$lang_text_index}][name]" value="title"/>
-				<input type="text" name="data[LangText][{$lang_text_index}][text]" style="width:210px !important" value="{$image_title}" />
-				<input type="hidden" name="data[LangText][{$lang_text_index}][object_id]" value="{$image.id}"/>
-				{if !empty($image.LangTextExtended)}<input type="hidden" name="data[LangText][{$lang_text_index}][id]" value="{$image.LangTextExtended[$image.id][$object_translation.lang].title}"/>{/if}
+				<input type="hidden" name="data[LangText][{$l1}][name]" value="title"/>
+				<input type="text" name="data[LangText][{$l1}][text]" style="width:210px !important" value="{$image_title}" />
+				<input type="hidden" name="data[LangText][{$l1}][object_id]" value="{$image.id}"/>
+				{if !empty($image.LangTextExtended)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangTextExtended[$image.id][$object_translation.lang].title}"/>{/if}
 				
-				{assign var='l2' value=$lang_text_index++}
+				{assign var='l1' value=$lang_text_index++}
 				{assign var='image_description' value=$image.LangText.description[$object_translation.lang]|default:''}
 				<label>{t}Description{/t}</label>
-				<input type="hidden" name="data[LangText][{$lang_text_index}][name]" value="description"/>
-				<textarea style="height:38px; width:210px !important" name="data[LangText][{$lang_text_index}][text]">{$image_description}</textarea>
-				<input type="hidden" name="data[LangText][{$lang_text_index}][object_id]" value="{$image.id}"/>
-				{if !empty($image.LangTextExtended)}<input type="hidden" name="data[LangText][{$lang_text_index}][id]" value="{$image.LangTextExtended[$image.id][$object_translation.lang].description}"/>{/if}
+				<input type="hidden" name="data[LangText][{$l1}][name]" value="description"/>
+				<textarea style="height:38px; width:210px !important" name="data[LangText][{$l1}][text]">{$image_description}</textarea>
+				<input type="hidden" name="data[LangText][{$l1}][object_id]" value="{$image.id}"/>
+				{if !empty($image.LangTextExtended)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangTextExtended[$image.id][$object_translation.lang].description}"/>{/if}
 			
 			</td>
 		</tr>
