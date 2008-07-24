@@ -1,3 +1,14 @@
+{$javascript->link("jquery/jquery.autogrow")}
+
+<script language="JavaScript">
+	{literal}
+	$(document).ready( function ()
+	{
+		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
+	});
+	{/literal}
+</script>
+
 <input type="hidden" name="data[id]" value="{$section.id|default:null}"/>
 <table>
 			
@@ -23,17 +34,17 @@
 				</tr>
 				<tr>
 					<th>{t}Title{/t}</th>
-					<td><input type="text" name="data[title]" value="{$section.title|default:""}" /></td>
+					<td><input type="text" style="width:280px" name="data[title]" value="{$section.title|default:""}" /></td>
 				</tr>
 				<tr>
 					<th>{t}Description{/t}</th>
-					<td><textarea style="height:30px" class="autogrowarea" name="data[description]">{$section.description|default:""}</textarea></td>
+					<td><textarea style="width:280px" class="autogrowarea" name="data[description]">{$section.description|default:""}</textarea></td>
 			</tr>
 
 			<tr>
 				<td><label>{t}reside in{/t}</label></td>
 				<td>
-					<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[parent_id]">
+					<select id="areaSectionAssoc" class="areaSectionAssociation" style="width:280px" name="data[parent_id]">
 					{if !empty($parent_id)}
 						{$beTree->option($tree, $parent_id)}
 					{else}
@@ -45,16 +56,16 @@
 			
 			<tr>
 				<td><label>{t}publisher{/t}</label></td>
-				<td><input type="text" name="publisher" value="" /></td>
+				<td><input type="text" style="width:280px" name="publisher" value="" /></td>
 			</tr>
 			<tr>
 					<td><strong>&copy; {t}rights{/t}</strong></td>
-				<td><input type="text" name="data[rights]" value="{$section.rights|default:null}" /></td>
+				<td><input type="text" style="width:280px" name="data[rights]" value="{$section.rights|default:null}" /></td>
 			</tr>
 			<tr>
 				<td> <label>{t}license{/t}</label></td>                
 				<td>
-					<select style="width:200px;" name="data[license]">
+					<select style="width:280px" name="data[license]">
 						<option value="">--</option>
 						<option  value="Creative Commons Attribuzione 2.5 Italia"{if !empty($section) && $section.license == "Creative Commons Attribuzione 2.5 Italia"} selected{/if}>Creative Commons Attribuzione 2.5 Italia</option>
 						<option  value="Creative Commons Attribuzione-Non commerciale 2.5 Italia"{if !empty($section) && $section.license == "Creative Commons Attribuzione-Non commerciale 2.5 Italia"} selected{/if}>Creative Commons Attribuzione-Non commerciale 2.5 Italia</option>
@@ -69,7 +80,7 @@
 			
 			<tr>
 				<th>{t}Nickname{/t}</th>
-				<td><input type="text" name="data[nickname]" value="{$section.nickname|default:""}" /></td>
+				<td><input type="text" style="width:280px" name="data[nickname]" value="{$section.nickname|default:""}" /></td>
 			</tr>
 			
 			</table>

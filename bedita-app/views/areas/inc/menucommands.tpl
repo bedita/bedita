@@ -12,7 +12,7 @@ $(document).ready(function(){
 		{literal}
 	});
 	
-	$("div.insidecol input[@name='save']").click(function() {
+	$("input[@name='save']").click(function() {
 		$("#updateForm").submit();
 	});
 });
@@ -25,9 +25,9 @@ $(document).ready(function(){
 	   <label class="areas" href="{$html->url('/areas')}">{t}Publishing{/t}</label>
 	</div> 
 	
-	{include file="../common_inc/messages.tpl"}
-			
 
+			
+{*
 	<div class="insidecol">
 		
 		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />	
@@ -35,7 +35,7 @@ $(document).ready(function(){
 
 	
 	</div>
-
+*}
 
 
 

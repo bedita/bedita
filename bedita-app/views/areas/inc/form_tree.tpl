@@ -5,7 +5,7 @@
 *}
 
 
-	<div class="publishingtree" style="width:295px; margin-left:20px;">
+	<div class="publishingtree" style="width:380px; margin:0px;">
 			
 		{$beTree->view($tree)}
 		

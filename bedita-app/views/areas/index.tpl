@@ -33,7 +33,7 @@ $(document).ready(function() {
 
 {include file="inc/menuleft.tpl" method="index"}
 
-{include file="inc/menucommands.tpl" fixed=true}
+{include file="inc/menucommands.tpl" fixed=false}
 
 <div class="head">
 		
@@ -41,7 +41,7 @@ $(document).ready(function() {
 
 </div> 
 
-<div class="main" style="width:325px;">
+<div class="main" style="left:180px; width:420px;">
 
 	
 {if !empty($smarty.get.hyper)}
@@ -54,7 +54,7 @@ $(document).ready(function() {
 
 <form action="{$html->url('/areas/saveSection')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 
-<div style="width:360px; position:absolute; top:160px; left:640px">
+<div style="width:420px; position:absolute; top:160px; left:580px">
 
 				
 <div class="tab"><h2>{t}Section details{/t}</h2></div>
@@ -62,7 +62,7 @@ $(document).ready(function() {
 <fieldset style="padding:0px" id="properties">		
 	
 	<h2 id="sectionTitle" style="margin-bottom:5px"></h2>
-	
+
 	<div id="loading" style="clear:both">&nbsp;</div>
 	
 	<ul class="htab">
@@ -90,6 +90,10 @@ $(document).ready(function() {
 
 	</div>
 	
+	<hr />
+	<input class="bemaincommands" style="display:inline" type="button" value=" {t}Save{/t} " name="save" />	
+	<input class="bemaincommands" style="display:inline" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" {if !($object.id|default:false)}disabled="1"{/if} />
+
 	
 </fieldset>	
 							

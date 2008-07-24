@@ -34,8 +34,7 @@ $(document).ready(function(){
 	   <label class="documents" rel="{$html->url('/documents')}">{t}Documents{/t}</label>
 	</div> 
 	
-	
-	{include file="../common_inc/messages.tpl"}
+
 	
 	{assign var="user" value=$session->read('BEAuthUser')}
 	

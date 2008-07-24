@@ -9,7 +9,9 @@ Menu a SX valido per tutte le pagine del controller.
 
 		<div class="modules"><label class="bedita" rel="{$html->url('/')}">BEdita 3.0</label></div>
 
-
+	
+		{include file="../common_inc/messages.tpl"}
+	
 		<ul class="insidecol">
 
 		{if $module_modify eq '1'}
@@ -32,13 +34,19 @@ Menu a SX valido per tutte le pagine del controller.
 
 
 
-		{if !empty($previews)}
+{if !empty($previews)}
+
 		<div class="insidecol"><label>{t}Previews{/t}</label></div>
+		
 		<ul class="insidecol">
-		{foreach from=$previews item="preview"}<li><a href="{$preview.url}" target="_blank">{$preview.desc}</a></li>{/foreach}
+		{foreach from=$previews item="preview"}
+			<li><a href="{$preview.url}" target="_blank">{$preview.desc}</a></li>
+		{/foreach}
 		</ul>
-		{/if}
+		
+{/if}
 
 		<div id="handlerChangeAlert"></div>
+		
 
 </div>
