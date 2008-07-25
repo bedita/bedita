@@ -93,7 +93,7 @@ class ObjectCategory extends BEAppModel {
 	 */
 	public function getTags($cloud=false, $coeff=12) {
 
-		$sql = "SELECT DISTINCT object_categories.id, object_categories.label, 
+		$sql = "SELECT DISTINCT object_categories.id, object_categories.label, object_categories.status,
 					   COUNT(content_bases_object_categories.object_category_id) AS weight
 				FROM object_categories,content_bases_object_categories
 				WHERE object_categories.object_type_id IS NULL

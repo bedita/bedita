@@ -82,12 +82,6 @@ function delObjects() {
 
 	<input type="hidden" name="data[id]"/>
 	<input type="hidden" name="objects_selected" id="objects_selected"/>
-
-	{*
-	{assign var="pagParams" value=$paginator->params()}
-	{assign_associative var="optionsPag" class=""}
-	{assign_associative var="optionsPagDisable" class=""}
-	*}
 		
 				
 	<table class="indexlist">
@@ -100,16 +94,9 @@ function delObjects() {
 			<img class="tagToolbar viewlist" src="{$html->webroot}img/iconML-list.png" />
 			
 		</th>
-		{*
-		<th>
-			{$paginator->sort('Name', 'label')}
-		</th>
-		<th>{$paginator->sort('Status', 'status')}</th>
-		<th class="center">{$paginator->sort('Ocurrences', 'occurences')}</th>
-		*}
 		
 		<th>{t}Name{/t}</th>
-		{*<th>{t}Status{/t}</th>*}
+		<th>{t}Status{/t}</th>
 		<th>{t}Ocurrences{/t}</th>
 		<th>Id</th>
 		<th></th>
@@ -124,7 +111,7 @@ function delObjects() {
 				<a href="{$html->url('view/')}{$tags[i].id}">{$tags[i].label}</a>
 				
 			</td>
-			{*<td>{$tags[i].status}</td>*}
+			<td>{$tags[i].status}</td>
 			<td class="center">{$tags[i].weight}</td>
 			<td><a href="{$html->url('view/')}{$tags[i].id}">{$tags[i].id}</a></td>
 			<td><a href="{$html->url('view/')}{$tags[i].id}">{t}details{/t}</a></td>
