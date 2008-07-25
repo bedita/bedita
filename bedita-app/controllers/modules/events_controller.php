@@ -114,7 +114,7 @@ class EventsController extends ModulesController {
 		if(!($this->data['status']=='fixed')) {
 			if(!isset($this->data['destination'])) 
 				$this->data['destination'] = array() ;
-			$this->BeTree->updateTree($this->Document->id, $this->data['destination']);
+			$this->BeTree->updateTree($this->Event->id, $this->data['destination']);
 		}
 		
 	 	// update permissions
