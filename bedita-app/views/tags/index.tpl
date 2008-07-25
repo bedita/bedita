@@ -74,7 +74,7 @@ function delObjects() {
 
 {include file="inc/menucommands.tpl" method="index"}
 
-{include file="../common_inc/toolbar.tpl"}
+{include file="inc/toolbar.tpl"}
 
 <div class="main">
 
@@ -83,11 +83,11 @@ function delObjects() {
 	<input type="hidden" name="data[id]"/>
 	<input type="hidden" name="objects_selected" id="objects_selected"/>
 
-	
+	{*
 	{assign var="pagParams" value=$paginator->params()}
 	{assign_associative var="optionsPag" class=""}
 	{assign_associative var="optionsPagDisable" class=""}
-
+	*}
 		
 				
 	<table class="indexlist">
@@ -100,29 +100,34 @@ function delObjects() {
 			<img class="tagToolbar viewlist" src="{$html->webroot}img/iconML-list.png" />
 			
 		</th>
-		
+		{*
 		<th>
 			{$paginator->sort('Name', 'label')}
 		</th>
 		<th>{$paginator->sort('Status', 'status')}</th>
 		<th class="center">{$paginator->sort('Ocurrences', 'occurences')}</th>
+		*}
+		
+		<th>{t}Name{/t}</th>
+		{*<th>{t}Status{/t}</th>*}
+		<th>{t}Ocurrences{/t}</th>
 		<th>Id</th>
 		<th></th>
 	</tr>
 	<tbody id="taglist">
-	{section name="i" loop=$objects}
+	{section name="i" loop=$tags}
 		<tr>
 			<td style="width:36px; text-align:center">
-				<input type="checkbox" name="object_chk" class="objectCheck" title="{$objects[i].id}"/>
+				<input type="checkbox" name="object_chk" class="objectCheck" title="{$tags[i].id}"/>
 			</td>
 			<td>
-				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].label}</a>
+				<a href="{$html->url('view/')}{$tags[i].id}">{$tags[i].label}</a>
 				
 			</td>
-			<td>{$objects[i].status}</td>
-			<td class="center">33</td>
-			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].id}</a></td>
-			<td><a href="{$html->url('view/')}{$objects[i].id}">{t}details{/t}</a></td>
+			{*<td>{$tags[i].status}</td>*}
+			<td class="center">{$tags[i].weight}</td>
+			<td><a href="{$html->url('view/')}{$tags[i].id}">{$tags[i].id}</a></td>
+			<td><a href="{$html->url('view/')}{$tags[i].id}">{t}details{/t}</a></td>
 		</tr>
 	{sectionelse}
 	
@@ -134,8 +139,8 @@ function delObjects() {
 	<tbody id="tagcloud">
 		<tr>
 			<td colspan="10" class="tag graced" style="text-align:justify; line-height:1.5em; padding:20px;">
-				{section name="i" loop=$objects}
-				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].label}</a>
+				{section name="i" loop=$tags}
+				<a href="{$html->url('view/')}{$tags[i].id}">{$tags[i].label}</a>
 				{/section}
 			</td>
 		</tr>

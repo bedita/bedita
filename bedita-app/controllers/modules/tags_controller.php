@@ -32,23 +32,29 @@ class TagsController extends ModulesController {
 	protected $moduleName = 'tags';
 
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
-		$data = $this->paginate("ObjectCategory");
-		$this->set('objects', $data);
+		//$data = $this->paginate("ObjectCategory");
+		$data = $this->ObjectCategory->getTags(true);
+		$this->set("numTags", count($data));
+		$this->set('tags', $data);
 	}
 
 	public function view($id = null) {
-		$obj = null ;
+		$tag = array();
+		$referenced = array();
+		
 		if(isset($id)) {
-			$obj = $this->ObjectCategory->findById($id);
-			if($obj == null || $obj === false) {
+			$tag = $this->ObjectCategory->findById($id);
+			if($tag == null || $tag === false) {
 				throw new BeditaException(__("Error loading tag: ", true).$id);
 			}
+			
+			$referenced = $this->ObjectCategory->getContentsByTag($tag["label"]);
+			$tag["weight"] = count($referenced);
 		}
-		$this->set('object',	$obj);
-		$this->set('tree', 		$this->BeTree->getSectionsTree());
-		$this->set('parents',	$this->BeTree->getParents($id));		
+		
+		$this->set('tag',	$tag);
+		$this->set("referenced", $referenced);		
 		$this->selfUrlParams = array("id", $id);
-		$this->setUsersAndGroups();
 	 }
 
 	public function save() {

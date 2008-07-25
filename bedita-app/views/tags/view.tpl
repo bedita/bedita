@@ -19,8 +19,8 @@
 <div class="head">
 
 	<h2>
-		{if $object}
-			Tag	“<em style="color:#FFFFFF; line-height:2em">{$object.label}</em>”
+		{if $tag}
+			Tag	“<em style="color:#FFFFFF; line-height:2em">{$tag.label}</em>”
 		{else}
 			{t}New tag{/t}
 		{/if}

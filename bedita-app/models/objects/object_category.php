@@ -160,6 +160,8 @@ class ObjectCategory extends BEAppModel {
 		
 		$beObject = ClassRegistry::init("BEObject");
 		
+		$contents = array();
+		
 		foreach ($tag["ContentBase"] as $c) {
 			
 			$o = $beObject->find("first", array(
