@@ -376,7 +376,7 @@ abstract class FrontendController extends AppController {
 			throw new BeditaException("Bad data");
 		}
 		$sectionItems = array();
-		$items = $this->BeTree->getChildren($parent_id, $this->status);
+		$items = $this->BeTree->getChildren($parent_id, $this->status, false, "priority");
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);
