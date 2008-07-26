@@ -9,10 +9,7 @@ Menu a SX valido per tutte le pagine del controller.
 	
 	<div class="modules">
 	   <label class="tags" rel="{$html->url('/tags')}">{t}Tags{/t}</label>
-	</div> 
-	
-	
-	{include file="../common_inc/messages.tpl"}
+	</div>
 	
 	
 	{if $method == "view" && $module_modify eq '1'}

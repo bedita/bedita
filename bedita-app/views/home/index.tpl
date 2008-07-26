@@ -70,10 +70,6 @@ $(document).ready(function() {
 
 		<hr />
 {if !empty($conf->multilang) && $conf->multilang}
-	 {*
-	{t}Language{/t}{if $session->check('Config.language')} [{$session->read('Config.language')}] {/if}:
-	<br />
-	*}
 	{foreach key=key item=item name=l from=$conf->langsSystem}
 		<a {if $session->read('Config.language') == $key}class="on"{/if} href="{$html->base}/lang/{$key}">› {$item}</a>
 		<br />
@@ -178,8 +174,4 @@ $(document).ready(function() {
 
 	
 <p style="clear:both; margin-bottom:20px;" />
-
-
-{include file="../common_inc/messages.tpl"}
-
 

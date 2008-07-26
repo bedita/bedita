@@ -29,10 +29,11 @@ $(document).ready ( function () {literal} { {/literal}
 	// hover for all messages
 	$("#messagesDiv").hover(
 		function() {
-			$(this).addClass('messagesDivOver');
+			//$(this).addClass('messagesDivOver');
+			$(this).fadeOut('slow')
 		},
 		function() {
-			$(this).removeClass('messagesDivOver');
+			//$(this).removeClass('messagesDivOver');
 		}
 	);
 })
@@ -45,21 +46,21 @@ $(document).ready ( function () {literal} { {/literal}
 
 	{if ($msg->check('Message.error'))}
 	<div class="message error">
-		<label>{t}Error{/t}</label>
+		<h2>{t}Error{/t}</h2>
 		<p>{$msg->userMsg('error')}</p>
 	</div>
 	{/if}
 	
 	{if ($msg->check('Message.warn'))}
 	<div class="message warn">
-		<label>{t}Warning{/t}</label>
+		<h2>{t}Warning{/t}</h2>
 		<p>{$msg->userMsg('warn')}</p>
 	</div>
 	{/if}
 	
 	{if ($msg->check('Message.info'))}
 	<div class="message info">
-		<label>{t}Notice{/t}</label>
+		<h2>{t}Notice{/t}</h2>
 		<p>{$msg->userMsg('info')}</p>
 	</div>
 	{/if}

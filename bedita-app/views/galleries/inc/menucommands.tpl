@@ -28,9 +28,6 @@ $(document).ready(function(){
 	</div> 
 	
 	
-	{include file="../common_inc/messages.tpl"}
-	
-	
 	{if !empty($method) && $method != "index" && $module_modify eq '1'}
 	<div class="insidecol">
 		

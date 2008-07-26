@@ -34,8 +34,6 @@ $(document).ready(function(){
 		<label class="translations" rel="{$html->url('/translations')}">{t}Translations{/t}</label>
 	</div>
 
-	{include file="../common_inc/messages.tpl"}
-
 	{assign var="user" value=$session->read('BEAuthUser')}
 
 	{if !empty($method) && $method != "index" && $module_modify|default:'' eq '1'}

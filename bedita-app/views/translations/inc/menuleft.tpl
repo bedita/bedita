@@ -9,6 +9,9 @@ Menu a SX valido per tutte le pagine del controller.
 
 		<div class="modules"><label class="bedita" rel="{$html->url('/')}">BEdita 3.0</label></div>
 
+
+	{include file="../common_inc/messages.tpl"}
+	
 {*
 		<ul class="insidecol">
 			<li><a href="{$html->url('/translations/view')}">{t}New Translation{/t}</a></li>

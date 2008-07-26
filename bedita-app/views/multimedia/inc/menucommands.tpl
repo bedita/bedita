@@ -35,8 +35,6 @@ $(document).ready(function(){
 	<div class="modules">
 	   <label class="multimedia" rel="{$html->url('/multimedia')}">{t}Multimedia{/t}</label>
 	</div> 
-
-		{include file="../common_inc/messages.tpl"}
 	
 	
 	{assign var="user" value=$session->read('BEAuthUser')}

@@ -46,6 +46,7 @@
 {*
 ** Page Footer
 *}
+
 <div id="footerPage">
 
 {include file="../pages/user_module_perms.tpl"}

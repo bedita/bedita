@@ -641,6 +641,7 @@ TD.center, TH.center {
 	border-width:0px 0px 1px 1px; 
 }
 
+
 .bordered TD:first-child, .bordered TH:first-child {
 	border-left:0px;
 	padding-left:10px;
@@ -944,36 +945,37 @@ input[type=radio] {
 
 #messagesDiv {
 	background:transparent url(../img/shadowpattern160.png);
-	padding:10px; margin:10px;
+	padding:10px; 
+	margin:10px;
+	margin-top:-29px; margin-left:9px;
 	width:140px; height:auto; 
 	display: none;
 }
 
 .message {
-	font-weight:lighter;
 	line-height:1.2em;
 	width:119px; height:119px; 
 	padding:10px;
 	margin: 0px 0px 1px 1px;
-	background-color:#FFFFFF; 
+	background-color:#FFFFFF;
+	color:#000000;
 
 }
 
-.message.error {
+.message.error H2 {
 	color:red;
 }
 
-.message.warn {
-  color:gold;
+.message.warn H2 {
+  	color:gold;
 }
 
-.message.info {
-	color:#000000;
+.message.info H2 {
+	color:#996600;
 }
 
 .message LABEL {
 	display:block;
-	font-size: 1.16em ;
 }
 
 /*...........................................    
@@ -1053,9 +1055,17 @@ input[type=radio] {
 
 
 
+/*...........................................    
 
+    debug e varie
 
+...........................................*/
 
+.todo {
+	background-color: gold;
+	padding:40px;
+	font: normal 12px Courier 
+}
 
 
 

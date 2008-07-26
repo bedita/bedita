@@ -33,9 +33,7 @@ $(document).ready(function(){
 	<div class="modules">
 	   <label class="events" rel="{$html->url('/events')}">{t}Events{/t}</label>
 	</div> 
-	
-	
-	{include file="../common_inc/messages.tpl"}
+
 
 	
 	{assign var="user" value=$session->read('BEAuthUser')}
