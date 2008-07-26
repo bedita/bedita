@@ -83,19 +83,5 @@
 
 
 
-	<div class="todo">
-	<h2>TODO</h2>
-	titolo originale
-	<br />
-	toolbar (la solita, next prev last etc)
-	<br />
-	le operazioni di massa da fare sono: cambio di status ed eliminazione
-	<br />
-	l'elenco delle lingue per una nuova translation dev'essere quello totale ISO e non $conf->langOptions<br />
-	per il filtro di ricerca potrebbe essere usato invece quello delle lingue effettivamente presenti.<br />
-	L'elenco delle lingue diponibili per l'interfaccia di BE invece (quello nel footer per intenderci)
-	non c'entra niente con l'elenco ISO ma è solo l'elenco delle INTERfacce disponibili 
-	che lascerei in <b>$conf->langOptions</b>.
-	</div>
 	
 </div>
