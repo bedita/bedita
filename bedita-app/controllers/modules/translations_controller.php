@@ -1,50 +1,18 @@
 <?php
 
 class TranslationsController extends ModulesController {
-	
+
+	var $helpers 	= array('BeTree','BeToolbar');
 	var $uses = array("BEObject","LangText");
 	var $components = array("BeLangText","Permission");
 	protected $moduleName = 'translations';
 	
-	public function index() {
-		$conditions = array("LangText.name = 'status'");
-		if(!empty($this->data['translation_lang'])) {
-			$clang = $this->data['translation_lang'];
-			$conditions[]="LangText.lang = '$clang'";
-		}
-		if(!empty($this->data['translation_status'])) {
-			$cstatus = $this->data['translation_status'];
-			$conditions[]="LangText.text = '$cstatus'";
-		}
-		if(!empty($this->data['translation_object_id'])) {
-			$cobjid = $this->data['translation_object_id'];
-			$conditions[]="LangText.object_id = '$cobjid'";
-		}
-		$objects_status=$this->LangText->find('all',
-			array(
-				'fields'=>array('id','object_id','name','text','long_text','lang'),
-				'conditions'=>$conditions
-			)
-		);
-		$res=$this->LangText->find('all',
-			array(
-				'fields'=>array('id','object_id','name','text','long_text','lang'),
-				'conditions'=>array("LangText.name = 'title'")
-			)
-		);
-		$objects = array();
-		$objects_title = array();
-		foreach($res as $k => $v) {
-			$objects_title[$v['LangText']['object_id']][$v['LangText']['lang']] = $v['LangText']['text'];
-			$this->BEObject->restrict(array("BEObject" => array()));
-			if(!($obj = $this->BEObject->findById($v['LangText']['object_id']))) {
-				 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
-			}
-			$objects[$v['LangText']['object_id']][$v['LangText']['lang']] = $obj;
-		}
-		$this->set("objects_translated",$objects);
-		$this->set("translations",$objects_status);
-		$this->set("translations_title",$objects_title);
+	public function index($order = "", $dir = true, $page = 1, $dim = 2) {
+		$lt = $this->trPaginatedList($this->data,$order,$dir,$page,$dim);
+		$this->set("objects_translated",$lt['objects_translated']);
+		$this->set("translations",		$lt['objects_status']);
+		$this->set("translations_title",$lt['objects_title']);
+		$this->params['toolbar'] = &$lt['toolbar'] ;
 	}
 
 	public function view($id=null,$lang=null) {
@@ -123,11 +91,87 @@ class TranslationsController extends ModulesController {
 		$this->eventInfo("translation $lang for object $id deleted");
 	}
 
+	public function deleteTranslations() {
+		$this->checkWriteModulePermission();
+		$objectsToDel = array();
+		$objectsListDesc = "";
+		if(!empty($this->params['form']['objects_selected'])) {
+			$objectsListDesc = $this->params['form']['objects_selected'];
+			$objectsToDel = split(",",$objectsListDesc);
+			
+		} else {
+			if(empty($this->data['id'])) 
+				throw new BeditaException(__("No data", true));
+			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
+				throw new BeditaException(__("Error delete permissions", true));
+			}
+			$objectsToDel = array($this->data['id']);
+			$objectsListDesc = $this->data['id'];
+		}
+		$this->Transaction->begin() ;
+		foreach ($objectsToDel as $id) {
+			$this->LangText->unbindModel(array('belongsTo'=>array('BEObject')));
+			$res = $this->LangText->deleteAll(
+				array("LangText.id = '$id'")
+			);
+			if(!$res) {
+				throw new BeditaException(__("Error deleting translation: ", true) . $id);
+			}
+		}
+		$this->Transaction->commit() ;
+		$this->userInfoMessage(__("Translation deleted", true) . " - $objectsListDesc ");
+		$this->eventInfo("translation(s) $objectsListDesc deleted");
+	}
+
+	public function changeStatusTranslations($newStatus) {
+		$objectsToModify = array();
+		$objectsListDesc = "";
+		if(!empty($this->params['form']['objects_selected'])) {
+			$objectsListDesc = $this->params['form']['objects_selected'];
+			$objectsToModify = split(",",$objectsListDesc);
+		} else {
+			if(empty($this->data['id'])) 
+				throw new BeditaException(__("No data", true));
+			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) {
+				throw new BeditaException(__("Error saving status for translations", true));
+			}
+			$objectsToModify = array($this->data['id']);
+			$objectsListDesc = $this->data['id'];
+		}
+		$this->Transaction->begin() ;
+		foreach ($objectsToModify as $id) {
+			$this->LangText->id = $id;
+			if(!$this->LangText->saveField('text',$newStatus))
+				throw new BeditaException(__("Error saving status for translation: ", true) . $id);
+		}
+		$this->Transaction->commit() ;
+		$this->userInfoMessage(__("Translation updated", true) . " - $objectsListDesc ");
+		$this->eventInfo("translation(s) $objectsListDesc updated to status $newStatus");
+	}
+
+	private function trPaginatedList($data, $order, $dir, $page, $dim) {
+		$this->setup_args(
+			array("id", "integer", &$id),
+			array("page", "integer", &$page),
+			array("dim", "integer", &$dim),
+			array("order", "string", &$order),
+			array("dir", "boolean", &$dir)
+		) ;
+		$filter = array();
+		$filter['lang'] = (!empty($data['translation_lang'])) ? $data['translation_lang'] : null;
+		$filter['status'] = (!empty($data['translation_status'])) ? $data['translation_status'] : null;
+		$filter['obj_id'] = (!empty($data['translation_object_id'])) ? $data['translation_object_id'] : null;
+		return $this->LangText->findObjs($filter,$order,$dir,$page,$dim);
+	}
+
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
-			"save"	=> 	array("OK"	=> "/translations/view/".$this->data['master_id']."/".$this->data['translation_lang']),
-			"view"	=> 	array("ERROR"	=> "/translations"),
-			"delete"	=> 	array("OK"	=> "/translations")
+			"page"	=> 						array("ERROR"	=> "/translations/index"),
+			"save"	=> 						array("OK"	=> "/translations/view/".$this->data['master_id']."/".$this->data['translation_lang']),
+			"view"	=> 						array("ERROR"	=> "/translations"),
+			"delete"	=> 					array("OK"	=> "/translations"),
+			"deleteTranslations"	=> 		array("OK"	=> "/translations"),
+			"changeStatusTranslations"	=> 	array("OK"	=> "/translations")
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;

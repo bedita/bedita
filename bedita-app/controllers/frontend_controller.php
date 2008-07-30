@@ -77,10 +77,11 @@ abstract class FrontendController extends AppController {
 	}
 
 	public function changeLang($lang, $forward = null) {
-		
+
 		if (empty($lang)) {
 			throw new BeditaException("No lang selected");
 		}
+
 		$conf = Configure::getInstance();
 		if (!array_key_exists($lang, $conf->frontendLangs)) {
 			throw new BeditaException("wrong lang selected: ".$lang);
@@ -88,13 +89,13 @@ abstract class FrontendController extends AppController {
 		$this->Session->write('Config.language', $lang);
 		$this->Cookie->write($conf->cookieName["langSelect"], $lang, null, '+350 day'); 
 		$this->currLang = $lang;
-		
+
 		if(!empty($forward)) {
 			$this->redirect($forward);
 		} else {
 			$this->redirect($this->referer());
 		}
-		
+
 	}
 
 	
@@ -286,7 +287,7 @@ abstract class FrontendController extends AppController {
 		}
 
 		if(!empty($obj["LangText"])) {
-			$this->BeLangText->setupForView($obj["LangText"]) ;		
+			$this->BeLangText->setupForView($obj["LangText"]) ;
 			$this->BeLangText->objectForLang($obj_id, $this->currLang, $obj);
 		}
 		

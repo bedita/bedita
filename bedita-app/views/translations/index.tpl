@@ -1,5 +1,70 @@
+<script type="text/javascript">
+var urlDelete = "{$html->url('deleteTranslations/')}" ;
+var message = "{t}Are you sure that you want to delete the item?{/t}" ;
+var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
+var URLBase = "{$html->url('index/')}" ;
 
+{literal}
+$(document).ready(function() {
 
+	$("TABLE.indexlist TD.cellList").click(function(i) { 
+		document.location = $(this).parent().find("a:first").attr("href"); 
+	} );
+
+	/* select/unselect each item's checkbox */
+	$(".selectAll").bind("click", function(e) {
+		var status = this.checked;
+		$(".objectCheck").each(function() { this.checked = status; });
+	}) ;
+	/* select/unselect main checkbox if all item's checkboxes are checked */
+	$(".objectCheck").bind("click", function(e) {
+		var status = true;
+		$(".objectCheck").each(function() { if (!this.checked) return status = false;});
+		$(".selectAll").each(function() { this.checked = status;});
+	}) ;
+
+	$("#deleteSelected").bind("click", delObjects);
+	$("a.delete").bind("click", function() {
+		delObject($(this).attr("title"));
+	});
+
+	$("#changestatusSelected").bind("click",changeStatusTranslations);
+
+});
+
+function delObject(id) {
+	if(!confirm(message)) return false ;
+	$("#objects_selected").attr("value",id);
+	$("#formObject").attr("action", urlDelete) ;
+	$("#formObject").get(0).submit() ;
+	return false ;
+}
+function delObjects() {
+	if(!confirm(messageSelected)) return false ;
+	var oToDel = "";
+	var checkElems = document.getElementsByName('object_chk');
+	for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
+	oToDel = (oToDel=="") ? "" : oToDel.substring(1);
+	$("#objects_selected").attr("value",oToDel);
+	$("#formObject").attr("action", urlDelete) ;
+	$("#formObject").get(0).submit() ;
+	return false ;
+}
+function changeStatusTranslations() {
+	var status = $("#newStatus").val();
+	if(status != "") {
+		var oToDel = "";
+		var checkElems = document.getElementsByName('object_chk');
+		for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
+		oToDel = (oToDel=="") ? "" : oToDel.substring(1);
+		$("#objects_selected").attr("value",oToDel);
+		$("#formObject").attr("action", '{/literal}{$html->url('changeStatusTranslations/')}{literal}' + status) ;
+		$("#formObject").get(0).submit() ;
+		return false ;
+	}
+}
+{/literal}
+</script>
 </head>
 
 <body>
@@ -10,78 +75,106 @@
 
 {include file="inc/menucommands.tpl" method="index"}
 
-{*include file="../common_inc/toolbar.tpl"*}
-
+{include file="../common_inc/toolbar.tpl"}
 
 <div class="mainfull">
-
-	<table class="indexlist">	
-	<tr>
-		<th>{t}Object Id{/t}</th>
-		<th>{t}Title{/t}</th>
-		<th>{t}Lang{/t}</th>
-		<th>{t}Original title{/t}</th>
-		
-		<th>{t}Status{/t}</th>
-		<th>{t}Type{/t}</th>
-	</tr>
-	{foreach from=$translations item=i key=k}
-	{assign var="ot" value=$objects_translated[$i.LangText.object_id][$i.LangText.lang].BEObject.object_type_id}
-	<tr class="rowList" rel="{$html->url('/translations/view/')}{$i.LangText.object_id}/{$i.LangText.lang}">
-		<td>{$i.LangText.object_id}</td>
-		<td>{$translations_title[$i.LangText.object_id][$i.LangText.lang]}</td>
-		<td>{$i.LangText.lang}</td>
-		<td>XXXtitolo orignale</td>
-		<td>{$i.LangText.text}</td>
-		<td>{$conf->objectTypeModels[$ot]}</td>
-	</tr>
-	{foreachelse}
-	<tr>
-		<td colspan="5">{t}No translation found{/t}</td>
-	</tr>
-	{/foreach}
-	</table>
-
 	
+	<form method="post" action="{$html->url('/translations/index')}" id="formObject">
 
-<br />
-<div class="tab"><h2>{t}search and filter:{/t}</h2></div>
-<fieldset id="filtering">
+	<input type="hidden" name="data[id]" value="{$object_translation.id.status|default:''}"/>
+	<input type="hidden" name="data[master_id]" value="{$object_master.id|default:''}"/>
+	<input type="hidden" name="objects_selected" id="objects_selected"/>
 	
-	<form action="{$html->url('/translations/index')}" method="post">
-		<input type="hidden" name="data[id]" value="{$object_translation.id.status|default:''}"/>
-		<input type="hidden" name="data[master_id]" value="{$object_master.id|default:''}"/>
-	
-	{t}Show translations in{/t}: &nbsp;
+	{t}Show translations in{/t}:
 	<select style="font-size:1.2em;" name="data[translation_lang]">
 		<option value="">{t}all languages{/t}</option>
 	{foreach key=val item=label from=$conf->langOptions}
-		<option value="{$val}">{$label}</option>
+		<option value="{$val}"{if !empty($form->params.data) && ($form->params.data.translation_lang==$val)} selected="selected"{/if}>{$label}</option>
 	{/foreach}
 	</select>
-	
-	&nbsp;&nbsp;
-	
 	{t}with status{/t}:
 	<select style="font-size:1.2em;" name="data[translation_status]">
-		<option value="">{t}on,off,draft,required{/t}</option>
-		<option value="on">{t}on{/t}</option>
-		<option value="off">{t}off{/t}</option>
-		<option value="draft">{t}draft{/t}</option>
-		<option value="required">{t}todo{/t}</option>
+	<option value="">{t}on,off,draft,required{/t}</option>
+	<option value="ON"{if !empty($form->params.data) && ($form->params.data.translation_status=='ON')} selected="selected"{/if}>{t}on{/t}</option>
+	<option value="OFF"{if !empty($form->params.data) && ($form->params.data.translation_status=='OFF')} selected="selected"{/if}>{t}off{/t}</option>
+	<option value="DRAFT"{if !empty($form->params.data) && ($form->params.data.translation_status=='DRAFT')} selected="selected"{/if}>{t}draft{/t}</option>
+	<option value="REQUIRED"{if !empty($form->params.data) && ($form->params.data.translation_status=='REQUIRED')} selected="selected"{/if}>{t}required{/t}</option>
 	</select>
-	
-	<hr/>
-	
-	{t}Translations for object id{/t}:
-	<input type="text" name="data[translation_object_id]"/>
-	&nbsp;&nbsp;
+	{t}Object master id{/t}:
+	<input type="text" name="data[translation_object_id]" value="{if !empty($form->params.data)}{$form->params.data.translation_object_id|default:''}{/if}"/>
 	<input type="submit" value="{t}Refresh data{/t}"/>
-	</form>
-
-</fieldset>
-
-
-
 	
+	<table class="indexlist">
+	{capture name="theader"}
+		<tr>
+			<th></th>
+			<th>{$beToolbar->order('id', 'Id')}</th>
+			<th>{$beToolbar->order('title', 'Object master title')}</th>
+			<th>{$beToolbar->order('object_id', 'Object master id')}</th>
+			<th>{$beToolbar->order('status', 'Status')}</th>
+			<th>{$beToolbar->order('type', 'Type')}</th>
+			<th>{$beToolbar->order('lang', 'Language')}</th>
+		</tr>
+	{/capture}
+
+	<br/><br/>
+		
+		{$smarty.capture.theader}
+	
+		{section name="i" loop=$translations}
+		
+		{assign var="oid" value=$translations[i].LangText.object_id}
+		{assign var="olang" value=$translations[i].LangText.lang}
+		{assign var="ot" value=$objects_translated[$oid][$olang].BEObject.object_type_id}
+		
+		<tr>
+			<td class="cellList" style="width:15px; padding:7px 0px 0px 0px;">
+				<input  type="checkbox" name="object_chk" class="objectCheck" title="{$translations[i].LangText.id}" />
+			</td>
+			<td class="cellList">{$translations[i].LangText.id}</td>
+			<td class="cellList"><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations_title[$oid][$olang]|truncate:64}</a></tdcellList>
+			<td class="cellList">{$oid}</td>
+			<td class="cellList">{$translations[i].LangText.text}</td>
+			<td class="cellList">{$conf->objectTypeModels[$ot]}</td>
+			<td class="cellList">{$olang}</td>
+		</tr>
+		{sectionelse}
+			<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>
+		{/section}
+
+{if ($smarty.section.i.total) >= 10}
+	{$smarty.capture.theader}
+{/if}
+
+
+</table>
+
+
+<br />
+	
+{if !empty($translations)}
+<div style="white-space:nowrap">
+	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
+	&nbsp;&nbsp;&nbsp;
+	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
+	&nbsp;&nbsp;&nbsp
+	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
+</div>
+<br />
+<div class="tab"><h2>Operations on <span class="selecteditems evidence"></span> selected records</h2></div>
+<div>
+{t}change status to:{/t}	<select style="width:75px" id="newStatus" data="newStatus">
+								<option value=""> -- </option>
+								<option value="ON"> ON </option>
+								<option value="OFF"> OFF </option>
+								<option value="DRAFT"> DRAFT </option>
+								<option value="REQUIRED"> REQUIRED </option>
+							</select>
+			<input id="changestatusSelected" type="button" value=" ok " />
+	<hr />
+	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
+</div>
+{/if}
+
+</form>
 </div>
