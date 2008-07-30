@@ -7,7 +7,7 @@ class TranslationsController extends ModulesController {
 	var $components = array("BeLangText","Permission");
 	protected $moduleName = 'translations';
 	
-	public function index($order = "", $dir = true, $page = 1, $dim = 2) {
+	public function index($order = "", $dir = true, $page = 1, $dim = 20) {
 		$lt = $this->trPaginatedList($this->data,$order,$dir,$page,$dim);
 		$this->set("objects_translated",$lt['objects_translated']);
 		$this->set("translations",		$lt['objects_status']);
