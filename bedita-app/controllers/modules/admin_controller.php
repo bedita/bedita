@@ -207,11 +207,13 @@ class AdminController extends ModulesController {
 			$c->write($config);
 		}
 	 }
+	 
 	 public function deleteEventLog() { 	
 	 	$this->checkWriteModulePermission();
 	 	$this->beditaVersion();
 	 	$this->EventLog->deleteAll("id > 0");
 		$this->set('events', array());
+		$this->set('sys', $this->BeSystem->systemInfo());
 	 }
 	 
 	 protected function forward($action, $esito) {
