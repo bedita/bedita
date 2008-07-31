@@ -264,7 +264,7 @@ class BeditaShell extends Shell {
 		$sqlFileName = $tmpBasePath."bedita-data.sql";
 		
         $this->hr();
-		$db =& ConnectionManager::getDataSource($dbCfg);
+		$db = ConnectionManager::getDataSource($dbCfg);
     	$hostName = $db->config['host'];
     	$dbName = $db->config['database'];
 		$this->out("Importing data using bedita db config: $dbCfg - [host=".$hostName.", database=".$dbName."]");
@@ -291,7 +291,7 @@ class BeditaShell extends Shell {
         $this->DataSourceTest->simpleInsert($db, $sqlFileName);
 		unlink($sqlFileName);
 		$this->out("$dbCfg database updated");
-		
+
 		$mediaRoot = Configure::read("mediaRoot");
 		
 		// update media root dir

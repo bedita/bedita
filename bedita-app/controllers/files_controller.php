@@ -14,7 +14,7 @@ class FilesController extends AppController {
 			$this->Transaction->commit();
 		} catch(BeditaException $ex) {
 			header("HTTP/1.0 " . $this->BeUploadToObj->errorCode . " Internal Server Error");
-			$errTrace = $ex->getClassName() . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
 			$this->setResult(self::ERROR);
 		}
@@ -35,7 +35,7 @@ class FilesController extends AppController {
 			$this->set("fileId", $id);
 			$this->set("fileUploaded", true);
 		} catch(BeditaException $ex) {
-			$errTrace = $ex->getClassName() . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
 			$this->setResult(self::ERROR);
 			$this->set("errorMsg", $ex->getMessage());
@@ -56,7 +56,7 @@ class FilesController extends AppController {
 			$this->set("fileId", $id);
 			
 		} catch(BeditaException $ex) {
-			$errTrace = $ex->getClassName() . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
 			$this->setResult(self::ERROR);
 			$this->set("errorMsg", $ex->getMessage());

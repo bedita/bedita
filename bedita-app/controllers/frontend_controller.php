@@ -597,7 +597,7 @@ abstract class FrontendController extends AppController {
 				$this->userInfoMessage(__("Comment saved", true));
 			} catch (BeditaException $ex) {
 				$this->Transaction->rollback();
-				$errTrace = $ex->getClassName() . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+				$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 				$this->log($errTrace);
 				$this->userErrorMessage($ex->getMessage());
 			}

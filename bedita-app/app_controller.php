@@ -687,13 +687,8 @@ class BeditaException extends Exception
     	return $this->errorDetails;
     }
     
-    public function  getClassName() {
-    	$r = new ReflectionObject($this);
-		return $r->getName();
-    }
-    
     public function errorTrace() {
-        return $this->getClassName()." - ".$this->getDetails()."\nFile: ". 
+        return get_class($this)." - ".$this->getDetails()."\nFile: ". 
             $this->getFile()." - line: ".$this->getLine()."\nTrace:\n".
             $this->getTraceAsString();   
     }
