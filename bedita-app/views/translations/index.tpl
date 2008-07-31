@@ -100,7 +100,7 @@ function changeStatusTranslations() {
 	<option value="DRAFT"{if !empty($form->params.data) && ($form->params.data.translation_status=='DRAFT')} selected="selected"{/if}>{t}draft{/t}</option>
 	<option value="REQUIRED"{if !empty($form->params.data) && ($form->params.data.translation_status=='REQUIRED')} selected="selected"{/if}>{t}required{/t}</option>
 	</select>
-	{t}Object master id{/t}:
+	{t}master id{/t}:
 	<input type="text" name="data[translation_object_id]" value="{if !empty($form->params.data)}{$form->params.data.translation_object_id|default:''}{/if}"/>
 	<input type="submit" value="{t}Refresh data{/t}"/>
 	
@@ -109,8 +109,9 @@ function changeStatusTranslations() {
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('id', 'Id')}</th>
-			<th>{$beToolbar->order('title', 'Object master title')}</th>
-			<th>{$beToolbar->order('object_id', 'Object master id')}</th>
+			<th>{$beToolbar->order('title', 'title')}</th>
+			<th>{$beToolbar->order('object_id', 'master id')}</th>
+			<th>{$beToolbar->order('title', 'master title')}</th>
 			<th>{$beToolbar->order('status', 'Status')}</th>
 			<th>{$beToolbar->order('type', 'Type')}</th>
 			<th>{$beToolbar->order('lang', 'Language')}</th>
@@ -118,7 +119,7 @@ function changeStatusTranslations() {
 	{/capture}
 
 	<br/><br/>
-		
+
 		{$smarty.capture.theader}
 	
 		{section name="i" loop=$translations}
@@ -126,17 +127,19 @@ function changeStatusTranslations() {
 		{assign var="oid" value=$translations[i].LangText.object_id}
 		{assign var="olang" value=$translations[i].LangText.lang}
 		{assign var="ot" value=$objects_translated[$oid][$olang].BEObject.object_type_id}
+		{assign var="mtitle" value=$objects_translated[$oid][$olang].BEObject.title}
 		
 		<tr>
-			<td class="cellList" style="width:15px; padding:7px 0px 0px 0px;">
+			<td style="width:15px; padding:7px 0px 0px 0px;">
 				<input  type="checkbox" name="object_chk" class="objectCheck" title="{$translations[i].LangText.id}" />
 			</td>
-			<td class="cellList">{$translations[i].LangText.id}</td>
-			<td class="cellList"><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations_title[$oid][$olang]|truncate:64}</a></tdcellList>
-			<td class="cellList">{$oid}</td>
-			<td class="cellList">{$translations[i].LangText.text}</td>
-			<td class="cellList">{$conf->objectTypeModels[$ot]}</td>
-			<td class="cellList">{$olang}</td>
+			<td>{$translations[i].LangText.id}</td>
+			<td><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations_title[$oid][$olang]|truncate:64}</a></td>
+			<td>{$oid}</td>
+			<td>{$mtitle|truncate:64}</td>
+			<td>{$translations[i].LangText.text}</td>
+			<td>{$conf->objectTypeModels[$ot]}</td>
+			<td>{$olang}</td>
 		</tr>
 		{sectionelse}
 			<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>
@@ -151,6 +154,11 @@ function changeStatusTranslations() {
 
 
 <br />
+
+{*
+{dump var=$objects_translated}
+{dump var=$translations_title}
+*}	
 	
 {if !empty($translations)}
 <div style="white-space:nowrap">
@@ -165,10 +173,10 @@ function changeStatusTranslations() {
 <div>
 {t}change status to:{/t}	<select style="width:75px" id="newStatus" data="newStatus">
 								<option value=""> -- </option>
-								<option value="ON"> ON </option>
-								<option value="OFF"> OFF </option>
-								<option value="DRAFT"> DRAFT </option>
-								<option value="REQUIRED"> REQUIRED </option>
+								<option value="on"> ON </option>
+								<option value="off"> OFF </option>
+								<option value="draft"> DRAFT </option>
+								<option value="required"> REQUIRED </option>
 							</select>
 			<input id="changestatusSelected" type="button" value=" ok " />
 	<hr />

@@ -417,7 +417,7 @@ $config['statusOptions'] = array(
 ) ;
 
 /**
- * Lang selection options ISO-639-3
+ * Lang selection options ISO-639-3 - Language options for contents
  */
 $config['langOptions'] = array(
 	"ita"	=> "italiano",
@@ -428,7 +428,7 @@ $config['langOptions'] = array(
 	"deu"	=> "deutsch"
 ) ;
 
-// ISO-639-3 codes
+// ISO-639-3 codes - User interface language options (backend)
 $config['langsSystem'] = array(
 	"ita"	=> "italiano",
 	"eng"	=> "english",

@@ -85,18 +85,19 @@ $(document).ready(function(){
 	<fieldset rel="properties">
 	{t}Translation to{/t}
 		{assign var=object_translated_lang value=$object_translation.lang|default:''}
-		<select style="font-size:1.2em;" name="data[translation_lang]" id="main_lang">
-			{foreach key=val item=label from=$conf->langOptions name=langfe}
-			{if empty($object_translated_lang)}
-				{if !in_array($val,$object_master_langs)}
-				<option value="{$val}">{$label}</option>
-				{/if}
-			{else}
-				{if $val==$object_translated_lang}<option value="{$val}" selected="selected">{$label}</option>{/if}
-			{/if}
-			{/foreach}
-		</select>
-
+		{if empty($object_translated_lang)}
+			<select style="font-size:1.2em;" name="data[translation_lang]" id="main_lang">
+				{foreach key=val item=label from=$conf->langOptions name=langfe}
+					{if !in_array($val,$object_master_langs)}
+					<option value="{$val}">{$label}</option>
+					{/if}
+				{/foreach}
+			</select>
+		{else}
+			<select style="font-size:1.2em;" name="data[translation_lang]" id="main_lang">
+					<option value="{$object_translated_lang}" selected="selected">{$conf->langOptions[$object_translated_lang]}</option>
+			</select>
+		{/if}
 		<hr />
 		<label>{t}Status{/t}</label>:
 		<input type="radio" name="data[LangText][0][text]" {if !empty($object_translation) && ($object_translation.status=='on')}checked="checked" {/if}value="on"/>ON

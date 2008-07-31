@@ -18,14 +18,13 @@ function smarty_function_dump($params, &$smarty)
 		$vars = &$params["var"] ;
 	}
 	
-	// Stampa
+	echo html_entity_decode("<pre>");
 	ob_start();
-	echo "<pre>";
 	print_r($vars);
 	$_output = ob_get_contents(); 
 	ob_end_clean();
 	echo htmlentities($_output);
-	echo "</pre>";
+	echo html_entity_decode("</pre>");
 }
 
 /* vim: set expandtab: */
