@@ -531,12 +531,7 @@ abstract class FrontendController extends AppController {
 	public function loadTags($tplVar=null) {
 		$tplVar = (empty($tplVar))? "listTags" : $tplVar;
 		$objectCategory = ClassRegistry::init("ObjectCategory");
-		$this->set($tplVar, $objectCategory->find("all", 
-									array(
-										"conditions" => "ObjectCategory.object_type_id is null",
-										"order"		=> array("ObjectCategory.label" => "asc")						
-									))
-				); 
+		$this->set($tplVar, $objectCategory->getTags(false, $this->status));
 	}
 	
 	/**

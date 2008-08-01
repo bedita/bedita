@@ -17,7 +17,7 @@ Menu a SX valido per tutte le pagine del controller.
 		
 		<input class="submit" type="submit" value=" {t}Save{/t} " name="save"/>	
 		<input type="button" name="delete" id="delBEObject" class="submit" value="{t}Delete{/t}" 
-		{if !($object.id|default:false)}disabled="1"{/if}/>
+		{if !($tag.id|default:false)}disabled="1"{/if}/>
 
 
 	</div>

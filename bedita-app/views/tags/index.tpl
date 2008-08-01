@@ -4,14 +4,14 @@
 </head>
 
 <body>
-{literal}
 <script type="text/javascript">
 <!--
-var urlDelete = "{$html->url('delete/')}" ;
-var message = "{t}Are you sure that you want to delete the tag?{/t}" ;
-var messageSelected = "{t}Are you sure that you want to delete selected tags?{/t}" ;
-var URLBase = "{$html->url('index/')}" ;
+var urlDelete = "{$html->url('delete/')}";
+var message = "{t}Are you sure that you want to delete the tag?{/t}";
+var messageSelected = "{t}Are you sure that you want to delete selected tags?{/t}";
+var URLBase = "{$html->url('index/')}";
 
+{literal}
 $(document).ready(function() {
 
 	/* select/unselect each item's checkbox */
@@ -102,33 +102,33 @@ function delObjects() {
 		<th></th>
 	</tr>
 	<tbody id="taglist">
-	{section name="i" loop=$tags}
+	{foreach from=$tags item=tag}
 		<tr>
 			<td style="width:36px; text-align:center">
-				<input type="checkbox" name="object_chk" class="objectCheck" title="{$tags[i].id}"/>
+				<input type="checkbox" name="object_chk" class="objectCheck" title="{$tag.id}"/>
 			</td>
 			<td>
-				<a href="{$html->url('view/')}{$tags[i].id}">{$tags[i].label}</a>
+				<a href="{$html->url('view/')}{$tag.id}">{$tag.label}</a>
 				
 			</td>
-			<td>{$tags[i].status}</td>
-			<td class="center">{$tags[i].weight}</td>
-			<td><a href="{$html->url('view/')}{$tags[i].id}">{$tags[i].id}</a></td>
-			<td><a href="{$html->url('view/')}{$tags[i].id}">{t}details{/t}</a></td>
+			<td>{$tag.status}</td>
+			<td class="center">{$tag.weight}</td>
+			<td><a href="{$html->url('view/')}{$tag.id}">{$tag.id}</a></td>
+			<td><a href="{$html->url('view/')}{$tag.id}">{t}details{/t}</a></td>
 		</tr>
-	{sectionelse}
+	{foreachelse}
 	
 		<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>
 	
-	{/section}
+	{/foreach}
 	</tbody>
 	
 	<tbody id="tagcloud">
 		<tr>
 			<td colspan="10" class="tag graced" style="text-align:justify; line-height:1.5em; padding:20px;">
-				{section name="i" loop=$tags}
-				<a href="{$html->url('view/')}{$tags[i].id}">{$tags[i].label}</a>
-				{/section}
+				{foreach from=$tags item=tag}
+				<a href="{$html->url('view/')}{$tag.id}">{$tag.label}</a>
+				{/foreach}
 			</td>
 		</tr>
 		
@@ -152,9 +152,9 @@ function delObjects() {
 		<hr>
 {t}change status to:{/t} 	<select style="width:75px" id="newStatus" data="newStatus">
 									<option value=""> -- </option>
-									<option> ON </option>
-									<option> OFF </option>
-									<option> DRAFT </option>
+									<option value="on"> ON </option>
+									<option value="off"> OFF </option>
+									<option value="draft"> DRAFT </option>
 								</select>
 			<input id="changestatusSelected" type="button" value=" ok " />
 	<hr />

@@ -33,7 +33,7 @@ class TagsController extends ModulesController {
 
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		//$data = $this->paginate("ObjectCategory");
-		$data = $this->ObjectCategory->getTags(true);
+		$data = $this->ObjectCategory->getTags(true, null, true);
 		$this->set("numTags", count($data));
 		$this->set('tags', $data);
 	}
@@ -81,7 +81,7 @@ class TagsController extends ModulesController {
 
 	public function listAllTags() {
 		$this->layout = "empty";
-		$this->set("listTags",$this->ObjectCategory->getTags(true));
+		$this->set("listTags",$this->ObjectCategory->getTags(true, null, true));
 	}
 	
 	protected function forward($action, $esito) {

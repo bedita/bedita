@@ -18,6 +18,38 @@ class ObjectCategory extends BEAppModel {
 			'CompactResult' 		=> array()
 	);
 	
+	var $validate = array(
+		'label' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
+		'status' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
+	) ;
+
+	/**
+	 * Definisce i valori di default.
+	 */		
+	function beforeValidate() {
+		if(isset($this->data[$this->name])) 
+			$data = &$this->data[$this->name] ;
+		else 
+			$data = &$this->data ;
+		$data['label'] = $this->checkLabel($data['label']);
+		return true;
+	}
+	 	
+	private function checkLabel($label) {
+		if(empty($label))
+			return null;
+		
+		$value = htmlentities( strtolower($label), ENT_NOQUOTES, "UTF-8" );
+		// replace accent, uml, tilde,... with letter after & in html entities
+		$value = preg_replace("/&(.)(uml);/", "$1e", $value);
+		$value = preg_replace("/&(.)(acute|grave|cedil|circ|ring|tilde|uml);/", "$1", $value);
+		// remove special chars and space (first decode html entities)
+		$value = preg_replace("/[^a-z0-9\-_]/i", "", html_entity_decode($value,ENT_NOQUOTES,"UTF-8" ) ) ;
+		// trim dashes in the beginning and in the end of nickname
+		$value = trim($value);
+		return $value;
+	}
+	
 	/**
 	 * Get all categories of some object type and order them by area
 	 *
@@ -91,18 +123,36 @@ class ObjectCategory extends BEAppModel {
 	 * @param int $coeff, coeffiecient for calculate the distribution
 	 * @return array
 	 */
-	public function getTags($cloud=false, $coeff=12) {
-
-		$sql = "SELECT DISTINCT object_categories.id, object_categories.label, object_categories.status,
-					   COUNT(content_bases_object_categories.object_category_id) AS weight
-				FROM object_categories,content_bases_object_categories
+	public function getTags($showOrphans=true, $status=null, $cloud=false, $coeff=12) {
+		
+		$conditions = array();
+		$conditions[] = "ObjectCategory.object_type_id IS NULL";
+		if(!empty($status)) {
+				if(is_array($status)) {
+					$c = "ObjectCategory.status IN (";
+					for($i=0 ; $i < count($status); $i++) {
+						$c .= (($i > 0) ? "," : "") . "'$status[$i]'";
+					}
+					$c .= ")";
+				} else {
+					$c = "ObjectCategory.status = '$status'";
+				}
+				$conditions[] = $c;
+		}
+		$allTags = $this->find('all', array('conditions'=> $conditions), "ObjectCategory.label ASC");
+		$tags = array();
+		foreach ($allTags as $t) {
+			$tags[$t['id']] = $t;
+		}
+		
+		$sql = "SELECT object_categories.id, COUNT(content_bases_object_categories.object_category_id) AS weight
+				FROM object_categories, content_bases_object_categories
 				WHERE object_categories.object_type_id IS NULL
 				AND object_categories.id = content_bases_object_categories.object_category_id
 				GROUP BY object_categories.id
-				ORDER BY object_categories.label ASC
-				";
+				ORDER BY object_categories.label ASC";
 		$res = $this->query($sql);
-		
+
 		if ($cloud) {
 			$sqlMax = "SELECT MAX(weight) AS max, MIN(weight) AS min FROM (" . $sql . ") tab";
 			$maxmin = $this->query($sqlMax);
@@ -111,28 +161,39 @@ class ObjectCategory extends BEAppModel {
 			$distribution = ($max - $min) / $coeff;
 		}
 		
-		$tags = array();
-		if (!empty($res)) {
-			foreach ($res as $key => $t) {
-				$tags[$key] = array_merge($t["object_categories"],$t[0]);
-				
-				if ($cloud) {
-					if ($t[0]["weight"] == $min)
-						$tags[$key]['class'] = "smallestTag";
-					elseif ($t[0]["weight"] == $max)
-						$tags[$key]['class']  = "largestTag";
-					elseif ($t[0]["weight"] > ($min + ($distribution * 2)))
-						$tags[$key]['class']  = "largeTag";
-					elseif ($t[0]["weight"] > ($min + $distribution))
-						$tags[$key]['class']  = "mediumTag";
-					else 
-						$tags[$key]['class']  = "smallTag";
-				}
-				
-			}
-		}		
+		foreach ($res as $r) {
+			$key = $r['object_categories']['id'];
+			$w = $r[0]['weight'];
+			$tags[$key]['weight'] = $w;
+			if ($cloud) {
+				if ($w == $min)
+					$tags[$key]['class'] = "smallestTag";
+				elseif ($w == $max)
+					$tags[$key]['class']  = "largestTag";
+				elseif ($w > ($min + ($distribution * 2)))
+					$tags[$key]['class']  = "largeTag";
+				elseif ($w > ($min + $distribution))
+					$tags[$key]['class']  = "mediumTag";
+				else 
+					$tags[$key]['class']  = "smallTag";
+			}	
+		}
 		
-		return $tags;
+		// remove orphans or set weight = 0, create the non-associative array
+		$tagsArray = array();
+		foreach ($tags as $k => $t) {
+			if(!isset($t['weight'])) {
+				if($showOrphans === false) {
+					unset($tags[$k]);		
+				} else {
+					$tags[$k]['weight'] = 0;		
+					$tagsArray[]= $tags[$k];
+				}
+			} else {
+				$tagsArray[]= $tags[$k];
+			}
+		}
+		return $tagsArray;
 	}
 	
 	public function getContentsByTag($label) {
