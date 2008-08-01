@@ -12,17 +12,9 @@ require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 class PermissionTestCase extends BeditaTestCase {
 	
     var $fixtures 	= array( 'area_test' );
- 	var $uses		= array(
- 							'BEObject', 'Collection', 
- 							'Area', 'Community', 'Faq', 'Newsletter', 'Questionnaire',
- 							'Scroll', 'Section', 'Timeline',
- 							
- 							'ContentBase', 'ViewImage', 'Content', 'BaseDocument', 
- 							'Document', 'Event', 'Question', 'Answer',
- 							'BEFile', 'Image', 'Audio', 'Video',
- 							'Comment', 'Book', 'Author', 'ShortNews',
- 							'Bibliography', 'FaqQuestion', 'BiblioItem', 'ObjectUser'
- 	) ;
+ 	var $uses		= array('BEObject', 
+ 							'Area', 'Section',
+ 							'Document', 'Event'	) ;
  	var $components	= array('Transaction', 'Permission') ;
     var $dataSource	= 'test' ;
 
@@ -36,7 +28,7 @@ class PermissionTestCase extends BeditaTestCase {
 		sort($this->data['addPerms1']);
 		// Aggiunge i permessi
 		$ret = $this->Permission->add($this->Area->id, $this->data['addPerms1']) ;
-		pr("Aggiunta permessi") ;
+		pr("Aggiunta permessi");
 		$this->assertEqual($ret,true);
 		
 		// Carica i permessi creati
@@ -325,7 +317,7 @@ class PermissionTestCase extends BeditaTestCase {
 	
 	private function _delete($model) {
 		$id = $model->id;
-		$result = $model->Delete($model->{$model->primaryKey});
+		$result = $model->delete($model->{$model->primaryKey});
 		$this->assertEqual($result,true);		
 		pr("Oggetto cancellato: $id");
 	} 
