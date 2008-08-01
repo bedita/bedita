@@ -21,10 +21,7 @@ class PermissionComponent extends Object {
 	var $uses = array('Permission') ;
 	
 	function __construct() {
-		if(!class_exists('Permission')) {
-			loadModel('Permission') ;
-		}
-		$this->Permission = new Permission() ;
+		$this->Permission = ClassRegistry::init('Permission', 'Model') ;
 	} 
 	
 	/**

@@ -56,10 +56,10 @@ class Area extends BEAppCollectionModel
 	 * Inserisce l'area nell'albero
 	 */
 	function afterSave($created) {
-		if (!$created) return ;
+		if (!$created) 
+			return ;
 		
-		if(!class_exists('Tree')) loadModel('Tree');
-		$tree 	=& new Tree();
+		$tree = ClassRegistry::init('Tree', 'Model');
 		$tree->appendChild($this->id, null) ;		
 	}
 
