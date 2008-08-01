@@ -23,6 +23,14 @@ class ObjectCategory extends BEAppModel {
 		'status' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
 	) ;
 
+	function afterFind($result) {
+		foreach ($result as &$res) {
+			if(isset($res['label']))
+				$res['url_label'] = str_replace(" ", "+", $res['label']);
+		}
+		return $result;			
+	}
+	
 	/**
 	 * Definisce i valori di default.
 	 */		
@@ -182,6 +190,7 @@ class ObjectCategory extends BEAppModel {
 		// remove orphans or set weight = 0, create the non-associative array
 		$tagsArray = array();
 		foreach ($tags as $k => $t) {
+			$tags[$k]['url_label'] = str_replace(" ", "+", $t['label']);
 			if(!isset($t['weight'])) {
 				if($showOrphans === false) {
 					unset($tags[$k]);		

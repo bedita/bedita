@@ -542,6 +542,8 @@ abstract class FrontendController extends AppController {
 	 */
 	protected function loadContentsByTag($tag) {
 		$objectCategory = ClassRegistry::init("ObjectCategory");
+		// remove '+' from $tag, if coming from url
+		$tag = str_replace("+", " ", $tag);
 		$contents = $objectCategory->getContentsByTag($tag);
 		$result = array();
 		foreach ($contents as $c) {
