@@ -43,8 +43,8 @@ class ObjectCategory extends BEAppModel {
 		// replace accent, uml, tilde,... with letter after & in html entities
 		$value = preg_replace("/&(.)(uml);/", "$1e", $value);
 		$value = preg_replace("/&(.)(acute|grave|cedil|circ|ring|tilde|uml);/", "$1", $value);
-		// remove special chars and space (first decode html entities)
-		$value = preg_replace("/[^a-z0-9\-_]/i", "", html_entity_decode($value,ENT_NOQUOTES,"UTF-8" ) ) ;
+		// remove special chars (first decode html entities)
+		$value = preg_replace("/[^a-z0-9\s]/i", "", html_entity_decode($value,ENT_NOQUOTES,"UTF-8" ) ) ;
 		// trim dashes in the beginning and in the end of nickname
 		$value = trim($value);
 		return $value;
