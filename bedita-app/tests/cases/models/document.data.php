@@ -14,8 +14,8 @@ Sondaggio: giusto fermarle? Dopo i dubbi della Lega e ",
 	        'user_created' => 1,
 			'object_type_id' => 22
 		),
-		'searches' => array("grecia procedura", "clinton", "bill giustizia"),
-		
+		'searches' => array("grecia procedura", "clinton giustizia"),
+		'searchTree' => array(13, 14)
 	);
 }
 

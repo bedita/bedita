@@ -10,7 +10,7 @@ require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
 class DocumentTestCase extends BeditaTestCase {
 
- 	var $uses		= array('BEObject','Document', 'SearchText') ;
+ 	var $uses		= array('BEObject','Document', 'SearchText', 'Tree') ;
     var $dataSource	= 'test' ;	
  	var $components	= array('Transaction', 'Permission') ;
 
@@ -59,6 +59,17 @@ class DocumentTestCase extends BeditaTestCase {
 				array(22, "search" => $s));
 	 		pr($res);
  		}
+
+ 	 	// tree search
+ 		foreach ($this->data['searchTree'] as $treeId) {
+	 		foreach ($searches as $s) {
+		 		pr("Tree id: $treeId - search string:".$s);
+				$res = $this->Tree->getChildren($treeId, null, null,
+					array(22, "search" => $s));
+		 		pr($res);
+	 		}
+ 		}
+ 		
  	}	
 	
  	function testDelete() {
