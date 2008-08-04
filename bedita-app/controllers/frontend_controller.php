@@ -6,7 +6,7 @@
  */
 abstract class FrontendController extends AppController {
 
-	private $status = array('on');
+	private $status = array('on', 'fixed');
 	protected $checkPubDate = true;
 	protected $showAllContents = false;
 
