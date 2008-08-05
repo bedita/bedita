@@ -103,48 +103,30 @@ class MultimediaController extends ModulesController {
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
 	 }
 
-     function save() {
-	   
-     	$this->checkWriteModulePermission();
-        
-        if(empty($this->data) || empty($this->data['id'])) 
-            throw new BeditaException( __("Bad data", true));
-        
-        // Verifica i permessi di modifica dell'oggetto
-        if(!$this->Permission->verify($this->data['id'], 
-            $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-                throw new BeditaException(__("Error modify permissions", true));
-        
-        // Formatta le custom properties
-        $this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-
-        // Formatta i campi da tradurre
-		$this->data['title'] = $this->data['LangText'][$this->data['lang']]['title'];
-		$this->data['description'] = $this->data['LangText'][$this->data['lang']]['description'];
-        $this->BeLangText->setupForSave($this->data["LangText"]) ;
-		
-        $this->Transaction->begin() ;
-        
-        // save
-        if(!$this->BEObject->save($this->data)) {
-            throw new BeditaException(__("Error saving multimedia object", true), 
-                $this->BEObject->validationErrors);
-        }
-
-        // update permissions
-        $perms = isset($this->data["Permissions"])?$this->data["Permissions"]:array();
-        if(!$this->Permission->saveFromPOST(
-                $this->BEObject->id, $perms,
-                (empty($this->data['recursiveApplyPermissions'])?false:true), 'document')
-            ) {
-                throw new BeditaException( __("Error saving permissions", true));
-        }       
-
-        $this->Transaction->commit() ;
-        $this->userInfoMessage(__("Multimedia object saved", true)." - ".$this->data["title"]);
-        $this->eventInfo("multimedia object [". $this->data["title"]."] saved");
-    }
-	 
+	function save() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data)) 
+			throw new BeditaException( __("No data", true));
+		$new = (empty($this->data['id'])) ? true : false ;
+		// Verify object permits
+		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+			throw new BeditaException(__("Error modify permissions", true));
+		// Format custom properties
+		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
+		$this->Transaction->begin() ;
+		// save data
+		if(!$this->BEObject->save($this->data)) {
+			throw new BeditaException(__("Error saving multimedia object", true),$this->BEObject->validationErrors);
+		}
+		// update permissions
+		if(!isset($this->data['Permissions'])) 
+			$this->data['Permissions'] = array() ;
+		$this->Permission->saveFromPOST($this->BEObject->id, $this->data['Permissions'], 
+				!empty($this->data['recursiveApplyPermissions']), 'document');
+		$this->Transaction->commit() ;
+		$this->userInfoMessage(__("Multimedia object saved", true)." - ".$this->data["title"]);
+		$this->eventInfo("multimedia object [". $this->data["title"]."] saved");
+	}
 
 	 /**
 	 * Delete multimedia object
