@@ -7,7 +7,7 @@
 <table>
 	<tr>
 		<th>{t}Title{/t}</th>
-		<td><input type="text" id="title" name="data[title]" value="{$object.title|escape:'html'|escape:'quotes'}" /></td>
+		<td><input type="text" id="title" name="data[title]" value="{$object.title|escape:'html'|escape:'quotes'}" id="titleBEObject"/></td>
 	</tr>
 	<tr>
 		<th>{t}Description{/t}</th>

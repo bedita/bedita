@@ -5,6 +5,27 @@
 	$(document).ready( function ()
 	{
 		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
+		{/literal}
+		{if !empty($section.id) && ($section.status == 'fixed')}
+			{literal}
+			$("#titleBEObject").attr("readonly",true);
+			$("#nicknameBEObject").attr("readonly",true);
+			$("#areaSectionAssoc").focus( function() {
+				alert('status fixed: not modifyable');
+				body.focus();
+				this.blur();
+			});
+			$("#delBEObject").attr("disabled",true);
+			{/literal}
+		{else}
+			{literal}
+			$("#titleBEObject").attr("readonly",false);
+			$("#nicknameBEObject").attr("readonly",false);
+			$("#areaSectionAssoc").focus( function() {});
+			$("#delBEObject").attr("disabled",false);
+			{/literal}
+		{/if}
+		{literal}
 	});
 	{/literal}
 </script>
@@ -16,8 +37,12 @@
 			
 					<th>{t}Status{/t}:</th>
 					<td>
-						{html_radios name="data[status]" options=$conf->statusOptions 
-						selected=$section.status|default:$conf->status separator="&nbsp;"}
+						{if ($section.status == 'fixed')}
+						{t}This object is fixed - some data is readonly{/t}
+						<input type="hidden" name="data[status]" value="fixed"/>
+						{else}
+						{html_radios name="data[status]" options=$conf->statusOptions selected=$section.status|default:$conf->status separator="&nbsp;"}
+						{/if}
 					</td>
 			
 				</tr>
@@ -34,7 +59,7 @@
 				</tr>
 				<tr>
 					<th>{t}Title{/t}</th>
-					<td><input type="text" style="width:280px" name="data[title]" value="{$section.title|default:""}" /></td>
+					<td><input type="text" style="width:280px" id="titleBEObject" name="data[title]" value="{$section.title|default:""}"/></td>
 				</tr>
 				<tr>
 					<th>{t}Description{/t}</th>
@@ -59,11 +84,11 @@
 				<td><input type="text" style="width:280px" name="publisher" value="" /></td>
 			</tr>
 			<tr>
-					<td><strong>&copy; {t}rights{/t}</strong></td>
+				<td><strong>&copy; {t}rights{/t}</strong></td>
 				<td><input type="text" style="width:280px" name="data[rights]" value="{$section.rights|default:null}" /></td>
 			</tr>
 			<tr>
-				<td> <label>{t}license{/t}</label></td>                
+				<td> <label>{t}license{/t}</label></td>
 				<td>
 					<select style="width:280px" name="data[license]">
 						<option value="">--</option>
@@ -75,24 +100,24 @@
 						<option  value="Creative Commons Attribuzione-Non commerciale-Non opere derivate 2.5 Italia"{if !empty($section) && $section.license == "Creative Commons Attribuzione-Non commerciale-Non opere derivate 2.5 Italia"} selected{/if}>Creative Commons Attribuzione-Non commerciale-Non opere derivate 2.5 Italia</option>
 						<option  value="Tutti i diritti riservati"{if !empty($section) && $section.license == "Tutti i diritti riservati"} selected{/if}>Tutti i diritti riservati</option>
 					</select>
-			    </td>
+				</td>
 			</tr>
-			
+
 			<tr>
 				<th>{t}Nickname{/t}</th>
-				<td><input type="text" style="width:280px" name="data[nickname]" value="{$section.nickname|default:""}" /></td>
+				<td><input id="nicknameBEObject" type="text" style="width:280px" name="data[nickname]" value="{$section.nickname|default:""}"/></td>
 			</tr>
-			
+
 			</table>
-			
+
 			<br/>
 			<div class="indexlist">
 			{include file="../common_inc/form_translations.tpl" object=$section|default:null}
 			</div>
 			{include file="../common_inc/form_permissions.tpl" el=$section|default:null recursion=true}
 			{include file="../common_inc/form_custom_properties.tpl" el=$section|default:null}
-			
-			
+
+
 			<hr />
 			oppure per i dettagli tipo custom pop e permessi linkare l'ulteriore dettaglio.?.
 			<a href="{$html->url('viewSection/')}"> QUI</a>

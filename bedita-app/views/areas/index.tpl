@@ -91,12 +91,11 @@ $(document).ready(function() {
 	</div>
 	
 	<hr />
-	<input class="bemaincommands" style="display:inline" type="button" value=" {t}Save{/t} " name="save" />	
-	<input class="bemaincommands" style="display:inline" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" {if !($object.id|default:false)}disabled="1"{/if} />
+	<input class="bemaincommands" style="display:inline" type="button" value=" {t}Save{/t} " name="save" />
+	<input class="bemaincommands" style="display:inline" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" />
 
-	
 </fieldset>	
-							
+
 </div>
 
 </form>

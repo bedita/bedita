@@ -413,7 +413,7 @@ $config['questionTypeDefault'] = BEDITA_DOMANDA_TXTSEMPLICE ;
 $config['statusOptions'] = array(
 	"on"	=> "ON",
 	"off"	=> "OFF",
-	"draft"	=> "DRAFT",
+	"draft"	=> "DRAFT"
 ) ;
 
 /**

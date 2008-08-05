@@ -23,7 +23,28 @@ $(document).ready(function(){
 	    beforeShow: customRange
 	}, $.datepicker.regional['{/literal}{$currLang}{literal}']);
 
-	$("input.dateinput").datepicker();
+	{/literal}
+	{if !empty($object.id) && ($object.status == 'fixed')}
+		{literal}
+		$("#titleBEObject").attr("readonly",true);
+		$("#nicknameBEObject").attr("readonly",true);
+		$("#start").attr("readonly",true);
+		$("#start").attr("value","");
+		$("#end").attr("readonly",true);
+		$("#end").attr("value","");
+		$("#delBEObject").attr("disabled",true);
+		{/literal}
+	{else}
+		{literal}
+		$("#titleBEObject").attr("readonly",false);
+		$("#nicknameBEObject").attr("readonly",false);
+		$("#start").attr("readonly",false);
+		$("#end").attr("readonly",false);
+		$("#delBEObject").attr("disabled",false);
+		$("input.dateinput").datepicker();
+		{/literal}
+	{/if}
+	{literal}
 });
 
 {/literal}
