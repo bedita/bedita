@@ -171,7 +171,7 @@ $(document).ready(function(){
 				<input type="hidden" name="data[LangText][{$l1}][name]" value="title"/>
 				<input type="text" name="data[LangText][{$l1}][text]" style="width:210px !important" value="{$image_title}" />
 				<input type="hidden" name="data[LangText][{$l1}][object_id]" value="{$image.id}"/>
-				{if !empty($image.LangTextExtended)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangTextExtended[$image.id][$object_translation.lang].title}"/>{/if}
+				{if !empty($image.LangTextExtended)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangTextExtended[$image.id][$object_translation.lang].title|default:''}"/>{/if}
 				
 				{assign var='l1' value=$lang_text_index++}
 				{assign var='image_description' value=$image.LangText.description[$object_translation.lang]|default:''}
@@ -179,7 +179,7 @@ $(document).ready(function(){
 				<input type="hidden" name="data[LangText][{$l1}][name]" value="description"/>
 				<textarea style="height:38px; width:210px !important" name="data[LangText][{$l1}][text]">{$image_description}</textarea>
 				<input type="hidden" name="data[LangText][{$l1}][object_id]" value="{$image.id}"/>
-				{if !empty($image.LangTextExtended)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangTextExtended[$image.id][$object_translation.lang].description}"/>{/if}
+				{if !empty($image.LangTextExtended)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangTextExtended[$image.id][$object_translation.lang].description|default:''}"/>{/if}
 			
 			</td>
 		</tr>
