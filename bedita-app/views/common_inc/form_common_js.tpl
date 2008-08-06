@@ -24,7 +24,7 @@ $(document).ready(function(){
 	}, $.datepicker.regional['{/literal}{$currLang}{literal}']);
 
 	{/literal}
-	{if !empty($object.id) && ($object.status == 'fixed')}
+	{if !empty($object) && !empty($object.id) && ($object.status == 'fixed')}
 		{literal}
 		$("#titleBEObject").attr("readonly",true);
 		$("#nicknameBEObject").attr("readonly",true);
@@ -40,7 +40,9 @@ $(document).ready(function(){
 		$("#nicknameBEObject").attr("readonly",false);
 		$("#start").attr("readonly",false);
 		$("#end").attr("readonly",false);
-		$("#delBEObject").attr("disabled",false);
+		{/literal}{if !empty($object)}{literal}
+			$("#delBEObject").attr("disabled",false);
+		{/literal}{/if}{literal}
 		$("input.dateinput").datepicker();
 		{/literal}
 	{/if}

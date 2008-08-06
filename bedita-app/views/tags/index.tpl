@@ -138,7 +138,7 @@ function delObjects() {
 
 
 	<br />
-	<div class="tab"><h2>{t}operazioni{/t}</h2></div>
+	<div class="tab"><h2>{t}operations{/t}</h2></div>
 	<div>
 
 		<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>

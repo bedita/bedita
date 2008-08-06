@@ -34,24 +34,23 @@ $(document).ready(function(){
 	   <label class="events" rel="{$html->url('/events')}">{t}Events{/t}</label>
 	</div> 
 
+	{if empty($categories)}
 
-	
 	{assign var="user" value=$session->read('BEAuthUser')}
-	
+
 	{if !empty($method) && $method != "index" && $module_modify eq '1'}
 	<div class="insidecol">
 		{if ($perms->isWritable($user.userid,$user.groups,$object.Permissions))}
 		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />
-		<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" />
+		<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" {if empty($object)}disabled="disabled"{/if}/>
 		{/if}
 		{if ($perms->isDeletable($user.userid,$user.groups,$object.Permissions))}
-		<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" {if !($object.id|default:false)}disabled="1"{/if} />
+		<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" {if empty($object)}disabled="disabled"{/if}/>
 		{/if}
 	</div>
-	
 	{/if}
 
-
+	{/if}
 
 </div>
 
