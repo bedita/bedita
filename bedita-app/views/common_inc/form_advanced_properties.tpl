@@ -1,10 +1,10 @@
 
 
-<div class="tab"><h2>{t}advanced properties{/t}</h2></div>
+<div class="tab"><h2>{t}Advanced Properties{/t}</h2></div>
 <fieldset id="advancedproperties">
 
 <table class="bordered">
-		
+
 	<tr>
 
 		<th>{t}nickname{/t}:</th>
@@ -12,8 +12,7 @@
 			<input type="text" id="nicknameBEObject" name="data[nickname]" value="{$object.nickname|escape:'html'|escape:'quotes'}"/>
 		</td>
 
-	</tr>		
-		
+	</tr>
 
 	{if (isset($doctype) && !empty($doctype))}
 	<tr>
@@ -32,7 +31,7 @@
 		</tr>	
 		<tr>
 			<th>{t}created on{/t}:</th>
-			<td>{$object.created|date_format:$conf->dateTimePattern}</td>				
+			<td>{$object.created|date_format:$conf->dateTimePattern}</td>
 		</tr>	 
 		<tr>
 			<th>{t}last modified on{/t}:</th>
@@ -45,32 +44,28 @@
 		
 	{/if}
 
-
-           <tr>
-				<td><label>{t}publisher{/t}</label></td>
-				<td><input type="text" name="publisher" value="" /></td>
-           </tr>
-           <tr>
-           		<td><strong>&copy; {t}rights{/t}</strong></td>
-				<td><input type="text" name="rights" value="" /></td>
-           </tr>
-			<tr>
-				<td> <label>{t}license{/t}</label></td>                
-				<td>
-					<select style="width:300px;" name="license">
-						<option value="">--</option>
-						<option  value="1">Creative Commons Attribuzione 2.5 Italia</option>
-						<option  value="2">Creative Commons Attribuzione-Non commerciale 2.5 Italia</option>
-						<option  value="3">Creative Commons Attribuzione-Condividi allo stesso modo 2.5 Italia</option>
-						<option  value="4">Creative Commons Attribuzione-Non opere derivate 2.5 Italia</option>
-						<option  value="5">Creative Commons Attribuzione-Non commerciale-Condividi allo stesso modo 2.5 Italia</option>
-						<option  value="6">Creative Commons Attribuzione-Non commerciale-Non opere derivate 2.5 Italia</option>
-						<option  value="7">Tutti i diritti riservati</option>
-					</select>
-                </td>
-           </tr>
+	<tr>
+		<td><label>{t}publisher{/t}</label></td>
+		<td><input type="text" name="data[publisher]" value="{$object.publisher|default:''}" /></td>
+	</tr>
+	<tr>
+		<td><strong>&copy; {t}rights{/t}</strong></td>
+		<td><input type="text" name="data[rights]" value="{$object.rights|default:''}" /></td>
+	</tr>
+	<tr>
+		<td> <label>{t}license{/t}</label></td>
+		<td>
+			<select style="width:300px;" name="data[license]">
+				<option value="">--</option>
+				<option value="1" {if $object.license=='1'}selected="selected"{/if}>Creative Commons Attribuzione 2.5 Italia</option>
+				<option value="2" {if $object.license=='2'}selected="selected"{/if}>Creative Commons Attribuzione-Non commerciale 2.5 Italia</option>
+				<option value="3" {if $object.license=='3'}selected="selected"{/if}>Creative Commons Attribuzione-Condividi allo stesso modo 2.5 Italia</option>
+				<option value="4" {if $object.license=='4'}selected="selected"{/if}>Creative Commons Attribuzione-Non opere derivate 2.5 Italia</option>
+				<option value="5" {if $object.license=='5'}selected="selected"{/if}>Creative Commons Attribuzione-Non commerciale-Condividi allo stesso modo 2.5 Italia</option>
+				<option value="6" {if $object.license=='6'}selected="selected"{/if}>Creative Commons Attribuzione-Non commerciale-Non opere derivate 2.5 Italia</option>
+				<option value="7" {if $object.license=='7'}selected="selected"{/if}>Tutti i diritti riservati</option>
+			</select>
+		</td>
+	</tr>
 </table>
-
-
-    
 
