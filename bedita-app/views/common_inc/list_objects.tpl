@@ -154,15 +154,13 @@ function changeStatusObjects() {
 
 <br />
 
-<div class="tab"><h2>Operazioni sui <span class="selecteditems evidence"></span> records selezionati</h2></div>
+<div class="tab"><h2>{t}Operations on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
 <div>
 
 {t}change status to:{/t} 	<select style="width:75px" id="newStatus" data="newStatus">
-									<option value=""> -- </option>
-									<option> ON </option>
-									<option> OFF </option>
-									<option> DRAFT </option>
-								</select>
+								<option value=""> -- </option>
+								{html_options options=$conf->statusOptions}
+							</select>
 			<input id="changestatusSelected" type="button" value=" ok " />
 	<hr />
 	

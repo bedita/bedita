@@ -133,12 +133,9 @@ class MultimediaController extends ModulesController {
 	 */
 	function delete($id = null) {
 		$this->checkWriteModulePermission();
-		if(!isset($this->data['id'])) 
-		  throw new BeditaException(sprintf(__("No data", true), $id));
-		$this->Transaction->begin() ;
-		if(!$this->BeFileHandler->del($this->data['id'])) 
-		  throw new BeditaException(sprintf(__("Error deleting object: %d", true), $id));
-		$this->Transaction->commit() ;
+		$objectsListDeleted = $this->deleteMultimediaObjects();
+		$this->userInfoMessage(__("Multimedia deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("multimedia $objectsListDeleted deleted");
 	}
 
 

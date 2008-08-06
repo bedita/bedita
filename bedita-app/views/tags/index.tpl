@@ -151,11 +151,9 @@ function delObjects() {
 		
 		<hr>
 {t}change status to:{/t} 	<select style="width:75px" id="newStatus" data="newStatus">
-									<option value=""> -- </option>
-									<option value="on"> ON </option>
-									<option value="off"> OFF </option>
-									<option value="draft"> DRAFT </option>
-								</select>
+								<option value=""> -- </option>
+								{html_options options=$conf->statusOptions}
+							</select>
 			<input id="changestatusSelected" type="button" value=" ok " />
 	<hr />
 

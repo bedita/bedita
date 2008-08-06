@@ -28,10 +28,11 @@ $(document).ready(function(){
 	$("a.delete").bind("click", function() {
 		delObject($(this).attr("title"));
 	});
+	$("#changestatusSelected").bind("click",changeStatusObjects);
 });
 function delObject(id) {
 	if(!confirm(message)) return false ;
-	$("#objects_to_del").attr("value",id);
+	$("#objects_selected").attr("value",id);
 	$("#formObject").attr("action", urlDelete) ;
 	$("#formObject").get(0).submit() ;
 	return false ;
@@ -42,10 +43,23 @@ function delObjects() {
 	var checkElems = document.getElementsByName('object_chk');
 	for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
 	oToDel = (oToDel=="") ? "" : oToDel.substring(1);
-	$("#objects_to_del").attr("value",oToDel);
+	$("#objects_selected").attr("value",oToDel);
 	$("#formObject").attr("action", urlDelete) ;
 	$("#formObject").get(0).submit() ;
 	return false ;
+}
+function changeStatusObjects() {
+	var status = $("#newStatus").val();
+	if(status != "") {
+		var oToDel = "";
+		var checkElems = document.getElementsByName('object_chk');
+		for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
+		oToDel = (oToDel=="") ? "" : oToDel.substring(1);
+		$("#objects_selected").attr("value",oToDel);
+		$("#formObject").attr("action", '{/literal}{$html->url('changeStatusObjects/')}{literal}' + status) ;
+		$("#formObject").get(0).submit() ;
+		return false ;
+	}
 }
 {/literal}
 //-->
@@ -55,7 +69,7 @@ function delObjects() {
 <form method="post" action="" id="formObject">
 
 <input type="hidden" name="data[id]"/>
-<input type="hidden" name="objects_to_del" id="objects_to_del"/>
+<input type="hidden" name="objects_selected" id="objects_selected"/>
 
 	
 	<table class="indexlist">
@@ -195,15 +209,13 @@ function delObjects() {
 
 <br />
 
-<div class="tab"><h2>Operazioni sui <span class="selecteditems evidence"></span> records selezionati</h2></div>
+<div class="tab"><h2>{t}Operations on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
 <div>
 
-{t}change status to:{/t} 	<select style="width:75px">
-									<option value=""> -- </option>
-									<option> ON </option>
-									<option> OFF </option>
-									<option> DRAFT </option>
-								</select>
+{t}change status to{/t}: 	<select style="width:75px" id="newStatus" data="newStatus">
+								<option value=""> -- </option>
+								{html_options options=$conf->statusOptions}
+							</select>
 			<input id="changestatusSelected" type="button" value=" ok " />
 	<hr />
 

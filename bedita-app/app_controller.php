@@ -538,7 +538,36 @@ abstract class ModulesController extends AppController {
 		$this->Transaction->commit() ;
 		return $objectsListDesc;
 	}
-	
+
+	protected function deleteMultimediaObjects() {
+		$objectsToDel = array();
+		$objectsListDesc = "";
+		if(!empty($this->params['form']['objects_selected'])) {
+			
+			$objectsListDesc = $this->params['form']['objects_selected'];
+			$objectsToDel = split(",",$objectsListDesc);
+			
+		} else {
+			if(empty($this->data['id'])) 
+				throw new BeditaException(__("No data", true));
+			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
+				throw new BeditaException(__("Error delete permissions", true));
+			}
+			$objectsToDel = array($this->data['id']);
+			$objectsListDesc = $this->data['id'];
+		}
+
+		$this->Transaction->begin() ;
+
+		foreach ($objectsToDel as $id) {
+			if(!$this->BeFileHandler->del($id))
+				throw new BeditaException(__("Error deleting object: ", true) . $id);
+		}
+		
+		$this->Transaction->commit() ;
+		return $objectsListDesc;
+	}
+
 	public function changeStatusObjects($newStatus) {
 		$objectsToModify = array();
 		$objectsListDesc = "";
