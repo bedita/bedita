@@ -251,7 +251,7 @@ class BeToolbarHelper extends AppHelper {
 		$data['dir'] 	= (integer)$dir ;
 
 		$url = Router::url($data) ;
-		return $this->Html->link(__($title, true), $url, $htmlAttributes);
+		return '<a href="' . $url . '">' . __($title, true) . '</a>';
 	}
 
 	/**
