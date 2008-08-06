@@ -13,8 +13,7 @@ function addItemsToParent() {
 	for(i=0;i<itemsIds.length;i++) {
 		$("#tr_"+itemsIds[i]).remove();
 	}
-
-	{/literal}{$relation}CommitUploadById(itemsIds, '{$relation}'){literal};
+	commitUploadItem(itemsIds, '{/literal}{$relation}{literal}');
 }
 
 function loadMultimediaAssoc(urlSearch, showAll) {

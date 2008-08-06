@@ -1,7 +1,7 @@
 <script type="text/javascript">
 var urlGetObj		= '{$html->url("/streams/get_item_form_by_id")}' ;
+var urlGetAllItemNoAssoc = "{$html->url("/streams/showStreams")}/{$object.id|default:'0'}/{$collection|default:''}";
 var containerItem = "#multimediaItems";
-
 
 {literal}
 function commitUploadItem(IDs, rel) {
@@ -29,28 +29,26 @@ function showResponse(data) {
 
 	if (data.UploadErrorMsg) {
 		$("#loading").hide();
-    	$("#addmultimedia").append("<label class='error'>"+data.UploadErrorMsg+"<\/label>").addClass("error");
-    } else {
-	    var tmp = new Array() ;
-	    var countFile = 0; 
-	    $.each(data, function(entryIndex, entry) {
-	    	tmp[countFile++] = entry['fileId'];
-	    });
- 
+		$("#addmultimedia").append("<label class='error'>"+data.UploadErrorMsg+"<\/label>").addClass("error");
+	} else {
+		var tmp = new Array() ;
+		var countFile = 0; 
+		$.each(data, function(entryIndex, entry) {
+			tmp[countFile++] = entry['fileId'];
+		});
+
 		commitUploadItem(tmp, "attach");
-	} 
-	
+	}
+
 		$("#addmultimedia").find("input[@type=text]").attr("value", "");
-	    $("#addmultimedia").find("input[@type=file]").attr("value", "");
-	    $("#addmultimedia").find("textarea").attr("value", "");
+		$("#addmultimedia").find("input[@type=file]").attr("value", "");
+		$("#addmultimedia").find("textarea").attr("value", "");
 }
 
 function resetError() {
 	$("#addmultimedia").find("label").remove();
 	$("#loading").show();
 }
-
-
 
 // Remove item from queue
 function removeItem(divId) {
@@ -65,27 +63,35 @@ $(document).ready(function()
 {  
 	var optionsForm = {
 		beforeSubmit:	resetError,
-        success:    	showResponse,  // post-submit callback  
-        dataType:  		'json'        // 'xml', 'script', or 'json' (expected server response type) 
-    }; 
+		success:		showResponse,  // post-submit callback  
+		dataType:		'json'        // 'xml', 'script', or 'json' (expected server response type) 
+	};
 
-    $("#uploadForm").click(function() {
-    	optionsForm.url = "{/literal}{$html->url('/files/uploadAjax')}{literal}"; // override form action
-    	$('#updateForm').ajaxSubmit(optionsForm);
-    	return false;
-    });
-    
-    $("#uploadFormMedia").click(function() {
-    	optionsForm.url = "{/literal}{$html->url('/files/uploadAjaxMediaProvider')}{literal}"; // override form action
-    	$('#updateForm').ajaxSubmit(optionsForm);
-    	return false;
-    });
-	
+	$("#uploadForm").click(function() {
+		optionsForm.url = "{/literal}{$html->url('/files/uploadAjax')}{literal}"; // override form action
+		$('#updateForm').ajaxSubmit(optionsForm);
+		return false;
+	});
+
+	$("#uploadFormMedia").click(function() {
+		optionsForm.url = "{/literal}{$html->url('/files/uploadAjaxMediaProvider')}{literal}"; // override form action
+		$('#updateForm').ajaxSubmit(optionsForm);
+		return false;
+	});
+
 	$(containerItem).sortable ({
 		distance: 20,
 		opacity:0.7,
 		update: $(this).reorderListItem
 	}).css("cursor","move");
+	
+	$("#reposItems").click( function () {
+		$("#loading").show();
+		$("#ajaxSubcontainer").show();
+		$("#ajaxSubcontainer").load(urlGetAllItemNoAssoc, function() {
+			$("#loading").hide();
+		});
+	});
 });
 {/literal}
 </script>
@@ -123,7 +129,7 @@ $(document).ready(function()
 	<ul class="htab">
 		<li rel="uploadItems">	{t}upload new items{/t}</li>
 		<li rel="urlItems">		{t}add by url{/t}</li>
-		<li rel="repositoryItems">	{t}select from archive{/t}</li>
+		<li rel="repositoryItems" id="reposItems">	{t}select from archive{/t}</li>
 	</ul>
 	
 	
@@ -180,10 +186,10 @@ $(document).ready(function()
 		</tr>
 		</table>
 	</div>
-	
-	
+
+
 	<div class="htabcontent" id="repositoryItems">
-		Lla awfwe wetrewt ert 
+		<div id="ajaxSubcontainer"></div>
 	</div>
 
 </fieldset>
