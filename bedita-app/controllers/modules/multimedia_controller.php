@@ -26,7 +26,7 @@ class MultimediaController extends ModulesController {
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
 	// This controller does not use a model
-	var $uses = array('Stream', 'Image', 'Audio', 'Video', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Tree', 'User', 'Group') ;
+	var $uses = array('Stream', 'Image', 'Audio', 'Video', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Tree', 'User', 'Group','ObjectCategory') ;
 	protected $moduleName = 'multimedia';
 	
 	 /**
@@ -75,22 +75,28 @@ class MultimediaController extends ModulesController {
 		// Get object by $id
 		$obj = null ;
 		if($id) {
-			$rec = $this->BEObject->recursive ;
-			$this->BEObject->recursive = -1 ;
-			if(!($ret = $this->BEObject->read('object_type_id', $id))) 
-			     throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
-			$this->BEObject->recursive = $rec ;
-			$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
-			$this->{$model}->bviorHideFields = array('Version', 'Index', 'current', 'multimedia', 'attachments') ;
+			$model = $this->BEObject->getType($id);
+			$this->{$model}->restrict(array(
+									"BEObject" => array("ObjectType",
+														"Permissions",
+														"UserCreated", 
+														"UserModified"),
+									"ContentBase" => array("*"),
+									"Stream"
+									)
+								);
 			if(!($obj = $this->{$model}->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
 			}
+			if (isset($obj["ObjectCategory"])) {
+				$objCat = array();
+				foreach ($obj["ObjectCategory"] as $oc) {
+					$objCat[] = $oc["id"];
+				}
+				$obj["ObjectCategory"] = $objCat;
+			}
 			$imagePath 	= $this->BeFileHandler->path($id) ;
 			$imageURL 	= $this->BeFileHandler->url($id) ;
-		}
-		// Language data
-		if(isset($obj["LangText"])) {
-			$this->BeLangText->setupForView($obj["LangText"]) ;
 		}
 		// data for template
 		$this->set('object',	@$obj);
@@ -115,13 +121,14 @@ class MultimediaController extends ModulesController {
 		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
 		$this->Transaction->begin() ;
 		// save data
-		if(!$this->BEObject->save($this->data)) {
-			throw new BeditaException(__("Error saving multimedia object", true),$this->BEObject->validationErrors);
+		$this->data["ObjectCategory"] = $this->ObjectCategory->saveTagList($this->params["form"]["tags"]);
+		if(!$this->Stream->save($this->data)) {
+			throw new BeditaException(__("Error saving multimedia object", true),$this->Stream->validationErrors);
 		}
 		// update permissions
 		if(!isset($this->data['Permissions'])) 
 			$this->data['Permissions'] = array() ;
-		$this->Permission->saveFromPOST($this->BEObject->id, $this->data['Permissions'], 
+		$this->Permission->saveFromPOST($this->Stream->id, $this->data['Permissions'], 
 				!empty($this->data['recursiveApplyPermissions']), 'document');
 		$this->Transaction->commit() ;
 		$this->userInfoMessage(__("Multimedia object saved", true)." - ".$this->data["title"]);
@@ -184,8 +191,8 @@ class MultimediaController extends ModulesController {
 							"ERROR"	=> "/multimedia/view/{$this->BEObject->id}" 
 							),
 			"save"  =>  array(
-							"OK"    => "/multimedia/view/{$this->BEObject->id}",
-							"ERROR" => "/multimedia/" 
+							"OK"    => "/multimedia/view/{$this->Stream->id}",
+							"ERROR" => "/multimedia/view/{$this->Stream->id}" 
 							), 
 			"delete"	=> 	array(
 							"OK"	=> "./",

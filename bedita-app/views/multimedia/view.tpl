@@ -30,7 +30,7 @@ $(document).ready(function(){
 {include file="inc/menucommands.tpl" method="view" fixed=true}
 
 <div class="main">
-	
+	{dump var=$object}
 	{include file="inc/form.tpl"}	
 
 </div>
