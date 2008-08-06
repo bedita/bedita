@@ -46,10 +46,7 @@ class HomeController extends AppController {
 	 	$lastMod = $this->BEObject->find("all", array(
 		 								"restrict" 		=> array("ObjectType"),
 		 								"fields"		=> array("id", "title", "modified", "ObjectType.module"),
-		 								"conditions" 	=> array(
-		 														"user_modified <> '" . $user["id"] . "'",
-		 														"object_type_id" => $types
-	 														),
+		 								"conditions" 	=> array("object_type_id" => $types),
 		 								"order"			=> array("modified DESC"),
 		 								"limit"			=> 10
 	 								)
