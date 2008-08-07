@@ -12,7 +12,7 @@
 {foreach from=$object.LangText.status item=i key=k}
 <tr class="rowList" rel="{$html->url('/translations/view/')}{$object.id}/{$k}">
 	<td>{$conf->langOptions[$k]}</td>
-	<td>{$object.LangText.title.$k}</td>
+	<td>{$object.LangText.title.$k|default:""}</td>
 	<td>{$i}</td>
 </tr>
 {/foreach}

@@ -626,7 +626,7 @@ class Tree extends BEAppModel
 		// costruisce il join dalle tabelle
 		$from = "trees AS `Tree` INNER JOIN objects as `BEObject` ON `Tree`.`id` = `BEObject`.`id`" ;
 		
-		$limit 	= $this->_getLimitClausole($page, $dim) ;
+		$limit 	= $this->getLimitClausole($page, $dim) ;
 		$query = "SELECT {$fields} {$searchFields} FROM {$from} {$fromSearchText} {$sqlClausole} {$searchClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
 		$tmp  	= $this->execute($query) ;
 				
@@ -639,15 +639,6 @@ class Tree extends BEAppModel
 		}
 
 		return $recordset ;
-	}
-
-	private function _getLimitClausole($page = 1, $dim = 100000) {
-		// Esegue la ricerca
-		if($page > 1) $offset = ($page -1) * $dim ;
-		else $offset = null ;
-		$limit = isset($offset)? "$offset, $dim" : "$dim";
-
-		return $limit ;
 	}
 
 	private function _getCondition_filterType(&$conditions, $filter = false) {

@@ -157,6 +157,18 @@ class BEAppModel extends AppModel {
 		
 		return $toolbar ;	
 	}
+
+	/**
+	 * SQL limit clausole
+	 *
+	 * @param int $page, page num
+	 * @param int $dim, global size/count
+	 * @return string
+	 */
+	protected function getLimitClausole($page = 1, $dim = 100000) {
+		$offset = ($page > 1) ? (($page -1) * $dim) : null;
+		return isset($offset) ? "$offset, $dim" : "$dim" ;
+	}
 }
 
 ///////////////////////////////////////////////////////////////

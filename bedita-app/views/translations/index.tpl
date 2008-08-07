@@ -139,8 +139,6 @@ function changeStatusTranslations() {
 
 
 	
-{if !empty($translations)}
-
 <div class="tab"><h2>{t}filters{/t}</h2></div>
 <div>
 	{t}Show translations in{/t}: &nbsp;
@@ -165,13 +163,16 @@ function changeStatusTranslations() {
 	value="{if !empty($form->params.data)}{$form->params.data.translation_object_id|default:''}{/if}"/>
 	&nbsp;<input type="submit" value="{t}go{/t}"/>
 	
+{if !empty($translations)}
 	<hr />
 		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
 		&nbsp;&nbsp;&nbsp;
 		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
+{/if}
 	
 	</div>
 
+{if !empty($translations)}
 	
 	<div class="tab"><h2>Operations on above records</h2></div>
 	<div>

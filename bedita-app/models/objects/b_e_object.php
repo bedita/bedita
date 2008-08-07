@@ -304,7 +304,7 @@ class BEObject extends BEAppModel
 			}
 		}
 		
-		$limit 	= $this->_getLimitClausole($page, $dim) ;
+		$limit 	= $this->getLimitClausole($page, $dim) ;
 		$query = "SELECT {$searchFields}{$fields} FROM {$from} {$fromSearchText} {$sqlClausole} {$searchClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
 		$tmp  	= $this->execute($query) ;
 
@@ -510,18 +510,6 @@ class BEObject extends BEAppModel
 		) ;	
 	}
 	
-	
-	/**
-	 * Creano le cluasole di ricerca
-	 */
-	private function _getLimitClausole($page = 1, $dim = 100000) {
-		// Esegue la ricerca
-		if($page > 1) $offset = ($page -1) * $dim ;
-		else $offset = null ;
-		$limit = isset($offset)? "$offset, $dim" : "$dim";
-
-		return $limit ;
-	}
 	
 	private function _getCondition_filterType(&$conditions, $filter = false) {
 		if(!$filter) 

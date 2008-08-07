@@ -277,7 +277,7 @@ UL.modules {
 .admin 			{background-color:#003366 !important;}
 .ecommerce 		{background-color:#999966 !important;}
 .attachments 	{background-color:#999966 !important;}
-.news 			{background-color:#6666FF !important;}
+.news, .shortnews 	{background-color:#6666FF !important;}
 .tags 			{background-color:#5F9EA0 !important;}
 .comments, .comment			{background-color:#F08080 !important;}
 .translations	{background-color:#FF00FF !important;}
