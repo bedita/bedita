@@ -127,7 +127,7 @@ function delObjects() {
 		<tr>
 			<td colspan="10" class="tag graced" style="text-align:justify; line-height:1.5em; padding:20px;">
 				{foreach from=$tags item=tag}
-				<a href="{$html->url('view/')}{$tag.id}">{$tag.label}</a>
+				<a title="{$tag.weight}" class="{$tag.class|default:""}" href="{$html->url('view/')}{$tag.id}">{$tag.label}</a>
 				{/foreach}
 			</td>
 		</tr>
@@ -135,7 +135,6 @@ function delObjects() {
 	</tbody>
 	
 	</table>
-
 
 	<br />
 	<div class="tab"><h2>{t}operations{/t}</h2></div>

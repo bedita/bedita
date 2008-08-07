@@ -45,7 +45,7 @@ $().ready(function() {
 <div class="secondacolonna">
 	
 	<div class="modules">
-	   <label class="admin error">{t}Login{/t}</label>
+	   <label class="admin">{t}Login{/t}</label>
 	</div> 
 	
 	{include file="../common_inc/messages.tpl"}

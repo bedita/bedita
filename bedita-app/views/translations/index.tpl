@@ -85,25 +85,7 @@ function changeStatusTranslations() {
 	<input type="hidden" name="data[master_id]" value="{$object_master.id|default:''}"/>
 	<input type="hidden" name="objects_selected" id="objects_selected"/>
 	
-	{t}Show translations in{/t}:
-	<select style="font-size:1.2em;" name="data[translation_lang]">
-		<option value="">{t}all languages{/t}</option>
-	{foreach key=val item=label from=$conf->langOptions}
-		<option value="{$val}"{if !empty($form->params.data) && ($form->params.data.translation_lang==$val)} selected="selected"{/if}>{$label}</option>
-	{/foreach}
-	</select>
-	{t}with status{/t}:
-	<select style="font-size:1.2em;" name="data[translation_status]">
-	<option value="">{t}on,off,draft,required{/t}</option>
-	<option value="ON"{if !empty($form->params.data) && ($form->params.data.translation_status=='ON')} selected="selected"{/if}>{t}on{/t}</option>
-	<option value="OFF"{if !empty($form->params.data) && ($form->params.data.translation_status=='OFF')} selected="selected"{/if}>{t}off{/t}</option>
-	<option value="DRAFT"{if !empty($form->params.data) && ($form->params.data.translation_status=='DRAFT')} selected="selected"{/if}>{t}draft{/t}</option>
-	<option value="REQUIRED"{if !empty($form->params.data) && ($form->params.data.translation_status=='REQUIRED')} selected="selected"{/if}>{t}required{/t}</option>
-	</select>
-	{t}master id{/t}:
-	<input type="text" name="data[translation_object_id]" value="{if !empty($form->params.data)}{$form->params.data.translation_object_id|default:''}{/if}"/>
-	<input type="submit" value="{t}Refresh data{/t}"/>
-	
+
 	<table class="indexlist">
 	{capture name="theader"}
 		<tr>
@@ -117,8 +99,6 @@ function changeStatusTranslations() {
 			<th>{$beToolbar->order('lang', 'Language')}</th>
 		</tr>
 	{/capture}
-
-	<br/><br/>
 
 		{$smarty.capture.theader}
 	
@@ -138,7 +118,10 @@ function changeStatusTranslations() {
 			<td>{$oid}</td>
 			<td>{$mtitle|truncate:64}</td>
 			<td>{$translations[i].LangText.text}</td>
-			<td>{$conf->objectTypeModels[$ot]}</td>
+			<td>
+				<span class="listrecent {$conf->objectTypeModels[$ot]|lower}">&nbsp;</span>
+				{$conf->objectTypeModels[$ot]}
+			</td>
 			<td>{$olang}</td>
 		</tr>
 		{sectionelse}
@@ -152,36 +135,60 @@ function changeStatusTranslations() {
 
 </table>
 
-
 <br />
 
-{*
-{dump var=$objects_translated}
-{dump var=$translations_title}
-*}	
+
 	
 {if !empty($translations)}
-<div style="white-space:nowrap">
-	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
-	&nbsp;&nbsp;&nbsp;
-	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
-	&nbsp;&nbsp;&nbsp
-	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
-</div>
-<br />
-<div class="tab"><h2>Operations on <span class="selecteditems evidence"></span> selected records</h2></div>
+
+<div class="tab"><h2>{t}filters{/t}</h2></div>
 <div>
-{t}change status to:{/t}	<select style="width:75px" id="newStatus" data="newStatus">
-								<option value=""> -- </option>
-								<option value="on"> ON </option>
-								<option value="off"> OFF </option>
-								<option value="draft"> DRAFT </option>
-								<option value="required"> REQUIRED </option>
-							</select>
-			<input id="changestatusSelected" type="button" value=" ok " />
+	{t}Show translations in{/t}: &nbsp;
+	<select name="data[translation_lang]">
+		<option value=""></option>
+	{foreach key=val item=label from=$conf->langOptions}
+		<option value="{$val}"{if !empty($form->params.data) && ($form->params.data.translation_lang==$val)} selected="selected"{/if}>{$label}</option>
+	{/foreach}
+	</select>
+	
+	&nbsp;{t}with status{/t}: &nbsp;
+	<select name="data[translation_status]">
+	<option value=""></option>
+	<option value="ON"{if !empty($form->params.data) && ($form->params.data.translation_status=='ON')} selected="selected"{/if}>{t}on{/t}</option>
+	<option value="OFF"{if !empty($form->params.data) && ($form->params.data.translation_status=='OFF')} selected="selected"{/if}>{t}off{/t}</option>
+	<option value="DRAFT"{if !empty($form->params.data) && ($form->params.data.translation_status=='DRAFT')} selected="selected"{/if}>{t}draft{/t}</option>
+	<option value="REQUIRED"{if !empty($form->params.data) && ($form->params.data.translation_status=='REQUIRED')} selected="selected"{/if}>{t}required{/t}</option>
+	</select>
+	
+	&nbsp;{t}of master id{/t}:&nbsp;
+	<input type="text" name="data[translation_object_id]" style="width:25px"
+	value="{if !empty($form->params.data)}{$form->params.data.translation_object_id|default:''}{/if}"/>
+	&nbsp;<input type="submit" value="{t}go{/t}"/>
+	
 	<hr />
-	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
-</div>
+		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
+		&nbsp;&nbsp;&nbsp;
+		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
+	
+	</div>
+
+	
+	<div class="tab"><h2>Operations on above records</h2></div>
+	<div>
+		<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
+		<hr />
+		{t}change status to:{/t}	<select style="width:75px" id="newStatus" data="newStatus">
+									<option value=""> -- </option>
+									<option value="on"> ON </option>
+									<option value="off"> OFF </option>
+									<option value="draft"> DRAFT </option>
+									<option value="required"> REQUIRED </option>
+								</select>
+				<input id="changestatusSelected" type="button" value=" ok " />
+		<hr />
+		{t}delete selected items{/t}&nbsp;<input id="deleteSelected" type="button" value=" ok "/>
+		<hr />
+	</div>
 {/if}
 
 </form>

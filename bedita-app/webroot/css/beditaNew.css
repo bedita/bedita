@@ -268,18 +268,18 @@ UL.modules {
 
 ...........................................*/
 
-.areas 			{background-color:#333333 !important;}
-.documents 		{background-color:#ff6600 !important;}
-.galleries 		{background-color:#FFBF00 !important;}
-.events			{background-color:#0099CC !important;}
-.newsletter 	{background-color:#99cc33 !important;}
-.multimedia 	{background-color:#ff0033 !important;}
+.areas, .area, .section 	{background-color:#333333 !important;}
+.documents, .document		{background-color:#ff6600 !important;}
+.galleries, .gallery 		{background-color:#FFBF00 !important;}
+.events, .event				{background-color:#0099CC !important;}
+.newsletter 				{background-color:#99cc33 !important;}
+.multimedia, .image, .audio, .video		{background-color:#ff0033 !important;}
 .admin 			{background-color:#003366 !important;}
 .ecommerce 		{background-color:#999966 !important;}
 .attachments 	{background-color:#999966 !important;}
 .news 			{background-color:#6666FF !important;}
 .tags 			{background-color:#5F9EA0 !important;}
-.comments		{background-color:#F08080 !important;}
+.comments, .comment			{background-color:#F08080 !important;}
 .translations	{background-color:#FF00FF !important;}
 
 .bedita 		{background-color:#FFFFFF !important; 
@@ -649,11 +649,13 @@ TD.center, TH.center {
 
 
 .indexlist TR {
-	border-bottom:1px solid #d8d8d8;
+	/* border-bottom:1px solid #d8d8d8; */
 }
 
 .indexlist TR:first-child, .indexlist TR:last-child  {
+	/*
 	border-bottom:0px solid #d8d8d8;
+	*/
 }
 
 
@@ -665,6 +667,9 @@ TABLE.indexlist {
 	background-color:#FFFFFF;
 }
 
+.indexlist TD  {
+	border-bottom:1px solid #d8d8d8;
+}
 
 
 .indexlist TR[rel] {
@@ -1023,14 +1028,12 @@ input[type=radio] {
 ...........................................*/
 
 .tag {
-	font-size:1.2em;
+	font-size:1em;
 	font-weight: normal;
 	line-height:1.2em;
-	
 }
 
 .tag A:Hover {
-	font-size:1.9em;
 	text-decoration:underline;
 }
 
@@ -1038,6 +1041,29 @@ input[type=radio] {
 	cursor:pointer;
 	vertical-align:middle;
 }
+
+.smallestTag {
+	font-size:1em;
+}
+
+.smallTag {
+	font-size:1.2em;
+}
+
+.mediumTag {
+	font-size:1.4em;
+}
+
+
+.largeTag {
+	font-size:1.8em;
+}
+
+.largestTag {
+	font-size:2.2em;
+}
+
+
 
 /*...........................................    
 

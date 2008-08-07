@@ -45,7 +45,7 @@ $(document).ready(function(){
 			<td>
 				{if !empty($referenced)}
 				
-				<ul class="bulleted">
+				<ul>
 
 					{foreach from=$referenced item="ref"}
 						<li>

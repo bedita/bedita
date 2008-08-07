@@ -50,14 +50,17 @@ $(document).ready(function(){
 	{/if}
 	</textarea>
 	{/strip}
-
-
-	<a class="BEbutton" id="callTags" href="javascript:void(0);">{t}Show system tags{/t}</a>
+	
+	<a class="BEbutton" id="callTags" href="javascript:void(0);">
+		{t}Show system tags{/t}
+	</a>
+	
 	
 	<hr />
 	
 	<div id="loadingTags" class="generalLoading" title="{t}Loading data{/t}">&nbsp;</div>
-	<div id="listExistingTags" class="tag graced" style="display: none;"></div>
+	
+	<div id="listExistingTags" class="tag graced" style="display: none; text-align:justify;"></div>
 
 
 </fieldset>

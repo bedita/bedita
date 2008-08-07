@@ -24,10 +24,18 @@ $(document).ready(function() {
 {/if}
 </script>
 
-
 </head>
 
-<body>
+
+{if !empty($smarty.get.hyper)}
+
+	<body onload="init()">
+
+{else}
+
+	<body>
+
+{/if}
 
 {include file="../common_inc/modulesmenu.tpl"}
 
@@ -45,9 +53,13 @@ $(document).ready(function() {
 
 	
 {if !empty($smarty.get.hyper)}
+
 	{include file="inc/hypertree.tpl"}
+	
 {else}
+
 	{include file="inc/form_tree.tpl"}
+	
 {/if}
 
 </div>

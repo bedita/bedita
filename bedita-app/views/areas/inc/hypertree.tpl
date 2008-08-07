@@ -1,4 +1,17 @@
-<div style="position:relative; z-index:0; background-color:pink; margin-top:-50px; margin-left:-50px; width:500px; height:500px">
+
+{$html->css('hypertree')}
+
+{$javascript->link("hypertree/mootools-beta-1.2b2.js", false)}
+{$javascript->link("hypertree/Hypertree.js", false)}
+{$javascript->link("hypertree/infovis.js", false)}
+{$javascript->link("hypertree/example-hypertree.js", false)}
 
 
-</div>
+<div id="header"></div>
+<div id="left"></div>
+
+
+<canvas id="infovis"></canvas>
+
+<div id="label_container"></div>
+

@@ -71,7 +71,7 @@ function changeStatusObjects() {
 <input type="hidden" name="data[id]"/>
 <input type="hidden" name="objects_selected" id="objects_selected"/>
 
-	
+	<div id="viewthumb">
 	<table class="indexlist">
 	{capture name="theader"}
 		<tr>
@@ -79,8 +79,6 @@ function changeStatusObjects() {
 				<img class="multimediaitemToolbar viewlist" src="{$html->webroot}img/iconML-list.png" />
 				<img class="multimediaitemToolbar viewsmall" src="{$html->webroot}img/iconML-small.png" />
 				<img class="multimediaitemToolbar viewthumb" src="{$html->webroot}img/iconML-thumb.png" />
-				
-				
 				order by:
 			</th>
 			<th>{$beToolbar->order('id', 'id')}</th>
@@ -100,7 +98,7 @@ function changeStatusObjects() {
 
 	<br style="clear:both" />
 	
-		<div id="viewthumb">
+		
 		{foreach from=$objects item="item"}
 			<div class="multimediaitem itemBox{if $item.status == "off"} off{/if}">
 				
@@ -113,11 +111,14 @@ function changeStatusObjects() {
 	<br style="margin:0px; line-height:0px; clear:both" />
 	
 	<table class="indexlist" id="viewlist" style="display:none;">
-	{section name="i" loop=$objects}
+		
+		{$smarty.capture.theader}
+		
+		{section name="i" loop=$objects}
 	<tr>
 
 {strip}
-		<td style="width:50px">
+		<td>
 			
 			{assign var="thumbWidth" 		value = 50}
 			{assign var="thumbHeight" 		value = 25}
