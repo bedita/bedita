@@ -29,9 +29,7 @@ $(document).ready(function() {
 		{foreach from=$sections.items item=s}
 		<li class="itemBox">
 			<input type="hidden" class="id" 	name="reorder[{$s.id}][id]" value="{$s.id}" />
-			<input type="text" class="priority" 
-			style="text-align:right; margin-left: -30px; margin-right:10px; width:35px; float:left; background-color:transparent" 
-			name="reorder[{$s.id}][priority]" value="{$s.priority}" size="3" maxlength="3"/>
+			<input type="text" class="priority"  name="reorder[{$s.id}][priority]" value="{$s.priority}" size="3" maxlength="3"/>
 	
 			<a title="{$s.created}" href="{$html->url('/')}areas/index/{$s.id}">{$s.title}</a>
 			

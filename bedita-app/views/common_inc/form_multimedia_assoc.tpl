@@ -101,96 +101,99 @@ $(document).ready(function(){
 
 <div id="formMultimediaAssoc">
 	<fieldset>
+		{if !empty($items)}
+			{if $toolbar|default:""}
+				<p>		
+					{t}Items{/t}: {$toolbar.size} | {t}page{/t} {$toolbar.page} {t}of{/t} {$toolbar.pages} 
+
+						&nbsp; | &nbsp;
+						<span><a href="javascript: void(0);" id="streamFirstPage" title="{t}first page{/t}">first</a></span>
+						&nbsp; | &nbsp;
+						<span><a href="javascript: void(0);" id="streamPrevPage" title="{t}previous page{/t}">prev</a></span>
+			
+						&nbsp; | &nbsp;			
+					
+						<span><a href="javascript: void(0);" id="streamNextPage" title="{t}next page{/t}">next</a></span>
+						&nbsp; | &nbsp;
+						<span><a href="javascript: void(0);" id="streamLastPage" title="{t}last page{/t}">last</a></span>
+										
+						&nbsp; | &nbsp;
+					
+						{t}Dimensions{/t}: 
+						<select name="streamPagDim" id="streamPagDim">
+							<option value="1"{if $toolbar.dim == 1} selected="selected"{/if}>1</option>
+							<option value="5"{if $toolbar.dim == 5} selected="selected"{/if}>5</option>
+							<option value="10"{if $toolbar.dim == 10} selected="selected"{/if}>10</option>
+							<option value="20"{if $toolbar.dim == 20} selected="selected"{/if}>20</option>
+							<option value="50"{if $toolbar.dim == 50} selected="selected"{/if}>50</option>
+							<option value="100"{if $toolbar.dim == 100} selected="selected"{/if}>100</option>
+						</select>
+				</p>
+			<hr />
+			{/if}
+		{/if}
 		<div>
 			<input type="text" id="searchMultimediaText" name="searchMultimediaItems" value="{$streamSearched|default:'search'}"/>
 			<input id="searchMultimedia" type="button" value="{t}Search{/t}"/>
 			<input type="button" id="searchMultimediaShowAll" value="{t}Show all{/t}" style="display: none;" />
 		</div>
-		{if !empty($items)}
-			{if $toolbar|default:""}
-				<p class="toolbar">
-	
-					{t}Items{/t}: {$toolbar.size} | {t}page{/t} {$toolbar.page} {t}of{/t} {$toolbar.pages} &nbsp;
-					
-					{if $toolbar.prev > 0}
-						<span><a href="javascript: void(0);" id="streamFirstPage" title="{t}first page{/t}">|<</a></span>
-						<span><a href="javascript: void(0);" id="streamPrevPage" title="{t}previous page{/t}"><</a></span>
-					{else}
-						<span>|<</span>
-						<span><</span>
-					{/if}
-					&nbsp;
-					{if $toolbar.page != $toolbar.pages}
-						<span><a href="javascript: void(0);" id="streamNextPage" title="{t}next page{/t}">></a></span>
-						<span><a href="javascript: void(0);" id="streamLastPage" title="{t}last page{/t}">>|</a></span>
-					{else}
-						<span>></span>
-						<span>>|</span>
-					{/if}		
-					{t}Dimensions{/t}: 
-					<select name="streamPagDim" id="streamPagDim">
-						<option value="1"{if $toolbar.dim == 1} selected="selected"{/if}>1</option>
-						<option value="5"{if $toolbar.dim == 5} selected="selected"{/if}>5</option>
-						<option value="10"{if $toolbar.dim == 10} selected="selected"{/if}>10</option>
-						<option value="20"{if $toolbar.dim == 20} selected="selected"{/if}>20</option>
-						<option value="50"{if $toolbar.dim == 50} selected="selected"{/if}>50</option>
-						<option value="100"{if $toolbar.dim == 100} selected="selected"{/if}>100</option>
-					</select>
-				</p>
-			{/if}
-			<input type="button" onclick="javascript:addItemsToParent();" value=" (+) {t}Add selected items{/t}"/>
-			<table class="indexList" id="streamPagList" style="clear: left;">
-			<thead>
+
+		<hr />
+		<table class="indexlist" id="streamPagList" style="clear: left;">
+			{* <thead>
 			<tr>
-				<th><input type="checkbox" class="selectAll" id="selectAll"/><label for="selectAll"> {t}(Un)Select All{/t}</label></th>
+				<th></th>
+				<th></th>
 				<th>id</th>
-				<th>{t}Thumb{/t}</th>
-				<th>{t}Title{/t}</th>
-				<th>{t}File name{/t}</th>
-				<th>{t}File size{/t}</th>
-				<th>{t}Language{/t}</th>
+				<th>{t}title{/t}</th>
+				<th>{t}file{/t}</th>
+				<th>{t}size{/t}</th>
+				<th>{t}lang{/t}</th>
 			</tr>
 			</thead>
-
+ 			*}
 			<tbody>
 			{foreach from=$items item='mobj' key='mkey'}
+				{assign var="thumbWidth" value = 45}
+				{assign var="thumbHeight" value = 45}
 			<tr class="rowList" id="tr_{$mobj.id}">
-				<td><input type="checkbox" value="{$mobj.id}" name="chk_bedita_item" class="itemCheck"/></td>
-				<td><a class="selItems" href="javascript:void(0);">{$mobj.id}</a></td>
-				<td>
-				{assign var="thumbWidth" 		value = 30}
-				{assign var="thumbHeight" 		value = 30}
-				{assign var="filePath"			value = $mobj.path}
-				{assign var="mediaPath"         value = $conf->mediaRoot}
-				{assign_concat var="mediaCacheBaseURL"	0=$conf->mediaUrl  1="/" 2=$conf->imgCache 3="/"}
-				{assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
+				
+				<td style="width:12px;"><input type="checkbox" value="{$mobj.id}" name="chk_bedita_item" class="itemCheck"/></td>
+				<td style="width:{$thumbWidth}px;">
+					{if strtolower($mobj.ObjectType.name) == "image"}
+					
+					<a title="show details" href="/multimedia/view/{$mobj.id}" target="_blank">					
+						{$beEmbedMedia->object($mobj,$thumbWidth,$thumbHeight)}
+					</a>
 
-				{if strtolower($mobj.ObjectType.name) == "image"}
-					{thumb 
-						width			= $thumbWidth
-						height			= $thumbHeight
-						file			= $mediaPath$filePath
-						cache			= $mediaCacheBaseURL
-						cachePATH		= $mediaCachePATH
-					}
-				{elseif ($mobj.provider|default:false)}
-					{assign_associative var="attributes" style="width:30px;heigth:30px;"}
-					<div><a href="{$filePath}" target="_blank">{$mediaProvider->thumbnail($mobj, $attributes) }</a></div>
-				{else}
-					<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$mobj.type}.gif" /></a></div>
-				{/if}
+					{elseif ($mobj.provider|default:false)}
+						{assign_associative var="attributes" style="width:30px;heigth:30px;"}
+						<div><a href="{$filePath}" target="_blank">{$mediaProvider->thumbnail($mobj, $attributes) }</a></div>
+					{else}
+						<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$mobj.type}.gif" /></a></div>
+					{/if}
 				</td>
+				{* <td>{$mobj.id}</td> *}
 				<td>{$mobj.title|default:""}</td>
-				<td>{$mobj.name|default:""}</td>
-				<td>{$mobj.size|default:""}</td>
+				{* <td>{$mobj.name|default:""|truncate:24:"..."}</td> *}
+				<td>{$mobj.size|default:""|filesize}</td>
+				
 				<td>{$mobj.lang}</td>
+				
 			</tr>
+			{foreachelse}
+				<tr>
+					<td>{t}No {$itemType} item found{/t}</td>
+				</tr>
 			{/foreach}
 			</tbody>
 			</table>
-			<input type="button" onclick="javascript:addItemsToParent();" value=" (+) {t}Add selected items{/t}"/>
-		{else}
-			{t}No {$itemType} item found{/t}
+		{if !empty($items)}
+			<hr />
+			&nbsp;<input type="checkbox" class="selectAll" id="selectAll" />&nbsp;
+			<label for="selectAll"> {t}(Un)Select All{/t}</label>
+			&nbsp;&nbsp;&nbsp;
+			<input type="button" onclick="javascript:addItemsToParent();" value="{t}Add selected items{/t}"/>
 		{/if}
 	</fieldset>
 	

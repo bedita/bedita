@@ -52,7 +52,7 @@ $config['tmp'] = "/tmp" ;
  */
 
 // User Interface default language [see also 'multilang' below]
-//$config['Config']['language'] = "ita"; // or "eng", "spa", "por"
+$config['Config']['language'] = "ita"; // or "eng", "spa", "por"
 
 // Set 'multilang' true for user choice [also set 'multilang' true if $config['Config']['language'] is set]
 $config['multilang'] = true;

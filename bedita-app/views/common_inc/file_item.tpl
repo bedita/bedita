@@ -1,7 +1,7 @@
 {if empty($item)} {assign var="item" value=$object} {/if}
 
 {assign var="thumbWidth" 		value = 130}
-{assign var="thumbHeight" 		value = 85}
+{assign var="thumbHeight" 		value = 98}
 {assign var="filePath"			value = $item.path}
 {assign var="fileName"			value = $item.filename|default:$item.name}
 {assign var="fileTitle"			value = $item.title}
@@ -16,25 +16,15 @@
 {strip}
 
 	
-	<div style="overflow:hidden; width:{$thumbWidth}px; height:{$thumbHeight}px" class="imagebox">
+	<div style="overflow:hidden; height:{$thumbHeight}px" class="imagebox">
 	<a href="{$linkUrl}">
 	{if strtolower($item.ObjectType.name) == "image"}
 	
 		{if !empty($fileName) }
-			{thumb 
-				longside			= $thumbWidth
-				width			= $thumbWidth
-				height			= $thumbHeight
-				file			= $mediaPath$filePath
-				link = "false"
-				linkurl			= $linkUrl
-				cache			= $mediaCacheBaseURL
-				cachePATH		= $mediaCachePATH
-				hint			= "false"
-				html			= $imageAltAttribute
-				frame			= ""
-				window			= "false"
-			}
+			
+			{$beEmbedMedia->object($item,$thumbWidth,$thumbHeight,false,"fill",null,null,false)}
+			
+			
 		{else}
 		
 			{if strtolower($item.ObjectType.name) == "image"}
@@ -69,7 +59,7 @@
 		</li>
 {if strtolower($item.ObjectType.name) == "image"}
 		<li>
-			{$item.width}x{$item.height}px, {math equation="x/y" x=$item.size|default:0 y=1024 format="%d"|default:""} KB
+			{$item.width}x{$item.height}px, {$item.size|default:0|filesize}
 		</li>
 {/if}
 		<li>

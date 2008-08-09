@@ -47,7 +47,7 @@ msgid "Univocal Nickname"
 msgstr "Nome univoco"
 
 msgid "Status"
-msgstr "Stato"
+msgstr "Status"
 
 msgid "Created"
 msgstr "Creato"
@@ -95,7 +95,7 @@ msgid "Properties"
 msgstr "Proprietà"
 
 msgid "Status"
-msgstr "Stato"
+msgstr "Status"
 
 msgid "Publication"
 msgstr "Pubblicazione"

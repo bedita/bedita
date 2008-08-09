@@ -27,7 +27,7 @@ BODY {
 }
 
 
-TD {padding:2px; vertical-align:top}
+TD {padding:2px; vertical-align:middle}
 
 HR {height:0px; border:0px; margin:10px 0px 10px 0px; border-top:1px solid gray}
 
@@ -648,15 +648,6 @@ TD.center, TH.center {
 }
 
 
-.indexlist TR {
-	/* border-bottom:1px solid #d8d8d8; */
-}
-
-.indexlist TR:first-child, .indexlist TR:last-child  {
-	/*
-	border-bottom:0px solid #d8d8d8;
-	*/
-}
 
 
 TABLE.indexlist {
@@ -678,7 +669,6 @@ TABLE.indexlist {
 
 .indexlist.bordered TH {
 	background-color:transparent;
-	
 }
 
 
@@ -933,6 +923,10 @@ input[type=radio] {
 	margin-right:5px; vertical-align:middle;
 }
 
+INPUT.priority {
+	text-align:right; margin-left: -30px; margin-right:10px; width:35px; float:left; background-color:transparent
+}
+
 /*...........................................    
 
     footer
@@ -1079,13 +1073,74 @@ input[type=radio] {
 	min-width:48px;
 }
 
+.loader {
+	background-image:url('../img/loadingAnimation.gif');
+	background-repeat:no-repeat;
+	background-position: center 100px ;
+}
 
+
+
+/*...........................................    
+
+    Modal
+
+...........................................*/
+
+#modaloverlay {
+	position:fixed;
+	height:100%;
+	width:100%;
+	top:0px;
+	left:0px;
+	background-color:black;
+	opacity:0.8;
+	z-index:499;
+	display:none;
+
+}
+
+#modal {
+	position:absolute;
+	top:160px;
+	left:300px;
+	background-color:white;
+	width:500px;
+	height:550px;
+	display:none;
+	z-index:500;
+	overflow:hidden;
+}
+
+#modalmain {
+	width:500px;
+	height:525px;
+	overflow-y:auto;
+	overflow-x:hidden;
+}
+
+#modalheader {
+	background-color:black;
+	width:480px;
+	height:20px;
+	padding-top:5px;
+	padding-right:20px;
+	text-align:right;
+	color:white;	
+}
+
+#modalheader A {
+	color:white;
+	cursor:pointer;
+}
 
 /*...........................................    
 
     debug e varie
 
 ...........................................*/
+
+
 
 .todo {
 	background-color: gold;

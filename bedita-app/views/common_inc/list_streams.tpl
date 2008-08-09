@@ -118,35 +118,23 @@ function changeStatusObjects() {
 	<tr>
 
 {strip}
-		<td>
-			
-			{assign var="thumbWidth" 		value = 50}
-			{assign var="thumbHeight" 		value = 25}
-			{assign var="filePath"			value = $objects[i].path}
-			{assign var="mediaPath"         value = $conf->mediaRoot}
-			{assign var="mediaUrl"         value = $conf->mediaUrl}
-			{assign_concat var="mediaCacheBaseURL"	0=$conf->mediaUrl  1="/" 2=$conf->imgCache 3="/"}
-			{assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
 
-				
-			<div>		
-			
+		{assign var="thumbWidth" 		value = 45}
+		{assign var="thumbHeight" 		value = 34}
+		{assign var="filePath"			value = $objects[i].path}
+		{assign var="mediaPath"         value = $conf->mediaRoot}
+		{assign var="mediaUrl"         value = $conf->mediaUrl}
+
+		<td style="width:{$thumbWidth}px">
+
+		{strip}		
+		<div style="width:{$thumbWidth}px; border:4px solid white;">		
+		
 			{if strtolower($objects[i].ObjectType.name) == "image"}	
 			<a href="{$html->url('view/')}{$objects[i].id}">
-				{thumb 
-					width			= $thumbWidth
-					height			= $thumbHeight
-					sharpen			= "false"
-					file			= $mediaPath$filePath
-					link			= "false"
-					linkurl			= $mediaUrl$filePath
-					window 			= "false"
-					cache			= $mediaCacheBaseURL
-					cachePATH		= $mediaCachePATH
-					hint			= "false"
-					html			= "style='border:4px solid white'"
-					frame			= ""
-				}	
+				
+			{$beEmbedMedia->object($objects[i],$thumbWidth,$thumbHeight,false,"crop",null,null,false)}				
+	
 			</a>
 						
 			{elseif ($objects[i].provider|default:false)}
@@ -161,6 +149,7 @@ function changeStatusObjects() {
 			{/if}
 		
 		</div>
+		{/strip}
 			
 		</td>
 {/strip}

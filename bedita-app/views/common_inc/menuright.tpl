@@ -6,10 +6,14 @@ Menu a DX
 	
 <div class="quartacolonna">	
 
+	
+	
 	<div class="tab"><h2>{t}quick help{/t}</h2></div>
 
 	<div style="padding:10px; margin-top:-10px; background-color:white;">
 				
+		<input type="button" rel="{$html->url('/testmodal.html')}" class="modalbutton" value="modal test example" />
+		
 		Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer magna tortor, scelerisque vitae, pharetra eu, 
 		<ul class="bulleted">
 			<li>venenatis ac, erat. </li>

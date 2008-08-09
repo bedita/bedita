@@ -127,12 +127,13 @@ $(document).ready(function()
 <div id="loading" style="clear:both" class="multimediaitem itemBox small">&nbsp;</div>
 
 	<ul class="htab">
-		<li rel="uploadItems">	{t}upload new items{/t}</li>
-		<li rel="urlItems">		{t}add by url{/t}</li>
-		<li rel="repositoryItems" id="reposItems">	{t}select from archive{/t}</li>
+		<li rel="uploadItems">{t}upload new items{/t}</li>
+		<li rel="urlItems">{t}add by url{/t}</li>
+		<li rel="repositoryItems" id="reposItems">{t}select from archive{/t}</li>
 	</ul>
 	
-	
+<div class="htabcontainer" id="addmultimediacontents">
+
 	<div class="htabcontent" id="uploadItems">
 		{include file="../common_inc/form_upload_ajax.tpl"}
 	</div>
@@ -191,6 +192,8 @@ $(document).ready(function()
 	<div class="htabcontent" id="repositoryItems">
 		<div id="ajaxSubcontainer"></div>
 	</div>
+
+</div>
 
 </fieldset>
 

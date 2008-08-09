@@ -83,6 +83,8 @@ $(document).ready(function() {
 		<li rel="areapropertiesC">{t}properties{/t}</li>
 	</ul>				
 	
+<div class="htabcontainer" id="sectiondetails">
+	
 	<div id="areacontentC" class="htabcontent" style="clear:none">
 			
 			{include file="inc/list_content_ajax.tpl"}
@@ -101,7 +103,7 @@ $(document).ready(function() {
 			{include file="inc/form_section.tpl"}
 
 	</div>
-	
+</div>
 	<hr />
 	<input class="bemaincommands" style="display:inline" type="button" value=" {t}Save{/t} " name="save" />
 	<input class="bemaincommands" style="display:inline" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" />

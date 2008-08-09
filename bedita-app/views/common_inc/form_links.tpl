@@ -51,6 +51,8 @@ $(document).ready(function() {
 <fieldset id="links">
 	
 	<input type="hidden" name="data[ObjectRelation]['link'][switch]" value="link" />
+
+
 	<ul id="listExistingLinks">
 
 	{if isset($relObjects.link)}
@@ -60,6 +62,8 @@ $(document).ready(function() {
 	{/if}
 	
 	</ul>
+	
+	<hr />
 	
 	<div id="newLink" style="white-space:nowrap">
 		{t}Title{/t}: 	<input type="text" style="width:100px" name="linkTitle" id="linkTitle" />

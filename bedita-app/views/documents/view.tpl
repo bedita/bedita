@@ -21,7 +21,8 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		$('#multimedia').show() ;
+		//$('#long_desc_langs_container').show() ;
+		$('#frmAssocObject').show() ;
 		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
 	});
 	{/literal}
@@ -38,7 +39,7 @@
 <div class="head">
 	
 	<h1>{t}{$object.title|default:"New Item"}{/t}</h1>
-
+	
 </div>
 
 {assign var=objIndex value=0}

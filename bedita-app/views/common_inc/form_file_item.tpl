@@ -19,14 +19,13 @@
 	
 	<div style="width:{$thumbWidth}px; height:{$thumbHeight}px" class="imagebox">
 	{if strtolower($item.ObjectType.name) == "image"}
-	
-		{$beEmbedMedia->object($item)}
+
+		{$beEmbedMedia->object($item,$thumbWidth,$thumbHeight,false,"fill",null,null,false)}
 		
 	{elseif ($item.provider|default:false)}
 	
 		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="px; " 3="height:" 4=$conf->videoThumbHeight 5="px;"}
 		{assign_associative var="attributes" style=$myStyle}
-	
 		{$mediaProvider->thumbnail($item, $attributes) }
 	
 	{elseif strtolower($item.ObjectType.name) == "audio"}
@@ -49,11 +48,14 @@
 
 
 	<ul class="info_file_item">
-		<li><input class="info_file_item" style="border:0px; border-bottom:1px solid silver;" type="text" value="{$item.title|escape:'htmlall'|default:""}" name="data[ObjectRelation][{$item.id}][title]" /></li>
+		<li>
+			<input class="info_file_item" style="border:0px;" type="text" value="{$item.title|escape:'htmlall'|default:""}" name="data[ObjectRelation][{$item.id}][title]" />
+		</li>
 		<li>
 			<textarea class="info_file_item" style="border:0px; border-bottom:1px solid silver;" name="data[ObjectRelation][{$item.id}][description]">{$item.description|default:""}</textarea>
 			<br />
-			<a href="{$linkUrl}">details</a>
+			<a rel="{$linkUrl} #multimediaitem" class="modalbutton">details</p>
+			
 			<a style="margin-left:60px" href="javascript: void(0);" onclick="removeItem('item_{$item.id}')" >delete</a>
 			<!-- <img style="vertical-align:middle;" src="{$session->webroot}img/iconClose.png" > -->
 		</li>

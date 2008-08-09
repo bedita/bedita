@@ -1,19 +1,30 @@
-<div class="itemBox" style="height:80px;">
+<tr>
 	<input type="hidden" name="index" value="{$objIndex|default:""}" />
 	<input type="hidden" class="id" 	name="data[ObjectRelation][{$objIndex|default:""}][id]" value="{$objRelated.id|default:''}" />
 	<input type="hidden" class="switch" name="data[ObjectRelation][{$objIndex|default:""}][switch]" value="{$rel|default:''}" />
 	
-	<div class="itemHeader">
+	<td>
 		<input type="text" class="priority" name="data[ObjectRelation][{$objIndex|default:""}][priority]" value="{$objRelated.priority|default:''}" size="3" maxlength="3"/>
-	</div>
+		<span class="listrecent {$objRelated.module|default:''}" style="margin-left:0px">&nbsp;&nbsp;</span>
+	</td>
 	
-	<div class="itemInfo">
-		<div><span class="title">{t}Title{/t}: </span>{$objRelated.title|default:''}</div>
-		<div><span class="title">{t}Type{/t}: </span>{$conf->objectTypeModels[$objRelated.object_type_id]|default:''}</div>
-	</div>
+	<td>
+		{$objRelated.title|default:''}
+	</td>
 	
-	<div class="itemFooter">
-		<input type="button" value="{t}X{/t}" />
-	</div>
+	<td>
+		{$objRelated.status|default:''}
+	</td>
 	
-</div>
+	<td>
+		{$objRelated.lang|default:''}
+	</td>
+	
+	<td>
+		<a href="{$html->url('/')}{$objRelated.module|default:''}/view/{$objRelated.id}">dettagli</a>
+	</td>
+	<td>
+		elimina 
+	</td>
+
+</tr>

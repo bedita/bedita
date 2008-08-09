@@ -136,17 +136,21 @@ $(document).ready(function(){
 
 ...........................................*/
 	
-	$(".htabcontent:first").show();
-	$(".htab LI:first").addClass("on");
+	$(".htabcontainer .htabcontent:first-child").show();
+	$(".htab LI:first-child").addClass("on");
 	
 	$(".htab LI").click(function() {
 
-		var trigged = $(this).attr("rel");		
-		$(".htabcontent").hide();
-		$("#"+trigged+"").toggle();
-		$(".htab LI").removeClass("on");
+		var trigged 		  = $(this).attr("rel");
+		var containermenu 	  = $(this).parents("UL");
+		var containercontents = $("#"+trigged+"").parent().attr("id");
+
+		$("#"+containercontents+" .htabcontent").hide();
+		$("#"+trigged+"").show();
+
+		$("LI",containermenu).removeClass("on");
 		$(this).addClass("on");
-		
+	
 	  });
 
 
@@ -250,7 +254,45 @@ $(document).ready(function(){
 	});
 	
 
+/*...........................................    
 
+   modal
+
+...........................................*/
+
+	$(".modalbutton").click(function () {
+		
+		var w = window.innerWidth || self.innerWidth || (de&&de.clientWidth) || document.body.clientWidth;
+		var h = window.innerHeight || self.innerHeight || (de&&de.clientHeight) || document.body.clientHeight;
+		var destination = $(this).attr("rel");
+
+			
+		$("#modaloverlay").show().width(w).height(h).click(function () {
+			$(this).hide();
+			$("#modal").hide();
+		});
+
+		$("#modal").toggle();
+
+		if ($(this).attr("rel")) {
+			$("#modalmain").empty().addClass("loader").load(destination).ajaxStop(function(){
+				$(this).removeClass("loader")
+			});
+		};
+
+		$("#modalheader .close").click(function () {
+			$("#modal").hide();
+			$("#modaloverlay").hide();
+		});
+
+	});
+
+
+/*...........................................    
+
+   bho
+
+...........................................*/
 
 
 

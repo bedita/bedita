@@ -10,39 +10,13 @@
 
 <div style="margin: 0 5px 5px 0; float: left;">
 	{if ($object.ObjectType.name == "image")}
-	
-		{assign var="filePath"			value = $object.path}
-		{assign var="fileName"			value = $object.filename|default:$obj.name}
-		{assign var="fileTitle"			value = $object.title}
-		{assign var="mediaPath"         value = $conf->mediaRoot}
-		{assign var="mediaUrl"          value = $conf->mediaUrl}
-		{assign_concat var="imageAltAttribute"	0="alt='"  1=$object.title 2="'"}
-		{assign_concat var="mediaCacheBaseURL"	0=$conf->mediaUrl  1="/" 2=$conf->imgCache 3="/"}
-		{assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
+
 
 		{assign_concat var="fileUrl"  0=$conf->mediaUrl  1=$object.path}
 		{image_info var="imageInfo" file=$fileUrl}
-		{if $imageInfo.landscape}
-			{assign var="thumbWidth" 		value = 470}
-			{assign var="thumbHeight" 		value = 200}
-		{else}
-			{assign var="thumbWidth" 		value = 200}
-			{assign var="thumbHeight" 		value = 300}
-		{/if}
-
-		{thumb longside 	= 480
-			width			= $thumbWidth
-			height			= $thumbHeight
-			sharpen			= "false"
-			file			= $mediaPath$filePath
-			linkurl			= $mediaUrl$filePath
-			cache			= $mediaCacheBaseURL
-			cachePATH		= $mediaCachePATH
-			hint			= "false"
-			html			= $imageAltAttribute
-			frame			= ""
-		}
-	
+		
+		{$beEmbedMedia->object($object,480,false,false,null,null,null,false)}
+		
 	{elseif ($object.provider|default:false)}
 		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="px; " 3="height:" 4=$conf->videoThumbHeight 5="px;"}
 		{assign_associative var="attributes" style=$myStyle}

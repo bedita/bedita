@@ -17,7 +17,6 @@
 
 <div class="mainfull">
 
-	{*include file="../common_inc/list_objects.tpl" method="index"*}
 	{include file="../common_inc/list_streams.tpl" method="index" streamTitle="multimedia"}
 	
 </div>

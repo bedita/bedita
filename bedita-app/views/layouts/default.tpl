@@ -38,9 +38,15 @@
 {$content_for_layout}
 
 
+{*
+** Modal container
+*}
 
-
-
+<div id="modaloverlay"></div>
+<div id="modal">
+	<div id="modalheader"><a class="close">{t}close{/t}</a></div>
+	<div id="modalmain"></div>
+</div>
 
 
 {*
