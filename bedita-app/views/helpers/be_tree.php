@@ -23,7 +23,9 @@ class BeTreeHelper extends Helper {
 		'area'		=> "<li class=\"area\">\n\t<input type='hidden' name='id' value='%s'/>\n\t<span class=\"AreaItem\">%s</span>\n\t%s\n</li>\n",
 		'section'	=> "<li class=\"section\">\n\t<input type='hidden' name='id' value='%s'/>\n\t<span class=\"SectionItem\">%s</span>\n\t%s\n</li>\n",
 	
-		'option'	=> "<option value=\"%s\"%s>%s</option>"
+		'option'	=> "<option value=\"%s\"%s>%s</option>",
+		'checkbox'	=> "<input type=\"checkbox\" name=\"data[destination][]\" value=\"%s\" %s/>",
+		'radio'	=> "<input type=\"radio\" name=\"data[destination]\" value=\"%s\" %s/>"
 	) ;
 
 	/**
@@ -80,18 +82,28 @@ class BeTreeHelper extends Helper {
 	 * output a tree
 	 *
 	 * @param array $tree, publications tree
+	 * @param string $inputType, type of input to prepend to section name (checkbox, radio)
+	 * @param array $parent_ids, array of ids parent
 	 * @return html for simple view tree
 	 */
-	public function view($tree=array()) {
+	public function view($tree=array(), $inputType=null, $parent_ids=array()) {
 	
 		$output = "";
 		if (!empty($tree)) {
 			
 			foreach ($tree as $publication) {
 				$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $publication["id"];
-				$output .= "<div><h2 rel='" . $url . "'>+ ". $publication["title"] . "</h2>";
+				$output .= "<div><h2 rel='" . $url . "'>+";
+				
+				if (!empty($inputType) && !empty($this->tags[$inputType])) {
+					$checked = (in_array($publication["id"], $parent_ids))? "checked='checked'" : "";
+					$output .= sprintf($this->tags[$inputType], $publication["id"], $checked) ;
+				}
+				
+				$output .= " " . $publication["title"] . "</h2>";
+				
 				if (!empty($publication["children"])) {
-					$output .= $this->designBranch($publication["children"]);
+					$output .= $this->designBranch($publication["children"], $inputType, $parent_ids);
 				}
 				$output .= "</div>";
 			}
@@ -101,7 +113,7 @@ class BeTreeHelper extends Helper {
 		
 	}
 	
-/**
+	/**
 	 * build option for select
 	 *
 	 * @param array $tree
@@ -134,21 +146,36 @@ class BeTreeHelper extends Helper {
 	 * get html section
 	 *
 	 * @param array $branch, section
+	 * @param string $inputType, type of input to prepend to section name (checkbox, radio)
+	 * @param array $parent_ids, array of ids parent
 	 * @return html for section simple tree
 	 */
-	private function designBranch($branch) {
+	private function designBranch($branch, $inputType, $parent_ids) {
+		$url = "";
+		$class = "";
 		$res = "<ul>";
 		foreach ($branch as $section) {
-			$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $section["id"];
-			$class = "";
-			if ( (!empty($this->params["named"]["id"]) && $this->params["named"]["id"] == $section["id"]) 
-					|| !empty($this->params["pass"][0]) && $this->params["pass"][0] == $section["id"]) {
-				$class = " class='on'";
+			
+			if (empty($inputType)) {
+				$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $section["id"];
+				if ( (!empty($this->params["named"]["id"]) && $this->params["named"]["id"] == $section["id"]) 
+						|| !empty($this->params["pass"][0]) && $this->params["pass"][0] == $section["id"]) {
+					$class = " class='on'";
+				}
+			}
+		
+			$res .= "<li rel='" . $url . "'" . $class . ">";
+			
+			if (!empty($inputType) && !empty($this->tags[$inputType])) {
+				$checked = (in_array($section["id"], $parent_ids))? "checked='checked'" : "";
+				$res .= sprintf($this->tags[$inputType], $section["id"], $checked);
+				
 			}
 			
-			$res .= "<li rel='" . $url . "'" . $class . ">" . $section["title"] . "</li>";
+			$res .= " " . $section["title"] . "</li>";
+			
 			if (!empty($section["children"])) {
-				$res .= $this->designBranch($section["children"]);
+				$res .= $this->designBranch($section["children"], $inputType, $parent_ids);
 			}
 		}
 		$res .= "</ul>";
