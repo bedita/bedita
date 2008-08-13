@@ -123,6 +123,7 @@ $(document).ready(function() {
 	</ul>
 
 
+
 <div class="tab"><h2>{t}connected user{/t}</h2></div>
 	<ul class="bordered">
 	{section name="i" loop=$connectedUser}
@@ -167,11 +168,46 @@ $(document).ready(function() {
 	
 	
 
+
+
+
+{literal}
+<script type="text/javascript">
+<!--
+$(document).ready(function(){
+	
+	var showTagsFirst = false;
+	var showTags = false;
+	$("#callTags").bind("click", function() {
+		if (!showTagsFirst) {
+			$("#loadingTags").show();
+			$("#listExistingTags").load("{/literal}{$html->url('/tags/listAllTags')}{literal}", function() {
+				$("#loadingTags").slideUp("fast");
+				$("#listExistingTags").slideDown("fast");
+				showTagsFirst = true;
+				showTags = true;
+			});
+		} else {
+			if (showTags) {
+				$("#listExistingTags").slideUp("fast");
+			} else {
+				$("#listExistingTags").slideDown("fast");
+			}
+			showTags = !showTags;
+		}
+	});	
+});
+//-->
+</script>
+{/literal}
+
+<div class="tab"><h2 id="callTags">{t}tags{/t}</h2></div>
+<div>
+	<div id="loadingTags" class="generalLoading" title="{t}Loading data{/t}">&nbsp;</div>
+	
+	<div id="listExistingTags" class="tag graced" style="display: none; text-align:justify;"></div>
 </div>
 
-
-
-
-	
+</div>	
 <p style="clear:both; margin-bottom:20px;" />
 

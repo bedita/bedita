@@ -30,7 +30,7 @@
 <div id="listTags" class="tag graced" style="text-align:justify; line-height:1.5em;">
 {if !empty($listTags)}
 	{foreach from=$listTags item="tag"}
-		<a title="{$tag.weight}" class="{$tag.class|default:""}" href="javascript: void(0)">{$tag.label} </a>
+		<a title="{$tag.weight}" class="{$tag.class|default:""}" href="javascript: void(0)">{$tag.label}</a>
 	{/foreach}
 {else}
 	{t}No tags found.{/t}
