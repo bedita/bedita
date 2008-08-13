@@ -508,48 +508,9 @@ background-color:#d8d8d8;
 	width:320px;
 }
 
-
-
-/*
-.publishingtree UL LI:last-child {
-	border-bottom:0px solid red;
-}
-*/
-
 #treecontrol {
 	text-transform:lowercase;
 	border-bottom:1px solid gray;
-}
-
-.publishingtree#treeWhere {
-	width:auto;
-	margin:0px; padding:0px
-}
-
-.publishingtree#treeWhere LI.area {
-	width:230px; float:left;
-	margin:4px 4px 4px 0px;
-	border-bottom:1px solid gray;
-
-}
-
-.publishingtree#treeWhere LI.section .last {
-
-}
-
-.publishingtree#treeWhere LI.section {
-	margin-left:-10px;
-	border-left:1px solid gray;
-
-}
-
-.publishingtree#treeWhere .AreaItem {
-	font:normal 18px "Georgia", "Times New Roman", Times, serif; line-height:1em;
-}
-
-
-.publishingtree#treeWhere LI, .publishingtree#treeWhere UL {
-	border:0px;
 }
 
 

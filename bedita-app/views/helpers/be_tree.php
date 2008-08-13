@@ -88,7 +88,8 @@ class BeTreeHelper extends Helper {
 		if (!empty($tree)) {
 			
 			foreach ($tree as $publication) {
-				$output .= "<div><h2>+ ". $publication["title"] . "</h2>";
+				$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $publication["id"];
+				$output .= "<div><h2 rel='" . $url . "'>+ ". $publication["title"] . "</h2>";
 				if (!empty($publication["children"])) {
 					$output .= $this->designBranch($publication["children"]);
 				}

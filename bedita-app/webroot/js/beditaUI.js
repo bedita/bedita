@@ -194,6 +194,10 @@ $(document).ready(function(){
 	$(".publishingtree h2").click(function () {
 	
 			$(this).parent("div").find("ul").toggle();
+			
+			if ($(this).attr("rel")) {
+				//window.location = $(this).attr("rel");
+			}
 
 	});
 

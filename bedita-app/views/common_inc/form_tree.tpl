@@ -34,7 +34,10 @@ $(document).ready(function(){
 				<a href="#">- {t}Close all{/t}</a>
 				<a href="#">+ {t}Expand all{/t}</a>
 			</div>
-			{$beTree->tree("treeWhere", $tree, $excludedSubTreeId)}	
+			
+			{$beTree->tree("treeWhere", $tree, $excludedSubTreeId)}
+
+		
 		{/if}
 	{else}
 		{if empty($tree)}
@@ -44,7 +47,20 @@ $(document).ready(function(){
 				<a href="#">- {t}Close all{/t}</a>
 				<a href="#">+ {t}Expand all{/t}</a>
 			</div>
-			{$beTree->tree("treeWhere", $tree)}
+			
+			{*$beTree->tree("", $tree)*}
+<pre>
+*ecco vorrei che questo helper qui sopra, si comportasse come questo sotto, 
+con la sola differenza di un checkbox
+davanti al nome della sezione o dell'area. Possibile??
+helper: /views/helpers/be_tree.php
+this template: /views/common_inc/form_tree.tpl line 57
+andrea
+</pre>
+			<div class="publishingtree" style="width:auto; margin-left:10px;">
+			{$beTree->view($tree)}
+			</div>
+			
 		{/if}
 	{/if}
 	
