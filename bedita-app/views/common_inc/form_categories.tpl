@@ -15,7 +15,7 @@
 				<td>
 				<input type="checkbox" id="cat_{$cat.id}" 
 					name="data[ObjectCategory][]" value="{$cat.id}"
-					{if $object && in_array($cat.id, $object.ObjectCategory)}checked="checked"{/if}/>
+					{if $object && in_array($cat.id, $object.assocCategory)}checked="checked"{/if}/>
 				<label for="cat_{$cat.id}">{$cat.label}</label>
 				</td>
 			</tr>
@@ -34,7 +34,7 @@
 				<td>
 				<input type="checkbox" id="cat_{$noareaC.id}" 
 					name="data[ObjectCategory][]" value="{$noareaC.id}"
-					{if $object && in_array($noareaC.id, $object.ObjectCategory)}checked="checked"{/if}/>
+					{if $object && in_array($noareaC.id, $object.assocCategory)}checked="checked"{/if}/>
 				<label for="cat_{$noareaC.id}">{$noareaC.label}</label>
 				</td>
 			</tr>

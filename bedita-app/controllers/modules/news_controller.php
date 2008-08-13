@@ -50,16 +50,21 @@ class NewsController extends ModulesController {
 			if($obj == null || $obj === false) {
 				 throw new BeditaException(__("Error loading news: ", true).$id);
 			}
-			$relations = $this->objectRelationArray($obj['ObjectRelation']);
+			
 			if(isset($obj["LangText"])) {
 				$this->BeLangText->setupForView($obj["LangText"]) ;
 			}
-			if (isset($obj["ObjectCategory"])) {
+			
+			$relations = $this->objectRelationArray($obj['ObjectRelation']);
+			
+			// build array of id's categories associated to event
+			$obj["assocCategory"] = array();
+			if (isset($obj["Category"])) {
 				$objCat = array();
-				foreach ($obj["ObjectCategory"] as $oc) {
+				foreach ($obj["Category"] as $oc) {
 					$objCat[] = $oc["id"];
 				}
-				$obj["ObjectCategory"] = $objCat;
+				$obj["assocCategory"] = $objCat;
 			}
 		}
 
@@ -89,8 +94,14 @@ class NewsController extends ModulesController {
 				throw new BeditaException(__("Error modify permissions", true));
 		// format custom properties
 		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-		// if no Category is checked set an empty array to delete association between news and category
-		if (!isset($this->data["ObjectCategory"])) $this->data["ObjectCategory"] = array();
+		
+		$tags = $this->ObjectCategory->saveTagList($this->params["form"]["tags"]);
+	 	
+	 	// if no Category is checked set an empty array to delete association between news and category
+	 	if (!isset($this->data["ObjectCategory"])) $this->data["ObjectCategory"] = array();
+	 	
+	 	$this->data["ObjectCategory"] = array_merge($this->data["ObjectCategory"], $tags);
+		
 		$this->Transaction->begin() ;
 		if(!$this->ShortNews->save($this->data)) {
 			throw new BeditaException(__("Error saving news", true), $this->ShortNews->validationErrors);
@@ -106,6 +117,7 @@ class NewsController extends ModulesController {
 		$this->Permission->saveFromPOST($this->ShortNews->id, $this->data['Permissions'], 
 	 			!empty($this->data['recursiveApplyPermissions']), 'news');
 	 	$this->Transaction->commit();
+	 	
  		$this->userInfoMessage(__("News saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("news [". $this->data["title"]."] saved");
 	 }

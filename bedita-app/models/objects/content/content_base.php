@@ -48,6 +48,33 @@ class ContentBase extends BEAppModel
 		) ;			
 
 	/**
+	 * afterFind: divide tags from categories
+	 *
+	 * @param array $result
+	 * @return array $result
+	 */
+	function afterFind($result) {
+		if (!empty($result["ObjectCategory"])) {
+			
+			$tag = array();
+			$category = array();
+			
+			foreach ($result["ObjectCategory"] as $ot) {
+				if (!empty($ot["object_type_id"])) {
+					$category[] = $ot;
+				} else {
+					$tag[] = $ot;
+				}
+			}
+			
+			$result["Category"] = $category;
+			$result["Tag"] = $tag;
+		}
+		
+		return $result;
+	}
+		
+	/**
 	 * Le associazioni di tipo HABTM ObjectRelation di questo modello non possono essere
 	 * salvate con i metodi di cakePHP (la tabella di unione utilizza 
 	 * 3 capi: id, object_id e swtich che determina il tipo di unione).

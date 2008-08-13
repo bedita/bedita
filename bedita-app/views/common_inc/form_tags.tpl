@@ -43,8 +43,8 @@ $(document).ready(function(){
 	
 	{strip}
 	<textarea name="tags" class="autogrowarea" style="display:block; width:470px" id="tagsArea">
-	{if !empty($object.ObjectCategory)}
-		{foreach from=$object.ObjectCategory item="tag" name="ft"}
+	{if !empty($object.Tag)}
+		{foreach from=$object.Tag item="tag" name="ft"}
 			{$tag.label}{if !$smarty.foreach.ft.last}, {/if}
 		{/foreach}
 	{/if}

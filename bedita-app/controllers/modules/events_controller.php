@@ -59,13 +59,16 @@ class EventsController extends ModulesController {
 			
 			$relations = $this->objectRelationArray($obj['ObjectRelation']);
 			
-			if (isset($obj["ObjectCategory"])) {
+			// build array of id's categories associated to event
+			$obj["assocCategory"] = array();
+			if (isset($obj["Category"])) {
 				$objCat = array();
-				foreach ($obj["ObjectCategory"] as $oc) {
+				foreach ($obj["Category"] as $oc) {
 					$objCat[] = $oc["id"];
 				}
-				$obj["ObjectCategory"] = $objCat;
+				$obj["assocCategory"] = $objCat;
 			}
+			
 			$parents_id = $this->Tree->getParent($id) ;
 			if($parents_id === false) array() ;
 			elseif(!is_array($parents_id))
@@ -102,8 +105,12 @@ class EventsController extends ModulesController {
 	 	// format custom properties
 	 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
 	 	
+	 	$tags = $this->ObjectCategory->saveTagList($this->params["form"]["tags"]);
+	 	
 	 	// if no Category is checked set an empty array to delete association between events and category
 	 	if (!isset($this->data["ObjectCategory"])) $this->data["ObjectCategory"] = array();
+	 	
+	 	$this->data["ObjectCategory"] = array_merge($this->data["ObjectCategory"], $tags);
 	 	
 		$this->Transaction->begin() ;
 		
