@@ -154,8 +154,9 @@ class BeTreeHelper extends Helper {
 		$url = "";
 		$class = "";
 		$res = "<ul>";
+		
 		foreach ($branch as $section) {
-			
+			$class = "";
 			if (empty($inputType)) {
 				$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $section["id"];
 				if ( (!empty($this->params["named"]["id"]) && $this->params["named"]["id"] == $section["id"]) 
@@ -163,7 +164,7 @@ class BeTreeHelper extends Helper {
 					$class = " class='on'";
 				}
 			}
-		
+			
 			$res .= "<li rel='" . $url . "'" . $class . ">";
 			
 			if (!empty($inputType) && !empty($this->tags[$inputType])) {
