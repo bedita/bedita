@@ -23,6 +23,7 @@ class ObjectCategory extends BEAppModel {
 		'status' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
 	) ;
 
+	// static vars used by reorderTag static function
 	static $dirTag, $orderTag;
 	
 	function afterFind($result) {
@@ -133,7 +134,7 @@ class ObjectCategory extends BEAppModel {
 	 * @param int $coeff, coeffiecient for calculate the distribution
 	 * @return array
 	 */
-	public function getTags($showOrphans=true, $status=null, $cloud=false, $coeff=12, $order, $dir) {
+	public function getTags($showOrphans=true, $status=null, $cloud=false, $coeff=12, $order="label", $dir=1) {
 		
 		$conditions = array();
 		$conditions[] = "ObjectCategory.object_type_id IS NULL";
@@ -149,17 +150,20 @@ class ObjectCategory extends BEAppModel {
 				}
 				$conditions[] = $c;
 		}
-				
+		
+		$orderSql = ($order != "weight")? $order : "label";
+		$dirSql = ($dir)? "ASC" : "DESC";
+		
 		$allTags = $this->find('all', array(
 										'conditions'=> $conditions,
-										'order' 	=> array("ObjectCategory.label" => "ASC")
+										'order' 	=> array("ObjectCategory." . $orderSql => $dirSql)
 										)
 								);
 		$tags = array();
 		foreach ($allTags as $t) {
 			$tags[$t['id']] = $t;
 		}
-		
+
 		$sql = "SELECT object_categories.id, COUNT(content_bases_object_categories.object_category_id) AS weight
 				FROM object_categories, content_bases_object_categories
 				WHERE object_categories.object_type_id IS NULL
@@ -210,10 +214,12 @@ class ObjectCategory extends BEAppModel {
 			}
 		}
 		
-		// reorder tags
-		ObjectCategory::$orderTag = $order;
-		ObjectCategory::$dirTag = $dir;
-		usort($tagsArray, array('ObjectCategory', 'reorderTag'));
+		// if order by weight reorder tags
+		if ($order == "weight") {
+			ObjectCategory::$orderTag = $order;
+			ObjectCategory::$dirTag = $dir;
+			usort($tagsArray, array('ObjectCategory', 'reorderTag'));
+		}
 		
 		return $tagsArray;
 	}
@@ -265,8 +271,8 @@ class ObjectCategory extends BEAppModel {
 	}
 
 	/**
-	 * compare two array elements defined by $order var and return -1,0,1 
-	 *	$dir is used for define order of comparison 
+	 * compare two array elements defined by $orderTag var and return -1,0,1 
+	 *	$dirTag is used for define order of comparison 
 	 * 
 	 * @param array $e1
 	 * @param array $e2
