@@ -112,6 +112,11 @@
 			else
 				$this->_smarty->error_reporting = error_reporting () ;
 
+			// Add by BEdita team - xho
+			// change default delimiters
+//			$this->_smarty->left_delimiter = '<!--//{';
+//			$this->_smarty->right_delimiter = '}//-->';
+
 
 			$svckResFuncs = array(
 				__CLASS__ . "::svck_get_template",
