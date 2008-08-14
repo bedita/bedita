@@ -23,6 +23,8 @@ class ObjectCategory extends BEAppModel {
 		'status' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
 	) ;
 
+	static $dirTag, $orderTag;
+	
 	function afterFind($result) {
 		foreach ($result as &$res) {
 			if(isset($res['label']))
@@ -131,7 +133,7 @@ class ObjectCategory extends BEAppModel {
 	 * @param int $coeff, coeffiecient for calculate the distribution
 	 * @return array
 	 */
-	public function getTags($showOrphans=true, $status=null, $cloud=false, $coeff=12) {
+	public function getTags($showOrphans=true, $status=null, $cloud=false, $coeff=12, $order, $dir) {
 		
 		$conditions = array();
 		$conditions[] = "ObjectCategory.object_type_id IS NULL";
@@ -147,7 +149,12 @@ class ObjectCategory extends BEAppModel {
 				}
 				$conditions[] = $c;
 		}
-		$allTags = $this->find('all', array('conditions'=> $conditions), "ObjectCategory.label ASC");
+				
+		$allTags = $this->find('all', array(
+										'conditions'=> $conditions,
+										'order' 	=> array("ObjectCategory.label" => "ASC")
+										)
+								);
 		$tags = array();
 		foreach ($allTags as $t) {
 			$tags[$t['id']] = $t;
@@ -202,8 +209,15 @@ class ObjectCategory extends BEAppModel {
 				$tagsArray[]= $tags[$k];
 			}
 		}
+		
+		// reorder tags
+		ObjectCategory::$orderTag = $order;
+		ObjectCategory::$dirTag = $dir;
+		usort($tagsArray, array('ObjectCategory', 'reorderTag'));
+		
 		return $tagsArray;
 	}
+	
 	
 	public function getContentsByTag($label) {
 		// bind association on th fly
@@ -249,5 +263,20 @@ class ObjectCategory extends BEAppModel {
 		
 		return $contents;
 	}
+
+	/**
+	 * compare two array elements defined by $order var and return -1,0,1 
+	 *	$dir is used for define order of comparison 
+	 * 
+	 * @param array $e1
+	 * @param array $e2
+	 * @return int (-1,0,1)
+	 */
+	private static function reorderTag($e1, $e2) {
+		$d1 = $e1[ObjectCategory::$orderTag];
+		$d2 = $e2[ObjectCategory::$orderTag];
+		return (ObjectCategory::$dirTag)? strcmp($d1,$d2) : strcmp($d2,$d1);
+	}
+	
 }
 ?>

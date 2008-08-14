@@ -22,20 +22,15 @@ class TagsController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission');
 	var $uses = array('ObjectCategory') ;
-	var $paginate = array("ObjectCategory" 	=>
-						array(
-							"limit" => 250, 
-							"conditions" => "ObjectCategory.object_type_id is null", 
-							"order" => array("ObjectCategory.label" => "asc")
-						)
-					); 
+	
 	protected $moduleName = 'tags';
 
-	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
-		//$data = $this->paginate("ObjectCategory");
-		$data = $this->ObjectCategory->getTags(true, null, true);
+	public function index($order = "label", $dir = 1) {
+		$data = $this->ObjectCategory->getTags(true, null, true, 12, $order, $dir);
 		$this->set("numTags", count($data));
 		$this->set('tags', $data);
+		$this->set("order", $order);
+		$this->set("dir", (($dir)? 0 : 1) );
 	}
 
 	public function view($id = null) {
@@ -83,6 +78,7 @@ class TagsController extends ModulesController {
 		$this->layout = "empty";
 		$this->set("listTags",$this->ObjectCategory->getTags(true, null, true));
 	}
+	
 	
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
