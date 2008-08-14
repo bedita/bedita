@@ -48,10 +48,20 @@ jQuery.fn.extend({
 			}
 		});
 	},
-	
+
 	/*
-	*	reorder items
+	*	fixItemsPriority (was reorderListItems, please remove asap)
 	*/
+	fixItemsPriority: function ()
+	{
+		$(this).find("input[name*='[priority]']").each(function(priority)
+		{
+			$(this).val(++priority)								// update priority
+			.hide().fadeIn(100).fadeOut(100).fadeIn('fast');	// pulse effect
+		});
+	},
+
+	// TO BE REMOVED - START
 	reorderListItem: function ()
 	{
 		$(this).find(".itemBox").each(function (priority)
@@ -60,6 +70,7 @@ jQuery.fn.extend({
 				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');			// effects
 		});
 	}
+	// TO BE REMOVED - END
 
 });
 
