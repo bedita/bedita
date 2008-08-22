@@ -65,9 +65,7 @@ class DocumentsController extends ModulesController {
 			}
 			$relations = $this->objectRelationArray($obj['ObjectRelation']);
 		}
-		if(isset($obj["LangText"])) {
-			$this->BeLangText->setupForView($obj["LangText"]) ;
-		}
+//		
 		$tree = $this->BeTree->getSectionsTree() ;
 		if(isset($id)) {
 			$parents_id = $this->Tree->getParent($id) ;

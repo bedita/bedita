@@ -162,8 +162,7 @@ class GalleriesController extends ModulesController {
 				$multimedia_id[]=$object['id'];
 			}
 		}
-		if(isset($obj["LangText"])) $this->BeLangText->setupForView($obj["LangText"]);
-		
+				
 		$this->set('object',	$obj);
 		$this->set('attach',$multimedia);
 		$this->selfUrlParams = array("id", $id);    

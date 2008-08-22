@@ -145,7 +145,11 @@ $(document).ready(function(){
 	</fieldset>
 	{/if}
 
-{if !empty($object_master.relations.attach)}
+
+{if !empty($object_master.relations.attach) && $object_master.object_type_id != $conf->objectTypes.image
+											&& $object_master.object_type_id != $conf->objectTypes.video
+											&& $object_master.object_type_id != $conf->objectTypes.befile}
+
 	<div class="tab2"><h2>{t}multimedia descriptions{/t}</h2></div>
 	<fieldset rel="multimedia">
 		<table style="margin-left:-10px; margin-bottom:20px;" border="0" cellpadding="0" cellspacing="2">
@@ -163,7 +167,7 @@ $(document).ready(function(){
 				<input type="hidden" name="data[LangText][{$l1}][name]" value="status"/>
 				<input type="hidden" name="data[LangText][{$l1}][object_id]" value="{$image.id}"/>
 				<input type="hidden" name="data[LangText][{$l1}][text]" value="{$image_status}"/>
-				{if !empty($image.LangTextExtended) && !empty($image.LangTextExtended[$image.id][$object_translation.lang].status)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangTextExtended[$image.id][$object_translation.lang].status}"/>{/if}
+				{if !empty($image.LangText[$image.id][$object_translation.lang].status)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangText[$image.id][$object_translation.lang].status}"/>{/if}
 
 				{assign var='l1' value=$lang_text_index++}
 				{assign var='image_title' value=$image.LangText.title[$object_translation.lang]|default:''}
@@ -171,7 +175,7 @@ $(document).ready(function(){
 				<input type="hidden" name="data[LangText][{$l1}][name]" value="title"/>
 				<input type="text" name="data[LangText][{$l1}][text]" style="width:210px !important" value="{$image_title}" />
 				<input type="hidden" name="data[LangText][{$l1}][object_id]" value="{$image.id}"/>
-				{if !empty($image.LangTextExtended)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangTextExtended[$image.id][$object_translation.lang].title|default:''}"/>{/if}
+				{if $image.LangText}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangText[$image.id][$object_translation.lang].title|default:''}"/>{/if}
 				
 				{assign var='l1' value=$lang_text_index++}
 				{assign var='image_description' value=$image.LangText.description[$object_translation.lang]|default:''}
@@ -179,13 +183,14 @@ $(document).ready(function(){
 				<input type="hidden" name="data[LangText][{$l1}][name]" value="description"/>
 				<textarea style="height:38px; width:210px !important" name="data[LangText][{$l1}][text]">{$image_description}</textarea>
 				<input type="hidden" name="data[LangText][{$l1}][object_id]" value="{$image.id}"/>
-				{if !empty($image.LangTextExtended)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangTextExtended[$image.id][$object_translation.lang].description|default:''}"/>{/if}
+				{if !empty($image.LangText)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangText[$image.id][$object_translation.lang].description|default:''}"/>{/if}
 			
 			</td>
 		</tr>
 		{/foreach}
 		</table>
 	</fieldset>
+
 {/if}
 
 	<div class="tab2"><h2>{t}advanced properties{/t}</h2></div>
@@ -278,7 +283,9 @@ $(document).ready(function(){
 	{/if}
 
 
-{if !empty($object_master.relations.attach)}
+{if !empty($object_master.relations.attach) && $object_master.object_type_id != $conf->objectTypes.image
+											&& $object_master.object_type_id != $conf->objectTypes.video
+											&& $object_master.object_type_id != $conf->objectTypes.befile}
 	<div class="tab2"><h2>{t}multimedia descriptions{/t}</h2></div>
 	<fieldset rel="multimedia">
 		

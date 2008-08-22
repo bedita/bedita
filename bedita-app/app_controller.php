@@ -440,19 +440,13 @@ class AppController extends Controller
 				continue ;
 			}
 			$objDetail['priority'] = $obj['ContentBasesObject']['priority'];
-			if(!empty($objDetail["LangText"])) {
-				if($langTextExtended) {
-					$objDetail["LangTextExtended"] = $objDetail["LangText"];
-					$this->BeLangText->setupForViewExtended($objDetail["LangTextExtended"]) ;
-				}
-				$this->BeLangText->setupForView($objDetail["LangText"]) ;
-			}
 			
 			if(isset($objDetail['path']))
 				$objDetail['filename'] = substr($objDetail['path'],strripos($objDetail['path'],"/")+1);
 
 			$relationArray[$rel][] = $objDetail;
 		}
+		
 		return $relationArray;
 	}
 }

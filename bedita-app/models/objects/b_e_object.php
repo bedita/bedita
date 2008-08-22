@@ -94,29 +94,42 @@ class BEObject extends BEAppModel
 	 */	
 	function afterFind($result) {
 		
-		if(!isset($result['CustomProperties'])) return $result ;
+		if(isset($result['CustomProperties'])) {
 		
-		// Formatta le custom properties
-		$props 	= &$result['CustomProperties'] ;
-		$tmps 	= array() ;
-		
-		$size = count($result['CustomProperties']) ;
-		for($i=0; $i < $size ; $i++) {
-			$record = &$props[$i] ;
-				
-			// carica le proprieta' custom
-			$val = null ;
-			switch($record["type"]) {
-				case "integer" : 	{ $val = $record["integer"] ; settype($val, "integer") ; } break ;
-				case "bool" : 		{ $val = $record["bool"] ; settype($val, "boolean") ; } break ;
-				case "float" : 		{ $val = $record["float"] ; settype($val, "double") ; } break ;
-				case "string" :		{ $val = $record["string"] ; settype($val, "string") ; } break ;
-				case "stream" :		{ $val = unserialize($record["stream"]); } break ;
+			// Formatta le custom properties
+			$props 	= &$result['CustomProperties'] ;
+			$tmps 	= array() ;
+			
+			$size = count($result['CustomProperties']) ;
+			for($i=0; $i < $size ; $i++) {
+				$record = &$props[$i] ;
+					
+				// carica le proprieta' custom
+				$val = null ;
+				switch($record["type"]) {
+					case "integer" : 	{ $val = $record["integer"] ; settype($val, "integer") ; } break ;
+					case "bool" : 		{ $val = $record["bool"] ; settype($val, "boolean") ; } break ;
+					case "float" : 		{ $val = $record["float"] ; settype($val, "double") ; } break ;
+					case "string" :		{ $val = $record["string"] ; settype($val, "string") ; } break ;
+					case "stream" :		{ $val = unserialize($record["stream"]); } break ;
+				}
+					
+				$tmps[$record['name']] = $val ;
 			}
-				
-			$tmps[$record['name']] = $val ;
+			$result['CustomProperties'] = $tmps ;
 		}
-		$result['CustomProperties'] = $tmps ;
+		
+		// set up LangText for view
+		if (!empty($result['LangText'])) {
+			$langText = array();
+			foreach ($result['LangText'] as $lang) {
+				if (!empty($lang["name"]) && !empty($lang["lang"])) {
+					$langText[$lang["name"]][$lang["lang"]] = (!empty($lang["text"])) ? $lang["text"] : $lang["long_text"] ;
+					$langText[$lang["object_id"]][$lang["lang"]][$lang["name"]] = $lang["id"];
+				}
+			}
+			$result['LangText'] = $langText;
+		}
 		
 		return $result ;
 	}

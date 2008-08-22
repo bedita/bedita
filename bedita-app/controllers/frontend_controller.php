@@ -287,7 +287,6 @@ abstract class FrontendController extends AppController {
 		}
 
 		if(!empty($obj["LangText"])) {
-			$this->BeLangText->setupForView($obj["LangText"]) ;
 			$this->BeLangText->objectForLang($obj_id, $this->currLang, $obj);
 		}
 		
@@ -327,9 +326,7 @@ abstract class FrontendController extends AppController {
 
 			if (!$details) 
 				continue ;
-			if(!empty($details["LangText"])) {
-				$this->BeLangText->setupForView($details["LangText"]) ;
-			}
+			
 			$details['priority'] = $object['priority'];
 			$details['filename'] = substr($details['path'], strripos($details['path'],"/")+1);
 			$multimedia[$index] = $details;

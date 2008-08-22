@@ -53,10 +53,7 @@ class EventsController extends ModulesController {
 			if(!($obj = $this->Event->findById($id))) {
 				 throw new BeditaException(__("Error loading event: ", true).$id);
 			}
-			if(isset($obj["LangText"])) {
-				$this->BeLangText->setupForView($obj["LangText"]) ;
-			}
-			
+						
 			$relations = $this->objectRelationArray($obj['ObjectRelation']);
 			
 			// build array of id's categories associated to event

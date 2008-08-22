@@ -51,10 +51,6 @@ class NewsController extends ModulesController {
 				 throw new BeditaException(__("Error loading news: ", true).$id);
 			}
 			
-			if(isset($obj["LangText"])) {
-				$this->BeLangText->setupForView($obj["LangText"]) ;
-			}
-			
 			$relations = $this->objectRelationArray($obj['ObjectRelation']);
 			
 			// build array of id's categories associated to event

@@ -99,11 +99,6 @@ class AttachmentsController extends ModulesController {
 			$imageURL 	= $this->BeFileHandler->url($id) ;
 		}
 	
-		// Formatta i campi in lingua
-		if(isset($obj["LangText"])) {
-			$this->BeLangText->setupForView($obj["LangText"]) ;
-		}
-		
 		// Setup dei dati da passare al template
 		$this->set('object',	@$obj);
 		$this->set('imagePath',	@$imagePath);

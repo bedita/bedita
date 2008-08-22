@@ -362,9 +362,7 @@ class AreasController extends ModulesController {
 		if(!($section = $this->Section->findById($id))) {
 			throw new BeditaException(sprintf(__("Error loading section: %d", true), $id));
 		}
-		if(isset($section["LangText"])) {
-			$this->BeLangText->setupForView($section["LangText"]) ;
-		}
+		
 		$this->set('section',$section);
 		$this->set('tree', $this->BeTree->getSectionsTree());
 		$this->set('parent_id', $this->Tree->getParent($id));
