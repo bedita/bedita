@@ -97,14 +97,14 @@ $(document).ready(function() {
 	
 	<ul class="bordered">
 	{section name="n" loop=$lastModBYUser}
-		<li><span class="listrecent {$lastModBYUser[n].ObjectType.module}">&nbsp;</span><a title="{$lastModBYUser[n].BEObject.modified}" href="{$html->url('/')}{$lastModBYUser[n].ObjectType.module}/view/{$lastModBYUser[n].BEObject.id}">{$lastModBYUser[n].BEObject.title}</a></li>
+		<li><span class="listrecent {$lastModBYUser[n].ObjectType.module}">&nbsp;</span><a title="{$lastModBYUser[n].ObjectType.module} | {$lastModBYUser[n].BEObject.modified}" href="{$html->url('/')}{$lastModBYUser[n].ObjectType.module}/view/{$lastModBYUser[n].BEObject.id}">{$lastModBYUser[n].BEObject.title}</a></li>
 	{/section}
 	</ul>
 	
 
 
 <div class="tab"><h2>{t}search{/t}</h2></div>
-	<div style="padding:0px 10px 0px 10px">
+	<div>
 		<form>
 			<label class="block" for="searchstring">{t}search string:{/t}</label>
 			<input type="text" name="searchstring" value=""/>
@@ -112,13 +112,14 @@ $(document).ready(function() {
 			<hr />
 		</form>
 	<div id="searchResult"></div>
+	
 	</div>
 
 
 <div class="tab"><h2>{t}all recent items{/t}</h2></div>
 	<ul class="bordered">
 	{section name="n" loop=$lastMod}
-		<li><span class="listrecent {$lastMod[n].ObjectType.module}">&nbsp;&nbsp;</span>&nbsp;<a title="{$lastMod[n].BEObject.modified}" href="{$html->url('/')}{$lastMod[n].ObjectType.module}/view/{$lastMod[n].BEObject.id}">{$lastMod[n].BEObject.title}</a></li>
+		<li><span class="listrecent {$lastMod[n].ObjectType.module}">&nbsp;&nbsp;</span>&nbsp;<a title="{$lastMod[n].ObjectType.module} | {$lastMod[n].BEObject.modified}" href="{$html->url('/')}{$lastMod[n].ObjectType.module}/view/{$lastMod[n].BEObject.id}">{$lastMod[n].BEObject.title}</a></li>
 	{/section}
 	</ul>
 

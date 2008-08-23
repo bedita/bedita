@@ -259,7 +259,7 @@ UL.modules {
 }
 
 .listrecent {
-	display:block; height:15px; width:8px; margin-left:-10px; margin-right:5px; float:left;
+	display:block; height:15px; width:15px; margin-left:-10px; margin-right:5px; float:left;
 }
 
 /*...........................................
@@ -274,13 +274,15 @@ UL.modules {
 .events, .event				{background-color:#0099CC !important;}
 .newsletter 				{background-color:#99cc33 !important;}
 .multimedia, .image, .audio, .video		{background-color:#ff0033 !important;}
-.admin 			{background-color:#003366 !important;}
-.ecommerce 		{background-color:#999966 !important;}
-.attachments 	{background-color:#999966 !important;}
-.news, .shortnews 	{background-color:#6666FF !important;}
-.tags 			{background-color:#5F9EA0 !important;}
+.admin 						{background-color:#003366 !important;}
+.ecommerce 					{background-color:#999966 !important;}
+.attachments 				{background-color:#999966 !important;}
+.news, .shortnews 			{background-color:#6666FF !important;}
+.tags 						{background-color:#5F9EA0 !important;}
 .comments, .comment			{background-color:#F08080 !important;}
-.translations	{background-color:#FF00FF !important;}
+.translations				{background-color:#FF00FF !important;}
+.books, .book					{background-color:#009933 !important;}
+.bibliographies, .bibliography {background-color:#cc9933 !important;}
 
 .bedita 		{background-color:#FFFFFF !important; 
 			font:normal 1.75em Georgia, "Times New Roman", Times, serif !important; ; 

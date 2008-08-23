@@ -28,7 +28,7 @@ $(document).ready(function() {
 {if !empty($objects.items)}
 
 	{foreach from=$objects.items item="o"}
-		<li><span class="{$o.module}">&nbsp;&nbsp;</span>&nbsp;<a title="{$o.modified}" href="{$html->url('/')}{$o.module}/view/{$o.id}">{$o.title}</a></li>
+		<li><span class="listrecent {$o.module}">&nbsp;&nbsp;</span>&nbsp;<a title="{$o.module} | {$o.modified}" href="{$html->url('/')}{$o.module}/view/{$o.id}">{$o.title}</a></li>
 	{/foreach}
 
 {else}

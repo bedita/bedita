@@ -94,9 +94,9 @@ function changeStatusTranslations() {
 			<th>{$beToolbar->order('title', 'title')}</th>
 			<th>{$beToolbar->order('object_id', 'master id')}</th>
 			<th>{$beToolbar->order('title', 'master title')}</th>
-			<th>{$beToolbar->order('status', 'Status')}</th>
 			<th>{$beToolbar->order('type', 'Type')}</th>
 			<th>{$beToolbar->order('lang', 'Language')}</th>
+			<th>{$beToolbar->order('status', 'Status')}</th>
 		</tr>
 	{/capture}
 
@@ -113,16 +113,16 @@ function changeStatusTranslations() {
 			<td style="width:15px; padding:7px 0px 0px 0px;">
 				<input  type="checkbox" name="object_chk" class="objectCheck" title="{$translations[i].LangText.id}" />
 			</td>
-			<td>{$translations[i].LangText.id}</td>
+			<td><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations[i].LangText.id}</a></td>
 			<td><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations_title[$oid][$olang]|truncate:64}</a></td>
 			<td>{$oid}</td>
-			<td>{$mtitle|truncate:64}</td>
-			<td>{$translations[i].LangText.text}</td>
+			<td>{$mtitle|truncate:64} &nbsp;</td>
 			<td>
 				<span class="listrecent {$conf->objectTypeModels[$ot]|lower}">&nbsp;</span>
 				{$conf->objectTypeModels[$ot]}
 			</td>
 			<td>{$olang}</td>
+			<td>{$translations[i].LangText.text}</td>
 		</tr>
 		{sectionelse}
 			<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>

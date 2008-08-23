@@ -26,7 +26,8 @@ class HomeController extends AppController {
 
 	 function index() {
 	 	$conf  = Configure::getInstance();
-	 	$types = array($conf->objectTypes['gallery'], $conf->objectTypes['document'], $conf->objectTypes['shortnews'], $conf->objectTypes['event']);
+	 	$types = $conf->objectTypes['relationated'];
+		//$types = array($conf->objectTypes['gallery'], $conf->objectTypes['document'], $conf->objectTypes['shortnews'], $conf->objectTypes['event']);
 	 	$user = $this->Session->read("BEAuthUser");
 	 	$lastModBYUser = array();
 	 	$lastMod = array();
@@ -63,12 +64,13 @@ class HomeController extends AppController {
 	 	
 	 	if (!empty($this->params["form"]["searchstring"])) {
 		 	$conf  = Configure::getInstance();
-		 	$filter = array($conf->objectTypes['gallery'], 
+			$filter = array($conf->objectTypes['gallery'], 
 		 					$conf->objectTypes['document'], 
 		 					$conf->objectTypes['shortnews'], 
 		 					$conf->objectTypes['event'],
 		 					"search" => addslashes($this->params["form"]["searchstring"])		
 		 			);
+
 		 	
 		 	$user = $this->Session->read("BEAuthUser");
 		 

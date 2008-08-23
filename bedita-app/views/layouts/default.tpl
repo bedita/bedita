@@ -13,6 +13,9 @@
 	{*$javascript->link("jquery.changealert")*}
 	{$javascript->link("common")}
 	{$javascript->link("beditaUI")}
+	
+	{$javascript->link("jquery/jquery.dimensions")}
+
 
 	{if $moduleName|default:""}
 		{assign_concat var="cssfile" 0=$smarty.const.APP 1="webroot/css/module." 2=$moduleName 3=".css"}

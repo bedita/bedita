@@ -296,8 +296,11 @@ $config['objectTypes'] = array(
 	
 	/* Per selezionare tutti i tipi di documenti */
 	'documentAll'		=> array(22,23,24,25,26,27),
+	//'documentAll'		=> array(18,19,20,21,22,23,24,25,26,27,29),
+	//'relationated'		=> array(18,21,22,23,24,25,26,27),
+	'relationated'		=> array(18,19,20,21,22,23,24,25,26,27,29),
+
 	
-	'relationated'		=> array(18,21,22,23,24,25,26,27)
 ) ;
 
 /**
@@ -397,6 +400,7 @@ $config['permissions'] = array(
 		array('guest', 			'group', (BEDITA_PERMS_READ)),
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
 	),
+	
 );
 
 

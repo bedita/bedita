@@ -269,14 +269,16 @@ $(document).ready(function(){
 		var w = window.innerWidth || self.innerWidth || (de&&de.clientWidth) || document.body.clientWidth;
 		var h = window.innerHeight || self.innerHeight || (de&&de.clientHeight) || document.body.clientHeight;
 		var destination = $(this).attr("rel");
-
-			
+		
+		var myTop = $(this).position().top;
+		//alert(myTop);
+		
 		$("#modaloverlay").show().width(w).height(h).click(function () {
 			$(this).hide();
 			$("#modal").hide();
 		});
-
-		$("#modal").toggle();
+		
+		$("#modal").toggle().css("top",myTop);
 
 		if ($(this).attr("rel")) {
 			$("#modalmain").empty().addClass("loader").load(destination).ajaxStop(function(){
