@@ -10,9 +10,9 @@
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
 	
-	{include file="../common_inc/form_book_detail.tpl"}
+	{include file="./inc/form_book_detail.tpl"}
 	
-	{include file="../common_inc/form_properties.tpl" doctype=false comments=true}
+	{include file="./inc/form_properties.tpl" doctype=false comments=true}
 	
 	{include file="../common_inc/form_tree.tpl"}
 	
@@ -24,11 +24,11 @@
 	
 	{include file="../common_inc/form_assoc_objects.tpl"}
 	
-	{include file="../common_inc/form_advanced_properties.tpl" el=$object}
+	{include file="./inc/form_advanced_properties.tpl" el=$object}
 	
 	{include file="../common_inc/form_custom_properties.tpl" el=$object}
 	
-	{include file="../common_inc/form_permissions.tpl" el=$object recursion=true}
+	{*include file="../common_inc/form_permissions.tpl" el=$object recursion=true*}
 	
 	
 </form>

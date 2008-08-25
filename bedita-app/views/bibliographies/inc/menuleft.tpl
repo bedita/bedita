@@ -26,7 +26,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 		<div class="insidecol publishingtree">
 			
-				{*$beTree->view($tree)*}
+				{$beTree->view($tree)}
 		
 		</div>
 

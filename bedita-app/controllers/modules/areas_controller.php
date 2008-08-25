@@ -277,6 +277,17 @@ class AreasController extends ModulesController {
 		$this->render(null, null, VIEWS."areas/inc/list_sections_ajax.tpl");
 	}
 	
+	/**
+	 * load all contents test da eliminare
+	 *
+	 * @param array $filters
+	 * 
+	 */
+	public function listAllContents($filters = null) {
+		$this->layout = null;
+		$this->render(null, null, VIEWS."areas/inc/list_all_contents.tpl");
+	}
+	
 	
 	/**
 	 * called via ajax

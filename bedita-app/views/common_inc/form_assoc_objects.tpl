@@ -84,27 +84,32 @@ $(document).ready(function() {
 		<table class="indexlist">
 			{section name=i loop=5}
 			<tr>
-				<td>
+				<td style="padding:0px; width:20px;">
 					<input type="text" class="priority" 
-					style="text-align:right; margin-left: -30px; margin-right:10px; width:35px; float:left; background-color:transparent" 
+					style="margin:0px; width:20px; text-align:right; background-color:transparent" 
 					name="data[ObjectRelation][{$smarty.section.i.index}][priority]" value="{$smarty.section.i.iteration}" size="3" maxlength="3"/>
-					<span class="listrecent documents" style="margin-left:0px">&nbsp;&nbsp;</span>
 				</td>
-				<td>Nome dell'oggetto relazionato dev'esser sortable</td>
+				<td style="width:10px;">
+					<span class="listrecent documents" style="margin:0px">&nbsp;</span>
+				</td>
+				<td>Nome dell'oggetto dev'esser sortable</td>
 				<td>draft</td>
 				<td>ita</td>
-				<td><a href="{$html->url('/')}documents/view/101">dettagli</a></td>
-				<td>elimina</td>
+				<td>
+					<input class="BEbutton link" href="{$html->url('/')}documents/view/101" name="details" type="button" value="details">
+					<input class="BEbutton" name="remove" type="button" value="remove">
+				</td>
 			</tr>
 			{/section}
 		</table>
 		<hr />
 		aggiungi nuova relazione di tipo "{$rel}": 
 		<br />
-		<label>object ids</label>: <input type="text" size="12" /> 
+		<label>add by object ids</label>: <input type="text" size="12" /> 
+		<input class="BEbutton" name="add" type="button" value="add">
 		&nbsp; or &nbsp;
-		<input type="button" rel="{$html->url('/areas/inc/showObjects/')}" class="modalbutton" value="choose objects" />
-		&nbsp;&nbsp;<input type="submit" value="ok" />
+		<input type="button" class="modalbutton" rel="{$html->url('/areas/listAllContents')}" value="choose objects" />
+
 		
 		<br />
 		

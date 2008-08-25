@@ -21,7 +21,8 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		//$('#long_desc_langs_container').show() ;
+		$('#bookdetails').show() ;
+		$('#properties').show() ;
 		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
 	});
 	{/literal}

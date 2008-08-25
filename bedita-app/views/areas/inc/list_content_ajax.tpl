@@ -32,7 +32,7 @@ $(document).ready(function() {
 			<input type="text" class="priority"	name="reorder[{$c.id}][priority]" value="{$c.priority}" size="3" maxlength="3"/>
 	
 			<span class="listrecent {$c.module}" style="margin-left:0px">&nbsp;&nbsp;</span>
-			<a title="{$c.created}" href="{$html->url('/')}{$c.module}/view/{$c.id}">{$c.title}</a>
+			<a title="{$c.module} | {$c.created}" href="{$html->url('/')}{$c.module}/view/{$c.id}">{$c.title}</a>
 			
 		</li>
 		{/foreach}

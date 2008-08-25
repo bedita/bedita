@@ -42,12 +42,12 @@ $(document).ready(function() {
         {if ($mod.flag & BEDITA_PERMS_READ) }
 
             {assign_concat var='linkPath' 0=$html->url('/') 1=$mod.path}
-            <li class="{$mod.path}" rel="{$linkPath}">{t}{$mod.label}{/t}</li>
+            <li class="{$mod.path}" rel="{$linkPath}"><span style="font-size:1.5em" class="graced">{$mod.id}</span> {t}{$mod.label}{/t}</li>
         {else}
-            <li class="{$mod.path} off" rel="{$linkPath}">{t}{$mod.label}{/t}</li>
+            <li class="{$mod.path} off" rel="{$linkPath}">{t}{$mod.id} {$mod.label}{/t}</li>
 		{/if}
 	{*/if*}
-	
+
     {if $smarty.foreach.module1.iteration == 2}
 	
 	<li class="welcome">

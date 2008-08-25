@@ -278,7 +278,8 @@ $(document).ready(function(){
 			$("#modal").hide();
 		});
 		
-		$("#modal").toggle().css("top",myTop);
+		//$("#modal").toggle().css("top",myTop);
+		$("#modal").toggle();
 
 		if ($(this).attr("rel")) {
 			$("#modalmain").empty().addClass("loader").load(destination).ajaxStop(function(){
@@ -296,11 +297,15 @@ $(document).ready(function(){
 
 /*...........................................    
 
-   bho
+   bottoni
 
 ...........................................*/
 
-
+		$(".BEbutton .link").click(function () {
+			if ($(this).attr("href")) {
+				window.open($(this).attr("href"));
+			}
+		});
 
 });
 
