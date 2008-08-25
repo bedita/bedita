@@ -82,7 +82,9 @@ INSERT INTO `modules` (`label`, `color`, `path`, `status`) VALUES
 ('events', '#3399CC', 'events', 'on'),
 ('tags', '#888888', 'tags', 'on'),
 ('comments', '#F08080', 'comments', 'on'),
-('translations', '#FF00FF', 'translations', 'on');
+('translations', '#FF00FF', 'translations', 'on'),
+('books', NULL, 'books', 'on'),
+('bibliographies', NULL, 'bibliographies', 'on');
 
 -- administrator permissions
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
@@ -118,6 +120,12 @@ VALUES ((SELECT id FROM modules WHERE label = 'comments'), (SELECT id FROM group
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'translations'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'books'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'bibliographies'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+
 -- editor perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'areas'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
@@ -149,6 +157,12 @@ VALUES ((SELECT id FROM modules WHERE label = 'comments'), (SELECT id FROM group
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'translations'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'books'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'bibliographies'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+
 -- reader perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'areas'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
@@ -179,4 +193,10 @@ VALUES ((SELECT id FROM modules WHERE label = 'comments'), (SELECT id FROM group
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'translations'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'books'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'bibliographies'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
