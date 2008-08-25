@@ -198,10 +198,6 @@ class MultimediaController extends ModulesController {
 							"OK"	=> "./",
 							"ERROR"	=> "./view/{@$this->params['pass'][0]}"
 							),
-			"addToAreaSection"	=> 	array(
-							"OK"	=> "/multimedia",
-							"ERROR"	=> "/multimedia" 
-							),
 			"changeStatusObjects"	=> 	array(
 							"OK"	=> "/multimedia",
 							"ERROR"	=> "/multimedia"

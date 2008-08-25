@@ -6,6 +6,10 @@ var urlDelete = "{$html->url('delete/')}" ;
 var message = "{t}Are you sure that you want to delete the item?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
 var URLBase = "{$html->url('index/')}" ;
+var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
+var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
+
+
 {literal}
 $(document).ready(function(){
 
@@ -26,60 +30,28 @@ $(document).ready(function(){
 		$(".selectAll").each(function() { this.checked = status;});
 	}) ;
 	
-	$("#deleteSelected").bind("click", delObjects);
-	$("a.delete").bind("click", function() {
-		delObject($(this).attr("title"));
+	$("#deleteSelected").bind("click", function() {
+		if(!confirm(message)) 
+			return false ;	
+		$("#formObject").attr("action", urlDelete) ;
+		$("#formObject").submit() ;
 	});
 	
-	$("#assocObjects").bind("click",assocObjectsToAreaSection);
-	$("#changestatusSelected").bind("click",changeStatusObjects);
+	
+	$("#assocObjects").click( function() {
+		$("#formObject").attr("action", urlAddToAreaSection) ;
+		$("#formObject").submit() ;
+	});
+	
+	$("#changestatusSelected").click( function() {
+		$("#formObject").attr("action", urlChangeStatus) ;
+		$("#formObject").submit() ;
+	});
 });
-function delObject(id) {
-	if(!confirm(message)) return false ;
-	$("#objects_selected").attr("value",id);
-	$("#formObject").attr("action", urlDelete) ;
-	$("#formObject").get(0).submit() ;
-	return false ;
-}
-function delObjects() {
-	if(!confirm(messageSelected)) return false ;
-	var oToDel = "";
-	var checkElems = document.getElementsByName('object_chk');
-	for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
-	oToDel = (oToDel=="") ? "" : oToDel.substring(1);
-	$("#objects_selected").attr("value",oToDel);
-	$("#formObject").attr("action", urlDelete) ;
-	$("#formObject").get(0).submit() ;
-	return false ;
-}
+
+
 {/literal}
-{if !empty($tree)}
-{literal}
-function assocObjectsToAreaSection(id) {
-	var oToDel = "";
-	var checkElems = document.getElementsByName('object_chk');
-	for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
-	oToDel = (oToDel=="") ? "" : oToDel.substring(1);
-	$("#objects_selected").attr("value",oToDel);
-	$("#formObject").attr("action", '{/literal}{$html->url('addToAreaSection/')}{literal}') ;
-	$("#formObject").get(0).submit() ;
-	return false ;
-}
-function changeStatusObjects() {
-	var status = $("#newStatus").val();
-	if(status != "") {
-		var oToDel = "";
-		var checkElems = document.getElementsByName('object_chk');
-		for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
-		oToDel = (oToDel=="") ? "" : oToDel.substring(1);
-		$("#objects_selected").attr("value",oToDel);
-		$("#formObject").attr("action", '{/literal}{$html->url('changeStatusObjects/')}{literal}' + status) ;
-		$("#formObject").get(0).submit() ;
-		return false ;
-	}
-}
-{/literal}
-{/if}
+
 //-->
 </script>	
 
@@ -89,7 +61,6 @@ function changeStatusObjects() {
 	<form method="post" action="" id="formObject">
 
 	<input type="hidden" name="data[id]"/>
-	<input type="hidden" name="objects_selected" id="objects_selected"/>
 
 
 	<table class="indexlist">
@@ -110,7 +81,7 @@ function changeStatusObjects() {
 		
 		<tr>
 			<td style="width:15px; padding:7px 0px 0px 0px;">
-				<input type="checkbox" name="object_chk" class="objectCheck" title="{$objects[i].id}" {if $objects[i].status == 'fixed'}disabled="disabled"{/if}/>
+				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" {if $objects[i].status == 'fixed'}disabled="disabled"{/if}/>
 			</td>
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64}</a></td>
 			<td>{$objects[i].id}</td>
@@ -157,7 +128,7 @@ function changeStatusObjects() {
 <div class="tab"><h2>{t}Operations on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
 <div>
 
-{t}change status to:{/t} 	<select style="width:75px" id="newStatus" data="newStatus">
+{t}change status to:{/t} 	<select style="width:75px" id="newStatus" name="newStatus">
 								<option value=""> -- </option>
 								{html_options options=$conf->statusOptions}
 							</select>

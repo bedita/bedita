@@ -70,13 +70,7 @@ class Document extends BEAppObjectModel
 				)
 	) ;			
 	
-	/**
-	 * Per cancellare le associazioni con i commenti
-	 *
-	 */
-//	function beforeDelete() {
-//		return $this->BaseDocument->delete() ;
-//	}	
+	
 }
 
 

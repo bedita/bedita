@@ -14,7 +14,7 @@
 
 <div class="mainfull">
 
-	{include file="../common_inc/list_objects.tpl" method="index" assocToSections=true}
+	{include file="../common_inc/list_objects.tpl" method="index"}
 	
 </div>
 

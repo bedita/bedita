@@ -284,15 +284,22 @@ class AreasController extends ModulesController {
 	 *
 	 * @param int $id area/section id
 	 */
-	public function showObjects($id) {
-		$conf = Configure::getInstance();
-		$ot  = $conf->objectTypes['relationated'];
-		$objects = $this->BeTree->getChildren($id, null, $ot, "priority") ;
-		foreach ($objects["items"] as $key => $obj) {
-			$objects["items"][$key]["relation"] = $this->ObjectType->field("name", array("id" => $obj["object_type_id"]));
+	public function showObjects($id=null) {
+		
+		if ($id) {
+			$ot  = Configure::read("objectTypes.related");
+			$objects = $this->BeTree->getChildren($id, null, $ot, "priority") ;
+			foreach ($objects["items"] as $key => $obj) {
+				$objects["items"][$key]["relation"] = $this->ObjectType->field("name", array("id" => $obj["object_type_id"]));
+			}
+			$this->set("objectsToAssoc", $objects);
+		} else {
+			$tree = $this->BeTree->getSectionsTree() ;
+			$this->set('tree',$tree);
 		}
-		$this->set("objectsToAssoc", $objects);
-		$this->layout = "empty";
+		
+		$this->layout = null;
+		$this->render(null, null, VIEWS."areas/inc/show_objects.tpl");
 	}
 	
 	public function loadObjectToAssoc($id, $relType) {

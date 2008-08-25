@@ -137,13 +137,6 @@ class BibliographiesController extends ModulesController {
 		$this->eventInfo("bibliographies $objectsListDeleted deleted");
 	}
 
-	function addToAreaSection() {
-		if(!empty($this->params['form']['objects_selected'])) {
-			$objects_to_assoc = split(",",$this->params['form']['objects_selected']);
-			$destination = $this->data['destination'];
-			$this->addItemsToAreaSection($objects_to_assoc,$destination);
-		}
-	}
 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
@@ -159,7 +152,7 @@ class BibliographiesController extends ModulesController {
 							"OK"	=> "/bibliographies",
 							"ERROR"	=> "/bibliographies/view/{@$this->params['pass'][0]}" 
 							),
-			"addToAreaSection"	=> 	array(
+			"addItemsToAreaSection"	=> 	array(
 							"OK"	=> "/bibliographies",
 							"ERROR"	=> "/bibliographies" 
 							),

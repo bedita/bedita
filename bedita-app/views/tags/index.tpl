@@ -10,6 +10,8 @@ var urlDelete = "{$html->url('delete/')}";
 var message = "{t}Are you sure that you want to delete the tag?{/t}";
 var messageSelected = "{t}Are you sure that you want to delete selected tags?{/t}";
 var URLBase = "{$html->url('index/')}";
+var urlAddMultipleTags = "{$html->url('addMultipleTags/')}";
+var urlChangeStatus = "{$html->url('changeStatus/')}";
 
 {literal}
 $(document).ready(function() {
@@ -25,10 +27,14 @@ $(document).ready(function() {
 		$(".objectCheck").each(function() { if (!this.checked) return status = false;});
 		$(".selectAll").each(function() { this.checked = status;});
 	}) ;
-	$("#deleteSelected").bind("click", delObjects);
-	$("a.delete").bind("click", function() {
-		delObject($(this).attr("title"));
+
+	$("#deleteSelected").bind("click", function() {
+		if(!confirm(messageSelected)) 
+			return false ;
+		$("#formObject").attr("action", urlDelete) ;
+		$("#formObject").submit() ;
 	});
+	
 
 	$("#taglist").hide();
 	
@@ -40,29 +46,18 @@ $(document).ready(function() {
 		$("#taglist").hide();
 		$("#tagcloud").show();
 	});
+	
+	$("#addmultipletag").click(function() {
+		$("#formObject").attr("action", urlAddMultipleTags) ;
+		$("#formObject").submit();
+	});
+	
+	$("#changestatusSelected").click(function() {
+		$("#formObject").attr("action", urlChangeStatus) ;
+		$("#formObject").submit();
+	});
 
 });
-
-function delObject(id) {
-	if(!confirm(message)) return false ;
-	$("#objects_selected").attr("value",id);
-	$("#formObject").attr("action", urlDelete) ;
-	$("#formObject").get(0).submit() ;
-	return false ;
-}
-function delObjects() {
-	if(!confirm(messageSelected)) return false ;
-	var oToDel = "";
-	var checkElems = document.getElementsByName('object_chk');
-	for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
-	oToDel = (oToDel=="") ? "" : oToDel.substring(1);
-	$("#objects_selected").attr("value",oToDel);
-	$("#formObject").attr("action", urlDelete) ;
-	$("#formObject").get(0).submit() ;
-	return false ;
-}
-
-
 
 //-->
 </script>
@@ -80,10 +75,7 @@ function delObjects() {
 
 <form method="post" action="" id="formObject">
 
-	<input type="hidden" name="data[id]"/>
-	<input type="hidden" name="objects_selected" id="objects_selected"/>
-		
-				
+					
 	<table class="indexlist">
 
 	<tr>
@@ -105,7 +97,7 @@ function delObjects() {
 	{foreach from=$tags item=tag}
 		<tr>
 			<td style="width:36px; text-align:center">
-				<input type="checkbox" name="object_chk" class="objectCheck" title="{$tag.id}"/>
+				<input type="checkbox" name="tags_selected[{$tag.id}]" class="objectCheck" title="{$tag.id}" value="{$tag.id}"/>
 			</td>
 			<td>
 				<a href="{$html->url('view/')}{$tag.id}">{$tag.label}</a>
@@ -142,14 +134,8 @@ function delObjects() {
 
 		<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
 		
-	&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
-	&nbsp;&nbsp;&nbsp;
-	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
-	&nbsp;&nbsp;&nbsp
-		
 		<hr>
-{t}change status to:{/t} 	<select style="width:75px" id="newStatus" data="newStatus">
+{t}change status to:{/t} 	<select style="width:75px" id="newStatus" name="newStatus">
 								<option value=""> -- </option>
 								{html_options options=$conf->statusOptions}
 							</select>

@@ -135,13 +135,6 @@ class DocumentsController extends ModulesController {
 		$this->eventInfo("documents $objectsListDeleted deleted");
 	}
 
-	function addToAreaSection() {
-		if(!empty($this->params['form']['objects_selected'])) {
-			$objects_to_assoc = split(",",$this->params['form']['objects_selected']);
-			$destination = $this->data['destination'];
-			$this->addItemsToAreaSection($objects_to_assoc,$destination);
-		}
-	}
 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
@@ -157,7 +150,7 @@ class DocumentsController extends ModulesController {
 							"OK"	=> "/documents",
 							"ERROR"	=> "/documents/view/{@$this->params['pass'][0]}" 
 							),
-			"addToAreaSection"	=> 	array(
+			"addItemsToAreaSection"	=> 	array(
 							"OK"	=> "/documents",
 							"ERROR"	=> "/documents" 
 							),

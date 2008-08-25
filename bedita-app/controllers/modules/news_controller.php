@@ -161,13 +161,6 @@ class NewsController extends ModulesController {
 		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
 	}
 
-	function addToAreaSection() {
-		if(!empty($this->params['form']['objects_selected'])) {
-			$objects_to_assoc = split(",",$this->params['form']['objects_selected']);
-			$destination = $this->data['destination'];
-			$this->addItemsToAreaSection($objects_to_assoc,$destination);
-		}
-	}
 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
@@ -191,7 +184,7 @@ class NewsController extends ModulesController {
 										"OK"	=> "/news/categories",
 										"ERROR"	=> "/news/categories"
 										),
-				"addToAreaSection"	=> 	array(
+				"addItemsToAreaSection"	=> 	array(
 										"OK"	=> "/news",
 										"ERROR"	=> "/news" 
 										),

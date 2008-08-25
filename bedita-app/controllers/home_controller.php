@@ -26,7 +26,7 @@ class HomeController extends AppController {
 
 	 function index() {
 	 	$conf  = Configure::getInstance();
-	 	$types = $conf->objectTypes['relationated'];
+	 	$types = $conf->objectTypes['related'];
 		//$types = array($conf->objectTypes['gallery'], $conf->objectTypes['document'], $conf->objectTypes['shortnews'], $conf->objectTypes['event']);
 	 	$user = $this->Session->read("BEAuthUser");
 	 	$lastModBYUser = array();

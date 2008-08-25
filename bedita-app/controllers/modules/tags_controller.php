@@ -69,9 +69,20 @@ class TagsController extends ModulesController {
 
 	public function delete() {
 		$this->checkWriteModulePermission();
-		$objectsListDeleted = $this->deleteObjects("ObjectCategory");
-		$this->userInfoMessage(__("Tag deleted", true) . " -  " . $objectsListDeleted);
-		$this->eventInfo("Tag $objectsListDeleted deleted");
+		
+		if(empty($this->params["form"]["tags_selected"])) 
+			throw new BeditaException( __("No tag selected", true));
+			
+		$this->Transaction->begin();
+		foreach ($this->params["form"]["tags_selected"] as $id) {
+			$this->ObjectCategory->del($id); 
+		}
+		$this->Transaction->commit();
+		
+		$tagsListDeleted = implode(",", $this->params["form"]["tags_selected"]);
+		
+		$this->userInfoMessage(__("Tag deleted", true) . " -  " . $tagsListDeleted);
+		$this->eventInfo("Tag $tagsListDeleted deleted");
 	}
 
 	public function listAllTags() {
@@ -79,6 +90,38 @@ class TagsController extends ModulesController {
 		$this->set("listTags",$this->ObjectCategory->getTags(true, null, true));
 	}
 	
+	/**
+	 * save tags from text area
+	 *
+	 */
+	public function addMultipleTags() {
+		$this->checkWriteModulePermission();
+		
+		if(empty($this->params["form"]["addtaglist"])) 
+			throw new BeditaException( __("No tag in text area", true));
+			
+		$this->Transaction->begin();
+		$tag_ids = $this->ObjectCategory->saveTagList($this->params["form"]["addtaglist"]);
+		$this->Transaction->commit();
+		$listTagIds = implode(",", $tag_ids);
+		$this->userInfoMessage(__("Tags saved", true)." - " . $listTagIds);
+		$this->eventInfo("tags [". $listTagIds ."] saved");
+		
+	}
+	
+	public function changeStatus() {
+		$this->checkWriteModulePermission();
+		
+		if(empty($this->params["form"]["tags_selected"])) 
+			throw new BeditaException( __("No tag selected", true));
+			
+		$this->Transaction->begin();
+		foreach ($this->params["form"]["tags_selected"] as $id) {
+			$this->ObjectCategory->id = $id;
+			$this->ObjectCategory->saveField("status", $this->params["form"]["newStatus"]); 
+		}
+		$this->Transaction->commit();
+	}
 	
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
@@ -89,6 +132,14 @@ class TagsController extends ModulesController {
 			"delete" =>	array(
 								"OK"	=> "/tags",
 								"ERROR"	=> "/tags/view/{@$this->params['pass'][0]}" 
+						),
+			"addMultipleTags" => array(
+								"OK"	=> "/tags",
+								"ERROR"	=> "/tags" 
+						),
+			"changeStatus" => array(
+								"OK"	=> "/tags",
+								"ERROR"	=> "/tags" 
 						)
 		) ;
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

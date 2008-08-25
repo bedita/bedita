@@ -507,10 +507,11 @@ abstract class ModulesController extends AppController {
 	protected function deleteObjects($model) {
 		$objectsToDel = array();
 		$objectsListDesc = "";
+		
 		if(!empty($this->params['form']['objects_selected'])) {
 			
-			$objectsListDesc = $this->params['form']['objects_selected'];
-			$objectsToDel = split(",",$objectsListDesc);
+			$objectsToDel = $this->params['form']['objects_selected'];
+			$objectsListDesc = implode(",", $objectsToDel);
 			
 		} else {
 			if(empty($this->data['id'])) 
@@ -525,8 +526,12 @@ abstract class ModulesController extends AppController {
 		$this->Transaction->begin() ;
 
 		foreach ($objectsToDel as $id) {
-			if(!$this->{$model}->delete($id))
+			if(!$this->Permission->verify($id, $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
+				throw new BeditaException(__("Error delete permissions", true));
+			}
+			if(!$this->{$model}->delete($id)) {
 				throw new BeditaException(__("Error deleting object: ", true) . $id);
+			}
 		}
 		
 		$this->Transaction->commit() ;
@@ -538,8 +543,8 @@ abstract class ModulesController extends AppController {
 		$objectsListDesc = "";
 		if(!empty($this->params['form']['objects_selected'])) {
 			
-			$objectsListDesc = $this->params['form']['objects_selected'];
-			$objectsToDel = split(",",$objectsListDesc);
+			$objectsToDel = $this->params['form']['objects_selected'];
+			$objectsListDesc = implode(",", $objectsToDel);
 			
 		} else {
 			if(empty($this->data['id'])) 
@@ -562,31 +567,22 @@ abstract class ModulesController extends AppController {
 		return $objectsListDesc;
 	}
 
-	public function changeStatusObjects($newStatus) {
+	public function changeStatusObjects() {
 		$objectsToModify = array();
 		$objectsListDesc = "";
 		if(!empty($this->params['form']['objects_selected'])) {
-			$objectsListDesc = $this->params['form']['objects_selected'];
-			$objectsToModify = split(",",$objectsListDesc);
-		} else {
-			if(empty($this->data['id'])) 
-				throw new BeditaException(__("No data", true));
-			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) {
-				throw new BeditaException(__("Error saving status for objects", true));
-			}
-			$objectsToModify = array($this->data['id']);
-			$objectsListDesc = $this->data['id'];
-		}
-
-		$this->Transaction->begin() ;
-		foreach ($objectsToModify as $id) {
-			$this->BEObject =& new BEObject(); 
-			$this->BEObject->id = $id;
-			if(!$this->BEObject->saveField('status',$newStatus))
-				throw new BeditaException(__("Error saving status for object: ", true) . $id);
-		}
+			$objectsToModify = $this->params['form']['objects_selected'];
+			$objectsListDesc = implode(",", $objectsToModify);
 		
-		$this->Transaction->commit() ;
+			$this->Transaction->begin() ;
+			foreach ($objectsToModify as $id) {
+				$this->BEObject->id = $id;
+				if(!$this->BEObject->saveField('status',$this->params['form']["newStatus"]))
+					throw new BeditaException(__("Error saving status for object: ", true) . $id);
+			}
+			
+			$this->Transaction->commit() ;
+		}
 		return $objectsListDesc;
 	}
 	
@@ -623,26 +619,32 @@ abstract class ModulesController extends AppController {
 		$this->set("objRelated", $this->data);
 	 }
 	 	
-	protected function addItemsToAreaSection($objects_to_assoc,$destination) {
+	public function addItemsToAreaSection() {
 		$this->checkWriteModulePermission();
-		$object_type_id = $this->BEObject->findObjectTypeId($destination);
-		$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
-		$modelLoaded->restrict("BEObject");
-		if(!($section = $modelLoaded->findById($destination))) {
-			throw new BeditaException(sprintf(__("Error loading section: %d", true), $destination));
-		}
-		$this->Transaction->begin() ;
-		for($i=0; $i < count($objects_to_assoc) ; $i++) {
-			$parents = $this->BeTree->getParents($objects_to_assoc[$i]);
-			if (!in_array($section['id'], $parents)) { 
-				if(!$modelLoaded->appendChild($objects_to_assoc[$i],$section['id'])) {
-					throw new BeditaException( __("Append child", true));
+		
+		if(!empty($this->params['form']['objects_selected'])) {
+			$objects_to_assoc = $this->params['form']['objects_selected'];
+			$destination = $this->data['destination'];
+		
+			$object_type_id = $this->BEObject->findObjectTypeId($destination);
+			$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
+			$modelLoaded->restrict("BEObject");
+			if(!($section = $modelLoaded->findById($destination))) {
+				throw new BeditaException(sprintf(__("Error loading section: %d", true), $destination));
+			}
+			$this->Transaction->begin() ;
+			for($i=0; $i < count($objects_to_assoc) ; $i++) {
+				$parents = $this->BeTree->getParents($objects_to_assoc[$i]);
+				if (!in_array($section['id'], $parents)) { 
+					if(!$modelLoaded->appendChild($objects_to_assoc[$i],$section['id'])) {
+						throw new BeditaException( __("Error during append child", true));
+					}
 				}
 			}
+			$this->Transaction->commit() ;
+			$this->userInfoMessage(__("Items associated to area/section", true) . " - " . $section['title']);
+			$this->eventInfo("items associated to area/section " . $section['id']);
 		}
-		$this->Transaction->commit() ;
-		$this->userInfoMessage(__("Items associated to area/section", true) . " - " . $section['title']);
-		$this->eventInfo("items associated to area/section " . $section['id']);
 	}
 
 	/**

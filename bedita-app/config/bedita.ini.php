@@ -297,8 +297,8 @@ $config['objectTypes'] = array(
 	/* Per selezionare tutti i tipi di documenti */
 	'documentAll'		=> array(22,23,24,25,26,27),
 	//'documentAll'		=> array(18,19,20,21,22,23,24,25,26,27,29),
-	//'relationated'		=> array(18,21,22,23,24,25,26,27),
-	'relationated'		=> array(18,19,20,21,22,23,24,25,26,27,29),
+	//'related'		=> array(18,21,22,23,24,25,26,27),
+	'related'		=> array(18,19,20,21,22,23,24,25,26,27,29),
 
 	
 ) ;

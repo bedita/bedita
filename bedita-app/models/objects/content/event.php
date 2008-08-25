@@ -29,7 +29,7 @@ class Event extends BEAppObjectModel
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('EventDateItem'),
 			'SearchTextSave'		=> array(),
-			'ForeignDependenceSave' => array('BEObject', 'ContentBase', 'Content', 'BaseDocument'),
+			'ForeignDependenceSave' => array('BEObject', 'ContentBase', 'Content'),
 			'DeleteObject' 			=> 'objects',
 	); 
 	 
@@ -53,13 +53,6 @@ class Event extends BEAppObjectModel
 			'Content' =>
 				array(
 					'className'		=> 'Content',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
-			'BaseDocument' =>
-				array(
-					'className'		=> 'BaseDocument',
 					'conditions'   => '',
 					'foreignKey'	=> 'id',
 					'dependent'		=> true
@@ -110,13 +103,7 @@ class Event extends BEAppObjectModel
 		return true ;
 	}
 
-	/**
-	 * Per cancellare le associazioni con i commenti
-	 *
-	 */
-	function beforeDelete() {
-		return $this->BaseDocument->delete() ;
-	}
+
 
 	
 }
