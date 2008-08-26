@@ -26,8 +26,8 @@ $(document).ready(function(){
 	</div> 
 	
 
-			
-{*
+{if !empty($method) && $method != "index" && $module_modify eq '1'}	
+
 	<div class="insidecol">
 		
 		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />	
@@ -35,7 +35,7 @@ $(document).ready(function(){
 
 	
 	</div>
-*}
+{/if}
 
 
 

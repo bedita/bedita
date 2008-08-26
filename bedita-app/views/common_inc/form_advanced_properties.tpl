@@ -69,3 +69,4 @@
 	</tr>
 </table>
 
+</fieldset>

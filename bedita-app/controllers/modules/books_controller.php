@@ -138,6 +138,23 @@ class BooksController extends ModulesController {
 	}
 
 
+
+
+	/**
+	 * load all books test da eliminare
+	 *
+	 * @param array $filters
+	 * 
+	 */
+	public function listAllBooks($filters = null) {
+		$this->layout = null;
+		$this->render(null, null, VIEWS."books/inc/list_all_books.tpl");
+	}
+
+
+
+
+
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"cloneObject"	=> 	array(

@@ -118,7 +118,7 @@
 				<td></td>
 					<td>
 					<input type="text" name="search" value="">&nbsp;
-					<input id="qw" type="button" rel="{$html->url('/testmodal.html')}" class="modalbutton" value="  go  ">
+					<input id="qw" type="button" rel="{$html->url('/')}books/listAllBooks" class="modalbutton" value="  go  ">
 				</td>
 			</tr>
 		</table>
