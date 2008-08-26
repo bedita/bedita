@@ -108,7 +108,8 @@ $(document).ready(function() {
 		<label>add by object ids</label>: <input type="text" size="12" /> 
 		<input class="BEbutton" name="add" type="button" value="add">
 		&nbsp; or &nbsp;
-		<input type="button" class="modalbutton" rel="{$html->url('/areas/listAllContents')}" value="choose objects" />
+		
+		<input type="button" class="modalbutton" rel="{$html->url('/areas/showObjects')}" value="choose objects" />
 
 		
 		<br />

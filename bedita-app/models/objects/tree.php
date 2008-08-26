@@ -629,7 +629,7 @@ class Tree extends BEAppModel
 		$limit 	= $this->getLimitClausole($page, $dim) ;
 		$query = "SELECT {$fields} {$searchFields} FROM {$from} {$fromSearchText} {$sqlClausole} {$searchClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
 		$tmp  	= $this->execute($query) ;
-				
+
 		// Torna il risultato
 		$recordset = array(
 			"items"		=> array(),
@@ -648,8 +648,10 @@ class Tree extends BEAppModel
 		if(is_array($filter)) {
 			$types = array();
 			foreach ($filter as $k => $v) {
-				if($k !== "search")
+				if($k !== "search" && $k !== "lang")
 					$types[] = $v;
+				elseif ($k === "lang")
+					$conditions["`BEObject`.lang"] = $v;
 			}
 			$conditions['object_type_id'] = $types;
 		} else {

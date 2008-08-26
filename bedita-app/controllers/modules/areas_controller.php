@@ -278,40 +278,35 @@ class AreasController extends ModulesController {
 	}
 	
 	/**
-	 * load all contents test da eliminare
-	 *
-	 * @param array $filters
-	 * 
-	 */
-	public function listAllContents($filters = null) {
-		$this->layout = null;
-		$this->render(null, null, VIEWS."areas/inc/list_all_contents.tpl");
-	}
-	
-	
-	/**
 	 * called via ajax
-	 * Show all objects in a section/area
-	 *
-	 * @param int $id area/section id
-	 */
-	public function showObjects($id=null) {
+	 * Show all objects for relation
+	 **/
+	public function showObjects() {
 		
-		if ($id) {
-			$ot  = Configure::read("objectTypes.related");
-			$objects = $this->BeTree->getChildren($id, null, $ot, "priority") ;
-			foreach ($objects["items"] as $key => $obj) {
-				$objects["items"][$key]["relation"] = $this->ObjectType->field("name", array("id" => $obj["object_type_id"]));
-			}
-			$this->set("objectsToAssoc", $objects);
-		} else {
-			$tree = $this->BeTree->getSectionsTree() ;
-			$this->set('tree',$tree);
+		$id = (!empty($this->params["form"]["parent_id"]))? $this->params["form"]["parent_id"] : null;
+		$filter = (!empty($this->params["form"]["objectType"]))? array($this->params["form"]["objectType"]) : Configure::read("objectTypes.related");
+		if (!empty($this->params["form"]["lang"]))
+			$filter = array_merge($filter, array("lang" => $this->params["form"]["lang"])); 
+			
+		if (!empty($this->params["form"]["search"]))
+			$filter = array_merge($filter, array("search" => $this->params["form"]["search"]));
+		
+		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
+			
+		$objects = $this->BeTree->getChildren($id, null, $filter, "title", true, $page, $dim=10) ;
+		
+		foreach ($objects["items"] as $key => $obj) {
+			$objects["items"][$key]["moduleName"] = $this->ObjectType->field("module", array("id" => $obj["object_type_id"]));
 		}
+		$this->set("objectsToAssoc", $objects);
+		
+		$tree = $this->BeTree->getSectionsTree() ;
+		$this->set('tree',$tree);
 		
 		$this->layout = null;
 		$this->render(null, null, VIEWS."areas/inc/show_objects.tpl");
 	}
+	
 	
 	public function loadObjectToAssoc($id, $relType) {
 		$object = $this->BEObject->find("first", array(
