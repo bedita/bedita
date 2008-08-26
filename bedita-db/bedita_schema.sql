@@ -154,6 +154,8 @@ CREATE TABLE objects (
   fundo INTEGER UNSIGNED DEFAULT 0,
   rights VARCHAR(255) NULL,
   license VARCHAR(255) NULL,
+  creator VARCHAR(255) NULL,
+  publisher VARCHAR(255) NULL,
   PRIMARY KEY(id),
   INDEX objects_FKIndex1(object_type_id),
   FOREIGN KEY(user_created)
@@ -396,9 +398,7 @@ CREATE TABLE areas (
   public_name VARCHAR(255) NULL,
   public_url VARCHAR(255) NULL,
   staging_url VARCHAR(255) NULL,
-  creator VARCHAR(255) NULL,
   email VARCHAR(255) NULL,
-  publisher VARCHAR(255) NULL,
   PRIMARY KEY(id),
   INDEX areas_FKIndex1(id),
   FOREIGN KEY(id)
