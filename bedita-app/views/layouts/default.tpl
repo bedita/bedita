@@ -56,6 +56,7 @@
 ** Page Footer
 *}
 
+{if empty($noFooter)}
 <div id="footerPage">
 
 {include file="../pages/user_module_perms.tpl"}
@@ -63,7 +64,7 @@
 	<div id="handlerChangeAlert"></div>
 
 </div>
-
+{/if}
 
 
 {* CakePHP Debug - start *}

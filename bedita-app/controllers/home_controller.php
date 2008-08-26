@@ -56,6 +56,7 @@ class HomeController extends AppController {
 	 	$this->set("lastModBYUser", $lastModBYUser);
 	 	$this->set("lastMod", $lastMod);
 		$this->set("connectedUser", $connectedUser);
+		$this->set("noFooter", true);
 	 }
 	 
 	 public function search($page=1, $dim=5) {
