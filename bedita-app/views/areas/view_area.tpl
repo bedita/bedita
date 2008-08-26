@@ -26,7 +26,7 @@
 
 </div> 
 
-{include file="inc/menucommands.tpl" operation="new" fixed=true}
+{include file="inc/menucommands.tpl" method="viewArea" fixed=true}
 
 {assign var='object' value=$area}
 
