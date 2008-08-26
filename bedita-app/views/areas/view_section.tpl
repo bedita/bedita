@@ -27,7 +27,7 @@ $(document).ready(function(){
 
 </div> 
 
-{include file="inc/menucommands.tpl" method="viewSection"}
+{include file="inc/menucommands.tpl" operation="new"}
 
 <div class="main">
 	<form action="{$html->url('/areas/saveSection')}" method="post" name="updateForm" id="updateForm" class="cmxform">

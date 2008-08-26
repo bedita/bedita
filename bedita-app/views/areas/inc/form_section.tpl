@@ -37,7 +37,7 @@
 			
 					<th>{t}Status{/t}:</th>
 					<td>
-						{if ($section.status == 'fixed')}
+						{if (!empty($section) && $section.status == 'fixed')}
 						{t}This object is fixed - some data is readonly{/t}
 						<input type="hidden" name="data[status]" value="fixed"/>
 						{else}
@@ -105,7 +105,7 @@
 
 			<tr>
 				<th>{t}Nickname{/t}</th>
-				<td><input id="nicknameBEObject" type="text" style="width:280px" name="data[nickname]" value="{$section.nickname|default:""}"/></td>
+				<td><input id="nicknameBEObject" type="text" style="width:280px" name="data[nickname]" value="{$section.nickname|default:null}"/></td>
 			</tr>
 
 			</table>
