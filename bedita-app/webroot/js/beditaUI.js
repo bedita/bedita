@@ -88,15 +88,17 @@ $(document).ready(function(){
 
 			$(this).next().toggle() 		
 
-			$("h2",this).css("background-position","right -25px");
-
+			//$("h2",this).css("background-position","right -25px");
+			
+			$("h2",this).toggleClass("open");
 		  },
 
 		  function () {
 
 			$(this).next().toggle() 		
 
-			$("h2",this).css("background-position","right 0px");
+			//$("h2",this).css("background-position","right 0px");
+			$("h2",this).toggleClass("open");
 
 		  }
 

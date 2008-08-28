@@ -89,15 +89,13 @@ $(document).ready(function() {
 		</table>
 		
 		<hr />
-		aggiungi nuova relazione di tipo "{$rel}": 
+	aggiungi nuova relazione di tipo "{$rel}": 
 		<br />
 		<label>{t}add by object ids{/t}</label>: <input type="text" name="list_object_id" size="12" /> 
 		<input class="BEbutton" name="addIds" type="button" value="{t}add{/t}">
 		&nbsp; {t}or{/t} &nbsp;
 		
 		<input type="button" class="modalbutton" rel="{$html->url('/areas/showObjects/')}{$rel}" value="{t}choose objects{/t}" />
-		
-		
 		
 	</div>
 	{/foreach}

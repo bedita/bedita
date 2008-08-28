@@ -409,7 +409,7 @@ class AreasController extends ModulesController {
 		// get content
 		$ot = Configure::read("objectTypes");
 		//$objType = array( $ot["document"], $ot["shortnews"], $ot["event"] );
-		$objType = null;
+		$objType = Configure::read("objectTypes.related");
 		$contents = $this->BeTree->getChildren($id, null, $objType, "priority", true, $page, $dim);
 		
 		foreach ($contents["items"] as $key => $item) {

@@ -45,7 +45,12 @@ INSERT INTO object_types (id, name, module) VALUES
 (31, 'audio', 'multimedia'),
 (32, 'video', 'multimedia'),
 
-(33, 'link', NULL);
+(33, 'link', NULL),
+
+(34, 'address', 'addressbook');
+	
+
+
 
 INSERT INTO `question_types` (`id`, `label`) VALUES
 (1, 'multiple choice'),
@@ -84,7 +89,11 @@ INSERT INTO `modules` (`label`, `color`, `path`, `status`) VALUES
 ('comments', '#F08080', 'comments', 'on'),
 ('translations', '#FF00FF', 'translations', 'on'),
 ('books', NULL, 'books', 'on'),
-('bibliographies', NULL, 'bibliographies', 'on');
+('bibliographies', NULL, 'bibliographies', 'on'),
+('addressbook', NULL, 'addressbook', 'on'),
+('newsletter', NULL, 'newsletter', 'on');
+
+
 
 -- administrator permissions
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
@@ -163,6 +172,12 @@ VALUES ((SELECT id FROM modules WHERE label = 'books'), (SELECT id FROM groups W
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'bibliographies'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'addressbook'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'newsletter'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+
 -- reader perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'areas'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
@@ -199,4 +214,10 @@ VALUES ((SELECT id FROM modules WHERE label = 'books'), (SELECT id FROM groups W
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'bibliographies'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'addressbook'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'newsletter'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 

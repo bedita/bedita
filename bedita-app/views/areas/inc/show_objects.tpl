@@ -55,7 +55,7 @@ $(document).ready(function() {
 
 	<label>Cerca:</label> &nbsp; <input type="text" name="search" id="search" value="">
 	&nbsp;&nbsp;
-	in: <select name="parent_id" id="parent_id">
+	in: <select style="width:240px" name="parent_id" id="parent_id">
 			{$beTree->option($tree)}
 		</select>
 	<hr>

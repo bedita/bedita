@@ -295,11 +295,13 @@ $config['objectTypes'] = array(
 	'video'				=> 32,
 	
 	'link'				=> 33,
+
+	'address'			=> 34,
 	
 	/* Per selezionare tutti i tipi di documenti */
 	'documentAll'		=> array(22,23,24,25,26,27),
 	//'documentAll'		=> array(18,19,20,21,22,23,24,25,26,27,29),
-	'related'		=> array(18,19,20,21,22,29),
+	'related'			=> array(18,19,20,21,22,29,34),
 
 	
 ) ;
@@ -349,7 +351,9 @@ $config['objectTypeModels'] = array(
 	28	=> 'Author',
 	30	=> 'BiblioItem',
 
-	33 	=> 'Link'
+	33 	=> 'Link',
+	
+	34 	=> 'Address'
 	// To be continued...
 ) ;
 

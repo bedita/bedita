@@ -90,8 +90,18 @@
 	</tr>
 	
 {/if}
+
+	<tr>
+		<th>{t}substitute file{/t}:</th>
+		<td colspan="3">
+			<input style="width:270px;" type="file" name="Filedata" />
+			
+		</td>
+		
+	</tr>
 	
 </table>
+
 
 </fieldset>
 
