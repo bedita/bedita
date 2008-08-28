@@ -281,7 +281,7 @@ class AreasController extends ModulesController {
 	 * called via ajax
 	 * Show all objects for relation
 	 **/
-	public function showObjects() {
+	public function showObjects($relation) {
 		
 		$id = (!empty($this->params["form"]["parent_id"]))? $this->params["form"]["parent_id"] : null;
 		$filter = (!empty($this->params["form"]["objectType"]))? array($this->params["form"]["objectType"]) : Configure::read("objectTypes.related");
@@ -303,22 +303,36 @@ class AreasController extends ModulesController {
 		$tree = $this->BeTree->getSectionsTree() ;
 		$this->set('tree',$tree);
 		
+		$this->set("relation", $relation);
+		
 		$this->layout = null;
-		$this->render(null, null, VIEWS."areas/inc/show_objects.tpl");
+		
+		$view = (empty($this->params["form"]))? "areas/inc/show_objects.tpl" : "areas/inc/list_contents_to_assoc.tpl";
+		$this->render(null, null, VIEWS . $view);
 	}
 	
 	
-	public function loadObjectToAssoc($id, $relType) {
-		$object = $this->BEObject->find("first", array(
-													"restrict" => "ObjectType",
-													"conditions" => array("BEObject.id" => $id)
+	public function loadObjectToAssoc() {
+		
+		$conditions = array(
+						"BEObject.id" => explode( ",", trim($this->params["form"]["object_selected"],",") ), 
+						"BEObject.object_type_id" => Configure::read("objectTypes.related")
+					);
+		
+		$objects = $this->BEObject->find("all", array(
+													"restrict" => array("ObjectType"),
+													"conditions" => $conditions
 												)
 										) ;
-										
-		$objRelated = array_merge($object["BEObject"], array("ObjectType" => $object["ObjectType"]));
-		$this->set("objRelated", $objRelated);
-		$this->set("rel", $relType);
-		$this->layout = "empty";
+		$objRelated = array();
+		foreach ($objects as $obj) {
+			$objRelated[] = array_merge($obj["BEObject"], array("ObjectType" => $obj["ObjectType"]));
+		}
+		
+		$this->set("objsRelated", $objRelated);
+		$this->set("rel", $this->params["form"]["relation"]);
+		$this->layout = null;
+		$this->render(null, null, VIEWS . "common_inc/form_assoc_object.tpl");
 	}
 	
 	 /**

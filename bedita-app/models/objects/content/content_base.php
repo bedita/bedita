@@ -103,6 +103,9 @@ class ContentBase extends BEAppModel
 			$queriesModified 	= array() ;
 			$lang			= (isset($this->data['ContentBase']['lang'])) ? $this->data['ContentBase']['lang']: null ;
 			
+			// set one-way relation
+			$oneWayRelation = array_merge( Configure::read("defaultOneWayRelation"), Configure::read("cfgOneWayRelation") );
+			
 			foreach ($this->data['ObjectRelation'] as $values) {
 				$assoc 	= $this->hasAndBelongsToMany['ObjectRelation'] ;
 				$table 	= $db->name($db->fullTableName($assoc['joinTable']));
@@ -119,7 +122,7 @@ class ContentBase extends BEAppModel
 					if (!empty($obj_id)) {
 						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
 						
-						if($switch != "link") {	
+						if(!in_array($switch,$oneWayRelation)) {	
 							// find priority of inverse relation
 							$inverseRel = $this->query("SELECT priority 
 														  FROM {$table} 

@@ -190,6 +190,8 @@ $config['basicGroups']      = array ('administrator', 'editor', 'reader', 'guest
 // Relations - local objects' relation types
 $config["objRelationType"] = array ();
 
+// One-way relation
+$config["defaultOneWayRelation"] = array("link");
 
 // Default reserved words [avoided in nickname creation]
 $config["defaultReservedWords"] = array("section","content");
@@ -556,9 +558,9 @@ $config['modelBindings'] = array(
 
 	'Area' => array("BEObject" => array("CustomProperties", "LangText")),
 	'Section' => array("BEObject" => array("CustomProperties", "LangText")),
- 	'Document' => array("BEObject" => array("CustomProperties", "LangText" ),
+ 	'Document' => array("BEObject" => array("CustomProperties", "LangText", "ObjectType" ),
 				"ContentBase" => array("*"), "Content","BaseDocument"),
-	'Event' => array("BEObject" => array("CustomProperties", "LangText"),
+	'Event' => array("BEObject" => array("CustomProperties", "LangText", "ObjectType"),
 				"ContentBase" => array("*"), "Content","BaseDocument","EventDateItem"),
 	'Image' => array("BEObject" => array("CustomProperties", "LangText", "ObjectType"),
 				"ContentBase", "Stream"),
