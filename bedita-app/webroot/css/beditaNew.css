@@ -50,9 +50,9 @@ UL UL {margin-left:20px;}
 ...........................................*/
 
 .on, LI.on {font-weight:bold;}
-.info {background-color:green}
-.warn {background-color:yellow}
-.err  {background-color:red}
+.info {color:green}
+.warn {color:yellow}
+.err  {color:red}
 
 .obj.on {font-weight:normal;}
 .obj.disabled {opacity:0.5}

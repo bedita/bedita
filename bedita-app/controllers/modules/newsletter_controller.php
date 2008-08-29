@@ -37,11 +37,27 @@ class NewsletterController extends ModulesController {
 	  */
 	function view($id = null) {
 		
-		
 	 }
 
-	
-
+	 /**
+	  * Get all newsletters.
+	  */
+	function newsletters() {
+		
+		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
+		
+	 }
+	 	
+	 /**
+	  * Get all subscribers.
+	  */
+	function subscribers() {
+		
+		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
+		
+	 }
+	 
+	 
 }	
 
 ?>

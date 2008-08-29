@@ -153,9 +153,9 @@
 			</tr>
 			<tr>	
 				<td colspan="3" style="border-bottom:0px;">
-					<b>View all</b>
+					<b><a href="{$html->url('/newsletter/newsletters')}">View all</a></b>
 					&nbsp;&nbsp;|&nbsp;&nbsp;
-					<b>Create new</b>
+					<b><a href="{$html->url('/newsletter/view')}">Create new</a></b>
 				</td>
 			</tr>
 		</table>

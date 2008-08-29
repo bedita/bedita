@@ -19,7 +19,7 @@ Menu a SX valido per tutte le pagine del controller.
 			<li>
 				<b>{t}Manage Newsletters{/t}</b>
 				<ul>
-					<li><a href="{$html->url('/newsletter/allnewsletters')}">View all newsletters</a></li>
+					<li><a href="{$html->url('/newsletter/newsletters')}">View all newsletters</a></li>
 					<li><a href="{$html->url('/newsletter/view')}">Create new</a></li>
 					<li><a href="{$html->url('/newsletter/templates')}">Templates</a></li>
 				</ul>
@@ -32,8 +32,8 @@ Menu a SX valido per tutte le pagine del controller.
 			<li>
 				<b>{t}Manage Subscribers{/t}</b>
 				<ul>
-					<li><a href="{$html->url('/newsletter/allsubscribers')}">View all Subscribers</a></li>
-					<li>Recipient Groups</li>
+					<li><a href="{$html->url('/newsletter/subscribers')}">View all Subscribers</a></li>
+					<li><a href="{$html->url('/newsletter/groups')}">Recipient Groups</a></li>
 					<ul>
 						<li><a href="{$html->url('/newsletter/viewgroup/12')}">gruppo uno</a></li>
 						<li><a href="{$html->url('/newsletter/viewgroup/13')}">gruppo 2</a></li>
@@ -47,12 +47,12 @@ Menu a SX valido per tutte le pagine del controller.
 		<hr />
 		<ul class="menuleft insidecol">
 			<li>
-				<a href="{$html->url('/newsletter/invoices')}"><b>{t}Manage invoices{/t}</b></a>
+				<b>{t}Manage invoices{/t}</b></a>
 				<ul>
-					<li>queued jobs</li>
-					<li>ended jobs</li>
-					<li>all jobs</li>
-					<li>bounced</li>
+					<li><a href="{$html->url('/newsletter/invoices')}">queued jobs</a></li>
+					<li><a href="{$html->url('/newsletter/invoices')}">ended jobs</a></li>
+					<li><a href="{$html->url('/newsletter/invoices')}">all jobs</a></li>
+					<li><a href="{$html->url('/newsletter/invoices')}">bounced</a></li>
 				</ul>
 			</li>
 

@@ -21,9 +21,7 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		//$('#long_desc_langs_container').show() ;
-		$('#frmAssocObject').show() ;
-		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
+		$('#contents').show() ;
 	});
 	{/literal}
 </script>
