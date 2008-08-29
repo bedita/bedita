@@ -19,8 +19,9 @@ Menu a SX valido per tutte le pagine del controller.
 			<li>
 				<b>{t}Manage Newsletters{/t}</b>
 				<ul>
-					<li><a href="{$html->url('/newsletter/allnewsletters')}">view all newsletters</a></li>
+					<li><a href="{$html->url('/newsletter/allnewsletters')}">View all newsletters</a></li>
 					<li><a href="{$html->url('/newsletter/view')}">Create new</a></li>
+					<li><a href="{$html->url('/newsletter/templates')}">Templates</a></li>
 				</ul>
 			</li>
 
@@ -31,8 +32,8 @@ Menu a SX valido per tutte le pagine del controller.
 			<li>
 				<a href="{$html->url('/newsletter/lists')}"><b>{t}Manage Subscribers{/t}</b></a>
 				<ul>
-					<li>All Subscriber</li>
-					<li>Subscriber Groups</li>
+					<li>View all Subscribers</li>
+					<li>Recipient Groups</li>
 					<ul>
 						<li>gruppo uno</li>
 						<li>gruppo 2</li>
