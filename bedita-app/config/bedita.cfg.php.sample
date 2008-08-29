@@ -79,6 +79,8 @@
 // Relations - local objects' relation types
 // $config["objRelationType"] = array ("language", "parent");
 
+// One-way relation
+// $config["cfgOneWayRelation"] = array("parent");
 
 // Reserved words [avoided in nickname creation]
 // $config["cfgReservedWords"] = array();

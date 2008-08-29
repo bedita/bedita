@@ -193,9 +193,11 @@ $config["objRelationType"] = array ();
 // One-way relation
 $config["defaultOneWayRelation"] = array("link");
 
+// Cfg One-way relation (as in local cfg)
+$config["cfgOneWayRelation"] = array();
+
 // Default reserved words [avoided in nickname creation]
 $config["defaultReservedWords"] = array("section","content");
-
 
 // Cfg reserved words (as in local cfg)
 $config["cfgReservedWords"] = array();
