@@ -61,7 +61,7 @@ $(document).ready(function() {
 
 
 
-<div class="tab"><h2>{t}Connections{/t}</h2></div>
+<div class="tab"><h2>{t}Relationships{/t}</h2></div>
 
 <fieldset id="frmAssocObject">
 	
@@ -78,24 +78,28 @@ $(document).ready(function() {
 	<div class="htabcontent" id="relationType_{$rel}">
 		<input type="hidden" class="relationTypeHidden" name="data[ObjectRelation][{$rel}][switch]" value="{$rel}" />				
 		
-		<table class="indexlist">
-		<tbody>
-		{if !empty($relObjects.$rel)}
-			{include file="../common_inc/form_assoc_object.tpl" objsRelated=$relObjects.$rel}
-		{else}
-			<tr><td></td></tr>
-		{/if}
-		</tbody>
+		<table class="indexlist" style="width:100%; margin-bottom:10px;">
+			<tbody>
+			{if !empty($relObjects.$rel)}
+				{include file="../common_inc/form_assoc_object.tpl" objsRelated=$relObjects.$rel}
+			{else}
+				<tr><td colspan="10"></td></tr>
+			{/if}
+			</tbody>
 		</table>
 		
-		<hr />
-	aggiungi nuova relazione di tipo "{$rel}": 
-		<br />
+		
+		<input type="button" class="modalbutton" 
+		rel="{$html->url('/areas/showObjects/')}{$rel}" style="width:200px" 
+		value="  {t}connect new items{/t}  " />
+		
+		{*
+		<br /><br />
+		{t}or{/t} &nbsp;
 		<label>{t}add by object ids{/t}</label>: <input type="text" name="list_object_id" size="12" /> 
 		<input class="BEbutton" name="addIds" type="button" value="{t}add{/t}">
-		&nbsp; {t}or{/t} &nbsp;
-		
-		<input type="button" class="modalbutton" rel="{$html->url('/areas/showObjects/')}{$rel}" value="{t}choose objects{/t}" />
+		*}
+
 		
 	</div>
 	{/foreach}

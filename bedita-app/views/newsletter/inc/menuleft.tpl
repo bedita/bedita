@@ -12,7 +12,7 @@ Menu a SX valido per tutte le pagine del controller.
 	
 		{include file="../common_inc/messages.tpl"}
 	
-		<ul class="insidecol">
+		<ul class="menuleft insidecol">
 
 
 
@@ -28,16 +28,16 @@ Menu a SX valido per tutte le pagine del controller.
 
 		</ul>
 		<hr />
-		<ul class="insidecol">
+		<ul class="menuleft insidecol">
 			<li>
-				<a href="{$html->url('/newsletter/lists')}"><b>{t}Manage Subscribers{/t}</b></a>
+				<b>{t}Manage Subscribers{/t}</b>
 				<ul>
-					<li>View all Subscribers</li>
+					<li><a href="{$html->url('/newsletter/allsubscribers')}">View all Subscribers</a></li>
 					<li>Recipient Groups</li>
 					<ul>
-						<li>gruppo uno</li>
-						<li>gruppo 2</li>
-						<li>gruppo III</li>
+						<li><a href="{$html->url('/newsletter/viewgroup/12')}">gruppo uno</a></li>
+						<li><a href="{$html->url('/newsletter/viewgroup/13')}">gruppo 2</a></li>
+						<li><a href="{$html->url('/newsletter/viewgroup/14')}">gruppo III</a></li>
 					</ul>
 
 				</ul>
@@ -45,7 +45,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 		</ul>
 		<hr />
-		<ul class="insidecol">
+		<ul class="menuleft insidecol">
 			<li>
 				<a href="{$html->url('/newsletter/invoices')}"><b>{t}Manage invoices{/t}</b></a>
 				<ul>

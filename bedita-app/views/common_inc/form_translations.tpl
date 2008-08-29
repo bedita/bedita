@@ -23,7 +23,7 @@
 
 <br />
 {if $moduleList.translations.flag & $conf->BEDITA_PERMS_MODIFY}
-<input type="button" value="{t}add new translation{/t}" onclick="javascript:document.location='{$html->url('/translations/view/')}{$object.id}';"/>
+<input type="button" value="{t}create new translation{/t}" onclick="javascript:document.location='{$html->url('/translations/view/')}{$object.id}';"/>
 {/if}
 
 </fieldset>

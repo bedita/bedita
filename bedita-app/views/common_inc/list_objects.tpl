@@ -79,7 +79,7 @@ $(document).ready(function(){
 	
 		{section name="i" loop=$objects}
 		
-		<tr>
+		<tr class="obj {$objects[i].status}">
 			<td style="width:15px; padding:7px 0px 0px 0px;">
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" {if $objects[i].status == 'fixed'}disabled="disabled"{/if}/>
 			</td>

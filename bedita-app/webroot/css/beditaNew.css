@@ -54,6 +54,10 @@ UL UL {margin-left:20px;}
 .warn {background-color:yellow}
 .err  {background-color:red}
 
+.obj.on {font-weight:normal;}
+.obj.disabled {opacity:0.5}
+.obj.draft *, .obj.off *  {color:#666666}
+
 
 /*...........................................
  
@@ -349,7 +353,23 @@ UL.modulesmenu {
 }
 
 
+/*...........................................
+ 
+   menu left
 
+...........................................*/
+
+.menuleft UL {
+	margin:0px;
+}
+
+.menuleft UL UL {
+	margin-left:15px;
+}
+
+.menuleft A:Hover {
+	color:#FFFFFF;
+}
 
 
 /*...........................................
@@ -1088,6 +1108,16 @@ INPUT.priority {
 	height:525px;
 	overflow-y:auto;
 	overflow-x:hidden;
+}
+
+#modalmain .body {
+	padding:10px;
+	height:505px;
+}
+
+.modalcommands {
+	padding:10px; margin-top:10px; text-align:center; 
+	background-color:#FFFFFF;
 }
 
 #modalheader {

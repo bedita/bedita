@@ -27,7 +27,7 @@ $(document).ready(function() {
 
 	<ul style="margin-top:10px; display: block;" id="areasections" class="bordered">
 		{foreach from=$sections.items item=s}
-		<li class="itemBox">
+		<li class="itemBox obj {$s.status}">
 			<input type="hidden" class="id" 	name="reorder[{$s.id}][id]" value="{$s.id}" />
 			<input type="text" class="priority"  name="reorder[{$s.id}][priority]" value="{$s.priority}" size="3" maxlength="3"/>
 			<span class="listrecent areas" style="margin-left:0px">&nbsp;&nbsp;</span>

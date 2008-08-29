@@ -46,7 +46,7 @@ $(document).ready(function() {
 
 	</table>
 
-	<hr />
+	<br />
 	<div id="contents_nav">
 		
 		{t}Items{/t}: {$objectsToAssoc.toolbar.size} | {t}page{/t} {$objectsToAssoc.toolbar.page} {t}of{/t} {$objectsToAssoc.toolbar.pages} 
@@ -75,5 +75,5 @@ $(document).ready(function() {
 	</div>
 
 {else}
-	{t}No items founded{/t}
+	{t}No item found{/t}
 {/if}

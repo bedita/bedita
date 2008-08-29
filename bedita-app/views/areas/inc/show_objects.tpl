@@ -51,11 +51,11 @@ $(document).ready(function() {
 //-->
 </script>
 
-<div class="bodybg" style="padding:10px;">
+<div class="body bodybg">
 
 	<label>Cerca:</label> &nbsp; <input type="text" name="search" id="search" value="">
 	&nbsp;&nbsp;
-	in: <select style="width:240px" name="parent_id" id="parent_id">
+	in: <select style="width:180px" name="parent_id" id="parent_id">
 			{$beTree->option($tree)}
 		</select>
 	<hr>
@@ -93,9 +93,14 @@ $(document).ready(function() {
 	<div id="assocObjContainer">
 		{include file="inc/list_contents_to_assoc.tpl"}
 	</div>
+
+	<div class="modalcommands">
+		
+		<input type="button" id="addButton" style="width:300px" value=" {t}add{/t} ">
 	
-	<hr />
-	
-	<input type="button" id="addButton" value=" {t}add{/t} ">
-	
+	</div>
 </div>
+
+
+
+	
