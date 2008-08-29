@@ -135,6 +135,14 @@ VALUES ((SELECT id FROM modules WHERE label = 'books'), (SELECT id FROM groups W
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'bibliographies'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'addressbook'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE label = 'newsletter'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+
+
+
 -- editor perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'areas'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
