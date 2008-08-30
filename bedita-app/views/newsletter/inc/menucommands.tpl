@@ -29,10 +29,19 @@ $(document).ready(function(){
 	</div> 
 	
 
-	
 	{assign var="user" value=$session->read('BEAuthUser')}
+
+	{if $method eq "subscribers"}	
 	
-	{if !empty($method) && $method != "index" && $module_modify eq '1'}
+	
+	{elseif $method eq "groups"}
+	
+	
+	{elseif $method eq "newsletters"}
+	
+	
+	{elseif !empty($method) && $method != "index" && $module_modify eq '1'}
+	
 	<div class="insidecol">
 		{if ($perms->isWritable($user.userid,$user.groups,$object.Permissions))}
 		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />
@@ -46,6 +55,7 @@ $(document).ready(function(){
 	{/if}
 
 
+	
 
 </div>
 

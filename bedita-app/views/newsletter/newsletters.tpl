@@ -6,9 +6,9 @@
 
 {include file="../common_inc/modulesmenu.tpl"}
 
-{include file="inc/menuleft.tpl" method="index"}
+{include file="inc/menuleft.tpl" method="newsletters"}
 
-{include file="inc/menucommands.tpl" method="index" fixed=true}
+{include file="inc/menucommands.tpl" method="newsletters" fixed=true}
 
 {include file="../common_inc/toolbar.tpl"}
 

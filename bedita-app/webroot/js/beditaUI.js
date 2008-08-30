@@ -224,11 +224,11 @@ $(document).ready(function(){
 
 	$(".multimediaitem").mouseover(function () {
 
-	 	//$(this).addClass("dark");
+	 	$(this).toggleClass("dark");
 
 	}).mouseout(function () {
 		
-		//$(this).removeClass("dark");
+		$(this).toggleClass("dark");
 
 	});
 

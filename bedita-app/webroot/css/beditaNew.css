@@ -56,7 +56,7 @@ UL UL {margin-left:20px;}
 
 .obj.on {font-weight:normal;}
 .obj.disabled {opacity:0.5}
-.obj.draft *, .obj.off *  {color:#666666}
+.obj.draft *, .obj.off *, .obj.required *   {color:#666666}
 
 
 /*...........................................
@@ -359,12 +359,21 @@ UL.modulesmenu {
 
 ...........................................*/
 
-.menuleft UL {
-	margin:0px;
+UL.menuleft {
+	padding-bottom:10px;
+	border-bottom:10px solid gray;
+	margin-bottom:10px !important;
 }
 
-.menuleft UL UL {
-	margin-left:15px;
+.menuleft  UL {
+	margin-left:20px;
+	margin-bottom:5px;
+}
+
+.menuleft UL LI {
+	list-style-type:disc;
+	line-height:1.35em;
+	white-space:nowrap;
 }
 
 .menuleft A:Hover {

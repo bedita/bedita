@@ -85,8 +85,8 @@ $(document).ready(function(){
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" {if $objects[i].status == 'fixed'}disabled="disabled"{/if} />
 			</td>
 			<td><a href="{$html->url('viewsubscriber/')}{$objects[i].id}">osama.bin@laden.com</a></td>
-			<td><a href="{$html->url('/admin/viewUser/')}2">2</a></td>
-			<td><a href="{$html->url('/addressbook/view/')}{$objects[i].id}">Armando Callone</a></td>
+			<td>2</td>
+			<td>Armando Callone</td>
 			<td>on</td>
 			<td>ita</td>
 			<td>html</td>

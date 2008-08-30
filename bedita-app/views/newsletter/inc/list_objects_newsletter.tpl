@@ -70,7 +70,7 @@ $(document).ready(function(){
 			<th>{$beToolbar->order('title', 'Title')}</th>
 			<th>{$beToolbar->order('id', 'id')}</th>
 			<th>{$beToolbar->order('status', 'Status')}</th>
-			<th>{$beToolbar->order('sent', 'Sent')}</th>
+			<th>{$beToolbar->order('sent', 'Last invoice')}</th>
 			<th>{$beToolbar->order('template', 'Template')}</th>	
 			<th>{$beToolbar->order('lang', 'Language')}</th>
 		</tr>
