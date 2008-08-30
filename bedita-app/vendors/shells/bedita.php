@@ -123,7 +123,8 @@ class DbDump {
     	foreach ($tables as $k=>$v) {
     		$t1 = array_values($v);
     		$t2 = array_values($t1[0]);
-    		if (strncasecmp($t2[0], 'view_', 5) !== 0) // exclude views
+    		if (strncasecmp($t2[0], 'view_', 5) !== 0 && 
+    			strncasecmp($t2[0], 'cake_', 5) !== 0) // exclude views and cake_ util tables
     			$res[]=$t2[0] ;
     	}
     	return $res;
@@ -132,7 +133,7 @@ class DbDump {
     public function tableDetails($tables, $handle) {
 
     	fwrite($handle, "SET FOREIGN_KEY_CHECKS=0;\n");
-    	
+
     	foreach ($tables as $t) {
     		$this->model->setSource($t); 
     		$select = $this->model->find('all');
@@ -141,16 +142,15 @@ class DbDump {
 				$values = "";
 				$count = 0;
 				foreach ($sel['DumpModel'] as $k=>$v) {
-					if($count > 0) {
-						$fields .= ",";
-						$values .= ",";
-					}
-					$fields .= "`$k`";
-					if($v == NULL)
-						$values .= "NULL";					
-					else 
+					if($v !== NULL) {
+						if($count > 0) {
+							$fields .= ",";
+							$values .= ",";
+						}
+						$fields .= "`$k`";
 						$values .= "'".addslashes($v)."'";
-					$count++;
+						$count++;
+					}
 				}
 				$res = "INSERT INTO $t (".$fields.") VALUES ($values);\n";
     			fwrite($handle, $res);
