@@ -10,7 +10,7 @@ Menu a SX valido per tutte le pagine del controller.
 	<div class="modules"><label class="bedita" rel="{$html->url('/')}">BEdita 3.0</label></div>
 		
 		
-	<ul class="insidecol">
+	<ul class="menuleft insidecol">
 		<li><a href="{$html->url('/comments')}">{t}Comments{/t}</a></li>					
 	</ul>
 

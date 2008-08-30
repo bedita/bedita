@@ -42,9 +42,9 @@ $(document).ready(function() {
         {if ($mod.flag & BEDITA_PERMS_READ) }
 
             {assign_concat var='linkPath' 0=$html->url('/') 1=$mod.path}
-            <li class="{$mod.path}" rel="{$linkPath}">{t}{$mod.label}{/t}<br /><span style="font-size:1.5em" class="graced">{$mod.id}</span></li>
+            <li class="{$mod.path}" rel="{$linkPath}">{t}{$mod.label}{/t}<br /><span style="font-size:1.5em" class="graced">{*$mod.id*}</span></li>
         {else}
-            <li class="{$mod.path} off" rel="{$linkPath}">{t}{$mod.label}{/t}<br /><span style="font-size:1.5em" class="graced">{$mod.id}</span></li>
+            <li class="{$mod.path} off" rel="{$linkPath}">{t}{$mod.label}{/t}<br /><span style="font-size:1.5em" class="graced">{*$mod.id*}</span></li>
 		{/if}
 	{/if}
 

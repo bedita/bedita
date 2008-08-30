@@ -12,7 +12,7 @@ Menu a SX valido per tutte le pagine del controller.
 		
 	{include file="../common_inc/messages.tpl"}
 		
-		<ul class="insidecol">
+		<ul class="menuleft insidecol">
 
 			<li {if $method eq 'index'}class="on"{/if}>{$tr->link('Areas Tree', '/areas')}</li>
 			<li {if $method eq 'hyper'}class="on"{/if}>{$tr->link('Areas HyperTree', '/areas?hyper=1')}</li>

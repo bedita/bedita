@@ -9,7 +9,7 @@ Menu a SX valido per tutte le pagine del controller.
 	
 		{include file="../common_inc/messages.tpl"}
 		
-	<ul class="insidecol">
+	<ul class="menuleft insidecol">
 		<li {if $method eq 'index'}class="on"{/if}>{$tr->link('Events', '/events')}</li>
 		<li {if $method eq 'categories'}class="on"{/if}>{$tr->link('Categories', '/events/categories')}</li>
 	{if $module_modify eq '1'}

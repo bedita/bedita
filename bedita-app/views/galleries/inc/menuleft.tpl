@@ -12,7 +12,7 @@ Menu a SX valido per tutte le pagine del controller.
 	
 	{include file="../common_inc/messages.tpl"}
 	
-		<ul class="insidecol">
+		<ul class="menuleft insidecol">
 
 		{if $module_modify eq '1'}
 

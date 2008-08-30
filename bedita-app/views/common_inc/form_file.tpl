@@ -6,7 +6,7 @@
 <div class="tab"><h2>{t}File{/t}</h2></div>
 <fieldset id="multimediaitem">
 
-{if (isset($object))}
+
 
 <div style="margin: 0 5px 5px 0; float: left;">
 	{if ($object.ObjectType.name == "image")}
@@ -58,7 +58,8 @@
 
 
 <table class="bordered" style="clear:both">
-	
+
+{if (isset($object))}
 	<tr>
 		<th>{t}Name{/t}:</th>
 		<td colspan="3">{$object.name|default:""}</td>
@@ -69,6 +70,7 @@
 		<th>{t}Size{/t}:</th>
 		<td>{math equation="x/y" x=$object.size|default:0 y=1024 format="%d"|default:""} KB</td>
 	</tr>
+{/if}
 
 {if ($object.ObjectType.name == "image")}
 	
@@ -108,6 +110,7 @@
 
 
 {* EXIF *}
+
 {if $object.ObjectType.name == "image" && $imageInfo.hrtype eq "JPG"}
 
 <div class="tab"><h2>{t}Exif - Main Data{/t}</h2></div>
@@ -135,8 +138,9 @@
 	{/if}
 	</div>
 
-</fieldset>
+
 
 {/if}
 
-{/if} {* if $obj, line 4 *}
+
+</fieldset>

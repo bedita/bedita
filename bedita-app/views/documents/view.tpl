@@ -21,8 +21,9 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		//$('#long_desc_langs_container').show() ;
-		$('#frmAssocObject').show() ;
+		$('#title').show() ;
+		$('#long_desc_langs_container').show() ;
+		//$('#frmAssocObject').show() ;
 		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
 	});
 	{/literal}

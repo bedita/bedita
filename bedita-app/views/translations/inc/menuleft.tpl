@@ -13,7 +13,7 @@ Menu a SX valido per tutte le pagine del controller.
 	{include file="../common_inc/messages.tpl"}
 	
 {*
-		<ul class="insidecol">
+		<ul class="menuleft insidecol">
 			<li><a href="{$html->url('/translations/view')}">{t}New Translation{/t}</a></li>
 		</ul>
 *}

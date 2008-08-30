@@ -11,7 +11,7 @@
 
 {include file="inc/menuleft.tpl" method="index"}
 
-{include file="inc/menucommands.tpl" method="index"}
+{include file="inc/menucommands.tpl" method="index" fixed=true}
 
 {include file="../common_inc/toolbar.tpl"}
 
