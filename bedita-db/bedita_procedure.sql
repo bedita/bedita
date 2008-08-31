@@ -308,10 +308,10 @@ DETERMINISTIC
 BEGIN
 DECLARE _priority INT ;
 
-SET _priority  	= (SELECT (MAX(priority)+1) FROM content_bases_objects WHERE object_id = _IDParent AND switch = 'BIBLIOS') ;
+SET _priority  	= (SELECT (MAX(priority)+1) FROM contents_objects WHERE object_id = _IDParent AND switch = 'BIBLIOS') ;
 SET _priority	= IF(_priority IS NULL, 1, _priority) ;
 
-INSERT INTO `content_bases_objects` ( `id` , `object_id` , `switch` , `priority` ) VALUES (_ID, _IDParent , 'BIBLIOS', _priority) ;
+INSERT INTO `contents_objects` ( `id` , `object_id` , `switch` , `priority` ) VALUES (_ID, _IDParent , 'BIBLIOS', _priority) ;
 
 END
 //
@@ -323,7 +323,7 @@ CREATE PROCEDURE removeAllChildrenBibliography (_IDParent INT)
 DETERMINISTIC
 BEGIN
 
-DELETE FROM content_bases_objects WHERE `object_id` = _IDParent AND switch = 'BIBLIOS' ;
+DELETE FROM contents_objects WHERE `object_id` = _IDParent AND switch = 'BIBLIOS' ;
 
 END
 //
@@ -338,13 +338,13 @@ BEGIN
 DECLARE _priority INT ;
 DECLARE _minPriority INT ;
 
-SET _priority  	 	= (SELECT priority FROM content_bases_objects  WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS') ;
-SET _minPriority  	= (SELECT MIN(priority) FROM content_bases_objects WHERE object_id = _IDParent AND switch = 'BIBLIOS') ;
+SET _priority  	 	= (SELECT priority FROM contents_objects  WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS') ;
+SET _minPriority  	= (SELECT MIN(priority) FROM contents_objects WHERE object_id = _IDParent AND switch = 'BIBLIOS') ;
 
 IF  _priority > _minPriority THEN
 	BEGIN
-	 UPDATE content_bases_objects SET priority = _priority WHERE object_id = _IDParent AND switch = 'BIBLIOS' AND priority = (_priority - 1) ;
-	 UPDATE content_bases_objects SET priority = (_priority - 1) WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS' ;
+	 UPDATE contents_objects SET priority = _priority WHERE object_id = _IDParent AND switch = 'BIBLIOS' AND priority = (_priority - 1) ;
+	 UPDATE contents_objects SET priority = (_priority - 1) WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS' ;
 	 END ;
 END IF ;
 
@@ -361,13 +361,13 @@ BEGIN
 DECLARE _priority INT ;
 DECLARE _maxPriority INT ;
 
-SET _priority  	 	= (SELECT priority FROM content_bases_objects  WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS') ;
-SET _maxPriority  	= (SELECT MAX(priority) FROM content_bases_objects WHERE object_id = _IDParent AND switch = 'BIBLIOS') ;
+SET _priority  	 	= (SELECT priority FROM contents_objects  WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS') ;
+SET _maxPriority  	= (SELECT MAX(priority) FROM contents_objects WHERE object_id = _IDParent AND switch = 'BIBLIOS') ;
 
 IF  _priority < _maxPriority THEN
 	BEGIN
-	 UPDATE content_bases_objects SET priority = _priority WHERE object_id = _IDParent AND switch = 'BIBLIOS' AND priority = (_priority + 1) ;
-	 UPDATE content_bases_objects SET priority = (_priority + 1) WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS' ;
+	 UPDATE contents_objects SET priority = _priority WHERE object_id = _IDParent AND switch = 'BIBLIOS' AND priority = (_priority + 1) ;
+	 UPDATE contents_objects SET priority = (_priority + 1) WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS' ;
 	END ;
 END IF ;
 
@@ -384,7 +384,7 @@ BEGIN
 DECLARE done INT DEFAULT 0;
 DECLARE _priority INT ;
 DECLARE _idCurr INT ;
-DECLARE curs CURSOR FOR SELECT id, priority FROM content_bases_objects WHERE object_id = _IDParent AND switch = 'BIBLIOS' ORDER BY priority ;
+DECLARE curs CURSOR FOR SELECT id, priority FROM contents_objects WHERE object_id = _IDParent AND switch = 'BIBLIOS' ORDER BY priority ;
 DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done = 1;
 
 OPEN curs;
@@ -394,10 +394,10 @@ REPEAT
 
 	IF NOT done THEN
 		IF _idCurr = _ID THEN
-			UPDATE content_bases_objects SET priority = 1 WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS' ;
+			UPDATE contents_objects SET priority = 1 WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS' ;
 			SET done = 1 ;
 		ELSE
-			UPDATE content_bases_objects SET priority = (_priority+1) WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS' ;
+			UPDATE contents_objects SET priority = (_priority+1) WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS' ;
 		END IF ;
 	END IF;
 UNTIL done END REPEAT;
@@ -414,11 +414,11 @@ DECLARE done INT DEFAULT 0;
 DECLARE _priority INT ;
 DECLARE _maxPriority INT ;
 DECLARE _idCurr INT ;
-DECLARE curs CURSOR FOR SELECT id, priority FROM content_bases_objects WHERE object_id = _IDParent AND switch = 'BIBLIOS' ORDER BY priority DESC ;
+DECLARE curs CURSOR FOR SELECT id, priority FROM contents_objects WHERE object_id = _IDParent AND switch = 'BIBLIOS' ORDER BY priority DESC ;
 
 DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done = 1;
 
-SET _maxPriority  	= (SELECT MAX(priority) FROM content_bases_objects WHERE object_id = _IDParent AND switch = 'BIBLIOS' ORDER BY priority) ;
+SET _maxPriority  	= (SELECT MAX(priority) FROM contents_objects WHERE object_id = _IDParent AND switch = 'BIBLIOS' ORDER BY priority) ;
 
 OPEN curs;
 
@@ -427,10 +427,10 @@ REPEAT
 
 	IF NOT done THEN
 		IF _idCurr = _ID THEN
-			UPDATE content_bases_objects SET priority = _maxPriority WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS'  ;
+			UPDATE contents_objects SET priority = _maxPriority WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS'  ;
 			SET done = 1 ;
 		ELSE
-			UPDATE content_bases_objects SET priority = (_priority-1) WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS'  ;
+			UPDATE contents_objects SET priority = (_priority-1) WHERE object_id = _IDParent AND id = _ID AND switch = 'BIBLIOS'  ;
 		END IF ;
 	END IF;
 UNTIL done END REPEAT;

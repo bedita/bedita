@@ -26,7 +26,7 @@ class AreaTest extends Area {
 class CloneTestCase extends CakeTestCase {
     var $fixtures 	= array( 'area_test' );
  	var $uses		= array(
- 							'Tree', 'Permission', 'BEObject', 'ContentBase', 'Content', 
+ 							'Tree', 'Permission', 'BEObject', 'Content', 
  							'BaseDocument', 'Event', 'Area', 'Section', 'Document',
  							'BEFile', 'Bibliography', 'BiblioItem', 'Book',
  							'Faq', 'FaqQuestion', 'Community', 'ObjectUser',

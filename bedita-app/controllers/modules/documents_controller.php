@@ -23,9 +23,9 @@ class DocumentsController extends ModulesController {
 	var $uses = array('BEObject', 'Document', 'Tree', 'ObjectCategory') ;
 	protected $moduleName = 'documents';
 	
-    public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
-		$conf  = Configure::getInstance() ;
-		$types = $conf->objectTypes['documentAll'];
+    public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
+    	$conf  = Configure::getInstance() ;
+		$types = array($conf->objectTypes['document']);
 		
 		if (!empty($this->params["form"]["searchstring"])) {
 			$types["search"] = addslashes($this->params["form"]["searchstring"]);
@@ -56,8 +56,7 @@ class DocumentsController extends ModulesController {
 															"CustomProperties",
 															"LangText"
 															),
-										"ContentBase" => array("*"),
-										"Content","BaseDocument"
+										"Content" => array("*")
 										)
 									);
 			if(!($obj = $this->Document->findById($id))) {

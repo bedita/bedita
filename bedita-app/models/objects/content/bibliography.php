@@ -1,13 +1,6 @@
 <?php
 /**
  *
- * PHP versions 5
- *
- * CakePHP :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright (c)	2006, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
- *
  * @filesource
  * @copyright		Copyright (c) 2007
  * @link			
@@ -25,56 +18,8 @@
  * 				e' anche un contenitore di oggetti specifici:
  * 				BiblioItem e Book		
 */
-class Bibliography extends BEAppObjectModel
+class Bibliography extends BeditaContentModel 
 {
-	var $name 		= 'Bibliography';
-	var $recursive 	= 2 ;
-	var $actsAs 	= array(
-			'CompactResult' 		=> array(),
-			'ForeignDependenceSave' => array('BEObject', 'ContentBase', 'Content'),
-			'DeleteObject' 			=> 'objects',
-	); 
-
-	var $hasOne= array(
-			'BEObject' =>
-				array(
-					'className'		=> 'BEObject',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
-			'ContentBase' =>
-				array(
-					'className'		=> 'ContentBase',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
-			'Content' =>
-				array(
-					'className'		=> 'Content',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
-		) ;			
-/*
-	var $hasAndBelongsToMany = array(
-			'items' =>
-				array(
-					'className'				=> 'BEObject',
-					'joinTable'    			=> 'content_bases_objects',
-					'foreignKey'   			=> 'id',
-					'associationForeignKey'	=> 'object_id',
-					'unique'				=> true,
-					'fields'				=> 'items.id, items.status',
-					'conditions'			=> "content_bases_objects.switch ='BIBLIOS'",
-					'switch'				=> "BIBLIOS",
-					'order'					=> 'priority'
-				),
-		) ;			
-*/	
-		
 	/**
 	 * Per cancellare gli oggetti BiblioItem associati
 	 *
@@ -122,11 +67,11 @@ class Bibliography extends BEAppObjectModel
 		$ret = $this->query("SELECT 
 					objects.id, 
 					objects.object_type_id,
-					content_bases_objects.priority
+					content_objects.priority
 					FROM 
-					content_bases_objects INNER JOIN objects ON content_bases_objects.id = objects.id 
+					content_objects INNER JOIN objects ON content_objects.id = objects.id 
 					WHERE
-					content_bases_objects.object_id = {$id} AND switch = 'BIBLIOS' 
+					content_objects.object_id = {$id} AND switch = 'BIBLIOS' 
 					ORDER BY priority"
 				) ;
 		if(!is_array($ret)) return false ;
@@ -134,7 +79,7 @@ class Bibliography extends BEAppObjectModel
 		$hiddenField = array('Permission', 'Version', 'CustomProperties', 'Index', 'ObjectType');
 		
 		for($i=0; $i < count($ret) ; $i++) {
-			$tmp = am($ret[$i]['content_bases_objects'], $ret[$i]['objects']) ;
+			$tmp = am($ret[$i]['content_objects'], $ret[$i]['objects']) ;
 			$obj = null ;
 			
 			switch ($tmp['object_type_id']) {

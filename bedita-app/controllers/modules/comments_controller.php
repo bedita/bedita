@@ -21,7 +21,7 @@ class CommentsController extends ModulesController {
 		if($id) {
 			$this->Comment->restrict(array(
 										"BEObject",
-										"ContentBase" => array("ObjectRelation")
+										"Content" => array("ObjectRelation")
 										)
 									);
 			if(!($obj = $this->Comment->findById($id))) {

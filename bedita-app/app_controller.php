@@ -425,7 +425,7 @@ class AppController extends Controller
 		$conf  = Configure::getInstance() ;
 		$relationArray = array();
 		foreach ($objectArray as $obj) {
-			$rel = $obj['ContentBasesObject']['switch'];
+			$rel = $obj['ContentObject']['switch'];
 			$modelClass = $conf->objectTypeModels[$obj['object_type_id']] ;
 			if(!class_exists($modelClass)){
 				App::import('Model',$modelClass);
@@ -439,7 +439,7 @@ class AppController extends Controller
 			if(!($objDetail = $this->{$modelClass}->findById($obj['id']))) {
 				continue ;
 			}
-			$objDetail['priority'] = $obj['ContentBasesObject']['priority'];
+			$objDetail['priority'] = $obj['ContentObject']['priority'];
 			
 			if(isset($objDetail['path']))
 				$objDetail['filename'] = substr($objDetail['path'],strripos($objDetail['path'],"/")+1);

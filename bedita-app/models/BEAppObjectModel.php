@@ -1,15 +1,5 @@
 <?php
 /**
- *
- * Estende la classe AppModel.
- *
- * PHP versions 4
- *
- * CakePHP :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright (c)	2006, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
- *
  * @filesource
  * @copyright		Copyright (c) 2006
  * @link
@@ -20,11 +10,11 @@
  * @modifiedby
  * @lastmodified
  * @license
- * @author 		giangi giangi@qwerg.com
+ * @author 		giangi giangi@qwerg.com ste ste@channelweb.it
  *
- * Ridefinisce la funzione save() per i model che rappresentano gli oggetti.
- * Permette il setup automatico del campo object_type_id.
- * Implementa la funzione di clonazione di un oggetto
+ *  - Redefine save()
+ *  - automatic setup for object_type_id.
+ *  - object cloning
  *
 */
 
@@ -148,6 +138,77 @@ class BEAppObjectModel extends BEAppModel {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * Bedita content model relations
+**/
+
+class BeditaContentModel extends BEAppObjectModel {
+	var $recursive 	= 2 ;
+	
+	var $actsAs 	= array(
+			'CompactResult' 		=> array(),
+			'SearchTextSave'		=> array(),
+			'ForeignDependenceSave' => array('BEObject', 'Content'),
+			'DeleteObject' 			=> 'objects',
+	); 
+
+	var $hasOne= array(
+			'BEObject' =>
+				array(
+					'className'		=> 'BEObject',
+					'conditions'   => '',
+					'foreignKey'	=> 'id',
+					'dependent'		=> true
+				),
+			'Content' =>
+				array(
+					'className'		=> 'Content',
+					'conditions'   => '',
+					'foreignKey'	=> 'id',
+					'dependent'		=> true
+				),
+		) ;			
+}
+
+class BeditaStreamModel extends BEAppObjectModel {
+	var $recursive 	= 2 ;
+
+	var $actsAs 	= array(
+			'CompactResult' 		=> array(),
+			'SearchTextSave'		=> array(),
+			'ForeignDependenceSave' => array('BEObject', 'Content', 'Stream'),
+			'DeleteObject' 			=> 'objects',
+	); 
+
+	var $hasOne= array(
+			'BEObject' =>
+				array(
+					'className'		=> 'BEObject',
+					'conditions'   => '',
+					'foreignKey'	=> 'id',
+					'dependent'		=> true
+				),
+			'Content' =>
+				array(
+					'className'		=> 'Content',
+					'conditions'   => '',
+					'foreignKey'	=> 'id',
+					'dependent'		=> true
+				),
+			'Stream' =>
+				array(
+					'className'		=> 'Stream',
+					'conditions'   => '',
+					'foreignKey'	=> 'id',
+					'dependent'		=> true
+				),
+	);
+	
+	function __clone() {
+		throw new BEditaCloneModelException($this);
+	}		
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * Classe utilizzata per gestire la clonazione di oggetti che contengono altri oggetti

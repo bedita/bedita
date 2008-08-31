@@ -55,7 +55,7 @@ class AreasController extends ModulesController {
 		// Get selected area
 		$area = null ;
 		if($id) {
-			$this->Area->bviorHideFields = array('ObjectType', 'Version', 'Index', 'current') ;
+			$this->Area->bviorHideFields = array('ObjectType', 'Version', 'current') ;
 			if(!($area = $this->Area->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading area: %d", true), $id));
 			}

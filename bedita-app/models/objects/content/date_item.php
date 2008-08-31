@@ -11,13 +11,12 @@
  * @modifiedby		
  * @lastmodified	
  * @license
- * @author 		giangi giangi@qwerg.com	
+ * @author 		giangi giangi@qwerg.com, ste ste@channelweb.it
  * 		
- * 				Esprime il calendario di un singolo evento 		
+ * 				Generic date items (for calendars) 		
 */
-class EventDateItem extends BEAppModel 
+class DateItem extends BEAppModel 
 {
-	var $useTable = 'event_date_items' ;
 	var $recursive = 0 ;
 
 	var $validate = array(

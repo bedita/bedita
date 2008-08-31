@@ -28,7 +28,7 @@ class TransactionTestCase extends CakeTestCase {
  							'Area', 'Community', 'Faq', 'Newsletter', 'Questionnaire',
  							'Scroll', 'Section', 'Timeline',
  							
- 							'ContentBase', 'ViewImage', 'Content', 'BaseDocument', 
+ 							'Content', 'BaseDocument', 
  							'Document', 'Event', 'Question', 'Answer',
  							'BEFile', 'Image', 'Audio', 'Video',
  							'Comment', 'Book', 'Author', 'ShortNews',

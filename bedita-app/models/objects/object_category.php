@@ -164,10 +164,10 @@ class ObjectCategory extends BEAppModel {
 			$tags[$t['id']] = $t;
 		}
 
-		$sql = "SELECT object_categories.id, COUNT(content_bases_object_categories.object_category_id) AS weight
-				FROM object_categories, content_bases_object_categories
+		$sql = "SELECT object_categories.id, COUNT(content_object_categories.object_category_id) AS weight
+				FROM object_categories, content_object_categories
 				WHERE object_categories.object_type_id IS NULL
-				AND object_categories.id = content_bases_object_categories.object_category_id
+				AND object_categories.id = content_object_categories.object_category_id
 				GROUP BY object_categories.id
 				ORDER BY object_categories.label ASC";
 		$res = $this->query($sql);
@@ -228,12 +228,12 @@ class ObjectCategory extends BEAppModel {
 	public function getContentsByTag($label) {
 		// bind association on th fly
 		$hasAndBelongsToMany = array(
-			'ContentBase' =>
+			'Content' =>
 				array(
-					'className'				=> 'ContentBase',
-					'joinTable'    			=> 'content_bases_object_categories',
+					'className'				=> 'Content',
+					'joinTable'    			=> 'content_object_categories',
 					'foreignKey'   			=> 'object_category_id',
-					'associationForeignKey'	=> 'content_base_id',
+					'associationForeignKey'	=> 'content_id',
 					'unique'				=> true
 						)
 				);
@@ -252,7 +252,7 @@ class ObjectCategory extends BEAppModel {
 		
 		$contents = array();
 		
-		foreach ($tag["ContentBase"] as $c) {
+		foreach ($tag["Content"] as $c) {
 			
 			$o = $beObject->find("first", array(
 									"conditions" => array("BEObject.id" => $c["id"]),

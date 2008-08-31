@@ -1,13 +1,6 @@
 <?php
 /**
  *
- * PHP versions 5
- *
- * CakePHP :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright (c)	2006, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
- *
  * @filesource
  * @copyright		Copyright (c) 2007
  * @link			
@@ -24,11 +17,10 @@
 */
 class Question extends BEAppObjectModel
 {
-	var $name 		= 'Question';
 	var $recursive 	= 2 ;
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('QuestionType','answers'),
-			'ForeignDependenceSave' => array('BEObject', 'ContentBase'),
+			'ForeignDependenceSave' => array('BEObject', 'Content'),
 			'DeleteObject' 			=> 'objects',
 	); 
 
@@ -44,9 +36,9 @@ class Question extends BEAppObjectModel
 					'foreignKey'	=> 'id',
 					'dependent'		=> true
 				),
-			'ContentBase' =>
+			'Content' =>
 				array(
-					'className'		=> 'ContentBase',
+					'className'		=> 'Content',
 					'conditions'   => '',
 					'foreignKey'	=> 'id',
 					'dependent'		=> true

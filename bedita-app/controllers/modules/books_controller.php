@@ -56,8 +56,7 @@ class BooksController extends ModulesController {
 															"CustomProperties",
 															"LangText"
 															),
-										"ContentBase" => array("*"),
-										"Content","BaseDocument"
+										"Content" => array("*")
 										)
 									);
 			if(!($obj = $this->Book->findById($id))) {

@@ -56,8 +56,7 @@ class BibliographiesController extends ModulesController {
 															"CustomProperties",
 															"LangText"
 															),
-										"ContentBase" => array("*"),
-										"Content","BaseDocument"
+										"Content" => array("*")
 										)
 									);
 			if(!($obj = $this->Bibliography->findById($id))) {

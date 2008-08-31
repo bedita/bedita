@@ -26,8 +26,7 @@ class AttachmentsController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
-	// This controller does not use a model
-	var $uses = array('Stream', 'BEFile', 'Image', 'Audio', 'Video', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Tree', 'User', 'Group') ;
+	var $uses = array('BEObject', 'Tree', 'User', 'Group') ;
 	protected $moduleName = 'attachments';
 	
 	 /**
@@ -52,7 +51,7 @@ class AttachmentsController extends ModulesController {
 			$modelLoaded = $this->loadModelByObjectTypeId($value['object_type_id']);
 			$modelLoaded->restrict(array(
 									"BEObject" => array("ObjectType"),
-									"ContentBase",
+									"Content",
 									"Stream"
 									)
 								);
@@ -90,7 +89,7 @@ class AttachmentsController extends ModulesController {
 			$this->BEObject->recursive = $rec ;
 			$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
 			
-			$this->{$model}->bviorHideFields = array('Version', 'Index', 'current', 'multimedia', 'attachments') ;
+			$this->{$model}->bviorHideFields = array('Version', 'current', 'multimedia', 'attachments') ;
 			if(!($obj = $this->{$model}->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
 			}

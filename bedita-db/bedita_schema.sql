@@ -18,13 +18,12 @@ DROP TABLE IF EXISTS `cake_sessions`;
 DROP TABLE IF EXISTS `links`;
 DROP TABLE IF EXISTS `documents`;
 DROP TABLE IF EXISTS `books`;
-DROP TABLE IF EXISTS `event_date_items`;
+DROP TABLE IF EXISTS `date_items`;
 DROP TABLE IF EXISTS `events`;
 DROP TABLE IF EXISTS `object_users`;
 DROP TABLE IF EXISTS `bibliographies`;
-DROP TABLE IF EXISTS `base_documents`;
-DROP TABLE IF EXISTS `content_bases_objects`;
-DROP TABLE IF EXISTS `content_bases_object_categories`;
+DROP TABLE IF EXISTS `content_objects`;
+DROP TABLE IF EXISTS `content_object_categories`;
 DROP TABLE IF EXISTS `contents`;
 DROP TABLE IF EXISTS `authors`;
 DROP TABLE IF EXISTS `images`;
@@ -33,14 +32,13 @@ DROP TABLE IF EXISTS `object_categories`;
 DROP TABLE IF EXISTS `answers`;
 DROP TABLE IF EXISTS `faq_questions`;
 DROP TABLE IF EXISTS `audio_videos`;
-DROP TABLE IF EXISTS `audio`;
-DROP TABLE IF EXISTS `video`;
+DROP TABLE IF EXISTS `audios`;
+DROP TABLE IF EXISTS `videos`;
 DROP TABLE IF EXISTS `areas`;
 DROP TABLE IF EXISTS `streams`;
 DROP TABLE IF EXISTS `short_news`;
 DROP TABLE IF EXISTS `newsletters`;
 DROP TABLE IF EXISTS `lang_texts`;
-DROP TABLE IF EXISTS `indexs`;
 DROP TABLE IF EXISTS `permissions`;
 DROP TABLE IF EXISTS `object_users`;
 DROP TABLE IF EXISTS `questions`;
@@ -48,7 +46,6 @@ DROP TABLE IF EXISTS `versions`;
 DROP TABLE IF EXISTS `trees`;
 DROP TABLE IF EXISTS `comments`;
 DROP TABLE IF EXISTS `biblio_items`;
-DROP TABLE IF EXISTS `content_bases`;
 DROP TABLE IF EXISTS `custom_properties`;
 DROP TABLE IF EXISTS `collections`;
 DROP TABLE IF EXISTS `objects`;
@@ -198,16 +195,17 @@ CREATE TABLE custom_properties (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE content_bases (
+CREATE TABLE contents (
   id INTEGER UNSIGNED NOT NULL,
   `start` DATETIME NULL ,
   `end` DATETIME NULL,
   subject VARCHAR(255) NULL,
   abstract MEDIUMTEXT NULL,
+  body MEDIUMTEXT NULL,
   type ENUM('html','txt','txtParsed') DEFAULT 'txt',
   comments ENUM('on','off') DEFAULT 'off',
   PRIMARY KEY(id),
-  INDEX content_bases_FKIndex1(id),
+  INDEX contents_FKIndex1(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
       ON DELETE CASCADE
@@ -220,7 +218,7 @@ CREATE TABLE biblio_items (
   PRIMARY KEY(id),
   INDEX biblio_items_FKIndex1(id),
   FOREIGN KEY(id)
-    REFERENCES content_bases(id)
+    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -233,7 +231,7 @@ CREATE TABLE comments (
   PRIMARY KEY(id),
   INDEX comments_FKIndex1(id),
   FOREIGN KEY(id)
-    REFERENCES content_bases(id)
+    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -286,7 +284,7 @@ CREATE TABLE questions (
   INDEX questions_FKIndex1(id),
   INDEX questions_FKIndex2(question_type_id),
   FOREIGN KEY(id)
-    REFERENCES content_bases(id)
+    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -298,7 +296,7 @@ CREATE TABLE object_users (
   INDEX objectUsers_FKIndex1(id),
   INDEX objectUsers_FKIndex2(user_id),
   FOREIGN KEY(id)
-    REFERENCES content_bases(id)
+    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
   FOREIGN KEY(user_id)
@@ -319,25 +317,6 @@ CREATE TABLE permissions (
   INDEX permissions_FKIndex2(id),
   INDEX permissions_FKIndex3(object_id),
   INDEX permissions_FKIndex4(`ugid`, `switch`),
-  FOREIGN KEY(object_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE indexs (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  object_id INTEGER UNSIGNED NOT NULL,
-  `name` VARCHAR(255) NOT NULL ,
-  lang CHAR(3) NOT NULL,
-  `type` ENUM('integer','bool','float','string','stream') NULL,
-  `integer` INTEGER UNSIGNED NULL,
-  `bool` BOOL NULL,
-  `float` DOUBLE NULL,
-  `string` MEDIUMTEXT NULL,
-  `stream` MEDIUMBLOB NULL,
-  PRIMARY KEY(`id`),
-  INDEX indexes_FKIndex1(object_id),
   FOREIGN KEY(object_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
@@ -374,7 +353,7 @@ CREATE TABLE short_news (
   PRIMARY KEY(id),
   INDEX short_news_FKIndex1(id),
   FOREIGN KEY(id)
-    REFERENCES content_bases(id)
+    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...or removed';
@@ -388,7 +367,7 @@ CREATE TABLE streams (
   PRIMARY KEY(id),
   INDEX stream_FKIndex1(id),
   FOREIGN KEY(id)
-    REFERENCES content_bases(id)
+    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -407,7 +386,7 @@ CREATE TABLE areas (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE audio (
+CREATE TABLE audios (
   id INTEGER UNSIGNED NOT NULL,
   PRIMARY KEY(id),
   INDEX audio_FKIndex1(id),
@@ -417,7 +396,7 @@ CREATE TABLE audio (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...' ;
 
-CREATE TABLE video (
+CREATE TABLE videos (
   id INTEGER UNSIGNED NOT NULL,
   provider VARCHAR( 255 ) NULL ,
   uid VARCHAR( 255 ) NULL,
@@ -438,7 +417,7 @@ CREATE TABLE faq_questions (
   PRIMARY KEY(id),
   INDEX faq_questions_FKIndex1(id),
   FOREIGN KEY(id)
-    REFERENCES content_bases(id)
+    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -450,7 +429,7 @@ CREATE TABLE answers (
   INDEX answers_FKIndex1(id),
   INDEX answers_FKIndex2(question_id),
   FOREIGN KEY(id)
-    REFERENCES content_bases(id)
+    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
   FOREIGN KEY(question_id)
@@ -497,44 +476,27 @@ CREATE TABLE images (
 
 CREATE TABLE authors (
   id INTEGER UNSIGNED NOT NULL,
-  image_id INTEGER UNSIGNED NULL,
   name VARCHAR(60) NULL,
   surname VARCHAR(60) NULL,
   search_string VARCHAR(255) NULL,
   PRIMARY KEY(id),
   INDEX authors_FKIndex1(id),
-  INDEX authors_FKIndex2(image_id),
   FOREIGN KEY(id)
-    REFERENCES content_bases(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(image_id)
-    REFERENCES images(id)
-      ON DELETE SET NULL
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE contents (
-  id INTEGER UNSIGNED NOT NULL,
-  body MEDIUMTEXT NULL,
-  PRIMARY KEY(id),
-  INDEX contents_FKIndex1(id),
-  FOREIGN KEY(id)
-    REFERENCES content_bases(id)
+    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE content_bases_objects (
+CREATE TABLE content_objects (
   object_id INTEGER UNSIGNED NOT NULL,
   id INTEGER UNSIGNED NOT NULL,
   switch varchar(63) NOT NULL default 'attach',
   priority int(11) default NULL,
   PRIMARY KEY  (`object_id`,`id`,`switch`),
-  INDEX `content_bases_has_objects_FKIndex1` (`id`),
-  INDEX `content_bases_has_objects_FKIndex2` (`object_id`),
+  INDEX `contents_has_objects_FKIndex1` (`id`),
+  INDEX `contents_has_objects_FKIndex2` (`object_id`),
   FOREIGN KEY(id)
-    REFERENCES content_bases(id)
+    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
   FOREIGN KEY(object_id)
@@ -543,33 +505,18 @@ CREATE TABLE content_bases_objects (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE content_bases_object_categories (
-  content_base_id INTEGER UNSIGNED NOT NULL,
+CREATE TABLE content_object_categories (
+  content_id INTEGER UNSIGNED NOT NULL,
   object_category_id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(content_base_id, object_category_id),
-  INDEX content_bases_has_object_caegories_FKIndex1(content_base_id),
-  INDEX content_bases_has_object_caegories_FKIndex2(object_category_id),
-  FOREIGN KEY(content_base_id)
-    REFERENCES content_bases(id)
+  PRIMARY KEY(content_id, object_category_id),
+  INDEX contents_has_object_caegories_FKIndex1(content_id),
+  INDEX contents_has_object_caegories_FKIndex2(object_category_id),
+  FOREIGN KEY(content_id)
+    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
   FOREIGN KEY(object_category_id)
     REFERENCES object_categories(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE base_documents (
-  id INTEGER UNSIGNED NOT NULL,
-  desc_author MEDIUMTEXT NULL,
-  credits VARCHAR(255) NULL,
-  `gallery_id` INT NULL ,
-  `question_id` INT NULL ,
-  `flag_comments` BOOL NULL ,
-  PRIMARY KEY(id),
-  INDEX base_documents_FKIndex1(id),
-  FOREIGN KEY(id)
-    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -588,33 +535,28 @@ CREATE TABLE events (
   id INTEGER UNSIGNED NOT NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(id)
-    REFERENCES base_documents(id)
+    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...or removed' ;
 
-CREATE TABLE event_date_items (
+CREATE TABLE date_items (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  event_id INTEGER UNSIGNED NOT NULL,
+  content_id INTEGER UNSIGNED NOT NULL,
   `start` DATETIME NULL,
   `end` DATETIME NULL,
   PRIMARY KEY(id),
-  FOREIGN KEY(event_id)
-    REFERENCES events(id)
+  FOREIGN KEY(content_id)
+    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE documents (
   id INTEGER UNSIGNED NOT NULL,
-  url VARCHAR(255) NULL,
-  obj INTEGER UNSIGNED NULL,
-  file VARCHAR(255) NULL,
-  rule MEDIUMTEXT NULL,
-  switch ENUM('alias','url','file','service','rule','doc') NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(id)
-    REFERENCES base_documents(id)
+    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;

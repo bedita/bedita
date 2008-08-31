@@ -478,12 +478,11 @@ abstract class FrontendController extends AppController {
 						   "06" => "June", "07" => "July", "08" => "August", "09" => "September", "10" => "October",
 						   "11" => "November", "12" => "December");
 	
-		$this->modelBindings['Document'] = array("BEObject" => array("LangText"), "ContentBase");
-		$this->modelBindings['ShortNews'] = array("BEObject" => array("LangText"), "ContentBase");
-		$this->modelBindings['Event'] = array("BEObject" => array("LangText"), "ContentBase","EventDateItem");
+		$this->modelBindings['Document'] = array("BEObject" => array("LangText"), "Content");
+		$this->modelBindings['ShortNews'] = array("BEObject" => array("LangText"), "Content");
+		$this->modelBindings['Event'] = array("BEObject" => array("LangText"), "Content","DateItem");
 		
 		$items = $this->loadSectionObjects($section_id);
-		
 		unset($this->modelBindings);
 		
 		$archive = array();

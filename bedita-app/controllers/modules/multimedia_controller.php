@@ -26,7 +26,7 @@ class MultimediaController extends ModulesController {
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
 	// This controller does not use a model
-	var $uses = array('Stream', 'Image', 'Audio', 'Video', 'BEObject', 'ContentBase', 'Content', 'BaseDocument', 'Tree', 'User', 'Group','ObjectCategory') ;
+	var $uses = array('Stream', 'Image', 'Audio', 'Video', 'BEObject', 'Tree', 'User', 'Group','ObjectCategory') ;
 	protected $moduleName = 'multimedia';
 	
 	 /**
@@ -49,7 +49,7 @@ class MultimediaController extends ModulesController {
 			$modelLoaded = $this->loadModelByObjectTypeId($value['object_type_id']);
 			$modelLoaded->restrict(array(
 									"BEObject" => array("ObjectType"),
-									"ContentBase",
+									"Content",
 									"Stream"
 									)
 								);
@@ -81,7 +81,7 @@ class MultimediaController extends ModulesController {
 														"Permissions",
 														"UserCreated", 
 														"UserModified"),
-									"ContentBase" => array("*"),
+									"Content" => array("*"),
 									"Stream"
 									)
 								);

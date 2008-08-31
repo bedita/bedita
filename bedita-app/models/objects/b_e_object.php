@@ -225,7 +225,7 @@ class BEObject extends BEAppModel
 	 	$default = array(
 			'nickname' 			=> array('_getDefaultNickname', 	(isset($data['nickname']) && !@empty($data['nickname']))?$data['nickname']:((isset($data['title']))?$data['title']:'')),
 			'lang' 				=> array('_getDefaultLang', 		(isset($data['lang']))?$data['lang']:null),
-			'ip_created' 		=> array('_getDefaultIP'),
+			'ip_created' 		=> array('_getDefaultIP',			(isset($data['ip_created']))?$data['ip_created']:null),
 			'user_created'		=> array('_getIDCurrentUser', 		((isset($data[$this->primaryKey]) && empty($data[$this->primaryKey])) || !isset($data[$this->primaryKey]))? (isset($data['user_created'])?$data['user_created']:true) :false),
 			'user_modified'		=> array('_getIDCurrentUser', 		(isset($data['user_modified'])?$data['user_modified']:true)), 
 			'Permissions' 		=> array('_getDefaultPermission', 	(isset($data['Permission']))?$data['Permission']:null, (isset($data['object_type_id']))?$data['object_type_id']:0),
@@ -480,6 +480,8 @@ class BEObject extends BEAppModel
 	}
 	
 	private function _getDefaultIP($value = null) {
+		if(isset($value)) 
+			return $value ;
 		$IP = $_SERVER['REMOTE_ADDR'] ;
 	
 		return $IP ;

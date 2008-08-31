@@ -48,17 +48,17 @@ $config['modelBindings'] = array(
 	'Area' => array("BEObject" => array("LangText")),
 	'Section' => array("BEObject" => array("LangText")),
  	'Document' => array("BEObject" => array("LangText" ),
-				"ContentBase" => array("*"), "Content","BaseDocument"),
+				"Content" => array("*")),
 	'Event' => array("BEObject" => array("LangText"),
-				"ContentBase" => array("*"), "Content","BaseDocument","EventDateItem"),
+				"Content" => array("*"), "DateItem"),
 	'Image' => array("BEObject" => array("LangText"),
-				"ContentBase", "Stream"),
+				"Content", "Stream"),
 	'Audio' => array("BEObject" => array("LangText"),
-				"ContentBase", "Stream"),
+				"Content", "Stream"),
 	'Video' => array("BEObject" => array("LangText"),
-				"ContentBase", "Stream"),
+				"Content", "Stream"),
 	'BEFile' => array("BEObject" => array("LangText"),
-				"ContentBase", "Stream"),
+				"Content", "Stream"),
 	'Gallery' => array("BEObject" => array("LangText"))
 
 ) ;

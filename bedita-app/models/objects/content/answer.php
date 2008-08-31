@@ -1,13 +1,5 @@
 <?php
 /**
- *
- * PHP versions 5
- *
- * CakePHP :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright (c)	2006, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
- *
  * @filesource
  * @copyright		Copyright (c) 2007
  * @link			
@@ -18,40 +10,21 @@
  * @modifiedby		
  * @lastmodified	
  * @license
- * @author 		giangi giangi@qwerg.com	
+ * @author 		giangi giangi@qwerg.com, ste ste@channelweb.it
  * 		
  * 						
 */
-class Answer extends BEAppObjectModel
+class Answer extends BeditaContentModel
 {
-	var $name 		= 'Answer';
-	var $recursive 	= 2 ;
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('Question'),
-			'ForeignDependenceSave' => array('BEObject', 'ContentBase'),
+			'ForeignDependenceSave' => array('BEObject', 'Content'),
 			'DeleteObject' 			=> 'objects',
 	); 
 
 	var $validate = array(
 		'question_id' 	=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
 	) ;
-
-	var $hasOne = array(
-			'BEObject' =>
-				array(
-					'className'		=> 'BEObject',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
-			'ContentBase' =>
-				array(
-					'className'		=> 'ContentBase',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
-		) ;			
 
 	var $belongsTo = array(
 		'Question' =>
@@ -61,11 +34,5 @@ class Answer extends BEAppObjectModel
 				'conditions'	=> ''
 			),
 	) ;
-		
-	function __construct() {
-		parent::__construct() ;
-
-	}
-
 }
 ?>

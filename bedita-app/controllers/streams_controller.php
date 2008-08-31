@@ -36,7 +36,7 @@ class StreamsController extends AppController {
 									"BEObject" => array("ObjectType", 
 														"LangText"
 														),
-									"ContentBase",
+									"Content",
 									"Stream"
 									)
 								);
@@ -147,8 +147,8 @@ class StreamsController extends AppController {
 		if (!$collection) {
 			$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
 			$objRel = $modelLoaded->find("first",array(
-													"restrict" => array("ContentBase" => "ObjectRelation"),
-													"conditions" => "ContentBase.id=".$obj_id
+													"restrict" => array("Content" => "ObjectRelation"),
+													"conditions" => "Content.id=".$obj_id
 												)
 											);
 			if (!empty($objRel["ObjectRelation"])) {

@@ -1,13 +1,6 @@
 <?php
 /**
  *
- * PHP versions 5
- *
- * CakePHP :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright (c)	2006, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
- *
  * @filesource
  * @copyright		Copyright (c) 2007
  * @link			
@@ -18,56 +11,26 @@
  * @modifiedby		
  * @lastmodified	
  * @license
- * @author 		giangi giangi@qwerg.com	
+ * @author 		giangi giangi@qwerg.com, ste ste@channelweb.it
  * 		
- * 				Esprime  le relazioni tra oggetti di tipo contenuto 		
 */
-class Event extends BEAppObjectModel
+class Event extends BeditaContentModel
 {
-	var $name 		= 'Event';
-	var $recursive 	= 2 ;
 	var $actsAs 	= array(
-			'CompactResult' 		=> array('EventDateItem'),
+			'CompactResult' 		=> array('DateItem'),
 			'SearchTextSave'		=> array(),
-			'ForeignDependenceSave' => array('BEObject', 'ContentBase', 'Content'),
+			'ForeignDependenceSave' => array('BEObject', 'Content'),
 			'DeleteObject' 			=> 'objects',
-	); 
-	 
-	var $transactional 	= true ;
+	); 	 
 
-	var $hasOne= array(
-			'BEObject' =>
+	var $hasMany = array(
+			'DateItem' =>
 				array(
-					'className'		=> 'BEObject',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
-			'ContentBase' =>
-				array(
-					'className'		=> 'ContentBase',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
-			'Content' =>
-				array(
-					'className'		=> 'Content',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				)
-		) ;			
-
-		var $hasMany = array(
-			'EventDateItem' =>
-				array(
-					'className'		=> 'EventDateItem',
-					'foreignKey'	=> 'event_id',
+					'className'		=> 'DateItem',
+					'foreignKey'	=> 'content_id',
 					'dependent'		=> true
 				)
 		) ;
-
 
 	function afterSave() {
 		
@@ -103,8 +66,5 @@ class Event extends BEAppObjectModel
 		return true ;
 	}
 
-
-
-	
 }
 ?>

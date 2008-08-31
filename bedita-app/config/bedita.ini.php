@@ -99,11 +99,6 @@ $config['msgPause'] = 3000;		// milliseconds
 $config['uploadType'] = "flash";
 
 
-
-
-
-
-
 /**
  ** ******************************************
  **  Image and Video defaults
@@ -196,24 +191,14 @@ $config["defaultOneWayRelation"] = array("link");
 // Cfg One-way relation (as in local cfg)
 $config["cfgOneWayRelation"] = array();
 
+// Cfg One-way relation (as in local cfg)
+$config["cfgOneWayRelation"] = array();
+
 // Default reserved words [avoided in nickname creation]
 $config["defaultReservedWords"] = array("section","content");
 
 // Cfg reserved words (as in local cfg)
 $config["cfgReservedWords"] = array();
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ///////////////////////////////////////////////////////
@@ -260,7 +245,6 @@ $config['objectTypes'] = array(
 
 	'questionnaire'		=> 4,
 	'faq'				=> 5,
-	'gallery'			=> 29,
 	'cartigli'			=> 6,
 
 	'scroll'			=> 7,
@@ -283,14 +267,9 @@ $config['objectTypes'] = array(
 	'event'				=> 21,
 
 	'document'			=> 22,
-	'documentptrobject'	=> 23,
-	'documentptrextern'	=> 24,
 
-	'documentptrfile'	=> 25,
-	'documentptrservice'=> 26,
-	'documentrule'		=> 27,
-	
 	'author'			=> 28,
+	'gallery'			=> 29,
 	'biblioitem'		=> 30,
 	
 	'audio'				=> 31,
@@ -300,11 +279,7 @@ $config['objectTypes'] = array(
 
 	'address'			=> 34,
 	
-	/* Per selezionare tutti i tipi di documenti */
-	'documentAll'		=> array(22,23,24,25,26,27),
-	//'documentAll'		=> array(18,19,20,21,22,23,24,25,26,27,29),
-	'related'			=> array(18,19,20,21,22,29,34),
-
+	'related'		=> array(18,19,20,21,22,29),
 	
 ) ;
 
@@ -343,20 +318,12 @@ $config['objectTypeModels'] = array(
 	21	=> 'Event',
 
 	22	=> 'Document',
-	23	=> 'DocumentPtrobject',
-	24	=> 'DocumentPtrExtern',
-	
-	25	=> 'DocumentPtrFile',
-	26	=> 'DocumentPtrService',
-	27	=> 'DocumentRule',
-
 	28	=> 'Author',
 	30	=> 'BiblioItem',
 
 	33 	=> 'Link',
-	
 	34 	=> 'Address'
-	// To be continued...
+
 ) ;
 
 /**
@@ -564,14 +531,14 @@ $config['modelBindings'] = array(
 
 	'Area' => array("BEObject" => array("CustomProperties", "LangText")),
 	'Section' => array("BEObject" => array("CustomProperties", "LangText")),
- 	'Document' => array("BEObject" => array("CustomProperties", "LangText", "ObjectType" ),
-				"ContentBase" => array("*"), "Content","BaseDocument"),
-	'Event' => array("BEObject" => array("CustomProperties", "LangText", "ObjectType"),
-				"ContentBase" => array("*"), "Content","BaseDocument","EventDateItem"),
+ 	'Document' => array("BEObject" => array("CustomProperties", "LangText" ),
+				"Content" => array("*")),
+	'Event' => array("BEObject" => array("CustomProperties", "LangText"),
+				"Content" => array("*"),"DateItem"),
 	'Image' => array("BEObject" => array("CustomProperties", "LangText", "ObjectType"),
-				"ContentBase", "Stream"),
+				"Content", "Stream"),
 	'Video' => array("BEObject" => array("CustomProperties", "LangText", "ObjectType"),
-				"ContentBase", "Stream")
+				"Content", "Stream")
 
 ) ;
 

@@ -43,7 +43,7 @@ class NewsController extends ModulesController {
 															"CustomProperties",
 															"LangText"
 															),
-										"ContentBase" => array("*")
+										"Content" => array("*")
 										)
 									);
 			$obj = $this->ShortNews->findById($id);

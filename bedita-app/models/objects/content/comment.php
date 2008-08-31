@@ -1,13 +1,6 @@
 <?php
 /**
  *
- * PHP versions 5
- *
- * CakePHP :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright (c)	2006, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
- *
  * @filesource
  * @copyright		Copyright (c) 2007
  * @link			
@@ -18,23 +11,12 @@
  * @modifiedby		
  * @lastmodified	
  * @license
- * @author 		giangi giangi@qwerg.com	
+ * @author 		giangi giangi@qwerg.com, ste ste@channelweb.it
  * 		
  * 						
 */
-class Comment extends BEAppObjectModel
+class Comment extends BeditaContentModel 
 {
-	var $recursive 	= 2 ;
-
-	var $actsAs 	= array(
-			'CompactResult' 		=> array(),
-			'CreateIndexFields'		=> array(),
-			'ForeignDependenceSave' => array('BEObject', 'ContentBase'),
-			'DeleteObject' 			=> 'objects',
-	); 
-
-	var $transactional 	= true ;
-	
 	var $validate = array(
 			'author' => array(
 				'rule' 			=> 'alphaNumeric',
@@ -52,25 +34,5 @@ class Comment extends BEAppObjectModel
 	   			'message' 		=> 'URL not valid'
 	   		)
 	   );
-
-	   
-	var $hasOne = array(
-			'BEObject' =>
-				array(
-					'className'		=> 'BEObject',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
-			'ContentBase' =>
-				array(
-					'className'		=> 'ContentBase',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
-		) ;
-
-		
 }
 ?>

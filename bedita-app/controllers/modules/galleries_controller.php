@@ -85,12 +85,6 @@ class GalleriesController extends ModulesController {
 					// save modified title and description 
 					$m['modified'] = (!isset($m['modified']))?0:((integer)$m['modified']) ;
 					if($m['modified']) {
-						if(!class_exists('ContentBase')) {
-							App::import('Model', 'ContentBase') ;
-							
-							$this->ContentBase = new ContentBase() ;
-						}
-										
 						if(!$this->Gallery->BEObject->updateTitleDescription($m['id'] , $m['title'], $m['description'])) {
 							throw new BeditaException( __("Save info child", true));
 						}
@@ -151,7 +145,7 @@ class GalleriesController extends ModulesController {
 									"BEObject" => array("ObjectType", 
 														"LangText"
 														),
-									"ContentBase", 
+									"Content", 
 									"Stream"
 									)
 								);
