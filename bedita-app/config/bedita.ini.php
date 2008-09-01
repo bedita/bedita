@@ -529,16 +529,18 @@ $config['media_providers_default_conf']  = array(
  */
 $config['modelBindings'] = array(
 
-	'Area' => array("BEObject" => array("CustomProperties", "LangText")),
-	'Section' => array("BEObject" => array("CustomProperties", "LangText")),
- 	'Document' => array("BEObject" => array("CustomProperties", "LangText" ),
-				"Content" => array("*")),
-	'Event' => array("BEObject" => array("CustomProperties", "LangText"),
-				"Content" => array("*"),"DateItem"),
-	'Image' => array("BEObject" => array("CustomProperties", "LangText", "ObjectType"),
-				"Content", "Stream"),
-	'Video' => array("BEObject" => array("CustomProperties", "LangText", "ObjectType"),
-				"Content", "Stream")
+	'Area' 		=> array("BEObject" => array("CustomProperties", "LangText")),
+	'Section' 	=> array("BEObject" => array("CustomProperties", "LangText")),
+ 	'Document' 	=> array("BEObject" => array("CustomProperties", "LangText", "ObjectType" ),
+					"Content" => array("*")),
+	'ShortNews' => array("BEObject" => array("CustomProperties", "LangText", "ObjectType" ),
+					"Content" => array("*")),
+	'Event' 	=> array("BEObject" => array("CustomProperties", "LangText", "ObjectType"),
+					"Content" => array("*"),"DateItem"),
+	'Image' 	=> array("BEObject" => array("CustomProperties", "LangText", "ObjectType"),
+					"Content", "Stream"),
+	'Video' 	=> array("BEObject" => array("CustomProperties", "LangText", "ObjectType"),
+					"Content", "Stream")
 
 ) ;
 

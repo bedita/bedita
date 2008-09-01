@@ -280,8 +280,12 @@ class AreasController extends ModulesController {
 	/**
 	 * called via ajax
 	 * Show all objects for relation
+	 * 
+	 * @param int $master_object_id, object id of main object used to exclude association with itself 
+	 * @param string $relation, relation type								
+	 * 
 	 **/
-	public function showObjects($relation) {
+	public function showObjects($main_object_id, $relation) {
 		
 		$id = (!empty($this->params["form"]["parent_id"]))? $this->params["form"]["parent_id"] : null;
 		$filter = (!empty($this->params["form"]["objectType"]))? array($this->params["form"]["objectType"]) : Configure::read("objectTypes.related");
@@ -296,7 +300,10 @@ class AreasController extends ModulesController {
 		$objects = $this->BeTree->getChildren($id, null, $filter, "title", true, $page, $dim=10) ;
 		
 		foreach ($objects["items"] as $key => $obj) {
-			$objects["items"][$key]["moduleName"] = $this->ObjectType->field("module", array("id" => $obj["object_type_id"]));
+			if ($obj["id"] != $main_object_id)
+				$objects["items"][$key]["moduleName"] = $this->ObjectType->field("module", array("id" => $obj["object_type_id"]));
+			else
+				unset($objects["items"][$key]);
 		}
 		$this->set("objectsToAssoc", $objects);
 		
@@ -304,6 +311,7 @@ class AreasController extends ModulesController {
 		$this->set('tree',$tree);
 		
 		$this->set("relation", $relation);
+		$this->set("main_object_id", $main_object_id);
 		
 		$this->layout = null;
 		
@@ -311,8 +319,13 @@ class AreasController extends ModulesController {
 		$this->render(null, null, VIEWS . $view);
 	}
 	
-	
-	public function loadObjectToAssoc() {
+	/**
+	 * called via ajax
+	 * load objects selected to main view to prepare association form
+	 *
+	 * @param int $main_object_id, object id of main object used to exclude association with itself 
+	 */
+	public function loadObjectToAssoc($main_object_id=null) {
 		
 		$conditions = array(
 						"BEObject.id" => explode( ",", trim($this->params["form"]["object_selected"],",") ), 
@@ -325,8 +338,10 @@ class AreasController extends ModulesController {
 												)
 										) ;
 		$objRelated = array();
-		foreach ($objects as $obj) {
-			$objRelated[] = array_merge($obj["BEObject"], array("ObjectType" => $obj["ObjectType"]));
+
+		foreach ($objects as $key => $obj) {
+			if (empty($main_object_id) || $objects[$key]["BEObject"]["id"] != $main_object_id)
+				$objRelated[] = array_merge($obj["BEObject"], array("ObjectType" => $obj["ObjectType"]));
 		}
 		
 		$this->set("objsRelated", $objRelated);

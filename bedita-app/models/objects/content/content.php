@@ -93,13 +93,17 @@ class Content extends BEAppModel
 			$queriesModified 	= array() ;
 			$lang			= (isset($this->data['Content']['lang'])) ? $this->data['Content']['lang']: null ;
 			
-			foreach ($this->data['ObjectRelation'] as $values) {
-				$assoc 	= $this->hasAndBelongsToMany['ObjectRelation'] ;
-				$table 	= $db->name($db->fullTableName($assoc['joinTable']));
-				$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch, priority"  ;	
-				foreach($values as $val) {
+			// set one-way relation
+			$oneWayRelation = array_merge( Configure::read("defaultOneWayRelation"), Configure::read("cfgOneWayRelation") );
+			
+			$assoc 	= $this->hasAndBelongsToMany['ObjectRelation'] ;
+			$table 	= $db->name($db->fullTableName($assoc['joinTable']));
+			$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch, priority"  ;
+
+			foreach ($this->data['ObjectRelation']['ObjectRelation'] as $switch => $values) {
+				
+				foreach($values as $key => $val) {
 					$obj_id		= isset($val['id'])? $val['id'] : false;
-					$switch		= $val['switch'] ;
 					$priority	= isset($val['priority']) ? "'{$val['priority']}'" : 'NULL' ;
 					
 					// Delete old associations
@@ -109,7 +113,7 @@ class Content extends BEAppModel
 					if (!empty($obj_id)) {
 						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
 						
-						if($switch != "link") {	
+						if(!in_array($switch,$oneWayRelation)) {
 							// find priority of inverse relation
 							$inverseRel = $this->query("SELECT priority 
 														  FROM {$table} 
@@ -143,6 +147,7 @@ class Content extends BEAppModel
 					}
 				}
 			}
+			
 			foreach ($queriesDelete as $qDel) {
 				if ($db->query($qDel) === false)
 					throw new BeditaException(__("Error deleting associations", true), $qDel);

@@ -64,7 +64,7 @@ class DocumentsController extends ModulesController {
 			}
 			$relations = $this->objectRelationArray($obj['ObjectRelation']);
 		}
-//		
+		
 		$tree = $this->BeTree->getSectionsTree() ;
 		if(isset($id)) {
 			$parents_id = $this->Tree->getParent($id) ;

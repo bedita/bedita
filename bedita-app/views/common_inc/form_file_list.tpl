@@ -107,7 +107,7 @@ $(document).ready(function()
 				<img class="multimediaitemToolbar viewthumb" src="{$html->webroot}img/iconML-thumb.png" />
 
 <hr />
-
+<input type="hidden" class="relationTypeHidden" name="data[ObjectRelation][{$relation}][0][switch]" value="{$relation}" />
 {foreach from=$attach item="item"}
 	<div class="multimediaitem itemBox{if $item.status == "off"} off{/if} small" id="item_{$item.id}">
 		

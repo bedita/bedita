@@ -1,7 +1,7 @@
 <script type="text/javascript">
 <!--
 
-var urlShowObj = "{$html->url('/areas/showObjects/')}{$relation}";
+var urlShowObj = "{$html->url('/areas/showObjects/')}{$main_object_id}/{$relation}";
 if (!urlAddObjToAss) 
 	var urlAddObjToAss = "{$html->url('/areas/loadObjectToAssoc')}";
 var relType = "{$relation}";
