@@ -29,8 +29,8 @@ $(document).ready(function(){
 {/literal}
 
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
-	
-	<div class="modules">
+
+<div class="modules">
 	   <label class="documents" rel="{$html->url('/documents')}">{t}Documents{/t}</label>
 	</div> 
 	

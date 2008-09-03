@@ -43,18 +43,18 @@ $().ready(function() {
 
 
 <div class="secondacolonna">
-	
+
 	<div class="modules">
 	   <label class="admin">{t}Login{/t}</label>
 	</div> 
 	
 	{include file="../common_inc/messages.tpl"}
 	
-	
+
 </div>
 
 
-<div class="secondacolonna" style="left:310px; padding-top:25px;">
+<div style="width:180px; margin-left:310px; padding-top:25px;">
 <form action="{$html->url('/authentications/login')}" method="post" name="loginForm" id="loginForm" class="cmxform">
 	<fieldset>
 		<input type="hidden" name="data[login][URLOK]" value="{$beurl->here()}" id="loginURLOK" />

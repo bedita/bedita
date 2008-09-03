@@ -17,17 +17,7 @@
 {/if}
 
 
-<script language="JavaScript">
-	{literal}
-	$(document).ready( function ()
-	{
-		$('#title').show() ;
-		$('#long_desc_langs_container').show() ;
-		//$('#frmAssocObject').show() ;
-		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
-	});
-	{/literal}
-</script>
+
 
 
 </head>

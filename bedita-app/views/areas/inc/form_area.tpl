@@ -1,4 +1,6 @@
 {assign var=object_lang value=$object.lang|default:$conf->defaultLang}
+
+{*
 <script type="text/javascript">
 <!--
 {literal}
@@ -39,12 +41,14 @@ $(document).ready(function(){
 {/literal}
 //-->
 </script>
+*}
+
 
 
 <form action="{$html->url('/areas/saveArea')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 
 
-<div class="tab"><h2>{t}Properties{/t}</h2></div>
+<div class="tab"><h2>{t}Publishing detail{/t}</h2></div>
 
 <fieldset id="properties">	
 
@@ -52,64 +56,42 @@ $(document).ready(function(){
 	<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 	<input type="hidden" name="data[title]" value="{$object.title|default:''}"/>
 	
-	<div id="properties_langs_choice" class="tabsContainer">
-		
-		<span class="label">&nbsp;{t}Main language{/t}:</span>
-		<span class="field">
-			<select name="data[lang]" id="main_lang">
-			{foreach key=val item=label from=$conf->langOptions name=langfe}
-			<option {if $val==$object_lang}selected="selected"{/if} value="{$val}">{$label}</option>
-			{/foreach}
-			</select>
-		</span>
-		<span class="label" style="margin-left: 16px;">{t}Versions{/t}:</span>
-		
-		
-	</div>
-	
-	<div id="area_langs_container" class="tabsContainer">
-				
-			
-		<div id="area_lang_{$val}">
-		
-		<table class="tableForm" border="0">
+
+	<table class="bordered" style="width:100%">
 		<tr>
 			<th>{t}Title{/t}:</th>
 			<td>
-				<input class="{literal}{required:true,minLength:1}{/literal}" title="{t}Title is required{/t}"
-					type="text" name="data[title]"
-					value="{$object.title|default:''|escape:'html'|escape:'quotes'}"/>&nbsp;
+				<input class="{literal}{required:true,minLength:1}{/literal}" title="{t}Title is required{/t}"	type="text" name="data[title]"	value="{$object.title|default:''|escape:'html'|escape:'quotes'}" />
 			</td>
-			
+		</tr>
+
+		<tr>
+			<th>{t}Main language{/t}:</th>
+			<td>
+				<select name="data[lang]" id="main_lang">
+				{foreach key=val item=label from=$conf->langOptions name=langfe}
+					<option {if $val==$object_lang}selected="selected"{/if} value="{$val}">{$label}</option>
+				{/foreach}
+				</select>
+			</td>
 		</tr>
 		<tr>
 			<th>{t}Public name{/t}:</th>
 			<td>
-				<input type="text" name="data[public_name]" value="{$object.public_name|default:''|escape:'html'|escape:'quotes'}"
-					class="{literal}{required:true,minLength:1}{/literal}" title="{t 1='1'}Public name is required (at least %1 alphanumerical char){/t}"/>
+				<input type="text" name="data[public_name]" value="{$object.public_name|default:''|escape:'html'|escape:'quotes'}""/>
 			</td>
 			
 		</tr>
 		<tr>
 			<th>{t}Description{/t}:</th>
 			<td>
-				<textarea name="data[description]"
-					class="{literal}{required:true,minLength:1}{/literal}" title="{t 1='1'}Description is required (at least %1 alphanumerical char){/t}">{$object.description|default:''|escape:'html'|escape:'quotes'}</textarea>
+				<textarea class="autogrowarea" name="data[description]">{$object.description|default:''|escape:'html'|escape:'quotes'}</textarea>
 			</td>
-			
 		</tr>
-		</table>
-		</div>
-		
-	</div>
-	
-
-	
-	<table class="bordered">
 	<tr>
 		<th>{t}Nickname{/t}:</th>
 		<td>
-			<input type="text" name="data[nickname]" value="{$object.nickname|default:''|escape:'html'|escape:'quotes'}"/>
+			<input disabled type="text" name="data[nickname]" value="{$object.nickname|default:''|escape:'html'|escape:'quotes'}"/>
 		</td>
 		
 	</tr>
@@ -120,6 +102,21 @@ $(document).ready(function(){
 		</td>
 		
 	</tr>
+
+	<tr>
+		<th>{t}Public url{/t}:</th>
+		<td>
+			<input type="text" name="data[public_url]" value="{$object.public_url}""/>
+		</td>
+	</tr>
+	
+	<tr>
+		<th>{t}Staging url{/t}:</th>
+		<td>
+			<input type="text" name="data[staging_url]" value="{$object.staging_url}""/>
+		</td>
+	</tr>
+	
 	<tr>
 		<th>{t}Contact email{/t}:</th>
 		<td>

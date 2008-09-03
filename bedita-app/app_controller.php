@@ -283,6 +283,7 @@ class AppController extends Controller
 		// module list
 		$moduleList = $this->BePermissionModule->getListModules($this->BeAuth->user["userid"]);
 		$this->set('moduleList', $moduleList) ;			
+		$this->set('moduleListInv', array_reverse($moduleList)) ;	
 		
 		// verify basic access
 		if(isset($this->moduleName)) { 

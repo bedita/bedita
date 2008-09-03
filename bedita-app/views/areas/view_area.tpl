@@ -1,6 +1,6 @@
 {$html->css('tree')}
 {$javascript->link("jquery/jquery.treeview", false)}
-{$javascript->link("jquery/interface", false)}
+
 {$javascript->link("form", false)}
 {$javascript->link("jquery/jquery.changealert", false)}
 {$javascript->link("jquery/jquery.form", false)}
@@ -10,7 +10,17 @@
 {$javascript->link("jquery/jquery.validate", false)}
 {$javascript->link("validate.tools", false)}
 
+{$javascript->link("jquery/jquery.autogrow")}
 
+<script language="JavaScript">
+	{literal}
+	$(document).ready( function ()
+	{
+		$('#properties').show() ;
+		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
+	});
+	{/literal}
+</script>
 
 </head>
 

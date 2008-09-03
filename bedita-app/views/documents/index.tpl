@@ -10,6 +10,7 @@
 
 {include file="inc/menucommands.tpl" method="index"}
 
+
 {include file="../common_inc/toolbar.tpl"}
 
 
@@ -20,4 +21,6 @@
 	
 
 </div>
+
+
 
