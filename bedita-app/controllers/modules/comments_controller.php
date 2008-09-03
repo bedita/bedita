@@ -73,6 +73,10 @@ class CommentsController extends ModulesController {
 			"delete" =>	array(
 							"OK"	=> "/comments",
 							"ERROR"	=> "/comments/view/{@$this->params['pass'][0]}" 
+							),
+			"changeStatusObjects"	=> 	array(
+							"OK"	=> "/comments",
+							"ERROR"	=> "/comments" 
 							)
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
