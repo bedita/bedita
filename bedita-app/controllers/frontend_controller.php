@@ -291,8 +291,8 @@ abstract class FrontendController extends AppController {
 		}
 		
 		if(!empty($obj["ObjectRelation"])) {
-			$relations = $this->objectRelationArray($obj['ObjectRelation']);
-			$obj['relations'] = $relations;
+			$obj['relations'] = $this->objectRelationArray($obj['ObjectRelation'], $this->status);
+			unset($obj["ObjectRelation"]);
 		}
 
 		if(!empty($obj['gallery_id'])) {
@@ -433,6 +433,7 @@ abstract class FrontendController extends AppController {
 		if(!empty($contentName)) {
 			$content_id = is_numeric($contentName) ? $contentName : $this->BEObject->getIdFromNickname($contentName);
 			$section['content'] = $this->loadObj($content_id);
+			
 			if ($this->showAllContents) {
 				$section['contents'] = $this->loadSectionObjects($sectionId);
 			}
@@ -571,7 +572,6 @@ abstract class FrontendController extends AppController {
 			}
 			$this->data["title"] = substr($this->data["abstract"],0,30) . "...";
 			$this->data["status"] = "on";
-			$this->data["ObjectRelation"][0]["switch"] = "comment";
 			
 			try {
 				// check captcha				

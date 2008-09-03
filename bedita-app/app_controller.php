@@ -419,34 +419,40 @@ class AppController extends Controller
 	 * Reorder content objects relations in array where keys are relation names
 	 *
 	 * @param array $objectArray
+	 * @param array $status, default get all objects
 	 * @return array
 	 */
-	protected function objectRelationArray($objectArray,$langTextExtended=false) {
+	protected function objectRelationArray($objectArray, $status=array()) {
 		$conf  = Configure::getInstance() ;
 		$relationArray = array();
-		foreach ($objectArray as $obj) {
-			$rel = $obj['ContentObject']['switch'];
-			$modelClass = $conf->objectTypeModels[$obj['object_type_id']] ;
-			if(!class_exists($modelClass)){
-				App::import('Model',$modelClass);
-			}
-			if (!class_exists($modelClass)) {
-				throw new BeditaException(__("Object type not found - ", true).$modelClass);			
-			}
-			$this->{$modelClass} = new $modelClass();
-			$this->modelBindings($this->{$modelClass});
-
-			if(!($objDetail = $this->{$modelClass}->findById($obj['id']))) {
-				continue ;
-			}
-			$objDetail['priority'] = $obj['ContentObject']['priority'];
-			
-			if(isset($objDetail['path']))
-				$objDetail['filename'] = substr($objDetail['path'],strripos($objDetail['path'],"/")+1);
-
-			$relationArray[$rel][] = $objDetail;
-		}
 		
+		foreach ($objectArray as $obj) {	
+			
+			if (empty($status) || in_array($obj["status"],$status)) {
+				$rel = $obj['ContentObject']['switch'];
+				$modelClass = $conf->objectTypeModels[$obj['object_type_id']] ;
+				if(!class_exists($modelClass)){
+					App::import('Model',$modelClass);
+				}
+				if (!class_exists($modelClass)) {
+					throw new BeditaException(__("Object type not found - ", true).$modelClass);			
+				}
+				$this->{$modelClass} = new $modelClass();
+				$this->modelBindings($this->{$modelClass});
+	
+				if(!($objDetail = $this->{$modelClass}->findById($obj['id']))) {
+					continue ;
+				}
+				$objDetail['priority'] = $obj['ContentObject']['priority'];
+				
+				if(isset($objDetail['path']))
+					$objDetail['filename'] = substr($objDetail['path'],strripos($objDetail['path'],"/")+1);
+	
+				$relationArray[$rel][] = $objDetail;
+			}
+			
+		}
+
 		return $relationArray;
 	}
 }
@@ -575,6 +581,8 @@ abstract class ModulesController extends AppController {
 			$objectsListDesc = implode(",", $objectsToModify);
 		
 			$this->Transaction->begin() ;
+			$this->BEObject = ClassRegistry::init("BEObject");
+
 			foreach ($objectsToModify as $id) {
 				$this->BEObject->id = $id;
 				if(!$this->BEObject->saveField('status',$this->params['form']["newStatus"]))
