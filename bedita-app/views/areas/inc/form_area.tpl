@@ -48,7 +48,9 @@ $(document).ready(function(){
 <form action="{$html->url('/areas/saveArea')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 
 
+<!--
 <div class="tab"><h2>{t}Publishing detail{/t}</h2></div>
+-->
 
 <fieldset id="properties">	
 

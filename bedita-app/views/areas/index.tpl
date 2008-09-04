@@ -8,9 +8,9 @@
 <!--
 
 /* define urls for ajax calls. Used in module.areas.js */
-ajaxContentsUrl = "{$html->url('/areas/listContentAjax')}";
-ajaxSectionsUrl = "{$html->url('/areas/listSectionAjax')}";
-ajaxSectionObjectUrl = "{$html->url('/areas/loadSectionAjax')}";
+ajaxContentsUrl 		= "{$html->url('/areas/listContentAjax')}";
+ajaxSectionsUrl 		= "{$html->url('/areas/listSectionAjax')}";
+ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 //-->
 
 {if !empty($section)}

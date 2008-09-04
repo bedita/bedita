@@ -228,7 +228,7 @@ class AreasController extends ModulesController {
 	}
 
 	/* AJAX CALLS */
-	
+
 	/**
 	 * load section object
 	 *
@@ -244,8 +244,8 @@ class AreasController extends ModulesController {
 		$this->render(null, null, VIEWS."areas/inc/form_section.tpl");
 		
 	}
-	
-	
+
+
 	/**
 	 * load contents for a section
 	 *
