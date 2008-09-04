@@ -230,6 +230,25 @@ class AreasController extends ModulesController {
 	/* AJAX CALLS */
 
 	/**
+	 * load area object
+	 *
+	 * @param int $id
+	 */
+	public function loadAreaAjax($id) {
+		$this->layout = null;
+		
+		if (!empty($id)) {
+			//da fare  -- dati per la pubblicazione -- area
+			//$this->loadAreaDetails($id);
+			//$this->loadSectionDetails($id);
+		
+		}
+		
+		$this->render(null, null, VIEWS."areas/inc/form_area.tpl");
+		
+	}
+	
+	/**
 	 * load section object
 	 *
 	 * @param int $id
