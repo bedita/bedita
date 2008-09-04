@@ -93,7 +93,7 @@ class BeTreeHelper extends Helper {
 			
 			foreach ($tree as $publication) {
 				$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $publication["id"];
-				$output .= "<div><h2 rel='" . $url . "'>+";
+				$output .= "<div><h2 rel='" . $url . "'>";
 				
 				if (!empty($inputType) && !empty($this->tags[$inputType])) {
 					$checked = (in_array($publication["id"], $parent_ids))? "checked='checked'" : "";

@@ -488,27 +488,60 @@ UL.menuleft {
 }
 
 .publishingtree DIV {
-	margin-left: -20px;
+	margin-top: 10px;
+	margin-left: 0px;
+	/*background-color:red;*/
+	clear:both;
 }
 
 .publishingtree H2 {
-	margin:10px 0px 10px 0px;
-	/* color:#ff6600; */
 	cursor:pointer;
+	padding:4px 0px 3px 0px;
+	/*background-color:gold;*/
 }
+
+.publishingtree H2.on {
+	font-weight:normal;
+	background-color: white;
+}
+
+.publishingtree H2:Hover {
+	color: white;
+}
+
+.publishingtree H2.on:Hover {
+	color: gray;
+}
+
+
+.publishingtree .plusminus {
+	float:left;
+	cursor:pointer;
+	background:transparent url(../img/piumenoBlack.gif) no-repeat;
+	background-position: right 0px ;
+	height:25px;
+	width:25px;
+	margin-top:0px;
+	/*background-color:pink;*/
+}
+
+.publishingtree .plusminus.on {
+	background-position: right -25px !important;
+}
+
 
 .publishingtree *[rel] {
 	cursor:pointer;
 }
 
 .publishingtree UL {
-	margin-left:20px;
+	margin-left:15px;
 	border-left:1px solid #999999;
 }
 
 .publishingtree LI  {
 	border-bottom:1px solid #999999;
-	padding:3px 0px 3px 5px;
+	padding:3px 0px 3px 10px;
 }
 
 .publishingtree LI:Hover {

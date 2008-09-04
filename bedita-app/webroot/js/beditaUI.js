@@ -24,7 +24,6 @@ $(document).ready(function(){
 		}).mouseout(function(){
 
 			$(this).css("background-repeat","repeat-x");
-
 		
 
 		}).click(function () {
@@ -192,15 +191,24 @@ $(document).ready(function(){
 
 	$(".publishingtree DIV UL").hide();
 
+	$(".publishingtree h2").before("<div class='plusminus'></div>");
+
+	
+	$(".publishingtree .plusminus").click(function () {
+			$(this).toggleClass("on").parent("div").find("ul").toggle();
+	});
+
+
 
 	$(".publishingtree h2").click(function () {
-	
-			$(this).parent("div").find("ul").toggle();
-			
+		
 			if ($(this).attr("rel")) {
 				//window.location = $(this).attr("rel");
 			}
-
+			$(this).parent("div").find("ul").toggle();
+			$(this).parent("div").find(".plusminus").toggleClass("on");
+			
+		
 	});
 
 	$(".publishingtree LI").click(function () {
