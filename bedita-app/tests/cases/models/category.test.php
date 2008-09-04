@@ -8,9 +8,9 @@
 
 require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
-class ObjectCategoryTestCase extends BeditaTestCase {
+class CategoryTestCase extends BeditaTestCase {
 
- 	var $uses		= array('BEObject','ObjectCategory') ;
+ 	var $uses		= array('BEObject','Category') ;
     var $dataSource	= 'default' ;	
 
     /////////////////////////////////////////////////
@@ -20,23 +20,23 @@ class ObjectCategoryTestCase extends BeditaTestCase {
  	function testTags() {
 
 		// show orphans
- 		$result = $this->ObjectCategory->getTags(true) ;
+ 		$result = $this->Category->getTags(true) ;
 		pr("Tags with orphans:");
  		pr($result);
  		
- 		$result = $this->ObjectCategory->getTags(false) ;
+ 		$result = $this->Category->getTags(false) ;
 		pr("Tags without orphans:");
  		pr($result);
 
- 	 	$result = $this->ObjectCategory->getTags(true, 'on') ;
+ 	 	$result = $this->Category->getTags(true, 'on') ;
 		pr("Tags with status: on");
  		pr($result);
  		
- 	 	$result = $this->ObjectCategory->getTags(true, array('on', 'off', 'draft')) ;
+ 	 	$result = $this->Category->getTags(true, array('on', 'off', 'draft')) ;
 		pr("Tags with status: on/off/draft");
  		pr($result);
  	
- 	 	$result = $this->ObjectCategory->getTags(true, null, true) ;
+ 	 	$result = $this->Category->getTags(true, null, true) ;
 		pr("Tags with cloud: ");
  		pr($result);
  	
@@ -48,7 +48,7 @@ class ObjectCategoryTestCase extends BeditaTestCase {
 	/////////////////////////////////////////////////
 
 	public   function __construct () {
-		parent::__construct('ObjectCategory', dirname(__FILE__)) ;
+		parent::__construct('Category', dirname(__FILE__)) ;
 	}	
 }
 

@@ -99,25 +99,25 @@ class DeleteObjectBehavior extends ModelBehavior {
 	 */
 	private function delRelatedObjects($relations, $object_id) {
 
-		$cb = ClassRegistry::init('Content') ;
+		$o = ClassRegistry::init('BEObject') ;
 		
-		$res = $cb->find("first", array(
-									"restrict" => array("ObjectRelation"),
-									"conditions" => array("`Content`.id" => $object_id)
+		$res = $o->find("first", array(
+									"restrict" => array("RelatedObject"),
+									"conditions" => array("`BEObject`.id" => $object_id)
 									)
 							);
-		if (!empty($res["ObjectRelation"])) {
+		if (!empty($res["RelatedObject"])) {
 			
 			$conf = Configure::getInstance();
-			foreach ($res["ObjectRelation"] as $obj) {
+			foreach ($res["RelatedObject"] as $obj) {
 				
-				if (in_array($obj["ContentsObject"]["switch"],$relations)) {
+				if (in_array($obj["ObjectRelation"]["switch"],$relations)) {
 					$modelClass = $conf->objectTypeModels[$obj["object_type_id"]];
 
 					$model = ClassRegistry::init($modelClass);
 				
 					if (!$model->del($obj["id"])) 
-						throw new BeditaException(__("Error deleting related object ", true), "id: ". $obj["id"] . ", switch: " . $obj["ContentsObject"]["switch"]);
+						throw new BeditaException(__("Error deleting related object ", true), "id: ". $obj["id"] . ", switch: " . $obj["ObjectRelation"]["switch"]);
 				}
 				
 			}

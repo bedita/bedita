@@ -1,10 +1,10 @@
 {foreach from=$objsRelated item="objRelated" name="assocForeach"}
 <tr class="obj {$objRelated.status|default:''}">
 	<td style="padding:0px; width:20px;">
-		<input type="hidden" class="id" 	name="data[ObjectRelation][{$rel}][{$objRelated.id|default:""}][id]" value="{$objRelated.id|default:''}" />
+		<input type="hidden" class="id" 	name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][id]" value="{$objRelated.id|default:''}" />
 		<input type="text" class="priority" 
 				style="margin:0px; width:20px; text-align:right; background-color:transparent"
-				name="data[ObjectRelation][{$rel}][{$objRelated.id|default:""}][priority]" 
+				name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][priority]" 
 				value="{$objRelated.priority|default:''}" size="3" maxlength="3"/>
 	</td>
 	

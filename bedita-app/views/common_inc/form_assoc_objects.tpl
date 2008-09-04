@@ -76,7 +76,7 @@ $(document).ready(function() {
 	<div class="htabcontainer" id="relationContainer">
 	{foreach from=$conf->objRelationType item="rel"}
 	<div class="htabcontent" id="relationType_{$rel}">
-		<input type="hidden" class="relationTypeHidden" name="data[ObjectRelation][{$rel}][0][switch]" value="{$rel}" />				
+		<input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$rel}][0][switch]" value="{$rel}" />				
 		
 		<table class="indexlist" style="width:100%; margin-bottom:10px;">
 			<tbody>
@@ -90,7 +90,7 @@ $(document).ready(function() {
 		
 		
 		<input type="button" class="modalbutton" 
-		rel="{$html->url('/areas/showObjects/')}{$object.id}/{$rel}" style="width:200px" 
+		rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/{$rel}" style="width:200px" 
 		value="  {t}connect new items{/t}  " />
 		
 		{*

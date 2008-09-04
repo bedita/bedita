@@ -50,7 +50,7 @@ $(document).ready(function() {
 
 <fieldset id="links">
 	
-	<input type="hidden" name="data[ObjectRelation][link][0][switch]" value="link" />
+	<input type="hidden" name="data[RelatedObject][link][0][switch]" value="link" />
 
 
 	<ul id="listExistingLinks">

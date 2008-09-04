@@ -22,13 +22,13 @@ DROP TABLE IF EXISTS `date_items`;
 DROP TABLE IF EXISTS `events`;
 DROP TABLE IF EXISTS `object_users`;
 DROP TABLE IF EXISTS `bibliographies`;
-DROP TABLE IF EXISTS `content_objects`;
-DROP TABLE IF EXISTS `content_object_categories`;
+DROP TABLE IF EXISTS `object_relations`;
+DROP TABLE IF EXISTS `object_categories`;
 DROP TABLE IF EXISTS `contents`;
 DROP TABLE IF EXISTS `authors`;
 DROP TABLE IF EXISTS `images`;
 DROP TABLE IF EXISTS `files`;
-DROP TABLE IF EXISTS `object_categories`;
+DROP TABLE IF EXISTS `categories`;
 DROP TABLE IF EXISTS `answers`;
 DROP TABLE IF EXISTS `faq_questions`;
 DROP TABLE IF EXISTS `audio_videos`;
@@ -438,7 +438,7 @@ CREATE TABLE answers (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE object_categories (
+CREATE TABLE categories (
   `id` int(10) unsigned NOT NULL auto_increment,
   `area_id` int(10) unsigned default NULL,
   `label` varchar(255) NOT NULL,
@@ -487,16 +487,16 @@ CREATE TABLE authors (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE content_objects (
+CREATE TABLE object_relations (
   object_id INTEGER UNSIGNED NOT NULL,
   id INTEGER UNSIGNED NOT NULL,
   switch varchar(63) NOT NULL default 'attach',
   priority int(11) default NULL,
   PRIMARY KEY  (`object_id`,`id`,`switch`),
-  INDEX `contents_has_objects_FKIndex1` (`id`),
-  INDEX `contents_has_objects_FKIndex2` (`object_id`),
+  INDEX `related_objects_FKIndex1` (`id`),
+  INDEX `related_objects_FKIndex2` (`object_id`),
   FOREIGN KEY(id)
-    REFERENCES contents(id)
+    REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
   FOREIGN KEY(object_id)
@@ -505,18 +505,18 @@ CREATE TABLE content_objects (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE content_object_categories (
-  content_id INTEGER UNSIGNED NOT NULL,
-  object_category_id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(content_id, object_category_id),
-  INDEX contents_has_object_caegories_FKIndex1(content_id),
-  INDEX contents_has_object_caegories_FKIndex2(object_category_id),
-  FOREIGN KEY(content_id)
-    REFERENCES contents(id)
+CREATE TABLE object_categories (
+  object_id INTEGER UNSIGNED NOT NULL,
+  category_id INTEGER UNSIGNED NOT NULL,
+  PRIMARY KEY(object_id, category_id),
+  INDEX objects_has_categories_FKIndex1(object_id),
+  INDEX objects_has_categories_FKIndex2(category_id),
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY(object_category_id)
-    REFERENCES object_categories(id)
+  FOREIGN KEY(category_id)
+    REFERENCES categories(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;

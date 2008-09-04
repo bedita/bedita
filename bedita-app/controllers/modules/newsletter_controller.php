@@ -20,7 +20,7 @@ class NewsletterController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
-	var $uses = array('BEObject','Tree', 'ObjectCategory') ;
+	var $uses = array('BEObject','Tree', 'Category') ;
 	protected $moduleName = 'newsletter';
 	
     public function index() {

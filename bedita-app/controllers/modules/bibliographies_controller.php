@@ -20,7 +20,7 @@ class BibliographiesController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
-	var $uses = array('BEObject', 'Bibliography', 'Tree', 'ObjectCategory') ;
+	var $uses = array('BEObject', 'Bibliography', 'Tree', 'Category') ;
 	protected $moduleName = 'bibliographies';
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -62,7 +62,7 @@ class BibliographiesController extends ModulesController {
 			if(!($obj = $this->Bibliography->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading document: %d", true), $id));
 			}
-			$relations = $this->objectRelationArray($obj['ObjectRelation']);
+			$relations = $this->objectRelationArray($obj['RelatedObject']);
 		}
 		if(isset($obj["LangText"])) {
 			$this->BeLangText->setupForView($obj["LangText"]) ;
@@ -107,7 +107,7 @@ class BibliographiesController extends ModulesController {
 		
 		$this->Transaction->begin() ;
 		// Save data
-		$this->data["ObjectCategory"] = $this->ObjectCategory->saveTagList($this->params["form"]["tags"]);
+		$this->data["Category"] = $this->Category->saveTagList($this->params["form"]["tags"]);
 		if(!$this->Bibliography->save($this->data)) {
 			throw new BeditaException(__("Error saving bibliography", true), $this->Bibliography->validationErrors);
 		}

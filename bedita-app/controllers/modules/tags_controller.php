@@ -21,12 +21,12 @@ class TagsController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission');
-	var $uses = array('ObjectCategory') ;
+	var $uses = array('Category') ;
 	
 	protected $moduleName = 'tags';
 
 	public function index($order = "label", $dir = 1) {
-		$data = $this->ObjectCategory->getTags(true, null, true, 12, $order, $dir);
+		$data = $this->Category->getTags(true, null, true, 12, $order, $dir);
 		$this->set("numTags", count($data));
 		$this->set('tags', $data);
 		$this->set("order", $order);
@@ -38,12 +38,12 @@ class TagsController extends ModulesController {
 		$referenced = array();
 		
 		if(isset($id)) {
-			$tag = $this->ObjectCategory->findById($id);
+			$tag = $this->Category->findById($id);
 			if($tag == null || $tag === false) {
 				throw new BeditaException(__("Error loading tag: ", true).$id);
 			}
 			
-			$referenced = $this->ObjectCategory->getContentsByTag($tag["label"]);
+			$referenced = $this->Category->getContentsByTag($tag["label"]);
 			$tag["weight"] = count($referenced);
 		}
 		
@@ -59,8 +59,8 @@ class TagsController extends ModulesController {
 		$new = (empty($this->data['id'])) ? true : false ;
 		// format custom properties
 		$this->Transaction->begin() ;
-		if(!$this->ObjectCategory->save($this->data)) {
-			throw new BeditaException(__("Error saving tag", true), $this->ObjectCategory->validationErrors);
+		if(!$this->Category->save($this->data)) {
+			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
 		}
 		$this->Transaction->commit();
 		$this->userInfoMessage(__("Tag saved", true)." - ".$this->data["label"]);
@@ -75,7 +75,7 @@ class TagsController extends ModulesController {
 			
 		$this->Transaction->begin();
 		foreach ($this->params["form"]["tags_selected"] as $id) {
-			$this->ObjectCategory->del($id); 
+			$this->Category->del($id); 
 		}
 		$this->Transaction->commit();
 		
@@ -87,7 +87,7 @@ class TagsController extends ModulesController {
 
 	public function listAllTags() {
 		$this->layout = "empty";
-		$this->set("listTags",$this->ObjectCategory->getTags(true, null, true));
+		$this->set("listTags",$this->Category->getTags(true, null, true));
 	}
 	
 	/**
@@ -101,7 +101,7 @@ class TagsController extends ModulesController {
 			throw new BeditaException( __("No tag in text area", true));
 			
 		$this->Transaction->begin();
-		$tag_ids = $this->ObjectCategory->saveTagList($this->params["form"]["addtaglist"]);
+		$tag_ids = $this->Category->saveTagList($this->params["form"]["addtaglist"]);
 		$this->Transaction->commit();
 		$listTagIds = implode(",", $tag_ids);
 		$this->userInfoMessage(__("Tags saved", true)." - " . $listTagIds);
@@ -117,8 +117,8 @@ class TagsController extends ModulesController {
 			
 		$this->Transaction->begin();
 		foreach ($this->params["form"]["tags_selected"] as $id) {
-			$this->ObjectCategory->id = $id;
-			$this->ObjectCategory->saveField("status", $this->params["form"]["newStatus"]); 
+			$this->Category->id = $id;
+			$this->Category->saveField("status", $this->params["form"]["newStatus"]); 
 		}
 		$this->Transaction->commit();
 	}
@@ -126,8 +126,8 @@ class TagsController extends ModulesController {
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"save"	=> 	array(
-								"OK"	=> "/tags/view/{$this->ObjectCategory->id}",
-								"ERROR"	=> "/tags/view/{$this->ObjectCategory->id}" 
+								"OK"	=> "/tags/view/{$this->Category->id}",
+								"ERROR"	=> "/tags/view/{$this->Category->id}" 
 						), 
 			"delete" =>	array(
 								"OK"	=> "/tags",

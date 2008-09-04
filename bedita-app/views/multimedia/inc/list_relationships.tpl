@@ -1,18 +1,19 @@
 
-
 <div class="tab"><h2>{t}Embedded in{/t}</h2></div>
 <fieldset id="relationships">
-	
-	<ul class="bordered">
-		<li><span title="document" class="listrecent document">&nbsp;</span>
-		Io sono il documento n cui l'imamgine è embeddata</li>
+	{if !empty($object.relations.attach)}
+		{foreach from=$object.relations.attach item="o"}
+		<ul class="bordered">
+		
+			<li><span title="{$o.ObjectType.name}" class="listrecent {$o.ObjectType.module}">&nbsp;</span>
+			<a href="{$html->url('/')}{$o.ObjectType.module}/view/{$o.id}">{$o.title}</a></li>
+		
+		</ul>
+		{/foreach}
 
-		<li><span title="gallery" class="listrecent gallery">&nbsp;</span>
-		Io sono la galleria n cui l'imamgine è embeddata</li>	
-
-		<li><span title="event" class="listrecent event">&nbsp;</span>
-		Io sono la notizia n cui l'imamgine è embeddata</li>	
-	</ul>
+	{else}
+		{t}Embedded in no objects{/t}
+	{/if}
 
 
 </fieldset>

@@ -5,7 +5,7 @@
  * 
  */
 
-class ObjectCategoryTestData extends BeditaTestData {
+class CategoryTestData extends BeditaTestData {
 	var $data =  array(
 	);
 }

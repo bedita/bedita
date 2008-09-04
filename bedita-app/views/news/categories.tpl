@@ -14,7 +14,7 @@
 
 </div>
 
-{include file="inc/menucommands.tpl" method="categories"}
+{include file="inc/menucommands.tpl" method="index"}
 
 
 <div class="main">

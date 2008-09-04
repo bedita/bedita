@@ -26,7 +26,7 @@ class MultimediaController extends ModulesController {
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
 	// This controller does not use a model
-	var $uses = array('Stream', 'Image', 'Audio', 'Video', 'BEObject', 'Tree', 'User', 'Group','ObjectCategory') ;
+	var $uses = array('Stream', 'Image', 'Audio', 'Video', 'BEObject', 'Tree', 'User', 'Group','Category') ;
 	protected $moduleName = 'multimedia';
 	
 	 /**
@@ -80,21 +80,26 @@ class MultimediaController extends ModulesController {
 									"BEObject" => array("ObjectType",
 														"Permissions",
 														"UserCreated", 
-														"UserModified"),
-									"Content" => array("*"),
-									"Stream"
+														"UserModified",
+														"RelatedObject"),
+									"Content", "Stream"
 									)
 								);
 			if(!($obj = $this->{$model}->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
 			}
-			if (isset($obj["ObjectCategory"])) {
+			if (isset($obj["Category"])) {
 				$objCat = array();
-				foreach ($obj["ObjectCategory"] as $oc) {
+				foreach ($obj["Category"] as $oc) {
 					$objCat[] = $oc["id"];
 				}
-				$obj["ObjectCategory"] = $objCat;
+				$obj["Category"] = $objCat;
 			}
+			
+			if (!empty($obj['RelatedObject'])) {
+				$obj["relations"] = $this->objectRelationArray($obj['RelatedObject']);
+			}
+			
 			$imagePath 	= $this->BeFileHandler->path($id) ;
 			$imageURL 	= $this->BeFileHandler->url($id) ;
 		}
@@ -121,7 +126,7 @@ class MultimediaController extends ModulesController {
 		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
 		$this->Transaction->begin() ;
 		// save data
-		$this->data["ObjectCategory"] = $this->ObjectCategory->saveTagList($this->params["form"]["tags"]);
+		$this->data["Category"] = $this->Category->saveTagList($this->params["form"]["tags"]);
 		if(!$this->Stream->save($this->data)) {
 			throw new BeditaException(__("Error saving multimedia object", true),$this->Stream->validationErrors);
 		}

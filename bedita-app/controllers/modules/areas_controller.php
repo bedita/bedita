@@ -285,7 +285,7 @@ class AreasController extends ModulesController {
 	 * @param string $relation, relation type								
 	 * 
 	 **/
-	public function showObjects($main_object_id, $relation) {
+	public function showObjects($main_object_id=null, $relation) {
 		
 		$id = (!empty($this->params["form"]["parent_id"]))? $this->params["form"]["parent_id"] : null;
 		$filter = (!empty($this->params["form"]["objectType"]))? array($this->params["form"]["objectType"]) : Configure::read("objectTypes.related");

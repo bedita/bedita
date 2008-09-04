@@ -147,12 +147,12 @@ class StreamsController extends AppController {
 		if (!$collection) {
 			$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
 			$objRel = $modelLoaded->find("first",array(
-													"restrict" => array("Content" => "ObjectRelation"),
-													"conditions" => "Content.id=".$obj_id
+													"restrict" => array("BEObject" => "RelatedObject"),
+													"conditions" => "BEObject.id=".$obj_id
 												)
 											);
-			if (!empty($objRel["ObjectRelation"])) {
-				foreach ($objRel["ObjectRelation"] as $rel) {
+			if (!empty($objRel["RelatedObject"])) {
+				foreach ($objRel["RelatedObject"] as $rel) {
 					$relations_id[] = $rel["id"];
 				}
 			}

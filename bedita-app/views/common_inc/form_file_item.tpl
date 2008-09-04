@@ -13,8 +13,8 @@
 
 {strip}
 
-	<input type="hidden" name="data[ObjectRelation][{$relation}][{$item.id}][id]" value="{$item.id}" />
-	<input type="hidden" name="data[ObjectRelation][{$relation}][{$item.id}][modified]" value="0" />
+	<input type="hidden" name="data[RelatedObject][{$relation}][{$item.id}][id]" value="{$item.id}" />
+	<input type="hidden" name="data[RelatedObject][{$relation}][{$item.id}][modified]" value="0" />
 	
 	<div style="width:{$thumbWidth}px; height:{$thumbHeight}px" class="imagebox">
 	{if strtolower($item.ObjectType.name) == "image"}
@@ -42,16 +42,16 @@
 
 	
 	<label class="evidence">
-		<input type="text" class="priority" name="data[ObjectRelation][{$relation}][{$item.id}][priority]" value="{$item.priority|default:$priority}" size="3" maxlength="3"/>
+		<input type="text" class="priority" name="data[RelatedObject][{$relation}][{$item.id}][priority]" value="{$item.priority|default:$priority}" size="3" maxlength="3"/>
 	</label>
 
 
 	<ul class="info_file_item">
 		<li>
-			<input class="info_file_item" style="border:0px;" type="text" value="{$item.title|escape:'htmlall'|default:""}" name="data[ObjectRelation][{$relation}][{$item.id}][title]" />
+			<input class="info_file_item" style="border:0px;" type="text" value="{$item.title|escape:'htmlall'|default:""}" name="data[RelatedObject][{$relation}][{$item.id}][title]" />
 		</li>
 		<li>
-			<textarea class="info_file_item" style="border:0px; border-bottom:1px solid silver;" name="data[ObjectRelation][{$relation}][{$item.id}][description]">{$item.description|default:""}</textarea>
+			<textarea class="info_file_item" style="border:0px; border-bottom:1px solid silver;" name="data[RelatedObject][{$relation}][{$item.id}][description]">{$item.description|default:""}</textarea>
 			<br />
 			<a rel="{$linkUrl} #multimediaitem" class="modalbutton">details</p>
 			

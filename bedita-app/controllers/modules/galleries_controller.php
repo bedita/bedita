@@ -50,7 +50,7 @@ class GalleriesController extends ModulesController {
 		// Data to save
 		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]);
 		
-		$multimedia = (isset($this->data['ObjectRelation']))? $this->data['ObjectRelation'] : array() ;
+		$multimedia = (isset($this->data['RelatedObject']))? $this->data['RelatedObject'] : array() ;
 		unset($this->data['multimedia']);
 	
 		$this->Transaction->begin();

@@ -21,7 +21,7 @@ class EventsController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
-	var $uses = array('BEObject','Event','ObjectCategory','Area','Tree') ;
+	var $uses = array('BEObject','Event','Category','Area','Tree') ;
 	protected $moduleName = 'events';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -42,17 +42,18 @@ class EventsController extends ModulesController {
 															"UserModified", 
 															"Permissions",
 															"CustomProperties",
-															"LangText"
+															"LangText",
+															"RelatedObject",
+															"Category"
 															),
-										"Content" => array("*"),
-										"DateItem"
+										"Content", "DateItem"
 										)
 									);
 			if(!($obj = $this->Event->findById($id))) {
 				 throw new BeditaException(__("Error loading event: ", true).$id);
 			}
 						
-			$relations = $this->objectRelationArray($obj['ObjectRelation']);
+			$relations = $this->objectRelationArray($obj['RelatedObject']);
 			
 			// build array of id's categories associated to event
 			$obj["assocCategory"] = array();
@@ -76,7 +77,7 @@ class EventsController extends ModulesController {
 		$tree = $this->BeTree->getSectionsTree() ;
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);
-		$areaCategory = $this->ObjectCategory->getCategoriesByArea($ot['event']);
+		$areaCategory = $this->Category->getCategoriesByArea($ot['event']);
 		$this->set("areaCategory", $areaCategory);
 		$this->Area->displayField = 'public_name';
 		$this->set("areasList", $this->Area->find('list', array("order" => "public_name")));
@@ -100,12 +101,12 @@ class EventsController extends ModulesController {
 	 	// format custom properties
 	 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
 	 	
-	 	$tags = $this->ObjectCategory->saveTagList($this->params["form"]["tags"]);
+	 	$tags = $this->Category->saveTagList($this->params["form"]["tags"]);
 	 	
 	 	// if no Category is checked set an empty array to delete association between events and category
-	 	if (!isset($this->data["ObjectCategory"])) $this->data["ObjectCategory"] = array();
+	 	if (!isset($this->data["Category"])) $this->data["Category"] = array();
 	 	
-	 	$this->data["ObjectCategory"] = array_merge($this->data["ObjectCategory"], $tags);
+	 	$this->data["Category"] = array_merge($this->data["Category"], $tags);
 	 	
 		$this->Transaction->begin() ;
 		
@@ -140,7 +141,7 @@ class EventsController extends ModulesController {
 	public function categories() {
 		$conf  = Configure::getInstance() ;
 		$type = $conf->objectTypes['event'];
-		$this->set("categories", $this->ObjectCategory->findAll("ObjectCategory.object_type_id=".$type));
+		$this->set("categories", $this->Category->findAll("Category.object_type_id=".$type));
 		$this->set("object_type_id", $type);
 		$this->Area->displayField = 'public_name';
 		$this->set("areasList", $this->Area->find('list', array("order" => "public_name")));
@@ -151,8 +152,8 @@ class EventsController extends ModulesController {
 		if(empty($this->data["label"])) 
  	 	    throw new BeditaException( __("No data", true));
 		$this->Transaction->begin() ;
-		if(!$this->ObjectCategory->save($this->data)) {
-			throw new BeditaException(__("Error saving tag", true), $this->ObjectCategory->validationErrors);
+		if(!$this->Category->save($this->data)) {
+			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
 		}
 		$this->Transaction->commit();
 		$this->userInfoMessage(__("Category saved", true)." - ".$this->data["label"]);
@@ -164,8 +165,8 @@ class EventsController extends ModulesController {
 		if(empty($this->data["id"])) 
  	 	    throw new BeditaException( __("No data", true));
  	 	$this->Transaction->begin() ;
-		if(!$this->ObjectCategory->del($this->data["id"])) {
-			throw new BeditaException(__("Error saving tag", true), $this->ObjectCategory->validationErrors);
+		if(!$this->Category->del($this->data["id"])) {
+			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
 		}
 		$this->Transaction->commit();
 		$this->userInfoMessage(__("Category deleted", true) . " -  " . $this->data["label"]);

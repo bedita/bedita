@@ -20,7 +20,7 @@ class DocumentsController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
-	var $uses = array('BEObject', 'Document', 'Tree', 'ObjectCategory') ;
+	var $uses = array('BEObject', 'Document', 'Tree', 'Category') ;
 	protected $moduleName = 'documents';
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
@@ -54,15 +54,18 @@ class DocumentsController extends ModulesController {
 															"UserModified", 
 															"Permissions",
 															"CustomProperties",
-															"LangText"
+															"LangText",
+															"RelatedObject",
+															"Category"
 															),
-										"Content" => array("*")
+										"Content"
 										)
 									);
 			if(!($obj = $this->Document->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading document: %d", true), $id));
 			}
-			$relations = $this->objectRelationArray($obj['ObjectRelation']);
+			
+			$relations = $this->objectRelationArray($obj['RelatedObject']);
 		}
 		
 		$tree = $this->BeTree->getSectionsTree() ;
@@ -105,7 +108,7 @@ class DocumentsController extends ModulesController {
 		
 		$this->Transaction->begin() ;
 		// Save data
-		$this->data["ObjectCategory"] = $this->ObjectCategory->saveTagList($this->params["form"]["tags"]);
+		$this->data["Category"] = $this->Category->saveTagList($this->params["form"]["tags"]);
 		if(!$this->Document->save($this->data)) {
 			throw new BeditaException(__("Error saving document", true), $this->Document->validationErrors);
 		}

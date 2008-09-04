@@ -20,7 +20,7 @@ class AddressbookController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
-	var $uses = array('BEObject','Tree', 'ObjectCategory') ;
+	var $uses = array('BEObject','Tree', 'Category') ;
 	protected $moduleName = 'addressbook';
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {

@@ -290,9 +290,9 @@ abstract class FrontendController extends AppController {
 			$this->BeLangText->objectForLang($obj_id, $this->currLang, $obj);
 		}
 		
-		if(!empty($obj["ObjectRelation"])) {
-			$obj['relations'] = $this->objectRelationArray($obj['ObjectRelation'], $this->status);
-			unset($obj["ObjectRelation"]);
+		if(!empty($obj["RelatedObject"])) {
+			$obj['relations'] = $this->objectRelationArray($obj['RelatedObject'], $this->status);
+			unset($obj["RelatedObject"]);
 		}
 
 		if(!empty($obj['gallery_id'])) {
@@ -527,8 +527,8 @@ abstract class FrontendController extends AppController {
 	 */
 	public function loadTags($tplVar=null) {
 		$tplVar = (empty($tplVar))? "listTags" : $tplVar;
-		$objectCategory = ClassRegistry::init("ObjectCategory");
-		$this->set($tplVar, $objectCategory->getTags(false, $this->status));
+		$category = ClassRegistry::init("Category");
+		$this->set($tplVar, $category->getTags(false, $this->status));
 	}
 	
 	/**
@@ -538,10 +538,10 @@ abstract class FrontendController extends AppController {
 	 * @return array
 	 */
 	protected function loadContentsByTag($tag) {
-		$objectCategory = ClassRegistry::init("ObjectCategory");
+		$category = ClassRegistry::init("Category");
 		// remove '+' from $tag, if coming from url
 		$tag = str_replace("+", " ", $tag);
-		$contents = $objectCategory->getContentsByTag($tag);
+		$contents = $category->getContentsByTag($tag);
 		$result = array();
 		foreach ($contents as $c) {
 			$object = $this->loadObj($c["id"]);

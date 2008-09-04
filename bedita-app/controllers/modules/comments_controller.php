@@ -20,14 +20,14 @@ class CommentsController extends ModulesController {
 		$relations = array();
 		if($id) {
 			$this->Comment->restrict(array(
-										"BEObject",
-										"Content" => array("ObjectRelation")
+										"BEObject" => array("RelatedObject"),
+										"Content"
 										)
 									);
 			if(!($obj = $this->Comment->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading comment: %d", true), $id));
 			}
-			$relations = $this->objectRelationArray($obj['ObjectRelation']);
+			$relations = $this->objectRelationArray($obj['RelatedObject']);
 		}
 
 		$this->set('object',	$obj);
