@@ -11,7 +11,8 @@ var $methodsQueries = array(
 			AND ob.object_type_id=22",
 	"shortNews" => "select ob.*, cb.*, s.* from objects ob, content_bases cb, short_news s 
 			where cb.id=ob.id AND s.id=ob.id AND ob.object_type_id=18",
-	"contentObjects" => "select cbo.* from content_bases_objects cbo",
+	"objectRelations" => "select cbo.* from content_bases_objects cbo",
+	"categories" => "select oc.* from object_categories oc",
 	"contentObjectCategories" => "select cboc.* from content_bases_object_categories cboc",
 	"areas" => "select ob.*, co.*, a.* from objects ob, collections co, areas a 
 			where co.id=ob.id AND a.id=ob.id AND ob.object_type_id=1",
@@ -46,9 +47,13 @@ var $methodsQueries = array(
 	}
 
 	protected function areas($r) {
-			$this->write($this->createInsert($r['ob'], "objects"));
-			$this->write($this->createInsert($r['co'], "collections"));
-			$this->write($this->createInsert($r['a'], "areas"));
+		$r['ob']['creator'] = $r['a']['creator'];
+		$r['ob']['publisher'] = $r['a']['publisher'];
+		$this->write($this->createInsert($r['ob'], "objects"));
+		$this->write($this->createInsert($r['co'], "collections"));
+		unset($r['a']['creator']);
+		unset($r['a']['publisher']);
+		$this->write($this->createInsert($r['a'], "areas"));
 	}
 
 	protected function sections($r) {
@@ -70,14 +75,20 @@ var $methodsQueries = array(
 			$this->write($this->createInsert($r['v'], "videos"));
 	}
 	
-	protected function contentObjects($r) {
-			$this->write($this->createInsert($r['cbo'], "content_objects"));
+	protected function objectRelations($r) {
+			$this->write($this->createInsert($r['cbo'], "object_relations"));
+	}
+	
+	protected function categories($r) {
+			$this->write($this->createInsert($r['oc'], "categories"));
 	}
 	
 	protected function contentObjectCategories($r) {
-		$r['cboc']['content_id'] = $r['cboc']['content_base_id'];
+		$r['cboc']['object_id'] = $r['cboc']['content_base_id'];
 		unset($r['cboc']['content_base_id']);
-		$this->write($this->createInsert($r['cboc'], "content_object_categories"));
+		$r['cboc']['category_id'] = $r['cboc']['object_category_id'];
+		unset($r['cboc']['object_category_id']);
+		$this->write($this->createInsert($r['cboc'], "object_categories"));
 	}
 	
 };
