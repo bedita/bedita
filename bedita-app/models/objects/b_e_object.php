@@ -88,6 +88,26 @@ class BEObject extends BEAppModel
 				'dependent'		=> true
 			),
 	);
+	
+	var $hasAndBelongsToMany = array(
+		'RelatedObject' =>
+			array(
+				'className'				=> 'BEObject',
+				'joinTable'    			=> 'object_relations',
+				'foreignKey'   			=> 'id',
+				'associationForeignKey'	=> 'object_id',
+				'unique'				=> true,
+				'order'					=> 'priority'
+			),
+		'Category' =>
+			array(
+				'className'				=> 'Category',
+				'joinTable'    			=> 'object_categories',
+				'foreignKey'   			=> 'object_id',
+				'associationForeignKey'	=> 'category_id',
+				'unique'				=> true
+			)
+	);	
 
 	/**
 	 * Formatta i dati specifici dopo la ricerca
@@ -131,6 +151,24 @@ class BEObject extends BEAppModel
 			$result['LangText'] = $langText;
 		}
 		
+		// divide tags from categories
+		if (!empty($result["Category"])) {
+			
+			$tag = array();
+			$category = array();
+			
+			foreach ($result["Category"] as $ot) {
+				if (!empty($ot["object_type_id"])) {
+					$category[] = $ot;
+				} else {
+					$tag[] = $ot;
+				}
+			}
+			
+			$result["Category"] = $category;
+			$result["Tag"] = $tag;
+		}
+		
 		return $result ;
 	}
 
@@ -152,6 +190,11 @@ class BEObject extends BEAppModel
 		  }
 		}
 		$this->unbindModel(array("hasMany"=>array("LangText")));
+
+		// unbind relations type. Save it in aftersave
+		$this->restoreRelatedObject = $this->hasAndBelongsToMany['RelatedObject'];
+		$this->unbindModel( array('hasAndBelongsToMany' => array('RelatedObject')) );
+		
 		return true ;
 	}
 	
@@ -159,6 +202,7 @@ class BEObject extends BEAppModel
 	 * Salva i dati delle associazioni tipo hasMany
 	 */
 	function afterSave() {
+		
 		// Scorre le associazioni hasMany
 		foreach ($this->hasMany as $name => $assoc) {
 			// Non gestisce i permessi
@@ -196,20 +240,103 @@ class BEObject extends BEAppModel
 		if(isset($this->data["Permissions"])) $permissions = $this->data["Permissions"] ;
 		else if(isset($this->data[$this->name]["Permissions"])) $permissions = $this->data[$this->name]["Permissions"] ;
 		
-		if(!$permissions) return true ;
+		if($permissions) {
 		
-		if(!class_exists('Permission')) {
-			loadModel('Permission') ;
+			if(!class_exists('Permission')) {
+				loadModel('Permission') ;
+			}
+			$Permission = new Permission() ;		
+			// Aggiunge
+			$this->_array2perms($permissions, $formatedPerms) ;
+			for($i=0; $i < count($formatedPerms) ; $i++) {
+				$item = &$formatedPerms[$i] ;
+					
+				if($Permission->replace($this->{$this->primaryKey}, $item['name'], $item['switch'], $item['flag']) === false) {
+					return false ;
+				}				
+			}
 		}
-		$Permission = new Permission() ;		
-		// Aggiunge
-		$this->_array2perms($permissions, $formatedPerms) ;
-		for($i=0; $i < count($formatedPerms) ; $i++) {
-			$item = &$formatedPerms[$i] ;
+		
+		
+		// save realtions between objects
+		if (!empty($this->data['RelatedObject'])) {
+			
+			$this->bindModel( array(
+				'hasAndBelongsToMany' => array(
+						'RelatedObject' => $this->restoreRelatedObject
+							)
+				) 
+			);
+			$db 		= &ConnectionManager::getDataSource($this->useDbConfig);
+			$queriesDelete 	= array() ;
+			$queriesInsert 	= array() ;
+			$queriesModified 	= array() ;
+			$lang			= (isset($this->data['BEObject']['lang'])) ? $this->data['BEObject']['lang']: null ;
+			
+			// set one-way relation
+			$oneWayRelation = array_merge( Configure::read("defaultOneWayRelation"), Configure::read("cfgOneWayRelation") );
+			
+			$assoc 	= $this->hasAndBelongsToMany['RelatedObject'] ;
+			$table 	= $db->name($db->fullTableName($assoc['joinTable']));
+			$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch, priority"  ;
+
+			foreach ($this->data['RelatedObject']['RelatedObject'] as $switch => $values) {
 				
-			if($Permission->replace($this->{$this->primaryKey}, $item['name'], $item['switch'], $item['flag']) === false) {
-				return false ;
-			}				
+				foreach($values as $key => $val) {
+					$obj_id		= isset($val['id'])? $val['id'] : false;
+					$priority	= isset($val['priority']) ? "'{$val['priority']}'" : 'NULL' ;
+					
+					// Delete old associations
+					$queriesDelete[$switch] = "DELETE FROM {$table} 
+											   WHERE ({$assoc['foreignKey']} = '{$this->id}' OR {$assoc['associationForeignKey']} = '{$this->id}')  
+											   AND switch = '{$switch}' ";
+					if (!empty($obj_id)) {
+						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
+						
+						if(!in_array($switch,$oneWayRelation)) {
+							// find priority of inverse relation
+							$inverseRel = $this->query("SELECT priority 
+														  FROM {$table} 
+														  WHERE id={$obj_id} 
+														  AND object_id={$this->id} 
+														  AND switch='{$switch}'");
+							
+							if (empty($inverseRel[0]["content_objects"]["priority"])) {
+								$inverseRel = $this->query("SELECT MAX(priority)+1 AS priority FROM {$table} WHERE id={$obj_id} AND switch='{$switch}'");
+								$inversePriority = (empty($inverseRel[0][0]["priority"]))? 1 : $inverseRel[0][0]["priority"];
+							} else {
+								$inversePriority = $inverseRel[0]["content_objects"]["priority"];
+							}						
+							$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$switch}', ". $inversePriority  .")" ;
+						}
+						
+						/**
+						 * Proposta x salvare le modifiche a title e description di oggetto relazionato se ci sono i dati sufficenti. (giangi) 
+						 */
+						$modified = (isset($val['modified']))? ((boolean)$val['modified']) : false;
+						if($modified && $obj_id) {
+							$title 		= isset($val['title']) ? addslashes($val['title']) : "" ;
+							$description 	= isset($val['description']) ? addslashes($val['description']) : "" ;
+							
+							$queriesModified[] = "UPDATE objects  SET title = '{$title}', description = '{$description}' WHERE id = {$obj_id} " ;
+							
+						}
+					}
+				}
+			}
+			
+			foreach ($queriesDelete as $qDel) {
+				if ($db->query($qDel) === false)
+					throw new BeditaException(__("Error deleting associations", true), $qDel);
+			}
+			foreach ($queriesInsert as $qIns) {
+				if ($db->query($qIns)  === false)
+					throw new BeditaException(__("Error inserting associations", true), $qIns);
+			}
+			foreach ($queriesModified as $qMod) {
+				if ($db->query($qMod)  === false)
+					throw new BeditaException(__("Error modifing title and description", true), $qMod);
+			}
 		}
 		
 		return true ;
@@ -320,7 +447,7 @@ class BEObject extends BEAppModel
 		$limit 	= $this->getLimitClausole($page, $dim) ;
 		$query = "SELECT {$searchFields}{$fields} FROM {$from} {$fromSearchText} {$sqlClausole} {$searchClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
 		$tmp  	= $this->execute($query) ;
-
+		
 		// build items and toolbar
 		$recordset = array(
 			"items"		=> array(),
@@ -589,14 +716,14 @@ class BEObject extends BEAppModel
 	
 	function getIdFromNickname($nickname) {
 		$sql = "SELECT objects.id FROM objects WHERE nickname = '{$nickname}' LIMIT 1" ;
-		$tmp  	= $this->execute($sql) ;
-		return ((isset($tmp[0]['BEObject']['id'])) ? $tmp[0]['BEObject']['id'] : null) ;
+		$tmp  	= $this->query($sql) ;
+		return ((isset($tmp[0]['objects']['id'])) ? $tmp[0]['objects']['id'] : null) ;
 	}
 
 	function getNicknameFromId($id) {
 		$sql = "SELECT objects.nickname FROM objects WHERE id = '{$id}' LIMIT 1" ;
-		$tmp  	= $this->execute($sql) ;
-		return ((isset($tmp[0]['BEObject']['nickname'])) ? $tmp[0]['BEObject']['nickname'] : null) ;
+		$tmp  	= $this->query($sql) ;
+		return ((isset($tmp[0]['objects']['nickname'])) ? $tmp[0]['objects']['nickname'] : null) ;
 	}
 }
 ?>

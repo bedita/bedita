@@ -13,7 +13,7 @@
  * @license
  * @author 		ste ste@channelweb.it			
 */
-class ObjectCategory extends BEAppModel {
+class Category extends BEAppModel {
 	var $actsAs = array(
 			'CompactResult' 		=> array()
 	);
@@ -74,7 +74,7 @@ class ObjectCategory extends BEAppModel {
 	public function getCategoriesByArea($objectType) {
 		App::import('Model','Area');
 		$this->Area = new Area(); 
-		$categories = $this->findAll("ObjectCategory.object_type_id=$objectType");
+		$categories = $this->findAll("Category.object_type_id=$objectType");
 		$this->Area->displayField = 'public_name';
 		$areaList = $this->Area->find('list', array("order" => "public_name"));
 		$areaCategory = array();
@@ -137,16 +137,16 @@ class ObjectCategory extends BEAppModel {
 	public function getTags($showOrphans=true, $status=null, $cloud=false, $coeff=12, $order="label", $dir=1) {
 		
 		$conditions = array();
-		$conditions[] = "ObjectCategory.object_type_id IS NULL";
+		$conditions[] = "Category.object_type_id IS NULL";
 		if(!empty($status)) {
 				if(is_array($status)) {
-					$c = "ObjectCategory.status IN (";
+					$c = "Category.status IN (";
 					for($i=0 ; $i < count($status); $i++) {
 						$c .= (($i > 0) ? "," : "") . "'$status[$i]'";
 					}
 					$c .= ")";
 				} else {
-					$c = "ObjectCategory.status = '$status'";
+					$c = "Category.status = '$status'";
 				}
 				$conditions[] = $c;
 		}
@@ -156,7 +156,7 @@ class ObjectCategory extends BEAppModel {
 		
 		$allTags = $this->find('all', array(
 										'conditions'=> $conditions,
-										'order' 	=> array("ObjectCategory." . $orderSql => $dirSql)
+										'order' 	=> array("Category." . $orderSql => $dirSql)
 										)
 								);
 		$tags = array();
@@ -164,12 +164,13 @@ class ObjectCategory extends BEAppModel {
 			$tags[$t['id']] = $t;
 		}
 
-		$sql = "SELECT object_categories.id, COUNT(content_object_categories.object_category_id) AS weight
-				FROM object_categories, content_object_categories
-				WHERE object_categories.object_type_id IS NULL
-				AND object_categories.id = content_object_categories.object_category_id
-				GROUP BY object_categories.id
-				ORDER BY object_categories.label ASC";
+		$sql = "SELECT categories.id, COUNT(object_categories.category_id) AS weight
+				FROM categories, object_categories
+				WHERE categories.object_type_id IS NULL
+				AND categories.id = object_categories.category_id
+				GROUP BY categories.id
+				ORDER BY categories.label ASC";
+		
 		$res = $this->query($sql);
 
 		if ($cloud) {
@@ -181,7 +182,7 @@ class ObjectCategory extends BEAppModel {
 		}
 		
 		foreach ($res as $r) {
-			$key = $r['object_categories']['id'];
+			$key = $r['categories']['id'];
 			$w = $r[0]['weight'];
 			$tags[$key]['weight'] = $w;
 			if ($cloud) {
@@ -216,9 +217,9 @@ class ObjectCategory extends BEAppModel {
 		
 		// if order by weight reorder tags
 		if ($order == "weight") {
-			ObjectCategory::$orderTag = $order;
-			ObjectCategory::$dirTag = $dir;
-			usort($tagsArray, array('ObjectCategory', 'reorderTag'));
+			Category::$orderTag = $order;
+			Category::$dirTag = $dir;
+			usort($tagsArray, array('Category', 'reorderTag'));
 		}
 		
 		return $tagsArray;
@@ -279,9 +280,9 @@ class ObjectCategory extends BEAppModel {
 	 * @return int (-1,0,1)
 	 */
 	private static function reorderTag($e1, $e2) {
-		$d1 = $e1[ObjectCategory::$orderTag];
-		$d2 = $e2[ObjectCategory::$orderTag];
-		return (ObjectCategory::$dirTag)? strcmp($d1,$d2) : strcmp($d2,$d1);
+		$d1 = $e1[Category::$orderTag];
+		$d2 = $e2[Category::$orderTag];
+		return (Category::$dirTag)? strcmp($d1,$d2) : strcmp($d2,$d1);
 	}
 	
 }
