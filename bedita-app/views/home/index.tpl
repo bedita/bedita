@@ -182,7 +182,7 @@ $(document).ready(function(){
 	$("#callTags").bind("click", function() {
 		if (!showTagsFirst) {
 			$("#loadingTags").show();
-			$("#listExistingTags").load("{/literal}{$html->url('/tags/listAllTags')}{literal}", function() {
+			$("#listExistingTags").load("{/literal}{$html->url('/tags/listAllTags/1')}{literal}", function() {
 				$("#loadingTags").slideUp("fast");
 				$("#listExistingTags").slideDown("fast");
 				showTagsFirst = true;

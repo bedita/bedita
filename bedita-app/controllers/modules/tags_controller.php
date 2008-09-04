@@ -42,7 +42,7 @@ class TagsController extends ModulesController {
 			if($tag == null || $tag === false) {
 				throw new BeditaException(__("Error loading tag: ", true).$id);
 			}
-			
+		
 			$referenced = $this->Category->getContentsByTag($tag["label"]);
 			$tag["weight"] = count($referenced);
 		}
@@ -85,9 +85,11 @@ class TagsController extends ModulesController {
 		$this->eventInfo("Tag $tagsListDeleted deleted");
 	}
 
-	public function listAllTags() {
+	public function listAllTags($href=false) {
 		$this->layout = "empty";
 		$this->set("listTags",$this->Category->getTags(true, null, true));
+		if ($href) 
+			$this->set("href", true);
 	}
 	
 	/**

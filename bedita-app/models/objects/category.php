@@ -229,12 +229,12 @@ class Category extends BEAppModel {
 	public function getContentsByTag($label) {
 		// bind association on th fly
 		$hasAndBelongsToMany = array(
-			'Content' =>
+			'BEObject' =>
 				array(
-					'className'				=> 'Content',
-					'joinTable'    			=> 'content_object_categories',
-					'foreignKey'   			=> 'object_category_id',
-					'associationForeignKey'	=> 'content_id',
+					'className'				=> 'BEObject',
+					'joinTable'    			=> 'object_categories',
+					'foreignKey'   			=> 'category_id',
+					'associationForeignKey'	=> 'object_id',
 					'unique'				=> true
 						)
 				);
@@ -247,28 +247,16 @@ class Category extends BEAppModel {
 		// don't compact find result
 		$this->bviorCompactResults = false;
 		
-		$tag = $this->find("first", array("conditions" => array("label" => $label, "object_type_id IS NULL")));
-		
-		$beObject = ClassRegistry::init("BEObject");
-		
-		$contents = array();
-		
-		foreach ($tag["Content"] as $c) {
-			
-			$o = $beObject->find("first", array(
-									"conditions" => array("BEObject.id" => $c["id"]),
-									"restrict"	=> array("ObjectType")
+		$tag = $this->find("first", array(
+										"conditions" => array("label" => $label, "object_type_id IS NULL"),
+										"restrict" => array("BEObject" => array("ObjectType"))
 									)
-							);
-			
-			$contents[] = array_merge( $c, $o["BEObject"], array("ObjectType" => $o["ObjectType"]) ) ; 
-			
-		}
+						);
 		
 		// reset to default compact result
 		$this->bviorCompactResults = true;
 		
-		return $contents;
+		return $tag["BEObject"];
 	}
 
 	/**
