@@ -35,13 +35,17 @@ class AreasController extends ModulesController {
 	 */
 	function index($id=null) {
 		if (!empty($id)) {
-			$this->loadSectionDetails($id);
+			$ot_id = $this->BEObject->field("object_type_id", array("BEObject.id" => $id));
+			$this->loadSectionDetails($id,$ot_id);
 			$this->loadContents($id);
 			$this->loadSections($id);
+			$formToUse = strtolower(Configure::read("objectTypeModels.".$ot_id));
 		} else {
 			$tree = $this->BeTree->getSectionsTree() ;
 			$this->set('tree',$tree);
+			$formToUse = "area";
 		}
+		$this->set("formToUse", $formToUse);
 	}
 
 	 /**
@@ -104,7 +108,7 @@ class AreasController extends ModulesController {
 	function saveArea() {
 		$this->checkWriteModulePermission();
 		if(empty($this->data))
-			throw BeditaException( __("No data", true));
+			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
 		// Verify permits for the object
 		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
@@ -117,6 +121,18 @@ class AreasController extends ModulesController {
 		// Save data
 		if(!$this->Area->save($this->data))
 			throw new BeditaException( __("Error saving area", true),  $this->Area->validationErrors);
+		
+		// update contents and children sections priority
+		$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
+		
+		foreach ($reorder as $r) {
+
+			if (!$this->Tree->setPriority($r['id'], $r['priority'], $this->Area->id)) {
+				throw new BeditaException( __("Error during reorder children priority", true), $r["id"]);
+			}
+			
+		}
+				
 		// update permits
 		$perms = isset($this->data["Permissions"])?$this->data["Permissions"]:array();
 		if(!$this->Permission->saveFromPOST($this->Area->id, $perms,
@@ -229,25 +245,7 @@ class AreasController extends ModulesController {
 
 	/* AJAX CALLS */
 
-	/**
-	 * load area object
-	 *
-	 * @param int $id
-	 */
-	public function loadAreaAjax($id) {
-		$this->layout = null;
 		
-		if (!empty($id)) {
-			//da fare  -- dati per la pubblicazione -- area
-			//$this->loadAreaDetails($id);
-			//$this->loadSectionDetails($id);
-		
-		}
-		
-		$this->render(null, null, VIEWS."areas/inc/form_area.tpl");
-		
-	}
-	
 	/**
 	 * load section object
 	 *
@@ -256,11 +254,15 @@ class AreasController extends ModulesController {
 	public function loadSectionAjax($id) {
 		$this->layout = null;
 		
+		$tplFile = "form_area.tpl";
+		
 		if (!empty($id)) {
-			$this->loadSectionDetails($id);
+			$ot_id = $this->BEObject->field("object_type_id", array("BEObject.id" => $id));
+			$this->loadSectionDetails($id, $ot_id);
+			$tplFile = "form_" . strtolower(Configure::read("objectTypeModels.".$ot_id)) . ".tpl";
 		}
 		
-		$this->render(null, null, VIEWS."areas/inc/form_section.tpl");
+		$this->render(null, null, VIEWS . "areas/inc/" . $tplFile);
 		
 	}
 
@@ -409,22 +411,26 @@ class AreasController extends ModulesController {
 	 * get section details and set for template, get all tree
 	 *
 	 * @param int $id
+	 * 			
 	 */
-	private function loadSectionDetails($id) {
-		$this->Section->restrict(array(
-									"BEObject" => array("ObjectType", 
-														"UserCreated", 
-														"UserModified", 
-														"Permissions",
-														"CustomProperties",
-														"LangText"
-														)
-									));
-		if(!($section = $this->Section->findById($id))) {
+	private function loadSectionDetails($id, $objectTypeId) {
+			
+		$model = ClassRegistry::init(Configure::read("objectTypeModels.".$objectTypeId));
+		
+		$model->restrict(array(
+					"BEObject" => array("ObjectType", 
+										"UserCreated", 
+										"UserModified", 
+										"Permissions",
+										"CustomProperties",
+										"LangText"
+										)
+						));
+		if(!($collection = $model->findById($id))) {
 			throw new BeditaException(sprintf(__("Error loading section: %d", true), $id));
 		}
 		
-		$this->set('section',$section);
+		$this->set('object',$collection);
 		$this->set('tree', $this->BeTree->getSectionsTree());
 		$this->set('parent_id', $this->Tree->getParent($id));
 		$this->setUsersAndGroups();
@@ -472,7 +478,7 @@ class AreasController extends ModulesController {
 									"ERROR"	=> "./" 
 								), 
 			"saveArea"	=> 	array(
-									"OK"	=> "./viewArea/{$this->Area->id}",
+									"OK"	=> "./index/{$this->Area->id}",
 									"ERROR"	=> "./viewArea/{$this->Area->id}" 
 								), 
 			"saveSection"	=> 	array(

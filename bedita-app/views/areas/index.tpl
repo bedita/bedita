@@ -13,11 +13,12 @@ ajaxSectionsUrl 		= "{$html->url('/areas/listSectionAjax')}";
 ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 //-->
 
-{if !empty($section)}
+{if !empty($object)}
 
 {literal}
 $(document).ready(function() {
 	$(".tab:first").click();
+	$("#sectionTitle").text("{/literal}{$object.title}{literal}");
 });
 {/literal}
 
@@ -64,7 +65,9 @@ $(document).ready(function() {
 
 </div>
 
-<form action="{$html->url('/areas/saveSection')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+{assign_concat var="actionForm" 0="save" 1=$formToUse|capitalize|default:"Area"}
+
+<form action="{$html->url('/areas/')}{$actionForm}" method="post" name="updateForm" id="updateForm" class="cmxform">
 
 <div style="width:420px; position:absolute; top:160px; left:580px">
 
@@ -99,8 +102,9 @@ $(document).ready(function() {
 	
 	
 	<div id="areapropertiesC" class="htabcontent" style="clear:none">
-						
-			{include file="inc/form_section.tpl"}
+			
+			{assign_concat var=formFile 0="inc/form_" 1=$formToUse|default:"area" 2=".tpl"}	
+			{include file=$formFile}
 
 	</div>
 </div>

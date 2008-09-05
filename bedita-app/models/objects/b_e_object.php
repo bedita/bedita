@@ -490,17 +490,8 @@ class BEObject extends BEAppModel
 	}
 	
 	public function findObjectTypeId($id) {
-		$object = $this->find("first", array(
-									"restrict" 	=> array(),
-									"fields" 	=> "object_type_id",
-									"conditions" => "BEObject.id=".$id
-								)
-						);
-		if (!empty($object)) {
-			return $object["BEObject"]["object_type_id"];
-		} else {
-			return false;
-		}
+		$object_type_id = $this->field("object_type_id", array("BEObject.id" => $id));
+		return $object_type_id;
 	}
 	
 	/**

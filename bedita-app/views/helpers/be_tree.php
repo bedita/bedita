@@ -89,11 +89,22 @@ class BeTreeHelper extends Helper {
 	public function view($tree=array(), $inputType=null, $parent_ids=array()) {
 	
 		$output = "";
+		$class = "";
 		if (!empty($tree)) {
-			
+				
 			foreach ($tree as $publication) {
 				$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $publication["id"];
-				$output .= "<div><h2 rel='" . $url . "'>";
+				
+				if (empty($inputType)) {
+					if ( (!empty($this->params["named"]["id"]) && $this->params["named"]["id"] == $publication["id"]) 
+							|| !empty($this->params["pass"][0]) && $this->params["pass"][0] == $publication["id"]) {
+						$class = " class='on'";
+					} else {
+						$class = "";
+					}
+				}
+				
+				$output .= "<div><h2 rel='" . $url . "'" . $class . "'>";
 				
 				if (!empty($inputType) && !empty($this->tags[$inputType])) {
 					$checked = (in_array($publication["id"], $parent_ids))? "checked='checked'" : "";
