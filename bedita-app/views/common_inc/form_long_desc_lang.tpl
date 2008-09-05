@@ -37,14 +37,14 @@ tinyMCE.init({
 {/literal}
 {/if}
 
-<div class="tab"><h2>{t}Long Text{/t}</h2></div>
+<div class="tab"><h2>{t}Text{/t}</h2></div>
 
 <fieldset id="long_desc_langs_container">
 	
-	<label>{t}Short text{/t}:</label>
+	<label>{t}short text{/t}:</label>
 	<textarea name="data[abstract]" style="height:200px" class="mce">{$object.abstract|default:''}</textarea>
 	
-	<label>{t}Long text{/t}:</label>
+	<label>{t}long text{/t}:</label>
 	<textarea name="data[body]" style="height:400px" class="mce">{$object.body|default:''}</textarea>
 		
 </fieldset>

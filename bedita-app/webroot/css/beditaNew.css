@@ -285,7 +285,7 @@ UL.modules {
 .translations				{background-color:#FF00FF !important;}
 .books, .book					{background-color:#996633 !important;}
 .bibliographies, .bibliography {background-color:#999966 !important;}
-.addressbook, .address			{background-color:#009933 !important;}
+.addressbook, .card			{background-color:#009933 !important;}
 .attachments 				{background-color:gray !important;}
 .news, .shortnews 			{background-color:gray !important;}
 .newsletter 				{background-color:#6666FF !important;}
@@ -496,7 +496,7 @@ UL.menuleft {
 
 .publishingtree H2 {
 	cursor:pointer;
-	padding:4px 0px 3px 0px;
+	padding:2px 0px 4px 0px;
 	/*background-color:gold;*/
 }
 

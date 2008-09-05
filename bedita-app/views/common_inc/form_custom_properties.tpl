@@ -111,9 +111,9 @@ function deleteTRCustomProp(el) {
 	
 <table class="indexlist" id="frmCustomProperties">
 	<tr>
-		<th>{t}name{/t}</th>
-		<th>{t}type{/t}</th>
-		<th>{t}value{/t}</th>
+		<th>{t}name{/t}:</th>
+		<th>{t}type{/t}:</th>
+		<th>{t}value{/t}:</th>
 		<th>&nbsp;</th>
 	</tr>
 	
@@ -132,7 +132,7 @@ function deleteTRCustomProp(el) {
 	
 	
 	<tr id="endLineCustomPropTR">
-		<td colspan="4"><label>{t}add new property{/t}</label></td>
+		<td colspan="4"><label>{t}add new property{/t}:</label></td>
 	</tr>
 
 	

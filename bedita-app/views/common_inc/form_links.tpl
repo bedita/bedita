@@ -66,9 +66,9 @@ $(document).ready(function() {
 	<hr />
 	
 	<div id="newLink" style="white-space:nowrap">
-		{t}Title{/t}: 	<input type="text" style="width:100px" name="linkTitle" id="linkTitle" />
-		{t}Url{/t}: 	<input type="text" name="linkUrl" id="linkUrl" />
-		{t}Type{/t}: 	<select name="targetType" id="linkTarget"> 
+		<label>{t}title{/t}:</label> 	<input type="text" style="width:100px" name="linkTitle" id="linkTitle" />
+		<label>{t}url{/t}:</label> 	<input type="text" name="linkUrl" id="linkUrl" />
+		<label>{t}target{/t}:</label> 	<select name="targetType" id="linkTarget"> 
 						<option value="_self">_self</option>
 						<option value="_blank">_blank</option>
 						</select>

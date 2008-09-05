@@ -41,7 +41,7 @@ tinyMCE.init({
 
 <fieldset id="long_desc_langs_container">
 	
-	<label>{t}Short text{/t}:</label>
+	<label>{t}short text{/t}:</label>
 	<textarea name="data[abstract]" style="height:200px" class="mce">{$object.abstract|default:''}</textarea>
 		
 </fieldset>

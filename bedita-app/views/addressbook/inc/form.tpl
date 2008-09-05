@@ -10,7 +10,7 @@
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
 	
-	{include file="./inc/form_address_details.tpl"}
+	{include file="./inc/form_card_details.tpl"}
 	
 	{include file="./inc/form_properties.tpl" doctype=false comments=true}
 	

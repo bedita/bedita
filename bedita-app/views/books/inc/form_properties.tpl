@@ -4,11 +4,11 @@
 
 <fieldset id="properties">			
 			
-<table class="bordered">
+<table class="bordered" style="width:100%">
 		
 	<tr>
 
-		<th>{t}Status{/t}:</th>
+		<th>{t}status{/t}:</th>
 		<td colspan="4">
 			{if ($object.status == 'fixed')}
 			{t}This object is fixed - some data is readonly{/t}
@@ -22,7 +22,7 @@
 	
 	{if isset($comments)}
 	<tr>
-		<th>{t}Comments{/t}:</th>
+		<th>{t}comments{/t}:</th>
 		<td>
 			<input type="radio" name="data[comments]" value="off"{if empty($object.comments) || $object.comments=='off'} checked{/if}/>{t}No{/t} 
 			<input type="radio" name="data[comments]" value="on"{if !empty($object.comments) && $object.comments=='on'} checked{/if}/>{t}Yes{/t}

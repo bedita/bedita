@@ -5,9 +5,9 @@
 {if !empty($object.LangText.status)}
 <table class="indexlist bordered">	
 <tr>
-	<th>{t}Lang{/t}</th>
-	<th>{t}Title{/t}</th>
-	<th>{t}Status{/t}</th>
+	<th>{t}lang{/t}</th>
+	<th>{t}title{/t}</th>
+	<th>{t}status{/t}</th>
 </tr>
 {foreach from=$object.LangText.status item=i key=k}
 <tr class="rowList" rel="{$html->url('/translations/view/')}{$object.id}/{$k}">

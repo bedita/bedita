@@ -8,19 +8,19 @@
 	<tr>
 
 		<th>{t}nickname{/t}:</th>
-		<td colspan="5">
+		<td>
 			<input type="text" id="nicknameBEObject" name="data[nickname]" value="{$object.nickname|escape:'html'|escape:'quotes'}"/>
+			&nbsp;&nbsp;
+			<label>id:</label> {$object.id}
 		</td>
-
 	</tr>
 
 	{if (isset($doctype) && !empty($doctype))}
 	<tr>
-		<th>{t}Choose document type{/t}:</th>
+		<th>{t}choose document type{/t}:</th>
 		<td>
 			{html_radios name="data[object_type_id]" options=$conf->docTypeOptions selected=$object.object_type_id|default:'22' separator="&nbsp;"}
 		</td>
-		<td>&nbsp;</td>
 	</tr>
 	{/if}
 
@@ -45,15 +45,15 @@
 	{/if}
 
 	<tr>
-		<td><label>{t}publisher{/t}</label></td>
+		<th>{t}publisher{/t}:</th>
 		<td><input type="text" name="data[publisher]" value="{$object.publisher|default:''}" /></td>
 	</tr>
 	<tr>
-		<td><strong>&copy; {t}rights{/t}</strong></td>
+		<th>&copy; {t}rights{/t}:</th>
 		<td><input type="text" name="data[rights]" value="{$object.rights|default:''}" /></td>
 	</tr>
 	<tr>
-		<td> <label>{t}license{/t}</label></td>
+		<th>{t}license{/t}:</th>
 		<td>
 			<select style="width:300px;" name="data[license]">
 				<option value="">--</option>

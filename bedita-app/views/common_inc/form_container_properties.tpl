@@ -21,7 +21,7 @@ $(document).ready(function(){
 		<h3><img src="{$html->webroot}img/flags/{$val}.png" border="0" alt="{$val}"/></h3>
 		<table class="tableForm" border="0">
 		<tr>
-			<td class="label">{t}Title{/t}:</td>
+			<td class="label">{t}title{/t}:</td>
 			<td class="field">
 				<input {if $val==$object_lang}class="{literal}{required:true,minLength:1}{/literal}" title="{t}Title is required{/t}"{/if}
 					type="text" name="data[LangText][{$val}][title]"
@@ -35,7 +35,7 @@ $(document).ready(function(){
 	</div>
 
 	<hr/>
-	<span style="font-weight:bold;">{t}status{/t}</span>:
+	<span style="font-weight:bold;">{t}status{/t}:</span>:
 	{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator=" "}
 	{if (isset($doctype) && !empty($doctype))}
 	<span style="font-weight:bold;">{t}Choose document type{/t}:</span>
@@ -44,7 +44,7 @@ $(document).ready(function(){
 	{/if}
 	<table class="tableForm" border="0">
 	<tr>
-		<td class="label">{t}Default language{/t}:</td>
+		<td class="label">{t}default language{/t}:</td>
 		<td>
 			<select name="data[lang]">
 			{assign var=object_lang value=$object.lang|default:$conf->defaultLang}{html_options options=$conf->langOptions selected=$object.lang|default:$conf->defaultLang}
@@ -53,7 +53,7 @@ $(document).ready(function(){
 		<td>&nbsp;</td>
 	</tr>
 	<tr>
-		<td class="label">{t}Nickname{/t}:</td>
+		<td class="label">{t}nickname{/t}:</td>
 		<td class="field">
 			<input type="text" name="data[nickname]" value="{$object.nickname|default:''|escape:'html'|escape:'quotes'}"/>&nbsp;
 		</td>
@@ -64,12 +64,12 @@ $(document).ready(function(){
 	<hr/>
 	<table class="tableForm" border="0">
 	<tr>
-		<td class="label">{t}Created{/t}:</td><td>{$object.created|date_format:$conf->datePattern}</td>
-		<td class="label">{t}From{/t}:</td><td>{$object.UserCreated.userid|default:""}</td>
+		<td class="label">{t}created{/t}:</td><td>{$object.created|date_format:$conf->datePattern}</td>
+		<td class="label">{t}from{/t}:</td><td>{$object.UserCreated.userid|default:""}</td>
 	</tr>
 	<tr>
-		<td class="label">{t}Last modified{/t}:</td><td>{$object.modified|date_format:$conf->datePattern}</td>
-		<td class="label">{t}From{/t}:</td><td>{$object.UserModified.userid|default:""}</td>
+		<td class="label">{t}last modified{/t}:</td><td>{$object.modified|date_format:$conf->datePattern}</td>
+		<td class="label">{t}from{/t}:</td><td>{$object.UserModified.userid|default:""}</td>
 	</tr>
 	<tr>
 		<td class="label">{t}IP{/t}:</td><td>{$object.ip_created}</td>

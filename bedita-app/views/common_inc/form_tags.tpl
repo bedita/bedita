@@ -39,7 +39,8 @@ $(document).ready(function(){
 <fieldset id="tags">
 	
 
-	{t}Add comma separated words{/t}<br/>
+	<label>{t}add comma separated words{/t}:</label>
+	<br/>
 	
 	{strip}
 	<textarea name="tags" class="autogrowarea" style="display:block; width:470px" id="tagsArea">

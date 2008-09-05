@@ -45,15 +45,15 @@ tinyMCE.init({
 
 <table>
 	<tr>
-		<th>{t}Title{/t}</th>
+		<th>{t}title{/t}:</th>
 		<td colspan="4"><input type="text" name="data[title]" value="{$object.title|escape:'html'|escape:'quotes'}" id="titleBEObject"/></td>
 	</tr>
 	<tr>
-		<th>{t}Subtitle{/t}</th>
+		<th>{t}subtitle{/t}:</th>
 		<td colspan="4"><textarea id="subtitle" style="height:30px" class="shortdesc autogrowarea" name="data[description]">{$object.description|default:''|escape:'html'}</textarea></td>
 	</tr>
 	<tr>
-		<th>{t}Author/s{/t}</th>
+		<th>{t}author/s{/t}:</th>
 		<td>
 			<input type="text" name="data[author]" value="{$object.author|escape:'html'|escape:'quotes'}" id="authorBEObject"/>
 		</td>
@@ -62,15 +62,15 @@ tinyMCE.init({
 		</td>
 	</tr>
 	<tr>
-		<th>{t}publisher{/t}</th>
+		<th>{t}publisher{/t}:</th>
 		<td><input type="text" name="data[publisher]" value="{$object.publisher|default:''}" /></td>
 		
-		<th>{t}year{/t}</th>
+		<th>{t}year{/t}:</th>
 		<td><input type="text" style="width:30px" name="data[year]" value="{$object.year|default:''}" /></td>
 		
 	</tr>
 	<tr>
-		<th>{t}isbn/issn{/t}</th>
+		<th>{t}isbn/issn{/t}:</th>
 		<td><input type="text" name="data[code]" value="{$object.code|default:''}" /></td>
 		
 		<th>{t}language{/t}:</th>
@@ -84,7 +84,7 @@ tinyMCE.init({
 		</td>
 	</tr>
 	<tr>
-		<th>{t}Abstract{/t}</th>
+		<th>{t}abstract:{/t}</th>
 		<td  colspan="4">
 			<textarea name="data[abstract]" class="mce">{$object.abstract|default:''}</textarea>
 		</td>

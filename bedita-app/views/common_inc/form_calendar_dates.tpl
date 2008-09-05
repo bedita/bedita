@@ -17,7 +17,7 @@ $(document).ready(function(){
 
 {assign var=d value=$object.DateItem.0}
 
-	<label>{t}start{/t}</label>
+	<label>{t}start{/t}:</label>
 	<input size=10 type="text" class="dateinput" name="data[DateItem][{$idx}][start]" id="eventStart" value="{if !empty($d.start)}{$d.start|date_format:$conf->datePattern}{/if}"/>
 	<input size=5 type="text" id="timeStart" name="data[DateItem][{$idx}][timeStart]" value="{if !empty($d.start)}{$d.start|date_format:"%H:%M"}{/if}" size="10"/>
 	

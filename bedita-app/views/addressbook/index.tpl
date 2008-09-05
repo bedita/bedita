@@ -10,7 +10,7 @@
 
 {include file="inc/menucommands.tpl" method="index"}
 
-{include file="../common_inc/toolbar.tpl" moduleName="addresses"}
+{include file="../common_inc/toolbar.tpl" moduleName="cards"}
 
 
 

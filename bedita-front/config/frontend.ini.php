@@ -19,7 +19,7 @@ $config['authorizedGroups'] = array('frontend');
 
 $config['draft']            = false;
 $config['frontendNickname'] = 'nomefrontend';
-$config['frontendAreaId'] = 1;
+$config['frontendAreaId'] 	= 1;
 $config['frontendUser']     = array ("userid" => null);
 $config['frontendLang']     = 'ita';
 $config['frontendLangs']    = array (

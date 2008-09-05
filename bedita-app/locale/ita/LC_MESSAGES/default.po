@@ -10,59 +10,59 @@ msgstr ""
 "Project-Id-Version: Bedita\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Username"
-msgstr "Nome utente"
+msgid "username"
+msgstr "nome utente"
 
-msgid "Username is required"
-msgstr "Nome utente obbligatorio"
+msgid "username is required"
+msgstr "nome utente obbligatorio"
 
-msgid "Password is required"
-msgstr "Password obbligatorio"
+msgid "password is required"
+msgstr "password obbligatorio"
 
-msgid "This field is required"
-msgstr "Campo obbligatorio"
+msgid "this field is required"
+msgstr "campo obbligatorio"
 
-msgid "Backend user restricted area"
-msgstr "Area riservata ai gestori"
+msgid "backend user restricted area"
+msgstr "area riservata ai gestori"
 
-msgid "Enter"
-msgstr "Entra"
+msgid "enter"
+msgstr "entra"
 
-msgid "Save"
-msgstr "Salva"
+msgid "save"
+msgstr "salva"
 
-msgid "No data"
-msgstr "Non ci sono dati"
+msgid "no data"
+msgstr "non ci sono dati"
 
-msgid "Wrong username/password or no authorization"
-msgstr "Nome utente/password errati o autorizzazione negata"
+msgid "wrong username/password or no authorization"
+msgstr "nome utente/password errati o autorizzazione negata"
 
-msgid "Gallery"
-msgstr "Galleria"
+msgid "gallery"
+msgstr "galleria"
 
-msgid "Title"
-msgstr "Titolo"
+msgid "title"
+msgstr "titolo"
 
-msgid "Univocal Nickname"
-msgstr "Nome univoco"
+msgid "univocal nickname"
+msgstr "nome univoco"
 
-msgid "Status"
-msgstr "Status"
+msgid "status"
+msgstr "status"
 
-msgid "Created"
-msgstr "Creato"
+msgid "created"
+msgstr "creato"
 
-msgid "Language"
-msgstr "Lingua"
+msgid "language"
+msgstr "lingua"
 
-msgid "Default language"
-msgstr "Lingua predefinita"
+msgid "default language"
+msgstr "lingua predefinita"
 
-msgid "Dimensions"
-msgstr "Dimensioni"
+msgid "dimensions"
+msgstr "dimensioni"
 
-msgid "Go to page"
-msgstr "Vai alla pagina"
+msgid "go to page"
+msgstr "vai alla pagina"
 
 msgid "page"
 msgstr "pagina"
@@ -70,14 +70,14 @@ msgstr "pagina"
 msgid "of"
 msgstr "di"
 
-msgid "Edit"
-msgstr "Modifica"
+msgid "edit"
+msgstr "modifica"
 
-msgid "Delete"
-msgstr "Elimina"
+msgid "delete"
+msgstr "elimina"
 
-msgid "Actions"
-msgstr "Azioni"
+msgid "actions"
+msgstr "azioni"
 
 msgid "open details"
 msgstr "apri tutti i dettagli"
@@ -91,92 +91,92 @@ msgstr "chiudi"
 msgid "cancel"
 msgstr "cancella"
 
-msgid "Properties"
-msgstr "Proprietà"
+msgid "properties"
+msgstr "proprietà"
 
-msgid "Status"
-msgstr "Status"
+msgid "status"
+msgstr "status"
 
-msgid "Publication"
-msgstr "Pubblicazione"
+msgid "publication"
+msgstr "pubblicazione"
 
-msgid "Publication schedule"
-msgstr "Pubblicazione programmata"
+msgid "publication schedule"
+msgstr "pubblicazione programmata"
 
-msgid "Start"
-msgstr "Inizio"
+msgid "start"
+msgstr "inizio"
 
-msgid "End"
-msgstr "Fine"
+msgid "end"
+msgstr "fine"
 
-msgid "Attention!!! you are deleting an item.\nAre you sure that you want to continue?"
-msgstr "Attenzione!!! stai eliminando un elemento.\nSicuro di voler continuare?"
+msgid "attention!!! you are deleting an item.\nare you sure that you want to continue?"
+msgstr "attenzione!!! stai eliminando un elemento.\nsicuro di voler continuare?"
 
-msgid "Where put the gallery into"
-msgstr "Dove inserire la galleria"
+msgid "where put the gallery into"
+msgstr "dove inserire la galleria"
 
-msgid "Close all"
-msgstr "Chiudi tutti"
+msgid "close all"
+msgstr "chiudi tutti"
 
-msgid "Expand all"
-msgstr "Espandi tutti"
+msgid "expand all"
+msgstr "espandi tutti"
 
-msgid "Images of the gallery"
-msgstr "Immagini della galleria"
+msgid "images of the gallery"
+msgstr "immagini della galleria"
 
-msgid "Add image"
-msgstr "Aggiungi immagine"
+msgid "add image"
+msgstr "aggiungi immagine"
 
-msgid "Available images"
-msgstr "Immagini disponibili"
+msgid "available images"
+msgstr "immagini disponibili"
 
-msgid "No images found"
-msgstr "Nessuna immagine trovata"
+msgid "no images found"
+msgstr "nessuna immagine trovata"
 
-msgid "Images"
-msgstr "Immagini"
+msgid "images"
+msgstr "immagini"
 
-msgid "Gallery images"
-msgstr "Immagini della galleria"
+msgid "gallery images"
+msgstr "immagini della galleria"
 
-msgid "Thumbnail"
-msgstr "Miniatura"
+msgid "thumbnail"
+msgstr "miniatura"
 
-msgid "Modify"
-msgstr "Modifica"
+msgid "modify"
+msgstr "modifica"
 
-msgid "Remove"
-msgstr "Rimuovi"
+msgid "remove"
+msgstr "rimuovi"
 
-msgid "Select"
-msgstr "Seleziona"
+msgid "select"
+msgstr "seleziona"
 
-msgid "Valid"
-msgstr "Valido"
+msgid "valid"
+msgstr "valido"
 
-msgid "Last login"
-msgstr "Ultimo login"
+msgid "last login"
+msgstr "ultimo login"
 
-msgid "Item deleted correctly"
-msgstr "Elemento eliminato correttamente"
+msgid "item deleted correctly"
+msgstr "elemento eliminato correttamente"
 
-msgid "Item to delete not found"
-msgstr "Elemento da eliminare non trovato"
+msgid "item to delete not found"
+msgstr "elemento da eliminare non trovato"
 
-msgid "Are you sure that you want to delete the gallery?"
-msgstr "Sei sicuro di voler eliminare la galleria?"
+msgid "are you sure that you want to delete the gallery?"
+msgstr "sei sicuro di voler eliminare la galleria?"
 
-msgid "New Item"
-msgstr "Nuovo Elemento"
+msgid "new item"
+msgstr "nuovo elemento"
 
-msgid "New Image"
-msgstr "Nuova Immagine"
+msgid "new image"
+msgstr "nuova immagine"
 
-msgid "Size"
-msgstr "Dimensione"
+msgid "size"
+msgstr "dimensione"
 
-msgid "Custom Properties"
-msgstr "Proprietà Ad Hoc"
+msgid "custom properties"
+msgstr "proprietà ad hoc"
 
 msgid "name"
 msgstr "nome"
@@ -184,8 +184,8 @@ msgstr "nome"
 msgid "type"
 msgstr "tipo"
 
-msgid "Type"
-msgstr "Tipo"
+msgid "type"
+msgstr "tipo"
 
 msgid "value"
 msgstr "valore"
@@ -193,8 +193,8 @@ msgstr "valore"
 msgid "add"
 msgstr "aggiungi"
 
-msgid "Permissions"
-msgstr "Permessi"
+msgid "permissions"
+msgstr "permessi"
 
 msgid "read"
 msgstr "lettura"
@@ -205,11 +205,11 @@ msgstr "modifica"
 msgid "delete"
 msgstr "elimina"
 
-msgid "Apply permissions recursively"
-msgstr "Applica i permessi ricorsivamente"
+msgid "apply permissions recursively"
+msgstr "applica i permessi ricorsivamente"
 
-msgid "Do you really want to delete the permission"
-msgstr "Vuoi davvero eliminare il permesso"
+msgid "do you really want to delete the permission"
+msgstr "vuoi davvero eliminare il permesso"
 
 msgid "user"
 msgstr "utente"
@@ -217,185 +217,185 @@ msgstr "utente"
 msgid "group"
 msgstr "gruppo"
 
-msgid "From"
-msgstr "Da"
+msgid "from"
+msgstr "da"
 
-msgid "Author"
-msgstr "Autore"
+msgid "author"
+msgstr "autore"
 
-msgid "Yes"
-msgstr "Si"
+msgid "yes"
+msgstr "si"
 
-msgid "Last modified"
-msgstr "Ultima modifica"
+msgid "last modified"
+msgstr "ultima modifica"
 
-msgid "Modified"
-msgstr "Modificato"
+msgid "modified"
+msgstr "modificato"
 
-msgid "User blocked"
-msgstr "Utente bloccato"
+msgid "user blocked"
+msgstr "utente bloccato"
 
-msgid "Do you really want to delete the property"
-msgstr "Vuoi davvero eliminare la proprietà"
+msgid "do you really want to delete the property"
+msgstr "vuoi davvero eliminare la proprietà"
 
-msgid "Data uncomplete"
-msgstr "Dati incompleti"
+msgid "data uncomplete"
+msgstr "dati incompleti"
 
-msgid "Property already present"
-msgstr "Proprietà già presente"
+msgid "property already present"
+msgstr "proprietà già presente"
 
-msgid "Where put the section into"
-msgstr "Dove inserire la sezione"
+msgid "where put the section into"
+msgstr "dove inserire la sezione"
 
-msgid "Choose document type"
-msgstr "Scegli il tipo documento"
+msgid "choose document type"
+msgstr "scegli il tipo documento"
 
-msgid "External links"
-msgstr "Link esterni"
+msgid "external links"
+msgstr "link esterni"
 
-msgid "Objects"
-msgstr "Oggetti"
+msgid "objects"
+msgstr "oggetti"
 
-msgid "Where put the document into"
-msgstr "Dove inserire il documento"
+msgid "where put the document into"
+msgstr "dove inserire il documento"
 
-msgid "User settings"
-msgstr "Impostazioni utente"
+msgid "user settings"
+msgstr "impostazioni utente"
 
-msgid "User name"
-msgstr "Nome utente"
+msgid "user name"
+msgstr "nome utente"
 
-msgid "User name is required (at least %1 chars, without white spaces and special chars)"
-msgstr "Nome utente obbligatorio (almeno %1 caratteri, senza spazi e caratteri speciali)"
+msgid "user name is required (at least %1 chars, without white spaces and special chars)"
+msgstr "nome utente obbligatorio (almeno %1 caratteri, senza spazi e caratteri speciali)"
 
-msgid "Real name"
-msgstr "Nome reale"
+msgid "real name"
+msgstr "nome reale"
 
-msgid "Real name is required (at least %1 alphanumerical chars)"
-msgstr "Nome reale obbligatorio (almeno %1 caratteri alfanumerici)"
+msgid "real name is required (at least %1 alphanumerical chars)"
+msgstr "nome reale obbligatorio (almeno %1 caratteri alfanumerici)"
 
-msgid "Use a valid email"
-msgstr "Utilizza un email valido"
+msgid "use a valid email"
+msgstr "utilizza un email valido"
 
-msgid "New password"
-msgstr "Nuova password"
+msgid "new password"
+msgstr "nuova password"
 
-msgid "Your password must be at least 6 characters long and contain at least one number"
-msgstr "La password deve essere di almeno 6 caratteri e contenere almeno un numero"
+msgid "your password must be at least 6 characters long and contain at least one number"
+msgstr "la password deve essere di almeno 6 caratteri e contenere almeno un numero"
 
-msgid "Confirm password"
-msgstr "Conferma password"
+msgid "confirm password"
+msgstr "conferma password"
 
-msgid "Passwords should be equal"
-msgstr "Le password devono essere uguali"
+msgid "passwords should be equal"
+msgstr "le password devono essere uguali"
 
-msgid "Group name is required (at least %1 chars, no white spaces and special chars)"
-msgstr "Nome gruppo obbligatorio (almeno %1 caratteri, niente spazi e caratteri speciali)"
+msgid "group name is required (at least %1 chars, no white spaces and special chars)"
+msgstr "nome gruppo obbligatorio (almeno %1 caratteri, niente spazi e caratteri speciali)"
 
-msgid "Strength"
-msgstr "Sicurezza"
+msgid "strength"
+msgstr "sicurezza"
 
-msgid "Blocked"
-msgstr "Bloccato"
+msgid "blocked"
+msgstr "bloccato"
 
-msgid "Groups"
-msgstr "Gruppi"
+msgid "groups"
+msgstr "gruppi"
 
-msgid "Module access"
-msgstr "Accesso ai moduli"
+msgid "module access"
+msgstr "accesso ai moduli"
 
-msgid "Read only"
-msgstr "Sola lettura"
+msgid "read only"
+msgstr "sola lettura"
 
-msgid "Read and modify"
-msgstr "Lettura e modifica"
+msgid "read and modify"
+msgstr "lettura e modifica"
 
-msgid "Check at least one group"
-msgstr "Indica almeno un gruppo"
+msgid "check at least one group"
+msgstr "indica almeno un gruppo"
 
-msgid "Users list"
-msgstr "Lista utenti"
+msgid "users list"
+msgstr "lista utenti"
 
-msgid "Manage user"
-msgstr "Opzioni utente"
+msgid "manage user"
+msgstr "opzioni utente"
 
-msgid "New user"
-msgstr "Nuovo utente"
+msgid "new user"
+msgstr "nuovo utente"
 
-msgid "Create"
-msgstr "Crea"
+msgid "create"
+msgstr "crea"
 
-msgid "User"
-msgstr "Utente"
+msgid "user"
+msgstr "utente"
 
-msgid "Name"
-msgstr "Nome"
+msgid "name"
+msgstr "nome"
 
-msgid "System Info"
-msgstr "Info Sistema"
+msgid "system info"
+msgstr "info sistema"
 
-msgid "Users admin"
-msgstr "Amministrazione utenti"
+msgid "users admin"
+msgstr "amministrazione utenti"
 
-msgid "Groups admin"
-msgstr "Amministrazione gruppi"
+msgid "groups admin"
+msgstr "amministrazione gruppi"
 
-msgid "Module"
-msgstr "Modulo"
+msgid "module"
+msgstr "modulo"
 
-msgid "No access"
-msgstr "Nessun accesso"
+msgid "no access"
+msgstr "nessun accesso"
 
-msgid "Group properties"
-msgstr "Proprietà gruppi"
+msgid "group properties"
+msgstr "proprietà gruppi"
 
-msgid "Create group"
-msgstr "Crea gruppo"
+msgid "create group"
+msgstr "crea gruppo"
 
-msgid "Insert group name"
-msgstr "Inserire nome gruppo"
+msgid "insert group name"
+msgstr "inserire nome gruppo"
 
-msgid "Users of this group"
-msgstr "Utenti di questo gruppo"
+msgid "users of this group"
+msgstr "utenti di questo gruppo"
 
-msgid "Subtitle, description"
-msgstr "Sottotitolo, descrizione"
+msgid "subtitle, description"
+msgstr "sottotitolo, descrizione"
 
-msgid "Long Text"
-msgstr "Testo Esteso"
+msgid "long text"
+msgstr "testo esteso"
 
-msgid "Title is required"
-msgstr "Titolo obbligatorio"
+msgid "title is required"
+msgstr "titolo obbligatorio"
 
 msgid "at least %1 alphanumerical char"
 msgstr "almeno %1 carattere alfanumerico"
 
-msgid "Areas"
-msgstr "Aree"
+msgid "areas"
+msgstr "aree"
 
-msgid "Documents"
-msgstr "Documenti"
+msgid "documents"
+msgstr "documenti"
 
-msgid "Galleries"
-msgstr "Gallerie"
+msgid "galleries"
+msgstr "gallerie"
 
 msgid "attachments"
 msgstr "allegati"
 
-msgid "Sections"
-msgstr "Sezioni"
+msgid "sections"
+msgstr "sezioni"
 
-msgid "New Area"
-msgstr "Nuova Area"
+msgid "new area"
+msgstr "nuova area"
 
-msgid "New Document"
-msgstr "Nuovo Documento"
+msgid "new document"
+msgstr "nuovo documento"
 
-msgid "New Gallery"
-msgstr "Nuova Galleria"
+msgid "new gallery"
+msgstr "nuova galleria"
 
-msgid "New Section"
-msgstr "Nuova Sezione"
+msgid "new section"
+msgstr "nuova sezione"
 
 msgid "areas"
 msgstr "aree"
@@ -409,8 +409,8 @@ msgstr "gallerie"
 msgid "sections"
 msgstr "sezioni"
 
-msgid "Tree of Areas"
-msgstr "Albero delle Aree"
+msgid "tree of areas"
+msgstr "albero delle aree"
 
 msgid "up"
 msgstr "su"
@@ -418,38 +418,38 @@ msgstr "su"
 msgid "down"
 msgstr "giu"
 
-msgid "Areas Tree"
-msgstr "Albero Aree"
+msgid "areas tree"
+msgstr "albero aree"
 
-msgid "Do you really want to remove user"
-msgstr "Vuoi davvero eliminare l'utente"
+msgid "do you really want to remove user"
+msgstr "vuoi davvero eliminare l'utente"
 
-msgid "Description"
-msgstr "Descrizione"
+msgid "description"
+msgstr "descrizione"
 
-msgid "Subtitle"
-msgstr "Sottotitolo"
+msgid "subtitle"
+msgstr "sottotitolo"
 
-msgid "The change will be lost. Do you want to continue"
-msgstr "I cambiamenti andranno perduti. Vuoi continuare"
+msgid "the change will be lost. do you want to continue"
+msgstr "i cambiamenti andranno perduti. vuoi continuare"
 
-msgid "Only text"
-msgstr "Solo testo"
+msgid "only text"
+msgstr "solo testo"
 
-msgid "Exit"
-msgstr "Esci"
+msgid "exit"
+msgstr "esci"
 
-msgid "Access to Backend"
-msgstr "Accesso al Backend"
+msgid "access to backend"
+msgstr "accesso al backend"
 
-msgid "Authorized"
-msgstr "Autorizzato"
+msgid "authorized"
+msgstr "autorizzato"
 
-msgid "Not Authorized"
-msgstr "Non Autorizzato"
+msgid "not authorized"
+msgstr "non autorizzato"
 
-msgid "Group authorized to Backend"
-msgstr "Gruppo autorizzato al Backend"
+msgid "group authorized to backend"
+msgstr "gruppo autorizzato al backend"
 
 msgid "html"
 msgstr "html"
@@ -460,65 +460,65 @@ msgstr "solo testo"
 msgid "text with conversion space and link"
 msgstr "testo con conversione spazi e link"
 
-msgid "Connect to multimedia gallery"
-msgstr "Collega ad una galleria multimediale"
+msgid "connect to multimedia gallery"
+msgstr "collega ad una galleria multimediale"
 
-msgid "Current gallery"
-msgstr "Galleria selezionata"
+msgid "current gallery"
+msgstr "galleria selezionata"
 
-msgid "Attachments"
-msgstr "Allegati"
+msgid "attachments"
+msgstr "allegati"
 
-msgid "No attachments item found"
-msgstr "Nessun allegato"
+msgid "no attachments item found"
+msgstr "nessun allegato"
 
-msgid "Add multimedia by upload"
-msgstr "Aggiungi oggetti multimediali via upload"
+msgid "add multimedia by upload"
+msgstr "aggiungi oggetti multimediali via upload"
 
-msgid "Add multimedia by URL"
-msgstr "Aggiungi oggetti multimediali via URL"
+msgid "add multimedia by url"
+msgstr "aggiungi oggetti multimediali via url"
 
-msgid "Add multimedia by BEdita"
-msgstr "Associa oggetti multimediali già presenti"
+msgid "add multimedia by bedita"
+msgstr "associa oggetti multimediali già presenti"
 
-msgid "Add attachments by upload"
-msgstr "Aggiungi allegati via upload"
+msgid "add attachments by upload"
+msgstr "aggiungi allegati via upload"
 
-msgid "Add attachments by URL"
-msgstr "Aggiungi allegati via URL"
+msgid "add attachments by url"
+msgstr "aggiungi allegati via url"
 
-msgid "Add attachments by BEdita"
-msgstr "Associa allegati già presenti"
+msgid "add attachments by bedita"
+msgstr "associa allegati già presenti"
 
-msgid "Short text"
-msgstr "Testo breve"
+msgid "short text"
+msgstr "testo breve"
 
-msgid "Long text"
-msgstr "Testo lungo"
+msgid "long text"
+msgstr "testo lungo"
 
-msgid "Text type"
-msgstr "Tipo di testo"
+msgid "text type"
+msgstr "tipo di testo"
 
-msgid "No galleries found"
-msgstr "Nessuna galleria trovata"
+msgid "no galleries found"
+msgstr "nessuna galleria trovata"
 
-msgid "No tree found"
-msgstr "Albero di elementi non trovato"
+msgid "no tree found"
+msgstr "albero di elementi non trovato"
 
-msgid "No documents found"
-msgstr "Nessun documento trovato"
+msgid "no documents found"
+msgstr "nessun documento trovato"
 
-msgid "No areas"
-msgstr "Nessuna area presente"
+msgid "no areas"
+msgstr "nessuna area presente"
 
-msgid "No multimedia item found"
-msgstr "Nessun elemento multimediale trovato"
+msgid "no multimedia item found"
+msgstr "nessun elemento multimediale trovato"
 
-msgid "Remind"
-msgstr "Segnala"
+msgid "remind"
+msgstr "segnala"
 
-msgid "Check if you want be notified, whenever you try to leave the page and you changed some data in the form"
-msgstr "Seleziona qui se vuoi essere avvertito del cambiamento dei dati quando lasci la pagina"
+msgid "check if you want be notified, whenever you try to leave the page and you changed some data in the form"
+msgstr "seleziona qui se vuoi essere avvertito del cambiamento dei dati quando lasci la pagina"
 
 msgid "changes would be lost if you leave the page"
 msgstr "i cambiamenti andrebbero persi, lasciando la pagina"
@@ -526,158 +526,158 @@ msgstr "i cambiamenti andrebbero persi, lasciando la pagina"
 msgid "data changed"
 msgstr "dati cambiati"
 
-msgid "Public name is required (at least %1 alphanumerical char)"
-msgstr "Nome pubblico obbligatorio (almeno %1 carattere alfanumerico)"
+msgid "public name is required (at least %1 alphanumerical char)"
+msgstr "nome pubblico obbligatorio (almeno %1 carattere alfanumerico)"
 
-msgid "Description is required (at least %1 alphanumerical char)"
-msgstr "Descrizione obbligatorio (almeno %1 carattere alfanumerico)"
+msgid "description is required (at least %1 alphanumerical char)"
+msgstr "descrizione obbligatorio (almeno %1 carattere alfanumerico)"
 
-msgid "Creator is required (at least %1 alphanumerical char)"
-msgstr "Creatore obbligatorio (almeno %1 carattere alfanumerico)"
+msgid "creator is required (at least %1 alphanumerical char)"
+msgstr "creatore obbligatorio (almeno %1 carattere alfanumerico)"
 
-msgid "Publisher is required (at least %1 alphanumerical char)"
-msgstr "Pubblicatore obbligatorio (almeno %1 carattere alfanumerico)"
+msgid "publisher is required (at least %1 alphanumerical char)"
+msgstr "pubblicatore obbligatorio (almeno %1 carattere alfanumerico)"
 
-msgid "Rights is required (at least %1 alphanumerical char)"
-msgstr "Diritti obbligatorio (almeno %1 carattere alfanumerico)"
+msgid "rights is required (at least %1 alphanumerical char)"
+msgstr "diritti obbligatorio (almeno %1 carattere alfanumerico)"
 
-msgid "License is required (at least %1 alphanumerical char)"
-msgstr "Licenza obbligatorio (almeno %1 carattere alfanumerico)"
+msgid "license is required (at least %1 alphanumerical char)"
+msgstr "licenza obbligatorio (almeno %1 carattere alfanumerico)"
 
-msgid "Public name"
-msgstr "Nome pubblico"
+msgid "public name"
+msgstr "nome pubblico"
 
-msgid "Contact email"
-msgstr "Contatto email"
+msgid "contact email"
+msgstr "contatto email"
 
-msgid "Creator"
-msgstr "Creatore"
+msgid "creator"
+msgstr "creatore"
 
-msgid "Publisher"
-msgstr "Pubblicatore"
+msgid "publisher"
+msgstr "pubblicatore"
 
-msgid "Rights"
-msgstr "Diritti"
+msgid "rights"
+msgstr "diritti"
 
-msgid "License"
-msgstr "Licenza"
+msgid "license"
+msgstr "licenza"
 
-msgid "Area saved"
-msgstr "Area salvata"
+msgid "area saved"
+msgstr "area salvata"
 
-msgid "Area removed"
-msgstr "Area eliminata"
+msgid "area removed"
+msgstr "area eliminata"
 
-msgid "Section saved"
-msgstr "Sezione salvata"
+msgid "section saved"
+msgstr "sezione salvata"
 
-msgid "Section removed"
-msgstr "Sezione eliminata"
+msgid "section removed"
+msgstr "sezione eliminata"
 
-msgid "Gallery associated to this document"
-msgstr "Galleria associata al documento"
+msgid "gallery associated to this document"
+msgstr "galleria associata al documento"
 
-msgid "No gallery"
-msgstr "Nessuna galleria"
+msgid "no gallery"
+msgstr "nessuna galleria"
 
-msgid "Document saved"
-msgstr "Documento salvato"
+msgid "document saved"
+msgstr "documento salvato"
 
-msgid "Gallery saved"
-msgstr "Galleria salvata"
+msgid "gallery saved"
+msgstr "galleria salvata"
 
-msgid "Select all"
-msgstr "Seleziona tutto"
+msgid "select all"
+msgstr "seleziona tutto"
 
-msgid "Unselect all"
-msgstr "Deseleziona tutto"
+msgid "unselect all"
+msgstr "deseleziona tutto"
 
-msgid "Delete selected items"
-msgstr "Elimina gli elementi selezionati"
+msgid "delete selected items"
+msgstr "elimina gli elementi selezionati"
 
-msgid "Are you sure that you want to delete selected galleries?"
-msgstr "Sei sicuro di voler eliminare le gallerie selezionate?"
+msgid "are you sure that you want to delete selected galleries?"
+msgstr "sei sicuro di voler eliminare le gallerie selezionate?"
 
-msgid "Galleries deleted"
-msgstr "Gallerie eliminate"
+msgid "galleries deleted"
+msgstr "gallerie eliminate"
 
-msgid "Documents deleted"
-msgstr "Documenti eliminati"
+msgid "documents deleted"
+msgstr "documenti eliminati"
 
-msgid "Are you sure that you want to delete selected documents?"
-msgstr "Sei sicuro di voler eliminare i documenti selezionati?"
+msgid "are you sure that you want to delete selected documents?"
+msgstr "sei sicuro di voler eliminare i documenti selezionati?"
 
-msgid "Are you sure that you want to delete the document?"
-msgstr "Sei sicuro di voler eliminare il documento?"
+msgid "are you sure that you want to delete the document?"
+msgstr "sei sicuro di voler eliminare il documento?"
 
-msgid "Are you sure that you want to delete the publication?"
-msgstr "Sei sicuro di voler eliminare la pubblicazione?"
+msgid "are you sure that you want to delete the publication?"
+msgstr "sei sicuro di voler eliminare la pubblicazione?"
 
-msgid "Are you sure that you want to delete the section?"
-msgstr "Sei sicuro di voler eliminare la sezione?"
+msgid "are you sure that you want to delete the section?"
+msgstr "sei sicuro di voler eliminare la sezione?"
 
-msgid "Are you sure that you want to delete the attachment?"
-msgstr "Sei sicuro di voler cancellare l'allegato?"
+msgid "are you sure that you want to delete the attachment?"
+msgstr "sei sicuro di voler cancellare l'allegato?"
 
-msgid "Are you sure that you want to delete the multimedia?"
-msgstr "Sei sicuro di voler cancellare il multimedia?"
+msgid "are you sure that you want to delete the multimedia?"
+msgstr "sei sicuro di voler cancellare il multimedia?"
 
-msgid "Multimedia archive"
-msgstr "Archivio Multimediale"
+msgid "multimedia archive"
+msgstr "archivio multimediale"
 
-msgid "Add selected items"
-msgstr "Aggiungere elementi selezionati"
+msgid "add selected items"
+msgstr "aggiungere elementi selezionati"
 
-msgid "Upload new items"
-msgstr "Carica nuovi oggetti"
+msgid "upload new items"
+msgstr "carica nuovi oggetti"
 
-msgid "Upload new images"
-msgstr "Carica nuovi immagini"
+msgid "upload new images"
+msgstr "carica nuovi immagini"
 
-msgid "Insert new audio/video"
-msgstr "Inserisci nuovi file audio/video"
+msgid "insert new audio/video"
+msgstr "inserisci nuovi file audio/video"
 
-msgid "Display size"
-msgstr "Mostra"
+msgid "display size"
+msgstr "mostra"
 
-msgid "Large icons"
-msgstr "Icone grandi"
+msgid "large icons"
+msgstr "icone grandi"
 
-msgid "Small icons"
-msgstr "Icone piccole"
+msgid "small icons"
+msgstr "icone piccole"
 
-msgid "Add item"
-msgstr "Aggiungi"
+msgid "add item"
+msgstr "aggiungi"
 
-msgid "Upload several images"
-msgstr "Carica molte immagini"
+msgid "upload several images"
+msgstr "carica molte immagini"
 
-msgid "Add from Archive"
-msgstr "Archivio"
+msgid "add from archive"
+msgstr "archivio"
 
-msgid "Gallery items"
-msgstr "Oggetti nella galleria"
+msgid "gallery items"
+msgstr "oggetti nella galleria"
 
-msgid "Empty"
-msgstr "Vuoto"
+msgid "empty"
+msgstr "vuoto"
 
-msgid "File"
-msgstr "File"
+msgid "file"
+msgstr "file"
 
-msgid "File name"
-msgstr "Nome del file"
+msgid "file name"
+msgstr "nome del file"
 
 msgid "image"
 msgstr "immagine"
 
-msgid "To populate this gallery 'Upload new items', 'Insert new audio/video' or use the 'Multimedia items repository' tab"
-msgstr "Per popolare questa galleria, 'Carica nuovi oggetti', 'Inserisci nuovi file audio/video' o usa la scheda 'Archivio oggetti Multimediali'"
+msgid "to populate this gallery 'upload new items', 'insert new audio/video' or use the 'multimedia items repository' tab"
+msgstr "per popolare questa galleria, 'carica nuovi oggetti', 'inserisci nuovi file audio/video' o usa la scheda 'archivio oggetti multimediali'"
 
-msgid "Object type"
-msgstr "Tipo di oggetto"
+msgid "object type"
+msgstr "tipo di oggetto"
 
-msgid "Total number of"
-msgstr "Numero totale di"
+msgid "total number of"
+msgstr "numero totale di"
 
 msgid "multimedia items"
 msgstr "oggetti multimediali"
@@ -685,221 +685,221 @@ msgstr "oggetti multimediali"
 msgid "(un)select all"
 msgstr "(de)seleziona tutti"
 
-msgid "Browse"
-msgstr "Cerca"
+msgid "browse"
+msgstr "cerca"
 
-msgid "Queue is empty"
-msgstr "Coda vuota"
+msgid "queue is empty"
+msgstr "coda vuota"
 
-msgid "Upload queue"
-msgstr "Avvia caricamento"
+msgid "upload queue"
+msgstr "avvia caricamento"
 
-msgid "Upload end"
-msgstr "Caricamento terminato"
+msgid "upload end"
+msgstr "caricamento terminato"
 
-msgid "Errors during upload"
-msgstr "Errori durante il caricamento file"
+msgid "errors during upload"
+msgstr "errori durante il caricamento file"
 
 msgid "files queued"
 msgstr "file in coda"
 
-msgid "Cancel queue"
-msgstr "Annullare coda"
+msgid "cancel queue"
+msgstr "annullare coda"
 
-msgid "Uploading file"
-msgstr "File in caricamento"
+msgid "uploading file"
+msgstr "file in caricamento"
 
-msgid "Thumb"
-msgstr "Miniatura"
+msgid "thumb"
+msgstr "miniatura"
 
-msgid "Select at least one type of permission"
-msgstr "Seleziona almeno un tipo di permesso"
+msgid "select at least one type of permission"
+msgstr "seleziona almeno un tipo di permesso"
 
-msgid "Incompleted data"
-msgstr "Dati incompleti"
+msgid "incompleted data"
+msgstr "dati incompleti"
 
-msgid "Are you sure that you want to delete selected items?"
-msgstr "Sei sicuro di voler eliminare gli elementi selezionati?"
+msgid "are you sure that you want to delete selected items?"
+msgstr "sei sicuro di voler eliminare gli elementi selezionati?"
 
-msgid "Are you sure that you want to delete the item?"
-msgstr "Sei sicuro di voler eliminare l'elemento?"
+msgid "are you sure that you want to delete the item?"
+msgstr "sei sicuro di voler eliminare l'elemento?"
 
-msgid "Are you sure that you want to delete the tag?"
-msgstr "Sei sicuro di voler eliminare il tag?"
+msgid "are you sure that you want to delete the tag?"
+msgstr "sei sicuro di voler eliminare il tag?"
 
-msgid "Tag"
+msgid "tag"
 msgstr "tag"
 
-msgid "Tag saved"
-msgstr "Tag salvato"
+msgid "tag saved"
+msgstr "tag salvato"
 
-msgid "Tag deleted"
-msgstr "Tag eliminato"
-
-msgid "Tags"
-msgstr "Tag"
-
-msgid "New Tag"
-msgstr "Nuovo Tag"
-
-msgid "No tags found"
-msgstr "Nessun tag trovato"
+msgid "tag deleted"
+msgstr "tag eliminato"
 
 msgid "tags"
 msgstr "tag"
 
-msgid "Please enter a valid date in the %1 format and greater than the previous date"
-msgstr "Inserisci una data valida nel formato %1 e maggiore della data precedente"
+msgid "new tag"
+msgstr "nuovo tag"
 
-msgid "Please enter a valid date in the %1 format"
-msgstr "Inserisci una data nel formato %1"
+msgid "no tags found"
+msgstr "nessun tag trovato"
 
-msgid "Please enter a valid date in the %1 format and greater than the previous date"
-msgstr "Inserisci una data valida nel formato %1 e maggiore della data precedente"
+msgid "tags"
+msgstr "tag"
 
-msgid "Main language"
-msgstr "Lingua principale"
+msgid "please enter a valid date in the %1 format and greater than the previous date"
+msgstr "inserisci una data valida nel formato %1 e maggiore della data precedente"
 
-msgid "Language versions"
-msgstr "Versioni linguistiche"
+msgid "please enter a valid date in the %1 format"
+msgstr "inserisci una data nel formato %1"
 
-msgid "Versions"
-msgstr "Versioni"
+msgid "please enter a valid date in the %1 format and greater than the previous date"
+msgstr "inserisci una data valida nel formato %1 e maggiore della data precedente"
 
-msgid "Enable / Disable"
-msgstr "Abilita / Disabilita"
+msgid "main language"
+msgstr "lingua principale"
 
-msgid "Where the section is"
-msgstr "Dove si colloca la sezione"
+msgid "language versions"
+msgstr "versioni linguistiche"
 
-msgid "Contents for the section"
-msgstr "Contenuti per la sezione"
+msgid "versions"
+msgstr "versioni"
 
-msgid "File already exists in the filesystem"
-msgstr "Il file è già presente sul filesystem"
+msgid "enable / disable"
+msgstr "abilita / disabilita"
 
-msgid "File is already associated to another object"
-msgstr "Il file è già associato ad un altro oggetto"
+msgid "where the section is"
+msgstr "dove si colloca la sezione"
 
-msgid "MIME type not found"
-msgstr "MIME type non trovato"
+msgid "contents for the section"
+msgstr "contenuti per la sezione"
 
-msgid "Error saving stream object"
-msgstr "Errore salvando l'oggetto stream"
+msgid "file already exists in the filesystem"
+msgstr "il file è già presente sul filesystem"
 
-msgid "Error deleting stream object"
-msgstr "Errore durante la cancellazione dell'oggetto stream" 
+msgid "file is already associated to another object"
+msgstr "il file è già associato ad un altro oggetto"
 
-msgid "URL not valid"
-msgstr "URL non valido"
+msgid "mime type not found"
+msgstr "mime type non trovato"
 
-msgid "You can't use remote file"
-msgstr "Non puoi usare file remoti"
+msgid "error saving stream object"
+msgstr "errore salvando l'oggetto stream"
 
-msgid "Attachments items"
-msgstr "Allegati"
+msgid "error deleting stream object"
+msgstr "errore durante la cancellazione dell'oggetto stream" 
 
-msgid "Attachments items repository"
-msgstr "Archivio allegati"
+msgid "url not valid"
+msgstr "url non valido"
 
-msgid "To insert item here, switch to the 'Upload new items' tab or the 'Attachments items repository' tab"
-msgstr "Per aggiungere elementi, vai sulla scheda 'Carica nuovi oggetti' o sulla scheda 'Archivio allegati'"
+msgid "you can't use remote file"
+msgstr "non puoi usare file remoti"
 
-msgid "Multimedia items"
-msgstr "Multimedia"
+msgid "attachments items"
+msgstr "allegati"
 
-msgid "Multimedia items repository"
-msgstr "Archivio multimediale"
+msgid "attachments items repository"
+msgstr "archivio allegati"
 
-msgid "To insert item here, switch to the 'Upload new items' tab or the 'Multimedia items repository' tab"
-msgstr "Per aggiungere elementi, vai sulla scheda 'Carica nuovi oggetti' o sulla scheda 'Archivio multimediale'"
+msgid "to insert item here, switch to the 'upload new items' tab or the 'attachments items repository' tab"
+msgstr "per aggiungere elementi, vai sulla scheda 'carica nuovi oggetti' o sulla scheda 'archivio allegati'"
 
-msgid "Add selected items to area/section"
-msgstr "Aggiungi gli elementi selezionati all'area/sezione"
+msgid "multimedia items"
+msgstr "multimedia"
+
+msgid "multimedia items repository"
+msgstr "archivio multimediale"
+
+msgid "to insert item here, switch to the 'upload new items' tab or the 'multimedia items repository' tab"
+msgstr "per aggiungere elementi, vai sulla scheda 'carica nuovi oggetti' o sulla scheda 'archivio multimediale'"
+
+msgid "add selected items to area/section"
+msgstr "aggiungi gli elementi selezionati all'area/sezione"
 
 msgid "comments"
 msgstr "commenti"
 
-msgid "Loading data"
-msgstr "Operazione in corso"
+msgid "loading data"
+msgstr "operazione in corso"
 
 msgid "events"
 msgstr "eventi"
 
-msgid "Events"
-msgstr "Eventi"
+msgid "events"
+msgstr "eventi"
 
-msgid "New Event"
-msgstr "Nuovo evento"
+msgid "new event"
+msgstr "nuovo evento"
 
-msgid "Categories"
-msgstr "Categorie"
+msgid "categories"
+msgstr "categorie"
 
-msgid "Event calendar"
-msgstr "Calendario evento"
+msgid "event calendar"
+msgstr "calendario evento"
 
-msgid "Open calendar"
-msgstr "Apri calendario"
+msgid "open calendar"
+msgstr "apri calendario"
 
-msgid "Add event date"
-msgstr "Aggiungi data evento"
+msgid "add event date"
+msgstr "aggiungi data evento"
 
-msgid "No categories found"
-msgstr "Nessuna categoria trovata"
+msgid "no categories found"
+msgstr "nessuna categoria trovata"
 
-msgid "No events found"
-msgstr "Nessun evento trovato"
+msgid "no events found"
+msgstr "nessun evento trovato"
 
-msgid "Event saved"
-msgstr "Evento salvato"
+msgid "event saved"
+msgstr "evento salvato"
 
-msgid "Event deleted"
-msgstr "Evento eliminato"
+msgid "event deleted"
+msgstr "evento eliminato"
 
-msgid "Where the event is"
-msgstr "Posizione dell'evento"
+msgid "where the event is"
+msgstr "posizione dell'evento"
 
-msgid "No news found"
-msgstr "Nessuna news trovata"
+msgid "no news found"
+msgstr "nessuna news trovata"
 
-msgid "Create news"
-msgstr "Nuova news"
+msgid "create news"
+msgstr "nuova news"
 
-msgid "Area tree saved"
-msgstr "Albero aree salvato"
+msgid "area tree saved"
+msgstr "albero aree salvato"
 
-msgid "Section deleted"
-msgstr "Sezione eliminata"
+msgid "section deleted"
+msgstr "sezione eliminata"
 
-msgid "Add comma separated words"
-msgstr "Aggiungi parole separate da virgola"
+msgid "add comma separated words"
+msgstr "aggiungi parole separate da virgola"
 
-msgid "Show system tags"
-msgstr "Mostra i tag presenti nel sistema"
+msgid "show system tags"
+msgstr "mostra i tag presenti nel sistema"
 
-msgid "Hide system tags"
-msgstr "Nascondi i tag presenti nel sistema"
+msgid "hide system tags"
+msgstr "nascondi i tag presenti nel sistema"
 
-msgid "Multimedia provider unsupported"
-msgstr "Multimedia provider non supportato"
+msgid "multimedia provider unsupported"
+msgstr "multimedia provider non supportato"
 
-msgid "Error during upload, missing file"
-msgstr "Errore durante l'upload: file assente"
+msgid "error during upload, missing file"
+msgstr "errore durante l'upload: file assente"
 
-msgid "Error during upload, error number"
-msgstr "Errore durante l'upload: errore numero"
+msgid "error during upload, error number"
+msgstr "errore durante l'upload: errore numero"
 
 msgid "other"
 msgstr "altro"
 
-msgid "Item Type"
-msgstr "Tipo"
+msgid "item type"
+msgstr "tipo"
 
 msgid "file"
 msgstr "file"
 
-msgid "Connect to other items"
-msgstr "Collega ad altri elementi"
+msgid "connect to other items"
+msgstr "collega ad altri elementi"
 
-msgid "Text doesn't match image"
-msgstr "Il testo non corrisponde all'immagine"
+msgid "text doesn't match image"
+msgstr "il testo non corrisponde all'immagine"

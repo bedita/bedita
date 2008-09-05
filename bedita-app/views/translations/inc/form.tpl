@@ -83,7 +83,7 @@ $(document).ready(function(){
 
 	<div class="tab2"><h2>{t}Properties{/t}</h2></div>
 	<fieldset rel="properties">
-	{t}Translation to{/t}
+	<label>{t}translation to{/t}:</label>
 		{assign var=object_translated_lang value=$object_translation.lang|default:''}
 		{if empty($object_translated_lang)}
 			<select style="font-size:1.2em;" name="data[translation_lang]" id="main_lang">
@@ -99,7 +99,7 @@ $(document).ready(function(){
 			</select>
 		{/if}
 		<hr />
-		<label>{t}Status{/t}</label>:
+		<label>{t}status{/t}:</label>
 		<input type="radio" name="data[LangText][0][text]" {if !empty($object_translation) && ($object_translation.status=='on')}checked="checked" {/if}value="on"/>ON
 		<input type="radio" name="data[LangText][0][text]" {if !empty($object_translation) && ($object_translation.status=='off')}checked="checked" {/if}value="off"/>OFF
 		<input type="radio" name="data[LangText][0][text]" {if !empty($object_translation) && ($object_translation.status=='draft')}checked="checked" {/if}value="draft"/>DRAFT
@@ -113,12 +113,12 @@ $(document).ready(function(){
 
 	<div class="tab2"><h2>{t}Title{/t}</h2></div>
 	<fieldset rel="title">
-		<label>{t}Title{/t}</label><br />
+		<label>{t}title{/t}:</label><br />
 		<input type="text" id="title" name="data[LangText][1][text]" value="{if !empty($object_translation.title)}{$object_translation.title}{/if}"/><br />
 		<input type="hidden" name="data[LangText][1][name]" value="title"/>
 		{if !empty($object_translation.id.title)}<input type="hidden" name="data[LangText][1][id]" value="{$object_translation.id.title}"/>{/if}
 		{if !empty($object_master.description)}
-		<label>{t}Description{/t}</label><br />
+		<label>{t}description{/t}:</label><br />
 		<textarea id="subtitle" style="height:30px" class="shortdesc autogrowarea" name="data[LangText][2][text]">{if !empty($object_translation.description)}{$object_translation.description}{/if}</textarea>
 		<input type="hidden" name="data[LangText][2][name]" value="description"/>
 		{if !empty($object_translation.id.description)}<input type="hidden" name="data[LangText][2][id]" value="{$object_translation.id.description}"/>{/if}
@@ -130,14 +130,14 @@ $(document).ready(function(){
 
 	<fieldset rel="long_desc_langs_container">
 		{if !empty($object_master.abstract)}
-		<label>{t}Short text{/t}:</label><br />
+		<label>{t}short text{/t}:</label><br />
 		<textarea name="data[LangText][3][text]" style="height:200px" class="mce">{if !empty($object_translation.abstract)}{$object_translation.abstract}{/if}</textarea>
 		<input type="hidden" name="data[LangText][3][name]" value="abstract"/>
 		{if !empty($object_translation.id.abstract)}<input type="hidden" name="data[LangText][3][id]" value="{$object_translation.id.abstract}"/>{/if}
 		<br />
 		{/if}
 		{if !empty($object_master.body)}
-		<label>{t}Long text{/t}:</label><br />
+		<label>{t}long text{/t}:</label><br />
 		<textarea name="data[LangText][4][text]" style="height:400px" class="mce">{if !empty($object_translation.body)}{$object_translation.body}{/if}</textarea>
 		<input type="hidden" name="data[LangText][4][name]" value="body"/>
 		{if !empty($object_translation.id.body)}<input type="hidden" name="data[LangText][4][id]" value="{$object_translation.id.body}"/>{/if}
@@ -244,7 +244,7 @@ $(document).ready(function(){
 	
 <div class="tab2"><h2>{t}Properties{/t}</h2></div>
 	<fieldset rel="properties">
-	{t}Master language{/t}:
+	<label>{t}master language{/t}:</label>
 		<select disabled style="font-size:1.2em;" id="eventoLang">
 			<option label="{$conf->langOptions[$object_master.lang]}" value="{$object_master.lang}">{$conf->langOptions[$object_master.lang]}</option>
 		</select>	
@@ -258,10 +258,10 @@ $(document).ready(function(){
 
 	<div class="tab2"><h2>{t}Original Title{/t}</h2></div>
 	<fieldset rel="title">
-		<label>{t}Title{/t}</label><br />
+		<label>{t}title{/t}:</label><br />
 		<input type="text" id="title_master" name="" value="{$object_master.title}" readonly="readonly"/><br />
 		{if !empty($object_master.description)}
-		<label>{t}Description{/t}</label><br />
+		<label>{t}tescription{/t}:</label><br />
 		<textarea id="subtitle" style="height:30px" class="shortdesc autogrowarea" name="">{$object_master.description}</textarea>
 		{/if}
 	</fieldset>
@@ -271,12 +271,12 @@ $(document).ready(function(){
 
 	<fieldset rel="long_desc_langs_container">
 		{if !empty($object_master.abstract)}
-		<label>{t}Short text{/t}:</label><br />
+		<label>{t}short text{/t}:</label><br />
 		<textarea name="" style="height:200px" class="mce">{$object_master.abstract}</textarea>
 		<br />
 		{/if}
 		{if !empty($object_master.body)}
-		<label>{t}Long text{/t}:</label><br />
+		<label>{t}long text{/t}:</label><br />
 		<textarea name="" style="height:400px" class="mce">{$object_master.body}</textarea>
 		{/if}
 	</fieldset>
@@ -298,9 +298,9 @@ $(document).ready(function(){
 				</a>
 			</td>
 			<td>
-				<label>{t}Title{/t}</label>
+				<label>{t}title{/t}</label>
 				<input type="text" style="width:210px !important" name="" value="{$image.title}" />
-				<label>{t}Description{/t}</label>
+				<label>{t}description{/t}</label>
 				<textarea style="height:38px; width:210px !important" name="">{$image.description}</textarea>
 			</td>
 		</tr>

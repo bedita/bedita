@@ -277,7 +277,7 @@ $config['objectTypes'] = array(
 	
 	'link'				=> 33,
 
-	'address'			=> 34,
+	'card'			=> 34,
 	
 	'related'		=> array(18,19,20,21,22,29),
 	
@@ -322,7 +322,7 @@ $config['objectTypeModels'] = array(
 	30	=> 'BiblioItem',
 
 	33 	=> 'Link',
-	34 	=> 'Address'
+	34 	=> 'Card'
 
 ) ;
 

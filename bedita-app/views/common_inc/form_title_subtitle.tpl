@@ -6,11 +6,11 @@
 
 <table>
 	<tr>
-		<th>{t}Title{/t}</th>
+		<th>{t}title{/t}:</th>
 		<td><input type="text" id="title" name="data[title]" value="{$object.title|escape:'html'|escape:'quotes'}" id="titleBEObject"/></td>
 	</tr>
 	<tr>
-		<th>{t}Description{/t}</th>
+		<th>{t}description{/t}:</th>
 		<td><textarea id="subtitle" style="height:30px" class="shortdesc autogrowarea" name="data[description]">{$object.description|default:''|escape:'html'}</textarea></td>
 	</tr>
 	

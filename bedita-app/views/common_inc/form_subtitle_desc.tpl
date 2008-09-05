@@ -5,7 +5,7 @@
 		
 		<table>
 		<tr>
-			<th>{t}Description{/t}:</th>
+			<th>{t}description{/t}:</th>
 			<td>
 				<textarea style="width:320px; min-height:16px;" class="shortdesc autogrowarea" name="data[description]">{$object.description|default:''|escape:'html'}</textarea>
 			</td>
