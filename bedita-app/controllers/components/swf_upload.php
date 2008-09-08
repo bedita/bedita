@@ -197,7 +197,7 @@ class SwfUploadComponent extends Object {
 	function setError($code = 1, $message = 'An unknown error occured.', $debug = '') {
 		$this->errorCode = $code;
 		$this->errorMessage = $message;
-		if (DEBUG) {
+		if (Configure::read("debug")) {
 			$this->errorMessage .= $debug;
 		}
 		return true;

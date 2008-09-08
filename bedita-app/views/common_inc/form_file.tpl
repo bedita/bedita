@@ -92,18 +92,34 @@
 	</tr>
 	
 {/if}
-
-	<tr>
-		<th>{t}substitute file{/t}:</th>
-		<td colspan="3">
-			<input style="width:270px;" type="file" name="Filedata" />
-			
-		</td>
-		
-	</tr>
 	
 </table>
 
+<ul class="htab">
+	<li rel="uploadItems">{t}upload new item{/t}</li>
+	<li rel="urlItems">{t}add by url{/t}</li>
+</ul>
+
+
+<div class="htabcontainer" id="addmultimediacontents">
+
+	<div class="htabcontent" id="uploadItems">
+		<input style="width:270px;" type="file" name="Filedata" />
+	</div>
+	
+	
+	<div class="htabcontent" id="urlItems">
+		
+		<table style="margin-bottom:20px">
+		<tr>
+			<td>{t}Url{/t}:</td>
+			<td><input type="text" style="width:270px;" name="data[url]" /></td>
+		</tr>
+		
+		</table>
+	</div>
+
+</div>
 
 </fieldset>
 

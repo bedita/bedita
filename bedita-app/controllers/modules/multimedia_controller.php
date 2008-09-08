@@ -23,7 +23,7 @@ class MultimediaController extends ModulesController {
 	var $name = 'Multimedia';
 
 	var $helpers 	= array('BeTree', 'BeToolbar', 'MediaProvider');
-	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
+	var $components = array('BeTree', 'Permission', 'BeFileHandler', 'SwfUpload', 'BeUploadToObj');
 
 	// This controller does not use a model
 	var $uses = array('Stream', 'Image', 'Audio', 'Video', 'BEObject', 'Tree', 'User', 'Group','Category') ;
@@ -69,7 +69,7 @@ class MultimediaController extends ModulesController {
 	  * If $id is not passed, show new multimedia object page
 	  * @param integer $id
 	  */
-	 function view($id = null) {
+	function view($id = null) {
 		$conf  = Configure::getInstance() ;
 		$this->setup_args(array("id", "integer", &$id)) ;
 		// Get object by $id
@@ -81,7 +81,8 @@ class MultimediaController extends ModulesController {
 														"Permissions",
 														"UserCreated", 
 														"UserModified",
-														"RelatedObject"),
+														"RelatedObject",
+														"Category"),
 									"Content", "Stream"
 									)
 								);
@@ -118,18 +119,29 @@ class MultimediaController extends ModulesController {
 		$this->checkWriteModulePermission();
 		if(empty($this->data)) 
 			throw new BeditaException( __("No data", true));
+			
 		$new = (empty($this->data['id'])) ? true : false ;
+		
 		// Verify object permits
 		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
 			throw new BeditaException(__("Error modify permissions", true));
-		// Format custom properties
-		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
+		
 		$this->Transaction->begin() ;
 		// save data
 		$this->data["Category"] = $this->Category->saveTagList($this->params["form"]["tags"]);
-		if(!$this->Stream->save($this->data)) {
-			throw new BeditaException(__("Error saving multimedia object", true),$this->Stream->validationErrors);
+
+		if (!empty($this->params['form']['Filedata']['name'])) {		
+			$this->Stream->id = $this->BeUploadToObj->upload($this->data) ;
+		} elseif (!empty($this->data['url'])) {
+			$this->Stream->id = $this->BeUploadToObj->uploadFromMediaProvider($this->data) ;
+		} else {
+			$model = $this->BEObject->getType($this->data["id"]);
+			if(!$this->{$model}->save($this->data)) {
+	            throw new BeditaException(__("Error saving multimedia", true), $this->{$model}->validationErrors);
+	        }
+	        $this->Stream->id = $this->{$model}->id;
 		}
+		
 		// update permissions
 		if(!isset($this->data['Permissions'])) 
 			$this->data['Permissions'] = array() ;
@@ -197,7 +209,7 @@ class MultimediaController extends ModulesController {
 							),
 			"save"  =>  array(
 							"OK"    => "/multimedia/view/{$this->Stream->id}",
-							"ERROR" => "/multimedia/view/{$this->Stream->id}" 
+							"ERROR" => "/multimedia/view/{$this->data["id"]}" 
 							), 
 			"delete"	=> 	array(
 							"OK"	=> "./",

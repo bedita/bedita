@@ -27,9 +27,9 @@ class BEAppObjectModel extends BEAppModel {
 	function save($data = null, $validate = true, $fieldList = array()) {
 		$conf = Configure::getInstance() ;
 
-		if(isset($data['BEObject']) && !isset($data['BEObject']['object_type_id'])) {
+		if(isset($data['BEObject']) && empty($data['BEObject']['object_type_id'])) {
 			$data['BEObject']['object_type_id'] = $conf->objectTypes[strtolower($this->name)] ;
-		} else if(!isset($data['object_type_id'])) {
+		} else if(!isset($data['object_type_id']) || empty($data['object_type_id'])) {
 			$data['object_type_id'] = $conf->objectTypes[strtolower($this->name)] ;
 		}
 

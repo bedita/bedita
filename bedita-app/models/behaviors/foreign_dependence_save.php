@@ -79,24 +79,6 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 	 * Preleva i dati d passare al parent
 	 * 
 	 */
-/*	
-	private function _data4Parent(&$model, $name, &$data) {
-		//se nn ci sono dati continua
-		if (is_array($model->data) && !count($model->data)) $data = array() ;
-		
-		if(isset($model->data[$name])) {
-			$data = $model->data[$name] ;
-			
-		} elseif (isset($model->data[$model->name])) {
-			$data = array($name => $model->data[$model->name]) ;
-					
-		} elseif (Set::countDim($model->data) == 1) {
-			$data = array($name => $model->data) ;
-		} else {
-			$data = array() ;
-		}
-	}
-*/
 	private function _data4Parent(&$model, $name, &$data) {
 		//se nn ci sono dati continua
 		if (is_array($model->data) && !count($model->data))

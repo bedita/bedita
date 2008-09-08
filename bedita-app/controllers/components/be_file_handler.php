@@ -81,6 +81,7 @@ class BeFileHandlerComponent extends Object {
 	 * @return integer or false (id of the object created or modified)
 	 */
 	function save(&$dati, $model = null) {
+		
 		if(isset($dati['id']) && !empty($dati['id'])) { // modify
 			if(!isset($dati['path']) || @empty($dati['path'])) {
 				return $this->_modify($dati['id'], $dati) ;
@@ -221,25 +222,9 @@ class BeFileHandlerComponent extends Object {
 					" - matches: ".$modelType) ;
 		}
 		$this->{$model}->id = false ;
-		// add lang_text
-		if (empty($dati["LangText"])) {
-			if (!empty($dati['lang'])) {
-				$langObj = $dati['lang'];
-			} else {
-				$conf = Configure::getInstance() ;
-				$langObj = $conf->defaultLang;
-			}
-			$langArr[] = array("lang" => $langObj, "name" => "title", "text" => $dati["title"]);
-			if (!empty($dati["description"])) {
-				$langArr[] = array("lang" => $langObj, "name" => "description", "text" => $dati["description"]);
-			}
-			
-			$dati["LangText"] = $langArr;
-		}
 		
 		if(!($ret = $this->{$model}->save($dati))) {
-			$this->validateErrors = $this->{$model}->validateErrors ;
-			throw new BEditaSaveStreamObjException(__("Error saving stream object",true)) ;
+			throw new BEditaSaveStreamObjException(__("Error saving stream object",true), $this->{$model}->validationErrors) ;
 		}
 		return ($this->{$model}->{$this->{$model}->primaryKey}) ;
 	}
@@ -258,7 +243,7 @@ class BeFileHandlerComponent extends Object {
 		}
 	
 		// se il file e' presente in un altro oggetto torna un eccezione
-		if(!$this->_isPresent($dati['path'], $id)) throw new BEditaFileExistException(__("File is already associated to another object",true)) ;
+		if($this->_isPresent($dati['path'], $id)) throw new BEditaFileExistException(__("File is already associated to another object",true)) ;
 		
 		// Se e' presente un path ad file su file system, cancella
 		if(($ret = $this->Stream->read('path', $id) && !$this->_isURL($ret['path']))) {
@@ -273,11 +258,14 @@ class BeFileHandlerComponent extends Object {
 		$targetPath	= $this->_getPathTargetFile($dati['name']); 
 		
 		// se il file e' presente in un altro oggetto torna un eccezione
-		if(!$this->_isPresent($targetPath, $id)) throw new BEditaFileExistException(__("File is already associated to another object",true)) ;
+		if($this->_isPresent($targetPath, $id)) 
+			throw new BEditaFileExistException(__("File is already associated to another object",true)) ;
 		
+		$ret = $this->Stream->read('path', $id);
+			
 		// Se e' presente un path ad file su file system, cancella
-		if(($ret = $this->Stream->read('path', $id) && !$this->_isURL($ret['path']))) {
-			$this->_removeFile($ret['path']) ;		
+		if(($ret && !$this->_isURL($ret['Stream']['path']))) {
+			$this->_removeFile($ret['Stream']['path']) ;		
 		}
 		
 		// Crea il file
@@ -288,16 +276,12 @@ class BeFileHandlerComponent extends Object {
 	}
 	
 	private function _modify($id, &$dati) {
-		$conf 		= Configure::getInstance() ;
+		$conf = Configure::getInstance() ;
 
-		if(isset($dati['type']) && !empty($dati['type'])) {
-			// Se il MIME type esiste e non e' == torna errore
-			$ret = $this->Stream->read('type', $id) ;
-			if(!isset($ret['type']) || empty($ret['type'])) break ;
+		$ret = $this->Stream->read('type', $id) ;
 			
-			if($ret['type'] != $dati['type']) 
-				throw new BEditaMIMEException(__("MIME type not found", true)) ;
-		}
+		if(empty($ret['Stream']['type'])) 
+			throw new BEditaMIMEException(__("MIME type of previous file isn't defined in database. Impossible replace it.", true)) ;
 		
 		// Preleva il tipo di oggetto da salvare e salva
 		$rec = $this->BEObject->recursive ;
@@ -307,12 +291,15 @@ class BeFileHandlerComponent extends Object {
 		$this->BEObject->recursive = $rec ;
 		$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
 		
+		if (!$this->_getTypeFromMIME($dati["type"], $model))
+			throw new BEditaMIMEException(__("MIME type (" . $dati["type"] . ") is not compatible with " . $model . " object", true)) ;
+		
 		$this->{$model}->id =  $id ;
 		if(!($ret = $this->{$model}->save($dati))) {
 			throw new BEditaSaveStreamObjException(__("Error saving stream object",true)) ;
 		}
 		
-		return $ret ;
+		return ($this->{$model}->{$this->{$model}->primaryKey}) ;
 	}	
 	
 	/**
@@ -353,7 +340,7 @@ class BeFileHandlerComponent extends Object {
 		if(isset($model) && isset($conf->validate_resorce['mime'][$model] )) {
 			$regs = $conf->validate_resorce['mime'][$model] ;
 			foreach ($regs as $reg) {
-				if(preg_match($reg, $path)) 
+				if(preg_match($reg, $mime)) 
 					return $model ;
 			}
 		} else {
@@ -455,7 +442,8 @@ class BeFileHandlerComponent extends Object {
 		$path = Configure::read("mediaRoot") . $path ;
 		
 		// Cancella
-		if(!$this->Transaction->rm($path)) return false ;
+		if(!$this->Transaction->rm($path))
+			return false ;
 		
 		// Se la directory contenitore e' vuota, la cancella
 		$dir = dirname($path) ;
@@ -474,7 +462,8 @@ class BeFileHandlerComponent extends Object {
 			
 			// Se vuota cancella altrimenti interrompe
 			if($vuota) {
-				if(!$this->Transaction->rmdir($dir)) return false ;
+				if(!$this->Transaction->rmdir($dir))
+					return false ;
 			}else {
 				break ;
 			}
@@ -495,7 +484,7 @@ class BeFileHandlerComponent extends Object {
 		
 		$clausoles = array() ;
 		$clausoles[] = array("path" => trim($path)) ;
-		if(isset($id)) $clausoles[] = array("id " => "not {$id}") ;
+		if(isset($id)) $clausoles[] = array("id" => "not {$id}") ;
 		
 		$ret = $this->Stream->find($clausoles, 'id') ;
 		
@@ -623,4 +612,23 @@ class BEditaMediaProviderException extends BeditaException
 {
 }
 
+/**
+ * 		BEditaUploadPHPException	// handle php upload errors
+ */
+class BEditaUploadPHPException extends BeditaException
+{
+	private $phpError = array(
+							UPLOAD_ERR_INI_SIZE		=> "The uploaded file exceeds the upload_max_filesize directive in php.ini",
+							UPLOAD_ERR_FORM_SIZE	=> "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form",
+							UPLOAD_ERR_PARTIAL		=> "The uploaded file was only partially uploaded",
+							UPLOAD_ERR_NO_FILE		=> "No file was uploaded",
+							UPLOAD_ERR_NO_TMP_DIR	=> "Missing a temporary folder",
+							UPLOAD_ERR_CANT_WRITE	=> "Failed to write file to disk",
+							UPLOAD_ERR_EXTENSION	=> "File upload stopped by extension"
+							); 
+	
+	public function __construct($numberError, $details = NULL, $res  = AppController::ERROR, $code = 0) {
+		parent::__construct($this->phpError[$numberError], $details, $res, $code);
+	}
+}
 ?>

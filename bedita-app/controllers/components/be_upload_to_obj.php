@@ -73,22 +73,31 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 	 */
 	function upload($dataStream=null) {
 		$result = false ;
+		if (empty($this->params["form"]["Filedata"]["name"]))
+			throw new BEditaException(__("No file in the form", true));
+		
 		if(!$this->validate()) {
 			$this->errorCode = 500 + $this->params['form']['Filedata']['error'] ;
-			return $result ;
+			throw new BeditaException(__($this->errorMessage, true));
 		}
 		// Prepare data
-		$data = &$this->params['form']['Filedata'] ;
-		$override = (isset($this->params['form']['override'])) ? ((boolean)$this->params['form']['override']) : false ;
-		$data['title']	= (empty($dataStream['title']))? $data['name'] : $dataStream['title'];
-		if (!empty($dataStream['description'])) {
-			$data["description"] = $dataStream['description'];
+		if (!empty($dataStream)) {
+			$data = array_merge($dataStream, $this->params['form']['Filedata']);
 		}
+
+		$override = (isset($this->params['form']['override'])) ? ((boolean)$this->params['form']['override']) : false ;
+
+		if (empty($data['title']))
+			$data['title'] = $data['name'];
+
 		$data['path']	= $data['tmp_name'] ;
-		$data['lang']   = $dataStream['lang'];
-		$data["status"] = "on";
+
+		if (empty($data["status"]))
+			$data["status"] = "on";
+
 		unset($data['tmp_name']) ;
 		unset($data['error']) ;
+
 		// FLASH returns application/octect-stream as MIME type
 		if($data['type'] == "application/octet-stream") { 
 			$old  = $data['type'] ;
@@ -136,50 +145,50 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 	function uploadFromMediaProvider($dataURL) {
 
 		$result = false ;
-		if(!$this->recognizeMediaProvider($dataURL['url'], $provider, $name)) {
+	
+		if(! $dataURL["url"] = $this->recognizeMediaProvider($dataURL['url'], $provider, $name)) {
 			throw new BEditaMediaProviderException(__("Multimedia provider unsupported",true)) ;
 		}
 	
 		// Prepare data
 		switch($provider) {
 			case 'youtube': {
-				$data['title']		= (!empty($dataURL['title'])) ? trim($dataURL['title']) : 'youtube video';
-				$data['name']		= preg_replace("/[\'\"]/", "", $data['title']) ;
-				$data['type']		= "video/$provider" ;
-				$data['path']		= $dataURL['url'] ;
-				$data['lang'] 	  	= $dataURL['lang'];
-				$data['provider']	=  $provider ;
-				$data['uid']  	 	=  $name ;
+				$dataURL['title']		= (!empty($dataURL['title'])) ? trim($dataURL['title']) : 'youtube video';
+				$dataURL['name']		= preg_replace("/[\'\"]/", "", $dataURL['title']) ;
+				$dataURL['type']		= "video/$provider" ;
+				$dataURL['path']		= $dataURL['url'] ;
+				$dataURL['provider']	=  $provider ;
+				$dataURL['uid']  	 	=  $name ;
 			} break ;
 			case 'blip': {
 				if(!($this->BeBlipTv->getInfoVideo($name) )) {
 					throw new BEditaMediaProviderException(__("Multimedia  not found",true)) ;
 				}
 				
-				if(@empty($dataURL['title'])) $data['title'] = $this->BeBlipTv->info['title'] ;
-				else $data['title'] = trim($dataURL['title']) ;
+				if(@empty($dataURL['title'])) $dataURL['title'] = $this->BeBlipTv->info['title'] ;
+				else $dataURL['title'] = trim($dataURL['title']) ;
 								
-				$data['name']		= preg_replace("/[\'\"]/", "", $data['title']) ;
-				$data['type']		= "video/$provider" ;
-				$data['path']		= $this->BeBlipTv->info['url'] ;
-				$data['lang'] 	  	= $dataURL['lang'];
-				$data['provider']	=  $provider ;
-				$data['uid']  	 	=  $name ;
+				$dataURL['name']		= preg_replace("/[\'\"]/", "", $dataURL['title']) ;
+				$dataURL['type']		= "video/$provider" ;
+				$dataURL['path']		= $this->BeBlipTv->info['url'] ;
+				$dataURL['provider']	=  $provider ;
+				$dataURL['uid']  	 	=  $name ;
 			} break ;
+			
 		}
 		
-		$data['status'] = "on";
-		if (!empty($dataURL['description']))
-			$data['description'] = $dataURL['description'];
+		if (empty($dataURL["status"]))
+			$dataURL['status'] = "on";
+			
 		
-		if($this->BeFileHandler->isPresent($data['path'])) 
+		if($this->BeFileHandler->isPresent($dataURL['path'])) 
 			throw new BEditaFileExistException(__("Video url is already in the system",true)) ;
 
 		App::import('Model', 'Video') ;
 		$Video = new Video() ;
-			
+		
 		$Video->id = false ;
-		if(!($ret = $Video->save($data))) {
+		if(!($ret = $Video->save($dataURL))) {
 			$this->validateErrors = $Video->validationErrors ;
 			throw new BEditaSaveStreamObjException(__("Error saving stream object",true)) ;
 		}
@@ -199,7 +208,7 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 				if(preg_match($expression, $url, $matched)) {
 					$uid = $matched[1] ;
 					
-					return true ;
+					return $matched[0] ;
 				}	
 			}
 		}

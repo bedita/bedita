@@ -21,14 +21,9 @@ class FilesController extends AppController {
 	}
 	
 	function uploadAjax () {
-		$this->layout = "empty";
+		$this->layout = null;
 		try {
 			$this->Transaction->begin() ;
-			if (!isset($this->params['form']['Filedata']))
-				throw new BEditaException(__("Error during upload: missing file",true)) ;
-			if (!empty($this->params['form']['Filedata']["error"]))
-				throw new BEditaException(__("Error during upload: error number" ." ". $this->params['form']['Filedata']["error"],true)) ;
-			
 			$this->params['form']['streamUploaded']['lang'] = $this->data["lang"];
 			$id = $this->BeUploadToObj->upload($this->params["form"]["streamUploaded"]) ;
 			$this->Transaction->commit();
