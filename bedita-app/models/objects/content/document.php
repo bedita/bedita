@@ -15,7 +15,7 @@
 class Document extends BeditaContentModel 
 {
 	var $actsAs 	= array(
-			'CompactResult' 		=> array(),
+			'CompactResult' 		=> array('GeoTag'),
 			'SearchTextSave'		=> array(),
 			'ForeignDependenceSave' => array('BEObject', 'Content'),
 			'DeleteObject' 			=> array(
@@ -24,6 +24,20 @@ class Document extends BeditaContentModel
 											)
 										) 
 	); 
+
+	var $hasMany = array(
+		'GeoTag' =>
+			array(
+				'foreignKey'	=> 'object_id',
+				'dependent'		=> true
+			)
+	) ;
+
+	function afterSave() {
+		return $this->updateHasManyAssoc();
+	}
+
+	
 }
 
 

@@ -202,18 +202,19 @@ class MultimediaController extends ModulesController {
 	}
 	 
 	protected function forward($action, $esito) {
+
 		$REDIRECT = array(
 			"cloneObject"	=> 	array(
-							"OK"	=> "/multimedia/view/{$this->BEObject->id}",
-							"ERROR"	=> "/multimedia/view/{$this->BEObject->id}" 
+							"OK"	=> "/multimedia/view/".@$this->BEObject->id,
+							"ERROR"	=> "/multimedia/view/".@$this->BEObject->id 
 							),
 			"save"  =>  array(
-							"OK"    => "/multimedia/view/{$this->Stream->id}",
-							"ERROR" => "/multimedia/view/{$this->data["id"]}" 
+							"OK"    => "/multimedia/view/".@$this->Stream->id,
+							"ERROR" => "/multimedia/view/".@$this->data['id'] 
 							), 
 			"delete"	=> 	array(
 							"OK"	=> "./",
-							"ERROR"	=> "./view/{@$this->params['pass'][0]}"
+							"ERROR"	=> "./view/".@$this->params['pass'][0]
 							),
 			"changeStatusObjects"	=> 	array(
 							"OK"	=> "/multimedia",

@@ -58,7 +58,7 @@ class DocumentsController extends ModulesController {
 															"RelatedObject",
 															"Category"
 															),
-										"Content"
+										"Content", "GeoTag"
 										)
 									);
 			if(!($obj = $this->Document->findById($id))) {
@@ -141,16 +141,16 @@ class DocumentsController extends ModulesController {
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"cloneObject"	=> 	array(
-							"OK"	=> "/documents/view/{$this->Document->id}",
-							"ERROR"	=> "/documents/view/{$this->Document->id}" 
+							"OK"	=> "/documents/view/".@$this->Document->id,
+							"ERROR"	=> "/documents/view/".@$this->Document->id 
 							),
 			"save"	=> 	array(
-							"OK"	=> "/documents/view/{$this->Document->id}",
-							"ERROR"	=> "/documents/view/{$this->Document->id}" 
+							"OK"	=> "/documents/view/".@$this->Document->id,
+							"ERROR"	=> "/documents/view/".@$this->Document->id 
 							), 
 			"delete" =>	array(
 							"OK"	=> "/documents",
-							"ERROR"	=> "/documents/view/{@$this->params['pass'][0]}" 
+							"ERROR"	=> "/documents/view/".@$this->params['pass'][0]
 							),
 			"addItemsToAreaSection"	=> 	array(
 							"OK"	=> "/documents",

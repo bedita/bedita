@@ -508,7 +508,9 @@ $config['validate_resorce'] = array(
 $config['media_providers'] = array(
 	"youtube"	=> array(
 			'/^http:\/\/\w{3}\.youtube\.com\/watch\?v=(.[^&]+)/',
-			'/http:\/\/youtube\.com\/watch\?v=(.[^&]+)/'
+			'/http:\/\/youtube\.com\/watch\?v=(.[^&]+)/',
+			'/http:\/\/[a-z]{2}\.youtube\.com\/watch\?v=(.[^&]+)/'
+
 	) ,
 	"blip"	=> array(
 			'/^http:\/\/\w{3}\.blip\.tv\/file\/(\d+)\?{0,1}.*/',
@@ -532,7 +534,7 @@ $config['modelBindings'] = array(
 	'Area' 		=> array("BEObject" => array("CustomProperties", "LangText")),
 	'Section' 	=> array("BEObject" => array("CustomProperties", "LangText")),
  	'Document' 	=> array("BEObject" => array("CustomProperties", "LangText", "ObjectType", "Category", "RelatedObject" ),
-					"Content"),
+					"Content","GeoTag"),
 	'ShortNews' => array("BEObject" => array("CustomProperties", "LangText", "ObjectType", "Category", "RelatedObject" ),
 					"Content"),
 	'Event' 	=> array("BEObject" => array("CustomProperties", "LangText", "ObjectType", "Category", "RelatedObject"),

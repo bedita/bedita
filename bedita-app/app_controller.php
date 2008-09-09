@@ -582,11 +582,11 @@ abstract class ModulesController extends AppController {
 			$objectsListDesc = implode(",", $objectsToModify);
 		
 			$this->Transaction->begin() ;
-			$this->BEObject = ClassRegistry::init("BEObject");
 
 			foreach ($objectsToModify as $id) {
-				$this->BEObject->id = $id;
-				if(!$this->BEObject->saveField('status',$this->params['form']["newStatus"]))
+				$beObj = $this->loadModelByType("BEObject");
+				$beObj->id = $id;
+				if(!$beObj->saveField('status',$this->params['form']["newStatus"]))
 					throw new BeditaException(__("Error saving status for object: ", true) . $id);
 			}
 			

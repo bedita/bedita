@@ -19,6 +19,7 @@ DROP TABLE IF EXISTS `links`;
 DROP TABLE IF EXISTS `documents`;
 DROP TABLE IF EXISTS `books`;
 DROP TABLE IF EXISTS `date_items`;
+DROP TABLE IF EXISTS `geo_tags`;
 DROP TABLE IF EXISTS `events`;
 DROP TABLE IF EXISTS `object_users`;
 DROP TABLE IF EXISTS `bibliographies`;
@@ -548,6 +549,20 @@ CREATE TABLE date_items (
   PRIMARY KEY(id),
   FOREIGN KEY(content_id)
     REFERENCES contents(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE geo_tags (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  object_id INTEGER UNSIGNED NOT NULL,
+  latitude FLOAT(7,4) NULL,
+  longitude FLOAT(7,4) NULL,
+  address VARCHAR(255) NULL,
+  gmaps_lookat VARCHAR(255) NULL,
+  PRIMARY KEY(id),
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;

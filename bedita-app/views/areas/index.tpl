@@ -72,7 +72,7 @@ $(document).ready(function() {
 <div style="width:420px; position:absolute; top:160px; left:580px">
 
 				
-<div class="tab"><h2>{t}Section details{/t}</h2></div>
+<div class="tab"><h2>{t}Details{/t}</h2></div>
 
 <fieldset style="padding:0px" id="properties">		
 	
