@@ -3,43 +3,67 @@
 
 <div class="tab"><h2>{t}card{/t}</h2></div>
 
-<fieldset id="personal">
+<fieldset id="card">
 
-<table>
-	<tr>
-		<th>{t}full Name{/t}</th>
-		<td><input type="text" name="data[name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>
-		<th>{t}title{/t}</th>
-		<td>
-			<input type="text" id="vtitle" name="data[vtitle]" value="{$object.vtitle|escape:'html'|escape:'quotes'}" />
+<ul class="htab">
+	<li rel="person">Person</li>
+	<li rel="company">Company</li>
+	
+</ul>
 
-		</td>
-	</tr>
-	<tr>
-		<td colspan="4"><hr /></td>
-	</tr>
-	<tr>
-		<th>{t}name{/t}</th>
-		<td><input type="text" name="data[name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>
-		<th>{t}surname{/t}</th>
-		<td><input type="text" name="data[surname]" value="{$object.surname|escape:'html'|escape:'quotes'}" /></td>
-	</tr>
-	<tr>
-		<td></td>
-		<td colspan="2">
-			<input type="radio" name="data[sex]" value="male" /> {t}male{/t} &nbsp&nbsp
-			<input type="radio" name="data[sex]" value="female" /> {t}female{/t} &nbsp&nbsp
-			<input type="radio" name="data[sex]" value="transgender" /> {t}transgender{/t} 
-		</td>
-	</tr>
-	<tr>
-		<th>{t}birthdate{/t}</th>
-		<td><input type="text" name="data[birthdate]" value="{$object.birthdate|escape:'html'|escape:'quotes'}" /></td>
-		<th>{t}deathdate {/t}</th>
-		<td><input type="text" name="data[birthdate]" value="{$object.deathdate|escape:'html'|escape:'quotes'}" /></td>
+<div class="htabcontainer" id="companyperson">
+	
+	<div class="htabcontent" id="person" >
+	<table>
+		<tr>
+			<th>{t}name{/t}:</th>
+			<td><input type="text" name="data[name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>
+		</tr>	
+		<tr>			
+			<th>{t}surname{/t}:</th>
+			<td><input type="text" name="data[surname]" value="{$object.surname|escape:'html'|escape:'quotes'}" /></td>
+			<th>{t}title{/t}:</th>
+			<td>
+				<input type="text" style="width:45px" id="vtitle" name="data[vtitle]" value="{$object.vtitle|escape:'html'|escape:'quotes'}" />
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td colspan="3">
+				<input type="radio" name="data[sex]" value="male" /> {t}male{/t} &nbsp&nbsp
+				<input type="radio" name="data[sex]" value="female" /> {t}female{/t} &nbsp&nbsp
+				<input type="radio" name="data[sex]" value="transgender" /> {t}transgender{/t}
+				<input type="radio" name="data[sex]" value="drone" /> {t}drone{/t} 
+			</td>
+		</tr>
+		<tr>
+			<th>{t}birthdate{/t}:</th>
+			<td><input type="text" name="data[birthdate]" value="{$object.birthdate|escape:'html'|escape:'quotes'}" /></td>
+		</tr>	
+		<tr>
+			<th>{t}deathdate{/t}:</th>
+			<td><input type="text" name="data[birthdate]" value="{$object.deathdate|escape:'html'|escape:'quotes'}" /></td>
+	
+		</tr>
+	</table>
+	</div>
 
-	</tr>
-</table>
+	<div class="htabcontent" id="company" >
+	<table>
+		<tr>
+			<th>{t}company name{/t}:</th>
+			<td><input style="width:320px" type="text" name="data[name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>
+		</tr>	
+		<tr>
+			<th>{t}kind{/t}:</th>
+			<td>
+				<input type="text" id="vtitle" name="data[vtitle]" value="{$object.vtitle|escape:'html'|escape:'quotes'}" />
+			</td>
+		</tr>
+	</table>
+	</div>
+		
+</div>
 
 </fieldset>
 

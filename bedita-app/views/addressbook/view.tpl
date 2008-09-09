@@ -23,7 +23,7 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		$('#personal').show() ;
+		$('#card').show() ;
 		$('#address').show() ;
 		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
 		
