@@ -11,7 +11,6 @@
 <tr>
 	<th>{t}address{/t}:</th>
 	<td colspan=3><input type="text" style="width:300px;" name="data[GeoTag][0][address]" value="{if !empty($d.address)}{$d.address}{/if}"></td>
-	<td style="vertical-align:middle;" rowspan="3"><input type="submit" value="add"></td>
 </tr>
 <tr>
 	<th>{t}latitude{/t}:</th
