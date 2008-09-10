@@ -30,8 +30,8 @@ $(document).ready(function(){
 
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 
-<div class="modules">
-	   <label class="documents" rel="{$html->url('/documents')}">{t}Documents{/t}</label>
+	<div class="modules">
+	   <label class="{$moduleName}" rel="{$html->url('/documents')}">{t}{$moduleName}{/t}</label>
 	</div> 
 	
 
@@ -52,6 +52,4 @@ $(document).ready(function(){
 	{/if}
 
 
-
 </div>
-

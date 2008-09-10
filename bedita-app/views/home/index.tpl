@@ -39,15 +39,21 @@ $(document).ready(function() {
 
 {foreach name=module1 from=$moduleList key=k item=mod}
 	{if ($mod.status == 'on')}
-        {if ($mod.flag & BEDITA_PERMS_READ) }
-
+	
             {assign_concat var='linkPath' 0=$html->url('/') 1=$mod.path}
-            <li class="{$mod.path}" rel="{$linkPath}">{t}{$mod.label}{/t}<br /><span style="font-size:1.5em" class="graced">{*$mod.id*}</span></li>
-        {else}
-            <li class="{$mod.path} off" rel="{$linkPath}">{t}{$mod.label}{/t}<br /><span style="font-size:1.5em" class="graced">{*$mod.id*}</span></li>
-		{/if}
-	{/if}
 
+            <li {if ($mod.flag & BEDITA_PERMS_READ) }
+					class="{$mod.path}" rel="{$linkPath}"
+				{else}
+					class="{$mod.path} off"
+				{/if}>
+            	{t}{$mod.label}{/t}
+				{*<br /><span style="font-size:1.5em" class="graced">{$mod.id}</span>*}
+			</li>	
+	{/if}
+	
+
+	
     {if $smarty.foreach.module1.iteration == 2}
 	
 	<li class="welcome">

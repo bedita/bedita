@@ -6,64 +6,86 @@
 <fieldset id="card">
 
 <ul class="htab">
-	<li rel="person">Person</li>
-	<li rel="company">Company</li>
+	<li rel="person"><input type="radio" name="kind"> Person</li>
+	<li rel="company"><input type="radio" name="kind"> Company</li>
 	
 </ul>
 
 <div class="htabcontainer" id="companyperson">
 	
 	<div class="htabcontent" id="person" >
-	<table>
-		<tr>
-			<th>{t}name{/t}:</th>
-			<td><input type="text" name="data[name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>
-		</tr>	
-		<tr>			
-			<th>{t}surname{/t}:</th>
-			<td><input type="text" name="data[surname]" value="{$object.surname|escape:'html'|escape:'quotes'}" /></td>
-			<th>{t}title{/t}:</th>
-			<td>
-				<input type="text" style="width:45px" id="vtitle" name="data[vtitle]" value="{$object.vtitle|escape:'html'|escape:'quotes'}" />
-			</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td colspan="3">
-				<input type="radio" name="data[sex]" value="male" /> {t}male{/t} &nbsp&nbsp
-				<input type="radio" name="data[sex]" value="female" /> {t}female{/t} &nbsp&nbsp
-				<input type="radio" name="data[sex]" value="transgender" /> {t}transgender{/t}
-				<input type="radio" name="data[sex]" value="drone" /> {t}drone{/t} 
-			</td>
-		</tr>
-		<tr>
-			<th>{t}birthdate{/t}:</th>
-			<td><input type="text" name="data[birthdate]" value="{$object.birthdate|escape:'html'|escape:'quotes'}" /></td>
-		</tr>	
-		<tr>
-			<th>{t}deathdate{/t}:</th>
-			<td><input type="text" name="data[birthdate]" value="{$object.deathdate|escape:'html'|escape:'quotes'}" /></td>
-	
-		</tr>
-	</table>
+		<table>
+			<tr>
+				<th>{t}name{/t}:</th>
+				<td><input type="text" name="data[name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>
+			</tr>	
+			<tr>			
+				<th>{t}surname{/t}:</th>
+				<td><input type="text" name="data[surname]" value="{$object.surname|escape:'html'|escape:'quotes'}" /></td>
+				<th>{t}title{/t}:</th>
+				<td>
+					<input type="text" style="width:45px" id="vtitle" name="data[vtitle]" value="{$object.vtitle|escape:'html'|escape:'quotes'}" />
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td colspan="3">
+					<input type="radio" name="data[sex]" value="male" /> {t}male{/t} &nbsp&nbsp
+					<input type="radio" name="data[sex]" value="female" /> {t}female{/t} &nbsp&nbsp
+					<input type="radio" name="data[sex]" value="transgender" /> {t}transgender{/t}
+					<input type="radio" name="data[sex]" value="drone" /> {t}drone{/t} 
+				</td>
+			</tr>
+			<tr>
+				<th>{t}birthdate{/t}:</th>
+				<td><input type="text" name="data[birthdate]" value="{$object.birthdate|escape:'html'|escape:'quotes'}" /></td>
+			</tr>	
+			<tr>
+				<th>{t}deathdate{/t}:</th>
+				<td><input type="text" name="data[birthdate]" value="{$object.deathdate|escape:'html'|escape:'quotes'}" /></td>
+		
+			</tr>
+		</table>
 	</div>
 
+
+
 	<div class="htabcontent" id="company" >
-	<table>
-		<tr>
-			<th>{t}company name{/t}:</th>
-			<td><input style="width:320px" type="text" name="data[name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>
-		</tr>	
-		<tr>
-			<th>{t}kind{/t}:</th>
-			<td>
-				<input type="text" id="vtitle" name="data[vtitle]" value="{$object.vtitle|escape:'html'|escape:'quotes'}" />
-			</td>
-		</tr>
-	</table>
+		<table>
+			<tr>
+				<th>{t}company name{/t}:</th>
+				<td><input type="text" name="data[name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>
+			</tr>
+			<tr>
+				<th>{t}company reference:{/t}</th>
+			</tr>
+			<tr>
+				<th>{t}name{/t}:</th>
+				<td><input type="text" name="data[name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>		
+			</tr>
+			<tr>	
+				<th>{t}surname{/t}:</th>
+				<td><input type="text" name="data[surname]" value="{$object.surname|escape:'html'|escape:'quotes'}" /></td>
+			</tr>
+			<tr>
+				<th>{t}title{/t}:</th>
+				<td>
+					<input type="text" style="width:45px" id="vtitle" name="data[vtitle]" value="{$object.vtitle|escape:'html'|escape:'quotes'}" />
+				</td>
+			</tr>
+		</table>
 	</div>
 		
 </div>
+
+
+<em>
+	Nel caso di person il title dell'oggetto è desunto accoppiando "nome + cognome"
+	<br />
+	Nel caso di company il title dell'oggetto è il campo "company name", mentre nome e cognome sono quelli del contatto d'azienda
+	
+</em>
+
 
 </fieldset>
 
@@ -127,5 +149,9 @@
 		<td><input type="text" name="data[website]" value="{$object.website|escape:'html'|escape:'quotes'}" /></td>
 	</tr>
 </table>
+
+
+
+
 
 </fieldset>

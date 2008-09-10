@@ -903,3 +903,18 @@ msgstr "collega ad altri elementi"
 
 msgid "text doesn't match image"
 msgstr "il testo non corrisponde all'immagine"
+
+msgid "translations"
+msgstr "traduzioni"
+
+msgid "books"
+msgstr "libri"
+
+msgid "bibliographies"
+msgstr "bibliografie"
+
+
+
+
+
+

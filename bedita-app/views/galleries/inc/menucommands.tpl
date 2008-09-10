@@ -24,7 +24,7 @@ $(document).ready(function(){
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 	<div class="modules">
-	   <label class="galleries" rel="{$html->url('/galleries')}">{t}Galleries{/t}</label>
+	   <label class="{$moduleName}" rel="{$html->url('/galleries')}">{t}{$moduleName}{/t}</label>
 	</div> 
 	
 	

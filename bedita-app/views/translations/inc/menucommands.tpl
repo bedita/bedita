@@ -31,7 +31,7 @@ $(document).ready(function(){
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 
 	<div class="modules">
-		<label class="translations" rel="{$html->url('/translations')}">{t}Translations{/t}</label>
+		<label class="{$moduleName}" rel="{$html->url('/translations')}">{t}{$moduleName}{/t}</label>
 	</div>
 
 	{assign var="user" value=$session->read('BEAuthUser')}

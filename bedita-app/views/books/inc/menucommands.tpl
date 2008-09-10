@@ -31,7 +31,7 @@ $(document).ready(function(){
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 	<div class="modules">
-	   <label class="books" rel="{$html->url('/books')}">{t}Books{/t}</label>
+	   <label class="{$moduleName}" rel="{$html->url('/books')}">{t}{$moduleName}{/t}</label>
 	</div> 
 	
 

@@ -194,17 +194,14 @@ INPUT[type=text], TEXTAREA {
 ...........................................*/
 
 .modules {
-	background:transparent url(../img/shadowpattern160.png);
-	/*background:transparent url(../img/shadowh2-small.png) repeat-y top left ;*/
-	/*shadowpattern140*/
-	/* width:280px; */
+	/*background:transparent url(../img/shadowpattern160.png);*/
 	width:auto;
 	height:140px;
 	padding:10px; margin:10px;
 }
 
 UL.modules {
-	background:transparent url(../img/shadowh2-small.png) repeat-y top left ;
+	/*background:transparent url(../img/shadowh2-small.png) repeat-y top left ;*/
 }
 
 .modules LI, .modules label {
@@ -218,11 +215,16 @@ UL.modules {
 	background-repeat:repeat-x;
 	color:#FFFFFF;
 	float:left;
-/*
-	cursor:pointer;
-*/
+	font-weight:normal;
 }
 
+.modules LI:first-letter, .modules label:first-letter {
+	text-transform:capitalize;
+}
+
+.modules LI.off {
+	opacity:0.55;
+}
 
 .modules .save {
 	background-image:url(../img/iconset.png);
@@ -311,7 +313,7 @@ UL.modulesmenu {
 	top:0px;
 	margin-right:15px; 
 	width:680px;
-	background:transparent url(../img/shadowh2-small.png) no-repeat;
+	/*background:transparent url(../img/shadowh2-small.png) no-repeat;*/
 	background-position: 520px 10px ;
 	padding:20px 0px 10px 0px;
 }
