@@ -64,7 +64,7 @@ class LangText extends BEAppModel
 			$lang = $os['LangText']['lang'];
 			$objects_title[$object_id][$lang] = $this->field("text", 
 				array("object_id"=>$object_id, "lang"=>$lang, "name"=>"title"));
-			$this->BEObject->restrict(array("BEObject" => array()));
+			$this->BEObject->recursive = -1;
 			if(!($obj = $this->BEObject->findById($object_id))) {
 				 throw new BeditaException(sprintf(__("Error loading object: %d", true), $object_id));
 			}

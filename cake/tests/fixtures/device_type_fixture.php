@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: device_type_fixture.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: device_type_fixture.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.fixtures
  * @since			CakePHP(tm) v 1.2.0.4667
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 /**
@@ -33,9 +33,21 @@
  * @subpackage	cake.tests.fixtures
  */
 class DeviceTypeFixture extends CakeTestFixture {
+/**
+ * name property
+ * 
+ * @var string 'DeviceType'
+ * @access public
+ */
 	var $name = 'DeviceType';
+/**
+ * fields property
+ * 
+ * @var array
+ * @access public
+ */
 	var $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary', 'extra'=> 'auto_increment'),
+		'id' => array('type' => 'integer', 'key' => 'primary'),
 		'device_type_category_id' => array('type' => 'integer', 'null' => false),
 		'feature_set_id' => array('type' => 'integer', 'null' => false),
 		'exterior_type_category_id' => array('type' => 'integer', 'null' => false),
@@ -45,8 +57,14 @@ class DeviceTypeFixture extends CakeTestFixture {
 		'name' => array('type' => 'string', 'null' => false),
 		'order' => array('type' => 'integer', 'null' => false)
 	);
+/**
+ * records property
+ * 
+ * @var array
+ * @access public
+ */
 	var $records = array(
-		array('id' => 1, 'device_type_category_id' => 1, 'feature_set_id' => 1, 'exterior_type_category_id' => 1, 'image_id' => 1, 'extra1_id' => 1, 'extra2_id' => 1, 'name' => 'DeviceType 1', 'order' => 0)
+		array('device_type_category_id' => 1, 'feature_set_id' => 1, 'exterior_type_category_id' => 1, 'image_id' => 1, 'extra1_id' => 1, 'extra2_id' => 1, 'name' => 'DeviceType 1', 'order' => 0)
 	);
 }
 ?>

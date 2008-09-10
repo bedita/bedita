@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: bake.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: bake.php 7125 2008-06-05 15:06:49Z gwoo $ */
 /**
  * Command-line code generation utility to automate programmer chores.
  *
@@ -23,9 +23,9 @@
  * @package			cake
  * @subpackage		cake.cake.console.libs
  * @since			CakePHP(tm) v 1.2.0.5012
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7125 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-05 08:06:49 -0700 (Thu, 05 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -41,7 +41,7 @@ class BakeShell extends Shell {
  * @var array
  * @access public
  */
-	var $tasks = array('Project', 'DbConfig', 'Model', 'Controller', 'View', 'Plugin');
+	var $tasks = array('Project', 'DbConfig', 'Model', 'Controller', 'View', 'Plugin', 'Test');
 /**
  * Override loadTasks() to handle paths
  *
@@ -55,7 +55,7 @@ class BakeShell extends Shell {
 			$this->{$task}->path = $this->params['working'] . DS . $path . DS;
 			if (!is_dir($this->{$task}->path)) {
 				$this->err(sprintf(__("%s directory could not be found.\nBe sure you have created %s", true), $task, $this->{$task}->path));
-				exit();
+				$this->_stop();
 			}
 		}
 	}
@@ -65,9 +65,10 @@ class BakeShell extends Shell {
  * @access public
  */
 	function main() {
-
-		if (!is_dir(CONFIGS)) {
-			$this->Project->execute();
+		if (!is_dir($this->DbConfig->path)) {
+			if ($this->Project->execute()) {
+				$this->DbConfig->path = $this->params['working'] . DS . 'config' . DS;
+			}
 		}
 
 		if (!config('database')) {
@@ -105,7 +106,7 @@ class BakeShell extends Shell {
 				exit(0);
 				break;
 			default:
-				$this->out('You have made an invalid selection. Please choose a type of class to Bake by entering D, M, V, or C.');
+				$this->out(__('You have made an invalid selection. Please choose a type of class to Bake by entering D, M, V, or C.', true));
 		}
 		$this->hr();
 		$this->main();
@@ -167,6 +168,7 @@ class BakeShell extends Shell {
 				$this->View->execute();
 			}
 			$this->out(__('Bake All complete'));
+			array_shift($this->args);
 		} else {
 			$this->err(__('Bake All could not continue without a valid model', true));
 		}
@@ -174,7 +176,7 @@ class BakeShell extends Shell {
 		if (empty($this->args)) {
 			$this->all();
 		}
-		exit();
+		$this->_stop();
 	}
 
 /**
@@ -198,6 +200,7 @@ class BakeShell extends Shell {
 		$this->out("\n\tbake help\n\t\tshows this help message.");
 		$this->out("\n\tbake all <name>\n\t\tbakes complete MVC. optional <name> of a Model");
 		$this->out("\n\tbake project <path>\n\t\tbakes a new app folder in the path supplied\n\t\tor in current directory if no path is specified");
+		$this->out("\n\tbake plugin <name>\n\t\tbakes a new plugin folder in the path supplied\n\t\tor in current directory if no path is specified.");
 		$this->out("\n\tbake db_config\n\t\tbakes a database.php file in config directory.");
 		$this->out("\n\tbake model\n\t\tbakes a model. run 'bake model help' for more info");
 		$this->out("\n\tbake view\n\t\tbakes views. run 'bake view help' for more info");

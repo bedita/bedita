@@ -118,7 +118,7 @@ class GalleriesController extends ModulesController {
 		$multimedia = array();
 		// get Gallery data
 		if($id) {
-			$this->Gallery->restrict(array(
+			$this->Gallery->contain(array(
 										"BEObject" => array("ObjectType", 
 															"UserCreated", 
 															"UserModified", 
@@ -141,7 +141,7 @@ class GalleriesController extends ModulesController {
 			foreach($objForGallery as $index => $object) {
 				$type = $conf->objectTypeModels[$object['object_type_id']] ;
 				$modelLoaded = $this->loadModelByObjectTypeId($object['object_type_id']);
-				$modelLoaded->restrict(array(
+				$modelLoaded->contain(array(
 									"BEObject" => array("ObjectType", 
 														"LangText"
 														),

@@ -40,8 +40,9 @@ class CompactResultBehavior extends ModelBehavior {
 	}
 
 	function afterFind(&$model, $results) {
-		// If switch has been disabled then cancel
-  		if ($model->bviorCompactResults) $this->_compactStart($model, $results);
+
+		if (isset($model->bviorCompactResults) && $model->bviorCompactResults === true)
+  		    $this->_compactStart($model, $results);
 
   		// toglie i campi richiesti
 		$this->_removeFields($model, $results) ;

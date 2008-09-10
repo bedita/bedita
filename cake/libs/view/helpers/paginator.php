@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: paginator.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: paginator.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Pagination Helper class file.
  *
@@ -19,9 +19,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view.helpers
  * @since			CakePHP(tm) v 1.2.0
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -140,6 +140,9 @@ class PaginatorHelper extends AppHelper {
 		}
 
 		if (isset($options['sort']) && !empty($options['sort'])) {
+			if (preg_match('/(?:\w+\.)?(\w+)/', $options['sort'], $result) && isset($result[1])) {
+				return $result[1];
+			}
 			return $options['sort'];
 		} elseif (isset($options['order']) && is_array($options['order'])) {
 			return preg_replace('/.*\./', '', key($options['order']));
@@ -219,13 +222,20 @@ class PaginatorHelper extends AppHelper {
 			$key = $title;
 			$title = __(Inflector::humanize(preg_replace('/_id$/', '', $title)), true);
 		}
-
 		$dir = 'asc';
+		$model = null;
+
+		if (strpos($key, '.') !== false) {
+			list($model, $key) = explode('.', $key);
+			$model = $model . '.';
+		}
 		if ($this->sortKey($options['model']) == $key && $this->sortDir($options['model']) == 'asc') {
 			$dir = 'desc';
 		}
-
-		$url = array_merge(array('sort' => $key, 'direction' => $dir), $url, array('order' => null));
+		if (is_array($title) && array_key_exists($dir, $title)) {
+			$title = $title[$dir];
+		}
+		$url = array_merge(array('sort' => $model . $key, 'direction' => $dir), $url, array('order' => null));
 		return $this->link($title, $url, $options);
 	}
 /**
@@ -278,7 +288,7 @@ class PaginatorHelper extends AppHelper {
 		if ($asArray) {
 			return $url;
 		}
-		return Router::url($url);
+		return parent::url($url);
 	}
 /**
  * Protected method for generating prev/next links
@@ -286,7 +296,7 @@ class PaginatorHelper extends AppHelper {
  */
 	function __pagingLink($which, $title = null, $options = array(), $disabledTitle = null, $disabledOptions = array()) {
 		$check = 'has' . $which;
-		$_defaults = array('url' => array(), 'step' => 1, 'escape' => true, 'model' => null);
+		$_defaults = array('url' => array(), 'step' => 1, 'escape' => true, 'model' => null, 'tag' => 'div');
 		$options = array_merge($_defaults, (array)$options);
 		$paging = $this->params($options['model']);
 
@@ -294,7 +304,7 @@ class PaginatorHelper extends AppHelper {
 			if (!empty($disabledTitle) && $disabledTitle !== true) {
 				$title = $disabledTitle;
 			}
-			$options = array_merge($options, $disabledOptions);
+			$options = array_merge($_defaults, (array)$disabledOptions);
 		} elseif (!$this->{$check}()) {
 			return null;
 		}
@@ -308,7 +318,7 @@ class PaginatorHelper extends AppHelper {
 		if ($this->{$check}()) {
 			return $this->link($title, $url, array_merge($options, array('escape' => $escape)));
 		} else {
-			return $this->Html->div(null, $title, $options, $escape);
+			return $this->Html->tag($tag, $title, $options, $escape);
 		}
 	}
 /**
@@ -461,12 +471,6 @@ class PaginatorHelper extends AppHelper {
 			$half = intval($modulus / 2);
 			$end = $params['page'] + $half;
 
-			if($first && $end > (int)$first) {
-				$out .= $this->first($first);
-			}
-
-			$out .= $before;
-
 			if ($end > $params['pageCount']) {
 				$end = $params['pageCount'];
 			}
@@ -475,11 +479,25 @@ class PaginatorHelper extends AppHelper {
 				$start = 1;
 				$end = $params['page'] + ($modulus  - $params['page']) + 1;
 			}
+
+			if ($first && $start > (int)$first) {
+				if ($start == $first + 1) {
+					$out .= $this->first($first, array('after' => $separator));
+				} else {
+					$out .= $this->first($first);
+				}
+			}
+
+			$out .= $before;
+
 			for ($i = $start; $i < $params['page']; $i++) {
 				$out .= '<span>' . $this->link($i, array('page' => $i), $options) . '</span>' . $separator;
 			}
 
-			$out .= '<span class="current">' . $params['page'] . '</span>' . $separator;
+			$out .= '<span class="current">' . $params['page'] . '</span>';
+			if ($i != $params['pageCount']) {
+				$out .= $separator;
+			}
 
 			$start = $params['page'] + 1;
 			for ($i = $start; $i < $end; $i++) {
@@ -492,21 +510,29 @@ class PaginatorHelper extends AppHelper {
 
 			$out .= $after;
 
-			if($last && $end < $params['pageCount'] - (int)$last) {
-				$out .= $this->last($last);
+			if ($last && $end <= $params['pageCount'] - (int)$last) {
+				if ($end + 1 == $params['pageCount']) {
+					$out .= $this->last($last, array('before' => $separator));
+				} else {
+					$out .= $this->last($last);
+				}
 			}
 
 		} else {
+			$out .= $before;
+
 			for ($i = 1; $i <= $params['pageCount']; $i++) {
 				if ($i == $params['page']) {
 					$out .= '<span class="current">' . $i . '</span>';
 				} else {
 					$out .= '<span>' .$this->link($i, array('page' => $i), $options) . '</span>';
 				}
-				if($i != $params['pageCount']) {
+				if ($i != $params['pageCount']) {
 					$out .= $separator;
 				}
 			}
+
+			$out .= $after;
 		}
 
 		return $this->output($out);
@@ -544,7 +570,7 @@ class PaginatorHelper extends AppHelper {
 			}
 			for ($i = 1; $i <= $first; $i++) {
 				$out .= '<span>' . $this->link($i, array('page' => $i), $options) . '</span>';
-				if($i != $first) {
+				if ($i != $first) {
 					$out .= $separator;
 				}
 			}
@@ -589,7 +615,7 @@ class PaginatorHelper extends AppHelper {
 			}
 			for ($i = $lower; $i <= $params['pageCount']; $i++) {
 				$out .= '<span>' . $this->link($i, array('page' => $i), $options) . '</span>';
-				if($i != $params['pageCount']) {
+				if ($i != $params['pageCount']) {
 					$out .= $separator;
 				}
 			}

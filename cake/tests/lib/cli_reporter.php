@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: cli_reporter.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: cli_reporter.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,25 +21,20 @@
  * @package			cake
  * @subpackage		cake.cake.tests.libs
  * @since			CakePHP(tm) v 1.2.0.4433
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 	if (! defined('ST_FAILDETAIL_SEPARATOR')) {
-	    define('ST_FAILDETAIL_SEPARATOR', "->");
+		define('ST_FAILDETAIL_SEPARATOR', "->");
 	}
 
-	if (! defined('ST_FAILS_RETURN_CODE')) {
-	    define('ST_FAILS_RETURN_CODE', 1);
-	}
-
-	if (version_compare(phpversion(), '4.3.0', '<') ||
-	    php_sapi_name() == 'cgi') {
-	    define('STDOUT', fopen('php://stdout', 'w'));
-	    define('STDERR', fopen('php://stderr', 'w'));
-	    register_shutdown_function(
-	        create_function('', 'fclose(STDOUT); fclose(STDERR); return true;'));
+	if (version_compare(phpversion(), '4.4.4', '<=') ||
+		php_sapi_name() == 'cgi') {
+		define('STDOUT', fopen('php://stdout', 'w'));
+		define('STDERR', fopen('php://stderr', 'w'));
+		register_shutdown_function(create_function('', 'fclose(STDOUT); fclose(STDERR); return true;'));
 	}
 /**
  * Minimal command line test displayer. Writes fail details to STDERR. Returns 0
@@ -48,7 +43,7 @@
  * @package    cake
  * @subpackage cake.cake.tests.libs
  */
-class CLIReporter extends SimpleReporter {
+class CLIReporter extends TextReporter {
 	var $faildetail_separator = ST_FAILDETAIL_SEPARATOR;
 
 	function CLIReporter($faildetail_separator = NULL) {
@@ -102,7 +97,6 @@ class CLIReporter extends SimpleReporter {
 			}
 			$buffer .= ".\n";
 			fwrite(STDOUT, $buffer);
-			exit(ST_FAILS_RETURN_CODE);
 		} else {
 			fwrite(STDOUT, $buffer . $this->getPassCount() . " passes.\n");
 		}

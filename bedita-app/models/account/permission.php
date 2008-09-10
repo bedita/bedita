@@ -48,7 +48,7 @@ class Permission extends BEAppModel
 	 * @param integer $flag		bit dei permessi da settare
 	 */
 	function replace($id, $name, $switch, $flag) {
-		return $this->execute("CALL replacePermission({$id}, '{$name}', '{$switch}', {$flag})") ;
+		return $this->query("CALL replacePermission({$id}, '{$name}', '{$switch}', {$flag})") ;
 	}	
 	
 	/**
@@ -59,7 +59,7 @@ class Permission extends BEAppModel
 	 * @param string $switch	user(/group
 	 */
 	function remove($id, $name, $switch) {
-		return $this->execute("CALL deletePermission({$id}, '{$name}', '{$switch}')") ;
+		return $this->query("CALL deletePermission({$id}, '{$name}', '{$switch}')") ;
 	}	
 
 	/**
@@ -68,7 +68,7 @@ class Permission extends BEAppModel
 	 * @param integer $id		ID dell'oggetto trattato
 	 */
 	function removeAll($id) {
-		return $this->execute("DELETE FROM permissions WHERE object_id = {$id}") ;
+		return $this->query("DELETE FROM permissions WHERE object_id = {$id}") ;
 	}	
 
 	/**
@@ -80,7 +80,7 @@ class Permission extends BEAppModel
 	 * @param integer $flag		bit dei permessi da settare
 	 */
 	function replaceTree($id, $name, $switch, $flag) {
-		return $this->execute("CALL replacePermissionTree({$id}, '{$name}', '{$switch}', {$flag})") ;
+		return $this->query("CALL replacePermissionTree({$id}, '{$name}', '{$switch}', {$flag})") ;
 	}	
 
 	/**
@@ -91,7 +91,7 @@ class Permission extends BEAppModel
 	 * @param string $switch	user(/group
 	 */
 	function removeTree($id, $name, $switch) {
-		return $this->execute("CALL deletePermissionTree({$id}, '{$name}', '{$switch}')") ;
+		return $this->query("CALL deletePermissionTree({$id}, '{$name}', '{$switch}')") ;
 	}	
 
 	/**
@@ -100,7 +100,7 @@ class Permission extends BEAppModel
 	 * @param integer $id		ID dell'oggetto root
 	 */
 	function removeAllTree($id) {
-		return $this->execute("CALL deleteAllPermissionTree({$id})") ;
+		return $this->query("CALL deleteAllPermissionTree({$id})") ;
 	}	
 	
 	/**
@@ -113,7 +113,7 @@ class Permission extends BEAppModel
 	 * @return integer
 	 */
 	function permsByUserid($userid, $object_id, $operations) {
-		$ret =  $this->execute("SELECT prmsUserByID('{$userid}', {$object_id}, {$operations}) AS perms") ;
+		$ret =  $this->query("SELECT prmsUserByID('{$userid}', {$object_id}, {$operations}) AS perms") ;
 		
 		return $ret[0][0]['perms'] ;
 	}
@@ -128,7 +128,7 @@ class Permission extends BEAppModel
 	 * @return integer
 	 */
 	function permsByGroup($groupid, $object_id, $operations) {
-		$ret =  $this->execute("SELECT prmsGroupByName('{$groupid}', {$object_id}, {$operations}) AS perms") ;
+		$ret =  $this->query("SELECT prmsGroupByName('{$groupid}', {$object_id}, {$operations}) AS perms") ;
 		
 		return $ret[0][0]['perms'] ;
 	}
@@ -140,7 +140,7 @@ class Permission extends BEAppModel
 	 * @param integer $idnew	ID dell'oggetto che assume i permessi
 	 */
 	function clonePermissions($id, $idnew) {
-		return $this->execute("CALL clonePermission({$id}, '{$idnew}')") ;
+		return $this->query("CALL clonePermission({$id}, '{$idnew}')") ;
 	}	
 }
 ?>

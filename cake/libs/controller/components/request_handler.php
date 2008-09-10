@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: request_handler.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: request_handler.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * Request object for handling alternative HTTP requests
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.controller.components
  * @since			CakePHP(tm) v 0.10.4.1076
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -128,6 +128,14 @@ class RequestHandlerComponent extends Object {
  */
 	var $ext = null;
 /**
+ * Flag set when MIME types have been initialized
+ *
+ * @var boolean
+ * @access private
+ * @see RequestHandler::__initializeTypes()
+ */
+	var $__typesInitialized = false;
+/**
  * Constructor. Parses the accepted content types accepted by the client using HTTP_ACCEPT
  *
  */
@@ -140,7 +148,6 @@ class RequestHandlerComponent extends Object {
 				$this->__acceptTypes[$i] = $type[0];
 			}
 		}
-
 		parent::__construct();
 	}
 /**
@@ -156,13 +163,6 @@ class RequestHandlerComponent extends Object {
 	function initialize(&$controller) {
 		if (isset($controller->params['url']['ext'])) {
 			$this->ext = $controller->params['url']['ext'];
-			if (isset($this->__requestContent[$this->ext])) {
-				$content = $this->__requestContent[$this->ext];
-				if (is_array($content)) {
-					$content = $content[0];
-				}
-				array_unshift($this->__acceptTypes, $content);
-			}
 		}
 	}
 /**
@@ -186,6 +186,7 @@ class RequestHandlerComponent extends Object {
 		if (!$this->enabled) {
 			return;
 		}
+		$this->__initializeTypes();
 		$controller->params['isAjax'] = $this->isAjax();
 
 		if (!empty($this->ext) && !in_array($this->ext, array('html', 'htm')) && in_array($this->ext, array_keys($this->__requestContent))) {
@@ -195,12 +196,12 @@ class RequestHandlerComponent extends Object {
 		}
 
 		if ($this->requestedWith('xml')) {
-			if (!class_exists('xmlnode') && !class_exists('XMLNode')) {
-				uses('xml');
+			if (!class_exists('XmlNode')) {
+				App::import('Core', 'Xml');
 			}
-			$xml = new XML(trim(file_get_contents('php://input')));
+			$xml = new Xml(trim(file_get_contents('php://input')));
 			if (is_object($xml->child('data')) && count($xml->children) == 1) {
-					$controller->data = $xml->child('data');
+				$controller->data = $xml->child('data');
 			} else {
 				$controller->data = $xml;
 			}
@@ -217,6 +218,11 @@ class RequestHandlerComponent extends Object {
 		if (!$this->isAjax()) {
 			return;
 		}
+		foreach ($_POST as $key => $val) {
+			unset($_POST[$key]);
+		}
+		echo $this->requestAction($url, array('return'));
+		$this->_stop();
 	}
 /**
  * Returns true if the current HTTP request is Ajax, false otherwise
@@ -226,6 +232,15 @@ class RequestHandlerComponent extends Object {
  */
 	function isAjax() {
 		return env('HTTP_X_REQUESTED_WITH') === "XMLHttpRequest";
+	}
+/**
+ * Returns true if the current HTTP request is coming from a Flash-based client
+ *
+ * @return boolean True if call is from Flash
+ * @access public
+ */
+	function isFlash() {
+		return env('HTTP_USER_AGENT') === "Shockwave Flash";
 	}
 /**
  * Returns true if the current request is over HTTPS, false otherwise.
@@ -410,6 +425,8 @@ class RequestHandlerComponent extends Object {
  * @see RequestHandlerComponent::setContent()
  */
 	function accepts($type = null) {
+		$this->__initializeTypes();
+
 		if ($type == null) {
 			return $this->mapType($this->__acceptTypes);
 
@@ -481,8 +498,9 @@ class RequestHandlerComponent extends Object {
  * @see RequestHandlerComponent::setContent()
  */
 	function prefers($type = null) {
+		$this->__initializeTypes();
 		if ($type == null) {
-			if (!empty($this->ext)) {
+			if (empty($this->ext)) {
 				$accept = $this->accepts(null);
 				if (is_array($accept)) {
 					return $accept[0];
@@ -492,9 +510,10 @@ class RequestHandlerComponent extends Object {
 				return $this->ext;
 			}
 		}
-		uses('set');
+		App::import('Core', 'Set');
 		$types = Set::normalize($type, false);
 		$accepts = array();
+
 		foreach ($types as $type) {
 			if ($this->accepts($type)) {
 				$accepts[] = $type;
@@ -520,6 +539,7 @@ class RequestHandlerComponent extends Object {
  * @see RequestHandlerComponent::respondAs()
  */
 	function renderAs(&$controller, $type) {
+		$this->__initializeTypes();
 		$options = array('charset' => 'UTF-8');
 
 		if (Configure::read('App.encoding') !== null) {
@@ -530,8 +550,8 @@ class RequestHandlerComponent extends Object {
 			$controller->layout = $this->ajaxLayout;
 			return $this->respondAs('html', $options);
 		}
-
 		$controller->ext = '.ctp';
+
 		if (empty($this->__renderType)) {
 			$controller->viewPath .= '/' . $type;
 		} else {
@@ -545,7 +565,7 @@ class RequestHandlerComponent extends Object {
 		}
 
 		$helper = ucfirst($type);
-		if (!in_array($helper, $controller->helpers)) {
+		if (!in_array($helper, $controller->helpers) && !array_key_exists($helper, $controller->helpers)) {
 			if (App::import('Helper', $helper)) {
 				$controller->helpers[] = $helper;
 			}
@@ -567,6 +587,7 @@ class RequestHandlerComponent extends Object {
  * @see RequestHandlerComponent::setContent()
  */
 	function respondAs($type, $options = array()) {
+		$this->__initializeTypes();
 		if ($this->__responseTypeSet != null) {
 			return false;
 		}
@@ -599,7 +620,6 @@ class RequestHandlerComponent extends Object {
 
 		if ($cType != null) {
 			$header = 'Content-type: ' . $cType;
-			$headers = array();
 
 			if (!empty($options['charset'])) {
 				$header .= '; charset=' . $options['charset'];
@@ -607,11 +627,8 @@ class RequestHandlerComponent extends Object {
 			if (!empty($options['attachment'])) {
 				header('Content-Disposition: attachment; filename="' . $options['attachment'] . '"');
 			}
-			if (Configure::read() < 2) {
-				header($header);
-				foreach ($headers as $h) {
-					header($h);
-				}
+			if (Configure::read() < 2 && !defined('CAKEPHP_SHELL')) {
+				@header($header);
 			}
 			$this->__responseTypeSet = $cType;
 			return true;
@@ -662,6 +679,25 @@ class RequestHandlerComponent extends Object {
 			}
 			return $ctype;
 		}
+	}
+/**
+ * Initializes MIME types
+ *
+ * @return void
+ * @access private
+ */
+	function __initializeTypes() {
+		if ($this->__typesInitialized) {
+			return;
+		}
+		if (isset($this->__requestContent[$this->ext])) {
+			$content = $this->__requestContent[$this->ext];
+			if (is_array($content)) {
+				$content = $content[0];
+			}
+			array_unshift($this->__acceptTypes, $content);
+		}
+		$this->__typesInitialized = true;
 	}
 }
 

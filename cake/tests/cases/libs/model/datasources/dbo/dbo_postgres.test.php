@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_postgres.test.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: dbo_postgres.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * DboPostgres test
  *
@@ -19,9 +19,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v 1.2.0
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -32,6 +32,8 @@ require_once LIBS.'model'.DS.'model.php';
 require_once LIBS.'model'.DS.'datasources'.DS.'datasource.php';
 require_once LIBS.'model'.DS.'datasources'.DS.'dbo_source.php';
 require_once LIBS.'model'.DS.'datasources'.DS.'dbo'.DS.'dbo_postgres.php';
+require_once dirname(dirname(dirname(__FILE__))) . DS . 'models.php';
+
 
 /**
  * Short description for class.
@@ -40,14 +42,30 @@ require_once LIBS.'model'.DS.'datasources'.DS.'dbo'.DS.'dbo_postgres.php';
  * @subpackage	cake.tests.cases.libs.model.datasources
  */
 class DboPostgresTestDb extends DboPostgres {
-
+/**
+ * simulated property
+ *
+ * @var array
+ * @access public
+ */
 	var $simulated = array();
-
+/**
+ * execute method
+ *
+ * @param mixed $sql
+ * @access protected
+ * @return void
+ */
 	function _execute($sql) {
 		$this->simulated[] = $sql;
 		return null;
 	}
-
+/**
+ * getLastQuery method
+ *
+ * @access public
+ * @return void
+ */
 	function getLastQuery() {
 		return $this->simulated[count($this->simulated) - 1];
 	}
@@ -59,22 +77,56 @@ class DboPostgresTestDb extends DboPostgres {
  * @subpackage	cake.tests.cases.libs.model.datasources
  */
 class PostgresTestModel extends Model {
-
+/**
+ * name property
+ *
+ * @var string 'PostgresTestModel'
+ * @access public
+ */
 	var $name = 'PostgresTestModel';
+/**
+ * useTable property
+ *
+ * @var bool false
+ * @access public
+ */
 	var $useTable = false;
-
+/**
+ * find method
+ *
+ * @param mixed $conditions
+ * @param mixed $fields
+ * @param mixed $order
+ * @param mixed $recursive
+ * @access public
+ * @return void
+ */
 	function find($conditions = null, $fields = null, $order = null, $recursive = null) {
 		return $conditions;
 	}
-
+/**
+ * findAll method
+ *
+ * @param mixed $conditions
+ * @param mixed $fields
+ * @param mixed $order
+ * @param mixed $recursive
+ * @access public
+ * @return void
+ */
 	function findAll($conditions = null, $fields = null, $order = null, $recursive = null) {
 		return $conditions;
 	}
-
+/**
+ * schema method
+ *
+ * @access public
+ * @return void
+ */
 	function schema() {
 		return array(
 			'id'		=> array('type' => 'integer', 'null' => '', 'default' => '', 'length' => '8'),
-			'client_id'	=> array('type' => 'integer', 'null' => '', 'default' => '0', 'length' => '11'),
+			'client_id' => array('type' => 'integer', 'null' => '', 'default' => '0', 'length' => '11'),
 			'name'		=> array('type' => 'string', 'null' => '', 'default' => '', 'length' => '255'),
 			'login'		=> array('type' => 'string', 'null' => '', 'default' => '', 'length' => '255'),
 			'passwd'	=> array('type' => 'string', 'null' => '1', 'default' => '', 'length' => '255'),
@@ -102,30 +154,60 @@ class PostgresTestModel extends Model {
  */
 class DboPostgresTest extends CakeTestCase {
 /**
- * The Dbo instance to be tested
+ * Do not automatically load fixtures for each test, they will be loaded manually using CakeTestCase::loadFixtures
+ *
+ * @var boolean
+ * @access public
+ */
+	var $autoFixtures = false;
+/**
+ * Fixtures
  *
  * @var object
  * @access public
  */
-	var $Db = null;
+	var $fixtures = array('core.user');
+/**
+ * Actual DB connection used in testing
+ *
+ * @var object
+ * @access public
+ */
+	var $db = null;
+/**
+ * Simulated DB connection used in testing
+ *
+ * @var object
+ * @access public
+ */
+	var $db2 = null;
 /**
  * Skip if cannot connect to postgres
  *
  * @access public
  */
 	function skip() {
-		$db = ConnectionManager::getDataSource('test_suite');
-		$this->skipif ($this->db->config['driver'] != 'postgres', 'PostgreSQL connection not available');
+		$this->_initDb();
+		$this->skipif($this->db->config['driver'] != 'postgres', 'PostgreSQL connection not available');
 	}
-
+/**
+ * Set up test suite database connection
+ *
+ * @access public
+ */
+	function startTest() {
+		$this->_initDb();
+	}
 /**
  * Sets up a Dbo class instance for testing
  *
  * @access public
  */
 	function setUp() {
-		$db = ConnectionManager::getDataSource('test_suite');
-		$this->db = new DboPostgresTestDb($db->config);
+		Configure::write('Cache.disable', true);
+		$this->startTest();
+		$this->db =& ConnectionManager::getDataSource('test_suite');
+		$this->db2 = new DboPostgresTestDb($this->db->config, false);
 		$this->model = new PostgresTestModel();
 	}
 /**
@@ -134,15 +216,16 @@ class DboPostgresTest extends CakeTestCase {
  * @access public
  */
 	function tearDown() {
-		unset($this->db);
+		Configure::write('Cache.disable', false);
+		unset($this->db2);
 	}
 /**
- * Test Dbo value method
+ * Test field and value quoting method
  *
  * @access public
  */
 	function testQuoting() {
-		$result = $this->db->fields($this->model);
+		$result = $this->db2->fields($this->model);
 		$expected = array(
 			'"PostgresTestModel"."id" AS "PostgresTestModel__id"',
 			'"PostgresTestModel"."client_id" AS "PostgresTestModel__client_id"',
@@ -166,12 +249,83 @@ class DboPostgresTest extends CakeTestCase {
 		$this->assertEqual($result, $expected);
 
 		$expected = "'1.2'";
-		$result = $this->db->value(1.2, 'float');
+		$result = $this->db2->value(1.2, 'float');
 		$this->assertIdentical($expected, $result);
 
 		$expected = "'1,2'";
-		$result = $this->db->value('1,2', 'float');
+		$result = $this->db2->value('1,2', 'float');
 		$this->assertIdentical($expected, $result);
+	}
+/**
+ * testColumnParsing method
+ *
+ * @access public
+ * @return void
+ */
+	function testColumnParsing() {
+		$this->assertEqual($this->db2->column('text'), 'text');
+		$this->assertEqual($this->db2->column('date'), 'date');
+		$this->assertEqual($this->db2->column('boolean'), 'boolean');
+		$this->assertEqual($this->db2->column('character varying'), 'string');
+		$this->assertEqual($this->db2->column('time without time zone'), 'time');
+		$this->assertEqual($this->db2->column('timestamp without time zone'), 'datetime');
+	}
+/**
+ * testValueQuoting method
+ *
+ * @access public
+ * @return void
+ */
+	function testValueQuoting() {
+		$this->assertEqual($this->db2->value('0', 'integer'), "'0'");
+		$this->assertEqual($this->db2->value('', 'integer'), "DEFAULT");
+		$this->assertEqual($this->db2->value('', 'float'), "DEFAULT");
+		$this->assertEqual($this->db2->value('0.0', 'float'), "'0.0'");
+
+		$this->assertEqual($this->db2->value('t', 'boolean'), "TRUE");
+		$this->assertEqual($this->db2->value('f', 'boolean'), "FALSE");
+		$this->assertEqual($this->db2->value(true), "TRUE");
+		$this->assertEqual($this->db2->value(false), "FALSE");
+		$this->assertEqual($this->db2->value('t'), "'t'");
+		$this->assertEqual($this->db2->value('f'), "'f'");
+		$this->assertEqual($this->db2->value('', 'boolean'), 'FALSE');
+		$this->assertEqual($this->db2->value(0, 'boolean'), 'FALSE');
+		$this->assertEqual($this->db2->value(1, 'boolean'), 'TRUE');
+		$this->assertEqual($this->db2->value('1', 'boolean'), 'TRUE');
+		$this->assertEqual($this->db2->value(null, 'boolean'), "NULL");
+	}
+/**
+ * testLastInsertIdMultipleInsert method
+ *
+ * @access public
+ * @return void
+ */
+	function testLastInsertIdMultipleInsert() {
+		$this->loadFixtures('User');
+
+		$User =& new User();
+		$db1 = ConnectionManager::getDataSource('test_suite');
+
+		if (PHP5) {
+			$db2 = clone $db1;
+		} else {
+			$db2 = $db1;
+		}
+
+		$db2->connect();
+		$this->assertNotEqual($db1->connection, $db2->connection);
+
+		$db1->truncate($User->useTable);
+
+		$table = $db1->fullTableName($User->useTable, false);
+		$db1->execute(
+			"INSERT INTO {$table} (\"user\", password) VALUES ('mariano', '5f4dcc3b5aa765d61d8327deb882cf99')"
+		);
+		$db2->execute(
+			"INSERT INTO {$table} (\"user\", password) VALUES ('hoge', '5f4dcc3b5aa765d61d8327deb882cf99')"
+		);
+		$this->assertEqual($db1->lastInsertId($table), 1);
+		$this->assertEqual($db2->lastInsertId($table), 2);
 	}
 }
 

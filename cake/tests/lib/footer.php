@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: footer.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: footer.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,17 +21,17 @@
  * @package			cake
  * @subpackage		cake.cake.tests.lib
  * @since			CakePHP(tm) v 1.2.0.4433
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-?>
+?>	</div>		
 		</div>
  		<div id="footer">
  			<!--PLEASE USE ONE OF THE POWERED BY CAKEPHP LOGO-->
  			<a href="http://www.cakephp.org/" target="_new">
- 				<img src="<?php echo $baseUrl; ?>img/cake.power.gif" alt="CakePHP(tm) :: Rapid Development Framework" height = "15" width = "80" /></a></p>
+ 				<img src="<?php echo $baseUrl; ?>img/cake.power.gif" alt="CakePHP(tm) :: Rapid Development Framework" /></a></p>
  		</div>
 	</div>
 </body>

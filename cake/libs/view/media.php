@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: media.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: media.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view
  * @since			CakePHP(tm) v 1.2.0.5714
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 class MediaView extends View {
@@ -114,8 +114,8 @@ class MediaView extends View {
 			$name = $id;
 		}
 
-		if (file_exists($path) && isset($extension) && array_key_exists($extension, $this->mimeType)) {
-			$chunkSize = 1 * (1024 * 1024);
+		if (file_exists($path) && isset($extension) && array_key_exists($extension, $this->mimeType) && connection_status() == 0) {
+			$chunkSize = 1 * (1024 * 8);
 			$buffer = '';
 			$fileSize = @filesize($path);
 			$handle = fopen($path, 'rb');
@@ -124,7 +124,7 @@ class MediaView extends View {
 				return false;
 			}
 			if (isset($modified) && !empty($modified)) {
-				$modified = gmdate('D, d M Y H:i:s', strtotime($modified, time()).' GMT');
+				$modified = gmdate('D, d M Y H:i:s', strtotime($modified, time())) . ' GMT';
 			} else {
 				$modified = gmdate('D, d M Y H:i:s').' GMT';
 			}
@@ -173,11 +173,11 @@ class MediaView extends View {
 				set_time_limit(0);
 				$buffer = fread($handle, $chunkSize);
 				echo $buffer;
-				@ob_flush();
 				@flush();
+				@ob_flush();
 			}
 			fclose($handle);
-			return;
+			return((connection_status() == 0) && !connection_aborted());
 		}
 		return false;
 	}

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: acl.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: acl.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,12 +21,13 @@
  * @package			cake
  * @subpackage		cake.cake.console.libs
  * @since			CakePHP(tm) v 1.2.0.5012
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-uses ('controller'.DS.'components'.DS.'acl', 'model'.DS.'db_acl');
+App::import('Component', 'Acl');
+App::import('Model', 'DbAcl');
 /**
  * Shell for ACL management.
  *
@@ -74,17 +75,17 @@ class AclShell extends Shell {
 			$this->dataSource = $this->params['datasource'];
 		}
 
-		if (Configure::read('Acl.classname') != 'DB_ACL') {
+		if (!in_array(Configure::read('Acl.classname'), array('DbAcl', 'DB_ACL'))) {
 			$out = "--------------------------------------------------\n";
 			$out .= __("Error: Your current Cake configuration is set to", true) . "\n";
 			$out .= __("an ACL implementation other than DB. Please change", true) . "\n";
 			$out .= __("your core config to reflect your decision to use", true) . "\n";
-			$out .= __("DB_ACL before attempting to use this script", true) . ".\n";
+			$out .= __("DbAcl before attempting to use this script", true) . ".\n";
 			$out .= "--------------------------------------------------\n";
 			$out .= sprintf(__("Current ACL Classname: %s", true), Configure::read('Acl.classname')) . "\n";
 			$out .= "--------------------------------------------------\n";
 			$this->err($out);
-			exit();
+			$this->_stop();
 		}
 
 		if ($this->command && !in_array($this->command, array('help'))) {
@@ -204,7 +205,14 @@ class AclShell extends Shell {
 		$this->_checkArgs(3, 'setParent');
 		$this->checkNodeType();
 		extract($this->__dataVars());
-		if (!$this->Acl->{$class}->setParent($this->args[2], $this->args[1])) {
+		$data = array(
+			$class => array(
+				'id' 		=> $this->args[1],
+				'parent_id' => $this->args[2]
+			)
+		);
+		$this->Acl->{$class}->create();
+		if (!$this->Acl->{$class}->save($data)) {
 			$this->out(__("Error in setting new parent. Please make sure the parent node exists, and is not a descendant of the node specified.", true), true);
 		} else {
 			$this->out(sprintf(__("Node parent set to %s", true), $this->args[2]) . "\n", true);
@@ -303,7 +311,7 @@ class AclShell extends Shell {
 		} else {
 			$conditions = null;
 		}
-		$nodes = $this->Acl->{$class}->findAll($conditions, null, 'lft ASC');
+		$nodes = $this->Acl->{$class}->find('all', array('conditions' => $conditions, 'order' => 'lft ASC'));
 		if (empty($nodes)) {
 			if (isset($this->args[1])) {
 				$this->error(sprintf(__("%s not found", true), $this->args[1]), __("No tree returned.", true));
@@ -322,10 +330,10 @@ class AclShell extends Shell {
 				if ($end[$class]['rght'] > $last) {
 					foreach ($stack as $k => $v) {
 						$end = end($stack);
-                        if ($v[$class]['rght'] < $end[$class]['rght']) {
-                            unset($stack[$k]);
-                        }
-                    }
+						if ($v[$class]['rght'] < $end[$class]['rght']) {
+							unset($stack[$k]);
+						}
+					}
 				}
 			}
 			$last   = $n[$class]['rght'];
@@ -340,7 +348,8 @@ class AclShell extends Shell {
  * @access public
  */
 	function initdb() {
-		$this->err('This command is deprecated. Please use, cake schema run create DbAcl');
+		$this->Dispatch->args = array('schema', 'run', 'create', 'DbAcl');
+		$this->Dispatch->dispatch();
 	}
 /**
  * Show help screen.
@@ -367,7 +376,7 @@ class AclShell extends Shell {
 
 			'setparent' => "\tsetParent aro|aco <node> <parent>\n" .
 							"\t\t" . __("Moves the ACL object specified by <node> beneath the parent ACL object specified by <parent>.", true) . "\n" .
-							"\t\t" . __("For more detailed parameter usage info, see help for the 'create' command.", true) . "\n",
+							"\t\t" . __("To identify the node and parent, use the row id.", true) . "\n",
 
 			'getpath' => "\tgetPath aro|aco <node>\n" .
 						"\t\t" . __("Returns the path to the ACL object specified by <node>. This command", true) . "\n" .
@@ -402,7 +411,7 @@ class AclShell extends Shell {
 						"\t\t" . __("For more detailed parameter usage info, see help for the 'create' command.", true) . "\n",
 
 			'initdb' =>	"\tinitdb\n".
-						"\t\t" . __("Use this command : cake schema run create DbAcl", true) . "\n",
+						"\t\t" . __("Uses this command : cake schema run create DbAcl", true) . "\n",
 
 			'help' => 	"\thelp [<command>]\n" .
 						"\t\t" . __("Displays this help message, or a message on a specific command.", true) . "\n"
@@ -447,7 +456,7 @@ class AclShell extends Shell {
 		extract($this->__dataVars($this->args[0]));
 		$key = (ife(is_numeric($this->args[1]), $secondary_id, 'alias'));
 		$conditions = array($class . '.' . $key => $this->args[1]);
-		$possibility = $this->Acl->{$class}->findAll($conditions);
+		$possibility = $this->Acl->{$class}->find('all', compact('conditions'));
 		if (empty($possibility)) {
 			$this->error(sprintf(__("%s not found", true), $this->args[1]), __("No tree returned.", true));
 		}
@@ -463,8 +472,22 @@ class AclShell extends Shell {
 		$aro = ife(is_numeric($this->args[0]), intval($this->args[0]), $this->args[0]);
 		$aco = ife(is_numeric($this->args[1]), intval($this->args[1]), $this->args[1]);
 
+		if (is_string($aro) && preg_match('/^([\w]+)\.(.*)$/', $aro, $matches)) {
+			$aro = array(
+				'model' => $matches[1],
+				'foreign_key' => $matches[2],
+			);
+		}
+
+		if (is_string($aco) && preg_match('/^([\w]+)\.(.*)$/', $aco, $matches)) {
+			$aco = array(
+				'model' => $matches[1],
+				'foreign_key' => $matches[2],
+			);
+		}
+
 		$action = null;
-		if(isset($this->args[2])) {
+		if (isset($this->args[2])) {
 			$action = $this->args[2];
 			if ($action == '' || $action == 'all') {
 				$action = '*';

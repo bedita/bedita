@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: class_registry.test.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: class_registry.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,28 +21,115 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs
  * @since			CakePHP(tm) v 1.2.0.5432
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-uses('class_registry');
+App::import('Core', 'ClassRegistry');
+/**
+ * ClassRegisterModel class
+ * 
+ * @package              cake
+ * @subpackage           cake.tests.cases.libs
+ */
 class ClassRegisterModel extends CakeTestModel {
+/**
+ * useTable property
+ * 
+ * @var bool false
+ * @access public
+ */
 	var $useTable = false;
 }
-
+/**
+ * RegisterArticle class
+ * 
+ * @package              cake
+ * @subpackage           cake.tests.cases.libs
+ */
 class RegisterArticle extends ClassRegisterModel {
+/**
+ * name property
+ * 
+ * @var string 'RegisterArticle'
+ * @access public
+ */
 	var $name = 'RegisterArticle';
 }
+/**
+ * RegisterArticleFeatured class
+ * 
+ * @package              cake
+ * @subpackage           cake.tests.cases.libs
+ */
 class RegisterArticleFeatured extends ClassRegisterModel {
+/**
+ * name property
+ * 
+ * @var string 'RegisterArticlFeatured'
+ * @access public
+ */
 	var $name = 'RegisterArticlFeatured';
 }
-
+/**
+ * RegisterArticleTag class
+ * 
+ * @package              cake
+ * @subpackage           cake.tests.cases.libs
+ */
 class RegisterArticleTag extends ClassRegisterModel {
+/**
+ * name property
+ * 
+ * @var string 'RegisterArticlTag'
+ * @access public
+ */
 	var $name = 'RegisterArticlTag';
 }
-
+/**
+ * RegistryPluginAppModel class
+ * 
+ * @package              cake
+ * @subpackage           cake.tests.cases.libs
+ */
+class RegistryPluginAppModel extends ClassRegisterModel {
+/**
+ * tablePrefix property
+ * 
+ * @var string 'something_'
+ * @access public
+ */
+	var $tablePrefix = 'something_';
+}
+/**
+ * TestRegistryPluginModel class
+ * 
+ * @package              cake
+ * @subpackage           cake.tests.cases.libs
+ */
+class TestRegistryPluginModel extends RegistryPluginAppModel {
+/**
+ * name property
+ * 
+ * @var string 'TestRegistryPluginModel'
+ * @access public
+ */
+	var $name = 'TestRegistryPluginModel';
+}
+/**
+ * ClassRegistryTest class
+ * 
+ * @package              cake
+ * @subpackage           cake.tests.cases.libs
+ */
 class ClassRegistryTest extends UnitTestCase {
+/**
+ * testAddModel method
+ * 
+ * @access public
+ * @return void
+ */
 	function testAddModel() {
 		if (PHP5) {
 			$Tag = ClassRegistry::init('RegisterArticleTag');
@@ -78,7 +165,12 @@ class ClassRegistryTest extends UnitTestCase {
 
 		$this->assertTrue($TagCopy->name === 'SomeOtherName');
 	}
-
+/**
+ * testClassRegistryFlush method
+ * 
+ * @access public
+ * @return void
+ */
 	function testClassRegistryFlush () {
 		$ArticleTag = ClassRegistry::getObject('RegisterArticleTag');
 		$this->assertTrue(is_a($ArticleTag, 'RegisterArticleTag'));
@@ -88,7 +180,12 @@ class ClassRegistryTest extends UnitTestCase {
 		$this->assertFalse($NoArticleTag);
 		$this->assertTrue(is_a($ArticleTag, 'RegisterArticleTag'));
 	}
-
+/**
+ * testAddMultiplModels method
+ * 
+ * @access public
+ * @return void
+ */
 	function testAddMultiplModels () {
 		$Article = ClassRegistry::isKeySet('Article');
 		$this->assertFalse($Article);
@@ -123,6 +220,21 @@ class ClassRegistryTest extends UnitTestCase {
 
 		$Tag = ClassRegistry::getObject('Tag');
 		$this->assertTrue(is_a($Tag, 'RegisterArticleTag'));
+	}
+/**
+ * testPluginAppModel method
+ * 
+ * @access public
+ * @return void
+ */
+	function testPluginAppModel() {
+		$TestRegistryPluginModel = ClassRegistry::isKeySet('TestRegistryPluginModel');
+		$this->assertFalse($TestRegistryPluginModel);
+
+		$TestRegistryPluginModel = ClassRegistry::init('RegistryPlugin.TestRegistryPluginModel');
+		$this->assertTrue(is_a($TestRegistryPluginModel, 'TestRegistryPluginModel'));
+
+		$this->assertEqual($TestRegistryPluginModel->tablePrefix, 'something_');
 	}
 }
 ?>

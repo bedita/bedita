@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: paths.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: paths.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.app.config
  * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -45,7 +45,9 @@
 /**
  * Path to the application's directory.
  */
+if (!defined('APP')) {
 	define ('APP', ROOT.DS.APP_DIR.DS);
+}
 /**
  * Path to the application's models directory.
  */
@@ -83,7 +85,9 @@
 /**
  * Path to the configuration files directory.
  */
+if (!defined('CONFIGS')) {
 	define ('CONFIGS', APP.'config'.DS);
+}
 /**
  * Path to the libs directory.
  */
@@ -115,6 +119,17 @@ if (!defined('TESTS')) {
 	define ('TESTS', APP.'tests'.DS);
 }
 /**
+ * Path to the core tests directory.
+ */
+if (!defined('CAKE_TESTS')) {
+	define ('CAKE_TESTS', CAKE.'tests'.DS);
+}
+/**
+ * Path to the test suite.
+ */
+	define ('CAKE_TESTS_LIB', CAKE_TESTS.'lib'.DS);
+
+/**
  * Path to the controller test directory.
  */
 	define ('CONTROLLER_TESTS', TESTS.'cases'.DS.'controllers'.DS);
@@ -133,7 +148,7 @@ if (!defined('TESTS')) {
 /**
  * Path to the lib test directory.
  */
-	define ('LIB_TESTS', CAKE.'tests'.DS.'lib'.DS);
+	define ('LIB_TESTS', CAKE_TESTS.'cases'.DS.'lib'.DS);
 /**
  * Path to the temporary files directory.
  */
@@ -163,6 +178,7 @@ if (!defined('VENDORS')) {
 /**
  *  Full url prefix
  */
+if (!defined('FULL_BASE_URL')) {
 	$s = null;
 	if (env('HTTPS')) {
 		$s ='s';
@@ -174,6 +190,7 @@ if (!defined('VENDORS')) {
 		define('FULL_BASE_URL', 'http'.$s.'://'.$httpHost);
 	}
 	unset($httpHost, $s);
+}
 /**
  * Web path to the public images directory.
  */

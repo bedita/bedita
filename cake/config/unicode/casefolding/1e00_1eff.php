@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: 1e00_1eff.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: 1e00_1eff.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * Case Folding Properties.
  *
@@ -25,9 +25,9 @@
  * @package			cake
  * @subpackage		cake.cake.config.unicode.casefolding
  * @since			CakePHP(tm) v 1.2.0.5691
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -120,12 +120,14 @@ $config['1e00_1eff'][] = array('upper' => 7822, 'status' => 'C', 'lower' => arra
 $config['1e00_1eff'][] = array('upper' => 7824, 'status' => 'C', 'lower' => array(7825)); /* LATIN CAPITAL LETTER Z WITH CIRCUMFLEX */
 $config['1e00_1eff'][] = array('upper' => 7826, 'status' => 'C', 'lower' => array(7827)); /* LATIN CAPITAL LETTER Z WITH DOT BELOW */
 $config['1e00_1eff'][] = array('upper' => 7828, 'status' => 'C', 'lower' => array(7829)); /* LATIN CAPITAL LETTER Z WITH LINE BELOW */
-$config['1e00_1eff'][] = array('upper' => 7830, 'status' => 'F', 'lower' => array(104, 817)); /* LATIN SMALL LETTER H WITH LINE BELOW */
-$config['1e00_1eff'][] = array('upper' => 7831, 'status' => 'F', 'lower' => array(116, 776)); /* LATIN SMALL LETTER T WITH DIAERESIS */
-$config['1e00_1eff'][] = array('upper' => 7832, 'status' => 'F', 'lower' => array(119, 778)); /* LATIN SMALL LETTER W WITH RING ABOVE */
-$config['1e00_1eff'][] = array('upper' => 7833, 'status' => 'F', 'lower' => array(121, 778)); /* LATIN SMALL LETTER Y WITH RING ABOVE */
-$config['1e00_1eff'][] = array('upper' => 7834, 'status' => 'F', 'lower' => array(97, 702)); /* LATIN SMALL LETTER A WITH RIGHT HALF RING */
-$config['1e00_1eff'][] = array('upper' => 7835, 'status' => 'C', 'lower' => array(7777)); /* LATIN SMALL LETTER LONG S WITH DOT ABOVE */
+
+//$config['1e00_1eff'][] = array('upper' => 7830, 'status' => 'F', 'lower' => array(104, 817)); /* LATIN SMALL LETTER H WITH LINE BELOW */
+//$config['1e00_1eff'][] = array('upper' => 7831, 'status' => 'F', 'lower' => array(116, 776)); /* LATIN SMALL LETTER T WITH DIAERESIS */
+//$config['1e00_1eff'][] = array('upper' => 7832, 'status' => 'F', 'lower' => array(119, 778)); /* LATIN SMALL LETTER W WITH RING ABOVE */
+//$config['1e00_1eff'][] = array('upper' => 7833, 'status' => 'F', 'lower' => array(121, 778)); /* LATIN SMALL LETTER Y WITH RING ABOVE */
+//$config['1e00_1eff'][] = array('upper' => 7834, 'status' => 'F', 'lower' => array(97, 702)); /* LATIN SMALL LETTER A WITH RIGHT HALF RING */
+//$config['1e00_1eff'][] = array('upper' => 7835, 'status' => 'C', 'lower' => array(7777)); /* LATIN SMALL LETTER LONG S WITH DOT ABOVE */
+
 $config['1e00_1eff'][] = array('upper' => 7840, 'status' => 'C', 'lower' => array(7841)); /* LATIN CAPITAL LETTER A WITH DOT BELOW */
 $config['1e00_1eff'][] = array('upper' => 7842, 'status' => 'C', 'lower' => array(7843)); /* LATIN CAPITAL LETTER A WITH HOOK ABOVE */
 $config['1e00_1eff'][] = array('upper' => 7844, 'status' => 'C', 'lower' => array(7845)); /* LATIN CAPITAL LETTER A WITH CIRCUMFLEX AND ACUTE */

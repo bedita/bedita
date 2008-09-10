@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: controller.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: controller.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * The ControllerTask handles creating and updating controller files.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.console.libs.tasks
  * @since			CakePHP(tm) v 1.2
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -33,6 +33,13 @@
  * @subpackage	cake.cake.console.libs.tasks
  */
 class ControllerTask extends Shell {
+/**
+ * Name of plugin
+ *
+ * @var string
+ * @access public
+ */
+	var $plugin = null;
 /**
  * Tasks to be loaded by this Task
  *
@@ -97,7 +104,7 @@ class ControllerTask extends Shell {
  */
 	function __interactive($controllerName = false) {
 		if (!$controllerName) {
-			$this->interactive = false;
+			$this->interactive = true;
 			$this->hr();
 			$this->out(sprintf("Bake Controller\nPath: %s", $this->path));
 			$this->hr();
@@ -280,7 +287,6 @@ class ControllerTask extends Shell {
 			$actions .= "\t\t\t\t\$this->redirect(array('action'=>'index'));\n";
 		} else {
 			$actions .= "\t\t\t\t\$this->flash(__('{$currentModelName} saved.', true), array('action'=>'index'));\n";
-			$actions .= "\t\t\t\texit();\n";
 		}
 		$actions .= "\t\t\t} else {\n";
 		if ($wannaUseSession) {
@@ -320,7 +326,6 @@ class ControllerTask extends Shell {
 			$actions .= "\t\t\t\$this->redirect(array('action'=>'index'));\n";
 		} else {
 			$actions .= "\t\t\t\$this->flash(__('Invalid {$singularHumanName}', true), array('action'=>'index'));\n";
-			$actions .= "\t\t\texit();\n";
 		}
 		$actions .= "\t\t}\n";
 		$actions .= "\t\tif (!empty(\$this->data)) {\n";
@@ -330,7 +335,6 @@ class ControllerTask extends Shell {
 			$actions .= "\t\t\t\t\$this->redirect(array('action'=>'index'));\n";
 		} else {
 			$actions .= "\t\t\t\t\$this->flash(__('The ".$singularHumanName." has been saved.', true), array('action'=>'index'));\n";
-			$actions .= "\t\t\t\texit();\n";
 		}
 		$actions .= "\t\t\t} else {\n";
 		if ($wannaUseSession) {
@@ -400,7 +404,7 @@ class ControllerTask extends Shell {
  */
 	function bake($controllerName, $actions = '', $helpers = null, $components = null, $uses = null) {
 		$out = "<?php\n";
-		$out .= "class $controllerName" . "Controller extends AppController {\n\n";
+		$out .= "class $controllerName" . "Controller extends {$this->plugin}AppController {\n\n";
 		$out .= "\tvar \$name = '$controllerName';\n";
 
 		if (low($actions) == 'scaffold') {
@@ -454,23 +458,32 @@ class ControllerTask extends Shell {
  * @access private
  */
 	function bakeTest($className) {
-		$out = '<?php '."\n\n";
-		$out .= "App::import('Controller', '$className');\n\n";
-		$out .= "class {$className}ControllerTestCase extends CakeTestCase {\n";
-		$out .= "\tvar \$TestObject = null;\n\n";
-		$out .= "\tfunction setUp() {\n\t\t\$this->TestObject = new {$className}Controller();\n";
-		$out .= "\t}\n\n\tfunction tearDown() {\n\t\tunset(\$this->TestObject);\n\t}\n";
-		$out .= "\n\t/*\n\tfunction testMe() {\n";
-		$out .= "\t\t\$result = \$this->TestObject->index();\n";
-		$out .= "\t\t\$expected = 1;\n";
-		$out .= "\t\t\$this->assertEqual(\$result, \$expected);\n\t}\n\t*/\n}";
-		$out .= "\n?>";
+		$import = $className;
+		if ($this->plugin) {
+			$import = $this->plugin . '.' . $className;
+		}
+		$out = "App::import('Controller', '$import');\n\n";
+		$out .= "class Test{$className} extends {$className}Controller {\n";
+		$out .= "\tvar \$autoRender = false;\n}\n\n";
+		$out .= "class {$className}ControllerTest extends CakeTestCase {\n";
+		$out .= "\tvar \${$className} = null;\n\n";
+		$out .= "\tfunction setUp() {\n\t\t\$this->{$className} = new Test{$className}();\n\t}\n\n";
+		$out .= "\tfunction test{$className}ControllerInstance() {\n";
+		$out .= "\t\t\$this->assertTrue(is_a(\$this->{$className}, '{$className}Controller'));\n\t}\n\n";
+		$out .= "\tfunction tearDown() {\n\t\tunset(\$this->{$className});\n\t}\n}\n";
 
 		$path = CONTROLLER_TESTS;
-		$filename = Inflector::underscore($className).'_controller.test.php';
+		if (isset($this->plugin)) {
+			$pluginPath = 'plugins' . DS . Inflector::underscore($this->plugin) . DS;
+			$path = APP . $pluginPath . 'tests' . DS . 'cases' . DS . 'controllers' . DS;
+		}
 
-		$this->out("Baking unit test for $className...");
-		return $this->createFile($path . $filename, $out);
+		$filename = Inflector::underscore($className).'_controller.test.php';
+		$this->out("\nBaking unit test for $className...");
+
+		$header = '$Id';
+		$content = "<?php \n/* SVN FILE: $header$ */\n/* ". $className ."Controller Test cases generated on: " . date('Y-m-d H:m:s') . " : ". time() . "*/\n{$out}?>";
+		return $this->createFile($path . $filename, $content);
 	}
 /**
  * Outputs and gets the list of possible models or controllers from database
@@ -492,8 +505,14 @@ class ControllerTask extends Shell {
 		} else {
 			$tables = $db->listSources();
 		}
+
+		if (empty($tables)) {
+			$this->err(__('Your database does not have any tables.', true));
+			$this->_stop();
+		}
+
 		$this->__tables = $tables;
-		$this->out('Possible Models based on your current database:');
+		$this->out('Possible Controllers based on your current database:');
 		$this->_controllerNames = array();
 		$count = count($tables);
 		for ($i = 0; $i < $count; $i++) {
@@ -515,11 +534,16 @@ class ControllerTask extends Shell {
 		$enteredController = '';
 
 		while ($enteredController == '') {
-			$enteredController = $this->in('Enter a number from the list above, or type in the name of another controller.');
+			$enteredController = $this->in(__("Enter a number from the list above, type in the name of another controller, or 'q' to exit", true), null, 'q');
+
+			if ($enteredController === 'q') {
+				$this->out(__("Exit", true));
+				$this->_stop();
+			}
 
 			if ($enteredController == '' || intval($enteredController) > count($controllers)) {
-				$this->out('Error:');
-				$this->out("The Controller name you supplied was empty, or the number \nyou selected was not an option. Please try again.");
+				$this->out(__('Error:', true));
+				$this->out(__("The Controller name you supplied was empty, or the number \nyou selected was not an option. Please try again.", true));
 				$enteredController = '';
 			}
 		}
@@ -547,7 +571,7 @@ class ControllerTask extends Shell {
 		$this->out("\n\tcontroller <name> scaffold admin\n\t\tbakes a controller with scaffold actions for both public and Configure::read('Routing.admin')");
 		$this->out("\n\tcontroller <name> admin\n\t\tbakes a controller with scaffold actions only for Configure::read('Routing.admin')");
 		$this->out("");
-		exit();
+		$this->_stop();
 	}
 }
 ?>

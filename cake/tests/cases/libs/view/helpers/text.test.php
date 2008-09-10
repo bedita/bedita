@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: text.test.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: text.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,12 +21,14 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs.view.helpers
  * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-uses('view'.DS.'helpers'.DS.'app_helper', 'view'.DS.'helper', 'view'.DS.'helpers'.DS.'text');
+App::import('Core', array('Helper', 'AppHelper'));
+App::import('Helper', 'Text');
+
 /**
  * Short description for class.
  *
@@ -34,20 +36,110 @@ uses('view'.DS.'helpers'.DS.'app_helper', 'view'.DS.'helper', 'view'.DS.'helpers
  * @subpackage	cake.tests.cases.libs.view.helpers
  */
 class TextTest extends UnitTestCase {
+/**
+ * helper property
+ * 
+ * @var mixed null
+ * @access public
+ */
 	var $helper = null;
-
+/**
+ * setUp method
+ * 
+ * @access public
+ * @return void
+ */
 	function setUp() {
 		$this->Text = new TextHelper();
 	}
+/**
+ * testTruncate method
+ * 
+ * @access public
+ * @return void
+ */
+	function testTruncate() {
+		if (!isset($this->method)) {
+			$this->method = 'truncate';
+		}
+		$m = $this->method;
+		$text1 = 'The quick brown fox jumps over the lazy dog';
+		$text2 = 'Heiz&ouml;lr&uuml;cksto&szlig;abd&auml;mpfung';
+		$text3 = '<b>&copy; 2005-2007, Cake Software Foundation, Inc.</b><br />written by Alexander Wegener';
+		$text4 = '<img src="mypic.jpg"> This image tag is not XHTML conform!<br><hr/><b>But the following image tag should be conform <img src="mypic.jpg" alt="Me, myself and I" /></b><br />Great, or?';
+		$text5 = '0<b>1<i>2<span class="myclass">3</span>4<u>5</u>6</i>7</b>8<b>9</b>0';
 
+		$this->assertIdentical($this->Text->{$m}($text1, 15), 'The quick br...');
+		$this->assertIdentical($this->Text->{$m}($text1, 15, '...', false), 'The quick...');
+		$this->assertIdentical($this->Text->{$m}($text1, 100), 'The quick brown fox jumps over the lazy dog');
+		$this->assertIdentical($this->Text->{$m}($text2, 10, '...'), 'Heiz&ou...');
+		$this->assertIdentical($this->Text->{$m}($text2, 10, '...', false), '...');
+		$this->assertIdentical($this->Text->{$m}($text3, 20), '<b>&copy; 2005-20...');
+		$this->assertIdentical($this->Text->{$m}($text4, 15), '<img src="my...');
+		$this->assertIdentical($this->Text->{$m}($text5, 6, ''), '0<b>1<');
+
+		$this->assertIdentical($this->Text->{$m}($text1, 15, array('ending' => '...', 'exact' => true, 'considerHtml' => true)), 'The quick br...');
+		$this->assertIdentical($this->Text->{$m}($text1, 15, '...', true, true), 'The quick br...');
+		$this->assertIdentical($this->Text->{$m}($text1, 15, '...', false, true), 'The quick...');
+		$this->assertIdentical($this->Text->{$m}($text2, 10, '...', true, true), 'Heiz&ouml;lr...');
+		$this->assertIdentical($this->Text->{$m}($text2, 10, '...', false, true), '...');
+		$this->assertIdentical($this->Text->{$m}($text3, 20, '...', true, true), '<b>&copy; 2005-2007, Cake...</b>');
+		$this->assertIdentical($this->Text->{$m}($text4, 15, '...', true, true), '<img src="mypic.jpg"> This image ...');
+		$this->assertIdentical($this->Text->{$m}($text4, 45, '...', true, true), '<img src="mypic.jpg"> This image tag is not XHTML conform!<br><hr/><b>But t...</b>');
+		$this->assertIdentical($this->Text->{$m}($text4, 90, '...', true, true), '<img src="mypic.jpg"> This image tag is not XHTML conform!<br><hr/><b>But the following image tag should be conform <img src="mypic.jpg" alt="Me, myself and I" /></b><br />Grea...');
+		$this->assertIdentical($this->Text->{$m}($text5, 6, '', true, true), '0<b>1<i>2<span class="myclass">3</span>4<u>5</u></i></b>');
+		$this->assertIdentical($this->Text->{$m}($text5, 20, '', true, true), $text5);
+
+		if ($this->method == 'truncate') {
+			$this->method = 'trim';
+			$this->testTruncate();
+		}
+	}
+/**
+ * testHighlight method
+ * 
+ * @access public
+ * @return void
+ */
 	function testHighlight() {
 		$text = 'This is a test text';
 		$phrases = array('This', 'text');
 		$result = $this->Text->highlight($text, $phrases, '<b>\1</b>');
 		$expected = '<b>This</b> is a test <b>text</b>';
 		$this->assertEqual($expected, $result);
-	}
 
+		$text = 'This is a test text';
+		$phrases = null;
+		$result = $this->Text->highlight($text, $phrases, '<b>\1</b>');
+		$this->assertEqual($result, $text);
+
+		$text = 'Ich saß in einem Café am Übergang';
+		$expected = 'Ich <b>saß</b> in einem <b>Café</b> am <b>Übergang</b>';
+		$phrases = array('saß', 'café', 'übergang');
+		$result = $this->Text->highlight($text, $phrases, '<b>\1</b>');
+		$this->assertEqual($result, $expected);
+	}
+/**
+ * testHighlightConsiderHtml method
+ * 
+ * @access public
+ * @return void
+ */
+	function testHighlightConsiderHtml() {
+		$text1 = '<p>strongbow isn&rsquo;t real cider</p>';
+		$text2 = '<p>strongbow <strong>isn&rsquo;t</strong> real cider</p>';
+		$text3 = '<img src="what-a-strong-mouse.png" alt="What a strong mouse!" />';
+
+		$this->assertEqual($this->Text->highlight($text1, 'strong', '<b>\1</b>', true), '<p><b>strong</b>bow isn&rsquo;t real cider</p>');
+		$this->assertEqual($this->Text->highlight($text2, 'strong', '<b>\1</b>', true), '<p><b>strong</b>bow <strong>isn&rsquo;t</strong> real cider</p>');
+		$this->assertEqual($this->Text->highlight($text3, 'strong', '<b>\1</b>', true), $text3);
+	}
+/**
+ * testStripLinks method
+ * 
+ * @access public
+ * @return void
+ */
 	function testStripLinks() {
 		$text = 'This is a test text';
 		$expected = 'This is a test text';
@@ -69,10 +161,37 @@ class TextTest extends UnitTestCase {
 		$result = $this->Text->stripLinks($text);
 		$this->assertEqual($expected, $result);
 	}
+/**
+ * testAutoLink method
+ * 
+ * @access public
+ * @return void
+ */
+	function testAutoLink() {
+		$text = 'This is a test text';
+		$expected = 'This is a test text';
+		$result = $this->Text->autoLink($text);
+		$this->assertEqual($expected, $result);
 
+		$text = 'Text with a partial www.cakephp.org URL and test@cakephp.org email address';
+		$result = $this->Text->autoLink($text);
+		$expected = 'Text with a partial <a href="http://www.cakephp.org">www.cakephp.org</a> URL and <a href="mailto:test@cakephp\.org">test@cakephp\.org</a> email address';
+		$this->assertPattern('#^' . $expected . '$#', $result);
+	}
+/**
+ * testAutoLinkUrls method
+ * 
+ * @access public
+ * @return void
+ */
 	function testAutoLinkUrls() {
 		$text = 'This is a test text';
 		$expected = 'This is a test text';
+		$result = $this->Text->autoLinkUrls($text);
+		$this->assertEqual($expected, $result);
+
+		$text = 'This is a test that includes (www.cakephp.org)';
+		$expected = 'This is a test that includes (<a href="http://www.cakephp.org">www.cakephp.org</a>)';
 		$result = $this->Text->autoLinkUrls($text);
 		$this->assertEqual($expected, $result);
 
@@ -97,7 +216,12 @@ class TextTest extends UnitTestCase {
 		$this->assertPattern('#^' . $expected . '$#', $result);
 
 	}
-
+/**
+ * testAutoLinkEmails method
+ * 
+ * @access public
+ * @return void
+ */
 	function testAutoLinkEmails() {
 		$text = 'This is a test text';
 		$expected = 'This is a test text';
@@ -114,7 +238,12 @@ class TextTest extends UnitTestCase {
 		$result = $this->Text->autoLinkEmails($text, array('class' => 'link'));
 		$this->assertPattern('#^' . $expected . '$#', $result);
 	}
-
+/**
+ * testHighlightCaseInsensitivity method
+ * 
+ * @access public
+ * @return void
+ */
 	function testHighlightCaseInsensitivity() {
 		$text = 'This is a Test text';
 		$expected = 'This is a <b>Test</b> text';
@@ -125,7 +254,12 @@ class TextTest extends UnitTestCase {
 		$result = $this->Text->highlight($text, array('test'), '<b>\1</b>');
 		$this->assertEqual($expected, $result);
 	}
-
+/**
+ * testExcerpt method
+ * 
+ * @access public
+ * @return void
+ */
 	function testExcerpt() {
 		$text = 'This is a phrase with test text to play with';
 
@@ -136,8 +270,25 @@ class TextTest extends UnitTestCase {
 		$expected = 'This is a...';
 		$result = $this->Text->excerpt($text, 'not_found', 9, '...');
 		$this->assertEqual($expected, $result);
-	}
 
+		$expected = 'This is a phras...';
+		$result = $this->Text->excerpt($text, null, 9, '...');
+		$this->assertEqual($expected, $result);
+
+		$expected = $text;
+		$result = $this->Text->excerpt($text, null, 200, '...');
+		$this->assertEqual($expected, $result);
+
+		$expected = '...phrase...';
+		$result = $this->Text->excerpt($text, 'phrase', 2, '...');
+		$this->assertEqual($expected, $result);
+	}
+/**
+ * testExcerptCaseInsensitivity method
+ * 
+ * @access public
+ * @return void
+ */
 	function testExcerptCaseInsensitivity() {
 		$text = 'This is a phrase with test text to play with';
 
@@ -149,7 +300,25 @@ class TextTest extends UnitTestCase {
 		$result = $this->Text->excerpt($text, 'NOT_FOUND', 9, '...');
 		$this->assertEqual($expected, $result);
 	}
+/**
+ * testListGeneration method
+ * 
+ * @access public
+ * @return void
+ */
+	function testListGeneration() {
+		$result = $this->Text->toList(array('Larry', 'Curly', 'Moe'));
+		$this->assertEqual($result, 'Larry, Curly and Moe');
 
+		$result = $this->Text->toList(array('Dusty', 'Lucky', 'Ned'), 'y');
+		$this->assertEqual($result, 'Dusty, Lucky y Ned');
+	}
+/**
+ * tearDown method
+ * 
+ * @access public
+ * @return void
+ */
 	function tearDown() {
 		unset($this->Text);
 	}

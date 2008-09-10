@@ -48,7 +48,7 @@ class DocumentsController extends ModulesController {
 		$obj = null ;
 		$relations = array();
 		if($id) {
-			$this->Document->restrict(array(
+			$this->Document->contain(array(
 										"BEObject" => array("ObjectType", 
 															"UserCreated", 
 															"UserModified", 
@@ -64,7 +64,6 @@ class DocumentsController extends ModulesController {
 			if(!($obj = $this->Document->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading document: %d", true), $id));
 			}
-			
 			$relations = $this->objectRelationArray($obj['RelatedObject']);
 		}
 		

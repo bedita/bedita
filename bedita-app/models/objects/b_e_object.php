@@ -446,7 +446,7 @@ class BEObject extends BEAppModel
 		
 		$limit 	= $this->getLimitClausole($page, $dim) ;
 		$query = "SELECT {$searchFields}{$fields} FROM {$from} {$fromSearchText} {$sqlClausole} {$searchClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
-		$tmp  	= $this->execute($query) ;
+		$tmp  	= $this->query($query) ;
 		
 		// build items and toolbar
 		$recordset = array(
@@ -478,7 +478,7 @@ class BEObject extends BEAppModel
 		} else if(!empty($sqlConditions)) {
 			$query .= $sqlConditions;
 		}
-		list($data)  = $this->execute($query) ;
+		list($data)  = $this->query($query) ;
 
 		if (isset($data[0]['count'])) {
 			return $data[0]['count'];

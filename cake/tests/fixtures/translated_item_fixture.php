@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: translated_item_fixture.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: translated_item_fixture.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.fixtures
  * @since			CakePHP(tm) v 1.2.0.5669
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 /**
@@ -33,13 +33,34 @@
  * @subpackage	cake.tests.fixtures
  */
 class TranslatedItemFixture extends CakeTestFixture {
+/**
+ * name property
+ * 
+ * @var string 'TranslatedItem'
+ * @access public
+ */
 	var $name = 'TranslatedItem';
+/**
+ * fields property
+ * 
+ * @var array
+ * @access public
+ */
 	var $fields = array(
-			'id' => array('type' => 'integer', 'key' => 'primary', 'extra'=> 'auto_increment'),
-			'slug' => array('type' => 'string', 'null' => false));
+		'id' => array('type' => 'integer', 'key' => 'primary'),
+		'slug' => array('type' => 'string', 'null' => false)
+	);
+/**
+ * records property
+ * 
+ * @var array
+ * @access public
+ */
 	var $records = array(
-			array('id' => 1, 'slug' => 'first_translated'),
-			array('id' => 2, 'slug' => 'second_translated'),
-			array('id' => 3, 'slug' => 'third_translated'));
+		array('slug' => 'first_translated'),
+		array('slug' => 'second_translated'),
+		array('slug' => 'third_translated')
+	);
 }
+
 ?>

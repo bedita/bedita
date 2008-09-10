@@ -48,7 +48,7 @@ class BooksController extends ModulesController {
 		$obj = null ;
 		$relations = array();
 		if($id) {
-			$this->Book->restrict(array(
+			$this->Book->contain(array(
 										"BEObject" => array("ObjectType", 
 															"UserCreated", 
 															"UserModified", 

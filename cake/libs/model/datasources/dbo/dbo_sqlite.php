@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_sqlite.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: dbo_sqlite.php 7296 2008-06-27 09:09:03Z gwoo $ */
 
 /**
  * SQLite layer for DBO
@@ -22,9 +22,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.datasources.dbo
  * @since			CakePHP(tm) v 0.9.0
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -44,17 +44,24 @@ class DboSqlite extends DboSource {
  */
 	var $description = "SQLite DBO Driver";
 /**
- * Enter description here...
+ * Opening quote for quoted identifiers
  *
- * @var unknown_type
+ * @var string
  */
 	var $startQuote = '"';
 /**
- * Enter description here...
+ * Closing quote for quoted identifiers
  *
- * @var unknown_type
+ * @var string
  */
 	var $endQuote = '"';
+/**
+ * Keeps the transaction statistics of CREATE/UPDATE/DELETE queries
+ *
+ * @var array
+ * @access protected
+ */
+	var $_queryStats = array();
 /**
  * Base configuration settings for SQLite driver
  *
@@ -66,6 +73,17 @@ class DboSqlite extends DboSource {
 		'connect' => 'sqlite_popen'
 	);
 /**
+ * Index of basic SQL commands
+ *
+ * @var array
+ * @access protected
+ */
+	var $_commands = array(
+		'begin'    => 'BEGIN TRANSACTION',
+		'commit'   => 'COMMIT TRANSACTION',
+		'rollback' => 'ROLLBACK TRANSACTION'
+	);
+/**
  * SQLite column definition
  *
  * @var array
@@ -74,14 +92,14 @@ class DboSqlite extends DboSource {
 		'primary_key' => array('name' => 'integer primary key'),
 		'string' => array('name' => 'varchar', 'limit' => '255'),
 		'text' => array('name' => 'text'),
-		'integer' => array('name' => 'integer', 'limit' => '11', 'formatter' => 'intval'),
+		'integer' => array('name' => 'integer', 'limit' => null, 'formatter' => 'intval'),
 		'float' => array('name' => 'float', 'formatter' => 'floatval'),
-		'datetime' => array('name' => 'timestamp', 'format' => 'YmdHis', 'formatter' => 'date'),
-		'timestamp' => array('name' => 'timestamp', 'format' => 'YmdHis', 'formatter' => 'date'),
-		'time' => array('name' => 'timestamp', 'format' => 'His', 'formatter' => 'date'),
-		'date' => array('name' => 'date', 'format' => 'Ymd', 'formatter' => 'date'),
+		'datetime' => array('name' => 'datetime', 'format' => 'Y-m-d H:i:s', 'formatter' => 'date'),
+		'timestamp' => array('name' => 'timestamp', 'format' => 'Y-m-d H:i:s', 'formatter' => 'date'),
+		'time' => array('name' => 'time', 'format' => 'H:i:s', 'formatter' => 'date'),
+		'date' => array('name' => 'date', 'format' => 'Y-m-d', 'formatter' => 'date'),
 		'binary' => array('name' => 'blob'),
-		'boolean' => array('name' => 'integer', 'limit' => '1')
+		'boolean' => array('name' => 'boolean')
 	);
 /**
  * Connects to the database using config['database'] as a filename.
@@ -93,6 +111,10 @@ class DboSqlite extends DboSource {
 		$config = $this->config;
 		$this->connection = $config['connect']($config['database']);
 		$this->connected = is_resource($this->connection);
+
+		if ($this->connected) {
+			$this->_execute('PRAGMA count_changes = 1;');
+		}
 		return $this->connected;
 	}
 /**
@@ -112,7 +134,24 @@ class DboSqlite extends DboSource {
  * @return resource Result resource identifier
  */
 	function _execute($sql) {
-		return sqlite_query($this->connection, $sql);
+		$result = sqlite_query($this->connection, $sql);
+
+		if (preg_match('/^(INSERT|UPDATE|DELETE)/', $sql)) {
+			$this->resultSet($result);
+			list($this->_queryStats) = $this->fetchResult();
+		}
+		return $result;
+	}
+/**
+ * Overrides DboSource::execute() to correctly handle query statistics
+ *
+ * @param string $sql
+ * @return unknown
+ */
+	function execute($sql) {
+		$result = parent::execute($sql);
+		$this->_queryStats = array();
+		return $result;
 	}
 /**
  * Returns an array of tables in the database. If there are no tables, an error is raised and the application exits.
@@ -157,7 +196,7 @@ class DboSqlite extends DboSource {
 			return $cache;
 		}
 		$fields = array();
-		$result = $this->fetchAll('PRAGMA table_info(' . $model->tablePrefix . $model->table . ')');
+		$result = $this->fetchAll('PRAGMA table_info(' . $this->fullTableName($model) . ')');
 
 		foreach ($result as $column) {
 			$fields[$column[0]['name']] = array(
@@ -172,8 +211,7 @@ class DboSqlite extends DboSource {
 					'null'		=> false,
 					'default'	=> $column[0]['dflt_value'],
 					'key'		=> $this->index['PRI'],
-					'extra'		=> 'auto_increment',
-					'length'	=> $this->columns['integer']['limit']
+					'length'	=> 11
 				);
 			}
 		}
@@ -187,21 +225,18 @@ class DboSqlite extends DboSource {
  * @param string $data String to be prepared for use in an SQL statement
  * @return string Quoted and escaped
  */
-	function value ($data, $column = null, $safe = false) {
+	function value($data, $column = null, $safe = false) {
 		$parent = parent::value($data, $column, $safe);
 
 		if ($parent != null) {
 			return $parent;
 		}
-
 		if ($data === null) {
 			return 'NULL';
 		}
-
 		if ($data === '') {
 			return  "''";
 		}
-
 		switch ($column) {
 			case 'boolean':
 				$data = $this->boolean((bool)$data);
@@ -213,49 +248,27 @@ class DboSqlite extends DboSource {
 		return "'" . $data . "'";
 	}
 /**
- * Begin a transaction
+ * Generates and executes an SQL UPDATE statement for given model, fields, and values.
  *
- * @param unknown_type $model
- * @return boolean True on success, false on fail
- * (i.e. if the database/model does not support transactions).
+ * @param Model $model
+ * @param array $fields
+ * @param array $values
+ * @param mixed $conditions
+ * @return array
  */
-	function begin (&$model) {
-		if (parent::begin($model)) {
-			if ($this->execute('BEGIN')) {
-				$this->_transactionStarted = true;
-				return true;
+	function update(&$model, $fields = array(), $values = null, $conditions = null) {
+		if (empty($values) && !empty($fields)) {
+			foreach ($fields as $field => $value) {
+				if (strpos($field, $model->alias . '.') !== false) {
+					unset($fields[$field]);
+					$field = str_replace($model->alias . '.', "", $field);
+					$field = str_replace($model->alias . '.', "", $field);
+					$fields[$field] = $value;
+				}
 			}
 		}
-		return false;
-	}
-/**
- * Commit a transaction
- *
- * @param unknown_type $model
- * @return boolean True on success, false on fail
- * (i.e. if the database/model does not support transactions,
- * or a transaction has not started).
- */
-	function commit (&$model) {
-		if (parent::commit($model)) {
-			$this->_transactionStarted = false;
-			return $this->execute('COMMIT');
-		}
-		return false;
-	}
-/**
- * Rollback a transaction
- *
- * @param unknown_type $model
- * @return boolean True on success, false on fail
- * (i.e. if the database/model does not support transactions,
- * or a transaction has not started).
- */
-	function rollback (&$model) {
-		if (parent::rollback($model)) {
-			return $this->execute('ROLLBACK');
-		}
-		return false;
+		$result = parent::update($model, $fields, $values, $conditions);
+		return $result;
 	}
 /**
  * Deletes all the records in a table and resets the count of the auto-incrementing
@@ -286,8 +299,12 @@ class DboSqlite extends DboSource {
  * @return integer Number of affected rows
  */
 	function lastAffected() {
-		if ($this->_result) {
-			return sqlite_changes($this->connection);
+		if (!empty($this->_queryStats)) {
+			foreach (array('rows inserted', 'rows updated', 'rows deleted') as $key) {
+				if (array_key_exists($key, $this->_queryStats)) {
+					return $this->_queryStats[$key];
+				}
+			}
 		}
 		return false;
 	}
@@ -298,7 +315,7 @@ class DboSqlite extends DboSource {
  * @return integer Number of rows in resultset
  */
 	function lastNumRows() {
-		if ($this->_result) {
+		if ($this->hasResult()) {
 			sqlite_num_rows($this->_result);
 		}
 		return false;
@@ -328,9 +345,11 @@ class DboSqlite extends DboSource {
 
 		$col = strtolower(str_replace(')', '', $real));
 		$limit = null;
-		@list($col, $limit) = explode('(', $col);
+		if (strpos($col, '(') !== false) {
+			list($col, $limit) = explode('(', $col);
+		}
 
-		if (in_array($col, array('text', 'integer', 'float', 'boolean', 'timestamp', 'datetime'))) {
+		if (in_array($col, array('text', 'integer', 'float', 'boolean', 'timestamp', 'date', 'datetime', 'time'))) {
 			return $col;
 		}
 		if (strpos($col, 'varchar') !== false) {
@@ -342,7 +361,6 @@ class DboSqlite extends DboSource {
 		if (strpos($col, 'numeric') !== false) {
 			return 'float';
 		}
-
 		return 'text';
 	}
 /**
@@ -353,11 +371,10 @@ class DboSqlite extends DboSource {
 	function resultSet(&$results) {
 		$this->results =& $results;
 		$this->map = array();
-		$num_fields = sqlite_num_fields($results);
-		$index = 0;
-		$j = 0;
+		$fieldCount = sqlite_num_fields($results);
+		$index = $j = 0;
 
-		while ($j < $num_fields) {
+		while ($j < $fieldCount) {
 			$columnName = str_replace('"', '', sqlite_field_name($results, $j));
 
 			if (strpos($columnName, '.')) {
@@ -415,16 +432,6 @@ class DboSqlite extends DboSource {
 		return null;
 	}
 /**
- * Inserts multiple values into a join table
- *
- * @param string $table
- * @param string $fields
- * @param array $values
- */
-	function insertMulti($table, $fields, $values) {
-		parent::__insertMulti($table, $fields, $values);
-	}
-/**
  * Generate a database-native column schema string
  *
  * @param array $column An array structured like the following: array('name'=>'value', 'type'=>'value'[, options]),
@@ -477,6 +484,79 @@ class DboSqlite extends DboSource {
 			}
 		}
 		return $out;
+	}
+/**
+ * Sets the database encoding
+ *
+ * @param string $enc Database encoding
+ */
+	function setEncoding($enc) {
+		if (!in_array($enc, array("UTF-8", "UTF-16", "UTF-16le", "UTF-16be"))) {
+			return false;
+		}
+		return $this->_execute("PRAGMA encoding = \"{$enc}\"") !== false;
+	}
+/**
+ * Gets the database encoding
+ *
+ * @return string The database encoding
+ */
+	function getEncoding() {
+		return $this->fetchRow('PRAGMA encoding');
+	}
+/**
+ * Removes redundant primary key indexes, as they are handled in the column def of the key.
+ *
+ * @param array $indexes
+ * @param string $table
+ * @return string
+ */
+	function buildIndex($indexes, $table = null) {
+		$join = array();
+
+		foreach ($indexes as $name => $value) {
+
+			if ($name == 'PRIMARY') {
+				continue;
+			}
+			$out = 'CREATE ';
+
+			if (!empty($value['unique'])) {
+				$out .= 'UNIQUE ';
+			}
+			if (is_array($value['column'])) {
+				$value['column'] = join(', ', array_map(array(&$this, 'name'), $value['column']));
+			} else {
+				$value['column'] = $this->name($value['column']);
+			}
+			$out .= "INDEX {$name} ON {$table}({$value['column']});";
+			$join[] = $out;
+		}
+		return $join;
+	}
+/**
+ * Overrides DboSource::renderStatement to handle schema generation with SQLite-style indexes
+ *
+ * @param string $type
+ * @param array $data
+ * @return string
+ */
+	function renderStatement($type, $data) {
+		switch (strtolower($type)) {
+			case 'schema':
+				extract($data);
+
+				foreach (array('columns', 'indexes') as $var) {
+					if (is_array(${$var})) {
+						${$var} = "\t" . join(",\n\t", array_filter(${$var}));
+					}
+				}
+				return "CREATE TABLE {$table} (\n{$columns});\n{$indexes}";
+			break;
+			default:
+				return parent::renderStatement($type, $data);
+			break;
+		}
 	}
 }
 

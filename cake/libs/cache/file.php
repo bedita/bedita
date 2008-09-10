@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: file.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: file.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * File Storage engine for cache
  *
@@ -20,18 +20,11 @@
  * @package			cake
  * @subpackage		cake.cake.libs.cache
  * @since			CakePHP(tm) v 1.2.0.4933
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-/**
- * Included libraries.
- *
- */
-if (!class_exists('File')) {
-	uses ('File');
-}
 /**
  * File Storage engine for cache
  *
@@ -84,12 +77,24 @@ class FileEngine extends CacheEngine {
  * @access public
  */
 	function init($settings = array()) {
-		parent::init($settings);
-		$defaults = array('path' => CACHE, 'prefix'=> 'cake_', 'lock'=> false, 'serialize'=> true);
-		$this->settings = array_merge($defaults, $this->settings, $settings);
+		parent::init(array_merge(
+			array(
+				'engine' => 'File', 'path' => CACHE, 'prefix'=> 'cake_', 'lock'=> false,
+				'serialize'=> true, 'isWindows' => false
+			),
+			$settings
+		));
 		if(!isset($this->__File)) {
+			if (!class_exists('File')) {
+				uses('file');
+			}
 			$this->__File =& new File($this->settings['path'] . DS . 'cake');
 		}
+
+		if(substr(PHP_OS, 0, 3) == "WIN") {
+			$this->settings['isWindows'] = true;
+		}
+
 		$this->settings['path'] = $this->__File->Folder->cd($this->settings['path']);
 		if(empty($this->settings['path'])) {
 			return false;
@@ -115,7 +120,7 @@ class FileEngine extends CacheEngine {
  * @access public
  */
 	function write($key, &$data, $duration) {
-		if (empty($data) || !$this->__init) {
+		if ($data === '' || !$this->__init) {
 			return false;
 		}
 
@@ -126,15 +131,14 @@ class FileEngine extends CacheEngine {
 		if ($duration == null) {
 			$duration = $this->settings['duration'];
 		}
-		$windows = false;
 		$lineBreak = "\n";
 
-		if (substr(PHP_OS, 0, 3) == "WIN") {
+		if ($this->settings['isWindows']) {
 			$lineBreak = "\r\n";
-			$windows = true;
 		}
+
 		if (!empty($this->settings['serialize'])) {
-			if ($windows) {
+			if ($this->settings['isWindows']) {
 				$data = str_replace('\\', '\\\\\\\\', serialize($data));
 			} else {
 				$data = serialize($data);
@@ -173,14 +177,11 @@ class FileEngine extends CacheEngine {
 		}
 		$data = $this->__File->read(true);
 
-		if (!empty($data) && !empty($this->settings['serialize'])) {
-			$data = stripslashes($data);
-			$data = preg_replace('!s:(\d+):"(.*?)";!se', "'s:'.strlen('$2').':\"$2\";'", $data);
-			$data = unserialize($data);
-
-			if (is_array($data)) {
-				$data = array_map('stripslashes_deep', $data);
+		if ($data !== '' && !empty($this->settings['serialize'])) {
+			if ($this->settings['isWindows']) {
+				$data = str_replace('\\\\\\\\', '\\', $data);
 			}
+			$data = unserialize($data);
 		}
 		$this->__File->close();
 		return $data;
@@ -215,7 +216,7 @@ class FileEngine extends CacheEngine {
 			$threshold = $now - $this->settings['duration'];
 		}
 		while (($entry = $dir->read()) !== false) {
-			if($this->__setKey(str_replace($this->settings['prefix'], '', $entry)) === false) {
+			if($this->__setKey($entry) === false) {
 				continue;
 			}
 			if ($check) {
@@ -246,7 +247,7 @@ class FileEngine extends CacheEngine {
  */
 	function __setKey($key) {
 		$this->__File->Folder->cd($this->settings['path']);
-		$this->__File->name = $this->settings['prefix'] . $key;
+		$this->__File->name = $key;
 		if (!$this->__File->Folder->inPath($this->__File->pwd(), true)) {
 			return false;
 		}

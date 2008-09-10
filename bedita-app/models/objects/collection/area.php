@@ -20,41 +20,9 @@
  * @license
  * @author 		giangi giangi@qwerg.com			
 */
-class Area extends BEAppCollectionModel
+class Area extends BeditaCollectionModel
 {
-	var $name 		= 'Area';
-	var $actsAs 	= array(
-			'CompactResult' 		=> array(),
-			'ForeignDependenceSave' => array('BEObject', 'Collection'),
-			'DeleteDependentObject'	=> array('section', 'community'),
-			'DeleteObject' 			=> 'objects',
-	); 
-	var $recursive 	= 2 ;
 
-	var $hasOne = array(
-			'BEObject' =>
-				array(
-					'className'		=> 'BEObject',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
-			'Collection' =>
-				array(
-					'className'		=> 'Collection',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
-	) ;			
-
-	function __construct() {
-		parent::__construct() ;
-	}
-	
-	/**
-	 * Inserisce l'area nell'albero
-	 */
 	function afterSave($created) {
 		if (!$created) 
 			return ;

@@ -56,7 +56,7 @@ class PermissionModule extends BEAppModel
 	 * @param integer $flag		bit dei permessi da settare
 	 */
 	function replace($module, $name, $switch, $flag) {
-		return $this->execute("CALL replacePermissionModule('{$module}', '{$name}', '{$switch}', {$flag})") ;
+		return $this->query("CALL replacePermissionModule('{$module}', '{$name}', '{$switch}', {$flag})") ;
 	}	
 	
 	/**
@@ -67,7 +67,7 @@ class PermissionModule extends BEAppModel
 	 * @param string $switch	user(/group
 	 */
 	function remove($module, $name, $switch) {
-		return $this->execute("CALL deletePermissionModule('{$module}', '{$name}', '{$switch}')") ;
+		return $this->query("CALL deletePermissionModule('{$module}', '{$name}', '{$switch}')") ;
 	}	
 
 	/**
@@ -76,7 +76,7 @@ class PermissionModule extends BEAppModel
 	 * @param string $module	nome del modulo
 	 */
 	function removeAll($module) {
-		return $this->execute("DELETE FROM permission_modules WHERE module_id = (SELECT id FROM modules WHERE label = '{$module}')") ;
+		return $this->query("DELETE FROM permission_modules WHERE module_id = (SELECT id FROM modules WHERE label = '{$module}')") ;
 	}	
 
 	/**
@@ -89,7 +89,7 @@ class PermissionModule extends BEAppModel
 	 * @return integer
 	 */
 	function permsByUserid($userid, $module, $operations) {
-		$ret =  $this->execute("SELECT prmsModuleUserByID('{$userid}', '{$module}', {$operations}) AS perms") ;
+		$ret =  $this->query("SELECT prmsModuleUserByID('{$userid}', '{$module}', {$operations}) AS perms") ;
 		
 		return $ret[0][0]['perms'] ;
 	}
@@ -104,7 +104,7 @@ class PermissionModule extends BEAppModel
 	 * @return integer
 	 */
 	function permsByGroup($groupid, $module, $operations) {
-		$ret =  $this->execute("SELECT prmsModuleGroupByName('{$groupid}', '{$module}', {$operations}) AS perms") ;
+		$ret =  $this->query("SELECT prmsModuleGroupByName('{$groupid}', '{$module}', {$operations}) AS perms") ;
 		
 		return $ret[0][0]['perms'] ;
 	}

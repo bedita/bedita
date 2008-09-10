@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: object.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: object.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Object class, allowing __construct and __destruct in PHP4.
  *
@@ -22,9 +22,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -79,34 +79,63 @@ class Object {
 /**
  * Calls a controller's method from any location.
  *
- * @param string $url  URL in the form of Cake URL ("/controller/method/parameter")
- * @param array $extra If array includes the key "return" it sets the AutoRender to true.
- * @return mixed  Success (true/false) or contents if 'return' is set in $extra
+ * @param string $url URL in the form of Cake URL ("/controller/method/parameter")
+ * @param array $extra if array includes the key "return" it sets the AutoRender to true.
+ * @return mixed Success (true/false) or contents if 'return' is set in $extra
  * @access public
  */
 	function requestAction($url, $extra = array()) {
-		if (!empty($url)) {
-			if (!class_exists('dispatcher')) {
-				require CAKE . 'dispatcher.php';
-			}
-			$dispatcher =& new Dispatcher();
-			if (in_array('return', $extra, true)) {
-				$extra['return'] = 0;
-				$extra['bare'] = 1;
-				$extra['requested'] = 1;
-				ob_start();
-				$out = $dispatcher->dispatch($url, $extra);
-				$out = ob_get_clean();
-				return $out;
-			} else {
-				$extra['return'] = 1;
-				$extra['bare'] = 1;
-				$extra['requested'] = 1;
-				return $dispatcher->dispatch($url, $extra);
-			}
-		} else {
+		if (empty($url)) {
 			return false;
 		}
+		if (!class_exists('dispatcher')) {
+			require CAKE . 'dispatcher.php';
+		}
+		if (in_array('return', $extra, true)) {
+			$extra = array_merge($extra, array('return' => 0, 'autoRender' => 1));
+		}
+		$params = am(array('autoRender' => 0, 'return' => 1, 'bare' => 1, 'requested' => 1), $extra);
+		$dispatcher = new Dispatcher;
+		return $dispatcher->dispatch($url, $params);
+	}
+/**
+ * Calls a method on this object with the given parameters. Provides an OO wrapper
+ * for call_user_func_array, and improves performance by using straight method calls
+ * in most cases.
+ *
+ * @param string $method  Name of the method to call
+ * @param array $params  Parameter list to use when calling $method
+ * @return mixed  Returns the result of the method call
+ * @access public
+ */
+	function dispatchMethod($method, $params = array()) {
+		switch (count($params)) {
+			case 0:
+				return $this->{$method}();
+			case 1:
+				return $this->{$method}($params[0]);
+			case 2:
+				return $this->{$method}($params[0], $params[1]);
+			case 3:
+				return $this->{$method}($params[0], $params[1], $params[2]);
+			case 4:
+				return $this->{$method}($params[0], $params[1], $params[2], $params[3]);
+			case 5:
+				return $this->{$method}($params[0], $params[1], $params[2], $params[3], $params[4]);
+			default:
+				return call_user_func_array(array(&$this, $method), $params);
+			break;
+		}
+	}
+/**
+ * Stop execution of the current script
+ *
+ * @param $status see http://php.net/exit for values
+ * @return void
+ * @access public
+ */
+	function _stop($status = 0) {
+		exit($status);
 	}
 /**
  * API for logging events.
@@ -119,13 +148,11 @@ class Object {
 		if (!class_exists('CakeLog')) {
 			uses('cake_log');
 		}
-
 		if (is_null($this->_log)) {
 			$this->_log = new CakeLog();
 		}
-
 		if (!is_string($msg)) {
-			$msg = print_r ($msg, true);
+			$msg = print_r($msg, true);
 		}
 		return $this->_log->write($type, $msg);
 	}
@@ -155,11 +182,14 @@ class Object {
  * @return error message
  * @access public
  */
-	function cakeError($method, $messages) {
+	function cakeError($method, $messages = array()) {
 		if (!class_exists('ErrorHandler')) {
-			uses('error');
+			App::import('Core', 'Error');
+
 			if (file_exists(APP . 'error.php')) {
 				include_once (APP . 'error.php');
+			} elseif (file_exists(APP . 'app_error.php')) {
+				include_once (APP . 'app_error.php');
 			}
 		}
 
@@ -233,15 +263,14 @@ class Object {
 			case 'registry':
 				$vars = unserialize(${$name});
 				foreach ($vars['0'] as $key => $value) {
-					if(strpos($key, '_behavior')) {
-						loadBehavior(Inflector::classify(str_replace('_behavior', '', $key)));
-					} else {
-						loadModel(Inflector::classify($key));
-					}
+					App::import('Model', Inflector::classify($key));
 				}
 				unset($vars);
 				$vars = unserialize(${$name});
 				foreach ($vars['0'] as $key => $value) {
+					foreach ($vars['0'][$key]->Behaviors->_attached as $behavior) {
+						App::import('Behavior', $behavior);
+					}
 					ClassRegistry::addObject($key, $value);
 					unset ($value);
 				}

@@ -48,7 +48,7 @@ class BibliographiesController extends ModulesController {
 		$obj = null ;
 		$relations = array();
 		if($id) {
-			$this->Bibliography->restrict(array(
+			$this->Bibliography->contain(array(
 										"BEObject" => array("ObjectType", 
 															"UserCreated", 
 															"UserModified", 

@@ -49,7 +49,7 @@ class AttachmentsController extends ModulesController {
 		
 		foreach($bedita_items['items'] as $key => $value) {
 			$modelLoaded = $this->loadModelByObjectTypeId($value['object_type_id']);
-			$modelLoaded->restrict(array(
+			$modelLoaded->contain(array(
 									"BEObject" => array("ObjectType"),
 									"Content",
 									"Stream"

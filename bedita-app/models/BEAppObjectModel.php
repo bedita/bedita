@@ -38,8 +38,8 @@ class BEAppObjectModel extends BEAppModel {
 			unset($data[$this->primaryKey]) ;
 		}
 
-		$this->dataCleanup($data);		
-		$result = parent::save($data, $validate, $fieldList) ;
+		$this->dataCleanup($data);	
+		$result = parent::save(array($this->alias => $data), $validate, $fieldList) ;
 		
 		/**
 		 * @todo VERIFICARE se nn da problemi.
@@ -190,8 +190,6 @@ class BEAppObjectModel extends BEAppModel {
 				$modelTmp	 	 = new $assoc['className']() ; 
 				$data 			 = &$this->data[$this->name][$name][$i] ;
 				$data[$foreignK] = $id ; 
-//pr($data);
-//exit;
 				if(!$modelTmp->save($data)) 
 					return false ;
 				
@@ -282,8 +280,35 @@ class BeditaStreamModel extends BEAppObjectModel {
  * e son inseriti nell'albero dei contenuti
  *
  */
-class BEAppCollectionModel extends BEAppObjectModel {
-	/**
+class BeditaCollectionModel extends BEAppObjectModel {
+
+	var $actsAs 	= array(
+			'CompactResult' 		=> array(),
+			'ForeignDependenceSave' => array('BEObject', 'Collection'),
+			'DeleteDependentObject'	=> array('section'),
+			'DeleteObject' 			=> 'objects',
+	); 
+	var $recursive 	= 2 ;
+
+	var $hasOne = array(
+			'BEObject' =>
+				array(
+					'className'		=> 'BEObject',
+					'conditions'   => '',
+					'foreignKey'	=> 'id',
+					'dependent'		=> true
+				),
+			'Collection' =>
+				array(
+					'className'		=> 'Collection',
+					'conditions'   => '',
+					'foreignKey'	=> 'id',
+					'dependent'		=> true
+				),
+	) ;			
+	
+
+/**
 	 * Se true esegue la clonazione anche dei figli, altrimenti no
 	 *
 	 * @var boolean

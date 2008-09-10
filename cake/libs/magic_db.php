@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: magic_db.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: magic_db.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * MagicDb parser and file analyzer
  *
@@ -19,13 +19,14 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v 1.2.0
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
-uses ('object', 'file');
+if (!class_exists('File')) {
+	uses ('object', 'file');
+}
 /**
  * A class to parse and use the MagicDb for file type analysis
  *
@@ -110,7 +111,7 @@ class MagicDb extends Object {
 		$format = array();
 		while (!empty($lines)) {
 			$line = array_shift($lines);
-			if (strpos($line, '#') === 0 || empty($line)) {
+			if (isset($line[0]) && $line[0] == '#' || empty($line)) {
 				continue;
 			}
 
@@ -216,7 +217,22 @@ class MagicFileResource extends Object{
  * @access public
  */
 	function test($magic) {
-		@list($offset, $type, $expected, $comment) = $magic;
+		$offset = null;
+		$type = null;
+		$expected = null;
+		$comment = null;
+		if (isset($magic[0])) {
+			$offset = $magic[0];
+		}
+		if (isset($magic[1])) {
+			$type = $magic[1];
+		}
+		if (isset($magic[2])) {
+			$expected = $magic[2];
+		}
+		if (isset($magic[3])) {
+			$comment = $magic[3];
+		}
 		$val = $this->extract($offset, $type, $expected);
 		return $val == $expected;
 	}

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: join_thing_fixture.php 4860 2007-04-15 07:19:31Z phpnut $ */
+/* SVN FILE: $Id: join_thing_fixture.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.fixtures
  * @since			CakePHP(tm) v 1.2.0.4667
- * @version			$Revision: 4860 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2007-04-15 03:19:31 -0400 (Sun, 15 Apr 2007) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 /**
@@ -33,20 +33,37 @@
  * @subpackage	cake.tests.fixtures
  */
 class JoinThingFixture extends CakeTestFixture {
+/**
+ * name property
+ *
+ * @var string 'JoinThing'
+ * @access public
+ */
 	var $name = 'JoinThing';
+/**
+ * fields property
+ *
+ * @var array
+ * @access public
+ */
 	var $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary', 'extra'=> 'auto_increment'),
+		'id' => array('type' => 'integer', 'key' => 'primary'),
 		'something_id' => array('type' => 'integer', 'length' => 10, 'null' => true),
-		'something_else_id' => array('type' => 'integer', 'default' => ''),
-		'doomed' => array('type' => 'boolean'),
+		'something_else_id' => array('type' => 'integer', 'default' => null),
+		'doomed' => array('type' => 'boolean', 'default' => '0'),
 		'created' => array('type' => 'datetime', 'null' => true),
 		'updated' => array('type' => 'datetime', 'null' => true)
 	);
-
+/**
+ * records property
+ * 
+ * @var array
+ * @access public
+ */
 	var $records = array(
-		array('id' => 1, 'something_id' => 1, 'something_else_id' => 2, 'doomed' => true, 'created' => '2007-03-18 10:39:23', 'updated' => '2007-03-18 10:41:31'),
-		array('id' => 2, 'something_id' => 2, 'something_else_id' => 3, 'doomed' => false, 'created' => '2007-03-18 10:41:23', 'updated' => '2007-03-18 10:43:31'),
-		array('id' => 3, 'something_id' => 3, 'something_else_id' => 1, 'doomed' => true, 'created' => '2007-03-18 10:43:23', 'updated' => '2007-03-18 10:45:31')
+		array('something_id' => 1, 'something_else_id' => 2, 'doomed' => '1', 'created' => '2007-03-18 10:39:23', 'updated' => '2007-03-18 10:41:31'),
+		array('something_id' => 2, 'something_else_id' => 3, 'doomed' => '0', 'created' => '2007-03-18 10:41:23', 'updated' => '2007-03-18 10:43:31'),
+		array('something_id' => 3, 'something_else_id' => 1, 'doomed' => '1', 'created' => '2007-03-18 10:43:23', 'updated' => '2007-03-18 10:45:31')
 	);
 }
 

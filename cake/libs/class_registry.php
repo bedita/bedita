@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: class_registry.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: class_registry.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Class collections.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v 0.9.2
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -62,7 +62,7 @@ class ClassRegistry {
 		if (!$instance) {
 			$instance[0] =& new ClassRegistry();
 		}
-		 return $instance[0];
+		return $instance[0];
 	}
 /**
  * Loads a class, registers the object in the registry and returns instance of the object.
@@ -127,7 +127,12 @@ class ClassRegistry {
 				if (App::import($type, $plugin . $class)) {
 					${$class} =& new $class($options);
 				} elseif ($type === 'Model') {
-					${$class} =& new AppModel($options);
+					if ($plugin && class_exists($plugin .'AppModel')) {
+						$appModel = $plugin .'AppModel';
+					} else {
+						$appModel = 'AppModel';
+					}
+					${$class} =& new $appModel($options);
 				}
 
 				if (!isset(${$class})) {

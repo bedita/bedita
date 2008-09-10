@@ -35,7 +35,7 @@ class NewsController extends ModulesController {
 		$obj = null ;
 		if(isset($id)) {
 			
-			$this->ShortNews->restrict(array(
+			$this->ShortNews->contain(array(
 										"BEObject" => array("ObjectType", 
 															"UserCreated", 
 															"UserModified", 

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: http_socket.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: http_socket.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * HTTP Socket connection class.
  *
@@ -19,12 +19,12 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v 1.2.0
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-uses('socket', 'set');
+App::import('Core', array('Socket', 'Set', 'Router'));
 
 /**
  * Cake network socket connection class.
@@ -95,8 +95,8 @@ class HttpSocket extends CakeSocket {
 		'raw' => array(
 			'status-line' => null,
 			'header' => null,
-			 'body' => null,
-			 'response' => null
+			'body' => null,
+			'response' => null
 		),
 		'status' => array(
 			'http-version' => null,
@@ -152,6 +152,10 @@ class HttpSocket extends CakeSocket {
 		if (is_string($config)) {
 			$this->configUri($config);
 		} elseif (is_array($config)) {
+			if (isset($config['request']['uri']) && is_string($config['request']['uri'])) {
+				$this->configUri($config['request']['uri']);
+				unset($config['request']['uri']);
+			}
 			$this->config = Set::merge($this->config, $config);
 		}
 		parent::__construct($this->config);
@@ -177,6 +181,7 @@ class HttpSocket extends CakeSocket {
 			$request['uri'] = null;
 		}
 		$uri = $this->parseUri($request['uri']);
+
 		if (!isset($uri['host'])) {
 			$host = $this->config['host'];
 		}
@@ -188,19 +193,27 @@ class HttpSocket extends CakeSocket {
 		$request['uri'] = $this->url($request['uri']);
 		$request['uri'] = $this->parseUri($request['uri'], true);
 		$this->request = Set::merge($this->request, $this->config['request'], $request);
+
 		$this->configUri($this->request['uri']);
 
 		if (isset($host)) {
 			$this->config['host'] = $host;
 		}
-
 		$cookies = null;
+
 		if (is_array($this->request['header'])) {
 			$this->request['header'] = $this->parseHeader($this->request['header']);
 			if (!empty($this->request['cookies'])) {
 				$cookies = $this->buildCookies($this->request['cookies']);
 			}
 			$this->request['header'] = array_merge(array('Host' => $this->request['uri']['host']), $this->request['header']);
+		}
+
+		if (isset($this->request['auth']['user']) && isset($this->request['auth']['pass'])) {
+			$this->request['header']['Authorization'] = $this->request['auth']['method'] ." ". base64_encode($this->request['auth']['user'] .":".$this->request['auth']['pass']);
+		}
+		if (isset($this->request['uri']['user']) && isset($this->request['uri']['pass'])) {
+			$this->request['header']['Authorization'] = $this->request['auth']['method'] ." ". base64_encode($this->request['uri']['user'] .":".$this->request['uri']['pass']);
 		}
 
 		if (is_array($this->request['body'])) {
@@ -251,6 +264,7 @@ class HttpSocket extends CakeSocket {
 		if (!empty($this->response['cookies'])) {
 			$this->config['request']['cookies'] = array_merge($this->config['request']['cookies'], $this->response['cookies']);
 		}
+
 		return $this->response['body'];
 	}
 
@@ -333,7 +347,7 @@ class HttpSocket extends CakeSocket {
 		}
 		if (is_string($url)) {
 			if ($url{0} == '/') {
-				$url = $this->config['request']['uri']['host'].':'.$this->config['request']['uri']['port'].$url;
+				$url = $this->config['request']['uri']['host'].':'.$this->config['request']['uri']['port'] . $url;
 			}
 			if (!preg_match('/^.+:\/\/|\*|^\//', $url)) {
 				$url = $this->config['request']['uri']['scheme'].'://'.$url;
@@ -344,6 +358,7 @@ class HttpSocket extends CakeSocket {
 
 		$base = array_merge($this->config['request']['uri'], array('scheme' => array('http', 'https'), 'port' => array(80, 443)));
 		$url = $this->parseUri($url, $base);
+
 		if (empty($url)) {
 			$url = $this->config['request']['uri'];
 		}
@@ -369,17 +384,19 @@ class HttpSocket extends CakeSocket {
 		}
 
 		static $responseTemplate;
+
 		if (empty($responseTemplate)) {
 			$classVars = get_class_vars(__CLASS__);
 			$responseTemplate = $classVars['response'];
 		}
 
 		$response = $responseTemplate;
+
 		if (!preg_match("/^(.+\r\n)(.*)(?<=\r\n)\r\n/Us", $message, $match)) {
 			return false;
 		}
 
-		list(, $response['raw']['status-line'], $response['raw']['header']) = $match;
+		list($null, $response['raw']['status-line'], $response['raw']['header']) = $match;
 		$response['raw']['response'] = $message;
 		$response['raw']['body'] = substr($message, strlen($match[0]));
 
@@ -392,6 +409,7 @@ class HttpSocket extends CakeSocket {
 		$response['header'] = $this->parseHeader($response['raw']['header']);
 		$decoded = $this->decodeBody($response['raw']['body'], @$response['header']['Transfer-Encoding']);
 		$response['body'] = $decoded['body'];
+
 		if (!empty($decoded['header'])) {
 			$response['header'] = $this->parseHeader($this->buildHeader($response['header']).$this->buildHeader($decoded['header']));
 		}
@@ -451,7 +469,7 @@ class HttpSocket extends CakeSocket {
 		$chunkLength = null;
 
 		while ($chunkLength !== 0) {
-			if (!preg_match("/^([0-9a-f]+)(?:;(.+)=(.+))?\r\n/iU", $body, $match)) {
+			if (!preg_match("/^([0-9a-f]+) *(?:;(.+)=(.+))?\r\n/iU", $body, $match)) {
 				if (!$this->quirksMode) {
 					trigger_error(__('HttpSocket::decodeChunkedBody - Could not parse malformed chunk. Activate quirks mode to do this.', true), E_USER_WARNING);
 					return false;
@@ -459,7 +477,23 @@ class HttpSocket extends CakeSocket {
 				break;
 			}
 
-			@list($chunkSize, $hexLength, $chunkExtensionName, $chunkExtensionValue) = $match;
+			$chunkSize = 0;
+			$hexLength = 0;
+			$chunkExtensionName = '';
+			$chunkExtensionValue = '';
+			if (isset($match[0])) {
+				$chunkSize = $match[0];
+			}
+			if (isset($match[1])) {
+				$hexLength = $match[1];
+			}
+			if (isset($match[2])) {
+				$chunkExtensionName = $match[2];
+			}
+			if (isset($match[3])) {
+				$chunkExtensionValue = $match[3];
+			}
+
 			$body = substr($body, strlen($chunkSize));
 			$chunkLength = hexdec($hexLength);
 			$chunk = substr($body, 0, $chunkLength);
@@ -640,6 +674,7 @@ class HttpSocket extends CakeSocket {
 		if (is_string($query) && !empty($query)) {
 			$query = preg_replace('/^\?/', '', $query);
 			$items = explode('&', $query);
+
 			foreach ($items as $item) {
 				if (strpos($item, '=') !== false) {
 					list($key, $value) = explode('=', $item);
@@ -650,12 +685,6 @@ class HttpSocket extends CakeSocket {
 
 				$key = urldecode($key);
 				$value = urldecode($value);
-
-				if ($value === '') {
-					$value = null;
-				} elseif (ctype_digit($value) == true) {
-					$value = (int)$value;
-				}
 
 				if (preg_match_all('/\[([^\[\]]*)\]/iUs', $key, $matches)) {
 					$subKeys = $matches[1];
@@ -833,10 +862,13 @@ class HttpSocket extends CakeSocket {
 			list($name, $value) = explode('=', array_shift($parts));
 			$cookies[$name] = compact('value');
 			foreach ($parts as $part) {
-				@list($key, $value) = explode('=', $part);
-				if (is_null($value)) {
+				if (strpos($part, '=') !== false) {
+					list($key, $value) = explode('=', $part);
+				} else {
+					$key = $part;
 					$value = true;
 				}
+
 				$key = strtolower($key);
 				if (!isset($cookies[$name][$key])) {
 					$cookies[$name][$key] = $value;
@@ -943,7 +975,7 @@ class HttpSocket extends CakeSocket {
  * @access public
  */
 	function reset($full = true) {
-		static $initalState = array()	;
+		static $initalState = array();
 		if (empty($initalState)) {
 			$initalState = get_class_vars(__CLASS__);
 		}
@@ -953,10 +985,7 @@ class HttpSocket extends CakeSocket {
 			$this->response = $initalState['response'];
 			return true;
 		}
-
-		foreach ($initalState as $property => $value) {
-			$this->{$property} = $value;
-		}
+		parent::reset($initalState);
 		return true;
 	}
 }

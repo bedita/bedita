@@ -1,6 +1,6 @@
 <?php
 
-App::import('Core', 'i18n');
+App::import('Core', 'l10n');
 
 class AppController extends Controller
 {
@@ -122,7 +122,8 @@ class AppController extends Controller
 		if(isset($lang) && $conf->multilang === true) {
 			$this->Session->write('Config.language', $lang);
 		}
-		I18n::getInstance();
+		$l10n = new L10n();
+		$l10n->get();		
 		$this->currLang = $conf->Config['language'];
 		if(!array_key_exists($this->currLang, $conf->langsSystem)) {
 			if(isset( $conf->langsSystemMap[$this->currLang])) {
@@ -265,7 +266,7 @@ class AppController extends Controller
 
 		// Verify authorization
 		if(!$this->BeAuth->isLogged()) { 
-			$this->render(null, null, VIEWS."home".DS."login.tpl") ; 
+			echo $this->render(null, null, VIEWS."home".DS."login.tpl") ; 
 			$_loginRunning = false; 
 			exit;
 		}
@@ -347,22 +348,20 @@ class AppController extends Controller
 	}
 
 	protected function loadModelByType($modelClass) {
-		if(!class_exists($modelClass)){
-			App::import('Model',$modelClass);
-		}
-		if (!class_exists($modelClass)) {
+		$model = ClassRegistry::init($modelClass);
+		if($model === false) {
 			throw new BeditaException(__("Object type not found - ", true).$modelClass);			
 		}
-		return new $modelClass();
+		return $model;
 	}
 	
 	public function modelBindings(Model $modelObj) {
 		$conf = Configure::getInstance();
 		$name = $modelObj->name;
 		if(isset ($this->modelBindings[$name])) {
-			$modelObj->restrict($this->modelBindings[$name]);
+			$modelObj->contain($this->modelBindings[$name]);
 		} else if(isset ($conf->modelBindings[$name])) {
-			$modelObj->restrict($conf->modelBindings[$name]);
+			$modelObj->contain($conf->modelBindings[$name]);
 		}
 	}	
 		
@@ -382,13 +381,8 @@ class AppController extends Controller
 			if (empty($status) || in_array($obj["status"],$status)) {
 				$rel = $obj['ObjectRelation']['switch'];
 				$modelClass = $conf->objectTypeModels[$obj['object_type_id']] ;
-				if(!class_exists($modelClass)){
-					App::import('Model',$modelClass);
-				}
-				if (!class_exists($modelClass)) {
-					throw new BeditaException(__("Object type not found - ", true).$modelClass);			
-				}
-				$this->{$modelClass} = new $modelClass();
+
+				$this->{$modelClass} = $this->loadModelByType($modelClass);
 				$this->modelBindings($this->{$modelClass});
 	
 				if(!($objDetail = $this->{$modelClass}->findById($obj['id']))) {
@@ -587,7 +581,7 @@ abstract class ModulesController extends AppController {
 		
 			$object_type_id = $this->BEObject->findObjectTypeId($destination);
 			$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
-			$modelLoaded->restrict("BEObject");
+			$modelLoaded->contain("BEObject");
 			if(!($section = $modelLoaded->findById($destination))) {
 				throw new BeditaException(sprintf(__("Error loading section: %d", true), $destination));
 			}

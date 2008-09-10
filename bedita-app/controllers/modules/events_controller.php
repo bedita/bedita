@@ -36,7 +36,7 @@ class EventsController extends ModulesController {
 		$parents_id = array();
 		$relations = array();
 		if(isset($id)) {
-			$this->Event->restrict(array(
+			$this->Event->contain(array(
 										"BEObject" => array("ObjectType", 
 															"UserCreated", 
 															"UserModified", 

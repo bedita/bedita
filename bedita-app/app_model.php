@@ -42,7 +42,7 @@ class AppModel extends Model{
 	// if undefined defaults to $default
 	// var $useDbConfig = 'test';
 	// var $useDbConfig = 'artefaenza';
-	var $actsAs 	= array("Bindable");
+	var $actsAs 	= array("Containable");
 }
 
 require_once(APP . 'models'. DS . 'BEAppModel.php') ;

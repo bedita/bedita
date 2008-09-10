@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: pages_controller.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: pages_controller.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * Static content controller.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.controller
  * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -34,7 +34,7 @@
  * @package		cake
  * @subpackage	cake.cake.libs.controller
  */
-class PagesController extends AppController{
+class PagesController extends AppController {
 /**
  * Controller name
  *
@@ -63,18 +63,13 @@ class PagesController extends AppController{
  * @access public
  */
 	function display() {
-		if (!func_num_args()) {
-			$this->redirect('/');
-		}
 		$path = func_get_args();
 
 		if (!count($path)) {
 			$this->redirect('/');
 		}
 		$count = count($path);
-		$page = null;
-		$subpage = null;
-		$title = null;
+		$page = $subpage = $title = null;
 
 		if (!empty($path[0])) {
 			$page = $path[0];
@@ -85,10 +80,9 @@ class PagesController extends AppController{
 		if (!empty($path[$count - 1])) {
 			$title = Inflector::humanize($path[$count - 1]);
 		}
-		$this->set('page', $page);
-		$this->set('subpage', $subpage);
-		$this->set('title', $title);
+		$this->set(compact('page', 'subpage', 'title'));
 		$this->render(join('/', $path));
 	}
 }
+
 ?>

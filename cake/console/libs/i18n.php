@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: i18n.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: i18n.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package		 cake
  * @subpackage	  cake.cake.console.libs
  * @since		   CakePHP(tm) v 1.2.0.5669
- * @version		 $Revision: 6311 $
- * @modifiedby	  $LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version		 $Revision: 7118 $
+ * @modifiedby	  $LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license		 http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -54,6 +54,7 @@ class I18nShell extends Shell {
  * @access public
  */
 	function startup() {
+		$this->_welcome();
 		if (isset($this->params['datasource'])) {
 			$this->dataSource = $this->params['datasource'];
 		}
@@ -82,16 +83,16 @@ class I18nShell extends Shell {
 		switch($choice) {
 			case 'E':
 				$this->Extract->execute();
-				break;
+			break;
 			case 'I':
 				$this->initdb();
-				break;
+			break;
 			case 'H':
 				$this->help();
-				break;
+			break;
 			case 'Q':
 				exit(0);
-				break;
+			break;
 			default:
 				$this->out(__('You have made an invalid selection. Please choose a command to execute by entering E, I, H, or Q.', true));
 		}
@@ -104,27 +105,8 @@ class I18nShell extends Shell {
  * @access public
  */
 	function initdb() {
-		$db =& ConnectionManager::getDataSource($this->dataSource);
-		$this->out(__('Initializing Database...', true), true);
-		$this->out(__('Creating i18n table ...', true), true);
-		$sql = ' CREATE TABLE '.$db->fullTableName('i18n').' (
-				'.$db->name('id').' '.$db->column($db->columns['primary_key']).',
-				'.$db->name('locale').' '.$db->column(array('name' => 'varchar', 'limit' => 6)).' NOT NULL,
-				'.$db->name('model').' '.$db->column($db->columns['string']).' NOT NULL,
-				'.$db->name('foreign_key').' '.$db->column($db->columns['integer']).' NOT NULL,
-				'.$db->name('field').' '.$db->column($db->columns['string']).' NOT NULL,
-				'.$db->name('content').' '.$db->column($db->columns['text']).',
-				PRIMARY KEY ('.$db->name('id').'),
-				INDEX locale ('.$db->name('locale').'),
-				INDEX model ('.$db->name('model').'),
-				INDEX foreign_key ('.$db->name('foreign_key').'),
-				INDEX field ('.$db->name('field').')
-				)';
-		if ($db->query($sql) === false) {
-			die('Error: ' . $db->lastError());
-		}
-
-		$this->out(__('Done.', true), true);
+		$this->Dispatch->args = array('schema', 'run', 'create', 'i18n');
+		$this->Dispatch->dispatch();
 	}
 /**
  * Show help screen.

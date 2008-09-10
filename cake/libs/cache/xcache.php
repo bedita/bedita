@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: xcache.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: xcache.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * Xcache storage engine for cache.
  *
@@ -20,9 +20,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.cache
  * @since			CakePHP(tm) v 1.2.0.4947
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -53,9 +53,10 @@ class XcacheEngine extends CacheEngine {
  * @access public
  */
 	function init($settings) {
-		parent::init($settings);
-		$defaults = array('PHP_AUTH_USER' => 'cake', 'PHP_AUTH_PW' => 'cake');
-		$this->settings = array_merge($this->settings, $defaults, $settings);
+		parent::init(array_merge(array(
+			'engine' => 'Xcache', 'prefix' => Inflector::slug(APP_DIR) . '_', 'PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'
+			), $settings)
+		);
 		return function_exists('xcache_info');
 	}
 /**

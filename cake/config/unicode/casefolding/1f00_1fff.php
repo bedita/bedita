@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: 1f00_1fff.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: 1f00_1fff.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * Case Folding Properties.
  *
@@ -25,9 +25,9 @@
  * @package			cake
  * @subpackage		cake.cake.config.unicode.casefolding
  * @since			CakePHP(tm) v 1.2.0.5691
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -45,7 +45,7 @@
  *     Note that the Turkic mappings do not maintain canonical equivalence without additional processing.
  *     See the discussions of case mapping in the Unicode Standard for more information.
  */
-$config['1f00_1fff'][] = array('upper' => 7944, 'status' => 'C', 'lower' => array(7936)); /* GREEK CAPITAL LETTER ALPHA WITH PSILI */
+$config['1f00_1fff'][] = array('upper' => 7944, 'status' => 'C', 'lower' => array(7936, 953)); /* GREEK CAPITAL LETTER ALPHA WITH PSILI */
 $config['1f00_1fff'][] = array('upper' => 7945, 'status' => 'C', 'lower' => array(7937)); /* GREEK CAPITAL LETTER ALPHA WITH DASIA */
 $config['1f00_1fff'][] = array('upper' => 7946, 'status' => 'C', 'lower' => array(7938)); /* GREEK CAPITAL LETTER ALPHA WITH PSILI AND VARIA */
 $config['1f00_1fff'][] = array('upper' => 7947, 'status' => 'C', 'lower' => array(7939)); /* GREEK CAPITAL LETTER ALPHA WITH DASIA AND VARIA */

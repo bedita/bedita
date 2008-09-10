@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: translate.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: translate.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.behaviors
  * @since			CakePHP(tm) v 1.2.0.4525
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -62,34 +62,40 @@ class TranslateBehavior extends ModelBehavior {
 		$this->settings[$model->alias] = array();
 		$this->runtime[$model->alias] = array('fields' => array());
 		$this->translateModel($model);
-		return $this->bindTranslation($model, null, false);
+		return $this->bindTranslation($model, $config, false);
+	}
+/**
+ * Callback
+ */
+	function cleanup(&$model) {
+		$this->unbindTranslation($model);
+		unset($this->settings[$model->alias]);
+		unset($this->runtime[$model->alias]);
 	}
 /**
  * Callback
  */
 	function beforeFind(&$model, $query) {
 		$locale = $this->_getLocale($model);
+		if (empty($locale)) {
+			return $query;
+		}
 		$db =& ConnectionManager::getDataSource($model->useDbConfig);
 		$tablePrefix = $db->config['prefix'];
 		$RuntimeModel =& $this->translateModel($model);
 
 		if (is_string($query['fields']) && 'COUNT(*) AS '.$db->name('count') == $query['fields']) {
-			if (empty($locale)) {
-				return $query;
-			}
-			$query['fields'] = 'COUNT(DISTINCT('.$db->name($model->alias).'.'.$db->name($model->primaryKey).')) ' . $db->alias . 'count';
+			$query['fields'] = 'COUNT(DISTINCT('.$db->name($model->alias . '.' . $model->primaryKey) . ')) ' . $db->alias . 'count';
 			$query['joins'][] = array(
-						'type' => 'INNER',
-						'alias' => $RuntimeModel->alias,
-						'table' => $db->name($tablePrefix . $RuntimeModel->useTable),
-						'conditions' => array(
-								$model->alias.'.id' => '{$__cakeIdentifier['.$RuntimeModel->alias.'.foreign_key]__$}',
-								$RuntimeModel->alias.'.model' => $model->alias,
-								$RuntimeModel->alias.'.locale' => $locale));
-			return $query;
-		}
-
-		if (empty($locale)) {
+				'type' => 'INNER',
+				'alias' => $RuntimeModel->alias,
+				'table' => $db->name($tablePrefix . $RuntimeModel->useTable),
+				'conditions' => array(
+					$model->alias.'.id' => $db->identifier($RuntimeModel->alias.'.foreign_key'),
+					$RuntimeModel->alias.'.model' => $model->name,
+					$RuntimeModel->alias.'.locale' => $locale
+				)
+			);
 			return $query;
 		}
 		$autoFields = false;
@@ -137,26 +143,35 @@ class TranslateBehavior extends ModelBehavior {
 					foreach ($locale as $_locale) {
 						$query['fields'][] = 'I18n__'.$field.'__'.$_locale.'.content';
 						$query['joins'][] = array(
-								'type' => 'LEFT',
-								'alias' => 'I18n__'.$field.'__'.$_locale,
-								'table' => $db->name($tablePrefix . $RuntimeModel->useTable),
-								'conditions' => array(
-										$model->alias.'.id' => '{$__cakeIdentifier[I18n__'.$field.'__'.$_locale.'.foreign_key]__$}',
-										'I18n__'.$field.'__'.$_locale.'.model' => $model->alias,
-										'I18n__'.$field.'__'.$_locale.'.'.$RuntimeModel->displayField => $field,
-										'I18n__'.$field.'__'.$_locale.'.locale' => $_locale));
+							'type' => 'LEFT',
+							'alias' => 'I18n__'.$field.'__'.$_locale,
+							'table' => $db->name($tablePrefix . $RuntimeModel->useTable),
+							'conditions' => array(
+								$model->alias.'.id' => $db->identifier("I18n__{$field}__{$_locale}.foreign_key"),
+								'I18n__'.$field.'__'.$_locale.'.model' => $model->name,
+								'I18n__'.$field.'__'.$_locale.'.'.$RuntimeModel->displayField => $field,
+								'I18n__'.$field.'__'.$_locale.'.locale' => $_locale
+							)
+						);
 					}
 				} else {
 					$query['fields'][] = 'I18n__'.$field.'.content';
 					$query['joins'][] = array(
-							'type' => 'LEFT',
-							'alias' => 'I18n__'.$field,
-							'table' => $db->name($tablePrefix . $RuntimeModel->useTable),
-							'conditions' => array(
-									$model->alias.'.id' => '{$__cakeIdentifier[I18n__'.$field.'.foreign_key]__$}',
-									'I18n__'.$field.'.model' => $model->alias,
-									'I18n__'.$field.'.'.$RuntimeModel->displayField => $field));
-					$query['conditions'][$db->name('I18n__'.$field.'.locale')] = $locale;
+						'type' => 'LEFT',
+						'alias' => 'I18n__'.$field,
+						'table' => $db->name($tablePrefix . $RuntimeModel->useTable),
+						'conditions' => array(
+							$model->alias.'.id' => $db->identifier("I18n__{$field}.foreign_key"),
+							'I18n__'.$field.'.model' => $model->name,
+							'I18n__'.$field.'.'.$RuntimeModel->displayField => $field
+						)
+					);
+
+					if (is_string($query['conditions'])) {
+						$query['conditions'] = $db->conditions($query['conditions'], true, false, $model) . ' AND '.$db->name('I18n__'.$field.'.locale').' = \''.$locale.'\'';
+					} else {
+						$query['conditions'][$db->name("I18n__{$field}.locale")] = $locale;
+					}
 				}
 			}
 		}
@@ -201,14 +216,13 @@ class TranslateBehavior extends ModelBehavior {
 			}
 		}
 		return $results;
-    }
+	}
 /**
  * Callback
  */
-	function beforeSave(&$model) {
+	function beforeValidate(&$model) {
 		$locale = $this->_getLocale($model);
-
-		if (empty($locale) || is_array($locale)) {
+		if (empty($locale)) {
 			return true;
 		}
 		$fields = array_merge($this->settings[$model->alias], $this->runtime[$model->alias]['fields']);
@@ -219,7 +233,14 @@ class TranslateBehavior extends ModelBehavior {
 
 			if (isset($model->data[$model->alias][$field])) {
 				$tempData[$field] = $model->data[$model->alias][$field];
-				unset($model->data[$model->alias][$field]);
+				if (is_array($model->data[$model->alias][$field])) {
+					if (is_string($locale) && !empty($model->data[$model->alias][$field][$locale])) {
+						$model->data[$model->alias][$field] = $model->data[$model->alias][$field][$locale];
+					} else {
+						$values = array_values($model->data[$model->alias][$field]);
+						$model->data[$model->alias][$field] = $values[0];
+					}
+				}
 			}
 		}
 		$this->runtime[$model->alias]['beforeSave'] = $tempData;
@@ -235,25 +256,32 @@ class TranslateBehavior extends ModelBehavior {
 		$locale = $this->_getLocale($model);
 		$tempData = $this->runtime[$model->alias]['beforeSave'];
 		unset($this->runtime[$model->alias]['beforeSave']);
-		$conditions = array('locale' => $locale, 'model' => $model->alias, 'foreign_key' => $model->id);
+		$conditions = array('model' => $model->alias, 'foreign_key' => $model->id);
 		$RuntimeModel =& $this->translateModel($model);
 
-		if (empty($created)) {
-			$translations = $RuntimeModel->find('list', array('conditions' => array_merge($conditions, array($RuntimeModel->displayField => array_keys($tempData)))));
-
-			if ($translations) {
-				foreach ($translations as $id => $field) {
-					$RuntimeModel->create();
-					$RuntimeModel->save(array($RuntimeModel->alias => array('id' => $id, 'content' => $tempData[$field])));
-					unset($tempData[$field]);
+		foreach ($tempData as $field => $value) {
+			unset($conditions['content']);
+			$conditions['field'] = $field;
+			if (is_array($value)) {
+				$conditions['locale'] = array_keys($value);
+			} else {
+				$conditions['locale'] = $locale;
+				if (is_array($locale)) {
+					$value = array($locale[0] => $value);
+				} else {
+					$value = array($locale => $value);
 				}
 			}
-		}
-
-		if (!empty($tempData)) {
-			foreach ($tempData as $field => $value) {
-				$RuntimeModel->create(array_merge($conditions, array($RuntimeModel->displayField => $field, 'content' => $value)));
-				$RuntimeModel->save();
+			$translations = $RuntimeModel->find('list', array('conditions' => $conditions, 'fields' => array($RuntimeModel->alias . '.locale', $RuntimeModel->alias . '.id')));
+			foreach ($value as $_locale => $_value) {
+				$RuntimeModel->create();
+				$conditions['locale'] = $_locale;
+				$conditions['content'] = $_value;
+				if (array_key_exists($_locale, $translations)) {
+					$RuntimeModel->save(array($RuntimeModel->alias => array_merge($conditions, array('id' => $translations[$_locale]))));
+				} else {
+					$RuntimeModel->save(array($RuntimeModel->alias => $conditions));
+				}
 			}
 		}
 	}
@@ -273,7 +301,7 @@ class TranslateBehavior extends ModelBehavior {
 	function _getLocale(&$model) {
 		if (!isset($model->locale) || is_null($model->locale)) {
 			if (!class_exists('I18n')) {
-				uses('i18n');
+				App::import('Core', 'i18n');
 			}
 			$I18n =& I18n::getInstance();
 			$model->locale = $I18n->l10n->locale;
@@ -299,15 +327,14 @@ class TranslateBehavior extends ModelBehavior {
 				$this->runtime[$model->alias]['model'] =& ClassRegistry::init($className, 'Model');
 			}
 		}
-
 		$useTable = 'i18n';
+
 		if (!empty($model->translateTable)) {
 			$useTable = $model->translateTable;
 		}
 		if ($useTable !== $this->runtime[$model->alias]['model']->useTable) {
 			$this->runtime[$model->alias]['model']->setSource($model->translateTable);
 		}
-
 		return $this->runtime[$model->alias]['model'];
 	}
 /**
@@ -315,15 +342,11 @@ class TranslateBehavior extends ModelBehavior {
  * fake field
  *
  * @param object instance of model
- * @param mixed string with field, or array(field1, field2=>AssocName, field3), or null for bind all original translations
+ * @param mixed string with field or array(field1, field2=>AssocName, field3)
  * @param boolean $reset
  * @return bool
  */
-	function bindTranslation(&$model, $fields = null, $reset = true) {
-		if (empty($fields)) {
-			return $this->bindTranslation($model, $model->actsAs['Translate'], $reset);
-		}
-
+	function bindTranslation(&$model, $fields, $reset = true) {
 		if (is_string($fields)) {
 			$fields = array($fields);
 		}
@@ -375,8 +398,9 @@ class TranslateBehavior extends ModelBehavior {
 					}
 				}
 				$associations[$association] = array_merge($default, array('conditions' => array(
-						'model' => $model->alias,
-						$RuntimeModel->displayField => $field)));
+					'model' => $model->alias,
+					$RuntimeModel->displayField => $field
+				)));
 			}
 		}
 
@@ -395,7 +419,7 @@ class TranslateBehavior extends ModelBehavior {
  */
 	function unbindTranslation(&$model, $fields = null) {
 		if (empty($fields)) {
-			return $this->unbindTranslation($model, $model->actsAs['Translate']);
+			return $this->unbindTranslation($model, $this->settings[$model->alias]);
 		}
 
 		if (is_string($fields)) {

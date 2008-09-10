@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: l10n.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: l10n.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v 1.2.0.4116
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -95,14 +95,15 @@ class L10n extends Object {
 	var $__l10nMap = array(/* Afrikaans */ 'afr' => 'af',
 								/* Albanian */ 'alb' => 'sq',
 								/* Arabic */ 'ara' => 'ar',
+								/* Armenian - Armenia */ 'hye' => 'hy',
 								/* Basque */ 'baq' => 'eu',
+								/* Bosnian */ 'bos' => 'bs',
 								/* Bulgarian */ 'bul' => 'bg',
 								/* Byelorussian */ 'bel' => 'be',
 								/* Catalan */ 'cat' => 'ca',
 								/* Chinese */ 'chi' => 'zh',
 								/* Chinese */ 'zho' => 'zh',
 								/* Croatian */ 'hrv' => 'hr',
-								/* Croatian */ 'scr' => 'hr',
 								/* Czech */ 'ces' => 'cs',
 								/* Czech */ 'cze' => 'cs',
 								/* Danish */ 'dan' => 'da',
@@ -197,6 +198,7 @@ class L10n extends Object {
 										'ar-ye' => array('language' => 'Arabic (Yemen)', 'locale' => 'ar_ye', 'localeFallback' => 'ara', 'charset' => 'utf-8'),
 										'be' => array('language' => 'Byelorussian', 'locale' => 'bel', 'localeFallback' => 'bel', 'charset' => 'utf-8'),
 										'bg' => array('language' => 'Bulgarian', 'locale' => 'bul', 'localeFallback' => 'bul', 'charset' => 'utf-8'),
+										'bs' => array('language' => 'Bosnian', 'locale' => 'bos', 'localeFallback' => 'bos', 'charset' => 'utf-8'),
 										'ca' => array('language' => 'Catalan', 'locale' => 'cat', 'localeFallback' => 'cat', 'charset' => 'utf-8'),
 										'cs' => array('language' => 'Czech', 'locale' => 'cze', 'localeFallback' => 'cze', 'charset' => 'utf-8'),
 										'da' => array('language' => 'Danish', 'locale' => 'dan', 'localeFallback' => 'dan', 'charset' => 'utf-8'),
@@ -257,8 +259,9 @@ class L10n extends Object {
 										'gl' => array('language' => 'Galician', 'locale' => 'glg', 'localeFallback' => 'glg', 'charset' => 'utf-8'),
 										'he' => array('language' => 'Hebrew', 'locale' => 'heb', 'localeFallback' => 'heb', 'charset' => 'utf-8'),
 										'hi' => array('language' => 'Hindi', 'locale' => 'hin', 'localeFallback' => 'hin', 'charset' => 'utf-8'),
-										'hr' => array('language' => 'Croatian', 'locale' => 'scr', 'localeFallback' => 'scr', 'charset' => 'utf-8'),
+										'hr' => array('language' => 'Croatian', 'locale' => 'hrv', 'localeFallback' => 'hrv', 'charset' => 'utf-8'),
 										'hu' => array('language' => 'Hungarian', 'locale' => 'hun', 'localeFallback' => 'hun', 'charset' => 'utf-8'),
+										'hy' => array('language' => 'Armenian - Armenia', 'locale' => 'hye', 'localeFallback' => 'hye', 'charset' => 'utf-8'),
 										'id' => array('language' => 'Indonesian', 'locale' => 'ind', 'localeFallback' => 'ind', 'charset' => 'utf-8'),
 										'in' => array('language' => 'Indonesian', 'locale' => 'ind', 'localeFallback' => 'ind', 'charset' => 'utf-8'),
 										'is' => array('language' => 'Icelandic', 'locale' => 'ice', 'localeFallback' => 'ice', 'charset' => 'utf-8'),
@@ -370,14 +373,23 @@ class L10n extends Object {
 			$this->lang = DEFAULT_LANGUAGE;
 			$this->locale = $this->__l10nCatalog[$this->__l10nMap[DEFAULT_LANGUAGE]]['locale'];
 			$this->charset = $this->__l10nCatalog[$this->__l10nMap[DEFAULT_LANGUAGE]]['charset'];
+		} else {
+			$this->lang = $language;
+			$this->languagePath = array(0 => $language);
 		}
 
 		if ($this->default) {
 			$this->languagePath[2] = $this->__l10nCatalog[$this->__l10nMap[$this->default]]['localeFallback'];
 		}
 		$this->found = true;
-		Configure::write('Config.language', $this->lang);
+
+		if (Configure::read('Config.language') === null) {
+			Configure::write('Config.language', $this->lang);
+		}
 		Configure::write('charset', $this->charset);
+		if ($language) {
+			return $language;
+		}
 	}
 /**
  * Attempts to find the locale settings based on the HTTP_ACCEPT_LANGUAGE variable

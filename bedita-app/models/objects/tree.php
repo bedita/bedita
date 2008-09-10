@@ -169,7 +169,7 @@ class Tree extends BEAppModel
 		$this->_getCondition_parentID($conditions, $this->id) ;
 		$sqlClausole = ConnectionManager::getDataSource($this->useDbConfig)->conditions($conditions, true, true) ;
 		
-		$children = $this->execute("SELECT id FROM view_trees {$sqlClausole}") ;
+		$children = $this->query("SELECT id FROM view_trees {$sqlClausole}") ;
 		
 		// Cancella i rami di cui i figli sono radice
 		for ($i =0; $i < count($children); $i++) {
@@ -245,7 +245,7 @@ class Tree extends BEAppModel
 		$sqlClausole = $db->conditions($conditions, true, true) ;
 
 		$from = " view_trees AS Tree ";
-		$records  = $this->execute("SELECT {$fields} FROM {$from} {$sqlClausole}") ;
+		$records  = $this->query("SELECT {$fields} FROM {$from} {$sqlClausole}") ;
 
 		// Costruisce l'albero
 		$roots 	= array() ;
@@ -515,7 +515,7 @@ class Tree extends BEAppModel
 			$query .= $sqlConditions;
 		}
 
-		list($data)  = $this->execute($query);
+		list($data)  = $this->query($query);
 
 		if (isset($data[0]['count'])) {
 			return $data[0]['count'];
@@ -549,7 +549,7 @@ class Tree extends BEAppModel
 			" ;
 		}
 		
-		$tmp  	= $this->execute($sql) ;
+		$tmp  	= $this->query($sql) ;
 		return ((isset($tmp[0]['trees']['id'])) ? $tmp[0]['trees']['id'] : null) ;
 	}
 	
@@ -628,7 +628,7 @@ class Tree extends BEAppModel
 		
 		$limit 	= $this->getLimitClausole($page, $dim) ;
 		$query = "SELECT {$fields} {$searchFields} FROM {$from} {$fromSearchText} {$sqlClausole} {$searchClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
-		$tmp  	= $this->execute($query) ;
+		$tmp  	= $this->query($query) ;
 
 		// Torna il risultato
 		$recordset = array(

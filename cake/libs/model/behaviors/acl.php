@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: acl.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: acl.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * ACL behavior class.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.behaviors
  * @since			CakePHP v 1.2.0.4487
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -54,14 +54,10 @@ class AclBehavior extends ModelBehavior {
 		}
 		$this->settings[$model->alias] = array_merge(array('type' => 'requester'), (array)$config);
 		$type = $this->__typeMaps[$this->settings[$model->alias]['type']];
-
-		if (!ClassRegistry::isKeySet($type)) {
+		if (!class_exists('AclNode')) {
 			uses('model' . DS . 'db_acl');
-			$object =& new $type();
-		} else {
-			$object =& ClassRegistry::getObject($type);
 		}
-		$model->{$type} =& $object;
+		$model->{$type} =& ClassRegistry::init($type);;
 		if (!method_exists($model, 'parentNode')) {
 			trigger_error("Callback parentNode() not defined in {$model->alias}", E_USER_WARNING);
 		}

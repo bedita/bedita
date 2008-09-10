@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: configure.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: configure.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v 1.0.0.2363
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -121,7 +121,7 @@ class Configure extends Object {
 	function &getInstance($boot = true) {
 		static $instance = array();
 		if (!$instance) {
-			$instance[0] =& new Configure;
+			$instance[0] =& new Configure();
 			$instance[0]->__loadBootstrap($boot);
 		}
 		return $instance[0];
@@ -154,7 +154,7 @@ class Configure extends Object {
 		if (empty($_this->__objects) || !isset($_this->__objects[$type]) || $cache !== true) {
 			$Inflector =& Inflector::getInstance();
 			$types = array(
-				'model' => array('suffix' => '.php', 'base' => 'AppModel'),
+				'model' => array('suffix' => '.php', 'base' => 'AppModel', 'core' => false),
 				'behavior' => array('suffix' => '.php', 'base' => 'ModelBehavior'),
 				'controller' => array('suffix' => '_controller.php', 'base' => 'AppController'),
 				'component' => array('suffix' => '.php', 'base' => null),
@@ -172,8 +172,10 @@ class Configure extends Object {
 			$objects = array();
 
 			if (empty($path)) {
-				$pathVar = $type . 'Paths';
-				$path = $_this->{$pathVar};
+				$path = $_this->{$type . 'Paths'};
+				if (isset($types[$type]['core']) && $types[$type]['core'] === false) {
+					array_pop($path);
+				}
 			}
 			$items = array();
 
@@ -205,7 +207,7 @@ class Configure extends Object {
  * @return array  List of directories or files in directory
  */
 	function __list($path, $suffix = false, $extension = false) {
-		if (!class_exists('folder')) {
+		if (!class_exists('Folder')) {
 			uses('folder');
 		}
 		$items = array();
@@ -245,27 +247,27 @@ class Configure extends Object {
 	function write($config, $value = null) {
 		$_this =& Configure::getInstance();
 
-		if (!is_array($config) && $value !== null) {
-			$name = $_this->__configVarNames($config);
+		if (!is_array($config)) {
+			$config = array($config => $value);
+		}
 
-			if (count($name) > 1) {
-				$_this->{$name[0]}[$name[1]] = $value;
-			} else {
-				$_this->{$name[0]} = $value;
-			}
-		} else {
-			foreach ($config as $names => $value) {
-				$name = $_this->__configVarNames($names);
+		foreach ($config as $names => $value) {
+			$name = $_this->__configVarNames($names);
 
-				if (count($name) > 1) {
+			switch (count($name)) {
+				case 3:
+					$_this->{$name[0]}[$name[1]][$name[2]] = $value;
+				break;
+				case 2:
 					$_this->{$name[0]}[$name[1]] = $value;
-				} else {
+				break;
+				default:
 					$_this->{$name[0]} = $value;
-				}
+				break;
 			}
 		}
 
-		if ($config == 'debug' || (is_array($config) && in_array('debug', $config))) {
+		if (array_key_exists('debug', $config)) {
 			if ($_this->debug) {
 				error_reporting(E_ALL);
 
@@ -274,7 +276,7 @@ class Configure extends Object {
 				}
 
 				if (!class_exists('Debugger')) {
-					require LIBS . 'debugger.php';
+					uses('debugger');
 				}
 				if (!class_exists('CakeLog')) {
 					uses('cake_log');
@@ -312,17 +314,24 @@ class Configure extends Object {
 		}
 		$name = $_this->__configVarNames($var);
 
-		if (count($name) > 1) {
-			if (isset($_this->{$name[0]}[$name[1]])) {
-				return $_this->{$name[0]}[$name[1]];
-			}
-			return null;
-		} else {
-			if (isset($_this->{$name[0]})) {
-				return $_this->{$name[0]};
-			}
-			return null;
+		switch (count($name)) {
+			case 3:
+				if (isset($_this->{$name[0]}[$name[1]][$name[2]])) {
+					return $_this->{$name[0]}[$name[1]][$name[2]];
+				}
+			break;
+			case 2:
+				if (isset($_this->{$name[0]}[$name[1]])) {
+					return $_this->{$name[0]}[$name[1]];
+				}
+			break;
+			case 1:
+				if (isset($_this->{$name[0]})) {
+					return $_this->{$name[0]};
+				}
+			break;
 		}
+		return null;
 	}
 /**
  * Used to delete a var from the Configure instance.
@@ -449,14 +458,26 @@ class Configure extends Object {
 	function corePaths($type = null) {
 		$paths = Cache::read('core_paths', '_cake_core_');
 		if (!$paths) {
-			$all = explode(PATH_SEPARATOR, ini_get('include_path'));
-			$all = array_flip(array_flip((array_merge(array(CAKE_CORE_INCLUDE_PATH), $all))));
 			$used = array();
+			$vendor = false;
+			$openBasedir = ini_get('open_basedir');
+
+			if ($openBasedir) {
+				$all = explode(PATH_SEPARATOR, $openBasedir);
+				$all = array_flip(array_flip((array_merge(array(CAKE_CORE_INCLUDE_PATH), $all))));
+			} else {
+				$all = explode(PATH_SEPARATOR, ini_get('include_path'));
+				$all = array_flip(array_flip((array_merge(array(CAKE_CORE_INCLUDE_PATH), $all))));
+			}
+			$all = array_values($all);
 
 			foreach ($all as $path) {
 				$path = rtrim($path, DS);
-				if ($path == '.' || in_array(realpath($path), $used)) {
+				if (empty($path) || $path == '.' || in_array(realpath($path), $used)) {
 					continue;
+				}
+				if (is_dir($path .  DS . 'cake' . DS . 'libs')) {
+					$paths['libs'][] = $path .  DS . 'cake' . DS . 'libs' . DS;
 				}
 				if (is_dir($path .  DS . 'cake' . DS . 'libs' . DS . 'model')) {
 					$paths['model'][] = $path .  DS . 'cake' . DS . 'libs' . DS . 'model' . DS;
@@ -476,14 +497,18 @@ class Configure extends Object {
 				if (is_dir($path . DS . 'cake' . DS . 'libs' . DS . 'view' . DS . 'helpers')) {
 					$paths['helper'][] = $path . DS . 'cake' . DS . 'libs' . DS . 'view' . DS . 'helpers' . DS;
 				}
-				if (is_dir($path .  DS . 'cake' . DS . 'libs')) {
-					$paths['libs'][] = $path .  DS . 'cake' . DS . 'libs' . DS;
-				}
 				if (is_dir($path .  DS . 'cake')) {
 					$paths['cake'][] = $path .  DS . 'cake' . DS;
 					$paths['class'][] = $path .  DS . 'cake' . DS;
 				}
+				if (is_dir($path .  DS . 'vendors')) {
+					$vendor['vendor'][] = $path .  DS . 'vendors' . DS;
+				}
 				$used[] = $path;
+			}
+
+			if ($vendor) {
+				$paths = array_merge($paths, $vendor);
 			}
 			Cache::write('core_paths', array_filter($paths), '_cake_core_');
 		}
@@ -518,7 +543,7 @@ class Configure extends Object {
 
 		if ($write === true) {
 			if (!class_exists('File')) {
-				uses('File');
+				uses('file');
 			}
 			$fileClass = new File($file);
 
@@ -537,10 +562,9 @@ class Configure extends Object {
 	function __configVarNames($name) {
 		if (is_string($name)) {
 			if (strpos($name, ".")) {
-				$name = explode(".", $name);
-			} else {
-				$name = array($name);
+				return explode(".", $name);
 			}
+			return array($name);
 		}
 		return $name;
 	}
@@ -550,7 +574,7 @@ class Configure extends Object {
  * @param array $paths paths defines in config/bootstrap.php
  * @access private
  */
-	function __buildPaths($paths) {
+	function buildPaths($paths) {
 		$_this =& Configure::getInstance();
 		$core = $_this->corePaths();
 		$basePaths = array(
@@ -562,7 +586,7 @@ class Configure extends Object {
 			'helper' => array(HELPERS),
 			'plugin' => array(APP . 'plugins' . DS),
 			'vendor' => array(APP . 'vendors' . DS, VENDORS),
-			);
+		);
 
 		foreach ($basePaths as $type => $default) {
 			$pathsVar = $type . 'Paths';
@@ -581,9 +605,11 @@ class Configure extends Object {
 			$_this->{$pathsVar} = $default;
 
 			if (isset($paths[$pathsVar]) && !empty($paths[$pathsVar])) {
-				$_this->{$pathsVar} = array_merge($_this->{$pathsVar}, (array)$paths[$pathsVar], $merge);
+				$path = array_flip(array_flip((array_merge($_this->{$pathsVar}, (array)$paths[$pathsVar], $merge))));
+				$_this->{$pathsVar} = array_values($path);
 			} else {
-				$_this->{$pathsVar} = array_merge($_this->{$pathsVar}, $merge);
+				$path = array_flip(array_flip((array_merge($_this->{$pathsVar}, $merge))));
+				$_this->{$pathsVar} = array_values($path);
 			}
 		}
 	}
@@ -606,83 +632,61 @@ class Configure extends Object {
 				$_this->write('App.server', 'IIS');
 			}
 
-			if (!include(APP_PATH . 'config' . DS . 'core.php')) {
+			if (!include(CONFIGS . 'core.php')) {
 				trigger_error(sprintf(__("Can't find application core file. Please create %score.php, and make sure it is readable by PHP.", true), CONFIGS), E_USER_ERROR);
 			}
 
-			if (!include(APP_PATH . 'config' . DS . 'bootstrap.php')) {
+			if (!include(CONFIGS . 'bootstrap.php')) {
 				trigger_error(sprintf(__("Can't find application bootstrap file. Please create %sbootstrap.php, and make sure it is readable by PHP.", true), CONFIGS), E_USER_ERROR);
 			}
 
 			if ($_this->read('Cache.disable') !== true) {
-				$cache = Cache::settings();
+				$cache = Cache::config('default');
 
-				if (empty($cache)) {
+				if (empty($cache['settings'])) {
 					trigger_error('Cache not configured properly. Please check Cache::config(); in APP/config/core.php', E_USER_WARNING);
-					list($engine, $cache) = Cache::config('default', array('engine' => 'File'));
+					$cache = Cache::config('default', array('engine' => 'File'));
 				}
-				if (Configure::read() > 1) {
-					$cache['duration'] = 10;
-				}
-				$settings = array('prefix' => 'cake_core_', 'path' => CACHE . 'persistent' . DS, 'serialize' => true);
- 				$config = Cache::config('_cake_core_' , array_merge($cache, $settings));
-			}
-		}
-		$_this->__buildPaths(compact('modelPaths', 'viewPaths', 'controllerPaths', 'helperPaths', 'componentPaths', 'behaviorPaths', 'pluginPaths'));
 
-		if (defined('BASE_URL')) {
-			trigger_error('BASE_URL Deprecated: See Configure::write(\'App.baseUrl\', \'' . BASE_URL . '\');  in APP/config/core.php', E_USER_WARNING);
-			$_this->write('App.baseUrl', BASE_URL);
-		}
-		if (defined('DEBUG')) {
-			trigger_error('DEBUG Deprecated: Use Configure::write(\'debug\', ' . DEBUG . ');  in APP/config/core.php', E_USER_WARNING);
-			$_this->write('debug', DEBUG);
-		}
-		if (defined('CAKE_ADMIN')) {
-			trigger_error('CAKE_ADMIN Deprecated: Use Configure::write(\'Routing.admin\', \'' . CAKE_ADMIN . '\');  in APP/config/core.php', E_USER_WARNING);
-			$_this->write('Routing.admin', CAKE_ADMIN);
-		}
-		if (defined('WEBSERVICES')) {
-			trigger_error('WEBSERVICES Deprecated: Use Router::parseExtensions(); or add Configure::write(\'Routing.webservices\', \'' . WEBSERVICES . '\');', E_USER_WARNING);
-			$_this->write('Routing.webservices', WEBSERVICES);
-		}
-		if (defined('ACL_CLASSNAME')) {
-			trigger_error('ACL_CLASSNAME Deprecated. Use Configure::write(\'Acl.classname\', \'' . ACL_CLASSNAME . '\'); in APP/config/core.php', E_USER_WARNING);
-			$_this->write('Acl.classname', ACL_CLASSNAME);
-		}
-		if (defined('ACL_DATABASE')) {
-			trigger_error('ACL_DATABASE Deprecated. Use Configure::write(\'Acl.database\', \'' . ACL_CLASSNAME . '\'); in APP/config/core.php', E_USER_WARNING);
-			$_this->write('Acl.database', ACL_CLASSNAME);
-		}
-		if (defined('CAKE_SESSION_SAVE')) {
-			trigger_error('CAKE_SESSION_SAVE Deprecated. Use Configure::write(\'Session.save\', \'' . CAKE_SESSION_SAVE . '\'); in APP/config/core.php', E_USER_WARNING);
-			$_this->write('Session.save', CAKE_SESSION_SAVE);
-		}
-		if (defined('CAKE_SESSION_TABLE')) {
-			trigger_error('CAKE_SESSION_TABLE Deprecated. Use Configure::write(\'Session.table\', \'' . CAKE_SESSION_TABLE . '\'); in APP/config/core.php', E_USER_WARNING);
-			$_this->write('Session.table', CAKE_SESSION_TABLE);
-		}
-		if (defined('CAKE_SESSION_STRING')) {
-			trigger_error('CAKE_SESSION_STRING Deprecated. Use Configure::write(\'Security.salt\', \'' . CAKE_SESSION_STRING . '\'); in APP/config/core.php', E_USER_WARNING);
-			$_this->write('Security.salt', CAKE_SESSION_STRING);
-		}
-		if (defined('CAKE_SESSION_COOKIE')) {
-			trigger_error('CAKE_SESSION_COOKIE Deprecated. Use Configure::write(\'Session.cookie\', \'' . CAKE_SESSION_COOKIE . '\'); in APP/config/core.php', E_USER_WARNING);
-			$_this->write('Session.cookie', CAKE_SESSION_COOKIE);
-		}
-		if (defined('CAKE_SECURITY')) {
-			trigger_error('CAKE_SECURITY Deprecated. Use Configure::write(\'Security.level\', \'' . CAKE_SECURITY . '\'); in APP/config/core.php', E_USER_WARNING);
-			$_this->write('Security.level', CAKE_SECURITY);
-		}
-		if (defined('CAKE_SESSION_TIMEOUT')) {
-			trigger_error('CAKE_SESSION_TIMEOUT Deprecated. Use Configure::write(\'Session.timeout\', \'' . CAKE_SESSION_TIMEOUT . '\'); in APP/config/core.php', E_USER_WARNING);
-			$_this->write('Session.timeout', CAKE_SESSION_TIMEOUT);
-		}
-		if (defined('AUTO_SESSION')) {
-			trigger_error('AUTO_SESSION Deprecated. Use Configure::write(\'Session.start\', \'' . AUTO_SESSION . '\'); in APP/config/core.php', E_USER_WARNING);
-			$_this->write('Session.start', (bool)AUTO_SESSION);
+				$path = $prefix = null;
+				if (!empty($cache['settings']['path'])) {
+					$path = realpath($cache['settings']['path']);
+				} else {
+					$prefix = $cache['settings']['prefix'];
+				}
+
+				$duration = $cache['settings']['duration'];
+				if (Configure::read() > 1) {
+					$duration = 10;
+				}
+
+				if (Cache::config('_cake_core_') === false) {
+					Cache::config('_cake_core_', array_merge($cache['settings'], array(
+						'prefix' => $prefix . 'cake_core_', 'path' => $path . DS . 'persistent' . DS,
+						'serialize' => true, 'duration' => $duration
+						)
+					));
+				}
+
+				if (Cache::config('_cake_model_') === false) {
+					Cache::config('_cake_model_', array_merge($cache['settings'], array(
+						'prefix' => $prefix . 'cake_model_', 'path' => $path . DS . 'models' . DS,
+						'serialize' => true, 'duration' => $duration
+						)
+					));
+				}
+
+				Cache::config('default');
+			}
+
+			$_this->buildPaths(compact('modelPaths', 'viewPaths', 'controllerPaths', 'helperPaths', 'componentPaths', 'behaviorPaths', 'pluginPaths', 'vendorPaths'));
 		}
 	}
+/**
+ * Caches the object map when the instance of the Configure class is destroyed
+ *
+ * @access public
+ */
 	function __destruct() {
 		$_this = & Configure::getInstance();
 
@@ -850,7 +854,7 @@ class App extends Object {
 				}
 			}
 
-			if (empty($search) && $_this->__load($file)) {
+			if (strtolower($type) !== 'vendor' && empty($search) && $_this->__load($file)) {
 				$directory = false;
 			} else {
 				$file = $find;
@@ -920,9 +924,7 @@ class App extends Object {
 				continue;
 			}
 			if (!isset($_this->__paths[$path])) {
-				if (!class_exists('Folder')) {
-					uses('Folder');
-				}
+				$_this->import('Folder');
 				$Folder =& new Folder();
 				$directories = $Folder->tree($path, false, 'dir');
 				$_this->__paths[$path] = $directories;
@@ -1016,9 +1018,7 @@ class App extends Object {
  * @access private
  */
 	function __overload($type, $name) {
-		$overload = array('Model', 'Helper');
-
-		if (in_array($type, $overload)) {
+		if (($type ==='Model' || $type === 'Helper') && strtolower($name) != 'schema') {
 			Overloadable::overload($name);
 		}
 	}
@@ -1042,11 +1042,9 @@ class App extends Object {
 		if ($plugin) {
 			$plugin = Inflector::underscore($plugin);
 			$name = Inflector::camelize($plugin);
-			$path = $plugin . DS;
-
 		}
-		$load = strtolower($type);
 		$path = null;
+		$load = strtolower($type);
 
 		switch ($load) {
 			case 'model':
@@ -1114,7 +1112,7 @@ class App extends Object {
  * @access private
  */
 	function __paths($type) {
-		if ($type === 'Core') {
+		if (strtolower($type) === 'core') {
 			$path = Configure::corePaths();
 
 			foreach ($path as $key => $value) {
@@ -1127,6 +1125,20 @@ class App extends Object {
 			return $paths;
 		}
 		$paths = Configure::read(strtolower($type) . 'Paths');
+
+		if (empty($paths)) {
+			if (strtolower($type) === 'plugin') {
+				$paths = array(APP . 'plugins' . DS);
+			} elseif (strtolower($type) === 'vendor') {
+				$paths = array(APP . 'vendors' . DS, VENDORS, APP . 'plugins' . DS);
+			} elseif (strtolower($type) === 'controller') {
+				$paths = array(APP . 'controllers' . DS, APP);
+			} elseif (strtolower($type) === 'model') {
+				$paths = array(APP . 'models' . DS, APP);
+			} elseif (strtolower($type) === 'view') {
+				$paths = array(APP . 'views' . DS);
+			}
+		}
 		return $paths;
 	}
 /**

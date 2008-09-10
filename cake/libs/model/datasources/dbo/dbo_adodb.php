@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_adodb.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: dbo_adodb.php 7296 2008-06-27 09:09:03Z gwoo $ */
 
 /**
  * AdoDB layer for DBO.
@@ -22,16 +22,16 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.datasources.dbo
  * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
 /**
  * Include AdoDB files.
  */
-vendor ('adodb' . DS . 'adodb.inc');
+App::import('Vendor', 'NewADOConnection', array('file' => 'adodb' . DS . 'adodb.inc.php'));
 
 /**
  * AdoDB DBO implementation.
@@ -47,40 +47,56 @@ class DboAdodb extends DboSource {
  *
  * @var string
  */
-	 var $description = "ADOdb DBO Driver";
-
+	var $description = "ADOdb DBO Driver";
 /**
  * ADOConnection object with which we connect.
  *
  * @var ADOConnection The connection object.
  * @access private
  */
-	 var $_adodb = null;
-
+	var $_adodb = null;
 /**
  * Array translating ADOdb column MetaTypes to cake-supported metatypes
  *
  * @var array
  * @access private
  */
-	 var $_adodb_column_types = array(
-	 	'C' => 'string',
-		'X' => 'text',
-		'D' => 'date',
-		'T' => 'timestamp',
-		'L' => 'boolean',
-		'N' => 'float',
-		'I' => 'integer',
-		'R' => 'integer', // denotes auto-increment or counter field
-		'B' => 'binary'
+	var $_adodbColumnTypes = array(
+		'string' => 'C',
+		'text' => 'X',
+		'date' => 'D',
+		'timestamp' => 'T',
+		'time' => 'T',
+		'datetime' => 'T',
+		'boolean' => 'L',
+		'float' => 'N',
+		'integer' => 'I',
+		'binary' => 'R',
 	);
-
+/**
+ * ADOdb column definition
+ *
+ * @var array
+ */
+	var $columns = array(
+		'primary_key' => array('name' => 'R', 'limit' => 11),
+		'string' => array('name' => 'C', 'limit' => '255'),
+		'text' => array('name' => 'X'),
+		'integer' => array('name' => 'I', 'limit' => '11', 'formatter' => 'intval'),
+		'float' => array('name' => 'N', 'formatter' => 'floatval'),
+		'timestamp' => array('name' => 'T', 'format' => 'Y-m-d H:i:s', 'formatter' => 'date'),
+		'time' => array('name' => 'T',  'format' => 'H:i:s', 'formatter' => 'date'),
+		'datetime' => array('name' => 'T', 'format' => 'Y-m-d H:i:s', 'formatter' => 'date'),
+		'date' => array('name' => 'D', 'format' => 'Y-m-d', 'formatter' => 'date'),
+		'binary' => array('name' => 'B'),
+		'boolean' => array('name' => 'L', 'limit' => '1')
+	);
 /**
  * Connects to the database using options in the given configuration array.
  *
  * @param array $config Configuration array for connecting
  */
-	 function connect() {
+	function connect() {
 		$config = $this->config;
 		$persistent = strrpos($config['connect'], '|p');
 
@@ -94,10 +110,13 @@ class DboAdodb extends DboSource {
 
 		$this->_adodb = NewADOConnection($adodb_driver);
 
+		$this->_adodbDataDict = NewDataDictionary($this->_adodb, $adodb_driver);
+
 		$this->startQuote = $this->_adodb->nameQuote;
 		$this->endQuote = $this->_adodb->nameQuote;
 
 		$this->connected = $this->_adodb->$connect($config['host'], $config['login'], $config['password'], $config['database']);
+		$this->_adodbMetatyper = &$this->_adodb->execute('Select 1');
 		return $this->connected;
 	}
 /**
@@ -105,9 +124,9 @@ class DboAdodb extends DboSource {
  *
  * @return boolean True if the database could be disconnected, else false
  */
-	 function disconnect() {
-		  return $this->_adodb->Close();
-	 }
+	function disconnect() {
+		return $this->_adodb->Close();
+	}
 /**
  * Executes given SQL statement.
  *
@@ -137,7 +156,7 @@ class DboAdodb extends DboSource {
 			}
 		}
 
-		if (!is_object($this->_result) || $this->_result->EOF) {
+		if (!$this->hasResult()) {
 			return null;
 		} else {
 			$resultRow = $this->_result->FetchRow();
@@ -198,13 +217,12 @@ class DboAdodb extends DboSource {
 	function listSources() {
 		$tables = $this->_adodb->MetaTables('TABLES');
 
-		  if (!sizeof($tables) > 0) {
-				trigger_error(ERROR_NO_TABLE_LIST, E_USER_NOTICE);
-				exit;
-		  }
-
-		  return $tables;
-	 }
+		if (!sizeof($tables) > 0) {
+			trigger_error(ERROR_NO_TABLE_LIST, E_USER_NOTICE);
+			exit;
+		}
+		return $tables;
+	}
 /**
  * Returns an array of the fields in the table used by the given model.
  *
@@ -222,8 +240,16 @@ class DboAdodb extends DboSource {
 
 		foreach ($cols as $column) {
 			$fields[$column->name] = array(
-										'type' => $this->column($column->type)
+										'type' => $this->column($column->type),
+										'null' => !$column->not_null,
+										'length' => $column->max_length,
 									);
+			if ($column->has_default) {
+				$fields[$column->name]['default'] = $column->default_value;
+			}
+			if ($column->primary_key == 1) {
+				$fields[$column->name]['key'] = 'primary';
+			}
 		}
 
 		$this->__cacheDescription($this->fullTableName($model, false), $fields);
@@ -260,10 +286,9 @@ class DboAdodb extends DboSource {
  *
  * @Returns the last autonumbering ID inserted. Returns false if function not supported.
  */
-	 function lastInsertId() {
-		  return $this->_adodb->Insert_ID();
-	 }
-
+	function lastInsertId() {
+		return $this->_adodb->Insert_ID();
+	}
 /**
  * Returns a LIMIT statement in the correct format for the particular database.
  *
@@ -272,15 +297,24 @@ class DboAdodb extends DboSource {
  * @return string SQL limit/offset statement
  * @todo Please change output string to whatever select your database accepts. adodb doesn't allow us to get the correct limit string out of it.
  */
-	 function limit($limit, $offset = null) {
-	 	if (empty($limit)) {
-	 		return null;
-	 	}
-		return " LIMIT {$limit}" . ($offset ? "{$offset}" : null);
-	 // please change to whatever select your database accepts
-	 // adodb doesn't allow us to get the correct limit string out of it
-	 }
+	function limit($limit, $offset = null) {
+		if ($limit) {
+			$rt = '';
+			if (!strpos(strtolower($limit), 'limit') || strpos(strtolower($limit), 'limit') === 0) {
+				$rt = ' LIMIT';
+			}
 
+			if ($offset) {
+				$rt .= ' ' . $offset . ',';
+			}
+
+			$rt .= ' ' . $limit;
+			return $rt;
+		}
+		return null;
+		// please change to whatever select your database accepts
+		// adodb doesn't allow us to get the correct limit string out of it
+	}
 /**
  * Converts database-layer column types to basic types
  *
@@ -288,18 +322,14 @@ class DboAdodb extends DboSource {
  * @return string Abstract column type (i.e. "string")
  */
 	function column($real) {
-		if (isset($this->_result)) {
-			$adodb_metatyper = &$this->_result;
-		} else {
-			$adodb_metatyper = &$this->_adodb->execute('Select 1');
-		}
+		$metaTypes = array_flip($this->_adodbColumnTypes);
 
-		$interpreted_type = $adodb_metatyper->MetaType($real);
-		if (!isset($this->_adodb_column_types[$interpreted_type])) {
+		$interpreted_type = $this->_adodbMetatyper->MetaType($real);
+
+		if (!isset($metaTypes[$interpreted_type])) {
 			return 'text';
 		}
-
-		return $this->_adodb_column_types[$interpreted_type];
+		return $metaTypes[$interpreted_type];
 	}
 /**
  * Returns a quoted and escaped string of $data for use in an SQL statement.
@@ -324,6 +354,7 @@ class DboAdodb extends DboSource {
 		}
 		return $this->_adodb->qstr($data);
 	}
+
 /**
  * Generates the fields list of an SQL query.
  *
@@ -332,37 +363,27 @@ class DboAdodb extends DboSource {
  * @param mixed $fields
  * @return array
  */
-	function fields(&$model, $alias = null, $fields = null, $quote = true) {
+	function fields(&$model, $alias = null, $fields = array(), $quote = true) {
 		if (empty($alias)) {
 			$alias = $model->alias;
 		}
+		$fields = parent::fields($model, $alias, $fields, false);
 
-		if (!is_array($fields)) {
-			if ($fields != null) {
-				if (strpos($fields, ',')) {
-					$fields = explode(',', $fields);
-				} else {
-					$fields = array($fields);
-				}
-				$fields = array_map('trim', $fields);
-			} else {
-				$fields = array_keys($model->schema());
-			}
+		if (!$quote) {
+			return $fields;
 		}
-
 		$count = count($fields);
 
 		if ($count >= 1 && $fields[0] != '*' && strpos($fields[0], 'COUNT(*)') === false) {
 			for ($i = 0; $i < $count; $i++) {
-				if (!preg_match('/^.+\\(.*\\)/', $fields[$i])) {
+				if (!preg_match('/^.+\\(.*\\)/', $fields[$i]) && !preg_match('/\s+AS\s+/', $fields[$i])) {
 					$prepend = '';
 					if (strpos($fields[$i], 'DISTINCT') !== false) {
 						$prepend = 'DISTINCT ';
 						$fields[$i] = trim(str_replace('DISTINCT', '', $fields[$i]));
 					}
 
-					$dot = strrpos($fields[$i], '.');
-					if ($dot === false) {
+					if (strrpos($fields[$i], '.') === false) {
 						$fields[$i] = $prepend . $this->name($alias) . '.' . $this->name($fields[$i]) . ' AS ' . $this->name($alias . '__' . $fields[$i]);
 					} else {
 						$build = explode('.', $fields[$i]);
@@ -374,9 +395,9 @@ class DboAdodb extends DboSource {
 		return $fields;
 	}
 /**
- * Enter description here...
+ * Build ResultSets and map data
  *
- * @param unknown_type $results
+ * @param array $results
  */
 	function resultSet(&$results) {
 		$num_fields = count($results);
@@ -418,15 +439,83 @@ class DboAdodb extends DboSource {
 			return false;
 		}
 	}
+
 /**
- * Inserts multiple values into a join table
+ * Generate a database-native column schema string
  *
- * @param string $table
- * @param string $fields
- * @param array $values
+ * @param array $column An array structured like the following: array('name'=>'value', 'type'=>'value'[, options]),
+ *                      where options can be 'default', 'length', or 'key'.
+ * @return string
  */
-	function insertMulti($table, $fields, $values) {
-		parent::__insertMulti($table, $fields, $values);
+	function buildColumn($column) {
+		$name = $type = null;
+		extract(array_merge(array('null' => true), $column));
+
+		if (empty($name) || empty($type)) {
+			trigger_error('Column name or type not defined in schema', E_USER_WARNING);
+			return null;
+		}
+
+		//$metaTypes = array_flip($this->_adodbColumnTypes);
+		if (!isset($this->_adodbColumnTypes[$type])) {
+			trigger_error("Column type {$type} does not exist", E_USER_WARNING);
+			return null;
+		}
+		$metaType = $this->_adodbColumnTypes[$type];
+		$concreteType = $this->_adodbDataDict->ActualType($metaType);
+		$real = $this->columns[$type];
+
+		//UUIDs are broken so fix them.
+		if ($type == 'string' && isset($real['length']) && $real['length'] == 36) {
+			$concreteType = 'CHAR';
+		}
+
+		$out = $this->name($name) . ' ' . $concreteType;
+
+		if (isset($real['limit']) || isset($real['length']) || isset($column['limit']) || isset($column['length'])) {
+			if (isset($column['length'])) {
+				$length = $column['length'];
+			} elseif (isset($column['limit'])) {
+				$length = $column['limit'];
+			} elseif (isset($real['length'])) {
+				$length = $real['length'];
+			} else {
+				$length = $real['limit'];
+			}
+			$out .= '(' . $length . ')';
+		}
+		$_notNull = $_default = $_autoInc = $_constraint = $_unsigned = false;
+
+		if (isset($column['key']) && $column['key'] == 'primary' && $type == 'integer') {
+			$_constraint = '';
+			$_autoInc = true;
+		} elseif (isset($column['key']) && $column['key'] == 'primary') {
+			$_notNull = '';
+		} elseif (isset($column['default']) && isset($column['null']) && $column['null'] == false) {
+			$_notNull = true;
+			$_default = $column['default'];
+		} elseif ( isset($column['null']) && $column['null'] == true) {
+			$_notNull = false;
+			$_default = 'NULL';
+		}
+		if (isset($column['default']) && $_default == false) {
+			$_default = $this->value($column['default']);
+		}
+		if (isset($column['null']) && $column['null'] == false) {
+			$_notNull = true;
+		}
+		//use concrete instance of DataDict to make the suffixes for us.
+		$out .=	$this->_adodbDataDict->_CreateSuffix($out, $metaType, $_notNull, $_default, $_autoInc, $_constraint, $_unsigned);
+		return $out;
+
+	}
+/**
+ * Checks if the result is valid
+ *
+ * @return boolean True if the result is valid, else false
+ */
+	function hasResult() {
+		return is_object($this->_result) && !$this->_result->EOF;
 	}
 }
 ?>

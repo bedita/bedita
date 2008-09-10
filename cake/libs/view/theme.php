@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: theme.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: theme.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * A custom view class that is used for themeing
  *
@@ -19,9 +19,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view
  * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -58,17 +58,17 @@ class ThemeView extends View {
  */
 	function __construct (&$controller) {
 		parent::__construct($controller);
+		$this->theme =& $controller->theme;
 
-    	$this->theme =& $controller->theme;
-    	if (!empty($this->theme)) {
-    		if (is_dir(WWW_ROOT . 'themed' . DS . $this->theme)) {
-    			$this->themeWeb = 'themed/'. $this->theme .'/';
-    		}
+		if (!empty($this->theme)) {
+			if (is_dir(WWW_ROOT . 'themed' . DS . $this->theme)) {
+				$this->themeWeb = 'themed/'. $this->theme .'/';
+			}
 			/* deprecated: as of 6128 the following properties are no longer needed */
-    		$this->themeElement = 'themed'. DS . $this->theme . DS .'elements'. DS;
-    		$this->themeLayout =  'themed'. DS . $this->theme . DS .'layouts'. DS;
-    		$this->themePath = 'themed'. DS . $this->theme . DS;
-    	}
+			$this->themeElement = 'themed'. DS . $this->theme . DS .'elements'. DS;
+			$this->themeLayout =  'themed'. DS . $this->theme . DS .'layouts'. DS;
+			$this->themePath = 'themed'. DS . $this->theme . DS;
+		}
 	}
 
 /**

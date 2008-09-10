@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: db_acl.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: db_acl.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * This is core configuration file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model
  * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -78,7 +78,6 @@ class AclNode extends AppModel {
 	function node($ref = null) {
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$type = $this->alias;
-		$prefix = $this->tablePrefix;
 		$result = null;
 
 		if (!empty($this->useTable)) {
@@ -94,39 +93,55 @@ class AclNode extends AppModel {
 			$start = $path[0];
 			unset($path[0]);
 
-			$queryData = array('conditions' => array(
-											$db->name("{$type}.lft") . ' <= ' . $db->name("{$type}0.lft"),
-											$db->name("{$type}.rght") . ' >= ' . $db->name("{$type}0.rght")),
-									'fields' => array('id', 'parent_id', 'model', 'foreign_key', 'alias'),
-									'joins' => array(array('table' => $db->name($prefix . $table),
-											'alias' => "{$type}0",
-											'type' => 'LEFT',
-											'conditions' => array("{$type}0.alias" => $start))),
-									'order' => $db->name("{$type}.lft") . ' DESC');
+			$queryData = array(
+				'conditions' => array(
+					$db->name("{$type}.lft") . ' <= ' . $db->name("{$type}0.lft"),
+					$db->name("{$type}.rght") . ' >= ' . $db->name("{$type}0.rght")),
+				'fields' => array('id', 'parent_id', 'model', 'foreign_key', 'alias'),
+				'joins' => array(array(
+					'table' => $db->fullTableName($this),
+					'alias' => "{$type}0",
+					'type' => 'LEFT',
+					'conditions' => array("{$type}0.alias" => $start)
+				)),
+				'order' => $db->name("{$type}.lft") . ' DESC'
+			);
+
 			foreach ($path as $i => $alias) {
 				$j = $i - 1;
 
-				array_push($queryData['joins'], array(
-								'table' => $db->name($prefix . $table),
-								'alias' => "{$type}{$i}",
-								'type'  => 'LEFT',
-								'conditions' => array(
-										$db->name("{$type}{$i}.lft") . ' > ' . $db->name("{$type}{$j}.lft"),
-										$db->name("{$type}{$i}.rght") . ' < ' . $db->name("{$type}{$j}.rght"),
-										$db->name("{$type}{$i}.alias") . ' = ' . $db->value($alias))));
+				$queryData['joins'][] = array(
+					'table' => $db->fullTableName($this),
+					'alias' => "{$type}{$i}",
+					'type'  => 'LEFT',
+					'conditions' => array(
+						$db->name("{$type}{$i}.lft") . ' > ' . $db->name("{$type}{$j}.lft"),
+						$db->name("{$type}{$i}.rght") . ' < ' . $db->name("{$type}{$j}.rght"),
+						$db->name("{$type}{$i}.alias") . ' = ' . $db->value($alias, 'string')
+					)
+				);
 
 				$queryData['conditions'] = array('or' => array(
-				$db->name("{$type}.lft") . ' <= ' . $db->name("{$type}0.lft") . ' AND ' . $db->name("{$type}.rght") . ' >= ' . $db->name("{$type}0.rght"),
-				$db->name("{$type}.lft") . ' <= ' . $db->name("{$type}{$i}.lft") . ' AND ' . $db->name("{$type}.rght") . ' >= ' . $db->name("{$type}{$i}.rght")));
+					$db->name("{$type}.lft") . ' <= ' . $db->name("{$type}0.lft") . ' AND ' . $db->name("{$type}.rght") . ' >= ' . $db->name("{$type}0.rght"),
+					$db->name("{$type}.lft") . ' <= ' . $db->name("{$type}{$i}.lft") . ' AND ' . $db->name("{$type}.rght") . ' >= ' . $db->name("{$type}{$i}.rght"))
+				);
 			}
 			$result = $db->read($this, $queryData, -1);
+			$path = array_values($path);
 
+			if (
+				!isset($result[0][$type]) ||
+				(!empty($path) && $result[0][$type]['alias'] != $path[count($path) - 1]) ||
+				(empty($path) && $result[0][$type]['alias'] != $start)
+			) {
+				return false;
+			}
 		} elseif (is_object($ref) && is_a($ref, 'Model')) {
 			$ref = array('model' => $ref->alias, 'foreign_key' => $ref->id);
 		} elseif (is_array($ref) && !(isset($ref['model']) && isset($ref['foreign_key']))) {
 			$name = key($ref);
 
-			if(PHP5) {
+			if (PHP5) {
 				$model = ClassRegistry::init(array('class' => $name, 'alias' => $name));
 			} else {
 				$model =& ClassRegistry::init(array('class' => $name, 'alias' => $name));
@@ -151,21 +166,30 @@ class AclNode extends AppModel {
 			}
 		}
 		if (is_array($ref)) {
+			if (is_array(current($ref)) && is_string(key($ref))) {
+				$name = key($ref);
+				$ref = current($ref);
+			}
 			foreach ($ref as $key => $val) {
-				if (strpos($key, $type) !== 0) {
+				if (strpos($key, $type) !== 0 && strpos($key, '.') === false) {
 					unset($ref[$key]);
 					$ref["{$type}0.{$key}"] = $val;
 				}
 			}
-			$queryData = array('conditions'	=> $ref,
-									'fields' => array('id', 'parent_id', 'model', 'foreign_key', 'alias'),
-									'joins' => array(array('table' => $db->name($prefix . $table),
-									'alias' => "{$type}0",
-									'type' => 'LEFT',
-									'conditions' => array(
-									$db->name("{$type}.lft") . ' <= ' . $db->name("{$type}0.lft"),
-									$db->name("{$type}.rght") . ' >= ' . $db->name("{$type}0.rght")))),
-									'order' => $db->name("{$type}.lft") . ' DESC');
+			$queryData = array(
+				'conditions' => $ref,
+				'fields' => array('id', 'parent_id', 'model', 'foreign_key', 'alias'),
+				'joins' => array(array(
+					'table' => $db->fullTableName($table),
+					'alias' => "{$type}0",
+					'type' => 'LEFT',
+					'conditions' => array(
+						$db->name("{$type}.lft") . ' <= ' . $db->name("{$type}0.lft"),
+						$db->name("{$type}.rght") . ' >= ' . $db->name("{$type}0.rght")
+					)
+				)),
+				'order' => $db->name("{$type}.lft") . ' DESC'
+			);
 			$result = $db->read($this, $queryData, -1);
 
 			if (!$result) {
@@ -217,7 +241,7 @@ class AcoAction extends AppModel {
  * @var array
  * @access public
  */
-	 var $belongsTo = array('Aco');
+	var $belongsTo = array('Aco');
 }
 /**
  * Access Request Object
@@ -268,21 +292,21 @@ class Permission extends AppModel {
  * @var string
  * @access public
  */
-	 var $useTable = 'aros_acos';
+	var $useTable = 'aros_acos';
 /**
  * Permissions link AROs with ACOs
  *
  * @var array
  * @access public
  */
-	 var $belongsTo = array('Aro', 'Aco');
+	var $belongsTo = array('Aro', 'Aco');
 /**
  * No behaviors for this model
  *
  * @var array
  * @access public
  */
-	 var $actsAs = null;
+	var $actsAs = null;
 /**
  * Constructor, used to tell this model to use the
  * database configured for ACL

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_firebird.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: dbo_firebird.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Firebird/Interbase layer for DBO
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.dbo
  * @since			CakePHP(tm) v 1.2.0.5152
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -97,7 +97,7 @@ class DboFirebird extends DboSource {
  * @var array
  */
 	var $columns = array(
-		'primary_key' => array('name' => 'integer IDENTITY (1, 1) NOT NULL'),
+		'primary_key' => array('name' => 'IDENTITY (1, 1) NOT NULL'),
 		'string'	=> array('name'	 => 'varchar', 'limit' => '255'),
 		'text'		=> array('name' => 'BLOB SUB_TYPE 1 SEGMENT SIZE 100 CHARACTER SET NONE'),
 		'integer'	=> array('name' => 'integer'),
@@ -147,11 +147,10 @@ class DboFirebird extends DboSource {
 /**
  * Returns a row from given resultset as an array .
  *
- * @param boolean $assoc Associative array only, or both?
  * @return array The fetched row as an array
  */
-	function fetchRow($assoc = false) {
-		if (is_resource($this->_result)) {
+	function fetchRow() {
+		if ($this->hasResult()) {
 			$this->resultSet($this->_result);
 			$resultRow = $this->fetchResult();
 			return $resultRow;
@@ -400,7 +399,9 @@ class DboFirebird extends DboSource {
 
 		$col = str_replace(')', '', $real);
 		$limit = null;
-		@list($col, $limit)=explode('(', $col);
+		if (strpos($col, '(') !== false) {
+			list($col, $limit) = explode('(', $col);
+		}
 
 		if (in_array($col, array('DATE', 'TIME'))) {
 			return strtolower($col);
@@ -502,16 +503,6 @@ class DboFirebird extends DboSource {
 		} else {
 			return false;
 		}
-	}
-/**
- * Inserts multiple values into a join table
- *
- * @param string $table
- * @param string $fields
- * @param array $values
- */
-	function insertMulti($table, $fields, $values) {
-		parent::__insertMulti($table, $fields, $values);
 	}
 }
 ?>

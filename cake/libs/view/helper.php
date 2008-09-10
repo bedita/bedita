@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: helper.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: helper.php 7296 2008-06-27 09:09:03Z gwoo $ */
 
 /**
  * Backend for helpers.
@@ -22,16 +22,16 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view
  * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
 /**
  * Included libs
  */
-uses('overloadable');
+App::import('Core', 'Overloadable');
 
 /**
  * Backend for helpers.
@@ -155,8 +155,8 @@ class Helper extends Overloadable {
  * @return array merged tags from config/$name.php
  */
 	function loadConfig($name = 'tags') {
-		if (file_exists(APP . 'config' . DS . $name .'.php')) {
-			require(APP . 'config' . DS . $name .'.php');
+		if (file_exists(CONFIGS . $name .'.php')) {
+			require(CONFIGS . $name .'.php');
 			if (isset($tags)) {
 				$this->tags = array_merge($this->tags, $tags);
 			}
@@ -213,6 +213,9 @@ class Helper extends Overloadable {
  */
 	function clean($output) {
 		$this->__reset();
+		if (empty($output)) {
+			return null;
+		}
 		if (is_array($output)) {
 			foreach ($output as $key => $value) {
 				$return[$key] = $this->clean($value);
@@ -299,12 +302,6 @@ class Helper extends Overloadable {
 		return $attribute;
 	}
 /**
- * @deprecated
- */
-	function setFormTag($tagValue, $setScope = false) {
-		return $this->setEntity($tagValue, $setScope);
-	}
-/**
  * Sets this helper's model and field properties to the dot-separated value-pair in $entity.
  *
  * @param mixed $entity A field name, like "ModelName.fieldName" or "ModelName.ID.fieldName"
@@ -316,6 +313,8 @@ class Helper extends Overloadable {
 
 		if ($setScope) {
 			$view->modelScope = false;
+		} elseif (join('.', $view->entity()) == $entity) {
+			return;
 		}
 
 		if ($entity === null) {
@@ -326,11 +325,15 @@ class Helper extends Overloadable {
 			return;
 		}
 
-		$sameScope = $hasField = false;
-		$parts = preg_split('/\/|\./', $entity);
-
 		$model = $view->model;
-		if(count($parts) === 1 || is_numeric($parts[0])) {
+		$sameScope = $hasField = false;
+		$parts = array_values(Set::filter(preg_split('/\/|\./', $entity), true));
+
+		if (empty($parts)) {
+			return;
+		}
+
+		if (count($parts) === 1 || is_numeric($parts[0])) {
 			$sameScope = true;
 		} else {
 			if (ClassRegistry::isKeySet($parts[0])) {
@@ -343,18 +346,22 @@ class Helper extends Overloadable {
 			for ($i = 0; $i < count($parts); $i++) {
 				if ($ModelObj->hasField($parts[$i]) || array_key_exists($parts[$i], $ModelObj->validate)) {
 					$hasField = $i;
-					if ($hasField === 0) {
+					if ($hasField === 0 || ($hasField === 1 && is_numeric($parts[0]))) {
 						$sameScope = true;
 					}
 					break;
 				}
 			}
 
-			if($sameScope === true && in_array($parts[0], array_keys($ModelObj->hasAndBelongsToMany))) {
+			if ($sameScope === true && in_array($parts[0], array_keys($ModelObj->hasAndBelongsToMany))) {
 				$sameScope = false;
 			}
 		}
 
+		if (!$view->association && $parts[0] == $view->field && $view->field != $view->model) {
+			array_unshift($parts, $model);
+			$hasField = true;
+		}
 		$view->field = $view->modelId = $view->fieldSuffix = $view->association = null;
 
 		switch (count($parts)) {
@@ -368,7 +375,7 @@ class Helper extends Overloadable {
 					}
 				}
 			break;
-		 	case 2:
+			case 2:
 				if ($view->modelScope === false) {
 					list($view->model, $view->field) = $parts;
 				} elseif ($sameScope === true && $hasField === 0) {
@@ -386,6 +393,13 @@ class Helper extends Overloadable {
 					list($view->association, $view->modelId, $view->field) = $parts;
 				} else {
 					list($view->association, $view->field, $view->fieldSuffix) = $parts;
+				}
+			break;
+			case 4:
+				if ($parts[0] === $view->model) {
+					list($view->model, $view->modelId, $view->field, $view->fieldSuffix) = $parts;
+				} else {
+					list($view->association, $view->modelId, $view->field, $view->fieldSuffix) = $parts;
 				}
 			break;
 		}
@@ -435,18 +449,29 @@ class Helper extends Overloadable {
 /**
  * Returns false if given FORM field has no errors. Otherwise it returns the constant set in the array Model->validationErrors.
  *
- * @param string $model Model name as string
+ * @param string $model		Model name as string
  * @param string $field		Fieldname as string
+ * @param integer $modelID	Unique index identifying this record within the form
  * @return boolean True on errors.
  */
-	function tagIsInvalid($model = null, $field = null) {
-		if ($model == null) {
-			$model = $this->model();
+	function tagIsInvalid($model = null, $field = null, $modelID = null) {
+		foreach (array('model', 'field', 'modelID') as $key) {
+			if (empty(${$key})) {
+				${$key} = $this->{$key}();
+			}
 		}
-		if ($field == null) {
-			$field = $this->field();
+		$view =& ClassRegistry::getObject('view');
+		$errors = $this->validationErrors;
+
+		if ($view->model !== $model && isset($errors[$view->model][$model])) {
+			$errors = $errors[$view->model];
 		}
-		return empty($this->validationErrors[$model][$field]) ? 0 : $this->validationErrors[$model][$field];
+
+		if (!isset($modelID)) {
+			return empty($errors[$model][$field]) ? 0 : $errors[$model][$field];
+		} else {
+			return empty($errors[$model][$modelID][$field]) ? 0 : $errors[$model][$modelID][$field];
+		}
 	}
 /**
  * Generates a DOM ID for the selected element, if one is not set.
@@ -466,7 +491,7 @@ class Helper extends Overloadable {
 			return $this->domId();
 		}
 
-		$dom = $this->model() . Inflector::camelize($view->field) . Inflector::camelize($view->fieldSuffix);
+		$dom = $this->model() . $this->modelID() . Inflector::camelize($view->field) . Inflector::camelize($view->fieldSuffix);
 
 		if (is_array($options) && !array_key_exists($id, $options)) {
 			$options[$id] = $dom;
@@ -664,7 +689,8 @@ class Helper extends Overloadable {
 	function afterLayout() {
 	}
 /**
- * Enter description here...
+ * Transforms a recordset from a hasAndBelongsToMany association to a list of selected
+ * options for a multiple select element
  *
  * @param mixed $data
  * @param string $key
@@ -726,6 +752,14 @@ class Helper extends Overloadable {
 			$oldstring = $this->__cleaned;
 			$this->__cleaned = preg_replace('#</*(applet|meta|xml|blink|link|style|script|embed|object|iframe|frame|frameset|ilayer|layer|bgsound|title|base)[^>]*>#i',"",$this->__cleaned);
 		} while ($oldstring != $this->__cleaned);
+	}
+
+/**
+ * @deprecated
+ */
+	function setFormTag($tagValue, $setScope = false) {
+		trigger_error(__('Helper::setFormTag() Deprecated, use Helper::setEntity()', true), E_USER_WARNING);
+		return $this->setEntity($tagValue, $setScope);
 	}
 }
 ?>

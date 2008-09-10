@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: model.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: model.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * The ModelTask handles creating and updating models files.
  *
@@ -21,11 +21,12 @@
  * @package			cake
  * @subpackage		cake.cake.console.libs.tasks
  * @since			CakePHP(tm) v 1.2
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
+App::import('Model', 'ConnectionManager');
 /**
  * Task class for creating and updating model files.
  *
@@ -34,12 +35,27 @@
  */
 class ModelTask extends Shell {
 /**
+ * Name of plugin
+ *
+ * @var string
+ * @access public
+ */
+	var $plugin = null;
+/**
  * path to MODELS directory
  *
  * @var string
  * @access public
  */
 	var $path = MODELS;
+
+/**
+ * tasks
+ *
+ * @var array
+ * @access public
+ */
+	var $tasks = array('DbConfig');
 /**
  * Execution method always used for tasks
  *
@@ -76,9 +92,15 @@ class ModelTask extends Shell {
 		$associations = array('belongsTo'=> array(), 'hasOne'=> array(), 'hasMany' => array(), 'hasAndBelongsToMany'=> array());
 
 		$useDbConfig = 'default';
-		$connections = array_keys(get_class_vars('DATABASE_CONFIG'));
+		$configs = get_class_vars('DATABASE_CONFIG');
+
+		if (!is_array($configs)) {
+			return $this->DbConfig->execute();
+		}
+
+		$connections = array_keys($configs);
 		if (count($connections) > 1) {
-        	$useDbConfig = $this->in(__('Use Database Config', true) .':', $connections, 'default');
+			$useDbConfig = $this->in(__('Use Database Config', true) .':', $connections, 'default');
 		}
 
 		$currentModelName = $this->getName($useDbConfig);
@@ -131,7 +153,6 @@ class ModelTask extends Shell {
 
 		$wannaDoAssoc = $this->in(__('Would you like to define model associations (hasMany, hasOne, belongsTo, etc.)?', true), array('y','n'), 'y');
 		if ((low($wannaDoAssoc) == 'y' || low($wannaDoAssoc) == 'yes')) {
-			$this->out(__('One moment while the associations are detected.', true));
 			$associations = $this->doAssociations($tempModel);
 		}
 
@@ -140,14 +161,19 @@ class ModelTask extends Shell {
 		$this->out(__('The following Model will be created:', true));
 		$this->hr();
 		$this->out("Name:       " . $currentModelName);
-		$this->out("DB Config:  " . $useDbConfig);
-		$this->out("DB Table:   " . $fullTableName);
 
+		if ($useDbConfig !== 'default') {
+			$this->out("DB Config:  " . $useDbConfig);
+		}
+		if ($fullTableName !== Inflector::tableize($currentModelName)) {
+			$this->out("DB Table:   " . $fullTableName);
+		}
 		if ($primaryKey != 'id') {
 			$this->out("Primary Key: " . $primaryKey);
 		}
-		$this->out("Validation: " . print_r($validate, true));
-
+		if (!empty($validate)) {
+			$this->out("Validation: " . print_r($validate, true));
+		}
 		if (!empty($associations)) {
 			$this->out("Associations:");
 
@@ -181,11 +207,11 @@ class ModelTask extends Shell {
 		if (low($looksGood) == 'y' || low($looksGood) == 'yes') {
 			if ($this->bake($currentModelName, $associations, $validate, $primaryKey, $useTable, $useDbConfig)) {
 				if ($this->_checkUnitTest()) {
-					$this->bakeTest($currentModelName);
+					$this->bakeTest($currentModelName, $useTable, $associations);
 				}
 			}
 		} else {
-			$this->out('Bake Aborted.');
+			return false;
 		}
 	}
 /**
@@ -212,7 +238,6 @@ class ModelTask extends Shell {
 		if (class_exists('Validation')) {
 			$parent = get_class_methods(get_parent_class('Validation'));
 			$options = array_diff(get_class_methods('Validation'), $parent);
-			$methods = array_flip($options);
 		}
 
 		foreach ($fields as $fieldName => $field) {
@@ -221,13 +246,18 @@ class ModelTask extends Shell {
 			$prompt .= '---------------------------------------------------------------'."\n";
 			$prompt .= 'Please select one of the following validation options:'."\n";
 			$prompt .= '---------------------------------------------------------------'."\n";
+			$choices = array();
 			$skip = 1;
+			sort($options);
 			foreach ($options as $key => $option) {
-				if ($option{0} != '_') {
-					$prompt .= "{$key} - {$option}\n";
+				if ($option{0} != '_' && strtolower($option) != 'getinstance') {
+					$prompt .= "{$skip} - {$option}\n";
+					$choices[$skip] = strtolower($option);
 					$skip++;
 				}
 			}
+			$methods = array_flip($choices);
+
 			$prompt .=  "{$skip} - Do not do any validation on this field.\n";
 			$prompt .= "... or enter in a valid regex validation string.\n";
 
@@ -236,7 +266,7 @@ class ModelTask extends Shell {
 				if ($fieldName == 'email') {
 					$guess = $methods['email'];
 				} elseif ($field['type'] == 'string') {
-					$guess = $methods['alphaNumeric'];
+					$guess = $methods['alphanumeric'];
 				} elseif ($field['type'] == 'integer') {
 					$guess = $methods['numeric'];
 				} elseif ($field['type'] == 'boolean') {
@@ -252,11 +282,11 @@ class ModelTask extends Shell {
 			} else {
 				$choice = $guess;
 			}
-			if ($choice !== $skip) {
-				if (is_numeric($choice) && isset($options[$choice])) {
-					$validate[$fieldName] = $options[$choice];
+			if ($choice != $skip) {
+				if (is_numeric($choice) && isset($choices[$choice])) {
+					$validate[$fieldName] = $choices[$choice];
 				} else {
-					$validate[$fieldName] = $validation;
+					$validate[$fieldName] = $choice;
 				}
 			}
 		}
@@ -276,6 +306,7 @@ class ModelTask extends Shell {
 		if (!is_object($model)) {
 			return false;
 		}
+		$this->out(__('One moment while the associations are detected.', true));
 
 		$fields = $model->schema();
 
@@ -366,16 +397,28 @@ class ModelTask extends Shell {
 						$count = count($associations[$type]);
 						$response = 'y';
 						for ($i = 0; $i < $count; $i++) {
-							if ($model->name === $associations[$type][$i]['alias']) {
-								$prompt = "{$model->name} {$type} {$associations[$type][$i]['alias']}\n";
-								$prompt .= __("This looks like a self join. Please specify an alternate association alias.", true);
-								$associations[$type][$i]['alias'] = $this->in($prompt, null, $associations[$type][$i]['alias']);
-							} else {
-								$prompt = "{$model->name} {$type} {$associations[$type][$i]['alias']}";
-								$response = $this->in("{$prompt}?", array('y','n'), 'y');
-							}
+							$prompt = "{$model->name} {$type} {$associations[$type][$i]['alias']}";
+							$response = $this->in("{$prompt}?", array('y','n'), 'y');
+
 							if ('n' == low($response) || 'no' == low($response)) {
 								unset($associations[$type][$i]);
+							} else {
+								if ($model->name === $associations[$type][$i]['alias']) {
+									if ($type === 'belongsTo') {
+										$alias = 'Parent' . $associations[$type][$i]['alias'];
+									}
+									if($type === 'hasOne' || $type === 'hasMany') {
+										$alias = 'Child' . $associations[$type][$i]['alias'];
+									}
+
+									$alternateAlias = $this->in(sprintf(__('This is a self join. Use %s as the alias', true), $alias), array('y', 'n'), 'y');
+
+									if ('n' == low($alternateAlias) || 'no' == low($alternateAlias)) {
+										$associations[$type][$i]['alias'] = $this->in(__('Specify an alternate alias.', true));
+									} else {
+										$associations[$type][$i]['alias'] = $alias;
+									}
+								}
 							}
 						}
 						$associations[$type] = array_merge($associations[$type]);
@@ -441,7 +484,7 @@ class ModelTask extends Shell {
 					$associationForeignKey = $this->in(__('What is the associationForeignKey?', true), null, $this->_modelKey($model->name));
 					$joinTable = $this->in(__('What is the joinTable?', true));
 				}
-				$associations[$assocs[$assocType]] = array_values($associations[$assocs[$assocType]]);
+				$associations[$assocs[$assocType]] = array_values((array)$associations[$assocs[$assocType]]);
 				$count = count($associations[$assocs[$assocType]]);
 				$i = ($count > 0) ? $count : 0;
 				$associations[$assocs[$assocType]][$i]['alias'] = $alias;
@@ -481,15 +524,19 @@ class ModelTask extends Shell {
 		}
 
 		$out = "<?php\n";
-		$out .= "class {$name} extends AppModel {\n\n";
+		$out .= "class {$name} extends {$this->plugin}AppModel {\n\n";
 		$out .= "\tvar \$name = '{$name}';\n";
 
 		if ($useDbConfig !== 'default') {
 			$out .= "\tvar \$useDbConfig = '$useDbConfig';\n";
 		}
 
-		if ($useTable === Inflector::tableize($name)) {
-			$out .= "\tvar \$useTable = '$useTable';\n";
+		if (($useTable && $useTable !== Inflector::tableize($name)) || $useTable === false) {
+			$table = "'$useTable'";
+			if (!$useTable) {
+				$table = 'false';
+			}
+			$out .= "\tvar \$useTable = $table;\n";
 		}
 
 		if ($primaryKey !== 'id') {
@@ -497,7 +544,7 @@ class ModelTask extends Shell {
 		}
 
 		$validateCount = count($validate);
-		if ($validateCount  > 1) {
+		if (is_array($validate) && $validateCount > 0) {
 			$out .= "\tvar \$validate = array(\n";
 			$keys = array_keys($validate);
 			for ($i = 0; $i < $validateCount; $i++) {
@@ -616,6 +663,7 @@ class ModelTask extends Shell {
 		$out .= "}\n";
 		$out .= "?>";
 		$filename = $this->path . Inflector::underscore($name) . '.php';
+		$this->out("\nBaking model class for $name...");
 		return $this->createFile($filename, $out);
 	}
 
@@ -625,24 +673,66 @@ class ModelTask extends Shell {
  * @param string $className Model class name
  * @access private
  */
-	function bakeTest($className) {
-		$out = '<?php '."\n\n";
-		$out .= "App::import('Model', '$className');\n\n";
-		$out .= "class {$className}TestCase extends CakeTestCase {\n";
-		$out .= "\tvar \$TestObject = null;\n\n";
-		$out .= "\tfunction setUp() {\n\t\t\$this->TestObject = new {$className}();\n";
-		$out .= "\t}\n\n\tfunction tearDown() {\n\t\tunset(\$this->TestObject);\n\t}\n";
-		$out .= "\n\t/*\n\tfunction testMe() {\n";
-		$out .= "\t\t\$result = \$this->TestObject->findAll();\n";
-		$out .= "\t\t\$expected = 1;\n";
-		$out .= "\t\t\$this->assertEqual(\$result, \$expected);\n\t}\n\t*/\n}";
-		$out .= "\n?>";
+	function bakeTest($className, $useTable = null, $associations = array()) {
+		$results = $this->fixture($className, $useTable);
 
-		$path = MODEL_TESTS;
-		$filename = Inflector::underscore($className).'.test.php';
+		if ($results) {
+			$fixtureInc = 'app';
+			if ($this->plugin) {
+				$fixtureInc = 'plugin.'.Inflector::underscore($this->plugin);
+			}
 
-		$this->out("Baking unit test for $className...");
-		return $this->createFile($path . $filename, $out);
+			$fixture[] = "'{$fixtureInc}." . Inflector::underscore($className) ."'";
+
+			if (!empty($associations)) {
+				$assoc[] = Set::extract($associations, 'belongsTo.{n}.className');
+				$assoc[] = Set::extract($associations, 'hasOne.{n}.className');
+				$assoc[] = Set::extract($associations, 'hasMany.{n}.className');
+				foreach ($assoc as $key => $value) {
+					if (is_array($value)) {
+						foreach ($value as $class) {
+							$fixture[] = "'{$fixtureInc}." . Inflector::underscore($class) ."'";
+						}
+					}
+				}
+			}
+			$fixture = join(", ", $fixture);
+
+			$import = $className;
+			if (isset($this->plugin)) {
+				$import = $this->plugin . '.' . $className;
+			}
+
+			$out = "App::import('Model', '$import');\n\n";
+			$out .= "class Test{$className} extends {$className} {\n";
+			$out .= "\tvar \$cacheSources = false;\n";
+			$out .= "\tvar \$useDbConfig  = 'test_suite';\n}\n\n";
+			$out .= "class {$className}TestCase extends CakeTestCase {\n";
+			$out .= "\tvar \${$className} = null;\n";
+			$out .= "\tvar \$fixtures = array($fixture);\n\n";
+			$out .= "\tfunction start() {\n\t\tparent::start();\n\t\t\$this->{$className} = new Test{$className}();\n\t}\n\n";
+			$out .= "\tfunction test{$className}Instance() {\n";
+			$out .= "\t\t\$this->assertTrue(is_a(\$this->{$className}, '{$className}'));\n\t}\n\n";
+			$out .= "\tfunction test{$className}Find() {\n";
+			$out .= "\t\t\$results = \$this->{$className}->recursive = -1;\n";
+			$out .= "\t\t\$results = \$this->{$className}->find('first');\n\t\t\$this->assertTrue(!empty(\$results));\n\n";
+			$out .= "\t\t\$expected = array('$className' => array(\n$results\n\t\t\t));\n";
+			$out .= "\t\t\$this->assertEqual(\$results, \$expected);\n\t}\n}\n";
+
+			$path = MODEL_TESTS;
+			if (isset($this->plugin)) {
+				$pluginPath = 'plugins' . DS . Inflector::underscore($this->plugin) . DS;
+				$path = APP . $pluginPath . 'tests' . DS . 'cases' . DS . 'models' . DS;
+			}
+
+			$filename = Inflector::underscore($className).'.test.php';
+			$this->out("\nBaking unit test for $className...");
+
+			$header = '$Id';
+			$content = "<?php \n/* SVN FILE: $header$ */\n/* ". $className ." Test cases generated on: " . date('Y-m-d H:m:s') . " : ". time() . "*/\n{$out}?>";
+			return $this->createFile($path . $filename, $content);
+		}
+		return false;
 	}
 /**
  * outputs the a list of possible models or controllers from database
@@ -663,6 +753,11 @@ class ModelTask extends Shell {
 		} else {
 			$tables = $db->listSources();
 		}
+		if (empty($tables)) {
+			$this->err(__('Your database does not have any tables.', true));
+			$this->_stop();
+		}
+
 		$this->__tables = $tables;
 
 		if ($interactive === true) {
@@ -687,7 +782,12 @@ class ModelTask extends Shell {
 		$enteredModel = '';
 
 		while ($enteredModel == '') {
-			$enteredModel = $this->in(__('Enter a number from the list above, or type in the name of another model.', true));
+			$enteredModel = $this->in(__("Enter a number from the list above, type in the name of another model, or 'q' to exit", true), null, 'q');
+
+			if ($enteredModel === 'q') {
+				$this->out(__("Exit", true));
+				$this->_stop();
+			}
 
 			if ($enteredModel == '' || intval($enteredModel) > count($this->_modelNames)) {
 				$this->err(__("The model name you supplied was empty, or the number you selected was not an option. Please try again.", true));
@@ -716,7 +816,127 @@ class ModelTask extends Shell {
 		$this->out("\n\tmodel\n\t\tbakes model in interactive mode.");
 		$this->out("\n\tmodel <name>\n\t\tbakes model file with no associations or validation");
 		$this->out("");
-		exit();
+		$this->_stop();
+	}
+/**
+ * Builds the tests fixtures for the model and create the file
+ *
+ * @param string $model the name of the model
+ * @param string $useTable table name
+ * @return array $records, used in ModelTask::bakeTest() to create $expected
+ * @todo move this to a task
+ */
+	function fixture($model, $useTable = null) {
+		if (!class_exists('CakeSchema')) {
+			App::import('Model', 'Schema');
+		}
+		$out = "\nclass {$model}Fixture extends CakeTestFixture {\n";
+		$out .= "\tvar \$name = '$model';\n";
+
+		if (!$useTable) {
+			$useTable = Inflector::tableize($model);
+		} else {
+			$out .= "\tvar \$table = '$useTable';\n";
+		}
+		$schema = new CakeSchema();
+		$data = $schema->read(array('models' => false));
+
+		if (!isset($data['tables'][$useTable])) {
+			return false;
+		}
+		$tables[$model] = $data['tables'][$useTable];
+
+		foreach ($tables as $table => $fields) {
+			if (!is_numeric($table) && $table !== 'missing') {
+				$out .= "\tvar \$fields = array(\n";
+				$records = array();
+				if (is_array($fields)) {
+					$cols = array();
+					foreach ($fields as $field => $value) {
+						if ($field != 'indexes') {
+							if (is_string($value)) {
+								$type = $value;
+								$value = array('type'=> $type);
+							}
+							$col = "\t\t\t'{$field}' => array('type'=>'" . $value['type'] . "', ";
+
+							switch ($value['type']) {
+								case 'integer':
+									$insert = 1;
+								break;
+								case 'string';
+									$insert = "Lorem ipsum dolor sit amet";
+									if (!empty($value['length'])) {
+										$insert = substr($insert, 0, (int)$value['length'] - 2);
+									}
+									$insert = "'$insert'";
+								break;
+								case 'datetime':
+									$ts = date('Y-m-d H:i:s');
+									$insert = "'$ts'";
+								break;
+								case 'date':
+									$ts = date('Y-m-d');
+									$insert = "'$ts'";
+								break;
+								case 'time':
+									$ts = date('H:i:s');
+									$insert = "'$ts'";
+								break;
+								case 'boolean':
+									$insert = 1;
+								break;
+								case 'text':
+									$insert =
+									'\'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida,
+									phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam,
+									vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit,
+									feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.
+									Orci aliquet, in lorem et velit maecenas luctus, wisi nulla at, mauris nam ut a, lorem et et elit eu.
+									Sed dui facilisi, adipiscing mollis lacus congue integer, faucibus consectetuer eros amet sit sit,
+									magna dolor posuere. Placeat et, ac occaecat rutrum ante ut fusce. Sit velit sit porttitor non enim purus,
+									id semper consectetuer justo enim, nulla etiam quis justo condimentum vel, malesuada ligula arcu. Nisl neque,
+									ligula cras suscipit nunc eget, et tellus in varius urna odio est. Fuga urna dis metus euismod laoreet orci,
+									litora luctus suspendisse sed id luctus ut. Pede volutpat quam vitae, ut ornare wisi. Velit dis tincidunt,
+									pede vel eleifend nec curabitur dui pellentesque, volutpat taciti aliquet vivamus viverra, eget tellus ut
+									feugiat lacinia mauris sed, lacinia et felis.\'';
+								break;
+							}
+							$records[] = "\t\t\t'$field'  => $insert";
+							unset($value['type']);
+							$col .= join(', ',  $schema->__values($value));
+						} else {
+							$col = "\t\t\t'indexes' => array(";
+							$props = array();
+							foreach ((array)$value as $key => $index) {
+								$props[] = "'{$key}' => array(".join(', ',  $schema->__values($index)).")";
+							}
+							$col .= join(', ', $props);
+						}
+						$col .= ")";
+						$cols[] = $col;
+					}
+					$out .= join(",\n", $cols);
+				}
+				$out .= "\n\t\t\t);\n";
+			}
+		}
+		$records = join(",\n", $records);
+		$out .= "\tvar \$records = array(array(\n$records\n\t\t\t));\n";
+		$out .= "}\n";
+		$path = TESTS . DS . 'fixtures' . DS;
+		if (isset($this->plugin)) {
+			$pluginPath = 'plugins' . DS . Inflector::underscore($this->plugin) . DS;
+			$path = APP . $pluginPath . 'tests' . DS . 'fixtures' . DS;
+		}
+		$filename = Inflector::underscore($model).'_fixture.php';
+		$header = '$Id';
+		$content = "<?php \n/* SVN FILE: $header$ */\n/* ". $model ." Fixture generated on: " . date('Y-m-d H:m:s') . " : ". time() . "*/\n{$out}?>";
+		$this->out("\nBaking test fixture for $model...");
+		if ($this->createFile($path . $filename, $content)) {
+			return $records;
+		}
+		return false;
 	}
 }
 ?>

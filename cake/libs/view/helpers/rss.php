@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: rss.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: rss.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * RSS Helper class file.
  *
@@ -19,9 +19,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view.helpers
  * @since			CakePHP(tm) v 1.2
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -32,7 +32,7 @@
  * @package		cake
  * @subpackage	cake.cake.libs.view.helpers
  */
-uses('view' . DS . 'helpers' . DS . 'xml');
+App::import('Helper', 'Xml');
 
 class RssHelper extends XmlHelper {
 
@@ -112,7 +112,6 @@ class RssHelper extends XmlHelper {
 			$attrib['version'] = $this->version;
 		}
 
-		$attrib = array_reverse(array_merge($this->__prepareNamespaces(), $attrib));
 		return $this->elem('rss', $attrib, $content);
 	}
 /**
@@ -146,7 +145,7 @@ class RssHelper extends XmlHelper {
 			}
 			$elems .= $this->elem($elem, $attributes, $data);
 		}
-		return $this->elem('channel', $attrib, $elems . $this->__composeContent($content), !($content === null));
+		return $this->elem('channel', $attrib, $elems . $content, !($content === null));
 	}
 /**
  * Transforms an array of data using an optional callback, and maps it to a set
@@ -198,14 +197,14 @@ class RssHelper extends XmlHelper {
 						unset($attrib['url']);
 						$val = $val['url'];
 					}
-					$val = Router::url($val, true);
+					$val = $this->url($val, true);
 				break;
 				case 'source':
 					if (is_array($val) && isset($val['url'])) {
-						$attrib['url'] = Router::url($val['url'], true);
+						$attrib['url'] = $this->url($val['url'], true);
 						$val = $val['title'];
 					} elseif (is_array($val)) {
-						$attrib['url'] = Router::url($val[0], true);
+						$attrib['url'] = $this->url($val[0], true);
 						$val = $val[1];
 					}
 				break;
@@ -218,12 +217,17 @@ class RssHelper extends XmlHelper {
 							$val['type'] = mime_content_type(WWW_ROOT . $val['url']);
 						}
 					}
-					$val['url'] = Router::url($val['url'], true);
+					$val['url'] = $this->url($val['url'], true);
 					$attrib = $val;
 					$val = null;
 				break;
 			}
-			if ($val != null) {
+			$escape = true;
+			if (is_array($val) && isset($val['convertEntities'])) {
+				$escape = $val['convertEntities'];
+				unset($val['convertEntities']);
+			}
+			if (!is_null($val) && $escape) {
 				$val = h($val);
 			}
 			$elements[$key] = $this->elem($key, $attrib, $val);
@@ -241,8 +245,8 @@ class RssHelper extends XmlHelper {
  * @return string An RSS-formatted timestamp
  * @see TimeHelper::toRSS
  */
- 	function time($time) {
+	function time($time) {
 		return $this->Time->toRSS($time);
- 	}
+	}
 }
 ?>

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: session.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: session.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Session class for Cake.
  *
@@ -24,16 +24,18 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v .0.10.0.1222
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * Database name for cake sessions.
  *
  */
-uses('set');
+if (!class_exists('Set')) {
+	uses('set');
+}
 /**
  * Session class for Cake.
  *
@@ -71,7 +73,7 @@ class CakeSession extends Object {
  * @var string
  * @access public
  */
-	var $path = false;
+	var $path = '/';
 /**
  * Error number of last occurred error
  *
@@ -123,7 +125,7 @@ class CakeSession extends Object {
  */
 	function __construct($base = null, $start = true) {
 		if (Configure::read('Session.save') === 'database' && !class_exists('ConnectionManager')) {
-			uses('model' . DS . 'connection_manager');
+			App::import('Core', 'ConnectionManager');
 		}
 
 		if (Configure::read('Session.checkAgent') === true || Configure::read('Session.checkAgent') === null) {
@@ -147,7 +149,7 @@ class CakeSession extends Object {
 			}
 
 			if (!class_exists('Security')) {
-				uses('security');
+				App::import('Core', 'Security');
 			}
 
 			$this->sessionTime = $this->time + (Security::inactiveMins() * Configure::read('Session.timeout'));
@@ -174,7 +176,7 @@ class CakeSession extends Object {
  *
  * @access public
  */
-	function started(){
+	function started() {
 		if (isset($_SESSION)) {
 			return true;
 		}
@@ -190,7 +192,7 @@ class CakeSession extends Object {
 	function check($name) {
 		$var = $this->__validateKeys($name);
 		if (empty($var)) {
-		  return false;
+			return false;
 		}
 		$result = Set::extract($_SESSION, $var);
 		return isset($result);
@@ -211,29 +213,6 @@ class CakeSession extends Object {
 		} else {
 			return $this->id;
 		}
-	}
-/**
- * Temp method until we are able to remove the last eval().
- * Builds an expression to fetch a session variable with specified name.
- *
- * @param string $name Name of variable (in dot notation)
- * @access private
- */
-	function __sessionVarNames($name) {
-		if (is_string($name) && preg_match("/^[ 0-9a-zA-Z._-]*$/", $name)) {
-			if (strpos($name, ".")) {
-				$names = explode(".", $name);
-			} else {
-				$names = array($name);
-			}
-			$expression = "\$_SESSION";
-			foreach ($names as $item) {
-				$expression .= is_numeric($item) ? "[$item]" : "['$item']";
-			}
-			return $expression;
-		}
-		$this->__setError(3, "$name is not a string");
-		return false;
 	}
 /**
  * Removes a variable from session.
@@ -509,7 +488,9 @@ class CakeSession extends Object {
 			break;
 			case 'cache':
 				if (!isset($_SESSION)) {
-					uses('Cache');
+					if (!class_exists('Cache')) {
+						uses('Cache');
+					}
 					if (function_exists('ini_set')) {
 						ini_set('session.use_trans_sid', 0);
 						ini_set('url_rewriter.tags', '');
@@ -555,6 +536,7 @@ class CakeSession extends Object {
 			header ('P3P: CP="NOI ADM DEV PSAi COM NAV OUR OTRo STP IND DEM"');
 			return true;
 		} else {
+			session_start();
 			return true;
 		}
 	}
@@ -769,7 +751,7 @@ class CakeSession extends Object {
 	function __destroy($key) {
 		$db =& ConnectionManager::getDataSource(Configure::read('Session.database'));
 		$table = $db->fullTableName(Configure::read('Session.table'));
-		$db->execute("DELETE FROM " . $db->name($table) . " WHERE " . $db->name($table.'.id') . " = " . $db->value($key, 'integer'));
+		$db->execute("DELETE FROM " . $db->name($table) . " WHERE " . $db->name($table.'.id') . " = " . $db->value($key));
 		return true;
 	}
 /**

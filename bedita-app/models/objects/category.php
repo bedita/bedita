@@ -249,7 +249,7 @@ class Category extends BEAppModel {
 		
 		$tag = $this->find("first", array(
 										"conditions" => array("label" => $label, "object_type_id IS NULL"),
-										"restrict" => array("BEObject" => array("ObjectType"))
+										"contain" => array("BEObject" => array("ObjectType"))
 									)
 						);
 		

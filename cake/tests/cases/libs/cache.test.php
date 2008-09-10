@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: cache.test.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: cache.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,30 +21,57 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs
  * @since			CakePHP(tm) v 1.2.0.5432
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-uses('cache');
+if (!class_exists('Cache')) {
+	require LIBS . 'cache.php';
+}
 /**
  * Short description for class.
  *
  * @package    cake.tests
  * @subpackage cake.tests.cases.libs
  */
-class CacheTest extends UnitTestCase {
-
-	function skip() {
-		$this->skipif (false, 'CacheTest not implemented');
+class CacheTest extends CakeTestCase {
+/**
+ * start method
+ *
+ * @access public
+ * @return void
+ */
+	function start() {
+		$this->config = Cache::config('default');
+		$settings = Cache::config('default', array('engine'=> 'File', 'path' => CACHE));
 	}
-
+/**
+ * end method
+ *
+ * @access public
+ * @return void
+ */
+	function end() {
+		Cache::config('default', $this->config['settings']);
+	}
+/**
+ * testConfig method
+ *
+ * @access public
+ * @return void
+ */
 	function testConfig() {
 		$settings = array('engine' => 'File', 'path' => TMP . 'tests', 'prefix' => 'cake_test_');
 		$results = Cache::config('new', $settings);
 		$this->assertEqual($results, Cache::config('new'));
 	}
-
+/**
+ * testConfigChange method
+ *
+ * @access public
+ * @return void
+ */
 	function testConfigChange() {
 		$result = Cache::config('sessions', array('engine'=> 'File', 'path' => TMP . 'sessions'));
 		$this->assertEqual($result['settings'], Cache::settings('File'));
@@ -52,18 +79,72 @@ class CacheTest extends UnitTestCase {
 		$result = Cache::config('tests', array('engine'=> 'File', 'path' => TMP . 'tests'));
 		$this->assertEqual($result['settings'], Cache::settings('File'));
 	}
+/**
+ * testWritingWithConfig method
+ *
+ * @access public
+ * @return void
+ */
+	function testWritingWithConfig() {
 
+		Cache::config('sessions');
+
+		Cache::write('test_somthing', 'this is the test data', 'tests');
+
+		$expected = array(
+			'path' => TMP . 'sessions',
+			'prefix' => 'cake_',
+			'lock' => false,
+			'serialize' => true,
+			'duration' => 3600,
+			'probability' => 100,
+			'engine' => 'File',
+		);
+		$this->assertEqual($expected, Cache::settings('File'));
+	}
+/**
+ * testInitSettings method
+ *
+ * @access public
+ * @return void
+ */
 	function testInitSettings() {
 		Cache::engine('File', array('path' => TMP . 'tests'));
 		$settings = Cache::settings();
-		$expecting = array('duration'=> 3600,
-						'probability' => 100,
-						'path'=> TMP . 'tests',
-						'prefix'=> 'cake_',
-						'lock' => false,
-						'serialize'=> true,
-						);
+		$expecting = array(
+			'engine' => 'File',
+			'duration'=> 3600,
+			'probability' => 100,
+			'path'=> TMP . 'tests',
+			'prefix'=> 'cake_',
+			'lock' => false,
+			'serialize'=> true
+		);
 		$this->assertEqual($settings, $expecting);
+	}
+/**
+ * testWriteEmptyValues method
+ * 
+ * @access public
+ * @return void
+ */
+	function testWriteEmptyValues() {
+		return;
+		Cache::engine('File', array('path' => TMP . 'tests'));
+		Cache::write('App.falseTest', false);
+		$this->assertIdentical(Cache::read('App.falseTest'), false);
+
+		Cache::write('App.trueTest', true);
+		$this->assertIdentical(Cache::read('App.trueTest'), true);
+
+		Cache::write('App.nullTest', null);
+		$this->assertIdentical(Cache::read('App.nullTest'), null);
+
+		Cache::write('App.zeroTest', 0);
+		$this->assertIdentical(Cache::read('App.zeroTest'), 0);
+
+		Cache::write('App.zeroTest2', '0');
+		$this->assertIdentical(Cache::read('App.zeroTest2'), '0');
 	}
 }
 ?>

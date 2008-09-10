@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: basics.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: basics.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Basic Cake functionality.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake
  * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -48,56 +48,6 @@ if (!function_exists('clone')) {
 		}');
 	}
 }
-/**
- * Get CakePHP basic paths as an indexed array.
- * Resulting array will contain array of paths
- * indexed by: Models, Behaviors, Controllers,
- * Components, and Helpers.
- *
- * @return array Array of paths indexed by type
- */
-	function paths() {
-		$directories = Configure::getInstance();
-		$paths = array();
-
-		foreach ($directories->modelPaths as $path) {
-			$paths['Models'][] = $path;
-		}
-		foreach ($directories->behaviorPaths as $path) {
-			$paths['Behaviors'][] = $path;
-		}
-		foreach ($directories->controllerPaths as $path) {
-			$paths['Controllers'][] = $path;
-		}
-		foreach ($directories->componentPaths as $path) {
-			$paths['Components'][] = $path;
-		}
-		foreach ($directories->helperPaths as $path) {
-			$paths['Helpers'][] = $path;
-		}
-
-		if (!class_exists('Folder')) {
-			App::import('Core', 'Folder');
-		}
-
-		$folder =& new Folder(APP.'plugins'.DS);
-		$plugins = $folder->ls();
-		$classPaths = array('models', 'models'.DS.'behaviors',  'controllers', 'controllers'.DS.'components', 'views'.DS.'helpers');
-
-		foreach ($plugins[0] as $plugin) {
-			foreach ($classPaths as $path) {
-				if (strpos($path, DS) !== false) {
-					$key = explode(DS, $path);
-					$key = $key[1];
-				} else {
-					$key = $path;
-				}
-				$folder->path = APP.'plugins'.DS.$plugin.DS.$path;
-				$paths[Inflector::camelize($plugin)][Inflector::camelize($key)][] = $folder->path;
-			}
-		}
-		return $paths;
-	}
 /**
  * Loads configuration files. Receives a set of configuration files
  * to load.
@@ -142,39 +92,6 @@ if (!function_exists('clone')) {
 		foreach ($args as $file) {
 			require_once(LIBS . strtolower($file) . '.php');
 		}
-	}
-/**
- * Require given files in the VENDORS directory. Takes optional number of parameters.
- *
- * @param string $name Filename without the .php part.
- */
-	function vendor() {
-		$args = func_get_args();
-		$c = func_num_args();
-
-		for ($i = 0; $i < $c; $i++) {
-			$arg = $args[$i];
-
-			if (strpos($arg, '.') !== false) {
-				$file = explode('.', $arg);
-				$plugin = Inflector::underscore($file[0]);
-				unset($file[0]);
-				$file = implode('.', $file);
-				if (file_exists(APP . 'plugins' . DS . $plugin . DS . 'vendors' . DS . $file . '.php')) {
-					require_once(APP . 'plugins' . DS . $plugin . DS . 'vendors' . DS . $file . '.php');
-					continue;
-				}
-			}
-
-			if (file_exists(APP . 'vendors' . DS . $arg . '.php')) {
-				require_once(APP . 'vendors' . DS . $arg . '.php');
-			} elseif (file_exists(VENDORS . $arg . '.php')) {
-				require_once(VENDORS . $arg . '.php');
-			} else {
-				return false;
-			}
-		}
-		return true;
 	}
 /**
  * Prints out debug information about given variable.
@@ -275,13 +192,20 @@ if (!function_exists('clone')) {
  * Convenience method for htmlspecialchars.
  *
  * @param string $text Text to wrap through htmlspecialchars
+ * @param string $charset Character set to use when escaping.  Defaults to config value in 'App.encoding' or 'UTF-8'
  * @return string Wrapped text
  */
-	function h($text) {
+	function h($text, $charset = null) {
 		if (is_array($text)) {
 			return array_map('h', $text);
 		}
-		return htmlspecialchars($text);
+		if (empty($charset)) {
+			$charset = Configure::read('App.encoding');
+		}
+		if (empty($charset)) {
+			$charset = 'UTF-8';
+		}
+		return htmlspecialchars($text, ENT_QUOTES, $charset);
 	}
 /**
  * Returns an array of all the given parameters.
@@ -418,22 +342,6 @@ if (!function_exists('clone')) {
 		return $r;
 	}
 /**
- * see Dispatcher::uri();
- *
- * @deprecated
- */
-	function setUri() {
-		return null;
-	}
-/**
- * see Dispatcher::getUrl();
- *
- * @deprecated
- */
-	function setUrl() {
-		return null;
-	}
-/**
  * Gets an environment variable from available sources, and provides emulation
  * for unsupported or inconsisten environment variables (i.e. DOCUMENT_ROOT on
  * IIS, or SCRIPT_NAME in CGI mode).  Also exposes some additional custom
@@ -537,6 +445,7 @@ if (!function_exists('clone')) {
  * @param  mixed  $expires A valid strtotime string when the data expires.
  * @param  string $target  The target of the cached data; either 'cache' or 'public'.
  * @return mixed  The contents of the temporary file.
+ * @deprecated Please use Cache::write() instead
  */
 	function cache($path, $data = null, $expires = '+1 day', $target = 'cache') {
 		if (Configure::read('Cache.disable')) {
@@ -612,12 +521,16 @@ if (!function_exists('clone')) {
 				}
 				return true;
 			} else {
-				$cache = CACHE . $type . DS . '*' . $params . '*' . $ext;
+				$cache = CACHE . $type . DS . '*' . $params . $ext;
 				$files = glob($cache);
+
+				$cache = CACHE . $type . DS . '*' . $params . '_*' . $ext;
+				$files = array_merge($files, glob($cache));
 
 				if ($files === false) {
 					return false;
 				}
+
 				foreach ($files as $file) {
 					if (is_file($file)) {
 						@unlink($file);
@@ -627,28 +540,11 @@ if (!function_exists('clone')) {
 			}
 		} elseif (is_array($params)) {
 			foreach ($params as $key => $file) {
-				$file = preg_replace('/\/\//', '/', $file);
-				$cache = CACHE . $type . DS . '*' . $file . '*' . $ext;
-				$files[] = glob($cache);
+				clearCache($file, $type, $ext);
 			}
-
-			if (!empty($files)) {
-				foreach ($files as $key => $delete) {
-					if (is_array($delete)) {
-						foreach ($delete as $file) {
-							if (is_file($file)) {
-								@unlink($file);
-							}
-						}
-					}
-				}
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
+			return true;
 		}
+		return false;
 	}
 /**
  * Recursively strips slashes from all values in an array
@@ -731,7 +627,7 @@ if (!function_exists('clone')) {
 		} else {
 			return I18n::translate($msg, null, $domain);
 		}
-    }
+	}
 /**
  * Allows you to override the current domain for a single plural message lookup
  * Returns correct plural form of message identified by $singular and $plural for count $count
@@ -865,7 +761,7 @@ if (!function_exists('clone')) {
 		} else {
 			return I18n::translate($msg, null, null, $category);
 		}
-    }
+	}
 /**
  * Computes the difference of arrays using keys for comparison
  *
@@ -1173,5 +1069,97 @@ if (!function_exists('clone')) {
 	function listClasses($path ) {
 		trigger_error('listClasses is deprecated see Configure::listObjects(\'file\', $path);', E_USER_WARNING);
 		return Configure::listObjects('file', $path);
+	}
+/**
+ * @deprecated
+ * @see Configure::corePaths();
+ */
+	function paths() {
+		$directories = Configure::getInstance();
+		$paths = array();
+
+		foreach ($directories->modelPaths as $path) {
+			$paths['Models'][] = $path;
+		}
+		foreach ($directories->behaviorPaths as $path) {
+			$paths['Behaviors'][] = $path;
+		}
+		foreach ($directories->controllerPaths as $path) {
+			$paths['Controllers'][] = $path;
+		}
+		foreach ($directories->componentPaths as $path) {
+			$paths['Components'][] = $path;
+		}
+		foreach ($directories->helperPaths as $path) {
+			$paths['Helpers'][] = $path;
+		}
+
+		if (!class_exists('Folder')) {
+			App::import('Core', 'Folder');
+		}
+
+		$folder =& new Folder(APP.'plugins'.DS);
+		$plugins = $folder->ls();
+		$classPaths = array('models', 'models'.DS.'behaviors',  'controllers', 'controllers'.DS.'components', 'views'.DS.'helpers');
+
+		foreach ($plugins[0] as $plugin) {
+			foreach ($classPaths as $path) {
+				if (strpos($path, DS) !== false) {
+					$key = explode(DS, $path);
+					$key = $key[1];
+				} else {
+					$key = $path;
+				}
+				$folder->path = APP.'plugins'.DS.$plugin.DS.$path;
+				$paths[Inflector::camelize($plugin)][Inflector::camelize($key)][] = $folder->path;
+			}
+		}
+		return $paths;
+	}
+/**
+ * @deprecated
+ */
+	function vendor() {
+		trigger_error('(vendor) Deprecated, see App::import(\'Vendor\', \'...\');', E_USER_WARNING);
+		$args = func_get_args();
+		$c = func_num_args();
+
+		for ($i = 0; $i < $c; $i++) {
+			$arg = $args[$i];
+
+			if (strpos($arg, '.') !== false) {
+				$file = explode('.', $arg);
+				$plugin = Inflector::underscore($file[0]);
+				unset($file[0]);
+				$file = implode('.', $file);
+				if (file_exists(APP . 'plugins' . DS . $plugin . DS . 'vendors' . DS . $file . '.php')) {
+					require_once(APP . 'plugins' . DS . $plugin . DS . 'vendors' . DS . $file . '.php');
+					continue;
+				}
+			}
+
+			if (file_exists(APP . 'vendors' . DS . $arg . '.php')) {
+				require_once(APP . 'vendors' . DS . $arg . '.php');
+			} elseif (file_exists(VENDORS . $arg . '.php')) {
+				require_once(VENDORS . $arg . '.php');
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}
+/**
+ * @deprecated
+ * @see Dispatcher::uri();
+ */
+	function setUri() {
+		return null;
+	}
+/**
+ * @deprecated
+ * @see Dispatcher::getUrl();
+ */
+	function setUrl() {
+		return null;
 	}
 ?>

@@ -46,16 +46,16 @@ class MultimediaController extends ModulesController {
 		$bedita_items = $this->BeTree->getDiscendents($id, null, $typesArray, $order, $dir, $page, $dim)  ;
 		
 	 	foreach($bedita_items['items'] as $key => $value) {
-			$modelLoaded = $this->loadModelByObjectTypeId($value['object_type_id']);
-			$modelLoaded->restrict(array(
+	 		$model = $this->loadModelByObjectTypeId($value['object_type_id']);
+			$model->contain(array(
 									"BEObject" => array("ObjectType"),
 									"Content",
 									"Stream"
 									)
 								);
-			if(($Details = $modelLoaded->findById($value['id']))) {
-				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
-				$bedita_items['items'][$key] = array_merge($bedita_items['items'][$key], $Details);	
+			if(($details = $model->findById($value['id']))) {
+				$details['filename'] = substr($details['path'],strripos($details['path'],"/")+1);
+				$bedita_items['items'][$key] = array_merge($bedita_items['items'][$key], $details);	
 			}
 		}
 		$this->params['toolbar'] = &$bedita_items['toolbar'] ;
@@ -76,7 +76,7 @@ class MultimediaController extends ModulesController {
 		$obj = null ;
 		if($id) {
 			$model = $this->BEObject->getType($id);
-			$this->{$model}->restrict(array(
+			$this->{$model}->contain(array(
 									"BEObject" => array("ObjectType",
 														"Permissions",
 														"UserCreated", 

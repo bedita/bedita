@@ -102,7 +102,7 @@ class DeleteObjectBehavior extends ModelBehavior {
 		$o = ClassRegistry::init('BEObject') ;
 		
 		$res = $o->find("first", array(
-									"restrict" => array("RelatedObject"),
+									"contain" => array("RelatedObject"),
 									"conditions" => array("`BEObject`.id" => $object_id)
 									)
 							);

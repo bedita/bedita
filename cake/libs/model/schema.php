@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: schema.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: schema.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Schema database management for CakePHP.
  *
@@ -17,21 +17,19 @@
  * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
  * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
  * @package			cake
- * @subpackage		cake.cake.libs
+ * @subpackage		cake.cake.libs.model
  * @since			CakePHP(tm) v 1.2.0.5550
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-if (!class_exists('connectionmanager')) {
-	uses('model' . DS . 'connection_manager');
-}
+App::import('Model', 'ConnectionManager');
 /**
  * Base Class for Schema management
  *
- * @package		cake.libs
- * @subpackage	cake.libs
+ * @package		cake
+ * @subpackage	cake.cake.libs.model
  */
 class CakeSchema extends Object {
 /**
@@ -82,12 +80,13 @@ class CakeSchema extends Object {
 		}
 
 		if ($this->name === 'Cake') {
-			$this->name = Inflector::camelize(Configure::read('App.dir'));
+			$this->name = Inflector::camelize(Inflector::slug(Configure::read('App.dir')));
 		}
 
 		if (empty($options['path'])) {
 			$this->path = CONFIGS . 'sql';
 		}
+
 		$options = array_merge(get_object_vars($this), $options);
 		$this->_build($options);
 	}
@@ -184,53 +183,53 @@ class CakeSchema extends Object {
 		));
 		$db =& ConnectionManager::getDataSource($connection);
 
-		$prefix = null;
 		App::import('Model', 'AppModel');
 
 		$tables = array();
-		$currentTables = $db->sources();
+		$currentTables = $db->listSources();
+
+		$prefix = null;
 		if (isset($db->config['prefix'])) {
 			$prefix = $db->config['prefix'];
 		}
 
 		if (!is_array($models) && $models !== false) {
-			$appPaths = array_diff(Configure::read('modelPaths'), Configure::corePaths('model'));
-			$models = Configure::listObjects('model', $appPaths, false);
+			$models = Configure::listObjects('model');
 		}
 
 		if (is_array($models)) {
 			foreach ($models as $model) {
-				if (!class_exists($model)) {
-					App::import('Model', $model);
+				if (PHP5) {
+					$Object = ClassRegistry::init(array('class' => $model, 'ds' => $connection));
+				} else {
+					$Object =& ClassRegistry::init(array('class' => $model, 'ds' => $connection));
 				}
-				if (class_exists($model)) {
-					$Object =& new $model();
+
+				if (is_object($Object)) {
 					$Object->setDataSource($connection);
 					$table = $db->fullTableName($Object, false);
-					if (is_object($Object)) {
-						$table = $db->fullTableName($Object, false);
-						if (in_array($table, $currentTables)) {
-							$key = array_search($table, $currentTables);
-							if (empty($tables[$Object->table])) {
-								$tables[$Object->table] = $this->__columns($Object);
-								$tables[$Object->table]['indexes'] = $db->index($Object);
-								unset($currentTables[$key]);
-							}
-							if (!empty($Object->hasAndBelongsToMany)) {
-								foreach($Object->hasAndBelongsToMany as $Assoc => $assocData) {
-									if (isset($assocData['with'])) {
-										$class = $assocData['with'];
-									} elseif ($assocData['_with']) {
-										$class = $assocData['_with'];
-									}
-									if (is_object($Object->$class)) {
-										$table = $db->fullTableName($Object->$class, false);
-										if (in_array($table, $currentTables)) {
-											$key = array_search($table, $currentTables);
-											$tables[$Object->$class->table] = $this->__columns($Object->$class);
-											$tables[$Object->$class->table]['indexes'] = $db->index($Object->$class);
-											unset($currentTables[$key]);
-										}
+
+					if (in_array($table, $currentTables)) {
+						$key = array_search($table, $currentTables);
+						if (empty($tables[$Object->table])) {
+							$tables[$Object->table] = $this->__columns($Object);
+							$tables[$Object->table]['indexes'] = $db->index($Object);
+							unset($currentTables[$key]);
+						}
+						if (!empty($Object->hasAndBelongsToMany)) {
+							foreach($Object->hasAndBelongsToMany as $Assoc => $assocData) {
+								if (isset($assocData['with'])) {
+									$class = $assocData['with'];
+								} elseif ($assocData['_with']) {
+									$class = $assocData['_with'];
+								}
+								if (is_object($Object->$class)) {
+									$table = $db->fullTableName($Object->$class, false);
+									if (in_array($table, $currentTables)) {
+										$key = array_search($table, $currentTables);
+										$tables[$Object->$class->table] = $this->__columns($Object->$class);
+										$tables[$Object->$class->table]['indexes'] = $db->index($Object->$class);
+										unset($currentTables[$key]);
 									}
 								}
 							}
@@ -248,6 +247,9 @@ class CakeSchema extends Object {
 				if (in_array($table, array('aros', 'acos', 'aros_acos', Configure::read('Session.table'), 'i18n'))) {
 					$tables[$Object->table] = $this->__columns($Object);
 					$tables[$Object->table]['indexes'] = $db->index($Object);
+				} elseif ($models === false) {
+					$tables[$table] = $this->__columns($Object);
+					$tables[$table]['indexes'] = $db->index($Object);
 				} else {
 					$tables['missing'][$table] = $this->__columns($Object);
 					$tables['missing'][$table]['indexes'] = $db->index($Object);
@@ -281,7 +283,7 @@ class CakeSchema extends Object {
 			get_object_vars($this), $options
 		));
 
-		$out = "\n\nclass {$name}Schema extends CakeSchema {\n\n";
+		$out = "class {$name}Schema extends CakeSchema {\n";
 
 		$out .= "\tvar \$name = '{$name}';\n\n";
 
@@ -320,7 +322,7 @@ class CakeSchema extends Object {
 						} else {
 							$col = "\t\t\t'indexes' => array(";
 							$props = array();
-							foreach ($value as $key => $index) {
+							foreach ((array)$value as $key => $index) {
 								$props[] = "'{$key}' => array(".join(', ',  $this->__values($index)).")";
 							}
 							$col .= join(', ', $props);
@@ -331,14 +333,14 @@ class CakeSchema extends Object {
 					$out .= join(",\n", $cols);
 				}
 				$out .= "\n\t\t);\n";
-				$out .="\n";
 			}
 		}
 		$out .="}\n";
 
 
 		$File =& new File($path . DS . $file, true);
-		$content = "<?php \n/* SVN FILE: \$Id: schema.php 6311 2008-01-02 06:33:52Z phpnut $ */\n/*". $name ." schema generated on: " . date('Y-m-d H:m:s') . " : ". time() . "*/\n{$out}?>";
+		$header = '$Id';
+		$content = "<?php \n/* SVN FILE: $header$ */\n/* ". $name ." schema generated on: " . date('Y-m-d H:m:s') . " : ". time() . "*/\n{$out}?>";
 		$content = $File->prepare($content);
 		if ($File->write($content)) {
 			return $content;
@@ -467,9 +469,6 @@ class CakeSchema extends Object {
 			}
 			if (empty($value['key'])) {
 				unset($value['key']);
-			}
-			if (empty($value['extra'])) {
-				unset($value['extra']);
 			}
 			$columns[$name] = $value;
 		}

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: bid_fixture.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: bid_fixture.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.fixtures
  * @since			CakePHP(tm) v 1.2.0.4667
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 /**
@@ -33,18 +33,36 @@
  * @subpackage	cake.tests.fixtures
  */
 class BidFixture extends CakeTestFixture {
+/**
+ * name property
+ * 
+ * @var string 'Bid'
+ * @access public
+ */
 	var $name = 'Bid';
+/**
+ * fields property
+ * 
+ * @var array
+ * @access public
+ */
 	var $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary', 'extra'=> 'auto_increment'),
+		'id' => array('type' => 'integer', 'key' => 'primary'),
 		'message_id' => array('type' => 'integer', 'null' => false),
 		'name' => array('type' => 'string', 'null' => false)
 	);
+/**
+ * records property
+ * 
+ * @var array
+ * @access public
+ */
 	var $records = array(
-		array ('id' => 1, 'message_id' => 1, 'name' => 'Bid 1.1'),
-		array ('id' => 2, 'message_id' => 1, 'name' => 'Bid 1.2'),
-		array ('id' => 3, 'message_id' => 3, 'name' => 'Bid 3.1'),
-		array ('id' => 4, 'message_id' => 2, 'name' => 'Bid 2.1'),
-		array ('id' => 5, 'message_id' => 2, 'name' => 'Bid 2.2')
+		array('message_id' => 1, 'name' => 'Bid 1.1'),
+		array('message_id' => 1, 'name' => 'Bid 1.2'),
+		array('message_id' => 3, 'name' => 'Bid 3.1'),
+		array('message_id' => 2, 'name' => 'Bid 2.1'),
+		array('message_id' => 2, 'name' => 'Bid 2.2')
 	);
 }
 ?>

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: auth.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: auth.php 7118 2008-06-04 20:49:29Z gwoo $ */
 
 /**
  * Authentication component
@@ -22,13 +22,13 @@
  * @package			cake
  * @subpackage		cake.cake.libs.controller.components
  * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
-uses('set', 'security');
+App::import(array('Router', 'Security'));
 
 /**
  * Authentication control component class
@@ -242,7 +242,7 @@ class AuthComponent extends Object {
 			));
 		}
 		if (Configure::read() > 0) {
-			uses('debugger');
+			App::import('Debugger');
 			Debugger::checkSessionKey();
 		}
 	}
@@ -254,14 +254,6 @@ class AuthComponent extends Object {
  * @access public
  */
 	function startup(&$controller) {
-		if (!$this->loginError) {
-			$this->loginError = __('Login failed. Invalid username or password.', true);
-		}
-
-		if (!$this->authError) {
-			$this->authError = __('You are not authorized to access that location.', true);
-		}
-
 		if (strtolower($controller->name) == 'app' || (strtolower($controller->name) == 'tests' && Configure::read() > 0)) {
 			return;
 		}
@@ -272,18 +264,34 @@ class AuthComponent extends Object {
 
 		$this->data = $controller->data = $this->hashPasswords($controller->data);
 
-		if ($this->allowedActions == array('*') || in_array($controller->action, $this->allowedActions)) {
+		$url = '';
+		if (is_array($this->loginAction)) {
+			$params = $controller->params;
+			$keys = array('pass', 'named', 'controller', 'action', 'plugin');
+			$url = array();
+
+			foreach($keys as $key) {
+				if (!empty($params[$key])) {
+					if (is_array($params[$key])) {
+						foreach ($params[$key] as $name => $value) {
+							$url[$name] = $value;
+						}
+					} else {
+						$url[$key] = $params[$key];
+					}
+				}
+			}
+		} elseif (isset($controller->params['url']['url'])) {
+			$url = $controller->params['url']['url'];
+		}	
+		$url = Router::normalize($url);
+		$loginAction = Router::normalize($this->loginAction);
+
+		if ($loginAction != $url && ($this->allowedActions == array('*') || in_array($controller->action, $this->allowedActions))) {
 			return false;
 		}
 
-		if (!isset($controller->params['url']['url'])) {
-			$url = '';
-		} else {
-			$url = $controller->params['url']['url'];
-		}
-
-		$this->loginAction = Router::normalize($this->loginAction);
-		if ($this->loginAction == Router::normalize($url)) {
+		if ($loginAction == $url) {
 			if (empty($controller->data) || !isset($controller->data[$this->userModel])) {
 				if (!$this->Session->check('Auth.redirect') && env('HTTP_REFERER')) {
 					$this->Session->write('Auth.redirect', $controller->referer());
@@ -292,8 +300,8 @@ class AuthComponent extends Object {
 			}
 
 			$data = array(
-				$this->userModel . '.' . $this->fields['username'] => '= ' . $controller->data[$this->userModel][$this->fields['username']],
-				$this->userModel . '.' . $this->fields['password'] => '= ' . $controller->data[$this->userModel][$this->fields['password']]
+				$this->userModel . '.' . $this->fields['username'] => $controller->data[$this->userModel][$this->fields['username']],
+				$this->userModel . '.' . $this->fields['password'] => $controller->data[$this->userModel][$this->fields['password']]
 			);
 
 			if ($this->login($data)) {
@@ -303,7 +311,7 @@ class AuthComponent extends Object {
 				return true;
 			} else {
 				$this->Session->setFlash($this->loginError, 'default', array(), 'auth');
-				unset($controller->data[$this->userModel][$this->fields['password']]);
+				$controller->data[$this->userModel][$this->fields['password']] = null;
 			}
 			return false;
 		} else {
@@ -311,52 +319,53 @@ class AuthComponent extends Object {
 				if (!$this->RequestHandler->isAjax()) {
 					$this->Session->setFlash($this->authError, 'default', array(), 'auth');
 					$this->Session->write('Auth.redirect', $url);
-					$controller->redirect($this->loginAction, null, true);
+					$controller->redirect($loginAction, null, true);
 					return false;
 				} elseif (!empty($this->ajaxLogin)) {
 					$controller->viewPath = 'elements';
-					$controller->render($this->ajaxLogin, 'ajax');
-					exit();
+					echo $controller->render($this->ajaxLogin, 'ajax');
+					$this->_stop();
+					return false;
 				}
 			}
 		}
 
-		if ($this->authorize) {
-			extract($this->__authType());
-			switch ($type) {
-				case 'controller':
-					$this->object =& $controller;
-				break;
-				case 'crud':
-				case 'actions':
-					if (isset($controller->Acl)) {
-						$this->Acl =& $controller->Acl;
-					} else {
-						trigger_error(__('Could not find AclComponent. Please include Acl in Controller::$components.', true), E_USER_WARNING);
-					}
-				break;
-				case 'model':
-					if (!isset($object)) {
-						if (isset($controller->{$controller->modelClass}) && is_object($controller->{$controller->modelClass})) {
-							$object = $controller->modelClass;
-						} elseif (!empty($controller->uses) && isset($controller->{$controller->uses[0]}) && is_object($controller->{$controller->uses[0]})) {
-							$object = $controller->uses[0];
-						}
-					}
-					$type = array('model' => $object);
-				break;
-			}
-
-			if ($this->isAuthorized($type)) {
-				return true;
-			}
-
-			$this->Session->setFlash($this->authError, 'default', array(), 'auth');
-			$controller->redirect($controller->referer(), null, true);
-			return false;
-		} else {
+		if (!$this->authorize) {
 			return true;
 		}
+
+		extract($this->__authType());
+		switch ($type) {
+			case 'controller':
+				$this->object =& $controller;
+			break;
+			case 'crud':
+			case 'actions':
+				if (isset($controller->Acl)) {
+					$this->Acl =& $controller->Acl;
+				} else {
+					trigger_error(__('Could not find AclComponent. Please include Acl in Controller::$components.', true), E_USER_WARNING);
+				}
+			break;
+			case 'model':
+				if (!isset($object)) {
+					if (isset($controller->{$controller->modelClass}) && is_object($controller->{$controller->modelClass})) {
+						$object = $controller->modelClass;
+					} elseif (!empty($controller->uses) && isset($controller->{$controller->uses[0]}) && is_object($controller->{$controller->uses[0]})) {
+						$object = $controller->uses[0];
+					}
+				}
+				$type = array('model' => $object);
+			break;
+		}
+
+		if ($this->isAuthorized($type)) {
+			return true;
+		}
+
+		$this->Session->setFlash($this->authError, 'default', array(), 'auth');
+		$controller->redirect($controller->referer(), null, true);
+		return false;
 	}
 /**
  * Attempts to introspect the correct values for object properties including
@@ -370,14 +379,20 @@ class AuthComponent extends Object {
 			trigger_error(__("Could not find \$userModel. Please set AuthComponent::\$userModel in beforeFilter().", true), E_USER_WARNING);
 			return false;
 		}
-		if (empty($this->loginAction)) {
-			$this->loginAction = Router::url(array('controller'=> Inflector::underscore(Inflector::pluralize($this->userModel)), 'action'=>'login'));
-		}
-		if (empty($this->sessionKey)) {
-			$this->sessionKey = 'Auth.' . $this->userModel;
-		}
-		if (empty($this->logoutRedirect)) {
-			$this->logoutRedirect = $this->loginAction;
+		$defaults = array(
+			'loginAction' => Router::normalize(array(
+				'controller'=> Inflector::underscore(Inflector::pluralize($this->userModel)),
+				'action' => 'login'
+			)),
+			'sessionKey' => 'Auth.' . $this->userModel,
+			'logoutRedirect' => $this->loginAction,
+			'loginError' => __('Login failed. Invalid username or password.', true),
+			'authError' => __('You are not authorized to access that location.', true)
+		);
+		foreach ($defaults as $key => $value) {
+			if (empty($this->{$key})) {
+				$this->{$key} = $value;
+			}
 		}
 		return true;
 	}
@@ -617,7 +632,7 @@ class AuthComponent extends Object {
 			$redir = $this->Session->read('Auth.redirect');
 			$this->Session->delete('Auth.redirect');
 
-			if (Router::normalize($redir) == $this->loginAction) {
+			if (Router::normalize($redir) == Router::normalize($this->loginAction)) {
 				$redir = $this->loginRedirect;
 			}
 		} else {
@@ -723,27 +738,28 @@ class AuthComponent extends Object {
 		}
 
 		if (is_array($user) && (isset($user[$this->fields['username']]) || isset($user[$this->userModel . '.' . $this->fields['username']]))) {
+
 			if (isset($user[$this->fields['username']]) && !empty($user[$this->fields['username']])  && !empty($user[$this->fields['password']])) {
 				if (trim($user[$this->fields['username']]) == '=' || trim($user[$this->fields['password']]) == '=') {
 					return false;
 				}
 				$find = array(
-					$this->fields['username'] => $user[$this->fields['username']],
-					$this->fields['password'] => $user[$this->fields['password']]
+					$this->userModel.'.'.$this->fields['username'] => $user[$this->fields['username']],
+					$this->userModel.'.'.$this->fields['password'] => $user[$this->fields['password']]
 				);
 			} elseif (isset($user[$this->userModel . '.' . $this->fields['username']]) && !empty($user[$this->userModel . '.' . $this->fields['username']])) {
 				if (trim($user[$this->userModel . '.' . $this->fields['username']]) == '=' || trim($user[$this->userModel . '.' . $this->fields['password']]) == '=') {
 					return false;
 				}
 				$find = array(
-					$this->fields['username'] => $user[$this->userModel . '.' . $this->fields['username']],
-					$this->fields['password'] => $user[$this->userModel . '.' . $this->fields['password']]
+					$this->userModel.'.'.$this->fields['username'] => $user[$this->userModel . '.' . $this->fields['username']],
+					$this->userModel.'.'.$this->fields['password'] => $user[$this->userModel . '.' . $this->fields['password']]
 				);
 			} else {
 				return false;
 			}
 			$model =& $this->getModel();
-			$data = $model->find(array_merge($find, $conditions), null, null, -1);
+			$data = $model->find(array_merge($find, $conditions), null, null, 0);
 			if (empty($data) || empty($data[$this->userModel])) {
 				return null;
 			}
@@ -755,6 +771,7 @@ class AuthComponent extends Object {
 				return null;
 			}
 		}
+
 		if (isset($data) && !empty($data)) {
 			if (!empty($data[$this->userModel][$this->fields['password']])) {
 				unset($data[$this->userModel][$this->fields['password']]);
@@ -791,7 +808,7 @@ class AuthComponent extends Object {
  * @access public
  */
 	function password($password) {
-		return Security::hash(Configure::read('Security.salt') . $password);
+		return Security::hash($password, null, true);
 	}
 /**
  * Component shutdown.  If user is logged in, wipe out redirect.

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_sybase.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: dbo_sybase.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Sybase layer for DBO
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.datasources.dbo
  * @since			CakePHP(tm) v 1.2.0.3097
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -287,7 +287,7 @@ class DboSybase extends DboSource {
  * @return integer Number of rows in resultset
  */
 	function lastNumRows() {
-		if ($this->_result and is_resource($this->_result)) {
+		if ($this->hasResult()) {
 			return @sybase_num_rows($this->_result);
 		}
 		return null;
@@ -320,7 +320,9 @@ class DboSybase extends DboSource {
 
 		$col = str_replace(')', '', $real);
 		$limit = null;
-		@list($col, $limit) = explode('(', $col);
+		if (strpos($col, '(') !== false) {
+			list($col, $limit) = explode('(', $col);
+		}
 
 		if (in_array($col, array('datetime', 'smalldatetime'))) {
 			return 'datetime';
@@ -379,16 +381,6 @@ class DboSybase extends DboSource {
 		} else {
 			return false;
 		}
-	}
-/**
- * Inserts multiple values into a join table
- *
- * @param string $table
- * @param string $fields
- * @param array $values
- */
-	function insertMulti($table, $fields, $values) {
-		parent::__insertMulti($table, $fields, $values);
 	}
 }
 

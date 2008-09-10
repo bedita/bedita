@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: test_manager.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: test_manager.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.tests.lib
  * @since			CakePHP(tm) v 1.2.0.4433
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 define ('CORE_TEST_CASES', dirname(dirname(__FILE__)) . DS . 'cases');
@@ -33,40 +33,40 @@ define ('APP_TEST_GROUPS', APP . 'tests' .DS. 'groups');
 /**
  * Short description for class.
  *
- * @package    cake
- * @subpackage cake.cake.tests.lib
+ * @package		cake
+ * @subpackage	cake.cake.tests.lib
  */
 class TestManager {
 	var $_testExtension = '.test.php';
 	var $_groupExtension = '.group.php';
-	var $usersAppTest = false;
+	var $appTest = false;
+	var $pluginTest = false;
 
 	function TestManager() {
 		$this->_installSimpleTest();
 		if (isset($_GET['app'])) {
-			$this->usersAppTest = true;
+			$this->appTest = true;
+		}
+		if (isset($_GET['plugin'])) {
+			$this->pluginTest = $_GET['plugin'];
 		}
 	}
 
 	function _installSimpleTest() {
-		vendor('simpletest'.DS.'unit_tester', 'simpletest'.DS.'mock_objects', 'simpletest'.DS.'web_tester');
-		require_once(LIB_TESTS . 'cake_web_test_case.php');
-		require_once(LIB_TESTS . 'cake_test_case.php');
+		App::import('Vendor', array('simpletest'.DS.'unit_tester', 'simpletest'.DS.'mock_objects', 'simpletest'.DS.'web_tester'));
+		require_once(CAKE_TESTS_LIB . 'cake_web_test_case.php');
+		require_once(CAKE_TESTS_LIB . 'cake_test_case.php');
 	}
 
 	function runAllTests(&$reporter) {
 		$manager =& new TestManager();
 
-		if (!empty($manager->usersAppTest)) {
-			$testCasePath = APP_TEST_CASES;
-		} else {
-			$testCasePath = CORE_TEST_CASES;
-		}
-		$testCases =& $manager->_getTestFileList($testCasePath);
-		$test =& new GroupTest('All Core Tests');
+		$testCases =& $manager->_getTestFileList($manager->_getTestsPath());
 
-		if (isset($_GET['app'])) {
+		if ($manager->appTest) {
 			$test =& new GroupTest('All App Tests');
+		} else if ($manager->pluginTest) {
+			$test =& new GroupTest('All ' . Inflector::humanize($manager->pluginTest) . ' Plugin Tests');
 		} else {
 			$test =& new GroupTest('All Core Tests');
 		}
@@ -80,11 +80,7 @@ class TestManager {
 	function runTestCase($testCaseFile, &$reporter) {
 		$manager =& new TestManager();
 
-		if (!empty($manager->usersAppTest)) {
-			$testCaseFileWithPath = APP_TEST_CASES . DIRECTORY_SEPARATOR . $testCaseFile;
-		} else {
-			$testCaseFileWithPath = CORE_TEST_CASES . DIRECTORY_SEPARATOR . $testCaseFile;
-		}
+		$testCaseFileWithPath = $manager->_getTestsPath() . DS . $testCaseFile;
 		if (! file_exists($testCaseFileWithPath)) {
 			trigger_error("Test case {$testCaseFile} cannot be found", E_USER_ERROR);
 		}
@@ -93,10 +89,9 @@ class TestManager {
 		return $test->run($reporter);
 	}
 
-	function runGroupTest($groupTestName, $groupTestDirectory, &$reporter) {
+	function runGroupTest($groupTestName, &$reporter) {
 		$manager =& new TestManager();
-		$filePath = $groupTestDirectory . DIRECTORY_SEPARATOR .
-		strtolower($groupTestName) . $manager->_groupExtension;
+		$filePath = $manager->_getTestsPath('groups') . DS . strtolower($groupTestName) . $manager->_groupExtension;
 
 		if (! file_exists($filePath)) {
 			trigger_error("Group test {$groupTestName} cannot be found at {$filePath}", E_USER_ERROR);
@@ -124,12 +119,18 @@ class TestManager {
 
 	function addTestFile(&$groupTest, $file) {
 		$manager =& new TestManager();
-		$groupTest->addTestFile($file.'.test.php');
+
+		if (file_exists($file.'.test.php')) {
+			$file .= '.test.php';
+		} elseif (file_exists($file.'.group.php')) {
+			$file .= '.group.php';
+		}
+		$groupTest->addTestFile($file);
 	}
 
-	function &getTestCaseList($directory = '.') {
+	function &getTestCaseList() {
 		$manager =& new TestManager();
-		$return = $manager->_getTestCaseList($directory);
+		$return = $manager->_getTestCaseList($manager->_getTestsPath());
 		return $return;
 	}
 
@@ -147,9 +148,9 @@ class TestManager {
 		return $return;
 	}
 
-	function &getGroupTestList($directory = '.') {
+	function &getGroupTestList() {
 		$manager =& new TestManager();
-		$return = $manager->_getTestGroupList($directory);
+		$return = $manager->_getTestGroupList($manager->_getTestsPath('groups'));
 		return $return;
 	}
 
@@ -181,12 +182,15 @@ class TestManager {
 	}
 
 	function &_getRecursiveFileList($directory = '.', $fileTestFunction) {
+		$fileList = array();
+		if (!is_dir($directory)) {
+			return $fileList;
+		}
 		$dh = opendir($directory);
 		if (! is_resource($dh)) {
 			trigger_error("Couldn't open {$directory}", E_USER_ERROR);
 		}
 
-		$fileList = array();
 		while ($file = readdir($dh)) {
 			$filePath = $directory . DIRECTORY_SEPARATOR . $file;
 			if (0 === strpos($file, '.')) {
@@ -215,18 +219,38 @@ class TestManager {
 	function _hasExpectedExtension($file, $extension) {
 		return $extension == strtolower(substr($file, (0 - strlen($extension))));
 	}
+
+	function _getTestsPath($type = 'cases') {
+		if (!empty($this->appTest)) {
+			if ($type == 'cases') {
+				$result = APP_TEST_CASES;
+			} else if ($type == 'groups') {
+				$result = APP_TEST_GROUPS;
+			}
+		} else if (!empty($this->pluginTest)) {
+			$_pluginBasePath = APP . 'plugins' . DS . $this->pluginTest . DS . 'tests';
+			$result = $_pluginBasePath . DS . $type;
+		} else {
+			if ($type == 'cases') {
+				$result = CORE_TEST_CASES;
+			} else if ($type == 'groups') {
+				$result = CORE_TEST_GROUPS;
+			}
+		}
+		return $result;
+	}
 }
 /**
  * Short description for class.
  *
- * @package    cake
- * @subpackage cake.cake.tests.lib
+ * @package		cake
+ * @subpackage	cake.cake.tests.lib
  */
 class CliTestManager extends TestManager {
 
-	function &getGroupTestList($directory = '.') {
+	function &getGroupTestList() {
 		$manager =& new CliTestManager();
-		$groupTests =& $manager->_getTestGroupList($directory);
+		$groupTests =& $manager->_getTestGroupList($manager->_getTestsPath('groups'));
 		$buffer = "Available Group Test:\n";
 
 		foreach ($groupTests as $groupTest) {
@@ -235,9 +259,9 @@ class CliTestManager extends TestManager {
 		return $buffer . "\n";
 	}
 
-	function &getTestCaseList($directory = '.') {
+	function &getTestCaseList() {
 		$manager =& new CliTestManager();
-		$testCases =& $manager->_getTestCaseList($directory);
+		$testCases =& $manager->_getTestCaseList($manager->_getTestsPath());
 		$buffer = "Available Test Cases:\n";
 
 		foreach ($testCases as $testCaseFile => $testCase) {
@@ -249,13 +273,14 @@ class CliTestManager extends TestManager {
 /**
  * Short description for class.
  *
- * @package    cake
- * @subpackage cake.cake.tests.lib
+ * @package		cake
+ * @subpackage	cake.cake.tests.lib
  */
 class TextTestManager extends TestManager {
 	var $_url;
 
 	function TextTestManager() {
+		parent::TestManager();
 		$this->_url = $_SERVER['PHP_SELF'];
 	}
 
@@ -263,49 +288,67 @@ class TextTestManager extends TestManager {
 		return $this->_url;
 	}
 
-	function &getGroupTestList($directory = '.') {
+	function &getGroupTestList() {
 		$manager =& new TextTestManager();
-		$groupTests =& $manager->_getTestGroupList($directory);
+		$groupTests =& $manager->_getTestGroupList($manager->_getTestsPath('groups'));
 
-		if (1 > count($groupTests)) {
-      $noGroups = "No test groups set up!\n";
-      return $noGroups;
+		$buffer = "Core Test Groups:\n";
+		$urlExtra = null;
+		if ($manager->appTest) {
+			$buffer = "App Test Groups:\n";
+			$urlExtra = '&app=true';
+		} else if ($manager->pluginTest) {
+			$buffer = Inflector::humanize($manager->pluginTest) . " Test Groups:\n";
+			$urlExtra = '&plugin=' . $manager->pluginTest;
 		}
-		$buffer = "Available test groups:\n";
-		$buffer .=  $manager->getBaseURL() . "?group=all All tests<\n";
 
-		foreach ($groupTests as $groupTest) {
-			$buffer .= "<li><a href='" . $manager->getBaseURL() . "?group={$groupTest}'>" . $groupTest . "&output=txt"."</a></li>\n";
+		$buffer .= "All tests\n" . $_SERVER['SERVER_NAME'] . $manager->getBaseURL() . "?group=all&output=txt{$urlExtra}\n";
+
+		foreach ((array)$groupTests as $groupTest) {
+			$buffer .= $_SERVER['SERVER_NAME']. $manager->getBaseURL()."?group=" . $groupTest . "&output=txt{$urlExtra}"."\n";
 		}
-		return $buffer . "</ul>\n";
+
+		return $buffer;
 	}
 
-	function &getTestCaseList($directory = '.') {
+	function &getTestCaseList() {
 		$manager =& new TextTestManager();
-		$testCases =& $manager->_getTestCaseList($directory);
+		$testCases =& $manager->_getTestCaseList($manager->_getTestsPath());
+
+		$buffer = "Core Test Cases:\n";
+		$urlExtra = null;
+		if ($manager->appTest) {
+			$buffer = "App Test Cases:\n";
+			$urlExtra = '&app=true';
+		} else if ($manager->pluginTest) {
+			$buffer = Inflector::humanize($manager->pluginTest) . " Test Cases:\n";
+			$urlExtra = '&plugin=' . $manager->pluginTest;
+		}
 
 		if (1 > count($testCases)) {
-			$noTestCases = "No test cases set up!";
-			return $noTestCases;
+			$buffer .= "EMPTY";
+			return $buffer;
 		}
-		$buffer = "Available test cases:\n";
 
 		foreach ($testCases as $testCaseFile => $testCase) {
 			$buffer .= $_SERVER['SERVER_NAME']. $manager->getBaseURL()."?case=" . $testCase . "&output=txt"."\n";
 		}
-		return $buffer . "\n";
+
+		$buffer .= "\n";
+		return $buffer;
 	}
 }
 /**
  * Short description for class.
  *
- * @package    cake
- * @subpackage cake.cake.tests.lib
+ * @package		cake
+ * @subpackage	cake.cake.tests.lib
  */
 class HtmlTestManager extends TestManager {
 	var $_url;
 
 	function HtmlTestManager() {
+		parent::TestManager();
 		$this->_url = $_SERVER['PHP_SELF'];
 	}
 
@@ -313,55 +356,212 @@ class HtmlTestManager extends TestManager {
 		return $this->_url;
 	}
 
-	function &getGroupTestList($directory = '.') {
-		$userApp = '';
-		if (isset($_GET['app'])) {
-			$userApp = '&amp;app=true';
-		}
+	function &getGroupTestList() {
+		$urlExtra = '';
 		$manager =& new HtmlTestManager();
-		$groupTests =& $manager->_getTestGroupList($directory);
+		$groupTests =& $manager->_getTestGroupList($manager->_getTestsPath('groups'));
 
-		if (1 > count($groupTests)) {
-			$noGroupTests = "<h3>No test cases set up!</h3>";
-			return $noGroupTests;
+		$buffer = "<h3>Core Test Groups:</h3>\n<ul>";
+		$urlExtra = null;
+		if ($manager->appTest) {
+			$buffer = "<h3>App Test Groups:</h3>\n<ul>";
+			$urlExtra = '&app=true';
+		} else if ($manager->pluginTest) {
+			$buffer = "<h3>" . Inflector::humanize($manager->pluginTest) . " Test Groups:</h3>\n<ul>";
+			$urlExtra = '&plugin=' . $manager->pluginTest;
 		}
 
-		if (isset($_GET['app'])) {
-			$buffer = "<h3>Available App Test Groups:</h3>\n<ul>";
-		} else {
-			$buffer = "<h3>Available Core Test Groups:</h3>\n<ul>";
-		}
-		$buffer .= "<li><a href='" . $manager->getBaseURL() . "?group=all$userApp'>All tests</a></li>\n";
+		$buffer .= "<li><a href='" . $manager->getBaseURL() . "?group=all$urlExtra'>All tests</a></li>\n";
 
-		foreach ($groupTests as $groupTest) {
-			$buffer .= "<li><a href='" . $manager->getBaseURL() . "?group={$groupTest}" . "{$userApp}'>" . $groupTest . "</a></li>\n";
+		foreach ((array)$groupTests as $groupTest) {
+			$buffer .= "<li><a href='" . $manager->getBaseURL() . "?group={$groupTest}" . "{$urlExtra}'>" . $groupTest . "</a></li>\n";
 		}
-		$buffer  .=  "</ul>\n";
+		$buffer .= "</ul>\n";
 		return $buffer;
 	}
 
-	function &getTestCaseList($directory = '.') {
-		$userApp = '';
-		if (isset($_GET['app'])) {
-			$userApp = '&amp;app=true';
-		}
+	function &getTestCaseList() {
+		$urlExtra = '';
 		$manager =& new HtmlTestManager();
-		$testCases =& $manager->_getTestCaseList($directory);
+		$testCases =& $manager->_getTestCaseList($manager->_getTestsPath());
+
+		$buffer = "<h3>Core Test Cases:</h3>\n<ul>";
+		$urlExtra = null;
+		if ($manager->appTest) {
+			$buffer = "<h3>App Test Cases:</h3>\n<ul>";
+			$urlExtra = '&app=true';
+		} else if ($manager->pluginTest) {
+			$buffer = "<h3>" . Inflector::humanize($manager->pluginTest) . " Test Cases:</h3>\n<ul>";
+			$urlExtra = '&plugin=' . $manager->pluginTest;
+		}
 
 		if (1 > count($testCases)) {
-			$noTestCases = "<h3>No test cases set up!</h3>";
-			return $noTestCases;
+			$buffer .= "<strong>EMPTY</strong>";
+			return $buffer;
 		}
-		if (isset($_GET['app'])) {
-			$buffer = "<h3>Available App Test Cases:</h3>\n<ul>";
-		} else {
-			$buffer = "<h3>Available Core Test Cases:</h3>\n<ul>";
-		}
+
 		foreach ($testCases as $testCaseFile => $testCase) {
-			$buffer .= "<li><a href='" . $manager->getBaseURL() . "?case=" . urlencode($testCase) . $userApp ."'>" . $testCase . "</a></li>\n";
+			$title = explode(strpos($testCase, '\\') ? '\\' : '/', str_replace('.test.php', '', $testCase));
+			$title[count($title) - 1] = Inflector::camelize($title[count($title) - 1]);
+			$title = join(' / ', $title);
+
+				$buffer .= "<li><a href='" . $manager->getBaseURL() . "?case=" . urlencode($testCase) . $urlExtra ."'>" . $title . "</a></li>\n";
 		}
-		$buffer  .=  "</ul>\n";
+		$buffer .= "</ul>\n";
 		return $buffer;
+	}
+}
+if (function_exists('caketestsgetreporter')) {
+	echo "You need a new test.php. \n";
+	echo "Try this one: " . CONSOLE_LIBS . "templates" . DS . "skel" . DS . "webroot" . DS . "test.php";
+	exit();
+} else {
+	function &CakeTestsGetReporter() {
+		static $Reporter = NULL;
+		if (!$Reporter) {
+			switch (CAKE_TEST_OUTPUT) {
+				case CAKE_TEST_OUTPUT_HTML:
+					require_once CAKE_TESTS_LIB . 'cake_reporter.php';
+					$Reporter =& new CakeHtmlReporter();
+				break;
+				default:
+					$Reporter =& new TextReporter();
+				break;
+			}
+		}
+		return $Reporter;
+	}
+
+	function CakePHPTestRunMore() {
+		switch (CAKE_TEST_OUTPUT) {
+			case CAKE_TEST_OUTPUT_HTML:
+				if (isset($_GET['group'])) {
+					if (isset($_GET['app'])) {
+						$show = '?show=groups&amp;app=true';
+					} else if (isset($_GET['plugin'])) {
+						$show = '?show=groups&amp;plugin=' . $_GET['plugin'];
+					} else {
+						$show = '?show=groups';
+					}
+					$query = '?group='.$_GET['group'];
+					if (isset($_GET['app'])) {
+						$query .= '&amp;app=true';
+					} elseif (isset($_GET['plugin'])) {
+						$query .= '&amp;plugin=' . $_GET['plugin'];
+					}
+				}
+				if (isset($_GET['case'])) {
+					if (isset($_GET['app'])) {
+						$show = '?show=cases&amp;app=true';
+					} else if (isset($_GET['plugin'])) {
+						$show = '?show=cases&amp;plugin=' . $_GET['plugin'];
+					} else {
+						$show = '?show=cases';
+					}
+					$query = '?case='.$_GET['case'];
+					if (isset($_GET['app'])) {
+						$query .= '&amp;app=true';
+					} elseif (isset($_GET['plugin'])) {
+						$query .= '&amp;plugin=' . $_GET['plugin'];
+					}
+				}
+				ob_start();
+				echo "<p><a href='" . RUN_TEST_LINK . $show . "'>Run more tests</a> | <a href='" . RUN_TEST_LINK . $query . "&show_passes=1'>Show Passes</a> | \n";
+			break;
+		}
+	}
+
+	function CakePHPTestAnalyzeCodeCoverage() {
+		switch (CAKE_TEST_OUTPUT) {
+			case CAKE_TEST_OUTPUT_HTML:
+				if (isset($_GET['case'])) {
+					$query = '?case='.$_GET['case'];
+					if (isset($_GET['app'])) {
+						$query .= '&amp;app=true';
+					} elseif (isset($_GET['plugin'])) {
+						$query .= '&amp;plugin=' . $_GET['plugin'];
+					}
+				} else {
+					$query = '?group='.$_GET['group'];
+					if (isset($_GET['app'])) {
+						$query .= '&amp;app=true';
+					} elseif (isset($_GET['plugin'])) {
+						$query .= '&amp;plugin=' . $_GET['plugin'];
+					}
+				}
+				$query .= '&amp;code_coverage=true';
+				ob_start();
+				echo " <a href='" . RUN_TEST_LINK . $query . "'>Analyze Code Coverage</a></p>\n";
+			break;
+		}
+	}
+
+	function CakePHPTestCaseList() {
+		switch (CAKE_TEST_OUTPUT) {
+			case CAKE_TEST_OUTPUT_HTML:
+				ob_start();
+				echo HtmlTestManager::getTestCaseList();
+			break;
+			case CAKE_TEST_OUTPUT_TEXT:
+			default:
+				echo TextTestManager::getTestCaseList();
+			break;
+		}
+	}
+
+	function CakePHPTestGroupTestList() {
+		switch (CAKE_TEST_OUTPUT) {
+			case CAKE_TEST_OUTPUT_HTML:
+				echo HtmlTestManager::getGroupTestList();
+			break;
+			case CAKE_TEST_OUTPUT_TEXT:
+			default:
+				echo TextTestManager::getGroupTestList();
+				break;
+		}
+	}
+
+	function CakePHPTestHeader() {
+		switch (CAKE_TEST_OUTPUT) {
+			case CAKE_TEST_OUTPUT_HTML:
+				ob_start();
+				if (!class_exists('dispatcher')) {
+					require CAKE . 'dispatcher.php';
+				}
+				$dispatch =& new Dispatcher();
+				$dispatch->baseUrl();
+				define('BASE', $dispatch->webroot);
+				$baseUrl = BASE;
+				$characterSet = 'charset=utf-8';
+				include CAKE_TESTS_LIB . 'header.php';
+			break;
+			case CAKE_TEST_OUTPUT_TEXT:
+			default:
+				header('content-type: text/plain');
+			break;
+		}
+	}
+
+	function CakePHPTestSuiteHeader() {
+		switch (CAKE_TEST_OUTPUT) {
+			case CAKE_TEST_OUTPUT_HTML:
+				ob_start();
+				$groups = $_SERVER['PHP_SELF'].'?show=groups';
+				$cases = $_SERVER['PHP_SELF'].'?show=cases';
+				$plugins = Configure::listObjects('plugin');
+				include CAKE_TESTS_LIB . 'content.php';
+			break;
+		}
+	}
+
+	function CakePHPTestSuiteFooter() {
+		switch ( CAKE_TEST_OUTPUT) {
+			case CAKE_TEST_OUTPUT_HTML:
+				ob_start();
+				$baseUrl = BASE;
+				include CAKE_TESTS_LIB . 'footer.php';
+			break;
+		}
 	}
 }
 ?>

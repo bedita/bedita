@@ -56,7 +56,6 @@
 	 *
 	 */
 
-	vendor('smarty/libs/Smarty.class');
 	
 	class SmartyView extends View
 	{
@@ -91,7 +90,8 @@
 			$this->_sv_cache_dir = TMP . 'smarty' . DS . 'cache' . DS;
 			$this->_sv_config_dir = ROOT . APP_DIR . DS . 'config' . DS . 'smarty' . DS;
 			
-			$this->_smarty = & new Smarty();
+            App::import('vendor', "Smarty", true, array(), "smarty/libs/Smarty.class.php");
+            $this->_smarty = & new Smarty();
 
 			$this->_smarty->compile_dir = $this->_sv_compile_dir;
 			$this->_smarty->cache_dir 	= $this->_sv_cache_dir;
@@ -146,47 +146,32 @@
 		}
 
 		
-		function _render($___viewFn, $___data_for_view, $___play_safe = true, $loadHelpers = true)
+		function _render($___viewFn, $___data_for_view, $loadHelpers = true, $cached = false)
 		{
 			$this->sv_processedTpl = NULL;
 			// clears all assigned variables to the smarty class
 			$this->_smarty->clear_all_assign();
+            $loadedHelpers = array();
+            if ($this->helpers != false && $loadHelpers === true) {
+                $loadedHelpers = $this->_loadHelpers($loadedHelpers, $this->helpers);
 
-			if ($this->helpers != false && $loadHelpers === true) {
-				$loadedHelpers = array();
-				$loadedHelpers = $this->_loadHelpers($loadedHelpers, $this->helpers);
-		
-				foreach (array_keys($loadedHelpers) as $helper) {
-					$replace = strtolower(substr($helper, 0, 1));
-					$camelBackedHelper = preg_replace('/\\w/', $replace, $helper, 1);
-	
-					${$camelBackedHelper} =& $loadedHelpers[$helper];
-	
-					if (is_array(${$camelBackedHelper}->helpers) && !empty(${$camelBackedHelper}->helpers)) {
-						$subHelpers = ${$camelBackedHelper}->helpers;
-						foreach ($subHelpers as $subHelper) {
-							${$camelBackedHelper}->{$subHelper} =& $loadedHelpers[$subHelper];
-						}
-					}
-					$this->loaded[$camelBackedHelper] =& ${$camelBackedHelper};
-					// this part loads the helpers are registered objects to smarty
-					// good thing the register_object, passes the variable via reference :)
-					$this->_smarty->assign_by_ref($camelBackedHelper, ${$camelBackedHelper});
-				}
-			}
+	            foreach (array_keys($loadedHelpers) as $helper) {
+	                $camelBackedHelper = Inflector::variable($helper);
+	                ${$camelBackedHelper} =& $loadedHelpers[$helper];
+	                $this->loaded[$camelBackedHelper] =& ${$camelBackedHelper};
+	                // this part loads the helpers are registered objects to smarty
+	                // good thing the register_object, passes the variable via reference :)
+	                $this->_smarty->assign_by_ref($camelBackedHelper, ${$camelBackedHelper});
+	            }
+	            foreach ($loadedHelpers as $helper) {
+                    if (is_object($helper)) {
+                        if (is_subclass_of($helper, 'Helper') || is_subclass_of($helper, 'helper')) {
+                            $helper->beforeRender();
+                        }
+                    }
+                }
+            }
 
-			if ($this->helpers != false && $loadHelpers === true) {
-				foreach ($loadedHelpers as $helper) {
-					if (is_object($helper)) {
-						if (is_subclass_of($helper, 'Helper') || is_subclass_of($helper, 'helper')) {
-							$helper->beforeRender();
-							
-							$helper->namedArgs = $this->passedArgs ;
-						}
-					}
-				}
-			}
-			
 			// let's determine if this is a layout call or a template call
 			// and change the template dir accordingly
 			$layout = false;
@@ -212,7 +197,29 @@
 			else {
 				$out = $this->_smarty->fetch($___viewFn);
 			}
-			
+	        if (!empty($loadedHelpers)) {
+	            foreach ($loadedHelpers as $helper) {
+	                if (is_object($helper)) {
+	                    if (is_subclass_of($helper, 'Helper') || is_subclass_of($helper, 'helper')) {
+	                        $helper->afterRender();
+	                    }
+	                }
+	            }
+	        }
+	        if (isset($this->loaded['cache']) && (($this->cacheAction != false)) && (Configure::read('Cache.check') === true)) {
+	            if (is_a($this->loaded['cache'], 'CacheHelper')) {
+	                $cache =& $this->loaded['cache'];
+	                $cache->base = $this->base;
+	                $cache->here = $this->here;
+	                $cache->helpers = $this->helpers;
+	                $cache->action = $this->action;
+	                $cache->controllerName = $this->name;
+	                $cache->layout  = $this->layout;
+	                $cache->cacheAction = $this->cacheAction;
+	                $cache->cache($___viewFn, $out, $cached);
+	            }
+	        }
+	        
 			return $out;
 		}
 		

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: no_database.group.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: no_database.group.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.groups
  * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 /** AllCoreLibGroupTest
@@ -33,9 +33,26 @@
  * @package    cake.tests
  * @subpackage cake.tests.groups
  */
+/**
+ * AllCoreWithOutDatabaseGroupTest class
+ * 
+ * @package              cake
+ * @subpackage           cake.tests.groups
+ */
 class AllCoreWithOutDatabaseGroupTest extends GroupTest {
+/**
+ * label property
+ * 
+ * @var string 'All tests without a database connection'
+ * @access public
+ */
 	var $label = 'All tests without a database connection';
-
+/**
+ * AllCoreWithOutDatabaseGroupTest method
+ * 
+ * @access public
+ * @return void
+ */
 	function AllCoreWithOutDatabaseGroupTest() {
 		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'dispatcher');
 		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'router');

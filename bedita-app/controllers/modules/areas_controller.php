@@ -153,7 +153,6 @@ class AreasController extends ModulesController {
 		$this->checkWriteModulePermission();
 		if(empty($this->data)) 
 			throw new BeditaException(__("No data", true));
-			
 		$new = (empty($this->data['id'])) ? true : false ;
 		// Verify permissions for the object
 		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
@@ -169,11 +168,12 @@ class AreasController extends ModulesController {
 		if(!$this->Section->save($this->data))
 			throw new BeditaException( __("Error saving section", true), $this->Section->validationErrors );
 		
+		$id = $this->Section->getID();
 		// Move section in the right tree position, if necessary
 		if(!$new) {
-			$oldParent = $this->Tree->getParent($this->Section->id) ;
+			$oldParent = $this->Tree->getParent($id) ;
 			if($oldParent != $this->data["parent_id"]) {
-				if(!$this->Tree->move($this->data["parent_id"], $oldParent, $this->Section->id))
+				if(!$this->Tree->move($this->data["parent_id"], $oldParent, $id))
 					throw new BeditaException( __("Error saving section", true));
 			}
 
@@ -182,7 +182,7 @@ class AreasController extends ModulesController {
 			
 			foreach ($reorder as $r) {
 
-				if (!$this->Tree->setPriority($r['id'], $r['priority'], $this->Section->id)) {
+				if (!$this->Tree->setPriority($r['id'], $r['priority'], $id)) {
 					throw new BeditaException( __("Error during reorder children priority", true), $r["id"]);
 				}
 				
@@ -192,7 +192,7 @@ class AreasController extends ModulesController {
 		}
 		// update permits
 		$perms = isset($this->data["Permissions"]) ? $this->data["Permissions"] : array();
-		if(!$this->Permission->saveFromPOST($this->Section->id, $perms,	 
+		if(!$this->Permission->saveFromPOST($id, $perms,	 
 			(empty($this->data['recursiveApplyPermissions'])?false:true), 'section')) {
 				throw new BeditaException( __("Error saving permissions", true));
 		}
@@ -354,7 +354,7 @@ class AreasController extends ModulesController {
 					);
 		
 		$objects = $this->BEObject->find("all", array(
-													"restrict" => array("ObjectType"),
+													"contain" => array("ObjectType"),
 													"conditions" => $conditions
 												)
 										) ;
@@ -417,7 +417,7 @@ class AreasController extends ModulesController {
 			
 		$model = ClassRegistry::init(Configure::read("objectTypeModels.".$objectTypeId));
 		
-		$model->restrict(array(
+		$model->contain(array(
 					"BEObject" => array("ObjectType", 
 										"UserCreated", 
 										"UserModified", 
@@ -453,10 +453,8 @@ class AreasController extends ModulesController {
 		$contents = $this->BeTree->getChildren($id, null, $objType, "priority", true, $page, $dim);
 		
 		foreach ($contents["items"] as $key => $item) {
-			$contents["items"][$key]["module"]= $this->ObjectType->field("module", array(
-															"conditions" => array("id" => $item["object_type_id"])
-															)
-														);
+			$contents["items"][$key]["module"]= $this->ObjectType->field("module", 
+				array("id" => $item["object_type_id"]));
 		}
 		
 		$this->set("contents", $contents);

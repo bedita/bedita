@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: view.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: view.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * The View Tasks handles creating and updating view files.
  *
@@ -21,12 +21,12 @@
  * @package			cake
  * @subpackage		cake.cake.console.libs.tasks
  * @since			CakePHP(tm) v 1.2
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-uses('controller'.DS.'controller');
+App::import('Core', 'Controller');
 /**
  * Task class for creating and updating view files.
  *
@@ -34,6 +34,13 @@ uses('controller'.DS.'controller');
  * @subpackage	cake.cake.console.libs.tasks
  */
 class ViewTask extends Shell {
+/**
+ * Name of plugin
+ *
+ * @var string
+ * @access public
+ */
+	var $plugin = null;
 /**
  * Tasks to be loaded by this Task
  *
@@ -131,7 +138,7 @@ class ViewTask extends Shell {
 						$adminDelete = $adminRoute.'_delete';
 					}
 					foreach ($methods as $method) {
-						if ($method{0} != '_' && !in_array(low($method), am($protected, array('delete', $adminDelete)))) {
+						if ($method{0} != '_' && !in_array(low($method), array_merge($protected, array('delete', $adminDelete)))) {
 							$content = $this->getContent($method, $vars);
 							$this->bake($method, $content);
 						}
@@ -209,10 +216,9 @@ class ViewTask extends Shell {
 			$looksGood = $this->in('Look okay?', array('y','n'), 'y');
 			if (low($looksGood) == 'y' || low($looksGood) == 'yes') {
 				$this->bake($action);
-				exit();
+				$this->_stop();
 			} else {
 				$this->out('Bake Aborted.');
-				exit();
 			}
 		}
 	}
@@ -231,26 +237,45 @@ class ViewTask extends Shell {
 			$this->err(__('Controller not found', true));
 		}
 
-		$controllerClassName = $this->controllerName . 'Controller';
-		if (!class_exists($this->controllerName . 'Controller') && !App::import('Controller', $this->controllerName)) {
+		$import = $this->controllerName;
+		if ($this->plugin) {
+			$import = $this->plugin . '.' . $this->controllerName;
+		}
+
+		if (!App::import('Controller', $import)) {
 			$file = $this->controllerPath . '_controller.php';
 			$this->err(sprintf(__("The file '%s' could not be found.\nIn order to bake a view, you'll need to first create the controller.", true), $file));
-			exit();
+			$this->_stop();
 		}
+		$controllerClassName = $this->controllerName . 'Controller';
 		$controllerObj = & new $controllerClassName();
 		$controllerObj->constructClasses();
 		$modelClass = $controllerObj->modelClass;
 		$modelObj =& ClassRegistry::getObject($controllerObj->modelKey);
-		$primaryKey = $modelObj->primaryKey;
-		$displayField = $modelObj->displayField;
-		$singularVar = Inflector::variable($modelClass);
-		$pluralVar = Inflector::variable($this->controllerName);
-		$singularHumanName = Inflector::humanize($modelClass);
-		$pluralHumanName = Inflector::humanize($this->controllerName);
-		$fields = array_keys($modelObj->schema());
-		$associations = $this->__associations($modelObj);
 
-		return compact('modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
+		if ($modelObj) {
+			$primaryKey = $modelObj->primaryKey;
+			$displayField = $modelObj->displayField;
+			$singularVar = Inflector::variable($modelClass);
+			$pluralVar = Inflector::variable($this->controllerName);
+			$singularHumanName = Inflector::humanize($modelClass);
+			$pluralHumanName = Inflector::humanize($this->controllerName);
+			$schema = $modelObj->schema();
+			$fields = array_keys($schema);
+			$associations = $this->__associations($modelObj);
+		} else {
+			$primaryKey = null;
+			$displayField = null;
+			$singularVar = Inflector::variable(Inflector::singularize($this->controllerName));
+			$pluralVar = Inflector::variable($this->controllerName);
+			$singularHumanName = Inflector::humanize(Inflector::singularize($this->controllerName));
+			$pluralHumanName = Inflector::humanize($this->controllerName);
+			$fields = array();
+			$schema = array();
+			$associations = array();
+		}
+
+		return compact('modelClass', 'schema', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 				'singularHumanName', 'pluralHumanName', 'fields','associations');
 	}
 /**
@@ -319,6 +344,7 @@ class ViewTask extends Shell {
 			$content = ob_get_clean();
 			return $content;
 		}
+		$this->hr();
 		$this->err(sprintf(__('Template for %s could not be found', true), $template));
 		return false;
 	}
@@ -336,7 +362,7 @@ class ViewTask extends Shell {
 		$this->out("\n\tview <controller> <action>\n\t\twill bake a template. core templates: (index, add, edit, view)");
 		$this->out("\n\tview <controller> <template> <alias>\n\t\twill use the template specified but name the file based on the alias");
 		$this->out("");
-		exit();
+		$this->_stop();
 	}
 /**
  * Returns associations for controllers models.
@@ -344,20 +370,21 @@ class ViewTask extends Shell {
  * @return  array $associations
  * @access private
  */
-	 function __associations($model) {
-	 	$keys = array('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany');
-	 	$associations = array();
+	function __associations($model) {
+		$keys = array('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany');
+		$associations = array();
 
-	 	foreach ($keys as $key => $type){
-	 		foreach ($model->{$type} as $assocKey => $assocData) {
-	 			$associations[$type][$assocKey]['primaryKey'] = $model->{$assocKey}->primaryKey;
-	 			$associations[$type][$assocKey]['displayField'] = $model->{$assocKey}->displayField;
-	 			$associations[$type][$assocKey]['foreignKey'] = $assocData['foreignKey'];
-	 			$associations[$type][$assocKey]['controller'] = Inflector::pluralize(Inflector::underscore($assocData['className']));
-	 			$associations[$type][$assocKey]['fields'] =  array_keys($model->{$assocKey}->schema());
-	 		}
-	 	}
-	 	return $associations;
-	 }
+		foreach ($keys as $key => $type){
+			foreach ($model->{$type} as $assocKey => $assocData) {
+				$associations[$type][$assocKey]['primaryKey'] = $model->{$assocKey}->primaryKey;
+				$associations[$type][$assocKey]['displayField'] = $model->{$assocKey}->displayField;
+				$associations[$type][$assocKey]['foreignKey'] = $assocData['foreignKey'];
+				$associations[$type][$assocKey]['controller'] = Inflector::pluralize(Inflector::underscore($assocData['className']));
+				$associations[$type][$assocKey]['fields'] =  array_keys($model->{$assocKey}->schema());
+			}
+		}
+		return $associations;
+	}
 }
+
 ?>

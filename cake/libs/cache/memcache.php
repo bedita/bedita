@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: memcache.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: memcache.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * Memcache storage engine for cache
  *
@@ -20,9 +20,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.cache
  * @since			CakePHP(tm) v 1.2.0.4933
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -62,9 +62,10 @@ class MemcacheEngine extends CacheEngine {
 		if (!class_exists('Memcache')) {
 			return false;
 		}
-		parent::init($settings);
-		$defaults = array('servers' => array('127.0.0.1'), 'compress'=> false);
-		$this->settings = array_merge($this->settings, $defaults, $settings);
+		parent::init(array_merge(array(
+			'engine'=> 'Memcache', 'prefix' => Inflector::slug(APP_DIR) . '_', 'servers' => array('127.0.0.1'), 'compress'=> false
+			), $settings)
+		);
 
 		if ($this->settings['compress']) {
 			$this->settings['compress'] = MEMCACHE_COMPRESSED;
@@ -74,7 +75,6 @@ class MemcacheEngine extends CacheEngine {
 		}
 
 		$this->__Memcache =& new Memcache();
-
 		foreach ($this->settings['servers'] as $server) {
 			$parts = explode(':', $server);
 			$host = $parts[0];
@@ -83,7 +83,9 @@ class MemcacheEngine extends CacheEngine {
 				$port = $parts[1];
 			}
 			if ($this->__Memcache->addServer($host, $port)) {
-				return true;
+				if ($this->__Memcache->connect($host, $port)) {
+					return true;
+				}
 			}
 		}
 		return false;

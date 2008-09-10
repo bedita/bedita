@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: session.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: session.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view.helpers
  * @since			CakePHP(tm) v 1.1.7.3328
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -35,9 +35,10 @@
  * @subpackage	cake.cake.libs.view.helpers
  *
  */
-if(!class_exists('cakesession')) {
+if (!class_exists('cakesession')) {
 	uses('session');
 }
+
 class SessionHelper extends CakeSession {
 /**
  * List of helpers used by this helper
@@ -133,7 +134,12 @@ class SessionHelper extends CakeSession {
 				$flash = parent::read('Message.' . $key);
 
 				if ($flash['layout'] == 'default') {
-					$out = '<div id="' . $key . 'Message" class="message">' . $flash['message'] . '</div>';
+					if (!empty($flash['params']['class'])) {
+						$class = $flash['params']['class'];
+					} else {
+						$class = 'message';
+					}
+					$out = '<div id="' . $key . 'Message" class="' . $class . '">' . $flash['message'] . '</div>';
 				} elseif ($flash['layout'] == '' || $flash['layout'] == null) {
 					$out = $flash['message'];
 				} else {
@@ -143,7 +149,7 @@ class SessionHelper extends CakeSession {
 					$out = $view->renderLayout($flash['message']);
 					list($view->layout, $view->viewVars, $view->pageTitle) = array($tmpLayout, $tmpVars, $tmpTitle);
 				}
-				e($out);
+				echo($out);
 				parent::del('Message.' . $key);
 				return true;
 			}

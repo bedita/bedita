@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: apc.test.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: apc.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,32 +21,49 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs.cache
  * @since			CakePHP(tm) v 1.2.0.5434
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-uses('cache', 'cache' . DS . 'apc');
+if (!class_exists('Cache')) {
+	require LIBS . 'cache.php';
+}
 /**
  * Short description for class.
  *
  * @package    cake.tests
  * @subpackage cake.tests.cases.libs.cache
  */
-class APCEngineTest extends UnitTestCase {
-
+class ApcEngineTest extends UnitTestCase {
+/**
+ * skip method
+ * 
+ * @access public
+ * @return void
+ */
 	function skip() {
 		$skip = true;
-		if($result = Cache::engine('Apc')) {
+		if (Cache::engine('Apc')) {
 			$skip = false;
 		}
-		$this->skipif ($skip, 'APCEngineTest not implemented');
+		$this->skipif($skip, 'Apc is not installed or configured properly');
 	}
-
+/**
+ * setUp method
+ * 
+ * @access public
+ * @return void
+ */
 	function setUp() {
-		Cache::config('apc', array('engine'=>'Apc'));
+		Cache::config('apc', array('engine'=>'Apc', 'prefix' => 'cake_'));
 	}
-
+/**
+ * testReadAndWriteCache method
+ * 
+ * @access public
+ * @return void
+ */
 	function testReadAndWriteCache() {
 		$result = Cache::read('test');
 		$expecting = '';
@@ -60,7 +77,12 @@ class APCEngineTest extends UnitTestCase {
 		$expecting = $data;
 		$this->assertEqual($result, $expecting);
 	}
-
+/**
+ * testExpiry method
+ * 
+ * @access public
+ * @return void
+ */
 	function testExpiry() {
 		sleep(2);
 		$result = Cache::read('test');
@@ -82,7 +104,12 @@ class APCEngineTest extends UnitTestCase {
 		$result = Cache::read('other_test');
 		$this->assertFalse($result);
 	}
-
+/**
+ * testDeleteCache method
+ * 
+ * @access public
+ * @return void
+ */
 	function testDeleteCache() {
 		$data = 'this is a test of the emergency broadcasting system';
 		$result = Cache::write('delete_test', $data);
@@ -91,7 +118,12 @@ class APCEngineTest extends UnitTestCase {
 		$result = Cache::delete('delete_test');
 		$this->assertTrue($result);
 	}
-
+/**
+ * tearDown method
+ * 
+ * @access public
+ * @return void
+ */
 	function tearDown() {
 		Cache::config('default');
 	}

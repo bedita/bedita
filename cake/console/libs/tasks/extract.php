@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: extract.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: extract.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package         cake
  * @subpackage      cake.cake.console.libs
  * @since           CakePHP(tm) v 1.2.0.5012
- * @version         $Revision: 6311 $
- * @modifiedby      $LastChangedBy: phpnut $
- * @lastmodified    $Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version         $Revision: 7296 $
+ * @modifiedby      $LastChangedBy: gwoo $
+ * @lastmodified    $Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license         http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -124,11 +124,11 @@ class ExtractTask extends Shell{
  */
 	var $__output = null;
 /**
- * Override initialize
+ * Execution method always used for tasks
  *
  * @access public
  */
-	function initialize() {
+	function execute() {
 		if (isset($this->params['files']) && !is_array($this->params['files'])) {
 			$this->files = explode(',', $this->params['files']);
 		}
@@ -140,7 +140,7 @@ class ExtractTask extends Shell{
 				$response = $this->in("What is the full path you would like to extract?\nExample: " . $this->params['root'] . DS . "myapp\n[Q]uit", null, 'Q');
 				if (strtoupper($response) === 'Q') {
 					$this->out('Extract Aborted');
-					exit();
+					$this->_stop();
 				}
 			}
 
@@ -148,7 +148,7 @@ class ExtractTask extends Shell{
 				$this->path = $response;
 			} else {
 				$this->err('The directory path you supplied was not found. Please try again.');
-				$this->initialize();
+				$this->execute();
 			}
 		}
 
@@ -165,7 +165,7 @@ class ExtractTask extends Shell{
 				$response = $this->in("What is the full path you would like to output?\nExample: " . $this->path . DS . "locale\n[Q]uit", null, $this->path . DS . "locale");
 				if (strtoupper($response) === 'Q') {
 					$this->out('Extract Aborted');
-					exit();
+					$this->_stop();
 				}
 			}
 
@@ -173,27 +173,21 @@ class ExtractTask extends Shell{
 				$this->__output = $response . DS;
 			} else {
 				$this->err('The directory path you supplied was not found. Please try again.');
-				$this->initialize();
+				$this->execute();
 			}
 		}
 
 		if (empty($this->files)) {
 			$this->files = $this->__searchDirectory();
 		}
+		$this->__extract();
 	}
 /**
- * Override startup
+ * Extract text
  *
- * @access public
+ * @access private
  */
-	function startup() {
-	}
-/**
- * Execution method always used for tasks
- *
- * @access public
- */
-	function execute() {
+	function __extract() {
 		$this->out('');
 		$this->out('');
 		$this->out(__('Extracting...', true));
@@ -205,7 +199,7 @@ class ExtractTask extends Shell{
 		$response = '';
 		$filename = '';
 		while ($response == '') {
-		    $response = $this->in(__('Would you like to merge all translations into one file?', true), array('y','n'), 'y');
+			$response = $this->in(__('Would you like to merge all translations into one file?', true), array('y','n'), 'y');
 			if (strtolower($response) == 'n') {
 				$this->__oneFile = false;
 			} else {
@@ -226,7 +220,7 @@ class ExtractTask extends Shell{
  * @access public
  */
 	function help() {
-	    $this->out(__('CakePHP Language String Extraction:', true));
+		$this->out(__('CakePHP Language String Extraction:', true));
 		$this->hr();
 		$this->out(__('The Extract script generates .pot file(s) with translations', true));
 		$this->out(__('By default the .pot file(s) will be place in the locale directory of -app', true));
@@ -532,7 +526,7 @@ class ExtractTask extends Shell{
 					$response = $this->in("\n\nError: ".$file . ' already exists in this location. Overwrite?', array('y','n', 'q'), 'n');
 					if (strtoupper($response) === 'Q') {
 						$this->out('Extract Aborted');
-						exit();
+						$this->_stop();
 					} elseif (strtoupper($response) === 'N') {
 						$response = '';
 						while ($response == '') {

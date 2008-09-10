@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: ajax.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: ajax.php 7118 2008-06-04 20:49:29Z gwoo $ */
 
 /**
  * Helper for AJAX operations.
@@ -22,9 +22,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view.helpers
  * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -68,7 +68,7 @@ class AjaxHelper extends AppHelper {
  *
  * @var array
  */
-	var $ajaxOptions = array('after', 'asynchronous', 'before', 'confirm', 'condition', 'contentType', 'encoding', 'evalScripts', 'failure', 'fallback', 'form', 'indicator', 'insertion', 'interactive', 'loaded', 'loading', 'method', 'onCreate', 'onComplete', 'onException', 'onFailure', 'onInteractive', 'onLoaded', 'onLoading', 'onSuccess', 'onUninitialized', 'parameters', 'position', 'postBody', 'requestHeaders', 'success', 'type', 'update', 'url', 'with');
+	var $ajaxOptions = array('after', 'asynchronous', 'before', 'confirm', 'condition', 'contentType', 'encoding', 'evalScripts', 'failure', 'fallback', 'form', 'indicator', 'insertion', 'interactive', 'loaded', 'loading', 'method', 'onCreate', 'onComplete', 'onException', 'onFailure', 'onInteractive', 'onLoaded', 'onLoading', 'onSuccess', 'onUninitialized', 'parameters', 'position', 'postBody', 'requestHeaders', 'success', 'type', 'update', 'with');
 /**
  * Options for draggable.
  *
@@ -98,7 +98,7 @@ class AjaxHelper extends AppHelper {
  *
  * @var array
  */
-	var $editorOptions = array('okText', 'cancelText', 'savingText', 'formId', 'externalControl', 'rows', 'cols', 'size', 'highlightcolor', 'highlightendcolor', 'savingClassName', 'formClassName', 'loadTextURL', 'loadingText', 'callback', 'ajaxOptions', 'clickToEditText', 'collection');
+	var $editorOptions = array('okText', 'cancelText', 'savingText', 'formId', 'externalControl', 'rows', 'cols', 'size', 'highlightcolor', 'highlightendcolor', 'savingClassName', 'formClassName', 'loadTextURL', 'loadingText', 'callback', 'ajaxOptions', 'clickToEditText', 'collection', 'okButton', 'cancelLink');
 /**
  * Options for auto-complete editor.
  *
@@ -178,7 +178,6 @@ class AjaxHelper extends AppHelper {
 		if (!isset($href)) {
 			$href = $title;
 		}
-
 		if (!isset($options['url'])) {
 			$options['url'] = $href;
 		}
@@ -187,20 +186,12 @@ class AjaxHelper extends AppHelper {
 			$options['confirm'] = $confirm;
 			unset($confirm);
 		}
-
-		$htmlOptions = $this->__getHtmlOptions($options);
+		$htmlOptions = $this->__getHtmlOptions($options, array('url'));
 
 		if (empty($options['fallback']) || !isset($options['fallback'])) {
 			$options['fallback'] = $href;
 		}
-
-		if (!isset($htmlOptions['id'])) {
-			$htmlOptions['id'] = 'link' . intval(rand());
-		}
-
-		if (!isset($htmlOptions['onclick'])) {
-			$htmlOptions['onclick'] = '';
-		}
+		$htmlOptions = array_merge(array('id' => 'link' . intval(rand()), 'onclick' => ''), $htmlOptions);
 
 		$htmlOptions['onclick'] .= ' event.returnValue = false; return false;';
 		$return = $this->Html->link($title, $href, $htmlOptions, null, $escapeTitle);
@@ -209,7 +200,6 @@ class AjaxHelper extends AppHelper {
 		if (is_string($script)) {
 			$return .= $script;
 		}
-
 		return $return;
 	}
 /**
@@ -218,11 +208,11 @@ class AjaxHelper extends AppHelper {
  * This function creates the javascript needed to make a remote call
  * it is primarily used as a helper for AjaxHelper::link.
  *
- * @see AjaxHelper::link() for docs on options parameter.
  * @param array $options options for javascript
  * @return string html code for link to remote action
+ * @see AjaxHelper::link() for docs on options parameter.
  */
-	function remoteFunction($options = null) {
+	function remoteFunction($options) {
 		if (isset($options['update'])) {
 			if (!is_array($options['update'])) {
 				$func = "new Ajax.Updater('{$options['update']}',";
@@ -246,11 +236,9 @@ class AjaxHelper extends AppHelper {
 		if (isset($options['before'])) {
 			$func = "{$options['before']}; $func";
 		}
-
 		if (isset($options['after'])) {
 			$func = "$func; {$options['after']};";
 		}
-
 		if (isset($options['condition'])) {
 			$func = "if ({$options['condition']}) { $func; }";
 		}
@@ -290,44 +278,22 @@ class AjaxHelper extends AppHelper {
  * @return string JavaScript/HTML code
  */
 	function form($params = null, $type = 'post', $options = array()) {
+		$model = false;
 		if (is_array($params)) {
 			extract($params, EXTR_OVERWRITE);
-
-			if (!isset($action)) {
-				$action = null;
-			}
-
-			if (!isset($type)) {
-				$type = 'post';
-			}
-
-			if (!isset($options)) {
-				$options = array();
-			}
-		} else {
-			$action = $params;
-		}
-		$htmlOptions = array_merge(
-			array(
-				'id'		=> 'form' . intval(rand()),
-				'action'	=> $action,
-				'onsubmit'	=> "event.returnValue = false; return false;",
-				'type'		=> $type
-			),
-			$this->__getHtmlOptions($options)
-		);
-		$options = array_merge(
-			array(
-				'url' => $htmlOptions['action'],
-				'model' => false,
-				'with' => "Form.serialize('{$htmlOptions['id']}')"
-			),
-			$options
-		);
-		foreach (array_keys($options) as $key) {
-			unset($htmlOptions[$key]);
 		}
 
+		if (empty($options['url'])) {
+			$options['url'] = array('action' => $params);
+		}
+
+		$htmlOptions = array_merge(array(
+			'id' => 'form' . intval(rand()), 'onsubmit'	=> "event.returnValue = false; return false;",
+			'type' => $type),
+			$this->__getHtmlOptions($options, array('model', 'with'))
+		);
+
+		$options = array_merge(array('model' => $model,'with' => "Form.serialize('{$htmlOptions['id']}')"), $options);
 		return $this->Form->create($options['model'], $htmlOptions)
 			. $this->Javascript->event("'" . $htmlOptions['id']. "'", 'submit', $this->remoteFunction($options));
 	}
@@ -641,7 +607,7 @@ class AjaxHelper extends AppHelper {
 			unset($options['var']);
 		}
 
-		$options = $this->_optionsToString($options, array('okText', 'cancelText', 'savingText', 'formId', 'externalControl', 'highlightcolor', 'highlightendcolor', 'savingClassName', 'formClassName', 'loadTextURL', 'loadingText', 'clickToEditText'));
+		$options = $this->_optionsToString($options, array('okText', 'cancelText', 'savingText', 'formId', 'externalControl', 'highlightcolor', 'highlightendcolor', 'savingClassName', 'formClassName', 'loadTextURL', 'loadingText', 'clickToEditText', 'okButton', 'cancelLink'));
 		$options = $this->_buildOptions($options, $this->editorOptions);
 		return $this->Javascript->codeBlock("{$var}new Ajax.{$type}('{$id}', '{$url}', {$options});");
 	}
@@ -659,17 +625,33 @@ class AjaxHelper extends AppHelper {
 			}
 			$options['onUpdate'] = 'function(sortable) {' . $this->remoteFunction($options) . '}';
 		}
+		$block = true;
 
-		$options = $this->_optionsToString($options, array('tag', 'constraint', 'only', 'handle', 'hoverclass', 'scroll', 'tree', 'treeTag', 'update'));
+		if (isset($options['block'])) {
+			$block = $options['block'];
+			unset($options['block']);
+		}
+		$strings = array('tag', 'constraint', 'only', 'handle', 'hoverclass', 'tree', 'treeTag', 'update', 'overlap');
+		if (isset($options['scroll']) && $options['scroll'] != 'window' && strpos($options['scroll'], '$(') !== 0) {
+			$strings[] = 'scroll';
+		}
+
+		$options = $this->_optionsToString($options, $strings);
 		$options = array_merge($options, $this->_buildCallbacks($options));
 		$options = $this->_buildOptions($options, $this->sortOptions);
-		return $this->Javascript->codeBlock("Sortable.create('$id', $options);");
+		$result = "Sortable.create('$id', $options);";
+		if (!$block) {
+			return $result;
+		}
+		return $this->Javascript->codeBlock($result);
 	}
 /**
  * Private helper function for Javascript.
  *
+ * @param array $options Set of options
+ * @access private
  */
-	function __optionsForAjax($options = array()) {
+	function __optionsForAjax($options) {
 		if (isset($options['indicator'])) {
 			if (isset($options['loading'])) {
 				if (!empty($options['loading']) && substr(trim($options['loading']), -1, 1) != ';') {
@@ -736,18 +718,11 @@ class AjaxHelper extends AppHelper {
  * @access private
  */
 	function __getHtmlOptions($options, $extra = array()) {
-		foreach ($this->ajaxOptions as $key) {
+		foreach (array_merge($this->ajaxOptions, $this->callbacks, $extra) as $key) {
 			if (isset($options[$key])) {
 				unset($options[$key]);
 			}
 		}
-
-		foreach ($extra as $key) {
-			if (isset($options[$key])) {
-				unset($options[$key]);
-			}
-		}
-
 		return $options;
 	}
 /**
@@ -881,7 +856,6 @@ class AjaxHelper extends AppHelper {
 				}
 				$out  = 'var __ajaxUpdater__ = {' . join(", \n", $data) . '};' . "\n";
 				$out .= 'for (n in __ajaxUpdater__) { if (typeof __ajaxUpdater__[n] == "string" && $(n)) Element.update($(n), unescape(decodeURIComponent(__ajaxUpdater__[n]))); }';
-
 				e($this->Javascript->codeBlock($out, false));
 			}
 			$scripts = $this->Javascript->getCache();
@@ -889,7 +863,8 @@ class AjaxHelper extends AppHelper {
 			if (!empty($scripts)) {
 				e($this->Javascript->codeBlock($scripts, false));
 			}
-			exit();
+
+			$this->_stop();
 		}
 	}
 }

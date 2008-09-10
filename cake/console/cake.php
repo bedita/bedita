@@ -1,6 +1,6 @@
 #!/usr/bin/php -q
 <?php
-/* SVN FILE: $Id: cake.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: cake.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Command-line code generation utility to automate programmer chores.
  *
@@ -22,9 +22,9 @@
  * @package			cake
  * @subpackage		cake.cake.console
  * @since			CakePHP(tm) v 1.2.0.5012
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -143,13 +143,18 @@ class ShellDispatcher {
 			ini_set('error_reporting', E_ALL);
 			ini_set('html_errors', false);
 			ini_set('implicit_flush', true);
-			ini_set('max_execution_time', 60 * 5);
+			ini_set('max_execution_time', 0);
 		}
-		define('PHP5', (phpversion() >= 5));
-		define('DS', DIRECTORY_SEPARATOR);
-		define('CAKE_CORE_INCLUDE_PATH', dirname(dirname(dirname(__FILE__))));
-		define('CORE_PATH', CAKE_CORE_INCLUDE_PATH . DS);
-		define('DISABLE_DEFAULT_ERROR_HANDLING', false);
+
+		if (!defined('CAKE_CORE_INCLUDE_PATH')) {
+			define('PHP5', (phpversion() >= 5));
+			define('DS', DIRECTORY_SEPARATOR);
+			define('CAKE_CORE_INCLUDE_PATH', dirname(dirname(dirname(__FILE__))));
+			define('CORE_PATH', CAKE_CORE_INCLUDE_PATH . DS);
+			define('DISABLE_DEFAULT_ERROR_HANDLING', false);
+			define('CAKEPHP_SHELL', true);
+		}
+		require_once(CORE_PATH . 'cake' . DS . 'basics.php');
 	}
 /**
  * Defines current working environment.
@@ -161,37 +166,37 @@ class ShellDispatcher {
 		$this->stdout = fopen('php://stdout', 'w');
 		$this->stderr = fopen('php://stderr', 'w');
 
+		if (!$this->__bootstrap()) {
+			$this->stderr("\nCakePHP Console: ");
+			$this->stderr("\nUnable to load Cake core:");
+			$this->stderr("\tMake sure " . DS . 'cake' . DS . 'libs exists in ' . CAKE_CORE_INCLUDE_PATH);
+			exit();
+		}
+
 		if (!isset($this->args[0]) || !isset($this->params['working'])) {
-			$this->stdout("\nCakePHP Console: ");
-			$this->stdout('This file has been loaded incorrectly and cannot continue.');
-			$this->stdout('Please make sure that ' . DIRECTORY_SEPARATOR . 'cake' . DIRECTORY_SEPARATOR . 'console is in your system path,');
-			$this->stdout('and check the manual for the correct usage of this command.');
-			$this->stdout('(http://manual.cakephp.org/)');
+			$this->stderr("\nCakePHP Console: ");
+			$this->stderr('This file has been loaded incorrectly and cannot continue.');
+			$this->stderr('Please make sure that ' . DIRECTORY_SEPARATOR . 'cake' . DIRECTORY_SEPARATOR . 'console is in your system path,');
+			$this->stderr('and check the manual for the correct usage of this command.');
+			$this->stderr('(http://manual.cakephp.org/)');
 			exit();
 		}
 
 		if (basename(__FILE__) !=  basename($this->args[0])) {
-			$this->stdout("\nCakePHP Console: ");
-			$this->stdout('Warning: the dispatcher may have been loaded incorrectly, which could lead to unexpected results...');
+			$this->stderr("\nCakePHP Console: ");
+			$this->stderr('Warning: the dispatcher may have been loaded incorrectly, which could lead to unexpected results...');
 			if ($this->getInput('Continue anyway?', array('y', 'n'), 'y') == 'n') {
 				exit();
 			}
 		}
 
-		if (!$this->__bootstrap()) {
-			$this->stdout("\nCakePHP Console: ");
-			$this->stdout("\nUnable to load Cake core:");
-			$this->stdout("\tMake sure " . DS . 'cake' . DS . 'libs exists in ' . CAKE_CORE_INCLUDE_PATH);
-			exit();
-		}
-
 		$this->shiftArgs();
 
 		$this->shellPaths = array(
-								APP . 'vendors' . DS . 'shells' . DS,
-								VENDORS . 'shells' . DS,
-								CONSOLE_LIBS
-							);
+			APP . 'vendors' . DS . 'shells' . DS,
+			VENDORS . 'shells' . DS,
+			CONSOLE_LIBS
+		);
 	}
 /**
  * Initializes the environment and loads the Cake core.
@@ -203,16 +208,19 @@ class ShellDispatcher {
 
 		define('ROOT', $this->params['root']);
 		define('APP_DIR', $this->params['app']);
-		define('APP_PATH', ROOT . DS . APP_DIR . DS);
-		define('WWW_ROOT', 'webroot');
+		define('APP_PATH', $this->params['working'] . DS);
+		define('WWW_ROOT', APP_PATH . $this->params['webroot'] . DS);
 
 		$includes = array(
-			CORE_PATH . 'cake' . DS . 'basics.php',
 			CORE_PATH . 'cake' . DS . 'config' . DS . 'paths.php',
 			CORE_PATH . 'cake' . DS . 'libs' . DS . 'object.php',
-		 	CORE_PATH . 'cake' . DS . 'libs' . DS . 'inflector.php',
+			CORE_PATH . 'cake' . DS . 'libs' . DS . 'inflector.php',
 			CORE_PATH . 'cake' . DS . 'libs' . DS . 'configure.php',
-			CORE_PATH . 'cake' . DS . 'libs' . DS . 'cache.php'
+			CORE_PATH . 'cake' . DS . 'libs' . DS . 'file.php',
+			CORE_PATH . 'cake' . DS . 'libs' . DS . 'cache.php',
+			CORE_PATH . 'cake' . DS . 'libs' . DS . 'string.php',
+			CORE_PATH . 'cake' . DS . 'libs' . DS . 'class_registry.php',
+			CORE_PATH . 'cake' . DS . 'console' . DS . 'error.php'
 		);
 
 		foreach ($includes as $inc) {
@@ -226,11 +234,8 @@ class ShellDispatcher {
 
 		if (!file_exists(APP_PATH . 'config' . DS . 'core.php')) {
 			include_once CORE_PATH . 'cake' . DS . 'console' . DS . 'libs' . DS . 'templates' . DS . 'skel' . DS . 'config' . DS . 'core.php';
-		} else {
-			include_once APP_PATH . 'config' . DS . 'core.php';
+			Configure::buildPaths(array());
 		}
-
-		require CORE_PATH . 'cake' . DS . 'libs' . DS . 'class_registry.php';
 
 		Configure::write('debug', 1);
 		return true;
@@ -242,10 +247,14 @@ class ShellDispatcher {
  * @access public
  */
 	function dispatch() {
-		$this->stdout("\nWelcome to CakePHP v" . Configure::version() . " Console");
-		$this->stdout("---------------------------------------------------------------");
 		if (isset($this->args[0])) {
-			$this->shell = $this->args[0];
+			$plugin = null;
+			$shell = $this->args[0];
+			if (strpos($shell, '.') !== false)  {
+				list($plugin, $shell) = explode('.', $this->args[0]);
+			}
+
+			$this->shell = $shell;
 			$this->shiftArgs();
 			$this->shellName = Inflector::camelize($this->shell);
 			$this->shellClass = $this->shellName . 'Shell';
@@ -254,6 +263,24 @@ class ShellDispatcher {
 				$this->help();
 			} else {
 				$loaded = false;
+				$paths = array();
+
+				if ($plugin !== null) {
+					$pluginPaths = Configure::read('pluginPaths');
+					$count = count($pluginPaths);
+					for ($i = 0; $i < $count; $i++) {
+						$paths[] = $pluginPaths[$i] . $plugin . DS . 'vendors' . DS . 'shells' . DS;
+					}
+				}
+
+				$vendorPaths = array_values(Configure::read('vendorPaths'));
+				$count = count($vendorPaths);
+
+				for ($i = 0; $i < $count; $i++) {
+					$paths[] = rtrim($vendorPaths[$i], DS) . DS . 'shells' . DS;
+				}
+
+				$this->shellPaths = array_merge($paths, array(CONSOLE_LIBS));
 				foreach ($this->shellPaths as $path) {
 					$this->shellPath = $path . $this->shell . ".php";
 					if (file_exists($this->shellPath)) {
@@ -263,7 +290,9 @@ class ShellDispatcher {
 				}
 
 				if ($loaded) {
-					require CONSOLE_LIBS . 'shell.php';
+					if (!class_exists('Shell')) {
+						require CONSOLE_LIBS . 'shell.php';
+					}
 					require $this->shellPath;
 					if (class_exists($this->shellClass)) {
 						$command = null;
@@ -273,28 +302,32 @@ class ShellDispatcher {
 						$this->shellCommand = Inflector::variable($command);
 						$shell = new $this->shellClass($this);
 
-						$shell->initialize();
-						$shell->loadTasks();
+						if (strtolower(get_parent_class($shell)) == 'shell') {
+							$shell->initialize();
+							$shell->loadTasks();
 
-						foreach ($shell->taskNames as $task) {
-							$shell->{$task}->initialize();
-							$shell->{$task}->loadTasks();
-						}
-
-						$task = Inflector::camelize($command);
-						if (in_array($task, $shell->taskNames)) {
-							$this->shiftArgs();
-							$shell->{$task}->startup();
-							if (isset($this->args[0]) && $this->args[0] == 'help') {
-								if (method_exists($shell->{$task}, 'help')) {
-									$shell->{$task}->help();
-									exit();
-								} else {
-									$this->help();
+							foreach ($shell->taskNames as $task) {
+								if (strtolower(get_parent_class($shell)) == 'shell') {
+									$shell->{$task}->initialize();
+									$shell->{$task}->loadTasks();
 								}
 							}
-							$shell->{$task}->execute();
-							return;
+
+							$task = Inflector::camelize($command);
+							if (in_array($task, $shell->taskNames)) {
+								$this->shiftArgs();
+								$shell->{$task}->startup();
+								if (isset($this->args[0]) && $this->args[0] == 'help') {
+									if (method_exists($shell->{$task}, 'help')) {
+										$shell->{$task}->help();
+										exit();
+									} else {
+										$this->help();
+									}
+								}
+								$shell->{$task}->execute();
+								return;
+							}
 						}
 
 						$classMethods = get_class_methods($shell);
@@ -308,12 +341,14 @@ class ShellDispatcher {
 							$missingCommand = true;
 						}
 
-						$protectedCommands = array('initialize','in','out','err','hr',
-													'createfile', 'isdir','copydir','object','tostring',
-													'requestaction','log','cakeerror', 'shelldispatcher',
-													'__initconstants','__initenvironment','__construct',
-													'dispatch','__bootstrap','getinput','stdout','stderr','parseparams','shiftargs'
-													);
+						$protectedCommands = array(
+							'initialize','in','out','err','hr',
+							'createfile', 'isdir','copydir','object','tostring',
+							'requestaction','log','cakeerror', 'shelldispatcher',
+							'__initconstants','__initenvironment','__construct',
+							'dispatch','__bootstrap','getinput','stdout','stderr','parseparams','shiftargs'
+						);
+
 						if (in_array(strtolower($command), $protectedCommands)) {
 							$missingCommand = true;
 						}
@@ -405,30 +440,37 @@ class ShellDispatcher {
 	function parseParams($params) {
 		$this->__parseParams($params);
 
-		$app = 'app';
-		$root = dirname(dirname(dirname(__FILE__)));
+		$defaults = array('app' => 'app', 'root' => dirname(dirname(dirname(__FILE__))), 'working' => null, 'webroot' => 'webroot');
 
-		if (!empty($this->params['working']) && (!isset($this->args[0]) || isset($this->args[0]) && $this->args[0]{0} !== '.')) {
-			if (empty($this->params['app'])) {
-				$root = dirname($this->params['working']);
-				$app = basename($this->params['working']);
+		$params = array_merge($defaults, array_intersect_key($this->params, $defaults));
+
+		$isWin = array_filter(array_map('strpos', $params, array('\\')));
+
+		$params = str_replace('\\', '/', $params);
+
+		if (!empty($params['working']) && (!isset($this->args[0]) || isset($this->args[0]) && $this->args[0]{0} !== '.')) {
+			if (empty($this->params['app']) && $params['working'] != $params['root']) {
+				$params['root'] = dirname($params['working']);
+				$params['app'] = basename($params['working']);
 			} else {
-				$root = $this->params['working'];
+				$params['root'] = $params['working'];
 			}
-			unset($this->params['working']);
- 		}
-
-		if (!empty($this->params['app'])) {
-			if ($this->params['app']{0} == '/') {
-				$root = dirname($this->params['app']);
-			}
-			$app = basename($this->params['app']);
-			unset($this->params['app']);
 		}
 
-		$working = str_replace(DS . DS, DS, $root . DS . $app);
+		if($params['app'][0] == '/' || preg_match('/([a-z])(:)/i', $params['app'], $matches)) {
+			$params['root'] = dirname($params['app']);
+		} elseif (strpos($params['app'], '/')) {
+			$params['root'] .= '/' . dirname($params['app']);
+		}
 
-		$this->params = array_merge($this->params, array('app'=> $app, 'root'=> $root, 'working'=> $working));
+		$params['app'] = basename($params['app']);
+		$params['working'] = $params['root'] . '/' . $params['app'];
+
+		if (!empty($matches[0]) || !empty($isWin)) {
+			$params = str_replace('/', '\\', $params);
+		}
+
+		$this->params = array_merge($this->params, $params);
 	}
 /**
  * Helper for recursively paraing params
@@ -481,10 +523,12 @@ class ShellDispatcher {
  * @access public
  */
 	function help() {
+		$this->stdout("\nWelcome to CakePHP v" . Configure::version() . " Console");
+		$this->stdout("---------------------------------------------------------------");
 		$this->stdout("Current Paths:");
+		$this->stdout(" -app: ". $this->params['app']);
 		$this->stdout(" -working: " . $this->params['working']);
-		$this->stdout(" -root: " . ROOT);
-		$this->stdout(" -app: ". APP);
+		$this->stdout(" -root: " . $this->params['root']);
 		$this->stdout(" -core: " . CORE_PATH);
 		$this->stdout("");
 		$this->stdout("Changing Paths:");

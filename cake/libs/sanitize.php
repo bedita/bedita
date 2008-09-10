@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: sanitize.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: sanitize.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * Washes strings from unwanted noise.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -53,6 +53,7 @@ class Sanitize {
 		}
 
 		if (is_array($string)) {
+			$cleaned = array();
 			foreach ($string as $key => $clean) {
 				$cleaned[$key] = preg_replace("/[^{$allow}a-zA-Z0-9]/", '', $clean);
 			}

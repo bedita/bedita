@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: text.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: text.php 7296 2008-06-27 09:09:03Z gwoo $ */
 
 /**
  * Text Helper
@@ -22,9 +22,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view.helpers
  * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -34,7 +34,7 @@
  */
 
 if (!class_exists('HtmlHelper')) {
-	uses('view' . DS . 'helpers' . DS . 'html');
+	App::import('Helper', 'Html');
 }
 
 /**
@@ -54,10 +54,11 @@ class TextHelper extends AppHelper {
  * @param string $text Text to search the phrase in
  * @param string $phrase The phrase that will be searched
  * @param string $highlighter The piece of html with that the phrase will be highlighted
+ * @param boolean $considerHtml If true, will ignore any HTML tags, ensuring that only the correct text is highlighted
  * @return string The highlighted text
  * @access public
  */
-	function highlight($text, $phrase, $highlighter = '<span class="highlight">\1</span>') {
+	function highlight($text, $phrase, $highlighter = '<span class="highlight">\1</span>', $considerHtml = false) {
 		if (empty($phrase)) {
 			return $text;
 		}
@@ -69,14 +70,22 @@ class TextHelper extends AppHelper {
 			foreach ($phrase as $key => $value) {
 				$key = $value;
 				$value = $highlighter;
-
-				$replace[] = '|(' . $key . ')|i';
+				$key = '(' . $key . ')';
+				if ($considerHtml) {
+					$key = '(?![^<]+>)' . $key . '(?![^<]+>)';
+				}
+				$replace[] = '|' . $key . '|iu';
 				$with[] = empty($value) ? $highlighter : $value;
 			}
-
+			
 			return preg_replace($replace, $with, $text);
 		} else {
-			return preg_replace("|({$phrase})|i", $highlighter, $text);
+			$phrase = '(' . $phrase . ')';
+			if ($considerHtml) {
+				$phrase = '(?![^<]+>)' . $phrase . '(?![^<]+>)';
+			}
+			
+			return preg_replace('|'.$phrase.'|iu', $highlighter, $text);
 		}
 	}
 /**
@@ -109,7 +118,7 @@ class TextHelper extends AppHelper {
 		$text = preg_replace_callback('#(?<!href="|">)((?:http|https|ftp|nntp)://[^ <]+)#i', create_function('$matches',
 			'$Html = new HtmlHelper(); $Html->tags = $Html->loadConfig(); return $Html->link($matches[0], $matches[0],' . $options . ');'), $text);
 
-		return preg_replace_callback('#(?<!href="|">)(?<!http://|https://|ftp://|nntp://)(www\.[^\n\%\ <]+[^<\n\%\,\.\ <])#i',
+		return preg_replace_callback('#(?<!href="|">)(?<!http://|https://|ftp://|nntp://)(www\.[^\n\%\ <]+[^<\n\%\,\.\ <])(?<!\))#i',
 			create_function('$matches', '$Html = new HtmlHelper(); $Html->tags = $Html->loadConfig(); return $Html->link($matches[0], "http://" . strtolower($matches[0]),' . $options . ');'), $text);
 	}
 /**
@@ -148,28 +157,90 @@ class TextHelper extends AppHelper {
  * Cuts a string to the length of $length and replaces the last characters
  * with the ending if the text is longer than length.
  *
- * @param string $text	String to truncate.
+ * @param string  $text String to truncate.
  * @param integer $length Length of returned string, including ellipsis.
- * @param string $ending Ending to be appended to the trimmed string.
+ * @param mixed $ending If string, will be used as Ending and appended to the trimmed string. Can also be an associative array that can contain the last three params of this method.
  * @param boolean $exact If false, $text will not be cut mid-word
+ * @param boolean $considerHtml If true, HTML tags would be handled correctly
  * @return string Trimmed string.
- * @access public
  */
-	function truncate($text, $length = 100, $ending = '...', $exact = true) {
-		if (strlen($text) <= $length) {
-			return $text;
-		} else {
-			$truncate = substr($text, 0, $length - strlen($ending));
+	function truncate($text, $length = 100, $ending = '...', $exact = true, $considerHtml = false) {
+		if (is_array($ending)) {
+			extract($ending);
+		}
+		if ($considerHtml) {
+			if (strlen(preg_replace('/<.*?>/', '', $text)) <= $length) {
+				return $text;
+			}
 
-			if (!$exact) {
-				$spacepos = strrpos($truncate, ' ');
+			preg_match_all('/(<.+?>)?([^<>]*)/s', $text, $lines, PREG_SET_ORDER);
+			$total_length = strlen($ending);
+			$open_tags = array();
+			$truncate = '';
 
-				if (isset($spacepos)) {
-					return substr($truncate, 0, $spacepos) . $ending;
+			foreach ($lines as $line_matchings) {
+				if (!empty($line_matchings[1])) {
+					if (preg_match('/^<(\s*.+?\/\s*|\s*(img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param)(\s.+?)?)>$/is', $line_matchings[1])) {
+					} elseif (preg_match('/^<\s*\/([^\s]+?)\s*>$/s', $line_matchings[1], $tag_matchings)) {
+						$pos = array_search($tag_matchings[1], $open_tags);
+						if ($pos !== false) {
+							unset($open_tags[$pos]);
+						}
+					} elseif (preg_match('/^<\s*([^\s>!]+).*?>$/s', $line_matchings[1], $tag_matchings)) {
+						array_unshift($open_tags, strtolower($tag_matchings[1]));
+					}
+					$truncate .= $line_matchings[1];
+				}
+
+				$content_length = strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $line_matchings[2]));
+				if ($total_length+$content_length > $length) {
+					$left = $length - $total_length;
+					$entities_length = 0;
+					if (preg_match_all('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', $line_matchings[2], $entities, PREG_OFFSET_CAPTURE)) {
+						foreach ($entities[0] as $entity) {
+							if ($entity[1]+1-$entities_length <= $left) {
+								$left--;
+								$entities_length += strlen($entity[0]);
+							} else {
+								break;
+							}
+						}
+					}
+					$truncate .= substr($line_matchings[2], 0, $left+$entities_length);
+					break;
+				} else {
+					$truncate .= $line_matchings[2];
+					$total_length += $content_length;
+				}
+
+				if ($total_length >= $length) {
+					break;
 				}
 			}
-			return $truncate . $ending;
+		} else {
+			if (strlen($text) <= $length) {
+				return $text;
+			} else {
+				$truncate = substr($text, 0, $length - strlen($ending));
+			}
 		}
+
+		if (!$exact) {
+			$spacepos = strrpos($truncate, ' ');
+			if (isset($spacepos)) {
+				$truncate = substr($truncate, 0, $spacepos);
+			}
+		}
+
+		$truncate .= $ending;
+
+		if ($considerHtml) {
+			foreach ($open_tags as $tag) {
+				$truncate .= '</' . $tag . '>';
+			}
+		}
+
+		return $truncate;
 	}
 /**
  * Alias for truncate().
@@ -242,12 +313,17 @@ class TextHelper extends AppHelper {
  * @return string "Flayed" text
  * @access public
  * @todo Change this. We need a real Textile parser.
+ * @codeCoverageIgnoreStart
  */
 	function flay($text, $allowHtml = false) {
+		trigger_error(__('(TextHelper::flay) Deprecated: the Flay library is no longer supported and will be removed in a future version.', true), E_USER_WARNING);
 		if (!class_exists('Flay')) {
 			uses('flay');
 		}
 		return Flay::toHtml($text, false, $allowHtml);
 	}
+/**
+ * @codeCoverageIgnoreEnd
+ */
 }
 ?>

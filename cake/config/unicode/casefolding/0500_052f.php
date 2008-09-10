@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: 0500_052f.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: 0500_052f.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * Case Folding Properties.
  *
@@ -25,9 +25,9 @@
  * @package			cake
  * @subpackage		cake.cake.config.unicode.casefolding
  * @since			CakePHP(tm) v 1.2.0.5691
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -53,6 +53,4 @@ $config['0500_052f'][] = array('upper' => 1288, 'status' => 'C', 'lower' => arra
 $config['0500_052f'][] = array('upper' => 1290, 'status' => 'C', 'lower' => array(1291)); /* CYRILLIC CAPITAL LETTER KOMI NJE */
 $config['0500_052f'][] = array('upper' => 1292, 'status' => 'C', 'lower' => array(1293)); /* CYRILLIC CAPITAL LETTER KOMI SJE */
 $config['0500_052f'][] = array('upper' => 1294, 'status' => 'C', 'lower' => array(1295)); /* CYRILLIC CAPITAL LETTER KOMI TJE */
-$config['0500_052f'][] = array('upper' => 1296, 'status' => 'C', 'lower' => array(1297)); /* CYRILLIC CAPITAL LETTER REVERSED ZE */
-$config['0500_052f'][] = array('upper' => 1298, 'status' => 'C', 'lower' => array(1299)); /* CYRILLIC CAPITAL LETTER EL WITH HOOK */
 ?>

@@ -37,6 +37,7 @@ DROP TABLE IF EXISTS `audio_videos`;
 DROP TABLE IF EXISTS `audios`;
 DROP TABLE IF EXISTS `videos`;
 DROP TABLE IF EXISTS `areas`;
+DROP TABLE IF EXISTS `sections`;
 DROP TABLE IF EXISTS `streams`;
 DROP TABLE IF EXISTS `short_news`;
 DROP TABLE IF EXISTS `mail_messages`;
@@ -467,6 +468,16 @@ CREATE TABLE areas (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
+CREATE TABLE sections (
+  id INTEGER UNSIGNED NOT NULL,
+  PRIMARY KEY(id),
+  INDEX sections_FKIndex1(id),
+  FOREIGN KEY(id)
+    REFERENCES collections(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
 CREATE TABLE audios (
   id INTEGER UNSIGNED NOT NULL,
   PRIMARY KEY(id),
@@ -763,12 +774,6 @@ CREATE TABLE `search_texts` (
 -- ------------------------------------------
 -- Creazione viste singoli tipi di oggetti
 -- ------------------------------------------
-
-CREATE  VIEW `view_sections` AS 
-SELECT 
-collections.*
-FROM objects INNER JOIN collections ON objects.id = collections.id AND objects.object_type_id = 3 
-;
 
 CREATE  VIEW `view_questionnaires` AS 
 SELECT 

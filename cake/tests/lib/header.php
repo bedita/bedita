@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: header.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: header.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.tests.lib
  * @since			CakePHP(tm) v 1.2.0.4433
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 ?>
@@ -32,13 +32,25 @@
 	<head>
 		<meta http-equiv='content-Type' content='text/html; <?php echo $characterSet; ?>' />
 		<title>CakePHP Test Suite v 1.2.0.0</title>
-		<link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>css/cake.generic.css" />
-		<style>
-			h3 {font-size: 150%}
+		<style type="text/css">
+			h3 {font-size: 170%; padding-top: 1em}
 			a {font-size: 120%}
 			li {line-height: 140%}
-			.fail { background-color: inherit; color: red; }
+			.test-menu {float:left; margin-right: 24px;}
+			.test-results {float:left; width: 67%;}
+			ul.tests {margin: 0; font-size:12px;}
+			ul.tests li {list-style: none; margin: 14px 0; padding-left: 20px;}
+			ul.tests li span { font-size:14px; text-transform: uppercase; display:block; color: black; font-weight: bold; }
+			ul.tests li.pass span, ul.tests li.skipped span { display:inline;}
+			ul.tests li.fail span { color: red; }
+			ul.tests li.fail {background: url(http://cakephp.org/img/test-fail-icon.png) top left no-repeat}
+			ul.tests li.pass {background: url(http://cakephp.org/img/test-pass-icon.png) top left no-repeat;}
+			ul.tests li.pass span { color: green; }
+			ul.tests li div { margin: 5px 0 8px 0; }
+			ul.tests li div.msg { font-weight: bold; }
+			#content {overflow: auto}
 		</style>
+		<link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>css/cake.generic.css" />
 	</head>
 	<body>
 		<div id="container">

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: index.ctp 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: index.ctp 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  *
  * PHP versions 4 and 5
@@ -18,9 +18,9 @@
  * @package			cake
  * @subpackage		cake.cake.console.libs.templates.views
  * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 ?>
@@ -33,8 +33,8 @@ echo $paginator->counter(array(
 ?></p>
 <table cellpadding="0" cellspacing="0">
 <tr>
-<?php foreach ($scaffoldFields as $field):?>
-	<th><?php echo $paginator->sort($field);?></th>
+<?php foreach ($scaffoldFields as $_field):?>
+	<th><?php echo $paginator->sort($_field);?></th>
 <?php endforeach;?>
 	<th><?php __('Actions');?></th>
 </tr>
@@ -47,19 +47,19 @@ foreach (${$pluralVar} as ${$singularVar}):
 	}
 echo "\n";
 	echo "\t<tr{$class}>\n";
-		foreach ($scaffoldFields as $field) {
+		foreach ($scaffoldFields as $_field) {
 			$isKey = false;
 			if(!empty($associations['belongsTo'])) {
-				foreach ($associations['belongsTo'] as $alias => $details) {
-					if($field === $details['foreignKey']) {
+				foreach ($associations['belongsTo'] as $_alias => $_details) {
+					if($_field === $_details['foreignKey']) {
 						$isKey = true;
-						echo "\t\t<td>\n\t\t\t" . $html->link(${$singularVar}[$alias][$details['displayField']], array('controller'=> $details['controller'], 'action'=>'view', ${$singularVar}[$alias][$details['primaryKey']])) . "\n\t\t</td>\n";
+						echo "\t\t<td>\n\t\t\t" . $html->link(${$singularVar}[$_alias][$_details['displayField']], array('controller'=> $_details['controller'], 'action'=>'view', ${$singularVar}[$_alias][$_details['primaryKey']])) . "\n\t\t</td>\n";
 						break;
 					}
 				}
 			}
 			if($isKey !== true) {
-				echo "\t\t<td>\n\t\t\t" . ${$singularVar}[$modelClass][$field] . " \n\t\t</td>\n";
+				echo "\t\t<td>\n\t\t\t" . ${$singularVar}[$modelClass][$_field] . " \n\t\t</td>\n";
 			}
 		}
 
@@ -85,12 +85,12 @@ echo "\n";
 		<li><?php echo $html->link('New '.$singularHumanName, array('action'=>'add')); ?></li>
 <?php
 		$done = array();
-		foreach ($associations as $type => $data) {
-			foreach($data as $alias => $details) {
-				if ($details['controller'] != $this->name && !in_array($details['controller'], $done)) {
-					echo "\t\t<li>".$html->link(sprintf(__('List %s', true), Inflector::humanize($details['controller'])), array('controller'=> $details['controller'], 'action'=>'index'))."</li>\n";
-					echo "\t\t<li>".$html->link(sprintf(__('New %s', true), Inflector::humanize(Inflector::underscore($alias))), array('controller'=> $details['controller'], 'action'=>'add'))."</li>\n";
-					$done[] = $details['controller'];
+		foreach ($associations as $_type => $_data) {
+			foreach($_data as $_alias => $_details) {
+				if ($_details['controller'] != $this->name && !in_array($_details['controller'], $done)) {
+					echo "\t\t<li>".$html->link(sprintf(__('List %s', true), Inflector::humanize($_details['controller'])), array('controller'=> $_details['controller'], 'action'=>'index'))."</li>\n";
+					echo "\t\t<li>".$html->link(sprintf(__('New %s', true), Inflector::humanize(Inflector::underscore($_alias))), array('controller'=> $_details['controller'], 'action'=>'add'))."</li>\n";
+					$done[] = $_details['controller'];
 				}
 			}
 		}

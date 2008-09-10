@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: datasource.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: datasource.php 7118 2008-06-04 20:49:29Z gwoo $ */
 /**
  * DataSource base class
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.datasources
  * @since			CakePHP(tm) v 0.10.5.1790
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7118 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -171,11 +171,12 @@ class DataSource extends Object {
  */
 	var $_transactionStarted = false;
 /**
- * Enter description here...
+ * Whether or not source data like available tables and schema descriptions
+ * should be cached
  *
  * @var boolean
  */
-       var $cacheSources = true;
+	var $cacheSources = true;
 /**
  * Constructor.
  */
@@ -204,17 +205,16 @@ class DataSource extends Object {
 			$expires = "+999 days";
 		}
 
-		if ($data != null) {
-			$data = serialize($data);
-		}
-		$filename = ConnectionManager::getSourceName($this) . '_' . preg_replace("/[^A-Za-z0-9_-]/", "_", $this->config['database']) . '_list';
-		$new = cache('models' . DS . $filename, $data, $expires);
+		$key = ConnectionManager::getSourceName($this) . '_' . Inflector::slug($this->config['database']) . '_list';
+		$sources = Cache::read($key, '_cake_model_');
 
-		if ($new != null) {
-			$new = unserialize($new);
-			$this->_sources = $new;
+		if ($sources == null) {
+			$sources = $data;
+			Cache::write($key, $data, array('duration' => $expires, 'config' => '_cake_model_'));
 		}
-		return $new;
+
+		$this->_sources = $sources;
+		return $sources;
 	}
 /**
  * Convenience method for DboSource::listSources().  Returns source names in lowercase.
@@ -249,26 +249,26 @@ class DataSource extends Object {
 /**
  * Begin a transaction
  *
- * @return boolean True
+ * @return boolean Returns true if a transaction is not in progress
  */
-	function begin() {
-		return true;
+	function begin(&$model) {
+		return !$this->_transactionStarted;
 	}
 /**
  * Commit a transaction
  *
- * @return boolean True
+ * @return boolean Returns true if a transaction is in progress
  */
 	function commit(&$model) {
-		return true;
+		return $this->_transactionStarted;
 	}
 /**
  * Rollback a transaction
  *
- * @return boolean True
+ * @return boolean Returns true if a transaction is in progress
  */
 	function rollback(&$model) {
-		return true;
+		return $this->_transactionStarted;
 	}
 /**
  * Converts column types to basic types
@@ -393,16 +393,17 @@ class DataSource extends Object {
 
 		if ($data !== null) {
 			$this->__descriptions[$object] =& $data;
-			$cache = serialize($data);
-		} else {
-			$cache = null;
 		}
-		$new = cache('models' . DS . ConnectionManager::getSourceName($this) . '_' . $object, $cache, $expires);
 
-		if ($new != null) {
-			$new = unserialize($new);
+		$key = ConnectionManager::getSourceName($this) . '_' . $object;
+		$cache = Cache::read($key, '_cake_model_');
+
+		if (empty($cache)) {
+			$cache = $data;
+			Cache::write($key, $cache, array('duration' => $expires, 'config' => '_cake_model_'));
 		}
-		return $new;
+
+		return $cache;
 	}
 /**
  * Enter description here...
@@ -499,6 +500,10 @@ class DataSource extends Object {
  *
  */
 	function __destruct() {
+		if ($this->_transactionStarted) {
+			$null = null;
+			$this->rollback($null);
+		}
 		if ($this->connected) {
 			$this->close();
 		}

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: number.test.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: number.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs.view.helpers
  * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 uses('view'.DS.'helpers'.DS.'app_helper', 'view'.DS.'helper', 'view'.DS.'helpers'.DS.'number');
@@ -34,18 +34,38 @@ uses('view'.DS.'helpers'.DS.'app_helper', 'view'.DS.'helper', 'view'.DS.'helpers
  * @subpackage	cake.tests.cases.libs.view.helpers
  */
 class NumberTest extends UnitTestCase {
+/**
+ * helper property
+ * 
+ * @var mixed null
+ * @access public
+ */
 	var $helper = null;
 
-
+/**
+ * setUp method
+ * 
+ * @access public
+ * @return void
+ */
 	function setUp() {
 		$this->Number =& new NumberHelper();
 	}
-
+/**
+ * testFormatAndCurrency method
+ * 
+ * @access public
+ * @return void
+ */
 	function testFormatAndCurrency() {
 		$value = '100100100';
 
 		$result = $this->Number->format($value, '#');
 		$expected = '#100,100,100';
+		$this->assertEqual($expected, $result);
+
+		$result = $this->Number->format($value, 3);
+		$expected = '100,100,100.000';
 		$this->assertEqual($expected, $result);
 
 		$result = $this->Number->format($value);
@@ -80,7 +100,12 @@ class NumberTest extends UnitTestCase {
 		$expected = '&#163;100,100,100.00';
 		$this->assertEqual($expected, $result);
 	}
-
+/**
+ * testCurrencyPositive method
+ * 
+ * @access public
+ * @return void
+ */
 	function testCurrencyPositive() {
 		$value = '100100100';
 
@@ -109,7 +134,12 @@ class NumberTest extends UnitTestCase {
 		$this->assertEqual($expected, $result);
 	}
 
-
+/**
+ * testCurrencyNegative method
+ * 
+ * @access public
+ * @return void
+ */
 	function testCurrencyNegative() {
 		$value = '-100100100';
 
@@ -138,7 +168,12 @@ class NumberTest extends UnitTestCase {
 		$this->assertEqual($expected, $result);
 
 	}
-
+/**
+ * testCurrencyCentsPositive method
+ * 
+ * @access public
+ * @return void
+ */
 	function testCurrencyCentsPositive() {
 		$value = '0.99';
 
@@ -155,7 +190,12 @@ class NumberTest extends UnitTestCase {
 		$this->assertEqual($expected, $result);
 
 	}
-
+/**
+ * testCurrencyCentsNegative method
+ * 
+ * @access public
+ * @return void
+ */
 	function testCurrencyCentsNegative() {
 		$value = '-0.99';
 
@@ -184,7 +224,12 @@ class NumberTest extends UnitTestCase {
 		$this->assertEqual($expected, $result);
 
 	}
-
+/**
+ * testCurrencyZero method
+ * 
+ * @access public
+ * @return void
+ */
 	function testCurrencyZero() {
 		$value = '0';
 
@@ -205,7 +250,12 @@ class NumberTest extends UnitTestCase {
 		$this->assertEqual($expected, $result);
 
 	}
-
+/**
+ * testCurrencyOptions method
+ * 
+ * @access public
+ * @return void
+ */
 	function testCurrencyOptions() {
 		$value = '1234567.89';
 
@@ -222,12 +272,78 @@ class NumberTest extends UnitTestCase {
 		$this->assertEqual($expected, $result);
 
 	}
+/**
+ * testToReadableSize method
+ * 
+ * @access public
+ * @return void
+ */
 	function testToReadableSize() {
 		$result = $this->Number->toReadableSize(0);
 		$expected = '0 Bytes';
 		$this->assertEqual($expected, $result);
-	}
 
+		$result = $this->Number->toReadableSize(1);
+		$expected = '1 Byte';
+		$this->assertEqual($expected, $result);
+
+		$under1KB = 45;
+		$result = $this->Number->toReadableSize($under1KB);
+		$expected = $under1KB.' Bytes';
+		$this->assertEqual($expected, $result);
+
+		$under1MB = 1024*1024-1;
+		$result = $this->Number->toReadableSize($under1MB);
+		$expected = sprintf("%01.0f", $under1MB/1024).' KB';
+		$this->assertEqual($expected, $result);
+
+		$under1GB = (float) 1024*1024*1024-1;
+		$result = $this->Number->toReadableSize($under1GB);
+		$expected = sprintf("%01.2f", $under1GB/1024/1024).' MB';
+		$this->assertEqual($expected, $result);
+
+		$float = (float) 1024*1024*1024*1023-1;
+		$result = $this->Number->toReadableSize($float);
+		$expected = sprintf("%01.2f", $float/1024/1024/1024).' GB';
+		$this->assertEqual($expected, $result);
+
+		$float = (float) 1024*1024*1024*1024*1023-1;
+		$result = $this->Number->toReadableSize($float);
+		$expected = sprintf("%01.2f", $float/1024/1024/1024/1024).' TB';
+		$this->assertEqual($expected, $result);
+	}
+/**
+ * testToPercentage method
+ * 
+ * @access public
+ * @return void
+ */
+	function testToPercentage() {
+		$result = $this->Number->toPercentage(45, 0);
+		$expected = '45%';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->Number->toPercentage(45, 2);
+		$expected = '45.00%';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->Number->toPercentage(0, 0);
+		$expected = '0%';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->Number->toPercentage(0, 4);
+		$expected = '0.0000%';
+		$this->assertEqual($result, $expected);
+
+
+
+	}
+/**
+ * tearDown method
+ * 
+ * @access public
+ * @return void
+ */
 	function tearDown() {
 		unset($this->Number);
 	}

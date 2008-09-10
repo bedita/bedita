@@ -56,7 +56,7 @@ class Stream extends BEAppModel
 																)
 														) ) );
 		 $findedStreams = $this->find("all", array(
-		 								"restrict" => array("BEObject" => "ObjectType"),
+		 								"contain" => array("BEObject" => "ObjectType"),
 										"conditions" => array(
 														"title LIKE '%" .$text. "%'", 
 														"object_type_id" => $ot,

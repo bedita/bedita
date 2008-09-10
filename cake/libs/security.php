@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: security.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: security.php 7296 2008-06-27 09:09:03Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v .0.10.0.1233
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 00:33:52 -0600 (Wed, 02 Jan 2008) $
+ * @version			$Revision: 7296 $
+ * @modifiedby		$LastChangedBy: gwoo $
+ * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -52,10 +52,10 @@ class Security extends Object {
   */
 	function &getInstance() {
 		static $instance = array();
-	 	if (!$instance) {
-	 		$instance[0] =& new Security;
-	 	}
-	 	return $instance[0];
+		if (!$instance) {
+			$instance[0] =& new Security;
+		}
+		return $instance[0];
 	}
 /**
   * Get allowed minutes of inactivity based on security level.
@@ -89,7 +89,7 @@ class Security extends Object {
 	function generateAuthKey() {
 		$_this =& Security::getInstance();
 		if(!class_exists('String')) {
-			uses('string');
+			App::import('Core', 'String');
 		}
 		return $_this->hash(String::uuid());
 	}
@@ -110,12 +110,18 @@ class Security extends Object {
  *
  * @param string $string String to hash
  * @param string $type Method to use (sha1/sha256/md5)
+ * @param boolean $salt If true, automatically appends the application's salt
+ * 				  value to $string (Security.salt)
  * @return string Hash
  * @access public
  * @static
  */
-	function hash($string, $type = null) {
+	function hash($string, $type = null, $salt = false) {
 		$_this =& Security::getInstance();
+
+		if ($salt) {
+			$string = Configure::read('Security.salt') . $string;
+		}
 		if (empty($type)) {
 			$type = $_this->hashType;
 		}
@@ -136,7 +142,7 @@ class Security extends Object {
 				return $return;
 			} else {
 				$type = 'md5';
-	 		}
+			}
 		}
 
 		if ($type == 'md5') {
@@ -167,6 +173,11 @@ class Security extends Object {
  * @static
  */
 	function cipher($text, $key) {
+		if (empty($key)) {
+			trigger_error(__('You cannot use an empty key for Security::cipher()', true), E_USER_WARNING);
+			return '';
+		}
+
 		$_this =& Security::getInstance();
 		if (!defined('CIPHER_SEED')) {
 			//This is temporary will change later

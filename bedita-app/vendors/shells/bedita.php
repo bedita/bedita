@@ -118,7 +118,7 @@ class DbDump {
 	}
 	
 	public function tableList() {
-   		$tables = $this->model->execute("show tables");
+   		$tables = $this->model->query("show tables");
     	$res = array();
     	foreach ($tables as $k=>$v) {
     		$t1 = array_values($v);

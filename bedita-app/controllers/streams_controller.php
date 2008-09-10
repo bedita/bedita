@@ -32,7 +32,7 @@ class StreamsController extends AppController {
 		foreach($bedita_items['items'] as $key => $value) {
 			$modelLoaded = $this->loadModelByObjectTypeId($value['object_type_id']);
 			
-			$modelLoaded->restrict(array(
+			$modelLoaded->contain(array(
 									"BEObject" => array("ObjectType", 
 														"LangText"
 														),
@@ -104,14 +104,9 @@ class StreamsController extends AppController {
 		if(!($ret = $this->BEObject->read('object_type_id', $id))) throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
 		$this->BEObject->recursive = $rec ;
 		$modelClass = $conf->objectTypeModels[$ret["BEObject"]["object_type_id"]];
-		if(!class_exists($modelClass)){
-			App::import('Model',$modelClass);
-		}
-		if (!class_exists($modelClass)) {
-			throw new BeditaException(__("Object type not found - ", true).$modelClass);			
-		}
-		$this->{$modelClass} = new $modelClass();
-		$this->{$modelClass}->restrict(array(
+
+		$this->{$modelClass} = $this->loadModelByType($modelClass);
+		$this->{$modelClass}->contain(array(
 										"BEObject" => array("ObjectType"),
 										"Stream"
 										)
@@ -145,7 +140,7 @@ class StreamsController extends AppController {
 		if (!$collection) {
 			$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
 			$objRel = $modelLoaded->find("first",array(
-													"restrict" => array("BEObject" => "RelatedObject"),
+													"contain" => array("BEObject" => "RelatedObject"),
 													"conditions" => "BEObject.id=".$obj_id
 												)
 											);
