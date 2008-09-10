@@ -22,10 +22,11 @@ $(document).ready(function() {
 {/literal}
 //-->
 </script>
+<div style="min-height:120px; margin-top:10px;">
 
 {if !empty($contents.items)}
 	
-	<ul style="margin-top:10px; display: block;" id="areacontent" class="bordered">
+	<ul id="areacontent" class="bordered">
 		{foreach from=$contents.items item="c"}
 		<li class="itemBox obj {$c.status}">
 			<input type="hidden" class="id" 	name="reorder[{$c.id}][id]" value="{$c.id}" />
@@ -39,7 +40,10 @@ $(document).ready(function() {
 	</ul>		
 
 
+	
 	<div id="contents_nav">
+
+		
 	{if $contents.toolbar.prev > 0}
 		<a href="javascript:void(0);" rel="{$contents.toolbar.prev}" class="graced" style="font-size:3em">‹</a>
 	{/if}
@@ -49,5 +53,10 @@ $(document).ready(function() {
 	</div>
 
 {else}
-	{t}no contents{/t}
+	&nbsp;&nbsp;<em>{t}no contents{/t}</em>
+	<hr />
 {/if}
+
+</div>	
+
+	

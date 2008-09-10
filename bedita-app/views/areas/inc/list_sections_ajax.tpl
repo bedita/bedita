@@ -23,9 +23,10 @@ $(document).ready(function() {
 //-->
 </script>
 
+<div style="min-height:100px; margin-top:10px;">
 {if !empty($sections.items)}
 
-	<ul style="margin-top:10px; display: block;" id="areasections" class="bordered">
+	<ul id="areasections" class="bordered">
 		{foreach from=$sections.items item=s}
 		<li class="itemBox obj {$s.status}">
 			<input type="hidden" class="id" 	name="reorder[{$s.id}][id]" value="{$s.id}" />
@@ -47,5 +48,7 @@ $(document).ready(function() {
 	</div>
 
 {else}
-	{t}no sections{/t}
+	&nbsp;&nbsp;<em>{t}no sections{/t}</em>
 {/if}
+
+</div>

@@ -108,9 +108,15 @@ $(document).ready(function() {
 
 	</div>
 </div>
-	<hr />
+	
+	<div>
+	
+	<input style="width:220px" type="button" rel="{$html->url('/testmodal.html')}" class="modalbutton" value=" {t}add contents{/t} " />
+	<br />
 	<input class="bemaincommands" style="display:inline" type="button" value=" {t}Save{/t} " name="save" />
 	<input class="bemaincommands" style="display:inline" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" />
+	
+	</div>
 
 </fieldset>	
 

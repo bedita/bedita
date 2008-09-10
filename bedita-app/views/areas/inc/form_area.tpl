@@ -7,7 +7,7 @@
 	<input type="hidden" name="data[title]" value="{$object.title|default:''}"/>
 	
 
-	<table class="bordered" style="width:100%">
+	<table style="width:100%">
 		<tr>
 			<th>{t}Title{/t}:</th>
 			<td>
