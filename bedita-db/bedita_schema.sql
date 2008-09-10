@@ -16,6 +16,7 @@ DROP VIEW IF EXISTS `view_galleries` ;
 
 DROP TABLE IF EXISTS `cake_sessions`;
 DROP TABLE IF EXISTS `links`;
+DROP TABLE IF EXISTS `cards`;
 DROP TABLE IF EXISTS `documents`;
 DROP TABLE IF EXISTS `books`;
 DROP TABLE IF EXISTS `date_items`;
@@ -556,10 +557,10 @@ CREATE TABLE date_items (
 CREATE TABLE geo_tags (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   object_id INTEGER UNSIGNED NOT NULL,
-  latitude FLOAT(7,4) NULL,
-  longitude FLOAT(7,4) NULL,
+  latitude FLOAT(9,6) NULL,
+  longitude FLOAT(9,6) NULL,
   address VARCHAR(255) NULL,
-  gmaps_lookat VARCHAR(255) NULL,
+  gmaps_lookat MEDIUMTEXT NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(object_id)
     REFERENCES objects(id)
@@ -608,6 +609,34 @@ CREATE TABLE links (
   `target` enum('_self','_blank','parent','top','popup') default NULL,
   PRIMARY KEY(id),
   KEY `idx_url` (`url`),
+  FOREIGN KEY(id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE cards (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  name    VARCHAR(64) NULL,
+  surname VARCHAR(64) NULL,
+  person_title VARCHAR(32) NULL,
+  birthdate DATE NULL,
+  deathdate DATE NULL,
+  company_name VARCHAR(128) NULL,
+  company_kind VARCHAR(64) NULL,
+  street_address VARCHAR(255) NULL,
+  street_number VARCHAR(32) NULL,
+  city VARCHAR(255) NULL,
+  zipcode VARCHAR(32) NULL,
+  country VARCHAR(128) NULL,
+  state VARCHAR(128) NULL,
+  email VARCHAR(128) NULL,
+  email2 VARCHAR(128) NULL,
+  phone VARCHAR(32) NULL,
+  phone2 VARCHAR(32) NULL,
+  fax VARCHAR(32) NULL,
+  website VARCHAR(128) NULL,
+  PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
       ON DELETE CASCADE

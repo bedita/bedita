@@ -1,21 +1,17 @@
 <?php
 /**
- * Web link
+ * Addressbook card - vCard format
  * 
- * @filesource
- * @copyright		Copyright (c) 2007
- * @link			
+ * @copyright		Copyright (c) 2008 Channelweb, Chialab
  * @package			
  * @subpackage		
  * @since			
  * @version			
- * @modifiedby		
- * @lastmodified	
  * @license
- * @author 		giangi giangi@qwerg.com,	ste ste@channelweb.it
+ * @author 		Stefano Rosanelli ste@channelweb.it
  * 		
 */
-class Link extends BEAppObjectModel {
+class Card extends BEAppObjectModel {
 
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
