@@ -67,7 +67,7 @@ class AreasController extends ModulesController {
 		
 		// Data for template
 		$this->set('area',$area);
-		$this->selfUrlParams = array("id", $id);
+		
 		// get users and groups list
 		$this->User->displayField = 'userid';
 		$this->set("usersList", $this->User->find('list', array("order" => "userid")));

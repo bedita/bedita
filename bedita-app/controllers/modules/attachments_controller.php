@@ -102,7 +102,7 @@ class AttachmentsController extends ModulesController {
 		$this->set('object',	@$obj);
 		$this->set('imagePath',	@$imagePath);
 		$this->set('imageUrl',	@$imageURL);
-        $this->selfUrlParams = array("id", $id);    
+        
         // get users and groups list. 
 		$this->User->displayField = 'userid';
 		$this->set("usersList", $this->User->find('list', array("order" => "userid")));

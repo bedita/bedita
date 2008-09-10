@@ -49,7 +49,6 @@ class TagsController extends ModulesController {
 		
 		$this->set('tag',	$tag);
 		$this->set("referenced", $referenced);		
-		$this->selfUrlParams = array("id", $id);
 	 }
 
 	public function save() {

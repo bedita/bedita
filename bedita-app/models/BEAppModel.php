@@ -69,35 +69,6 @@ class BEAppModel extends AppModel {
 		return ((isset($conf->type))?$conf->type:'') ;
 	}
 	
-	/**
-	 * Esegue una query in un template di smarty e torna il recordset.
-	 * la query puo' esserein un file di template o in una stringa 
-	 *
-	 * @param string $sql		Path di un file o stringa con la query
-	 * @param array $params		Array con i parametri da passare, puo' essere vuoto
-	 * @param mixed $recordset	Dove tornare il risultato
-	 */
-	function execTemplate($sql, &$params = null, $page = 1, $dim = null, $file = true) {
-		
-		// Crea la query
-		$templater = new SQLFromSmarty() ;
-		$sql = $templater->getSQLFromTemplate($sql, $params, $file) ;
-		unset($templater);
-		
-		// Definisce i limiti del recordset
-		$offset = null;
-		if ($page > 1 && $dim != null) {
-			$offset = ($page - 1) * $dim;
-		}
-				
-		// esegue la query
-		$db =& ConnectionManager::getDataSource($this->useDbConfig);
-		$sql .= $db->limit($dim, $offset);			
-		$recordset = $db->fetchAll($sql, $this->cacheQueries, $this->name);
-		unset($db) ;
-		
-		return $recordset ;
-	}
 		
 	/**
 	 * Object search Toolbar

@@ -77,7 +77,6 @@ class NewsController extends ModulesController {
 		$this->set("areaCategory", $areaCategory);
 		$this->Area->displayField = 'public_name';
 		$this->set("areasList", $this->Area->find('list', array("order" => "public_name")));	
-		$this->selfUrlParams = array("id", $id);
 		$this->setUsersAndGroups();
 	 }
 

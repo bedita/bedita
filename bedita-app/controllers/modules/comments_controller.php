@@ -32,7 +32,6 @@ class CommentsController extends ModulesController {
 
 		$this->set('object',	$obj);
 		$this->set('relObjects', isset($relations) ? $relations : array());
-		$this->selfUrlParams = array("id", $id);
 		$this->setUsersAndGroups();
 	 }
 	 

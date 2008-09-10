@@ -127,8 +127,6 @@ class StreamsController extends AppController {
 		$this->set('imageUrl',	@$imageURL);
 		$this->set('priority',	@$priority);
 		$this->set('relation',	@$relation);
-		//$this->set('cols',		@$cols);
-		$this->selfUrlParams = array("id", @$id);    
 		$this->layout = "empty" ;
 	}
 	

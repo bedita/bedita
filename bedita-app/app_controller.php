@@ -24,8 +24,6 @@ class AppController extends Controller
 	
 	protected static $current = NULL;
 
-	protected $selfUrlParams = NULL;
-
 	protected $currLang = NULL; // selected UI lang - 
 	
 	/**
@@ -157,14 +155,6 @@ class AppController extends Controller
 	 * 
 	 */
 	final function beforeRender() {
-
-		// setup return URL (if session expires)
-		if(empty($this->selfUrlParams)) {
-            $this->set('selfPlus', $this->createSelfURL(false)) ;
-		} else {
-            $this->set('selfPlus', $this->createSelfURL(false, $this->selfUrlParams));
-		}
-        $this->set('self',  ($this->createSelfURL(false)."?")) ;
 		
 		// convienience methods for frontends [like beforeRender]
         $this->beditaBeforeRender() ;
@@ -349,46 +339,6 @@ class AppController extends Controller
 		
 	}
 	
-	/**
-	 * Crea l'URL per il ritorno allo stesso stato.
-	 * Nelle 2 forme possibili:
-	 * cake		controller/action[/params_1[/...]]
-	 * get		controller/action[?param_1_name=parm_1_value[&amp;...]]
-	 * 
-	 * @param $cake true, torna nel formato cake; false: get 
-	 * altri Parametri:
-	 * 0..N array con i seguenti valori:
-	 * 		0	nome della variabile
-	 * 		2	valore
-	 *
-	 */
-	protected function createSelfURL($cake = true) {
-		if(!isset($this->params["controller"]) || !isset($this->params["action"]))
-			throw new BeditaException("Configuration error", "cake params controller/action missing!!");
-		
-		$baseURL = "/" . $this->params["controller"] ."/". $this->params["action"] ;
-		
-		$size  = func_num_args() ;
-		$args  = func_get_args() ;
-		
-		if($size < 2) return $baseURL ;
-		
-		
-		for($i=1; $i < $size ; $i++) {
-			if($cake) {
-				$baseURL .= "/" . urlencode($args[$i][1]) ;
-				continue ;
-			}
-			
-			if($i == 1) {
-				$baseURL .= "?" .  urlencode($args[$i][0]) ."=" . urlencode($args[$i][1]) ;
-			}  else {
-				$baseURL .= "&amp;" .  urlencode($args[$i][0]) ."=" . urlencode($args[$i][1]) ;
-			}
-		}
-	
-		return $baseURL ;
-	}
 	
 	protected function loadModelByObjectTypeId($obj_type_id) {
 		$conf  = Configure::getInstance();

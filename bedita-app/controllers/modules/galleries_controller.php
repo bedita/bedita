@@ -159,7 +159,6 @@ class GalleriesController extends ModulesController {
 				
 		$this->set('object',	$obj);
 		$this->set('attach',$multimedia);
-		$this->selfUrlParams = array("id", $id);    
 		$this->setUsersAndGroups();
 	}
 

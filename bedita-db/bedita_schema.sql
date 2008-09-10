@@ -39,7 +39,12 @@ DROP TABLE IF EXISTS `videos`;
 DROP TABLE IF EXISTS `areas`;
 DROP TABLE IF EXISTS `streams`;
 DROP TABLE IF EXISTS `short_news`;
-DROP TABLE IF EXISTS `newsletters`;
+DROP TABLE IF EXISTS `mail_messages`;
+DROP TABLE IF EXISTS `mail_templates`;
+DROP TABLE IF EXISTS `mail_addresses`;
+DROP TABLE IF EXISTS `mail_groups`;
+DROP TABLE IF EXISTS `mail_group_addresses`;
+DROP TABLE IF EXISTS `mail_jobs`;
 DROP TABLE IF EXISTS `lang_texts`;
 DROP TABLE IF EXISTS `permissions`;
 DROP TABLE IF EXISTS `object_users`;
@@ -340,15 +345,89 @@ CREATE TABLE lang_texts (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE newsletters (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE mail_messages (
+  id INTEGER UNSIGNED NOT NULL,
+  mail_status ENUM('unsent','pending','sent') DEFAULT 'unsent' NOT NULL,
+  start_sending DATETIME DEFAULT NULL,
+  end_sending DATETIME DEFAULT NULL,
+  sender VARCHAR(255) NOT NULL,
+  replay_to VARCHAR(255) NOT NULL,
+  bounce_to VARCHAR(255) NOT NULL,
+  priority INTEGER UNSIGNED NULL,
   PRIMARY KEY(id),
-  INDEX newsletters_FKIndex1(id),
   FOREIGN KEY(id)
-    REFERENCES collections(id)
+    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...' ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE mail_templates (
+  id INTEGER UNSIGNED NOT NULL,
+  PRIMARY KEY(id),
+  FOREIGN KEY(id)
+    REFERENCES contents(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE mail_addresses (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  email VARCHAR(255) NOT NULL,
+  status ENUM('blocked','valid','pending') NOT NULL DEFAULT 'pending',
+  bounce INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  last_bounce_date DATETIME NULL,
+  html BOOL NOT NULL DEFAULT 1,
+  card_id INTEGER UNSIGNED NULL,
+  user_id INTEGER UNSIGNED NULL,
+  PRIMARY KEY(id),
+  INDEX card_index(card_id),
+  INDEX user_index(user_id),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE mail_groups (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  area_id INTEGER UNSIGNED NOT NULL,
+  group_name VARCHAR(255) NOT NULL,
+  visible BOOL NOT NULL DEFAULT 1, 
+  PRIMARY KEY(id),
+  INDEX area_id(area_id),
+  UNIQUE KEY `group_name` (`group_name`),
+  FOREIGN KEY(area_id)
+    REFERENCES areas(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE mail_group_addresses (
+  mail_group_id INTEGER UNSIGNED NOT NULL,
+  mail_address_id INTEGER UNSIGNED NOT NULL,
+  PRIMARY KEY(mail_group_id, mail_address_id),
+  INDEX mail_address_id_index(mail_address_id),
+  INDEX mail_group_id_index(mail_group_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE mail_jobs (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  mail_message_id INTEGER UNSIGNED NOT NULL,
+  mail_address_id INTEGER UNSIGNED NOT NULL,
+  status ENUM ('pending','sent') NOT NULL DEFAULT 'pending',
+  sending_date DATETIME NULL,
+  created DATETIME NULL,
+  modified DATETIME NULL,
+  priority INTEGER UNSIGNED NULL,
+  PRIMARY KEY(id),
+  INDEX mail_address_id_index(mail_address_id),
+  INDEX mail_message_id_index(mail_message_id),
+  FOREIGN KEY(mail_message_id)
+    REFERENCES mail_messages(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(mail_address_id)
+    REFERENCES mail_addresses(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE short_news (
   id INTEGER UNSIGNED NOT NULL,
@@ -375,7 +454,7 @@ CREATE TABLE streams (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE areas (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  id INTEGER UNSIGNED NOT NULL,
   public_name VARCHAR(255) NULL,
   public_url VARCHAR(255) NULL,
   staging_url VARCHAR(255) NULL,

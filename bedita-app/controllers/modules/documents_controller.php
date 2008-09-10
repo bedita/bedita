@@ -88,7 +88,6 @@ class DocumentsController extends ModulesController {
 		$this->set('tree', 		$tree);
 		$this->set('parents',	$parents_id);
 		$this->set('previews',	$previews);
-		$this->selfUrlParams = array("id", $id);
 		$this->setUsersAndGroups();
 	 }
 
