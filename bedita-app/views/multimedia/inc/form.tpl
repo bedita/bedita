@@ -5,8 +5,6 @@
 
 
 {$javascript->link("jquery/jquery.form")}
-{$javascript->link("jquery/jquery.autogrow")}
-
 
 <form action="{$html->url('/multimedia/save')}" enctype="multipart/form-data" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input  type="hidden" name="data[id]" value="{$object.id|default:''}" />

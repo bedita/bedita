@@ -1,5 +1,3 @@
-{$javascript->link("jquery/jquery.autogrow")}
-
 <script language="JavaScript">
 	{literal}
 	$(document).ready( function ()

@@ -13,7 +13,7 @@ $(document).ready(function(){
 </script>
 
 {$javascript->link("jquery/jquery.form")}
-{$javascript->link("jquery/jquery.autogrow")}
+
 {include file="../common_inc/form_common_js.tpl"}
 
 <form action="{$html->url('/attachments/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">

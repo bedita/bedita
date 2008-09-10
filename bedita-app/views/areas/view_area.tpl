@@ -7,10 +7,7 @@
 {$javascript->link("jquery/jquery.selectboxes.pack", false)}
 {$javascript->link("jquery/jquery.cmxforms", false)}
 {$javascript->link("jquery/jquery.metadata", false)}
-{$javascript->link("jquery/jquery.validate", false)}
-{$javascript->link("validate.tools", false)}
 
-{$javascript->link("jquery/jquery.autogrow")}
 
 <script language="JavaScript">
 	{literal}

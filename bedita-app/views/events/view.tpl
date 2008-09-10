@@ -6,7 +6,6 @@
 
 {$javascript->link("jquery/jquery.form", false)}
 {$javascript->link("jquery/jquery.treeview", false)}
-{$javascript->link("jquery/jquery.autogrow")}
 
 {$javascript->link("jquery/ui/ui.core.min", false)}
 {$javascript->link("jquery/ui/ui.sortable.min", false)}
