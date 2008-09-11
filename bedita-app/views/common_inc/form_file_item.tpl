@@ -1,12 +1,14 @@
 {assign var="thumbWidth" 		value = 130}
-{assign var="thumbHeight" 		value = 85}
+{assign var="thumbHeight" 		value = 98}
 {assign var="filePath"			value = $item.path}
 {assign var="fileName"			value = $item.filename|default:$item.name}
 {assign var="fileTitle"			value = $item.title}
 {assign var="newPriority"		value = $item.priority+1|default:$priority}
 {assign var="mediaPath"         value = $conf->mediaRoot}
 {assign var="mediaUrl"          value = $conf->mediaUrl}
+
 {assign_concat var="linkUrl"            0=$html->url('/multimedia/view/') 1=$item.id}
+
 {assign_concat var="imageAltAttribute"	0="alt='"  1=$item.title 2="'"}
 {assign_concat var="mediaCacheBaseURL"	0=$conf->mediaUrl  1="/" 2=$conf->imgCache 3="/"}
 {assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
@@ -19,7 +21,7 @@
 	<div style="width:{$thumbWidth}px; height:{$thumbHeight}px" class="imagebox">
 	{if strtolower($item.ObjectType.name) == "image"}
 
-		{$beEmbedMedia->object($item,$thumbWidth,$thumbHeight,false,"fill",null,null,false)}
+		{$beEmbedMedia->object($item,$thumbWidth,$thumbHeight,false,"fill","000000",null,false)}
 		
 	{elseif ($item.provider|default:false)}
 	
@@ -42,7 +44,8 @@
 
 	
 	<label class="evidence">
-		<input type="text" class="priority" name="data[RelatedObject][{$relation}][{$item.id}][priority]" value="{$item.priority|default:$priority}" size="3" maxlength="3"/>
+		<input type="text" class="priority" style="text-align:left; margin-left:0px;"
+		name="data[RelatedObject][{$relation}][{$item.id}][priority]" value="{$item.priority|default:$priority}" size="3" maxlength="3"/>
 	</label>
 
 
@@ -53,7 +56,7 @@
 		<li>
 			<textarea class="info_file_item" style="border:0px; border-bottom:1px solid silver;" name="data[RelatedObject][{$relation}][{$item.id}][description]">{$item.description|default:""}</textarea>
 			<br />
-			<a rel="{$linkUrl} #multimediaitem" class="modalbutton">details</p>
+			<a rel="{$linkUrl} #multimediaiteminside" class="modalbutton">details</p>
 			
 			<a style="margin-left:60px" href="javascript: void(0);" onclick="removeItem('item_{$item.id}')" >delete</a>
 			<!-- <img style="vertical-align:middle;" src="{$session->webroot}img/iconClose.png" > -->

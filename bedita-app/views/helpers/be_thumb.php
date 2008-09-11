@@ -78,7 +78,8 @@ class BeThumbHelper extends AppHelper {
 	 * return: resampled and cached image URI (using $html helper)
 	 * 
 	 */
-	public function image ($be_obj, $params = null) //$width = false, $height = false, $longside = null, $mode = null, $modeparam = null, $type = null, $upscale = null)
+	public function image ($be_obj, $params = null) 
+	//$width = false, $height = false, $longside = null, $mode = null, $modeparam = null, $type = null, $upscale = null)
 	{
 		// this method is for image only, check bedita object type
 		if ( strpos($be_obj['type'], "image") === false )

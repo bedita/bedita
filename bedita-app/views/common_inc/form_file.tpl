@@ -3,19 +3,22 @@
 ** @author ChannelWeb srl
 *}
 
+{if (isset($object))}
+
 <div class="tab"><h2>{t}File{/t}</h2></div>
-<fieldset id="multimediaitem">
 
 
+<fieldset id="multimediaitem" style="margin-left:-10px;">
 
-<div style="margin: 0 5px 5px 0; float: left;">
+
+<div id="multimediaiteminside">
 	{if ($object.ObjectType.name == "image")}
 
 
 		{assign_concat var="fileUrl"  0=$conf->mediaUrl  1=$object.path}
 		{image_info var="imageInfo" file=$fileUrl}
 		
-		{$beEmbedMedia->object($object,480,false,false,null,null,null,false)}
+		{$beEmbedMedia->object($object,500,false,false,null,null,null,false)}
 		
 	{elseif ($object.provider|default:false)}
 		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="px; " 3="height:" 4=$conf->videoThumbHeight 5="px;"}
@@ -54,23 +57,23 @@
 	</a>
 	{/if}
 
-</div>
 
 
-<table class="bordered" style="clear:both">
 
-{if (isset($object))}
+<table class="bordered" style="width:100%; clear:both">
+
+
 	<tr>
-		<th>{t}Name{/t}:</th>
+		<th>{t}filename{/t}:</th>
 		<td colspan="3">{$object.name|default:""}</td>
 	</tr>
 	<tr>
-		<th>{t}Mime type{/t}:</th>
+		<th>{t}mime type{/t}:</th>
 		<td>{$object.type|default:""}</td>
-		<th>{t}Size{/t}:</th>
-		<td>{math equation="x/y" x=$object.size|default:0 y=1024 format="%d"|default:""} KB</td>
+		<th>{t}filesize{/t}:</th>
+		<td>{$object.size|filesize}</td>
 	</tr>
-{/if}
+
 
 {if ($object.ObjectType.name == "image")}
 	
@@ -95,8 +98,27 @@
 	
 </table>
 
+</div>
+
+</fieldset>
+
+
+{/if}
+
+
+<div class="tab"><h2>
+	{if (!isset($object))}
+		{t}Upload new file{/t}
+	{else}
+		{t}Substitute file{/t}
+	{/if}
+	</h2></div>
+
+<fieldset id="add">
+	
+
 <ul class="htab">
-	<li rel="uploadItems">{t}upload new item{/t}</li>
+	<li rel="uploadItems">{t}browse your disk{/t}</li>
 	<li rel="urlItems">{t}add by url{/t}</li>
 </ul>
 
@@ -104,13 +126,13 @@
 <div class="htabcontainer" id="addmultimediacontents">
 
 	<div class="htabcontent" id="uploadItems">
-		<input style="width:270px;" type="file" name="Filedata" />
+		<input style="margin:20px; width:270px;" type="file" name="Filedata" />
 	</div>
 	
 	
 	<div class="htabcontent" id="urlItems">
 		
-		<table style="margin-bottom:20px">
+		<table style="margin:20px;">
 		<tr>
 			<td>{t}Url{/t}:</td>
 			<td><input type="text" style="width:270px;" name="data[url]" /></td>

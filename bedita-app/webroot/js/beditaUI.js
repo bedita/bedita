@@ -230,7 +230,7 @@ $(document).ready(function(){
 
 	
 
-	$(".multimediaitem").mouseover(function () {
+	$("#viewthumb .multimediaitem").mouseover(function () {
 
 	 	$(this).toggleClass("dark");
 
@@ -327,7 +327,7 @@ $(document).ready(function(){
 	$('.autogrowarea').autogrow({
 		lineHeight: 16
 	});
-							
+						
 
 
 

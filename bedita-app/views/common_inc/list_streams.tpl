@@ -69,13 +69,15 @@ $(document).ready(function(){
 	
 		
 		{foreach from=$objects item="item"}
-			<div class="multimediaitem itemBox{if $item.status == "off"} off{/if}">
+			<div class="multimediaitem itemBox{if $item.status != "on"} off{/if}">
 				
 				{include file="../common_inc/file_item.tpl"}
-					
+				
+				
+				
 			</div>
 		{/foreach}
-		</div>
+	</div>
 		
 	<br style="margin:0px; line-height:0px; clear:both" />
 	

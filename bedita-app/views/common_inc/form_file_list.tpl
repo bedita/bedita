@@ -109,7 +109,7 @@ $(document).ready(function()
 <hr />
 <input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$relation}][0][switch]" value="{$relation}" />
 {foreach from=$attach item="item"}
-	<div class="multimediaitem itemBox{if $item.status == "off"} off{/if} small" id="item_{$item.id}">
+	<div class="multimediaitem itemBox {if $item.status != "on"} off{/if} small" id="item_{$item.id}">
 		
 			{include file="../common_inc/form_file_item.tpl"}
 			
