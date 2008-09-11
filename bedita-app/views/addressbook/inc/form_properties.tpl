@@ -32,8 +32,8 @@
 	<tr>
 		<th>{t}Display details in frontend{/t}:</th>
 		<td>
-			<input type="radio" name="data[comments]" value="off"{if empty($object.comments) || $object.comments=='off'} checked{/if}/>{t}No{/t} 
-			<input type="radio" name="data[comments]" value="on"{if !empty($object.comments) && $object.comments=='on'} checked{/if}/>{t}Yes{/t}
+			<input type="radio" name="data[privacy_level]" value="0"{if empty($object.privacy_level) || $object.privacy_level=='0'} checked{/if}/>{t}No{/t} 
+			<input type="radio" name="data[privacy_level]" value="1"{if !empty($object.privacy_level) && $object.privacy_level=='1'} checked{/if}/>{t}Yes{/t}
 		</td>
 	</tr>
 	{/if}

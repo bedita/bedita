@@ -728,6 +728,7 @@ CREATE TABLE cards (
   phone2 VARCHAR(32) NULL,
   fax VARCHAR(32) NULL,
   website VARCHAR(128) NULL,
+  privacy_level TINYINT( 1 ) NOT NULL DEFAULT '0',
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
