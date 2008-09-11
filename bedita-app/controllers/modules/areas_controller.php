@@ -122,12 +122,27 @@ class AreasController extends ModulesController {
 		if(!$this->Area->save($this->data))
 			throw new BeditaException( __("Error saving area", true),  $this->Area->validationErrors);
 		
+		$id = $this->Area->getID();
+			
 		// update contents and children sections priority
 		$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
 		
+		$objects = $this->BeTree->getChildren($id, null, Configure::read("objectTypes.leafs")) ;
+		$idsToReorder = array_keys($this->params["form"]['reorder']);
+		
+		// remove old children
+		foreach ($objects["items"] as $obj) {
+			if (!in_array($obj["id"], $idsToReorder)) {
+				$this->Tree->removeChild($obj["id"], $id);
+			}
+		}
+		
+		// add new children and reorder priority
 		foreach ($reorder as $r) {
-
-			if (!$this->Tree->setPriority($r['id'], $r['priority'], $this->Area->id)) {
+		 	if (!$this->Tree->find("first", array("conditions" => "id=".$r["id"]." AND parent_id=".$id))) {
+				$this->Tree->appendChild($r["id"], $id);
+			}
+			if (!$this->Tree->setPriority($r['id'], $r['priority'], $id)) {
 				throw new BeditaException( __("Error during reorder children priority", true), $r["id"]);
 			}
 			
@@ -135,7 +150,7 @@ class AreasController extends ModulesController {
 				
 		// update permits
 		$perms = isset($this->data["Permissions"])?$this->data["Permissions"]:array();
-		if(!$this->Permission->saveFromPOST($this->Area->id, $perms,
+		if(!$this->Permission->saveFromPOST($id, $perms,
 			(empty($this->data['recursiveApplyPermissions'])?false:true), 'area'))  {
 			throw new BeditaException( __("Error saving permissions", true));
 		}
@@ -176,12 +191,25 @@ class AreasController extends ModulesController {
 				if(!$this->Tree->move($this->data["parent_id"], $oldParent, $id))
 					throw new BeditaException( __("Error saving section", true));
 			}
-
+			
 			// update contents and children sections priority
 			$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
 			
+			$objects = $this->BeTree->getChildren($id, null, Configure::read("objectTypes.leafs")) ;
+			$idsToReorder = array_keys($this->params["form"]['reorder']);
+			
+			// remove old children
+			foreach ($objects["items"] as $obj) {
+				if (!in_array($obj["id"], $idsToReorder)) {
+					$this->Tree->removeChild($obj["id"], $id);
+				}
+			}
+			
+			// add new children and reorder priority
 			foreach ($reorder as $r) {
-
+			 	if (!$this->Tree->find("first", array("conditions" => "id=".$r["id"]." AND parent_id=".$id))) {
+					$this->Tree->appendChild($r["id"], $id);
+				}
 				if (!$this->Tree->setPriority($r['id'], $r['priority'], $id)) {
 					throw new BeditaException( __("Error during reorder children priority", true), $r["id"]);
 				}
@@ -300,16 +328,17 @@ class AreasController extends ModulesController {
 	
 	/**
 	 * called via ajax
-	 * Show all objects for relation
+	 * Show list of objects for relation, append to section,...
 	 * 
 	 * @param int $master_object_id, object id of main object used to exclude association with itself 
-	 * @param string $relation, relation type								
+	 * @param string $relation, relation type
+	 * @param string $objectTypes name of objectType to filter (used if $this->parmas["form"]["objectType"] is empty)								
 	 * 
 	 **/
-	public function showObjects($main_object_id=null, $relation) {
+	public function showObjects($main_object_id=null, $relation=null, $objectType="related") {
 		
 		$id = (!empty($this->params["form"]["parent_id"]))? $this->params["form"]["parent_id"] : null;
-		$filter = (!empty($this->params["form"]["objectType"]))? array($this->params["form"]["objectType"]) : Configure::read("objectTypes.related");
+		$filter = (!empty($this->params["form"]["objectType"]))? array($this->params["form"]["objectType"]) : Configure::read("objectTypes." . $objectType);
 		if (!empty($this->params["form"]["lang"]))
 			$filter = array_merge($filter, array("lang" => $this->params["form"]["lang"])); 
 			
@@ -331,8 +360,11 @@ class AreasController extends ModulesController {
 		$tree = $this->BeTree->getSectionsTree() ;
 		$this->set('tree',$tree);
 		
-		$this->set("relation", $relation);
+		if (!empty($relation))
+			$this->set("relation", $relation);
+		
 		$this->set("main_object_id", $main_object_id);
+		$this->set("objectType", $objectType);
 		
 		$this->layout = null;
 		
@@ -346,7 +378,7 @@ class AreasController extends ModulesController {
 	 *
 	 * @param int $main_object_id, object id of main object used to exclude association with itself 
 	 */
-	public function loadObjectToAssoc($main_object_id=null) {
+	public function loadObjectToAssoc($main_object_id=null, $tplname=null) {
 		
 		$conditions = array(
 						"BEObject.id" => explode( ",", trim($this->params["form"]["object_selected"],",") ), 
@@ -362,13 +394,15 @@ class AreasController extends ModulesController {
 
 		foreach ($objects as $key => $obj) {
 			if (empty($main_object_id) || $objects[$key]["BEObject"]["id"] != $main_object_id)
+				$obj["BEObject"]["module"] = $obj["ObjectType"]["module"];
 				$objRelated[] = array_merge($obj["BEObject"], array("ObjectType" => $obj["ObjectType"]));
 		}
 		
 		$this->set("objsRelated", $objRelated);
 		$this->set("rel", $this->params["form"]["relation"]);
 		$this->layout = null;
-		$this->render(null, null, VIEWS . "common_inc/form_assoc_object.tpl");
+		$tplname = (empty($tplname))? "common_inc/form_assoc_object.tpl" : "areas/inc/" . $tplname;
+		$this->render(null, null, VIEWS . $tplname);
 	}
 	
 	 /**

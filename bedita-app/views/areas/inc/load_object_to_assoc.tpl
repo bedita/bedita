@@ -1,1 +1,0 @@
-{include file="../pages/form_assoc_object.tpl"}

@@ -1,6 +1,19 @@
 <script type="text/javascript">
 <!--
+var urlAddObjToAss = "{$html->url('/areas/loadObjectToAssoc')}/{$object.id|default:0}/list_contents_for_section.tpl";
+
 {literal}
+
+function addObjToAssoc(url, postdata) {
+	$.post(url, postdata, function(html){
+		$("#areacontent li:last").after(html);
+		if ($("#noContents"))
+			$("#noContents").remove();
+		$("#areacontent").fixItemsPriority();
+		$("#areacontent").sortable("refresh");
+	});
+}
+
 $(document).ready(function() {
 
 	$("#areacontent").sortable ({
@@ -9,7 +22,7 @@ $(document).ready(function() {
 		update: $(this).reorderListItem
 	}).css("cursor","move");
 
-	$("#contents_nav a").click(function() {
+	$("#contents_nav_leafs a").click(function() {
 			
 		$("#loading").show();
 		$("#areacontentC").load(urlC, {page:$(this).attr("rel")}, function() {
@@ -27,21 +40,12 @@ $(document).ready(function() {
 {if !empty($contents.items)}
 	
 	<ul id="areacontent" class="bordered">
-		{foreach from=$contents.items item="c"}
-		<li class="itemBox obj {$c.status}">
-			<input type="hidden" class="id" 	name="reorder[{$c.id}][id]" value="{$c.id}" />
-			<input type="text" class="priority"	name="reorder[{$c.id}][priority]" value="{$c.priority}" size="3" maxlength="3"/>
-	
-			<span title="{$c.module}" class="listrecent {$c.module}" style="margin-left:0px">&nbsp;&nbsp;</span>
-			<a title="{$c.module} | {$c.created}" href="{$html->url('/')}{$c.module}/view/{$c.id}">{$c.title}</a>
-			
-		</li>
-		{/foreach}
+		{include file="inc/list_contents_for_section.tpl" objsRelated=$contents.items}
 	</ul>		
 
 
 	
-	<div id="contents_nav">
+	<div id="contents_nav_leafs">
 
 		
 	{if $contents.toolbar.prev > 0}
@@ -53,8 +57,9 @@ $(document).ready(function() {
 	</div>
 
 {else}
-	&nbsp;&nbsp;<em>{t}no contents{/t}</em>
-	<hr />
+	<ul id="areacontent" class="bordered">
+		<li id="noContents"><em>{t}no contents{/t}</em><hr /></li>
+	</ul>
 {/if}
 
 </div>	

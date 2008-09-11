@@ -1,10 +1,10 @@
 <script type="text/javascript">
 <!--
 
-var urlShowObj = "{$html->url('/areas/showObjects/')}{$main_object_id|default:0}/{$relation}";
+var urlShowObj = "{$html->here}";
 if (!urlAddObjToAss) 
 	var urlAddObjToAss = "{$html->url('/areas/loadObjectToAssoc')}";
-var relType = "{$relation}";
+var relType = "{$relation|default:""}";
 
 {literal}
 function loadObjToAssoc(page) {
@@ -40,7 +40,7 @@ $(document).ready(function() {
 			$("#modal").hide();
 			$("#modaloverlay").hide();
 			
-			// function defined in form_assoc_objects.tpl
+			// addObjToAssoc function has to be defined in other template (i.e common_inc/form_assoc_objects.tpl)
 			addObjToAssoc(urlAddObjToAss, obj_sel);
 			
 		}
@@ -64,7 +64,7 @@ $(document).ready(function() {
 	tipo: 
 	<select name="objectType" id="objectType">
 		<option value="">{t}all{/t}</option>
-		{foreach from=$conf->objectTypes.related item=type_id}
+		{foreach from=$conf->objectTypes.$objectType item=type_id}
 			{strip}
 			<option value="{$type_id}">
 				{$conf->objectTypeModels[$type_id]|lower}

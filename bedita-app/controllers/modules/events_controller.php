@@ -66,9 +66,11 @@ class EventsController extends ModulesController {
 			}
 			
 			$parents_id = $this->Tree->getParent($id) ;
-			if($parents_id === false) array() ;
+			if($parents_id === false) 
+				$parents_id = array() ;
 			elseif(!is_array($parents_id))
 				$parents_id = array($parents_id);
+
 		}
 		$ot = &$conf->objectTypes ; 
 		$this->set('object',	$obj);

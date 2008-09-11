@@ -47,6 +47,8 @@ class DocumentsController extends ModulesController {
 		$this->setup_args(array("id", "integer", &$id)) ;
 		$obj = null ;
 		$relations = array();
+		$parents_id = array();
+		
 		if($id) {
 			$this->Document->contain(array(
 										"BEObject" => array("ObjectType", 
@@ -65,17 +67,16 @@ class DocumentsController extends ModulesController {
 				 throw new BeditaException(sprintf(__("Error loading document: %d", true), $id));
 			}
 			$relations = $this->objectRelationArray($obj['RelatedObject']);
-		}
-		
-		$tree = $this->BeTree->getSectionsTree() ;
-		if(isset($id)) {
+			
 			$parents_id = $this->Tree->getParent($id) ;
-			if($parents_id === false) array() ;
+			if($parents_id === false) 
+				$parents_id = array() ;
 			elseif(!is_array($parents_id))
 				$parents_id = array($parents_id);
-		} else {
-			$parents_id = array();
 		}
+
+		$tree = $this->BeTree->getSectionsTree() ;
+	
 		$galleries = $this->BeTree->getDiscendents(null, null, $conf->objectTypes['gallery'], "", true, 1, 10000);
 		$status = (!empty($obj['status'])) ? $obj['status'] : null;
 		$previews = (isset($id)) ? $this->previewsForObject($parents_id,$id,$status) : array();

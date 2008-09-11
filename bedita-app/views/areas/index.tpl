@@ -111,7 +111,7 @@ $(document).ready(function() {
 	
 	<div>
 	
-	<input style="width:220px" type="button" rel="{$html->url('/testmodal.html')}" class="modalbutton" value=" {t}add contents{/t} " />
+	<input style="width:220px" type="button" rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/0/leafs" class="modalbutton" value=" {t}add contents{/t} " />
 	<br />
 	<input class="bemaincommands" style="display:inline" type="button" value=" {t}Save{/t} " name="save" />
 	<input class="bemaincommands" style="display:inline" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" />

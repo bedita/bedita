@@ -197,7 +197,7 @@ class Tree extends BEAppModel
 
 		// Verifica che il nuovo parent non sia un discendente dell'albero da spostare
 		$ret = $this->query("SELECT isParentTree({$id}, {$idNewParent}) AS parent");
-		if(!empty($ret["parent"])) return  false ;
+		if(!empty($ret[0][0]["parent"])) return  false ;
 
  		$ret = $this->query("CALL moveTree({$id}, {$idOldParent}, {$idNewParent})");
 		return (($ret === false)?false:true) ;
@@ -404,6 +404,7 @@ class Tree extends BEAppModel
 
 		// Verifica che il nuovo parent non sia un discendente dell'albero da spostare
 		$ret = $this->query("SELECT isParentTree({$idParent}, {$id}) AS parent");
+		
 		if(empty($ret[0][0]["parent"])) return  false ;
 
 		return (($ret[0][0]["parent"])?true:false) ;
