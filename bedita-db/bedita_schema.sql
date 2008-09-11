@@ -712,6 +712,7 @@ CREATE TABLE cards (
   person_title VARCHAR(32) NULL,
   birthdate DATE NULL,
   deathdate DATE NULL,
+  company BOOL NOT NULL DEFAULT '0',
   company_name VARCHAR(128) NULL,
   company_kind VARCHAR(64) NULL,
   street_address VARCHAR(255) NULL,
