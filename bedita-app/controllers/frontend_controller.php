@@ -56,7 +56,8 @@ abstract class FrontendController extends AppController {
 				$this->currLang = $lang;
 			} else {
 				// HTTP autodetect
-				I18n::getInstance();
+				$l10n = new L10n();
+				$l10n->get();		
 				$this->currLang = $conf->Config['language'];
 
 				if(!array_key_exists($this->currLang, $conf->frontendLangs)) {
@@ -126,8 +127,8 @@ abstract class FrontendController extends AppController {
 			$errTrace =  get_class($ex)." -  ". $ex->getMessage().
 				"\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 		}
-		self::$current->handleError($ex->getDetails(), $ex->getMessage(), $errTrace);
 		header('HTTP/1.1 404 Not Found');
+		self::$current->handleError($ex->getDetails(), $ex->getMessage(), $errTrace);
 		self::$current->render(null, "error", VIEWS."errors/error404.tpl");
 	}
 	
