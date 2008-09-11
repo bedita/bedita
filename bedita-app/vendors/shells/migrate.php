@@ -52,7 +52,7 @@ abstract class MigrationBase {
     }
     
     protected function copyTable($t) {
-		$res = $this->model->execute("SELECT * from $t");
+		$res = $this->model->query("SELECT * from $t");
 		foreach ($res as $r) {
 			$this->write($this->createInsert($r[$t], $t));
 		}
@@ -66,7 +66,7 @@ abstract class MigrationBase {
 					$this->copyTable($t);
 				}
 			} else {
-				$res = $this->model->execute($q);
+				$res = $this->model->query($q);
 				if(is_array($res)) {
 					foreach ($res as $r) {
 						$this->$method($r);

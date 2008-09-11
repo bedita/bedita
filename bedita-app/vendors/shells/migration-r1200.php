@@ -59,6 +59,7 @@ var $methodsQueries = array(
 	protected function sections($r) {
 			$this->write($this->createInsert($r['ob'], "objects"));
 			$this->write($this->createInsert($r['co'], "collections"));
+			$this->write($this->createInsert(array('id' => $r['co']['id']), "sections"));
 	}
 
 	protected function images($r) {
