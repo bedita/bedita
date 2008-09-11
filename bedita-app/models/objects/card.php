@@ -30,8 +30,8 @@ class Card extends BEAppObjectModel {
 		);
 	
 	function beforeValidate() {
-		$this->data['Card']['birthdate'] = $this->getDefaultDateFormat($this->data['Card']['birthdate']);
-		$this->data['Card']['deathdate'] = $this->getDefaultDateFormat($this->data['Card']['deathdate']);
+		if(!empty($this->data['Card']['birthdate'])) $this->data['Card']['birthdate'] = $this->getDefaultDateFormat($this->data['Card']['birthdate']);
+		if(!empty($this->data['Card']['deathdate'])) $this->data['Card']['deathdate'] = $this->getDefaultDateFormat($this->data['Card']['deathdate']);
 		return true;
 	}
 }

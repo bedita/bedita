@@ -99,7 +99,7 @@ $(document).ready(function(){
 		<table>
 			<tr>
 				<th>{t}company name{/t}:</th>
-				<td><input type="text" name="data[cmp][company_name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>
+				<td><input type="text" name="data[cmp][company_name]" value="{$object.company_name|escape:'html'|escape:'quotes'}" /></td>
 			</tr>
 			<tr>
 				<th>{t}company reference{/t}:</th>
