@@ -25,8 +25,8 @@ $(document).ready(function(){
 		$("#updateForm").submit();
 	});
 });
-</script>
 {/literal}
+</script>
 
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
@@ -41,11 +41,11 @@ $(document).ready(function(){
 	{if !empty($method) && $method != "index" && $module_modify eq '1'}
 	<div class="insidecol">
 		{if ($perms->isWritable($user.userid,$user.groups,$object.Permissions))}
-		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />
+		<input class="bemaincommands" type="button" value=" {t}save{/t} " name="save" />
 		<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" />
 		{/if}
 		{if ($perms->isDeletable($user.userid,$user.groups,$object.Permissions))}
-		<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" {if !($object.id|default:false)}disabled="1"{/if} />
+		<input class="bemaincommands" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" {if !($object.id|default:false)}disabled="1"{/if} />
 		{/if}
 	</div>
 	

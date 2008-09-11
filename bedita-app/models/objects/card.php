@@ -28,5 +28,11 @@ class Card extends BEAppObjectModel {
 				'dependent'		=> true
 			)
 		);
+	
+	function beforeValidate() {
+		$this->data['Card']['birthdate'] = $this->getDefaultDateFormat($this->data['Card']['birthdate']);
+		$this->data['Card']['deathdate'] = $this->getDefaultDateFormat($this->data['Card']['deathdate']);
+		return true;
+	}
 }
 ?>
