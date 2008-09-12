@@ -1,6 +1,6 @@
 <script type="text/javascript">
 <!--
-var urlAddObjToAss = "{$html->url('/areas/loadObjectToAssoc')}/{$object.id|default:0}/list_contents_for_section.tpl";
+var urlAddObjToAss = "{$html->url('/areas/loadObjectToAssoc')}/{$object.id|default:0}/leafs/list_contents_for_section.tpl";
 
 {literal}
 

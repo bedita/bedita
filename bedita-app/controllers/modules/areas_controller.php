@@ -380,11 +380,11 @@ class AreasController extends ModulesController {
 	 *
 	 * @param int $main_object_id, object id of main object used to exclude association with itself 
 	 */
-	public function loadObjectToAssoc($main_object_id=null, $tplname=null) {
+	public function loadObjectToAssoc($main_object_id=null, $objectType="related", $tplname=null) {
 		
 		$conditions = array(
 						"BEObject.id" => explode( ",", trim($this->params["form"]["object_selected"],",") ), 
-						"BEObject.object_type_id" => Configure::read("objectTypes.related")
+						"BEObject.object_type_id" => Configure::read("objectTypes." . $objectType)
 					);
 		
 		$objects = $this->BEObject->find("all", array(
