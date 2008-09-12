@@ -481,9 +481,7 @@ class AreasController extends ModulesController {
 		$dim = (!empty($this->params["form"]["dim"]))? $this->params["form"]["dim"] : 20; 
 		
 		// get content
-		$ot = Configure::read("objectTypes");
-		//$objType = array( $ot["document"], $ot["shortnews"], $ot["event"] );
-		$objType = Configure::read("objectTypes.related");
+		$objType = Configure::read("objectTypes.leafs");
 		$contents = $this->BeTree->getChildren($id, null, $objType, "priority", true, $page, $dim);
 		
 		foreach ($contents["items"] as $key => $item) {
