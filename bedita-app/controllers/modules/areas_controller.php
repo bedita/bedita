@@ -332,7 +332,9 @@ class AreasController extends ModulesController {
 	 * 
 	 * @param int $master_object_id, object id of main object used to exclude association with itself 
 	 * @param string $relation, relation type
-	 * @param string $objectTypes name of objectType to filter (used if $this->parmas["form"]["objectType"] is empty)								
+	 * @param string $objectTypes name of objectType to filter. It has to be a string that defined a group of type
+	 * 							  defined in bedita.ini.php (i.e. 'related' 'leafs',...)
+	 * 							  Used if $this->parmas["form"]["objectType"] is empty. In view used for create select.	
 	 * 
 	 **/
 	public function showObjects($main_object_id=null, $relation=null, $objectType="related") {
