@@ -95,7 +95,7 @@ $(document).ready(function() {
 	</tr>
 	<tbody id="taglist">
 	{foreach from=$tags item=tag}
-		<tr>
+		<tr class="obj {$tag.status}">
 			<td style="width:36px; text-align:center">
 				<input type="checkbox" name="tags_selected[{$tag.id}]" class="objectCheck" title="{$tag.id}" value="{$tag.id}"/>
 			</td>
@@ -119,7 +119,11 @@ $(document).ready(function() {
 		<tr>
 			<td colspan="10" class="tag graced" style="text-align:justify; line-height:1.5em; padding:20px;">
 				{foreach from=$tags item=tag}
-				<a title="{$tag.weight}" class="{$tag.class|default:""}" href="{$html->url('view/')}{$tag.id}">{$tag.label}</a>
+				<span class="obj {$tag.status}">
+					<a title="{$tag.weight}" class="{$tag.class|default:""}" href="{$html->url('view/')}{$tag.id}">
+						{$tag.label}
+					</a>
+				</span>
 				{/foreach}
 			</td>
 		</tr>
