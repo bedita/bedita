@@ -7,9 +7,7 @@ class GeoTag extends BEAppModel
 
 		$this->checkFloat('latitude');
 		$this->checkFloat('longitude');
-		// TODO: geo conversion.....
-//		$data['latitude'] = $this->geoConvert($data['latitude']);
-//		$data['longitude'] = $this->geoConvert($data['longitude']);
+
 		return true;
 	}
 	

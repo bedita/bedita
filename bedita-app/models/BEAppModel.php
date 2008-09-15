@@ -58,7 +58,6 @@ class BEAppModel extends AppModel {
 	/**
 	 * Check date field in $this->data[ModelName][$key] -> set to null if empty or call getDefaultDateFormat
 	 *
-	 * @param array $data
 	 * @param string $key
 	 */
 	protected function checkDate($key) {
@@ -71,9 +70,8 @@ class BEAppModel extends AppModel {
 	}
 
 	/**
-	 * Check float/double field in $data array[$key] -> set to null if empty or call getDefaultDateFormat
+	 * Check float/double field in $this->data[ModelName][$key] -> set to null if empty
 	 *
-	 * @param array $data
 	 * @param string $key
 	 */
 	protected function checkFloat($key) {
