@@ -123,29 +123,32 @@ class AreasController extends ModulesController {
 			throw new BeditaException( __("Error saving area", true),  $this->Area->validationErrors);
 		
 		$id = $this->Area->getID();
+		
+		if(!$new) {
 			
-		// update contents and children sections priority
-		$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
-		
-		$objects = $this->BeTree->getChildren($id, null, Configure::read("objectTypes.leafs")) ;
-		$idsToReorder = array_keys($this->params["form"]['reorder']);
-		
-		// remove old children
-		foreach ($objects["items"] as $obj) {
-			if (!in_array($obj["id"], $idsToReorder)) {
-				$this->Tree->removeChild($obj["id"], $id);
-			}
-		}
-		
-		// add new children and reorder priority
-		foreach ($reorder as $r) {
-		 	if (!$this->Tree->find("first", array("conditions" => "id=".$r["id"]." AND parent_id=".$id))) {
-				$this->Tree->appendChild($r["id"], $id);
-			}
-			if (!$this->Tree->setPriority($r['id'], $r['priority'], $id)) {
-				throw new BeditaException( __("Error during reorder children priority", true), $r["id"]);
+			// update contents and children sections priority
+			$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
+			
+			$objects = $this->BeTree->getChildren($id, null, Configure::read("objectTypes.leafs")) ;
+			$idsToReorder = array_keys($reorder);
+			
+			// remove old children
+			foreach ($objects["items"] as $obj) {
+				if (!in_array($obj["id"], $idsToReorder)) {
+					$this->Tree->removeChild($obj["id"], $id);
+				}
 			}
 			
+			// add new children and reorder priority
+			foreach ($reorder as $r) {
+			 	if (!$this->Tree->find("first", array("conditions" => "id=".$r["id"]." AND parent_id=".$id))) {
+					$this->Tree->appendChild($r["id"], $id);
+				}
+				if (!$this->Tree->setPriority($r['id'], $r['priority'], $id)) {
+					throw new BeditaException( __("Error during reorder children priority", true), $r["id"]);
+				}
+				
+			}
 		}
 				
 		// update permits
@@ -196,7 +199,7 @@ class AreasController extends ModulesController {
 			$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
 			
 			$objects = $this->BeTree->getChildren($id, null, Configure::read("objectTypes.leafs")) ;
-			$idsToReorder = array_keys($this->params["form"]['reorder']);
+			$idsToReorder = array_keys($reorder);
 			
 			// remove old children
 			foreach ($objects["items"] as $obj) {
