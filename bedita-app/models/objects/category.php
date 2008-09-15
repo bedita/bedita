@@ -75,8 +75,9 @@ class Category extends BEAppModel {
 		App::import('Model','Area');
 		$this->Area = new Area(); 
 		$categories = $this->findAll("Category.object_type_id=$objectType");
-		$this->Area->displayField = 'public_name';
-		$areaList = $this->Area->find('list', array("order" => "public_name"));
+		$this->Area->bviorCompactResults = false;
+		$this->set("areasList", $this->Area->find('list', array("order" => "public_name", "fields" => "public_name")));
+		$this->Area->bviorCompactResults = true;
 		$areaCategory = array();
 		
 		foreach ($categories as $cat) {

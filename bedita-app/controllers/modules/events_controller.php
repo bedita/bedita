@@ -81,8 +81,9 @@ class EventsController extends ModulesController {
 		$this->set('parents',	$parents_id);
 		$areaCategory = $this->Category->getCategoriesByArea($ot['event']);
 		$this->set("areaCategory", $areaCategory);
-		$this->Area->displayField = 'public_name';
-		$this->set("areasList", $this->Area->find('list', array("order" => "public_name")));
+		$this->Area->bviorCompactResults = false;
+		$this->set("areasList", $this->Area->find('list', array("order" => "public_name", "fields" => "public_name")));
+		$this->Area->bviorCompactResults = true;
 		$this->setUsersAndGroups();
 	 }
 
@@ -144,8 +145,9 @@ class EventsController extends ModulesController {
 		$type = $conf->objectTypes['event'];
 		$this->set("categories", $this->Category->findAll("Category.object_type_id=".$type));
 		$this->set("object_type_id", $type);
-		$this->Area->displayField = 'public_name';
-		$this->set("areasList", $this->Area->find('list', array("order" => "public_name")));
+		$this->Area->bviorCompactResults = false;
+		$this->set("areasList", $this->Area->find('list', array("order" => "public_name", "fields" => "public_name")));
+		$this->Area->bviorCompactResults = true;
 	}
 
 	public function saveCategories() {
