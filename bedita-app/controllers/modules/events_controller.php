@@ -46,13 +46,16 @@ class EventsController extends ModulesController {
 															"RelatedObject",
 															"Category"
 															),
-										"Content", "DateItem"
+										"DateItem"
 										)
 									);
 			if(!($obj = $this->Event->findById($id))) {
 				 throw new BeditaException(__("Error loading event: ", true).$id);
 			}
-						
+
+			if(!$this->Event->checkType($obj['object_type_id'])) {
+               throw new BeditaException(__("Wrong content type: ", true).$id);
+			}
 			$relations = $this->objectRelationArray($obj['RelatedObject']);
 			
 			// build array of id's categories associated to event
@@ -183,7 +186,10 @@ class EventsController extends ModulesController {
 										"OK"	=> "/events/view/{$this->Event->id}",
 										"ERROR"	=> "/events/view/{$this->Event->id}" 
 										),
-	 			"save"				=> 	array(
+                "view"              =>  array(
+                                            "ERROR" => "/events"
+                                        ), 
+				"save"				=> 	array(
 	 										"OK"	=> "/events/view/{$this->Event->id}",
 	 										"ERROR"	=> "/events" 
 	 									), 

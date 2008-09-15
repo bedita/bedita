@@ -45,12 +45,15 @@ class NewsController extends ModulesController {
 															"RelatedObject",
 															"Category"
 															),
-										"Content"
 										)
 									);
 			$obj = $this->ShortNews->findById($id);
 			if($obj == null || $obj === false) {
 				 throw new BeditaException(__("Error loading news: ", true).$id);
+			}
+
+			if(!$this->ShortNews->checkType($obj['object_type_id'])) {
+               throw new BeditaException(__("Wrong content type: ", true).$id);
 			}
 			
 			$relations = $this->objectRelationArray($obj['RelatedObject']);

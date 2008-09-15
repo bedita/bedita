@@ -60,11 +60,14 @@ class DocumentsController extends ModulesController {
 															"RelatedObject",
 															"Category"
 															),
-										"Content", "GeoTag"
+										"GeoTag"
 										)
 									);
 			if(!($obj = $this->Document->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading document: %d", true), $id));
+			}
+			if(!$this->Document->checkType($obj['object_type_id'])) {
+               throw new BeditaException(__("Wrong content type: ", true).$id);
 			}
 			$relations = $this->objectRelationArray($obj['RelatedObject']);
 			
@@ -120,7 +123,7 @@ class DocumentsController extends ModulesController {
 		if(!isset($this->data['Permissions'])) 
 			$this->data['Permissions'] = array() ;
 		$this->Permission->saveFromPOST($this->Document->id, $this->data['Permissions'], 
-	 			!empty($this->data['recursiveApplyPermissions']), 'event');
+	 			!empty($this->data['recursiveApplyPermissions']), 'document');
  		$this->Transaction->commit() ;
  		$this->userInfoMessage(__("Document saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("document [". $this->data["title"]."] saved");

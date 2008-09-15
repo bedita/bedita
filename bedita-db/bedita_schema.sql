@@ -12,16 +12,28 @@ DROP VIEW IF EXISTS `view_questionnaires`;
 DROP VIEW IF EXISTS `view_sections`;
 DROP VIEW IF EXISTS `view_permissions` ;
 DROP VIEW IF EXISTS `view_trees` ;
+
+-- old tables/views --
+DROP TABLE IF EXISTS `documents`;
+DROP TABLE IF EXISTS `base_documents`;
+DROP TABLE IF EXISTS `content_bases`;
+DROP TABLE IF EXISTS `content_bases_objects`;
+DROP TABLE IF EXISTS `content_bases_object_categories`;
+DROP TABLE IF EXISTS `events`;
+DROP TABLE IF EXISTS `short_news`;
+DROP TABLE IF EXISTS `audio`;
+DROP TABLE IF EXISTS `video`;
+DROP TABLE IF EXISTS `content_bases_object_categories`;
+DROP TABLE IF EXISTS `newsletters`;
 DROP VIEW IF EXISTS `view_galleries` ;
 
+-- current tables --
 DROP TABLE IF EXISTS `cake_sessions`;
 DROP TABLE IF EXISTS `links`;
 DROP TABLE IF EXISTS `cards`;
-DROP TABLE IF EXISTS `documents`;
 DROP TABLE IF EXISTS `books`;
 DROP TABLE IF EXISTS `date_items`;
 DROP TABLE IF EXISTS `geo_tags`;
-DROP TABLE IF EXISTS `events`;
 DROP TABLE IF EXISTS `object_users`;
 DROP TABLE IF EXISTS `bibliographies`;
 DROP TABLE IF EXISTS `object_relations`;
@@ -39,7 +51,6 @@ DROP TABLE IF EXISTS `videos`;
 DROP TABLE IF EXISTS `areas`;
 DROP TABLE IF EXISTS `sections`;
 DROP TABLE IF EXISTS `streams`;
-DROP TABLE IF EXISTS `short_news`;
 DROP TABLE IF EXISTS `mail_messages`;
 DROP TABLE IF EXISTS `mail_templates`;
 DROP TABLE IF EXISTS `mail_addresses`;
@@ -430,16 +441,6 @@ CREATE TABLE mail_jobs (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE short_news (
-  id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(id),
-  INDEX short_news_FKIndex1(id),
-  FOREIGN KEY(id)
-    REFERENCES contents(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...or removed';
-
 CREATE TABLE streams (
   id INTEGER UNSIGNED NOT NULL,
   path VARCHAR(255) NOT NULL ,
@@ -623,15 +624,6 @@ CREATE TABLE bibliographies (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...' ;
 
-CREATE TABLE events (
-  id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(id)
-    REFERENCES contents(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...or removed' ;
-
 CREATE TABLE date_items (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   content_id INTEGER UNSIGNED NOT NULL,
@@ -657,16 +649,6 @@ CREATE TABLE geo_tags (
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE documents (
-  id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(id)
-    REFERENCES contents(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
 
 CREATE TABLE books (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -806,12 +788,6 @@ CREATE  VIEW `view_communities` AS
 SELECT 
 collections.*
 FROM objects INNER JOIN collections ON objects.id = collections.id AND objects.object_type_id = 9
-;
-
-CREATE  VIEW `view_galleries` AS 
-SELECT 
-collections.*
-FROM objects INNER JOIN collections ON objects.id = collections.id AND objects.object_type_id = 29
 ;
 
 CREATE  VIEW `view_streams` AS 

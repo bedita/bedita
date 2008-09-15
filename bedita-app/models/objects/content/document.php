@@ -14,10 +14,12 @@
 */
 class Document extends BeditaContentModel 
 {
+	var $useTable = 'contents';
+
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('GeoTag'),
 			'SearchTextSave'		=> array(),
-			'ForeignDependenceSave' => array('BEObject', 'Content'),
+			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteObject' 			=> array(
 										'objects' => array(
 											"relatedObjects" => array("comment")

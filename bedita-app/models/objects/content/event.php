@@ -16,10 +16,12 @@
 */
 class Event extends BeditaContentModel
 {
+    var $useTable = 'contents';
+
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('DateItem'),
 			'SearchTextSave'		=> array(),
-			'ForeignDependenceSave' => array('BEObject', 'Content'),
+			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteObject' 			=> 'objects',
 	); 	 
 

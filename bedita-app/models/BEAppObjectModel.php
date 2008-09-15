@@ -170,6 +170,40 @@ class BEAppObjectModel extends BEAppModel {
 		return true ;
 	}
 	
+    /**
+     * default values.. TODO: use cake validation rules??
+     */     
+    protected function validateContent() {
+        if(isset($this->data[$this->name])) $data = &$this->data[$this->name] ;
+        else $data = &$this->data ;
+        
+        $default = array(
+            'start'             => array('getDefaultDateFormat', (isset($data['start']) && !empty($data['start']))?$data['start']:time()),
+            'end'           => array('getDefaultDateFormat', ((isset($data['end']) && !empty($data['end']))?$data['end']:null)),
+            'type'      => array('getDefaultTextFormat', (isset($data['type']))?$data['type']:null),
+        ) ;
+        
+        foreach ($default as $name => $rule) {
+            if(!is_array($rule) || !count($rule)) {
+                $data[$name] = $rule ;
+                continue ;
+            }
+            $method = $rule[0];
+            unset($rule[0]);
+            if (method_exists($this, $method)) {
+                $data[$name] = call_user_func_array(array(&$this, $method), $rule);
+            } 
+        }
+        return true ;
+    }
+
+    public function checkType($objTypeId) {
+    	return ($objTypeId == Configure::read("objectTypes.".strtolower($this->name)));
+    }
+    
+    public function getTypeId() {
+        return Configure::read("objectTypes.".strtolower($this->name));
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,7 +217,7 @@ class BeditaContentModel extends BEAppObjectModel {
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'SearchTextSave'		=> array(),
-			'ForeignDependenceSave' => array('BEObject', 'Content'),
+			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteObject' 			=> 'objects',
 	); 
 
@@ -195,14 +229,13 @@ class BeditaContentModel extends BEAppObjectModel {
 					'foreignKey'	=> 'id',
 					'dependent'		=> true
 				),
-			'Content' =>
-				array(
-					'className'		=> 'Content',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
 		) ;			
+
+
+	function beforeValidate() {
+    	return $this->validateContent();
+    }
+		
 }
 
 class BeditaStreamModel extends BEAppObjectModel {
@@ -239,6 +272,10 @@ class BeditaStreamModel extends BEAppObjectModel {
 				),
 	);
 	
+    function beforeValidate() {
+        return $this->validateContent();
+    }
+        
 	function __clone() {
 		throw new BEditaCloneModelException($this);
 	}		

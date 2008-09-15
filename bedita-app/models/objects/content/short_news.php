@@ -16,5 +16,6 @@
 */
 class ShortNews extends BeditaContentModel
 {
+	   var $useTable = 'contents';	
 }
 ?>
