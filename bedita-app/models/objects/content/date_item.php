@@ -25,24 +25,19 @@ class DateItem extends BEAppModel
 	) ;
 	
 	function beforeValidate() {
-		if(isset($this->data[$this->name])) 
-			$data = &$this->data[$this->name] ;
-		else 
-			$data = &$this->data ;
-		
-		$data['start'] = $this->getDefaultDateFormat($data['start']);
-	 	$data['end'] = $this->getDefaultDateFormat($data['end']);
-		
-	 	if (!empty($data['start']) && !empty($data['timeStart'])) {
-	 		$data['start'] .= " " . $data['timeStart'];
-	 	}
-		if (!empty($data['end']) && !empty($data['timeEnd'])) {
-	 		$data['end'] .= " " . $data['timeEnd'];
-	 	} else if(empty($data['end'])) {
-	 		$data['end'] = $data['start']  ;
-	 	}
- 	 	
-		return true;
+
+
+        $this->checkDate('start');
+        $this->checkDate('end');
+        $data = &$this->data[$this->name] ;
+        if(!empty($data['start']) && !empty($data['timeStart'])) {
+            $data['start'] .= " " . $data['timeStart'];
+        }
+        if (!empty($data['end']) && !empty($data['timeEnd'])) {
+            $data['end'] .= " " . $data['timeEnd'];
+        }
+        
+        return true;
 	}
 }
 ?>
