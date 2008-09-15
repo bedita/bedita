@@ -13,8 +13,10 @@
 */
 class Card extends BEAppObjectModel {
 
+	
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
+			'SearchTextSave'		=> array("title" => 8 , "description" => 4, "company_name" => 3, "city" => 4),
 			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteObject' 			=> 'objects',
 	); 
@@ -30,8 +32,10 @@ class Card extends BEAppObjectModel {
 		);
 	
 	function beforeValidate() {
-		if(!empty($this->data['Card']['birthdate'])) $this->data['Card']['birthdate'] = $this->getDefaultDateFormat($this->data['Card']['birthdate']);
-		if(!empty($this->data['Card']['deathdate'])) $this->data['Card']['deathdate'] = $this->getDefaultDateFormat($this->data['Card']['deathdate']);
+		
+		$this->checkDate('birthdate');
+		$this->checkDate('deathdate');
+
 		return true;
 	}
 }

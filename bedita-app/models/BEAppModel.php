@@ -56,6 +56,34 @@ class BEAppModel extends AppModel {
 	}
 	
 	/**
+	 * Check date field in $this->data[ModelName][$key] -> set to null if empty or call getDefaultDateFormat
+	 *
+	 * @param array $data
+	 * @param string $key
+	 */
+	protected function checkDate($key) {
+		$data = &$this->data[$this->name];
+		if(empty($data[$key])) {
+			$data[$key] = null;
+		} else {
+			$data[$key] = $this->getDefaultDateFormat($data[$key]);
+		}
+	}
+
+	/**
+	 * Check float/double field in $data array[$key] -> set to null if empty or call getDefaultDateFormat
+	 *
+	 * @param array $data
+	 * @param string $key
+	 */
+	protected function checkFloat($key) {
+		$data = &$this->data[$this->name];
+		if(empty($data[$key])) {
+			$data[$key] = null;
+		}
+	}
+	
+	/**
 	 * Default text format
 	 *
 	 * @param unknown_type $value

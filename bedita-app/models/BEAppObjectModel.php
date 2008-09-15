@@ -38,7 +38,6 @@ class BEAppObjectModel extends BEAppModel {
 			unset($data[$this->primaryKey]) ;
 		}
 
-		$this->dataCleanup($data);	
 		$result = parent::save(array($this->alias => $data), $validate, $fieldList) ;
 		
 		/**
@@ -54,35 +53,6 @@ class BEAppObjectModel extends BEAppModel {
 		return $result ;
 	}
 	
-	/**
-	 * cleanup empty arrays... before saving... 
-	 * TODO: is there a better way with cake??
-	 */  
-	private function dataCleanup(array &$data) {
-		$keys = array("GeoTag");
-		foreach ($keys as $k) {
-			if(!empty($data[$k])) {
-				foreach ($data[$k] as $key => $val) {
-					if(empty($val)) {
-						unset($data[$k][$key]);
-					} else if(is_array($val)) {
-						foreach ($val as $k2 => $v2) {
-							if(empty($v2)) {
-								unset($data[$k][$key][$k2]);
-							} 	
-						}
-						if(empty($data[$k][$key])) {
-							unset($data[$k][$key]);
-						}
-					}
-					if(empty($data[$k])) {
-						unset($data[$k]);
-					}
-				}
-			}
-		}
-	}
-
 	/**
 	 * Un oggetto crea un clone di se stesso.
 	 *
