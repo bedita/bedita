@@ -376,18 +376,18 @@ class AppController extends Controller
 		$relationArray = array();
 		
 		foreach ($objectArray as $obj) {	
-			
 			if (empty($status) || in_array($obj["status"],$status)) {
-				$rel = $obj['ObjectRelation']['switch'];
-				$modelClass = $conf->objectTypeModels[$obj['object_type_id']] ;
+				$rel = $obj['switch'];
+				$modelClass = $this->BEObject->getType($obj['object_id']);
+				//$modelClass = $conf->objectTypeModels[$obj['object_type_id']] ;
 
 				$this->{$modelClass} = $this->loadModelByType($modelClass);
 				$this->modelBindings($this->{$modelClass});
 	
-				if(!($objDetail = $this->{$modelClass}->findById($obj['id']))) {
+				if(!($objDetail = $this->{$modelClass}->findById($obj['object_id']))) {
 					continue ;
 				}
-				$objDetail['priority'] = $obj['ObjectRelation']['priority'];
+				$objDetail['priority'] = $obj['priority'];
 				
 				if(isset($objDetail['path']))
 					$objDetail['filename'] = substr($objDetail['path'],strripos($objDetail['path'],"/")+1);
@@ -395,8 +395,7 @@ class AppController extends Controller
 				$relationArray[$rel][] = $objDetail;
 			}
 			
-		}
-
+		}		
 		return $relationArray;
 	}
 }

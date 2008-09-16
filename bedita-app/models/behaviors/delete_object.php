@@ -111,13 +111,14 @@ class DeleteObjectBehavior extends ModelBehavior {
 			$conf = Configure::getInstance();
 			foreach ($res["RelatedObject"] as $obj) {
 				
-				if (in_array($obj["ObjectRelation"]["switch"],$relations)) {
-					$modelClass = $conf->objectTypeModels[$obj["object_type_id"]];
+				if (in_array($obj["switch"],$relations)) {
+					
+					$modelClass = $o->getType($obj['object_id']);
 
 					$model = ClassRegistry::init($modelClass);
 				
-					if (!$model->del($obj["id"])) 
-						throw new BeditaException(__("Error deleting related object ", true), "id: ". $obj["id"] . ", switch: " . $obj["ObjectRelation"]["switch"]);
+					if (!$model->del($obj["object_id"])) 
+						throw new BeditaException(__("Error deleting related object ", true), "id: ". $obj["object_id"] . ", switch: " . $obj["switch"]);
 				}
 				
 			}

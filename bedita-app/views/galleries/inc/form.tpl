@@ -18,6 +18,8 @@
 	
 {include file="../common_inc/form_translations.tpl"}
 
+{include file="../common_inc/form_assoc_objects.tpl"}
+	
 {include file="../common_inc/form_advanced_properties.tpl" el=$object}
 {include file="../common_inc/form_custom_properties.tpl" el=$object}
 {include file="../common_inc/form_permissions.tpl" el=$object recursion=true}

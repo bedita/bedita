@@ -87,18 +87,17 @@ class BEObject extends BEAppModel
 				'foreignKey'	=> 'object_id',
 				'dependent'		=> true
 			),
-	);
-	
-	var $hasAndBelongsToMany = array(
 		'RelatedObject' =>
 			array(
-				'className'				=> 'BEObject',
+				'className'				=> 'ObjectRelation',
 				'joinTable'    			=> 'object_relations',
 				'foreignKey'   			=> 'id',
 				'associationForeignKey'	=> 'object_id',
-				'unique'				=> true,
 				'order'					=> 'priority'
 			),
+		);
+	
+	var $hasAndBelongsToMany = array(
 		'Category' =>
 			array(
 				'className'				=> 'Category',
@@ -192,8 +191,8 @@ class BEObject extends BEAppModel
 		$this->unbindModel(array("hasMany"=>array("LangText")));
 
 		// unbind relations type. Save it in aftersave
-		$this->restoreRelatedObject = $this->hasAndBelongsToMany['RelatedObject'];
-		$this->unbindModel( array('hasAndBelongsToMany' => array('RelatedObject')) );
+		$this->restoreRelatedObject = $this->hasMany['RelatedObject'];
+		$this->unbindModel( array('hasMany' => array('RelatedObject')) );
 		
 		return true ;
 	}
@@ -257,12 +256,11 @@ class BEObject extends BEAppModel
 			}
 		}
 		
-		
 		// save realtions between objects
-		if (!empty($this->data['RelatedObject'])) {
+		if (!empty($this->data['BEObject']['RelatedObject'])) {
 			
 			$this->bindModel( array(
-				'hasAndBelongsToMany' => array(
+				'hasMany' => array(
 						'RelatedObject' => $this->restoreRelatedObject
 							)
 				) 
@@ -276,11 +274,11 @@ class BEObject extends BEAppModel
 			// set one-way relation
 			$oneWayRelation = array_merge( Configure::read("defaultOneWayRelation"), Configure::read("cfgOneWayRelation") );
 			
-			$assoc 	= $this->hasAndBelongsToMany['RelatedObject'] ;
+			$assoc 	= $this->hasMany['RelatedObject'] ;
 			$table 	= $db->name($db->fullTableName($assoc['joinTable']));
 			$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch, priority"  ;
 
-			foreach ($this->data['RelatedObject']['RelatedObject'] as $switch => $values) {
+			foreach ($this->data['BEObject']['RelatedObject'] as $switch => $values) {
 				
 				foreach($values as $key => $val) {
 					$obj_id		= isset($val['id'])? $val['id'] : false;
@@ -324,7 +322,7 @@ class BEObject extends BEAppModel
 					}
 				}
 			}
-			
+
 			foreach ($queriesDelete as $qDel) {
 				if ($db->query($qDel) === false)
 					throw new BeditaException(__("Error deleting associations", true), $qDel);

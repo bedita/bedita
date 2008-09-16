@@ -162,15 +162,15 @@ $(document).ready(function(){
 				<td style="width:{$thumbWidth}px;">
 					{if strtolower($mobj.ObjectType.name) == "image"}
 					
-					<a title="show details" href="/multimedia/view/{$mobj.id}" target="_blank">					
+					<a title="show details" href="{$html->url('/multimedia/view/')}{$mobj.id}" target="_blank">					
 						{$beEmbedMedia->object($mobj,$thumbWidth,$thumbHeight)}
 					</a>
 
 					{elseif ($mobj.provider|default:false)}
 						{assign_associative var="attributes" style="width:30px;heigth:30px;"}
-						<div><a href="{$filePath}" target="_blank">{$mediaProvider->thumbnail($mobj, $attributes) }</a></div>
+						<div><a href="{$mobj.path}" target="_blank">{$mediaProvider->thumbnail($mobj, $attributes) }</a></div>
 					{else}
-						<div><a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$mobj.type}.gif" /></a></div>
+						<div><a href="{$conf->mediaUrl}{$mobj.path}" target="_blank"><img src="{$session->webroot}img/mime/{$mobj.type}.gif" /></a></div>
 					{/if}
 				</td>
 				{* <td>{$mobj.id}</td> *}
