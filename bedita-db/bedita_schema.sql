@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS `documents`;
 DROP TABLE IF EXISTS `base_documents`;
 DROP TABLE IF EXISTS `content_bases`;
 DROP TABLE IF EXISTS `content_bases_objects`;
+DROP TABLE IF EXISTS `content_objects`;
 DROP TABLE IF EXISTS `content_bases_object_categories`;
 DROP TABLE IF EXISTS `events`;
 DROP TABLE IF EXISTS `short_news`;
