@@ -19,7 +19,25 @@
 */
 
 class BEAppObjectModel extends BEAppModel {
-
+	var $recursive 	= 2 ;
+	
+	var $actsAs 	= array(
+			'CompactResult' 		=> array(),
+			'SearchTextSave',
+			'ForeignDependenceSave' => array('BEObject'),
+			'DeleteObject' 			=> 'objects',
+	); 
+	
+	var $hasOne= array(
+			'BEObject' =>
+			array(
+				'className'		=> 'BEObject',
+				'conditions'   => '',
+				'foreignKey'	=> 'id',
+				'dependent'		=> true
+			)
+		);
+	
 	/**
  	* Sovrascrive e poi chiama la funzione del parent xch� deve settare
  	* ove necessario, il tipo di oggetto da salvare
@@ -171,29 +189,11 @@ class BEAppObjectModel extends BEAppModel {
 	}
 	
     /**
-     * default values.. TODO: use cake validation rules??
+     * default values for Contents
      */     
     protected function validateContent() {
-        if(isset($this->data[$this->name])) $data = &$this->data[$this->name] ;
-        else $data = &$this->data ;
-        
-        $default = array(
-            'start'             => array('getDefaultDateFormat', (isset($data['start']) && !empty($data['start']))?$data['start']:time()),
-            'end'           => array('getDefaultDateFormat', ((isset($data['end']) && !empty($data['end']))?$data['end']:null)),
-            'type'      => array('getDefaultTextFormat', (isset($data['type']))?$data['type']:null),
-        ) ;
-        
-        foreach ($default as $name => $rule) {
-            if(!is_array($rule) || !count($rule)) {
-                $data[$name] = $rule ;
-                continue ;
-            }
-            $method = $rule[0];
-            unset($rule[0]);
-            if (method_exists($this, $method)) {
-                $data[$name] = call_user_func_array(array(&$this, $method), $rule);
-            } 
-        }
+    	$this->checkDate('start');
+    	$this->checkDate('end');
         return true ;
     }
 
@@ -212,26 +212,10 @@ class BEAppObjectModel extends BEAppModel {
 **/
 
 class BeditaContentModel extends BEAppObjectModel {
-	var $recursive 	= 2 ;
 	
-	var $actsAs 	= array(
-			'CompactResult' 		=> array(),
-			'SearchTextSave'		=> array(),
-			'ForeignDependenceSave' => array('BEObject'),
-			'DeleteObject' 			=> 'objects',
-	); 
-
-	var $hasOne= array(
-			'BEObject' =>
-				array(
-					'className'		=> 'BEObject',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
-		) ;			
-
-
+	public $searchFields = array("title" => 10 , "description" => 6, 
+		"subject" => 4, "abstract" => 4, "body" => 4);	
+	
 	function beforeValidate() {
     	return $this->validateContent();
     }
@@ -239,8 +223,10 @@ class BeditaContentModel extends BEAppObjectModel {
 }
 
 class BeditaStreamModel extends BEAppObjectModel {
-	var $recursive 	= 2 ;
 
+	public $searchFields = array("title" => 10 , "description" => 6, 
+		"subject" => 4, "abstract" => 4, "body" => 4);	
+	
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'SearchTextSave'		=> array(),

@@ -20,21 +20,22 @@ class SearchText extends BEAppModel
 			$bviorCompactResults = $model->bviorCompactResults ;
 		}
 		$model->bviorCompactResults = true ;
-		$model->contain(array("BEObject"));
 		if(!($data = $model->findById($model->{$model->primaryKey}))) 
 		  throw new BeditaException("Error loading {$model->name}");
 		$model->bviorCompactResults = $bviorCompactResults ;
-		$relevance = array("title" => 10 , "description" => 5);
+		
+		$searchFields = ($model->searchFields != null) ? $model->searchFields: array();
+		$indexFields = array_keys($searchFields);
 		foreach ($data as $k => $v) {
-			if($k === 'title' || $k === 'description') {
+			if(in_array($k, $indexFields)) {
                 if (!empty($v)) {
 					$sText = array(
 		                'object_id' => $data['id'],
 		                'lang'      => $data['lang'], 
 		                'content'   => $v,
-		                'relevance' => $relevance[$k]
+		                'relevance' => $searchFields[$k]
 	                );
-	                
+
 	                $this->create();
 	                if(!$this->save($sText)) 
 	                    throw new BeditaException("Error saving search text {$model}: $k => $v");

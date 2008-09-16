@@ -7,19 +7,17 @@
 class SearchTextSaveBehavior extends ModelBehavior {
 	var $config = array();
 	
-	function setup(&$model, $config = array()) {
-		$this->config[$model->name] = $config ;
+	function setup(&$model, $config) {
 	}
 	
 	/**
 	 * @param object $model
 	 * @return boolean
 	 */
-	function afterSave($model) {
+	function afterSave($model, $created) {
 		if(!isset($model->{$model->primaryKey})) 
 		  throw new BeditaException("Missing primary key from {$model}");	
-		App::import("Model", "SearchText");
-		$searchTextModel = new SearchText();
+		$searchTextModel = ClassRegistry::init("SearchText");
 		$searchTextModel->createSearchText($model);		
 	}
 

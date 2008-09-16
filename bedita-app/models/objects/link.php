@@ -16,21 +16,5 @@
  * 		
 */
 class Link extends BEAppObjectModel {
-
-	var $actsAs 	= array(
-			'CompactResult' 		=> array(),
-			'ForeignDependenceSave' => array('BEObject'),
-			'DeleteObject' 			=> 'objects',
-	); 
-	
-	var $hasOne= array(
-			'BEObject' =>
-			array(
-				'className'		=> 'BEObject',
-				'conditions'   => '',
-				'foreignKey'	=> 'id',
-				'dependent'		=> true
-			)
-		);
 }
 ?>

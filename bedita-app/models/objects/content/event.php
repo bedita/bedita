@@ -20,7 +20,7 @@ class Event extends BeditaContentModel
 
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('DateItem'),
-			'SearchTextSave'		=> array(),
+			'SearchTextSave',
 			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteObject' 			=> 'objects',
 	); 	 

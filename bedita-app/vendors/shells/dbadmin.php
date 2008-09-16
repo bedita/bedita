@@ -11,24 +11,18 @@ class DbadminShell extends Shell {
 		$conf = Configure::getInstance();
 		$searchText = ClassRegistry::init("SearchText");
 		$beObj = ClassRegistry::init("BEObject");
-		$types = array('Event', 'Document', 'ShortNews');		
+		$beObj->contain();
+		$res = $beObj->find('all',array("fields"=>array('id')));
 
-		foreach ($types as $t) {
-			if(!class_exists($t)){
-				App::import('Model',$t);
-			}
-			$model = new $t();
-			$objTypeId = $conf->objectTypes[strtolower($t)];
-			$res = $beObj->findObjs(null, null, array($objTypeId));
-			foreach ($res['items'] as $o) {
-				$model->id = $o['id'];
-				$searchText = ClassRegistry::init("SearchText");
-				$searchText->deleteAll("object_id=".$model->id);
-				$searchText->createSearchText($model);
-			}
-			$this->out("Objects of type $t indexed");
-		}		
-		$this->out("Search text index build");
+		foreach ($res as $r) {
+			$id = $r['BEObject']['id'];
+			$type = $beObj->getType($id);
+			$model = ClassRegistry::init($type);
+			$model->{$model->primaryKey}=$id;
+			$this->out("id: $id - type: $type");
+			$searchText->deleteAll("object_id=".$id);
+			$searchText->createSearchText($model);
+		}
 	}
 	
 	/**

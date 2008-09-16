@@ -13,23 +13,8 @@
 */
 class Card extends BEAppObjectModel {
 
-	
-	var $actsAs 	= array(
-			'CompactResult' 		=> array(),
-			'SearchTextSave'		=> array("title" => 8 , "description" => 4, "company_name" => 3, "city" => 4),
-			'ForeignDependenceSave' => array('BEObject'),
-			'DeleteObject' 			=> 'objects',
-	); 
-	
-	var $hasOne= array(
-			'BEObject' =>
-			array(
-				'className'		=> 'BEObject',
-				'conditions'   => '',
-				'foreignKey'	=> 'id',
-				'dependent'		=> true
-			)
-		);
+	public $searchFields = array("title" => 8 , "description" => 4, 
+		"company_name" => 3, "city" => 4);
 	
 	function beforeValidate() {
 		
