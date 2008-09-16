@@ -3,7 +3,6 @@
 class ContentTestFixture extends CakeTestFixture {
 	
     var $name = 'ContentTest';
-    //var $import = 'Content';
     
     var $fields = array(
         'id' => array('type' => 'integer', 'key' => 'primary'),

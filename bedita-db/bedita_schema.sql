@@ -445,7 +445,7 @@ CREATE TABLE streams (
   id INTEGER UNSIGNED NOT NULL,
   path VARCHAR(255) NOT NULL ,
   name VARCHAR(255) NULL,
-  `type` VARCHAR(40) NULL,
+  mime_type VARCHAR(60) NULL,
   size INTEGER UNSIGNED NULL,
   PRIMARY KEY(id),
   INDEX stream_FKIndex1(id),

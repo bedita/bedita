@@ -46,7 +46,7 @@ class AreaData extends Object {
 				'title' 	=> 'Titolo empty Stream', 
 				'path'		=> 'path_file',
 				'name'		=> 'file_name',
-				'type'		=> 'plain/txt',
+				'mime_type'		=> 'plain/txt',
 				'size'		=> 123456
 			),
 			

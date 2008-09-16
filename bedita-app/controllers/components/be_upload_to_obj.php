@@ -83,8 +83,12 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 		// Prepare data
 		if (!empty($dataStream)) {
 			$data = array_merge($dataStream, $this->params['form']['Filedata']);
+		} else {
+			$data = $this->params['form']['Filedata'];
 		}
-
+		$data['mime_type'] = $data['type'];
+		unset($data['type']);
+		
 		$override = (isset($this->params['form']['override'])) ? ((boolean)$this->params['form']['override']) : false ;
 
 		if (empty($data['title']))
@@ -99,9 +103,9 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 		unset($data['error']) ;
 
 		// FLASH returns application/octect-stream as MIME type
-		if($data['type'] == "application/octet-stream") { 
-			$old  = $data['type'] ;
-			unset($data['type']) ;
+		if($data['mime_type'] == "application/octet-stream") { 
+			$old  = $data['mime_type'] ;
+			unset($data['mime_type']) ;
 			$this->BeFileHandler->getInfoURL($data['path'], $data) ;
 		}
 		try {
@@ -155,7 +159,7 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 			case 'youtube': {
 				$dataURL['title']		= (!empty($dataURL['title'])) ? trim($dataURL['title']) : 'youtube video';
 				$dataURL['name']		= preg_replace("/[\'\"]/", "", $dataURL['title']) ;
-				$dataURL['type']		= "video/$provider" ;
+				$dataURL['mime_type']		= "video/$provider" ;
 				$dataURL['path']		= $dataURL['url'] ;
 				$dataURL['provider']	=  $provider ;
 				$dataURL['uid']  	 	=  $name ;
@@ -169,7 +173,7 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 				else $dataURL['title'] = trim($dataURL['title']) ;
 								
 				$dataURL['name']		= preg_replace("/[\'\"]/", "", $dataURL['title']) ;
-				$dataURL['type']		= "video/$provider" ;
+				$dataURL['mime_type']		= "video/$provider" ;
 				$dataURL['path']		= $this->BeBlipTv->info['url'] ;
 				$dataURL['provider']	=  $provider ;
 				$dataURL['uid']  	 	=  $name ;

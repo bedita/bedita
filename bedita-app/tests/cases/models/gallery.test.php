@@ -60,7 +60,7 @@ class GalleryTestCase extends CakeTestCase {
 			'width'     => '350',
 			'height'    => '235',
 			'name'		=> 'scimparpente',
-			'type'		=> 'ascii/img',
+			'mime_type'		=> 'ascii/img',
 			'size'		=> 75
 		);
 		$result = $this->Image->save($this->data['file']);
@@ -78,7 +78,7 @@ class GalleryTestCase extends CakeTestCase {
 			'width'     => '800',
 			'height'    => '600',
 			'name'		=> 'moscacavallina',
-			'type'		=> 'ascii/img',
+			'mime_type'		=> 'ascii/img',
 			'size'		=> 205
 		);
 		$result = $this->Image->save($this->data['file']);
@@ -96,7 +96,7 @@ class GalleryTestCase extends CakeTestCase {
 			'width'     => '969',
 			'height'    => '673',
 			'name'		=> 'leorpente',
-			'type'		=> 'ascii/img',
+			'mime_type'		=> 'ascii/img',
 			'size'		=> 572
 		);
 		$result = $this->Image->save($this->data['file']);
@@ -114,7 +114,7 @@ class GalleryTestCase extends CakeTestCase {
 			'width'     => '800',
 			'height'    => '554',
 			'name'		=> 'ippotigre',
-			'type'		=> 'ascii/img',
+			'mime_type'		=> 'ascii/img',
 			'size'		=> 329
 		);
 		$result = $this->Image->save($this->data['file']);

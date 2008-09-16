@@ -82,9 +82,9 @@ class BeThumbHelper extends AppHelper {
 	//$width = false, $height = false, $longside = null, $mode = null, $modeparam = null, $type = null, $upscale = null)
 	{
 		// this method is for image only, check bedita object type
-		if ( strpos($be_obj['type'], "image") === false )
+		if ( strpos($be_obj['mime_type'], "image") === false )
 		{
-			$this->_triggerError ( $this->_helpername . ": '" . $be_obj['name'] . "' is not a valid Bedita image object (object type is " . $be_obj['type'] . ")", E_USER_NOTICE ) ;
+			$this->_triggerError ( $this->_helpername . ": '" . $be_obj['name'] . "' is not a valid Bedita image object (object type is " . $be_obj['mime_type'] . ")", E_USER_NOTICE ) ;
 			return $this->_conf['imgMissingFile'];
 		}
 		else $this->_resetObjects();
@@ -179,7 +179,7 @@ class BeThumbHelper extends AppHelper {
 			$this->_imageInfo["h"] = $be_obj['height'];
 	
 			// since not using getimagesize(), try to get image type from object or extension
-			if ( !($this->_imageInfo['ntype'] =@ $this->array_isearch ( substr (strrchr ($be_obj['type'], "/"), 1), $this->_imageInfo['ext'] ) ) )
+			if ( !($this->_imageInfo['ntype'] =@ $this->array_isearch ( substr (strrchr ($be_obj['mime_type'], "/"), 1), $this->_imageInfo['ext'] ) ) )
 			{
 				if ( !( $this->_imageInfo['ntype'] =@ $this->_array_isearch ($this->_imageInfo['ext'], $this->_imagetype) ) )
 				{

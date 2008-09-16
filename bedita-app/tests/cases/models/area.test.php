@@ -10,10 +10,11 @@ require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
 class AreaTestCase extends BeditaTestCase {
 
-    var $fixtures 	= array( 'area_test' );
- 	var $uses		= array('BEObject', 'Collection', 'Area', 'Tree', 'Section') ;
+//    var $fixtures 	= array( 'area_test' );
+// 	var $uses		= array('BEObject', 'Collection', 'Area', 'Tree', 'Section') ;
+ 	var $uses		= array('Area') ;
     var $dataSource	= 'test' ;	
- 	var $components	= array('Transaction', 'Permission') ;
+// 	var $components	= array() ;
 
 
  	function testInserimentoMinimo() {
@@ -31,19 +32,13 @@ class AreaTestCase extends BeditaTestCase {
 		pr("Area creata:");
 		pr($result);
 		
-		// I campi devono essere nella tabella Index
-		pr("Proprieta' Indicizzate presenti in DB:");
-		$SQL = "SELECT * FROM `indexs`  WHERE object_id IN ({$this->Area->id})" ;
-		$result = $this->Area->execute($SQL) ;
-		pr($result) ;
-		
 		// Cancella l'area creata
 		$result = $this->Area->Delete($this->Area->{$this->Area->primaryKey});
 		$this->assertEqual($result,true);		
 		pr("Area cancellata");
 		
 	} 
-	
+/*	
 	function testInserimentoConCustomProperties() {
 		$conf  		= Configure::getInstance() ;
 		
@@ -133,7 +128,7 @@ class AreaTestCase extends BeditaTestCase {
 	function testInserimentoInTreeCancellazione() {
 		$conf  		= Configure::getInstance() ;
 		
-		$this->Transaction->begin() ;
+//		$this->Transaction->begin() ;
 
 		// Inserisce
 		$result = $this->Area->save($this->data['insert']['area']['minimo']) ;
@@ -177,7 +172,7 @@ class AreaTestCase extends BeditaTestCase {
 		$result = $this->Section->findById($id3) ;
 		$this->assertEqual($result, false);
 		
-		$this->Transaction->rollback() ;
+//		$this->Transaction->rollback() ;
 	} 
 	
 	/////////////////////////////////////////////////
@@ -185,9 +180,9 @@ class AreaTestCase extends BeditaTestCase {
 
 	
 	protected function cleanUp() {
-		$this->Transaction->rollback() ;
+//		$this->Transaction->rollback() ;
 	}
-	
+*/	
 	public   function __construct () {
 		parent::__construct('Area', dirname(__FILE__)) ;
 	}	

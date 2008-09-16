@@ -19,7 +19,7 @@ class BeFileHandlerData extends Object {
 		'minimo'	=> array(
 			'title' 		=> 'test_target.jpg', 
 			'name'			=> 'test_target.jpg',
-			'type'			=> 'image/jpeg',
+			'mime_type'			=> 'image/jpeg',
 			'nameSource'	=> 'test.jpg'
 			),
 		'minimoURL'	=> array(

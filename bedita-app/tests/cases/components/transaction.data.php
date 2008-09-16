@@ -21,14 +21,14 @@ class AreaData extends Object {
 		'makeFileFromData'	=> array(
 				'title' 	=> 'Titolo test File', 
 				'name'		=> 'txtFileTest.txt',
-				'type'		=> 'plain/txt',
+				'mime_type'		=> 'plain/txt',
 				'data'		=> "Questo file e' una prova"
 		),
 		
 		'makeFileFromFile'		=> array(
 				'title' 		=> 'Titolo test File', 
 				'name'			=> 'test_target.jpg',
-				'type'			=> 'image/jpeg',
+				'mime_type'			=> 'image/jpeg',
 				'nameSource'	=> 'test.jpg'
 		),
 

@@ -196,7 +196,7 @@ class BeFileHandlerComponent extends Object {
 
 	private function _create(&$dati, $model = null) {
 		$model = false ;
-		$modelType = $this->_getTypeFromMIME($dati['type'], $model);
+		$modelType = $this->_getTypeFromMIME($dati['mime_type'], $model);
 		switch($modelType) {
 			case 'BEFile':
 				$model = 'BEFile' ;
@@ -218,7 +218,7 @@ class BeFileHandlerComponent extends Object {
 				$model = 'Video' ; 
 				break ;
 			default:
-				throw new BEditaMIMEException(__("MIME type not found",true).": ".$dati['type'].
+				throw new BEditaMIMEException(__("MIME type not found",true).": ".$dati['mime_type'].
 					" - matches: ".$modelType) ;
 		}
 		$this->{$model}->id = false ;
@@ -278,9 +278,9 @@ class BeFileHandlerComponent extends Object {
 	private function _modify($id, &$dati) {
 		$conf = Configure::getInstance() ;
 
-		$ret = $this->Stream->read('type', $id) ;
+		$ret = $this->Stream->read('mime_type', $id) ;
 			
-		if(empty($ret['Stream']['type'])) 
+		if(empty($ret['Stream']['mime_type'])) 
 			throw new BEditaMIMEException(__("MIME type of previous file isn't defined in database. Impossible replace it.", true)) ;
 		
 		// Preleva il tipo di oggetto da salvare e salva
@@ -370,25 +370,25 @@ class BeFileHandlerComponent extends Object {
 		/**
 		 * Preleva il MIME type
 		 */
-		if(!(isset($dati['type']) && !empty($dati['type']))) {			
+		if(!(isset($dati['mime_type']) && !empty($dati['mime_type']))) {			
 			// Cerca tramite l'estensione del path
-			$dati['type']= $this->_mimeByFInfo($path) ;
+			$dati['mime_type']= $this->_mimeByFInfo($path) ;
 			
-			if(!(isset($dati['type']) && !empty($dati['type']))) {
+			if(!(isset($dati['mime_type']) && !empty($dati['mime_type']))) {
 				if(!@empty($dati['name'])) {
 					$extension = pathinfo($dati['name'], PATHINFO_EXTENSION);
 				} else {
 					$extension = pathinfo(parse_url($path, PHP_URL_PATH), PATHINFO_EXTENSION);
 				}					
 				if(@empty($extension)) return false ;
-				$dati['type']= $this->_mimeByExtension($extension) ;						
+				$dati['mime_type']= $this->_mimeByExtension($extension) ;						
 
 			}
 			
-			if(!(isset($dati['type']) && !empty($dati['type']))) {
+			if(!(isset($dati['mime_type']) && !empty($dati['mime_type']))) {
 				// Cerca tramite implementazione ricerca in magic
 				$magic 			= new MimeByMagic() ;
-				$dati['type']	= $magic->getMime($path) ;
+				$dati['mime_type']	= $magic->getMime($path) ;
 			}
 		}
 		
@@ -399,7 +399,7 @@ class BeFileHandlerComponent extends Object {
 			}
 		}
 		
-		return $dati['type'] ;
+		return $dati['mime_type'] ;
 	}
 	
 	/**

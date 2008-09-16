@@ -40,7 +40,7 @@
 	
 	{elseif strtolower($object.ObjectType.name) == "audio"}
 	<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
-		<img src="{$session->webroot}img/mime/{$object.type}.gif" />
+		<img src="{$session->webroot}img/mime/{$object.mime_type}.gif" />
 	</a>
 
 	<embed 
@@ -53,7 +53,7 @@
 	/>
 	{else}
 	<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
-		<img src="{$session->webroot}img/mime/{$object.type}.gif" />
+		<img src="{$session->webroot}img/mime/{$object.mime_type}.gif" />
 	</a>
 	{/if}
 
@@ -69,7 +69,7 @@
 	</tr>
 	<tr>
 		<th>{t}mime type{/t}:</th>
-		<td>{$object.type|default:""}</td>
+		<td>{$object.mime_type|default:""}</td>
 		<th>{t}filesize{/t}:</th>
 		<td>{$object.size|filesize}</td>
 	</tr>
