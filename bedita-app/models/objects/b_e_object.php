@@ -656,7 +656,8 @@ class BEObject extends BEAppModel
 				elseif ($k === "lang")
 					$conditions["`BEObject`.lang"] = $v;
 			}
-			$conditions['object_type_id'] = $types;
+			if(!empty($types))
+				$conditions['object_type_id'] = $types;
 		} else {
 			$conditions['object_type_id'] = $filter;
 		}
