@@ -76,10 +76,6 @@ class GalleriesController extends ModulesController {
         $this->setUsersAndGroups();
     }
     
-	function select_from_list($id = null, $order = "", $dir = true, $page = 1, $dim = 10) {
-		$this->loadGalleries($id,$order,$dir,$page,$dim);
-	}	
-	
 	public function save() {
 
         $this->checkWriteModulePermission();
@@ -98,7 +94,12 @@ class GalleriesController extends ModulesController {
 		if(!$this->Gallery->save($this->data)) {
 			throw new BeditaException( __("Error saving gallery", true), $this->Gallery->validationErrors);
 		}		
-        // update permissions
+		if(!($this->data['status']=='fixed')) {
+			if(!isset($this->data['destination'])) 
+				$this->data['destination'] = array() ;
+			$this->BeTree->updateTree($this->Gallery->id, $this->data['destination']);
+		}
+		// update permissions
         if(!isset($this->data['Permissions'])) 
             $this->data['Permissions'] = array() ;
         $this->Permission->saveFromPOST($this->Gallery->id, $this->data['Permissions'], 
