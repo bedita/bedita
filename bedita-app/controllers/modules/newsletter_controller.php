@@ -18,14 +18,15 @@ class NewsletterController extends ModulesController {
 
 	var $name = 'Newsletter';
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
+	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
 
-	var $uses = array('BEObject','Tree', 'Category') ;
+	var $uses = array('MailAddress', 'MailGroup') ;
+	
 	protected $moduleName = 'newsletter';
 	
     public function index() {
 		
-		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
+		//$this->paginatedList($id, $types, $order, $dir, $page, $dim);
 		
 	 }
 
@@ -53,7 +54,7 @@ class NewsletterController extends ModulesController {
 	  */
 	function subscribers() {
 		
-		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
+		//$this->paginatedList($id, $types, $order, $dir, $page, $dim);
 		
 	 }
 
@@ -64,7 +65,20 @@ class NewsletterController extends ModulesController {
 	  * @param integer $id
 	  */
 	function viewsubscriber($id = null) {
+
+		$mailAddress = null;
 		
+		if (!empty($id)) {
+			
+			if( !($mailAddress = $this->MailAddress->findById($id)) ) {
+				 throw new BeditaException(sprintf(__("Error loading subscriber: %d", true), $id));
+			}
+
+		}
+
+		$this->set("groupsByArea", $this->MailGroup->getGroupsByArea(null, $id));
+		
+		$this->set("subscriber", $mailAddress);
 	 }
 	 
 	 /**
@@ -75,6 +89,34 @@ class NewsletterController extends ModulesController {
 		
 	 }
 	 
+	
+	public function saveSubscriber() {
+
+		$this->checkWriteModulePermission();
+		if(empty($this->data)) 
+			throw new BeditaException( __("No data", true));
+
+		$this->Transaction->begin() ;
+		
+		if (!$this->MailAddress->save($this->data))
+			throw new BeditaException(__("Error saving address", true), $this->MailAddress->validationErrors);
+		
+		$this->Transaction->commit() ;
+		
+	}
+	
+	
+	protected function forward($action, $esito) {
+		$REDIRECT = array(
+			"saveSubscriber"	=> 	array(
+							"OK"	=> "/newsletter/viewsubscriber/".@$this->MailAddress->id,
+							"ERROR"	=> "/newsletter/viewsubscriber/".@$this->MailAddress->id 
+							)
+		);
+		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
+		return false ;
+	}
+	
 }	
 
 ?>

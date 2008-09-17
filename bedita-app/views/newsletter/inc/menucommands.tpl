@@ -33,7 +33,13 @@ $(document).ready(function(){
 
 	{if $method eq "subscribers"}	
 	
+	{elseif $method eq "viewsubscriber"}
 	
+	<div class="insidecol">
+		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />
+		<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" {if !($subscriber.MailAddress.id|default:false)}disabled="1"{/if} />
+	</div>
+
 	{elseif $method eq "groups"}
 	
 	

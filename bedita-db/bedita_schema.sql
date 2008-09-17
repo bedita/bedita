@@ -374,50 +374,53 @@ CREATE TABLE mail_messages (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE mail_templates (
-  id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(id)
-    REFERENCES contents(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `mail_addresses` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `email` varchar(255) NOT NULL,
+  `status` enum('blocked','valid') NOT NULL default 'valid',
+  `bounce` int(10) unsigned NOT NULL default '0',
+  `last_bounce_date` datetime default NULL,
+  `html` tinyint(1) NOT NULL default '1',
+  `card_id` int(10) unsigned default NULL,
+  `user_id` int(10) unsigned default NULL,
+  `created` datetime default NULL,
+  `modified` datetime default NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `email` (`email`),
+  KEY `card_index` (`card_id`),
+  KEY `user_index` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE mail_addresses (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  email VARCHAR(255) NOT NULL,
-  status ENUM('blocked','valid','pending') NOT NULL DEFAULT 'pending',
-  bounce INTEGER UNSIGNED NOT NULL DEFAULT 0,
-  last_bounce_date DATETIME NULL,
-  html BOOL NOT NULL DEFAULT 1,
-  card_id INTEGER UNSIGNED NULL,
-  user_id INTEGER UNSIGNED NULL,
-  PRIMARY KEY(id),
-  INDEX card_index(card_id),
-  INDEX user_index(user_id),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE mail_groups (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  area_id INTEGER UNSIGNED NOT NULL,
-  group_name VARCHAR(255) NOT NULL,
-  visible BOOL NOT NULL DEFAULT 1, 
-  PRIMARY KEY(id),
-  INDEX area_id(area_id),
+CREATE TABLE `mail_groups` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `area_id` int(10) unsigned NOT NULL,
+  `group_name` varchar(255) NOT NULL,
+  `visible` tinyint(1) NOT NULL default '1',
+  `security` enum('all','none') NOT NULL default 'all',
+  PRIMARY KEY  (`id`),
   UNIQUE KEY `group_name` (`group_name`),
-  FOREIGN KEY(area_id)
-    REFERENCES areas(id)
+  KEY `area_id` (`area_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `mail_group_addresses` (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `mail_group_id` int(10) unsigned NOT NULL,
+  `mail_address_id` int(10) unsigned NOT NULL,
+  `status` enum('pending','confirmed') NOT NULL default 'pending',
+  `command` enum('confirm','delete','modify') NOT NULL default 'confirm',
+  `hash` varchar(255) default NULL,
+  `created` datetime default NULL,
+  PRIMARY KEY(id),
+  INDEX `mail_address_id_index` (`mail_address_id`),
+  INDEX `mail_group_id_index` (`mail_group_id`),
+  FOREIGN KEY(mail_address_id)
+    REFERENCES mail_addresses(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(mail_group_id)
+    REFERENCES mail_groups(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE mail_group_addresses (
-  mail_group_id INTEGER UNSIGNED NOT NULL,
-  mail_address_id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(mail_group_id, mail_address_id),
-  INDEX mail_address_id_index(mail_address_id),
-  INDEX mail_group_id_index(mail_group_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE mail_jobs (

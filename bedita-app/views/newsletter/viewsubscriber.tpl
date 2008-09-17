@@ -5,7 +5,6 @@
 {$html->css("ui.datepicker")}
 
 {$javascript->link("jquery/jquery.form", false)}
-{$javascript->link("jquery/jquery.treeview", false)}
 {$javascript->link("jquery/jquery.selectboxes.pack")}
 
 {$javascript->link("jquery/ui/ui.core.min", false)}

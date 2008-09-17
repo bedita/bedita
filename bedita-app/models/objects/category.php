@@ -72,12 +72,17 @@ class Category extends BEAppModel {
 	 * 				)
 	 */
 	public function getCategoriesByArea($objectType) {
-		App::import('Model','Area');
-		$this->Area = new Area(); 
+		
 		$categories = $this->findAll("Category.object_type_id=$objectType");
-		$this->Area->bviorCompactResults = false;
-		$this->set("areasList", $this->Area->find('list', array("order" => "public_name", "fields" => "public_name")));
-		$this->Area->bviorCompactResults = true;
+		
+		$objModel = ClassRegistry::init("BEObject");
+		$areaList = $objModel->find('list', array(
+										"conditions" => "object_type_id=" . Configure::read("objectTypes.area"), 
+										"order" => "title", 
+										"fields" => "BEObject.title"
+										)
+									);
+		
 		$areaCategory = array();
 		
 		foreach ($categories as $cat) {
