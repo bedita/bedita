@@ -1,13 +1,6 @@
 <?php
 /**
  *
- * PHP versions 5
- *
- * CakePHP :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright (c)	2006, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
- *
  * @filesource
  * @copyright		Copyright (c) 2007
  * @link			
@@ -18,11 +11,28 @@
  * @modifiedby		
  * @lastmodified	
  * @license
- * @author 		giangi giangi@qwerg.com			
+ * @author 		giangi giangi@qwerg.com, ste ste@channelweb.it	
 */
 class Area extends BeditaCollectionModel
 {
 
+		public $searchFields = array("title" => 10 , "description" => 6, 
+			"public_name" => 10, "public_url" => 8);
+	
+		protected $modelBindings = array( 
+				"detailed" =>  array("BEObject" => array("ObjectType", 
+										"UserCreated", 
+										"UserModified", 
+										"Permissions",
+										"CustomProperties",
+										"LangText")),
+
+       			"default" => array("BEObject" => array("CustomProperties", 
+									"LangText", "ObjectType")),
+
+				"minimum" => array("BEObject" => array("ObjectType"))		
+		);
+	
 	function afterSave($created) {
 		if (!$created) 
 			return ;

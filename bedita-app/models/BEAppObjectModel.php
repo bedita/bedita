@@ -341,15 +341,13 @@ class BeditaStreamModel extends BEAppObjectModel {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
- * Classe utilizzata per gestire la clonazione di oggetti che contengono altri oggetti
- * e son inseriti nell'albero dei contenuti
- *
  */
 class BeditaCollectionModel extends BEAppObjectModel {
 
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
-			'ForeignDependenceSave' => array('BEObject', 'Collection'),
+			'SearchTextSave',
+			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteDependentObject'	=> array('section'),
 			'DeleteObject' 			=> 'objects',
 	); 
@@ -362,17 +360,9 @@ class BeditaCollectionModel extends BEAppObjectModel {
 					'conditions'   => '',
 					'foreignKey'	=> 'id',
 					'dependent'		=> true
-				),
-			'Collection' =>
-				array(
-					'className'		=> 'Collection',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
+				)
 	) ;			
 	
-
 /**
 	 * Se true esegue la clonazione anche dei figli, altrimenti no
 	 *

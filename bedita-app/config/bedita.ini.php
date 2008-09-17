@@ -529,10 +529,6 @@ $config['media_providers_default_conf']  = array(
 /**
  *  Default model bindings for Containable Behaviour 
  */
-$config['modelBindings'] = array(
-
-	'Area' 		=> array("BEObject" => array("CustomProperties", "LangText")),
-	'Section' 	=> array("BEObject" => array("CustomProperties", "LangText")),
-) ;
+$config['modelBindings'] = array() ;
 
 ?>

@@ -20,7 +20,7 @@ class DocumentsController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeLangText', 'BeFileHandler');
 
-	var $uses = array('BEObject', 'Document', 'Tree', 'Category') ;
+	var $uses = array('BEObject', 'Document', 'Tree') ;
 	protected $moduleName = 'documents';
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
@@ -35,11 +35,8 @@ class DocumentsController extends ModulesController {
 		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
 	 }
 
-
 	 public function view($id = null) {
-
 		$this->viewObject($this->Document, $id);
-
 	 }
 
 	public function save() {

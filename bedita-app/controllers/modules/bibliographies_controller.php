@@ -20,7 +20,7 @@ class BibliographiesController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
-	var $uses = array('BEObject', 'Bibliography', 'Tree', 'Category') ;
+	var $uses = array('BEObject', 'Bibliography', 'Tree') ;
 	protected $moduleName = 'bibliographies';
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -38,14 +38,14 @@ class BibliographiesController extends ModulesController {
 
 	 public function view($id = null) {
 
-		$this->viewObject($this->Book, $id);
+		$this->viewObject($this->Bibliography, $id);
 
 	 }
 
 	public function save() {
 		$this->checkWriteModulePermission();
 		$this->Transaction->begin();
-		$this->saveObject($this->Document);
+		$this->saveObject($this->Bibliography);
 	 	$this->Transaction->commit() ;
  		$this->userInfoMessage(__("Book saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("Book [". $this->data["title"]."] saved");

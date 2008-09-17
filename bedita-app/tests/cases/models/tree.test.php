@@ -19,7 +19,7 @@ include_once(dirname(__FILE__) . DS . 'tree.data.php') ;
 class TreeTestCase extends CakeTestCase {
     var $fixtures 	= array( 'area_test' );
  	var $uses		= array(
- 							'BEObject', 'Collection', 
+ 							'BEObject',
  							'Area', 'Community', 'Faq', 'Newsletter', 'Questionnaire',
  							'Scroll', 'Section', 'Timeline',
  							

@@ -1,5 +1,4 @@
 <?php 
-loadModel('Collection');
 
 class CollectionTest extends Collection {
     var $name = 'CollectionTest';

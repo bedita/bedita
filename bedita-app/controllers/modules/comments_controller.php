@@ -2,7 +2,7 @@
 class CommentsController extends ModulesController {
 	
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
+	var $components = array('BeTree', 'Permission', 'BeLangText');
 	
 	protected $moduleName = 'comments';
 	
@@ -13,30 +13,21 @@ class CommentsController extends ModulesController {
 		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
 	 }
 	 
-	function view($id = null) {
-		$conf  = Configure::getInstance() ;
-		$this->setup_args(array("id", "integer", &$id)) ;
+	public function view($id = null) {
 		$obj = null ;
 		$relations = array();
 		if($id) {
-			$this->Comment->contain(array(
-										"BEObject" => array("RelatedObject"),
-										"Content"
-										)
-									);
+			$this->Comment->containLevel("detailed");
 			if(!($obj = $this->Comment->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading comment: %d", true), $id));
 			}
 			$relations = $this->objectRelationArray($obj['RelatedObject']);
 		}
-
 		$this->set('object',	$obj);
-		$this->set('relObjects', isset($relations) ? $relations : array());
-		$this->setUsersAndGroups();
+		$this->set('relObjects', $relations);
 	 }
 	 
-	 
-	function save() {
+	public function save() {
 		$this->checkWriteModulePermission();
 		if(empty($this->data)) 
 			throw new BeditaException( __("No data", true));
@@ -54,9 +45,8 @@ class CommentsController extends ModulesController {
  		$this->userInfoMessage(__("Comment saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("comment [". $this->data["title"]."] saved");
 	 }
-	 
-	
-	function delete() {
+	 	
+	public function delete() {
 		$this->checkWriteModulePermission();
 		$objectsListDeleted = $this->deleteObjects("Comment");
 		$this->userInfoMessage(__("Comments deleted", true) . " -  " . $objectsListDeleted);

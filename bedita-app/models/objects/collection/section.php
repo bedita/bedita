@@ -14,7 +14,22 @@
 */
 class Section extends BeditaCollectionModel
 {
+	public $searchFields = array("title" => 10 , "description" => 6);
 
+	protected $modelBindings = array( 
+				"detailed" =>  array("BEObject" => array("ObjectType", 
+										"UserCreated", 
+										"UserModified", 
+										"Permissions",
+										"CustomProperties",
+										"LangText")),
+
+       			"default" => array("BEObject" => array("CustomProperties", 
+									"LangText", "ObjectType")),
+
+				"minimum" => array("BEObject" => array("ObjectType"))		
+		);
+	
 	var $validate = array(
 		'parent_id'	=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
 	) ;

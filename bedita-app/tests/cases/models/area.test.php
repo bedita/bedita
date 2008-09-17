@@ -10,12 +10,8 @@ require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
 class AreaTestCase extends BeditaTestCase {
 
-//    var $fixtures 	= array( 'area_test' );
-// 	var $uses		= array('BEObject', 'Collection', 'Area', 'Tree', 'Section') ;
  	var $uses		= array('Area') ;
     var $dataSource	= 'test' ;	
-// 	var $components	= array() ;
-
 
  	function testInserimentoMinimo() {
 		$conf  		= Configure::getInstance() ;

@@ -55,11 +55,10 @@ class AreasController extends ModulesController {
 	  * @param integer $id
 	  */
 	function viewArea($id = null) {
-		$this->setup_args(array("id", "integer", &$id)) ;
 		// Get selected area
 		$area = null ;
 		if($id) {
-			$this->Area->bviorHideFields = array('ObjectType', 'Version', 'current') ;
+			$this->Area->containLevel("detailed");
 			if(!($area = $this->Area->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading area: %d", true), $id));
 			}
@@ -67,7 +66,6 @@ class AreasController extends ModulesController {
 		
 		// Data for template
 		$this->set('area',$area);
-		
 		// get users and groups list
 		$this->User->displayField = 'userid';
 		$this->set("usersList", $this->User->find('list', array("order" => "userid")));

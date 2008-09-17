@@ -45,7 +45,7 @@ class BooksController extends ModulesController {
 	public function save() {
 		$this->checkWriteModulePermission();
 		$this->Transaction->begin();
-		$this->saveObject($this->Document);
+		$this->saveObject($this->Book);
 	 	$this->Transaction->commit() ;
  		$this->userInfoMessage(__("Book saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("Book [". $this->data["title"]."] saved");

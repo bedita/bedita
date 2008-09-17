@@ -21,6 +21,7 @@ DROP TABLE IF EXISTS `content_bases_object_categories`;
 DROP TABLE IF EXISTS `newsletters`;
 DROP TABLE IF EXISTS `files`;
 DROP TABLE IF EXISTS `audios`;
+DROP TABLE IF EXISTS `collections`;
 DROP TABLE IF EXISTS `bibliographies`;
 DROP TABLE IF EXISTS `biblio_items`;
 DROP VIEW IF EXISTS `view_galleries` ;
@@ -67,7 +68,6 @@ DROP TABLE IF EXISTS `versions`;
 DROP TABLE IF EXISTS `trees`;
 DROP TABLE IF EXISTS `comments`;
 DROP TABLE IF EXISTS `custom_properties`;
-DROP TABLE IF EXISTS `collections`;
 DROP TABLE IF EXISTS `objects`;
 DROP TABLE IF EXISTS `question_types`;
 DROP TABLE IF EXISTS `object_types`;
@@ -185,17 +185,6 @@ CREATE TABLE objects (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE collections (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  create_rules MEDIUMBLOB NULL,
-  access_rules MEDIUMBLOB NULL,
-  PRIMARY KEY(id),
-  INDEX containers_FKIndex1(id),
-  FOREIGN KEY(id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE custom_properties (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -254,14 +243,14 @@ CREATE TABLE trees (
   path MEDIUMTEXT NOT NULL,
   parent_path MEDIUMTEXT NULL,
   priority INTEGER UNSIGNED NULL,
-  INDEX Table_36_FKIndex1(id),
-  INDEX Table_36_FKIndex2(parent_id),
+  INDEX trees_FKIndex1(id),
+  INDEX trees_FKIndex2(parent_id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
       ON DELETE NO ACTION
       ON UPDATE NO ACTION,
   FOREIGN KEY(parent_id)
-    REFERENCES collections(id)
+    REFERENCES objects(id)
       ON DELETE NO ACTION
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -457,17 +446,18 @@ CREATE TABLE areas (
   PRIMARY KEY(id),
   INDEX areas_FKIndex1(id),
   FOREIGN KEY(id)
-    REFERENCES collections(id)
+    REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE sections (
   id INTEGER UNSIGNED NOT NULL,
+  syndicate ENUM('on','off') DEFAULT 'on',
   PRIMARY KEY(id),
   INDEX sections_FKIndex1(id),
   FOREIGN KEY(id)
-    REFERENCES collections(id)
+    REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;

@@ -17,6 +17,15 @@
 */
 class Comment extends BeditaContentModel 
 {
+	
+	protected $modelBindings = array( 
+				"detailed" =>  array("BEObject" => array("ObjectType", "RelatedObject"), 
+								"Content"),
+				"default" =>  array("BEObject" => array("ObjectType", "RelatedObject"), 
+								"Content"),
+				"minimum" => array("BEObject" => array("ObjectType"))
+	);
+	
 	var $validate = array(
 			'author' => array(
 				'rule' 			=> 'alphaNumeric',
