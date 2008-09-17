@@ -170,7 +170,7 @@ $(document).ready(function(){
 						{assign_associative var="attributes" style="width:30px;heigth:30px;"}
 						<div><a href="{$mobj.path}" target="_blank">{$mediaProvider->thumbnail($mobj, $attributes) }</a></div>
 					{else}
-						<div><a href="{$conf->mediaUrl}{$mobj.path}" target="_blank"><img src="{$session->webroot}img/mime/{$mobj.type}.gif" /></a></div>
+						<div><a href="{$conf->mediaUrl}{$mobj.path}" target="_blank"><img src="{$session->webroot}img/mime/{$mobj.mime_type}.gif" /></a></div>
 					{/if}
 				</td>
 				{* <td>{$mobj.id}</td> *}

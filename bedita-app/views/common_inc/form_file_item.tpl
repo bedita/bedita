@@ -31,11 +31,11 @@
 	
 	{elseif strtolower($item.ObjectType.name) == "audio"}
 	
-		<a href="{$linkUrl}"><img src="{$session->webroot}img/mime/{$item.type}.gif" /></a>	
+		<a href="{$linkUrl}"><img src="{$session->webroot}img/mime/{$item.mime_type}.gif" /></a>	
 	
 	{else}
 	
-		<a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$item.type}.gif" /></a>
+		<a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$item.mime_type}.gif" /></a>
 	
 	{/if}
 	

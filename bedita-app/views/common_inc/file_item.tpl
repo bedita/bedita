@@ -41,11 +41,11 @@
 	
 	{elseif strtolower($item.ObjectType.name) == "audio"}
 	
-		<img src="{$session->webroot}img/mime/{$item.type}.gif" />
+		<img src="{$session->webroot}img/mime/{$item.mime_type}.gif" />
 	
 	{else}
 	
-		<img src="{$session->webroot}img/mime/{$item.type}.gif" />
+		<img src="{$session->webroot}img/mime/{$item.mime_type}.gif" />
 	
 	{/if}
 	</a>

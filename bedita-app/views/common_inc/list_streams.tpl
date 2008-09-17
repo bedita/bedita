@@ -115,7 +115,7 @@ $(document).ready(function(){
 			
 			{else}
 			
-				<a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$objects[i].type}.gif" /></a>
+				<a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$objects[i].mime_type}.gif" /></a>
 			
 			{/if}
 		
