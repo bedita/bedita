@@ -13,10 +13,11 @@
  * @license
  * @author 		giangi giangi@qwerg.com, ste ste@channelweb.it
  * 		
- * 						
+ * 	Generic file/attachment (pdf, rtf, odt, txt, doc,...)
+ * 
 */
-class BEFile extends BeditaStreamModel
+class BEFile extends BeditaSimpleStreamModel
 {
-	var $useTable	= "files" ;
+	var $useTable	= "streams" ;
 }
 ?>

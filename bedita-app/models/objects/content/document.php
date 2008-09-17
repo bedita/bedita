@@ -16,6 +16,24 @@ class Document extends BeditaContentModel
 {
 	var $useTable = 'contents';
 
+	protected $modelBindings = array( 
+				"detailed" =>  array("BEObject" => array("ObjectType", 
+															"UserCreated", 
+															"UserModified", 
+															"Permissions",
+															"CustomProperties",
+															"LangText",
+															"RelatedObject",
+															"Category"
+															),
+									"GeoTag"),
+				"default" => array("BEObject" => array("CustomProperties", 
+									"LangText", "ObjectType", 
+									"Category", "RelatedObject" ), "GeoTag"),
+
+				"minimum" => array("BEObject" => array("ObjectType"))		
+	);
+	
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('GeoTag'),
 			'SearchTextSave',

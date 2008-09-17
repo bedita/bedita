@@ -5,7 +5,7 @@ App::import('Core', 'l10n');
 class AppController extends Controller
 {
 	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "Msg", "MediaProvider", "Perms", 'BeEmbedMedia', 'BeThumb');
-	var $components = array('BeAuth', 'BeTree', 'BePermissionModule','Transaction', 'Cookie', 'Session');
+	var $components = array('BeAuth', 'BeTree', 'BePermissionModule', 'BeCustomProperty', 'Permission', 'Transaction', 'Cookie', 'Session');
 	var $uses = array('EventLog') ;
 	
 	protected $moduleName = NULL;
@@ -354,13 +354,15 @@ class AppController extends Controller
 		return $model;
 	}
 	
-	public function modelBindings(Model $modelObj) {
+	public function modelBindings(Model $modelObj, $level = 'default') {
 		$conf = Configure::getInstance();
 		$name = $modelObj->name;
 		if(isset ($this->modelBindings[$name])) {
 			$modelObj->contain($this->modelBindings[$name]);
 		} else if(isset ($conf->modelBindings[$name])) {
 			$modelObj->contain($conf->modelBindings[$name]);
+		} else {
+			$modelObj->containLevel($level);
 		}
 	}	
 		
@@ -629,6 +631,91 @@ abstract class ModulesController extends AppController {
 		$this->data['status']='draft';
 		$this->save();
 	}
+
+	protected function viewObject(BEAppModel $beModel, $id = null) {
+
+		$obj = null ;
+		$parents_id = array();
+		$relations = array();
+		$previews = array();
+		$name = strtolower($beModel->name);
+		if(isset($id)) {
+			$beModel->containLevel("detailed");
+			if(!($obj = $beModel->findById($id))) {
+				throw new BeditaException(__("Error loading $name: ", true).$id);
+			}
+			if(!$beModel->checkType($obj['object_type_id'])) {
+               throw new BeditaException(__("Wrong content type: ", true).$id);
+			}
+			$relations = $this->objectRelationArray($obj['RelatedObject']);
+			// build array of id's categories associated
+			$obj["assocCategory"] = array();
+			if (isset($obj["Category"])) {
+				$objCat = array();
+				foreach ($obj["Category"] as $oc) {
+					$objCat[] = $oc["id"];
+				}
+				$obj["assocCategory"] = $objCat;
+			}			
+			$treeModel = ClassRegistry::init("Tree");
+			$parents_id = $treeModel->getParent($id) ;
+			if($parents_id === false) 
+				$parents_id = array() ;
+			elseif(!is_array($parents_id))
+				$parents_id = array($parents_id);
+		
+			$previews = $this->previewsForObject($parents_id, $id, $obj['status']);		
+		}
+
+		$this->set('object',	$obj);
+		$this->set('attach', isset($relations['attach']) ? $relations['attach'] : array());
+		$this->set('relObjects', $relations);
+
+		$this->set('parents',	$parents_id);
+		$this->set('tree', 		$this->BeTree->getSectionsTree());
+		$this->set('previews',	$previews);
+		
+		$categoryModel = ClassRegistry::init("Category");
+		$areaCategory = $categoryModel->getCategoriesByArea(Configure::read('objectTypes.'.$name));
+		$this->set("areaCategory", $areaCategory);
+		$areaModel = ClassRegistry::init("Area");
+		$areaModel->bviorCompactResults = false;
+		$this->set("areasList", $areaModel->find('list', array("order" => "public_name", "fields" => "public_name")));
+		$areaModel->bviorCompactResults = true;
+		
+		$this->setUsersAndGroups();
+	}
+
+	protected function saveObject(BEAppModel $beModel) {
+
+		if(empty($this->data)) 
+			throw new BeditaException( __("No data", true));
+		$new = (empty($this->data['id'])) ? true : false ;
+		// Verify object permits
+		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+			throw new BeditaException(__("Error modify permissions", true));
+		// Format custom properties
+		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
+		
+		$name = strtolower($beModel->name);
+		
+		$categoryModel = ClassRegistry::init("Category");
+		$this->data["Category"] = $categoryModel->saveTagList($this->params["form"]["tags"]);
+		if(!$beModel->save($this->data)) {
+			throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
+		}
+		if(!($this->data['status']=='fixed')) {
+			if(!isset($this->data['destination'])) 
+				$this->data['destination'] = array() ;
+			$this->BeTree->updateTree($beModel->id, $this->data['destination']);
+		}
+	 	// update permissions
+		if(!isset($this->data['Permissions'])) 
+			$this->data['Permissions'] = array() ;
+		$this->Permission->saveFromPOST($beModel->id, $this->data['Permissions'], 
+	 			!empty($this->data['recursiveApplyPermissions']), $name);
+	}
+	
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

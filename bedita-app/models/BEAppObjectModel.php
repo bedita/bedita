@@ -222,10 +222,81 @@ class BeditaContentModel extends BEAppObjectModel {
 		
 }
 
+
+class BeditaSimpleStreamModel extends BEAppObjectModel {
+
+	public $searchFields = array("title" => 10 , "description" => 6, 
+		"subject" => 4, "abstract" => 4, "body" => 4, "name" => 6);	
+
+	protected $modelBindings = array( 
+				"detailed" => array("BEObject" => array("ObjectType",
+														"Permissions",
+														"UserCreated", 
+														"UserModified",
+														"RelatedObject",
+														"Category"),
+									"Content"),
+				"default" => array("BEObject" => array(	"CustomProperties", 
+														"LangText", 
+														"ObjectType"), 
+									"Content"),
+				"minimum" => array("BEObject" => array("ObjectType"), "Content")		
+	);
+	
+	var $actsAs 	= array(
+			'CompactResult' 		=> array(),
+			'SearchTextSave'		=> array(),
+			'ForeignDependenceSave' => array('BEObject', 'Content'),
+			'DeleteObject' 			=> 'objects',
+	); 
+
+	var $hasOne= array(
+			'BEObject' =>
+				array(
+					'className'		=> 'BEObject',
+					'conditions'   => '',
+					'foreignKey'	=> 'id',
+					'dependent'		=> true
+				),
+			'Content' =>
+				array(
+					'className'		=> 'Content',
+					'conditions'   => '',
+					'foreignKey'	=> 'id',
+					'dependent'		=> true
+				),
+	);
+
+    function beforeValidate() {
+        return $this->validateContent();
+    }
+        
+	function __clone() {
+		throw new BEditaCloneModelException($this);
+	}		
+}
+
+
 class BeditaStreamModel extends BEAppObjectModel {
 
 	public $searchFields = array("title" => 10 , "description" => 6, 
-		"subject" => 4, "abstract" => 4, "body" => 4);	
+		"subject" => 4, "abstract" => 4, "body" => 4, "name" => 6);	
+	
+	protected $modelBindings = array( 
+				"detailed" => array("BEObject" => array("ObjectType",
+														"Permissions",
+														"UserCreated", 
+														"UserModified",
+														"RelatedObject",
+														"Category"),
+									"Content", "Stream"),
+				"default" => array("BEObject" => array(	"CustomProperties", 
+														"LangText", 
+														"ObjectType"), 
+									"Content", "Stream"),
+				"minimum" => array("BEObject" => array("ObjectType"),"Content", "Stream")		
+	);
+	
 	
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
@@ -266,6 +337,7 @@ class BeditaStreamModel extends BEAppObjectModel {
 		throw new BEditaCloneModelException($this);
 	}		
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /**

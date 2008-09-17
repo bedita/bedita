@@ -31,106 +31,13 @@ class EventsController extends ModulesController {
 	 }
 
 	public function view($id = null) {
-		$conf  = Configure::getInstance() ;
-		$obj = null ;
-		$parents_id = array();
-		$relations = array();
-		if(isset($id)) {
-			$this->Event->contain(array(
-										"BEObject" => array("ObjectType", 
-															"UserCreated", 
-															"UserModified", 
-															"Permissions",
-															"CustomProperties",
-															"LangText",
-															"RelatedObject",
-															"Category"
-															),
-										"DateItem"
-										)
-									);
-			if(!($obj = $this->Event->findById($id))) {
-				 throw new BeditaException(__("Error loading event: ", true).$id);
-			}
-
-			if(!$this->Event->checkType($obj['object_type_id'])) {
-               throw new BeditaException(__("Wrong content type: ", true).$id);
-			}
-			$relations = $this->objectRelationArray($obj['RelatedObject']);
-			
-			// build array of id's categories associated to event
-			$obj["assocCategory"] = array();
-			if (isset($obj["Category"])) {
-				$objCat = array();
-				foreach ($obj["Category"] as $oc) {
-					$objCat[] = $oc["id"];
-				}
-				$obj["assocCategory"] = $objCat;
-			}
-			
-			$parents_id = $this->Tree->getParent($id) ;
-			if($parents_id === false) 
-				$parents_id = array() ;
-			elseif(!is_array($parents_id))
-				$parents_id = array($parents_id);
-
-		}
-		$ot = &$conf->objectTypes ; 
-		$this->set('object',	$obj);
-		$this->set('attach', isset($relations['attach']) ? $relations['attach'] : array());
-		$this->set('relObjects', isset($relations) ? $relations : array());
-		$tree = $this->BeTree->getSectionsTree() ;
-		$this->set('tree', 		$tree);
-		$this->set('parents',	$parents_id);
-		$areaCategory = $this->Category->getCategoriesByArea($ot['event']);
-		$this->set("areaCategory", $areaCategory);
-		$this->Area->bviorCompactResults = false;
-		$this->set("areasList", $this->Area->find('list', array("order" => "public_name", "fields" => "public_name")));
-		$this->Area->bviorCompactResults = true;
-		$this->setUsersAndGroups();
-	 }
+		$this->viewObject($this->Event, $id);
+	}
 
 	public function save() {
-	 	
  		$this->checkWriteModulePermission();
- 		
- 	 	if(empty($this->data)) 
- 	 	    throw new BeditaException( __("No data", true));
- 		
-		$new = (empty($this->data['id'])) ? true : false ;
-		
-	 	// verify object permissions
-	 	if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-	 			throw new BeditaException(__("Error modify permissions", true));
-	 	
-	 	// format custom properties
-	 	$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-	 	
-	 	$tags = $this->Category->saveTagList($this->params["form"]["tags"]);
-	 	
-	 	// if no Category is checked set an empty array to delete association between events and category
-	 	if (!isset($this->data["Category"])) $this->data["Category"] = array();
-	 	
-	 	$this->data["Category"] = array_merge($this->data["Category"], $tags);
-	 	
 		$this->Transaction->begin() ;
-		
-		if(!$this->Event->save($this->data)) {
-	 		throw new BeditaException(__("Error saving event", true), $this->Event->validationErrors);
-	 	}
-
-		if(!($this->data['status']=='fixed')) {
-			if(!isset($this->data['destination'])) 
-				$this->data['destination'] = array() ;
-			$this->BeTree->updateTree($this->Event->id, $this->data['destination']);
-		}
-		
-	 	// update permissions
-		if(!isset($this->data['Permissions'])) 
-			$this->data['Permissions'] = array() ;
-		$this->Permission->saveFromPOST($this->Event->id, $this->data['Permissions'], 
-	 			!empty($this->data['recursiveApplyPermissions']), 'event');
-	 			
+		$this->saveObject($this->Event);
 	 	$this->Transaction->commit();
  		$this->userInfoMessage(__("Event saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("event [". $this->data["title"]."] saved");

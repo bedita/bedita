@@ -14,7 +14,8 @@
  * 		
  * 						
 */
-class Audio extends BeditaStreamModel
+class Audio extends BeditaSimpleStreamModel
 {
+	var $useTable	= "streams" ;
 }
 ?>

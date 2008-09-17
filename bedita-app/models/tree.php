@@ -241,7 +241,6 @@ class Tree extends BEAppModel
 
 		// Esegue la ricerca
 		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
-//		$sqlClausole = $db->conditions($conditions, false, true) ;
 		$sqlClausole = $db->conditions($conditions, true, true) ;
 
 		$from = " view_trees AS Tree ";

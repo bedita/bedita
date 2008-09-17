@@ -31,94 +31,15 @@ class NewsController extends ModulesController {
 	 }
 
 	public function view($id = null) {
-
-		$obj = null ;
-		if(isset($id)) {
-			
-			$this->ShortNews->contain(array(
-										"BEObject" => array("ObjectType", 
-															"UserCreated", 
-															"UserModified", 
-															"Permissions",
-															"CustomProperties",
-															"LangText",
-															"RelatedObject",
-															"Category"
-															),
-										)
-									);
-			$obj = $this->ShortNews->findById($id);
-			if($obj == null || $obj === false) {
-				 throw new BeditaException(__("Error loading news: ", true).$id);
-			}
-
-			if(!$this->ShortNews->checkType($obj['object_type_id'])) {
-               throw new BeditaException(__("Wrong content type: ", true).$id);
-			}
-			
-			$relations = $this->objectRelationArray($obj['RelatedObject']);
-			
-			// build array of id's categories associated to event
-			$obj["assocCategory"] = array();
-			if (isset($obj["Category"])) {
-				$objCat = array();
-				foreach ($obj["Category"] as $oc) {
-					$objCat[] = $oc["id"];
-				}
-				$obj["assocCategory"] = $objCat;
-			}
-		}
-
-		$this->set('object',	$obj);
-		$this->set('tree', 		$this->BeTree->getSectionsTree());
-		$this->set('parents',	$this->BeTree->getParents($id));	
-		$this->set('attach', isset($relations['attach']) ? $relations['attach'] : array());		
-		$this->set('relObjects', isset($relations) ? $relations : array());
-		$conf  = Configure::getInstance() ;
-		$ot = $conf->objectTypes['shortnews'];
-		$areaCategory = $this->Category->getCategoriesByArea($ot);
-		$this->set("areaCategory", $areaCategory);
-		$this->Area->bviorCompactResults = false;
-		$this->set("areasList", $this->Area->find('list', array("order" => "public_name", "fields" => "public_name")));
-		$this->Area->bviorCompactResults = true;	
-		$this->setUsersAndGroups();
+    	$this->viewObject($this->ShortNews, $id);
 	 }
 
 
 	public function save() {
-		$this->checkWriteModulePermission();
-		if(empty($this->data)) 
-		    throw new BeditaException( __("No data", true));
-		$new = (empty($this->data['id'])) ? true : false ;
-		// verify object permissions
-		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-				throw new BeditaException(__("Error modify permissions", true));
-		// format custom properties
-		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-		
-		$tags = $this->Category->saveTagList($this->params["form"]["tags"]);
-	 	
-	 	// if no Category is checked set an empty array to delete association between news and category
-	 	if (!isset($this->data["Category"])) $this->data["Category"] = array();
-	 	
-	 	$this->data["Category"] = array_merge($this->data["Category"], $tags);
-		
-		$this->Transaction->begin() ;
-		if(!$this->ShortNews->save($this->data)) {
-			throw new BeditaException(__("Error saving news", true), $this->ShortNews->validationErrors);
-		}
-		if(!($this->data['status']=='fixed')) {
-			if(!isset($this->data['destination'])) 
-				$this->data['destination'] = array() ;
-			$this->BeTree->updateTree($this->ShortNews->id, $this->data['destination']);
-		}
-		// update permissions
-		if(!isset($this->data['Permissions'])) 
-			$this->data['Permissions'] = array() ;
-		$this->Permission->saveFromPOST($this->ShortNews->id, $this->data['Permissions'], 
-	 			!empty($this->data['recursiveApplyPermissions']), 'news');
+        $this->checkWriteModulePermission();
+		$this->Transaction->begin();
+		$this->saveObject($this->ShortNews);
 	 	$this->Transaction->commit();
-	 	
  		$this->userInfoMessage(__("News saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("news [". $this->data["title"]."] saved");
 	 }

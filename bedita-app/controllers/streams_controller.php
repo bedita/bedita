@@ -32,17 +32,11 @@ class StreamsController extends AppController {
 		foreach($bedita_items['items'] as $key => $value) {
 			$modelLoaded = $this->loadModelByObjectTypeId($value['object_type_id']);
 			
-			$modelLoaded->contain(array(
-									"BEObject" => array("ObjectType", 
-														"LangText"
-														),
-									"Content",
-									"Stream"
-									)
-								);
-			if(($Details = $modelLoaded->findById($value['id']))) {
-				$Details['filename'] = substr($Details['path'],strripos($Details['path'],"/")+1);
-				$bedita_items['items'][$key] = array_merge($bedita_items['items'][$key], $Details);	
+			$modelLoaded->containLevel("minimum");
+
+			if(($details = $modelLoaded->findById($value['id']))) {
+				$details['filename'] = substr($details['path'],strripos($details['path'],"/")+1);
+				$bedita_items['items'][$key] = array_merge($bedita_items['items'][$key], $details);	
 			}
 		}
 		
@@ -105,13 +99,9 @@ class StreamsController extends AppController {
 		$this->BEObject->recursive = $rec ;
 		$modelClass = $conf->objectTypeModels[$ret["BEObject"]["object_type_id"]];
 
-		$this->{$modelClass} = $this->loadModelByType($modelClass);
-		$this->{$modelClass}->contain(array(
-										"BEObject" => array("ObjectType"),
-										"Stream"
-										)
-								);
-		if(!($obj = $this->{$modelClass}->findById($id))) {
+		$model = $this->loadModelByType($modelClass);
+		$model->containLevel("minimum");
+		if(!($obj = $model->findById($id))) {
 			 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
 		}
 		$imagePath 	= $this->BeFileHandler->path($id) ;

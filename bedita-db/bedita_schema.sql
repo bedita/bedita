@@ -3,13 +3,6 @@
 -- 
 SET FOREIGN_KEY_CHECKS=0;
 
-DROP VIEW IF EXISTS `view_streams`;
-DROP VIEW IF EXISTS `view_communities`;
-DROP VIEW IF EXISTS `view_timelines`;
-DROP VIEW IF EXISTS `view_scrolls`;
-DROP VIEW IF EXISTS `view_faqs`;
-DROP VIEW IF EXISTS `view_questionnaires`;
-DROP VIEW IF EXISTS `view_sections`;
 DROP VIEW IF EXISTS `view_permissions` ;
 DROP VIEW IF EXISTS `view_trees` ;
 
@@ -26,7 +19,18 @@ DROP TABLE IF EXISTS `audio`;
 DROP TABLE IF EXISTS `video`;
 DROP TABLE IF EXISTS `content_bases_object_categories`;
 DROP TABLE IF EXISTS `newsletters`;
+DROP TABLE IF EXISTS `files`;
+DROP TABLE IF EXISTS `audios`;
+DROP TABLE IF EXISTS `bibliographies`;
+DROP TABLE IF EXISTS `biblio_items`;
 DROP VIEW IF EXISTS `view_galleries` ;
+DROP VIEW IF EXISTS `view_communities`;
+DROP VIEW IF EXISTS `view_faqs`;
+DROP VIEW IF EXISTS `view_questionnaires`;
+DROP VIEW IF EXISTS `view_timelines`;
+DROP VIEW IF EXISTS `view_scrolls`;
+DROP VIEW IF EXISTS `view_sections`;
+DROP VIEW IF EXISTS `view_streams`;
 
 -- current tables --
 DROP TABLE IF EXISTS `cake_sessions`;
@@ -36,18 +40,15 @@ DROP TABLE IF EXISTS `books`;
 DROP TABLE IF EXISTS `date_items`;
 DROP TABLE IF EXISTS `geo_tags`;
 DROP TABLE IF EXISTS `object_users`;
-DROP TABLE IF EXISTS `bibliographies`;
 DROP TABLE IF EXISTS `object_relations`;
 DROP TABLE IF EXISTS `object_categories`;
 DROP TABLE IF EXISTS `contents`;
 DROP TABLE IF EXISTS `authors`;
 DROP TABLE IF EXISTS `images`;
-DROP TABLE IF EXISTS `files`;
 DROP TABLE IF EXISTS `categories`;
 DROP TABLE IF EXISTS `answers`;
 DROP TABLE IF EXISTS `faq_questions`;
 DROP TABLE IF EXISTS `audio_videos`;
-DROP TABLE IF EXISTS `audios`;
 DROP TABLE IF EXISTS `videos`;
 DROP TABLE IF EXISTS `areas`;
 DROP TABLE IF EXISTS `sections`;
@@ -65,7 +66,6 @@ DROP TABLE IF EXISTS `questions`;
 DROP TABLE IF EXISTS `versions`;
 DROP TABLE IF EXISTS `trees`;
 DROP TABLE IF EXISTS `comments`;
-DROP TABLE IF EXISTS `biblio_items`;
 DROP TABLE IF EXISTS `custom_properties`;
 DROP TABLE IF EXISTS `collections`;
 DROP TABLE IF EXISTS `objects`;
@@ -232,17 +232,6 @@ CREATE TABLE contents (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE biblio_items (
-  id INTEGER UNSIGNED NOT NULL,
-  search_string VARCHAR(255) NULL,
-  PRIMARY KEY(id),
-  INDEX biblio_items_FKIndex1(id),
-  FOREIGN KEY(id)
-    REFERENCES contents(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
 CREATE TABLE comments (
   id INTEGER UNSIGNED NOT NULL,
   author VARCHAR(255) NULL,
@@ -316,7 +305,7 @@ CREATE TABLE object_users (
   INDEX objectUsers_FKIndex1(id),
   INDEX objectUsers_FKIndex2(user_id),
   FOREIGN KEY(id)
-    REFERENCES contents(id)
+    REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
   FOREIGN KEY(user_id)
@@ -483,16 +472,6 @@ CREATE TABLE sections (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE audios (
-  id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(id),
-  INDEX audio_FKIndex1(id),
-  FOREIGN KEY(id)
-    REFERENCES streams(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...' ;
-
 CREATE TABLE videos (
   id INTEGER UNSIGNED NOT NULL,
   provider VARCHAR( 255 ) NULL ,
@@ -548,16 +527,6 @@ CREATE TABLE categories (
   KEY `index_label` (`label`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE files (
-  id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(id),
-  INDEX file_FKIndex1(id),
-  FOREIGN KEY(id)
-    REFERENCES streams(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...or removed' ;
 
 CREATE TABLE images (
   id INTEGER UNSIGNED NOT NULL,
@@ -618,24 +587,14 @@ CREATE TABLE object_categories (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE bibliographies (
-  id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(id),
-  INDEX bibliographies_FKIndex1(id),
-  FOREIGN KEY(id)
-    REFERENCES contents(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='to be extended...' ;
-
 CREATE TABLE date_items (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  content_id INTEGER UNSIGNED NOT NULL,
+  object_id INTEGER UNSIGNED NOT NULL,
   `start` DATETIME NULL,
   `end` DATETIME NULL,
   PRIMARY KEY(id),
-  FOREIGN KEY(content_id)
-    REFERENCES contents(id)
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -759,46 +718,6 @@ CREATE TABLE `search_texts` (
   KEY `object_id` (`object_id`,`lang`),
   FULLTEXT KEY `content` (`content`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='search texts table';
-
--- ------------------------------------------
--- Creazione viste singoli tipi di oggetti
--- ------------------------------------------
-
-CREATE  VIEW `view_questionnaires` AS 
-SELECT 
-collections.*
-FROM objects INNER JOIN collections ON objects.id = collections.id AND objects.object_type_id = 4
-;
-
-CREATE  VIEW `view_faqs` AS 
-SELECT 
-collections.*
-FROM objects INNER JOIN collections ON objects.id = collections.id AND objects.object_type_id = 5
-;
-
-CREATE  VIEW `view_scrolls` AS 
-SELECT 
-collections.*
-FROM objects INNER JOIN collections ON objects.id = collections.id AND objects.object_type_id = 7
-;
-
-CREATE  VIEW `view_timelines` AS 
-SELECT 
-collections.*
-FROM objects INNER JOIN collections ON objects.id = collections.id AND objects.object_type_id = 8
-;
-
-CREATE  VIEW `view_communities` AS 
-SELECT 
-collections.*
-FROM objects INNER JOIN collections ON objects.id = collections.id AND objects.object_type_id = 9
-;
-
-CREATE  VIEW `view_streams` AS 
-SELECT 
-streams.*, objects.title, objects.status, objects.object_type_id
-FROM 
-streams INNER JOIN objects ON streams.id = objects.id ;
 
 -- ------------------------------------------
 -- Permessi

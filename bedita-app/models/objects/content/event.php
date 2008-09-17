@@ -18,6 +18,24 @@ class Event extends BeditaContentModel
 {
     var $useTable = 'contents';
 
+	protected $modelBindings = array( 
+				"detailed" =>  array(
+								"BEObject" => array("ObjectType", 
+													"UserCreated", 
+													"UserModified", 
+													"Permissions",
+													"CustomProperties",
+													"LangText",
+													"RelatedObject",
+													"Category"
+													),
+									"DateItem"),
+				"default" 	=> array("BEObject" => array("CustomProperties", "LangText", 
+								"ObjectType", "Category", "RelatedObject"),
+								"DateItem"),
+				"minimum" => array("BEObject" => array("ObjectType"))
+	);
+    
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('DateItem'),
 			'SearchTextSave',
@@ -29,7 +47,7 @@ class Event extends BeditaContentModel
 			'DateItem' =>
 				array(
 					'className'		=> 'DateItem',
-					'foreignKey'	=> 'content_id',
+					'foreignKey'	=> 'object_id',
 					'dependent'		=> true
 				)
 		) ;

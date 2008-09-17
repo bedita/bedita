@@ -16,6 +16,7 @@
 
 class BEAppModel extends AppModel {
 
+	protected $modelBindings = array();
 	
 	/**
 	 * Collassa il risultato di un record in un array unico
@@ -165,6 +166,13 @@ class BEAppModel extends AppModel {
 	protected function getLimitClausole($page = 1, $dim = 100000) {
 		$offset = ($page > 1) ? (($page -1) * $dim) : null;
 		return isset($offset) ? "$offset, $dim" : "$dim" ;
+	}
+
+	public function containLevel($level = "minimum") {
+		if(!isset($this->modelBindings[$level])) {
+			throw new BeditaException("Contain level not found: $level");
+		}
+		$this->contain($this->modelBindings[$level]);
 	}
 }
 

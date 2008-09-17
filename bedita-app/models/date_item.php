@@ -26,7 +26,6 @@ class DateItem extends BEAppModel
 	
 	function beforeValidate() {
 
-
         $this->checkDate('start');
         $this->checkDate('end');
         $data = &$this->data[$this->name] ;

@@ -11,7 +11,7 @@
  * @modifiedby		
  * @lastmodified	
  * @license			
- * @author 			andrea@chialab.it
+ * @author 			andrea@chialab.it, dante@channelweb.it
  */
 
 class AddressbookController extends ModulesController {
@@ -33,7 +33,6 @@ class AddressbookController extends ModulesController {
 		}
 		
 		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
-		
 	 }
 
 	 /**
@@ -43,63 +42,15 @@ class AddressbookController extends ModulesController {
 	  * @param integer $id
 	  */
 	function view($id = null) {
-		$conf  = Configure::getInstance() ;
-		$this->setup_args(array("id", "integer", &$id)) ;
-		$obj = null ;
-		$relations = array();
-		if($id) {
-			$this->Card->contain(array(
-										"BEObject" => array("ObjectType", 
-															"UserCreated", 
-															"UserModified", 
-															"Permissions",
-															"CustomProperties",
-															"LangText",
-															"RelatedObject",
-															"Category"
-															)
-										)
-									);
-			if(!($obj = $this->Card->findById($id))) {
-				 throw new BeditaException(sprintf(__("Error loading card: %d", true), $id));
-			}
-			$relations = $this->objectRelationArray($obj['RelatedObject']);
-		}
-		
-		$tree = $this->BeTree->getSectionsTree() ;
-		if(isset($id)) {
-			$parents_id = $this->Tree->getParent($id) ;
-			if($parents_id === false) array() ;
-			elseif(!is_array($parents_id))
-				$parents_id = array($parents_id);
-		} else {
-			$parents_id = array();
-		}
-		$status = (!empty($obj['status'])) ? $obj['status'] : null;
-		$previews = (isset($id)) ? $this->previewsForObject($parents_id,$id,$status) : array();
-
-		$this->set('object',	$obj);
-		$this->set('attach', isset($relations['attach']) ? $relations['attach'] : array());
-		$this->set('relObjects', isset($relations) ? $relations : array());
-		$this->set('tree', 		$tree);
-		$this->set('parents',	$parents_id);
-		$this->set('previews',	$previews);
-		$this->setUsersAndGroups();
+		$this->viewObject($this->Card, $id);
 	}
 
 	/**
 	 * Creates/updates card
 	 */
 	function save() {
-		$this->checkWriteModulePermission();
-		if(empty($this->data)) 
-			throw new BeditaException( __("No data", true));
-		$new = (empty($this->data['id'])) ? true : false ;
-		// Verify object permits
-		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-			throw new BeditaException(__("Error modify permissions", true));
-		// Format custom properties
-		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
+        $this->checkWriteModulePermission();
+		$this->Transaction->begin();
 		$kind = ($this->data['company']==0) ? 'person' : 'cmp';
 		if($kind == 'person') {
 			$this->data['title'] = $this->data['person']['name']." ".$this->data['person']['surname'];
@@ -113,23 +64,8 @@ class AddressbookController extends ModulesController {
 		$this->data['surname'] = $this->data[$kind]['surname'];
 		$this->data['person_title'] = $this->data[$kind]['person_title'];
 
-		$this->Transaction->begin() ;
-		// Save data
-		$this->data["Category"] = $this->Category->saveTagList($this->params["form"]["tags"]);
-		if(!$this->Card->save($this->data)) {
-			throw new BeditaException(__("Error saving card", true), $this->Card->validationErrors);
-		}
-		if(!($this->data['status']=='fixed')) {
-			if(!isset($this->data['destination'])) 
-				$this->data['destination'] = array() ;
-			$this->BeTree->updateTree($this->Card->id, $this->data['destination']);
-		}
-	 	// update permissions
-		if(!isset($this->data['Permissions'])) 
-			$this->data['Permissions'] = array() ;
-		$this->Permission->saveFromPOST($this->Card->id, $this->data['Permissions'], 
-			!empty($this->data['recursiveApplyPermissions']), 'event');
-		$this->Transaction->commit() ;
+		$this->saveObject($this->Card);
+	 	$this->Transaction->commit();
 		$this->userInfoMessage(__("Card saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("card [". $this->data["title"]."] saved");
 	}

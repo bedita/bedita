@@ -172,10 +172,6 @@ $config['basicGroups']      = array ('administrator', 'editor', 'reader', 'guest
 
 
 
-
-
-
-
 /**
  ** ******************************************
  **  More specific settings
@@ -537,17 +533,6 @@ $config['modelBindings'] = array(
 
 	'Area' 		=> array("BEObject" => array("CustomProperties", "LangText")),
 	'Section' 	=> array("BEObject" => array("CustomProperties", "LangText")),
- 	'Document' 	=> array("BEObject" => array("CustomProperties", "LangText", "ObjectType", "Category", "RelatedObject" ),
-					"GeoTag"),
-	'ShortNews' => array("BEObject" => array("CustomProperties", "LangText", "ObjectType", "Category", "RelatedObject" ),
-					),
-	'Event' 	=> array("BEObject" => array("CustomProperties", "LangText", "ObjectType", "Category", "RelatedObject"),
-					"DateItem"),
-	'Image' 	=> array("BEObject" => array("CustomProperties", "LangText", "ObjectType"),
-					"Content", "Stream"),
-	'Video' 	=> array("BEObject" => array("CustomProperties", "LangText", "ObjectType"),
-					"Content", "Stream")
-
 ) ;
 
 ?>

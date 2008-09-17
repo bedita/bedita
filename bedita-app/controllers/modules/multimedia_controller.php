@@ -47,12 +47,7 @@ class MultimediaController extends ModulesController {
 		
 	 	foreach($bedita_items['items'] as $key => $value) {
 	 		$model = $this->loadModelByObjectTypeId($value['object_type_id']);
-			$model->contain(array(
-									"BEObject" => array("ObjectType"),
-									"Content",
-									"Stream"
-									)
-								);
+			$model->containLevel("minimum");
 			if(($details = $model->findById($value['id']))) {
 				$details['filename'] = substr($details['path'],strripos($details['path'],"/")+1);
 				$bedita_items['items'][$key] = array_merge($bedita_items['items'][$key], $details);	
@@ -75,18 +70,9 @@ class MultimediaController extends ModulesController {
 		// Get object by $id
 		$obj = null ;
 		if($id) {
-			$model = $this->BEObject->getType($id);
-			$this->{$model}->contain(array(
-									"BEObject" => array("ObjectType",
-														"Permissions",
-														"UserCreated", 
-														"UserModified",
-														"RelatedObject",
-														"Category"),
-									"Content", "Stream"
-									)
-								);
-			if(!($obj = $this->{$model}->findById($id))) {
+			$model = ClassRegistry::init($this->BEObject->getType($id));
+			$model->containLevel("detailed");
+			if(!($obj = $model->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
 			}
 			if (isset($obj["Category"])) {
