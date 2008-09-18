@@ -17,10 +17,14 @@
 class NewsletterController extends ModulesController {
 
 	var $name = 'Newsletter';
-	var $helpers 	= array('BeTree', 'BeToolbar');
+	var $helpers 	= array('BeTree', 'BeToolbar', 'Paginator');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
 
 	var $uses = array('MailAddress', 'MailGroup') ;
+	
+	var $paginate = array(
+			'MailAddress' => array('limit' => 2, 'order' => array('MailAddress.email' => 'asc'))
+		);
 	
 	protected $moduleName = 'newsletter';
 	
@@ -54,7 +58,9 @@ class NewsletterController extends ModulesController {
 	  */
 	function subscribers() {
 		
-		//$this->paginatedList($id, $types, $order, $dir, $page, $dim);
+		$subscribers = $this->paginate("MailAddress");
+//		pr($subscribers);
+		$this->set("subscribers", $subscribers);
 		
 	 }
 
@@ -102,6 +108,8 @@ class NewsletterController extends ModulesController {
 			throw new BeditaException(__("Error saving address", true), $this->MailAddress->validationErrors);
 		
 		$this->Transaction->commit() ;
+		$this->userInfoMessage(__("Mail address saved", true)." - ".$this->data["MailAddress"]["email"]);
+		$this->eventInfo("mail address [". $this->data["MailAddress"]["email"]."] saved");
 		
 	}
 	

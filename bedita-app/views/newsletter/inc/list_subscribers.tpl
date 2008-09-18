@@ -47,6 +47,11 @@ $(document).ready(function(){
 		$("#formObject").attr("action", urlChangeStatus) ;
 		$("#formObject").submit() ;
 	});
+	
+	$("select").change(function() {
+		location.href = $(this).val();
+	});
+	
 });
 
 
@@ -67,46 +72,35 @@ $(document).ready(function(){
 	{capture name="theader"}
 		<tr>
 			<th></th>
-			<th>{$beToolbar->order('email', 'Email')}</th>
-			<th>{$beToolbar->order('userid', 'userid')}</th>
-			<th>{$beToolbar->order('addressbook', 'in addressbook')}</th>
-			<th>{$beToolbar->order('status', 'Status')}</th>
-			<th>{$beToolbar->order('lang', 'Language')}</th>
-			<th>{$beToolbar->order('html', 'html')}</th>
-			<th>{$beToolbar->order('data', 'data')}</th>
+			<th>{$paginator->sort('Email', 'email')}</th>
+			<th>{$paginator->sort('ID', 'id')}</th>
+			<th>{$paginator->sort('in addressbook', 'Card.name')}</th>
+			<th>{$paginator->sort('Status', 'status')}</th>
+			<th>{$paginator->sort('html', 'html')}</th>
+			<th>{$paginator->sort('data', 'created')}</th>
 			
 		</tr>
 	{/capture}
 		
 		{$smarty.capture.theader}
 	
+		{foreach from=$subscribers item="sub" name="f"}
+	
 		<tr class="obj on">
 			<td style="width:15px; padding:7px 0px 0px 0px;">
-				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" {if $objects[i].status == 'fixed'}disabled="disabled"{/if} />
+				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$sub.MailAddress.id}" value="{$sub.MailAddress.id}" />
 			</td>
-			<td><a href="{$html->url('viewsubscriber/')}{$objects[i].id}">osama.bin@laden.com</a></td>
-			<td>2</td>
-			<td>Armando Callone</td>
-			<td>on</td>
-			<td>ita</td>
-			<td>html</td>
-			<td>21 gen 2007</td>
+			<td><a href="{$html->url('viewsubscriber/')}{$sub.MailAddress.id}">{$sub.MailAddress.email}</a></td>
+			<td>{$sub.MailAddress.id}</td>
+			<td>{$sub.Card.name|default:''} {$sub.Card.surname|default:''}</td>
+			<td>{t}{$sub.MailAddress.status}{/t}</td>
+			<td>{if $sub.MailAddress.html == 1}html{else}txt{/if}</td>
+			<td>{$sub.MailAddress.created|date_format:$conf->datePattern}</td>
 		</tr>
-	{section name="i" loop=45}
-		<tr class="obj on">
-			<td style="width:15px; padding:7px 0px 0px 0px;">
-				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" {if $objects[i].status == 'fixed'}disabled="disabled"{/if} />
-			</td>
-			<td><a href="{$html->url('viewsubscriber/')}{$objects[i].id}">cadendo.si.sfracella@dallamontagna.com</a></td>
-			<td><em>none</em></td>
-			<td><em>no</em></td>
-			<td>on</td>
-			<td>eng</td>
-			<td>text</td>
-			<td>12 apr 2008</td>
-		</tr>
-	{/section}
-{if ($smarty.section.i.total) >= 10}
+		
+		{/foreach}
+
+{if ($smarty.foreach.f.total) >= 10}
 		
 			{$smarty.capture.theader}
 			
@@ -118,13 +112,35 @@ $(document).ready(function(){
 
 <br />
 	
-{if !empty($objects)}
+{if !empty($sub)}
 
 <div style="white-space:nowrap">
 	
-	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
+	{t}Go to page{/t}:
+	<select name="pagSelectBottom" id="pagSelectBottom">
+		
+		{section name="i" start=0 loop=$html->params.paging.MailAddress.count step=1}
+			{assign_associative var="options" page=$smarty.section.i.iteration}
+			<option value="{$paginator->url($options)}">{$smarty.section.i.iteration}</option>
+		{/section}
+		
+	</select>		 
 	&nbsp;&nbsp;&nbsp;
-	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
+	{t}Dimensions{/t}:
+	<select id="selectTop" name="selectTop">
+		{assign_associative var="options" limit="1"}
+		<option value="{$paginator->url($options)}">1</option>
+		{assign_associative var="options" limit="5"}
+		<option value="{$paginator->url($options)}">5</option>
+		{assign_associative var="options" limit="10"}
+		<option value="{$paginator->url($options)}">10</option>
+		{assign_associative var="options" limit="20"}
+		<option value="{$paginator->url($options)}">20</option>
+		{assign_associative var="options" limit="50"}
+		<option value="{$paginator->url($options)}">50</option>
+		{assign_associative var="options" limit="100"}
+		<option value="{$paginator->url($options)}">100</option>
+	</select>
 	&nbsp;&nbsp;&nbsp
 	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
 
@@ -136,10 +152,11 @@ $(document).ready(function(){
 <div class="tab"><h2>{t}Operations on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
 <div>
 
-{t}change status to:{/t} 	<select style="width:75px" id="newStatus" name="newStatus">
-								<option value=""> -- </option>
-								{html_options options=$conf->statusOptions}
-							</select>
+{t}change status to:{/t}
+<select style="width:75px" id="newStatus" name="newStatus">
+	<option value=""> -- </option>
+	{html_options options=$conf->statusOptions}
+</select>
 			<input id="changestatusSelected" type="button" value=" ok " />
 	<hr />
 	

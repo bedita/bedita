@@ -10,9 +10,7 @@
 
 {include file="inc/menucommands.tpl" method="subscribers" fixed=true}
 
-{include file="../common_inc/toolbar.tpl" moduleName = "subscribers"}
-
-
+{include file="inc/toolbar.tpl" title="mail addresses"}
 
 <div class="mainfull">
 

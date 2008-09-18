@@ -1,7 +1,3 @@
-{*
-Template incluso.
-Menu a SX valido per tutte le pagine del controller.
-*}
 
 	
 <div class="primacolonna">
@@ -36,13 +32,17 @@ Menu a SX valido per tutte le pagine del controller.
 				<a href="{$html->url('/newsletter/subscribers')}">Manage Subscribers</a>
 			</li>
 			{if $method eq "subscribers"}
-				{*<ul>	
+				{if !empty($groups)}
+				<ul>	
 					<li {if $group == 1}class="on"{/if}><a href="{$html->url('/newsletter/subscribers/1')}">gruppo uno</a></li>
 					<li {if $group == 2}class="on"{/if}><a href="{$html->url('/newsletter/subscribers/2')}">gruppo azione 2</a></li>
 					<li {if $group == 3}class="on"{/if}><a href="{$html->url('/newsletter/subscribers/3')}">group II</a></li>
 					<li {if $group == 4}class="on"{/if}><a href="{$html->url('/newsletter/subscribers/4')}">Quarto gruppo</a></li>
-				</ul>*}
+				</ul>
+				
 				{/if}
+				
+			{/if}
 			<li {if $method eq "importsubscribers"}class="on"{/if}>
 				<a href="{$html->url('/newsletter/importsubscribers')}">Import email</a>
 			</li>
