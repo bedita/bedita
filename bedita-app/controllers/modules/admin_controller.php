@@ -20,18 +20,21 @@ class AdminController extends ModulesController {
 
 	 var $uses = array('User', 'Group','Module') ;
 	 var $components = array('BeSystem');
+	 var $helpers = array('Paginator');
+	 var $paginate = array(
+	 	'User' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc')),
+		'Group' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc')),
+	 	'EventLog' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc'))
+	 ); 
 	 protected $moduleName = 'admin';
 	 
 	/**
 	 * show users
 	 */
 	 function index() { 	
-	 	
-		$users = $this->User->findAll() ;
-		$this->set('users', 		$users);
+		$this->set('users', $this->paginate('User'));
 	}
 
-	 
 	 function saveUser() {
 
 	 	$this->checkWriteModulePermission();
@@ -105,7 +108,7 @@ class AdminController extends ModulesController {
 
 	private function loadGroups() {
 		$config =& Configure::getInstance();
-		$groups = $this->Group->findAll() ;
+		$groups = $this->paginate('Group');
 		foreach ($groups as &$g) {
 			$immutable=false;
 			if (in_array($g['Group']['name'], $config->basicGroups))
@@ -192,7 +195,7 @@ class AdminController extends ModulesController {
 	 */
 	 public function systemInfo() { 	
 	 	$this->beditaVersion();
-		$this->set('events', $this->EventLog->findAll(NULL, NULL, 'created DESC'));
+		$this->set('events', $this->paginate('EventLog'));
 		$this->set('sys', $this->BeSystem->systemInfo());
 	 }
 

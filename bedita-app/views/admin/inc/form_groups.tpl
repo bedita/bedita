@@ -20,47 +20,35 @@ $(document).ready(function() {
 </script>
 
 
-
+{include file="./inc/toolbar.tpl" label_items='system groups'}
 
 <table class="indexlist">
-
-		<tr>
-			<th>{t}Name{/t}</th>
-			<th>{t}Access to Backend{/t}</th>	
-			<th>{t}Created{/t}</th>
-			<th>{t}Modified{/t}</th>
-			<th></th>
-		</tr>
-		
+	<tr>
+		<th>{$paginator->sort('Name', 'name')}</th>
+		<th>{t}Access to Backend{/t}</th>
+		<th>{$paginator->sort('Created', 'created')}</th>
+		<th>{$paginator->sort('Modified', 'modified')}</th>
+		<th></th>
+	</tr>
 	{foreach from=$groups|default:'' item=g}
-
-		<tr class="rowList" rel="{$html->url('/admin/viewGroup/')}{$g.Group.id}">	
-		
-			
-				<td>{$g.Group.name}</td>
-				<td>{if in_array($g.Group.name,$conf->authorizedGroups)}{t}Authorized{/t}{else}{t}Not Authorized{/t}{/if}</td>
-						
-				{if $g.Group.immutable}	
-				
-					<td>-</td>
-					<td>-</td>
-					<td>-</td>
-				{else}
-				
-					<td>{$g.Group.created}</td>
-					<td>{$g.Group.modified}</td>
-					<td>{if ($module_modify eq '1')}
-						<input type="button" name="deleteGroup" value="{t}Remove{/t}" 
-						onclick="javascript:delGroupDialog('{$g.Group.name}',{$g.Group.id});"/>
-						{else}-{/if}
-					</td>
-				
-				{/if}
-				
-		</tr>
-
+	<tr class="rowList" rel="{$html->url('/admin/viewGroup/')}{$g.Group.id}">	
+		<td>{$g.Group.name}</td>
+		<td>{if in_array($g.Group.name,$conf->authorizedGroups)}{t}Authorized{/t}{else}{t}Not Authorized{/t}{/if}</td>
+		{if $g.Group.immutable}	
+		<td>-</td>
+		<td>-</td>
+		<td>-</td>
+		{else}
+		<td>{$g.Group.created}</td>
+		<td>{$g.Group.modified}</td>
+		<td>{if ($module_modify eq '1')}
+			<input type="button" name="deleteGroup" value="{t}Remove{/t}" 
+			onclick="javascript:delGroupDialog('{$g.Group.name}',{$g.Group.id});"/>
+			{else}-{/if}
+		</td>
+		{/if}
+	</tr>
   	{/foreach}
-
 </table>
 
 <div class="tab"><h2>{t}Group properties {/t}</h2></div>
