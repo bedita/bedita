@@ -32,14 +32,13 @@
 				<a href="{$html->url('/newsletter/subscribers')}">Manage Subscribers</a>
 			</li>
 			{if $method eq "subscribers"}
-				{if !empty($groups)}
-				<ul>	
-					<li {if $group == 1}class="on"{/if}><a href="{$html->url('/newsletter/subscribers/1')}">gruppo uno</a></li>
-					<li {if $group == 2}class="on"{/if}><a href="{$html->url('/newsletter/subscribers/2')}">gruppo azione 2</a></li>
-					<li {if $group == 3}class="on"{/if}><a href="{$html->url('/newsletter/subscribers/3')}">group II</a></li>
-					<li {if $group == 4}class="on"{/if}><a href="{$html->url('/newsletter/subscribers/4')}">Quarto gruppo</a></li>
-				</ul>
 				
+				{if !empty($groups)}
+				<ul>
+					{foreach from=$groups item="group"}
+					<li {if $group.MailGroup.id == $group_id}class="on"{/if}><a href="{$html->url('/newsletter/subscribers/')}{$group.MailGroup.id}">{$group.MailGroup.group_name}</a></li>
+					{/foreach}
+				</ul>				
 				{/if}
 				
 			{/if}

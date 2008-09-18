@@ -518,7 +518,7 @@ abstract class ModulesController extends AppController {
 		return $objectsListDesc;
 	}
 
-	public function changeStatusObjects() {
+	public function changeStatusObjects($modelName=null) {
 		$objectsToModify = array();
 		$objectsListDesc = "";
 		if(!empty($this->params['form']['objects_selected'])) {
@@ -527,11 +527,14 @@ abstract class ModulesController extends AppController {
 		
 			$this->Transaction->begin() ;
 
+			if (empty($modelName))
+				$modelName = "BEObject";
+			
 			foreach ($objectsToModify as $id) {
-				$beObj = $this->loadModelByType("BEObject");
-				$beObj->id = $id;
-				if(!$beObj->saveField('status',$this->params['form']["newStatus"]))
-					throw new BeditaException(__("Error saving status for object: ", true) . $id);
+				$model = $this->loadModelByType($modelName);
+				$model->id = $id;
+				if(!$model->saveField('status',$this->params['form']["newStatus"]))
+					throw new BeditaException(__("Error saving status for item: ", true) . $id);
 			}
 			
 			$this->Transaction->commit() ;

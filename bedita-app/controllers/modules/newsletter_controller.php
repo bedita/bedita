@@ -20,10 +20,14 @@ class NewsletterController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Paginator');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
 
-	var $uses = array('MailAddress', 'MailGroup') ;
+	var $uses = array('MailAddress', 'MailGroup','MailGroupAddress') ;
 	
 	var $paginate = array(
-			'MailAddress' => array('limit' => 2, 'order' => array('MailAddress.email' => 'asc'))
+			'MailAddress' => array('limit' => 10, 'order' => array('MailAddress.email' => 'asc')),
+			'MailGroupAddress' => array('limit' => 10, 
+										'order' => array('MailAddress.email' => 'asc'),
+										'contain' => array("MailAddress" => array("Card"))
+										)
 		);
 	
 	protected $moduleName = 'newsletter';
@@ -56,11 +60,17 @@ class NewsletterController extends ModulesController {
 	 /**
 	  * Get all subscribers.
 	  */
-	function subscribers() {
+	function subscribers($group_id=null) {
 		
-		$subscribers = $this->paginate("MailAddress");
-//		pr($subscribers);
+		if (!empty($group_id)) {
+			$subscribers = $this->paginate("MailGroupAddress", array("mail_group_id" => $group_id));
+		} else {
+			$subscribers = $this->paginate("MailAddress");
+		}
 		$this->set("subscribers", $subscribers);
+		$this->set("group_id", $group_id);
+		$this->MailGroup->containLevel("minimum");
+		$this->set("groups", $this->MailGroup->find("all", array("order" => "group_name ASC")));
 		
 	 }
 
@@ -87,15 +97,7 @@ class NewsletterController extends ModulesController {
 		$this->set("subscriber", $mailAddress);
 	 }
 	 
-	 /**
-	  * Manage groups.
-	  */
-	function groups() {
-
-		
-	 }
-	 
-	
+	 	
 	public function saveSubscriber() {
 
 		$this->checkWriteModulePermission();
@@ -113,12 +115,27 @@ class NewsletterController extends ModulesController {
 		
 	}
 	
+	public function changeStatusAddress() {
+		$this->changeStatusObjects("MailAddress");
+	}
+	
+	/**
+	  * Manage groups.
+	  */
+	function groups() {
+
+		
+	 }
 	
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"saveSubscriber"	=> 	array(
 							"OK"	=> "/newsletter/viewsubscriber/".@$this->MailAddress->id,
 							"ERROR"	=> "/newsletter/viewsubscriber/".@$this->MailAddress->id 
+							),
+			"changeStatusAddress"	=> 	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=>  $this->referer() 
 							)
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

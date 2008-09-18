@@ -11,6 +11,12 @@ class MailAddress extends BEAppModel
 	
 		);
 	
+	protected $modelBindings = array( 
+				"detailed" => array("User", "Card", "MailAddress"),
+				"default" => array("User", "Card"),
+				"minimum" => array()		
+	);
+		
 	var $validate = array(
 			"email" => array(
 				"rule" => "email",

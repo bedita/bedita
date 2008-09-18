@@ -6,17 +6,12 @@ var urlDelete = "{$html->url('delete/')}" ;
 var message = "{t}Are you sure that you want to delete the item?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
 var URLBase = "{$html->url('index/')}" ;
-var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
+var urlChangeStatus = "{$html->url('changeStatusAddress/')}";
 var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 
 
 {literal}
 $(document).ready(function(){
-
-
-	$("TABLE.indexList TD.cellList").click(function(i) { 
-		document.location = $(this).parent().find("a:first").attr("href"); 
-	} );
 	
 	/* select/unselect each item's checkbox */
 	$(".selectAll").bind("click", function(e) {
@@ -48,7 +43,7 @@ $(document).ready(function(){
 		$("#formObject").submit() ;
 	});
 	
-	$("select").change(function() {
+	$("#selectPagContainer select").change(function() {
 		location.href = $(this).val();
 	});
 	
@@ -61,7 +56,7 @@ $(document).ready(function(){
 </script>	
 
 
-	
+	{assign var="pagParams" value=$paginator->params()}
 	
 	<form method="post" action="" id="formObject">
 
@@ -92,7 +87,13 @@ $(document).ready(function(){
 			</td>
 			<td><a href="{$html->url('viewsubscriber/')}{$sub.MailAddress.id}">{$sub.MailAddress.email}</a></td>
 			<td>{$sub.MailAddress.id}</td>
-			<td>{$sub.Card.name|default:''} {$sub.Card.surname|default:''}</td>
+			<td>
+			{if !empty($sub.Card)}
+				{$sub.Card.name|default:''} {$sub.Card.surname|default:''}
+			{elseif !empty($sub.MailAddress.Card)}
+				{$sub.MailAddress.Card.name|default:''} {$sub.MailAddress.Card.surname|default:''}
+			{/if}
+			</td>
 			<td>{t}{$sub.MailAddress.status}{/t}</td>
 			<td>{if $sub.MailAddress.html == 1}html{else}txt{/if}</td>
 			<td>{$sub.MailAddress.created|date_format:$conf->datePattern}</td>
@@ -114,14 +115,14 @@ $(document).ready(function(){
 	
 {if !empty($sub)}
 
-<div style="white-space:nowrap">
+<div id="selectPagContainer" style="white-space:nowrap">
 	
 	{t}Go to page{/t}:
 	<select name="pagSelectBottom" id="pagSelectBottom">
 		
-		{section name="i" start=0 loop=$html->params.paging.MailAddress.count step=1}
+		{section name="i" start=0 loop=$pagParams.count step=1}
 			{assign_associative var="options" page=$smarty.section.i.iteration}
-			<option value="{$paginator->url($options)}">{$smarty.section.i.iteration}</option>
+			<option value="{$paginator->url($options)}"{if $pagParams.page == $options.page} selected{/if}>{$smarty.section.i.iteration}</option>
 		{/section}
 		
 	</select>		 
@@ -129,17 +130,17 @@ $(document).ready(function(){
 	{t}Dimensions{/t}:
 	<select id="selectTop" name="selectTop">
 		{assign_associative var="options" limit="1"}
-		<option value="{$paginator->url($options)}">1</option>
+		<option value="{$paginator->url($options)}"{if $pagParams.options.limit == 1} selected{/if}>1</option>
 		{assign_associative var="options" limit="5"}
-		<option value="{$paginator->url($options)}">5</option>
+		<option value="{$paginator->url($options)}"{if $pagParams.options.limit == 5} selected{/if}>5</option>
 		{assign_associative var="options" limit="10"}
-		<option value="{$paginator->url($options)}">10</option>
+		<option value="{$paginator->url($options)}"{if $pagParams.options.limit == 10} selected{/if}>10</option>
 		{assign_associative var="options" limit="20"}
-		<option value="{$paginator->url($options)}">20</option>
+		<option value="{$paginator->url($options)}"{if $pagParams.options.limit == 20} selected{/if}>20</option>
 		{assign_associative var="options" limit="50"}
-		<option value="{$paginator->url($options)}">50</option>
+		<option value="{$paginator->url($options)}"{if $pagParams.options.limit == 50} selected{/if}>50</option>
 		{assign_associative var="options" limit="100"}
-		<option value="{$paginator->url($options)}">100</option>
+		<option value="{$paginator->url($options)}"{if $pagParams.options.limit == 100} selected{/if}>100</option>
 	</select>
 	&nbsp;&nbsp;&nbsp
 	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
@@ -155,7 +156,8 @@ $(document).ready(function(){
 {t}change status to:{/t}
 <select style="width:75px" id="newStatus" name="newStatus">
 	<option value=""> -- </option>
-	{html_options options=$conf->statusOptions}
+	<option value="valid">{t}valid{/t}</option>
+	<option value="blocked">{t}blocked{/t}</option>
 </select>
 			<input id="changestatusSelected" type="button" value=" ok " />
 	<hr />

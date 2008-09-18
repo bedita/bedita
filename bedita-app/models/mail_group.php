@@ -12,6 +12,11 @@ class MailGroup extends BEAppModel
 	
 		);
 	
+	protected $modelBindings = array( 
+				"detailed" => array("Area", "MailAddress"),
+				"default" => array("Area"),
+				"minimum" => array()		
+	);
 
 	/**
 	 * get mail groups divided by area
