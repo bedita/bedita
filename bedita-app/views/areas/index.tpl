@@ -1,6 +1,6 @@
 {$javascript->link("jquery/jquery.form", false)}
-{$javascript->link("jquery/ui/ui.core.min", false)}
-{$javascript->link("jquery/ui/ui.sortable.min", false)}
+
+{$javascript->link("jquery/ui/ui.sortable.min", true)}
 {$javascript->link("jquery/jquery.selectboxes.pack", false)}
 
 

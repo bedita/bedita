@@ -6,15 +6,11 @@
 	
 	{$html->css('beditaNew')}
 	
-	
 	{$javascript->link("jquery/jquery")}
 	{$javascript->link("jquery/jquery.cookie")}
-	
 	{$javascript->link("jquery/jquery.autogrow")}
-
 	{$javascript->link("common")}
-	{$javascript->link("beditaUI")}
-	
+	{$javascript->link("beditaUI")
 	{$javascript->link("jquery/jquery.dimensions")}
 
 
@@ -29,6 +25,8 @@
 	{* collect linked scripts around *}
 	{$scripts_for_layout}
 
+	{$javascript->link("jquery/ui/ui.core.min")}
+	{$javascript->link("jquery/ui/ui.draggable.min")}
 
 
 
@@ -42,13 +40,15 @@
 {$content_for_layout}
 
 
+
+
 {*
 ** Modal container
 *}
 
 <div id="modaloverlay"></div>
 <div id="modal">
-	<div id="modalheader"><a class="close">{t}close{/t}</a></div>
+	<div id="modalheader"><span class="caption"></span><a class="close">{t}close{/t}</a></div>
 	<div id="modalmain"></div>
 </div>
 

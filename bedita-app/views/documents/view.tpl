@@ -5,8 +5,7 @@
 {$javascript->link("jquery/jquery.form", false)}
 {$javascript->link("jquery/jquery.treeview", false)}
 {$javascript->link("jquery/jquery.selectboxes.pack")}
-{$javascript->link("jquery/ui/ui.core.min", false)}
-{$javascript->link("jquery/ui/ui.sortable.min", false)}
+{$javascript->link("jquery/ui/ui.sortable.min", true)}
 {$javascript->link("jquery/ui/ui.datepicker.min", false)}
 {if $currLang != "eng"}
 {$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
@@ -14,13 +13,17 @@
 {literal}
 <script language="JavaScript">
     $(document).ready(function(){
+		
 		var openAtStart ="#title,#long_desc_langs_container";
 		$(openAtStart).prev(".tab").BEtabstoggle();
+		
     });
 </script>
 {/literal}
 </head>
 <body>
+	
+	
 	
     {include file="../common_inc/modulesmenu.tpl"}
     

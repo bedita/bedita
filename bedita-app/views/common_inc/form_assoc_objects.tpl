@@ -89,7 +89,7 @@ $(document).ready(function() {
 		</table>
 		
 		
-		<input type="button" class="modalbutton" 
+		<input type="button" class="modalbutton" title="{$rel|upper} : {t}select an item to associate{/t}"
 		rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/{$rel}" style="width:200px" 
 		value="  {t}connect new items{/t}  " />
 		

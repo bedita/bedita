@@ -1145,7 +1145,7 @@ INPUT.priority {
 	position:absolute;
 	top:160px;
 	left:300px;
-	background-color:white;
+	background-color: #FFFFFF;
 	width:500px;
 	height:550px;
 	display:none;
@@ -1158,11 +1158,14 @@ INPUT.priority {
 	height:525px;
 	overflow-y:auto;
 	overflow-x:hidden;
+	background: transparent url(../img/shadowsimple.png) repeat-x;
+	
 }
 
 #modalmain .body {
 	padding:10px;
 	height:505px;
+	
 }
 
 .modalcommands {
@@ -1171,13 +1174,13 @@ INPUT.priority {
 }
 
 #modalheader {
-	background-color:black;
+	background-color:#000000;
 	width:480px;
 	height:20px;
 	padding-top:5px;
 	padding-right:20px;
 	text-align:right;
-	color:white;	
+	color:white;
 }
 
 #modalheader A {

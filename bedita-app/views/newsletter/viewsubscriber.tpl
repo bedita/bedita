@@ -1,5 +1,5 @@
 {*
-** document view template
+** subscriber view template
 *}
 
 {$html->css("ui.datepicker")}
@@ -7,7 +7,6 @@
 {$javascript->link("jquery/jquery.form", false)}
 {$javascript->link("jquery/jquery.selectboxes.pack")}
 
-{$javascript->link("jquery/ui/ui.core.min", false)}
 {$javascript->link("jquery/ui/ui.sortable.min", false)}
 {$javascript->link("jquery/ui/ui.datepicker.min", false)}
 {if $currLang != "eng"}
@@ -19,7 +18,8 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		$('#subscriberdetails').show() ;
+		var openAtStart ="#subscriberdetails";
+		$(openAtStart).prev(".tab").BEtabstoggle();
 	});
 	{/literal}
 </script>
