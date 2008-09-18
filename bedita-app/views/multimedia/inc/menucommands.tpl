@@ -51,6 +51,20 @@ $(document).ready(function(){
 	</div>
 	
 	{/if}
+	
+	{if $method == "index"}
+	<div class="insidecol">
+		<label>{t}filter by{/t}:</label>
+		<ul>
+			<li><input type="checkbox" name="filtertype[images]" />images</li>
+			<li><input type="checkbox" name="filtertype[images]" />videos</li>
+			<li><input type="checkbox" name="filtertype[images]" />texts</li>
+			<li><input type="checkbox" name="filtertype[images]" />datasheets</li>
+			<li><input type="checkbox" name="filtertype[images]" />applications</li>
+			<li><input type="checkbox" name="filtertype[images]" />view all</li>
+		</ul>
+	</div>
+	{/if}
 
 
 

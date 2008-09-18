@@ -20,12 +20,13 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		//$('#long_desc_langs_container').show() ;
-		$('#books').show() ;
+		var openAtStart ="#books,#title";
+		$(openAtStart).prev(".tab").BEtabstoggle();
 		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
 	});
 	{/literal}
 </script>
+
 
 
 </head>

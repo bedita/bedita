@@ -20,8 +20,8 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		$('#bookdetails').show() ;
-		$('#properties').show() ;
+		var openAtStart ="#bookdetails,#properties";
+		$(openAtStart).prev(".tab").BEtabstoggle();
 		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
 	});
 	{/literal}

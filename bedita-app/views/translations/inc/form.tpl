@@ -62,9 +62,11 @@ tinyMCE.init({
 $(document).ready(function(){
 
 	$(".tab2").click(function () {
+		
 			var trigged = $(this).next().attr("rel") ;
-			$("*[rel='"+trigged+"']").toggle();		
-			$("h2",this).css("background-position","right -25px");
+			//$(this).BEtabstoggle();
+			$("*[rel='"+trigged+"']").prev(".tab2").BEtabstoggle();
+
 	});
 
 	$('textarea.autogrowarea').css("line-height","1.2em").autogrow();

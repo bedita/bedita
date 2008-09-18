@@ -53,6 +53,7 @@ $(document).ready(function() {
 
 <div class="body bodybg">
 
+
 	<label>Cerca:</label> &nbsp; <input type="text" name="search" id="search" value="">
 	&nbsp;&nbsp;
 	in: <select style="width:180px" name="parent_id" id="parent_id">

@@ -78,56 +78,38 @@ $(document).ready(function(){
 
 ...........................................*/
 
-	//$(".tab + *").hide();
+	var currentclassmodule   = $(".secondacolonna .modules LABEL").attr("class");
 
-
-	$(".tab").toggle(
-
-		  function () {
-
-			$(this).next().toggle() 		
-
-			//$("h2",this).css("background-position","right -25px");
+	jQuery.fn.BEtabstoggle = function() {
 			
-			$("h2",this).toggleClass("open");
-		  },
+		$(this).next().toggle() ;	
+		$("h2",this).toggleClass("open").toggleClass(currentclassmodule);
+	
+	};
 
-		  function () {
+	jQuery.fn.BEtabsopen = function() {
+			
+		$(this).next().show() ;	
+		$("h2",this).addClass("open").addClass(currentclassmodule);
+	
+	};
 
-			$(this).next().toggle() 		
+	jQuery.fn.BEtabsclose = function() {
+			
+		$(this).next().hide() ;	
+		$("h2",this).removeClass("open").removeClass(currentclassmodule);
+	
+	};
+	
+	
+	
+	$(".tab").click(function (){
+		
+		$(this).BEtabstoggle() ;	
 
-			//$("h2",this).css("background-position","right 0px");
-			$("h2",this).toggleClass("open");
-
-		  }
-
-		);
+	});
 
 
-
-	$(".aprichiudi").toggle(
-
-		  function () {
-
-			$(".tab h2").css("background-position","right -25px");
-
-			$(".tab").next().show();
-
-			$(".aprichiudi").text('chiudi tutti');
-
-		  },
-
-		  function () {
-
-			$(".tab h2").css("background-position","right 0px");
-
-			$(".tab").next().hide();
-
-			$(".aprichiudi").text('apri tutti');
-
-		  }
-
-		);
 
 
 

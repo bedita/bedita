@@ -22,8 +22,9 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		$('#card').show() ;
-		$('#address').show() ;
+		var openAtStart ="#card,#address";
+		$(openAtStart).prev(".tab").BEtabstoggle();
+		
 		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
 		
 		// prendiamolo da remoto, facciamo n file php con tutti gli array helpers per gli autocomplete?

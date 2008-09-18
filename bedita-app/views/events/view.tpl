@@ -19,7 +19,10 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		$('#eventDates').show() ;
+	
+		var openAtStart ="#eventDates";
+		$(openAtStart).prev(".tab").BEtabstoggle();
+		
 		$('textarea.autogrowarea').css("line-height","1.2em").autogrow();
 		
 	});

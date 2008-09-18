@@ -3,16 +3,17 @@
 ** @author ChannelWeb srl
 *}
 
+
 {literal}
-<script type="text/javascript">
-<!--
-$(document).ready(function(){
-	$('#multimediaitem').show() ;
-	$('textarea.autogrowarea').css("line-height","1.2em").autogrow();
-});
-//-->
+<script language="JavaScript">
+    $(document).ready(function(){
+		var openAtStart ="#multimediaitem";
+		$(openAtStart).prev(".tab").BEtabstoggle();
+    });
 </script>
 {/literal}
+
+
 </head>
 
 <body>

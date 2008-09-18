@@ -170,20 +170,31 @@ UL UL {margin-left:20px;}
 	
 /*...........................................
  
-    Headings and general typography
+    Headings and all typography
 
 ...........................................*/
 
-BODY {font-size:12px; font-family: Arial, Helvetica, sans-serif; line-height:1.5em;}
+BODY {font-size:12px; font-family: "Arial", "Helvetica", sans-serif; line-height:1.5em;}
 
-H1 {font:normal 2em Georgia, "Times New Roman", Times, serif; line-height:1em}
+H1 {font:normal 2em "Georgia", "Times New Roman", Times, serif; line-height:1em}
 
-H2 {font:normal 1.5em Georgia, "Times New Roman", Times, serif; line-height:1em}
+H2 {font:normal 1.5em "Georgia", "Times New Roman", Times, serif; line-height:1em}
 
-.graced {font-family: Georgia, "Times New Roman", Times, serif;}
+.graced {font-family: "Georgia", "Times New Roman", Times, serif;}
 
 INPUT[type=text], TEXTAREA {
-	font-size:12px; font-family: Verdana, sans-serif; line-height:1.5em;
+	font-size:12px; font-family: "Verdana", sans-serif; line-height:1.5em;
+}
+
+.modules {font-family: "Arial", "Helvetica", sans-serif}
+
+.tab H2,  .tab2 H2 {
+	font-family: "Arial", "Helvetica", sans-serif;
+	font-size:1em; font-weight:normal; 
+}
+
+.toolbar {
+	font:normal 1.2em "Georgia", "Times New Roman", Times, serif;
 }
 
 
@@ -411,15 +422,13 @@ UL.menuleft {
 .tab H2,  .tab2 H2 {
 	cursor:pointer;
 	color: white; 
-	font-family:Arial, Helvetica, sans-serif;
-	font-size:1em; font-weight:normal; 
 	background:#808080 url(../img/piumeno.gif) no-repeat;
 	background-position:right 0px ;
 	height:20px; padding:5px 10px 0px 10px;
 
 }
 
-.tab H2.open {
+.tab H2.open, .tab2 H2.open {
 	background-position: right -25px !important;
 }
 
@@ -600,9 +609,6 @@ background-color:#d8d8d8;
 
 ...........................................*/
 
-.toolbar {
-	font:normal 1.2em Georgia, "Times New Roman", Times, serif;
-}
 
 .toolbar .evidence {
 	/* view simple ".evidence" below */

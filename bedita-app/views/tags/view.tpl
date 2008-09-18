@@ -6,7 +6,16 @@
 {$javascript->link("jquery/jquery.metadata", false)}
 {$javascript->link("jquery/jquery.validate", false)}
 
-
+<script language="JavaScript">
+	{literal}
+	$(document).ready( function ()
+	{
+		var openAtStart ="#tagdetails";
+		$(openAtStart).prev(".tab").BEtabstoggle();
+		
+	});
+	{/literal}
+</script>
 
 </head>
 

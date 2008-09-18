@@ -15,6 +15,14 @@
 	{$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
 
+{literal}
+<script language="JavaScript">
+    $(document).ready(function(){
+		var openAtStart ="#title,#multimedia";
+		$(openAtStart).prev(".tab").BEtabstoggle();
+    });
+</script>
+{/literal}
 
 </head>
 <body>
