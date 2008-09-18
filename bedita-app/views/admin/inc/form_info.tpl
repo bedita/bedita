@@ -1,5 +1,6 @@
 <div class="tab"><h2>{t}System info {/t}</h2></div>
-
+<fieldset id="system_info">
+	
 <div>	
 	
 		<ul class="bordered">
@@ -10,11 +11,11 @@
 		</ul>
 
 </div>
-
+</fieldset>
 
 <div class="tab"><h2>{t}System events{/t}</h2></div>
 
-
+<fieldset id="system_events">
 <div>
 
 {include file="./inc/toolbar.tpl" label_items='system events'}
@@ -27,15 +28,16 @@
 		<th>{$paginator->sort('Msg', 'msg')}</th>
 		<th>{$paginator->sort('Context', 'context')}</th>
 	</tr>
-{foreach from=$events item=e}
+	{foreach from=$events item=e}
 	<tr>
-			<td style="white-space:nowrap">{$e.EventLog.created}</td>
-			<td class="{$e.EventLog.level}">{$e.EventLog.level}</td>
-			<td>{$e.EventLog.user}</td>
-			<td>{$e.EventLog.msg}</td>
-			<td>{$e.EventLog.context}</td>
+		<td style="white-space:nowrap">{$e.EventLog.created}</td>
+		<td class="{$e.EventLog.level}">{$e.EventLog.level}</td>
+		<td>{$e.EventLog.user}</td>
+		<td>{$e.EventLog.msg}</td>
+		<td>{$e.EventLog.context}</td>
 	</tr>
-{/foreach}
+	{/foreach}
 </table>
 
 </div>
+</fieldset>

@@ -3,8 +3,17 @@
 {$javascript->link("jquery/interface", false)}
 {$javascript->link("form", false)}
 {$javascript->link("jquery/jquery.changealert", false)}
-</head>
 
+{literal}
+<script language="JavaScript">
+	$(document).ready(function(){
+		var openAtStart ="#system_info,#system_events";
+		$(openAtStart).prev(".tab").BEtabstoggle();
+	});
+</script>
+{/literal}
+
+</head>
 
 
 <body>
