@@ -7,7 +7,7 @@ var message = "{t}Are you sure that you want to delete the item?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
 var URLBase = "{$html->url('index/')}" ;
 var urlChangeStatus = "{$html->url('changeStatusAddress/')}";
-var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
+var urlAddToGroup = "{$html->url('addAddressToGroup/')}{$selected_group_id}";
 
 
 {literal}
@@ -34,7 +34,7 @@ $(document).ready(function(){
 	
 	
 	$("#assocObjects").click( function() {
-		$("#formObject").attr("action", urlAddToAreaSection) ;
+		$("#formObject").attr("action", urlAddToGroup) ;
 		$("#formObject").submit() ;
 	});
 	
@@ -153,28 +153,36 @@ $(document).ready(function(){
 <div class="tab"><h2>{t}Operations on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
 <div>
 
-{t}change status to:{/t}
-<select style="width:75px" id="newStatus" name="newStatus">
-	<option value=""> -- </option>
-	<option value="valid">{t}valid{/t}</option>
-	<option value="blocked">{t}blocked{/t}</option>
-</select>
-			<input id="changestatusSelected" type="button" value=" ok " />
+	{t}change status to:{/t}
+	<select style="width:75px" id="newStatus" name="newStatus">
+		<option value=""> -- </option>
+		<option value="valid">{t}valid{/t}</option>
+		<option value="blocked">{t}blocked{/t}</option>
+	</select>
+	
+	<input id="changestatusSelected" type="button" value=" ok " />
+	
 	<hr />
 	
 
-<select>
-	<option>move</option>
-	<option>copy</option>
-</select>
-&nbsp;
-{t}to group:{/t} 	<select >
-								<option value=""> -- </option>
-								<option>elenco dei recipients groups</option>
-							</select>
-			<input type="button" value=" ok " />
+	<select name="operation">
+		{if $selected_group_id}<option value="move">{t}move{/t}</option>{/if}
+		<option value="copy">{t}copy{/t}</option>
+	</select>
+
+	{t}to group:{/t} 	
+	<select name="destination">
+		<option value=""> -- </option>
+		{if !empty($groups)}
+		{foreach from=$groups item="group"}
+			<option value="{$group.MailGroup.id}">{$group.MailGroup.group_name}</option>
+		{/foreach}
+		{/if}
+	</select>
+
+	<input id="assocObjects" type="button" value=" ok " />
 	<hr />
-	
+
 	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
 	
 </div>

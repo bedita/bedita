@@ -20,7 +20,7 @@ class NewsletterController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Paginator');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
 
-	var $uses = array('MailAddress', 'MailGroup','MailGroupAddress') ;
+	var $uses = array('MailAddress', 'MailGroup') ;
 	
 	var $paginate = array(
 			'MailAddress' => array('limit' => 10, 'order' => array('MailAddress.email' => 'asc')),
@@ -68,7 +68,7 @@ class NewsletterController extends ModulesController {
 			$subscribers = $this->paginate("MailAddress");
 		}
 		$this->set("subscribers", $subscribers);
-		$this->set("group_id", $group_id);
+		$this->set("selected_group_id", $group_id);
 		$this->MailGroup->containLevel("minimum");
 		$this->set("groups", $this->MailGroup->find("all", array("order" => "group_name ASC")));
 		
@@ -119,6 +119,48 @@ class NewsletterController extends ModulesController {
 		$this->changeStatusObjects("MailAddress");
 	}
 	
+	public function addAddressToGroup($old_group_id=null) {
+		$this->checkWriteModulePermission();
+		if(!empty($this->params['form']['objects_selected'])) {
+			
+			$this->Transaction->begin() ;
+			
+			$groupname = $this->MailGroup->field("group_name", array("id" => $this->params["form"]["destination"]));
+			
+			$data["MailGroupAddress"]["mail_group_id"] = $this->params["form"]["destination"];
+			$data["MailGroupAddress"]["status"] = "confirmed";
+			
+			foreach ($this->params['form']['objects_selected'] as $address_id) {
+				
+				// move to group => delete from previous group
+				if ($this->params["form"]["operation"] == "move" && !empty($old_group_id)) {
+					$this->MailAddress->MailGroupAddress->deleteAll(array(
+																		"mail_address_id" => $address_id, 
+																		"mail_group_id" => $old_group_id	
+																		)
+																	);
+				}
+				
+				// save if not already exists
+				$join_id = $this->MailAddress->MailGroupAddress->field("id", "mail_address_id=".$address_id." AND mail_group_id=".$this->params["form"]["destination"] );
+				
+				if (!$join_id) {
+					$data["MailGroupAddress"]["mail_address_id"] = $address_id;
+					$data["MailGroupAddress"]["hash"] = md5($address_id . microtime() . $groupname);
+					$this->MailAddress->MailGroupAddress->create();
+					if (!$this->MailAddress->MailGroupAddress->save($data))
+						throw new BeditaException(__("Error adding subscriber " . $address_id . " in group " . $data["MailGroupAddress"]["mail_group_id"], true));
+				}
+				
+				
+			}
+			
+			$this->Transaction->commit() ;
+			$this->userInfoMessage(__("Subscribers associated to recipient group", true) . " - " . $groupname);
+			$this->eventInfo("Subscribers associated to recipient group " . $this->params["form"]["destination"]);
+		}
+	}
+	
 	/**
 	  * Manage groups.
 	  */
@@ -134,6 +176,10 @@ class NewsletterController extends ModulesController {
 							"ERROR"	=> "/newsletter/viewsubscriber/".@$this->MailAddress->id 
 							),
 			"changeStatusAddress"	=> 	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=>  $this->referer() 
+							),
+			"addAddressToGroup"	=> 	array(
 							"OK"	=> $this->referer(),
 							"ERROR"	=>  $this->referer() 
 							)

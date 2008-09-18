@@ -36,7 +36,7 @@
 				{if !empty($groups)}
 				<ul>
 					{foreach from=$groups item="group"}
-					<li {if $group.MailGroup.id == $group_id}class="on"{/if}><a href="{$html->url('/newsletter/subscribers/')}{$group.MailGroup.id}">{$group.MailGroup.group_name}</a></li>
+					<li {if $group.MailGroup.id == $selected_group_id}class="on"{/if}><a href="{$html->url('/newsletter/subscribers/')}{$group.MailGroup.id}">{$group.MailGroup.group_name}</a></li>
 					{/foreach}
 				</ul>				
 				{/if}

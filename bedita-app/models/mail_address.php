@@ -46,7 +46,7 @@ class MailAddress extends BEAppModel
 					
 					if (empty($joinData["hash"])) {
 						$groupname = $this->MailGroup->field("group_name", array("id" => $joinData["mail_group_id"]));
-						$joinData["hash"] = md5(microtime() . $groupname);
+						$joinData["hash"] = md5($this->id . microtime() . $groupname);
 					}
 					
 					if (empty($joinData["created"]))
