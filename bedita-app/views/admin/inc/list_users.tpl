@@ -26,13 +26,11 @@
 	{/foreach}
 </table>
 
-{*
-<div class="tab"><h2>Operazioni sui 3 records selezionati</h2></div>
+<div class="tab"><h2>{t}Operations on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
 <div>
 	<input type="checkbox" class="selectAll" id="selectAll"/><label for="selectAll"> {t}(Un)Select All{/t}</label>
 	<hr />
 	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
-</div>	
-*}
+</div>
 
 </form>
