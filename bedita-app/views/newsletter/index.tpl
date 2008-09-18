@@ -2,8 +2,7 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		$('.tab H2').addClass("open") ;
-		$('.mainhalf *').show() ;
+		$('.tab').BEtabstoggle();
 	});
 	{/literal}
 </script>

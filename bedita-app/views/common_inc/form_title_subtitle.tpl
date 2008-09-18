@@ -4,17 +4,14 @@
 
 <fieldset id="title">
 
-<table>
-	<tr>
-		<th>{t}title{/t}:</th>
-		<td><input type="text" id="title" name="data[title]" value="{$object.title|escape:'html'|escape:'quotes'}" id="titleBEObject"/></td>
-	</tr>
-	<tr>
-		<th>{t}description{/t}:</th>
-		<td><textarea id="subtitle" style="height:30px" class="shortdesc autogrowarea" name="data[description]">{$object.description|default:''|escape:'html'}</textarea></td>
-	</tr>
+	<label>{t}title{/t}:</label>
+	<br />
+	<input type="text" id="title" name="data[title]" value="{$object.title|escape:'html'|escape:'quotes'}" id="titleBEObject"/>
+	<br />
+	<label>{t}description{/t}:</label>
+	<br />
+	<textarea id="subtitle" style="height:30px" class="shortdesc autogrowarea" name="data[description]">{$object.description|default:''|escape:'html'}</textarea>
 	
-</table>
 
 
 </fieldset>
