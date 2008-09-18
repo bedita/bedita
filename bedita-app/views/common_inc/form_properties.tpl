@@ -24,17 +24,22 @@
 	{if !(isset($publication)) || $publication}
 
 	<tr>
-		<th>{t}publication schedule{/t}:</th>
-		<td>
-			<label>{t}start{/t} </label>
+		{* <th></th> *}
+		<td colspan="2">
+			<label>{t}scheduled{/t} &nbsp;&nbsp;&nbsp;{t}from{/t}:</label>&nbsp;
 			
-			<input size="10" type="text" class="dateinput" name="data[start]" id="start" value="{if !empty($object.start)}{$object.start|date_format:$conf->datePattern}{/if}"/>
-			&nbsp;&nbsp;
 			
-			<label>{t}end{/t} </label>{strip}
+			<input size="10" type="text" style="vertical-align:middle"
+			class="dateinput" name="data[start]" id="start" 
+			value="{if !empty($object.start)}{$object.start|date_format:$conf->datePattern}{/if}"/>
+			&nbsp;&nbsp;&nbsp;&nbsp;
 			
-			<input size="10" type="text" class="dateinput" name="data[end]" id="end" value="{if !empty($object.end)}{$object.end|date_format:$conf->datePattern}{/if}"/>
-		{/strip}
+			<label>{t}to{/t}: </label>&nbsp;
+			
+			<input size="10" type="text" 
+			class="dateinput" name="data[end]" id="end" 
+			value="{if !empty($object.end)}{$object.end|date_format:$conf->datePattern}{/if}"/>
+		
 		</td>
 	</tr>
 
