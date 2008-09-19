@@ -90,12 +90,14 @@ class BeTreeHelper extends Helper {
 	
 		$output = "";
 		$class = "";
+		$url = "";
+		
 		if (!empty($tree)) {
 				
 			foreach ($tree as $publication) {
-				$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $publication["id"];
-				
+								
 				if (empty($inputType)) {
+					$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $publication["id"];
 					if ( (!empty($this->params["named"]["id"]) && $this->params["named"]["id"] == $publication["id"]) 
 							|| !empty($this->params["pass"][0]) && $this->params["pass"][0] == $publication["id"]) {
 						$class = " class='on'";
