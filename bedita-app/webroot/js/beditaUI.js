@@ -185,10 +185,8 @@ $(document).ready(function(){
 	$(".publishingtree h2").click(function () {
 		
 			if ($(this).attr("rel")) {
-				//window.location = $(this).attr("rel");
+				window.location = $(this).attr("rel");
 			}
-			$(this).parent("div").find("ul").toggle();
-			$(this).parent("div").find(".plusminus").toggleClass("on");
 			
 		
 	});
