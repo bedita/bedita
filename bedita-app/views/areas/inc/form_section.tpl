@@ -29,11 +29,37 @@
 </script>
 
 <input type="hidden" name="data[id]" value="{$object.id|default:null}"/>
-<table>
-			
+	
+	<table class="areaform">
+
+			<tr>
+					<th>{t}title{/t}:</th>
+					<td><input type="text" id="titleBEObject" name="data[title]" value="{$object.title|default:""}"/></td>
+			</tr>
+			<tr>
+				<td><label>{t}reside in{/t}:</label></td>
+				<td>
+					<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[parent_id]">
+					{if !empty($parent_id)}
+						{$beTree->option($tree, $parent_id)}
+					{else}
+						{$beTree->option($tree)}
+					{/if}
+					</select>
+				</td>
+			</tr>
+			<tr>
+					<th>{t}description{/t}:</th>
+					<td><textarea class="autogrowarea" name="data[description]">{$object.description|default:""}</textarea></td>
+			</tr>
+	</table>
+	
+	<hr />
+	
+	<table class="areaform">
 			<tr>
 			
-					<th>{t}Status{/t}:</th>
+					<th>{t}status{/t}:</th>
 					<td>
 						{if (!empty($object) && $object.status == 'fixed')}
 						{t}This object is fixed - some data is readonly{/t}
@@ -42,8 +68,8 @@
 						{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator="&nbsp;"}
 						{/if}
 					</td>
-			
-				</tr>
+			</tr>
+
 			<tr>
 					<th>{t}language{/t}:</th>
 					<td>
@@ -55,38 +81,30 @@
 					</select>
 					</td>
 				</tr>
-				<tr>
-					<th>{t}Title{/t}</th>
-					<td><input type="text" style="width:280px" id="titleBEObject" name="data[title]" value="{$object.title|default:""}"/></td>
-				</tr>
-				<tr>
-					<th>{t}Description{/t}</th>
-					<td><textarea style="width:280px" class="autogrowarea" name="data[description]">{$object.description|default:""}</textarea></td>
-			</tr>
-
 			<tr>
-				<td><label>{t}reside in{/t}</label></td>
+				<th>{t}nickname{/t}:</th>
 				<td>
-					<select id="areaSectionAssoc" class="areaSectionAssociation" style="width:280px" name="data[parent_id]">
-					{if !empty($parent_id)}
-						{$beTree->option($tree, $parent_id)}
-					{else}
-						{$beTree->option($tree)}
-					{/if}
-					</select>
+					<input id="nicknameBEObject" type="text" name="data[nickname]" value="{$object.nickname|default:null}" />
+					{$object.id|default:null}
 				</td>
 			</tr>
+
+	</table>
+	
+	<hr />
+	
+	<table class="areaform">
 			
 			<tr>
-				<td><label>{t}publisher{/t}</label></td>
-				<td><input type="text" style="width:280px" name="publisher" value="" /></td>
+				<td><label>{t}publisher{/t}:</label></td>
+				<td><input type="text" name="publisher" value="" /></td>
 			</tr>
 			<tr>
-				<td><strong>&copy; {t}rights{/t}</strong></td>
-				<td><input type="text" style="width:280px" name="data[rights]" value="{$object.rights|default:null}" /></td>
+				<td><strong>&copy; {t}rights{/t}:</strong></td>
+				<td><input type="text" name="data[rights]" value="{$object.rights|default:null}" /></td>
 			</tr>
 			<tr>
-				<td> <label>{t}license{/t}</label></td>
+				<td> <label>{t}license{/t}:</label></td>
 				<td>
 					<select style="width:280px" name="data[license]">
 						<option value="">--</option>
@@ -101,10 +119,7 @@
 				</td>
 			</tr>
 
-			<tr>
-				<th>{t}Nickname{/t}</th>
-				<td><input id="nicknameBEObject" type="text" style="width:280px" name="data[nickname]" value="{$object.nickname|default:null}"/></td>
-			</tr>
+
 
 			</table>
 
@@ -114,8 +129,3 @@
 			</div>
 			{include file="../common_inc/form_permissions.tpl" el=$object|default:null recursion=true}
 			{include file="../common_inc/form_custom_properties.tpl" el=$object|default:null}
-
-
-			<hr />
-			oppure per i dettagli tipo custom pop e permessi linkare l'ulteriore dettaglio.?.
-			<a href="{$html->url('viewSection/')}"> QUI</a>

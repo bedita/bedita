@@ -18,12 +18,32 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 {literal}
 $(document).ready(function() {
 	$(".tab:first").click();
-	$("#sectionTitle").text("{/literal}{$object.title}{literal}");
+	$("#sectionTitle").text("{/literal}{$object.title|truncate:42:'…':true}{literal}");
 });
 {/literal}
 
 {/if}
 </script>
+
+{literal}
+<style type="text/css">
+	
+	TABLE.areaform {
+		width:100%
+	}
+	.areaform INPUT[type=text], .areaform TEXTAREA, .areaform SELECT {
+		width:240px;
+		
+	}
+	.areaform TH {
+		width:100px;
+		
+	}
+	
+</style>
+{/literal}
+
+
 
 </head>
 
@@ -65,64 +85,69 @@ $(document).ready(function() {
 
 </div>
 
+
+
+
 {assign_concat var="actionForm" 0="save" 1=$formToUse|capitalize|default:"Area"}
 
 <form action="{$html->url('/areas/')}{$actionForm}" method="post" name="updateForm" id="updateForm" class="cmxform">
 
-<div style="width:420px; position:absolute; top:160px; left:580px">
+<div style="width:420px; position:absolute; top:170px; left:580px">
 
 				
-<div class="tab"><h2>{t}Details{/t}</h2></div>
-
-<fieldset style="padding:0px" id="properties">		
+	<div class="tab"><h2>{t}Details{/t} of &nbsp; <span class="graced" style="font-size:1.5em" id="sectionTitle"></span></h2></div>
 	
-	<h2 id="sectionTitle" style="margin-bottom:5px"></h2>
-
-	<div id="loading" style="clear:both">&nbsp;</div>
+	<fieldset style="padding:0px" id="properties">		
+		
+		<!-- <h2 id="sectionTitle" style="margin-bottom:5px"></h2> -->
 	
-	<ul class="htab">
-		<li rel="areacontentC">{t}contents{/t}</li>
-		<li rel="areasectionsC">{t}sections{/t}</li>
-		<li rel="areapropertiesC">{t}properties{/t}</li>
-	</ul>				
-	
-<div class="htabcontainer" id="sectiondetails">
-	
-	<div id="areacontentC" class="htabcontent" style="clear:none">
+		<div id="loading" style="clear:both">&nbsp;</div>
+		
+		<ul class="htab">
+			<li rel="areacontentC">{t}contents{/t}</li>
+			<li rel="areasectionsC">{t}sections{/t}</li>
+			<li rel="areapropertiesC">{t}properties{/t}</li>
+		</ul>				
+		
+		<div class="htabcontainer" id="sectiondetails">
 			
-			{include file="inc/list_content_ajax.tpl"}
+			<div id="areacontentC" class="htabcontent" style="clear:none">
+					
+					{include file="inc/list_content_ajax.tpl"}
+					
+			</div>
+		
+			<div id="areasectionsC" class="htabcontent" style="clear:none">
+								
+					{include file="inc/list_sections_ajax.tpl"}
+		
+			</div>
 			
-	</div>
-
-	<div id="areasectionsC" class="htabcontent" style="clear:none">
-						
-			{include file="inc/list_sections_ajax.tpl"}
-
-	</div>
-	
-	
-	<div id="areapropertiesC" class="htabcontent" style="clear:none">
 			
-			{assign_concat var=formFile 0="inc/form_" 1=$formToUse|default:"area" 2=".tpl"}	
-			{include file=$formFile}
-
-	</div>
-</div>
+			<div id="areapropertiesC" class="htabcontent" style="clear:none">
+					
+					{assign_concat var=formFile 0="inc/form_" 1=$formToUse|default:"area" 2=".tpl"}	
+					{include file=$formFile}
+		
+			</div>
+		</div>
+		
+		<div>
+		
+			<input style="width:220px" type="button" rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/0/leafs" class="modalbutton" value=" {t}add contents{/t} " />
+			<br />
+			<input class="bemaincommands" style="display:inline" type="button" value=" {t}Save{/t} " name="save" />
+			<input class="bemaincommands" style="display:inline" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" />
+		
+		</div>
 	
-	<div>
-	
-	<input style="width:220px" type="button" rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/0/leafs" class="modalbutton" value=" {t}add contents{/t} " />
-	<br />
-	<input class="bemaincommands" style="display:inline" type="button" value=" {t}Save{/t} " name="save" />
-	<input class="bemaincommands" style="display:inline" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" />
-	
-	</div>
-
-</fieldset>	
+	</fieldset>	
 
 </div>
 
 </form>
+
+
 
 
 
