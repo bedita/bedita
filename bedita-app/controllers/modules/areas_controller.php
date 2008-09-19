@@ -77,9 +77,10 @@ class AreasController extends ModulesController {
 	  *
 	  * @param integer $id
 	  */
-	function viewSection() {
-		$this->set('tree',$this->BeTree->getSectionsTree());
-		$this->setUsersAndGroups();
+	function viewSection($id=null) {
+		if (!empty($id)) {
+			$this->loadSectionDetails($id,Configure::read("objectTypes.section"));
+		}
 	}
 	
 	
