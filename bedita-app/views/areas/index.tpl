@@ -17,6 +17,7 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 
 {literal}
 $(document).ready(function() {
+	$(".areacontainer").show();
 	$(".tab:first").click();
 	$("#sectionTitle").text("{/literal}{$object.title|truncate:42:'…':true}{literal}");
 });
@@ -24,25 +25,6 @@ $(document).ready(function() {
 
 {/if}
 </script>
-
-{literal}
-<style type="text/css">
-	
-	TABLE.areaform {
-		width:100%
-	}
-	.areaform INPUT[type=text], .areaform TEXTAREA, .areaform SELECT {
-		width:240px;
-		
-	}
-	.areaform TH {
-		width:100px;
-		
-	}
-	
-</style>
-{/literal}
-
 
 
 </head>
@@ -92,7 +74,7 @@ $(document).ready(function() {
 
 <form action="{$html->url('/areas/')}{$actionForm}" method="post" name="updateForm" id="updateForm" class="cmxform">
 
-<div style="width:420px; position:absolute; top:170px; left:580px">
+<div class="areacontainer" style="display:none; width:420px; position:absolute; top:170px; left:580px">
 
 				
 	<div class="tab"><h2>{t}Details{/t} of &nbsp; <span class="graced" style="font-size:1.5em" id="sectionTitle"></span></h2></div>

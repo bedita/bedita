@@ -34,6 +34,10 @@ $(document).ready(function() {
 			<span class="listrecent areas" style="margin-left:0px">&nbsp;&nbsp;</span>
 			<a title="{$s.created}" href="{$html->url('/')}areas/index/{$s.id}">{$s.title}</a>
 			
+			<div style="margin-top:-20px; float:right;">
+				<input type="button" class="" value="x" />
+			</div>
+	
 		</li>
 		{/foreach}
 	</ul>		

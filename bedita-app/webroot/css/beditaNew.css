@@ -1188,6 +1188,31 @@ INPUT.priority {
 	cursor:pointer;
 }
 
+
+
+/*...........................................
+ 
+	areas section
+
+...........................................*/
+
+	
+TABLE.areaform {
+	width:100%
+}
+.areaform INPUT[type=text], .areaform TEXTAREA, .areaform SELECT {
+	width:240px;
+	
+}
+.areaform TH {
+	width:100px;
+	
+}
+	
+
+
+
+
 /*...........................................    
 
     debug e varie

@@ -1,3 +1,5 @@
+{if !empty($object)}
+
 <script language="JavaScript">
 	{literal}
 	$(document).ready( function ()
@@ -27,6 +29,11 @@
 	});
 	{/literal}
 </script>
+
+{/if}
+
+
+<fieldset id="properties">
 
 <input type="hidden" name="data[id]" value="{$object.id|default:null}"/>
 	
@@ -119,13 +126,14 @@
 				</td>
 			</tr>
 
+		</table>
 
+</fieldset>	
 
-			</table>
-
-			<br/>
-			<div class="indexlist">
+			
+		<div class="indexlist">
 			{include file="../common_inc/form_translations.tpl" object=$object|default:null}
-			</div>
+		</div>
+
 			{include file="../common_inc/form_permissions.tpl" el=$object|default:null recursion=true}
 			{include file="../common_inc/form_custom_properties.tpl" el=$object|default:null}

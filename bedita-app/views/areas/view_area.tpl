@@ -13,8 +13,8 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		$('#properties').show() ;
-		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
+		var openAtStart ="#properties";
+		$(openAtStart).prev(".tab").BEtabstoggle();
 	});
 	{/literal}
 </script>
@@ -39,8 +39,11 @@
 
 <div class="main">
 	<form action="{$html->url('/areas/saveArea')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+	
+	<div class="tab"><h2>{t}Create new publishing{/t}</h2></div>
+	
 	{include file="inc/form_area.tpl"}
 	
 </div>
 
-
+{include file="../common_inc/menuright.tpl"}
