@@ -40,8 +40,8 @@
 	<table class="areaform">
 
 			<tr>
-					<th>{t}title{/t}:</th>
-					<td><input type="text" id="titleBEObject" name="data[title]" value="{$object.title|default:""}"/></td>
+				<th>{t}title{/t}:</th>
+				<td><input type="text" id="titleBEObject" name="data[title]" value="{$object.title|default:""}"/></td>
 			</tr>
 			<tr>
 				<td><label>{t}reside in{/t}:</label></td>
@@ -129,11 +129,26 @@
 		</table>
 
 </fieldset>	
-
 			
-		<div class="indexlist">
-			{include file="../common_inc/form_translations.tpl" object=$object|default:null}
-		</div>
+	<div class="indexlist">
+		{include file="../common_inc/form_translations.tpl" object=$object|default:null}
+	</div>
 
-			{include file="../common_inc/form_permissions.tpl" el=$object|default:null recursion=true}
-			{include file="../common_inc/form_custom_properties.tpl" el=$object|default:null}
+
+{if (!empty($method) && $method == "viewSection")}
+
+	{include file="../common_inc/form_custom_properties.tpl" el=$object|default:null}
+	{include file="../common_inc/form_permissions.tpl" el=$object|default:null recursion=true}
+
+{else}
+	
+	<hr />
+	<a href="{$html->url('/areas/viewSection/')}{$object.id}">
+	
+		{t}Edit more details{/t}
+
+	</a>
+	<hr />
+{/if}
+
+

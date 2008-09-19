@@ -8,6 +8,7 @@
 {$javascript->link("jquery/jquery.cmxforms", false)}
 {$javascript->link("jquery/jquery.metadata", false)}
 
+{assign var='object' value=$area}
 
 <script language="JavaScript">
 	{literal}
@@ -28,21 +29,28 @@
 {include file="inc/menuleft.tpl" method="viewArea"}
 
 <div class="head">
-		
-	<h2>{t}Tree of Areas{/t}</h2>
-
+<h1>
+	{if (empty($object))}
+	
+		{t}Create new publishing{/t}
+	
+	{else}
+	
+		{$object.title|default:"no title"}
+	
+	{/if}
+</h1>	
 </div> 
 
 {include file="inc/menucommands.tpl" method="viewArea" fixed=true}
 
-{assign var='object' value=$area}
 
 <div class="main">
 	<form action="{$html->url('/areas/saveArea')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 	
-	<div class="tab"><h2>{t}Create new publishing{/t}</h2></div>
+<div class="tab"><h2>{t}Properties{/t}</h2></div>	
 	
-	{include file="inc/form_area.tpl"}
+	{include file="inc/form_area.tpl" method="viewArea"}
 	
 </div>
 

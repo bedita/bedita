@@ -10,6 +10,7 @@
 {$javascript->link("jquery/jquery.cmxforms", false)}
 {$javascript->link("jquery/jquery.metadata", false)}
 
+
 <script language="JavaScript">
 	{literal}
 	$(document).ready( function ()
@@ -30,9 +31,17 @@
 {include file="inc/menuleft.tpl" method="viewSection"}
 
 <div class="head">
-		
-	<h2>{t}Section{/t}</h2>
-
+<h1>
+	{if (empty($object))}
+	
+		{t}Create new section{/t}
+	
+	{else}
+	
+		{$object.title|default:"no title"}
+	
+	{/if}
+</h1>	
 </div> 
 
 {include file="inc/menucommands.tpl" method="viewSection"}
@@ -40,11 +49,11 @@
 <div class="main">
 	<form action="{$html->url('/areas/saveSection')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 	
-	<div class="tab"><h2>{t}Create new section{/t}</h2></div>
-	{include file="inc/form_section.tpl"}
+	<div class="tab"><h2>{t}Properties{/t}</h2></div>
+		
+		{include file="inc/form_section.tpl"  method="viewSection"}
+	
 	</form>
 </div>
 
 {include file="../common_inc/menuright.tpl"}
-
-

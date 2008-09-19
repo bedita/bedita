@@ -507,13 +507,15 @@ UL.menuleft {
 
 .publishingtree H2 {
 	cursor:pointer;
-	padding:2px 0px 5px 15px;
-	margin-left:7px;
+	padding:2px 0px 5px 10px;
+	margin-left:15px;
+	border-bottom:1px solid #999999;
 }
 
 .publishingtree H2.on {
 	font-weight:normal;
 	background-color: white;
+	border-bottom:0px;
 }
 
 .publishingtree H2:Hover {
@@ -533,11 +535,11 @@ UL.menuleft {
 	height:25px;
 	width:25px;
 	margin-top:0px;
-	background-color:#FFFFFF;
 }
 
 .publishingtree .plusminus.on {
 	background-position: right -25px !important;
+	/*background-color:#FFFFFF;*/
 }
 
 
@@ -552,6 +554,7 @@ UL.menuleft {
 
 .publishingtree LI  {
 	border-bottom:1px solid #999999;
+	border-right:1px solid #999999;
 	padding:3px 0px 3px 10px;
 }
 
@@ -561,6 +564,7 @@ UL.menuleft {
 
 .publishingtree LI.on  {
 	background-color:white;
+	font-weight:normal;
 }
 
 
