@@ -22,6 +22,8 @@ var $methodsQueries = array(
 			where cb.id=ob.id AND st.id=ob.id AND im.id=ob.id AND ob.object_type_id=12",
 	"videos" => "select ob.*, cb.*, st.*, v.* from objects ob, content_bases cb, streams st, video v 
 			where cb.id=ob.id AND st.id=ob.id AND v.id=ob.id AND ob.object_type_id=32",
+	"files" => "select ob.*, cb.*, st.*, f.* from objects ob, content_bases cb, streams st, files f 
+			where cb.id=ob.id AND st.id=ob.id AND f.id=ob.id AND ob.object_type_id=10",
 	"copy" => "event_logs groups groups_users lang_texts modules object_types permissions permission_modules question_types search_texts trees users"
 );
 
@@ -37,43 +39,51 @@ var $methodsQueries = array(
 			$contents = array_merge($r['cb'], $r['c']);
 			$contents = array_merge($contents, $r['bd']);
 			$this->write($this->createInsert($contents, "contents"));
-			$this->write($this->createInsert($r['d'], "documents"));
 	}
 	
 	protected function shortNews($r) {
 			$this->write($this->createInsert($r['ob'], "objects"));
 			$this->write($this->createInsert($r['cb'], "contents"));
-			$this->write($this->createInsert($r['s'], "short_news"));
 	}
 
 	protected function areas($r) {
 		$r['ob']['creator'] = $r['a']['creator'];
 		$r['ob']['publisher'] = $r['a']['publisher'];
 		$this->write($this->createInsert($r['ob'], "objects"));
-		$this->write($this->createInsert($r['co'], "collections"));
 		unset($r['a']['creator']);
 		unset($r['a']['publisher']);
 		$this->write($this->createInsert($r['a'], "areas"));
 	}
 
 	protected function sections($r) {
-			$this->write($this->createInsert($r['ob'], "objects"));
-			$this->write($this->createInsert($r['co'], "collections"));
-			$this->write($this->createInsert(array('id' => $r['co']['id']), "sections"));
+		$this->write($this->createInsert($r['ob'], "objects"));
+		$this->write($this->createInsert(array('id' => $r['co']['id']), "sections"));
 	}
 
 	protected function images($r) {
-			$this->write($this->createInsert($r['ob'], "objects"));
-			$this->write($this->createInsert($r['cb'], "contents"));
-			$this->write($this->createInsert($r['st'], "streams"));
-			$this->write($this->createInsert($r['im'], "images"));
+		$this->write($this->createInsert($r['ob'], "objects"));
+		$this->write($this->createInsert($r['cb'], "contents"));
+		$r['st']['mime_type'] = $r['st']['type'];
+		unset($r['st']['type']);		
+		$this->write($this->createInsert($r['st'], "streams"));
+		$this->write($this->createInsert($r['im'], "images"));
 	}
 
 	protected function videos($r) {
-			$this->write($this->createInsert($r['ob'], "objects"));
-			$this->write($this->createInsert($r['cb'], "contents"));
-			$this->write($this->createInsert($r['st'], "streams"));
-			$this->write($this->createInsert($r['v'], "videos"));
+		$this->write($this->createInsert($r['ob'], "objects"));
+		$this->write($this->createInsert($r['cb'], "contents"));
+		$r['st']['mime_type'] = $r['st']['type'];
+		unset($r['st']['type']);		
+		$this->write($this->createInsert($r['st'], "streams"));
+		$this->write($this->createInsert($r['v'], "videos"));
+	}
+
+	protected function files($r) {
+		$this->write($this->createInsert($r['ob'], "objects"));
+		$this->write($this->createInsert($r['cb'], "contents"));
+		$r['st']['mime_type'] = $r['st']['type'];
+		unset($r['st']['type']);		
+		$this->write($this->createInsert($r['st'], "streams"));
 	}
 	
 	protected function objectRelations($r) {
