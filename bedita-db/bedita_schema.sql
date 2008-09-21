@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS `short_news`;
 DROP TABLE IF EXISTS `audio`;
 DROP TABLE IF EXISTS `video`;
 DROP TABLE IF EXISTS `content_bases_object_categories`;
+DROP TABLE IF EXISTS `contents_object_categories`;
 DROP TABLE IF EXISTS `newsletters`;
 DROP TABLE IF EXISTS `files`;
 DROP TABLE IF EXISTS `audios`;
@@ -118,6 +119,7 @@ CREATE TABLE users (
   num_login_err int(11) NOT NULL default '0',
   created datetime default NULL,
   modified datetime default NULL,
+  level TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   UNIQUE KEY userid (userid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -674,11 +676,12 @@ CREATE TABLE cards (
 
 CREATE TABLE `modules` (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) NOT NULL,
   `label` varchar(32) default NULL,
-  `color` varchar(7) default NULL,
-  `path` varchar(255) default NULL,
+  `path` varchar(255) NOT NULL,
   `status` enum('on','off') NOT NULL default 'on',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY name (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 

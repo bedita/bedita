@@ -4,54 +4,19 @@
 
 INSERT INTO object_types (id, name, module) VALUES
 (1, 'area', 'areas'),
-(2, 'newsletter', NULL),
 (3, 'section', 'areas'),
-
-(4, 'questionnaire', NULL),
-(5, 'faq', NULL),
-(29, 'gallery', 'galleries'),
-(6, 'cartigli', NULL),
-
-(7, 'scroll', NULL),
-(8, 'timeline', NULL),
-(9, 'community', NULL),
-
-(10, 'befile', 'attachments'),
+(10, 'befile', 'multimedia'),
 (12, 'image', 'multimedia'),
-
-(13, 'comment', 'comments'),
-(14, 'faqquestion', NULL),
-(15, 'question', NULL),
-
-(16, 'answer', NULL),
-(17, 'objectuser', NULL),
-(18, 'shortnews', 'news'),
-
-(19, 'bibliography', NULL),
-(20, 'book', NULL),
-(21, 'event', 'events'),
-
-(22, 'document', 'documents'),
-(23, 'documentptrobject', NULL),
-(24, 'documentptrextern', NULL),
-
-(25, 'documentptrfile', NULL),
-(26, 'documentptrservice', NULL),
-(27, 'documentrule', NULL),
-
-(28, 'author', NULL),
-(30, 'biblioitem', NULL),
-
 (31, 'audio', 'multimedia'),
 (32, 'video', 'multimedia'),
-
+(29, 'gallery', 'galleries'),
+(13, 'comment', 'comments'),
+(18, 'shortnews', 'news'),
+(21, 'event', 'events'),
+(22, 'document', 'documents'),
 (33, 'link', NULL),
-
-(34, 'address', 'addressbook');
+(34, 'card', 'addressbook');
 	
-
-
-
 INSERT INTO `question_types` (`id`, `label`) VALUES
 (1, 'multiple choice'),
 (2, 'single choice'),
@@ -76,23 +41,21 @@ INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES (1, (SELECT id FROM
 -- ---------------------------
 -- module data
 -- ---------------------------
-INSERT INTO `modules` (`label`, `color`, `path`, `status`) VALUES
-('admin', '#000000', 'admin', 'on'),
-('areas', '#ff9933', 'areas', 'on'),
-('documents', '#ff6600', 'documents', 'on'),
-('galleries', '#ffcc33', 'galleries', 'on'),
-('multimedia', '#ff3456', 'multimedia', 'on'),
-('attachments', '#ff34aa', 'attachments', 'on'),
-('news', '#cc00ff', 'news', 'on'),
-('events', '#3399CC', 'events', 'on'),
-('tags', '#888888', 'tags', 'on'),
-('comments', '#F08080', 'comments', 'on'),
-('translations', '#FF00FF', 'translations', 'on'),
-('books', NULL, 'books', 'on'),
-('bibliographies', NULL, 'bibliographies', 'on'),
-('addressbook', NULL, 'addressbook', 'on'),
-('newsletter', NULL, 'newsletter', 'on');
-
+INSERT INTO `modules` (`label`, `name`, `path`, `status`) VALUES
+('admin', 'admin', 'admin', 'on'),
+('areas', 'areas', 'areas', 'on'),
+('documents', 'documents', 'documents', 'on'),
+('galleries', 'galleries', 'galleries', 'on'),
+('multimedia', 'multimedia', 'multimedia', 'on'),
+('news', 'news', 'news', 'on'),
+('events', 'events', 'events', 'on'),
+('tags', 'tags', 'tags', 'on'),
+('comments', 'comments', 'comments', 'on'),
+('translations', 'translations', 'translations', 'on'),
+('books', 'books', 'books', 'on'),
+('bibliographies', 'bibliographies', 'bibliographies', 'on'),
+('addressbook', 'addressbook', 'addressbook', 'on'),
+('newsletter', 'newsletter', 'newsletter', 'on');
 
 
 -- administrator permissions
@@ -110,9 +73,6 @@ VALUES ((SELECT id FROM modules WHERE label = 'galleries'), (SELECT id FROM grou
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'multimedia'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
-
-INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'attachments'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'news'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
@@ -157,9 +117,6 @@ INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'multimedia'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'attachments'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
-
-INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'news'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
@@ -198,9 +155,6 @@ VALUES ((SELECT id FROM modules WHERE label = 'galleries'), (SELECT id FROM grou
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'multimedia'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
-
-INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'attachments'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE label = 'news'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );

@@ -10,7 +10,6 @@ class AppController extends Controller
 	
 	protected $moduleName = NULL;
 	protected $modulePerms = NULL;
-	protected $moduleColor = NULL;
 	/**
 	 * tipologie di esito operazione e esisto dell'operazione
 	 *
@@ -281,7 +280,6 @@ class AppController extends Controller
 			foreach ($moduleList as $mod) {
 			 	if($this->moduleName == $mod['label']) { 
 			 		$this->modulePerms = $mod['flag'];
-			 		$this->moduleColor = $mod['color'];
 				}
 			}
 			$this->set("module_modify",(isset($this->moduleName) && ($this->modulePerms & BEDITA_PERMS_MODIFY)) ? "1" : "0");
@@ -290,7 +288,6 @@ class AppController extends Controller
 					$this->handleError($logMsg, __("Module access not authorized",true), $logMsg);
 					$this->redirect("/");
 			}
-			$this->set('moduleColor',$this->moduleColor);
 			$this->set('moduleName', $this->moduleName);
 		}
 		
@@ -378,25 +375,21 @@ class AppController extends Controller
 		$relationArray = array();
 		
 		foreach ($objectArray as $obj) {	
-			if (empty($status) || in_array($obj["status"],$status)) {
-				$rel = $obj['switch'];
-				$modelClass = $this->BEObject->getType($obj['object_id']);
-				//$modelClass = $conf->objectTypeModels[$obj['object_type_id']] ;
-
-				$this->{$modelClass} = $this->loadModelByType($modelClass);
-				$this->modelBindings($this->{$modelClass});
+			$rel = $obj['switch'];
+			$modelClass = $this->BEObject->getType($obj['object_id']);
+			$this->{$modelClass} = $this->loadModelByType($modelClass);
+			$this->modelBindings($this->{$modelClass});
 	
-				if(!($objDetail = $this->{$modelClass}->findById($obj['object_id']))) {
-					continue ;
-				}
+			if(!($objDetail = $this->{$modelClass}->findById($obj['object_id']))) {
+				continue ;
+			}
+            if (empty($status) || in_array($objDetail["status"],$status)) {
 				$objDetail['priority'] = $obj['priority'];
-				
 				if(isset($objDetail['path']))
 					$objDetail['filename'] = substr($objDetail['path'],strripos($objDetail['path'],"/")+1);
 	
 				$relationArray[$rel][] = $objDetail;
-			}
-			
+			}	
 		}		
 		return $relationArray;
 	}
