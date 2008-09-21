@@ -24,25 +24,33 @@ class SearchText extends BEAppModel
 		  throw new BeditaException("Error loading {$model->name}");
 		$model->bviorCompactResults = $bviorCompactResults ;
 		
-		$searchFields = ($model->searchFields != null) ? $model->searchFields: array();
-		$indexFields = array_keys($searchFields);
-		foreach ($data as $k => $v) {
-			if(in_array($k, $indexFields)) {
-                if (!empty($v)) {
-					$sText = array(
-		                'object_id' => $data['id'],
-		                'lang'      => $data['lang'], 
-		                'content'   => $v,
-		                'relevance' => $searchFields[$k]
-	                );
-
-	                $this->create();
-	                if(!$this->save($sText)) 
-	                    throw new BeditaException("Error saving search text {$model}: $k => $v");
-                }
-			}
+		$searchFields = array();
+		$conf = Configure::getInstance();
+		if(isset( $conf->searchFields[$model->name])) {
+			$searchFields = $conf->searchFields[$model->name];
+		} elseif($model->searchFields != null) {
+			$searchFields = $model->searchFields;
 		}
 
+		if(!empty($searchFields)) {
+			$indexFields = array_keys($searchFields);
+			foreach ($data as $k => $v) {
+				if(in_array($k, $indexFields)) {
+	                if (!empty($v)) {
+						$sText = array(
+			                'object_id' => $data['id'],
+			                'lang'      => $data['lang'], 
+			                'content'   => $v,
+			                'relevance' => $searchFields[$k]
+		                );
+	
+		                $this->create();
+		                if(!$this->save($sText)) 
+		                    throw new BeditaException("Error saving search text {$model}: $k => $v");
+	                }
+				}
+			}
+		}
 		return true ;
 	}
 

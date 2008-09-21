@@ -86,5 +86,9 @@
 // $config["cfgReservedWords"] = array();
 
 
+// $config['searchFields'] = array(
+//	'ModelName' => array('title'=> 6, 'description' => 4),
+//) ;
+
 
 ?>

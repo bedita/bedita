@@ -531,4 +531,11 @@ $config['media_providers_default_conf']  = array(
  */
 $config['modelBindings'] = array() ;
 
+
+/**
+ *  Default model bindings for Containable Behaviour 
+ */
+$config['searchFields'] = array(
+) ;
+
 ?>
