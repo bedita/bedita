@@ -30,6 +30,11 @@ $(document).ready(function() {
 		});
 		
 	});
+	
+	$("#areacontent").find("input[@type='button']").click(function() {
+		$(this).parents("li").remove();
+		$("#areacontent").fixItemsPriority();
+	});
 
 });
 {/literal}
