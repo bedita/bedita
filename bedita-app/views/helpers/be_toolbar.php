@@ -107,13 +107,9 @@ class BeToolbarHelper extends AppHelper {
 		if(!isset($this->params['toolbar']['dim'])) return "" ;
 
 		// Definisce lo script per il cambio di pagina
-		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;
-		if(!empty($this->namedArgs)) {
-			foreach ($this->namedArgs as $k => $v) {
-				if($k != "dim") $data[$k] = $v ;
-				$data[$k] = $v ;
-			}
-		}
+		$data = $this->getPassedArgs();
+		unset($data["page"]);
+		unset($data["dim"]);
 		$url = Router::url($data) ;
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/dim:'+ this[this.selectedIndex].value +'/page:1'" ;
 
@@ -128,17 +124,9 @@ class BeToolbarHelper extends AppHelper {
 		if(!isset($this->params['toolbar']['dim'])) return "" ;
 
 		// Definisce lo script per il cambio di pagina
-		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;
-		if(!empty($this->namedArgs)) {
-			foreach ($this->namedArgs as $k => $v) {
-				if($k != "dim") $data[$k] = $v ;
-				$data[$k] = $v ;
-			}
-		}
-		
-		/**
-		 * se action == index Router::url non lo inserisce nell'url
-		 */
+		$data = $this->getPassedArgs();
+		unset($data["page"]);
+		unset($data["dim"]);
 		$url = Router::url($data) ;
 		if($this->params["action"] == "index" && !preg_match("/\/index\//i", $url )) $url .= "/".$this->params["action"] ;
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/dim:'+ this[this.selectedIndex].value" ;
@@ -160,13 +148,10 @@ class BeToolbarHelper extends AppHelper {
 		if(!isset($this->params['toolbar']['page'])) return "" ;
 
 		// Definisce lo script per il cambio di pagina
-		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;
-		if(@is_array($this->namedArgs)) {
-			foreach ($this->namedArgs as $k => $v) {
-				$data[$k] = $v ;
-			}
-		}
+		$data = $this->getPassedArgs();
+		unset($data["page"]);
 		$url = Router::url($data) ;
+		
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/page:'+ this[this.selectedIndex].value" ;
 
 		// Definisce il numero di pagine selezionabili
@@ -192,12 +177,8 @@ class BeToolbarHelper extends AppHelper {
 		if(!isset($this->params['toolbar']['page'])) return "" ;
 
 		// Definisce lo script per il cambio di pagina
-		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;
-		if(!empty($this->namedArgs)) {
-			foreach ($this->namedArgs as $k => $v) {
-				$data[$k] = $v ;
-			}
-		}
+		$data = $this->getPassedArgs();
+		unset($data["page"]);
 		$url = Router::url($data) ;
 		if($this->params["action"] == "index" && !preg_match("/\/index\//i", $url )) $url .= "/".$this->params["action"] ;		
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/page:'+ this[this.selectedIndex].value" ;
@@ -241,12 +222,7 @@ class BeToolbarHelper extends AppHelper {
 		}
 
 		// Crea l'url
-		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;
-		if(!empty($this->namedArgs)) {
-			foreach ($this->namedArgs as $k => $v) {
-				if($k != "order" && $k != "dir") $data[$k] = $v ;
-			}
-		}
+		$data = $this->getPassedArgs();
 		$data['order'] 	= $field ;
 		$data['dir'] 	= (integer)$dir ;
 
@@ -273,12 +249,7 @@ class BeToolbarHelper extends AppHelper {
 		}
 
 		// Crea l'url
-		$data	= array( "controller" => $this->params["controller"],"action" => $this->params["action"], "plugin" => $this->params["plugin"]) ;
-		if(!empty($this->namedArgs)) {
-			foreach ($this->namedArgs as $k => $v) {
-				if($k != "page") $data[$k] = $v ;
-			}
-		}
+		$data = $this->getPassedArgs();
 		$data['page'] = $page ;
 
 		$url = Router::url($data) ;
@@ -292,6 +263,13 @@ class BeToolbarHelper extends AppHelper {
 					$this->_parseAttributes($options, null, ' ', ''), $text
 			)
 		);
+	}
+	
+	public function getPassedArgs($otherParams=array()) {
+		if (empty($otherParams))
+			return array_merge($this->params["pass"], $this->params["named"]);
+		else
+			return array_merge($this->params["pass"], $this->params["named"], $otherParams);
 	}
 }
 

@@ -7,6 +7,9 @@
 		{assign_associative var="optionsPagDisable" style="display: inline;"}
 		{assign var="pagParams" value=$paginator->params()}
 		
+		{assign_associative var="par" url=$beToolbar->getPassedArgs()}
+		{$paginator->options($par)}
+		
 		<ul>
 	
 			<li>

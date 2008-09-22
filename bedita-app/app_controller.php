@@ -433,7 +433,7 @@ abstract class ModulesController extends AppController {
 		$sectionSel = $section->findById($id);
 		unset($this->modelBindings['Section']);
 		
-		$objects = $this->BeTree->getDiscendents($id, null, $typesArray, $order, $dir, $page, $dim)  ;
+		$objects = $this->BeTree->getChildren($id, null, $typesArray, $order, $dir, $page, $dim)  ;
 		$this->params['toolbar'] = &$objects['toolbar'] ;
 		
 		// template data

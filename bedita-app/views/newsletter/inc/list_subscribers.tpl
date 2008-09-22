@@ -120,27 +120,27 @@ $(document).ready(function(){
 	{t}Go to page{/t}:
 	<select name="pagSelectBottom" id="pagSelectBottom">
 		
-		{section name="i" start=0 loop=$pagParams.count step=1}
-			{assign_associative var="options" page=$smarty.section.i.iteration}
-			<option value="{$paginator->url($options)}"{if $pagParams.page == $options.page} selected{/if}>{$smarty.section.i.iteration}</option>
+		{section name="i" start=0 loop=$pagParams.pageCount step=1}
+			{assign_associative var="pageOptions" page=$smarty.section.i.iteration}
+			<option value="{$paginator->url($beToolbar->getPassedArgs($pageOptions))}"{if $pagParams.page == $pageOptions.page} selected{/if}>{$smarty.section.i.iteration}</option>
 		{/section}
 		
 	</select>		 
 	&nbsp;&nbsp;&nbsp;
 	{t}Dimensions{/t}:
 	<select id="selectTop" name="selectTop">
-		{assign_associative var="options" limit="1"}
-		<option value="{$paginator->url($options)}"{if $pagParams.options.limit == 1} selected{/if}>1</option>
-		{assign_associative var="options" limit="5"}
-		<option value="{$paginator->url($options)}"{if $pagParams.options.limit == 5} selected{/if}>5</option>
-		{assign_associative var="options" limit="10"}
-		<option value="{$paginator->url($options)}"{if $pagParams.options.limit == 10} selected{/if}>10</option>
-		{assign_associative var="options" limit="20"}
-		<option value="{$paginator->url($options)}"{if $pagParams.options.limit == 20} selected{/if}>20</option>
-		{assign_associative var="options" limit="50"}
-		<option value="{$paginator->url($options)}"{if $pagParams.options.limit == 50} selected{/if}>50</option>
-		{assign_associative var="options" limit="100"}
-		<option value="{$paginator->url($options)}"{if $pagParams.options.limit == 100} selected{/if}>100</option>
+		{assign_associative var="dimOptions" limit="1" page="1"}
+		<option value="{$paginator->url($beToolbar->getPassedArgs($dimOptions))}"{if $pagParams.options.limit == 1} selected{/if}>1</option>
+		{assign_associative var="dimOptions" limit="5" page="1"}
+		<option value="{$paginator->url($beToolbar->getPassedArgs($dimOptions))}"{if $pagParams.options.limit == 5} selected{/if}>5</option>
+		{assign_associative var="dimOptions" limit="10" page="1"}
+		<option value="{$paginator->url($beToolbar->getPassedArgs($dimOptions))}"{if $pagParams.options.limit == 10} selected{/if}>10</option>
+		{assign_associative var="dimOptions" limit="20" page="1"}
+		<option value="{$paginator->url($beToolbar->getPassedArgs($dimOptions))}"{if $pagParams.options.limit == 20} selected{/if}>20</option>
+		{assign_associative var="dimOptions" limit="50" page="1"}
+		<option value="{$paginator->url($beToolbar->getPassedArgs($dimOptions))}"{if $pagParams.options.limit == 50} selected{/if}>50</option>
+		{assign_associative var="dimOptions" limit="100" page="1"}
+		<option value="{$paginator->url($beToolbar->getPassedArgs($dimOptions))}"{if $pagParams.options.limit == 100} selected{/if}>100</option>
 	</select>
 	&nbsp;&nbsp;&nbsp
 	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
