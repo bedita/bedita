@@ -85,15 +85,12 @@ class NewsletterController extends ModulesController {
 		$mailAddress = null;
 		
 		if (!empty($id)) {
-			
 			if( !($mailAddress = $this->MailAddress->findById($id)) ) {
 				 throw new BeditaException(sprintf(__("Error loading subscriber: %d", true), $id));
 			}
-
 		}
 
 		$this->set("groupsByArea", $this->MailGroup->getGroupsByArea(null, $id));
-		
 		$this->set("subscriber", $mailAddress);
 	 }
 	 
@@ -123,7 +120,7 @@ class NewsletterController extends ModulesController {
 		$this->checkWriteModulePermission();
 		if(!empty($this->params['form']['objects_selected'])) {
 			
-			$this->Transaction->begin() ;
+			$this->Transaction->begin();
 			
 			$groupname = $this->MailGroup->field("group_name", array("id" => $this->params["form"]["destination"]));
 			
@@ -155,9 +152,29 @@ class NewsletterController extends ModulesController {
 				
 			}
 			
-			$this->Transaction->commit() ;
+			$this->Transaction->commit();
 			$this->userInfoMessage(__("Subscribers associated to recipient group", true) . " - " . $groupname);
 			$this->eventInfo("Subscribers associated to recipient group " . $this->params["form"]["destination"]);
+		}
+	}
+	
+	public function deleteAddress() {
+		$this->checkWriteModulePermission();
+		$addressToDel = null;
+		if(!empty($this->params['form']['objects_selected'])) {
+			$addressToDel = $this->params['form']['objects_selected'];
+			$addressToDelList = implode(",",$this->params["form"]["objects_selected"]);
+		} else if (!empty($this->data["MailAddress"]["id"])) {
+			$addressToDel = $addressToDelList = $this->data["MailAddress"]["id"];
+		} 
+			
+		if (!empty($addressToDel)) {
+			$this->Transaction->begin();
+			if (!$this->MailAddress->deleteAll(array("MailAddress.id" => $addressToDel)))
+				throw new BeditaException(__("Error deleting address", true));
+			$this->Transaction->commit();
+			$this->userInfoMessage(__("Subscribers deleted", true) . " - " . $addressToDelList);
+			$this->eventInfo("Subscribers deleted, ids deleted:  " . $addressToDelList);
 		}
 	}
 	
@@ -182,6 +199,10 @@ class NewsletterController extends ModulesController {
 			"addAddressToGroup"	=> 	array(
 							"OK"	=> $this->referer(),
 							"ERROR"	=>  $this->referer() 
+							),
+			"deleteAddress"	=> 	array(
+							"OK"	=> "/newsletter/subscribers",
+							"ERROR"	=>  "/newsletter/subscribers" 
 							)
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

@@ -14,6 +14,14 @@ $(document).ready(function(){
 		{literal}
 	});
 	
+	$("#delAddress").submitConfirm({
+		{/literal}
+		action: "{$html->url('deleteAddress/')}",
+		message: "{t}Are you sure that you want to delete the address?{/t}",
+		formId: "updateForm"
+		{literal}
+	});
+	
 	$("div.insidecol input[@name='save']").click(function() {
 		$("#updateForm").submit();
 	});
@@ -37,7 +45,7 @@ $(document).ready(function(){
 	
 	<div class="insidecol">
 		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />
-		<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" {if !($subscriber.MailAddress.id|default:false)}disabled="1"{/if} />
+		<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delAddress" {if !($subscriber.MailAddress.id|default:false)}disabled="1"{/if} />
 	</div>
 
 	{elseif $method eq "groups"}
