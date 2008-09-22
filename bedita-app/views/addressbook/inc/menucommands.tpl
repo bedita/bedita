@@ -49,6 +49,32 @@ $(document).ready(function(){
 		{/if}
 	</div>
 	
+	{else}
+	
+
+
+		<ul class="menuleft insidecol">
+			<li><a href="javascript:void(0)" onClick="$('#groups').slideToggle();">{t}Select by group{/t}</a></li>
+				<ul id="groups" style="display:none">
+					<li>gruppo uno</li>
+					<li>gruppo uno</li>
+					<li>gruppo uno</li>
+					<li>gruppo uno</li>
+					<li>gruppo uno</li>
+				</ul>
+		</ul>
+		
+		<ul class="menuleft insidecol">
+			<li><a href="javascript:void(0)" onClick="$('#countries').slideToggle();">{t}Select by country{/t}</a></li>
+				<ul id="countries" style="display:none">
+					<li>gruppo uno</li>
+					<li>gruppo uno</li>
+					<li>gruppo uno</li>
+					<li>gruppo uno</li>
+					<li>gruppo uno</li>
+				</ul>
+		</ul>
+	
 	{/if}
 
 

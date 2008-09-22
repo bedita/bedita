@@ -394,6 +394,7 @@ UL.menuleft {
 }
 
 
+
 /*...........................................
  
     Head
@@ -500,7 +501,7 @@ UL.menuleft {
 
 .publishingtree DIV {
 	margin-top: 10px;
-	margin-left: -10px;
+	margin-left: -15px;
 	/*background-color:red;*/
 	clear:both;
 }
@@ -508,7 +509,7 @@ UL.menuleft {
 .publishingtree H2 {
 	cursor:pointer;
 	padding:2px 0px 5px 10px;
-	margin-left:15px;
+	margin-left:10px;
 	border-bottom:1px solid #999999;
 }
 
@@ -539,7 +540,6 @@ UL.menuleft {
 
 .publishingtree .plusminus.on {
 	background-position: right -25px !important;
-	/*background-color:#FFFFFF;*/
 }
 
 
@@ -548,7 +548,7 @@ UL.menuleft {
 }
 
 .publishingtree UL {
-	margin-left:15px;
+	margin-left:10px;
 	border-left:1px solid #999999;
 }
 

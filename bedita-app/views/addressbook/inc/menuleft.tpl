@@ -19,10 +19,10 @@ Menu a SX valido per tutte le pagine del controller.
 			<li><a href="{$html->url('/addressbook/view')}">{t}New card{/t}</a></li>
 
 		{/if}
-
+			
 		</ul>
 
-{if (!empty($method)) && $method eq "index"}
+{*if (!empty($method)) && $method eq "index"}
 
 		<div class="insidecol publishingtree">
 			
@@ -30,20 +30,35 @@ Menu a SX valido per tutte le pagine del controller.
 		
 		</div>
 
+{/if*}
+
+{if !empty($object)}
+	<ul class="menuleft insidecol">
+		<li>
+			<a href="javascript:void(0)" onClick="$('#export').slideToggle();">Export card</a>
+			<ul id="export" style="display:none;">
+				<li><a href="">Vcard</a></li>
+				<li><a href="">xml BEdita</a></li>
+				<li><a href="">rtf</a></li>
+				<li><a href="">PDF</a></li>
+				<li><a href="">html</a></li>
+			</ul>
+		
+		</li>
+	</ul>
 {/if}
-
-
-
+		
+		
 {if !empty($previews)}
-
-		<div class="insidecol"><label>{t}Previews{/t}</label></div>
-		
-		<ul class="insidecol">
-		{foreach from=$previews item="preview"}
-			<li><a href="{$preview.url}" target="_blank">{$preview.desc}</a></li>
-		{/foreach}
-		</ul>
-		
+	<ul class="menuleft insidecol">
+		<li>
+			<a href="javascript:void(0)" onClick="$('#previews').slideToggle();">{t}Previews{/t}</a>
+			<ul id="previews" style="display:none;">
+			{foreach from=$previews item="preview"}
+				<li><a href="{$preview.url}" target="_blank">{$preview.desc}</a></li>
+			{/foreach}
+			</ul>
+	</ul>
 {/if}
 
 		<div id="handlerChangeAlert"></div>
