@@ -26,8 +26,7 @@ class HomeController extends AppController {
 
 	 function index() {
 	 	$conf  = Configure::getInstance();
-	 	$types = $conf->objectTypes['related'];
-		//$types = array($conf->objectTypes['gallery'], $conf->objectTypes['document'], $conf->objectTypes['shortnews'], $conf->objectTypes['event']);
+	 	
 	 	$user = $this->Session->read("BEAuthUser");
 	 	$lastModBYUser = array();
 	 	$lastMod = array();
@@ -36,8 +35,7 @@ class HomeController extends AppController {
 		 								"contain" 		=> array("ObjectType"),
 		 								"fields"		=> array("id", "title", "modified", "ObjectType.module"),
 		 								"conditions" 	=> array(
-		 														"user_modified = '" . $user["id"] . "'",
-	 															"object_type_id" => $types
+		 														"user_modified = '" . $user["id"] . "'"
 	 														),
 		 								"order"			=> array("modified DESC"),
 		 								"limit"			=> 5
@@ -47,7 +45,6 @@ class HomeController extends AppController {
 	 	$lastMod = $this->BEObject->find("all", array(
 		 								"contain" 		=> array("ObjectType"),
 		 								"fields"		=> array("id", "title", "modified", "ObjectType.module"),
-		 								"conditions" 	=> array("object_type_id" => $types),
 		 								"order"			=> array("modified DESC"),
 		 								"limit"			=> 10
 	 								)
