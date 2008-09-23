@@ -1,1 +1,0 @@
-{include file='error404.tpl'}
