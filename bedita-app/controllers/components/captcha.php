@@ -8,7 +8,7 @@ class CaptchaComponent extends Object {
 	private $fontType;
 	
 	function startup(&$controller) {
-		$this->controller = &$controller;echo defined(BEDITA_CORE_PATH);
+		$this->controller = &$controller;
 		// set default
 		$appPath = (defined("BEDITA_CORE_PATH"))? BEDITA_CORE_PATH : APP;
 		$this->background = $appPath . "/webroot/captcha/img/button.png";

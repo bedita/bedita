@@ -91,4 +91,13 @@
 //) ;
 
 
+// smtp server configuration
+// $config['smtpOptions'] = array(
+//	 'port'=>'25',
+//	 'timeout'=>'30',
+//	 'host' => 'your.smtp.server',
+//	 'username'=>'your_smtp_username',
+//	 'password'=>'your_smtp_password'
+//);
+
 ?>

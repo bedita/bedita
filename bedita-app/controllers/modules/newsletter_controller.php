@@ -18,7 +18,7 @@ class NewsletterController extends ModulesController {
 
 	var $name = 'Newsletter';
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Paginator');
-	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText');
+	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeMail');
 
 	var $uses = array('MailAddress', 'MailGroup') ;
 	
@@ -186,6 +186,8 @@ class NewsletterController extends ModulesController {
 		
 	 }
 	
+	 
+	 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"saveSubscriber"	=> 	array(

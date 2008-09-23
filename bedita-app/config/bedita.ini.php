@@ -535,7 +535,6 @@ $config['modelBindings'] = array() ;
 /**
  *  Default model bindings for Containable Behaviour 
  */
-$config['searchFields'] = array(
-) ;
+$config['searchFields'] = array() ;
 
 ?>
