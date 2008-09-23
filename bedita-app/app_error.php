@@ -37,6 +37,7 @@ class AppError extends ErrorHandler {
 					" - line: ".$e->getLine()."\nTrace:\n". $e->getTraceAsString();
 				$this->controller->log($this->errorTrace);
 				$this->sendMail($this->errorTrace);
+				$this->controller->set($messages);
 				App::import('View', "Smarty");
 				$viewObj = new SmartyView($this->controller);
 				$this->controller->output = $viewObj->render(null, "error", VIEWS."errors/error500.tpl");				
@@ -53,9 +54,11 @@ class AppError extends ErrorHandler {
 	public function handleExceptionFrontend(array $messages) {
 		$current = AppController::currentController();
 		if(isset($current)) {
-			$current->handleError($messages['details'], $messages['msg'], $this->errorTrace);
+			$this->controller = $current;
+			$this->controller->handleError($messages['details'], $messages['msg'], $this->errorTrace);
 		}
 		header('HTTP/1.1 404 Not Found');
+		$this->controller->set($messages);
 		App::import('View', "Smarty");
 		$viewObj = new SmartyView($this->controller);
 		echo $viewObj->render(null, "error", VIEWS."errors/error404.tpl");				
