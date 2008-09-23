@@ -125,7 +125,7 @@ class Category extends BEAppModel {
 					}
 					$id_tag = (!empty($tagDB["id"]))? $tagDB["id"] : $this->getLastInsertID();
 					if (!in_array($id_tag,$arrIdTag)) {
-						$arrIdTag[] = $id_tag;
+						$arrIdTag[$id_tag] = $id_tag;
 					}
 				}  
 			}

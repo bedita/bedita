@@ -20,8 +20,8 @@ class DateItem extends BEAppModel
 	var $recursive = 0 ;
 
 	var $validate = array(
-		'start' 		=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
-		'end' 		=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true))
+//		'start' 		=> array(array('rule' => VALID_NOT_EMPTY, 'required' => false)),
+//		'end' 		=> array(array('rule' => VALID_NOT_EMPTY, 'required' => false))
 	) ;
 	
 	function beforeValidate() {

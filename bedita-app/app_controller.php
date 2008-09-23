@@ -674,16 +674,12 @@ abstract class ModulesController extends AppController {
 		$categoryModel = ClassRegistry::init("Category");
 		$areaCategory = $categoryModel->getCategoriesByArea(Configure::read('objectTypes.'.$name));
 		$this->set("areaCategory", $areaCategory);
-		$areaModel = ClassRegistry::init("Area");
-		$areaModel->bviorCompactResults = false;
-		$this->set("areasList", $areaModel->find('list', array("order" => "public_name", "fields" => "public_name")));
-		$areaModel->bviorCompactResults = true;
 		
 		$this->setUsersAndGroups();
 	}
 
 	protected function saveObject(BEAppModel $beModel) {
-
+		
 		if(empty($this->data)) 
 			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
@@ -696,7 +692,9 @@ abstract class ModulesController extends AppController {
 		$name = strtolower($beModel->name);
 		
 		$categoryModel = ClassRegistry::init("Category");
-		$this->data["Category"] = $categoryModel->saveTagList($this->params["form"]["tags"]);
+		$tagList = $categoryModel->saveTagList($this->params["form"]["tags"]);
+		$this->data["Category"] = (!empty($this->data["Category"]))? array_merge($this->data["Category"], $tagList) : $tagList;
+		
 		if(!$beModel->save($this->data)) {
 			throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
 		}
