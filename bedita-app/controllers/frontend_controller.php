@@ -134,7 +134,9 @@ abstract class FrontendController extends AppController {
 	}
 	
 	public function handleError($eventMsg, $userMsg, $errTrace) {
-		$this->log($errTrace);
+		if(Configure::read('debug') > 0) {
+			$this->log($errTrace);
+		}
 	}
 	
 	/**
