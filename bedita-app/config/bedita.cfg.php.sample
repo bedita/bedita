@@ -100,4 +100,11 @@
 //	 'password'=>'your_smtp_password'
 //);
 
+// mail support configuration
+//$config["mailSupport"] = array(
+//	"from" => "bedita-support@...",	
+//	'to' => "bedita-support@...",
+//	'subject' => "[bedita] error message",
+//);
+
 ?>

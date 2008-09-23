@@ -47,19 +47,15 @@ $config['modelBindings'] = array(
 
 	'Area' => array("BEObject" => array("LangText")),
 	'Section' => array("BEObject" => array("LangText")),
- 	'Document' => array("BEObject" => array("LangText" ),
-				"Content" => array("*")),
-	'Event' => array("BEObject" => array("LangText"),
-				"Content" => array("*"), "DateItem"),
-	'Image' => array("BEObject" => array("LangText"),
-				"Content", "Stream"),
-	'Audio' => array("BEObject" => array("LangText"),
-				"Content", "Stream"),
-	'Video' => array("BEObject" => array("LangText"),
-				"Content", "Stream"),
-	'BEFile' => array("BEObject" => array("LangText"),
-				"Content", "Stream"),
-	'Gallery' => array("BEObject" => array("LangText"))
+ 	'Document' => array("BEObject" => array("LangText", "UserCreated","RelatedObject", "Category")),
+	'Event' => array("BEObject" => array("LangText","RelatedObject", "Category"), "DateItem"),
+	'Image' => array("BEObject" => array("LangText"), "Content", "Stream"),
+	'Audio' => array("BEObject" => array("LangText"), "Content"),
+	'Video' => array("BEObject" => array("LangText"), "Content", "Stream"),
+	'BEFile' => array("BEObject" => array("LangText"), "Content"),
+	'Gallery' => array("BEObject" => array("LangText")),
+	'Comment' => array("BEObject" => array("RelatedObject"), "Content"),
+	'ShortNews' => array("BEObject" => array("LangText","RelatedObject", "Category"))
 
 ) ;
 
