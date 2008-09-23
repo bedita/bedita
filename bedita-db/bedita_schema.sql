@@ -456,6 +456,7 @@ CREATE TABLE areas (
 CREATE TABLE sections (
   id INTEGER UNSIGNED NOT NULL,
   syndicate ENUM('on','off') DEFAULT 'on',
+  priority_order ENUM('asc','desc') DEFAULT 'asc',
   PRIMARY KEY(id),
   INDEX sections_FKIndex1(id),
   FOREIGN KEY(id)
