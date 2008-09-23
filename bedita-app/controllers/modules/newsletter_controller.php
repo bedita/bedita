@@ -20,7 +20,7 @@ class NewsletterController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Paginator');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeMail');
 
-	var $uses = array('MailAddress', 'MailGroup') ;
+	var $uses = array('MailAddress', 'MailGroup', 'MailMessage') ;
 	
 	var $paginate = array(
 			'MailAddress' => array('limit' => 10, 'order' => array('MailAddress.email' => 'asc')),
@@ -45,7 +45,7 @@ class NewsletterController extends ModulesController {
 	  * @param integer $id
 	  */
 	function view($id = null) {
-		
+		$this->viewObject($this->MailMessage, $id);
 	 }
 
 	 /**

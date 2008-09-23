@@ -46,9 +46,9 @@ class BEAppObjectModel extends BEAppModel {
 		$conf = Configure::getInstance() ;
 
 		if(isset($data['BEObject']) && empty($data['BEObject']['object_type_id'])) {
-			$data['BEObject']['object_type_id'] = $conf->objectTypes[strtolower($this->name)] ;
+			$data['BEObject']['object_type_id'] = $conf->objectTypes[strtolower($this->name)]["id"] ;
 		} else if(!isset($data['object_type_id']) || empty($data['object_type_id'])) {
-			$data['object_type_id'] = $conf->objectTypes[strtolower($this->name)] ;
+			$data['object_type_id'] = $conf->objectTypes[strtolower($this->name)]["id"] ;
 		}
 
 		// Se c'e' la chiave primaria vuota la toglie
@@ -198,11 +198,11 @@ class BEAppObjectModel extends BEAppModel {
     }
 
     public function checkType($objTypeId) {
-    	return ($objTypeId == Configure::read("objectTypes.".strtolower($this->name)));
+    	return ($objTypeId == Configure::read("objectTypes.".strtolower($this->name).".id"));
     }
     
     public function getTypeId() {
-        return Configure::read("objectTypes.".strtolower($this->name));
+        return Configure::read("objectTypes.".strtolower($this->name).".id");
     }
 }
 
@@ -430,7 +430,7 @@ class BeditaCollectionModel extends BEAppObjectModel {
 
 		// crea le nuove associazioni
 		for ($i=0; $i < count($queries[0]["children"]) ; $i++) {
-			$className	= $conf->objectTypeModels[$queries[0]["children"][$i]['object_type_id']] ;
+			$className	= $conf->objectTypes[$queries[0]["children"][$i]['object_type_id']]["model"] ;
 			$item 		= new $className() ;
 			$item->id	= $queries[0]['children'][$i]['id'] ;
 

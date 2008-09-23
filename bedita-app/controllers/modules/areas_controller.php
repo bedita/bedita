@@ -39,7 +39,7 @@ class AreasController extends ModulesController {
 			$this->loadSectionDetails($id,$ot_id);
 			$this->loadContents($id);
 			$this->loadSections($id);
-			$formToUse = strtolower(Configure::read("objectTypeModels.".$ot_id));
+			$formToUse = strtolower(Configure::read("objectTypes.".$ot_id.".model"));
 		} else {
 			$tree = $this->BeTree->getSectionsTree() ;
 			$this->set('tree',$tree);
@@ -79,7 +79,7 @@ class AreasController extends ModulesController {
 	  */
 	function viewSection($id=null) {
 		if (!empty($id)) {
-			$this->loadSectionDetails($id,Configure::read("objectTypes.section"));
+			$this->loadSectionDetails($id,Configure::read("objectTypes.section.id"));
 		} else {
 			$this->set('tree',$this->BeTree->getSectionsTree());
 			$this->setUsersAndGroups();
@@ -131,7 +131,7 @@ class AreasController extends ModulesController {
 			// update contents and children sections priority
 			$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
 			
-			$objects = $this->BeTree->getChildren($id, null, Configure::read("objectTypes.leafs")) ;
+			$objects = $this->BeTree->getChildren($id, null, Configure::read("objectTypes.leafs.id")) ;
 			$idsToReorder = array_keys($reorder);
 			
 			// remove old children
@@ -200,7 +200,7 @@ class AreasController extends ModulesController {
 			// update contents and children sections priority
 			$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
 			
-			$objects = $this->BeTree->getChildren($id, null, Configure::read("objectTypes.leafs")) ;
+			$objects = $this->BeTree->getChildren($id, null, Configure::read("objectTypes.leafs.id")) ;
 			$idsToReorder = array_keys($reorder);
 			
 			// remove old children
@@ -292,7 +292,7 @@ class AreasController extends ModulesController {
 		if (!empty($id)) {
 			$ot_id = $this->BEObject->field("object_type_id", array("BEObject.id" => $id));
 			$this->loadSectionDetails($id, $ot_id);
-			$tplFile = "form_" . strtolower(Configure::read("objectTypeModels.".$ot_id)) . ".tpl";
+			$tplFile = "form_" . strtolower(Configure::read("objectTypes.".$ot_id.".model")) . ".tpl";
 		}
 		
 		$this->render(null, null, VIEWS . "areas/inc/" . $tplFile);
@@ -345,7 +345,7 @@ class AreasController extends ModulesController {
 	public function showObjects($main_object_id=null, $relation=null, $objectType="related") {
 		
 		$id = (!empty($this->params["form"]["parent_id"]))? $this->params["form"]["parent_id"] : null;
-		$filter = (!empty($this->params["form"]["objectType"]))? array($this->params["form"]["objectType"]) : Configure::read("objectTypes." . $objectType);
+		$filter = (!empty($this->params["form"]["objectType"]))? array($this->params["form"]["objectType"]) : Configure::read("objectTypes." . $objectType . ".id");
 		if (!empty($this->params["form"]["lang"]))
 			$filter = array_merge($filter, array("lang" => $this->params["form"]["lang"])); 
 			
@@ -389,7 +389,7 @@ class AreasController extends ModulesController {
 		
 		$conditions = array(
 						"BEObject.id" => explode( ",", trim($this->params["form"]["object_selected"],",") ), 
-						"BEObject.object_type_id" => Configure::read("objectTypes." . $objectType)
+						"BEObject.object_type_id" => Configure::read("objectTypes." . $objectType . ".id")
 					);
 		
 		$objects = $this->BEObject->find("all", array(
@@ -456,7 +456,7 @@ class AreasController extends ModulesController {
 	 */
 	private function loadSectionDetails($id, $objectTypeId) {
 			
-		$model = ClassRegistry::init(Configure::read("objectTypeModels.".$objectTypeId));
+		$model = ClassRegistry::init(Configure::read("objectTypes.".$objectTypeId.".model"));
 		
 		$model->contain(array(
 					"BEObject" => array("ObjectType", 
@@ -488,7 +488,7 @@ class AreasController extends ModulesController {
 		$dim = (!empty($this->params["form"]["dim"]))? $this->params["form"]["dim"] : 20; 
 		
 		// get content
-		$objType = Configure::read("objectTypes.leafs");
+		$objType = Configure::read("objectTypes.leafs.id");
 		$contents = $this->BeTree->getChildren($id, null, $objType, "priority", true, $page, $dim);
 		
 		foreach ($contents["items"] as $key => $item) {
@@ -505,7 +505,7 @@ class AreasController extends ModulesController {
 		$dim = (!empty($this->params["form"]["dim"]))? $this->params["form"]["dim"] : 20; 
 		
 		// get sections children
-		$this->set("sections", $this->BeTree->getChildren($id, null, Configure::read("objectTypes.section"), "priority", true, $page, $dim));
+		$this->set("sections", $this->BeTree->getChildren($id, null, Configure::read("objectTypes.section.id"), "priority", true, $page, $dim));
 	}
 	
 	protected function forward($action, $esito) {

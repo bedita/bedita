@@ -41,7 +41,7 @@ class MultimediaController extends ModulesController {
 			array("order", "string", &$order),
 			array("dir", "boolean", &$dir)
 		) ;
-		$typesArray = array($conf->objectTypes['image'],$conf->objectTypes['audio'],$conf->objectTypes['video']);
+		$typesArray = array($conf->objectTypes['image']["id"],$conf->objectTypes['audio']["id"],$conf->objectTypes['video']["id"]);
 				
 		$bedita_items = $this->BeTree->getDiscendents($id, null, $typesArray, $order, $dir, $page, $dim)  ;
 		
@@ -167,12 +167,12 @@ class MultimediaController extends ModulesController {
 			array("dir", "boolean", &$dir)
 		) ;
 		$ot = &$conf->objectTypes ; 
-		$multimedia = $this->BeTree->getDiscendents(null, null, array($ot['image'], $ot['audio'], $ot['video']), $order, $dir, $page, $dim)  ;
+		$multimedia = $this->BeTree->getDiscendents(null, null, array($ot['image']["id"], $ot['audio']["id"], $ot['video']["id"]), $order, $dir, $page, $dim)  ;
 		for($i=0; $i < count($multimedia['items']) ; $i++) {
 			$id = $multimedia['items'][$i]['id'] ;
 			$ret = $this->Stream->findById($id) ;
 			$multimedia['items'][$i] = array_merge($multimedia['items'][$i], $ret['Stream']) ;
-			$multimedia['items'][$i]['bedita_type'] = $conf->objectTypeModels[$multimedia['items'][$i]['object_type_id']] ;
+			$multimedia['items'][$i]['bedita_type'] = $conf->objectTypes[$multimedia['items'][$i]['object_type_id']]["model"] ;
 		}
 		$this->params['toolbar'] = &$multimedia['toolbar'] ;
 		// Data for template

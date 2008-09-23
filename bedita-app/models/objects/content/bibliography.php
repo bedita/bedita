@@ -33,7 +33,7 @@ class Bibliography extends BeditaContentModel
 			$tmp = &$children[$i] ;
 			$obj = null ;
 			
-			if($tmp['object_type_id'] != $conf->objectTypes['biblioitem']) {
+			if($tmp['object_type_id'] != $conf->objectTypes['biblioitem']["id"]) {
 				continue ;
 			}
 			
@@ -83,8 +83,8 @@ class Bibliography extends BeditaContentModel
 			$obj = null ;
 			
 			switch ($tmp['object_type_id']) {
-				case $conf->objectTypes['biblioitem']: 	$obj = new BiblioItem() ; break ;
-				case $conf->objectTypes['book']: 		$obj = new Book() ; break ;
+				case $conf->objectTypes['biblioitem']["id"]: 	$obj = new BiblioItem() ; break ;
+				case $conf->objectTypes['book']["id"]: 		$obj = new Book() ; break ;
 			}
 			
 			$obj->bviorHideFields = $hiddenField ;
@@ -165,7 +165,7 @@ class Bibliography extends BeditaContentModel
 		
 		// I libri riassociati, gli item clonati
 		for ($i=0; $i < count($items) ; $i++) {
-			if($items[$i]['object_type_id'] == $conf->objectTypes['biblioitem']) {
+			if($items[$i]['object_type_id'] == $conf->objectTypes['biblioitem']["id"]) {
 				$item = new BiblioItem() ;
 				$item->id 				= $items[$i]['id'] ;
 				$item->bibliography_id 	= $idNewObj ;

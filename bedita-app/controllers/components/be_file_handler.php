@@ -289,7 +289,7 @@ class BeFileHandlerComponent extends Object {
 		if(!($ret = $this->BEObject->read('object_type_id', $id)))  
 			throw new BEditaMIMEException(__("MIME type not found", true)) ;
 		$this->BEObject->recursive = $rec ;
-		$model = $conf->objectTypeModels[$ret['BEObject']['object_type_id']] ;
+		$model = $conf->objectTypes[$ret['BEObject']['object_type_id']]["model"] ;
 		
 		if (!$this->_getTypeFromMIME($dati["type"], $model))
 			throw new BEditaMIMEException(__("MIME type (" . $dati["type"] . ") is not compatible with " . $model . " object", true)) ;

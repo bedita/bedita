@@ -12,6 +12,8 @@ INSERT INTO object_types (id, name, module) VALUES
 (29, 'gallery', 'galleries'),
 (13, 'comment', 'comments'),
 (18, 'shortnews', 'news'),
+(19, 'bibliography', 'bibliographies'),
+(20, 'book', 'books'),
 (21, 'event', 'events'),
 (22, 'document', 'documents'),
 (33, 'link', NULL),

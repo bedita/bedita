@@ -88,7 +88,7 @@ class PermissionTestCase extends BeditaTestCase {
 		$this->Transaction->begin() ;
 				
 		// Preleva i permessi
-		$perms = $this->Permission->getDefaultByType($conf->objectTypes['area']) ; 
+		$perms = $this->Permission->getDefaultByType($conf->objectTypes['area']["id"]) ; 
 		sort($perms);
 		pr("Permessi di default per un oggetto Area") ;
 		$this->assertEqual(count($perms) > 0,true);

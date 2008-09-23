@@ -39,7 +39,7 @@ class MailGroup extends BEAppModel
 		
 		$objModel = ClassRegistry::init("BEObject");
 		$areaList = $objModel->find('list', array(
-							"conditions" => "object_type_id=" . Configure::read("objectTypes.area"), 
+							"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
 							"order" => "title", 
 							"fields" => "BEObject.title")
 							);

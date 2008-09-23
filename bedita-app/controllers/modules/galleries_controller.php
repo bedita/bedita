@@ -23,7 +23,7 @@ class GalleriesController extends ModulesController {
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 10) {
 		$conf  = Configure::getInstance() ;
-		$types = array($conf->objectTypes['gallery']);
+		$types = array($conf->objectTypes['gallery']["id"]);
 		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
 	}
 

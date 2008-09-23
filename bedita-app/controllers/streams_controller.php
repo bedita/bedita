@@ -15,12 +15,12 @@ class StreamsController extends AppController {
 	 */
 	public function showStreams($obj_id=null, $collection=0, $page = 1, $dim = 20) {
 		$conf = Configure::getInstance();
-		$ot  = array($conf->objectTypes['image'],
-					$conf->objectTypes['audio'],
-					$conf->objectTypes['video']
+		$ot  = array($conf->objectTypes['image']["id"],
+					$conf->objectTypes['audio']["id"],
+					$conf->objectTypes['video']["id"]
 				);
 		if (empty($collection)) {
-			$ot[] = $conf->objectTypes['befile'];
+			$ot[] = $conf->objectTypes['befile']["id"];
 		}
 		$relations_id = array();
 		if (!empty($obj_id)) {
@@ -49,12 +49,12 @@ class StreamsController extends AppController {
 	
 	public function searchStreams($obj_id=null, $collection=0, $text=null) {
 		$conf = Configure::getInstance();
-		$ot  = array($conf->objectTypes['image'],
-					$conf->objectTypes['audio'],
-					$conf->objectTypes['video']
+		$ot  = array($conf->objectTypes['image']["id"],
+					$conf->objectTypes['audio']["id"],
+					$conf->objectTypes['video']["id"]
 				);
 		if (empty($collection)) {
-			$ot[] = $conf->objectTypes['befile'];
+			$ot[] = $conf->objectTypes['befile']["id"];
 		}
 		$relations_id = array();
 		if (!empty($obj_id)) {
@@ -97,7 +97,7 @@ class StreamsController extends AppController {
 		$this->BEObject->recursive = -1 ;
 		if(!($ret = $this->BEObject->read('object_type_id', $id))) throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
 		$this->BEObject->recursive = $rec ;
-		$modelClass = $conf->objectTypeModels[$ret["BEObject"]["object_type_id"]];
+		$modelClass = $conf->objectTypes[$ret["BEObject"]["object_type_id"]]["model"];
 
 		$model = $this->loadModelByType($modelClass);
 		$model->containLevel("minimum");

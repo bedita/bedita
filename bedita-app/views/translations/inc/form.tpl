@@ -148,9 +148,9 @@ $(document).ready(function(){
 	{/if}
 
 
-{if !empty($object_master.relations.attach) && $object_master.object_type_id != $conf->objectTypes.image
-											&& $object_master.object_type_id != $conf->objectTypes.video
-											&& $object_master.object_type_id != $conf->objectTypes.befile}
+{if !empty($object_master.relations.attach) && $object_master.object_type_id != $conf->objectTypes.image.id
+											&& $object_master.object_type_id != $conf->objectTypes.video.id
+											&& $object_master.object_type_id != $conf->objectTypes.befile.id}
 
 	<div class="tab2"><h2>{t}multimedia descriptions{/t}</h2></div>
 	<fieldset rel="multimedia">
@@ -285,9 +285,9 @@ $(document).ready(function(){
 	{/if}
 
 
-{if !empty($object_master.relations.attach) && $object_master.object_type_id != $conf->objectTypes.image
-											&& $object_master.object_type_id != $conf->objectTypes.video
-											&& $object_master.object_type_id != $conf->objectTypes.befile}
+{if !empty($object_master.relations.attach) && $object_master.object_type_id != $conf->objectTypes.image.id
+											&& $object_master.object_type_id != $conf->objectTypes.video.id
+											&& $object_master.object_type_id != $conf->objectTypes.befile.id}
 	<div class="tab2"><h2>{t}multimedia descriptions{/t}</h2></div>
 	<fieldset rel="multimedia">
 		

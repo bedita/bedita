@@ -26,7 +26,7 @@ class NewsController extends ModulesController {
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
-		$types = array($conf->objectTypes['shortnews']);
+		$types = array($conf->objectTypes['shortnews']["id"]);
 		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
 	 }
 
@@ -54,11 +54,11 @@ class NewsController extends ModulesController {
 
 	public function categories() {
 		$conf  = Configure::getInstance() ;
-		$type = $conf->objectTypes['shortnews'];
+		$type = $conf->objectTypes['shortnews']["id"];
 		$this->set("categories", $this->Category->findAll("Category.object_type_id=".$type));
 		$this->set("object_type_id", $type);
 		$this->set("areasList", $this->BEObject->find('list', array(
-										"conditions" => "object_type_id=" . Configure::read("objectTypes.area"), 
+										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
 										"order" => "title", 
 										"fields" => "BEObject.title"
 										)

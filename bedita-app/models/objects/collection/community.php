@@ -78,9 +78,9 @@ class Community extends BEAppCollectionModel
 		$conf = Configure::getInstance() ;		
 		
 		if(isset($data['BEObject']) && !isset($data['BEObject']['object_type_id'])) {
-			$data['BEObject']['object_type_id'] = $conf->objectTypes[strtolower($this->name)] ;
+			$data['BEObject']['object_type_id'] = $conf->objectTypes[strtolower($this->name)]["id"] ;
 		} else if(!isset($data['object_type_id'])) {
-			$data['object_type_id'] = $conf->objectTypes[strtolower($this->name)] ;
+			$data['object_type_id'] = $conf->objectTypes[strtolower($this->name)]["id"] ;
 		}
 
 		$this->set($data);

@@ -25,7 +25,7 @@ class DocumentsController extends ModulesController {
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
     	$conf  = Configure::getInstance() ;
-		$types = array($conf->objectTypes['document']);
+		$types = array($conf->objectTypes['document']["id"]);
 		
 		if (!empty($this->params["form"]["searchstring"])) {
 			$types["search"] = addslashes($this->params["form"]["searchstring"]);

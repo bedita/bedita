@@ -8,7 +8,7 @@ class CommentsController extends ModulesController {
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
-		$types = $conf->objectTypes['comment'];
+		$types = $conf->objectTypes['comment']["id"];
 		
 		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
 	 }

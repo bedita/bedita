@@ -25,7 +25,7 @@ class AddressbookController extends ModulesController {
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
-		$types = $conf->objectTypes['card'];
+		$types = $conf->objectTypes['card']['id'];
 		
 		if (!empty($this->params["form"]["searchstring"])) {
 			$types["search"] = addslashes($this->params["form"]["searchstring"]);

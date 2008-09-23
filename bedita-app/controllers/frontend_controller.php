@@ -149,7 +149,7 @@ abstract class FrontendController extends AppController {
 		$conf = Configure::getInstance(); 
 		$result = array();
 		$sections = $this->BeTree->getChildren($parent_id, $this->status, 
-			array($conf->objectTypes['section']), "priority") ;
+			array($conf->objectTypes['section']["id"]), "priority") ;
 
 		foreach ($sections['items'] as $s) {
 			
@@ -197,7 +197,7 @@ abstract class FrontendController extends AppController {
 		$level = 0;
 		foreach ($parents as $p_id) {
 			$sections = $this->BeTree->getChildren($p_id, $this->status, 
-				array($conf->objectTypes['section']), "priority") ;
+				array($conf->objectTypes['section']["id"]), "priority") ;
 
 			foreach ($sections["items"] as $s) {
 				
@@ -313,7 +313,7 @@ abstract class FrontendController extends AppController {
 		$conf = Configure::getInstance();
 		foreach($children['items'] as $index => $object) {
 			
-			$modelType = $conf->objectTypeModels[$object['object_type_id']];
+			$modelType = $conf->objectTypes[$object['object_type_id']]["model"];
 			if(!isset($this->{$modelType})) {
 				$this->{$modelType} = $this->loadModelByType($modelType);
 			}

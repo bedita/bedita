@@ -81,9 +81,9 @@ class Section extends BeditaCollectionModel
 			$item = $children["items"][$i] ;
 			
 			switch($item['object_type_id']) {
-				case $conf->objectTypes['section']:
-				case $conf->objectTypes['community']: {
-					$className	= $conf->objectTypeModels[$item['object_type_id']] ;
+				case $conf->objectTypes['section']["id"]:
+				case $conf->objectTypes['community']["id"]: {
+					$className	= $conf->objectTypes[$item['object_type_id']]["model"] ;
 					
 					$tmp = new $className() ;
 					$tmp->id = $item['id'] ;

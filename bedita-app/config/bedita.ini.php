@@ -235,96 +235,57 @@ define("BEDITA_DOMANDA_TXTSEMPLICE",	0x6) ;
  * definisce i tipi i oggetti ammessi
  */
 $config['objectTypes'] = array(
-	'area'				=> 1,
-	'newsletter'		=> 2,
-	'section'			=> 3,
-
-	'questionnaire'		=> 4,
-	'faq'				=> 5,
-	'cartigli'			=> 6,
-
-	'scroll'			=> 7,
-	'timeline'			=> 8,
-	'community'			=> 9,
-
-	'befile'			=> 10,
-	'image'				=> 12,
+	1			=> array("id" => 1, "name" => "area", "module" => "areas", "model" => "Area"),
+	"area"		=> array("id" => 1, "name" => "area", "module" => "areas", "model" => "Area"),
 	
-	'comment'			=> 13,
-	'faqquestion'		=> 14,
-	'question'			=> 15,
-
-	'answer'			=> 16,
-	'objectuser'		=> 17,
-	'shortnews'			=> 18,
-
-	'bibliography'		=> 19,
-	'book'				=> 20,
-	'event'				=> 21,
-
-	'document'			=> 22,
-
-	'author'			=> 28,
-	'gallery'			=> 29,
-	'biblioitem'		=> 30,
+	3			=> array("id" => 3, "name" => "section", "module" => "areas", "model" => "Section"),
+	"section"	=> array("id" => 3, "name" => "section", "module" => "areas", "model" => "Section"),
 	
-	'audio'				=> 31,
-	'video'				=> 32,
+	10			=> array("id" => 10, "name" => "befile", "module" => "multimedia", "model" => "BEFile"),
+	"befile"	=> array("id" => 10, "name" => "befile", "module" => "multimedia", "model" => "BEFile"),
 	
-	'link'				=> 33,
-
-	'card'			=> 34,
+	12			=> array("id" => 12, "name" => "image", "module" => "multimedia", "model" => "Image"),
+	"image"		=> array("id" => 12, "name" => "image", "module" => "multimedia", "model" => "Image"),
+	
+	13			=> array("id" => 13, "name" => "comment", "module" => "comments", "model" => "Comment"),
+	"comment"	=> array("id" => 13, "name" => "comment", "module" => "comments", "model" => "Comment"),
+	
+	18			=> array("id" => 18, "name" => "shortnews", "module" => "news", "model" => "ShortNews"),
+	"shortnews"	=> array("id" => 18, "name" => "shortnews", "module" => "news", "model" => "ShortNews"),
+	
+	19			   => array("id" => 19, "name" => "bibliography", "module" => "bibliographies", "model" => "Bibliography"),
+	"bibliography" => array("id" => 19, "name" => "bibliography", "module" => "bibliographies", "model" => "Bibliography"),
+	
+	20			=> array("id" => 20, "name" => "book", "module" => "books", "model" => "Book"),
+	"book"		=> array("id" => 20, "name" => "book", "module" => "books", "model" => "Book"),
+	
+	21			=> array("id" => 21, "name" => "event", "module" => "events", "model" => "Event"),
+	"event"		=> array("id" => 21, "name" => "event", "module" => "events", "model" => "Event"),
+	
+	22			=> array("id" => 22, "name" => "document", "module" => "documents", "model" => "Document"),
+	"document"	=> array("id" => 22, "name" => "document", "module" => "documents", "model" => "Document"),
+	
+	29			=> array("id" => 29, "name" => "gallery", "module" => "galleries", "model" => "Gallery"),
+	"gallery"	=> array("id" => 29, "name" => "gallery", "module" => "galleries", "model" => "Gallery"),
+	
+	31			=> array("id" => 31, "name" => "audio", "module" => "multimedia", "model" => "Audio"),
+	"audio"		=> array("id" => 31, "name" => "audio", "module" => "multimedia", "model" => "Audio"),
+	
+	32			=> array("id" => 32, "name" => "video", "module" => "multimedia", "model" => "Video"),
+	"video"		=> array("id" => 32, "name" => "video", "module" => "multimedia", "model" => "Video"),
+	
+	33			=> array("id" => 33, "name" => "link", "module" => null, "model" => "Link"),
+	"link"		=> array("id" => 33, "name" => "link", "module" => null, "model" => "Link"),
+	
+	34			=> array("id" => 34, "name" => "card", "module" => "addressbook", "model" => "Card"),
+	"card"		=> array("id" => 34, "name" => "card", "module" => "addressbook", "model" => "Card"),
 	
 	// define array of objects that can be related to other
-	'related'		=> array(18,19,20,21,22,29),
+	'related'	=> array("id" => array(18,19,20,21,22,29)),
 
 	// define array of objects that are leafs of the tree
-	'leafs'			=> array(18,19,20,21,22,29)
-	
-) ;
-
-/**
- * definisce i model per i diversi tipi di oggetti
- */
-$config['objectTypeModels'] = array(
-	1	=> 'Area',
-	2	=> 'Newsletter',
-	3	=> 'Section',
-	
-	4	=> 'Questionnaire',
-	5	=> 'Faq',
-	29	=> 'Gallery',
-	6	=> 'Cartigli',
-	
-	7	=> 'Scroll',
-	8	=> 'Timeline',
-	9	=> 'Community',
-	
-	10	=> 'BEFile',
-	12	=> 'Image',
-	31	=> 'Audio',
-	32	=> 'Video',
-
-	13	=> 'Comment',
-	14	=> 'FaqQuestion',
-	15	=> 'Question',
-	
-	16	=> 'Answer',
-	17	=> 'ObjectUser',
-	18	=> 'ShortNews',
-
-	19	=> 'Bibliography',
-	20	=> 'Book',
-	21	=> 'Event',
-
-	22	=> 'Document',
-	28	=> 'Author',
-	30	=> 'BiblioItem',
-
-	33 	=> 'Link',
-	34 	=> 'Card'
-
-) ;
+	'leafs'		=> array("id" => array(18,19,20,21,22,29))
+);
 
 /**
  * Definisce le variabili utilizzate per la gestione delle sessioni
@@ -342,35 +303,35 @@ $config['permissions'] = array(
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
 		array('guest', 			'group', (BEDITA_PERMS_READ)),
 	),
-	$config['objectTypes']['section']	=> array(
+	$config['objectTypes']['section']['id']	=> array(
 		array('guest', 			'group', (BEDITA_PERMS_READ)),
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
 	),
-	$config['objectTypes']['area']	=> array(
+	$config['objectTypes']['area']['id']	=> array(
 		array('guest', 			'group', (BEDITA_PERMS_READ)),
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
 	),
-	$config['objectTypes']['document']	=> array(
+	$config['objectTypes']['document']['id']	=> array(
 		array('guest', 			'group', (BEDITA_PERMS_READ)),
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
 	),
-	$config['objectTypes']['image']	=> array(
+	$config['objectTypes']['image']['id']	=> array(
 		array('guest', 			'group', (BEDITA_PERMS_READ)),
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
 	),
-	$config['objectTypes']['audio']	=> array(
+	$config['objectTypes']['audio']['id']	=> array(
 		array('guest', 			'group', (BEDITA_PERMS_READ)),
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
 	),
-	$config['objectTypes']['video']	=> array(
+	$config['objectTypes']['video']['id']	=> array(
 		array('guest', 			'group', (BEDITA_PERMS_READ)),
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
 	),
-	$config['objectTypes']['befile']	=> array(
+	$config['objectTypes']['befile']['id']	=> array(
 		array('guest', 			'group', (BEDITA_PERMS_READ)),
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
 	),
-	$config['objectTypes']['gallery']	=> array(
+	$config['objectTypes']['gallery']['id']	=> array(
 		array('guest', 			'group', (BEDITA_PERMS_READ)),
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
 	),

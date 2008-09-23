@@ -128,8 +128,8 @@ function changeStatusTranslations() {
 			*}
 			<td>{$mtitle|truncate:38:true} &nbsp;</td>
 			<td>
-				<span class="listrecent {$conf->objectTypeModels[$ot]|lower}">&nbsp;</span>
-				{$conf->objectTypeModels[$ot]}
+				<span class="listrecent {$conf->objectTypes[$ot].model|lower}">&nbsp;</span>
+				{$conf->objectTypes[$ot].model}
 			</td>
 			<td>{$olang}</td>
 			<td>{$translations[i].LangText.text}</td>

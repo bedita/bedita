@@ -32,12 +32,12 @@ class DeleteDependentObjectBehavior extends ModelBehavior {
 		
 		foreach ($this->config[$model->name] as $type) {
 			if(!is_array($filter)) $filter = array() ;
-			$filter[] = $conf->objectTypes[strtolower($type)] ;
+			$filter[] = $conf->objectTypes[strtolower($type)]["id"] ;
 		}
 		
 		// Se sono stati selezionati tipi specifici, aggiunge anche il tipo del model corrente
 		if($filter) {
-			$filter[] = $conf->objectTypes[strtolower($model->name)] ;
+			$filter[] = $conf->objectTypes[strtolower($model->name)]["id"] ;
 		}
 		
 		// Preleva gli oggetti discendenti 
@@ -65,8 +65,8 @@ class DeleteDependentObjectBehavior extends ModelBehavior {
 		// Preleva la tipologia dell'oggetto
 		$conf  = Configure::getInstance() ;
 		
-		if(!isset($conf->objectTypeModels[$tree['object_type_id']])) return true ;
-		$modelName 	= $conf->objectTypeModels[$tree['object_type_id']];
+		if(!isset($conf->objectTypes[$tree['object_type_id']]["model"])) return true ;
+		$modelName 	= $conf->objectTypes[$tree['object_type_id']]["model"];
 		
 		if(!class_exists($modelName)) loadModel($modelName);		
 		$model = new $modelName ;

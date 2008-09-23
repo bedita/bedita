@@ -317,7 +317,7 @@ class AppController extends Controller
 	
 	protected function loadModelByObjectTypeId($obj_type_id) {
 		$conf  = Configure::getInstance();
-		$modelClass = $conf->objectTypeModels[$obj_type_id];
+		$modelClass = $conf->objectTypes[$obj_type_id]["model"];
 		return $this->loadModelByType($modelClass);
 	}
 
@@ -650,7 +650,7 @@ abstract class ModulesController extends AppController {
 		$this->set('previews',	$previews);
 		
 		$categoryModel = ClassRegistry::init("Category");
-		$areaCategory = $categoryModel->getCategoriesByArea(Configure::read('objectTypes.'.$name));
+		$areaCategory = $categoryModel->getCategoriesByArea(Configure::read('objectTypes.'.$name.'.id'));
 		$this->set("areaCategory", $areaCategory);
 		
 		$this->setUsersAndGroups();

@@ -502,7 +502,7 @@ class BEObject extends BEAppModel
 		if($type_id === false) {
 			return false;
 		}		
-		return Configure::getInstance()->objectTypeModels[$type_id] ;
+		return Configure::getInstance()->objectTypes[$type_id]["model"] ;
 	}
 	
 	/**

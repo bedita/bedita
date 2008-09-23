@@ -53,7 +53,7 @@ class BeTreeComponent extends Object {
 		// Preleva l'utente connesso
 		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : '' ;
 		
-		$tree = $this->Tree->getAll(null, $userid, null, array($conf->objectTypes['area'],$conf->objectTypes['section'])) ;
+		$tree = $this->Tree->getAll(null, $userid, null, array($conf->objectTypes['area']['id'],$conf->objectTypes['section']['id'])) ;
 		
 		return $tree ;	
 	}
