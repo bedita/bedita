@@ -33,43 +33,24 @@ class AppController extends Controller
 	protected $modelBindings = array();
 	/////////////////////////////////		
 	/////////////////////////////////		
-
+	public static function currentController() {
+		return self::$current;
+	}
+	
 	public static function handleExceptions(BeditaException $ex) {
-		$errTrace =  $ex->errorTrace();   
-		if(isset(self::$current)) {
-			try {
-				self::$current->handleError($ex->getDetails(), $ex->getMessage(), $errTrace);
-				self::$current->setResult($ex->result);
-				self::$current->beforeRender();
-			} catch (Exception $e) { // error 500 if another exception is thrown here
-				header('HTTP/1.1 500 Internal Server Error');
-				// log error
-				$errTrace = get_class($e). ": ". $e->getMessage()."\nFile: ".$e->getFile().
-					" - line: ".$e->getLine()."\nTrace:\n". $e->getTraceAsString();
-				self::$current->log($errTrace);
-				App::import('View', "Smarty");
-				$viewObj = new SmartyView(self::$current);
-				return $viewObj->render(null, "error", VIEWS."errors/error500.tpl");				
-			}
-		} else {
-			// TODO: what else??
-			$obj = new AppController();
-			$obj->log($errTrace);
-		}
+		include_once (APP . 'app_error.php');
+		return new AppError('handleException', array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
+				'result' => $ex->result), $ex->errorTrace());
 	}
 
 	public static function defaultError(Exception $ex) {
-		$r = new ReflectionObject($ex);
-		$errTrace =  $r->getName()." -  ". $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
-		if(isset(self::$current)) {
-			self::$current->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
-			self::$current->setResult(self::ERROR);
-			self::$current->beforeRender();
-		} else {
-			// TODO: what else??
-			$obj = new AppController();
-			$obj->log($errTrace);
-		}
+
+		$errTrace =  get_class($ex)." -  ". $ex->getMessage()."\nFile: ".$ex->getFile().
+					" - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+		include_once (APP . 'app_error.php');
+		return new AppError('handleException', array('details' => $ex->getMessage(), 
+				'msg' => $ex->getMessage(), 
+				'result' => self::ERROR), $errTrace);
 	}
 	
 	public function handleError($eventMsg, $userMsg, $errTrace) {
@@ -81,9 +62,6 @@ class AppController extends Controller
 		}
 		$this->eventError($eventMsg);
 		$this->userErrorMessage($userMsg);
-		/** 
-		 * @todo : send mail in some cases.....
-		 */
 	}
 	
 	public function setResult($r) {
@@ -745,8 +723,8 @@ class BeditaException extends Exception
     }
     
     public function errorTrace() {
-        return get_class($this)." - ".$this->getDetails()."\nFile: ". 
-            $this->getFile()." - line: ".$this->getLine()."\nTrace:\n".
+        return get_class($this)." - ".$this->getDetails()." \nFile: ". 
+            $this->getFile()." - line: ".$this->getLine()." \nTrace:\n".
             $this->getTraceAsString();   
     }
 }

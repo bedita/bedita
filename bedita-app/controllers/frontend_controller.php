@@ -127,9 +127,10 @@ abstract class FrontendController extends AppController {
 			$errTrace =  get_class($ex)." -  ". $ex->getMessage().
 				"\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 		}
-		header('HTTP/1.1 404 Not Found');
-		self::$current->handleError($ex->getDetails(), $ex->getMessage(), $errTrace);
-		self::$current->render(null, "error", VIEWS."errors/error404.tpl");
+		include_once (APP . 'app_error.php');
+		return new AppError('handleExceptionFrontend', 
+				array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
+				'result' => $ex->result), $errTrace);
 	}
 	
 	public function handleError($eventMsg, $userMsg, $errTrace) {
@@ -264,7 +265,7 @@ abstract class FrontendController extends AppController {
 	 */
 	protected function loadObj($obj_id) {
 		if($obj_id === null)
-			throw new BeditaException(__("Content not found"));
+			throw new BeditaException(__("Content not found", true));
 		
 		$modelType = $this->BEObject->getType($obj_id);
 		if(!isset($this->{$modelType})) {
@@ -280,11 +281,11 @@ abstract class FrontendController extends AppController {
 								)
 							);
 		if(empty($obj)) {
-			throw new BeditaException(__("Content not found"));
+			throw new BeditaException(__("Content not found", true));
 		}
 							
 		if($this->checkPubDate && !$this->checkPubblicationDate($obj)) {
-			throw new BeditaException(__("Content not found"));
+			throw new BeditaException(__("Content not found", true));
 		}
 
 		if(!empty($obj["LangText"])) {
@@ -389,12 +390,12 @@ abstract class FrontendController extends AppController {
 	
 	public function content($name) {
 		if(empty($name))
-			throw new BeditaException(__("Content not found"));
+			throw new BeditaException(__("Content not found", true));
 		
 		$content_id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
 		$section_id = $this->Tree->field('parent_id',"id = $content_id", "priority");
 		if($section_id === false) {
-			throw new BeditaException(__("Content not found"));
+			throw new BeditaException(__("Content not found", true));
 		}
 		$this->action = 'section';
 		$this->section($section_id, $content_id);	

@@ -62,6 +62,9 @@ class DocumentsController extends ModulesController {
 							"OK"	=> "/documents/view/".@$this->Document->id,
 							"ERROR"	=> "/documents/view/".@$this->Document->id 
 							),
+			"view"	=> 	array(
+							"ERROR"	=> "/documents" 
+							), 
 			"save"	=> 	array(
 							"OK"	=> "/documents/view/".@$this->Document->id,
 							"ERROR"	=> "/documents/view/".@$this->Document->id 
