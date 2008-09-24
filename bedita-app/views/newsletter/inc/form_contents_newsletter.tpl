@@ -29,7 +29,12 @@ tinyMCE.init({
     remove_script_host : false,
 	document_base_url : "/"
 	
-	
+/*
+<a href="#" onclick="tinyMCE.execCommand('Bold');return false;">[Bold]</a>
+<a href="#" onclick="tinyMCE.execCommand('Italic');return false;">[Italic]</a>
+<a href="#" onclick="tinyMCE.execCommand('mceInsertContent',false,'<b>Hello world!!</b>');return false;">[Insert some HTML]</a>
+<a href="#" onclick="tinyMCE.execCommand('mceReplaceContent',false,'<b>{$selection}</b>');return false;">[Replace selection]</a>
+ */
 
 });
 

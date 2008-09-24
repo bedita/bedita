@@ -501,7 +501,7 @@ UL.menuleft {
 
 .publishingtree DIV {
 	margin-top: 10px;
-	margin-left: -15px;
+	margin-left: -10px;
 	/*background-color:red;*/
 	clear:both;
 }
@@ -531,7 +531,7 @@ UL.menuleft {
 .publishingtree .plusminus {
 	float:left;
 	cursor:pointer;
-	background:transparent url(../img/piumenoBlack.gif) no-repeat;
+	background: transparent url(../img/piumenoBlack.gif) no-repeat;
 	background-position: right 0px ;
 	height:25px;
 	width:25px;
@@ -540,6 +540,7 @@ UL.menuleft {
 
 .publishingtree .plusminus.on {
 	background-position: right -25px !important;
+	/*background-color: white;*/
 }
 
 
@@ -549,12 +550,12 @@ UL.menuleft {
 
 .publishingtree UL {
 	margin-left:10px;
-	border-left:1px solid #999999;
+	border-left:5px solid gray;
 }
 
 .publishingtree LI  {
-	border-bottom:1px solid #999999;
-	border-right:1px solid #999999;
+	border-bottom:1px solid gray;
+	border-right:0px solid #999999;
 	padding:3px 0px 3px 10px;
 }
 
@@ -570,8 +571,8 @@ UL.menuleft {
 
 .publishingtree.pubmodule:Hover {
 	/*
-background-color:#d8d8d8;
-*/
+	background-color:#d8d8d8;
+	*/
 }
 
 .publishingtree.pubmodule LI:Hover, .publishingtree.pubmodule LI.on {
@@ -873,6 +874,59 @@ input.priority {
 	margin-right:5px;
 }
 
+/*...........................................    
+
+    mediatypes
+
+...........................................*/
+
+UL#mediatypes  {
+	padding: 0px;
+	margin: 0px;
+}
+
+#mediatypes LI {
+	list-style:none;
+	padding:4px 0px 0px 32px;
+	margin:0px;
+	height:20px;
+	background-repeat: no-repeat;
+	margin-top:6px;
+	cursor:pointer;
+}
+
+#mediatypes .inline LI {
+	float:left;
+	padding:4px 8px 0px 26px;
+	margin-right:8px;
+}
+
+
+#mediatypes .on {
+	background-position: left -24px;
+}
+	
+#mediatypes .inline .on {
+	/*background-color: #FFF;*/
+}
+
+/*...........................................    
+
+    iconset
+
+...........................................*/
+
+.ico_image {background-image: url('../img/iconset/24px/image.png');}
+.ico_video {background-image: url('../img/iconset/24px/video.png');}
+.ico_audio {background-image: url('../img/iconset/24px/audio.png');}
+.ico_text {background-image: url('../img/iconset/24px/text.png');}
+.ico_spreadsheet {background-image: url('../img/iconset/24px/spreadsheet.png');}
+.ico_presentation {background-image: url('../img/iconset/24px/presentation.png');}
+.ico_drawing {background-image: url('../img/iconset/24px/drawing.png');}
+.ico_chart {background-image: url('../img/iconset/24px/chart.png');}
+.ico_formula {background-image: url('../img/iconset/24px/formula.png');}
+.ico_rss {background-image: url('../img/iconset/24px/rss.png');}
+
 
 
 /*...........................................    
@@ -880,6 +934,7 @@ input.priority {
     Specific template layouts: home
 
 ...........................................*/
+
 
 .home UL.modules {
 	width:710px;

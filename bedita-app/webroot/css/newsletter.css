@@ -1,14 +1,15 @@
-﻿@charset "utf-8";
+@charset "utf-8";
 /* CSS Document */
 
-body, td {
+body {
 	font-family: "Verdana" , sans-serif;	
 	font-size:14px;
 	line-height:1.5em;
+	background-color: #ffffff;
 }
 
 
-H1 {font-size: 1.6em; font-weight:normal; margin: 10px 0px 10px 0px}
+H1 {font: bold 1.6em "Georgia",serif; margin: 10px 0px 10px 0px}
 
 H2 {font-size: 1.4em; font-weight:normal;}
 
@@ -20,3 +21,4 @@ blockquote {
 	padding:20px;
 }
 
+HR {border:0px; border-top:1px solid silver;}

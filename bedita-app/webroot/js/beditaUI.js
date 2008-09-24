@@ -246,7 +246,18 @@ $(document).ready(function(){
 		$("#viewthumb").show();
 		$(".multimediaitem").removeClass("small");
 	});
-	
+
+	$("#mediatypes LI").click(function () {
+		$("#mediatypes LI").removeClass("on");
+		$(this).addClass("on");
+	});
+
+	$("#mediatypes LI.ico_all").click(function () {
+		$("#mediatypes LI").addClass("on");
+	});
+
+
+
 
 /*...........................................    
 

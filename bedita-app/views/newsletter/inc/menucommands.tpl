@@ -39,32 +39,56 @@ $(document).ready(function(){
 
 	{assign var="user" value=$session->read('BEAuthUser')}
 
-	{if $method eq "subscribers"}	
-	
-	{elseif $method eq "viewsubscriber"}
-	
-	<div class="insidecol">
-		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />
-		<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delAddress" {if !($subscriber.MailAddress.id|default:false)}disabled="1"{/if} />
-	</div>
 
-	{elseif $method eq "groups"}
-	
+	{if $method eq "templates"}
+
+		<ul class="menuleft insidecol bordered">
+			<li><a href="{$html->url('/newsletter/viewtemplate')}">{t}New template{/t}</a></li>
+		</ul>
+
+
 	
 	{elseif $method eq "newsletters"}
-	
+	{literal}
+		<style>
+			UL#templates {
+				margin-left:0px; 
+				margin-top:10px;
+				display:none;
+				
+			}
+			UL#templates LI {
+				list-style-type:none; padding-left:0px;
+				cursor:pointer;	
+			}
+			UL#templates LI:Hover {
+				font-weight:bold;
+			}
+			
+		</style>
+	{/literal}
+	<ul class="menuleft insidecol">
+		<li><a href="javascript:void(0)" onClick="$('#templates').slideToggle();">{t}Select by template{/t}</a></li>
+			<ul id="templates" class="bordered">
+				<li>pubblicazione uno</li>
+				<li>pubblic azione 2</li>
+				<li>pu blic azione III</li>
+				<li>Quarta pubblicazione</li>
+				<li class="on">All</li>
+			</ul>
+	</ul>
 	
 	{elseif !empty($method) && $method != "index" && $module_modify eq '1'}
 	
-	<div class="insidecol">
-		{if ($perms->isWritable($user.userid,$user.groups,$object.Permissions))}
-		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />
-		<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" />
-		{/if}
-		{if ($perms->isDeletable($user.userid,$user.groups,$object.Permissions))}
-		<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" {if !($object.id|default:false)}disabled="1"{/if} />
-		{/if}
-	</div>
+		<div class="insidecol">
+			{if ($perms->isWritable($user.userid,$user.groups,$object.Permissions))}
+			<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />
+			<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" />
+			{/if}
+			{if ($perms->isDeletable($user.userid,$user.groups,$object.Permissions))}
+			<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" {if !($object.id|default:false)}disabled="1"{/if} />
+			{/if}
+		</div>
 	
 	{/if}
 

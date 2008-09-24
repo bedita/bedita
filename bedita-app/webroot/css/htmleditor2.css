@@ -1,10 +1,11 @@
-﻿@charset "utf-8";
+@charset "utf-8";
 /* CSS Document */
 
 body, td {
 	font-family: "Verdana" , sans-serif;	
 	font-size:14px;
 	line-height:1.5em;
+	background-color:green;
 }
 
 
@@ -19,4 +20,3 @@ H4 {line-height:1em; margin: 5px 0px 0px 0px}
 blockquote {
 	padding:20px;
 }
-

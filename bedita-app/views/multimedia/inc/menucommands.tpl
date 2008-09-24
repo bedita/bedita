@@ -54,18 +54,45 @@ $(document).ready(function(){
 
 	{if $method == "index"}	
 		<ul class="menuleft insidecol">
-			<li><a href="javascript:void(0)" onClick="$('#multitypes').slideToggle();">{t}Select by type{/t}</a></li>
-				<ul id="multitypes" style="display:none">
-					<li>images</li>
-					<li>videos</li>
-					<li>texts</li>
-					<li>datasheets</li>
-					<li>view all</li>
+			<li><a href="javascript:void(0)" onClick="$('#mediatypes').slideToggle();">{t}Select by type{/t}</a></li>
+				<ul id="mediatypes" style="display:none">
+					
+					<li class="ico_image">
+						Image
+					</li>
+					<li class="ico_video">
+						Video
+					</li>
+					<li class="ico_audio">
+						Audio
+					</li>
+					<li class="ico_text">
+						Text
+					</li>
+					<li class="ico_spreadsheet">
+						Spreadsheet
+					</li>
+					<li class="ico_presentation">
+						Presentation
+					</li>
+					<li class="ico_drawing">
+						Drawing
+					</li>
+					<li class="ico_chart">
+						Chart
+					</li>
+					<li class="ico_formula">
+						Formula
+					</li>
+					
+					<li class="ico_all">
+						All
+					</li>
+				
 				</ul>
 		</ul>
 	{/if}	
-	
-	
+
 
 
 </div>
