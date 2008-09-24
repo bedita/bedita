@@ -8,19 +8,18 @@ tinyMCE.init({
 	mode : "textareas",
 	theme : "advanced",
 	editor_selector : "mce",
-	plugins : "safari,pagebreak,paste,fullscreen",
+	plugins : "safari,pagebreak,paste,fullscreen,template",
 
 	// Theme options
-	theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
-	theme_advanced_buttons2 : "",
+	theme_advanced_buttons1 : "template,|,bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
+	theme_advanced_buttons2 : "sub,sup,fontsizeselect,forecolor,styleselect,justifyleft,justifycenter,justifyright,justifyfull",
 	theme_advanced_buttons3 : "", 
 	theme_advanced_toolbar_location : "top",
 	theme_advanced_toolbar_align : "left",
-	//theme_advanced_statusbar_location : "bottom",
 	//theme_advanced_resizing : true,
 	theme_advanced_blockformats : "p,h1,h2,h3,h4,blockquote,address",
-	width : "470",
-
+	width : "450",
+	//http://wiki.moxiecode.com/index.php/TinyMCE:Control_reference
 	
 	// Example content CSS (should be your site CSS)
 	content_css : "/css/htmleditor.css",
@@ -37,6 +36,10 @@ tinyMCE.init({
  */
 
 });
+
+
+
+
 
 	</script>
 {/literal}
@@ -64,21 +67,30 @@ tinyMCE.init({
 	
 	&nbsp;&nbsp;
 		<input class="modalbutton" type="button" value="{t}Get contents{/t}" rel="{$html->url('/areas/showObjects/')}{$rel}" style="width:200px" />
-	
-	<hr />
-	
-	<textarea name="data[body]" style="height:400px" class="mce">{$object.body|default:''}
-	qui ci va il testo e se si pigia "get contents" qui sopra, si 'appende' via ajax
-	anche il contenuto tratto dagli oggetti selezionati nella modale.
-	COME e cosa si prenda da quegli oggetti dipende dal template in uso.
-	ma in sostanza titolo, immagine, testobreve e/o descrizione).
-	Non penso di tenere la relazione tra l'oggetto e la newsletter, in sostanza la scelta
-	degli oggetti serve solo come helper per riempire la textarea di testo, 
-	che il redattore potrà modificaRE COME GLI PARE.
-	Dal template dipendono anche titolo, firma(appesa anch'essa alla fine del testo) 
-	e grafica of course.
-	I templates a loro volta dipendono dalla pubblicazione da cui traggono 
-	l'URL per il dettaglio delle notizie, per l'iscrizione e la disiscrizione, il css etc
-	</textarea>
 
+	<hr />
+
+
+	<ul class="htab">
+		<li rel="html">HTML version</li>
+		<li rel="txt">PLAIN TEXT version</li>
+	</ul>
+	
+	<div class="htabcontainer" id="templatebody">
+		
+		<div class="htabcontent" id="html">
+			<textarea id="htmltextarea" style="height:300px" class="mce"></textarea>
+		</div>
+		
+		<div class="htabcontent" id="txt">
+			<textarea style="height:300px; border:1px solid silver; width:450px" class="autogrowarea"></textarea>
+		</div>
+		
+	</div>
+
+		<br />
+	<a href="#" onclick="tinyMCE.execCommand('mceInsertContent',false,'<b>Hello world!!<br /><hr /></b>');return false;">[TEST 4 Insert some HTML]</a>
+	
+	
+	
 </fieldset>
