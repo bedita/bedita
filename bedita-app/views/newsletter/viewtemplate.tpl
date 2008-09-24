@@ -18,7 +18,7 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		var openAtStart ="#subscriberdetails";
+		var openAtStart ="#details";
 		$(openAtStart).prev(".tab").BEtabstoggle();
 	});
 	{/literal}
@@ -30,23 +30,23 @@
 
 {include file="../common_inc/modulesmenu.tpl"}
 
-{include file="inc/menuleft.tpl" method="subscribers"}
+{include file="inc/menuleft.tpl" method="templates"}
 
 <div class="head">
 	
-	<h1>{t}{$object.title|default:"New Item"}{/t}</h1>
+	<h1>{t}{$object.title|default:"New Template"}{/t}</h1>
 	
 </div>
 
 {assign var=objIndex value=0}
 
 
-{include file="inc/menucommands.tpl" method="viewsubscriber" fixed = true}
+{include file="inc/menucommands.tpl" method="viewtemplate" fixed = true}
 
 
 <div class="main">	
 	
-	{include file="inc/form_subscriber.tpl"}
+	{include file="inc/form_template.tpl"}
 		
 </div>
 

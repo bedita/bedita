@@ -185,7 +185,19 @@ class NewsletterController extends ModulesController {
 
 		
 	 }
+
+	function templates() {
+
+		
+	 }
+
+	function viewtemplate() {
+
+		
+	 }
 	
+	
+	 
 	 
 	 
 	protected function forward($action, $esito) {

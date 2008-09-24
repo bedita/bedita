@@ -47,8 +47,6 @@ $(document).ready(function() {
 	<ul id="areacontent" class="bordered">
 		{include file="inc/list_contents_for_section.tpl" objsRelated=$contents.items}
 	</ul>		
-
-
 	
 	<div id="contents_nav_leafs">
 
@@ -61,12 +59,22 @@ $(document).ready(function() {
 	{/if}
 	</div>
 
+
 {else}
 	<ul id="areacontent" class="bordered">
-		<li id="noContents"><em>{t}no contents{/t}</em><hr /></li>
+		<li id="noContents"><em>{t}no contents{/t}</em></li>
 	</ul>
 {/if}
 
+
+	<hr />
+	<ul id="mediatypes" style="margin-left:20px">
+		<li class="ico_rss">syndicate <input type="checkbox" /></li>
+	</ul>
+
+	<hr />
+	<input style="width:220px" type="button" rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/0/leafs" class="modalbutton" value=" {t}add contents{/t} " />
+	
 </div>	
 
 	

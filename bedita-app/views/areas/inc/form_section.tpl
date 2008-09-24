@@ -129,14 +129,11 @@
 		</table>
 
 </fieldset>	
-			
-	<div class="indexlist">
-		{include file="../common_inc/form_translations.tpl" object=$object|default:null}
-	</div>
 
 
-{if (!empty($method) && $method == "viewSection")}
+{if (!empty($method) && $method == "viewSection")}			
 
+	{include file="../common_inc/form_translations.tpl" object=$object|default:null}
 	{include file="../common_inc/form_custom_properties.tpl" el=$object|default:null}
 	{include file="../common_inc/form_permissions.tpl" el=$object|default:null recursion=true}
 
