@@ -6,14 +6,14 @@ class MailGroup extends BEAppModel
 	
 	var $hasAndBelongsToMany = array(
 
-			"MailAddress" => array(
-							"joinTable"	=> "mail_group_addresses"		
+			"Card" => array(
+							"joinTable"	=> "mail_group_cards"		
 						)
 	
 		);
 	
 	protected $modelBindings = array( 
-				"detailed" => array("Area", "MailAddress"),
+				"detailed" => array("Area", "Card"),
 				"default" => array("Area"),
 				"minimum" => array()		
 	);
@@ -25,13 +25,13 @@ class MailGroup extends BEAppModel
 	 * @param int $address_id, if it's defined, filter by address_id
 	 * @return array
 	 */		
-	public function getGroupsByArea($area_id=null, $address_id=null) {
+	public function getGroupsByArea($area_id=null, $card_id=null) {
 		
 		$areaCond = (!empty($area_id))? "Area.id=" . $area_id : "Area";
-		$addressCond = (!empty($address_id))? "MailAddress.id=" . $address_id : "MailAddress";
+		$cardCond = (!empty($card_id))? "Card.id=" . $card_id : "Card";
 			
 		$groups = $this->find("all", array(
-								'contain' => array($areaCond, $addressCond)
+								'contain' => array($areaCond, $cardCond)
 								)
 						);
 
@@ -46,9 +46,9 @@ class MailGroup extends BEAppModel
 		
 		foreach ($groups as $g) {
 			
-			if (!empty($address_id) && !empty($g["MailAddress"])) {
+			if (!empty($address_id) && !empty($g["Card"])) {
 				$g["MailGroup"]["subscribed"] = true;
-				$g["MailGroup"]["MailGroupAddress"] = $g["MailAddress"][0]["MailGroupAddress"];
+				$g["MailGroup"]["MailGroupCard"] = $g["Card"][0]["MailGroupCard"];
 			}
 				
 			$areaGroups[$areaList[$g["MailGroup"]["area_id"]]][] = $g["MailGroup"]; 

@@ -280,6 +280,9 @@ $config['objectTypes'] = array(
 	34			=> array("id" => 34, "name" => "card", "module" => "addressbook", "model" => "Card"),
 	"card"		=> array("id" => 34, "name" => "card", "module" => "addressbook", "model" => "Card"),
 	
+	35			  => array("id" => 35, "name" => "mailmessage", "module" => "newsletter", "model" => "MailMessage"),
+	"mailmessage" => array("id" => 35, "name" => "mailmessage", "module" => "newsletter", "model" => "MailMessage"),
+	
 	// define array of objects that can be related to other
 	'related'	=> array("id" => array(18,19,20,21,22,29)),
 

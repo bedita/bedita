@@ -56,7 +56,9 @@ class BEAppObjectModel extends BEAppModel {
 			unset($data[$this->primaryKey]) ;
 		}
 
-		$result = parent::save(array($this->alias => $data), $validate, $fieldList) ;
+		$data = (!empty($data[$this->alias]))? $data : array($this->alias => $data);
+		
+		$result = parent::save($data, $validate, $fieldList) ;
 		
 		/**
 		 * @todo VERIFICARE se nn da problemi.

@@ -51,7 +51,7 @@ class TreeTestCase extends CakeTestCase {
 
 		$conf  = Configure::getInstance() ;
 		
-		$tree = $this->Tree->getAll(null, null, null, array($conf->objectTypes['area'], $conf->objectTypes['section'])) ;
+		$tree = $this->Tree->getAll(null, null, null, array($conf->objectTypes['area']["id"], $conf->objectTypes['section']["id"])) ;
 		
 		pr("Carica l'albero con solo aree e sezioni") ;
 		$this->assertEqual($tree,unserialize($this->data['resultTree2']));

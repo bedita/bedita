@@ -670,13 +670,15 @@ abstract class ModulesController extends AppController {
 		$name = strtolower($beModel->name);
 		
 		$categoryModel = ClassRegistry::init("Category");
-		$tagList = $categoryModel->saveTagList($this->params["form"]["tags"]);
+		$tagList = array();
+		if (!empty($this->params["form"]["tags"]))
+			$tagList = $categoryModel->saveTagList($this->params["form"]["tags"]);
 		$this->data["Category"] = (!empty($this->data["Category"]))? array_merge($this->data["Category"], $tagList) : $tagList;
 		
 		if(!$beModel->save($this->data)) {
 			throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
 		}
-		if(!($this->data['status']=='fixed')) {
+		if(!empty($this->data['status']) && !($this->data['status']=='fixed')) {
 			if(!isset($this->data['destination'])) 
 				$this->data['destination'] = array() ;
 			$this->BeTree->updateTree($beModel->id, $this->data['destination']);
