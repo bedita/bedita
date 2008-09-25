@@ -56,6 +56,11 @@ class TagsController extends ModulesController {
 		if(empty($this->data)) 
 			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
+		if($this->Category->tagLabelPresent($this->data["label"])) {
+			$this->userInfoMessage(__("Tag already present", true)." - ".$this->data["label"]);
+			return;
+		}
+		
 		// format custom properties
 		$this->Transaction->begin() ;
 		if(!$this->Category->save($this->data)) {
@@ -132,7 +137,7 @@ class TagsController extends ModulesController {
 						), 
 			"delete" =>	array(
 								"OK"	=> "/tags",
-								"ERROR"	=> "/tags/view/{@$this->params['pass'][0]}" 
+								"ERROR"	=> "/tags" 
 						),
 			"addMultipleTags" => array(
 								"OK"	=> "/tags",

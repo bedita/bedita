@@ -511,13 +511,15 @@ CREATE TABLE categories (
   `id` int(10) unsigned NOT NULL auto_increment,
   `area_id` int(10) unsigned default NULL,
   `label` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `object_type_id` int(10) unsigned default NULL,
   `priority` int(10) unsigned default NULL,
   `status` enum('on','off','draft','staging') NOT NULL default 'draft',
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `area_label_type` (`area_id`,`label`,`object_type_id`),
+  UNIQUE KEY `area_name_type` (`area_id`,`name`,`object_type_id`),
   KEY `object_type_id` (`object_type_id`),
   KEY `index_label` (`label`)
+  KEY `index_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

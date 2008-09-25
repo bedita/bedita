@@ -21,6 +21,7 @@ class Category extends BEAppModel {
 	var $validate = array(
 		'label' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
 		'status' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
+		'name' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
 	) ;
 
 	// static vars used by reorderTag static function
@@ -28,38 +29,56 @@ class Category extends BEAppModel {
 	
 	function afterFind($result) {
 		foreach ($result as &$res) {
-			if(isset($res['label']))
-				$res['url_label'] = str_replace(" ", "+", $res['label']);
+			if(isset($res['name']))
+				$res['url_label'] = $this->urlLabel($res['name']);
 		}
 		return $result;			
+	}
+
+	public function tagLabelPresent($label) {
+		$name = $this->uniqueLabelName($label);
+		$tagDB = $this->find("first", 
+			array("conditions" => "name='".$name."' AND object_type_id IS NULL") );
+		return !empty($tagDB);
+	}
+
+	/**
+	 * Define a unique name from label
+	 *
+	 * @param unknown_type $label
+	 */
+	public function uniqueLabelName($label) {
+		return strtolower(trim($label));		
+	}
+
+	private function urlLabel($tagName) {
+		return str_replace(" ", "-", $tagName);		
 	}
 	
 	/**
 	 * Definisce i valori di default.
 	 */		
 	function beforeValidate() {
-		if(isset($this->data[$this->name])) 
-			$data = &$this->data[$this->name] ;
-		else 
-			$data = &$this->data ;
-		$data['label'] = $this->checkLabel($data['label']);
+		$data = &$this->data[$this->name] ;
+		$data['label'] = trim($data['label']);
+		$data['name'] = $this->uniqueLabelName($data['label']);
 		return true;
 	}
 	 	
-	private function checkLabel($label) {
-		if(empty($label))
-			return null;
+//	private function checkLabel($label) {
+//		if(empty($label))
+//			return null;
 		
-		$value = htmlentities( strtolower($label), ENT_NOQUOTES, "UTF-8" );
+//		$value = htmlentities( strtolower($label), ENT_NOQUOTES, "UTF-8" );
 		// replace accent, uml, tilde,... with letter after & in html entities
-		$value = preg_replace("/&(.)(uml);/", "$1e", $value);
-		$value = preg_replace("/&(.)(acute|grave|cedil|circ|ring|tilde|uml);/", "$1", $value);
+//		$value = preg_replace("/&(.)(uml);/", "$1e", $value);
+//		$value = preg_replace("/&(.)(acute|grave|cedil|circ|ring|tilde|uml);/", "$1", $value);
 		// remove special chars (first decode html entities)
-		$value = preg_replace("/[^a-z0-9\s]/i", "", html_entity_decode($value,ENT_NOQUOTES,"UTF-8" ) ) ;
+//		$value = preg_replace("/[^a-z0-9\s]/i", "", html_entity_decode($value,ENT_NOQUOTES,"UTF-8" ) ) ;
 		// trim dashes in the beginning and in the end of nickname
-		$value = trim($value);
-		return $value;
-	}
+//		$value = trim($value);
+//		return $value;
+//	}
 	
 	/**
 	 * Get all categories of some object type and order them by area
@@ -111,12 +130,14 @@ class Category extends BEAppModel {
 				$tag = trim($tag);
 				
 				if (!empty($tag))  {
+					$name = $this->uniqueLabelName($tag);
 					$tagDB = $this->find("first", array(
-													"conditions" => "label='".$tag."' AND object_type_id IS NULL"
+													"conditions" => "name='".$name."' AND object_type_id IS NULL"
 													)
 									);
 					if (empty($tagDB)) {
 						$tagDB["label"] = $tag;
+						$tagDB["name"] = $name;
 						$tagDB["status"] = "on";
 						$this->create();
 						if (!$this->save($tagDB)) {
@@ -208,7 +229,7 @@ class Category extends BEAppModel {
 		// remove orphans or set weight = 0, create the non-associative array
 		$tagsArray = array();
 		foreach ($tags as $k => $t) {
-			$tags[$k]['url_label'] = str_replace(" ", "+", $t['label']);
+			$tags[$k]['url_label'] = $this->urlLabel($t['name']);
 			if(!isset($t['weight'])) {
 				if($showOrphans === false) {
 					unset($tags[$k]);		
@@ -252,9 +273,9 @@ class Category extends BEAppModel {
 		
 		// don't compact find result
 		$this->bviorCompactResults = false;
-		
+		$name = $this->uniqueLabelName($label);
 		$tag = $this->find("first", array(
-										"conditions" => array("label" => $label, "object_type_id IS NULL"),
+										"conditions" => array("name" => $name, "object_type_id IS NULL"),
 										"contain" => array("BEObject" => array("ObjectType"))
 									)
 						);
