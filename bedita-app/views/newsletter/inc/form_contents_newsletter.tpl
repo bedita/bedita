@@ -11,9 +11,10 @@ tinyMCE.init({
 	plugins : "safari,pagebreak,paste,fullscreen,template",
 
 	// Theme options
-	theme_advanced_buttons1 : "template,|,bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
+	theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
 	theme_advanced_buttons2 : "sub,sup,fontsizeselect,forecolor,styleselect,justifyleft,justifycenter,justifyright,justifyfull",
-	theme_advanced_buttons3 : "", 
+	theme_advanced_buttons3 : "template",
+	//http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/template 
 	theme_advanced_toolbar_location : "top",
 	theme_advanced_toolbar_align : "left",
 	//theme_advanced_resizing : true,
@@ -26,8 +27,30 @@ tinyMCE.init({
     relative_urls : false,
 	convert_urls : false,
     remove_script_host : false,
-	document_base_url : "/"
-	
+	document_base_url : "/",
+
+	template_cdate_classes : "cdate creationdate",
+	template_mdate_classes : "mdate modifieddate",
+	template_selected_content_classes : "selcontent",
+	template_cdate_format : "%m/%d/%Y : %H:%M:%S",
+	template_mdate_format : "%m/%d/%Y : %H:%M:%S",
+	template_replace_values : {
+		username : "Jack Black",
+		staffid : "991234"
+	},
+	template_templates : [
+		{
+			title : "Test1 Details",
+			src : "/test1.html",
+			description : "Adds Editor Name and Staff ID"
+		},
+		{
+			title : "TESt2 Timestamp",
+			src : "/test2.html",
+			description : "Adds an editing timestamp."
+		}
+	]
+
 /*
 <a href="#" onclick="tinyMCE.execCommand('Bold');return false;">[Bold]</a>
 <a href="#" onclick="tinyMCE.execCommand('Italic');return false;">[Italic]</a>
@@ -36,10 +59,6 @@ tinyMCE.init({
  */
 
 });
-
-
-
-
 
 	</script>
 {/literal}
@@ -89,8 +108,7 @@ tinyMCE.init({
 	</div>
 
 		<br />
-	<a href="#" onclick="tinyMCE.execCommand('mceInsertContent',false,'<b>Hello world!!<br /><hr /></b>');return false;">[TEST 4 Insert some HTML]</a>
-	
+
 	
 	
 </fieldset>

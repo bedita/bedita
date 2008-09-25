@@ -48,7 +48,7 @@ $(document).ready(function(){
 
 
 
-<div class="tab"><h2>{t}card{/t}</h2></div>
+<div class="tab"><h2>{t}Card{/t}</h2></div>
 
 <fieldset id="card">
 
@@ -126,7 +126,7 @@ $(document).ready(function(){
 </fieldset>
 
 
-<div class="tab"><h2>{t}address{/t}</h2></div>
+<div class="tab"><h2>{t}Address{/t}</h2></div>
 
 <fieldset id="address">
 <table>
@@ -396,7 +396,7 @@ $(document).ready(function(){
 </fieldset>
 
 
-<div class="tab"><h2>{t}contacts{/t}</h2></div>
+<div class="tab"><h2>{t}Contacts{/t}</h2></div>
 
 <fieldset id="contacts">
 <table>
@@ -423,7 +423,7 @@ $(document).ready(function(){
 </fieldset>
 
 
-<div class="tab"><h2>{t}note{/t}</h2></div>
+<div class="tab"><h2>{t}Note{/t}</h2></div>
 
 <fieldset id="note">
 	<textarea name="data[description]" class="mce" style="font-size:13px; width:510px; height:150px;">{$object.description|default:''}</textarea>

@@ -1,66 +1,32 @@
 
+<div class="tab"><h2>{t}Invoice{/t}</h2></div>
 
-<div class="tab"><h2>{t}Invoices{/t}</h2></div>
+<fieldset id="invoice">			
 
-<fieldset id="invoices">			
-			
-<table class="bordered" style="width:100%">
-		
-	<tr>
-		<th>Newsletter sent on:</th>
-		<th>to recipient</th>
-		<th>with template</th>
-	</tr>
-	<tr>
-		<td class="info" style="text-decoration: blink;">currently in job</td>
-		<td>gruppo uno</td>
-		<td>pubblicazione uno</td>
-	</tr>
-	<tr>
-		<td>01 sep 2008</td>
-		<td>gruppo due</td>
-		<td>pubblicazione uno</td>
-	</tr>
-	<tr>
-		<td>21 aug 2008</td>
-		<td>gruppo uno</td>
-		<td>pubblicazione uno</td>
-	</tr>
-</table>
-
-</fieldset>
-
-
-
-<div class="tab"><h2>{t}Schedule new Invoice{/t}</h2></div>
 
 <fieldset id="schedule">			
 			
 <table class="bordered" style="width:100%">
 
 	<tr>
-		<th>Start on:</th>
-		<th>to recipient:</th>
-		<th>with template:</th>
+		<th>{t}start{/t}:</th>
+		<th>{t}to recipients{/t}:</th>
+		<th>{t}status{/t}:</th>
 	</tr>
 	<tr>
 		<td>
-			<input size="10" type="text" class="dateinput" name="data[start]" id="start" 
-			value="{$object.start|default:$smarty.now|date_format:$conf->datePattern}" />
+	<input size=10 type="text" class="dateinput" name="data[DateItem][{$idx}][start]" id="eventStart" value="{if !empty($d.start)}{$d.start|date_format:$conf->datePattern}{/if}"/>
+	<input size=5 type="text" id="timeStart" name="data[DateItem][{$idx}][timeStart]" value="" />
+
 		</td>
 		<td>
-			<select>
-				<option value="">--</option>
-				<option>list of all recipents</option>
-			</select>
+			<input type="checkbox"> lista dei gruppi
+			<br />
+			<input type="checkbox"> cioè delle categorie 
+			<br />
+			<input type="checkbox"> addressbook+newsletter
 		</td>
-		<td>
-			<select>
-				<option value="">--</option>
-				<option>list of all templates</option>
-				<option>grouped by publishing</option>
-			</select>
-		</td>
+		<td class="info" style="text-decoration: blink;">currently in job</td>
 	</tr>
 
 

@@ -13,13 +13,17 @@
 	{$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
 
+{$html->css("jquery.timepicker.css")}
+{$javascript->link("jquery/jquery.placement.below")}
+{$javascript->link("jquery/jquery.timepicker-list")}
 
 <script language="JavaScript">
 	{literal}
 	$(document).ready( function ()
 	{
-		var openAtStart ="#contents";
+		var openAtStart ="#contents, #invoice";
 		$(openAtStart).prev(".tab").BEtabstoggle();
+		$("#timeStart, #timeEnd").timePicker({startTime: "00:00", endTime: "23:30"});
 	});
 	{/literal}
 </script>
