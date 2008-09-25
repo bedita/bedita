@@ -17,7 +17,8 @@ INSERT INTO object_types (id, name, module) VALUES
 (21, 'event', 'events'),
 (22, 'document', 'documents'),
 (33, 'link', NULL),
-(34, 'card', 'addressbook');
+(34, 'card', 'addressbook'),
+(35, 'mailmessage', 'newsletter');
 	
 INSERT INTO `question_types` (`id`, `label`) VALUES
 (1, 'multiple choice'),
