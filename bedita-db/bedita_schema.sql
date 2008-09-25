@@ -433,7 +433,7 @@ CREATE TABLE categories (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `area_name_type` (`area_id`,`name`,`object_type_id`),
   KEY `object_type_id` (`object_type_id`),
-  KEY `index_label` (`label`)
+  KEY `index_label` (`label`),
   KEY `index_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
