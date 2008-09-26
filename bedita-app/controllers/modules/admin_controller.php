@@ -34,6 +34,26 @@ class AdminController extends ModulesController {
 	 function index() { 	
 		$this->set('users', $this->paginate('User'));
 	}
+	
+	function showUsers() {
+		$allGroups = $this->Group->findAll();
+		$userGroups = array();
+		if(isset($user)) {
+			foreach ($user['Group'] as $g) {
+				array_push($userGroups, $g['name']);
+			}
+		}
+		$formGroups = array();
+		foreach ($allGroups as $g) {
+			$isGroup=false;
+			if(array_search($g['Group']['name'],$userGroups) !== false)
+				$isGroup = true;
+			$formGroups[$g['Group']['name']] = $isGroup;
+		}
+		$this->set('users', $this->User->findAll());
+		$this->set('formGroups',  $formGroups);
+		$this->layout = null;
+	}
 
 	 function saveUser() {
 
@@ -58,7 +78,35 @@ class AdminController extends ModulesController {
 			$this->userInfoMessage(__("User updated",true));
 		}
 	 }
-	 
+
+	 function saveUserAjax () {
+		$this->layout = null;
+		$this->checkWriteModulePermission();
+		try {
+			$this->Transaction->begin() ;
+			if(empty($this->data)) {
+				throw new BeditaException(__("Empty data",true));
+			}
+			$userGroups=array();
+			if(isset($this->data['groups'] )) {
+				foreach ($this->data['groups'] as $k=>$v)
+					array_push($userGroups, $k);
+			}
+			$this->data['User']['passwd'] = substr($this->data['User']['userid'],0,4) . "+pwd";
+			$this->BeAuth->createUser($this->data, $userGroups);
+			$u = $this->User->findByUserid($this->data['User']['userid']);
+			$this->eventInfo("user ".$this->data['User']['userid']." created");
+			$this->Transaction->commit();
+			$this->set("userId", $u['User']['id']);
+			$this->set("userCreated", true);
+		} catch(BeditaException $ex) {
+			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
+			$this->setResult(self::ERROR);
+			$this->set("errorMsg", $ex->getMessage());
+		}
+	}
+	
 	 function removeUser($id) {
 	 	$this->checkWriteModulePermission();
 	 	if(isset($id)) {
@@ -244,7 +292,11 @@ class AdminController extends ModulesController {
 	 			"removeGroup" => 	array(
  								"OK"	=> "/admin/groups",
 	 							"ERROR"	=> "/admin/groups" 
-	 						)
+	 						),
+				"saveUserAjax" =>	array(
+					 			"OK"	=> self::VIEW_FWD.'save_user_ajax_response',
+								"ERROR"	=> self::VIEW_FWD.'save_user_ajax_response'
+							)
 	 			);
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 	 	return false;

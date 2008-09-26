@@ -1,13 +1,21 @@
-
+<script type="text/javascript">
+<!--
+{literal}
+function addUserToCard(id,username) {
+	$("#user_id").attr("value",id);
+	$("#user_name").text(username);
+}
+{/literal}
+//-->
+</script>
 
 <div class="tab"><h2>{t}Properties{/t}</h2></div>
 
-<fieldset id="properties">			
-			
-<table class="bordered">
-		
-	<tr>
+<fieldset id="properties">
 
+<table class="bordered">
+
+	<tr>
 		<th>{t}Status{/t}:</th>
 		<td colspan="4">
 			{if ($object.status == 'fixed')}
@@ -17,17 +25,18 @@
 			{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator="&nbsp;"}
 			{/if}
 		</td>
-
 	</tr>
 
 	<tr>
 		<th>{t}Username{/t}:</th>
 		<td>
-			<i>{t}no user data{/t} </i> 
-			&nbsp;&nbsp;&nbsp;<input type="button" class="beditabutton" name="edit" value="  {t}promote as user{/t}  " />
+			<span id="user_name">{t}no user data{/t}</span><input type="hidden" id="user_id" name="data[user_id]" value="{$object.userid|default:''}"/>
+			&nbsp;&nbsp;&nbsp;<input type="button" class="modalbutton" name="edit" value="  {t}promote as user{/t}  "
+				rel="{$html->url('/admin/showUsers')}"
+				title="USERS : select an item to associate"/>
 		</td>
 	</tr>
-	
+
 	{if isset($comments)}
 	<tr>
 		<th>{t}Display details in frontend{/t}:</th>
@@ -37,9 +46,7 @@
 		</td>
 	</tr>
 	{/if}
-	
 
-	
 </table>
-	
+
 </fieldset>
