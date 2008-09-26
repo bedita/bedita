@@ -19,11 +19,11 @@
 					{foreach from=$groups item="group" name="fc"}
 						<li>
 						<input type="checkbox" name="data[joinGroup][{$index}][mail_group_id]" value="{$group.id}"{if !empty($group.subscribed)} checked{/if}/> {$group.group_name}
-						<input type="hidden" name="data[joinGroup][{$index}][id]" value="{$group.MailGroupAddress.id|default:""}" />
-						<input type="hidden" name="data[joinGroup][{$index}][status]" value="confirmed" />
-						<input type="hidden" name="data[joinGroup][{$index}][command]" value="{$group.MailGroupAddress.command|default:"confirm"}" />
-						<input type="hidden" name="data[joinGroup][{$index}][hash]" value="{$group.MailGroupAddress.hash|default:""}" />
-						<input type="hidden" name="data[joinGroup][{$index++}][created]" value="{$group.MailGroupAddress.created|default:""}" />
+						<input type="hidden" name="data[joinGroup][{$index}][id]" value="{$group.MailGroupCard.id|default:""}" />
+						<input type="hidden" name="data[joinGroup][{$index}][status]" value="{$group.MailGroupCard.status|default:"confirmed" />
+						<input type="hidden" name="data[joinGroup][{$index}][command]" value="{$group.MailGroupCard.command|default:"confirm"}" />
+						<input type="hidden" name="data[joinGroup][{$index}][hash]" value="{$group.MailGroupCard.hash|default:""}" />
+						<input type="hidden" name="data[joinGroup][{$index++}][created]" value="{$group.MailGroupCard.created|default:""}" />
 						</li>
 					{/foreach}
 					
@@ -34,21 +34,21 @@
 		</tr>
 		<tr>
 			<th><label id="lemail" for="email">{t}with email{/t}</label></th>
-			<td colspan="2"><input type="text" id="email" name="data[MailAddress][email]" value="{$subscriber.MailAddress.email|default:''}" /></td>
+			<td colspan="2"><input type="text" id="email" name="data[mail_email]" value="{$object.mail_email|default:''}" /></td>
 		</tr>
 		<tr>
 			<th>status</th>
 			<td colspan="2">
-				<input type="radio" name="data[MailAddress][status]" value="valid"{if $subscriber.MailAddress.status|default:"valid" == "valid"} checked{/if} /> {t}valid{/t}
-				<input type="radio" name="data[MailAddress][status]" value="blocked"{if $subscriber.MailAddress.status|default:"valid" == "blocked"} checked{/if} /> {t}blocked{/t} 
+				<input type="radio" name="data[mail_status]" value="valid"{if $object.mail_status|default:"valid" == "valid"} checked{/if} /> {t}valid{/t}
+				<input type="radio" name="data[mail_status]" value="blocked"{if $object.mail_status|default:"valid" == "blocked"} checked{/if} /> {t}blocked{/t} 
 			</td>
 		</tr>
 		<tr>
 			<th>html</th>
 			<td colspan="2">
-				<input type="radio" name="data[MailAddress][html]" value="1"{if $subscriber.MailAddress.html|default:1 == 1} checked{/if}> {t}yes{/t}
+				<input type="radio" name="data[mail_html]" value="1"{if $object.mail_html|default:1 == 1} checked{/if}> {t}yes{/t}
 				&nbsp;&nbsp;
-				<input type="radio" name="data[MailAddress][html]" value="0"{if $subscriber.MailAddress.html|default:1 == 0} checked{/if}> {t}no{/t}
+				<input type="radio" name="data[mail_html]" value="0"{if $object.mail_html|default:1 == 0} checked{/if}> {t}no{/t}
 			</td>
 		</tr>
 		<tr>
@@ -57,16 +57,10 @@
 		</tr>
 		<tr>
 			<th>{t}subscribed on{/t}:</th>
-			<td colspan="2">{$subscriber.MailAddress.created|date_format:$conf->datePattern|default:''}</td>
+			<td colspan="2">{$object.created|date_format:$conf->datePattern|default:''}</td>
 		</tr>
 		</table>
 </fieldset>
-	
-
-
-
-
-</form>
 	
 
 
