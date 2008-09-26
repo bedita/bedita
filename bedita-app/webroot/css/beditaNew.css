@@ -550,7 +550,7 @@ UL.menuleft {
 
 .publishingtree UL {
 	margin-left:10px;
-	border-left:5px solid gray;
+	border-left:1px solid gray;
 }
 
 .publishingtree LI  {
@@ -566,6 +566,7 @@ UL.menuleft {
 .publishingtree LI.on  {
 	background-color:white;
 	font-weight:normal;
+	border-right:1px solid #999999;
 }
 
 

@@ -19,7 +19,7 @@ $(document).ready(function() {
 	$("#areacontent").sortable ({
 		distance: 20,
 		opacity:0.7,
-		update: $(this).reorderListItem
+		update: $(this).fixItemsPriority
 	}).css("cursor","move");
 
 	$("#contents_nav_leafs a").click(function() {
@@ -67,14 +67,15 @@ $(document).ready(function() {
 {/if}
 
 
-	<hr />
-	<ul id="mediatypes" style="margin-left:20px">
+	<br />
+	<input style="width:220px" type="button" rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/0/leafs" class="modalbutton" value=" {t}add contents{/t} " />
+	
+
+	<ul id="mediatypes" style="margin-top:10px; margin-left:0px">
 		<li class="ico_rss">syndicate <input type="checkbox" /></li>
 	</ul>
 
 	<hr />
-	<input style="width:220px" type="button" rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/0/leafs" class="modalbutton" value=" {t}add contents{/t} " />
-	
 </div>	
 
 	

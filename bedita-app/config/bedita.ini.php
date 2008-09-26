@@ -284,10 +284,10 @@ $config['objectTypes'] = array(
 	"mailmessage" => array("id" => 35, "name" => "mailmessage", "module" => "newsletter", "model" => "MailMessage"),
 	
 	// define array of objects that can be related to other
-	'related'	=> array("id" => array(18,19,20,21,22,29)),
+	'related'	=> array("id" => array(18,19,20,21,22,29,34)),
 
 	// define array of objects that are leafs of the tree
-	'leafs'		=> array("id" => array(18,19,20,21,22,29))
+	'leafs'		=> array("id" => array(18,19,20,21,22,29,34))
 );
 
 /**

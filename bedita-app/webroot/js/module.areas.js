@@ -21,7 +21,7 @@ function loadSectionAjax(container) {
 	urlS = ajaxSectionsUrl + "/" + rel[1];
 	urlSO = ajaxSectionObjectUrl + "/" + rel[1];
 	
-	$(".areacontainer, #loading").show();
+	$(".main, #loading").show();
 	
 	// load section
 	$("#areapropertiesC").load(urlSO, function() {

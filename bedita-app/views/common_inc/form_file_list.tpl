@@ -17,7 +17,7 @@ function commitUploadItem(IDs, rel) {
 			urlGetObj, {'id': id, 'relation':rel}, function (responseText, textStatus, XMLHttpRequest)
 			{
 				$("#loading").hide();
-				$(containerItem).append(this).reorderListItem(); 
+				$(containerItem).append(this).fixItemsPriority(); 
 				$(containerItem).sortable("refresh");
 			}
 		)
@@ -53,7 +53,7 @@ function resetError() {
 // Remove item from queue
 function removeItem(divId) {
 	$("#" + divId).remove() ;
-	$("#multimediaItems").reorderListItem();
+	$("#multimediaItems").fixItemsPriority();
 }
 
 
@@ -82,7 +82,7 @@ $(document).ready(function()
 	$(containerItem).sortable ({
 		distance: 20,
 		opacity:0.7,
-		update: $(this).reorderListItem
+		update: $(this).fixItemsPriority
 	}).css("cursor","move");
 	
 	$("#reposItems").click( function () {

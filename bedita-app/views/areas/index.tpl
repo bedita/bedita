@@ -17,7 +17,7 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 
 {literal}
 $(document).ready(function() {
-	$(".areacontainer").show();
+	$(".main").show();
 	$(".tab:first").click();
 	$("#sectionTitle").text("{/literal}{$object.title|truncate:42:'…':true}{literal}");
 });
@@ -52,30 +52,14 @@ $(document).ready(function() {
 
 </div> 
 
-<div class="main" style="left:180px; width:420px;">
-
-	
-{if !empty($smarty.get.hyper)}
-
-	{include file="inc/hypertree.tpl"}
-	
-{else}
-
-	{include file="inc/form_tree.tpl"}
-	
-{/if}
-
-</div>
-
-
 
 
 {assign_concat var="actionForm" 0="save" 1=$formToUse|capitalize|default:"Area"}
 
+
+<div class="main" style="display:none">
+
 <form action="{$html->url('/areas/')}{$actionForm}" method="post" name="updateForm" id="updateForm" class="cmxform">
-
-<div class="areacontainer" style="display:none; width:420px; position:absolute; top:170px; left:580px">
-
 				
 	<div class="tab"><h2>{t}Details{/t} of &nbsp; <span class="graced" style="font-size:1.5em" id="sectionTitle"></span></h2></div>
 	
@@ -128,9 +112,7 @@ $(document).ready(function() {
 </form>
 
 
-
-
-
+{include file="../common_inc/menuright.tpl"}
 
 
 

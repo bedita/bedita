@@ -6,7 +6,7 @@ $(document).ready(function() {
 	$("#areasections").sortable ({
 		distance: 20,
 		opacity:0.7,
-		update: $(this).reorderListItem
+		update: $(this).fixItemsPriority
 	}).css("cursor","move");
 
 	$("#sections_nav a").click(function() {

@@ -13,12 +13,12 @@ function addItem() {
 	var linkUrl=$("#linkUrl").val();
 	var target=$("#linkTarget").val();
 	$(emptyLI).load(urlBaseAddLink, {'title': linkTitle, 'url':linkUrl, 'target':target }, function () {
-		$("#listExistingLinks").append(this).reorderListItem() ; 
+		$("#listExistingLinks").append(this).fixItemsPriority() ; 
 		
 		$("#loadingLinks").hide();
 		$(this).find("input[@type='button']").click(function() {
 			$(this).parents("li").remove();
-			$("#listExistingLinks").reorderListItem();
+			$("#listExistingLinks").fixItemsPriority();
 		});
 	}) ;
 }
@@ -31,13 +31,13 @@ $(document).ready(function() {
 	
 	$("#listExistingLinks").find("input[@type='button']").click(function() {
 		$(this).parents("li").remove();
-		$("#listExistingLinks").reorderListItem();
+		$("#listExistingLinks").fixItemsPriority();
 	});
 	
 	$("#listExistingLinks").sortable ({
 		distance: 20,
 		opacity:0.7,
-		update: $(this).reorderListItem
+		update: $(this).fixItemsPriority
 	});
 	
 });

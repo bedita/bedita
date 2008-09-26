@@ -11,6 +11,16 @@ Menu a SX valido per tutte le pagine del controller.
 	   <div class="modules"><label class="bedita" rel="{$html->url('/')}">BEdita 3.0</label></div>
 		
 	{include file="../common_inc/messages.tpl"}
+
+
+	<div class="insidecol publishingtree">
+		
+			{$beTree->view($tree)}
+
+	
+	</div>
+
+		<br /><br /><br /><br /><br /><br /><br /><br />
 		
 		<ul class="menuleft insidecol">
 
@@ -22,6 +32,7 @@ Menu a SX valido per tutte le pagine del controller.
 			{/if}
 					
 		</ul>
+
 
 
 </div>
