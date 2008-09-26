@@ -2,7 +2,7 @@
 ** subscriber form template
 *}
 
-
+{if isset($moduleList.newsletter) && $moduleList.newsletter.status == "on"}
 <div class="tab"><h2>{t}Newsletter subscriptions{/t}</h2></div>
 
 <fieldset id="subscriberdetails">	
@@ -57,6 +57,6 @@
 		</tr>
 		</table>
 </fieldset>
-	
+{/if}
 
 
