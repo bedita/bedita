@@ -26,7 +26,7 @@ Menu a SX valido per tutte le pagine del controller.
 {if !empty($object)}
 	<ul class="menuleft insidecol">
 		<li>
-			<a href="javascript:void(0)" onClick="$('#export').slideToggle();">Export document</a>
+			<a href="javascript:void(0)" onclick="$('#export').slideToggle();">Export document</a>
 			<ul id="export" style="display:none;">
 				<li><a href="">xml openDoc bho?</a></li>
 			</ul>
@@ -39,7 +39,7 @@ Menu a SX valido per tutte le pagine del controller.
 {if !empty($previews)}
 	<ul class="menuleft insidecol">
 		<li>
-			<a href="javascript:void(0)" onClick="$('#previews').slideToggle();">{t}Previews{/t}</a>
+			<a href="javascript:void(0)" onclick="$('#previews').slideToggle();">{t}Previews{/t}</a>
 			<ul id="previews" style="display:none;">
 			{foreach from=$previews item="preview"}
 				<li><a href="{$preview.url}" target="_blank">{$preview.desc}</a></li>

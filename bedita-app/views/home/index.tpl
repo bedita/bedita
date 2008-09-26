@@ -111,9 +111,9 @@ $(document).ready(function() {
 
 <div class="tab"><h2>{t}search{/t}</h2></div>
 	<div>
-		<form>
+		<form action="">
 			<label class="block" for="searchstring">{t}search string:{/t}</label>
-			<input type="text" name="searchstring" value=""/>
+			<input type="text" name="searchstring" id="searchstring" value=""/>
 			&nbsp;<input id="searchButton" type="button" value="go" />
 			<hr />
 		</form>

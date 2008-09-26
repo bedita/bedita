@@ -5,7 +5,7 @@
 
 
 {literal}
-<script language="JavaScript">
+<script type="text/javascript">
     $(document).ready(function(){
 		var openAtStart ="#multimediaitem";
 		$(openAtStart).prev(".tab").BEtabstoggle();

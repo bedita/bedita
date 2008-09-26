@@ -6,7 +6,7 @@
 {$javascript->link("jquery/jquery.metadata", false)}
 {$javascript->link("jquery/jquery.validate", false)}
 
-<script language="JavaScript">
+<script type="text/javascript">
 	{literal}
 	$(document).ready( function ()
 	{

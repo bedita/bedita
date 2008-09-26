@@ -17,7 +17,7 @@
 {$javascript->link("jquery/jquery.placement.below")}
 {$javascript->link("jquery/jquery.timepicker-list")}
 
-<script language="JavaScript">
+<script type="text/javascript">
 	{literal}
 	$(document).ready( function ()
 	{

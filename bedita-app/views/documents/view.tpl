@@ -11,7 +11,7 @@
 {$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
 {literal}
-<script language="JavaScript">
+<script type="text/javascript">
     $(document).ready(function(){
 		
 		var openAtStart ="#title,#long_desc_langs_container";

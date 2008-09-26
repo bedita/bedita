@@ -1,4 +1,4 @@
-<script language="JavaScript">
+<script type="text/javascript">
 	{literal}
 	$(document).ready( function ()
 	{
