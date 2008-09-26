@@ -29,7 +29,7 @@ class CloneTestCase extends CakeTestCase {
  							'Tree', 'Permission', 'BEObject', 'Content', 
  							'BaseDocument', 'Event', 'Area', 'Section', 'Document',
  							'BEFile', 'Bibliography', 'BiblioItem', 'Book',
- 							'Faq', 'FaqQuestion', 'Community', 'ObjectUser',
+ 							'Faq', 'FaqQuestion', 'Community',
  							'Questionnaire', 'Question', 'Comment'
  							) ;
  	var $components = array('Transaction') ;
@@ -233,12 +233,6 @@ class CloneTestCase extends CakeTestCase {
 				'user_id'	=> $ret['User']['id']
 			) ;
 		
-			$this->ObjectUser = new ObjectUser() ;
-			$ret = $this->ObjectUser->save($users[$i]) ;
-			$this->assertEqual($ret,true);
-			
-			// Aggiunge l'user
-			$this->Community->appendChild($this->ObjectUser->id) ;
 		}
 		
 		// Preleva gli oggetti user della community

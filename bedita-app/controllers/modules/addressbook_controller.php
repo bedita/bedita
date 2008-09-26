@@ -20,7 +20,7 @@ class AddressbookController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
-	var $uses = array('BEObject','Tree', 'Category', 'Card') ;
+	var $uses = array('BEObject','Tree', 'Category', 'Card', 'MailGroup') ;
 	protected $moduleName = 'addressbook';
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -43,6 +43,7 @@ class AddressbookController extends ModulesController {
 	  */
 	function view($id = null) {
 		$this->viewObject($this->Card, $id);
+		$this->set("groupsByArea", $this->MailGroup->getGroupsByArea(null, $id));
 	}
 
 	/**

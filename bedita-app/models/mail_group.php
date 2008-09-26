@@ -46,7 +46,7 @@ class MailGroup extends BEAppModel
 		
 		foreach ($groups as $g) {
 			
-			if (!empty($address_id) && !empty($g["Card"])) {
+			if (!empty($card_id) && !empty($g["Card"])) {
 				$g["MailGroup"]["subscribed"] = true;
 				$g["MailGroup"]["MailGroupCard"] = $g["Card"][0]["MailGroupCard"];
 			}

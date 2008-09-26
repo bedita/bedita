@@ -27,7 +27,7 @@ class TreeTestCase extends CakeTestCase {
  							'Document', 'Event', 'Question', 'Answer',
  							'BEFile', 'Image', 'Audio', 'Video',
  							'Comment', 'Book', 'Author', 'ShortNews',
- 							'Bibliography', 'FaqQuestion', 'BiblioItem', 'ObjectUser',
+ 							'Bibliography', 'FaqQuestion', 'BiblioItem',
  							'Tree'
  	) ;
  	var $components	= array('Transaction', 'Permission') ;

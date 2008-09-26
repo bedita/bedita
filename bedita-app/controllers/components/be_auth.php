@@ -78,7 +78,7 @@ class BeAuthComponent extends Object {
 		);
 		
 		$this->User->recursive = 1;
-		$this->User->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
+		$this->User->unbindModel(array('hasMany' => array('Permission')));
 		$u = $this->User->find($conditions);
 		
 		if(!$this->loginPolicy($userid, $u, $policy))
@@ -110,7 +110,7 @@ class BeAuthComponent extends Object {
 			// look for existing user
 			
 			$this->User->recursive = 1;
-			$this->User->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
+			$this->User->unbindModel(array('hasMany' => array('Permission')));
 			$u2 = $this->User->find(array("User.userid" => $userid));
 			if(!empty($u2["User"])) {
 				$u2["User"]["last_login_err"]= date('Y-m-d H:i:s');
@@ -185,7 +185,7 @@ class BeAuthComponent extends Object {
 		}
 		
 		$this->User->recursive = 1;
-		$this->User->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
+		$this->User->unbindModel(array('hasMany' => array('Permission')));
 		$u = $this->User->find(array("User.userid" => $userid));
 		$u["User"]["passwd"] = md5($password);
 		$u["User"]["num_login_err"]=0;
@@ -249,7 +249,7 @@ class BeAuthComponent extends Object {
 	public function createUser($userData, $groups=NULL) {
 		$user = new User() ;
 		$user->recursive = 1;
-		$user->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
+		$user->unbindModel(array('hasMany' => array('Permission')));
 		$u = $user->findByUserid($userData['User']['userid']);
 		if(!empty($u["User"])) {
 			$this->log("User ".$userData['User']['userid']." already created");
@@ -313,7 +313,7 @@ class BeAuthComponent extends Object {
 	public function removeUser($userId) {
 		// TODO: come fare con oggetti associati??? sono cancellati di default??
 		$user = new User();
-		$user->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
+		$user->unbindModel(array('hasMany' => array('Permission')));
 		$u = $user->findByUserid($userId);
 		if(empty($u["User"])) {
 			throw new BeditaException(__("User not present",true));

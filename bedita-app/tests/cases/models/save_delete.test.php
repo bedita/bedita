@@ -32,7 +32,7 @@ class SaveDeleteTestCase extends CakeTestCase {
  							'Document', 'Event', 'Question', 'Answer',
  							'BEFile', 'Image', 'Audio','Video',
  							'Comment', 'Book', 'Author', 'ShortNews',
- 							'Bibliography', 'FaqQuestion', 'BiblioItem', 'ObjectUser',
+ 							'Bibliography', 'FaqQuestion', 'BiblioItem',
  							'Tree', 'Gallery'
  	) ;
     var $dataSource	= 'test' ;
@@ -377,23 +377,6 @@ class SaveDeleteTestCase extends CakeTestCase {
 		$this->assertEqual($numRecordBegin,$numRecordEnd);
 	} 
 	
-
-	function testInsertObjectUser() {
-		$numRecordBegin = $this->_getNumRecordsTable($this->ObjectUser) ; 
-		
-		// Torna l'id dell'utente 'bedita'
-		if(!class_exists('User')) loadModel('User') ;
-		$this->User = new User() ;
-		
-		$ret = $this->User->findByUserid('bedita') ;
-		$this->data['user']['user_id'] = $ret['User']['id'] ;
-		
-		$this->_insertDelete($this->ObjectUser, $this->data['user']) ;
-		
-		$numRecordEnd = $this->_getNumRecordsTable($this->ObjectUser) ; 
-		
-		$this->assertEqual($numRecordBegin,$numRecordEnd);
-	} 
 
 	function testInsertFaqAndFaqQuestion() {
 		$numRecordBegin = $this->_getNumRecordsTable($this->FaqQuestion) ; 

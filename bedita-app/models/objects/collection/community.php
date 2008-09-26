@@ -44,7 +44,6 @@ class Community extends BEAppCollectionModel
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'ForeignDependenceSave' => array('BEObject', 'Collection'),
-			'DeleteDependentObject'	=> array('objectuser'),
 			'DeleteObject' 			=> 'objects',
 	); 
 	

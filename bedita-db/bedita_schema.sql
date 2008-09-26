@@ -292,21 +292,20 @@ CREATE TABLE questions (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE object_users (
-  id INTEGER UNSIGNED NOT NULL,
+  object_id INTEGER UNSIGNED NOT NULL,
   user_id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(id),
-  INDEX objectUsers_FKIndex1(id),
-  INDEX objectUsers_FKIndex2(user_id),
-  FOREIGN KEY(id)
+  PRIMARY KEY(object_id, user_id),
+  INDEX object_id_FKIndex1(object_id),
+  INDEX user_id_FKIndex2(user_id),
+  FOREIGN KEY(object_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
   FOREIGN KEY(user_id)
     REFERENCES users(id)
-      ON DELETE NO ACTION
+      ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
 
 CREATE TABLE permissions (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -584,10 +583,11 @@ CREATE TABLE cards (
   fax VARCHAR(32) NULL,
   website VARCHAR(128) NULL,
   privacy_level TINYINT( 1 ) NOT NULL DEFAULT '0',
-  `mail_status` enum('blocked','valid') NOT NULL default 'valid',
-  `mail_bounce` int(10) unsigned NOT NULL default '0',
-  `mail_last_bounce_date` datetime default NULL,
-  `mail_html` tinyint(1) NOT NULL default '1',
+  mail_email VARCHAR(255) NULL,
+  mail_status enum('blocked','valid') NOT NULL default 'valid',
+  mail_bounce int(10) unsigned NOT NULL default '0',
+  mail_last_bounce_date datetime default NULL,
+  mail_html tinyint(1) NOT NULL default '1',
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)

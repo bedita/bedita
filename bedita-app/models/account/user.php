@@ -46,12 +46,6 @@ class User extends BEAppModel
 				'fields'		=> 'Permission.object_id, Permission.switch, Permission.flag',
 				'foreignKey'	=> 'id',
 				'dependent'		=> true
-			),
-		'ObjectUser' =>
-			array(
-				'className'		=> 'ObjectUser',
-				'condition'		=> "",
-				'dependent'		=> true
 			)
 	);
 
@@ -73,7 +67,6 @@ class User extends BEAppModel
 	 * @param unknown_type $user
 	 */
 	function compact(&$user) {
-		unset($user['ObjectUser']) ;
 		unset($user['Permission']) ;
 		
 		$user['User']['groups'] = array() ;

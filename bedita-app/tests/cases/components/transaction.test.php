@@ -32,7 +32,7 @@ class TransactionTestCase extends CakeTestCase {
  							'Document', 'Event', 'Question', 'Answer',
  							'BEFile', 'Image', 'Audio', 'Video',
  							'Comment', 'Book', 'Author', 'ShortNews',
- 							'Bibliography', 'FaqQuestion', 'BiblioItem', 'ObjectUser'
+ 							'Bibliography', 'FaqQuestion', 'BiblioItem'
  	) ;
  	var $components	= array('Transaction') ;
     var $dataSource	= 'test' ;

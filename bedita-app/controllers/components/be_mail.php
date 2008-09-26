@@ -156,7 +156,7 @@ class BeMailComponent extends Object {
 						);
 						
 		foreach ($jobsToDo as $job) {
-			$data["to"] = $job["Card"]["email"];
+			$data["to"] = $job["Card"]["mail_email"];
 			$data["from"] = $job["MailMessage"]["sender"];
 			$data["replayTo"] = $job["MailMessage"]["replay_to"];
 			$data["subject"] = $job["MailMessage"]["Content"]["subject"];

@@ -19,7 +19,7 @@ class BeAuthTestCase extends BeditaTestCase {
     private function removeIfPresent($userData, $groupData) {
 		$user = new User() ;
 		$user->recursive=1;
-		$user->unbindModel(array('hasMany' => array('Permission', 'ObjectUser')));
+		$user->unbindModel(array('hasMany' => array('Permission')));
 		$u = $user->findByUserid($userData['User']['userid']);
 		if(!empty($u["User"])) {
 			$beAuth	= new BeAuthComponent();

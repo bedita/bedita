@@ -105,7 +105,15 @@ class BEObject extends BEAppModel
 				'foreignKey'   			=> 'object_id',
 				'associationForeignKey'	=> 'category_id',
 				'unique'				=> true
-			)
+			),
+		 'User' =>
+			   array(
+			    'className'    => 'User',
+			    'joinTable'       => 'object_users',
+			    'foreignKey'      => 'object_id',
+			    'associationForeignKey' => 'user_id',
+			    'unique'    => true
+			   )
 	);	
 
 	/**
@@ -205,7 +213,8 @@ class BEObject extends BEAppModel
 		// Scorre le associazioni hasMany
 		foreach ($this->hasMany as $name => $assoc) {
 			// Non gestisce i permessi
-			if($name == 'Permissions') continue ;
+			if($name == 'Permissions')
+				continue ;
 			
 			$db 		=& ConnectionManager::getDataSource($this->useDbConfig);
 			$model 		= new $assoc['className']() ; 
@@ -228,7 +237,8 @@ class BEObject extends BEAppModel
 				$modelTmp	 	 = new $assoc['className']() ; 
 				$data 			 = &$this->data[$this->name][$name][$i] ;
 				$data[$foreignK] = $id ; 
-				if(!$modelTmp->save($data)) return false ;
+				if(!$modelTmp->save($data))
+					throw new BeditaException(__("Error saving object", true), "Error saving hasMany relation in BEObject for model " . $assoc['className']);
 				
 				unset($modelTmp);
 			}
