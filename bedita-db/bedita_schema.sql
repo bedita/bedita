@@ -583,7 +583,7 @@ CREATE TABLE cards (
   fax VARCHAR(32) NULL,
   website VARCHAR(128) NULL,
   privacy_level TINYINT( 1 ) NOT NULL DEFAULT '0',
-  mail_email VARCHAR(255) NULL,
+  newsletter_email VARCHAR(255) NULL,
   mail_status enum('blocked','valid') NOT NULL default 'valid',
   mail_bounce int(10) unsigned NOT NULL default '0',
   mail_last_bounce_date datetime default NULL,
