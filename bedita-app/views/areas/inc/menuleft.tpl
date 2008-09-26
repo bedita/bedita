@@ -15,7 +15,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 	<div class="insidecol publishingtree">
 		
-			{$beTree->view($tree)}
+			{if !empty($tree)}{$beTree->view($tree)}{/if}
 
 	
 	</div>
