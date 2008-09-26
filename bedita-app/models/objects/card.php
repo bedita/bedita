@@ -31,9 +31,10 @@ class Card extends BEAppObjectModel {
 															"CustomProperties",
 															"LangText",
 															"RelatedObject",
-															"Category"), "MailGroup"),
+															"Category",
+															"User"), "MailGroup"),
 
-       			"default" => array("BEObject" => array("CustomProperties", 
+				"default" => array("BEObject" => array("CustomProperties", 
 									"LangText", "ObjectType", 
 									"Category", "RelatedObject" )),
 

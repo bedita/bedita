@@ -50,7 +50,7 @@ class AddressbookController extends ModulesController {
 	 * Creates/updates card
 	 */
 	function save() {
-        $this->checkWriteModulePermission();
+		$this->checkWriteModulePermission();
 		$this->Transaction->begin();
 		$kind = ($this->data['company']==0) ? 'person' : 'cmp';
 		if($kind == 'person') {
