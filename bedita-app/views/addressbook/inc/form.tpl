@@ -12,7 +12,7 @@
 	
 	{include file="./inc/form_card_details.tpl"}
 	
-	{include file="./inc/form_subscriber.tpl"}
+	{include file="./inc/form_newsletter_subscription.tpl"}
 	
 	{include file="./inc/form_properties.tpl"}
 	

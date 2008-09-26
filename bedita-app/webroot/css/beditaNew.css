@@ -218,9 +218,9 @@ UL.modules {
 .modules LI, .modules label {
 	display:block;
 	font-size: 1.16em ;
-	width:119px; height:119px; 
+	width:120px; height:120px; 
 	padding:10px;
-	margin: 0px 1px 1px 0px;
+	margin: 0px 0px 0px 0px;
 	background-color:#CCCCCC; 
 	background-image: url(../img/sfomodulo.png);
 	background-repeat:repeat-x;
@@ -331,7 +331,7 @@ UL.modulesmenu {
 
 .modulesmenu LI {
 	height:25px; width:15px;
-	float:right; margin-left:1px;
+	float:right; margin-left:0px;
 	cursor:pointer;
 	background-image: url(../img/sfomodulo.png);
 	background-repeat:repeat-x;

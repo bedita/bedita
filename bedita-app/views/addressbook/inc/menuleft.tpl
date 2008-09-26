@@ -17,6 +17,7 @@ Menu a SX valido per tutte le pagine del controller.
 		{if $module_modify eq '1'}
 
 			<li><a href="{$html->url('/addressbook/view')}">{t}New card{/t}</a></li>
+			<li><a href="{$html->url('/addressbook/view')}">{t}New group{/t}</a></li>
 
 		{/if}
 			

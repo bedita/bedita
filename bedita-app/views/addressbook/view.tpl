@@ -17,7 +17,7 @@
 {$javascript->link("jquery/jquery.autocomplete", false)}
 
 
-<script language="JavaScript">
+<script type="text/javascript">
 	{literal}
 	$(document).ready( function ()
 	{

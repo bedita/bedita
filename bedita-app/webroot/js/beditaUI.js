@@ -132,7 +132,7 @@ $(document).ready(function(){
 
 	}).click(function () {
 
-			window.location = ($(this).attr("href"));
+			window.location = ($(this).attr("rel"));
 
 	});
 

@@ -12,7 +12,7 @@
 		<td colspan="4">
 			{if ($object.status == 'fixed')}
 			{t}This object is fixed - some data is readonly{/t}
-			<input type="hidden" name="data[status]" value="fixed"/>
+			<input type="hidden" name="data[status]" value="fixed" />
 			{else}
 			{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator="&nbsp;"}
 			{/if}
@@ -31,14 +31,14 @@
 			
 			<input size="10" type="text" style="vertical-align:middle"
 			class="dateinput" name="data[start]" id="start" 
-			value="{if !empty($object.start)}{$object.start|date_format:$conf->datePattern}{/if}"/>
+			value="{if !empty($object.start)}{$object.start|date_format:$conf->datePattern}{/if}" />
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			
 			<label>{t}to{/t}: </label>&nbsp;
 			
 			<input size="10" type="text" 
 			class="dateinput" name="data[end]" id="end" 
-			value="{if !empty($object.end)}{$object.end|date_format:$conf->datePattern}{/if}"/>
+			value="{if !empty($object.end)}{$object.end|date_format:$conf->datePattern}{/if}" />
 		
 		</td>
 	</tr>

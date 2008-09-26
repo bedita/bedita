@@ -131,21 +131,21 @@ $(document).ready(function(){
 <fieldset id="address">
 <table>
 	<tr>
-		<th>{t}street name and #{/t}</th>
+		<th>{t}street name and #{/t}:</th>
 		<td>
 			<input style="width:240px;" type="text" name="data[street_address]" value="{$object.street_address|escape:'html'|escape:'quotes'}" />
 			<input style="width:30px;" type="text" name="data[street_number]" value="{$object.street_number|escape:'html'|escape:'quotes'}" />
 		</td>
 	</tr>
 	<tr>
-		<th>{t}city and zip code{/t}</th>
+		<th>{t}city and zip code{/t}:</th>
 		<td>
 			<input type="text" name="data[city]" value="{$object.city|escape:'html'|escape:'quotes'}" />
 			<input style="width:60px;" type="text" name="data[zipcode]" value="{$object.zipcode|escape:'html'|escape:'quotes'}" />
 		</td>
 	</tr>
 	<tr>
-		<th>{t}country{/t}</th>
+		<th>{t}country{/t}:</th>
 		<td>
 			<select type="text" name="data[country]" id="country">
 				<option value="">-- {t}select one{/t} --</option>
@@ -388,7 +388,7 @@ $(document).ready(function(){
 		</td>
 	</tr>
 	<tr>
-		<th>{t}state{/t}</th>
+		<th>{t}state{/t}:</th>
 		<td><input type="text" name="data[state]" value="{$object.state|escape:'html'|escape:'quotes'}" /></td>
 	</tr>
 </table>
@@ -401,21 +401,21 @@ $(document).ready(function(){
 <fieldset id="contacts">
 <table>
 	<tr>
-		<th>{t}email{/t}</th>
+		<th>{t}email{/t}:</th>
 		<td><input type="text" name="data[email]" value="{$object.email|escape:'html'|escape:'quotes'}" /></td>
-		<th>{t}email2{/t}</th>
+		<th>{t}email2{/t}:</th>
 		<td><input type="text" name="data[email2]" value="{$object.email2|escape:'html'|escape:'quotes'}" /></td>
 	</tr>
 	<tr>
-		<th>{t}phone{/t}</th>
+		<th>{t}phone{/t}:</th>
 		<td><input type="text" name="data[phone]" value="{$object.phone|escape:'html'|escape:'quotes'}" /></td>
-		<th>{t}phone2{/t}</th>
+		<th>{t}phone2{/t}:</th>
 		<td><input type="text" name="data[phone2]" value="{$object.phone2|escape:'html'|escape:'quotes'}" /></td>
 	</tr>
 	<tr>
-		<th>{t}fax{/t}</th>
+		<th>{t}fax{/t}:</th>
 		<td><input type="text" name="data[fax]" value="{$object.fax|escape:'html'|escape:'quotes'}" /></td>
-		<th>{t}website{/t}</th>
+		<th>{t}website{/t}:</th>
 		<td><input type="text" name="data[website]" value="{$object.website|escape:'html'|escape:'quotes'}" /></td>
 	</tr>
 </table>

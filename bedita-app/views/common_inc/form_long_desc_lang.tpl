@@ -42,9 +42,9 @@ tinyMCE.init({
 <fieldset id="long_desc_langs_container">
 	
 	<label>{t}short text{/t}:</label>
-	<textarea name="data[abstract]" style="height:200px" class="mce">{$object.abstract|default:''}</textarea>
+	<textarea cols="" rows="" name="data[abstract]" style="height:200px" class="mce">{$object.abstract|default:''}</textarea>
 	
 	<label>{t}long text{/t}:</label>
-	<textarea name="data[body]" style="height:400px" class="mce">{$object.body|default:''}</textarea>
+	<textarea cols="" rows="" name="data[body]" style="height:400px" class="mce">{$object.body|default:''}</textarea>
 		
 </fieldset>

@@ -120,8 +120,8 @@ $config['media']['image']['wmi']['o']    = 100;      // int, wm opacity 0 (trans
  
 $config['media']['video']['width']       = 300;      // px - was $config['videoWidth']
 $config['media']['video']['height']      = 250;      // px - was $config['videoHeight']
-$config['media']['video']['thumbWidth']  = 110;      // px - was $config['videoThumbWidth']
-$config['media']['video']['thumbHeight'] = 83;       // px - was $config['videoThumbHeight']
+$config['media']['video']['thumbWidth']  = 130;      // px - was $config['videoThumbWidth']
+$config['media']['video']['thumbHeight'] = 85;       // px - was $config['videoThumbHeight']
 
 $config['media']['audio']['width']       = 300;      // px - was $config['audioWidth']
 $config['media']['audio']['height']      = 20;       // px - was $config['audioHeight']

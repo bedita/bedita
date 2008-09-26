@@ -5,7 +5,7 @@
 {$javascript->link("jquery/jquery.changealert", false)}
 
 {literal}
-<script language="JavaScript">
+<script type="text/javascript">
 	$(document).ready(function(){
 		var openAtStart ="#system_info,#system_events";
 		$(openAtStart).prev(".tab").BEtabstoggle();

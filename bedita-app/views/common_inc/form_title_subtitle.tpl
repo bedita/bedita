@@ -6,7 +6,7 @@
 
 	<label>{t}title{/t}:</label>
 	<br />
-	<input type="text" id="title" name="data[title]" value="{$object.title|escape:'html'|escape:'quotes'}" id="titleBEObject"/>
+	<input type="text" name="data[title]" value="{$object.title|escape:'html'|escape:'quotes'}" id="titleBEObject" />
 	<br />
 	<label>{t}description{/t}:</label>
 	<br />
