@@ -9,7 +9,6 @@
 	{$javascript->link("jquery/jquery")}
 	{$javascript->link("jquery/jquery.cookie")}
 	{$javascript->link("jquery/jquery.autogrow")}
-	{$javascript->link("common")}
 	{$javascript->link("beditaUI")
 	{$javascript->link("jquery/jquery.dimensions")}
 

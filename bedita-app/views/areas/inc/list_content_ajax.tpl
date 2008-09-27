@@ -36,6 +36,10 @@ $(document).ready(function() {
 		$("#areacontent").fixItemsPriority();
 	});
 
+	$(".modalbutton").click(function () {
+		$(this).BEmodal();
+	});
+	
 });
 {/literal}
 //-->

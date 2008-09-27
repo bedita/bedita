@@ -331,43 +331,47 @@ $(document).ready(function(){
 
 ...........................................*/
 
+jQuery.fn.BEmodal = function(){
 	
+	$("#modal").draggable();		 	
+	var w = window.innerWidth || self.innerWidth || (de&&de.clientWidth) || document.body.clientWidth;
+	var h = window.innerHeight || self.innerHeight || (de&&de.clientHeight) || document.body.clientHeight;
+	var destination = $(this).attr("rel");
+	var title = $(this).attr("title");
+	
+	var myTop = $(this).position().top;
+	//alert(myTop);
+	
+	$("#modaloverlay").show().width(w).height(h).click(function () {
+		$(this).hide();
+		$("#modal").hide();
+	});
+	
+	$("#modal").toggle().css("top",myTop);
+	//$("#modal").toggle();
+
+	if ($(this).attr("rel")) {
+		$("#modalmain").empty().addClass("loader").load(destination).ajaxStop(function(){
+			$(this).removeClass("loader")
+		});
+	};
+
+	
+	if ($(this).attr("title")) {
+		$("#modalheader .caption").html(title+"&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;");
+	};
+	
+	
+	$("#modalheader .close").click(function () {
+		$("#modal").hide();
+		$("#modaloverlay").hide();
+	});
+
+}
+
 	$(".modalbutton").click(function () {
 	
-		$("#modal").draggable();
-			 	
-		var w = window.innerWidth || self.innerWidth || (de&&de.clientWidth) || document.body.clientWidth;
-		var h = window.innerHeight || self.innerHeight || (de&&de.clientHeight) || document.body.clientHeight;
-		var destination = $(this).attr("rel");
-		var title = $(this).attr("title");
-		
-		var myTop = $(this).position().top;
-		//alert(myTop);
-		
-		$("#modaloverlay").show().width(w).height(h).click(function () {
-			$(this).hide();
-			$("#modal").hide();
-		});
-		
-		$("#modal").toggle().css("top",myTop);
-		//$("#modal").toggle();
-
-		if ($(this).attr("rel")) {
-			$("#modalmain").empty().addClass("loader").load(destination).ajaxStop(function(){
-				$(this).removeClass("loader")
-			});
-		};
-
-		
-		if ($(this).attr("title")) {
-			$("#modalheader .caption").html(title+"&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;");
-		};
-		
-		
-		$("#modalheader .close").click(function () {
-			$("#modal").hide();
-			$("#modaloverlay").hide();
-		});
+		$(this).BEmodal();
 
 	});
 

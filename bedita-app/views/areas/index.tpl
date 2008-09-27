@@ -23,6 +23,15 @@ $(document).ready(function() {
 });
 {/literal}
 
+{else}
+
+{literal}
+$(document).ready(function() {
+	$(".publishingtree H2:first").click();
+});
+{/literal}
+
+
 {/if}
 </script>
 

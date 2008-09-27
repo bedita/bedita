@@ -218,9 +218,9 @@ UL.modules {
 .modules LI, .modules label {
 	display:block;
 	font-size: 1.16em ;
-	width:120px; height:120px; 
+	width:119px; height:119px; 
 	padding:10px;
-	margin: 0px 0px 0px 0px;
+	margin: 0px 1px 1px 0px;
 	background-color:#CCCCCC; 
 	background-image: url(../img/sfomodulo.png);
 	background-repeat:repeat-x;
@@ -550,11 +550,11 @@ UL.menuleft {
 
 .publishingtree UL {
 	margin-left:10px;
-	border-left:1px solid gray;
+	border-left:1px solid #999999;
 }
 
 .publishingtree LI  {
-	border-bottom:1px solid gray;
+	border-bottom:1px solid #999999;
 	border-right:0px solid #999999;
 	padding:3px 0px 3px 10px;
 }
@@ -1001,9 +1001,10 @@ textarea#description, textarea#title, textarea#addtaglist, textarea.longtext {
 	width:480px; 
 }
 
-input#title, textarea#subtitle {
+input#titleBEObject, input#title, textarea#subtitle {
 	width:380px; 
 }
+
 
 .insidecol input {
 	width:100px;

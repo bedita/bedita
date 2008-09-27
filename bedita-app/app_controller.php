@@ -256,7 +256,7 @@ class AppController extends Controller
 		// verify basic access
 		if(isset($this->moduleName)) { 
 			foreach ($moduleList as $mod) {
-			 	if($this->moduleName == $mod['label']) { 
+			 	if($this->moduleName == $mod['name']) { 
 			 		$this->modulePerms = $mod['flag'];
 				}
 			}

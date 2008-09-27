@@ -134,13 +134,13 @@ function deleteTRCustomProp(el) {
 	<tr id="endLineCustomPropTR">
 		<td colspan="4"><label>{t}add new property{/t}:</label></td>
 	</tr>
-
+	
 	
 	<tr id="addCustomPropTR">
-		<td><input type="text" name="name"/></td>
+		<td><input type="text" style="width:100px" name="name"/></td>
 		<td><select name="type">{html_options options=$conf->customPropTypeOptions}</select></td>
 		<td><input type="text" name="value" value=""/></td>
-		<td><input type="button" name="cmdAdd" value=" {t}add{/t} "/></td>
+		<td><input type="button" name="cmdAdd" value="{t}add{/t}"/></td>
 	</tr>
 </table>
 

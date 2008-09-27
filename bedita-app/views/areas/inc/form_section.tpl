@@ -130,12 +130,16 @@
 
 </fieldset>	
 
-
-{if (!empty($method) && $method == "viewSection")}			
-
+	<br />
+	
 	{include file="../common_inc/form_translations.tpl" object=$object|default:null}
 	{include file="../common_inc/form_custom_properties.tpl" el=$object|default:null}
 	{include file="../common_inc/form_permissions.tpl" el=$object|default:null recursion=true}
+	
+	
+{*if (!empty($method) && $method == "viewSection")}			
+
+
 
 {else}
 	
@@ -146,6 +150,6 @@
 
 	</a>
 	<hr />
-{/if}
+{/if*}
 
 
