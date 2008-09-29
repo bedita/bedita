@@ -44,5 +44,20 @@ class MailMessage extends BeditaContentModel
 
 				"minimum" => array("BEObject" => array("ObjectType"))
 	);
+	
+	
+	function beforeValidate() {
+
+        $this->checkDate('start');
+        $this->checkDate('end');
+		$this->checkDate('start_sending');
+
+        $data = &$this->data[$this->name] ;
+        if(!empty($data['start_sending']) && !empty($data['start_sending_time'])) {
+            $data['start_sending'] .= " " . $data['start_sending_time'];
+        }
+
+        return true;
+	}
 }
 ?>

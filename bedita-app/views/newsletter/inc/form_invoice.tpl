@@ -15,18 +15,31 @@
 	</tr>
 	<tr>
 		<td>
-	<input size=10 type="text" class="dateinput" name="data[DateItem][{$idx}][start]" id="eventStart" value="{if !empty($d.start)}{$d.start|date_format:$conf->datePattern}{/if}"/>
-	<input size=5 type="text" id="timeStart" name="data[DateItem][{$idx}][timeStart]" value="" />
+	<input size=10 type="text" class="dateinput" name="data[start_sending]" id="eventStart" value="{if !empty($object.start_sending)}{$object.start_sending|date_format:$conf->datePattern}{/if}"/>
+	<input size=5 type="text" id="timeStart" name="data[start_sending_time]" value="{if !empty($object.start_sending)}{$object.start_sending|date_format:"%H:%M"}{/if}" />
 
 		</td>
 		<td>
-			<input type="checkbox"> lista dei gruppi
-			<br />
-			<input type="checkbox"> cioè delle categorie 
-			<br />
-			<input type="checkbox"> addressbook+newsletter
+		{if !empty($groupsByArea)}
+			{foreach from=$groupsByArea item="groups" key="pub"}
+				<ul>
+				{$pub}
+				
+				{foreach from=$groups item="group" name="fc"}
+					<li>
+					<input type="checkbox" name="data[MailGroup][]" value="{$group.id}"{if !empty($group.MailMessage)} checked{/if}/> {$group.group_name}
+					</li>
+				{/foreach}
+				
+				</ul>
+			{/foreach}
+		{/if}
 		</td>
-		<td class="info" style="text-decoration: blink;">currently in job</td>
+		{if !empty($object.mail_status) && $object.mail_status == "pending"}
+			<td class="info" style="text-decoration: blink;">{t}currently in job{/t}</td>
+		{else}
+			<td class="info">{t}{$object.mail_status|default:"draft"}{/t}</td>
+		{/if}
 	</tr>
 
 

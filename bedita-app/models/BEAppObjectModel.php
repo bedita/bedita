@@ -55,9 +55,25 @@ class BEAppObjectModel extends BEAppModel {
 		if(isset($data[$this->primaryKey]) && empty($data[$this->primaryKey])) {
 			unset($data[$this->primaryKey]) ;
 		}
-
-		$data = (!empty($data[$this->alias]))? $data : array($this->alias => $data);
 		
+		$data = (!empty($data[$this->alias]))? $data : array($this->alias => $data);	
+
+		// format data array for HABTM relations in cake way
+		if (!empty($this->hasAndBelongsToMany)) {
+			foreach ($this->hasAndBelongsToMany as $key => $val) {
+				if (!empty($data[$this->alias][$key][$key])) {
+					$data[$key][$key] = $data[$this->alias][$key][$key];
+					unset($data[$this->alias][$key]);
+				} elseif (!empty($data[$this->alias][$key])) {
+					$data[$key][$key] = $data[$this->alias][$key];
+					unset($data[$this->alias][$key]);
+				} elseif ( (empty($data[$this->alias][$key]) && is_array($data[$this->alias][$key])) 
+							|| (empty($data[$this->alias][$key][$key]) && is_array($data[$this->alias][$key][$key])) ) {
+					$data[$key][$key] = array();
+				}
+			}
+		}
+
 		$result = parent::save($data, $validate, $fieldList) ;
 		
 		/**

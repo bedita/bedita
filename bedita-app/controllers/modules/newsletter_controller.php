@@ -46,6 +46,7 @@ class NewsletterController extends ModulesController {
 	  */
 	function view($id = null) {
 		$this->viewObject($this->MailMessage, $id);
+		$this->set("groupsByArea", $this->MailGroup->getGroupsByArea(null, null, $id));
 	 }
 
 	 /**
@@ -59,6 +60,8 @@ class NewsletterController extends ModulesController {
 	
 	function save() {
 		$this->checkWriteModulePermission();
+		if (empty($this->data["MailGroup"]))
+			$this->data["MailGroup"] = array();
 		$this->Transaction->begin();
 		$this->saveObject($this->MailMessage);
 	 	$this->Transaction->commit() ;
