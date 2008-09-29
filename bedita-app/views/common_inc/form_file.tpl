@@ -1,6 +1,5 @@
 {*
-** pages form-file template
-** @author ChannelWeb srl
+** detail of media item
 *}
 
 {if (isset($object))}
@@ -29,6 +28,7 @@
 	</a>
 	
 		{$mediaProvider->embed($object, $attributes) }
+	
 	<embed 
 		src	= "{$html->webroot}swf/mediaplayer.swf" 
 		width	= "{$conf->videoWidth}"

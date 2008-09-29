@@ -45,55 +45,14 @@
 			<li>Subscribed this month: <b>186</b></li>
 			<li>Total Subscribers: <b>2078</b></li>
 			<li>
-				<b>View all</b> 
+				<b><a href="{$html->url('/addressbook/')}">View all</a></b> 
 				&nbsp;&nbsp;|&nbsp;&nbsp;
-				<b>Import</b> 
-				&nbsp;&nbsp;|&nbsp;&nbsp;
-				<b>Export</b>
+				<b><a href="{$html->url('/addressbook/import')}">Import</a></b> 
 			</li>
 		</ul>
-	
-	<div class="tab"><h2>{t}Recipient Groups{/t}</h2></div>
-		<table class="bordered">
-			<tr>
-				<th>group name</th><th>status</th><th>subscribers</th>
-			</tr>
-			<tr>
-				<td>Iscritti da soli due</td>
-				<td style="text-align:center">on</td>
-				<td style="text-align:center">123</td>
-			<tr>
-			</tr>
-				<td>Scuole darwiniane uno</td>
-				<td style="text-align:center">on</td>
-				<td style="text-align:center">32</td>
-			<tr>
-			</tr>
-				<td>Gruppo due</td>
-				<td style="text-align:center">off</td>
-				<td style="text-align:center">123</td>
-			<tr>
-			</tr>
-				<td>Gruppo uno</td>
-				<td style="text-align:center">hidden</td>
-				<td style="text-align:center">32</td>
-			<tr>
-			</tr>
-				<td>Gruppo due</td>
-				<td style="text-align:center">on</td>
-				<td style="text-align:center">123</td>
-			<tr>
-			</tr>
-				<td colspan="2" style="border-bottom:0px;">
-					<b>Manage groups</b>
-					&nbsp;&nbsp;|&nbsp;&nbsp;
-					<b>Create new group</b>
-				</td>
-			</tr>
-		</table>
 
 
-	<div class="tab"><h2>{t}Newsletters templates{/t}</h2></div>
+	<div class="tab"><h2>{t}Templates{/t}</h2></div>
 		<ul class="bordered">
 			<li>Coincidono con asdfsaf</li>
 			<li>le pubblicazion i / arre macroarree</li>

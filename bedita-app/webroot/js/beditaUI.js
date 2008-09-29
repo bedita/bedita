@@ -222,11 +222,10 @@ $(document).ready(function(){
 
 	});
 
-	$(".indexlist TR.rowList").click(function() {
+	$(".indexlist TR[rel]").click(function() {
 		
 		window.location = ($(this).attr("rel"));
 	});
-
 
 
 /*...........................................    

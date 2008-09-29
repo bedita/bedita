@@ -10,7 +10,7 @@
 	
 
 	<div style="margin-top:-20px; float:right;">
-	
+		{$c.lang} &nbsp;&nbsp;&nbsp; 
 		<input type="button" class="" value="x" />
 	</div>
 	

@@ -25,12 +25,8 @@
 		
 		<ul class="menuleft insidecol">
 
-			<li><a href="{$html->url('/newsletter/invoices')}">Manage invoices</a></li>
-			<ul>
-				<li><a href="{$html->url('/newsletter/invoices')}">queued jobs</a></li>
-				<li><a href="{$html->url('/newsletter/invoices')}">ended jobs</a></li>
-				<li><a href="{$html->url('/newsletter/invoices')}">bounced</a></li>
-			</ul>	
+			<li {if $method eq "invoices"}class="on"{/if}><a href="{$html->url('/newsletter/invoices')}">Manage invoices</a></li>
+	
 		</ul>
 
 

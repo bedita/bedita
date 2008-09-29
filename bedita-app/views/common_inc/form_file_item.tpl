@@ -1,3 +1,7 @@
+{*
+** media item in the object container's detail page
+*}
+
 {assign var="thumbWidth" 		value = 130}
 {assign var="thumbHeight" 		value = 98}
 {assign var="filePath"			value = $item.path}
@@ -31,12 +35,14 @@
 	
 	{elseif strtolower($item.ObjectType.name) == "audio"}
 	
-		<a href="{$linkUrl}"><img src="{$session->webroot}img/mime/{$item.mime_type}.gif" /></a>	
+		<a href="{$linkUrl}"><img src="{$session->webroot}img/iconset/88px/audio.png" /></a>	
 	
 	{else}
-	
+		
+		<img src="/img/iconset/88px/text.png" />
+		{*
 		<a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$item.mime_type}.gif" /></a>
-	
+		*}
 	{/if}
 	
 	</div>

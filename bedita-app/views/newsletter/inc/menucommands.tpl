@@ -46,9 +46,8 @@ $(document).ready(function(){
 			<li><a href="{$html->url('/newsletter/viewtemplate')}">{t}New template{/t}</a></li>
 		</ul>
 
-
-	
 	{elseif $method eq "newsletters"}
+	
 	{literal}
 		<style>
 			UL#templates {
@@ -67,6 +66,7 @@ $(document).ready(function(){
 			
 		</style>
 	{/literal}
+	
 	<ul class="menuleft insidecol">
 		<li><a href="javascript:void(0)" onClick="$('#templates').slideToggle();">{t}Select by template{/t}</a></li>
 			<ul id="templates" class="bordered">
@@ -77,6 +77,9 @@ $(document).ready(function(){
 				<li class="on">All</li>
 			</ul>
 	</ul>
+	
+	{elseif $method eq "invoices"}
+	
 	
 	{elseif !empty($method) && $method != "index" && $module_modify eq '1'}
 	

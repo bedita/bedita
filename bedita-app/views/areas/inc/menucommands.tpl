@@ -22,7 +22,7 @@ $(document).ready(function(){
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}" style="z-index:10">
 	
 	<div class="modules">
-	   <label class="{$moduleName}" rel="{$html->url('/areas')}">{t}{$moduleName}{/t}</label>
+	   <label class="{$moduleName}" rel="{$html->url('/areas')}">{t}Publishing{/t}</label>
 	</div> 
 	
 

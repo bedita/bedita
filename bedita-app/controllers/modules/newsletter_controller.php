@@ -190,10 +190,6 @@ class NewsletterController extends ModulesController {
 	/**
 	  * Manage groups.
 	  */
-	function groups() {
-
-		
-	 }
 
 	function templates() {
 
@@ -205,7 +201,10 @@ class NewsletterController extends ModulesController {
 		
 	 }
 	
-	
+	function invoices() {
+
+		
+	 }
 	 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(

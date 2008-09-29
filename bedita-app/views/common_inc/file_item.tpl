@@ -1,3 +1,7 @@
+{*
+** media item on media modules index
+*}
+
 {if empty($item)} {assign var="item" value=$object} {/if}
 
 {assign var="thumbWidth" 		value = 130}
@@ -28,7 +32,8 @@
 		{else}
 		
 			{if strtolower($item.ObjectType.name) == "image"}
-			<img src="{$session->webroot}img/image-missing.jpg" width="{$thumbWidth}" />{/if}
+			<img src="/img/iconset/88px/image.png" />
+			{/if}
 			
 		{/if}
 
@@ -41,11 +46,12 @@
 	
 	{elseif strtolower($item.ObjectType.name) == "audio"}
 	
-		<img src="{$session->webroot}img/mime/{$item.mime_type}.gif" />
+		<img src="/img/iconset/88px/audio.png" />
 	
 	{else}
 	
-		<img src="{$session->webroot}img/mime/{$item.mime_type}.gif" />
+		<img src="/img/iconset/88px/text.png" />
+		{* <img src="/img/iconset/88px/mime/{$item.mime_type}.png" /> *}
 	
 	{/if}
 	</a>
@@ -60,6 +66,10 @@
 {if strtolower($item.ObjectType.name) == "image"}
 		<li>
 			{$item.width}x{$item.height}px, {$item.size|default:0|filesize}
+		</li>
+{else}
+		<li>
+			{$item.mime_type} {$item.size|default:0|filesize}
 		</li>
 {/if}
 		<li>
