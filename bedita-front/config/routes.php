@@ -38,4 +38,5 @@
  * feeds
  */ 
     Router::connect('/rss/*', array('controller' => 'pages', 'action' => 'rss'));
+    Router::connect('/feed/*', array('controller' => 'pages', 'action' => 'rss'));
 ?>
