@@ -98,16 +98,19 @@ class Section extends BeditaCollectionModel
 		}
 	}
     
-	public function feedsAvailable() {
-        $this->containLevel("minimum");
+	public function feedsAvailable($areaId) {
+        $this->bindModel( array('hasOne' => array('Tree' =>
+											array('foreignKey'	=> 'id',)) ), false);
         $feeds = $this->find('all', array(
-                'conditions' => array('Section.syndicate' => 'on', 'BEObject.status' => 'on'), 
-                'fields' => array('BEObject.nickname')));
-        $feedUrls = array();
+                'conditions' => array('Section.syndicate' => 'on', 'BEObject.status' => 'on', "Tree.path LIKE '/$areaId/%'"), 
+                'fields' => array('BEObject.nickname', 'BEObject.title'),
+                'contain' => array("BEObject", "Tree"))
+        );
+        $feedNames = array();
         foreach ($feeds as $f) {
-        	$feedUrls[] = "/rss/" . $f['BEObject']['nickname'];	
+        	$feedNames[] = $f['BEObject'];	
         }
-        return $feedUrls;
+        return $feedNames;
     }
     
 	

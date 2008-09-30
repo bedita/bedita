@@ -191,7 +191,7 @@ $config["cfgOneWayRelation"] = array();
 $config["cfgOneWayRelation"] = array();
 
 // Default reserved words [avoided in nickname creation]
-$config["defaultReservedWords"] = array("section","content");
+$config["defaultReservedWords"] = array("section", "content", "rss", "feed");
 
 // Cfg reserved words (as in local cfg)
 $config["cfgReservedWords"] = array();

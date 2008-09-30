@@ -16,6 +16,7 @@ class PagesController extends FrontendController {
 	 */ 
 	protected function beditaBeforeFilter() {
 		$this->set('pageTitle', "test page");
+		$this->set('feedNames', $this->Section->feedsAvailable(Configure::read("frontendAreaId")));
 	}
 	
 	public function index() {

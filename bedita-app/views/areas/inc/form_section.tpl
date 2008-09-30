@@ -96,6 +96,14 @@
 				</td>
 			</tr>
 
+	<tr>
+		<td>
+			<ul id="mediatypes" style="margin-top:10px; margin-left:0px">
+				<li class="ico_rss">syndicate <input type="checkbox" name="data[syndicate]" value="on" {if $object.syndicate|default:'off'=='on'}checked{/if}/></li>
+			</ul>
+		</td>
+	</tr>
+
 	</table>
 	
 	<hr />
@@ -127,6 +135,7 @@
 			</tr>
 
 		</table>
+	
 
 </fieldset>	
 

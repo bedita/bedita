@@ -8,6 +8,9 @@
 	<meta name="author" content="" />
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<meta http-equiv="Content-Style-Type" content="text/css" />
+{foreach from=$feedNames item=feed}
+	<link rel="alternate" type="application/rss+xml" title="{$feed.title}" href="{$session->webroot}rss/{$feed.nickname}" />
+{/foreach}
 
 {$content_for_layout}
 

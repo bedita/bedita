@@ -118,6 +118,9 @@ class AreasController extends ModulesController {
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
 		// Format translations for fields
+
+		if(empty($this->data["syndicate"]))
+			$this->data["syndicate"] = 'off';
 		
 		$this->Transaction->begin() ;
 		// Save data
@@ -181,7 +184,10 @@ class AreasController extends ModulesController {
 		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
 		
 		$this->Transaction->begin() ;
-	
+
+		if(empty($this->data["syndicate"]))
+			$this->data["syndicate"] = 'off';
+		
 		if(empty($this->data["parent_id"]))
 			throw new BeditaException( __("Missing parent", true));
 		

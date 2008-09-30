@@ -74,11 +74,6 @@ $(document).ready(function() {
 	<br />
 	<input style="width:220px" type="button" rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/0/leafs" class="modalbutton" value=" {t}add contents{/t} " />
 	
-
-	<ul id="mediatypes" style="margin-top:10px; margin-left:0px">
-		<li class="ico_rss">syndicate <input type="checkbox" /></li>
-	</ul>
-
 	<hr />
 </div>	
 

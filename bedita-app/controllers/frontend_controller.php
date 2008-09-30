@@ -224,26 +224,35 @@ abstract class FrontendController extends AppController {
 		return $result;
 	}
 
+	/**
+	 * Publish RSS feed with contents inside section $sectionName
+	 *
+	 * @param string $sectionName, section's nickname
+	 */
 	public function rss($sectionName) {
 	   $s = $this->loadObjByNick($sectionName);
-       $channel = array( 'title' => $s['title'] , 
+	   if($s['syndicate'] === "off") {
+	   		throw new BeditaException(__("Content not found", true));
+	   }
+	   $channel = array( 'title' => $s['title'] , 
         'link' => "/rss/".$sectionName,
         'url' => "/rss/".$sectionName,
         'description' => $s['description'],
         'language' => $s['lang'],
        );
 	   $this->set('channelData', $channel);
-       $sectionObjs = $this->loadSectionObjects($s['id']);
-       $items = array();
-       foreach ($sectionObjs as $objName => $objVal) {
-       	    foreach($objVal as $obj) {
-	            $items[] = array( 'title' => $obj['title'], 'description' => $obj['description'],
+       $rssItems = array();
+	   $items = $this->BeTree->getChildren($s['id'], $this->status, false, "priority");
+	   if(!empty($items) && !empty($items['items'])) {
+			foreach($items['items'] as $index => $item) {
+				$obj = $this->loadObj($item['id']);
+	            $rssItems[] = array( 'title' => $obj['title'], 'description' => $obj['description'],
 	                'pubDate' => $obj['created']);
-       	    }
-       }
-       $this->set('items', $items);
+			}
+		}
+       $this->set('items', $rssItems);
        $this->view = 'View';
-       $this->layout = 'rss';
+       $this->layout = NULL;
 	}
 	/**
 	 * Like loadObj using nickname
@@ -320,43 +329,8 @@ abstract class FrontendController extends AppController {
 			unset($obj["RelatedObject"]);
 		}
 
-		if(!empty($obj['gallery_id'])) {
-			$obj['gallery_items'] = $this->loadGalleryItems($obj['gallery_id']);
-		}
-		
 		$obj['object_type'] = $modelType;
 		return $obj;
-	}
-	
-	
-	protected function loadGalleryItems($gallery_id) {
-
-		$children = $this->BeTree->getChildren($gallery_id, $this->status, false, "priority") ;
-		$multimedia=array();
-		$conf = Configure::getInstance();
-		foreach($children['items'] as $index => $object) {
-			
-			$modelType = $conf->objectTypes[$object['object_type_id']]["model"];
-			if(!isset($this->{$modelType})) {
-				$this->{$modelType} = $this->loadModelByType($modelType);
-			}
-			$this->modelBindings($this->{$modelType});
-			$details = $this->{$modelType}->find("first", array(
-								"conditions" => array(
-									"BEObject.id" => $object['id'],
-									"status" => $this->status
-									)
-							)
-						);
-
-			if (!$details) 
-				continue ;
-			
-			$details['priority'] = $object['priority'];
-			$details['filename'] = substr($details['path'], strripos($details['path'],"/")+1);
-			$multimedia[$index] = $details;
-		}
-		return $multimedia;
 	}
 
 	/**
