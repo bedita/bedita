@@ -7,6 +7,7 @@ DROP VIEW IF EXISTS `view_permissions` ;
 DROP VIEW IF EXISTS `view_trees` ;
 
 -- old tables/views --
+DROP TABLE IF EXISTS `answers`;
 DROP TABLE IF EXISTS `documents`;
 DROP TABLE IF EXISTS `base_documents`;
 DROP TABLE IF EXISTS `content_bases`;
@@ -50,7 +51,6 @@ DROP TABLE IF EXISTS `contents`;
 DROP TABLE IF EXISTS `authors`;
 DROP TABLE IF EXISTS `images`;
 DROP TABLE IF EXISTS `categories`;
-DROP TABLE IF EXISTS `answers`;
 DROP TABLE IF EXISTS `faq_questions`;
 DROP TABLE IF EXISTS `audio_videos`;
 DROP TABLE IF EXISTS `videos`;
@@ -81,6 +81,7 @@ DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `groups`;
 DROP TABLE IF EXISTS `event_logs`;
 DROP TABLE IF EXISTS `search_texts`;
+DROP TABLE IF EXISTS `banned_ips`;
 
 CREATE TABLE cake_sessions (
   id varchar(255) NOT NULL default '',
@@ -99,6 +100,17 @@ CREATE TABLE `event_logs` (
   PRIMARY KEY  (id),
   KEY user_idx (user),
   KEY date_idx (created)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE `banned_ips` (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  ip_address VARCHAR(15) NOT NULL,
+  created datetime NOT NULL,
+  modified datetime NOT NULL,
+  status set('ban','accept') NOT NULL default 'ban',
+  PRIMARY KEY  (id),
+  KEY ip_idx (ip_number),
+  KEY status_idx (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE groups (
@@ -230,8 +242,9 @@ CREATE TABLE comments (
   author VARCHAR(255) NULL,
   email VARCHAR(255) NULL,
   url VARCHAR(255) NULL,
+  thread_path MEDIUMTEXT NULL,
   PRIMARY KEY(id),
-  INDEX comments_FKIndex1(id),
+  INDEX author_FKIndex1(author),
   FOREIGN KEY(id)
     REFERENCES contents(id)
       ON DELETE CASCADE
@@ -402,22 +415,6 @@ CREATE TABLE faq_questions (
   FOREIGN KEY(id)
     REFERENCES contents(id)
       ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE answers (
-  id INTEGER UNSIGNED NOT NULL,
-  question_id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(id),
-  INDEX answers_FKIndex1(id),
-  INDEX answers_FKIndex2(question_id),
-  FOREIGN KEY(id)
-    REFERENCES contents(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(question_id)
-    REFERENCES questions(id)
-      ON DELETE NO ACTION
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 

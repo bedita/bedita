@@ -577,6 +577,16 @@ abstract class FrontendController extends AppController {
 			$this->data["status"] = "on";
 			
 			try {
+				// check IP
+				$bannedIP = ClassRegistry::init("BannedIp");
+        		$banned = $bannedIP->find('first', array(
+                	'conditions' => array('BannedIp.status' => 'ban', 
+                	'BannedIp.ip_address' => $_SERVER['REMOTE_ADDR']), 
+                	'fields' => array('BannedIp.id')));
+        		if(!empty($banned)) {
+					throw new BeditaException(__("Error saving comment", true));
+        		}
+				
 				// check captcha				
 				if(!isset($this->Captcha)) {
 					App::import('Component', 'Captcha');
