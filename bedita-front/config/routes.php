@@ -34,4 +34,8 @@
  * to use (in this case, /app/views/pages/home.thtml)...
  */
 	Router::connect('/', array('controller' => 'pages', 'action' => 'index'));
+/**
+ * feeds
+ */ 
+    Router::connect('/rss/*', array('controller' => 'pages', 'action' => 'rss'));
 ?>

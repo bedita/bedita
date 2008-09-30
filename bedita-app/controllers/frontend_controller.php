@@ -224,6 +224,27 @@ abstract class FrontendController extends AppController {
 		return $result;
 	}
 
+	public function rss($sectionName) {
+	   $s = $this->loadObjByNick($sectionName);
+       $channel = array( 'title' => $s['title'] , 
+        'link' => "/rss/".$sectionName,
+        'url' => "/rss/".$sectionName,
+        'description' => $s['description'],
+        'language' => $s['lang'],
+       );
+	   $this->set('channelData', $channel);
+       $sectionObjs = $this->loadSectionObjects($s['id']);
+       $items = array();
+       foreach ($sectionObjs as $objName => $objVal) {
+       	    foreach($objVal as $obj) {
+	            $items[] = array( 'title' => $obj['title'], 'description' => $obj['description'],
+	                'pubDate' => $obj['created']);
+       	    }
+       }
+       $this->set('items', $items);
+       $this->view = 'View';
+       $this->layout = 'rss';
+	}
 	/**
 	 * Like loadObj using nickname
 	 *

@@ -97,6 +97,19 @@ class Section extends BeditaCollectionModel
 			}
 		}
 	}
-
+    
+	public function feedsAvailable() {
+        $this->containLevel("minimum");
+        $feeds = $this->find('all', array(
+                'conditions' => array('Section.syndicate' => 'on', 'BEObject.status' => 'on'), 
+                'fields' => array('BEObject.nickname')));
+        $feedUrls = array();
+        foreach ($feeds as $f) {
+        	$feedUrls[] = "/rss/" . $f['BEObject']['nickname'];	
+        }
+        return $feedUrls;
+    }
+    
+	
 }
 ?>
