@@ -17,7 +17,30 @@
 */
 class Comment extends BeditaContentModel 
 {
-	
+	var $actsAs 	= array(
+			'CompactResult' 		=> array(),
+			'SearchTextSave'		=> array(),
+			'ForeignDependenceSave' => array('BEObject', 'Content'),
+			'DeleteObject' 			=> 'objects',
+	); 
+
+	var $hasOne= array(
+			'BEObject' =>
+				array(
+					'className'		=> 'BEObject',
+					'conditions'   => '',
+					'foreignKey'	=> 'id',
+					'dependent'		=> true
+				),
+			'Content' =>
+				array(
+					'className'		=> 'Content',
+					'conditions'   => '',
+					'foreignKey'	=> 'id',
+					'dependent'		=> true
+				),
+		);
+
 	protected $modelBindings = array( 
 				"detailed" =>  array("BEObject" => array("ObjectType", "RelatedObject"), 
 								"Content"),
@@ -43,5 +66,12 @@ class Comment extends BeditaContentModel
 	   			'message' 		=> 'URL not valid'
 	   		)
 	   );
+	   
+	   	function beforeValidate() {
+        	$data = &$this->data[$this->name] ;
+        	if(isset($data['url']) && $data['url'] == "http://") {
+        		unset($data['url']);
+        	}
+	   	}
 }
 ?>

@@ -252,6 +252,10 @@ abstract class FrontendController extends AppController {
 		}
        $this->set('items', $rssItems);
        $this->view = 'View';
+       // add RSS helper if not present
+       if(!in_array('Rss', $this->helpers)) {
+       		$this->helpers[] = 'Rss';
+       }
        $this->layout = NULL;
 	}
 	/**
@@ -491,7 +495,8 @@ abstract class FrontendController extends AppController {
 		
 			foreach ($itemGroup as $item) {
 		
-				$data = explode("-", $item["start"]);
+				$refDate = isset($item["start"])? $item["start"] : $item["created"]; // pubblication or creation date
+				$data = explode("-", $refDate);
 				$year = $data[0];
 				$month = $monthName[$data[1]];
 				$id = $item["id"];
@@ -559,9 +564,8 @@ abstract class FrontendController extends AppController {
 			$this->Captcha = new CaptchaComponent();
 			$this->Captcha->startup($this);
 		}
-		$this->layout = null;
+		$this->autoRender = false;
 		$this->Captcha->image();
-		$this->render = false;
 	}
 	
 	public function saveComment() {
@@ -589,8 +593,7 @@ abstract class FrontendController extends AppController {
 				$this->userInfoMessage(__("Comment saved", true));
 			} catch (BeditaException $ex) {
 				$this->Transaction->rollback();
-				$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
-				$this->log($errTrace);
+				$this->log($ex->errorTrace());
 				$this->userErrorMessage($ex->getMessage());
 			}
 	

@@ -352,9 +352,10 @@ class AppController extends Controller
 		$conf  = Configure::getInstance() ;
 		$relationArray = array();
 		
+		$beObject = ClassRegistry::init("BEObject");
 		foreach ($objectArray as $obj) {	
 			$rel = $obj['switch'];
-			$modelClass = $this->BEObject->getType($obj['object_id']);
+			$modelClass = $beObject->getType($obj['object_id']);
 			$this->{$modelClass} = $this->loadModelByType($modelClass);
 			$this->modelBindings($this->{$modelClass});
 	
