@@ -30,11 +30,22 @@ function addUserToCard(id,username) {
 	<tr>
 		<th>{t}Username{/t}:</th>
 		<td>
-			<span id="user_name">{if !empty($object.User)}{$object.User.0.userid|default:''}{else}{t}no user data{/t}{/if}</span>
+			<span id="user_name">
+				{if !empty($object.User)}
+					<a href="{$html->url('/admin/viewUser/')}{$object.User.0.id}">{$object.User.0.userid|default:''}</a>
+				{else}
+					{t}no user data{/t}
+				{/if}
+			</span>
 			<input type="hidden" id="user_id" name="data[User][0]" value="{$object.User.0.id|default:''}"/>
-			&nbsp;&nbsp;&nbsp;<input type="button" class="modalbutton" name="edit" value="  {t}promote as user{/t}  "
+			&nbsp;&nbsp;&nbsp;
+			{if empty($object.User)}
+			<input type="button" class="modalbutton" name="edit" value="  {t}promote as user{/t}  "
 				rel="{$html->url('/admin/showUsers')}"
-				title="USERS : select an item to associate"/>
+				title="USERS : select an item to associate" />
+			{else}
+			<input type="button" value="  {t}remove from users{/t}  " />
+			{/if}
 		</td>
 	</tr>
 

@@ -81,6 +81,49 @@ class AddressbookController extends ModulesController {
 		$this->eventInfo("cards $objectsListDeleted deleted");
 	}
 
+	public function categories() {
+		$conf  = Configure::getInstance() ;
+		$type = $conf->objectTypes['event']["id"];
+		$this->set("categories", $this->Category->findAll("Category.object_type_id=".$type));
+		$this->set("object_type_id", $type);
+		$this->set("areasList", $this->BEObject->find('list', array(
+										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
+										"order" => "title", 
+										"fields" => "BEObject.title"
+										)
+									)
+								);
+	}
+
+	public function saveCategories() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data["label"])) 
+ 	 	    throw new BeditaException( __("No data", true));
+		$this->Transaction->begin() ;
+		if(!$this->Category->save($this->data)) {
+			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
+		}
+		$this->Transaction->commit();
+		$this->userInfoMessage(__("Category saved", true)." - ".$this->data["label"]);
+		$this->eventInfo("category [" .$this->data["label"] . "] saved");
+	}
+	
+	public function deleteCategories() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data["id"])) 
+ 	 	    throw new BeditaException( __("No data", true));
+ 	 	$this->Transaction->begin() ;
+		if(!$this->Category->del($this->data["id"])) {
+			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
+		}
+		$this->Transaction->commit();
+		$this->userInfoMessage(__("Category deleted", true) . " -  " . $this->data["label"]);
+		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
+	}
+
+
+
+
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"cloneObject"	=> 	array(
@@ -98,7 +141,17 @@ class AddressbookController extends ModulesController {
 			"changeStatusObjects"	=> 	array(
 							"OK"	=> "/addressbook",
 							"ERROR"	=> "/addressbook" 
-							)
+							),			
+ 			"saveCategories" 	=> array(
+ 										"OK"	=> "/addressbook/categories",
+ 										"ERROR"	=> "/addressbook/categories"
+ 									),
+ 			"deleteCategories" 	=> array(
+ 										"OK"	=> "/addressbook/categories",
+ 										"ERROR"	=> "/addressbook/categories"
+ 									),
+
+
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;
