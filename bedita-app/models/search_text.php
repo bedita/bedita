@@ -20,6 +20,7 @@ class SearchText extends BEAppModel
 			$bviorCompactResults = $model->bviorCompactResults ;
 		}
 		$model->bviorCompactResults = true ;
+		$model->containLevel("default");
 		if(!($data = $model->findById($model->{$model->primaryKey}))) 
 		  throw new BeditaException("Error loading {$model->name}");
 		$model->bviorCompactResults = $bviorCompactResults ;
