@@ -25,7 +25,6 @@
 
 class PagesController extends ModulesController {
 	
-	var $helpers = array();
 	var $components = array('Session', 'Cookie');
 	
 	var $uses = array();
