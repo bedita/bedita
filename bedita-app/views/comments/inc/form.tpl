@@ -19,7 +19,7 @@
 	
 		<th>{t}Text{/t}:</th>
 		<td colspan="3">
-		<textarea name="data[abstract]">{$object.abstract|default:''}</textarea>
+		<textarea name="data[description]">{$object.description|default:''}</textarea>
 		</td>
 	
 	</tr>

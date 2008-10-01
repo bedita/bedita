@@ -17,42 +17,18 @@
 */
 class Comment extends BeditaContentModel 
 {
-	var $actsAs 	= array(
-			'CompactResult' 		=> array(),
-			'SearchTextSave'		=> array(),
-			'ForeignDependenceSave' => array('BEObject', 'Content'),
-			'DeleteObject' 			=> 'objects',
-	); 
-
-	var $hasOne= array(
-			'BEObject' =>
-				array(
-					'className'		=> 'BEObject',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
-			'Content' =>
-				array(
-					'className'		=> 'Content',
-					'conditions'   => '',
-					'foreignKey'	=> 'id',
-					'dependent'		=> true
-				),
-		);
-
 	protected $modelBindings = array( 
-				"detailed" =>  array("BEObject" => array("ObjectType", "RelatedObject"), 
-								"Content"),
-				"default" =>  array("BEObject" => array("ObjectType", "RelatedObject"), 
-								"Content"),
+				"detailed" =>  array("BEObject" => array("ObjectType", "RelatedObject")),
+				"default" =>  array("BEObject" => array("ObjectType", "RelatedObject")),
 				"minimum" => array("BEObject" => array("ObjectType"))
 	);
 	
 	var $validate = array(
 			'author' => array(
-				'rule' 			=> 'alphaNumeric',
-				'required' 		=> true				
+				'required' 		=> true
+	   		),
+			'description' => array(
+				'required' 		=> true
 	   		),
 	   		'email' => array(
 	   			'rule' 			=> 'email',

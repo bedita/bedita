@@ -573,7 +573,7 @@ abstract class FrontendController extends AppController {
 			if(!isset($this->Comment)) {
 				$this->Comment = $this->loadModelByType("Comment");
 			}
-			$this->data["title"] = substr($this->data["abstract"],0,30) . "...";
+			$this->data["title"] = substr($this->data["description"],0,30) . "...";
 			$this->data["status"] = "on";
 			
 			try {
