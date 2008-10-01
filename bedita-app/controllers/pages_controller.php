@@ -16,10 +16,10 @@
  * version 3 along with BEdita (see LICENSE.AGPL).
  * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
  *  
- * @link			http://www.bedita.com - BEdita project
+ * @link			http://www.bedita.com
  * @version			$Revision$
- * @author 			$Author$
- * @date			$Date$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
  * $Id$
  */
