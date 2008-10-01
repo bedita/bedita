@@ -18,10 +18,10 @@
  *  
  * @link			http://www.bedita.com - BEdita project
  * @version			$Revision$
- * @modifiedby		$Author$
- * @lastmodified	$Date$
+ * @author 			$Author$
+ * @date			$Date$
  * 
- * $Id: pages_controller.php 1369 2008-10-01 10:17:15Z ste $
+ * $Id$
  */
 
 class PagesController extends ModulesController {
