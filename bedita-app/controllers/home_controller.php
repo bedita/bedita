@@ -25,7 +25,7 @@
  */
 
 class HomeController extends AppController {
-	
+
 	var $uses = "BEObject";
 	var $helpers = array();
 
@@ -62,6 +62,7 @@ class HomeController extends AppController {
 	 }
 	 
 	 public function search($page=1, $dim=5) {
+
 	 	$this->layout = "empty";
 	 	
 	 	if (!empty($this->params["form"]["searchstring"])) {
