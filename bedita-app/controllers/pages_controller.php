@@ -20,7 +20,7 @@
  * @modifiedby		$Author$
  * @lastmodified	$Date$
  * 
- * $Id$
+ * $Id: pages_controller.php 1369 2008-10-01 10:17:15Z ste $
  */
 
 class PagesController extends ModulesController {
