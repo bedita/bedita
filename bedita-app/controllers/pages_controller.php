@@ -26,10 +26,8 @@
 class PagesController extends ModulesController {
 	
 	var $components = array('Session', 'Cookie');
-	
-	var $uses = array();
 
-	 function display() {
+	function display() {
 	 	$this->action = "index" ;
 	 }
 	 
