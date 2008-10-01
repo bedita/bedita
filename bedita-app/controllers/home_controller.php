@@ -13,7 +13,8 @@
  * See the Affero GNU General Public License for more details.
  * 
  * You should have received a copy of the Affero GNU General Public License 
- * version 3 along with BEdita.  If not, see <http://gnu.org/licenses/agpl-3.0.html>.
+ * version 3 along with BEdita (see LICENSE.AGPL).
+ * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
  * 
  * @link			http://www.bedita.com - BEdita project
  * @version			$Revision$
