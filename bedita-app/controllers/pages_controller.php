@@ -1,5 +1,4 @@
 <?php
-/* SVN FILE: $Id: $ */
 /**
  * BEdita - a semantic content management framework
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
@@ -17,9 +16,11 @@
  * version 3 along with BEdita.  If not, see <http://gnu.org/licenses/agpl-3.0.html>.
  * 
  * @link			http://www.bedita.com - BEdita project
- * @version			$Revision:  $
- * @modifiedby		$LastChangedBy:  $
- * @lastmodified	$Date: $
+ * @version			$Rev$
+ * @modifiedby		$Author$
+ * @lastmodified	$Date$
+ * 
+ * $Id$
  */
 
 class PagesController extends ModulesController {
