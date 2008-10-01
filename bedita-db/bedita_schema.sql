@@ -230,7 +230,6 @@ CREATE TABLE contents (
   type ENUM('html','txt','txtParsed') DEFAULT 'txt',
   comments ENUM('on','off') DEFAULT 'off',
   PRIMARY KEY(id),
-  INDEX contents_FKIndex1(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
       ON DELETE CASCADE
@@ -246,7 +245,7 @@ CREATE TABLE comments (
   PRIMARY KEY(id),
   INDEX author_FKIndex1(author),
   FOREIGN KEY(id)
-    REFERENCES contents(id)
+    REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -327,10 +326,8 @@ CREATE TABLE permissions (
   switch SET('user','group') NOT NULL,
   flag INTEGER UNSIGNED NULL,
   PRIMARY KEY(`id`),
-  INDEX permissions_FKIndex1(id),
-  INDEX permissions_FKIndex2(id),
-  INDEX permissions_FKIndex3(object_id),
-  INDEX permissions_FKIndex4(`ugid`, `switch`),
+  INDEX permissions_obj_inkdex(object_id),
+  INDEX permissions_ugid_switch(`ugid`, `switch`),
   FOREIGN KEY(object_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
@@ -359,7 +356,6 @@ CREATE TABLE streams (
   mime_type VARCHAR(60) NULL,
   size INTEGER UNSIGNED NULL,
   PRIMARY KEY(id),
-  INDEX stream_FKIndex1(id),
   FOREIGN KEY(id)
     REFERENCES contents(id)
       ON DELETE CASCADE
@@ -373,7 +369,6 @@ CREATE TABLE areas (
   staging_url VARCHAR(255) NULL,
   email VARCHAR(255) NULL,
   PRIMARY KEY(id),
-  INDEX areas_FKIndex1(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
       ON DELETE CASCADE
@@ -385,7 +380,6 @@ CREATE TABLE sections (
   syndicate ENUM('on','off') DEFAULT 'on',
   priority_order ENUM('asc','desc') DEFAULT 'asc',
   PRIMARY KEY(id),
-  INDEX sections_FKIndex1(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
       ON DELETE CASCADE
@@ -397,7 +391,6 @@ CREATE TABLE videos (
   provider VARCHAR( 255 ) NULL ,
   uid VARCHAR( 255 ) NULL,
   PRIMARY KEY(id),
-  INDEX video_FKIndex1(id),
   FOREIGN KEY(id)
     REFERENCES streams(id)
       ON DELETE CASCADE
@@ -439,7 +432,6 @@ CREATE TABLE images (
   width INT(5) UNSIGNED NULL,
   height INT(5) UNSIGNED NULL,
   PRIMARY KEY(id),
-  INDEX images_FKIndex1(id),
   FOREIGN KEY(id)
     REFERENCES streams(id)
       ON DELETE CASCADE
@@ -452,7 +444,6 @@ CREATE TABLE authors (
   surname VARCHAR(60) NULL,
   search_string VARCHAR(255) NULL,
   PRIMARY KEY(id),
-  INDEX authors_FKIndex1(id),
   FOREIGN KEY(id)
     REFERENCES contents(id)
       ON DELETE CASCADE
@@ -536,7 +527,6 @@ CREATE TABLE books (
   position VARCHAR(255) NULL,
   inv VARCHAR(255) NULL,
   PRIMARY KEY(id),
-  INDEX books_FKIndex1(id),
   FOREIGN KEY(id)
     REFERENCES contents(id)
       ON DELETE CASCADE
