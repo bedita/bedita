@@ -38,8 +38,6 @@
 	
 </div>
 
-{assign var=objIndex value=0}
-
 
 {include file="inc/menucommands.tpl" method="viewtemplate" fixed = true}
 

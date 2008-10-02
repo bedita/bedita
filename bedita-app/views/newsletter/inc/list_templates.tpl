@@ -10,28 +10,32 @@
 			<th>Id</th>
 		</tr>
 
-			
-		{section name="p" loop=5}
+		{if !empty($objects)}		
+		{foreach from=$objects item="template"}
 
-			<tr rel="{$html->url('/newsletter/viewtemplate')}">
+			<tr rel="{$html->url('/newsletter/viewtemplate/')}{$template.id}">
 
 				<td>
-					Nome convenzionale del template
+					{$template.title}
 				</td>
 				<td>
-					Nome della Pubblicazione di riferimento							
+					{$template.Area.title}							
 				</td>
 				<td>
-					sender@email.be
+					{$template.sender|default:null}
 				</td>
 				<td>
-					id
+					{$template.id}
 				</td>
 			</tr>
 			
-			</form>
-		{/section}
-
+			
+		{/foreach}
+		{else}
+			
+			<tr><td colspan="100" style="padding: 30px;">{t}No templates found{/t}</td></tr>
+			
+		{/if}
 		
 		</table>
 		

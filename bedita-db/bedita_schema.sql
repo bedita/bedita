@@ -109,7 +109,7 @@ CREATE TABLE `banned_ips` (
   modified datetime NOT NULL,
   status set('ban','accept') NOT NULL default 'ban',
   PRIMARY KEY  (id),
-  KEY ip_idx (ip_number),
+  KEY ip_idx (ip_address),
   KEY status_idx (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
@@ -591,6 +591,7 @@ CREATE TABLE mail_messages (
   replay_to VARCHAR(255) NOT NULL,
   bounce_to VARCHAR(255) NOT NULL,
   priority INTEGER UNSIGNED NULL,
+  signature VARCHAR(255) NOT NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES contents(id)

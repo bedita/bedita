@@ -622,7 +622,10 @@ abstract class ModulesController extends AppController {
 			if(!$beModel->checkType($obj['object_type_id'])) {
                throw new BeditaException(__("Wrong content type: ", true).$id);
 			}
-			$relations = $this->objectRelationArray($obj['RelatedObject']);
+			$relations = array();
+			if (!empty($obj['RelatedObject'])) {
+				$relations = $this->objectRelationArray($obj['RelatedObject']);
+			}
 			// build array of id's categories associated
 			$obj["assocCategory"] = array();
 			if (isset($obj["Category"])) {
@@ -679,7 +682,7 @@ abstract class ModulesController extends AppController {
 		if(!$beModel->save($this->data)) {
 			throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
 		}
-		if(!empty($this->data['status']) && !($this->data['status']=='fixed')) {
+		if( empty($this->data['status']) || $this->data['status'] != 'fixed' ) {
 			if(!isset($this->data['destination'])) 
 				$this->data['destination'] = array() ;
 			$this->BeTree->updateTree($beModel->id, $this->data['destination']);

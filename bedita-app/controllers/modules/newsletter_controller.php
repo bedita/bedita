@@ -20,15 +20,7 @@ class NewsletterController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Paginator');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeMail');
 
-	var $uses = array('Card', 'MailGroup', 'MailMessage') ;
-	
-//	var $paginate = array(
-//			'MailAddress' => array('limit' => 10, 'order' => array('MailAddress.email' => 'asc')),
-//			'MailGroupAddress' => array('limit' => 10, 
-//										'order' => array('MailAddress.email' => 'asc'),
-//										'contain' => array("MailAddress" => array("Card"))
-//										)
-//		);
+	var $uses = array('Card', 'MailGroup', 'MailMessage', 'MailTemplate') ;
 	
 	protected $moduleName = 'newsletter';
 	
@@ -52,10 +44,10 @@ class NewsletterController extends ModulesController {
 	 /**
 	  * Get all newsletters.
 	  */
-	function newsletters() {
-		
+	function newsletters($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
+		$types = array(Configure::read("objectTypes.mailmessage.id"));
 		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
-		
+//		pr($this->viewVars["objects"]);exit;
 	 }
 	
 	function save() {
@@ -195,14 +187,50 @@ class NewsletterController extends ModulesController {
 	  */
 
 	function templates() {
-
+		$this->MailTemplate->containLevel("minimum");
+		$templates = $this->MailTemplate->find("all", array(
+											"conditions" => array("BEObject.object_type_id" => Configure::read("objectTypes.mailtemplate.id"))
+											)
+		);
+		foreach ($templates as $key => $t) {
+			$treeModel = ClassRegistry::init("Tree");
+			$pub_id = $treeModel->getParent($t["id"]);
+			$areaModel = ClassRegistry::init("Area");
+			$templates[$key]["Area"] = $areaModel->find("first", array(
+												"conditions" => array("Area.id" => $pub_id),
+												"contain" 	 => array("BEObject")
+												)
+			);
+		}
 		
+		$this->set("objects", $templates);
 	 }
 
-	function viewtemplate() {
-
-		
+	function viewtemplate($id=null) {
+		$this->viewObject($this->MailTemplate, $id);
+		if (!empty($id)) {
+			$treeModel = ClassRegistry::init("Tree");
+			$pub_id = $treeModel->getParent($id);
+			$areaModel = ClassRegistry::init("Area");
+			$areaModel->containLevel("minimum");
+			$this->set("pub", $areaModel->find("first", array(
+														"conditions" => array("Area.id" => $pub_id)
+														)
+												)
+											);
+		}
 	 }
+	
+	function saveTemplate() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data["destination"]))
+			throw new BeditaException( __("Missing publishing", true));
+		$this->Transaction->begin();
+		$this->saveObject($this->MailTemplate);
+	 	$this->Transaction->commit() ;
+ 		$this->userInfoMessage(__("Mail template saved", true)." - ".$this->data["title"]);
+		$this->eventInfo("mail template [". $this->data["title"]."] saved");
+	}
 	
 	function invoices() {
 
@@ -215,10 +243,10 @@ class NewsletterController extends ModulesController {
 							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
 							"ERROR"	=> $this->referer() 
 							), 
-//			"saveSubscriber"	=> 	array(
-//							"OK"	=> "/newsletter/viewsubscriber/".@$this->MailAddress->id,
-//							"ERROR"	=> "/newsletter/viewsubscriber/".@$this->MailAddress->id 
-//							),
+			"saveTemplate"	=> 	array(
+							"OK"	=> "/newsletter/viewtemplate/".@$this->MailTemplate->id,
+							"ERROR"	=> $this->referer()
+							),
 			"changeStatusAddress"	=> 	array(
 							"OK"	=> $this->referer(),
 							"ERROR"	=>  $this->referer() 

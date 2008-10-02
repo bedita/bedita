@@ -2,7 +2,11 @@
 ** newsletter form template template :-)
 *}
 
-{assign_concat var="templateCSS" 0=$pub.public_url 1="/css/" 2="newsletter.css"}
+{if !empty($pub)}
+	{assign_concat var="templateCSS" 0=$pub.public_url 1="/css/" 2="newsletter.css"}
+{else}
+	{assign var="templateCSS" value=$html->url('/css/newsletter.css')}
+{/if}
 
 
 {if ($conf->mce|default:true)}
@@ -44,7 +48,7 @@ tinyMCE.init({
 
 {include file="../common_inc/form_common_js.tpl"}
 
-<form action="{$html->url('/newsletter/templates/save')}" method="post" name="updateForm" id="updateForm" class="">
+<form action="{$html->url('/newsletter/saveTemplate')}" method="post" name="updateForm" id="updateForm" class="">
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
 
@@ -56,34 +60,37 @@ tinyMCE.init({
 		<tr>
 			<td>publishing</td>
 			<td>
-				<select>
-					<option>pubblicazione di riferimento</option>
-					<option>è obbligatoria</option>
+				{if !empty($tree)}
+				<select name="data[destination][]">
+				{foreach from=$tree item="t"}
+					<option value="{$t.id}"{if $t.id == $pub.id|default:null} selected{/if}>{$t.title}</option>
+				{/foreach}
 				</select>
+				{/if}
 			</td>
 		</tr>
 		<tr>
 			<td>default title</td>
 			<td>
-				<input type="text" 	name="data[title]" value="bhoo" />
+				<input type="text" 	name="data[title]" value="{$object.title|default:null}" />
 			</td>
 		</tr>
 		<tr>
 			<td>sender email</td>
-			<td><input type="text" value="" /></td>
+			<td><input type="text" name="data[sender]" value="{$object.sender|default:null}"/></td>
 		</tr>
 		<tr>
 			<td>bounce to email</td>
-			<td><input type="text" value="" /></td>
+			<td><input type="text" name="data[bounce_to]" value="{$object.bounce_to|default:null}" /></td>
 		</tr>
 		<tr>
 			<td>priority</td>
-			<td><input type="text" value="-1" /></td>
+			<td><input type="text" value="{$object.priority|default:null}" /></td>
 		</tr>
 		<tr>
 			<td>signature:</td>
 			<td>	
-				<textarea style="width:340px" class="autogrowarea"></textarea>
+				<textarea name="data[signature]" style="width:340px" class="autogrowarea">{$object.signature|default:null}</textarea>
 			</td>
 		</tr>
 	</table>
@@ -108,7 +115,11 @@ tinyMCE.init({
 	<div class="htabcontainer" id="templatebody">
 		
 		<div class="htabcontent" id="html">
-			<textarea id="htmltextarea" style="height:300px" class="mce">
+			<textarea id="htmltextarea" name="data[body]" style="height:300px" class="mce">
+			{strip}
+			{if !empty($object.body)}
+				{$object.body}
+			{else}
 				<h1>[$titolonewsletter]</h1>
 				<hr />
 				<img src="/img/{$imagenotizia|default:'px.gif'}" 
@@ -123,11 +134,16 @@ tinyMCE.init({
 				<p>
 				[$privacydisclaimer]
 				</p>
+			{/if}
+			{/strip}
 			</textarea>
 		</div>
 		
 		<div class="htabcontent" id="txt">
-			<textarea style="height:300px; border:1px solid silver; width:450px" class="autogrowarea">
+			<textarea name="data[abstract]" style="height:300px; border:1px solid silver; width:450px" class="autogrowarea">
+{if !empty($object.abstract)}
+{$object.abstract}
+{else}
 [$titolonewsletter]
 ________________________________
 [$titolo notizia]
@@ -139,6 +155,7 @@ ________________________________
 Per disiscriversi [$signoutlink]
 ________________________________
 [$privacydisclaimer]
+{/if}
 			</textarea>
 
 		</div>

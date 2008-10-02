@@ -283,6 +283,9 @@ $config['objectTypes'] = array(
 	35			  => array("id" => 35, "name" => "mailmessage", "module" => "newsletter", "model" => "MailMessage"),
 	"mailmessage" => array("id" => 35, "name" => "mailmessage", "module" => "newsletter", "model" => "MailMessage"),
 	
+	36			   => array("id" => 36, "name" => "mailtemplate", "module" => "newsletter", "model" => "MailTemplate"),
+	"mailtemplate" => array("id" => 36, "name" => "mailtemplate", "module" => "newsletter", "model" => "MailTemplate"),
+	
 	// define array of objects that can be related to other
 	'related'	=> array("id" => array(18,19,20,21,22,29,34)),
 
