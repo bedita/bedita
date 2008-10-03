@@ -25,9 +25,10 @@
 {include file="inc/menucommands.tpl" method="systemInfo" fixed=true}
 
 <div class="head">
-	
-	<h2>{t}System info{/t}</h2>
-
+	<div class="toolbar" style="white-space:nowrap">
+	<h2>{t}System events{/t}</h2>
+	{include file="./inc/toolbar.tpl" label_items='events'}
+	</div>
 </div>
 
 <div class="main">

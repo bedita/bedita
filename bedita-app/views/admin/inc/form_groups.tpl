@@ -20,7 +20,6 @@ $(document).ready(function() {
 </script>
 
 
-{include file="./inc/toolbar.tpl" label_items='system groups'}
 
 <table class="indexlist">
 	<tr>

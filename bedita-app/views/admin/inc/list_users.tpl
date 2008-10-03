@@ -1,4 +1,4 @@
-{include file="./inc/toolbar.tpl" label_items='system users'}
+
 
 <form action="{$html->url('/admin/users')}" method="post" name="userForm" id="userForm">
 

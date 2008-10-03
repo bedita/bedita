@@ -18,7 +18,7 @@
 <fieldset id="system_events">
 <div>
 
-{include file="./inc/toolbar.tpl" label_items='system events'}
+
 
 <table class="indexlist">
 	<tr>

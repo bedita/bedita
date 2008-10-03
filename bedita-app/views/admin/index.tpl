@@ -25,8 +25,15 @@
 
 {include file="inc/menucommands.tpl" method="index"}
 
-{* da correggere e riabilitare *}
-{*include file="../common_inc/toolbar.tpl"*}
+
+<div class="head">
+	<div class="toolbar" style="white-space:nowrap">
+		<h2>System users</h2>
+		{include file="./inc/toolbar.tpl" label_items='users'}
+	</div>
+</div>
+
+
 
 <div class="mainfull">
 

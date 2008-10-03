@@ -1,4 +1,4 @@
-<div class="toolbar" style="white-space:nowrap">
+
 	{assign_associative var="optionsPagDisable" style="display: inline;"}
 	{assign var="pagParams" value=$paginator->params()}
 	<ul>
@@ -24,4 +24,4 @@
 		<li>{$paginator->next('next', null, 'next',$optionsPagDisable)}  <span class="evidence"> &nbsp;</span></li>
 		<li>{$paginator->prev('prev',null,'prev',$optionsPagDisable)}  <span class="evidence"> &nbsp;</span></li>
 	</ul>
-</div>
+

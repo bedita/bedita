@@ -18,14 +18,13 @@
 
 <div class="head">
 	
-	<h2>
+	<h1>
 		{if isset($user)}
-			{t}User settings{/t}<br />
-			“<em style="color:#FFFFFF; line-height:2em">{$user.User.realname}</em>”
+			{t}User{/t}	“<em style="color:#FFFFFF; line-height:2em">{$user.User.realname}</em>”
 		{else}
 			{t}New user{/t}
 		{/if}
-	</h2>
+	</h1>
 
 </div>
 

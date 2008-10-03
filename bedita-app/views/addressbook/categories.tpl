@@ -4,7 +4,7 @@
 
 <body>
 	
-{include file="../common_inc/modulesmenu.tpl" method="categories"}
+{include file="../common_inc/modulesmenu.tpl"}
 
 {include file="inc/menuleft.tpl" method="categories"}
 
@@ -14,12 +14,12 @@
 
 </div>
 
-{include file="inc/menucommands.tpl" method="categories" method="index"}
+{include file="inc/menucommands.tpl" method="categories"}
 
 
 <div class="mainfull">
 	
-{include file="../common_inc/list_categories.tpl" method="index"}
+{include file="../common_inc/list_categories.tpl" method="categories"}
 
 </div>
 
