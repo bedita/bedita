@@ -521,7 +521,8 @@ abstract class ModulesController extends AppController {
 	public function addLink() {
 		$this->layout="empty";
 	 	$this->data = $this->params['form'];
-		$this->Transaction->begin() ;
+		$this->data["status"] = "on";
+	 	$this->Transaction->begin() ;
 		$linkModel = $this->loadModelByType("Link");
 		if(!$linkModel->save($this->data)) {
 	 		throw new BeditaException(__("Error saving link", true), $linkModel->validationErrors);
