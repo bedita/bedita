@@ -513,21 +513,6 @@ abstract class ModulesController extends AppController {
 		}
 		return $objectsListDesc;
 	}
-	
-	protected function setUsersAndGroups() {
-		if(!class_exists('User')) {
-			App::import('Model', 'User') ;
-		}
-		if(!class_exists('Group')) {
-			App::import('Model', 'Group') ;
-		}
-		$this->User = new User();
-		$this->Group = new Group();
-		// get users and groups list. 
-		$this->User->displayField = 'userid';
-		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
-		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
-	}
 
 	 /**
 	  * Add Link with Ajax...
