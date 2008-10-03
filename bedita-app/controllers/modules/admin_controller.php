@@ -266,7 +266,25 @@ class AdminController extends ModulesController {
 		$this->set('events', array());
 		$this->set('sys', $this->BeSystem->systemInfo());
 	 }
-	 
+	
+	public function loadUsersGroupsAjax() {
+		if($this->params['form']['itype'] == 'user') {
+			if(!class_exists('User')) {
+				App::import('Model', 'User') ;
+			}
+			$this->User = new User();
+			$this->User->displayField = 'userid';
+			$this->set("itemsList", $this->User->find('list', array("order" => "userid")));
+		} else if($this->params['form']['itype'] == 'group') {
+			if(!class_exists('Group')) {
+				App::import('Model', 'Group') ;
+			}
+			$this->Group = new Group();
+			$this->set("itemsList", $this->Group->find('list', array("order" => "name")));
+		}
+		$this->layout=null;
+	}
+	
 	 protected function forward($action, $esito) {
 	 	 	$REDIRECT = array(
 				"viewGroup" => 	array(
@@ -296,6 +314,10 @@ class AdminController extends ModulesController {
 				"saveUserAjax" =>	array(
 					 			"OK"	=> self::VIEW_FWD.'save_user_ajax_response',
 								"ERROR"	=> self::VIEW_FWD.'save_user_ajax_response'
+							),
+				"loadUsersGroupsAjax" =>	array(
+					 			"OK"	=> self::VIEW_FWD.'load_ugs_ajax',
+								"ERROR"	=> self::VIEW_FWD.'load_ugs_ajax'
 							)
 	 			);
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

@@ -13,7 +13,7 @@ var postfix_customProp = "_permTR" ;
 */
 
 var maxIDPerms = {/literal}{if empty($maxIDPerms)}0{else}{$maxIDPerms}{/if}{literal} ;
-
+var urlLoad = "{/literal}{$html->url('/admin/loadUsersGroupsAjax')}{literal}";
 $(document).ready(function(){
 {/literal}
 	{if !empty($el.Permissions)}
@@ -45,6 +45,14 @@ $(document).ready(function(){
 		}
 	});
 
+	$("#permissionsTab").click(function() {
+		$("#loaderug").show();
+		$("#inputAddPermUser").load(urlLoad, {itype:'user'}, function() {
+			$("#inputAddPermGroup").load(urlLoad, {itype:'group'}, function() {
+				$("#loaderug").hide();
+			});
+		});
+	});
 });
 
 
@@ -163,9 +171,9 @@ function deleteTRPerm(el) {
 
 
 
-<div class="tab"><h2>{t}Permissions{/t}</h2></div>
+<div class="tab" id="permissionsTab"><h2>{t}Permissions{/t}</h2></div>
 <fieldset id="permissions">
-	
+<div class="loader" id="loaderug"></div>
 <table class="indexlist" id="frmCustomPermissions">
 <tr>
 	<th>{t}name{/t}</th>
@@ -230,9 +238,6 @@ function deleteTRPerm(el) {
 <tr id="addPermUserTR">
 	<td>
 		<select id="inputAddPermUser" name="name">
-		{foreach from=$usersList key="id_user" item="username"}
-			<option value="{$username}">{$username}</option>
-		{/foreach}
 		</select>
 	</td>
 	<td><input type="hidden" name="switch" value="user"/></td> {* DO NOT TRANSLATE user!!! It's a switch for table *}
@@ -253,9 +258,6 @@ function deleteTRPerm(el) {
 <tr id="addPermGroupTR">
 	<td style="white-space:nowrap">
 		<select id="inputAddPermGroup" name="name">
-		{foreach from=$groupsList key="id_group" item="groupname"}
-			<option value="{$groupname}">{$groupname}</option>
-		{/foreach}
 		</select>
 	</td>
 	<td><input type="hidden" name="switch" value="group"/></td> {* DO NOT TRANSLATE group!!! It's a switch for table *}

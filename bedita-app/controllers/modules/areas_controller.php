@@ -82,7 +82,6 @@ class AreasController extends ModulesController {
 			$this->loadSectionDetails($id,Configure::read("objectTypes.section.id"));
 		} else {
 			$this->set('tree',$this->BeTree->getSectionsTree());
-			$this->setUsersAndGroups();
 		}
 	}
 	
@@ -480,7 +479,6 @@ class AreasController extends ModulesController {
 		$this->set('object',$collection);
 		$this->set('tree', $this->BeTree->getSectionsTree());
 		$this->set('parent_id', $this->Tree->getParent($id));
-		$this->setUsersAndGroups();
 	}
 	
 	/**

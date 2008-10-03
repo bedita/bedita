@@ -656,8 +656,6 @@ abstract class ModulesController extends AppController {
 		$categoryModel = ClassRegistry::init("Category");
 		$areaCategory = $categoryModel->getCategoriesByArea(Configure::read('objectTypes.'.$name.'.id'));
 		$this->set("areaCategory", $areaCategory);
-		
-		$this->setUsersAndGroups();
 	}
 
 	protected function saveObject(BEAppModel $beModel) {

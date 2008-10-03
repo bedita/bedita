@@ -456,11 +456,8 @@ $config['validate_resorce'] = array(
 				'Image'			=> array('/image\/jpeg/', '/image\/gif/', '/image\/png/'),
 				'Audio'			=> array('/audio\/\.*/'),
 				'Video'			=> array('/video\/\.+/'),
-				'BEFile'		=> array('/application\/msword/', '/application\/applefile/', '/application\/pdf/', 
-										'/application\/postscript/', '/application\/x-tar/', '/application\/zip/', 
-										'/text\/.+/', '/application\/vnd.oasis.opendocument/', '/application\/vnd.ms-excel/'
-								   ),
-			   ),
+				'BEFile'		=> array('/application\/\.*/', '/text\/\.*/')
+				),
 	/**
 	 * Possono essere usati i file che accompagnano l'associazione oppure indicare fiel diversi
 	 * cambiando il path

@@ -1168,19 +1168,12 @@ INPUT.priority {
 ...........................................*/
 
 
-#loading {
+#loading, .loader {
 	background: transparent url(../img/loadingAnimation.gif) left no-repeat;
 	display:none;
 	min-height:48px;
 	min-width:48px;
 }
-
-.loader {
-	background-image:url('../img/loadingAnimation.gif');
-	background-repeat:no-repeat;
-	background-position: center 100px ;
-}
-
 
 
 /*...........................................    
