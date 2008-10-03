@@ -1,6 +1,8 @@
 {if ($conf->mce|default:true)}
 	{$javascript->link("tiny_mce/tiny_mce")}
+	
 {literal}
+
 <script language="javascript" type="text/javascript">
 
 tinyMCE.init({
@@ -23,7 +25,7 @@ tinyMCE.init({
 	//http://wiki.moxiecode.com/index.php/TinyMCE:Control_reference
 	
 	// Example content CSS (should be your site CSS)
-	content_css : "/css/htmleditor.css",
+	content_css : "{/literal}{$cssUrl|default:$html->url('/css/newsletter.css')}{literal}",
     relative_urls : false,
 	convert_urls : false,
     remove_script_host : false,
@@ -78,14 +80,21 @@ tinyMCE.init({
 	<hr />
 
 	<label>template :</label>
-	<select>
-				<option value="">--</option>
-				<option>list of all templates</option>
-				<option>grouped by publishing</option>
-			</select>
+	<input type="hidden" name="data[RelatedObject][template][0][switch]" value="template" />
+	<select name="data[RelatedObject][template][1][id]">
+		<option value="">--</option>
+		{foreach from=$templateByArea item="pub"}
+			{if !empty($pub.MailTemplate)}
+				<option value="">{$pub.title|upper}</option>
+			{/if}
+			{foreach from=$pub.MailTemplate item="temp"}
+				<option value="{$temp.id}"{if !empty($relObjects.template) && $relObjects.template.0.id == $temp.id} selected{/if}>&nbsp;&nbsp;&nbsp;{$temp.title}</option>
+			{/foreach}
+		{/foreach}		
+	</select>
 	
 	&nbsp;&nbsp;
-		<input class="modalbutton" type="button" value="{t}Get contents{/t}" rel="{$html->url('/areas/showObjects/')}{$rel}" style="width:200px" />
+		<input class="modalbutton" type="button" value="{t}Get contents{/t}" rel="{$html->url('/areas/showObjects/')}" style="width:200px" />
 
 	<hr />
 

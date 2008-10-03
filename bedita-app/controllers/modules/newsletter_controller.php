@@ -39,6 +39,21 @@ class NewsletterController extends ModulesController {
 	function view($id = null) {
 		$this->viewObject($this->MailMessage, $id);
 		$this->set("groupsByArea", $this->MailGroup->getGroupsByArea(null, null, $id));
+		
+		$areaModel = ClassRegistry::init("Area");				
+		$pub = $areaModel->find("all", array("contain" => array("BEObject")));
+		foreach ($pub as $key => $p) {
+			$temp = $this->BeTree->getChildren($p["id"], null, array(Configure::read("objectTypes.mailtemplate.id")));
+			$pub[$key]["MailTemplate"] = $temp["items"];
+			// set cssUrl to use with template
+			if (!empty($this->viewVars["relObjects"]["template"])) {
+				foreach ($temp["items"] as $t) {
+					if ($t["id"] == $this->viewVars["relObjects"]["template"][0]["id"])	
+						$this->set("cssUrl", $p["public_url"] . "/css/" . Configure::read("newsletterCss"));
+				}
+			} 
+		}
+		$this->set("templateByArea", $pub);
 	 }
 
 	 /**
@@ -47,7 +62,20 @@ class NewsletterController extends ModulesController {
 	function newsletters($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$types = array(Configure::read("objectTypes.mailmessage.id"));
 		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
-//		pr($this->viewVars["objects"]);exit;
+		foreach ($this->viewVars["objects"] as $key => $obj) {
+			$msg = $this->MailMessage->find("first", array(
+												"conditions" => array("MailMessage.id" => $obj["id"]),
+												"contain"	=> array("BEObject" => array("RelatedObject"))
+												)
+			);
+			if (!empty($msg["RelatedObject"])) {
+				$this->modelBindings["MailTemplate"] = array("BEObject");
+				$msg["relations"] = $this->objectRelationArray($msg['RelatedObject']);
+				unset($this->modelBindings["MailTemplate"]);
+			}
+
+			$this->viewVars["objects"][$key] = $msg;
+		}		
 	 }
 	
 	function save() {
@@ -59,6 +87,13 @@ class NewsletterController extends ModulesController {
 	 	$this->Transaction->commit() ;
  		$this->userInfoMessage(__("Mail message saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("mail message [". $this->data["title"]."] saved");
+	}
+	
+	public function delete() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("MailMessage");
+		$this->userInfoMessage(__("Mail message deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("mail messages $objectsListDeleted deleted");
 	}
 	
 	 /**
@@ -242,7 +277,11 @@ class NewsletterController extends ModulesController {
 			"save"	=> 	array(
 							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
 							"ERROR"	=> $this->referer() 
-							), 
+							),
+			"delete" =>	array(
+							"OK"	=> "/newsletter/newsletters",
+							"ERROR"	=> "/newsletter/newsletters"
+							),
 			"saveTemplate"	=> 	array(
 							"OK"	=> "/newsletter/viewtemplate/".@$this->MailTemplate->id,
 							"ERROR"	=> $this->referer()

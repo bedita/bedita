@@ -107,4 +107,7 @@
 //	'subject' => "[bedita] error message",
 //);
 
+// specific css filename for newsletter templates
+//$config['newsletterCss'] = "base.css";
+
 ?>

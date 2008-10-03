@@ -12,11 +12,6 @@ var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 
 {literal}
 $(document).ready(function(){
-
-
-	$("TABLE.indexList TD.cellList").click(function(i) { 
-		document.location = $(this).parent().find("a:first").attr("href"); 
-	} );
 	
 	/* select/unselect each item's checkbox */
 	$(".selectAll").bind("click", function(e) {
@@ -77,19 +72,8 @@ $(document).ready(function(){
 	{/capture}
 		
 		{$smarty.capture.theader}
-	
-		<tr class="obj on">
-			<td style="width:15px; padding:7px 0px 0px 0px;">
-				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" {if $objects[i].status == 'fixed'}disabled="disabled"{/if} />
-			</td>
-			<td><a href="{$html->url('view/')}{$objects[i].id}">Io sono il titolo della newsletter</a></td>
-			<td>1234</td>
-			<td>on</td>
-			<td>12 oct 2008</td>
-			<td>pubblicazione uno</td>
-			<td>ita</td>
-		</tr>
-		{*section name="i" loop=$objects}
+		
+		{section name="i" loop=$objects}
 		
 		<tr class="obj {$objects[i].status}">
 			<td style="width:15px; padding:7px 0px 0px 0px;">
@@ -97,9 +81,13 @@ $(document).ready(function(){
 			</td>
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64}</a></td>
 			<td>{$objects[i].id}</td>
-			<td>{$objects[i].status}</td>
-			<td>{$objects[i].sent|date_format:$conf->dateTimePattern}</td>
-			<td>{$objects[i].template}</td>
+			<td>{$objects[i].mail_status}</td>
+			<td>{*$objects[i].sent|date_format:$conf->dateTimePattern*}</td>
+			<td>
+			{if !empty($objects[i].relations.template)}
+				<a href="{$html->url('/newsletter/viewtemplate/')}{$objects[i].relations.template.0.id}">{$objects[i].relations.template.0.title}</a>
+			{/if}
+			</td>
 			<td>{$objects[i].lang}</td>
 		</tr>
 			
@@ -107,7 +95,7 @@ $(document).ready(function(){
 		
 			<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>
 		
-		{/section*}
+		{/section}
 		
 {if ($smarty.section.i.total) >= 10}
 		

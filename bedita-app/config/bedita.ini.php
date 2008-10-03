@@ -501,4 +501,9 @@ $config['modelBindings'] = array() ;
  */
 $config['searchFields'] = array() ;
 
+/**
+ * Default css filename for newsletter templates
+ */
+$config['newsletterCss'] = "base.css";
+
 ?>
