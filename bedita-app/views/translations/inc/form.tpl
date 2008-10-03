@@ -107,7 +107,7 @@ $(document).ready(function(){
 		<input type="radio" name="data[LangText][0][text]" {if !empty($object_translation) && ($object_translation.status=='draft')}checked="checked" {/if}value="draft"/>DRAFT
 		<input type="radio" name="data[LangText][0][text]" {if empty($object_translation) || ($object_translation.status=='required')}checked="checked" {/if}value="required"/>TO DO
 		<input type="hidden" name="data[LangText][0][name]" value="status"/>
-		{if !empty($object_translation.id.status)}<input type="hidden" name="data[LangText][0][id]" value="{$object_translation.id.status}"/>{/if}
+		{if !empty($object_translation) && !empty($object_translation.id) && !empty($object_translation.id.status)}<input type="hidden" name="data[LangText][0][id]" value="{$object_translation.id.status}"/>{/if}
 
 	</fieldset>
 
@@ -165,27 +165,27 @@ $(document).ready(function(){
 			</td>
 			<td>
 				{assign var='l1' value=$lang_text_index++}
-				{assign var='image_status' value=$image.LangText.status[$object_translation.lang]|default:$image.status}
+				{assign var='image_status' value=$image.LangText.status[$object_translated_lang]|default:$image.status}
 				<input type="hidden" name="data[LangText][{$l1}][name]" value="status"/>
 				<input type="hidden" name="data[LangText][{$l1}][object_id]" value="{$image.id}"/>
 				<input type="hidden" name="data[LangText][{$l1}][text]" value="{$image_status}"/>
-				{if !empty($image.LangText[$image.id][$object_translation.lang].status)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangText[$image.id][$object_translation.lang].status}"/>{/if}
+				{if !empty($image.LangText[$image.id][$object_translated_lang].status)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangText[$image.id][$object_translated_lang].status}"/>{/if}
 
 				{assign var='l1' value=$lang_text_index++}
-				{assign var='image_title' value=$image.LangText.title[$object_translation.lang]|default:''}
+				{assign var='image_title' value=$image.LangText.title[$object_translated_lang]|default:''}
 				<label>{t}Title{/t}</label>
 				<input type="hidden" name="data[LangText][{$l1}][name]" value="title"/>
 				<input type="text" name="data[LangText][{$l1}][text]" style="width:210px !important" value="{$image_title}" />
 				<input type="hidden" name="data[LangText][{$l1}][object_id]" value="{$image.id}"/>
-				{if $image.LangText}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangText[$image.id][$object_translation.lang].title|default:''}"/>{/if}
+				{if $image.LangText}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangText[$image.id][$object_translated_lang].title|default:''}"/>{/if}
 				
 				{assign var='l1' value=$lang_text_index++}
-				{assign var='image_description' value=$image.LangText.description[$object_translation.lang]|default:''}
+				{assign var='image_description' value=$image.LangText.description[$object_translated_lang]|default:''}
 				<label>{t}Description{/t}</label>
 				<input type="hidden" name="data[LangText][{$l1}][name]" value="description"/>
 				<textarea style="height:38px; width:210px !important" name="data[LangText][{$l1}][text]">{$image_description}</textarea>
 				<input type="hidden" name="data[LangText][{$l1}][object_id]" value="{$image.id}"/>
-				{if !empty($image.LangText)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangText[$image.id][$object_translation.lang].description|default:''}"/>{/if}
+				{if !empty($image.LangText)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangText[$image.id][$object_translated_lang].description|default:''}"/>{/if}
 			
 			</td>
 		</tr>

@@ -90,15 +90,9 @@ function changeStatusTranslations() {
 	{capture name="theader"}
 		<tr>
 			<th></th>
-			{*
-			<th>{$beToolbar->order('id', 'Id')}</th>
-			*}
-			<th>{$beToolbar->order('title', 'title')}</th>
-			{*
-			<th>{$beToolbar->order('object_id', 'master id')}</th>
-			*}
 			<th>{$beToolbar->order('title', 'master title')}</th>
-			<th>{$beToolbar->order('type', 'Type')}</th>
+			<th>{t}title{/t}</th>
+			<th>{$beToolbar->order('object_type_id', 'Type')}</th>
 			<th>{$beToolbar->order('lang', 'Language')}</th>
 			<th>{$beToolbar->order('status', 'Status')}</th>
 		</tr>
@@ -117,15 +111,9 @@ function changeStatusTranslations() {
 			<td style="width:15px; padding:7px 0px 0px 0px;">
 				<input  type="checkbox" name="object_chk" class="objectCheck" title="{$translations[i].LangText.id}" />
 			</td>
-			{*
-				<td><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations[i].LangText.id}</a></td>
-			*}
 			<td>
 				<a href="{$html->url('view/')}{$oid}/{$olang}">{$translations_title[$oid][$olang]|default:'<em>no title</em>'|truncate:38:true}</a>
 			</td>
-			{*
-				<td>{$oid}</td>
-			*}
 			<td>{$mtitle|truncate:38:true} &nbsp;</td>
 			<td>
 				<span class="listrecent {$conf->objectTypes[$ot].model|lower}">&nbsp;</span>
