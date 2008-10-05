@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: magic_db.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: magic_db.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * MagicDb parser and file analyzer
  *
@@ -19,9 +19,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v 1.2.0
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 if (!class_exists('File')) {
@@ -247,9 +247,8 @@ class MagicFileResource extends Object{
 	function read($length = null) {
 		if (!is_object($this->resource)){
 			return substr($this->resource, $this->offset, $length);
-		} else {
-			return $this->resource->read($length);
 		}
+		return $this->resource->read($length);
 	}
 /**
  * undocumented function

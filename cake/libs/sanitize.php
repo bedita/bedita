@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: sanitize.php 7118 2008-06-04 20:49:29Z gwoo $ */
+/* SVN FILE: $Id: sanitize.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Washes strings from unwanted noise.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 7118 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -73,7 +73,7 @@ class Sanitize {
  */
 	function escape($string, $connection = 'default') {
 		$db =& ConnectionManager::getDataSource($connection);
-		if (is_numeric($string)  || $string === null) {
+		if (is_numeric($string) || $string === null || is_bool($string)) {
 			return $string;
 		}
 		$string = substr($db->value($string), 1);
@@ -103,6 +103,7 @@ class Sanitize {
  * Strips extra whitespace from output
  *
  * @param string $str String to sanitize
+ * @return string whitespace sanitized string
  * @access public
  * @static
  */
@@ -114,6 +115,7 @@ class Sanitize {
  * Strips image tags from output
  *
  * @param string $str String to sanitize
+ * @return string Sting with images stripped.
  * @access public
  * @static
  */
@@ -127,6 +129,7 @@ class Sanitize {
  * Strips scripts and stylesheets from output
  *
  * @param string $str String to sanitize
+ * @return string String with <script>, <style>, <link> elements removed.
  * @access public
  * @static
  */
@@ -137,6 +140,7 @@ class Sanitize {
  * Strips extra whitespace, images, scripts and stylesheets from output
  *
  * @param string $str String to sanitize
+ * @return string sanitized string
  * @access public
  */
 	function stripAll($str) {
@@ -151,6 +155,7 @@ class Sanitize {
  *
  * @param string $str String to sanitize
  * @param string $tag Tag to remove (add more parameters as needed)
+ * @return string sanitized String
  * @access public
  * @static
  */
@@ -240,7 +245,7 @@ class Sanitize {
  */
 	function formatColumns(&$model) {
 		foreach ($model->data as $name => $values) {
-			if ($name == $model->name) {
+			if ($name == $model->alias) {
 				$curModel =& $model;
 			} elseif (isset($model->{$name}) && is_object($model->{$name}) && is_subclass_of($model->{$name}, 'Model')) {
 				$curModel =& $model->{$name};

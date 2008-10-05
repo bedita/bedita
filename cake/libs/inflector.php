@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: inflector.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: inflector.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Pluralize and singularize English words.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -34,7 +34,7 @@ if (!class_exists('Object')) {
 	uses('object');
 }
 if (!class_exists('Set')) {
-	uses('set');
+	require LIBS . 'set.php';
 }
 /**
  * Pluralize and singularize English words.
@@ -48,12 +48,75 @@ if (!class_exists('Set')) {
  */
 class Inflector extends Object {
 /**
- * Constructor.
+ * Pluralized words
  *
- */
-	function __construct() {
-		parent::__construct();
-	}
+ * @var array
+ * @access private
+ **/
+	var $pluralized = array();
+/**
+ * All plural rules
+ *
+ * @var array
+ * @access public
+ **/
+	var $pluralRules = array();
+/**
+ * Singularized words
+ *
+ * @var array
+ * @access private
+ **/
+	var $singularized = array();
+/**
+ * All singular rules
+ *
+ * @var array
+ * @access public
+ **/
+	var $singularRules = array();
+/**
+ * Plural rules from inflections.php
+ *
+ * @var array
+ * @access private
+ **/
+	var $__pluralRules = array();
+/**
+ * Un-inflected plural rules from inflections.php
+ *
+ * @var array
+ * @access private
+ **/
+	var $__uninflectedPlural = array();
+/**
+ * Irregular plural rules from inflections.php
+ *
+ * @var array
+ * @access private
+ **/
+	var $__irregularPlural = array();
+/**
+ * Singular rules from inflections.php
+ *
+ * @var array
+ * @access private
+ **/
+	var $__singularRules = array();
+/**
+ * Un-inflectd singular rules from inflections.php
+ *
+ * @var array
+ * @access private
+ **/
+	var $__uninflectedSingular = array();
+/**
+ * Irregular singular rules from inflections.php
+ *
+ * @var array
+ * @access private
+ **/
+	var $__irregularSingular = array();
 /**
  * Gets a reference to the Inflector object instance
  *
@@ -63,15 +126,25 @@ class Inflector extends Object {
 	function &getInstance() {
 		static $instance = array();
 
-		if (!isset($instance[0]) || !$instance[0]) {
+		if (!$instance) {
 			$instance[0] =& new Inflector();
-		}
+			if (file_exists(CONFIGS.'inflections.php')) {
+				include(CONFIGS.'inflections.php');
+				$instance[0]->__pluralRules = $pluralRules;
+				$instance[0]->__uninflectedPlural = $uninflectedPlural;
+				$instance[0]->__irregularPlural = $irregularPlural;
+				$instance[0]->__singularRules = $singularRules;
+				$instance[0]->__uninflectedSingular = $uninflectedPlural;
+				$instance[0]->__irregularSingular = array_flip($irregularPlural);
 
+			}
+		}
 		return $instance[0];
 	}
 /**
  * Initializes plural inflection rules
  *
+ * @return void
  * @access protected
  */
 	function __initPluralRules() {
@@ -97,6 +170,7 @@ class Inflector extends Object {
 			'/(alias)$/i' => '\1es',
 			'/(ax|cri|test)is$/i' => '\1es',
 			'/s$/' => 's',
+			'/^$/' => '',
 			'/$/' => 's');
 
 		$coreUninflectedPlural = array(
@@ -142,16 +216,11 @@ class Inflector extends Object {
 			'trilby' => 'trilbys',
 			'turf' => 'turfs');
 
-		$pluralRules = $corePluralRules;
-		$uninflected = $coreUninflectedPlural;
-		$irregular = $coreIrregularPlural;
 
-		if (file_exists(CONFIGS . 'inflections.php')) {
-			include(CONFIGS.'inflections.php');
-			$pluralRules = Set::pushDiff($pluralRules, $corePluralRules);
-			$uninflected = Set::pushDiff($uninflectedPlural, $coreUninflectedPlural);
-			$irregular = Set::pushDiff($irregularPlural, $coreIrregularPlural);
-		}
+		$pluralRules = Set::pushDiff($_this->__pluralRules, $corePluralRules);
+		$uninflected = Set::pushDiff($_this->__uninflectedPlural, $coreUninflectedPlural);
+		$irregular = Set::pushDiff($_this->__irregularPlural, $coreIrregularPlural);
+
 		$_this->pluralRules = array('pluralRules' => $pluralRules, 'uninflected' => $uninflected, 'irregular' => $irregular);
 		$_this->pluralized = array();
 	}
@@ -164,7 +233,6 @@ class Inflector extends Object {
  * @static
  */
 	function pluralize($word) {
-
 		$_this =& Inflector::getInstance();
 		if (!isset($_this->pluralRules) || empty($_this->pluralRules)) {
 			$_this->__initPluralRules();
@@ -204,6 +272,7 @@ class Inflector extends Object {
 /**
  * Initializes singular inflection rules
  *
+ * @return void
  * @access protected
  */
 	function __initSingularRules() {
@@ -232,7 +301,7 @@ class Inflector extends Object {
 			'/(tive)s$/i' => '\1',
 			'/(hive)s$/i' => '\1',
 			'/(drive)s$/i' => '\1',
-			'/([^f])ves$/i' => '\1fe',
+			'/([^fo])ves$/i' => '\1fe',
 			'/(^analy)ses$/i' => '\1sis',
 			'/((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$/i' => '\1\2sis',
 			'/([ti])a$/i' => '\1um',
@@ -286,16 +355,10 @@ class Inflector extends Object {
 			'trilbys' => 'trilby',
 			'turfs' => 'turf');
 
-		$singularRules = $coreSingularRules;
-		$uninflected = $coreUninflectedSingular;
-		$irregular = $coreIrregularSingular;
+		$singularRules = Set::pushDiff($_this->__singularRules, $coreSingularRules);
+		$uninflected = Set::pushDiff($_this->__uninflectedSingular, $coreUninflectedSingular);
+		$irregular = Set::pushDiff($_this->__irregularSingular, $coreIrregularSingular);
 
-		if (file_exists(CONFIGS . 'inflections.php')) {
-			include(CONFIGS.'inflections.php');
-			$singularRules = Set::pushDiff($singularRules, $coreSingularRules);
-			$uninflected = Set::pushDiff($uninflectedSingular, $coreUninflectedSingular);
-			$irregular = Set::pushDiff($irregularSingular, $coreIrregularSingular);
-		}
 		$_this->singularRules = array('singularRules' => $singularRules, 'uninflected' => $uninflected, 'irregular' => $irregular);
 		$_this->singularized = array();
 	}
@@ -397,7 +460,7 @@ class Inflector extends Object {
  * Returns Cake model class name ("Post" for the database table "posts".) for given database table.
  *
  * @param string $tableName Name of database table to get class name for
- * @return string
+ * @return string Class name
  * @access public
  * @static
  */
@@ -409,7 +472,7 @@ class Inflector extends Object {
  * Returns camelBacked version of a string.
  *
  * @param string $string
- * @return string
+ * @return string in variable form
  * @access public
  * @static
  */
@@ -429,8 +492,8 @@ class Inflector extends Object {
  * @static
  */
 	function slug($string, $replacement = '_') {
-		if(!class_exists('String')) {
-			require_once LIBS . 'string.php';
+		if (!class_exists('String')) {
+			require LIBS . 'string.php';
 		}
 		$map = array(
 			'/à|á|å|â/' => 'a',

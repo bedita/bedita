@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: validation.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: validation.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v 1.2.0.3830
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -39,7 +39,7 @@
 	define('VALID_NUMBER', '/^[-+]?\\b[0-9]*\\.?[0-9]+\\b$/');
 /**
  * A valid email address.
- */ 
+ */
 	define('VALID_EMAIL', "/^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,4}|museum|travel)$/i");
 /**
  * A valid year (1000-2999).
@@ -110,10 +110,37 @@ class Validation extends Object {
 	function &getInstance() {
 		static $instance = array();
 
-		if (!isset($instance[0]) || !$instance[0]) {
+		if (!$instance) {
 			$instance[0] =& new Validation();
 		}
 		return $instance[0];
+	}
+/**
+ * Checks that a string contains something other than whitespace
+ *
+ * Returns true if string contains something other than whitespace
+ *
+ * $check can be passed as an array:
+ * array('check' => 'valueToCheck');
+ *
+ * @param mixed $check Value to check
+ * @return boolean Success
+ * @access public
+ */
+	function notEmpty($check) {
+		$_this =& Validation::getInstance();
+		$_this->__reset();
+		$_this->check = $check;
+
+		if (is_array($check)) {
+			$_this->_extract($check);
+		}
+
+		if (empty($_this->check) && $_this->check != '0') {
+			return false;
+		}
+		$_this->regex = '/[^\s]+/mu';
+		return $_this->_check();
 	}
 /**
  * Checks that a string contains only integer or letters
@@ -139,13 +166,8 @@ class Validation extends Object {
 		if (empty($_this->check) && $_this->check != '0') {
 			return false;
 		}
-
-		$_this->regex = '/[^\\dA-Z]/i';
-		if ($_this->_check() === true) {
-			return false;
-		} else {
-			return true;
-		}
+		$_this->regex = '/^[\p{Ll}\p{Lm}\p{Lo}\p{Lt}\p{Lu}\p{Nd}]+$/mu';
+		return $_this->_check();
 	}
 /**
  * Checks that a string length is within s specified range.
@@ -281,7 +303,7 @@ class Validation extends Object {
  * 								is greater >, is less <, greater or equal >=
  * 								less or equal <=, is less <, equal to ==, not equal !=
  * @param integer $check2 only needed if $check1 is a string
- * @return bool
+ * @return boolean Success
  * @access public
  */
 	function comparison($check1, $operator = null, $check2 = null) {
@@ -371,7 +393,7 @@ class Validation extends Object {
  * 							dMy 27 December 2006 or 27 Dec 2006
  * 							Mdy December 27, 2006 or Dec 27, 2006 comma is optional
  * 							My December 2006 or Dec 2006
- * 							my 12/2006 or 12/06 separators can be a space, period, dash, forward slash
+ * 							my 12/2006 separators can be a space, period, dash, forward slash
  * @param string $regex If a custom regular expression is used this is the only validation that will occur.
  * @return boolean Success
  * @access public
@@ -513,6 +535,7 @@ class Validation extends Object {
  *
  * @param mixed $check Value to check
  * @param mixed $comparedTo Value to compare
+ * @return boolean Success
  * @access public
  */
 	function equalTo($check, $comparedTo) {
@@ -523,6 +546,7 @@ class Validation extends Object {
  *
  * @param mixed $check Value to check
  * @param array $extensions file extenstions to allow
+ * @return boolean Success
  * @access public
  */
 	function extension($check, $extensions = array('gif', 'jpeg', 'png', 'jpg')) {
@@ -546,6 +570,7 @@ class Validation extends Object {
  *
  * @param mixed $check Value to check
  * @access public
+ * @todo finish implementation
  */
 	function file($check) {
 		// if (is_array($check)) {
@@ -556,7 +581,7 @@ class Validation extends Object {
 		// 	}
 		// 	return true;
 		// }
-		// 
+		//
 		// return preg_match('/[\w| |_]+\.[\w]+/', $check);
 	}
 /**
@@ -628,15 +653,35 @@ class Validation extends Object {
  * Validate a multiple select.
  *
  * @param mixed $check Value to check
- * @param mixed $type Type of check
- * @param string $regex Use custom regular expression
+ * @param mixed $options Options for the check.
+ * 	Valid options
+ *	  in => provide a list of choices that selections must be made from
+ *	  max => maximun number of non-zero choices that can be made
+ * 	  min => minimum number of non-zero choices that can be made
+ * @return boolean Success
  * @access public
- * @todo Implement
  */
-	function multiple($check, $type, $regex = null) {
-		//Validate a select object for a selected index past 0.
-		//Validate a select against a list of restriced indexes.
-		//Validate a multiple-select for the quantity selected.
+	function multiple($check, $options = array()) {
+		$defaults = array('in' => null, 'max' => null, 'min' => null);
+		$options = array_merge($defaults, $options);
+		$check = array_filter($check);
+		if (empty($check)) {
+			return false;
+		}
+		if ($options['max'] && sizeof($check) > $options['max']) {
+			return false;
+		}
+		if ($options['min'] && sizeof($check) < $options['min']) {
+			return false;
+		}
+		if ($options['in'] && is_array($options['in'])) {
+			foreach ($check as $val) {
+				if (!in_array($val, $options['in'])) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 /**
  * Checks if a value is numeric.
@@ -727,6 +772,7 @@ class Validation extends Object {
  * @param string $check Value to check
  * @param integer $lower Lower limit
  * @param integer $upper Upper limit
+ * @return boolean Success
  * @access public
  */
 	function range($check, $lower = null, $upper = null ) {
@@ -840,6 +886,7 @@ class Validation extends Object {
  * an array.
  *
  * @param array $params Parameters sent to validation method
+ * @return void
  * @access protected
  */
 	function _extract($params) {
@@ -899,7 +946,8 @@ class Validation extends Object {
 	}
 /**
  * Reset internal variables for another validation run.
- *
+ * 
+ * @return void
  * @access private
  */
 	function __reset() {

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: debugger.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: debugger.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Framework debugging and PHP error-handling class
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v 1.2.4560
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -92,11 +92,12 @@ class Debugger extends Object {
  *
  * @return object
  * @access public
+ * @static
  */
 	function &getInstance() {
 		static $instance = array();
 
-		if (!isset($instance[0]) || !$instance[0]) {
+		if (!$instance) {
 			$instance[0] =& new Debugger();
 			if (Configure::read() > 0) {
 				Configure::version(); // Make sure the core config is loaded
@@ -106,15 +107,26 @@ class Debugger extends Object {
 		return $instance[0];
 	}
 /**
- * formats and outputs the passed var
+ * Formats and outputs the passed var
+ * 
+ * @param $var mixed the variable to dump
+ * @return void
+ * @see exportVar
+ * @access public
+ * @static
 */
 	function dump($var) {
 		$_this = Debugger::getInstance();
 		pr($_this->exportVar($var));
 	}
 /**
- *  neatly logs a given var
-*/
+ * Neatly logs a given var
+ * 
+ * @param $var mixed Variable or content to log
+ * @param $level int type of log to use. Defaults to LOG_DEBUG
+ * @return void
+ * @static
+ */
 	function log($var, $level = LOG_DEBUG) {
 		$_this = Debugger::getInstance();
 		$trace = $_this->trace(array('start' => 1, 'depth' => 2, 'format' => 'array'));
@@ -213,6 +225,7 @@ class Debugger extends Object {
  * @param array $options Format for outputting stack trace
  * @return string Formatted stack trace
  * @access public
+ * @static
  */
 	function trace($options = array()) {
 		$options = array_merge(array(
@@ -228,8 +241,9 @@ class Debugger extends Object {
 
 		$backtrace = debug_backtrace();
 		$back = array();
+		$count = count($backtrace);
 
-		for ($i = $options['start']; $i < count($backtrace) && $i < $options['depth']; $i++) {
+		for ($i = $options['start']; $i < $count && $i < $options['depth']; $i++) {
 			$trace = array_merge(
 				array(
 					'file' => '[internal]',
@@ -288,6 +302,7 @@ class Debugger extends Object {
  * @param string $path Path to shorten
  * @return string Normalized path
  * @access public
+ * @static
  */
 	function trimPath($path) {
 		if (!defined('CAKE_CORE_INCLUDE_PATH') || !defined('APP')) {
@@ -317,6 +332,7 @@ class Debugger extends Object {
  * @param integer $context Number of lines of context to extract above and below $line
  * @return array Set of lines highlighted
  * @access public
+ * @static
  */
 	function excerpt($file, $line, $context = 2) {
 		$data = $lines = array();
@@ -344,12 +360,13 @@ class Debugger extends Object {
  * @param string $var Variable to convert
  * @return string Variable as a formatted string
  * @access public
+ * @static
  */
 	function exportVar($var, $recursion = 0) {
 		$_this =  Debugger::getInstance();
 		switch(strtolower(gettype($var))) {
 			case 'boolean':
-				return ife($var, 'true', 'false');
+				return ($var) ? 'true' : 'false';
 			break;
 			case 'integer':
 			case 'double':
@@ -394,6 +411,7 @@ class Debugger extends Object {
  * Handles object conversion to debug string
  *
  * @param string $var Object to convert
+ * @return string
  * @access private
  */
 	function __object($var) {
@@ -462,30 +480,30 @@ class Debugger extends Object {
 				$out = "<a href='javascript:void(0);' onclick='{$link}'><b>{$error}</b> ({$code})</a>: {$description} [<b>{$file}</b>, line <b>{$line}</b>]";
 				if (Configure::read() > 0) {
 					debug($out, false, false);
-					e('<div id="CakeStackTrace' . count($_this->errors) . '" class="cake-stack-trace" style="display: none;">');
+					echo '<div id="CakeStackTrace' . count($_this->errors) . '" class="cake-stack-trace" style="display: none;">';
 						$link = "document.getElementById(\"CakeErrorCode" . count($_this->errors) . "\").style.display = (document.getElementById(\"CakeErrorCode" . count($_this->errors) . "\").style.display == \"none\" ? \"\" : \"none\")";
-						e("<a href='javascript:void(0);' onclick='{$link}'>Code</a>");
+						echo "<a href='javascript:void(0);' onclick='{$link}'>Code</a>";
 
 						if (!empty($context)) {
 							$link = "document.getElementById(\"CakeErrorContext" . count($_this->errors) . "\").style.display = (document.getElementById(\"CakeErrorContext" . count($_this->errors) . "\").style.display == \"none\" ? \"\" : \"none\")";
-							e(" | <a href='javascript:void(0);' onclick='{$link}'>Context</a>");
+							echo " | <a href='javascript:void(0);' onclick='{$link}'>Context</a>";
 
 							if (!empty($helpCode)) {
-								e(" | <a href='{$_this->helpPath}{$helpCode}' target='blank'>Help</a>");
+								echo " | <a href='{$_this->helpPath}{$helpCode}' target='_blank'>Help</a>";
 							}
 
-							e("<pre id=\"CakeErrorContext" . count($_this->errors) . "\" class=\"cake-context\" style=\"display: none;\">");
-							e(implode("\n", $context));
-							e("</pre>");
+							echo "<pre id=\"CakeErrorContext" . count($_this->errors) . "\" class=\"cake-context\" style=\"display: none;\">";
+							echo implode("\n", $context);
+							echo "</pre>";
 						}
 
 						if (!empty($listing)) {
-							e("<div id=\"CakeErrorCode" . count($_this->errors) . "\" class=\"cake-code-dump\" style=\"display: none;\">");
+							echo "<div id=\"CakeErrorCode" . count($_this->errors) . "\" class=\"cake-code-dump\" style=\"display: none;\">";
 								pr(implode("\n", $listing) . "\n", false);
-							e('</div>');
+							echo '</div>';
 						}
 						pr($trace, false);
-					e('</div>');
+					echo '</div>';
 				}
 			break;
 			case 'html':
@@ -516,6 +534,7 @@ class Debugger extends Object {
  * Verify that the application's salt has been changed from the default value
  *
  * @access public
+ * @static
  */
 	function checkSessionKey() {
 		if (Configure::read('Security.salt') == 'DYhG93b0qyJfIxfs2guVoUubWwvniR2G0FgaC9mi') {
@@ -528,6 +547,7 @@ class Debugger extends Object {
  *
  * @param object $debugger A reference to the Debugger object
  * @access public
+ * @static
  */
 	function invoke(&$debugger) {
 		set_error_handler(array(&$debugger, 'handleError'));

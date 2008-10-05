@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: security.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: security.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v .0.10.0.1233
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -87,11 +87,10 @@ class Security extends Object {
   * @static
   */
 	function generateAuthKey() {
-		$_this =& Security::getInstance();
 		if(!class_exists('String')) {
 			App::import('Core', 'String');
 		}
-		return $_this->hash(String::uuid());
+		return Security::hash(String::uuid());
 	}
 /**
  * Validate authorization hash.
@@ -100,13 +99,14 @@ class Security extends Object {
  * @return boolean Success
  * @access public
  * @static
+ * @todo Complete implementation
  */
 	function validateAuthKey($authKey) {
-		$_this =& Security::getInstance();
 		return true;
 	}
 /**
  * Create a hash from string using given method.
+ * Fallback on next available method.
  *
  * @param string $string String to hash
  * @param string $type Method to use (sha1/sha256/md5)
@@ -120,8 +120,13 @@ class Security extends Object {
 		$_this =& Security::getInstance();
 
 		if ($salt) {
-			$string = Configure::read('Security.salt') . $string;
+			if (is_string($salt)) {
+				$string = $salt . $string;
+			} else {
+				$string = Configure::read('Security.salt') . $string;
+			}
 		}
+
 		if (empty($type)) {
 			$type = $_this->hashType;
 		}
@@ -131,24 +136,18 @@ class Security extends Object {
 			if (function_exists('sha1')) {
 				$return = sha1($string);
 				return $return;
-			} else {
-				$type = 'sha256';
 			}
+			$type = 'sha256';
 		}
 
-		if ($type == 'sha256') {
-			if (function_exists('mhash')) {
-				$return = bin2hex(mhash(MHASH_SHA256, $string));
-				return $return;
-			} else {
-				$type = 'md5';
-			}
+		if ($type == 'sha256' && function_exists('mhash')) {
+			return bin2hex(mhash(MHASH_SHA256, $string));
 		}
 
-		if ($type == 'md5') {
-			$return = md5($string);
-			return $return;
+		if (function_exists('hash')) {
+			return hash($type, $string);
 		}
+		return md5($string);
 	}
 /**
  * Sets the default hash method for the Security object.  This affects all objects using
@@ -156,6 +155,7 @@ class Security extends Object {
  *
  * @param string $hash Method to use (sha1/sha256/md5)
  * @access public
+ * @return void
  * @static
  * @see Security::hash()
  */
@@ -164,7 +164,7 @@ class Security extends Object {
 		$_this->hashType = $hash;
 	}
 /**
- * Encripts/Decrypts a text using the given key.
+ * Encrypts/Decrypts a text using the given key.
  *
  * @param string $text Encrypted string to decrypt, normal string to encrypt
  * @param string $key Key to use
@@ -183,7 +183,7 @@ class Security extends Object {
 			//This is temporary will change later
 			define('CIPHER_SEED', '76859309657453542496749683645');
 		}
-		srand (CIPHER_SEED);
+		srand(CIPHER_SEED);
 		$out = '';
 
 		for ($i = 0; $i < strlen($text); $i++) {
