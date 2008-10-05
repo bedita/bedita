@@ -26,6 +26,7 @@
 
 class PagesController extends ModulesController {
 	
+	var $uses = array();
 	var $components = array('Session', 'Cookie');
 
 	function display() {
