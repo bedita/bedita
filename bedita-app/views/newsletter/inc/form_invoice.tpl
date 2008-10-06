@@ -1,3 +1,21 @@
+<script type="text/javascript">
+var sendNewsletterUrl = "{$html->url('/newsletter/sendNewsletter')}";
+var testNewsletterUrl = "{$html->url('/newsletter/testNewsletter')}";
+{literal}
+$(document).ready(function() {
+	$("#sendNewsletter").click(function() {
+		$("#updateForm").attr("action", sendNewsletterUrl).submit();
+	});
+	
+	$("#testNewsletter").click(function() {
+		to = prompt("{/literal}{t}Send email to{/t}{literal}");
+		$("#updateForm").attr("action", testNewsletterUrl + "/" + to);
+		$("#updateForm").submit();
+	});
+});
+{/literal}
+</script>
+
 
 <div class="tab"><h2>{t}Invoice{/t}</h2></div>
 
@@ -45,9 +63,9 @@
 
 </table>
 	<div class="modalcommands newsletter">
-		<input type="button" value="  test newsletter  "> 
+		<input type="button" id="testNewsletter" value="  test newsletter  "/> 
 		&nbsp;&nbsp;
-		<input type="button" value="  SEND newsletter  ">
+		<input type="button" id="sendNewsletter" value="  SEND newsletter  " {if !($object.id|default:false)}disabled="disabled"{/if}/>
 	</div>
 	
 	<em>{t} Newsletter must be saved before sending {/t}</em>

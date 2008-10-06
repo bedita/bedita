@@ -67,8 +67,8 @@ class BEAppObjectModel extends BEAppModel {
 				} elseif (!empty($data[$this->alias][$key])) {
 					$data[$key][$key] = $data[$this->alias][$key];
 					unset($data[$this->alias][$key]);
-				} elseif ( (empty($data[$this->alias][$key]) && is_array($data[$this->alias][$key])) 
-							|| (empty($data[$this->alias][$key][$key]) && is_array($data[$this->alias][$key][$key])) ) {
+				} elseif ( (isset($data[$this->alias][$key]) && is_array($data[$this->alias][$key])) 
+							|| (isset($data[$this->alias][$key][$key]) && is_array($data[$this->alias][$key][$key])) ) {
 					$data[$key][$key] = array();
 				}
 			}

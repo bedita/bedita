@@ -34,11 +34,12 @@ class BeMailComponent extends Object {
 			throw new BeditaException(__("Error finding mail message " . $msg_id, true));
 		
 		$data["to"] = $to;
-		$data["from"] = (!empty($res["sender"]))? $res["sender"] : "Bedita mail service";
+		$data["from"] = (!empty($res["sender"]))? $res["sender"] : "Bedita mail service <noreplay@channelweb.it>";
 		$data["subject"] = $res["subject"];
 		$data["replayTo"] = $res["replay_to"];
+		$data["mailType"] = "html";
 		$data["body"] = $res["body"];
-		
+
 		$this->sendMail($data);
 	}
 	

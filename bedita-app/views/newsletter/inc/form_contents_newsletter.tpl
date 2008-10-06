@@ -5,62 +5,82 @@
 
 <script language="javascript" type="text/javascript">
 
-tinyMCE.init({
-	// General options
-	mode : "textareas",
-	theme : "advanced",
-	editor_selector : "mce",
-	plugins : "safari,pagebreak,paste,fullscreen,template",
-
-	// Theme options
-	theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
-	theme_advanced_buttons2 : "sub,sup,fontsizeselect,forecolor,styleselect,justifyleft,justifycenter,justifyright,justifyfull",
-	theme_advanced_buttons3 : "template",
-	//http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/template 
-	theme_advanced_toolbar_location : "top",
-	theme_advanced_toolbar_align : "left",
-	//theme_advanced_resizing : true,
-	theme_advanced_blockformats : "p,h1,h2,h3,h4,blockquote,address",
-	width : "450",
-	//http://wiki.moxiecode.com/index.php/TinyMCE:Control_reference
+function initializeTinyMCE(cssPath) {
+	tinyMCE.init({
+		// General options
+		mode : "textareas",
+		theme : "advanced",
+		editor_selector : "mce",
+		plugins : "safari,pagebreak,paste,fullscreen,template",
 	
-	// Example content CSS (should be your site CSS)
-	content_css : "{/literal}{$cssUrl|default:$html->url('/css/newsletter.css')}{literal}",
-    relative_urls : false,
-	convert_urls : false,
-    remove_script_host : false,
-	document_base_url : "/",
-
-	template_cdate_classes : "cdate creationdate",
-	template_mdate_classes : "mdate modifieddate",
-	template_selected_content_classes : "selcontent",
-	template_cdate_format : "%m/%d/%Y : %H:%M:%S",
-	template_mdate_format : "%m/%d/%Y : %H:%M:%S",
-	template_replace_values : {
-		username : "Jack Black",
-		staffid : "991234"
-	},
-	template_templates : [
-		{
-			title : "Test1 Details",
-			src : "/test1.html",
-			description : "Adds Editor Name and Staff ID"
+		// Theme options
+		theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
+		theme_advanced_buttons2 : "sub,sup,fontsizeselect,forecolor,styleselect,justifyleft,justifycenter,justifyright,justifyfull",
+		theme_advanced_buttons3 : "template",
+		//http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/template 
+		theme_advanced_toolbar_location : "top",
+		theme_advanced_toolbar_align : "left",
+		//theme_advanced_resizing : true,
+		theme_advanced_blockformats : "p,h1,h2,h3,h4,blockquote,address",
+		width : "450",
+		//http://wiki.moxiecode.com/index.php/TinyMCE:Control_reference
+		
+		// Example content CSS (should be your site CSS)
+		content_css : cssPath,
+	    relative_urls : false,
+		convert_urls : false,
+	    remove_script_host : false,
+		document_base_url : "/",
+	
+		template_cdate_classes : "cdate creationdate",
+		template_mdate_classes : "mdate modifieddate",
+		template_selected_content_classes : "selcontent",
+		template_cdate_format : "%m/%d/%Y : %H:%M:%S",
+		template_mdate_format : "%m/%d/%Y : %H:%M:%S",
+		template_replace_values : {
+			username : "Jack Black",
+			staffid : "991234"
 		},
-		{
-			title : "TESt2 Timestamp",
-			src : "/test2.html",
-			description : "Adds an editing timestamp."
-		}
-	]
+		template_templates : [
+			{
+				title : "Test1 Details",
+				src : "/test1.html",
+				description : "Adds Editor Name and Staff ID"
+			},
+			{
+				title : "TESt2 Timestamp",
+				src : "/test2.html",
+				description : "Adds an editing timestamp."
+			}
+		]
+	
+	/*
+	<a href="#" onclick="tinyMCE.execCommand('Bold');return false;">[Bold]</a>
+	<a href="#" onclick="tinyMCE.execCommand('Italic');return false;">[Italic]</a>
+	<a href="#" onclick="tinyMCE.execCommand('mceInsertContent',false,'<b>Hello world!!</b>');return false;">[Insert some HTML]</a>
+	<a href="#" onclick="tinyMCE.execCommand('mceReplaceContent',false,'<b>{$selection}</b>');return false;">[Replace selection]</a>
+	 */
+	
+	});
+	
+}
 
-/*
-<a href="#" onclick="tinyMCE.execCommand('Bold');return false;">[Bold]</a>
-<a href="#" onclick="tinyMCE.execCommand('Italic');return false;">[Italic]</a>
-<a href="#" onclick="tinyMCE.execCommand('mceInsertContent',false,'<b>Hello world!!</b>');return false;">[Insert some HTML]</a>
-<a href="#" onclick="tinyMCE.execCommand('mceReplaceContent',false,'<b>{$selection}</b>');return false;">[Replace selection]</a>
- */
+initializeTinyMCE("{/literal}{$cssUrl|default:$html->url('/css/newsletter.css')}{literal}");
 
+$(document).ready(function() {
+	$("#changeTemplate").change(function() {
+		mce = tinyMCE.get("htmltextarea");
+		mce.remove();
+		cssBaseUrl = $(this).find("option:selected").attr("rel");
+		if (cssBaseUrl === undefined)
+			cssPath = "{/literal}{$html->url('/css/newsletter.css')}{literal}";
+		else
+			cssPath =  cssBaseUrl + "/css/{/literal}{$conf->newsletterCss}{literal}";
+
+		initializeTinyMCE(cssPath);	
+	});
 });
+
 
 	</script>
 {/literal}
@@ -81,14 +101,14 @@ tinyMCE.init({
 
 	<label>template :</label>
 	<input type="hidden" name="data[RelatedObject][template][0][switch]" value="template" />
-	<select name="data[RelatedObject][template][1][id]">
+	<select name="data[RelatedObject][template][1][id]" id="changeTemplate">
 		<option value="">--</option>
 		{foreach from=$templateByArea item="pub"}
 			{if !empty($pub.MailTemplate)}
 				<option value="">{$pub.title|upper}</option>
 			{/if}
 			{foreach from=$pub.MailTemplate item="temp"}
-				<option value="{$temp.id}"{if !empty($relObjects.template) && $relObjects.template.0.id == $temp.id} selected{/if}>&nbsp;&nbsp;&nbsp;{$temp.title}</option>
+				<option rel="{$pub.public_url}" value="{$temp.id}"{if !empty($relObjects.template) && $relObjects.template.0.id == $temp.id} selected{/if}>&nbsp;&nbsp;&nbsp;{$temp.title}</option>
 			{/foreach}
 		{/foreach}		
 	</select>
@@ -107,11 +127,11 @@ tinyMCE.init({
 	<div class="htabcontainer" id="templatebody">
 		
 		<div class="htabcontent" id="html">
-			<textarea id="htmltextarea" style="height:300px" class="mce"></textarea>
+			<textarea id="htmltextarea" name="data[body]" style="height:300px" class="mce">{$object.body|default:null}</textarea>
 		</div>
 		
 		<div class="htabcontent" id="txt">
-			<textarea style="height:300px; border:1px solid silver; width:450px" class="autogrowarea"></textarea>
+			<textarea name="data[abstract]" style="height:300px; border:1px solid silver; width:450px" class="autogrowarea">{$object.abstract|default:null}</textarea>
 		</div>
 		
 	</div>

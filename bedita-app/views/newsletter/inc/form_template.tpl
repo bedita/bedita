@@ -14,35 +14,52 @@
 {literal}
 <script language="javascript" type="text/javascript">
 
-tinyMCE.init({
-	// General options
-	mode : "textareas",
-	theme : "advanced",
-	editor_selector : "mce",
-	plugins : "safari,pagebreak,paste,fullscreen",
-
-	// Theme options
-	theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
-	theme_advanced_buttons2 : "",
-	theme_advanced_buttons3 : "", 
-	theme_advanced_toolbar_location : "top",
-	theme_advanced_toolbar_align : "left",
-	//theme_advanced_statusbar_location : "bottom",
-	//theme_advanced_resizing : true,
-	theme_advanced_blockformats : "p,h1,h2,h3,h4,blockquote,address",
-	width : "450",
-	// Example content CSS (should be your site CSS)
-	//content_css : "http://beditafront.lcl:8081/css/htmleditor.css",
-    content_css : "{/literal}{$templateCSS}{literal}",
-	relative_urls : false,
-	convert_urls : false,
-    remove_script_host : false,
-	document_base_url : "/"
+function initializeTinyMCE(cssPath) {
+	tinyMCE.init({
+		// General options
+		mode : "textareas",
+		theme : "advanced",
+		editor_selector : "mce",
+		plugins : "safari,pagebreak,paste,fullscreen",
 	
+		// Theme options
+		theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
+		theme_advanced_buttons2 : "",
+		theme_advanced_buttons3 : "", 
+		theme_advanced_toolbar_location : "top",
+		theme_advanced_toolbar_align : "left",
+		//theme_advanced_statusbar_location : "bottom",
+		//theme_advanced_resizing : true,
+		theme_advanced_blockformats : "p,h1,h2,h3,h4,blockquote,address",
+		width : "450",
+		// Example content CSS (should be your site CSS)
+		//content_css : "http://beditafront.lcl:8081/css/htmleditor.css",
+	    content_css : cssPath,
+		relative_urls : false,
+		convert_urls : false,
+	    remove_script_host : false,
+		document_base_url : "/"
+		
+	});
+}
+
+initializeTinyMCE("{/literal}{$templateCSS}{literal}");
+
+$(document).ready(function() {
+	$("#changeCss").change(function() {
+		mce = tinyMCE.get("htmltextarea");
+		mce.remove();
+		cssBaseUrl = $(this).find("option:selected").attr("rel");
+		if (cssBaseUrl === undefined)
+			cssPath = "{/literal}{$html->url('/css/newsletter.css')}{literal}";
+		else
+			cssPath =  cssBaseUrl + "/css/{/literal}{$conf->newsletterCss}{literal}";
+
+		initializeTinyMCE(cssPath);	
+	});
 });
-
 	
-	</script>
+</script>
 {/literal}
 {/if}
 
@@ -61,9 +78,10 @@ tinyMCE.init({
 			<td>publishing</td>
 			<td>
 				{if !empty($tree)}
-				<select name="data[destination][]">
+				<select name="data[destination][]" id="changeCss">
+				<option value="">--</option>
 				{foreach from=$tree item="t"}
-					<option value="{$t.id}"{if $t.id == $pub.id|default:null} selected{/if}>{$t.title}</option>
+					<option rel="{$t.public_url|default:null}" value="{$t.id}"{if $t.id == $pub.id|default:null} selected{/if}>{$t.title}</option>
 				{/foreach}
 				</select>
 				{/if}
@@ -101,9 +119,6 @@ tinyMCE.init({
 	
 	<fieldset id="body">
 	
-	La parte qui sotto temo dovrò caricarla solo dopo che è stato salvato il template,
-	poiché in TynyMCE NON posso cambiare dinamicamente i valori di default_css e altri parametri che dipnedono dalla publbicazione in cui il templete è inserito.
-	:-(
 	<br /><br />	
 	
 		

@@ -79,12 +79,7 @@ class NewsletterController extends ModulesController {
 	 }
 	
 	function save() {
-		$this->checkWriteModulePermission();
-		if (empty($this->data["MailGroup"]))
-			$this->data["MailGroup"] = array();
-		$this->Transaction->begin();
-		$this->saveObject($this->MailMessage);
-	 	$this->Transaction->commit() ;
+		$this->saveMessage();
  		$this->userInfoMessage(__("Mail message saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("mail message [". $this->data["title"]."] saved");
 	}
@@ -94,6 +89,50 @@ class NewsletterController extends ModulesController {
 		$objectsListDeleted = $this->deleteObjects("MailMessage");
 		$this->userInfoMessage(__("Mail message deleted", true) . " -  " . $objectsListDeleted);
 		$this->eventInfo("mail messages $objectsListDeleted deleted");
+	}
+	
+	public function sendNewsletter() {
+		if (empty($this->data["MailGroup"]))
+			throw new BeditaException(__("Missing invoices", true));
+		if (empty($this->data["start_sending"]))
+			throw new BeditaException(__("Missing sending date", true));
+		
+		$this->data["mail_status"] = "unsent";	
+		$this->saveMessage();
+		$this->userInfoMessage(__("Mail ready to be sended on ", true) . $this->data["start_sending"]);
+		$this->eventInfo("mail [". $this->data["title"]."] prepared for sending");
+	}
+	
+	public function testNewsletter($to) {
+		$this->saveMessage();
+		$this->BeMail->sendMailById($this->data["id"],$to);
+		$this->userInfoMessage(__("Test mail sended to ", true) . $to);
+		$this->eventInfo("test mail [". $this->data["title"]."] sended");
+	}
+	
+	private function saveMessage() {
+		$this->checkWriteModulePermission();
+		if (empty($this->data["MailGroup"]))
+			$this->data["MailGroup"] = array();
+		
+		$this->Transaction->begin();
+		$this->saveObject($this->MailMessage);
+	 	$this->Transaction->commit() ;
+	}
+	
+	public function test() {
+//		$this->BeMail->sendMailById(8,"batopa@gmail.com");
+		//$data["to"] = "batopa@gmail.com";
+		//$data["from"] = "a.pagliarini@channelweb.it";
+		//$data["subject"] = "";
+		//$data["replayTo"] = "";
+		//$data["body"] = "<p>zxczx</p>";
+		//$this->BeMail->sendMail($data);
+		//pr($data);
+//		$this->BeMail->lockMessages();
+//		$this->BeMail->createJobs();
+//		$this->BeMail->sendQueuedJobs();
+		exit;
 	}
 	
 	 /**
@@ -243,6 +282,16 @@ class NewsletterController extends ModulesController {
 
 	function viewtemplate($id=null) {
 		$this->viewObject($this->MailTemplate, $id);
+		// get publishing public_url
+		if (!empty($this->viewVars["tree"])) {
+			$areaModel = ClassRegistry::init("Area");
+			$areaModel->bviorCompactResults = false;
+			foreach ($this->viewVars["tree"] as $k => $p) {
+				$this->viewVars["tree"][$k]["public_url"] = $areaModel->field("public_url", array("Area.id" => $p["id"]));
+			}
+			$areaModel->bviorCompactResults = true;
+		}
+		
 		if (!empty($id)) {
 			$treeModel = ClassRegistry::init("Tree");
 			$pub_id = $treeModel->getParent($id);
@@ -275,6 +324,14 @@ class NewsletterController extends ModulesController {
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"save"	=> 	array(
+							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
+							"ERROR"	=> $this->referer() 
+							),
+			"sendNewsletter" => 	array(
+							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
+							"ERROR"	=> $this->referer() 
+							),
+			"testNewsletter" => 	array(
 							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
 							"ERROR"	=> $this->referer() 
 							),
