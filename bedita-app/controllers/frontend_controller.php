@@ -579,11 +579,7 @@ abstract class FrontendController extends AppController {
 			try {
 				// check IP
 				$bannedIP = ClassRegistry::init("BannedIp");
-        		$banned = $bannedIP->find('first', array(
-                	'conditions' => array('BannedIp.status' => 'ban', 
-                	'BannedIp.ip_address' => $_SERVER['REMOTE_ADDR']), 
-                	'fields' => array('BannedIp.id')));
-        		if(!empty($banned)) {
+        		if($bannedIP->isBanned($_SERVER['REMOTE_ADDR'])) {
 					throw new BeditaException(__("Error saving comment", true));
         		}
 				

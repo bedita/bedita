@@ -1,3 +1,23 @@
+<script type="text/javascript">
+var urlBan = "{$html->url('/comments/banIp')}";
+var msgBan = "{t}Are you sure you want to ban this IP?{/t}";
+var msgAccept = "{t}Are you sure you want to accept this IP?{/t}";
+{literal}
+$(document).ready(function(){
+	$("#banIP").bind("click", function(){
+		if(!confirm(msgBan)) return false ;
+		$("#updateForm").attr("action", urlBan).submit();
+		return false;
+	});
+	$("#sbanIP").bind("click", function(){
+		if(!confirm(msgAccept)) return false ;
+		$("#updateForm").attr("action", urlBan).submit();
+		return false;
+	});
+});
+{/literal}
+</script>
+
 <form action="{$html->url('/comments/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 <input type="hidden" name="data[title]" value="{$object.title|default:''}" />
@@ -62,9 +82,19 @@
 	<tr>
 	
 		<th>{t}IP{/t}:</th>
-		<td colspan="3">
+		<td>
 		{$object.ip_created}
+		<input type="hidden" name="data[ip_to_ban]" value="{$object.ip_created}"/>
 		</td>
+		<td colspan="2">
+			{if !isset($banned)}
+				<input type="hidden" name="data[ban_status]" value="ban"/>
+				<input type="button" class="delete" id="banIP" title="banIP" value="{t}ban this IP!{/t}"/>
+			{else}
+				<input type="hidden" name="data[ban_status]" value="accept"/>
+				IP banned - <input type="button" class="delete" id="sbanIP" title="banIP" value="{t}accept this IP!{/t}"/>
+			{/if}
+		</td>		
 	
 	</tr>
 	{/if}

@@ -109,7 +109,7 @@ CREATE TABLE `banned_ips` (
   modified datetime NOT NULL,
   status set('ban','accept') NOT NULL default 'ban',
   PRIMARY KEY  (id),
-  KEY ip_idx (ip_address),
+  UNIQUE KEY `ip_unique` (`ip_address`),
   KEY status_idx (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 

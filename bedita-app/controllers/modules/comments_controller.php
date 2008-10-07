@@ -3,6 +3,7 @@ class CommentsController extends ModulesController {
 	
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'Permission', 'BeLangText');
+	var $uses = array('Comment');
 	
 	protected $moduleName = 'comments';
 	
@@ -25,6 +26,10 @@ class CommentsController extends ModulesController {
 		}
 		$this->set('object',	$obj);
 		$this->set('relObjects', $relations);
+		$bannedIP = ClassRegistry::init("BannedIp");
+        if($bannedIP->isBanned($obj['ip_created'])) {
+			$this->set('banned', true);
+        }
 	 }
 	 
 	public function save() {
@@ -45,7 +50,23 @@ class CommentsController extends ModulesController {
  		$this->userInfoMessage(__("Comment saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("comment [". $this->data["title"]."] saved");
 	 }
-	 	
+	
+	public function banIp() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data))
+			throw new BeditaException( __("No data", true));
+		$ip =  $this->data["ip_to_ban"];
+		$bannedIp = ClassRegistry::init("BannedIp");
+		$bannedIp->ban($ip, $this->data["ban_status"]);
+		if($this->data["ban_status"] === "ban") {
+	 		$this->userInfoMessage(__("IP banned", true)." - ".$ip);
+			$this->eventInfo("IP [". $ip."] banned");
+		} else {
+	 		$this->userInfoMessage(__("IP accepted", true)." - ".$ip);
+			$this->eventInfo("IP [". $ip."] accepted");
+		}
+	 }
+	 
 	public function delete() {
 		$this->checkWriteModulePermission();
 		$objectsListDeleted = $this->deleteObjects("Comment");
@@ -63,6 +84,10 @@ class CommentsController extends ModulesController {
 							"OK"	=> "/comments",
 							"ERROR"	=> "/comments/view/{@$this->params['pass'][0]}" 
 							),
+			"banIp"	=> 	array(
+							"OK"	=> "/comments/view/{$this->data['id']}",
+							"ERROR"	=> "/comments/view" 
+							), 
 			"changeStatusObjects"	=> 	array(
 							"OK"	=> "/comments",
 							"ERROR"	=> "/comments" 
