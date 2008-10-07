@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: set.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: set.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs
  * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'Set');
@@ -34,7 +34,7 @@ App::import('Core', 'Set');
  * @package		cake.tests
  * @subpackage	cake.tests.cases.libs
  */
-class SetTest extends UnitTestCase {
+class SetTest extends CakeTestCase {
 /**
  * testNumericKeyExtraction method
  *
@@ -58,6 +58,12 @@ class SetTest extends UnitTestCase {
 		$result = Set::enum(2, 'one, two');
 		$this->assertNull($result);
 
+		$set = array('one', 'two');
+		$result = Set::enum(0, $set);
+		$this->assertIdentical($result, 'one');
+		$result = Set::enum(1, $set);
+		$this->assertIdentical($result, 'two');
+
 		$result = Set::enum(1, array('one', 'two'));
 		$this->assertIdentical($result, 'two');
 		$result = Set::enum(2, array('one', 'two'));
@@ -71,6 +77,13 @@ class SetTest extends UnitTestCase {
 		$result = Set::enum('no', array('no' => 0, 'yes' => 1));
 		$this->assertIdentical($result, 0);
 		$result = Set::enum('not sure', array('no' => 0, 'yes' => 1));
+		$this->assertNull($result);
+
+		$result = Set::enum(0);
+		$this->assertIdentical($result, 'no');
+		$result = Set::enum(1);
+		$this->assertIdentical($result, 'yes');
+		$result = Set::enum(2);
 		$this->assertNull($result);
 	}
 /**
@@ -91,6 +104,24 @@ class SetTest extends UnitTestCase {
  * @return void
  */
 	function testNumericArrayCheck() {
+		$data = array('one');
+		$this->assertTrue(Set::numeric(array_keys($data)));
+
+		$data = array(1 => 'one');
+		$this->assertFalse(Set::numeric($data));
+
+		$data = array('one');
+		$this->assertFalse(Set::numeric($data));
+
+		$data = array('one' => 'two');
+		$this->assertFalse(Set::numeric($data));
+
+		$data = array('one' => 1);
+		$this->assertTrue(Set::numeric($data));
+
+		$data = array(0);
+		$this->assertTrue(Set::numeric($data));
+
 		$data = array('one', 'two', 'three', 'four', 'five');
 		$this->assertTrue(Set::numeric(array_keys($data)));
 
@@ -156,7 +187,7 @@ class SetTest extends UnitTestCase {
 		$r = Set::merge('foo', 'bar');
 		$this->assertIdentical($r, array('foo', 'bar'));
 
-		if (substr(phpversion(), 0, 1) >= 5) {
+		if (substr(PHP_VERSION, 0, 1) >= 5) {
 			$r = eval('class StaticSetCaller{static function merge($a, $b){return Set::merge($a, $b);}} return StaticSetCaller::merge("foo", "bar");');
 			$this->assertIdentical($r, array('foo', 'bar'));
 		}
@@ -190,21 +221,8 @@ class SetTest extends UnitTestCase {
 
 		$this->assertIdentical(Set::merge($a, $b, array(), $c), $expected);
 
-		$Set =& new Set($a);
-		$r = $Set->merge($b, array(), $c);
+		$r = Set::merge($a, $b, $c);
 		$this->assertIdentical($r, $expected);
-		$this->assertIdentical($Set->value, $expected);
-
-		unset($Set);
-
-		$Set =& new Set();
-		$SetA =& new Set($a);
-		$SetB =& new Set($b);
-		$SetC =& new Set($c);
-
-		$r = $Set->merge($SetA, $SetB, $SetC);
-		$this->assertIdentical($r, $expected);
-		$this->assertIdentical($Set->value, $expected);
 
 		$a = array('Tree', 'CounterCache',
 				'Upload' => array('folder' => 'products',
@@ -403,9 +421,9 @@ class SetTest extends UnitTestCase {
 			),
 		);
 
-		$expected = array(
-			$c[0], $c[0]['a']['I'], $c[1], $c[2], array('a' => $c[2]['a']['II']['a']), $c[2]['a']['II']['III']
-		);
+		$expected = array(array('a' => $c[2]['a']));
+		$r = Set::extract('/a/II[a=3]/..', $c);
+		$this->assertEqual($r, $expected);
 
 		$expected = array(1,2,3,4,5);
 		$r = Set::extract('/User/id', $a);
@@ -606,13 +624,125 @@ class SetTest extends UnitTestCase {
 		$expected = array(array('Comment' => $common[1]['Comment'][0]));
 		$r = Set::extract('/Comment[addition=]', $common);
 		$this->assertEqual($r, $expected);
+
+		$habtm = array(
+			array(
+				'Post' => array(
+					'id' => 1,
+					'title' => 'great post',
+				),
+				'Comment' => array(
+					array(
+						'id' => 1,
+						'text' => 'foo',
+						'User' => array(
+							'id' => 1,
+							'name' => 'bob'
+						),
+					),
+					array(
+						'id' => 2,
+						'text' => 'bar',
+						'User' => array(
+							'id' => 2,
+							'name' => 'tod'
+						),
+					),
+				),
+			),
+			array(
+				'Post' => array(
+					'id' => 2,
+					'title' => 'fun post',
+				),
+				'Comment' => array(
+					array(
+						'id' => 3,
+						'text' => '123',
+						'User' => array(
+							'id' => 3,
+							'name' => 'dan'
+						),
+					),
+					array(
+						'id' => 4,
+						'text' => '987',
+						'User' => array(
+							'id' => 4,
+							'name' => 'jim'
+						),
+					),
+				),
+			),
+		);
+
+		$r = Set::extract('/Comment/User[name=/bob|dan/]/..', $habtm);
+		$this->assertEqual($r[0]['Comment']['User']['name'], 'bob');
+		$this->assertEqual($r[1]['Comment']['User']['name'], 'dan');
+		$this->assertEqual(count($r), 2);
+
+		$r = Set::extract('/Comment/User[name=/bob|tod/]/..', $habtm);
+		$this->assertEqual($r[0]['Comment']['User']['name'], 'bob');
+		// Currently failing, needs fix
+		// $this->assertEqual($r[1]['Comment']['User']['name'], 'tod');
+		$this->assertEqual(count($r), 2);
+
+		$tree = array(
+			array(
+				'Category' => array(
+					'name' => 'Category 1'
+				),
+				'children' => array(
+					array(
+						'Category' => array(
+							'name' => 'Category 1.1'
+						)
+					)
+				)
+			),
+			array(
+				'Category' => array(
+					'name' => 'Category 2'
+				),
+				'children' => array(
+					array(
+						'Category' => array(
+							'name' => 'Category 2.1'
+						)
+					),
+					array(
+						'Category' => array(
+							'name' => 'Category 2.2'
+						)
+					),
+				)
+			),
+			array(
+				'Category' => array(
+					'name' => 'Category 3'
+				),
+				'children' => array(
+					array(
+						'Category' => array(
+							'name' => 'Category 3.1'
+						)
+					)
+				)
+			)
+		);
+
+		$expected = array(array('Category' => $tree[1]['Category']));
+		$r = Set::extract('/Category[name=Category 2]', $tree);
+		$this->assertEqual($r, $expected);
+
+		$expected = array(array('Category' => $tree[1]['Category'], 'children' => $tree[1]['children']));
+		$r = Set::extract('/Category[name=Category 2]/..', $tree);
+		$this->assertEqual($r, $expected);
+
+		$expected = array(array('children' => $tree[1]['children'][0]), array('children' => $tree[1]['children'][1]));
+		$r = Set::extract('/Category[name=Category 2]/../children', $tree);
+		$this->assertEqual($r, $expected);
 	}
-/**
- * undocumented function
- *
- * @return void
- * @author Felix
- */
 /**
  * testMatches method
  *
@@ -628,6 +758,9 @@ class SetTest extends UnitTestCase {
 		$this->assertTrue(Set::matches(array('id=2'), $a[1]['Article']));
 		$this->assertFalse(Set::matches(array('id>2'), $a[1]['Article']));
 		$this->assertTrue(Set::matches(array('id>=2'), $a[1]['Article']));
+		$this->assertFalse(Set::matches(array('id>=3'), $a[1]['Article']));
+		$this->assertTrue(Set::matches(array('id<=2'), $a[1]['Article']));
+		$this->assertFalse(Set::matches(array('id<2'), $a[1]['Article']));
 		$this->assertTrue(Set::matches(array('id>1'), $a[1]['Article']));
 		$this->assertTrue(Set::matches(array('id>1', 'id<3', 'id!=0'), $a[1]['Article']));
 
@@ -640,6 +773,7 @@ class SetTest extends UnitTestCase {
 
 		$this->assertTrue(Set::matches('/Article[id=2]', $a));
 		$this->assertFalse(Set::matches('/Article[id=4]', $a));
+		$this->assertTrue(Set::matches(array(), $a));
 	}
 /**
  * testClassicExtract method
@@ -659,6 +793,14 @@ class SetTest extends UnitTestCase {
 
 		$result = Set::extract($a, '{n}.Article.title');
 		$expected = array( 'Article 1', 'Article 2', 'Article 3' );
+		$this->assertIdentical($result, $expected);
+
+		$result = Set::extract($a, '1.Article.title');
+		$expected = 'Article 2';
+		$this->assertIdentical($result, $expected);
+
+		$result = Set::extract($a, '3.Article.title');
+		$expected = null;
 		$this->assertIdentical($result, $expected);
 
 		$a = array(
@@ -749,6 +891,101 @@ class SetTest extends UnitTestCase {
 		$result = Set::extract($a, '{dot\.test}.{n}');
 		$expected = array('dot.test' => array(array('name' => 'jippi')));
 		$this->assertIdentical($result, $expected);
+
+		$a = new stdClass();
+		$a->articles = array(
+			array('Article' => array('id' => 1, 'title' => 'Article 1')),
+			array('Article' => array('id' => 2, 'title' => 'Article 2')),
+			array('Article' => array('id' => 3, 'title' => 'Article 3')));
+
+		$result = Set::extract($a, 'articles.{n}.Article.id');
+		$expected = array( 1, 2, 3 );
+		$this->assertIdentical($result, $expected);
+
+		$result = Set::extract($a, 'articles.{n}.Article.title');
+		$expected = array( 'Article 1', 'Article 2', 'Article 3' );
+		$this->assertIdentical($result, $expected);
+	}
+/**
+ * testInsert method
+ *
+ * @access public
+ * @return void
+ */
+	function testInsert() {
+		$a = array(
+			'pages' => array('name' => 'page')
+		);
+
+		$result = Set::insert($a, 'files', array('name' => 'files'));
+		$expected = array(
+			'pages'     => array('name' => 'page'),
+			'files'		=> array('name' => 'files')
+		);
+		$this->assertIdentical($result, $expected);
+
+		$a = array(
+			'pages' => array('name' => 'page')
+		);
+		$result = Set::insert($a, 'pages.name', array());
+		$expected = array(
+			'pages'     => array('name' => array()),
+		);
+		$this->assertIdentical($result, $expected);
+
+		$a = array(
+			'pages' => array(
+				0 => array('name' => 'main'),
+				1 => array('name' => 'about')
+			)
+		);
+
+		$result = Set::insert($a, 'pages.1.vars', array('title' => 'page title'));
+		$expected = array(
+			'pages' => array(
+				0 => array('name' => 'main'),
+				1 => array('name' => 'about', 'vars' => array('title' => 'page title'))
+			)
+		);
+		$this->assertIdentical($result, $expected);
+	}
+/**
+ * testRemove method
+ *
+ * @access public
+ * @return void
+ */
+	function testRemove() {
+		$a = array(
+			'pages'     => array('name' => 'page'),
+			'files'		=> array('name' => 'files')
+		);
+
+		$result = Set::remove($a, 'files', array('name' => 'files'));
+		$expected = array(
+			'pages'     => array('name' => 'page')
+		);
+		$this->assertIdentical($result, $expected);
+
+		$a = array(
+			'pages' => array(
+				0 => array('name' => 'main'),
+				1 => array('name' => 'about', 'vars' => array('title' => 'page title'))
+			)
+		);
+
+		$result = Set::remove($a, 'pages.1.vars', array('title' => 'page title'));
+		$expected = array(
+			'pages' => array(
+				0 => array('name' => 'main'),
+				1 => array('name' => 'about')
+			)
+		);
+		$this->assertIdentical($result, $expected);
+
+		$result = Set::remove($a, 'pages.2.vars', array('title' => 'page title'));
+		$expected = $a;
+		$this->assertIdentical($result, $expected);
 	}
 /**
  * testCheck method
@@ -757,17 +994,20 @@ class SetTest extends UnitTestCase {
  * @return void
  */
 	function testCheck() {
-		$set = new Set(array(
+		$set = array(
 			'My Index 1' => array('First' => 'The first item')
-		));
-		$this->assertTrue($set->check('My Index 1.First'));
+		);
+		$this->assertTrue(Set::check($set, 'My Index 1.First'));
+		$this->assertTrue(Set::check($set, 'My Index 1'));
+		$this->assertTrue(Set::check($set, array()));
 
-		$set = new Set(array(
+		$set = array(
 			'My Index 1' => array('First' => array('Second' => array('Third' => array('Fourth' => 'Heavy. Nesting.'))))
-		));
-		$this->assertTrue($set->check('My Index 1.First.Second'));
-		$this->assertTrue($set->check('My Index 1.First.Second.Third'));
-		$this->assertTrue($set->check('My Index 1.First.Second.Third.Fourth'));
+		);
+		$this->assertTrue(Set::check($set, 'My Index 1.First.Second'));
+		$this->assertTrue(Set::check($set, 'My Index 1.First.Second.Third'));
+		$this->assertTrue(Set::check($set, 'My Index 1.First.Second.Third.Fourth'));
+		$this->assertFalse(Set::check($set, 'My Index 1.First.Seconds.Third.Fourth'));
 	}
 /**
  * testWritingWithFunkyKeys method
@@ -776,15 +1016,100 @@ class SetTest extends UnitTestCase {
  * @return void
  */
 	function testWritingWithFunkyKeys() {
-		$set = new Set();
-		$set->insert('Session Test', "test");
-		$this->assertEqual($set->extract('Session Test'), 'test');
+		$set = Set::insert(array(), 'Session Test', "test");
+		$this->assertEqual(Set::extract($set, 'Session Test'), 'test');
 
-		$set->remove('Session Test');
-		$this->assertFalse($set->check('Session Test'));
+		$set = Set::remove($set, 'Session Test');
+		$this->assertFalse(Set::check($set, 'Session Test'));
 
-		$this->assertTrue($set->insert('Session Test.Test Case', "test"));
-		$this->assertTrue($set->check('Session Test.Test Case'));
+		$this->assertTrue($set = Set::insert(array(), 'Session Test.Test Case', "test"));
+		$this->assertTrue(Set::check($set, 'Session Test.Test Case'));
+	}
+/**
+ * testDiff method
+ *
+ * @access public
+ * @return void
+ */
+	function testDiff() {
+		$a = array(
+			0 => array('name' => 'main'),
+			1 => array('name' => 'about')
+		);
+		$b = array(
+			0 => array('name' => 'main'),
+			1 => array('name' => 'about'),
+			2 => array('name' => 'contact')
+		);
+
+		$result = Set::diff($a, $b);
+		$expected = array(
+			2 => array('name' => 'contact')
+		);
+		$this->assertIdentical($result, $expected);
+
+		$result = Set::diff($a, array());
+		$expected = $a;
+		$this->assertIdentical($result, $expected);
+
+		$result = Set::diff(array(), $b);
+		$expected = $b;
+		$this->assertIdentical($result, $expected);
+
+		$b = array(
+			0 => array('name' => 'me'),
+			1 => array('name' => 'about')
+		);
+
+		$result = Set::diff($a, $b);
+		$expected = array(
+			0 => array('name' => 'main')
+		);
+		$this->assertIdentical($result, $expected);
+	}
+/**
+ * testIsEqual method
+ *
+ * @access public
+ * @return void
+ */
+	function testIsEqual() {
+		$a = array(
+			0 => array('name' => 'main'),
+			1 => array('name' => 'about')
+		);
+		$b = array(
+			0 => array('name' => 'main'),
+			1 => array('name' => 'about'),
+			2 => array('name' => 'contact')
+		);
+
+		$this->assertTrue(Set::isEqual($a, $a));
+		$this->assertTrue(Set::isEqual($b, $b));
+		$this->assertFalse(Set::isEqual($a, $b));
+		$this->assertFalse(Set::isEqual($b, $a));
+	}
+/**
+ * testContains method
+ *
+ * @access public
+ * @return void
+ */
+	function testContains() {
+		$a = array(
+			0 => array('name' => 'main'),
+			1 => array('name' => 'about')
+		);
+		$b = array(
+			0 => array('name' => 'main'),
+			1 => array('name' => 'about'),
+			2 => array('name' => 'contact'),
+			'a' => 'b'
+		);
+
+		$this->assertTrue(Set::contains($a, $a));
+		$this->assertFalse(Set::contains($a, $b));
+		$this->assertTrue(Set::contains($b, $a));
 	}
 /**
  * testCombine method
@@ -845,24 +1170,22 @@ class SetTest extends UnitTestCase {
 				14 => 'Larry E. Masters'));
 		$this->assertIdentical($result, $expected);
 
-		$Set =& new Set($a);
-
-		$result = $Set->combine('{n}.User.id');
+		$result = Set::combine($a, '{n}.User.id');
 		$expected = array(2 => null, 14 => null, 25 => null);
 		$this->assertIdentical($result, $expected);
 
-		$result = $Set->combine('{n}.User.id', '{n}.User.Data');
+		$result = Set::combine($a, '{n}.User.id', '{n}.User.Data');
 		$expected = array(
 			2 => array('user' => 'mariano.iglesias', 'name' => 'Mariano Iglesias'),
 			14 => array('user' => 'phpnut', 'name' => 'Larry E. Masters'),
 			25 => array('user' => 'gwoo', 'name' => 'The Gwoo'));
 		$this->assertIdentical($result, $expected);
 
-		$result = $Set->combine('{n}.User.id', '{n}.User.Data.name');
+		$result = Set::combine($a, '{n}.User.id', '{n}.User.Data.name');
 		$expected = array(2 => 'Mariano Iglesias', 14 => 'Larry E. Masters', 25 => 'The Gwoo');
 		$this->assertIdentical($result, $expected);
 
-		$result = $Set->combine('{n}.User.id', '{n}.User.Data', '{n}.User.group_id');
+		$result = Set::combine($a, '{n}.User.id', '{n}.User.Data', '{n}.User.group_id');
 		$expected = array(
 			1 => array(
 				2 => array('user' => 'mariano.iglesias', 'name' => 'Mariano Iglesias'),
@@ -871,7 +1194,7 @@ class SetTest extends UnitTestCase {
 				14 => array('user' => 'phpnut', 'name' => 'Larry E. Masters')));
 		$this->assertIdentical($result, $expected);
 
-		$result = $Set->combine('{n}.User.id', '{n}.User.Data.name', '{n}.User.group_id');
+		$result = Set::combine($a, '{n}.User.id', '{n}.User.Data.name', '{n}.User.group_id');
 		$expected = array(
 			1 => array(
 				2 => 'Mariano Iglesias',
@@ -902,6 +1225,22 @@ class SetTest extends UnitTestCase {
 
 		$result = Set::combine($a, array('%2$d: %1$s', '{n}.User.Data.user', '{n}.User.id'), '{n}.User.Data.name');
 		$expected = array('2: mariano.iglesias' => 'Mariano Iglesias', '14: phpnut' => 'Larry E. Masters', '25: gwoo' => 'The Gwoo');
+		$this->assertIdentical($result, $expected);
+
+		$b = new stdClass();
+		$b->users = array(
+			array('User' => array('id' => 2, 'group_id' => 1,
+				'Data' => array('user' => 'mariano.iglesias','name' => 'Mariano Iglesias'))),
+			array('User' => array('id' => 14, 'group_id' => 2,
+				'Data' => array('user' => 'phpnut', 'name' => 'Larry E. Masters'))),
+			array('User' => array('id' => 25, 'group_id' => 1,
+				'Data' => array('user' => 'gwoo','name' => 'The Gwoo'))));
+		$result = Set::combine($b, 'users.{n}.User.id');
+		$expected = array(2 => null, 14 => null, 25 => null);
+		$this->assertIdentical($result, $expected);
+
+		$result = Set::combine($b, 'users.{n}.User.id', 'users.{n}.User.non-existant');
+		$expected = array(2 => null, 14 => null, 25 => null);
 		$this->assertIdentical($result, $expected);
 	}
 /**
@@ -1122,7 +1461,7 @@ class SetTest extends UnitTestCase {
 				'hasMany' => array('className', 'foreignKey', 'conditions', 'fields', 'order', 'limit', 'offset', 'dependent', 'exclusive', 'finderQuery', 'counterQuery'),
 				'hasAndBelongsToMany' => array('className', 'joinTable', 'with', 'foreignKey', 'associationForeignKey', 'conditions', 'fields', 'order', 'limit', 'offset', 'unique', 'finderQuery', 'deleteQuery', 'insertQuery')),
 			'__associations' => array('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany'), '__backAssociation' => array(), '__insertID' => null, '__numRows' => null, '__affectedRows' => null,
-				'__findMethods' => array('all' => true, 'first' => true, 'count' => true, 'neighbors' => true, 'list' => true), '_log' => null);
+				'_findMethods' => array('all' => true, 'first' => true, 'count' => true, 'neighbors' => true, 'list' => true, 'threaded' => true), '_log' => null);
 		$result = Set::reverse($model);
 
 		ksort($result);
@@ -1139,6 +1478,18 @@ class SetTest extends UnitTestCase {
 
 		$result = Set::reverse($class);
 		$expected = array('User' => array('id' => '100'), 'someString'=> 'this is some string', 'Profile' => array('name' => 'Joe Mamma'));
+		$this->assertEqual($result, $expected);
+
+		$class = new stdClass;
+		$class->User = new stdClass;
+		$class->User->id = 100;
+		$class->User->_name_ = 'User';
+		$class->Profile = new stdClass;
+		$class->Profile->name = 'Joe Mamma';
+		$class->Profile->_name_ = 'Profile';
+
+		$result = Set::reverse($class);
+		$expected = array('User' => array('id' => '100'), 'Profile' => array('name' => 'Joe Mamma'));
 		$this->assertEqual($result, $expected);
 	}
 /**
@@ -1233,6 +1584,13 @@ class SetTest extends UnitTestCase {
 
 		$data = array('1' => array('1.1' => '1.1.1'), array('2' => array('2.1' => array('2.1.1' => array('2.1.1.1' => '2.1.1.1.1')))), '3' => array('3.1' => array('3.1.1' => '3.1.1.1')));
 		$result = Set::countDim($data, true);
+		$this->assertEqual($result, 5);
+
+		$set = array('1' => array('1.1' => '1.1.1'), array('2' => array('2.1' => array('2.1.1' => array('2.1.1.1' => '2.1.1.1.1')))), '3' => array('3.1' => array('3.1.1' => '3.1.1.1')));
+		$result = Set::countDim($set, false, 0);
+		$this->assertEqual($result, 2);
+
+		$result = Set::countDim($set, true);
 		$this->assertEqual($result, 5);
 	}
 /**
@@ -1354,6 +1712,10 @@ class SetTest extends UnitTestCase {
 			$ids[] = $object->id;
 		}
 		$this->assertEqual($ids, array(1, 2));
+
+		$result = Set::map(null);
+		$expected = null;
+		$this->assertEqual($result, $expected);
 	}
 /**
  * testNestedMappedData method
@@ -1390,6 +1752,7 @@ class SetTest extends UnitTestCase {
 		$expected->Author->created = "2007-03-17 01:16:23";
 		$expected->Author->updated = "2007-03-17 01:18:31";
 		$expected->Author->test = "working";
+		$expected->Author->_name_ = 'Author';
 
 		$expected2 = new stdClass;
 		$expected2->_name_ = 'Post';
@@ -1408,6 +1771,7 @@ class SetTest extends UnitTestCase {
 		$expected2->Author->created = "2007-03-17 01:20:23";
 		$expected2->Author->updated = "2007-03-17 01:22:31";
 		$expected2->Author->test = "working";
+		$expected2->Author->_name_ = 'Author';
 
 		$test = array();
 		$test[0] = $expected;
@@ -1438,6 +1802,166 @@ class SetTest extends UnitTestCase {
 		$expected->Author->created = "2007-03-17 01:16:23";
 		$expected->Author->updated = "2007-03-17 01:18:31";
 		$expected->Author->test = "working";
+		$expected->Author->_name_ = 'Author';
+		$this->assertIdentical($expected, $result);
+
+		//Case where extra HABTM fields come back in a result
+		$data = array(
+			'User' => array(
+				'id' => 1,
+				'email' => 'user@example.com',
+				'first_name' => 'John',
+				'last_name' => 'Smith',
+			),
+			'Piece' => array(
+				array(
+					'id' => 1,
+					'title' => 'Moonlight Sonata',
+					'composer' => 'Ludwig van Beethoven',
+					'PiecesUser' => array(
+						'id' => 1,
+						'created' => '2008-01-01 00:00:00',
+						'modified' => '2008-01-01 00:00:00',
+						'piece_id' => 1,
+						'user_id' => 2,
+					)
+				),
+				array(
+					'id' => 2,
+					'title' => 'Moonlight Sonata 2',
+					'composer' => 'Ludwig van Beethoven',
+					'PiecesUser' => array(
+						'id' => 2,
+						'created' => '2008-01-01 00:00:00',
+						'modified' => '2008-01-01 00:00:00',
+						'piece_id' => 2,
+						'user_id' => 2,
+					)
+				)
+			)
+		);
+
+		$result = Set::map($data);
+
+		$expected = new stdClass();
+		$expected->_name_ = 'User';
+		$expected->id = 1;
+		$expected->email = 'user@example.com';
+		$expected->first_name = 'John';
+		$expected->last_name = 'Smith';
+
+		$piece = new stdClass();
+		$piece->id = 1;
+		$piece->title = 'Moonlight Sonata';
+		$piece->composer = 'Ludwig van Beethoven';
+
+		$piece->PiecesUser = new stdClass();
+		$piece->PiecesUser->id = 1;
+		$piece->PiecesUser->created = '2008-01-01 00:00:00';
+		$piece->PiecesUser->modified = '2008-01-01 00:00:00';
+		$piece->PiecesUser->piece_id = 1;
+		$piece->PiecesUser->user_id = 2;
+		$piece->PiecesUser->_name_ = 'PiecesUser';
+
+		$piece->_name_ = 'Piece';
+
+
+		$piece2 = new stdClass();
+		$piece2->id = 2;
+		$piece2->title = 'Moonlight Sonata 2';
+		$piece2->composer = 'Ludwig van Beethoven';
+
+		$piece2->PiecesUser = new stdClass();
+		$piece2->PiecesUser->id = 2;
+		$piece2->PiecesUser->created = '2008-01-01 00:00:00';
+		$piece2->PiecesUser->modified = '2008-01-01 00:00:00';
+		$piece2->PiecesUser->piece_id = 2;
+		$piece2->PiecesUser->user_id = 2;
+		$piece2->PiecesUser->_name_ = 'PiecesUser';
+
+		$piece2->_name_ = 'Piece';
+
+		$expected->Piece = array($piece, $piece2);
+
+		$this->assertIdentical($expected, $result);
+		
+		//Same data, but should work if _name_ has been manually defined:
+		$data = array(
+			'User' => array(
+				'id' => 1,
+				'email' => 'user@example.com',
+				'first_name' => 'John',
+				'last_name' => 'Smith',
+				'_name_' => 'FooUser',
+			),
+			'Piece' => array(
+				array(
+					'id' => 1,
+					'title' => 'Moonlight Sonata',
+					'composer' => 'Ludwig van Beethoven',
+					'_name_' => 'FooPiece',
+					'PiecesUser' => array(
+						'id' => 1,
+						'created' => '2008-01-01 00:00:00',
+						'modified' => '2008-01-01 00:00:00',
+						'piece_id' => 1,
+						'user_id' => 2,
+						'_name_' => 'FooPiecesUser',
+					)
+				),
+				array(
+					'id' => 2,
+					'title' => 'Moonlight Sonata 2',
+					'composer' => 'Ludwig van Beethoven',
+					'_name_' => 'FooPiece',
+					'PiecesUser' => array(
+						'id' => 2,
+						'created' => '2008-01-01 00:00:00',
+						'modified' => '2008-01-01 00:00:00',
+						'piece_id' => 2,
+						'user_id' => 2,
+						'_name_' => 'FooPiecesUser',
+					)
+				)
+			)
+		);
+
+		$result = Set::map($data);
+
+		$expected = new stdClass();
+		$expected->_name_ = 'FooUser';
+		$expected->id = 1;
+		$expected->email = 'user@example.com';
+		$expected->first_name = 'John';
+		$expected->last_name = 'Smith';
+
+		$piece = new stdClass();
+		$piece->id = 1;
+		$piece->title = 'Moonlight Sonata';
+		$piece->composer = 'Ludwig van Beethoven';
+		$piece->_name_ = 'FooPiece';
+		$piece->PiecesUser = new stdClass();
+		$piece->PiecesUser->id = 1;
+		$piece->PiecesUser->created = '2008-01-01 00:00:00';
+		$piece->PiecesUser->modified = '2008-01-01 00:00:00';
+		$piece->PiecesUser->piece_id = 1;
+		$piece->PiecesUser->user_id = 2;
+		$piece->PiecesUser->_name_ = 'FooPiecesUser';
+
+		$piece2 = new stdClass();
+		$piece2->id = 2;
+		$piece2->title = 'Moonlight Sonata 2';
+		$piece2->composer = 'Ludwig van Beethoven';
+		$piece2->_name_ = 'FooPiece';
+		$piece2->PiecesUser = new stdClass();
+		$piece2->PiecesUser->id = 2;
+		$piece2->PiecesUser->created = '2008-01-01 00:00:00';
+		$piece2->PiecesUser->modified = '2008-01-01 00:00:00';
+		$piece2->PiecesUser->piece_id = 2;
+		$piece2->PiecesUser->user_id = 2;
+		$piece2->PiecesUser->_name_ = 'FooPiecesUser';
+
+		$expected->Piece = array($piece, $piece2);
 
 		$this->assertIdentical($expected, $result);
 	}
@@ -1481,11 +2005,10 @@ class SetTest extends UnitTestCase {
 					1 => array('ModelTwo' => array('id'=>1002, 'field_one'=>'s1.1.m2.f2', 'field_two'=>'s1.1.m2.f2')));
 		$this->assertIdentical($result, $expected);
 
-		$result = Set::pushDiff($array1);
+		$result = Set::pushDiff($array1, null);
 		$this->assertIdentical($result, $array1);
 
-		$set =& new Set($array1);
-		$result = $set->pushDiff($array2);
+		$result = Set::pushDiff($array1, $array2);
 		$this->assertIdentical($result, $array1+$array2);
 	}
 /**
@@ -1578,8 +2101,7 @@ class SetTest extends UnitTestCase {
 				'Item' => array(
 					'attr' => '123',
 					'Titles' => array(
-						array('Title' => 'title1'),
-						array('Title' => 'title2'),
+						'Title' => array('title1', 'title2')
 					)
 				)
 			)
@@ -1599,16 +2121,186 @@ class SetTest extends UnitTestCase {
 			)
 		);
 		$this->assertIdentical($result, $expected);
+
+		$string = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+		<rss version="2.0">
+		  <channel>
+		  <title>Cake PHP Google Group</title>
+		  <link>http://groups.google.com/group/cake-php</link>
+		  <description>Search this group before posting anything. There are over 20,000 posts and it&amp;#39;s very likely your question was answered before. Visit the IRC channel #cakephp at irc.freenode.net for live chat with users and developers of Cake. If you post, tell us the version of Cake, PHP, and database.</description>
+		  <language>en</language>
+		  	<item>
+			  <title>constructng result array when using findall</title>
+			  <link>http://groups.google.com/group/cake-php/msg/49bc00f3bc651b4f</link>
+			  <description>i&#39;m using cakephp to construct a logical data model array that will be &lt;br&gt; passed to a flex app. I have the following model association: &lt;br&gt; ServiceDay-&amp;gt;(hasMany)ServiceTi me-&amp;gt;(hasMany)ServiceTimePrice. So what &lt;br&gt; the current output from my findall is something like this example: &lt;br&gt; &lt;p&gt;Array( &lt;br&gt; [0] =&amp;gt; Array(</description>
+			  	<dc:creator>cakephp</dc:creator>
+				<category><![CDATA[cakephp]]></category>
+				<category><![CDATA[model]]></category>
+			  <guid isPermaLink="true">http://groups.google.com/group/cake-php/msg/49bc00f3bc651b4f</guid>
+			  <author>bmil...@gmail.com(bpscrugs)</author>
+			  <pubDate>Fri, 28 Dec 2007 00:44:14 UT</pubDate>
+			  </item>
+			  <item>
+			  <title>Re: share views between actions?</title>
+			  <link>http://groups.google.com/group/cake-php/msg/8b350d898707dad8</link>
+			  <description>Then perhaps you might do us all a favour and refrain from replying to &lt;br&gt; things you do not understand. That goes especially for asinine comments. &lt;br&gt; Indeed. &lt;br&gt; To sum up: &lt;br&gt; No comment. &lt;br&gt; In my day, a simple &amp;quot;RTFM&amp;quot; would suffice. I&#39;ll keep in mind to ignore any &lt;br&gt; further responses from you. &lt;br&gt; You (and I) were referring to the *online documentation*, not other</description>
+			  	<dc:creator>cakephp</dc:creator>
+				<category><![CDATA[cakephp]]></category>
+				<category><![CDATA[model]]></category>
+			  <guid isPermaLink="true">http://groups.google.com/group/cake-php/msg/8b350d898707dad8</guid>
+			  <author>subtropolis.z...@gmail.com(subtropolis zijn)</author>
+			  <pubDate>Fri, 28 Dec 2007 00:45:01 UT</pubDate>
+			 </item>
+		</channel>
+		</rss>';
+
+		$xml = new Xml($string);
+		$result = Set::reverse($xml);
+
+		$expected = array('Rss' => array(
+			'version' => '2.0',
+			'Channel' => array(
+				'title' => 'Cake PHP Google Group',
+				'link' => 'http://groups.google.com/group/cake-php',
+				'description' => 'Search this group before posting anything. There are over 20,000 posts and it&#39;s very likely your question was answered before. Visit the IRC channel #cakephp at irc.freenode.net for live chat with users and developers of Cake. If you post, tell us the version of Cake, PHP, and database.',
+				'language' => 'en',
+				'Item' => array(
+					array(
+						'title' => 'constructng result array when using findall',
+						'link' => 'http://groups.google.com/group/cake-php/msg/49bc00f3bc651b4f',
+						'description' => "i'm using cakephp to construct a logical data model array that will be <br> passed to a flex app. I have the following model association: <br> ServiceDay-&gt;(hasMany)ServiceTi me-&gt;(hasMany)ServiceTimePrice. So what <br> the current output from my findall is something like this example: <br><p>Array( <br> [0] =&gt; Array(",
+						'creator' => 'cakephp',
+						'Category' => array('cakephp', 'model'),
+						'guid' => array('isPermaLink' => 'true', 'value' => 'http://groups.google.com/group/cake-php/msg/49bc00f3bc651b4f'),
+						'author' => 'bmil...@gmail.com(bpscrugs)',
+						'pubDate' => 'Fri, 28 Dec 2007 00:44:14 UT',
+					),
+					array(
+						'title' => 'Re: share views between actions?',
+						'link' => 'http://groups.google.com/group/cake-php/msg/8b350d898707dad8',
+						'description' => 'Then perhaps you might do us all a favour and refrain from replying to <br> things you do not understand. That goes especially for asinine comments. <br> Indeed. <br> To sum up: <br> No comment. <br> In my day, a simple &quot;RTFM&quot; would suffice. I\'ll keep in mind to ignore any <br> further responses from you. <br> You (and I) were referring to the *online documentation*, not other',
+						'creator' => 'cakephp',
+						'Category' => array('cakephp', 'model'),
+						'guid' => array('isPermaLink' => 'true', 'value' => 'http://groups.google.com/group/cake-php/msg/8b350d898707dad8'),
+						'author' => 'subtropolis.z...@gmail.com(subtropolis zijn)',
+						'pubDate' => 'Fri, 28 Dec 2007 00:45:01 UT'
+					)
+				)
+			)
+		));
+		$this->assertEqual($result, $expected);
+
+		$text = '<?xml version="1.0" encoding="UTF-8"?>
+		<XRDS xmlns="xri://$xrds">
+		<XRD xml:id="oauth" xmlns="xri://$XRD*($v*2.0)" version="2.0">
+			<Type>xri://$xrds*simple</Type>
+			<Expires>2008-04-13T07:34:58Z</Expires>
+			<Service>
+				<Type>http://oauth.net/core/1.0/endpoint/authorize</Type>
+				<Type>http://oauth.net/core/1.0/parameters/auth-header</Type>
+				<Type>http://oauth.net/core/1.0/parameters/uri-query</Type>
+				<URI priority="10">https://ma.gnolia.com/oauth/authorize</URI>
+				<URI priority="20">http://ma.gnolia.com/oauth/authorize</URI>
+			</Service>
+		</XRD>
+		<XRD xmlns="xri://$XRD*($v*2.0)" version="2.0">
+			<Type>xri://$xrds*simple</Type>
+				<Service priority="10">
+					<Type>http://oauth.net/discovery/1.0</Type>
+					<URI>#oauth</URI>
+				</Service>
+		</XRD>
+		</XRDS>';
+
+		$xml = new Xml($text);
+		$result = Set::reverse($xml);
+
+		$expected = array('XRDS' => array(
+			'xmlns' => 'xri://$xrds',
+			'XRD' => array(
+				array(
+					'xml:id' => 'oauth',
+					'xmlns' => 'xri://$XRD*($v*2.0)',
+					'version' => '2.0',
+					'Type' => 'xri://$xrds*simple',
+					'Expires' => '2008-04-13T07:34:58Z',
+					'Service' => array(
+						'Type' => array(
+							'http://oauth.net/core/1.0/endpoint/authorize',
+							'http://oauth.net/core/1.0/parameters/auth-header',
+							'http://oauth.net/core/1.0/parameters/uri-query'
+						),
+						'URI' => array(
+							array(
+								'value' => 'https://ma.gnolia.com/oauth/authorize',
+								'priority' => '10',
+							),
+							array(
+								'value' => 'http://ma.gnolia.com/oauth/authorize',
+								'priority' => '20'
+							)
+						)
+					)
+				),
+				array(
+					'xmlns' => 'xri://$XRD*($v*2.0)',
+					'version' => '2.0',
+					'Type' => 'xri://$xrds*simple',
+					'Service' => array(
+						'priority' => '10',
+						'Type' => 'http://oauth.net/discovery/1.0',
+						'URI' => '#oauth'
+					)
+				)
+			)
+		));
+		$this->assertEqual($result, $expected);
 	}
 /**
  * testStrictKeyCheck method
- * 
+ *
  * @access public
  * @return void
  */
 	function testStrictKeyCheck() {
-		$set = new Set(array('a' => 'hi'));
-		$this->assertFalse($set->check('a.b'));
+		$set = array('a' => 'hi');
+		$this->assertFalse(Set::check($set, 'a.b'));
+	}
+
+/**
+ * Tests Set::flatten
+ *
+ * @access public
+ * @return void
+ */
+	function testFlatten() {
+		$data = array('Larry', 'Curly', 'Moe');
+		$result = Set::flatten($data);
+		$this->assertEqual($result, $data);
+
+		$data[9] = 'Shemp';
+		$result = Set::flatten($data);
+		$this->assertEqual($result, $data);
+
+		$data = array(
+			array(
+				'Post' => array('id' => '1', 'author_id' => '1', 'title' => 'First Post'),
+				'Author' => array('id' => '1', 'user' => 'nate', 'password' => 'foo'),
+			),
+			array(
+				'Post' => array('id' => '2', 'author_id' => '3', 'title' => 'Second Post', 'body' => 'Second Post Body'),
+				'Author' => array('id' => '3', 'user' => 'larry', 'password' => null),
+			)
+		);
+
+		$result = Set::flatten($data);
+		$expected = array(
+			'0.Post.id' => '1', '0.Post.author_id' => '1', '0.Post.title' => 'First Post', '0.Author.id' => '1',
+			'0.Author.user' => 'nate', '0.Author.password' => 'foo', '1.Post.id' => '2', '1.Post.author_id' => '3',
+			'1.Post.title' => 'Second Post', '1.Post.body' => 'Second Post Body', '1.Author.id' => '3',
+			'1.Author.user' => 'larry', '1.Author.password' => null
+		);
+		$this->assertEqual($result, $expected);
 	}
 }
 

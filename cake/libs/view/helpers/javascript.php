@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: javascript.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: javascript.php 7690 2008-10-02 04:56:53Z nate $ */
 
 /**
  * Javascript Helper class file.
@@ -20,9 +20,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view.helpers
  * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -217,7 +217,7 @@ class JavascriptHelper extends AppHelper {
 		echo $this->__scriptBuffer;
 		$this->__scriptBuffer = null;
 		$options = $this->_blockOptions;
-		$safe = ($options['safe'] || $this->safe);
+		$safe = ((isset($options['safe']) && $options['safe']) || $this->safe);
 		$this->_blockOptions = array();
 		$this->inBlock = false;
 
@@ -264,6 +264,7 @@ class JavascriptHelper extends AppHelper {
 					$url .= '.js';
 				}
 				if ((Configure::read('Asset.timestamp') === true && Configure::read() > 0) || Configure::read('Asset.timestamp') === 'force') {
+					$url = $this->webroot($url);
 					$url .= '?' . @filemtime(WWW_ROOT . str_replace('/', DS, $url));
 				}
 			}
@@ -508,7 +509,7 @@ class JavascriptHelper extends AppHelper {
 
 			foreach ($data as $key => $val) {
 				if (is_array($val) || is_object($val)) {
-					$val = $this->object($val, am($options, array('block' => false)));
+					$val = $this->object($val, array_merge($options, array('block' => false)));
 				} else {
 					$val = $this->value($val, (!count($options['stringKeys']) || ($options['quoteKeys'] && in_array($key, $options['stringKeys'], true)) || (!$options['quoteKeys'] && !in_array($key, $options['stringKeys'], true))));
 				}

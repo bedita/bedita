@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_mysql.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: dbo_mysql.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * DboMysql test
  *
@@ -19,19 +19,17 @@
  * @package			cake
  * @subpackage		cake.cake.libs
  * @since			CakePHP(tm) v 1.2.0
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
 	define('CAKEPHP_UNIT_TEST_EXECUTION', 1);
 }
-require_once LIBS.'model'.DS.'model.php';
-require_once LIBS.'model'.DS.'datasources'.DS.'datasource.php';
-require_once LIBS.'model'.DS.'datasources'.DS.'dbo_source.php';
-require_once LIBS.'model'.DS.'datasources'.DS.'dbo'.DS.'dbo_mysql.php';
+App::import('Core', array('Model', 'DataSource', 'DboSource', 'DboMysql'));
+
 
 /**
  * Short description for class.
@@ -234,6 +232,15 @@ class DboMysqlTest extends CakeTestCase {
 
 		$expected = "'4713e29446'";
 		$result = $this->db->value('4713e29446');
+
+		$this->assertEqual($expected, $result);
+
+		$expected = 'NULL';
+		$result = $this->db->value('', 'integer');
+		$this->assertEqual($expected, $result);
+		
+		$expected = 'NULL';
+		$result = $this->db->value('', 'boolean');
 		$this->assertEqual($expected, $result);
 
 		$expected = 10010001;
@@ -257,6 +264,7 @@ class DboMysqlTest extends CakeTestCase {
 		$this->model = new CakeTestModel(array(
 			'name' => 'Tinyint', 'table' => $this->db->fullTableName('tinyint', false)
 		));
+
 		$result = $this->model->schema();
 		$this->assertEqual($result['bool']['type'], 'boolean');
 		$this->assertEqual($result['small_int']['type'], 'integer');

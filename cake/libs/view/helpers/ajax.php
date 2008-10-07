@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: ajax.php 7118 2008-06-04 20:49:29Z gwoo $ */
+/* SVN FILE: $Id: ajax.php 7690 2008-10-02 04:56:53Z nate $ */
 
 /**
  * Helper for AJAX operations.
@@ -22,9 +22,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view.helpers
  * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 7118 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -98,7 +98,7 @@ class AjaxHelper extends AppHelper {
  *
  * @var array
  */
-	var $editorOptions = array('okText', 'cancelText', 'savingText', 'formId', 'externalControl', 'rows', 'cols', 'size', 'highlightcolor', 'highlightendcolor', 'savingClassName', 'formClassName', 'loadTextURL', 'loadingText', 'callback', 'ajaxOptions', 'clickToEditText', 'collection', 'okButton', 'cancelLink');
+	var $editorOptions = array('okText', 'cancelText', 'savingText', 'formId', 'externalControl', 'rows', 'cols', 'size', 'highlightcolor', 'highlightendcolor', 'savingClassName', 'formClassName', 'loadTextURL', 'loadingText', 'callback', 'ajaxOptions', 'clickToEditText', 'collection', 'okButton', 'cancelLink', 'submitOnBlur');
 /**
  * Options for auto-complete editor.
  *
@@ -191,7 +191,7 @@ class AjaxHelper extends AppHelper {
 		if (empty($options['fallback']) || !isset($options['fallback'])) {
 			$options['fallback'] = $href;
 		}
-		$htmlOptions = array_merge(array('id' => 'link' . intval(rand()), 'onclick' => ''), $htmlOptions);
+		$htmlOptions = array_merge(array('id' => 'link' . intval(mt_rand()), 'onclick' => ''), $htmlOptions);
 
 		$htmlOptions['onclick'] .= ' event.returnValue = false; return false;';
 		$return = $this->Html->link($title, $href, $htmlOptions, null, $escapeTitle);
@@ -288,7 +288,7 @@ class AjaxHelper extends AppHelper {
 		}
 
 		$htmlOptions = array_merge(array(
-			'id' => 'form' . intval(rand()), 'onsubmit'	=> "event.returnValue = false; return false;",
+			'id' => 'form' . intval(mt_rand()), 'onsubmit'	=> "event.returnValue = false; return false;",
 			'type' => $type),
 			$this->__getHtmlOptions($options, array('model', 'with'))
 		);
@@ -315,7 +315,7 @@ class AjaxHelper extends AppHelper {
 			$options['with'] = 'Form.serialize(Event.element(event).form)';
 		}
 		if (!isset($htmlOptions['id'])) {
-			$htmlOptions['id'] = 'submit' . intval(rand());
+			$htmlOptions['id'] = 'submit' . intval(mt_rand());
 		}
 
 		$htmlOptions['onclick'] = "event.returnValue = false; return false;";
@@ -484,7 +484,7 @@ class AjaxHelper extends AppHelper {
 	}
 /**
  * Creates a draggable element.  For a reference on the options for this function,
- * check out http://wiki.script.aculo.us/scriptaculous/show/Draggable
+ * check out http://github.com/madrobby/scriptaculous/wikis/draggable
  *
  * @param unknown_type $id
  * @param array $options
@@ -501,7 +501,7 @@ class AjaxHelper extends AppHelper {
 	}
 /**
  * For a reference on the options for this function, check out
- * http://wiki.script.aculo.us/scriptaculous/show/Droppables.add
+ * http://github.com/madrobby/scriptaculous/wikis/droppables
  *
  * @param unknown_type $id
  * @param array $options
@@ -546,7 +546,7 @@ class AjaxHelper extends AppHelper {
  * @param string $id DOM ID of slider handle
  * @param string $trackId DOM ID of slider track
  * @param array $options Array of options to control the slider
- * @link http://wiki.script.aculo.us/scriptaculous/show/Slider
+ * @link http://github.com/madrobby/scriptaculous/wikis/slider
  */
 	function slider($id, $trackId, $options = array()) {
 		if (isset($options['var'])) {
@@ -579,7 +579,7 @@ class AjaxHelper extends AppHelper {
  * @param string $id DOM ID of input element
  * @param string $url Postback URL of saved data
  * @param array $options Array of options to control the editor, including ajaxOptions (see link).
- * @link http://wiki.script.aculo.us/scriptaculous/show/Ajax.InPlaceEditor
+ * @link http://github.com/madrobby/scriptaculous/wikis/ajax-inplaceeditor 
  */
 	function editor($id, $url, $options = array()) {
 		$url = $this->url($url);
@@ -615,8 +615,8 @@ class AjaxHelper extends AppHelper {
  * Makes a list or group of floated objects sortable.
  *
  * @param string $id DOM ID of parent
- * @param array $options Array of options to control sort.http://wiki.script.aculo.us/scriptaculous/show/Sortable.create
- * @link http://wiki.script.aculo.us/scriptaculous/show/Sortable.create
+ * @param array $options Array of options to control sort.
+ * @link http://github.com/madrobby/scriptaculous/wikis/sortable 
  */
 	function sortable($id, $options = array()) {
 		if (!empty($options['url'])) {
@@ -682,10 +682,10 @@ class AjaxHelper extends AppHelper {
 		foreach ($options as $key => $value) {
 			switch($key) {
 				case 'type':
-					$jsOptions['asynchronous'] = ife(($value == 'synchronous'), 'false', 'true');
+					$jsOptions['asynchronous'] = ($value == 'synchronous') ? 'false' : 'true';
 				break;
 				case 'evalScripts':
-					$jsOptions['evalScripts'] = ife($value, 'true', 'false');
+					$jsOptions['evalScripts'] = ($value) ? 'true' : 'false';
 				break;
 				case 'position':
 					$jsOptions['insertion'] = "Insertion." . Inflector::camelize($options['position']);
@@ -868,5 +868,4 @@ class AjaxHelper extends AppHelper {
 		}
 	}
 }
-
 ?>

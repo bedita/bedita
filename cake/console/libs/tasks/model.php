@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: model.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: model.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * The ModelTask handles creating and updating models files.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.console.libs.tasks
  * @since			CakePHP(tm) v 1.2
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Model', 'ConnectionManager');
@@ -233,7 +233,8 @@ class ModelTask extends Shell {
 		}
 
 		$validate = array();
-		$options = array('VALID_NOT_EMPTY', 'VALID_EMAIL', 'VALID_NUMER', 'VALID_YEAR');
+
+		$options = array();
 
 		if (class_exists('Validation')) {
 			$parent = get_class_methods(get_parent_class('Validation'));
@@ -246,9 +247,10 @@ class ModelTask extends Shell {
 			$prompt .= '---------------------------------------------------------------'."\n";
 			$prompt .= 'Please select one of the following validation options:'."\n";
 			$prompt .= '---------------------------------------------------------------'."\n";
-			$choices = array();
-			$skip = 1;
+
 			sort($options);
+
+			$skip = 1;
 			foreach ($options as $key => $option) {
 				if ($option{0} != '_' && strtolower($option) != 'getinstance') {
 					$prompt .= "{$skip} - {$option}\n";
@@ -256,6 +258,7 @@ class ModelTask extends Shell {
 					$skip++;
 				}
 			}
+
 			$methods = array_flip($choices);
 
 			$prompt .=  "{$skip} - Do not do any validation on this field.\n";
@@ -266,7 +269,7 @@ class ModelTask extends Shell {
 				if ($fieldName == 'email') {
 					$guess = $methods['email'];
 				} elseif ($field['type'] == 'string') {
-					$guess = $methods['alphanumeric'];
+					$guess = $methods['notempty'];
 				} elseif ($field['type'] == 'integer') {
 					$guess = $methods['numeric'];
 				} elseif ($field['type'] == 'boolean') {
@@ -317,7 +320,8 @@ class ModelTask extends Shell {
 		$primaryKey = $model->primaryKey;
 		$foreignKey = $this->_modelKey($model->name);
 
-		$associations = $possibleKeys = array();
+		$associations = array('belongsTo' => array(), 'hasMany' => array(), 'hasOne'=> array(), 'hasAndBelongsToMany' => array());
+		$possibleKeys = array();
 
 		//Look for belongsTo
 		$i = 0;
@@ -548,7 +552,8 @@ class ModelTask extends Shell {
 			$out .= "\tvar \$validate = array(\n";
 			$keys = array_keys($validate);
 			for ($i = 0; $i < $validateCount; $i++) {
-				$out .= "\t\t'" . $keys[$i] . "' => array('" . $validate[$keys[$i]] . "')";
+				$val = "'" . $validate[$keys[$i]] . "'";
+				$out .= "\t\t'" . $keys[$i] . "' => array({$val})";
 				if ($i + 1 < $validateCount) {
 					$out .= ",";
 				}
@@ -559,7 +564,7 @@ class ModelTask extends Shell {
 		$out .= "\n";
 
 		if (!empty($associations)) {
-			if (!empty($associations['belongsTo']) || !empty($associations['$hasOne']) || !empty($associations['hasMany']) || !empty($associations['hasAndBelongsToMany'])) {
+			if (!empty($associations['belongsTo']) || !empty($associations['hasOne']) || !empty($associations['hasMany']) || !empty($associations['hasAndBelongsToMany'])) {
 				$out.= "\t//The Associations below have been created with all possible keys, those that are not needed can be removed\n";
 			}
 
@@ -714,7 +719,7 @@ class ModelTask extends Shell {
 			$out .= "\tfunction test{$className}Instance() {\n";
 			$out .= "\t\t\$this->assertTrue(is_a(\$this->{$className}, '{$className}'));\n\t}\n\n";
 			$out .= "\tfunction test{$className}Find() {\n";
-			$out .= "\t\t\$results = \$this->{$className}->recursive = -1;\n";
+			$out .= "\t\t\$this->{$className}->recursive = -1;\n";
 			$out .= "\t\t\$results = \$this->{$className}->find('first');\n\t\t\$this->assertTrue(!empty(\$results));\n\n";
 			$out .= "\t\t\$expected = array('$className' => array(\n$results\n\t\t\t));\n";
 			$out .= "\t\t\$this->assertEqual(\$results, \$expected);\n\t}\n}\n";

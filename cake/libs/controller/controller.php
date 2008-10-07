@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: controller.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: controller.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Base controller class.
  *
@@ -19,9 +19,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.controller
  * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -271,6 +271,13 @@ class Controller extends Object {
  */
 	var $passedArgs = array();
 /**
+ * Triggers Scaffolding
+ *
+ * @var mixed
+ * @access public
+ */
+	var $scaffold = false;
+/**
  * Constructor.
  *
  */
@@ -292,18 +299,9 @@ class Controller extends Object {
 		parent::__construct();
 	}
 /**
- * Starts the components linked to this controller.
- *
- * @deprecated 1.2.0.7070
- * @see Component::init()
- */
-	function _initComponents() {
-		trigger_error(__('Controller::_initComponents(); deprecated, use $this->Component->init($this);', true), E_USER_WARNING);
-		$this->Component->init($this);
-	}
-/**
  * Merge components, helpers, and uses vars from AppController and PluginAppController
  *
+ * @return void
  * @access protected
  */
 	function __mergeVars() {
@@ -340,7 +338,7 @@ class Controller extends Object {
 
 			foreach ($merge as $var) {
 				if (isset($appVars[$var]) && !empty($appVars[$var]) && is_array($this->{$var})) {
-					if ($var == 'components') {
+					if ($var === 'components') {
 						$normal = Set::normalize($this->{$var});
 						$app = Set::normalize($appVars[$var]);
 						$this->{$var} = Set::merge($normal, $app);
@@ -362,7 +360,7 @@ class Controller extends Object {
 
 			foreach ($merge as $var) {
 				if (isset($appVars[$var]) && !empty($appVars[$var]) && is_array($this->{$var})) {
-					if ($var == 'components') {
+					if ($var === 'components') {
 						$normal = Set::normalize($this->{$var});
 						$app = Set::normalize($appVars[$var]);
 						$this->{$var} = Set::merge($normal, array_diff_assoc($app, $normal));
@@ -397,7 +395,11 @@ class Controller extends Object {
 				$this->loadModel($this->modelClass, $id);
 			} elseif ($this->uses) {
 				$uses = is_array($this->uses) ? $this->uses : array($this->uses);
-				$this->modelClass = $uses[0];
+				$modelClassName = $uses[0];
+				if (strpos($uses[0], '.') !== false) {
+					list($plugin, $modelClassName) = explode('.', $uses[0]);
+				}
+				$this->modelClass = $modelClassName;
 				foreach ($uses as $modelClass) {
 					$this->loadModel($modelClass);
 				}
@@ -408,7 +410,9 @@ class Controller extends Object {
 /**
  * Loads and instantiates models required by this controller.
  * If Controller::persistModel; is true, controller will create cached model instances on first request,
- * additional request will used cached models
+ * additional request will used cached models.
+ * If the model is non existent, it will throw a missing database table error, as Cake generates
+ * dynamic models for the time being.
  *
  * @param string $modelClass Name of model class to load
  * @param mixed $id Initial ID the instanced model class should have
@@ -469,6 +473,7 @@ class Controller extends Object {
  *                   within the app, or an absolute URL
  * @param integer $status Optional HTTP status code (eg: 404)
  * @param boolean $exit If true, exit() will be called after the redirect
+ * @return mixed void if $exit = false. Terminates script if $exit = true
  * @access public
  */
 	function redirect($url, $status = null, $exit = true) {
@@ -498,53 +503,58 @@ class Controller extends Object {
 
 		if (!empty($status)) {
 			$codes = array(
-				100 => "Continue",
-				101 => "Switching Protocols",
-				200 => "OK",
-				201 => "Created",
-				202 => "Accepted",
-				203 => "Non-Authoritative Information",
-				204 => "No Content",
-				205 => "Reset Content",
-				206 => "Partial Content",
-				300 => "Multiple Choices",
-				301 => "Moved Permanently",
-				302 => "Found",
-				303 => "See Other",
-				304 => "Not Modified",
-				305 => "Use Proxy",
-				307 => "Temporary Redirect",
-				400 => "Bad Request",
-				401 => "Unauthorized",
-				402 => "Payment Required",
-				403 => "Forbidden",
-				404 => "Not Found",
-				405 => "Method Not Allowed",
-				406 => "Not Acceptable",
-				407 => "Proxy Authentication Required",
-				408 => "Request Time-out",
-				409 => "Conflict",
-				410 => "Gone",
-				411 => "Length Required",
-				412 => "Precondition Failed",
-				413 => "Request Entity Too Large",
-				414 => "Request-URI Too Large",
-				415 => "Unsupported Media Type",
-				416 => "Requested range not satisfiable",
-				417 => "Expectation Failed",
-				500 => "Internal Server Error",
-				501 => "Not Implemented",
-				502 => "Bad Gateway",
-				503 => "Service Unavailable",
-				504 => "Gateway Time-out"
+				100 => 'Continue',
+				101 => 'Switching Protocols',
+				200 => 'OK',
+				201 => 'Created',
+				202 => 'Accepted',
+				203 => 'Non-Authoritative Information',
+				204 => 'No Content',
+				205 => 'Reset Content',
+				206 => 'Partial Content',
+				300 => 'Multiple Choices',
+				301 => 'Moved Permanently',
+				302 => 'Found',
+				303 => 'See Other',
+				304 => 'Not Modified',
+				305 => 'Use Proxy',
+				307 => 'Temporary Redirect',
+				400 => 'Bad Request',
+				401 => 'Unauthorized',
+				402 => 'Payment Required',
+				403 => 'Forbidden',
+				404 => 'Not Found',
+				405 => 'Method Not Allowed',
+				406 => 'Not Acceptable',
+				407 => 'Proxy Authentication Required',
+				408 => 'Request Time-out',
+				409 => 'Conflict',
+				410 => 'Gone',
+				411 => 'Length Required',
+				412 => 'Precondition Failed',
+				413 => 'Request Entity Too Large',
+				414 => 'Request-URI Too Large',
+				415 => 'Unsupported Media Type',
+				416 => 'Requested range not satisfiable',
+				417 => 'Expectation Failed',
+				500 => 'Internal Server Error',
+				501 => 'Not Implemented',
+				502 => 'Bad Gateway',
+				503 => 'Service Unavailable',
+				504 => 'Gateway Time-out'
 			);
 			if (is_string($status)) {
 				$codes = array_combine(array_values($codes), array_keys($codes));
 			}
 
 			if (isset($codes[$status])) {
-				$code = ife(is_numeric($status), $status, $codes[$status]);
-				$msg  = ife(is_string($status),  $status, $codes[$status]);
+				$code = $msg = $codes[$status];
+				if (is_numeric($status)) {
+					$code = $status;
+				}
+				if (is_string($status)) {
+					$msg = $status;
+				}
 				$status = "HTTP/1.1 {$code} {$msg}";
 			} else {
 				$status = null;
@@ -567,7 +577,7 @@ class Controller extends Object {
 		}
 	}
 /**
- * undocumented function
+ * Conveinence method for header()
  *
  * @param string $status
  * @return void
@@ -582,6 +592,7 @@ class Controller extends Object {
  * @param mixed $one A string or an array of data.
  * @param mixed $two Value in case $one is a string (which then works as the key).
  * 				Unused if $one is an associative array, otherwise serves as the values to $one's keys.
+ * @return void
  * @access public
  */
 	function set($one, $two = null) {
@@ -598,7 +609,7 @@ class Controller extends Object {
 		}
 
 		foreach ($data as $name => $value) {
-			if ($name == 'title') {
+			if ($name === 'title') {
 				$this->pageTitle = $value;
 			} else {
 				if ($two === null && is_array($one)) {
@@ -759,13 +770,13 @@ class Controller extends Object {
 
 		if ($default != null) {
 			return $default;
-		} else {
-			return '/';
 		}
+		return '/';
 	}
 /**
  * Tells the browser not to cache the results of the current request by sending headers
  *
+ * @return void
  * @access public
  */
 	function disableCache() {
@@ -776,12 +787,13 @@ class Controller extends Object {
 		header("Pragma: no-cache");
 	}
 /**
- * Shows a message to the user $time seconds, then redirects to $url
+ * Shows a message to the user $pause seconds, then redirects to $url
  * Uses flash.thtml as a layout for the messages
  *
  * @param string $message Message to display to the user
  * @param string $url Relative URL to redirect to after the time expires
- * @param integer $time Time to show the message
+ * @param integer $pause Time to show the message
+ * @return void Renders flash layout
  * @access public
  */
 	function flash($message, $url, $pause = 1) {
@@ -832,7 +844,7 @@ class Controller extends Object {
 					continue;
 				}
 				$fieldOp = strtoupper(trim($fieldOp));
-				if ($fieldOp == 'LIKE') {
+				if ($fieldOp === 'LIKE') {
 					$key = $key.' LIKE';
 					$value = '%'.$value.'%';
 				} elseif ($fieldOp && $fieldOp != '=') {
@@ -879,7 +891,7 @@ class Controller extends Object {
 			} elseif (isset($this->{$this->modelClass}) && isset($this->{$this->modelClass}->{$object})) {
 				$object = $this->{$this->modelClass}->{$object};
 			}
-		} elseif (empty($object) || $object == null) {
+		} elseif (empty($object) || $object === null) {
 			if (isset($this->{$this->modelClass})) {
 				$object = $this->{$this->modelClass};
 			} else {
@@ -912,10 +924,15 @@ class Controller extends Object {
 			$options['limit'] = $options['show'];
 		}
 
-		if (isset($options['sort']) && isset($options['direction'])) {
-			$options['order'] = array($options['sort'] => $options['direction']);
-		} elseif (isset($options['sort'])) {
-			$options['order'] = array($options['sort'] => 'asc');
+		if (isset($options['sort'])) {
+			$direction = null;
+			if (isset($options['direction'])) {
+				$direction = strtolower($options['direction']);
+			}
+			if ($direction != 'asc' && $direction != 'desc') {
+				$direction = 'asc';
+			}
+			$options['order'] = array($options['sort'] => $direction);
 		}
 
 		if (!empty($options['order']) && is_array($options['order'])) {
@@ -942,7 +959,7 @@ class Controller extends Object {
 			if (!in_array($keys[$i], $vars)) {
 				unset($options[$keys[$i]]);
 			}
-			if (empty($whitelist) && ($keys[$i] == 'fields' || $keys[$i] == 'recursive')) {
+			if (empty($whitelist) && ($keys[$i] === 'fields' || $keys[$i] === 'recursive')) {
 				unset($options[$keys[$i]]);
 			} elseif (!empty($whitelist) && !in_array($keys[$i], $whitelist)) {
 				unset($options[$keys[$i]]);
@@ -968,10 +985,15 @@ class Controller extends Object {
 		if (isset($defaults[0])) {
 			$type = array_shift($defaults);
 		}
-		$extra = array_diff_key($defaults, compact('conditions', 'fields', 'order', 'limit', 'page', 'recursive'));
+		$extra = array_diff_key($defaults, compact(
+			'conditions', 'fields', 'order', 'limit', 'page', 'recursive'
+		));
+		if ($type !== 'all') {
+			$extra['type'] = $type;
+		}
 
 		if (method_exists($object, 'paginateCount')) {
-			$count = $object->paginateCount($conditions, $recursive);
+			$count = $object->paginateCount($conditions, $recursive, $extra);
 		} else {
 			$parameters = compact('conditions');
 			if ($recursive != $object->recursive) {
@@ -981,14 +1003,14 @@ class Controller extends Object {
 		}
 		$pageCount = intval(ceil($count / $limit));
 
-		if ($page == 'last' || $page >= $pageCount) {
+		if ($page === 'last' || $page >= $pageCount) {
 			$options['page'] = $page = $pageCount;
 		} elseif (intval($page) < 1) {
 			$options['page'] = $page = 1;
 		}
 
 		if (method_exists($object, 'paginate')) {
-			$results = $object->paginate($conditions, $fields, $order, $limit, $page, $recursive);
+			$results = $object->paginate($conditions, $fields, $order, $limit, $page, $recursive, $extra);
 		} else {
 			$parameters = compact('conditions', 'fields', 'order', 'limit', 'page');
 			if ($recursive != $object->recursive) {

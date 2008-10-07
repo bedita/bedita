@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: auth.php 7118 2008-06-04 20:49:29Z gwoo $ */
+/* SVN FILE: $Id: auth.php 7690 2008-10-02 04:56:53Z nate $ */
 
 /**
  * Authentication component
@@ -22,9 +22,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.controller.components
  * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 7118 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -220,6 +220,7 @@ class AuthComponent extends Object {
  * Initializes AuthComponent for use in the controller
  *
  * @param object $controller A reference to the instantiating controller object
+ * @return void
  * @access public
  */
 	function initialize(&$controller) {
@@ -251,6 +252,7 @@ class AuthComponent extends Object {
  * of login form data.
  *
  * @param object $controller A reference to the instantiating controller object
+ * @return boolean
  * @access public
  */
 	function startup(&$controller) {
@@ -283,11 +285,15 @@ class AuthComponent extends Object {
 			}
 		} elseif (isset($controller->params['url']['url'])) {
 			$url = $controller->params['url']['url'];
-		}	
+		}
 		$url = Router::normalize($url);
 		$loginAction = Router::normalize($this->loginAction);
+		$isAllowed = (
+			$this->allowedActions == array('*') ||
+			in_array($controller->action, $this->allowedActions)
+		);
 
-		if ($loginAction != $url && ($this->allowedActions == array('*') || in_array($controller->action, $this->allowedActions))) {
+		if ($loginAction != $url && $isAllowed) {
 			return false;
 		}
 
@@ -298,10 +304,12 @@ class AuthComponent extends Object {
 				}
 				return false;
 			}
+			$username = $controller->data[$this->userModel][$this->fields['username']];
+			$password = $controller->data[$this->userModel][$this->fields['password']];
 
 			$data = array(
-				$this->userModel . '.' . $this->fields['username'] => $controller->data[$this->userModel][$this->fields['username']],
-				$this->userModel . '.' . $this->fields['password'] => $controller->data[$this->userModel][$this->fields['password']]
+				$this->userModel . '.' . $this->fields['username'] => $username,
+				$this->userModel . '.' . $this->fields['password'] => $password
 			);
 
 			if ($this->login($data)) {
@@ -319,13 +327,15 @@ class AuthComponent extends Object {
 				if (!$this->RequestHandler->isAjax()) {
 					$this->Session->setFlash($this->authError, 'default', array(), 'auth');
 					$this->Session->write('Auth.redirect', $url);
-					$controller->redirect($loginAction, null, true);
+					$controller->redirect($loginAction);
 					return false;
 				} elseif (!empty($this->ajaxLogin)) {
 					$controller->viewPath = 'elements';
-					echo $controller->render($this->ajaxLogin, 'ajax');
+					echo $controller->render($this->ajaxLogin, $this->RequestHandler->ajaxLayout);
 					$this->_stop();
 					return false;
+				} else {
+					$controller->redirect(null, 403);
 				}
 			}
 		}
@@ -372,6 +382,7 @@ class AuthComponent extends Object {
  * $userModel and $sessionKey.
  *
  * @param object $controller A reference to the instantiating controller object
+ * @return boolean
  * @access private
  */
 	function __setDefaults() {
@@ -503,6 +514,7 @@ class AuthComponent extends Object {
  * @param string $action Controller action name
  * @param string $action Controller action name
  * @param string ... etc.
+ * @return void
  * @access public
  */
 	function allow() {
@@ -522,6 +534,7 @@ class AuthComponent extends Object {
  * @param string $action Controller action name
  * @param string $action Controller action name
  * @param string ... etc.
+ * @return void
  * @see AuthComponent::allow()
  * @access public
  */
@@ -539,6 +552,7 @@ class AuthComponent extends Object {
  * Maps action names to CRUD operations. Used for controller-based authentication.
  *
  * @param array $map Actions to map
+ * @return void
  * @access public
  */
 	function mapActions($map = array()) {
@@ -597,7 +611,8 @@ class AuthComponent extends Object {
 /**
  * Get the current user from the session.
  *
- * @return array User record, or null if no user is logged in.
+ * @param string $key field to retrive.  Leave null to get entire User record
+ * @return mixed User record. or null if no user is logged in.
  * @access public
  */
 	function user($key = null) {
@@ -612,9 +627,8 @@ class AuthComponent extends Object {
 			$user = $this->Session->read($this->sessionKey);
 			if (isset($user[$key])) {
 				return $user[$key];
-			} else {
-				return null;
 			}
+			return null;
 		}
 	}
 /**
@@ -763,7 +777,7 @@ class AuthComponent extends Object {
 			if (empty($data) || empty($data[$this->userModel])) {
 				return null;
 			}
-		} elseif (is_numeric($user)) {
+		} elseif (!empty($user)) {
 			$model =& $this->getModel();
 			$data = $model->find(array_merge(array($model->escapeField() => $user), $conditions));
 
@@ -772,14 +786,13 @@ class AuthComponent extends Object {
 			}
 		}
 
-		if (isset($data) && !empty($data)) {
+		if (!empty($data)) {
 			if (!empty($data[$this->userModel][$this->fields['password']])) {
 				unset($data[$this->userModel][$this->fields['password']]);
 			}
 			return $data[$this->userModel];
-		} else {
-			return null;
 		}
+		return null;
 	}
 /**
  * Hash any passwords found in $data using $userModel and $fields['password']
@@ -793,7 +806,7 @@ class AuthComponent extends Object {
 			return $this->authenticate->hashPasswords($data);
 		}
 
-		if (isset($data[$this->userModel])) {
+		if (is_array($data) && isset($data[$this->userModel])) {
 			if (isset($data[$this->userModel][$this->fields['username']]) && isset($data[$this->userModel][$this->fields['password']])) {
 				$data[$this->userModel][$this->fields['password']] = $this->password($data[$this->userModel][$this->fields['password']]);
 			}

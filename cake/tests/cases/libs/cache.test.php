@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: cache.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: cache.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs
  * @since			CakePHP(tm) v 1.2.0.5432
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!class_exists('Cache')) {
@@ -86,9 +86,7 @@ class CacheTest extends CakeTestCase {
  * @return void
  */
 	function testWritingWithConfig() {
-
 		Cache::config('sessions');
-
 		Cache::write('test_somthing', 'this is the test data', 'tests');
 
 		$expected = array(
@@ -99,6 +97,7 @@ class CacheTest extends CakeTestCase {
 			'duration' => 3600,
 			'probability' => 100,
 			'engine' => 'File',
+			'isWindows' => DIRECTORY_SEPARATOR == '\\'
 		);
 		$this->assertEqual($expected, Cache::settings('File'));
 	}
@@ -118,13 +117,14 @@ class CacheTest extends CakeTestCase {
 			'path'=> TMP . 'tests',
 			'prefix'=> 'cake_',
 			'lock' => false,
-			'serialize'=> true
+			'serialize'=> true,
+			'isWindows' => DIRECTORY_SEPARATOR == '\\'
 		);
 		$this->assertEqual($settings, $expecting);
 	}
 /**
  * testWriteEmptyValues method
- * 
+ *
  * @access public
  * @return void
  */
@@ -145,6 +145,33 @@ class CacheTest extends CakeTestCase {
 
 		Cache::write('App.zeroTest2', '0');
 		$this->assertIdentical(Cache::read('App.zeroTest2'), '0');
+	}
+/**
+ * testSet method
+ *
+ * @access public
+ * @return void
+ */
+	function testSet() {
+		$write = false;
+
+		Cache::set(array('duration' => '+1 year'));
+		$data = Cache::read('test_cache');
+		$this->assertFalse($data);
+
+		$data = 'this is just a simple test of the cache system';
+		$write = Cache::write('test_cache', $data);
+
+		$this->assertTrue($write);
+
+		Cache::set(array('duration' => '+1 year'));
+		$data = Cache::read('test_cache');
+
+		$this->assertEqual($data, 'this is just a simple test of the cache system');
+
+		Cache::delete('test_cache');
+
+		$global = Cache::settings();
 	}
 }
 ?>

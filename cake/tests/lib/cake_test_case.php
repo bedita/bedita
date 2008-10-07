@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: cake_test_case.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: cake_test_case.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.tests.libs
  * @since			CakePHP(tm) v 1.2.0.4667
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!class_exists('dispatcher')) {
@@ -86,6 +86,13 @@ class CakeTestCase extends UnitTestCase {
  * @access public
  */
 	var $autoFixtures = true;
+/**
+ * Set this to false to avoid tables to be dropped if they already exist
+ *
+ * @var boolean
+ * @access public
+ */
+	var $dropTables = true;
 /**
  * Maps fixture class names to fixture identifiers as included in CakeTestCase::$fixtures
  *
@@ -156,25 +163,37 @@ class CakeTestCase extends UnitTestCase {
 			if (!isset($this->db)) {
 				$this->_initDb();
 			}
-			$classRegistry =& ClassRegistry::getInstance();
-			$models = array();
 
-			foreach ($classRegistry->__map as $key => $name) {
-				$object =& $classRegistry->getObject(Inflector::camelize($key));
-				if (is_subclass_of($object, 'Model') && ((is_array($params['fixturize']) && in_array($object->alias, $params['fixturize'])) || $params['fixturize'] === true)) {
-					$models[$object->alias] = array(
-						'table' => $object->table,
-						'model' => $object->alias,
-						'key' => Inflector::camelize($key));
-				}
+			if ($controller->uses === false) {
+				$list = array($controller->modelClass);
+			} else {
+				$list = is_array($controller->uses) ? $controller->uses : array($controller->uses);
 			}
 
+			$models = array();
+			ClassRegistry::config(array('ds' => $params['connection']));
+
+			foreach ($list as $name) {
+				if ((is_array($params['fixturize']) && in_array($name, $params['fixturize'])) || $params['fixturize'] === true) {
+					if (class_exists($name) || App::import('Model', $name)) {
+						$object =& ClassRegistry::init($name);
+						//switch back to specified datasource.
+						$object->setDataSource($params['connection']);
+						$db =& ConnectionManager::getDataSource($object->useDbConfig);						
+						$db->cacheSources = false;
+
+						$models[$object->alias] = array(
+							'table' => $object->table,
+							'model' => $object->alias,
+							'key' => strtolower($name),
+						);
+					}
+				}
+			}
+			ClassRegistry::config(array('ds' => 'test_suite'));
+
 			if (!empty($models) && isset($this->db)) {
-				$this->_queries = array(
-					'create' => array(),
-					'insert' => array(),
-					'drop' => array()
-				);
+				$this->_actionFixtures = array();
 
 				foreach ($models as $model) {
 					$fixture =& new CakeTestFixture($this->db);
@@ -182,38 +201,15 @@ class CakeTestCase extends UnitTestCase {
 					$fixture->name = $model['model'] . 'Test';
 					$fixture->table = $model['table'];
 					$fixture->import = array('model' => $model['model'], 'records' => true);
-
 					$fixture->init();
 
-					$createFixture = $fixture->create($this->db);
-					$insertsFixture = $fixture->insert();
-					$dropFixture = $fixture->drop();
-
-					if (!empty($createFixture)) {
-						$this->_queries['create'] = array_merge($this->_queries['create'], array($createFixture));
-					}
-					if (!empty($insertsFixture)) {
-						$this->_queries['insert'] = array_merge($this->_queries['insert'], $insertsFixture);
-					}
-					if (!empty($dropFixture)) {
-						$this->_queries['drop'] = array_merge($this->_queries['drop'], array($dropFixture));
-					}
-				}
-
-				foreach ($this->_queries['create'] as $query) {
-					if (isset($query) && $query !== false) {
-						$this->db->execute($query);
-					}
-				}
-
-				foreach ($this->_queries['insert'] as $query) {
-					if (isset($query) && $query !== false) {
-						$this->db->execute($query);
-					}
+					$fixture->create($this->db);
+					$fixture->insert($this->db);
+					$this->_actionFixtures[] =& $fixture;
 				}
 
 				foreach ($models as $model) {
-					$object =& $classRegistry->getObject($model['key']);
+					$object =& ClassRegistry::getObject($model['key']);
 					if ($object !== false) {
 						$object->setDataSource('test_suite');
 						$object->cacheSources = false;
@@ -229,11 +225,9 @@ class CakeTestCase extends UnitTestCase {
  * * @param array $params	Additional parameters as sent by testAction().
  */
 	function endController(&$controller, $params = array()) {
-		if (isset($this->db) && isset($this->_queries) && !empty($this->_queries) && !empty($this->_queries['drop'])) {
-			foreach ($this->_queries['drop'] as $query) {
-				if (isset($query) && $query !== false) {
-					$this->db->execute($query);
-				}
+		if (isset($this->db) && isset($this->_actionFixtures) && !empty($this->_actionFixtures)) {
+			foreach ($this->_actionFixtures as $fixture) {
+				$fixture->drop($this->db);
 			}
 		}
 	}
@@ -255,7 +249,8 @@ class CakeTestCase extends UnitTestCase {
 			'return' => 'result',
 			'fixturize' => false,
 			'data' => array(),
-			'method' => 'post'
+			'method' => 'post',
+			'connection' => 'default'
 		);
 
 		if (is_string($params)) {
@@ -277,14 +272,14 @@ class CakeTestCase extends UnitTestCase {
 				: $this->__savedGetData;
 
 		$data = (!empty($params['data']))
-					? array('data' => $params['data'])
+					? $params['data']
 					: array();
 
 		if (strtolower($params['method']) == 'get') {
 			$_GET = array_merge($this->__savedGetData, $data);
 			$_POST = array();
 		} else {
-			$_POST = $data;
+			$_POST = array('data' => $data);
 			$_GET = $this->__savedGetData;
 		}
 
@@ -325,11 +320,10 @@ class CakeTestCase extends UnitTestCase {
 			$result = @$dispatcher->dispatch($url, $params);
 		}
 
-		ClassRegistry::flush();
-
-		if (isset($this->_queries)) {
-			unset($this->_queries);
+		if (isset($this->_actionFixtures)) {
+			unset($this->_actionFixtures);
 		}
+		ClassRegistry::flush();
 
 		return $result;
 	}
@@ -371,17 +365,21 @@ class CakeTestCase extends UnitTestCase {
  */
 	function start() {
 		if (isset($this->_fixtures) && isset($this->db)) {
+			Configure::write('Cache.disable', true);
 			$cacheSources = $this->db->cacheSources;
 			$this->db->cacheSources = false;
 			$sources = $this->db->listSources();
 			$this->db->cacheSources = $cacheSources;
 
+			if (!$this->dropTables) {
+				return;
+			}
 			foreach ($this->_fixtures as $fixture) {
 				if (in_array($fixture->table, $sources)) {
 					$fixture->drop($this->db);
+				} elseif (!in_array($fixture->table, $sources)) {
+					$fixture->create($this->db);
 				}
-
-				$fixture->create($this->db);
 			}
 		}
 	}
@@ -392,9 +390,17 @@ class CakeTestCase extends UnitTestCase {
  */
 	function end() {
 		if (isset($this->_fixtures) && isset($this->db)) {
-			foreach (array_reverse($this->_fixtures) as $fixture) {
-				$fixture->drop($this->db);
+			if ($this->dropTables) {
+				foreach (array_reverse($this->_fixtures) as $fixture) {
+					$fixture->drop($this->db);
+				}
 			}
+			$this->db->sources(true);
+			Configure::write('Cache.disable', false);
+		}
+
+		if (class_exists('ClassRegistry')) {
+			ClassRegistry::flush();
 		}
 	}
 /**
@@ -633,33 +639,33 @@ class CakeTestCase extends UnitTestCase {
  * @access protected
  */
 	function _initDb() {
-		$testDbAvailable = false;
+		$testDbAvailable = in_array('test', array_keys(ConnectionManager::enumConnectionObjects()));
 
-		if (class_exists('DATABASE_CONFIG')) {
-			$dbConfig =& new DATABASE_CONFIG();
-			$testDbAvailable = isset($dbConfig->test);
-		}
+		$_prefix = null;
 
 		if ($testDbAvailable) {
 			// Try for test DB
 			restore_error_handler();
 			@$db =& ConnectionManager::getDataSource('test');
 			set_error_handler('simpleTestErrorHandler');
-
 			$testDbAvailable = $db->isConnected();
 		}
 
 		// Try for default DB
 		if (!$testDbAvailable) {
 			$db =& ConnectionManager::getDataSource('default');
+			$_prefix = $db->config['prefix'];
 			$db->config['prefix'] = 'test_suite_';
 		}
 
 		ConnectionManager::create('test_suite', $db->config);
+		$db->config['prefix'] = $_prefix;
+
 		// Get db connection
 		$this->db =& ConnectionManager::getDataSource('test_suite');
 		$this->db->cacheSources  = false;
-		$this->db->fullDebug = false;
+
+		ClassRegistry::config(array('ds' => 'test_suite'));
 	}
 /**
  * Load fixtures specified in var $fixtures.
@@ -700,6 +706,13 @@ class CakeTestCase extends UnitTestCase {
 					TESTS . 'fixtures',
 					VENDORS . 'tests' . DS . 'fixtures'
 				);
+				$pluginPaths = Configure::read('pluginPaths');
+				foreach ($pluginPaths as $path) {
+					if (file_exists($path . $pluginName . DS . 'tests' . DS. 'fixtures')) {
+						$fixturePaths[0] = $path . $pluginName . DS . 'tests' . DS. 'fixtures';
+						break;
+					}
+				}
 			} else {
 				$fixturePaths = array(
 					TESTS . 'fixtures',

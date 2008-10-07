@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: bootstrap.php 7118 2008-06-04 20:49:29Z gwoo $ */
+/* SVN FILE: $Id: bootstrap.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Basic Cake functionality.
  *
@@ -21,13 +21,13 @@
  * @package			cake
  * @subpackage		cake.cake
  * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 7118 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 if (!defined('PHP5')) {
-	define ('PHP5', (phpversion() >= 5));
+	define ('PHP5', (PHP_VERSION >= 5));
 }
 /**
  * Configuration, directory layout and standard libraries
@@ -40,12 +40,11 @@ if (!defined('PHP5')) {
 		require LIBS . 'inflector.php';
 		require LIBS . 'configure.php';
 	}
-	require LIBS . 'file.php';
 	require LIBS . 'cache.php';
 
 	Configure::getInstance();
 
 	$url = null;
 
-	App::import('Core', array('Session', 'Security', 'String', 'Dispatcher'));
+	App::import('Core', array('Dispatcher'));
 ?>

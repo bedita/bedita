@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: js.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: js.php 7690 2008-10-02 04:56:53Z nate $ */
 
 /**
  * Javascript Generator class file.
@@ -20,9 +20,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view.helpers
  * @since			CakePHP v 1.2
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-01 22:33:52 -0800 (Tue, 01 Jan 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -70,10 +70,10 @@ class JsHelper extends Overloadable2 {
 
 	function call__($method, $params) {
 		if (is_object($this->hook) && method_exists($this->hook, $method)) {
-
+			$this->hook->dispatchMethod($method . '_', $params);
 		}
 		if (method_exists($this, $method . '_')) {
-			return call_user_func_array(array(&$this, $method . '_'), $params);
+			return $this->dispatchMethod($method . '_', $params);
 		}
 	}
 

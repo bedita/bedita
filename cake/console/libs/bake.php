@@ -25,7 +25,7 @@
  * @since			CakePHP(tm) v 1.2.0.5012
  * @version			$Revision: 7125 $
  * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-05 08:06:49 -0700 (Thu, 05 Jun 2008) $
+ * @lastmodified	$Date: 2008-06-05 11:06:49 -0400 (Thu, 05 Jun 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**

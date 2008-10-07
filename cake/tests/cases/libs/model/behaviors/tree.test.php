@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: tree.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: tree.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs.model.behaviors
  * @since			CakePHP(tm) v 1.2.0.5330
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 
@@ -44,7 +44,7 @@ class NumberTreeCase extends CakeTestCase {
  * @access public
  */
 	var $fixtures = array(
-		'core.number_tree', 'core.flag_tree', 'core.campaign', 'core.ad', 'core.translate'
+		'core.number_tree', 'core.flag_tree', 'core.campaign', 'core.ad', 'core.translate', 'core.after_tree'
 	);
 /**
  * testInitialize method
@@ -948,6 +948,39 @@ class NumberTreeCase extends CakeTestCase {
 		$this->assertIdentical($validTree, true);
 	}
 /**
+ * testRemoveNoChildren method
+ *
+ * @return void
+ * @access public
+ */
+	function testRemoveNoChildren() {
+		$this->NumberTree =& new NumberTree();
+		$this->NumberTree->initialize(2, 2);
+		$initialCount = $this->NumberTree->find('count');
+
+		$result = $this->NumberTree->findByName('1.1.1');
+		$this->NumberTree->removeFromTree($result['NumberTree']['id']);
+
+		$laterCount = $this->NumberTree->find('count');
+		$this->assertEqual($initialCount, $laterCount);
+
+		$nodes = $this->NumberTree->find('list', array('order' => 'lft'));
+		$expects = array(
+			1 => '1. Root',
+			2 => '1.1',
+			4 => '1.1.2',
+			5 => '1.2',
+			6 => '1.2.1',
+			7 => '1.2.2',
+			3 => '1.1.1',
+		);
+
+		$this->assertEqual($nodes, $expects);
+
+		$validTree = $this->NumberTree->verify();
+		$this->assertIdentical($validTree, true);
+	}
+/**
  * testRemoveAndDelete method
  *
  * @access public
@@ -978,6 +1011,38 @@ class NumberTreeCase extends CakeTestCase {
 		$validTree = $this->NumberTree->verify();
 		$this->assertIdentical($validTree, true);
 	}
+/**
+ * testRemoveAndDeleteNoChildren method
+ *
+ * @return void
+ * @access public
+ */
+	function testRemoveAndDeleteNoChildren() {
+		$this->NumberTree =& new NumberTree();
+		$this->NumberTree->initialize(2, 2);
+		$initialCount = $this->NumberTree->find('count');
+
+		$result = $this->NumberTree->findByName('1.1.1');
+		$this->NumberTree->removeFromTree($result['NumberTree']['id'], true);
+
+		$laterCount = $this->NumberTree->find('count');
+		$this->assertEqual($initialCount - 1, $laterCount);
+
+		$nodes = $this->NumberTree->find('list', array('order' => 'lft'));
+		$expects = array(
+			1 => '1. Root',
+			2 => '1.1',
+			4 => '1.1.2',
+			5 => '1.2',
+			6 => '1.2.1',
+			7 => '1.2.2',
+		);
+		$this->assertEqual($nodes, $expects);
+
+		$validTree = $this->NumberTree->verify();
+		$this->assertIdentical($validTree, true);
+	}
+
 /**
  * testChildren method
  *
@@ -1278,6 +1343,23 @@ class NumberTreeCase extends CakeTestCase {
 			),
 		);
 		$this->assertEqual($result, $expected);
+	}
+/**
+ * Tests the afterSave callback in the model
+ *
+ * @access public
+ * @return void
+ */
+	function testAftersaveCallback() {
+		$this->AfterTree =& new AfterTree();
+
+		$expected = array('AfterTree' => array('name' => 'Six and One Half Changed in AfterTree::afterSave() but not in database', 'parent_id' => 6, 'lft' => 11, 'rght' => 12));
+		$result = $this->AfterTree->save(array('AfterTree' => array('name' => 'Six and One Half', 'parent_id' => 6)));
+		$this->assertEqual($result, $expected);
+
+		$expected = array('AfterTree' => array('name' => 'Six and One Half', 'parent_id' => 6, 'lft' => 11, 'rght' => 12, 'id' => 8));
+		$result = $this->AfterTree->findAll();
+		$this->assertEqual($result[7], $expected);
 	}
 }
 ?>

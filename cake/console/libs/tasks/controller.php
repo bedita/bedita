@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: controller.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: controller.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * The ControllerTask handles creating and updating controller files.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.console.libs.tasks
  * @since			CakePHP(tm) v 1.2
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -467,7 +467,8 @@ class ControllerTask extends Shell {
 		$out .= "\tvar \$autoRender = false;\n}\n\n";
 		$out .= "class {$className}ControllerTest extends CakeTestCase {\n";
 		$out .= "\tvar \${$className} = null;\n\n";
-		$out .= "\tfunction setUp() {\n\t\t\$this->{$className} = new Test{$className}();\n\t}\n\n";
+		$out .= "\tfunction setUp() {\n\t\t\$this->{$className} = new Test{$className}();";
+		$out .= "\n\t\t\$this->{$className}->constructClasses();\n\t}\n\n";
 		$out .= "\tfunction test{$className}ControllerInstance() {\n";
 		$out .= "\t\t\$this->assertTrue(is_a(\$this->{$className}, '{$className}Controller'));\n\t}\n\n";
 		$out .= "\tfunction tearDown() {\n\t\tunset(\$this->{$className});\n\t}\n}\n";

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: translate.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: translate.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs.model.behaviors
  * @since			CakePHP(tm) v 1.2.0.5669
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
@@ -421,6 +421,20 @@ class TranslateTest extends CakeTestCase {
 		$this->Model->displayField = 'title';
 		$result = $this->Model->find('list', array('recursive' => 1));
 		$expected = array(1 => 'Titel #1', 2 => 'Titel #2', 3 => 'Titel #3');
+		$this->assertEqual($result, $expected);
+
+		$debug = Configure::read('debug');
+		Configure::write('debug', 0);
+
+		$result = $this->Model->find('list', array('recursive' => 1, 'callbacks' => false));
+		$this->assertEqual($result, array());
+
+		$result = $this->Model->find('list', array('recursive' => 1, 'callbacks' => 'after'));
+		$this->assertEqual($result, array());
+		Configure::write('debug', $debug);
+
+		$result = $this->Model->find('list', array('recursive' => 1, 'callbacks' => 'before'));
+		$expected = array(1 => null, 2 => null, 3 => null);
 		$this->assertEqual($result, $expected);
 	}
 /**

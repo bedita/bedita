@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: folder.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: folder.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,19 +21,19 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs
  * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-uses('file', 'folder');
+App::import('Core', 'File');
 /**
  * Short description for class.
  *
  * @package		cake.tests
  * @subpackage	cake.tests.cases.libs
  */
-class FolderTest extends UnitTestCase {
+class FolderTest extends CakeTestCase {
 /**
  * Folder property
  *
@@ -96,7 +96,7 @@ class FolderTest extends UnitTestCase {
  * @return void
  */
 	function testOperations() {
-		$path = TEST_CAKE_CORE_INCLUDE_PATH.'console'.DS.'libs'.DS.'templates'.DS.'skel';
+		$path = TEST_CAKE_CORE_INCLUDE_PATH . 'console' . DS . 'libs' . DS . 'templates' . DS . 'skel';
 		$Folder =& new Folder($path);
 
 		$result = is_dir($Folder->pwd());
@@ -153,6 +153,33 @@ class FolderTest extends UnitTestCase {
 		$this->assertNull($result);
 	}
 /**
+ * testChmod method
+ *
+ * @return void
+ * @access public
+ */
+	function testChmod() {
+		$path = TEST_CAKE_CORE_INCLUDE_PATH . 'console' . DS . 'libs' . DS . 'templates' . DS . 'skel';
+		$Folder =& new Folder($path);
+
+		$subdir = 'test_folder_new';
+		$new = TMP . $subdir;
+
+		$this->assertTrue($Folder->create($new));
+		$this->assertTrue($Folder->create($new . DS . 'test1'));
+		$this->assertTrue($Folder->create($new . DS . 'test2'));
+
+		$filePath = $new . DS . 'test1.php';
+		$File =& new File($filePath);
+		$this->assertTrue($File->create());
+		$copy = TMP . 'test_folder_copy';
+
+		$this->assertTrue($Folder->chmod($new, 0777, true));
+		$this->assertEqual($File->perms(), '0777');
+
+		$Folder->delete($new);
+	}
+/**
  * testRealPathForWebroot method
  *
  * @access public
@@ -171,8 +198,7 @@ class FolderTest extends UnitTestCase {
 	function testZeroAsDirectory() {
 		$Folder =& new Folder(TMP);
 		$new = TMP . '0';
-		$result = $Folder->create($new);
-		$this->assertTrue($result);
+		$this->assertTrue($Folder->create($new));
 
 		$result = $Folder->read(true, true);
 		$expected = array(array('0', 'cache', 'logs', 'sessions', 'tests'), array());
@@ -460,5 +486,34 @@ class FolderTest extends UnitTestCase {
 		$folder->cd(TMP);
 		$folder->delete($folder->pwd().'config_non_existant');
 	}
+
+/**
+ * testDelete method
+ *
+ * @access public
+ * @return void
+ */
+	function testDelete() {
+		$path = TMP . 'folder_delete_test';
+		$Folder =& new Folder($path, true);
+		touch(TMP.'folder_delete_test' . DS . 'file1');
+		touch(TMP.'folder_delete_test' . DS . 'file2');
+
+		$return = $Folder->delete();
+		$this->assertTrue($return);
+
+		$messages = $Folder->messages();
+		$errors = $Folder->errors();
+		$this->assertEqual($errors, array());
+
+		$expected = array(
+			$path . ' created',
+			$path . DS . 'file1 removed',
+			$path . DS . 'file2 removed',
+			$path . ' removed'
+		);
+		$this->assertEqual($expected, $messages);
+	}
+
 }
 ?>

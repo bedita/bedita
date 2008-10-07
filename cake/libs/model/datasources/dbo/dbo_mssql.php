@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_mssql.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: dbo_mssql.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * MS SQL layer for DBO
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.datasources.dbo
  * @since			CakePHP(tm) v 0.10.5.1790
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -278,7 +278,7 @@ class DboMssql extends DboSource {
 			break;
 		}
 
-		if (in_array($column, array('integer', 'float')) && is_numeric($data)) {
+		if (in_array($column, array('integer', 'float', 'binary')) && is_numeric($data)) {
 			return $data;
 		}
 		return "'" . $data . "'";
@@ -387,7 +387,7 @@ class DboMssql extends DboSource {
 		$error = mssql_get_last_message($this->connection);
 
 		if ($error) {
-			if (!preg_match('/contesto di database|changed database/i', $error)) {
+			if (!preg_match('/contexto de la base de datos a|contesto di database|changed database/i', $error)) {
 				return $error;
 			}
 		}
@@ -546,9 +546,9 @@ class DboMssql extends DboSource {
 					$offset = intval($offset[1]) + intval($limitVal[1]);
 					$rOrder = $this->__switchSort($order);
 					list($order2, $rOrder) = array($this->__mapFields($order), $this->__mapFields($rOrder));
-					return "SELECT * FROM (SELECT {$limit} * FROM (SELECT TOP {$offset} {$fields} FROM {$table} {$alias} {$joins} {$conditions} {$order}) AS Set1 {$rOrder}) AS Set2 {$order2}";
+					return "SELECT * FROM (SELECT {$limit} * FROM (SELECT TOP {$offset} {$fields} FROM {$table} {$alias} {$joins} {$conditions} {$group} {$order}) AS Set1 {$rOrder}) AS Set2 {$order2}";
 				} else {
-					return "SELECT {$limit} {$fields} FROM {$table} {$alias} {$joins} {$conditions} {$order}";
+					return "SELECT {$limit} {$fields} FROM {$table} {$alias} {$joins} {$conditions} {$group} {$order}";
 				}
 			break;
 			case "schema":
@@ -613,7 +613,6 @@ class DboMssql extends DboSource {
 	function read(&$model, $queryData = array(), $recursive = null) {
 		$results = parent::read($model, $queryData, $recursive);
 		$this->__fieldMappings = array();
-		$this->__fieldMapBase = null;
 		return $results;
 	}
 /**
@@ -650,8 +649,10 @@ class DboMssql extends DboSource {
 			(array_key_exists('default', $column) && $column['default'] === null) ||
 			(array_keys($column) == array('type', 'name'))
 		);
-		$stringKey = (isset($column['key']) && $column['key'] == 'primary' && $column['type'] != 'integer');
-		if ($null) {
+		$primaryKey = (isset($column['key']) && $column['key'] == 'primary');
+		$stringKey =  ($primaryKey && $column['type'] != 'integer');
+
+		if ($null && !$primaryKey) {
 			$result .= " NULL";
 		}
 		return $result;

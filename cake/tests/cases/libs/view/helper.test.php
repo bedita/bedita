@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: helper.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: helper.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,29 +21,29 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs
  * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-uses('view' . DS . 'view', 'view' . DS . 'helper');
+App::import('Core', array('View', 'Helper'));
 /**
  * HelperTestPost class
- * 
+ *
  * @package              cake
  * @subpackage           cake.tests.cases.libs.view
  */
 class HelperTestPost extends Model {
 /**
  * useTable property
- * 
+ *
  * @var bool false
  * @access public
  */
 	var $useTable = false;
 /**
  * schema method
- * 
+ *
  * @access public
  * @return void
  */
@@ -61,7 +61,7 @@ class HelperTestPost extends Model {
 	}
 /**
  * hasAndBelongsToMany property
- * 
+ *
  * @var array
  * @access public
  */
@@ -70,21 +70,21 @@ class HelperTestPost extends Model {
 
 /**
  * HelperTestComment class
- * 
+ *
  * @package              cake
  * @subpackage           cake.tests.cases.libs.view
  */
 class HelperTestComment extends Model {
 /**
  * useTable property
- * 
+ *
  * @var bool false
  * @access public
  */
 	var $useTable = false;
 /**
  * schema method
- * 
+ *
  * @access public
  * @return void
  */
@@ -102,21 +102,21 @@ class HelperTestComment extends Model {
 }
 /**
  * HelperTestTag class
- * 
+ *
  * @package              cake
  * @subpackage           cake.tests.cases.libs.view
  */
 class HelperTestTag extends Model {
 /**
  * useTable property
- * 
+ *
  * @var bool false
  * @access public
  */
 	var $useTable = false;
 /**
  * schema method
- * 
+ *
  * @access public
  * @return void
  */
@@ -132,21 +132,21 @@ class HelperTestTag extends Model {
 }
 /**
  * HelperTestPostsTag class
- * 
+ *
  * @package              cake
  * @subpackage           cake.tests.cases.libs.view
  */
 class HelperTestPostsTag extends Model {
 /**
  * useTable property
- * 
+ *
  * @var bool false
  * @access public
  */
 	var $useTable = false;
 /**
  * schema method
- * 
+ *
  * @access public
  * @return void
  */
@@ -165,10 +165,10 @@ class HelperTestPostsTag extends Model {
  * @package		cake.tests
  * @subpackage	cake.tests.cases.libs
  */
-class HelperTest extends UnitTestCase {
+class HelperTest extends CakeTestCase {
 /**
  * setUp method
- * 
+ *
  * @access public
  * @return void
  */
@@ -184,7 +184,7 @@ class HelperTest extends UnitTestCase {
 	}
 /**
  * testFormFieldNameParsing method
- * 
+ *
  * @access public
  * @return void
  */
@@ -320,7 +320,7 @@ class HelperTest extends UnitTestCase {
 	}
 /**
  * testFieldsWithSameName method
- * 
+ *
  * @access public
  * @return void
  */
@@ -355,7 +355,7 @@ class HelperTest extends UnitTestCase {
 	}
 /**
  * testFieldSameAsModel method
- * 
+ *
  * @access public
  * @return void
  */
@@ -376,7 +376,7 @@ class HelperTest extends UnitTestCase {
 	}
 /**
  * testFieldSuffixForDate method
- * 
+ *
  * @access public
  * @return void
  */
@@ -401,7 +401,7 @@ class HelperTest extends UnitTestCase {
 	}
 /**
  * testMulitDimensionValue method
- * 
+ *
  * @access public
  * @return void
  */
@@ -434,7 +434,7 @@ class HelperTest extends UnitTestCase {
 	}
 /**
  * testClean method
- * 
+ *
  * @access public
  * @return void
  */
@@ -448,10 +448,21 @@ class HelperTest extends UnitTestCase {
 		$result = $this->Helper->clean('<script>with something</script>');
 		$this->assertEqual($result, 'with something');
 
+		$result = $this->Helper->clean('<script type="text/javascript">alert("ruined");</script>');
+		$this->assertNoPattern('#</*script#', $result);
+
+		$result = $this->Helper->clean("<script \ntype=\"text/javascript\">\n\talert('ruined');\n\n\t\t</script>");
+		$this->assertNoPattern('#</*script#', $result);
+
+		$result = $this->Helper->clean('<body/onload=do(/something/)>');
+		$this->assertEqual($result, '<body/>');
+
+		$result = $this->Helper->clean('&lt;script&gt;alert(document.cookie)&lt;/script&gt;');
+		$this->assertEqual($result, '&amp;lt;script&amp;gt;alert(document.cookie)&amp;lt;/script&amp;gt;');
 	}
 /**
  * tearDown method
- * 
+ *
  * @access public
  * @return void
  */
@@ -460,5 +471,4 @@ class HelperTest extends UnitTestCase {
 		ClassRegistry::flush();
 	}
 }
-
 ?>

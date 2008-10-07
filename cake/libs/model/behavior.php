@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: behavior.php 7118 2008-06-04 20:49:29Z gwoo $ */
+/* SVN FILE: $Id: behavior.php 7690 2008-10-02 04:56:53Z nate $ */
 
 /**
  * Model behaviors base class.
@@ -22,9 +22,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model
  * @since			CakePHP(tm) v 1.2.0.0
- * @version			$Revision: 7118 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -150,6 +150,7 @@ class ModelBehavior extends Object {
  *
  * @see Object::dispatchMethod
  * @access public
+ * @return mixed
  */
 	function dispatchMethod(&$model, $method, $params = array()) {
 		if (empty($params)) {
@@ -244,6 +245,7 @@ class BehaviorCollection extends Object {
  * Attaches a model object and loads a list of behaviors
  *
  * @access public
+ * @return void
  */
 	function init($modelName, $behaviors = array()) {
 		$this->modelName = $modelName;
@@ -292,12 +294,12 @@ class BehaviorCollection extends Object {
 			$this->__mappedMethods[$method] = array($alias, $name);
 		}
 		$methods = get_class_methods($this->{$name});
-		$parentMethods = get_class_methods('ModelBehavior');
-		$callbacks = array('setup', 'cleanup', 'beforeFind', 'afterFind', 'beforeSave', 'afterSave', 'beforeDelete', 'afterDelete', 'afterError');
+		$parentMethods = array_flip(get_class_methods('ModelBehavior'));
+		$callbacks = array('setup' => true, 'cleanup' => true, 'beforeFind' => true, 'afterFind' => true, 'beforeSave' => true, 'afterSave' => true, 'beforeDelete' => true, 'afterDelete' => true, 'afterError' => true);
 
 		foreach ($methods as $m) {
-			if (!in_array($m, $parentMethods)) {
-				if ($m[0] != '_' && !array_key_exists($m, $this->__methods) && !in_array($m, $callbacks)) {
+			if (!isset($parentMethods[$m])) {
+				if ($m[0] != '_' && !array_key_exists($m, $this->__methods) && !isset($callbacks[$m])) {
 					$this->__methods[$m] = array($m, $name);
 				}
 			}
@@ -317,6 +319,7 @@ class BehaviorCollection extends Object {
  * Detaches a behavior from a model
  *
  * @param string $name CamelCased name of the behavior to unload
+ * @return void
  * @access public
  */
 	function detach($name) {
@@ -383,8 +386,13 @@ class BehaviorCollection extends Object {
  * @access public
  */
 	function dispatchMethod(&$model, $method, $params = array(), $strict = false) {
-		$methods = array_map('strtolower', array_keys($this->__methods));
-		$found = (in_array(strtolower($method), $methods));
+		$methods = array_keys($this->__methods);
+		foreach ($methods as $key => $value) {
+			$methods[$key] = strtolower($value);
+		}
+		$method = strtolower($method);
+		$check = array_flip($methods);
+		$found = isset($check[$method]);
 		$call = null;
 
 		if ($strict && !$found) {
@@ -392,7 +400,7 @@ class BehaviorCollection extends Object {
 			return null;
 		} elseif ($found) {
 			$methods = array_combine($methods, array_values($this->__methods));
-			$call = $methods[strtolower($method)];
+			$call = $methods[$method];
 		} else {
 			$count = count($this->__mappedMethods);
 			$mapped = array_keys($this->__mappedMethods);
@@ -405,6 +413,7 @@ class BehaviorCollection extends Object {
 				}
 			}
 		}
+
 		if (!empty($call)) {
 			return $this->{$call[1]}->dispatchMethod($model, $call[0], $params);
 		}

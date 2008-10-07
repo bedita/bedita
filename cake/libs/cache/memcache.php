@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: memcache.php 7118 2008-06-04 20:49:29Z gwoo $ */
+/* SVN FILE: $Id: memcache.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Memcache storage engine for cache
  *
@@ -20,9 +20,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.cache
  * @since			CakePHP(tm) v 1.2.0.4933
- * @version			$Revision: 7118 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -73,22 +73,22 @@ class MemcacheEngine extends CacheEngine {
 		if (!is_array($this->settings['servers'])) {
 			$this->settings['servers'] = array($this->settings['servers']);
 		}
-
-		$this->__Memcache =& new Memcache();
-		foreach ($this->settings['servers'] as $server) {
-			$parts = explode(':', $server);
-			$host = $parts[0];
-			$port = 11211;
-			if (isset($parts[1])) {
-				$port = $parts[1];
-			}
-			if ($this->__Memcache->addServer($host, $port)) {
-				if ($this->__Memcache->connect($host, $port)) {
+		if (!isset($this->__Memcache)) {
+			$this->__Memcache =& new Memcache();
+			foreach ($this->settings['servers'] as $server) {
+				$parts = explode(':', $server);
+				$host = $parts[0];
+				$port = 11211;
+				if (isset($parts[1])) {
+					$port = $parts[1];
+				}
+				if ($this->__Memcache->addServer($host, $port)) {
 					return true;
 				}
 			}
+			return false;
 		}
-		return false;
+		return true;
 	}
 /**
  * Write data for key into cache
@@ -100,6 +100,8 @@ class MemcacheEngine extends CacheEngine {
  * @access public
  */
 	function write($key, &$value, $duration) {
+		$expires = time() + $duration;
+		$this->__Memcache->set($key.'_expires', $expires, $this->settings['compress'], $duration);
 		return $this->__Memcache->set($key, $value, $this->settings['compress'], $duration);
 	}
 /**
@@ -110,6 +112,11 @@ class MemcacheEngine extends CacheEngine {
  * @access public
  */
 	function read($key) {
+		$time = time();
+		$cachetime = intval($this->__Memcache->get($key.'_expires'));
+		if ($cachetime < $time || ($time + $this->settings['duration']) < $cachetime) {
+			return false;
+		}
 		return $this->__Memcache->get($key);
 	}
 /**

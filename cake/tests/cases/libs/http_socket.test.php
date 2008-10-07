@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: http_socket.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: http_socket.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs
  * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'HttpSocket');
@@ -33,17 +33,17 @@ App::import('Core', 'HttpSocket');
  * @package		cake.tests
  * @subpackage	cake.tests.cases.libs
  */
-class HttpSocketTest extends UnitTestCase {
+class HttpSocketTest extends CakeTestCase {
 /**
  * Socket property
- * 
+ *
  * @var mixed null
  * @access public
  */
 	var $Socket = null;
 /**
  * RequestSocket property
- * 
+ *
  * @var mixed null
  * @access public
  */
@@ -89,7 +89,7 @@ class HttpSocketTest extends UnitTestCase {
 		$baseConfig['request']['uri']['port'] = 23;
 		$baseConfig['protocol'] = getprotobyname($baseConfig['protocol']);
 		$this->assertIdentical($this->Socket->config, $baseConfig);
-		
+
 		$this->Socket->reset();
 		$this->Socket->__construct(array('request' => array('uri' => 'http://www.cakephp.org:23/')));
 		$this->assertIdentical($this->Socket->config, $baseConfig);
@@ -153,7 +153,7 @@ class HttpSocketTest extends UnitTestCase {
 		);
 		$this->assertIdentical($this->Socket->config, $expected);
 		$this->assertIdentical($r, $expected);
-		$r = $this->Socket->configUri('/this-is-fuck');
+		$r = $this->Socket->configUri('/this-is-broken');
 		$this->assertIdentical($this->Socket->config, $expected);
 		$this->assertIdentical($r, false);
 		$r = $this->Socket->configUri(false);
@@ -392,7 +392,7 @@ class HttpSocketTest extends UnitTestCase {
 		$this->Socket->setReturnValue('connect', true);
 		$this->Socket->setReturnValue('read', false);
 		$this->Socket->_mock->_call_counts['read'] = 0;
-		$number = rand(0, 9999999);
+		$number = mt_rand(0, 9999999);
 		$serverResponse = "HTTP/1.x 200 OK\r\nDate: Mon, 16 Apr 2007 04:14:16 GMT\r\nServer: CakeHttp Server\r\nContent-Type: text/html\r\n\r\n<h1>Hello, your lucky number is ".$number."</h1>";
 		$this->Socket->setReturnValueAt(0, 'read', $serverResponse);
 		$this->Socket->expect('write', array("GET / HTTP/1.1\r\nHost: www.cakephp.org\r\nConnection: close\r\nUser-Agent: CakePHP\r\n\r\n"));
@@ -419,7 +419,7 @@ class HttpSocketTest extends UnitTestCase {
 	}
 /**
  * testUrl method
- * 
+ *
  * @access public
  * @return void
  */
@@ -473,7 +473,7 @@ class HttpSocketTest extends UnitTestCase {
 	}
 /**
  * testGet method
- * 
+ *
  * @access public
  * @return void
  */
@@ -497,7 +497,7 @@ class HttpSocketTest extends UnitTestCase {
 	}
 /**
  * testPostPutDelete method
- * 
+ *
  * @access public
  * @return void
  */
@@ -701,7 +701,7 @@ class HttpSocketTest extends UnitTestCase {
 	}
 /**
  * testBuildRequestLine method
- * 
+ *
  * @access public
  * @return void
  */

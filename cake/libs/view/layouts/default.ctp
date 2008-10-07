@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: default.ctp 7118 2008-06-04 20:49:29Z gwoo $ */
+/* SVN FILE: $Id: default.ctp 7690 2008-10-02 04:56:53Z nate $ */
 /**
  *
  * PHP versions 4 and 5
@@ -18,9 +18,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view.templates.layouts
  * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 7118 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 ?>
@@ -46,21 +46,18 @@
 			<h1><?php echo $html->link(__('CakePHP: the rapid development php framework', true), 'http://cakephp.org'); ?></h1>
 		</div>
 		<div id="content">
-			<?php
-				if ($session->check('Message.flash')):
-						$session->flash();
-				endif;
-			?>
+
+			<?php $session->flash(); ?>
 
 			<?php echo $content_for_layout; ?>
 
 		</div>
 		<div id="footer">
 			<?php echo $html->link(
-							$html->image('cake.power.gif', array('alt'=> __("CakePHP: the rapid development php framework", true), 'border'=>"0")),
-							'http://www.cakephp.org/',
-							array('target'=>'_new'), null, false
-						);
+					$html->image('cake.power.gif', array('alt'=> __("CakePHP: the rapid development php framework", true), 'border'=>"0")),
+					'http://www.cakephp.org/',
+					array('target'=>'_blank'), null, false
+				);
 			?>
 		</div>
 	</div>

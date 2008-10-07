@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: view.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: view.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,13 +21,15 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs
  * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-App::import('Core', array('View', 'Controller', 'Error'));
-
+App::import('Core', array('View', 'Controller'));
+if (!class_exists('ErrorHandler')) {
+	App::import('Core', array('Error'));
+}
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
 	define('CAKEPHP_UNIT_TEST_EXECUTION', 1);
 }
@@ -219,14 +221,14 @@ class ViewTest extends CakeTestCase {
 	function testPluginGetTemplate() {
 		$this->Controller->plugin = 'test_plugin';
 		$this->Controller->name = 'TestPlugin';
-		$this->Controller->viewPath = 'test_plugin';
+		$this->Controller->viewPath = 'tests';
 		$this->Controller->action = 'index';
 
 		$View = new TestView($this->Controller);
 		Configure::write('pluginPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS));
 		Configure::write('viewPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views'. DS));
 
-		$expected = TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS .'test_plugin' . DS . 'views' . DS .'test_plugin' . DS .'index.ctp';
+		$expected = TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS .'test_plugin' . DS . 'views' . DS .'tests' . DS .'index.ctp';
 		$result = $View->getViewFileName('index');
 		$this->assertEqual($result, $expected);
 
@@ -273,8 +275,9 @@ class ViewTest extends CakeTestCase {
 		$this->assertEqual($result, $expected);
 
 		$View->layoutPath = 'email' . DS . 'html';
-		$expected = TEST_CAKE_CORE_INCLUDE_PATH . 'libs' . DS . 'view' . DS . 'layouts' . DS . 'email' . DS . 'html' . DS . 'default.ctp';
+		$expected = TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views' . DS . 'layouts' . DS . 'email' . DS . 'html' . DS . 'default.ctp';
 		$result = $View->getLayoutFileName();
+
 		$this->assertEqual($result, $expected);
 	}
 /**
@@ -448,9 +451,9 @@ class ViewTest extends CakeTestCase {
 		$this->assertTrue(is_object($result['Ajax']->Html));
 
 		$View->plugin = 'test_plugin';
-		$result = $View->loadHelpers($loaded, array('TestPlugin.TestPluginHelper'));
-		$this->assertTrue(is_object($result['TestPluginHelper']));
-		$this->assertTrue(is_object($result['TestPluginHelper']->TestPluginOtherHelper));
+		$result = $View->loadHelpers($loaded, array('TestPlugin.PluggedHelper'));
+		$this->assertTrue(is_object($result['PluggedHelper']));
+		$this->assertTrue(is_object($result['PluggedHelper']->OtherHelper));
 	}
 /**
  * testBeforeLayout method
@@ -501,7 +504,7 @@ class ViewTest extends CakeTestCase {
 		$this->assertTrue(is_object($helpers['form']->Html));
 		$this->assertTrue(is_object($helpers['ajax']->Html));
 
-		$this->PostsController->helpers = array('Html', 'Form', 'Ajax', 'TestPlugin.TestPluginHelper');
+		$this->PostsController->helpers = array('Html', 'Form', 'Ajax', 'TestPlugin.PluggedHelper');
 		$View = new TestView($this->PostsController);
 
 		$result = $View->_render($View->getViewFileName('index'), array());
@@ -512,7 +515,7 @@ class ViewTest extends CakeTestCase {
 		$this->assertTrue(is_object($helpers['form']));
 		$this->assertTrue(is_object($helpers['form']->Html));
 		$this->assertTrue(is_object($helpers['ajax']->Html));
-		$this->assertTrue(is_object($helpers['testPluginHelper']->TestPluginOtherHelper));
+		$this->assertTrue(is_object($helpers['pluggedHelper']->OtherHelper));
 	}
 /**
  * testRender method
@@ -610,7 +613,7 @@ class ViewTest extends CakeTestCase {
 		@unlink($path);
 	}
 /**
- * testRenderNocache method 
+ * testRenderNocache method
  *
  * @access public
  * @return void

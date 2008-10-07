@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: file.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: file.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * File Storage engine for cache
  *
@@ -20,9 +20,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.cache
  * @since			CakePHP(tm) v 1.2.0.4933
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -86,12 +86,12 @@ class FileEngine extends CacheEngine {
 		));
 		if(!isset($this->__File)) {
 			if (!class_exists('File')) {
-				uses('file');
+				require LIBS . 'file.php';
 			}
 			$this->__File =& new File($this->settings['path'] . DS . 'cake');
 		}
 
-		if(substr(PHP_OS, 0, 3) == "WIN") {
+		if (DIRECTORY_SEPARATOR === '\\') {
 			$this->settings['isWindows'] = true;
 		}
 
@@ -128,9 +128,6 @@ class FileEngine extends CacheEngine {
 			return false;
 		}
 
-		if ($duration == null) {
-			$duration = $this->settings['duration'];
-		}
 		$lineBreak = "\n";
 
 		if ($this->settings['isWindows']) {
@@ -162,15 +159,16 @@ class FileEngine extends CacheEngine {
  * @access public
  */
 	function read($key) {
-		if($this->__setKey($key) === false || !$this->__init) {
+		if($this->__setKey($key) === false || !$this->__init || !$this->__File->exists()) {
 			return false;
 		}
 		if ($this->settings['lock']) {
 			$this->__File->lock = true;
 		}
-		$cachetime = $this->__File->read(11);
+		$time = time();
+		$cachetime = intval($this->__File->read(11));
 
-		if ($cachetime !== false && intval($cachetime) < time()) {
+		if ($cachetime !== false && ($cachetime < $time || ($time + $this->settings['duration']) < $cachetime)) {
 			$this->__File->close();
 			$this->__File->delete();
 			return false;
@@ -181,7 +179,7 @@ class FileEngine extends CacheEngine {
 			if ($this->settings['isWindows']) {
 				$data = str_replace('\\\\\\\\', '\\', $data);
 			}
-			$data = unserialize($data);
+			$data = unserialize((string)$data);
 		}
 		$this->__File->close();
 		return $data;

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: view.ctp 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: view.ctp 7690 2008-10-02 04:56:53Z nate $ */
 /**
  *
  * PHP versions 4 and 5
@@ -18,9 +18,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view.templates.scaffolds
  * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 ?>
@@ -40,14 +40,14 @@ foreach ($scaffoldFields as $_field) {
 			if($_field === $_details['foreignKey']) {
 				$isKey = true;
 				echo "\t\t<dt{$class}>".Inflector::humanize($_alias)."</dt>\n";
-				echo "\t\t<dd{$class}>\n\t\t\t" . $html->link(${$singularVar}[$_alias][$_details['displayField']], array('controller'=> $_details['controller'], 'action'=>'view', ${$singularVar}[$_alias][$_details['primaryKey']])) . "\n\t\t</dd>\n";
+				echo "\t\t<dd{$class}>\n\t\t\t" . $html->link(${$singularVar}[$_alias][$_details['displayField']], array('controller'=> $_details['controller'], 'action'=>'view', ${$singularVar}[$_alias][$_details['primaryKey']])) . "\n\t\t&nbsp;</dd>\n";
 				break;
 			}
 		}
 	}
 	if($isKey !== true) {
 		echo "\t\t<dt{$class}>".Inflector::humanize($_field)."</dt>\n";
-		echo "\t\t<dd{$class}>\n\t\t\t" . ${$singularVar}[$modelClass][$_field] . " \n\t\t</dd>\n";
+		echo "\t\t<dd{$class}>\n\t\t\t{${$singularVar}[$modelClass][$_field]}\n&nbsp;\t\t</dd>\n";
 	}
 }
 ?>
@@ -97,7 +97,7 @@ foreach ($associations['hasOne'] as $_alias => $_details): ?>
 <?php endif; ?>
 	<div class="actions">
 		<ul>
-			<li><?php echo $html->link(sprintf(__('Edit %s', true), Inflector::humanize(Inflector::underscore($_alias))), array('controller'=> $details['controller'], 'action'=>'edit', ${$singularVar}[$_alias][$_details['primaryKey']]))."</li>\n";?>
+			<li><?php echo $html->link(sprintf(__('Edit %s', true), Inflector::humanize(Inflector::underscore($_alias))), array('controller'=> $_details['controller'], 'action'=>'edit', ${$singularVar}[$_alias][$_details['primaryKey']]))."</li>\n";?>
 		</ul>
 	</div>
 </div>

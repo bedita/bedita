@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: xcache.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: xcache.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs.cache
  * @since			CakePHP(tm) v 1.2.0.5434
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!class_exists('Cache')) {
@@ -38,7 +38,7 @@ if (!class_exists('Cache')) {
 class XcacheEngineTest extends UnitTestCase {
 /**
  * skip method
- * 
+ *
  * @access public
  * @return void
  */
@@ -51,7 +51,7 @@ class XcacheEngineTest extends UnitTestCase {
 	}
 /**
  * setUp method
- * 
+ *
  * @access public
  * @return void
  */
@@ -60,7 +60,7 @@ class XcacheEngineTest extends UnitTestCase {
 	}
 /**
  * testSettings method
- * 
+ *
  * @access public
  * @return void
  */
@@ -70,14 +70,14 @@ class XcacheEngineTest extends UnitTestCase {
 						'duration'=> 3600,
 						'probability' => 100,
 						'engine' => 'Xcache',
-						'PHP_AUTH_USER' => 'cake',
-						'PHP_AUTH_PW' => 'cake',
+						'PHP_AUTH_USER' => 'user',
+						'PHP_AUTH_PW' => 'password',
 						);
 		$this->assertEqual($settings, $expecting);
 	}
 /**
  * testReadAndWriteCache method
- * 
+ *
  * @access public
  * @return void
  */
@@ -96,11 +96,13 @@ class XcacheEngineTest extends UnitTestCase {
 	}
 /**
  * testExpiry method
- * 
+ *
  * @access public
  * @return void
  */
 	function testExpiry() {
+		Cache::engine('Xcache', array('duration' => 4));
+
 		sleep(3);
 		$result = Cache::read('test');
 		$this->assertFalse($result);
@@ -109,7 +111,7 @@ class XcacheEngineTest extends UnitTestCase {
 		$result = Cache::write('other_test', $data, 1);
 		$this->assertTrue($result);
 
-		sleep(3);
+		sleep(2);
 		$result = Cache::read('other_test');
 		$this->assertFalse($result);
 
@@ -117,13 +119,15 @@ class XcacheEngineTest extends UnitTestCase {
 		$result = Cache::write('other_test', $data, "+1 second");
 		$this->assertTrue($result);
 
-		sleep(3);
+		sleep(2);
 		$result = Cache::read('other_test');
 		$this->assertFalse($result);
+
+		Cache::engine('Xcache', array('duration' => 3600));
 	}
 /**
  * testDeleteCache method
- * 
+ *
  * @access public
  * @return void
  */
@@ -137,7 +141,7 @@ class XcacheEngineTest extends UnitTestCase {
 	}
 /**
  * tearDown method
- * 
+ *
  * @access public
  * @return void
  */

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_mysql.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: dbo_mysql.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * MySQL layer for DBO
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.datasources.dbo
  * @since			CakePHP(tm) v 0.10.5.1790
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -137,7 +137,9 @@ class DboMysql extends DboSource {
  * @return boolean True if the database could be disconnected, else false
  */
 	function disconnect() {
-		@mysql_free_result($this->results);
+		if (isset($this->results) && is_resource($this->results)) {
+			mysql_free_result($this->results);
+		}
 		$this->connected = !@mysql_close($this->connection);
 		return !$this->connected;
 	}
@@ -224,7 +226,7 @@ class DboMysql extends DboSource {
 			return $parent;
 		} elseif ($data === null || (is_array($data) && empty($data))) {
 			return 'NULL';
-		} elseif ($data === '') {
+		} elseif ($data === '' && $column !== 'integer' && $column !== 'float' && $column !== 'boolean') {
 			return  "''";
 		}
 		if (empty($column)) {
@@ -237,12 +239,14 @@ class DboMysql extends DboSource {
 			break;
 			case 'integer':
 			case 'float':
-				if ((is_int($data) || is_float($data)) || (
-					is_numeric($data) && strpos($data, ',') === false &&
-					$data[0] != '0' && strpos($data, 'e') === false
-				)) {
-					return $data;
+				if ($data === '') {
+					return 'NULL';
 				}
+				if ((is_int($data) || is_float($data) || $data === '0') || (
+					is_numeric($data) && strpos($data, ',') === false &&
+					$data[0] != '0' && strpos($data, 'e') === false)) {
+						return $data;
+					}
 			default:
 				$data = "'" . mysql_real_escape_string($data, $this->connection) . "'";
 			break;
@@ -269,14 +273,16 @@ class DboMysql extends DboSource {
 			$combined = array_combine($fields, $values);
 		}
 
+		$alias = $joins = false;
 		$fields = $this->_prepareUpdateFields($model, $combined, empty($conditions), !empty($conditions));
 		$fields = join(', ', $fields);
 		$table = $this->fullTableName($model);
-		$alias = $this->name($model->alias);
-		$joins = implode(' ', $this->_getJoins($model));
 
-		if (empty($conditions)) {
-			$alias = $joins = false;
+		if (!empty($conditions)) {
+			$alias = $this->name($model->alias);
+			if ($model->name == $model->alias) {
+				$joins = implode(' ', $this->_getJoins($model));
+			}
 		}
 		$conditions = $this->conditions($this->defaultConditions($model, $conditions, $alias), true, true, $model);
 
@@ -350,8 +356,8 @@ class DboMysql extends DboSource {
  * @return integer Number of rows in resultset
  */
 	function lastNumRows() {
-		if ($this->_result) {
-			return @mysql_num_rows($this->_result);
+		if ($this->hasResult()) {
+			return mysql_num_rows($this->_result);
 		}
 		return null;
 	}
@@ -425,6 +431,9 @@ class DboMysql extends DboSource {
  * @param unknown_type $results
  */
 	function resultSet(&$results) {
+		if (isset($this->results) && is_resource($this->results) && $this->results != $results) {
+			mysql_free_result($this->results);
+		}
 		$this->results =& $results;
 		$this->map = array();
 		$num_fields = mysql_num_fields($results);
@@ -507,7 +516,7 @@ class DboMysql extends DboSource {
 			foreach ($keys as $i => $key) {
 				if(!isset($index[$key['Key_name']])) {
 					$index[$key['Key_name']]['column'] = $key['Column_name'];
-					$index[$key['Key_name']]['unique'] = ife($key['Non_unique'] == 0, 1, 0);
+					$index[$key['Key_name']]['unique'] = intval($key['Non_unique'] == 0);
 				} else {
 					if(!is_array($index[$key['Key_name']]['column'])) {
 						$col[] = $index[$key['Key_name']]['column'];

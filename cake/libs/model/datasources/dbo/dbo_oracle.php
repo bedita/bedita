@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_oracle.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: dbo_oracle.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Oracle layer for DBO.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.datasources.dbo
  * @since			CakePHP v 1.2.0.4041
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -343,7 +343,7 @@ class DboOracle extends DboSource {
 			$this->_setError($this->_statementId);
 			return false;
 		}
-		
+
 		$this->_setError(null, true);
 
 		switch(ocistatementtype($this->_statementId)) {
@@ -394,6 +394,10 @@ class DboOracle extends DboSource {
 		}
 		$this->_currentRow++;
 		return $resultRow;
+	}
+
+	function fetchResult() {
+		return $this->fetchRow();
 	}
 /**
  * Checks to see if a named sequence exists
@@ -469,7 +473,7 @@ class DboOracle extends DboSource {
 			$this->_sequenceMap[$model->table] = $model->sequence;
 		} elseif (!empty($model->table)) {
 			$this->_sequenceMap[$model->table] = $model->table . '_seq';
-		} 
+		}
 
 		$cache = parent::describe($model);
 
@@ -646,7 +650,7 @@ class DboOracle extends DboSource {
 				}
 				if(!isset($index[$key])) {
 					$index[$key]['column'] = strtolower($idx['cc']['column_name']);
-					$index[$key]['unique'] = ife($idx['i']['uniqueness'] == 'UNIQUE', 1, 0);
+					$index[$key]['unique'] = intval($idx['i']['uniqueness'] == 'UNIQUE');
 				} else {
 					if(!is_array($index[$key]['column'])) {
 						$col[] = $index[$key]['column'];
@@ -964,6 +968,7 @@ class DboOracle extends DboSource {
 					$ins = array_chunk($ins, 1000);
 					foreach ($ins as $i) {
 						$q = str_replace('{$__cakeID__$}', join(', ', $i), $query);
+						$q = str_replace('= (', 'IN (', $q);
 						$res = $this->fetchAll($q, $model->cacheQueries, $model->alias);
 						$fetch = array_merge($fetch, $res);
 					}
@@ -1007,8 +1012,9 @@ class DboOracle extends DboSource {
 					$ins = array_chunk($ins, 1000);
 					foreach ($ins as $i) {
 						$q = str_replace('{$__cakeID__$}', '(' .join(', ', $i) .')', $query);
-						$q = str_replace('=  (', 'IN (', $q);
+						$q = str_replace('= (', 'IN (', $q);
 						$q = str_replace('  WHERE 1 = 1', '', $q);
+
 
 						$q = $this->insertQueryData($q, null, $association, $assocData, $model, $linkModel, $stack);
 						if ($q != false) {

@@ -1,4 +1,4 @@
-/* SVN FILE: $Id: cake.generic.css 7118 2008-06-04 20:49:29Z gwoo $ */
+/* SVN FILE: $Id: cake.generic.css 7690 2008-10-02 04:56:53Z nate $ */
 /**
  *
  * PHP versions 4 and 5
@@ -17,11 +17,12 @@
  * @package			cake
  * @subpackage		cake.app.webroot.css
  * @since			CakePHP(tm)
- * @version			$Revision: 7118 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
+
 
 * {
 	margin:0;
@@ -231,12 +232,11 @@ fieldset legend {
 fieldset fieldset {
 	margin-top: 0px;
 	margin-bottom: 20px;
-	padding: 16px 0;
+	padding: 16px 10px;
 }
 fieldset fieldset legend {
 	font-size: 120%;
 	font-weight: normal;
-	margin-left: 20px;
 }
 fieldset fieldset div {
 	clear: left;
@@ -268,7 +268,6 @@ label {
 }
 input, textarea {
 	clear: both;
-	display: block;
 	font-size: 140%;
 	font-family: "frutiger linotype", "lucida grande", "verdana", sans-serif;
 	padding: 2px;
@@ -291,6 +290,14 @@ input[type=checkbox] {
 	float: left;
 	margin: 0px 6px 7px 2px;
 	width: auto;
+}
+input[type=radio] {
+	float:left;
+	width:auto;
+	margin: 0 3px 7px 0;
+}
+div.radio label {
+	margin: 0 0 6px 20px;
 }
 input[type=submit] {
 	display: inline;

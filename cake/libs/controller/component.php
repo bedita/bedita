@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: component.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: component.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  *
  * PHP versions 4 and 5
@@ -18,9 +18,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.controller
  * @since			CakePHP(tm) v TBD
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -55,6 +55,7 @@ class Component extends Object {
  * Used to initialize the components for current controller
  *
  * @param object $controller Controller with components to load
+ * @return void
  * @access public
  */
 	function init(&$controller) {
@@ -73,6 +74,7 @@ class Component extends Object {
  * Called before the Controller::beforeFilter()
  *
  * @param object $controller Controller with components to initialize
+ * @return void
  * @access public
  */
 	function initialize(&$controller) {
@@ -91,6 +93,7 @@ class Component extends Object {
  * Called after the Controller::beforeFilter() and before the controller action
  *
  * @param object $controller Controller with components to startup
+ * @return void
  * @access public
  */
 	function startup(&$controller) {
@@ -105,6 +108,7 @@ class Component extends Object {
  * Called after the Controller::beforeRender(), after the view class is loaded, and before the Controller::render()
  *
  * @param object $controller Controller with components to beforeRender
+ * @return void
  * @access public
  */
 	function beforeRender(&$controller) {
@@ -119,6 +123,7 @@ class Component extends Object {
  * Called before Controller::redirect();
  *
  * @param object $controller Controller with components to beforeRedirect
+ * @return void
  * @access public
  */
 	function beforeRedirect(&$controller, $url, $status = null, $exit = true) {
@@ -139,6 +144,7 @@ class Component extends Object {
  * Called after Controller::render() and before the output is printed to the browser
  *
  * @param object $controller Controller with components to shutdown
+ * @return void
  * @access public
  */
 	function shutdown(&$controller) {
@@ -164,13 +170,15 @@ class Component extends Object {
 		if (is_array($object->components)) {
 			$normal = Set::normalize($object->components);
 			foreach ($normal as $component => $config) {
-				$parts = preg_split('/\/|\./', $component);
+				$plugin = null;
 
-				if (count($parts) === 1) {
+				if (isset($this->__controllerVars['plugin'])) {
 					$plugin = $this->__controllerVars['plugin'] . '.';
-				} else {
-					$plugin = Inflector::underscore($parts['0']) . '.';
-					$component = array_pop($parts);
+				}
+
+				if (strpos($component, '.') !== false) {
+					list($plugin, $component) = explode('.', $component);
+					$plugin = $plugin . '.';
 				}
 				$componentCn = $component . 'Component';
 
@@ -209,7 +217,7 @@ class Component extends Object {
 						$this->__settings[$component] = $config;
 					}
 				} else {
-					if ($componentCn == 'SessionComponent') {
+					if ($componentCn === 'SessionComponent') {
 						$object->{$component} =& new $componentCn($base);
 					} else {
 						$object->{$component} =& new $componentCn();

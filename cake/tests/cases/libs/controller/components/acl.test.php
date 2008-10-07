@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: acl.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: acl.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs.controller.components
  * @since			CakePHP(tm) v 1.2.0.5435
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
@@ -323,8 +323,7 @@ class AclComponentTest extends CakeTestCase {
 		$this->expectError("ACO permissions key foobar does not exist in DbAcl::check()");
 		$this->assertFalse($this->Acl->check('Lumbergh', 'smash', 'foobar'));
 
-		//The next assertion should generate an error but only returns false.
-		//$this->expectError("DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:\nAro: users\nAco: NonExistant");
+		$this->expectError("DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:\nAro: users\nAco: NonExistant");
 		$this->assertFalse($this->Acl->check('users', 'NonExistant', 'read'));
 
 		$this->assertFalse($this->Acl->check(null, 'printers', 'create'));

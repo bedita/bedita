@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: inflector.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: inflector.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs
  * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'Inflector');
@@ -34,7 +34,7 @@ App::import('Core', 'Inflector');
  * @package    cake.tests
  * @subpackage cake.tests.cases.libs
  */
-class InflectorTest extends UnitTestCase {
+class InflectorTest extends CakeTestCase {
 /**
  * Inflector property
  * 
@@ -98,6 +98,13 @@ class InflectorTest extends UnitTestCase {
 		$this->assertEqual(Inflector::singularize('termini'), 'terminus');
 		$this->assertEqual(Inflector::singularize('viri'), 'virus');
 		$this->assertEqual(Inflector::singularize('people'), 'person');
+		$this->assertEqual(Inflector::singularize('gloves'), 'glove');
+		$this->assertEqual(Inflector::singularize('doves'), 'dove');
+		$this->assertEqual(Inflector::singularize('lives'), 'life');
+		$this->assertEqual(Inflector::singularize('knives'), 'knife');
+		$this->assertEqual(Inflector::singularize('wolves'), 'wolf');
+		$this->assertEqual(Inflector::singularize('shelves'), 'shelf');
+		$this->assertEqual(Inflector::singularize(''), '');
 	}
 /**
  * testInflectingPlurals method
@@ -138,6 +145,8 @@ class InflectorTest extends UnitTestCase {
 		$this->assertEqual(Inflector::pluralize('virus'), 'viri');
 		$this->assertEqual(Inflector::pluralize('person'), 'people');
 		$this->assertEqual(Inflector::pluralize('people'), 'people');
+		$this->assertEqual(Inflector::pluralize('glove'), 'gloves');
+		$this->assertEqual(Inflector::pluralize(''), '');		
 	}
 /**
  * testInflectorSlug method

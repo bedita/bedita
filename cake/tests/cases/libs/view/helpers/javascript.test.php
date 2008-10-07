@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: javascript.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: javascript.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,13 +21,13 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs.view.helpers
  * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-uses('view'.DS.'helpers'.DS.'app_helper', 'view'.DS.'helper', 'view'.DS.'helpers'.DS.'javascript','view'.DS.'view',
-	'view'.DS.'helpers'.DS.'html', 'view'.DS.'helpers'.DS.'form', 'class_registry', 'controller'.DS.'controller');
+App::import('Core', array('Controller', 'View', 'ClassRegistry', 'View'));
+App::import('Helper', array('Javascript', 'Html', 'Form'));
 /**
  * TheJsTestController class
  * 
@@ -96,7 +96,7 @@ class TestJavascriptObject {
  * @subpackage test_suite.cases.libs
  * @since      CakePHP Test Suite v 1.0.0.0
  */
-class JavascriptTest extends UnitTestCase {
+class JavascriptTest extends CakeTestCase {
 /**
  * setUp method
  * 
@@ -417,6 +417,9 @@ class JavascriptTest extends UnitTestCase {
 		$this->assertPattern('/^<script[^<>]+type="text\/javascript">something<\/script>$/', $result);
 		$this->assertPattern('/^<script[^<>]+type="text\/javascript"[^<>]*>/', $result);
 		$this->assertNoPattern('/^<script[^type]=[^<>]*>/', $result);
+
+		$result = $this->Javascript->blockEnd();
+		$this->assertPattern('/^<\/script>$/', $result);
 
 		$result = $this->Javascript->codeBlock('something', array('safe' => true));
 		$this->assertPattern('/^<script[^<>]+>\s*' . str_replace('/', '\\/', preg_quote('//<![CDATA[')) . '\s*something\s*' . str_replace('/', '\\/', preg_quote('//]]>')) . '\s*<\/script>$/', $result);

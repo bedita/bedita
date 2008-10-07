@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: sanitize.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: sanitize.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,46 +21,55 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs
  * @since			CakePHP(tm) v 1.2.0.5428
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'Sanitize');
-
-if (!class_exists('DataTest')) {
 /**
  * DataTest class
  * 
  * @package              cake
  * @subpackage           cake.tests.cases.libs
  */
-	class DataTest extends CakeTestModel {
+class SanitizeDataTest extends CakeTestModel {
 /**
  * name property
  * 
- * @var string 'DataTest'
+ * @var string 'SanitizeDataTest'
  * @access public
  */
-		var $name = 'DataTest';
-	}
+	var $name = 'SanitizeDataTest';
+/**
+ * useTable property
+ * 
+ * @var string 'data_tests'
+ * @access public
+ */
+	var $useTable = 'data_tests';
 }
-if (!class_exists('Article')) {
 /**
  * Article class
  * 
  * @package              cake
  * @subpackage           cake.tests.cases.libs
  */
-	class Article extends CakeTestModel {
+class SanitizeArticle extends CakeTestModel {
 /**
  * name property
  * 
  * @var string 'Article'
  * @access public
  */
-		var $name = 'Article';
-	}
+	var $name = 'SanitizeArticle';
+/**
+ * useTable property
+ * 
+ * @var string 'articles'
+ * @access public
+ */
+	var $useTable = 'articles';
 }
 /**
  * Short description for class.
@@ -69,21 +78,21 @@ if (!class_exists('Article')) {
  * @subpackage cake.tests.cases.libs
  */
 class SanitizeTest extends CakeTestCase {
-	/**
+/**
  * autoFixtures property
  * 
  * @var bool false
  * @access public
  */
 	var $autoFixtures = false;
-	/**
+/**
  * fixtures property
  * 
  * @var array
  * @access public
  */
 	var $fixtures = array('core.data_test', 'core.article');
-	/**
+/**
  * startTest method
  * 
  * @param mixed $method 
@@ -378,7 +387,7 @@ class SanitizeTest extends CakeTestCase {
 	function testFormatColumns() {
 		$this->loadFixtures('DataTest', 'Article');
 		
-		$this->DataTest =& new DataTest();
+		$this->DataTest =& new SanitizeDataTest(array('alias' => 'DataTest'));
 		$data = array('DataTest' => array(
 						'id' => 'z',
 						'count' => '12a',
@@ -397,7 +406,7 @@ class SanitizeTest extends CakeTestCase {
 		$result = $this->DataTest->data;
 		$this->assertEqual($result, $expected);
 		
-		$this->Article =& new Article();
+		$this->Article =& new SanitizeArticle(array('alias' => 'Article'));
 		$data = array('Article' => array(
 			'id' => 'ZB',
 			'user_id' => '12',

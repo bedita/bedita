@@ -1,6 +1,6 @@
 #!/usr/bin/php -q
 <?php
-/* SVN FILE: $Id: cake.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: cake.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Command-line code generation utility to automate programmer chores.
  *
@@ -22,9 +22,9 @@
  * @package			cake
  * @subpackage		cake.cake.console
  * @since			CakePHP(tm) v 1.2.0.5012
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -147,7 +147,7 @@ class ShellDispatcher {
 		}
 
 		if (!defined('CAKE_CORE_INCLUDE_PATH')) {
-			define('PHP5', (phpversion() >= 5));
+			define('PHP5', (PHP_VERSION >= 5));
 			define('DS', DIRECTORY_SEPARATOR);
 			define('CAKE_CORE_INCLUDE_PATH', dirname(dirname(dirname(__FILE__))));
 			define('CORE_PATH', CAKE_CORE_INCLUDE_PATH . DS);
@@ -404,9 +404,8 @@ class ShellDispatcher {
 
 		if ($default != null && empty($result)) {
 			return $default;
-		} else {
-			return $result;
 		}
+		return $result;
 	}
 /**
  * Outputs to the stdout filehandle.
@@ -464,7 +463,7 @@ class ShellDispatcher {
 		}
 
 		$params['app'] = basename($params['app']);
-		$params['working'] = $params['root'] . '/' . $params['app'];
+		$params['working'] = rtrim($params['root'], '/') . '/' . $params['app'];
 
 		if (!empty($matches[0]) || !empty($isWin)) {
 			$params = str_replace('/', '\\', $params);

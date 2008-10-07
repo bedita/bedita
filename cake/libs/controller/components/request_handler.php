@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: request_handler.php 7118 2008-06-04 20:49:29Z gwoo $ */
+/* SVN FILE: $Id: request_handler.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Request object for handling alternative HTTP requests
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.controller.components
  * @since			CakePHP(tm) v 0.10.4.1076
- * @version			$Revision: 7118 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -157,6 +157,7 @@ class RequestHandlerComponent extends Object {
  * as the first item.
  *
  * @param object $controller A reference to the controller
+ * @return void
  * @see Router::parseExtensions()
  * @access public
  */
@@ -180,6 +181,7 @@ class RequestHandlerComponent extends Object {
  *   to the $data property of the controller, which can then be saved to a model object.
  *
  * @param object $controller A reference to the controller
+ * @return void
  * @access public
  */
 	function startup(&$controller) {
@@ -359,6 +361,7 @@ class RequestHandlerComponent extends Object {
  * @param string $name The name of the Content-type, i.e. "html", "xml", "css"
  * @param mixed $type The Content-type or array of Content-types assigned to the name,
  *                    i.e. "text/html", or "application/xml"
+ * @return void
  * @access public
  */
 	function setContent($name, $type = null) {
@@ -382,7 +385,7 @@ class RequestHandlerComponent extends Object {
 		if (env('HTTP_X_FORWARDED_HOST') != null) {
 			$sess_host = env('HTTP_X_FORWARDED_HOST');
 		}
-		return trim(preg_replace('/:.*/', '', $sess_host));
+		return trim(preg_replace('/(?:\:.*)/', '', $sess_host));
 	}
 /**
  * Gets remote client IP
@@ -392,7 +395,7 @@ class RequestHandlerComponent extends Object {
  */
 	function getClientIP() {
 		if (env('HTTP_X_FORWARDED_FOR') != null) {
-			$ipaddr = preg_replace('/,.*/', '', env('HTTP_X_FORWARDED_FOR'));
+			$ipaddr = preg_replace('/(?:,.*)/', '', env('HTTP_X_FORWARDED_FOR'));
 		} else {
 			if (env('HTTP_CLIENT_IP') != null) {
 				$ipaddr = env('HTTP_CLIENT_IP');
@@ -405,7 +408,7 @@ class RequestHandlerComponent extends Object {
 			$tmpipaddr = env('HTTP_CLIENTADDRESS');
 
 			if (!empty($tmpipaddr)) {
-				$ipaddr = preg_replace('/,.*/', '', $tmpipaddr);
+				$ipaddr = preg_replace('/(?:,.*)/', '', $tmpipaddr);
 			}
 		}
 		return trim($ipaddr);
@@ -439,7 +442,7 @@ class RequestHandlerComponent extends Object {
 			return false;
 		} elseif (is_string($type)) {
 
-			if (!in_array($type, array_keys($this->__requestContent))) {
+			if (!isset($this->__requestContent[$type])) {
 				return false;
 			}
 
@@ -462,6 +465,7 @@ class RequestHandlerComponent extends Object {
  * Determines the content type of the data the client has sent (i.e. in a POST request)
  *
  * @param mixed $type Can be null (or no parameter), a string type name, or an array of types
+ * @return mixed
  * @access public
  */
 	function requestedWith($type = null) {
@@ -469,8 +473,9 @@ class RequestHandlerComponent extends Object {
 			return null;
 		}
 
+		list($contentType) = explode(';', env('CONTENT_TYPE'));
 		if ($type == null) {
-			return $this->mapType(env('CONTENT_TYPE'));
+			return $this->mapType($contentType);
 		} elseif (is_array($type)) {
 			foreach ($type as $t) {
 				if ($this->requestedWith($t)) {
@@ -479,7 +484,7 @@ class RequestHandlerComponent extends Object {
 			}
 			return false;
 		} elseif (is_string($type)) {
-			return ($type == $this->mapType(env('CONTENT_TYPE')));
+			return ($type == $this->mapType($contentType));
 		}
 	}
 /**
@@ -499,41 +504,53 @@ class RequestHandlerComponent extends Object {
  */
 	function prefers($type = null) {
 		$this->__initializeTypes();
+		$accept = $this->accepts();
+
 		if ($type == null) {
 			if (empty($this->ext)) {
-				$accept = $this->accepts(null);
 				if (is_array($accept)) {
 					return $accept[0];
 				}
 				return $accept;
-			} else {
-				return $this->ext;
 			}
+			return $this->ext;
 		}
-		App::import('Core', 'Set');
-		$types = Set::normalize($type, false);
+
+		if (is_string($type)) {
+			$types = array($type);
+		}
+
+		if (count($types) === 1) {
+			if (!empty($this->ext)) {
+				return ($types[0] == $this->ext);
+			}
+			return ($types[0] == $accept[0]);
+		}
 		$accepts = array();
 
 		foreach ($types as $type) {
-			if ($this->accepts($type)) {
+			if (in_array($type, $accept)) {
 				$accepts[] = $type;
 			}
 		}
 
-		if (count($accepts) == 0) {
+		if (count($accepts) === 0) {
 			return false;
-		} elseif (count($accepts) == 1) {
-			return $accepts[0];
-		} else {
-			$accepts = array_intersect($this->__acceptTypes, $accepts);
-			return $accepts[0];
+		} elseif (count($types) === 1) {
+			return ($types[0] === $accepts[0]);
+		} elseif (count($accepts) === 1) {
+            return $accepts[0];
 		}
+
+		$accepts = array_intersect($this->__acceptTypes, $accepts);
+		return $accepts[0];
 	}
 /**
  * Sets the layout and template paths for the content type defined by $type.
  *
  * @param object $controller A reference to a controller object
  * @param string $type Type of response to send (e.g: 'ajax')
+ * @return void
  * @access public
  * @see RequestHandlerComponent::setContent()
  * @see RequestHandlerComponent::respondAs()
@@ -555,12 +572,12 @@ class RequestHandlerComponent extends Object {
 		if (empty($this->__renderType)) {
 			$controller->viewPath .= '/' . $type;
 		} else {
-			$controller->viewPath = preg_replace("/\/{$type}$/", '/' . $type, $controller->viewPath);
+			$controller->viewPath = preg_replace("/(?:\/{$type})$/", '/' . $type, $controller->viewPath);
 		}
 		$this->__renderType = $type;
 		$controller->layoutPath = $type;
 
-		if (in_array($type, array_keys($this->__requestContent))) {
+		if (isset($this->__requestContent[$type])) {
 			$this->respondAs($type, $options);
 		}
 
@@ -632,9 +649,9 @@ class RequestHandlerComponent extends Object {
 			}
 			$this->__responseTypeSet = $cType;
 			return true;
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 /**
  * Returns the current response type (Content-type header), or null if none has been set

@@ -1,5 +1,5 @@
 <?php 
-/* SVN FILE: $Id$ */
+/* SVN FILE: $Id: ad_fixture.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for ad_fixture.php
  * 
@@ -18,9 +18,9 @@
  * @package              cake
  * @subpackage           cake.tests.fixtures
  * @since                1.2
- * @version              $Revision$
- * @modifiedBy           $LastChangedBy$
- * @lastModified         $Date$
+ * @version              $Revision: 7690 $
+ * @modifiedBy           $LastChangedBy: nate $
+ * @lastModified         $Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license              http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**

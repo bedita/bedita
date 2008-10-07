@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_db2.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: dbo_db2.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * IBM DB2 for DBO
  *
@@ -23,9 +23,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.datasources.dbo
  * @since			CakePHP(tm) v 0.10.5.1790
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -278,13 +278,10 @@ class DboDb2 extends DboSource {
 			break;
 		}
 
-		// TODO: Make sure this isn't catching other numeric values
-		// that are going into string columns.
-		if ($column == 'integer' || is_numeric($data)) {
+		if ($column == 'integer' || $column == 'float') {
 			return $data;
-		} else {
-			return "'" . $data . "'";
 		}
+		return "'" . $data . "'";
 	}
 /**
  * Not sure about this one, MySQL needs it but does ODBC?  Safer just to leave it
@@ -563,9 +560,8 @@ class DboDb2 extends DboSource {
 				$i++;
 			}
 			return $resultRow;
-		} else {
-			return false;
 		}
+		return false;
 	}
 }
 ?>

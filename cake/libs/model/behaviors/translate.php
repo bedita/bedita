@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: translate.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: translate.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.behaviors
  * @since			CakePHP(tm) v 1.2.0.4525
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -51,6 +51,10 @@ class TranslateBehavior extends ModelBehavior {
  *
  * $config could be empty - and translations configured dynamically by
  * bindTranslation() method
+ * 
+ * @param array $config
+ * @return mixed
+ * @access public
  */
 	function setup(&$model, $config = array()) {
 		$db =& ConnectionManager::getDataSource($model->useDbConfig);
@@ -66,6 +70,9 @@ class TranslateBehavior extends ModelBehavior {
 	}
 /**
  * Callback
+ * 
+ * @return void
+ * @access public
  */
 	function cleanup(&$model) {
 		$this->unbindTranslation($model);
@@ -73,7 +80,11 @@ class TranslateBehavior extends ModelBehavior {
 		unset($this->runtime[$model->alias]);
 	}
 /**
- * Callback
+ * beforeFind Callback
+ * 
+ * @param array $query 
+ * @return array Modified query
+ * @access public
  */
 	function beforeFind(&$model, $query) {
 		$locale = $this->_getLocale($model);
@@ -91,7 +102,7 @@ class TranslateBehavior extends ModelBehavior {
 				'alias' => $RuntimeModel->alias,
 				'table' => $db->name($tablePrefix . $RuntimeModel->useTable),
 				'conditions' => array(
-					$model->alias.'.id' => $db->identifier($RuntimeModel->alias.'.foreign_key'),
+					$model->alias . '.' . $model->primaryKey => $db->identifier($RuntimeModel->alias.'.foreign_key'),
 					$RuntimeModel->alias.'.model' => $model->name,
 					$RuntimeModel->alias.'.locale' => $locale
 				)
@@ -121,7 +132,7 @@ class TranslateBehavior extends ModelBehavior {
 		$addFields = array();
 		if (is_array($query['fields'])) {
 			foreach ($fields as $key => $value) {
-				$field = ife(is_numeric($key), $value, $key);
+				$field = (is_numeric($key)) ? $value : $key;
 
 				if (in_array($model->alias.'.*', $query['fields']) || $autoFields || in_array($model->alias.'.'.$field, $query['fields']) || in_array($field, $query['fields'])) {
 					$addFields[] = $field;
@@ -147,7 +158,7 @@ class TranslateBehavior extends ModelBehavior {
 							'alias' => 'I18n__'.$field.'__'.$_locale,
 							'table' => $db->name($tablePrefix . $RuntimeModel->useTable),
 							'conditions' => array(
-								$model->alias.'.id' => $db->identifier("I18n__{$field}__{$_locale}.foreign_key"),
+								$model->alias . '.' . $model->primaryKey => $db->identifier("I18n__{$field}__{$_locale}.foreign_key"),
 								'I18n__'.$field.'__'.$_locale.'.model' => $model->name,
 								'I18n__'.$field.'__'.$_locale.'.'.$RuntimeModel->displayField => $field,
 								'I18n__'.$field.'__'.$_locale.'.locale' => $_locale
@@ -161,7 +172,7 @@ class TranslateBehavior extends ModelBehavior {
 						'alias' => 'I18n__'.$field,
 						'table' => $db->name($tablePrefix . $RuntimeModel->useTable),
 						'conditions' => array(
-							$model->alias.'.id' => $db->identifier("I18n__{$field}.foreign_key"),
+							$model->alias . '.' . $model->primaryKey => $db->identifier("I18n__{$field}.foreign_key"),
 							'I18n__'.$field.'.model' => $model->name,
 							'I18n__'.$field.'.'.$RuntimeModel->displayField => $field
 						)
@@ -182,7 +193,12 @@ class TranslateBehavior extends ModelBehavior {
 		return $query;
 	}
 /**
- * Callback
+ * afterFind Callback
+ * 
+ * @param array $results
+ * @param boolean $primary
+ * @return array Modified results
+ * @access public
  */
 	function afterFind(&$model, $results, $primary) {
 		$this->runtime[$model->alias]['fields'] = array();
@@ -194,7 +210,7 @@ class TranslateBehavior extends ModelBehavior {
 		$beforeFind = $this->runtime[$model->alias]['beforeFind'];
 
 		foreach ($results as $key => $row) {
-			$results[$key][$model->alias]['locale'] = ife(is_array($locale), @$locale[0], $locale);
+			$results[$key][$model->alias]['locale'] = (is_array($locale)) ? @$locale[0] : $locale;
 
 			foreach ($beforeFind as $field) {
 				if (is_array($locale)) {
@@ -209,7 +225,10 @@ class TranslateBehavior extends ModelBehavior {
 						$results[$key][$model->alias][$field] = '';
 					}
 				} else {
-					$value = ife(empty($results[$key]['I18n__'.$field]['content']), '', $results[$key]['I18n__'.$field]['content']);
+					$value = '';
+					if (!empty($results[$key]['I18n__'.$field]['content'])) {
+						$value = $results[$key]['I18n__'.$field]['content'];
+					}
 					$results[$key][$model->alias][$field] = $value;
 					unset($results[$key]['I18n__'.$field]);
 				}
@@ -218,7 +237,10 @@ class TranslateBehavior extends ModelBehavior {
 		return $results;
 	}
 /**
- * Callback
+ * beforeValidate Callback
+ * 
+ * @return boolean
+ * @access public
  */
 	function beforeValidate(&$model) {
 		$locale = $this->_getLocale($model);
@@ -229,7 +251,7 @@ class TranslateBehavior extends ModelBehavior {
 		$tempData = array();
 
 		foreach ($fields as $key => $value) {
-			$field = ife(is_numeric($key), $value, $key);
+			$field = (is_numeric($key)) ? $value : $key;
 
 			if (isset($model->data[$model->alias][$field])) {
 				$tempData[$field] = $model->data[$model->alias][$field];
@@ -247,7 +269,11 @@ class TranslateBehavior extends ModelBehavior {
 		return true;
 	}
 /**
- * Callback
+ * afterSave Callback
+ * 
+ * @param boolean $created
+ * @return void
+ * @access public
  */
 	function afterSave(&$model, $created) {
 		if (!isset($this->runtime[$model->alias]['beforeSave'])) {
@@ -286,7 +312,10 @@ class TranslateBehavior extends ModelBehavior {
 		}
 	}
 /**
- * Callback
+ * afterDelete Callback
+ * 
+ * @return void
+ * @access public
  */
 	function afterDelete(&$model) {
 		$RuntimeModel =& $this->translateModel($model);
@@ -297,6 +326,7 @@ class TranslateBehavior extends ModelBehavior {
  * Get selected locale for model
  *
  * @return mixed string or false
+ * @access protected
  */
 	function _getLocale(&$model) {
 		if (!isset($model->locale) || is_null($model->locale)) {
@@ -304,14 +334,17 @@ class TranslateBehavior extends ModelBehavior {
 				App::import('Core', 'i18n');
 			}
 			$I18n =& I18n::getInstance();
+			$I18n->l10n->get(Configure::read('Config.language'));
 			$model->locale = $I18n->l10n->locale;
 		}
+
 		return $model->locale;
 	}
 /**
  * Get instance of model for translations
  *
  * @return object
+ * @access public
  */
 	function &translateModel(&$model) {
 		if (!isset($this->runtime[$model->alias]['model'])) {

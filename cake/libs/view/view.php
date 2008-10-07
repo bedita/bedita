@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: view.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: view.php 7690 2008-10-02 04:56:53Z nate $ */
 
 /**
  * Methods for displaying presentation data in the view.
@@ -20,9 +20,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view
  * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -280,10 +280,14 @@ class View extends Object {
  *
  * This realizes the concept of Elements, (or "partial layouts")
  * and the $params array is used to send data to be used in the
- * Element.
+ * Element.  Elements can be cached through use of the cache key.
  *
  * @param string $name Name of template file in the/app/views/elements/ folder
  * @param array $params Array of data to be made available to the for rendered view (i.e. the Element)
+ *    Special params:
+ *		cache - enable caching for this element accepts boolean or strtotime compatible string. Can also be an array
+ *				if an array,'time' is used to specify duration of cache.  'key' can be used to create unique cache files.
+ *
  * @return string Rendered Element
  * @access public
  */
@@ -392,6 +396,11 @@ class View extends Object {
 	}
 /**
  * Renders a layout. Returns output from _render(). Returns false on error.
+ * Several variables are created for use in layout.
+ *	title_for_layout - contains page title
+ *	content_for_layout - contains rendered view file
+ *	scripts_for_layout - contains scripts added to header
+ *  cakeDebug - if debug is on, cake debug information is added.
  *
  * @param string $content_for_layout Content to render in a view, wrapped by the surrounding layout.
  * @return mixed Rendered output, or false on error
@@ -521,6 +530,7 @@ class View extends Object {
  *
  * @param string $name
  * @param string $content
+ * @return void
  * @access public
  */
 	function addScript($name, $content = null) {
@@ -557,10 +567,8 @@ class View extends Object {
  * @return array An array containing the identity elements of an entity
  */
 	function entity() {
-		return array_values(Set::filter(array(
-			ife($this->association, $this->association, $this->model),
-			$this->modelId, $this->field, $this->fieldSuffix
-		)));
+		$assoc = ($this->association) ? $this->association : $this->model;
+		return array_values(Set::filter(array($assoc, $this->modelId, $this->field, $this->fieldSuffix)));
 	}
 /**
  * Allows a template or element to set a variable that will be available in
@@ -694,19 +702,20 @@ class View extends Object {
 				$options = $helper;
 				$helper = $i;
 			}
-			$parts = preg_split('/\/|\./', $helper);
+			$plugin = $this->plugin;
 
-			if (count($parts) === 1) {
-				$plugin = $this->plugin;
-			} else {
-				$plugin = Inflector::underscore($parts['0']);
-				$helper = $parts[count($parts) - 1];
+			if (strpos($helper, '.') !== false) {
+				list($plugin, $helper) = explode('.', $helper);
 			}
 			$helperCn = $helper . 'Helper';
 
-			if (in_array($helper, array_keys($loaded)) !== true) {
+			if (!isset($loaded[$helper])) {
 				if (!class_exists($helperCn)) {
-					if (is_null($plugin) || !App::import('Helper', $plugin . '.' . $helper)) {
+					$isLoaded = false;
+					if (!is_null($plugin)) {
+						$isLoaded = App::import('Helper', $plugin . '.' . $helper);
+					}
+					if (!$isLoaded) {
 						if (!App::import('Helper', $helper)) {
 							$this->cakeError('missingHelperFile', array(array(
 								'helper' => $helper,
@@ -825,13 +834,12 @@ class View extends Object {
 		$paths = $this->_paths($this->plugin);
 		$file = 'layouts' . DS . $subDir . $name;
 
+		$exts = array($this->ext, '.ctp', '.thtml');
 		foreach ($paths as $path) {
-			if (file_exists($path . $file . $this->ext)) {
-				return $path . $file . $this->ext;
-			} elseif (file_exists($path . $file . '.ctp')) {
-				return $path . $file . '.ctp';
-			} elseif (file_exists($path . $file . '.thtml')) {
-				return $path . $file . '.thtml';
+			foreach ($exts as $ext) {
+				if (file_exists($path . $file . $ext)) {
+					return $path . $file . $ext;
+				}
 			}
 		}
 		return $this->_missingView($paths[0] . $file . $this->ext, 'missingLayout');

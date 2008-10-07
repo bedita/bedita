@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: session.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: session.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,25 +21,44 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs.controller.components
  * @since			CakePHP(tm) v 1.2.0.5436
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-App::import('Core', 'Controller');
+App::import('Core', array('Controller', 'Object'));
 App::import('Component', 'Session');
 /**
  * SessionTestController class
  *
- * @package              cake
- * @subpackage           cake.tests.cases.libs.controller.components
+ * @package		cake.tests
+ * @subpackage	cake.tests.cases.libs.controller.components
  */
-class SessionTestController extends Controller {}
+class SessionTestController extends Controller {
+	var $uses = array();
+
+	function session_id() {
+		return $this->Session->id();
+	}
+}
+/**
+ * OrangeSessionTestController class
+ *
+ * @package		cake.tests
+ * @subpackage	cake.tests.cases.libs.controller.components
+ */
+class OrangeSessionTestController extends Controller {
+	var $uses = array();
+
+	function session_id() {
+		return $this->Session->id();
+	}
+}
 /**
  * Short description for class.
  *
- * @package    cake.tests
- * @subpackage cake.tests.cases.libs.controller.components
+ * @package		cake.tests
+ * @subpackage	cake.tests.cases.libs.controller.components
  */
 class SessionComponentTest extends CakeTestCase {
 /**
@@ -61,6 +80,17 @@ class SessionComponentTest extends CakeTestCase {
 		$this->assertFalse($Session->__started);
 		$Session->startup(new SessionTestController());
 		$this->assertTrue(isset($_SESSION));
+
+		$Object = new Object();
+		$Session =& new SessionComponent();
+		$Session->start();
+		$expected = $Session->id();
+
+		$result = $Object->requestAction('/session_test/session_id');
+		$this->assertEqual($result, $expected);
+
+		$result = $Object->requestAction('/orange_session_test/session_id');
+		$this->assertEqual($result, $expected);
 	}
 /**
  * testSessionInitialize method
@@ -121,6 +151,16 @@ class SessionComponentTest extends CakeTestCase {
 		$this->assertFalse($Session->__active);
 		$this->assertFalse($Session->valid());
 		Configure::write('Session.start', true);
+
+		$Session =& new SessionComponent();
+		$Session->time = $Session->read('Config.time') + 1;
+		$this->assertFalse($Session->valid());
+
+		Configure::write('Session.checkAgent', false);
+		$Session =& new SessionComponent();
+		$Session->time = $Session->read('Config.time') + 1;
+		$this->assertFalse($Session->valid());
+		Configure::write('Session.checkAgent', true);
 	}
 /**
  * testSessionError method

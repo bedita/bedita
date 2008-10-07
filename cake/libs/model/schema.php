@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: schema.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: schema.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Schema database management for CakePHP.
  *
@@ -19,9 +19,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model
  * @since			CakePHP(tm) v 1.2.0.5550
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Model', 'ConnectionManager');
@@ -79,7 +79,7 @@ class CakeSchema extends Object {
 			$this->name = preg_replace('/schema$/i', '', get_class($this));
 		}
 
-		if ($this->name === 'Cake') {
+		if (strtolower($this->name) === 'cake') {
 			$this->name = Inflector::camelize(Inflector::slug(Configure::read('App.dir')));
 		}
 
@@ -94,6 +94,7 @@ class CakeSchema extends Object {
  * Builds schema object properties
  *
  * @param array $data loaded object properties
+ * @return void
  * @access protected
  */
 	function _build($data) {
@@ -104,7 +105,7 @@ class CakeSchema extends Object {
 					$this->tables[$key] = $val;
 					unset($this->{$key});
 				} elseif ($key !== 'tables') {
-					if ($key === 'name' && $val !== $this->name) {
+					if ($key === 'name' && $val !== $this->name && !isset($data['file'])) {
 						$file = Inflector::underscore($val) . '.php';
 					}
 					$this->{$key} = $val;
@@ -143,7 +144,7 @@ class CakeSchema extends Object {
  */
 	function load($options = array()) {
 		if (is_string($options)) {
-			$options = array('path'=> $options);
+			$options = array('path' => $options);
 		}
 
 		$this->_build($options);
@@ -169,6 +170,9 @@ class CakeSchema extends Object {
  * Reads database and creates schema tables
  *
  * @param array $options schema object properties
+ *		'connection' - the db connection to use
+ *		'name' - name of the schema
+ *		'models' - a list of models to use, or false to ignore models
  * @return array Array indexed by name and tables
  * @access public
  */
@@ -205,7 +209,7 @@ class CakeSchema extends Object {
 					$Object =& ClassRegistry::init(array('class' => $model, 'ds' => $connection));
 				}
 
-				if (is_object($Object)) {
+				if (is_object($Object) && $Object->useTable !== false) {
 					$Object->setDataSource($connection);
 					$table = $db->fullTableName($Object, false);
 
@@ -241,10 +245,20 @@ class CakeSchema extends Object {
 		if (!empty($currentTables)) {
 			foreach($currentTables as $table) {
 				if ($prefix) {
+					if (strpos($table, $prefix) !== 0) {
+						continue;
+					}
 					$table = str_replace($prefix, '', $table);
 				}
-				$Object = new AppModel(array('name'=> Inflector::classify($table), 'table'=> $table, 'ds'=> $connection));
-				if (in_array($table, array('aros', 'acos', 'aros_acos', Configure::read('Session.table'), 'i18n'))) {
+				$Object = new AppModel(array(
+					'name' => Inflector::classify($table), 'table' => $table, 'ds' => $connection
+				));
+
+				$systemTables = array(
+					'aros', 'acos', 'aros_acos', Configure::read('Session.table'), 'i18n'
+				);
+
+				if (in_array($table, $systemTables)) {
 					$tables[$Object->table] = $this->__columns($Object);
 					$tables[$Object->table]['indexes'] = $db->index($Object);
 				} elseif ($models === false) {
@@ -316,7 +330,7 @@ class CakeSchema extends Object {
 								$type = $value;
 								$value = array('type'=> $type);
 							}
-							$col = "\t\t\t'{$field}' => array('type'=>'" . $value['type'] . "', ";
+							$col = "\t\t\t'{$field}' => array('type' => '" . $value['type'] . "', ";
 							unset($value['type']);
 							$col .= join(', ',  $this->__values($value));
 						} else {

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: security.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: security.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs
  * @since			CakePHP(tm) v 1.2.0.5432
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'Security');
@@ -33,7 +33,7 @@ App::import('Core', 'Security');
  * @package    cake.tests
  * @subpackage cake.tests.cases.libs
  */
-class SecurityTest extends UnitTestCase {
+class SecurityTest extends CakeTestCase {
 /**
  * sut property
  *
@@ -93,10 +93,18 @@ class SecurityTest extends UnitTestCase {
  */
 	function testHash() {
 		$key = 'someKey';
+		$hash = 'someHash';
+
 		$this->assertIdentical(strlen(Security::hash($key, null, false)), 40);
 		$this->assertIdentical(strlen(Security::hash($key, 'sha1', false)), 40);
 		$this->assertIdentical(strlen(Security::hash($key, null, true)), 40);
 		$this->assertIdentical(strlen(Security::hash($key, 'sha1', true)), 40);
+
+		$result = Security::hash($key, null, $hash);
+		$this->assertIdentical($result, 'e38fcb877dccb6a94729a81523851c931a46efb1');
+
+		$result = Security::hash($key, 'sha1', $hash);
+		$this->assertIdentical($result, 'e38fcb877dccb6a94729a81523851c931a46efb1');
 
 		$hashType = 'sha1';
 		Security::setHash($hashType);
@@ -113,18 +121,17 @@ class SecurityTest extends UnitTestCase {
 		$this->assertIdentical(strlen(Security::hash($key, null, false)), 32);
 		$this->assertIdentical(strlen(Security::hash($key, null, true)), 32);
 
-
-		if (function_exists('mhash')) {
-			$this->assertIdentical(strlen(Security::hash($key, 'sha256', false)), 64);
-			$this->assertIdentical(strlen(Security::hash($key, 'sha256', true)), 64);
-		} else {
+		if (!function_exists('hash') && !function_exists('mhash')) {
 			$this->assertIdentical(strlen(Security::hash($key, 'sha256', false)), 32);
 			$this->assertIdentical(strlen(Security::hash($key, 'sha256', true)), 32);
+		} else {
+			$this->assertIdentical(strlen(Security::hash($key, 'sha256', false)), 64);
+			$this->assertIdentical(strlen(Security::hash($key, 'sha256', true)), 64);
 		}
 	}
 /**
  * testCipher method
- * 
+ *
  * @access public
  * @return void
  */
@@ -132,7 +139,7 @@ class SecurityTest extends UnitTestCase {
 		$length = 10;
 		$txt = '';
 		for ($i = 0; $i < $length; $i++) {
-			$txt .= rand(0, 255);
+			$txt .= mt_rand(0, 255);
 		}
 		$key = 'my_key';
 		$result = Security::cipher($txt, $key);
@@ -150,5 +157,4 @@ class SecurityTest extends UnitTestCase {
 		$this->assertIdentical($result, '');
 	}
 }
-
 ?>

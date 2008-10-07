@@ -1,12 +1,12 @@
 ;<?php die() ?>
-; SVN FILE: $Id: acl.ini.php 6311 2008-01-02 06:33:52Z phpnut $
+; SVN FILE: $Id: acl.ini.php 7690 2008-10-02 04:56:53Z nate $
 ;/**
 ; * Short description for file.
 ; *
 ; *
 ; * PHP versions 4 and 5
 ; *
-; * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
+; * CakePHP(tm) :  Rapid Development Framework http://www.cakephp.org/
 ; * Copyright 2005-2008, Cake Software Foundation, Inc.
 ; *							1785 E. Sahara Avenue, Suite 490-204
 ; *							Las Vegas, Nevada 89104
@@ -20,9 +20,9 @@
 ; * @package		cake
 ; * @subpackage	cake.app.config
 ; * @since			CakePHP(tm) v 0.10.0.1076
-; * @version		$Revision: 6311 $
-; * @modifiedby	$LastChangedBy: phpnut $
-; * @lastmodified	$Date: 2008-01-01 22:33:52 -0800 (Tue, 01 Jan 2008) $
+; * @version		$Revision: 7690 $
+; * @modifiedby	$LastChangedBy: nate $
+; * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
 ; * @license		http://www.opensource.org/licenses/mit-license.php The MIT License
 ; */
 

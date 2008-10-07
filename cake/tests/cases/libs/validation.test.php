@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: validation.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: validation.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,15 +21,15 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs
  * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'Validation');
 /**
  * CustomValidator class
- * 
+ *
  * @package              cake
  * @subpackage           cake.tests.cases.libs
  */
@@ -52,17 +52,17 @@ class CustomValidator {
  * @package		cake.tests
  * @subpackage	cake.tests.cases.libs
  */
-class ValidationTestCase extends UnitTestCase {
+class ValidationTestCase extends CakeTestCase {
 /**
  * Validation property
- * 
+ *
  * @var mixed null
  * @access public
  */
 	var $Validation = null;
 /**
  * setup method
- * 
+ *
  * @access public
  * @return void
  */
@@ -71,7 +71,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testAlphaNumeric method
- * 
+ *
  * @access public
  * @return void
  */
@@ -80,6 +80,13 @@ class ValidationTestCase extends UnitTestCase {
 		$this->assertTrue(Validation::alphaNumeric('12234'));
 		$this->assertTrue(Validation::alphaNumeric('1w2e2r3t4y'));
 		$this->assertTrue(Validation::alphaNumeric('0'));
+		$this->assertTrue(Validation::alphaNumeric('abçďĕʑʘπй'));
+		$this->assertTrue(Validation::alphaNumeric('ˇˆๆゞ'));
+		$this->assertTrue(Validation::alphaNumeric('אกあアꀀ豈'));
+		$this->assertTrue(Validation::alphaNumeric('ǅᾈᾨ'));
+		$this->assertTrue(Validation::alphaNumeric('ÆΔΩЖÇ'));
+
+
 		$this->assertFalse(Validation::alphaNumeric('12 234'));
 		$this->assertFalse(Validation::alphaNumeric('dfd 234'));
 		$this->assertFalse(Validation::alphaNumeric("\n"));
@@ -90,7 +97,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testAlphaNumericPassedAsArray method
- * 
+ *
  * @access public
  * @return void
  */
@@ -109,7 +116,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testBetween method
- * 
+ *
  * @access public
  * @return void
  */
@@ -120,7 +127,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testBlank method
- * 
+ *
  * @access public
  * @return void
  */
@@ -135,7 +142,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testBlankAsArray method
- * 
+ *
  * @access public
  * @return void
  */
@@ -150,7 +157,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testcc method
- * 
+ *
  * @access public
  * @return void
  */
@@ -594,7 +601,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testLuhn method
- * 
+ *
  * @access public
  * @return void
  */
@@ -673,7 +680,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testCustomRegexForCc method
- * 
+ *
  * @access public
  * @return void
  */
@@ -684,7 +691,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testCustomRegexForCcWithLuhnCheck method
- * 
+ *
  * @access public
  * @return void
  */
@@ -696,7 +703,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testFastCc method
- * 
+ *
  * @access public
  * @return void
  */
@@ -722,7 +729,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testAllCc method
- * 
+ *
  * @access public
  * @return void
  */
@@ -772,7 +779,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testAllCcDeep method
- * 
+ *
  * @access public
  * @return void
  */
@@ -822,7 +829,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testComparison method
- * 
+ *
  * @access public
  * @return void
  */
@@ -858,7 +865,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testComparisonAsArray method
- * 
+ *
  * @access public
  * @return void
  */
@@ -894,7 +901,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testCustom method
- * 
+ *
  * @access public
  * @return void
  */
@@ -905,7 +912,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testCustomAsArray method
- * 
+ *
  * @access public
  * @return void
  */
@@ -916,7 +923,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateDdmmyyyy method
- * 
+ *
  * @access public
  * @return void
  */
@@ -936,7 +943,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateDdmmyyyyLeapYear method
- * 
+ *
  * @access public
  * @return void
  */
@@ -952,7 +959,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateDdmmyy method
- * 
+ *
  * @access public
  * @return void
  */
@@ -972,7 +979,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateDdmmyyLeapYear method
- * 
+ *
  * @access public
  * @return void
  */
@@ -988,7 +995,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateDmyy method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1008,7 +1015,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateDmyyLeapYear method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1024,7 +1031,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateDmyyyy method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1044,7 +1051,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateDmyyyyLeapYear method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1060,7 +1067,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateMmddyyyy method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1080,7 +1087,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateMmddyyyyLeapYear method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1096,7 +1103,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateMmddyy method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1116,7 +1123,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateMmddyyLeapYear method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1132,7 +1139,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateMdyy method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1152,7 +1159,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateMdyyLeapYear method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1168,7 +1175,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateMdyyyy method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1188,7 +1195,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateMdyyyyLeapYear method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1204,7 +1211,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateYyyymmdd method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1220,7 +1227,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateYyyymmddLeapYear method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1236,7 +1243,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateYymmdd method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1256,7 +1263,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateYymmddLeapYear method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1272,7 +1279,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateDdMMMMyyyy method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1284,7 +1291,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateDdMMMMyyyyLeapYear method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1294,7 +1301,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateMmmmDdyyyy method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1308,7 +1315,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateMmmmDdyyyyLeapYear method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1321,7 +1328,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateMy method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1333,7 +1340,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateMyNumeric method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1349,7 +1356,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testTime method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1370,7 +1377,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testBoolean method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1389,7 +1396,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDateCustomRegx method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1399,7 +1406,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDecimal method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1417,7 +1424,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDecimalWithPlaces method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1441,7 +1448,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testDecimalCustomRegex method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1451,7 +1458,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testEmail method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1523,7 +1530,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testEmailDeep method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1534,7 +1541,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testEmailCustomRegex method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1544,7 +1551,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testEqualTo method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1558,7 +1565,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testIp method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1572,7 +1579,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testMaxLength method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1583,7 +1590,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testMinLength method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1594,7 +1601,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testUrl method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1628,7 +1635,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testInList method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1639,7 +1646,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testValidNumber method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1665,7 +1672,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testRange method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1680,7 +1687,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testExtension method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1709,7 +1716,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testMoney method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1740,8 +1747,45 @@ class ValidationTestCase extends UnitTestCase {
 		$this->assertFalse(Validation::money('100.1111€', 'right'));
 	}
 /**
+ * Test Multiple Select Validation
+ *
+ * @access public
+ * @return void
+ **/
+	function testMultiple() {
+		$this->assertTrue(Validation::multiple(array(0, 1, 2, 3)));
+		$this->assertTrue(Validation::multiple(array(50, 32, 22, 0)));
+		$this->assertTrue(Validation::multiple(array('str', 'var', 'enum', 0)));
+		$this->assertFalse(Validation::multiple(array()));
+		$this->assertFalse(Validation::multiple(array(0)));
+		$this->assertFalse(Validation::multiple(array('0')));
+		
+		$this->assertTrue(Validation::multiple(array(0, 3, 4, 5), array('in' => range(0, 10))));
+		$this->assertFalse(Validation::multiple(array(0, 15, 20, 5), array('in' => range(0, 10))));
+		$this->assertFalse(Validation::multiple(array(0, 5, 10, 11), array('in' => range(0, 10))));
+		$this->assertFalse(Validation::multiple(array('boo', 'foo', 'bar'), array('in' => array('foo', 'bar', 'baz'))));
+		
+		$this->assertTrue(Validation::multiple(array(0, 5, 10, 11), array('max' => 3)));
+		$this->assertFalse(Validation::multiple(array(0, 5, 10, 11, 55), array('max' => 3)));
+		$this->assertTrue(Validation::multiple(array('foo', 'bar', 'baz'), array('max' => 3)));
+		$this->assertFalse(Validation::multiple(array('foo', 'bar', 'baz', 'squirrel'), array('max' => 3)));
+		
+		$this->assertTrue(Validation::multiple(array(0, 5, 10, 11), array('min' => 3)));
+		$this->assertTrue(Validation::multiple(array(0, 5, 10, 11, 55), array('min' => 3)));
+		$this->assertFalse(Validation::multiple(array('foo', 'bar', 'baz'), array('min' => 5)));
+		$this->assertFalse(Validation::multiple(array('foo', 'bar', 'baz', 'squirrel'), array('min' => 10)));		
+		
+		$this->assertTrue(Validation::multiple(array(0, 5, 9), array('in' => range(0, 10), 'max' => 5)));
+		$this->assertFalse(Validation::multiple(array(0, 5, 9, 8, 6, 2, 1), array('in' => range(0, 10), 'max' => 5)));							
+		$this->assertFalse(Validation::multiple(array(0, 5, 9, 8, 11), array('in' => range(0, 10), 'max' => 5)));
+		
+		$this->assertFalse(Validation::multiple(array(0, 5, 9), array('in' => range(0, 10), 'max' => 5, 'min' => 3)));
+		$this->assertFalse(Validation::multiple(array(0, 5, 9, 8, 6, 2, 1), array('in' => range(0, 10), 'max' => 5, 'min' => 2)));							
+		$this->assertFalse(Validation::multiple(array(0, 5, 9, 8, 11), array('in' => range(0, 10), 'max' => 5, 'min' => 2)));
+	}
+/**
  * testNumeric method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1757,7 +1801,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testPhone method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1779,7 +1823,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testPostal method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1831,7 +1875,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testSsn method
- * 
+ *
  * @access public
  * @return void
  */
@@ -1852,7 +1896,7 @@ class ValidationTestCase extends UnitTestCase {
 	}
 /**
  * testUserDefined method
- * 
+ *
  * @access public
  * @return void
  */

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: xcache.php 7118 2008-06-04 20:49:29Z gwoo $ */
+/* SVN FILE: $Id: xcache.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Xcache storage engine for cache.
  *
@@ -20,9 +20,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.cache
  * @since			CakePHP(tm) v 1.2.0.4947
- * @version			$Revision: 7118 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -69,6 +69,8 @@ class XcacheEngine extends CacheEngine {
  * @access public
  */
 	function write($key, &$value, $duration) {
+		$expires = time() + $duration;
+		xcache_set($key.'_expires', $expires, $duration);
 		return xcache_set($key, $value, $duration);
 	}
 /**
@@ -80,6 +82,11 @@ class XcacheEngine extends CacheEngine {
  */
 	function read($key) {
 		if (xcache_isset($key)) {
+			$time = time();
+			$cachetime = intval(xcache_get($key.'_expires'));
+			if ($cachetime < $time || ($time + $this->settings['duration']) < $cachetime) {
+				return false;
+			}
 			return xcache_get($key);
 		}
 		return false;
@@ -124,8 +131,8 @@ class XcacheEngine extends CacheEngine {
  */
 	function __auth($reverse = false) {
 		static $backup = array();
-		$keys = array('PHP_AUTH_USER', 'PHP_AUTH_PW');
-		foreach ($keys as $key) {
+		$keys = array('PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password');
+		foreach ($keys as $key => $setting) {
 			if ($reverse) {
 				if (isset($backup[$key])) {
 					$_SERVER[$key] = $backup[$key];
@@ -138,8 +145,13 @@ class XcacheEngine extends CacheEngine {
 				if (!empty($value)) {
 					$backup[$key] = $value;
 				}
-				$varName = '__' . $key;
-				$_SERVER[$key] = $this->settings[$varName];
+				if (!empty($this->settings[$setting])) {
+					$_SERVER[$key] = $this->settings[$setting];
+				} else if (!empty($this->settings[$key])) {
+					$_SERVER[$key] = $this->settings[$key];
+				} else {
+					$_SERVER[$key] = $value;
+				}
 			}
 		}
 	}

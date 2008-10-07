@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_mysqli.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: dbo_mysqli.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * MySQLi layer for DBO
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.datasources.dbo
  * @since			CakePHP(tm) v 1.1.4.2974
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -101,14 +101,14 @@ class DboMysqli extends DboSource {
 	function connect() {
 		$config = $this->config;
 		$this->connected = false;
-		
+
 		if (is_numeric($config['port'])) {
 			$config['socket'] = null;
 		} else {
 			$config['socket'] = $config['port'];
 			$config['port'] = null;
 		}
-		
+
 		$this->connection = mysqli_connect($config['host'], $config['login'], $config['password'], $config['database'], $config['port'], $config['socket']);
 
 		if ($this->connection !== false) {
@@ -126,7 +126,9 @@ class DboMysqli extends DboSource {
  * @return boolean True if the database could be disconnected, else false
  */
 	function disconnect() {
-		@mysqli_free_result($this->results);
+		if (isset($this->results) && is_resource($this->results)) {
+			mysqli_free_result($this->results);
+		}
 		$this->connected = !@mysqli_close($this->connection);
 		return !$this->connected;
 	}
@@ -241,7 +243,7 @@ class DboMysqli extends DboSource {
 			return 'NULL';
 		}
 
-		if ($data === '') {
+		if ($data === '' && $column !== 'integer' && $column !== 'float' && $column !== 'boolean') {
 			return  "''";
 		}
 
@@ -252,9 +254,14 @@ class DboMysqli extends DboSource {
 			case 'integer' :
 			case 'float' :
 			case null :
-				if (is_numeric($data) && strpos($data, ',') === false && $data[0] != '0' && strpos($data, 'e') === false) {
-					break;
+				if ($data === '') {
+					return 'NULL';
 				}
+				if ((is_int($data) || is_float($data) || $data === '0') || (
+					is_numeric($data) && strpos($data, ',') === false &&
+					$data[0] != '0' && strpos($data, 'e') === false)) {
+						return $data;
+					}
 			default:
 				$data = "'" . mysqli_real_escape_string($this->connection, $data) . "'";
 			break;
@@ -307,7 +314,7 @@ class DboMysqli extends DboSource {
  */
 	function lastNumRows() {
 		if ($this->hasResult()) {
-			return @mysqli_num_rows($this->_result);
+			return mysqli_num_rows($this->_result);
 		}
 		return null;
 	}
@@ -400,6 +407,9 @@ class DboMysqli extends DboSource {
  * @param unknown_type $results
  */
 	function resultSet(&$results) {
+		if (isset($this->results) && is_resource($this->results) && $this->results != $results) {
+			mysqli_free_result($this->results);
+		}
 		$this->results =& $results;
 		$this->map = array();
 		$num_fields = mysqli_num_fields($results);
@@ -460,6 +470,6 @@ class DboMysqli extends DboSource {
  */
 	function hasResult() {
 		return is_object($this->_result);
-	}	
+	}
 }
 ?>

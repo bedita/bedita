@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: plugin.php 7118 2008-06-04 20:49:29Z gwoo $ */
+/* SVN FILE: $Id: plugin.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * The Plugin Task handles creating an empty plugin, ready to be used
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.console.libs.tasks
  * @since			CakePHP(tm) v 1.2
- * @version			$Revision: 7118 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 if (!class_exists('File')) {
@@ -164,7 +164,7 @@ class PluginTask extends Shell {
 			$out = "<?php\n\n";
 			$out .= "class {$plugin}AppController extends AppController {\n\n";
 			$out .= "}\n\n";
-			$out .= "?>\n";
+			$out .= "?>";
 			$this->createFile($this->path . $pluginPath. DS . $controllerFileName, $out);
 
 			$modelFileName = $pluginPath . '_app_model.php';
@@ -172,7 +172,7 @@ class PluginTask extends Shell {
 			$out = "<?php\n\n";
 			$out .= "class {$plugin}AppModel extends AppModel {\n\n";
 			$out .= "}\n\n";
-			$out .= "?>\n";
+			$out .= "?>";
 			$this->createFile($this->path . $pluginPath . DS . $modelFileName, $out);
 
 			$this->hr();

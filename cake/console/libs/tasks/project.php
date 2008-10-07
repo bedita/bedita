@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: project.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: project.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * The Project Task handles creating the base application
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.scripts.bake
  * @since			CakePHP(tm) v 1.2
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 if (!class_exists('File')) {
@@ -104,6 +104,9 @@ class ProjectTask extends Shell {
 				$this->err(sprintf(__('Could not set permissions on %s', true), $path . DS .'tmp'));
 				$this->out(sprintf(__('chmod -R 0777 %s', true), $path . DS .'tmp'));
 			}
+
+			$this->params['working'] = $path;
+			$this->params['app'] = basename($path);
 			return true;
 		}
 	}
@@ -201,12 +204,10 @@ class ProjectTask extends Shell {
 			$result = str_replace($match[0], "\t" . 'Configure::write(\'Security.salt\', \''.$string.'\');', $contents);
 			if ($File->write($result)) {
 				return true;
-			} else {
-				return false;
 			}
-		} else {
 			return false;
 		}
+		return false;
 	}
 /**
  * Generates and writes CAKE_CORE_INCLUDE_PATH

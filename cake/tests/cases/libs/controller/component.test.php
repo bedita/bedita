@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: component.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: component.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs.controller
  * @since			CakePHP(tm) v 1.2.0.5436
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', array('Component', 'Controller'));
@@ -66,7 +66,7 @@ if (!class_exists('AppController')) {
 		var $components = array('Orange' => array('colour' => 'blood orange'));
 
 	}
-} else {
+} else if (!defined('APP_CONTROLLER_EXISTS')){
 	define('APP_CONTROLLER_EXISTS', true);
 }
 /**

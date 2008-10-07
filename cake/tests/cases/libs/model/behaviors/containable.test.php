@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: containable.test.php 7296 2008-06-27 09:09:03Z gwoo $ *.
+/* SVN FILE: $Id: containable.test.php 7690 2008-10-02 04:56:53Z nate $ *.
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs.model.behaviors
  * @since			CakePHP(tm) v 1.2.0.5669
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 
@@ -3320,7 +3320,145 @@ class ContainableTest extends CakeTestCase {
 		$result = $this->Article->Comment->find('all', $initialOptions);
 		$this->assertEqual($result, $initialModels);
 	}
+/**
+ * testResetDeeperHasOneAssociations method
+ *
+ * @access public
+ */
+	function testResetDeeperHasOneAssociations() {
+		$this->Article->User->unbindModel(array(
+			'hasMany' => array('ArticleFeatured', 'Comment')
+		), false);
+		$userHasOne = array('hasOne' => array('ArticleFeatured', 'Comment'));
 
+		$this->Article->User->bindModel($userHasOne, false);
+		$expected = $this->Article->User->hasOne;
+		$this->Article->find('all');
+		$this->assertEqual($expected, $this->Article->User->hasOne);
+
+		$this->Article->User->bindModel($userHasOne, false);
+		$expected = $this->Article->User->hasOne;
+		$this->Article->find('all', array(
+			'contain' => array(
+				'User' => array('ArticleFeatured', 'Comment')
+			)
+		));
+		$this->assertEqual($expected, $this->Article->User->hasOne);
+
+		$this->Article->User->bindModel($userHasOne, false);
+		$expected = $this->Article->User->hasOne;
+		$this->Article->find('all', array(
+			'contain' => array(
+				'User' => array(
+					'ArticleFeatured',
+					'Comment' => array('fields' => array('created'))
+				)
+			)
+		));
+		$this->assertEqual($expected, $this->Article->User->hasOne);
+
+		$this->Article->User->bindModel($userHasOne, false);
+		$expected = $this->Article->User->hasOne;
+		$this->Article->find('all', array(
+			'contain' => array(
+				'User.ArticleFeatured' => array(
+					'conditions' => array('ArticleFeatured.published' => 'Y')
+				),
+				'User.Comment'
+			)
+		));
+		$this->assertEqual($expected, $this->Article->User->hasOne);
+	}
+/**
+ * testResetMultipleHabtmAssociations method
+ *
+ * @access public
+ */
+	function testResetMultipleHabtmAssociations() {
+		$articleHabtm = array(
+			'hasAndBelongsToMany' => array(
+				'Tag' => array(
+					'className'				=> 'Tag',
+					'joinTable'				=> 'articles_tags',
+					'foreignKey'			=> 'article_id',
+					'associationForeignKey' => 'tag_id'
+				),
+				'ShortTag' => array(
+					'className'				=> 'Tag',
+					'joinTable'				=> 'articles_tags',
+					'foreignKey'			=> 'article_id',
+					'associationForeignKey' => 'tag_id',
+					'conditions' 			=> 'LENGTH(ShortTag.tag) <= 3'
+				)
+			)
+		);
+
+		$this->Article->resetBindings();
+		$this->Article->bindModel($articleHabtm, false);
+		$expected = $this->Article->hasAndBelongsToMany;
+		$this->Article->find('all');
+		$this->assertEqual($expected, $this->Article->hasAndBelongsToMany);
+
+		$this->Article->resetBindings();
+		$this->Article->bindModel($articleHabtm, false);
+		$expected = $this->Article->hasAndBelongsToMany;
+		$this->Article->find('all', array('contain' => 'Tag.tag'));
+		$this->assertEqual($expected, $this->Article->hasAndBelongsToMany);
+
+		$this->Article->resetBindings();
+		$this->Article->bindModel($articleHabtm, false);
+		$expected = $this->Article->hasAndBelongsToMany;
+		$this->Article->find('all', array('contain' => 'Tag'));
+		$this->assertEqual($expected, $this->Article->hasAndBelongsToMany);
+
+		$this->Article->resetBindings();
+		$this->Article->bindModel($articleHabtm, false);
+		$expected = $this->Article->hasAndBelongsToMany;
+		$this->Article->find('all', array('contain' => array('Tag' => array('fields' => array(null)))));
+		$this->assertEqual($expected, $this->Article->hasAndBelongsToMany);
+
+		$this->Article->resetBindings();
+		$this->Article->bindModel($articleHabtm, false);
+		$expected = $this->Article->hasAndBelongsToMany;
+		$this->Article->find('all', array('contain' => array('Tag' => array('fields' => array('Tag.tag')))));
+		$this->assertEqual($expected, $this->Article->hasAndBelongsToMany);
+
+		$this->Article->resetBindings();
+		$this->Article->bindModel($articleHabtm, false);
+		$expected = $this->Article->hasAndBelongsToMany;
+		$this->Article->find('all', array('contain' => array('Tag' => array('fields' => array('Tag.tag', 'Tag.created')))));
+		$this->assertEqual($expected, $this->Article->hasAndBelongsToMany);
+
+		$this->Article->resetBindings();
+		$this->Article->bindModel($articleHabtm, false);
+		$expected = $this->Article->hasAndBelongsToMany;
+		$this->Article->find('all', array('contain' => 'ShortTag.tag'));
+		$this->assertEqual($expected, $this->Article->hasAndBelongsToMany);
+
+		$this->Article->resetBindings();
+		$this->Article->bindModel($articleHabtm, false);
+		$expected = $this->Article->hasAndBelongsToMany;
+		$this->Article->find('all', array('contain' => 'ShortTag'));
+		$this->assertEqual($expected, $this->Article->hasAndBelongsToMany);
+
+		$this->Article->resetBindings();
+		$this->Article->bindModel($articleHabtm, false);
+		$expected = $this->Article->hasAndBelongsToMany;
+		$this->Article->find('all', array('contain' => array('ShortTag' => array('fields' => array(null)))));
+		$this->assertEqual($expected, $this->Article->hasAndBelongsToMany);
+
+		$this->Article->resetBindings();
+		$this->Article->bindModel($articleHabtm, false);
+		$expected = $this->Article->hasAndBelongsToMany;
+		$this->Article->find('all', array('contain' => array('ShortTag' => array('fields' => array('ShortTag.tag')))));
+		$this->assertEqual($expected, $this->Article->hasAndBelongsToMany);
+
+		$this->Article->resetBindings();
+		$this->Article->bindModel($articleHabtm, false);
+		$expected = $this->Article->hasAndBelongsToMany;
+		$this->Article->find('all', array('contain' => array('ShortTag' => array('fields' => array('ShortTag.tag', 'ShortTag.created')))));
+		$this->assertEqual($expected, $this->Article->hasAndBelongsToMany);
+	}
 /**
  * containments method
  *

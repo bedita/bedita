@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: scaffold.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: scaffold.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Scaffold.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.controller
  * @since		Cake v 0.10.0.1076
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -137,13 +137,13 @@ class Scaffold extends Object {
  */
 	function __construct(&$controller, $params) {
 		$this->controller =& $controller;
-		
+
 		$count = count($this->__passedVars);
 		for ($j = 0; $j < $count; $j++) {
 			$var = $this->__passedVars[$j];
 			$this->{$var} = $controller->{$var};
 		}
-		
+
 		$this->redirect = array('action'=> 'index');
 
 		if (!in_array('Form', $this->controller->helpers)) {
@@ -195,7 +195,8 @@ class Scaffold extends Object {
 /**
  * Outputs the content of a scaffold method passing it through the Controller::afterFilter()
  *
- * @access private
+ * @return void
+ * @access protected
  */
 	function _output() {
 		$this->controller->afterFilter();
@@ -239,7 +240,7 @@ class Scaffold extends Object {
 	function __scaffoldIndex($params) {
 		if ($this->controller->_beforeScaffold('index')) {
 			$this->ScaffoldModel->recursive = 0;
-			$this->controller->set(Inflector::variable($this->controller->name), $this->controller->paginate()); 	
+			$this->controller->set(Inflector::variable($this->controller->name), $this->controller->paginate());
 			$this->controller->render($this->action, $this->layout);
 			$this->_output();
 		} elseif ($this->controller->_scaffoldError('index') === false) {
@@ -321,7 +322,7 @@ class Scaffold extends Object {
 			}
 
 			foreach ($this->ScaffoldModel->belongsTo as $assocName => $assocData) {
-				$varName = Inflector::variable(Inflector::pluralize(preg_replace('/_id$/', '', $assocData['foreignKey'])));
+				$varName = Inflector::variable(Inflector::pluralize(preg_replace('/(?:_id)$/', '', $assocData['foreignKey'])));
 				$this->controller->set($varName, $this->ScaffoldModel->{$assocName}->find('list'));
 			}
 			foreach ($this->ScaffoldModel->hasAndBelongsToMany as $assocName => $assocData) {
@@ -489,7 +490,17 @@ class ScaffoldView extends ThemeView {
 			$name = $this->action;
 		}
 		$name = Inflector::underscore($name);
-		$scaffoldAction = 'scaffold.'.$name;
+		$admin = Configure::read('Routing.admin');
+
+		if (!empty($admin) && strpos($name, $admin . '_') !== false) { 
+			$name = substr($name, strlen($admin) + 1);
+		}
+
+		if ($name === 'add') {
+			$name = 'edit';
+		}
+
+		$scaffoldAction = 'scaffold.' . $name;
 
 		if (!is_null($this->subDir)) {
 			$subDir = strtolower($this->subDir) . DS;
@@ -497,27 +508,18 @@ class ScaffoldView extends ThemeView {
 			$subDir = null;
 		}
 
-		if ($name === 'add') {
-			$name = 'edit';
-		}
-
 		$names[] = $this->viewPath . DS . $subDir . $scaffoldAction;
 		$names[] = 'scaffolds' . DS . $subDir . $name;
-		
-		$admin = Configure::read('Routing.admin');
-		if (!empty($admin) && strpos($name, $admin.'_') !== false) {
-			$names[] = 'scaffolds' . DS . $subDir . substr($name, strlen($admin) +1);
-		}
+
 		$paths = $this->_paths($this->plugin);
 
+		$exts = array($this->ext, '.ctp', '.thtml');
 		foreach ($paths as $path) {
 			foreach ($names as $name) {
-				if (file_exists($path . $name . $this->ext)) {
-					return $path . $name . $this->ext;
-				} elseif (file_exists($path . $name . '.ctp')) {
-					return $path . $name . '.thtml';
-				} elseif (file_exists($path . $name . '.thtml')) {
-					return $path . $name . '.thtml';
+				foreach ($exts as $ext) {
+					if (file_exists($path . $name . $ext)) {
+						return $path . $name . $ext;
+					}
 				}
 			}
 		}

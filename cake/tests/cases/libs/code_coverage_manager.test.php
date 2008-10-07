@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: code_coverage_manager.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: code_coverage_manager.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs
  * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'CodeCoverageManager');
@@ -35,7 +35,26 @@ require_once CAKE . 'tests' . DS . 'lib' . DS . 'cake_reporter.php';
  * @package		cake.tests
  * @subpackage	cake.tests.cases.libs
  */
-class CodeCoverageManagerTest extends UnitTestCase {
+class CodeCoverageManagerTest extends CakeTestCase {
+
+/**
+ * startTest Method
+ * Store reference of $_GET to restore later.
+ *
+ * @return void
+ **/
+	function startCase() {
+		$this->_get = $_GET;
+	}
+
+/**
+ * End Case - restore GET vars.
+ *
+ * @return void
+ **/
+	function endCase() {
+		$_GET = $this->_get;
+	}
 /**
  * Skip if XDebug not installed
  *
@@ -51,7 +70,7 @@ class CodeCoverageManagerTest extends UnitTestCase {
  * @return void
  */
 	function testNoTestCaseSupplied() {
-		if (php_sapi_name() != 'cli') {
+		if (PHP_SAPI != 'cli') {
 			unset($_GET['group']);
 			CodeCoverageManager::start(substr(md5(microtime()), 0, 5), new CakeHtmlReporter());
 			CodeCoverageManager::report(false);
@@ -613,7 +632,7 @@ HTML;
 	}
 /**
  * testCalculateCodeCoverage method
- * 
+ *
  * @access public
  * @return void
  */

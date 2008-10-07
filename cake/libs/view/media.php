@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: media.php 7118 2008-06-04 20:49:29Z gwoo $ */
+/* SVN FILE: $Id: media.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view
  * @since			CakePHP(tm) v 1.2.0.5714
- * @version			$Revision: 7118 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 class MediaView extends View {
@@ -35,9 +35,9 @@ class MediaView extends View {
 	var $mimeType = array('ai' => 'application/postscript', 'bcpio' => 'application/x-bcpio', 'bin' => 'application/octet-stream',
 								'ccad' => 'application/clariscad', 'cdf' => 'application/x-netcdf', 'class' => 'application/octet-stream',
 								'cpio' => 'application/x-cpio', 'cpt' => 'application/mac-compactpro', 'csh' => 'application/x-csh',
-								'dcr' => 'application/x-director', 'dir' => 'application/x-director', 'dms' => 'application/octet-stream',
-								'doc' => 'application/msword', 'drw' => 'application/drafting', 'dvi' => 'application/x-dvi',
-								'dwg' => 'application/acad', 'dxf' => 'application/dxf', 'dxr' => 'application/x-director',
+								'csv' => 'application/csv', 'dcr' => 'application/x-director', 'dir' => 'application/x-director',
+								'dms' => 'application/octet-stream', 'doc' => 'application/msword', 'drw' => 'application/drafting',
+								'dvi' => 'application/x-dvi', 'dwg' => 'application/acad', 'dxf' => 'application/dxf', 'dxr' => 'application/x-director',
 								'eps' => 'application/postscript', 'exe' => 'application/octet-stream', 'ez' => 'application/andrew-inset',
 								'flv' => 'video/x-flv', 'gtar' => 'application/x-gtar', 'gz' => 'application/x-gzip', 'hdf' => 'application/x-hdf',
 								'hqx' => 'application/mac-binhex40', 'ips' => 'application/x-ipscript', 'ipx' => 'application/x-ipix',
@@ -80,7 +80,6 @@ class MediaView extends View {
 								'iges' => 'model/iges', 'igs' => 'model/iges', 'mesh' => 'model/mesh', 'msh' => 'model/mesh',
 								'silo' => 'model/mesh', 'vrml' => 'model/vrml', 'wrl' => 'model/vrml',
 								'mime' => 'www/mime', 'pdb' => 'chemical/x-pdb', 'xyz' => 'chemical/x-pdb');
-
 /**
  * Constructor
  *
@@ -89,7 +88,6 @@ class MediaView extends View {
 	function __construct(&$controller) {
 		parent::__construct($controller);
 	}
-
 /**
  * Enter description here...
  *
@@ -103,6 +101,7 @@ class MediaView extends View {
 		$modified = null;
 		$path = null;
 		$size = null;
+		$cache = null;
 		extract($this->viewVars, EXTR_OVERWRITE);
 
 		if ($size) {
@@ -123,14 +122,11 @@ class MediaView extends View {
 			if ($handle === false) {
 				return false;
 			}
-			if (isset($modified) && !empty($modified)) {
+			if (!empty($modified)) {
 				$modified = gmdate('D, d M Y H:i:s', strtotime($modified, time())) . ' GMT';
 			} else {
 				$modified = gmdate('D, d M Y H:i:s').' GMT';
 			}
-
-			header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-			header("Last-Modified: $modified");
 
 			if ($download) {
 				$contentType = 'application/octet-stream';
@@ -139,7 +135,6 @@ class MediaView extends View {
 				if (preg_match('%Opera(/| )([0-9].[0-9]{1,2})%', $agent) || preg_match('/MSIE ([0-9].[0-9]{1,2})/', $agent)) {
 					$contentType = 'application/octetstream';
 				}
-
 				header('Content-Type: ' . $contentType);
 				header("Content-Disposition: attachment; filename=\"" . $name . '.' . $extension . "\";");
 				header("Expires: 0");
@@ -164,12 +159,25 @@ class MediaView extends View {
 					header("Content-Length: " . $fileSize);
 				}
 			} else {
+				header("Date: " . gmdate("D, d M Y H:i:s", time()) . " GMT");
+				if ($cache) {
+					if (!is_numeric($cache)) {
+						$cache = strtotime($cache) - time();
+					}
+					header("Cache-Control: max-age=$cache");
+					header("Expires: " . gmdate("D, d M Y H:i:s", time() + $cache) . " GMT");
+					header("Pragma: cache");
+				} else {
+					header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+					header("Pragma: no-cache");
+				}
+				header("Last-Modified: $modified");
 				header("Content-Type: " . $this->mimeType[$extension]);
 				header("Content-Length: " . $fileSize);
 			}
 			@ob_end_clean();
 
-			while (!feof($handle) && connection_status() == 0) {
+			while (!feof($handle) && connection_status() == 0 && !connection_aborted()) {
 				set_time_limit(0);
 				$buffer = fread($handle, $chunkSize);
 				echo $buffer;
@@ -177,7 +185,7 @@ class MediaView extends View {
 				@ob_flush();
 			}
 			fclose($handle);
-			return((connection_status() == 0) && !connection_aborted());
+			exit(0);
 		}
 		return false;
 	}

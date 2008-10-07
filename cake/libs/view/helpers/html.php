@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: html.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: html.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Html Helper class file.
  *
@@ -19,9 +19,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.view.helpers
  * @since			CakePHP(tm) v 0.9.1
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -257,8 +257,10 @@ class HtmlHelper extends AppHelper {
  * @return string A meta tag containing the specified character set.
  */
 	function charset($charset = null) {
-		$charset = current(array_filter(array($charset, strtolower(Configure::read('App.encoding')), 'utf-8')));
-		return $this->output(sprintf($this->tags['charset'], $charset));
+		if (empty($charset)) {
+			$charset = strtolower(Configure::read('App.encoding'));
+		}
+		return $this->output(sprintf($this->tags['charset'], (!empty($charset) ? $charset : 'utf-8')));
 	}
 /**
  * Creates an HTML link.
@@ -289,8 +291,9 @@ class HtmlHelper extends AppHelper {
 			$escapeTitle = $htmlAttributes['escape'];
 			unset($htmlAttributes['escape']);
 		}
+
 		if ($escapeTitle === true) {
-			$title = htmlspecialchars($title, ENT_QUOTES);
+			$title = h($title);
 		} elseif (is_string($escapeTitle)) {
 			$title = htmlentities($title, ENT_QUOTES, $escapeTitle);
 		}
@@ -346,6 +349,7 @@ class HtmlHelper extends AppHelper {
 					$path .= '.css';
 				}
 				if ((Configure::read('Asset.timestamp') === true && Configure::read() > 0) || Configure::read('Asset.timestamp') === 'force') {
+					$path = $this->webroot($path);
 					$path .= '?' . @filemtime(WWW_ROOT . str_replace('/', DS, $path));
 				}
 			}

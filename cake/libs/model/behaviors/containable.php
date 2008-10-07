@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: containable.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: containable.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Behavior for binding management.
  *
@@ -21,9 +21,9 @@
  * @package		 cake
  * @subpackage	  cake.cake.console.libs
  * @since		   CakePHP(tm) v 1.2.0.5669
- * @version		 $Revision: 7296 $
- * @modifiedby	  $LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version		 $Revision: 7690 $
+ * @modifiedby	  $LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license		 http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -70,7 +70,10 @@ class ContainableBehavior extends ModelBehavior {
 		if (!isset($this->settings[$Model->alias])) {
 			$this->settings[$Model->alias] = array('recursive' => true, 'notices' => true, 'autoFields' => true);
 		}
-		$this->settings[$Model->alias] = array_merge($this->settings[$Model->alias], ife(is_array($settings), $settings, array()));
+		if (!is_array($settings)) {
+			$settings = array();
+		}
+		$this->settings[$Model->alias] = array_merge($this->settings[$Model->alias], $settings);
 	}
 /**
  * Runs before a find() operation. Used to allow 'contain' setting
@@ -89,6 +92,7 @@ class ContainableBehavior extends ModelBehavior {
  *
  * @param object $Model	Model using the behavior
  * @param array $query Query parameters as set by cake
+ * @return array
  * @access public
  */
 	function beforeFind(&$Model, $query) {
@@ -138,6 +142,8 @@ class ContainableBehavior extends ModelBehavior {
 					if (!empty($unbind)) {
 						if (!$reset && empty($instance->__backOriginalAssociation)) {
 							$instance->__backOriginalAssociation = $backupBindings;
+						} else if ($reset && empty($instance->__backContainableAssociation)) {
+							$instance->__backContainableAssociation = $backupBindings;
 						}
 						$instance->unbindModel(array($type => $unbind), $reset);
 					}
@@ -197,10 +203,28 @@ class ContainableBehavior extends ModelBehavior {
 		return $query;
 	}
 /**
+ * Resets original associations on models that may have receive multiple,
+ * subsequent unbindings.
+ *
+ * @param object $Model Model on which we are resetting
+ * @param array $results Results of the find operation
+ * @param bool $primary true if this is the primary model that issued the find operation, false otherwise
+ * @access public
+ */
+	function afterFind(&$Model, $results, $primary) {
+		if (!empty($Model->__backContainableAssociation)) {
+			foreach($Model->__backContainableAssociation as $relation => $bindings) {
+				$Model->{$relation} = $bindings;
+				unset($Model->__backContainableAssociation);
+			}
+		}
+	}
+/**
  * Unbinds all relations from a model except the specified ones. Calling this function without
  * parameters unbinds all related models.
  *
  * @param object $Model Model on which binding restriction is being applied
+ * @return void
  * @access public
  */
 	function contain(&$Model) {
@@ -214,6 +238,7 @@ class ContainableBehavior extends ModelBehavior {
  * contain call.
  *
  * @param object $Model Model on which to reset bindings
+ * @return void
  * @access public
  */
 	function resetBindings(&$Model) {

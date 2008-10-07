@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: cookie.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: cookie.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.controller.components
  * @since			CakePHP(tm) v 1.2.0.4213
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -270,6 +270,7 @@ class CookieComponent extends Object {
  * Failure to do so will result in header already sent errors.
  *
  * @param string $key Key of the value to be deleted
+ * @return void
  * @access public
  */
 	function del($key) {
@@ -298,6 +299,7 @@ class CookieComponent extends Object {
  * You must use this method before any output is sent to the browser.
  * Failure to do so will result in header already sent errors.
  *
+ * @return void
  * @access public
  */
 	function destroy() {
@@ -348,9 +350,8 @@ class CookieComponent extends Object {
 		$this->__reset = $this->__expires;
 		if (is_integer($expires) || is_numeric($expires)) {
 			return $this->__expires = $now + intval($expires);
-		} else {
-			return $this->__expires = strtotime($expires, $now);
 		}
+		return $this->__expires = strtotime($expires, $now);
 	}
 /**
  * Set cookie
@@ -417,13 +418,13 @@ class CookieComponent extends Object {
 					}
 				}
 			} else {
-					$pos = strpos($value, 'Q2FrZQ==.');
-					$decrypted[$name] = $this->__explode($value);
+				$pos = strpos($value, 'Q2FrZQ==.');
+				$decrypted[$name] = $this->__explode($value);
 
-					if ($pos !== false) {
-						$value = substr($value, 8);
-						$decrypted[$name] = $this->__explode(Security::$type(base64_decode($value), $this->key));
-					}
+				if ($pos !== false) {
+					$value = substr($value, 8);
+					$decrypted[$name] = $this->__explode(Security::$type(base64_decode($value), $this->key));
+				}
 			}
 		}
 

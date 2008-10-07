@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: tree.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: tree.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Tree behavior class.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.behaviors
  * @since			CakePHP v 1.2.0.4487
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -35,14 +35,30 @@
  * @subpackage	cake.cake.libs.model.behaviors
  */
 class TreeBehavior extends ModelBehavior {
-
+/**
+ * Errors
+ *
+ * @var array
+ */
 	var $errors = array();
-
+/**
+ * Defaults
+ *
+ * @var array
+ * @access protected
+ */
 	var $_defaults = array(
 		'parent' => 'parent_id', 'left' => 'lft', 'right' => 'rght',
 		'scope' => '1 = 1', 'type' => 'nested', '__parentChange' => false, 'recursive' => -1
 	);
-
+/**
+ * Initiate Tree behavior
+ *
+ * @param object $model
+ * @param array $config
+ * @return void
+ * @access public
+ */
 	function setup(&$model, $config = array()) {
 		if (!is_array($config)) {
 			$config = array('type' => $config);
@@ -58,16 +74,6 @@ class TreeBehavior extends ModelBehavior {
 		$this->settings[$model->alias] = $settings;
 	}
 /**
- * @deprecated
- */
-	function setScope(&$model, $scope) {
-		trigger_error(__('(TreeBehavior::setScope) Deprecated - Use BehaviorCollection::attach() to re-attach with new settings', true), E_USER_WARNING);
-		$this->settings[$model->alias]['scope'] = $scope;
-		if ($this->settings[$model->alias]['recursive'] < 0) {
-			$this->settings[$model->alias]['recursive'] = 0;
-		}
-	}
-/**
  * After save method. Called after all saves
  *
  * Overriden to transparently manage setting the lft and rght fields if and only if the parent field is included in the
@@ -76,6 +82,7 @@ class TreeBehavior extends ModelBehavior {
  * @param AppModel $model
  * @param boolean $created indicates whether the node just saved was created or updated
  * @return boolean true on success, false on failure
+ * @access public
  */
 	function afterSave(&$model, $created) {
 		extract($this->settings[$model->alias]);
@@ -95,6 +102,7 @@ class TreeBehavior extends ModelBehavior {
  *
  * @param AppModel $model
  * @return boolean true to continue, false to abort the delete
+ * @access public
  */
 	function beforeDelete(&$model) {
 		extract($this->settings[$model->alias]);
@@ -126,6 +134,7 @@ class TreeBehavior extends ModelBehavior {
  * @since 1.2
  * @param AppModel $model
  * @return boolean true to continue, false to abort the save
+ * @access public
  */
 	function beforeSave(&$model) {
 		extract($this->settings[$model->alias]);
@@ -370,9 +379,8 @@ class TreeBehavior extends ModelBehavior {
 			$parent = $model->find('first', array('conditions' => array($model->escapeField() => $parentId), 'fields' => $fields, 'recursive' => $recursive));
 
 			return $parent;
-		} else {
-			return false;
 		}
+		return false;
 	}
 /**
  * Get the path to the given node
@@ -550,8 +558,7 @@ class TreeBehavior extends ModelBehavior {
 			$model->bindModel(array('belongsTo' => array('VerifyParent' => array(
 				'className' => $model->alias,
 				'foreignKey' => $parent,
-				'fields' => array($model->primaryKey, $left, $right, $parent,
-				'actsAs' => '')
+				'fields' => array($model->primaryKey, $left, $right, $parent),
 			))));
 			$missingParents = $model->find('list', array(
 				'recursive' => 0,
@@ -659,9 +666,10 @@ class TreeBehavior extends ModelBehavior {
 
 		if ($node[$right] == $node[$left] + 1) {
 			if ($delete) {
-				$model->delete();
+				return $model->delete($id);
 			} else {
-				return false;
+				$model->id = $id;
+				return $model->saveField($parent, null);
 			}
 		} elseif ($node[$parent]) {
 			list($parentNode) = array_values($model->find('first', array(
@@ -699,29 +707,6 @@ class TreeBehavior extends ModelBehavior {
 				array('callbacks' => false)
 			);
 		}
-	}
-/**
- * Backward compatible method
- *
- * Returns true if the change is successful.
- *
- * @param AppModel $model
- * @param mixed $parentId The ID to set as the parent of the current node.
- * @return true on success
- * @access public
- * @deprecated
- */
-	function setparent(&$model, $parentId = null , $created = null) {
-		trigger_error(
-			__('(TreeBehavior::setParent) Deprecated - save the record with a parent ID instead', true),
-			E_USER_ERROR
-		);
-		extract($this->settings[$model->alias]);
-
-		if ($created === false && $parentId == $model->field($parent)) {
-			return true;
-		}
-		return $model->saveField($parent, $parentId, array('callbacks' => false));
 	}
 /**
  * Check if the current tree is valid.
@@ -790,9 +775,8 @@ class TreeBehavior extends ModelBehavior {
 
 		if ($errors) {
 			return $errors;
-		} else {
-			return true;
 		}
+		return true;
 	}
 /**
  * Sets the parent of the given node
@@ -838,10 +822,11 @@ class TreeBehavior extends ModelBehavior {
 			}
 			if (empty ($node[$left]) && empty ($node[$right])) {
 				$this->__sync($model, 2, '+', '>= ' . $parentNode[$right], $created);
-				$model->save(
+				$result = $model->save(
 					array($left => $parentNode[$right], $right => $parentNode[$right] + 1, $parent => $parentId),
 					array('validate' => false, 'callbacks' => false)
 				);
+				$model->data = $result;
 			} else {
 				$this->__sync($model, $edge - $node[$left] +1, '+', 'BETWEEN ' . $node[$left] . ' AND ' . $node[$right], $created);
 				$diff = $node[$right] - $node[$left] + 1;
@@ -886,7 +871,7 @@ class TreeBehavior extends ModelBehavior {
 			'fields' => $db->calculate($model, 'max', array($right)),
 			'recursive' => $recursive
 		)));
-		return ife(empty ($edge[$right]), 0, $edge[$right]);
+		return (empty($edge[$right])) ? 0 : $edge[$right];
 	}
 /**
  * get the minimum index value in the table.
@@ -904,7 +889,7 @@ class TreeBehavior extends ModelBehavior {
 			'fields' => $db->calculate($model, 'min', array($left)),
 			'recursive' => $recursive
 		)));
-		return ife(empty($edge[$left]), 0, $edge[$left]);
+		return (empty($edge[$left])) ? 0 : $edge[$left];
 	}
 /**
  * Table sync method.
@@ -940,5 +925,4 @@ class TreeBehavior extends ModelBehavior {
 		$model->recursive = $modelRecursive;
 	}
 }
-
 ?>

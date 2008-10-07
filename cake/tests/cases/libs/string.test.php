@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: string.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: string.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,9 +21,9 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs
  * @since			CakePHP(tm) v 1.2.0.5432
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'String');
@@ -33,10 +33,10 @@ App::import('Core', 'String');
  * @package    cake.tests
  * @subpackage cake.tests.cases.libs
  */
-class StringTest extends UnitTestCase {
+class StringTest extends CakeTestCase {
 /**
  * testUuidGeneration method
- * 
+ *
  * @access public
  * @return void
  */
@@ -47,13 +47,13 @@ class StringTest extends UnitTestCase {
 	}
 /**
  * testMultipleUuidGeneration method
- * 
+ *
  * @access public
  * @return void
  */
 	function testMultipleUuidGeneration() {
 		$check = array();
-		$count = rand(10, 1000);
+		$count = mt_rand(10, 1000);
 		for($i = 0; $i < $count; $i++) {
 			$result = String::uuid();
 			$match = preg_match("/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/", $result);
@@ -64,7 +64,7 @@ class StringTest extends UnitTestCase {
 	}
 /**
  * testInsert method
- * 
+ *
  * @access public
  * @return void
  */
@@ -160,10 +160,27 @@ class StringTest extends UnitTestCase {
 		$result = String::insert("this is a ? string", "test");
 		$expected = "this is a test string";
 		$this->assertEqual($result, $expected);
+
+		$result = String::insert("this is a ? string with a ? ? ?", array('long', 'few?', 'params', 'you know'));
+		$expected = "this is a long string with a few? params you know";
+		$this->assertEqual($result, $expected);
+
+		$result = String::insert('update saved_urls set url = :url where id = :id', array('url' => 'http://www.testurl.com/param1:url/param2:id','id' => 1));   
+		$expected = "update saved_urls set url = http://www.testurl.com/param1:url/param2:id where id = 1";
+		$this->assertEqual($result, $expected);
+
+		$result = String::insert('update saved_urls set url = :url where id = :id', array('id' => 1, 'url' => 'http://www.testurl.com/param1:url/param2:id'));   
+		$expected = "update saved_urls set url = http://www.testurl.com/param1:url/param2:id where id = 1";
+		$this->assertEqual($result, $expected);
+		
+		$result = String::insert(':me cake. :subject :verb fantastic.', array('me' => 'I :verb', 'subject' => 'cake', 'verb' => 'is'));   
+		$expected = "I :verb cake. cake is fantastic.";
+		$this->assertEqual($result, $expected);
+
 	}
-	/**
+/**
  * testTokenize method
- * 
+ *
  * @access public
  * @return void
  */
@@ -183,7 +200,7 @@ class StringTest extends UnitTestCase {
 		$result = String::tokenize('"single tag"', ' ', '"', '"');
 		$expected = array('"single tag"');
 		$this->assertEqual($expected, $result);
-		
+
 		$result = String::tokenize('tagA "single tag" tagB', ' ', '"', '"');
 		$expected = array('tagA', '"single tag"', 'tagB');
 		$this->assertEqual($expected, $result);

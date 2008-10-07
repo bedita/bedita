@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: connection_manager.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: connection_manager.php 7690 2008-10-02 04:56:53Z nate $ */
 
 /**
  * Short description for file.
@@ -22,9 +22,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model
  * @since			CakePHP(tm) v 0.10.x.1402
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-01 22:33:52 -0800 (Tue, 01 Jan 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -81,7 +81,7 @@ class ConnectionManager extends Object {
 	function &getInstance() {
 		static $instance = array();
 
-		if (!isset($instance[0]) || !$instance[0]) {
+		if (!$instance) {
 			$instance[0] =& new ConnectionManager();
 		}
 
@@ -98,12 +98,13 @@ class ConnectionManager extends Object {
 	function &getDataSource($name) {
 		$_this =& ConnectionManager::getInstance();
 
-		if (in_array($name, array_keys($_this->_dataSources))) {
-			return $_this->_dataSources[$name];
+		if (!empty($_this->_dataSources[$name])) {
+			$return =& $_this->_dataSources[$name];
+			return $return;
 		}
 
 		$connections = $_this->enumConnectionObjects();
-		if (in_array($name, array_keys($connections))) {
+		if (!empty($connections[$name])) {
 			$conn = $connections[$name];
 			$class = $conn['classname'];
 			$_this->loadDataSource($name);
@@ -114,7 +115,8 @@ class ConnectionManager extends Object {
 			return null;
 		}
 
-		return $_this->_dataSources[$name];
+		$return =& $_this->_dataSources[$name];
+		return $return;
 	}
 /**
  * Gets the list of available DataSource connections
@@ -164,7 +166,7 @@ class ConnectionManager extends Object {
 			$conn = $connections[$connName];
 		}
 
-		if (isset($conn['parent']) && !empty($conn['parent'])) {
+		if (!empty($conn['parent'])) {
 			$_this->loadDataSource($conn['parent']);
 		}
 
@@ -225,7 +227,8 @@ class ConnectionManager extends Object {
 
 		$_this->config->{$name} = $config;
 		$_this->_connectionsEnum[$name] = $_this->__getDriver($config);
-		return $_this->getDataSource($name);
+		$return =& $_this->getDataSource($name);
+		return $return;
 	}
 /**
  * Returns the file, class name, and parent for the given driver.
@@ -262,5 +265,4 @@ class ConnectionManager extends Object {
 		}
 	}
 }
-
 ?>

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: database.php.default 7118 2008-06-04 20:49:29Z gwoo $ */
+/* SVN FILE: $Id: database.php.default 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * This is core configuration file.
  *
@@ -21,9 +21,9 @@
  * @package			cake
  * @subpackage		cake.app.config
  * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 7118 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-04 13:49:29 -0700 (Wed, 04 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -47,7 +47,7 @@
  *		firebird	- Firebird/Interbase
  *		sybase		- Sybase ASE
  *		adodb-[drivername]	- ADOdb interface wrapper (see below),
- *		pear-[drivername]	- PEAR::DB wrapper
+ *		odbc		- ODBC DBO driver
  *
  * You can add custom database drivers (or override existing drivers) by adding the
  * appropriate file to app/models/datasources/dbo.  Drivers should be named 'dbo_x.php',

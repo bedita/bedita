@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: cli_reporter.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: cli_reporter.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,17 +21,17 @@
  * @package			cake
  * @subpackage		cake.cake.tests.libs
  * @since			CakePHP(tm) v 1.2.0.4433
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 	if (! defined('ST_FAILDETAIL_SEPARATOR')) {
 		define('ST_FAILDETAIL_SEPARATOR', "->");
 	}
 
-	if (version_compare(phpversion(), '4.4.4', '<=') ||
-		php_sapi_name() == 'cgi') {
+	if (version_compare(PHP_VERSION, '4.4.4', '<=') ||
+		PHP_SAPI == 'cgi') {
 		define('STDOUT', fopen('php://stdout', 'w'));
 		define('STDERR', fopen('php://stderr', 'w'));
 		register_shutdown_function(create_function('', 'fclose(STDOUT); fclose(STDERR); return true;'));

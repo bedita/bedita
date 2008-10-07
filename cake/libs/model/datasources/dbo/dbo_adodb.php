@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_adodb.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: dbo_adodb.php 7690 2008-10-02 04:56:53Z nate $ */
 
 /**
  * AdoDB layer for DBO.
@@ -22,9 +22,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.datasources.dbo
  * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -425,19 +425,25 @@ class DboAdodb extends DboSource {
  * @return unknown
  */
 	function fetchResult() {
-		if (!empty($this->results) && $row = $this->results) {
-			$resultRow = array();
-			$fields = array_keys($row);
-			$count = count($fields);
-			$i = 0;
-			for ($i = 0; $i < $count; $i++) { //$row as $index => $field) {
-				list($table, $column) = $this->map[$i];
-				$resultRow[$table][$column] = $row[$fields[$i]];
-			}
-			return $resultRow;
+		if (!empty($this->results)) {
+			$row = $this->results;
 		} else {
+			$row = $this->_result->FetchRow();
+		}
+
+		if (empty($row)) {
 			return false;
 		}
+
+		$resultRow = array();
+		$fields = array_keys($row);
+		$count = count($fields);
+		$i = 0;
+		for ($i = 0; $i < $count; $i++) { //$row as $index => $field) {
+			list($table, $column) = $this->map[$i];
+			$resultRow[$table][$column] = $row[$fields[$i]];
+		}
+		return $resultRow;
 	}
 
 /**

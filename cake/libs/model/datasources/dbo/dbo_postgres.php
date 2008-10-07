@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_postgres.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: dbo_postgres.php 7690 2008-10-02 04:56:53Z nate $ */
 
 /**
  * PostgreSQL layer for DBO.
@@ -22,9 +22,9 @@
  * @package			cake
  * @subpackage		cake.cake.libs.model.datasources.dbo
  * @since			CakePHP(tm) v 0.9.1.114
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -193,7 +193,14 @@ class DboPostgres extends DboSource {
 		$this->_sequenceMap[$table] = array();
 
 		if ($fields === null) {
-			$cols = $this->fetchAll("SELECT DISTINCT column_name AS name, data_type AS type, is_nullable AS null, column_default AS default, ordinal_position AS position, character_maximum_length AS char_length, character_octet_length AS oct_length FROM information_schema.columns WHERE table_name =" . $this->value($table) . " ORDER BY position", false);
+			$cols = $this->fetchAll(
+				"SELECT DISTINCT column_name AS name, data_type AS type, is_nullable AS null,
+					column_default AS default, ordinal_position AS position, character_maximum_length AS char_length,
+					character_octet_length AS oct_length FROM information_schema.columns
+				WHERE table_name = " . $this->value($table) . " AND table_schema = " .
+				$this->value($this->config['schema'])."  ORDER BY position",
+				false
+			);
 
 			foreach ($cols as $column) {
 				$colKey = array_keys($column);
@@ -215,7 +222,11 @@ class DboPostgres extends DboSource {
 					$fields[$c['name']] = array(
 						'type'    => $this->column($c['type']),
 						'null'    => ($c['null'] == 'NO' ? false : true),
-						'default' => preg_replace("/^'(.*)'$/", "$1", preg_replace('/::.*/', '', $c['default'])),
+						'default' => preg_replace(
+							"/^'(.*)'$/",
+							"$1",
+							preg_replace('/::.*/', '', $c['default'])
+						),
 						'length'  => $length
 					);
 					if ($c['name'] == $model->primaryKey) {
@@ -224,7 +235,10 @@ class DboPostgres extends DboSource {
 							$fields[$c['name']]['length'] = 11;
 						}
 					}
-					if ($fields[$c['name']]['default'] == 'NULL' || preg_match('/nextval\([\'"]?(\w+)/', $c['default'], $seq)) {
+					if (
+						$fields[$c['name']]['default'] == 'NULL' ||
+						preg_match('/nextval\([\'"]?([\w.]+)/', $c['default'], $seq)
+					) {
 						$fields[$c['name']]['default'] = null;
 						if (!empty($seq) && isset($seq[1])) {
 							$this->_sequenceMap[$table][$c['name']] = $seq[1];
@@ -244,10 +258,11 @@ class DboPostgres extends DboSource {
  *
  * @param string $data String to be prepared for use in an SQL statement
  * @param string $column The column into which this data will be inserted
+ * @param boolean $read Value to be used in READ or WRITE context
  * @return string Quoted and escaped
  * @todo Add logic that formats/escapes data based on column type
  */
-	function value($data, $column = null) {
+	function value($data, $column = null, $read = true) {
 
 		$parent = parent::value($data, $column);
 		if ($parent != null) {
@@ -266,15 +281,15 @@ class DboPostgres extends DboSource {
 			case 'float':
 			case 'integer':
 				if ($data === '') {
-					return 'DEFAULT';
+					return $read ? 'NULL' : 'DEFAULT';
 				}
 			case 'binary':
 				$data = pg_escape_bytea($data);
 			break;
 			case 'boolean':
-				if ($data === true || $data === 't') {
+				if ($data === true || $data === 't' || $data === 'true') {
 					return 'TRUE';
-				} elseif ($data === false || $data === 'f') {
+				} elseif ($data === false || $data === 'f' || $data === 'false') {
 					return 'FALSE';
 				}
 				return (!empty($data) ? 'TRUE' : 'FALSE');
@@ -292,10 +307,7 @@ class DboPostgres extends DboSource {
  */
 	function lastError() {
 		$error = pg_last_error($this->connection);
-		if ($error) {
-			return $error;
-		}
-		return null;
+		return ($error) ? $error : null;
 	}
 
 /**
@@ -304,11 +316,7 @@ class DboPostgres extends DboSource {
  * @return integer Number of affected rows
  */
 	function lastAffected() {
-		if ($this->_result) {
-			$return = pg_affected_rows($this->_result);
-			return $return;
-		}
-		return false;
+		return ($this->_result) ? pg_affected_rows($this->_result) : false;
 	}
 /**
  * Returns number of rows in previous resultset. If no previous resultset exists,
@@ -317,11 +325,7 @@ class DboPostgres extends DboSource {
  * @return integer Number of rows in resultset
  */
 	function lastNumRows() {
-		if ($this->_result) {
-			$return = pg_num_rows($this->_result);
-			return $return;
-		}
-		return false;
+		return ($this->_result) ? pg_num_rows($this->_result) : false;
 	}
 /**
  * Returns the ID generated from the previous INSERT operation.
@@ -465,41 +469,36 @@ class DboPostgres extends DboSource {
 
 		$col = str_replace(')', '', $real);
 		$limit = null;
+
 		if (strpos($col, '(') !== false) {
 			list($col, $limit) = explode('(', $col);
 		}
 
-		if (in_array($col, array('date', 'time'))) {
-			return $col;
+		$floats = array(
+			'float', 'float4', 'float8', 'double', 'double precision', 'decimal', 'real', 'numeric'
+		);
+
+		switch (true) {
+			case (in_array($col, array('date', 'time', 'inet', 'boolean'))):
+				return $col;
+			case (strpos($col, 'timestamp') !== false):
+				return 'datetime';
+			case (strpos($col, 'time') === 0):
+				return 'time';
+			case (strpos($col, 'int') !== false && $col != 'interval'):
+				return 'integer';
+			case (strpos($col, 'char') !== false || $col == 'uuid'):
+				return 'string';
+			case (strpos($col, 'text') !== false):
+				return 'text';
+			case (strpos($col, 'bytea') !== false):
+				return 'binary';
+			case (in_array($col, $floats)):
+				return 'float';
+			default:
+				return 'text';
+			break;
 		}
-		if (strpos($col, 'timestamp') !== false) {
-			return 'datetime';
-		}
-		if (strpos($col, 'time') === 0) {
-			return 'time';
-		}
-		if ($col == 'inet') {
-			return('inet');
-		}
-		if ($col == 'boolean') {
-			return 'boolean';
-		}
-		if (strpos($col, 'int') !== false && $col != 'interval') {
-			return 'integer';
-		}
-		if (strpos($col, 'char') !== false) {
-			return 'string';
-		}
-		if (strpos($col, 'text') !== false) {
-			return 'text';
-		}
-		if (strpos($col, 'bytea') !== false) {
-			return 'binary';
-		}
-		if (in_array($col, array('float', 'float4', 'float8', 'double', 'double precision', 'decimal', 'real', 'numeric'))) {
-			return 'float';
-		}
-		return 'text';
 	}
 /**
  * Gets the length of a database-native column description, or null if no length
@@ -514,7 +513,9 @@ class DboPostgres extends DboSource {
 		if (strpos($col, '(') !== false) {
 			list($col, $limit) = explode('(', $col);
 		}
-
+		if ($col == 'uuid') {
+			return 36;
+		}
 		if ($limit != null) {
 			return intval($limit);
 		}
@@ -552,12 +553,23 @@ class DboPostgres extends DboSource {
 	function fetchResult() {
 		if ($row = pg_fetch_row($this->results)) {
 			$resultRow = array();
-			$i = 0;
 
 			foreach ($row as $index => $field) {
 				list($table, $column) = $this->map[$index];
-				$resultRow[$table][$column] = $row[$index];
-				$i++;
+				$type = pg_field_type($this->results, $index);
+
+				switch ($type) {
+					case 'bool':
+						$resultRow[$table][$column] = $this->boolean($row[$index], false);
+					break;
+					case 'binary':
+					case 'bytea':
+						$resultRow[$table][$column] = pg_unescape_bytea($row[$index]);
+					break;
+					default:
+						$resultRow[$table][$column] = $row[$index];
+					break;
+				}
 			}
 			return $resultRow;
 		} else {
@@ -577,6 +589,10 @@ class DboPostgres extends DboSource {
 				return $data;
 			case ($data === 't' || $data === 'f'):
 				return ($data === 't');
+			case ($data === 'true' || $data === 'false'):
+				return ($data === 'true');
+			case ($data === 'TRUE' || $data === 'FALSE'):
+				return ($data === 'TRUE');
 			default:
 				return (bool)$data;
 			break;
@@ -602,11 +618,16 @@ class DboPostgres extends DboSource {
 /**
  * Generate a Postgres-native column schema string
  *
- * @param array $column An array structured like the following: array('name'=>'value', 'type'=>'value'[, options]),
+ * @param array $column An array structured like the following:
+ *                      array('name'=>'value', 'type'=>'value'[, options]),
  *                      where options can be 'default', 'length', or 'key'.
  * @return string
  */
 	function buildColumn($column) {
+		$col = $this->columns[$column['type']];
+		if (!isset($col['length']) && !isset($col['limit'])) {
+			unset($column['length']);
+		}
 		$out = preg_replace('/integer\([0-9]+\)/', 'integer', parent::buildColumn($column));
 		$out = str_replace('integer serial', 'serial', $out);
 
@@ -669,13 +690,14 @@ class DboPostgres extends DboSource {
 						break;
 					}
 				}
+				$join = array('columns' => ",\n\t", 'indexes' => "\n");
 
 				foreach (array('columns', 'indexes') as $var) {
 					if (is_array(${$var})) {
-						${$var} = "\t" . join(",\n\t", array_filter(${$var}));
+						${$var} = join($join[$var], array_filter(${$var}));
 					}
 				}
-				return "CREATE TABLE {$table} (\n{$columns});\n{$indexes}";
+				return "CREATE TABLE {$table} (\n\t{$columns}\n);\n{$indexes}";
 			break;
 			default:
 				return parent::renderStatement($type, $data);

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: file.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: file.test.php 7690 2008-10-02 04:56:53Z nate $ */
 /**
  * Short description for file.
  *
@@ -21,12 +21,12 @@
  * @package			cake.tests
  * @subpackage		cake.tests.cases.libs
  * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 02:09:03 -0700 (Fri, 27 Jun 2008) $
+ * @version			$Revision: 7690 $
+ * @modifiedby		$LastChangedBy: nate $
+ * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
  * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-uses('file');
+App::import('Core', 'File');
 
 /**
  * Short description for class.
@@ -34,17 +34,17 @@ uses('file');
  * @package		cake.tests
  * @subpackage	cake.tests.cases.libs
  */
-class FileTest extends UnitTestCase {
+class FileTest extends CakeTestCase {
 /**
  * File property
- * 
+ *
  * @var mixed null
  * @access public
  */
 	var $File = null;
 /**
  * testBasic method
- * 
+ *
  * @access public
  * @return void
  */
@@ -102,7 +102,7 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * testRead method
- * 
+ *
  * @access public
  * @return void
  */
@@ -124,7 +124,7 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * testOffset method
- * 
+ *
  * @access public
  * @return void
  */
@@ -156,7 +156,7 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * testOpen method
- * 
+ *
  * @access public
  * @return void
  */
@@ -180,7 +180,7 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * testClose method
- * 
+ *
  * @access public
  * @return void
  */
@@ -197,7 +197,7 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * testCreate method
- * 
+ *
  * @access public
  * @return void
  */
@@ -208,7 +208,7 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * testOpeningNonExistantFileCreatesIt method
- * 
+ *
  * @access public
  * @return void
  */
@@ -221,7 +221,7 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * testPrepare method
- * 
+ *
  * @access public
  * @return void
  */
@@ -235,7 +235,7 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * testReadable method
- * 
+ *
  * @access public
  * @return void
  */
@@ -248,7 +248,7 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * testWritable method
- * 
+ *
  * @access public
  * @return void
  */
@@ -261,7 +261,7 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * testExecutable method
- * 
+ *
  * @access public
  * @return void
  */
@@ -274,7 +274,7 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * testLastAccess method
- * 
+ *
  * @access public
  * @return void
  */
@@ -288,7 +288,7 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * testLastChange method
- * 
+ *
  * @access public
  * @return void
  */
@@ -304,7 +304,7 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * testWrite method
- * 
+ *
  * @access public
  * @return void
  */
@@ -334,7 +334,7 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * testAppend method
- * 
+ *
  * @access public
  * @return void
  */
@@ -362,7 +362,7 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * testDelete method
- * 
+ *
  * @access public
  * @return void
  */
@@ -386,8 +386,8 @@ class FileTest extends UnitTestCase {
 	}
 /**
  * getTmpFile method
- * 
- * @param bool $paintSkip 
+ *
+ * @param bool $paintSkip
  * @access protected
  * @return void
  */
