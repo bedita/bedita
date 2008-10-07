@@ -2,13 +2,14 @@
 	
 	<div class="toolbar" style="white-space:nowrap">
 		
-		<h2>{if !empty($sectionSel)}{t}{$moduleName}{/t} in “ <span style="color:white" class="evidence">{$sectionSel.title}</span> ”
-		{else} all {$moduleName}{/if}</h2>
+		<h2>{if !empty($sectionSel)}{t}{$itemName|default:moduleName}{/t} in “ 
+		<span style="color:white" class="evidence">{$sectionSel.title}</span> ”
+		{else} all {$itemName|default:$moduleName}{/if}</h2>
 		
 		<ul>
 	
 			<li>
-			<span class="evidence">{$beToolbar->size()}&nbsp;</span> {t}{$moduleName}{/t}
+			<span class="evidence">{$beToolbar->size()}&nbsp;</span> {t}{$itemName|default:$moduleName}{/t}
 			</li>
 			
 			<li>
@@ -37,9 +38,6 @@
 
 
 		</ul>
-
-
-
 
 	</div>
 
