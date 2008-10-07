@@ -536,6 +536,9 @@ class BEObject extends BEAppModel
 	 */
 	private function _getDefaultNickname($value) {
 		
+		if(empty($value)) {
+			return $value;
+		}
 		if (is_numeric($value)) {
 			$value = "n" . $value;
 		}
@@ -553,15 +556,17 @@ class BEObject extends BEAppModel
 		$value = preg_replace("/[\-]{2,}/", "-", $value);
 		// trim dashes in the beginning and in the end of nickname
 		$nickname = $nickname_base = trim($value,"-");
-		if(@empty($nickname)) 
-			return $nickname ;
 
+		$conf = Configure::getInstance() ;
 		$nickOk = false;
 		$countNick = 1;
-		$conf = Configure::getInstance() ;
 		$reservedWords = array_merge ( $conf->defaultReservedWords, $conf->cfgReservedWords );
+		if(empty($nickname)) {
+			$objTypeId = $this->data['BEObject']['object_type_id'];
+			$nickname_base = $conf->objectTypes[$objTypeId]["name"]; // default name - model type name
+			$nickname = $nickname_base . "-0";
+		};
 
-		
 		while (!$nickOk) {
 			
 			$cond = "WHERE nickname = '{$nickname}'";
@@ -574,9 +579,8 @@ class BEObject extends BEAppModel
 			if ($numNickDb == 0 && !in_array($nickname, $reservedWords)) {
 				$nickOk = true;
 			} else {
-				$nickname = $nickname_base . "_" . $countNick++;
+				$nickname = $nickname_base . "-" . $countNick++;
 			}
-			
 		}
 		
 		return $nickname ;
@@ -622,6 +626,8 @@ class BEObject extends BEAppModel
 		$conf = Configure::getInstance() ;		
 		$session = @(new CakeSession()) ;
 		
+		if($session->valid() === false)
+			return null;
 		$user = $session->read($conf->session["sessionUserKey"]) ; 
 		if(!isset($user["id"])) return null ;
 		

@@ -21,10 +21,6 @@ class DocumentTestCase extends BeditaTestCase {
     /////////////////////////////////////////////////
  	
  	function testInsert() {
-        pr("Document created:");
- 
-//		$conf  		= Configure::getInstance() ;
-		
 		$this->requiredData(array("insert"));
 		$result = $this->Document->save($this->data['insert']) ;
 		$this->assertEqual($result,true);		
@@ -37,17 +33,6 @@ class DocumentTestCase extends BeditaTestCase {
 		pr("Document created:");
 		pr($result);
 		$this->inserted[] = $this->Document->id;
-		// look for search texts
-//		pr("Search Text:");
-//		$SQL = "SELECT * FROM `indexs`  WHERE object_id IN ({$this->Area->id})" ;
-//		$result = $this->Area->execute($SQL) ;
-//		pr($result) ;
-		
-		// Delete
-//		$result = $this->Document->delete($this->Document->id);
-//		$this->assertEqual($result,true);		
-//		pr("Document deleted");
-		
 	} 
 	
  	function testSearch() {
