@@ -64,7 +64,10 @@ class AddressbookController extends ModulesController {
 		$this->data['name'] = $this->data[$kind]['name'];
 		$this->data['surname'] = $this->data[$kind]['surname'];
 		$this->data['person_title'] = $this->data[$kind]['person_title'];
-
+		if(empty($this->data['User'][0])) {
+			$this->data['User'] = array();
+		}
+		
 		$this->saveObject($this->Card);
 	 	$this->Transaction->commit();
 		$this->userInfoMessage(__("Card saved", true)." - ".$this->data["title"]);
@@ -82,17 +85,7 @@ class AddressbookController extends ModulesController {
 	}
 
 	public function categories() {
-		$conf  = Configure::getInstance() ;
-		$type = $conf->objectTypes['event']["id"];
-		$this->set("categories", $this->Category->findAll("Category.object_type_id=".$type));
-		$this->set("object_type_id", $type);
-		$this->set("areasList", $this->BEObject->find('list', array(
-										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
-										"order" => "title", 
-										"fields" => "BEObject.title"
-										)
-									)
-								);
+		$this->showCategories($this->Card);
 	}
 
 	public function saveCategories() {

@@ -5,9 +5,9 @@ var message = "{t}Are you sure that you want to delete the item?{/t}";
 $(document).ready(function(){
 	$(".delete").bind("click", function(){
 		if(!confirm(message)) return false ;
-		$(this).parent().siblings("form").attr("action", urlDelete) ;
-		$(this).parent().siblings("form").get(0).submit() ;
-		return false ;
+		var catId = $(this).attr("title");
+		$("#form_"+catId).attr("action", urlDelete).submit();
+		return false;
 	});
 
 	$("input[@type=text]").bind("keyup", function(){

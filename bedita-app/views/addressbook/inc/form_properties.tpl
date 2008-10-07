@@ -5,6 +5,16 @@ function addUserToCard(id,username) {
 	$("#user_id").attr("value",id);
 	$("#user_name").text(username);
 }
+
+$(document).ready(function() {
+	$("#remove_user").click(removeUserFromCard);
+});
+
+function removeUserFromCard() {
+	$("#user_id").attr("value", "");
+	$("#user_name").text(" - ");
+	$("#remove_user").attr("disabled", "disabled");
+}
 {/literal}
 //-->
 </script>
@@ -44,7 +54,7 @@ function addUserToCard(id,username) {
 				rel="{$html->url('/admin/showUsers')}"
 				title="USERS : select an item to associate" />
 			{else}
-			<input type="button" value="  {t}remove from users{/t}  " />
+			<input id="remove_user" type="button" value="  {t}remove from users{/t}  "/>
 			{/if}
 		</td>
 	</tr>

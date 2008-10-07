@@ -53,17 +53,7 @@ class NewsController extends ModulesController {
 	}
 
 	public function categories() {
-		$conf  = Configure::getInstance() ;
-		$type = $conf->objectTypes['shortnews']["id"];
-		$this->set("categories", $this->Category->findAll("Category.object_type_id=".$type));
-		$this->set("object_type_id", $type);
-		$this->set("areasList", $this->BEObject->find('list', array(
-										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
-										"order" => "title", 
-										"fields" => "BEObject.title"
-										)
-									)
-								);
+		$this->showCategories($this->ShortNews);
 	}
 	
 	public function saveCategories() {

@@ -677,7 +677,22 @@ abstract class ModulesController extends AppController {
 		$this->Permission->saveFromPOST($beModel->id, $this->data['Permissions'], 
 	 			!empty($this->data['recursiveApplyPermissions']), $name);
 	}
-	
+
+	protected function showCategories(BEAppModel $beModel) {
+		$conf  = Configure::getInstance() ;
+		$type = $conf->objectTypes[strtolower($beModel->name)]["id"];
+		$categoryModel = ClassRegistry::init("Category");
+		$this->set("categories", $categoryModel->findAll("Category.object_type_id=".$type));
+		$this->set("object_type_id", $type);
+		$this->set("areasList", $this->BEObject->find('list', array(
+										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
+										"order" => "title", 
+										"fields" => "BEObject.title"
+										)
+									)
+								);	
+	}
+		
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

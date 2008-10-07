@@ -27,7 +27,7 @@
 	{if !empty($areaCategory.noarea)}
 			
 			<tr>
-				<th><h2 style="color:white; margin-left:-10px">{t}Categories with no area associated{/t}</h2></th>
+				<th><h2 style="color:white; margin-left:-10px">{t}Generic categories{/t}</h2></th>
 			</tr>
 			{foreach item="noareaC" from=$areaCategory.noarea}
 			<tr>
