@@ -493,13 +493,18 @@ class AreasController extends ModulesController {
 		
 		// get content
 		$objType = Configure::read("objectTypes.leafs.id");
-		$contents = $this->BeTree->getChildren($id, null, $objType, "priority", true, $page, $dim);
+
+		$priorityOrder = $this->Section->field("priority_order", array("id" => $id));
+		if(empty($priorityOrder))
+			$priorityOrder = "asc";
+		$contents = $this->BeTree->getChildren($id, null, $objType, "priority", ($priorityOrder == "asc"), $page, $dim);
 		
 		foreach ($contents["items"] as $key => $item) {
 			$contents["items"][$key]["module"]= $this->ObjectType->field("module", 
 				array("id" => $item["object_type_id"]));
 		}
 		
+		$this->set("priorityOrder", $priorityOrder);
 		$this->set("contents", $contents);
 	}
 	

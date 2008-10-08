@@ -1,16 +1,32 @@
 <script type="text/javascript">
 <!--
 var urlAddObjToAss = "{$html->url('/areas/loadObjectToAssoc')}/{$object.id|default:0}/leafs/list_contents_for_section.tpl";
+var priorityOrder = "{$priorityOrder|default:'asc'}";
+var numContents = "{$contents.toolbar.size|default:0}";
 
 {literal}
 
 function addObjToAssoc(url, postdata) {
 	$.post(url, postdata, function(html){
-		$("#areacontent li:last").after(html);
+		if(priorityOrder == 'asc') {
+			$("#areacontent li:last").after(html);
+		} else {
+			$("#areacontent li:first").before(html);
+		}
+		numContents = $("#areacontent li").size();
 		if ($("#noContents"))
 			$("#noContents").remove();
 		$("#areacontent").fixItemsPriority();
 		$("#areacontent").sortable("refresh");
+		setRemoveActions();
+	});
+}
+
+function setRemoveActions() {
+	$("#areacontent").find("input[@type='button']").click(function() {
+		$(this).parents("li").remove();
+		numContents--;
+		$("#areacontent").fixItemsPriority();
 	});
 }
 
@@ -30,12 +46,7 @@ $(document).ready(function() {
 		});
 		
 	});
-	
-	$("#areacontent").find("input[@type='button']").click(function() {
-		$(this).parents("li").remove();
-		$("#areacontent").fixItemsPriority();
-	});
-
+	setRemoveActions();
 	$(".modalbutton").click(function () {
 		$(this).BEmodal();
 	});

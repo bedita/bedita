@@ -96,6 +96,14 @@
 				</td>
 			</tr>
 
+			<tr>
+			
+					<th>{t}order{/t}:</th>
+					<td>
+						<input type="radio" name="data[priority_order]" value="asc" {if $object.priority_order|default:'asc'=="asc"}checked{/if} />{t}asc{/t}
+						<input type="radio" name="data[priority_order]" value="desc" {if $object.priority_order|default:'asc'=="desc"}checked{/if} />{t}desc{/t}
+					</td>
+			</tr>
 	<tr>
 		<td>
 			<ul id="mediatypes" style="margin-top:10px; margin-left:0px">

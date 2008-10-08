@@ -242,7 +242,7 @@ abstract class FrontendController extends AppController {
        );
 	   $this->set('channelData', $channel);
        $rssItems = array();
-	   $items = $this->BeTree->getChildren($s['id'], $this->status, false, "priority");
+	   $items = $this->BeTree->getChildren($s['id'], $this->status, false, "priority", ($s['priority_order']=="asc"));
 	   if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);
@@ -376,8 +376,13 @@ abstract class FrontendController extends AppController {
 		if(empty($parent_id)) {
 			throw new BeditaException("Bad data");
 		}
+
+		$priorityOrder = $this->Section->field("priority_order", array("id" => $parent_id));
+		if(empty($priorityOrder)) {
+			$priorityOrder = "asc";
+		}
 		$sectionItems = array();
-		$items = $this->BeTree->getChildren($parent_id, $this->status, false, "priority");
+		$items = $this->BeTree->getChildren($parent_id, $this->status, false, "priority", ($priorityOrder == "asc"));
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);

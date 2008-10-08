@@ -55,14 +55,29 @@ jQuery.fn.extend({
 /*
 *	fixItemsPriority (was reorderListItems)
 */
-
 	fixItemsPriority: function ()
 	{
-		$(this).find("input[name*='[priority]']").each(function(priority)
-		{
-			$(this).val(++priority)								// update priority
-			.hide().fadeIn(100).fadeOut(100).fadeIn('fast');	// pulse effect
-		});
+		if(window.priorityOrder === undefined) {
+			priorityOrder = "asc";
+		}
+					
+		if(priorityOrder == "desc") {
+
+			var count = numContents;
+			$(this).find("input[name*='[priority]']").each(function(priority)
+			{
+				$(this).val(count--)								// update priority
+				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');
+			});
+			
+		} else {
+		
+			$(this).find("input[name*='[priority]']").each(function(priority)
+			{
+				$(this).val(++priority)								// update priority
+				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');	// pulse effect
+			});
+		}
 	},
 
 
