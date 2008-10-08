@@ -27,7 +27,7 @@ class MailMessage extends BeditaContentModel
 			'MailGroup' =>	array (
 					'joinTable' => 'mail_group_messages'
 				)
-	);	
+	);
 		
 	protected $modelBindings = array( 
 				"detailed" =>  array("BEObject" => array("ObjectType", 
@@ -43,6 +43,20 @@ class MailMessage extends BeditaContentModel
 				"mailgroup" => array("MailGroup"),
 
 				"minimum" => array("BEObject" => array("ObjectType"))
+	);
+	
+	var $validate = array(
+		"subject" => array(
+			"rule" 			=> array('custom', '/.+/') ,
+			"required" 		=> true,
+			"message" 		=> "Subject required"
+		),
+		
+		"sender" => array(
+			"rule"	=> "email",
+			"required" => true,
+			"message"	=> "Please supply a valid email address."
+		)
 	);
 	
 	

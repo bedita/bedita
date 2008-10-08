@@ -63,7 +63,7 @@ $(document).ready(function() {
 
 </table>
 	<div class="modalcommands newsletter">
-		<input type="button" id="testNewsletter" value="  test newsletter  "/> 
+		<input type="button" id="testNewsletter" value="  test newsletter  " {if !($object.id|default:false)}disabled="disabled"{/if}/> 
 		&nbsp;&nbsp;
 		<input type="button" id="sendNewsletter" value="  SEND newsletter  " {if !($object.id|default:false)}disabled="disabled"{/if}/>
 	</div>

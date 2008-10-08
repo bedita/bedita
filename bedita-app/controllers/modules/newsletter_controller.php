@@ -321,6 +321,19 @@ class NewsletterController extends ModulesController {
 		
 	 }
 	 
+	 /** AJAX CALLS **/
+	function showTemplateDetailsAjax($id) {
+		$this->layout = null;
+		$temp = $this->MailTemplate->find("first", array(
+								"conditions" => array("id" => $id),
+								"contain"	 => array()
+								)
+		);
+
+		$this->set("object", $temp);
+		$this->render(null, null, VIEWS . "newsletter/inc/form_message_details.tpl");
+	}
+	 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"save"	=> 	array(

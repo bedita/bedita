@@ -34,7 +34,7 @@ class BeMailComponent extends Object {
 			throw new BeditaException(__("Error finding mail message " . $msg_id, true));
 		
 		$data["to"] = $to;
-		$data["from"] = (!empty($res["sender"]))? $res["sender"] : "Bedita mail service <noreplay@channelweb.it>";
+		$data["from"] = $res["sender"];
 		$data["subject"] = $res["subject"];
 		$data["replayTo"] = $res["replay_to"];
 		$data["mailType"] = "html";
@@ -172,7 +172,7 @@ class BeMailComponent extends Object {
 				$job["MailJob"]["sending_date"] = date("Y-m-d H:i:s",time());
 				$job["MailJob"]["status"] = "sent";
 				$jobModel->save($job);
-			} catch(BeditaException $ex) {
+			} catch(BeditaMailException $ex) {
 				$job["MailJob"]["status"] = "failed";
 				$jobModel->save($job);
 				$this->log($ex->errorTrace());
@@ -193,14 +193,17 @@ class BeMailComponent extends Object {
 		
 		// check required fields
 		if (empty($data["to"]))
-			throw new BeditaException(__("Missing recipient", true));
+			throw new BeditaMailException(__("Missing recipient", true));
 		
 		if (empty($data["from"]))
-			throw new BeditaException(__("Missing from field", true));
+			throw new BeditaMailException(__("Missing from field", true));
+			
+		if (empty($data["subject"]))
+			throw new BeditaMailException(__("Missing subject field", true));
 		
 		$this->Email->to = $data["to"];
 		$this->Email->from = $data["from"]; 
-		$this->Email->subject = (!empty($data["subject"]))? $data["subject"] : __("no subject", true);
+		$this->Email->subject = $data["subject"];
 		$this->Email->replyTo = (!empty($data["replayTo"]))? $data["replayTo"] : "";
 		$this->Email->sendAs = (!empty($data["mailType"]))? $data["mailType"] : "txt";
 		if (!empty($data["cc"]) && is_array($data["cc"]))

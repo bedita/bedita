@@ -69,6 +69,14 @@ initializeTinyMCE("{/literal}{$cssUrl|default:$html->url('/css/newsletter.css')}
 
 $(document).ready(function() {
 	$("#changeTemplate").change(function() {
+		
+		$("#msgDetailsLoader").show();
+		
+		$("#msgDetails").load("{/literal}{$html->url('/newsletter/showTemplateDetailsAjax/')}{literal}" + $(this).val(), function() {
+			$("#msgDetailsLoader").hide();	
+		});
+		
+		// reinitilize tinyMCE with templatecss
 		mce = tinyMCE.get("htmltextarea");
 		mce.remove();
 		cssBaseUrl = $(this).find("option:selected").attr("rel");
@@ -77,7 +85,8 @@ $(document).ready(function() {
 		else
 			cssPath =  cssBaseUrl + "/css/{/literal}{$conf->newsletterCss}{literal}";
 
-		initializeTinyMCE(cssPath);	
+		initializeTinyMCE(cssPath);
+		
 	});
 });
 
@@ -96,6 +105,12 @@ $(document).ready(function() {
 	{assign_concat var="default" 0="Newsletter | " 1=$smarty.now|date_format:"%B %Y"}
 	<input type="text" id="title" name="data[title]" 
 	value="{$object.title|default:$default|escape:'html'|escape:'quotes'}" id="titleBEObject"/>
+	
+	<hr />
+	
+	<label>{t}Subject{/t}: </label>
+	<input type="text" id="subject" name="data[subject]" 
+	value="{$object.subject|default:null}" id="subjectBEObject"/>
 	
 	<hr />
 
@@ -117,7 +132,7 @@ $(document).ready(function() {
 		<input class="modalbutton" type="button" value="{t}Get contents{/t}" rel="{$html->url('/areas/showObjects/')}" style="width:200px" />
 
 	<hr />
-
+	
 
 	<ul class="htab">
 		<li rel="html">HTML version</li>
@@ -137,7 +152,9 @@ $(document).ready(function() {
 	</div>
 
 		<br />
-
+	
+	<div id="msgDetailsLoader" class="loader"></div>
+	<div id="msgDetails">{include file="inc/form_message_details.tpl"}</div>
 	
 	
 </fieldset>
