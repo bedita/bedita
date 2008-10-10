@@ -4,7 +4,7 @@ App::import('Model', 'DataSource');
 App::import('Model', 'Stream');
 App::import('Component', 'Transaction');
 App::import('vendor', "splitter_sql");
-App::import('vendor', "Tar");
+App::import('vendor', "Archive_Tar", true, array(), "Tar.php");
 
 class DataSourceTest extends DataSource {
 	
