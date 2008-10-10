@@ -20,7 +20,7 @@ class NewsletterController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Paginator');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeMail');
 
-	var $uses = array('Card', 'MailGroup', 'MailMessage', 'MailTemplate') ;
+	var $uses = array('BEObject', 'Card', 'MailGroup', 'MailMessage', 'MailTemplate') ;
 	
 	protected $moduleName = 'newsletter';
 	
@@ -90,7 +90,52 @@ class NewsletterController extends ModulesController {
 		$this->userInfoMessage(__("Mail message deleted", true) . " -  " . $objectsListDeleted);
 		$this->eventInfo("mail messages $objectsListDeleted deleted");
 	}
-	
+
+	public function mailGroups() {
+		$this->MailGroup->recursive = -1;
+		$mg = $this->MailGroup->findAll();
+		$result = array();
+		foreach($mg as $k => $v) {
+			$result[]=$v['MailGroup'];
+		}
+		$this->set("mailGroups", $result);
+		$this->set("areasList", $this->BEObject->find('list', array(
+										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
+										"order" => "title", 
+										"fields" => "BEObject.title"
+										)
+									)
+								);	
+	}
+
+	public function saveMailGroups() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data["group_name"])) 
+			throw new BeditaException( __("No data", true));
+		if(empty($this->data["area_id"])) 
+ 			throw new BeditaException( __("No area", true));
+		$this->Transaction->begin() ;
+		if(!$this->MailGroup->save($this->data)) {
+			throw new BeditaException(__("Error saving mail group", true), $this->MailGroup->validationErrors);
+		}
+		$this->Transaction->commit();
+		$this->userInfoMessage(__("Mail Group saved", true)." - ".$this->data["group_name"]);
+		$this->eventInfo("mail group [" .$this->data["group_name"] . "] saved");
+	}
+
+	public function deleteMailGroups() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data["id"])) 
+ 	 	    throw new BeditaException( __("No data", true));
+ 	 	$this->Transaction->begin() ;
+		if(!$this->MailGroup->del($this->data["id"])) {
+			throw new BeditaException(__("Error saving mail group", true), $this->MailGroup->validationErrors);
+		}
+		$this->Transaction->commit();
+		$this->userInfoMessage(__("Mail Group deleted", true) . " -  " . $this->data["group_name"]);
+		$this->eventInfo("mail group " . $this->data["id"] . "-" . $this->data["group_name"] . " deleted");
+	}
+
 	public function sendNewsletter() {
 		if (empty($this->data["MailGroup"]))
 			throw new BeditaException(__("Missing invoices", true));
@@ -367,7 +412,15 @@ class NewsletterController extends ModulesController {
 			"deleteAddress"	=> 	array(
 							"OK"	=> "/newsletter/subscribers",
 							"ERROR"	=>  "/newsletter/subscribers" 
-							)
+							),
+			"saveMailGroups"=> array(
+							"OK"	=> "/newsletter/mailGroups",
+							"ERROR"	=> "/newsletter/mailGroups"
+							),
+			"deleteMailGroups"=> array(
+							"OK"	=> "/newsletter/mailGroups",
+							"ERROR"	=> "/newsletter/mailGroups"
+							),
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;

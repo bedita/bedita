@@ -81,7 +81,7 @@ $(document).ready(function(){
 	{elseif $method eq "invoices"}
 	
 	
-	{elseif !empty($method) && $method != "index" && $module_modify eq '1'}
+	{elseif !empty($method) && $method != "index" && $module_modify eq '1' && !empty($object)}
 	
 		<div class="insidecol">
 			{if ($perms->isWritable($user.userid,$user.groups,$object.Permissions))}

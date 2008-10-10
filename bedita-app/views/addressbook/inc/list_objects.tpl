@@ -62,7 +62,6 @@ $(document).ready(function(){
 
 	<input type="hidden" name="data[id]"/>
 
-
 	<table class="indexlist">
 	{capture name="theader"}
 		<tr>
@@ -71,7 +70,7 @@ $(document).ready(function(){
 			<th>{$beToolbar->order('id', 'tipo')}</th>
 			<th>{$beToolbar->order('status', 'Status')}</th>
 			<th>{$beToolbar->order('modified', 'Modified')}</th>
-			<th>{$beToolbar->order('modified', 'Country')}</th>			
+			<th>{t}Country{/t}</th>			
 		</tr>
 	{/capture}
 		
@@ -87,7 +86,7 @@ $(document).ready(function(){
 			<td>{$objects[i].id}</td>
 			<td>{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
-			<td>{$objects[i].id}</td>
+			<td>{$objects[i].country}</td>
 		</tr>
 		
 		

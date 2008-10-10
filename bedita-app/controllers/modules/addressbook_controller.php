@@ -25,14 +25,16 @@ class AddressbookController extends ModulesController {
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
-		$types = $conf->objectTypes['card']['id'];
-		
+		$types = array($conf->objectTypes['card']['id']);
 		if (!empty($this->params["form"]["searchstring"])) {
 			$types["search"] = addslashes($this->params["form"]["searchstring"]);
 			$this->set("stringSearched", $this->params["form"]["searchstring"]);
 		}
-		
-		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
+		$this->paginatedList($id, $types, $order, $dir, $page, $dim); 
+		foreach($this->viewVars['objects'] as $key => $value) {
+			$this->Card->recursive = -1;
+			$this->viewVars['objects'][$key]['country'] = $this->Card->field('country',array('id'=>$value['id']));
+		}
 	 }
 
 	 /**
