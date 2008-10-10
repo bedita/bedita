@@ -16,11 +16,11 @@
 		<h2>{t}Invoices{/t}</h2>
 		<ul>
 			<li>
-			<span class="evidence">1 &nbsp;</span> {t}pending{/t}
+			<span class="evidence">{$pending}&nbsp;</span> {t}pending{/t}
 			</li>
-			<li><span class="evidence"> 13 &nbsp;</span> {t}scheduled{/t}</li>
+			<li><span class="evidence"> {$scheduled} &nbsp;</span> {t}scheduled{/t}</li>
 			
-			<li> next invoice at: <span class="evidence">12 october 2008 : 23.30</span></li>
+			<li> {t}next invoice at{/t}: <span class="evidence">{$nextInvoiceDate|default:$conf->dateTimePattern}</span></li>
 		</ul>
 		
 	</div>

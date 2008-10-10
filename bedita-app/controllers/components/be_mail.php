@@ -2,15 +2,24 @@
 
 class BeMailComponent extends Object {
 
-	var $components = array("Email","Transaction");
+	var $components = array("Email");
 	
 	/**
 	 * startup component
 	 * set smtp options if it's in cofiguration (bedita.cfg.php)	
 	 * @param unknown_type $controller
 	 */
-	function startup(&$controller) {
-		$this->controller = &$controller;
+	function startup(&$controller=null) {
+		if ($controller === null) {
+			foreach ($this->components as $comp) {
+				App::import('Component', $comp);
+				$componentName = $comp . "Component";
+				$this->{$comp} = new $componentName() ;
+			}
+		} else {
+			$this->controller = &$controller;	
+		}
+		
 		$smtpOptions = Configure::read("smtpOptions");
 		if (!empty($smtpOptions) && is_array($smtpOptions)) {
 			$this->Email->smtpOptions = $smtpOptions;
@@ -54,12 +63,14 @@ class BeMailComponent extends Object {
 			throw new BeditaMailException(__("Mail delivery failed", true), $this->Email->smtpError);
 	}
 	
+	
 	/**
 	 * set to pending messages with status=unsent and start_sending <= now
 	 *
 	 */
 	public function lockMessages() {
 		
+		$msgIds = array();
 		$mailMsgModel = ClassRegistry::init("MailMessage");
 		$mailMsgModel->containLevel("mailgroup");
 		
@@ -73,34 +84,39 @@ class BeMailComponent extends Object {
 		
 		if (!empty($msgToLock)) {
 			
-			$this->Transaction->begin();
-			
 			foreach ($msgToLock as $key => $message) {
-				$mailMsgModel->Behaviors->disable('ForeignDependenceSave');
 				if (!empty($message["MailGroup"])) {
 					$mailMsgModel->id = $message["id"];
 					if (!$mailMsgModel->saveField("mail_status", "pending")) {
 						throw new BeditaException(__("Mail message lock failed: id " . $message["id"]), true);
 					}
+					
+					$msgIds[] = $message["id"];
 				}
-				$mailMsgModel->Behaviors->enable('ForeignDependenceSave');
 			}
 			
-			$this->Transaction->commit();
-			
 		}
+		
+		return $msgIds;
 								
 	}
 	
 	/**
 	 * create jobs from message with status pending
 	 */
-	public function createJobs() {
+	public function createJobs(array $msgIds) {
+		
+		if (empty($msgIds))
+			return ;
+			
 		$mailMsgModel = ClassRegistry::init("MailMessage");
 		$mailMsgModel->containLevel("mailgroup");
 		
 		$msgToSend = $mailMsgModel->find("all", array(
-									"conditions" => array("MailMessage.mail_status" => "pending")
+									"conditions" => array(
+										"MailMessage.mail_status" => "pending",
+										"MailMessage.id" => $msgIds
+										)
 									)
 								);
 		
@@ -147,37 +163,56 @@ class BeMailComponent extends Object {
 	 * execute active jobs
 	 *
 	 */
-	public function sendQueuedJobs() {
+	public function sendQueuedJobs(array $msgIds) {
+		
+		if (empty($msgIds))
+			return ;
 		
 		$jobModel = ClassRegistry::init("MailJob");
 		$jobModel->containLevel("detailed");
 		$jobsToDo = $jobModel->find("all", array(
-								"conditions" => array("MailJob.status" => "unsent")
+								"conditions" => array("MailJob.status" => "unsent"),
+								"MailJob.mail_message_id" => $msgIds
 							)
 						);
 						
+		$messagesSent = array();
+		
 		foreach ($jobsToDo as $job) {
-			$data["to"] = $job["Card"]["newsletter_email"];
-			$data["from"] = $job["MailMessage"]["sender"];
-			$data["replayTo"] = $job["MailMessage"]["replay_to"];
-			$data["subject"] = $job["MailMessage"]["Content"]["subject"];
-			$data["mailType"] = (!empty($job["Card"]["mail_html"]))? "html" : "txt";
-			$data["body"] = $job["MailMessage"]["Content"]["body"];
 			
-			unset($job["MailMessage"]);
-			unset($job["Card"]);
-				
-			try {
-				$this->sendMail($data);
-				$job["MailJob"]["sending_date"] = date("Y-m-d H:i:s",time());
-				$job["MailJob"]["status"] = "sent";
-				$jobModel->save($job);
-			} catch(BeditaMailException $ex) {
-				$job["MailJob"]["status"] = "failed";
-				$jobModel->save($job);
-				$this->log($ex->errorTrace());
+			if (!in_array($job["MailMessage"]["id"], $messagesSent)) {
+				$messagesSent[] = $job["MailMessage"]["id"];
 			}
 			
+			if ($job["Card"]["mail_status"] == "valid") {
+				$data["to"] = $job["Card"]["newsletter_email"];
+				$data["from"] = $job["MailMessage"]["sender"];
+				$data["replayTo"] = $job["MailMessage"]["replay_to"];
+				$data["subject"] = $job["MailMessage"]["Content"]["subject"];
+				$data["mailType"] = (!empty($job["Card"]["mail_html"]))? "html" : "txt";
+				$data["body"] = $job["MailMessage"]["Content"]["body"];
+				
+				unset($job["MailMessage"]);
+				unset($job["Card"]);
+					
+				try {
+					$this->sendMail($data);
+					$job["MailJob"]["sending_date"] = date("Y-m-d H:i:s",time());
+					$job["MailJob"]["status"] = "sent";
+					$jobModel->save($job);
+				} catch(BeditaMailException $ex) {
+					$job["MailJob"]["status"] = "failed";
+					$jobModel->save($job);
+					$this->log($ex->errorTrace());
+				}
+			}
+		}
+
+		// set messages mail_status to sent
+		$mailMsgModel = ClassRegistry::init("MailMessage");
+		foreach ($messagesSent as $id) {
+			$mailMsgModel->id = $id;
+			$mailMsgModel->saveField("mail_status", "sent");
 		}
 		
 	}
@@ -193,13 +228,13 @@ class BeMailComponent extends Object {
 		
 		// check required fields
 		if (empty($data["to"]))
-			throw new BeditaMailException(__("Missing recipient", true));
+			throw new BeditaException(__("Missing recipient", true));
 		
 		if (empty($data["from"]))
-			throw new BeditaMailException(__("Missing from field", true));
+			throw new BeditaException(__("Missing from field", true));
 			
 		if (empty($data["subject"]))
-			throw new BeditaMailException(__("Missing subject field", true));
+			throw new BeditaException(__("Missing subject field", true));
 		
 		$this->Email->to = $data["to"];
 		$this->Email->from = $data["from"]; 

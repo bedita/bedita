@@ -176,7 +176,7 @@ class NewsletterController extends ModulesController {
 		//pr($data);
 //		$this->BeMail->lockMessages();
 //		$this->BeMail->createJobs();
-//		$this->BeMail->sendQueuedJobs();
+		$this->BeMail->sendQueuedJobs();
 		exit;
 	}
 	
@@ -363,8 +363,34 @@ class NewsletterController extends ModulesController {
 	
 	function invoices() {
 
+		$msg = array();
+		$msg = $this->MailMessage->find("all", array(
+			"conditions" => array("MailMessage.mail_status" => array("pending", "unsent")),
+			"contain"	=> array("BEObject" => array("RelatedObject"), "MailGroup")
+			)
+		);
 		
-	 }
+		$this->modelBindings["MailTemplate"] = array("BEObject");
+		foreach ($msg as $k => $m) {
+			if (!empty($m["RelatedObject"])) {
+				$msg[$k]["relations"] = $this->objectRelationArray($m['RelatedObject']);
+			}	
+		}
+		unset($this->modelBindings["MailTemplate"]);
+		
+		$pending = $this->MailMessage->find("count", array(
+			"conditions" => array("MailMessage.mail_status" => array("pending"))
+			)
+		);
+		
+		$nextInvoice = $this->MailMessage->field("start_sending", array("mail_status" => "unsent"), "start_sending ASC");
+		
+		$this->set("objects", $msg);
+		$this->set("scheduled", count($msg));
+		$this->set("pending", $pending);
+		$this->set("nextInvoiceDate", $nextInvoice);
+
+	}
 	 
 	 /** AJAX CALLS **/
 	function showTemplateDetailsAjax($id) {

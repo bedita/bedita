@@ -219,7 +219,27 @@ class BEAppObjectModel extends BEAppModel {
 			$this->Behaviors->enable('CompactResult'); 
 		}
 		return $res;
-	}	
+	}
+	
+	/**
+	 * Overrides saveField, don't use CompactResult in saveField()
+	 *
+	 * @param string $name
+	 * @param array $conditions
+	 * @param string $order
+	 */
+	public function saveField($name, $value, $validate = false) {
+	
+		$dependanceEnabled = $this->Behaviors->enabled('ForeignDependenceSave');
+		if ($dependanceEnabled) {
+			$this->Behaviors->disable('ForeignDependenceSave'); 
+		}
+		$res = parent::saveField($name, $value, $validate);
+		if ($dependanceEnabled) { 
+			$this->Behaviors->enable('ForeignDependenceSave'); 
+		}
+		return $res;
+	}
 		
 	/**
  	* Sovrascrive e poi chiama la funzione del parent xch� deve settare
