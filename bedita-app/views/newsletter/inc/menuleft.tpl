@@ -14,7 +14,7 @@
 				<a href="{$html->url('/newsletter/newsletters')}">Manage newsletters</a>
 			</li>
 			<li {if $method eq "view"}class="on"{/if}><a href="{$html->url('/newsletter/view')}">Create new</a></li>
-			<li><a href="{$html->url('/newsletter/mailGroups')}">{t}Mail groups{/t}</a></li>
+			<li><a href="{$html->url('/newsletter/mailGroups')}">{t}Lists{/t}</a></li>
 		</ul>
 		
 		<ul class="menuleft insidecol">	

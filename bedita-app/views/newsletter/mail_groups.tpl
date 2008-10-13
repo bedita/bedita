@@ -10,7 +10,7 @@
 
 <div class="head">
 	
-	<h1>{t}Mail Groups{/t}</h1>
+	<h1>{t}Lists{/t}</h1>
 
 </div>
 
