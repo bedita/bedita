@@ -54,12 +54,12 @@
 
 	<div class="tab"><h2>{t}Templates{/t}</h2></div>
 		<ul class="bordered">
-			<li>Coincidono con asdfsaf</li>
-			<li>le pubblicazion i / arre macroarree</li>
-			<li>Coincidono con</li>
-			<li>le pubblicazion i</li>
-			<li>Coincidono con</li>
-			<li>le pubblicazion i</li>
+		{foreach from=$templates item="temp"}
+			<li><a href="{$html->url('/newsletter/viewtemplate/')}{$temp.BEObject.id}">{$temp.BEObject.title}</a></li>
+		{foreachelse}
+			<li>{t}No template avaible{/t}</li>
+		{/foreach}
+		
 		</ul>
 		
 </div>
@@ -68,54 +68,44 @@
 	
 	<div class="tab"><h2>{t}Newsletters{/t}</h2></div>
 		<ul class="bordered">
-			<li>Newsletters sent this month: <b>2 </b></li>
-			<li>Newsletters sent this year: <b>32</b> </li>
-			<li>Queued: <b>1</b> </li>		 
-			<li>Total newsletters sent: <b>36</b></li>
+			<li>Newsletters sent this month: <b>{$sentThisMonth|default:0} </b></li>
+			<li>Newsletters sent this year: <b>{$sentThisYear|default:0}</b> </li>
+			<li>Queued: <b>{$queued|default:0}</b> </li>		 
+			<li>Total newsletters sent: <b>{$sentTotal|default:0}</b></li>
 		</ul>
 	
 	<div class="tab"><h2>{t}Recent newsletters {/t}</h2></div>
 	
 		<table class="bordered">
+		{if !empty($recentMsg)}
 			<tr>
-				<th>title</th>
-				<th>Sent on</th>
-			{*	
-				<th>to recipient</th>
-				<th>template</th>
-			*}
+				<th>{t}title{/t}</th>
+				<th>{t}Sent on{/t}</th>
 			</tr>
+			
+			{foreach from=$recentMsg item="msg"}
 			<tr>
-				<td>tarallilal si farloccxa this week</td>
-				<td><i>not yet sent</i></td>
-			{*
-				<td>Iscritti da soli due</td>
-				<td>pubblicazione 1</td>
-			*}
+				<td>{$msg.title}</td>
+				<td>
+				{if $msg.mail_status == "sent"}
+					{$msg.start_sending|date_format:$conf->datePattern}
+				{else}
+					<i>{t}not yet sent{/t}</i>
+				{/if}
+				</td>
 			</tr>
-			<tr>
-				<td>titolo della newsletta</td>
-				<td>12 sep 2008</td>
-			</tr>
-			<tr>
-				<td>si  this week</td>
-				<td>01 sep 2008</td>
-			</tr>
+			{/foreach}
 			<tr>	
-				<td>si farloccxa this week</td>
-				<td>25 aug 2008</td>
-			</tr>
-			<tr>
-				<td>titolo della newsletta</td>
-				<td>01 aug 2008</td>
-			</tr>
-			<tr>	
-				<td colspan="3" style="border-bottom:0px;">
+				<td colspan="2" style="border-bottom:0px;">
 					<b><a href="{$html->url('/newsletter/newsletters')}">View all</a></b>
 					&nbsp;&nbsp;|&nbsp;&nbsp;
 					<b><a href="{$html->url('/newsletter/view')}">Create new</a></b>
 				</td>
 			</tr>
+		{else}
+			<tr><td colspan="2" style="border:0;">{t}No newsletters found{/t}</td></tr>
+		{/if}
+
 		</table>
 
 	

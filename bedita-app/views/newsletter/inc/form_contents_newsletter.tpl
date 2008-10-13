@@ -70,11 +70,15 @@ initializeTinyMCE("{/literal}{$cssUrl|default:$html->url('/css/newsletter.css')}
 $(document).ready(function() {
 	$("#changeTemplate").change(function() {
 		
-		$("#msgDetailsLoader").show();
+		var template_id = $(this).val();
 		
-		$("#msgDetails").load("{/literal}{$html->url('/newsletter/showTemplateDetailsAjax/')}{literal}" + $(this).val(), function() {
-			$("#msgDetailsLoader").hide();	
-		});
+		if (template_id != "") {
+			$("#msgDetailsLoader").show();
+			
+			$("#msgDetails").load("{/literal}{$html->url('/newsletter/showTemplateDetailsAjax/')}{literal}" + template_id, function() {
+				$("#msgDetailsLoader").hide();	
+			})
+		}
 		
 		// reinitilize tinyMCE with templatecss
 		mce = tinyMCE.get("htmltextarea");

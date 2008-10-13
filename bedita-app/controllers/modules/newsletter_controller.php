@@ -25,9 +25,57 @@ class NewsletterController extends ModulesController {
 	protected $moduleName = 'newsletter';
 	
     public function index() {
+		$this->MailMessage->recursive = -1;
 		
-		//$this->paginatedList($id, $types, $order, $dir, $page, $dim);
+		$sentThisMonth = $this->MailMessage->find("count", array(
+				"conditions" => array(
+					"mail_status" => "sent",
+					"start_sending LIKE '" . date("Y-m-%", time()) . "'"
+				)
+			)
+		);
 		
+		$sentThisYear = $this->MailMessage->find("count", array(
+				"conditions" => array(
+					"mail_status" => "sent",
+					"start_sending LIKE '" . date("Y-%", time()) . "'"
+				)
+			)
+		);
+		
+		$queued = $this->MailMessage->find("count", array(
+				"conditions" => array( "mail_status" => array("unsent", "pending") )
+			)
+		);
+		
+		$sentTotal = $this->MailMessage->find("count", array(
+				"conditions" => array( "mail_status" => "sent" )
+			)
+		);
+		
+		$this->MailTemplate->BEObject->recursive = -1;
+		$templates = $this->MailTemplate->BEObject->find("all", array(
+				"conditions" => array("object_type_id" => Configure::read("objectTypes.mailtemplate.id")),
+				"fields" => array("id", "title"),
+				"order" => "title ASC"
+			)
+		);
+		
+		$this->MailMessage->containLevel("minimum");
+		$recentMsg = $this->MailMessage->find("all", array(
+				"conditions" => array("BEObject.object_type_id" => Configure::read("objectTypes.mailmessage.id")),
+				"order" => "MailMessage.start_sending DESC",
+				"limit"	=> 5
+			)
+		);
+
+		$this->set("sentThisMonth", $sentThisMonth);
+		$this->set("sentThisYear", $sentThisYear);
+		$this->set("queued", $queued);
+		$this->set("sentTotal", $sentTotal);
+		$this->set("templates", $templates);
+		$this->set("recentMsg", $recentMsg);
+
 	 }
 
 	 /**
@@ -174,9 +222,9 @@ class NewsletterController extends ModulesController {
 		//$data["body"] = "<p>zxczx</p>";
 		//$this->BeMail->sendMail($data);
 		//pr($data);
-//		$this->BeMail->lockMessages();
-//		$this->BeMail->createJobs();
-		$this->BeMail->sendQueuedJobs();
+//		pr($this->BeMail->lockMessages());
+//		$this->BeMail->createJobs(array(14,15));
+//		$this->BeMail->sendQueuedJobs(array(14));
 		exit;
 	}
 	

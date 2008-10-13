@@ -119,7 +119,7 @@ class BeMailComponent extends Object {
 										)
 									)
 								);
-		
+
 		$groupCardModel = ClassRegistry::init("MailGroupCard");
 		$groupCardModel->recursive = -1;
 	
@@ -136,7 +136,7 @@ class BeMailComponent extends Object {
 				foreach ($message["MailGroup"] as $group) {
 				
 					$res = $groupCardModel->find("all", array("conditions" => array("mail_group_id" => $group["id"])));
-					
+
 					foreach ($res as $groupCard) {
 						// create job only if it dosen't exist
 						if ($jobModel->find("count", array(
@@ -171,8 +171,10 @@ class BeMailComponent extends Object {
 		$jobModel = ClassRegistry::init("MailJob");
 		$jobModel->containLevel("detailed");
 		$jobsToDo = $jobModel->find("all", array(
-								"conditions" => array("MailJob.status" => "unsent"),
-								"MailJob.mail_message_id" => $msgIds
+								"conditions" => array(
+									"MailJob.status" => "unsent",
+									"MailJob.mail_message_id" => $msgIds
+								)
 							)
 						);
 						
@@ -210,10 +212,14 @@ class BeMailComponent extends Object {
 
 		// set messages mail_status to sent
 		$mailMsgModel = ClassRegistry::init("MailMessage");
+		$mailMsgModel->Behaviors->disable('ForeignDependenceSave'); 		
 		foreach ($messagesSent as $id) {
-			$mailMsgModel->id = $id;
-			$mailMsgModel->saveField("mail_status", "sent");
+			$dataMsg["id"] = $id;
+			$dataMsg["mail_status"] = "sent";
+			$dataMsg["end_sending"] = date("Y-m-d H:i:s");
+			$mailMsgModel->save($dataMsg, false);
 		}
+		$mailMsgModel->Behaviors->disable('ForeignDependenceSave'); 
 		
 	}
 	
