@@ -67,7 +67,8 @@ $(document).ready(function(){
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('title', 'name')}</th>
-			<th>{$beToolbar->order('id', 'tipo')}</th>
+			<th>{$beToolbar->order('id', 'id')}</th>
+			<th>{t}User/Company{/t}</th>
 			<th>{$beToolbar->order('status', 'Status')}</th>
 			<th>{$beToolbar->order('modified', 'Modified')}</th>
 			<th>{t}Country{/t}</th>			
@@ -84,6 +85,7 @@ $(document).ready(function(){
 			</td>
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64}</a></td>
 			<td>{$objects[i].id}</td>
+			<td>-</td>
 			<td>{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
 			<td>{$objects[i].country}</td>

@@ -25,7 +25,8 @@ class AddressbookController extends ModulesController {
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
-		$types = array($conf->objectTypes['card']['id']);
+		$type = $conf->objectTypes['card']["id"];
+		$types = array($type);
 		if (!empty($this->params["form"]["searchstring"])) {
 			$types["search"] = addslashes($this->params["form"]["searchstring"]);
 			$this->set("stringSearched", $this->params["form"]["searchstring"]);
@@ -35,6 +36,12 @@ class AddressbookController extends ModulesController {
 			$this->Card->recursive = -1;
 			$this->viewVars['objects'][$key]['country'] = $this->Card->field('country',array('id'=>$value['id']));
 		}
+		$categoryModel = ClassRegistry::init("Category");
+		$allcat = $categoryModel->findAll("Category.object_type_id=".$type);
+		foreach($allcat as $cat) {
+			$categories[$cat['id']] = $cat['label'];
+		}
+		$this->set("categories", $categories);
 	 }
 
 	 /**
