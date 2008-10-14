@@ -594,7 +594,7 @@ abstract class ModulesController extends AppController {
 	}
 
 	protected function viewObject(BEAppModel $beModel, $id = null) {
-
+		Configure::load('langs.iso') ;
 		$obj = null ;
 		$parents_id = array();
 		$relations = array();
@@ -628,7 +628,7 @@ abstract class ModulesController extends AppController {
 			elseif(!is_array($parents_id))
 				$parents_id = array($parents_id);
 		
-			$previews = $this->previewsForObject($parents_id, $id, $obj['status']);		
+			$previews = $this->previewsForObject($parents_id, $id, $obj['status']);
 		}
 
 		$this->set('object',	$obj);

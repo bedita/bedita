@@ -94,6 +94,11 @@ $(document).ready(function(){
 					<option value="{$val}">{$label}</option>
 					{/if}
 				{/foreach}
+				{foreach key=val item=label from=$conf->langsIso name=langfe}
+					{if !in_array($val,$object_master_langs)}
+					<option value="{$val}">{$label}</option>
+					{/if}
+				{/foreach}
 			</select>
 		{else}
 			<select style="font-size:1.2em;" name="data[translation_lang]" id="main_lang">

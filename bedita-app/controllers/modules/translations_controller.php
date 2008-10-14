@@ -16,6 +16,7 @@ class TranslationsController extends ModulesController {
 	}
 
 	public function view($id=null,$lang=null) {
+		Configure::load('langs.iso') ;
 		$lang_view = ($lang) ? true : false;
 		if($id) {
 			$object_type_id = $this->BEObject->findObjectTypeId($id);

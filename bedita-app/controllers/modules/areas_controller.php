@@ -290,6 +290,9 @@ class AreasController extends ModulesController {
 	 * @param int $id
 	 */
 	public function loadSectionAjax($id) {
+		// Load languages
+		Configure::load('langs.iso') ;
+
 		$this->layout = null;
 		
 		$tplFile = "form_area.tpl";

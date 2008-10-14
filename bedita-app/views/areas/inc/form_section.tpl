@@ -85,6 +85,9 @@
 						{foreach key=val item=label from=$conf->langOptions name=langfe}
 						<option {if $val==$object_lang}selected="selected"{/if} value="{$val}">{$label}</option>
 						{/foreach}
+						{foreach key=val item=label from=$conf->langsIso name=langfe}
+						<option {if $val==$object_lang}selected="selected"{/if} value="{$val}">{$label}</option>
+						{/foreach}
 					</select>
 					</td>
 				</tr>
