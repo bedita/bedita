@@ -23,8 +23,10 @@ $(document).ready(function(){
 	$("div.insidecol input[@name='clone']").click(function() {
 		$("#updateForm").attr("action","{/literal}{$html->url('/multimedia/cloneObject')}{literal}");
 		var cloneTitle=prompt("{/literal}{t}Title{/t}{literal}",$("input[@name='data[title]']").val()+"-copy");
-		$("input[@name='data[title]']").attr("value",cloneTitle);
-		$("#updateForm").submit();
+		if (cloneTitle) {
+			$("input[@name='data[title]']").attr("value",cloneTitle);
+			$("#updateForm").submit();
+		}
 	});
 });
 </script>
