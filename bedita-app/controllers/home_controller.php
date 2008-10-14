@@ -40,7 +40,8 @@ class HomeController extends AppController {
 		 								"contain" 		=> array("ObjectType"),
 		 								"fields"		=> array("id", "title", "modified", "ObjectType.module"),
 		 								"conditions" 	=> array(
-		 														"user_modified = '" . $user["id"] . "'"
+		 														"user_modified = '" . $user["id"] . "'",
+	 															"object_type_id != " . $conf->objectTypes["link"]["id"]
 	 														),
 		 								"order"			=> array("modified DESC"),
 		 								"limit"			=> 5
@@ -50,7 +51,10 @@ class HomeController extends AppController {
 	 	$lastMod = $this->BEObject->find("all", array(
 		 								"contain" 		=> array("ObjectType"),
 		 								"fields"		=> array("id", "title", "modified", "ObjectType.module"),
-		 								"order"			=> array("modified DESC"),
+		 								"conditions" 	=> array(
+	 															"object_type_id != " . $conf->objectTypes["link"]["id"]
+	 														),
+	 									"order"			=> array("modified DESC"),
 		 								"limit"			=> 10
 	 								)
 	 						);
