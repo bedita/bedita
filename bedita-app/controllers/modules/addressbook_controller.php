@@ -38,6 +38,7 @@ class AddressbookController extends ModulesController {
 		}
 		$categoryModel = ClassRegistry::init("Category");
 		$allcat = $categoryModel->findAll("Category.object_type_id=".$type);
+		$categories = array();
 		foreach($allcat as $cat) {
 			$categories[$cat['id']] = $cat['label'];
 		}
