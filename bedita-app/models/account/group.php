@@ -28,14 +28,11 @@ class Group extends BEAppModel
 	'name'  => VALID_NOT_EMPTY,
 	);
 
-	var $hasAndBelongsToMany = array(
-		'User' =>
-			array(
-				'className'    => 'User',
-				'uniq'         => true,
-				'fields'		=> 'id'
-			)
-	);
+	
+	function beforeFind($queryData) {
+		$this->bindModel( array("hasAndBelongsToMany" => array("User")) );
+		return true;
+	}
 
 }
 ?>

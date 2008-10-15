@@ -29,14 +29,7 @@ class User extends BEAppModel
 		'pasword'  => VALID_NOT_EMPTY,
 	);
 
-	var $hasAndBelongsToMany = array(
-		'Group' =>
-			array(
-				'className'		=> 'Group',
-				'uniq'			=> true,
-				'fields'		=> 'id, name'
-			)
-	);
+	var $hasAndBelongsToMany = array('Group');
 
 	var $hasMany = array(
 		'Permission' =>
