@@ -331,6 +331,10 @@ abstract class FrontendController extends AppController {
 		if(!empty($obj["RelatedObject"])) {
 			$obj['relations'] = $this->objectRelationArray($obj['RelatedObject'], $this->status);
 			unset($obj["RelatedObject"]);
+			$obj['relations_count'] = array();
+			foreach ($obj["relations"] as $k=>$v) {
+				$obj['relations_count'][$k] = count($v);
+			}
 		}
 
 		$obj['object_type'] = $modelType;
