@@ -25,12 +25,13 @@ class NewsletterController extends ModulesController {
 	protected $moduleName = 'newsletter';
 	
     public function index() {
+    	
+    	$firstDayOfmonth = date("Y") . "-" . date("m") . "-01 00:00:00";
 		$this->MailMessage->recursive = -1;
-		
 		$sentThisMonth = $this->MailMessage->find("count", array(
 				"conditions" => array(
 					"mail_status" => "sent",
-					"start_sending LIKE '" . date("Y-m-%", time()) . "'"
+					"start_sending >= '" . $firstDayOfmonth . "'"
 				)
 			)
 		);
@@ -38,7 +39,7 @@ class NewsletterController extends ModulesController {
 		$sentThisYear = $this->MailMessage->find("count", array(
 				"conditions" => array(
 					"mail_status" => "sent",
-					"start_sending LIKE '" . date("Y-%", time()) . "'"
+					"start_sending >= '" . date("Y") . "-01-01 00:00:00'"
 				)
 			)
 		);
@@ -68,6 +69,34 @@ class NewsletterController extends ModulesController {
 				"limit"	=> 5
 			)
 		);
+		
+		
+		$this->Card->contain(array("BEObject"));
+		$subscribedWeek = $this->Card->find("count", array(
+				"conditions" => array(
+					"Card.newsletter_email IS NOT NULL AND Card.newsletter_email <> ''",
+					"BEObject.created >= '" . date("Y-m-d", mktime(0,0,0,date("m"),  date('d')-7,  date("Y"))) . " 00:00:00'",
+					"BEObject.object_type_id" => Configure::read("objectTypes.card.id")
+				)
+			)
+		);
+		
+		$subscribedMonth = $this->Card->find("count", array(
+				"conditions" => array(
+					"Card.newsletter_email IS NOT NULL AND Card.newsletter_email <> ''",
+					"BEObject.created >= '" . $firstDayOfmonth . "'",
+					"BEObject.object_type_id" => Configure::read("objectTypes.card.id")
+				)
+			)
+		);
+		
+		$subscribedTotal = $this->Card->find("count", array(
+				"conditions" => array(
+					"Card.newsletter_email IS NOT NULL AND Card.newsletter_email <> ''",
+					"BEObject.object_type_id" => Configure::read("objectTypes.card.id")
+				)
+			)
+		);
 
 		$this->set("sentThisMonth", $sentThisMonth);
 		$this->set("sentThisYear", $sentThisYear);
@@ -75,6 +104,9 @@ class NewsletterController extends ModulesController {
 		$this->set("sentTotal", $sentTotal);
 		$this->set("templates", $templates);
 		$this->set("recentMsg", $recentMsg);
+		$this->set("subscribedWeek", $subscribedWeek);
+		$this->set("subscribedMonth", $subscribedMonth);
+		$this->set("subscribedTotal", $subscribedTotal);
 
 	 }
 

@@ -41,9 +41,9 @@
 <div class="mainhalf">
 	<div class="tab"><h2>{t}Subscribers{/t}</h2></div>
 		<ul class="bordered">
-			<li>Subscribed this week: <b>12</b></li>
-			<li>Subscribed this month: <b>186</b></li>
-			<li>Total Subscribers: <b>2078</b></li>
+			<li>Subscribed this week: <b>{$subscribedWeek|default:0}</b></li>
+			<li>Subscribed this month: <b>{$subscribedMonth|default:0}</b></li>
+			<li>Total Subscribers: <b>{$subscribedTotal|default:0}</b></li>
 			<li>
 				<b><a href="{$html->url('/addressbook/')}">View all</a></b> 
 				&nbsp;&nbsp;|&nbsp;&nbsp;
