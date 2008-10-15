@@ -184,7 +184,6 @@ CREATE TABLE objects (
   ip_created VARCHAR(15) NULL,
   user_created INTEGER UNSIGNED NULL,
   user_modified INTEGER UNSIGNED NULL,
-  fundo INTEGER UNSIGNED DEFAULT 0,
   rights VARCHAR(255) NULL,
   license VARCHAR(255) NULL,
   creator VARCHAR(255) NULL,

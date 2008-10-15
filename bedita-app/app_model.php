@@ -358,7 +358,6 @@ class BEAppObjectModel extends BEAppModel {
 	 * @param object $source	Oggetto sorgente
 	 */
 	protected function _formatDataForClone(&$data, $source = null) {
-		$data['fundo'] = 0 ;
 
 		$labels = array($this->primaryKey, 'user_created', 'user_modified', 'Index') ;
 		foreach($labels as $label) unset($data[$label]) ;
