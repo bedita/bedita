@@ -173,7 +173,7 @@ CREATE TABLE question_types (
 CREATE TABLE objects (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   object_type_id INTEGER UNSIGNED NOT NULL,
-  `status` ENUM('on','off','draft','staging','fixed') DEFAULT 'draft',
+  `status` ENUM('on','off','draft','staging') DEFAULT 'draft',
   created DATETIME NULL,
   modified DATETIME NULL,
   title VARCHAR(255) NULL,
@@ -189,6 +189,8 @@ CREATE TABLE objects (
   license VARCHAR(255) NULL,
   creator VARCHAR(255) NULL,
   publisher VARCHAR(255) NULL,
+  note TEXT NULL,
+  fixed TINYINT(1) DEFAULT 0,
   PRIMARY KEY(id),
   INDEX objects_FKIndex1(object_type_id),
   FOREIGN KEY(user_created)
