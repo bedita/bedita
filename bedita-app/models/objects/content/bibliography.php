@@ -1,201 +1,31 @@
 <?php
 /**
- *
- * @filesource
- * @copyright		Copyright (c) 2007
- * @link			
- * @package			
- * @subpackage		
- * @since			
- * @version			
- * @modifiedby		
- * @lastmodified	
- * @license
- * @author 		giangi giangi@qwerg.com	
- * 		
- * 				Esprime  un'ntita' di tipo bibliografia.
- * 				Che ha tutte le caratteristiche di un contenuto ma con
- * 				e' anche un contenitore di oggetti specifici:
- * 				BiblioItem e Book		
-*/
+ * BEdita - a semantic content management framework
+ * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * 
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the Affero GNU General Public License as published 
+ * by the Free Software Foundation, either version 3 of the License, or 
+ * (at your option) any later version.
+ * 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * See the Affero GNU General Public License for more details.
+ * 
+ * You should have received a copy of the Affero GNU General Public License 
+ * version 3 along with BEdita (see LICENSE.AGPL).
+ * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
+ * 
+ * @link			http://www.bedita.com
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
+ * 
+ * $Id$
+ */
 class Bibliography extends BeditaContentModel 
 {
-	/**
-	 * Per cancellare gli oggetti BiblioItem associati
-	 *
-	 */	
-	function beforeDelete() {
-		$conf  	= Configure::getInstance() ;
-		if(!class_exists('BiblioItem')) loadModel('BiblioItem') ;
-		
-		$this->getItems($this->{$this->primaryKey}, $children) ;
-		for($i=0; $i < count($children) ; $i++) {
-			$tmp = &$children[$i] ;
-			$obj = null ;
-			
-			if($tmp['object_type_id'] != $conf->objectTypes['biblioitem']["id"]) {
-				continue ;
-			}
-			
-			$obj = new BiblioItem() ; 
-			if(!$obj->delete($tmp['id'])) {
-				return false ;
-			}
-			
-			unset($obj) ;
-		}
-		
-		return true ;
-	}	
-		
-	/**
-	 * Torna l'elenco degli item della bibliografia
-	 *
-	 * @param unknown_type $id
-	 */
-	function getItems($id = null, &$items) {
-		$conf  	= Configure::getInstance() ;
-		$items	= array() ;
-		
-		if(!class_exists('BiblioItem')) loadModel('BiblioItem') ;
-		if(!class_exists('Book')) 		loadModel('Book') ;
-		
-		if(isset($id)) $this->id  = $id ;
-		
-		$id = $this->id ;
-		
-		$ret = $this->query("SELECT 
-					objects.id, 
-					objects.object_type_id,
-					content_objects.priority
-					FROM 
-					content_objects INNER JOIN objects ON content_objects.id = objects.id 
-					WHERE
-					content_objects.object_id = {$id} AND switch = 'BIBLIOS' 
-					ORDER BY priority"
-				) ;
-		if(!is_array($ret)) return false ;
-		
-		$hiddenField = array('Permission', 'Version', 'CustomProperties', 'Index', 'ObjectType');
-		
-		for($i=0; $i < count($ret) ; $i++) {
-			$tmp = am($ret[$i]['content_objects'], $ret[$i]['objects']) ;
-			$obj = null ;
-			
-			switch ($tmp['object_type_id']) {
-				case $conf->objectTypes['biblioitem']["id"]: 	$obj = new BiblioItem() ; break ;
-				case $conf->objectTypes['book']["id"]: 		$obj = new Book() ; break ;
-			}
-			
-			$obj->bviorHideFields = $hiddenField ;
-			if(!($items[] = $obj->findById($tmp['id']))) {
-				return false ;
-			}
-			$items[count($items)-1]['priority'] = $tmp['priority'] ;
-			
-			unset($obj) ;
-		}
-		
-		return true ;
-	}
-	
 
-	function appendChild($id, $idParent = false) {
-		if (!empty($idParent)) {
-			$this->id = $idParent ;
-		}
-		
-		$this->query("CALL appendChildBibliography({$id}, {$this->id})");
-	}
-	
-	function moveChildUp($id, $idParent = false) {
-		if (!empty($idParent)) {
-			$this->id = $idParent ;
-		}
-		$this->query("CALL moveChildBibliographyUp({$id}, {$this->id})");
-	}
-	
-	function moveChildDown($id, $idParent = false) {
-		if (!empty($idParent)) {
-			$this->id = $idParent ;
-		}		
-		$this->query("CALL moveChildBibliographyDown({$id}, {$this->id})");
-	}
-
-	function moveChildFirst($id, $idParent = false) {
-		if (!empty($idParent)) {
-			$this->id = $idParent ;
-		}		
-		$this->query("CALL moveChildBibliographyFirst({$id}, {$this->id})");
-	}
-	
-	function moveChildLast($id, $idParent = false) {
-		if (!empty($idParent)) {
-			$this->id = $idParent ;
-		}		
-		$this->query("CALL moveChildBibliographyLast({$id}, {$this->id})");
-	}
-
-	function removeAllChildren($idParent = false) {
-		if (!empty($idParent)) {
-			$this->id = $idParent ;
-		}		
-		$this->query("CALL removeAllChildrenBibliography({$this->id})");
-	}
-	
-	/**
-	 * Un oggetto crea un clone di se stesso.
-	 *
-	 */
-	function __clone() {
-		$conf  	= Configure::getInstance() ;
-		if(!class_exists('BiblioItem')) loadModel('BiblioItem') ;
-		
-		$idSourceObj = $this->{$this->primaryKey} ;
-		
-		// Clona l'oggetto
-		parent::__clone();
-		
-		$idNewObj = $this->id ;
-		
-		// Associa gli items
-		if(!$this->getItems($idSourceObj, $items)) {
-			throw new BEditaErrorCloneException("Bibliography::getItems") ;
-		}
-		
-		// I libri riassociati, gli item clonati
-		for ($i=0; $i < count($items) ; $i++) {
-			if($items[$i]['object_type_id'] == $conf->objectTypes['biblioitem']["id"]) {
-				$item = new BiblioItem() ;
-				$item->id 				= $items[$i]['id'] ;
-				$item->bibliography_id 	= $idNewObj ;
-				
-				$clone = clone $item ;
-				
-				$idItem = $clone->id ;
-			} else {
-				$idItem = $items[$i]['id'] ;
-				
-				// Aggiunge il libro
-				if($this->appendChild($idItem, $idNewObj)) {
-					throw new BEditaErrorCloneException("Bibliography::appendChild") ;
-				}
-			}
-			
-		}
-	}
+	var $useTable = 'contents';
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 ?>
