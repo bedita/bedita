@@ -40,7 +40,7 @@ $(document).ready(function() {
 			$("#modal").hide();
 			$("#modaloverlay").hide();
 			
-			// addObjToAssoc function has to be defined in other template (i.e common_inc/form_assoc_objects.tpl)
+			// addObjToAssoc function has to be defined in other template (i.e. common_inc/form_assoc_objects.tpl)
 			addObjToAssoc(urlAddObjToAss, obj_sel);
 			
 		}

@@ -484,6 +484,27 @@ class NewsletterController extends ModulesController {
 		$this->set("object", $temp);
 		$this->render(null, null, VIEWS . "newsletter/inc/form_message_details.tpl");
 	}
+	
+	function loadContentToNewsletter() {
+		$objects = array();
+		$contents_id = explode( ",", trim($this->params["form"]["object_selected"],","));
+		$beObject = ClassRegistry::init("BEObject");
+		foreach ($contents_id as $id) {
+			$object_type_id = $beObject->findObjectTypeId($id);
+			$model = $this->loadModelByObjectTypeId($object_type_id);
+			$model->containLevel("default");
+			$obj = $model->find("first", array(
+					"conditions" => array("BEObject.id" => $id)
+				)
+			);
+			$obj["relations"] = $this->objectRelationArray($obj["RelatedObject"]);
+			$objects[] = $obj;
+		}
+		
+		$this->layout = null;
+		$this->set("objects", $objects);
+		$this->render(null, null, VIEWS . "newsletter/inc/contents_to_newsletter_ajax.tpl");
+	}
 	 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(

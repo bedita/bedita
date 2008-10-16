@@ -1,9 +1,17 @@
 {if ($conf->mce|default:true)}
 	{$javascript->link("tiny_mce/tiny_mce")}
 	
+<script language="javascript" type="text/javascript">
+
+var urlAddObjToAss = "{$html->url('/newsletter/loadContentToNewsletter')}";
+
 {literal}
 
-<script language="javascript" type="text/javascript">
+function addObjToAssoc(url, postdata) {
+    $.post(url, postdata, function(html){
+       tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.getBody(), "span", null, html);
+	});
+}
 
 function initializeTinyMCE(cssPath) {
 	tinyMCE.init({
@@ -133,7 +141,7 @@ $(document).ready(function() {
 	</select>
 	
 	&nbsp;&nbsp;
-		<input class="modalbutton" type="button" value="{t}Get contents{/t}" rel="{$html->url('/areas/showObjects/')}" style="width:200px" />
+		<input class="modalbutton" type="button" value="{t}Get contents{/t}" rel="{$html->url('/areas/showObjects/0/0/leafs')}" style="width:200px" />
 
 	<hr />
 	
@@ -150,7 +158,7 @@ $(document).ready(function() {
 		</div>
 		
 		<div class="htabcontent" id="txt">
-			<textarea name="data[abstract]" style="height:300px; border:1px solid silver; width:450px" class="autogrowarea">{$object.abstract|default:null}</textarea>
+			<textarea id="txtarea" name="data[abstract]" style="height:300px; border:1px solid silver; width:450px" class="autogrowarea">{$object.abstract|default:null}</textarea>
 		</div>
 		
 	</div>

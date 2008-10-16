@@ -343,7 +343,7 @@ class AreasController extends ModulesController {
 	 * called via ajax
 	 * Show list of objects for relation, append to section,...
 	 * 
-	 * @param int $master_object_id, object id of main object used to exclude association with itself 
+	 * @param int $main_object_id, object id of main object used to exclude association with itself 
 	 * @param string $relation, relation type
 	 * @param string $objectTypes name of objectType to filter. It has to be a string that defined a group of type
 	 * 							  defined in bedita.ini.php (i.e. 'related' 'leafs',...)

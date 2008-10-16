@@ -111,7 +111,7 @@ class BeEmbedMediaHelper extends AppHelper {
 
 			// video
 			case 'video':
-				return "known type: " . $this->_type;
+				$this->_output = $this->MediaProvider->thumbnail($obj);
 				break;
 
 
