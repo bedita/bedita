@@ -92,6 +92,15 @@ abstract class FrontendController extends AppController {
 		$this->currLang = $lang;
 
 		if(!empty($forward)) {
+			if (substr($forward, 0, 5) != "http:") {
+				if (strpos("/", $forward) != 1)
+					$forward = "/" . $forward;
+					
+				if (!empty($this->params["pass"][2])) {
+					$forward .= "/" . implode("/", array_slice($this->params["pass"],2));
+				}
+			}
+			
 			$this->redirect($forward);
 		} else {
 			$this->redirect($this->referer());
@@ -457,6 +466,25 @@ abstract class FrontendController extends AppController {
 		// section after filter
 		if (method_exists($this, $secNameFilter . "BeforeRender")) {
 			$this->{$secNameFilter . "BeforeRender"}();
+		}
+	}
+	
+	/**
+	 * route to section or content
+	 *
+	 * @param unknown_type $name, id or nickname
+	 */
+	public function route($name) {
+		if(empty($name))
+			throw new BeditaException(__("Content not found", true));
+		
+		$id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
+		$object_type_id = $this->BEObject->findObjectTypeId($id);
+		
+		if ($object_type_id == Configure::read("objectTypes.section.id")) {
+			$this->setAction("section",$id);
+		} else {
+			$this->content($id);
 		}
 	}
 	

@@ -34,9 +34,14 @@
  * to use (in this case, /app/views/pages/home.thtml)...
  */
 	Router::connect('/', array('controller' => 'pages', 'action' => 'index'));
+	Router::connect('/lang/*', array('controller' => 'pages', 'action' => 'changeLang'));
+	Router::connect('/section/*', array('controller' => 'pages', 'action' => 'section'));
+	Router::connect('/content/*', array('controller' => 'pages', 'action' => 'content'));
 /**
  * feeds
  */ 
     Router::connect('/rss/*', array('controller' => 'pages', 'action' => 'rss'));
     Router::connect('/feed/*', array('controller' => 'pages', 'action' => 'rss'));
+    
+    Router::connect('/*', array('controller' => 'pages', "action" => "route"));
 ?>
