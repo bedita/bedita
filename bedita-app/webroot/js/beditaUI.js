@@ -365,8 +365,8 @@ jQuery.fn.BEmodal = function(){
 	//$("#modal").toggle();
 
 	if ($(this).attr("rel")) {
-		$("#modalmain").empty().addClass("loader").load(destination).ajaxStop(function(){
-			$(this).removeClass("loader")
+		$("#modalmain").empty().addClass("modaloader").load(destination).ajaxStop(function(){
+			$(this).removeClass("modaloader")
 		});
 	};
 

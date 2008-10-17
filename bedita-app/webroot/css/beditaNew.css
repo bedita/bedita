@@ -1175,6 +1175,10 @@ INPUT.priority {
 	min-width:48px;
 }
 
+.modaloader {
+	background: transparent url(../img/loadingAnimation.gif) no-repeat center !important;
+}
+
 
 /*...........................................    
 

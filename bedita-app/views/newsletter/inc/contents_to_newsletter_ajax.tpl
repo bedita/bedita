@@ -10,7 +10,7 @@
 	{if !empty($obj.description)}
 		<h3>{$obj.description}</h3>
 	{/if}
-	{$obj.body|truncate:128}
+	{$obj.body|html_substr:128:"..."}
 	
 	</div>
 {/foreach}

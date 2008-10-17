@@ -8,7 +8,8 @@ var relType = "{$relation|default:""}";
 
 {literal}
 function loadObjToAssoc(page) {
-	$("#assocObjContainer").load(urlShowObj, 
+	$("#loadObjInModal").show();
+	$("#assocObjContainer").empty().load(urlShowObj, 
 			{
 				"parent_id": $("#parent_id").val(),
 				"objectType": $("#objectType").val(),
@@ -17,7 +18,7 @@ function loadObjToAssoc(page) {
 				"page": page
 			},
 			function() {
-		
+				$("#loadObjInModal").hide();
 	});
 }
 
@@ -90,7 +91,9 @@ $(document).ready(function() {
 	&nbsp;&nbsp;
 	<input type="button" id="searchButton" value=" {t}Search{/t} ">
 	<hr />
-		
+	
+	<div id="loadObjInModal" class="loader"><span></span></div>
+	
 	<div id="assocObjContainer">
 		{include file="inc/list_contents_to_assoc.tpl"}
 	</div>

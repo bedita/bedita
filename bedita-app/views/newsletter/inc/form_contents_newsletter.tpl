@@ -8,8 +8,10 @@ var urlAddObjToAss = "{$html->url('/newsletter/loadContentToNewsletter')}";
 {literal}
 
 function addObjToAssoc(url, postdata) {
+	$("#loaderContent").show();
     $.post(url, postdata, function(html){
        tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.getBody(), "span", null, html);
+       $("#loaderContent").hide();
 	});
 }
 
@@ -145,7 +147,8 @@ $(document).ready(function() {
 
 	<hr />
 	
-
+	<div id="loaderContent" class="loader"><span></span></div>
+	
 	<ul class="htab">
 		<li rel="html">HTML version</li>
 		<li rel="txt">PLAIN TEXT version</li>
