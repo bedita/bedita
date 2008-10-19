@@ -474,7 +474,7 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @param unknown_type $name, id or nickname
 	 */
-	public function route($name) {
+	public function route($name, $name2=null) {
 		if(empty($name))
 			throw new BeditaException(__("Content not found", true));
 		
@@ -482,7 +482,7 @@ abstract class FrontendController extends AppController {
 		$object_type_id = $this->BEObject->findObjectTypeId($id);
 		
 		if ($object_type_id == Configure::read("objectTypes.section.id")) {
-			$this->setAction("section",$id);
+			$this->setAction("section",$id, $name2);
 		} else {
 			$this->content($id);
 		}
