@@ -196,10 +196,12 @@ class AreasController extends ModulesController {
 		$id = $this->Section->getID();
 		// Move section in the right tree position, if necessary
 		if(!$new) {
-			$oldParent = $this->Tree->getParent($id) ;
-			if($oldParent != $this->data["parent_id"]) {
-				if(!$this->Tree->move($this->data["parent_id"], $oldParent, $id))
-					throw new BeditaException( __("Error saving section", true));
+			if (empty($this->data["fixed"])) {
+				$oldParent = $this->Tree->getParent($id) ;
+				if($oldParent != $this->data["parent_id"]) {
+					if(!$this->Tree->move($this->data["parent_id"], $oldParent, $id))
+						throw new BeditaException( __("Error saving section", true));
+				}
 			}
 			
 			// update contents and children sections priority

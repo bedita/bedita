@@ -645,7 +645,7 @@ abstract class ModulesController extends AppController {
 	}
 
 	protected function saveObject(BEAppModel $beModel) {
-		
+
 		if(empty($this->data)) 
 			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
@@ -666,7 +666,7 @@ abstract class ModulesController extends AppController {
 		if(!$beModel->save($this->data)) {
 			throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
 		}
-		if( empty($this->data['status']) || $this->data['status'] != 'fixed' ) {
+		if( empty($this->data['fixed']) ) {
 			if(!isset($this->data['destination'])) 
 				$this->data['destination'] = array() ;
 			$this->BeTree->updateTree($beModel->id, $this->data['destination']);

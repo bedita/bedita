@@ -5,6 +5,7 @@
 	
 	<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 	<input type="hidden" name="data[title]" value="{$object.title|default:''}"/>
+	<input type="hidden" name="data[fixed]" value="{$object.fixed|default:0}"/>
 	
 
 	<table class="areaform">
@@ -55,8 +56,7 @@
 	<tr>
 		<th>{t}nickname{/t}:</th>
 		<td>
-			<input disabled type="text" name="data[nickname]" value="{$object.nickname|default:''|escape:'html'|escape:'quotes'}" />
-			{$object.id|default:null}
+			<input type="text" name="data[nickname]" value="{$object.nickname|default:''|escape:'html'|escape:'quotes'}" />
 		</td>
 		
 	</tr>

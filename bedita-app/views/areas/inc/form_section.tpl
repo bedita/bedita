@@ -36,6 +36,7 @@
 <fieldset id="properties">
 
 <input type="hidden" name="data[id]" value="{$object.id|default:null}"/>
+<input type="hidden" name="data[fixed]" value="{$object.fixed|default:0}"/>
 	
 	<table class="areaform">
 
