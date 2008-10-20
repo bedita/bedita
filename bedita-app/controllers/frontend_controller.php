@@ -244,8 +244,8 @@ abstract class FrontendController extends AppController {
 	   		throw new BeditaException(__("Content not found", true));
 	   }
 	   $channel = array( 'title' => $s['title'] , 
-        'link' => "/rss/".$sectionName,
-        'url' => "/rss/".$sectionName,
+        'link' => "/section/".$sectionName,
+//        'url' => Router::url("/section/".$sectionName),
         'description' => $s['description'],
         'language' => $s['lang'],
        );
@@ -256,7 +256,7 @@ abstract class FrontendController extends AppController {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);
 	            $rssItems[] = array( 'title' => $obj['title'], 'description' => $obj['description'],
-	                'pubDate' => $obj['created']);
+	                'pubDate' => $obj['created'], 'link' => "/section/".$s['id']."/".$item['id']);
 			}
 		}
        $this->set('items', $rssItems);
