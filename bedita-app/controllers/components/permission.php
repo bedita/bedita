@@ -1,8 +1,26 @@
 <?php
-/**
- * @author giangi@qwerg.com
+/*-----8<--------------------------------------------------------------------
  * 
- * Componente per la gestione dei permessi sugl' oggetti
+ * BEdita - a semantic content management framework
+ * 
+ * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * 
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the Affero GNU General Public License as published 
+ * by the Free Software Foundation, either version 3 of the License, or 
+ * (at your option) any later version.
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the Affero GNU General Public License for more details.
+ * You should have received a copy of the Affero GNU General Public License 
+ * version 3 along with BEdita (see LICENSE.AGPL).
+ * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
+ * 
+ *------------------------------------------------------------------->8-----
+ */
+
+/**
+ * Componente per la gestione dei permessi sugl' oggetti.
  * 
  * I permessi sono espressi in un integer che raprresenta una combinazione 
  * di bit definiti nel file di configurazione (bedita.ini.php):
@@ -10,8 +28,15 @@
  * BEDITA_PERMS_MODIFY	0x2
  * BEDITA_PERMS_DELETE	0x4
  * BEDITA_PERMS_CREATE	0x8
+ *  
+ * @link			http://www.bedita.com
+ * @version			$Revision: $
+ * @modifiedby 		$LastChangedBy: $
+ * @lastmodified	$LastChangedDate: $
  * 
+ * $Id: $
  */
+
 class PermissionComponent extends Object {
 	static $SWITCH_USER		= 'user' ;
 	static $SWITCH_GROUP	= 'group' ;
