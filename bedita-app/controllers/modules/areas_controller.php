@@ -241,47 +241,43 @@ class AreasController extends ModulesController {
 		$this->eventInfo("section [". $this->data["title"]."] saved");
 	}
 
-	 /**
-	  * Delete area
-	  */
-	function deleteArea() {
-		$this->checkWriteModulePermission();
+	function delete() {
 		if(empty($this->data['id'])) {
 			throw new BeditaException(__("No data", true));
 		}
-		if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
-			throw new BeditaException(__("Error delete permissions", true));
+		$ot_id = $this->BEObject->field("object_type_id", array("BEObject.id" => $this->data['id']));
+		switch ($ot_id) {
+			case Configure::read("objectTypes.area.id"):
+				$this->deleteArea();
+				break;
+				
+			case Configure::read("objectTypes.section.id"):
+				$this->deleteSection();
+				break;
 		}
-		$this->Transaction->begin() ;
-		// delete data
-		if(!$this->Area->delete($this->data['id'])) {
-			throw new BeditaException( sprintf(__("Error deleting area: %d", true), $this->data['id']));
-		}
-		$this->Transaction->commit() ;
-		$this->userInfoMessage(__("Area deleted", true)." - ".$this->data['id']);
-		$this->eventInfo("area [". $this->data['id']."] deleted");
+	}
+	
+	 /**
+	  * Delete area
+	  */
+	private function deleteArea() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("Area");
+		$this->userInfoMessage(__("Area deleted", true)." - ".$objectsListDeleted);
+		$this->eventInfo("area [". $objectsListDeleted."] deleted");
 	}
 
 	/**
 	  * Delete section
 	  */
-	function deleteSection() {
+	private function deleteSection() {
 		$this->checkWriteModulePermission();
-		if(empty($this->data['id'])) {
-			throw new BeditaException(__("No data", true));
-		}
-		if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
-			throw new BeditaException(__("Error delete permissions", true));
-		}
-		$this->Transaction->begin() ;
-		// delete section
-		if(!$this->Section->delete($this->data['id'])) {
-			throw new BeditaException( sprintf(__("Error deleting section: %d", true), $this->data['id']));
-		}
-		$this->Transaction->commit() ;
-		$this->userInfoMessage(__("Section deleted", true)." - ".$this->data['id']);
-		$this->eventInfo("section [". $this->data['id']."] deleted");
+		$objectsListDeleted = $this->deleteObjects("Section");
+		$this->userInfoMessage(__("Section deleted", true)." - ".$objectsListDeleted);
+		$this->eventInfo("section [". $objectsListDeleted."] deleted");
 	}
+	
+	
 
 	/* AJAX CALLS */
 
@@ -536,13 +532,13 @@ class AreasController extends ModulesController {
 									"OK"	=> "./index/{$this->Section->id}",
 									"ERROR"	=> "./viewSection" 
 								), 
-			"deleteArea"	=> 	array(
+			"delete"	=> 	array(
 									"OK"	=> "./",
-									"ERROR"	=> "./viewArea/{@$this->params['pass'][0]}" 
+									"ERROR"	=> "/areas/view/" . @$this->data["id"]
 								), 
 			"deleteSection"	=> 	array(
 									"OK"	=> "./",
-									"ERROR"	=> "./viewSection/{@$this->params['pass'][0]}" 
+									"ERROR"	=> $this->referer() 
 								)
 		) ;
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

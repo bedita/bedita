@@ -424,7 +424,7 @@ abstract class ModulesController extends AppController {
 	/**
 	 * Delete objects
 	 *
-	 * @param model name
+	 * @param model name 
 	 * @return string of objects'ids deleted
 	 */
 	protected function deleteObjects($model) {
@@ -432,10 +432,7 @@ abstract class ModulesController extends AppController {
 		$objectsListDesc = "";
 		
 		if(!empty($this->params['form']['objects_selected'])) {
-			
 			$objectsToDel = $this->params['form']['objects_selected'];
-			$objectsListDesc = implode(",", $objectsToDel);
-			
 		} else {
 			if(empty($this->data['id'])) 
 				throw new BeditaException(__("No data", true));
@@ -443,51 +440,36 @@ abstract class ModulesController extends AppController {
 				throw new BeditaException(__("Error delete permissions", true));
 			}
 			$objectsToDel = array($this->data['id']);
-			$objectsListDesc = $this->data['id'];
 		}
 
 		$this->Transaction->begin() ;
 
+		$beObject = ClassRegistry::init("BEObject");
+		
 		foreach ($objectsToDel as $id) {
 			if(!$this->Permission->verify($id, $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
 				throw new BeditaException(__("Error delete permissions", true));
 			}
-			if(!$this->{$model}->delete($id)) {
-				throw new BeditaException(__("Error deleting object: ", true) . $id);
+			
+			$fixed = $beObject->field("fixed", array("id" => $id));
+			
+			if ( $fixed == 0 ) {
+				if ($model != "Stream") {
+					if(!$this->{$model}->delete($id))
+						throw new BeditaException(__("Error deleting object: ", true) . $id);
+				} else {
+					if(!$this->BeFileHandler->del($id))
+						throw new BeditaException(__("Error deleting object: ", true) . $id);
+				}
+				$objectsListDesc .= $id . ",";
 			}
 		}
 		
-		$this->Transaction->commit() ;
-		return $objectsListDesc;
-	}
-
-	protected function deleteMultimediaObjects() {
-		$objectsToDel = array();
-		$objectsListDesc = "";
-		if(!empty($this->params['form']['objects_selected'])) {
-			
-			$objectsToDel = $this->params['form']['objects_selected'];
-			$objectsListDesc = implode(",", $objectsToDel);
-			
-		} else {
-			if(empty($this->data['id'])) 
-				throw new BeditaException(__("No data", true));
-			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
-				throw new BeditaException(__("Error delete permissions", true));
-			}
-			$objectsToDel = array($this->data['id']);
-			$objectsListDesc = $this->data['id'];
-		}
-
-		$this->Transaction->begin() ;
-
-		foreach ($objectsToDel as $id) {
-			if(!$this->BeFileHandler->del($id))
-				throw new BeditaException(__("Error deleting object: ", true) . $id);
-		}
+		if (empty($objectsListDesc))
+			throw new BeditaException(__("No object deleted, maybe you're trying to delete fixed object", true));
 		
 		$this->Transaction->commit() ;
-		return $objectsListDesc;
+		return trim($objectsListDesc, ",");
 	}
 
 	public function changeStatusObjects($modelName=null) {
@@ -495,7 +477,6 @@ abstract class ModulesController extends AppController {
 		$objectsListDesc = "";
 		if(!empty($this->params['form']['objects_selected'])) {
 			$objectsToModify = $this->params['form']['objects_selected'];
-			$objectsListDesc = implode(",", $objectsToModify);
 		
 			$this->Transaction->begin() ;
 
@@ -504,14 +485,19 @@ abstract class ModulesController extends AppController {
 			
 			foreach ($objectsToModify as $id) {
 				$model = $this->loadModelByType($modelName);
-				$model->id = $id;
-				if(!$model->saveField('status',$this->params['form']["newStatus"]))
-					throw new BeditaException(__("Error saving status for item: ", true) . $id);
+				
+				$fixed = ( ($modelName == "BEObject")? $model->field("fixed", array("id" => $id)) : $model->BEObject->field("fixed", array("id" => $id)) );
+				if ( $fixed == 0 ) {
+					$model->id = $id;
+					if(!$model->saveField('status',$this->params['form']["newStatus"]))
+						throw new BeditaException(__("Error saving status for item: ", true) . $id);
+				}
+				$objectsListDesc .= $id . ",";
 			}
 			
 			$this->Transaction->commit() ;
 		}
-		return $objectsListDesc;
+		return trim($objectsListDesc, ",");
 	}
 
 	 /**
@@ -548,10 +534,15 @@ abstract class ModulesController extends AppController {
 			}
 			$this->Transaction->begin() ;
 			for($i=0; $i < count($objects_to_assoc) ; $i++) {
-				$parents = $this->BeTree->getParents($objects_to_assoc[$i]);
-				if (!in_array($section['id'], $parents)) { 
-					if(!$modelLoaded->appendChild($objects_to_assoc[$i],$section['id'])) {
-						throw new BeditaException( __("Error during append child", true));
+				
+				$fixed = $this->BEObject->field("fixed", array("id" => $objects_to_assoc[$i]));
+				
+				if ($fixed == 0) {
+					$parents = $this->BeTree->getParents($objects_to_assoc[$i]);
+					if (!in_array($section['id'], $parents)) { 
+						if(!$modelLoaded->appendChild($objects_to_assoc[$i],$section['id'])) {
+							throw new BeditaException( __("Error during append child", true));
+						}
 					}
 				}
 			}
@@ -590,6 +581,7 @@ abstract class ModulesController extends AppController {
 	public function cloneObject() {
 		unset($this->data['id']);
 		$this->data['status']='draft';
+		$this->data['fixed'] = 0;
 		$this->save();
 	}
 

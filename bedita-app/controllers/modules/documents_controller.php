@@ -71,7 +71,7 @@ class DocumentsController extends ModulesController {
 							), 
 			"delete" =>	array(
 							"OK"	=> "/documents",
-							"ERROR"	=> "/documents/view/".@$this->params['pass'][0]
+							"ERROR"	=> $this->referer()
 							),
 			"addItemsToAreaSection"	=> 	array(
 							"OK"	=> "/documents",

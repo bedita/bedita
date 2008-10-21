@@ -145,7 +145,7 @@ class MultimediaController extends ModulesController {
 	 */
 	function delete($id = null) {
 		$this->checkWriteModulePermission();
-		$objectsListDeleted = $this->deleteMultimediaObjects();
+		$objectsListDeleted = $this->deleteObjects("Stream");
 		$this->userInfoMessage(__("Multimedia deleted", true) . " -  " . $objectsListDeleted);
 		$this->eventInfo("multimedia $objectsListDeleted deleted");
 	}
@@ -202,7 +202,7 @@ class MultimediaController extends ModulesController {
 							), 
 			"delete"	=> 	array(
 							"OK"	=> "./",
-							"ERROR"	=> "./view/".@$this->params['pass'][0]
+							"ERROR"	=> $this->referer()
 							),
 			"changeStatusObjects"	=> 	array(
 							"OK"	=> "/multimedia",
