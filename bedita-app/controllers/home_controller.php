@@ -20,6 +20,7 @@
  */
 
 /**
+ * BEdita main page
  * 
  * @link			http://www.bedita.com
  * @version			$Revision: $
