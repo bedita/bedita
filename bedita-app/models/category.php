@@ -38,7 +38,7 @@ class Category extends BEAppModel {
 	public function tagLabelPresent($label) {
 		$name = $this->uniqueLabelName($label);
 		$tagDB = $this->find("first", 
-			array("conditions" => "name='".addslashes($name)."' AND object_type_id IS NULL") );
+			array("conditions" => "object_type_id IS NULL AND name='".addslashes($name)."' collate utf8_bin") );
 		return !empty($tagDB);
 	}
 
@@ -132,7 +132,7 @@ class Category extends BEAppModel {
 				if (!empty($tag))  {
 					$name = $this->uniqueLabelName($tag);
 					$tagDB = $this->find("first", array(
-													"conditions" => "name='".addslashes($name)."' AND object_type_id IS NULL"
+													"conditions" => "object_type_id IS NULL AND name='".addslashes($name)."' collate utf8_bin"
 													)
 									);
 					if (empty($tagDB)) {
@@ -275,7 +275,7 @@ class Category extends BEAppModel {
 		$this->bviorCompactResults = false;
 		$name = $this->uniqueLabelName($label);
 		$tag = $this->find("first", array(
-										"conditions" => array("name" => addslashes($name), "object_type_id IS NULL"),
+										"conditions" => "object_type_id IS NULL AND name='".addslashes($name)."' collate utf8_bin",
 										"contain" => array("BEObject" => array("ObjectType"))
 									)
 						);
