@@ -586,7 +586,9 @@ abstract class ModulesController extends AppController {
 	}
 
 	protected function viewObject(BEAppModel $beModel, $id = null) {
-		Configure::load('langs.iso') ;
+		if(Configure::read("langOptionsIso") == true) {
+			Configure::load('langs.iso') ;
+		}
 		$obj = null ;
 		$parents_id = array();
 		$relations = array();

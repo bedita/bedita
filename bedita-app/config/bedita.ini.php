@@ -392,6 +392,11 @@ $config['langsSystemMap'] = array(
 	"pt_br"	=> "por"
 ) ;
 
+// 'langsIso' empty, overridden if 'langOptionsIso' is true
+$config['langsIso'] = array();
+// add langs.iso.php to language options for content 
+$config['langOptionsIso'] = true;
+
 /**
  * 
  * Options selezione tipologia Cutom properties

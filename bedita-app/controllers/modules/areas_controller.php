@@ -289,7 +289,9 @@ class AreasController extends ModulesController {
 	 */
 	public function loadSectionAjax($id) {
 		// Load languages
-		Configure::load('langs.iso') ;
+		if(Configure::read("langOptionsIso") == true) {
+			Configure::load('langs.iso') ;
+		}
 
 		$this->layout = null;
 		
