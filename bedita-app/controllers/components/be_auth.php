@@ -24,13 +24,12 @@
  * 	- user/group creation/handling
  * 
  * @link			http://www.bedita.com
- * @version			$Revision: $
- * @modifiedby 		$LastChangedBy: $
- * @lastmodified	$LastChangedDate: $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: $
+ * $Id$
  */
-
 class BeAuthComponent extends Object {
 	var $controller	;
 	var $Session	= null ;

@@ -23,13 +23,12 @@
  * Translation properties manipulation
  *  
  * @link			http://www.bedita.com
- * @version			$Revision: $
- * @modifiedby 		$LastChangedBy: $
- * @lastmodified	$LastChangedDate: $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: $
+ * $Id$
  */
-
 class BeLangTextComponent extends Object {
 
 	var $controller = null ;

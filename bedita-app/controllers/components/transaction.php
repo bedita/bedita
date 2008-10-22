@@ -23,11 +23,11 @@
  * Componente per la gestione di transazioni su + model contemporaneamente
  * 
  * @link			http://www.bedita.com
- * @version			$Revision: $
- * @modifiedby 		$LastChangedBy: $
- * @lastmodified	$LastChangedDate: $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: $
+ * $Id$
  */
 class TransactionComponent extends Object {
 	

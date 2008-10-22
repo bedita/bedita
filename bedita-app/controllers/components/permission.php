@@ -30,13 +30,12 @@
  * BEDITA_PERMS_CREATE	0x8
  *  
  * @link			http://www.bedita.com
- * @version			$Revision: $
- * @modifiedby 		$LastChangedBy: $
- * @lastmodified	$LastChangedDate: $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: $
+ * $Id$
  */
-
 class PermissionComponent extends Object {
 	static $SWITCH_USER		= 'user' ;
 	static $SWITCH_GROUP	= 'group' ;

@@ -23,11 +23,11 @@
  * Administration: users, groups, eventlogs....
  * 
  * @link			http://www.bedita.com
- * @version			$Revision: $
- * @modifiedby 		$LastChangedBy: $
- * @lastmodified	$LastChangedDate: $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: $
+ * $Id$
  */
 class AdminController extends ModulesController {
 

@@ -28,11 +28,11 @@
  * BEDITA_PERMS_MODIFY	0x2
  * 
  * @link			http://www.bedita.com
- * @version			$Revision: $
- * @modifiedby 		$LastChangedBy: $
- * @lastmodified	$LastChangedDate: $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: $
+ * $Id$
  */
 class BeTreeComponent extends Object {
 	var $controller		= null ;

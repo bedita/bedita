@@ -23,13 +23,12 @@
  * Custom properties handling component
  * 
  * @link			http://www.bedita.com
- * @version			$Revision: $
- * @modifiedby 		$LastChangedBy: $
- * @lastmodified	$LastChangedDate: $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: $
+ * $Id$
  */
-
 class BeCustomPropertyComponent extends Object {
 	static $SWITCH_USER		= 'user' ;
 	static $SWITCH_GROUP	= 'group' ;

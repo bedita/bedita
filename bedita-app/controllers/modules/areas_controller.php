@@ -23,11 +23,11 @@
  * Controller entrata modulo Aree, gestione aree e gestione sessioni
  * 
  * @link			http://www.bedita.com
- * @version			$Revision: $
- * @modifiedby 		$LastChangedBy: $
- * @lastmodified	$LastChangedDate: $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: $
+ * $Id$
  */
 class AreasController extends ModulesController {
 	var $name = 'Areas';

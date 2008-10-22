@@ -65,13 +65,12 @@
  * 	BEDITA_PROVIDER_NOT_FOUND	34	Provider (not recognized or not allowed)
  * 
  * @link			http://www.bedita.com
- * @version			$Revision: $
- * @modifiedby 		$LastChangedBy: $
- * @lastmodified	$LastChangedDate: $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: $
+ * $Id$
  */
-
 class BeUploadToObjComponent extends SwfUploadComponent {
 	var $components	= array('BeFileHandler', 'BeBlipTv') ;
 
