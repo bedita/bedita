@@ -4,7 +4,7 @@
 		
 		<h2>{if !empty($sectionSel)}{t}{$itemName|default:moduleName}{/t} in “ 
 		<span style="color:white" class="evidence">{$sectionSel.title}</span> ”
-		{else} all {$itemName|default:$moduleName}{/if}</h2>
+		{else} {t}all{/t} {t}{$itemName|default:$moduleName}{/t}{/if}</h2>
 		
 		<ul>
 	
