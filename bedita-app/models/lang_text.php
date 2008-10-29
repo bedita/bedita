@@ -88,11 +88,18 @@ class LangText extends BEAppModel
 			$objects[$object_id][$lang] = $obj;
 		}
 
+		$size = $this->find('count',
+				array(
+					'fields'=>array('id','object_id','name','text','long_text','lang'),
+					'conditions'=>$conditions,
+				)
+			);
+		
 		$recordset = array(
 			"objects_status"		=> $objects_status,
 			"objects_title"			=> $objects_title,
 			"objects_translated"	=> $objects,
-			"toolbar"				=> $this->toolbar($page, $dim, $conditions)
+			"toolbar"				=> $this->toolbar($page, $dim, $size)
 		) ;
 
 		return $recordset ;

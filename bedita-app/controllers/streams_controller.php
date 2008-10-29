@@ -55,7 +55,8 @@ class StreamsController extends AppController {
 			$relations_id = $this->getRelatedStreamIDs($obj_id, $ot, $collection);
 		}
 		
-		$bedita_items = $this->BEObject->findObjs(null, null, $ot, $order=null, $dir=true, $page, $dim, $relations_id)  ;
+		$filter["object_type_id"] = $ot;
+		$bedita_items = $this->BEObject->findObjects(null, null, null, $filter, $order=null, $dir=true, $page, $dim, false, $relations_id)  ;
 
 		foreach($bedita_items['items'] as $key => $value) {
 			$modelLoaded = $this->loadModelByObjectTypeId($value['object_type_id']);
@@ -68,7 +69,7 @@ class StreamsController extends AppController {
 			}
 		}
 		
-		$this->layout = "empty";
+		$this->layout = null;
 		$this->set("bedita_items",$bedita_items['items']);
 		$this->set('toolbar', 		$bedita_items['toolbar']);
 		$this->set("collection", $collection);
@@ -89,7 +90,7 @@ class StreamsController extends AppController {
 			$relations_id = $this->getRelatedStreamIDs($obj_id, $ot, $collection);
 		}
 		$bedita_items = $this->Stream->search($text, $ot, $relations_id);
-		$this->layout = "empty";
+		$this->layout = null;
 		$this->set("bedita_items", $bedita_items);
 		$this->set("streamSearched", $text);
 		$this->set("collection", $collection);
@@ -169,7 +170,8 @@ class StreamsController extends AppController {
 			}
 			
 		} else {
-			$objRel = $this->BeTree->getChildren($obj_id, null, $ot, "priority") ;
+			$filter["object_type_id"] = $ot;
+			$objRel = $this->BeTree->getChildren($obj_id, null, $filter, "priority") ;
 				foreach($objRel['items'] as $rel) {
 					$relations_id[] = $rel['id'];
 				}

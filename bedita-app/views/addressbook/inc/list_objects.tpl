@@ -13,11 +13,6 @@ var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 {literal}
 $(document).ready(function(){
 
-
-	$("TABLE.indexList TD.cellList").click(function(i) { 
-		document.location = $(this).parent().find("a:first").attr("href"); 
-	} );
-	
 	/* select/unselect each item's checkbox */
 	$(".selectAll").bind("click", function(e) {
 		var status = this.checked;
@@ -71,7 +66,7 @@ $(document).ready(function(){
 			<th>{t}User/Company{/t}</th>
 			<th>{$beToolbar->order('status', 'Status')}</th>
 			<th>{$beToolbar->order('modified', 'Modified')}</th>
-			<th>{t}Country{/t}</th>			
+			<th>{$beToolbar->order('country', 'Country')}</th>			
 		</tr>
 	{/capture}
 		

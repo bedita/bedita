@@ -419,13 +419,13 @@ abstract class ModulesController extends AppController {
 	 * Method for paginated objects, used in ModuleController::index()...
 	 *
 	 * @param unknown_type $id
-	 * @param unknown_type $typesArray
+	 * @param unknown_type $filter
 	 * @param unknown_type $order
 	 * @param unknown_type $dir
 	 * @param unknown_type $page
 	 * @param unknown_type $dim
 	 */
-	protected function paginatedList($id, $typesArray, $order, $dir, $page, $dim) {
+	protected function paginatedList($id, $filter, $order, $dir, $page, $dim) {
 		$this->setup_args(
 			array("id", "integer", &$id),
 			array("page", "integer", &$page),
@@ -441,7 +441,7 @@ abstract class ModulesController extends AppController {
 		$sectionSel = $section->findById($id);
 		unset($this->modelBindings['Section']);
 		
-		$objects = $this->BeTree->getChildren($id, null, $typesArray, $order, $dir, $page, $dim)  ;
+		$objects = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
 		$this->params['toolbar'] = &$objects['toolbar'] ;
 		
 		// template data

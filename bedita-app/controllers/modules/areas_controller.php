@@ -141,8 +141,8 @@ class AreasController extends ModulesController {
 			
 			// update contents and children sections priority
 			$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
-			
-			$objects = $this->BeTree->getChildren($id, null, Configure::read("objectTypes.leafs.id")) ;
+			$filter["object_type_id"] = Configure::read("objectTypes.leafs.id");
+			$objects = $this->BeTree->getChildren($id, null, $filter) ;
 			$idsToReorder = array_keys($reorder);
 			
 			// remove old children
@@ -215,8 +215,8 @@ class AreasController extends ModulesController {
 			
 			// update contents and children sections priority
 			$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
-			
-			$objects = $this->BeTree->getChildren($id, null, Configure::read("objectTypes.leafs.id")) ;
+			$filter["object_type_id"] = Configure::read("objectTypes.leafs.id");
+			$objects = $this->BeTree->getChildren($id, null, $filter) ;
 			$idsToReorder = array_keys($reorder);
 			
 			// remove old children
@@ -362,12 +362,12 @@ class AreasController extends ModulesController {
 	public function showObjects($main_object_id=null, $relation=null, $objectType="related") {
 		
 		$id = (!empty($this->params["form"]["parent_id"]))? $this->params["form"]["parent_id"] : null;
-		$filter = (!empty($this->params["form"]["objectType"]))? array($this->params["form"]["objectType"]) : Configure::read("objectTypes." . $objectType . ".id");
+		$filter["object_type_id"] = (!empty($this->params["form"]["objectType"]))? array($this->params["form"]["objectType"]) : Configure::read("objectTypes." . $objectType . ".id");
 		if (!empty($this->params["form"]["lang"]))
-			$filter = array_merge($filter, array("lang" => $this->params["form"]["lang"])); 
+			$filter["lang"] = $this->params["form"]["lang"]; 
 			
 		if (!empty($this->params["form"]["search"]))
-			$filter = array_merge($filter, array("search" => $this->params["form"]["search"]));
+			$filter["search"] = addslashes($this->params["form"]["search"]);
 		
 		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
 			
@@ -504,12 +504,12 @@ class AreasController extends ModulesController {
 		$dim = (!empty($this->params["form"]["dim"]))? $this->params["form"]["dim"] : 20; 
 		
 		// get content
-		$objType = Configure::read("objectTypes.leafs.id");
+		$filter["object_type_id"] = Configure::read("objectTypes.leafs.id");
 
 		$priorityOrder = $this->Section->field("priority_order", array("id" => $id));
 		if(empty($priorityOrder))
 			$priorityOrder = "asc";
-		$contents = $this->BeTree->getChildren($id, null, $objType, "priority", ($priorityOrder == "asc"), $page, $dim);
+		$contents = $this->BeTree->getChildren($id, null, $filter, "priority", ($priorityOrder == "asc"), $page, $dim);
 		
 		foreach ($contents["items"] as $key => $item) {
 			$contents["items"][$key]["module"]= $this->ObjectType->field("module", 
@@ -524,9 +524,9 @@ class AreasController extends ModulesController {
 		// set pagination
 		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
 		$dim = (!empty($this->params["form"]["dim"]))? $this->params["form"]["dim"] : 20; 
-		
+		$filter["object_type_id"] = Configure::read("objectTypes.section.id");
 		// get sections children
-		$this->set("sections", $this->BeTree->getChildren($id, null, Configure::read("objectTypes.section.id"), "priority", true, $page, $dim));
+		$this->set("sections", $this->BeTree->getChildren($id, null, $filter, "priority", true, $page, $dim));
 	}
 	
 	protected function forward($action, $esito) {

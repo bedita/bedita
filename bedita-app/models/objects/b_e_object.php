@@ -398,113 +398,6 @@ class BEObject extends BEAppModel
 			return true ;
 	}
 
-	/**
-	 * Search objects not using content tree.
-	 * (see: Tre::getChildren(), Tree::getDiscendents()  for searches using content tree).
-	 * 
-	 * If userid != null, only objects with read permissione for user, if ' ' - use guest/anonymous user,
-	 * if userid = null -> no permission check.
-	 * Filter: object types, search text query.
-	 *
-	 * @param string $userid	user: null (default) => no permission check. ' ' => guest/anonymous user,
-	 * @param string $status	object status
-	 * @param array  $filter	Filter: object types, search text query, eg. array(21, 22, "search" => "text to search").
-	 * 							Default: all object types
-	 * @param string $order		field to order result (id, status, modified..)
-	 * @param boolean $dir		true (default), ascending, otherwiese descending.
-	 * @param integer $page		Page number (for pagination)
-	 * @param integer $dim		Page dim (for pagination)
-	 * @param array $excludeIds Array of id's to exclude
-	 */	
-	function findObjs($userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000, $excludeIds=array()) {
-
-		$searchFields = ""; 
-		$fields  = " `BEObject`.* " ;
-		
-		// setta le condizioni di ricerca
-		$conditions = array() ;
-		$this->_getCondition_filterType($conditions, $filter) ;
-		$this->_getCondition_userid($conditions, $userid ) ;
-		$this->_getCondition_status($conditions, $status) ;
-		$this->_getCondition_current($conditions, true) ;
-		$this->getCondition_excludeIds($conditions, $excludeIds) ;
-		
-		// standard sql where for BEObject
-		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
-		$sqlClausole = $db->conditions($conditions, true, true) ;
-		
-		$from = " objects as `BEObject` " ;
-		
-		$fromSearchText = "";
-		$ordClausole  = "" ;
-		$groupClausole  = "" ;
-		$searchText = false;
-		$searchClausole = ""; 
-		// text search conditions?
-		if(is_array($filter) && isset($filter['search'])) {
-			$s = $filter['search'];
-			$searchFields = "DISTINCT `SearchText`.`object_id` AS `oid`, SUM( MATCH (`SearchText`.`content`) AGAINST ('$s') * `SearchText`.`relevance` ) AS `points`, ";
-			$searchText = true;
-			$fromSearchText = ", search_texts as `SearchText` ";
-			$searchClausole = " AND `SearchText`.`object_id` = `BEObject`.`id` AND MATCH (`SearchText`.`content`) AGAINST ('$s')";
-			$groupClausole  = "  GROUP BY `SearchText`.`object_id`";
-			$ordClausole = " ORDER BY points DESC ";
-		}
-		
-		if(is_string($order) && strlen($order)) {
-			$ordItem = "{$order} " . ((!$dir)? " DESC " : "");
-			if($searchText) {
-				$ordClausole .= ", ".$ordItem;
-			} else {
-				$ordClausole = " ORDER BY {$order} " . ((!$dir)? " DESC " : "") ;
-			}
-		}
-		
-		$limit 	= $this->getLimitClausole($page, $dim) ;
-		$query = "SELECT {$searchFields}{$fields} FROM {$from} {$fromSearchText} {$sqlClausole} {$searchClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
-		$tmp  	= $this->query($query) ;
-		
-		// build items and toolbar
-		$recordset = array(
-			"items"		=> array(),
-			"toolbar"	=> $this->toolbar($page, $dim, $fromSearchText.$sqlClausole.$searchClausole)
-		) ;
-		for ($i =0; $i < count($tmp); $i++) {
-			$recordset['items'][] = $this->am($tmp[$i]);
-		}
-
-		return $recordset ;
-	}
-	
-	function findCount($sqlConditions = null, $recursive = null) {
-		$from = " objects as `BEObject` " ;
-		$query = "SELECT COUNT(DISTINCT `BEObject`.`id`) AS count FROM {$from}";
-		if(is_array($sqlConditions)) {
-			$where = " WHERE ";
-			$first = true;
-			foreach ($sqlConditions as $k => $v) {
-				if(!$first) {
-					$where .= " AND ";
-				}
-				$where .= " $k = $v";
-				$first = false;
-			}
-			$query .= $where;
-			
-		} else if(!empty($sqlConditions)) {
-			$query .= $sqlConditions;
-		}
-		list($data)  = $this->query($query) ;
-
-		if (isset($data[0]['count'])) {
-			return $data[0]['count'];
-		} elseif (isset($data[$this->name]['count'])) {
-			return $data[$this->name]['count'];
-		}
-
-		return false;
-	}
-	
 	public function findObjectTypeId($id) {
 		$object_type_id = $this->field("object_type_id", array("BEObject.id" => $id));
 		return $object_type_id;
@@ -666,47 +559,6 @@ class BEObject extends BEAppModel
 	}
 	
 	
-	private function _getCondition_filterType(&$conditions, $filter = false) {
-		if(!$filter) 
-			return ;
-		// exclude search query from object_type_id list
-		if(is_array($filter)) {
-			$types = array();
-			foreach ($filter as $k => $v) {
-				if($k !== "search" && $k !== "lang")
-					$types[] = $v;
-				elseif ($k === "lang")
-					$conditions["`BEObject`.lang"] = $v;
-			}
-			if(!empty($types))
-				$conditions['object_type_id'] = $types;
-		} else {
-			$conditions['object_type_id'] = $filter;
-		}
-	}
-	
-	private function _getCondition_userid(&$conditions, $userid = null) {
-		if(!isset($userid)) return ;
-
-		$conditions[] 	= " prmsUserByID ('{$userid}', `BEObject`.id, ".BEDITA_PERMS_READ.") > 0 " ;
-	}
-
-	private function _getCondition_status(&$conditions, $status = null) {
-		if(!isset($status)) 
-			return ;
-		$conditions[] = array('status' => $status) ;
-	}
-
-	private function _getCondition_current(&$conditions, $current = true) {
-		if(!$current) return ;
-		$conditions[] = array("current" => 1);
-	}
-	
-	private function getCondition_excludeIds(&$conditions, $excludeIds) {
-		if(empty($excludeIds)) return ;
-		$conditions["NOT"] = array(array("id" => $excludeIds));
-	}
-	
 	/**
 	 * Transform permission array ==> cake-style associative array
 	 *
@@ -739,5 +591,7 @@ class BEObject extends BEAppModel
 		$tmp  	= $this->query($sql) ;
 		return ((isset($tmp[0]['objects']['nickname'])) ? $tmp[0]['objects']['nickname'] : null) ;
 	}
+	
+	
 }
 ?>

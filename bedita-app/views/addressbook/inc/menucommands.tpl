@@ -59,8 +59,8 @@ $(document).ready(function(){
 		<ul class="menuleft insidecol">
 			<li><a href="javascript:void(0)" onClick="$('#groups').slideToggle();">{t}Select by category{/t}</a></li>
 				<ul id="groups" style="display:none">
-					{foreach key=val item=label from=$categories name=cat}
-					<li>{$label}</li>
+					{foreach key=val item=cat from=$categories}
+					<li><a href="{$html->url('/addressbook/index/category:')}{$cat.id}">{$cat.label}</a></li>
 					{/foreach}
 				</ul>
 		</ul>

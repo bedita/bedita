@@ -184,8 +184,9 @@ abstract class FrontendController extends AppController {
 
 		$conf = Configure::getInstance(); 
 		$result = array();
+		$filter["object_type_id"] = $conf->objectTypes['section']["id"];
 		$sections = $this->BeTree->getChildren($parent_id, $this->status, 
-			array($conf->objectTypes['section']["id"]), "priority") ;
+			$filter, "priority") ;
 
 		foreach ($sections['items'] as $s) {
 			
@@ -231,9 +232,10 @@ abstract class FrontendController extends AppController {
 		$parents = explode("/", trim($path,"/"));
 		
 		$level = 0;
+		$filter["object_type_id"] = $conf->objectTypes['section']["id"];
 		foreach ($parents as $p_id) {
 			$sections = $this->BeTree->getChildren($p_id, $this->status, 
-				array($conf->objectTypes['section']["id"]), "priority") ;
+				$filter, "priority") ;
 
 			foreach ($sections["items"] as $s) {
 				

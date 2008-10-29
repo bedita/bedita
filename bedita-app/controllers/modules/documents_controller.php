@@ -37,18 +37,12 @@ class DocumentsController extends ModulesController {
 	var $uses = array('BEObject', 'Document', 'Tree') ;
 	protected $moduleName = 'documents';
 	
-    public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
+	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
     	$conf  = Configure::getInstance() ;
-		$types = array($conf->objectTypes['document']["id"]);
-		
-		if (!empty($this->params["form"]["searchstring"])) {
-			$types["search"] = addslashes($this->params["form"]["searchstring"]);
-			$this->set("stringSearched", $this->params["form"]["searchstring"]);
-		}
-		
-		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
+		$filter["object_type_id"] = array($conf->objectTypes['document']["id"]);
+		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 	 }
-
+	
 	 public function view($id = null) {
 		$this->viewObject($this->Document, $id);
 	 }

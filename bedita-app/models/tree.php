@@ -483,7 +483,7 @@ class Tree extends BEAppModel
 	 * @param integer $dim		Page dim (for pagination)
 	 */
 	function getChildren($id = null, $userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
-		return $this->_getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim, false) ;
+		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, false) ;
 	}
 
 	/**
@@ -504,7 +504,7 @@ class Tree extends BEAppModel
 	 * @param integer $dim		Page dim (for pagination)
 	 */
 	function getDiscendents($id = null, $userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
-		return $this->_getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim, true) ;
+		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, true) ;
 	}
 
 	function findCount($sqlConditions = null, $recursive = null) {
@@ -565,93 +565,8 @@ class Tree extends BEAppModel
 	}
 	
 	////////////////////////////////////////////////////////////////////////
-	/**
-	 * children/discendents of id.
-	 * See: getChildren/getDiscendents
-	 * 
-	 * @param integer $id		root id
-	 * @param string $userid	user: null (default) => no permission check. ' ' => guest/anonymous user,
-	 * @param string $status	object status
-	 * @param array  $filter	Filter: object types, search text query, eg. array(21, 22, "search" => "text to search").
-	 * 							Default: all object types
-	 * @param string $order		field to order result (id, status, modified..)
-	 * @param boolean $dir		true (default), ascending, otherwiese descending.
-	 * @param integer $page		Page number (for pagination)
-	 * @param integer $dim		Page dim (for pagination)
-	 * @param boolean $all		true: all tree levels (discendents), false: only first level (children)
-	 */
-	private function _getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim, $all) {
-		
-		// Setta l'id
-		if (!empty($id)) {
-			$this->id = $id;
-		}
-
-		$fields  = " distinct `Tree`.*, `BEObject`.* " ;
-		
-		// setta le condizioni di ricerca
-		$conditions = array() ;
-		$this->_getCondition_filterType($conditions, $filter) ;
-		$this->_getCondition_userid($conditions, $userid ) ;
-		$this->_getCondition_status($conditions, $status) ;
-		$this->_getCondition_current($conditions, true) ;
-
-		if($all) $this->_getCondition_parentPath($conditions, $id) ;
-		else $this->_getCondition_parentID($conditions, $id) ;
-
-		// Costruisce i criteri di ricerca
-		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
-		$sqlClausole = $db->conditions($conditions, true, true) ;
-		
-		$fromSearchText = "";
-		$ordClausole  = "" ;
-		$groupClausole  = "" ;
-		$searchFields = "" ;
-		$searchText = false;
-		$searchClausole = ""; 
-		// text search conditions?
-		if(is_array($filter) && isset($filter['search'])) {
-			$s = $filter['search'];
-			$searchFields = ", SUM( MATCH (`SearchText`.`content`) AGAINST ('$s') * `SearchText`.`relevance` ) AS `points` ";
-			$searchText = true;
-			$fromSearchText = " INNER JOIN search_texts as `SearchText` ON `SearchText`.`object_id` = `BEObject`.`id` ";
-			$searchClausole = " AND MATCH (`SearchText`.`content`) AGAINST ('$s')";
-			$groupClausole  = "  GROUP BY `SearchText`.`object_id`";
-			$ordClausole = " ORDER BY points DESC ";
-		}
-		
-		if(is_string($order) && strlen($order)) {
-			if($this->hasField($order)) {
-				$order = " `Tree`.`{$order}`";
-			} else {
-				$order = " `BEObject`.`{$order}`";
-			}
-			$ordItem = "{$order} " . ((!$dir)? " DESC " : "");
-			if($searchText) {
-				$ordClausole .= ", ".$ordItem;
-			} else {
-				$ordClausole = " ORDER BY {$order} " . ((!$dir)? " DESC " : "") ;
-			}
-		}
-		
-		// costruisce il join dalle tabelle
-		$from = "trees AS `Tree` INNER JOIN objects as `BEObject` ON `Tree`.`id` = `BEObject`.`id`" ;
-		
-		$limit 	= $this->getLimitClausole($page, $dim) ;
-		$query = "SELECT {$fields} {$searchFields} FROM {$from} {$fromSearchText} {$sqlClausole} {$searchClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
-		$tmp  	= $this->query($query) ;
-
-		// Torna il risultato
-		$recordset = array(
-			"items"		=> array(),
-			"toolbar"	=> $this->toolbar($page, $dim, $fromSearchText.$sqlClausole.$searchClausole) );
-		for ($i =0; $i < count($tmp); $i++) {
-			$recordset['items'][] = $this->am($tmp[$i]);
-		}
-
-		return $recordset ;
-	}
-
+	
+	
 	private function _getCondition_filterType(&$conditions, $filter = false) {
 		if(!$filter) 
 			return;
@@ -670,10 +585,14 @@ class Tree extends BEAppModel
 		}	
 	}
 
-	private function _getCondition_userid(&$conditions, $userid = null) {
-		if(!isset($userid)) return ;
-
-		$conditions[] 	= " prmsUserByID ('{$userid}', Tree.id, ".BEDITA_PERMS_READ.") > 0 " ;
+	private function _getCondition_userid(&$conditions, $userid = null, $checkTree=true) {
+		if(!isset($userid))
+			return ;
+		
+		if ($checkTree) 
+			$conditions[] 	= " prmsUserByID ('{$userid}', Tree.id, ".BEDITA_PERMS_READ.") > 0 " ;
+		else
+			$conditions[] 	= " prmsUserByID ('{$userid}', `BEObject`.id, ".BEDITA_PERMS_READ.") > 0 " ;
 	}
 
 	private function _getCondition_status(&$conditions, $status = null) {

@@ -39,23 +39,17 @@ class AddressbookController extends ModulesController {
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
-		$type = $conf->objectTypes['card']["id"];
-		$types = array($type);
-		if (!empty($this->params["form"]["searchstring"])) {
-			$types["search"] = addslashes($this->params["form"]["searchstring"]);
-			$this->set("stringSearched", $this->params["form"]["searchstring"]);
-		}
-		$this->paginatedList($id, $types, $order, $dir, $page, $dim); 
-		foreach($this->viewVars['objects'] as $key => $value) {
-			$this->Card->recursive = -1;
-			$this->viewVars['objects'][$key]['country'] = $this->Card->field('country',array('id'=>$value['id']));
-		}
-		$categoryModel = ClassRegistry::init("Category");
-		$allcat = $categoryModel->findAll("Category.object_type_id=".$type);
-		$categories = array();
-		foreach($allcat as $cat) {
-			$categories[$cat['id']] = $cat['label'];
-		}
+		$filter["object_type_id"] = $conf->objectTypes['card']["id"];
+		$filter["Card.country"] = "";
+		
+		$this->paginatedList($id, $filter, $order, $dir, $page, $dim); 
+
+		$categories = $this->Category->find("all", array(
+			"conditions" => "Category.object_type_id=".$conf->objectTypes['card']["id"],
+			"contain" => array()
+			)
+		);
+		
 		$this->set("categories", $categories);
 	 }
 

@@ -213,16 +213,18 @@ class BeToolbarHelper extends AppHelper {
 	 */
 	function order($field, $title = "", $htmlAttributes = array(),	$dir = null) {
 		$title = __($title, true);
+		
 		if(!isset($this->params['toolbar'])) return "" ;
-
-		if(isset($this->namedArgs['order']) && $this->namedArgs['order'] == $field) {
-			if(!isset($dir)) $dir = (isset($this->namedArgs['dir']))  ? (!$this->namedArgs['dir']) : true  ;
+		
+		$data = $this->getPassedArgs();
+		
+		if(isset($data['order']) && $data['order'] == $field) {
+			if(!isset($dir)) $dir = (isset($data['dir']))  ? (!$data['dir']) : true  ;
 		}  else {
 			if(!isset($dir)) $dir = true ;
 		}
 
 		// Crea l'url
-		$data = $this->getPassedArgs();
 		$data['order'] 	= $field ;
 		$data['dir'] 	= (integer)$dir ;
 

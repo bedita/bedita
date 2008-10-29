@@ -38,6 +38,7 @@ class BeTreeComponent extends Object {
 	var $controller		= null ;
 	var $Tree			= null ;
 	var $Object			= null ;
+	var $filter			= array();
 	
 	var $uses = array('Tree') ;
 	
@@ -63,6 +64,30 @@ class BeTreeComponent extends Object {
 	function startup(&$controller)
 	{
 		$this->controller 	= $controller;
+		// set filter parameters
+		if (!empty($this->controller->passedArgs["category"])) {
+			$this->filter["category"] = $this->controller->passedArgs["category"];
+			$this->controller->set("categorySearched", $this->controller->passedArgs["category"]);
+		}
+		if (!empty($this->controller->passedArgs["relation"]))
+			$this->filter["ObjectRelation.switch"] = $this->controller->passedArgs["relation"];
+			
+		if (!empty($this->controller->passedArgs["rel_object_id"]))
+			$this->filter["ObjectRelation.object_id"] = $this->controller->passedArgs["rel_object_id"];
+
+		if (!empty($this->controller->params["form"]["searchstring"])) {
+			$this->filter["search"] = addslashes($this->controller->params["form"]["searchstring"]);
+			$this->controller->params["named"]["search"] = urlencode($this->controller->params["form"]["searchstring"]);
+			$this->controller->set("stringSearched", $this->controller->params["form"]["searchstring"]);
+		} elseif (!empty($this->controller->passedArgs["search"])) {
+			$this->controller->params["named"]["search"] = urlencode($this->controller->passedArgs["search"]);
+			$this->filter["search"] = addslashes(urldecode($this->controller->passedArgs["search"]));
+			$this->controller->set("stringSearched", urldecode($this->controller->passedArgs["search"]));
+		}
+	}
+	
+	function cleanFilter() {
+		$this->filter = array();
 	}
 
 	/**
@@ -115,11 +140,9 @@ class BeTreeComponent extends Object {
 		// Preleva l'utente connesso
 		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : null ;
 		
-		if(isset($id)) {
-			$objs = &  $this->Tree->getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
-		} else {
-			$objs = &  $this->BEObject->findObjs($userid, $status, $filter, $order, $dir, $page, $dim) ;
-		}
+		$filter = ($filter)? array_merge($this->filter, $filter) : $this->filter;
+		
+		$objs = &  $this->Tree->getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
 		
 		return  $objs ;
 	}
@@ -133,11 +156,11 @@ class BeTreeComponent extends Object {
 		$conf  = Configure::getInstance() ;
 		// Get user data
 		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : null ;
-		if(isset($id)) {
-			$objs = &  $this->Tree->getDiscendents($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
-		} else {
-			$objs = &  $this->BEObject->findObjs($userid, $status, $filter, $order, $dir, $page, $dim) ;
-		}
+		
+		$filter = ($filter)? array_merge($this->filter, $filter) : $this->filter;
+			
+		$objs = &  $this->Tree->getDiscendents($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
+		
 		return  $objs ;
 	}
 	

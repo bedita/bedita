@@ -51,12 +51,13 @@ class MultimediaController extends ModulesController {
 			array("order", "string", &$order),
 			array("dir", "boolean", &$dir)
 		) ;
-		$typesArray = array(
-		$conf->objectTypes['befile']["id"],
-		$conf->objectTypes['image']["id"],
-		$conf->objectTypes['audio']["id"],
-		$conf->objectTypes['video']["id"]);
-		$bedita_items = $this->BeTree->getDiscendents($id, null, $typesArray, $order, $dir, $page, $dim)  ;
+		$filter["object_type_id"] = array(
+			$conf->objectTypes['befile']["id"],
+			$conf->objectTypes['image']["id"],
+			$conf->objectTypes['audio']["id"],
+			$conf->objectTypes['video']["id"]
+		);
+		$bedita_items = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
 		
 	 	foreach($bedita_items['items'] as $key => $value) {
 	 		$model = $this->loadModelByObjectTypeId($value['object_type_id']);

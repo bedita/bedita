@@ -136,8 +136,9 @@ class NewsletterController extends ModulesController {
 		
 		$areaModel = ClassRegistry::init("Area");				
 		$pub = $areaModel->find("all", array("contain" => array("BEObject")));
+		$filter["object_type_id"] = Configure::read("objectTypes.mailtemplate.id");
 		foreach ($pub as $key => $p) {
-			$temp = $this->BeTree->getChildren($p["id"], null, array(Configure::read("objectTypes.mailtemplate.id")));
+			$temp = $this->BeTree->getChildren($p["id"], null, $filter);
 			$pub[$key]["MailTemplate"] = $temp["items"];
 			// set cssUrl to use with template
 			if (!empty($this->viewVars["relObjects"]["template"])) {
@@ -154,8 +155,8 @@ class NewsletterController extends ModulesController {
 	  * Get all newsletters.
 	  */
 	function newsletters($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
-		$types = array(Configure::read("objectTypes.mailmessage.id"));
-		$this->paginatedList($id, $types, $order, $dir, $page, $dim);
+		$filter["object_type_id"] = Configure::read("objectTypes.mailmessage.id");
+		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 		foreach ($this->viewVars["objects"] as $key => $obj) {
 			$msg = $this->MailMessage->find("first", array(
 												"conditions" => array("MailMessage.id" => $obj["id"]),

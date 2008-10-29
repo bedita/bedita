@@ -129,10 +129,8 @@ class BEAppModel extends AppModel {
 	 * @param mixed 	$sqlCondition	sql search condition
 	 * @return array
 	 */
-	function toolbar($page = null, $dimPage = null, $sqlCondition = null, $recursive = null, $searchText = null) {
-		// conta il numero di record
-		if(($size = $this->findCount($sqlCondition, $recursive)) === false) return false ;
-		
+	function toolbar($page = null, $dimPage = null, $size=0) {
+						
 		$toolbar = array("first" => 0, "prev" => 0, "next" => 0, "last" => 0, "size" => 0, "pages" => 0, "page" => 0, "dim" => 0) ;
 		
 		if(!$page || empty($page)) $page = 1 ;
@@ -195,6 +193,184 @@ class BEAppModel extends AppModel {
 			throw new BeditaException("Contain level not found: $level");
 		}
 		$this->contain($this->modelBindings[$level]);
+	}
+	
+	/**
+	 * perform an objects search
+	 * 
+	 * @param integer $id		root id, if it's set perform search on the tree
+	 * @param string $userid	user: null (default) => no permission check. ' ' => guest/anonymous user,
+	 * @param string $status	object status
+	 * @param array  $filter	example of filter: 
+	 * 							"object_type_id" => array(21,22,...),
+	 *							"ModelName.fieldname => "value",
+	 * 							"search" => "text to search"
+	 * 							....
+	 *
+	 *							reserved filter words:
+	 *							"category" => "val" search by category id or category name
+	 *							"relation" => "val" search by object_relations swicth
+	 *							"rel_object_id" => "val" search object relateds to a particular object (object_relation object_id)
+	 *
+	 * @param string $order		field to order result (id, status, modified..)
+	 * @param boolean $dir		true (default), ascending, otherwiese descending.
+	 * @param integer $page		Page number (for pagination)
+	 * @param integer $dim		Page dim (for pagination)
+	 * @param boolean $all		true: all tree levels (discendents), false: only first level (children)
+	 * @param array $excludeIds Array of id's to exclude
+	 */
+	public function findObjects($id=null, $userid=null, $status=null, $filter=array(), $order=null, $dir=true, $page=1, $dim=100000, $all=false, $excludeIds=array()) {
+		
+		$fields  = "DISTINCT `BEObject`.*, `Content`.*" ;
+		$from = "objects as `BEObject` LEFT OUTER JOIN contents as `Content` ON `BEObject`.id=`Content`.id";
+		$conditions = array();
+		$groupClausole = "GROUP BY `BEObject`.id";
+		
+		if (!empty($id)) {
+			$fields .= ", `Tree`.*";
+			$from .= ", trees AS `Tree`";
+			$conditions[] = " `Tree`.`id`=`BEObject`.`id`" ;
+			if (!empty($userid))
+				$conditions[] 	= " prmsUserByID ('{$userid}', Tree.id, ".BEDITA_PERMS_READ.") > 0 " ;
+			
+			if($all)
+				$conditions[] = " path LIKE (CONCAT((SELECT path FROM trees WHERE id = {$id}), '/%')) " ;
+			else
+				$conditions[] = array("parent_id" => $id) ;
+		} else {
+			if (!empty($userid))
+				$conditions[] 	= " prmsUserByID ('{$userid}', `BEObject`.id, ".BEDITA_PERMS_READ.") > 0 " ;
+		}
+
+		if (!empty($status))
+			$conditions[] = array('status' => $status) ;
+		
+		if(!empty($excludeIds))
+			$conditions["NOT"] = array(array("`BEObject`.id" => $excludeIds));
+			
+		list($otherFields, $otherFrom, $otherConditions, $otherGroup, $otherOrder) = $this->getSqlItems($filter);
+		
+		if (!empty($otherFields))
+			$fields = $fields . $otherFields;
+			
+		$conditions = array_merge($conditions, $otherConditions);
+		$from .= $otherFrom;
+		$groupClausole .= $otherGroup; 
+		
+		// build sql conditions
+		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
+		$sqlClausole = $db->conditions($conditions, true, true) ;
+
+		if(is_string($order) && strlen($order)) {
+			$beObject = ClassRegistry::init("BEObject");
+			if ($beObject->hasField($order))
+				$order = "`BEObject`." . $order;
+			$ordItem = "{$order} " . ((!$dir)? " DESC " : "");
+			if(!empty($otherOrder)) {
+				$ordClausole = "ORDER BY " . $ordItem .", " . $otherOrder;
+			} else {
+				$ordClausole = " ORDER BY {$order} " . ((!$dir)? " DESC " : "") ;
+			}
+		} else {
+			$ordClausole = "";
+		}
+		
+		$limit 	= $this->getLimitClausole($page, $dim) ;
+		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
+		$tmp  	= $this->query($query) ;
+
+		if ($tmp === false)
+			throw new BeditaException(__("Error finding objects", true));
+		
+		$queryCount = "SELECT COUNT(DISTINCT `BEObject`.id) AS count FROM {$from} {$sqlClausole}";
+
+		$tmpCount = $this->query($queryCount);
+		if ($tmpCount === false)
+			throw new BeditaException(__("Error counting objects", true));
+		
+		$size = (empty($tmpCount[0][0]["count"]))? 0 : $tmpCount[0][0]["count"];
+		
+		$recordset = array(
+			"items"		=> array(),
+			"toolbar"	=> $this->toolbar($page, $dim, $size) );
+		for ($i =0; $i < count($tmp); $i++) {
+			if (!empty($tmp[$i]["Content"]) && empty($tmp[$i]["Content"]["id"]))
+				unset($tmp[$i]["Content"]);
+			$recordset['items'][] = $this->am($tmp[$i]);
+		}
+
+		return $recordset ;
+	}
+
+	/**
+	 * set conditions, from, fields, group and order from $filter
+	 *
+	 * @param array $filter
+	 * @return array
+	 */
+	private function getSqlItems($filter) {
+		$conditions = array();
+		$from = "";
+		$fields = "";
+		$group = "";
+		$order = "";
+		
+		if (!empty($filter["search"])) {
+			$fields = ", `SearchText`.`object_id` AS `oid`, SUM( MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."') * `SearchText`.`relevance` ) AS `points`";
+			$from .= ", search_texts AS `SearchText`";
+			$conditions[] = "`SearchText`.`object_id` = `BEObject`.`id` AND MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."')";
+//			$group  .= ", `SearchText`.`object_id`";
+			$order .= "points DESC ";
+			unset($filter["search"]);	
+		}
+		
+		if (!empty($filter["category"])) {
+			$cat_field = (is_numeric($filter["category"]))? "id" : "name";
+			$from .= ", categories AS `Category`, object_categories AS `ObjectCategory`";
+			$conditions[] = "`Category`." . $cat_field . "='" . $filter["category"] . "' 
+							AND `ObjectCategory`.object_id=`BEObject`.id
+							AND `ObjectCategory`.category_id=`Category`.id
+							AND `Category`.object_type_id IS NOT NULL";
+			unset($filter["category"]);
+		}
+		
+		if (!empty($filter["relation"])) {
+			$filter["ObjectRelation.switch"] = $filter["relation"];
+			unset($filter["relation"]);
+		}
+			
+		if (!empty($filter["rel_object_id"])) {
+			$filter["ObjectRelation.object_id"] = $filter["rel_object_id"];
+			unset($filter["rel_object_id"]);
+		}
+		
+		$beObject = ClassRegistry::init("BEObject");
+		
+		foreach ($filter as $key => $val) {
+			if ($beObject->hasField($key))
+				$key = "`BEObject`." . $key;
+			
+			$fields .= ", " . $key;
+			if (is_array($val)) 
+				$conditions[] = $key . " IN (" . implode(",", $val) . ")";
+			elseif (!empty($val))
+				$conditions[] = $key . "='" . $val . "'";
+
+			if (count($arr = explode(".", $key)) == 2 ) {
+				$modelName = $arr[0];
+				if (!strstr($modelName,"BEObject") && $modelName != "Content") {
+					$model = ClassRegistry::init($modelName);
+					$f_str = $model->useTable . " as `" . $model->alias . "`";
+					// create join with BEObject
+					if (empty($from) || !strstr($from, $f_str)) {
+						$from .= ", " . $f_str;
+						$conditions[] = "`BEObject`.id=`" . $model->alias . "`.id";
+					}
+				}
+				
+			}
+		}
+		return array($fields, $from ,$conditions, $group, $order);
 	}
 }
 
