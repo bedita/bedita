@@ -18,7 +18,7 @@
 
 
 <div class="main">
-{include file="../pages/list_categories.tpl" method="index"}
+{include file="../common_inc/list_categories.tpl" method="categories"}
 </div>
 
 
