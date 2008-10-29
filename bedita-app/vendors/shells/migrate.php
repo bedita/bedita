@@ -111,6 +111,9 @@ class MigrateShell extends Shell {
 
 	const DEFAULT_MIGRATION_DUMP = 'bedita-migration.sql' ;
 	
+	public function main() {
+		$this->migrate();
+	}
 	
 	public function migrate() {
 		
