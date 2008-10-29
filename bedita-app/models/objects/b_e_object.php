@@ -470,9 +470,9 @@ class BEObject extends BEAppModel
 
 		while (!$nickOk) {
 			
-			$cond = "WHERE nickname = '{$nickname}'";
+			$cond = "WHERE BEObject.nickname = '{$nickname}'";
 			if ($this->id) {
-				$cond .= " AND id<>".$this->id;
+				$cond .= " AND BEObject.id<>".$this->id;
 			}
 			$numNickDb = $this->findCount($cond);
 			
