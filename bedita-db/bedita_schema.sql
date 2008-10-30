@@ -47,6 +47,7 @@ DROP TABLE IF EXISTS `geo_tags`;
 DROP TABLE IF EXISTS `object_users`;
 DROP TABLE IF EXISTS `object_relations`;
 DROP TABLE IF EXISTS `object_categories`;
+DROP TABLE IF EXISTS `object_properties`;
 DROP TABLE IF EXISTS `contents`;
 DROP TABLE IF EXISTS `authors`;
 DROP TABLE IF EXISTS `images`;
@@ -70,7 +71,8 @@ DROP TABLE IF EXISTS `questions`;
 DROP TABLE IF EXISTS `versions`;
 DROP TABLE IF EXISTS `trees`;
 DROP TABLE IF EXISTS `comments`;
-DROP TABLE IF EXISTS `custom_properties`;
+DROP TABLE IF EXISTS `properties`;
+DROP TABLE IF EXISTS `property_options`;
 DROP TABLE IF EXISTS `objects`;
 DROP TABLE IF EXISTS `question_types`;
 DROP TABLE IF EXISTS `object_types`;
@@ -82,6 +84,7 @@ DROP TABLE IF EXISTS `groups`;
 DROP TABLE IF EXISTS `event_logs`;
 DROP TABLE IF EXISTS `search_texts`;
 DROP TABLE IF EXISTS `banned_ips`;
+DROP TABLE IF EXISTS `custom_properties`;
 
 CREATE TABLE cake_sessions (
   id varchar(255) NOT NULL default '',
@@ -217,6 +220,50 @@ CREATE TABLE custom_properties (
   INDEX custom_properties_FKIndex1(object_id),
   FOREIGN KEY(object_id)
     REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE properties (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  object_type_id INTEGER UNSIGNED NOT NULL,
+  property_type SET('number','date','text','options') NOT NULL,
+  multiple_choice TINYINT(1) default 0,
+  PRIMARY KEY(id),
+  UNIQUE name_type(name, object_type_id),
+  INDEX name_index(name),
+  INDEX type_index(object_type_id),
+  FOREIGN KEY(object_type_id)
+    REFERENCES object_types(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE property_options (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  property_id INTEGER UNSIGNED NOT NULL,
+  property_option TEXT not null,
+  PRIMARY KEY(id),
+  FOREIGN KEY(property_id)
+    REFERENCES properties(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE object_properties (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  property_id INTEGER UNSIGNED NOT NULL,
+  object_id INTEGER UNSIGNED NOT NULL,
+  property_value TEXT not null,
+  INDEX id_index(id),
+  INDEX property_id_index(property_id),
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(property_id)
+    REFERENCES properties(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;

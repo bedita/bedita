@@ -20,6 +20,7 @@
  */
 
 /**
+ * TODO: refactor/remove this class!!
  * 
  * @link			http://www.bedita.com
  * @version			$Revision$
