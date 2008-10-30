@@ -11,14 +11,20 @@
 		<ul class="menuleft insidecol">
 
 			<li {if $method eq "newsletters"}class="on"{/if}>
-				<a href="{$html->url('/newsletter/newsletters')}">Manage newsletters</a>
+				<a href="{$html->url('/newsletter/newsletters')}">{$moduleName}</a>
 			</li>
 			<li {if $method eq "view"}class="on"{/if}><a href="{$html->url('/newsletter/view')}">Create new</a></li>
-			<li><a href="{$html->url('/newsletter/mailGroups')}">{t}Lists{/t}</a></li>
+			
+		</ul>
+		
+		<ul class="menuleft insidecol">
+			<li {if $method eq "mailgroups"}class="on"{/if}>
+				<a href="{$html->url('/newsletter/mailGroups')}">{t}Lists{/t}</a>
+			</li>
 		</ul>
 		
 		<ul class="menuleft insidecol">	
-			<li {if $method eq "templates"}class="on"{/if}><a href="{$html->url('/newsletter/templates')}">Manage templates</a></li>
+			<li {if $method eq "templates"}class="on"{/if}><a href="{$html->url('/newsletter/templates')}">Templates</a></li>
 		
 		</ul>
 		
@@ -26,7 +32,7 @@
 		
 		<ul class="menuleft insidecol">
 
-			<li {if $method eq "invoices"}class="on"{/if}><a href="{$html->url('/newsletter/invoices')}">Manage invoices</a></li>
+			<li {if $method eq "invoices"}class="on"{/if}><a href="{$html->url('/newsletter/invoices')}">Invoices</a></li>
 	
 		</ul>
 

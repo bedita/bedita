@@ -55,7 +55,7 @@ $(document).ready(function(){
 	{elseif $method == "index"}
 	
 
-
+		{if !empty($categories)}
 		<ul class="menuleft insidecol">
 			<li><a href="javascript:void(0)" onClick="$('#groups').slideToggle();">{t}Select by category{/t}</a></li>
 				<ul id="groups" style="display:none">
@@ -64,6 +64,7 @@ $(document).ready(function(){
 					{/foreach}
 				</ul>
 		</ul>
+		{/if}
 	{/if}
 
 
