@@ -285,27 +285,26 @@ UL.modules {
 
 ...........................................*/
 
-.areas, .area, .section 	{background-color:#333333 !important;}
+.areas, .area, .section 	{background-color:#626151 !important;}
 .documents, .document		{background-color:#ff6600 !important;}
 .galleries, .gallery 		{background-color:#FFBF00 !important;}
 .events, .event				{background-color:#0099CC !important;}
 .newsletter 				{background-color:#99cc33 !important;}
-.multimedia, .image, .audio, .video		{background-color:#ff0033 !important;}
-.admin 						{background-color:#003366 !important;}
+.multimedia, .image, .audio, .video	{background-color:#ff0033 !important;}
+.admin 						{background-color:#333333 !important;}
 .ecommerce 					{background-color:#999966 !important;}
 .tags 						{background-color:#336666 !important;}
 .comments, .comment			{background-color:#F08080 !important;}
 .translations				{background-color:#FF00FF !important;}
-.books, .book					{background-color:#996633 !important;}
+.books, .book				{background-color:#996633 !important;}
 .bibliographies, .bibliography {background-color:#999966 !important;}
 .addressbook, .card			{background-color:#009933 !important;}
 .attachments 				{background-color:gray !important;}
-.news, .shortnews 			{background-color:gray !important;}
+.news, .shortnews 			{background-color:#003366 !important;}
 .newsletter 				{background-color:#6666FF !important;}
 
 
-
-.bedita 		{background-color:#FFFFFF !important; 
+.bedita 	{background-color:#FFFFFF !important; 
 			font:normal 1.75em Georgia, "Times New Roman", Times, serif !important; ; 
 			line-height:0.75em !important;
 			color:#996600  !important;

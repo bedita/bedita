@@ -67,6 +67,10 @@
 		<td>
 			<input type="radio" name="data[comments]" value="off"{if empty($object.comments) || $object.comments=='off'} checked{/if}/>{t}No{/t} 
 			<input type="radio" name="data[comments]" value="on"{if !empty($object.comments) && $object.comments=='on'} checked{/if}/>{t}Yes{/t}
+			&nbsp;&nbsp;
+			{if !empty($relations.comment)}
+				view comments (elenco filrato per oggetto)
+			{/if}	
 		</td>
 	</tr>
 	{/if}

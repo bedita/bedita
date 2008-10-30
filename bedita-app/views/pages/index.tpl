@@ -12,9 +12,9 @@
 	{if ($mod.status == 'on')}
 		{if ($mod.flag & BEDITA_PERMS_READ) }
 			{assign_concat var='linkPath' 0=$html->url('/') 1=$mod.path}
-			<li class="{$mod.path}" rel="{$linkPath}">{t}{$mod.label}{/t}</li>
+			<li class="{$mod.name}" rel="{$linkPath}">{t}{$mod.label}{/t}</li>
 		{else}
-			<li class="{$mod.path} off" rel="{$linkPath}">{t}{$mod.label}{/t}</li>
+			<li class="{$mod.name} off" rel="{$linkPath}">{t}{$mod.label}{/t}</li>
 		{/if}
 	{/if}
 	
