@@ -161,9 +161,9 @@ class BeThumbHelper extends AppHelper {
 		// build _image_info with getimagesize() or available parameters
 		if ( empty($be_obj['width']) || empty($be_obj['height']) )
 		{
-			if ( !$_image_data =@ getimagesize($_imageInfo['path']) )
+			if ( !$_image_data =@ getimagesize($this->_imageInfo['filepath']) )
 			{
-				$this->_triggerError ( $this->_helpername . ": '" . $_imageInfo['path'] . "' is not a valid image file", E_USER_NOTICE ) ;
+				$this->_triggerError ( $this->_helpername . ": '" . $this->_imageInfo['path'] . "' is not a valid image file", E_USER_NOTICE ) ;
 				return $this->_conf['imgMissingFile'];
 			}
 			

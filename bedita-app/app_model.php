@@ -315,7 +315,7 @@ class BEAppModel extends AppModel {
 		$group = "";
 		$order = "";
 		
-		if (!empty($filter["search"])) {
+		if (array_key_exists("search", $filter)) {
 			$fields = ", `SearchText`.`object_id` AS `oid`, SUM( MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."') * `SearchText`.`relevance` ) AS `points`";
 			$from .= ", search_texts AS `SearchText`";
 			$conditions[] = "`SearchText`.`object_id` = `BEObject`.`id` AND MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."')";
@@ -324,7 +324,7 @@ class BEAppModel extends AppModel {
 			unset($filter["search"]);	
 		}
 		
-		if (!empty($filter["category"])) {
+		if (array_key_exists("category", $filter)) {
 			$cat_field = (is_numeric($filter["category"]))? "id" : "name";
 			$from .= ", categories AS `Category`, object_categories AS `ObjectCategory`";
 			$conditions[] = "`Category`." . $cat_field . "='" . $filter["category"] . "' 
@@ -334,12 +334,12 @@ class BEAppModel extends AppModel {
 			unset($filter["category"]);
 		}
 		
-		if (!empty($filter["relation"])) {
+		if (array_key_exists("relation", $filter)) {
 			$filter["ObjectRelation.switch"] = $filter["relation"];
 			unset($filter["relation"]);
 		}
 			
-		if (!empty($filter["rel_object_id"])) {
+		if (array_key_exists("rel_object_id", $filter)) {
 			$filter["ObjectRelation.object_id"] = $filter["rel_object_id"];
 			unset($filter["rel_object_id"]);
 		}

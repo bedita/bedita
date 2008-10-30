@@ -45,9 +45,9 @@ $(document).ready(function(){
 	}) ;
 	
 	$("#searchMultimedia").bind("click", function() {
-		var textToSearch = $(this).prev().val();
+		var textToSearch = escape($("#searchMultimediaText").val());
 		loadMultimediaAssoc(
-			"{/literal}{$html->url("/streams/searchStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{literal}" + textToSearch,
+			"{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{literal}" + textToSearch,
 			true
 		);
 	});
@@ -56,7 +56,7 @@ $(document).ready(function(){
 	});
 	$("#searchMultimediaShowAll").click(function() {
 		loadMultimediaAssoc(
-			"{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{literal}",
+			"{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}{literal}",
 			false
 		);
 	});
@@ -72,23 +72,23 @@ $(document).ready(function(){
 		});
 		 
 		$("#streamNextPage").click(function() {
-			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{$toolbar.next}/{$toolbar.dim}{literal}";
+			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.next}/{$toolbar.dim}{literal}";
 			loadMultimediaAssoc(urlReq,	false);
 		});
 		$("#streamPrevPage").click(function() {
-			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{$toolbar.prev}/{$toolbar.dim}{literal}";
+			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.prev}/{$toolbar.dim}{literal}";
 			loadMultimediaAssoc(urlReq,	false);
 		});
 		$("#streamFirstPage").click(function() {
-			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{$toolbar.first}/{$toolbar.dim}{literal}";
+			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.first}/{$toolbar.dim}{literal}";
 			loadMultimediaAssoc(urlReq,	false);
 		});
 		$("#streamLastPage").click(function() {
-			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{$toolbar.last}/{$toolbar.dim}{literal}";
+			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.last}/{$toolbar.dim}{literal}";
 			loadMultimediaAssoc(urlReq,	false);
 		});
 		$("#streamPagDim").change(function() {
-			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$collection|default:'0'}/{$toolbar.first}/{literal}" + $(this).val();
+			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.first}/{literal}" + $(this).val();
 			loadMultimediaAssoc(urlReq,	false);
 		});
 	{/literal}
@@ -107,15 +107,35 @@ $(document).ready(function(){
 					{t}Items{/t}: {$toolbar.size} | {t}page{/t} {$toolbar.page} {t}of{/t} {$toolbar.pages} 
 
 						&nbsp; | &nbsp;
-						<span><a href="javascript: void(0);" id="streamFirstPage" title="{t}first page{/t}">first</a></span>
+						{if $toolbar.page > 1}
+							<span><a href="javascript: void(0);" id="streamFirstPage" title="{t}first page{/t}">{t}first{/t}</a></span>
+						{else}
+							<span>{t}first{/t}</span>
+						{/if}
+						
 						&nbsp; | &nbsp;
-						<span><a href="javascript: void(0);" id="streamPrevPage" title="{t}previous page{/t}">prev</a></span>
+						
+						{if $toolbar.prev > 0}
+							<span><a href="javascript: void(0);" id="streamPrevPage" title="{t}previous page{/t}">{t}prev{/t}</a></span>
+						{else}
+							<span>{t}prev{/t}</span>
+						{/if}
 			
 						&nbsp; | &nbsp;			
 					
-						<span><a href="javascript: void(0);" id="streamNextPage" title="{t}next page{/t}">next</a></span>
+						{if $toolbar.next > 0}
+							<span><a href="javascript: void(0);" id="streamNextPage" title="{t}next page{/t}">{t}next{/t}</a></span>
+						{else}
+							<span>{t}next{/t}</span>
+						{/if}
+						
 						&nbsp; | &nbsp;
-						<span><a href="javascript: void(0);" id="streamLastPage" title="{t}last page{/t}">last</a></span>
+						
+						{if $toolbar.last > 0}
+							<span><a href="javascript: void(0);" id="streamLastPage" title="{t}last page{/t}">{t}last{/t}</a></span>
+						{else}
+							<span>{t}last{/t}
+						{/if}
 										
 						&nbsp; | &nbsp;
 					
@@ -133,7 +153,7 @@ $(document).ready(function(){
 			{/if}
 		{/if}
 		<div>
-			<input type="text" id="searchMultimediaText" name="searchMultimediaItems" value="{$streamSearched|default:'search'}"/>
+			<input type="text" id="searchMultimediaText" name="searchMultimediaItems" value="{if !empty($streamSearched)}{$streamSearched}{else}search{/if}"/>
 			<input id="searchMultimedia" type="button" value="{t}Search{/t}"/>
 			<input type="button" id="searchMultimediaShowAll" value="{t}Show all{/t}" style="display: none;" />
 		</div>
@@ -160,13 +180,14 @@ $(document).ready(function(){
 				
 				<td style="width:12px;"><input type="checkbox" value="{$mobj.id}" name="chk_bedita_item" class="itemCheck"/></td>
 				<td style="width:{$thumbWidth}px;">
-					{if strtolower($mobj.ObjectType.name) == "image"}
+					
+					{if $conf->objectTypes[$mobj.object_type_id].name == "image"}
 					
 					<a title="show details" href="{$html->url('/multimedia/view/')}{$mobj.id}" target="_blank">					
 						{$beEmbedMedia->object($mobj,$thumbWidth,$thumbHeight)}
 					</a>
 
-					{elseif ($mobj.provider|default:false)}
+					{elseif $conf->objectTypes[$mobj.object_type_id].name == "video"}
 						{assign_associative var="attributes" style="width:30px;heigth:30px;"}
 						<div><a href="{$mobj.path}" target="_blank">{$mediaProvider->thumbnail($mobj, $attributes) }</a></div>
 					{else}

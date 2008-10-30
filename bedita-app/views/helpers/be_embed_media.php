@@ -145,7 +145,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	 */
 	private function _getType ($obj)
 	{
-		return strtolower ( $obj['ObjectType']['name'] );
+		return strtolower ( Configure::read("objectTypes." . $obj['object_type_id'] . ".name") );
 	}
 
 

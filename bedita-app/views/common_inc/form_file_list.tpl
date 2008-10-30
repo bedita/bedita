@@ -1,6 +1,6 @@
 <script type="text/javascript">
 var urlGetObj		= '{$html->url("/streams/get_item_form_by_id")}' ;
-var urlGetAllItemNoAssoc = "{$html->url("/streams/showStreams")}/{$object.id|default:'0'}/{$collection|default:''}";
+var urlGetAllItemNoAssoc = "{$html->url("/streams/showStreams")}/{$object.id|default:'0'}";
 var containerItem = "#multimediaItems";
 
 {literal}

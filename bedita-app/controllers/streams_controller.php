@@ -38,24 +38,26 @@ class StreamsController extends AppController {
 	 * get all or not related streams to an object 
 	 *
 	 * @param int $obj_id, if it's null get all streams else exclude related streams to $obj_id
-	 * @param $collection, if it's set works on collection object (gallery,...)
-	 * 					   else works on content object (document,... )
 	 */
-	public function showStreams($obj_id=null, $collection=0, $page = 1, $dim = 20) {
+	public function showStreams($obj_id=null, $text=null, $page = 1, $dim = 20) {
 		$conf = Configure::getInstance();
 		$ot  = array($conf->objectTypes['image']["id"],
 					$conf->objectTypes['audio']["id"],
-					$conf->objectTypes['video']["id"]
+					$conf->objectTypes['video']["id"],
+					$conf->objectTypes['befile']["id"]
 				);
-		if (empty($collection)) {
-			$ot[] = $conf->objectTypes['befile']["id"];
-		}
+		
 		$relations_id = array();
 		if (!empty($obj_id)) {
-			$relations_id = $this->getRelatedStreamIDs($obj_id, $ot, $collection);
+			$relations_id = $this->getRelatedStreamIDs($obj_id);
 		}
 		
 		$filter["object_type_id"] = $ot;
+		if (!empty($text)) {
+			$text = urldecode($text);
+			$filter["search"] = $text;
+		}
+		
 		$bedita_items = $this->BEObject->findObjects(null, null, null, $filter, $order=null, $dir=true, $page, $dim, false, $relations_id)  ;
 
 		foreach($bedita_items['items'] as $key => $value) {
@@ -72,31 +74,11 @@ class StreamsController extends AppController {
 		$this->layout = null;
 		$this->set("bedita_items",$bedita_items['items']);
 		$this->set('toolbar', 		$bedita_items['toolbar']);
-		$this->set("collection", $collection);
 		$this->set("object_id", $obj_id);
-	}
-	
-	public function searchStreams($obj_id=null, $collection=0, $text=null) {
-		$conf = Configure::getInstance();
-		$ot  = array($conf->objectTypes['image']["id"],
-					$conf->objectTypes['audio']["id"],
-					$conf->objectTypes['video']["id"]
-				);
-		if (empty($collection)) {
-			$ot[] = $conf->objectTypes['befile']["id"];
-		}
-		$relations_id = array();
-		if (!empty($obj_id)) {
-			$relations_id = $this->getRelatedStreamIDs($obj_id, $ot, $collection);
-		}
-		$bedita_items = $this->Stream->search($text, $ot, $relations_id);
-		$this->layout = null;
-		$this->set("bedita_items", $bedita_items);
 		$this->set("streamSearched", $text);
-		$this->set("collection", $collection);
-		$this->set("object_id", $obj_id);
 	}
 	
+		
 	/* Called by Ajax.
 	 * Show multimedia object in the form page
 	 * @param string $filename	File to show in the form page
@@ -149,47 +131,28 @@ class StreamsController extends AppController {
 	 *
 	 * @param int $obj_id
 	 * @param array $ot object types
-	 * @param bool $collection
 	 * @return array of related streams to $obj_id
 	 */
-	private function getRelatedStreamIDs($obj_id, $ot=null, $collection=false) {
+	private function getRelatedStreamIDs($obj_id, $ot=null) {
 		$conf = Configure::getInstance();
 		$relations_id = array();
 		$object_type_id = $this->BEObject->findObjectTypeId($obj_id);
-		if (!$collection) {
-			$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
-			$objRel = $modelLoaded->find("first",array(
-													"contain" => array("BEObject" => "RelatedObject"),
-													"conditions" => "BEObject.id=".$obj_id
-												)
-											);
-			if (!empty($objRel["RelatedObject"])) {
-				foreach ($objRel["RelatedObject"] as $rel) {
-					$relations_id[] = $rel["id"];
-				}
+		
+		$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
+		$objRel = $modelLoaded->find("first",array(
+												"contain" => array("BEObject" => "RelatedObject"),
+												"conditions" => array("BEObject.id" => $obj_id)
+											)
+										);
+		if (!empty($objRel["RelatedObject"])) {
+			foreach ($objRel["RelatedObject"] as $rel) {
+				$relations_id[] = $rel["object_id"];
 			}
-			
-		} else {
-			$filter["object_type_id"] = $ot;
-			$objRel = $this->BeTree->getChildren($obj_id, null, $filter, "priority") ;
-				foreach($objRel['items'] as $rel) {
-					$relations_id[] = $rel['id'];
-				}
 		}
 		
 		return $relations_id;
 	}
 	
 	
-	protected function forward($action, $esito) {
-	 	 	$REDIRECT = array(
-				"searchStreams" => array(
- 								"OK"	=> self::VIEW_FWD.'show_streams',
-	 							"ERROR"	=> self::VIEW_FWD.'show_streams'
-	 						)
-	 			);
-	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-	 	return false;
-	 }
 }
 ?>
