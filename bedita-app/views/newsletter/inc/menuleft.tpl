@@ -11,9 +11,8 @@
 		<ul class="menuleft insidecol">
 
 			<li {if $method eq "newsletters"}class="on"{/if}>
-				<a href="{$html->url('/newsletter/newsletters')}">{$moduleName}</a>
+				<a href="{$html->url('/newsletter/newsletters')}">Newsletters</a>
 			</li>
-			<li {if $method eq "view"}class="on"{/if}><a href="{$html->url('/newsletter/view')}">Create new</a></li>
 			
 		</ul>
 		
@@ -24,7 +23,7 @@
 		</ul>
 		
 		<ul class="menuleft insidecol">	
-			<li {if $method eq "templates"}class="on"{/if}><a href="{$html->url('/newsletter/templates')}">Templates</a></li>
+			<li {if $method eq "templates"}class="on"{/if}><a href="{$html->url('/newsletter/templates')}">{t}Templates{/t}</a></li>
 		
 		</ul>
 		
@@ -32,7 +31,7 @@
 		
 		<ul class="menuleft insidecol">
 
-			<li {if $method eq "invoices"}class="on"{/if}><a href="{$html->url('/newsletter/invoices')}">Invoices</a></li>
+			<li {if $method eq "invoices"}class="on"{/if}><a href="{$html->url('/newsletter/invoices')}">{t}Invoices{/t}</a></li>
 	
 		</ul>
 

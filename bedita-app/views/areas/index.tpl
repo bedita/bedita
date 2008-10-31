@@ -39,15 +39,9 @@ $(document).ready(function() {
 </head>
 
 
-{if !empty($smarty.get.hyper)}
 
-	<body onload="init()">
+<body>
 
-{else}
-
-	<body>
-
-{/if}
 
 {include file="../common_inc/modulesmenu.tpl"}
 
@@ -122,15 +116,6 @@ $(document).ready(function() {
 
 
 {include file="../common_inc/menuright.tpl"}
-
-
-
-
-
-
-
-
-
 
 
 

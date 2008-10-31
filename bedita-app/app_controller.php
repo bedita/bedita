@@ -298,8 +298,11 @@ class AppController extends Controller
 			$this->set('moduleName', $this->moduleName);
 			if (!empty($this->moduleName))
 				$this->set('currentModule', $moduleList[$this->moduleName]);
-			
+				
+		
 		}
+		
+		
 		
 		$_loginRunning = false ;
 

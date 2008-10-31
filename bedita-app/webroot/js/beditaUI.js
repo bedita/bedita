@@ -163,7 +163,7 @@ $(document).ready(function(){
 
 	jQuery.fn.BEtabstoggle = function() {
 			
-		$(this).next().toggle('fast') ;	
+		$(this).next().toggle() ;	
 		$("h2",this).toggleClass("open").toggleClass(currentclassmodule);
 	
 	};

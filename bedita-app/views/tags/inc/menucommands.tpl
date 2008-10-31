@@ -8,7 +8,7 @@ Menu a SX valido per tutte le pagine del controller.
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 	<div class="modules">
-	   <label class="{$moduleName}" rel="{$html->url('/tags')}">{t}{$moduleName}{/t}</label>
+	   <label class="{$moduleName}" rel="{$html->url('/tags')}">{t}{$currentModule.label}{/t}</label>
 	</div>
 	
 	

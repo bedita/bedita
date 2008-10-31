@@ -33,7 +33,7 @@ $(document).ready(function(){
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 	<div class="modules">
-	   <label class="{$moduleName}" rel="{$html->url('/newsletter')}">{t}{$moduleName}{/t}</label>
+	   <label class="{$moduleName}" rel="{$html->url('/newsletter')}">{t}{$currentModule.label}{/t}</label>
 	</div> 
 	
 
@@ -67,6 +67,10 @@ $(document).ready(function(){
 		</style>
 	{/literal}
 	
+	<ul class="menuleft insidecol">
+		<li {if $method eq "view"}class="on"{/if}><a href="{$html->url('/newsletter/view')}">{t}Create new{/t}</a></li>
+	</ul>
+		
 	<ul class="menuleft insidecol">
 		<li><a href="javascript:void(0)" onClick="$('#templates').slideToggle();">{t}Select by template{/t}</a></li>
 			<ul id="templates" class="bordered">

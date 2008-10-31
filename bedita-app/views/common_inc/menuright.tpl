@@ -6,11 +6,23 @@ Menu a DX
 
 <div class="quartacolonna">	
 
-	<div class="tab"><h2>{t}quick help{/t}</h2></div>
+	<div class="tab"><h2>{t}Notes{/t}</h2></div>
 
 	<div style="padding:10px; margin-top:-10px; background-color:white;">
 				
-		<input type="button" title="Io sono un test per la modale" rel="{$html->url('/testmodal.html')}" class="modalbutton" value="modal test example" />
+	
+	<ul>
+		<li>concurrent user</li>
+		<li>locked document</li>
+		<li>unsaved changes</li>
+		<li>trashed document</li>
+		<li>user note</li>
+	</ul>
+	
+	
+	
+	
+	<input type="button" title="Io sono un test per la modale" rel="{$html->url('/testmodal.html')}" class="modalbutton" value="modal test example" />
 		
 		
 	<ul style="margin:10px 0px 10px 0px; border:1px solid gray; border-width:1px 0px 1px 0px">
@@ -30,9 +42,14 @@ Menu a DX
 			<li>odio augue pellentesque massa</li>	
 		</ul>
 		
+		
+		<pre>
+			{dump var=$currentModule}
+		</pre>
+
+
+
 	</div>
-
-
 
 
 
