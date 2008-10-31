@@ -412,8 +412,8 @@ class BEObject extends BEAppModel
 	public function getType($id) {
 		$type_id = $this->findObjectTypeId($id);
 		if($type_id === false) {
-			return false;
-		}		
+			throw new BeditaException(__("Error: object type not found", true));
+		}
 		return Configure::getInstance()->objectTypes[$type_id]["model"] ;
 	}
 	
