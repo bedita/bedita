@@ -296,6 +296,9 @@ class AppController extends Controller
 					$this->redirect("/");
 			}
 			$this->set('moduleName', $this->moduleName);
+			if (!empty($this->moduleName))
+				$this->set('currentModule', $moduleList[$this->moduleName]);
+			
 		}
 		
 		$_loginRunning = false ;
