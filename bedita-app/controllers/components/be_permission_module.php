@@ -74,7 +74,7 @@ class BePermissionModuleComponent extends Object {
 		$resModules = array();
 		for ($i=0; $i < count($modules) ; $i++) {
             $modules[$i]  = $this->PermissionModule->am($modules[$i]);
-            $resModules[$modules[$i]['label']] = $modules[$i];
+            $resModules[$modules[$i]['name']] = $modules[$i];
 		}
 		return $resModules ;
 	}
