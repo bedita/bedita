@@ -92,7 +92,7 @@ class MultimediaController extends ModulesController {
 			if (isset($obj["Category"])) {
 				$objCat = array();
 				foreach ($obj["Category"] as $oc) {
-					$objCat[] = $oc["id"];
+					$objCat = $oc["name"];
 				}
 				$obj["Category"] = $objCat;
 			}
@@ -136,11 +136,41 @@ class MultimediaController extends ModulesController {
 		} else {
 			$model = $this->BEObject->getType($this->data["id"]);
 			if(!$this->{$model}->save($this->data)) {
-	            throw new BeditaException(__("Error saving multimedia", true), $this->{$model}->validationErrors);
-	        }
-	        $this->Stream->id = $this->{$model}->id;
+				throw new BeditaException(__("Error saving multimedia", true), $this->{$model}->validationErrors);
+			}
+			$this->Stream->id = $this->{$model}->id;
+
+			$name = !empty($this->params['form']['mediatype']) ? $this->params['form']['mediatype'] : null;
+			if(!empty($name)) {
+				$object_type_id = $this->BEObject->findObjectTypeId($this->Stream->id);
+				$category = $this->Category->find("first",
+					array(
+						"conditions" => array(
+							"name" => $name, 
+							"object_type_id" => $object_type_id
+						)
+					)
+				);
+				if(empty($category)) { // if media category doesn't exists, create it
+					$data = array(
+						"name"=>$name,
+						"label"=>ucfirst($name),
+						"object_type_id"=>$object_type_id,
+						"status"=>"on"
+					);
+					if(!$this->Category->save($data)) {
+						throw new BeditaException(__("Error saving category", true), $this->Category->validationErrors);
+					}
+					$category['id']=$this->Category->id;
+				}
+				$this->data['Category'] = array($category['id']=>$category['id']);
+			}
+			$this->{$model}->create();
+			if(!$this->{$model}->save($this->data)) {
+				throw new BeditaException(__("Error saving multimedia", true), $this->{$model}->validationErrors);
+			}
 		}
-		
+
 		// update permissions
 		if(!isset($this->data['Permissions'])) 
 			$this->data['Permissions'] = array() ;

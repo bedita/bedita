@@ -274,15 +274,16 @@ class BEObject extends BEAppModel
 			}
 		}
 		
+		$this->bindModel( array(
+			'hasMany' => array(
+					'RelatedObject' => $this->restoreRelatedObject
+				)
+			) 
+		);
 		// save realtions between objects
 		if (!empty($this->data['BEObject']['RelatedObject'])) {
 			
-			$this->bindModel( array(
-				'hasMany' => array(
-						'RelatedObject' => $this->restoreRelatedObject
-							)
-				) 
-			);
+			
 			$db 		= &ConnectionManager::getDataSource($this->useDbConfig);
 			$queriesDelete 	= array() ;
 			$queriesInsert 	= array() ;
