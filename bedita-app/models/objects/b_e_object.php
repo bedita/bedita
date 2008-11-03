@@ -475,7 +475,7 @@ class BEObject extends BEAppModel
 			if ($this->id) {
 				$cond .= " AND BEObject.id<>".$this->id;
 			}
-			$numNickDb = $this->findCount($cond);
+			$numNickDb = $this->find("count", array("conditions" => $cond, "contain" => array()));
 			
 			// check nickname in db and in reservedWords
 			if ($numNickDb == 0 && !in_array($nickname, $reservedWords)) {

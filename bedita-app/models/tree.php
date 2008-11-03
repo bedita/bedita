@@ -236,41 +236,17 @@ class Tree extends BEAppModel
 	 * @param array $filter		object types id (no "search" text query!!), default: false (all)
 	 */
 	function getAll($id = null, $userid = null, $status = null, $filter = false) {
-		$fields  = " distinct * " ;
 
-		// Setta l'id
-		if (!empty($id)) {
-			$this->id = $id;
-		}
-
-		// setta le condizioni di ricerca
-		$conditions = array() ;
-		$this->_getCondition_filterType($conditions, $filter) ;
-		$this->_getCondition_userid($conditions, $userid ) ;
-		$this->_getCondition_status($conditions, $status) ;
-		$this->_getCondition_parentPath($conditions, $id) ;
-
-		// Esegue la ricerca
-		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
-		$sqlClausole = $db->conditions($conditions, true, true) ;
-
-		$from = " view_trees AS Tree ";
-		$records  = $this->query("SELECT {$fields} FROM {$from} {$sqlClausole}") ;
-
-		// Costruisce l'albero
+		// build tree
 		$roots 	= array() ;
 		$tree 	= array() ;
-		$size	= count($records) ;
 
-		for ($i=0; $i < $size ; $i++) {
-			if(isset($records[$i]['Tree'])){
-				$root = am($records[$i]['Tree'], (isset($records[$i][0])?$records[$i][0] :array())) ;
-			} else {
+		$filter2["object_type_id"] = $filter;
+		if (empty($id))
+			$filter2["Tree.*"] = "";
+		$res = $this->findObjects($id, $userid, $status, $filter2, null, true, 1, 100000, true);
 
-				if(!isset($records[$i]['trees'])) $records[$i]['trees'] = "";
-				if(!isset($records[$i]['objects'])) $records[$i]['objects'] = "";
-				$root = am($records[$i]['trees'], $records[$i]['objects'], (isset($records[$i][0])?$records[$i][0] :array())) ;
-			}
+		foreach ($res["items"] as $root) {
 
 			$root['children']	= array() ;
 			$roots[$root['id']] = &$root ;
@@ -283,7 +259,7 @@ class Tree extends BEAppModel
 
 			unset($root);
 		}
-
+		
 		// scarta tutti i rami che non sono root e che non coincidono con $id
 		// sono rami su cui l'utente non ha permessi sui parent
 		$tmp = array() ;
@@ -507,36 +483,6 @@ class Tree extends BEAppModel
 		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, true) ;
 	}
 
-	function findCount($sqlConditions = null, $recursive = null) {
-		$from = " trees AS Tree INNER JOIN objects as BEObject ON Tree.id = BEObject.id " ;
-		$query = "SELECT COUNT(DISTINCT `Tree`.`id`) AS count FROM {$from}";
-		if(is_array($sqlConditions)) {
-			$where = " WHERE ";
-			$first = true;
-			foreach ($sqlConditions as $k => $v) {
-				if(!$first) {
-					$where .= " AND ";
-				}
-				$where .= " $k = $v";
-				$first = false;
-			}
-			$query .= $where;
-			
-		} else if(!empty($sqlConditions)) {
-			$query .= $sqlConditions;
-		}
-
-		list($data)  = $this->query($query);
-
-		if (isset($data[0]['count'])) {
-			return $data[0]['count'];
-		} elseif (isset($data[$this->name]['count'])) {
-			return $data[$this->name]['count'];
-		}
-
-		return false;
-	}
-
 	/**
 	 * Torna l'ID delll'oggetto con un determinato nickname che ha come parent.
 	 * Se ci sono + figli con lo stesso nick, torna il primo
@@ -565,41 +511,6 @@ class Tree extends BEAppModel
 	}
 	
 	////////////////////////////////////////////////////////////////////////
-	
-	
-	private function _getCondition_filterType(&$conditions, $filter = false) {
-		if(!$filter) 
-			return;
-		// exclude search query from object_type_id list
-		if(is_array($filter)) {
-			$types = array();
-			foreach ($filter as $k => $v) {
-				if($k !== "search" && $k !== "lang")
-					$types[] = $v;
-				elseif ($k === "lang")
-					$conditions["`BEObject`.lang"] = $v;
-			}
-			$conditions['object_type_id'] = $types;
-		} else {
-			$conditions['object_type_id'] = $filter;
-		}	
-	}
-
-	private function _getCondition_userid(&$conditions, $userid = null, $checkTree=true) {
-		if(!isset($userid))
-			return ;
-		
-		if ($checkTree) 
-			$conditions[] 	= " prmsUserByID ('{$userid}', Tree.id, ".BEDITA_PERMS_READ.") > 0 " ;
-		else
-			$conditions[] 	= " prmsUserByID ('{$userid}', `BEObject`.id, ".BEDITA_PERMS_READ.") > 0 " ;
-	}
-
-	private function _getCondition_status(&$conditions, $status = null) {
-		if(!isset($status)) 
-			return ;
-		$conditions[] = array('status' => $status) ;
-	}
 
 	private function _getCondition_parentID(&$conditions, $id = null) {
 		if(isset($this->id)) $conditions[] = array("parent_id" => $this->id) ;
@@ -612,10 +523,6 @@ class Tree extends BEAppModel
 		}
 	}
 
-	private function _getCondition_current(&$conditions, $current = true) {
-		if(!$current) return ;
-		$conditions[] = array("current" => 1);
-	}
 
 }
 
