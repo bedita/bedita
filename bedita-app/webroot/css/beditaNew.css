@@ -182,6 +182,9 @@ H2 {font:normal 1.5em "Georgia", "Times New Roman", Times, serif; line-height:1e
 
 .graced {font-family: "Georgia", "Times New Roman", Times, serif;}
 
+.monospaced {font-family: monospace;}
+
+
 INPUT[type=text], TEXTAREA {
 	font-size:12px; font-family: "Verdana", sans-serif; line-height:1.5em;
 }
@@ -681,6 +684,10 @@ TD.center, TH.center {
 	vertical-align:middle;
 }
 
+TABLE.bordered {
+	width:100%;
+}
+
 .bordered TD, .bordered TH  {
 	border-color:#999999; 
 	border-style:solid;
@@ -979,7 +986,7 @@ INPUT, TEXTAREA, SELECT {
 	padding:2px;
 }
 INPUT[type=text], INPUT[type=file], TEXTAREA {
-	border:1px solid gray;
+	border:1px solid silver;
 }
 
 INPUT[type=checkbox] {
@@ -1001,7 +1008,11 @@ textarea#description, textarea#title, textarea#addtaglist, textarea.longtext {
 }
 
 input#titleBEObject, input#title, textarea#subtitle {
-	width:380px; 
+	width:460px;
+}
+
+input#titleBEObject {
+	padding:5px 0px 5px 5px; font-size:1.25em;
 }
 
 

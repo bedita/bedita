@@ -34,7 +34,7 @@ function delGroupDialog(name,objectid) {
 
 <div class="head">
 	<div class="toolbar" style="white-space:nowrap">
-	<h2>{t}System groups{/t}</h2>
+	<h2>{t}User groups{/t}</h2>
 	
 	{include file="./inc/toolbar.tpl" label_items='groups'}
 	</div>

@@ -25,7 +25,6 @@
 	{if !(isset($publication)) || $publication}
 
 	<tr>
-		{* <th></th> *}
 		<td colspan="2">
 			<label>{t}scheduled{/t} &nbsp;&nbsp;&nbsp;{t}from{/t}:</label>&nbsp;
 			
@@ -68,9 +67,9 @@
 			<input type="radio" name="data[comments]" value="off"{if empty($object.comments) || $object.comments=='off'} checked{/if}/>{t}No{/t} 
 			<input type="radio" name="data[comments]" value="on"{if !empty($object.comments) && $object.comments=='on'} checked{/if}/>{t}Yes{/t}
 			&nbsp;&nbsp;
-			{if !empty($relations.comment)}
-				view comments (elenco filrato per oggetto)
-			{/if}	
+			{*if !empty($relations.comment)*}
+				<a href="/comments/"><img style="vertical-align:middle" src="/img/iconComments.gif" alt="comments" /> (14) view</a>
+			{*/if*}	
 		</td>
 	</tr>
 	{/if}

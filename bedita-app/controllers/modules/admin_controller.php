@@ -297,7 +297,15 @@ class AdminController extends ModulesController {
 		}
 		$this->layout=null;
 	}
-	
+
+ /**
+	 * show system Info
+	 */
+	 public function customproperties() { 	
+
+	 }
+
+
 	 protected function forward($action, $esito) {
 	 	 	$REDIRECT = array(
 				"viewGroup" => 	array(

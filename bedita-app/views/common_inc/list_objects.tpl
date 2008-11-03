@@ -69,9 +69,14 @@ $(document).ready(function(){
 			<th></th>
 			<th>{$beToolbar->order('title', 'Title')}</th>
 			<th>{$beToolbar->order('id', 'id')}</th>
-			<th>{$beToolbar->order('status', 'Status')}</th>
-			<th>{$beToolbar->order('modified', 'Modified')}</th>		
-			<th>{$beToolbar->order('lang', 'Language')}</th>
+			<th style="text-align:center">{$beToolbar->order('status', 'Status')}</th>
+			<th>{$beToolbar->order('modified', 'Modified')}</th>
+			<th style="text-align:center">
+				{*$beToolbar->order('numcomments', 'Comments')*}
+				<img src="/img/iconComments.gif" alt="comments" />
+			</th>			
+			<th>{$beToolbar->order('lang', 'Lang')}</th>
+			<th>notes</th>
 		</tr>
 	{/capture}
 		
@@ -85,9 +90,13 @@ $(document).ready(function(){
 			</td>
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64}</a></td>
 			<td>{$objects[i].id}</td>
-			<td>{$objects[i].status}</td>
+			<td style="text-align:center">{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
+			<td style="text-align:center">{$objects[i].numcomments|default:0}</td>
 			<td>{$objects[i].lang}</td>
+			<td>
+				{if $objects[i].notes}x{/if}
+			</td>
 		</tr>
 		
 		
@@ -162,6 +171,8 @@ $(document).ready(function(){
 {/if}
 
 </form>
+
+
 
 <br />
 <br />

@@ -21,18 +21,18 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 		{if $method == "viewUser"}
 		
 			<input type="submit" id="submit" name="save" class="submit" 
-			value="{if isset($user)}{t}Save{/t}{else}{t}Create{/t}{/if}" />
+			value="{if isset($user)}{t}Save{/t}{else}{t}create{/t}{/if}" />
 		
 		{elseif $method == "groups"}
 		
 			<input type="submit" name="save" class="submit" 
-			value="{if isset($group)}{t}Modify{/t}{else}{t}Create group{/t}{/if}" />
+			value="{if isset($group)}{t}Modify{/t}{else}{t}create group{/t}{/if}" />
 		
 		
 		{elseif $method == "systemInfo"}
 		
 			<form action="{$html->url('/admin/deleteEventLog')}" method="post">
-			<input type="submit" value="{t}Delete all events{/t}"/>
+			<input type="submit" value="{t}delete all{/t}"/>
 			</form>
 		
 		
