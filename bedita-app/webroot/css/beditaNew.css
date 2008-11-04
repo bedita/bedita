@@ -1008,8 +1008,13 @@ textarea#description, textarea#title, textarea#addtaglist, textarea.longtext {
 }
 
 input#titleBEObject, input#title, textarea#subtitle {
+	width:380px;
+}
+
+#title input#titleBEObject, input#title, textarea#subtitle {
 	width:460px;
 }
+
 
 input#titleBEObject {
 	padding:5px 0px 5px 5px; font-size:1.25em;

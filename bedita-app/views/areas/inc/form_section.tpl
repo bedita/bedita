@@ -42,7 +42,7 @@
 
 			<tr>
 				<th>{t}title{/t}:</th>
-				<td><input type="text" id="titleBEObject" name="data[title]" value="{$object.title|default:""}"/></td>
+				<td><input type="text" id="titleBEObject" style="width:340px;" name="data[title]" value="{$object.title|default:""}"/></td>
 			</tr>
 			<tr>
 				<td><label>{t}reside in{/t}:</label></td>
@@ -109,7 +109,7 @@
 					</td>
 			</tr>
 	<tr>
-		<td>
+		<td colspan="2">
 			<ul id="mediatypes" style="margin-top:10px; margin-left:0px">
 				<li class="ico_rss">syndicate <input type="checkbox" name="data[syndicate]" value="on" {if $object.syndicate|default:'off'=='on'}checked{/if}/></li>
 			</ul>

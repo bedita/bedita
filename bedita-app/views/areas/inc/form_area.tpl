@@ -14,7 +14,7 @@
 		<tr>
 			<th>{t}title{/t}:</th>
 			<td>
-				<input class="{literal}{required:true,minLength:1}{/literal}" title="{t}Title is required{/t}"	type="text" name="data[title]"	value="{$object.title|default:''|escape:'html'|escape:'quotes'}" />
+				<input id="titleBEObject" style="width:340px;" class="{literal}{required:true,minLength:1}{/literal}" title="{t}Title is required{/t}"	type="text" name="data[title]"	value="{$object.title|default:''|escape:'html'|escape:'quotes'}" />
 			</td>
 		</tr>
 		<tr>
@@ -61,7 +61,7 @@
 		
 	</tr>
 	<tr>
-		<td>
+		<td colspan="2">
 			<ul id="mediatypes" style="margin-top:10px; margin-left:0px">
 				<li class="ico_rss">syndicate <input type="checkbox" name="data[syndicate]" value="on" {if $object.syndicate|default:'off'=='on'}checked{/if}/></li>
 			</ul>
