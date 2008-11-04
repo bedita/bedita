@@ -627,6 +627,7 @@ abstract class ModulesController extends AppController {
 		$obj = null ;
 		$parents_id = array();
 		$relations = array();
+		$relationsCount = array();
 		$previews = array();
 		$name = strtolower($beModel->name);
 		if(isset($id)) {
@@ -637,10 +638,12 @@ abstract class ModulesController extends AppController {
 			if(!$beModel->checkType($obj['object_type_id'])) {
                throw new BeditaException(__("Wrong content type: ", true).$id);
 			}
-			$relations = array();
 			if (!empty($obj['RelatedObject'])) {
 				$relations = $this->objectRelationArray($obj['RelatedObject']);
 			}
+			foreach ($relations as $k=>$v) {
+				$relationsCount[$k] = count($v);
+			}	
 			// build array of id's categories associated
 			$obj["assocCategory"] = array();
 			if (isset($obj["Category"])) {
@@ -663,7 +666,8 @@ abstract class ModulesController extends AppController {
 		$this->set('object',	$obj);
 		$this->set('attach', isset($relations['attach']) ? $relations['attach'] : array());
 		$this->set('relObjects', $relations);
-
+		$this->set('relationsCount', $relationsCount);
+		
 		$this->set('parents',	$parents_id);
 		$this->set('tree', 		$this->BeTree->getSectionsTree());
 		$this->set('previews',	$previews);

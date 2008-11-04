@@ -67,9 +67,11 @@
 			<input type="radio" name="data[comments]" value="off"{if empty($object.comments) || $object.comments=='off'} checked{/if}/>{t}No{/t} 
 			<input type="radio" name="data[comments]" value="on"{if !empty($object.comments) && $object.comments=='on'} checked{/if}/>{t}Yes{/t}
 			&nbsp;&nbsp;
-			{*if !empty($relations.comment)*}
-				<a href="/comments/"><img style="vertical-align:middle" src="/img/iconComments.gif" alt="comments" /> (14) view</a>
-			{*/if*}	
+			{if isset($moduleList.comments) && $moduleList.comments.status == "on"}
+				{if !empty($relationsCount.comment)}
+					<a href="{$html->url('/')}comments/index/relation:comment/rel_object_id:{$object.id}"><img style="vertical-align:middle" src="{$html->webroot}img/iconComments.gif" alt="comments" /> ({$relationsCount.comment}) {t}view{/t}</a>
+				{/if}
+			{/if}
 		</td>
 	</tr>
 	{/if}
