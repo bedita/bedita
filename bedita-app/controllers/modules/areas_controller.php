@@ -525,8 +525,11 @@ class AreasController extends ModulesController {
 		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
 		$dim = (!empty($this->params["form"]["dim"]))? $this->params["form"]["dim"] : 20; 
 		$filter["object_type_id"] = Configure::read("objectTypes.section.id");
+		$priorityOrder = $this->Section->field("priority_order", array("id" => $id));
+		if(empty($priorityOrder))
+			$priorityOrder = "asc";
 		// get sections children
-		$this->set("sections", $this->BeTree->getChildren($id, null, $filter, "priority", true, $page, $dim));
+		$this->set("sections", $this->BeTree->getChildren($id, null, $filter, "priority", ($priorityOrder == "asc"), $page, $dim));
 	}
 	
 	protected function forward($action, $esito) {
