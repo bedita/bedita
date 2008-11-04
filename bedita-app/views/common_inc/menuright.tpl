@@ -12,11 +12,9 @@ Menu a DX
 	<div style="margin-top:-10px; padding:10px; background-color:white;">
 {strip}
 	<label>editor notes:</label>
-	<textarea name="notes" class="autogrowarea" style="line-height: 16px!important; width:156px; font:normal 12px Arial,Helvetica, sans-serif;
-	color: #9a5830; background:white url('/img/sfo_zebranotes.gif'); border:0px;">
-	Qui le note che ho scritto per gli altri redattori...
-		ad esempio...
-		NON toccfate il mio documento
+	<textarea name="data[note]" class="autogrowarea" style="line-height: 16px!important; width:156px; font:normal 12px Arial,Helvetica, sans-serif;
+	color: #9a5830; background:white url('{$html->webroot}img/sfo_zebranotes.gif'); border:0px;">
+	  {$object.note|default:''}
 	</textarea>
 {/strip}
 	<input type="submit" value=" OK ">
