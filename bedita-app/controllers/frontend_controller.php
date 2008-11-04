@@ -33,7 +33,8 @@ abstract class FrontendController extends AppController {
 
 	private $status = array('on', 'fixed');
 	protected $checkPubDate = true;
-	protected $showAllContents = false;
+	protected $baseLevel = false;
+	protected $sectionOptions = array("showAllContents" => true, "itemsByType" => false);
 
 	protected function checkLogin() {
 		return false; // every frontend has to implement checkLogin
@@ -344,7 +345,12 @@ abstract class FrontendController extends AppController {
 			$this->{$modelType} = $this->loadModelByType($modelType);
 		}
 
-		$this->modelBindings($this->{$modelType});
+		if (!$this->baseLevel) {
+			$this->modelBindings($this->{$modelType});
+		} else {
+			$this->{$modelType}->contain(array("BEObject"));
+		}
+			
 		$obj = $this->{$modelType}->find("first", array(
 								"conditions" => array(
 									"BEObject.id" => $obj_id,
@@ -426,7 +432,10 @@ abstract class FrontendController extends AppController {
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);
-				$sectionItems[$obj['object_type']][] = $obj; 
+				if ($this->sectionOptions["itemsByType"])
+					$sectionItems[$obj['object_type']][] = $obj;
+				else
+					$sectionItems[] = $obj;
 			}
 		}
 		return $sectionItems;
@@ -453,7 +462,7 @@ abstract class FrontendController extends AppController {
 	 * Set section and:
 	 * if $contentName=null set all contents in section
 	 * if $contentName is defined set single content (default)
-	 * if $contentName is defined and $this->showAllContents=true set content and other contents too
+	 * if $contentName is defined and $this->showAllContents=true set content and other contents too 
 	 * 
 	 * Execute 'sectionNickname'BeforeFilter and/or 'sectionNickName'BeforeRender 
 	 * if they're set in the controller (i.e. pages_controller.php)				
@@ -482,12 +491,26 @@ abstract class FrontendController extends AppController {
 			$content_id = is_numeric($contentName) ? $contentName : $this->BEObject->getIdFromNickname($contentName);
 			$section['content'] = $this->loadObj($content_id);
 			
-			if ($this->showAllContents) {
-				$section['contents'] = $this->loadSectionObjects($sectionId);
+			if ($this->sectionOptions["showAllContents"]) {
+				$this->baseLevel = true;
+				$checkPubDate = $this->checkPubDate;
+				$this->checkPubDate = false;
+				
+				$section['items'] = $this->loadSectionObjects($sectionId);
+				
+				$this->baseLevel = false;
+				$this->checkPubDate = $checkPubDate;
 			}
 		} else {
-			$section['contents'] = $this->loadSectionObjects($sectionId);
+			$section['items'] = $this->loadSectionObjects($sectionId);
+			if (!$this->sectionOptions["itemsByType"]) {
+				$section['content'] = $section['items'][0];
+			} else {
+				$current = current($section['items']);
+				$section['content'] = $current[0];
+			}
 		}
+		
 		$this->set('section', $section);
 		
 		// section after filter
