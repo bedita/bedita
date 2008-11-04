@@ -330,6 +330,8 @@ $(document).ready(function(){
 	$("#mediatypes LI").click(function () {
 		$("#mediatypes LI").removeClass("on");
 		$(this).addClass("on");
+		var valore = $("input", this).attr("value");
+		$("#mediatypes input").val([valore]);	
 	});
 
 	$("#mediatypes LI.ico_all").click(function () {
