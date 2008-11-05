@@ -499,8 +499,12 @@ abstract class FrontendController extends AppController {
 				$this->baseLevel = true;
 				$checkPubDate = $this->checkPubDate;
 				$this->checkPubDate = false;
-								
-				$section = array_merge($section, $this->loadSectionObjects($sectionId));
+				
+				$tmp = $this->loadSectionObjects($sectionId);
+				if (!$this->sectionOptions["itemsByType"])
+					$section = array_merge($section, $tmp);
+				else
+					$section = array_merge($section, array("children" => $tmp));
 				
 				$this->baseLevel = false;
 				$this->checkPubDate = $checkPubDate;
@@ -510,12 +514,12 @@ abstract class FrontendController extends AppController {
 			
 			if (!$this->sectionOptions["itemsByType"]) {
 				$tmp['currentContent'] = $tmp['childContents'][0];
+				$section = array_merge($section, $tmp);
 			} else {
 				$current = current($tmp);
-				$tmp['currentContent'] = $current[0];
+//				$tmp['currentContent'] = $current[0];
+				$section = array_merge($section, array("currentContent" => $current[0], "children" => $tmp));
 			}
-			
-			$section = array_merge($section, $tmp);
 		}
 		
 		$this->set('section', $section);
