@@ -432,10 +432,14 @@ abstract class FrontendController extends AppController {
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);
-				if ($this->sectionOptions["itemsByType"])
+				if ($this->sectionOptions["itemsByType"]) {
 					$sectionItems[$obj['object_type']][] = $obj;
-				else
-					$sectionItems[] = $obj;
+				} else {
+					if ($obj["object_type"] == Configure::read("objectTypes.section.model"))
+						$sectionItems["childSections"][] = $obj;
+					else
+						$sectionItems["childContents"][] = $obj;
+				}
 			}
 		}
 		return $sectionItems;
@@ -489,26 +493,29 @@ abstract class FrontendController extends AppController {
 		
 		if(!empty($contentName)) {
 			$content_id = is_numeric($contentName) ? $contentName : $this->BEObject->getIdFromNickname($contentName);
-			$section['content'] = $this->loadObj($content_id);
+			$section['currentContent'] = $this->loadObj($content_id);
 			
 			if ($this->sectionOptions["showAllContents"]) {
 				$this->baseLevel = true;
 				$checkPubDate = $this->checkPubDate;
 				$this->checkPubDate = false;
-				
-				$section['items'] = $this->loadSectionObjects($sectionId);
+								
+				$section = array_merge($section, $this->loadSectionObjects($sectionId));
 				
 				$this->baseLevel = false;
 				$this->checkPubDate = $checkPubDate;
 			}
 		} else {
-			$section['items'] = $this->loadSectionObjects($sectionId);
+			$tmp = $this->loadSectionObjects($sectionId);
+			
 			if (!$this->sectionOptions["itemsByType"]) {
-				$section['content'] = $section['items'][0];
+				$tmp['currentContent'] = $tmp['childContents'][0];
 			} else {
-				$current = current($section['items']);
-				$section['content'] = $current[0];
+				$current = current($tmp);
+				$tmp['currentContent'] = $current[0];
 			}
+			
+			$section = array_merge($section, $tmp);
 		}
 		
 		$this->set('section', $section);
