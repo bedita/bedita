@@ -68,7 +68,7 @@ $(document).ready(function(){
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('title', 'Title')}</th>
-			<th>{$beToolbar->order('object', 'Object title')}</th>
+			<th>{$beToolbar->order('RelatedObject.title', 'Object title')}</th>
 			<th>{$beToolbar->order('status', 'Status')}</th>
 			<th>{$beToolbar->order('created', 'Inserted on')}</th>
 			<th>{$beToolbar->order('email', 'email')}</th>
@@ -86,7 +86,7 @@ $(document).ready(function(){
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" {if $objects[i].status == 'fixed'}disabled="disabled"{/if}/>
 			</td>
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64}</a></td>
-			<td> - </td>
+			<td>{$objects[i].RelatedObject.title}</td>
 			<td>{$objects[i].status}</td>
 			<td>{$objects[i].created|date_format:$conf->dateTimePattern}</td>
 			<td>{$objects[i].email|default:''}</td>

@@ -39,6 +39,8 @@ class CommentsController extends ModulesController {
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
 		$filter["object_type_id"] = $conf->objectTypes['comment']["id"];
+		$filter["rel_detail"] = true;
+		$filter["relation"] = 'comment';
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 	 }
 	 
