@@ -244,7 +244,7 @@ class Tree extends BEAppModel
 		$filter2["object_type_id"] = $filter;
 		if (empty($id))
 			$filter2["Tree.*"] = "";
-		$res = $this->findObjects($id, $userid, $status, $filter2, null, true, 1, 100000, true);
+		$res = $this->findObjects($id, $userid, $status, $filter2, "priority", true, 1, 100000, true);
 
 		foreach ($res["items"] as $root) {
 

@@ -226,6 +226,10 @@ class BEAppModel extends AppModel {
 		$conditions = array();
 		$groupClausole = "GROUP BY `BEObject`.id";
 		
+		// if $order is empty and not performing search then set a default order
+		if (empty($order) && empty($filter["search"]))
+			$order = "title";
+		
 		if (!empty($id)) {
 			$fields .= ", `Tree`.*";
 			$from .= ", trees AS `Tree`";
@@ -249,7 +253,7 @@ class BEAppModel extends AppModel {
 			$conditions["NOT"] = array(array("`BEObject`.id" => $excludeIds));
 			
 		list($otherFields, $otherFrom, $otherConditions, $otherGroup, $otherOrder) = $this->getSqlItems($filter);
-		
+
 		if (!empty($otherFields))
 			$fields = $fields . $otherFields;
 			
@@ -261,6 +265,7 @@ class BEAppModel extends AppModel {
 		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
 		$sqlClausole = $db->conditions($conditions, true, true) ;
 
+		$ordClausole = "";
 		if(is_string($order) && strlen($order)) {
 			$beObject = ClassRegistry::init("BEObject");
 			if ($beObject->hasField($order))
@@ -271,8 +276,8 @@ class BEAppModel extends AppModel {
 			} else {
 				$ordClausole = " ORDER BY {$order} " . ((!$dir)? " DESC " : "") ;
 			}
-		} else {
-			$ordClausole = "";
+		} elseif (!empty($otherOrder)) {
+			$ordClausole = "ORDER BY {$otherOrder}";
 		}
 		
 		$limit 	= $this->getLimitClausole($page, $dim) ;
@@ -294,9 +299,17 @@ class BEAppModel extends AppModel {
 			"items"		=> array(),
 			"toolbar"	=> $this->toolbar($page, $dim, $size) );
 		for ($i =0; $i < count($tmp); $i++) {
+			$tmpRel = array();
 			if (!empty($tmp[$i]["Content"]) && empty($tmp[$i]["Content"]["id"]))
 				unset($tmp[$i]["Content"]);
-			$recordset['items'][] = $this->am($tmp[$i]);
+				
+			if (!empty($tmp[$i]["RelatedObject"])) {
+				$tmpRel["RelatedObject"] = $tmp[$i]["RelatedObject"];
+				unset($tmp[$i]["RelatedObject"]);
+				$recordset['items'][] = array_merge($this->am($tmp[$i]), $tmpRel);
+			} else {
+				$recordset['items'][] = $this->am($tmp[$i]);
+			}
 		}
 
 		return $recordset ;
@@ -319,7 +332,6 @@ class BEAppModel extends AppModel {
 			$fields = ", `SearchText`.`object_id` AS `oid`, SUM( MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."') * `SearchText`.`relevance` ) AS `points`";
 			$from .= ", search_texts AS `SearchText`";
 			$conditions[] = "`SearchText`.`object_id` = `BEObject`.`id` AND MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."')";
-//			$group  .= ", `SearchText`.`object_id`";
 			$order .= "points DESC ";
 			unset($filter["search"]);	
 		}
@@ -342,6 +354,18 @@ class BEAppModel extends AppModel {
 		if (array_key_exists("rel_object_id", $filter)) {
 			$filter["ObjectRelation.object_id"] = $filter["rel_object_id"];
 			unset($filter["rel_object_id"]);
+		}
+		
+		if (array_key_exists("rel_detail", $filter)) {
+			if (!empty($filter["rel_detail"])) {
+				if (!isset($filter["ObjectRelation.switch"]))
+					$filter["ObjectRelation.switch"] = "";
+				$fields .= ", `RelatedObject`.*";
+				$from .= ", objects AS `RelatedObject`";
+				$conditions[] = "`ObjectRelation`.object_id=`RelatedObject`.id";
+				$order .= ( (!empty($order))? "," : "" ) . "ObjectRelation.priority";
+			}
+			unset($filter["rel_detail"]);
 		}
 		
 		$beObject = ClassRegistry::init("BEObject");
