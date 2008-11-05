@@ -1300,6 +1300,13 @@ TABLE.areaform {
 	font: normal 12px Courier 
 }
 
+.editornotes {
+	line-height: 16px!important; width:156px; 
+	font:normal 12px Arial,Helvetica, sans-serif;
+	color: #9a5830; 
+	background:white url('../img/sfo_zebranotes.gif'); 
+	border:0px;
+}
 
 
 
