@@ -12,25 +12,24 @@ Menu a DX
 	<div style="margin-top:-10px; padding:10px; background-color:white;">
 {strip}
 	<label>editor notes:</label>
-	<textarea name="data[note]" class="autogrowarea" style="line-height: 16px!important; width:156px; font:normal 12px Arial,Helvetica, sans-serif;
-	color: #9a5830; background:white url('{$html->webroot}img/sfo_zebranotes.gif'); border:0px;">
+	<textarea name="data[note]" class="autogrowarea editornotes">
 	  {$object.note|default:''}
 	</textarea>
 {/strip}
-	<input type="submit" value=" OK ">
 
-	<br /><br />
+
+{*
 	
 	<label>quick help:</label>
 
 	<div class="help">
-		Un fate cazzate qui. Se prorio avete dei dubbi clonate e chiedete
+		
 	</div>
 	
 	
 
 	<hr />
-{*	
+	
 	<ul>
 		<li>icone da fare</li>
 		<li>concurrent user</li>
@@ -42,6 +41,9 @@ Menu a DX
 	
 *}	
 	
+	<br />
+	<br />
+	<br />
 	
 	<input type="button" title="Io sono un test per la modale" rel="{$html->url('/testmodal.html')}" class="modalbutton" value="modal test example" />
 		
