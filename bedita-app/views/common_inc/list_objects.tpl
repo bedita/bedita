@@ -94,9 +94,7 @@ $(document).ready(function(){
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
 			<td style="text-align:center">{$objects[i].numcomments|default:0}</td>
 			<td>{$objects[i].lang}</td>
-			<td>
-				{if $objects[i].notes}x{/if}
-			</td>
+			<td>{$objects[i].note|default:''}</td>
 		</tr>
 		
 		
