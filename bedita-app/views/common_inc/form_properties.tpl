@@ -74,6 +74,7 @@
 		<td>
 			<input type="radio" name="data[comments]" value="off"{if empty($object.comments) || $object.comments=='off'} checked{/if}/>{t}No{/t} 
 			<input type="radio" name="data[comments]" value="on"{if !empty($object.comments) && $object.comments=='on'} checked{/if}/>{t}Yes{/t}
+			<input type="radio" name="data[comments]" value="moderated"{if !empty($object.comments) && $object.comments=='moderated'} checked{/if}/>{t}Moderated{/t}
 			&nbsp;&nbsp;
 			{if isset($moduleList.comments) && $moduleList.comments.status == "on"}
 				{if !empty($relationsCount.comment)}

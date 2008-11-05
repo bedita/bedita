@@ -573,8 +573,11 @@ abstract class FrontendController extends AppController {
 		$this->modelBindings['ShortNews'] = array("BEObject" => array("LangText"));
 		$this->modelBindings['Event'] = array("BEObject" => array("LangText"),"DateItem");
 		
+		$oldItemsByType = $this->sectionOptions['itemsByType'];
+		$this->sectionOptions['itemsByType'] = true;
 		$items = $this->loadSectionObjects($section_id);
 		unset($this->modelBindings);
+		$this->sectionOptions['itemsByType'] = $oldItemsByType;
 		
 		$archive = array();
 		
@@ -661,8 +664,17 @@ abstract class FrontendController extends AppController {
 				$this->Comment = $this->loadModelByType("Comment");
 			}
 			$this->data["title"] = substr($this->data["description"],0,30) . "...";
-			$this->data["status"] = "on";
-			
+			// for comment status check contents.comments 
+			$content = ClassRegistry::init("Content");
+			$commentsFlag = $content->field("comments", array("id" => $this->data['RelatedObject']['comment']['0']['id']));
+			if($commentsFlag == 'moderated') {
+				 $this->data["status"] = "draft";
+			} else if ($commentsFlag == 'on'){
+				 $this->data["status"] = 'on';
+			} else {
+				 throw new BeditaException(__("Post comment disabled", true));
+			}
+
 			try {
 				// check IP
 				$bannedIP = ClassRegistry::init("BannedIp");

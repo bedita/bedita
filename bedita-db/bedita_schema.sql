@@ -276,7 +276,7 @@ CREATE TABLE contents (
   abstract MEDIUMTEXT NULL,
   body MEDIUMTEXT NULL,
   type ENUM('html','txt','txtParsed') DEFAULT 'txt',
-  comments ENUM('on','off') DEFAULT 'off',
+  comments ENUM('on','off','moderated') DEFAULT 'off',
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
