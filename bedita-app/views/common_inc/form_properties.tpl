@@ -46,6 +46,14 @@
 	{/if}
 
 	<tr>
+		<th>{t}author{/t}:</th>
+		<td>
+			<input type="text" name="data[creator]" value="{$object.creator}" />
+		</td>
+	</tr>
+
+
+	<tr>
 		<th>{t}main language{/t}:</th>
 		<td>
 		{assign var=object_lang value=$object.lang|default:$conf->defaultLang}
