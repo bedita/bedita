@@ -36,7 +36,7 @@
 	{include file="../common_inc/form_permissions.tpl" el=$object recursion=true}
 	
 
-</form>
+
 	
 
 {*include file="../common_inc/form_lang_version.tpl"*}
