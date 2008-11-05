@@ -70,9 +70,9 @@ $(document).ready(function(){
 			<th>{$beToolbar->order('title', 'Title')}</th>
 			<th>{$beToolbar->order('object', 'Object title')}</th>
 			<th>{$beToolbar->order('status', 'Status')}</th>
-			<th>{$beToolbar->order('dateInsert', 'Inserted on')}</th>
+			<th>{$beToolbar->order('created', 'Inserted on')}</th>
 			<th>{$beToolbar->order('email', 'email')}</th>
-			<th>{$beToolbar->order('IP', 'IP')}</th>	
+			<th>{$beToolbar->order('ip_created', 'IP')}</th>	
 			<th>{$beToolbar->order('id', 'id')}</th>
 		</tr>
 	{/capture}
@@ -86,10 +86,12 @@ $(document).ready(function(){
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" {if $objects[i].status == 'fixed'}disabled="disabled"{/if}/>
 			</td>
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64}</a></td>
-			<td>{$objects[i].id}</td>
+			<td> - </td>
 			<td>{$objects[i].status}</td>
-			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
-			<td>{$objects[i].lang}</td>
+			<td>{$objects[i].created|date_format:$conf->dateTimePattern}</td>
+			<td>{$objects[i].email|default:''}</td>
+			<td>{$objects[i].ip_created}</td>
+			<td>{$objects[i].id}</td>
 		</tr>
 		
 		
