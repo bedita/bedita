@@ -39,13 +39,24 @@ $(document).ready(function() {
 	}).css("cursor","move");
 
 	$("#contents_nav_leafs a").click(function() {
-			
 		$("#loading").show();
-		$("#areacontentC").load(urlC, {page:$(this).attr("rel")}, function() {
+		$("#areacontentC").load(urlC, 
+				{
+					page:$(this).attr("rel"),
+					dim:$("#dimContentsPage").val()
+				}
+				, function() {
 			$("#loading").hide();
 		});
-		
 	});
+	
+	$("#dimContentsPage").change(function() {
+		$("#loading").show();
+		$("#areacontentC").load(urlC, {dim:$(this).val()}, function() {
+			$("#loading").hide();
+		});
+	});
+	
 	setRemoveActions();
 	$(".modalbutton").click(function () {
 		$(this).BEmodal();
@@ -72,6 +83,15 @@ $(document).ready(function() {
 	{if $contents.toolbar.next > 0}
 		<a href="javascript:void(0);" rel="{$contents.toolbar.next}" class="graced" style="font-size:3em">›</a>
 	{/if}
+	
+	dim:
+	<select name="dimContentsPage" id="dimContentsPage">
+		<option value="5"{if $dim == 5} selected{/if}>5</option>
+		<option value="10"{if $dim == 10} selected{/if}>10</option>
+		<option value="20"{if $dim == 20} selected{/if}>20</option>
+		<option value="50"{if $dim == 50} selected{/if}>50</option>
+		<option value="1000000"{if $dim == 1000000} selected{/if}>tutti</option>
+	</select>
 	</div>
 
 

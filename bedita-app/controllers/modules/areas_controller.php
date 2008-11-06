@@ -518,6 +518,8 @@ class AreasController extends ModulesController {
 		
 		$this->set("priorityOrder", $priorityOrder);
 		$this->set("contents", $contents);
+		$this->set("dim", $dim);
+		$this->set("page", $page);
 	}
 	
 	private function loadSections($id) {
