@@ -244,7 +244,8 @@ class Tree extends BEAppModel
 		$filter2["object_type_id"] = $filter;
 		if (empty($id))
 			$filter2["Tree.*"] = "";
-		$res = $this->findObjects($id, $userid, $status, $filter2, "priority", true, 1, 100000, true);
+
+		$res = $this->findObjects($id, $userid, $status, $filter2, "parent_path, priority");
 
 		foreach ($res["items"] as $root) {
 
@@ -259,7 +260,7 @@ class Tree extends BEAppModel
 
 			unset($root);
 		}
-		
+	
 		// scarta tutti i rami che non sono root e che non coincidono con $id
 		// sono rami su cui l'utente non ha permessi sui parent
 		$tmp = array() ;
