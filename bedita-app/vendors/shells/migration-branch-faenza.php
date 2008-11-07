@@ -150,7 +150,7 @@ var $methodsQueries = array(
 			$r['lt']['text'] = $r['lt']['long_text'];
 		}
 		unset($r['lt']['long_text']);		
-		$this->write($this->createInsert($r['lt'], "objects"));
+		$this->write($this->createInsert($r['lt'], "lang_texts"));
 	}
 	
 };
