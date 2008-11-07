@@ -67,7 +67,7 @@ class LangText extends BEAppModel
 		$limit = $this->getLimitClausole($page, $dim);
 		$objects_status=$this->find('all',
 			array(
-				'fields'=>array('id','object_id','name','text','long_text','lang'),
+				'fields'=>array('id','object_id','name','text','lang'),
 				'conditions'=>$conditions,
 				'limit'=>$limit,
 				'order'=>$order
@@ -90,7 +90,7 @@ class LangText extends BEAppModel
 
 		$size = $this->find('count',
 				array(
-					'fields'=>array('id','object_id','name','text','long_text','lang'),
+					'fields'=>array('id','object_id','name','text','lang'),
 					'conditions'=>$conditions,
 				)
 			);

@@ -55,10 +55,7 @@ class BeLangTextComponent extends Object {
 					$formatted = array() ;
 					$formatted['lang'] = $lang ;
 					$formatted['name'] = $attribute ;
-					if(strlen($value) <= 255)
-						$formatted['text'] = $value ;
-					else
-						$formatted['long_text'] = $value ;
+					$formatted['text'] = $value ;
 					$translation[]=$formatted;
 				}
 			}
@@ -71,7 +68,7 @@ class BeLangTextComponent extends Object {
 		for($i=0; $i < count($data) ; $i++) {
 			$item = &$data[$i] ;
 			if(!isset($tmp[$item["name"]]))	$tmp[$item["name"]] = array() ;
-			$tmp[$item["name"]][$item["lang"]] = (!@empty($item["text"])) ? @$item["text"] : @$item["long_text"] ;
+			$tmp[$item["name"]][$item["lang"]] = @$item["text"];
 		}
 		$data = $tmp ;
 	}
@@ -81,7 +78,7 @@ class BeLangTextComponent extends Object {
 		for($i=0; $i < count($data) ; $i++) {
 			$item = &$data[$i]['LangText'] ;
 			if(!isset($tmp[$item["name"]]))	$tmp[$item["name"]] = array() ;
-			$tmp[$item["name"]] = (!@empty($item["text"])) ? @$item["text"] : @$item["long_text"] ;
+			$tmp[$item["name"]] = @$item["text"];
 			$tmp['id'][$item["name"]]=$item['id'];
 		}
 		$data = $tmp ;
@@ -90,13 +87,13 @@ class BeLangTextComponent extends Object {
 	function objectForLang($id,$lang,&$object) {
 		$tmpobj = $this->LangText->find('all',
 			array(
-				'fields'=>array('name','text','long_text'),
+				'fields'=>array('name','text'),
 				'conditions'=>array("LangText.object_id = '$id'","LangText.lang = '$lang'")
 			)
 		);
 		foreach($tmpobj as $k => $v) {
 			$key = $v['LangText']['name'];
-			$value= (!empty($v['LangText']['text']))?$v['LangText']['text']:$v['LangText']['long_text'];
+			$value= $v['LangText']['text'];
 			if(!empty($value)) $object[$key]=$value;
 		}
 	}

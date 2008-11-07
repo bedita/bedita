@@ -71,7 +71,7 @@ class TranslationsController extends ModulesController {
 			$translation = array();
 			$lang_text=$this->LangText->find('all',
 				array(
-					'fields'=>array('id','name','text','long_text'),
+					'fields'=>array('id','name','text'),
 					'conditions'=>array("LangText.object_id = '$id'","LangText.lang = '$lang'")
 				)
 			);

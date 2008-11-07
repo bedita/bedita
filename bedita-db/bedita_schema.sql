@@ -387,8 +387,7 @@ CREATE TABLE lang_texts (
   object_id INTEGER UNSIGNED NOT NULL,
   lang CHAR(3) NOT NULL,
   `name` VARCHAR(255) NULL,
-  `text` MEDIUMTEXT NULL,
-  `long_text` MEDIUMTEXT NULL,
+  `text` TEXT NULL,
   PRIMARY KEY(id),
   INDEX lang_texts_FKIndex1(object_id),
   FOREIGN KEY(object_id)

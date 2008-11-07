@@ -159,7 +159,7 @@ class BEObject extends BEAppModel
 			$langText = array();
 			foreach ($result['LangText'] as $lang) {
 				if (!empty($lang["name"]) && !empty($lang["lang"])) {
-					$langText[$lang["name"]][$lang["lang"]] = (!empty($lang["text"])) ? $lang["text"] : $lang["long_text"] ;
+					$langText[$lang["name"]][$lang["lang"]] = $lang["text"];
 					$langText[$lang["object_id"]][$lang["lang"]][$lang["name"]] = $lang["id"];
 				}
 			}

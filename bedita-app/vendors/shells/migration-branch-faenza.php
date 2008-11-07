@@ -53,6 +53,7 @@ var $methodsQueries = array(
 	"files" => "select ob.*, cb.*, st.*, f.* from objects ob, content_bases cb, streams st, files f 
 			where cb.id=ob.id AND st.id=ob.id AND f.id=ob.id AND ob.object_type_id=10",
 	"modules" => "select mo.* from modules mo",
+	"langTexts" => "select lt.* from lang_texts lt",
 	"copy" => "event_logs groups groups_users lang_texts object_types permissions permission_modules question_types trees users"
 );
 
@@ -142,6 +143,14 @@ var $methodsQueries = array(
 		$r['mo']['name'] = $r['mo']['label'];
 		unset($r['mo']['color']);
 		$this->write($this->createInsert($r['mo'], "modules"));
+	}
+
+	protected function langTexts($r) {
+		if(empty($r['lt']['text'])) {
+			$r['lt']['text'] = $r['lt']['long_text'];
+		}
+		unset($r['lt']['long_text']);		
+		$this->write($this->createInsert($r['lt'], "objects"));
 	}
 	
 };
