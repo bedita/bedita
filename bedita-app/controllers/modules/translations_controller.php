@@ -103,6 +103,9 @@ class TranslationsController extends ModulesController {
 		$this->Transaction->begin();
 		$this->LangText->unbindModel(array('belongsTo'=>array('BEObject')));
 		$this->LangText->saveAll($this->data['LangText']);
+		// save search index
+		$searchText = ClassRegistry::init("SearchText");
+		$searchText->saveLangTexts($this->data['LangText']);
 		$this->Transaction->commit();
 		$this->userInfoMessage(__("Translation saved", true));
 		$this->eventInfo("translation saved");
@@ -192,6 +195,9 @@ class TranslationsController extends ModulesController {
 		$filter['lang'] = (!empty($data['translation_lang'])) ? $data['translation_lang'] : null;
 		$filter['status'] = (!empty($data['translation_status'])) ? $data['translation_status'] : null;
 		$filter['obj_id'] = (!empty($data['translation_object_id'])) ? $data['translation_object_id'] : null;
+		if(isset ($this->params["form"]["searchstring"])) {
+			$filter['search'] = $this->params["form"]["searchstring"];
+		}
 		return $this->LangText->findObjs($filter,$order,$dir,$page,$dim);
 	}
 

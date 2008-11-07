@@ -331,7 +331,7 @@ class BEAppModel extends AppModel {
 		if (array_key_exists("search", $filter)) {
 			$fields = ", `SearchText`.`object_id` AS `oid`, SUM( MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."') * `SearchText`.`relevance` ) AS `points`";
 			$from .= ", search_texts AS `SearchText`";
-			$conditions[] = "`SearchText`.`object_id` = `BEObject`.`id` AND MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."')";
+			$conditions[] = "`SearchText`.`object_id` = `BEObject`.`id` AND `SearchText`.`lang` = `BEObject`.`lang` AND MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."')";
 			$order .= "points DESC ";
 			unset($filter["search"]);	
 		}

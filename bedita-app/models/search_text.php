@@ -50,6 +50,12 @@ class SearchText extends BEAppModel
 		  throw new BeditaException("Error loading {$model->name}");
 		$model->bviorCompactResults = $bviorCompactResults ;
 		
+		$searchFields = $this->getSearchFields($model);
+		$this->saveSearchTexts($searchFields, $data);
+		return true ;
+	}
+	
+	private function getSearchFields(BEAppModel $model) {
 		$searchFields = array();
 		$conf = Configure::getInstance();
 		if(isset( $conf->searchFields[$model->name])) {
@@ -57,7 +63,29 @@ class SearchText extends BEAppModel
 		} elseif($model->searchFields != null) {
 			$searchFields = $model->searchFields;
 		}
-
+		return $searchFields;
+	}
+	
+	public function saveLangTexts(array &$dataLangText) {
+		$objectId = $dataLangText[0]['object_id'];
+		$beObject = ClassRegistry::init("BEObject");
+		$modelClass = $beObject->getType($objectId);
+		$model = ClassRegistry::init($modelClass);
+		$searchFields = $this->getSearchFields($model);
+		$data = array();
+		$data['lang'] = $dataLangText[0]['lang'];
+		$data['id'] = $objectId;
+		foreach ($dataLangText as $lang) {
+			$data[$lang['name']] = $lang['text'];
+		}
+		// first delete old items
+		if(!$this->deleteAll(array("SearchText.object_id" => $objectId, "SearchText.lang" =>$data['lang']), false))
+			throw new BeditaException("Error deleting old search text items : " . $objectId . "-". $data['lang']);
+		$this->saveSearchTexts($searchFields, $data);
+	}
+			
+	private function saveSearchTexts(array &$searchFields, array &$data) {
+		
 		if(!empty($searchFields)) {
 			$indexFields = array_keys($searchFields);
 			foreach ($data as $k => $v) {
@@ -77,8 +105,6 @@ class SearchText extends BEAppModel
 				}
 			}
 		}
-		return true ;
 	}
-
 }
 ?>

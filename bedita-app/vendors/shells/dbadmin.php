@@ -42,7 +42,10 @@ class DbadminShell extends Shell {
 		$beObj = ClassRegistry::init("BEObject");
 		$beObj->contain();
 		$res = $beObj->find('all',array("fields"=>array('id')));
-
+		$this->hr();
+		$this->out("Objects:");
+		$this->hr();
+		
 		foreach ($res as $r) {
 			$id = $r['BEObject']['id'];
 			$type = $beObj->getType($id);
@@ -52,8 +55,25 @@ class DbadminShell extends Shell {
 			$searchText->deleteAll("object_id=".$id);
 			$searchText->createSearchText($model);
 		}
+		// lang texts
+		$this->hr();
+		$this->out("Translations:");
+		$this->hr();
+		$langText = ClassRegistry::init("LangText");
+		$res = $langText->find('all',array("fields"=>array('DISTINCT LangText.object_id, LangText.lang')));	
+		foreach ($res as $r) {
+			
+			$lt = $langText->find('all',array("conditions"=>array("LangText.object_id"=>$r['LangText']['object_id'], 
+												"LangText.lang" => $r['LangText']['lang'])));	
+			$dataLang = array();
+			foreach ($lt as $item) {
+				$dataLang[] = $item['LangText'];
+			}
+			$this->out("object_id: " . $r['LangText']['object_id'] . " - lang: " . $r['LangText']['lang']);
+			$searchText->saveLangTexts($dataLang);
+		}
 	}
-	
+
 	/**
 	 * update lang texts 'status' using master object status....
 	 * parameter 'lang' mandatory
