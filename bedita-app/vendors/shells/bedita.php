@@ -380,9 +380,9 @@ class BeditaShell extends Shell {
 		fclose($handle);
        	$this->out("Exporting to $expFile");
        	
-       	$compress = "gz";
-    	if (isset($this->params['nocompress']) || (substr($expFile, strlen($expFile)-3) != ".gz")) {
-            $compress = null;
+		$compress = null;
+		if (isset($this->params['compress']) || (substr($expFile, strlen($expFile)-3) == ".gz")) {
+            $compress = "gz";
     	}
        	$tar = new Archive_Tar($expFile, $compress);
        	if($tar === FALSE) {
@@ -473,7 +473,7 @@ class BeditaShell extends Shell {
     }
 
     private function cleanTempDir() {
-    	$exportPath = sys_get_temp_dir().DS."export-tmp".DS;
+    	$exportPath = sys_get_temp_dir().DS."bedita-export-tmp".DS;
     	$folder= new Folder();
     	if(!$folder->delete($exportPath)) {
 			throw new Exception("Error deleting dir $exportPath");
@@ -674,10 +674,10 @@ class BeditaShell extends Shell {
         $this->out(' ');
         $this->out('4. export: export media files and data dump');
   		$this->out(' ');
-        $this->out('    Usage: export [-f <tar-gz-filename>] [-nocompress]');
+        $this->out('    Usage: export [-f <tar-gz-filename>] [-compress]');
         $this->out(' ');
   		$this->out("    -f <tar-gz-filename>\t file to export, default ".self::DEFAULT_ARCHIVE_FILE);
-        $this->out("    -nocompress \t don't compress, plain tar");
+        $this->out("    -compress \t gz compression (automagically applied if file extension is .gz)");
   		$this->out(' ');
         $this->out('5. import: import media files and data dump');
   		$this->out(' ');
