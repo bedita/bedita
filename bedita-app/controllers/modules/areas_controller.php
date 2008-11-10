@@ -139,18 +139,15 @@ class AreasController extends ModulesController {
 		
 		if(!$new) {
 			
-			// update contents and children sections priority
-			$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
-			$filter["object_type_id"] = Configure::read("objectTypes.leafs.id");
-			$objects = $this->BeTree->getChildren($id, null, $filter) ;
-			$idsToReorder = array_keys($reorder);
-			
-			// remove old children
-			foreach ($objects["items"] as $obj) {
-				if (!in_array($obj["id"], $idsToReorder)) {
-					$this->Tree->removeChild($obj["id"], $id);
+			// remove children
+			if (!empty($this->params["form"]["contentsToRemove"])) {
+				$childrenToRemove = explode(",", trim($this->params["form"]["contentsToRemove"],","));
+				foreach ($childrenToRemove as $idToRemove) {
+					$this->Tree->removeChild($idToRemove, $id);
 				}
 			}
+
+			$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
 			
 			// add new children and reorder priority
 			foreach ($reorder as $r) {
@@ -213,18 +210,15 @@ class AreasController extends ModulesController {
 				}
 			}
 			
-			// update contents and children sections priority
-			$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
-			$filter["object_type_id"] = Configure::read("objectTypes.leafs.id");
-			$objects = $this->BeTree->getChildren($id, null, $filter) ;
-			$idsToReorder = array_keys($reorder);
-			
-			// remove old children
-			foreach ($objects["items"] as $obj) {
-				if (!in_array($obj["id"], $idsToReorder)) {
-					$this->Tree->removeChild($obj["id"], $id);
+			// remove children
+			if (!empty($this->params["form"]["contentsToRemove"])) {
+				$childrenToRemove = explode(",", trim($this->params["form"]["contentsToRemove"],","));
+				foreach ($childrenToRemove as $idToRemove) {
+					$this->Tree->removeChild($idToRemove, $id);
 				}
 			}
+
+			$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
 			
 			// add new children and reorder priority
 			foreach ($reorder as $r) {
@@ -325,11 +319,9 @@ class AreasController extends ModulesController {
 	 */
 	public function listContentAjax($id) {
 		$this->layout = null;
-	
 		if (!empty($id)) {
 			$this->loadContents($id);
 		}
-		
 		$this->render(null, null, VIEWS."areas/inc/list_content_ajax.tpl");
 	}
 	
@@ -520,6 +512,7 @@ class AreasController extends ModulesController {
 		$this->set("contents", $contents);
 		$this->set("dim", $dim);
 		$this->set("page", $page);
+		$this->set("selectedId", $id);
 	}
 	
 	private function loadSections($id) {
@@ -532,6 +525,8 @@ class AreasController extends ModulesController {
 			$priorityOrder = "asc";
 		// get sections children
 		$this->set("sections", $this->BeTree->getChildren($id, null, $filter, "priority", ($priorityOrder == "asc"), $page, $dim));
+		$this->set("dimSec", $dim);
+		$this->set("pageSec", $page);
 	}
 	
 	protected function forward($action, $esito) {

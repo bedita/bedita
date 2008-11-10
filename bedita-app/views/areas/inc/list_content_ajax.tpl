@@ -2,21 +2,25 @@
 <!--
 var urlAddObjToAss = "{$html->url('/areas/loadObjectToAssoc')}/{$object.id|default:0}/leafs/list_contents_for_section.tpl";
 var priorityOrder = "{$priorityOrder|default:'asc'}";
-var numContents = "{$contents.toolbar.size|default:0}";
 
 {literal}
 
 function addObjToAssoc(url, postdata) {
 	$.post(url, postdata, function(html){
 		if(priorityOrder == 'asc') {
+			var startPriority = $("#areacontent").find("input[name*='[priority]']:first").val();
 			$("#areacontent li:last").after(html);
 		} else {
+			var startPriority = parseInt($("#areacontent").find("input[name*='[priority]']:first").val());
+			var beforeInsert = parseInt($("#areacontent li").size());
 			$("#areacontent li:first").before(html);
+			var afterInsert = parseInt($("#areacontent li").size());
+			startPriority = startPriority + (afterInsert - beforeInsert);
 		}
-		numContents = $("#areacontent li").size();
+
 		if ($("#noContents"))
 			$("#noContents").remove();
-		$("#areacontent").fixItemsPriority();
+		$("#areacontent").fixItemsPriority(startPriority);
 		$("#areacontent").sortable("refresh");
 		setRemoveActions();
 	});
@@ -24,18 +28,39 @@ function addObjToAssoc(url, postdata) {
 
 function setRemoveActions() {
 	$("#areacontent").find("input[@type='button']").click(function() {
+		var contentField = $("#contentsToRemove").val() + $(this).parents("li").find("input[name*='[id]']").val() + ",";
+		$("#contentsToRemove").val(contentField);
+		var startPriority = $("#areacontent").find("input[name*='[priority]']:first").val();
+		
+		if (priorityOrder == "desc" && $(this) != $("#areacontent").find("input[name*='[priority]']:first")) {
+			startPriority--;
+		}
+		
 		$(this).parents("li").remove();
-		numContents--;
-		$("#areacontent").fixItemsPriority();
+		
+
+		$("#areacontent").fixItemsPriority(startPriority);
 	});
 }
 
 $(document).ready(function() {
 
+	if ($("#areacontent").find("input[name*='[priority]']:first"))
+		var startPriority = $("#areacontent").find("input[name*='[priority]']:first").val();
+	else
+		var startPriority = 1;
+		
+	var urlC = ajaxContentsUrl + "/{/literal}{$selectedId|default:''}{literal}";
+
 	$("#areacontent").sortable ({
 		distance: 20,
 		opacity:0.7,
-		update: $(this).fixItemsPriority
+		update: function() {
+					if (priorityOrder == 'desc' && startPriority < $("#areacontent").find("input[name*='[priority]']:first").val()) {
+						startPriority = $("#areacontent").find("input[name*='[priority]']:first").val();
+					}
+					$(this).fixItemsPriority(startPriority);
+				}
 	}).css("cursor","move");
 
 	$("#contents_nav_leafs a").click(function() {
@@ -69,21 +94,21 @@ $(document).ready(function() {
 <div style="min-height:120px; margin-top:10px;">
 
 {if !empty($contents.items)}
-	
+	<input type="hidden" name="contentsToRemove" id="contentsToRemove" value=""/>
 	<ul id="areacontent" class="bordered">
 		{include file="inc/list_contents_for_section.tpl" objsRelated=$contents.items}
 	</ul>		
 	
 	<div id="contents_nav_leafs">
 
-		
+	{*
 	{if $contents.toolbar.prev > 0}
 		<a href="javascript:void(0);" rel="{$contents.toolbar.prev}" class="graced" style="font-size:3em">‹</a>
 	{/if}
 	{if $contents.toolbar.next > 0}
 		<a href="javascript:void(0);" rel="{$contents.toolbar.next}" class="graced" style="font-size:3em">›</a>
 	{/if}
-	
+		
 	dim:
 	<select name="dimContentsPage" id="dimContentsPage">
 		<option value="5"{if $dim == 5} selected{/if}>5</option>
@@ -92,6 +117,7 @@ $(document).ready(function() {
 		<option value="50"{if $dim == 50} selected{/if}>50</option>
 		<option value="1000000"{if $dim == 1000000} selected{/if}>tutti</option>
 	</select>
+	*}
 	</div>
 
 

@@ -3,19 +3,35 @@
 {literal}
 $(document).ready(function() {
 
+	var startSecPriority = $("#areasections").find("input[name*='[priority]']:first").val();
+	var urlS = ajaxSectionsUrl + "/{/literal}{$selectedId|default:''}{literal}";
+
 	$("#areasections").sortable ({
 		distance: 20,
 		opacity:0.7,
-		update: $(this).fixItemsPriority
+		update: function() {
+					$(this).fixItemsPriority(startSecPriority);
+				}
 	}).css("cursor","move");
 
 	$("#sections_nav a").click(function() {
 			
 		$("#loading").show();
-		$("#areasectionsC").load(urlS, {page:$(this).attr("rel")}, function() {
+		$("#areasectionsC").load(urlS, 
+				{
+					page:$(this).attr("rel"),
+					dim:$("#dimSectionsPage").val() 					
+				}, function() {
 			$("#loading").hide();
 		});
 		
+	});
+	
+	$("#dimSectionsPage").change(function() {
+		$("#loading").show();
+		$("#areacontentC").load(urlS, {dim:$(this).val()}, function() {
+			$("#loading").hide();
+		});
 	});
 
 });
@@ -35,8 +51,7 @@ $(document).ready(function() {
 			<a title="{$s.created}" href="{$html->url('/')}areas/index/{$s.id}">{$s.title}</a>
 			
 			<div style="margin-top:-20px; float:right;">
-				{$s.lang} &nbsp;&nbsp;&nbsp; 
-				<input type="button" class="" value="x" />
+				{$s.lang}
 			</div>
 			
 		</li>
@@ -44,12 +59,23 @@ $(document).ready(function() {
 	</ul>		
 	
 	<div id="sections_nav">
+	{*
 	{if $sections.toolbar.prev > 0}
 		<a href="javascript:void(0);" rel="{$sections.toolbar.prev}" class="graced" style="font-size:3em">‹</a>
 	{/if}
 	{if $sections.toolbar.next > 0}
 		<a href="javascript:void(0);" rel="{$sections.toolbar.next}" class="graced" style="font-size:3em">›</a>
 	{/if}
+	
+	dim:
+	<select name="dimSectionsPage" id="dimSectionsPage">
+		<option value="5"{if $dimSec == 5} selected{/if}>5</option>
+		<option value="10"{if $dimSec == 10} selected{/if}>10</option>
+		<option value="20"{if $dimSec == 20} selected{/if}>20</option>
+		<option value="50"{if $dimSec == 50} selected{/if}>50</option>
+		<option value="1000000"{if $dimSec == 1000000} selected{/if}>tutti</option>
+	</select>
+	*}
 	</div>
 
 {else}

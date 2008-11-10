@@ -54,6 +54,7 @@ jQuery.fn.extend({
 
 /*
 *	fixItemsPriority (was reorderListItems)
+*	optional first parameter define priority start number
 */
 	fixItemsPriority: function ()
 	{
@@ -63,18 +64,20 @@ jQuery.fn.extend({
 					
 		if(priorityOrder == "desc") {
 
-			var count = numContents;
-			$(this).find("input[name*='[priority]']").each(function(priority)
+			priority = parseInt( (arguments.length > 0 && typeof(arguments[0]) != 'object')? arguments[0] : $(this).find("input[name*='[priority]']:first").val() );
+			
+			$(this).find("input[name*='[priority]']").each(function(index)
 			{
-				$(this).val(count--)								// update priority
+				$(this).val(priority--)								// update priority
 				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');
 			});
 			
 		} else {
-		
-			$(this).find("input[name*='[priority]']").each(function(priority)
+			priority = parseInt( (arguments.length > 0 && typeof(arguments[0]) != 'object')? arguments[0] : 1 );
+			
+			$(this).find("input[name*='[priority]']").each(function(index)
 			{
-				$(this).val(++priority)								// update priority
+				$(this).val(priority++)								// update priority
 				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');	// pulse effect
 			});
 		}
