@@ -84,17 +84,44 @@ class BeLangTextComponent extends Object {
 		$data = $tmp ;
 	}
 	
-	function objectForLang($id,$lang,&$object) {
-		$tmpobj = $this->LangText->find('all',
-			array(
-				'fields'=>array('name','text'),
-				'conditions'=>array("LangText.object_id = '$id'","LangText.lang = '$lang'")
-			)
-		);
-		foreach($tmpobj as $k => $v) {
-			$key = $v['LangText']['name'];
-			$value= $v['LangText']['text'];
-			if(!empty($value)) $object[$key]=$value;
+	/**
+	 * used in frontend_controller
+	 * Maps object available languages 
+	 *
+	 * @param Object $object object to map 
+	 * @param string $lang, current frontend language 
+	 * @param array $status, status for languages showed
+	 */
+	function setObjectLang(&$object, $lang, $status=array('on')) {
+		$object["languages"] = array();
+		if (!empty($object["LangText"]["status"])) {
+			
+			foreach ($object["LangText"]["status"] as $langAvailable => $statusLang) {
+				
+				// main language
+				if ($langAvailable == $lang) {
+					
+					foreach($object["LangText"] as $key => $value) {
+						if (!is_numeric($key)) { 
+							if (!empty($object[$key]))
+								$object["languages"][$object["lang"]][$key] = $object[$key]; 
+							
+							$object[$key] = $object["LangText"][$key][$lang];
+						}
+					}
+				// avaible languages
+				} elseif (in_array($statusLang, $status)) {
+				
+					$object["languages"][$langAvailable] = array();
+					foreach($object["LangText"] as $key => $value) {
+						if ($key == "title") {
+							$object["languages"][$langAvailable][$key] = $object["LangText"][$key][$langAvailable];
+						}
+					}
+				}
+			}
+			
+			unset($object["LangText"]);
 		}
 	}
 }

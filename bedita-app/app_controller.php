@@ -105,7 +105,6 @@ class AppController extends Controller
 		$this->view = 'Smarty';
 		// convienience methods for frontends
 		$this->initAttributes();
-	 	$this->beditaBeforeFilter() ;
 
 	 	// Exit on login/logout
 	 	if(isset($this->data["login"]) || $this->name === 'Authentications') {
@@ -116,6 +115,7 @@ class AppController extends Controller
 		$this->set('conf',  Configure::getInstance());
 		// check/setup localization
 		$this->setupLocale();
+		$this->beditaBeforeFilter() ;
 		
 		if(!$this->checkLogin($this->skipCheck)) 
 			return;

@@ -366,10 +366,8 @@ abstract class FrontendController extends AppController {
 			throw new BeditaException(__("Content not found", true));
 		}
 
-		if(!empty($obj["LangText"])) {
-			$this->BeLangText->objectForLang($obj_id, $this->currLang, $obj);
-		}
-		
+		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
+
 		if(!empty($obj["RelatedObject"])) {
 			$obj['relations'] = $this->objectRelationArray($obj['RelatedObject'], $this->status);
 			unset($obj["RelatedObject"]);
