@@ -58,8 +58,8 @@ class Category extends BEAppModel {
 	}
 
 	/**
-	 * Define a unique name from label
-	 *
+	 * Define a unique name from label: lowercase, trimmed
+	 * TODO: handle cases with spaces and '+' mixed...
 	 * @param unknown_type $label
 	 */
 	public function uniqueLabelName($label) {
@@ -67,7 +67,7 @@ class Category extends BEAppModel {
 	}
 
 	private function urlLabel($tagName) {
-		return str_replace(" ", "-", $tagName);		
+		return str_replace(" ", "+", $tagName);		
 	}
 	
 	/**
@@ -298,7 +298,7 @@ class Category extends BEAppModel {
 		// reset to default compact result
 		$this->bviorCompactResults = true;
 		
-		return $tag["BEObject"];
+		return empty($tag["BEObject"]) ? array() : $tag["BEObject"];
 	}
 
 	/**
