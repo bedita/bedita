@@ -6,12 +6,12 @@
 	{
 		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
 		{/literal}
-		{if !empty($object.id) && ($object.status == 'fixed')}
+		{if !empty($object.id) && ($object.fixed)}
 			{literal}
 			$("#titleBEObject").attr("readonly",true);
 			$("#nicknameBEObject").attr("readonly",true);
 			$("#areaSectionAssoc").focus( function() {
-				alert('status fixed: not modifyable');
+				alert('object fixed: not modifyable');
 				body.focus();
 				this.blur();
 			});
@@ -69,12 +69,7 @@
 			
 					<th>{t}status{/t}:</th>
 					<td>
-						{if (!empty($object) && $object.status == 'fixed')}
-						{t}This object is fixed - some data is readonly{/t}
-						<input type="hidden" name="data[status]" value="fixed"/>
-						{else}
 						{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator="&nbsp;"}
-						{/if}
 					</td>
 			</tr>
 

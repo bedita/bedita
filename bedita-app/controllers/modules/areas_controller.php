@@ -202,7 +202,8 @@ class AreasController extends ModulesController {
 		$id = $this->Section->getID();
 		// Move section in the right tree position, if necessary
 		if(!$new) {
-			if (empty($this->data["fixed"])) {
+			
+			if (!$this->BEObject->isFixed($id)) {
 				$oldParent = $this->Tree->getParent($id) ;
 				if($oldParent != $this->data["parent_id"]) {
 					if(!$this->Tree->move($this->data["parent_id"], $oldParent, $id))

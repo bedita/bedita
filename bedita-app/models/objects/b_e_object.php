@@ -367,7 +367,6 @@ class BEObject extends BEAppModel
 		else $data = &$this->data ;
 		
 	 	$default = array(
-			'nickname' 			=> array('_getDefaultNickname', 	(isset($data['nickname']) && !@empty($data['nickname']))?$data['nickname']:((isset($data['title']))?$data['title']:'')),
 			'lang' 				=> array('_getDefaultLang', 		(isset($data['lang']))?$data['lang']:null),
 			'ip_created' 		=> array('_getDefaultIP',			(isset($data['ip_created']))?$data['ip_created']:null),
 			'user_created'		=> array('_getIDCurrentUser', 		((isset($data[$this->primaryKey]) && empty($data[$this->primaryKey])) || !isset($data[$this->primaryKey]))? (isset($data['user_created'])?$data['user_created']:true) :false),
@@ -389,20 +388,53 @@ class BEObject extends BEAppModel
 			} 
 		}
 
+		// nickname: verify nick and status change, object not fixed
+		if(isset($data['id'])) {
+			$currObj = $this->find("first", array(
+											"conditions"=>array("BEObject.id" => $data['id']), 
+											"fields" =>array("status", "nickname", "fixed"),
+											"contain" => ("")
+											));
+			if($data['nickname'] != $currObj['BEObject']['nickname']) {				
+				if($currObj['BEObject']['fixed'] == 1) {
+					throw new BeditaException(__("Error: modifying fixed object!", true));
+				} else {
+					$data['nickname'] = $this->_getDefaultNickname($data['nickname']);
+				}
+			}
+			if($data['status'] != $currObj['BEObject']['status'] && $currObj['BEObject']['fixed'] == 1) {				
+				throw new BeditaException(__("Error: modifying fixed object!", true));
+			}
+
+		} else {
+			$tmpName = !empty($data['nickname']) ? $data['nickname'] : $data['title'];
+			$data['nickname'] = $this->_getDefaultNickname($tmpName);
+		}
+		
 		if(empty($data["user_created"])) unset($data["user_created"]) ;
 		
 		// Se c'e' la chiave primaria vuota la toglie
 		if(isset($data[$this->primaryKey]) && empty($data[$this->primaryKey]))
 			unset($data[$this->primaryKey]) ;
 			
-
-			return true ;
+		return true ;
 	}
 
 	public function findObjectTypeId($id) {
 		$object_type_id = $this->field("object_type_id", array("BEObject.id" => $id));
 		return $object_type_id;
 	}
+
+	/**
+	 * Is object fixed??
+	 *
+	 * @param int $id
+	 * @return boolean
+	 */
+	public function isFixed($id) {
+		$fixed = $this->field("fixed", array("BEObject.id" => $id));
+		return ($fixed == 1);
+	}	
 	
 	/**
 	 * Model name/type from id

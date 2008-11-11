@@ -77,7 +77,7 @@ $(document).ready(function(){
 		
 		<tr class="obj {$objects[i].status}">
 			<td style="width:15px; padding:7px 0px 0px 0px;">
-				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" {if $objects[i].status == 'fixed'}disabled="disabled"{/if}/>
+				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
 			</td>
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64}</a></td>
 			<td>{$objects[i].id}</td>

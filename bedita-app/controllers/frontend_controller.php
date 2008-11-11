@@ -31,7 +31,7 @@
  */
 abstract class FrontendController extends AppController {
 
-	private $status = array('on', 'fixed');
+	private $status = array('on');
 	protected $checkPubDate = true;
 	protected $baseLevel = false;
 	protected $sectionOptions = array("showAllContents" => true, "itemsByType" => false);

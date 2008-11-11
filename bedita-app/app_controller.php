@@ -486,23 +486,19 @@ abstract class ModulesController extends AppController {
 				throw new BeditaException(__("Error delete permissions", true));
 			}
 			
-			$fixed = $beObject->field("fixed", array("id" => $id));
-			
-			if ( $fixed == 0 ) {
-				if ($model != "Stream") {
-					if(!$this->{$model}->delete($id))
-						throw new BeditaException(__("Error deleting object: ", true) . $id);
-				} else {
-					if(!$this->BeFileHandler->del($id))
-						throw new BeditaException(__("Error deleting object: ", true) . $id);
-				}
+			if ($beObject->isFixed($id)) {
+				throw new BeditaException(__("Error, trying to delete fixed object!", true));
+			}
+
+			if ($model != "Stream") {
+				if(!$this->{$model}->delete($id))
+					throw new BeditaException(__("Error deleting object: ", true) . $id);
+			} else {
+				if(!$this->BeFileHandler->del($id))
+					throw new BeditaException(__("Error deleting object: ", true) . $id);
 				$objectsListDesc .= $id . ",";
 			}
 		}
-		
-		if (empty($objectsListDesc))
-			throw new BeditaException(__("No object deleted, maybe you're trying to delete fixed object", true));
-		
 		$this->Transaction->commit() ;
 		return trim($objectsListDesc, ",");
 	}
@@ -510,6 +506,7 @@ abstract class ModulesController extends AppController {
 	public function changeStatusObjects($modelName=null) {
 		$objectsToModify = array();
 		$objectsListDesc = "";
+		
 		if(!empty($this->params['form']['objects_selected'])) {
 			$objectsToModify = $this->params['form']['objects_selected'];
 		
@@ -521,12 +518,12 @@ abstract class ModulesController extends AppController {
 			foreach ($objectsToModify as $id) {
 				$model = $this->loadModelByType($modelName);
 				
-				$fixed = ( ($modelName == "BEObject")? $model->field("fixed", array("id" => $id)) : $model->BEObject->field("fixed", array("id" => $id)) );
-				if ( $fixed == 0 ) {
-					$model->id = $id;
-					if(!$model->saveField('status',$this->params['form']["newStatus"]))
-						throw new BeditaException(__("Error saving status for item: ", true) . $id);
+				if ($this->BEObject->isFixed($id)) {
+					throw new BeditaException(__("Error: changing status to a fixed object!", true));
 				}
+				$model->id = $id;
+				if(!$model->saveField('status',$this->params['form']["newStatus"]))
+					throw new BeditaException(__("Error saving status for item: ", true) . $id);
 				$objectsListDesc .= $id . ",";
 			}
 			
@@ -570,14 +567,14 @@ abstract class ModulesController extends AppController {
 			$this->Transaction->begin() ;
 			for($i=0; $i < count($objects_to_assoc) ; $i++) {
 				
-				$fixed = $this->BEObject->field("fixed", array("id" => $objects_to_assoc[$i]));
+				if ($this->BEObject->isFixed($objects_to_assoc[$i])) {
+					throw new BeditaException(__("Error: modifying a fixed object!", true));
+				}
 				
-				if ($fixed == 0) {
-					$parents = $this->BeTree->getParents($objects_to_assoc[$i]);
-					if (!in_array($section['id'], $parents)) { 
-						if(!$modelLoaded->appendChild($objects_to_assoc[$i],$section['id'])) {
-							throw new BeditaException( __("Error during append child", true));
-						}
+				$parents = $this->BeTree->getParents($objects_to_assoc[$i]);
+				if (!in_array($section['id'], $parents)) { 
+					if(!$modelLoaded->appendChild($objects_to_assoc[$i],$section['id'])) {
+						throw new BeditaException( __("Error during append child", true));
 					}
 				}
 			}
@@ -696,15 +693,26 @@ abstract class ModulesController extends AppController {
 			$tagList = $categoryModel->saveTagList($this->params["form"]["tags"]);
 		$this->data["Category"] = (!empty($this->data["Category"]))? array_merge($this->data["Category"], $tagList) : $tagList;
 		
+		$fixed = false;
+		if(!$new) {
+			$fixed = $this->BEObject->isFixed($this->data['id']);
+			if($fixed) { // unset pubblication date, TODO: throw exception if pub date is set! 
+				unset($this->data['start']);
+				unset($this->data['end']);
+			}
+		}
+			
 		if(!$beModel->save($this->data)) {
 			throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
 		}
-		if( empty($this->data['fixed']) ) {
+
+		if(!$fixed) {
 			if(!isset($this->data['destination'])) 
 				$this->data['destination'] = array() ;
 			$this->BeTree->updateTree($beModel->id, $this->data['destination']);
 		}
-	 	// update permissions
+
+		// update permissions
 		if(!isset($this->data['Permissions'])) 
 			$this->data['Permissions'] = array() ;
 		$this->Permission->saveFromPOST($beModel->id, $this->data['Permissions'], 

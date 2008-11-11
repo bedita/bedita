@@ -24,7 +24,7 @@ $(document).ready(function(){
 	}, $.datepicker.regional['{/literal}{$currLang}{literal}']);
 
 	{/literal}
-	{if !empty($object) && !empty($object.id) && ($object.status == 'fixed')}
+	{if !empty($object) && !empty($object.id) && ($object.fixed == 1)}
 		{literal}
 		$("#titleBEObject").attr("readonly",true);
 		$("#nicknameBEObject").attr("readonly",true);
