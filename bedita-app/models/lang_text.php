@@ -54,7 +54,13 @@ class LangText extends BEAppModel
 	
 	function findObjs($filter = null, $order = null, $dir  = true, $page = 1, $dim = 100000, $excludeIds=array()) {
 
+		$fields  = "DISTINCT `BEObject`.*, `LangText`.*" ;
+		$from = "lang_texts as `LangText` LEFT OUTER JOIN objects as `BEObject` ON `LangText`.object_id=`BEObject`.id";
+		$conditions = array();
+		$groupClausole = "GROUP BY `BEObject`.id";
+		
 		$conditions = array("LangText.name = 'status'");
+		
 		if( !empty($filter['lang']) && ($filter['lang']!=null) ) {
 			$conditions[]="LangText.lang = '" . $filter['lang'] . "'";
 		}
@@ -64,42 +70,65 @@ class LangText extends BEAppModel
 		if( !empty($filter['obj_id'])  && ($filter['obj_id']!=null) ) {
 			$conditions[]="LangText.object_id = '" . $filter['obj_id'] . "'";
 		}
-		$limit = $this->getLimitClausole($page, $dim);
-		$objects_status=$this->find('all',
-			array(
-				'fields'=>array('id','object_id','name','text','lang'),
-				'conditions'=>$conditions,
-				'limit'=>$limit,
-				'order'=>$order
-			)
-		);
+
+		$otherOrder = "";
+		if (array_key_exists("search", $filter)) {
+			$fields .= ", `SearchText`.`object_id` AS `oid`, SUM( MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."') * `SearchText`.`relevance` ) AS `points`";
+			$from .= ", search_texts AS `SearchText`";
+			$conditions[] = "`SearchText`.`object_id` = `BEObject`.`id` AND `SearchText`.`lang` = `LangText`.`lang` AND MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."')";
+			$otherOrder = "points DESC ";
+			unset($filter["search"]);	
+		}
+		
+		// build sql conditions
+		$db =& ConnectionManager::getDataSource($this->useDbConfig);
+		$sqlClausole = $db->conditions($conditions, true, true) ;
+
+		$ordClausole = "";
+		if(is_string($order) && strlen($order)) {
+			$beObject = ClassRegistry::init("BEObject");
+			if ($beObject->hasField($order))
+				$order = "`BEObject`." . $order;
+			$ordItem = "{$order} " . ((!$dir)? " DESC " : "");
+			if(!empty($otherOrder)) {
+				$ordClausole = "ORDER BY " . $ordItem .", " . $otherOrder;
+			} else {
+				$ordClausole = " ORDER BY {$order} " . ((!$dir)? " DESC " : "") ;
+			}
+		} elseif (!empty($otherOrder)) {
+			$ordClausole = "ORDER BY {$otherOrder}";
+		}
+		
+		$limit 	= $this->getLimitClausole($page, $dim) ;
+		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
+		$tmp  	= $this->query($query) ;
+
+		if ($tmp === false)
+			throw new BeditaException(__("Error finding translations", true));
 
 		$objects = array();
-		$objects_title = array();
-		foreach($objects_status as $os) {
-			$object_id = $os['LangText']['object_id'];
-			$lang = $os['LangText']['lang'];
-			$objects_title[$object_id][$lang] = $this->field("text", 
+		foreach($tmp as $tr) {
+			$object_id = $tr['LangText']['object_id'];
+			$lang = $tr['LangText']['lang'];
+			$translationTitle = $this->field("text", 
 				array("object_id"=>$object_id, "lang"=>$lang, "name"=>"title"));
-			$this->BEObject->recursive = -1;
-			if(!($obj = $this->BEObject->findById($object_id))) {
-				 throw new BeditaException(sprintf(__("Error loading object: %d", true), $object_id));
-			}
-			$objects[$object_id][$lang] = $obj;
+
+			$objects[] = array("LangText" => array(
+				"id" => $tr['LangText']["id"], "object_id" => $object_id, "lang" => $tr['LangText']["lang"],
+				"status" => $tr['LangText']["text"], "title" => $translationTitle), 
+				"BEObject" => $tr['BEObject']);
 		}
 
-		$size = $this->find('count',
-				array(
-					'fields'=>array('id','object_id','name','text','lang'),
-					'conditions'=>$conditions,
-				)
-			);
-		
+		$queryCount = "SELECT COUNT(DISTINCT `BEObject`.id) AS count FROM {$from} {$sqlClausole}";
+		$tmpCount = $this->query($queryCount);
+		if ($tmpCount === false)
+			throw new BeditaException(__("Error counting translations", true));
+	
+		$size = (empty($tmpCount[0][0]["count"]))? 0 : $tmpCount[0][0]["count"];
+			
 		$recordset = array(
-			"objects_status"		=> $objects_status,
-			"objects_title"			=> $objects_title,
-			"objects_translated"	=> $objects,
-			"toolbar"				=> $this->toolbar($page, $dim, $size)
+			"translations"	=> $objects,
+			"toolbar"		=> $this->toolbar($page, $dim, $size)
 		) ;
 
 		return $recordset ;

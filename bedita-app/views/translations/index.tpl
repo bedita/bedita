@@ -104,15 +104,15 @@ function changeStatusTranslations() {
 		
 		{assign var="oid" value=$translations[i].LangText.object_id}
 		{assign var="olang" value=$translations[i].LangText.lang}
-		{assign var="ot" value=$objects_translated[$oid][$olang].BEObject.object_type_id}
-		{assign var="mtitle" value=$objects_translated[$oid][$olang].BEObject.title}
+		{assign var="ot" value=$translations[i].BEObject.object_type_id}
+		{assign var="mtitle" value=$translations[i].BEObject.title}
 		
-		<tr class="obj {$translations[i].LangText.text}">
+		<tr class="obj {$translations[i].LangText.status}">
 			<td style="width:15px; padding:7px 0px 0px 0px;">
 				<input  type="checkbox" name="object_chk" class="objectCheck" title="{$translations[i].LangText.id}" />
 			</td>
 			<td>
-				<a href="{$html->url('view/')}{$oid}/{$olang}">{$translations_title[$oid][$olang]|default:'<em>no title</em>'|truncate:38:true}</a>
+				<a href="{$html->url('view/')}{$oid}/{$olang}">{$translations[i].LangText.title|default:'<em>no title</em>'|truncate:38:true}</a>
 			</td>
 			<td>{$mtitle|truncate:38:true} &nbsp;</td>
 			<td>
@@ -120,7 +120,7 @@ function changeStatusTranslations() {
 				{$conf->objectTypes[$ot].model}
 			</td>
 			<td>{$olang}</td>
-			<td>{$translations[i].LangText.text}</td>
+			<td>{$translations[i].LangText.status}</td>
 		</tr>
 		{sectionelse}
 			<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>

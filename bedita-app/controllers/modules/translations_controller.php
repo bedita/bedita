@@ -37,9 +37,7 @@ class TranslationsController extends ModulesController {
 	
 	public function index($order = "", $dir = true, $page = 1, $dim = 20) {
 		$lt = $this->trPaginatedList($this->data,$order,$dir,$page,$dim);
-		$this->set("objects_translated",$lt['objects_translated']);
-		$this->set("translations",		$lt['objects_status']);
-		$this->set("translations_title",$lt['objects_title']);
+		$this->set("translations",		$lt['translations']);
 		$this->params['toolbar'] = &$lt['toolbar'] ;
 	}
 
