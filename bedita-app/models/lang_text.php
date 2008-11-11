@@ -38,6 +38,8 @@ class LangText extends BEAppModel
 			)
 	);
 
+	static $paginationOrder, $paginationDir;
+	
 	public function langsForObject($object_id) {
 		$result = array();
 		$langs=$this->find('all',
@@ -57,7 +59,7 @@ class LangText extends BEAppModel
 		$fields  = "DISTINCT `BEObject`.*, `LangText`.*" ;
 		$from = "lang_texts as `LangText` LEFT OUTER JOIN objects as `BEObject` ON `LangText`.object_id=`BEObject`.id";
 		$conditions = array();
-		$groupClausole = "GROUP BY `BEObject`.id";
+		$groupClausole = "GROUP BY `LangText`.id";
 		
 		$conditions = array("LangText.name = 'status'");
 		
@@ -69,6 +71,17 @@ class LangText extends BEAppModel
 		}
 		if( !empty($filter['obj_id'])  && ($filter['obj_id']!=null) ) {
 			$conditions[]="LangText.object_id = '" . $filter['obj_id'] . "'";
+		}
+		if( !empty($order) && $order == "object_type_id")  {
+			$fields .= ", `ObjectType`.name";
+			$from .= ", object_types AS `ObjectType`";
+			$conditions[]="`ObjectType`.id = `BEObject`.object_type_id";
+			$order = "`ObjectType`.name";
+		}
+		if (!empty($order) && strstr($order,"LangText.")) {
+			$t = explode(".", $order);
+			$langTextOrder = $t[1];
+			$order = null;
 		}
 
 		$otherOrder = "";
@@ -125,13 +138,34 @@ class LangText extends BEAppModel
 			throw new BeditaException(__("Error counting translations", true));
 	
 		$size = (empty($tmpCount[0][0]["count"]))? 0 : $tmpCount[0][0]["count"];
-			
+		
+		// reorder by LangText fields
+		if (!empty($langTextOrder)) {
+			LangText::$paginationOrder = $langTextOrder;
+			LangText::$paginationDir = $dir;
+			usort($objects, array('LangText', 'reorderPagination'));
+		}
+		
 		$recordset = array(
 			"translations"	=> $objects,
 			"toolbar"		=> $this->toolbar($page, $dim, $size)
 		) ;
 
 		return $recordset ;
+	}
+	
+	/**
+	 * compare two array elements defined by $paginationOrder var and return -1,0,1 
+	 *	$paginationDir is used for define order of comparison 
+	 * 
+	 * @param array $e1
+	 * @param array $e2
+	 * @return int (-1,0,1)
+	 */
+	private static function reorderPagination($e1, $e2) {
+		$d1 = $e1["LangText"][LangText::$paginationOrder];
+		$d2 = $e2["LangText"][LangText::$paginationOrder];
+		return (LangText::$paginationDir)? strcmp($d1,$d2) : strcmp($d2,$d1);
 	}
 
 }

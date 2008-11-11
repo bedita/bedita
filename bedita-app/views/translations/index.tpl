@@ -91,10 +91,10 @@ function changeStatusTranslations() {
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('title', 'master title')}</th>
-			<th>{t}title{/t}</th>
+			<th>{$beToolbar->order('LangText.title', 'title')}</th>
 			<th>{$beToolbar->order('object_type_id', 'Type')}</th>
-			<th>{$beToolbar->order('lang', 'Language')}</th>
-			<th>{$beToolbar->order('status', 'Status')}</th>
+			<th>{$beToolbar->order('LangText.lang', 'Language')}</th>
+			<th>{$beToolbar->order('LangText.status', 'Status')}</th>
 		</tr>
 	{/capture}
 
@@ -112,9 +112,9 @@ function changeStatusTranslations() {
 				<input  type="checkbox" name="object_chk" class="objectCheck" title="{$translations[i].LangText.id}" />
 			</td>
 			<td>
-				<a href="{$html->url('view/')}{$oid}/{$olang}">{$translations[i].LangText.title|default:'<em>no title</em>'|truncate:38:true}</a>
+				{$mtitle|truncate:38:true} &nbsp;
 			</td>
-			<td>{$mtitle|truncate:38:true} &nbsp;</td>
+			<td><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations[i].LangText.title|default:'<em>no title</em>'|truncate:38:true}</a></td>
 			<td>
 				<span class="listrecent {$conf->objectTypes[$ot].model|lower}">&nbsp;</span>
 				{$conf->objectTypes[$ot].model}
@@ -143,22 +143,22 @@ function changeStatusTranslations() {
 	<select name="data[translation_lang]">
 		<option value=""></option>
 	{foreach key=val item=label from=$conf->langOptions}
-		<option value="{$val}"{if !empty($form->params.data) && ($form->params.data.translation_lang==$val)} selected="selected"{/if}>{$label}</option>
+		<option value="{$val}"{if $langSelected==$val} selected="selected"{/if}>{$label}</option>
 	{/foreach}
 	</select>
 	
 	&nbsp;{t}with status{/t}: &nbsp;
 	<select name="data[translation_status]">
 	<option value=""></option>
-	<option value="ON"{if !empty($form->params.data) && ($form->params.data.translation_status=='ON')} selected="selected"{/if}>{t}on{/t}</option>
-	<option value="OFF"{if !empty($form->params.data) && ($form->params.data.translation_status=='OFF')} selected="selected"{/if}>{t}off{/t}</option>
-	<option value="DRAFT"{if !empty($form->params.data) && ($form->params.data.translation_status=='DRAFT')} selected="selected"{/if}>{t}draft{/t}</option>
-	<option value="REQUIRED"{if !empty($form->params.data) && ($form->params.data.translation_status=='REQUIRED')} selected="selected"{/if}>{t}required{/t}</option>
+	<option value="on"{if $statusSelected=='on'} selected="selected"{/if}>{t}on{/t}</option>
+	<option value="off"{if $statusSelected=='off'} selected="selected"{/if}>{t}off{/t}</option>
+	<option value="draft"{if $statusSelected=='draft'} selected="selected"{/if}>{t}draft{/t}</option>
+	<option value="required"{if $statusSelected=='required'} selected="selected"{/if}>{t}required{/t}</option>
 	</select>
 	
 	&nbsp;{t}of master id{/t}:&nbsp;
 	<input type="text" name="data[translation_object_id]" style="width:25px"
-	value="{if !empty($form->params.data)}{$form->params.data.translation_object_id|default:''}{/if}"/>
+	value="{$objectIdSelected}"/>
 	&nbsp;<input type="submit" value="{t}go{/t}"/>
 	
 {if !empty($translations)}

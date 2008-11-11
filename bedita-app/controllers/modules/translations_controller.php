@@ -189,13 +189,45 @@ class TranslationsController extends ModulesController {
 			array("order", "string", &$order),
 			array("dir", "boolean", &$dir)
 		) ;
-		$filter = array();
-		$filter['lang'] = (!empty($data['translation_lang'])) ? $data['translation_lang'] : null;
-		$filter['status'] = (!empty($data['translation_status'])) ? $data['translation_status'] : null;
-		$filter['obj_id'] = (!empty($data['translation_object_id'])) ? $data['translation_object_id'] : null;
-		if(isset ($this->params["form"]["searchstring"])) {
-			$filter['search'] = $this->params["form"]["searchstring"];
+		
+		$filter = array("lang" => null, "status" => null, "obj_id" => null);
+		
+		if (!empty($data['translation_lang'])) {
+			$filter['lang'] = $data['translation_lang'];
+			$this->params["named"]["translation_lang"] = $filter['lang'];
+		} elseif (!empty($this->passedArgs["translation_lang"])) {
+			$filter['lang'] = $this->passedArgs["translation_lang"];
+			$this->params["named"]["translation_lang"] = $filter['lang'];
 		}
+		
+		if (!empty($data['translation_status'])) {
+			$filter['status'] = $data['translation_status'];
+			$this->params["named"]["translation_status"] = $filter['status'];
+		} elseif (!empty($this->passedArgs["translation_status"])) {
+			$filter['status'] = $this->passedArgs["translation_status"];
+			$this->params["named"]["translation_status"] = $filter['status'];
+		}
+		
+		if (!empty($data['translation_object_id'])) {
+			$filter['obj_id'] = $data['translation_object_id'];
+			$this->params["named"]["translation_object_id"] = $filter['obj_id'];
+		} elseif (!empty($this->passedArgs["translation_object_id"])) {
+			$filter['obj_id'] = $this->passedArgs["translation_object_id"];
+			$this->params["named"]["translation_object_id"] = $filter['obj_id'];
+		}
+		
+		if(!empty($this->params["form"]["searchstring"])) {
+			$filter['search'] = $this->params["form"]["searchstring"];
+			$this->params["named"]["search"] = $filter['search'];
+		} elseif (!empty($this->passedArgs["search"])) {
+			$filter['search'] = $this->passedArgs["search"];
+			$this->params["named"]["search"] = $filter['search'];
+		}
+		
+		$this->set("statusSelected",$filter['status']);
+		$this->set("langSelected",$filter['lang']);
+		$this->set("objectIdSelected",$filter['obj_id']);
+		
 		return $this->LangText->findObjs($filter,$order,$dir,$page,$dim);
 	}
 
