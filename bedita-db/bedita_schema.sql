@@ -48,6 +48,7 @@ DROP TABLE IF EXISTS `object_users`;
 DROP TABLE IF EXISTS `object_relations`;
 DROP TABLE IF EXISTS `object_categories`;
 DROP TABLE IF EXISTS `object_properties`;
+DROP TABLE IF EXISTS `object_editors`;
 DROP TABLE IF EXISTS `contents`;
 DROP TABLE IF EXISTS `authors`;
 DROP TABLE IF EXISTS `images`;
@@ -268,6 +269,24 @@ CREATE TABLE object_properties (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
+CREATE TABLE object_editors (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  object_id INTEGER UNSIGNED NOT NULL,
+  user_id INTEGER UNSIGNED NOT NULL,
+  last_access TIMESTAMP NOT NULL,
+  PRIMARY KEY(id),
+  INDEX object_id_index(object_id),
+  INDEX user_id_index(user_id),
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(user_id)
+    REFERENCES users(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
 CREATE TABLE contents (
   id INTEGER UNSIGNED NOT NULL,
   `start` DATETIME NULL ,
@@ -320,21 +339,22 @@ CREATE TABLE trees (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE versions (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  object_id INTEGER UNSIGNED NOT NULL,
-  version_id INTEGER UNSIGNED NOT NULL,
-  date DATETIME NULL,
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `object_id` INTEGER UNSIGNED NOT NULL,
+  `revision` INTEGER UNSIGNED NOT NULL,
+  `user_id` INTEGER UNSIGNED NOT NULL,
+  `created` datetime NOT NULL,
+  `diff` TEXT NOT NULL,
   PRIMARY KEY(id),
-  INDEX objects_has_objects_FKIndex1(id),
-  INDEX objects_has_objects_FKIndex2(version_id),
-  INDEX objects_has_objects_FKIndex3(id, version_id),
+  INDEX objects_index(object_id),
+  INDEX user_index(user_id),
   FOREIGN KEY(object_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY(version_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
+  FOREIGN KEY(user_id)
+    REFERENCES users(id)
+      ON DELETE NO ACTION
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
