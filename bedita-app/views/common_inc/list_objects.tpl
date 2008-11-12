@@ -73,7 +73,7 @@ $(document).ready(function(){
 			<th>{$beToolbar->order('modified', 'Modified')}</th>
 			<th style="text-align:center">
 				{*$beToolbar->order('numcomments', 'Comments')*}
-				<img src="{$html->url('/img/')}iconComments.gif" alt="comments" />
+				<img src="{$html->webroot}img/iconComments.gif" alt="comments" />
 			</th>			
 			<th>{$beToolbar->order('lang', 'Lang')}</th>
 			<th>Notes</th>
@@ -94,7 +94,7 @@ $(document).ready(function(){
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
 			<td style="text-align:center">{$objects[i].numcomments|default:0}</td>
 			<td>{$objects[i].lang}</td>
-			<td>{if $objects[i].note|default:''}<img src="{$html->url('/img/')}iconNotes.gif" alt="notes" />{/if}</td>
+			<td>{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 		</tr>
 		
 		
