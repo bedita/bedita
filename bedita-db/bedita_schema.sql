@@ -659,6 +659,7 @@ CREATE TABLE mail_messages (
   bounce_to VARCHAR(255) NOT NULL,
   priority INTEGER UNSIGNED NULL,
   signature VARCHAR(255) NOT NULL,
+  stylesheet VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES contents(id)

@@ -275,131 +275,8 @@ class NewsletterController extends ModulesController {
 		exit;
 	}
 	
-	 /**
-	  * Get all subscribers.
-	  */
-	function subscribers($group_id=null) {
-//		
-//		if (!empty($group_id)) {
-//			$subscribers = $this->paginate("MailGroupAddress", array("mail_group_id" => $group_id));
-//		} else {
-//			$subscribers = $this->paginate("MailAddress");
-//		}
-//		$this->set("subscribers", $subscribers);
-//		$this->set("selected_group_id", $group_id);
-//		$this->MailGroup->containLevel("minimum");
-//		$this->set("groups", $this->MailGroup->find("all", array("order" => "group_name ASC")));
-//		
-	 }
-
-	 /**
-	  * Get subscriber detail.
-	  * If id is null, empty document
-	  *
-	  * @param integer $id
-	  */
-	function viewsubscriber($id = null) {
-
-//		$mailAddress = null;
-//		
-//		if (!empty($id)) {
-//			if( !($mailAddress = $this->MailAddress->findById($id)) ) {
-//				 throw new BeditaException(sprintf(__("Error loading subscriber: %d", true), $id));
-//			}
-//		}
-//
-//		$this->set("groupsByArea", $this->MailGroup->getGroupsByArea(null, $id));
-//		$this->set("subscriber", $mailAddress);
-	 }
-	 
-	 	
-	public function saveSubscriber() {
-
-//		$this->checkWriteModulePermission();
-//		if(empty($this->data)) 
-//			throw new BeditaException( __("No data", true));
-//
-//		$this->Transaction->begin() ;
-//		
-//		if (!$this->MailAddress->save($this->data))
-//			throw new BeditaException(__("Error saving address", true), $this->MailAddress->validationErrors);
-//		
-//		$this->Transaction->commit() ;
-//		$this->userInfoMessage(__("Mail address saved", true)." - ".$this->data["MailAddress"]["email"]);
-//		$this->eventInfo("mail address [". $this->data["MailAddress"]["email"]."] saved");
-		
-	}
 	
-	public function changeStatusAddress() {
-//		$this->changeStatusObjects("MailAddress");
-	}
 	
-	public function addAddressToGroup($old_group_id=null) {
-//		$this->checkWriteModulePermission();
-//		if(!empty($this->params['form']['objects_selected'])) {
-//			
-//			$this->Transaction->begin();
-//			
-//			$groupname = $this->MailGroup->field("group_name", array("id" => $this->params["form"]["destination"]));
-//			
-//			$data["MailGroupAddress"]["mail_group_id"] = $this->params["form"]["destination"];
-//			$data["MailGroupAddress"]["status"] = "confirmed";
-//			
-//			foreach ($this->params['form']['objects_selected'] as $address_id) {
-//				
-//				// move to group => delete from previous group
-//				if ($this->params["form"]["operation"] == "move" && !empty($old_group_id)) {
-//					$this->MailAddress->MailGroupAddress->deleteAll(array(
-//																		"mail_address_id" => $address_id, 
-//																		"mail_group_id" => $old_group_id	
-//																		)
-//																	);
-//				}
-//				
-//				// save if not already exists
-//				$join_id = $this->MailAddress->MailGroupAddress->field("id", "mail_address_id=".$address_id." AND mail_group_id=".$this->params["form"]["destination"] );
-//				
-//				if (!$join_id) {
-//					$data["MailGroupAddress"]["mail_address_id"] = $address_id;
-//					$data["MailGroupAddress"]["hash"] = md5($address_id . microtime() . $groupname);
-//					$this->MailAddress->MailGroupAddress->create();
-//					if (!$this->MailAddress->MailGroupAddress->save($data))
-//						throw new BeditaException(__("Error adding subscriber " . $address_id . " in group " . $data["MailGroupAddress"]["mail_group_id"], true));
-//				}
-//				
-//				
-//			}
-//			
-//			$this->Transaction->commit();
-//			$this->userInfoMessage(__("Subscribers associated to recipient group", true) . " - " . $groupname);
-//			$this->eventInfo("Subscribers associated to recipient group " . $this->params["form"]["destination"]);
-//		}
-	}
-	
-	public function deleteAddress() {
-//		$this->checkWriteModulePermission();
-//		$addressToDel = null;
-//		if(!empty($this->params['form']['objects_selected'])) {
-//			$addressToDel = $this->params['form']['objects_selected'];
-//			$addressToDelList = implode(",",$this->params["form"]["objects_selected"]);
-//		} else if (!empty($this->data["MailAddress"]["id"])) {
-//			$addressToDel = $addressToDelList = $this->data["MailAddress"]["id"];
-//		} 
-//			
-//		if (!empty($addressToDel)) {
-//			$this->Transaction->begin();
-//			if (!$this->MailAddress->deleteAll(array("MailAddress.id" => $addressToDel)))
-//				throw new BeditaException(__("Error deleting address", true));
-//			$this->Transaction->commit();
-//			$this->userInfoMessage(__("Subscribers deleted", true) . " - " . $addressToDelList);
-//			$this->eventInfo("Subscribers deleted, ids deleted:  " . $addressToDelList);
-//		}
-	}
-	
-	/**
-	  * Manage groups.
-	  */
-
 	function templates() {
 		$this->MailTemplate->containLevel("minimum");
 		$templates = $this->MailTemplate->find("all", array(
@@ -425,11 +302,9 @@ class NewsletterController extends ModulesController {
 		// get publishing public_url
 		if (!empty($this->viewVars["tree"])) {
 			$areaModel = ClassRegistry::init("Area");
-			$areaModel->bviorCompactResults = false;
 			foreach ($this->viewVars["tree"] as $k => $p) {
 				$this->viewVars["tree"][$k]["public_url"] = $areaModel->field("public_url", array("Area.id" => $p["id"]));
 			}
-			$areaModel->bviorCompactResults = true;
 		}
 		
 		if (!empty($id)) {
@@ -542,18 +417,6 @@ class NewsletterController extends ModulesController {
 			"saveTemplate"	=> 	array(
 							"OK"	=> "/newsletter/viewtemplate/".@$this->MailTemplate->id,
 							"ERROR"	=> $this->referer()
-							),
-			"changeStatusAddress"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=>  $this->referer() 
-							),
-			"addAddressToGroup"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=>  $this->referer() 
-							),
-			"deleteAddress"	=> 	array(
-							"OK"	=> "/newsletter/subscribers",
-							"ERROR"	=>  "/newsletter/subscribers" 
 							),
 			"saveMailGroups"=> array(
 							"OK"	=> "/newsletter/mailGroups",
