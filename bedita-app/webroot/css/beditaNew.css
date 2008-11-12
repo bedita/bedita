@@ -185,7 +185,7 @@ H2 {font:normal 1.5em "Georgia", "Times New Roman", Times, serif; line-height:1e
 .monospaced {font-family: monospace;}
 
 
-INPUT[type=text], TEXTAREA {
+INPUT[type=text],INPUT[type=password], TEXTAREA {
 	font-size:12px; font-family: "Verdana", sans-serif; line-height:1.5em;
 }
 

@@ -39,56 +39,76 @@ $(document).ready(function() {
 			alert(g_msg);
 		}
 	});
+	
+
+	$(".tab").click(function (){
+		
+		$(this).BEtabstoggle();
+
+	});
+	
+	var openAtStart ="#selectuser";
+	$(openAtStart).prev(".tab").BEtabstoggle();
+		
+
+	
 });
 {/literal}
 //-->
 </script>
 
-<form id="ucardForm" action="" method="post">
+<div class="bodybg" style="height:480px; padding:20px;">
+	
+<form id="ucardForm" method="post">
 
-{t}Card associated to user from the list{/t}<br/>
-
-<table>
+<div class="tab"><h2>{t}Select a user from the list{/t}</h2></div>
+<fieldset id="selectuser">
+<table class="bordered">
 	<tr>
-		<th></th>
-		<th>{t}User{/t}</th>
-		<th>{t}Name{/t}</th>
+		<td></td>
+		<th>{t}username{/t}</th>
+		<th style="width:50%">{t}realname{/t}</th>
 	</tr>
 	{foreach from=$users item=u}
 	<tr>
-		<td><input type="radio" class="uradio" value="{$u.User.id}" name="{$u.User.userid}"/></td>
+		<td style="text-align:right"><input type="radio" class="uradio" value="{$u.User.id}" name="{$u.User.userid}" /></td>
 		<td>{$u.User.userid}</td>
 		<td>{$u.User.realname}</td>
 	</tr>
 	{/foreach}
 </table>
-<input id="userToCard" type="button" value="{t}save{/t}"/>
 
-<br/>
-<br/>
-<br/>
+<input id="userToCard" style="margin:10px 0px 10px 100px" type="button" value=" {t}associate{/t} "/>
+</fieldset>
 
-{t}Card associated to new user{/t}
-<br/>
-{t}username{/t} <input type="text" name="data[User][userid]" id="userid"/>
-<br/>
-{t}groups{/t}
-<table>
+<div class="tab"><h2>{t}Create new user{/t}</h2></div>
+
+<fieldset id="createuser">
+<table class="bordered">
+	<tr>
+		<th style="text-align:right">{t}username{/t}:</th><td><input type="text" name="data[User][userid]" id="userid" /></td>
+	</tr>
 {if !empty($formGroups)}
 {foreach from=$formGroups key=gname item=u}
 <tr>
+	<td></td>
 	<td>
 		<input class="ugroup" type="checkbox" id="group_{$gname}" name="data[groups][{$gname}]"/>
 		&nbsp;<label id="lgroup{$gname}" for="group{$gname}">{$gname}</label>
+		{if in_array($gname,$conf->authorizedGroups)} <span class="evidence">*</span> {/if}
 	</td>
-	<th>{if in_array($gname,$conf->authorizedGroups)} <span class="evidence">*</span> {/if}</th>
 </tr>
 {/foreach}
 {/if}
 <tr>
-	<td></td>
-	<td><span class="evidence">*</span> {t}Group authorized to Backend{/t}</td>
+	<td colspan="2"><span class="evidence">*</span> {t}Group authorized to Backend{/t}</td>
 </tr>
 </table>
-<input type="button" id="createUser" value="{t}create new user{/t}"/>
+
+<input type="button" style="margin:10px 0px 10px 100px"  id="createUser" value="{t}create and associate{/t}"/>
+
+</fieldset>
+
 </form>
+
+</div>
