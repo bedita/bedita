@@ -184,7 +184,6 @@ H2 {font:normal 1.5em "Georgia", "Times New Roman", Times, serif; line-height:1e
 
 .monospaced {font-family: monospace;}
 
-
 INPUT[type=text], TEXTAREA {
 	font-size:12px; font-family: "Verdana", sans-serif; line-height:1.5em;
 }
@@ -935,47 +934,6 @@ UL#mediatypes  {
 .ico_rss {background-image: url('../img/iconset/24px/rss.png');}
 
 
-
-/*...........................................    
-
-    Specific template layouts: home
-
-...........................................*/
-
-
-.home UL.modules {
-	width:710px;
-	height:280px;
-}
-
-LI.welcome {
-	width: 260px;
-	background:transparent none;
-	font-size:1em; 
-	color:#000000;
-	padding-top:5px;
-	padding-bottom:15px;
-}
-
-LI.colophon {
-	background:transparent none;
-	font-size:1em; color:#000000;
-}
-
-
-.dashboard {
-	position:absolute;
-	left:740px;
-	top:25px;
-	width: 240px;
-	height: 120px;
-}
-
-.dashboard H1 {
-	margin-bottom:5px;
-}
-
-
 /*...........................................    
 
     Forms
@@ -1092,32 +1050,6 @@ INPUT.priority {
 
 .message LABEL {
 	display:block;
-}
-
-/*...........................................    
-
-    accessori e varie
-
-...........................................*/
-
-.evidence {
-	font-size: 1.3em;
-}
-
-.messageboard {
-	font-size:1em;
-	line-height:1.2em;
-	overflow:auto; 
-	background-color:#FFFFFF; 
-	border:0px solid #999999;
-	height:120px;
-	
-}
-
-.messageboard HR {
-	border-color: silver;
-	border-style:dotted;
-	
 }
 
 
@@ -1263,9 +1195,49 @@ INPUT.priority {
 
 
 
+/*...........................................    
+
+    Specific template layout: home
+
+...........................................*/
+
+
+.home UL.modules {
+	width:710px;
+	height:280px;
+}
+
+LI.welcome {
+	width: 260px;
+	background:transparent none;
+	font-size:1em; 
+	color:#000000;
+	padding-top:5px;
+	padding-bottom:15px;
+}
+
+LI.colophon {
+	background:transparent none;
+	font-size:1em; color:#000000;
+}
+
+
+.dashboard {
+	position:absolute;
+	left:740px;
+	top:25px;
+	width: 240px;
+	height: 120px;
+}
+
+.dashboard H1 {
+	margin-bottom:5px;
+}
+
+
 /*...........................................
  
-	areas section
+	 Specific template layout: publishing
 
 ...........................................*/
 
@@ -1279,25 +1251,33 @@ TABLE.areaform {
 }
 .areaform TH {
 	width:100px;
-	
 }
-	
-
-
 
 
 /*...........................................    
 
-    debug e varie
+    accessories
 
 ...........................................*/
 
+.evidence {
+	font-size: 1.3em;
+}
 
+.messageboard {
+	font-size:1em;
+	line-height:1.2em;
+	overflow:auto; 
+	background-color:#FFFFFF; 
+	border:0px solid #999999;
+	height:120px;
+	
+}
 
-.todo {
-	background-color: gold;
-	padding:40px;
-	font: normal 12px Courier 
+.messageboard HR {
+	border-color: silver;
+	border-style:dotted;
+	
 }
 
 .editornotes {
@@ -1307,6 +1287,24 @@ TABLE.areaform {
 	background:white url('../img/sfo_zebranotes.gif'); 
 	border:0px;
 }
+
+.listobjnav  {
+	text-align:center;
+	padding:10px;
+}
+
+.listobjnav  A {
+	font-size:4em;
+	color:#666666;
+}
+
+.listobjnav  A:Hover {
+	color:#000000;
+}
+
+
+
+
 
 
 
