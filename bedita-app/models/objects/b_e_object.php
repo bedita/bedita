@@ -402,7 +402,7 @@ class BEObject extends BEAppModel
 					$data['nickname'] = $this->_getDefaultNickname($data['nickname']);
 				}
 			}
-			if($data['status'] != $currObj['BEObject']['status'] && $currObj['BEObject']['fixed'] == 1) {				
+			if($currObj['BEObject']['fixed'] == 1 && $data['status'] != $currObj['BEObject']['status']) {				
 				throw new BeditaException(__("Error: modifying fixed object!", true));
 			}
 
