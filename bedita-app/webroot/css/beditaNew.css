@@ -184,6 +184,7 @@ H2 {font:normal 1.5em "Georgia", "Times New Roman", Times, serif; line-height:1e
 
 .monospaced {font-family: monospace;}
 
+
 INPUT[type=text], TEXTAREA {
 	font-size:12px; font-family: "Verdana", sans-serif; line-height:1.5em;
 }
@@ -220,9 +221,9 @@ UL.modules {
 .modules LI, .modules label {
 	display:block;
 	font-size: 1.16em ;
-	width:119px; height:119px; 
+	width:120px; height:120px; 
 	padding:10px;
-	margin: 0px 1px 1px 0px;
+	margin: 0px;
 	background-color:#CCCCCC; 
 	background-image: url(../img/sfomodulo.png);
 	background-repeat:repeat-x;
@@ -419,6 +420,7 @@ UL.menuleft {
 	background:transparent url(../img/shadowh2-small.png) repeat left top;
 	padding:10px 0px 10px 0px;
 	margin-top:-10px;
+
 }
 
 .tab H2,  .tab2 H2 {
@@ -427,8 +429,8 @@ UL.menuleft {
 	background:#808080 url(../img/piumeno.gif) no-repeat;
 	background-position:right 0px ;
 	height:20px; padding:5px 10px 0px 10px;
-
 }
+
 
 .tab H2.open, .tab2 H2.open {
 	background-position: right -25px !important;
@@ -934,6 +936,47 @@ UL#mediatypes  {
 .ico_rss {background-image: url('../img/iconset/24px/rss.png');}
 
 
+
+/*...........................................    
+
+    Specific template layouts: home
+
+...........................................*/
+
+
+.home UL.modules {
+	width:710px;
+	height:280px;
+}
+
+LI.welcome {
+	width: 260px;
+	background:transparent none;
+	font-size:1em; 
+	color:#000000;
+	padding-top:5px;
+	padding-bottom:15px;
+}
+
+LI.colophon {
+	background:transparent none;
+	font-size:1em; color:#000000;
+}
+
+
+.dashboard {
+	position:absolute;
+	left:740px;
+	top:25px;
+	width: 240px;
+	height: 120px;
+}
+
+.dashboard H1 {
+	margin-bottom:5px;
+}
+
+
 /*...........................................    
 
     Forms
@@ -1052,6 +1095,32 @@ INPUT.priority {
 	display:block;
 }
 
+/*...........................................    
+
+    accessori e varie
+
+...........................................*/
+
+.evidence {
+	font-size: 1.3em;
+}
+
+.messageboard {
+	font-size:1em;
+	line-height:1.2em;
+	overflow:auto; 
+	background-color:#FFFFFF; 
+	border:0px solid #999999;
+	height:120px;
+	
+}
+
+.messageboard HR {
+	border-color: silver;
+	border-style:dotted;
+	
+}
+
 
 /*...........................................    
 
@@ -1139,7 +1208,7 @@ INPUT.priority {
 	width:100%;
 	top:0px;
 	left:0px;
-	background-color:black;
+	background-color:#000;
 	opacity:0.8;
 	z-index:499;
 	display:none;
@@ -1182,7 +1251,7 @@ INPUT.priority {
 	background-color:#000000;
 	width:480px;
 	height:20px;
-	padding-top:5px;
+	padding:5px;
 	padding-right:20px;
 	text-align:right;
 	color:white;
@@ -1195,49 +1264,9 @@ INPUT.priority {
 
 
 
-/*...........................................    
-
-    Specific template layout: home
-
-...........................................*/
-
-
-.home UL.modules {
-	width:710px;
-	height:280px;
-}
-
-LI.welcome {
-	width: 260px;
-	background:transparent none;
-	font-size:1em; 
-	color:#000000;
-	padding-top:5px;
-	padding-bottom:15px;
-}
-
-LI.colophon {
-	background:transparent none;
-	font-size:1em; color:#000000;
-}
-
-
-.dashboard {
-	position:absolute;
-	left:740px;
-	top:25px;
-	width: 240px;
-	height: 120px;
-}
-
-.dashboard H1 {
-	margin-bottom:5px;
-}
-
-
 /*...........................................
  
-	 Specific template layout: publishing
+	areas section
 
 ...........................................*/
 
@@ -1251,60 +1280,52 @@ TABLE.areaform {
 }
 .areaform TH {
 	width:100px;
+	
 }
+	
+
+
 
 
 /*...........................................    
 
-    accessories
+    varie
 
 ...........................................*/
 
-.evidence {
-	font-size: 1.3em;
-}
 
-.messageboard {
-	font-size:1em;
-	line-height:1.2em;
-	overflow:auto; 
-	background-color:#FFFFFF; 
-	border:0px solid #999999;
-	height:120px;
-	
-}
 
-.messageboard HR {
-	border-color: silver;
-	border-style:dotted;
-	
+.todo {
+	background-color: gold;
+	padding:40px;
+	font: normal 12px Courier 
 }
 
 .editornotes {
 	line-height: 16px!important; width:156px; 
 	font:normal 12px Arial,Helvetica, sans-serif;
-	color: #9a5830; 
-	background:white url('../img/sfo_zebranotes.gif'); 
-	border:0px;
+	color: #9a5830;
+	background: transparent url('../img/sfo_zebranotes.gif'); 
 }
 
-.listobjnav  {
-	text-align:center;
-	padding:10px;
+/* bordi tondi? */
+
+INPUT[type=text],INPUT[type=password], .tab H2,  .tab2 H2, .modules label, .modules LI {
+
+/*
+-moz-border-radius : 70px; 
+*/
+
+	
 }
 
-.listobjnav  A {
-	font-size:4em;
-	color:#666666;
+INPUT[type=text],INPUT[type=password], textarea {	
+	border-radius : 7px; 
+	-moz-border-radius : 7px; 
+	-webkit-border-radius : 7px;	
 }
+	
+/*
+	
 
-.listobjnav  A:Hover {
-	color:#000000;
-}
-
-
-
-
-
-
-
+*/

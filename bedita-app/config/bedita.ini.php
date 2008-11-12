@@ -392,9 +392,9 @@ $config['statusOptions'] = array(
 $config['langOptions'] = array(
 	"ita"	=> "italiano",
 	"eng"	=> "english",
-	"spa"	=> "espa&ntilde;ol",
-	"por"	=> "portugu&ecirc;s",
-	"fra"	=> "fran&ccedil;ais",
+	"spa"	=> "español",
+	"por"	=> "portuguěs",
+	"fra"	=> "français",
 	"deu"	=> "deutsch"
 ) ;
 
@@ -402,7 +402,7 @@ $config['langOptions'] = array(
 $config['langsSystem'] = array(
 	"ita"	=> "italiano",
 	"eng"	=> "english",
-	"por"	=> "portugu&ecirc;s",
+	"por"	=> "portuguěs",
 	"deu"	=> "deutsch"
 ) ;
 
