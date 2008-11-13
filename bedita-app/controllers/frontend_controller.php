@@ -44,6 +44,9 @@ abstract class FrontendController extends AppController {
 	 * $uses & $components array don't work... (abstract class ??)
 	 */
 	final protected function initAttributes() {
+		if(!isset($this->BEObject)) {
+			$this->BEObject = $this->loadModelByType('BEObject');
+		}
 		if(!isset($this->Section)) {
 			$this->Section = $this->loadModelByType('Section');
 		}
@@ -57,12 +60,21 @@ abstract class FrontendController extends AppController {
 		if(!isset($this->Tree)) {
 			$this->Tree = $this->loadModelByType('Tree');
 		}
-		if(!isset($this->BEObject)) {
-			$this->BEObject = $this->loadModelByType('BEObject');
-		}
 		$conf = Configure::getInstance() ;
 		if (!empty($conf->draft))
 			$this->status[] = "draft";
+			
+		// check publication status		
+		$pubStatus = $this->BEObject->field("status", array("nickname" => Configure::read("frontendNickname")));
+		
+		if ($pubStatus != "on") {
+			$this->status = array('on', 'off', 'draft');
+			$this->set('publication', $this->loadObj(Configure::read("frontendAreaId")));
+			throw new BeditaPublicationException($pubStatus);
+		} else {
+			// set publication data for template
+			$this->set('publication', $this->loadObj(Configure::read("frontendAreaId")));
+		}
 	}
 
 	/**
@@ -156,16 +168,23 @@ abstract class FrontendController extends AppController {
 	
 	public static function handleExceptions(Exception $ex) {
 
-		if($ex instanceof BeditaException) {
-			$errTrace =  $ex->errorTrace();   
+		if ($ex instanceof BeditaPublicationException) {
+			$currentController = AppController::currentController();
+			echo $currentController->render(false, $ex->status);
 		} else {
-			$errTrace =  get_class($ex)." -  ". $ex->getMessage().
-				"\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+			
+			if($ex instanceof BeditaException) {
+				$errTrace =  $ex->errorTrace();   
+			} else {
+				$errTrace =  get_class($ex)." -  ". $ex->getMessage().
+					"\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+			}
+			include_once (APP . 'app_error.php');
+			return new AppError('handleExceptionFrontend', 
+					array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
+					'result' => $ex->result), $errTrace);
+					
 		}
-		include_once (APP . 'app_error.php');
-		return new AppError('handleExceptionFrontend', 
-				array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
-				'result' => $ex->result), $errTrace);
 	}
 	
 	public function handleError($eventMsg, $userMsg, $errTrace) {
@@ -723,5 +742,17 @@ abstract class FrontendController extends AppController {
 	public function getStatus() {
 		return $this->status;
 	}
+}
+
+
+// Exception class
+class BeditaPublicationException extends BeditaException {
+	
+	public $status;
+	
+	public function __construct($status) {
+   		$this->status = $status;
+    }
+	
 }
 ?>
