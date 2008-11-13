@@ -45,7 +45,8 @@ Menu a DX
 	<br />
 	<br />
 	
-	<input type="button" title="Io sono un test per la modale" rel="{$html->url('/testmodal.html')}" class="modalbutton" value="modal test example" />
+	
+	<input type="button" title="Io sono un test per la modale" rel="{$html->webroot}testmodal.html'" class="modalbutton" value="modal test example" />
 		
 		
 	<ul style="margin:10px 0px 10px 0px; border:1px solid gray; border-width:1px 0px 1px 0px">
