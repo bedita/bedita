@@ -64,10 +64,19 @@ class GalleriesController extends ModulesController {
 	}
 
 	protected function forward($action, $esito) {
-		$REDIRECT = array("save"	=> 	array("OK"	=> "./view/{$this->Gallery->id}",
-		                                      "ERROR"	=> "./view/{$this->Gallery->id}"),
-						"delete"	=> 	array("OK"	=> "./",
-						                      "ERROR"	=> "./view/{@$this->params['pass'][0]}"));
+		$REDIRECT = array("cloneObject"	=> 	array(
+							"OK"	=> "/galleries/view/".@$this->Gallery->id,
+							"ERROR"	=> "/galleries/view/".@$this->Gallery->id 
+							),
+						"save"	=> 	array(
+							"OK"	=> "./view/{$this->Gallery->id}",
+							"ERROR"	=> "./view/{$this->Gallery->id}"
+							),
+						"delete"	=> 	array(
+							"OK"	=> "./",
+							"ERROR"	=> "./view/{@$this->params['pass'][0]}"
+							)
+						);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito];
 		return false;
 	}
