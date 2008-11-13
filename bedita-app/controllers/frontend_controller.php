@@ -99,8 +99,7 @@ abstract class FrontendController extends AppController {
 				$this->currLang = $conf->Config['language'];
 
 				if(!array_key_exists($this->currLang, $conf->frontendLangs)) {
-					if (isset($conf->frontendLangsMap)) {
-						$lang = $conf->frontendLangsMap[$this->currLang];
+					if (isset($conf->frontendLangsMap) && $lang = $conf->frontendLangsMap[$this->currLang]) {
 						$this->currLang = (!empty($lang))? $lang : $conf->frontendLang;
 					} else {
 						$this->currLang = $conf->frontendLang;
