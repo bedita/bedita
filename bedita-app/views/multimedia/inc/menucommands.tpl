@@ -54,41 +54,22 @@ $(document).ready(function(){
 	
 	{/if}
 
-	{if $method == "index"}	
+	{assign var='cat' value=$categorySearched|default:''}
+
+	{if $method == "index"}
 		<ul class="menuleft insidecol">
 			<li><a href="javascript:void(0)" onClick="$('#mediatypes').slideToggle();">{t}Select by type{/t}</a></li>
 				<ul id="mediatypes" style="display:none">
 					
-					<li class="ico_image">
-						Image
+					{foreach from=$conf->mediaTypes item="media_type"}
+					<li class="ico_{$media_type} {if $cat==$media_type}on{/if}">
+						<a href="{$html->url('/multimedia')}/index/category:{$media_type}">
+						{$media_type}
+						</a>
 					</li>
-					<li class="ico_video">
-						Video
-					</li>
-					<li class="ico_audio">
-						Audio
-					</li>
-					<li class="ico_text">
-						Text
-					</li>
-					<li class="ico_spreadsheet">
-						Spreadsheet
-					</li>
-					<li class="ico_presentation">
-						Presentation
-					</li>
-					<li class="ico_drawing">
-						Drawing
-					</li>
-					<li class="ico_chart">
-						Chart
-					</li>
-					<li class="ico_formula">
-						Formula
-					</li>
-					
+					{/foreach}
 					<li class="ico_all">
-						All
+						<a href="{$html->url('/multimedia')}">All</a>
 					</li>
 				
 				</ul>

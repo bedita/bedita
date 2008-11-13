@@ -422,6 +422,9 @@ $config['langsIso'] = array();
 // add langs.iso.php to language options for content 
 $config['langOptionsIso'] = true;
 
+// media types for multimedia association
+$config['mediaTypes'] = array('image','video','audio','text','spreadsheet','presentation','drawing','chart','formula');
+
 /**
  * 
  * Options selezione tipologia Cutom properties
@@ -536,4 +539,8 @@ $config['searchFields'] = array() ;
  */
 $config['newsletterCss'] = "base.css";
 
+/**
+ * Default value in milliseconds, between autosave of objects (status draft or off)
+ */
+$config['autosaveTime'] = 120000; // two minutes
 ?>
