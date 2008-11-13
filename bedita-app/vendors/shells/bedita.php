@@ -632,13 +632,12 @@ class BeditaShell extends Shell {
 		// mediaRoot, mediaUrl
 		$this->out("Checking media dir and url");
 		$mediaRoot = Configure::read("mediaRoot");
-		$this->checkAppDirPerms($mediaRoot);
+		@$this->checkAppDirPerms($mediaRoot);
 		$mediaUrl = Configure::read("mediaUrl");
 		@$this->checkAppUrl($mediaUrl);
 
 		// database connection
-		$this->out("Checking database connection");
-		$this->checkAppDbConnection();
+		@$this->checkAppDbConnection();
     }
 
     private function checkAppDirPerms($dirPath) {
@@ -646,12 +645,20 @@ class BeditaShell extends Shell {
     }
 
 	private function checkAppDbConnection() {
+		$dbCfg = 'default';
+		if (isset($this->params['db'])) {
+			$dbCfg = $this->params['db'];
+		}
+		$db1 = ConnectionManager::getDataSource($dbCfg);
+		$hostName = $db1->config['host'];
+		$dbName = $db1->config['database'];
+		$this->out("Checking database connection: $dbCfg - [host=".$hostName.", database=".$dbName."]");
 		$db = ConnectionManager::getInstance();
-		$connected = $db->getDataSource('default'); 
+		$connected = $db->getDataSource($dbCfg); 
 		if ($connected->isConnected()) {
-			$this->out('Database connection: ok');
+			$this->out("Database connection: ok");
 		} else {
-			$this->out('Database connection: unable to connect to default db');
+			$this->out("Database connection: unable to connect");
 		}
 	}
 
