@@ -206,10 +206,12 @@ class BEObject extends BEAppModel
 		}
 		$this->unbindModel(array("hasMany"=>array("LangText")));
 
-		// unbind relations type. Save it in aftersave
-		$this->restoreRelatedObject = $this->hasMany['RelatedObject'];
-		$this->unbindModel( array('hasMany' => array('RelatedObject')) );
-		
+		// unbind relations type (if present). Save it in aftersave
+		$this->restoreRelatedObject = array(); 
+		if(!empty($this->hasMany['RelatedObject'])) {
+			$this->restoreRelatedObject = $this->hasMany['RelatedObject'];
+			$this->unbindModel( array('hasMany' => array('RelatedObject')) );
+		}
 		return true ;
 	}
 	

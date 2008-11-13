@@ -75,7 +75,11 @@ class GalleriesController extends ModulesController {
 						"delete"	=> 	array(
 							"OK"	=> "./",
 							"ERROR"	=> "./view/{@$this->params['pass'][0]}"
-							)
+							),
+						"changeStatusObjects"	=> 	array(
+							"OK"	=> "/galleries",
+							"ERROR"	=> "/galleries" 
+						)	
 						);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito];
 		return false;

@@ -506,6 +506,7 @@ abstract class ModulesController extends AppController {
 	public function changeStatusObjects($modelName=null) {
 		$objectsToModify = array();
 		$objectsListDesc = "";
+		$beObject = ClassRegistry::init("BEObject");
 		
 		if(!empty($this->params['form']['objects_selected'])) {
 			$objectsToModify = $this->params['form']['objects_selected'];
@@ -518,7 +519,7 @@ abstract class ModulesController extends AppController {
 			foreach ($objectsToModify as $id) {
 				$model = $this->loadModelByType($modelName);
 				
-				if ($this->BEObject->isFixed($id)) {
+				if ($beObject->isFixed($id)) {
 					throw new BeditaException(__("Error: changing status to a fixed object!", true));
 				}
 				$model->id = $id;
