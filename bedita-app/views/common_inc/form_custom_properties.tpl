@@ -1,9 +1,6 @@
-		
+{*
 <script type="text/javascript">
 {literal}
-/*
-Script per la gestione delle custom properties
-*/
 var postfix_customProp = "_customPropTR" ;
 
 $(document).ready(function(){
@@ -145,3 +142,4 @@ function deleteTRCustomProp(el) {
 </table>
 
 </fieldset>
+*}
