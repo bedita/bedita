@@ -37,6 +37,7 @@ $config['frontendLangsMap'] = array(
 	"it"	=> "ita",
 	"en"	=> "eng",
 	"en_us"	=> "eng",
+	"en-us"	=> "eng",
 	"en_gb"	=> "eng"
 ) ;
 								
