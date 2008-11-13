@@ -628,11 +628,40 @@ class BeditaShell extends Shell {
         $this->checkAppDirPerms($appPath.DS."tmp".DS."smarty".DS."compile");
         // tmp/logs
         $this->checkAppDirPerms($appPath.DS."tmp".DS."logs");
+
+		// mediaRoot, mediaUrl
+		$this->out("Checking media dir and url");
+		$mediaRoot = Configure::read("mediaRoot");
+		$this->checkAppDirPerms($mediaRoot);
+		$mediaUrl = Configure::read("mediaUrl");
+		@$this->checkAppUrl($mediaUrl);
+
+		// database connection
+		$this->out("Checking database connection");
+		$this->checkAppDbConnection();
     }
 
     private function checkAppDirPerms($dirPath) {
        $this->out("$dirPath - perms: ".sprintf("%o",(fileperms($dirPath) & 511)));
     }
+
+	private function checkAppDbConnection() {
+		$db = ConnectionManager::getInstance();
+		$connected = $db->getDataSource('default'); 
+		if ($connected->isConnected()) {
+			$this->out('Database connection: ok');
+		} else {
+			$this->out('Database connection: unable to connect to default db');
+		}
+	}
+
+	private function checkAppUrl($url) {
+		if(get_headers($url)) {
+			$this->out("$url: ok.");
+		} else {
+			$this->out("$url: unreachable.");
+		}
+	}
 
     private function checkAppFile($filePath) {
         if(!file_exists($filePath)) {
