@@ -276,12 +276,14 @@ class BEObject extends BEAppModel
 			}
 		}
 		
-		$this->bindModel( array(
-			'hasMany' => array(
-					'RelatedObject' => $this->restoreRelatedObject
-				)
-			) 
-		);
+		if(!empty($this->restoreRelatedObject)) {
+			$this->bindModel( array(
+				'hasMany' => array(
+						'RelatedObject' => $this->restoreRelatedObject
+					)
+				) 
+			);
+		}
 		// save realtions between objects
 		if (!empty($this->data['BEObject']['RelatedObject'])) {
 			
