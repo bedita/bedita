@@ -369,7 +369,7 @@ class BEObject extends BEAppModel
 	function beforeValidate() {
 		if(isset($this->data[$this->name])) $data = &$this->data[$this->name] ;
 		else $data = &$this->data ;
-		
+		$data['title'] = trim($data['title']);
 	 	$default = array(
 			'lang' 				=> array('_getDefaultLang', 		(isset($data['lang']))?$data['lang']:null),
 			'ip_created' 		=> array('_getDefaultIP',			(isset($data['ip_created']))?$data['ip_created']:null),

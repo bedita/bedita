@@ -64,6 +64,7 @@ class AdminController extends ModulesController {
 			$formGroups[$g['Group']['name']] = $isGroup;
 		}
 		$this->set('users', $this->User->findAll());
+		$this->set('usersNoCard', $this->User->findAll());
 		$this->set('formGroups',  $formGroups);
 		$this->layout = null;
 	}

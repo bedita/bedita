@@ -37,7 +37,17 @@ class User extends BEAppModel
 		'pasword'  => VALID_NOT_EMPTY,
 	);
 
-	var $hasAndBelongsToMany = array('Group');
+	var $hasAndBelongsToMany = array(
+			'Group',
+			'Card' =>
+				array(
+					'className'    => 'Card',
+					'joinTable'       => 'object_users',
+					'foreignKey'      => 'user_id',
+					'associationForeignKey' => 'object_id',
+					'unique'    => true
+				)
+			);
 
 	var $hasMany = array(
 		'Permission' =>

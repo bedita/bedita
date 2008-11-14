@@ -70,11 +70,13 @@ $(document).ready(function() {
 		<th style="width:50%">{t}realname{/t}</th>
 	</tr>
 	{foreach from=$users item=u}
+	{if empty($u.Card)}
 	<tr>
 		<td style="text-align:right"><input type="radio" class="uradio" value="{$u.User.id}" name="{$u.User.userid}" /></td>
 		<td>{$u.User.userid}</td>
 		<td>{$u.User.realname}</td>
 	</tr>
+	{/if}
 	{/foreach}
 </table>
 
