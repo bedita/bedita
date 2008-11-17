@@ -81,7 +81,7 @@ jQuery.fn.extend({
 				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');	// pulse effect
 			});
 		}
-	},
+	}
 
 
 });
