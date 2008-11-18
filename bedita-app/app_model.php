@@ -103,6 +103,18 @@ class BEAppModel extends AppModel {
 			$data[$key] = null;
 		}
 	}
+
+	/**
+	 * Check integer/generic number in $this->data[ModelName][$key] -> set to null if empty
+	 *
+	 * @param string $key
+	 */
+	protected function checkNumber($key) {
+		$data = &$this->data[$this->name];
+		if(empty($data[$key])) {
+			$data[$key] = null;
+		}
+	}
 	
 	/**
 	 * Default text format

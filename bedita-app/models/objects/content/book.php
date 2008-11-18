@@ -30,5 +30,65 @@
  */
 class Book extends BeditaContentModel 
 {
+	public $searchFields = array("title" => 10 , "description" => 6, 
+		"subject" => 4, "abstract" => 4, "isbn" => 10, "editor" => 4);	
+	
+	var $actsAs 	= array(
+			'CompactResult' 		=> array(),
+			'SearchTextSave',
+			'ForeignDependenceSave' => array('BEObject', 'Content'),
+			'DeleteObject' 			=> 'objects',
+	); 
+	
+	var $hasOne= array(
+			'BEObject' => array(
+					'className'		=> 'BEObject',
+					'conditions'   => '',
+					'foreignKey'	=> 'id',
+					'dependent'		=> true
+				),
+			'Content' => array(
+					'className'		=> 'Content',
+					'conditions'   => '',
+					'foreignKey'	=> 'id',
+					'dependent'		=> true
+				)
+		);
+	
+
+	protected $modelBindings = array( 
+				"detailed" =>  array("BEObject" => array("ObjectType", 
+															"UserCreated", 
+															"UserModified", 
+															"Permissions",
+															"ObjectProperty",
+															"LangText",
+															"RelatedObject",
+															"Category"
+															),
+									 "Content"
+									),
+				"default" => array("BEObject" => array("ObjectProperty", 
+									"LangText", "ObjectType", 
+									"Category", "RelatedObject"), "Content"),
+									
+				"minimum" => array("BEObject" => array("ObjectType"))
+	);
+	
+//	TODO: validation rules for year, ISBN
+//	var $validate = array(
+//		"subject" => array(
+//			"rule" 			=> array('custom', '/.+/') ,
+//			"required" 		=> true,
+//			"message" 		=> "Subject required"
+//		)
+//	);
+	
+	
+	function beforeValidate() {
+		$this->checkNumber('year');
+        return true;
+	}
+	
 }
 ?>

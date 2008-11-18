@@ -66,7 +66,7 @@ tinyMCE.init({
 		<td><input type="text" name="data[publisher]" value="{$object.publisher|default:''}" /></td>
 		
 		<th>{t}year{/t}:</th>
-		<td><input type="text" style="width:30px" name="data[year]" value="{$object.year|default:''}" /></td>
+		<td><input type="text" style="width:30px" name="data[year]" value="{$object.year|default:''}" size="4" maxlength="4" /></td>
 		
 	</tr>
 	<tr>
