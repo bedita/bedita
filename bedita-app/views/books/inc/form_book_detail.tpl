@@ -50,7 +50,7 @@ tinyMCE.init({
 	</tr>
 	<tr>
 		<th>{t}subtitle{/t}:</th>
-		<td colspan="4"><textarea id="subtitle" style="height:30px" class="shortdesc autogrowarea" name="data[description]">{$object.description|default:''|escape:'html'}</textarea></td>
+		<td colspan="4"><textarea id="subtitle" style="width:380px; height:30px" class="shortdesc autogrowarea" name="data[description]">{$object.description|default:''|escape:'html'}</textarea></td>
 	</tr>
 	<tr>
 		<th>{t}author/s{/t}:</th>
@@ -64,7 +64,13 @@ tinyMCE.init({
 	<tr>
 		<th>{t}publisher{/t}:</th>
 		<td><input type="text" name="data[publisher]" value="{$object.publisher|default:''}" /></td>
-		
+		<th>{t}series{/t}:</th>
+		<td><input type="text" name="data[series]" value=""/></td>
+
+	</tr>
+	<tr>
+		<th>{t}place{/t}:</th>
+		<td><input type="text" name="data[place]" value=""/></td>
 		<th>{t}year{/t}:</th>
 		<td><input type="text" style="width:30px" name="data[year]" value="{$object.year|default:''}" size="4" maxlength="4" /></td>
 		
@@ -93,8 +99,36 @@ tinyMCE.init({
 		</td>
 	</tr>
 
-	
 </table>
+
+<hr />
+
+<table>
+	<tr>
+		<th>{t}collocazione{/t}:</th>
+		<td><input type="text" name="data[collocazione]" value=""/></td>
+		<td rowspan="4">
+			qui in futuro un bel lettore di codice a barre via webcam?
+			<br>
+			http://en.barcodepedia.com/download
+			<br>
+			http://scan.jsharkey.org/
+		</td>
+	</tr>
+	<tr>
+		<th>{t}code{/t}:</th>
+		<td><input type="text" name="data[inventario]" value=""/></td>
+	</tr>
+	<tr>
+		<th>{t}weight{/t}:</th>
+		<td><input type="text" name="data[weight]" value=""/></td>
+	</tr>
+	<tr>
+		<th>{t}dimensions{/t}:</th>
+		<td><input type="text" name="data[dimensions]" value=""/></td>
+	</tr>
+</table>
+
 
 
 </fieldset>
