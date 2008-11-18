@@ -138,25 +138,6 @@ $(document).ready(function(){
 							</select>
 			<input id="changestatusSelected" type="button" value=" ok " />
 	<hr />
-	
-	{if !empty($tree)}
-			
-
-			
-			<select style="width:75px">
-				<option> {t}copy{/t} </option>
-				<option> {t}move{/t} </option>
-			</select>
-			
-			  &nbsp;to:  &nbsp;
-			
-			<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
-			{$beTree->option($tree)}
-			</select>
-			
-			<input id="assocObjects" type="button" value=" ok " />
-	<hr />
-	{/if}
 
 	
 	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>

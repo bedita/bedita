@@ -23,6 +23,9 @@ $(document).ready(function(){
 <input type="hidden" name="data[title]" value="{$object.title|default:''}" />
 <input type="hidden" name="data[nickname]" value="{$object.nickname|default:''}" />
 
+<div class="tab"><h2>comment#{$object.id} on </h2></div>
+
+<fieldset id="details">
 <table class="bordered">
 		
 	<tr>
@@ -39,7 +42,7 @@ $(document).ready(function(){
 	
 		<th>{t}Text{/t}:</th>
 		<td colspan="3">
-		<textarea name="data[description]">{$object.description|default:''}</textarea>
+		<textarea style="height:120px; width:380px;" name="data[description]">{$object.description|default:''}</textarea>
 		</td>
 	
 	</tr>
@@ -100,5 +103,17 @@ $(document).ready(function(){
 	{/if}
 	
 </table>
+</fieldset>
+
+<div class="tab"><h2>{t}altro{/t}</h2></div>
+<fieldset id="altro">
+<ul>
+	<li>vedi altri commenti da questo IP</li>
+	<li>vedi altri commenti da questa email</li>
+	<li>vedi altri commenti a questa notizia</li>
+</ul>
+</fieldset>
+
+
 
 </form>
