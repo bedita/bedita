@@ -1,6 +1,17 @@
 
 {$javascript->link("jquery/jquery.form")}
 
+{literal}
+<script type="text/javascript">
+    $(document).ready(function(){
+		
+		var openAtStart ="#details,#altro";
+		$(openAtStart).prev(".tab").BEtabstoggle();
+		
+    });
+</script>
+{/literal}
+
 </head>
 
 <body>
