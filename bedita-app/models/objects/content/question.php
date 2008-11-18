@@ -114,7 +114,7 @@ class Question extends BEAppObjectModel
 	function beforeDelete() {
 		// Preleva l'elenco delle risposte
 		$this->bviorCompactResults 	= true ;
-		$this->bviorHideFields		= array("Index", "CustomProperties", "Permission", "Version", "langObjs", "images", "attachments", "multimedia", "links") ;
+		$this->bviorHideFields		= array("Index", "ObjectProperty", "Permission", "Version", "langObjs", "images", "attachments", "multimedia", "links") ;
 		$domanda = $this->findById($this->{$this->primaryKey}) ;
 		
 		for ($i=0; $i < count($domanda['answers']) ; $i++) {

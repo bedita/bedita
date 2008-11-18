@@ -39,10 +39,10 @@ class Area extends BeditaCollectionModel
 										"UserCreated", 
 										"UserModified", 
 										"Permissions",
-										"CustomProperties",
+										"ObjectProperty",
 										"LangText")),
 
-       			"default" => array("BEObject" => array("CustomProperties", 
+       			"default" => array("BEObject" => array("ObjectProperty", 
 									"LangText", "ObjectType")),
 
 				"minimum" => array("BEObject" => array("ObjectType"))		

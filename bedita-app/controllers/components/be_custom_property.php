@@ -35,9 +35,6 @@ class BeCustomPropertyComponent extends Object {
 	
 	var $controller			= null ;
 	
-	function __construct() {
-	} 
-	
 	/**
 	 * @param object $controller
 	 */
@@ -78,30 +75,58 @@ class BeCustomPropertyComponent extends Object {
 	}
 	
 	/**
-	 * Formatta, per salvataggio, le custom properties passate
-	 *
-	 * @param unknown_type $data
+	 * unset property with empty property_value field from data form 
 	 */
-	function setupForSave(&$data) {
-		$tmp = array() ;
-		if(!@count($data)) return ;
-		
-		foreach($data as $name => $value) {
-//			if(!(isset($value["name"])  && isset($value["type"]) && isset($value["value"]))) continue ;
-			
-			switch($value["type"]) {
-				case "integer" : 	{ settype($value["value"], "integer") ; } break ;
-				case "bool" : 		{ settype($value["value"], "boolean") ; } break ;
-				case "float" : 		{ settype($value["value"], "double") ; } break ;
-				case "string" :		{ settype($value["value"], "string") ; } break ;
+	function setupForSave() {
+		if (!empty($this->controller->data["ObjectProperty"])) {
+			$objProp = array();
+			foreach($this->controller->data["ObjectProperty"] as $key => $value) {
+				
+				if (!empty($value["property_value"])) {
+					$value["property_value"] = trim($value["property_value"]);
+					
+					if (!empty($value["property_value"])) {
+						$objProp[] = $value;
+					}
+					
+				} 
 			}
 			
-			$tmp[$name] = $value["value"] ;
+			$this->controller->data["ObjectProperty"] = $objProp;
 		}
 		
-		$data = $tmp ;
 	}
 	
+	
+	/**
+	 * set property array of object for view
+	 *
+	 * @param array $obj, array of object data 
+	 * @param int $object_type_id
+	 * @return array
+	 */
+	function setupForView(&$obj, $object_type_id=null) {
+		$property = array();
+		
+		if (!empty($obj) || !empty($object_type_id)) {
+		
+			if (empty($obj["ObjectProperty"])) {
+				$propertyModel = ClassRegistry::init("Property");
+				$object_type_id = (!empty($obj["object_type_id"]))? $obj["object_type_id"] : $object_type_id;
+				$property = $propertyModel->find("all", array(
+								"conditions" => array("object_type_id" => $object_type_id),
+								"contain" => array("PropertyOption")
+							)
+						);
+			} else {
+				$property = $obj["ObjectProperty"];
+				unset($obj["ObjectProperty"]);
+			}
+			
+		}
+		
+		return $property;
+	}
 }
 
 ?>

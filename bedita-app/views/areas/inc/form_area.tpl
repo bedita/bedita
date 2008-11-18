@@ -135,7 +135,7 @@
 </fieldset>
 
 	{include file="../common_inc/form_translations.tpl" object=$object|default:null}
-	{include file="../common_inc/form_custom_properties.tpl" el=$object|default:null}
+	{include file="../common_inc/form_custom_properties.tpl"}
 	{include file="../common_inc/form_permissions.tpl" el=$object|default:null recursion=true}
 	
 

@@ -28,26 +28,12 @@
  * 
  * $Id$
  */
-class ShortNews extends BeditaContentModel
-{
-	   var $useTable = 'contents';	
-
-      protected $modelBindings = array( 
-				"detailed" =>  array("BEObject" => array("ObjectType", 
-															"UserCreated", 
-															"UserModified", 
-															"Permissions",
-															"ObjectProperty",
-															"LangText",
-															"RelatedObject",
-															"Category")),
-
-       			"default" => array("BEObject" => array("ObjectProperty", 
-									"LangText", "ObjectType", 
-									"Category", "RelatedObject" )),
-
-				"minimum" => array("BEObject" => array("ObjectType"))		
-		);
-	   
+class Property extends BEAppModel  {
+	
+	var $actsAs = array("CompactResult" => array("PropertyOption", "ObjectProperty"));
+ 	
+	var $hasMany = array("PropertyOption", "ObjectProperty");
+ 	
 }
+ 
 ?>

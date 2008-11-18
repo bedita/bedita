@@ -78,9 +78,9 @@ class BEObject extends BEAppModel
 				'dependent'		=> true
 			),
 			
-		'CustomProperties' =>
+		'ObjectProperty' =>
 			array(
-				'className'		=> 'CustomProperty',
+				'className'		=> 'ObjectProperty',
 				'foreignKey'	=> 'object_id',
 				'dependent'		=> true
 			),			
@@ -114,7 +114,7 @@ class BEObject extends BEAppModel
 				'associationForeignKey'	=> 'category_id',
 				'unique'				=> true
 			),
-		 'User' =>
+		'User' =>
 			   array(
 			    'className'    => 'User',
 			    'joinTable'       => 'object_users',
@@ -129,29 +129,42 @@ class BEObject extends BEAppModel
 	 */	
 	function afterFind($result) {
 		
-		if(isset($result['CustomProperties'])) {
-		
-			// Formatta le custom properties
-			$props 	= &$result['CustomProperties'] ;
-			$tmps 	= array() ;
+		// format object properties
+		if(!empty($result['ObjectProperty'])) {
+			$propertyModel = ClassRegistry::init("Property");
+			$property = $propertyModel->find("all", array(
+								"conditions" => array("object_type_id" => $result["object_type_id"]),
+								"contain" => array("PropertyOption")
+							)
+						);
 			
-			$size = count($result['CustomProperties']) ;
-			for($i=0; $i < $size ; $i++) {
-				$record = &$props[$i] ;
-					
-				// carica le proprieta' custom
-				$val = null ;
-				switch($record["type"]) {
-					case "integer" : 	{ $val = $record["integer"] ; settype($val, "integer") ; } break ;
-					case "bool" : 		{ $val = $record["bool"] ; settype($val, "boolean") ; } break ;
-					case "float" : 		{ $val = $record["float"] ; settype($val, "double") ; } break ;
-					case "string" :		{ $val = $record["string"] ; settype($val, "string") ; } break ;
-					case "stream" :		{ $val = unserialize($record["stream"]); } break ;
+			foreach ($property as $keyProp => $prop) {
+				
+				foreach ($result["ObjectProperty"] as $k => $value) {
+					if ($value["property_id"] == $prop["id"]) {
+						if ($prop["multiple_choice"] != 0) {
+							$property[$keyProp]["value"][] = $value;
+						} else { 
+							$property[$keyProp]["value"] = $value;
+						}
+						
+						// set selected to true in PropertyOption array
+						if (!empty($prop["PropertyOption"])) {
+							foreach ($prop["PropertyOption"] as $n => $option) {
+								if ($option["property_option"] == $value["property_value"]) {
+									$property[$keyProp]["PropertyOption"][$n]["selected"] = true;
+								}
+							}
+						}
+						
+						unset($result["ObjectProperty"][$k]);
+					}
 				}
-					
-				$tmps[$record['name']] = $val ;
+				
 			}
-			$result['CustomProperties'] = $tmps ;
+			$result["ObjectProperty"] = $property;
+//			pr($property);
+			unset($property);
 		}
 		
 		// set up LangText for view
@@ -189,7 +202,7 @@ class BEObject extends BEAppModel
 
 	function beforeSave() {
 		// format custom properties and searchable text fields
-		$labels = array('CustomProperties', 'SearchText');
+		$labels = array('SearchText');
 		foreach ($labels as $label) {
 		  if(!isset($this->data[$this->name][$label])) 
 			continue ;
@@ -237,9 +250,11 @@ class BEObject extends BEAppModel
 			$db->query("DELETE FROM {$table} WHERE {$foreignK} = '{$id}'");
 			
 			// Se non ci sono dati da salvare esce
-			if(!isset($this->data[$this->name][$name])) continue ;
+			if(!isset($this->data[$this->name][$name]))
+				continue ;
 			
-			if (!(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name]))) continue ;
+			if (!(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name])))
+				continue ;
 			
 			// Salva le nuove associazioni
 			$size = count($this->data[$this->name][$name]) ;
@@ -252,6 +267,7 @@ class BEObject extends BEAppModel
 				
 				unset($modelTmp);
 			}
+						
 		}
 		
 		// Salva eventuali permessi
@@ -416,6 +432,14 @@ class BEObject extends BEAppModel
 		}
 		
 		if(empty($data["user_created"])) unset($data["user_created"]) ;
+		
+		// format custom properties data type
+		if (!empty($data["ObjectProperty"])) {
+			foreach ($data["ObjectProperty"] as $key => $val) {
+				if ($val["property_type"] == "date")
+					$data["ObjectProperty"][$key]["property_value"] = $this->getDefaultDateFormat($val["property_value"]);
+			}
+		}
 		
 		// Se c'e' la chiave primaria vuota la toglie
 		if(isset($data[$this->primaryKey]) && empty($data[$this->primaryKey]))

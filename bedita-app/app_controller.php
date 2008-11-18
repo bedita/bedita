@@ -660,11 +660,14 @@ abstract class ModulesController extends AppController {
 		
 			$previews = $this->previewsForObject($parents_id, $id, $obj['status']);
 		}
+		
+		$property = $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . strtolower($name) . ".id"));
 
 		$this->set('object',	$obj);
 		$this->set('attach', isset($relations['attach']) ? $relations['attach'] : array());
 		$this->set('relObjects', $relations);
 		$this->set('relationsCount', $relationsCount);
+		$this->set('objectProperty', $property);
 		
 		$this->set('parents',	$parents_id);
 		$this->set('tree', 		$this->BeTree->getSectionsTree());
@@ -684,8 +687,8 @@ abstract class ModulesController extends AppController {
 		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
 			throw new BeditaException(__("Error modify permissions", true));
 		// Format custom properties
-		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
-		
+		$this->BeCustomProperty->setupForSave() ;
+
 		$name = strtolower($beModel->name);
 		
 		$categoryModel = ClassRegistry::init("Category");

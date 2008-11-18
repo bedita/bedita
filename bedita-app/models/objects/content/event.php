@@ -38,13 +38,13 @@ class Event extends BeditaContentModel
 													"UserCreated", 
 													"UserModified", 
 													"Permissions",
-													"CustomProperties",
+													"ObjectProperty",
 													"LangText",
 													"RelatedObject",
 													"Category"
 													),
 									"DateItem"),
-				"default" 	=> array("BEObject" => array("CustomProperties", "LangText", 
+				"default" 	=> array("BEObject" => array("ObjectProperty", "LangText", 
 								"ObjectType", "Category", "RelatedObject"),
 								"DateItem"),
 				"minimum" => array("BEObject" => array("ObjectType"))

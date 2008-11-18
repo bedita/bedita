@@ -20,7 +20,6 @@
  */
 
 /**
- * TODO: refactor/remove this class!!
  * 
  * @link			http://www.bedita.com
  * @version			$Revision$
@@ -29,16 +28,8 @@
  * 
  * $Id$
  */
-class CustomProperty extends BEAppModel
-{
-	var $belongsTo = array(
-		'BEObject' =>
-			array(
-				'fields'		=> 'id',
-				'foreignKey'	=> 'object_id',
-			),
-			
-	);				
+class PropertyOption extends BEAppModel  {
+ 	
 }
-
+ 
 ?>

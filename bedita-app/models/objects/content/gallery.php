@@ -37,12 +37,12 @@ class Gallery extends BeditaContentModel
 															"UserCreated", 
 															"UserModified", 
 															"Permissions",
-															"CustomProperties",
+															"ObjectProperty",
 															"LangText",
 															"RelatedObject",
 															"Category")),
 
-       			"default" => array("BEObject" => array("CustomProperties", 
+       			"default" => array("BEObject" => array("ObjectProperty", 
 									"LangText", "ObjectType", 
 									"Category", "RelatedObject" )),
 

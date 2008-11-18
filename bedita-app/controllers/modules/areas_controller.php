@@ -73,8 +73,11 @@ class AreasController extends ModulesController {
 			}
 		}
 		
+		$property = $this->BeCustomProperty->setupForView($area, Configure::read("objectTypes.area.id"));
+		
 		// Data for template
 		$this->set('area',$area);
+		$this->set('objectProperty', $property);
 		// get users and groups list
 		$this->User->displayField = 'userid';
 		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
@@ -90,6 +93,8 @@ class AreasController extends ModulesController {
 		if (!empty($id)) {
 			$this->loadSectionDetails($id,Configure::read("objectTypes.section.id"));
 		} else {
+			$sec = null;
+			$this->set('objectProperty', $this->BeCustomProperty->setupForView($sec, Configure::read("objectTypes.section.id"))) ;
 			$this->set('tree',$this->BeTree->getSectionsTree());
 		}
 	}
@@ -124,7 +129,7 @@ class AreasController extends ModulesController {
 		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
 			throw new BeditaException(__("Error modify permissions", true));
 		// Format custom properties
-		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
+		$this->BeCustomProperty->setupForSave() ;
 		// Format translations for fields
 
 		if(empty($this->data["syndicate"]))
@@ -186,7 +191,7 @@ class AreasController extends ModulesController {
 		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
 				throw new BeditaException( __("Error modifying permissions", true));
 		// Format custom properties
-		$this->BeCustomProperty->setupForSave($this->data["CustomProperties"]) ;
+		$this->BeCustomProperty->setupForSave() ;
 		
 		$this->Transaction->begin() ;
 
@@ -473,14 +478,15 @@ class AreasController extends ModulesController {
 										"UserCreated", 
 										"UserModified", 
 										"Permissions",
-										"CustomProperties",
+										"ObjectProperty",
 										"LangText"
 										)
 						));
 		if(!($collection = $model->findById($id))) {
 			throw new BeditaException(sprintf(__("Error loading section: %d", true), $id));
 		}
-		
+				
+		$this->set('objectProperty', $this->BeCustomProperty->setupForView($collection));
 		$this->set('object',$collection);
 		$this->set('tree', $this->BeTree->getSectionsTree());
 		$this->set('parent_id', $this->Tree->getParent($id));

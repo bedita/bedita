@@ -36,6 +36,7 @@ DROP VIEW IF EXISTS `view_timelines`;
 DROP VIEW IF EXISTS `view_scrolls`;
 DROP VIEW IF EXISTS `view_sections`;
 DROP VIEW IF EXISTS `view_streams`;
+DROP TABLE IF EXISTS `custom_properties`;
 
 -- current tables --
 DROP TABLE IF EXISTS `cake_sessions`;
@@ -85,7 +86,6 @@ DROP TABLE IF EXISTS `groups`;
 DROP TABLE IF EXISTS `event_logs`;
 DROP TABLE IF EXISTS `search_texts`;
 DROP TABLE IF EXISTS `banned_ips`;
-DROP TABLE IF EXISTS `custom_properties`;
 
 CREATE TABLE cake_sessions (
   id varchar(255) NOT NULL default '',
@@ -206,24 +206,6 @@ CREATE TABLE objects (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-
-CREATE TABLE custom_properties (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  object_id INTEGER UNSIGNED NOT NULL,
-  name VARCHAR(255) NOT NULL ,
-  `type` SET('integer','bool','float','string','stream') NULL,
-  `integer` INTEGER UNSIGNED NULL,
-  `bool` BOOL NULL,
-  `float` DOUBLE NULL,
-  `string` MEDIUMTEXT NULL,
-  `stream` MEDIUMBLOB NULL,
-  PRIMARY KEY(id),
-  INDEX custom_properties_FKIndex1(object_id),
-  FOREIGN KEY(object_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE properties (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
