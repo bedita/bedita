@@ -13,14 +13,11 @@ Menu a SX valido per tutte le pagine del controller.
 	{include file="../common_inc/messages.tpl"}
 
 	<ul class="menuleft insidecol">
-	
 	{if $module_modify eq '1'}
 
 		<li><a href="{$html->url('/documents/view')}">{t}Create new document{/t}</a></li>
 
 	{/if}
-
-
 	</ul>
 
 {if !empty($object)}
@@ -57,10 +54,6 @@ Menu a SX valido per tutte le pagine del controller.
 	</div>
 {/if}
 
-
-
-
-	<div id="handlerChangeAlert"></div>
-	
+	{include file="../common_inc/user_module_perms.tpl"}
 
 </div>

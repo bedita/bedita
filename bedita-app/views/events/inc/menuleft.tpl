@@ -28,9 +28,8 @@ Menu a SX valido per tutte le pagine del controller.
 
 {/if}
 
-<div id="handlerChangeAlert"></div>
+	{include file="../common_inc/user_module_perms.tpl"}
 
 </div>
 
 
-{*include file="../pages/user_module_perms.tpl"*}

@@ -58,7 +58,7 @@ $(document).ready(function(){
 
 	
 	
-	<form method="post" action="" id="formObject">
+<form method="post" action="" id="formObject">
 
 	<input type="hidden" name="data[id]"/>
 

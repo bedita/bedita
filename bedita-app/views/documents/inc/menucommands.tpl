@@ -36,8 +36,6 @@ $(document).ready(function(){
 	   <label class="{$moduleName}" rel="{$html->url('/documents')}">{t}{$currentModule.label}{/t}</label>
 	</div> 
 	
-
-	
 	{assign var="user" value=$session->read('BEAuthUser')}
 	
 	{if !empty($method) && $method != "index" && $module_modify eq '1'}
@@ -49,6 +47,18 @@ $(document).ready(function(){
 		{if ($perms->isDeletable($user.userid,$user.groups,$object.Permissions))}
 		<input class="bemaincommands" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" {if !($object.id|default:false)}disabled="1"{/if} />
 		{/if}
+		
+		<div class="listobjnav">
+			<a title="next" href="#">
+				‹
+			</a>
+			
+			
+			<a title="next" href="#">
+				›
+			</a> 
+		</div>
+		
 	</div>
 	
 	{/if}

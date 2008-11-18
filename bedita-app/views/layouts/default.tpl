@@ -9,9 +9,8 @@
 	{$javascript->link("jquery/jquery")}
 	{$javascript->link("jquery/jquery.cookie")}
 	{$javascript->link("jquery/jquery.autogrow")}
-	{$javascript->link("beditaUI")
 	{$javascript->link("jquery/jquery.dimensions")}
-
+	{$javascript->link("beditaUI")}
 
 	{if $moduleName|default:""}
 		{assign_concat var="cssfile" 0=$smarty.const.APP 1="webroot/css/module." 2=$moduleName 3=".css"}
@@ -61,9 +60,7 @@
 {if empty($noFooter)}
 <div id="footerPage">
 
-{include file="../pages/user_module_perms.tpl"}
-
-	<div id="handlerChangeAlert"></div>
+{include file="../common_inc/footer.tpl"}
 
 </div>
 {/if}

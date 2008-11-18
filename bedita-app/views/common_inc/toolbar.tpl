@@ -6,26 +6,26 @@
 		<span style="color:white" class="evidence">{$sectionSel.title}</span> ”
 		{else} {t}all{/t} {t}{$itemName|default:$moduleName}{/t}{/if}</h2>
 		
-		<ul>
-	
-			<li>
+		<table>
+		<tr>
+			<td>
 			<span class="evidence">{$beToolbar->size()}&nbsp;</span> {t}{$itemName|default:$moduleName}{/t}
-			</li>
+			</td>
 			
-			<li>
+			<td>
 				{$beToolbar->first('page','','page')}
 				<span class="evidence"> {$beToolbar->current()} </span> 
 				{t}of{/t} 
 				<span class="evidence"> 
 					{$beToolbar->last($beToolbar->pages(),'',$beToolbar->pages())}
 				</span>
-			</li>
+			</td>
 			
-			<li>{$beToolbar->next('next','','next')}  <span class="evidence"> &nbsp;</span></li>
+			<td>{$beToolbar->next('next','','next')}  <span class="evidence"> &nbsp;</span></td>
 			
-			<li> {$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span></li>
+			<td> {$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span></td>
 			
-			<li> 
+			<td> 
 			
 				<form action="{$html->url('/')}{$moduleName}/index{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">				
 				<span>{t}search{/t}</span> : <span class="evidence"> &nbsp;</span>
@@ -34,10 +34,10 @@
 				<input type="submit" value="{t}go{/t}"/>
 				</form>
 				
-			</li>
+			</td>
 
-
-		</ul>
+		</tr>
+		</table>
 
 	</div>
 

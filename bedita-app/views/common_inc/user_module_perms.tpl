@@ -1,4 +1,4 @@
-<ul class="bordered singola" style="margin-top:100px">
+<ul class="bordered singola" style="margin-top:200px">
 {if !empty($BEAuthUser.userid)}
 	<li>{t}User{/t}: <span class="on">{$BEAuthUser.realname}</span></li>
 	{if isset($module_modify)}
@@ -25,3 +25,6 @@
 	<li><a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a></li>
 {/if}
 </ul>
+
+
+<div id="handlerChangeAlert"></div>

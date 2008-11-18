@@ -31,7 +31,8 @@ Menu a SX valido per tutte le pagine del controller.
 	</ul>
 	*}
 
-
+	{include file="../common_inc/user_module_perms.tpl"}
+	
 </div>
 
 

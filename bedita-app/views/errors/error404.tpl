@@ -14,12 +14,12 @@
 <body>
 
 <div class="primacolonna">
-	<div class="modules"><label class="bedita" rel="{$html->url('/')}">BEdita 3.0</label></div>
+	<div class="modules"><label class="bedita" rel="{$html->url('/')}">BEdita 3.0</label></div>	
 </div>
 
 <div class="secondacolonna">
-	<div id="messagesDiv" style="margin-top:10px;display:block">
-		<div class="message error">
+	<div id="messagesDiv" style="display:block">
+		<div class="message error" style="border-top:0px; border-left:1px solid silver">
 			<h2>Error 404</h2>
 			<br />
 			<p>Missing Page</p>
