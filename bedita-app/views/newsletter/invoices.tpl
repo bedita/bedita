@@ -14,14 +14,13 @@
 	
 	<div class="toolbar" style="white-space:nowrap">
 		<h2>{t}Invoices{/t}</h2>
-		<ul>
-			<li>
-			<span class="evidence">{$pending}&nbsp;</span> {t}pending{/t}
-			</li>
-			<li><span class="evidence"> {$scheduled} &nbsp;</span> {t}scheduled{/t}</li>
-			
-			<li> {t}next invoice at{/t}: <span class="evidence">{$nextInvoiceDate|default:$conf->dateTimePattern}</span></li>
-		</ul>
+		<table>
+			<tr>
+				<td><span class="evidence">{$pending}&nbsp;</span> {t}pending{/t}</td>
+				<td><span class="evidence"> {$scheduled} &nbsp;</span> {t}scheduled{/t}</td>
+				<td>{t}next invoice at{/t}: <span class="evidence">{$nextInvoiceDate|default:$conf->dateTimePattern}</span></td>
+			</tr>
+		</table>
 		
 	</div>
 

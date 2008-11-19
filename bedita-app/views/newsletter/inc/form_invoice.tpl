@@ -21,9 +21,10 @@ $(document).ready(function() {
 
 <fieldset id="invoice">			
 
-
+<!--
 <fieldset id="schedule">			
-			
+-->
+		
 <table class="bordered" style="width:100%">
 
 	<tr>
@@ -59,9 +60,8 @@ $(document).ready(function() {
 			<td class="info">{t}{$object.mail_status|default:"draft"}{/t}</td>
 		{/if}
 	</tr>
-
-
 </table>
+
 	<div class="modalcommands newsletter">
 		<input type="button" id="testNewsletter" value="  test newsletter  " {if !($object.id|default:false)}disabled="disabled"{/if}/> 
 		&nbsp;&nbsp;
@@ -69,4 +69,5 @@ $(document).ready(function() {
 	</div>
 	
 	<em>{t} Newsletter must be saved before sending {/t}</em>
+	
 </fieldset>
