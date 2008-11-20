@@ -64,7 +64,7 @@ jQuery.fn.extend({
 					
 		if(priorityOrder == "desc") {
 
-			priority = parseInt( (arguments.length > 0 && typeof(arguments[0]) != 'object')? arguments[0] : $(this).find("input[name*='[priority]']:first").val() );
+			priority = parseInt( (arguments.length > 0 && typeof(arguments[0]) != 'object' && typeof(arguments[0]) != 'undefined')? arguments[0] : $(this).find("input[name*='[priority]']:first").val() );
 			
 			$(this).find("input[name*='[priority]']").each(function(index)
 			{
@@ -73,7 +73,7 @@ jQuery.fn.extend({
 			});
 			
 		} else {
-			priority = parseInt( (arguments.length > 0 && typeof(arguments[0]) != 'object')? arguments[0] : 1 );
+			priority = parseInt( (arguments.length > 0 && typeof(arguments[0]) != 'object' && typeof(arguments[0]) != 'undefined')? arguments[0] : 1 );
 			
 			$(this).find("input[name*='[priority]']").each(function(index)
 			{

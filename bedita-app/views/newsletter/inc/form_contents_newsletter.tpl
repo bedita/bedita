@@ -143,7 +143,7 @@ $(document).ready(function() {
 	</select>
 	
 	&nbsp;&nbsp;
-		<input class="modalbutton" type="button" value="{t}Get contents{/t}" rel="{$html->url('/areas/showObjects/0/0/leafs')}" style="width:200px" />
+		<input class="modalbutton" type="button" value="{t}Get contents{/t}" rel="{$html->url('/areas/showObjects/0/0/0/leafs')}" style="width:200px" />
 
 	<hr />
 	

@@ -66,12 +66,14 @@ $(document).ready(function() {
 	tipo:
 	<select name="objectType" id="objectType">
 		<option value="">{t}all{/t}</option>
-		{foreach from=$conf->objectTypes.$objectType.id item=type_id}
+		{foreach from=$objectTypeIds item=type_id}
+			{if $type_id}
 			{strip}
 			<option value="{$type_id}">
 				{$conf->objectTypes[$type_id].name|lower}
 			</option>
 			{/strip}
+			{/if}
 		{/foreach}
 		</select>
 	

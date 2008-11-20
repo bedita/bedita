@@ -661,23 +661,24 @@ abstract class ModulesController extends AppController {
 			$previews = $this->previewsForObject($parents_id, $id, $obj['status']);
 		}
 		
-		$property = $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . strtolower($name) . ".id"));
+		$property = $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $name . ".id"));
 
 		$this->set('object',	$obj);
 		$this->set('attach', isset($relations['attach']) ? $relations['attach'] : array());
 		$this->set('relObjects', $relations);
 		$this->set('relationsCount', $relationsCount);
 		$this->set('objectProperty', $property);
+		$this->set('availabeRelations', $this->getAvailableRelations($name));
 		
 		$this->set('parents',	$parents_id);
-		$this->set('tree', 		$this->BeTree->getSectionsTree());
+		$this->set('tree', 		$this->BeTree->getSectionsTree($name));
 		$this->set('previews',	$previews);
 		
 		$categoryModel = ClassRegistry::init("Category");
 		$areaCategory = $categoryModel->getCategoriesByArea(Configure::read('objectTypes.'.$name.'.id'));
 		$this->set("areaCategory", $areaCategory);
 	}
-
+	
 	protected function saveObject(BEAppModel $beModel) {
 
 		if(empty($this->data)) 
@@ -736,6 +737,44 @@ abstract class ModulesController extends AppController {
 										)
 									)
 								);	
+	}
+	
+	/**
+	 * return an array of available relations for common object defined form $objectType
+	 * relations with "hidden" set to true are excluded from array  
+	 * 
+	 * @param string $objectType
+	 * @return array
+	 */
+	protected function getAvailableRelations($objectType) {
+		$objectTypeId = Configure::read("objectTypes." . $objectType . ".id");
+		$allRelations = array_merge(Configure::read("objRelationType"), Configure::read("defaultObjRelationType"));
+		$availableRelations = array();
+		foreach ($allRelations as $relation => $rule) {
+			if (empty($rule["hidden"])) {
+				// no rule defined
+				if (empty($rule[$objectType]) && empty($rule["left"]) && empty($rule["right"])) {
+					$availableRelations[] = $relation;
+				// rule on objectType
+				} elseif (!empty($rule[$objectType])) {
+					$availableRelations[] = $relation;
+				// rule on sideA / sideB
+				} elseif (key_exists("left", $rule) 
+							&& key_exists("right", $rule)
+							&& is_array($rule["left"])
+							&& is_array($rule["right"])
+							) {
+				
+					if ( (in_array($objectTypeId, $rule["left"]) || in_array($objectTypeId, $rule["right"])) 
+							|| (empty($rule["left"]) || empty($rule["right"]))) {
+						$availableRelations[] = $relation;
+					}
+				} else {
+					$availableRelations[] = $relation;
+				}
+			}
+		}
+		return $availableRelations;
 	}
 		
 }

@@ -354,16 +354,69 @@ class AreasController extends ModulesController {
 	 * @param string $relation, relation type
 	 * @param string $objectTypes name of objectType to filter. It has to be a string that defined a group of type
 	 * 							  defined in bedita.ini.php (i.e. 'related' 'leafs',...)
-	 * 							  Used if $this->parmas["form"]["objectType"] is empty. In view used for create select.	
+	 * 							  Used if $this->parmas["form"]["objectType"] and $relation are empty	
 	 * 
 	 **/
-	public function showObjects($main_object_id=null, $relation=null, $objectType="related") {
+	public function showObjects($main_object_id=null, $relation=null, $main_object_type_id=null, $objectType="related") {
 		
 		$id = (!empty($this->params["form"]["parent_id"]))? $this->params["form"]["parent_id"] : null;
-		$filter["object_type_id"] = (!empty($this->params["form"]["objectType"]))? array($this->params["form"]["objectType"]) : Configure::read("objectTypes." . $objectType . ".id");
+		
+		// default
+		$objectTypeIds = Configure::read("objectTypes.related.id");
+		
+		if (!empty($relation)) {
+			
+			$relTypes = array_merge(Configure::read("objRelationType"), Configure::read("defaultObjRelationType"));
+			
+			if (!empty($relTypes[$relation])) {
+				
+				if (!empty($main_object_id)) {
+					$main_object_type_id = $this->BEObject->field("object_type_id", array("id" => $main_object_id));
+				}
+				
+				$objectTypeName = Configure::read("objectTypes." . $main_object_type_id . ".name");
+				
+				if (!empty($relTypes[$relation][$objectTypeName])) {
+					$objectTypeIds = $relTypes[$relation][$objectTypeName];
+				} elseif (key_exists("left", $relTypes[$relation]) 
+							&& key_exists("right", $relTypes[$relation])
+							&& is_array($relTypes[$relation]["left"])
+							&& is_array($relTypes[$relation]["right"])
+							) {
+				
+					if (in_array($main_object_type_id, $relTypes[$relation]["left"])) {
+						if (!empty($relTypes[$relation]["right"]))
+							$objectTypeIds = $relTypes[$relation]["right"];
+					} elseif (in_array($main_object_type_id, $relTypes[$relation]["right"])) {
+						if (!empty($relTypes[$relation]["left"]))
+							$objectTypeIds = $relTypes[$relation]["left"];
+					} elseif (empty($relTypes[$relation]["left"])) { 
+						$objectTypeIds = $relTypes[$relation]["right"];
+					} elseif (empty($relTypes[$relation]["right"])) {
+						$objectTypeIds = $relTypes[$relation]["left"];
+					} else {
+						$objectTypeIds = array(0);	
+					}
+				}
+
+			}
+			
+		} else {
+			$objectTypeIds = Configure::read("objectTypes." . $objectType . ".id");
+		}
+		
+		// set object_type_id filter
+		if (!empty($this->params["form"]["objectType"])) {
+			$filter["object_type_id"] = array($this->params["form"]["objectType"]);
+		} else {
+			$filter["object_type_id"] = $objectTypeIds;
+		}
+		
+		// set lang filter
 		if (!empty($this->params["form"]["lang"]))
 			$filter["lang"] = $this->params["form"]["lang"]; 
-			
+		
+		// set search filter
 		if (!empty($this->params["form"]["search"]))
 			$filter["search"] = addslashes($this->params["form"]["search"]);
 		
@@ -386,7 +439,9 @@ class AreasController extends ModulesController {
 			$this->set("relation", $relation);
 		
 		$this->set("main_object_id", $main_object_id);
+		$this->set("object_type_id", $main_object_type_id);
 		$this->set("objectType", $objectType);
+		$this->set("objectTypeIds", (is_array($objectTypeIds))? $objectTypeIds : array($objectTypeIds) );
 		
 		$this->layout = null;
 		
@@ -400,12 +455,12 @@ class AreasController extends ModulesController {
 	 *
 	 * @param int $main_object_id, object id of main object used to exclude association with itself 
 	 */
-	public function loadObjectToAssoc($main_object_id=null, $objectType="related", $tplname=null) {
+	public function loadObjectToAssoc($main_object_id=null, $objectType=null, $tplname=null) {
 		
-		$conditions = array(
-						"BEObject.id" => explode( ",", trim($this->params["form"]["object_selected"],",") ), 
-						"BEObject.object_type_id" => Configure::read("objectTypes." . $objectType . ".id")
-					);
+		$conditions = array("BEObject.id" => explode( ",", trim($this->params["form"]["object_selected"],",") ));
+		
+		if (!empty($objectType))
+			$conditions["BEObject.object_type_id"] = Configure::read("objectTypes." . $objectType . ".id");
 		
 		$objects = $this->BEObject->find("all", array(
 													"contain" => array("ObjectType"),

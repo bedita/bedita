@@ -68,13 +68,13 @@ $(document).ready(function() {
 	<div id="loadingAssoc" class="generalLoading" title="{t}Loading data{/t}"></div>
 	
 	<ul class="htab">
-	{foreach from=$conf->objRelationType item="rel"}
+	{foreach from=$availabeRelations item="rel"}
 			<li rel="relationType_{$rel}">{$rel}</li>
 	{/foreach}
 	</ul>
 	
 	<div class="htabcontainer" id="relationContainer">
-	{foreach from=$conf->objRelationType item="rel"}
+	{foreach from=$availabeRelations item="rel"}
 	<div class="htabcontent" id="relationType_{$rel}">
 		<input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$rel}][0][switch]" value="{$rel}" />				
 		
@@ -88,9 +88,8 @@ $(document).ready(function() {
 			</tbody>
 		</table>
 		
-		
 		<input type="button" class="modalbutton" title="{$rel|upper} : {t}select an item to associate{/t}"
-		rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/{$rel}" style="width:200px" 
+		rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/{$rel}/{$object_type_id}" style="width:200px" 
 		value="  {t}connect new items{/t}  " />
 		
 		{*

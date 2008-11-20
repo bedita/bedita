@@ -203,28 +203,6 @@ $config['basicGroups']      = array ('administrator', 'editor', 'reader', 'guest
  ** ******************************************
  */
 
-// Relations - local objects' relation types
-$config["objRelationType"] = array ();
-
-// One-way relation
-$config["defaultOneWayRelation"] = array("link");
-
-// Cfg One-way relation (as in local cfg)
-$config["cfgOneWayRelation"] = array();
-
-// Cfg One-way relation (as in local cfg)
-$config["cfgOneWayRelation"] = array();
-
-// Default reserved words [avoided in nickname creation]
-$config["defaultReservedWords"] = array("section", "content", "rss", "feed");
-
-// Cfg reserved words (as in local cfg)
-$config["cfgReservedWords"] = array();
-
-
-///////////////////////////////////////////////////////
-// DO NOT EDIT BELOW THIS LINE//
-///////////////////////////////////////////////////////
 
 /**
  ** Import PHP constants for smarty templates
@@ -317,6 +295,60 @@ $config['objectTypes'] = array(
 	// define array of objects that are leafs of the tree
 	'leafs'		=> array("id" => array(18,19,20,21,22,29,34))
 );
+
+
+/*
+ * Relations - default objects' relation types
+ * 
+ * Array("relationType" => 
+ * 		array(
+ * 			"hidden" => define if relation is hidden. Used in object's view in relationship tab,
+ * 			"left" => array of object_type_id related to right object_type_id (empty array means all object_type_id) 
+ * 			"right => array of object_type_id related to left object_type_id (empty array means all object_type_id)
+ * 			
+ * OPTIONAL "objectType" => array of object_type_id related to objectType. If defined it's used instead of 'left', 'right'
+ * 		)
+ *	)
+ * 
+ */
+$config["defaultObjRelationType"] = array(
+	"gallery" => array(
+		"hidden" => false,
+		"left" 		=> array(29),
+		"right" 		=> array()	
+	),
+	"comment" => array(
+		"hidden" => true,
+		"left" => array(13),
+		"right" => array()
+	),
+	"attach" => array(
+		"hidden" => true,
+		"left" => array(10,12,31,32),
+		"right" => array()
+	),
+	"link" => array(
+		"hidden" => true,
+		"left" => array(33),
+		"right" => array()
+	)
+);
+
+// Relations - local objects' relation types
+$config["objRelationType"] = array ();
+
+// One-way relation
+$config["defaultOneWayRelation"] = array("link");
+
+// Cfg One-way relation (as in local cfg)
+$config["cfgOneWayRelation"] = array();
+
+// Default reserved words [avoided in nickname creation]
+$config["defaultReservedWords"] = array("section", "content", "rss", "feed");
+
+// Cfg reserved words (as in local cfg)
+$config["cfgReservedWords"] = array();
+
 
 /**
  * Definisce le variabili utilizzate per la gestione delle sessioni
