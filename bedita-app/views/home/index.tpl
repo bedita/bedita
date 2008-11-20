@@ -66,7 +66,8 @@ $(document).ready(function() {
 	{/if}
 	
 {/foreach}
-	
+
+{*
 	<li class="ecommerce">
 		ecommerce
 	</li>
@@ -94,7 +95,8 @@ $(document).ready(function() {
 	<li class="topographies">
 		topographies
 	</li>
-	
+*}
+
 	<li class="colophon" style="width:240px">
 
 		<h2>BEdita</h2>
