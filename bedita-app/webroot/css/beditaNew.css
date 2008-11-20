@@ -1316,19 +1316,17 @@ TABLE.areaform {
 
 
 /* bordi tondi? */
-
-INPUT[type=text],INPUT[type=password], .tab H2,  .tab2 H2, .modules label, .modules LI {
 /*
--moz-border-radius : 70px; 
-*/
-}
+.modules label, .modules LI {
 
+-moz-border-radius : 70px; 
+
+}
+*/
 INPUT[type=text],INPUT[type=password], textarea {	
 	border-radius : 7px; 
 	-moz-border-radius : 7px; 
 	-webkit-border-radius : 7px;	
 }
-
-
 
 

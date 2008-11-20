@@ -67,7 +67,34 @@ $(document).ready(function() {
 	
 {/foreach}
 	
+	<li class="ecommerce">
+		ecommerce
+	</li>
+	
+	<li class="webmarks">
+		webmarks
+	</li>
 
+	<li class="forms">
+		forms
+	</li>
+
+	<li class="bookings">
+		bookings
+	</li>
+
+	<li class="faq">
+		faq
+	</li>
+
+	<li class="print">
+		print
+	</li>
+	
+	<li class="topographies">
+		topographies
+	</li>
+	
 	<li class="colophon" style="width:240px">
 
 		<h2>BEdita</h2>

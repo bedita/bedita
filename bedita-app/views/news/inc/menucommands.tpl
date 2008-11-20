@@ -36,9 +36,6 @@ $(document).ready(function(){
 	   <label class="{$moduleName}" rel="{$html->url('/news')}">{t}{$currentModule.label}{/t}</label>
 	</div> 
 	
-	
-	{include file="../common_inc/messages.tpl"}
-	
 	{assign var="user" value=$session->read('BEAuthUser')}
 	
 	{if !empty($method) && $method != "index" && $module_modify eq '1'}
