@@ -18,16 +18,9 @@
 		
 		<ul class="menuleft insidecol">
 			<li {if $method eq "mailgroups"}class="on"{/if}>
-				<a href="{$html->url('/newsletter/mailGroups')}">{t}Lists{/t}</a>
+				<a href="{$html->url('/newsletter/mailGroups')}">{t}Subscriber lists{/t}</a>
 			</li>
 		</ul>
-		
-		<ul class="menuleft insidecol">	
-			<li {if $method eq "templates"}class="on"{/if}><a href="{$html->url('/newsletter/templates')}">{t}Templates{/t}</a></li>
-		
-		</ul>
-		
-
 		
 		<ul class="menuleft insidecol">
 
@@ -35,6 +28,11 @@
 	
 		</ul>
 
+		<ul class="menuleft insidecol">	
+			<li {if $method eq "templates"}class="on"{/if}><a href="{$html->url('/newsletter/templates')}">{t}Templates{/t}</a></li>
+		
+		</ul>
+		
 	{include file="../common_inc/user_module_perms.tpl"}
 		
 

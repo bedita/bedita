@@ -48,7 +48,7 @@ $(document).ready(function(){
 
 	{elseif $method eq "newsletters"}
 	
-	{literal}
+		{literal}
 		<style>
 			UL#templates {
 				margin-left:0px; 
@@ -65,27 +65,40 @@ $(document).ready(function(){
 			}
 			
 		</style>
-	{/literal}
-	
-	<ul class="menuleft insidecol">
-		<li {if $method eq "view"}class="on"{/if}><a href="{$html->url('/newsletter/view')}">{t}Create new{/t}</a></li>
-	</ul>
+		{/literal}
 		
-	<ul class="menuleft insidecol">
-		<li><a href="javascript:void(0)" onClick="$('#templates').slideToggle();">{t}Select by template{/t}</a></li>
-			<ul id="templates" class="bordered">
-				<li>pubblicazione uno</li>
-				<li>pubblic azione 2</li>
-				<li>pu blic azione III</li>
-				<li>Quarta pubblicazione</li>
-				<li class="on">All</li>
-			</ul>
-	</ul>
+		<ul class="menuleft insidecol">
+			<li {if $method eq "view"}class="on"{/if}><a href="{$html->url('/newsletter/view')}">{t}Create new{/t}</a></li>
+		</ul>
+			
+		<ul class="menuleft insidecol">
+			<li><a href="javascript:void(0)" onClick="$('#templates').slideToggle();">{t}Select by template{/t}</a></li>
+				<ul id="templates" class="bordered">
+					<li>pubblicazione uno</li>
+					<li>pubblic azione 2</li>
+					<li>pu blic azione III</li>
+					<li>Quarta pubblicazione</li>
+					<li class="on">All</li>
+				</ul>
+		</ul>
 	
+	{elseif $method eq "mailgroups"}
+	
+		<ul class="menuleft insidecol">
+			<li><a href="{$html->url('/newsletter/view_mail_group/')}">{t}Create list{/t}</a></li>
+		</ul>
+	
+	{elseif $method eq "viewmailgroup"}
+
+		<div class="insidecol">
+			<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />
+			<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" {if !($object.id|default:false)}disabled="1"{/if} />
+		</div>
+
 	{elseif $method eq "invoices"}
 	
 	
-	{elseif !empty($method) && $method != "index" && $method != "mailgroups" && $module_modify eq '1'}
+	{elseif !empty($method) && $method != "index" && $module_modify eq '1'}
 	
 		<div class="insidecol">
 			{if ($perms->isWritable($user.userid,$user.groups,$object.Permissions))}

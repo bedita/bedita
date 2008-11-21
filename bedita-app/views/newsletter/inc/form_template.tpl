@@ -115,13 +115,10 @@ $(document).ready(function() {
 	</fieldset>
 	
 
-	<div class="tab"><h2>{t}Body{/t}</h2></div>
+	<div class="tab"><h2>{t}Message template{/t}</h2></div>
 	
 	<fieldset id="body">
 	
-	<br /><br />	
-	
-		
 	<ul class="htab">
 		<li rel="html">HTML version</li>
 		<li rel="txt">PLAIN TEXT version</li>
@@ -182,8 +179,7 @@ ________________________________
 	</fieldset>
 	
 
-	
-	
+
 
 </form>
 	

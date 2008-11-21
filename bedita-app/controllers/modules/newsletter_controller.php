@@ -203,6 +203,17 @@ class NewsletterController extends ModulesController {
 								);	
 	}
 
+
+
+	 /**
+	  * Get list detail
+	  */
+	public function view_mail_group() {
+		
+	}
+
+
+
 	public function saveMailGroups() {
 		$this->checkWriteModulePermission();
 		if(empty($this->data["group_name"])) 
