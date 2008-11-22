@@ -3,6 +3,7 @@
 ** @author ChannelWeb srl
 *}
 
+{include file="../common_inc/form_common_js.tpl"}
 
 {$javascript->link("jquery/jquery.form")}
 
@@ -29,5 +30,7 @@
 
 {include file="../common_inc/form_advanced_properties.tpl"}
 
-
+<pre>
+	{dump var=$object}
+</pre>
 </form>

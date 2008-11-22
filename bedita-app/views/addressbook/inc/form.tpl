@@ -1,5 +1,5 @@
 {*
-** books form template
+** addressbook form template
 *}
 
 

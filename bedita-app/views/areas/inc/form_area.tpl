@@ -1,3 +1,30 @@
+{if !empty($object)}
+
+<script type="text/javascript">
+	{literal}
+	$(document).ready( function ()
+	{
+		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
+		{/literal}
+		{if !empty($object.id) && ($object.fixed)}
+			{literal}
+			$("#titleBEObject").attr("readonly",true).attr("disabled",true);
+			$("#nicknameBEObject").attr("readonly",true).attr("disabled",true);
+			$("#delBEObject").attr("disabled",true);
+			$(".secondacolonna .modules label").addClass("fixedobject");
+			{/literal}
+		{else}
+			{literal}
+			$(".secondacolonna .modules label").removeClass("fixedobject");
+			{/literal}
+		{/if}
+		{literal}
+	});
+	{/literal}
+</script>
+
+{/if}
+
 {assign var=object_lang value=$object.lang|default:$conf->defaultLang}
 
 <fieldset id="properties">	
@@ -56,7 +83,7 @@
 	<tr>
 		<th>{t}nickname{/t}:</th>
 		<td>
-			<input type="text" name="data[nickname]" value="{$object.nickname|default:''|escape:'html'|escape:'quotes'}" />
+			<input id="nicknameBEObject" type="text" name="data[nickname]" value="{$object.nickname|default:''|escape:'html'|escape:'quotes'}" />
 		</td>
 		
 	</tr>

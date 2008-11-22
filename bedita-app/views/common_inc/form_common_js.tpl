@@ -11,6 +11,7 @@ var langs = {
 // FINE USATO????
 
 $(document).ready(function(){
+	
 	$.datepicker.setDefaults({
 		speed: 'fast', 
 		showOn: 'both',
@@ -24,25 +25,20 @@ $(document).ready(function(){
 	}, $.datepicker.regional['{/literal}{$currLang}{literal}']);
 
 	{/literal}
-	{if !empty($object) && !empty($object.id) && ($object.fixed == 1)}
+	{if !empty($object.id) && ($object.fixed == 1)}
 		{literal}
-		$("#titleBEObject").attr("readonly",true);
-		$("#nicknameBEObject").attr("readonly",true);
+		$("#titleBEObject").attr("readonly",true).attr("disabled",true);
+		$("#nicknameBEObject").attr("readonly",true).attr("disabled",true);
 		$("#start").attr("readonly",true);
 		$("#start").attr("value","");
 		$("#end").attr("readonly",true);
 		$("#end").attr("value","");
 		$("#delBEObject").attr("disabled",true);
+		$(".secondacolonna .modules label").addClass("fixedobject").attr("title","fixed object");
 		{/literal}
 	{else}
 		{literal}
-		$("#titleBEObject").attr("readonly",false);
-		$("#nicknameBEObject").attr("readonly",false);
-		$("#start").attr("readonly",false);
-		$("#end").attr("readonly",false);
-		{/literal}{if !empty($object)}{literal}
-			$("#delBEObject").attr("disabled",false);
-		{/literal}{/if}{literal}
+		$("#delBEObject").attr("disabled",false);
 		$("input.dateinput").datepicker();
 		{/literal}
 	{/if}

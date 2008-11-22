@@ -48,7 +48,7 @@ $(document).ready(function(){
 		<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" />
 		{/if}
 		{if ($perms->isDeletable($user.userid,$user.groups,$object.Permissions))}
-		<input class="bemaincommands" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" {if !($object.id|default:false)}disabled="1"{/if} />
+		<input class="bemaincommands" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" />
 		{/if}
 	</div>
 	

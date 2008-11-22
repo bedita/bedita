@@ -240,34 +240,6 @@ UL.modules {
 	text-transform:capitalize;
 }
 
-.modules LI.off {
-	opacity:0.55;
-}
-
-.modules .save {
-	background-image:url(../img/iconset.png);
-	background-repeat:no-repeat !important;
-	background-position: 50px 45px;
-}
-
-.modules .alert {
-	background-image:url(../img/iconset.png);
-	background-repeat:no-repeat !important;
-	background-position: -110px 45px;
-}
-
-.modules .lock {
-	background-image:url(../img/iconset.png);
-	background-repeat:no-repeat !important;
-	background-position: -430px 45px;
-}
-
-.modules .error {
-	background-image:url(../img/iconset.png);
-	background-repeat:no-repeat !important;
-	background-position: -760px 45px;
-}
-
 
 .modulesmiddle {
 	background: transparent url(../img/shadowpattern240.png);
@@ -325,7 +297,71 @@ UL.modules {
 
 .default 		{background-color:#CCCCCC !important; color:#000000 !important}
 
+/*...........................................
+ 
+    Modules states
 
+...........................................*/
+
+.modules LI.off {
+	opacity:0.55;
+}
+
+
+.modules .readonly {
+	background: transparent url(../img/iconReadonly.png);
+	background-repeat:no-repeat !important;
+	background-position: center;
+}
+
+.modules .fixedobject {
+	background: transparent url(../img/iconFixed.png);
+	background-repeat:no-repeat !important;
+	background-position: center;
+}
+
+.modules .lock {
+	background: transparent url(../img/iconLocked.png);
+	background-repeat:no-repeat !important;
+	background-position: center;
+}
+
+
+.modules .future {
+	background: transparent url(../img/iconFuture.png);
+	background-repeat:no-repeat !important;
+	background-position: center;
+}
+
+.modules .trashed {
+	background: transparent url(../img/iconTrashed.png);
+	background-repeat:no-repeat !important;
+	background-position: center;
+}
+
+.modules .concurrentuser {
+	background: transparent url(../img/iconConcurrentuser.png);
+	background-repeat:no-repeat !important;
+	background-position: center;
+}
+
+.modules .alert {
+	background: transparent url(../img/iconAlert.png);
+	background-repeat:no-repeat !important;
+	background-position: center;
+}
+
+.modules .error {
+	background: transparent url(../img/iconError.png);
+	background-repeat:no-repeat !important;
+	background-position: center;
+}
+
+.modules .save {
+	background: transparent url(../img/iconSave.png);
+	background-repeat:no-repeat !important;
+	background-position: center;
+}
 /*...........................................
  
     MENU SMALL Modules 

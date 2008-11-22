@@ -126,8 +126,9 @@ $(document).ready(function(){
 {/strip}
 	
 		<td style="width:15px;">
-			<input  type="checkbox" 
-			name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
+		{if (empty($objects[i].fixed))}
+			<input  type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
+		{/if}
 		</td>
 		
 		<td>{$objects[i].id}</td>

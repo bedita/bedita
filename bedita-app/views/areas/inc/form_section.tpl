@@ -8,21 +8,15 @@
 		{/literal}
 		{if !empty($object.id) && ($object.fixed)}
 			{literal}
-			$("#titleBEObject").attr("readonly",true);
-			$("#nicknameBEObject").attr("readonly",true);
-			$("#areaSectionAssoc").focus( function() {
-				alert('object fixed: not modifyable');
-				body.focus();
-				this.blur();
-			});
+			$("#titleBEObject").attr("readonly",true).attr("disabled",true);
+			$("#nicknameBEObject").attr("readonly",true).attr("disabled",true);
+			$("#areaSectionAssoc").attr("disabled",true);
 			$("#delBEObject").attr("disabled",true);
+			$(".secondacolonna .modules label").addClass("fixedobject");
 			{/literal}
 		{else}
 			{literal}
-			$("#titleBEObject").attr("readonly",false);
-			$("#nicknameBEObject").attr("readonly",false);
-			$("#areaSectionAssoc").focus( function() {});
-			$("#delBEObject").attr("disabled",false);
+			$(".secondacolonna .modules label").removeClass("fixedobject");
 			{/literal}
 		{/if}
 		{literal}
@@ -149,7 +143,6 @@
 	<br />
 	
 	{include file="../common_inc/form_translations.tpl" object=$object|default:null}
-	{include file="../common_inc/form_custom_properties.tpl"}
 	{include file="../common_inc/form_permissions.tpl" el=$object|default:null recursion=true}
 	
 	

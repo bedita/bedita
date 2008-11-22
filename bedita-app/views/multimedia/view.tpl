@@ -3,6 +3,7 @@
 ** @author ChannelWeb srl
 *}
 
+{$javascript->link("jquery/ui/ui.datepicker.min", false)}
 
 {literal}
 <script type="text/javascript">
