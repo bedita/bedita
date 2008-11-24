@@ -241,7 +241,16 @@ class BEAppModel extends AppModel {
 		// if $order is empty and not performing search then set a default order
 		if (empty($order) && empty($filter["search"]))
 			$order = "title";
+	
+		if (!empty($status))
+			$conditions[] = array('status' => $status) ;
 		
+		if(!empty($excludeIds))
+			$conditions["NOT"] = array(array("`BEObject`.id" => $excludeIds));
+		
+		// get specific query elements
+		list($otherFields, $otherFrom, $otherConditions, $otherGroup, $otherOrder) = $this->getSqlItems($filter);
+
 		if (!empty($id)) {
 			$fields .= ", `Tree`.*";
 			$from .= ", trees AS `Tree`";
@@ -257,15 +266,7 @@ class BEAppModel extends AppModel {
 			if (!empty($userid))
 				$conditions[] 	= " prmsUserByID ('{$userid}', `BEObject`.id, ".BEDITA_PERMS_READ.") > 0 " ;
 		}
-
-		if (!empty($status))
-			$conditions[] = array('status' => $status) ;
 		
-		if(!empty($excludeIds))
-			$conditions["NOT"] = array(array("`BEObject`.id" => $excludeIds));
-			
-		list($otherFields, $otherFrom, $otherConditions, $otherGroup, $otherOrder) = $this->getSqlItems($filter);
-
 		if (!empty($otherFields))
 			$fields = $fields . $otherFields;
 			
@@ -340,8 +341,17 @@ class BEAppModel extends AppModel {
 		$group = "";
 		$order = "";
 		
+		// define particular behaviors: put first LEFT, INNER, RIGHT specific join then join build in WHERE condition
+		if (array_key_exists("mediatype", $filter)) {
+			$fields .= ", `Category`.name AS mediatype";
+			$from = " LEFT OUTER JOIN object_categories AS `ObjectCategory` ON `BEObject`.id=`ObjectCategory`.object_id
+					LEFT OUTER JOIN categories AS `Category` ON `ObjectCategory`.category_id=`Category`.id";
+			unset($filter["mediatype"]);
+			$mediatype = true;
+		}
+		
 		if (array_key_exists("search", $filter)) {
-			$fields = ", `SearchText`.`object_id` AS `oid`, SUM( MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."') * `SearchText`.`relevance` ) AS `points`";
+			$fields .= ", `SearchText`.`object_id` AS `oid`, SUM( MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."') * `SearchText`.`relevance` ) AS `points`";
 			$from .= ", search_texts AS `SearchText`";
 			$conditions[] = "`SearchText`.`object_id` = `BEObject`.`id` AND `SearchText`.`lang` = `BEObject`.`lang` AND MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."')";
 			$order .= "points DESC ";
@@ -350,7 +360,8 @@ class BEAppModel extends AppModel {
 		
 		if (array_key_exists("category", $filter)) {
 			$cat_field = (is_numeric($filter["category"]))? "id" : "name";
-			$from .= ", categories AS `Category`, object_categories AS `ObjectCategory`";
+			if (empty($mediatype))
+				$from .= ", categories AS `Category`, object_categories AS `ObjectCategory`";
 			$conditions[] = "`Category`." . $cat_field . "='" . $filter["category"] . "' 
 							AND `ObjectCategory`.object_id=`BEObject`.id
 							AND `ObjectCategory`.category_id=`Category`.id
@@ -380,6 +391,8 @@ class BEAppModel extends AppModel {
 			unset($filter["rel_detail"]);
 		}
 		
+		
+		// ordinary behavior
 		$beObject = ClassRegistry::init("BEObject");
 		
 		foreach ($filter as $key => $val) {

@@ -53,7 +53,7 @@ $(document).ready(function(){
 			<th>{$beToolbar->order('id', 'id')}</th>
 			<th>{$beToolbar->order('title', 'Title')}</th>
 			<th>{$beToolbar->order('name', 'Name')}</th>
-			<th>type</th>
+			<th>{$beToolbar->order('mediatype', 'Type')}</th>
 			<th>size</th>
 			
 			<th>{$beToolbar->order('status', 'Status')}</th>
@@ -134,7 +134,7 @@ $(document).ready(function(){
 		<td>{$objects[i].id}</td>
 		<td>{$objects[i].title}</td>
 		<td>{$objects[i].name}</td>
-		<td>{$objects[i].ObjectType.name}</td>
+		<td>{$objects[i].mediatype}</td>
 		<td>{math equation="x/y" x=$objects[i].size|default:0 y=1024 format="%d"|default:""} KB</td>
 		<td>{$objects[i].status}</td>
 		<td>{$objects[i].created|date_format:'%b %e, %Y'}</td>
