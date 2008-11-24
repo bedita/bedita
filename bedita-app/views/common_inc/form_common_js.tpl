@@ -13,6 +13,7 @@
 {assign var="user" value=$session->read('BEAuthUser')}
 {assign var="submiturl" value=$submiturl|default:$currentModule.path}
 
+
 <script type="text/javascript">
 {literal}
 $(document).ready(function(){
@@ -63,6 +64,7 @@ $(document).ready(function(){
 {/literal}{if $module_modify != 1}{literal}
 		
 		$("#saveBEObject,#delBEObject").attr("disabled",true);
+		$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");
 
 {/literal}{/if}{literal}
 
@@ -73,8 +75,9 @@ $(document).ready(function(){
 {/literal}{/if}{literal}
 
 {/literal}{if !($perms->isWritable($user.userid,$user.groups,$object.Permissions))}{literal}
-		
+
 		$("#saveBEObject,#cloneBEObject,#delBEObject").attr("disabled",true);
+		$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");
 	
 {/literal}{/if}{literal}
 

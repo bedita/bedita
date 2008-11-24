@@ -4,6 +4,7 @@ $(document).ready ( function () {literal} { {/literal}
 {if ($msg->check('Message.error'))}
 
 	{literal}
+	$(".secondacolonna .modules label").addClass("error").attr("title","error");
 	$("#messagesDiv")
 		.show()							// fade in msg
 		.click( function() {

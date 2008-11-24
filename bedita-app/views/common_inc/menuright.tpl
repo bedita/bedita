@@ -30,16 +30,31 @@ Menu a DX
 
 	<hr />
 	
-	<ul>
-		<li>icone da fare</li>
-		<li>concurrent user*</li>
-		<li>locked document*</li>
-		<li>unsaved changes*</li>
-		<li>trashed document*</li>
-		<li>fixed document*</li>
-		<li>user note*</li>
-		<li>read only*</li>
-		<li>error</li>
+{literal}
+<script type="text/javascript">
+	$(document).ready(function(){
+		
+		$(".icons LI").css("cursor","pointer").mouseover(function() {
+			var myclass = $(this).attr("rel");
+			$(".secondacolonna .modules label").removeClass().addClass("{/literal}{$moduleName}{literal}").addClass(""+myclass+"");
+		});
+	});
+</script>
+{/literal}
+
+	<ul class="icons">
+		<li>ecco le varie icone di stato:</li>
+		<li rel="readonly">Readonly</li>
+		<li rel="fixedobject">Fixed</li>
+		<li rel="lock">Locked</li>
+		<li rel="future">Future</li>
+		<li rel="trashed">Trashed</li>
+		<li rel="concurrentuser">Concurrentuser</li>
+		<li rel="alert">Alert</li>
+		<li rel="error">Error</li>
+		<li rel="pending">Pending</li>
+		<li rel="unsent">Unsent</li>
+		<li rel="save">Save</li>
 	</ul>
 	
 	

@@ -16,8 +16,9 @@ var ajaxSectionObjectUrl = "/areas/loadSectionAjax";
 // function to bind click event on tree in publication module 
 function loadSectionAjax(container) {
 	
-	//reset alert and icons
+	//reset alert and icons an submits
 		$(".secondacolonna .modules label").removeClass().addClass("areas");
+		$("INPUT").removeAttr("readonly").removeAttr("disabled");
 	//
 	
 	rel = container.attr("rel").split(":");
@@ -101,6 +102,8 @@ $(document).ready(function() {
 		action = $("#updateForm").attr("action");
 		$("#updateForm").attr("action", action.replace(/saveArea/, "saveSection"));
 	});
+
+
 
 
 });

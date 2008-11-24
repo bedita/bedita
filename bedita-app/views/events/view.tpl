@@ -1,38 +1,31 @@
 {*
 ** event view template
 *}
-
 {$html->css("ui.datepicker")}
-
 {$javascript->link("jquery/jquery.form", false)}
 {$javascript->link("jquery/jquery.treeview", false)}
-
+{$javascript->link("jquery/jquery.selectboxes.pack")}
 {$javascript->link("jquery/ui/ui.sortable.min", true)}
 {$javascript->link("jquery/ui/ui.datepicker.min", false)}
 {if $currLang != "eng"}
-	{$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
+{$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
-
-
+{literal}
 <script type="text/javascript">
-	{literal}
-	$(document).ready( function ()
-	{
-	
-		var openAtStart ="#eventDates";
+    $(document).ready(function(){
+		
+		var openAtStart ="#title,#eventDates";
 		$(openAtStart).prev(".tab").BEtabstoggle();
 		
-		$('textarea.autogrowarea').css("line-height","1.2em").autogrow();
-		
-	});
-	{/literal}
+    });
 </script>
+{/literal}
 
 {include file="../common_inc/form_common_js.tpl"}
 
 </head>
 <body>
-	
+
 {include file="../common_inc/modulesmenu.tpl"}
 
 {include file="inc/menuleft.tpl" method="view"}
