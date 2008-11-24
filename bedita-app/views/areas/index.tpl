@@ -1,4 +1,5 @@
 {$javascript->link("jquery/jquery.form", false)}
+{$javascript->link("jquery/jquery.autogrow", false)}
 
 {$javascript->link("jquery/ui/ui.sortable.min", true)}
 {$javascript->link("jquery/jquery.selectboxes.pack", false)}
@@ -67,17 +68,17 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 {assign_concat var="actionForm" 0="save" 1=$formToUse|capitalize|default:"Area"}
 <form action="{$html->url('/areas/')}{$actionForm}" method="post" name="updateForm" id="updateForm" class="cmxform">
 
+<div id="loading" style="position:absolute; left:320px; top:110px; ">&nbsp;</div>
 
 <div class="main" style="display:none">
 
 
 	<div class="tab"><h2>{t}Details{/t} of &nbsp; <span class="graced" style="font-size:1.5em" id="sectionTitle"></span></h2></div>
 	
-	<fieldset style="padding:0px" id="properties">		
-
 	
-		<div id="loading" style="clear:both">&nbsp;</div>
-		
+	
+	<fieldset style="padding:0px" id="properties">		
+	
 		<ul class="htab">
 			<li rel="areacontentC">{t}contents{/t}</li>
 			<li rel="areasectionsC">{t}sections{/t}</li>
@@ -121,6 +122,4 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 
 
 {include file="../common_inc/menuright.tpl"}
-
-
 

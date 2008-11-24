@@ -1,3 +1,4 @@
+
 {include file="../common_inc/form_common_js.tpl"}
 
 {assign var=object_lang value=$object.lang|default:$conf->defaultLang}

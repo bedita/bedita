@@ -1,3 +1,4 @@
+
 {include file="../common_inc/form_common_js.tpl"}
 
 <fieldset id="properties">
