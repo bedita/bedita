@@ -26,23 +26,23 @@ Menu a DX
 		
 	</div>
 	
-	
+*}	
 
 	<hr />
 	
 	<ul>
 		<li>icone da fare</li>
-		<li>concurrent user</li>
+		<li>concurrent user*</li>
 		<li>locked document*</li>
 		<li>unsaved changes*</li>
 		<li>trashed document*</li>
 		<li>fixed document*</li>
 		<li>user note*</li>
-		<li>read only</li>
+		<li>read only*</li>
 		<li>error</li>
 	</ul>
 	
-*}	
+	
 	
 	<br />
 	<br />

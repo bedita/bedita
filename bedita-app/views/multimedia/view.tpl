@@ -2,7 +2,7 @@
 ** multimedia view template
 ** @author ChannelWeb srl
 *}
-
+{$javascript->link("jquery/jquery.form")}
 {$javascript->link("jquery/ui/ui.datepicker.min", false)}
 
 {literal}
@@ -14,6 +14,7 @@
 </script>
 {/literal}
 
+{include file="../common_inc/form_common_js.tpl"}
 
 </head>
 

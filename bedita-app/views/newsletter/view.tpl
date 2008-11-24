@@ -1,5 +1,5 @@
 {*
-** document view template
+** nesletter view template
 *}
 
 {$html->css("ui.datepicker")}
@@ -24,10 +24,12 @@
 		var openAtStart ="#contents, #invoice";
 		$(openAtStart).prev(".tab").BEtabstoggle();
 		$("#timeStart, #timeEnd").timePicker({startTime: "00:00", endTime: "23:30"});
+		
 	});
 	{/literal}
 </script>
 
+{include file="../common_inc/form_common_js.tpl"}
 
 </head>
 <body>

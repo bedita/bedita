@@ -3,32 +3,6 @@ Template incluso.
 Menu a SX valido per tutte le pagine del controller.
 *}
 
-<script type="text/javascript">
-{literal}
-$(document).ready(function(){
-	$("#delBEObject").submitConfirm({
-		{/literal}
-		action: "{if !empty($delparam)}{$html->url($delparam)}{else}{$html->url('delete/')}{/if}",
-		message: "{t}Are you sure that you want to delete the item?{/t}",
-		formId: "updateForm"
-		{literal}
-	});
-	
-	$("div.insidecol input[@name='save']").click(function() {
-		$("#updateForm").submit();
-	});
-	
-	$("div.insidecol input[@name='clone']").click(function() {
-		$("#updateForm").attr("action","{/literal}{$html->url('/addressbook/cloneObject')}{literal}");
-		var cloneTitle=prompt("{/literal}{t}Title{/t}{literal}",$("input[@name='data[title]']").val()+"-copy");
-		if (cloneTitle) {
-			$("input[@name='data[title]']").attr("value",cloneTitle);
-			$("#updateForm").submit();
-		}
-	});
-});
-{/literal}
-</script>
 
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	

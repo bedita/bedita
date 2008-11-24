@@ -3,9 +3,6 @@
 ** @author ChannelWeb srl
 *}
 
-{include file="../common_inc/form_common_js.tpl"}
-
-{$javascript->link("jquery/jquery.form")}
 
 <form action="{$html->url('/multimedia/save')}" enctype="multipart/form-data" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input  type="hidden" name="data[id]" value="{$object.id|default:''}" />
@@ -30,7 +27,5 @@
 
 {include file="../common_inc/form_advanced_properties.tpl"}
 
-<pre>
-	{dump var=$object}
-</pre>
+
 </form>

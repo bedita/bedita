@@ -1,31 +1,4 @@
-{if !empty($object)}
-
-<script type="text/javascript">
-	{literal}
-	$(document).ready( function ()
-	{
-		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
-		{/literal}
-		{if !empty($object.id) && ($object.fixed)}
-			{literal}
-			$("#titleBEObject").attr("readonly",true).attr("disabled",true);
-			$("#nicknameBEObject").attr("readonly",true).attr("disabled",true);
-			$("#areaSectionAssoc").attr("disabled",true);
-			$("#delBEObject").attr("disabled",true);
-			$(".secondacolonna .modules label").addClass("fixedobject");
-			{/literal}
-		{else}
-			{literal}
-			$(".secondacolonna .modules label").removeClass("fixedobject");
-			{/literal}
-		{/if}
-		{literal}
-	});
-	{/literal}
-</script>
-
-{/if}
-
+{include file="../common_inc/form_common_js.tpl"}
 
 <fieldset id="properties">
 

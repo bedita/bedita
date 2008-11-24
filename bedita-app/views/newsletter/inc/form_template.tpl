@@ -63,7 +63,6 @@ $(document).ready(function() {
 {/literal}
 {/if}
 
-{include file="../common_inc/form_common_js.tpl"}
 
 <form action="{$html->url('/newsletter/saveTemplate')}" method="post" name="updateForm" id="updateForm" class="">
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>

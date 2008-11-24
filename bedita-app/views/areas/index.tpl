@@ -2,7 +2,7 @@
 
 {$javascript->link("jquery/ui/ui.sortable.min", true)}
 {$javascript->link("jquery/jquery.selectboxes.pack", false)}
-
+{$javascript->link("jquery/ui/ui.datepicker.min", false)}
 
 <script type="text/javascript">
 <!--
@@ -15,25 +15,25 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 
 {if !empty($object)}
 
-{literal}
-$(document).ready(function() {
-	$(".main").show();
-	$(".tab:first").click();
-	$("#sectionTitle").text("{/literal}{$object.title|truncate:42:'…':true}{literal}");
-});
-{/literal}
+	{literal}
+	$(document).ready(function() {
+		$(".main").show();
+		$(".tab:first").click();
+		$("#sectionTitle").text("{/literal}{$object.title|truncate:42:'…':true}{literal}");
+	});
+	{/literal}
 
 {else}
 
-{literal}
-$(document).ready(function() {
-	$(".publishingtree H2:first").click();
-});
-{/literal}
-
+	{literal}
+	$(document).ready(function() {
+		$(".publishingtree H2:first").click();
+	});
+	{/literal}
 
 {/if}
 </script>
+
 
 
 </head>
@@ -56,19 +56,17 @@ $(document).ready(function() {
 </div> 
 
 
-
 {assign_concat var="actionForm" 0="save" 1=$formToUse|capitalize|default:"Area"}
+<form action="{$html->url('/areas/')}{$actionForm}" method="post" name="updateForm" id="updateForm" class="cmxform">
 
 
 <div class="main" style="display:none">
 
-<form action="{$html->url('/areas/')}{$actionForm}" method="post" name="updateForm" id="updateForm" class="cmxform">
-				
+
 	<div class="tab"><h2>{t}Details{/t} of &nbsp; <span class="graced" style="font-size:1.5em" id="sectionTitle"></span></h2></div>
 	
 	<fieldset style="padding:0px" id="properties">		
-		
-		<!-- <h2 id="sectionTitle" style="margin-bottom:5px"></h2> -->
+
 	
 		<div id="loading" style="clear:both">&nbsp;</div>
 		
@@ -80,31 +78,30 @@ $(document).ready(function() {
 		
 		<div class="htabcontainer" id="sectiondetails">
 			
-			<div id="areacontentC" class="htabcontent" style="clear:none">
+			<div id="areacontentC" class="htabcontent">
 					
-					{include file="inc/list_content_ajax.tpl"}
+				&nbsp;
 					
 			</div>
 		
-			<div id="areasectionsC" class="htabcontent" style="clear:none">
+			<div id="areasectionsC" class="htabcontent">
 								
-					{include file="inc/list_sections_ajax.tpl"}
+				&nbsp;
 		
 			</div>
 			
 			
-			<div id="areapropertiesC" class="htabcontent" style="clear:none">
+			<div id="areapropertiesC" class="htabcontent">
 					
-					{assign_concat var=formFile 0="inc/form_" 1=$formToUse|default:"area" 2=".tpl"}	
-					{include file=$formFile}
+				&nbsp;
 		
 			</div>
 		</div>
 		
-		<div style="margin-left:8px">
+		<div class="insidecol" style="margin-left:8px">
 		
-			<input class="bemaincommands" style="display:inline" type="button" value=" {t}Save{/t} " name="save" />
-			<input class="bemaincommands" style="display:inline" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" />
+		<input class="bemaincommands" type="button" value=" {t}save{/t} " name="save" id="saveBEObject" />
+		<input class="bemaincommands" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" />
 		
 		</div>
 	
