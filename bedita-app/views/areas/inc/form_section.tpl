@@ -1,6 +1,6 @@
 
 {include file="../common_inc/form_common_js.tpl"}
-
+<h1>sono una sezioneeee!!</h1>
 <fieldset id="properties">
 
 <input type="hidden" name="data[id]" value="{$object.id|default:null}"/>

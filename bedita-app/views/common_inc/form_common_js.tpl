@@ -95,7 +95,7 @@ $(document).ready(function(){
 		
 		$(".secondacolonna .modules label").addClass("pending").attr("title","pending invoice");
 		
-{/literal}{elseif ($object.mail_status == "unsent")}{literal}
+{/literal}{elseif (!empty($object.mail_status) && $object.mail_status == "unsent")}{literal}
 
 		$(".secondacolonna .modules label").addClass("unsent").attr("title","unsent message");
 			
