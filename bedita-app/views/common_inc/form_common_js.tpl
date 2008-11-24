@@ -5,7 +5,7 @@
 ** controlli aggiuntivi specifici per il singolo form locale del modulo vanno nel suo module.js
 ** 
 ** parametri opzionali ricevuti:
-** saveurl = url, default: currentModule.path
+** submiturl = url, default: currentModule.path
 **
 *}
 

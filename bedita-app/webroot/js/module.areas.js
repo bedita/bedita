@@ -15,7 +15,7 @@ var ajaxSectionObjectUrl = "/areas/loadSectionAjax";
 
 // function to bind click event on tree in publication module 
 function loadSectionAjax(container) {
-	
+
 	rel = container.attr("rel").split(":");
 	urlC = ajaxContentsUrl + "/" + rel[1];
 	urlS = ajaxSectionsUrl + "/" + rel[1];

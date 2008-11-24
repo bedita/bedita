@@ -17,12 +17,19 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 
 	{literal}
 	$(document).ready(function() {
-		$(".main").show();
-		$(".tab:first").click();
-		$("#sectionTitle").text("{/literal}{$object.title|truncate:42:'…':true}{literal}");
+
+		$(".publishingtree #pub_{/literal}{$object.id}{literal}").click();
+		
 	});
 	{/literal}
-
+	
+{elseif $new}
+	{literal}
+	
+	/// ajax script col form vuoto da mettere
+	
+	
+	{/literal}
 {else}
 
 	{literal}
@@ -41,6 +48,7 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 
 
 <body>
+
 
 
 {include file="../common_inc/modulesmenu.tpl"}

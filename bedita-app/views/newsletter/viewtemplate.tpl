@@ -24,7 +24,7 @@
 	{/literal}
 </script>
 
-{include file="../common_inc/form_common_js.tpl"}
+{include file="../common_inc/form_common_js.tpl" submiturl=""}
 
 </head>
 <body>

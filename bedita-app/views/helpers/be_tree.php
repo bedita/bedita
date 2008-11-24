@@ -106,7 +106,7 @@ class BeTreeHelper extends Helper {
 					}
 				}
 				
-				$output .= "<div><h2 rel='" . $url . "'" . $class . "'>";
+				$output .= "<div><h2 id='pub_" . $publication['id'] . "' rel='" . $url . "'" . $class . "'>";
 				
 				if (!empty($inputType) && !empty($this->tags[$inputType])) {
 					$checked = (in_array($publication["id"], $parent_ids))? "checked='checked'" : "";
@@ -180,7 +180,7 @@ class BeTreeHelper extends Helper {
 				}
 			}
 			
-			$res .= "<li rel='" . $url . "'" . $class . ">";
+			$res .= "<li id='pub_" . $section['id'] . "' rel='" . $url . "'" . $class . ">";
 			
 			if (!empty($inputType) && !empty($this->tags[$inputType])) {
 				$checked = (in_array($section["id"], $parent_ids))? "checked='checked'" : "";
