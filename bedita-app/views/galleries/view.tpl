@@ -23,7 +23,9 @@
 </script>
 {/literal}
 
+{include file="../common_inc/form_common_js.tpl"}
 </head>
+
 <body>
 
 {include file="../common_inc/modulesmenu.tpl"}

@@ -3,9 +3,6 @@
 *}
 
 
-{include file="../common_inc/form_common_js.tpl"}
-
-
 <form action="{$html->url('/documents/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
@@ -35,10 +32,3 @@
 	
 	{include file="../common_inc/form_permissions.tpl" el=$object recursion=true}
 	
-
-
-	
-
-{*include file="../common_inc/form_lang_version.tpl"*}
-{*include file="../common_inc/form_galleries.tpl"*}
-

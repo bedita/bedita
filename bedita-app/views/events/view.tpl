@@ -28,6 +28,8 @@
 	{/literal}
 </script>
 
+{include file="../common_inc/form_common_js.tpl"}
+
 </head>
 <body>
 	

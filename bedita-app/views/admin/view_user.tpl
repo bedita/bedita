@@ -8,6 +8,8 @@
 {$javascript->link("jquery/jquery.changealert", false)}
 {$javascript->link("jquery/jquery.pwdstrengthmeter")}
 
+{include file="../common_inc/form_common_js.tpl"}
+
 </head>
 
 <body>

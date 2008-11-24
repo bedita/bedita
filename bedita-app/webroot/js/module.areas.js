@@ -77,8 +77,9 @@ $(document).ready(function() {
 		
 	$(".publishingtree H2").click(function() {
 		loadSectionAjax($(this));
-		action = $("#updateForm").attr("action");
-		$("#updateForm").attr("action", action.replace(/saveSection/, "saveArea"));
+		
+		//action = $("#updateForm").attr("action");
+		//$("#updateForm").attr("action", action.replace(/saveSection/, "saveArea"));
 	});
 
 
@@ -94,8 +95,9 @@ $(document).ready(function() {
 	// set on click behavior on tree sections
 	$(".publishingtree LI").click(function() {
 		loadSectionAjax($(this));
-		action = $("#updateForm").attr("action");
-		$("#updateForm").attr("action", action.replace(/saveArea/, "saveSection"));
+		
+		//action = $("#updateForm").attr("action");
+		//$("#updateForm").attr("action", action.replace(/saveArea/, "saveSection"));
 	});
 
 

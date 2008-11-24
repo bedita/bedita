@@ -1,4 +1,3 @@
-{include file="../common_inc/form_common_js.tpl"}
 
 <form action="{$html->url('/galleries/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
