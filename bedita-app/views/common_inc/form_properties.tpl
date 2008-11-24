@@ -39,7 +39,7 @@
 			<input size="10" type="text" 
 			class="dateinput" name="data[end]" id="end" 
 			value="{if !empty($object.end)}{$object.end|date_format:$conf->datePattern}{/if}" />
-		
+
 		</td>
 	</tr>
 

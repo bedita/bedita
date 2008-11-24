@@ -81,6 +81,13 @@ $(document).ready(function(){
 	
 {/literal}{/if}{literal}
 
+{/literal}{if !empty($object.start) && ($object.start > ($smarty.now|date_format:"%Y-%m-%d %T"))}{literal}
+		
+		$(".secondacolonna .modules label").addClass("future").attr("title","object scheduled in the future");
+
+{/literal}{/if}{literal}
+
+
 {/literal}{if ($object.fixed == 1)}{literal}
 
 		$("#titleBEObject").attr("readonly",true);

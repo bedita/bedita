@@ -5,8 +5,8 @@
 	
 <ul class="inline">
 	{foreach from=$conf->mediaTypes item="media_type"}
-		<li class="ico_{$media_type} {if $cat==$media_type}on{/if}">
-		{$media_type} <input type="radio" name="mediatype" value="{$media_type}" {if $cat==$media_type}checked="checked"{/if}/>
+		<li style="width:95px" class="ico_{$media_type} {if $cat==$media_type}on{/if}">
+		{$media_type} <input type="radio" name="mediatype" value="{$media_type}" {if $cat==$media_type}checked="checked"{/if} />
 		</li>
 	{/foreach}
 </ul>
