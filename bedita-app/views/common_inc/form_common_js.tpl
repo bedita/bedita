@@ -91,7 +91,7 @@ $(document).ready(function(){
 		
 {/literal}{/if}{literal}
 
-{/literal}{if ($object.mail_status == "pending")}{literal}
+{/literal}{if (!empty($object.mail_status) && $object.mail_status == "pending")}{literal}
 		
 		$(".secondacolonna .modules label").addClass("pending").attr("title","pending invoice");
 		
