@@ -331,10 +331,14 @@ $(document).ready(function(){
 	});
 
 	$("#mediatypes LI").click(function () {
+	
 		$("#mediatypes LI").removeClass("on");
 		$(this).addClass("on");
 		var valore = $("input", this).attr("value");
-		$("#mediatypes input").val([valore]);	
+		$("#mediatypes input").val([valore]);
+		if ($(this).attr("rel")) {
+				window.location = $(this).attr("rel");
+		}
 	});
 
 	$("#mediatypes LI.ico_all").click(function () {
