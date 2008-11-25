@@ -42,6 +42,7 @@ DROP TABLE IF EXISTS `custom_properties`;
 DROP TABLE IF EXISTS `cake_sessions`;
 DROP TABLE IF EXISTS `links`;
 DROP TABLE IF EXISTS `cards`;
+DROP TABLE IF EXISTS `products`;
 DROP TABLE IF EXISTS `books`;
 DROP TABLE IF EXISTS `date_items`;
 DROP TABLE IF EXISTS `geo_tags`;
@@ -491,10 +492,9 @@ CREATE TABLE authors (
   id INTEGER UNSIGNED NOT NULL,
   name VARCHAR(60) NULL,
   surname VARCHAR(60) NULL,
-  search_string VARCHAR(255) NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(id)
-    REFERENCES contents(id)
+    REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -559,29 +559,38 @@ CREATE TABLE geo_tags (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE books (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  author_1 TINYTEXT NULL,
-  author_2 TINYTEXT NULL,
-  isbn VARCHAR(32) NULL,
-  editor VARCHAR(64) NULL,
-  year DATE NULL,
-  place VARCHAR(255) NULL,
-  lang VARCHAR(60) NULL,
+CREATE TABLE products (
+  id INTEGER UNSIGNED NOT NULL,
+  abstract MEDIUMTEXT NULL,
+  body MEDIUMTEXT NULL,
+  serial_number VARCHAR(128) NULL,
   weight DOUBLE NULL,
-  dim_x DOUBLE NULL,
-  dim_y DOUBLE NULL,
-  note TINYTEXT NULL,
-  category VARCHAR(255) NULL,
-  position VARCHAR(255) NULL,
-  inv VARCHAR(255) NULL,
+  width DOUBLE NULL,
+  height DOUBLE NULL,
+  depth DOUBLE NULL,
+  volume DOUBLE NULL,
+  color VARCHAR(128) NULL,
+  production_date DATETIME NULL,
+  production_place VARCHAR(255) NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(id)
-    REFERENCES contents(id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE books (
+  id INTEGER UNSIGNED NOT NULL,
+  isbn CHAR(13) NULL,
+  year DATE NULL,
+  series VARCHAR(255) NULL,
+  position VARCHAR(255) NULL,
+  PRIMARY KEY(id),
+  FOREIGN KEY(id)
+    REFERENCES products(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
 
 CREATE TABLE links (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
