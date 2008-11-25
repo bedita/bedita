@@ -30,7 +30,6 @@
  */
 class Bibliography extends BeditaContentModel 
 {
-
 	var $useTable = 'contents';
 }
 ?>
