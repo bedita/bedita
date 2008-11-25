@@ -289,6 +289,9 @@ $config['objectTypes'] = array(
 	36			   => array("id" => 36, "name" => "mailtemplate", "module" => "newsletter", "model" => "MailTemplate"),
 	"mailtemplate" => array("id" => 36, "name" => "mailtemplate", "module" => "newsletter", "model" => "MailTemplate"),
 	
+	37			 => array("id" => 37, "name" => "author", "module" => null, "model" => "Author"),
+	"author" 	 => array("id" => 37, "name" => "author", "module" => null, "model" => "Author"),
+	
 	// define array of objects that can be related to other
 	'related'	=> array("id" => array(18,19,20,21,22,29,34)),
 
@@ -331,7 +334,13 @@ $config["defaultObjRelationType"] = array(
 		"hidden" => true,
 		"left" => array(33),
 		"right" => array()
-	)
+	),
+	"author" => array(
+		"hidden" => true,
+		"left" => array(20),
+		"right" => array(37)
+	),
+	
 );
 
 // Relations - local objects' relation types
