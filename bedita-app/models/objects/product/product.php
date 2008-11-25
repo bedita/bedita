@@ -22,11 +22,11 @@
 /**
  * 
  * @link			http://www.bedita.com
- * @version			$Revision: 1434 $
- * @modifiedby 		$LastChangedBy: bato $
- * @lastmodified	$LastChangedDate: 2008-10-22 10:40:12 +0200 (mer, 22 ott 2008) $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: content.php 1434 2008-10-22 08:40:12Z bato $
+ * $Id$
  */
 class Product extends BEAppModel
 {
