@@ -39,7 +39,7 @@
 	<table class="areaform">
 		<tr>
 			<th>{t}status{/t}:</th>
-			<td>
+			<td id="status">
 				{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator=" "}
 			</td>
 		</tr>

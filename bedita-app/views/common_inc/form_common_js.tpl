@@ -90,12 +90,9 @@ $(document).ready(function(){
 
 {/literal}{if ($object.fixed == 1)}{literal}
 
-		$("#titleBEObject").attr("readonly",true);
-		$("#nicknameBEObject").attr("readonly",true);
-		$("#start").attr("readonly",true);
-		$("#start").attr("value","");
-		$("#end").attr("readonly",true);
-		$("#end").attr("value","");
+		$("#titleBEObject,#nicknameBEObject").attr("readonly",true);
+		$("#start,#end").attr("value","").attr("disabled",true);
+		//$("#status input").attr("disabled",true);
 		$("#delBEObject").attr("disabled",true);
 		$(".secondacolonna .modules label").addClass("fixedobject").attr("title","fixed object");
 		
