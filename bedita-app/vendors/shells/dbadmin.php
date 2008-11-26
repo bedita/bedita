@@ -114,15 +114,65 @@ class DbadminShell extends Shell {
 		}
 		$this->out("Lang texts status updated");
 	}
+	
+	/**
+	 * build hash_file for media objects
+	 *
+	 */
+	public function buildHashMedia() {
+		
+		$conf = Configure::getInstance() ;
+		$streamModel = ClassRegistry::init("Stream");
+		$conditions = array();
+		$countOperations = 0;
+		
+		if (!isset($this->params['all'])) {
+			$conditions[] = "hash_file IS NULL"; 
+		}
+		
+		$streams = $streamModel->find("all", array(
+					"conditions" => $conditions
+				)
+			);
+		
+		$this->hr();
+		$this->out("Build hash for media file:");
+		$this->hr();
+		
+		if (!empty($streams)) {
+			foreach ($streams as $s) {
+				
+				// if it's not an url build hash
+				if (!preg_match($conf->validate_resorce['URL'], $s["Stream"]["path"])) {
+					$hash = hash_file("md5", $conf->mediaRoot . $s["Stream"]["path"]);
+					if ($hash === false)
+						 throw new BeditaException(__("Building Hash file failed", true));
+					$streamModel->id = $s["Stream"]["id"];
+					if (!$streamModel->saveField("hash_file", $hash))
+						throw new BeditaException(__("Error saving hash_file field", true));
+					$this->out("file: " . $conf->mediaRoot . $s["Stream"]["path"] . ", hash: " . $hash);
+					$countOperations++;
+				}
+				
+			}
+		}
+		$this->out($countOperations . " rows on db updated");
+		$this->out("done");
+	}
 
 	function help() {
- 	
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
   		$this->out(' ');
  		$this->out("2. checkLangStatus: update lang texts 'status' using master object status");
         $this->out(' ');
         $this->out('    Usage: checkLangStatus -lang <lang>');
+        $this->out(' ');
+        $this->out("3. buildHashMedia: insert 'hash_file' for media file.");
+        $this->out(' ');
+        $this->out('    Usage: buildHashMedia [-all]');
+        $this->out(' ');
+        $this->out("    -all \t rebuild all 'hash_file'");
         $this->out(' ');
 	}
 	

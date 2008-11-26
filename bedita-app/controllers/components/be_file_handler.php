@@ -104,18 +104,18 @@ class BeFileHandlerComponent extends Object {
 	 *
 	 * @return integer or false (id of the object created or modified)
 	 */
-	function save(&$dati, $model = null) {
+	function save(&$dati, $model = null, $getInfoUrl=true) {
 		
 		if(isset($dati['id']) && !empty($dati['id'])) { // modify
 			if(!isset($dati['path']) || @empty($dati['path'])) {
 				return $this->_modify($dati['id'], $dati) ;
 			} else if($this->_isURL($dati['path'])) {
-				return $this->_modifyFromURL($dati['id'], $dati) ;
+				return $this->_modifyFromURL($dati['id'], $dati, $getInfoUrl) ;
 			} else {
 				return $this->_modifyFromFile($dati['id'], $dati) ;
 			}
 		} else { // create
-			return ($this->_isURL($dati['path'])) ? $this->_createFromURL($dati, $model) : $this->_createFromFile($dati, $model);
+			return ($this->_isURL($dati['path'])) ? $this->_createFromURL($dati, $model, $getInfoUrl) : $this->_createFromFile($dati, $model);
 		}
 	}	
 
@@ -178,17 +178,17 @@ class BeFileHandlerComponent extends Object {
 				
 		return $ret['Stream']['id'] ;
 	}
-
+	
 	////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function _createFromURL(&$dati, $model = null) {
+	private function _createFromURL(&$dati, $model = null, $getInfoUrl=true) {
 		if(!isset($dati['path'])) return false ;
 		
 		// URL accettabile
 		if(!$this->_regularURL($dati['path'])) throw new BEditaURLException(__("URL not valid",true)) ;
 
-		if($this->paranoid) {
+		if($getInfoUrl && $this->paranoid) {
 			// Permesso di usare file remoti
 			if(!ini_get('allow_url_fopen')) throw  new BEditaAllowURLException(__("You can't use remote file",true)) ;
 			
@@ -197,7 +197,7 @@ class BeFileHandlerComponent extends Object {
 		}
 			
 		// Il file/URL non deve essere presente
-		if($this->_isPresent($dati['path'])) throw new BEditaFileExistException(__("File already exists in the filesystem",true)) ;
+		if($this->isPresent($dati['path'])) throw new BEditaFileExistException(__("Media already exists in the system",true)) ;
 		
 		return $this->_create($dati, $model) ;
 	}
@@ -206,11 +206,16 @@ class BeFileHandlerComponent extends Object {
 		if(!isset($dati['path'])) return false ;
 		// Create destination path
 		$sourcePath = $dati['path'] ;
-		$targetPath	= $this->_getPathTargetFile($dati['name']); 
-		// File should not exist
-		if($this->_isPresent($targetPath)) {
+		
+		// check if hash file exists
+		$dati["hash_file"] = hash_file("md5", $sourcePath);
+		
+		if ($stream_id = $this->Stream->field("id", array("hash_file" => $dati["hash_file"]))) {
 			throw new BEditaFileExistException(__("File already exists in the filesystem",true)) ;
 		}
+		
+		$targetPath	= $this->_getPathTargetFile($dati['name']); 
+
 		// Create file
 		if(!$this->_putFile($sourcePath, $targetPath)) return false ;
 		$dati['path'] = $targetPath ;
@@ -219,14 +224,13 @@ class BeFileHandlerComponent extends Object {
 	}
 
 	private function _create(&$dati, $model = null) {
-		$model = false ;
 		$modelType = $this->_getTypeFromMIME($dati['mime_type'], $model);
 		switch($modelType) {
 			case 'BEFile':
-				$model = 'BEFile' ;
+			case 'Audio':
+			case 'Video':
 				break ;
 			case 'Image':
-				$model = 'Image' ;
 				if ( $imageSize =@ getimagesize(Configure::read("mediaRoot") . $dati['path']) )
 				{
 					if (!empty($imageSize[0]))
@@ -235,30 +239,27 @@ class BeFileHandlerComponent extends Object {
 						$dati["height"] = $imageSize[1];
 				}
 				break ;
-			case 'Audio':
-				$model = 'Audio' ; 
-				break ;
-			case 'Video':
-				$model = 'Video' ; 
-				break ;
 			default:
 				throw new BEditaMIMEException(__("MIME type not found",true).": ".$dati['mime_type'].
 					" - matches: ".$modelType) ;
 		}
-		$this->{$model}->id = false ;
 		
-		if(!($ret = $this->{$model}->save($dati))) {
-			throw new BEditaSaveStreamObjException(__("Error saving stream object",true), $this->{$model}->validationErrors) ;
+		$dati['Category'] = (!empty($dati['Category']))? array_merge($dati['Category'],$this->getCategoryMediaType($dati,$modelType)) : $this->getCategoryMediaType($dati,$modelType);
+		
+		$this->{$modelType}->id = false ;
+		
+		if(!($ret = $this->{$modelType}->save($dati))) {
+			throw new BEditaSaveStreamObjException(__("Error saving stream object",true), $this->{$modelType}->validationErrors) ;
 		}
-		return ($this->{$model}->{$this->{$model}->primaryKey}) ;
+		return ($this->{$modelType}->{$this->{$modelType}->primaryKey}) ;
 	}
 
-	private function _modifyFromURL($id, &$dati) {
+	private function _modifyFromURL($id, &$dati, $getInfoUrl=true) {
 		// URL accettabile
 		if(!$this->_regularURL($dati['path'])) 
 			throw new BEditaURLException(__("URL not valid",true)) ;
 			
-		if($this->paranoid) {
+		if($getInfoUrl && $this->paranoid) {
 			// Permesso di usare file remoti
 			if(!ini_get('allow_url_fopen')) throw  new BEditaAllowURLException(__("You can't use remote file",true)) ;
 			
@@ -267,11 +268,12 @@ class BeFileHandlerComponent extends Object {
 		}
 	
 		// se il file e' presente in un altro oggetto torna un eccezione
-		if($this->_isPresent($dati['path'], $id)) throw new BEditaFileExistException(__("File is already associated to another object",true)) ;
+		if($this->isPresent($dati['path'], $id)) throw new BEditaFileExistException(__("File is already associated to another object",true)) ;
 		
 		// Se e' presente un path ad file su file system, cancella
-		if(($ret = $this->Stream->read('path', $id) && !$this->_isURL($ret['path']))) {
-			$this->_removeFile($ret['path']) ;		
+		$stream = $this->Stream->read('path', $id);
+		if((!empty($stream["Stream"]["path"]) && !$this->_isURL($stream['Stream']['path']))) {
+			$this->_removeFile($stream['Stream']['path']) ;		
 		}
 		
 		return $this->_modify($id, $dati) ;
@@ -279,11 +281,13 @@ class BeFileHandlerComponent extends Object {
 
 	private function _modifyFromFile($id, &$dati) {
 		$sourcePath = $dati['path'] ;
-		$targetPath	= $this->_getPathTargetFile($dati['name']); 
+		// check if hash file exists
+		$dati["hash_file"] = hash_file("md5", $sourcePath);
 		
-		// se il file e' presente in un altro oggetto torna un eccezione
-		if($this->_isPresent($targetPath, $id)) 
-			throw new BEditaFileExistException(__("File is already associated to another object",true)) ;
+		if ($stream_id = $this->Stream->field("id", array("hash_file" => $dati["hash_file"]))) {
+			throw new BEditaFileExistException(__("File already exists in the filesystem",true)) ;
+		}
+		$targetPath	= $this->_getPathTargetFile($dati['name']); 
 		
 		$ret = $this->Stream->read('path', $id);
 			
@@ -302,10 +306,7 @@ class BeFileHandlerComponent extends Object {
 	private function _modify($id, &$dati) {
 		$conf = Configure::getInstance() ;
 
-		$ret = $this->Stream->read('mime_type', $id) ;
-			
-		if(empty($ret['Stream']['mime_type'])) 
-			throw new BEditaMIMEException(__("MIME type of previous file isn't defined in database. Impossible replace it.", true)) ;
+		$stream = $this->Stream->read(array('mime_type','path'), $id) ;
 		
 		// Preleva il tipo di oggetto da salvare e salva
 		$rec = $this->BEObject->recursive ;
@@ -315,8 +316,35 @@ class BeFileHandlerComponent extends Object {
 		$this->BEObject->recursive = $rec ;
 		$model = $conf->objectTypes[$ret['BEObject']['object_type_id']]["model"] ;
 		
-		if (!$this->_getTypeFromMIME($dati["type"], $model))
-			throw new BEditaMIMEException(__("MIME type (" . $dati["type"] . ") is not compatible with " . $model . " object", true)) ;
+		if (!$fileModelType = $this->_getTypeFromMIME($dati["mime_type"])) {
+			throw new BEditaMIMEException(__("MIME type not found",true).": ".$dati['mime_type'].
+					" - matches: ".$fileModelType) ;
+		}
+		
+		// change object type
+		if ($fileModelType != $model) {
+			if ( $fileModelType == "Image" && ($imageSize =@ getimagesize(Configure::read("mediaRoot") . $dati['path'])) ) {
+				if (!empty($imageSize[0]))
+					$dati["width"] = $imageSize[0];
+				if (!empty($imageSize[1]))
+					$dati["height"] = $imageSize[1];
+			}
+			
+			$dati["object_type_id"] = Configure::read("objectTypes." . strtolower($fileModelType) . ".id");
+			// delete old data from specific table
+			$this->{$model}->Behaviors->disable('DeleteObject');
+			$this->{$model}->del($id, false);
+			$this->{$model}->Behaviors->enable('DeleteObject');
+			
+			// delete file on filesystem
+			if(($stream["Stream"]["path"] && !$this->_isURL($stream["Stream"]["path"]))) {
+				$this->_removeFile($stream["Stream"]["path"]) ;		
+			}
+			
+			$model = $fileModelType;
+		}
+		
+		$dati['Category'] = (!empty($dati['Category']))? array_merge($dati['Category'],$this->getCategoryMediaType($dati,$model)) : $this->getCategoryMediaType($dati,$model);
 		
 		$this->{$model}->id =  $id ;
 		if(!($ret = $this->{$model}->save($dati))) {
@@ -325,6 +353,21 @@ class BeFileHandlerComponent extends Object {
 		
 		return ($this->{$model}->{$this->{$model}->primaryKey}) ;
 	}	
+	
+	private function getCategoryMediaType($data, $modelType) {
+		$cat = array();
+		// if empty mediatype try to get it from modelName
+		if (empty($data['mediatype']) && $modelType != "BEFile") {
+			$data['mediatype'] = strtolower($modelType);
+		}
+		
+		if (!empty($data['mediatype'])) {
+			$category = ClassRegistry::init("Category");
+			$objetc_type_id = Configure::read("objectTypes." . strtolower($modelType) . ".id");
+			$cat = $category->checkMediaType($objetc_type_id, $data['mediatype']);	
+		}
+		return $cat;
+	}
 	
 	/**
 	 * Torna TRUE se il path e' un URL
@@ -433,7 +476,7 @@ class BeFileHandlerComponent extends Object {
 	 * @param string $targetPath
 	 */
 	private function _putFile($sourcePath, $targetPath) {
-		if(@empty($targetPath)) return false ;
+		if(empty($targetPath)) return false ;
 		
 		// Determina quali directory creare per registrare il file
 		$tmp = Configure::read("mediaRoot") . $targetPath ;
@@ -465,55 +508,42 @@ class BeFileHandlerComponent extends Object {
 	private function _removeFile($path) {
 		$path = Configure::read("mediaRoot") . $path ;
 		
-		// Cancella
-		if(!$this->Transaction->rm($path))
-			return false ;
+		if (file_exists($path)) {
 		
-		// Se la directory contenitore e' vuota, la cancella
-		$dir = dirname($path) ;
-		while($dir != Configure::read("mediaRoot")) {
-			// Verifica che sia vuota
-			$vuota = true ;
-			if($handle = opendir($dir)) {
-			    while (false !== ($file = readdir($handle))) {
-        			if ($file != "." && $file != "..") {
-        				$vuota = false ;
-		            	break ;
-		        	}
-    			}
-    			closedir($handle);				
-			}
+			// Cancella
+			if(!$this->Transaction->rm($path))
+				return false ;
 			
-			// Se vuota cancella altrimenti interrompe
-			if($vuota) {
-				if(!$this->Transaction->rmdir($dir))
-					return false ;
-			}else {
-				break ;
-			}
-			
-			$dir = dirname($dir) ;
-		} 
-
+			// Se la directory contenitore e' vuota, la cancella
+			$dir = dirname($path) ;
+			while($dir != Configure::read("mediaRoot")) {
+				// Verifica che sia vuota
+				$vuota = true ;
+				if($handle = opendir($dir)) {
+				    while (false !== ($file = readdir($handle))) {
+	        			if ($file != "." && $file != "..") {
+	        				$vuota = false ;
+			            	break ;
+			        	}
+	    			}
+	    			closedir($handle);				
+				}
+				
+				// Se vuota cancella altrimenti interrompe
+				if($vuota) {
+					if(!$this->Transaction->rmdir($dir))
+						return false ;
+				}else {
+					break ;
+				}
+				
+				$dir = dirname($dir) ;
+			} 
+		}
+		
 		return true ;
 	}
 
-	/**
-	 * Torna TRUE e' gia' presente ad eccezione dell'oggetto indicato in id
-	 *
-	 * @param string $path
-	 * @param intger $id
-	 */
-	private function _isPresent($path, $id = null) {
-		
-		$clausoles = array() ;
-		$clausoles[] = array("path" => trim($path)) ;
-		if(isset($id)) $clausoles[] = array("id" => "not {$id}") ;
-		
-		$ret = $this->Stream->find($clausoles, 'id') ;
-		
-		return ((is_array($ret))?((boolean)count($ret)):false) ;
-	}
 	
 	private function _mimeByExtension($ext) {
 		$conf 		= Configure::getInstance() ;
@@ -541,14 +571,26 @@ class BeFileHandlerComponent extends Object {
   	 *
   	 * @param string $name 	Nome del file
   	 */
-	function _getPathTargetFile($name)  {
-   		$conf 		= Configure::getInstance() ;
-		
+	function _getPathTargetFile(&$name)  {
+   		
    		// Determina le directory dove salvare il file
 		$md5 = md5($name) ;
 		preg_match("/(\w{2,2})(\w{2,2})(\w{2,2})(\w{2,2})/", $md5, $dirs) ;
 		array_shift($dirs) ;
-		$path =  DS . implode(DS, $dirs) . DS . $name ;
+		
+		$pointPosition = strrpos($name,".");
+		$filename = $tmpname = substr($name, 0, $pointPosition);
+		$ext = substr($name, $pointPosition);
+		$mediaRoot = Configure::read("mediaRoot");
+		$dirsString = implode(DS, $dirs);
+		$counter = 1;
+		while(file_exists($mediaRoot . DS . $dirsString . DS . $filename . $ext)) {
+			$filename = $tmpname . "-" . $counter++;
+		}
+		
+		// save new name (passed by reference)
+		$name = $filename . $ext;
+		$path =  DS . $dirsString . DS . $name ;
 		
 		return $path ;
 	}

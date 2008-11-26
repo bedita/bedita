@@ -302,6 +302,43 @@ class Category extends BEAppModel {
 	}
 
 	/**
+	 * USED for multimedia objects
+	 * check if exists $mediatype in categories for an object type. If not, create the category
+	 *
+	 * @param int $object_type_id
+	 * @return mixed, false if not mediatype in the form else return array of Category
+	 */
+	public function checkMediaType($object_type_id, $mediatype) {
+		
+		if (empty($mediatype)) {
+			return false;
+		}
+		
+		$category = $this->find("first",
+			array(
+				"conditions" => array(
+					"name" => $mediatype, 
+					"object_type_id" => $object_type_id
+				)
+			)
+		);
+		if(empty($category)) { // if media category doesn't exists, create it
+			$data = array(
+				"name"=>$mediatype,
+				"label"=>ucfirst($mediatype),
+				"object_type_id"=>$object_type_id,
+				"status"=>"on"
+			);
+			if(!$this->save($data)) {
+				throw new BeditaException(__("Error saving category", true), $this->validationErrors);
+			}
+			$category['id']=$this->id;
+		}
+		$categoryArr = array($category['id']=>$category['id']);
+		return $categoryArr;
+	}
+	
+	/**
 	 * compare two array elements defined by $orderTag var and return -1,0,1 
 	 *	$dirTag is used for define order of comparison 
 	 * 

@@ -129,42 +129,26 @@ class MultimediaController extends ModulesController {
 		$this->Transaction->begin() ;
 		// save data
 		$this->data["Category"] = $this->Category->saveTagList($this->params["form"]["tags"]);
-
-		if (!empty($this->params['form']['Filedata']['name'])) {		
+	
+		if (!empty($this->params['form']['Filedata']['name'])) {
 			$this->Stream->id = $this->BeUploadToObj->upload($this->data) ;
 		} elseif (!empty($this->data['url'])) {
-			$this->Stream->id = $this->BeUploadToObj->uploadFromMediaProvider($this->data) ;
+			$this->Stream->id = $this->BeUploadToObj->uploadFromMediaProvider($this->data) ;	
 		} else {
-			$model = $this->BEObject->getType($this->data["id"]);
+			$model = (!empty($this->data["id"]))? $this->BEObject->getType($this->data["id"]) : "BEFile";
 			if(!$this->{$model}->save($this->data)) {
 				throw new BeditaException(__("Error saving multimedia", true), $this->{$model}->validationErrors);
 			}
 			$this->Stream->id = $this->{$model}->id;
-
-			$name = !empty($this->params['form']['mediatype']) ? $this->params['form']['mediatype'] : null;
-			if(!empty($name)) {
-				$object_type_id = $this->BEObject->findObjectTypeId($this->Stream->id);
-				$category = $this->Category->find("first",
-					array(
-						"conditions" => array(
-							"name" => $name, 
-							"object_type_id" => $object_type_id
-						)
-					)
-				);
-				if(empty($category)) { // if media category doesn't exists, create it
-					$data = array(
-						"name"=>$name,
-						"label"=>ucfirst($name),
-						"object_type_id"=>$object_type_id,
-						"status"=>"on"
-					);
-					if(!$this->Category->save($data)) {
-						throw new BeditaException(__("Error saving category", true), $this->Category->validationErrors);
-					}
-					$category['id']=$this->Category->id;
-				}
-				$this->data['Category'] = array($category['id']=>$category['id']);
+			
+			if (!empty($this->params['form']['mediatype'])) {
+				$objetc_type_id = Configure::read("objectTypes." . strtolower($model) . ".id");
+				$this->data['Category'] = array_merge($this->data['Category'], $this->Category->checkMediaType($objetc_type_id, $this->params['form']['mediatype']));
+			}
+			
+			// if it's new object set id just saved in $this->data["id"] to execute an update
+			if (empty($this->data["id"])) {
+				$this->data["id"] = $this->{$model}->id;
 			}
 			$this->{$model}->create();
 			if(!$this->{$model}->save($this->data)) {
@@ -181,7 +165,8 @@ class MultimediaController extends ModulesController {
 		$this->userInfoMessage(__("Multimedia object saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("multimedia object [". $this->data["title"]."] saved");
 	}
-
+	
+	
 	 /**
 	 * Delete multimedia object
 	 */
@@ -230,6 +215,7 @@ class MultimediaController extends ModulesController {
 	 */
 	function frm_upload_url() {
 	}
+	
 	 
 	protected function forward($action, $esito) {
 

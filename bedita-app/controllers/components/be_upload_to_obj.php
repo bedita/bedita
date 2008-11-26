@@ -114,6 +114,10 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 		$data['mime_type'] = $data['type'];
 		unset($data['type']);
 		
+		if (!empty($this->params['form']['mediatype'])) {
+			$data['mediatype'] = $this->params['form']['mediatype'];
+		}
+		
 		$override = (isset($this->params['form']['override'])) ? ((boolean)$this->params['form']['override']) : false ;
 
 		if (empty($data['title']))
@@ -208,22 +212,15 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 		
 		if (empty($dataURL["status"]))
 			$dataURL['status'] = "on";
-			
 		
-		if($this->BeFileHandler->isPresent($dataURL['path'])) 
-			throw new BEditaFileExistException(__("Video url is already in the system",true)) ;
-
-		App::import('Model', 'Video') ;
-		$Video = new Video() ;
-		
-		$Video->id = false ;
-		if(!($ret = $Video->save($dataURL))) {
-			$this->validateErrors = $Video->validationErrors ;
-			throw new BEditaSaveStreamObjException(__("Error saving stream object",true)) ;
+		if (!empty($this->params['form']['mediatype'])) {
+			$dataURL['mediatype'] = $this->params['form']['mediatype'];
 		}
 		
-		$id = (!empty($ret["Video"]["id"]))? $ret["Video"]["id"] : $Video->getLastInsertID();
+		$id = $this->BeFileHandler->save($dataURL, null, false) ;
+		
 		return $id;
+		
 	}
 	
 	/**

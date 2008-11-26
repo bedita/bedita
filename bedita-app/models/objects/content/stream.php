@@ -30,11 +30,6 @@
  */
 class Stream extends BEAppModel
 {
-	var $validate = array(
-		'path' 		=> array(array('rule' => VALID_NOT_EMPTY, 	'required' => true)),
-		'name' 		=> array(array('rule' => VALID_NOT_EMPTY, 	'required' => true)),
-		'mime_type' => array(array('rule' => VALID_NOT_EMPTY, 	'required' => true)),
-	) ;
 
 	/**
 	 * Get id from filename

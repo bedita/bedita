@@ -529,7 +529,7 @@ $config['validate_resorce'] = array(
 	'mime'	=> array(
 				'Image'			=> array('/image\/jpeg/', '/image\/gif/', '/image\/png/'),
 				'Audio'			=> array('/audio\/\.*/'),
-				'Video'			=> array('/video\/\.+/'),
+				'Video'			=> array('/video\/\.*/'),
 				'BEFile'		=> array('/application\/\.*/', '/text\/\.*/')
 				),
 	/**

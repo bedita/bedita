@@ -405,7 +405,9 @@ CREATE TABLE streams (
   name VARCHAR(255) NULL,
   mime_type VARCHAR(60) NULL,
   size INTEGER UNSIGNED NULL,
+  hash_file VARCHAR(255) NULL,
   PRIMARY KEY(id),
+  INDEX hash_file_index(hash_file),
   FOREIGN KEY(id)
     REFERENCES contents(id)
       ON DELETE CASCADE
