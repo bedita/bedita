@@ -423,6 +423,8 @@ class BEObject extends BEAppModel
 				}
 				$data['nickname'] = $currObj['BEObject']['nickname'];
 				$data['status'] = $currObj['BEObject']['status'];
+			} elseif (empty($data['nickname']) && !empty($currObj['BEObject']['nickname'])) {
+				$data["nickname"] = $currObj['BEObject']['nickname'];
 			} else {
 				$data['nickname'] = $this->_getDefaultNickname($data['nickname']);
 			}

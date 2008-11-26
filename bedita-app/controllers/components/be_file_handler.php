@@ -292,7 +292,7 @@ class BeFileHandlerComponent extends Object {
 		$ret = $this->Stream->read('path', $id);
 			
 		// Se e' presente un path ad file su file system, cancella
-		if(($ret && !$this->_isURL($ret['Stream']['path']))) {
+		if((!empty($ret['Stream']['path']) && !$this->_isURL($ret['Stream']['path']))) {
 			$this->_removeFile($ret['Stream']['path']) ;		
 		}
 		
