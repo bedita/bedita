@@ -20,6 +20,7 @@
  */
 
 /**
+ * Bibliographic annotation
  * 
  * @link			http://www.bedita.com
  * @version			$Revision$
@@ -28,7 +29,22 @@
  * 
  * $Id$
  */
-class BiblioItem extends BEAppObjectModel
+class BiblioItem extends BEObject
 {
+	var $useTable	= "objects" ;
+	
+	protected $modelBindings = array( 
+			"detailed" =>  array("ObjectType", 
+								"UserCreated", 
+								"UserModified", 
+								"Permissions",
+								"ObjectProperty",
+								"LangText",
+								"RelatedObject",
+								"Category"),
+			"default" 	=> array("ObjectProperty", "LangText", 
+								"ObjectType", "Category", "RelatedObject"),
+			"minimum" => array("ObjectType")
+	);
 }
 ?>

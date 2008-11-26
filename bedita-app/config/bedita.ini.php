@@ -292,6 +292,9 @@ $config['objectTypes'] = array(
 	37			 => array("id" => 37, "name" => "author", "module" => null, "model" => "Author"),
 	"author" 	 => array("id" => 37, "name" => "author", "module" => null, "model" => "Author"),
 	
+	38			 => array("id" => 38, "name" => "biblioitem", "module" => null, "model" => "BiblioItem"),
+	"biblioitem" 	 => array("id" => 38, "name" => "biblioitem", "module" => null, "model" => "BiblioItem"),
+	
 	// define array of objects that can be related to other
 	'related'	=> array("id" => array(18,19,20,21,22,29,34)),
 
@@ -339,6 +342,16 @@ $config["defaultObjRelationType"] = array(
 		"hidden" => true,
 		"left" => array(20),
 		"right" => array(37)
+	),
+	"annotate" => array(
+		"hidden" => true,
+		"left" => array(38),
+		"right" => array(20)
+	),
+	"bibliography" => array(
+		"hidden" => true,
+		"left" => array(19),
+		"right" => array(38)
 	),
 	
 );
