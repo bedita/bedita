@@ -415,15 +415,16 @@ class BEObject extends BEAppModel
 											"fields" =>array("status", "nickname", "fixed"),
 											"contain" => ("")
 											));
-			if($data['nickname'] != $currObj['BEObject']['nickname']) {				
-				if($currObj['BEObject']['fixed'] == 1) {
+			if($currObj['BEObject']['fixed'] == 1) {  // don't change nickname & status
+				// throws exceptions if status/nicknames are changed
+				if((!empty($data['status']) && $data['status'] != $currObj['BEObject']['status']) ||
+				    (!empty($data['nickname']) && $data['nickname'] != $currObj['BEObject']['nickname'])) {
 					throw new BeditaException(__("Error: modifying fixed object!", true));
-				} else {
-					$data['nickname'] = $this->_getDefaultNickname($data['nickname']);
 				}
-			}
-			if($currObj['BEObject']['fixed'] == 1 && $data['status'] != $currObj['BEObject']['status']) {				
-				throw new BeditaException(__("Error: modifying fixed object!", true));
+				$data['nickname'] = $currObj['BEObject']['nickname'];
+				$data['status'] = $currObj['BEObject']['status'];
+			} else {
+				$data['nickname'] = $this->_getDefaultNickname($data['nickname']);
 			}
 
 		} else {
