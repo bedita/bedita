@@ -24,7 +24,7 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 	});
 	{/literal}
 	
-{elseif $new}
+{elseif !empty($new)}
 	{literal}
 	
 	/// ajax script col form vuoto da mettere
