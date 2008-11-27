@@ -60,7 +60,7 @@ $(document).ready(function() {
 		<h1>welcome</h1>
 		{$BEAuthUser.realname}
 		<br  />
-		you have 3 ipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut
+		
 	</li>
 	
 	{/if}
