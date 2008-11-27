@@ -13,7 +13,6 @@
 
 	<table class="areaform">
 
-
 		<tr>
 			<th>{t}title{/t}:</th>
 			<td>

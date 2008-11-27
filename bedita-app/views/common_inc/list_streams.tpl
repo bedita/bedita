@@ -72,9 +72,7 @@ $(document).ready(function(){
 			<div class="multimediaitem itemBox{if $item.status != "on"} off{/if}">
 				
 				{include file="../common_inc/file_item.tpl"}
-				
-				
-				
+	
 			</div>
 		{/foreach}
 	</div>
@@ -97,8 +95,7 @@ $(document).ready(function(){
 		{assign var="mediaUrl"         value = $conf->mediaUrl}
 
 		<td style="width:{$thumbWidth}px">
-
-		{strip}		
+	
 		<div style="width:{$thumbWidth}px; border:4px solid white;">		
 		
 			{if strtolower($objects[i].ObjectType.name) == "image"}	
@@ -115,12 +112,13 @@ $(document).ready(function(){
 			
 			{else}
 			
-				<a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$objects[i].mime_type}.gif" /></a>
+				<a href="{$conf->mediaUrl}{$filePath}" target="_blank">
+					<img src="{$session->webroot}img/mime/{$objects[i].mime_type}.gif" />
+				</a>
 			
 			{/if}
 		
 		</div>
-		{/strip}
 			
 		</td>
 {/strip}

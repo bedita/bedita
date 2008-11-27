@@ -5,14 +5,25 @@
 {$javascript->link("jquery/jquery.form")}
 {$javascript->link("jquery/ui/ui.datepicker.min", false)}
 
-{literal}
 <script type="text/javascript">
+{if !empty($object.path)}
+{literal}
+
     $(document).ready(function(){
 		var openAtStart ="#multimediaitem";
 		$(openAtStart).prev(".tab").BEtabstoggle();
     });
-</script>
 {/literal}
+{else}
+{literal}
+
+    $(document).ready(function(){
+		var openAtStart ="#title,#mediatypes";
+		$(openAtStart).prev(".tab").BEtabstoggle();
+    });
+{/literal}
+{/if}
+</script>
 
 {include file="../common_inc/form_common_js.tpl"}
 

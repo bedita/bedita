@@ -1013,6 +1013,20 @@ INPUT[type=checkbox] {
 	vertical-align:middle;
 }
 
+input[type=radio] {
+	margin-right:5px; vertical-align:middle;
+}
+
+input[type=radio] {
+	margin-right:5px; vertical-align:middle;
+}
+
+INPUT[readonly] {
+	color:gray;
+	background-color:#dedede;
+}
+
+
 label {font-weight:bold;}
 
 label.block {display:block; margin-top:4px; margin-bottom:2px}
@@ -1055,10 +1069,6 @@ input#titleBEObject {
 	margin:5px 0px 0px 0px !important;
 }
 
-input[type=radio] {
-	
-	margin-right:5px; vertical-align:middle;
-}
 
 INPUT.priority {
 	text-align:right; margin-left: -30px; margin-right:10px; width:35px; float:left; background-color:transparent

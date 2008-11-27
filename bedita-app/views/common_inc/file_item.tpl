@@ -21,6 +21,7 @@
 
 	
 	<div style="overflow:hidden; height:{$thumbHeight}px" class="imagebox">
+
 	<a href="{$linkUrl}">
 	{if strtolower($item.ObjectType.name) == "image"}
 	
@@ -31,9 +32,7 @@
 			
 		{else}
 		
-			{if strtolower($item.ObjectType.name) == "image"}
-			<img src="/img/iconset/88px/image.png" />
-			{/if}
+			<img  alt="{$item.mediatype|default:'notype'}" title="{$item.mediatype|default:'notype'} | {$item.title}" src="/img/iconset/88px/{$item.mediatype|default:'notype'}.png" />
 			
 		{/if}
 
@@ -43,15 +42,11 @@
 		{assign_associative var="attributes" style=$myStyle}
 	
 		{$mediaProvider->thumbnail($item, $attributes) }
-	
-	{elseif strtolower($item.ObjectType.name) == "audio"}
-	
-		<img src="/img/iconset/88px/audio.png" />
+
 	
 	{else}
-	
-		<img src="/img/iconset/88px/text.png" />
-		{* <img src="/img/iconset/88px/mime/{$item.mime_type}.png" /> *}
+		
+		<img alt="{$item.mediatype|default:'notype'}" title="{$item.mediatype|default:'notype'} | {$item.title}" src="/img/iconset/88px/{$item.mediatype|default:'notype'}.png" />
 	
 	{/if}
 	</a>
@@ -60,7 +55,7 @@
 	
 	<ul class="info_file_item bordered">
 
-		<li>
+		<li style="line-height:1.2em; height:1.2em; overflow:hidden">
 			{$fileTitle}
 		</li>
 {if strtolower($item.ObjectType.name) == "image"}

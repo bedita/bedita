@@ -22,6 +22,11 @@
 						{$beTree->option($tree)}
 					{/if}
 					</select>
+					
+					{if ($object.fixed == 1)}
+						<input id="areaSectionAssoc" type="hidden" name="data[parent_id]" value="{$parent_id}" />
+					{/if}
+					
 				</td>
 			</tr>
 			<tr>
@@ -36,7 +41,7 @@
 			<tr>
 			
 					<th>{t}status{/t}:</th>
-					<td>
+					<td id="status">
 						{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator="&nbsp;"}
 					</td>
 			</tr>
