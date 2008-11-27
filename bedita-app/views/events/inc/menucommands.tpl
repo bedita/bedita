@@ -7,7 +7,7 @@ Menu a SX valido per tutte le pagine del controller.
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 	<div class="modules">
-	   <label class="{$moduleName}" rel="{$html->url('/events')}">{t}{$currentModule.label}{/t}</label>
+		<label class="{$moduleName}" rel="{$html->url('/')}{$currentModule.path}">{t}{$currentModule.label}{/t}</label>
 	</div> 
 
 	{if empty($categories)}

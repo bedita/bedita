@@ -31,7 +31,7 @@
 	</div>
 </div>
 
-<div class="main">
+<div class="mainfull">
 	
 	{include file="inc/form_info.tpl" method="systemInfo"}
 

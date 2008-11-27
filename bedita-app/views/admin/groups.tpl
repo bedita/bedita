@@ -54,4 +54,6 @@ function delGroupDialog(name,objectid) {
 
 </div>
 
+{include file="../common_inc/menuright.tpl"}
+
 </form>

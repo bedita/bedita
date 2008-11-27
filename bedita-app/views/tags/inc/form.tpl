@@ -1,24 +1,3 @@
-<script type="text/javascript">
-{literal}
-
-$(document).ready(function(){
-	$('#tagdetails').show() ;
-	$("#updateform").validate();
-	$("#delBEObject").submitConfirm({
-		{/literal}
-		action: "{$html->url('delete/')}",
-		message: "{t}Are you sure that you want to delete the tag?{/t}"
-		{literal}
-	});
-});
-
-{/literal}
-</script>
-
-
-<input type="hidden" name="data[id]" value="{$tag.id|default:''}"/>
-<input type="hidden" name="tags_selected[0]" value="{$tag.id|default:''}"/>
-<input type="hidden" name="data[name]" value="{$tag.name|default:''}"/>
 	
 <div class="tab"><h2>{t}Tag details{/t}</h2></div>
 <fieldset id="tagdetails">

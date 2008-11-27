@@ -56,6 +56,9 @@
 {include file="inc/menucommands.tpl" method="view" fixed = true}
 
 
+<form action="{$html->url('/addressbook/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
+
 <div class="main">	
 	
 	{include file="inc/form.tpl"}
@@ -65,7 +68,7 @@
 
 {include file="../common_inc/menuright.tpl"}
 
-
+</form>
 
 
 

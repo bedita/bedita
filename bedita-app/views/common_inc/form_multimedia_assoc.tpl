@@ -179,6 +179,7 @@ $(document).ready(function(){
 			<tr class="rowList" id="tr_{$mobj.id}">
 				
 				<td style="width:12px;"><input type="checkbox" value="{$mobj.id}" name="chk_bedita_item" class="itemCheck"/></td>
+				
 				<td style="width:{$thumbWidth}px;">
 					
 					{if $conf->objectTypes[$mobj.object_type_id].name == "image"}
@@ -194,6 +195,7 @@ $(document).ready(function(){
 						<div><a href="{$conf->mediaUrl}{$mobj.path}" target="_blank"><img src="{$session->webroot}img/mime/{$mobj.mime_type}.gif" /></a></div>
 					{/if}
 				</td>
+				
 				{* <td>{$mobj.id}</td> *}
 				<td>{$mobj.title|default:""}</td>
 				{* <td>{$mobj.name|default:""|truncate:24:"..."}</td> *}

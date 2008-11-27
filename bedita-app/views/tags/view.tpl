@@ -7,16 +7,20 @@
 {$javascript->link("jquery/jquery.validate", false)}
 
 <script type="text/javascript">
-	{literal}
-	$(document).ready( function ()
-	{
-		var openAtStart ="#tagdetails";
-		$(openAtStart).prev(".tab").BEtabstoggle();
-		
+{literal}
+$(document).ready( function ()
+{
+	var openAtStart ="#tagdetails";
+	$(openAtStart).prev(".tab").BEtabstoggle();
+	$("#updateform").validate();
+	$("#delBEObject").submitConfirm({
+		action: "{/literal}{$html->url('delete/')}{literal}",
+		message: "{/literal}{t}Are you sure that you want to delete the tag?{/t}{literal}"
 	});
-	{/literal}
-</script>
+});
 
+{/literal}
+</script>
 </head>
 
 <body>
@@ -38,8 +42,15 @@
 </div>
 
 <form action="{$html->url('/tags/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
-	
+
+<input type="hidden" name="data[id]" value="{$tag.id|default:''}"/>
+<input type="hidden" name="tags_selected[0]" value="{$tag.id|default:''}"/>
+<input type="hidden" name="data[name]" value="{$tag.name|default:''}"/>
+
 {include file="inc/menucommands.tpl" method="view" fixed=true}
+
+
+
 
 <div class="main">
 	
