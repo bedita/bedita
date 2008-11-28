@@ -7,11 +7,10 @@
 {$javascript->link("jquery/jquery.form", false)}
 {$javascript->link("jquery/jquery.treeview", false)}
 {$javascript->link("jquery/jquery.selectboxes.pack")}
-
-{$javascript->link("jquery/ui/ui.sortable.min", false)}
+{$javascript->link("jquery/ui/ui.sortable.min", true)}
 {$javascript->link("jquery/ui/ui.datepicker.min", false)}
 {if $currLang != "eng"}
-	{$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
+{$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
 
 
