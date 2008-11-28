@@ -61,6 +61,7 @@ function loadSectionAjax(container) {
 	$(".publishingtree LI").removeClass("on");
 	container.addClass("on");
 	$("#sectionTitle").text(container.text());
+	$(".head H1").text(container.text());
 	
 	// open tab if it's not opened
 	if ( $(".tab:first").next().css("display") == "none" ) {

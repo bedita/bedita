@@ -1289,11 +1289,6 @@ LI.welcome {
 	padding-bottom:15px;
 }
 
-LI.colophon {
-	background:transparent none;
-	font-size:1em; color:#000000;
-}
-
 
 .dashboard {
 	position:absolute;
@@ -1332,6 +1327,16 @@ TABLE.areaform {
     accessories
 
 ...........................................*/
+
+.colophon {
+	width:240px !important;
+	background:transparent none !important;
+	font-size:1em !important; 
+}
+
+.colophon .belinks, .colophon .belinks A {
+	color:#333 !important;	
+}
 
 .evidence {
 	font-size: 1.3em;

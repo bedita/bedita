@@ -22,7 +22,7 @@
 {/if}	
 
 {if !empty($BEAuthUser.userid)}
-	<li><a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a></li>
+	<li><a href="{$html->url('/authentications/logout')}">› {t}Exit{/t}</a></li>
 {/if}
 </ul>
 

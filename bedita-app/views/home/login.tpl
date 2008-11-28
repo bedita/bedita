@@ -27,16 +27,10 @@ $().ready(function() {
 	 <div class="modules"><label class="bedita" rel="{$html->url('/')}">BEdita 3.0</label></div>
 	 
 	 
-	 	<div class="insidecol">
+	<div class="insidecol colophon">	
 	
-		<a href="css-class.html">› sed diam nonum</a>
-		<br />
-		<a href="testinside.html">› nibh euismod</a>
-		<br />
-		<a href="testinside2.html">› nonummy nibh</a>
-		<hr />
-		un software di <strong>Chialab</strong> and <strong>Channelweb</strong>
-
+		{include file="../common_inc/colophon.tpl"}
+	
 	</div>
 	 
 </div>

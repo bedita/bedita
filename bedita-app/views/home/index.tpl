@@ -97,21 +97,18 @@ $(document).ready(function() {
 	</li>
 *}
 
-	<li class="colophon" style="width:240px">
+	<li class="colophon">
 
-		<h2>BEdita</h2>
-	
-		un software di <strong>Chialab</strong> and <strong>Channelweb</strong>
-
+		{if !empty($conf->multilang) && $conf->multilang}
+			{foreach key=key item=item name=l from=$conf->langsSystem}
+				<a {if $session->read('Config.language') == $key}class="on"{/if} href="{$html->base}/lang/{$key}">› {$item}</a>
+				<br />
+			{/foreach} 
+		{/if}	
 		<hr />
-{if !empty($conf->multilang) && $conf->multilang}
-	{foreach key=key item=item name=l from=$conf->langsSystem}
-		<a {if $session->read('Config.language') == $key}class="on"{/if} href="{$html->base}/lang/{$key}">› {$item}</a>
-		<br />
-	{/foreach} 
-{/if}	
+		{include file="../common_inc/colophon.tpl"}
 		<hr />
-		<a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a>
+		<a href="{$html->url('/authentications/logout')}">› {t}Exit{/t}</a>
 	</li>
 	
 
