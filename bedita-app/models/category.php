@@ -329,6 +329,7 @@ class Category extends BEAppModel {
 				"object_type_id"=>$object_type_id,
 				"status"=>"on"
 			);
+			$this->create();
 			if(!$this->save($data)) {
 				throw new BeditaException(__("Error saving category", true), $this->validationErrors);
 			}

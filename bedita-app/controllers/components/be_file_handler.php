@@ -100,22 +100,16 @@ class BeFileHandlerComponent extends Object {
 	 * size		File size. Empty if path == URL
 	 *
 	 * @param array $dati	object data
-	 * @param string $model	Create object of specified type, otherwise use MIME type
 	 *
 	 * @return integer or false (id of the object created or modified)
 	 */
-	function save(&$dati, $model = null, $getInfoUrl=true) {
-		
-		if(isset($dati['id']) && !empty($dati['id'])) { // modify
-			if(!isset($dati['path']) || @empty($dati['path'])) {
-				return $this->_modify($dati['id'], $dati) ;
-			} else if($this->_isURL($dati['path'])) {
-				return $this->_modifyFromURL($dati['id'], $dati, $getInfoUrl) ;
+	function save(&$data, $getInfoUrl=true) {
+		if (!empty($data['path'])) {
+			if ($this->_isURL($data['path'])) {
+				return $this->_createFromURL($data, $getInfoUrl);
 			} else {
-				return $this->_modifyFromFile($dati['id'], $dati) ;
+				return $this->_createFromFile($data);
 			}
-		} else { // create
-			return ($this->_isURL($dati['path'])) ? $this->_createFromURL($dati, $model, $getInfoUrl) : $this->_createFromFile($dati, $model);
 		}
 	}	
 
@@ -168,7 +162,7 @@ class BeFileHandlerComponent extends Object {
 	 */
 	function isPresent($path, $id = null) {
 		if(!$this->_isURL($path)) {
-			$path = $this->_getPathTargetFile($path);
+			$path = $this->getPathTargetFile($path);
 		}
 		$clausoles = array() ;
 		$clausoles[] = array("path" => trim($path)) ;
@@ -182,177 +176,130 @@ class BeFileHandlerComponent extends Object {
 	////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function _createFromURL(&$dati, $model = null, $getInfoUrl=true) {
-		if(!isset($dati['path'])) return false ;
-		
-		// URL accettabile
-		if(!$this->_regularURL($dati['path'])) throw new BEditaURLException(__("URL not valid",true)) ;
+	private function _createFromURL(&$data, $getInfoUrl=true) {
+		// check URL
+		if(empty($data['path']) || !$this->_regularURL($data['path'])) 
+			throw new BEditaURLException(__("URL not valid",true)) ;
 
 		if($getInfoUrl && $this->paranoid) {
 			// Permesso di usare file remoti
-			if(!ini_get('allow_url_fopen')) throw  new BEditaAllowURLException(__("You can't use remote file",true)) ;
+			if(!ini_get('allow_url_fopen')) 
+				throw new BEditaAllowURLException(__("You can't use remote file",true)) ;
 			
-			// Preleva MIME type e dimensioni
-			if(!$this->_getInfoURL($dati['path'], $dati)) throw new BEditaInfoException() ;
+			// Preleva MIME type
+			$this->getInfoURL($data);
+
 		}
 			
-		// Il file/URL non deve essere presente
-		if($this->isPresent($dati['path'])) throw new BEditaFileExistException(__("Media already exists in the system",true)) ;
+		// check url presence in database
+		// new
+		if (empty($data["id"])) {
+			if ($this->isPresent($data['path']))
+				throw new BEditaFileExistException(__("Media already exists in the system",true)) ;
+		// modify
+		} elseif (!empty($data["id"])) {
+			if ($this->isPresent($data['path'], $data['id']))
+				throw new BEditaFileExistException(__("Media already exists in the system",true)) ;
+
+			// if present in filesystem delete it
+			$stream = $this->Stream->read('path', $data['id']);
+			if((!empty($stream["Stream"]["path"]) && !$this->_isURL($stream['Stream']['path']))) {
+				$this->_removeFile($stream['Stream']['path']) ;		
+			}
+		}
 		
-		return $this->_create($dati, $model) ;
+		return $this->_create($data) ;
 	}
 
-	private function _createFromFile(&$dati, $model = null) {
-		if(!isset($dati['path'])) return false ;
+	private function _createFromFile(&$data) {
+		// if it's new object and missing path
+		if(empty($data['path']) && empty($data['id'])) 
+			throw new BeditaException(__("Missing temporary file in filesystem.", true));
+		
 		// Create destination path
-		$sourcePath = $dati['path'] ;
+		$sourcePath = $data['path'] ;
 		
 		// check if hash file exists
-		$dati["hash_file"] = hash_file("md5", $sourcePath);
+		$data["hash_file"] = hash_file("md5", $sourcePath);
 		
-		if ($stream_id = $this->Stream->field("id", array("hash_file" => $dati["hash_file"]))) {
+		if ($stream_id = $this->Stream->field("id", array("hash_file" => $data["hash_file"]))) {
 			throw new BEditaFileExistException(__("File already exists in the filesystem",true)) ;
 		}
 		
-		$targetPath	= $this->_getPathTargetFile($dati['name']); 
+		$targetPath	= $this->getPathTargetFile($data['name']);
+		
+		if (!empty($data["id"])) {
+			$ret = $this->Stream->read('path', $data["id"]);
+				
+			// Se e' presente un path ad file su file system, cancella
+			if((!empty($ret['Stream']['path']) && !$this->_isURL($ret['Stream']['path']))) {
+				$this->_removeFile($ret['Stream']['path']) ;		
+			}
+		}
 
 		// Create file
 		if(!$this->_putFile($sourcePath, $targetPath)) return false ;
-		$dati['path'] = $targetPath ;
+		$data['path'] = $targetPath ;
 		// Create object
-		return $this->_create($dati, $model) ;
+		return $this->_create($data) ;
 	}
 
-	private function _create(&$dati, $model = null) {
-		$modelType = $this->_getTypeFromMIME($dati['mime_type'], $model);
+	private function _create(&$data) {
+	
+		if (!$modelType = $this->_getTypeFromMIME($data["mime_type"])) {
+			throw new BEditaMIMEException(__("MIME type not found",true).": ".$data['mime_type'].
+					" - matches: ".$modelType) ;
+		}
+		
+		if (!empty($data["id"])) {
+			$stream = $this->Stream->read(array('mime_type','path'), $data["id"]) ;
+			$object_type_id = $this->BEObject->field("object_type_id", array("id" => $data["id"]));
+			$prevModel = Configure::read("objectTypes." . $object_type_id . ".model");
+			
+			// change object type
+			if ($modelType != $prevModel) {
+				
+				
+				$data["object_type_id"] = Configure::read("objectTypes." . strtolower($modelType) . ".id");
+				// delete old data from specific table
+				$this->{$prevModel}->Behaviors->disable('DeleteObject');
+				$this->{$prevModel}->del($data["id"], false);
+				$this->{$prevModel}->Behaviors->enable('DeleteObject');
+				
+				// delete file on filesystem
+				if(($stream["Stream"]["path"] && !$this->_isURL($stream["Stream"]["path"]))) {
+					$this->_removeFile($stream["Stream"]["path"]) ;		
+				}
+			}
+		}
+		
 		switch($modelType) {
 			case 'BEFile':
 			case 'Audio':
 			case 'Video':
 				break ;
 			case 'Image':
-				if ( $imageSize =@ getimagesize(Configure::read("mediaRoot") . $dati['path']) )
+				$path = ($this->_isURL($data["path"]))? $data["path"] : Configure::read("mediaRoot") . $data['path'];
+				if ( $imageSize =@ getimagesize($path) )
 				{
 					if (!empty($imageSize[0]))
-						$dati["width"] = $imageSize[0];
+						$data["width"] = $imageSize[0];
 					if (!empty($imageSize[1]))
-						$dati["height"] = $imageSize[1];
+						$data["height"] = $imageSize[1];
 				}
 				break ;
-			default:
-				throw new BEditaMIMEException(__("MIME type not found",true).": ".$dati['mime_type'].
-					" - matches: ".$modelType) ;
 		}
 		
-		$dati['Category'] = (!empty($dati['Category']))? array_merge($dati['Category'],$this->getCategoryMediaType($dati,$modelType)) : $this->getCategoryMediaType($dati,$modelType);
+		$data['Category'] = (!empty($data['Category']))? array_merge($data['Category'],$this->getCategoryMediaType($data,$modelType)) : $this->getCategoryMediaType($data,$modelType);
 		
-		$this->{$modelType}->id = false ;
+		$this->{$modelType}->create();
 		
-		if(!($ret = $this->{$modelType}->save($dati))) {
+		if(!($ret = $this->{$modelType}->save($data))) {
 			throw new BEditaSaveStreamObjException(__("Error saving stream object",true), $this->{$modelType}->validationErrors) ;
 		}
 		return ($this->{$modelType}->{$this->{$modelType}->primaryKey}) ;
 	}
 
-	private function _modifyFromURL($id, &$dati, $getInfoUrl=true) {
-		// URL accettabile
-		if(!$this->_regularURL($dati['path'])) 
-			throw new BEditaURLException(__("URL not valid",true)) ;
-			
-		if($getInfoUrl && $this->paranoid) {
-			// Permesso di usare file remoti
-			if(!ini_get('allow_url_fopen')) throw  new BEditaAllowURLException(__("You can't use remote file",true)) ;
-			
-			// Preleva MIME type e dimensioni
-			if(!$this->_getInfoURL($dati['path'], $dati)) throw new BEditaInfoException() ;
-		}
-	
-		// se il file e' presente in un altro oggetto torna un eccezione
-		if($this->isPresent($dati['path'], $id)) throw new BEditaFileExistException(__("File is already associated to another object",true)) ;
-		
-		// Se e' presente un path ad file su file system, cancella
-		$stream = $this->Stream->read('path', $id);
-		if((!empty($stream["Stream"]["path"]) && !$this->_isURL($stream['Stream']['path']))) {
-			$this->_removeFile($stream['Stream']['path']) ;		
-		}
-		
-		return $this->_modify($id, $dati) ;
-	}
-
-	private function _modifyFromFile($id, &$dati) {
-		$sourcePath = $dati['path'] ;
-		// check if hash file exists
-		$dati["hash_file"] = hash_file("md5", $sourcePath);
-		
-		if ($stream_id = $this->Stream->field("id", array("hash_file" => $dati["hash_file"]))) {
-			throw new BEditaFileExistException(__("File already exists in the filesystem",true)) ;
-		}
-		$targetPath	= $this->_getPathTargetFile($dati['name']); 
-		
-		$ret = $this->Stream->read('path', $id);
-			
-		// Se e' presente un path ad file su file system, cancella
-		if((!empty($ret['Stream']['path']) && !$this->_isURL($ret['Stream']['path']))) {
-			$this->_removeFile($ret['Stream']['path']) ;		
-		}
-		
-		// Crea il file
-		if(!$this->_putFile($sourcePath, $targetPath)) return false ;
-		$dati['path'] = $targetPath ;
-
-		return $this->_modify($id, $dati) ;
-	}
-	
-	private function _modify($id, &$dati) {
-		$conf = Configure::getInstance() ;
-
-		$stream = $this->Stream->read(array('mime_type','path'), $id) ;
-		
-		// Preleva il tipo di oggetto da salvare e salva
-		$rec = $this->BEObject->recursive ;
-		$this->BEObject->recursive = -1 ;
-		if(!($ret = $this->BEObject->read('object_type_id', $id)))  
-			throw new BEditaMIMEException(__("MIME type not found", true)) ;
-		$this->BEObject->recursive = $rec ;
-		$model = $conf->objectTypes[$ret['BEObject']['object_type_id']]["model"] ;
-		
-		if (!$fileModelType = $this->_getTypeFromMIME($dati["mime_type"])) {
-			throw new BEditaMIMEException(__("MIME type not found",true).": ".$dati['mime_type'].
-					" - matches: ".$fileModelType) ;
-		}
-		
-		// change object type
-		if ($fileModelType != $model) {
-			if ( $fileModelType == "Image" && ($imageSize =@ getimagesize(Configure::read("mediaRoot") . $dati['path'])) ) {
-				if (!empty($imageSize[0]))
-					$dati["width"] = $imageSize[0];
-				if (!empty($imageSize[1]))
-					$dati["height"] = $imageSize[1];
-			}
-			
-			$dati["object_type_id"] = Configure::read("objectTypes." . strtolower($fileModelType) . ".id");
-			// delete old data from specific table
-			$this->{$model}->Behaviors->disable('DeleteObject');
-			$this->{$model}->del($id, false);
-			$this->{$model}->Behaviors->enable('DeleteObject');
-			
-			// delete file on filesystem
-			if(($stream["Stream"]["path"] && !$this->_isURL($stream["Stream"]["path"]))) {
-				$this->_removeFile($stream["Stream"]["path"]) ;		
-			}
-			
-			$model = $fileModelType;
-		}
-		
-		$dati['Category'] = (!empty($dati['Category']))? array_merge($dati['Category'],$this->getCategoryMediaType($dati,$model)) : $this->getCategoryMediaType($dati,$model);
-		
-		$this->{$model}->id =  $id ;
-		if(!($ret = $this->{$model}->save($dati))) {
-			throw new BEditaSaveStreamObjException(__("Error saving stream object",true)) ;
-		}
-		
-		return ($this->{$model}->{$this->{$model}->primaryKey}) ;
-	}	
 	
 	private function getCategoryMediaType($data, $modelType) {
 		$cat = array();
@@ -422,51 +369,36 @@ class BeFileHandlerComponent extends Object {
 		return false ;
 	}
 
-	function getInfoURL($path, &$dati) {
-		return $this->_getInfoURL($path, $dati) ;
-	}
 	
 	/**
-	 * Preleva il MIME type e le dimensioni da un URL remoto e il nome del file
+	 * get mime type
 	 */
-	private function _getInfoURL($path, &$dati) {		
-		if(!(isset($dati['name']) && !empty($dati['name']))) {
-			$dati['name']  = basename($path) ;
+	function getInfoURL(&$data) {
+		
+		if(!(isset($data['name']) && !empty($data['name']))) {
+			$data['name']  = basename($data["path"]) ;
 		}
 		
-		/**
-		 * Preleva il MIME type
-		 */
-		if(!(isset($dati['mime_type']) && !empty($dati['mime_type']))) {			
-			// Cerca tramite l'estensione del path
-			$dati['mime_type']= $this->_mimeByFInfo($path) ;
-			
-			if(!(isset($dati['mime_type']) && !empty($dati['mime_type']))) {
-				if(!@empty($dati['name'])) {
-					$extension = pathinfo($dati['name'], PATHINFO_EXTENSION);
-				} else {
-					$extension = pathinfo(parse_url($path, PHP_URL_PATH), PATHINFO_EXTENSION);
-				}					
-				if(@empty($extension)) return false ;
-				$dati['mime_type']= $this->_mimeByExtension($extension) ;						
-
-			}
-			
-			if(!(isset($dati['mime_type']) && !empty($dati['mime_type']))) {
-				// Cerca tramite implementazione ricerca in magic
-				$magic 			= new MimeByMagic() ;
-				$dati['mime_type']	= $magic->getMime($path) ;
+		if (empty($data['title'])) {
+			$data['title'] = $data['name'];
+		}
+		
+		// get mime type
+		if (!($fp = fopen($data["path"], 'r')))
+			throw new BEditaInfoException(__("URL unattainable"),true);
+		
+		$meta = stream_get_meta_data($fp);
+		fclose($fp);
+		foreach($meta["wrapper_data"] as $m) {
+			if (strstr($m, "Content-Type:")) {
+				$data["mime_type"] = trim(substr($m, strpos($m, ":")+1));
+				break;
 			}
 		}
 		
-		if(!(isset($dati['size']) && !empty($dati['size']))) {
-			// Preleva le dimensioni del file
-			if(($info = @stat($path))) {
-				$dati['size'] = $info[7] ;
-			}
+		if (empty($data["mime_type"])) {
+			$data["mime_type"] = "beexternalsource";
 		}
-		
-		return $dati['mime_type'] ;
 	}
 	
 	/**
@@ -544,34 +476,13 @@ class BeFileHandlerComponent extends Object {
 		return true ;
 	}
 
-	
-	private function _mimeByExtension($ext) {
-		$conf 		= Configure::getInstance() ;
-		$lines = file($conf->validate_resorce['mime.types']) ;
-		foreach($lines as $line) {
-			if(preg_match('/^([^#]\S+)\s+.*'.strtolower($ext).'.*$/',$line,$m)) {
-				return $m[1];
-			}
-		}
-		return false ;
-	}
-
-	private function _mimeByFInfo($file) {
-		if(!function_exists("finfo_open")) return false ;
-		$conf 	= Configure::getInstance() ;
-		$finfo 	= finfo_open(FILEINFO_MIME, $conf->validate_resorce['magic']); // return mime type alla mimetype extension
-		if (!$finfo) return false ;
-		$mime = finfo_file($finfo, $file);
-		finfo_close($finfo);
-		return $mime ;
-	}
 
   	/**
   	 * Torna il path dove inserire il file uploadato
   	 *
   	 * @param string $name 	Nome del file
   	 */
-	function _getPathTargetFile(&$name)  {
+	function getPathTargetFile(&$name)  {
    		
    		// Determina le directory dove salvare il file
 		$md5 = md5($name) ;
@@ -594,31 +505,32 @@ class BeFileHandlerComponent extends Object {
 		
 		return $path ;
 	}
+	
+	/**
+	 * clone media and prepare data to save 
+	 *
+	 * @param array $data
+	 */
+	function cloneFile(&$data) {
+		if (!empty($data["path"])) {
+			if ($this->_isURL($data["path"])) {
+				$data["name"] = $data["title"];
+			} else {
+				$oldPath = $data["path"];
+				$mediaRoot = Configure::read("mediaRoot");
+				$data["hash_file"] = hash_file("md5",  $mediaRoot . $oldPath);
+				$data["path"] = $this->getPathTargetFile($data["name"]);
+				$this->Transaction->cp($mediaRoot . $data['path'], $mediaRoot . $oldPath);
+			}
+		}
+	}
    
 } ;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * Implementa la funzione di cercare il MIME type tramite il magic file dove
- * non e' presente l'estensio FINFO di PHP.
- * 
- * @todo All
- *
- */
-class MimeByMagic {
-	function __construction() {
-		
-	}
-	
-	function getMime($path) {
-		
-		return "application/octet-stream" ;
-	}
-} ;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * 		BEditaIOException		// Generic I/O Error

@@ -11,10 +11,14 @@
 
 
 <div id="multimediaiteminside">
+
 	{if ($object.ObjectType.name == "image")}
 
-
-		{assign_concat var="fileUrl"  0=$conf->mediaUrl  1=$object.path}
+		{if strpos($object.path,'/') === 0}
+			{assign_concat var="fileUrl"  0=$conf->mediaUrl  1=$object.path}
+		{else}
+			{assign var="fileUrl"  value=$object.path}
+		{/if}
 		{image_info var="imageInfo" file=$fileUrl}
 		
 		{$beEmbedMedia->object($object,500,false,false,null,null,null,false)}

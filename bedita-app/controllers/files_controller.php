@@ -75,7 +75,7 @@ class FilesController extends AppController {
 			$this->params['form']['uploadByUrl']['lang'] = $this->data["lang"];
 			
 			$this->Transaction->begin() ;
-			$id = $this->BeUploadToObj->uploadFromMediaProvider($this->params['form']['uploadByUrl']) ;
+			$id = $this->BeUploadToObj->uploadFromURL($this->params['form']['uploadByUrl']) ;
 			$this->Transaction->commit();
 			$this->set("fileId", $id);
 			

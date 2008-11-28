@@ -135,7 +135,7 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 		if($data['mime_type'] == "application/octet-stream") { 
 			$old  = $data['mime_type'] ;
 			unset($data['mime_type']) ;
-			$this->BeFileHandler->getInfoURL($data['path'], $data) ;
+			$this->BeFileHandler->getInfoURL($data) ;
 		}
 		try {
 			$result = $this->BeFileHandler->save($data) ;
@@ -171,25 +171,24 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 	}
 	
 	/**
-	 * Create obj stream from media provider.
+	 * Create obj stream from URL.
 	 * Form must to have: url, title, lang.
-	 * @return boolean true if upload was successful, false otherwise.
+	 * @return boolean true if upload was successful, int $id otherwise.
 	 */
-	function uploadFromMediaProvider($dataURL) {
+	function uploadFromURL($dataURL) {
 
 		$result = false ;
-	
-		if(! $dataURL["url"] = $this->recognizeMediaProvider($dataURL['url'], $provider, $name)) {
-			throw new BEditaMediaProviderException(__("Multimedia provider unsupported",true)) ;
-		}
-	
+		$getInfoURL = false;
+		
+		$url = $this->recognizeMediaProvider($dataURL['url'], $provider, $name);
+		
 		// Prepare data
 		switch($provider) {
 			case 'youtube': {
 				$dataURL['title']		= (!empty($dataURL['title'])) ? trim($dataURL['title']) : 'youtube video';
 				$dataURL['name']		= preg_replace("/[\'\"]/", "", $dataURL['title']) ;
 				$dataURL['mime_type']		= "video/$provider" ;
-				$dataURL['path']		= $dataURL['url'] ;
+				$dataURL['path']		= $url ;
 				$dataURL['provider']	=  $provider ;
 				$dataURL['uid']  	 	=  $name ;
 			} break ;
@@ -207,9 +206,13 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 				$dataURL['provider']	=  $provider ;
 				$dataURL['uid']  	 	=  $name ;
 			} break ;
+			default:
+				$dataURL['path'] = $dataURL["url"];
+				$getInfoURL = true;
+				break;
 			
 		}
-		
+
 		if (empty($dataURL["status"]))
 			$dataURL['status'] = "on";
 		
@@ -217,7 +220,7 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 			$dataURL['mediatype'] = $this->params['form']['mediatype'];
 		}
 		
-		$id = $this->BeFileHandler->save($dataURL, null, false) ;
+		$id = $this->BeFileHandler->save($dataURL, $getInfoURL) ;
 		
 		return $id;
 		
@@ -238,7 +241,7 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 				}	
 			}
 		}
-		
+		$provider = "";
 		return false ;
 	}
 } ;

@@ -115,7 +115,7 @@ class MultimediaController extends ModulesController {
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
 	 }
 
-	function save() {
+	function save($clone=false) {
 		$this->checkWriteModulePermission();
 		if(empty($this->data)) 
 			throw new BeditaException( __("No data", true));
@@ -133,9 +133,15 @@ class MultimediaController extends ModulesController {
 		if (!empty($this->params['form']['Filedata']['name'])) {
 			$this->Stream->id = $this->BeUploadToObj->upload($this->data) ;
 		} elseif (!empty($this->data['url'])) {
-			$this->Stream->id = $this->BeUploadToObj->uploadFromMediaProvider($this->data) ;	
+			$this->Stream->id = $this->BeUploadToObj->uploadFromURL($this->data) ;	
 		} else {
 			$model = (!empty($this->data["id"]))? $this->BEObject->getType($this->data["id"]) : "BEFile";
+			
+//			if ($clone) {
+//				$this->BeFileHandler->cloneFile($this->data);
+//				unset($this->data["id"]);
+//			}
+			
 			if(!$this->{$model}->save($this->data)) {
 				throw new BeditaException(__("Error saving multimedia", true), $this->{$model}->validationErrors);
 			}
@@ -166,6 +172,11 @@ class MultimediaController extends ModulesController {
 		$this->eventInfo("multimedia object [". $this->data["title"]."] saved");
 	}
 	
+//	public function cloneObject() {
+//		$this->data['status']='draft';
+//		$this->data['fixed'] = 0;
+//		$this->save(true);
+//	}
 	
 	 /**
 	 * Delete multimedia object

@@ -543,14 +543,8 @@ $config['validate_resorce'] = array(
 				'Image'			=> array('/image\/jpeg/', '/image\/gif/', '/image\/png/'),
 				'Audio'			=> array('/audio\/\.*/'),
 				'Video'			=> array('/video\/\.*/'),
-				'BEFile'		=> array('/application\/\.*/', '/text\/\.*/')
-				),
-	/**
-	 * Possono essere usati i file che accompagnano l'associazione oppure indicare fiel diversi
-	 * cambiando il path
-	 */
-	'mime.types'	=> dirname(__FILE__) . DS . "mime.types" ,
-	'magic'			=> dirname(__FILE__) . DS . "magic" ,
+				'BEFile'		=> array('/application\/\.*/', '/text\/\.*/', '/beexternalsource/')
+				)
 ) ;
 
 /**
