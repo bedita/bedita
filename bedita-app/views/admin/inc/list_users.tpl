@@ -4,6 +4,7 @@
 
 <table class="indexlist">
 	<tr>
+		<th>{$paginator->sort('id', 'id')}</th>
 		<th>{$paginator->sort('User', 'userid')}</th>
 		<th>{$paginator->sort('Name', 'realname')}</th>
 		<th>{$paginator->sort('Valid', 'valid')}</th>
@@ -12,8 +13,9 @@
 		<th>{t}Action{/t}</th>
 	</tr>
 	{foreach from=$users item=u}
-	<tr>
-		<td><a href="{$html->url('/admin/viewUser/')}{$u.User.id}">{$u.User.userid}</a></td>
+	<tr rel="{$html->url('/admin/viewUser/')}{$u.User.id}">
+		<td>{$u.User.id}</td>
+		<td>{$u.User.userid}</td>
 		<td>{$u.User.realname}</td>
 		<td>{$u.User.valid}</td>
 		<td>{$u.User.created|date_format:$conf->dateTimePattern}</td>

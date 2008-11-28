@@ -137,20 +137,20 @@ class AdminController extends ModulesController {
 	  function viewUser($id=NULL) {
 	  	
 	 	if(isset($id)) {
-	 		$user = $this->User->findById($id) ;
-		  	if(empty($user))
+	 		$userdetail = $this->User->findById($id) ;
+		  	if(empty($userdetail))
 		  		throw new BeditaException(__("Bad data",true));
-	 		$userModules = $this->BePermissionModule->getListModules($user['User']['userid']);
+	 		$userdetailModules = $this->BePermissionModule->getListModules($userdetail['User']['userid']);
 	 		
 		} else {
-			$user = NULL;
-			$userModules = NULL;
+			$userdetail = NULL;
+			$userdetailModules = NULL;
 		}
 
 		$allGroups = $this->Group->findAll();
 		$userGroups = array();
-		if(isset($user)) {
-			foreach ($user['Group'] as $g) {
+		if(isset($userdetail)) {
+			foreach ($userdetail['Group'] as $g) {
 				array_push($userGroups, $g['name']);
 			}
 		}
@@ -162,9 +162,9 @@ class AdminController extends ModulesController {
 			$formGroups[$g['Group']['name']] = $isGroup;
 		}
 		
-		$this->set('user',  $user);
+		$this->set('userdetail',  $userdetail['User']);
 		$this->set('formGroups',  $formGroups);
-		$this->set('userModules', $userModules) ;
+		$this->set('userdetailModules', $userdetailModules) ;
 	 }
 
 	private function loadGroups() {
@@ -299,7 +299,7 @@ class AdminController extends ModulesController {
 	}
 
  /**
-	 * show system Info
+	 * show customproperties
 	 */
 	 public function customproperties() { 	
 

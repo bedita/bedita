@@ -6,7 +6,15 @@
 {$javascript->link("jquery/jquery.metadata", false)}
 {$javascript->link("jquery/jquery.validate", false)}
 {$javascript->link("jquery/jquery.changealert", false)}
-{$javascript->link("jquery/jquery.pwdstrengthmeter")}
+
+{literal}
+<script type="text/javascript">
+	$(document).ready(function(){
+		var openAtStart ="#details";
+		$(openAtStart).prev(".tab").BEtabstoggle();
+	});
+</script>
+{/literal}
 
 {include file="../common_inc/form_common_js.tpl"}
 
@@ -21,8 +29,8 @@
 <div class="head">
 	
 	<h1>
-		{if isset($user)}
-			{t}User{/t}	“<em style="color:#FFFFFF; line-height:2em">{$user.User.realname}</em>”
+		{if !empty($userdetail)}
+			{t}User{/t}	“<em style="color:#FFFFFF; line-height:2em">{$userdetail.realname}</em>”
 		{else}
 			{t}New user{/t}
 		{/if}
@@ -37,10 +45,11 @@
 <div class="main">
 	
 	{include file="inc/form_user.tpl" method="viewUser"}
-	
+
 </div>
 
 {include file="../common_inc/menuright.tpl"}
 
 </form>
+
 

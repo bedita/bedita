@@ -21,7 +21,7 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 		{if $method == "viewUser"}
 		
 			<input type="submit" id="submit" name="save" class="submit" 
-			value="{if isset($user)}{t}Save{/t}{else}{t}create{/t}{/if}" />
+			value="{if isset($userdetail)}{t}Save{/t}{else}{t}create{/t}{/if}" />
 		
 		{elseif $method == "groups"}
 		
