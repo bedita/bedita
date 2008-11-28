@@ -593,7 +593,7 @@ abstract class ModulesController extends AppController {
 	 * @param $obj_id object id
 	 */
 	public function previewsForObject($sections,$obj_id,$status) {
-		$previews = array();
+		$previews = array();;
 		if(empty($obj_id) || empty($sections))
 			return $previews;
 		foreach($sections as $section_id) {
@@ -601,9 +601,9 @@ abstract class ModulesController extends AppController {
 			if(!empty($a)) {
 				$desc = $this->BEObject->field('title',array("id=$section_id"));
 				$field = ($status=='on') ? 'public_url' : 'staging_url';
-				if(!empty($a[$field])) {
+				if(!empty($a['Area'][$field])) {
 					$previews[]=array(
-						'url'=>$a[$field]."/section/$section_id/$obj_id",
+						'url'=>$a['Area'][$field]."/section/$section_id/$obj_id",
 						'desc'=>$desc);
 				}
 			}
@@ -617,7 +617,24 @@ abstract class ModulesController extends AppController {
 		$this->data['fixed'] = 0;
 		$this->save();
 	}
-
+/*
+	public function autosave() {
+		$this->layout = null;
+		if( !empty($this->data['status']) && ( ($this->data['status']=='draft') || ($this->data['status']=='off') ) ) {
+			try {
+				if(empty($this->data['title'])) {
+					$this->data['title'] = 'Draft ' . date("m.d.Y G:i:s");
+				}
+				$this->save();
+			} catch(BeditaException $ex) {
+				$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();
+				$this->log($errTrace);
+				$this->setResult(self::ERROR);
+			}
+		}
+		$this->render(null, null, VIEWS."common_inc/autosave.tpl");
+	}
+*/
 	protected function viewObject(BEAppModel $beModel, $id = null) {
 		if(Configure::read("langOptionsIso") == true) {
 			Configure::load('langs.iso') ;
@@ -673,7 +690,6 @@ abstract class ModulesController extends AppController {
 		$this->set('parents',	$parents_id);
 		$this->set('tree', 		$this->BeTree->getSectionsTree($name));
 		$this->set('previews',	$previews);
-		
 		$categoryModel = ClassRegistry::init("Category");
 		$areaCategory = $categoryModel->getCategoriesByArea(Configure::read('objectTypes.'.$name.'.id'));
 		$this->set("areaCategory", $areaCategory);
