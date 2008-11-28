@@ -586,7 +586,7 @@ CREATE TABLE books (
   isbn CHAR(13) NULL,
   year DATE NULL,
   series VARCHAR(255) NULL,
-  position VARCHAR(255) NULL,
+  location VARCHAR(255) NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES products(id)

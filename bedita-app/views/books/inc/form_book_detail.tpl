@@ -55,7 +55,7 @@ tinyMCE.init({
 	<tr>
 		<th>{t}author/s{/t}:</th>
 		<td>
-			<input type="text" name="data[author]" value="{$object.author|escape:'html'|escape:'quotes'}" id="authorBEObject"/>
+			<input type="text" name="data[author]" value="{$object.author|default:''|escape:'html'|escape:'quotes'}" id="authorBEObject"/>
 		</td>
 		<td colspan="2">	
 			<input type="button" class="modalbutton" value="get from list" rel="{$html->url('/biographies')}">
@@ -65,19 +65,19 @@ tinyMCE.init({
 		<th>{t}publisher{/t}:</th>
 		<td><input type="text" name="data[publisher]" value="{$object.publisher|default:''}" /></td>
 		<th>{t}series{/t}:</th>
-		<td><input type="text" name="data[series]" value=""/></td>
+		<td><input type="text" name="data[series]" value="{$object.series|default:''}"/></td>
 
 	</tr>
 	<tr>
 		<th>{t}place{/t}:</th>
-		<td><input type="text" name="data[place]" value=""/></td>
+		<td><input type="text" name="data[production_place]" value="{$object.production_place|default:''}"/></td>
 		<th>{t}year{/t}:</th>
 		<td><input type="text" style="width:30px" name="data[year]" value="{$object.year|default:''}" size="4" maxlength="4" /></td>
 		
 	</tr>
 	<tr>
 		<th>{t}isbn/issn{/t}:</th>
-		<td><input type="text" name="data[code]" value="{$object.code|default:''}" /></td>
+		<td><input type="text" name="data[isbn]" value="{$object.isbn|default:''}" /></td>
 		
 		<th>{t}language{/t}:</th>
 		<td>
@@ -105,8 +105,8 @@ tinyMCE.init({
 
 <table>
 	<tr>
-		<th>{t}collocazione{/t}:</th>
-		<td><input type="text" name="data[collocazione]" value=""/></td>
+		<th>{t}location{/t}:</th>
+		<td><input type="text" name="data[location]" value="{$object.location|default:''}"/></td>
 		<td rowspan="4">
 			qui in futuro un bel lettore di codice a barre via webcam?
 			<br>
@@ -116,16 +116,24 @@ tinyMCE.init({
 		</td>
 	</tr>
 	<tr>
-		<th>{t}code{/t}:</th>
-		<td><input type="text" name="data[inventario]" value=""/></td>
+		<th>{t}serial number{/t}:</th>
+		<td><input type="text" name="data[serial_number]" value="{$object.serial_number|default:''}"/></td>
 	</tr>
 	<tr>
 		<th>{t}weight{/t}:</th>
-		<td><input type="text" name="data[weight]" value=""/></td>
+		<td><input type="text" style="width:30px" name="data[weight]" value="{$object.weight|default:''}"/></td>
 	</tr>
 	<tr>
-		<th>{t}dimensions{/t}:</th>
-		<td><input type="text" name="data[dimensions]" value=""/></td>
+		<th>{t}width{/t}:</th>
+		<td><input type="text" style="width:30px" name="data[width]" value="{$object.width|default:''}"/></td>
+	</tr>
+	<tr>
+		<th>{t}height{/t}:</th>
+		<td><input type="text" style="width:30px" name="data[height]" value="{$object.height|default:''}"/></td>
+	</tr>
+	<tr>
+		<th>{t}depth{/t}:</th>
+		<td><input type="text" style="width:30px" name="data[depth]" value="{$object.depth|default:''}"/></td>
 	</tr>
 </table>
 
