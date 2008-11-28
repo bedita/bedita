@@ -4,32 +4,31 @@ Menu a SX valido per tutte le pagine del controller.
 *}
 
 <div class="primacolonna">
-	
+
 	<div class="modules"><label class="bedita" rel="{$html->url('/')}">BEdita 3.0</label></div>
-	
-		{include file="../common_inc/messages.tpl"}
-		
+
+	{include file="../common_inc/messages.tpl"}
+
 	<ul class="menuleft insidecol">
-		<li {if $method eq 'index'}class="on"{/if}>{$tr->link('Events', '/events')}</li>
-		<li {if $method eq 'categories'}class="on"{/if}>{$tr->link('Categories', '/events/categories')}</li>
 	{if $module_modify eq '1'}
-		<li {if $method eq 'view'}class="on"{/if}>{$tr->link('New Event', '/events/view')}</li>
+
+		<li><a href="{$html->url('/')}{$currentModule.path}/view">{t}Create new event{/t}</a></li>
+
 	{/if}
-									
 	</ul>
 
-{if (!empty($method)) && $method eq "index"}
+{include file="../common_inc/export.tpl"}
 
-		<div class="insidecol publishingtree">
-			
-				{$beTree->view($tree)}
+	{if (!empty($method)) && $method eq "index"}
+	<div class="insidecol publishingtree">
 		
-		</div>
+			{$beTree->view($tree)}
+	
+	</div>
+	{/if}
 
-{/if}
+{include file="../common_inc/previews.tpl"}
 
-	{include file="../common_inc/user_module_perms.tpl"}
+{include file="../common_inc/user_module_perms.tpl"}
 
 </div>
-
-

@@ -17,6 +17,8 @@ Menu a SX valido per tutte le pagine del controller.
 		{/if}
 	</ul>
 
+{include file="../common_inc/export.tpl"}
+
 {if (!empty($method)) && $method eq "index"}
 
 		<div class="insidecol publishingtree">
@@ -27,6 +29,8 @@ Menu a SX valido per tutte le pagine del controller.
 
 {/if}
 
-	{include file="../common_inc/user_module_perms.tpl"}
+{include file="../common_inc/previews.tpl"}
+
+{include file="../common_inc/user_module_perms.tpl"}
 
 </div>

@@ -15,15 +15,13 @@ Menu a SX valido per tutte le pagine del controller.
 
 		<ul class="menuleft insidecol">
 			
-			{*
-			<li {if $method eq 'index'}class="on"{/if}>{$tr->link('List items', '/multimedia')}</li>
-			*}
-			
 			<li>{$tr->link('Add new item', '/multimedia/view')}</li>	
 					
 		</ul>
 
-	{include file="../common_inc/user_module_perms.tpl"}
+{include file="../common_inc/export.tpl"}
+
+{include file="../common_inc/user_module_perms.tpl"}
 
 </div>
 
