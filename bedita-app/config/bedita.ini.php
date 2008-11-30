@@ -444,20 +444,47 @@ $config['statusOptions'] = array(
  * Lang selection options ISO-639-3 - Language options for contents
  */
 $config['langOptions'] = array(
-	"ita"	=> "italiano",
-	"eng"	=> "english",
-	"spa"	=> "español",
-	"por"	=> "portuguěs",
-	"fra"	=> "français",
-	"deu"	=> "deutsch"
+		"ara" => "Arabic",
+		"bul" => "Bulgarian",
+		"cat" => "Catalan",
+		"zho" => "Chinese",
+		"hrv" => "Croatian",
+		"ces" => "Czech",
+		"dan" => "Danish",
+		"nld" => "Dutch",
+		"eng" => "English",
+		"fin" => "Finnish",
+		"fra" => "French",
+		"deu" => "German",
+		"ell" => "Greek",
+		"heb" => "Hebrew",
+		"hin" => "Hindi",
+		"ita" => "Italian",
+		"jpn" => "Japanese",
+		"kor" => "Korean",
+		"lav" => "Latvian",
+		"lit" => "Lithuanian",
+		"nor" => "Norwegian",
+		"pol" => "Polish",
+		"por" => "Portuguese",
+		"ron" => "Romanian",
+		"rus" => "Russian",
+		"srp" => "Serbian",
+		"slk" => "Slovak",
+		"slv" => "Slovenian",
+		"spa" => "Spanish",
+		"swe" => "Swedish",
+		"ukr" => "Ukrainian",
+		"vie" => "Vietnamese"
 ) ;
 
 // ISO-639-3 codes - User interface language options (backend)
 $config['langsSystem'] = array(
 	"ita"	=> "italiano",
 	"eng"	=> "english",
-	"por"	=> "portuguěs",
-	"deu"	=> "deutsch"
+	"deu"	=> "deutsch",
+	"por"	=> "portuguěs"
+
 ) ;
 
 // maps ISO-639-2 known codes to ISO-639-3
@@ -474,7 +501,7 @@ $config['langsSystemMap'] = array(
 // 'langsIso' empty, overridden if 'langOptionsIso' is true
 $config['langsIso'] = array();
 // add langs.iso.php to language options for content 
-$config['langOptionsIso'] = true;
+$config['langOptionsIso'] = false;
 
 // media types for multimedia association
 $config['mediaTypes'] = array('image','video','audio','text','spreadsheet','presentation','drawing','chart','formula');
