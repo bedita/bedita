@@ -44,8 +44,8 @@
 			</td>
 			<td>
 				<select>
-				{foreach from=$conf->objectTypes item=objectTypes}
-				{if !empty($objectTypes.model)}
+				{foreach from=$conf->objectTypes key="key" item="objectTypes"}
+				{if !empty($objectTypes.model) && is_numeric($key)}
 					<option value="{$objectTypes.id}" class="{$objectTypes.model|lower}" style="padding-left:5px"> {$objectTypes.model|lower}</option>
 				{/if}
 				{/foreach}
