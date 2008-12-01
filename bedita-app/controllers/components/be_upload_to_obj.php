@@ -175,7 +175,7 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 	 * Form must to have: url, title, lang.
 	 * @return boolean true if upload was successful, int $id otherwise.
 	 */
-	function uploadFromURL($dataURL) {
+	function uploadFromURL($dataURL, $clone=false) {
 
 		$result = false ;
 		$getInfoURL = false;
@@ -187,7 +187,7 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 			case 'youtube': {
 				$dataURL['title']		= (!empty($dataURL['title'])) ? trim($dataURL['title']) : 'youtube video';
 				$dataURL['name']		= preg_replace("/[\'\"]/", "", $dataURL['title']) ;
-				$dataURL['mime_type']		= "video/$provider" ;
+				$dataURL['mime_type']	= "video/$provider" ;
 				$dataURL['path']		= $url ;
 				$dataURL['provider']	=  $provider ;
 				$dataURL['uid']  	 	=  $name ;
@@ -201,7 +201,7 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 				else $dataURL['title'] = trim($dataURL['title']) ;
 								
 				$dataURL['name']		= preg_replace("/[\'\"]/", "", $dataURL['title']) ;
-				$dataURL['mime_type']		= "video/$provider" ;
+				$dataURL['mime_type']	= "video/$provider" ;
 				$dataURL['path']		= $this->BeBlipTv->info['url'] ;
 				$dataURL['provider']	=  $provider ;
 				$dataURL['uid']  	 	=  $name ;
@@ -220,10 +220,26 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 			$dataURL['mediatype'] = $this->params['form']['mediatype'];
 		}
 		
-		$id = $this->BeFileHandler->save($dataURL, $getInfoURL) ;
+		$id = $this->BeFileHandler->save($dataURL, $clone, $getInfoURL) ;
 		
 		return $id;
 		
+	}
+	
+	function cloneMediaObject($data) {
+		if (!empty($data["id"]))
+			unset($data["id"]);
+			
+		if(preg_match(Configure::read("validate_resorce.URL"), $data["path"])) {
+			$data['url'] = $data["path"];
+			return $this->uploadFromURL($data, true);
+		} else {
+			$data['path'] = Configure::read("mediaRoot") . $data["path"];
+			if (!empty($this->params['form']['mediatype'])) {
+				$data['mediatype'] = $this->params['form']['mediatype'];
+			}
+			return $this->BeFileHandler->save($data, true);
+		}
 	}
 	
 	/**

@@ -103,12 +103,12 @@ class BeFileHandlerComponent extends Object {
 	 *
 	 * @return integer or false (id of the object created or modified)
 	 */
-	function save(&$data, $getInfoUrl=true) {
+	function save(&$data, $clone=false, $getInfoUrl=true) {
 		if (!empty($data['path'])) {
 			if ($this->_isURL($data['path'])) {
-				return $this->_createFromURL($data, $getInfoUrl);
+				return $this->_createFromURL($data, $clone, $getInfoUrl);
 			} else {
-				return $this->_createFromFile($data);
+				return $this->_createFromFile($data, $clone);
 			}
 		}
 	}	
@@ -176,7 +176,7 @@ class BeFileHandlerComponent extends Object {
 	////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function _createFromURL(&$data, $getInfoUrl=true) {
+	private function _createFromURL(&$data, $clone, $getInfoUrl) {
 		// check URL
 		if(empty($data['path']) || !$this->_regularURL($data['path'])) 
 			throw new BEditaURLException(__("URL not valid",true)) ;
@@ -190,39 +190,41 @@ class BeFileHandlerComponent extends Object {
 			$this->getInfoURL($data);
 
 		}
-			
+		
 		// check url presence in database
-		// new
-		if (empty($data["id"])) {
-			if ($this->isPresent($data['path']))
-				throw new BEditaFileExistException(__("Media already exists in the system",true)) ;
-		// modify
-		} elseif (!empty($data["id"])) {
-			if ($this->isPresent($data['path'], $data['id']))
-				throw new BEditaFileExistException(__("Media already exists in the system",true)) ;
-
-			// if present in filesystem delete it
-			$stream = $this->Stream->read('path', $data['id']);
-			if((!empty($stream["Stream"]["path"]) && !$this->_isURL($stream['Stream']['path']))) {
-				$this->_removeFile($stream['Stream']['path']) ;		
+		if (!$clone) {
+			// new
+			if (empty($data["id"])) {
+				if ($this->isPresent($data['path']))
+					throw new BEditaFileExistException(__("Media already exists in the system",true)) ;
+			// modify
+			} elseif (!empty($data["id"])) {
+				if ($this->isPresent($data['path'], $data['id']))
+					throw new BEditaFileExistException(__("Media already exists in the system",true)) ;
+	
+				// if present in filesystem delete it
+				$stream = $this->Stream->read('path', $data['id']);
+				if((!empty($stream["Stream"]["path"]) && !$this->_isURL($stream['Stream']['path']))) {
+					$this->_removeFile($stream['Stream']['path']) ;		
+				}
 			}
 		}
 		
 		return $this->_create($data) ;
 	}
 
-	private function _createFromFile(&$data) {
+	private function _createFromFile(&$data, $clone) {
 		// if it's new object and missing path
 		if(empty($data['path']) && empty($data['id'])) 
 			throw new BeditaException(__("Missing temporary file in filesystem.", true));
 		
 		// Create destination path
 		$sourcePath = $data['path'] ;
-		
-		// check if hash file exists
+
 		$data["hash_file"] = hash_file("md5", $sourcePath);
-		
-		if ($stream_id = $this->Stream->field("id", array("hash_file" => $data["hash_file"]))) {
+
+		// check if hash file exists
+		if (!$clone && ($stream_id = $this->Stream->field("id", array("hash_file" => $data["hash_file"]))) ) {
 			throw new BEditaFileExistException(__("File already exists in the filesystem",true)) ;
 		}
 		
@@ -504,25 +506,6 @@ class BeFileHandlerComponent extends Object {
 		$path =  DS . $dirsString . DS . $name ;
 		
 		return $path ;
-	}
-	
-	/**
-	 * clone media and prepare data to save 
-	 *
-	 * @param array $data
-	 */
-	function cloneFile(&$data) {
-		if (!empty($data["path"])) {
-			if ($this->_isURL($data["path"])) {
-				$data["name"] = $data["title"];
-			} else {
-				$oldPath = $data["path"];
-				$mediaRoot = Configure::read("mediaRoot");
-				$data["hash_file"] = hash_file("md5",  $mediaRoot . $oldPath);
-				$data["path"] = $this->getPathTargetFile($data["name"]);
-				$this->Transaction->cp($mediaRoot . $data['path'], $mediaRoot . $oldPath);
-			}
-		}
 	}
    
 } ;

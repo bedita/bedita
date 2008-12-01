@@ -115,7 +115,7 @@ class MultimediaController extends ModulesController {
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
 	 }
 
-	function save($clone=false) {
+	function save() {
 		$this->checkWriteModulePermission();
 		if(empty($this->data)) 
 			throw new BeditaException( __("No data", true));
@@ -136,11 +136,6 @@ class MultimediaController extends ModulesController {
 			$this->Stream->id = $this->BeUploadToObj->uploadFromURL($this->data) ;	
 		} else {
 			$model = (!empty($this->data["id"]))? $this->BEObject->getType($this->data["id"]) : "BEFile";
-			
-//			if ($clone) {
-//				$this->BeFileHandler->cloneFile($this->data);
-//				unset($this->data["id"]);
-//			}
 			
 			if(!$this->{$model}->save($this->data)) {
 				throw new BeditaException(__("Error saving multimedia", true), $this->{$model}->validationErrors);
@@ -172,11 +167,11 @@ class MultimediaController extends ModulesController {
 		$this->eventInfo("multimedia object [". $this->data["title"]."] saved");
 	}
 	
-//	public function cloneObject() {
-//		$this->data['status']='draft';
-//		$this->data['fixed'] = 0;
-//		$this->save(true);
-//	}
+	public function cloneObject() {
+		$this->data['status']='draft';
+		$this->data['fixed'] = 0;
+		$this->Stream->id = $this->BeUploadToObj->cloneMediaObject($this->data);
+	}
 	
 	 /**
 	 * Delete multimedia object
@@ -232,8 +227,8 @@ class MultimediaController extends ModulesController {
 
 		$REDIRECT = array(
 			"cloneObject"	=> 	array(
-							"OK"	=> "/multimedia/view/".@$this->BEObject->id,
-							"ERROR"	=> "/multimedia/view/".@$this->BEObject->id 
+							"OK"	=> "/multimedia/view/".@$this->Stream->id,
+							"ERROR"	=> "/multimedia/view/".@$this->Stream->id 
 							),
 			"save"  =>  array(
 							"OK"    => "/multimedia/view/".@$this->Stream->id,
