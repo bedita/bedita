@@ -52,11 +52,12 @@ $(document).ready(function(){
 
 <fieldset id="card">
 
-<ul class="htab">
-	<li rel="person"><input type="radio" name="data[company]" value="0" {if (empty($object.id)||($object.company==0))}checked="checked"{/if}>{t}Person{/t}</li>
-	<li rel="company"><input type="radio" name="data[company]" value="1" {if (!empty($object.id)&&($object.company==1))}checked="checked"{/if}>{t}Company{/t}</li>
-</ul>
+<table class="htab">
+	<td rel="person"><input type="radio" name="data[company]" value="0" {if (empty($object.id)||($object.company==0))}checked="checked"{/if}>{t}Person{/t}</td>
+	<td rel="company"><input type="radio" name="data[company]" value="1" {if (!empty($object.id)&&($object.company==1))}checked="checked"{/if}>{t}Company{/t}</td>
+</table>
 
+		
 <div class="htabcontainer" id="companyperson">
 	
 	<div class="htabcontent" id="person" >

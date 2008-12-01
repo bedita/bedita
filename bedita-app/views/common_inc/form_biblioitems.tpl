@@ -46,11 +46,11 @@
 {/section}
 
 
-<ul class="htab">
-	<li rel="submitnew">{t}write new item{/t}</li>
-	<li rel="addbycode">{t}add by code{/t}</li>
-	<li rel="repositoryBooks" id="reposBooks">{t}select from books repository{/t}</li>
-</ul>
+<table class="htab">
+	<td rel="submitnew">{t}write new item{/t}</td>
+	<td rel="addbycode">{t}add by code{/t}</td>
+	<td rel="repositoryBooks" id="reposBooks">{t}select from books repository{/t}</td>
+</table>
 
 <div class="htabcontainer" id="addbiblioitems">
 

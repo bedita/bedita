@@ -152,10 +152,10 @@ $(document).ready(function() {
 	
 	<div id="loaderContent" class="loader"><span></span></div>
 	
-	<ul class="htab">
-		<li rel="html">HTML version</li>
-		<li rel="txt">PLAIN TEXT version</li>
-	</ul>
+	<table class="htab">
+		<td rel="html">HTML version</td>
+		<td rel="txt">PLAIN TEXT version</td>
+	</table>
 	
 	<div class="htabcontainer" id="templatebody">
 		

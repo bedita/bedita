@@ -204,18 +204,18 @@ $(document).ready(function(){
 ...........................................*/
 	
 	$(".htabcontainer .htabcontent:first-child").show();
-	$(".htab LI:first-child").addClass("on");
+	$(".htab TD:first-child,.htab LI:first-child").addClass("on");
 	
-	$(".htab LI").click(function() {
+	$(".htab TD,.htab LI").click(function() {
 
 		var trigged 		  = $(this).attr("rel");
-		var containermenu 	  = $(this).parents("UL");
+		var containermenu 	  = $(this).parents(".htab");
 		var containercontents = $("#"+trigged+"").parent().attr("id");
 
 		$("#"+containercontents+" .htabcontent").hide();
 		$("#"+trigged+"").show();
 
-		$("LI",containermenu).removeClass("on");
+		$("TD,LI",containermenu).removeClass("on");
 		$(this).addClass("on");
 	
 	  });

@@ -79,11 +79,23 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 	
 	<fieldset style="padding:0px" id="properties">		
 	
+		{*
+		<!-- a causa di IE non si pole usare questo -->
 		<ul class="htab">
 			<li rel="areacontentC">{t}contents{/t}</li>
 			<li rel="areasectionsC">{t}sections{/t}</li>
 			<li rel="areapropertiesC">{t}properties{/t}</li>
-		</ul>				
+		</ul>
+		<!-- per IE -->			
+		*}
+		
+		<!-- questo è brutto ma cross-browser -->
+		<table class="htab">
+			<td rel="areacontentC">{t}contents{/t}</td>
+			<td rel="areasectionsC">{t}sections{/t}</td>
+			<td rel="areapropertiesC">{t}properties{/t}</td>
+		</table>	
+		<!-- -->	
 		
 		<div class="htabcontainer" id="sectiondetails">
 			

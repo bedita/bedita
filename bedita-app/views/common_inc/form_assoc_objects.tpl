@@ -67,12 +67,13 @@ $(document).ready(function() {
 	
 	<div id="loadingAssoc" class="generalLoading" title="{t}Loading data{/t}"></div>
 	
-	<ul class="htab">
+	<table class="htab">
 	{foreach from=$availabeRelations item="rel"}
-			<li rel="relationType_{$rel}">{$rel}</li>
+			<td rel="relationType_{$rel}">{$rel}</td>
 	{/foreach}
-	</ul>
-	
+	</table>
+
+
 	<div class="htabcontainer" id="relationContainer">
 	{foreach from=$availabeRelations item="rel"}
 	<div class="htabcontent" id="relationType_{$rel}">

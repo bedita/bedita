@@ -126,11 +126,11 @@ $(document).ready(function()
 
 <div id="loading" style="clear:both" class="multimediaitem itemBox small">&nbsp;</div>
 
-	<ul class="htab">
-		<li rel="uploadItems">{t}upload new items{/t}</li>
-		<li rel="urlItems">{t}add by url{/t}</li>
-		<li rel="repositoryItems" id="reposItems">{t}select from archive{/t}</li>
-	</ul>
+	<table class="htab">
+		<td rel="uploadItems">{t}upload new items{/t}</td>
+		<td rel="urlItems">{t}add by url{/t}</td>
+		<td rel="repositoryItems" id="reposItems">{t}select from archive{/t}</td>
+	</table>
 	
 <div class="htabcontainer" id="addmultimediacontents">
 

@@ -121,10 +121,10 @@
 <fieldset id="add">
 	
 
-<ul class="htab">
-	<li rel="uploadItems">{t}browse your disk{/t}</li>
-	<li rel="urlItems">{t}add by url{/t}</li>
-</ul>
+<table class="htab">
+	<td rel="uploadItems">{t}browse your disk{/t}</td>
+	<td rel="urlItems">{t}add by url{/t}</td>
+</table>
 
 
 <div class="htabcontainer" id="addmultimediacontents">

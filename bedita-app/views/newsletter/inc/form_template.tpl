@@ -115,10 +115,10 @@ $(document).ready(function() {
 	
 	<fieldset id="body">
 	
-	<ul class="htab">
-		<li rel="html">HTML version</li>
-		<li rel="txt">PLAIN TEXT version</li>
-	</ul>
+	<table class="htab">
+		<td rel="html">HTML version</td>
+		<td rel="txt">PLAIN TEXT version</td>
+	</table>
 	
 	<div class="htabcontainer" id="templatebody">
 		
