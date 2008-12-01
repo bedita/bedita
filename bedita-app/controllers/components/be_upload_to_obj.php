@@ -235,6 +235,9 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 			return $this->uploadFromURL($data, true);
 		} else {
 			$data['path'] = Configure::read("mediaRoot") . $data["path"];
+			if (empty($data["size"])) {
+				$data["size"] = filesize($data["path"]);
+			}
 			if (!empty($this->params['form']['mediatype'])) {
 				$data['mediatype'] = $this->params['form']['mediatype'];
 			}
