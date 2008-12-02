@@ -108,12 +108,14 @@ class BeTreeHelper extends Helper {
 				
 				$output .= "<div><h2 id='pub_" . $publication['id'] . "'>";
 				
+				$output .= "<a ".$class." rel='" . $url . "'>";
+				
 				if (!empty($inputType) && !empty($this->tags[$inputType])) {
 					$checked = (in_array($publication["id"], $parent_ids))? "checked='checked'" : "";
 					$output .= sprintf($this->tags[$inputType], $publication["id"], $checked) ;
 				}
 				
-				$output .= "<a ".$class." rel='" . $url . "'>" . $publication["title"] . "</a></h2>";
+				$output .= $publication["title"] . "</a></h2>";
 				
 				if (!empty($publication["children"])) {
 					$output .= $this->designBranch($publication["children"], $inputType, $parent_ids);
@@ -180,13 +182,16 @@ class BeTreeHelper extends Helper {
 				}
 			}
 			
-			$res .= "<li id='pub_" . $section['id'] . "'><a " . $class . " rel='" . $url . "'>" . $section["title"] . "</a>";
+			$res .= "<li id='pub_" . $section['id'] . "'><a " . $class . " rel='" . $url . "'>";
 			
 			if (!empty($inputType) && !empty($this->tags[$inputType])) {
 				$checked = (in_array($section["id"], $parent_ids))? "checked='checked'" : "";
 				$res .= sprintf($this->tags[$inputType], $section["id"], $checked);
 				
 			}
+			
+			$res .= $section["title"] . "</a>";
+			
 			
 			if (!empty($section["children"])) {
 				$res .= $this->designBranch($section["children"], $inputType, $parent_ids);

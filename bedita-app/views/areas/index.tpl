@@ -65,9 +65,9 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 
 <div class="main" style="display:none">
 
-
+<!--
 	<div class="tab"><h2>{t}Details{/t} of &nbsp; <span class="graced" style="font-size:1.5em" id="sectionTitle"></span></h2></div>
-	
+-->
 	
 	
 	<fieldset style="padding:0px" id="properties">		

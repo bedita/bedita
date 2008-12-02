@@ -637,6 +637,10 @@ UL.menuleft {
 	font-weight:normal;
 }
 
+.publishingtree INPUT {
+	margin-right:5px;
+}
+
 
 #treecontrol {
 	text-transform:lowercase;

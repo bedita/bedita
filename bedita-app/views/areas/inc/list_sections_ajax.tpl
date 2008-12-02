@@ -48,7 +48,7 @@ $(document).ready(function() {
 			<input type="hidden" class="id" 	name="reorder[{$s.id}][id]" value="{$s.id}" />
 			<input type="text" class="priority"  name="reorder[{$s.id}][priority]" value="{$s.priority}" size="3" maxlength="3"/>
 			<span class="listrecent areas" style="margin-left:0px">&nbsp;&nbsp;</span>
-			<a title="{$s.created}" href="{$html->url('/')}areas/index/{$s.id}">{$s.title}</a>
+			<a title="{$s.created}" href="{$html->url('/')}areas/index/{$s.id}">{$s.title|truncate:"70":"…":true}</a>
 			
 			<div style="margin-top:-20px; float:right;">
 				{$s.lang}
