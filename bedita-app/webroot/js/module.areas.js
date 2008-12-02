@@ -84,6 +84,7 @@ $(document).ready(function() {
 	$(".publishingtree H2 A").click(function() {
 		loadSectionAjax($(this));
 		action = $("#updateForm").attr("action");
+	
 		$("#updateForm").attr("action", action.replace(/saveSection/, "saveArea"));
 	});
 
@@ -95,10 +96,10 @@ $(document).ready(function() {
 	...........................................*/	
 
 	// unbind default behavior on tree
-	$(".publishingtree A").unbind("click");
+	$(".publishingtree LI A").unbind("click");
 	
 	// set on click behavior on tree sections
-	$(".publishingtree A").click(function() {
+	$(".publishingtree LI A").click(function() {
 		loadSectionAjax($(this));
 		action = $("#updateForm").attr("action");
 		$("#updateForm").attr("action", action.replace(/saveArea/, "saveSection"));
