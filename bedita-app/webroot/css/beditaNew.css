@@ -566,28 +566,22 @@ UL.menuleft {
 .publishingtree DIV {
 	margin-top: 10px;
 	margin-left: -10px;
-	/*background-color:red;*/
 	clear:both;
 }
 
-.publishingtree H2 {
-	cursor:pointer;
-	padding:2px 0px 5px 10px;
+.publishingtree H2 A {
+	display:block;
+	padding:2px 0px 5px 5px;
 	margin-left:10px;
-	border-bottom:1px solid #999999;
 }
 
-.publishingtree H2.on {
+.publishingtree H2 A.on {
 	font-weight:normal;
 	background-color: white;
 	border-bottom:0px;
 }
 
-.publishingtree H2:Hover {
-	color: white;
-}
-
-.publishingtree H2.on:Hover {
+.publishingtree H2 A:Hover {
 	color: gray;
 }
 
@@ -604,7 +598,7 @@ UL.menuleft {
 
 .publishingtree .plusminus.on {
 	background-position: right -25px !important;
-	/*background-color: white;*/
+	background-color: transparent;
 }
 
 
@@ -614,52 +608,35 @@ UL.menuleft {
 
 .publishingtree UL {
 	margin-left:10px;
-	border-left:1px solid #999999;
 }
 
 .publishingtree LI  {
-	border-bottom:1px solid #999999;
-	border-right:0px solid #999999;
-	padding:3px 0px 3px 10px;
+	padding:0px; margin:0px;
+	list-style-type:none;
+	list-style-position: outside;
+	border-left:1px dotted #666666;
+	border-top:0px dashed #999999;
 }
 
-.publishingtree LI:Hover {
+.publishingtree LI A {
+	display:block;
+	padding:3px 0px 3px 10px;
+
+}
+
+.publishingtree A {
+		cursor:pointer;	
+}
+
+.publishingtree A:Hover {
 	background-color:#d8d8d8;
 }
 
-.publishingtree LI.on  {
+.publishingtree .on {
 	background-color:white;
 	font-weight:normal;
-	border-right:1px solid #999999;
 }
 
-
-.publishingtree.pubmodule:Hover {
-	/*
-	background-color:#d8d8d8;
-	*/
-}
-
-.publishingtree.pubmodule LI:Hover, .publishingtree.pubmodule LI.on {
-	background: transparent url(../img/sfo_gestDownD.png) bottom repeat-x;
-	cursor:pointer;
-}
-
-.publishingtree.pubmodule {
-	margin:-10px 20px 20px -10px; 
-	border:1px solid #999999; 
-	border-bottom:0px;
-	border-top:0px;
-	width:320px;
-	float:left;
-}
-
-
-
-.pubmodule.detail {
-	margin:0px 0px 0px 340px; 
-	width:320px;
-}
 
 #treecontrol {
 	text-transform:lowercase;

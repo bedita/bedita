@@ -265,7 +265,7 @@ $(document).ready(function(){
 
 
 
-	$(".publishingtree h2").click(function () {
+	$(".publishingtree h2 A").click(function () {
 		
 			if ($(this).attr("rel")) {
 				window.location = $(this).attr("rel");
@@ -274,7 +274,7 @@ $(document).ready(function(){
 		
 	});
 
-	$(".publishingtree LI").click(function () {
+	$(".publishingtree LI A").click(function () {
 
 			if ($(this).attr("rel")) {
 				window.location = $(this).attr("rel");
@@ -282,7 +282,7 @@ $(document).ready(function(){
 
 	});
 	
-	$(".publishingtree LI.on").parents("DIV:first").find("UL").show();
+	$(".publishingtree LI A.on").parents("DIV:first").find("UL").show();
 	
 
 /*...........................................    

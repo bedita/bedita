@@ -57,8 +57,8 @@ function loadSectionAjax(container) {
 		});
 	});
 	
-	$(".publishingtree H2").removeClass("on");
-	$(".publishingtree LI").removeClass("on");
+	$(".publishingtree H2 A").removeClass("on");
+	$(".publishingtree LI A").removeClass("on");
 	container.addClass("on");
 	$("#sectionTitle").text(container.text());
 	$(".head H1").text(container.text());
@@ -79,9 +79,9 @@ $(document).ready(function() {
 	...........................................*/	
 	
 	// unbind default behavior on tree
-	$(".publishingtree H2").unbind("click");
+	$(".publishingtree H2 A").unbind("click");
 		
-	$(".publishingtree H2").click(function() {
+	$(".publishingtree H2 A").click(function() {
 		loadSectionAjax($(this));
 		action = $("#updateForm").attr("action");
 		$("#updateForm").attr("action", action.replace(/saveSection/, "saveArea"));
@@ -95,10 +95,10 @@ $(document).ready(function() {
 	...........................................*/	
 
 	// unbind default behavior on tree
-	$(".publishingtree LI").unbind("click");
+	$(".publishingtree A").unbind("click");
 	
 	// set on click behavior on tree sections
-	$(".publishingtree LI").click(function() {
+	$(".publishingtree A").click(function() {
 		loadSectionAjax($(this));
 		action = $("#updateForm").attr("action");
 		$("#updateForm").attr("action", action.replace(/saveArea/, "saveSection"));

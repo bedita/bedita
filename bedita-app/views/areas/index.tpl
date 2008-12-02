@@ -19,23 +19,16 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 	{literal}
 	$(document).ready(function() {
 
-		$(".publishingtree #pub_{/literal}{$object.id}{literal}").click();
+		$(".publishingtree #pub_{/literal}{$object.id}{literal} A").click();
 		
 	});
 	{/literal}
 	
-{elseif !empty($new)}
-	{literal}
-	
-	/// ajax script col form vuoto da mettere
-	
-	
-	{/literal}
 {else}
 
 	{literal}
 	$(document).ready(function() {
-		$(".publishingtree H2:first").click();
+		$(".publishingtree H2:first A").click();
 	});
 	{/literal}
 
