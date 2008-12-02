@@ -6,6 +6,7 @@
 {$javascript->link("jquery/jquery.metadata", false)}
 {$javascript->link("jquery/jquery.validate", false)}
 {$javascript->link("jquery/jquery.changealert", false)}
+{$javascript->link("jquery/ui/ui.datepicker.min", false)}
 
 {literal}
 <script type="text/javascript">
