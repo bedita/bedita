@@ -7,7 +7,7 @@
 		<tr>
 			<th>
 				<label id="lusername" for="username">{t}User name{/t}</label>
-				{if isset($userdetail)}<input type="hidden" name="data[User][id]" value="{$userdetail.id}"/>{/if}
+				{if !empty($userdetail.id)}<input type="hidden" name="data[User][id]" value="{$userdetail.id}"/>{/if}
 			</th>
 			<td>
 				<input type="text" id="username" name="data[User][userid]" value="{$userdetail.userid}" onkeyup="cutBlank(this);" 
@@ -22,14 +22,14 @@
 		<tr>
 			<th><label id="lemail" for="email">{t}Email{/t}</label></th>
 			<td>
-				<input type="text" id="email" name="data[User][email]" value="{$userdetail.email}"
+				<input type="text" id="email" name="data[User][email]" value="{$userdetail.email|default:' '}"
 			class="{literal}{email:true}{/literal}" title="{t}Use a valid email{/t}"/>&nbsp;</td>
 
 		</tr>
 		
 
 		<tr>
-		 	<th>{if isset($userdetail)}{t}New password{/t}{else}{t}Password{/t}{/if}</th>
+		 	<th>{if empty($userdetail.id)}{t}New password{/t}{else}{t}Password{/t}{/if}</th>
 			<td>
 				<input type="password" name="pwd" value="" id="pwd"
 					class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}" 

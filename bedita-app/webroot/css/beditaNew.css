@@ -450,7 +450,7 @@ UL.menuleft {
 .menuleft UL LI {
 	list-style-type:disc;
 	line-height:1.35em;
-	white-space:nowrap;
+	/*white-space:nowrap;*/
 }
 
 .menuleft A:Hover {
