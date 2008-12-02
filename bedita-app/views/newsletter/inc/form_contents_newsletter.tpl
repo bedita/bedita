@@ -10,8 +10,14 @@ var urlAddObjToAss = "{$html->url('/newsletter/loadContentToNewsletter')}";
 function addObjToAssoc(url, postdata) {
 	$("#loaderContent").show();
     $.post(url, postdata, function(html){
-       tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.getBody(), "span", null, html);
-       $("#loaderContent").hide();
+		tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.getBody(), "span", null, html);
+		// get txt
+		postdata.txt = 1;
+		$.post(url, postdata, function(txt){
+			prevText = $("#txtarea").val(); 
+			$("#txtarea").val(prevText + txt).focus(); // focus is used to update textarea dimension with autogrow
+			$("#loaderContent").hide();
+		}, "text");
 	});
 }
 

@@ -1,3 +1,4 @@
+{strip}
 {foreach from=$objects item="obj"}
 	<div style="clear: both">
 	
@@ -10,7 +11,8 @@
 	{if !empty($obj.description)}
 		<h3>{$obj.description}</h3>
 	{/if}
-	{$obj.body|html_substr:128:"..."}
+	{if !empty($obj.body)}{$obj.body|html_substr:128:"..."}{/if}
 	
 	</div>
 {/foreach}
+{/strip}

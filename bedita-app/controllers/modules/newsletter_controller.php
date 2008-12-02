@@ -399,12 +399,22 @@ class NewsletterController extends ModulesController {
 				)
 			);
 			$obj["relations"] = $this->objectRelationArray($obj["RelatedObject"]);
+			if (!empty($this->params["form"]["txt"])) {
+				if (!empty($obj["description"]))
+					$obj["description"] = html_entity_decode($obj["description"], ENT_QUOTES, "UTF-8");
+				if (!empty($obj["abstract"]))
+					$obj["abstract"] = html_entity_decode($obj["abstract"], ENT_QUOTES, "UTF-8");
+				if (!empty($obj["body"]))
+					$obj["body"] = html_entity_decode($obj["body"], ENT_QUOTES, "UTF-8");
+			}
 			$objects[] = $obj;
+			
 		}
 		
 		$this->layout = null;
 		$this->set("objects", $objects);
-		$this->render(null, null, VIEWS . "newsletter/inc/contents_to_newsletter_ajax.tpl");
+		$tpl = (empty($this->params["form"]["txt"]))? "contents_to_newsletter_ajax.tpl" : "contents_to_newsletter_txt_ajax.tpl";
+		$this->render(null, null, VIEWS . "newsletter/inc/" . $tpl);
 	}
 	 
 	protected function forward($action, $esito) {
