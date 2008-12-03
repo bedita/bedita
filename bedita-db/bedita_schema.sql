@@ -37,6 +37,9 @@ DROP VIEW IF EXISTS `view_scrolls`;
 DROP VIEW IF EXISTS `view_sections`;
 DROP VIEW IF EXISTS `view_streams`;
 DROP TABLE IF EXISTS `custom_properties`;
+DROP TABLE IF EXISTS `faq_questions`;
+DROP TABLE IF EXISTS `questions`;
+DROP TABLE IF EXISTS `question_types`;
 
 -- current tables --
 DROP TABLE IF EXISTS `cake_sessions`;
@@ -55,7 +58,6 @@ DROP TABLE IF EXISTS `contents`;
 DROP TABLE IF EXISTS `authors`;
 DROP TABLE IF EXISTS `images`;
 DROP TABLE IF EXISTS `categories`;
-DROP TABLE IF EXISTS `faq_questions`;
 DROP TABLE IF EXISTS `audio_videos`;
 DROP TABLE IF EXISTS `videos`;
 DROP TABLE IF EXISTS `areas`;
@@ -70,14 +72,12 @@ DROP TABLE IF EXISTS `mail_jobs`;
 DROP TABLE IF EXISTS `lang_texts`;
 DROP TABLE IF EXISTS `permissions`;
 DROP TABLE IF EXISTS `object_users`;
-DROP TABLE IF EXISTS `questions`;
 DROP TABLE IF EXISTS `versions`;
 DROP TABLE IF EXISTS `trees`;
 DROP TABLE IF EXISTS `comments`;
 DROP TABLE IF EXISTS `properties`;
 DROP TABLE IF EXISTS `property_options`;
 DROP TABLE IF EXISTS `objects`;
-DROP TABLE IF EXISTS `question_types`;
 DROP TABLE IF EXISTS `object_types`;
 DROP TABLE IF EXISTS `groups_users`;
 DROP TABLE IF EXISTS `permission_modules`;
@@ -164,14 +164,6 @@ CREATE TABLE object_types (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NULL,
   module VARCHAR(32) NULL,
-  PRIMARY KEY(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-
-
-CREATE TABLE question_types (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  label VARCHAR(255) NULL,
   PRIMARY KEY(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
@@ -341,19 +333,6 @@ CREATE TABLE versions (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-CREATE TABLE questions (
-  id INTEGER UNSIGNED NOT NULL,
-  question_type_id INTEGER UNSIGNED NOT NULL,
-  max_chars INTEGER UNSIGNED NULL,
-  PRIMARY KEY(id),
-  INDEX questions_FKIndex1(id),
-  INDEX questions_FKIndex2(question_type_id),
-  FOREIGN KEY(id)
-    REFERENCES contents(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
 CREATE TABLE object_users (
   object_id INTEGER UNSIGNED NOT NULL,
   user_id INTEGER UNSIGNED NOT NULL,
@@ -445,20 +424,6 @@ CREATE TABLE videos (
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES streams(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE faq_questions (
-  id INTEGER UNSIGNED NOT NULL,
-  question_text MEDIUMTEXT NULL,
-  answer_text MEDIUMTEXT NULL,
-  name VARCHAR(50) NULL,
-  surname VARCHAR(50) NULL,
-  PRIMARY KEY(id),
-  INDEX faq_questions_FKIndex1(id),
-  FOREIGN KEY(id)
-    REFERENCES contents(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -595,7 +560,7 @@ CREATE TABLE books (
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE links (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  id INTEGER UNSIGNED NOT NULL,
   `url` varchar(255) default NULL,
   `target` enum('_self','_blank','parent','top','popup') default NULL,
   PRIMARY KEY(id),
@@ -607,7 +572,7 @@ CREATE TABLE links (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE cards (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  id INTEGER UNSIGNED NOT NULL,
   name    VARCHAR(64) NULL,
   surname VARCHAR(64) NULL,
   person_title VARCHAR(32) NULL,
@@ -661,7 +626,7 @@ CREATE TABLE mail_messages (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mail_groups` (
-  `id` INTEGER UNSIGNED NOT NULL auto_increment,
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   `area_id` INTEGER UNSIGNED NOT NULL,
   `group_name` varchar(255) NOT NULL,
   `visible` tinyint(1) NOT NULL default '1',
