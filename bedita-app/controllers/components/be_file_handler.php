@@ -386,21 +386,14 @@ class BeFileHandlerComponent extends Object {
 		}
 		
 		// get mime type
-		if (!($fp = fopen($data["path"], 'r')))
-			throw new BEditaInfoException(__("URL unattainable"),true);
+		if (!($headers = @get_headers($data["path"],1)))
+			throw new BEditaInfoException(__("URL unattainable",true));
 		
-		$meta = stream_get_meta_data($fp);
-		fclose($fp);
-		foreach($meta["wrapper_data"] as $m) {
-			if (strstr($m, "Content-Type:")) {
-				$data["mime_type"] = trim(substr($m, strpos($m, ":")+1));
-				break;
-			}
-		}
+		if (!strstr($headers["0"], "200"))
+			throw new BEditaInfoException(__("URL unattainable",true));
 		
-		if (empty($data["mime_type"])) {
-			$data["mime_type"] = "beexternalsource";
-		}
+		$data["mime_type"] = (!empty($headers["Content-Type"]))? $headers["Content-Type"] : $data["mime_type"] = "beexternalsource";
+		
 	}
 	
 	/**

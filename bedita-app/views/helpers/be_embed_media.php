@@ -19,22 +19,10 @@ class BeEmbedMediaHelper extends AppHelper {
 
 	private $_helpername = "BeEmbedMedia Helper";
 
-
-
-	// output template for sprintf non funziona e vai a fare in culo lo vedo dopo
-	// private $_html	= '<img src="%s" width="%d" height="%d" alt="%s" />';
-
-
-
-	// public
-
 	// private
-	private $_arguments  = array();
 	private $_objects = array ("image", "audio", "video", "flash"); // supported
-    private $_output  = false;
+  //  private $_output  = false;
 	private $_conf    = array ();
-
-
 
 
 	/**
@@ -60,77 +48,47 @@ class BeEmbedMediaHelper extends AppHelper {
 
 
 
-	/*
+	/**
 	 * object public method: embed a generic bedita multimedia object
 	 * 
-	 * params: be_obj, required, object, BEdita Multimedia Object
-	 *         params, optional, parameters used by external helpers such as BeThumb->image
+	 * @param array obj, BEdita Multimedia Object
+	 * @param array params, optional, parameters used by external helpers such as BeThumb->image
+	 * 		   possible value for params:
+	 * 			"presentation" => "thumb" (default), "full", "link"
+	 * 
+	 * 			## USED only for image thumbnail on filesystem ##
+	 * 			width, height, longside, at least one required, integer (if longside, w&h are ignored)
+	 *         	mode, optional, 'crop'/'fill'/'croponly'/'stretch'
+	 *         	modeparam, optional, depends on mode:
+	 *             if fill, string representing hex color, ie 'FFFFFF'
+	 *             if croponly, string describing crop zone 'C', 'T', 'B', 'L', 'R', 'TL', 'TR', 'BL', 'BR'
+	 *             if stretch, bool to allow upscale (default false)
+	 *         	type, optional, 'gif'/'png'/'jpg', force image target type
+	 *         	upscale, optional, bool, allow or not upscale
+	 * 
+	 * @param array htmlAttributes, html attributes
 	 *         
-	 * return: output complete html tag
+	 * @return string, output complete html tag
 	 * 
 	 */
-	public function object ( $obj, $params = null )
+	public function object ( $obj, $params = null, $htmlAttributes=array() )
 	{
-		// merge with call params
-		// $this->_attributes = array_merge($this->_conf, $attributes) ;
-
-
-
-
+		$params["presentation"] = (!empty($params["presentation"]))? $params["presentation"] : "thumb";
+		
 		// get object type
-		$this->_type = $this->_getType ($obj);
-
-
-		// clean up onjects
-		$this->_resetObjects();
+		$model = $this->getType ($obj);
+		$method = "show" . ucfirst($params["presentation"]) . $model;
 		
-
-		// call the right method
-		switch ($this->_type)
-		{
-			// image
-			case 'image':
-				// read params as an associative array or multiple variable
-				$expectedArgs = array ('width', 'height', 'longside', 'mode', 'modeparam', 'type', 'upscale');
-				if ( func_num_args() > 1 && !is_array( func_get_arg(1) ) )
-				{
-					$argList = func_get_args() ;
-					array_shift($argList);
-				    for ($i = 0; $i < sizeof($expectedArgs); $i++)
-					{
-				        if ( isset ($argList[$i]) && $argList[$i] !== null )
-							$this->_arguments[$expectedArgs[$i]] = $argList[$i];
-				    }
-				}
-				else $this->_arguments = $params;
-				unset ($params);
-				$this->_output = $this->_image ($obj, $this->_arguments);
-				break;
-
-
-
-			// video
-			case 'video':
-				$this->_output = $this->MediaProvider->thumbnail($obj);
-				break;
-
-
-
-			// audio
-			case 'audio':
-				return "known type: " . $this->_type;
-				break;
-
-
-
-			// unknown
-			default:
-				return "unknown type: " . $this->_type; //$this->_conf['imgMissingFile']
-				exit;
+		if (method_exists($this, "show" . ucfirst($params["presentation"]) . $model)) {
+			$output = $this->{"show" . ucfirst($params["presentation"]) . $model}($obj, $params, $htmlAttributes);
+		} elseif (method_exists($this, "show" . $model)) {
+			$output = $this->{"show" . $model}($obj, $params, $htmlAttributes);
+		} else {
+			$output = "unknown type: " . $model;
 		}
-		
+				
 		// output HTML
-		return $this->_output;
+		return $output;
 	}
 
 
@@ -141,40 +99,102 @@ class BeEmbedMediaHelper extends AppHelper {
 
 
 	/*
-	 * return object type
+	 * return object model
 	 */
-	private function _getType ($obj)
+	private function getType ($obj)
 	{
-		return strtolower ( Configure::read("objectTypes." . $obj['object_type_id'] . ".name") );
+		$model = Configure::read("objectTypes." . $obj['object_type_id'] . ".model");
+		return (!empty($model))? $model : "";
 	}
 
 
 
 	/*
-	 * produce html <img> tag
+	 * produce html tag
 	 */
-	private function _image ( $obj, $params = null )
+	private function showImage ($obj, $params, $htmlAttributes)
 	{
-		if (strpos($obj['path'], "/") === 0)
-			$src = $this->BeThumb->image ($obj, $params);
+		$src = $this->getImageSrc($obj, $params);
+		if ($params["presentation"] == "link")
+			return $this->Html->link($src, $obj["title"], $htmlAttributes);
 		else
+			return $this->Html->image($src, $htmlAttributes);
+	}
+	
+	
+	private function getImageSrc($obj, $params) {
+		// not local file
+		if(preg_match(Configure::read("validate_resorce.URL"), $obj["path"])) {
 			$src = $obj['path'];
-		$html  = "<img src='" . $src;
-		$html .= "' title='" . $obj['name'];
-		$html .= "' />";
-
-		return $html;
+		//local file
+		} else {
+			$src = ($params["presentation"] == "thumb")? $this->BeThumb->image ($obj, $params) : $this->_conf['url'] . $obj['path'];
+		}
+		return $src;
 	}
 
-
-
-	/*
-	 * reset internal objects to empty defaults
+	
+	/**
+	 * html video output
+	 *
+	 * @param array $obj, object
+	 * @param array $params, specific parameters
+	 * @param array $htmlAttributes, html attributes
+	 * @return string, html
 	 */
-	private function _resetObjects()
+	private function showVideo($obj, $params, $htmlAttributes)
 	{
-		$this->_output = "";
+		if ($params["presentation"] == "thumb") {
+			$output = $this->MediaProvider->thumbnail($obj, $htmlAttributes);
+		} elseif ($params["presentation"] == "full") {
+			$output = $this->MediaProvider->embed($obj, $htmlAttributes);
+		} elseif ($params["presentation"] == "link") {
+			$src = $this->MediaProvider->sourceEmbed($obj);
+			return $this->Html->link($src, $obj['title'], $htmlAttributes);
+		}
+		
+		if (empty($output)) {
+			//$output = $this->Html->image("default video image", $htmlAttributes);
+		}
+		
+		return $output;
 	}
+
+	
+	/**
+	 * html audio output
+	 *
+	 * @param array $obj, object
+	 * @param array $params, specific parameters
+	 * @param array $htmlAttributes, html attributes
+	 * @return string, html
+	 */
+	private function showAudio($obj, $params, $htmlAttributes)
+	{
+		if (!preg_match(Configure::read("validate_resorce.URL"), $obj["path"])) {
+			$obj['path'] = $this->_conf["url"] . $obj["path"]; 
+		}
+
+		if ($params["presentation"] == "link")
+			return $this->Html->link($obj['path'], $obj['title'], $htmlAttributes);
+		else
+			return $this->Html->image("iconset/88px/audio.png", $htmlAttributes);
+	}
+	
+	
+	/**
+	 * html befile output
+	 *
+	 * @param array $obj, object
+	 * @param array $params, specific parameters
+	 * @param array $htmlAttributes, html attributes
+	 * @return string, html
+	 */
+	private function showBEFile($obj, $params, $htmlAttributes) {
+		//@todo: definire immagine di default per BEFile
+		return "";
+	}
+
 
 }
 ?>

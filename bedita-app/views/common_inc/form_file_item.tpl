@@ -17,6 +17,9 @@
 {assign_concat var="mediaCacheBaseURL"	0=$conf->mediaUrl  1="/" 2=$conf->imgCache 3="/"}
 {assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
 
+{assign_associative var="params" width=$thumbWidth height=$thumbHeight longside=false mode="fill" modeparam="000000" type=null upscale=false}
+{assign_associative var="htmlAttr" width=$thumbWidth height=$thumbHeight alt=$item.title title=$item.name}
+
 {strip}
 
 	<input type="hidden" name="data[RelatedObject][{$relation}][{$item.id}][id]" value="{$item.id}" />
@@ -25,13 +28,13 @@
 	<div style="width:{$thumbWidth}px; height:{$thumbHeight}px" class="imagebox">
 	{if strtolower($item.ObjectType.name) == "image"}
 
-		{$beEmbedMedia->object($item,$thumbWidth,$thumbHeight,false,"fill","000000",null,false)}
+		{$beEmbedMedia->object($item,$params,$htmlAttr)}
 		
 	{elseif ($item.provider|default:false)}
 	
 		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="px; " 3="height:" 4=$conf->videoThumbHeight 5="px;"}
 		{assign_associative var="attributes" style=$myStyle}
-		{$mediaProvider->thumbnail($item, $attributes) }
+		{$beEmbedMedia->object($item,null,$attributes)}
 	
 	{elseif strtolower($item.ObjectType.name) == "audio"}
 	

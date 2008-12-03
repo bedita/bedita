@@ -183,14 +183,14 @@ $(document).ready(function(){
 				<td style="width:{$thumbWidth}px;">
 					
 					{if $conf->objectTypes[$mobj.object_type_id].name == "image"}
-					
+					{assign_associative var="params" width=$thumbWidth height=$thumbHeight}
 					<a title="show details" href="{$html->url('/multimedia/view/')}{$mobj.id}" target="_blank">					
-						{$beEmbedMedia->object($mobj,$thumbWidth,$thumbHeight)}
+						{$beEmbedMedia->object($mobj,$params, $params)}
 					</a>
 
 					{elseif $conf->objectTypes[$mobj.object_type_id].name == "video"}
 						{assign_associative var="attributes" style="width:30px;heigth:30px;"}
-						<div><a href="{$mobj.path}" target="_blank">{$mediaProvider->thumbnail($mobj, $attributes) }</a></div>
+						<div><a href="{$mobj.path}" target="_blank">{$beEmbedMedia->object($mobj, null, $attributes) }</a></div>
 					{else}
 						<div><a href="{$conf->mediaUrl}{$mobj.path}" target="_blank"><img src="{$session->webroot}img/mime/{$mobj.mime_type}.gif" /></a></div>
 					{/if}

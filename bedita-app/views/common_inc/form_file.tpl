@@ -21,17 +21,19 @@
 		{/if}
 		{image_info var="imageInfo" file=$fileUrl}
 		
-		{$beEmbedMedia->object($object,500,false,false,null,null,null,false)}
+		{assign_associative var="params" width=500}
+		{assign_associative var="htmlAttr" width=500}
+		{$beEmbedMedia->object($object,$params,$htmlAttr)}
 		
 	{elseif ($object.provider|default:false)}
 		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="px; " 3="height:" 4=$conf->videoThumbHeight 5="px;"}
 		{assign_associative var="attributes" style=$myStyle}
 
 	<a href="{$object.path}" target="_blank">
-		{$mediaProvider->thumbnail($object, $attributes) }
+		{$beEmbedMedia->object($object,null,$attributes)}
 	</a>
-	
-		{$mediaProvider->embed($object, $attributes) }
+		{assign_associative var="params" presentation="full"}
+		{$beEmbedMedia->object($object,$params)}
 	
 	<embed 
 		src	= "{$html->webroot}swf/mediaplayer.swf" 

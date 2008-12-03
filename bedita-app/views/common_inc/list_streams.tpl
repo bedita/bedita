@@ -100,15 +100,15 @@ $(document).ready(function(){
 		
 			{if strtolower($objects[i].ObjectType.name) == "image"}	
 			<a href="{$html->url('view/')}{$objects[i].id}">
-				
-			{$beEmbedMedia->object($objects[i],$thumbWidth,$thumbHeight,false,"crop",null,null,false)}				
-	
+			{assign_associative var="params" width=$thumbWidth height=$thumbHeight mode="crop"}
+			{assign_associative var="htmlAttr" width=$thumbWidth height=$thumbHeight}	
+			{$beEmbedMedia->object($objects[i],$params,$htmlAttr)}
 			</a>
 						
 			{elseif ($objects[i].provider|default:false)}
 			
-				{assign_associative var="attributes" style="width:30px;heigth:30px;"}
-				<a href="{$filePath}" target="_blank">{$mediaProvider->thumbnail($objects[i], $attributes) }</a>
+				{assign_associative var="htmlAttr" width="30" heigth="30"}
+				<a href="{$filePath}" target="_blank">{$beEmbedMedia->object($objects[i],null,$htmlAttr)}</a>
 			
 			{else}
 			
