@@ -21,6 +21,7 @@ INSERT INTO object_types (id, name, module) VALUES
 (35, 'mailmessage', 'newsletter'),
 (36, 'mailtemplate', 'newsletter'),
 (37, 'author', NULL);
+(38, 'biblioitem', NULL);
 	
 INSERT INTO `question_types` (`id`, `label`) VALUES
 (1, 'multiple choice'),
