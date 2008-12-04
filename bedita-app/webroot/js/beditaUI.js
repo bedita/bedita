@@ -356,7 +356,13 @@ $(document).ready(function(){
 
 jQuery.fn.BEmodal = function(){
 	
-	$("#modal").draggable();		 	
+
+$("#modal").draggable({
+   handle: "#modalheader",
+   //revert: true
+ });
+
+		 	
 	var w = window.innerWidth || self.innerWidth || (de&&de.clientWidth) || document.body.clientWidth;
 	var h = window.innerHeight || self.innerHeight || (de&&de.clientHeight) || document.body.clientHeight;
 	var destination = $(this).attr("rel");
@@ -371,7 +377,6 @@ jQuery.fn.BEmodal = function(){
 	});
 	
 	$("#modal").toggle().css("top",myTop);
-	//$("#modal").toggle();
 
 	if ($(this).attr("rel")) {
 		$("#modalmain").empty().addClass("modaloader").load(destination).ajaxStop(function(){
