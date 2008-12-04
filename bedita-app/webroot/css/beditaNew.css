@@ -1192,7 +1192,7 @@ INPUT.priority {
 	top:0px;
 	left:0px;
 	background-color:black;
-	opacity:0.8;
+	/*opacity:0.8;*/
 	z-index:499;
 	display:none;
 
@@ -1238,6 +1238,11 @@ INPUT.priority {
 	padding-right:20px;
 	text-align:right;
 	color:white;
+	cursor:move;
+}
+
+#modalheader:Hover {
+	background-color:#333333;
 }
 
 #modalheader A {

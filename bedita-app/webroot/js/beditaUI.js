@@ -355,28 +355,33 @@ $(document).ready(function(){
 ...........................................*/
 
 jQuery.fn.BEmodal = function(){
-	
 
-$("#modal").draggable({
-   handle: "#modalheader",
-   //revert: true
- });
-
+	$("#modal").draggable({
+		handle : "#modalheader",
+   		//revert: true
+	});
 		 	
-	var w = window.innerWidth || self.innerWidth || (de&&de.clientWidth) || document.body.clientWidth;
-	var h = window.innerHeight || self.innerHeight || (de&&de.clientHeight) || document.body.clientHeight;
+	
+	var w = window.innerWidth || self.innerWidth || document.body.clientWidth;
+	var h = window.innerHeight || self.innerHeight || document.body.clientHeight;
+	
+	var h = 1500; 
+	//alert(h);
+	
 	var destination = $(this).attr("rel");
 	var title = $(this).attr("title");
 	
-	var myTop = $(this).position().top;
-	//alert(myTop);
+	//var myTop = $(this).position().top;
+	var myTop = $(".secondacolonna").position().top;
+
 	
-	$("#modaloverlay").show().width(w).height(h).click(function () {
-		$(this).hide();
-		$("#modal").hide();
+	
+	$("#modaloverlay").show().fadeTo("fast", 0.8).width(w).height(h).click(function () {
+		//$(this).hide();
+		//$("#modal").hide();
 	});
 	
-	$("#modal").toggle().css("top",myTop);
+	$("#modal").toggle().css("top",myTop+115);
 
 	if ($(this).attr("rel")) {
 		$("#modalmain").empty().addClass("modaloader").load(destination).ajaxStop(function(){
@@ -395,7 +400,16 @@ $("#modal").draggable({
 		$("#modaloverlay").hide();
 	});
 
+	$("#modalheader .full").click(function () {
+
+	});
+
+
+
 }
+
+
+
 
 	$(".modalbutton").click(function () {
 	
