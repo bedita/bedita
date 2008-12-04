@@ -1,3 +1,16 @@
+{literal}
+<script language="JavaScript" type="text/javascript">
+$(document).ready(function(){
+	
+	$(".autogrowarea").autogrow({
+		lineHeight: 16
+	});
+	$(".areaform input[type='text'], .areaform textarea").width(340);
+	
+
+});
+</script>
+{/literal}
 
 {include file="../common_inc/form_common_js.tpl"}
 
@@ -64,10 +77,8 @@
 				<th>{t}nickname{/t}:</th>
 				<td>
 					<input id="nicknameBEObject" type="text" name="data[nickname]" value="{$object.nickname|default:null}" />
-					{$object.id|default:null}
 				</td>
 			</tr>
-
 			<tr>
 			
 					<th>{t}order{/t}:</th>
@@ -83,7 +94,10 @@
 			</ul>
 		</td>
 	</tr>
-
+	<tr>
+		<th>id:</th>
+		<td>{$object.id|default:null}</td>
+	</tr>
 	</table>
 	
 	<hr />

@@ -1,3 +1,16 @@
+{literal}
+<script language="JavaScript" type="text/javascript">
+$(document).ready(function(){
+	
+	$(".autogrowarea").autogrow({
+		lineHeight: 16
+	});
+	$(".areaform input[type='text'], .areaform textarea").width(340);
+	
+
+});
+</script>
+{/literal}
 
 {include file="../common_inc/form_common_js.tpl"}
 
@@ -16,7 +29,7 @@
 		<tr>
 			<th>{t}title{/t}:</th>
 			<td>
-				<input id="titleBEObject" style="width:340px;" class="{literal}{required:true,minLength:1}{/literal}" title="{t}Title is required{/t}"	type="text" name="data[title]"	value="{$object.title|default:''|escape:'html'|escape:'quotes'}" />
+				<input id="titleBEObject" class="{literal}{required:true,minLength:1}{/literal}" title="{t}Title is required{/t}"	type="text" name="data[title]"	value="{$object.title|default:''|escape:'html'|escape:'quotes'}" />
 			</td>
 		</tr>
 		<tr>
@@ -59,9 +72,7 @@
 		<th>{t}nickname{/t}:</th>
 		<td>
 			<input id="nicknameBEObject" type="text" name="data[nickname]" value="{$object.nickname|default:''|escape:'html'|escape:'quotes'}" />
-			{$object.id|default:null}
 		</td>
-		
 	</tr>
 	<tr>
 		<td colspan="2">
@@ -69,6 +80,10 @@
 				<li class="ico_rss">syndicate <input type="checkbox" name="data[syndicate]" value="on" {if $object.syndicate|default:'off'=='on'}checked{/if}/></li>
 			</ul>
 		</td>
+	</tr>	
+	<tr>
+		<th>id:</th>
+		<td>{$object.id|default:null}</td>
 	</tr>
 	</table>
 	
@@ -88,7 +103,6 @@
 			<input type="text" name="data[staging_url]" value="{$object.staging_url|default:''}""/>
 		</td>
 	</tr>
-	
 	<tr>
 		<th>{t}contact email{/t}:</th>
 		<td>

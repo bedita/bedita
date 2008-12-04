@@ -42,7 +42,7 @@ class MultimediaController extends ModulesController {
 	 /**
 	 * Show multimedia item list
 	 */
-	 function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
+	 function index($id = null, $order = "id", $dir = 0, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
 		$this->setup_args(
 			array("id", "integer", &$id),

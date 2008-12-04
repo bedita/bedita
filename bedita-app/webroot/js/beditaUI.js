@@ -357,8 +357,7 @@ $(document).ready(function(){
 jQuery.fn.BEmodal = function(){
 
 	$("#modal").draggable({
-		handle : "#modalheader",
-   		//revert: true
+		handle : "#modalheader"
 	});
 		 	
 	
@@ -399,11 +398,11 @@ jQuery.fn.BEmodal = function(){
 		$("#modal").hide();
 		$("#modaloverlay").hide();
 	});
-
+/*
 	$("#modalheader .full").click(function () {
 
 	});
-
+*/
 
 
 }
@@ -434,6 +433,7 @@ jQuery.fn.BEmodal = function(){
 		});
 
 
+		
 /*...........................................    
 
    autogrow

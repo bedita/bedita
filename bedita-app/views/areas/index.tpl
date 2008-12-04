@@ -19,7 +19,7 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 	{literal}
 	$(document).ready(function() {
 
-		$(".publishingtree #pub_{/literal}{$object.id}{literal} A").click();
+		$(".publishingtree #pub_{/literal}{$object.id}{literal} A:first").click();
 		
 	});
 	{/literal}
