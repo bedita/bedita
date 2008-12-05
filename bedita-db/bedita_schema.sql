@@ -631,6 +631,8 @@ CREATE TABLE `mail_groups` (
   `group_name` varchar(255) NOT NULL,
   `visible` tinyint(1) NOT NULL default '1',
   `security` enum('all','none') NOT NULL default 'all',
+  `confirmation_in_message` TEXT NULL,
+  `confirmation_out_message` TEXT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `group_name` (`group_name`),
   KEY `area_id` (`area_id`)

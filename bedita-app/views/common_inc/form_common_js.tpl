@@ -55,7 +55,9 @@ $(document).ready(function(){
 	
 	$("input.dateinput").datepicker();
 
-{/literal}{if !($object.id)}{literal}
+{/literal}
+
+{if !($object.id)}{literal}
 
 		$("#delBEObject,#cloneBEObject").hide();
 
@@ -68,13 +70,13 @@ $(document).ready(function(){
 
 {/literal}{/if}{literal}
 
-{/literal}{if !($perms->isDeletable($user.userid,$user.groups,$object.Permissions))}{literal}
+{/literal}{if !empty($object.Permissions) && !($perms->isDeletable($user.userid,$user.groups,$object.Permissions))}{literal}
 		
 		$("#delBEObject").attr("disabled",true);
 
 {/literal}{/if}{literal}
 
-{/literal}{if !($perms->isWritable($user.userid,$user.groups,$object.Permissions))}{literal}
+{/literal}{if !empty($object.Permissions) && !($perms->isWritable($user.userid,$user.groups,$object.Permissions))}{literal}
 
 		$("#saveBEObject,#cloneBEObject,#delBEObject").attr("disabled",true);
 		$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");
@@ -88,7 +90,7 @@ $(document).ready(function(){
 {/literal}{/if}{literal}
 
 
-{/literal}{if ($object.fixed == 1)}{literal}
+{/literal}{if !empty($object.fixed) && ($object.fixed == 1)}{literal}
 
 		$("#nicknameBEObject,#start,#end").attr("readonly",true);
 		$("#status input,#delBEObject").attr("disabled",true);

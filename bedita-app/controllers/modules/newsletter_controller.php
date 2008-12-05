@@ -208,25 +208,39 @@ class NewsletterController extends ModulesController {
 	 /**
 	  * Get list detail
 	  */
-	public function view_mail_group() {
-		
+	public function view_mail_group($id=null) {
+		$obj = null;
+		if($id!=null) {
+			$o = $this->MailGroup->find('first',
+							array("conditions" => "MailGroup.id=" . $id)
+						);
+			$obj = $o['MailGroup'];
+		}
+		$this->set('object',	$obj);
+		$this->set("areasList", $this->BEObject->find('list', array(
+										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
+										"order" => "title", 
+										"fields" => "BEObject.title"
+										)
+									)
+								);	
 	}
 
 
 
 	public function saveMailGroups() {
 		$this->checkWriteModulePermission();
-		if(empty($this->data["group_name"])) 
+		if(empty($this->data["MailGroup"]["group_name"])) 
 			throw new BeditaException( __("No data", true));
-		if(empty($this->data["area_id"])) 
+		if(empty($this->data["MailGroup"]["area_id"])) 
  			throw new BeditaException( __("No area", true));
 		$this->Transaction->begin() ;
 		if(!$this->MailGroup->save($this->data)) {
 			throw new BeditaException(__("Error saving mail group", true), $this->MailGroup->validationErrors);
 		}
 		$this->Transaction->commit();
-		$this->userInfoMessage(__("Mail Group saved", true)." - ".$this->data["group_name"]);
-		$this->eventInfo("mail group [" .$this->data["group_name"] . "] saved");
+		$this->userInfoMessage(__("Mail Group saved", true)." - ".$this->data["MailGroup"]["group_name"]);
+		$this->eventInfo("mail group [" .$this->data["MailGroup"]["group_name"] . "] saved");
 	}
 
 	public function deleteMailGroups() {
