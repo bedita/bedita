@@ -43,6 +43,10 @@ tinyMCE.init({
 
 <fieldset id="bookdetails">
 
+<input type="hidden" name="data[weight_unit]" value="gr"/>
+<input type="hidden" name="data[length_unit]" value="cm"/>
+<input type="hidden" name="data[volume_unit]" value="cm3"/>
+
 <table>
 	<tr>
 		<th>{t}title{/t}:</th>
@@ -121,19 +125,19 @@ tinyMCE.init({
 	</tr>
 	<tr>
 		<th>{t}weight{/t}:</th>
-		<td><input type="text" style="width:30px" name="data[weight]" value="{$object.weight|default:''}"/></td>
+		<td><input type="text" style="width:30px" name="data[weight]" value="{$object.weight|default:''}"/> (gr)</td>
 	</tr>
 	<tr>
 		<th>{t}width{/t}:</th>
-		<td><input type="text" style="width:30px" name="data[width]" value="{$object.width|default:''}"/></td>
+		<td><input type="text" style="width:30px" name="data[width]" value="{$object.width|default:''}"/> (cm)</td>
 	</tr>
 	<tr>
 		<th>{t}height{/t}:</th>
-		<td><input type="text" style="width:30px" name="data[height]" value="{$object.height|default:''}"/></td>
+		<td><input type="text" style="width:30px" name="data[height]" value="{$object.height|default:''}"/> (cm)</td>
 	</tr>
 	<tr>
 		<th>{t}depth{/t}:</th>
-		<td><input type="text" style="width:30px" name="data[depth]" value="{$object.depth|default:''}"/></td>
+		<td><input type="text" style="width:30px" name="data[depth]" value="{$object.depth|default:''}"/> (cm)</td>
 	</tr>
 </table>
 
