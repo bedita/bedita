@@ -156,9 +156,3 @@ $(document).ready(function(){
 	{include file="../common_inc/form_permissions.tpl" el=$object|default:null recursion=true}
 	
 
-
-
-	
-	
-
-</form>
