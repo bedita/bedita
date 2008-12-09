@@ -56,8 +56,11 @@ class MailShell extends Shell {
 
 		try {
 			$msgIds = $this->BeMail->lockMessages();
-			$this->BeMail->createJobs($msgIds);
-			$this->BeMail->sendQueuedJobs($msgIds);
+			if (!empty($msgIds))
+			{
+				$this->BeMail->createJobs($msgIds);
+				$this->BeMail->sendQueuedJobs($msgIds);
+			}
 				
 		} catch (BeditaException $ex) {
 			$this->log("Error: " . $ex->errorTrace());

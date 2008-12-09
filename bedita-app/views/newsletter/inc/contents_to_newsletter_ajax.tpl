@@ -3,8 +3,10 @@
 	<div style="clear: both">
 	
 	{if !empty($obj.relations.attach)}
+		{assign_associative var="params" width=96 height=96 mode="fill" upscale=false}
+		{assign_associative var="htmlAttr" width=96 height=96}
 		<div style="float:left;margin:0px 20px 20px 0px;">
-		{$beEmbedMedia->object($obj.relations.attach.0,"96","96",false,"fill","000000",null,false)}
+		{$beEmbedMedia->object($obj.relations.attach.0,$params,$htmlAttr)}
 		</div>
 	{/if}
 	<h2>{$obj.title}</h2>

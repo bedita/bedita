@@ -687,6 +687,7 @@ CREATE TABLE mail_jobs (
   created DATETIME NULL,
   modified DATETIME NULL,
   priority INTEGER UNSIGNED NULL,
+  mail_body TEXT NULL,
   PRIMARY KEY(id),
   INDEX card_id_index(card_id),
   INDEX mail_message_id_index(mail_message_id),

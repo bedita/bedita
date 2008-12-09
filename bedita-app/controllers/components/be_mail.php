@@ -60,10 +60,11 @@ class BeMailComponent extends Object {
 	 *
 	 * @param int $msg_id
 	 * @param strinf $to, recipient email
+	 * @param bool $html
 	 */
-	public function sendMailById($msg_id, $to=null) {
-		if (empty($msg_id))
-			throw new BeditaException(__("Missing message id", true));
+	public function sendMailById($msg_id, $to, $html=true) {
+		if (empty($msg_id) || empty($to))
+			throw new BeditaException(__("Missing message id or recipient", true));
 		
 		$mailMsgModel = ClassRegistry::init("MailMessage");
 		$mailMsgModel->containLevel("default");
@@ -74,12 +75,57 @@ class BeMailComponent extends Object {
 		$data["from"] = $res["sender"];
 		$data["subject"] = $res["subject"];
 		$data["replayTo"] = $res["replay_to"];
-		$data["mailType"] = "html";
-		$data["body"] = $res["body"];
+		$data["mailType"] = ($html)? "html" : "txt";
+		
+		$data["body"] = $this->prepareMailBody($res, $html);
 
 		$this->sendMail($data);
 	}
 	
+	/**
+	 * Prepare mail body using template
+	 *
+	 * @param array $message, mail_message array from a find on MailMessage 
+	 * @param bool $html, mail type
+	 * @return body (html or txt) of the message
+	 */
+	private function prepareMailBody($message, $html=true) {
+		
+		if (!empty($message["RelatedObject"]) && $message["RelatedObject"][0]["switch"] == "template") {
+
+			$mailTemplate = ClassRegistry::init("MailTemplate");
+			$template = $mailTemplate->find("first", array(
+					"conditions" => array("MailTemplate.id" => $message["RelatedObject"][0]["object_id"]),
+					"contain" => array("Content")
+				)
+			);
+			
+			if ($html) {
+				// get css
+				$treeModel = ClassRegistry::init("Tree");
+				$pub_id = $treeModel->getParent($template["id"]);
+				$areaModel = ClassRegistry::init("Area");
+				$publicationUrl = $areaModel->field("public_url", array("id" => $pub_id));
+				
+				$css = (!empty($publicationUrl))? $publicationUrl . "/css/" . Configure::read("newsletterCss") : "";
+				$htmlMsg = "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"" . $css . "\" /></head><body>%s</body></html>";
+				$htmlBody = str_replace("[\$newsletterTitle]", $message["title"], $template["body"]);
+				$htmlBody = preg_replace("/<!-- contentblock -->[\s\S]*<!-- contentblock -->/", $message["body"], $htmlBody);
+				$htmlBody = str_replace("[\$signature]", $message["signature"], $htmlBody);
+				$body = sprintf($htmlMsg, $htmlBody);
+			} else {
+				$txtBody = str_replace("[\$newsletterTitle]",  strip_tags($message["title"]), $template["abstract"]);
+				$txtBody = preg_replace("/<!-- contentblock -->[\s\S]*<!-- contentblock -->/", $message["abstract"], $txtBody);
+				$body = str_replace("[\$signature]", $message["signature"], $txtBody);
+			}
+			//pr($message["body"]);
+			
+			return $body;
+			
+		}
+		
+		return ($html)? $message["body"] : $message["abstract"];
+	}
 	
 	/**
 	 * send single mail from $data array
@@ -138,19 +184,19 @@ class BeMailComponent extends Object {
 			return ;
 			
 		$mailMsgModel = ClassRegistry::init("MailMessage");
-		$mailMsgModel->containLevel("mailgroup");
 		
 		$msgToSend = $mailMsgModel->find("all", array(
 									"conditions" => array(
 										"MailMessage.mail_status" => "pending",
 										"MailMessage.id" => $msgIds
-										)
+										),
+									"contain" => array("BEObject" => array("RelatedObject"), "Content", "MailGroup")
 									)
 								);
 
 		$groupCardModel = ClassRegistry::init("MailGroupCard");
-		$groupCardModel->recursive = -1;
-	
+		$groupCardModel->contain("Card");
+		
 		$jobModel = ClassRegistry::init("MailJob");
 		$jobModel->containLevel("default");
 
@@ -163,7 +209,12 @@ class BeMailComponent extends Object {
 			if (!empty($message["MailGroup"])) {
 				foreach ($message["MailGroup"] as $group) {
 				
-					$res = $groupCardModel->find("all", array("conditions" => array("mail_group_id" => $group["id"])));
+					$res = $groupCardModel->find("all", array(
+						"conditions" => array(
+							"mail_group_id" => $group["id"],
+							"Card.mail_status" => "valid")
+						)
+					);
 
 					foreach ($res as $groupCard) {
 						// create job only if it dosen't exist
@@ -175,6 +226,10 @@ class BeMailComponent extends Object {
 															)
 											) == 0) {
 							$data["card_id"] = $groupCard["MailGroupCard"]["card_id"];
+							
+							// prepare mail body using template
+							$data["mail_body"] = $this->prepareMailBody($message, $groupCard["Card"]["mail_html"]);
+							
 							$jobModel->create();
 							if (!$jobModel->save($data))
 								throw new BeditaException(__("Error create jobs"),true);
@@ -220,7 +275,7 @@ class BeMailComponent extends Object {
 				$data["replayTo"] = $job["MailMessage"]["replay_to"];
 				$data["subject"] = $job["MailMessage"]["Content"]["subject"];
 				$data["mailType"] = (!empty($job["Card"]["mail_html"]))? "html" : "txt";
-				$data["body"] = $job["MailMessage"]["Content"]["body"];
+				$data["body"] = $job["MailJob"]["mail_body"];
 				
 				unset($job["MailMessage"]);
 				unset($job["Card"]);

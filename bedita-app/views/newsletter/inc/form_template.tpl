@@ -128,13 +128,15 @@ $(document).ready(function() {
 			{if !empty($object.body)}
 				{$object.body}
 			{else}
-				<h1>[$titolonewsletter]</h1>
+				<h1>[$newsletterTitle]</h1>
 				<hr />
+				<!-- contentblock -->
 				<img src="/img/{$imagenotizia|default:'px.gif'}" 
 				style="float:left; background-color: silver; width:96px; height:96px; margin:0px 20px 20px 0px;" />
-				<h2>[$titolo notizia]</h2>
-				<h3>[$sottotitolo notizia]</h3>
-				[$testo|truncate:128]
+				<h2>[$title]</h2>
+				<h3>[$description]</h3>
+				[$body|truncate:128]
+				<!-- contentblock -->
 				<hr style="clear:both" />
 				[$signature]
 				<hr />
@@ -152,11 +154,13 @@ $(document).ready(function() {
 {if !empty($object.abstract)}
 {$object.abstract}
 {else}
-[$titolonewsletter]
+[$newsletterTitle]
 ________________________________
-[$titolo notizia]
-[$sottotitolo notizia]
-[$testo|truncate:128]
+<!-- contentblock -->
+[$title]
+[$description]
+[$body|truncate:128]
+<!-- contentblock -->
 ---------------
 [$signature]
 ________________________________

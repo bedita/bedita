@@ -264,15 +264,15 @@ class NewsletterController extends ModulesController {
 		
 		$this->data["mail_status"] = "unsent";	
 		$this->saveMessage();
-		$this->userInfoMessage(__("Mail ready to be sended on ", true) . $this->data["start_sending"]);
+		$this->userInfoMessage(__("Mail ready to be sent on ", true) . $this->data["start_sending"]);
 		$this->eventInfo("mail [". $this->data["title"]."] prepared for sending");
 	}
 	
 	public function testNewsletter($to) {
 		$this->saveMessage();
-		$this->BeMail->sendMailById($this->data["id"],$to);
-		$this->userInfoMessage(__("Test mail sended to ", true) . $to);
-		$this->eventInfo("test mail [". $this->data["title"]."] sended");
+		$this->BeMail->sendMailById($this->data["id"],$to, false);
+		$this->userInfoMessage(__("Test mail sent to ", true) . $to);
+		$this->eventInfo("test mail [". $this->data["title"]."] sent");
 	}
 	
 	private function saveMessage() {
@@ -294,9 +294,9 @@ class NewsletterController extends ModulesController {
 		//$data["body"] = "<p>zxczx</p>";
 		//$this->BeMail->sendMail($data);
 		//pr($data);
-//		pr($this->BeMail->lockMessages());
-//		$this->BeMail->createJobs(array(14,15));
-//		$this->BeMail->sendQueuedJobs(array(14));
+		//$msg = $this->BeMail->lockMessages();
+//		$this->BeMail->createJobs(array(93));
+//		$this->BeMail->sendQueuedJobs(array(93));
 		exit;
 	}
 	
