@@ -77,6 +77,9 @@ class BeTreeComponent extends Object {
 			
 		if (!empty($this->controller->passedArgs["rel_detail"]))
 			$this->filter["rel_detail"] = $this->controller->passedArgs["rel_detail"];
+			
+		if (!empty($this->controller->passedArgs["mail_group"]))
+			$this->filter["mail_group"] = $this->controller->passedArgs["mail_group"];
 
 		if (!empty($this->controller->params["form"]["searchstring"])) {
 			$this->filter["search"] = addslashes($this->controller->params["form"]["searchstring"]);

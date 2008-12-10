@@ -2,24 +2,82 @@
 ** subscriber view template
 *}
 
-{$html->css("ui.datepicker")}
-
 {$javascript->link("jquery/jquery.form", false)}
-{$javascript->link("jquery/jquery.treeview", false)}
-{$javascript->link("jquery/jquery.selectboxes.pack")}
-{$javascript->link("jquery/ui/ui.sortable.min", true)}
 {$javascript->link("jquery/ui/ui.datepicker.min", false)}
-{if $currLang != "eng"}
-{$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
-{/if}
-{literal}
+
 <script type="text/javascript">
-	$(document).ready( function () {
-		var openAtStart ="#details,#subscribers";
-		$(openAtStart).prev(".tab").BEtabstoggle();
+<!--
+var urlListSubscribers = "{$html->url('/newsletter/listSubscribers')}";
+
+{literal}
+function initSubscribers() {
+	$("#paginateSubscribers a, #orderSubscribers a").each(function() {
+		searched = "view_mail_group";
+		specificParams = $(this).attr("href");
+		position = specificParams.indexOf(searched);
+		if (position == -1) {
+			searched = "listSubscribers";
+			position = specificParams.indexOf(searched);
+		}
+		position += searched.length;
+		specificParams = specificParams.substr(position);
+		$(this).attr("rel", urlListSubscribers + specificParams).attr("href", "javascript: void(0);");
 	});
-</script>
+	
+	$("#paginateSubscribers a, #orderSubscribers a").click(function() {
+		$("#loaderListSubscribers").show();
+		$("#divSubscribers").load($(this).attr("rel"), function() {
+			$("#loaderListSubscribers").hide();
+			initSubscribers();
+		});
+	});
+}
+
+// get form params and perform a post action
+function submitSubscribers(url) {
+	$("#loaderListSubscribers").show();
+	var arrVal = new Array();
+	$("input.objectCheck:checked").each(function(index) {
+		arrVal[index] = $(this).val();
+	});
+	
+	$.post(url,
+		{
+			'objects_selected[]': arrVal,
+			'operation': $("select[@name=operation]").val(),
+			'destination': $("select[@name=destination]").val(),
+			'newStatus': $("select[@name=newStatus]").val()
+		},
+		function(htmlcode) {
+			$("#divSubscribers").html(htmlcode);
+			$("#loaderListSubscribers").hide();
+			initSubscribers();
+		}	
+	);
+}
+
+$(document).ready(function() {
+	var openAtStart ="#details,#subscribers";
+	$(openAtStart).prev(".tab").BEtabstoggle();
+	initSubscribers();
+	
+	$("#assocCard").click( function() {
+		submitSubscribers("{/literal}{$html->url('/newsletter/addCardToGroup/')}{$object.id|default:''}{literal}");		
+	});
+	
+	$("#changestatusSelected").click( function() {
+		submitSubscribers("{/literal}{$html->url('/newsletter/changeCardStatus/')}{$object.id|default:''}{literal}");
+	});
+
+	$("#deleteSelected").bind("click", function() {
+		if(!confirm("{/literal}{t}Do you want unsubscribe selected items?{/t}{literal}")) 
+			return false ;	
+		submitSubscribers("{/literal}{$html->url('/newsletter/unlinkCard/')}{$object.id|default:''}{literal}");
+	});
+});
 {/literal}
+//-->
+</script>
 
 {include file="../common_inc/form_common_js.tpl"}
 
@@ -108,97 +166,46 @@
 	</table>
 </fieldset>
 
+{if !empty($object)}
 <div class="tab"><h2>Subscribers</h2></div>
-<fieldset id="subscribers">		
-		<table class="indexlist">
-			<tr>
-				<th></th>
-				<th>email</th>
-				<th>html</th>
-				<th>status</th>
-				<th>inserted on</th>
-				<th></th>
-			</tr>
-			<tr>
-				<td><input type="checkbox" /></td>
-				<td>carrachio@madiovavavava.com</td>
-				<td>yes</td>
-				<td>on</td>
-				<td>12-12-2008</td>
-				<td><a href="{*$html->url('/addressbook/view/')}{$objects[i].id*}">› details</a></td>
-			</tr>
-			<tr>
-				<td><input type="checkbox" /></td>
-				<td>carchio@madioava.com</td>
-				<td>yes</td>
-				<td>on</td>
-				<td>12-02-2008</td>
-				<td><a href="{*$html->url('/addressbook/view/')}{$objects[i].id*}">› details</a></td>
-			</tr>
-			<tr>
-				<td><input type="checkbox" /></td>
-				<td>carrachmadio@vavavava.com</td>
-				<td>yes</td>
-				<td>on</td>
-				<td>12-12-2008</td>
-				<td><a href="{*$html->url('/addressbook/view/')}{$objects[i].id*}">› details</a></td>
-			</tr>
-		</table>
-		<hr />
-
-
-		<table class="graced">
-		<tr>
-			<td>
-				{$beToolbar->first('page','','page')}
-				<span class="evidence"> 1 </span> 
-				{t}of{/t} 
-				<span class="evidence"> 
-					2
-				</span>
-				&nbsp;
-			</td>
-			<td style="border:1px solid gray; border-top:0px; border-bottom:0px;">{$beToolbar->next('next','','next')}  <span class="evidence"> &nbsp;</span></td>
-			<td>{$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span></td>
-		</tr>
-		</table>
-
-
-
-
-
-</fieldset>
+<div id="divSubscribers">{include file="inc/list_subscribers.tpl"}</div>
 
 
 <div class="tab"><h2>{t}Operations on{/t} <span class="selecteditems evidence"></span> {t}selected subscribers{/t}</h2></div>
 <fieldset>
-		<select style="width:75px">
+		<select name="operation" style="width:75px">
 			<option> {t}copy{/t} </option>
 			<option> {t}move{/t} </option>
 		</select>
 		&nbsp;to:&nbsp;
-		<select>
-			<option>qui l'elenco delelliste uffa e riufa  </option>
+		<select name="destination">
+			{if !empty($groups)}
+			{foreach from=$groups item="group"}
+				{if $group.MailGroup.id != $object.id}
+				<option value="{$group.MailGroup.id}">{$group.MailGroup.group_name}</option>
+				{/if}
+			{/foreach}
+			{/if}
 		</select>
-		<input id="assocObjects" type="button" value=" ok " />
+		<input id="assocCard" type="button" value=" ok " />
 	
 	<hr />
 	
 		{t}change status to:{/t}&nbsp;&nbsp;
 		<select style="width:75px" id="newStatus" name="newStatus">
-		<option value=""> -- </option>
-		{html_options options=$conf->statusOptions}
+			<option value="valid">{t}valid{/t}</option>
+			<option value="blocked">{t}blocked{/t}</option>
 		</select>
 		<input id="changestatusSelected" type="button" value=" ok " />
 	
 	<hr />
 
-	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
+	<input id="deleteSelected" type="button" value="X {t}Unsubscribe selected items{/t}"/>
 </fieldset>
-
+{/if}
 
 <div class="tab"><h2>Add new subscribers</h2></div>
-<fieldset id="subscribers">
+<fieldset id="">
 		Qui si apre un mondo che ppalle, email separate da virgole, check delle preesistenza e tutat cosa che pppppp
 		<textarea id="addsubscribers" style="width:100%" class="autogrowarea"></textarea>
 </fieldset>

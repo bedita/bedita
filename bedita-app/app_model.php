@@ -391,6 +391,13 @@ class BEAppModel extends AppModel {
 			unset($filter["rel_detail"]);
 		}
 		
+		if (array_key_exists("mail_group", $filter)) {
+			$from .= ", mail_group_cards AS `MailGroupCard`";
+			$conditions[] = "`MailGroupCard`.mail_group_id='" . $filter["mail_group"] . "' 
+							AND `MailGroupCard`.card_id=`BEObject`.id";
+			unset($filter["mail_group"]);
+		}
+		
 		
 		// ordinary behavior
 		$beObject = ClassRegistry::init("BEObject");

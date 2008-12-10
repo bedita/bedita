@@ -34,7 +34,7 @@ class NewsletterController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Paginator');
 	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeMail');
 
-	var $uses = array('BEObject', 'Card', 'MailGroup', 'MailMessage', 'MailTemplate') ;
+	var $uses = array('BEObject', 'Card', 'MailGroup', 'MailMessage', 'MailTemplate', 'MailGroupCard') ;
 	
 	protected $moduleName = 'newsletter';
 	
@@ -211,10 +211,22 @@ class NewsletterController extends ModulesController {
 	public function view_mail_group($id=null) {
 		$obj = null;
 		if($id!=null) {
+			$this->MailGroup->containLevel("default");
 			$o = $this->MailGroup->find('first',
 							array("conditions" => "MailGroup.id=" . $id)
 						);
 			$obj = $o['MailGroup'];
+			
+			// get paginated subscribers
+			$filter = array(
+				"object_type_id" => Configure::read("objectTypes.card.id"),
+				"Card.*" => "",
+				"mail_group" => $id
+			);
+			$card = $this->BeTree->getChildren(null, null, $filter, null, true, 1, 10) ;
+			$this->set("subscribers", $card["items"]);
+			$this->params['toolbar'] = &$card['toolbar'] ;
+			
 		}
 		$this->set('object',	$obj);
 		$this->set("areasList", $this->BEObject->find('list', array(
@@ -223,7 +235,8 @@ class NewsletterController extends ModulesController {
 										"fields" => "BEObject.title"
 										)
 									)
-								);	
+								);
+		$this->set("groups", $this->MailGroup->find("all", array("order" => "group_name ASC")));
 	}
 
 
@@ -270,6 +283,9 @@ class NewsletterController extends ModulesController {
 	
 	public function testNewsletter($to) {
 		$this->saveMessage();
+		// send html test
+		$this->BeMail->sendMailById($this->data["id"],$to, true);
+		// send txt test
 		$this->BeMail->sendMailById($this->data["id"],$to, false);
 		$this->userInfoMessage(__("Test mail sent to ", true) . $to);
 		$this->eventInfo("test mail [". $this->data["title"]."] sent");
@@ -430,6 +446,109 @@ class NewsletterController extends ModulesController {
 		$tpl = (empty($this->params["form"]["txt"]))? "contents_to_newsletter_ajax.tpl" : "contents_to_newsletter_txt_ajax.tpl";
 		$this->render(null, null, VIEWS . "newsletter/inc/" . $tpl);
 	}
+	
+	/**
+	 * load paginated list of list's subscribers
+	 *
+	 * @param int $mail_group_id
+	 */
+	public function listSubscribers($mail_group_id) {
+		// get paginated subscribers
+		$filter = array(
+			"object_type_id" => Configure::read("objectTypes.card.id"),
+			"Card.*" => "",
+			"mail_group" => $mail_group_id
+		);
+		
+		$page = (!empty($this->passedArgs["page"]))? $this->passedArgs["page"] : 1;
+		$dir = (isset($this->passedArgs["dir"]))? $this->passedArgs["dir"] : true;
+		$dim = (!empty($this->passedArgs["dim"]))? $this->passedArgs["dim"] : 10;
+		$order = (!empty($this->passedArgs["order"]))? $this->passedArgs["order"] : "newsletter_email";
+		
+		$card = $this->BeTree->getChildren(null, null, $filter, $order, $dir, $page, $dim) ;
+		$this->set("subscribers", $card["items"]);
+		$this->params['toolbar'] = &$card['toolbar'] ;
+		$this->layout = null;
+		$this->render(null, null, VIEWS . "newsletter/inc/list_subscribers.tpl");
+	}
+	
+	/**
+	 * copy or move a list of subscribers
+	 *
+	 * @param unknown_type $old_group_id
+	 */
+	public function addCardToGroup($old_group_id=null) {
+		$this->checkWriteModulePermission();
+		if(!empty($this->params['form']['objects_selected'])) {
+			
+			$this->Transaction->begin();
+			
+			$groupname = $this->MailGroup->field("group_name", array("id" => $this->params["form"]["destination"]));
+			
+			$data["MailGroupCard"]["mail_group_id"] = $this->params["form"]["destination"];
+			$data["MailGroupCard"]["status"] = "confirmed";
+			
+			foreach ($this->params['form']['objects_selected'] as $card_id) {
+				
+				// move to group => delete from previous group
+				if ($this->params["form"]["operation"] == "move" && !empty($old_group_id)) {
+					$this->MailGroupCard->deleteAll(array(
+														"card_id" => $card_id, 
+														"mail_group_id" => $old_group_id	
+														)
+													);
+				}
+				
+				// save if not already exists
+				$join_id = $this->MailGroupCard->field("id", "card_id=".$card_id." AND mail_group_id=".$this->params["form"]["destination"] );
+				
+				if (!$join_id) {
+					$data["MailGroupCard"]["card_id"] = $card_id;
+					$data["MailGroupCard"]["hash"] = md5($card_id . microtime() . $groupname);
+					$this->MailGroupCard->create();
+					if (!$this->MailGroupCard->save($data))
+						throw new BeditaException(__("Error adding subscriber " . $card_id . " in group " . $data["MailGroupCard"]["mail_group_id"], true));
+				}
+				
+			}
+			
+			$this->Transaction->commit();
+			//$this->userInfoMessage(__("Subscribers associated to list", true) . " - " . $groupname);
+			$this->eventInfo("Subscribers associated to list " . $this->params["form"]["destination"]);
+			// set to forward callback
+			$this->MailGroup->id = $old_group_id;
+		}
+	}
+	
+	public function changeCardStatus($mail_group_id=null) {
+		$this->checkWriteModulePermission();
+		if(!empty($this->params['form']['objects_selected'])) {
+		
+			$this->Transaction->begin() ;
+			foreach ($this->params['form']['objects_selected'] as $id) {
+				
+				$this->Card->id = $id;
+				if(!$this->Card->saveField('mail_status',$this->params['form']["newStatus"]))
+					throw new BeditaException(__("Error saving status for item: ", true) . $id);
+			}
+			$this->Transaction->commit() ;
+			
+			$this->eventInfo("Change mail_status to " . $this->params['form']["newStatus"] . " at subscribers  " . implode(",",$this->params["form"]["objects_selected"]));
+		}
+		$this->MailGroup->id = $mail_group_id;
+	}
+	
+	public function unlinkCard($mail_group_id) {
+		$this->checkWriteModulePermission();
+		if(!empty($this->params['form']['objects_selected'])) {
+			$this->MailGroupCard->deleteAll(array(
+					"mail_group_id" => $mail_group_id,
+					"card_id" => $this->params['form']['objects_selected']
+				)
+			);
+		}
+		$this->MailGroup->id = $mail_group_id;
+	}
 	 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
@@ -461,6 +580,18 @@ class NewsletterController extends ModulesController {
 							"OK"	=> "/newsletter/mailGroups",
 							"ERROR"	=> "/newsletter/mailGroups"
 							),
+			"addCardToGroup" => array(
+							"OK"	=> "/newsletter/listSubscribers/" . $this->MailGroup->id,
+							"ERROR"	=> "/newsletter/listSubscribers/" . $this->MailGroup->id
+							),
+			"changeCardStatus" => array(
+							"OK"	=> "/newsletter/listSubscribers/" . $this->MailGroup->id,
+							"ERROR"	=> "/newsletter/listSubscribers/" . $this->MailGroup->id
+							),
+			"unlinkCard" 	=> array(
+							"OK"	=> "/newsletter/listSubscribers/" . $this->MailGroup->id,
+							"ERROR"	=> "/newsletter/listSubscribers/" . $this->MailGroup->id
+							)
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;
