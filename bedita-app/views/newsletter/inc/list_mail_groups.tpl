@@ -46,11 +46,11 @@ $(document).ready(function(){
 						hidden
 					{/if}
 				</td>
-				<td >
-					458
+				<td>
+					{$grp.subscribers}
 				</td>
 				<td>
-					{$grp.area_id}
+					{$grp.publishing}
 				</td>
 				<td>{$grp.id}</td>
 			</tr>

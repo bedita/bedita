@@ -187,12 +187,20 @@ class NewsletterController extends ModulesController {
 	}
 
 	public function mailGroups() {
-		$this->MailGroup->recursive = -1;
-		$mg = $this->MailGroup->findAll();
+		$mg = $this->MailGroup->find("all", array(
+				"contain" => array("Area" => "BEObject.title")
+			)
+		);
 		$result = array();
 		foreach($mg as $k => $v) {
+			$v["MailGroup"]["subscribers"] = $this->MailGroupCard->find("count", array(
+					"conditions" => array("mail_group_id" => $v["MailGroup"]["id"])
+				)
+			);
+			$v["MailGroup"]["publishing"] = $v["Area"]["BEObject"]["title"];
 			$result[]=$v['MailGroup'];
 		}
+		
 		$this->set("mailGroups", $result);
 		$this->set("areasList", $this->BEObject->find('list', array(
 										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
