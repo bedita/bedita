@@ -207,7 +207,7 @@ $(document).ready(function() {
 <div class="tab"><h2>Add new subscribers</h2></div>
 <fieldset id="">
 		Qui si apre un mondo che ppalle, email separate da virgole, check delle preesistenza e tutat cosa che pppppp
-		<textarea id="addsubscribers" style="width:100%" class="autogrowarea"></textarea>
+		<textarea name="addsubscribers" id="addsubscribers" style="width:100%" class="autogrowarea"></textarea>
 </fieldset>
 
 

@@ -252,12 +252,43 @@ class NewsletterController extends ModulesController {
 	public function saveMailGroups() {
 		$this->checkWriteModulePermission();
 		if(empty($this->data["MailGroup"]["group_name"])) 
-			throw new BeditaException( __("No data", true));
+			throw new BeditaException( __("Missing list name", true));
 		if(empty($this->data["MailGroup"]["area_id"])) 
- 			throw new BeditaException( __("No area", true));
+ 			throw new BeditaException( __("Missing publishing", true));
 		$this->Transaction->begin() ;
 		if(!$this->MailGroup->save($this->data)) {
 			throw new BeditaException(__("Error saving mail group", true), $this->MailGroup->validationErrors);
+		}
+		
+		$mail_group_id = $this->MailGroup->id;
+		
+		// add subscribers
+		if (!empty($this->params["form"]["addsubscribers"])) {
+			$subscribers = explode(",", $this->params["form"]["addsubscribers"]);
+			foreach ($subscribers as $sub) {
+				$sub = trim($sub);
+				// if it's not already present save card and join group
+				if ( !($card_id = $this->Card->field("id", array("newsletter_email" => $sub))) ) {
+					$dataCard = array("title" => $sub, "name" => $sub, "newsletter_email" => $sub);
+					$dataCard["joinGroup"][0]["mail_group_id"] = $mail_group_id;
+					$dataCard["joinGroup"][0]["status"] = "confirmed";
+					$this->Card->create();
+					if (!$this->Card->save($dataCard))
+						throw new BeditaException(__("Error saving subscriber", true));
+				
+				// join group, if not already joined
+				} elseif (!$this->MailGroupCard->field("id", array("mail_group_id" => $mail_group_id, "card_id" => $card_id)) ) {
+					$dataJoin["MailGroupCard"]["mail_group_id"] = $mail_group_id;
+					$dataJoin["MailGroupCard"]["card_id"] = $card_id;
+					$dataJoin["MailGroupCard"]["status"] = "confirmed";
+					$dataJoin["MailGroupCard"]["hash"] = md5($card_id . microtime() . $this->data["MailGroup"]["group_name"]);
+						
+					$this->MailGroupCard->create();
+					if (!$this->MailGroupCard->save($dataJoin))
+						throw new BeditaException(__("Error join group", true));
+				}
+				
+			}
 		}
 		$this->Transaction->commit();
 		$this->userInfoMessage(__("Mail Group saved", true)." - ".$this->data["MailGroup"]["group_name"]);
@@ -581,8 +612,8 @@ class NewsletterController extends ModulesController {
 							"ERROR"	=> $this->referer()
 							),
 			"saveMailGroups"=> array(
-							"OK"	=> "/newsletter/mailGroups",
-							"ERROR"	=> "/newsletter/mailGroups"
+							"OK"	=> "/newsletter/view_mail_group/" . @$this->MailGroup->id,
+							"ERROR"	=> "/newsletter/view_mail_group/" . @$this->MailGroup->id
 							),
 			"deleteMailGroups"=> array(
 							"OK"	=> "/newsletter/mailGroups",

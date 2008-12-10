@@ -71,7 +71,7 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 				
 			// salva il/i parent
 			$run = true ;
-
+			$model->$name->create();
 			if(!$model->$name->save($data)) {
 				$model->validationErrors = $model->$name->validationErrors ;
 				// Se e' gia' stato creato il primo elemento, torna esegue la cancellazione
