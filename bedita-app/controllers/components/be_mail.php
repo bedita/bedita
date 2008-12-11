@@ -110,15 +110,14 @@ class BeMailComponent extends Object {
 				$css = (!empty($publicationUrl))? $publicationUrl . "/css/" . Configure::read("newsletterCss") : "";
 				$htmlMsg = "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"" . $css . "\" /></head><body>%s</body></html>";
 				$htmlBody = str_replace("[\$newsletterTitle]", $message["title"], $template["body"]);
-				$htmlBody = preg_replace("/<!-- contentblock -->[\s\S]*<!-- contentblock -->/", $message["body"], $htmlBody);
+				$htmlBody = preg_replace("/<!--bedita content block-->[\s\S]*<!--bedita content block-->/", $message["body"], $htmlBody);
 				$htmlBody = str_replace("[\$signature]", $message["signature"], $htmlBody);
 				$body = sprintf($htmlMsg, $htmlBody);
 			} else {
 				$txtBody = str_replace("[\$newsletterTitle]",  strip_tags($message["title"]), $template["abstract"]);
-				$txtBody = preg_replace("/<!-- contentblock -->[\s\S]*<!-- contentblock -->/", $message["abstract"], $txtBody);
+				$txtBody = preg_replace("/<!--bedita content block-->[\s\S]*<!--bedita content block-->/", $message["abstract"], $txtBody);
 				$body = str_replace("[\$signature]", $message["signature"], $txtBody);
 			}
-			//pr($message["body"]);
 			
 			return $body;
 			

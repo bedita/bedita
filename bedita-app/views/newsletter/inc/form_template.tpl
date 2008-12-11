@@ -20,11 +20,11 @@ function initializeTinyMCE(cssPath) {
 		mode : "textareas",
 		theme : "advanced",
 		editor_selector : "mce",
-		plugins : "safari,pagebreak,paste,fullscreen",
+		plugins : "safari,pagebreak,paste,fullscreen,bedita",
 	
 		// Theme options
 		theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
-		theme_advanced_buttons2 : "",
+		theme_advanced_buttons2 : "be_content",
 		theme_advanced_buttons3 : "", 
 		theme_advanced_toolbar_location : "top",
 		theme_advanced_toolbar_align : "left",
@@ -130,13 +130,13 @@ $(document).ready(function() {
 			{else}
 				<h1>[$newsletterTitle]</h1>
 				<hr />
-				<!-- contentblock -->
+				<!--bedita content block-->
 				<img src="/img/{$imagenotizia|default:'px.gif'}" 
 				style="float:left; background-color: silver; width:96px; height:96px; margin:0px 20px 20px 0px;" />
 				<h2>[$title]</h2>
 				<h3>[$description]</h3>
 				[$body|truncate:128]
-				<!-- contentblock -->
+				<!--bedita content block-->
 				<hr style="clear:both" />
 				[$signature]
 				<hr />
@@ -156,11 +156,11 @@ $(document).ready(function() {
 {else}
 [$newsletterTitle]
 ________________________________
-<!-- contentblock -->
+<!--bedita content block-->
 [$title]
 [$description]
 [$body|truncate:128]
-<!-- contentblock -->
+<!--bedita content block-->
 ---------------
 [$signature]
 ________________________________
