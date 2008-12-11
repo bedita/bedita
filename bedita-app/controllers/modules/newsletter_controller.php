@@ -274,7 +274,7 @@ class NewsletterController extends ModulesController {
 					$dataCard["joinGroup"][0]["status"] = "confirmed";
 					$this->Card->create();
 					if (!$this->Card->save($dataCard))
-						throw new BeditaException(__("Error saving subscriber", true));
+						throw new BeditaException(__("Error adding subscribers", true), $this->Card->validationErrors . "Email: " . $sub);
 				
 				// join group, if not already joined
 				} elseif (!$this->MailGroupCard->field("id", array("mail_group_id" => $mail_group_id, "card_id" => $card_id)) ) {
@@ -285,7 +285,7 @@ class NewsletterController extends ModulesController {
 						
 					$this->MailGroupCard->create();
 					if (!$this->MailGroupCard->save($dataJoin))
-						throw new BeditaException(__("Error join group", true));
+						throw new BeditaException(__("Error join group", true), $this->MailGroupCard->validationErrors);
 				}
 				
 			}

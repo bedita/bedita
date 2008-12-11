@@ -63,6 +63,25 @@ class Card extends BEAppObjectModel {
 							"joinTable"	=> "mail_group_cards"
 						)
 		);
+	
+	
+	var $validate = array(
+		'email' => array(
+			'rule' => array('email', true), // attempt to verify that the host for the address is valid
+			'allowEmpty' => true,
+			'message' => 'Please supply a valid email address.'
+ 		),
+ 		'email2' => array(
+			'rule' => array('email', true),
+			'allowEmpty' => true,
+			'message' => 'Please supply a valid email address.'
+ 		),
+ 		'newsletter_email' => array(
+			'rule' => array('email', true),
+			'allowEmpty' => true,
+			'message' => 'Please supply a valid email address.'
+ 		)
+ 	);
 		
 	function beforeValidate() {
 		
