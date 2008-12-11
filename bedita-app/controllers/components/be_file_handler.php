@@ -217,7 +217,10 @@ class BeFileHandlerComponent extends Object {
 		// if it's new object and missing path
 		if(empty($data['path']) && empty($data['id'])) 
 			throw new BeditaException(__("Missing temporary file in filesystem.", true));
-		
+
+		if (!file_exists($data["path"]))
+			throw new BEditaFileExistException(__("Resource " . $data["path"] . " not valid", true));
+			
 		// Create destination path
 		$sourcePath = $data['path'] ;
 
