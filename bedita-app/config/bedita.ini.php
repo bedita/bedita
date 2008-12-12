@@ -306,7 +306,7 @@ $config['objectTypes'] = array(
 /*
  * Relations - default objects' relation types
  * 
- * Array("relationType" => 
+ * Array("defaultObjRelationType" => 
  * 		array(
  * 			"hidden" => define if relation is hidden. Used in object's view in relationship tab,
  * 			"left" => array of object_type_id related to right object_type_id (empty array means all object_type_id) 

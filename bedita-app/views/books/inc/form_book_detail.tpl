@@ -62,7 +62,10 @@ tinyMCE.init({
 			<input type="text" name="data[author]" value="{$object.author|default:''|escape:'html'|escape:'quotes'}" id="authorBEObject"/>
 		</td>
 		<td colspan="2">	
-			<input type="button" class="modalbutton" value="get from list" rel="{$html->url('/biographies')}">
+			{assign var=rel value='author'}
+			<input type="button" class="modalbutton" title="{$rel|upper} : {t}select an item to associate{/t}"
+				rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/{$rel}/" style="width:200px" 
+				value="  {t}connect new items{/t}  " />
 		</td>
 	</tr>
 	<tr>
