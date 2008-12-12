@@ -552,7 +552,7 @@ CREATE TABLE products (
 CREATE TABLE books (
   id INTEGER UNSIGNED NOT NULL,
   isbn CHAR(13) NULL,
-  year DATE NULL,
+  year INT(4) NULL DEFAULT NULL,
   series VARCHAR(255) NULL,
   location VARCHAR(255) NULL,
   PRIMARY KEY(id),

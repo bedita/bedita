@@ -33,5 +33,9 @@ class Book extends BeditaProductModel
 	public $searchFields = array("title" => 10 , "description" => 6, 
 		"subject" => 4, "abstract" => 4, "isbn" => 10, "publisher" => 4);	
 	
+	function beforeValidate() {
+		$this->checkNumber('year');
+		return true;
+	}
 }
 ?>
