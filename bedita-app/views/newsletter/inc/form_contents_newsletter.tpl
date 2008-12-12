@@ -3,7 +3,11 @@
 	
 <script language="javascript" type="text/javascript">
 
-var urlAddObjToAss = "{$html->url('/newsletter/loadContentToNewsletter')}";
+var urlAddObjToAssBase = "{$html->url('/newsletter/loadContentToNewsletter')}";
+var urlAddObjToAss = urlAddObjToAssBase;
+{if !empty($relObjects.template)}
+	urlAddObjToAss += "/{$relObjects.template.0.id}";
+{/if}
 
 {literal}
 
@@ -88,6 +92,8 @@ $(document).ready(function() {
 	$("#changeTemplate").change(function() {
 		
 		var template_id = $(this).val();
+		// update url ajax return from modal window 
+		urlAddObjToAss = urlAddObjToAssBase + "/" + template_id;
 		
 		if (template_id != "") {
 			$("#msgDetailsLoader").show();

@@ -455,7 +455,7 @@ class NewsletterController extends ModulesController {
 		$this->render(null, null, VIEWS . "newsletter/inc/form_message_details.tpl");
 	}
 	
-	function loadContentToNewsletter() {
+	function loadContentToNewsletter($template_id=null) {
 		$objects = array();
 		$contents_id = explode( ",", trim($this->params["form"]["object_selected"],","));
 		$beObject = ClassRegistry::init("BEObject");
@@ -468,20 +468,44 @@ class NewsletterController extends ModulesController {
 				)
 			);
 			$obj["relations"] = $this->objectRelationArray($obj["RelatedObject"]);
+			if (empty($obj["description"]))
+				$obj["description"] = "";
+			if (empty($obj["abstract"]))
+				$obj["abstract"] = "";
+			if (empty($obj["body"]))
+				$obj["body"] = "";
+			
 			if (!empty($this->params["form"]["txt"])) {
-				if (!empty($obj["description"]))
-					$obj["description"] = html_entity_decode($obj["description"], ENT_QUOTES, "UTF-8");
-				if (!empty($obj["abstract"]))
-					$obj["abstract"] = html_entity_decode($obj["abstract"], ENT_QUOTES, "UTF-8");
-				if (!empty($obj["body"]))
-					$obj["body"] = html_entity_decode($obj["body"], ENT_QUOTES, "UTF-8");
+				$obj["description"] = html_entity_decode($obj["description"], ENT_QUOTES, "UTF-8");
+				$obj["abstract"] = html_entity_decode($obj["abstract"], ENT_QUOTES, "UTF-8");
+				$obj["body"] = html_entity_decode($obj["body"], ENT_QUOTES, "UTF-8");
 			}
 			$objects[] = $obj;
 			
 		}
 		
+		// get template
+		if (!empty($template_id)) {
+			$field = (!empty($this->params["form"]["txt"]))? "abstract" : "body";
+			$contentModel = ClassRegistry::init("Content");
+			$bodyTemplate = $contentModel->field($field, array("id" => $template_id));
+			// get template block between first and last <!--bedita content block--> delimeter
+			if (preg_match("/<!--bedita content block-->([\s\S]*)<!--bedita content block-->/", $bodyTemplate, $matches)) {
+				// delete other <!--bedita content block-->
+				$contentTemplate = str_replace("<!--bedita content block-->","",$matches[1]);
+ 
+				// get truncate number of chars
+				if (preg_match("/\[" . preg_quote("$") ."body\|truncate:(\d*)\]/", $contentTemplate, $bodyMatches)) {
+					$truncateNumber = $bodyMatches[1];
+				}
+			}
+
+		}
+		
 		$this->layout = null;
 		$this->set("objects", $objects);
+		$this->set("contentTemplate", (!empty($contentTemplate))? $contentTemplate : "" );
+		$this->set("truncateNumber", (!empty($truncateNumber))? $truncateNumber : "" );
 		$tpl = (empty($this->params["form"]["txt"]))? "contents_to_newsletter_ajax.tpl" : "contents_to_newsletter_txt_ajax.tpl";
 		$this->render(null, null, VIEWS . "newsletter/inc/" . $tpl);
 	}

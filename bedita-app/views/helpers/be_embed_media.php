@@ -55,6 +55,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	 * @param array params, optional, parameters used by external helpers such as BeThumb->image
 	 * 		   possible value for params:
 	 * 			"presentation" => "thumb" (default), "full", "link"
+	 * 			"URLonly" => if setted return only url
 	 * 
 	 * 			## USED only for image thumbnail on filesystem ##
 	 * 			width, height, longside, at least one required, integer (if longside, w&h are ignored)
@@ -115,7 +116,9 @@ class BeEmbedMediaHelper extends AppHelper {
 	private function showImage ($obj, $params, $htmlAttributes)
 	{
 		$src = $this->getImageSrc($obj, $params);
-		if ($params["presentation"] == "link")
+		if (!empty($params["URLonly"]))
+			return $src;
+		elseif ($params["presentation"] == "link")
 			return $this->Html->link($src, $obj["title"], $htmlAttributes);
 		else
 			return $this->Html->image($src, $htmlAttributes);
@@ -145,7 +148,8 @@ class BeEmbedMediaHelper extends AppHelper {
 	private function showVideo($obj, $params, $htmlAttributes)
 	{
 		if ($params["presentation"] == "thumb") {
-			$output = $this->MediaProvider->thumbnail($obj, $htmlAttributes);
+			$URLonly = (!empty($params["URLonly"]))? true : false;
+			$output = $this->MediaProvider->thumbnail($obj, $htmlAttributes, $URLonly);				
 		} elseif ($params["presentation"] == "full") {
 			$output = $this->MediaProvider->embed($obj, $htmlAttributes);
 		} elseif ($params["presentation"] == "link") {

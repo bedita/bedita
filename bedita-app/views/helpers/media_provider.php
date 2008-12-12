@@ -24,7 +24,7 @@ class MediaProviderHelper extends AppHelper {
 	/**
 	 * get img tag for thumbnail
 	 */
-	function thumbnail(&$obj, $htmlAttributes = array() ) {
+	function thumbnail(&$obj, $htmlAttributes = array(), $URLonly=false ) {
 		if(!isset($obj['provider'])) return "" ;
 		
 		$media = null ;
@@ -33,7 +33,7 @@ class MediaProviderHelper extends AppHelper {
 			case 'blip': 	 $media = new BlipMedia($this) ; break ;
 			default: "" ;
 		}
-		return $media->thumbnail($obj, $htmlAttributes) ;
+		return $media->thumbnail($obj, $htmlAttributes, $URLonly) ;
 	}
 	
 	/**
@@ -82,8 +82,9 @@ class YoutubeMedia {
 		$this->helper = $helper ;
 	}
 	
-	function thumbnail(&$obj, &$htmlAttributes) {
-		return $this->helper->Html->image(sprintf($this->thumbTag, $obj['uid']), $htmlAttributes) ;
+	function thumbnail(&$obj, &$htmlAttributes, $URLonly) {
+		$src = sprintf($this->thumbTag, $obj['uid']);
+		return (!$URLonly)? $this->helper->Html->image($src, $htmlAttributes) : $src;
 	}
 	
 	/**
@@ -142,14 +143,15 @@ class BlipMedia {
 		$this->helper = $helper ;		
 	}
 	
-	function thumbnail(&$obj, &$htmlAttributes) {
+	function thumbnail(&$obj, &$htmlAttributes, $URLonly) {
 		if(!class_exists("BeBlipTvComponent")){
 			App::import('Component', "BeBlipTv");
 		}
 		$Component = new BeBlipTvComponent();
 		$Component->getInfoVideo($obj['uid']) ;
 		
-		return $this->helper->Html->image(sprintf($Component->info['thumbnailUrl'], $obj['uid']), $htmlAttributes) ;
+		$src = sprintf($Component->info['thumbnailUrl'], $obj['uid']);
+		return (!$URLonly)? $this->helper->Html->image($src, $htmlAttributes) : $src;
 	}
 	
 	/**
