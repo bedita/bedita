@@ -59,6 +59,14 @@ tinyMCE.init({
 	<tr>
 		<th>{t}author/s{/t}:</th>
 		<td>
+			{if !empty($relObjects.author)}
+			{foreach from=$relObjects.author item=author}
+				<input type="hidden" name="data[RelatedObject][author][{$author.id}][id]" value="{$author.id}"/>
+				<input type="hidden" name="data[RelatedObject][author][{$author.id}][priority]" value="{$author.priority}"/>
+				{$author.name}<br/>
+			{/foreach}
+			{/if}
+			<input type="hidden" name="data[RelatedObject][author][0][switch]" value="author"/>
 			<input type="text" name="data[author]" value="{$object.author|default:''|escape:'html'|escape:'quotes'}" id="authorBEObject"/>
 		</td>
 		<td colspan="2">	

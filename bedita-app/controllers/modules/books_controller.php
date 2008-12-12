@@ -52,6 +52,16 @@ class BooksController extends ModulesController {
 	public function save() {
 		$this->checkWriteModulePermission();
 		$this->Transaction->begin();
+		if(!empty($this->data['author'])) {
+			$authorModel = ClassRegistry::init('Author');
+			$authorData = array('title'=>$this->data['author'],'name'=>$this->data['author']);
+			$authorModel->save($authorData);
+			$authorId = $authorModel->getInsertID();
+			$this->data['RelatedObject']['author'][$authorId] = array(
+				'id' => $authorId,
+				'priority' => 1
+			);
+		}
 		$this->saveObject($this->Book);
 	 	$this->Transaction->commit() ;
  		$this->userInfoMessage(__("Book saved", true)." - ".$this->data["title"]);
