@@ -57,7 +57,7 @@ $(document).ready(function(){
 
 {/literal}
 
-{if !($object.id)}{literal}
+{if empty($object.id)}{literal}
 
 		$("#delBEObject,#cloneBEObject").hide();
 

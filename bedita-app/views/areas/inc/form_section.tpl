@@ -36,7 +36,7 @@ $(document).ready(function(){
 					{/if}
 					</select>
 					
-					{if ($object.fixed == 1)}
+					{if $object|default:false && ($object.fixed == 1)}
 						<input id="areaSectionAssoc" type="hidden" name="data[parent_id]" value="{$parent_id}" />
 					{/if}
 					
