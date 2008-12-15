@@ -692,8 +692,8 @@ abstract class FrontendController extends AppController {
 			}
 			$this->data["title"] = substr($this->data["description"],0,30) . "...";
 			// for comment status check contents.comments 
-			$content = ClassRegistry::init("Content");
-			$commentsFlag = $content->field("comments", array("id" => $this->data['RelatedObject']['comment']['0']['id']));
+			$beObject = ClassRegistry::init("BEObject");
+			$commentsFlag = $beObject->field("comments", array("id" => $this->data['RelatedObject']['comment']['0']['id']));
 			if($commentsFlag == 'moderated') {
 				 $this->data["status"] = "draft";
 			} else if ($commentsFlag == 'on'){

@@ -41,6 +41,7 @@ class CommentsController extends ModulesController {
 		$filter["object_type_id"] = $conf->objectTypes['comment']["id"];
 		$filter["rel_detail"] = true;
 		$filter["relation"] = 'comment';
+		$filter["Comment.email"] = "";
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 	 }
 	 

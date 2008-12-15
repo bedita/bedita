@@ -187,6 +187,7 @@ CREATE TABLE objects (
   publisher VARCHAR(255) NULL,
   note TEXT NULL,
   fixed TINYINT(1) DEFAULT 0,
+  comments ENUM('on','off','moderated') DEFAULT 'off',
   PRIMARY KEY(id),
   INDEX objects_FKIndex1(object_type_id),
   FOREIGN KEY(user_created)
@@ -270,7 +271,6 @@ CREATE TABLE contents (
   abstract MEDIUMTEXT NULL,
   body MEDIUMTEXT NULL,
   type ENUM('html','txt','txtParsed') DEFAULT 'txt',
-  comments ENUM('on','off','moderated') DEFAULT 'off',
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
