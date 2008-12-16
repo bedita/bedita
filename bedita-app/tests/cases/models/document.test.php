@@ -1,11 +1,33 @@
 <?php 
-/**
- * Areas, sections test cases...
+/*-----8<--------------------------------------------------------------------
  * 
- * @author giangi@qwerg.com ste@channelweb.it
+ * BEdita - a semantic content management framework
  * 
+ * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * 
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the Affero GNU General Public License as published 
+ * by the Free Software Foundation, either version 3 of the License, or 
+ * (at your option) any later version.
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the Affero GNU General Public License for more details.
+ * You should have received a copy of the Affero GNU General Public License 
+ * version 3 along with BEdita (see LICENSE.AGPL).
+ * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
+ * 
+ *------------------------------------------------------------------->8-----
  */
 
+/**
+ * 
+ * @link			http://www.bedita.com
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
+ * 
+ * $Id$
+ */
 require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
 class DocumentTestCase extends BeditaTestCase {
@@ -40,7 +62,7 @@ class DocumentTestCase extends BeditaTestCase {
  		$searches = $this->data['searches'];
  		foreach ($searches as $s) {
 	 		pr("Search string:".$s);
-			$res = $this->BEObject->findObjs(null, null, 
+			$res = $this->BEObject->findObjects(null, null, null, 
 				array(22, "search" => $s));
 	 		pr($res);
  		}
@@ -49,7 +71,7 @@ class DocumentTestCase extends BeditaTestCase {
  		foreach ($this->data['searchTree'] as $treeId) {
 	 		foreach ($searches as $s) {
 		 		pr("Tree id: $treeId - search string:".$s);
-				$res = $this->Tree->getChildren($treeId, null, null,
+				$res = $this->BEObject->findObjects($treeId, null, null,
 					array(22, "search" => $s));
 		 		pr($res);
 	 		}

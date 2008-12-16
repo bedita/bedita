@@ -1,8 +1,12 @@
 <?php 
 /**
  * 
- * @author ste ste@channelweb.it
+ * @link			http://www.bedita.com
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
+ * $Id$
  */
 class SchemaTestData extends BeditaTestData {
 	var $data =  array(

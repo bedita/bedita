@@ -1,11 +1,14 @@
 <?php 
 /**
- *
- * @author ste@channelweb.it
  * 
+ * @link			http://www.bedita.com
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
+ * 
+ * $Id$
  */
-
-class DocumentTestData extends BeditaTestData {
+ class DocumentTestData extends BeditaTestData {
 	var $data =  array(
 		'insert' => array(
 			'title' => "中国",
