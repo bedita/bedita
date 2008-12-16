@@ -1,9 +1,13 @@
 <?php 
 /**
  * 
-  * @author giangi@qwerg.com
+ * @link			http://www.bedita.com
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
+ * 
+ * $Id$
  */
-
 class AuthenticationControllerTestData extends BeditaTestData {
 	var $data =  array(
 		'login' => array(
