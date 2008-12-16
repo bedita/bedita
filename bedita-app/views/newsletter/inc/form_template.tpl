@@ -84,27 +84,33 @@ $(document).ready(function() {
 			</td>
 		</tr>
 		<tr>
-			<td>default title</td>
+			<td>{t}title{/t}</td>
 			<td>
 				<input type="text" 	name="data[title]" value="{$object.title|default:null}" />
 			</td>
 		</tr>
 		<tr>
-			<td>sender email</td>
+			<td>{t}sender email{/t}</td>
 			<td><input type="text" name="data[sender]" value="{$object.sender|default:null}"/></td>
 		</tr>
 		<tr>
-			<td>bounce to email</td>
+			<td>{t}bounce to email{/t}</td>
 			<td><input type="text" name="data[bounce_to]" value="{$object.bounce_to|default:null}" /></td>
 		</tr>
 		<tr>
-			<td>priority</td>
+			<td>{t}priority{/t}</td>
 			<td><input type="text" value="{$object.priority|default:null}" /></td>
 		</tr>
 		<tr>
-			<td>signature:</td>
+			<td>{t}signature{/t}:</td>
 			<td>	
 				<textarea name="data[signature]" style="width:340px" class="autogrowarea">{$object.signature|default:null}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>{t}privacy disclaimer{/t}:</td>
+			<td>	
+				<textarea name="data[privacy_disclaimer]" style="width:340px" class="autogrowarea">{$object.privacy_disclaimer|default:null}</textarea>
 			</td>
 		</tr>
 	</table>

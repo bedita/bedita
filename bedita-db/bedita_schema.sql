@@ -620,6 +620,7 @@ CREATE TABLE mail_messages (
   bounce_to VARCHAR(255) NOT NULL,
   priority INTEGER UNSIGNED NULL,
   signature VARCHAR(255) NOT NULL,
+  privacy_disclaimer TEXT NULL,
   stylesheet VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(id)

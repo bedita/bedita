@@ -112,11 +112,13 @@ class BeMailComponent extends Object {
 				$htmlBody = str_replace("[\$newsletterTitle]", $message["title"], $template["body"]);
 				$htmlBody = preg_replace("/<!--bedita content block-->[\s\S]*<!--bedita content block-->/", $message["body"], $htmlBody);
 				$htmlBody = str_replace("[\$signature]", $message["signature"], $htmlBody);
+				$htmlBody = str_replace("[\$privacydisclaimer]", $message["privacy_disclaimer"], $htmlBody);
 				$body = sprintf($htmlMsg, $htmlBody);
 			} else {
 				$txtBody = str_replace("[\$newsletterTitle]",  strip_tags($message["title"]), $template["abstract"]);
 				$txtBody = preg_replace("/<!--bedita content block-->[\s\S]*<!--bedita content block-->/", $message["abstract"], $txtBody);
-				$body = str_replace("[\$signature]", $message["signature"], $txtBody);
+				$txtBody = str_replace("[\$signature]", $message["signature"], $txtBody);
+				$body = str_replace("[\$privacydisclaimer]", $message["privacy_disclaimer"], $txtBody);
 			}
 			
 			return $body;
