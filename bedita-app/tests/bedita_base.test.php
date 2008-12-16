@@ -61,6 +61,10 @@ class BeditaTestCase extends CakeTestCase {
 	public   function __construct ($t=NULL, $phpDataDir=NULL) {
 		parent::__construct() ;
 
+		// setup unit test user id
+		$conf = Configure::getInstance() ;		
+		$conf->write("beditaTestUserId", $conf->unitTestUserId);
+		
 		$this->testName = $t;
 		if(!isset($t))
 			return;

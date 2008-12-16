@@ -123,6 +123,8 @@ $config['msgPause'] = 3000;		// milliseconds
 // Upload mode ['flash', 'ajax']
 $config['uploadType'] = "flash";
 
+// bedita user for unit test
+$config['unitTestUserId'] = 1;
 
 /**
  ** ******************************************

@@ -587,16 +587,25 @@ class BEObject extends BEAppModel
 		
 		if(is_string($get)) return $get ;
 		
-		// Preleva l'utente dai dati di sessione
-		$conf = Configure::getInstance() ;		
-		$session = @(new CakeSession()) ;
+		// read user data from session or from configure
+		$conf = Configure::getInstance();
+		$userId=0; 
+
+		if(isset($conf->beditaTestUserId)) {
+			$userId = $conf->beditaTestUserId; // unit tests
+		} else {
 		
-		if($session->valid() === false)
-			return null;
-		$user = $session->read($conf->session["sessionUserKey"]) ; 
-		if(!isset($user["id"])) return null ;
+			$session = @(new CakeSession()) ;
+			
+			if($session->valid() === false)
+				return null;
+			$user = $session->read($conf->session["sessionUserKey"]) ; 
+			if(!isset($user["id"])) 
+				return null ;
+			$userId = $user["id"];	
+		}
 		
-		return $user["id"] ;
+		return $userId;
 	}
 	
 	/**
