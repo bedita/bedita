@@ -196,10 +196,11 @@ abstract class FrontendController extends AppController {
 	* Get area's section recursively
 	* 
 	* @param integer $area_id			area parent
-	* @param  string $var_name			name result in to template_ vars
-	* @params array $exclude_nicknames	list exclude sections 
+	* @param string $var_name			name result in to template_ vars
+	* @param array $exclude_nicknames	list exclude sections 
+	* @param integer $depth				tree's depth level (default=1000 => all levels)
 	* */
-	protected function loadSectionsTree($parent_id,  $loadContents = false, array $exclude_nicknames = null) {
+	protected function loadSectionsTree($parent_id,  $loadContents=false, array $exclude_nicknames=null, $depth=1000) {
 
 		$conf = Configure::getInstance(); 
 		$result = array();
@@ -216,7 +217,8 @@ abstract class FrontendController extends AppController {
 			if($loadContents) {
 				$sectionObject['objects'] = $this->loadSectionObjects($s['id']);	
 			}
-			$sectionObject['sections'] = $this->loadSectionsTree($s['id'], $loadContents, $exclude_nicknames);
+			if ($depth > 1)
+				$sectionObject['sections'] = $this->loadSectionsTree($s['id'], $loadContents, $exclude_nicknames, $depth-1);
 			$result[] = $sectionObject;
 		}
 
@@ -241,7 +243,7 @@ abstract class FrontendController extends AppController {
 	* @return array of level selected 
 	* 							
 	* */
-	protected function loadSectionsLevels($secName, $loadContents = false, array $exclude_nicknames = null) {
+	protected function loadSectionsLevels($secName, $loadContents=false, array $exclude_nicknames=null) {
 		$conf = Configure::getInstance(); 
 		$result = array();
 		
