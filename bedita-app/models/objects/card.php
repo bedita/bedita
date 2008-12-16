@@ -34,7 +34,7 @@ class Card extends BEAppObjectModel {
 		"company_name" => 3, "city" => 4);
 
 	var $actsAs 	= array(
-			'CompactResult' 		=> array("MailGroup"),
+			'CompactResult' 		=> array("MailGroup", "GeoTag"),
 			'SearchTextSave',
 			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteObject' 			=> 'objects',
@@ -49,7 +49,8 @@ class Card extends BEAppObjectModel {
 															"LangText",
 															"RelatedObject",
 															"Category",
-															"User"), "MailGroup"),
+															"User"), 
+									"MailGroup", "GeoTag"),
 
 				"default" => array("BEObject" => array("ObjectProperty", 
 									"LangText", "ObjectType", 
@@ -64,6 +65,14 @@ class Card extends BEAppObjectModel {
 						)
 		);
 	
+	var $hasMany = array(
+			'GeoTag' =>
+				array(
+					'foreignKey'	=> 'object_id',
+					'dependent'		=> true
+				)
+		) ;
+
 	
 	var $validate = array(
 		'email' => array(
@@ -91,9 +100,10 @@ class Card extends BEAppObjectModel {
 		return true;
 	}
 	
-	// save join with mail groups
+	
 	function afterSave($created) {
 		
+		// save join with mail groups
 		if (!empty($this->data["Card"]["joinGroup"])) {
 		
 			if (empty($this->id))
@@ -125,6 +135,9 @@ class Card extends BEAppObjectModel {
 			}
 			
 		}
+		
+		// save geotag
+		return $this->updateHasManyAssoc();
 
 	}
 }
