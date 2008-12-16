@@ -267,6 +267,12 @@ class BeditaShell extends Shell {
 	        $this->out("SQL_SCRIPT_PATH has to be defined in ".APP_DIR."/config/database.php");
 			return;
 		}
+		
+		$answerYes = false;
+    	if (isset($this->params['y'])) {
+            $answerYes = true;
+    	}
+		
 		$this->check_sys_get_temp_dir();
 		$tmpBasePath = $this->setupTempDir();
        	$this->out("Using temp dir: $tmpBasePath");
@@ -296,10 +302,12 @@ class BeditaShell extends Shell {
     	$hostName = $db->config['host'];
     	$dbName = $db->config['database'];
 		$this->out("Importing data using bedita db config: $dbCfg - [host=".$hostName.", database=".$dbName."]");
-		$res = $this->in("ACHTUNG! Database $dbName will be replaced, proceed? [y/n]");
-		if($res != "y") {
-       		$this->out("Bye");
-			return;
+		if(!$answerYes) {
+			$res = $this->in("ACHTUNG! Database $dbName will be replaced, proceed? [y/n]");
+			if($res != "y") {
+	       		$this->out("Bye");
+				return;
+			}
 		}
         $this->hr();
 				
@@ -326,11 +334,15 @@ class BeditaShell extends Shell {
 		$folder = new Folder($mediaRoot);
 		$ls = $folder->ls();
 		if(count($ls[0]) > 0 || count($ls[1]) > 0) {
-			$res = $this->in($mediaRoot. " is not empty, remove files and folders? [y/n]");
-			if($res == "y") {
+			if($answerYes) {
        			$this->removeMediaFiles();
 			} else {
-				$this->out($mediaRoot. " not clean!");
+				$res = $this->in($mediaRoot. " is not empty, remove files and folders? [y/n]");
+				if($res == "y") {
+	       			$this->removeMediaFiles();
+				} else {
+					$this->out($mediaRoot. " not clean!");
+				}
 			}
 		}
 		
@@ -717,10 +729,11 @@ class BeditaShell extends Shell {
   		$this->out(' ');
         $this->out('5. import: import media files and data dump');
   		$this->out(' ');
-  		$this->out('    Usage: import [-f <tar-gz-filename>] [-db <dbname>]');
+  		$this->out('    Usage: import [-f <tar-gz-filename>] [-db <dbname>] [-y]');
         $this->out(' ');
   		$this->out("    -f <tar-gz-filename>\t file to import, default ".self::DEFAULT_ARCHIVE_FILE);
         $this->out("    -db <dbname>\t use db configuration <dbname> specified in config/database.php");
+        $this->out("    -y  answer always 'yes' to questions...");
         $this->out(' ');
         $this->out('6. checkApp: check app files ... (core.php/database.php/index.php...)');
         $this->out(' ');
