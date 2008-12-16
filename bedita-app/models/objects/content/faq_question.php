@@ -30,5 +30,6 @@
  */
 class FaqQuestion extends BeditaContentModel
 {
+	var $useTable = 'contents';	
 }
 ?>
