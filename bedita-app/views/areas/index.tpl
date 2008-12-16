@@ -110,6 +110,7 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 				&nbsp;
 		
 			</div>
+
 		</div>
 		
 		<div class="insidecol" style="margin-top:0px; padding-top:0px; margin-left:8px">
@@ -123,8 +124,7 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 
 </div>
 
+{*include file="../common_inc/menuright.tpl"*}
+
 </form>
-
-
-{include file="../common_inc/menuright.tpl"}
 
