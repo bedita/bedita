@@ -122,7 +122,10 @@ class BeLangTextComponent extends Object {
 			}
 			
 			unset($object["LangText"]);
+		} elseif (empty($object["LangText"])) {
+			unset($object["LangText"]);
 		}
+		
 	}
 }
 ?>

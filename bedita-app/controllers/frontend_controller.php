@@ -315,6 +315,18 @@ abstract class FrontendController extends AppController {
        }
        $this->layout = NULL;
 	}
+	
+	public function xml($name) {
+		$this->route($name);
+		header("content-type: text/xml");
+		if(!in_array('Xml', $this->helpers)) {
+       		$this->helpers[] = 'Xml';
+		}
+		$this->action = "xml";
+		$this->view = 'View';
+		$this->layout = NULL;
+	}
+	
 	/**
 	 * Like loadObj using nickname
 	 *
@@ -394,6 +406,9 @@ abstract class FrontendController extends AppController {
 			$obj['relations_count'] = array();
 			foreach ($obj["relations"] as $k=>$v) {
 				$obj['relations_count'][$k] = count($v);
+				foreach ($v as $j => $o) {
+					$this->BeLangText->setObjectLang($obj["relations"][$k][$j], $this->currLang, $this->status);
+				}
 			}
 		}
 
