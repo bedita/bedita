@@ -44,4 +44,3 @@ class BeditaCoreGroupTest extends GroupTest {
 	}
 }
 ?>
-?>
