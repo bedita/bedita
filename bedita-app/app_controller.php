@@ -383,7 +383,7 @@ class AppController extends Controller
 	 * @param array $status, default get all objects
 	 * @return array
 	 */
-	protected function objectRelationArray($objectArray, $status=array()) {
+	protected function objectRelationArray($objectArray, $status=array(), $options=array()) {
 		$conf  = Configure::getInstance() ;
 		$relationArray = array();
 		
@@ -401,7 +401,15 @@ class AppController extends Controller
 				$objDetail['priority'] = $obj['priority'];
 				if(isset($objDetail['path']))
 					$objDetail['filename'] = substr($objDetail['path'],strripos($objDetail['path'],"/")+1);
-	
+				
+				// set fields with "mainLanguage" value. Usually used in frontend (frontend_controller.php)
+				if (!empty($options["mainLanguage"])) {
+					if(!isset($this->BeLangText)) {
+						App::import('Component', 'BeLangText');
+						$this->BeLangText = new BeLangTextComponent();
+					}
+					$this->BeLangText->setObjectLang($objDetail, $options["mainLanguage"], $status);
+				}
 				$relationArray[$rel][] = $objDetail;
 			}	
 		}		

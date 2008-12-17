@@ -439,14 +439,11 @@ abstract class FrontendController extends AppController {
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
 
 		if(!empty($obj["RelatedObject"])) {
-			$obj['relations'] = $this->objectRelationArray($obj['RelatedObject'], $this->status);
+			$obj['relations'] = $this->objectRelationArray($obj['RelatedObject'], $this->status, array("mainLanguage" => $this->currLang));
 			unset($obj["RelatedObject"]);
 			$obj['relations_count'] = array();
 			foreach ($obj["relations"] as $k=>$v) {
 				$obj['relations_count'][$k] = count($v);
-				foreach ($v as $j => $o) {
-					$this->BeLangText->setObjectLang($obj["relations"][$k][$j], $this->currLang, $this->status);
-				}
 			}
 		}
 
