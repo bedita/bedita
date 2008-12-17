@@ -44,6 +44,7 @@
     Router::connect('/feed/*', array('controller' => 'pages', 'action' => 'rss'));
     
     Router::connect('/xml/*', array('controller' => 'pages', 'action' => 'xml'));
+    Router::connect('/xmlobject/*', array('controller' => 'pages', 'action' => 'xmlobject'));
     
     Router::connect('/(?!pages)(.*)', array('controller' => 'pages', "action" => "route"));
 ?>

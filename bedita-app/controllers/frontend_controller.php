@@ -35,6 +35,7 @@ abstract class FrontendController extends AppController {
 	protected $checkPubDate = true;
 	protected $baseLevel = false;
 	protected $sectionOptions = array("showAllContents" => true, "itemsByType" => false);
+	protected $xmlFormat = "attributes"; // possible values "tags", "attributes"
 
 	protected function checkLogin() {
 		return false; // every frontend has to implement checkLogin
@@ -316,12 +317,49 @@ abstract class FrontendController extends AppController {
        $this->layout = NULL;
 	}
 	
+	/**
+	 * output an xml of returned array by section or content method
+	 *
+	 * passing a "format" named parameters in the url obtain an xml "attributes" format or an xml "tags" format
+	 * i.e. http://www.example.com/xml/nickname/format:tags output a tag style xml 
+	 * default is defined by class attribute xmlFormat
+	 * 
+	 * @param unknown_type $name, nickname or id
+	 */
 	public function xml($name) {
 		$this->route($name);
+		$this->outputXML(array("section" => $this->viewVars["section"]));
+	}
+	
+	/**
+	 * output an xml of returned array by loadObj/loadObjByNick method
+	 *
+	 * passing a "format" named parameters in the url obtain an xml "attributes" format or an xml "tags" format
+	 * i.e. http://www.example.com/xmlobject/nickname/format:tags output a tag style xml 
+	 * default is defined by class attribute xmlFormat
+	 * 
+	 * @param unknown_type $name, nickname or id
+	 */
+	public function xmlobject($name) {
+		$object = (is_numeric($name))? $this->loadObj($name) : $this->loadObjByNick($name);
+		$this->outputXML(array("object" => $object));
+	}
+	
+	private function outputXML($data) {
 		header("content-type: text/xml");
 		if(!in_array('Xml', $this->helpers)) {
        		$this->helpers[] = 'Xml';
 		}
+		
+		$availableFormat = array("attributes", "tags");
+		if (!empty($this->passedArgs["format"]) && in_array($this->passedArgs["format"],$availableFormat)) {
+			$options = array("format" => $this->passedArgs["format"]);
+		} else {
+			$options = array("format" => $this->xmlFormat);
+		}
+		
+		$this->set("options", $options);
+		$this->set("data", $data);
 		$this->action = "xml";
 		$this->view = 'View';
 		$this->layout = NULL;
