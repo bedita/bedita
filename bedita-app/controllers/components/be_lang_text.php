@@ -103,7 +103,7 @@ class BeLangTextComponent extends Object {
 					
 					foreach($object["LangText"] as $key => $value) {
 						if (!is_numeric($key)) { 
-							if (!empty($object[$key]))
+							if (!empty($object[$key]) && $key == "title")
 								$object["languages"][$object["lang"]][$key] = $object[$key]; 
 							
 							$object[$key] = $object["LangText"][$key][$lang];
