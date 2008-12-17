@@ -581,7 +581,7 @@ abstract class FrontendController extends AppController {
 			$tmp = $this->loadSectionObjects($sectionId);
 			
 			if (!$this->sectionOptions["itemsByType"]) {
-				$tmp['currentContent'] = $tmp['childContents'][0];
+				$tmp['currentContent'] = (!empty($tmp['childContents']))? $tmp['childContents'][0] : array();
 				$section = array_merge($section, $tmp);
 			} else {
 				$current = current($tmp);
