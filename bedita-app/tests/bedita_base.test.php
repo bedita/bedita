@@ -53,9 +53,13 @@ class BeditaTestCase extends CakeTestCase {
 				echo '<h2>Data file: '.$this->dataFile.'</h2>';
 			}
 		}
+		$db = ConnectionManager::getDataSource('default');
+		echo '<h2>Using database: <b>'. $db->config['database'] .'</b></h2>';
+		echo '<hr/>';
 	}
 
 	function endCase() {
+		echo '<hr/>';
 		if(isset($this->testName)) {
 			echo '<h1>Ending '.$this->testName.' Case</h1>';
 		}
@@ -63,11 +67,13 @@ class BeditaTestCase extends CakeTestCase {
 	}
 
 	function startTest($method) {
+		echo '<hr/>';
 		echo '<h3>Starting method ' . $method . '</h3>';
+		echo '<hr/>';
 	}
 
 	function endTest($method) {
-		echo '<hr />';
+		echo '<hr/>';
 	}
 
 	function requiredData($names) {
@@ -117,24 +123,15 @@ class BeditaTestCase extends CakeTestCase {
 		}
 		$this->data = $testData->getData() ;
 
-		// Carica i Models
+		// load Models
 		if (isset($this->uses)) {
 			if($this->uses !== null && $this->uses !== array()){
 
 				$uses = is_array($this->uses) ? $this->uses : array($this->uses);
 
 				foreach($uses as $modelClass) {
-					$modelKey = Inflector::underscore($modelClass);
-					
-					if(!class_exists($modelClass)){
-						App::import('Model',$modelClass);
-					}
-
-					if (class_exists($modelClass)) {
-						$model =& new $modelClass();
-						$this->modelNames[] = $modelClass;
-						$this->{$modelClass} =& $model;
-					} else {
+					$this->{$modelClass} = ClassRegistry::init($modelClass);
+					if($this->{$modelClass} === false) {
 						echo "Missing Model: $modelClass" ;
 						return ;
 					}

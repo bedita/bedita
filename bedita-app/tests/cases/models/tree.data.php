@@ -1,20 +1,14 @@
 <?php 
 /**
  * 
- * Short description for file.
- *
- * Long description for file
- *
- * PHP versions 4 and 5
-
- *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
- *
- * @author giangi@qwerg.com
+ * @link			http://www.bedita.com
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
+ * $Id$
  */
-class AreaData extends Object {
+class TreeTestData extends BeditaTestData {
 	var $data =  array(
 		'resultAllTree1' 	=> 'a:1:{i:0;a:11:{s:2:"id";s:1:"2";s:9:"parent_id";N;s:4:"path";s:2:"/2";s:10:"parent_path";s:1:"/";s:8:"priority";s:1:"1";s:14:"object_type_id";s:1:"1";s:6:"status";s:2:"on";s:5:"title";s:9:"Test site";s:8:"nickname";s:8:"TestSite";s:4:"lang";s:2:"it";s:8:"children";a:4:{i:0;a:11:{s:2:"id";s:1:"3";s:9:"parent_id";s:1:"2";s:4:"path";s:4:"/2/3";s:10:"parent_path";s:2:"/2";s:8:"priority";s:1:"1";s:14:"object_type_id";s:1:"3";s:6:"status";s:2:"on";s:5:"title";s:17:"Sezione Home Page";s:8:"nickname";s:15:"SezioneHomePage";s:4:"lang";s:2:"it";s:8:"children";a:4:{i:0;a:11:{s:2:"id";s:2:"12";s:9:"parent_id";s:1:"3";s:4:"path";s:7:"/2/3/12";s:10:"parent_path";s:5:"/2/12";s:8:"priority";s:1:"1";s:14:"object_type_id";s:2:"22";s:6:"status";s:2:"on";s:5:"title";s:23:"Primo Documento di Test";s:8:"nickname";s:20:"PrimoDocumentoDiTest";s:4:"lang";s:2:"fr";s:8:"children";a:0:{}}i:1;a:11:{s:2:"id";s:1:"6";s:9:"parent_id";s:1:"3";s:4:"path";s:6:"/2/3/6";s:10:"parent_path";s:4:"/2/3";s:8:"priority";s:1:"1";s:14:"object_type_id";s:2:"22";s:6:"status";s:2:"on";s:5:"title";s:23:"Primo Documento di Test";s:8:"nickname";s:20:"PrimoDocumentoDiTest";s:4:"lang";s:2:"en";s:8:"children";a:0:{}}i:2;a:11:{s:2:"id";s:1:"5";s:9:"parent_id";s:1:"3";s:4:"path";s:6:"/2/3/5";s:10:"parent_path";s:4:"/2/3";s:8:"priority";s:1:"2";s:14:"object_type_id";s:2:"22";s:6:"status";s:2:"on";s:5:"title";s:23:"Primo Documento di Test";s:8:"nickname";s:20:"PrimoDocumentoDiTest";s:4:"lang";s:2:"it";s:8:"children";a:0:{}}i:3;a:11:{s:2:"id";s:1:"8";s:9:"parent_id";s:1:"3";s:4:"path";s:6:"/2/3/8";s:10:"parent_path";s:4:"/2/3";s:8:"priority";s:1:"3";s:14:"object_type_id";s:2:"21";s:6:"status";s:2:"on";s:5:"title";s:20:"Primo Evento di Test";s:8:"nickname";s:17:"PrimoEventoDiTest";s:4:"lang";s:2:"it";s:8:"children";a:0:{}}}}i:1;a:11:{s:2:"id";s:1:"4";s:9:"parent_id";s:1:"2";s:4:"path";s:4:"/2/4";s:10:"parent_path";s:2:"/2";s:8:"priority";s:1:"2";s:14:"object_type_id";s:1:"3";s:6:"status";s:2:"on";s:5:"title";s:17:"Sezione Home Page";s:8:"nickname";s:15:"SezioneHomePage";s:4:"lang";s:2:"it";s:8:"children";a:0:{}}i:2;a:11:{s:2:"id";s:1:"9";s:9:"parent_id";s:1:"2";s:4:"path";s:4:"/2/9";s:10:"parent_path";s:2:"/2";s:8:"priority";s:1:"3";s:14:"object_type_id";s:2:"18";s:6:"status";s:2:"on";s:5:"title";s:21:"Prima Notizia di Test";s:8:"nickname";s:18:"PrimaNotiziaDiTest";s:4:"lang";s:2:"it";s:8:"children";a:0:{}}i:3;a:11:{s:2:"id";s:2:"11";s:9:"parent_id";s:1:"2";s:4:"path";s:5:"/2/11";s:10:"parent_path";s:2:"/2";s:8:"priority";s:1:"4";s:14:"object_type_id";s:2:"28";s:6:"status";s:2:"on";s:5:"title";s:16:"Antonio Albanese";s:8:"nickname";s:15:"AntonioAlbanese";s:4:"lang";s:2:"it";s:8:"children";a:0:{}}}}}',
 		'resultTree2'		=> 'a:1:{i:0;a:11:{s:2:"id";s:1:"2";s:9:"parent_id";N;s:4:"path";s:2:"/2";s:10:"parent_path";s:1:"/";s:8:"priority";s:1:"1";s:14:"object_type_id";s:1:"1";s:6:"status";s:2:"on";s:5:"title";s:9:"Test site";s:8:"nickname";s:8:"TestSite";s:4:"lang";s:2:"it";s:8:"children";a:2:{i:0;a:11:{s:2:"id";s:1:"3";s:9:"parent_id";s:1:"2";s:4:"path";s:4:"/2/3";s:10:"parent_path";s:2:"/2";s:8:"priority";s:1:"1";s:14:"object_type_id";s:1:"3";s:6:"status";s:2:"on";s:5:"title";s:17:"Sezione Home Page";s:8:"nickname";s:15:"SezioneHomePage";s:4:"lang";s:2:"it";s:8:"children";a:0:{}}i:1;a:11:{s:2:"id";s:1:"4";s:9:"parent_id";s:1:"2";s:4:"path";s:4:"/2/4";s:10:"parent_path";s:2:"/2";s:8:"priority";s:1:"2";s:14:"object_type_id";s:1:"3";s:6:"status";s:2:"on";s:5:"title";s:17:"Sezione Home Page";s:8:"nickname";s:15:"SezioneHomePage";s:4:"lang";s:2:"it";s:8:"children";a:0:{}}}}}',
@@ -59,25 +53,5 @@ class AreaData extends Object {
 			),
 		), 			
 	) ;
-	
-	function __construct() {
-		$this->data['Perms1'] = array(
-				array('administrator', 	'group', (BEDITA_PERMS_CREATE | BEDITA_PERMS_DELETE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_READ)),
-				array('guest', 			'group', BEDITA_PERMS_READ),
-				array('alberto', 		'user',  ( BEDITA_PERMS_CREATE | BEDITA_PERMS_MODIFY|BEDITA_PERMS_READ)),
-				array('torto', 			'user',  ( BEDITA_PERMS_DELETE | BEDITA_PERMS_MODIFY|BEDITA_PERMS_READ))
-		) ;
-		$this->data['Perms2'] = array(
-				array('administrator', 	'group', (BEDITA_PERMS_CREATE | BEDITA_PERMS_DELETE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_READ)),
-				array('alberto', 		'user',  ( BEDITA_PERMS_CREATE | BEDITA_PERMS_MODIFY|BEDITA_PERMS_READ)),
-		) ;
-		$this->data['Perms3'] = array(
-				array('guest', 			'group', BEDITA_PERMS_READ),
-		) ;
-	}
-
-	function &getData() { return $this->data ;  }
-
 }
-
 ?> 

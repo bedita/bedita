@@ -1,23 +1,43 @@
 <?php 
-/**
- * Areas, sections test cases...
+/*-----8<--------------------------------------------------------------------
  * 
- * @author giangi@qwerg.com ste@channelweb.it
+ * BEdita - a semantic content management framework
  * 
+ * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * 
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the Affero GNU General Public License as published 
+ * by the Free Software Foundation, either version 3 of the License, or 
+ * (at your option) any later version.
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the Affero GNU General Public License for more details.
+ * You should have received a copy of the Affero GNU General Public License 
+ * version 3 along with BEdita (see LICENSE.AGPL).
+ * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
+ * 
+ *------------------------------------------------------------------->8-----
  */
 
+/**
+ * 
+ * @link			http://www.bedita.com
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
+ * 
+ * $Id$
+ */
 require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
 class AreaTestCase extends BeditaTestCase {
 
  	var $uses		= array('Area') ;
-    var $dataSource	= 'test' ;	
 
- 	function testInserimentoMinimo() {
-		$conf  		= Configure::getInstance() ;
+ 	function testMinInsert() {
 		
-		$this->requiredData(array("insert"));
-		$result = $this->Area->save($this->data['insert']['area']['minimo']) ;
+		$this->requiredData(array("area"));
+		$result = $this->Area->save($this->data['area']) ;
 		$this->assertEqual($result,true);		
 		if(!$result) {
 			debug($this->Area->validationErrors);
@@ -25,160 +45,15 @@ class AreaTestCase extends BeditaTestCase {
 		}
 		
 		$result = $this->Area->findById($this->Area->id);
-		pr("Area creata:");
+		pr("Area created:");
 		pr($result);
 		
-		// Cancella l'area creata
-		$result = $this->Area->Delete($this->Area->{$this->Area->primaryKey});
+		// remove publication
+		$result = $this->Area->delete($this->Area->{$this->Area->primaryKey});
 		$this->assertEqual($result,true);		
-		pr("Area cancellata");
-		
-	} 
-/*	
-	function testInserimentoConCustomProperties() {
-		$conf  		= Configure::getInstance() ;
-		
-		$result = $this->Area->save($this->data['insert']['area']['customProperties']) ;
-		$this->assertEqual($result,true);		
-		if(!$result) {
-			debug($this->Area->validationErrors);
-			
-			return ;
-		}
-		$result = $this->Area->findById($this->Area->id);
-		pr("Area creata:");
-		pr($result);
-		
-		// I campi devono essere nella tabella CustomProperties
-		pr("Proprieta' Custom prensenti in DB:");
-		$SQL = "SELECT * FROM `custom_properties` AS `CustomProperties` WHERE object_id IN ({$this->Area->id})" ;
-		$result = $this->Area->execute($SQL) ;
-		pr($result) ;
-		// Cancella l'area creata
-		$result = $this->Area->Delete($this->Area->{$this->Area->primaryKey});
-		$this->assertEqual($result,true);		
-		pr("Area cancellata");
-} 
-	
-	function testInserimentoConCustomPropertiesIndicizzate() {
-		$conf  		= Configure::getInstance() ;
-		
-		$result = $this->Area->save($this->data['insert']['area']['customProperties']) ;
-		$this->assertEqual($result,true);		
-		if(!$result) {
-			debug($this->Area->validationErrors);
-			return ;
-		}
-		
-		$result = $this->Area->findById($this->Area->id);
-		pr("Area creata:");
-		pr($result);
-		
-		// I campi devono essere nella tabella CustomProperties
-		pr("Proprieta' Custom prensenti in DB:");
-		$SQL = "SELECT * FROM `custom_properties` AS `CustomProperties` WHERE object_id IN ({$this->Area->id})" ;
-		$result = $this->Area->execute($SQL) ;
-		pr($result) ;
-		
-		// I campi devono essere nella tabella Index
-		pr("Proprieta' Indicizzate presenti in DB:");
-		$SQL = "SELECT * FROM `indexs`  WHERE object_id IN ({$this->Area->id})" ;
-		$result = $this->Area->execute($SQL) ;
-		pr($result) ;
-		
-		// Cancella l'area creata
-		$result = $this->Area->Delete($this->Area->{$this->Area->primaryKey});
-		$this->assertEqual($result,true);		
-		pr("Area cancellata");
-		
-	} 
-
-	function testInserimentoConTitoloMultiLingua() {
-		$conf  		= Configure::getInstance() ;
-		
-		$result = $this->Area->save($this->data['insert']['area']['traduzioni']) ;
-		$this->assertEqual($result,true);		
-		if(!$result) {
-			debug($this->Area->validationErrors);
-			
-			return ;
-		}
-		
-		$result = $this->Area->findById($this->Area->id);
-		pr("Area creata:");
-		pr($result);
-		
-		// Il titolo tradotto deve essere nella tabella lang_texts
-		pr("Titolo tradotto presente in DB:");
-		$SQL = "SELECT * FROM lang_texts WHERE object_id IN ({$this->Area->id})" ;
-		$result = $this->Area->execute($SQL) ;
-		pr($result) ;
-		
-		// Cancella l'area creata
-		$result = $this->Area->Delete($this->Area->{$this->Area->primaryKey});
-		$this->assertEqual($result,true);		
-		pr("Area cancellata");
-		
-	} 
-
-	function testInserimentoInTreeCancellazione() {
-		$conf  		= Configure::getInstance() ;
-		
-//		$this->Transaction->begin() ;
-
-		// Inserisce
-		$result = $this->Area->save($this->data['insert']['area']['minimo']) ;
-		$this->assertEqual($result,true);		
-
-		$this->data['insert']['sezione']['minimo1']['parent_id'] = $this->Area->id;
-		$result = $this->Section->save($this->data['insert']['sezione']['minimo1']) ;
-		$this->assertEqual($result,true);
-
-		$id1 = $this->Section->id ;
-		$section = $this->Section->findById($id1);
-		$this->assertEqual($section['id'] ,$id1);
-		
-		$this->Section = new Section() ;
-		$this->data['insert']['sezione']['minimo2']['parent_id'] = $this->Area->id;
-		$result = $this->Section->save($this->data['insert']['sezione']['minimo2']) ;
-		$this->assertEqual($result,true);
-		$id2 = $this->Section->id ;
-
-		$this->Section = new Section() ;
-		$this->data['insert']['sezione']['minimo3']['parent_id'] = $this->Area->id;
-		$result = $this->Section->save($this->data['insert']['sezione']['minimo3']) ;
-		$this->assertEqual($result,true);
-		$id3 = $this->Section->id ;
-
-		// Preleva l'abero inserito
-		$tree = $this->Tree->getAll($this->Area->id) ;
-		
-		// Cancella l'area creata
-		$result = $this->Area->Delete($this->Area->{$this->Area->primaryKey});
-		$this->assertEqual($result,true);		
-		pr("Area cancellata");
-
-		// Devono essere cancellate anche le sezioni
-		$result = $this->Section->findById($id1) ;
-		$this->assertEqual($result, false);
-		
-		$result = $this->Section->findById($id2) ;
-		$this->assertEqual($result, false);
-
-		$result = $this->Section->findById($id3) ;
-		$this->assertEqual($result, false);
-		
-//		$this->Transaction->rollback() ;
+		pr("Area removed");
 	} 
 	
-	/////////////////////////////////////////////////
-	/////////////////////////////////////////////////
-
-	
-	protected function cleanUp() {
-//		$this->Transaction->rollback() ;
-	}
-*/	
 	public   function __construct () {
 		parent::__construct('Area', dirname(__FILE__)) ;
 	}	

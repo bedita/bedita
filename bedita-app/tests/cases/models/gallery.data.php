@@ -1,29 +1,20 @@
 <?php
 /**
- *
- * Short description for file.
- *
- * Long description for file
- *
- * PHP versions 4 and 5
-
- *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
- *
- * @author giangi@qwerg.com
- *
+ * 
+ * @link			http://www.bedita.com
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
+ * 
+ * $Id$
  */
-class GalleryData extends Object {
-	var $data =  array('gallery'	=>
-		array(
-			'object_type_id' 	=> 29,
-			'status' 			=> 'on',
-			'title' 			=> 'Gallery'
+class GalleryTestData extends BeditaTestData {
+	var $data =  array(
+		"insert" => array(
+			'title' 		=> 'Gallery di prova',
+			 'abstract'		=> 'un qualche abstract',
+			 'body'		=> 'un qualche body pure...'
 		)
 	) ;
-
-	function &getData() { return $this->data ;  }
 }
-
 ?>

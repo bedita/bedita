@@ -1,154 +1,64 @@
 <?php
-/**
- *
- * @author d.didomenico@channelweb.it
- *
- * Gallery tests
- *
+/*-----8<--------------------------------------------------------------------
+ * 
+ * BEdita - a semantic content management framework
+ * 
+ * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * 
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the Affero GNU General Public License as published 
+ * by the Free Software Foundation, either version 3 of the License, or 
+ * (at your option) any later version.
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the Affero GNU General Public License for more details.
+ * You should have received a copy of the Affero GNU General Public License 
+ * version 3 along with BEdita (see LICENSE.AGPL).
+ * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
+ * 
+ *------------------------------------------------------------------->8-----
  */
 
-include_once(dirname(__FILE__) . DS . 'gallery.data.php') ;
-loadComponent('Permission');
-loadModel('Gallery');
-loadModel('Image');
+/**
+ * 
+ * @link			http://www.bedita.com
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
+ * 
+ * $Id$
+ */
+require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
-class GalleryTestCase extends CakeTestCase {
+class GalleryTestCase extends BeditaTestCase {
 
-	var $fixtures 	= array();
-	var $user		= null;
-	var $dataSource = 'default' ;
-	var $data = null ;
-
-	////////////////////////////////////////////////////////////////////
-
-	function testInsertGalleries() {
-
-		$nGalleries = 0; // number of galleries to insert
-		$perms = array(
-			array('bedita', 'user', (BEDITA_PERMS_CREATE | BEDITA_PERMS_DELETE | BEDITA_PERMS_MODIFY | BEDITA_PERMS_READ) )
-		);
-		for($i=1;$i<$nGalleries+1;$i++) {
-			$model =& new Gallery();
-			$this->{'Gallery'} =& $model;
-			$permission = new PermissionComponent();
-			$this->data['gallery']['title'] = "Gallery $i";
-			$result = $this->Gallery->save($this->data['gallery']);
-			$ret = $permission->add($this->Gallery->getLastInsertId(), $perms);
+	var $uses = array('Gallery') ;
+	
+	function testInsertGallery() {
+		$this->requiredData(array("insert"));
+		$result = $this->Gallery->save($this->data['insert']) ;
+		$this->assertEqual($result,true);		
+		if(!$result) {
+			debug($this->Gallery->validationErrors);
+			return ;
 		}
+		
+		$result = $this->Gallery->findById($this->Gallery->id);
+		pr("Gallery created:");
+		pr($result);
+
+		$result = $this->Gallery->delete($this->Gallery->id);
+		$this->assertEqual($result,true);		
+		pr("Gallery removed");
 	}
 
 	function testInsertImagesForGallery() {
-		$perms = array(
-			array('bedita', 'user', (BEDITA_PERMS_CREATE | BEDITA_PERMS_DELETE | BEDITA_PERMS_MODIFY | BEDITA_PERMS_READ) )
-		);
-
-		$model =& new Gallery();
-		$this->{'Gallery'} =& $model;
-		$permission = new PermissionComponent();
-		$this->data['gallery']['title'] = "Il Circolo Tognolo";
-		$result = $this->Gallery->save($this->data['gallery']);
-		$ret = $permission->add($this->Gallery->getLastInsertId(), $perms);
-		
-		$image =& new Image();
-		$this->{'Image'} =& $image;
-		$permission = new PermissionComponent();
-		$this->data['file']= array(
-			'title' 	=> 'Lo scimparpente',
-			'path'		=> 'img/scimparpente.jpg',
-			'shortDesc' => 'Lo scimparpente e\' davvero tremendo',
-			'body'  => 'Lo scimparpente e\' davvero tremendo tremendissimo, ne fa di tutti i colori porca troia... minchia lo scimparpente!',
-			'width'     => '350',
-			'height'    => '235',
-			'name'		=> 'scimparpente',
-			'mime_type'		=> 'ascii/img',
-			'size'		=> 75
-		);
-		$result = $this->Image->save($this->data['file']);
-		$ret = $permission->add($this->Image->getLastInsertId(), $perms);
-		$this->Gallery->appendChild($this->Image->getLastInsertId(),null,1);
-		
-		$image =& new Image();
-		$this->{'Image'} =& $image;
-		$permission = new PermissionComponent();
-		$this->data['file']= array(
-			'title' 	=> 'La mosca cavallina',
-			'path'		=> 'img/moscacavallina.jpg',
-			'abstract' => 'La mosca cavallina ronza dappertutto al galoppo',
-			'body'  => 'Ronza dappertutto al galoppo, e non si ferma mai, proprio per questo \'e tanto pericolosa!',
-			'width'     => '800',
-			'height'    => '600',
-			'name'		=> 'moscacavallina',
-			'mime_type'		=> 'ascii/img',
-			'size'		=> 205
-		);
-		$result = $this->Image->save($this->data['file']);
-		$ret = $permission->add($this->Image->getLastInsertId(), $perms);
-		$this->Gallery->appendChild($this->Image->getLastInsertId(),null,2);
-
-		$image =& new Image();
-		$this->{'Image'} =& $image;
-		$permission = new PermissionComponent();
-		$this->data['file']= array(
-			'title' 	=> 'Il leorpente',
-			'path'		=> 'img/leorpente.jpg',
-			'abstract' => 'Il leorpente e\' il serpente piu\' velenoso tra i felini...',
-			'body'  => 'Velenoso re della foresta! Il leorpente caccia le sue prede nella savana, un po\' strisciando, un po\' correndo.',
-			'width'     => '969',
-			'height'    => '673',
-			'name'		=> 'leorpente',
-			'mime_type'		=> 'ascii/img',
-			'size'		=> 572
-		);
-		$result = $this->Image->save($this->data['file']);
-		$ret = $permission->add($this->Image->getLastInsertId(), $perms);
-		$this->Gallery->appendChild($this->Image->getLastInsertId(),null,3);
-		
-		$image =& new Image();
-		$this->{'Image'} =& $image;
-		$permission = new PermissionComponent();
-		$this->data['file']= array(
-			'title' 	=> 'L\'ippotigre',
-			'path'		=> 'img/ippotigre.jpg',
-			'abstract' => 'L\'ippotigre - uno su un milione di abitanti',
-			'body'  => 'Uno su un milione di abitanti!',
-			'width'     => '800',
-			'height'    => '554',
-			'name'		=> 'ippotigre',
-			'mime_type'		=> 'ascii/img',
-			'size'		=> 329
-		);
-		$result = $this->Image->save($this->data['file']);
-		$ret = $permission->add($this->Image->getLastInsertId(), $perms);
-		$this->Gallery->appendChild($this->Image->getLastInsertId(),null,4);
-	}
-
-	/////////////////////////////////////////////////
-	/////////////////////////////////////////////////
-
-	function startCase() {
-		echo '<h1>Bedita Gallery Test</h1>';
-	}
-
-	function endCase() {
-		echo '<h1>Ending Test Case</h1>';
-	}
-
-	function startTest($method) {
-		echo '<h3>Starting method ' . $method . '</h3>';
-	}
-
-	function endTest($method) {
-		echo '<hr />';
+		// TODO: add multimedia items...
+		pr("To be done....");
 	}
 
 	public   function __construct () {
-		parent::__construct() ;
-		$permission 	= &new PermissionComponent() ;
-		$model =& new Gallery();
-		$this->modelNames[] = 'Gallery';
-		$this->{'Gallery'} =& $model;
-		$GalleryData = &new GalleryData() ;
-		$this->data = $GalleryData->getData() ;
-	}
+		parent::__construct('Gallery', dirname(__FILE__)) ;
+	}	
 }
 ?>
