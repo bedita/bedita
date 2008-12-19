@@ -490,7 +490,9 @@ abstract class FrontendController extends AppController {
 		if(empty($parent_id)) {
 			throw new BeditaException("Bad data");
 		}
-
+		
+		$this->checkParentStatus($parent_id);
+		
 		$priorityOrder = $this->Section->field("priority_order", array("id" => $parent_id));
 		if(empty($priorityOrder)) {
 			$priorityOrder = "asc";
@@ -784,6 +786,32 @@ abstract class FrontendController extends AppController {
 		}
 		$this->redirect($this->referer());
 
+	}
+	
+	/**
+	 * check parents status of $section_id
+	 *	
+	 * if one or more parents haven't status IN $this->status array throw a BeditaException
+	 * 
+	 * @param int $section_id
+	 */
+	private function checkParentStatus($section_id) {
+		$parent_path = $this->Tree->field("parent_path", array("id" => $section_id));
+		$parent_array = explode("/", trim($parent_path,"/"));
+		if (!empty($parent_array)) {
+			$countParent = count($parent_array);
+			$countParentStatus = $this->BEObject->find("count", array(
+					"conditions" => array(
+						"status" => $this->status,
+						"id" => $parent_array
+					),
+					"contain" => array()
+				)
+			);
+			
+			if ($countParent != $countParentStatus)
+				throw new BeditaException(__("Content not found", true));
+		}
 	}
 	
 	protected function showDraft() {
