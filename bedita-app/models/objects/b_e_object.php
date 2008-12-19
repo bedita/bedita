@@ -34,12 +34,21 @@ class BEObject extends BEAppModel
 	var $useTable	= "objects" ;
 	
 	var $validate = array(
-		'title' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
-		'object_type_id' 	=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
-		'nickname' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
-		'lang' 				=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
-		'ip_created' 		=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
-
+		'title' => array(
+			'rule' => 'notEmpty'
+		),
+		'object_type_id' => array(
+			'rule' => 'notEmpty'
+		),
+		'nickname' => array(
+			'rule' => 'notEmpty'
+		),
+		'lang' => array(
+			'rule' => 'notEmpty'
+		),
+		'ip_created' => array(
+			'rule' => 'notEmpty'
+		)
 	) ;
 
 	var $belongsTo = array(

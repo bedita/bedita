@@ -33,8 +33,12 @@ class User extends BEAppModel
 	var $name = 'User';
 
 	var $validate = array(
-		'userid'  => VALID_NOT_EMPTY,
-		'pasword'  => VALID_NOT_EMPTY,
+		'userid' => array(
+			'rule' => 'notEmpty'
+		),
+		'pasword' => array(
+			'rule' => 'notEmpty'
+		)
 	);
 
 	var $hasAndBelongsToMany = array(

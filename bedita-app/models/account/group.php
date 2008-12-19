@@ -33,7 +33,9 @@ class Group extends BEAppModel
 	var $name = 'Group';
 
 	var $validate = array(
-	'name'  => VALID_NOT_EMPTY,
+		'name' => array(
+			'allowEmpty' => false
+		)
 	);
 
 	

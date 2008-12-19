@@ -32,7 +32,9 @@ class EventLog extends BEAppModel
 {
 
 	var $validate = array(
-	'msg'  => VALID_NOT_EMPTY,
+		'msg' => array(
+			'rule' => 'notEmpty'
+		)
 	);
 
 }

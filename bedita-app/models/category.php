@@ -34,9 +34,15 @@ class Category extends BEAppModel {
 	);
 	
 	var $validate = array(
-		'label' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
-		'status' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
-		'name' 			=> array(array('rule' => VALID_NOT_EMPTY, 'required' => true)),
+		'label' => array(
+			'rule' => 'notEmpty'
+		),
+		'status' => array(
+			'rule' => 'notEmpty'
+		),
+		'name' => array(
+			'rule' => 'notEmpty'
+		)
 	) ;
 
 	// static vars used by reorderTag static function
