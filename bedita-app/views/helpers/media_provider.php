@@ -107,7 +107,7 @@ class YoutubeMedia {
 		
 		// formatta le variabili
 		$attributes = array_merge($this->conf->youtube, $attributes) ;
-		$widht = $attributes['width'] ;
+		$width = $attributes['width'] ;
 		$height = $attributes['height'] ;
 		unset($attributes['conf']) ;
 		unset($attributes['width']) ;
@@ -117,7 +117,7 @@ class YoutubeMedia {
 			$params .= "&$key=$value" ;
 		}
 
-		return trim(sprintf($this->embedTag, $widht, $height, $obj['uid'], $params,  $obj['uid'], $params, $widht, $height)) ;
+		return trim(sprintf($this->embedTag, $obj['uid'], $params, $width, $height)) ;
 	}
 	
 	/**
