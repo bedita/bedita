@@ -95,7 +95,7 @@ var $methodsQueries = array(
 
 	protected function dateItems($r) {
 		unset($r["edi"]["id"]);
-		$r["object_id"] = $r["edi"]["event_id"];
+		$r["edi"]["object_id"] = $r["edi"]["event_id"];
 		unset($r["edi"]["event_id"]);
 		$this->write($this->createInsert($r['edi'],"date_items"));
 	}
