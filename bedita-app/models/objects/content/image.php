@@ -30,5 +30,6 @@
  */
 class Image extends BeditaStreamModel
 {
+	var $actsAs = array();
 }
 ?>

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: router.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: router.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Parses the request URL into controller, action, and parameters.
  *
@@ -7,24 +7,22 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs
- * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs
+ * @since         CakePHP(tm) v 0.2.9
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * Included libraries.
@@ -33,12 +31,11 @@
 if (!class_exists('Object')) {
 	App::import('Core', 'Object');
 }
-
 /**
  * Parses the request URL into controller, action, and parameters.
  *
- * @package		cake
- * @subpackage	cake.cake.libs
+ * @package       cake
+ * @subpackage    cake.cake.libs
  */
 class Router extends Object {
 /**
@@ -408,7 +405,7 @@ class Router extends Object {
 		$out = array('pass' => array(), 'named' => array());
 		$r = $ext = null;
 
-		if (ini_get('magic_quotes_gpc') == 1) {
+		if (ini_get('magic_quotes_gpc') === '1') {
 			$url = stripslashes_deep($url);
 		}
 
@@ -425,7 +422,7 @@ class Router extends Object {
 				$route = $_this->compile($i);
 			}
 
-			if (($r = $_this->matchRoute($route, $url)) !== false) {
+			if (($r = $_this->__matchRoute($route, $url)) !== false) {
 				$_this->__currentRoute[] = $route;
 				list($route, $regexp, $names, $defaults, $params) = $route;
 				$argOptions = array();
@@ -492,19 +489,18 @@ class Router extends Object {
  * @param array $route
  * @param string $url
  * @return mixed Boolean false on failure, otherwise array
- * @access public
+ * @access private
  */
-	function matchRoute($route, $url) {
+	function __matchRoute($route, $url) {
 		list($route, $regexp, $names, $defaults) = $route;
 
 		if (!preg_match($regexp, $url, $r)) {
 			return false;
 		} else {
-			$_this =& Router::getInstance();
 			foreach ($defaults as $key => $val) {
 				if ($key{0} === '[' && preg_match('/^\[(\w+)\]$/', $key, $header)) {
-					if (isset($_this->__headerMap[$header[1]])) {
-						$header = $_this->__headerMap[$header[1]];
+					if (isset($this->__headerMap[$header[1]])) {
+						$header = $this->__headerMap[$header[1]];
 					} else {
 						$header = 'http_' . $header[1];
 					}
@@ -556,16 +552,15 @@ class Router extends Object {
  */
 	function __parseExtension($url) {
 		$ext = null;
-		$_this =& Router::getInstance();
 
-		if ($_this->__parseExtensions) {
+		if ($this->__parseExtensions) {
 			if (preg_match('/\.[0-9a-zA-Z]*$/', $url, $match) === 1) {
 				$match = substr($match[0], 1);
-				if (empty($_this->__validExtensions)) {
+				if (empty($this->__validExtensions)) {
 					$url = substr($url, 0, strpos($url, '.' . $match));
 					$ext = $match;
 				} else {
-					foreach ($_this->__validExtensions as $name) {
+					foreach ($this->__validExtensions as $name) {
 						if (strcasecmp($name, $match) === 0) {
 							$url = substr($url, 0, strpos($url, '.' . $name));
 							$ext = $match;
@@ -582,18 +577,17 @@ class Router extends Object {
 /**
  * Connects the default, built-in routes, including admin routes, and (deprecated) web services
  * routes.
- * 
+ *
  * @return void
  * @access private
  */
 	function __connectDefaultRoutes() {
-		$_this =& Router::getInstance();
-		if ($_this->__defaultsMapped) {
+		if ($this->__defaultsMapped) {
 			return;
 		}
 
-		if ($_this->__admin) {
-			$params = array('prefix' => $_this->__admin, $_this->__admin => true);
+		if ($this->__admin) {
+			$params = array('prefix' => $this->__admin, $this->__admin => true);
 		}
 
 		if ($plugins = Configure::listObjects('plugin')) {
@@ -602,25 +596,25 @@ class Router extends Object {
 			}
 
 			$match = array('plugin' => implode('|', $plugins));
-			$_this->connect('/:plugin/:controller/:action/*', array(), $match);
+			$this->connect('/:plugin/:controller/:action/*', array(), $match);
 
-			if ($_this->__admin) {
-				$_this->connect("/{$_this->__admin}/:plugin/:controller", $params, $match);
-				$_this->connect("/{$_this->__admin}/:plugin/:controller/:action/*", $params, $match);
+			if ($this->__admin) {
+				$this->connect("/{$this->__admin}/:plugin/:controller", $params, $match);
+				$this->connect("/{$this->__admin}/:plugin/:controller/:action/*", $params, $match);
 			}
 		}
 
-		if ($_this->__admin) {
-			$_this->connect("/{$_this->__admin}/:controller", $params);
-			$_this->connect("/{$_this->__admin}/:controller/:action/*", $params);
+		if ($this->__admin) {
+			$this->connect("/{$this->__admin}/:controller", $params);
+			$this->connect("/{$this->__admin}/:controller/:action/*", $params);
 		}
-		$_this->connect('/:controller', array('action' => 'index'));
-		$_this->connect('/:controller/:action/*');
+		$this->connect('/:controller', array('action' => 'index'));
+		$this->connect('/:controller/:action/*');
 
-		if ($_this->named['rules'] === false) {
-			$_this->connectNamed(true);
+		if ($this->named['rules'] === false) {
+			$this->connectNamed(true);
 		}
-		$_this->__defaultsMapped = true;
+		$this->__defaultsMapped = true;
 	}
 /**
  * Takes parameter and path information back from the Dispatcher
@@ -874,7 +868,7 @@ class Router extends Object {
 					array_unshift($urlOut, $url['plugin']);
 				}
 
-				if($_this->__admin && isset($url[$_this->__admin])) {
+				if ($_this->__admin && isset($url[$_this->__admin])) {
 					array_unshift($urlOut, $_this->__admin);
 				}
 				$output = join('/', $urlOut) . '/';
@@ -918,7 +912,7 @@ class Router extends Object {
 			}
 			$output = str_replace('//', '/', $output);
 		}
-		if ($full) {
+		if ($full && defined('FULL_BASE_URL')) {
 			$output = FULL_BASE_URL . $output;
 		}
 		if (!empty($extension) && substr($output, -1) === '/') {
@@ -1040,7 +1034,7 @@ class Router extends Object {
  * @access private
  */
 	function __mapRoute($route, $params = array()) {
-		if(isset($params['plugin']) && isset($params['controller']) && $params['plugin'] === $params['controller']) {
+		if (isset($params['plugin']) && isset($params['controller']) && $params['plugin'] === $params['controller']) {
 			unset($params['controller']);
 		}
 
@@ -1060,10 +1054,9 @@ class Router extends Object {
 				$count = count($params['named']);
 				$keys = array_keys($params['named']);
 				$named = array();
-				$_this =& Router::getInstance();
 
 				for ($i = 0; $i < $count; $i++) {
-					$named[] = $keys[$i] . $_this->named['separator'] . $params['named'][$keys[$i]];
+					$named[] = $keys[$i] . $this->named['separator'] . $params['named'][$keys[$i]];
 				}
 				$params['named'] = join('/', $named);
 			}

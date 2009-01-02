@@ -31,5 +31,6 @@
 class Audio extends BeditaSimpleStreamModel
 {
 	var $useTable	= "streams" ;
+	var $actsAs = array();
 }
 ?>

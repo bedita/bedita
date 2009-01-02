@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: translate.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: translate.php 7961 2008-12-25 23:21:36Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -7,32 +7,30 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.model.behaviors
- * @since			CakePHP(tm) v 1.2.0.4525
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.model.behaviors
+ * @since         CakePHP(tm) v 1.2.0.4525
+ * @version       $Revision: 7961 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-25 17:21:36 -0600 (Thu, 25 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * @package	 	cake
- * @subpackage	cake.cake.libs.model.behaviors
+ * @package       cake
+ * @subpackage    cake.cake.libs.model.behaviors
  */
 class TranslateBehavior extends ModelBehavior {
 /**
@@ -51,7 +49,7 @@ class TranslateBehavior extends ModelBehavior {
  *
  * $config could be empty - and translations configured dynamically by
  * bindTranslation() method
- * 
+ *
  * @param array $config
  * @return mixed
  * @access public
@@ -59,7 +57,10 @@ class TranslateBehavior extends ModelBehavior {
 	function setup(&$model, $config = array()) {
 		$db =& ConnectionManager::getDataSource($model->useDbConfig);
 		if (!$db->connected) {
-			trigger_error('Datasource '.$model->useDbConfig.' for TranslateBehavior of model '.$model->alias.' is not connected', E_USER_ERROR);
+			trigger_error(
+				sprintf(__('Datasource %s for TranslateBehavior of model %s is not connected', true), $model->useDbConfig, $model->alias),
+				E_USER_ERROR
+			);
 			return false;
 		}
 
@@ -70,7 +71,7 @@ class TranslateBehavior extends ModelBehavior {
 	}
 /**
  * Callback
- * 
+ *
  * @return void
  * @access public
  */
@@ -81,8 +82,8 @@ class TranslateBehavior extends ModelBehavior {
 	}
 /**
  * beforeFind Callback
- * 
- * @param array $query 
+ *
+ * @param array $query
  * @return array Modified query
  * @access public
  */
@@ -114,14 +115,21 @@ class TranslateBehavior extends ModelBehavior {
 		if (empty($query['fields'])) {
 			$query['fields'] = array($model->alias.'.*');
 
-			foreach (array('hasOne', 'belongsTo') as $type) {
-				foreach ($model->{$type} as $key => $value) {
+			$recursive = $model->recursive;
+			if (isset($query['recursive'])) {
+				$recursive = $query['recursive'];
+			}
 
-					if (empty($value['fields'])) {
-						$query['fields'][] = $key.'.*';
-					} else {
-						foreach ($value['fields'] as $field) {
-							$query['fields'][] = $key.'.'.$field;
+			if ($recursive >= 0) {
+				foreach (array('hasOne', 'belongsTo') as $type) {
+					foreach ($model->{$type} as $key => $value) {
+
+						if (empty($value['fields'])) {
+							$query['fields'][] = $key.'.*';
+						} else {
+							foreach ($value['fields'] as $field) {
+								$query['fields'][] = $key.'.'.$field;
+							}
 						}
 					}
 				}
@@ -194,7 +202,7 @@ class TranslateBehavior extends ModelBehavior {
 	}
 /**
  * afterFind Callback
- * 
+ *
  * @param array $results
  * @param boolean $primary
  * @return array Modified results
@@ -238,7 +246,7 @@ class TranslateBehavior extends ModelBehavior {
 	}
 /**
  * beforeValidate Callback
- * 
+ *
  * @return boolean
  * @access public
  */
@@ -270,7 +278,7 @@ class TranslateBehavior extends ModelBehavior {
 	}
 /**
  * afterSave Callback
- * 
+ *
  * @param boolean $created
  * @return void
  * @access public
@@ -313,7 +321,7 @@ class TranslateBehavior extends ModelBehavior {
 	}
 /**
  * afterDelete Callback
- * 
+ *
  * @return void
  * @access public
  */
@@ -360,12 +368,7 @@ class TranslateBehavior extends ModelBehavior {
 				$this->runtime[$model->alias]['model'] =& ClassRegistry::init($className, 'Model');
 			}
 		}
-		$useTable = 'i18n';
-
-		if (!empty($model->translateTable)) {
-			$useTable = $model->translateTable;
-		}
-		if ($useTable !== $this->runtime[$model->alias]['model']->useTable) {
+		if (!empty($model->translateTable) && $model->translateTable !== $this->runtime[$model->alias]['model']->useTable) {
 			$this->runtime[$model->alias]['model']->setSource($model->translateTable);
 		}
 		return $this->runtime[$model->alias]['model'];
@@ -398,14 +401,12 @@ class TranslateBehavior extends ModelBehavior {
 
 			if (array_key_exists($field, $this->settings[$model->alias])) {
 				unset($this->settings[$model->alias][$field]);
-
 			} elseif (in_array($field, $this->settings[$model->alias])) {
 				$this->settings[$model->alias] = array_merge(array_diff_assoc($this->settings[$model->alias], array($field)));
 			}
 
 			if (array_key_exists($field, $this->runtime[$model->alias]['fields'])) {
 				unset($this->runtime[$model->alias]['fields'][$field]);
-
 			} elseif (in_array($field, $this->runtime[$model->alias]['fields'])) {
 				$this->runtime[$model->alias]['fields'] = array_merge(array_diff_assoc($this->runtime[$model->alias]['fields'], array($field)));
 			}
@@ -417,7 +418,6 @@ class TranslateBehavior extends ModelBehavior {
 					$this->settings[$model->alias][] = $field;
 				}
 			} else {
-
 				if ($reset) {
 					$this->runtime[$model->alias]['fields'][$field] = $association;
 				} else {
@@ -426,7 +426,10 @@ class TranslateBehavior extends ModelBehavior {
 
 				foreach (array('hasOne', 'hasMany', 'belongsTo', 'hasAndBelongsToMany') as $type) {
 					if (isset($model->{$type}[$association]) || isset($model->__backAssociation[$type][$association])) {
-						trigger_error('Association '.$association.' is already binded to model '.$model->alias, E_USER_ERROR);
+						trigger_error(
+							sprintf(__('Association %s is already binded to model %s', true), $association, $model->alias),
+							E_USER_ERROR
+						);
 						return false;
 					}
 				}
@@ -459,7 +462,6 @@ class TranslateBehavior extends ModelBehavior {
 			$fields = array($fields);
 		}
 		$RuntimeModel =& $this->translateModel($model);
-		$default = array('className' => $RuntimeModel->alias, 'foreignKey' => 'foreign_key');
 		$associations = array();
 
 		foreach ($fields as $key => $value) {
@@ -473,14 +475,12 @@ class TranslateBehavior extends ModelBehavior {
 
 			if (array_key_exists($field, $this->settings[$model->alias])) {
 				unset($this->settings[$model->alias][$field]);
-
 			} elseif (in_array($field, $this->settings[$model->alias])) {
 				$this->settings[$model->alias] = array_merge(array_diff_assoc($this->settings[$model->alias], array($field)));
 			}
 
 			if (array_key_exists($field, $this->runtime[$model->alias]['fields'])) {
 				unset($this->runtime[$model->alias]['fields'][$field]);
-
 			} elseif (in_array($field, $this->runtime[$model->alias]['fields'])) {
 				$this->runtime[$model->alias]['fields'] = array_merge(array_diff_assoc($this->runtime[$model->alias]['fields'], array($field)));
 			}
@@ -498,8 +498,8 @@ class TranslateBehavior extends ModelBehavior {
 }
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
 /**
- * @package	 	cake
- * @subpackage	cake.cake.libs.model.behaviors
+ * @package       cake
+ * @subpackage    cake.cake.libs.model.behaviors
  */
 	class I18nModel extends AppModel {
 		var $name = 'I18nModel';

@@ -1,6 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_sqlite.php 7690 2008-10-02 04:56:53Z nate $ */
-
+/* SVN FILE: $Id: dbo_sqlite.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * SQLite layer for DBO
  *
@@ -8,35 +7,32 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.model.datasources.dbo
- * @since			CakePHP(tm) v 0.9.0
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.model.datasources.dbo
+ * @since         CakePHP(tm) v 0.9.0
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * DBO implementation for the SQLite DBMS.
  *
  * Long description for class
  *
- * @package		cake
- * @subpackage	cake.cake.libs.model.datasources.dbo
+ * @package       cake
+ * @subpackage    cake.cake.libs.model.datasources.dbo
  */
 class DboSqlite extends DboSource {
-
 /**
  * Enter description here...
  *
@@ -199,7 +195,7 @@ class DboSqlite extends DboSource {
 				'default'	=> $column[0]['dflt_value'],
 				'length'	=> $this->length($column[0]['type'])
 			);
-			if($column[0]['pk'] == 1) {
+			if ($column[0]['pk'] == 1) {
 				$fields[$column[0]['name']] = array(
 					'type'		=> $fields[$column[0]['name']]['type'],
 					'null'		=> false,
@@ -416,7 +412,7 @@ class DboSqlite extends DboSource {
  * @param integer $offset Offset from which to start results
  * @return string SQL limit/offset statement
  */
-	function limit ($limit, $offset = null) {
+	function limit($limit, $offset = null) {
 		if ($limit) {
 			$rt = '';
 			if (!strpos(strtolower($limit), 'limit') || strpos(strtolower($limit), 'limit') === 0) {
@@ -534,6 +530,43 @@ class DboSqlite extends DboSource {
 		return $join;
 	}
 /**
+ * Overrides DboSource::index to handle SQLite indexe introspection
+ * Returns an array of the indexes in given table name.
+ *
+ * @param string $model Name of model to inspect
+ * @return array Fields in table. Keys are column and unique
+ */
+	function index(&$model) {
+		$index = array();
+		$table = $this->fullTableName($model);
+		if ($table) {
+			$indexes = $this->query('PRAGMA index_list(' . $table . ')');
+			$tableInfo = $this->query('PRAGMA table_info(' . $table . ')');
+			foreach ($indexes as $i => $info) {
+				$key = array_pop($info);
+				$keyInfo = $this->query('PRAGMA index_info("' . $key['name'] . '")');
+				foreach ($keyInfo as $keyCol) {
+					if (!isset($index[$key['name']])) {
+						$col = array();
+						if (preg_match('/autoindex/', $key['name'])) {
+							$key['name'] = 'PRIMARY';
+						}
+						$index[$key['name']]['column'] = $keyCol[0]['name'];
+						$index[$key['name']]['unique'] = intval($key['unique'] == 1);
+					} else {
+						if (!is_array($index[$key['name']]['column'])) {
+							$col[] = $index[$key['name']]['column'];
+						}
+						$col[] = $keyCol[0]['name'];
+						$index[$key['name']]['column'] = $col;
+					}
+				}
+			}
+		}
+		return $index;
+	}
+	
+/**
  * Overrides DboSource::renderStatement to handle schema generation with SQLite-style indexes
  *
  * @param string $type
@@ -558,5 +591,4 @@ class DboSqlite extends DboSource {
 		}
 	}
 }
-
 ?>

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: test_manager.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: test_manager.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -8,33 +8,31 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
- * @package			cake
- * @subpackage		cake.cake.tests.lib
- * @since			CakePHP(tm) v 1.2.0.4433
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @package       cake
+ * @subpackage    cake.cake.tests.lib
+ * @since         CakePHP(tm) v 1.2.0.4433
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-define ('CORE_TEST_CASES', TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'cases');
-define ('CORE_TEST_GROUPS', TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'groups');
-define ('APP_TEST_CASES', TESTS . 'cases');
-define ('APP_TEST_GROUPS', TESTS . 'groups');
+define('CORE_TEST_CASES', TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'cases');
+define('CORE_TEST_GROUPS', TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'groups');
+define('APP_TEST_CASES', TESTS . 'cases');
+define('APP_TEST_GROUPS', TESTS . 'groups');
 /**
  * Short description for class.
  *
- * @package		cake
- * @subpackage	cake.cake.tests.lib
+ * @package       cake
+ * @subpackage    cake.cake.tests.lib
  */
 class TestManager {
 	var $_testExtension = '.test.php';
@@ -63,7 +61,11 @@ class TestManager {
  * @access public
  */
 	function _installSimpleTest() {
-		App::import('Vendor', array('simpletest'.DS.'unit_tester', 'simpletest'.DS.'mock_objects', 'simpletest'.DS.'web_tester'));
+		App::import('Vendor', array(
+			'simpletest' . DS . 'unit_tester',
+			'simpletest' . DS . 'mock_objects',
+			'simpletest' . DS . 'web_tester'
+		));
 		require_once(CAKE_TESTS_LIB . 'cake_web_test_case.php');
 		require_once(CAKE_TESTS_LIB . 'cake_test_case.php');
 	}
@@ -74,7 +76,7 @@ class TestManager {
  * @return void
  * @access public
  */
-	function runAllTests(&$reporter) {
+	function runAllTests(&$reporter, $testing = false) {
 		$manager =& new TestManager();
 
 		$testCases =& $manager->_getTestFileList($manager->_getTestsPath());
@@ -86,9 +88,14 @@ class TestManager {
 			$test =& new GroupTest('All Core Tests');
 		}
 
+		if ($testing) {
+			return $testCases;
+		}
+
 		foreach ($testCases as $testCase) {
 			$test->addTestFile($testCase);
 		}
+
 		return $test->run($reporter);
 	}
 /**
@@ -99,13 +106,20 @@ class TestManager {
  * @return void
  * @access public
  */
-	function runTestCase($testCaseFile, &$reporter) {
+	function runTestCase($testCaseFile, &$reporter, $testing = false) {
 		$manager =& new TestManager();
 
 		$testCaseFileWithPath = $manager->_getTestsPath() . DS . $testCaseFile;
-		if (! file_exists($testCaseFileWithPath)) {
+
+		if (!file_exists($testCaseFileWithPath)) {
 			trigger_error("Test case {$testCaseFile} cannot be found", E_USER_ERROR);
+			return false;
 		}
+
+		if ($testing) {
+			return true;
+		}
+
 		$test =& new GroupTest("Individual test case: " . $testCaseFile);
 		$test->addTestFile($testCaseFileWithPath);
 		return $test->run($reporter);
@@ -244,12 +258,11 @@ class TestManager {
 	function &_getGroupTestClassNames($groupTestFile) {
 		$file = implode("\n", file($groupTestFile));
 		preg_match("~lass\s+?(.*)\s+?extends GroupTest~", $file, $matches);
-		if (! empty($matches)) {
+		if (!empty($matches)) {
 			unset($matches[0]);
 			return $matches;
-		} else {
-			return array();
 		}
+		return array();
 	}
 /**
  * Gets a recursive list of files from a given directory and matches then against
@@ -262,25 +275,15 @@ class TestManager {
 		if (!is_dir($directory)) {
 			return $fileList;
 		}
-		$dh = opendir($directory);
-		if (! is_resource($dh)) {
-			trigger_error("Couldn't open {$directory}", E_USER_ERROR);
-		}
 
-		while ($file = readdir($dh)) {
-			$filePath = $directory . DIRECTORY_SEPARATOR . $file;
-			if (0 === strpos($file, '.')) {
-				continue;
-			}
-
-			if (is_dir($filePath)) {
-				$fileList = array_merge($fileList, $this->_getRecursiveFileList($filePath, $fileTestFunction));
-			}
-			if ($fileTestFunction[0]->$fileTestFunction[1]($file)) {
-				$fileList[] = $filePath;
+		$files = glob($directory . DS . '*');
+		foreach ($files as $file) {
+			if (is_dir($file)) {
+				$fileList = array_merge($fileList, $this->_getRecursiveFileList($file, $fileTestFunction));
+			} elseif ($fileTestFunction[0]->$fileTestFunction[1]($file)) {
+				$fileList[] = $file;
 			}
 		}
-		closedir($dh);
 		return $fileList;
 	}
 /**
@@ -347,12 +350,26 @@ class TestManager {
 		}
 		return $result;
 	}
+/**
+ * undocumented function
+ *
+ * @param string $type
+ * @return void
+ * @access public
+ */
+	function getExtension($type = 'test') {
+		$manager =& new TestManager();
+		if ($type == 'test') {
+			return $manager->_testExtension;
+		}
+		return $manager->_groupExtension;
+	}
 }
 /**
  * The CliTestManager ensures that the list of available files are printed in the correct cli format
  *
- * @package		cake
- * @subpackage	cake.cake.tests.lib
+ * @package       cake
+ * @subpackage    cake.cake.tests.lib
  */
 class CliTestManager extends TestManager {
 /**
@@ -389,8 +406,8 @@ class CliTestManager extends TestManager {
 /**
  * The TextTestManager ensures that the list of available tests is printed as a list of urls in a text-friendly format
  *
- * @package		cake
- * @subpackage	cake.cake.tests.lib
+ * @package       cake
+ * @subpackage    cake.cake.tests.lib
  */
 class TextTestManager extends TestManager {
 	var $_url;
@@ -423,7 +440,7 @@ class TextTestManager extends TestManager {
 		$groupTests =& $manager->_getTestGroupList($manager->_getTestsPath('groups'));
 
 		$buffer = "Core Test Groups:\n";
-		$urlExtra = null;
+		$urlExtra = '';
 		if ($manager->appTest) {
 			$buffer = "App Test Groups:\n";
 			$urlExtra = '&app=true';
@@ -450,7 +467,7 @@ class TextTestManager extends TestManager {
 		$testCases =& $manager->_getTestCaseList($manager->_getTestsPath());
 
 		$buffer = "Core Test Cases:\n";
-		$urlExtra = null;
+		$urlExtra = '';
 		if ($manager->appTest) {
 			$buffer = "App Test Cases:\n";
 			$urlExtra = '&app=true';
@@ -476,8 +493,8 @@ class TextTestManager extends TestManager {
  * The HtmlTestManager provides the foundation for the web-based CakePHP testsuite.
  * It prints the different lists of tests and provides the interface for CodeCoverage, etc.
  *
- * @package		cake
- * @subpackage	cake.cake.tests.lib
+ * @package       cake
+ * @subpackage    cake.cake.tests.lib
  */
 class HtmlTestManager extends TestManager {
 	var $_url;
@@ -522,7 +539,7 @@ class HtmlTestManager extends TestManager {
 
 		$buffer .= "<li><a href='" . $manager->getBaseURL() . "?group=all$urlExtra'>All tests</a></li>\n";
 
-		foreach ((array)$groupTests as $groupTest) {
+		foreach ($groupTests as $groupTest) {
 			$buffer .= "<li><a href='" . $manager->getBaseURL() . "?group={$groupTest}" . "{$urlExtra}'>" . $groupTest . "</a></li>\n";
 		}
 		$buffer .= "</ul>\n";
@@ -581,10 +598,10 @@ if (function_exists('caketestsgetreporter')) {
 				case CAKE_TEST_OUTPUT_HTML:
 					require_once CAKE_TESTS_LIB . 'cake_reporter.php';
 					$Reporter =& new CakeHtmlReporter();
-				break;
+					break;
 				default:
 					$Reporter =& new TextReporter();
-				break;
+					break;
 			}
 		}
 		return $Reporter;
@@ -630,7 +647,8 @@ if (function_exists('caketestsgetreporter')) {
 				}
 				ob_start();
 				echo "<p><a href='" . RUN_TEST_LINK . $show . "'>Run more tests</a> | <a href='" . RUN_TEST_LINK . $query . "&show_passes=1'>Show Passes</a> | \n";
-			break;
+
+				break;
 		}
 	}
 /**
@@ -660,7 +678,8 @@ if (function_exists('caketestsgetreporter')) {
 				$query .= '&amp;code_coverage=true';
 				ob_start();
 				echo " <a href='" . RUN_TEST_LINK . $query . "'>Analyze Code Coverage</a></p>\n";
-			break;
+
+				break;
 		}
 	}
 /**
@@ -674,11 +693,11 @@ if (function_exists('caketestsgetreporter')) {
 			case CAKE_TEST_OUTPUT_HTML:
 				ob_start();
 				echo HtmlTestManager::getTestCaseList();
-			break;
+				break;
 			case CAKE_TEST_OUTPUT_TEXT:
 			default:
 				echo TextTestManager::getTestCaseList();
-			break;
+				break;
 		}
 	}
 /**
@@ -691,7 +710,7 @@ if (function_exists('caketestsgetreporter')) {
 		switch (CAKE_TEST_OUTPUT) {
 			case CAKE_TEST_OUTPUT_HTML:
 				echo HtmlTestManager::getGroupTestList();
-			break;
+				break;
 			case CAKE_TEST_OUTPUT_TEXT:
 			default:
 				echo TextTestManager::getGroupTestList();
@@ -717,11 +736,12 @@ if (function_exists('caketestsgetreporter')) {
 				$baseUrl = BASE;
 				$characterSet = 'charset=utf-8';
 				include CAKE_TESTS_LIB . 'header.php';
-			break;
+
+				break;
 			case CAKE_TEST_OUTPUT_TEXT:
 			default:
 				header('content-type: text/plain');
-			break;
+				break;
 		}
 	}
 /**
@@ -738,7 +758,7 @@ if (function_exists('caketestsgetreporter')) {
 				$cases = $_SERVER['PHP_SELF'].'?show=cases';
 				$plugins = Configure::listObjects('plugin');
 				include CAKE_TESTS_LIB . 'content.php';
-			break;
+				break;
 		}
 	}
 /**
@@ -753,7 +773,7 @@ if (function_exists('caketestsgetreporter')) {
 				ob_start();
 				$baseUrl = BASE;
 				include CAKE_TESTS_LIB . 'footer.php';
-			break;
+				break;
 		}
 	}
 }

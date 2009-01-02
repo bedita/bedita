@@ -30,7 +30,8 @@
  */
 class Author extends BEAppObjectModel
 {
-
+	var $actsAs = array();
+	
 	public $searchFields = array("title" => 10 , "description" => 6, 
 		"name" => 8, "surname" => 8);	
 	

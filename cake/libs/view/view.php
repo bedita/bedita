@@ -1,29 +1,26 @@
 <?php
-/* SVN FILE: $Id: view.php 7690 2008-10-02 04:56:53Z nate $ */
-
+/* SVN FILE: $Id: view.php 7961 2008-12-25 23:21:36Z gwoo $ */
 /**
  * Methods for displaying presentation data in the view.
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.view
- * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.view
+ * @since         CakePHP(tm) v 0.10.0.1076
+ * @version       $Revision: 7961 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-25 17:21:36 -0600 (Thu, 25 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * Included libraries.
@@ -34,8 +31,8 @@ App::import('Core', array('Helper', 'ClassRegistry'));
  *
  * Class holding methods for displaying presentation data.
  *
- * @package			cake
- * @subpackage		cake.cake.libs.view
+ * @package       cake
+ * @subpackage    cake.cake.libs.view
  */
 class View extends Object {
 /**
@@ -54,7 +51,7 @@ class View extends Object {
 /**
  * Name of the plugin.
  *
- * @link http://manual.cakephp.org/chapter/plugins
+ * @link          http://manual.cakephp.org/chapter/plugins
  * @var string
  */
 	var $plugin = null;
@@ -242,7 +239,11 @@ class View extends Object {
  * @var array
  * @access protected
  */
-	var $__passedVars = array('viewVars', 'action', 'autoLayout', 'autoRender', 'ext', 'base', 'webroot', 'helpers', 'here', 'layout', 'name', 'pageTitle', 'layoutPath', 'viewPath', 'params', 'data', 'plugin', 'passedArgs', 'cacheAction');
+	var $__passedVars = array(
+		'viewVars', 'action', 'autoLayout', 'autoRender', 'ext', 'base', 'webroot',
+		'helpers', 'here', 'layout', 'name', 'pageTitle', 'layoutPath', 'viewPath',
+		'params', 'data', 'plugin', 'passedArgs', 'cacheAction'
+	);
 /**
  * Scripts (and/or other <head /> tags) for the layout
  *
@@ -283,10 +284,13 @@ class View extends Object {
  * Element.  Elements can be cached through use of the cache key.
  *
  * @param string $name Name of template file in the/app/views/elements/ folder
- * @param array $params Array of data to be made available to the for rendered view (i.e. the Element)
+ * @param array $params Array of data to be made available to the for rendered
+ *                      view (i.e. the Element)
  *    Special params:
- *		cache - enable caching for this element accepts boolean or strtotime compatible string. Can also be an array
- *				if an array,'time' is used to specify duration of cache.  'key' can be used to create unique cache files.
+ *		cache - enable caching for this element accepts boolean or strtotime compatible string.
+ *      Can also be an array
+ *				if an array,'time' is used to specify duration of cache.  'key' can be used to
+ *              create unique cache files.
  *
  * @return string Rendered Element
  * @access public
@@ -382,7 +386,12 @@ class View extends Object {
 		if ($out !== false) {
 			if ($layout && $this->autoLayout) {
 				$out = $this->renderLayout($out, $layout);
-				if (isset($this->loaded['cache']) && (($this->cacheAction != false)) && (Configure::read('Cache.check') === true)) {
+				$isCached = (
+					isset($this->loaded['cache']) &&
+					(($this->cacheAction != false)) && (Configure::read('Cache.check') === true)
+				);
+
+				if ($isCached) {
 					$replace = array('<cake:nocache>', '</cake:nocache>');
 					$out = str_replace($replace, '', $out);
 				}
@@ -390,7 +399,8 @@ class View extends Object {
 			$this->hasRendered = true;
 		} else {
 			$out = $this->_render($viewFileName, $this->viewVars);
-			trigger_error(sprintf(__("Error in view %s, got: <blockquote>%s</blockquote>", true), $viewFileName, $out), E_USER_ERROR);
+			$msg = __("Error in view %s, got: <blockquote>%s</blockquote>", true);
+			trigger_error(sprintf($msg, $viewFileName, $out), E_USER_ERROR);
 		}
 		return $out;
 	}
@@ -406,11 +416,12 @@ class View extends Object {
  * @return mixed Rendered output, or false on error
  */
 	function renderLayout($content_for_layout, $layout = null) {
-		$layout_fn = $this->_getLayoutFileName($layout);
+		$layoutFileName = $this->_getLayoutFileName($layout);
 		$debug = '';
 
 		if (isset($this->viewVars['cakeDebug']) && Configure::read() > 2) {
-			$debug = View::element('dump', array('controller' => $this->viewVars['cakeDebug']), false);
+			$params = array('controller' => $this->viewVars['cakeDebug']);
+			$debug = View::element('dump', $params, false);
 			unset($this->viewVars['cakeDebug']);
 		}
 
@@ -419,14 +430,12 @@ class View extends Object {
 		} else {
 			$pageTitle = Inflector::humanize($this->viewPath);
 		}
-		$data_for_layout = array_merge($this->viewVars,
-			array(
-				'title_for_layout' => $pageTitle,
-				'content_for_layout' => $content_for_layout,
-				'scripts_for_layout' => join("\n\t", $this->__scripts),
-				'cakeDebug' => $debug
-			)
-		);
+		$data_for_layout = array_merge($this->viewVars, array(
+			'title_for_layout' => $pageTitle,
+			'content_for_layout' => $content_for_layout,
+			'scripts_for_layout' => join("\n\t", $this->__scripts),
+			'cakeDebug' => $debug
+		));
 
 		if (empty($this->loaded) && !empty($this->helpers)) {
 			$loadHelpers = true;
@@ -435,42 +444,45 @@ class View extends Object {
 			$data_for_layout = array_merge($data_for_layout, $this->loaded);
 		}
 
-		if (!empty($this->loaded)) {
-			$helpers = array_keys($this->loaded);
-			foreach ($helpers as $helperName) {
-				$helper =& $this->loaded[$helperName];
-				if (is_object($helper)) {
-					if (is_subclass_of($helper, 'Helper') || is_subclass_of($helper, 'helper')) {
-						$helper->beforeLayout();
-					}
-				}
-			}
-		}
+		$this->_triggerHelpers('beforeLayout');
 
-		if (substr($layout_fn, -3) === 'ctp' || substr($layout_fn, -5) === 'thtml') {
-			$this->output = View::_render($layout_fn, $data_for_layout, $loadHelpers, true);
+		if (substr($layoutFileName, -3) === 'ctp' || substr($layoutFileName, -5) === 'thtml') {
+			$this->output = View::_render($layoutFileName, $data_for_layout, $loadHelpers, true);
 		} else {
-			$this->output = $this->_render($layout_fn, $data_for_layout, $loadHelpers);
+			$this->output = $this->_render($layoutFileName, $data_for_layout, $loadHelpers);
 		}
 
 		if ($this->output === false) {
-			$this->output = $this->_render($layout_fn, $data_for_layout);
-			trigger_error(sprintf(__("Error in layout %s, got: <blockquote>%s</blockquote>", true), $layout_fn, $this->output), E_USER_ERROR);
+			$this->output = $this->_render($layoutFileName, $data_for_layout);
+			$msg = __("Error in layout %s, got: <blockquote>%s</blockquote>", true);
+			trigger_error(sprintf($msg, $layoutFileName, $this->output), E_USER_ERROR);
 			return false;
 		}
 
-		if (!empty($this->loaded)) {
-			$helpers = array_keys($this->loaded);
-			foreach ($helpers as $helperName) {
-				$helper =& $this->loaded[$helperName];
-				if (is_object($helper)) {
-					if (is_subclass_of($helper, 'Helper') || is_subclass_of($helper, 'helper')) {
-						$helper->afterLayout();
-					}
+		$this->_triggerHelpers('afterLayout');
+
+		return $this->output;
+	}
+/**
+ * Fire a callback on all loaded Helpers
+ *
+ * @param string $callback name of callback fire.
+ * @access protected
+ * @return void
+ */
+	function _triggerHelpers($callback) {
+		if (empty($this->loaded)) {
+			return false;
+		}
+		$helpers = array_keys($this->loaded);
+		foreach ($helpers as $helperName) {
+			$helper =& $this->loaded[$helperName];
+			if (is_object($helper)) {
+				if (is_subclass_of($helper, 'Helper')) {
+					$helper->{$callback}();
 				}
 			}
 		}
-		return $this->output;
 	}
 /**
  * Render cached view
@@ -496,8 +508,7 @@ class View extends Object {
 				if ($this->layout === 'xml') {
 					header('Content-type: text/xml');
 				}
-				$out = str_replace('<!--cachetime:'.$match['1'].'-->', '', $out);
-				echo $out;
+				echo str_replace('<!--cachetime:' . $match['1'] . '-->', '', $out);
 				return true;
 			}
 		}
@@ -568,7 +579,9 @@ class View extends Object {
  */
 	function entity() {
 		$assoc = ($this->association) ? $this->association : $this->model;
-		return array_values(Set::filter(array($assoc, $this->modelId, $this->field, $this->fieldSuffix)));
+		return array_values(Set::filter(
+			array($assoc, $this->modelId, $this->field, $this->fieldSuffix)
+		));
 	}
 /**
  * Allows a template or element to set a variable that will be available in
@@ -576,7 +589,8 @@ class View extends Object {
  *
  * @param mixed $one A string or an array of data.
  * @param mixed $two Value in case $one is a string (which then works as the key).
- * 				Unused if $one is an associative array, otherwise serves as the values to $one's keys.
+ *              Unused if $one is an associative array, otherwise serves as the
+ *              values to $one's keys.
  * @return unknown
  */
 	function set($one, $two = null) {
@@ -638,13 +652,7 @@ class View extends Object {
 				$this->loaded[$camelBackedHelper] =& ${$camelBackedHelper};
 			}
 
-			foreach ($loadedHelpers as $helper) {
-				if (is_object($helper)) {
-					if (is_subclass_of($helper, 'Helper') || is_subclass_of($helper, 'helper')) {
-						$helper->beforeRender();
-					}
-				}
-			}
+			$this->_triggerHelpers('beforeRender');
 		}
 
 		extract($___dataForView, EXTR_SKIP);
@@ -656,18 +664,17 @@ class View extends Object {
 			@include ($___viewFn);
 		}
 
-		if (!empty($loadedHelpers)) {
-			foreach ($loadedHelpers as $helper) {
-				if (is_object($helper)) {
-					if (is_subclass_of($helper, 'Helper') || is_subclass_of($helper, 'helper')) {
-						$helper->afterRender();
-					}
-				}
-			}
+		if ($loadHelpers === true) {
+			$this->_triggerHelpers('afterRender');
 		}
-		$out = ob_get_clean();
 
-		if (isset($this->loaded['cache']) && (($this->cacheAction != false)) && (Configure::read('Cache.check') === true)) {
+		$out = ob_get_clean();
+		$caching = (
+			isset($this->loaded['cache']) &&
+			(($this->cacheAction != false)) && (Configure::read('Cache.check') === true)
+		);
+
+		if ($caching) {
 			if (is_a($this->loaded['cache'], 'CacheHelper')) {
 				$cache =& $this->loaded['cache'];
 				$cache->base = $this->base;
@@ -735,7 +742,9 @@ class View extends Object {
 					}
 				}
 				$loaded[$helper] =& new $helperCn($options);
-				$vars = array('base', 'webroot', 'here', 'params', 'action', 'data', 'themeWeb', 'plugin');
+				$vars = array(
+					'base', 'webroot', 'here', 'params', 'action', 'data', 'themeWeb', 'plugin'
+				);
 				$c = count($vars);
 
 				for ($j = 0; $j < $c; $j++) {
@@ -854,21 +863,20 @@ class View extends Object {
 
 		if ($error === 'missingView') {
 			$this->cakeError('missingView', array(
-					'className' => $this->name,
-					'action' => $this->action,
-					'file' => $file,
-					'base' => $this->base
-					));
+				'className' => $this->name,
+				'action' => $this->action,
+				'file' => $file,
+				'base' => $this->base
+			));
 			return false;
 		} elseif ($error === 'missingLayout') {
 			$this->cakeError('missingLayout', array(
-					'layout' => $this->layout,
-					'file' => $file,
-					'base' => $this->base
-					));
+				'layout' => $this->layout,
+				'file' => $file,
+				'base' => $this->base
+			));
 			return false;
 		}
-
 	}
 /**
  * Return all possible paths to find view files in order
@@ -911,4 +919,5 @@ class View extends Object {
 		return $this->element($name, $params, $loadHelpers);
 	}
 }
+
 ?>

@@ -1,36 +1,34 @@
 <?php
-/* SVN FILE: $Id: set.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: set.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Library of array functions for Cake.
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs
- * @since			CakePHP(tm) v 1.2.0
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs
+ * @since         CakePHP(tm) v 1.2.0
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * Class used for manipulation of arrays.
  *
  * Long description for class
  *
- * @package		cake
- * @subpackage	cake.cake.libs
+ * @package       cake
+ * @subpackage    cake.cake.libs
  */
 class Set extends Object {
 /**
@@ -54,10 +52,7 @@ class Set extends Object {
 	function merge($arr1, $arr2 = null) {
 		$args = func_get_args();
 
-		if (!isset($r)) {
-			$r = (array)current($args);
-		}
-
+		$r = (array)current($args);
 		while (($arg = next($args)) !== false) {
 			foreach ((array)$arg as $key => $val)	 {
 				if (is_array($val) && isset($r[$key]) && is_array($r[$key])) {
@@ -194,25 +189,25 @@ class Set extends Object {
 					$out[$key] = Set::__map($value, $class);
 					if (is_object($out[$key])) {
 						if ($primary !== true && is_array($value) && Set::countDim($value, true) === 2) {
-							if(!isset($out[$key]->_name_)) {
+							if (!isset($out[$key]->_name_)) {
 								$out[$key]->_name_ = $primary;
 							}
 						}
 					}
 				} elseif (is_array($value)) {
 					if ($primary === true) {
-						if(!isset($out->_name_)) {
+						if (!isset($out->_name_)) {
 							$out->_name_ = $key;
 						}
 						$primary = false;
-						foreach($value as $key2 => $value2) {
+						foreach ($value as $key2 => $value2) {
 							$out->{$key2} = Set::__map($value2, true);
 						}
 					} else {
 						if (!is_numeric($key)) {
 							$out->{$key} = Set::__map($value, true, $key);
 							if (is_object($out->{$key}) && !is_numeric($key)) {
-								if(!isset($out->{$key}->_name_)) {
+								if (!isset($out->{$key}->_name_)) {
 									$out->{$key}->_name_ = $key;
 								}
 							}
@@ -393,8 +388,8 @@ class Set extends Object {
 		if (!isset($contexts[0])) {
 			$contexts = array($data);
 		}
-
 		$tokens = array_slice(preg_split('/(?<!=)\/(?![a-z]*\])/', $path), 1);
+
 		do {
 			$token = array_shift($tokens);
 			$conditions = false;
@@ -403,10 +398,7 @@ class Set extends Object {
 				$token = substr($token, 0, strpos($token, '['));
 			}
 			$matches = array();
-			$i = 0;
-			$contextsCount = count($contexts);
 			foreach ($contexts as $key => $context) {
-				$i++;
 				if (!isset($context['trace'])) {
 					$context = array('trace' => array(null), 'item' => $context, 'key' => $key);
 				}
@@ -414,15 +406,17 @@ class Set extends Object {
 					if (count($context['trace']) == 1) {
 						$context['trace'][] = $context['key'];
 					}
-
-					$parent = join('/', $context['trace']).'/.';
+					$parent = join('/', $context['trace']) . '/.';
 					$context['item'] = Set::extract($parent, $data);
 					$context['key'] = array_pop($context['trace']);
-					$context['item'] = $context['item'][0];
+					if (isset($context['trace'][1]) && $context['trace'][1] > 0) {
+						$context['item'] = $context['item'][0];
+					} else {
+						$context['item'] = $context['item'][$key];
+					}
 					$matches[] = $context;
 					continue;
 				}
-
 				$match = false;
 				if ($token === '@*' && is_array($context['item'])) {
 					$matches[] = array(
@@ -432,19 +426,44 @@ class Set extends Object {
 					);
 				} elseif (is_array($context['item']) && array_key_exists($token, $context['item'])) {
 					$items = $context['item'][$token];
-					if (!is_array($items) || !isset($items[0])) {
+					if (!is_array($items)) {
 						$items = array($items);
+					} elseif (!isset($items[0])) {
+						$current = current($items);
+						if ((is_array($current) && count($items) <= 1) || !is_array($current)) {
+							$items = array($items);
+						}
 					}
-					foreach ($items as $item) {
+
+					foreach ($items as $key => $item) {
+						$ctext = array($context['key']);
+						if (!is_numeric($key)) {
+							$ctext[] = $token;
+							$token = array_shift($tokens);
+							if (isset($items[$token])) {
+								$ctext[] = $token;
+								$item = $items[$token];
+								$matches[] = array(
+									'trace' => array_merge($context['trace'], $ctext),
+									'key' => $key,
+									'item' => $item,
+								);
+								break;
+							}
+						} else {
+							$key = $token;
+						}
+
 						$matches[] = array(
-							'trace' => array_merge($context['trace'], array($context['key'])),
-							'key' => $token,
+							'trace' => array_merge($context['trace'], $ctext),
+							'key' => $key,
 							'item' => $item,
 						);
 					}
 				} elseif (($key === $token || (ctype_digit($token) && $key == $token) || $token === '.')) {
+					$context['trace'][] = $key;
 					$matches[] = array(
-						'trace' => array_merge($context['trace'], (array)$key),
+						'trace' => $context['trace'],
 						'key' => $key,
 						'item' => $context['item'],
 					);
@@ -455,7 +474,7 @@ class Set extends Object {
 					$filtered = array();
 					$length = count($matches);
 					foreach ($matches as $i => $match) {
-						if (Set::matches(array($condition), $match['item'], $i+1, $length)) {
+						if (Set::matches(array($condition), $match['item'], $i + 1, $length)) {
 							$filtered[] = $match;
 						}
 					}
@@ -463,12 +482,14 @@ class Set extends Object {
 				}
 			}
 			$contexts = $matches;
+
 			if (empty($tokens)) {
 				break;
 			}
 		} while(1);
 
 		$r = array();
+
 		foreach ($matches as $match) {
 			if ((!$options['flatten'] || is_array($match['item'])) && !is_int($match['key'])) {
 				$r[] = array($match['key'] => $match['item']);

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: cookie.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: cookie.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -7,24 +7,22 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.controller.components
- * @since			CakePHP(tm) v 1.2.0.4213
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.controller.components
+ * @since         CakePHP(tm) v 1.2.0.4213
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * Load Security class
@@ -35,8 +33,8 @@ App::import('Core', 'Security');
  *
  * Cookie handling for the controller.
  *
- * @package		cake
- * @subpackage	cake.cake.libs.controller.components
+ * @package       cake
+ * @subpackage    cake.cake.libs.controller.components
  *
  */
 class CookieComponent extends Object {
@@ -247,7 +245,7 @@ class CookieComponent extends Object {
 
 		if (count($name) > 1) {
 			if (isset($this->__values[$name[0]])) {
-				if(isset($this->__values[$name[0]][$name[1]])) {
+				if (isset($this->__values[$name[0]][$name[1]])) {
 					return $this->__values[$name[0]][$name[1]];
 				}
 			}
@@ -274,12 +272,14 @@ class CookieComponent extends Object {
  * @access public
  */
 	function del($key) {
+		if (empty($this->__values)) {
+			$this->read();
+		}
 		$name = $this->__cookieVarNames($key);
-
 		if (count($name) > 1) {
 			if (isset($this->__values[$name[0]])) {
-				unset($this->__values[$name[0]][$name[1]]);
 				$this->__delete("[".$name[0]."][".$name[1]."]");
+				unset($this->__values[$name[0]][$name[1]]);
 			}
 		} else {
 			if (isset($this->__values[$name[0]])) {

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dispatcher.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: dispatcher.php 7961 2008-12-25 23:21:36Z gwoo $ */
 /**
  * Dispatcher takes the URL information, parses it for paramters and
  * tells the involved controllers what to do.
@@ -8,24 +8,22 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) : Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake
- * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake
+ * @since         CakePHP(tm) v 0.2.9
+ * @version       $Revision: 7961 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-25 17:21:36 -0600 (Thu, 25 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * List of helpers to include
@@ -36,8 +34,8 @@ App::import('Core', array('Router', 'Controller'));
  *
  * Dispatches the request, creating appropriate models and controllers.
  *
- * @package		cake
- * @subpackage	cake.cake
+ * @package       cake
+ * @subpackage    cake.cake
  */
 class Dispatcher extends Object {
 /**
@@ -228,21 +226,9 @@ class Dispatcher extends Object {
 		$controller->beforeFilter();
 		$controller->Component->startup($controller);
 
-		$childMethods = get_class_methods($controller);
-		$parentMethods = get_class_methods('Controller');
+		$methods = array_flip($controller->methods);
 
-		foreach ($childMethods as $key => $value) {
-			$childMethods[$key] = strtolower($value);
-		}
-
-		foreach ($parentMethods as $key => $value) {
-			$parentMethods[$key] = strtolower($value);
-		}
-
-		$classMethods = array_diff($childMethods, $parentMethods);
-		$classMethods = array_flip($classMethods);
-
-		if (!isset($classMethods[strtolower($params['action'])])) {
+		if (!isset($methods[strtolower($params['action'])])) {
 			if ($controller->scaffold !== false) {
 				App::import('Core', 'Scaffold');
 				return new Scaffold($controller, $params);
@@ -299,7 +285,7 @@ class Dispatcher extends Object {
 
 		if (isset($_POST)) {
 			$params['form'] = $_POST;
-			if (ini_get('magic_quotes_gpc') == 1) {
+			if (ini_get('magic_quotes_gpc') === '1') {
 				$params['form'] = stripslashes_deep($params['form']);
 			}
 			if (env('HTTP_X_HTTP_METHOD_OVERRIDE')) {
@@ -328,7 +314,7 @@ class Dispatcher extends Object {
 		}
 
 		if (isset($_GET)) {
-			if (ini_get('magic_quotes_gpc') == 1) {
+			if (ini_get('magic_quotes_gpc') === '1') {
 				$url = stripslashes_deep($_GET);
 			} else {
 				$url = $_GET;
@@ -430,7 +416,7 @@ class Dispatcher extends Object {
  * @access protected
  */
 	function _restructureParams($params, $reverse = false) {
-		if($reverse === true) {
+		if ($reverse === true) {
 			extract(Router::getArgs($params['action']));
 			$params = array_merge($params, array('controller'=> $params['plugin'],
 						'action'=> $params['controller'],
@@ -648,7 +634,7 @@ class Dispatcher extends Object {
 			}
 
 			if ($isAsset === true) {
-				$ob = @ini_get("zlib.output_compression") !== true && extension_loaded("zlib") && (strpos(env('HTTP_ACCEPT_ENCODING'), 'gzip') !== false);
+				$ob = @ini_get("zlib.output_compression") !== '1' && extension_loaded("zlib") && (strpos(env('HTTP_ACCEPT_ENCODING'), 'gzip') !== false);
 
 				if ($ob && Configure::read('Asset.compress')) {
 					ob_start();
@@ -688,7 +674,7 @@ class Dispatcher extends Object {
 						readfile($assetFile);
 					}
 
-					if(Configure::read('Asset.compress')) {
+					if (Configure::read('Asset.compress')) {
 						ob_end_flush();
 					}
 					return true;
@@ -701,7 +687,7 @@ class Dispatcher extends Object {
 			if ($this->here == '/') {
 				$path = 'home';
 			}
-			$path = Inflector::slug($path);
+			$path = strtolower(Inflector::slug($path));
 
 			$filename = CACHE . 'views' . DS . $path . '.php';
 

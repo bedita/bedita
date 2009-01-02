@@ -1,35 +1,33 @@
 <?php
-/* SVN FILE: $Id: schema.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: schema.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Schema database management for CakePHP.
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.model
- * @since			CakePHP(tm) v 1.2.0.5550
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.model
+ * @since         CakePHP(tm) v 1.2.0.5550
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Model', 'ConnectionManager');
 /**
  * Base Class for Schema management
  *
- * @package		cake
- * @subpackage	cake.cake.libs.model
+ * @package       cake
+ * @subpackage    cake.cake.libs.model
  */
 class CakeSchema extends Object {
 /**
@@ -221,7 +219,7 @@ class CakeSchema extends Object {
 							unset($currentTables[$key]);
 						}
 						if (!empty($Object->hasAndBelongsToMany)) {
-							foreach($Object->hasAndBelongsToMany as $Assoc => $assocData) {
+							foreach ($Object->hasAndBelongsToMany as $Assoc => $assocData) {
 								if (isset($assocData['with'])) {
 									$class = $assocData['with'];
 								} elseif ($assocData['_with']) {
@@ -242,8 +240,9 @@ class CakeSchema extends Object {
 				}
 			}
 		}
+
 		if (!empty($currentTables)) {
-			foreach($currentTables as $table) {
+			foreach ($currentTables as $table) {
 				if ($prefix) {
 					if (strpos($table, $prefix) !== 0) {
 						continue;
@@ -402,13 +401,13 @@ class CakeSchema extends Object {
 				}
 				$diff = array_diff_assoc($old[$table], $fields);
 				if (!empty($diff)) {
-					$tables[$table]['drop']  = $diff;
+					$tables[$table]['drop'] = $diff;
 				}
 			}
 			foreach ($fields as $field => $value) {
 				if (isset($old[$table][$field])) {
 					$diff = array_diff_assoc($value, $old[$table][$field]);
-					if (!empty($diff)) {
+					if (!empty($diff) && $field !== 'indexes') {
 						$tables[$table]['change'][$field] = array_merge($old[$table][$field], $diff);
 					}
 				}
@@ -420,6 +419,14 @@ class CakeSchema extends Object {
 							$tables[$table]['add'][$field]['after'] = $wrapper[$column - 1];
 						}
 					}
+				}
+			}
+
+			if (isset($old[$table]['indexes']) && isset($new[$table]['indexes'])) {
+				$diff = $this->_compareIndexes($new[$table]['indexes'], $old[$table]['indexes']);
+				if ($diff) {
+					$tables[$table]['drop']['indexes'] = $diff['drop'];
+					$tables[$table]['add']['indexes'] = $diff['add'];
 				}
 			}
 		}
@@ -458,7 +465,6 @@ class CakeSchema extends Object {
 		$fields = $Obj->schema(true);
 		$columns = $props = array();
 		foreach ($fields as $name => $value) {
-
 			if ($Obj->primaryKey == $name) {
 				$value['key'] = 'primary';
 			}
@@ -488,6 +494,56 @@ class CakeSchema extends Object {
 		}
 
 		return $columns;
+	}
+/**
+ * Compare two schema indexes
+ *
+ * @param array $new New indexes
+ * @param array $old Old indexes
+ * @return mixed false on failure or array of indexes to add and drop
+ */
+	function _compareIndexes($new, $old) {
+		if (!is_array($new) || !is_array($old)) {
+			return false;
+		}
+
+		$add = $drop = array();
+
+		$diff = array_diff_assoc($new, $old);
+		if (!empty($diff)) {
+			$add = $diff;
+		}
+
+		$diff = array_diff_assoc($old, $new);
+		if (!empty($diff)) {
+			$drop = $diff;
+		}
+
+		foreach ($new as $name => $value) {
+			if (isset($old[$name])) {
+				$newUnique = isset($value['unique']) ? $value['unique'] : 0;
+				$oldUnique = isset($old[$name]['unique']) ? $old[$name]['unique'] : 0;
+				$newColumn = $value['column'];
+				$oldColumn = $old[$name]['column'];
+
+				$diff = false;
+
+				if ($newUnique != $oldUnique) {
+					$diff = true;
+				} elseif (is_array($newColumn) && is_array($oldColumn)) {
+					$diff = ($newColumn !== $oldColumn);
+				} elseif (is_string($newColumn) && is_string($oldColumn)) {
+					$diff = ($newColumn != $oldColumn);
+				} else {
+					$diff = true;
+				}
+				if ($diff) {
+					$drop[$name] = null;
+					$add[$name] = $value;
+				}
+			}
+		}
+		return array_filter(compact('add', 'drop'));
 	}
 }
 ?>

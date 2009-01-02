@@ -31,5 +31,6 @@
 class Bibliography extends BeditaContentModel 
 {
 	var $useTable = 'contents';
+	var $actsAs = array();
 }
 ?>

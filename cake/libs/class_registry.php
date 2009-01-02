@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: class_registry.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: class_registry.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Class collections.
  *
@@ -7,24 +7,22 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs
- * @since			CakePHP(tm) v 0.9.2
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs
+ * @since         CakePHP(tm) v 0.9.2
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * Class Collections.
@@ -33,8 +31,8 @@
  * If you try to add an object with the same key twice, nothing will come of it.
  * If you need a second instance of an object, give it another key.
  *
- * @package		cake
- * @subpackage	cake.cake.libs
+ * @package       cake
+ * @subpackage    cake.cake.libs
  */
 class ClassRegistry {
 /**
@@ -94,9 +92,8 @@ class ClassRegistry {
 	function &init($class, $type = null) {
 		$_this =& ClassRegistry::getInstance();
 		$id = $false = false;
-		$table = $ds = $alias = $plugin = null;
-		$options = null;
 		$true = true;
+
 		if (!$type) {
 			$type = 'Model';
 		}
@@ -109,16 +106,15 @@ class ClassRegistry {
 		} else {
 			$objects = array(array('class' => $class));
 		}
-
 		$defaults = isset($_this->__config[$type]) ? $_this->__config[$type] : array();
-
 		$count = count($objects);
+
 		foreach ($objects as $key => $settings) {
 			if (is_array($settings)) {
 				$plugin = $pluginPath = null;
 				$settings = array_merge($defaults, $settings);
-
 				$class = $settings['class'];
+
 				if (strpos($class, '.') !== false) {
 					list($plugin, $class) = explode('.', $class);
 					$pluginPath = $plugin . '.';
@@ -129,7 +125,7 @@ class ClassRegistry {
 				}
 				$alias = $settings['alias'];
 
-				if ($model =& $_this->_duplicate($alias, $class)) {
+				if ($model =& $_this->__duplicate($alias, $class)) {
 					$_this->map($alias, $class);
 					return $model;
 				}
@@ -165,7 +161,6 @@ class ClassRegistry {
 		if ($count > 1) {
 			return $true;
 		}
-
 		return ${$class};
 	}
 /**
@@ -180,7 +175,7 @@ class ClassRegistry {
 	function addObject($key, &$object) {
 		$_this =& ClassRegistry::getInstance();
 		$key = Inflector::underscore($key);
-		if (array_key_exists($key, $_this->__objects) === false) {
+		if (!isset($_this->__objects[$key])) {
 			$_this->__objects[$key] =& $object;
 			return true;
 		}
@@ -197,7 +192,7 @@ class ClassRegistry {
 	function removeObject($key) {
 		$_this =& ClassRegistry::getInstance();
 		$key = Inflector::underscore($key);
-		if (array_key_exists($key, $_this->__objects) === true) {
+		if (isset($_this->__objects[$key])) {
 			unset($_this->__objects[$key]);
 		}
 	}
@@ -212,9 +207,9 @@ class ClassRegistry {
 	function isKeySet($key) {
 		$_this =& ClassRegistry::getInstance();
 		$key = Inflector::underscore($key);
-		if (array_key_exists($key, $_this->__objects)) {
+		if (isset($_this->__objects[$key])) {
 			return true;
-		} elseif (array_key_exists($key, $_this->__map)) {
+		} elseif (isset($_this->__map[$key])) {
 			return true;
 		}
 		return false;
@@ -250,7 +245,6 @@ class ClassRegistry {
 				$return =& $_this->__objects[$key];
 			}
 		}
-
 		return $return;
 	}
 /**
@@ -275,7 +269,6 @@ class ClassRegistry {
 		} elseif (empty($param) && is_string($type)) {
 			return isset($_this->__config[$type]) ? $_this->__config[$type] : null;
 		}
-
 		$_this->__config[$type] = $param;
 	}
 /**
@@ -284,15 +277,14 @@ class ClassRegistry {
  * @param string $alias
  * @param string $class
  * @return boolean
- * @access protected
+ * @access private
  * @static
  */
-	function &_duplicate($alias,  $class) {
-		$_this =& ClassRegistry::getInstance();
+	function &__duplicate($alias,  $class) {
 		$duplicate = false;
-		if ($_this->isKeySet($alias)) {
-			$model =& $_this->getObject($alias);
-			if (is_a($model, $class) || $model->alias === $class) {
+		if ($this->isKeySet($alias)) {
+			$model =& $this->getObject($alias);
+			if (is_object($model) && (is_a($model, $class) || $model->alias === $class)) {
 				$duplicate =& $model;
 			}
 			unset($model);
@@ -311,7 +303,7 @@ class ClassRegistry {
 		$_this =& ClassRegistry::getInstance();
 		$key = Inflector::underscore($key);
 		$name = Inflector::underscore($name);
-		if (array_key_exists($key, $_this->__map) === false) {
+		if (!isset($_this->__map[$key])) {
 			$_this->__map[$key] = $name;
 		}
 	}
@@ -335,9 +327,8 @@ class ClassRegistry {
  * @static
  */
 	function __getMap($key) {
-		$_this =& ClassRegistry::getInstance();
-		if (array_key_exists($key, $_this->__map)) {
-			return $_this->__map[$key];
+		if (isset($this->__map[$key])) {
+			return $this->__map[$key];
 		}
 	}
 /**

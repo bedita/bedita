@@ -882,7 +882,7 @@ class BeditaCollectionModel extends BEAppObjectModel {
 			'SearchTextSave',
 			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteDependentObject'	=> array('section'),
-			'DeleteObject' 			=> 'objects',
+			'DeleteObject' 			=> 'objects'
 	); 
 	var $recursive 	= 2 ;
 

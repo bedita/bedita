@@ -1,6 +1,5 @@
 <?php
-/* SVN FILE: $Id: helper.php 7690 2008-10-02 04:56:53Z nate $ */
-
+/* SVN FILE: $Id: helper.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Backend for helpers.
  *
@@ -8,26 +7,23 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.view
- * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.view
+ * @since         CakePHP(tm) v 0.2.9
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
 /**
  * Included libs
  */
@@ -38,11 +34,10 @@ App::import('Core', 'Overloadable');
  *
  * Long description for class
  *
- * @package		cake
- * @subpackage	cake.cake.libs.view
+ * @package       cake
+ * @subpackage    cake.cake.libs.view
  */
 class Helper extends Overloadable {
-
 /**
  * List of helpers used by this helper
  *
@@ -371,11 +366,11 @@ class Helper extends Overloadable {
 
 		switch (count($parts)) {
 			case 1:
-				if($view->modelScope === false) {
+				if ($view->modelScope === false) {
 					$view->model = $parts[0];
 				} else {
 					$view->field = $parts[0];
-					if($sameScope === false) {
+					if ($sameScope === false) {
 						$view->association = $parts[0];
 					}
 				}
@@ -585,7 +580,7 @@ class Helper extends Overloadable {
 
 		if (is_array($result)) {
 			$view =& ClassRegistry::getObject('view');
-			if(isset($result[$view->fieldSuffix])) {
+			if (isset($result[$view->fieldSuffix])) {
 				$result = $result[$view->fieldSuffix];
 			}
 		}

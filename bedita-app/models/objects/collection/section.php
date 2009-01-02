@@ -30,6 +30,8 @@
  */
 class Section extends BeditaCollectionModel
 {
+	var $actsAs = array();
+	
 	public $searchFields = array("title" => 10 , "description" => 6);
 
 	protected $modelBindings = array( 

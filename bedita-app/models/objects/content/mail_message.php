@@ -32,8 +32,7 @@ class MailMessage extends BeditaContentModel
 {
 	var $actsAs 	= array(
 			'CompactResult' 		=> array("MailGroup"),
-			'SearchTextSave',
-			'ForeignDependenceSave' => array('BEObject', 'Content'),
+			'ForeignDependenceSave' => array('Content'),
 			'DeleteObject' 			=> 'objects',
 	); 
 	

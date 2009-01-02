@@ -34,6 +34,10 @@ class AreaTestCase extends BeditaTestCase {
 
  	var $uses		= array('Area') ;
 
+	function testActsAs() {
+ 		$this->checkDuplicateBehavior($this->Area);
+ 	}
+ 	
  	function testMinInsert() {
 		
 		$this->requiredData(array("area"));

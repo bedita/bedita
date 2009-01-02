@@ -30,5 +30,6 @@
  */
 class Video extends BeditaStreamModel
 {
+	var $actsAs = array();
 }
 ?>

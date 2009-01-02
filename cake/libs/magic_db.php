@@ -1,37 +1,35 @@
 <?php
-/* SVN FILE: $Id: magic_db.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: magic_db.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * MagicDb parser and file analyzer
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link			http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs
- * @since			CakePHP(tm) v 1.2.0
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs
+ * @since         CakePHP(tm) v 1.2.0
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 if (!class_exists('File')) {
-	uses ('object', 'file');
+	uses('object', 'file');
 }
 /**
  * A class to parse and use the MagicDb for file type analysis
  *
- * @package		cake.tests
- * @subpackage	cake.tests.cases.libs
+ * @package       cake.tests
+ * @subpackage    cake.tests.cases.libs
  */
 class MagicDb extends Object {
 /**
@@ -46,7 +44,7 @@ class MagicDb extends Object {
  *
  * @var $magicDb mixed Can be an array containing the db, a magic db as a string, or a filename pointing to a magic db in .db or magic.db.php format
  * @return boolean Returns false if reading / validation failed or true on success.
- * @author Felix
+ * @author        Felix
  **/
 	function read($magicDb = null) {
 		if (!is_string($magicDb) && !is_array($magicDb)) {
@@ -177,8 +175,8 @@ class MagicDb extends Object {
 /**
  * undocumented class
  *
- * @package		cake.tests
- * @subpackage	cake.tests.cases.libs
+ * @package       cake.tests
+ * @subpackage    cake.tests.cases.libs
  */
 class MagicFileResource extends Object{
 /**
@@ -245,7 +243,7 @@ class MagicFileResource extends Object{
  * @access public
  */
 	function read($length = null) {
-		if (!is_object($this->resource)){
+		if (!is_object($this->resource)) {
 			return substr($this->resource, $this->offset, $length);
 		}
 		return $this->resource->read($length);

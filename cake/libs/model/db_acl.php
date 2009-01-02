@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: db_acl.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: db_acl.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * This is core configuration file.
  *
@@ -7,27 +7,22 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.model
- * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 05:09:03 -0400 (Fri, 27 Jun 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
- */
-/**
- * Set database config if not defined.
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.model
+ * @since         CakePHP(tm) v 0.2.9
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * Load Model and AppModel
@@ -39,8 +34,8 @@ App::import('Model', 'App');
  * Long description for file
  *
  *
- * @package		cake
- * @subpackage	cake.cake.libs.model
+ * @package       cake
+ * @subpackage    cake.cake.libs.model
  */
 class AclNode extends AppModel {
 /**
@@ -63,7 +58,7 @@ class AclNode extends AppModel {
  */
 	function __construct() {
 		$config = Configure::read('Acl.database');
-		if(isset($config)) {
+		if (isset($config)) {
 			$this->useDbConfig = $config;
 		}
 		parent::__construct();
@@ -202,8 +197,8 @@ class AclNode extends AppModel {
 /**
  * Access Control Object
  *
- * @package cake
- * @subpackage cake.cake.libs.model
+ * @package       cake
+ * @subpackage    cake.cake.libs.model
  */
 class Aco extends AclNode {
 /**
@@ -224,8 +219,8 @@ class Aco extends AclNode {
 /**
  * Action for Access Control Object
  *
- * @package		cake
- * @subpackage	cake.cake.libs.model
+ * @package       cake
+ * @subpackage    cake.cake.libs.model
  */
 class AcoAction extends AppModel {
 /**
@@ -246,8 +241,8 @@ class AcoAction extends AppModel {
 /**
  * Access Request Object
  *
- * @package	cake
- * @subpackage cake.cake.libs.model
+ * @package       cake
+ * @subpackage    cake.cake.libs.model
  */
 class Aro extends AclNode {
 /**
@@ -268,8 +263,8 @@ class Aro extends AclNode {
 /**
  * Permissions linking AROs with ACOs
  *
- * @package cake
- * @subpackage cake.cake.libs.model
+ * @package       cake
+ * @subpackage    cake.cake.libs.model
  */
 class Permission extends AppModel {
 /**

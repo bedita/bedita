@@ -1,6 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_adodb.php 7690 2008-10-02 04:56:53Z nate $ */
-
+/* SVN FILE: $Id: dbo_adodb.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * AdoDB layer for DBO.
  *
@@ -8,38 +7,34 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.model.datasources.dbo
- * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.model.datasources.dbo
+ * @since         CakePHP(tm) v 0.2.9
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
 /**
  * Include AdoDB files.
  */
 App::import('Vendor', 'NewADOConnection', array('file' => 'adodb' . DS . 'adodb.inc.php'));
-
 /**
  * AdoDB DBO implementation.
  *
  * Database abstraction implementation for the AdoDB library.
  *
- * @package		cake
- * @subpackage	cake.cake.libs.model.datasources.dbo
+ * @package       cake
+ * @subpackage    cake.cake.libs.model.datasources.dbo
  */
 class DboAdodb extends DboSource {
 /**
@@ -139,17 +134,11 @@ class DboAdodb extends DboSource {
 		return $this->_adodb->execute($sql);
 	}
 /**
- * Returns a row from given resultset as an array .
- *
- * @return array The fetched row as an array
- */
-/**
  * Returns a row from current resultset as an array .
  *
  * @return array The fetched row as an array
  */
 	function fetchRow($sql = null) {
-
 		if (!empty($sql) && is_string($sql) && strlen($sql) > 5) {
 			if (!$this->execute($sql)) {
 				return null;
@@ -427,6 +416,7 @@ class DboAdodb extends DboSource {
 	function fetchResult() {
 		if (!empty($this->results)) {
 			$row = $this->results;
+			$this->results = null;
 		} else {
 			$row = $this->_result->FetchRow();
 		}
@@ -445,7 +435,6 @@ class DboAdodb extends DboSource {
 		}
 		return $resultRow;
 	}
-
 /**
  * Generate a database-native column schema string
  *

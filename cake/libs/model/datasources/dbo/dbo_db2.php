@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_db2.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: dbo_db2.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * IBM DB2 for DBO
  *
@@ -9,24 +9,22 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
  * Copyright 2007, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.model.datasources.dbo
- * @since			CakePHP(tm) v 0.10.5.1790
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.model.datasources.dbo
+ * @since         CakePHP(tm) v 0.10.5.1790
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * IBM DB2 for DBO
@@ -35,8 +33,8 @@
  * Sun Java DB) using the native ibm_db2 extension:
  * http://pecl.php.net/package/ibm_db2
  *
- * @package		cake
- * @subpackage	cake.cake.libs.model.datasources.dbo
+ * @package       cake
+ * @subpackage    cake.cake.libs.model.datasources.dbo
  */
 class DboDb2 extends DboSource {
 /**
@@ -118,7 +116,7 @@ class DboDb2 extends DboSource {
 		if ($config['cataloged']) {
 			$this->connection = $connect($config['database'], $config['login'], $config['password']);
 		} else {
-			$conn_string = sprintf(
+			$connString = sprintf(
 				"DRIVER={IBM DB2 ODBC DRIVER};DATABASE=%s;HOSTNAME=%s;PORT=%d;PROTOCOL=TCPIP;UID=%s;PWD=%s;",
 				$config['database'],
 				$config['hostname'],
@@ -126,7 +124,7 @@ class DboDb2 extends DboSource {
 				$config['login'],
 				$config['password']
 			);
-			$this->connection = db2_connect($conn_string, '', '');
+			$this->connection = db2_connect($connString, '', '');
 		}
 
 		if ($this->connection) {
@@ -161,15 +159,15 @@ class DboDb2 extends DboSource {
 		// get result from db
 		$result = db2_exec($this->connection, $sql);
 
-		if(!is_bool($result)){
+		if (!is_bool($result)) {
 			// build table/column map for this result
 			$map = array();
-			$num_fields = db2_num_fields($result);
+			$numFields = db2_num_fields($result);
 			$index = 0;
 			$j = 0;
 			$offset = 0;
 
-			while ($j < $num_fields) {
+			while ($j < $numFields) {
 				$columnName = strtolower(db2_field_name($result, $j));
 				$tmp = strpos($sql, '.' . $columnName, $offset);
 				$tableName = substr($sql, $offset, ($tmp-$offset));
@@ -250,7 +248,6 @@ class DboDb2 extends DboSource {
  * @return string Quoted and escaped
  * @todo Add logic that formats/escapes data based on column type
  */
-
 	function value($data, $column = null, $safe = false) {
 		$parent = parent::value($data, $column, $safe);
 

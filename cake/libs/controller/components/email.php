@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: email.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: email.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -7,24 +7,22 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *						1785 E. Sahara Avenue, Suite 490-204
- *						Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link			http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.controller.components
- * @since			CakePHP(tm) v 1.2.0.3467
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.controller.components
+ * @since         CakePHP(tm) v 1.2.0.3467
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * EmailComponent
@@ -32,8 +30,8 @@
  * This component is used for handling Internet Message Format based
  * based on the standard outlined in http://www.rfc-editor.org/rfc/rfc2822.txt
  *
- * @package		cake
- * @subpackage	cake.cake.libs.controller.components
+ * @package       cake
+ * @subpackage    cake.cake.libs.controller.components
  *
  */
 App::import('Core', 'Multibyte');
@@ -456,7 +454,7 @@ class EmailComponent extends Object{
 			$this->__header[] = 'cc: ' .implode(', ', array_map(array($this, '__formatAddress'), $this->cc));
 		}
 
-		if (!empty($this->bcc)) {
+		if (!empty($this->bcc) && $this->delivery != 'smtp') {
 			$this->__header[] = 'Bcc: ' .implode(', ', array_map(array($this, '__formatAddress'), $this->bcc));
 		}
 		if ($this->delivery == 'smtp') {
@@ -574,7 +572,7 @@ class EmailComponent extends Object{
 		}
 
 		foreach ($lines as $line) {
-			if(substr($line, 0, 1) == '.') {
+			if (substr($line, 0, 1) == '.') {
 				$line = '.' . $line;
 			}
 			$formatted = array_merge($formatted, explode("\n", wordwrap($line, $this->lineLength, "\n", true)));
@@ -625,32 +623,15 @@ class EmailComponent extends Object{
  * @access private
  */
 	function __strip($value, $message = false) {
-/*
 		$search = '%0a|%0d|Content-(?:Type|Transfer-Encoding)\:|charset\=|mime-version\:|multipart/mixed|(?:to|b?cc)\:.*';
 		if ($message !== true) {
-			$search .= '|\\r|\\n';
+			$search .= '|\r|\n';
 		}
 		$search = '#(?:' . $search . ')#i';
 		while (preg_match($search, $value)) {
 			$value = preg_replace($search, '', $value);
 		}
 		return $value;
-*/
-		$search = array(
-			'/(?:%0a)/i', '/(?:%0d)/i', '/(?:Content-Type\:)/i', '/(?:charset\=)/i', '/(?:mime-version\:)/i',
-			'/(?:multipart\/mixed)/i', '/(?:bcc\:.*)/i','/(?:to\:.*)/i','/(?:cc\:.*)/i', '/(?:Content-Transfer-Encoding\:)/i',
-			'/\\r/i', '/\\n/i'
-		);
-		if ($message === true) {
-			$search = array_slice($search, 0, -2);
-		}
-
-		foreach ($search as $key) {
-			while (preg_match($key, $value)) {
-				$value = preg_replace($key, '', $value);
-			}
-		}
-		return preg_replace($search, '', $value);
 	}
 /**
  * Wrapper for PHP mail function used for sending out emails
@@ -689,13 +670,15 @@ class EmailComponent extends Object{
 		}
 
 		if (isset($this->smtpOptions['username']) && isset($this->smtpOptions['password'])) {
-			if (!$this->__smtpSend('AUTH LOGIN', '334')) {
-				return false;
-			}
-			if (!$this->__smtpSend(base64_encode($this->smtpOptions['username']), '334')) {
-				return false;
-			}
-			if (!$this->__smtpSend(base64_encode($this->smtpOptions['password']), '235')) {
+			$authRequired = $this->__smtpSend('AUTH LOGIN', '334|503');
+			if ($authRequired == '334') {
+				if (!$this->__smtpSend(base64_encode($this->smtpOptions['username']), '334')) {
+					return false;
+				}
+				if (!$this->__smtpSend(base64_encode($this->smtpOptions['password']), '235')) {
+					return false;
+				}
+			} elseif ($authRequired != '503') {
 				return false;
 			}
 		}
@@ -748,10 +731,11 @@ class EmailComponent extends Object{
 		if ($checkCode !== false) {
 			$response = $this->__smtpConnection->read();
 
-			if (!preg_match('/^' . $checkCode . '/', $response)) {
-				$this->smtpError = $response;
-				return false;
+			if (preg_match('/^(' . $checkCode . ')/', $response, $code)) {
+				return $code[0];
 			}
+			$this->smtpError = $response;
+			return false;
 		}
 		return true;
 	}

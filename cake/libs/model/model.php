@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: model.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: model.php 7961 2008-12-25 23:21:36Z gwoo $ */
 /**
  * Object-relational mapper.
  *
@@ -7,24 +7,22 @@
  *
  * PHP versions 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.model
- * @since			CakePHP(tm) v 0.10.0.0
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.model
+ * @since         CakePHP(tm) v 0.10.0.0
+ * @version       $Revision: 7961 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-25 17:21:36 -0600 (Thu, 25 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * Included libs
@@ -36,11 +34,11 @@ App::import('Core', array('ClassRegistry', 'Overloadable', 'Validation', 'Behavi
  * DBO-backed object data model.
  * Automatically selects a database table name based on a pluralized lowercase object class name
  * (i.e. class 'User' => table 'users'; class 'Man' => table 'men')
- * The table is required to have at least 'id auto_increment', 'created datetime',
- * and 'modified datetime' fields.
+ * The table is required to have at least 'id auto_increment' primary key.
  *
- * @package		cake
- * @subpackage	cake.cake.libs.model
+ * @package       cake
+ * @subpackage    cake.cake.libs.model
+ * @link          http://book.cakephp.org/view/66/Models
  */
 class Model extends Overloadable {
 /**
@@ -48,13 +46,15 @@ class Model extends Overloadable {
  *
  * @var string
  * @access public
+ * @link http://book.cakephp.org/view/435/useDbConfig
  */
 	var $useDbConfig = 'default';
 /**
- * Custom database table name.
+ * Custom database table name, or null/false if no table association is desired.
  *
  * @var string
  * @access public
+ * @link http://book.cakephp.org/view/436/useTable
  */
 	var $useTable = null;
 /**
@@ -62,20 +62,23 @@ class Model extends Overloadable {
  *
  * @var string
  * @access public
+ * @link http://book.cakephp.org/view/438/displayField
  */
 	var $displayField = null;
 /**
- * Value of the primary key ID of the record that this model is currently pointing to
+ * Value of the primary key ID of the record that this model is currently pointing to.
+ * Automatically set after database insertions.
  *
  * @var mixed
  * @access public
  */
 	var $id = false;
 /**
- * Container for the data that this model gets from persistent storage (the database).
+ * Container for the data that this model gets from persistent storage (usually, a database).
  *
  * @var array
  * @access public
+ * @link http://book.cakephp.org/view/441/data
  */
 	var $data = array();
 /**
@@ -86,17 +89,19 @@ class Model extends Overloadable {
  */
 	var $table = false;
 /**
- * The name of the ID field for this Model.
+ * The name of the primary key field for this model.
  *
  * @var string
  * @access public
+ * @link http://book.cakephp.org/view/437/primaryKey
  */
 	var $primaryKey = null;
 /**
- * Table metadata
+ * Field-by-field table metadata.
  *
  * @var array
  * @access protected
+ * @link http://book.cakephp.org/view/442/_schema
  */
 	var $_schema = null;
 /**
@@ -105,13 +110,16 @@ class Model extends Overloadable {
  *
  * @var array
  * @access public
+ * @link http://book.cakephp.org/view/443/validate
+ * @link http://book.cakephp.org/view/125/Data-Validation
  */
 	var $validate = array();
 /**
- * Errors in validation
+ * List of validation errors.
  *
  * @var array
  * @access public
+ * @link http://book.cakephp.org/view/410/Validating-Data-from-the-Controller
  */
 	var $validationErrors = array();
 /**
@@ -119,6 +127,7 @@ class Model extends Overloadable {
  *
  * @var string
  * @access public
+ * @link http://book.cakephp.org/view/475/tablePrefix
  */
 	var $tablePrefix = null;
 /**
@@ -126,6 +135,7 @@ class Model extends Overloadable {
  *
  * @var string
  * @access public
+ * @link http://book.cakephp.org/view/444/name
  */
 	var $name = null;
 /**
@@ -136,21 +146,21 @@ class Model extends Overloadable {
  */
 	var $alias = null;
 /**
- * List of table names included in the Model description. Used for associations.
+ * List of table names included in the model description. Used for associations.
  *
  * @var array
  * @access public
  */
 	var $tableToModel = array();
 /**
- * Whether or not transactions for this model should be logged
+ * Whether or not to log transactions for this model.
  *
  * @var boolean
  * @access public
  */
 	var $logTransactions = false;
 /**
- * Whether or not to enable transactions for this model (i.e. BEGIN/COMMIT/ROLLBACK)
+ * Whether or not to enable transactions for this model (i.e. BEGIN/COMMIT/ROLLBACK statements)
  *
  * @var boolean
  * @access public
@@ -158,101 +168,113 @@ class Model extends Overloadable {
 	var $transactional = false;
 /**
  * Whether or not to cache queries for this model.  This enables in-memory
- * caching only, the results are not stored beyond this execution.
+ * caching only, the results are not stored beyond the current request.
  *
  * @var boolean
  * @access public
+ * @link http://book.cakephp.org/view/445/cacheQueries
  */
 	var $cacheQueries = false;
 /**
- * belongsTo association
+ * Detailed list of belongsTo associations.
  *
  * @var array
  * @access public
+ * @link http://book.cakephp.org/view/81/belongsTo
  */
 	var $belongsTo = array();
 /**
- * hasOne association
+ * Detailed list of hasOne associations.
  *
  * @var array
  * @access public
+ * @link http://book.cakephp.org/view/80/hasOne
  */
 	var $hasOne = array();
 /**
- * hasMany association
+ * Detailed list of hasMany associations.
  *
  * @var array
  * @access public
+ * @link http://book.cakephp.org/view/82/hasMany
  */
 	var $hasMany = array();
 /**
- * hasAndBelongsToMany association
+ * Detailed list of hasAndBelongsToMany associations.
  *
  * @var array
  * @access public
+ * @link http://book.cakephp.org/view/83/hasAndBelongsToMany-HABTM
  */
 	var $hasAndBelongsToMany = array();
 /**
  * List of behaviors to load when the model object is initialized. Settings can be
  * passed to behaviors by using the behavior name as index. Eg:
  *
- * array('Translate', 'MyBehavior' => array('setting1' => 'value1'))
+ * var $actsAs = array('Translate', 'MyBehavior' => array('setting1' => 'value1'))
  *
  * @var array
  * @access public
+ * @link http://book.cakephp.org/view/90/Using-Behaviors
  */
 	var $actsAs = null;
 /**
- * Holds the Behavior objects currently bound to this model
+ * Holds the Behavior objects currently bound to this model.
  *
  * @var object
  * @access public
  */
 	var $Behaviors = null;
 /**
- * Whitelist of fields allowed to be saved
+ * Whitelist of fields allowed to be saved.
  *
  * @var array
  * @access public
  */
 	var $whitelist = array();
 /**
- * Should sources for this model be cached.
+ * Whether or not to cache sources for this model.
  *
  * @var boolean
  * @access public
  */
 	var $cacheSources = true;
 /**
- * Type of find query currently executing
+ * Type of find query currently executing.
  *
  * @var string
  * @access public
  */
 	var $findQueryType = null;
 /**
- * Depth of recursive association
+ * Number of associations to recurse through during find calls. Fetches only
+ * the first level by default.
  *
  * @var integer
  * @access public
+ * @link http://book.cakephp.org/view/439/recursive
  */
 	var $recursive = 1;
 /**
- * Default ordering of model records
+ * The column name(s) and direction(s) to order find results by default.
+ *
+ * var $order = "Post.created DESC";
+ * var $order = array("Post.view_count DESC", "Post.rating DESC");
  *
  * @var string
  * @access public
+ * @link http://book.cakephp.org/view/440/order
  */
 	var $order = null;
 /**
- * Whether or not the model record exists, set by Model::exists()
+ * Whether or not the model record exists, set by Model::exists().
  *
  * @var bool
  * @access private
  */
 	var $__exists = null;
 /**
- * Default association keys
+ * Default list of association keys.
  *
  * @var array
  * @access private
@@ -263,42 +285,42 @@ class Model extends Overloadable {
 			'hasMany' => array('className', 'foreignKey', 'conditions', 'fields', 'order', 'limit', 'offset', 'dependent', 'exclusive', 'finderQuery', 'counterQuery'),
 			'hasAndBelongsToMany' => array('className', 'joinTable', 'with', 'foreignKey', 'associationForeignKey', 'conditions', 'fields', 'order', 'limit', 'offset', 'unique', 'finderQuery', 'deleteQuery', 'insertQuery'));
 /**
- * Holds provided/generated association key names and other data for all associations
+ * Holds provided/generated association key names and other data for all associations.
  *
  * @var array
  * @access private
  */
 	var $__associations = array('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany');
 /**
- * Holds model associations temporarily to allow for dynamic (un)binding
+ * Holds model associations temporarily to allow for dynamic (un)binding.
  *
  * @var array
  * @access private
  */
 	var $__backAssociation = array();
 /**
- * The last inserted ID of the data that this model created
+ * The ID of the model record that was last inserted.
  *
  * @var integer
  * @access private
  */
 	var $__insertID = null;
 /**
- * The number of records returned by the last query
+ * The number of records returned by the last query.
  *
  * @var integer
  * @access private
  */
 	var $__numRows = null;
 /**
- * The number of records affected by the last query
+ * The number of records affected by the last query.
  *
  * @var integer
  * @access private
  */
 	var $__affectedRows = null;
 /**
- * List of valid finder method options
+ * List of valid finder method options, supplied as the first parameter to find().
  *
  * @var array
  * @access protected
@@ -308,7 +330,7 @@ class Model extends Overloadable {
 		'neighbors' => true, 'list' => true, 'threaded' => true
 	);
 /**
- * Constructor. Binds the Model's database table to the object.
+ * Constructor. Binds the model's database table to the object.
  *
  * @param integer $id Set this ID for this model on startup
  * @param string $table Name of database table to use.
@@ -357,6 +379,15 @@ class Model extends Overloadable {
 			if ($this->actsAs !== null || $this->actsAs !== false) {
 				$merge[] = 'actsAs';
 			}
+			$parentClass = get_parent_class($this);
+			if (strtolower($parentClass) !== 'appmodel') {
+				$parentVars = get_class_vars($parentClass);
+				foreach ($merge as $var) {
+					if (isset($parentVars[$var]) && !empty($parentVars[$var])) {
+						$appVars[$var] = Set::merge($appVars[$var], $parentVars[$var]);
+					}
+				}
+			}
 
 			foreach ($merge as $var) {
 				if (isset($appVars[$var]) && !empty($appVars[$var]) && is_array($this->{$var})) {
@@ -375,14 +406,15 @@ class Model extends Overloadable {
 			if (method_exists($this, 'setTablePrefix')) {
 				$this->setTablePrefix();
 			}
-
 			$this->setSource($this->useTable);
-			$this->__createLinks();
 
 			if ($this->displayField == null) {
 				$this->displayField = $this->hasField(array('title', 'name', $this->primaryKey));
 			}
+		} elseif ($this->table === false) {
+			$this->table = Inflector::tableize($this->name);
 		}
+		$this->__createLinks();
 		$this->Behaviors->init($this->alias, $this->actsAs);
 	}
 /**
@@ -473,6 +505,7 @@ class Model extends Overloadable {
  * @param boolean $reset Set to false to make the binding permanent
  * @return boolean Success
  * @access public
+ * @link http://book.cakephp.org/view/86/Creating-and-Destroying-Associations-on-the-Fly
  */
 	function bindModel($params, $reset = true) {
 		foreach ($params as $assoc => $model) {
@@ -510,6 +543,7 @@ class Model extends Overloadable {
  * @param boolean $reset  Set to false to make the unbinding permanent
  * @return boolean Success
  * @access public
+ * @link http://book.cakephp.org/view/86/Creating-and-Destroying-Associations-on-the-Fly
  */
 	function unbindModel($params, $reset = true) {
 		foreach ($params as $assoc => $models) {
@@ -526,7 +560,7 @@ class Model extends Overloadable {
 		return true;
 	}
 /**
- * Create a set of associations
+ * Create a set of associations.
  *
  * @return void
  * @access private
@@ -578,7 +612,7 @@ class Model extends Overloadable {
 		}
 	}
 /**
- * Private helper method to create associated models of given class.
+ * Private helper method to create associated models of a given class.
  *
  * @param string $assoc Association name
  * @param string $className Class name
@@ -592,7 +626,7 @@ class Model extends Overloadable {
  * @access private
  */
 	function __constructLinkedModel($assoc, $className = null) {
-		if(empty($className)) {
+		if (empty($className)) {
 			$className = $assoc;
 		}
 
@@ -609,7 +643,7 @@ class Model extends Overloadable {
 		}
 	}
 /**
- * Build array-based association from string.
+ * Build an array-based association from string.
  *
  * @param string $type 'belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany'
  * @return void
@@ -618,12 +652,14 @@ class Model extends Overloadable {
 	function __generateAssociation($type) {
 		foreach ($this->{$type} as $assocKey => $assocData) {
 			$class = $assocKey;
+			$dynamicWith = false;
 
 			foreach ($this->__associationKeys[$type] as $key) {
+
 				if (!isset($this->{$type}[$assocKey][$key]) || $this->{$type}[$assocKey][$key] === null) {
 					$data = '';
 
-					switch($key) {
+					switch ($key) {
 						case 'fields':
 							$data = '';
 						break;
@@ -638,6 +674,7 @@ class Model extends Overloadable {
 
 						case 'with':
 							$data = Inflector::camelize(Inflector::singularize($this->{$type}[$assocKey]['joinTable']));
+							$dynamicWith = true;
 						break;
 
 						case 'joinTable':
@@ -671,7 +708,7 @@ class Model extends Overloadable {
 					$this->{$type}[$assocKey]['with'] = $joinClass;
 				}
 
-				if (!ClassRegistry::isKeySet($plugin . $joinClass) && !App::import('Model', $plugin . $joinClass)) {
+				if (!ClassRegistry::isKeySet($joinClass) && $dynamicWith === true) {
 					$this->{$joinClass} = new AppModel(array(
 						'name' => $joinClass,
 						'table' => $this->{$type}[$assocKey]['joinTable'],
@@ -682,7 +719,7 @@ class Model extends Overloadable {
 					$this->{$type}[$assocKey]['joinTable'] = $this->{$joinClass}->table;
 				}
 
-				if ($this->{$joinClass}->primaryKey == 'id' && count($this->{$joinClass}->schema()) <= 2) {
+				if (count($this->{$joinClass}->schema()) <= 2 && $this->{$joinClass}->primaryKey !== false) {
 					$this->{$joinClass}->primaryKey = $this->{$type}[$assocKey]['foreignKey'];
 				}
 			}
@@ -746,30 +783,30 @@ class Model extends Overloadable {
 			$data = array($this->alias => array($one => $two));
 		}
 
-		foreach ($data as $n => $v) {
-			if (is_array($v)) {
+		foreach ($data as $modelName => $fieldSet) {
+			if (is_array($fieldSet)) {
 
-				foreach ($v as $x => $y) {
-					if (isset($this->validationErrors[$x])) {
-						unset ($this->validationErrors[$x]);
+				foreach ($fieldSet as $fieldName => $fieldValue) {
+					if (isset($this->validationErrors[$fieldName])) {
+						unset ($this->validationErrors[$fieldName]);
 					}
 
-					if ($n === $this->alias) {
-						if ($x === $this->primaryKey) {
-							$this->id = $y;
+					if ($modelName === $this->alias) {
+						if ($fieldName === $this->primaryKey) {
+							$this->id = $fieldValue;
 						}
 					}
-					if (is_array($y) || is_object($y)) {
-						$y = $this->deconstruct($x, $y);
+					if (is_array($fieldValue) || is_object($fieldValue)) {
+						$fieldValue = $this->deconstruct($fieldName, $fieldValue);
 					}
-					$this->data[$n][$x] = $y;
+					$this->data[$modelName][$fieldName] = $fieldValue;
 				}
 			}
 		}
 		return $data;
 	}
 /**
- * Deconstructs a complex data type (array or object) into a single field value
+ * Deconstructs a complex data type (array or object) into a single field value.
  *
  * @param string $field The name of the field to be deconstructed
  * @param mixed $data An array or object to be deconstructed into a field
@@ -809,6 +846,9 @@ class Model extends Overloadable {
 				}
 			}
 			$date = str_replace(array_keys($date), array_values($date), $format);
+			if ($type == 'time' && $date == '00:00:00') {
+				return null;
+			}
 
 			if ($useNewDate && (!empty($date))) {
 				return $date;
@@ -861,7 +901,7 @@ class Model extends Overloadable {
 		return $cols;
 	}
 /**
- * Returns the column type of a column in the model
+ * Returns the column type of a column in the model.
  *
  * @param string $column The name of the model column
  * @return string Column type
@@ -886,7 +926,7 @@ class Model extends Overloadable {
 		return null;
 	}
 /**
- * Returns true if this Model has given field in its database table.
+ * Returns true if the supplied field exists in the model's database table.
  *
  * @param mixed $name Name of field to look for, or an array of names
  * @return mixed If $name is a string, returns a boolean indicating whether the field exists.
@@ -915,18 +955,21 @@ class Model extends Overloadable {
 	}
 /**
  * Initializes the model for writing a new record, loading the default values
- * for those fields that are not defined in $data.
+ * for those fields that are not defined in $data. Especially helpful for
+ * saving data in loops.
  *
  * @param mixed $data Optional data array to assign to the model after it is created.  If null or false,
  *                    schema data defaults are not merged.
  * @param boolean $filterKey If true, overwrites any primary key input with an empty value
  * @return array The current Model::data; after merging $data and/or defaults from database
  * @access public
+ * @link http://book.cakephp.org/view/75/Saving-Your-Data
  */
 	function create($data = array(), $filterKey = false) {
 		$defaults = array();
 		$this->id = false;
 		$this->data = array();
+		$this->__exists = null;
 		$this->validationErrors = array();
 
 		if ($data !== null && $data !== false) {
@@ -973,13 +1016,15 @@ class Model extends Overloadable {
 		}
 	}
 /**
- * Returns contents of a field in a query matching given conditions.
+ * Returns the contents of a single field given the supplied conditions, in the
+ * supplied order.
  *
  * @param string $name Name of field to get
  * @param array $conditions SQL conditions (defaults to NULL)
  * @param string $order SQL ORDER BY fragment
  * @return string field contents, or false if not found
  * @access public
+ * @link http://book.cakephp.org/view/453/field
  */
 	function field($name, $conditions = null, $order = null) {
 		if ($conditions === null && $this->id !== false) {
@@ -1010,7 +1055,8 @@ class Model extends Overloadable {
 		}
 	}
 /**
- * Saves a single field to the database.
+ * Saves the value of a single field to the database, based on the current
+ * model ID.
  *
  * @param string $name Name of the table field
  * @param mixed $value Value of the field
@@ -1018,6 +1064,7 @@ class Model extends Overloadable {
  * @return boolean See Model::save()
  * @access public
  * @see Model::save()
+ * @link http://book.cakephp.org/view/75/Saving-Your-Data
  */
 	function saveField($name, $value, $validate = false) {
 		$id = $this->id;
@@ -1031,7 +1078,8 @@ class Model extends Overloadable {
 		return $this->save(array($this->alias => array($this->primaryKey => $id, $name => $value)), $options);
 	}
 /**
- * Saves model data to the database. By default, validation occurs before save.
+ * Saves model data (based on white-list, if supplied) to the database. By
+ * default, validation occurs before save.
  *
  * @param array $data Data to save.
  * @param mixed $validate Either a boolean, or an array.
@@ -1040,6 +1088,7 @@ class Model extends Overloadable {
  * @param array $fieldList List of fields to allow to be written
  * @return mixed On success Model::$data if its not empty or true, false on failure
  * @access public
+ * @link http://book.cakephp.org/view/75/Saving-Your-Data
  */
 	function save($data = null, $validate = true, $fieldList = array()) {
 		$defaults = array('validate' => true, 'fieldList' => array(), 'callbacks' => true);
@@ -1092,8 +1141,9 @@ class Model extends Overloadable {
 
 		foreach ($dateFields as $updateCol) {
 			if ($this->hasField($updateCol) && !in_array($updateCol, $fields)) {
-				$colType = array_merge(array('formatter' => 'date'), $db->columns[$this->getColumnType($updateCol)]);
-				if (!array_key_exists('formatter', $colType) || !array_key_exists('format', $colType)) {
+				$default = array('formatter' => 'date');
+				$colType = array_merge($default, $db->columns[$this->getColumnType($updateCol)]);
+				if (!array_key_exists('format', $colType)) {
 					$time = strtotime('now');
 				} else {
 					$time = $colType['formatter']($colType['format']);
@@ -1106,7 +1156,10 @@ class Model extends Overloadable {
 		}
 
 		if ($options['callbacks'] === true || $options['callbacks'] === 'before') {
-			if (!$this->Behaviors->trigger($this, 'beforeSave', array($options), array('break' => true, 'breakOn' => false)) || !$this->beforeSave($options)) {
+			$result = $this->Behaviors->trigger($this, 'beforeSave', array($options), array(
+				'break' => true, 'breakOn' => false
+			));
+			if (!$result || !$this->beforeSave($options)) {
 				$this->whitelist = $_whitelist;
 				return false;
 			}
@@ -1148,15 +1201,18 @@ class Model extends Overloadable {
 		$created = false;
 
 		if ($count > 0) {
+			$cache = $this->_prepareUpdateFields(array_combine($fields, $values));
+
 			if (!empty($this->id)) {
-				if (!$db->update($this, $fields, $values)) {
-					$success = false;
-				}
+				$success = (bool)$db->update($this, $fields, $values);
 			} else {
 				foreach ($this->_schema as $field => $properties) {
 					if ($this->primaryKey === $field) {
-						$isUUID = ($this->_schema[$field]['type'] === 'string' && $this->_schema[$field]['length'] === 36)
-								|| ($this->_schema[$field]['type'] === 'binary' && $this->_schema[$field]['length'] === 16);
+						$fInfo = $this->_schema[$field];
+						$isUUID = (
+							($fInfo['type'] === 'string' && $fInfo['length'] === 36) ||
+							($fInfo['type'] === 'binary' && $fInfo['length'] === 16)
+						);
 						if (empty($this->data[$this->alias][$this->primaryKey]) && $isUUID) {
 							list($fields[], $values[]) = array($this->primaryKey, String::uuid());
 						}
@@ -1170,10 +1226,10 @@ class Model extends Overloadable {
 					$created = true;
 				}
 			}
-		}
 
-		if (!empty($this->belongsTo)) {
-			$this->updateCounterCache(array(), $created);
+			if ($success && !empty($this->belongsTo)) {
+				$this->updateCounterCache($cache, $created);
+			}
 		}
 
 		if (!empty($joined) && $success === true) {
@@ -1209,48 +1265,67 @@ class Model extends Overloadable {
 	function __saveMulti($joined, $id) {
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 
-		foreach ($joined as $assoc => $value) {
-			$newValues = array();
-			if (empty($value)) {
-				$value = array();
-			}
+		foreach ($joined as $assoc => $data) {
+
 			if (isset($this->hasAndBelongsToMany[$assoc])) {
 				list($join) = $this->joinModel($this->hasAndBelongsToMany[$assoc]['with']);
-				$conditions = array($join . '.' . $this->hasAndBelongsToMany[$assoc]['foreignKey'] => $id);
-				$links = array();
 
-				if ($this->hasAndBelongsToMany[$assoc]['unique']) {
-					$this->{$join}->deleteAll($conditions);
-				} else {
-					list($recursive, $fields) = array(-1, $this->hasAndBelongsToMany[$assoc]['associationForeignKey']);
-					$links = Set::extract(
-						$this->{$join}->find('all', compact('conditions', 'recursive', 'fields')),
-						"{n}.{$join}." . $this->hasAndBelongsToMany[$assoc]['associationForeignKey']
-					);
+				$conditions = array($join . '.' . $this->hasAndBelongsToMany[$assoc]['foreignKey'] => $id);
+
+				$links = $this->{$join}->find('all', array(
+					'conditions' => $conditions,
+					'recursive' => -1,
+					'fields' => $this->hasAndBelongsToMany[$assoc]['associationForeignKey']
+				));
+
+				$isUUID = !empty($this->{$join}->primaryKey) && (($this->{$join}->_schema[$this->{$join}->primaryKey]['type'] === 'string' && $this->{$join}->_schema[$this->{$join}->primaryKey]['length'] === 36)
+						|| ($this->{$join}->_schema[$this->{$join}->primaryKey]['type'] === 'binary' && $this->{$join}->_schema[$this->{$join}->primaryKey]['length'] === 16));
+
+				$newData = $newValues = array();
+
+				foreach ((array)$data as $row) {
+					if ((is_string($row) && (strlen($row) == 36 || strlen($row) == 16)) || is_numeric($row)) {
+						$values = array(
+							$db->value($id, $this->getColumnType($this->primaryKey)),
+							$db->value($row)
+						);
+						if ($isUUID) {
+							$values[] = $db->value(String::uuid());
+						}
+						$values = join(',', $values);
+						$newValues[] = "({$values})";
+						unset($values);
+					} elseif (isset($row[$this->hasAndBelongsToMany[$assoc]['associationForeignKey']])) {
+						$newData[] = $row;
+					}
 				}
 
-				foreach ($value as $update) {
-					if (!empty($update)) {
-						if (is_array($update)) {
-							$update[$this->hasAndBelongsToMany[$assoc]['foreignKey']] = $id;
-							$this->{$join}->create($update);
-							$this->{$join}->save();
-						} elseif (!in_array($update, $links)) {
-							$values  = join(',', array(
-								$db->value($id, $this->getColumnType($this->primaryKey)),
-								$db->value($update)
-							));
-							$newValues[] = "({$values})";
-							unset($values);
-						}
+				if (!empty($newData)) {
+					foreach ($newData as $data) {
+						$data[$this->hasAndBelongsToMany[$assoc]['foreignKey']] = $id;
+						$this->{$join}->create($data);
+						$this->{$join}->save();
+					}
+				}
+
+				if (empty($newData) && $this->hasAndBelongsToMany[$assoc]['unique']) {
+					$associationForeignKey = "{$join}." . $this->hasAndBelongsToMany[$assoc]['associationForeignKey'];
+					$oldLinks = Set::extract($links, "{n}.{$associationForeignKey}");
+					if (!empty($oldLinks)) {
+ 						$conditions[$associationForeignKey] = $oldLinks;
+						$db->delete($this->{$join}, $conditions);
 					}
 				}
 
 				if (!empty($newValues)) {
-					$fields = join(',', array(
+					$fields =  array(
 						$db->name($this->hasAndBelongsToMany[$assoc]['foreignKey']),
 						$db->name($this->hasAndBelongsToMany[$assoc]['associationForeignKey'])
-					));
+					);
+					if ($isUUID) {
+						$fields[] = $db->name($this->{$join}->primaryKey);
+					}
+					$fields =  join(',', $fields);
 					$db->insertMulti($this->{$join}, $fields, $newValues);
 				}
 			}
@@ -1266,35 +1341,83 @@ class Model extends Overloadable {
  * @access public
  */
 	function updateCounterCache($keys = array(), $created = false) {
-		if (empty($keys)) {
-			$keys = $this->data[$this->alias];
-		}
+		$keys = empty($keys) ? $this->data[$this->alias] : $keys;
+		$keys['old'] = isset($keys['old']) ? $keys['old'] : array();
+
 		foreach ($this->belongsTo as $parent => $assoc) {
+			$foreignKey = $assoc['foreignKey'];
+			$fkQuoted = $this->escapeField($assoc['foreignKey']);
+
 			if (!empty($assoc['counterCache'])) {
 				if ($assoc['counterCache'] === true) {
 					$assoc['counterCache'] = Inflector::underscore($this->alias) . '_count';
 				}
-				if (!isset($keys[$assoc['foreignKey']]) || empty($keys[$assoc['foreignKey']])) {
-					$keys[$assoc['foreignKey']] = $this->field($assoc['foreignKey']);
+				if (!$this->{$parent}->hasField($assoc['counterCache'])) {
+					continue;
 				}
-				if ($this->{$parent}->hasField($assoc['counterCache'])) {
-					$conditions = array($this->escapeField($assoc['foreignKey']) => $keys[$assoc['foreignKey']]);
-					$recursive = -1;
-					if (isset($assoc['counterScope'])) {
-						$conditions = array_merge($conditions, (array)$assoc['counterScope']);
-						$recursive = 1;
+
+				if (!array_key_exists($foreignKey, $keys)) {
+					$keys[$foreignKey] = $this->field($foreignKey);
+				}
+				$recursive = (isset($assoc['counterScope']) ? 1 : -1);
+				$conditions = ($recursive == 1) ? (array)$assoc['counterScope'] : array();
+
+				if (isset($keys['old'][$foreignKey])) {
+					if ($keys['old'][$foreignKey] == $keys[$foreignKey]) {
+						continue;
 					}
+					$conditions[$fkQuoted] = $keys['old'][$foreignKey];
+					$count = intval($this->find('count', compact('conditions', 'recursive')));
+
 					$this->{$parent}->updateAll(
-						array($assoc['counterCache'] => intval($this->find('count', compact('conditions', 'recursive')))),
-						array($this->{$parent}->escapeField() => $keys[$assoc['foreignKey']])
+						array($assoc['counterCache'] => $count),
+						array($this->{$parent}->escapeField() => $keys['old'][$foreignKey])
 					);
 				}
+				$conditions[$fkQuoted] = $keys[$foreignKey];
+
+				if ($recursive == 1) {
+					$conditions = array_merge($conditions, (array)$assoc['counterScope']);
+				}
+				$count = intval($this->find('count', compact('conditions', 'recursive')));
+
+				$this->{$parent}->updateAll(
+					array($assoc['counterCache'] => $count),
+					array($this->{$parent}->escapeField() => $keys[$foreignKey])
+				);
 			}
 		}
 	}
 /**
- * Saves (a) multiple individual records for a single model or (b) this record, as well as
- * all associated records
+ * Helper method for Model::updateCounterCache().  Checks the fields to be updated for
+ *
+ * @param array $data The fields of the record that will be updated
+ * @return array Returns updated foreign key values, along with an 'old' key containing the old
+ *               values, or empty if no foreign keys are updated.
+ * @access protected
+ */
+	function _prepareUpdateFields($data) {
+		$foreignKeys = array();
+		foreach ($this->belongsTo as $assoc => $info) {
+			if ($info['counterCache']) {
+				$foreignKeys[$assoc] = $info['foreignKey'];
+			}
+		}
+		$included = array_intersect($foreignKeys, array_keys($data));
+
+		if (empty($included) || empty($this->id)) {
+			return array();
+		}
+		$old = $this->find('first', array(
+			'conditions' => array('id' => $this->id),
+			'fields' => array_values($included),
+			'recursive' => -1
+		));
+		return array_merge($data, array('old' => $old[$this->alias]));
+	}
+/**
+ * Saves multiple individual records for a single model; Also works with a single record, as well as
+ * all its associated records.
  *
  * @param array $data Record data to save.  This can be either a numerically-indexed array (for saving multiple
  * 						records of the same type), or an array indexed by association name.
@@ -1309,6 +1432,8 @@ class Model extends Overloadable {
  *							- fieldList: Equivalent to the $fieldList parameter in Model::save()
  * @return mixed True on success, or false on failure
  * @access public
+ * @link http://book.cakephp.org/view/84/Saving-Related-Model-Data-hasOne-hasMany-belongsTo
+ * @link http://book.cakephp.org/view/75/Saving-Your-Data
  */
 	function saveAll($data = null, $options = array()) {
 		if (empty($data)) {
@@ -1383,6 +1508,7 @@ class Model extends Overloadable {
 						case 'belongsTo':
 							if ($this->__save($this->{$association}, $values, $options)) {
 								$data[$this->alias][$this->belongsTo[$association]['foreignKey']] = $this->{$association}->id;
+								unset($data[$association]);
 							} else {
 								$validationErrors[$association] = $this->{$association}->validationErrors;
 								$validates = false;
@@ -1394,7 +1520,7 @@ class Model extends Overloadable {
 					}
 				}
 			}
-			if (!$this->__save($this, $data[$this->alias], $options)) {
+			if (!$this->__save($this, $data, $options)) {
 				$validationErrors[$this->alias] = $this->validationErrors;
 				$validates = false;
 			}
@@ -1479,7 +1605,7 @@ class Model extends Overloadable {
 		}
 	}
 /**
- * Private helper method used by saveAll
+ * Private helper method used by saveAll.
  *
  * @return boolean Success
  * @access private
@@ -1496,37 +1622,40 @@ class Model extends Overloadable {
 		return true;
 	}
 /**
- * Allows model records to be updated based on a set of conditions
+ * Updates multiple model records based on a set of conditions.
  *
  * @param array $fields Set of fields and values, indexed by fields.
  * 						Fields are treated as SQL snippets, to insert literal values manually escape your data.
  * @param mixed $conditions Conditions to match, true for all records
  * @return boolean True on success, false on failure
  * @access public
+ * @link http://book.cakephp.org/view/75/Saving-Your-Data
  */
 	function updateAll($fields, $conditions = true) {
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		return $db->update($this, $fields, null, $conditions);
 	}
 /**
- * Synonym for del().
+ * Alias for del().
  *
  * @param mixed $id ID of record to delete
  * @param boolean $cascade Set to true to delete records that depend on this record
  * @return boolean True on success
  * @access public
  * @see Model::del()
+ * @link http://book.cakephp.org/view/691/remove
  */
 	function remove($id = null, $cascade = true) {
 		return $this->del($id, $cascade);
 	}
 /**
- * Removes record for given id. If no id is given, the current id is used. Returns true on success.
+ * Removes record for given ID. If no ID is given, the current ID is used. Returns true on success.
  *
  * @param mixed $id ID of record to delete
  * @param boolean $cascade Set to true to delete records that depend on this record
  * @return boolean True on success
  * @access public
+ * @link http://book.cakephp.org/view/690/del
  */
 	function del($id = null, $cascade = true) {
 		if (!empty($id)) {
@@ -1562,7 +1691,7 @@ class Model extends Overloadable {
 		return false;
 	}
 /**
- * Synonym for del().
+ * Alias for del().
  *
  * @param mixed $id ID of record to delete
  * @param boolean $cascade Set to true to delete records that depend on this record
@@ -1574,7 +1703,7 @@ class Model extends Overloadable {
 		return $this->del($id, $cascade);
 	}
 /**
- * Cascades model deletes to hasMany and hasOne relationships.
+ * Cascades model deletes through associated hasMany and hasOne child records.
  *
  * @param string $id ID of record that was deleted
  * @param boolean $cascade Set to true to delete records that depend on this record
@@ -1614,7 +1743,7 @@ class Model extends Overloadable {
 		}
 	}
 /**
- * Cascades model deletes to HABTM join keys.
+ * Cascades model deletes through HABTM join keys.
  *
  * @param string $id ID of record that was deleted
  * @return void
@@ -1625,7 +1754,7 @@ class Model extends Overloadable {
 
 		foreach ($this->hasAndBelongsToMany as $assoc => $data) {
 			$records = $this->{$data['with']}->find('all', array(
-				'conditions' => array($data['foreignKey'] => $id),
+				'conditions' => array_merge(array($data['foreignKey'] => $id), (array) $data['conditions']),
 				'fields' => $this->{$data['with']}->primaryKey,
 				'recursive' => -1
 			));
@@ -1637,13 +1766,14 @@ class Model extends Overloadable {
 		}
 	}
 /**
- * Allows model records to be deleted based on a set of conditions
+ * Deletes multiple model records based on a set of conditions.
  *
  * @param mixed $conditions Conditions to match
  * @param boolean $cascade Set to true to delete records that depend on this record
  * @param boolean $callbacks Run callbacks (not being used)
  * @return boolean True on success, false on failure
  * @access public
+ * @link http://book.cakephp.org/view/692/deleteAll
  */
 	function deleteAll($conditions, $cascade = true, $callbacks = false) {
 		if (empty($conditions)) {
@@ -1665,11 +1795,12 @@ class Model extends Overloadable {
 
 			if ($callbacks) {
 				$_id = $this->id;
-
+				$result = true;
 				foreach ($ids as $id) {
-					$this->delete($id, $cascade);
+					$result = ($result && $this->delete($id, $cascade));
 				}
 				$this->id = $_id;
+				return $result;
 			} else {
 				foreach ($ids as $id) {
 					$this->_deleteLinks($id);
@@ -1682,7 +1813,7 @@ class Model extends Overloadable {
 		}
 	}
 /**
- * Collects foreign keys from associations
+ * Collects foreign keys from associations.
  *
  * @return array
  * @access private
@@ -1698,7 +1829,7 @@ class Model extends Overloadable {
 		return $result;
 	}
 /**
- * Returns true if a record with set id exists.
+ * Returns true if a record with the currently set ID exists.
  *
  * @param boolean $reset if true will force database query
  * @return boolean True if such a record exists
@@ -1724,7 +1855,7 @@ class Model extends Overloadable {
 		return $this->__exists = ($this->find('count', $query) > 0);
 	}
 /**
- * Returns true if a record that meets given conditions exists
+ * Returns true if a record that meets given conditions exists.
  *
  * @param array $conditions SQL conditions array
  * @return boolean True if such a record exists
@@ -1734,14 +1865,11 @@ class Model extends Overloadable {
 		return ($this->find('count', array('conditions' => $conditions, 'recursive' => -1)) != false);
 	}
 /**
- * Return a single row as a resultset array.
- * By using the $recursive parameter, the call can access further "levels of association" than
- * the ones this model is directly associated to.
- *
- * Eg: find(array('name' => 'Thomas Anderson'), array('name', 'email'), 'field3 DESC', 2);
+ * Returns a result set array.
  *
  * Also used to perform new-notation finds, where the first argument is type of find operation to perform
- * (all / first / count), second parameter options for finding (indexed array, including: 'conditions', 'limit',
+ * (all / first / count / neighbors / list / threaded ),
+ * second parameter options for finding ( indexed array, including: 'conditions', 'limit',
  * 'recursive', 'page', 'fields', 'offset', 'order')
  *
  * Eg: find('all', array(
@@ -1757,12 +1885,13 @@ class Model extends Overloadable {
  *  - If three fields are specified, they are used (in order) for key, value and group.
  *  - Otherwise, first and second fields are used for key and value.
  *
- * @param array $conditions SQL conditions array, or type of find operation (all / first / count)
+ * @param array $conditions SQL conditions array, or type of find operation (all / first / count / neighbors / list / threaded)
  * @param mixed $fields Either a single string of a field name, or an array of field names, or options for matching
  * @param string $order SQL ORDER BY conditions (e.g. "price DESC" or "name ASC")
  * @param integer $recursive The number of levels deep to fetch associated records
  * @return array Array of records
  * @access public
+ * @link http://book.cakephp.org/view/449/find
  */
 	function find($conditions = null, $fields = array(), $order = null, $recursive = null) {
 		if (!is_string($conditions) || (is_string($conditions) && !array_key_exists($conditions, $this->_findMethods))) {
@@ -1843,6 +1972,7 @@ class Model extends Overloadable {
  * @param array $data
  * @return array
  * @access protected
+ * @see Model::find()
  */
 	function _findFirst($state, $query, $results = array()) {
 		if ($state == 'before') {
@@ -1866,6 +1996,7 @@ class Model extends Overloadable {
  * @param array $data
  * @return int The number of records found, or false
  * @access protected
+ * @see Model::find()
  */
 	function _findCount($state, $query, $results = array()) {
 		if ($state == 'before') {
@@ -1896,6 +2027,7 @@ class Model extends Overloadable {
  * @param array $data
  * @return array Key/value pairs of primary keys/display field values of all records found
  * @access protected
+ * @see Model::find()
  */
 	function _findList($state, $query, $results = array()) {
 		if ($state == 'before') {
@@ -1946,10 +2078,8 @@ class Model extends Overloadable {
 		}
 	}
 /**
- * findNeighbors method
- *
- * The before logic will find the previous field value, the after logic will then find the 'wrapping'
- * rows and return them
+ * Detects the previous field's value, then uses logic to find the 'wrapping'
+ * rows and return them.
  *
  * @param string $state Either "before" or "after"
  * @param mixed $query
@@ -2006,8 +2136,6 @@ class Model extends Overloadable {
 		}
 	}
 /**
- * findThreaded method
- *
  * In the event of ambiguous results returned (multiple top level results, with different parent_ids)
  * top level results with different parent_ids to the first result will be dropped
  *
@@ -2054,7 +2182,7 @@ class Model extends Overloadable {
 		}
 	}
 /**
- * Passes query results through model and behavior afterFilter() methods
+ * Passes query results through model and behavior afterFilter() methods.
  *
  * @param array Results to filter
  * @param boolean $primary If this is the primary model results (results from model where the find operation was performed)
@@ -2069,9 +2197,9 @@ class Model extends Overloadable {
 		return $this->afterFind($results, $primary);
 	}
 /**
- * Method is called only when bindTo<ModelName>() is used.
+ * Called only when bindTo<ModelName>() is used.
  * This resets the association arrays for the model back
- * to the original as set in the model.
+ * to those originally defined in the model.
  *
  * @return boolean Success
  * @access public
@@ -2097,7 +2225,7 @@ class Model extends Overloadable {
 		return true;
 	}
 /**
- * False if any fields passed match any (by default, all if $or = false) of their matching values.
+ * Returns false if any fields passed match any (by default, all if $or = false) of their matching values.
  *
  * @param array $fields Field/value pairs to search (if no values specified, they are pulled from $this->data)
  * @param boolean $or If false, all fields specified must match in order for a false return value
@@ -2139,11 +2267,12 @@ class Model extends Overloadable {
 		return ($this->find('count', array('conditions' => $fields, 'recursive' => -1)) == 0);
 	}
 /**
- * Returns a resultset for given SQL statement. Generic SQL queries should be made with this method.
+ * Returns a resultset for a given SQL statement. Custom SQL queries should be performed with this method.
  *
  * @param string $sql SQL statement
  * @return array Resultset
  * @access public
+ * @link http://book.cakephp.org/view/456/query
  */
 	function query() {
 		$params = func_get_args();
@@ -2151,11 +2280,12 @@ class Model extends Overloadable {
 		return call_user_func_array(array(&$db, 'query'), $params);
 	}
 /**
- * Returns true if all fields pass validation, otherwise false.
+ * Returns true if all fields pass validation.
  *
  * @param string $options An optional array of custom options to be made available in the beforeValidate callback
  * @return boolean True if there are no errors
  * @access public
+ * @link http://book.cakephp.org/view/410/Validating-Data-from-the-Controller
  */
 	function validates($options = array()) {
 		$errors = $this->invalidFields($options);
@@ -2165,11 +2295,12 @@ class Model extends Overloadable {
 		return $errors;
 	}
 /**
- * Returns an array of fields that do not meet validation.
+ * Returns an array of fields that have failed validation.
  *
  * @param string $options An optional array of custom options to be made available in the beforeValidate callback
  * @return array Array of invalid fields
  * @access public
+ * @link http://book.cakephp.org/view/410/Validating-Data-from-the-Controller
  */
 	function invalidFields($options = array()) {
 		if (
@@ -2308,8 +2439,8 @@ class Model extends Overloadable {
 		return $this->validationErrors;
 	}
 /**
- * Sets a field as invalid, optionally setting the name of validation
- * rule (in case of multiple validation for field) that was broken
+ * Marks a field as invalid, optionally setting the name of validation
+ * rule (in case of multiple validation for field) that was broken.
  *
  * @param string $field The name of the field to invalidate
  * @param mixed $value Name of validation rule that was not failed. If no validation key
@@ -2323,7 +2454,7 @@ class Model extends Overloadable {
 		$this->validationErrors[$field] = $value;
 	}
 /**
- * Returns true if given field name is a foreign key in this Model.
+ * Returns true if given field name is a foreign key in this model.
  *
  * @param string $field Returns true if the input string ends in "_id"
  * @return boolean True if the field is a foreign key listed in the belongsTo array.
@@ -2339,16 +2470,17 @@ class Model extends Overloadable {
 		return in_array($field, $foreignKeys);
 	}
 /**
- * Gets the display field for this model
+ * Returns the display field for this model.
  *
  * @return string The name of the display field for this Model (i.e. 'name', 'title').
  * @access public
+ * @deprecated
  */
 	function getDisplayField() {
 		return $this->displayField;
 	}
 /**
- * Escapes the field name and prepends the model name. Escaping will be done according to the current database driver's rules.
+ * Escapes the field name and prepends the model name. Escaping is done according to the current database driver's rules.
  *
  * @param string $field Field to escape (e.g: id)
  * @param string $alias Alias for the model (e.g: Post)
@@ -2401,59 +2533,7 @@ class Model extends Overloadable {
 		return false;
 	}
 /**
- * Top secret
- *
- * @return array
- * @access public
- */
-	function normalizeFindParams($type, $data, $altType = null, $r = array(), $_this = null) {
-		if ($_this == null) {
-			$_this = $this;
-			$root = true;
-		}
-
-		foreach ((array)$data as $name => $children) {
-			if (is_numeric($name)) {
-				$name = $children;
-				$children = array();
-			}
-
-			if (strpos($name, '.') !== false) {
-				$chain = explode('.', $name);
-				$name = array_shift($chain);
-				$children = array(join('.', $chain) => $children);
-			}
-
-			if (!empty($children)) {
-				if ($_this->name == $name) {
-					$r = array_merge($r, $this->normalizeFindParams($type, $children, $altType, $r, $_this));
-				} else {
-					if (!$_this->getAssociated($name)) {
-						$r[$altType][$name] = $children;
-					} else {
-						$r[$name] = $this->normalizeFindParams($type, $children, $altType, @$r[$name], $_this->{$name});;
-					}
-				}
-			} else {
-				if ($_this->getAssociated($name)) {
-					$r[$name] = array($type => null);
-				} else {
-					if ($altType != null) {
-						$r[$type][] = $name;
-					} else {
-						$r[$type] = $name;
-					}
-				}
-			}
-		}
-
-		if (isset($root)) {
-			return array($this->name => $r);
-		}
-		return $r;
-	}
-/**
- * Returns the ID of the last record this Model inserted
+ * Returns the ID of the last record this model inserted.
  *
  * @return mixed Last inserted ID
  * @access public
@@ -2462,7 +2542,7 @@ class Model extends Overloadable {
 		return $this->getInsertID();
 	}
 /**
- * Returns the ID of the last record this Model inserted
+ * Returns the ID of the last record this model inserted.
  *
  * @return mixed Last inserted ID
  * @access public
@@ -2471,7 +2551,7 @@ class Model extends Overloadable {
 		return $this->__insertID;
 	}
 /**
- * Sets the ID of the last record this Model inserted
+ * Sets the ID of the last record this model inserted
  *
  * @param mixed Last inserted ID
  * @access public
@@ -2480,7 +2560,7 @@ class Model extends Overloadable {
 		$this->__insertID = $id;
 	}
 /**
- * Returns the number of rows returned from the last query
+ * Returns the number of rows returned from the last query.
  *
  * @return int Number of rows
  * @access public
@@ -2490,7 +2570,7 @@ class Model extends Overloadable {
 		return $db->lastNumRows();
 	}
 /**
- * Returns the number of rows affected by the last query
+ * Returns the number of rows affected by the last query.
  *
  * @return int Number of rows
  * @access public
@@ -2500,7 +2580,7 @@ class Model extends Overloadable {
 		return $db->lastAffected();
 	}
 /**
- * Sets the DataSource to which this model is bound
+ * Sets the DataSource to which this model is bound.
  *
  * @param string $dataSource The name of the DataSource, as defined in app/config/database.php
  * @return boolean True on success
@@ -2539,7 +2619,7 @@ class Model extends Overloadable {
 		return $db;
 	}
 /**
- * Gets all the models with which this model is associated
+ * Gets all the models with which this model is associated.
  *
  * @param string $type Only result associations of this type
  * @return array Associations
@@ -2596,79 +2676,91 @@ class Model extends Overloadable {
 		}
 	}
 /**
- * Before find callback
+ * Called before each find operation. Return false if you want to halt the find
+ * call, otherwise return the (modified) query data.
  *
  * @param array $queryData Data used to execute this query, i.e. conditions, order, etc.
  * @return mixed true if the operation should continue, false if it should abort; or, modified $queryData to continue with new $queryData
  * @access public
+ * @link http://book.cakephp.org/view/680/beforeFind
  */
 	function beforeFind($queryData) {
 		return true;
 	}
 /**
- * After find callback. Can be used to modify any results returned by find().
+ * Called after each find operation. Can be used to modify any results returned by find().
+ * Return value should be the (modified) results.
  *
  * @param mixed $results The results of the find operation
  * @param boolean $primary Whether this model is being queried directly (vs. being queried as an association)
  * @return mixed Result of the find operation
  * @access public
+ * @link http://book.cakephp.org/view/681/afterFind
  */
 	function afterFind($results, $primary = false) {
 		return $results;
 	}
 /**
- * Before save callback
+ * Called before each save operation, after validation. Return a non-true result
+ * to halt the save.
  *
  * @return boolean True if the operation should continue, false if it should abort
  * @access public
+ * @link http://book.cakephp.org/view/683/beforeSave
  */
 	function beforeSave($options = array()) {
 		return true;
 	}
 /**
- * After save callback
+ * Called after each successful save operation.
  *
  * @param boolean $created True if this save created a new record
  * @access public
+ * @link http://book.cakephp.org/view/684/afterSave
  */
 	function afterSave($created) {
 	}
 /**
- * Before delete callback
+ * Called after every deletion operation.
  *
  * @param boolean $cascade If true records that depend on this record will also be deleted
  * @return boolean True if the operation should continue, false if it should abort
  * @access public
+ * @link http://book.cakephp.org/view/685/beforeDelete
  */
 	function beforeDelete($cascade = true) {
 		return true;
 	}
 /**
- * After delete callback
+ * Called after every deletion operation.
  *
  * @access public
+ * @link http://book.cakephp.org/view/686/afterDelete
  */
 	function afterDelete() {
 	}
 /**
- * Before validate callback
+ * Called during save operations, before validation. Please note that custom
+ * validation rules can be defined in $validate.
  *
  * @return boolean True if validate operation should continue, false to abort
  * @param $options array Options passed from model::save(), see $options of model::save().
  * @access public
+ * @link http://book.cakephp.org/view/682/beforeValidate
  */
 	function beforeValidate($options = array()) {
 		return true;
 	}
 /**
- * DataSource error callback
+ * Called when a DataSource-level error occurs.
  *
  * @access public
+ * @link http://book.cakephp.org/view/687/onError
  */
 	function onError() {
 	}
 /**
- * Private method. Clears cache for this model
+ * Private method. Clears cache for this model.
  *
  * @param string $type If null this deletes cached views if Cache.check is true
  *                     Will be used to allow deleting query cache also
@@ -2680,11 +2772,13 @@ class Model extends Overloadable {
 		if ($type === null) {
 			if (Configure::read('Cache.check') === true) {
 				$assoc[] = strtolower(Inflector::pluralize($this->alias));
+				$assoc[] = strtolower(Inflector::underscore(Inflector::pluralize($this->alias)));
 				foreach ($this->__associations as $key => $association) {
 					foreach ($this->$association as $key => $className) {
 						$check = strtolower(Inflector::pluralize($className['className']));
 						if (!in_array($check, $assoc)) {
 							$assoc[] = strtolower(Inflector::pluralize($className['className']));
+							$assoc[] = strtolower(Inflector::underscore(Inflector::pluralize($className['className'])));
 						}
 					}
 				}
@@ -2696,7 +2790,7 @@ class Model extends Overloadable {
 		}
 	}
 /**
- * Called when serializing a model
+ * Called when serializing a model.
  *
  * @return array Set of object variable names this model has
  * @access private
@@ -2706,7 +2800,7 @@ class Model extends Overloadable {
 		return $return;
 	}
 /**
- * Called when unserializing a model
+ * Called when de-serializing a model.
  *
  * @access private
  * @todo

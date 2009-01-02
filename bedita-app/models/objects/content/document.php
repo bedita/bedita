@@ -52,8 +52,6 @@ class Document extends BeditaContentModel
 	
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('GeoTag'),
-			'SearchTextSave',
-			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteObject' 			=> array(
 										'objects' => array(
 											"relatedObjects" => array("comment")

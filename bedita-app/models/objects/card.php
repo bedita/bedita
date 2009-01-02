@@ -34,10 +34,7 @@ class Card extends BEAppObjectModel {
 		"company_name" => 3, "city" => 4);
 
 	var $actsAs 	= array(
-			'CompactResult' 		=> array("MailGroup", "GeoTag"),
-			'SearchTextSave',
-			'ForeignDependenceSave' => array('BEObject'),
-			'DeleteObject' 			=> 'objects',
+			'CompactResult' 		=> array("MailGroup", "GeoTag")
 	); 
 	
 	protected $modelBindings = array( 

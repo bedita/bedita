@@ -1,6 +1,5 @@
 <?php
-/* SVN FILE: $Id: text.php 7690 2008-10-02 04:56:53Z nate $ */
-
+/* SVN FILE: $Id: text.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Text Helper
  *
@@ -8,45 +7,42 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.view.helpers
- * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.view.helpers
+ * @since         CakePHP(tm) v 0.10.0.1076
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
 /**
  * Included libraries.
  *
  */
-
 if (!class_exists('HtmlHelper')) {
 	App::import('Helper', 'Html');
 }
-
+if (!class_exists('Multibyte')) {
+	App::import('Core', 'Multibyte');
+}
 /**
  * Text helper library.
  *
  * Text manipulations: Highlight, excerpt, truncate, strip of links, convert email addresses to mailto: links...
  *
- * @package		cake
- * @subpackage	cake.cake.libs.view.helpers
+ * @package       cake
+ * @subpackage    cake.cake.libs.view.helpers
  */
 class TextHelper extends AppHelper {
-
 /**
  * Highlights a given phrase in a text. You can specify any expression in highlighter that
  * may include the \1 expression to include the $phrase found.
@@ -169,27 +165,27 @@ class TextHelper extends AppHelper {
 			extract($ending);
 		}
 		if ($considerHtml) {
-			if (strlen(preg_replace('/<.*?>/', '', $text)) <= $length) {
+			if (mb_strlen(preg_replace('/<.*?>/', '', $text)) <= $length) {
 				return $text;
 			}
-			$totalLength = strlen($ending);
+			$totalLength = mb_strlen($ending);
 			$openTags = array();
 			$truncate = '';
 			preg_match_all('/(<\/?([\w+]+)[^>]*>)?([^<>]*)/', $text, $tags, PREG_SET_ORDER);
 			foreach ($tags as $tag) {
-				if (preg_match('/img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param/s', $tag[2])) {
-
-				} else if (preg_match('/<[\w]+[^>]*>/s', $tag[0])) {
-					array_unshift($openTags, $tag[2]);
-				} else if (preg_match('/<\/([\w]+)[^>]*>/s', $tag[0], $closeTag)) {
-					$pos = array_search($closeTag[1], $openTags);
-					if ($pos !== false) {
-						array_splice($openTags, $pos, 1);
+				if (!preg_match('/img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param/s', $tag[2])) {
+					if (preg_match('/<[\w]+[^>]*>/s', $tag[0])) {
+						array_unshift($openTags, $tag[2]);
+					} else if (preg_match('/<\/([\w]+)[^>]*>/s', $tag[0], $closeTag)) {
+						$pos = array_search($closeTag[1], $openTags);
+						if ($pos !== false) {
+							array_splice($openTags, $pos, 1);
+						}
 					}
 				}
 				$truncate .= $tag[1];
 
-				$contentLength = strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $tag[3]));
+				$contentLength = mb_strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $tag[3]));
 				if ($contentLength + $totalLength > $length) {
 					$left = $length - $totalLength;
 					$entitiesLength = 0;
@@ -197,14 +193,14 @@ class TextHelper extends AppHelper {
 						foreach ($entities[0] as $entity) {
 							if ($entity[1] + 1 - $entitiesLength <= $left) {
 								$left--;
-								$entitiesLength += strlen($entity[0]);
+								$entitiesLength += mb_strlen($entity[0]);
 							} else {
 								break;
 							}
 						}
 					}
 
-					$truncate .= substr($tag[3], 0 , $left + $entitiesLength);
+					$truncate .= mb_substr($tag[3], 0 , $left + $entitiesLength);
 					break;
 				} else {
 					$truncate .= $tag[3];
@@ -216,17 +212,17 @@ class TextHelper extends AppHelper {
 			}
 
 		} else {
-			if (strlen($text) <= $length) {
+			if (mb_strlen($text) <= $length) {
 				return $text;
 			} else {
-				$truncate = substr($text, 0, $length - strlen($ending));
+				$truncate = mb_substr($text, 0, $length - strlen($ending));
 			}
 		}
 		if (!$exact) {
-			$spacepos = strrpos($truncate, ' ');
+			$spacepos = mb_strrpos($truncate, ' ');
 			if (isset($spacepos)) {
 				if ($considerHtml) {
-					$bits = substr($truncate, $spacepos);
+					$bits = mb_substr($truncate, $spacepos);
 					preg_match_all('/<\/([a-z]+)>/', $bits, $droppedTags, PREG_SET_ORDER);
 					if (!empty($droppedTags)) {
 						foreach ($droppedTags as $closingTag) {
@@ -236,7 +232,7 @@ class TextHelper extends AppHelper {
 						}
 					}
 				}
-				$truncate = substr($truncate, 0, $spacepos);
+				$truncate = mb_substr($truncate, 0, $spacepos);
 			}
 		}
 

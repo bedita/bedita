@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_source.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: dbo_source.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -7,24 +7,22 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.model.datasources
- * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.model.datasources
+ * @since         CakePHP(tm) v 0.10.0.1076
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Core', array('Set', 'String'));
 
@@ -33,8 +31,8 @@ App::import('Core', array('Set', 'String'));
  *
  * Creates DBO-descendant objects from a given db connection configuration
  *
- * @package		cake
- * @subpackage	cake.cake.libs.model.datasources
+ * @package       cake
+ * @subpackage    cake.cake.libs.model.datasources
  */
 class DboSource extends DataSource {
 /**
@@ -50,21 +48,9 @@ class DboSource extends DataSource {
  */
 	var $index = array('PRI' => 'primary', 'MUL' => 'index', 'UNI' => 'unique');
 /**
- * Enter description here...
+ * Database keyword used to assign aliases to identifiers.
  *
- * @var unknown_type
- */
-	var $startQuote = null;
-/**
- * Enter description here...
- *
- * @var unknown_type
- */
-	var $endQuote = null;
-/**
- * Enter description here...
- *
- * @var unknown_type
+ * @var string
  */
 	var $alias = 'AS ';
 /**
@@ -74,9 +60,9 @@ class DboSource extends DataSource {
  */
 	var $fieldCache = array();
 /**
- * Enter description here...
+ * Bypass automatic adding of joined fields/associations.
  *
- * @var unknown_type
+ * @var boolean
  */
 	var $__bypass = false;
 /**
@@ -129,14 +115,21 @@ class DboSource extends DataSource {
  * Prepares a value, or an array of values for database queries by quoting and escaping them.
  *
  * @param mixed $data A value or an array of values to prepare.
+ * @param string $column The column into which this data will be inserted
+ * @param boolean $read Value to be used in READ or WRITE context
  * @return mixed Prepared value or array of values.
  */
-	function value($data, $column = null) {
+	function value($data, $column = null, $read = true) {
 		if (is_array($data) && !empty($data)) {
-			return array_map(array(&$this, 'value'), $data, array_fill(0, count($data), $column));
-		} elseif (is_object($data)) {
-			if (isset($data->type) && $data->type == 'identifier') {
+			return array_map(
+				array(&$this, 'value'),
+				$data, array_fill(0, count($data), $column), array_fill(0, count($data), $read)
+			);
+		} elseif (is_object($data) && isset($data->type)) {
+			if ($data->type == 'identifier') {
 				return $this->name($data->value);
+			} elseif ($data->type == 'expression') {
+				return $data->value;
 			}
 		} elseif (in_array($data, array('{$__cakeID__$}', '{$__cakeForeignKey__$}'), true)) {
 			return $data;
@@ -345,7 +338,7 @@ class DboSource extends DataSource {
 			$out = array();
 
 			$first = $this->fetchRow();
-			if ($first != null){
+			if ($first != null) {
 				$out[] = $first;
 			}
 			while ($this->hasResult() && $item = $this->fetchResult()) {
@@ -397,7 +390,7 @@ class DboSource extends DataSource {
 		$data = (array)$data;
 		$count = count($data);
 
-		for($i = 0; $i < $count; $i++) {
+		for ($i = 0; $i < $count; $i++) {
 			if ($data[$i] == '*') {
 				continue;
 			}
@@ -564,7 +557,7 @@ class DboSource extends DataSource {
 		$count = count($fields);
 
 		for ($i = 0; $i < $count; $i++) {
-			$valueInsert[] = $this->value($values[$i], $model->getColumnType($fields[$i]));
+			$valueInsert[] = $this->value($values[$i], $model->getColumnType($fields[$i]), false);
 		}
 		for ($i = 0; $i < $count; $i++) {
 			$fieldInsert[] = $this->name($fields[$i]);
@@ -572,8 +565,13 @@ class DboSource extends DataSource {
 				$id = $values[$i];
 			}
 		}
+		$query = array(
+			'table' => $this->fullTableName($model),
+			'fields' => join(', ', $fieldInsert),
+			'values' => join(', ', $valueInsert)
+		);
 
-		if ($this->execute('INSERT INTO ' . $this->fullTableName($model) . ' (' . join(',', $fieldInsert). ') VALUES (' . join(',', $valueInsert) . ')')) {
+		if ($this->execute($this->renderStatement('create', $query))) {
 			if (empty($id)) {
 				$id = $this->lastInsertId($this->fullTableName($model, false), $model->primaryKey);
 			}
@@ -841,7 +839,7 @@ class DboSource extends DataSource {
 					if ($type == 'hasAndBelongsToMany') {
 						$uniqueIds = $merge = array();
 
-						foreach($fetch as $j => $data) {
+						foreach ($fetch as $j => $data) {
 							if (
 								(isset($data[$with]) && $data[$with][$foreignKey] === $row[$model->alias][$model->primaryKey]) &&
 								(!in_array($data[$with][$joinKeys[1]], $uniqueIds))
@@ -1074,7 +1072,7 @@ class DboSource extends DataSource {
 		}
 		$assocData['limit'] = $this->limit($assocData['limit'], $assocData['offset']);
 
-		switch($type) {
+		switch ($type) {
 			case 'hasOne':
 			case 'belongsTo':
 				$conditions = $this->__mergeConditions(
@@ -1292,6 +1290,9 @@ class DboSource extends DataSource {
 			case 'select':
 				return "SELECT {$fields} FROM {$table} {$alias} {$joins} {$conditions} {$group} {$order} {$limit}";
 			break;
+			case 'create':
+				return "INSERT INTO {$table} ({$fields}) VALUES ({$values})";
+			break;
 			case 'update':
 				if (!empty($alias)) {
 					$aliases = "{$this->alias}{$alias} {$joins} ";
@@ -1370,8 +1371,9 @@ class DboSource extends DataSource {
 		if ($conditions === false) {
 			return false;
 		}
+		$query = compact('table', 'alias', 'joins', 'fields', 'conditions');
 
-		if (!$this->execute($this->renderStatement('update', compact('table', 'alias', 'joins', 'fields', 'conditions')))) {
+		if (!$this->execute($this->renderStatement('update', $query))) {
 			$model->onError();
 			return false;
 		}
@@ -1728,10 +1730,9 @@ class DboSource extends DataSource {
 		}
 
 		if (is_array($conditions) && !empty($conditions)) {
-			if (!empty($conditions)) {
-				$out = $this->conditionKeysToString($conditions, $quoteValues, $model);
-			}
-			if (empty($out) || empty($conditions)) {
+			$out = $this->conditionKeysToString($conditions, $quoteValues, $model);
+
+			if (empty($out)) {
 				return $clause . ' 1 = 1';
 			}
 			return $clause . join(' AND ', $out);
@@ -1740,7 +1741,9 @@ class DboSource extends DataSource {
 		if (empty($conditions) || trim($conditions) == '' || $conditions === true) {
 			return $clause . '1 = 1';
 		}
-		if (preg_match('/^WHERE\\x20|^GROUP\\x20BY\\x20|^HAVING\\x20|^ORDER\\x20BY\\x20/i', $conditions, $match)) {
+		$clauses = '/^WHERE\\x20|^GROUP\\x20BY\\x20|^HAVING\\x20|^ORDER\\x20BY\\x20/i';
+
+		if (preg_match($clauses, $conditions, $match)) {
 			$clause = '';
 		}
 		if (trim($conditions) == '') {
@@ -1785,7 +1788,6 @@ class DboSource extends DataSource {
 				} else {
 					$key = $join;
 				}
-
 				$value = $this->conditionKeysToString($value, $quoteValues, $model);
 
 				if (strpos($join, 'NOT') !== false) {
@@ -1809,6 +1811,12 @@ class DboSource extends DataSource {
 				if (is_object($value) && isset($value->type)) {
 					if ($value->type == 'identifier') {
 						$data .= $this->name($key) . ' = ' . $this->name($value->value);
+					} elseif ($value->type == 'expression') {
+						if (is_numeric($key)) {
+							$data .= $value->value;
+						} else {
+							$data .= $this->name($key) . ' = ' . $value->value;
+						}
 					}
 				} elseif (is_array($value) && !empty($value) && !$valueInsert) {
 					$keys = array_keys($value);
@@ -1852,8 +1860,8 @@ class DboSource extends DataSource {
 		return $out;
 	}
 /**
- * Extracts a Model.field identifier and an SQL condition operator from a string, formats and inserts values,
- * and composes them into an SQL snippet.
+ * Extracts a Model.field identifier and an SQL condition operator from a string, formats
+ * and inserts values, and composes them into an SQL snippet.
  *
  * @param Model $model Model object initiating the query
  * @param string $key An SQL key snippet containing a field and optional SQL operator
@@ -1871,16 +1879,20 @@ class DboSource extends DataSource {
 		} else {
 			list($key, $operator) = explode(' ', trim($key), 2);
 
-			if (!preg_match($operatorMatch, trim($operator))) {
+			if (!preg_match($operatorMatch, trim($operator)) && strpos($operator, ' ') !== false) {
 				$key = $key . ' ' . $operator;
-				list($key, $operator) = str_split($key, strrpos($key, ' '));
+				$split = strrpos($key, ' ');
+				$operator = substr($key, $split);
+				$key = substr($key, 0, $split);
 			}
 		}
 		$type = (is_object($model) ? $model->getColumnType($key) : null);
 		$null = ($value === null || (is_array($value) && empty($value)));
 
 		if (strtolower($operator) === 'not') {
-			$data = $this->conditionKeysToString(array($operator => array($key => $value)), true, $model);
+			$data = $this->conditionKeysToString(
+				array($operator => array($key => $value)), true, $model
+			);
 			return $data[0];
 		}
 		$value = $this->value($value, $type);
@@ -1992,17 +2004,12 @@ class DboSource extends DataSource {
 		}
 
 		if (is_array($keys)) {
-			foreach ($keys as $key => $val) {
-				if (is_numeric($key) && empty($val)) {
-					unset($keys[$key]);
-				}
-			}
+			$keys = array_filter($keys);
 		}
 
 		if (empty($keys) || (is_array($keys) && count($keys) && isset($keys[0]) && empty($keys[0]))) {
 			return '';
 		}
-		$flag = (isset($keys[0]) && $keys[0] == '(Model.field > 100) DESC');
 
 		if (is_array($keys)) {
 			$keys = (Set::countDim($keys) > 1) ? array_map(array(&$this, 'order'), $keys) : $keys;
@@ -2022,9 +2029,11 @@ class DboSource extends DataSource {
 					} else {
 						$dir = '';
 					}
-					Configure::write('flag', $flag);
-					$key = trim($this->name(trim($key)) . ' ' . trim($dir));
-					Configure::write('flag', false);
+					$key = trim($key);
+					if (!preg_match('/\s/', $key)) {
+						$key = $this->name($key);
+					}
+					$key .= ' ' . trim($dir);
 				}
 				$order[] = $this->order($key . $value);
 			}

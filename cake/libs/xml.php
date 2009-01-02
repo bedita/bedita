@@ -1,6 +1,5 @@
 <?php
-/* SVN FILE: $Id: xml.php 7690 2008-10-02 04:56:53Z nate $ */
-
+/* SVN FILE: $Id: xml.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * XML handling for Cake.
  *
@@ -8,35 +7,32 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *                     1785 E. Sahara Avenue, Suite 490-204
- *                     Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright    Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link         http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package      cake
- * @subpackage   cake.cake.libs
- * @since        CakePHP v .0.10.3.1400
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs
+ * @since         CakePHP v .0.10.3.1400
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Core', 'Set');
-
 /**
  * XML node.
  *
  * Single XML node in an XML tree.
  *
- * @package    cake
- * @subpackage cake.cake.libs
- * @since      CakePHP v .0.10.3.1400
+ * @package       cake
+ * @subpackage    cake.cake.libs
+ * @since         CakePHP v .0.10.3.1400
  */
 class XmlNode extends Object {
 /**
@@ -110,7 +106,7 @@ class XmlNode extends Object {
 
 		if (is_array($value) || is_object($value)) {
 			$this->normalize($value);
-		} elseif(!empty($value) || $value === 0 || $value === '0') {
+		} elseif (!empty($value) || $value === 0 || $value === '0') {
 			$this->createTextNode($value);
 		}
 	}
@@ -650,58 +646,58 @@ class XmlNode extends Object {
 				}
 			}
 		}
-
 		return $d;
 	}
 /**
  * Return array representation of current object.
  *
- * @param object optional used mainly by the method itself to reverse children
+ * @param boolean $camelize true will camelize child nodes, false will not alter node names
  * @return array Array representation
  * @access public
  */
-	function toArray($object = null) {
-		if ($object === null) {
-			$object =& $this;
+	function toArray($camelize = true) {
+		$out = $this->attributes;
+		$multi = null;
+
+		foreach ($this->children as $child) {
+			$key = $camelize ? Inflector::camelize($child->name) : $child->name;
+
+			if (is_a($child, 'XmlTextNode')) {
+				$out['value'] = $child->value;
+				continue;
+			} elseif (isset($child->children[0]) && is_a($child->children[0], 'XmlTextNode')) {
+				$value = $child->children[0]->value;
+
+				if ($child->attributes) {
+					$value = array_merge(array('value' => $value), $child->attributes);
+				}
+
+				if (isset($out[$child->name]) || isset($multi[$key])) {
+					if (!isset($multi[$key])) {
+						$multi[$key] = array($out[$child->name]);
+						unset($out[$child->name]);
+					}
+					$multi[$key][] = $value;
+				} else {
+					$out[$child->name] = $value;
+				}
+				continue;
+			} else {
+				$value = $child->toArray($camelize);
+			}
+
+			if (!isset($out[$key])) {
+				$out[$key] = $value;
+			} else {
+				if (!is_array($out[$key]) || !isset($out[$key][0])) {
+					$out[$key] = array($out[$key]);
+				}
+				$out[$key][] = $value;
+			}
 		}
-		if (is_a($object, 'XmlNode')) {
-			$out = $object->attributes;
-			$multi = null;
-			foreach ($object->children as $child) {
-				$key = Inflector::camelize($child->name);
-				if (is_a($child, 'XmlTextNode')) {
-					$out['value'] = $child->value;
-					continue;
-				} elseif (isset($child->children[0]) && is_a($child->children[0], 'XmlTextNode')) {
-					$value = $child->children[0]->value;
-					if ($child->attributes) {
-						$value = array_merge(array('value' => $value), $child->attributes);
-					}
-					if (isset($out[$child->name]) || isset($multi[$key])) {
-						if (!isset($multi[$key])) {
-							$multi[$key] = array($out[$child->name]);
-							unset($out[$child->name]);
-						}
-						$multi[$key][] = $value;
-					} else {
-						$out[$child->name] = $value;
-					}
-					continue;
-				} else {
-					$value = $this->toArray($child);
-				}
-				if (!isset($out[$key])) {
-					$out[$key] = $value;
-				} else {
-					if (!is_array($out[$key]) || !isset($out[$key][0])) {
-						$out[$key] = array($out[$key]);
-					}
-					$out[$key][] = $value;
-				}
-			}
-			if (isset($multi)) {
-				$out = array_merge($out, $multi);
-			}
+
+		if (isset($multi)) {
+			$out = array_merge($out, $multi);
 		}
 		return $out;
 	}
@@ -736,9 +732,9 @@ class XmlNode extends Object {
  *
  * Parses and stores XML data, representing the root of an XML document
  *
- * @package    cake
- * @subpackage cake.cake.libs
- * @since      CakePHP v .0.10.3.1400
+ * @package       cake
+ * @subpackage    cake.cake.libs
+ * @since         CakePHP v .0.10.3.1400
  */
 class Xml extends XmlNode {
 
@@ -805,7 +801,10 @@ class Xml extends XmlNode {
  * @param array $options Options to set up with
  */
 	function __construct($input = null, $options = array()) {
-		$defaults = array('root' => '#document', 'tags' => array(), 'namespaces' => array(), 'version' => '1.0', 'encoding' => 'UTF-8', 'format' => 'attributes');
+		$defaults = array(
+			'root' => '#document', 'tags' => array(), 'namespaces' => array(),
+			'version' => '1.0', 'encoding' => 'UTF-8', 'format' => 'attributes'
+		);
 		$options = array_merge($defaults, Xml::options(), $options);
 
 		foreach (array('version', 'encoding', 'namespaces') as $key) {
@@ -873,7 +872,7 @@ class Xml extends XmlNode {
 		for ($i = 0; $i < $count; $i++) {
 			$data = $vals[$i];
 			$data = array_merge(array('tag' => null, 'value' => null, 'attributes' => array()), $data);
-			switch($data['type']) {
+			switch ($data['type']) {
 				case "open" :
 					$xml =& $xml->createElement($data['tag'], $data['value'], $data['attributes']);
 				break;
@@ -1239,9 +1238,9 @@ class XmlElement extends XmlNode {
  *
  * Stores XML text data according to the encoding of the parent document
  *
- * @package    cake
- * @subpackage cake.cake.libs
- * @since      CakePHP v .1.2.6000
+ * @package       cake
+ * @subpackage    cake.cake.libs
+ * @since         CakePHP v .1.2.6000
  */
 class XmlTextNode extends XmlNode {
 /**
@@ -1263,9 +1262,6 @@ class XmlTextNode extends XmlNode {
  * @param mixed $value Node value
  */
 	function __construct($value = null) {
-		if (is_numeric($value)) {
-			$value = floatval($value);
-		}
 		$this->value = $value;
 	}
 /**
@@ -1305,7 +1301,7 @@ class XmlTextNode extends XmlNode {
 			$val = mb_convert_encoding($val,'UTF-8', 'HTML-ENTITIES');
 		}
 
-		if ($options['cdata'] === true && is_string($val)) {
+		if ($options['cdata'] === true && !is_numeric($val)) {
 			$val = '<![CDATA[' . $val . ']]>';
 		}
 

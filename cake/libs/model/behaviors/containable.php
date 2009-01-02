@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: containable.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: containable.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Behavior for binding management.
  *
@@ -7,31 +7,29 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *							  1785 E. Sahara Avenue, Suite 490-204
- *							  Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright	   Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package		 cake
- * @subpackage	  cake.cake.console.libs
- * @since		   CakePHP(tm) v 1.2.0.5669
- * @version		 $Revision: 7690 $
- * @modifiedby	  $LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license		 http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.console.libs
+ * @since         CakePHP(tm) v 1.2.0.5669
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * Behavior to allow for dynamic and atomic manipulation of a Model's associations used for a find call. Most useful for limiting
  * the amount of associations and data returned.
  *
- * @package		cake
- * @subpackage	cake.cake.console.libs
+ * @package       cake
+ * @subpackage    cake.cake.console.libs
  */
 class ContainableBehavior extends ModelBehavior {
 /**
@@ -129,7 +127,7 @@ class ContainableBehavior extends ModelBehavior {
 			}
 			if ($contain) {
 				$backupBindings = array();
-				foreach($this->types as $relation) {
+				foreach ($this->types as $relation) {
 					$backupBindings[$relation] = $instance->{$relation};
 				}
 				foreach ($this->types as $type) {
@@ -180,16 +178,16 @@ class ContainableBehavior extends ModelBehavior {
 
 		$query['fields'] = (array)$query['fields'];
 		if (!empty($Model->belongsTo)) {
-			foreach($Model->belongsTo as $assoc => $data) {
+			foreach ($Model->belongsTo as $assoc => $data) {
 				if (!empty($data['fields'])) {
-					foreach((array) $data['fields'] as $field) {
+					foreach ((array) $data['fields'] as $field) {
 						$query['fields'][] = (strpos($field, '.') === false ? $assoc . '.' : '') . $field;
 					}
 				}
 			}
 		}
 		if (!empty($mandatory[$Model->alias])) {
-			foreach($mandatory[$Model->alias] as $field) {
+			foreach ($mandatory[$Model->alias] as $field) {
 				if ($field == '--primaryKey--') {
 					$field = $Model->primaryKey;
 				} else if (preg_match('/^.+\.\-\-[^-]+\-\-$/', $field)) {
@@ -213,7 +211,7 @@ class ContainableBehavior extends ModelBehavior {
  */
 	function afterFind(&$Model, $results, $primary) {
 		if (!empty($Model->__backContainableAssociation)) {
-			foreach($Model->__backContainableAssociation as $relation => $bindings) {
+			foreach ($Model->__backContainableAssociation as $relation => $bindings) {
 				$Model->{$relation} = $bindings;
 				unset($Model->__backContainableAssociation);
 			}
@@ -250,7 +248,7 @@ class ContainableBehavior extends ModelBehavior {
 		if (!empty($Model->__backInnerAssociation)) {
 			$assocs = $Model->__backInnerAssociation;
 			unset($Model->__backInnerAssociation);
-			foreach($assocs as $currentModel) {
+			foreach ($assocs as $currentModel) {
 				$this->resetBindings($Model->$currentModel);
 			}
 		}
@@ -370,9 +368,9 @@ class ContainableBehavior extends ModelBehavior {
  */
 	function fieldDependencies(&$Model, $map, $fields = array()) {
 		if ($fields === false) {
-			foreach($map as $parent => $children) {
-				foreach($children as $type => $bindings) {
-					foreach($bindings as $dependency) {
+			foreach ($map as $parent => $children) {
+				foreach ($children as $type => $bindings) {
+					foreach ($bindings as $dependency) {
 						if ($type == 'hasAndBelongsToMany') {
 							$fields[$parent][] = '--primaryKey--';
 						} else if ($type == 'belongsTo') {
@@ -386,10 +384,10 @@ class ContainableBehavior extends ModelBehavior {
 		if (empty($map[$Model->alias])) {
 			return $fields;
 		}
-		foreach($map[$Model->alias] as $type => $bindings) {
-			foreach($bindings as $dependency) {
+		foreach ($map[$Model->alias] as $type => $bindings) {
+			foreach ($bindings as $dependency) {
 				$innerFields = array();
-				switch($type) {
+				switch ($type) {
 					case 'belongsTo':
 						$fields[] = $Model->{$type}[$dependency]['foreignKey'];
 						break;

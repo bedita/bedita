@@ -30,6 +30,8 @@
  */
 class Link extends BEAppObjectModel {
 	
+	var $actsAs = array();
+	
 	public $searchFields = array();
 	
 	protected $modelBindings = array( 

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: tree.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: tree.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Tree behavior class.
  *
@@ -7,32 +7,30 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP :  Rapid Development Framework <http://www.cakephp.org/>
+ * CakePHP :  Rapid Development Framework (http://www.cakephp.org)
  * Copyright 2006-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2006-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP Project
- * @package			cake
- * @subpackage		cake.cake.libs.model.behaviors
- * @since			CakePHP v 1.2.0.4487
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2006-2008, Cake Software Foundation, Inc.
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.model.behaviors
+ * @since         CakePHP v 1.2.0.4487
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * Short description for file
  *
  * Long description for file
  *
- * @package		cake
- * @subpackage	cake.cake.libs.model.behaviors
+ * @package       cake
+ * @subpackage    cake.cake.libs.model.behaviors
  */
 class TreeBehavior extends ModelBehavior {
 /**
@@ -131,7 +129,7 @@ class TreeBehavior extends ModelBehavior {
  * parameters to be saved. For newly created nodes with NO parent the left and right field values are set directly by
  * this method bypassing the setParent logic.
  *
- * @since 1.2
+ * @since         1.2
  * @param AppModel $model
  * @return boolean true to continue, false to abort the save
  * @access public
@@ -226,7 +224,7 @@ class TreeBehavior extends ModelBehavior {
 
 		if ($id === null) {
 			return $model->find('count', array('conditions' => $scope));
-		} elseif (!empty ($model->data)) {
+		} elseif (isset($model->data[$model->alias][$left]) && isset($model->data[$model->alias][$right])) {
 			$data = $model->data[$model->alias];
 		} else {
 			list($data) = array_values($model->find('first', array('conditions' => array($scope, $model->escapeField() => $id), 'recursive' => $recursive)));
@@ -582,7 +580,7 @@ class TreeBehavior extends ModelBehavior {
 			}
 			$count = 1;
 			foreach ($model->find('all', array('conditions' => $scope, 'fields' => array($model->primaryKey), 'order' => $left)) as $array) {
-				$model->{$model->primaryKey} = $array[$model->alias][$model->primaryKey];
+				$model->id = $array[$model->alias][$model->primaryKey];
 				$lft = $count++;
 				$rght = $count++;
 				$model->save(array($left => $lft, $right => $rght), array('callbacks' => false));
@@ -754,7 +752,7 @@ class TreeBehavior extends ModelBehavior {
 			if (is_null($instance[$model->alias][$left]) || is_null($instance[$model->alias][$right])) {
 				$errors[] = array('node', $instance[$model->alias][$model->primaryKey],
 					'has invalid left or right values');
-			} elseif ($instance[$model->alias][$left] == $instance[$model->alias][$right]){
+			} elseif ($instance[$model->alias][$left] == $instance[$model->alias][$right]) {
 				$errors[] = array('node', $instance[$model->alias][$model->primaryKey],
 					'left and right values identical');
 			} elseif ($instance[$model->alias][$parent]) {
@@ -768,11 +766,10 @@ class TreeBehavior extends ModelBehavior {
 					$errors[] = array('node', $instance[$model->alias][$model->primaryKey],
 						'right greater than parent (node ' . $instance['VerifyParent'][$model->primaryKey] . ').');
 				}
-			} elseif ($model->find('count', array('conditions' => array($scope, $model->escapeField($left) . '< ' . $instance[$model->alias][$left], $right . '> ' . $instance[$model->alias][$right]), 'recursive' => 0))) {
+			} elseif ($model->find('count', array('conditions' => array($scope, $model->escapeField($left) . ' <' => $instance[$model->alias][$left], $model->escapeField($right) . ' >' => $instance[$model->alias][$right]), 'recursive' => 0))) {
 				$errors[] = array('node', $instance[$model->alias][$model->primaryKey], 'The parent field is blank, but has a parent');
 			}
 		}
-
 		if ($errors) {
 			return $errors;
 		}
@@ -921,7 +918,7 @@ class TreeBehavior extends ModelBehavior {
 		if ($created) {
 			$conditions['NOT'][$model->alias . '.' . $model->primaryKey] = $model->id;
 		}
-		$model->updateAll(array($model->alias . '.' . $field => $model->alias . '.' . $field . ' ' . $dir . ' ' . $shift), $conditions);
+		$model->updateAll(array($model->alias . '.' . $field => $model->escapeField($field) . ' ' . $dir . ' ' . $shift), $conditions);
 		$model->recursive = $modelRecursive;
 	}
 }

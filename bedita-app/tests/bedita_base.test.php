@@ -208,6 +208,44 @@ class BeditaTestCase extends CakeTestCase {
 	}
 
 	protected function cleanUp() {}
+	
+	/**
+	 * Check for duplicate entry in actsAs
+	 *
+	 * @param unknown_type $model
+	 */
+	protected function checkDuplicateBehavior($model) {
+		if (empty($model->actsAs)) {
+			pr("actsAs attribute not defined for " . $model->name);
+			return;	
+		}
+		
+		pr("actsAs attribute, check for duplicate entry:");
+ 		pr($model->actsAs);
+ 		
+ 		// check in numeric array
+ 		foreach ($model->actsAs as $key => $value) {
+ 			if (is_numeric($key))
+ 				$numericActAs[] = $value;
+ 		}
+ 		$this->assertEqual($numericActAs, array_unique($numericActAs));
+ 		
+ 		// specific associative array
+ 		if (!empty($model->actsAs["CompactResult"])) {
+	 		$this->assertEqual($model->actsAs["CompactResult"], 
+	 						   array_unique($model->actsAs["CompactResult"]));
+ 		}
+ 		
+ 		if (!empty($model->actsAs["ForeignDependenceSave"])) {
+	 		$this->assertEqual($model->actsAs["ForeignDependenceSave"], 
+	 						   array_unique($model->actsAs["ForeignDependenceSave"]));
+ 		}
+
+ 		if (!empty($model->actsAs["DeleteDependentObject"])) {
+ 			$this->assertEqual($model->actsAs["DeleteDependentObject"], 
+	 						   array_unique($model->actsAs["DeleteDependentObject"]));
+ 		}
+	}
 }
 
 ?>

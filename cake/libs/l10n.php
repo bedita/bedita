@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: l10n.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id: l10n.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -7,32 +7,30 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs
- * @since			CakePHP(tm) v 1.2.0.4116
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 05:09:03 -0400 (Fri, 27 Jun 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs
+ * @since         CakePHP(tm) v 1.2.0.4116
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * @package		cake
- * @subpackage	cake.cake.libs
+ * @package       cake
+ * @subpackage    cake.cake.libs
  */
 class L10n extends Object {
 /**
@@ -104,8 +102,8 @@ class L10n extends Object {
 								/* Chinese */ 'chi' => 'zh',
 								/* Chinese */ 'zho' => 'zh',
 								/* Croatian */ 'hrv' => 'hr',
-								/* Czech */ 'ces' => 'cs',
 								/* Czech */ 'cze' => 'cs',
+								/* Czech */ 'ces' => 'cs',
 								/* Danish */ 'dan' => 'da',
 								/* Dutch (Standard) */ 'dut' => 'nl',
 								/* Dutch (Standard) */ 'nld' => 'nl',
@@ -115,14 +113,14 @@ class L10n extends Object {
 								/* Farsi */ 'fas' => 'fa',
 								/* Farsi */ 'per' => 'fa',
 								/* Finnish */ 'fin' => 'fi',
-								/* French (Standard) */ 'fra' => 'fr',
 								/* French (Standard) */ 'fre' => 'fr',
+								/* French (Standard) */ 'fra' => 'fr',
 								/* Gaelic (Scots) */ 'gla' => 'gd',
 								/* Galician */ 'glg' => 'gl',
 								/* German (Standard) */ 'deu' => 'de',
 								/* German (Standard) */ 'ger' => 'de',
-								/* Greek */ 'ell' => 'el',
 								/* Greek */ 'gre' => 'el',
+								/* Greek */ 'ell' => 'el',
 								/* Hebrew */ 'heb' => 'he',
 								/* Hindi */ 'hin' => 'hi',
 								/* Hungarian */ 'hun' => 'hu',
@@ -146,15 +144,14 @@ class L10n extends Object {
 								/* Polish */ 'pol' => 'pl',
 								/* Portuguese (Portugal) */ 'por' => 'pt',
 								/* Rhaeto-Romanic */ 'roh' => 'rm',
-								/* Romanian */ 'ron' => 'ro',
 								/* Romanian */ 'rum' => 'ro',
+								/* Romanian */ 'ron' => 'ro',
 								/* Russian */ 'rus' => 'ru',
 								/* Sami (Lappish) */ 'smi' => 'sz',
-								/* Scots Gaelic */ 'gla' => 'gd',
 								/* Serbian */ 'scc' => 'sr',
 								/* Serbian */ 'srp' => 'sr',
-								/* Slovack */ 'slk' => 'sk',
 								/* Slovack */ 'slo' => 'sk',
+								/* Slovack */ 'slk' => 'sk',
 								/* Slovenian */ 'slv' => 'sl',
 								/* Sorbian */ 'wen' => 'sb',
 								/* Spanish (Spain - Traditional) */ 'spa' => 'es',
@@ -233,7 +230,6 @@ class L10n extends Object {
 										'es-gt' => array('language' => 'Spanish (Guatemala)', 'locale' => 'es_gt', 'localeFallback' => 'spa', 'charset' => 'utf-8'),
 										'es-hn' => array('language' => 'Spanish (Honduras)', 'locale' => 'es_hn', 'localeFallback' => 'spa', 'charset' => 'utf-8'),
 										'es-mx' => array('language' => 'Spanish (Mexican)', 'locale' => 'es_mx', 'localeFallback' => 'spa', 'charset' => 'utf-8'),
-										'es_mx' => array('language' => 'Spanish (Mexican)', 'locale' => 'es_mx', 'localeFallback' => 'spa', 'charset' => 'utf-8'),
 										'es-ni' => array('language' => 'Spanish (Nicaragua)', 'locale' => 'es_ni', 'localeFallback' => 'spa', 'charset' => 'utf-8'),
 										'es-pa' => array('language' => 'Spanish (Panama)', 'locale' => 'es_pa', 'localeFallback' => 'spa', 'charset' => 'utf-8'),
 										'es-pe' => array('language' => 'Spanish (Peru)', 'locale' => 'es_pe', 'localeFallback' => 'spa', 'charset' => 'utf-8'),
@@ -336,10 +332,10 @@ class L10n extends Object {
  * @access public
  */
 	function get($language = null) {
-		if (!is_null($language)) {
+		if ($language !== null) {
 			return $this->__setLanguage($language);
 		} elseif ($this->__autoLanguage() === false) {
-			return $this->__setLanguage($language);
+			return $this->__setLanguage();
 		}
 	}
 /**
@@ -350,36 +346,35 @@ class L10n extends Object {
  * @access private
  */
 	function __setLanguage($language = null) {
-		if ((!is_null($language)) && (isset($this->__l10nMap[$language])) && (isset($this->__l10nCatalog[$this->__l10nMap[$language]]))) {
-			$this->language = $this->__l10nCatalog[$this->__l10nMap[$language]]['language'];
-			$this->languagePath = array(0 => $this->__l10nCatalog[$this->__l10nMap[$language]]['locale'],
-													1 => $this->__l10nCatalog[$this->__l10nMap[$language]]['localeFallback']);
-			$this->lang = $language;
-			$this->locale = $this->__l10nCatalog[$this->__l10nMap[$language]]['locale'];
-			$this->charset = $this->__l10nCatalog[$this->__l10nMap[$language]]['charset'];
+		$langKey = null;
+		if ($language !== null && isset($this->__l10nMap[$language]) && isset($this->__l10nCatalog[$this->__l10nMap[$language]])) {
+			$langKey = $this->__l10nMap[$language];
+		} else if ($language !== null && isset($this->__l10nCatalog[$language])) {
+			$langKey = $language;
+		} else if (defined('DEFAULT_LANGUAGE')) {
+			$langKey = DEFAULT_LANGUAGE;
+		}
 
-		} elseif ((!is_null($language)) && (isset($this->__l10nCatalog[$language]))) {
-			$this->language = $this->__l10nCatalog[$language]['language'];
-			$this->languagePath = array(0 => $this->__l10nCatalog[$language]['locale'],
-													1 => $this->__l10nCatalog[$language]['localeFallback']);
+		if ($langKey !== null && isset($this->__l10nCatalog[$langKey])) {
+			$this->language = $this->__l10nCatalog[$langKey]['language'];
+			$this->languagePath = array(
+				$this->__l10nCatalog[$langKey]['locale'],
+				$this->__l10nCatalog[$langKey]['localeFallback']
+			);
 			$this->lang = $language;
-			$this->locale = $this->__l10nCatalog[$language]['locale'];
-			$this->charset = $this->__l10nCatalog[$language]['charset'];
-
-		} elseif (defined('DEFAULT_LANGUAGE')) {
-			$this->language = $this->__l10nCatalog[$this->__l10nMap[DEFAULT_LANGUAGE]]['language'];
-			$this->languagePath = array(0 => $this->__l10nCatalog[$this->__l10nMap[DEFAULT_LANGUAGE]]['locale'],
-													1 => $this->__l10nCatalog[$this->__l10nMap[DEFAULT_LANGUAGE]]['localeFallback']);
-			$this->lang = DEFAULT_LANGUAGE;
-			$this->locale = $this->__l10nCatalog[$this->__l10nMap[DEFAULT_LANGUAGE]]['locale'];
-			$this->charset = $this->__l10nCatalog[$this->__l10nMap[DEFAULT_LANGUAGE]]['charset'];
+			$this->locale = $this->__l10nCatalog[$langKey]['locale'];
+			$this->charset = $this->__l10nCatalog[$langKey]['charset'];
 		} else {
 			$this->lang = $language;
-			$this->languagePath = array(0 => $language);
+			$this->languagePath = array($language);
 		}
 
 		if ($this->default) {
-			$this->languagePath[2] = $this->__l10nCatalog[$this->__l10nMap[$this->default]]['localeFallback'];
+			if (isset($this->__l10nMap[$this->default]) && isset($this->__l10nCatalog[$this->__l10nMap[$this->default]])) {
+				$this->languagePath[] = $this->__l10nCatalog[$this->__l10nMap[$this->default]]['localeFallback'];
+			} else if (isset($this->__l10nCatalog[$this->default])) {
+				$this->languagePath[] = $this->__l10nCatalog[$this->default]['localeFallback'];
+			}
 		}
 		$this->found = true;
 
@@ -387,6 +382,7 @@ class L10n extends Object {
 			Configure::write('Config.language', $this->lang);
 		}
 		Configure::write('charset', $this->charset);
+
 		if ($language) {
 			return $language;
 		}
@@ -398,25 +394,22 @@ class L10n extends Object {
  * @access private
  */
 	function __autoLanguage() {
-		$_detectableLanguages = split ('[,;]', env('HTTP_ACCEPT_LANGUAGE'));
+		$_detectableLanguages = split('[,;]', env('HTTP_ACCEPT_LANGUAGE'));
 		foreach ($_detectableLanguages as $key => $langKey) {
 			$langKey = strtolower($langKey);
+			if (strpos($langKey, '_') !== false) {
+				$langKey = str_replace('_', '-', $langKey);
+			}
+
 			if (isset($this->__l10nCatalog[$langKey])) {
-
-				$this->language = $this->__l10nCatalog[$langKey]['language'];
-				$this->languagePath = array(0 => $this->__l10nCatalog[$langKey]['locale'],
-														1 => $this->__l10nCatalog[$langKey]['localeFallback']);
-				$this->lang = $langKey;
-				$this->locale = $this->__l10nCatalog[$langKey]['locale'];
-				$this->charset = $this->__l10nCatalog[$langKey]['charset'];
-
-				if ($this->default) {
-					$this->languagePath[2] = $this->__l10nCatalog[$this->__l10nMap[$this->default]]['localeFallback'];
-				}
-				$this->found = true;
-				Configure::write('Config.language', $this->lang);
-				Configure::write('charset', $this->charset);
+				$this->__setLanguage($langKey);
 				return true;
+			} else if (strpos($langKey, '-') !== false) {
+				$langKey = substr($langKey, 0, 2);
+				if (isset($this->__l10nCatalog[$langKey])) {
+					$this->__setLanguage($langKey);
+					return true;
+				}
 			}
 		}
 		return false;
@@ -437,17 +430,11 @@ class L10n extends Object {
 				}
 			}
 			return $result;
-		}
-
-		if (is_string($mixed)) {
-			if (2 == strlen($mixed)) {
-				if (in_array($mixed, $this->__l10nMap)) {
-					return array_search($mixed, $this->__l10nMap);
-				}
-			} else {
-				if (isset($this->__l10nMap[$mixed])) {
-					return $this->__l10nMap[$mixed];
-				}
+		} else if (is_string($mixed)) {
+			if (strlen($mixed) === 2 && in_array($mixed, $this->__l10nMap)) {
+				return array_search($mixed, $this->__l10nMap);
+			} else if (isset($this->__l10nMap[$mixed])) {
+				return $this->__l10nMap[$mixed];
 			}
 			return false;
 		}
@@ -468,9 +455,7 @@ class L10n extends Object {
 				}
 			}
 			return $result;
-		}
-
-		if (is_string($language)) {
+		} else if (is_string($language)) {
 			if (isset($this->__l10nCatalog[$language])) {
 				return $this->__l10nCatalog[$language];
 			}

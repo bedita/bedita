@@ -34,6 +34,10 @@ class GalleryTestCase extends BeditaTestCase {
 
 	var $uses = array('Gallery') ;
 	
+	function testActsAs() {
+ 		$this->checkDuplicateBehavior($this->Gallery);
+ 	}
+ 	
 	function testInsertGallery() {
 		$this->requiredData(array("insert"));
 		$result = $this->Gallery->save($this->data['insert']) ;

@@ -41,6 +41,9 @@ class DocumentTestCase extends BeditaTestCase {
     /////////////////////////////////////////////////
     //      TEST METHODS
     /////////////////////////////////////////////////
+ 	function testActsAs() {
+ 		$this->checkDuplicateBehavior($this->Document);
+ 	}
  	
  	function testInsert() {
 		$this->requiredData(array("insert"));

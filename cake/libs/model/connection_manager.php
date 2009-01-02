@@ -1,6 +1,5 @@
 <?php
-/* SVN FILE: $Id: connection_manager.php 7690 2008-10-02 04:56:53Z nate $ */
-
+/* SVN FILE: $Id: connection_manager.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -8,38 +7,34 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.model
- * @since			CakePHP(tm) v 0.10.x.1402
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.model
+ * @since         CakePHP(tm) v 0.10.x.1402
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
+uses ('model' . DS . 'datasources' . DS . 'datasource');
+config('database');
 
 /**
  * Manages loaded instances of DataSource objects
  *
  * Long description for file
  *
- * @package		cake
- * @subpackage	cake.cake.libs.model
+ * @package       cake
+ * @subpackage    cake.cake.libs.model
  */
-
-uses ('model' . DS . 'datasources' . DS . 'datasource');
-config('database');
-
 class ConnectionManager extends Object {
 /**
  * Holds a loaded instance of the Connections object
@@ -179,7 +174,8 @@ class ConnectionManager extends Object {
 		} elseif (fileExistsInPath(LIBS . 'model' . DS . 'datasources' . DS . $conn['filename'] . '.php')) {
 			require (LIBS . 'model' . DS . 'datasources' . DS . $conn['filename'] . '.php');
 		} else {
-			trigger_error(sprintf(__('Unable to load DataSource file %s.php', true), $conn['filename']), E_USER_ERROR);
+		    $error = __('Unable to load DataSource file %s.php', true);
+			trigger_error(sprintf($error, $conn['filename']), E_USER_ERROR);
 			return null;
 		}
 	}
@@ -237,8 +233,6 @@ class ConnectionManager extends Object {
  * @access private
  */
 	function __getDriver($config) {
-		$_this =& ConnectionManager::getInstance();
-
 		if (!isset($config['datasource'])) {
 			$config['datasource'] = 'dbo';
 		}
@@ -246,7 +240,7 @@ class ConnectionManager extends Object {
 		if (isset($config['driver']) && $config['driver'] != null && !empty($config['driver'])) {
 			$filename = $config['datasource'] . DS . $config['datasource'] . '_' . $config['driver'];
 			$classname = Inflector::camelize(strtolower($config['datasource'] . '_' . $config['driver']));
-			$parent = $_this->__getDriver(array('datasource' => $config['datasource']));
+			$parent = $this->__getDriver(array('datasource' => $config['datasource']));
 		} else {
 			$filename = $config['datasource'] . '_source';
 			$classname = Inflector::camelize(strtolower($config['datasource'] . '_source'));

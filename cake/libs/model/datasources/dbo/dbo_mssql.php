@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_mssql.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: dbo_mssql.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * MS SQL layer for DBO
  *
@@ -7,33 +7,30 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.model.datasources.dbo
- * @since			CakePHP(tm) v 0.10.5.1790
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.model.datasources.dbo
+ * @since         CakePHP(tm) v 0.10.5.1790
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
 /**
  * Short description for class.
  *
  * Long description for class
  *
- * @package		cake
- * @subpackage	cake.cake.libs.model.datasources.dbo
+ * @package       cake
+ * @subpackage    cake.cake.libs.model.datasources.dbo
  */
 class DboMssql extends DboSource {
 /**
@@ -186,7 +183,7 @@ class DboMssql extends DboSource {
 		if ($cache != null) {
 			return $cache;
 		}
-		$result = $this->fetchAll('SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES');
+		$result = $this->fetchAll('SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES', false);
 
 		if (!$result || empty($result)) {
 			return array();
@@ -222,7 +219,7 @@ class DboMssql extends DboSource {
 			$fields[$field] = array(
 				'type' => $this->column($column[0]['Type']),
 				'null' => (strtoupper($column[0]['Null']) == 'YES'),
-				'default' => preg_replace("/^\('?([^']*)?'?\)$/", "$1", $column[0]['Default']),
+				'default' => preg_replace("/^[(]{1,2}'?([^')]*)?'?[)]{1,2}$/", "$1", $column[0]['Default']),
 				'length' => intval($column[0]['Length']),
 				'key'	=> ($column[0]['Key'] == '1')
 			);
@@ -265,7 +262,7 @@ class DboMssql extends DboSource {
 			return "''";
 		}
 
-		switch($column) {
+		switch ($column) {
 			case 'boolean':
 				$data = $this->boolean((bool)$data);
 			break;
@@ -358,7 +355,6 @@ class DboMssql extends DboSource {
 		}
 		return $result;
 	}
-
 /**
  * Generates and executes an SQL UPDATE statement for given model, fields, and values.
  * Removes Identity (primary key) column from update data before returning to parent.
@@ -500,11 +496,11 @@ class DboMssql extends DboSource {
 	function resultSet(&$results) {
 		$this->results =& $results;
 		$this->map = array();
-		$num_fields = mssql_num_fields($results);
+		$numFields = mssql_num_fields($results);
 		$index = 0;
 		$j = 0;
 
-		while ($j < $num_fields) {
+		while ($j < $numFields) {
 			$column = mssql_field_name($results, $j);
 
 			if (strpos($column, '__')) {
@@ -685,5 +681,4 @@ class DboMssql extends DboSource {
 		return $join;
 	}
 }
-
 ?>

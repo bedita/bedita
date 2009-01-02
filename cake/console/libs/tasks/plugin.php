@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: plugin.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: plugin.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * The Plugin Task handles creating an empty plugin, ready to be used
  *
@@ -7,24 +7,22 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.console.libs.tasks
- * @since			CakePHP(tm) v 1.2
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.console.libs.tasks
+ * @since         CakePHP(tm) v 1.2
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 if (!class_exists('File')) {
 	uses('file');
@@ -32,8 +30,8 @@ if (!class_exists('File')) {
 /**
  * Task class for creating a plugin
  *
- * @package		cake
- * @subpackage	cake.cake.console.libs.tasks
+ * @package       cake
+ * @subpackage    cake.cake.console.libs.tasks
  */
 class PluginTask extends Shell {
 /**
@@ -71,7 +69,7 @@ class PluginTask extends Shell {
 
 		$plugin = null;
 
-		if(isset($this->args[0])) {
+		if (isset($this->args[0])) {
 			$plugin = Inflector::camelize($this->args[0]);
 			$pluginPath = Inflector::underscore($plugin) . DS;
 			$this->Dispatch->shiftArgs();
@@ -86,8 +84,8 @@ class PluginTask extends Shell {
 				$this->__interactive($plugin);
 			}
 		}
-		
-		if(isset($this->args[0])) {
+
+		if (isset($this->args[0])) {
 			$task = Inflector::classify($this->args[0]);
 			$this->Dispatch->shiftArgs();
 			if (in_array($task, $this->tasks)) {
@@ -179,7 +177,7 @@ class PluginTask extends Shell {
 			$this->out(sprintf(__("Created: %s in %s", true), $plugin, $this->path . $pluginPath));
 			$this->hr();
 		}
-		
+
 		return true;
 	}
 /**

@@ -228,12 +228,6 @@ class BEObject extends BEAppModel
 		}
 		$this->unbindModel(array("hasMany"=>array("LangText")));
 
-		// unbind relations type (if present). Save it in aftersave
-		$this->restoreRelatedObject = array(); 
-		if(!empty($this->hasMany['RelatedObject'])) {
-			$this->restoreRelatedObject = $this->hasMany['RelatedObject'];
-			$this->unbindModel( array('hasMany' => array('RelatedObject')) );
-		}
 		return true ;
 	}
 	
@@ -245,7 +239,7 @@ class BEObject extends BEAppModel
 		// Scorre le associazioni hasMany
 		foreach ($this->hasMany as $name => $assoc) {
 			// Non gestisce i permessi
-			if($name == 'Permissions')
+			if($name == 'Permissions' || $name == 'RelatedObject')
 				continue ;
 			
 			$db 		=& ConnectionManager::getDataSource($this->useDbConfig);
@@ -301,14 +295,7 @@ class BEObject extends BEAppModel
 			}
 		}
 		
-		if(!empty($this->restoreRelatedObject)) {
-			$this->bindModel( array(
-				'hasMany' => array(
-						'RelatedObject' => $this->restoreRelatedObject
-					)
-				) 
-			);
-		}
+		
 		// save realtions between objects
 		if (!empty($this->data['BEObject']['RelatedObject'])) {
 			

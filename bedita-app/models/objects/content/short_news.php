@@ -30,24 +30,26 @@
  */
 class ShortNews extends BeditaContentModel
 {
-	   var $useTable = 'contents';	
+	var $useTable = 'contents';
 
-      protected $modelBindings = array( 
-				"detailed" =>  array("BEObject" => array("ObjectType", 
-															"UserCreated", 
-															"UserModified", 
-															"Permissions",
-															"ObjectProperty",
-															"LangText",
-															"RelatedObject",
-															"Category")),
+	var $actsAs = array();
 
-       			"default" => array("BEObject" => array("ObjectProperty", 
-									"LangText", "ObjectType", 
-									"Category", "RelatedObject" )),
-
-				"minimum" => array("BEObject" => array("ObjectType"))		
-		);
+	protected $modelBindings = array( 
+		"detailed" =>  array("BEObject" => array("ObjectType", 
+													"UserCreated", 
+													"UserModified", 
+													"Permissions",
+													"ObjectProperty",
+													"LangText",
+													"RelatedObject",
+													"Category")),
+		
+		       "default" => array("BEObject" => array("ObjectProperty", 
+							"LangText", "ObjectType", 
+							"Category", "RelatedObject" )),
+		
+		"minimum" => array("BEObject" => array("ObjectType"))		
+	);
 	   
 }
 ?>

@@ -1,6 +1,5 @@
 <?php
-/* SVN FILE: $Id: behavior.php 7690 2008-10-02 04:56:53Z nate $ */
-
+/* SVN FILE: $Id: behavior.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Model behaviors base class.
  *
@@ -8,32 +7,30 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.model
- * @since			CakePHP(tm) v 1.2.0.0
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.model
+ * @since         CakePHP(tm) v 1.2.0.0
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * Model behavior base class.
  *
  * Defines the Behavior interface, and contains common model interaction functionality.
  *
- * @package		cake
- * @subpackage	cake.cake.libs.model
+ * @package       cake
+ * @subpackage    cake.cake.libs.model
  */
 class ModelBehavior extends Object {
 /**
@@ -204,8 +201,8 @@ class ModelBehavior extends Object {
  *
  * Defines the Behavior interface, and contains common model interaction functionality.
  *
- * @package		cake
- * @subpackage	cake.cake.libs.model
+ * @package       cake
+ * @subpackage    cake.cake.libs.model
  */
 class BehaviorCollection extends Object {
 
@@ -332,9 +329,7 @@ class BehaviorCollection extends Object {
 				unset($this->__methods[$m]);
 			}
 		}
-		$keys = array_combine(array_values($this->_attached), array_keys($this->_attached));
-		unset($this->_attached[$keys[$name]]);
-		$this->_attached = array_values($this->_attached);
+		$this->_attached = array_values(array_diff($this->_attached, (array)$name));
 	}
 /**
  * Enables callbacks on a behavior or array of behaviors
@@ -344,10 +339,7 @@ class BehaviorCollection extends Object {
  * @access public
  */
 	function enable($name) {
-		$keys = array_combine(array_values($this->_disabled), array_keys($this->_disabled));
-		foreach ((array)$name as $behavior) {
-			unset($this->_disabled[$keys[$behavior]]);
-		}
+		$this->_disabled = array_diff($this->_disabled, (array)$name);
 	}
 /**
  * Disables callbacks on a behavior or array of behaviors.  Public behavior methods are still

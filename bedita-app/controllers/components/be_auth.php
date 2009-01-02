@@ -358,6 +358,7 @@ class BeAuthComponent extends Object {
 	}
 	
 	function unserializesession($data) {
+		$result = array();
 		$vars=preg_split('/([a-zA-Z0-9]+)\|/',$data,-1,PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 		for($i=0; @$vars[$i]; $i++) {
 			$result[$vars[$i++]]=unserialize($vars[$i]);

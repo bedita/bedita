@@ -1,8 +1,6 @@
-# $Id: db_acl.sql 7118 2008-06-04 20:49:29Z gwoo $
+# $Id: db_acl.sql 7945 2008-12-19 02:16:01Z gwoo $
 #
 # Copyright 2005-2008,	Cake Software Foundation, Inc.
-#								1785 E. Sahara Avenue, Suite 490-204
-#								Las Vegas, Nevada 89104
 #
 # Licensed under The MIT License
 # Redistributions of files must retain the above copyright notice.

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*-----8<--------------------------------------------------------------------
  * 
  * BEdita - a semantic content management framework
@@ -28,34 +28,8 @@
  * 
  * $Id$
  */
-require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
-
-class SectionTestCase extends BeditaTestCase {
-
- 	var $uses		= array('Section', 'Tree') ;
-    var $dataSource	= 'default' ;	
-
-	function testActsAs() {
- 		$this->checkDuplicateBehavior($this->Section);
- 	}
- 	
- 	function testFeeds() {
-
- 		$conf = Configure::getInstance();
-		$tree = $this->Tree->getAll(null, null, null, array($conf->objectTypes['area']['id'])) ;
- 		
-		foreach ($tree as $area) {
-			pr("Publication: ". $area['id'] . " - ". $area['title']);
-			$result = $this->Section->feedsAvailable($area['id']);
-			pr("Available feeds:");
-	 		pr($result);
-		}
-		
- 	} 
- 	
-	public   function __construct () {
-		parent::__construct('Section', dirname(__FILE__)) ;
-	}	
+class EventTestData extends BeditaTestData {
+	var $data =  array();
 }
-
-?> 
+ 
+?>

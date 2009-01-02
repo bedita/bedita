@@ -35,10 +35,7 @@ class MailTemplate extends BeditaContentModel
 	public $searchFields = array();
 	
 	var $actsAs 	= array(
-			'CompactResult' 		=> array(),
-			'SearchTextSave',
-			'ForeignDependenceSave' => array('BEObject', 'Content'),
-			'DeleteObject' 			=> 'objects',
+			'ForeignDependenceSave' => array('Content')
 	); 
 	
 	var $hasOne= array(

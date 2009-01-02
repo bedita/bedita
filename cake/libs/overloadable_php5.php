@@ -1,49 +1,42 @@
 <?php
-/* SVN FILE: $Id: overloadable_php5.php 6311 2008-01-02 06:33:52Z phpnut $ */
+/* SVN FILE: $Id: overloadable_php5.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Overload abstraction interface.  Merges differences between PHP4 and 5.
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs
- * @since			CakePHP(tm) v 1.2
- * @version			$Revision: 6311 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2008-01-02 01:33:52 -0500 (Wed, 02 Jan 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs
+ * @since         CakePHP(tm) v 1.2
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * Overloadable class selector
  *
- * @package		cake
- * @subpackage	cake.cake.libs
- */
-
-/**
  * Load the interface class based on the version of PHP.
  *
+ * @package       cake
+ * @subpackage    cake.cake.libs
  */
 class Overloadable extends Object {
-
 /**
  * Overload implementation. No need for implementation in PHP5.
  *
  * @access public
  */
 	function overload() { }
-
 /**
  * Magic method handler.
  *
@@ -60,15 +53,20 @@ class Overloadable extends Object {
 	}
 }
 
+/**
+ * Overloadable2 class selector
+ *
+ * Load the interface class based on the version of PHP.
+ *
+ * @package       cake
+ */
 class Overloadable2 extends Object {
-
 /**
  * Overload implementation. No need for implementation in PHP5.
  *
  * @access public
  */
 	function overload() { }
-
 /**
  * Magic method handler.
  *
@@ -83,7 +81,6 @@ class Overloadable2 extends Object {
 		}
 		return $this->call__($method, $params);
 	}
-
 /**
  * Getter.
  *
@@ -95,7 +92,6 @@ class Overloadable2 extends Object {
 	function __get($name) {
 		return $this->get__($name);
 	}
-
 /**
  * Setter.
  *
@@ -108,5 +104,4 @@ class Overloadable2 extends Object {
 		return $this->set__($name, $value);
 	}
 }
-
 ?>

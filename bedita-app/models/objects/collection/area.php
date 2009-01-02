@@ -31,22 +31,24 @@
 class Area extends BeditaCollectionModel
 {
 
-		public $searchFields = array("title" => 10 , "description" => 6, 
-			"public_name" => 10, "public_url" => 8);
+	var $actsAs = array();
 	
-		protected $modelBindings = array( 
-				"detailed" =>  array("BEObject" => array("ObjectType", 
-										"UserCreated", 
-										"UserModified", 
-										"Permissions",
-										"ObjectProperty",
-										"LangText")),
+	public $searchFields = array("title" => 10 , "description" => 6, 
+		"public_name" => 10, "public_url" => 8);
 
-       			"default" => array("BEObject" => array("ObjectProperty", 
-									"LangText", "ObjectType")),
+	protected $modelBindings = array( 
+			"detailed" =>  array("BEObject" => array("ObjectType", 
+									"UserCreated", 
+									"UserModified", 
+									"Permissions",
+									"ObjectProperty",
+									"LangText")),
 
-				"minimum" => array("BEObject" => array("ObjectType"))		
-		);
+       		"default" => array("BEObject" => array("ObjectProperty", 
+								"LangText", "ObjectType")),
+
+			"minimum" => array("BEObject" => array("ObjectType"))		
+	);
 	
 	function afterSave($created) {
 		if (!$created) 

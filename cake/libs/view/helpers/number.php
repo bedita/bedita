@@ -1,6 +1,5 @@
 <?php
-/* SVN FILE: $Id: number.php 7296 2008-06-27 09:09:03Z gwoo $ */
-
+/* SVN FILE: $Id: number.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Number Helper.
  *
@@ -8,33 +7,30 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs.view.helpers
- * @since			CakePHP(tm) v 0.10.0.1076
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 05:09:03 -0400 (Fri, 27 Jun 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.view.helpers
+ * @since         CakePHP(tm) v 0.10.0.1076
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
 /**
  * Number helper library.
  *
  * Methods to make numbers more readable.
  *
- * @package 	cake
- * @subpackage	cake.cake.libs.view.helpers
+ * @package       cake
+ * @subpackage    cake.cake.libs.view.helpers
  */
 class NumberHelper extends AppHelper {
 /**
@@ -48,7 +44,6 @@ class NumberHelper extends AppHelper {
 	function precision($number, $precision = 3) {
 		return sprintf("%01.{$precision}f", $number);
 	}
-
 /**
  * Returns a formatted-for-humans file size.
  *
@@ -57,20 +52,20 @@ class NumberHelper extends AppHelper {
  * @static
  */
 	function toReadableSize($size) {
-		switch($size) {
+		switch ($size) {
 			case 0:
 				return '0 Bytes';
 			case 1:
 				return '1 Byte';
 			case $size < 1024:
 				return $size . ' Bytes';
-			case $size < 1024 * 1024:
+			case round($size / 1024) < 1024:
 				return $this->precision($size / 1024, 0) . ' KB';
-			case $size < 1024 * 1024 * 1024:
+			case round($size / 1024 / 1024, 2) < 1024:
 				return $this->precision($size / 1024 / 1024, 2) . ' MB';
-			case $size < 1024 * 1024 * 1024 * 1024:
+			case round($size / 1024 / 1024 / 1024, 2) < 1024:
 				return $this->precision($size / 1024 / 1024 / 1024, 2) . ' GB';
-			case $size < 1024 * 1024 * 1024 * 1024 * 1024:
+			default:
 				return $this->precision($size / 1024 / 1024 / 1024 / 1024, 2) . ' TB';
 		}
 	}
@@ -185,7 +180,7 @@ class NumberHelper extends AppHelper {
 		$result = $this->format($abs, $options);
 
 		if ($number < 0 ) {
-			if($options['negative'] == '()') {
+			if ($options['negative'] == '()') {
 				$result = '(' . $result .')';
 			} else {
 				$result = $options['negative'] . $result;
@@ -194,5 +189,4 @@ class NumberHelper extends AppHelper {
 		return $result;
 	}
 }
-
 ?>

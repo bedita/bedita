@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: cake_test_case.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id: cake_test_case.php 7961 2008-12-25 23:21:36Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -8,23 +8,21 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
- * @package			cake
- * @subpackage		cake.cake.tests.libs
- * @since			CakePHP(tm) v 1.2.0.4667
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @package       cake
+ * @subpackage    cake.cake.tests.libs
+ * @since         CakePHP(tm) v 1.2.0.4667
+ * @version       $Revision: 7961 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-25 17:21:36 -0600 (Thu, 25 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!class_exists('dispatcher')) {
 	require CAKE . 'dispatcher.php';
@@ -35,8 +33,8 @@ App::import('Vendor', 'simpletest' . DS . 'unit_tester');
 /**
  * Short description for class.
  *
- * @package    cake
- * @subpackage cake.cake.tests.lib
+ * @package       cake
+ * @subpackage    cake.cake.tests.lib
  */
 class CakeTestDispatcher extends Dispatcher {
 	var $controller;
@@ -65,8 +63,8 @@ class CakeTestDispatcher extends Dispatcher {
 /**
  * Short description for class.
  *
- * @package    cake
- * @subpackage cake.cake.tests.lib
+ * @package       cake
+ * @subpackage    cake.cake.tests.lib
  */
 class CakeTestCase extends UnitTestCase {
 /**
@@ -179,7 +177,7 @@ class CakeTestCase extends UnitTestCase {
 						$object =& ClassRegistry::init($name);
 						//switch back to specified datasource.
 						$object->setDataSource($params['connection']);
-						$db =& ConnectionManager::getDataSource($object->useDbConfig);						
+						$db =& ConnectionManager::getDataSource($object->useDbConfig);
 						$db->cacheSources = false;
 
 						$models[$object->alias] = array(
@@ -271,9 +269,7 @@ class CakeTestCase extends UnitTestCase {
 				? array_intersect_key($_GET, $toSave)
 				: $this->__savedGetData;
 
-		$data = (!empty($params['data']))
-					? $params['data']
-					: array();
+		$data = (!empty($params['data'])) ? $params['data'] : array();
 
 		if (strtolower($params['method']) == 'get') {
 			$_GET = array_merge($this->__savedGetData, $data);
@@ -377,6 +373,7 @@ class CakeTestCase extends UnitTestCase {
 			foreach ($this->_fixtures as $fixture) {
 				if (in_array($fixture->table, $sources)) {
 					$fixture->drop($this->db);
+					$fixture->create($this->db);
 				} elseif (!in_array($fixture->table, $sources)) {
 					$fixture->create($this->db);
 				}
@@ -689,7 +686,7 @@ class CakeTestCase extends UnitTestCase {
 			if (strpos($fixture, 'core.') === 0) {
 				$fixture = substr($fixture, strlen('core.'));
 				foreach (Configure::corePaths('cake') as $key => $path) {
-					$fixturePaths[] = $path . DS . 'tests' . DS . 'fixtures';
+					$fixturePaths[] = $path . 'tests' . DS . 'fixtures';
 				}
 			} elseif (strpos($fixture, 'app.') === 0) {
 				$fixture = substr($fixture, strlen('app.'));

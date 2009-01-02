@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: paths.php 7118 2008-06-04 20:49:29Z gwoo $ */
+/* SVN FILE: $Id: paths.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -7,24 +7,22 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.app.config
- * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 7118 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-04 16:49:29 -0400 (Wed, 04 Jun 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.app.config
+ * @since         CakePHP(tm) v 0.2.9
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * If the index.php file is used instead of an .htaccess file
@@ -33,81 +31,81 @@
  * here.
  */
 	if (!defined('ROOT')) {
-		define ('ROOT', '../');
+		define('ROOT', '../');
 	}
 	if (!defined('WEBROOT_DIR')) {
-		define ('WEBROOT_DIR', 'webroot');
+		define('WEBROOT_DIR', 'webroot');
 	}
 /**
  * Path to the cake directory.
  */
-	define ('CAKE', CORE_PATH.'cake'.DS);
+	define('CAKE', CORE_PATH.'cake'.DS);
 /**
  * Path to the application's directory.
  */
 if (!defined('APP')) {
-	define ('APP', ROOT.DS.APP_DIR.DS);
+	define('APP', ROOT.DS.APP_DIR.DS);
 }
 /**
  * Path to the application's models directory.
  */
-	define ('MODELS', APP.'models'.DS);
+	define('MODELS', APP.'models'.DS);
 /**
  * Path to model behaviors directory.
  */
-	define ('BEHAVIORS', MODELS.'behaviors'.DS);
+	define('BEHAVIORS', MODELS.'behaviors'.DS);
 /**
  * Path to the application's controllers directory.
  */
-	define ('CONTROLLERS', APP.'controllers'.DS);
+	define('CONTROLLERS', APP.'controllers'.DS);
 /**
  * Path to the application's components directory.
  */
-	define ('COMPONENTS', CONTROLLERS.'components'.DS);
+	define('COMPONENTS', CONTROLLERS.'components'.DS);
 /**
  * Path to the application's views directory.
  */
-	define ('VIEWS', APP.'views'.DS);
+	define('VIEWS', APP.'views'.DS);
 /**
  * Path to the application's helpers directory.
  */
-	define ('HELPERS', VIEWS.'helpers'.DS);
+	define('HELPERS', VIEWS.'helpers'.DS);
 /**
  * Path to the application's view's layouts directory.
  */
-	define ('LAYOUTS', VIEWS.'layouts'.DS);
+	define('LAYOUTS', VIEWS.'layouts'.DS);
 /**
  * Path to the application's view's elements directory.
  * It's supposed to hold pieces of PHP/HTML that are used on multiple pages
  * and are not linked to a particular layout (like polls, footers and so on).
  */
-	define ('ELEMENTS', VIEWS.'elements'.DS);
+	define('ELEMENTS', VIEWS.'elements'.DS);
 /**
  * Path to the configuration files directory.
  */
 if (!defined('CONFIGS')) {
-	define ('CONFIGS', APP.'config'.DS);
+	define('CONFIGS', APP.'config'.DS);
 }
 /**
  * Path to the libs directory.
  */
-	define ('INFLECTIONS', CAKE.'config'.DS.'inflections'.DS);
+	define('INFLECTIONS', CAKE.'config'.DS.'inflections'.DS);
 /**
  * Path to the libs directory.
  */
-	define ('LIBS', CAKE.'libs'.DS);
+	define('LIBS', CAKE.'libs'.DS);
 /**
  * Path to the public CSS directory.
  */
-	define ('CSS', WWW_ROOT.'css'.DS);
+	define('CSS', WWW_ROOT.'css'.DS);
 /**
  * Path to the public JavaScript directory.
  */
-	define ('JS', WWW_ROOT.'js'.DS);
+	define('JS', WWW_ROOT.'js'.DS);
 /**
  * Path to the public images directory.
  */
-	define ('IMAGES', WWW_ROOT.'img'.DS);
+	define('IMAGES', WWW_ROOT.'img'.DS);
 /**
  * Path to the console libs direcotry.
  */
@@ -116,49 +114,49 @@ if (!defined('CONFIGS')) {
  * Path to the tests directory.
  */
 if (!defined('TESTS')) {
-	define ('TESTS', APP.'tests'.DS);
+	define('TESTS', APP.'tests'.DS);
 }
 /**
  * Path to the core tests directory.
  */
 if (!defined('CAKE_TESTS')) {
-	define ('CAKE_TESTS', CAKE.'tests'.DS);
+	define('CAKE_TESTS', CAKE.'tests'.DS);
 }
 /**
  * Path to the test suite.
  */
-	define ('CAKE_TESTS_LIB', CAKE_TESTS.'lib'.DS);
+	define('CAKE_TESTS_LIB', CAKE_TESTS.'lib'.DS);
 
 /**
  * Path to the controller test directory.
  */
-	define ('CONTROLLER_TESTS', TESTS.'cases'.DS.'controllers'.DS);
+	define('CONTROLLER_TESTS', TESTS.'cases'.DS.'controllers'.DS);
 /**
  * Path to the components test directory.
  */
-	define ('COMPONENT_TESTS', TESTS.'cases'.DS.'components'.DS);
+	define('COMPONENT_TESTS', TESTS.'cases'.DS.'components'.DS);
 /**
  * Path to the helpers test directory.
  */
-	define ('HELPER_TESTS', TESTS.'cases'.DS.'views'.DS.'helpers'.DS);
+	define('HELPER_TESTS', TESTS.'cases'.DS.'views'.DS.'helpers'.DS);
 /**
  * Path to the models' test directory.
  */
-	define ('MODEL_TESTS', TESTS.'cases'.DS.'models'.DS);
+	define('MODEL_TESTS', TESTS.'cases'.DS.'models'.DS);
 /**
  * Path to the lib test directory.
  */
-	define ('LIB_TESTS', CAKE_TESTS.'cases'.DS.'lib'.DS);
+	define('LIB_TESTS', CAKE_TESTS.'cases'.DS.'lib'.DS);
 /**
  * Path to the temporary files directory.
  */
 if (!defined('TMP')) {
-	define ('TMP', APP.'tmp'.DS);
+	define('TMP', APP.'tmp'.DS);
 }
 /**
  * Path to the logs directory.
  */
-	define ('LOGS', TMP.'logs'.DS);
+	define('LOGS', TMP.'logs'.DS);
 /**
  * Path to the cache files directory. It can be shared between hosts in a multi-server setup.
  */
@@ -167,14 +165,14 @@ if (!defined('TMP')) {
  * Path to the vendors directory.
  */
 if (!defined('VENDORS')) {
-	define ('VENDORS', CAKE_CORE_INCLUDE_PATH.DS.'vendors'.DS);
+	define('VENDORS', CAKE_CORE_INCLUDE_PATH.DS.'vendors'.DS);
 }
 /**
  * Path to the Pear directory
  * The purporse is to make it easy porting Pear libs into Cake
  * without setting the include_path PHP variable.
  */
-	define ('PEAR', VENDORS.'Pear'.DS);
+	define('PEAR', VENDORS.'Pear'.DS);
 /**
  *  Full url prefix
  */
@@ -195,18 +193,18 @@ if (!defined('FULL_BASE_URL')) {
  * Web path to the public images directory.
  */
 if (!defined('IMAGES_URL')) {
-	define ('IMAGES_URL', 'img/');
+	define('IMAGES_URL', 'img/');
 }
 /**
  * Web path to the CSS files directory.
  */
 if (!defined('CSS_URL')) {
-	define ('CSS_URL', 'css/');
+	define('CSS_URL', 'css/');
 }
 /**
  * Web path to the js files directory.
  */
 if (!defined('JS_URL')) {
-	define ('JS_URL', 'js/');
+	define('JS_URL', 'js/');
 }
 ?>
