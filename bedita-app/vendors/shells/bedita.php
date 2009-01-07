@@ -194,6 +194,46 @@ class BeditaShell extends Shell {
 	const DEFAULT_TAR_FILE 	= 'bedita-export.tar' ;
 	const DEFAULT_ARCHIVE_FILE 	= 'bedita-export.tar.gz' ;
 	
+	/**
+	 * initialize BEdita
+	 *
+	 */
+	function init() {
+		$this->out("CHECKING DATABASE CONNECTION");
+		if ($this->checkAppDbConnection()) {
+			$this->hr();
+			$this->out("");
+			$this->hr();
+			$this->out("CHECKING MEDIA URL");
+			$mediaUrl = Configure::read("mediaUrl");
+			if (@$this->checkAppUrl($mediaUrl)) {
+				$this->hr();
+				$this->out("");
+				$this->hr();
+				$this->out("CHECKING MEDIA ROOT");
+				$mediaRoot = Configure::read("mediaRoot");
+				if ($this->checkAppDirPerms($mediaRoot)) {
+					$this->hr();
+					$this->out("");
+					$this->hr();
+					$this->out("INITIALIZE DATABASE");
+					$this->updateDb();
+					$this->out("");
+					$this->out("");
+					$res = $this->in("Do you want checking BEdita status? [y/n]");
+					if($res != "y") {
+			       		$this->out("Bye");
+			       		return;
+					}
+					$this->hr();
+					$this->out("BEdita STATUS");
+					$this->hr();
+					$this->checkApp();
+				}
+			}
+		}
+	}
+	
 	function updateDb() {
         $dbCfg = 'default';
     	if (isset($this->params['db'])) {
@@ -618,6 +658,7 @@ class BeditaShell extends Shell {
         	$appPath = $this->params['frontend'];
         }
         $this->out('Checking cake app dir: '.$appPath);
+        $this->hr();
         // config/core.php
         $this->checkAppFile($appPath.DS."config".DS."core.php");
         // config/database.php
@@ -642,7 +683,9 @@ class BeditaShell extends Shell {
         $this->checkAppDirPerms($appPath.DS."tmp".DS."logs");
 
 		// mediaRoot, mediaUrl
+		$this->hr();
 		$this->out("Checking media dir and url");
+		$this->hr();
 		$mediaRoot = Configure::read("mediaRoot");
 		@$this->checkAppDirPerms($mediaRoot);
 		$mediaUrl = Configure::read("mediaUrl");
@@ -652,9 +695,15 @@ class BeditaShell extends Shell {
 		@$this->checkAppDbConnection();
     }
 
-    private function checkAppDirPerms($dirPath) {
-       $this->out("$dirPath - perms: ".sprintf("%o",(fileperms($dirPath) & 511)));
-    }
+	private function checkAppDirPerms($dirPath) {
+		if (is_dir($dirPath)) {
+			$this->out("$dirPath - perms: ".sprintf("%o",(fileperms($dirPath) & 511)));
+			return true;
+		} else {
+			$this->out($dirPath .  " doesn't exist or it isn't a directory!");
+			return false;
+		}
+	}
 
 	private function checkAppDbConnection() {
 		$dbCfg = 'default';
@@ -669,16 +718,21 @@ class BeditaShell extends Shell {
 		$connected = $db->getDataSource($dbCfg); 
 		if ($connected->isConnected()) {
 			$this->out("Database connection: ok");
+			return true;
 		} else {
 			$this->out("Database connection: unable to connect");
+			return false;
 		}
 	}
 
 	private function checkAppUrl($url) {
-		if(get_headers($url)) {
+		$headers = get_headers($url); 
+		if($headers && !strstr($headers[0], "404")) {
 			$this->out("$url: ok.");
+			return true;
 		} else {
 			$this->out("$url: unreachable.");
+			return false;
 		}
 	}
 
