@@ -201,9 +201,10 @@ abstract class FrontendController extends AppController {
 	* @param array $exclude_nicknames	list exclude sections 
 	* @param integer $depth				tree's depth level (default=1000 => all levels)
 	* */
-	protected function loadSectionsTree($parent_id,  $loadContents=false, array $exclude_nicknames=null, $depth=1000) {
+	protected function loadSectionsTree($parentName,  $loadContents=false, array $exclude_nicknames=null, $depth=1000) {
 
 		$conf = Configure::getInstance(); 
+		$parent_id = is_numeric($parentName) ? $parentName: $this->BEObject->getIdFromNickname($parentName);
 		$result = array();
 		$filter["object_type_id"] = $conf->objectTypes['section']["id"];
 		$sections = $this->BeTree->getChildren($parent_id, $this->status, 
