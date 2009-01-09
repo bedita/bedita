@@ -76,6 +76,10 @@ class GalleriesController extends ModulesController {
 							"OK"	=> "./",
 							"ERROR"	=> "./view/{@$this->params['pass'][0]}"
 							),
+						"addItemsToAreaSection"	=> 	array(
+							"OK"	=> "/galleries",
+							"ERROR"	=> "/galleries" 
+							),
 						"changeStatusObjects"	=> 	array(
 							"OK"	=> "/galleries",
 							"ERROR"	=> "/galleries" 
