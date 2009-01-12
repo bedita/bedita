@@ -1,0 +1,34 @@
+<?php
+$rel["user"]="...";
+$rel["password"]="...";
+$rel["url"]="https://svn.channelweb.it/bedita/trunk";
+
+$rel["releaseDir"]=".";
+$rel["releaseBaseName"]="BEdita-agpl-3.0.alpha1.";
+
+$rel["removeFiles"]= array( 
+	"bedita-db/bedita_init_data.sql",
+	"bedita-app/controllers/modules/newsletter_controller.php",
+	"bedita-app/controllers/modules/bibliographies_controller.php",
+	"bedita-app/controllers/modules/books_controller.php",
+);
+
+$rel["removeDirs"]= array(
+	"bedita-deploy",
+	"bedita-doc",
+	"bedita-app/views/bibliographies",
+	"bedita-app/views/books",
+	"bedita-app/views/newsletter",
+);
+
+$rel["renameFiles"]= array(
+	"bedita-db/bedita_init_agpl.sql" => "bedita-db/bedita_init_data.sql",
+	"bedita-app/config/core.php.sample" => "bedita-app/config/core.php",
+	"bedita-app/config/database.php.sample" => "bedita-app/config/database.php",
+	"bedita-app/config/bedita.cfg.php.sample" => "bedita-app/config/bedita.cfg.php",
+	"bedita-app/webroot/index.php.sample" => "bedita-app/webroot/index.php",
+);
+
+$rel["versionFileName"]="bedita-app/config/bedita.version.php";
+
+?>

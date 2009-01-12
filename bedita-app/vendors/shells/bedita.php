@@ -707,6 +707,102 @@ class BeditaShell extends Shell {
 		@$this->checkAppDbConnection();
     }
 
+    public function createRelease() {
+    	$scr = $this->params['script'];
+		if (empty($scr)) {
+	        $this->out("script file is mandatory, use -script ");
+			return;
+		}
+		$this->out("Using script: $scr");
+		include_once($scr);
+    	if(empty($rel) || !is_array($rel)) {
+	        $this->out("no parameters in script $scr");
+			return;
+    	}
+    	$this->check_sys_get_temp_dir();
+		$tmpBasePath = $this->setupTempDir();
+       	$this->out("Using temp dir: $tmpBasePath");
+		$exportPath = $tmpBasePath . "svn-export";
+    	$svnExport = "svn export --non-interactive --username ". 
+    			$rel['user'] . " --password " . $rel['password'] . 
+    			" " . $rel['url'] . " " . $exportPath;
+		$this->out("Svn command: $svnExport");
+    	$res = system($svnExport);
+		$this->out("Result: $res");
+		$s = split(" ", $res);
+		$svnRelease = $s[count($s)-1];
+		$this->out("Svn release: $svnRelease");
+		
+		foreach ($rel["removeFiles"] as $f) {
+			$fp = $exportPath.DS.$f;
+			$this->out("remove: $fp");
+			if(!unlink($fp)) {
+	        	throw new Exception("Error deleting file " . $fp);
+			}
+		}
+
+		$folder= new Folder($exportPath);
+		foreach ($rel["removeDirs"] as $d) {
+			$p = $exportPath.DS.$d;
+			$this->out("remove: $p");
+			if(!$folder->delete($p)) {
+	        	throw new Exception("Error deleting dir " . $p);
+			}
+		}
+		
+		foreach ($rel["renameFiles"] as $from => $to) {
+			$p1 = $exportPath.DS.$from;
+			$p2 = $exportPath.DS.$to;
+			$this->out("rename: $p1 => $p2");
+			if(!rename($p1, $p2)) {
+	        	throw new Exception("Error renaming " . $p1. " to " .$p2);
+			};
+		}
+		// create version file
+		$versionFileContent="<?php\n\$config['Bedita.version'] = '". $rel["releaseBaseName"]. $svnRelease . "';\n?>";
+		$handle = fopen($exportPath.DS.$rel["versionFileName"], 'w');
+		fwrite($handle, $versionFileContent);
+		fclose($handle);
+		
+		$releaseFile = $rel["releaseDir"]. DS . $rel["releaseBaseName"]. $svnRelease . "tar";
+    	if(file_exists($releaseFile)) {
+			$res = $this->in("$releaseFile exists, overwrite? [y/n]");
+			if($res == "y") {
+				if(!unlink($releaseFile)){
+					throw new Exception("Error deleting $releaseFile");
+				}
+			} else {
+				$this->out("Export aborted. Bye.");
+				return;
+			}
+		}
+		$this->out("Creating: $releaseFile");
+		$tar = new Archive_Tar($releaseFile, false);
+       	if($tar === FALSE) {
+			throw new Exception("Error opening archive $releaseFile");
+       	}
+       	
+       	$folder= new Folder($exportPath);
+        $tree= $folder->tree($exportPath, false);
+        foreach ($tree as $files) {
+            foreach ($files as $file) {
+            	if (!is_dir($file)) {
+	            	$contents = file_get_contents($file);
+	        		if ( $contents === false ) {
+						throw new Exception("Error reading file content: $file");
+	       			}
+					$p = substr($file, strlen($exportPath));	
+					if(!$tar->addString($p, $contents)) {
+						throw new Exception("Error adding $file to tar file");
+					}
+					unset($contents);
+            	}
+            }
+        }
+		$this->cleanTempDir();
+        $this->out("$releaseFile created");
+    }
+    
 	private function checkAppDirPerms($dirPath) {
 		if (is_dir($dirPath)) {
 			$this->out("$dirPath - perms: ".sprintf("%o",(fileperms($dirPath) & 511)));
@@ -806,6 +902,10 @@ class BeditaShell extends Shell {
         $this->out('    Usage: checkApp [-frontend <app-path>]');
         $this->out(' ');
         $this->out("    -frontend \t check files in <frontend path> [use frontend /app path]");
+        $this->out(' ');
+        $this->out('7. createRelease: creates bedita release from svn');
+  		$this->out(' ');
+  		$this->out('   Usage: createRelease -script <release-config-script.php>');
         $this->out(' ');
 	}
 }
