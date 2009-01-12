@@ -32,16 +32,22 @@ class Migration extends MigrationBase {
 	
 var $methodsQueries = array(
 	
-	"documents" => "select ob.*, cb.*, c.*, bd.*, d.* 
+	"documents" => "select ob.*, cb.*, c.*, bd.*, d.*
 				from objects ob, content_bases cb, contents c, base_documents bd, documents d 
 				where cb.id=ob.id AND c.id=ob.id 
 				AND bd.id=ob.id  AND d.id=ob.id 
 				AND ob.object_type_id=22",
-	"shortNews" => "select ob.*, cb.*, s.* from objects ob, content_bases cb, short_news s 
-			where cb.id=ob.id AND s.id=ob.id AND ob.object_type_id=18",
-	"events" => "select ob.*, cb.*, c.*, e.* 
+	"shortNews" => "select ob.*, cb.*, s.* 
+				from objects ob, content_bases cb, short_news s 
+				where cb.id=ob.id 
+				AND s.id=ob.id 
+				AND ob.object_type_id=18",
+	"events" => "select ob.*, cb.*, c.*, e.*
 				from objects ob, content_bases cb, contents c, events e 
-				where cb.id=ob.id AND c.id=ob.id AND e.id=ob.id AND ob.object_type_id=21",
+				where cb.id=ob.id 
+				AND c.id=ob.id 
+				AND e.id=ob.id 
+				AND ob.object_type_id=21",
 	"dateItems" => "select edi.* from event_date_items edi",
 	"objectRelations" => "select cbo.* from content_bases_objects cbo",
 	"categories" => "select oc.* from object_categories oc",
@@ -58,6 +64,7 @@ var $methodsQueries = array(
 			where cb.id=ob.id AND st.id=ob.id AND f.id=ob.id AND ob.object_type_id=10",
 	"audio" => "select ob.*, cb.*, st.*, a.* from objects ob, content_bases cb, streams st, audio a 
 			where cb.id=ob.id AND st.id=ob.id AND a.id=ob.id AND ob.object_type_id=31",
+	"links" => "select ob.*, l.* from objects ob, links l where l.id=ob.id AND ob.object_type_id=33",
 	"modules" => "select mo.* from modules mo",
 	"langTexts" => "select lt.* from lang_texts lt",
 	"galleries" => "select ob.*, co.* FROM objects ob, collections co where ob.id=co.id AND ob.object_type_id=29",
@@ -73,21 +80,35 @@ var $methodsQueries = array(
 	}
 	
 	protected function documents($r) {
-		unset($r['ob']['fundo']);		
+		unset($r['ob']['fundo']);
+		$r["ob"]["description"] = $this->getLangTextDescription($r["ob"]);
 		$this->write($this->createInsert($r['ob'], "objects"));
 		$contents = array_merge($r['cb'], $r['c']);
 //		$contents = array_merge($contents, $r['bd']);
 		$this->write($this->createInsert($contents, "contents"));
+		// migrate gallery relation
+		if (!empty($r["bd"]["gallery_id"])) {
+			$obr["id"] = $r["ob"]["id"];
+			$obr["object_id"] = $r["bd"]["gallery_id"];
+			$obr["switch"] = "gallery";
+			$obr["priority"] = 1;
+			$this->write($this->createInsert($obr, "object_relations"));
+			$obr["id"] = $r["bd"]["gallery_id"];
+			$obr["object_id"] = $r["ob"]["id"];
+			$this->write($this->createInsert($obr, "object_relations"));
+		}
 	}
 	
 	protected function shortNews($r) {
-		unset($r['ob']['fundo']);		
+		unset($r['ob']['fundo']);
+		$r["ob"]["description"] = $this->getLangTextDescription($r["ob"]);
 		$this->write($this->createInsert($r['ob'], "objects"));
 		$this->write($this->createInsert($r['cb'], "contents"));
 	}
 	
 	protected function events($r) {
-		unset($r['ob']['fundo']);		
+		unset($r['ob']['fundo']);
+		$r["ob"]["description"] = $this->getLangTextDescription($r["ob"]);
 		$this->write($this->createInsert($r['ob'], "objects"));
 		$contents = array_merge($r['cb'], $r['c']);
 		$this->write($this->createInsert($contents, "contents"));
@@ -103,7 +124,8 @@ var $methodsQueries = array(
 	protected function areas($r) {
 		$r['ob']['creator'] = $r['a']['creator'];
 		$r['ob']['publisher'] = $r['a']['publisher'];
-		unset($r['ob']['fundo']);		
+		unset($r['ob']['fundo']);
+		$r["ob"]["description"] = $this->getLangTextDescription($r["ob"]);		
 		$this->write($this->createInsert($r['ob'], "objects"));
 		unset($r['a']['creator']);
 		unset($r['a']['publisher']);
@@ -111,13 +133,15 @@ var $methodsQueries = array(
 	}
 
 	protected function sections($r) {
-		unset($r['ob']['fundo']);		
+		unset($r['ob']['fundo']);	
+		$r["ob"]["description"] = $this->getLangTextDescription($r["ob"]);	
 		$this->write($this->createInsert($r['ob'], "objects"));
 		$this->write($this->createInsert(array('id' => $r['co']['id']), "sections"));
 	}
 
 	protected function images($r) {
-		unset($r['ob']['fundo']);		
+		unset($r['ob']['fundo']);	
+		$r["ob"]["description"] = $this->getLangTextDescription($r["ob"]);	
 		$this->write($this->createInsert($r['ob'], "objects"));
 		$this->write($this->createInsert($r['cb'], "contents"));
 		$r['st']['mime_type'] = $r['st']['type'];
@@ -127,7 +151,8 @@ var $methodsQueries = array(
 	}
 
 	protected function videos($r) {
-		unset($r['ob']['fundo']);		
+		unset($r['ob']['fundo']);
+		$r["ob"]["description"] = $this->getLangTextDescription($r["ob"]);		
 		$this->write($this->createInsert($r['ob'], "objects"));
 		$this->write($this->createInsert($r['cb'], "contents"));
 		$r['st']['mime_type'] = $r['st']['type'];
@@ -137,7 +162,8 @@ var $methodsQueries = array(
 	}
 
 	protected function files($r) {
-		unset($r['ob']['fundo']);		
+		unset($r['ob']['fundo']);	
+		$r["ob"]["description"] = $this->getLangTextDescription($r["ob"]);	
 		$this->write($this->createInsert($r['ob'], "objects"));
 		$this->write($this->createInsert($r['cb'], "contents"));
 		$r['st']['mime_type'] = $r['st']['type'];
@@ -146,12 +172,19 @@ var $methodsQueries = array(
 	}
 	
 	protected function audio($r) {
-		unset($r['ob']['fundo']);		
+		unset($r['ob']['fundo']);
+		$r["ob"]["description"] = $this->getLangTextDescription($r["ob"]);		
 		$this->write($this->createInsert($r['ob'], "objects"));
 		$this->write($this->createInsert($r['cb'], "contents"));
 		$r['st']['mime_type'] = $r['st']['type'];
 		unset($r['st']['type']);		
 		$this->write($this->createInsert($r['st'], "streams"));
+	}
+	
+	protected function links($r) {
+		unset($r['ob']['fundo']);
+		$this->write($this->createInsert($r['ob'], "objects"));
+		$this->write($this->createInsert($r['l'], "links"));
 	}
 	
 	protected function objectRelations($r) {
@@ -178,10 +211,11 @@ var $methodsQueries = array(
 	}
 
 	protected function langTexts($r) {
-		$beObjectModel = ClassRegistry::init("BEObject");
-		$langObj = $beObjectModel->field("lang", array("id" => $r["lt"]["object_id"]));
+		$sql = "SELECT lang FROM objects WHERE id='" . $r["lt"]["object_id"] . "'";
+		$langObj = $this->model->query($sql);
+		
 		// do not insert main object language in lang_texts 
-		if ($langObj != $r["lt"]["lang"]) {
+		if ($langObj[0]['objects']['lang'] != $r["lt"]["lang"]) {
 			if(empty($r['lt']['text'])) {
 				$r['lt']['text'] = $r['lt']['long_text'];
 			}
@@ -192,20 +226,16 @@ var $methodsQueries = array(
 	
 	protected function galleries($r) {
 		unset($r['ob']['fundo']);
+		$r["ob"]["description"] = $this->getLangTextDescription($r["ob"]);
 		$this->write($this->createInsert($r['ob'], "objects"));
 		$this->write($this->createInsert(array('id' => $r['co']['id']), "contents"));
 	}
 	
 	protected function trees($r) {
-		$beObjectModel = ClassRegistry::init("BEObject");
-		$galleryCount = $beObjectModel->find("count", array(
-				"conditions" => array("id" => $r["tr"]["parent_id"], "object_type_id" => 29),
-				"contain" => array()
-			)
-		);
-		
+		$sql = "SELECT COUNT(id) as numGallery FROM objects WHERE id='" . $r["tr"]["parent_id"] . "' AND object_type_id=29";
+		$galleryCount = $this->model->query($sql);
 		// if it's not a gallery insert in trees table, else build attach relation
-		if ($galleryCount == 0) {
+		if ($galleryCount[0][0]['numGallery'] == 0) {
 			$this->write($this->createInsert($r["tr"], "trees"));
 		} else {
 			$obr["id"] = $r["tr"]["id"];
@@ -217,6 +247,19 @@ var $methodsQueries = array(
 			$obr["object_id"] = $r["tr"]["id"];
 			$this->write($this->createInsert($obr, "object_relations"));
 		}
+	}
+	
+	private function getLangTextDescription($object) {
+		$description = $object["description"];
+		$sql = "SELECT * FROM lang_texts as `LangText` 
+				WHERE object_id='".$object["id"]."'
+				AND lang='".$object["lang"]."'
+				AND name='description' LIMIT 1";
+		$l = $this->model->query($sql);
+		if (!empty($l[0]["LangText"])) {
+			$description = (!empty($l[0]["LangText"]["long_text"]))? $l[0]["LangText"]["long_text"] : $l[0]["LangText"]["text"];
+		}
+		return $description;
 	}
 	
 };
