@@ -802,7 +802,7 @@ class BeditaShell extends Shell {
 		}
 		$this->out("Creating: $releaseFile");
 		
-		$command = "cd " . $tmpBasePath . " && " . "tar cfvp " . $releaseFile . " bedita";
+		$command = "cd " . $tmpBasePath . " && " . "tar cfp " . $releaseFile . " bedita";
        	$this->out("Executing shell command: " . $command);
        	$this->out(shell_exec($command));
        	
