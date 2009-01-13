@@ -7,28 +7,41 @@ $rel["releaseDir"]=".";
 $rel["releaseBaseName"]="BEdita-agpl-3.0.alpha1.";
 
 $rel["removeFiles"]= array( 
-	"bedita-db/bedita_init_data.sql",
-	"bedita-app/controllers/modules/newsletter_controller.php",
-	"bedita-app/controllers/modules/bibliographies_controller.php",
-	"bedita-app/controllers/modules/books_controller.php",
+	"bedita-db".DS."bedita_init_data.sql",
+	"bedita-app".DS."controllers".DS."modules".DS."newsletter_controller.php",
+	"bedita-app".DS."controllers".DS."modules".DS."bibliographies_controller.php",
+	"bedita-app".DS."controllers".DS."modules".DS."books_controller.php",
 );
 
 $rel["removeDirs"]= array(
 	"bedita-deploy",
 	"bedita-doc",
-	"bedita-app/views/bibliographies",
-	"bedita-app/views/books",
-	"bedita-app/views/newsletter",
+	"bedita-app".DS."views".DS."bibliographies",
+	"bedita-app".DS."views".DS."books",
+	"bedita-app".DS."views".DS."newsletter",
+);
+
+$rel["createDirs"] = array(
+	"bedita-app".DS."tmp".DS."cache".DS."models",
+	"bedita-app".DS."tmp".DS."cache".DS."persistent",
+	"bedita-app".DS."tmp".DS."cache".DS."views",
+	"bedita-app".DS."tmp".DS."logs",
+	"bedita-app".DS."tmp".DS."sessions",
+	"bedita-app".DS."tmp".DS."smarty".DS."cache",
+	"bedita-app".DS."tmp".DS."smarty".DS."compile",
+	"bedita-app".DS."tmp".DS."tests"
 );
 
 $rel["renameFiles"]= array(
-	"bedita-db/bedita_init_agpl.sql" => "bedita-db/bedita_init_data.sql",
-	"bedita-app/config/core.php.sample" => "bedita-app/config/core.php",
-	"bedita-app/config/database.php.sample" => "bedita-app/config/database.php",
-	"bedita-app/config/bedita.cfg.php.sample" => "bedita-app/config/bedita.cfg.php",
-	"bedita-app/webroot/index.php.sample" => "bedita-app/webroot/index.php",
+	"bedita-db".DS."bedita_init_agpl.sql" => "bedita-db".DS."bedita_init_data.sql",
+	"bedita-app".DS."config".DS."core.php.sample" => "bedita-app".DS."config".DS."core.php",
+	"bedita-app".DS."config".DS."database.php.sample" => "bedita-app".DS."config".DS."database.php",
+	"bedita-app".DS."config".DS."bedita.cfg.php.sample" => "bedita-app".DS."config".DS."bedita.cfg.php",
+	"bedita-app".DS."webroot".DS."index.php.sample" => "bedita-app".DS."webroot".DS."index.php",
 );
 
-$rel["versionFileName"]="bedita-app/config/bedita.version.php";
+$rel["createFiles"] = array("bedita-app".DS."webroot".DS."test.php");
+
+$rel["versionFileName"]="bedita-app".DS."config".DS."bedita.version.php";
 
 ?>

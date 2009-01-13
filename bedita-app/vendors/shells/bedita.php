@@ -241,7 +241,7 @@ class BeditaShell extends Shell {
 			}
 		} else {
 			$this->hr();
-			$this->out("HINT: edit \$default array in bedita-app/config/database.php, have a look to CakePHP documentation.");
+			$this->out("HINT: check the database existence and edit \$default array in bedita-app/config/database.php, have a look to CakePHP documentation.");
 			$this->out("");
 		}
 	}
@@ -722,7 +722,9 @@ class BeditaShell extends Shell {
     	$this->check_sys_get_temp_dir();
 		$tmpBasePath = $this->setupTempDir();
        	$this->out("Using temp dir: $tmpBasePath");
-		$exportPath = $tmpBasePath . "svn-export";
+		$exportPath = $tmpBasePath . "bedita";
+		
+		
     	$svnExport = "svn export --non-interactive --username ". 
     			$rel['user'] . " --password " . $rel['password'] . 
     			" " . $rel['url'] . " " . $exportPath;
@@ -750,6 +752,18 @@ class BeditaShell extends Shell {
 			}
 		}
 		
+		foreach ($rel["createDirs"] as $d) {
+			$p = $exportPath.DS.$d;
+			$this->out("create dirs: " . $p);
+			if (!$folder->create($p)) {
+				throw new Exception("Error creating dir " . $p);
+			}
+			$this->out("create empty file in: " . $p);
+			if (!$fileObj = new File($p . DS . "empty", true)) {
+				throw new Exception("Error creating empty file in " . $p);
+			}
+		}
+		
 		foreach ($rel["renameFiles"] as $from => $to) {
 			$p1 = $exportPath.DS.$from;
 			$p2 = $exportPath.DS.$to;
@@ -758,6 +772,15 @@ class BeditaShell extends Shell {
 	        	throw new Exception("Error renaming " . $p1. " to " .$p2);
 			};
 		}
+		
+    	foreach ($rel["createFiles"] as $f) {
+			$p = $exportPath.DS.$f;
+			$this->out("create file: " . $p);
+			if (!$fileObj = new File($p, true)) {
+				throw new Exception("Error creating empty file " . $p);
+			}
+		}
+		
 		// create version file
 		$versionFileContent="<?php\n\$config['Bedita.version'] = '". $rel["releaseBaseName"]. $svnRelease . "';\n?>";
 		$handle = fopen($exportPath.DS.$rel["versionFileName"], 'w');
@@ -765,6 +788,7 @@ class BeditaShell extends Shell {
 		fclose($handle);
 		
 		$releaseFile = $rel["releaseDir"]. DS . $rel["releaseBaseName"]. $svnRelease . "tar";
+		
     	if(file_exists($releaseFile)) {
 			$res = $this->in("$releaseFile exists, overwrite? [y/n]");
 			if($res == "y") {
@@ -777,29 +801,12 @@ class BeditaShell extends Shell {
 			}
 		}
 		$this->out("Creating: $releaseFile");
-		$tar = new Archive_Tar($releaseFile, false);
-       	if($tar === FALSE) {
-			throw new Exception("Error opening archive $releaseFile");
-       	}
+		
+		$command = "cd " . $tmpBasePath . " && " . "tar cfvp " . $releaseFile . " bedita";
+       	$this->out("Executing shell command: " . $command);
+       	$this->out(shell_exec($command));
        	
-       	$folder= new Folder($exportPath);
-        $tree= $folder->tree($exportPath, false);
-        foreach ($tree as $files) {
-            foreach ($files as $file) {
-            	if (!is_dir($file)) {
-	            	$contents = file_get_contents($file);
-	        		if ( $contents === false ) {
-						throw new Exception("Error reading file content: $file");
-	       			}
-					$p = substr($file, strlen($exportPath));	
-					if(!$tar->addString($p, $contents)) {
-						throw new Exception("Error adding $file to tar file");
-					}
-					unset($contents);
-            	}
-            }
-        }
-		$this->cleanTempDir();
+       	$this->cleanTempDir();
         $this->out("$releaseFile created");
     }
     
@@ -818,7 +825,7 @@ class BeditaShell extends Shell {
 		if (isset($this->params['db'])) {
 			$dbCfg = $this->params['db'];
 		}
-		$db1 = ConnectionManager::getDataSource($dbCfg);
+		$db1 = @ConnectionManager::getDataSource($dbCfg);
 		$hostName = $db1->config['host'];
 		$dbName = $db1->config['database'];
 		$this->out("Checking database connection: $dbCfg - [host=".$hostName.", database=".$dbName."]");
