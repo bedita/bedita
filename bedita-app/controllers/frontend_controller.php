@@ -419,7 +419,7 @@ abstract class FrontendController extends AppController {
 		if (!$this->baseLevel) {
 			$this->modelBindings($this->{$modelType});
 		} else {
-			$this->{$modelType}->contain(array("BEObject"));
+			$this->{$modelType}->contain(array("BEObject" => array("LangText")));
 		}
 			
 		$obj = $this->{$modelType}->find("first", array(
