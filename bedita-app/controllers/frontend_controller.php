@@ -97,15 +97,15 @@ abstract class FrontendController extends AppController {
 				// HTTP autodetect
 				$l10n = new L10n();
 				$l10n->get();
-				$this->currLang = $conf->Config['language'];
-
-				if(!array_key_exists($this->currLang, $conf->frontendLangs)) {
+				$this->currLang = $l10n->lang;
+				if(!isset($this->currLang)) {
+					$this->currLang = $conf->frontendLang;
+				} else if(!array_key_exists($this->currLang, $conf->frontendLangs)) {
 					if (isset($conf->frontendLangsMap) && $lang = $conf->frontendLangsMap[$this->currLang]) {
 						$this->currLang = (!empty($lang))? $lang : $conf->frontendLang;
 					} else {
 						$this->currLang = $conf->frontendLang;
 					}
-
 				}
 			}
 
@@ -587,9 +587,12 @@ abstract class FrontendController extends AppController {
 				$tmp['currentContent'] = (!empty($tmp['childContents']))? $tmp['childContents'][0] : array();
 				$section = array_merge($section, $tmp);
 			} else {
-				$current = current($tmp);
-//				$tmp['currentContent'] = $current[0];
-				$section = array_merge($section, array("currentContent" => $current[0], "children" => $tmp));
+				if(empty($tmp)) {
+					$section = array_merge($section, array("currentContent" => array(), "children" => array()));
+				} else {
+					$current = current($tmp);
+					$section = array_merge($section, array("currentContent" => $current[0], "children" => $tmp));
+				}
 			}
 		}
 		

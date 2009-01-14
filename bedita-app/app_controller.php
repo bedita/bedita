@@ -122,21 +122,33 @@ class AppController extends Controller
 	}
 
 	protected function setupLocale() {
-		// read Cookie
-		$lang = $this->Cookie->read('bedita.lang');
-		$conf = Configure::getInstance();
-		if(isset($lang) && $conf->multilang === true) {
-			$this->Session->write('Config.language', $lang);
-		}
-		$l10n = new L10n();
-		$l10n->get();		
-		$this->currLang = $conf->Config['language'];
-		if(!array_key_exists($this->currLang, $conf->langsSystem)) {
-			if(isset( $conf->langsSystemMap[$this->currLang])) {
-				$this->currLang = $conf->langsSystemMap[$this->currLang];
-			} else { // use default
-				$this->currLang = $conf->defaultLang;
+
+		$this->currLang = $this->Session->read('Config.language');
+
+		if($this->currLang === null || empty($this->currLang)) {
+			// read Cookie
+			$lang = $this->Cookie->read('bedita.lang');
+			$conf = Configure::getInstance();
+			if(isset($lang) && $conf->multilang === true) {
+				$this->Session->write('Config.language', $lang);
+				$this->currLang = $lang;
+			} else {
+				// HTTP autodetect
+				$l10n = new L10n();
+				$l10n->get();		
+				$this->currLang = $l10n->lang;
+				if(!isset($this->currLang)) {
+					$this->currLang = $conf->defaultLang;
+				} else if(!array_key_exists($this->currLang, $conf->langsSystem)) {
+					if(isset( $conf->langsSystemMap[$this->currLang])) {
+						$this->currLang = $conf->langsSystemMap[$this->currLang];
+					} else { // use default
+						$this->currLang = $conf->defaultLang;
+					}
+				}
 			}
+			$this->Session->write('Config.language', $this->currLang);
+			Configure::write('Config.language', $this->currLang);
 		}
 		$this->set('currLang', $this->currLang);
 		if(isset( $conf->datePatternLocale[$this->currLang])) {
@@ -145,7 +157,6 @@ class AppController extends Controller
 		if(isset( $conf->dateTimePatternLocale[$this->currLang])) {
 			Configure::write('dateTimePattern', $conf->dateTimePatternLocale[$this->currLang]);
 		}
-
 	}
 	
 	/**
