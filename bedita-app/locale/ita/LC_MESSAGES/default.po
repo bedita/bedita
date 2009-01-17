@@ -536,7 +536,7 @@ msgid "creator is required (at least %1 alphanumerical char)"
 msgstr "creatore obbligatorio (almeno %1 carattere alfanumerico)"
 
 msgid "publisher is required (at least %1 alphanumerical char)"
-msgstr "pubblicatore obbligatorio (almeno %1 carattere alfanumerico)"
+msgstr "editore obbligatorio (almeno %1 carattere alfanumerico)"
 
 msgid "rights is required (at least %1 alphanumerical char)"
 msgstr "diritti obbligatorio (almeno %1 carattere alfanumerico)"
@@ -554,7 +554,7 @@ msgid "creator"
 msgstr "creatore"
 
 msgid "publisher"
-msgstr "pubblicatore"
+msgstr "editore"
 
 msgid "rights"
 msgstr "diritti"
@@ -910,11 +910,26 @@ msgstr "traduzioni"
 msgid "books"
 msgstr "libri"
 
+msgid "book detail"
+msgstr "dettagli del libro"
+
 msgid "bibliographies"
 msgstr "bibliografie"
 
+msgid "place"
+msgstr "luogo"
 
+msgid "series"
+msgstr "collana"
 
+msgid "year"
+msgstr "anno
 
+msgid "author/s"
+msgstr "autore/i"
 
+msgid "notes"
+msgstr "note"
 
+msgid "surname"
+msgstr "cognome"
