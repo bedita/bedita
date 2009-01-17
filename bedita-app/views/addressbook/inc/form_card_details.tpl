@@ -32,64 +32,96 @@ tinyMCE.init({
 
 {/literal}
 {/if}
+
 {literal}
 $(document).ready(function(){
 
-{/literal}
-{if (!empty($object) && !empty($object.country))}
-{literal}$("#country").selectOptions("{/literal}{$object.country}{literal}",true);{/literal}
-{/if}
-{literal}
+$("#fototessera").click(function () {
+	$('.main .tab').BEtabsclose();
+	$('#multimedia').prev('.tab').BEtabstoggle();
+});
+
+$(".htab TD").click(function () {
+	$("input",this).attr({checked:"checked"});
+});
+
+{/literal}{if (!empty($object) && !empty($object.country))}{literal}
+
+$("#country").selectOptions("{/literal}{$object.country}{literal}",true);{/literal}
+
+{/if}{literal}
+
+{/literal}{if (!empty($object.id)&&($object.company==1))}{literal}
+
+$(".htab TD[rel:company]").click();
+
+
+
+{/literal}{/if}{literal}
 
 })
 {/literal}
+
 </script>
 
 
 
+
+</script>
 
 <div class="tab"><h2>{t}Card{/t}</h2></div>
 
 <fieldset id="card">
 
 <table class="htab">
-	<td rel="person"><input type="radio" name="data[company]" value="0" {if (empty($object.id)||($object.company==0))}checked="checked"{/if}>{t}Person{/t}</td>
-	<td rel="company"><input type="radio" name="data[company]" value="1" {if (!empty($object.id)&&($object.company==1))}checked="checked"{/if}>{t}Company{/t}</td>
+	<td id="personh" rel="person">
+		<input type="radio" name="data[company]" value="0" {if (empty($object.id)||($object.company==0))}checked="checked"{/if} />
+		{t}Person{/t}</td>
+	<td id="companyh" rel="company">
+		<input type="radio" name="data[company]" value="1" {if (!empty($object.id)&&($object.company==1))}checked="checked"{/if} />
+		{t}Company / institution{/t}</td>
 </table>
 
 		
 <div class="htabcontainer" id="companyperson">
 	
-	<div class="htabcontent" id="person" >
+	<div class="htabcontent" id="person">
 		<table>
 			<tr>
-				<th>{t}name{/t}:</th>
-				<td><input type="text" name="data[person][name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>
-			</tr>	
-			<tr>			
-				<th>{t}surname{/t}:</th>
-				<td><input type="text" name="data[person][surname]" value="{$object.surname|escape:'html'|escape:'quotes'}" /></td>
+			{if !empty($attach[0])}
+				<td id="fototessera" style="padding-right:10px;" rowspan="4">
+					{assign_associative var="params" width=100 height=125 longside=false mode="crop"}
+					{$beEmbedMedia->object($attach[0],$params)}
+				</td>
+			{/if}
 				<th>{t}title{/t}:</th>
 				<td>
 					<input type="text" style="width:45px" id="vtitle" name="data[person][person_title]" value="{$object.person_title|escape:'html'|escape:'quotes'}" />
 				</td>
 			</tr>
 			<tr>
-				<td></td>
+				<th>{t}name{/t}:</th>
+				<td><input type="text" name="data[person][name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td			
+			</tr>
+			<tr>				
+				<th>{t}surname{/t}:</th>
+				<td><input type="text" name="data[person][surname]" value="{$object.surname|escape:'html'|escape:'quotes'}" /></td>
+			</tr>	
+
+			<tr>
 				<td colspan="3">
 					<input type="radio" name="data[gender]" value="male" {if (!empty($object.gender) && $object.gender=='male')}checked="checked"{/if}/> {t}male{/t} &nbsp&nbsp
 					<input type="radio" name="data[gender]" value="female" {if (!empty($object.gender) && $object.gender=='female')}checked="checked"{/if}/> {t}female{/t} &nbsp&nbsp
 					<input type="radio" name="data[gender]" value="transgender" {if (!empty($object.gender) && $object.gender=='transgender')}checked="checked"{/if}/> {t}transgender{/t}
-					<input type="radio" name="data[gender]" value="drone" {if (!empty($object.gender) && $object.gender=='drone')}checked="checked"{/if}/> {t}drone{/t} 
 				</td>
 			</tr>
+		</table>
+		<table>
 			<tr>
 				<th>{t}birthdate{/t}:</th>
-				<td><input type="text" class="dateinput" name="data[person][birthdate]" value="{if !empty($object.birthdate)}{$object.birthdate|date_format:$conf->datePattern}{/if}"/></td>
-			</tr>	
-			<tr>
+				<td><input type="text" style="width:75px" class="dateinput" name="data[person][birthdate]" value="{if !empty($object.birthdate)}{$object.birthdate|date_format:$conf->datePattern}{/if}"/></td>
 				<th>{t}deathdate{/t}:</th>
-				<td><input type="text" class="dateinput" name="data[person][deathdate]" value="{if !empty($object.deathdate)}{$object.deathdate|date_format:$conf->datePattern}{/if}"/></td>
+				<td><input type="text" style="width:75px" class="dateinput" name="data[person][deathdate]" value="{if !empty($object.deathdate)}{$object.deathdate|date_format:$conf->datePattern}{/if}"/></td>
 			</tr>
 		</table>
 	</div>
@@ -99,17 +131,17 @@ $(document).ready(function(){
 	<div class="htabcontent" id="company" >
 		<table>
 			<tr>
-				<th>{t}company name{/t}:</th>
-				<td><input type="text" name="data[cmp][company_name]" value="{$object.company_name|escape:'html'|escape:'quotes'}" /></td>
+				<th>{t}name{/t}:</th>
+				<td><input type="text" style="width:400px" name="data[cmp][company_name]" value="{$object.company_name|escape:'html'|escape:'quotes'}" /></td>
 			</tr>
+		</table>
+		<table>
 			<tr>
-				<th>{t}company reference{/t}:</th>
+				<th colspan=2>{t}reference{/t}</th>
 			</tr>
 			<tr>
 				<th>{t}name{/t}:</th>
-				<td><input type="text" name="data[cmp][name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>		
-			</tr>
-			<tr>	
+				<td><input type="text" name="data[cmp][name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>			
 				<th>{t}surname{/t}:</th>
 				<td><input type="text" name="data[cmp][surname]" value="{$object.surname|escape:'html'|escape:'quotes'}" /></td>
 			</tr>
@@ -424,7 +456,7 @@ $(document).ready(function(){
 </fieldset>
 
 
-<div class="tab"><h2>{t}Note{/t}</h2></div>
+<div class="tab"><h2>{t}Description{/t}</h2></div>
 
 <fieldset id="note">
 	<textarea name="data[description]" class="mce" style="font-size:13px; width:510px; height:150px;">{$object.description|default:''}</textarea>

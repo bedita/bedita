@@ -13,6 +13,11 @@ var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 {literal}
 $(document).ready(function(){
 
+	$(".indexlist TD").not(".checklist").css("cursor","pointer").click(function(i) {
+		document.location = $(this).parent().find("a:first").attr("href"); 
+	} );
+	
+	
 	/* select/unselect each item's checkbox */
 	$(".selectAll").bind("click", function(e) {
 		var status = this.checked;
@@ -63,10 +68,10 @@ $(document).ready(function(){
 			<th></th>
 			<th>{$beToolbar->order('title', 'name')}</th>
 			<th>{$beToolbar->order('id', 'id')}</th>
-			<th>{t}User/Company{/t}</th>
 			<th>{$beToolbar->order('status', 'Status')}</th>
 			<th>{$beToolbar->order('modified', 'Modified')}</th>
-			<th>{$beToolbar->order('country', 'Country')}</th>			
+			<th>{$beToolbar->order('country', 'Country')}</th>
+			<th>{$beToolbar->order('note', 'Notes')}</th>	
 		</tr>
 	{/capture}
 		
@@ -75,15 +80,15 @@ $(document).ready(function(){
 		{section name="i" loop=$objects}
 		
 		<tr class="obj {$objects[i].status}">
-			<td style="width:15px; padding:7px 0px 0px 0px;">
+			<td class="checklist">
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}"/>
 			</td>
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64}</a></td>
 			<td>{$objects[i].id}</td>
-			<td>-</td>
 			<td>{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
 			<td>{$objects[i].country}</td>
+			<td>{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 		</tr>
 		
 		
@@ -102,8 +107,6 @@ $(document).ready(function(){
 
 
 </table>
-
-
 
 
 

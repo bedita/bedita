@@ -32,9 +32,10 @@ Menu a SX valido per tutte le pagine del controller.
 		{if !empty($categories)}
 		<ul class="menuleft insidecol">
 			<li><a href="javascript:void(0)" onClick="$('#groups').slideToggle();">{t}Select by category{/t}</a></li>
-				<ul id="groups" style="display:none">
+				
+				<ul id="groups" {if (empty($categorySearched))}style="display:none"{/if}>
 					{foreach key=val item=cat from=$categories}
-					<li><a href="{$html->url('/addressbook/index/category:')}{$cat.id}">{$cat.label}</a></li>
+					<li {if (($categorySearched|default:'')==$cat.id)}class="on"{/if}><a href="{$html->url('/addressbook/index/category:')}{$cat.id}">{$cat.label}</a></li>
 					{/foreach}
 				</ul>
 		</ul>

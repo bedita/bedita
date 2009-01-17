@@ -1,5 +1,5 @@
 {*
-** bibliography view template
+** addressbook view template
 *}
 
 {$html->css("ui.datepicker")}
@@ -21,7 +21,7 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		var openAtStart ="#card,#address";
+		var openAtStart = "#card,#address,#properties";
 		$(openAtStart).prev(".tab").BEtabstoggle();
 		
 		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
@@ -46,7 +46,7 @@
 
 <div class="head">
 	
-	<h1>{t}{$object.title|default:"New Item"}{/t}</h1>
+	<h1>{t}{if !empty($object.person_title)}{$object.person_title}. {/if}{$object.title|default:"New Item"}{/t}</h1>
 	
 </div>
 
