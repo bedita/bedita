@@ -281,13 +281,13 @@ UL.modules {
 .books, .book				{background-color:#996633 !important;}
 .bibliographies, .bibliography {background-color:#999966 !important;}
 .ecommerce 					{background-color:#771717 !important;}
-.webmark, .webmarks 		{background-color:#3274D0 !important;}
+.webmark, .webmarks 		{background-color:#6600cc !important;}
 .form, .forms 				{background-color:#006633 !important;}
 .bookings, .booking 		{background-color:#99CC33 !important;}
 .faq, .faqs 				{background-color:#CC3333 !important;}
 .print 						{background-color:#CC9900 !important;}
 .topography, .topographies 	{background-color:#993300 !important;}
-
+.statistics, .stats 	{background-color:#788279 !important;}
 
 .bedita 	{background-color:#FFFFFF !important; 
 			font:normal 1.75em Georgia, "Times New Roman", Times, serif !important; ; 
@@ -297,6 +297,8 @@ UL.modules {
 
 .default 		{background-color:#CCCCCC !important; color:#000000 !important}
 
+
+;
 /*...........................................
  
     Modules states
@@ -766,7 +768,9 @@ TABLE.indexlist {
 	background-color:transparent;
 }
 
-
+.indexlist TD.checklist {
+	width:15px; padding:7px 0px 0px 0px;
+}
 
 
 /*...........................................    
@@ -797,6 +801,11 @@ TABLE.indexlist {
 	margin-right:10px;
 	margin-bottom:10px;
 	float:left;
+
+	border-radius : 10px; 
+	-moz-border-radius : 10px; 
+	-webkit-border-radius : 10px;
+	
 }
 .multimediaitem input, .multimediaitem textarea, .multimediaitem LI {
 	font-size:0.9em;
@@ -841,7 +850,10 @@ TABLE.indexlist {
 	overflow:hidden !important;
 }
 
-
+.multimediaitem.small IMG {
+	width:75px !important;
+	height:auto !important;
+}
 
 
 .multimediaitem.small .info_file_item {
@@ -1345,10 +1357,12 @@ TABLE.areaform {
 }
 
 .editornotes {
-	line-height: 16px!important; width:156px; 
+	line-height: 16px!important; 
+	width:146px; 
+	padding:5px;
 	font:normal 12px Arial,Helvetica, sans-serif;
 	color: #9a5830; 
-	background: transparent url('../img/sfo_zebranotes.gif'); 
+	/* background: transparent url('../img/sfo_zebranotes.gif'); */
 }
 
 .listobjnav  {
