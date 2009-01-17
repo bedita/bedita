@@ -7,7 +7,7 @@ var URLBase = "{$html->url('index/')}" ;
 {literal}
 $(document).ready(function() {
 
-	$("TABLE.indexlist TD.cellList").click(function(i) { 
+	$(".indexlist TD").not(".checklist").css("cursor","pointer").click(function(i) {
 		document.location = $(this).parent().find("a:first").attr("href"); 
 	} );
 
@@ -108,7 +108,7 @@ function changeStatusTranslations() {
 		{assign var="mtitle" value=$translations[i].BEObject.title}
 		
 		<tr class="obj {$translations[i].LangText.status}">
-			<td style="width:15px; padding:7px 0px 0px 0px;">
+			<td class="checklist">
 				<input  type="checkbox" name="object_chk" class="objectCheck" title="{$translations[i].LangText.id}" />
 			</td>
 			<td>

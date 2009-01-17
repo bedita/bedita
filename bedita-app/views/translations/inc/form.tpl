@@ -30,8 +30,9 @@ tinyMCE.init({
 	plugins : "safari,pagebreak,paste,fullscreen",
 
 	// Theme options
-	theme_advanced_buttons1 : "bold,italic, | ,formatselect,bullist, | ,link,unlink,pastetext,pasteword, | ,charmap,fullscreen",
-	theme_advanced_buttons2 : "",
+	//theme_advanced_buttons1 : "bold,italic, | ,formatselect,bullist, | ,link,unlink,pastetext,pasteword, | ,charmap,fullscreen",
+	theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, link,unlink",
+	theme_advanced_buttons2 : "pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
 	theme_advanced_buttons3 : "", 
 	theme_advanced_toolbar_location : "top",
 	theme_advanced_toolbar_align : "left",
@@ -80,6 +81,8 @@ $(document).ready(function(){
 <form action="{$html->url('/translations/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object_translation.id.status|default:''}"/>
 <input type="hidden" name="data[master_id]" value="{$object_master.id|default:''}"/>
+
+
 
 <div class="mainhalf">
 
@@ -341,5 +344,6 @@ $(document).ready(function(){
 	</fieldset>
 
 </div>
+
 
 </form>
