@@ -100,9 +100,9 @@ $(document).ready(function(){
 		
 			{if strtolower($objects[i].ObjectType.name) == "image"}	
 			<a href="{$html->url('view/')}{$objects[i].id}">
-			{assign_associative var="params" width=$thumbWidth height=$thumbHeight mode="crop"}
-			{assign_associative var="htmlAttr" width=$thumbWidth height=$thumbHeight}	
-			{$beEmbedMedia->object($objects[i],$params,$htmlAttr)}
+				{assign_associative var="params" width=$thumbWidth height=$thumbHeight mode="crop"}
+				{assign_associative var="htmlAttr" width=$thumbWidth height=$thumbHeight}	
+				{$beEmbedMedia->object($objects[i],$params,$htmlAttr)}
 			</a>
 						
 			{elseif ($objects[i].provider|default:false)}
@@ -115,7 +115,7 @@ $(document).ready(function(){
 				<a href="{$conf->mediaUrl}{$filePath}" target="_blank">
 					<img src="{$session->webroot}img/mime/{$objects[i].mime_type}.gif" />
 				</a>
-			
+
 			{/if}
 		
 		</div>

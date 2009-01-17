@@ -101,23 +101,20 @@ $(document).ready(function()
 
 <div id="multimedia">
 	
-<fieldset id="multimediaItems">	
+<fieldset id="multimediaItems" style="margin-left:10px">	
 
-				<img class="multimediaitemToolbar viewsmall" src="{$html->webroot}img/iconML-small.png" />
-				<img class="multimediaitemToolbar viewthumb" src="{$html->webroot}img/iconML-thumb.png" />
+<img class="multimediaitemToolbar viewsmall" src="{$html->webroot}img/iconML-small.png" />
+<img class="multimediaitemToolbar viewthumb" src="{$html->webroot}img/iconML-thumb.png" />
 
 <hr />
 <input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$relation}][0][switch]" value="{$relation}" />
 {foreach from=$attach item="item"}
-	<div class="multimediaitem itemBox {if $item.status != "on"} off{/if} small" id="item_{$item.id}">
+	<div class="multimediaitem itemBox {if $item.status != "on"} off{/if}" id="item_{$item.id}">
 		
 			{include file="../common_inc/form_file_item.tpl"}
 			
 	</div>
 {/foreach}
-
-	
-
 
 </fieldset>
 

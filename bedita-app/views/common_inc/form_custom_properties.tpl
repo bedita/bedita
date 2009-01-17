@@ -1,7 +1,7 @@
+{if !empty($objectProperty)}
+
 <div class="tab"><h2>{t}Custom Properties{/t}</h2></div>
 <fieldset id="customProperties">
-
-{if !empty($objectProperty)}
 	
 	<table class="indexlist" id="frmCustomProperties">
 	<tr>
@@ -65,7 +65,6 @@
 	{/foreach} 
 	</table>
 	
-{else}
-	{t}No properties defined for this object{/t}
-{/if}
+
 </fieldset>
+{/if}

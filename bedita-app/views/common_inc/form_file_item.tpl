@@ -65,10 +65,13 @@
 		<li>
 			<textarea class="info_file_item" style="border:0px; border-bottom:1px solid silver;" name="data[RelatedObject][{$relation}][{$item.id}][description]">{$item.description|default:""}</textarea>
 			<br />
-			<a rel="{$linkUrl} #multimediaiteminside" class="modalbutton">details</p>
-			
-			<a style="margin-left:60px" href="javascript: void(0);" onclick="removeItem('item_{$item.id}')" >delete</a>
-			<!-- <img style="vertical-align:middle;" src="{$session->webroot}img/iconClose.png" > -->
+			<table style="width:100%">
+				<tr>
+					<td><a rel="{$linkUrl} #multimediaiteminside" class="modalbutton">details</a></td>
+					<td><a href="{$linkUrl}" target="_blank">edit</a></td>
+					<td><a href="javascript: void(0);" onclick="removeItem('item_{$item.id}')">remove</a></td>
+				</tr>
+			</table>
 		</li>
 	</ul>
 

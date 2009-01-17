@@ -14,7 +14,7 @@ var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 $(document).ready(function(){
 
 
-	$("TABLE.indexList TD.cellList").click(function(i) { 
+	$(".indexlist TD").not(".checklist").css("cursor","pointer").click(function(i) {
 		document.location = $(this).parent().find("a:first").attr("href"); 
 	} );
 	
@@ -57,8 +57,6 @@ $(document).ready(function(){
 //-->
 </script>	
 
-
-	
 	
 <form method="post" action="" id="formObject">
 
@@ -87,7 +85,7 @@ $(document).ready(function(){
 		{section name="i" loop=$objects}
 		
 		<tr class="obj {$objects[i].status}">
-			<td style="width:15px; padding:7px 0px 0px 0px;">
+			<td class="checklist">
 			{if (empty($objects[i].fixed))}
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
 			{/if}

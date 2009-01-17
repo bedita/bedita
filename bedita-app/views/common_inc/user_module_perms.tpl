@@ -1,4 +1,4 @@
-<ul class="bordered singola" style="margin-top:200px">
+<ul class="bordered singola" style="margin-top:100px">
 {if !empty($BEAuthUser.userid)}
 	<li>{t}User{/t}: <span class="on">{$BEAuthUser.realname}</span></li>
 	{if isset($module_modify)}

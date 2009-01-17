@@ -2,7 +2,7 @@
 ** detail of media item
 *}
 
-{if (isset($object))}
+{if (isset($object)) and (!empty($object.path))}
 
 <div class="tab"><h2>{t}File{/t}</h2></div>
 
@@ -25,49 +25,60 @@
 		{assign_associative var="htmlAttr" width=500}
 		{$beEmbedMedia->object($object,$params,$htmlAttr)}
 		
+	
 	{elseif ($object.provider|default:false)}
+		
+		
 		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="px; " 3="height:" 4=$conf->videoThumbHeight 5="px;"}
 		{assign_associative var="attributes" style=$myStyle}
 
-	<a href="{$object.path}" target="_blank">
-		{$beEmbedMedia->object($object,null,$attributes)}
-	</a>
+		<a href="{$object.path}" target="_blank">
+			{$beEmbedMedia->object($object,null,$attributes)}
+		</a>
 		{assign_associative var="params" presentation="full"}
 		{$beEmbedMedia->object($object,$params)}
 	
-	<embed 
-		src	= "{$html->webroot}swf/mediaplayer.swf" 
-		width	= "{$conf->videoWidth}"
-		height	= "{$conf->videoHeight}"
-		allowscriptaccess = "always"
-		allowfullscreen = "true"
-		flashvars = "file={$mediaProvider->sourceEmbed($object) }&backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0x000000&overstretch=true&searchbar=false&autostart=false"
-	/>
+		<embed 
+			src	= "{$html->webroot}swf/mediaplayer.swf" 
+			width	= "{$conf->videoWidth}"
+			height	= "{$conf->videoHeight}"
+			allowscriptaccess = "always"
+			allowfullscreen = "true"
+			flashvars = "file={$mediaProvider->sourceEmbed($object) }&backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0x000000&overstretch=true&searchbar=false&autostart=false"
+		/>
+	
 	
 	{elseif strtolower($object.ObjectType.name) == "audio"}
-	<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
-		<img src="{$session->webroot}img/mime/{$object.mime_type}.gif" />
-	</a>
-
-	<embed 
-		src		= "{$html->webroot}swf/mediaplayer.swf" 
-		width	= "{$conf->audioWidth}"
-		height	= "{$conf->audioHeight}"
-		allowscriptaccess = "always"
-		allowfullscreen = "true"
-		flashvars = "file={$conf->mediaUrl}{$object.path}&backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0x000000&overstretch=true&searchbar=false&autostart=false"
-	/>
+	
+	
+		<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
+			<img src="{$session->webroot}img/mime/{$object.mime_type}.gif" />
+		</a>
+	
+		<embed 
+			src		= "{$html->webroot}swf/mediaplayer.swf" 
+			width	= "{$conf->audioWidth}"
+			height	= "{$conf->audioHeight}"
+			allowscriptaccess = "always"
+			allowfullscreen = "true"
+			flashvars = "file={$conf->mediaUrl}{$object.path}&backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0x000000&overstretch=true&searchbar=false&autostart=false"
+		/>
+		
+		
 	{else}
-	<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
-		<img src="{$session->webroot}img/mime/{$object.mime_type}.gif" />
-	</a>
+	
+	
+		<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
+			<img src="{$session->webroot}img/mime/{$object.mime_type}.gif" />
+		</a>
+	
+	
 	{/if}
 
 
 
 
-<table class="bordered" style="width:100%; clear:both">
-
+<table class="bordered" style="margin-top:10px; border:1px solid #999; width:100%; clear:both">
 
 	<tr>
 		<th>{t}filename{/t}:</th>
@@ -101,7 +112,10 @@
 	</tr>
 	
 {/if}
-	
+	<tr>
+		<th></th>
+		<td><a target="_blank" href="{$conf->mediaUrl}{$object.path}">› {t}open file in a separate window{/t}</a></td>
+	</tr>
 </table>
 
 </div>
@@ -113,10 +127,10 @@
 
 
 <div class="tab"><h2>
-	{if (!isset($object))}
+	{if (!isset($object)) or (empty($object.path))}
 		{t}Upload new file{/t}
 	{else}
-		{t}Substitute file{/t}
+		{t}Change this file with another{/t}
 	{/if}
 	</h2></div>
 
