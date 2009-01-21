@@ -16,7 +16,7 @@ INSERT INTO object_types (id, name, module) VALUES
 (20, 'book', 'books'),
 (21, 'event', 'events'),
 (22, 'document', 'documents'),
-(33, 'link', NULL),
+(33, 'link', 'webmarks'),
 (35, 'mailmessage', 'newsletter'),
 (36, 'mailtemplate', 'newsletter'),
 (37, 'author', NULL),
