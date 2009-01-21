@@ -1,5 +1,5 @@
 {*
-** bibliography view template
+** book view template
 *}
 
 {$html->css("ui.datepicker")}
@@ -12,15 +12,16 @@
 {if $currLang != "eng"}
 {$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
-
+{$javascript->link("jquery/jquery.autocomplete", false)}
 
 <script type="text/javascript">
 	{literal}
-	$(document).ready( function ()
-	{
+	$(document).ready( function (){
+		
 		var openAtStart ="#bookdetails,#properties";
 		$(openAtStart).prev(".tab").BEtabstoggle();
 		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
+				
 	});
 	{/literal}
 </script>
