@@ -62,10 +62,12 @@ $(document).ready(function() {
 	{/if}
 	
 	</ul>
-	
+
 	<hr />
-	
+	{assign var="prior" value=$smarty.foreach.linkForeach.total|default:0}
 	<div id="newLink" style="white-space:nowrap">
+		<input type="text" class="priority" name="linkPriority" 
+		value="{$prior+1}" size="3" maxlength="3"/>
 		<label>{t}title{/t}:</label> 	<input type="text" style="width:100px" name="linkTitle" id="linkTitle" />
 		<label>{t}url{/t}:</label> 	<input type="text" name="linkUrl" id="linkUrl" />
 		<label>{t}target{/t}:</label> 	<select name="targetType" id="linkTarget"> 
