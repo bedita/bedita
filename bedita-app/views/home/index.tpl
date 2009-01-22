@@ -33,7 +33,9 @@ $(document).ready(function() {
 
 <ul class="modules">
 
-    <li class="bedita" rel="{$html->url('/')}">BEdita 3.0</li>
+    <li class="bedita" rel="{$html->url('/')}">
+    	BEdita 3.0
+	</li>
 	
 
 
