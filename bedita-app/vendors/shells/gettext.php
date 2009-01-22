@@ -35,22 +35,7 @@ App::import('Controller', 'App'); // BeditaException
 
 class GettextShell extends Shell {
 
-	// smarty open tag
-	protected $ldq;
-	protected $rdq;
-	protected $cmd;
-	
-	// extensions of smarty files
-	protected $extensions = array('tpl');
-
 	protected $poResult = array();
-	
-	public function __construct($dispatch) {
-		$this->ldq = preg_quote('{');
-		$this->rdq = preg_quote('}');
-		$this->cmd = preg_quote('t');
-		parent::__construct($dispatch);		
-	}
 	
 	// "fix" string - strip slashes, escape and convert new lines to \n
 	private function fs($str)
@@ -62,7 +47,7 @@ class GettextShell extends Shell {
 	}
 
 	// rips gettext strings from $file and prints them in C format
-	private function parseFile($file)
+	private function parseFile($file, $rgxp)
 	{
 		$content = @file_get_contents($file);
 	
@@ -71,15 +56,12 @@ class GettextShell extends Shell {
 		}
 	
 		$matches = array();
-		$rgxp = "/{$this->ldq}\s*({$this->cmd})\s*([^{$this->rdq}]*){$this->rdq}([^{$this->ldq}]*){$this->ldq}\/\\1{$this->rdq}/";
 		preg_match_all($rgxp, $content, $matches);
 		
 		for ($i=0; $i < count($matches[0]); $i++) {
 			// TODO: handle plural forms, file lines...!!!
 //			if (preg_match('/plural\s*=\s*["\']?\s*(.[^\"\']*)\s*["\']?/', $matches[2][$i], $match)) {
 //				$this->out('ngettext("'.$this->fs($matches[3][$i]).'","'.$this->fs($match[1]).'",x);'."\n");
-//			} else {
-//				$this->out('gettext("'.$this->fs($matches[3][$i]).'");'."\n");
 //			}
 			$item = $this->fs($matches[3][$i]);
 			if(!in_array($item, $this->poResult)) {
@@ -91,6 +73,15 @@ class GettextShell extends Shell {
 	// go through a directory
 	private function parseDir($dir)
 	{
+		// tpl regexp, look for {t}text to translate{/t}
+		$l = preg_quote('{');
+		$r = preg_quote('}');
+		$t = preg_quote('t');
+		$rgxpTpl = "/{$l}\s*({$t})\s*([^{$r}]*){$r}([^{$l}]*){$l}\/\\1{$r}/";
+
+		// TODO: php regexp, look for __("text to translate",true)
+		$extensionRgxp = array("tpl" => $rgxpTpl);
+		
 		$folder = new Folder($dir);
         $tree = $folder->tree($dir, false);
         foreach ($tree as $files) {
@@ -98,8 +89,8 @@ class GettextShell extends Shell {
                 if (!is_dir($file)) {
                 	$f = new File($file);
                 	$info = $f->info();
-                	if(isset($info['extension']) && in_array($info['extension'], $this->extensions))	{
-                		$this->parseFile($file);
+                	if(isset($info['extension']) && in_array($info['extension'], array_keys($extensionRgxp))) {
+                		$this->parseFile($file, $extensionRgxp[$info['extension']]);
                 	}
                 }
             }
@@ -108,7 +99,6 @@ class GettextShell extends Shell {
 
 	public function update() {
 		
-		$conf = Configure::getInstance();
 		$tplPath = VIEWS;
 		$localePath = APP."locale".DS;
 		if (isset($this->params['frontend'])) {
