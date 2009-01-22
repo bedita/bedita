@@ -68,6 +68,6 @@ $(document).ready(function() {
 		<input type="button" id="sendNewsletter" value="  SEND newsletter  " {if !($object.id|default:false)}disabled="disabled"{/if}/>
 	</div>
 	
-	<em>{t} Newsletter must be saved before sending {/t}</em>
+	<em>{t}Newsletter must be saved before sending{/t}</em>
 	
 </fieldset>

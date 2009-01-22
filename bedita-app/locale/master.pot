@@ -1,50 +1,49 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: BEdita 3\n"
 "POT-Creation-Date: 2009-01-22 13:05:49\n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: Bedita I18N & I10N Team\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
+"Language-Team: BEdita I18N & I10N Team\n"
+"Project-Id-Version: BEdita 3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=utf-8\n"
+
 
 msgid "(Un)Select All"
-msgstr "(De)Seleziona tutto"
+msgstr ""
 
 msgid "(un)select all"
-msgstr "(de)seleziona tutti"
+msgstr ""
 
 msgid "Access to Backend"
-msgstr "Accesso al Backend"
+msgstr ""
 
 msgid "Action"
-msgstr "Azione"
+msgstr ""
 
 msgid "Add"
-msgstr "Aggiungi"
+msgstr ""
 
 msgid "Add comma separated words"
-msgstr "Aggiungi parole separate da virgole"
+msgstr ""
 
 msgid "Add event date"
-msgstr "Aggiungi data evento"
+msgstr ""
 
 msgid "Add multiple items"
 msgstr ""
 
 msgid "Add new category"
-msgstr "Aggiungi nuova categoria"
+msgstr ""
 
 msgid "Add selected items"
 msgstr ""
 
 msgid "Address"
-msgstr "Indirizzo"
+msgstr ""
 
 msgid "Advanced Properties"
-msgstr "Proprietà avanzate"
+msgstr ""
 
 msgid "Apply permissions recursively"
 msgstr ""
@@ -667,8 +666,7 @@ msgstr ""
 msgid "User name"
 msgstr ""
 
-msgid "User name is required (at least %1 chars, without white spaces and special"
-"chars)"
+msgid "User name is required (at least %1 chars, without white spaces and special chars)"
 msgstr ""
 
 msgid "Username"
@@ -699,7 +697,7 @@ msgid "accept this IP!"
 msgstr ""
 
 msgid "add"
-msgstr "aggiungi"
+msgstr ""
 
 msgid "add by code"
 msgstr ""
@@ -711,7 +709,7 @@ msgid "add by url"
 msgstr ""
 
 msgid "add comma separated words"
-msgstr "aggiungi parole separate da virgola"
+msgstr ""
 
 msgid "add contents"
 msgstr ""
@@ -720,7 +718,7 @@ msgid "add group"
 msgstr ""
 
 msgid "add item"
-msgstr "aggiungi"
+msgstr ""
 
 msgid "add more tags"
 msgstr ""
@@ -756,7 +754,7 @@ msgid "audio"
 msgstr ""
 
 msgid "author"
-msgstr "autore"
+msgstr ""
 
 msgid "ban this IP!"
 msgstr ""
@@ -765,7 +763,7 @@ msgid "birthdate"
 msgstr ""
 
 msgid "blocked"
-msgstr "bloccato"
+msgstr ""
 
 msgid "bounce to email"
 msgstr ""
@@ -783,7 +781,7 @@ msgid "change status to:"
 msgstr ""
 
 msgid "choose document type"
-msgstr "scegli il tipo documento"
+msgstr ""
 
 msgid "city and zip code"
 msgstr ""
@@ -792,10 +790,10 @@ msgid "clone"
 msgstr ""
 
 msgid "close"
-msgstr "chiudi"
+msgstr ""
 
 msgid "comments"
-msgstr "commenti"
+msgstr ""
 
 msgid "connect new items"
 msgstr ""
@@ -804,7 +802,7 @@ msgid "connected user"
 msgstr ""
 
 msgid "contact email"
-msgstr "contatto email"
+msgstr ""
 
 msgid "contents"
 msgstr ""
@@ -816,19 +814,19 @@ msgid "country"
 msgstr ""
 
 msgid "create"
-msgstr "crea"
+msgstr ""
 
 msgid "create and associate"
 msgstr ""
 
 msgid "create group"
-msgstr "crea gruppo"
+msgstr ""
 
 msgid "create new translation"
 msgstr ""
 
 msgid "created"
-msgstr "creato"
+msgstr ""
 
 msgid "created by"
 msgstr ""
@@ -837,7 +835,7 @@ msgid "created on"
 msgstr ""
 
 msgid "creator"
-msgstr "creatore"
+msgstr ""
 
 msgid "currently in job"
 msgstr ""
@@ -846,16 +844,16 @@ msgid "deathdate"
 msgstr ""
 
 msgid "default language"
-msgstr "lingua predefinita"
+msgstr ""
 
 msgid "delete"
-msgstr "elimina"
+msgstr ""
 
 msgid "delete all"
 msgstr ""
 
 msgid "delete selected items"
-msgstr "elimina gli elementi selezionati"
+msgstr ""
 
 msgid "depth"
 msgstr ""
@@ -864,7 +862,7 @@ msgid "desc"
 msgstr ""
 
 msgid "description"
-msgstr "descrizione"
+msgstr ""
 
 msgid "details"
 msgstr ""
@@ -879,7 +877,7 @@ msgid "email2"
 msgstr ""
 
 msgid "end"
-msgstr "fine"
+msgstr ""
 
 msgid "end has to be a valid date in the following format:"
 msgstr ""
@@ -891,13 +889,13 @@ msgid "female"
 msgstr ""
 
 msgid "file"
-msgstr "file"
+msgstr ""
 
 msgid "filename"
 msgstr ""
 
 msgid "files queued"
-msgstr "file in coda"
+msgstr ""
 
 msgid "filesize"
 msgstr ""
@@ -912,7 +910,7 @@ msgid "first page"
 msgstr ""
 
 msgid "from"
-msgstr "da"
+msgstr ""
 
 msgid "get from list"
 msgstr ""
@@ -924,7 +922,7 @@ msgid "height"
 msgstr ""
 
 msgid "image"
-msgstr "immagine"
+msgstr ""
 
 msgid "in recipient groups"
 msgstr ""
@@ -936,16 +934,16 @@ msgid "lang"
 msgstr ""
 
 msgid "language"
-msgstr "lingua"
+msgstr ""
 
 msgid "last"
 msgstr ""
 
 msgid "last login"
-msgstr "ultimo login"
+msgstr ""
 
 msgid "last modified"
-msgstr "ultima modifica"
+msgstr ""
 
 msgid "last modified by"
 msgstr ""
@@ -960,7 +958,7 @@ msgid "latitude"
 msgstr ""
 
 msgid "license"
-msgstr "licenza"
+msgstr ""
 
 msgid "list name"
 msgstr ""
@@ -969,7 +967,7 @@ msgid "location code"
 msgstr ""
 
 msgid "long text"
-msgstr "testo esteso"
+msgstr ""
 
 msgid "longitude"
 msgstr ""
@@ -993,10 +991,10 @@ msgid "mime type"
 msgstr ""
 
 msgid "modified"
-msgstr "modificato"
+msgstr ""
 
 msgid "modify"
-msgstr "modifica"
+msgstr ""
 
 msgid "more results"
 msgstr ""
@@ -1008,7 +1006,7 @@ msgid "multimedia descriptions"
 msgstr ""
 
 msgid "name"
-msgstr "nome"
+msgstr ""
 
 msgid "newsletter title"
 msgstr ""
@@ -1044,7 +1042,7 @@ msgid "not yet sent"
 msgstr ""
 
 msgid "of"
-msgstr "di"
+msgstr ""
 
 msgid "of master id"
 msgstr ""
@@ -1071,10 +1069,10 @@ msgid "order"
 msgstr ""
 
 msgid "other"
-msgstr "altro"
+msgstr ""
 
 msgid "page"
-msgstr "pagina"
+msgstr ""
 
 msgid "pending"
 msgstr ""
@@ -1086,7 +1084,7 @@ msgid "phone2"
 msgstr ""
 
 msgid "place"
-msgstr "luogo"
+msgstr ""
 
 msgid "prev"
 msgstr ""
@@ -1107,25 +1105,25 @@ msgid "promote as user"
 msgstr ""
 
 msgid "properties"
-msgstr "proprietà"
+msgstr ""
 
-msgid "public list\t"
+msgid "public list	"
 msgstr ""
 
 msgid "public name"
-msgstr "nome pubblico"
+msgstr ""
 
 msgid "public url"
 msgstr ""
 
 msgid "publisher"
-msgstr "editore"
+msgstr ""
 
 msgid "publishing"
 msgstr ""
 
 msgid "read"
-msgstr "lettura"
+msgstr ""
 
 msgid "realname"
 msgstr ""
@@ -1155,10 +1153,10 @@ msgid "reside in"
 msgstr ""
 
 msgid "rights"
-msgstr "diritti"
+msgstr ""
 
 msgid "save"
-msgstr "salva"
+msgstr ""
 
 msgid "scheduled"
 msgstr ""
@@ -1170,7 +1168,7 @@ msgid "search string:"
 msgstr ""
 
 msgid "sections"
-msgstr "sezioni"
+msgstr ""
 
 msgid "select an item to associate"
 msgstr ""
@@ -1206,22 +1204,22 @@ msgid "serial number"
 msgstr ""
 
 msgid "series"
-msgstr "collana"
+msgstr ""
 
 msgid "short text"
-msgstr "testo breve"
+msgstr ""
 
 msgid "signature"
 msgstr ""
 
 msgid "size"
-msgstr "dimensione"
+msgstr ""
 
 msgid "staging url"
 msgstr ""
 
 msgid "start"
-msgstr "inizio"
+msgstr ""
 
 msgid "start has to be a valid date in the following format:"
 msgstr ""
@@ -1230,7 +1228,7 @@ msgid "state"
 msgstr ""
 
 msgid "status"
-msgstr "stato"
+msgstr ""
 
 msgid "street name and #"
 msgstr ""
@@ -1242,13 +1240,13 @@ msgid "subscribing method"
 msgstr ""
 
 msgid "subtitle"
-msgstr "sottotitolo"
+msgstr ""
 
 msgid "surname"
-msgstr "cognome"
+msgstr ""
 
 msgid "tags"
-msgstr "tag"
+msgstr ""
 
 msgid "target"
 msgstr ""
@@ -1260,7 +1258,7 @@ msgid "tescription"
 msgstr ""
 
 msgid "title"
-msgstr "titolo"
+msgstr ""
 
 msgid "to"
 msgstr ""
@@ -1278,19 +1276,19 @@ msgid "translation to"
 msgstr ""
 
 msgid "type"
-msgstr "tipo"
+msgstr ""
 
 msgid "upload new items"
-msgstr "carica nuovi oggetti"
+msgstr ""
 
 msgid "url"
 msgstr ""
 
 msgid "username"
-msgstr "nome utente"
+msgstr ""
 
 msgid "valid"
-msgstr "valido"
+msgstr ""
 
 msgid "value"
 msgstr ""
@@ -1323,14 +1321,13 @@ msgid "write new item"
 msgstr ""
 
 msgid "year"
-msgstr "anno"
+msgstr ""
 
 msgid "yes"
-msgstr "si"
+msgstr ""
 
 msgid "your 5 recent items"
 msgstr ""
 
 msgid "your message"
 msgstr ""
-

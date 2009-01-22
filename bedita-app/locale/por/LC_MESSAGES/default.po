@@ -1,682 +1,59 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Bedita\n"
-"PO-Revision-Date: 2008-02-20 16:04+0100\n"
-"POT-Creation-Date: \n"
-"Content-Type: text/plain; charset=utf-8\n"
-"MIME-Version: 1.0\n"
+"Project-Id-Version: BEdita 3\n"
+"POT-Creation-Date: 2009-01-22 13:05:49\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
-"Last-Translator: dante <didojunior@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Username"
-msgstr "Usuário"
-
-msgid "Username is required"
-msgstr "Nome usuário obligatório"
-
-msgid "Password is required"
-msgstr "Password obligatório"
-
-msgid "This field is required"
-msgstr "Campo obligatório"
-
-msgid "Backend user restricted area"
-msgstr "Area reservada aos gestores"
-
-msgid "Enter"
-msgstr "Entrar"
-
-msgid "No data"
-msgstr "Não ha datos"
-
-msgid "Wrong username/password or no authorization"
-msgstr "Nome usuário/password errados ou autorização negada"
-
-msgid "Gallery"
-msgstr "Galeria"
-
-msgid "Title"
-msgstr "Títolo"
-
-msgid "Univocal Nickname"
-msgstr "Nome de identificação"
-
-msgid "Status"
-msgstr "Estado"
-
-msgid "Created"
-msgstr "Creado"
-
-msgid "Language"
-msgstr "Língua"
-
-msgid "Default language"
-msgstr "Lingua predefinida"
-
-msgid "Dimensions"
-msgstr "Dimensões"
-
-msgid "Go to page"
-msgstr "Va a la página"
-
-msgid "page"
-msgstr "página"
-
-msgid "of"
-msgstr "de"
-
-msgid "Edit"
-msgstr "Guardar"
-
-msgid "Delete"
-msgstr "Borrar"
-
-msgid "Actions"
-msgstr "Ações"
-
-msgid "open details"
-msgstr "abrir todos os detalhes"
-
-msgid "close details"
-msgstr "fechar todos os detalhes"
-
-msgid "cancel"
-msgstr "cancelar"
-
-msgid "Properties"
-msgstr "Propriedades"
-
-msgid "Status"
-msgstr "Estado"
-
-msgid "Publication"
-msgstr "Publicação"
-
-msgid "Publication schedule"
-msgstr "Pubblicação programada"
-
-msgid "Start"
-msgstr "Início"
-
-msgid "End"
-msgstr "Fim"
-
-msgid "Attention!!! you are deleting an item.\n"
-"Are you sure that you want to continue?"
-msgstr "Atenção!!! está borrando um elemento.\n"
-"Quer continuar?"
-
-msgid "Where put the gallery into"
-msgstr "Posição da galeria"
-
-msgid "Close all"
-msgstr "Fechar todos"
-
-msgid "Expand all"
-msgstr "Abrir todos"
-
-msgid "Images of the gallery"
-msgstr "Imagens da galeria"
-
-msgid "Add image"
-msgstr "Adicionar imagem"
-
-msgid "Available images"
-msgstr "Imagens disponíveis"
-
-msgid "No images found"
-msgstr "Nenhuma imagem encontrada"
-
-msgid "Images"
-msgstr "Imagens"
-
-msgid "Gallery images"
-msgstr "Imagens da galeria"
-
-msgid "Thumbnail"
-msgstr "Miniatura"
-
-msgid "Modify"
-msgstr "Editar"
-
-msgid "Remove"
-msgstr "Borrar"
-
-msgid "Valid"
-msgstr "Válido"
-
-msgid "Last login"
-msgstr "Último aceso"
-
-msgid "Item deleted correctly"
-msgstr "Elemento borrado correctamente"
-
-msgid "Item to delete not found"
-msgstr "Elemento não encontrado"
-
-msgid "Are you sure that you want to delete the gallery?"
-msgstr "Quer borrar a galeria?"
-
-msgid "New Item"
-msgstr "Novo Elemento"
-
-msgid "New Image"
-msgstr "Nova Imagem"
-
-msgid "Size"
-msgstr "Dimensão"
-
-msgid "Custom Properties"
-msgstr "Propriedade Ad Hoc"
-
-msgid "name"
-msgstr "nome"
-
-msgid "type"
-msgstr "tipo"
-
-msgid "Type"
-msgstr "Tipo"
-
-msgid "value"
-msgstr "valor"
-
-msgid "add"
-msgstr "junta"
-
-msgid "Permissions"
-msgstr "Permisos"
-
-msgid "read"
-msgstr "lectura"
-
-msgid "modify"
-msgstr "editar"
-
-msgid "delete"
-msgstr "borrar"
-
-msgid "Apply permissions recursively"
-msgstr "Aplicar permisos recorsivamente"
-
-msgid "Do you really want to delete the permission"
-msgstr "Quer borrar o permiso"
-
-msgid "user"
-msgstr "usuário"
-
-msgid "group"
-msgstr "grupo"
-
-msgid "From"
-msgstr "De"
-
-msgid "Author"
-msgstr "Autor"
-
-msgid "Yes"
-msgstr "Sim"
-
-msgid "Last modified"
-msgstr "Última editação"
-
-msgid "Modified"
-msgstr "Guardado"
-
-msgid "User blocked"
-msgstr "Usuário bloqueado"
-
-msgid "Do you really want to delete the property"
-msgstr "Quer borrar a propriedade"
-
-msgid "Data uncomplete"
-msgstr "Datos não completos"
-
-msgid "Property already present"
-msgstr "Propriedade ja existente"
-
-msgid "Where put the section into"
-msgstr "Colocação da seção"
-
-msgid "Choose document type"
-msgstr "Escolher tipo de documento"
-
-msgid "External links"
-msgstr "Enlaces exteriores"
-
-msgid "Objects"
-msgstr "Objetos"
-
-msgid "Where put the document into"
-msgstr "Posição do documento"
-
-msgid "User settings"
-msgstr "Impostações usuário"
-
-msgid "User name"
-msgstr "Nome usuário"
-
-msgid "User name is required (at least %1 chars, without white spaces and special chars)"
-msgstr "Nome usuário obligatório (%1 carácteres, sem espaço e carácteres especiais)"
-
-msgid "Real name"
-msgstr "Nome real"
-
-msgid "Real name is required (at least %1 alphanumerical chars)"
-msgstr "Nome real obligatório (%1 carácteres alfanuméricos)"
-
-msgid "Use a valid email"
-msgstr "Utiliza um email válido"
-
-msgid "New password"
-msgstr "Nova password"
-
-msgid "Your password must be at least 6 characters long and contain at least one number"
-msgstr "A password deve ser não menos de 6 carácteres e conter não menos de um número"
-
-msgid "Confirm password"
-msgstr "Confirmar password"
-
-msgid "Passwords should be equal"
-msgstr "As password devem ser iguais"
-
-msgid "Group name is required (at least %1 chars, no white spaces and special chars)"
-msgstr "Nome grupo obligatório (%1 carácteres, sem espaços e carácteres especiais)"
-
-msgid "Strength"
-msgstr "Nivel de segurança"
-
-msgid "Blocked"
-msgstr "Bloqueado"
-
-msgid "Groups"
-msgstr "Grupos"
-
-msgid "Module access"
-msgstr "Aceso aos módulos"
-
-msgid "Read only"
-msgstr "So leitura"
-
-msgid "Read and modify"
-msgstr "Leitura e editação"
-
-msgid "Check at least one group"
-msgstr "Indicar não menos de um grupo"
-
-msgid "Users list"
-msgstr "Lista usuários"
-
-msgid "Manage user"
-msgstr "Opções usuário"
-
-msgid "New user"
-msgstr "Novo usuário"
-
-msgid "Create"
-msgstr "Crear"
-
-msgid "User"
-msgstr "Usuário"
-
-msgid "Name"
-msgstr "Nome"
-
-msgid "System Info"
-msgstr "Info Sistema"
-
-msgid "Users admin"
-msgstr "Usuário"
-
-msgid "Groups admin"
-msgstr "Administração grupos"
-
-msgid "Module"
-msgstr "Módulo"
-
-msgid "No access"
-msgstr "Nenhum aceso"
-
-msgid "Group properties"
-msgstr "Propriedades grupos"
-
-msgid "Create group"
-msgstr "Crear grupo"
-
-msgid "Insert group name"
-msgstr "Indicar nome grupo"
-
-msgid "Users of this group"
-msgstr "Usuários do grupo"
-
-msgid "Subtitle, description"
-msgstr "Subtítolo, descrição"
-
-msgid "Long Text"
-msgstr "Texto Extenso"
-
-msgid "Title is required"
-msgstr "Títolo obligatório"
-
-msgid "at least %1 alphanumerical char"
-msgstr "não menos de %1 carácter alfanumérico"
-
-msgid "Areas"
-msgstr "Áreas"
-
-msgid "Documents"
-msgstr "Documentos"
-
-msgid "Galleries"
-msgstr "Galerias"
-
-msgid "Sections"
-msgstr "Seções"
-
-msgid "New Area"
-msgstr "Nova Área"
-
-msgid "New Document"
-msgstr "Novo Documento"
-
-msgid "New Gallery"
-msgstr "Nova Galeria"
-
-msgid "New Section"
-msgstr "Nova Seção"
-
-msgid "areas"
-msgstr "áreas"
-
-msgid "documents"
-msgstr "documentos"
-
-msgid "galleries"
-msgstr "galerias"
-
-msgid "sections"
-msgstr "seções"
-
-msgid "Tree of Areas"
-msgstr "Árvore das Áreas"
-
-msgid "up"
-msgstr "sobre"
-
-msgid "down"
-msgstr "abaixo"
-
-msgid "Areas Tree"
-msgstr "Árvore Áreas"
-
-msgid "Do you really want to remove user"
-msgstr "Quer borrar o usuário"
-
-msgid "Description"
-msgstr "Descrição"
-
-msgid "Subtitle"
-msgstr "Subtítolo"
-
-msgid "The change will be lost. Do you want to continue"
-msgstr "Se perderão as mudações. Quer continuar"
-
-msgid "Only text"
-msgstr "So texto"
-
-msgid "No"
-msgstr "Não"
-
-msgid "Save"
-msgstr "Guardar"
-
-msgid "Exit"
-msgstr "Sair"
-
-msgid "Authorized"
-msgstr "Autorizado"
-
-msgid "Não Autorizado"
-msgstr "Non Autorizzato"
-
-msgid "Group authorized to Backend"
-msgstr "Grupo autorizado ao Backend"
-
-msgid "html"
-msgstr "html"
-
-msgid "only text"
-msgstr "solo texto"
-
-msgid "text with conversion space and link"
-msgstr "texto com conversão dos espaços e dos link"
-
-msgid "Connect to multimedia gallery"
-msgstr "Liga a uma galeria multimedial"
-
-msgid "Current gallery"
-msgstr "Galleia selecionada"
-
-msgid "Attachments"
-msgstr "Anexos"
-
-msgid "No attachments item found"
-msgstr "Nenhum anexo"
-
-msgid "Add multimedia by upload"
-msgstr "Junta objetos multimediais por upload"
-
-msgid "Add multimedia by URL"
-msgstr "Junta objetos multimediais por URL"
-
-msgid "Add multimedia by BEdita"
-msgstr "Junta objetos multimediais que ja existem no sistema"
-
-msgid "Add attachments by upload"
-msgstr "Anexa arquivos por upload"
-
-msgid "Add attachments by URL"
-msgstr "Anexa arquivos por URL"
-
-msgid "Add attachments by BEdita"
-msgstr "Anexa arquivos que ja existem no sistema"
-
-msgid "Short text"
-msgstr "Texto breve"
-
-msgid "Long text"
-msgstr "Texto comprido"
-
-msgid "Text type"
-msgstr "Tipo de texto"
-
-msgid "No tree found"
-msgstr "Elementos não encontrados"
-
-msgid "No galleries found"
-msgstr "Nenhuma galeria encontrada"
-
-msgid "attachments"
-msgstr "anexos"
-
-msgid "No documents found"
-msgstr "Nenhum documento encontrado"
-
-msgid "No areas"
-msgstr "Nenhuma área encontrada"
-
-msgid "No multimedia item found"
-msgstr "Nenhum elemento multimedial encontrado"
-
-msgid "Remind"
-msgstr "Alerta"
-
-msgid "Check if you want be notified, whenever you try to leave the page and you changed some data in the form"
-msgstr "Selecciona aqui si quiser ser alarmado, quando cambia a pagina"
-
-msgid "changes would be lost if you leave the page"
-msgstr "os cambios perdem-se deixando a pagina"
-
-msgid "data changed"
-msgstr "datos cambiados"
-
-msgid "Public name is required (at least %1 alphanumerical char)"
-msgstr "Nome publico obligatório (não menos de %1 carácter alfanumérico)"
-
-msgid "Description is required (at least %1 alphanumerical char)"
-msgstr "Descrição obligatório (não menos de %1 carácter alfanumérico)"
-
-msgid "Creator is required (at least %1 alphanumerical char)"
-msgstr "Criador obligatório (não menos de %1 carácter alfanumérico)"
-
-msgid "Publisher is required (at least %1 alphanumerical char)"
-msgstr "Publicador obligatório (não menos de %1 carácter alfanumérico)"
-
-msgid "Rights is required (at least %1 alphanumerical char)"
-msgstr "Direitos obligatório (não menos de %1 carácter alfanumérico)"
-
-msgid "License is required (at least %1 alphanumerical char)"
-msgstr "Licença obligatório (não menos de %1 carácter alfanumérico)"
-
-msgid "Public name"
-msgstr "Nome publico"
-
-msgid "Contact email"
-msgstr "Contato email"
-
-msgid "Creator"
-msgstr "Criador"
-
-msgid "Publisher"
-msgstr "Publicador"
-
-msgid "Rights"
-msgstr "Direitos"
-
-msgid "License"
-msgstr "Licença"
-
-msgid "Area saved"
-msgstr "Área guardada"
-
-msgid "Area removed"
-msgstr "Area borrada"
-
-msgid "Section saved"
-msgstr "Seção guardada"
-
-msgid "Section removed"
-msgstr "Seção borrada"
-
-msgid "Gallery associated to this document"
-msgstr "Galeria asociada ao documento"
-
-msgid "No gallery"
-msgstr "Nenhuma galeria"
-
-msgid "Document saved"
-msgstr "Documento guardado"
-
-msgid "Gallery saved"
-msgstr "Galeria guardada"
-
-msgid "Select all"
-msgstr "Selecionas todos"
-
-msgid "Unselect all"
-msgstr "Deselecionar todos"
-
-msgid "Delete selected items"
-msgstr "Borrar todos os elementos selecionados"
-
-msgid "Are you sure that you want to delete selected galleries?"
-msgstr "Quer borrar as galerias selecionadas?"
-
-msgid "Galleries deleted"
-msgstr "Galerias borradas"
-
-msgid "Documents deleted"
-msgstr "Documentos borrados"
-
-msgid "Are you sure that you want to delete selected documents?"
-msgstr "Quer borrar os documentos selecionados?"
-
-msgid "Multimedia archive"
-msgstr "Arquivo multimedial"
-
-msgid "Add selected items"
-msgstr "Adicionar elementos selecionados"
-
-msgid "Upload new items"
-msgstr "Anexar"
-
-msgid "Gallery items"
-msgstr "Elementos relacionados a este documento"
-
-msgid "Empty"
-msgstr "Vacio"
-
-msgid "File"
-msgstr "Arquivo"
-
-msgid "File name"
-msgstr "Nome do arquivo"
-
-msgid "image"
-msgstr "imagem"
-
-msgid "To populate this gallery switch to the 'Upload new items' tab or the 'Multimedia items repository' tab"
-msgstr "Para inserir datos na galeria, vai a 'Cargar novos objetos' ou a 'Arquivos objetos Multimediais'"
-
-msgid "Object type"
-msgstr "Tipo de objeto"
-
-msgid "Total number of"
-msgstr "Numero total de"
-
-msgid "multimedia items"
-msgstr "objetos multimediais"
+msgid "(Un)Select All"
+msgstr ""
 
 msgid "(un)select all"
 msgstr "(de)selecionar todos"
 
-msgid "Browse"
-msgstr "Procura"
+msgid "Access to Backend"
+msgstr ""
 
-msgid "Queue is empty"
-msgstr "Lista vacia"
+msgid "Action"
+msgstr ""
 
-msgid "Upload queue"
-msgstr "Anexar lista"
+msgid "Add"
+msgstr ""
 
-msgid "Upload end"
-msgstr "Anexar terminado"
+msgid "Add comma separated words"
+msgstr "Adicionar palavras separadas por vírgulas"
 
-msgid "Errors during upload"
-msgstr "Errores no anexar"
+msgid "Add event date"
+msgstr "Adicionar data evento"
 
-msgid "files queued"
-msgstr "arquivos na lista"
+msgid "Add multiple items"
+msgstr ""
 
-msgid "Cancel queue"
-msgstr "Anular lista"
+msgid "Add new category"
+msgstr ""
 
-msgid "Uploading file"
-msgstr "Anexando o arquivo"
+msgid "Add selected items"
+msgstr "Adicionar elementos selecionados"
 
-msgid "Thumb"
-msgstr "Imagem"
+msgid "Address"
+msgstr ""
 
-msgid "Select at least one type of permission"
-msgstr "Selecionar um tipo de permiso"
+msgid "Advanced Properties"
+msgstr ""
 
-msgid "Incompleted data"
-msgstr "Datos insuficientes"
+msgid "Apply permissions recursively"
+msgstr "Aplicar permisos recorsivamente"
 
 msgid "Are you sure that you want to delete selected items?"
 msgstr "Quer borrar todos os elementos selecionados?"
+
+msgid "Are you sure that you want to delete selected tags?"
+msgstr ""
 
 msgid "Are you sure that you want to delete the item?"
 msgstr "Quer borrar o elemento?"
@@ -684,176 +61,1831 @@ msgstr "Quer borrar o elemento?"
 msgid "Are you sure that you want to delete the tag?"
 msgstr "Quer borrar o tag?"
 
-msgid "Tag"
-msgstr "Tag"
+msgid "Are you sure you want to accept this IP?"
+msgstr ""
 
-msgid "Tag saved"
-msgstr "Tag guardado"
+msgid "Are you sure you want to ban this IP?"
+msgstr ""
 
-msgid "Tag deleted"
-msgstr "Tag borrado"
-
-msgid "Tags"
-msgstr "Tag"
-
-msgid "New Tag"
-msgstr "Novo Tag"
-
-msgid "No tags found"
-msgstr "Nenhum tag encontrado"
-
-msgid "categories"
-msgstr "categorias"
-
-msgid "Please enter a valid date in the %1 format and greater than the previous date"
-msgstr "Indicar uma data no formato %1 e maior da data anterior"
-
-msgid "Please enter a valid date in the %1 format"
-msgstr "Indicar data no formato %1"
-
-msgid "Main language"
-msgstr "Lingua principal"
-
-msgid "Language versions"
-msgstr "Versões linguisticas"
-
-msgid "Versions"
-msgstr "Versões"
-
-msgid "Enable / Disable"
-msgstr "Ligar / Desligar"
-
-msgid "Where the section is"
-msgstr "Colocação da seção"
-
-msgid "Contents for the section"
-msgstr "Contenidos para a seção"
-
-msgid "File already exists in the filesystem"
-msgstr "Arquivo ja presente no filesystem"
-
-msgid "File is already associated to another object"
-msgstr "Arquivo ja relacionado com outro objeto"
-
-msgid "MIME type not found"
-msgstr "MIME type não encontrado"
-
-msgid "Error saving stream object"
-msgstr "Error guardando o objeto stream"
-
-msgid "Error deleting stream object"
-msgstr "Errore borrando o objeto stream" 
-
-msgid "URL not valid"
-msgstr "URL não valido"
-
-msgid "You can't use remote file"
-msgstr "Não è possivel utilizar arquivos remotos"
-
-msgid "Attachments items"
+msgid "Attachments"
 msgstr "Anexos"
 
-msgid "Attachments items repository"
-msgstr "Arquivo anexos"
+msgid "Author"
+msgstr "Autor"
 
-msgid "To insert item here, switch to the 'Upload new items' tab or the 'Attachments items repository' tab"
-msgstr "Para adicionar elementos, vai para o tab 'Anexar' ou para o tab 'Arquivo anexos'"
+msgid "Authorized"
+msgstr "Autorizado"
 
-msgid "Multimedia items"
-msgstr "Multimedia"
+msgid "B.Edita"
+msgstr ""
 
-msgid "Multimedia items repository"
-msgstr "Arquivo multimedial"
+msgid "Backend user restricted area"
+msgstr "Area reservada aos gestores"
 
-msgid "To insert item here, switch to the 'Upload new items' tab or the 'Multimedia items repository' tab"
-msgstr "Para adicionar elementos, vai para o tab 'Anexar' ou para o tab 'Arquivo multimedial'"
+msgid "Bedita3 main dashboard"
+msgstr ""
 
-msgid "comments"
-msgstr "comentários"
+msgid "Bit depth"
+msgstr ""
 
-msgid "Add selected items to area/section"
-msgstr "Adicionar os elementos selecionados a area/seção"
+msgid "Book details"
+msgstr ""
 
-msgid "Loading data"
-msgstr "Cargando datos"
+msgid "Books"
+msgstr ""
 
-msgid "events"
-msgstr "eventos"
+msgid "Browse"
+msgstr "Procura"
 
-msgid "Events"
-msgstr "Eventos"
+msgid "Bulk operations on"
+msgstr ""
 
-msgid "New Event"
-msgstr "Novo evento"
+msgid "Cancel queue"
+msgstr "Anular lista"
+
+msgid "Card"
+msgstr ""
 
 msgid "Categories"
 msgstr "Categorias"
 
-msgid "Event calendar"
-msgstr "Calendario evento"
+msgid "Change"
+msgstr ""
 
-msgid "Open calendar"
-msgstr "Abrir calendario"
+msgid "Change Password"
+msgstr ""
 
-msgid "Add event date"
-msgstr "Adicionar data evento"
+msgid "Change this file with another"
+msgstr ""
 
-msgid "No categories found"
-msgstr "Nenhuma categoria encontrada"
+msgid "Channels"
+msgstr ""
 
-msgid "No events found"
-msgstr "Nenhum evento encontrado"
+msgid "Check at least one group"
+msgstr "Indicar não menos de um grupo"
 
-msgid "Event saved"
-msgstr "Evento guardado"
+msgid "Choose document type"
+msgstr "Escolher tipo de documento"
 
-msgid "Event deleted"
-msgstr "Evento borrado"
+msgid "Comments"
+msgstr ""
 
-msgid "Where the event is"
-msgstr "Posição do evento"
+msgid "Company / institution"
+msgstr ""
 
-msgid "No news found"
-msgstr "Nenhuma news encontrada"
+msgid "Compile"
+msgstr ""
+
+msgid "Configuration"
+msgstr ""
+
+msgid "Confirm password"
+msgstr "Confirmar password"
+
+msgid "Confirmation-In mail message"
+msgstr ""
+
+msgid "Confirmation-Out mail message"
+msgstr ""
+
+msgid "Connect to multimedia gallery"
+msgstr "Liga a uma galeria multimedial"
+
+msgid "Contacts"
+msgstr ""
+
+msgid "Create"
+msgstr "Crear"
+
+msgid "Create list"
+msgstr ""
+
+msgid "Create new"
+msgstr ""
+
+msgid "Create new document"
+msgstr ""
+
+msgid "Create new event"
+msgstr ""
+
+msgid "Create new gallery"
+msgstr ""
+
+msgid "Create new publishing"
+msgstr ""
+
+msgid "Create new section"
+msgstr ""
+
+msgid "Create new user"
+msgstr ""
 
 msgid "Create news"
 msgstr "Nova news"
 
-msgid "Area tree saved"
-msgstr "Árvore areas guardado"
+msgid "Creator is required (at least %1 alphanumerical char)"
+msgstr "Criador obligatório (não menos de %1 carácter alfanumérico)"
 
-msgid "Section deleted"
-msgstr "Seção borrada"
+msgid "Custom Properties"
+msgstr "Propriedade Ad Hoc"
 
-msgid "Add comma separated words"
-msgstr "Adicionar palavras separadas por vírgulas"
+msgid "Custom properties"
+msgstr ""
 
-msgid "Show system tags"
-msgstr "Mostrar os tag no sistema"
+msgid "Delete"
+msgstr "Borrar"
+
+msgid "Delete selected items"
+msgstr "Borrar todos os elementos selecionados"
+
+msgid "Description"
+msgstr "Descrição"
+
+msgid "Details"
+msgstr ""
+
+msgid "Dimensions"
+msgstr "Dimensões"
+
+msgid "Display details in frontend"
+msgstr ""
+
+msgid "Do you really want to delete the permission"
+msgstr "Quer borrar o permiso"
+
+msgid "Do you really want to remove group"
+msgstr ""
+
+msgid "Do you really want to remove user"
+msgstr "Quer borrar o usuário"
+
+msgid "Do you want unsubscribe selected items?"
+msgstr ""
+
+msgid "Edit more details"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Embedded in"
+msgstr ""
+
+msgid "Embedded in no objects"
+msgstr ""
+
+msgid "Enter"
+msgstr "Entrar"
+
+msgid "Error"
+msgstr ""
+
+msgid "Errors during upload"
+msgstr "Errores no anexar"
+
+msgid "Event calendar"
+msgstr "Calendario evento"
+
+msgid "Event start"
+msgstr ""
+
+msgid "Exif - Main Data"
+msgstr ""
+
+msgid "Exit"
+msgstr "Sair"
+
+msgid "File"
+msgstr "Arquivo"
+
+msgid "Gallery associated to this document"
+msgstr "Galeria asociada ao documento"
+
+msgid "Generic categories"
+msgstr ""
+
+msgid "Geotag"
+msgstr ""
+
+msgid "Get contents"
+msgstr ""
+
+msgid "Gmaps LookaT"
+msgstr ""
+
+msgid "Go to page"
+msgstr "Va a la página"
+
+msgid "Group Name"
+msgstr ""
+
+msgid "Group authorized to Backend"
+msgstr "Grupo autorizado ao Backend"
+
+msgid "Group modules access"
+msgstr ""
+
+msgid ""
+"Group name is required (at least %1 chars, no white spaces and special chars)"
+msgstr ""
+"Nome grupo obligatório (%1 carácteres, sem espaços e carácteres especiais)"
+
+msgid "Group properties "
+msgstr ""
+
+msgid "Groups"
+msgstr "Grupos"
+
+msgid "Height"
+msgstr ""
 
 msgid "Hide system tags"
 msgstr "Esconder os tag no sistema"
 
-msgid "Multimedia provider unsupported"
-msgstr "Multimedia provider não suportado"
+msgid "Human readable type"
+msgstr ""
 
-msgid "Error during upload, missing file"
-msgstr "Erro no upload: arquivo não encontrado"
+msgid "IP"
+msgstr ""
 
-msgid "Error during upload, error number"
-msgstr "Erro no upload: error numero"
+msgid "Invoice"
+msgstr ""
 
-msgid "other"
-msgstr "outro"
+msgid "Invoices"
+msgstr ""
 
 msgid "Item Type"
 msgstr "Tipo"
 
+msgid "Items"
+msgstr ""
+
+msgid "Letters or numbers only please"
+msgstr ""
+
+msgid "License is required (at least %1 alphanumerical char)"
+msgstr "Licença obligatório (não menos de %1 carácter alfanumérico)"
+
+msgid "Links"
+msgstr ""
+
+msgid "Lists"
+msgstr ""
+
+msgid "Loading data"
+msgstr "Cargando datos"
+
+msgid "Login"
+msgstr ""
+
+msgid "Long Text"
+msgstr "Texto Extenso"
+
+msgid "Media type"
+msgstr ""
+
+msgid "Message template"
+msgstr ""
+
+msgid "Moderated"
+msgstr ""
+
+msgid "Modify"
+msgstr "Editar"
+
+msgid "Module"
+msgstr "Módulo"
+
+msgid "Module access"
+msgstr "Aceso aos módulos"
+
+msgid "More data"
+msgstr ""
+
+msgid "Multimedia items"
+msgstr "Multimedia"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "Name is required (at least %1 alphanumerical char)"
+msgstr ""
+
+msgid "New Book"
+msgstr ""
+
+msgid "New Translation"
+msgstr ""
+
+msgid "New bibliography"
+msgstr ""
+
+msgid "New card"
+msgstr ""
+
+msgid "New link"
+msgstr ""
+
+msgid "New password"
+msgstr "Nova password"
+
+msgid "New tag"
+msgstr ""
+
+msgid "New template"
+msgstr ""
+
+msgid "New user"
+msgstr "Novo usuário"
+
+msgid "Newsletter must be saved before sending"
+msgstr ""
+
+msgid "Newsletter subscriptions"
+msgstr ""
+
+msgid "Newsletters"
+msgstr ""
+
+msgid "No"
+msgstr "Não"
+
+msgid "No access"
+msgstr "Nenhum aceso"
+
+msgid "No categories found"
+msgstr "Nenhuma categoria encontrada"
+
+msgid "No gallery"
+msgstr "Nenhuma galeria"
+
+msgid "No invoices"
+msgstr ""
+
+msgid "No item found"
+msgstr ""
+
+msgid "No mail group found"
+msgstr ""
+
+msgid "No newsletters found"
+msgstr ""
+
+msgid "No subscribers"
+msgstr ""
+
+msgid "No tags found."
+msgstr ""
+
+msgid "No template avaible"
+msgstr ""
+
+msgid "No templates found"
+msgstr ""
+
+msgid "No translations found"
+msgstr ""
+
+msgid "No tree found"
+msgstr "Elementos não encontrados"
+
+msgid "Not Authorized"
+msgstr ""
+
+msgid "Notes"
+msgstr ""
+
+msgid "Notice"
+msgstr ""
+
+msgid "Occurrences"
+msgstr ""
+
+msgid "Ocurrences"
+msgstr ""
+
+msgid "Open Calendar"
+msgstr ""
+
+msgid "Operations on"
+msgstr ""
+
+msgid "Orientation"
+msgstr ""
+
+msgid "Original Title"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Password is required"
+msgstr "Password obligatório"
+
+msgid "Passwords should be equal"
+msgstr "As password devem ser iguais"
+
+msgid "Permission"
+msgstr ""
+
+msgid "Permissions"
+msgstr "Permisos"
+
+msgid "Person"
+msgstr ""
+
+msgid "Please enter a valid date in the %1 format"
+msgstr "Indicar data no formato %1"
+
+msgid ""
+"Please enter a valid date in the %1 format and greater than the previous date"
+msgstr "Indicar uma data no formato %1 e maior da data anterior"
+
+msgid "Please enter a valid time in the %1 format"
+msgstr ""
+
+msgid "Previews"
+msgstr ""
+
+msgid "Properties"
+msgstr "Propriedades"
+
+msgid "Publisher is required (at least %1 alphanumerical char)"
+msgstr "Publicador obligatório (não menos de %1 carácter alfanumérico)"
+
+msgid "Publishing tree"
+msgstr ""
+
+msgid "Queue is empty"
+msgstr "Lista vacia"
+
+msgid "Read"
+msgstr ""
+
+msgid "Read and modify"
+msgstr "Leitura e editação"
+
+msgid "Read only"
+msgstr "So leitura"
+
+msgid "Real name"
+msgstr "Nome real"
+
+msgid "Real name is required (at least %1 alphanumerical chars)"
+msgstr "Nome real obligatório (%1 carácteres alfanuméricos)"
+
+msgid "Recent newsletters "
+msgstr ""
+
+msgid "Relationships"
+msgstr ""
+
+msgid "Remove"
+msgstr "Borrar"
+
+msgid "Rights is required (at least %1 alphanumerical char)"
+msgstr "Direitos obligatório (não menos de %1 carácter alfanumérico)"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Search"
+msgstr ""
+
+msgid "Select a user from the list"
+msgstr ""
+
+msgid "Select at least one type of permission"
+msgstr "Selecionar um tipo de permiso"
+
+msgid "Select by category"
+msgstr ""
+
+msgid "Select by template"
+msgstr ""
+
+msgid "Select by type"
+msgstr ""
+
+msgid "Send email to"
+msgstr ""
+
+msgid "Sent on"
+msgstr ""
+
+msgid "Show all"
+msgstr ""
+
+msgid "Show system tags"
+msgstr "Mostrar os tag no sistema"
+
+msgid "Show translations in"
+msgstr ""
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Subject"
+msgstr ""
+
+msgid "Subscriber lists"
+msgstr ""
+
+msgid "Subscribers"
+msgstr ""
+
+msgid "Subtitle, description"
+msgstr "Subtítolo, descrição"
+
+msgid "System events"
+msgstr ""
+
+msgid "System info "
+msgstr ""
+
+msgid "Tag details"
+msgstr ""
+
+msgid "Tags"
+msgstr "Tag"
+
+msgid "Templates"
+msgstr ""
+
+msgid "Text"
+msgstr ""
+
+msgid ""
+"The content is fixed: it's not possible to change the position in the tree"
+msgstr ""
+
+msgid "This object is fixed - some data is readonly"
+msgstr ""
+
+msgid "Title"
+msgstr "Títolo"
+
+msgid "Title is required"
+msgstr "Títolo obligatório"
+
+msgid "Translations"
+msgstr ""
+
+msgid "Unsubscribe selected items"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "Upload end"
+msgstr "Anexar terminado"
+
+msgid "Upload new file"
+msgstr ""
+
+msgid "Upload queue"
+msgstr "Anexar lista"
+
+msgid "Uploading file"
+msgstr "Anexando o arquivo"
+
+msgid "Url"
+msgstr ""
+
+msgid "Use a valid email"
+msgstr "Utiliza um email válido"
+
+msgid "User"
+msgstr "Usuário"
+
+msgid "User blocked"
+msgstr "Usuário bloqueado"
+
+msgid "User details"
+msgstr ""
+
+msgid "User groups"
+msgstr ""
+
+msgid "User name"
+msgstr "Nome usuário"
+
+msgid ""
+"User name is required (at least %1 chars, without white spaces and special "
+"chars)"
+msgstr ""
+"Nome usuário obligatório (%1 carácteres, sem espaço e carácteres especiais)"
+
+msgid "Username"
+msgstr "Usuário"
+
+msgid "Username is required"
+msgstr "Nome usuário obligatório"
+
+msgid "Users of this group"
+msgstr "Usuários do grupo"
+
+msgid "Warning"
+msgstr ""
+
+msgid "Width"
+msgstr ""
+
+msgid "X"
+msgstr ""
+
+msgid "Yes"
+msgstr "Sim"
+
+msgid "abstract:"
+msgstr ""
+
+msgid "accept this IP!"
+msgstr ""
+
+msgid "add"
+msgstr "junta"
+
+msgid "add by code"
+msgstr ""
+
+msgid "add by object ids"
+msgstr ""
+
+msgid "add by url"
+msgstr ""
+
+msgid "add comma separated words"
+msgstr ""
+
+msgid "add contents"
+msgstr ""
+
+msgid "add group"
+msgstr ""
+
+msgid "add item"
+msgstr ""
+
+msgid "add more tags"
+msgstr ""
+
+msgid "add user"
+msgstr ""
+
+msgid "address"
+msgstr ""
+
+msgid "addressbook details"
+msgstr ""
+
+msgid "advanced properties"
+msgstr ""
+
+msgid "all"
+msgstr ""
+
+msgid "all recent items"
+msgstr ""
+
+msgid "altro"
+msgstr ""
+
+msgid "asc"
+msgstr ""
+
+msgid "associate"
+msgstr ""
+
+msgid "audio"
+msgstr ""
+
+msgid "author"
+msgstr ""
+
+msgid "ban this IP!"
+msgstr ""
+
+msgid "birthdate"
+msgstr ""
+
+msgid "blocked"
+msgstr ""
+
+msgid "bounce to email"
+msgstr ""
+
+msgid "browse your disk"
+msgstr ""
+
+msgid "change status"
+msgstr ""
+
+msgid "change status to"
+msgstr ""
+
+msgid "change status to:"
+msgstr ""
+
+msgid "choose document type"
+msgstr ""
+
+msgid "city and zip code"
+msgstr ""
+
+msgid "clone"
+msgstr ""
+
+msgid "close"
+msgstr ""
+
+msgid "comments"
+msgstr "comentários"
+
+msgid "connect new items"
+msgstr ""
+
+msgid "connected user"
+msgstr ""
+
+msgid "contact email"
+msgstr ""
+
+msgid "contents"
+msgstr ""
+
+msgid "copy"
+msgstr ""
+
+msgid "country"
+msgstr ""
+
+msgid "create"
+msgstr ""
+
+msgid "create and associate"
+msgstr ""
+
+msgid "create group"
+msgstr ""
+
+msgid "create new translation"
+msgstr ""
+
+msgid "created"
+msgstr ""
+
+msgid "created by"
+msgstr ""
+
+msgid "created on"
+msgstr ""
+
+msgid "creator"
+msgstr ""
+
+msgid "currently in job"
+msgstr ""
+
+msgid "deathdate"
+msgstr ""
+
+msgid "default language"
+msgstr ""
+
+msgid "delete"
+msgstr "borrar"
+
+msgid "delete all"
+msgstr ""
+
+msgid "delete selected items"
+msgstr ""
+
+msgid "depth"
+msgstr ""
+
+msgid "desc"
+msgstr ""
+
+msgid "description"
+msgstr ""
+
+msgid "details"
+msgstr ""
+
+msgid "draft"
+msgstr ""
+
+msgid "email"
+msgstr ""
+
+msgid "email2"
+msgstr ""
+
+msgid "end"
+msgstr ""
+
+msgid "end has to be a valid date in the following format:"
+msgstr ""
+
+msgid "fax"
+msgstr ""
+
+msgid "female"
+msgstr ""
+
 msgid "file"
 msgstr "arquivo"
 
-msgid "Connect to other items"
-msgstr "Relacionar a outros elementos"
+msgid "filename"
+msgstr ""
 
-msgid "Text doesn't match image"
-msgstr "X DANTE - Il testo non corrisponde all'immagine"
+msgid "files queued"
+msgstr "arquivos na lista"
+
+msgid "filesize"
+msgstr ""
+
+msgid "filters"
+msgstr ""
+
+msgid "first"
+msgstr ""
+
+msgid "first page"
+msgstr ""
+
+msgid "from"
+msgstr ""
+
+msgid "get from list"
+msgstr ""
+
+msgid "go"
+msgstr ""
+
+msgid "height"
+msgstr ""
+
+msgid "image"
+msgstr "imagem"
+
+msgid "in recipient groups"
+msgstr ""
+
+msgid "isbn/issn"
+msgstr ""
+
+msgid "lang"
+msgstr ""
+
+msgid "language"
+msgstr ""
+
+msgid "last"
+msgstr ""
+
+msgid "last login"
+msgstr ""
+
+msgid "last modified"
+msgstr ""
+
+msgid "last modified by"
+msgstr ""
+
+msgid "last modified on"
+msgstr ""
+
+msgid "last page"
+msgstr ""
+
+msgid "latitude"
+msgstr ""
+
+msgid "license"
+msgstr ""
+
+msgid "list name"
+msgstr ""
+
+msgid "location code"
+msgstr ""
+
+msgid "long text"
+msgstr ""
+
+msgid "longitude"
+msgstr ""
+
+msgid "mail address"
+msgstr ""
+
+msgid "main language"
+msgstr ""
+
+msgid "male"
+msgstr ""
+
+msgid "master language"
+msgstr ""
+
+msgid "message board"
+msgstr ""
+
+msgid "mime type"
+msgstr ""
+
+msgid "modified"
+msgstr ""
+
+msgid "modify"
+msgstr "editar"
+
+msgid "more results"
+msgstr ""
+
+msgid "move"
+msgstr ""
+
+msgid "multimedia descriptions"
+msgstr ""
+
+msgid "name"
+msgstr "nome"
+
+msgid "newsletter title"
+msgstr ""
+
+msgid "next"
+msgstr ""
+
+msgid "next invoice at"
+msgstr ""
+
+msgid "next page"
+msgstr ""
+
+msgid "nickname"
+msgstr ""
+
+msgid "no"
+msgstr ""
+
+msgid "no contents"
+msgstr ""
+
+msgid "no results"
+msgstr ""
+
+msgid "no sections"
+msgstr ""
+
+msgid "no user data"
+msgstr ""
+
+msgid "not yet sent"
+msgstr ""
+
+msgid "of"
+msgstr "de"
+
+msgid "of master id"
+msgstr ""
+
+msgid "off"
+msgstr ""
+
+msgid "on"
+msgstr ""
+
+msgid "open file in a separate window"
+msgstr ""
+
+msgid "operations"
+msgstr ""
+
+msgid "operazioni"
+msgstr ""
+
+msgid "or"
+msgstr ""
+
+msgid "order"
+msgstr ""
+
+msgid "other"
+msgstr "outro"
+
+msgid "page"
+msgstr "página"
+
+msgid "pending"
+msgstr ""
+
+msgid "phone"
+msgstr ""
+
+msgid "phone2"
+msgstr ""
+
+msgid "place"
+msgstr ""
+
+msgid "prev"
+msgstr ""
+
+msgid "previous page"
+msgstr ""
+
+msgid "priority"
+msgstr ""
+
+msgid "privacy disclaimer"
+msgstr ""
+
+msgid "private list "
+msgstr ""
+
+msgid "promote as user"
+msgstr ""
+
+msgid "properties"
+msgstr ""
+
+msgid "public list\t"
+msgstr ""
+
+msgid "public name"
+msgstr ""
+
+msgid "public url"
+msgstr ""
+
+msgid "publisher"
+msgstr ""
+
+msgid "publishing"
+msgstr ""
+
+msgid "read"
+msgstr "lectura"
+
+msgid "realname"
+msgstr ""
+
+msgid "received Messages"
+msgstr ""
+
+msgid "recipients"
+msgstr ""
+
+msgid "reference"
+msgstr ""
+
+msgid "referenced objects list"
+msgstr ""
+
+msgid "remove from users"
+msgstr ""
+
+msgid "remove item"
+msgstr ""
+
+msgid "required"
+msgstr ""
+
+msgid "reside in"
+msgstr ""
+
+msgid "rights"
+msgstr ""
+
+msgid "save"
+msgstr ""
+
+msgid "scheduled"
+msgstr ""
+
+msgid "search"
+msgstr ""
+
+msgid "search string:"
+msgstr ""
+
+msgid "sections"
+msgstr "seções"
+
+msgid "select an item to associate"
+msgstr ""
+
+msgid "select from archive"
+msgstr ""
+
+msgid "select from author repository"
+msgstr ""
+
+msgid "select from books repository"
+msgstr ""
+
+msgid "select one"
+msgstr ""
+
+msgid "selected records"
+msgstr ""
+
+msgid "selected subscribers"
+msgstr ""
+
+msgid "sender"
+msgstr ""
+
+msgid "sender email"
+msgstr ""
+
+msgid "sending date"
+msgstr ""
+
+msgid "serial number"
+msgstr ""
+
+msgid "series"
+msgstr ""
+
+msgid "short text"
+msgstr ""
+
+msgid "signature"
+msgstr ""
+
+msgid "size"
+msgstr ""
+
+msgid "staging url"
+msgstr ""
+
+msgid "start"
+msgstr ""
+
+msgid "start has to be a valid date in the following format:"
+msgstr ""
+
+msgid "state"
+msgstr ""
+
+msgid "status"
+msgstr ""
+
+msgid "street name and #"
+msgstr ""
+
+msgid "subscribers"
+msgstr ""
+
+msgid "subscribing method"
+msgstr ""
+
+msgid "subtitle"
+msgstr ""
+
+msgid "surname"
+msgstr ""
+
+msgid "tags"
+msgstr ""
+
+msgid "target"
+msgstr ""
+
+msgid "template"
+msgstr ""
+
+msgid "tescription"
+msgstr ""
+
+msgid "title"
+msgstr ""
+
+msgid "to"
+msgstr ""
+
+msgid "to recipients"
+msgstr ""
+
+msgid "transgender"
+msgstr ""
+
+msgid "translation of"
+msgstr ""
+
+msgid "translation to"
+msgstr ""
+
+msgid "type"
+msgstr "tipo"
+
+msgid "upload new items"
+msgstr ""
+
+msgid "url"
+msgstr ""
+
+msgid "username"
+msgstr ""
+
+msgid "valid"
+msgstr ""
+
+msgid "value"
+msgstr "valor"
+
+msgid "video"
+msgstr ""
+
+msgid "view"
+msgstr ""
+
+msgid "web site"
+msgstr ""
+
+msgid "website"
+msgstr ""
+
+msgid "weight"
+msgstr ""
+
+msgid "width"
+msgstr ""
+
+msgid "with email"
+msgstr ""
+
+msgid "with status"
+msgstr ""
+
+msgid "write new item"
+msgstr ""
+
+msgid "year"
+msgstr ""
+
+msgid "yes"
+msgstr ""
+
+msgid "your 5 recent items"
+msgstr ""
+
+msgid "your message"
+msgstr ""
+
+#~ msgid "This field is required"
+#~ msgstr "Campo obligatório"
+
+#~ msgid "No data"
+#~ msgstr "Não ha datos"
+
+#~ msgid "Wrong username/password or no authorization"
+#~ msgstr "Nome usuário/password errados ou autorização negada"
+
+#~ msgid "Gallery"
+#~ msgstr "Galeria"
+
+#~ msgid "Univocal Nickname"
+#~ msgstr "Nome de identificação"
+
+#~ msgid "Created"
+#~ msgstr "Creado"
+
+#~ msgid "Language"
+#~ msgstr "Língua"
+
+#~ msgid "Default language"
+#~ msgstr "Lingua predefinida"
+
+#~ msgid "Edit"
+#~ msgstr "Guardar"
+
+#~ msgid "Actions"
+#~ msgstr "Ações"
+
+#~ msgid "open details"
+#~ msgstr "abrir todos os detalhes"
+
+#~ msgid "close details"
+#~ msgstr "fechar todos os detalhes"
+
+#~ msgid "cancel"
+#~ msgstr "cancelar"
+
+#~ msgid "Publication"
+#~ msgstr "Publicação"
+
+#~ msgid "Publication schedule"
+#~ msgstr "Pubblicação programada"
+
+#~ msgid "Start"
+#~ msgstr "Início"
+
+#~ msgid "End"
+#~ msgstr "Fim"
+
+#~ msgid ""
+#~ "Attention!!! you are deleting an item.\n"
+#~ "Are you sure that you want to continue?"
+#~ msgstr ""
+#~ "Atenção!!! está borrando um elemento.\n"
+#~ "Quer continuar?"
+
+#~ msgid "Where put the gallery into"
+#~ msgstr "Posição da galeria"
+
+#~ msgid "Close all"
+#~ msgstr "Fechar todos"
+
+#~ msgid "Expand all"
+#~ msgstr "Abrir todos"
+
+#~ msgid "Images of the gallery"
+#~ msgstr "Imagens da galeria"
+
+#~ msgid "Add image"
+#~ msgstr "Adicionar imagem"
+
+#~ msgid "Available images"
+#~ msgstr "Imagens disponíveis"
+
+#~ msgid "No images found"
+#~ msgstr "Nenhuma imagem encontrada"
+
+#~ msgid "Images"
+#~ msgstr "Imagens"
+
+#~ msgid "Gallery images"
+#~ msgstr "Imagens da galeria"
+
+#~ msgid "Thumbnail"
+#~ msgstr "Miniatura"
+
+#~ msgid "Valid"
+#~ msgstr "Válido"
+
+#~ msgid "Last login"
+#~ msgstr "Último aceso"
+
+#~ msgid "Item deleted correctly"
+#~ msgstr "Elemento borrado correctamente"
+
+#~ msgid "Item to delete not found"
+#~ msgstr "Elemento não encontrado"
+
+#~ msgid "Are you sure that you want to delete the gallery?"
+#~ msgstr "Quer borrar a galeria?"
+
+#~ msgid "New Item"
+#~ msgstr "Novo Elemento"
+
+#~ msgid "New Image"
+#~ msgstr "Nova Imagem"
+
+#~ msgid "Size"
+#~ msgstr "Dimensão"
+
+#~ msgid "Type"
+#~ msgstr "Tipo"
+
+#~ msgid "user"
+#~ msgstr "usuário"
+
+#~ msgid "group"
+#~ msgstr "grupo"
+
+#~ msgid "From"
+#~ msgstr "De"
+
+#~ msgid "Last modified"
+#~ msgstr "Última editação"
+
+#~ msgid "Modified"
+#~ msgstr "Guardado"
+
+#~ msgid "Do you really want to delete the property"
+#~ msgstr "Quer borrar a propriedade"
+
+#~ msgid "Data uncomplete"
+#~ msgstr "Datos não completos"
+
+#~ msgid "Property already present"
+#~ msgstr "Propriedade ja existente"
+
+#~ msgid "Where put the section into"
+#~ msgstr "Colocação da seção"
+
+#~ msgid "External links"
+#~ msgstr "Enlaces exteriores"
+
+#~ msgid "Objects"
+#~ msgstr "Objetos"
+
+#~ msgid "Where put the document into"
+#~ msgstr "Posição do documento"
+
+#~ msgid "User settings"
+#~ msgstr "Impostações usuário"
+
+#~ msgid ""
+#~ "Your password must be at least 6 characters long and contain at least one "
+#~ "number"
+#~ msgstr ""
+#~ "A password deve ser não menos de 6 carácteres e conter não menos de um "
+#~ "número"
+
+#~ msgid "Strength"
+#~ msgstr "Nivel de segurança"
+
+#~ msgid "Blocked"
+#~ msgstr "Bloqueado"
+
+#~ msgid "Users list"
+#~ msgstr "Lista usuários"
+
+#~ msgid "Manage user"
+#~ msgstr "Opções usuário"
+
+#~ msgid "System Info"
+#~ msgstr "Info Sistema"
+
+#~ msgid "Users admin"
+#~ msgstr "Usuário"
+
+#~ msgid "Groups admin"
+#~ msgstr "Administração grupos"
+
+#~ msgid "Group properties"
+#~ msgstr "Propriedades grupos"
+
+#~ msgid "Create group"
+#~ msgstr "Crear grupo"
+
+#~ msgid "Insert group name"
+#~ msgstr "Indicar nome grupo"
+
+#~ msgid "at least %1 alphanumerical char"
+#~ msgstr "não menos de %1 carácter alfanumérico"
+
+#~ msgid "Areas"
+#~ msgstr "Áreas"
+
+#~ msgid "Documents"
+#~ msgstr "Documentos"
+
+#~ msgid "Galleries"
+#~ msgstr "Galerias"
+
+#~ msgid "Sections"
+#~ msgstr "Seções"
+
+#~ msgid "New Area"
+#~ msgstr "Nova Área"
+
+#~ msgid "New Document"
+#~ msgstr "Novo Documento"
+
+#~ msgid "New Gallery"
+#~ msgstr "Nova Galeria"
+
+#~ msgid "New Section"
+#~ msgstr "Nova Seção"
+
+#~ msgid "areas"
+#~ msgstr "áreas"
+
+#~ msgid "documents"
+#~ msgstr "documentos"
+
+#~ msgid "galleries"
+#~ msgstr "galerias"
+
+#~ msgid "Tree of Areas"
+#~ msgstr "Árvore das Áreas"
+
+#~ msgid "up"
+#~ msgstr "sobre"
+
+#~ msgid "down"
+#~ msgstr "abaixo"
+
+#~ msgid "Areas Tree"
+#~ msgstr "Árvore Áreas"
+
+#~ msgid "Subtitle"
+#~ msgstr "Subtítolo"
+
+#~ msgid "The change will be lost. Do you want to continue"
+#~ msgstr "Se perderão as mudações. Quer continuar"
+
+#~ msgid "Only text"
+#~ msgstr "So texto"
+
+#~ msgid "Não Autorizado"
+#~ msgstr "Non Autorizzato"
+
+#~ msgid "html"
+#~ msgstr "html"
+
+#~ msgid "only text"
+#~ msgstr "solo texto"
+
+#~ msgid "text with conversion space and link"
+#~ msgstr "texto com conversão dos espaços e dos link"
+
+#~ msgid "Current gallery"
+#~ msgstr "Galleia selecionada"
+
+#~ msgid "No attachments item found"
+#~ msgstr "Nenhum anexo"
+
+#~ msgid "Add multimedia by upload"
+#~ msgstr "Junta objetos multimediais por upload"
+
+#~ msgid "Add multimedia by URL"
+#~ msgstr "Junta objetos multimediais por URL"
+
+#~ msgid "Add multimedia by BEdita"
+#~ msgstr "Junta objetos multimediais que ja existem no sistema"
+
+#~ msgid "Add attachments by upload"
+#~ msgstr "Anexa arquivos por upload"
+
+#~ msgid "Add attachments by URL"
+#~ msgstr "Anexa arquivos por URL"
+
+#~ msgid "Add attachments by BEdita"
+#~ msgstr "Anexa arquivos que ja existem no sistema"
+
+#~ msgid "Short text"
+#~ msgstr "Texto breve"
+
+#~ msgid "Long text"
+#~ msgstr "Texto comprido"
+
+#~ msgid "Text type"
+#~ msgstr "Tipo de texto"
+
+#~ msgid "No galleries found"
+#~ msgstr "Nenhuma galeria encontrada"
+
+#~ msgid "attachments"
+#~ msgstr "anexos"
+
+#~ msgid "No documents found"
+#~ msgstr "Nenhum documento encontrado"
+
+#~ msgid "No areas"
+#~ msgstr "Nenhuma área encontrada"
+
+#~ msgid "No multimedia item found"
+#~ msgstr "Nenhum elemento multimedial encontrado"
+
+#~ msgid "Remind"
+#~ msgstr "Alerta"
+
+#~ msgid ""
+#~ "Check if you want be notified, whenever you try to leave the page and you "
+#~ "changed some data in the form"
+#~ msgstr "Selecciona aqui si quiser ser alarmado, quando cambia a pagina"
+
+#~ msgid "changes would be lost if you leave the page"
+#~ msgstr "os cambios perdem-se deixando a pagina"
+
+#~ msgid "data changed"
+#~ msgstr "datos cambiados"
+
+#~ msgid "Public name is required (at least %1 alphanumerical char)"
+#~ msgstr "Nome publico obligatório (não menos de %1 carácter alfanumérico)"
+
+#~ msgid "Description is required (at least %1 alphanumerical char)"
+#~ msgstr "Descrição obligatório (não menos de %1 carácter alfanumérico)"
+
+#~ msgid "Public name"
+#~ msgstr "Nome publico"
+
+#~ msgid "Contact email"
+#~ msgstr "Contato email"
+
+#~ msgid "Creator"
+#~ msgstr "Criador"
+
+#~ msgid "Publisher"
+#~ msgstr "Publicador"
+
+#~ msgid "Rights"
+#~ msgstr "Direitos"
+
+#~ msgid "License"
+#~ msgstr "Licença"
+
+#~ msgid "Area saved"
+#~ msgstr "Área guardada"
+
+#~ msgid "Area removed"
+#~ msgstr "Area borrada"
+
+#~ msgid "Section saved"
+#~ msgstr "Seção guardada"
+
+#~ msgid "Section removed"
+#~ msgstr "Seção borrada"
+
+#~ msgid "Document saved"
+#~ msgstr "Documento guardado"
+
+#~ msgid "Gallery saved"
+#~ msgstr "Galeria guardada"
+
+#~ msgid "Select all"
+#~ msgstr "Selecionas todos"
+
+#~ msgid "Unselect all"
+#~ msgstr "Deselecionar todos"
+
+#~ msgid "Are you sure that you want to delete selected galleries?"
+#~ msgstr "Quer borrar as galerias selecionadas?"
+
+#~ msgid "Galleries deleted"
+#~ msgstr "Galerias borradas"
+
+#~ msgid "Documents deleted"
+#~ msgstr "Documentos borrados"
+
+#~ msgid "Are you sure that you want to delete selected documents?"
+#~ msgstr "Quer borrar os documentos selecionados?"
+
+#~ msgid "Multimedia archive"
+#~ msgstr "Arquivo multimedial"
+
+#~ msgid "Upload new items"
+#~ msgstr "Anexar"
+
+#~ msgid "Gallery items"
+#~ msgstr "Elementos relacionados a este documento"
+
+#~ msgid "Empty"
+#~ msgstr "Vacio"
+
+#~ msgid "File name"
+#~ msgstr "Nome do arquivo"
+
+#~ msgid ""
+#~ "To populate this gallery switch to the 'Upload new items' tab or the "
+#~ "'Multimedia items repository' tab"
+#~ msgstr ""
+#~ "Para inserir datos na galeria, vai a 'Cargar novos objetos' ou a "
+#~ "'Arquivos objetos Multimediais'"
+
+#~ msgid "Object type"
+#~ msgstr "Tipo de objeto"
+
+#~ msgid "Total number of"
+#~ msgstr "Numero total de"
+
+#~ msgid "multimedia items"
+#~ msgstr "objetos multimediais"
+
+#~ msgid "Thumb"
+#~ msgstr "Imagem"
+
+#~ msgid "Incompleted data"
+#~ msgstr "Datos insuficientes"
+
+#~ msgid "Tag"
+#~ msgstr "Tag"
+
+#~ msgid "Tag saved"
+#~ msgstr "Tag guardado"
+
+#~ msgid "Tag deleted"
+#~ msgstr "Tag borrado"
+
+#~ msgid "New Tag"
+#~ msgstr "Novo Tag"
+
+#~ msgid "No tags found"
+#~ msgstr "Nenhum tag encontrado"
+
+#~ msgid "categories"
+#~ msgstr "categorias"
+
+#~ msgid "Main language"
+#~ msgstr "Lingua principal"
+
+#~ msgid "Language versions"
+#~ msgstr "Versões linguisticas"
+
+#~ msgid "Versions"
+#~ msgstr "Versões"
+
+#~ msgid "Enable / Disable"
+#~ msgstr "Ligar / Desligar"
+
+#~ msgid "Where the section is"
+#~ msgstr "Colocação da seção"
+
+#~ msgid "Contents for the section"
+#~ msgstr "Contenidos para a seção"
+
+#~ msgid "File already exists in the filesystem"
+#~ msgstr "Arquivo ja presente no filesystem"
+
+#~ msgid "File is already associated to another object"
+#~ msgstr "Arquivo ja relacionado com outro objeto"
+
+#~ msgid "MIME type not found"
+#~ msgstr "MIME type não encontrado"
+
+#~ msgid "Error saving stream object"
+#~ msgstr "Error guardando o objeto stream"
+
+#~ msgid "Error deleting stream object"
+#~ msgstr "Errore borrando o objeto stream"
+
+#~ msgid "URL not valid"
+#~ msgstr "URL não valido"
+
+#~ msgid "You can't use remote file"
+#~ msgstr "Não è possivel utilizar arquivos remotos"
+
+#~ msgid "Attachments items"
+#~ msgstr "Anexos"
+
+#~ msgid "Attachments items repository"
+#~ msgstr "Arquivo anexos"
+
+#~ msgid ""
+#~ "To insert item here, switch to the 'Upload new items' tab or the "
+#~ "'Attachments items repository' tab"
+#~ msgstr ""
+#~ "Para adicionar elementos, vai para o tab 'Anexar' ou para o tab 'Arquivo "
+#~ "anexos'"
+
+#~ msgid "Multimedia items repository"
+#~ msgstr "Arquivo multimedial"
+
+#~ msgid ""
+#~ "To insert item here, switch to the 'Upload new items' tab or the "
+#~ "'Multimedia items repository' tab"
+#~ msgstr ""
+#~ "Para adicionar elementos, vai para o tab 'Anexar' ou para o tab 'Arquivo "
+#~ "multimedial'"
+
+#~ msgid "Add selected items to area/section"
+#~ msgstr "Adicionar os elementos selecionados a area/seção"
+
+#~ msgid "events"
+#~ msgstr "eventos"
+
+#~ msgid "Events"
+#~ msgstr "Eventos"
+
+#~ msgid "New Event"
+#~ msgstr "Novo evento"
+
+#~ msgid "Open calendar"
+#~ msgstr "Abrir calendario"
+
+#~ msgid "No events found"
+#~ msgstr "Nenhum evento encontrado"
+
+#~ msgid "Event saved"
+#~ msgstr "Evento guardado"
+
+#~ msgid "Event deleted"
+#~ msgstr "Evento borrado"
+
+#~ msgid "Where the event is"
+#~ msgstr "Posição do evento"
+
+#~ msgid "No news found"
+#~ msgstr "Nenhuma news encontrada"
+
+#~ msgid "Area tree saved"
+#~ msgstr "Árvore areas guardado"
+
+#~ msgid "Section deleted"
+#~ msgstr "Seção borrada"
+
+#~ msgid "Multimedia provider unsupported"
+#~ msgstr "Multimedia provider não suportado"
+
+#~ msgid "Error during upload, missing file"
+#~ msgstr "Erro no upload: arquivo não encontrado"
+
+#~ msgid "Error during upload, error number"
+#~ msgstr "Erro no upload: error numero"
+
+#~ msgid "Connect to other items"
+#~ msgstr "Relacionar a outros elementos"
+
+#~ msgid "Text doesn't match image"
+#~ msgstr "X DANTE - Il testo non corrisponde all'immagine"

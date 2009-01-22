@@ -1,17 +1,1339 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Bedita \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-12-23 03:28-0600\n"
-"Last-Translator: Ste <ste (at) channelweb (dot) it>\n"
-"Language-Team: Bedita I18N & I10N Team \n"
+"Project-Id-Version: BEdita 3\n"
+"POT-Creation-Date: 2009-01-22 13:05:49\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: Bedita I18N & I10N Team\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "(Un)Select All"
+msgstr ""
+
+msgid "(un)select all"
+msgstr ""
+
+msgid "Access to Backend"
+msgstr ""
+
+msgid "Action"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Add comma separated words"
+msgstr ""
+
+msgid "Add event date"
+msgstr ""
+
+msgid "Add multiple items"
+msgstr ""
+
+msgid "Add new category"
+msgstr ""
+
+msgid "Add selected items"
+msgstr ""
+
+msgid "Address"
+msgstr ""
+
+msgid "Advanced Properties"
+msgstr ""
+
+msgid "Apply permissions recursively"
+msgstr ""
+
+msgid "Are you sure that you want to delete selected items?"
+msgstr ""
+
+msgid "Are you sure that you want to delete selected tags?"
+msgstr ""
+
+msgid "Are you sure that you want to delete the item?"
+msgstr ""
+
+msgid "Are you sure that you want to delete the tag?"
+msgstr ""
+
+msgid "Are you sure you want to accept this IP?"
+msgstr ""
+
+msgid "Are you sure you want to ban this IP?"
+msgstr ""
+
+msgid "Attachments"
+msgstr ""
+
+msgid "Author"
+msgstr ""
+
+msgid "Authorized"
+msgstr ""
+
+msgid "B.Edita"
+msgstr ""
+
+msgid "Backend user restricted area"
+msgstr ""
+
+msgid "Bedita3 main dashboard"
+msgstr ""
+
+msgid "Bit depth"
+msgstr ""
+
+msgid "Book details"
+msgstr ""
+
+msgid "Books"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
+msgid "Bulk operations on"
+msgstr ""
+
+msgid "Cancel queue"
+msgstr ""
+
+msgid "Card"
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "Change"
+msgstr ""
+
+msgid "Change Password"
+msgstr ""
+
+msgid "Change this file with another"
+msgstr ""
+
+msgid "Channels"
+msgstr ""
+
+msgid "Check at least one group"
+msgstr ""
+
+msgid "Choose document type"
+msgstr ""
+
+msgid "Comments"
+msgstr ""
+
+msgid "Company / institution"
+msgstr ""
+
+msgid "Compile"
+msgstr ""
+
+msgid "Configuration"
+msgstr ""
+
+msgid "Confirm password"
+msgstr ""
+
+msgid "Confirmation-In mail message"
+msgstr ""
+
+msgid "Confirmation-Out mail message"
+msgstr ""
+
+msgid "Connect to multimedia gallery"
+msgstr ""
+
+msgid "Contacts"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "Create list"
+msgstr ""
+
+msgid "Create new"
+msgstr ""
+
+msgid "Create new document"
+msgstr ""
+
+msgid "Create new event"
+msgstr ""
+
+msgid "Create new gallery"
+msgstr ""
+
+msgid "Create new publishing"
+msgstr ""
+
+msgid "Create new section"
+msgstr ""
+
+msgid "Create new user"
+msgstr ""
+
+msgid "Create news"
+msgstr ""
+
+msgid "Creator is required (at least %1 alphanumerical char)"
+msgstr ""
+
+msgid "Custom Properties"
+msgstr ""
+
+msgid "Custom properties"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Delete selected items"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Details"
+msgstr ""
+
+msgid "Dimensions"
+msgstr ""
+
+msgid "Display details in frontend"
+msgstr ""
+
+msgid "Do you really want to delete the permission"
+msgstr ""
+
+msgid "Do you really want to remove group"
+msgstr ""
+
+msgid "Do you really want to remove user"
+msgstr ""
+
+msgid "Do you want unsubscribe selected items?"
+msgstr ""
+
+msgid "Edit more details"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Embedded in"
+msgstr ""
+
+msgid "Embedded in no objects"
+msgstr ""
+
+msgid "Enter"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Errors during upload"
+msgstr ""
+
+msgid "Event calendar"
+msgstr ""
+
+msgid "Event start"
+msgstr ""
+
+msgid "Exif - Main Data"
+msgstr ""
+
+msgid "Exit"
+msgstr ""
+
+msgid "File"
+msgstr ""
+
+msgid "Gallery associated to this document"
+msgstr ""
+
+msgid "Generic categories"
+msgstr ""
+
+msgid "Geotag"
+msgstr ""
+
+msgid "Get contents"
+msgstr ""
+
+msgid "Gmaps LookaT"
+msgstr ""
+
+msgid "Go to page"
+msgstr ""
+
+msgid "Group Name"
+msgstr ""
+
+msgid "Group authorized to Backend"
+msgstr ""
+
+msgid "Group modules access"
+msgstr ""
+
+msgid ""
+"Group name is required (at least %1 chars, no white spaces and special chars)"
+msgstr ""
+
+msgid "Group properties "
+msgstr ""
+
+msgid "Groups"
+msgstr ""
+
+msgid "Height"
+msgstr ""
+
+msgid "Hide system tags"
+msgstr ""
+
+msgid "Human readable type"
+msgstr ""
+
+msgid "IP"
+msgstr ""
+
+msgid "Invoice"
+msgstr ""
+
+msgid "Invoices"
+msgstr ""
+
+msgid "Item Type"
+msgstr ""
+
+msgid "Items"
+msgstr ""
+
+msgid "Letters or numbers only please"
+msgstr ""
+
+msgid "License is required (at least %1 alphanumerical char)"
+msgstr ""
+
+msgid "Links"
+msgstr ""
+
+msgid "Lists"
+msgstr ""
+
+msgid "Loading data"
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "Long Text"
+msgstr ""
+
+msgid "Media type"
+msgstr ""
+
+msgid "Message template"
+msgstr ""
+
+msgid "Moderated"
+msgstr ""
+
+msgid "Modify"
+msgstr ""
+
+msgid "Module"
+msgstr ""
+
+msgid "Module access"
+msgstr ""
+
+msgid "More data"
+msgstr ""
+
+msgid "Multimedia items"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Name is required (at least %1 alphanumerical char)"
+msgstr ""
+
+msgid "New Book"
+msgstr ""
+
+msgid "New Translation"
+msgstr ""
+
+msgid "New bibliography"
+msgstr ""
+
+msgid "New card"
+msgstr ""
+
+msgid "New link"
+msgstr ""
+
+msgid "New password"
+msgstr ""
+
+msgid "New tag"
+msgstr ""
+
+msgid "New template"
+msgstr ""
+
+msgid "New user"
+msgstr ""
+
+msgid "Newsletter must be saved before sending"
+msgstr ""
+
+msgid "Newsletter subscriptions"
+msgstr ""
+
+msgid "Newsletters"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "No access"
+msgstr ""
+
+msgid "No categories found"
+msgstr ""
+
+msgid "No gallery"
+msgstr ""
+
+msgid "No invoices"
+msgstr ""
+
+msgid "No item found"
+msgstr ""
+
+msgid "No mail group found"
+msgstr ""
+
+msgid "No newsletters found"
+msgstr ""
+
+msgid "No subscribers"
+msgstr ""
+
+msgid "No tags found."
+msgstr ""
+
+msgid "No template avaible"
+msgstr ""
+
+msgid "No templates found"
+msgstr ""
+
+msgid "No translations found"
+msgstr ""
+
+msgid "No tree found"
+msgstr ""
+
+msgid "Not Authorized"
+msgstr ""
+
+msgid "Notes"
+msgstr ""
+
+msgid "Notice"
+msgstr ""
+
+msgid "Occurrences"
+msgstr ""
+
+msgid "Ocurrences"
+msgstr ""
+
+msgid "Open Calendar"
+msgstr ""
+
+msgid "Operations on"
+msgstr ""
+
+msgid "Orientation"
+msgstr ""
+
+msgid "Original Title"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Password is required"
+msgstr ""
+
+msgid "Passwords should be equal"
+msgstr ""
+
+msgid "Permission"
+msgstr ""
+
+msgid "Permissions"
+msgstr ""
+
+msgid "Person"
+msgstr ""
+
+msgid "Please enter a valid date in the %1 format"
+msgstr ""
+
+msgid ""
+"Please enter a valid date in the %1 format and greater than the previous date"
+msgstr ""
+
+msgid "Please enter a valid time in the %1 format"
+msgstr ""
+
+msgid "Previews"
+msgstr ""
+
+msgid "Properties"
+msgstr ""
+
+msgid "Publisher is required (at least %1 alphanumerical char)"
+msgstr ""
+
+msgid "Publishing tree"
+msgstr ""
+
+msgid "Queue is empty"
+msgstr ""
+
+msgid "Read"
+msgstr ""
+
+msgid "Read and modify"
+msgstr ""
+
+msgid "Read only"
+msgstr ""
+
+msgid "Real name"
+msgstr ""
+
+msgid "Real name is required (at least %1 alphanumerical chars)"
+msgstr ""
+
+msgid "Recent newsletters "
+msgstr ""
+
+msgid "Relationships"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Rights is required (at least %1 alphanumerical char)"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "Select a user from the list"
+msgstr ""
+
+msgid "Select at least one type of permission"
+msgstr ""
+
+msgid "Select by category"
+msgstr ""
+
+msgid "Select by template"
+msgstr ""
+
+msgid "Select by type"
+msgstr ""
+
+msgid "Send email to"
+msgstr ""
+
+msgid "Sent on"
+msgstr ""
+
+msgid "Show all"
+msgstr ""
+
+msgid "Show system tags"
+msgstr ""
+
+msgid "Show translations in"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Subscriber lists"
+msgstr ""
+
+msgid "Subscribers"
+msgstr ""
+
+msgid "Subtitle, description"
+msgstr ""
+
+msgid "System events"
+msgstr ""
+
+msgid "System info "
+msgstr ""
+
+msgid "Tag details"
+msgstr ""
+
+msgid "Tags"
+msgstr ""
+
+msgid "Templates"
+msgstr ""
+
+msgid "Text"
+msgstr ""
+
+msgid ""
+"The content is fixed: it's not possible to change the position in the tree"
+msgstr ""
+
+msgid "This object is fixed - some data is readonly"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Title is required"
+msgstr ""
+
+msgid "Translations"
+msgstr ""
+
+msgid "Unsubscribe selected items"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "Upload end"
+msgstr ""
+
+msgid "Upload new file"
+msgstr ""
+
+msgid "Upload queue"
+msgstr ""
+
+msgid "Uploading file"
+msgstr ""
+
+msgid "Url"
+msgstr ""
+
+msgid "Use a valid email"
+msgstr ""
+
+msgid "User"
+msgstr ""
+
+msgid "User blocked"
+msgstr ""
+
+msgid "User details"
+msgstr ""
+
+msgid "User groups"
+msgstr ""
+
+msgid "User name"
+msgstr ""
+
+msgid ""
+"User name is required (at least %1 chars, without white spaces and special "
+"chars)"
+msgstr ""
 
 msgid "Username"
 msgstr ""
 
-msgid "Backend user restricted area"
+msgid "Username is required"
+msgstr ""
+
+msgid "Users of this group"
+msgstr ""
+
+msgid "Warning"
+msgstr ""
+
+msgid "Width"
+msgstr ""
+
+msgid "X"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "abstract:"
+msgstr ""
+
+msgid "accept this IP!"
+msgstr ""
+
+msgid "add"
+msgstr ""
+
+msgid "add by code"
+msgstr ""
+
+msgid "add by object ids"
+msgstr ""
+
+msgid "add by url"
+msgstr ""
+
+msgid "add comma separated words"
+msgstr ""
+
+msgid "add contents"
+msgstr ""
+
+msgid "add group"
+msgstr ""
+
+msgid "add item"
+msgstr ""
+
+msgid "add more tags"
+msgstr ""
+
+msgid "add user"
+msgstr ""
+
+msgid "address"
+msgstr ""
+
+msgid "addressbook details"
+msgstr ""
+
+msgid "advanced properties"
+msgstr ""
+
+msgid "all"
+msgstr ""
+
+msgid "all recent items"
+msgstr ""
+
+msgid "altro"
+msgstr ""
+
+msgid "asc"
+msgstr ""
+
+msgid "associate"
+msgstr ""
+
+msgid "audio"
+msgstr ""
+
+msgid "author"
+msgstr ""
+
+msgid "ban this IP!"
+msgstr ""
+
+msgid "birthdate"
+msgstr ""
+
+msgid "blocked"
+msgstr ""
+
+msgid "bounce to email"
+msgstr ""
+
+msgid "browse your disk"
+msgstr ""
+
+msgid "change status"
+msgstr ""
+
+msgid "change status to"
+msgstr ""
+
+msgid "change status to:"
+msgstr ""
+
+msgid "choose document type"
+msgstr ""
+
+msgid "city and zip code"
+msgstr ""
+
+msgid "clone"
+msgstr ""
+
+msgid "close"
+msgstr ""
+
+msgid "comments"
+msgstr ""
+
+msgid "connect new items"
+msgstr ""
+
+msgid "connected user"
+msgstr ""
+
+msgid "contact email"
+msgstr ""
+
+msgid "contents"
+msgstr ""
+
+msgid "copy"
+msgstr ""
+
+msgid "country"
+msgstr ""
+
+msgid "create"
+msgstr ""
+
+msgid "create and associate"
+msgstr ""
+
+msgid "create group"
+msgstr ""
+
+msgid "create new translation"
+msgstr ""
+
+msgid "created"
+msgstr ""
+
+msgid "created by"
+msgstr ""
+
+msgid "created on"
+msgstr ""
+
+msgid "creator"
+msgstr ""
+
+msgid "currently in job"
+msgstr ""
+
+msgid "deathdate"
+msgstr ""
+
+msgid "default language"
+msgstr ""
+
+msgid "delete"
+msgstr ""
+
+msgid "delete all"
+msgstr ""
+
+msgid "delete selected items"
+msgstr ""
+
+msgid "depth"
+msgstr ""
+
+msgid "desc"
+msgstr ""
+
+msgid "description"
+msgstr ""
+
+msgid "details"
+msgstr ""
+
+msgid "draft"
+msgstr ""
+
+msgid "email"
+msgstr ""
+
+msgid "email2"
+msgstr ""
+
+msgid "end"
+msgstr ""
+
+msgid "end has to be a valid date in the following format:"
+msgstr ""
+
+msgid "fax"
+msgstr ""
+
+msgid "female"
+msgstr ""
+
+msgid "file"
+msgstr ""
+
+msgid "filename"
+msgstr ""
+
+msgid "files queued"
+msgstr ""
+
+msgid "filesize"
+msgstr ""
+
+msgid "filters"
+msgstr ""
+
+msgid "first"
+msgstr ""
+
+msgid "first page"
+msgstr ""
+
+msgid "from"
+msgstr ""
+
+msgid "get from list"
+msgstr ""
+
+msgid "go"
+msgstr ""
+
+msgid "height"
+msgstr ""
+
+msgid "image"
+msgstr ""
+
+msgid "in recipient groups"
+msgstr ""
+
+msgid "isbn/issn"
+msgstr ""
+
+msgid "lang"
+msgstr ""
+
+msgid "language"
+msgstr ""
+
+msgid "last"
+msgstr ""
+
+msgid "last login"
+msgstr ""
+
+msgid "last modified"
+msgstr ""
+
+msgid "last modified by"
+msgstr ""
+
+msgid "last modified on"
+msgstr ""
+
+msgid "last page"
+msgstr ""
+
+msgid "latitude"
+msgstr ""
+
+msgid "license"
+msgstr ""
+
+msgid "list name"
+msgstr ""
+
+msgid "location code"
+msgstr ""
+
+msgid "long text"
+msgstr ""
+
+msgid "longitude"
+msgstr ""
+
+msgid "mail address"
+msgstr ""
+
+msgid "main language"
+msgstr ""
+
+msgid "male"
+msgstr ""
+
+msgid "master language"
+msgstr ""
+
+msgid "message board"
+msgstr ""
+
+msgid "mime type"
+msgstr ""
+
+msgid "modified"
+msgstr ""
+
+msgid "modify"
+msgstr ""
+
+msgid "more results"
+msgstr ""
+
+msgid "move"
+msgstr ""
+
+msgid "multimedia descriptions"
+msgstr ""
+
+msgid "name"
+msgstr ""
+
+msgid "newsletter title"
+msgstr ""
+
+msgid "next"
+msgstr ""
+
+msgid "next invoice at"
+msgstr ""
+
+msgid "next page"
+msgstr ""
+
+msgid "nickname"
+msgstr ""
+
+msgid "no"
+msgstr ""
+
+msgid "no contents"
+msgstr ""
+
+msgid "no results"
+msgstr ""
+
+msgid "no sections"
+msgstr ""
+
+msgid "no user data"
+msgstr ""
+
+msgid "not yet sent"
+msgstr ""
+
+msgid "of"
+msgstr ""
+
+msgid "of master id"
+msgstr ""
+
+msgid "off"
+msgstr ""
+
+msgid "on"
+msgstr ""
+
+msgid "open file in a separate window"
+msgstr ""
+
+msgid "operations"
+msgstr ""
+
+msgid "operazioni"
+msgstr ""
+
+msgid "or"
+msgstr ""
+
+msgid "order"
+msgstr ""
+
+msgid "other"
+msgstr ""
+
+msgid "page"
+msgstr ""
+
+msgid "pending"
+msgstr ""
+
+msgid "phone"
+msgstr ""
+
+msgid "phone2"
+msgstr ""
+
+msgid "place"
+msgstr ""
+
+msgid "prev"
+msgstr ""
+
+msgid "previous page"
+msgstr ""
+
+msgid "priority"
+msgstr ""
+
+msgid "privacy disclaimer"
+msgstr ""
+
+msgid "private list "
+msgstr ""
+
+msgid "promote as user"
+msgstr ""
+
+msgid "properties"
+msgstr ""
+
+msgid "public list\t"
+msgstr ""
+
+msgid "public name"
+msgstr ""
+
+msgid "public url"
+msgstr ""
+
+msgid "publisher"
+msgstr ""
+
+msgid "publishing"
+msgstr ""
+
+msgid "read"
+msgstr ""
+
+msgid "realname"
+msgstr ""
+
+msgid "received Messages"
+msgstr ""
+
+msgid "recipients"
+msgstr ""
+
+msgid "reference"
+msgstr ""
+
+msgid "referenced objects list"
+msgstr ""
+
+msgid "remove from users"
+msgstr ""
+
+msgid "remove item"
+msgstr ""
+
+msgid "required"
+msgstr ""
+
+msgid "reside in"
+msgstr ""
+
+msgid "rights"
+msgstr ""
+
+msgid "save"
+msgstr ""
+
+msgid "scheduled"
+msgstr ""
+
+msgid "search"
+msgstr ""
+
+msgid "search string:"
+msgstr ""
+
+msgid "sections"
+msgstr ""
+
+msgid "select an item to associate"
+msgstr ""
+
+msgid "select from archive"
+msgstr ""
+
+msgid "select from author repository"
+msgstr ""
+
+msgid "select from books repository"
+msgstr ""
+
+msgid "select one"
+msgstr ""
+
+msgid "selected records"
+msgstr ""
+
+msgid "selected subscribers"
+msgstr ""
+
+msgid "sender"
+msgstr ""
+
+msgid "sender email"
+msgstr ""
+
+msgid "sending date"
+msgstr ""
+
+msgid "serial number"
+msgstr ""
+
+msgid "series"
+msgstr ""
+
+msgid "short text"
+msgstr ""
+
+msgid "signature"
+msgstr ""
+
+msgid "size"
+msgstr ""
+
+msgid "staging url"
+msgstr ""
+
+msgid "start"
+msgstr ""
+
+msgid "start has to be a valid date in the following format:"
+msgstr ""
+
+msgid "state"
+msgstr ""
+
+msgid "status"
+msgstr ""
+
+msgid "street name and #"
+msgstr ""
+
+msgid "subscribers"
+msgstr ""
+
+msgid "subscribing method"
+msgstr ""
+
+msgid "subtitle"
+msgstr ""
+
+msgid "surname"
+msgstr ""
+
+msgid "tags"
+msgstr ""
+
+msgid "target"
+msgstr ""
+
+msgid "template"
+msgstr ""
+
+msgid "tescription"
+msgstr ""
+
+msgid "title"
+msgstr ""
+
+msgid "to"
+msgstr ""
+
+msgid "to recipients"
+msgstr ""
+
+msgid "transgender"
+msgstr ""
+
+msgid "translation of"
+msgstr ""
+
+msgid "translation to"
+msgstr ""
+
+msgid "type"
+msgstr ""
+
+msgid "upload new items"
+msgstr ""
+
+msgid "url"
+msgstr ""
+
+msgid "username"
+msgstr ""
+
+msgid "valid"
+msgstr ""
+
+msgid "value"
+msgstr ""
+
+msgid "video"
+msgstr ""
+
+msgid "view"
+msgstr ""
+
+msgid "web site"
+msgstr ""
+
+msgid "website"
+msgstr ""
+
+msgid "weight"
+msgstr ""
+
+msgid "width"
+msgstr ""
+
+msgid "with email"
+msgstr ""
+
+msgid "with status"
+msgstr ""
+
+msgid "write new item"
+msgstr ""
+
+msgid "year"
+msgstr ""
+
+msgid "yes"
+msgstr ""
+
+msgid "your 5 recent items"
+msgstr ""
+
+msgid "your message"
 msgstr ""
