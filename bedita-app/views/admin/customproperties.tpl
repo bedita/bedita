@@ -33,12 +33,12 @@
 			<th>property name</th>
 			<th>for object type</th>
 			<th>data type</th>
-			<th>data attributes</th>
 			<th>option list</th>
+			<th>data attributes</th>
 			<th></th>
 		</tr>
 		
-		<tr>
+		<tr id="row_0">
 			<td>
 				<input type="text" value="" name="" />
 			</td>
@@ -53,22 +53,21 @@
 				
 			</td>
 			<td>
-				<select>
-					<option></option>
+				<select class="datatype">
 					<option>number</option>
 					<option>date</option>
 					<option>text</option>
 					<option>options</option>
 				</select>
 			</td>
- 			<td>
-				<input type="checkbox"> multiple choice
+			<td class="optd">
+				<input ctype="text" value="" name="" />
+			</td>
+ 			<td class="optd">
+				<input type="checkbox" /> multiple choice
 			</td>
 			<td>
-				<input type="text" value="" name="" />
-			</td>
-			<td>
-				<input type="submit" value="{t}save{/t}">
+				<input type="submit" value="{t}save{/t}" />
 			</td>
 		</tr>
 			
