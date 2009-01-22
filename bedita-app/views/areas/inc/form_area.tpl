@@ -69,22 +69,24 @@ $(document).ready(function(){
 			</td>
 		</tr>
 	<tr>
-		<th>{t}nickname{/t}:</th>
+		<th>{t}nickname{/t}: (id:{$object.id|default:null})</th>
 		<td>
 			<input id="nicknameBEObject" type="text" name="data[nickname]" value="{$object.nickname|default:''|escape:'html'|escape:'quotes'}" />
 		</td>
 	</tr>
+	</table>
+	
+	<hr />
+	
+	<table class="areaform">
 	<tr>
-		<td colspan="2">
-			<ul id="mediatypes" style="margin-top:10px; margin-left:0px">
+		<th></th>
+		<td>
+			<ul id="mediatypes" style="margin-top:0px; margin-left:0px">
 				<li class="ico_rss">syndicate <input type="checkbox" name="data[syndicate]" value="on" {if $object.syndicate|default:'off'=='on'}checked{/if}/></li>
 			</ul>
 		</td>
 	</tr>	
-	<tr>
-		<th>id:</th>
-		<td>{$object.id|default:null}</td>
-	</tr>
 	</table>
 	
 	<hr />
