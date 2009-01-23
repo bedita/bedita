@@ -523,7 +523,13 @@ abstract class FrontendController extends AppController {
 			throw new BeditaException(__("Content not found", true));
 		
 		$content_id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
-		$section_id = $this->Tree->field('parent_id',"id = $content_id", "priority");
+		
+		// if it's defined frontend publication id then search content inside that publication else in all BEdita
+		$publication_id = Configure::read("frontendAreaId");
+		$conditions = (!empty($publication_id))? "id = $content_id AND path LIKE '/$publication_id/%'" : "id = $content_id" ;
+		
+		$section_id = $this->Tree->field('parent_id',$conditions, "priority");
+		
 		if($section_id === false) {
 			throw new BeditaException(__("Content not found", true));
 		}
