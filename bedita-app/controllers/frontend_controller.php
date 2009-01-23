@@ -36,6 +36,7 @@ abstract class FrontendController extends AppController {
 	protected $baseLevel = false;
 	protected $sectionOptions = array("showAllContents" => true, "itemsByType" => false);
 	protected $xmlFormat = "attributes"; // possible values "tags", "attributes"
+	protected $publication = "";
 
 	protected function checkLogin() {
 		return false; // every frontend has to implement checkLogin
@@ -67,14 +68,15 @@ abstract class FrontendController extends AppController {
 			
 		// check publication status		
 		$pubStatus = $this->BEObject->field("status", array("nickname" => Configure::read("frontendNickname")));
+		$this->publication = $this->loadObj(Configure::read("frontendAreaId"));
 		
 		if ($pubStatus != "on") {
 			$this->status = array('on', 'off', 'draft');
-			$this->set('publication', $this->loadObj(Configure::read("frontendAreaId")));
+			$this->set('publication', $this->publication);
 			throw new BeditaPublicationException($pubStatus);
 		} else {
 			// set publication data for template
-			$this->set('publication', $this->loadObj(Configure::read("frontendAreaId")));
+			$this->set('publication', $this->publication);
 		}
 	}
 
@@ -293,7 +295,8 @@ abstract class FrontendController extends AppController {
 	   if($s['syndicate'] === "off") {
 	   		throw new BeditaException(__("Content not found", true));
 	   }
-	   $channel = array( 'title' => $s['title'] , 
+	   
+	   $channel = array( 'title' => $this->publication["public_name"] . " - " . $s['title'] , 
         'link' => "/section/".$sectionName,
 //        'url' => Router::url("/section/".$sectionName),
         'description' => $s['description'],
@@ -306,7 +309,7 @@ abstract class FrontendController extends AppController {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);
 	            $rssItems[] = array( 'title' => $obj['title'], 'description' => $obj['description'],
-	                'pubDate' => $obj['created'], 'link' => "/section/".$s['id']."/".$item['id']);
+	                'pubDate' => $obj['created'], 'link' => "/section/".$s['nickname']."/".$item['id']);
 			}
 		}
        $this->set('items', $rssItems);
@@ -525,8 +528,7 @@ abstract class FrontendController extends AppController {
 		$content_id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
 		
 		// if it's defined frontend publication id then search content inside that publication else in all BEdita
-		$publication_id = Configure::read("frontendAreaId");
-		$conditions = (!empty($publication_id))? "id = $content_id AND path LIKE '/$publication_id/%'" : "id = $content_id" ;
+		$conditions = (!empty($this->publication["id"]))? "id = $content_id AND path LIKE '/" . $this->publication["id"] . "/%'" : "id = $content_id" ;
 		
 		$section_id = $this->Tree->field('parent_id',$conditions, "priority");
 		
