@@ -79,7 +79,8 @@ class GettextShell extends Shell {
 		$t = preg_quote('t');
 		$rgxpTpl = "/{$l}\s*({$t})\s*([^{$r}]*){$r}([^{$l}]*){$l}\/\\1{$r}/";
 
-		// TODO: php regexp, look for __("text to translate",true)
+		// looks for __("text to translate",true), result in matches[2]
+//		$rgxpPHP = "/__\s*\(\s*(\"|')" . "([^\\1]*)" . "\\1/";
 		$extensionRgxp = array("tpl" => $rgxpTpl);
 		
 		$folder = new Folder($dir);
