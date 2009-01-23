@@ -11,15 +11,15 @@
 
 	<label>{t}url{/t}:</label>
 	<br />
-	<input style="width:460px" type="text" name="data[url]" value="" />
+	<input style="width:460px" type="text" name="data[url]" value="{$object.url|default:''}" />
 	<br />
 	<label>{t}title{/t}:</label>
 	<br />
-	<input style="width:460px" type="text" name="data[title]" value=""  />
+	<input style="width:460px" type="text" name="data[title]" value="{$object.title|default:''}" />
 	<br />
 	<label>{t}description{/t}:</label>
 	<br />
-	<textarea id="subtitle" style="height:30px" class="shortdesc autogrowarea" name="data[description]"></textarea>
+	<textarea id="subtitle" style="height:30px" class="shortdesc autogrowarea" name="data[description]">{$object.description|default:''}</textarea>
 
 </fieldset>
 
@@ -59,6 +59,6 @@
 		</tr>
 	</table>
 	
-
-
 </fieldset>
+
+	{include file="../common_inc/form_categories.tpl"}

@@ -86,7 +86,7 @@ $(document).ready(function(){
 			{/if}
 			</td>
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64}</a></td>
-			<td>http://www.iosonolurl.com/lungoolunghi</td>
+			<td>{$objects[i].url|default:''}</td>
 			<td>ok</td>
 			<td style="text-align:center">{$objects[i].status}</td>
 			<td>{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
@@ -111,7 +111,7 @@ $(document).ready(function(){
 
 
 <br />
-	
+
 {if !empty($objects)}
 
 <div style="white-space:nowrap">

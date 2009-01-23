@@ -38,9 +38,10 @@ class Link extends BEAppObjectModel {
 				"detailed" =>  array("BEObject" => array("ObjectType", 
 															"UserCreated", 
 															"UserModified", 
-															"RelatedObject")),
+															"RelatedObject",
+															"Category")),
 
-       			"default" => array("BEObject" => array("ObjectType", "RelatedObject" )),
+       			"default" => array("BEObject" => array("ObjectType", "RelatedObject", "Category")),
 
 				"minimum" => array("BEObject" => array("ObjectType"))		
 		);

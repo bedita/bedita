@@ -279,8 +279,8 @@ $config['objectTypes'] = array(
 	32			=> array("id" => 32, "name" => "video", "module" => "multimedia", "model" => "Video"),
 	"video"		=> array("id" => 32, "name" => "video", "module" => "multimedia", "model" => "Video"),
 	
-	33			=> array("id" => 33, "name" => "link", "module" => null, "model" => "Link"),
-	"link"		=> array("id" => 33, "name" => "link", "module" => null, "model" => "Link"),
+	33			=> array("id" => 33, "name" => "link", "module" => "webmarks", "model" => "Link"),
+	"link"		=> array("id" => 33, "name" => "link", "module" => "webmarks", "model" => "Link"),
 	
 	34			=> array("id" => 34, "name" => "card", "module" => "addressbook", "model" => "Card"),
 	"card"		=> array("id" => 34, "name" => "card", "module" => "addressbook", "model" => "Card"),
