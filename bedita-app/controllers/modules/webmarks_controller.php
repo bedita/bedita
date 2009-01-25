@@ -38,6 +38,15 @@ class WebmarksController extends ModulesController {
 			'Link.*'=>""
 		);
 		$this->paginatedList($id, @$filter, $order, $dir, $page, $dim);
+		
+		$categories = $this->Category->find("all", array(
+			"conditions" => "Category.object_type_id=".$conf->objectTypes['link']["id"],
+			"contain" => array()
+			)
+		);
+		
+		$this->set("categories", $categories);
+		
 	}
 	
 	public function view($id = null) {
