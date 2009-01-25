@@ -1,11 +1,12 @@
+{if !empty($areaCategory)}
+
 <div class="tab"><h2>{t}Categories{/t}</h2></div>
 
 <fieldset id="category" >
 	
 <table class="bordered">
-	{if !empty($areaCategory)}
 		
-		{if !empty($areaCategory.area)}
+	{if !empty($areaCategory.area)}
 		{foreach key="areaName" item="areaC" from=$areaCategory.area}
 			<tr>
 				<td><h2 style="color:white; margin-left:-10px">{$areaName}</h2></td>
@@ -40,12 +41,9 @@
 			</tr>
 			{/foreach}
 		{/if}
-		
-	
-	{else}
-		{t}No categories found{/t}
-	{/if}
 
 </table>
 
 </fieldset>
+
+{/if}
