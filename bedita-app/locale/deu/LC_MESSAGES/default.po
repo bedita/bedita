@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-01-22 13:05:49\n"
+"POT-Creation-Date: 2009-01-26 18:58:44\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -67,6 +67,15 @@ msgstr ""
 msgid "Are you sure you want to ban this IP?"
 msgstr ""
 
+msgid "Area deleted"
+msgstr ""
+
+msgid "Area saved"
+msgstr ""
+
+msgid "Area tree saved"
+msgstr ""
+
 msgid "Attachments"
 msgstr ""
 
@@ -76,19 +85,37 @@ msgstr ""
 msgid "Authorized"
 msgstr ""
 
+msgid "Auto-remove forbidden"
+msgstr ""
+
 msgid "B.Edita"
 msgstr ""
 
 msgid "Backend user restricted area"
 msgstr "Nur fur Backend Benutzer "
 
+msgid "Bad data"
+msgstr ""
+
+msgid "Bad transaction state"
+msgstr ""
+
 msgid "Bedita3 main dashboard"
+msgstr ""
+
+msgid "Bibliography deleted"
 msgstr ""
 
 msgid "Bit depth"
 msgstr ""
 
+msgid "Book deleted"
+msgstr ""
+
 msgid "Book details"
+msgstr ""
+
+msgid "Book saved"
 msgstr ""
 
 msgid "Books"
@@ -103,10 +130,25 @@ msgstr ""
 msgid "Cancel queue"
 msgstr ""
 
+msgid "Captcha image and text don't match"
+msgstr ""
+
 msgid "Card"
 msgstr ""
 
+msgid "Card saved"
+msgstr ""
+
+msgid "Cards deleted"
+msgstr ""
+
 msgid "Categories"
+msgstr ""
+
+msgid "Category deleted"
+msgstr ""
+
+msgid "Category saved"
 msgstr ""
 
 msgid "Change"
@@ -127,7 +169,13 @@ msgstr ""
 msgid "Choose document type"
 msgstr ""
 
+msgid "Comment saved"
+msgstr ""
+
 msgid "Comments"
+msgstr ""
+
+msgid "Comments deleted"
 msgstr ""
 
 msgid "Company / institution"
@@ -152,6 +200,9 @@ msgid "Connect to multimedia gallery"
 msgstr ""
 
 msgid "Contacts"
+msgstr ""
+
+msgid "Content not found"
 msgstr ""
 
 msgid "Create"
@@ -223,6 +274,12 @@ msgstr ""
 msgid "Do you want unsubscribe selected items?"
 msgstr ""
 
+msgid "Document saved"
+msgstr ""
+
+msgid "Documents deleted"
+msgstr ""
+
 msgid "Edit more details"
 msgstr ""
 
@@ -235,10 +292,127 @@ msgstr ""
 msgid "Embedded in no objects"
 msgstr ""
 
+msgid "Empty data"
+msgstr ""
+
 msgid "Enter"
 msgstr ""
 
 msgid "Error"
+msgstr ""
+
+msgid "Error adding subscriber "
+msgstr ""
+
+msgid "Error adding subscribers"
+msgstr ""
+
+msgid "Error changing password"
+msgstr ""
+
+msgid "Error create jobs"
+msgstr ""
+
+msgid "Error delete permissions"
+msgstr ""
+
+msgid "Error deleting object: %d"
+msgstr ""
+
+msgid "Error deleting stream object"
+msgstr ""
+
+msgid "Error deleting translation: "
+msgstr ""
+
+msgid "Error during reorder children priority"
+msgstr ""
+
+msgid "Error during upload: missing url"
+msgstr ""
+
+msgid "Error finding mail message "
+msgstr ""
+
+msgid "Error get id object: %d"
+msgstr ""
+
+msgid "Error get id object: %s"
+msgstr ""
+
+msgid "Error get object: %d"
+msgstr ""
+
+msgid "Error join group"
+msgstr ""
+
+msgid "Error loading area: %d"
+msgstr ""
+
+msgid "Error loading comment: %d"
+msgstr ""
+
+msgid "Error loading object: %d"
+msgstr ""
+
+msgid "Error loading section: %d"
+msgstr ""
+
+msgid "Error loading tag: "
+msgstr ""
+
+msgid "Error modify permissions"
+msgstr ""
+
+msgid "Error modifying permissions"
+msgstr ""
+
+msgid "Error removing group"
+msgstr ""
+
+msgid "Error save tree from _POST"
+msgstr ""
+
+msgid "Error saving area"
+msgstr ""
+
+msgid "Error saving comment"
+msgstr ""
+
+msgid "Error saving group"
+msgstr ""
+
+msgid "Error saving mail group"
+msgstr ""
+
+msgid "Error saving multimedia"
+msgstr ""
+
+msgid "Error saving permissions"
+msgstr ""
+
+msgid "Error saving section"
+msgstr ""
+
+msgid "Error saving status for item: "
+msgstr ""
+
+msgid "Error saving status for translation: "
+msgstr ""
+
+msgid "Error saving status for translations"
+msgstr ""
+
+msgid "Error saving stream object"
+msgstr ""
+
+msgid "Error saving tag"
+msgstr ""
+
+msgid "Error saving user"
+msgstr ""
+
+msgid "Error updating user"
 msgstr ""
 
 msgid "Errors during upload"
@@ -247,7 +421,13 @@ msgstr ""
 msgid "Event calendar"
 msgstr ""
 
+msgid "Event saved"
+msgstr ""
+
 msgid "Event start"
+msgstr ""
+
+msgid "Events deleted"
 msgstr ""
 
 msgid "Exif - Main Data"
@@ -259,7 +439,16 @@ msgstr ""
 msgid "File"
 msgstr ""
 
+msgid "File already exists in the filesystem"
+msgstr ""
+
+msgid "Galleries deleted"
+msgstr ""
+
 msgid "Gallery associated to this document"
+msgstr ""
+
+msgid "Gallery saved"
 msgstr ""
 
 msgid "Generic categories"
@@ -277,10 +466,16 @@ msgstr ""
 msgid "Go to page"
 msgstr ""
 
+msgid "Group "
+msgstr ""
+
 msgid "Group Name"
 msgstr ""
 
 msgid "Group authorized to Backend"
+msgstr ""
+
+msgid "Group deleted"
 msgstr ""
 
 msgid "Group modules access"
@@ -306,6 +501,18 @@ msgid "Human readable type"
 msgstr ""
 
 msgid "IP"
+msgstr ""
+
+msgid "IP accepted"
+msgstr ""
+
+msgid "IP banned"
+msgstr ""
+
+msgid "Immutable group"
+msgstr ""
+
+msgid "Immutable group %s"
 msgstr ""
 
 msgid "Invoice"
@@ -338,13 +545,76 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+msgid "Login failed"
+msgstr ""
+
 msgid "Long Text"
+msgstr ""
+
+msgid "MIME type not found"
+msgstr ""
+
+msgid "Mail Group deleted"
+msgstr ""
+
+msgid "Mail Group saved"
+msgstr ""
+
+msgid "Mail delivery failed"
+msgstr ""
+
+msgid "Mail message deleted"
+msgstr ""
+
+msgid "Mail message lock failed: id "
+msgstr ""
+
+msgid "Mail message saved"
+msgstr ""
+
+msgid "Mail ready to be sent on "
+msgstr ""
+
+msgid "Mail template saved"
+msgstr ""
+
+msgid "Media already exists in the system"
 msgstr ""
 
 msgid "Media type"
 msgstr ""
 
 msgid "Message template"
+msgstr ""
+
+msgid "Missing from field"
+msgstr ""
+
+msgid "Missing invoices"
+msgstr ""
+
+msgid "Missing list name"
+msgstr ""
+
+msgid "Missing message id or recipient"
+msgstr ""
+
+msgid "Missing parent"
+msgstr ""
+
+msgid "Missing publishing"
+msgstr ""
+
+msgid "Missing recipient"
+msgstr ""
+
+msgid "Missing sending date"
+msgstr ""
+
+msgid "Missing subject field"
+msgstr ""
+
+msgid "Missing temporary file in filesystem."
 msgstr ""
 
 msgid "Moderated"
@@ -362,7 +632,16 @@ msgstr ""
 msgid "More data"
 msgstr ""
 
+msgid "Multimedia  not found"
+msgstr ""
+
+msgid "Multimedia deleted"
+msgstr ""
+
 msgid "Multimedia items"
+msgstr ""
+
+msgid "Multimedia object saved"
 msgstr ""
 
 msgid "Name"
@@ -398,6 +677,12 @@ msgstr ""
 msgid "New user"
 msgstr ""
 
+msgid "News deleted"
+msgstr ""
+
+msgid "News saved"
+msgstr ""
+
 msgid "Newsletter must be saved before sending"
 msgstr ""
 
@@ -416,6 +701,12 @@ msgstr ""
 msgid "No categories found"
 msgstr ""
 
+msgid "No data"
+msgstr ""
+
+msgid "No file in the form"
+msgstr ""
+
 msgid "No gallery"
 msgstr ""
 
@@ -431,7 +722,16 @@ msgstr ""
 msgid "No newsletters found"
 msgstr ""
 
+msgid "No object id specified"
+msgstr ""
+
 msgid "No subscribers"
+msgstr ""
+
+msgid "No tag in text area"
+msgstr ""
+
+msgid "No tag selected"
 msgstr ""
 
 msgid "No tags found."
@@ -504,6 +804,9 @@ msgstr ""
 msgid "Please enter a valid time in the %1 format"
 msgstr ""
 
+msgid "Post comment disabled"
+msgstr ""
+
 msgid "Previews"
 msgstr ""
 
@@ -543,6 +846,9 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
+msgid "Resource "
+msgstr ""
+
 msgid "Rights is required (at least %1 alphanumerical char)"
 msgstr ""
 
@@ -550,6 +856,12 @@ msgid "Save"
 msgstr ""
 
 msgid "Search"
+msgstr ""
+
+msgid "Section deleted"
+msgstr ""
+
+msgid "Section saved"
 msgstr ""
 
 msgid "Select a user from the list"
@@ -594,6 +906,9 @@ msgstr ""
 msgid "Subscribers"
 msgstr ""
 
+msgid "Subscribers associated to list"
+msgstr ""
+
 msgid "Subtitle, description"
 msgstr ""
 
@@ -603,16 +918,34 @@ msgstr ""
 msgid "System info "
 msgstr ""
 
+msgid "Tag already present"
+msgstr ""
+
+msgid "Tag deleted"
+msgstr ""
+
 msgid "Tag details"
+msgstr ""
+
+msgid "Tag saved"
 msgstr ""
 
 msgid "Tags"
 msgstr ""
 
+msgid "Tags saved"
+msgstr ""
+
 msgid "Templates"
 msgstr ""
 
+msgid "Test mail sent to "
+msgstr ""
+
 msgid "Text"
+msgstr ""
+
+msgid "Text doesn't match image"
 msgstr ""
 
 msgid ""
@@ -628,7 +961,22 @@ msgstr ""
 msgid "Title is required"
 msgstr ""
 
+msgid "Translation deleted"
+msgstr ""
+
+msgid "Translation saved"
+msgstr ""
+
+msgid "Translation updated"
+msgstr ""
+
 msgid "Translations"
+msgstr ""
+
+msgid "URL not valid"
+msgstr ""
+
+msgid "URL unattainable"
 msgstr ""
 
 msgid "Unsubscribe selected items"
@@ -658,7 +1006,13 @@ msgstr ""
 msgid "User"
 msgstr ""
 
+msgid "User already created"
+msgstr ""
+
 msgid "User blocked"
+msgstr ""
+
+msgid "User created"
 msgstr ""
 
 msgid "User details"
@@ -667,12 +1021,21 @@ msgstr ""
 msgid "User groups"
 msgstr ""
 
+msgid "User login temporary blocked"
+msgstr ""
+
 msgid "User name"
 msgstr ""
 
 msgid ""
 "User name is required (at least %1 chars, without white spaces and special "
 "chars)"
+msgstr ""
+
+msgid "User not present"
+msgstr ""
+
+msgid "User updated"
 msgstr ""
 
 msgid "Username"
@@ -690,10 +1053,16 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
+msgid "Wrong username/password or no authorization"
+msgstr ""
+
 msgid "X"
 msgstr ""
 
 msgid "Yes"
+msgstr ""
+
+msgid "You can't use remote file"
 msgstr ""
 
 msgid "abstract:"
@@ -1306,6 +1675,9 @@ msgid "view"
 msgstr ""
 
 msgid "web site"
+msgstr ""
+
+msgid "webmark saved"
 msgstr ""
 
 msgid "website"

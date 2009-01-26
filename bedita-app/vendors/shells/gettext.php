@@ -19,10 +19,6 @@
  *------------------------------------------------------------------->8-----
  */
 
-App::import('Core', 'String');
-App::import('Core', 'Controller');
-App::import('Controller', 'App'); // BeditaException
-
 /**
  * 
  * @link			http://www.bedita.com
@@ -46,9 +42,8 @@ class GettextShell extends Shell {
 		return $str;
 	}
 
-
-	// rips gettext strings from $file and prints them in C format
-	private function parseFile($file, $rgxp)
+	// rips gettext strings from $file
+	private function parseFile($file, $extension)
 	{
 		$content = @file_get_contents($file);
 	
@@ -56,53 +51,59 @@ class GettextShell extends Shell {
 			return;
 		}
 	
+		if($extension === "tpl") {
+			$this->parseTplContent($content);
+		} else if($extension === "php") {
+			$this->parsePhpContent($content);
+		}
+	}
+
+	private function parseTplContent($content) {
+		// tpl regexp, look for {t}text to translate{/t}
+		$l = preg_quote('{');
+		$r = preg_quote('}');
+		$t = preg_quote('t');
+		$rgxp = "/{$l}\s*({$t})\s*([^{$r}]*){$r}([^{$l}]*){$l}\/\\1{$r}/";
 		$matches = array();
 		preg_match_all($rgxp, $content, $matches);
-		
 		for ($i=0; $i < count($matches[0]); $i++) {
 			// TODO: handle plural forms, file lines...!!!
-//			if (preg_match('/plural\s*=\s*["\']?\s*(.[^\"\']*)\s*["\']?/', $matches[2][$i], $match)) {
-//				$this->out('ngettext("'.$this->fs($matches[3][$i]).'","'.$this->fs($match[1]).'",x);'."\n");
-//			}
 			$item = $this->fs($matches[3][$i]);
 			if(!in_array($item, $this->poResult)) {
 				$this->poResult[] = $item;
 			}
 		}
+		
 	}
+	
+	private function parsePhpContent($content) {
+		
+		$p  = preg_quote("(");
+		$q1 = preg_quote("'");
+		$q2 = preg_quote('"');
+		
+		// looks for __("text to translate",true)
+		// or __('text to translate',true), result in matches[1] or in matches[2]
+		$rgxp     = "/__\s*{$p}\s*{$q2}" . "([^{$q2}]*)" . "{$q2}" . "|" . "__\s*{$p}\s*{$q1}" . "([^{$q1}]*)" . "{$q1}/";
+		
+		$matches = array();
+		preg_match_all($rgxp, $content, $matches);
 
+		for ($i=0; $i < count($matches[0]); $i++) {
+			// TODO: handle plural forms, file lines...!!!
+			$item = $this->fs($matches[1][$i]);
+			if(empty($item)) {
+				$item = $this->fs($matches[2][$i]);
+			}
+			if(!in_array($item, $this->poResult)) {
+				$this->poResult[] = $item;
+			}
+		}
+	}
+	
 	// go through a directory
 	private function parseDir($dir)
 	{
-		// tpl regexp, look for {t}text to translate{/t}
-		$l = preg_quote('{');
-		$r = preg_quote('}');
-		$t = preg_quote('t');
-		$rgxpTpl = "/{$l}\s*({$t})\s*([^{$r}]*){$r}([^{$l}]*){$l}\/\\1{$r}/";
-
-
-
-/*		REGEXP x STEF
- * 		isola le stringhe in __("text to translate",true)
- * 		volevo beccare sia " che ', ma siccome non si poteva 
- * 		usare un backref nel character class il modo + semplice è
- * 		stato dividere in due con un or logico in mezzo
- * 		come conseguenza un po' scomoda hai in matches[1] quelli che tra le " e in matches[2] quelli tra '
- * 		x cui forse ti conviene fare un merge o usarli entrambi
- * 
- * 		ho anche messo ", ' e ( in var così si legge un po' meglio
- */
-
-
-//		$p  = preg_quote("(");
-//		$q1 = preg_quote("'");
-//		$q2 = preg_quote('"');
-//		$rgxp     = "/__\s*{$p}\s*{$q2}" . "([^{$q2}]*)" . "{$q2}" . "|" . "__\s*{$p}\s*{$q1}" . "([^{$q1}]*)" . "{$q1}/";
-
-
-
-		$extensionRgxp = array("tpl" => $rgxpTpl);
-		
 		$folder = new Folder($dir);
         $tree = $folder->tree($dir, false);
         foreach ($tree as $files) {
@@ -110,8 +111,8 @@ class GettextShell extends Shell {
                 if (!is_dir($file)) {
                 	$f = new File($file);
                 	$info = $f->info();
-                	if(isset($info['extension']) && in_array($info['extension'], array_keys($extensionRgxp))) {
-                		$this->parseFile($file, $extensionRgxp[$info['extension']]);
+                	if(isset($info['extension'])) {
+                		$this->parseFile($file, $info['extension']);
                 	}
                 }
             }
@@ -121,14 +122,19 @@ class GettextShell extends Shell {
 	public function update() {
 		
 		$tplPath = VIEWS;
+		$phpPath = APP."controllers".DS;
 		$localePath = APP."locale".DS;
 		if (isset($this->params['frontend'])) {
 			$f = new Folder($this->params['frontend']);
     		$tplPath = $f->path.DS."views".DS;
     		$localePath = $f->path.DS."locale".DS;
+			$phpPath = $f->path.DS."controllers".DS;
 		}
-        $this->out('Creating master .po looking in: '.$tplPath);
-		$this->parseDir($tplPath);    	
+        $this->out("Creating master .po file");
+        $this->out("Search in: $tplPath");
+		$this->parseDir($tplPath);
+        $this->out("Search in: $phpPath");
+		$this->parseDir($phpPath);
         // write .pot file
         $potFilename = $localePath."master.pot";
         $this->out("Writing new .pot file: $potFilename");
@@ -153,7 +159,8 @@ class GettextShell extends Shell {
 		$ls = $folder->ls();
 		foreach ($ls[0] as $loc) {
 			if($loc[0] != '.') { // only "regular" dirs...
-	        	$poFile = $localePath. $loc . DS . "LC_MESSAGES" . DS . "default.po";
+				$this->out("Language: $loc");
+				$poFile = $localePath. $loc . DS . "LC_MESSAGES" . DS . "default.po";
 				$this->out("Merging $poFile");
 				$mergeCmd = "msgmerge --backup=off -N -U " . $poFile . " " . $potFilename;
 				exec($mergeCmd);

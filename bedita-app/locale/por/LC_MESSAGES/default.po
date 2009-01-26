@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-01-22 13:05:49\n"
+"POT-Creation-Date: 2009-01-26 18:58:44\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -67,6 +67,15 @@ msgstr ""
 msgid "Are you sure you want to ban this IP?"
 msgstr ""
 
+msgid "Area deleted"
+msgstr ""
+
+msgid "Area saved"
+msgstr "Área guardada"
+
+msgid "Area tree saved"
+msgstr "Árvore areas guardado"
+
 msgid "Attachments"
 msgstr "Anexos"
 
@@ -76,19 +85,37 @@ msgstr "Autor"
 msgid "Authorized"
 msgstr "Autorizado"
 
+msgid "Auto-remove forbidden"
+msgstr ""
+
 msgid "B.Edita"
 msgstr ""
 
 msgid "Backend user restricted area"
 msgstr "Area reservada aos gestores"
 
+msgid "Bad data"
+msgstr ""
+
+msgid "Bad transaction state"
+msgstr ""
+
 msgid "Bedita3 main dashboard"
+msgstr ""
+
+msgid "Bibliography deleted"
 msgstr ""
 
 msgid "Bit depth"
 msgstr ""
 
+msgid "Book deleted"
+msgstr ""
+
 msgid "Book details"
+msgstr ""
+
+msgid "Book saved"
 msgstr ""
 
 msgid "Books"
@@ -103,11 +130,26 @@ msgstr ""
 msgid "Cancel queue"
 msgstr "Anular lista"
 
+msgid "Captcha image and text don't match"
+msgstr ""
+
 msgid "Card"
+msgstr ""
+
+msgid "Card saved"
+msgstr ""
+
+msgid "Cards deleted"
 msgstr ""
 
 msgid "Categories"
 msgstr "Categorias"
+
+msgid "Category deleted"
+msgstr ""
+
+msgid "Category saved"
+msgstr ""
 
 msgid "Change"
 msgstr ""
@@ -127,7 +169,13 @@ msgstr "Indicar não menos de um grupo"
 msgid "Choose document type"
 msgstr "Escolher tipo de documento"
 
+msgid "Comment saved"
+msgstr ""
+
 msgid "Comments"
+msgstr ""
+
+msgid "Comments deleted"
 msgstr ""
 
 msgid "Company / institution"
@@ -152,6 +200,9 @@ msgid "Connect to multimedia gallery"
 msgstr "Liga a uma galeria multimedial"
 
 msgid "Contacts"
+msgstr ""
+
+msgid "Content not found"
 msgstr ""
 
 msgid "Create"
@@ -223,6 +274,12 @@ msgstr "Quer borrar o usuário"
 msgid "Do you want unsubscribe selected items?"
 msgstr ""
 
+msgid "Document saved"
+msgstr "Documento guardado"
+
+msgid "Documents deleted"
+msgstr "Documentos borrados"
+
 msgid "Edit more details"
 msgstr ""
 
@@ -235,10 +292,127 @@ msgstr ""
 msgid "Embedded in no objects"
 msgstr ""
 
+msgid "Empty data"
+msgstr ""
+
 msgid "Enter"
 msgstr "Entrar"
 
 msgid "Error"
+msgstr ""
+
+msgid "Error adding subscriber "
+msgstr ""
+
+msgid "Error adding subscribers"
+msgstr ""
+
+msgid "Error changing password"
+msgstr ""
+
+msgid "Error create jobs"
+msgstr ""
+
+msgid "Error delete permissions"
+msgstr ""
+
+msgid "Error deleting object: %d"
+msgstr ""
+
+msgid "Error deleting stream object"
+msgstr "Errore borrando o objeto stream"
+
+msgid "Error deleting translation: "
+msgstr ""
+
+msgid "Error during reorder children priority"
+msgstr ""
+
+msgid "Error during upload: missing url"
+msgstr ""
+
+msgid "Error finding mail message "
+msgstr ""
+
+msgid "Error get id object: %d"
+msgstr ""
+
+msgid "Error get id object: %s"
+msgstr ""
+
+msgid "Error get object: %d"
+msgstr ""
+
+msgid "Error join group"
+msgstr ""
+
+msgid "Error loading area: %d"
+msgstr ""
+
+msgid "Error loading comment: %d"
+msgstr ""
+
+msgid "Error loading object: %d"
+msgstr ""
+
+msgid "Error loading section: %d"
+msgstr ""
+
+msgid "Error loading tag: "
+msgstr ""
+
+msgid "Error modify permissions"
+msgstr ""
+
+msgid "Error modifying permissions"
+msgstr ""
+
+msgid "Error removing group"
+msgstr ""
+
+msgid "Error save tree from _POST"
+msgstr ""
+
+msgid "Error saving area"
+msgstr ""
+
+msgid "Error saving comment"
+msgstr ""
+
+msgid "Error saving group"
+msgstr ""
+
+msgid "Error saving mail group"
+msgstr ""
+
+msgid "Error saving multimedia"
+msgstr ""
+
+msgid "Error saving permissions"
+msgstr ""
+
+msgid "Error saving section"
+msgstr ""
+
+msgid "Error saving status for item: "
+msgstr ""
+
+msgid "Error saving status for translation: "
+msgstr ""
+
+msgid "Error saving status for translations"
+msgstr ""
+
+msgid "Error saving stream object"
+msgstr "Error guardando o objeto stream"
+
+msgid "Error saving tag"
+msgstr ""
+
+msgid "Error saving user"
+msgstr ""
+
+msgid "Error updating user"
 msgstr ""
 
 msgid "Errors during upload"
@@ -247,7 +421,13 @@ msgstr "Errores no anexar"
 msgid "Event calendar"
 msgstr "Calendario evento"
 
+msgid "Event saved"
+msgstr "Evento guardado"
+
 msgid "Event start"
+msgstr ""
+
+msgid "Events deleted"
 msgstr ""
 
 msgid "Exif - Main Data"
@@ -259,8 +439,17 @@ msgstr "Sair"
 msgid "File"
 msgstr "Arquivo"
 
+msgid "File already exists in the filesystem"
+msgstr "Arquivo ja presente no filesystem"
+
+msgid "Galleries deleted"
+msgstr "Galerias borradas"
+
 msgid "Gallery associated to this document"
 msgstr "Galeria asociada ao documento"
+
+msgid "Gallery saved"
+msgstr "Galeria guardada"
 
 msgid "Generic categories"
 msgstr ""
@@ -277,11 +466,17 @@ msgstr ""
 msgid "Go to page"
 msgstr "Va a la página"
 
+msgid "Group "
+msgstr ""
+
 msgid "Group Name"
 msgstr ""
 
 msgid "Group authorized to Backend"
 msgstr "Grupo autorizado ao Backend"
+
+msgid "Group deleted"
+msgstr ""
 
 msgid "Group modules access"
 msgstr ""
@@ -307,6 +502,18 @@ msgid "Human readable type"
 msgstr ""
 
 msgid "IP"
+msgstr ""
+
+msgid "IP accepted"
+msgstr ""
+
+msgid "IP banned"
+msgstr ""
+
+msgid "Immutable group"
+msgstr ""
+
+msgid "Immutable group %s"
 msgstr ""
 
 msgid "Invoice"
@@ -339,13 +546,76 @@ msgstr "Cargando datos"
 msgid "Login"
 msgstr ""
 
+msgid "Login failed"
+msgstr ""
+
 msgid "Long Text"
 msgstr "Texto Extenso"
+
+msgid "MIME type not found"
+msgstr "MIME type não encontrado"
+
+msgid "Mail Group deleted"
+msgstr ""
+
+msgid "Mail Group saved"
+msgstr ""
+
+msgid "Mail delivery failed"
+msgstr ""
+
+msgid "Mail message deleted"
+msgstr ""
+
+msgid "Mail message lock failed: id "
+msgstr ""
+
+msgid "Mail message saved"
+msgstr ""
+
+msgid "Mail ready to be sent on "
+msgstr ""
+
+msgid "Mail template saved"
+msgstr ""
+
+msgid "Media already exists in the system"
+msgstr ""
 
 msgid "Media type"
 msgstr ""
 
 msgid "Message template"
+msgstr ""
+
+msgid "Missing from field"
+msgstr ""
+
+msgid "Missing invoices"
+msgstr ""
+
+msgid "Missing list name"
+msgstr ""
+
+msgid "Missing message id or recipient"
+msgstr ""
+
+msgid "Missing parent"
+msgstr ""
+
+msgid "Missing publishing"
+msgstr ""
+
+msgid "Missing recipient"
+msgstr ""
+
+msgid "Missing sending date"
+msgstr ""
+
+msgid "Missing subject field"
+msgstr ""
+
+msgid "Missing temporary file in filesystem."
 msgstr ""
 
 msgid "Moderated"
@@ -363,8 +633,17 @@ msgstr "Aceso aos módulos"
 msgid "More data"
 msgstr ""
 
+msgid "Multimedia  not found"
+msgstr ""
+
+msgid "Multimedia deleted"
+msgstr ""
+
 msgid "Multimedia items"
 msgstr "Multimedia"
+
+msgid "Multimedia object saved"
+msgstr ""
 
 msgid "Name"
 msgstr "Nome"
@@ -399,6 +678,12 @@ msgstr ""
 msgid "New user"
 msgstr "Novo usuário"
 
+msgid "News deleted"
+msgstr ""
+
+msgid "News saved"
+msgstr ""
+
 msgid "Newsletter must be saved before sending"
 msgstr ""
 
@@ -417,6 +702,12 @@ msgstr "Nenhum aceso"
 msgid "No categories found"
 msgstr "Nenhuma categoria encontrada"
 
+msgid "No data"
+msgstr "Não ha datos"
+
+msgid "No file in the form"
+msgstr ""
+
 msgid "No gallery"
 msgstr "Nenhuma galeria"
 
@@ -432,7 +723,16 @@ msgstr ""
 msgid "No newsletters found"
 msgstr ""
 
+msgid "No object id specified"
+msgstr ""
+
 msgid "No subscribers"
+msgstr ""
+
+msgid "No tag in text area"
+msgstr ""
+
+msgid "No tag selected"
 msgstr ""
 
 msgid "No tags found."
@@ -505,6 +805,9 @@ msgstr "Indicar uma data no formato %1 e maior da data anterior"
 msgid "Please enter a valid time in the %1 format"
 msgstr ""
 
+msgid "Post comment disabled"
+msgstr ""
+
 msgid "Previews"
 msgstr ""
 
@@ -544,6 +847,9 @@ msgstr ""
 msgid "Remove"
 msgstr "Borrar"
 
+msgid "Resource "
+msgstr ""
+
 msgid "Rights is required (at least %1 alphanumerical char)"
 msgstr "Direitos obligatório (não menos de %1 carácter alfanumérico)"
 
@@ -552,6 +858,12 @@ msgstr "Guardar"
 
 msgid "Search"
 msgstr ""
+
+msgid "Section deleted"
+msgstr "Seção borrada"
+
+msgid "Section saved"
+msgstr "Seção guardada"
 
 msgid "Select a user from the list"
 msgstr ""
@@ -595,6 +907,9 @@ msgstr ""
 msgid "Subscribers"
 msgstr ""
 
+msgid "Subscribers associated to list"
+msgstr ""
+
 msgid "Subtitle, description"
 msgstr "Subtítolo, descrição"
 
@@ -604,17 +919,35 @@ msgstr ""
 msgid "System info "
 msgstr ""
 
+msgid "Tag already present"
+msgstr ""
+
+msgid "Tag deleted"
+msgstr "Tag borrado"
+
 msgid "Tag details"
 msgstr ""
+
+msgid "Tag saved"
+msgstr "Tag guardado"
 
 msgid "Tags"
 msgstr "Tag"
 
+msgid "Tags saved"
+msgstr ""
+
 msgid "Templates"
+msgstr ""
+
+msgid "Test mail sent to "
 msgstr ""
 
 msgid "Text"
 msgstr ""
+
+msgid "Text doesn't match image"
+msgstr "X DANTE - Il testo non corrisponde all'immagine"
 
 msgid ""
 "The content is fixed: it's not possible to change the position in the tree"
@@ -629,7 +962,22 @@ msgstr "Títolo"
 msgid "Title is required"
 msgstr "Títolo obligatório"
 
+msgid "Translation deleted"
+msgstr ""
+
+msgid "Translation saved"
+msgstr ""
+
+msgid "Translation updated"
+msgstr ""
+
 msgid "Translations"
+msgstr ""
+
+msgid "URL not valid"
+msgstr "URL não valido"
+
+msgid "URL unattainable"
 msgstr ""
 
 msgid "Unsubscribe selected items"
@@ -659,13 +1007,22 @@ msgstr "Utiliza um email válido"
 msgid "User"
 msgstr "Usuário"
 
+msgid "User already created"
+msgstr ""
+
 msgid "User blocked"
 msgstr "Usuário bloqueado"
+
+msgid "User created"
+msgstr ""
 
 msgid "User details"
 msgstr ""
 
 msgid "User groups"
+msgstr ""
+
+msgid "User login temporary blocked"
 msgstr ""
 
 msgid "User name"
@@ -676,6 +1033,12 @@ msgid ""
 "chars)"
 msgstr ""
 "Nome usuário obligatório (%1 carácteres, sem espaço e carácteres especiais)"
+
+msgid "User not present"
+msgstr ""
+
+msgid "User updated"
+msgstr ""
 
 msgid "Username"
 msgstr "Usuário"
@@ -692,11 +1055,17 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
+msgid "Wrong username/password or no authorization"
+msgstr "Nome usuário/password errados ou autorização negada"
+
 msgid "X"
 msgstr ""
 
 msgid "Yes"
 msgstr "Sim"
+
+msgid "You can't use remote file"
+msgstr "Não è possivel utilizar arquivos remotos"
 
 msgid "abstract:"
 msgstr ""
@@ -1310,6 +1679,9 @@ msgstr ""
 msgid "web site"
 msgstr ""
 
+msgid "webmark saved"
+msgstr ""
+
 msgid "website"
 msgstr ""
 
@@ -1342,12 +1714,6 @@ msgstr ""
 
 #~ msgid "This field is required"
 #~ msgstr "Campo obligatório"
-
-#~ msgid "No data"
-#~ msgstr "Não ha datos"
-
-#~ msgid "Wrong username/password or no authorization"
-#~ msgstr "Nome usuário/password errados ou autorização negada"
 
 #~ msgid "Gallery"
 #~ msgstr "Galeria"
@@ -1686,23 +2052,11 @@ msgstr ""
 #~ msgid "License"
 #~ msgstr "Licença"
 
-#~ msgid "Area saved"
-#~ msgstr "Área guardada"
-
 #~ msgid "Area removed"
 #~ msgstr "Area borrada"
 
-#~ msgid "Section saved"
-#~ msgstr "Seção guardada"
-
 #~ msgid "Section removed"
 #~ msgstr "Seção borrada"
-
-#~ msgid "Document saved"
-#~ msgstr "Documento guardado"
-
-#~ msgid "Gallery saved"
-#~ msgstr "Galeria guardada"
 
 #~ msgid "Select all"
 #~ msgstr "Selecionas todos"
@@ -1712,12 +2066,6 @@ msgstr ""
 
 #~ msgid "Are you sure that you want to delete selected galleries?"
 #~ msgstr "Quer borrar as galerias selecionadas?"
-
-#~ msgid "Galleries deleted"
-#~ msgstr "Galerias borradas"
-
-#~ msgid "Documents deleted"
-#~ msgstr "Documentos borrados"
 
 #~ msgid "Are you sure that you want to delete selected documents?"
 #~ msgstr "Quer borrar os documentos selecionados?"
@@ -1762,12 +2110,6 @@ msgstr ""
 #~ msgid "Tag"
 #~ msgstr "Tag"
 
-#~ msgid "Tag saved"
-#~ msgstr "Tag guardado"
-
-#~ msgid "Tag deleted"
-#~ msgstr "Tag borrado"
-
 #~ msgid "New Tag"
 #~ msgstr "Novo Tag"
 
@@ -1795,26 +2137,8 @@ msgstr ""
 #~ msgid "Contents for the section"
 #~ msgstr "Contenidos para a seção"
 
-#~ msgid "File already exists in the filesystem"
-#~ msgstr "Arquivo ja presente no filesystem"
-
 #~ msgid "File is already associated to another object"
 #~ msgstr "Arquivo ja relacionado com outro objeto"
-
-#~ msgid "MIME type not found"
-#~ msgstr "MIME type não encontrado"
-
-#~ msgid "Error saving stream object"
-#~ msgstr "Error guardando o objeto stream"
-
-#~ msgid "Error deleting stream object"
-#~ msgstr "Errore borrando o objeto stream"
-
-#~ msgid "URL not valid"
-#~ msgstr "URL não valido"
-
-#~ msgid "You can't use remote file"
-#~ msgstr "Não è possivel utilizar arquivos remotos"
 
 #~ msgid "Attachments items"
 #~ msgstr "Anexos"
@@ -1857,9 +2181,6 @@ msgstr ""
 #~ msgid "No events found"
 #~ msgstr "Nenhum evento encontrado"
 
-#~ msgid "Event saved"
-#~ msgstr "Evento guardado"
-
 #~ msgid "Event deleted"
 #~ msgstr "Evento borrado"
 
@@ -1868,12 +2189,6 @@ msgstr ""
 
 #~ msgid "No news found"
 #~ msgstr "Nenhuma news encontrada"
-
-#~ msgid "Area tree saved"
-#~ msgstr "Árvore areas guardado"
-
-#~ msgid "Section deleted"
-#~ msgstr "Seção borrada"
 
 #~ msgid "Multimedia provider unsupported"
 #~ msgstr "Multimedia provider não suportado"
@@ -1886,6 +2201,3 @@ msgstr ""
 
 #~ msgid "Connect to other items"
 #~ msgstr "Relacionar a outros elementos"
-
-#~ msgid "Text doesn't match image"
-#~ msgstr "X DANTE - Il testo non corrisponde all'immagine"
