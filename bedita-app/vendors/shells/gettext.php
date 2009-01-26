@@ -46,6 +46,7 @@ class GettextShell extends Shell {
 		return $str;
 	}
 
+
 	// rips gettext strings from $file and prints them in C format
 	private function parseFile($file, $rgxp)
 	{
@@ -79,8 +80,27 @@ class GettextShell extends Shell {
 		$t = preg_quote('t');
 		$rgxpTpl = "/{$l}\s*({$t})\s*([^{$r}]*){$r}([^{$l}]*){$l}\/\\1{$r}/";
 
-		// looks for __("text to translate",true), result in matches[2]
-//		$rgxpPHP = "/__\s*\(\s*(\"|')" . "([^\\1]*)" . "\\1/";
+
+
+/*		REGEXP x STEF
+ * 		isola le stringhe in __("text to translate",true)
+ * 		volevo beccare sia " che ', ma siccome non si poteva 
+ * 		usare un backref nel character class il modo + semplice è
+ * 		stato dividere in due con un or logico in mezzo
+ * 		come conseguenza un po' scomoda hai in matches[1] quelli che tra le " e in matches[2] quelli tra '
+ * 		x cui forse ti conviene fare un merge o usarli entrambi
+ * 
+ * 		ho anche messo ", ' e ( in var così si legge un po' meglio
+ */
+
+
+//		$p  = preg_quote("(");
+//		$q1 = preg_quote("'");
+//		$q2 = preg_quote('"');
+//		$rgxp     = "/__\s*{$p}\s*{$q2}" . "([^{$q2}]*)" . "{$q2}" . "|" . "__\s*{$p}\s*{$q1}" . "([^{$q1}]*)" . "{$q1}/";
+
+
+
 		$extensionRgxp = array("tpl" => $rgxpTpl);
 		
 		$folder = new Folder($dir);
