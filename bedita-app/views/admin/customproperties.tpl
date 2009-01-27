@@ -6,6 +6,23 @@
 {$javascript->link("jquery/jquery.validate", false)}
 {$javascript->link("jquery/jquery.changealert", false)}
 
+<script type="text/javascript">
+var urlDelete = "{$html->url('deleteCustomProperties/')}";
+var message = "{t}Are you sure that you want to delete the item?{/t}";
+{literal}
+$(document).ready(function(){
+	$(".delete").bind("click", function(){
+		if(!confirm(message))
+			return false ;
+		var customId = $(this).attr("title");
+		$("#form_"+customId).attr("action", urlDelete).submit();
+		return false;
+	});
+	
+});
+{/literal}
+</script>
+
 </head>
 
 <body>
@@ -27,23 +44,94 @@
 
 <div class="mainfull">
 
+	<table class="indexlist">
+		<tr>
+			<th>{t}property name{/t}</th>
+			<th>{t}for object type{/t}</th>
+			<th>{t}data type{/t}</th>
+			<th>{t}option list{/t}</th>
+			<th>{t}data attributes{/t}</th>
+			<th></th>
+		</tr>
+		{foreach from=$properties item="p"}
+			<form id="form_{$p.id}" action="{$html->url('/admin/saveCustomProperties')}" method="post">
+			
+			<tr>
+
+				<td>
+					<input type="text" name="data[Property][name]" value="{$p.name}" />
+				</td>
+				<td>
+					<select name="data[Property][object_type_id]">
+					{foreach from=$conf->objectTypes key="key" item="objectTypes"}
+					{if !empty($objectTypes.model) && is_numeric($key)}
+						<option value="{$objectTypes.id}" class="{$objectTypes.model|lower}" style="padding-left:5px"{if $p.object_type_id ==$objectTypes.id} selected="selected"{/if}> {$objectTypes.model|lower}</option>
+					{/if}
+					{/foreach}
+					</select>
+				</td>
+				<td>
+					<select class="datatype" name="data[Property][property_type]">
+						<option value="number"{if $p.property_type == "number"} selected="selected"{/if}>{t}number{/t}</option>
+						<option value="date"{if $p.property_type == "date"} selected="selected"{/if}>{t}date{/t}</option>
+						<option value="text"{if $p.property_type == "text"} selected="selected"{/if}>{t}text{/t}</option>
+						<option value="options"{if $p.property_type == "options"} selected="selected"{/if}>{t}options{/t}</option>
+					</select>
+				</td>
+				
+				<td class="optd">
+					{assign var="options" value=""}
+					{if !empty($p.PropertyOption)}
+						{foreach from=$p.PropertyOption item="opt" name="fcopt"}
+							{if $smarty.foreach.fcopt.iteration == 1}
+								{assign var="options" value=$opt.property_option}
+							{else}
+								{assign_concat var="options" 0=$options 1="," 2=$opt.property_option}
+							{/if}
+						{/foreach}
+					{/if}
+					<input ctype="text" value="{$options}" name="data[options]" />
+				</td>
+	 			<td class="optd">
+					<input type="checkbox" name="data[Property][multiple_choice]" value="1"{if $p.multiple_choice == 1} checked="checked"{/if} /> {t}multiple choice{/t}
+				</td>
+				
+				
+				<td>
+					<input type="hidden" name="data[Property][id]" value="{$p.id}"/>
+					<input type="submit" value=" {t}save{/t} "/>
+					<input type="button" class="delete" title="{$p.id}" value="{t}delete{/t}"/>
+					
+				</td>
+			</tr>
+			
+			</form>
+		{foreachelse}
+			<tr><td>{t}no custom properties defined{/t}</td></tr>
+		{/foreach}
+	</table>
+
+
+
+
+	<form action="{$html->url('/admin/saveCustomProperties')}" method="post">
 
 	<table class="indexlist">
 		<tr>
-			<th>property name</th>
-			<th>for object type</th>
-			<th>data type</th>
-			<th>option list</th>
-			<th>data attributes</th>
+			<th>{t}property name{/t}</th>
+			<th>{t}for object type{/t}</th>
+			<th>{t}data type{/t}</th>
+			<th>{t}option list{/t}</th>
+			<th>{t}data attributes{/t}</th>
 			<th></th>
 		</tr>
 		
 		<tr id="row_0">
 			<td>
-				<input type="text" value="" name="" />
+				<input type="text" value="" name="data[Property][name]" />
 			</td>
 			<td>
-				<select>
+				<select name="data[Property][object_type_id]">
 				{foreach from=$conf->objectTypes key="key" item="objectTypes"}
 				{if !empty($objectTypes.model) && is_numeric($key)}
 					<option value="{$objectTypes.id}" class="{$objectTypes.model|lower}" style="padding-left:5px"> {$objectTypes.model|lower}</option>
@@ -53,18 +141,18 @@
 				
 			</td>
 			<td>
-				<select class="datatype">
-					<option>number</option>
-					<option>date</option>
-					<option>text</option>
-					<option>options</option>
+				<select class="datatype" name="data[Property][property_type]">
+					<option value="number">{t}number{/t}</option>
+					<option value="date">{t}date{/t}</option>
+					<option value="text">{t}text{/t}</option>
+					<option value="options">{t}options{/t}</option>
 				</select>
 			</td>
 			<td class="optd">
-				<input ctype="text" value="" name="" />
+				<input ctype="text" value="" name="data[options]" />
 			</td>
  			<td class="optd">
-				<input type="checkbox" /> multiple choice
+				<input type="checkbox" name="data[Property][multiple_choice]" value="1" /> {t}multiple choice{/t}
 			</td>
 			<td>
 				<input type="submit" value="{t}save{/t}" />
@@ -72,5 +160,7 @@
 		</tr>
 			
 	</table>
+	
+	</form>
 </div>
 

@@ -298,13 +298,78 @@ class AdminController extends ModulesController {
 		$this->layout=null;
 	}
 
- /**
+ 	/**
 	 * show customproperties
 	 */
-	 public function customproperties() { 	
+	public function customproperties() { 	
+		$properties = ClassRegistry::init("Property")->find("all", array(
+							"contain" => "PropertyOption"
+						)
+					);
+		
+		$this->set("properties", $properties);
+	}
+	 
+	public function saveCustomProperties() {
+		$this->checkWriteModulePermission();
+		if (empty($this->data["Property"]))
+	 		throw new BeditaException(__("Empty data",true));
+	 		
+	 	$propertyModel = ClassRegistry::init("Property");
+	 	
+	 	$conditions = array(
+ 					"name" => $this->data["Property"]["name"],
+	 				"object_type_id" => $this->data["Property"]["object_type_id"]
+ 				);
+ 				
+ 		if (!empty($this->data["Property"]["id"]))
+ 			$conditions[] = "id <> '" . $this->data["Property"]["id"] . "'";
+	 	
+	 	$countProperties = $propertyModel->find("count", array(
+ 				"conditions" => $conditions
+ 			) 
+ 		);
+		
+ 		if ($countProperties > 0)
+ 			throw new BeditaException(__("Duplicate property name for the same object",true));
 
+	 	if (empty($this->data["Property"]["multiple_choice"]) || $this->data["Property"]["property_type"] != "options")
+	 		$this->data["Property"]["multiple_choice"] = 0;
+	 	
+	 	$this->Transaction->begin();
+	 	if (!$propertyModel->save($this->data)) {
+	 		throw new BeditaException(__("Error saving custom property",true), $propertyModel->validationErrors);
+	 	}
+		
+	 	// save options
+	 	$propertyModel->PropertyOption->deleteAll("property_id='" . $propertyModel->id . "'");
+	 	if ($this->data["Property"]["property_type"] == "options") {
+	 		if (empty($this->data["options"]))
+	 			throw new BeditaException(__("Missing options",true));
+	 			
+	 		$optionArr = explode(",", trim($this->data["options"],","));
+	 		foreach ($optionArr as $opt) {
+	 			$propOpt[] = array("property_id" => $propertyModel->id, "property_option" => $opt);
+	 		}
+	 		if (!$propertyModel->PropertyOption->saveAll($propOpt)) {
+	 			throw new BeditaException(__("Error saving options",true));
+	 		}
+	 	}
+	 	
+	 	$this->Transaction->commit();
+	 	
+	 	$this->eventInfo("property ".$this->data['Property']['name']." saved");
+		$this->userInfoMessage(__("Custom property saved",true));	 	
 	 }
 
+	 function deleteCustomProperties() {
+	 	$this->checkWriteModulePermission();
+	 	if (!empty($this->data["Property"]["id"])) {
+	 		if (!ClassRegistry::init("Property")->del($this->data["Property"]["id"])) {
+	 			throw new BeditaException(__("Error deleting custom property " . $this->data["Property"]["name"],true));
+	 		}
+	 	}
+	 }
 
 	 protected function forward($action, $esito) {
 	 	 	$REDIRECT = array(
@@ -339,6 +404,14 @@ class AdminController extends ModulesController {
 				"loadUsersGroupsAjax" =>	array(
 					 			"OK"	=> self::VIEW_FWD.'load_ugs_ajax',
 								"ERROR"	=> self::VIEW_FWD.'load_ugs_ajax'
+							),
+				"saveCustomProperties" =>	array(
+					 			"OK"	=> '/admin/customproperties',
+								"ERROR"	=> '/admin/customproperties'
+							),
+				"deleteCustomProperties" =>	array(
+					 			"OK"	=> '/admin/customproperties',
+								"ERROR"	=> '/admin/customproperties'
 							)
 	 			);
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

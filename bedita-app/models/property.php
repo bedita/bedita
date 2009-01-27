@@ -33,6 +33,13 @@ class Property extends BEAppModel  {
 	var $actsAs = array("CompactResult" => array("PropertyOption", "ObjectProperty"));
  	
 	var $hasMany = array("PropertyOption", "ObjectProperty");
+	
+	var $validate = array(
+		'name' => array(
+			'rule' => "notEmpty"
+		)
+	);
+	
  	
 }
  
