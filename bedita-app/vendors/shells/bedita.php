@@ -705,6 +705,21 @@ class BeditaShell extends Shell {
 
 		// database connection
 		@$this->checkAppDbConnection();
+		
+		$debugLevel = Configure::read("debug");
+		$this->out("Cake debug level: $debugLevel");
+		$saveSess = Configure::read("Session.save");
+		$this->out("Cake session handling: " .$saveSess);
+		if($saveSess !== "database") {
+			$this->out("WARNIN: use 'database' as session handler in config/core.php - 'Session.save'");
+		}
+		$appBaseUrl = Configure::read('App.baseUrl');
+		if(empty($appBaseUrl)) {
+			$this->out("Using mod_rewrite");
+		} else {
+			$this->out("NOT USING mod_rewrite");
+		}
+		
     }
 
     public function createRelease() {
