@@ -1,7 +1,12 @@
 <?php 
 /**
-  * @author giangi@qwerg.com
  * 
+ * @link			http://www.bedita.com
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
+ * 
+ * $Id$
  */
 
 define("MODIFY_READ",	BEDITA_PERMS_MODIFY|BEDITA_PERMS_READ) ;

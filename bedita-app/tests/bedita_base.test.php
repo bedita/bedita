@@ -35,6 +35,8 @@ class BeditaTestData extends Object {
 
 App::import('Controller', 'App'); // base controller, beditaexcepion... 
 
+class BeditaTestController extends AppController{} 
+
 class BeditaTestCase extends CakeTestCase {
 
 	var $dataSource	= 'test' ;
@@ -43,6 +45,7 @@ class BeditaTestCase extends CakeTestCase {
 	var $uses = array();
 	var $testName = NULL;
 	var $dataFile	  = NULL ;
+	var $testController = NULL;
 	
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -145,6 +148,8 @@ class BeditaTestCase extends CakeTestCase {
 
 				$components = is_array($this->components) ? $this->components : array($this->components);
 
+				$this->testController = new BeditaTestController();
+				
 				foreach($components as $componentClass) {
 					App::import('Component',$componentClass);
 
@@ -152,6 +157,9 @@ class BeditaTestCase extends CakeTestCase {
 					if (class_exists($className)) {
 						$component =& new $className();
 						$this->{$componentClass} =& $component;
+						if(method_exists($component, "startup")) {
+							$component->startup($this->testController);
+						}
 					} else {
 						echo "Missing Component: $className" ;
 						return ;

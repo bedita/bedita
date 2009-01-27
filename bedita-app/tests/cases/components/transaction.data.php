@@ -1,20 +1,15 @@
 <?php 
 /**
  * 
- * Short description for file.
- *
- * Long description for file
- *
- * PHP versions 4 and 5
-
- *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
- *
- * @author giangi@qwerg.com
+ * @link			http://www.bedita.com
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
+ * $Id$
  */
-class AreaData extends Object {
+
+class TransactionTestData extends BeditaTestData {
 	var $data =  array(
 		'minimo'	=> array('title' 			=> 'Titolo di test'),
 		
@@ -33,9 +28,6 @@ class AreaData extends Object {
 		),
 
 		) ;
-	
-	function &getData() { return $this->data ;  }
-
 }
 
 ?> 

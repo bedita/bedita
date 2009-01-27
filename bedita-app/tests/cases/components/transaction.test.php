@@ -1,42 +1,42 @@
 <?php 
-/**
+/*-----8<--------------------------------------------------------------------
  * 
- * Short description for file.
- *
- * Long description for file
- *
- * PHP versions 4 and 5
-
- *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
- *
- * @author giangi@qwerg.com
+ * BEdita - a semantic content management framework
  * 
- * Crea e salva tutti i tipi di oggetti per verificare il settaggio del tipo correttamente
+ * Copyright 2008 ChannelWeb Srl, Chialab Srl
  * 
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the Affero GNU General Public License as published 
+ * by the Free Software Foundation, either version 3 of the License, or 
+ * (at your option) any later version.
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the Affero GNU General Public License for more details.
+ * You should have received a copy of the Affero GNU General Public License 
+ * version 3 along with BEdita (see LICENSE.AGPL).
+ * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
+ * 
+ *------------------------------------------------------------------->8-----
  */
 
-include_once(dirname(__FILE__) . DS . 'transaction.data.php') ;
+/**
+ * 
+ * @link			http://www.bedita.com
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
+ * 
+ * $Id$
+ */
 
+require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
-class TransactionTestCase extends CakeTestCase {
-	
-    var $fixtures 	= array( 'area_test' );
- 	var $uses		= array(
- 							'BEObject',
- 							'Area', 'Community', 'Faq', 'Newsletter', 'Questionnaire',
- 							'Scroll', 'Section', 'Timeline',
- 							
- 							'Content', 'BaseDocument', 
- 							'Document', 'Event', 'Question', 'Answer',
- 							'BEFile', 'Image', 'Audio', 'Video',
- 							'Comment', 'Book', 'Author', 'ShortNews',
- 							'Bibliography', 'FaqQuestion', 'BiblioItem'
- 	) ;
+class TransactionTestCase extends BeditaTestCase {
+
+ 	var $uses		= array('BEObject', 'Area', 'Document', 'Event', 'BEFile', 'Image', 
+ 							'Audio', 'Video', 'ShortNews') ;
  	var $components	= array('Transaction') ;
     var $dataSource	= 'test' ;
- 	
     var $data		= null ;
 
 	////////////////////////////////////////////////////////////////////
@@ -203,12 +203,12 @@ class TransactionTestCase extends CakeTestCase {
 	private function _getNumRecordsTable(&$model) {
 		$recs = array() ;
 		
-		$tables = $model->execute("SHOW TABLES") ;
+		$tables = $model->query("SHOW TABLES") ;
 		
 		for($i = 0 ; $i < count($tables) ; $i++) {
 			$ret = array_values($tables[$i]['TABLE_NAMES']) ;
 			
-			$nums = $model->execute("SELECT count(*) AS num FROM {$ret[0]} ")  ;
+			$nums = $model->query("SELECT count(*) AS num FROM {$ret[0]} ")  ;
 			
 			$recs[] = array($ret[0], $nums[0][0]['num']) ;
 		}
@@ -216,131 +216,8 @@ class TransactionTestCase extends CakeTestCase {
 		return $recs ;
 	}
 	
-	/////////////////////////////////////////////////
-	/////////////////////////////////////////////////
-	
-	function startCase() {
-		echo '<h1>Test Transazioni sul DB e sul File System</h1>';
-	}
-
-	function endCase() {
-		echo '<h1>Ending Test Case</h1>';
-	}
-
-	function startTest($method) {
-		echo '<h3>Starting method ' . $method . '</h3>';
-	}
-
-	function endTest($method) {
-		echo '<hr />';
-	}
-
-	/**
- 	* Loads and instantiates models required by this controller.
- 	* If Controller::persistModel; is true, controller will create cached model instances on first request,
- 	* additional request will used cached models
- 	*
- 	*/
 	public   function __construct () {
-		parent::__construct() ;
-		
-		// Carica i dati d'esempio
-		$AreaData 	= &new AreaData() ;
-		$this->data	= $AreaData->getData() ;
-
-		// Cambia il dataSource di default
-		if(isset($this->dataSource)) $this->setDefaultDataSource($this->dataSource) ;
-
-		// Carica i Models
-		if ($this->uses) {
-			if($this->uses === null || ($this->uses === array())){
-				return ;
-			}
-
-			$uses = is_array($this->uses) ? $this->uses : array($this->uses);
-
-			foreach($uses as $modelClass) {
-				$modelKey = Inflector::underscore($modelClass);
-
-				if(!class_exists($modelClass)){
-					loadModel($modelClass);
-				}
-
-				if (class_exists($modelClass)) {
-						$model =& new $modelClass();
-						$this->modelNames[] = $modelClass;
-						$this->{$modelClass} =& $model;
-				} else {
-					echo "Missing Model: $modelClass" ;
-					return ;
-				}
-			}
-		}
-		
-		// carica i components
-		if ($this->components) {
-			if($this->components === null || ($this->components === array())){
-				return ;
-			}
-
-			$components = is_array($this->components) ? $this->components : array($this->components);
-
-			foreach($components as $componentClass) {
-				loadComponent($componentClass);
-				
-				$className = $componentClass . 'Component' ;
-				if (class_exists($className)) {
-						$component =& new $className();
-						$this->{$componentClass} =& $component;
-				} else {
-					echo "Missing Component: $className" ;
-					return ;
-				}
-			}
-		}
-		
-	}
-
-	/**
- 	* Cambio il data source di default
- 	*/
-	protected function setDefaultDataSource($name) {		
-		$_this =& ConnectionManager::getInstance();
-
-		if (in_array($name, array_keys($_this->_dataSources))) {
-			return $_this->_dataSources[$name];
-		}
-
-		$connections = $_this->enumConnectionObjects();
-		if (in_array($name, array_keys($connections))) {
-			$conn = $connections[$name];
-			$class = $conn['classname'];
-			$_this->loadDataSource($name);
-			
-			$this->_originalDefaultDB = &$_this->_dataSources['default'] ;
-			
-			$_this->_dataSources['default'] =& new $class($_this->config->{$name});
-			$_this->_dataSources['default']->configKeyName = $name;
-		} else {
-			trigger_error(sprintf(__("ConnectionManager::getDataSource - Non-existent data source %s", true), $name), E_USER_ERROR);
-			return null;
-		}
-
-		return $_this->_dataSources['default'];		
-	}
-
-	/**
- 	* Resetta data source di default
- 	*/
-	protected function resetDefaultDataSource($name) {
-		
-		if(!isset($this->_originalDefaultDB)) return ;
-		$_this->_dataSources['default'] = &$this->_originalDefaultDB  ;
-		
-		unset($this->_originalDefaultDB);
-		
-		return $_this->_dataSources['default'];
-	}
-	
+		parent::__construct('Transaction', dirname(__FILE__)) ;
+	}	
 }
 ?> 

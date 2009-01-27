@@ -65,7 +65,7 @@ class BeAuthComponent extends Object {
 		$this->controller 	= $controller;
 		$this->Session 		= &$controller->Session;
 		
-		if ($this->Session->valid() &&  $this->Session->check($this->sessionKey)) {
+		if(isset($this->Session) && $this->Session->valid() &&  $this->Session->check($this->sessionKey)) {
 			$this->user 	= $this->Session->read($this->sessionKey);
 			$this->allow 	= $this->Session->read($this->allowKey);
 		}
