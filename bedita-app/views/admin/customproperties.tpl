@@ -18,8 +18,19 @@ $(document).ready(function(){
 		$("#form_"+customId).attr("action", urlDelete).submit();
 		return false;
 	});
-	
-});
+
+
+    $(".optionlist option[value!='options']:selected").parents("tr").find(".optionsfields").hide();
+
+	$(".optionlist").change(function () {
+        $(".optionsfields").hide();
+		$(".optionlist option[value='options']:selected").parents("tr").find(".optionsfields").show();
+     })
+
+	});
+
+
+
 {/literal}
 </script>
 
@@ -44,6 +55,9 @@ $(document).ready(function(){
 
 <div class="mainfull">
 
+					
+					
+					
 	<table class="indexlist">
 		<tr>
 			<th>{t}property name{/t}</th>
@@ -56,7 +70,7 @@ $(document).ready(function(){
 		{foreach from=$properties item="p"}
 			<form id="form_{$p.id}" action="{$html->url('/admin/saveCustomProperties')}" method="post">
 			
-			<tr>
+			<tr name="pop">
 
 				<td>
 					<input type="text" name="data[Property][name]" value="{$p.name}" />
@@ -71,15 +85,15 @@ $(document).ready(function(){
 					</select>
 				</td>
 				<td>
-					<select class="datatype" name="data[Property][property_type]">
-						<option value="number"{if $p.property_type == "number"} selected="selected"{/if}>{t}number{/t}</option>
-						<option value="date"{if $p.property_type == "date"} selected="selected"{/if}>{t}date{/t}</option>
-						<option value="text"{if $p.property_type == "text"} selected="selected"{/if}>{t}text{/t}</option>
-						<option value="options"{if $p.property_type == "options"} selected="selected"{/if}>{t}options{/t}</option>
+					<select class="optionlist" name="data[Property][property_type]">
+						<option value="number" {if $p.property_type == "number"} selected="selected"{/if}>{t}number{/t}</option>
+						<option value="date" {if $p.property_type == "date"} selected="selected"{/if}>{t}date{/t}</option>
+						<option value="text" {if $p.property_type == "text"} selected="selected"{/if}>{t}text{/t}</option>
+						<option value="options" {if $p.property_type == "options"} selected="selected"{/if}>{t}options{/t}</option>
 					</select>
 				</td>
 				
-				<td class="optd">
+				<td>
 					{assign var="options" value=""}
 					{if !empty($p.PropertyOption)}
 						{foreach from=$p.PropertyOption item="opt" name="fcopt"}
@@ -90,10 +104,12 @@ $(document).ready(function(){
 							{/if}
 						{/foreach}
 					{/if}
-					<input ctype="text" value="{$options}" name="data[options]" />
+					<input class="optionsfields" ctype="text" value="{$options}" name="data[options]" />
 				</td>
-	 			<td class="optd">
+	 			<td>
+	 				<span class="optionsfields">
 					<input type="checkbox" name="data[Property][multiple_choice]" value="1"{if $p.multiple_choice == 1} checked="checked"{/if} /> {t}multiple choice{/t}
+					</span>
 				</td>
 				
 				
@@ -141,18 +157,19 @@ $(document).ready(function(){
 				
 			</td>
 			<td>
-				<select class="datatype" name="data[Property][property_type]">
+				<select class="optionList" name="data[Property][property_type]">
 					<option value="number">{t}number{/t}</option>
 					<option value="date">{t}date{/t}</option>
 					<option value="text">{t}text{/t}</option>
 					<option value="options">{t}options{/t}</option>
 				</select>
 			</td>
-			<td class="optd">
-				<input ctype="text" value="" name="data[options]" />
+			<td >
+				<input class="optionsfields" ctype="text" value="" name="data[options]" />
 			</td>
- 			<td class="optd">
+ 			<td><span class="optionsfields">
 				<input type="checkbox" name="data[Property][multiple_choice]" value="1" /> {t}multiple choice{/t}
+				</span>
 			</td>
 			<td>
 				<input type="submit" value="{t}save{/t}" />
