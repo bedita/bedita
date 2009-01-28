@@ -55,7 +55,7 @@ INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUE
 ('23','statistics', 'statistics', 'statistics', 'on', '16'),
 ('24','tags', 'tags', 'tags', 'on', '6'),
 ('25','comments', 'comments', 'comments', 'on', '7'),
-('26','multimedia', 'multimedia', 'multimedia', 'on', '4'),
+('26','multimedia', 'multimedia', 'multimedia', 'on', '4');
 
 
 

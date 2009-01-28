@@ -42,10 +42,11 @@ INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUE
 ('7','news', 'news', 'news', 'on', '9'),
 ('8','galleries', 'galleries', 'galleries', 'on', '5'),
 ('10','events', 'events', 'events', 'on', '3'),
+('12','webmarks', 'webmarks', 'webmarks', 'on', '12'),
 ('16','addressbook', 'addressbook', 'addressbook', 'on', '10'),
 ('24','tags', 'tags', 'tags', 'on', '6'),
 ('25','comments', 'comments', 'comments', 'on', '7'),
-('26','multimedia', 'multimedia', 'multimedia', 'on', '4'),
+('26','multimedia', 'multimedia', 'multimedia', 'on', '4');
 
 
 -- administrator permissions
