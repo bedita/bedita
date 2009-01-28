@@ -33,6 +33,7 @@
 	{include file="inc/menuleft.tpl" method="view"}
     
 	<div class="head">
+		
         <h1>{t}{$object.title|default:"New Item"}{/t}</h1>
     </div>
     

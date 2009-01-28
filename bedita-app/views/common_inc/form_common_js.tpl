@@ -19,6 +19,14 @@
 $(document).ready(function(){
 	
 	//alert("pop");
+
+	$("#cancelBEObject").hide().click(function() {
+		if(confirm("{/literal}{t}Are you sure you want to cancel and reload this document? All unsaved changes will be lost{/t}{literal}")) {
+			window.location.reload();
+			//location.reload();
+		}
+	;
+	});
 	
 	$("#delBEObject").submitConfirm({
 		{/literal}
@@ -117,7 +125,7 @@ $(document).ready(function(){
 	$("#updateForm *").change(function () {
 
 		$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object").attr("rel","");
-
+		$("#cancelBEObject").show();
 	});
 
 

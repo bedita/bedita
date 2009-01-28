@@ -11,3 +11,4 @@
 	<meta name="author" content="ChannelWeb srl - Chialab srl" />
 	<meta name="description" content="Descrizione" lang="it" />
 	<meta name="keywords" content="Keys" />
+	<meta name="generator" content="BEdita" />

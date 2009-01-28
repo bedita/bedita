@@ -27,8 +27,9 @@ Menu a SX valido per tutte le pagine del controller.
 	</div>
 	{/if}
 
+{if $method eq "view"}
 {include file="../common_inc/previews.tpl"}
-
+{/if}
 {include file="../common_inc/user_module_perms.tpl"}
 
 </div>

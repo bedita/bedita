@@ -9,8 +9,9 @@
 
 <fieldset id="multimediaitem" style="margin-left:-10px;">
 
-
+		
 <div id="multimediaiteminside">
+
 
 	{if ($object.ObjectType.name == "image")}
 
@@ -23,21 +24,20 @@
 		
 		{assign_associative var="params" width=500}
 		{assign_associative var="htmlAttr" width=500}
+		
 		{$beEmbedMedia->object($object,$params,$htmlAttr)}
 		
-	
+
+		
 	{elseif ($object.provider|default:false)}
 		
-		
+		{*
 		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="px; " 3="height:" 4=$conf->videoThumbHeight 5="px;"}
 		{assign_associative var="attributes" style=$myStyle}
 
 		<a href="{$object.path}" target="_blank">
 			{$beEmbedMedia->object($object,null,$attributes)}
 		</a>
-		{assign_associative var="params" presentation="full"}
-		{$beEmbedMedia->object($object,$params)}
-	
 		<embed 
 			src	= "{$html->webroot}swf/mediaplayer.swf" 
 			width	= "{$conf->videoWidth}"
@@ -46,8 +46,13 @@
 			allowfullscreen = "true"
 			flashvars = "file={$mediaProvider->sourceEmbed($object) }&backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0x000000&overstretch=true&searchbar=false&autostart=false"
 		/>
+		*}
 	
-	
+		{assign_associative var="params" presentation="full"}
+		
+		{$beEmbedMedia->object($object,$params)}
+		
+		
 	{elseif strtolower($object.ObjectType.name) == "audio"}
 	
 	
@@ -114,7 +119,16 @@
 {/if}
 	<tr>
 		<th></th>
-		<td><a target="_blank" href="{$conf->mediaUrl}{$object.path}">› {t}open file in a separate window{/t}</a></td>
+		<td>
+			
+			{if (substr($object.path,0,7) == 'http://') or (substr($object.path,0,8) == 'https://')}
+			<a target="_blank" href="{$object.path}">
+			{else}
+			<a target="_blank" href="{$conf->mediaUrl}{$object.path}">
+			{/if}
+				› {t}open file in a separate window{/t}
+			</a>
+		</td>
 	</tr>
 </table>
 
