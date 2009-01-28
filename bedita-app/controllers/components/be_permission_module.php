@@ -68,7 +68,7 @@ class BePermissionModuleComponent extends Object {
 	function getListModules($userid, $all = false) {
 		
 		$condition 	=  "prmsModuleUserByID('{$userid}', Module.path, " . (BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) . ")" ;
-		$sql 		=  "SELECT *, {$condition} as flag FROM modules AS Module WHERE prmsModuleUserByID('{$userid}', Module.path, " . (BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) . ")" ;
+		$sql 		=  "SELECT *, {$condition} as flag FROM modules AS Module WHERE prmsModuleUserByID('{$userid}', Module.path, " . (BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) . ") ORDER BY priority IS NULL, priority" ;
 		$modules 	= $this->PermissionModule->query($sql);
 		
 		$resModules = array();

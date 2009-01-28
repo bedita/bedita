@@ -30,21 +30,22 @@ INSERT INTO `groups` ( `name` ) VALUES ('frontend');
 
 INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES (1, (SELECT id FROM groups WHERE name = 'administrator'));
 
+
 -- ---------------------------
 -- module data
 -- ---------------------------
-INSERT INTO `modules` (`label`, `name`, `path`, `status`) VALUES
-('admin', 'admin', 'admin', 'on'),
-('areas', 'areas', 'areas', 'on'),
-('documents', 'documents', 'documents', 'on'),
-('galleries', 'galleries', 'galleries', 'on'),
-('multimedia', 'multimedia', 'multimedia', 'on'),
-('news', 'news', 'news', 'on'),
-('events', 'events', 'events', 'on'),
-('tags', 'tags', 'tags', 'on'),
-('comments', 'comments', 'comments', 'on'),
-('addressbook', 'addressbook', 'addressbook', 'on'),
-('translations', 'translations', 'translations', 'on');
+INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES
+('1','publishing', 'areas', 'areas', 'on', '1'),
+('2','admin', 'admin', 'admin', 'on', '15'),
+('3','translations', 'translations', 'translations', 'on', '8'),
+('6','documents', 'documents', 'documents', 'on', '2'),
+('7','news', 'news', 'news', 'on', '9'),
+('8','galleries', 'galleries', 'galleries', 'on', '5'),
+('10','events', 'events', 'events', 'on', '3'),
+('16','addressbook', 'addressbook', 'addressbook', 'on', '10'),
+('24','tags', 'tags', 'tags', 'on', '6'),
+('25','comments', 'comments', 'comments', 'on', '7'),
+('26','multimedia', 'multimedia', 'multimedia', 'on', '4'),
 
 
 -- administrator permissions

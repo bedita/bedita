@@ -39,23 +39,23 @@ INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES (1, (SELECT id FROM
 -- ---------------------------
 -- module data
 -- ---------------------------
-INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`) VALUES
-('1','publishing', 'areas', 'areas', 'on'),
-('2','admin', 'admin', 'admin', 'on'),
-('3','translations', 'translations', 'translations', 'on'),
-('6','documents', 'documents', 'documents', 'on'),
-('7','news', 'news', 'news', 'on'),
-('8','galleries', 'galleries', 'galleries', 'on'),
-('10','events', 'events', 'events', 'on'),
-('11','bibliographies', 'bibliographies', 'bibliographies', 'on'),
-('12','webmarks', 'webmarks', 'webmarks', 'on'),
-('13','books', 'books', 'books', 'on'),
-('16','addressbook', 'addressbook', 'addressbook', 'on'),
-('18','newsletter', 'newsletter', 'newsletter', 'on'),
-('23','statistics', 'statistics', 'statistics', 'on'),
-('24','tags', 'tags', 'tags', 'on'),
-('25','comments', 'comments', 'comments', 'on'),
-('26','multimedia', 'multimedia', 'multimedia', 'on');
+INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES
+('1','publishing', 'areas', 'areas', 'on', '1'),
+('2','admin', 'admin', 'admin', 'on', '15'),
+('3','translations', 'translations', 'translations', 'on', '8'),
+('6','documents', 'documents', 'documents', 'on', '2'),
+('7','news', 'news', 'news', 'on', '9'),
+('8','galleries', 'galleries', 'galleries', 'on', '5'),
+('10','events', 'events', 'events', 'on', '3'),
+('11','bibliographies', 'bibliographies', 'bibliographies', 'on', '14'),
+('12','webmarks', 'webmarks', 'webmarks', 'on', '12'),
+('13','books', 'books', 'books', 'on', '13'),
+('16','addressbook', 'addressbook', 'addressbook', 'on', '10'),
+('18','newsletter', 'newsletter', 'newsletter', 'on', '11'),
+('23','statistics', 'statistics', 'statistics', 'on', '16'),
+('24','tags', 'tags', 'tags', 'on', '6'),
+('25','comments', 'comments', 'comments', 'on', '7'),
+('26','multimedia', 'multimedia', 'multimedia', 'on', '4'),
 
 
 

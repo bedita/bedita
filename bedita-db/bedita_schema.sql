@@ -708,6 +708,7 @@ CREATE TABLE `modules` (
   `label` varchar(32) default NULL,
   `path` varchar(255) NOT NULL,
   `status` enum('on','off') NOT NULL default 'on',
+  `priority` int(11) default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY name (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
