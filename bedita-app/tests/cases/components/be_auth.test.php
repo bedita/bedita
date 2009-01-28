@@ -80,6 +80,8 @@ class BeAuthTestCase extends BeditaTestCase {
 		$id2 = $beAuth->saveGroup($g);
 		$this->assertTrue($id2 === $id);
 		$this->assertTrue($beAuth->removeGroup($this->data['new.group.name']));
+		$this->expectException(new BeditaException("Error saving group"));
+		$beAuth->saveGroup($this->data['bad.group']);
 	}
 	
 	

@@ -15,6 +15,7 @@ class BeAuthTestData extends BeditaTestData {
 		'user2'	=> array('userid' 	=> 'giangi', 'passwd' => 'giungggg'),
 		'user3'	=> array('userid' 	=> 'nuovoutente', 'passwd' => 'nuovapass'),
 		'new.group' => array('Group' => array('name' => 'frustrated')), 
+		'bad.group' => array('Group' => array('name' => null)), 
 		'new.user'	=> array('User' => array('userid' => 'nuovoutente', 'passwd' => 'nuovapass')), 
         'new.user.bad.pass' => 'wrongpassword',
 	    'new.user.groups' =>array('guest','frustrated'),
