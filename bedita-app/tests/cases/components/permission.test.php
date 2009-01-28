@@ -186,145 +186,154 @@ class PermissionTestCase extends BeditaTestCase {
 
 	function testReplaceByRootTree() {	
 		$this->Transaction->begin() ;
+
+		$this->_insert($this->Area, $this->data['minimo']) ;
+		$this->data['minimo']['parent_id'] = $this->Area->id;
+		$this->_insert($this->Section, $this->data['minimo']) ;
+		$this->data['minimo']['parent_id'] = $this->Section->id;
+		$this->_insert($this->Document, $this->data['minimo']) ;
 		
 		sort($this->data['addPerms1']);
-		// aggiunge/sosstituisce per una ramificazione (3, 6, 5, 8, 12)
-		$ret = $this->Permission->addTree(3, $this->data['addPerms1']) ;
-		pr("aggiunge/sostituisce per una ramificazione (3, 6, 5, 8, 12)") ;
+		$ret = $this->Permission->addTree($this->Area->id, $this->data['addPerms1']) ;
 		$this->assertEqual($ret,true);
 		
-		// Carica i permessi creati e verifica
-		$perms = $this->Permission->load(3) ;
+		// area permissions
+		$perms = $this->Permission->load($this->Area->id);
 		sort($perms);
-		pr("Verifica permessi creati (3)") ;
+		pr("Verify permission on id:" . $this->Area->id) ;
 		$this->assertEqual($this->data['addPerms1'], $perms);
 		
-		$perms = $this->Permission->load(5) ;
+		// section permissions
+		$perms = $this->Permission->load($this->Section->id);
 		sort($perms);
-		pr("Verifica permessi creati (5)") ;
-		$this->assertEqual($this->data['addPerms1'], $perms);
-
-		$perms = $this->Permission->load(12) ;
-		sort($perms);
-		pr("Verifica permessi creati (12)") ;
+		pr("Verify permission on id:" . $this->Section->id) ;
 		$this->assertEqual($this->data['addPerms1'], $perms);
 		
+		// document permissions
+		$perms = $this->Permission->load($this->Document->id);
+		sort($perms);
+		pr("Verify permission on id:" . $this->Document->id) ;
+		$this->assertEqual($this->data['addPerms1'], $perms);
+		
+		$this->_delete($this->Document) ;
+		$this->_delete($this->Section) ;
+		$this->_delete($this->Area) ;
 		$this->Transaction->rollback() ;
 	} 
 
 	function testDeleteByRootTree() {	
 		$this->Transaction->begin() ;
 		
+		$this->_insert($this->Area, $this->data['minimo']) ;
+		$this->data['minimo']['parent_id'] = $this->Area->id;
+		$this->_insert($this->Section, $this->data['minimo']) ;
+		$this->data['minimo']['parent_id'] = $this->Section->id;
+		$this->_insert($this->Document, $this->data['minimo']) ;
+		
 		sort($this->data['addPerms1']);
-		// aggiunge/sosstituisce per una ramificazione (3, 6, 5, 8, 12)
-		$ret = $this->Permission->addTree(3, $this->data['addPerms1']) ;
-		pr("aggiunge/sostituisce per una ramificazione (3, 6, 5, 8, 12)") ;
-		$this->assertEqual($ret,true);
-
-		// Cancella per una ramificazione (3, 6, 5, 8, 12)
-		$ret = $this->Permission->removeTree(3, $this->data['removePerms1']) ;
-		pr("Cancella i permessi per una ramificazione (3, 6, 5, 8, 12)") ;
+		$ret = $this->Permission->addTree($this->Area->id, $this->data['addPerms1']) ;
 		$this->assertEqual($ret,true);
 		
-		// Carica i permessi creati e verifica
-		$perms = $this->Permission->load(3) ;
+		// remove permissions
+		$ret = $this->Permission->removeTree($this->Area->id, $this->data['removePerms1']) ;
+		$this->assertEqual($ret,true);
+		
+		// area permissions
+		$perms = $this->Permission->load($this->Area->id);
 		sort($perms);
-		pr("Verifica permessi cancellati (3)") ;
+		pr("Verify permission on id:" . $this->Area->id) ;
 		$this->assertEqual($this->data['resultDeletePerms1'], $perms);
 		
-		$perms = $this->Permission->load(5) ;
+		// section permissions
+		$perms = $this->Permission->load($this->Section->id);
 		sort($perms);
-		pr("Verifica permessi cancellati (5)") ;
-		$this->assertEqual($this->data['resultDeletePerms1'], $perms);
-
-		$perms = $this->Permission->load(12) ;
-		sort($perms);
-		pr("Verifica permessi cancellati (12)") ;
+		pr("Verify permission on id:" . $this->Section->id) ;
 		$this->assertEqual($this->data['resultDeletePerms1'], $perms);
 		
+		// document permissions
+		$perms = $this->Permission->load($this->Document->id);
+		sort($perms);
+		pr("Verify permission on id:" . $this->Document->id) ;
+		$this->assertEqual($this->data['resultDeletePerms1'], $perms);
+		
+		$this->_delete($this->Document) ;
+		$this->_delete($this->Section) ;
+		$this->_delete($this->Area) ;
 		$this->Transaction->rollback() ;
 	} 
 
 	function testDeleteAllByRootTree() {	
 		$this->Transaction->begin() ;
 		
+		$this->_insert($this->Area, $this->data['minimo']) ;
+		$this->data['minimo']['parent_id'] = $this->Area->id;
+		$this->_insert($this->Section, $this->data['minimo']) ;
+		$this->data['minimo']['parent_id'] = $this->Section->id;
+		$this->_insert($this->Document, $this->data['minimo']) ;
+		
 		sort($this->data['addPerms1']);
-		// aggiunge/sosstituisce per una ramificazione (3, 6, 5, 8, 12)
-		$ret = $this->Permission->addTree(3, $this->data['addPerms1']) ;
-		pr("aggiunge/sostituisce per una ramificazione (3, 6, 5, 8, 12)") ;
+		$ret = $this->Permission->addTree($this->Area->id, $this->data['addPerms1']) ;
 		$this->assertEqual($ret,true);
 
-		// cancella i permessi
-		$ret = $this->Permission->removeAllTree(3) ;
-		pr("Cancella tutti i permessi per una ramificazione (3, 6, 5, 8, 12)") ;
+		// remove all permissions
+		$ret = $this->Permission->removeAllTree($this->Area->id);
 		$this->assertEqual($ret,true);
 		
-		// Carica i permessi creati e verifica
-		$perms = $this->Permission->load(3) ;
+		// area permissions
+		$perms = $this->Permission->load($this->Area->id);
 		sort($perms);
-		pr("Verifica permessi cancellati (3)") ;
-		
+		pr("Verify permission on id:" . $this->Area->id) ;
 		$this->assertEqual(array(), $perms);
 		
-		$perms = $this->Permission->load(5) ;
+		// section permissions
+		$perms = $this->Permission->load($this->Section->id);
 		sort($perms);
-		pr("Verifica permessi cancellati (5)") ;
-		$this->assertEqual(array(), $perms);
-
-		$perms = $this->Permission->load(12) ;
-		sort($perms);
-		pr("Verifica permessi cancellati (12)") ;
+		pr("Verify permission on id:" . $this->Section->id) ;
 		$this->assertEqual(array(), $perms);
 		
+		// document permissions
+		$perms = $this->Permission->load($this->Document->id);
+		sort($perms);
+		pr("Verify permission on id:" . $this->Document->id) ;
+		$this->assertEqual(array(), $perms);
+		
+		$this->_delete($this->Document) ;
+		$this->_delete($this->Section) ;
+		$this->_delete($this->Area) ;
 		$this->Transaction->rollback() ;
 	} 
 
-	function testPermissionsByUserid() {	
+	function testPermissionsByUserOrGroup() {	
 		$this->Transaction->begin() ;
 		
+		$this->_insert($this->Area, $this->data['minimo']) ;
+		
 		sort($this->data['addPerms1']);
-		// aggiunge/sosstituisce per una ramificazione (3, 6, 5, 8, 12)
-		$ret = $this->Permission->addTree(3, $this->data['addPerms1']) ;
-		pr("aggiunge/sostituisce per una ramificazione (3, 6, 5, 8, 12)") ;
+		$ret = $this->Permission->addTree($this->Area->id, $this->data['addPerms1']) ;
 		$this->assertEqual($ret,true);
+				
+		// Verify user/group permissions
+		foreach ($this->data['addPerms1'] as $permsData) {
+			$who = $permsData[0];
+			$type = $permsData[1];
+			$p = $permsData[2];
+			if($type === 'user') {
+				$ret = $this->Permission->verify($this->Area->id, $who, $p) ;
+				$this->assertEqual($ret, true);
+			} else {
+				$ret = $this->Permission->verifyGroup($this->Area->id, $who, $p) ;
+				$this->assertEqual($ret, true);
+			}
+		}
 		
-		// Verifica dei permessi
-		$ret = $this->Permission->verify(3, 'torto', BEDITA_PERMS_MODIFY) ;
-		pr("Verifica permessi di modifica utente 'torto' (true)") ;
+		// guest perms
+		$ret = $this->Permission->verify($this->Area->id, '', BEDITA_PERMS_READ) ;
 		$this->assertEqual((boolean)$ret, true);
 		
-		$ret = $this->Permission->verify(3, 'torto', BEDITA_PERMS_CREATE) ;
-		pr("Verifica permessi di creazione utente 'torto' (false)") ;
-		$this->assertEqual((boolean)$ret, false);
-
-		$ret = $this->Permission->verify(3, '', BEDITA_PERMS_READ) ;
-		pr("Verifica permessi di lettura utente anonimo (true)") ;
-		$this->assertEqual((boolean)$ret, true);
-
+		$this->_delete($this->Area) ;
 		$this->Transaction->rollback() ;
 	} 
 	
-	function testPermissionsByGroup() {	
-		$this->Transaction->begin() ;
-		
-		sort($this->data['addPerms1']);
-		// aggiunge/sosstituisce per una ramificazione (3, 6, 5, 8, 12)
-		$ret = $this->Permission->addTree(3, $this->data['addPerms1']) ;
-		pr("aggiunge/sostituisce per una ramificazione (3, 6, 5, 8, 12)") ;
-		$this->assertEqual($ret,true);
-		
-		// Verifica dei permessi
-		$ret = $this->Permission->verifyGroup(3, 'guest', BEDITA_PERMS_READ) ;
-		pr("Verifica permessi di lettura gruppo 'guest' (true)") ;
-		$this->assertEqual((boolean)$ret, true);
-		
-		$ret = $this->Permission->verifyGroup(3, 'guest', BEDITA_PERMS_DELETE) ;
-		pr("Verifica permessi di cancellazione gruppo 'guest' (false)") ;
-		$this->assertEqual((boolean)$ret, false);
-
-		$this->Transaction->rollback() ;
-	} 
-
 	/////////////////////////////////////////////////
 	private function _insert($model, $data) {
 		// Crea

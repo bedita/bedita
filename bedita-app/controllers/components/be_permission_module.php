@@ -199,8 +199,9 @@ class BePermissionModuleComponent extends Object {
 	 * @return array $perms	Permessi individuati o FALSE
 	 */
 	function load($name) {
-		$condition = "Module.label = '{$name}'" ;
-		if(($perms = $this->PermissionModule->findAll($condition)) === false) return false ;
+		$condition = "Module.name = '{$name}'" ;
+		if(($perms = $this->PermissionModule->findAll($condition)) === false) 
+			return false ;
 		
 		$this->perms2arr($perms, $arr) ;
 		

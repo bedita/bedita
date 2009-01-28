@@ -78,6 +78,9 @@ if ( file_exists (ROOT.DS.APP_DIR.DS."config/bedita.cfg.php") ) {
 	Configure::load("bedita.cfg") ;	
 }
 
+// common exceptions definitions
+require ROOT.DS.APP_DIR.DS."bedita_exception.php";
+
 
 /**
  * Registrazione funzioni di shutdown e gestione transazioni.

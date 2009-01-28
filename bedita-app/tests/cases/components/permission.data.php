@@ -15,7 +15,7 @@ define("DELETE_MODIFY_READ",	 BEDITA_PERMS_DELETE | BEDITA_PERMS_MODIFY|BEDITA_P
 class PermissionTestData extends BeditaTestData {
 
 	var $data =  array(
-		'minimo'	=> array('title' => 'Titolo di test'),
+		'minimo'	=> array('title' => 'Test title'),
 		'addPerms1' => array(
 				array('administrator', 	'group', ALL_PERMS),
 				array('bedita', 		'user', BEDITA_PERMS_READ),

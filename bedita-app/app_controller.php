@@ -813,44 +813,4 @@ abstract class ModulesController extends AppController {
 	}
 		
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * Bedita basic exception
- */
-class BeditaException extends Exception
-{
-	public $result;
-	protected $errorDetails; // details for log file
-	
-	public function __construct($message = NULL, $details = NULL, $res  = AppController::ERROR, $code = 0) {
-   		if(empty($message)) {
-   			$message = __("Unexpected error, operation failed",true);
-   		}
-   		$this->errorDetails = $message;
-   		if(!empty($details)) {
-   			if(is_array($details)) {
-   				foreach ($details as $k => $v) {
-					$this->errorDetails .= "; [$k] => $v";
-				}
-   			} else {
-   				$this->errorDetails = $this->errorDetails . ": ".$details; 
-   			}
-   		}
-   		$this->result = $res;
-        parent::__construct($message, $code);
-    }
-    
-    public function  getDetails() {
-    	return $this->errorDetails;
-    }
-    
-    public function errorTrace() {
-        return get_class($this)." - ".$this->getDetails()." \nFile: ". 
-            $this->getFile()." - line: ".$this->getLine()." \nTrace:\n".
-            $this->getTraceAsString();   
-    }
-}
-
 ?>

@@ -555,13 +555,13 @@ DECLARE _idprm INT DEFAULT 0;
 SET _UGID 	= IF(_SWITCH = 'user', (SELECT ID FROM users WHERE userid = _USERGROUP), (SELECT ID FROM groups WHERE name = _USERGROUP)) ;
 
 IF _UGID > 0 THEN
-	SET _idprm	= (SELECT id FROM permission_modules WHERE module_id = (SELECT id FROM modules WHERE label = _MDL)
+	SET _idprm	= (SELECT id FROM permission_modules WHERE module_id = (SELECT id FROM modules WHERE name = _MDL)
 	AND ugid = _UGID AND switch = _SWITCH) ;
 
 	IF _idprm > 0 THEN
 		UPDATE permission_modules SET flag = _FLAG WHERE id = _idprm ;
 	ELSE
-		INSERT permission_modules (module_id, ugid, switch, flag) VALUES ((SELECT id FROM modules WHERE label = _MDL) , _UGID, _SWITCH, _FLAG) ;
+		INSERT permission_modules (module_id, ugid, switch, flag) VALUES ((SELECT id FROM modules WHERE name = _MDL) , _UGID, _SWITCH, _FLAG) ;
 	END IF ;
 END IF ;
 END
@@ -580,7 +580,7 @@ DECLARE _idprm INT DEFAULT 0;
 SET _UGID 	= IF(_SWITCH = 'user', (SELECT ID FROM users WHERE userid = _USERGROUP), (SELECT ID FROM groups WHERE name = _USERGROUP)) ;
 
 IF _UGID > 0 THEN
-	DELETE FROM permission_modules WHERE module_id = (SELECT id FROM modules WHERE label = _MDL)
+	DELETE FROM permission_modules WHERE module_id = (SELECT id FROM modules WHERE name = _MDL)
 	AND ugid = _UGID AND switch = _SWITCH ;
 END IF ;
 END

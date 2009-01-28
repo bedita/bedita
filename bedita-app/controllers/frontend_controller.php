@@ -29,6 +29,10 @@
  * 
  * $Id$
  */
+if(defined('BEDITA_CORE_PATH')) {
+	require_once (BEDITA_CORE_PATH . DS . 'bedita_exception.php');
+}
+
 abstract class FrontendController extends AppController {
 
 	private $status = array('on');
