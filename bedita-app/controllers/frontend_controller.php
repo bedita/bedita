@@ -640,14 +640,14 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
-	 * find path to $object_id (exclude publication)
+	 * find parent path of $object_id (exclude publication)
 	 *
 	 * @param int $object_id
 	 * @return array (the keys are object's id)
 	 */
 	protected function getPath($object_id) {
 		$pathArr = array();
-		$path = $this->Tree->field("path", array("id" => $object_id));
+		$path = $this->Tree->field("parent_path", array("id" => $object_id));
 		$parents = explode("/", trim($path,"/"));
 		if (!empty($parents)) {
 			$this->baseLevel = true;
