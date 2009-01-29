@@ -544,6 +544,7 @@ abstract class FrontendController extends AppController {
 		$this->section($section_id, $content_id);	
 	}
 
+		
 	/**
 	 * find section and contents from section nick or section id and set template vars
 	 * 
@@ -574,6 +575,8 @@ abstract class FrontendController extends AppController {
 		}
 		
 		$section = $this->loadObj($sectionId);
+		
+		$section["pathSection"] = $this->getPath($sectionId);
 		
 		if(!empty($contentName)) {
 			$content_id = is_numeric($contentName) ? $contentName : $this->BEObject->getIdFromNickname($contentName);
@@ -634,6 +637,27 @@ abstract class FrontendController extends AppController {
 		} else {
 			$this->content($id);
 		}
+	}
+	
+	/**
+	 * find path to $object_id (exclude publication)
+	 *
+	 * @param int $object_id
+	 * @return array (the keys are object's id)
+	 */
+	protected function getPath($object_id) {
+		$pathArr = array();
+		$path = $this->Tree->field("path", array("id" => $object_id));
+		$parents = explode("/", trim($path,"/"));
+		if (!empty($parents)) {
+			$this->baseLevel = true;
+			foreach ($parents as $p) {
+				if ($p != $this->publication["id"])
+					$pathArr[$p] = $this->loadObj($p);
+			}
+			$this->baseLevel = false;
+		}
+		return $pathArr;
 	}
 	
 	/**
