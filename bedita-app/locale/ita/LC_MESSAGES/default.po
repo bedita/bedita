@@ -124,8 +124,8 @@ msgstr ""
 msgid "Browse"
 msgstr ""
 
-msgid "Bulk operations on"
-msgstr ""
+msgid "Bulk actions on"
+msgstr "Operazioni su"
 
 msgid "Cancel queue"
 msgstr ""
@@ -1561,7 +1561,7 @@ msgid "select one"
 msgstr ""
 
 msgid "selected records"
-msgstr ""
+msgstr "elementi selezionati"
 
 msgid "selected subscribers"
 msgstr ""
