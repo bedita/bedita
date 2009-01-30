@@ -473,6 +473,9 @@ abstract class ModulesController extends AppController {
 		$this->set('tree', $this->BeTree->getSectionsTree());
 		$this->set('sectionSel',$sectionSel);
 		$this->set('objects', $objects['items']);
+		
+		// set prevNext array to session
+		$this->setPrevNext($objects['items']);
 	}
 	
 	/**
@@ -712,6 +715,39 @@ abstract class ModulesController extends AppController {
 		$categoryModel = ClassRegistry::init("Category");
 		$areaCategory = $categoryModel->getCategoriesByArea(Configure::read('objectTypes.'.$name.'.id'));
 		$this->set("areaCategory", $areaCategory);
+		$this->sessionForObjectDetail();
+	}
+	
+	/**
+	 * set vars in session. used in view method
+	 *
+	 */
+	protected function sessionForObjectDetail() {
+		$backURL = $this->Session->read('backFromView');
+		$modulePath = $this->viewVars["currentModule"]["path"];	
+		$referer = trim($this->referer(),"/");
+		
+		if (!empty($referer) && strstr($referer, $modulePath . "/index")) {
+			$this->Session->write('backFromView', $referer);
+		} elseif (empty($backURL) || !strstr($backURL, $modulePath) || !strstr($referer, $modulePath)) {
+			$this->Session->write('backFromView', $modulePath);
+			$this->Session->write("prevNext", "");
+		}
+	}
+	
+	/**
+	 * set array with prev and next
+	 *
+	 * @param array $objects
+	 */
+	protected function setPrevNext($objects) {
+		if (!empty($objects)) {
+			foreach ($objects as $k => $o) {
+				$prevNextArr[$o["id"]]["prev"] = (!empty($objects[$k-1]))? $objects[$k-1]["id"] : "";
+				$prevNextArr[$o["id"]]["next"] = (!empty($objects[$k+1]))? $objects[$k+1]["id"] : "";
+			}
+			$this->Session->write("prevNext", $prevNextArr);
+		}
 	}
 	
 	protected function saveObject(BEAppModel $beModel) {

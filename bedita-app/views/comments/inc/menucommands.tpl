@@ -24,7 +24,7 @@ $(document).ready(function(){
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 	<div class="modules">
-	   	   <label class="{$moduleName}" rel="{$html->url('/')}{$currentModule.path}">{t}{$currentModule.label}{/t}</label>
+	   	   <label class="{$moduleName}" rel="{$html->url('/')}{$session->read("backFromView")}">{t}{$currentModule.label}{/t}</label>
 	</div> 
 	
 	
@@ -38,6 +38,23 @@ $(document).ready(function(){
 		<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" {if !($object.id|default:false)}disabled="1"{/if} />
 
 	</div>
+	
+	{if $session->read("prevNext") && !empty($object.id)}
+		{assign var="prevNext" value=$session->read("prevNext")}
+		<div class="listobjnav">
+			{if $prevNext[$object.id].prev}
+			<a title="prev" href="{$html->url('/')}{$currentModule.path}/view/{$prevNext[$object.id].prev}">
+				‹
+			</a>
+			{/if}
+	
+			{if $prevNext[$object.id].next}
+			<a title="next" href="{$html->url('/')}{$currentModule.path}/view/{$prevNext[$object.id].next}">
+				›
+			</a> 
+			{/if}
+		</div>
+	{/if}
 	
 	{/if}
 

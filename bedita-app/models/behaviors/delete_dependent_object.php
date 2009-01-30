@@ -63,11 +63,19 @@ class DeleteDependentObjectBehavior extends ModelBehavior {
 		}
 		
 		// Preleva gli oggetti discendenti 
-		if(!class_exists('Tree')) loadModel('Tree');		
-		$tree = new Tree ;
-		
+//		if(!class_exists('Tree')) loadModel('Tree');		
+//		$tree = new Tree ;
+		$tree = ClassRegistry::init("Tree");
 		$descendents = $tree->getAll($model->id, null, null, $filter) ;
 		
+		
+//		$descendents = $model->findObjects($model->id, null, null, $filter, null, true, 1, 100000, true);
+		
+//		foreach ($descendents["items"] as $item) {
+//			if(!$this->_deleteDescs($item)) {
+//				return false ;
+//			}
+//		}
 		for ($i=0; isset($descendents[0]['children']) && $i <count($descendents[0]['children']) ; $i++) {
 			if(!$this->_deleteDescs($descendents[0]['children'][$i])) {
 				return false ;
@@ -90,11 +98,13 @@ class DeleteDependentObjectBehavior extends ModelBehavior {
 		if(!isset($conf->objectTypes[$tree['object_type_id']]["model"])) return true ;
 		$modelName 	= $conf->objectTypes[$tree['object_type_id']]["model"];
 		
-		if(!class_exists($modelName)) loadModel($modelName);		
-		$model = new $modelName ;
+//		if(!class_exists($modelName)) loadModel($modelName);		
+//		$model = new $modelName ;
 
+		$model = ClassRegistry::init($modelName);
+		
 		// Cancella l'oggetto
-		$result = $model->Delete($tree['id']);
+		$result = $model->del($tree['id']);
 		
 		return $result ;
 	}
