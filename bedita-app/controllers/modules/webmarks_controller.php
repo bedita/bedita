@@ -104,8 +104,11 @@ class WebmarksController extends ModulesController {
 		$this->Link->id = $this->params['form']['id'];
 		$http_code = $this->Link->responseForUrl($this->params['form']['url']);
 		$http_response_date = date('Y-m-d H:m:s',time());
-//		$this->Link->saveField("http_code",$http_code);
-//		$this->Link->saveField("http_response_date",$http_response_date);
+		$saved_url = $this->Link->field("url",array("id" => $this->params['form']['id']));
+		if($saved_url == $this->params['form']['url']) {
+			$this->Link->saveField("http_code",$http_code);
+			$this->Link->saveField("http_response_date",$http_response_date);
+		}
 		$this->set("http_code",$http_code);
 		$this->set("http_response_date",$http_response_date);
 		$this->layout = null;
