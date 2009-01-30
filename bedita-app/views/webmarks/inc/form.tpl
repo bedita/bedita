@@ -27,10 +27,9 @@ var url="{$html->url('/webmarks/checkUrl')}";
 	<input type="hidden" name="data[id]" id="link_id" value="{$object.id|default:''}"/>
 	<label>{t}url{/t}:</label>
 	<br />
-	<input style="width:460px" type="text" id="url" name="data[url]" value="{$object.url|default:''}" />
+	<input style="width:430px" type="text" id="url" name="data[url]" value="{$object.url|default:''}" />
 	{if !empty($object.url)}
-	<br />
-	<a href="{$object.url}">{$object.url}</a>
+	&nbsp; <a style="font-weight:bold;" href="{$object.url}" target="_blank"> GO </a>
 	{/if}
 	<br />
 	<label>{t}title{/t}:</label>
