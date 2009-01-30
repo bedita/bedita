@@ -127,7 +127,7 @@ $(document).ready(function(){
 
 <br />
 
-<div class="tab"><h2>{t}Bulk operations on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
+<div class="tab"><h2>{t}Bulk actions on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
 
 	<div>
 		check and select 404's: <input type="button" value="ping" />
