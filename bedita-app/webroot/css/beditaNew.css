@@ -1419,7 +1419,16 @@ Table.graph .value {
 INPUT[type=text],INPUT[type=password], textarea {	
 	border-radius : 7px; 
 	-moz-border-radius : 7px; 
-	-webkit-border-radius : 7px;	
+	-webkit-border-radius : 7px;
+	-khtml-border-radius: 7px;
 }
+
+INPUT[type=button] {
+	text-transform:uppercase;
+}
+
+
+
+
 
 

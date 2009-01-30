@@ -133,7 +133,7 @@ $(document).ready(function() {
 	</table>
 
 	<br />
-	<div class="tab"><h2>{t}operations{/t}</h2></div>
+	<div class="tab"><h2>{t}Bulk actions on{/t}<span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
 	<div>
 
 		<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
