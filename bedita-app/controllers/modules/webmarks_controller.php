@@ -99,6 +99,18 @@ class WebmarksController extends ModulesController {
 		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
 	}
 
+	public function checkUrl() {
+		$this->data = $this->params['form'];
+		$this->Link->id = $this->params['form']['id'];
+		$http_code = $this->Link->responseForUrl($this->params['form']['url']);
+		$http_response_date = date('Y-m-d H:m:s',time());
+//		$this->Link->saveField("http_code",$http_code);
+//		$this->Link->saveField("http_response_date",$http_response_date);
+		$this->set("http_code",$http_code);
+		$this->set("http_response_date",$http_response_date);
+		$this->layout = null;
+	}
+
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 				"cloneObject"	=> 	array(

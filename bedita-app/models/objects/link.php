@@ -29,11 +29,11 @@
  * $Id$
  */
 class Link extends BEAppObjectModel {
-	
+
 	var $actsAs = array();
-	
+
 	public $searchFields = array();
-	
+
 	protected $modelBindings = array( 
 				"detailed" =>  array("BEObject" => array("ObjectType", 
 															"UserCreated", 
@@ -41,10 +41,37 @@ class Link extends BEAppObjectModel {
 															"RelatedObject",
 															"Category")),
 
-       			"default" => array("BEObject" => array("ObjectType", "RelatedObject", "Category")),
+				"default" => array("BEObject" => array("ObjectType", "RelatedObject", "Category")),
 
 				"minimum" => array("BEObject" => array("ObjectType"))		
 		);
+
+	public function beforeSave() {
+		if(!empty($this->data['Link']['url'])) { // when saveField() is called, no url checks should be done
+			$url = $this->data['Link']['url'];
+			if(!$this->isHttp($url) && !$this->isHttps($url)) {
+				$url = "http://" . $url;
+				$this->data['Link']['url'] = $url;
+			}
+			$this->data['Link']['http_code'] = $this->responseForUrl($url);
+			$this->data['Link']['http_response_date'] = date('Y-m-d H:m:s',time());
+		}
+		return true;
+	}
+
+	public function responseForUrl($url) {
+		$result = @get_headers($url);
+		return (empty($result) || !$result) ? "Invalid url" : $result[0];
+	}
 	
+	private function isHttp($url) {
+		if(strlen($url)<10) return false;
+		return (substr($url,0,7) == "http://");
+	}
+	
+	private function isHttps($url) {
+		if(strlen($url)<10) return false;
+		return (substr($url,0,8) == "https://");
+	}
 }
 ?>

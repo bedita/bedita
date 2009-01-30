@@ -566,6 +566,8 @@ CREATE TABLE links (
   id INTEGER UNSIGNED NOT NULL,
   `url` varchar(255) default NULL,
   `target` enum('_self','_blank','parent','top','popup') default NULL,
+  `http_code` MEDIUMTEXT NULL,
+  `http_response_date` DATETIME NULL,
   PRIMARY KEY(id),
   KEY `idx_url` (`url`),
   FOREIGN KEY(id)
