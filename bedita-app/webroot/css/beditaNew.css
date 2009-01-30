@@ -298,7 +298,6 @@ UL.modules {
 .default 		{background-color:#CCCCCC !important; color:#000000 !important}
 
 
-;
 /*...........................................
  
     Modules states
@@ -1396,15 +1395,17 @@ Table.graph .value {
 .listobjnav  {
 	text-align:center;
 	padding:10px;
+	color:#888;
+	font-size:4em;
 }
 
 .listobjnav  A {
-	font-size:4em;
-	color:#666666;
+	
+	color:#333;
 }
 
 .listobjnav  A:Hover {
-	color:#000000;
+	color:#000;
 }
 
 

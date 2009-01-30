@@ -16,22 +16,7 @@ Menu a SX valido per tutte le pagine del controller.
 		<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" id="cloneBEObject" />
 		<input class="bemaincommands" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" />
 	
-		{if $session->read("prevNext") && !empty($object.id)}
-			{assign var="prevNext" value=$session->read("prevNext")}
-			<div class="listobjnav">
-				{if $prevNext[$object.id].prev}
-				<a title="prev" href="{$html->url('/')}{$currentModule.path}/view/{$prevNext[$object.id].prev}">
-					‹
-				</a>
-				{/if}
-		
-				{if $prevNext[$object.id].next}
-				<a title="next" href="{$html->url('/')}{$currentModule.path}/view/{$prevNext[$object.id].next}">
-					›
-				</a> 
-				{/if}
-			</div>
-		{/if}
+		{include file="../common_inc/prevnext.tpl"}
 		
 	</div>
 	

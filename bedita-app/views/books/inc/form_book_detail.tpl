@@ -55,19 +55,19 @@ tinyMCE.init({
 		{/if}
 		</td>
 		<td>
-			<label>{t}title{/t}:</label>
+			<label>{t}title{/t}:</label><br />
 			<input id="titleBEObject" style="width:320px;" type="text" name="data[title]" value="{$object.title|escape:'html'|escape:'quotes'}" />
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<label>{t}subtitle{/t}:</label>
+			<label>{t}subtitle{/t}:</label><br />
 			<textarea id="subtitle" style="width:320px; height:30px" class="shortdesc autogrowarea" name="data[description]">{$object.description|default:''|escape:'html'}</textarea>
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<label>{t}abstract:{/t}</label>
+			<label>{t}abstract:{/t}</label><br />
 			<textarea name="data[abstract]" class="mce">{$object.abstract|default:''}</textarea>
 		</td>
 	</tr>
