@@ -446,6 +446,27 @@ jQuery.fn.BEmodal = function(){
 						
 
 
+/*...........................................    
+
+   bulk actions
+
+...........................................*/
+
+
+	$('.selecteditems').text($(".objectCheck:checked").length);	
+	
+	$('#formObject').change(function () {
+		$('.selecteditems').text($(".objectCheck:checked").length);
+	});
+
+
+
+
+
+
+
+
+
 
 
 
