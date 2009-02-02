@@ -50,6 +50,7 @@ INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUE
 ('11','bibliographies', 'bibliographies', 'bibliographies', 'on', '14'),
 ('12','webmarks', 'webmarks', 'webmarks', 'on', '12'),
 ('13','books', 'books', 'books', 'on', '13'),
+(14, 'forms', 'forms', 'forms', 'on', 15),
 ('16','addressbook', 'addressbook', 'addressbook', 'on', '10'),
 ('18','newsletter', 'newsletter', 'newsletter', 'on', '11'),
 ('23','statistics', 'statistics', 'statistics', 'on', '16'),
@@ -108,6 +109,8 @@ VALUES ((SELECT id FROM modules WHERE name = 'statistics'), (SELECT id FROM grou
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'webmarks'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE name = 'forms'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 
 -- editor perms
@@ -156,6 +159,8 @@ VALUES ((SELECT id FROM modules WHERE name = 'statistics'), (SELECT id FROM grou
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'webmarks'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE name = 'forms'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 -- reader perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
@@ -202,4 +207,7 @@ VALUES ((SELECT id FROM modules WHERE name = 'statistics'), (SELECT id FROM grou
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'webmarks'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE name = 'forms'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
