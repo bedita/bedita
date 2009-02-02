@@ -461,16 +461,40 @@ jQuery.fn.BEmodal = function(){
 
 
 
-
-
-
-
-
-
-
-
-
 });
+
+/*...........................................    
+
+   keyboard binding
+
+...........................................*/
+
+document.onkeydown = function(e){ 	
+	if (e == null) { // ie
+		keycode = event.keyCode;
+	} else { // mozilla
+		keycode = e.which;
+	}
+	
+	if(keycode == 27){ // 
+		
+		if ($('.tab').next().is(":visible")) {
+			$('.tab').BEtabsclose();
+		} else {
+			$('.tab').BEtabsopen();
+		}
+		
+	
+	} else if(keycode == 109){ // 
+		
+	
+	} else if(keycode == 188){ // 
+		
+	}
+	//alert(keycode);
+};
+
+
 
 
 
