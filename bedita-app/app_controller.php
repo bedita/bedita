@@ -475,7 +475,7 @@ abstract class ModulesController extends AppController {
 		$this->set('objects', $objects['items']);
 		
 		// set prevNext array to session
-		$this->setPrevNext($objects['items']);
+		$this->setSessionForObjectDetail($objects['items']);
 	}
 	
 	/**
@@ -715,38 +715,38 @@ abstract class ModulesController extends AppController {
 		$categoryModel = ClassRegistry::init("Category");
 		$areaCategory = $categoryModel->getCategoriesByArea(Configure::read('objectTypes.'.$name.'.id'));
 		$this->set("areaCategory", $areaCategory);
-		$this->sessionForObjectDetail();
+		$this->setSessionForObjectDetail();
 	}
 	
+	
 	/**
-	 * set vars in session. used in view method
+	 * set session vars to use in objects detail:
+	 * 		- backFromView
+	 * 		- array with prev and next
 	 *
+	 * @param array $objects if it's defined prepare prevNext array for session
 	 */
-	protected function sessionForObjectDetail() {
-		$backURL = $this->Session->read('backFromView');
+	protected function setSessionForObjectDetail($objects=null) {
 		$modulePath = $this->viewVars["currentModule"]["path"];	
-		$referer = trim($this->referer(),"/");
 		
-		if (!empty($referer) && strstr($referer, $modulePath . "/index")) {
-			$this->Session->write('backFromView', $referer);
-		} elseif (empty($backURL) || !strstr($backURL, $modulePath) || !strstr($referer, $modulePath)) {
-			$this->Session->write('backFromView', $modulePath);
-			$this->Session->write("prevNext", "");
-		}
-	}
-	
-	/**
-	 * set array with prev and next
-	 *
-	 * @param array $objects
-	 */
-	protected function setPrevNext($objects) {
-		if (!empty($objects)) {
+		// set array of previous and next objects
+		if (!empty($objects) && strstr($this->here, $modulePath)) {
 			foreach ($objects as $k => $o) {
 				$prevNextArr[$o["id"]]["prev"] = (!empty($objects[$k-1]))? $objects[$k-1]["id"] : "";
 				$prevNextArr[$o["id"]]["next"] = (!empty($objects[$k+1]))? $objects[$k+1]["id"] : "";
 			}
 			$this->Session->write("prevNext", $prevNextArr);
+		}
+
+		$backURL = $this->Session->read('backFromView');
+		
+		// set backFromView session vars and reset prevNext if necessary		
+		if (!empty($this->here) && strstr($this->here, $modulePath . "/index")) {
+			$backURL = (empty($this->params["form"]["searchstring"]))? $this->here : rtrim($this->here,"/") . "/search:" . urlencode($this->params["form"]["searchstring"]);
+			$this->Session->write('backFromView', $backURL);
+		} elseif (empty($backURL) || !strstr($backURL, $modulePath) || !strstr($this->referer(), $modulePath)) {
+			$this->Session->write('backFromView', $this->webroot . $modulePath);
+			$this->Session->write("prevNext", "");
 		}
 	}
 	

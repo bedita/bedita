@@ -72,7 +72,7 @@ class MultimediaController extends ModulesController {
 		// template data
 		$this->set('areasectiontree',$this->BeTree->getSectionsTree());
 		$this->set('objects', $bedita_items['items']);
-		$this->setPrevNext($bedita_items['items']);
+		$this->setSessionForObjectDetail($bedita_items['items']);
 	 }
 
 	 /**
@@ -114,7 +114,7 @@ class MultimediaController extends ModulesController {
 		$this->User->displayField = 'userid';
 		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
-		$this->sessionForObjectDetail();
+		$this->setSessionForObjectDetail();
 	 }
 
 	function save() {
