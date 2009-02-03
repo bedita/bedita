@@ -31,7 +31,7 @@
 						<option label="1 - scelta multipla" value="multiple">scelta multipla</option>
 						<option label="2 - scelta singola" value="single_checkbox">scelta singola checkbox</option>
 						<option label="10 - scelta singola a tendina" value="single_pulldown">scelta singola a tendina</option>
-						<option label="3 - testo libero" value="freetext" selected="selected">risposta a testo libero</option>
+						<option label="3 - testo libero" value="freetext">risposta a testo libero</option>
 						<option label="4 - checkOpen" value="checkopen">checkOpen</option>
 						<option label="5 - grado" value="degree">grado</option>
 						<option label="9 - numero" value="number">numero</option>

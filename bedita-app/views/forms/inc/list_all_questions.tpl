@@ -76,9 +76,8 @@ $(document).ready(function(){
 	{/capture}
 		
 		{$smarty.capture.theader}
-	
-		{*section name="i" loop=$objects*}
-		{section name="i" loop=10}
+		
+	{*section name="i" loop=10}
 		<tr>
 			<td class="checklist">
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}"/>
@@ -90,26 +89,46 @@ $(document).ready(function(){
 			<td style="text-align:center">12</td>
 			<td>{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 		</tr>
-		
-		
-		
-		{sectionelse}
+			
+	{sectionelse}
 		
 			<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>
 		
-		{/section}
+	{/section*}
+
+	{if ($smarty.section.i.total) >= 10}
+		{$smarty.capture.theader}		
+	{/if}
+
+
+	</table>
+
+{section name="i" loop=10}
+
+	<div style="color: #333; line-height:1.2em; height:120px; padding:5px; border-radius : 11px; -moz-border-radius : 11px; -webkit-border-radius : 11px; 
+	float:left; background-color:white; margin:10px 10px 0px 0px; width:160px;
+	{if $objects[i].status != 'on'} opacity:0.5;{/if}
+	">
 		
-{if ($smarty.section.i.total) >= 10}
+		<input style="vertical-align:top;" 
+		type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
+		&nbsp; 
+		{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}
 		
-			{$smarty.capture.theader}
+		<h2 style="margin:2px 0px 5px 0px;">
+			<a style="color:#8C3540" href="{$html->url('view_question/')}{$objects[i].id}">{$objects[i].title|truncate:36:'~':true|default:"<i>[no title]</i>"}</a>
+		</h2>
+		<label>tipo</label>: scelta multipla
+		<br />
+		<label>status</label>: {$objects[i].status|upper}
+		<br />
+		{$objects[i].modified|date_format:$conf->dateTimePattern}	
+	</div>
 			
-{/if}
+	
+{/section}
 
-
-</table>
-
-
-
+<hr style="clear:both" />
 <br />
 	
 {if !empty($objects)}
