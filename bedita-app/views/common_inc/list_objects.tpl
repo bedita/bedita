@@ -90,7 +90,7 @@ $(document).ready(function(){
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
 			{/if}
 			</td>
-			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64}</a></td>
+			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a></td>
 			<td>{$objects[i].id}</td>
 			<td style="text-align:center">{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>

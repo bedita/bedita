@@ -34,7 +34,7 @@ $(document).ready(function() {
 				<input type="checkbox" name="object_selected[]" class="objectCheck" value="{$objToAss.id}"/>
 			</td>
 			<td><a href="">{$objToAss.id}</a></td>
-			<td><a href="">{$objToAss.title}</a></td>
+			<td><a href="">{$objToAss.title|default:'<i>[no title]</i>'}</a></td>
 			<td>
 				<span style="margin:0" class="listrecent {$objToAss.moduleName}">&nbsp;</span>
 			</td>

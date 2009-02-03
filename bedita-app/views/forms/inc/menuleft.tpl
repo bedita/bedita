@@ -8,17 +8,8 @@ Menu a SX valido per tutte le pagine del controller.
 	<div class="modules"><label class="bedita" rel="{$html->url('/')}">BEdita 3.0</label></div>
 
 	{include file="../common_inc/messages.tpl"}
-
-	<ul class="menuleft insidecol">
-	{if $module_modify eq '1'}
-
-		<li {if $method eq "index"}class="on"{/if}>
-			<a href="{$html->url('/')}{$currentModule.path}/index">{t}Forms list{/t}</a>
-		</li>
-		<li {if $method eq "view" && (empty($object))}class="on"{/if}>
-			<a href="{$html->url('/')}{$currentModule.path}/view">{t}Create new form{/t}</a>
-		</li>
-	</ul>
+	
+	{if $module_modify eq '1'}{/if}
 	
 	<ul class="menuleft insidecol">
 				
@@ -28,10 +19,18 @@ Menu a SX valido per tutte le pagine del controller.
 		<li {if $method eq "viewQuestion" && (empty($object))}class="on"{/if}>
 			<a href="{$html->url('/')}{$currentModule.path}/view_question">{t}Create new question{/t}</a>
 		</li>
-
-	{/if}
+	
 	</ul>
 
+	<ul class="menuleft insidecol">
+		<li {if $method eq "index"}class="on"{/if}>
+			<a href="{$html->url('/')}{$currentModule.path}/index">{t}Forms list{/t}</a>
+		</li>
+		<li {if $method eq "view" && (empty($object))}class="on"{/if}>
+			<a href="{$html->url('/')}{$currentModule.path}/view">{t}Create new form{/t}</a>
+		</li>
+	</ul>
+	
 {include file="../common_inc/export.tpl"}
 
 

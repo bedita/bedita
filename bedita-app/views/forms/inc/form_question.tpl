@@ -28,36 +28,91 @@
 				<th>{t}type{/t}:</th>
 				<td>
 					<select name="domanda[tipoID]" id="tipoID">
-						<option label="1 - scelta multipla" value="1" selected="selected">scelta multipla</option>
-						<option label="2 - scelta singola" value="2">scelta singola checkbox</option>
-						<option label="10 - scelta singola a tendina" value="10">scelta singola a tendina</option>
-						<option label="3 - testo libero" value="3">risposta a testo libero</option>
-						<option label="4 - checkOpen" value="4">checkOpen</option>
-						<option label="5 - grado" value="5">grado</option>
-						<option label="9 - numero" value="9">numero</option>
+						<option label="1 - scelta multipla" value="multiple">scelta multipla</option>
+						<option label="2 - scelta singola" value="single_checkbox">scelta singola checkbox</option>
+						<option label="10 - scelta singola a tendina" value="single_pulldown">scelta singola a tendina</option>
+						<option label="3 - testo libero" value="freetext" selected="selected">risposta a testo libero</option>
+						<option label="4 - checkOpen" value="checkopen">checkOpen</option>
+						<option label="5 - grado" value="degree">grado</option>
+						<option label="9 - numero" value="number">numero</option>
 					</select>
 				</td>
 			</tr>
 
+
+{literal}
+
+<script>
+
+$(document).ready(function(){	
+
+	$(".add").click(function (){
+		var row = $(this).parent().parent("tr");
+		$(row).clone(true).insertAfter(row).addClass("newrow").find(".iteration").empty();
+	});
+	
+	$(".remove").click(function (){
+		//da fare if not:first
+		var row = $(this).parent().parent("tr");
+		$(row).remove();
+ 	});
+
+	var kind = $("#tipoID option:selected").val();
+	$("." + kind).show();
+
+
+});
+
+
+$("#tipoID").change(function () {
+	$(".answers div").hide();
+	var kind = $("#tipoID option:selected").val();
+	$("." + kind).show();
+});
+
+
+
+</script>
+{/literal}
+
+
 			<tr>
 				<th>{t}answers{/t}:</th>
-				<td>
+				<td class="answers">
 					
-					<table class="answers">
-					{section name="w" loop=5}
-						<tr>
-							<td style="padding-left:0px;">{$smarty.section.w.iteration}.&nbsp;</td>
-							<td><textarea style="height:16px; width:220px !important;" name="" class="autogrowarea"></textarea></td>
-							<td>
-								<input type="button" title="{t}add{/t}" value="+" />
-								<input type="button" title="{t}remove{/t}" value="-" />
-							</td>
-							<td>
-								&nbsp;<input type="checkbox">&nbsp;{t}correct{/t}
-							</td>
-						</tr>
-					{/section}
-					</table>
+					<!--  -->
+					
+					<div style="display:none" class="multiple single_checkbox single_pulldown checkopen">
+						<table> 
+						{section name="w" loop=5}
+							<tr>
+								<td class="iteration" style="padding-left:0px;">{$smarty.section.w.iteration}.&nbsp;</td>
+								<td><textarea style="height:32px; width:240px !important;" name="" class="autogrowarea"></textarea></td>
+								<td>
+									&nbsp;&nbsp;<input type="checkbox">&nbsp;{t}correct{/t}&nbsp;&nbsp;&nbsp;
+								</td>
+								<td>
+									<input type="button" class="add" title="{t}add{/t}" value="+" />
+								</td>
+								<td>
+									<input type="button" class="remove" title="{t}remove{/t}" value="-" />
+								</td>
+								<td>
+									
+								</td>
+							</tr>
+						{/section}
+						</table>
+					</div>
+					
+					<!--  -->
+					
+					<div style="display:none" class="freetext">
+						
+						max characters: <input style="width:60px" type="text" />
+						
+						
+					</div>
 					
 				</td>
 			</tr>

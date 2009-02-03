@@ -41,7 +41,7 @@ $(document).ready(function(){
 
 <div class="head">
 	
-	<h1>{t}{$object.title|default:"New Item"}{/t}</h1>
+	<h1>{if !empty($object)}{$object.title|default:"<i>[no title]</i>"}{else}<i>[{t}New item{/t}]</i>{/if}</h1>
 
 </div>
 

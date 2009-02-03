@@ -12,7 +12,7 @@
 		<span title="{$objRelated.ObjectType.name}" class="listrecent {$objRelated.ObjectType.module|default:''}" style="margin:0px">&nbsp;</span>
 	</td>
 	
-	<td>{$objRelated.title|default:''}</td>
+	<td>{$objRelated.title|default:'<i>[no title]</i>'}</td>
 	
 	<td>{$objRelated.status|default:''}</td>
 	

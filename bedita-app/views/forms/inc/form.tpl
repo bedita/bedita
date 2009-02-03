@@ -5,7 +5,7 @@
 
 	{include file="../common_inc/form_title_subtitle.tpl"}
 
-	{include file="./inc/list_questions.tpl"}
+	{include file="./inc/form_list_questions.tpl"}
 	
 
 	{include file="../common_inc/form_properties.tpl" doctype=false comments=false}
@@ -19,4 +19,3 @@
 	{include file="../common_inc/form_custom_properties.tpl"}
 	
 	{include file="../common_inc/form_permissions.tpl" el=$object recursion=true}
-	

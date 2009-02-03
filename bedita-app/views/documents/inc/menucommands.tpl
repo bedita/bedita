@@ -1,6 +1,14 @@
 {*
 Template incluso.
 Menu a SX valido per tutte le pagine del controller.
+
+usare
+{$session->read("backFromView")}
+oppure
+{$currentModule.path}
+a seconda del metodo
+
+
 *}
 
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">

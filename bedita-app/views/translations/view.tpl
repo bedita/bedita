@@ -11,9 +11,9 @@
 {include file="inc/menuleft.tpl" method="view"}
 
 <div class="head">
-	{if !empty($object_translation.title)}<h1>{$object_translation.title}</h1>{/if}
+	{if !empty($object_translation.title)}<h1>{$object_translation.title|default:'<i>[no title]</i>'}</h1>{/if}
 	{t}translation of{/t}
-	<h1 style="margin-top:0px">{$object_master.title}</h1>
+	<h1 style="margin-top:0px">{$object_master.title|default:'<i>[no title]</i>'}</h1>
 
 </div>
 

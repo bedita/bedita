@@ -11,13 +11,13 @@
 {include file="inc/menucommands.tpl" method="indexQuestions"}
 
 
-{include file="../common_inc/toolbar.tpl"}
+{include file="../common_inc/toolbar.tpl" itemName="questions"}
 
 
 
 <div class="mainfull">
 	
-	{include file="./inc/list_objects.tpl" method="index"}
+	{include file="./inc/list_all_questions.tpl"}
 	
 
 </div>

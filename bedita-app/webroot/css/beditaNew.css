@@ -1358,6 +1358,14 @@ Table.graph .value {
 
 .answers TD {padding:0px; margin:0px; border:0px; vertical-align:bottom; padding-bottom:5px !important}
 
+.newrow textarea {
+	background-color:gold;
+	height:32px !important;
+}
+.answers TD {
+	vertical-align:middle; 
+}
+	
 
 /*...........................................    
 

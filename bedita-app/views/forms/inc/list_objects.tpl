@@ -66,7 +66,7 @@ $(document).ready(function(){
 	{capture name="theader"}
 		<tr>
 			<th></th>
-			<th>{$beToolbar->order('title', 'name')}</th>
+			<th>{$beToolbar->order('title', 'Title')}</th>
 			<th>{$beToolbar->order('status', 'Status')}</th>
 			<th>{$beToolbar->order('modified', 'Modified')}</th>
 			<th>{$beToolbar->order('sessions', 'Sessions')}</th>
@@ -83,7 +83,7 @@ $(document).ready(function(){
 			<td class="checklist">
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}"/>
 			</td>
-			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:32}</a></td>
+			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:32|default:"<i>[no title]</i>"}</a></td>
 			<td>{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
 			<td style="text-align:center">12</td>

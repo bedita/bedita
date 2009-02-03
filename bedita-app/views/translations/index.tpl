@@ -112,9 +112,9 @@ function changeStatusTranslations() {
 				<input  type="checkbox" name="object_chk" class="objectCheck" title="{$translations[i].LangText.id}" />
 			</td>
 			<td>
-				{$mtitle|truncate:38:true} &nbsp;
+				{$mtitle|default:'<i>[no title]</i>'|truncate:38:true} &nbsp;
 			</td>
-			<td><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations[i].LangText.title|default:'<em>no title</em>'|truncate:38:true}</a></td>
+			<td><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations[i].LangText.title|default:'<i>[no title]</i>'|truncate:38:true}</a></td>
 			<td>
 				<span class="listrecent {$conf->objectTypes[$ot].model|lower}">&nbsp;</span>
 				{$conf->objectTypes[$ot].model}

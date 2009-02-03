@@ -50,7 +50,7 @@ INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUE
 ('11','bibliographies', 'bibliographies', 'bibliographies', 'on', '14'),
 ('12','webmarks', 'webmarks', 'webmarks', 'on', '12'),
 ('13','books', 'books', 'books', 'on', '13'),
-(14, 'forms', 'forms', 'forms', 'on', 15),
+('14', 'forms', 'forms', 'forms', 'on', '15'),
 ('16','addressbook', 'addressbook', 'addressbook', 'on', '10'),
 ('18','newsletter', 'newsletter', 'newsletter', 'on', '11'),
 ('23','statistics', 'statistics', 'statistics', 'on', '16'),
