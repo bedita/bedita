@@ -745,7 +745,7 @@ abstract class ModulesController extends AppController {
 			$backURL = (empty($this->params["form"]["searchstring"]))? $this->here : rtrim($this->here,"/") . "/search:" . urlencode($this->params["form"]["searchstring"]);
 			$this->Session->write('backFromView', $backURL);
 		} elseif (empty($backURL) || !strstr($backURL, $modulePath) || !strstr($this->referer(), $modulePath)) {
-			$this->Session->write('backFromView', $this->here);
+			$this->Session->write('backFromView', rtrim($this->base,"/") . "/" . $modulePath);
 			$this->Session->write("prevNext", "");
 		}
 	}
