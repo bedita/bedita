@@ -1365,8 +1365,17 @@ Table.graph .value {
 .answers TD {
 	vertical-align:middle; 
 }
-	
 
+.questionbox {	
+	color: #333; line-height:1.2em; height:120px; padding:5px; 
+	border-radius : 11px; -moz-border-radius : 11px; -webkit-border-radius : 11px; 
+	float:left; background-color:white; margin:10px 10px 0px 0px; width:160px;
+}
+
+.questionbox.off {	
+	opacity:0.5
+}	
+	
 /*...........................................    
 
     accessories
