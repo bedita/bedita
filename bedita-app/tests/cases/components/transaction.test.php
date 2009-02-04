@@ -33,13 +33,11 @@ require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
 class TransactionTestCase extends BeditaTestCase {
 
- 	var $uses		= array('BEObject', 'Area', 'Document', 'Event', 'BEFile', 'Image', 
- 							'Audio', 'Video', 'ShortNews') ;
+ 	var $uses		= array('BEObject', 'Area', 'Document', 'Event', 'BEFile', 'Image') ;
  	var $components	= array('Transaction') ;
     var $dataSource	= 'test' ;
-    var $data		= null ;
 
-	////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////
 
 	function testRollback() {	
 		$numRecordBegin = $this->_getNumRecordsTable() ; 
@@ -49,12 +47,20 @@ class TransactionTestCase extends BeditaTestCase {
 		$this->_insert($this->Area, $this->data['minimo']) ;
 		
 		$this->Transaction->rollback() ;
-		pr('Operazione di rollback, il DB torna alla situazione precedente') ;
+		pr('Rollback, check DB rows') ;
 		
 		$numRecordEnd = $this->_getNumRecordsTable() ; 
 		
 		$this->assertEqual($numRecordBegin,$numRecordEnd);
-		$this->_delete($this->Area);
+		
+		$this->Area->containLevel('minimum');
+		$obj = $this->Area->findById($this->Area->id) ;
+//		$obj = $this->Area->findById(1231) ;
+		$this->assertFalse($obj);
+		
+		if($obj !== false) { // cleanup....
+			$this->_delete($this->Area);
+		}
 	} 
 
 	function testCommit() {	
