@@ -133,7 +133,7 @@ $(document).ready(function() {
 	</table>
 
 	<br />
-	<div class="tab"><h2>{t}Bulk actions on{/t}<span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
+	<div class="tab"><h2>{t}Bulk actions on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
 	<div>
 
 		<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
@@ -152,8 +152,10 @@ $(document).ready(function() {
 		<hr />
 		
 		<textarea name="addtaglist" id="addtaglist"></textarea>
-		<br><input id="addmultipletag" type="button" value="{t}add more tags{/t}"/> 
+		<p style="margin-top:5px">
+		<input id="addmultipletag" type="button" value="{t}add more tags{/t}"/> 
 		{t}Add comma separated words{/t}
+		</p>
 		
 	</div>
 

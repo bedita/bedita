@@ -39,7 +39,54 @@ Menu a SX valido per tutte le pagine del controller.
 				</ul>
 		</ul>
 
-	
+
+			{literal}
+			<script type="text/javascript">
+			<!--
+			$(document).ready(function(){
+				
+				var showTagsFirst = false;
+				var showTags = false;
+				$("#callTags").bind("click", function() {
+					if (!showTagsFirst) {
+						$("#loadingTags").show();
+						$("#listExistingTags").load("{/literal}{$html->url('/tags/listAllTags/1')}{literal}", function() {
+							$("#loadingTags").slideUp("fast");
+							$("#listExistingTags").slideDown("fast");
+							showTagsFirst = true;
+							showTags = true;
+						});
+					} else {
+						if (showTags) {
+							$("#listExistingTags").slideUp("fast");
+						} else {
+							$("#listExistingTags").slideDown("fast");
+						}
+						showTags = !showTags;
+					}
+				});	
+			});
+			//-->
+			</script>
+			{/literal}
+			
+			<ul class="menuleft insidecol">
+				<li>
+					<a id="callTags" href="javascript:void(0)">{t}Select by tag{/t}</a>
+				
+				<div id="loadingTags" style="display:none" class="generalLoading" title="{t}Loading data{/t}">&nbsp;</div>
+				<div id="listExistingTags" class="tag graced" style="display: none; padding:10px 15px 0px 0px;"></div>
+				
+				</li>
+				
+			</ul>
+
+
+
+
+
+
+
 	{/if}
 
 </div>

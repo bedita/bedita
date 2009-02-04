@@ -1453,7 +1453,8 @@ INPUT[type=text],INPUT[type=password], textarea {
 	-khtml-border-radius: 7px;
 }
 
-INPUT[type=button] {
+
+INPUT[type=button], INPUT[type=submit]  {
 	text-transform:uppercase;
 }
 
