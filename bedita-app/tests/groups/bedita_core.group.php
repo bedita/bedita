@@ -40,6 +40,8 @@ class BeditaCoreGroupTest extends GroupTest {
 	function BeditaCoreGroupTest() {
 		$this->addTest('controllers' . DS . 'authentication_controller');
 		$this->addTest('components' . DS . 'be_auth');
+		$this->addTest('components' . DS . 'be_system');
+		$this->addTest('components' . DS . 'permission_module');
 		$this->addTest('datasources' . DS . 'schema');
 		$this->addTest('models' . DS . 'category');
 		$this->addTest('models' . DS . 'section');
