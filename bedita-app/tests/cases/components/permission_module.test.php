@@ -42,37 +42,88 @@ class PermissionModuleTestCase extends BeditaTestCase {
 	function testAddSingleModule() {	
 		$this->Transaction->begin() ;
 		
-		$perms = $this->BePermissionModule->load('areas') ;
-		// Aggiunge i permessi
+		$prevPerms = $this->BePermissionModule->load('areas') ;
+		// add perms
 		$ret = $this->BePermissionModule->add('areas', $this->data['addPerms1']) ;
 		pr("Aggiunta permessi modulo") ;
 		$this->assertEqual($ret,true);
 		
-		// Carica i permessi creati
-		$perms = $this->BePermissionModule->load('areas') ;
+		// laod new perms and calc expected
+		$newPerms = $this->BePermissionModule->load('areas') ;
+		sort($newPerms);
 		
-		pr("Verifica permessi modulo aggiunti") ;
-		$this->assertEqual($this->data['addPerms1'], $perms);
-	
+		$expectedPerms = $this->mergePerms($prevPerms, $this->data['addPerms1']);		
+		pr("Verify module perms") ;
+		$this->assertEqual($expectedPerms, $newPerms);
+
+		// restore previous perms
+		$ret = $this->BePermissionModule->removeAll('areas') ;
+		$this->assertEqual($ret, true);
+		$ret = $this->BePermissionModule->add('areas', $prevPerms) ;
+		$this->assertEqual($ret, true);
+		
 		$this->Transaction->rollback() ;
 	} 
 
+	private function mergePerms(array &$oldPerms, array &$addedPerms) {
+		$expectedPerms = array();
+		foreach ($oldPerms as $p) {
+			$found = false;
+			foreach ($this->data['addPerms1'] as $added) {
+				if($found === false && $added[0] === $p[0] && $added[1] === $p[1]) {
+					$expectedPerms[] = $added;
+					$found = true;
+				}
+			}
+			if($found === false)
+				$expectedPerms[] = $p;
+		}
+		foreach ($this->data['addPerms1'] as $added) {
+			$found = false;
+			foreach ($oldPerms as $p) {
+				if($found === false && $added[0] === $p[0] && $added[1] === $p[1]) {
+					$found = true;
+				}
+			}
+			if($found === false)
+				$expectedPerms[] = $added;
+		}
+		
+		sort($expectedPerms);
+		return $expectedPerms;
+	}
+	
 	function testAddMultipleModule() {	
 		$this->Transaction->begin() ;
 		
-		// Aggiunge i permessi
+		$prevPermsArea = $this->BePermissionModule->load('areas') ;
+		$prevPermsAdmin = $this->BePermissionModule->load('admin') ;
+		
 		$ret = $this->BePermissionModule->add(array('admin', 'areas'), $this->data['addPerms1']) ;
 		pr("Aggiunta permessi moduli") ;
 		$this->assertEqual($ret,true);
 		
-		// Carica i permessi creati e verifica
 		$perms = $this->BePermissionModule->load('admin') ;
-		pr("Verifica permessi modulo 'admin'") ;
-		$this->assertEqual($this->data['addPerms1'], $perms);
+		sort($perms);
+		$expectedPerms = $this->mergePerms($prevPermsAdmin, $this->data['addPerms1']);		
+		pr("Verify 'admin' module perms") ;
+		$this->assertEqual($expectedPerms, $perms);
 		
 		$perms = $this->BePermissionModule->load('areas') ;
-		pr("Verifica permessi modulo 'areas'") ;
-		$this->assertEqual($this->data['addPerms1'], $perms);
+		sort($perms);
+		$expectedPerms = $this->mergePerms($prevPermsArea, $this->data['addPerms1']);		
+		pr("Verify 'areas' module perms") ;
+		$this->assertEqual($expectedPerms, $perms);
+				
+		// restore previous perms
+		$ret = $this->BePermissionModule->removeAll('areas') ;
+		$this->assertEqual($ret, true);
+		$ret = $this->BePermissionModule->add('areas', $prevPermsArea) ;
+		$this->assertEqual($ret, true);
+		$ret = $this->BePermissionModule->removeAll('admin') ;
+		$this->assertEqual($ret, true);
+		$ret = $this->BePermissionModule->add('admin', $prevPermsAdmin) ;
+		$this->assertEqual($ret, true);
 		
 		$this->Transaction->rollback() ;
 	} 
@@ -85,15 +136,28 @@ class PermissionModuleTestCase extends BeditaTestCase {
 		pr("Aggiunta permessi") ;
 		$this->assertEqual($ret,true);
 
-		// cancella i permessi
+		$newPerms = $this->BePermissionModule->load('areas') ;
+		sort($newPerms);
 		$ret = $this->BePermissionModule->remove('areas', $this->data['removePerms1']) ;
 		pr("Cancella i permessi") ;
 		$this->assertEqual($ret,true);
+
+		$expectedPerms = $newPerms;
+		foreach ($this->data['removePerms1'] as $r) {
+			$found = false;
+			for ($i = 0; $i < count($expectedPerms) && !$found; $i++) {
+				if($r[0] === $expectedPerms[$i][0] && $r[1] === $expectedPerms[$i][1]) {
+					$found = true;
+					unset($expectedPerms[$i]);
+				}
+			}
+		}
 		
 		// Carica i permessi creati
 		$perms = $this->BePermissionModule->load('areas') ;
+		sort($perms);
 		pr("Verifica permessi cancellati") ;
-		$this->assertEqual($this->data['resultDeletePerms1'], $perms);
+		$this->assertEqual($expectedPerms, $perms);
 
 		$this->Transaction->rollback() ;
 	} 
@@ -223,30 +287,6 @@ class PermissionModuleTestCase extends BeditaTestCase {
 //		pr($ret);	
 		
 		$this->Transaction->rollback() ;
-	} 
-
-	/////////////////////////////////////////////////
-	private function _insert(&$model, &$data) {
-		$conf  		= Configure::getInstance() ;
-		
-		// Crea
-		$result = $model->save($data) ;
-		$this->assertEqual($result,true);		
-		
-		// Visualizza
-		$obj = $model->findById($model->id) ;
-		pr("Oggetto Creato: {$model->id}") ;
-//		pr($obj) ;
-		
-	} 
-	
-	private function _delete(&$model) {
-		$conf  		= Configure::getInstance() ;
-		
-		// Cancella
-		$result = $model->Delete($model->{$model->primaryKey});
-		$this->assertEqual($result,true);		
-		pr("Oggetto cancellato");
 	} 
 
 	/////////////////////////////////////////////////

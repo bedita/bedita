@@ -82,7 +82,7 @@ class PermissionModule extends BEAppModel
 	 * @param string $module	nome del modulo
 	 */
 	function removeAll($module) {
-		return $this->query("DELETE FROM permission_modules WHERE module_id = (SELECT id FROM modules WHERE label = '{$module}')") ;
+		return $this->query("DELETE FROM permission_modules WHERE module_id = (SELECT id FROM modules WHERE name = '{$module}')") ;
 	}	
 
 	/**
