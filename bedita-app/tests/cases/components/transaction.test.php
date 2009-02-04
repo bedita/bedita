@@ -42,7 +42,7 @@ class TransactionTestCase extends BeditaTestCase {
 	////////////////////////////////////////////////////////////////////
 
 	function testRollback() {	
-		$numRecordBegin = $this->_getNumRecordsTable($this->Area) ; 
+		$numRecordBegin = $this->_getNumRecordsTable() ; 
 		
 		$this->Transaction->begin() ;
 		
@@ -51,55 +51,57 @@ class TransactionTestCase extends BeditaTestCase {
 		$this->Transaction->rollback() ;
 		pr('Operazione di rollback, il DB torna alla situazione precedente') ;
 		
-		$numRecordEnd = $this->_getNumRecordsTable($this->Area) ; 
+		$numRecordEnd = $this->_getNumRecordsTable() ; 
 		
 		$this->assertEqual($numRecordBegin,$numRecordEnd);
+		$this->_delete($this->Area);
 	} 
 
 	function testCommit() {	
-		$numRecordBegin = $this->_getNumRecordsTable($this->Area) ; 
+		$numRecordBegin = $this->_getNumRecordsTable() ; 
 		
 		$this->Transaction->begin() ;
 		
+		$this->Area->create();
 		$this->_insert($this->Area, $this->data['minimo']) ;
 		
 		$this->Transaction->commit() ;
 		pr('Operazione di commit, il DB deve risultare modificato') ;
 		
-		$numRecordEnd = $this->_getNumRecordsTable($this->Area) ; 
+		$numRecordEnd = $this->_getNumRecordsTable() ; 
 		
-		$this->assertNotEqual($numRecordBegin,$numRecordEnd);
+		$this->assertNotEqual($numRecordBegin, $numRecordEnd);
+		
+		$this->_delete($this->Area);
 	} 
 
 	function testRollbackMultipleObjects() {	
-		$numRecordBegin = $this->_getNumRecordsTable($this->Area) ; 
+		$numRecordBegin = $this->_getNumRecordsTable() ; 
 		
 		$this->Transaction->begin() ;
 		
 		$this->_insert($this->Area, $this->data['minimo']) ;
-		$this->_insert($this->Community, $this->data['minimo']) ;
-		$this->_insert($this->Section, $this->data['minimo']) ;
+		$this->_insert($this->Document, $this->data['minimo']) ;
+		$this->_insert($this->Event, $this->data['minimo']) ;
 		
 		$this->Transaction->rollback() ;
 		pr('Operazione di rollback, il DB torna alla situazione precedente') ;
 		
-		$numRecordEnd = $this->_getNumRecordsTable($this->Area) ; 
+		$numRecordEnd = $this->_getNumRecordsTable() ; 
 		
-		$this->assertEqual($numRecordBegin,$numRecordEnd);
+		$this->assertEqual($numRecordBegin, $numRecordEnd);
 	} 
 
 	function testRollbackMakeFileFromData() {
 		pr('Crea un oggetto BEFile passando i dati e salvando i dati su file ed esegue il rollback ') ;
-		$conf  	= Configure::getInstance() ;
 		$data 	= $this->data['makeFileFromData'] ;
 		
-		// Inizio transazione
-		$this->Transaction->init('default', $conf->tmp) ;	
+		// start transaction
+		$this->Transaction->init('default', Configure::read("tmp")) ;	
 		$this->Transaction->begin() ;
 		
-		// Inserisce il file in File System
-		$path = dirname(__FILE__) . DS . $data['name'];
-//		$path = "/tmp" . DS . $data['name'];
+		// create file on filesystem
+		$path = TMP. DS . $data['name'];
 		$ret  = $this->Transaction->makeFromData($path, $data['data']) ;
 		pr("File creato") ;
 		$this->assertEqual(file_exists($path), true);
@@ -107,13 +109,12 @@ class TransactionTestCase extends BeditaTestCase {
 		// Inserisce l'oggetto in DB
 		$data['size'] = filesize($path) ;
 		$data['path'] = $path ;
-		$numRecordBegin = $this->_getNumRecordsTable($this->Area) ; 
+		$numRecordBegin = $this->_getNumRecordsTable() ; 
 		
 		$result = $this->BEFile->save($data) ;
 		$this->assertEqual($result,true);		
 		
-		$this->BEFile->bviorHideFields = array('Index', 'ObjectType', 'Permission', 'Version', 'LangText') ;
-		
+		$this->BEFile->containLevel('minimum');
 		$obj = $this->BEFile->findById($this->BEFile->id) ;
 		pr("Oggetto Creato: {$this->BEFile->id}") ;
 		pr($obj) ;
@@ -122,7 +123,7 @@ class TransactionTestCase extends BeditaTestCase {
 		$this->Transaction->rollback() ;		
 		
 		// test cambianti
-		$numRecordEnd = $this->_getNumRecordsTable($this->Area) ; 
+		$numRecordEnd = $this->_getNumRecordsTable() ; 
 		pr('DB invariato') ;
 		$this->assertEqual($numRecordBegin,$numRecordEnd);
 		
@@ -132,29 +133,28 @@ class TransactionTestCase extends BeditaTestCase {
 
 	function testRollbackMakeFileFromFile() {
 		pr('Crea un oggetto Image passando da un file presente ed esegue il rollback ') ;
-		$conf  	= Configure::getInstance() ;
 		$data 	= $this->data['makeFileFromFile'] ;
 		
 		// Inizio transazione
-		$this->Transaction->init('default', $conf->tmp) ;	
+		$this->Transaction->init('default', Configure::read("tmp")) ;	
 		$this->Transaction->begin() ;
 		
 		// Inserisce il file in File System
-		$path = dirname(__FILE__) ;
-		$ret  = $this->Transaction->makeFromFile(($path . DS . $data['name']), ($path . DS . $data['nameSource'])) ;
+		$srcPath = dirname(__FILE__) ;
+		$path = TMP;
+		$ret  = $this->Transaction->makeFromFile(($path . DS . $data['name']), ($srcPath . DS . $data['nameSource'])) ;
 		pr("File creato") ;
 		$this->assertEqual(file_exists($path . DS . $data['name']), true);
 		
 		// Inserisce l'oggetto in DB
 		$data['size'] = filesize($path . DS . $data['name']) ;
 		$data['path'] = $path . DS . $data['name'] ;
-		$numRecordBegin = $this->_getNumRecordsTable($this->Image) ; 
+		$numRecordBegin = $this->_getNumRecordsTable() ; 
 		
 		$result = $this->Image->save($data) ;
 		$this->assertEqual($result,true);		
 		
-		$this->BEFile->bviorHideFields = array('Index', 'ObjectType', 'Permission', 'Version', 'LangText') ;
-		
+		$this->Image->containLevel('minimum');
 		$obj = $this->Image->findById($this->Image->id) ;
 		pr("Oggetto Creato: {$this->Image->id}") ;
 		pr($obj) ;
@@ -163,7 +163,7 @@ class TransactionTestCase extends BeditaTestCase {
 		$this->Transaction->rollback() ;		
 		
 		// test cambianti
-		$numRecordEnd = $this->_getNumRecordsTable($this->Image) ; 
+		$numRecordEnd = $this->_getNumRecordsTable() ; 
 		pr('DB invariato') ;
 		$this->assertEqual($numRecordBegin,$numRecordEnd);
 		
@@ -173,47 +173,39 @@ class TransactionTestCase extends BeditaTestCase {
 
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
-	private function _insert(&$model, &$data) {
-		$conf  		= Configure::getInstance() ;
-		
-		// Crea
+	private function _insert($model, &$data) {
 		$result = $model->save($data) ;
 		$this->assertEqual($result,true);		
-		
-		// Visualizza
 		$obj = $model->findById($model->id) ;
-		pr("Oggetto Creato: {$model->id}") ;
-//		pr($obj) ;
-		
+		pr("Object created: {$model->id}") ;
 	} 
 	
-	private function _delete(&$model) {
-		$conf  		= Configure::getInstance() ;
-		
-		// Cancella
-		$result = $model->Delete($model->{$model->primaryKey});
+	private function _delete($model) {
+		$result = $model->delete($model->{$model->primaryKey});
 		$this->assertEqual($result,true);		
-		pr("Oggetto cancellato");
+		pr("Object removed");
 	} 
 
 	/**
-	 * Torna un array con il numero di righe per ogni tabella
-	 *
+	 * Returns an array with row count for every table
 	 */
-	private function _getNumRecordsTable(&$model) {
+	private function _getNumRecordsTable() {
 		$recs = array() ;
 		
+		$model = ClassRegistry::init("BEObject");
 		$tables = $model->query("SHOW TABLES") ;
 		
+		$count = 0;
 		for($i = 0 ; $i < count($tables) ; $i++) {
 			$ret = array_values($tables[$i]['TABLE_NAMES']) ;
 			
-			$nums = $model->query("SELECT count(*) AS num FROM {$ret[0]} ")  ;
+			$q = "SELECT count(*) AS num FROM {$ret[0]} ";
+			$nums = $model->query($q);
 			
-			$recs[] = array($ret[0], $nums[0][0]['num']) ;
+			$count += $nums[0][0]['num'] ;
 		}
 		
-		return $recs ;
+		return $count ;
 	}
 	
 	public   function __construct () {
