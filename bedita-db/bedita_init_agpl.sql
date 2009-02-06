@@ -14,7 +14,7 @@ INSERT INTO object_types (id, name, module) VALUES
 (18, 'shortnews', 'news'),
 (21, 'event', 'events'),
 (22, 'document', 'documents'),
-(33, 'link', NULL),
+(33, 'link', 'webmarks'),
 (34, 'card', 'addressbook');
 	
 -- ----------------------------------
@@ -51,97 +51,106 @@ INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUE
 
 -- administrator permissions
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'admin'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3');
+VALUES ((SELECT id FROM modules WHERE name = 'admin'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3');
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'areas'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'areas'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'documents'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'documents'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'galleries'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'galleries'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'multimedia'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'multimedia'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'news'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'news'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'events'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'events'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'tags'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'tags'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'comments'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'comments'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'translations'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'translations'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'addressbook'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'addressbook'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE name = 'webmarks'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 
 -- editor perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'areas'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'areas'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'documents'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'documents'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'galleries'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'galleries'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'multimedia'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'multimedia'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'news'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'news'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'events'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'events'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'tags'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'tags'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'comments'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'comments'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'translations'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'translations'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'addressbook'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+VALUES ((SELECT id FROM modules WHERE name = 'addressbook'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE name = 'webmarks'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 -- reader perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'areas'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+VALUES ((SELECT id FROM modules WHERE name = 'areas'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'documents'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+VALUES ((SELECT id FROM modules WHERE name = 'documents'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'galleries'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+VALUES ((SELECT id FROM modules WHERE name = 'galleries'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'multimedia'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+VALUES ((SELECT id FROM modules WHERE name = 'multimedia'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'news'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+VALUES ((SELECT id FROM modules WHERE name = 'news'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'events'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+VALUES ((SELECT id FROM modules WHERE name = 'events'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'tags'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+VALUES ((SELECT id FROM modules WHERE name = 'tags'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'comments'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+VALUES ((SELECT id FROM modules WHERE name = 'comments'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'translations'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+VALUES ((SELECT id FROM modules WHERE name = 'translations'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE label = 'addressbook'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+VALUES ((SELECT id FROM modules WHERE name = 'addressbook'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE name = 'webmarks'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
