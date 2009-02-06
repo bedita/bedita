@@ -53,8 +53,9 @@ class Link extends BEAppObjectModel {
 				$url = "http://" . $url;
 				$this->data['Link']['url'] = $url;
 			}
+			$date = new DateTime();
 			$this->data['Link']['http_code'] = $this->responseForUrl($url);
-			$this->data['Link']['http_response_date'] = date('Y-m-d H:m:s',time());
+			$this->data['Link']['http_response_date'] = $date->format(DATE_RFC3339);
 		}
 		return true;
 	}

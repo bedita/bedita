@@ -114,6 +114,34 @@ class WebmarksController extends ModulesController {
 		$this->layout = null;
 	}
 
+	public function checkMultiUrl() {
+		$this->doMultiCheck();
+	}
+
+	private function doMultiCheck() {
+		$objectsToModify = array();
+		$objectsListDesc = "";
+		$beObject = ClassRegistry::init("BEObject");
+		if(!empty($this->params['form']['objects_selected'])) {
+			$objectsToModify = $this->params['form']['objects_selected'];
+			$this->Transaction->begin() ;
+			$modelName = "Link";
+			foreach ($objectsToModify as $id) {
+				$model = $this->loadModelByType($modelName);
+				$model->id = $id;
+				$link = $model->findById($id);
+				$date = new DateTime();
+				if(!$model->saveField("http_code",$model->responseForUrl($link['url'])))
+					throw new BeditaException(__("Error checking url for link: ", true) . $id);
+				if(!$model->saveField("http_response_date",$date->format(DATE_RFC3339)))
+					throw new BeditaException(__("Error checking url for link: ", true) . $id);
+				$objectsListDesc .= $id . ",";
+			}
+			$this->Transaction->commit() ;
+		}
+		return trim($objectsListDesc, ",");
+	}
+
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 				"cloneObject"	=> 	array(
@@ -141,6 +169,10 @@ class WebmarksController extends ModulesController {
 										"ERROR"	=> "/webmarks" 
 										),
 				"changeStatusObjects"	=> 	array(
+										"OK"	=> "/webmarks",
+										"ERROR"	=> "/webmarks" 
+										),
+				"checkMultiUrl"		=> 	array(
 										"OK"	=> "/webmarks",
 										"ERROR"	=> "/webmarks" 
 										)

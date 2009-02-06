@@ -8,7 +8,7 @@ var messageSelected = "{t}Are you sure that you want to delete selected items?{/
 var URLBase = "{$html->url('index/')}" ;
 var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
 var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
-
+var urlCheckMulti = "{$html->url('checkMultiUrl/')}";
 
 {literal}
 $(document).ready(function(){
@@ -37,7 +37,6 @@ $(document).ready(function(){
 		$("#formObject").submit() ;
 	});
 	
-	
 	$("#assocObjects").click( function() {
 		$("#formObject").attr("action", urlAddToAreaSection) ;
 		$("#formObject").submit() ;
@@ -48,7 +47,10 @@ $(document).ready(function(){
 		$("#formObject").submit() ;
 	});
 	
-	
+	$("#checkSelected").bind("click", function() {
+		$("#formObject").attr("action", urlCheckMulti) ;
+		$("#formObject").submit() ;
+	});
 });
 
 
@@ -69,7 +71,8 @@ $(document).ready(function(){
 			<th></th>
 			<th>{$beToolbar->order('title', 'Title')}</th>
 			<th>{$beToolbar->order('url', 'Url')}</th>
-			<th>{$beToolbar->order('ping', 'Ping')}</th>
+			<th>{$beToolbar->order('http_code', 'Check result')}</th>
+			<th>{$beToolbar->order('http_response_date', 'Last check')}</th>
 			<th style="text-align:center">{$beToolbar->order('status', 'Status')}</th>
 			<th>Notes</th>
 		</tr>
@@ -87,7 +90,8 @@ $(document).ready(function(){
 			</td>
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a></td>
 			<td>{$objects[i].url|default:''}</td>
-			<td>ok</td>
+			<td>{$objects[i].http_code|default:''}</td>
+			<td>{$objects[i].http_response_date|date_format:$conf->dateTimePattern|default:''}</td>
 			<td style="text-align:center">{$objects[i].status}</td>
 			<td>{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 		</tr>
@@ -130,7 +134,7 @@ $(document).ready(function(){
 <div class="tab"><h2>{t}Bulk actions on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
 
 	<div>
-		check and select 404's: <input type="button" value="ping" />
+		{t}check urls{/t}: <input id="checkSelected" type="button" value="{t}check selected links{/t}" />
 		<hr />
 		
 		{t}change status to:{/t}
