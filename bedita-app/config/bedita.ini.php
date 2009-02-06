@@ -362,7 +362,7 @@ $config["defaultObjRelationType"] = array(
 $config["objRelationType"] = array ();
 
 // One-way relation
-$config["defaultOneWayRelation"] = array("link");
+$config["defaultOneWayRelation"] = array();
 
 // Cfg One-way relation (as in local cfg)
 $config["cfgOneWayRelation"] = array();

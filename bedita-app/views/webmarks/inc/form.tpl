@@ -42,7 +42,6 @@ var url="{$html->url('/webmarks/checkUrl')}";
 
 </fieldset>
 
-	
 <div class="tab"><h2>{t}Properties{/t}</h2></div>
 <fieldset id="linkdetails">
 
@@ -67,15 +66,15 @@ var url="{$html->url('/webmarks/checkUrl')}";
 		<tr>
 			<th style="vertical-align:top">{t}referenced objects list{/t}:</th>
 			<td>
-				{if !empty($referenced)}
-				<ul>
-					{foreach from=$referenced item="ref"}
+				{if !empty($relObjects.link)}
+					{foreach from=$relObjects.link item="o"}
 						<li>
-						<span class="listrecent {$ref.ObjectType.module}" style="margin-left:0px">&nbsp;&nbsp;</span>
-						<a title="{$ref.created}" href="{$html->url('/')}{$ref.ObjectType.module}/view/{$ref.id}">{$ref.title}</a>
+							<span class="listrecent {$o.ObjectType.module}" style="margin-left:0px">&nbsp;&nbsp;</span>
+							<a title="{$o.created}"  href="{$html->url('/')}{$o.ObjectType.module}/view/{$o.id}">{$o.title}</a>
 						</li>
 					{/foreach}
-				</ul>
+				{else}
+					{t}no referenced objects{/t}
 				{/if}
 			</td>
 		</tr>
