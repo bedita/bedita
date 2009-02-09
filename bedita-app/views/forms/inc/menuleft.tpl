@@ -13,10 +13,10 @@ Menu a SX valido per tutte le pagine del controller.
 	
 	<ul class="menuleft insidecol">
 		<li {if $method eq "index"}class="on"{/if}>
-			<a href="{$html->url('/')}{$currentModule.path}/index">{t}Forms list{/t}</a>
+			<a href="{$html->url('/')}{$currentModule.path}/index">{t}Questionnaires list{/t}</a>
 		</li>
 		<li {if $method eq "view" && (empty($object))}class="on"{/if}>
-			<a href="{$html->url('/')}{$currentModule.path}/view">{t}Create new form{/t}</a>
+			<a href="{$html->url('/')}{$currentModule.path}/view">{t}Create new{/t}</a>
 		</li>
 	</ul>
 	

@@ -74,7 +74,7 @@ $(document).ready(function(){
 		</tr>
 	</table>
 
-{section name="i" loop=100}
+{section name="i" loop=10}
 
 	<div class="questionbox{if $objects[i].status != 'on'} off {/if}">
 		

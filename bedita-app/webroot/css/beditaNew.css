@@ -388,8 +388,8 @@ UL.modules {
 
 UL.modulesmenu {
 	top:0px;
-	margin-right:15px; 
-	width:680px;
+	margin-right:10px; 
+	width:685px;
 	/*background:transparent url(../img/shadowh2-small.png) no-repeat;*/
 	background-position: 520px 10px ;
 	padding:20px 0px 10px 0px;
@@ -1367,9 +1367,10 @@ Table.graph .value {
 }
 
 .questionbox {	
-	color: #333; line-height:1.2em; height:120px; padding:5px; 
+	width:150px; height:120px; 
+	color: #333; line-height:1.2em; padding:5px; 
 	border-radius : 11px; -moz-border-radius : 11px; -webkit-border-radius : 11px; 
-	float:left; background-color:white; margin:10px 10px 0px 0px; width:160px;
+	float:left; background-color:white; margin:10px 0px 0px 10px; 
 }
 
 .questionbox.off {	
@@ -1436,6 +1437,40 @@ Table.graph .value {
 .listobjnav  A:Hover {
 	color:#000;
 }
+
+
+/*...........................................    
+
+   Help
+
+...........................................*/
+
+.helptrigger {
+	font: normal 18px  'Georgia', serif; 
+	color:#996633 !important; 
+	background-color:white;
+	text-align:center; padding: 2px 5px 0px 5px !important; 
+	height:23px !important;
+	/*
+	position:absolute; left:960px; top:135px;
+	width:auto; height:23px; 
+	*/
+}
+
+.helptrigger:Hover, .helpon {
+	background-color:black !important;
+	color:white !important;
+}
+
+#helpcontainer {
+	display:none; width:660px; background-color:#fff; min-height:630px; 
+	position:absolute; left:300px; top:20px;
+}
+
+#helpcontainer H2 {
+	font-size:20px!important; margin: 0px 0px 20px 0px
+}
+
 
 
 /* bordi tondi? */

@@ -2,6 +2,7 @@
 ** translations view template
 *}
 
+{$javascript->link("jquery/ui/ui.datepicker.min", false)}
 
 </head>
 <body>

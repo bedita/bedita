@@ -149,9 +149,9 @@ $(document).ready(function(){
 		
 
 	}).click(function () {
-
+		if ($(this).attr("rel")) {
 			window.location = ($(this).attr("rel"));
-
+		}
 	});
 
 		
@@ -461,6 +461,20 @@ jQuery.fn.BEmodal = function(){
 
 
 
+
+/*...........................................    
+
+   help
+
+...........................................*/
+	
+	$('.helptrigger').click(function () {
+		$('#helpcontainer, .quartacolonna, .main, .mainhalf, .mainfull, .insidecol').toggle();
+		$(this).toggleClass("helpon");
+	});
+
+
+
 });
 
 /*...........................................    
@@ -484,9 +498,15 @@ document.onkeydown = function(e){
 			$('.tab').BEtabsopen();
 		}
 		
-	
 	} else if(keycode == 109){ // 
 		
+		$('.tab').BEtabsopen();
+		helptrigger
+		
+	} else if(keycode == 112){ // 
+		
+		$('.helptrigger').click();
+	
 	
 	} else if(keycode == 188){ // 
 		

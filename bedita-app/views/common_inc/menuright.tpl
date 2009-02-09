@@ -15,6 +15,7 @@ Menu a DX
 
 <div class="quartacolonna">	
 
+	
 	<div class="tab"><h2>{t}Notes{/t}</h2></div>
 			
 	<div id="editornotes" style="margin-top:-10px; padding:10px; background-color:white;">

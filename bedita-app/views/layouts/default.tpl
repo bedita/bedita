@@ -40,17 +40,21 @@
 
 
 	
+{*
+** Help container
+*}
+
+{include file="../common_inc/help.tpl"}
+
+
 
 
 {*
 ** Modal container
 *}
 
-<div id="modaloverlay"></div>
-<div id="modal">
-	<div id="modalheader"><span class="caption"></span><a class="close">{t}close{/t}</a></div>
-	<div id="modalmain"></div>
-</div>
+{include file="../common_inc/modal.tpl"}
+
 
 
 {*

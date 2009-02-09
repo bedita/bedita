@@ -1,6 +1,7 @@
 <div class="modulesmenucaption">go to: &nbsp;<a>be</a></div>
 
 <ul class="modulesmenu">
+		<li title="{t}help{/t}" class="helptrigger">?</li>
 {strip}
 {foreach from=$moduleListInv key=k item=mod}
 {if ($mod.status == 'on')}
@@ -10,6 +11,7 @@
 {/foreach}
 
     <li rel="{$html->url('/')}" title="{t}Bedita3 main dashboard{/t}" class="bedita"></li>
+
 {/strip}
 </ul>
 
