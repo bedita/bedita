@@ -632,7 +632,7 @@ abstract class FrontendController extends AppController {
 		$id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
 		$object_type_id = $this->BEObject->findObjectTypeId($id);
 		
-		if ($object_type_id == Configure::read("objectTypes.section.id")) {
+		if ($object_type_id == Configure::read("objectTypes.section.id") || $object_type_id == Configure::read("objectTypes.area.id")) {
 			$this->setAction("section",$id, $name2);
 		} else {
 			$this->content($id);
@@ -649,7 +649,7 @@ abstract class FrontendController extends AppController {
 		$pathArr = array();
 		$path = $this->Tree->field("parent_path", array("id" => $object_id));
 		$parents = explode("/", trim($path,"/"));
-		if (!empty($parents)) {
+		if (!empty($parents[0])) {
 			$this->baseLevel = true;
 			foreach ($parents as $p) {
 				if ($p != $this->publication["id"])
@@ -839,7 +839,7 @@ abstract class FrontendController extends AppController {
 	private function checkParentStatus($section_id) {
 		$parent_path = $this->Tree->field("parent_path", array("id" => $section_id));
 		$parent_array = explode("/", trim($parent_path,"/"));
-		if (!empty($parent_array)) {
+		if (!empty($parent_array[0])) {
 			$countParent = count($parent_array);
 			$countParentStatus = $this->BEObject->find("count", array(
 					"conditions" => array(
