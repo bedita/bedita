@@ -477,15 +477,15 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @param string $parentNick
 	 */
-	protected function loadAndSetSectionObjectsByNick($parentNick) {
-		$sectionItems = $this->loadSectionObjectsByNick($parentNick);
+	protected function loadAndSetSectionObjectsByNick($parentNick, $options=array()) {
+		$sectionItems = $this->loadSectionObjectsByNick($parentNick, $options);
 		foreach($sectionItems as $key => $objs) {
 			$this->set($key, $objs);
 		}
 	}
 	
-	protected function loadSectionObjectsByNick($parentNick) {
-		return $this->loadSectionObjects($this->BEObject->getIdFromNickname($parentNick));
+	protected function loadSectionObjectsByNick($parentNick, $options=array()) {
+		return $this->loadSectionObjects($this->BEObject->getIdFromNickname($parentNick), $options);
 	}	
 
 	/**
@@ -494,7 +494,7 @@ abstract class FrontendController extends AppController {
 	 * @param int $parent_id
 	 * @return array
 	 */
-	protected function loadSectionObjects($parent_id) {
+	protected function loadSectionObjects($parent_id, $options=array()) {
 
 		if(empty($parent_id)) {
 			throw new BeditaException("Bad data");
@@ -507,7 +507,12 @@ abstract class FrontendController extends AppController {
 			$priorityOrder = "asc";
 		}
 		$sectionItems = array();
-		$items = $this->BeTree->getChildren($parent_id, $this->status, false, "priority", ($priorityOrder == "asc"));
+		
+		$filter = (!empty($options["filter"]))? $options["filter"] : false;
+		$order = (!empty($options["order"]))? $options["order"] : "priority";
+		$dir = (!empty($options["dir"]))? $options["dir"] : ($priorityOrder == "asc");
+		
+		$items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir);
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);
@@ -683,7 +688,7 @@ abstract class FrontendController extends AppController {
 	 * @param unknown_type $secName section id or section nickname
 	 * @return array
 	 */
-	public function loadArchiveTree($secName) {
+	public function loadArchiveTree($secName, $options=array()) {
 		
 		$section_id = (is_numeric($secName))? $secName : $this->BEObject->getIdFromNickname($secName);
 		
@@ -706,15 +711,30 @@ abstract class FrontendController extends AppController {
 		foreach ($items as $type => $itemGroup) {
 		
 			foreach ($itemGroup as $item) {
-		
-				$refDate = isset($item["start"])? $item["start"] : $item["created"]; // pubblication or creation date
+				
+				// DateItem, pubblication or creation date
+				if(!empty($item["DateItem"][0]["start"]))
+					$refDate = $item["DateItem"][0]["start"];
+				else
+					$refDate = isset($item["start"])? $item["start"] : $item["created"];
+				 
 				$data = explode("-", $refDate);
 				$year = $data[0];
-				$month = $monthName[$data[1]];
 				$id = $item["id"];
 				$item["title"] = (!empty($item["LangText"]["title"][$this->currLang]))? $item["LangText"]["title"][$this->currLang] : $item["title"];
-				$archive[$type][$year][$month][] = $item;
+				$archive[$type][$year][$data[1]][] = $item;
+				if (empty($archive[$type][$year][$data[1]]["monthName"]))
+					$archive[$type][$year][$data[1]]["monthName"] = __($monthName[$data[1]],true);
+			}
 			
+			// sort archive
+			$sortFunction = "ksort";
+			if (!empty($options["archiveSort"]) && $options["archiveSort"] == "desc")
+				$sortFunction = "krsort";
+			
+			$sortFunction($archive[$type]);
+			foreach ($archive[$type] as $year => $month) {
+				$sortFunction($archive[$type][$year]);
 			}
 			
 			// add number of items for month and year
@@ -727,7 +747,6 @@ abstract class FrontendController extends AppController {
 					$archive[$type][$year][$key]["total"] = count($i);
 				}
 				$archive[$type][$year]["total"] = $countYear;
-				
 			}
 	
 		}
