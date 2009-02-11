@@ -41,6 +41,7 @@ abstract class FrontendController extends AppController {
 	protected $sectionOptions = array("showAllContents" => true, "itemsByType" => false);
 	protected $xmlFormat = "attributes"; // possible values "tags", "attributes"
 	protected $publication = "";
+	protected $captchaOptions = array(); // default defined in captcha component
 
 	protected function checkLogin() {
 		return false; // every frontend has to implement checkLogin
@@ -796,7 +797,7 @@ abstract class FrontendController extends AppController {
 			$this->Captcha->startup($this);
 		}
 		$this->autoRender = false;
-		$this->Captcha->image();
+		$this->Captcha->image($this->captchaOptions);
 	}
 	
 	public function saveComment() {

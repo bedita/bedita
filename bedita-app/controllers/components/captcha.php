@@ -43,13 +43,13 @@ class CaptchaComponent extends Object {
 		$this->fontType = $appPath . "/webroot/captcha/fonts/Vera.ttf";
 	}
 	
-	public function image() {
+	public function image($options=array()) {
+		$length = (!empty($options["length"]))? $options["length"] : 4;
+		if (!empty($options["color"]))
+			$this->fontColor = $options["color"];
+		 
 		// Create a random string, leaving out 'o' to avoid confusion with '0'
-		$char = strtoupper(substr(str_shuffle('abcdefghjkmnpqrstuvwxyz'), 0, 2));
-		
-		// Concatenate the random string onto the random numbers
-		// '0' is left out to avoid confusion with 'O'
-		$str = rand(2, 9) . rand(2, 9) . $char;
+		$str = strtoupper(substr(str_shuffle('123456789abcdefghjkmnpqrstuvwxyz'), 0, $length));
 		
 		// put captcha id in session
 		$this->controller->Session->write("captcha_id", $str);
@@ -92,11 +92,16 @@ class CaptchaComponent extends Object {
 		if (!empty($fontArr))
 			$this->fontType = $fontArr[array_rand($fontArr)];
 		
-		// Set a random integer for the rotation between -15 and 15 degrees
-		$rotate = rand(-15, 15);
+		// get image size
+		$imgsize = getimagesize($this->background);
+		$width = $imgsize[0];
+		$height = $imgsize[1];
+		$charSpace = $width / (strlen($str)+1);
 		
 		// Create an image using our original image and adding the detail
-		imagettftext($image, 14, $rotate, 18, 30, $colour, $this->fontType, $str);
+		for ($i=0; $i< strlen($str); $i++)	{
+			imagettftext($image, 14+rand(0,8), -20+rand(0,40), ($i+0.3)*$charSpace, ($height/2)+rand(0,10), $colour, $this->fontType, $str{$i});
+		}
 		
 		// Output the image as a png
 		imagepng($image);
