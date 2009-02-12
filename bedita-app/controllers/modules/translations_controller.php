@@ -85,8 +85,8 @@ class TranslationsController extends ModulesController {
 			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
 		// Verify object permits
-		if(!$new && !$this->Permission->verify($this->data['master_id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-			throw new BeditaException(__("Error modify permissions", true));
+		if($new && !$this->Permission->verify($this->data['master_id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+			throw new BeditaException(__("Error: bad permissions", true));
 		foreach($this->data['LangText'] as $k => $v) {
 			$this->data['LangText'][$k]['lang'] = $this->data['translation_lang'];
 			if(empty($this->data['LangText'][$k]['object_id'])) { // if object_id is defined => it's a translation for an attach
@@ -233,12 +233,26 @@ class TranslationsController extends ModulesController {
 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
-			"page"	=> 						array("ERROR"	=> "/translations/index"),
-			"save"	=> 						array("OK"	=> "/translations/view/".$this->data['master_id']."/".$this->data['translation_lang']),
+			"page"	=> 						array(
+												"ERROR"	=> "/translations/index"
+											),
+			"save"	=> 						array(
+												"OK"	=> "/translations/view/".$this->data['master_id']."/".$this->data['translation_lang'],
+												"ERROR" => "/translations/view/".$this->data['master_id']."/".$this->data['translation_lang']
+											),
 			"view"	=> 						array("ERROR"	=> "/translations"),
-			"delete"	=> 					array("OK"	=> "/translations"),
-			"deleteTranslations"	=> 		array("OK"	=> "/translations"),
-			"changeStatusTranslations"	=> 	array("OK"	=> "/translations")
+			"delete"	=> 					array(
+												"OK"	=> "/translations",
+												"ERROR" => "/translations"
+											),
+			"deleteTranslations"	=> 		array(
+												"OK"	=> "/translations",
+												"ERROR" => "/translations"
+											),
+			"changeStatusTranslations"	=> 	array(
+												"OK"	=> "/translations",
+												"ERROR" => "/translations"
+											),
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;

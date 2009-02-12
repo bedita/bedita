@@ -36,18 +36,13 @@ $(document).ready(function(){
 
 	{assign var="user" value=$session->read('BEAuthUser')}
 
-	{if !empty($method) && $method != "index" && $module_modify|default:'' eq '1'}
+	{if !empty($method) && $method != "index"} 
 	<div class="insidecol">
-		
-		{if ($perms->isWritable($user.userid,$user.groups,$object_master.Permissions))}
-		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />
+		{if $module_modify eq '1'}		
+			<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />
+			<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delLangText" {if !($object_translation.id|default:false)}disabled="1"{/if} />
 		{/if}
-		{if ($perms->isDeletable($user.userid,$user.groups,$object_master.Permissions))}
-		<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delLangText" {if !($object_translation.id|default:false)}disabled="1"{/if} />
-		{/if}
-		{if !empty($object_master)}
 		<input class="bemaincommands" type="button" value="{t}Back to {$object_master.ObjectType.name}{/t}" name="back" id="backBEObject"/>
-		{/if}
 	</div>
 	{/if}
 
