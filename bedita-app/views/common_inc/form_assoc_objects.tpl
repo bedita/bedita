@@ -1,3 +1,5 @@
+{$javascript->link("jquery/jquery.disable.text.select", true)}
+
 <script type="text/javascript">
 var urlAddObjToAss= "{$html->url('/areas/loadObjectToAssoc/')}{$object.id}";
 <!--
@@ -55,6 +57,11 @@ $(document).ready(function() {
 	});
 	
 });
+
+$(function() {
+    $('.disableSelection').disableTextSelect();
+});
+	
 {/literal}
 //-->
 </script>
@@ -77,10 +84,11 @@ $(document).ready(function() {
 	<div class="htabcontainer" id="relationContainer">
 	{foreach from=$availabeRelations item="rel"}
 	<div class="htabcontent" id="relationType_{$rel}">
+
 		<input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$rel}][0][switch]" value="{$rel}" />				
 		
 		<table class="indexlist" style="width:100%; margin-bottom:10px;">
-			<tbody>
+			<tbody class="disableSelection">
 			{if !empty($relObjects.$rel)}
 				{include file="../common_inc/form_assoc_object.tpl" objsRelated=$relObjects.$rel}
 			{else}

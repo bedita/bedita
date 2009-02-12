@@ -772,23 +772,9 @@ TABLE.indexlist {
 	width:15px; padding:7px 0px 0px 0px;
 }
 
-
-TABLE.itemBox TD {
-	border:0px; border-bottom:1px solid gray; padding:4px 0px 4px 0px;
-	line-height:1em;
+.indexlist TR:Hover {
+	background-color:#d8d8d8;
 }
-
-TABLE.itemBox TR:Hover {
-	background-color:#fff !important;
-}
-
-
-TABLE.itemBox TD.commands {
-	padding:0px 0px 0px 10px; 
-	white-space:nowrap;
-}
-
-
 
 /*...........................................    
 

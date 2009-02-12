@@ -1,3 +1,5 @@
+{$javascript->link("jquery/jquery.disable.text.select", true)}
+
 <script type="text/javascript">
 <!--
 {literal}
@@ -5,8 +7,9 @@ $(document).ready(function() {
 
 	var startSecPriority = $("#areasections").find("input[name*='[priority]']:first").val();
 	var urlS = ajaxSectionsUrl + "/{/literal}{$selectedId|default:''}{literal}";
-
-	$("#areasections").sortable ({
+	
+	//$("#areasections").sortable ({
+	$("#areasections table").find("tbody").sortable ({
 		distance: 20,
 		opacity:0.7,
 		update: function() {
@@ -35,6 +38,11 @@ $(document).ready(function() {
 	});
 
 });
+
+    $(function() {
+        $('.disableSelection').disableTextSelect();
+    });
+	
 {/literal}
 //-->
 </script>
@@ -43,7 +51,11 @@ $(document).ready(function() {
 {if !empty($sections.items)}
 
 	<div id="areasections">
+	<table class="indexlist" style="width:100%; margin-bottom:10px;">
+		<tbody class="disableSelection">
 		{include file="inc/list_sections_for_section.tpl" objsRelated=$sections.items}
+		</tbody>
+	</table>
 	</div>		
 	
 	<div id="sections_nav">

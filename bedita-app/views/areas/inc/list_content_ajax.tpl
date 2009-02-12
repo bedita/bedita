@@ -1,3 +1,5 @@
+{$javascript->link("jquery/jquery.disable.text.select", true)}
+
 <script type="text/javascript">
 <!--
 var urlAddObjToAss = "{$html->url('/areas/loadObjectToAssoc')}/{$object.id|default:0}/leafs/list_contents_for_section.tpl";
@@ -9,12 +11,12 @@ function addObjToAssoc(url, postdata) {
 	$.post(url, postdata, function(html){
 		if(priorityOrder == 'asc') {
 			var startPriority = $("#areacontent").find("input[name*='[priority]']:first").val();
-			$("#areacontent table:last").after(html);
+			$("#areacontent tr:last").after(html);
 		} else {
 			var startPriority = parseInt($("#areacontent").find("input[name*='[priority]']:first").val());
-			var beforeInsert = parseInt($("#areacontent table").size());
-			$("#areacontent table:first").before(html);
-			var afterInsert = parseInt($("#areacontent table").size());
+			var beforeInsert = parseInt($("#areacontent tr").size());
+			$("#areacontent tr:first").before(html);
+			var afterInsert = parseInt($("#areacontent tr").size());
 			startPriority = startPriority + (afterInsert - beforeInsert);
 		}
 
@@ -22,6 +24,7 @@ function addObjToAssoc(url, postdata) {
 			$("#noContents").remove();
 		$("#areacontent").fixItemsPriority(startPriority);
 		$("#areacontent").sortable("refresh");
+		$("#areacontent table").find("tbody").sortable("refresh");
 		setRemoveActions();
 	});
 }
@@ -36,7 +39,7 @@ function setRemoveActions() {
 			startPriority--;
 		}
 		
-		$(this).parents().parents("table").remove();
+		$(this).parents().parents("tr").remove();
 		
 
 		$("#areacontent").fixItemsPriority(startPriority);
@@ -52,7 +55,8 @@ $(document).ready(function() {
 		
 	var urlC = ajaxContentsUrl + "/{/literal}{$selectedId|default:''}{literal}";
 
-	$("#areacontent").sortable ({
+	//$("#areacontent").sortable ({
+	$("#areacontent table").find("tbody").sortable ({
 		distance: 20,
 		opacity:0.7,
 		update: function() {
@@ -89,16 +93,32 @@ $(document).ready(function() {
 	});
 	
 });
+
+
+    $(function() {
+        $('.disableSelection').disableTextSelect();
+    });
+
 {/literal}
 //-->
 </script>
+
+
+
 <div style="min-height:120px; margin-top:10px;">
 
 {if !empty($contents.items)}
 	<input type="hidden" name="contentsToRemove" id="contentsToRemove" value=""/>
+	
 	<div id="areacontent">
+		
+	<table class="indexlist" style="width:100%; margin-bottom:10px;">
+		<tbody class="disableSelection">
 		{include file="inc/list_contents_for_section.tpl" objsRelated=$contents.items}
-	</div>		
+		</tbody>
+	</table>
+	
+	</div>
 	
 	<div id="contents_nav_leafs">
 
