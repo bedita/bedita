@@ -35,13 +35,14 @@ class AppError extends ErrorHandler {
 
 	protected $error404 = array('missingController', 'missingAction');
 	protected $errorTrace = "";
+	protected $debugLevel;
 	
 	function __construct($method, $messages, $trace="") {
-		$debugLevel = Configure::read('debug');
+		$this->debugLevel = Configure::read('debug');
 		Configure::write('debug', 1);
 		$this->errorTrace = $trace;
 		parent::__construct($method, $messages);
-		Configure::write('debug', $debugLevel); // restore level
+		Configure::write('debug', $this->debugLevel); // restore level
 	}
 
 	public function handleException(array $messages) {
@@ -105,6 +106,14 @@ class AppError extends ErrorHandler {
 				$this->log("mail send failed");
 			}
 		}
+	}
+
+	// use cake output only in debug mode
+	function _outputMessage($template) {
+		if($this->debugLevel > 0)
+			parent::_outputMessage($template);	
+		else
+			$this->__outputMessage($template);
 	}
 	
 	function __outputMessage($template) {
