@@ -9,12 +9,12 @@ function addObjToAssoc(url, postdata) {
 	$.post(url, postdata, function(html){
 		if(priorityOrder == 'asc') {
 			var startPriority = $("#areacontent").find("input[name*='[priority]']:first").val();
-			$("#areacontent li:last").after(html);
+			$("#areacontent table:last").after(html);
 		} else {
 			var startPriority = parseInt($("#areacontent").find("input[name*='[priority]']:first").val());
-			var beforeInsert = parseInt($("#areacontent li").size());
-			$("#areacontent li:first").before(html);
-			var afterInsert = parseInt($("#areacontent li").size());
+			var beforeInsert = parseInt($("#areacontent table").size());
+			$("#areacontent table:first").before(html);
+			var afterInsert = parseInt($("#areacontent table").size());
 			startPriority = startPriority + (afterInsert - beforeInsert);
 		}
 
