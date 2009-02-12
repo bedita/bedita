@@ -50,7 +50,8 @@ class Section extends BeditaCollectionModel
 	
 	var $validate = array(
 		'title'	=> array(
-			'rule' => 'notEmpty'
+			'rule' => 'notEmpty',
+			'required' => true
 		),
 		'parent_id'	=> array(
 			'rule' => 'notEmpty'

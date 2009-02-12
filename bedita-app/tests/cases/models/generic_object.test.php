@@ -58,6 +58,11 @@ class GenericObjectTestCase extends BeditaTestCase  {
 		$this->insertAndCheck($event, $this->data["with-title"]);
 
 		$section = ClassRegistry::init("Section");
+		$this->insertAndCheck($event, $this->data["with-title"]);
+		$section->create();
+		$res = $section->save($this->data["empty-title"]);
+		pr($res);
+		$this->assertEqual($res,false);
 		$section->create();
 		$res = $section->save($this->data["no-title"]);
 		pr($res);

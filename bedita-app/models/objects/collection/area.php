@@ -52,7 +52,8 @@ class Area extends BeditaCollectionModel
 
 	var $validate = array(
 		'title'	=> array(
-			'rule' => 'notEmpty'
+			'rule' => 'notEmpty',
+			'required' => true
 		),
 	);
 	
