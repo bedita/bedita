@@ -30,13 +30,15 @@
  */
 class BEObject extends BEAppModel
 {
+	var $actsAs = array();
+	
 	var $name = 'BEObject';
 	var $useTable	= "objects" ;
 	
 	var $validate = array(
-		'title' => array(
-			'rule' => 'notEmpty'
-		),
+//		'title' => array(
+//			'rule' => 'notEmpty'
+//		),
 		'object_type_id' => array(
 			'rule' => 'notEmpty'
 		),
@@ -379,9 +381,15 @@ class BEObject extends BEAppModel
 	 * Definisce i valori di default.
 	 */		
 	function beforeValidate() {
-		if(isset($this->data[$this->name])) $data = &$this->data[$this->name] ;
-		else $data = &$this->data ;
-		$data['title'] = trim($data['title']);
+		if(isset($this->data[$this->name])) 
+			$data = &$this->data[$this->name] ;
+		else 
+			$data = &$this->data ;
+	
+		if(isset($data['title'])) {
+			$data['title'] = trim($data['title']);
+		}
+
 	 	$default = array(
 			'lang' 				=> array('_getDefaultLang', 		(isset($data['lang']))?$data['lang']:null),
 			'ip_created' 		=> array('_getDefaultIP',			(isset($data['ip_created']))?$data['ip_created']:null),
@@ -426,7 +434,8 @@ class BEObject extends BEAppModel
 			}
 
 		} else {
-			$tmpName = !empty($data['nickname']) ? $data['nickname'] : $data['title'];
+			$title = isset($data['title']) ? $data['title'] : null;
+			$tmpName = !empty($data['nickname']) ? $data['nickname'] : $title;
 			$data['nickname'] = $this->_getDefaultNickname($tmpName);
 		}
 		
@@ -497,8 +506,8 @@ class BEObject extends BEAppModel
 	 */
 	private function _getDefaultNickname($value) {
 		
-		if(empty($value)) {
-			return $value;
+		if(is_null($value)) {
+			$value = "";
 		}
 		if (is_numeric($value)) {
 			$value = "n" . $value;

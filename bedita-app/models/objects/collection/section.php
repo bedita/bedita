@@ -49,6 +49,9 @@ class Section extends BeditaCollectionModel
 		);
 	
 	var $validate = array(
+		'title'	=> array(
+			'rule' => 'notEmpty'
+		),
 		'parent_id'	=> array(
 			'rule' => 'notEmpty'
 		)

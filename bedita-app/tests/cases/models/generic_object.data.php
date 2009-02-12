@@ -20,7 +20,6 @@
  */
 
 /**
- * Bibliographic annotation
  * 
  * @link			http://www.bedita.com
  * @version			$Revision$
@@ -29,26 +28,20 @@
  * 
  * $Id$
  */
-class BiblioItem extends BEObject
-{
-	var $actsAs = array();
-
-	public $searchFields = array();
-
-	var $useTable	= "objects" ;
-	
-	protected $modelBindings = array( 
-			"detailed" =>  array("ObjectType", 
-								"UserCreated", 
-								"UserModified", 
-								"Permissions",
-								"ObjectProperty",
-								"LangText",
-								"RelatedObject",
-								"Category"),
-			"default" 	=> array("ObjectProperty", "LangText", 
-								"ObjectType", "Category", "RelatedObject"),
-			"minimum" => array("ObjectType")
+class GenericObjectTestData extends BeditaTestData {
+	var $data =  array(
+		"with-title" => array(
+				"title"=>"object title", 
+				"description" => "desc WITH title",
+			),
+		"empty-title" => array(
+				"title"=>"", 
+				"description" => "desc and EMPTY title",
+			),
+		"no-title" => array(
+			"description" => "desc and NO title",
+		),
 	);
 }
+ 
 ?>

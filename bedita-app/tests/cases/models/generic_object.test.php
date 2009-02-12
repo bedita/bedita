@@ -31,8 +31,9 @@
 
 require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
-class GenericObject extends BeditaTestCase  {
+class GenericObjectTestCase extends BeditaTestCase  {
  	
+	public $uses = array("Area", "Section");
 	function testActsAs() {
 		foreach(Configure::read("objectTypes") as $key => $object) {
 			if (is_numeric($key)) {
@@ -43,6 +44,43 @@ class GenericObject extends BeditaTestCase  {
 			}
 		}
 	}
+	
+	public function testUntitled() {
+		$this->requiredData(array("no-title", "empty-title", "with-title"));
+		$document = ClassRegistry::init("Document");
+		$this->insertAndCheck($document, $this->data["no-title"]);
+		$this->insertAndCheck($document, $this->data["empty-title"]);
+		$this->insertAndCheck($document, $this->data["with-title"]);
+
+		$event = ClassRegistry::init("Event");
+		$this->insertAndCheck($event, $this->data["no-title"]);
+		$this->insertAndCheck($event, $this->data["empty-title"]);
+		$this->insertAndCheck($event, $this->data["with-title"]);
+
+		$section = ClassRegistry::init("Section");
+		$section->create();
+		$res = $section->save($this->data["no-title"]);
+		pr($res);
+		$this->assertEqual($res,false);		
+	}
+
+	private function insertAndCheck(Model $model, array &$d) {
+		$model->create();
+		$res = $model->save($d);
+		$this->assertEqual($res,true);		
+		$id = $model->id;
+		$model->create();
+		$result = $model->findById($id);
+		$this->assertNotNull($result);		
+		pr("Title: ".$result['title']);
+		pr("Nick: ".$result['nickname']);
+		$result = $model->delete($id);
+		$this->assertEqual($result,true);		
+	}
+
+	public   function __construct () {
+		parent::__construct('GenericObject', dirname(__FILE__)) ;
+	}	
 	
 }
  

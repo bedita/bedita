@@ -49,6 +49,12 @@ class Area extends BeditaCollectionModel
 
 			"minimum" => array("BEObject" => array("ObjectType"))		
 	);
+
+	var $validate = array(
+		'title'	=> array(
+			'rule' => 'notEmpty'
+		),
+	);
 	
 	function afterSave($created) {
 		if (!$created) 
