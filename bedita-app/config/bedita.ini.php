@@ -192,10 +192,10 @@ $config['passwdRegexMsg'] = "Your password must be at least 6 characters long an
 
 
 // Groups
-$config['authorizedGroups'] = array ('administrator', 'editor', 'reader');
+$config['authorizedGroups'] = array ('administrator', 'editor', 'reader', 'translator');
 
 // Predefined groups
-$config['basicGroups']      = array ('administrator', 'editor', 'reader', 'guest');
+$config['basicGroups']      = array ('administrator', 'editor', 'reader', 'guest', 'translator');
 
 
 
