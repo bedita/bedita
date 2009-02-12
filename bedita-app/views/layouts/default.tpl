@@ -6,6 +6,12 @@
 	
 	{$html->css('beditaNew')}
 	
+	<!--[if lte IE 6]>
+	
+		{$html->css('IE6fix')}
+		
+	<![endif]-->
+
 	{$javascript->link("jquery/jquery")}
 	{$javascript->link("jquery/jquery.cookie")}
 	{$javascript->link("jquery/jquery.autogrow")}

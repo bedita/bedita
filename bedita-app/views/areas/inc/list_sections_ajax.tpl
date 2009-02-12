@@ -42,21 +42,9 @@ $(document).ready(function() {
 <div style="min-height:100px; margin-top:10px;">
 {if !empty($sections.items)}
 
-	<ul id="areasections" class="bordered">
-		{foreach from=$sections.items item=s}
-		<li class="itemBox obj {$s.status}">
-			<input type="hidden" class="id" 	name="reorder[{$s.id}][id]" value="{$s.id}" />
-			<input type="text" class="priority"  name="reorder[{$s.id}][priority]" value="{$s.priority}" size="3" maxlength="3"/>
-			<span class="listrecent areas" style="margin-left:0px">&nbsp;&nbsp;</span>
-			<a title="{$s.created}" href="{$html->url('/')}areas/index/{$s.id}">{$s.title|truncate:"70":"…":true}</a>
-			
-			<div style="margin-top:-20px; float:right;">
-				{$s.lang}
-			</div>
-			
-		</li>
-		{/foreach}
-	</ul>		
+	<div id="areasections">
+		{include file="inc/list_sections_for_section.tpl" objsRelated=$sections.items}
+	</div>		
 	
 	<div id="sections_nav">
 	{*

@@ -28,7 +28,7 @@ function addObjToAssoc(url, postdata) {
 
 function setRemoveActions() {
 	$("#areacontent").find("input[@name='remove']").click(function() {
-		var contentField = $("#contentsToRemove").val() + $(this).parents("li").find("input[name*='[id]']").val() + ",";
+		var contentField = $("#contentsToRemove").val() + $(this).parents().parents().find("input[name*='[id]']").val() + ",";
 		$("#contentsToRemove").val(contentField);
 		var startPriority = $("#areacontent").find("input[name*='[priority]']:first").val();
 		
@@ -36,7 +36,7 @@ function setRemoveActions() {
 			startPriority--;
 		}
 		
-		$(this).parents("li").remove();
+		$(this).parents().parents("table").remove();
 		
 
 		$("#areacontent").fixItemsPriority(startPriority);
@@ -96,9 +96,9 @@ $(document).ready(function() {
 
 {if !empty($contents.items)}
 	<input type="hidden" name="contentsToRemove" id="contentsToRemove" value=""/>
-	<ul id="areacontent" class="bordered">
+	<div id="areacontent">
 		{include file="inc/list_contents_for_section.tpl" objsRelated=$contents.items}
-	</ul>		
+	</div>		
 	
 	<div id="contents_nav_leafs">
 

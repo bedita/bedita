@@ -1,19 +1,39 @@
-{foreach from=$objsRelated item="c"}
-<li class="itemBox obj {$c.status}">
-	
-		
-	<input type="hidden" class="id" 	name="reorder[{$c.id}][id]" value="{$c.id}" />
-	<input type="text" class="priority"	name="reorder[{$c.id}][priority]" value="{$c.priority|default:""}" size="3" maxlength="3"/>
+{$javascript->link("jquery/jquery.disable.text.select", true)}
+{literal}
+ <script type="text/javascript">
+    $(function() {
+        $('.disableSelection').disableTextSelect();
+    });
+    </script>
+{/literal}
 
-	<span title="{$c.module}" class="listrecent {$c.module}" style="margin-left:0px">&nbsp;&nbsp;</span>
-	{$c.title|default:'<i>[no title]</i>'|truncate:"64":"…":true}
-	
-	<div style="margin-top:-20px; float:right;">
+
+{foreach from=$objsRelated item="c"}
+
+<table class="itemBox obj {$c.status}">
+	<tr class="disableSelection">
+	<td>
+		<input type="hidden" class="id" 	name="reorder[{$c.id}][id]" value="{$c.id}" />
+		<input type="text" class="priority"	name="reorder[{$c.id}][priority]" value="{$c.priority|default:""}" size="3" maxlength="3"/>
+	</td>
+	<td>
+		<span title="{$c.module}" class="listrecent {$c.module}" style="margin-left:0px">&nbsp;&nbsp;</span>
+	</td>
+	<td style="width:100%">
+		{$c.title|default:'<i>[no title]</i>'|truncate:"64":"…":true}
+	</td>
+	<td>
+		{$c.lang}
+	</td>
+	<td class="commands">
 		<input type="button" class="BEbutton link" onClick="window.open($(this).attr('href'));" href="{$html->url('/')}{$c.module}/view/{$c.id}" name="details" value="››" />
 		<input type="button" name="remove" value="x" />
-	</div>
-	
-</li>
+	</td>
+	</tr>
+</table>
+
 {/foreach}
+
+
 
 

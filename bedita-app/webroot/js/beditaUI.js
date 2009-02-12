@@ -500,8 +500,8 @@ document.onkeydown = function(e){
 		
 	} else if(keycode == 109){ // 
 		
-		$('.tab').BEtabsopen();
-		helptrigger
+		//$('.tab').BEtabsopen();
+		//helptrigger
 		
 	} else if(keycode == 112){ // 
 		

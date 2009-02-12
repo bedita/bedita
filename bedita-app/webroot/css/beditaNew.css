@@ -747,8 +747,6 @@ TABLE.bordered {
 }
 
 
-
-
 TABLE.indexlist {
 	width:100%;
 }
@@ -773,6 +771,23 @@ TABLE.indexlist {
 .indexlist TD.checklist {
 	width:15px; padding:7px 0px 0px 0px;
 }
+
+
+TABLE.itemBox TD {
+	border:0px; border-bottom:1px solid gray; padding:4px 0px 4px 0px;
+	line-height:1em;
+}
+
+TABLE.itemBox TR:Hover {
+	background-color:#fff !important;
+}
+
+
+TABLE.itemBox TD.commands {
+	padding:0px 0px 0px 10px; 
+	white-space:nowrap;
+}
+
 
 
 /*...........................................    
@@ -1066,7 +1081,10 @@ input#titleBEObject {
 
 
 INPUT.priority {
-	text-align:right; margin-left: -30px; margin-right:10px; width:35px; float:left; background-color:transparent
+	text-align:center; 
+	margin-left: 0px; 
+	margin-right:0px; width:35px;
+	background-color:transparent
 }
 
 /*...........................................    
@@ -1320,6 +1338,7 @@ TABLE.areaform {
 .areaform TH {
 	width:100px;
 }
+
 
 
 /*...........................................
