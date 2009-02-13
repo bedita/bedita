@@ -43,7 +43,7 @@ class Link extends BEAppObjectModel {
 
 				"default" => array("BEObject" => array("ObjectType", "RelatedObject", "Category")),
 
-				"minimum" => array("BEObject" => array("ObjectType"))		
+				"minimum" => array("BEObject" => array("ObjectType"))
 		);
 
 	public function beforeSave() {
@@ -52,6 +52,11 @@ class Link extends BEAppObjectModel {
 			if(!$this->isHttp($url) && !$this->isHttps($url)) {
 				$url = "http://" . $url;
 				$this->data['Link']['url'] = $url;
+			}
+			$link = $this->find('all', array('conditions' => array('url' => $this->data['Link']['url'] ,'title' => $this->data['Link']['title'])));
+			if(!empty($link)) {// do not save twice the same link
+				throw new BeditaException(__("Error saving link: duplicated link", true), $this->validationErrors);
+				return false;
 			}
 			$date = new DateTime();
 			$this->data['Link']['http_code'] = $this->responseForUrl($url);

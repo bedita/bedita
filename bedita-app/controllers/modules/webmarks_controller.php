@@ -150,7 +150,7 @@ class WebmarksController extends ModulesController {
 										),
 				"save"	=> 	array(
 										"OK"	=> "/webmarks/view/{$this->Link->id}",
-										"ERROR"	=> "/webmarks" 
+										"ERROR"	=> "/webmarks/view/" 
 									), 
 				"delete" =>	array(
 										"OK"	=> "/webmarks",

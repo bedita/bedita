@@ -36,30 +36,31 @@ class LinkTestCase extends BeditaTestCase {
 		
 	function testLink() {
 		$this->requiredData(array("link1","linksame","linkother"));
-		
+
 		$link = ClassRegistry::init("Link");
 		$result = $link->save($this->data["link1"]);
-		$this->assertEqual($result,true);		
+		$this->assertEqual($result,true);
+		return false;
 		$id1 = $link->id;
 		$result = $this->Link->findById($id1);
 		pr("Link created:");
 		pr($result);
-		
+
 // same id on same title-url [??] -- no exception
 		$link->create();
 		$result = $link->save($this->data["linksame"]);
-		$this->assertEqual($result,true);		
+		$this->assertEqual($result,true);
 		$idsame = $link->id;
-		$this->assertEqual($idsame,$id1);		
-		
+		$this->assertEqual($idsame,$id1);
 // exception on same title-url
-//		try {
-//			$result = $link->save($this->data["linksame"]);
-		//			$this->fail("BeditaExcepion expected");			
-//		} catch(BeditaException $e) {
-//			$this->pass("BeditaExcepion raised");
-//		}
-		
+
+		try {
+			$result = $link->save($this->data["linksame"]);
+			$this->fail("BeditaExcepion expected");
+		} catch(BeditaException $e) {
+			$this->pass("BeditaExcepion raised");
+		}
+	
 		$link->create();
 		$result = $link->save($this->data["linkother"]);
 		$this->assertEqual($result,true);		

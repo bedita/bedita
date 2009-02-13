@@ -565,14 +565,8 @@ abstract class ModulesController extends AppController {
 		$this->data["status"] = "on";
 	 	$this->Transaction->begin() ;
 		$linkModel = $this->loadModelByType("Link");
-		// if already exists, do not clone
-		$link = $linkModel->find('all', array('conditions' => array('url' => $this->data['url'] ,'title' => $this->data['title'])));
-		if(empty($link)) {
-			if(!$linkModel->save($this->data)) {
-				throw new BeditaException(__("Error saving link", true), $linkModel->validationErrors);
-			}
-		} else {
-			$linkModel->id = $link[0]['id'];
+		if(!$linkModel->save($this->data)) {
+			throw new BeditaException(__("Error saving link", true), $linkModel->validationErrors);
 		}
  		$this->Transaction->commit() ;
 		if(empty($link)) {
