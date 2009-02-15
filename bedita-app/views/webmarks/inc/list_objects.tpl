@@ -14,7 +14,7 @@ var urlCheckMulti = "{$html->url('checkMultiUrl/')}";
 $(document).ready(function(){
 
 
-	$(".indexlist TD").not(".checklist").css("cursor","pointer").click(function(i) {
+	$(".indexlist TD").not(".checklist").not(".go").css("cursor","pointer").click(function(i) {
 		document.location = $(this).parent().find("a:first").attr("href"); 
 	} );
 	
@@ -71,10 +71,9 @@ $(document).ready(function(){
 			<th></th>
 			<th>{$beToolbar->order('title', 'Title')}</th>
 			<th>{$beToolbar->order('url', 'Url')}</th>
-			<th>{t}Link{/t}</th>
 			<th>{$beToolbar->order('http_code', 'Check result')}</th>
-			<th>{$beToolbar->order('http_response_date', 'Last check')}</th>
 			<th style="text-align:center">{$beToolbar->order('status', 'Status')}</th>
+			<th style="text-align:center">{t}Link{/t}</th>
 			<th>Notes</th>
 		</tr>
 	{/capture}
@@ -91,10 +90,12 @@ $(document).ready(function(){
 			</td>
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a></td>
 			<td>{$objects[i].url|default:''}</td>
-			<td><a href="{$objects[i].url|default:''}" target="_blank">[{t}visit this url{/t}]</a></td>
 			<td>{$objects[i].http_code|default:''}</td>
-			<td>{$objects[i].http_response_date|date_format:$conf->dateTimePattern|default:''}</td>
 			<td style="text-align:center">{$objects[i].status}</td>
+		<td class="go">
+				<input type="button" value="go" onclick="window.open('{$objects[i].url|default:''}','_blank')" />	
+			</td>
+			
 			<td>{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 		</tr>
 		

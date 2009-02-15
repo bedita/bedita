@@ -20,3 +20,4 @@
 
 {include file="../common_inc/form_advanced_properties.tpl"}
 
+{include file="../common_inc/form_custom_properties.tpl"}
