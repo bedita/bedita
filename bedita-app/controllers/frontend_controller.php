@@ -616,13 +616,14 @@ abstract class FrontendController extends AppController {
 				if(empty($tmp)) {
 					$section = array_merge($section, array("currentContent" => array(), "children" => array()));
 				} else {
+					$toolbar = $tmp["toolbar"];
+					unset($tmp["toolbar"]);
 					$current = current($tmp);
-					$section = array_merge($section, array("currentContent" => $current[0], "children" => $tmp));
+					$section = array_merge($section, array("currentContent" => $current[0], "children" => $tmp, "toolbar" => $toolbar));
 				}
 			}
-//			pr($section);exit;
 		}
-		
+		pr($section);exit;
 		$this->set('section', $section);
 		
 		// section after filter
@@ -677,13 +678,14 @@ abstract class FrontendController extends AppController {
 	 * Array(
 	 * 		"Document" => Array(
 	 * 				"2008" => Array(
-	 * 					"January" => Array(
+	 * 					"01" => Array(
 	 * 						0 => document,
 	 * 						1 => document,
 	 * 						...
+	 * 						"monthName" => month name
 	 * 						"total" => number of document in january
 	 * 						),
-	 *	 				"February" => Array(...),
+	 *	 				"02" => Array(...),
 	 * 					....
 	 * 					"total" => numeber of document in 2008
 	 * 				),
@@ -716,45 +718,47 @@ abstract class FrontendController extends AppController {
 		
 		foreach ($items as $type => $itemGroup) {
 		
-			foreach ($itemGroup as $item) {
-				
-				// DateItem, pubblication or creation date
-				if(!empty($item["DateItem"][0]["start"]))
-					$refDate = $item["DateItem"][0]["start"];
-				else
-					$refDate = isset($item["start"])? $item["start"] : $item["created"];
-				 
-				$data = explode("-", $refDate);
-				$year = $data[0];
-				$id = $item["id"];
-				$item["title"] = (!empty($item["LangText"]["title"][$this->currLang]))? $item["LangText"]["title"][$this->currLang] : $item["title"];
-				$archive[$type][$year][$data[1]][] = $item;
-				if (empty($archive[$type][$year][$data[1]]["monthName"]))
-					$archive[$type][$year][$data[1]]["monthName"] = __($monthName[$data[1]],true);
-			}
+			if($type != "toolbar") {
 			
-			// sort archive
-			$sortFunction = "ksort";
-			if (!empty($options["archiveSort"]) && $options["archiveSort"] == "desc")
-				$sortFunction = "krsort";
-			
-			$sortFunction($archive[$type]);
-			foreach ($archive[$type] as $year => $month) {
-				$sortFunction($archive[$type][$year]);
-			}
-			
-			// add number of items for month and year
-			$countYear = 0;
-			foreach ($archive[$type] as $year => $month) {
-				
-				$countYear = 0;
-				foreach ($month as $key => $i) {
-					$countYear += count($i);
-					$archive[$type][$year][$key]["total"] = count($i);
+				foreach ($itemGroup as $item) {
+					
+					// DateItem, pubblication or creation date
+					if(!empty($item["DateItem"][0]["start"]))
+						$refDate = $item["DateItem"][0]["start"];
+					else
+						$refDate = isset($item["start"])? $item["start"] : $item["created"];
+					 
+					$data = explode("-", $refDate);
+					$year = $data[0];
+					$id = $item["id"];
+					$item["title"] = (!empty($item["LangText"]["title"][$this->currLang]))? $item["LangText"]["title"][$this->currLang] : $item["title"];
+					$archive[$type][$year][$data[1]][] = $item;
+					if (empty($archive[$type][$year][$data[1]]["monthName"]))
+						$archive[$type][$year][$data[1]]["monthName"] = __($monthName[$data[1]],true);
 				}
-				$archive[$type][$year]["total"] = $countYear;
+				
+				// sort archive
+				$sortFunction = "ksort";
+				if (!empty($options["archiveSort"]) && $options["archiveSort"] == "desc")
+					$sortFunction = "krsort";
+				
+				$sortFunction($archive[$type]);
+				foreach ($archive[$type] as $year => $month) {
+					$sortFunction($archive[$type][$year]);
+				}
+				
+				// add number of items for month and year
+				$countYear = 0;
+				foreach ($archive[$type] as $year => $month) {
+					
+					$countYear = 0;
+					foreach ($month as $key => $i) {
+						$countYear += count($i);
+						$archive[$type][$year][$key]["total"] = count($i);
+					}
+					$archive[$type][$year]["total"] = $countYear;
+				}
 			}
-	
 		}
 
 		return $archive;
