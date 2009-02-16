@@ -55,9 +55,10 @@ class CaptchaComponent extends Object {
 		$this->controller->Session->write("captcha_id", $str);
 		
 		// Set the content type
-		header('Content-type: image/png');
-		header('Cache-control: no-cache, must-revalidate');
+		header('Cache-control: no-cache, no-store, max-age=0, must-revalidate');
 		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+		header('Pragma: no-cache');
+		header('Content-type: image/png'); 
 					
 		// Create a background image
 		if (is_dir(APP . "webroot/captcha/img/")) {
