@@ -46,17 +46,23 @@ msgstr "Indirizzo"
 msgid "Advanced Properties"
 msgstr "Proprietà avanzate"
 
+msgid "all documents"
+msgstr "tutti i documenti"
+
+msgid "all events"
+msgstr "tutti gli eventi"
+
 msgid "Apply permissions recursively"
 msgstr ""
 
 msgid "Are you sure that you want to delete selected items?"
-msgstr ""
+msgstr "Sicuro di voler eliminare gli elementi selezionati?"
 
 msgid "Are you sure that you want to delete selected tags?"
 msgstr ""
 
 msgid "Are you sure that you want to delete the item?"
-msgstr ""
+msgstr "Sicuro di voler eliminare l'elemento?"
 
 msgid "Are you sure that you want to delete the tag?"
 msgstr ""
@@ -143,7 +149,7 @@ msgid "Cards deleted"
 msgstr ""
 
 msgid "Categories"
-msgstr ""
+msgstr "Categorie"
 
 msgid "Category deleted"
 msgstr ""
@@ -215,19 +221,19 @@ msgid "Create new"
 msgstr ""
 
 msgid "Create new document"
-msgstr ""
+msgstr "Crea nuovo documento"
 
 msgid "Create new event"
-msgstr ""
+msgstr "Crea nuovo evento"
 
 msgid "Create new gallery"
 msgstr ""
 
 msgid "Create new publishing"
-msgstr ""
+msgstr "Crea una nuova pubblicazione"
 
 msgid "Create new section"
-msgstr ""
+msgstr "Crea una nuova sezione"
 
 msgid "Create new user"
 msgstr ""
@@ -244,11 +250,14 @@ msgstr ""
 msgid "Custom properties"
 msgstr ""
 
-msgid "Delete"
+msgid "dashboard"
 msgstr ""
 
+msgid "Delete"
+msgstr "Elimina"
+
 msgid "Delete selected items"
-msgstr ""
+msgstr "Elimina gli elementi selezionati"
 
 msgid "Description"
 msgstr ""
@@ -257,7 +266,7 @@ msgid "Details"
 msgstr ""
 
 msgid "Dimensions"
-msgstr ""
+msgstr "Dimensione"
 
 msgid "Display details in frontend"
 msgstr ""
@@ -275,10 +284,13 @@ msgid "Do you want unsubscribe selected items?"
 msgstr ""
 
 msgid "Document saved"
-msgstr ""
+msgstr "Documento salvato"
+
+msgid "documents"
+msgstr "documenti"
 
 msgid "Documents deleted"
-msgstr ""
+msgstr "Documento eliminato"
 
 msgid "Edit more details"
 msgstr ""
@@ -419,16 +431,22 @@ msgid "Errors during upload"
 msgstr ""
 
 msgid "Event calendar"
-msgstr ""
+msgstr "Calendario"
 
 msgid "Event saved"
-msgstr ""
+msgstr "Evento salvato"
 
 msgid "Event start"
-msgstr ""
+msgstr "Inizio"
+
+msgid "Events"
+msgstr "Eventi"
+
+msgid "events"
+msgstr "eventi"
 
 msgid "Events deleted"
-msgstr ""
+msgstr "Eventi eliminati"
 
 msgid "Exif - Main Data"
 msgstr ""
@@ -464,7 +482,7 @@ msgid "Gmaps LookaT"
 msgstr ""
 
 msgid "Go to page"
-msgstr ""
+msgstr "Vai alla pagina"
 
 msgid "Group "
 msgstr ""
@@ -603,7 +621,7 @@ msgid "Missing parent"
 msgstr ""
 
 msgid "Missing publishing"
-msgstr ""
+msgstr "Pubblicazione mancante"
 
 msgid "Missing recipient"
 msgstr ""
@@ -654,7 +672,7 @@ msgid "New Book"
 msgstr ""
 
 msgid "New Translation"
-msgstr ""
+msgstr "Nuova traduzione"
 
 msgid "New bibliography"
 msgstr ""
@@ -704,6 +722,9 @@ msgstr ""
 msgid "No data"
 msgstr ""
 
+msgid "No events found"
+msgstr "Nessun evento trovato"
+
 msgid "No file in the form"
 msgstr ""
 
@@ -735,7 +756,7 @@ msgid "No tag selected"
 msgstr ""
 
 msgid "No tags found."
-msgstr ""
+msgstr "Nessun tag trovato"
 
 msgid "No template avaible"
 msgstr ""
@@ -744,7 +765,7 @@ msgid "No templates found"
 msgstr ""
 
 msgid "No translations found"
-msgstr ""
+msgstr "Nessuna traduzione trovata"
 
 msgid "No tree found"
 msgstr ""
@@ -789,7 +810,7 @@ msgid "Permission"
 msgstr ""
 
 msgid "Permissions"
-msgstr ""
+msgstr "Permessi"
 
 msgid "Person"
 msgstr ""
@@ -814,10 +835,10 @@ msgid "Properties"
 msgstr ""
 
 msgid "Publisher is required (at least %1 alphanumerical char)"
-msgstr ""
+msgstr "La pubblicazione è obbligatoria (almeno %1 carattere alfanumerico)"
 
 msgid "Publishing tree"
-msgstr ""
+msgstr "Albero delle pubblicazioni"
 
 msgid "Queue is empty"
 msgstr ""
@@ -962,16 +983,16 @@ msgid "Title is required"
 msgstr ""
 
 msgid "Translation deleted"
-msgstr ""
+msgstr "Traduzione eliminata"
 
 msgid "Translation saved"
-msgstr ""
+msgstr "Traduzione salvata"
 
 msgid "Translation updated"
-msgstr ""
+msgstr "Traduzione aggiornata"
 
 msgid "Translations"
-msgstr ""
+msgstr "Traduzioni"
 
 msgid "URL not valid"
 msgstr ""
@@ -1087,7 +1108,7 @@ msgid "add comma separated words"
 msgstr "aggiungi parole separate da virgola"
 
 msgid "add contents"
-msgstr ""
+msgstr "aggiungi contenuti"
 
 msgid "add group"
 msgstr ""
@@ -1114,7 +1135,7 @@ msgid "all"
 msgstr ""
 
 msgid "all recent items"
-msgstr ""
+msgstr "elementi recenti"
 
 msgid "altro"
 msgstr ""
@@ -1147,22 +1168,19 @@ msgid "browse your disk"
 msgstr ""
 
 msgid "change status"
-msgstr ""
+msgstr "cambia status"
 
 msgid "change status to"
-msgstr ""
-
-msgid "change status to:"
-msgstr ""
+msgstr "cambia status in"
 
 msgid "choose document type"
 msgstr "scegli il tipo documento"
 
 msgid "city and zip code"
-msgstr ""
+msgstr "città e cap"
 
 msgid "clone"
-msgstr ""
+msgstr "clona"
 
 msgid "close"
 msgstr "chiudi"
@@ -1171,19 +1189,19 @@ msgid "comments"
 msgstr "commenti"
 
 msgid "connect new items"
-msgstr ""
+msgstr "collega nuovi elementi"
 
 msgid "connected user"
-msgstr ""
+msgstr "utenti connessi"
 
 msgid "contact email"
 msgstr "contatto email"
 
 msgid "contents"
-msgstr ""
+msgstr "contenuti"
 
 msgid "copy"
-msgstr ""
+msgstr "copia"
 
 msgid "country"
 msgstr ""
@@ -1198,7 +1216,7 @@ msgid "create group"
 msgstr "crea gruppo"
 
 msgid "create new translation"
-msgstr ""
+msgstr "nuova traduzione"
 
 msgid "created"
 msgstr "creato"
@@ -1210,7 +1228,7 @@ msgid "created on"
 msgstr ""
 
 msgid "creator"
-msgstr "creatore"
+msgstr "autore"
 
 msgid "currently in job"
 msgstr ""
@@ -1257,6 +1275,9 @@ msgstr "fine"
 msgid "end has to be a valid date in the following format:"
 msgstr ""
 
+msgid "Exit"
+msgstr "Esci"
+
 msgid "fax"
 msgstr ""
 
@@ -1291,10 +1312,10 @@ msgid "get from list"
 msgstr ""
 
 msgid "go"
-msgstr ""
+msgstr "vai"
 
 msgid "height"
-msgstr ""
+msgstr "altezza"
 
 msgid "image"
 msgstr "immagine"
@@ -1351,7 +1372,7 @@ msgid "mail address"
 msgstr ""
 
 msgid "main language"
-msgstr ""
+msgstr "lingua principale"
 
 msgid "male"
 msgstr ""
@@ -1375,7 +1396,7 @@ msgid "more results"
 msgstr ""
 
 msgid "move"
-msgstr ""
+msgstr "sposta"
 
 msgid "multimedia descriptions"
 msgstr ""
@@ -1395,6 +1416,12 @@ msgstr ""
 msgid "next page"
 msgstr ""
 
+msgid "new publishing"
+msgstr "nuova pubblicazione"
+
+msgid "new section"
+msgstr "nuova sezione"
+
 msgid "nickname"
 msgstr ""
 
@@ -1402,19 +1429,22 @@ msgid "no"
 msgstr ""
 
 msgid "no contents"
-msgstr ""
+msgstr "nessun contenuto"
 
 msgid "no results"
-msgstr ""
+msgstr "nessun risultato"
 
 msgid "no sections"
-msgstr ""
+msgstr "nessuna sezione"
 
 msgid "no user data"
 msgstr ""
 
 msgid "not yet sent"
 msgstr ""
+
+msgid "notes"
+msgstr "note"
 
 msgid "of"
 msgstr "di"
@@ -1465,10 +1495,10 @@ msgid "prev"
 msgstr ""
 
 msgid "previous page"
-msgstr ""
+msgstr "pagina precedente"
 
 msgid "priority"
-msgstr ""
+msgstr "priorità"
 
 msgid "privacy disclaimer"
 msgstr ""
@@ -1482,7 +1512,7 @@ msgstr ""
 msgid "properties"
 msgstr "proprietà"
 
-msgid "public list\t"
+msgid "public list"
 msgstr ""
 
 msgid "public name"
@@ -1495,7 +1525,7 @@ msgid "publisher"
 msgstr "editore"
 
 msgid "publishing"
-msgstr ""
+msgstr "pubblicazioni"
 
 msgid "read"
 msgstr "lettura"
@@ -1539,17 +1569,17 @@ msgstr ""
 msgid "search"
 msgstr "cerca"
 
-msgid "search string:"
-msgstr ""
+msgid "search string"
+msgstr "stringa di ricerca"
 
 msgid "sections"
 msgstr "sezioni"
 
 msgid "select an item to associate"
-msgstr ""
+msgstr "seleziona un elemento da collegare"
 
 msgid "select from archive"
-msgstr ""
+msgstr "seleziona dall'archivio"
 
 msgid "select from author repository"
 msgstr ""
@@ -1603,7 +1633,7 @@ msgid "state"
 msgstr ""
 
 msgid "status"
-msgstr "stato"
+msgstr ""
 
 msgid "street name and #"
 msgstr ""
@@ -1686,6 +1716,9 @@ msgstr ""
 msgid "weight"
 msgstr ""
 
+msgid "welcome"
+msgstr "benvenuto"
+
 msgid "width"
 msgstr ""
 
@@ -1694,6 +1727,9 @@ msgstr ""
 
 msgid "with status"
 msgstr ""
+
+msgid "word"
+msgstr "parola"
 
 msgid "write new item"
 msgstr ""
@@ -1705,10 +1741,11 @@ msgid "yes"
 msgstr "si"
 
 msgid "your 5 recent items"
-msgstr ""
+msgstr "i tuoi 5 ultimi elementi"
 
 msgid "your message"
 msgstr ""
 
-msgid "word"
-msgstr "parola"
+
+
+

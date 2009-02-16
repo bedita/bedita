@@ -12,8 +12,16 @@ Menu a SX valido per tutte le pagine del controller.
 	
 	{if $module_modify eq '1'}
 	<ul class="menuleft insidecol">
-		<li id="newArea" {if $method eq 'viewArea'}class="on"{/if}>{$tr->link('New Publishing', '/areas/viewArea')}</li>
-		<li id="newSection" {if $method eq 'viewSection'}class="on"{/if}>{$tr->link('New Section', '/areas/viewSection')}</li>
+		<li id="newArea" {if $method eq 'viewArea'}class="on"{/if}>
+			<a href="{$html->url('/')}{$currentModule.path}/viewArea">
+				{t}new publishing{/t}
+			</a>
+		</li>
+		<li id="newSection" {if $method eq 'viewSection'}class="on"{/if}>
+			<a href="{$html->url('/')}{$currentModule.path}/viewSection">
+				{t}new section{/t}
+			</a>
+		</li>
 	</ul>
 	{/if}
 	

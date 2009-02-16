@@ -59,7 +59,7 @@ $(document).ready(function() {
     {if $smarty.foreach.module1.iteration == 2}
 	
 	<li class="welcome">
-		<h1>welcome</h1>
+		<h1>{t}welcome{/t}</h1>
 		{$BEAuthUser.realname}
 		<br  />
 		
@@ -69,35 +69,6 @@ $(document).ready(function() {
 	
 {/foreach}
 
-{*
-	<li class="ecommerce">
-		ecommerce
-	</li>
-	
-	<li class="webmarks">
-		webmarks
-	</li>
-
-	<li class="forms">
-		forms
-	</li>
-
-	<li class="bookings">
-		bookings
-	</li>
-
-	<li class="faq">
-		faq
-	</li>
-
-	<li class="print">
-		print
-	</li>
-	
-	<li class="topographies">
-		topographies
-	</li>
-*}
 
 	<li class="colophon">
 
@@ -123,8 +94,8 @@ $(document).ready(function() {
 
 <div class="dashboard">
 
-<h1>dashboard</h1>
 
+<h1>{*t}dashboard{/t*}</h1>
 
 
 <div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
@@ -140,9 +111,9 @@ $(document).ready(function() {
 <div class="tab"><h2>{t}search{/t}</h2></div>
 	<div>
 		<form action="">
-			<label class="block" for="searchstring">{t}search string:{/t}</label>
+			{*<label class="block" for="searchstring">{t}search string{/t}:</label>*}
 			<input type="text" name="searchstring" id="searchstring" value=""/>
-			&nbsp;<input id="searchButton" type="button" value="go" />
+			&nbsp;<input id="searchButton" type="button" value="{t}go{/t}" />
 			<hr />
 		</form>
 	<div id="searchResult"></div>

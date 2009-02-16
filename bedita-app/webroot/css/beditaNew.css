@@ -444,6 +444,10 @@ UL.menuleft {
 	margin-bottom:10px !important;
 }
 
+.menuleft  LI {
+	line-height:1.175em;
+}
+
 .menuleft  UL {
 /*
 	margin-left:20px;

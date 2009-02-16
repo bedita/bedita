@@ -1,5 +1,4 @@
 
-
 <script type="text/javascript">
 <!--
 var urlDelete = "{$html->url('delete/')}" ;
@@ -31,7 +30,7 @@ $(document).ready(function(){
 	}) ;
 	
 	$("#deleteSelected").bind("click", function() {
-		if(!confirm(message)) 
+		if(!confirm(messageSelected)) 
 			return false ;	
 		$("#formObject").attr("action", urlDelete) ;
 		$("#formObject").submit() ;
@@ -72,8 +71,7 @@ $(document).ready(function(){
 			<th style="text-align:center">{$beToolbar->order('status', 'Status')}</th>
 			<th>{$beToolbar->order('modified', 'Modified')}</th>
 			<th style="text-align:center">
-				{*$beToolbar->order('numcomments', 'Comments')*}
-				<img src="{$html->webroot}img/iconComments.gif" alt="comments" />
+				<img src="{$html->webroot}img/iconComments.gif" alt="{t}comments{/t}" />
 			</th>			
 			<th>{$beToolbar->order('lang', 'Lang')}</th>
 			<th>Notes</th>
@@ -137,7 +135,7 @@ $(document).ready(function(){
 <div class="tab"><h2>{t}Bulk actions on{/t}&nbsp;<span class="selecteditems evidence"></span>&nbsp;{t}selected records{/t}</h2></div>
 <div>
 
-{t}change status to:{/t} 	<select style="width:75px" id="newStatus" name="newStatus">
+{t}change status to{/t}: 	<select style="width:75px" id="newStatus" name="newStatus">
 								<option value=""> -- </option>
 								{html_options options=$conf->statusOptions}
 							</select>
@@ -153,7 +151,7 @@ $(document).ready(function(){
 				<option> {t}move{/t} </option>
 			</select>
 			
-			  &nbsp;to:  &nbsp;
+			  &nbsp;{t}to{/t}:  &nbsp;
 			
 			<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
 			{$beTree->option($tree)}
