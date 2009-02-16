@@ -623,7 +623,7 @@ abstract class FrontendController extends AppController {
 				}
 			}
 		}
-		pr($section);exit;
+
 		$this->set('section', $section);
 		
 		// section after filter
