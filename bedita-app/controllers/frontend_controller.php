@@ -38,7 +38,7 @@ abstract class FrontendController extends AppController {
 	private $status = array('on');
 	protected $checkPubDate = true;
 	protected $baseLevel = false;
-	protected $sectionOptions = array("showAllContents" => true, "itemsByType" => false);
+	protected $sectionOptions = array("showAllContents" => true, "itemsByType" => false, "childrenParams" => array());
 	protected $xmlFormat = "attributes"; // possible values "tags", "attributes"
 	protected $publication = "";
 	protected $captchaOptions = array(); // default defined in captcha component
@@ -512,8 +512,10 @@ abstract class FrontendController extends AppController {
 		$filter = (!empty($options["filter"]))? $options["filter"] : false;
 		$order = (!empty($options["order"]))? $options["order"] : "priority";
 		$dir = (!empty($options["dir"]))? $options["dir"] : ($priorityOrder == "asc");
+		$page = (!empty($options["page"]))? $options["page"] : 1;
+		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
 		
-		$items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir);
+		$items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);
@@ -526,6 +528,7 @@ abstract class FrontendController extends AppController {
 						$sectionItems["childContents"][] = $obj;
 				}
 			}
+			$sectionItems["toolbar"] = $items['toolbar'];
 		}
 		return $sectionItems;
 	
@@ -583,6 +586,7 @@ abstract class FrontendController extends AppController {
 		$section = $this->loadObj($sectionId);
 		
 		$section["pathSection"] = $this->getPath($sectionId);
+		$this->getPassedArgs();
 		
 		if(!empty($contentName)) {
 			$content_id = is_numeric($contentName) ? $contentName : $this->BEObject->getIdFromNickname($contentName);
@@ -593,7 +597,7 @@ abstract class FrontendController extends AppController {
 				$checkPubDate = $this->checkPubDate;
 				$this->checkPubDate = false;
 				
-				$tmp = $this->loadSectionObjects($sectionId);
+				$tmp = $this->loadSectionObjects($sectionId, $this->sectionOptions["childrenParams"]);
 				if (!$this->sectionOptions["itemsByType"])
 					$section = array_merge($section, $tmp);
 				else
@@ -603,7 +607,7 @@ abstract class FrontendController extends AppController {
 				$this->checkPubDate = $checkPubDate;
 			}
 		} else {
-			$tmp = $this->loadSectionObjects($sectionId);
+			$tmp = $this->loadSectionObjects($sectionId, $this->sectionOptions["childrenParams"]);
 			
 			if (!$this->sectionOptions["itemsByType"]) {
 				$tmp['currentContent'] = (!empty($tmp['childContents']))? $tmp['childContents'][0] : array();
@@ -616,6 +620,7 @@ abstract class FrontendController extends AppController {
 					$section = array_merge($section, array("currentContent" => $current[0], "children" => $tmp));
 				}
 			}
+//			pr($section);exit;
 		}
 		
 		$this->set('section', $section);
@@ -845,7 +850,22 @@ abstract class FrontendController extends AppController {
 			}
 	
 		}
-		$this->redirect($this->referer());
+		
+		if (!isset($this->RequestHandler)) {
+			App::import("Component", "RequestHandler");
+			$this->RequestHandler = new RequestHandlerComponent();
+			$this->RequestHandler->initialize($this);
+			$this->RequestHandler->startup($this);
+		}
+		// if it's ajax call no redirect by referer
+		if($this->RequestHandler->isAjax()) { 
+			$this->layout = "ajax";
+			if (!empty($this->params["form"]["render"])) { 
+				$this->render(null, null, $this->params["form"]["render"] .".tpl");
+			}
+		} else {
+			$this->redirect($this->referer());
+		}
 
 	}
 	
@@ -872,6 +892,20 @@ abstract class FrontendController extends AppController {
 			
 			if ($countParent != $countParentStatus)
 				throw new BeditaException(__("Content not found", true));
+		}
+	}
+	
+	/**
+	 * get passed args by name and set sectionOptions["childrenParams"]
+	 *
+	 */
+	private function getPassedArgs() {
+		if (!empty($this->passedArgs)) {
+			foreach ($this->passedArgs as $key => $val) {
+				if (!is_numeric($key)) {
+					$this->sectionOptions["childrenParams"][$key] = $val;
+				}
+			}
 		}
 	}
 	
