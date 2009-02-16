@@ -320,6 +320,11 @@ $config['objectTypes'] = array(
  * 
  */
 $config["defaultObjRelationType"] = array(
+	"download" => array(
+		"hidden" => false,
+		"left" 		=> array(10,12,31,32),
+		"right" 		=> array()	
+	),
 	"gallery" => array(
 		"hidden" => false,
 		"left" 		=> array(29),

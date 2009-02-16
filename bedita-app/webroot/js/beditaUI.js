@@ -166,21 +166,21 @@ $(document).ready(function(){
 
 	jQuery.fn.BEtabstoggle = function() {
 			
-		$(this).next().toggle() ;	
+		$(this).next().toggle('fast') ;	
 		$("h2",this).toggleClass("open").toggleClass(currentclassmodule);
 	
 	};
 
 	jQuery.fn.BEtabsopen = function() {
 			
-		$(this).next().show() ;	
+		$(this).next().show('fast') ;	
 		$("h2",this).addClass("open").addClass(currentclassmodule);
 	
 	};
 
 	jQuery.fn.BEtabsclose = function() {
 			
-		$(this).next().hide() ;	
+		$(this).next().hide('fast') ;	
 		$("h2",this).removeClass("open").removeClass(currentclassmodule);
 	
 	};

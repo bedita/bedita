@@ -422,7 +422,7 @@ class AreasController extends ModulesController {
 		
 		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
 			
-		$objects = $this->BeTree->getChildren($id, null, $filter, "title", true, $page, $dim=10) ;
+		$objects = $this->BeTree->getChildren($id, null, $filter, "title", true, $page, $dim=20) ;
 		
 		foreach ($objects["items"] as $key => $obj) {
 			if ($obj["id"] != $main_object_id)

@@ -24,6 +24,17 @@ function loadObjToAssoc(page) {
 
 $(document).ready(function() {
 
+
+	$(".searchTrigger").click(function() {
+		$(".search").toggle('fast');
+	});
+	
+	
+	$("#searchButton").click(function() {
+		loadObjToAssoc(1);
+	});
+	
+	
 	$("#searchButton").click(function() {
 		loadObjToAssoc(1);
 	});
@@ -52,47 +63,65 @@ $(document).ready(function() {
 //-->
 </script>
 
-<div class="body bodybg">
+<div class="bodybg">
+
+<div class="searchTrigger" style="
+background:white url('{$html->url('/')}img/piumeno.gif') no-repeat left 2px; 
+padding:5px 0px 5px 30px; margin-bottom:1px; font-weight:bold; cursor:pointer;">
+	{t}Search{/t} 
+</div>
+
+<div class="search" style="display:none; padding:10px; border:0px solid red;">
+	
+	<table>
+		<tr>
+			<th><label>{t}word{/t}:</label></th>
+			<td><input type="text" name="search" id="search" value="" /></td>
+			<th><label>{t}type{/t}:</label></th>
+			<td>
+				<select name="objectType" id="objectType">
+					<option value="">{t}all{/t}</option>
+					{foreach from=$objectTypeIds item=type_id}
+						{if $type_id}
+						{strip}
+						<option value="{$type_id}">
+							{$conf->objectTypes[$type_id].name|lower}
+						</option>
+						{/strip}
+						{/if}
+					{/foreach}
+				</select>
+			</td>
+			<td rowspan="2">
+				<input type="button" id="searchButton" value=" {t}Find it{/t} ">
+			</td>
+		</tr>
+		<tr>
+			<th><label>{t}on{/t}:</label></th>
+			<td>
+				<select style="width:180px" name="parent_id" id="parent_id">
+				{$beTree->option($tree)}
+				</select>
+			</td>
+			<th><label>{t}language{/t}:</label></th>
+			<td>
+					<select name="lang" id="lang">
+					<option value="">{t}all{/t}</option>
+					{foreach key=val item=label from=$conf->langOptions}
+						{strip}
+						<option value="{$val}">
+							{$label}
+						</option>
+						{/strip}
+					{/foreach}
+				</select>
+			</td>
+			
+		</tr>
+	</table>
 
 
-	<label>Cerca:</label> &nbsp; <input type="text" name="search" id="search" value="">
-	&nbsp;&nbsp;
-	in: <select style="width:180px" name="parent_id" id="parent_id">
-			{$beTree->option($tree)}
-		</select>
-	<hr>
-	
-	
-	tipo:
-	<select name="objectType" id="objectType">
-		<option value="">{t}all{/t}</option>
-		{foreach from=$objectTypeIds item=type_id}
-			{if $type_id}
-			{strip}
-			<option value="{$type_id}">
-				{$conf->objectTypes[$type_id].name|lower}
-			</option>
-			{/strip}
-			{/if}
-		{/foreach}
-		</select>
-	
-	&nbsp;&nbsp;
-	lingua: 
-	<select name="lang" id="lang">
-		<option value="">{t}all{/t}</option>
-		{foreach key=val item=label from=$conf->langOptions}
-			{strip}
-			<option value="{$val}">
-				{$label}
-			</option>
-			{/strip}
-		{/foreach}
-	</select>
-	
-	&nbsp;&nbsp;
-	<input type="button" id="searchButton" value=" {t}Search{/t} ">
-	<hr />
+</div>
 	
 	<div id="loadObjInModal" class="loader"><span></span></div>
 	

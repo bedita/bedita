@@ -20,34 +20,35 @@ $(document).ready(function() {
 
 		<tr>
 			<th></th>
-			<th>Id</th>
 			<th>title</th>
-			<th>type</th>
-			<th>status</th>
-			<th>date</th>
-			<th>lang</th>
+			<th style="text-align:center">type</th>
+			<th style="text-align:center">status</th>
+			<th style="text-align:center">date</th>
+			<th style="text-align:center">lang</th>
+			<th>Id</th>
 		</tr>
 
 		{foreach from=$objectsToAssoc.items item="objToAss"}
 		<tr>
-			<td style="width:15px; padding:7px 0px 0px 0px;">
+			<td style="width:15px; padding:7px 0px 0px 10px;">
 				<input type="checkbox" name="object_selected[]" class="objectCheck" value="{$objToAss.id}"/>
 			</td>
-			<td><a href="">{$objToAss.id}</a></td>
-			<td><a href="">{$objToAss.title|default:'<i>[no title]</i>'}</a></td>
-			<td>
-				<span style="margin:0" class="listrecent {$objToAss.moduleName}">&nbsp;</span>
+			<td>{$objToAss.title|default:'<i>[no title]</i>'}</td>
+			<td style="text-align:center">
+				<span style="margin:0px" class="listrecent {$objToAss.moduleName}">&nbsp;</span>
 			</td>
-			<td>{$objToAss.status}</td>
+			<td style="text-align:center">{$objToAss.status}</td>
 			<td>{$objToAss.created|date_format:$conf->datePattern}</td>
-			<td>{$objToAss.lang}</td>
+			<td style="text-align:center">{$objToAss.lang}</td>
+			<td style="text-align:center">{$objToAss.id}</td>
 		</tr>
 		{/foreach}
 
 	</table>
 
-	<br />
-	<div id="contents_nav">
+
+	<div id="contents_nav" class="graced" 
+	style="font-size:1.275em; padding:10px 10px 0px 10px;">
 		
 		{t}Items{/t}: {$objectsToAssoc.toolbar.size} | {t}page{/t} {$objectsToAssoc.toolbar.page} {t}of{/t} {$objectsToAssoc.toolbar.pages} 
 
@@ -70,8 +71,7 @@ $(document).ready(function() {
 			&nbsp; | &nbsp;
 			<span><a href="javascript:void(0);" rel="{$objectsToAssoc.toolbar.last}" id="streamLastPage" title="{t}last page{/t}">{t}last{/t}</a></span>
 		{/if}
-		
-										
+									
 	</div>
 
 {else}

@@ -1,7 +1,7 @@
 {$javascript->link("jquery/jquery.disable.text.select", true)}
 
 <script type="text/javascript">
-var urlAddObjToAss= "{$html->url('/areas/loadObjectToAssoc/')}{$object.id}";
+//var urlAddObjToAss= "{$html->url('/areas/loadObjectToAssoc/')}{$object.id}";
 <!--
 {literal}
 
