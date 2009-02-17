@@ -733,8 +733,6 @@ abstract class FrontendController extends AppController {
 					$id = $item["id"];
 					$item["title"] = (!empty($item["LangText"]["title"][$this->currLang]))? $item["LangText"]["title"][$this->currLang] : $item["title"];
 					$archive[$type][$year][$data[1]][] = $item;
-					if (empty($archive[$type][$year][$data[1]]["monthName"]))
-						$archive[$type][$year][$data[1]]["monthName"] = __($monthName[$data[1]],true);
 				}
 				
 				// sort archive
@@ -755,6 +753,7 @@ abstract class FrontendController extends AppController {
 					foreach ($month as $key => $i) {
 						$countYear += count($i);
 						$archive[$type][$year][$key]["total"] = count($i);
+						$archive[$type][$year][$key]["monthName"] = __($monthName[$key],true);
 					}
 					$archive[$type][$year]["total"] = $countYear;
 				}
