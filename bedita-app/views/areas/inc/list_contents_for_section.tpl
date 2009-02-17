@@ -1,4 +1,4 @@
-{foreach from=$objsRelated item="c"}
+{foreach from=$objsRelated|default:'' item="c"}
 	<tr class="obj {$c.status}">
 		<td>
 			<input type="hidden" class="id" 	name="reorder[{$c.id}][id]" value="{$c.id}" />

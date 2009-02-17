@@ -22,7 +22,7 @@
 
 	<td>{$objRelated.mime_type|default:''}</td>
 	
-	<td style="text-align:right">{$objRelated.size|filesize}</td>
+	<td style="text-align:right">{$objRelated.size|default:0|filesize}</td>
 
 {/if}
 

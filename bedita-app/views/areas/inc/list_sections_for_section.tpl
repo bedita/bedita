@@ -5,7 +5,7 @@
 			<input type="text" class="priority"	name="reorder[{$s.id}][priority]" value="{$s.priority|default:""}" size="3" maxlength="3"/>
 		</td>
 		<td>
-			<span title="{$s.module}" class="listrecent areas" style="margin-left:0px">&nbsp;&nbsp;</span>
+			<span class="listrecent areas" style="margin-left:0px">&nbsp;&nbsp;</span>
 		</td>
 		<td style="width:100%">
 			{$s.title|default:'<i>[no title]</i>'|truncate:"64":"…":true}

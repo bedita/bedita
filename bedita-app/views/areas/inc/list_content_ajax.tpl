@@ -107,14 +107,15 @@ $(document).ready(function() {
 
 <div style="min-height:120px; margin-top:10px;">
 
-{if !empty($contents.items)}
-	<input type="hidden" name="contentsToRemove" id="contentsToRemove" value=""/>
-	
 	<div id="areacontent">
-		
+
 	<table class="indexlist" style="width:100%; margin-bottom:10px;">
 		<tbody class="disableSelection">
-		{include file="inc/list_contents_for_section.tpl" objsRelated=$contents.items}
+			<input type="hidden" name="contentsToRemove" id="contentsToRemove" value=""/>
+			{include file="inc/list_contents_for_section.tpl" objsRelated=$contents.items}
+			<tr class="obj">
+				
+			</tr>
 		</tbody>
 	</table>
 	
@@ -142,11 +143,8 @@ $(document).ready(function() {
 	</div>
 
 
-{else}
-	<ul id="areacontent" class="bordered">
-		<li id="noContents"><em>{t}no contents{/t}</em></li>
-	</ul>
-{/if}
+
+
 
 
 	<br />
