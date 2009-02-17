@@ -439,13 +439,18 @@ UL.modulesmenu {
 ...........................................*/
 
 UL.menuleft {
-	padding-bottom:10px;
+	padding-bottom:5px;
 	border-bottom:5px solid gray;
 	margin-bottom:10px !important;
 }
 
 .menuleft  LI {
-	line-height:1.175em;
+	line-height:1.2em;
+	padding-bottom:5px;
+}
+
+.menuleft  LI:first-letter {
+	text-transform: uppercase;
 }
 
 .menuleft  UL {
