@@ -67,10 +67,12 @@ $(document).ready(function(){
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('title', 'name')}</th>
-			<th>{$beToolbar->order('id', 'id')}</th>
+			<th>{$beToolbar->order('company', 'company')}</th>
 			<th>{$beToolbar->order('status', 'Status')}</th>
 			<th>{$beToolbar->order('modified', 'Modified')}</th>
+			<th>is user</th>
 			<th>{$beToolbar->order('country', 'Country')}</th>
+			<th>{$beToolbar->order('id', 'id')}</th>
 			<th>{$beToolbar->order('note', 'Notes')}</th>	
 		</tr>
 	{/capture}
@@ -84,10 +86,12 @@ $(document).ready(function(){
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}"/>
 			</td>
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a></td>
-			<td>{$objects[i].id}</td>
+			<td>{$objects[i].company|default:''}</td>
 			<td>{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
+			<td>no</td>
 			<td>{$objects[i].country}</td>
+			<td>{$objects[i].id}</td>
 			<td>{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 		</tr>
 		
