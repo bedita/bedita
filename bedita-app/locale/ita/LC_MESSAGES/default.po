@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-01-26 18:58:44\n"
+"POT-Creation-Date: 2009-02-17 11:26:49\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -15,6 +15,9 @@ msgstr "(De)Seleziona tutto"
 
 msgid "(un)select all"
 msgstr "(de)seleziona tutti"
+
+msgid "+"
+msgstr ""
 
 msgid "Access to Backend"
 msgstr "Accesso al Backend"
@@ -37,9 +40,6 @@ msgstr ""
 msgid "Add new category"
 msgstr "Aggiungi nuova categoria"
 
-msgid "Add new item"
-msgstr "Aggiungi nuovo elemento"
-
 msgid "Add selected items"
 msgstr ""
 
@@ -48,12 +48,6 @@ msgstr "Indirizzo"
 
 msgid "Advanced Properties"
 msgstr "Proprietà avanzate"
-
-msgid "all documents"
-msgstr "tutti i documenti"
-
-msgid "all events"
-msgstr "tutti gli eventi"
 
 msgid "Apply permissions recursively"
 msgstr ""
@@ -74,6 +68,11 @@ msgid "Are you sure you want to accept this IP?"
 msgstr ""
 
 msgid "Are you sure you want to ban this IP?"
+msgstr ""
+
+msgid ""
+"Are you sure you want to cancel and reload this document? All unsaved "
+"changes will be lost"
 msgstr ""
 
 msgid "Area deleted"
@@ -98,6 +97,12 @@ msgid "Auto-remove forbidden"
 msgstr ""
 
 msgid "B.Edita"
+msgstr ""
+
+msgid "BEdita contents statistics"
+msgstr ""
+
+msgid "BEdita editors activity statistics"
 msgstr ""
 
 msgid "Backend user restricted area"
@@ -235,6 +240,9 @@ msgstr ""
 msgid "Create new publishing"
 msgstr "Crea una nuova pubblicazione"
 
+msgid "Create new question"
+msgstr ""
+
 msgid "Create new section"
 msgstr "Crea una nuova sezione"
 
@@ -253,7 +261,7 @@ msgstr ""
 msgid "Custom properties"
 msgstr ""
 
-msgid "dashboard"
+msgid "Custom property saved"
 msgstr ""
 
 msgid "Delete"
@@ -289,11 +297,11 @@ msgstr ""
 msgid "Document saved"
 msgstr "Documento salvato"
 
-msgid "documents"
-msgstr "documenti"
-
 msgid "Documents deleted"
 msgstr "Documento eliminato"
+
+msgid "Duplicate property name for the same object"
+msgstr ""
 
 msgid "Edit more details"
 msgstr ""
@@ -325,10 +333,16 @@ msgstr ""
 msgid "Error changing password"
 msgstr ""
 
+msgid "Error checking url for link: "
+msgstr ""
+
 msgid "Error create jobs"
 msgstr ""
 
 msgid "Error delete permissions"
+msgstr ""
+
+msgid "Error deleting custom property "
 msgstr ""
 
 msgid "Error deleting object: %d"
@@ -394,6 +408,9 @@ msgstr ""
 msgid "Error saving comment"
 msgstr ""
 
+msgid "Error saving custom property"
+msgstr ""
+
 msgid "Error saving group"
 msgstr ""
 
@@ -401,6 +418,9 @@ msgid "Error saving mail group"
 msgstr ""
 
 msgid "Error saving multimedia"
+msgstr ""
+
+msgid "Error saving options"
 msgstr ""
 
 msgid "Error saving permissions"
@@ -430,6 +450,9 @@ msgstr ""
 msgid "Error updating user"
 msgstr ""
 
+msgid "Error: bad permissions"
+msgstr ""
+
 msgid "Errors during upload"
 msgstr ""
 
@@ -441,12 +464,6 @@ msgstr "Evento salvato"
 
 msgid "Event start"
 msgstr "Inizio"
-
-msgid "Events"
-msgstr "Eventi"
-
-msgid "events"
-msgstr "eventi"
 
 msgid "Events deleted"
 msgstr "Eventi eliminati"
@@ -461,6 +478,9 @@ msgid "File"
 msgstr ""
 
 msgid "File already exists in the filesystem"
+msgstr ""
+
+msgid "Find it"
 msgstr ""
 
 msgid "Galleries deleted"
@@ -548,10 +568,19 @@ msgstr ""
 msgid "Items"
 msgstr ""
 
+msgid "Last check"
+msgstr ""
+
+msgid "Last result"
+msgstr ""
+
 msgid "Letters or numbers only please"
 msgstr ""
 
 msgid "License is required (at least %1 alphanumerical char)"
+msgstr ""
+
+msgid "Link"
 msgstr ""
 
 msgid "Links"
@@ -564,9 +593,6 @@ msgid "Loading data"
 msgstr ""
 
 msgid "Login"
-msgstr ""
-
-msgid "Login failed"
 msgstr ""
 
 msgid "Long Text"
@@ -618,6 +644,9 @@ msgid "Missing list name"
 msgstr ""
 
 msgid "Missing message id or recipient"
+msgstr ""
+
+msgid "Missing options"
 msgstr ""
 
 msgid "Missing parent"
@@ -683,6 +712,9 @@ msgstr ""
 msgid "New card"
 msgstr ""
 
+msgid "New item"
+msgstr ""
+
 msgid "New link"
 msgstr ""
 
@@ -725,9 +757,6 @@ msgstr ""
 msgid "No data"
 msgstr ""
 
-msgid "No events found"
-msgstr "Nessun evento trovato"
-
 msgid "No file in the form"
 msgstr ""
 
@@ -747,6 +776,9 @@ msgid "No newsletters found"
 msgstr ""
 
 msgid "No object id specified"
+msgstr ""
+
+msgid "No questions found"
 msgstr ""
 
 msgid "No subscribers"
@@ -782,6 +814,9 @@ msgstr ""
 msgid "Notice"
 msgstr ""
 
+msgid "Number of objects"
+msgstr ""
+
 msgid "Occurrences"
 msgstr ""
 
@@ -799,9 +834,6 @@ msgstr ""
 
 msgid "Original Title"
 msgstr ""
-
-msgid "parent"
-msgstr "parentela"
 
 msgid "Password"
 msgstr ""
@@ -831,9 +863,6 @@ msgstr ""
 msgid "Please enter a valid time in the %1 format"
 msgstr ""
 
-msgid "Position"
-msgstr "Posizione"
-
 msgid "Post comment disabled"
 msgstr ""
 
@@ -843,11 +872,26 @@ msgstr ""
 msgid "Properties"
 msgstr ""
 
+msgid "Public sites users statistics"
+msgstr ""
+
 msgid "Publisher is required (at least %1 alphanumerical char)"
 msgstr "La pubblicazione è obbligatoria (almeno %1 carattere alfanumerico)"
 
 msgid "Publishing tree"
 msgstr "Albero delle pubblicazioni"
+
+msgid "Question detail"
+msgstr ""
+
+msgid "Questionnaires list"
+msgstr ""
+
+msgid "Questions"
+msgstr ""
+
+msgid "Questions list"
+msgstr ""
 
 msgid "Queue is empty"
 msgstr ""
@@ -902,6 +946,9 @@ msgstr ""
 
 msgid "Select by category"
 msgstr "Seleziona per categoria"
+
+msgid "Select by tag"
+msgstr ""
 
 msgid "Select by template"
 msgstr ""
@@ -1149,6 +1196,9 @@ msgstr "elementi recenti"
 msgid "altro"
 msgstr ""
 
+msgid "answers"
+msgstr ""
+
 msgid "asc"
 msgstr ""
 
@@ -1176,11 +1226,23 @@ msgstr ""
 msgid "browse your disk"
 msgstr ""
 
+msgid "cancel"
+msgstr ""
+
 msgid "change status"
 msgstr "cambia status"
 
 msgid "change status to"
 msgstr "cambia status in"
+
+msgid "change status to:"
+msgstr ""
+
+msgid "check selected links"
+msgstr ""
+
+msgid "check urls"
+msgstr ""
 
 msgid "choose document type"
 msgstr "scegli il tipo documento"
@@ -1212,6 +1274,9 @@ msgstr "contenuti"
 msgid "copy"
 msgstr "copia"
 
+msgid "correct"
+msgstr ""
+
 msgid "country"
 msgstr ""
 
@@ -1240,6 +1305,15 @@ msgid "creator"
 msgstr "autore"
 
 msgid "currently in job"
+msgstr ""
+
+msgid "data attributes"
+msgstr ""
+
+msgid "data type"
+msgstr ""
+
+msgid "date"
 msgstr ""
 
 msgid "deathdate"
@@ -1284,9 +1358,6 @@ msgstr "fine"
 msgid "end has to be a valid date in the following format:"
 msgstr ""
 
-msgid "Exit"
-msgstr "Esci"
-
 msgid "fax"
 msgstr ""
 
@@ -1314,6 +1385,9 @@ msgstr ""
 msgid "first page"
 msgstr ""
 
+msgid "for object type"
+msgstr ""
+
 msgid "from"
 msgstr "da"
 
@@ -1326,10 +1400,16 @@ msgstr "vai"
 msgid "height"
 msgstr "altezza"
 
+msgid "help"
+msgstr ""
+
 msgid "image"
 msgstr "immagine"
 
 msgid "in recipient groups"
+msgstr ""
+
+msgid "insert more questions"
 msgstr ""
 
 msgid "isbn/issn"
@@ -1410,8 +1490,17 @@ msgstr "sposta"
 msgid "multimedia descriptions"
 msgstr ""
 
+msgid "multiple choice"
+msgstr ""
+
 msgid "name"
 msgstr "nome"
+
+msgid "new publishing"
+msgstr "nuova pubblicazione"
+
+msgid "new section"
+msgstr "nuova sezione"
 
 msgid "newsletter title"
 msgstr ""
@@ -1425,12 +1514,6 @@ msgstr ""
 msgid "next page"
 msgstr ""
 
-msgid "new publishing"
-msgstr "nuova pubblicazione"
-
-msgid "new section"
-msgstr "nuova sezione"
-
 msgid "nickname"
 msgstr ""
 
@@ -1439,6 +1522,12 @@ msgstr ""
 
 msgid "no contents"
 msgstr "nessun contenuto"
+
+msgid "no custom properties defined"
+msgstr ""
+
+msgid "no referenced objects"
+msgstr ""
 
 msgid "no results"
 msgstr "nessun risultato"
@@ -1452,8 +1541,8 @@ msgstr ""
 msgid "not yet sent"
 msgstr ""
 
-msgid "notes"
-msgstr "note"
+msgid "number"
+msgstr ""
 
 msgid "of"
 msgstr "di"
@@ -1470,10 +1559,13 @@ msgstr ""
 msgid "open file in a separate window"
 msgstr ""
 
-msgid "operations"
+msgid "operazioni"
 msgstr ""
 
-msgid "operazioni"
+msgid "option list"
+msgstr ""
+
+msgid "options"
 msgstr ""
 
 msgid "or"
@@ -1521,10 +1613,10 @@ msgstr ""
 msgid "properties"
 msgstr "proprietà"
 
-msgid "Properties"
-msgstr "Proprietà"
+msgid "property name"
+msgstr ""
 
-msgid "public list"
+msgid "public list\t"
 msgstr ""
 
 msgid "public name"
@@ -1557,6 +1649,9 @@ msgstr ""
 msgid "referenced objects list"
 msgstr ""
 
+msgid "remove"
+msgstr ""
+
 msgid "remove from users"
 msgstr ""
 
@@ -1575,6 +1670,9 @@ msgstr "diritti"
 msgid "save"
 msgstr "salva"
 
+msgid "scheduled"
+msgstr ""
+
 msgid "scheduled from"
 msgstr "previsto dal"
 
@@ -1584,8 +1682,14 @@ msgstr "cerca"
 msgid "search string"
 msgstr "stringa di ricerca"
 
+msgid "search string:"
+msgstr ""
+
 msgid "sections"
 msgstr "sezioni"
+
+msgid "see results"
+msgstr ""
 
 msgid "select an item to associate"
 msgstr "seleziona un elemento da collegare"
@@ -1671,6 +1775,12 @@ msgstr ""
 msgid "template"
 msgstr ""
 
+msgid "tescription"
+msgstr ""
+
+msgid "text"
+msgstr ""
+
 msgid "title"
 msgstr "titolo"
 
@@ -1749,15 +1859,38 @@ msgstr "anno"
 msgid "yes"
 msgstr "sì"
 
-msgid "Yes"
-msgstr "Sì"
-
 msgid "your 5 recent items"
 msgstr "i tuoi 5 ultimi elementi"
 
 msgid "your message"
 msgstr ""
 
+#~ msgid "Add new item"
+#~ msgstr "Aggiungi nuovo elemento"
 
+#~ msgid "all documents"
+#~ msgstr "tutti i documenti"
 
+#~ msgid "all events"
+#~ msgstr "tutti gli eventi"
 
+#~ msgid "documents"
+#~ msgstr "documenti"
+
+#~ msgid "Events"
+#~ msgstr "Eventi"
+
+#~ msgid "events"
+#~ msgstr "eventi"
+
+#~ msgid "No events found"
+#~ msgstr "Nessun evento trovato"
+
+#~ msgid "parent"
+#~ msgstr "parentela"
+
+#~ msgid "Position"
+#~ msgstr "Posizione"
+
+#~ msgid "notes"
+#~ msgstr "note"
