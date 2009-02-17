@@ -1,5 +1,5 @@
 
-<div class="tab"><h2>comment#{$object.id} on </h2></div>
+<div class="tab"><h2>comment#{$object.id} on {$object.ReferenceObject.title}</h2></div>
 
 <fieldset id="details">
 <table class="bordered">

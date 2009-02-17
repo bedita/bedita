@@ -102,6 +102,10 @@ class MultimediaController extends ModulesController {
 			if (!empty($obj['RelatedObject'])) {
 				$obj["relations"] = $this->objectRelationArray($obj['RelatedObject']);
 			}
+			if (!empty($obj['Annotation'])) {
+				$this->setupAnnotations($obj);
+			}
+			unset($obj['Annotation']);
 			
 			$imagePath 	= $this->BeFileHandler->path($id) ;
 			$imageURL 	= $this->BeFileHandler->url($id) ;

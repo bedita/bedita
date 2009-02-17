@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -28,47 +28,7 @@
  * 
  * $Id$
  */
-class Document extends BeditaContentModel 
+class Annotation extends BEAppModel
 {
-	var $useTable = 'contents';
-
-	protected $modelBindings = array( 
-				"detailed" =>  array("BEObject" => array("ObjectType", 
-															"UserCreated", 
-															"UserModified", 
-															"Permissions",
-															"ObjectProperty",
-															"LangText",
-															"RelatedObject",
-															"Annotation",
-															"Category"
-															),
-									"GeoTag"),
-				"default" => array("BEObject" => array("ObjectProperty", 
-									"LangText", "ObjectType", "Annotation",
-									"Category", "RelatedObject" ), "GeoTag"),
-
-				"minimum" => array("BEObject" => array("ObjectType"))		
-	);
-	
-	var $actsAs 	= array(
-			'CompactResult' 		=> array('GeoTag'),
-	); 
-
-	var $hasMany = array(
-		'GeoTag' =>
-			array(
-				'foreignKey'	=> 'object_id',
-				'dependent'		=> true
-			)
-	) ;
-
-	function afterSave() {
-		return $this->updateHasManyAssoc();
-	}
-
-	
 }
-
-
 ?>

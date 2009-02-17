@@ -28,16 +28,10 @@
  * 
  * $Id$
  */
-class Comment extends BeditaContentModel 
+class Comment extends BeditaAnnotationModel
 {
-	var $actsAs = array();
-	
-	protected $modelBindings = array( 
-				"detailed" =>  array("BEObject" => array("ObjectType", "RelatedObject")),
-				"default" =>  array("BEObject" => array("ObjectType", "RelatedObject")),
-				"minimum" => array("BEObject" => array("ObjectType"))
-	);
-	
+	var $useTable = 'annotations';
+
 	var $validate = array(
 			'author' => array(
 				'required' 		=> true

@@ -75,6 +75,7 @@ DROP TABLE IF EXISTS `object_users`;
 DROP TABLE IF EXISTS `versions`;
 DROP TABLE IF EXISTS `trees`;
 DROP TABLE IF EXISTS `comments`;
+DROP TABLE IF EXISTS `annotations`;
 DROP TABLE IF EXISTS `properties`;
 DROP TABLE IF EXISTS `property_options`;
 DROP TABLE IF EXISTS `objects`;
@@ -120,7 +121,9 @@ CREATE TABLE `banned_ips` (
 
 CREATE TABLE groups (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  name VARCHAR(32) NULL,
+  name VARCHAR(32) NOT NULL,
+  backend_auth BOOL NOT NULL DEFAULT '1',
+  immutable BOOL NOT NULL DEFAULT '0',
   created datetime default NULL,
   modified datetime default NULL,
  PRIMARY KEY(id)
@@ -291,6 +294,27 @@ CREATE TABLE comments (
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE annotations (
+  id INTEGER UNSIGNED NOT NULL,
+  object_id INTEGER UNSIGNED NOT NULL,
+  author VARCHAR(255) NULL,
+  email VARCHAR(255) NULL,
+  url VARCHAR(255) NULL,
+  thread_path MEDIUMTEXT NULL,
+  rating INTEGER UNSIGNED NULL,
+  PRIMARY KEY(id),
+  INDEX `author_idx`(author),
+  INDEX `objects_idx` (`object_id`),
+  FOREIGN KEY(id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 
 -- La cancellazione deve essere gestita separatamente

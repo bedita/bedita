@@ -77,8 +77,8 @@
 			<input type="radio" name="data[comments]" value="moderated"{if !empty($object.comments) && $object.comments=='moderated'} checked{/if}/>{t}Moderated{/t}
 			&nbsp;&nbsp;
 			{if isset($moduleList.comments) && $moduleList.comments.status == "on"}
-				{if !empty($relationsCount.comment)}
-					<a href="{$html->url('/')}comments/index/relation:comment/rel_object_id:{$object.id}"><img style="vertical-align:middle" src="{$html->webroot}img/iconComments.gif" alt="comments" /> ({$relationsCount.comment}) {t}view{/t}</a>
+				{if !empty($object.num_of_comment)}
+					<a href="{$html->url('/')}comments/index/comment_object_id:{$object.id}"><img style="vertical-align:middle" src="{$html->webroot}img/iconComments.gif" alt="comments" /> ({$object.num_of_comment}) {t}view{/t}</a>
 				{/if}
 			{/if}
 		</td>

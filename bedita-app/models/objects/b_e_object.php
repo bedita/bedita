@@ -106,6 +106,11 @@ class BEObject extends BEAppModel
 				'foreignKey'	=> 'object_id',
 				'dependent'		=> true
 			),
+		'Annotation' =>
+			array(
+				'foreignKey'	=> 'object_id',
+				'dependent'		=> true
+			),
 		'RelatedObject' =>
 			array(
 				'className'				=> 'ObjectRelation',

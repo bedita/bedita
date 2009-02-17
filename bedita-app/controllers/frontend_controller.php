@@ -456,7 +456,11 @@ abstract class FrontendController extends AppController {
 				$obj['relations_count'][$k] = count($v);
 			}
 		}
-
+		if (!empty($obj['Annotation'])) {
+			$this->setupAnnotations($obj);
+		}
+		unset($obj['Annotation']);
+		
 		$obj['object_type'] = $modelType;
 		return $obj;
 	}
@@ -816,7 +820,7 @@ abstract class FrontendController extends AppController {
 			$this->data["title"] = substr($this->data["description"],0,30) . "...";
 			// for comment status check contents.comments 
 			$beObject = ClassRegistry::init("BEObject");
-			$commentsFlag = $beObject->field("comments", array("id" => $this->data['RelatedObject']['comment']['0']['id']));
+			$commentsFlag = $beObject->field("comments", array("id" => $this->data['object_id']));
 			if($commentsFlag == 'moderated') {
 				 $this->data["status"] = "draft";
 			} else if ($commentsFlag == 'on'){

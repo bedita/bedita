@@ -705,6 +705,39 @@ class BeditaContentModel extends BEAppObjectModel {
 		
 }
 
+/**
+ * Bedita annotation model
+**/
+
+class BeditaAnnotationModel extends BEAppObjectModel {
+	
+	public $searchFields = array("title" => 10 , "description" => 6, 
+		"body" => 4, "author" => 3);	
+
+	var $belongsTo = array(
+		"ReferenceObject" =>
+			array(
+				'className'		=> 'BEObject',
+				'foreignKey'	=> 'object_id',
+			),
+	);
+	
+	var $actsAs 	= array(
+			'CompactResult' 		=> array("ReferenceObject"),
+			'SearchTextSave',
+			'ForeignDependenceSave' => array('BEObject'),
+			'DeleteObject' 			=> 'objects',
+	); 
+	
+	protected $modelBindings = array( 
+		"detailed" =>  array("BEObject" => array("ObjectType"), "ReferenceObject"),
+		"default" =>  array("BEObject" => array("ObjectType"), "ReferenceObject"),
+		"minimum" => array("BEObject" => array("ObjectType"))
+	);
+	
+}
+
+
 
 class BeditaSimpleStreamModel extends BEAppObjectModel {
 

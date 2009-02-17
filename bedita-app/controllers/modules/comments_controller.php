@@ -39,8 +39,6 @@ class CommentsController extends ModulesController {
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
 		$filter["object_type_id"] = $conf->objectTypes['comment']["id"];
-		$filter["rel_detail"] = true;
-		$filter["relation"] = 'comment';
 		$filter["Comment.email"] = "";
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 	 }
@@ -53,10 +51,8 @@ class CommentsController extends ModulesController {
 			if(!($obj = $this->Comment->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading comment: %d", true), $id));
 			}
-			$relations = $this->objectRelationArray($obj['RelatedObject']);
 		}
 		$this->set('object',	$obj);
-		$this->set('relObjects', $relations);
 		$bannedIP = ClassRegistry::init("BannedIp");
         if($bannedIP->isBanned($obj['ip_created'])) {
 			$this->set('banned', true);

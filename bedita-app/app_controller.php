@@ -426,6 +426,38 @@ class AppController extends Controller
 		}		
 		return $relationArray;
 	}
+
+	/**
+	 * Setup object array with annotations-type details
+	 *
+	 * @param array $objectArray
+	 * @param array $status, default get all objects
+	 * @return array
+	 */
+	protected function setupAnnotations(array &$objectArray, $status=array()) {
+		$typesCount = array();
+		$beObject = ClassRegistry::init("BEObject");
+		foreach ($objectArray['Annotation'] as $obj) {	
+			$modelClass = $beObject->getType($obj['id']);
+			$this->{$modelClass} = $this->loadModelByType($modelClass);
+			$this->modelBindings($this->{$modelClass});
+			if(!($objDetail = $this->{$modelClass}->findById($obj['id']))) {
+				continue ;
+			}
+            if (empty($status) || in_array($objDetail["status"],$status)) {
+				$objectArray[$modelClass][] = $objDetail;
+				if(!array_key_exists($modelClass, $typesCount)) {
+					$typesCount[$modelClass] = 1;
+				} else {
+					$typesCount[$modelClass] = $typesCount[$modelClass] + 1;
+				}
+			}	
+		}
+		foreach ($typesCount as $k => $v) {
+			$objectArray['num_of_'.Inflector::underscore($k)] = $v;
+		}
+	}
+	
 }
 
 /**
@@ -683,6 +715,10 @@ abstract class ModulesController extends AppController {
 			foreach ($relations as $k=>$v) {
 				$relationsCount[$k] = count($v);
 			}	
+			if (!empty($obj['Annotation'])) {
+				$this->setupAnnotations($obj);
+			}
+			unset($obj['Annotation']);
 			// build array of id's categories associated
 			$obj["assocCategory"] = array();
 			if (isset($obj["Category"])) {

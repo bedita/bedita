@@ -78,6 +78,9 @@ class BeTreeComponent extends Object {
 		if (!empty($this->controller->passedArgs["rel_detail"]))
 			$this->filter["rel_detail"] = $this->controller->passedArgs["rel_detail"];
 			
+		if (!empty($this->controller->passedArgs["comment_object_id"]))
+			$this->filter["Comment.object_id"] = $this->controller->passedArgs["comment_object_id"];
+			
 		if (!empty($this->controller->passedArgs["mail_group"]))
 			$this->filter["mail_group"] = $this->controller->passedArgs["mail_group"];
 
