@@ -26,13 +26,13 @@
 
 	<tr>
 		<td colspan="2">
-			<label>{t}scheduled{/t} &nbsp;&nbsp;&nbsp;{t}from{/t}:</label>&nbsp;
+			<label>{t}scheduled from{/t}:</label>&nbsp;
 			
 			
 			<input size="10" type="text" style="vertical-align:middle"
 			class="dateinput" name="data[start]" id="start" 
 			value="{if !empty($object.start)}{$object.start|date_format:$conf->datePattern}{/if}" />
-			&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;
 			
 			<label>{t}to{/t}: </label>&nbsp;
 			

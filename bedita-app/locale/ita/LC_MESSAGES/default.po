@@ -37,6 +37,9 @@ msgstr ""
 msgid "Add new category"
 msgstr "Aggiungi nuova categoria"
 
+msgid "Add new item"
+msgstr "Aggiungi nuovo elemento"
+
 msgid "Add selected items"
 msgstr ""
 
@@ -164,7 +167,7 @@ msgid "Change Password"
 msgstr ""
 
 msgid "Change this file with another"
-msgstr ""
+msgstr "Sostituisci il file"
 
 msgid "Channels"
 msgstr ""
@@ -299,10 +302,10 @@ msgid "Email"
 msgstr ""
 
 msgid "Embedded in"
-msgstr ""
+msgstr "Inserito in"
 
 msgid "Embedded in no objects"
-msgstr ""
+msgstr "l'elemento non è inserito da nessuna parte"
 
 msgid "Empty data"
 msgstr ""
@@ -513,7 +516,7 @@ msgid "Height"
 msgstr ""
 
 msgid "Hide system tags"
-msgstr ""
+msgstr "Nascondi i Tag"
 
 msgid "Human readable type"
 msgstr ""
@@ -636,19 +639,19 @@ msgid "Missing temporary file in filesystem."
 msgstr ""
 
 msgid "Moderated"
-msgstr ""
+msgstr "Moderati"
 
 msgid "Modify"
-msgstr ""
+msgstr "Modifica"
 
 msgid "Module"
-msgstr ""
+msgstr "Modulo"
 
 msgid "Module access"
 msgstr ""
 
 msgid "More data"
-msgstr ""
+msgstr "Altri dati"
 
 msgid "Multimedia  not found"
 msgstr ""
@@ -657,7 +660,7 @@ msgid "Multimedia deleted"
 msgstr ""
 
 msgid "Multimedia items"
-msgstr ""
+msgstr "Elementi multimediali"
 
 msgid "Multimedia object saved"
 msgstr ""
@@ -797,6 +800,9 @@ msgstr ""
 msgid "Original Title"
 msgstr ""
 
+msgid "parent"
+msgstr "parentela"
+
 msgid "Password"
 msgstr ""
 
@@ -824,6 +830,9 @@ msgstr ""
 
 msgid "Please enter a valid time in the %1 format"
 msgstr ""
+
+msgid "Position"
+msgstr "Posizione"
 
 msgid "Post comment disabled"
 msgstr ""
@@ -853,7 +862,7 @@ msgid "Read only"
 msgstr ""
 
 msgid "Real name"
-msgstr ""
+msgstr "Nome reale"
 
 msgid "Real name is required (at least %1 alphanumerical chars)"
 msgstr ""
@@ -862,10 +871,10 @@ msgid "Recent newsletters "
 msgstr ""
 
 msgid "Relationships"
-msgstr ""
+msgstr "Relazioni"
 
 msgid "Remove"
-msgstr ""
+msgstr "Rimuovi"
 
 msgid "Resource "
 msgstr ""
@@ -880,10 +889,10 @@ msgid "Search"
 msgstr "Cerca"
 
 msgid "Section deleted"
-msgstr ""
+msgstr "Sezione elimnata"
 
 msgid "Section saved"
-msgstr ""
+msgstr "Sezione salvata"
 
 msgid "Select a user from the list"
 msgstr ""
@@ -892,13 +901,13 @@ msgid "Select at least one type of permission"
 msgstr ""
 
 msgid "Select by category"
-msgstr ""
+msgstr "Seleziona per categoria"
 
 msgid "Select by template"
 msgstr ""
 
 msgid "Select by type"
-msgstr ""
+msgstr "Seleziona per tipo"
 
 msgid "Send email to"
 msgstr ""
@@ -910,7 +919,7 @@ msgid "Show all"
 msgstr ""
 
 msgid "Show system tags"
-msgstr ""
+msgstr "Mostra i tag già esistenti"
 
 msgid "Show translations in"
 msgstr ""
@@ -964,7 +973,7 @@ msgid "Test mail sent to "
 msgstr ""
 
 msgid "Text"
-msgstr ""
+msgstr "Testo"
 
 msgid "Text doesn't match image"
 msgstr ""
@@ -977,10 +986,10 @@ msgid "This object is fixed - some data is readonly"
 msgstr ""
 
 msgid "Title"
-msgstr ""
+msgstr "Titolo"
 
 msgid "Title is required"
-msgstr ""
+msgstr "Il titolo è necesario"
 
 msgid "Translation deleted"
 msgstr "Traduzione eliminata"
@@ -995,7 +1004,7 @@ msgid "Translations"
 msgstr "Traduzioni"
 
 msgid "URL not valid"
-msgstr ""
+msgstr "URL non valido"
 
 msgid "URL unattainable"
 msgstr ""
@@ -1010,7 +1019,7 @@ msgid "Upload end"
 msgstr ""
 
 msgid "Upload new file"
-msgstr ""
+msgstr "Fai l'upload di un nuovo file"
 
 msgid "Upload queue"
 msgstr ""
@@ -1102,7 +1111,7 @@ msgid "add by object ids"
 msgstr ""
 
 msgid "add by url"
-msgstr ""
+msgstr "aggiungi via url"
 
 msgid "add comma separated words"
 msgstr "aggiungi parole separate da virgola"
@@ -1129,7 +1138,7 @@ msgid "addressbook details"
 msgstr ""
 
 msgid "advanced properties"
-msgstr ""
+msgstr "proprietà avanzate"
 
 msgid "all"
 msgstr ""
@@ -1222,10 +1231,10 @@ msgid "created"
 msgstr "creato"
 
 msgid "created by"
-msgstr ""
+msgstr "creato da"
 
 msgid "created on"
-msgstr ""
+msgstr "creato il"
 
 msgid "creator"
 msgstr "autore"
@@ -1342,16 +1351,16 @@ msgid "last modified"
 msgstr "ultima modifica"
 
 msgid "last modified by"
-msgstr ""
+msgstr "ultima modifica di"
 
 msgid "last modified on"
-msgstr ""
+msgstr "ultima modifica il"
 
 msgid "last page"
 msgstr ""
 
 msgid "latitude"
-msgstr ""
+msgstr "latitudine"
 
 msgid "license"
 msgstr "licenza"
@@ -1366,7 +1375,7 @@ msgid "long text"
 msgstr "testo esteso"
 
 msgid "longitude"
-msgstr ""
+msgstr "longitudine"
 
 msgid "mail address"
 msgstr ""
@@ -1512,6 +1521,9 @@ msgstr ""
 msgid "properties"
 msgstr "proprietà"
 
+msgid "Properties"
+msgstr "Proprietà"
+
 msgid "public list"
 msgstr ""
 
@@ -1563,8 +1575,8 @@ msgstr "diritti"
 msgid "save"
 msgstr "salva"
 
-msgid "scheduled"
-msgstr ""
+msgid "scheduled from"
+msgstr "previsto dal"
 
 msgid "search"
 msgstr "cerca"
@@ -1659,14 +1671,11 @@ msgstr ""
 msgid "template"
 msgstr ""
 
-msgid "tescription"
-msgstr ""
-
 msgid "title"
 msgstr "titolo"
 
 msgid "to"
-msgstr ""
+msgstr "al"
 
 msgid "to recipients"
 msgstr ""
@@ -1675,7 +1684,7 @@ msgid "transgender"
 msgstr ""
 
 msgid "translation of"
-msgstr ""
+msgstr "traduzione di"
 
 msgid "translation to"
 msgstr ""
@@ -1684,7 +1693,7 @@ msgid "type"
 msgstr "tipo"
 
 msgid "upload new items"
-msgstr "carica nuovi oggetti"
+msgstr "carica nuovi elementi"
 
 msgid "url"
 msgstr ""
@@ -1738,7 +1747,10 @@ msgid "year"
 msgstr "anno"
 
 msgid "yes"
-msgstr "si"
+msgstr "sì"
+
+msgid "Yes"
+msgstr "Sì"
 
 msgid "your 5 recent items"
 msgstr "i tuoi 5 ultimi elementi"

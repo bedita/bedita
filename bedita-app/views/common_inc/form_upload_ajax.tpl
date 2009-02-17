@@ -9,12 +9,12 @@
 		</tr>
 		
 		<tr>
-			<td>{t}Title{/t}:</td>
+			<td>{t}title{/t}:</td>
 			<td><input style="width:270px;" type="text" name="streamUploaded[title]" class="formtitolo" value=""></td>
 		</tr>
 		
 		<tr>
-			<td>{t}Description{/t}:</td>
+			<td>{t}description{/t}:</td>
 			<td><textarea name="streamUploaded[description]" class="autogrowarea" style="width:270px; min-height:16px; height:16px;"></textarea></td>
 		</tr>
 		<tr>

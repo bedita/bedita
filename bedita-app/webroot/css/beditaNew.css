@@ -463,6 +463,7 @@ UL.menuleft {
 .menuleft UL LI {
 	list-style-type:disc;
 	line-height:1.35em;
+	padding-bottom:0px;
 	/*white-space:nowrap;*/
 }
 

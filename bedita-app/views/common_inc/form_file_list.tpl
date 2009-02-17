@@ -165,15 +165,15 @@ $(document).ready(function()
 		*}
 		<table style="margin-bottom:20px">
 		<tr>
-			<td>{t}Url{/t}:</td>
+			<td>{t}url{/t}:</td>
 			<td><input type="text" style="width:270px;" name="uploadByUrl[url]" /></td>
 		</tr>
 		<tr>
-			<td>{t}Title{/t}:</td>
+			<td>{t}title{/t}:</td>
 			<td><input type="text" style="width:270px;" name="uploadByUrl[title]" /></td>
 		</tr>
 		<tr>
-			<td>{t}Description{/t}:</td>
+			<td>{t}description{/t}:</td>
 			<td><textarea style="width:270px; min-height:16px; height:16px;" class="autogrowarea" name="uploadByUrl[description]"></textarea></td>
 		</tr>
 		<tr>

@@ -76,7 +76,7 @@ $(function() {
 	
 	<table class="htab">
 	{foreach from=$availabeRelations item="rel"}
-			<td rel="relationType_{$rel}">{$rel}</td>
+			<td rel="relationType_{$rel}">{t}{$rel}{/t}</td>
 	{/foreach}
 	</table>
 
@@ -97,7 +97,7 @@ $(function() {
 			</tbody>
 		</table>
 		
-		<input type="button" class="modalbutton" title="{$rel|upper} : {t}select an item to associate{/t}"
+		<input type="button" class="modalbutton" title="{t}{$rel}{/t} : {t}select an item to associate{/t}"
 		rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/{$rel}/{$object_type_id}" style="width:200px" 
 		value="  {t}connect new items{/t}  " />
 		
