@@ -1196,7 +1196,7 @@ INPUT.priority {
 
 
 #loading, .loader {
-	background: transparent url(../img/loadingAnimation.gif) left no-repeat;
+	background: transparent url(../img/loadingAnimation.gif) no-repeat top center;
 	display:none;
 	min-height:48px;
 	min-width:48px;
@@ -1231,36 +1231,40 @@ INPUT.priority {
 	top:160px;
 	left:300px;
 	background-color: #FFFFFF;
-	width:500px;
-	height:550px;
+	width:660px;
+	/*height:550px;*/
 	display:none;
 	z-index:500;
-	overflow:hidden;
+	/*overflow:hidden;*/
+	border-radius : 22px; 
+	-moz-border-radius : 22px; 
+	-webkit-border-radius : 22px;
+	-khtml-border-radius: 22px;
 }
 
 #modalmain {
-	width:500px;
-	height:525px;
-	overflow-y:auto;
-	overflow-x:hidden;
+	width:100%;
+	/*min-height:525px;*/
+	/*overflow-y:auto;*/
+	/*overflow-x:hidden;*/
 	background: transparent url(../img/shadowsimple.png) repeat-x;
-	
+	margin-bottom:30px;
 }
 
 #modalmain .body {
 	padding:10px;
-	height:505px;
+	/*min-height:505px;*/
 	
 }
 
 .modalcommands {
-	padding:10px; margin-top:10px; text-align:center; 
+	padding:10px; margin-top:0px; text-align:center; 
 	background-color:#FFFFFF;
 }
 
 #modalheader {
 	background-color:#000000;
-	width:480px;
+	/*width:480px;*/
 	height:20px;
 	padding-top:5px;
 	padding-right:20px;
@@ -1270,7 +1274,7 @@ INPUT.priority {
 }
 
 #modalheader:Hover {
-	background-color:#333333;
+	background-color:#666;
 }
 
 #modalheader A {
