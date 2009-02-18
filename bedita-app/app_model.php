@@ -342,6 +342,12 @@ class BEAppModel extends AppModel {
 		$order = "";
 		
 		// define particular behaviors: put first LEFT, INNER, RIGHT specific join then join build in WHERE condition
+		if (array_key_exists("object_user", $filter)) {
+			$fields .= ", `ObjectUser`.user_id AS user_id";
+			$from = " LEFT OUTER JOIN object_users AS `ObjectUser` ON `BEObject`.id=`ObjectUser`.object_id";
+			unset($filter["object_user"]);
+		}
+		
 		if (array_key_exists("mediatype", $filter)) {
 			$fields .= ", `Category`.name AS mediatype";
 			$from = " LEFT OUTER JOIN object_categories AS `ObjectCategory` ON `BEObject`.id=`ObjectCategory`.object_id
