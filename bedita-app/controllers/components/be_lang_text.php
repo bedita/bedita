@@ -98,34 +98,35 @@ class BeLangTextComponent extends Object {
 			
 			foreach ($object["LangText"]["status"] as $langAvailable => $statusLang) {
 				
-				// main language
-				if ($langAvailable == $lang) {
-					
-					foreach($object["LangText"] as $key => $value) {
-						if (!is_numeric($key)) { 
-							if (!empty($object[$key]) && $key == "title")
-								$object["languages"][$object["lang"]][$key] = $object[$key]; 
-							
-							$object[$key] = $object["LangText"][$key][$lang];
+				if (in_array($statusLang, $status)) {
+					// if main language substitute $object corresponding fields (not status) 
+					if ($langAvailable == $lang) {
+						
+						foreach($object["LangText"] as $key => $value) {
+							if (!is_numeric($key)) { 
+								if (!empty($object[$key])) {
+									if($key == "title") {
+										$object["languages"][$object["lang"]][$key] = $object[$key];
+									}
+									if($key != "status") {
+										$object[$key] = $object["LangText"][$key][$lang];
+									}
+								}
+							}
 						}
-					}
-				// avaible languages
-				} elseif (in_array($statusLang, $status)) {
-				
-					$object["languages"][$langAvailable] = array();
-					foreach($object["LangText"] as $key => $value) {
-						if ($key == "title") {
-							$object["languages"][$langAvailable][$key] = $object["LangText"][$key][$langAvailable];
+					// avaible languages
+					} else {
+						$object["languages"][$langAvailable] = array();
+						foreach($object["LangText"] as $key => $value) {
+							if ($key == "title") {
+								$object["languages"][$langAvailable][$key] = $object["LangText"][$key][$langAvailable];
+							}
 						}
 					}
 				}
 			}
-			
-			unset($object["LangText"]);
-		} elseif (isset($object["LangText"])) {
-			unset($object["LangText"]);
 		}
-		
+		unset($object["LangText"]);
 	}
 }
 ?>
