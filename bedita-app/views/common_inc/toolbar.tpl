@@ -1,10 +1,26 @@
+{strip}
 <div class="head">
 	
 	<div class="toolbar" style="white-space:nowrap">
 		
-		<h2>{if !empty($sectionSel)}{t}{$itemName|default:$moduleName}{/t} in “ 
-		<span style="color:white" class="evidence">{$sectionSel.title}</span> ”
-		{else} {t}all {$itemName|default:$moduleName}{/t}{/if}</h2>
+		<h2>
+			{if !empty($sectionSel)}
+			
+				{t}{$itemName|default:$moduleName}{/t} in “ 
+				<span style="color:white" class="evidence">{$sectionSel.title}</span> ”
+			
+			{elseif !empty($pubSel)}
+				
+				{t}{$itemName|default:$moduleName}{/t} in “ 
+				<span style="color:white" class="evidence">{$pubSel.title}</span> ”
+			
+			{else}
+			
+				{t}all {$itemName|default:$moduleName}{/t}
+			
+			{/if}
+		</h2>
+		
 		
 		<table>
 		<tr>
@@ -42,4 +58,4 @@
 	</div>
 
 </div> 
-
+{/strip}

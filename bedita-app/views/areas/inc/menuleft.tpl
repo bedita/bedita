@@ -33,11 +33,6 @@ Menu a SX valido per tutte le pagine del controller.
 	{include file="../common_inc/messages.tpl"}
 	</div>
 	
-	{*
-	<ul class="menuleft insidecol" style="border-top:5px solid gray; padding-top:10px;  margin-top:20px">
-		<li {if $method eq 'hyper'}class="on"{/if}>{$tr->link('Publishing HyperTree', '/areas?hyper=1')}</li>	
-	</ul>
-	*}
 
 	{include file="../common_inc/user_module_perms.tpl"}
 	
