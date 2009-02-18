@@ -109,7 +109,7 @@ class Tree extends BEAppModel
 		}
 		$path = substr($path,1);
 		$pos = strpos($path,"/");
-		if($pos == -1)
+		if($pos === false)
 			return $path;
 		return substr($path,0, $pos);
 	}

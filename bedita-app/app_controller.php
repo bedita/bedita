@@ -497,10 +497,8 @@ abstract class ModulesController extends AppController {
 		$pubSel = null;
 		if(isset($id)) {
 			$section = $this->loadModelByType("section");
-			$this->modelBindings['Section'] = array("BEObject");
-			$this->modelBindings($section);
+			$section->containLevel("minimum");
 			$sectionSel = $section->findById($id);
-			unset($this->modelBindings['Section']);
 			$pubSel = $this->BeTree->getAreaForSection($id);
 		}
 		
