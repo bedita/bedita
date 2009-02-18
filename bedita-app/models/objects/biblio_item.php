@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -29,26 +29,10 @@
  * 
  * $Id$
  */
-class BiblioItem extends BEObject
+class BiblioItem extends BeditaAnnotationModel
 {
-	var $actsAs = array();
 
-	public $searchFields = array();
+	var $useTable = 'annotations';
 
-	var $useTable	= "objects" ;
-	
-	protected $modelBindings = array( 
-			"detailed" =>  array("ObjectType", 
-								"UserCreated", 
-								"UserModified", 
-								"Permissions",
-								"ObjectProperty",
-								"LangText",
-								"RelatedObject",
-								"Category"),
-			"default" 	=> array("ObjectProperty", "LangText", 
-								"ObjectType", "Category", "RelatedObject"),
-			"minimum" => array("ObjectType")
-	);
 }
 ?>
