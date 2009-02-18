@@ -39,7 +39,11 @@ class CommentsController extends ModulesController {
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
 		$filter["object_type_id"] = $conf->objectTypes['comment']["id"];
-		$filter["Comment.email"] = "";
+		$filter["ref_object_details"] = "Comment";
+		$filter["Comment.email"] = (!empty($this->passedArgs["email"]))? $this->passedArgs["email"] : "";
+		if (!empty($this->passedArgs["ip_created"]))
+			$filter["ip_created"] = $this->passedArgs["ip_created"];
+		
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 	 }
 	 

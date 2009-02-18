@@ -84,9 +84,9 @@
 <div class="tab"><h2>{t}altro{/t}</h2></div>
 <fieldset id="altro">
 <ul>
-	<li>vedi altri commenti da questo IP</li>
-	<li>vedi altri commenti da questa email</li>
-	<li>vedi altri commenti a questa notizia</li>
+	<li><a href="{$html->url('/comments/index')}/ip_created:{$object.ip_created|default:''}">{t}see comments from this IP{/t}</a></li>
+	<li><a href="{$html->url('/comments/index')}/email:{$object.email|default:''}">{t}see comments from this email{/t}</a></li>
+	<li><a href="{$html->url('/comments/index')}/comment_object_id:{$object.object_id|default:''}">{t}see comments on this content{/t}</a></li>
 </ul>
 </fieldset>
 

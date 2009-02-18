@@ -312,17 +312,21 @@ class BEAppModel extends AppModel {
 			"items"		=> array(),
 			"toolbar"	=> $this->toolbar($page, $dim, $size) );
 		for ($i =0; $i < count($tmp); $i++) {
-			$tmpRel = array();
+			$tmpToAdd = array();
 			if (!empty($tmp[$i]["Content"]) && empty($tmp[$i]["Content"]["id"]))
 				unset($tmp[$i]["Content"]);
 				
 			if (!empty($tmp[$i]["RelatedObject"])) {
-				$tmpRel["RelatedObject"] = $tmp[$i]["RelatedObject"];
+				$tmpToAdd["RelatedObject"] = $tmp[$i]["RelatedObject"];
 				unset($tmp[$i]["RelatedObject"]);
-				$recordset['items'][] = array_merge($this->am($tmp[$i]), $tmpRel);
-			} else {
-				$recordset['items'][] = $this->am($tmp[$i]);
 			}
+			
+			if (!empty($tmp[$i]["ReferenceObject"])) {
+				$tmpToAdd["ReferenceObject"] = $tmp[$i]["ReferenceObject"];
+				unset($tmp[$i]["ReferenceObject"]);
+			}
+			
+			$recordset['items'][] = array_merge($this->am($tmp[$i]), $tmpToAdd);
 		}
 
 		return $recordset ;
@@ -395,6 +399,15 @@ class BEAppModel extends AppModel {
 				$order .= ( (!empty($order))? "," : "" ) . "ObjectRelation.priority";
 			}
 			unset($filter["rel_detail"]);
+		}
+		
+		if (array_key_exists("ref_object_details", $filter)) {
+			if (!empty($filter["ref_object_details"])) {
+				$fields .= ", `ReferenceObject`.*";
+				$from .= ", objects AS `ReferenceObject`";
+				$conditions[] = "`" . ClassRegistry::init($filter["ref_object_details"])->alias . "`.object_id=`ReferenceObject`.id";
+			}
+			unset($filter["ref_object_details"]);
 		}
 		
 		if (array_key_exists("mail_group", $filter)) {

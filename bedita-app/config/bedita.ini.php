@@ -330,11 +330,6 @@ $config["defaultObjRelationType"] = array(
 		"left" 		=> array(29),
 		"right" 		=> array()	
 	),
-	"comment" => array(
-		"hidden" => true,
-		"left" => array(13),
-		"right" => array()
-	),
 	"attach" => array(
 		"hidden" => true,
 		"left" => array(10,12,31,32),
@@ -349,11 +344,6 @@ $config["defaultObjRelationType"] = array(
 		"hidden" => true,
 		"left" => array(20),
 		"right" => array(37)
-	),
-	"annotate" => array(
-		"hidden" => true,
-		"left" => array(38),
-		"right" => array(20)
 	),
 	"bibliography" => array(
 		"hidden" => true,
