@@ -380,7 +380,7 @@ jQuery.fn.BEmodal = function(){
 		//$("#modal").hide();
 	});
 	
-	$("#modal").toggle().css("top",myTop+115);
+	$("#modal").toggle().css("top",myTop);
 
 	if ($(this).attr("rel")) {
 		$("#modalmain").empty().addClass("modaloader").load(destination).ajaxStop(function(){

@@ -786,6 +786,11 @@ TABLE.indexlist {
 	background-color:#d8d8d8;
 }
 
+.condensed TD, .condensed TH {
+	padding:2px;
+}
+
+
 /*...........................................    
 
     States
@@ -1228,7 +1233,7 @@ INPUT.priority {
 
 #modal {
 	position:absolute;
-	top:160px;
+	top:20px;
 	left:300px;
 	background-color: #FFFFFF;
 	width:660px;

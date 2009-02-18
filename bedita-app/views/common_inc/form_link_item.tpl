@@ -1,20 +1,18 @@
-<div style="white-space:nowrap">
-	
-<input type="hidden" class="id" 	name="data[RelatedObject][link][{$objRelated.id}][id]" value="{$objRelated.id|default:''}" />
-<input type="text" class="priority" style="margin-left:-10px;" name="data[RelatedObject][link][{$objRelated.id}][priority]" value="{$objRelated.priority|default:1}" size="3" maxlength="3"/>
 
-{*
-<label>{t}title{/t}:</label> <a href="{$objRelated.url}" target="{$objRelated.target}">{$objRelated.title|default:''}</a>
-&nbsp;&nbsp;
-<label>{t}url{/t}:</label> {$objRelated.url|default:''}
-&nbsp;&nbsp;
-<label>{t}target{/t}:</label> {$objRelated.target|default:''}
-&nbsp;&nbsp;
-<input type="button" value="{t}X{/t}" />
-*}
+<td style="padding:0px !important">
+	<input type="hidden" class="id"  name="data[RelatedObject][link][{$objRelated.id}][id]" value="{$objRelated.id|default:''}" />
+	<input type="text" class="priority" 
+	style="width:20px; padding:0px; margin:0px !important;" 
+	name="data[RelatedObject][link][{$objRelated.id}][priority]" value="{$objRelated.priority|default:1}" size="3" maxlength="3"/>
+</td>
+<td>
+	<input type="text" style="width:140px" name="data[RelatedObject][link][{$objRelated.id}][title]" 
+	value="{$objRelated.title|default:''}" />
+</td>
+<td>
+	<input type="text" style="width:230px" value="{$objRelated.url}" name="data[RelatedObject][link][{$objRelated.id}][url]" />
+</td>
 
-<label>{t}title{/t}:</label> <input type="text" style="width:150px" name="data[RelatedObject][link][{$objRelated.id}][title]" value="{$objRelated.title|default:''}" />
-<label>{t}url{/t}:</label> 	<input type="text" style="width:200px" value="{$objRelated.url}" name="data[RelatedObject][link][{$objRelated.id}][url]" />
 {*
 <label>{t}target{/t}:</label> 
 <select style="width:70px" name="data[RelatedObject][link][{$objRelated.id}][target]"> 
@@ -22,6 +20,6 @@
 	<option value="_blank">_blank</option>
 </select>
 *}
-<input type="button" title="remove" value="{t}X{/t}" />
-
-</div>
+<td>
+	<input type="button" class="remove" title="remove" value="{t}X{/t}" />
+</td>

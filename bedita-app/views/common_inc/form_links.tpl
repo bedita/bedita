@@ -6,19 +6,24 @@ var urlBaseAddLink = "{$html->url('/pages/addLink')}";
 {literal}
 
 function addItem() {
+	
 	var divToFill = "#listExistingLinks";
 	$("#loadingLinks").show();
-	var emptyLI = "<li class='itemBox'><\/li>"; 
+	var emptyLI = "<tr><\/tr>"; 
 	var linkTitle=$("#linkTitle").val();
 	var linkUrl=$("#linkUrl").val();
 	var target=$("#linkTarget").val();
+	
 	$(emptyLI).load(urlBaseAddLink, {'title': linkTitle, 'url':linkUrl, 'target':target }, function () {
-		$("#listExistingLinks").append(this).fixItemsPriority() ; 
 		
+		$("#listExistingLinks").append(this).fixItemsPriority() ; 
+	
 		$("#loadingLinks").hide();
 		$(this).find("input[@type='button']").click(function() {
-			$(this).parents("li").remove();
+			
+			$(this).parents("tr").remove();
 			$("#listExistingLinks").fixItemsPriority();
+			
 		});
 	}) ;
 }
@@ -27,11 +32,14 @@ function addItem() {
 $(document).ready(function() {
 	$("#addLink").click(function () {
 		addItem();
+		$(".new").val('');
 	});
 	
-	$("#listExistingLinks").find("input[@type='button']").click(function() {
-		$(this).parents("li").remove();
+	$("#listExistingLinks .remove").click(function() {
+		
+		$(this).parents("tr").remove();
 		$("#listExistingLinks").fixItemsPriority();
+	
 	});
 	
 	$("#listExistingLinks").sortable ({
@@ -53,33 +61,39 @@ $(document).ready(function() {
 	<input type="hidden" name="data[RelatedObject][link][0][switch]" value="link" />
 
 
-	<ul id="listExistingLinks">
-
-	{if isset($relObjects.link)}
-	{foreach from=$relObjects.link item="objRelated" name="linkForeach"}
-		<li class="itemBox">{include file="../common_inc/form_link_item.tpl"}</li>
-	{/foreach}
-	{/if}
+	<table border="0" class="condensed" style="margin-left:-5px; margin-top:-10px;">
+		<thead>
+			<tr>
+				<th></th><th>{t}title{/t}</th><th>url</th>
+			</tr>
+		</thead>
+		<tbody id="listExistingLinks">
+			{if isset($relObjects.link)}
+			
+				{foreach from=$relObjects.link item="objRelated" name="linkForeach"}
+					<tr>{include file="../common_inc/form_link_item.tpl"}</tr>
+				{/foreach}
+			
+			{/if}
+		</tbody>
 	
-	</ul>
-
-	<hr />
 	{assign var="prior" value=$smarty.foreach.linkForeach.total|default:0}
-	<div id="newLink" style="white-space:nowrap">
-		<input type="text" class="priority" style="margin-left:-10px;" 
-		name="linkPriority" value="{$prior+1}" size="3" maxlength="3"/>
-		<label>{t}title{/t}:</label> 	<input type="text" style="width:150px" name="linkTitle" id="linkTitle" />
-		<label>{t}url{/t}:</label> 	<input type="text" style="width:200px" name="linkUrl" id="linkUrl" />
-		{*
-		<label>{t}target{/t}:</label> 	<select name="targetType" id="linkTarget"> 
-						<option value="_self">_self</option>
-						<option value="_blank">_blank</option>
-						</select>
-		*}
-		<input type="button" value="{t}+{/t}" id="addLink"/>
-	</div>
-	
-	<div id="loadingLinks" class="generalLoading" title="{t}Loading data{/t}"><span>&nbsp;</span></div>
+		<tfoot>
+			<tr id="loadingLinks" style="display:none">
+				<td></td><td colspan="3">loading...</td>
+			</tr>
+			<tr id="newLink">
+				<td style="padding:0px !important"><input type="text" class="priority" 
+				style="width:20px; padding:0px; margin:0px !important;" name="linkPriority" value="{$prior+1}" size="3" maxlength="3"/></td>
+				<td><input type="text" class="new" style="width:140px" name="linkTitle" id="linkTitle" /></td>
+				<td><input type="text" class="new" style="width:230px" name="linkUrl" id="linkUrl" /></td>
+				<td><input type="button" value="{t}add{/t}" id="addLink"/></td>
+		
+			</tr>
+		</tfoot>	
+	</table>
+
+
 
 
 	
