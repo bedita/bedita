@@ -109,6 +109,8 @@ class MultimediaController extends ModulesController {
 			
 			$imagePath 	= $this->BeFileHandler->path($id) ;
 			$imageURL 	= $this->BeFileHandler->url($id) ;
+			
+			$this->set('objectProperty', $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $model->name . ".id")));
 		}
 		// data for template
 		$this->set('object',	@$obj);
@@ -131,6 +133,9 @@ class MultimediaController extends ModulesController {
 		// Verify object permits
 		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
 			throw new BeditaException(__("Error modify permissions", true));
+		
+		// Format custom properties
+		$this->BeCustomProperty->setupForSave() ;	
 		
 		$this->Transaction->begin() ;
 		// save data
