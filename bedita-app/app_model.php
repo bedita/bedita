@@ -328,7 +328,7 @@ class BEAppModel extends AppModel {
 			
 			$recordset['items'][] = array_merge($this->am($tmp[$i]), $tmpToAdd);
 		}
-
+		
 		return $recordset ;
 	}
 
@@ -348,13 +348,22 @@ class BEAppModel extends AppModel {
 		// define particular behaviors: put first LEFT, INNER, RIGHT specific join then join build in WHERE condition
 		if (array_key_exists("object_user", $filter)) {
 			$fields .= ", `ObjectUser`.user_id AS user_id";
-			$from = " LEFT OUTER JOIN object_users AS `ObjectUser` ON `BEObject`.id=`ObjectUser`.object_id";
+			$from .= " LEFT OUTER JOIN object_users AS `ObjectUser` ON `BEObject`.id=`ObjectUser`.object_id";
 			unset($filter["object_user"]);
+		}
+		
+		if (array_key_exists("count_annotation", $filter)) {
+			$annotationModel = ClassRegistry::init($filter["count_annotation"]);
+			$refObj_type_id = Configure::read("objectTypes." . strtolower($annotationModel->name) . ".id");
+			$fields .= ", COUNT(`" . $annotationModel->name . "`.id) AS num_of_" . Inflector::underscore($annotationModel->name);
+			$from .= " LEFT OUTER JOIN annotations AS `" . $annotationModel->name . "` ON `BEObject`.id=`" . $annotationModel->name . "`.object_id
+					LEFT OUTER JOIN objects AS `RefObj`ON (`RefObj`.id = `" . $annotationModel->name . "`.id AND `RefObj`.object_type_id=" . $refObj_type_id . ")";
+			unset($filter["count_annotation"]);
 		}
 		
 		if (array_key_exists("mediatype", $filter)) {
 			$fields .= ", `Category`.name AS mediatype";
-			$from = " LEFT OUTER JOIN object_categories AS `ObjectCategory` ON `BEObject`.id=`ObjectCategory`.object_id
+			$from .= " LEFT OUTER JOIN object_categories AS `ObjectCategory` ON `BEObject`.id=`ObjectCategory`.object_id
 					LEFT OUTER JOIN categories AS `Category` ON `ObjectCategory`.category_id=`Category`.id";
 			unset($filter["mediatype"]);
 			$mediatype = true;

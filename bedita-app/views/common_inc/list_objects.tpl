@@ -71,7 +71,8 @@ $(document).ready(function(){
 			<th style="text-align:center">{$beToolbar->order('status', 'Status')}</th>
 			<th>{$beToolbar->order('modified', 'Modified')}</th>
 			<th style="text-align:center">
-				<img src="{$html->webroot}img/iconComments.gif" alt="{t}comments{/t}" />
+				{assign_associative var="htmlAttributes" alt="comments" border="0"} 
+				{$beToolbar->order('num_of_comment', '', 'iconComments.gif', $htmlAttributes)}
 			</th>			
 			<th>{$beToolbar->order('lang', 'Lang')}</th>
 			<th>Notes</th>
@@ -92,7 +93,7 @@ $(document).ready(function(){
 			<td>{$objects[i].id}</td>
 			<td style="text-align:center">{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
-			<td style="text-align:center">{$objects[i].numcomments|default:0}</td>
+			<td style="text-align:center">{$objects[i].num_of_comment|default:0}</td>
 			<td>{$objects[i].lang}</td>
 			<td>{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 		</tr>

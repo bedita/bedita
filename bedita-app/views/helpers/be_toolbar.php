@@ -211,8 +211,7 @@ class BeToolbarHelper extends AppHelper {
 	 * @param boolean $dir				Se presente impone la direzione. 1: ascendente, 0: discendente
 	 * 									altrimenti mette la direzione opposta della corrente.
 	 */
-	function order($field, $title = "", $htmlAttributes = array(),	$dir = null) {
-		$title = __($title, true);
+	function order($field, $title="", $image="", $htmlAttributes = array(), $dir=null) {
 		
 		if(!isset($this->params['toolbar'])) return "" ;
 		
@@ -229,7 +228,16 @@ class BeToolbarHelper extends AppHelper {
 		$data['dir'] 	= (integer)$dir ;
 
 		$url = Router::url($data) ;
-		return '<a href="' . $url . '">' . __($title, true) . '</a>';
+		
+		if (!empty($image)) {
+			$htmlAttributes["alt"] = __($htmlAttributes["alt"], true);
+			$title = $this->Html->image($image, $htmlAttributes);
+		} else {
+			$title = __($title, true);
+		}
+		
+		return '<a href="' . $url . '">' . $title . '</a>';
+		
 	}
 
 	/**

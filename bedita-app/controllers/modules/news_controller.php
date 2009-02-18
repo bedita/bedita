@@ -39,6 +39,7 @@ class NewsController extends ModulesController {
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
 		$filter["object_type_id"] = $conf->objectTypes['shortnews']["id"];
+		$filter["count_annotation"] = "Comment";
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 	 }
 
