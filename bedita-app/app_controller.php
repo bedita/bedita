@@ -491,12 +491,18 @@ abstract class ModulesController extends AppController {
 			array("dir", "boolean", &$dir)
 		) ;
 
-		// get section selected
-		$section = $this->loadModelByType("section");
-		$this->modelBindings['Section'] = array("BEObject");
-		$this->modelBindings($section);
-		$sectionSel = $section->findById($id);
-		unset($this->modelBindings['Section']);
+
+		// get selected section
+		$sectionSel = null;
+		$pubSel = null;
+		if(isset($id)) {
+			$section = $this->loadModelByType("section");
+			$this->modelBindings['Section'] = array("BEObject");
+			$this->modelBindings($section);
+			$sectionSel = $section->findById($id);
+			unset($this->modelBindings['Section']);
+			$pubSel = $this->BeTree->getAreaForSection($id);
+		}
 		
 		$objects = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
 		$this->params['toolbar'] = &$objects['toolbar'] ;
@@ -504,6 +510,7 @@ abstract class ModulesController extends AppController {
 		// template data
 		$this->set('tree', $this->BeTree->getSectionsTree());
 		$this->set('sectionSel',$sectionSel);
+		$this->set('pubSel',$pubSel);
 		$this->set('objects', $objects['items']);
 		
 		// set prevNext array to session

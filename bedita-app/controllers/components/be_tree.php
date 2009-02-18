@@ -36,26 +36,15 @@
  */
 class BeTreeComponent extends Object {
 	var $controller		= null ;
-	var $Tree			= null ;
-	var $Object			= null ;
+	protected $Tree		= null ;
+	protected $BEObject	= null ;
+	protected $Section	= null ;
 	var $filter			= array();
 	
-	var $uses = array('Tree') ;
-	
 	function __construct() {
-		if(!class_exists('Tree')) 	
-		  App::import('Model', 'Tree') ;
-		if(!class_exists('BEObject')) 	
-		  App::import('Model', 'BEObject') ;
-		if(!class_exists('Area')) 	
-		  App::import('Model', 'Area') ;
-		if(!class_exists('Section')) 	
-		  App::import('Model', 'Section') ;
-		
-		$this->Tree 	= new Tree() ;
-		$this->BEObject 	= new BEObject() ;
-		$this->Area = new Area();
-		$this->Section = new Section();
+		$this->Tree = ClassRegistry::init('Tree');
+		$this->BEObject = ClassRegistry::init('BEObject');
+		$this->Section = ClassRegistry::init('Section');
 	} 
 
 	/**
@@ -116,8 +105,10 @@ class BeTreeComponent extends Object {
 	}
 	
 	function getAreaForSection($section_id) {
+		$area = ClassRegistry::init('Area');
+		$area->containLevel("minimum");
 		$area_id = $this->Tree->getRootForSection($section_id);
-		return $this->Area->findById($area_id);
+		return $area->findById($area_id);
 	}
 
 	/**
