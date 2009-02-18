@@ -82,5 +82,5 @@ $(document).ready(function() {
 	</div>
 
 {else}
-	{t}No item found{/t}
+	<div style="background-color:#FFF; padding:20px;">{t}No item found{/t}</div>
 {/if}

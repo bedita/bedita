@@ -359,8 +359,7 @@ jQuery.fn.BEmodal = function(){
 	$("#modal").draggable({
 		handle : "#modalheader"
 	});
-		 	
-	
+
 	var w = window.innerWidth || self.innerWidth || document.body.clientWidth;
 	var h = window.innerHeight || self.innerHeight || document.body.clientHeight;
 	
@@ -373,7 +372,6 @@ jQuery.fn.BEmodal = function(){
 	//var myTop = $(this).position().top;
 	var myTop = $(".secondacolonna").position().top;
 
-	
 	
 	$("#modaloverlay").show().fadeTo("fast", 0.8).width(w).height(h).click(function () {
 		//$(this).hide();

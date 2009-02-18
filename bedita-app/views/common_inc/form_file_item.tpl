@@ -20,10 +20,22 @@
 {assign_associative var="params" width=$thumbWidth height=$thumbHeight longside=false mode="fill" modeparam="000000" type=null upscale=false}
 {assign_associative var="htmlAttr" width=$thumbWidth height=$thumbHeight alt=$item.title title=$item.name}
 
+{literal}
+<script type="text/javascript">
+$(document).ready(function(){
+	$(".info_file_item").change(function() {
+		$(this).parents(".multimediaitem").css("background-color","gold").find(".mod").val(1);
+	})
+});
+</script>
+{/literal}
+
+
 {strip}
 
 	<input type="hidden" name="data[RelatedObject][{$relation}][{$item.id}][id]" value="{$item.id}" />
-	<input type="hidden" name="data[RelatedObject][{$relation}][{$item.id}][modified]" value="0" />
+	
+	<input type="hidden" class="mod" name="data[RelatedObject][{$relation}][{$item.id}][modified]" value="0" />
 	
 	<div style="width:{$thumbWidth}px; height:{$thumbHeight}px" class="imagebox">
 	{if strtolower($item.ObjectType.name) == "image"}
@@ -60,10 +72,12 @@
 
 	<ul class="info_file_item">
 		<li>
-			<input class="info_file_item" style="border:0px;" type="text" value="{$item.title|escape:'htmlall'|default:""}" name="data[RelatedObject][{$relation}][{$item.id}][title]" />
+			<input class="info_file_item" style="border:0px;" type="text" value="{$item.title|escape:'htmlall'|default:""}" 
+			name="data[RelatedObject][{$relation}][{$item.id}][title]" />
 		</li>
 		<li>
-			<textarea class="info_file_item" style="border:0px; border-bottom:1px solid silver;" name="data[RelatedObject][{$relation}][{$item.id}][description]">{$item.description|default:""}</textarea>
+			<textarea class="info_file_item" style="border:0px; border-bottom:1px solid silver;" 
+			name="data[RelatedObject][{$relation}][{$item.id}][description]">{$item.description|default:""}</textarea>
 			<br />
 			<table style="width:100%">
 				<tr>
