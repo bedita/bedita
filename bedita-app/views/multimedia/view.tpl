@@ -10,16 +10,14 @@
 {literal}
 
     $(document).ready(function(){
-		var openAtStart ="#multimediaitem";
-		$(openAtStart).prev(".tab").BEtabstoggle();
+		openAtStart("#multimediaitem");
     });
 {/literal}
 {else}
 {literal}
 
     $(document).ready(function(){
-		var openAtStart ="#title,#mediatypes";
-		$(openAtStart).prev(".tab").BEtabstoggle();
+		openAtStart("#title,#mediatypes");
     });
 {/literal}
 {/if}

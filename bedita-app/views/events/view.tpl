@@ -13,10 +13,7 @@
 {literal}
 <script type="text/javascript">
     $(document).ready(function(){
-		
-		var openAtStart ="#title,#eventDates";
-		$(openAtStart).prev(".tab").BEtabstoggle();
-		
+		openAtStart("#title,#eventDates");
     });
 </script>
 {/literal}

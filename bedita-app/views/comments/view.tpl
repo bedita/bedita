@@ -5,7 +5,7 @@
 <script type="text/javascript">
     $(document).ready(function(){
 		
-		var openAtStart ="#details,#altro";
+		openAtStart("#details,#altro");
 		$(openAtStart).prev(".tab").BEtabstoggle();
 		
     });

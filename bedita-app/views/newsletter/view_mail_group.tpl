@@ -57,8 +57,9 @@ function submitSubscribers(url) {
 }
 
 $(document).ready(function() {
-	var openAtStart ="#details,#subscribers";
-	$(openAtStart).prev(".tab").BEtabstoggle();
+	
+	openAtStart("#details,#subscribers");
+
 	initSubscribers();
 	
 	$("#assocCard").click( function() {

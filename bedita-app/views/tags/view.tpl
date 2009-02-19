@@ -10,8 +10,7 @@
 {literal}
 $(document).ready( function ()
 {
-	var openAtStart ="#tagdetails";
-	$(openAtStart).prev(".tab").BEtabstoggle();
+	openAtStart("#tagdetails");
 	$("#updateform").validate();
 	$("#delBEObject").submitConfirm({
 		action: "{/literal}{$html->url('delete/')}{literal}",

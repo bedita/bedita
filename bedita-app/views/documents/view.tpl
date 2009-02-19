@@ -10,13 +10,11 @@
 {if $currLang != "eng"}
 {$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
+
 {literal}
 <script type="text/javascript">
-    $(document).ready(function(){
-		
-		var openAtStart ="#title,#long_desc_langs_container";
-		$(openAtStart).prev(".tab").BEtabstoggle();
-		
+    $(document).ready(function(){	
+		openAtStart("#title,#long_desc_langs_container");
     });
 </script>
 {/literal}
@@ -25,9 +23,7 @@
 
 </head>
 <body>
-	
-	
-	
+
     {include file="../common_inc/modulesmenu.tpl"}
     
 	{include file="inc/menuleft.tpl" method="view"}

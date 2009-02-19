@@ -16,10 +16,8 @@
 
 <script type="text/javascript">
 	{literal}
-	$(document).ready( function ()
-	{
-		var openAtStart ="#details";
-		$(openAtStart).prev(".tab").BEtabstoggle();
+	$(document).ready( function (){
+		openAtStart("#details");
 	});
 	{/literal}
 </script>

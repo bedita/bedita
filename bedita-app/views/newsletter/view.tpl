@@ -21,8 +21,7 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		var openAtStart ="#contents, #invoice";
-		$(openAtStart).prev(".tab").BEtabstoggle();
+		openAtStart("#contents, #invoice");
 		$("#timeStart, #timeEnd").timePicker({startTime: "00:00", endTime: "23:30"});
 		
 	});

@@ -17,9 +17,8 @@
 <script type="text/javascript">
 	{literal}
 	$(document).ready( function (){
-		
-		var openAtStart ="#bookdetails,#properties";
-		$(openAtStart).prev(".tab").BEtabstoggle();
+
+		openAtStart("#bookdetails,#properties");
 		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
 				
 	});

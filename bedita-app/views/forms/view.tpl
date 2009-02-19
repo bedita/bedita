@@ -14,9 +14,8 @@
 <script type="text/javascript">
     $(document).ready(function(){
 		
-		var openAtStart ="#title,#questions";
-		$(openAtStart).prev(".tab").BEtabstoggle();
-		
+		openAtStart("#title,#questions");
+	
     });
 </script>
 {/literal}

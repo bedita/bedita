@@ -513,6 +513,30 @@ document.onkeydown = function(e){
 };
 
 
+/*...........................................    
 
+   openAtStart
+
+...........................................*/
+
+function openAtStart(defaultOpen) {
+
+	var cookieTitle = document.title;
+	var openAtStart = $.cookie(cookieTitle);
+	if (openAtStart == null) {
+		var openAtStart = defaultOpen;
+	}
+	$(openAtStart).prev(".tab").BEtabstoggle();
+	
+	$(window).unload(function(){
+		openAtStart = new Array();
+		$(".tab").each(function(i){
+			if ($(this).next().is(":visible")) {
+				openAtStart.push("#" + $(this).next().attr("id"));
+			}
+		});
+		$.cookie(cookieTitle, openAtStart);
+	});
+}
 
 

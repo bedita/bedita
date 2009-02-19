@@ -19,10 +19,9 @@
 
 <script type="text/javascript">
 	{literal}
-	$(document).ready( function ()
-	{
-		var openAtStart = "#card,#address,#properties";
-		$(openAtStart).prev(".tab").BEtabstoggle();
+	$(document).ready( function (){
+	
+		openAtStart("#card,#address,#properties");
 		
 		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
 		

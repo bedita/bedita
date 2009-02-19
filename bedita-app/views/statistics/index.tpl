@@ -5,8 +5,8 @@
 <script type="text/javascript">
     $(document).ready(function(){
 		
-		var openAtStart ="#objects";
-		$(openAtStart).prev(".tab").BEtabstoggle();
+		openAtStart("#objects");
+
 		
     });
 </script>

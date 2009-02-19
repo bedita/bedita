@@ -19,8 +19,7 @@
 	{literal}
 	$(document).ready( function ()
 	{
-		var openAtStart ="#books,#title";
-		$(openAtStart).prev(".tab").BEtabstoggle();
+		openAtStart("#books,#title");
 		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
 	});
 	{/literal}
