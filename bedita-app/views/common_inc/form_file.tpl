@@ -49,8 +49,9 @@
 		*}
 	
 		{assign_associative var="params" presentation="full"}
+		{assign_associative var="htmlAttr" width=$conf->media.video.width height=$conf->media.video.height}
 		
-		{$beEmbedMedia->object($object,$params)}
+		{$beEmbedMedia->object($object,$params,$htmlAttr)}
 		
 		
 	{elseif strtolower($object.ObjectType.name) == "audio"}

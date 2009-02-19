@@ -168,7 +168,7 @@ class BlipMedia {
 			App::import('Component', "BeBlipTv");
 		}
 		$Component = new BeBlipTvComponent();
-		$Component->getEmbedVideo($obj['uid']) ;
+		$Component->getEmbedVideo($obj['uid'], $attributes) ;
 	
 		return $Component->embed ;
 	}

@@ -202,10 +202,10 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
-	* Get area's section recursively
+	* Get tree starting from specified section or area
 	* 
-	* @param integer $area_id			area parent
-	* @param string $var_name			name result in to template_ vars
+	* @param integer $parentName		parent nickname or id 
+	* @param bool $loadContents			if it's true load all contents too. Default false
 	* @param array $exclude_nicknames	list exclude sections 
 	* @param integer $depth				tree's depth level (default=1000 => all levels)
 	* */

@@ -53,15 +53,21 @@ class BeBlipTvComponent extends Object {
 	 *
 	 * @return unknown
 	 */
-	public function getInfoVideo($id) {
+	public function getInfoVideo($id, $attributes=array()) {
 		$conf = Configure::getInstance() ;
 		$this->info = null ;
 		
 		Configure::load($conf->media_providers_default_conf['blip']) ;
 		if(!isset($conf->blip)) return false ;
 		
+		$urlinfo = $conf->blip['urlinfo'];
+		if (!empty($attributes["width"]))
+			$urlinfo .= "&amp;width=" . $attributes["width"];
+		if (!empty($attributes["height"]))
+			$urlinfo .= "&amp;height=" . $attributes["height"];  
+		
 		// Preleva le informazioni
-		$fp = fopen(sprintf($conf->blip['urlinfo'], $id), "r") ;
+		$fp = fopen(sprintf($urlinfo, $id), "r") ;
 		$json = "" ;
 		while(!feof($fp)) {
 			$json .= fread($fp, 1024) ;
@@ -95,29 +101,15 @@ class BeBlipTvComponent extends Object {
 	 *
 	 * @return unknown
 	 */
-	public function getEmbedVideo($id) {
+	public function getEmbedVideo($id, $attributes=array()) {
 		$conf = Configure::getInstance() ;
 		$this->embed = null ;
 		
 		if(!isset($this->info)) {
-			if(!$this->getInfovideo($id) ) return false ;
+			if(!$this->getInfovideo($id, $attributes) ) return false ;
 		}
 		
-		Configure::load($conf->media_providers_default_conf['blip']) ;
-		if(!isset($conf->blip)) return false ;
-				
-		// Preleva le informazioni
-		$fp = fopen(sprintf($conf->blip['urlembed'], $this->info['postsId']), "r") ;
-		$json = "" ;
-		while(!feof($fp)) {
-			$json .= fread($fp, 1024) ;
-		}	
-		@fclose($fp) ;
-		if(!$json) return false ;
-
-		// Eliina i commenti, danno errore
-		$json = preg_replace('/^[^\']+\'/mi', '', $json) ;
-		$this->embed = stripslashes(substr($json, 0, stripos($json, "'"))) ;
+		$this->embed = $this->info["embedCode"];
 		
 		return $this->embed  ;
 	}
