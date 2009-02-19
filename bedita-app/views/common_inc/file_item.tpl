@@ -49,21 +49,21 @@
 	</div>
 	
 	
-	<ul class="info_file_item bordered">
+	<ul class="info_file_item bordered" style="line-height:1em;">
 
 		<li style="line-height:1.2em; height:1.2em; overflow:hidden">
-			{$item.title}
+			{$item.title|default:'<i>[no title]</i>'}
 		</li>
 {if strtolower($item.ObjectType.name) == "image"}
-		<li>
+		<li style="line-height:1.2em; height:1.2em; overflow:hidden">
 			{$item.width}x{$item.height}px, {$item.size|default:0|filesize}
 		</li>
 {else}
-		<li>
+		<li style="line-height:1.2em; height:1.2em; white-space:nowrap; overflow:hidden">
 			{$item.mime_type} {$item.size|default:0|filesize}
 		</li>
 {/if}
-		<li>
+		<li style="line-height:1.2em; height:1.2em; overflow:hidden">
 			{$item.created|date_format:'%b %e, %Y'}
 		</li>
 	</ul>
