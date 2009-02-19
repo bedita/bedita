@@ -251,6 +251,13 @@ class BEAppModel extends AppModel {
 		// get specific query elements
 		list($otherFields, $otherFrom, $otherConditions, $otherGroup, $otherOrder) = $this->getSqlItems($filter);
 
+		if (!empty($otherFields))
+			$fields = $fields . $otherFields;
+			
+		$conditions = array_merge($conditions, $otherConditions);
+		$from .= $otherFrom;
+		$groupClausole .= $otherGroup; 
+		
 		if (!empty($id)) {
 			$fields .= ", `Tree`.*";
 			$from .= ", trees AS `Tree`";
@@ -266,13 +273,6 @@ class BEAppModel extends AppModel {
 			if (!empty($userid))
 				$conditions[] 	= " prmsUserByID ('{$userid}', `BEObject`.id, ".BEDITA_PERMS_READ.") > 0 " ;
 		}
-		
-		if (!empty($otherFields))
-			$fields = $fields . $otherFields;
-			
-		$conditions = array_merge($conditions, $otherConditions);
-		$from .= $otherFrom;
-		$groupClausole .= $otherGroup; 
 		
 		// build sql conditions
 		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
