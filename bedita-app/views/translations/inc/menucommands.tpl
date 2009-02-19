@@ -33,7 +33,7 @@ $(document).ready(function(){
 	{if !empty($method) && $method != "index"}
 		{assign var="back" value=$session->read("backFromView")}
 	{else}
-		{assign_concat var="back" 0="/" 1=$currentModule.path}
+		{assign_concat var="back" 0=$html->url('/') 1=$currentModule.path}
 	{/if}
 
 	<div class="modules">
