@@ -131,12 +131,6 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 		unset($data['tmp_name']) ;
 		unset($data['error']) ;
 
-		// FLASH returns application/octect-stream as MIME type
-		if($data['mime_type'] == "application/octet-stream") { 
-			$old  = $data['mime_type'] ;
-			unset($data['mime_type']) ;
-			$this->BeFileHandler->getInfoURL($data) ;
-		}
 		try {
 			$result = $this->BeFileHandler->save($data) ;
 		} catch (BEditaFileExistException $e) {

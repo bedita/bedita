@@ -564,7 +564,7 @@ $config['validate_resorce'] = array(
 	 * ELenco dei MIME accettati per i diversi tipi di oggetti
 	 */
 	'mime'	=> array(
-				'Image'			=> array('/image\/jpeg/', '/image\/gif/', '/image\/png/'),
+				'Image'			=> array('/image\/\.*/'),
 				'Audio'			=> array('/audio\/\.*/'),
 				'Video'			=> array('/video\/\.*/'),
 				'BEFile'		=> array('/application\/\.*/', '/text\/\.*/', '/beexternalsource/')
