@@ -38,8 +38,8 @@
 
 {include file="inc/statsobjects.tpl"}
 
-{include file="inc/statsusers.tpl"}
-
 {include file="inc/statseditors.tpl"}
+
+{include file="inc/statsusers.tpl"}
 
 </div>

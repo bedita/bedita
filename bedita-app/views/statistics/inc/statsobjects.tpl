@@ -50,7 +50,7 @@
 			{math assign="pixel" equation="(x/y)*350" x=$c.count_relations y=$maxContentCommented}
 			{if isset($c.ObjectType.module)}
 			<tr>
-				<td class="label">{$c.title|truncate:20}</td>
+				<td class="label">{$c.title|truncate:20|default:'<i>[no title]</i>'}</td>
 				<td>
 					<div style="width:{$pixel}px;" class="{$c.ObjectType.module}">&nbsp</div><span class="value">{$c.count_relations}</span>
 				</td>
@@ -68,7 +68,10 @@
 			{math assign="pixel" equation="(x/y)*350" x=$c.count_relations y=$maxRelatedObject}
 			{if isset($c.ObjectType.module)}
 			<tr>
-				<td class="label">{$c.title|truncate:20}</td>
+				<td class="label">
+					<a href="{$html->url('/')}{$c.ObjectType.module}/view/{$c.id}">
+					{$c.title|truncate:20|default:'<i>[no title]</i>'}</a>
+				</td>
 				<td>
 					<div style="width:{$pixel}px;" class="{$c.ObjectType.module}">&nbsp</div><span class="value">{$c.count_relations}</span>
 				</td>

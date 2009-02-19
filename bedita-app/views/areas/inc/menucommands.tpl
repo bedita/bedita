@@ -6,8 +6,14 @@ Menu comandi a SX valido per tutte le pagine del controller.
 
 <div class="secondacolonna" style="z-index:10">
 	
+	{if !empty($method) && $method != "index"}
+		{assign var="back" value=$session->read("backFromView")}
+	{else}
+		{assign_concat var="back" 0="/" 1=$currentModule.path}
+	{/if}
+
 	<div class="modules">
-	  	   <label class="{$moduleName}" rel="{$html->url('/')}{$currentModule.path}">{t}{$currentModule.label}{/t}</label>
+		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
 	</div> 
 	
 	{if !empty($method) && ($method == "viewArea" or $method == "viewSection")}

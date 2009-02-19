@@ -30,10 +30,17 @@ $(document).ready(function(){
 
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 
-	<div class="modules">
-	   <label class="{$moduleName}" rel="{$html->url('/')}{$currentModule.path}">{t}{$currentModule.label}{/t}</label>
-	</div>
+	{if !empty($method) && $method != "index"}
+		{assign var="back" value=$session->read("backFromView")}
+	{else}
+		{assign_concat var="back" 0="/" 1=$currentModule.path}
+	{/if}
 
+	<div class="modules">
+		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
+	</div>
+	
+	
 	{assign var="user" value=$session->read('BEAuthUser')}
 
 	{if !empty($method) && $method != "index"} 

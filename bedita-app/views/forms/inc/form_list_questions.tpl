@@ -14,7 +14,7 @@
 	{section name="o" loop=8}
 		<tr>
 			<td>{$smarty.section.o.iteration}</td>
-			<td>Quanti peli ci vogliono per fare un pube?</td>
+			<td>Quanti conchiglie per 55 lische?</td>
 			<td>scelta multipla</td>
 			<td style="text-align:center">on</td>
 			<td>
