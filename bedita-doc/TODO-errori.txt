@@ -8,5 +8,3 @@
 - comment
 - test sulle FAQ, complete delle domande
 - test ObjectUser con la relazione con gli user (userid...)
-
-
