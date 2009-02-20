@@ -159,6 +159,54 @@ class DbadminShell extends Shell {
 		$this->out($countOperations . " rows on db updated");
 		$this->out("done");
 	}
+	
+	public function setImageDimensions() {
+		
+		$conf = Configure::getInstance() ;
+		$imageModel = ClassRegistry::init("Image");
+		$conditions = array();
+		$countOperations = 0;
+		
+		if (!isset($this->params['all'])) {
+			$conditions[] = "width IS NULL OR height IS NULL"; 
+		}
+		
+		$images = $imageModel->find("all", array(
+					"conditions" => $conditions,
+					"contain" => array("Stream")
+				)
+			);
+		
+		$this->hr();
+		$this->out("Check image size and write in db");
+		$this->hr();
+		
+		if (!empty($images)) {
+			foreach ($images as $i) {
+				
+				// if it's not an url get image size
+				if (!preg_match($conf->validate_resorce['URL'], $i["path"])) {
+					
+					if ( !$imageSize =@ getimagesize($conf->mediaRoot . $i['path']) )
+						throw new BeditaException(__("Get image size failed", true));
+					
+					if ($imageSize[0] == 0  || $imageSize[1] == 0)
+						throw new BeditaException(__("Can't get dimension for " . $i['path'], true));
+						
+					$imageModel->id = $i["id"];
+					if (!$imageModel->saveField("width", $imageSize[0]))
+						throw new BeditaException(__("Error saving width field", true));
+					if (!$imageModel->saveField("height", $imageSize[1]))
+						throw new BeditaException(__("Error saving height field", true));
+					$this->out("file: " . $conf->mediaRoot . $i["path"] . ", dimension: " . $imageSize[0] . "x" . $imageSize[0] ." pixels");
+					$countOperations++;
+				}
+				
+			}
+		}
+		$this->out($countOperations . " rows on db updated");
+		$this->out("done");
+	}
 
 	function help() {
 		$this->out('Available functions:');
@@ -173,6 +221,12 @@ class DbadminShell extends Shell {
         $this->out('    Usage: buildHashMedia [-all]');
         $this->out(' ');
         $this->out("    -all \t rebuild all 'hash_file'");
+        $this->out(' ');
+        $this->out("4. setImageDimensions: get images size and update db");
+        $this->out(' ');
+        $this->out('    Usage: setImageDimensions [-all]');
+        $this->out(' ');
+        $this->out("    -all \t set dimension for all images, otherwise only for image with dimensions no defined in db");
         $this->out(' ');
 	}
 	
