@@ -147,14 +147,17 @@ class BeEmbedMediaHelper extends AppHelper {
 	 */
 	private function showVideo($obj, $params, $htmlAttributes)
 	{
+		$URLonly = (!empty($params["URLonly"]))? true : false;
 		if ($params["presentation"] == "thumb") {
-			$URLonly = (!empty($params["URLonly"]))? true : false;
 			$output = $this->MediaProvider->thumbnail($obj, $htmlAttributes, $URLonly);				
 		} elseif ($params["presentation"] == "full") {
 			$output = $this->MediaProvider->embed($obj, $htmlAttributes);
 		} elseif ($params["presentation"] == "link") {
 			$src = $this->MediaProvider->sourceEmbed($obj);
-			return $this->Html->link($src, $obj['title'], $htmlAttributes);
+			if ($URLonly)
+				return $src;
+			else
+				return $this->Html->link($src, $obj['title'], $htmlAttributes);
 		}
 		
 		if (empty($output)) {
