@@ -53,10 +53,12 @@ class Link extends BEAppObjectModel {
 				$url = "http://" . $url;
 				$this->data['Link']['url'] = $url;
 			}
-			$link = $this->find('all', array('conditions' => array('url' => $this->data['Link']['url'] ,'title' => $this->data['Link']['title'])));
-			if(!empty($link)) {// do not save twice the same link
-				throw new BeditaException(__("Error saving link: duplicated link", true), $this->validationErrors);
-				return false;
+			if(empty($this->data['Link']['id']) || !empty($this->data['Link']['noduplicate'])) {
+				$link = $this->find('all', array('conditions' => array('url' => $this->data['Link']['url'] ,'title' => $this->data['Link']['title'])));
+				if(!empty($link)) {// do not save twice the same link
+					throw new BeditaException(__("Error saving link: duplicated link", true), $this->validationErrors);
+					return false;
+				}
 			}
 			$date = new DateTime();
 			$this->data['Link']['http_code'] = $this->responseForUrl($url);
@@ -70,12 +72,12 @@ class Link extends BEAppObjectModel {
 		return (empty($result) || !$result) ? "Invalid url" : $result[0];
 	}
 	
-	private function isHttp($url) {
+	public function isHttp($url) {
 		if(strlen($url)<10) return false;
 		return (substr($url,0,7) == "http://");
 	}
 	
-	private function isHttps($url) {
+	public function isHttps($url) {
 		if(strlen($url)<10) return false;
 		return (substr($url,0,8) == "https://");
 	}

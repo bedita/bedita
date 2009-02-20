@@ -356,10 +356,15 @@ class BEObject extends BEAppModel
 						$modified = (isset($val['modified']))? ((boolean)$val['modified']) : false;
 						if($modified && $obj_id) {
 							$title 		= isset($val['title']) ? addslashes($val['title']) : "" ;
-							$description 	= isset($val['description']) ? addslashes($val['description']) : "" ;
-							
-							$queriesModified[] = "UPDATE objects  SET title = '{$title}', description = '{$description}' WHERE id = {$obj_id} " ;
-							
+							if($switch == 'link') {
+								$queriesModified[] = "UPDATE objects  SET title = '{$title}' WHERE id = {$obj_id} " ;
+								$link = ClassRegistry::init('Link');
+								$link->id = $obj_id;
+								$link->saveField('url',$val['url']);
+							} else {
+								$description 	= isset($val['description']) ? addslashes($val['description']) : "" ;
+								$queriesModified[] = "UPDATE objects  SET title = '{$title}', description = '{$description}' WHERE id = {$obj_id} " ;
+							}
 						}
 					}
 				}
