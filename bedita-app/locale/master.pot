@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2009-02-17 11:26:49\n"
+"POT-Creation-Date: 2009-02-21 12:27:55\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -13,9 +13,6 @@ msgid "(Un)Select All"
 msgstr ""
 
 msgid "(un)select all"
-msgstr ""
-
-msgid "+"
 msgstr ""
 
 msgid "Access to Backend"
@@ -1173,7 +1170,13 @@ msgstr ""
 msgid "address"
 msgstr ""
 
+msgid "addressbook"
+msgstr ""
+
 msgid "addressbook details"
+msgstr ""
+
+msgid "admin"
 msgstr ""
 
 msgid "advanced properties"
@@ -1206,10 +1209,16 @@ msgstr ""
 msgid "ban this IP!"
 msgstr ""
 
+msgid "bibliographies"
+msgstr ""
+
 msgid "birthdate"
 msgstr ""
 
 msgid "blocked"
+msgstr ""
+
+msgid "books"
 msgstr ""
 
 msgid "bounce to email"
@@ -1335,6 +1344,9 @@ msgstr ""
 msgid "details"
 msgstr ""
 
+msgid "documents"
+msgstr ""
+
 msgid "draft"
 msgstr ""
 
@@ -1348,6 +1360,9 @@ msgid "end"
 msgstr ""
 
 msgid "end has to be a valid date in the following format:"
+msgstr ""
+
+msgid "events"
 msgstr ""
 
 msgid "fax"
@@ -1380,7 +1395,13 @@ msgstr ""
 msgid "for object type"
 msgstr ""
 
+msgid "forms"
+msgstr ""
+
 msgid "from"
+msgstr ""
+
+msgid "galleries"
 msgstr ""
 
 msgid "get from list"
@@ -1405,6 +1426,9 @@ msgid "insert more questions"
 msgstr ""
 
 msgid "isbn/issn"
+msgstr ""
+
+msgid "items"
 msgstr ""
 
 msgid "lang"
@@ -1479,6 +1503,9 @@ msgstr ""
 msgid "move"
 msgstr ""
 
+msgid "multimedia"
+msgstr ""
+
 msgid "multimedia descriptions"
 msgstr ""
 
@@ -1492,6 +1519,12 @@ msgid "new publishing"
 msgstr ""
 
 msgid "new section"
+msgstr ""
+
+msgid "news"
+msgstr ""
+
+msgid "newsletter"
 msgstr ""
 
 msgid "newsletter title"
@@ -1510,9 +1543,6 @@ msgid "nickname"
 msgstr ""
 
 msgid "no"
-msgstr ""
-
-msgid "no contents"
 msgstr ""
 
 msgid "no custom properties defined"
@@ -1680,6 +1710,15 @@ msgstr ""
 msgid "sections"
 msgstr ""
 
+msgid "see comments from this IP"
+msgstr ""
+
+msgid "see comments from this email"
+msgstr ""
+
+msgid "see comments on this content"
+msgstr ""
+
 msgid "see results"
 msgstr ""
 
@@ -1740,6 +1779,9 @@ msgstr ""
 msgid "state"
 msgstr ""
 
+msgid "statistics"
+msgstr ""
+
 msgid "status"
 msgstr ""
 
@@ -1791,6 +1833,9 @@ msgstr ""
 msgid "translation to"
 msgstr ""
 
+msgid "translations"
+msgstr ""
+
 msgid "type"
 msgstr ""
 
@@ -1819,6 +1864,9 @@ msgid "web site"
 msgstr ""
 
 msgid "webmark saved"
+msgstr ""
+
+msgid "webmarks"
 msgstr ""
 
 msgid "website"

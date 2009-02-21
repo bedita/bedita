@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-02-17 11:26:49\n"
+"POT-Creation-Date: 2009-02-21 12:27:55\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -15,9 +15,6 @@ msgstr "(De)Seleziona tutto"
 
 msgid "(un)select all"
 msgstr "(de)seleziona tutti"
-
-msgid "+"
-msgstr ""
 
 msgid "Access to Backend"
 msgstr "Accesso al Backend"
@@ -133,7 +130,7 @@ msgid "Book saved"
 msgstr ""
 
 msgid "Books"
-msgstr ""
+msgstr "Libri"
 
 msgid "Browse"
 msgstr ""
@@ -1181,8 +1178,14 @@ msgstr ""
 msgid "address"
 msgstr ""
 
+msgid "addressbook"
+msgstr "rubrica"
+
 msgid "addressbook details"
 msgstr ""
+
+msgid "admin"
+msgstr "amminstrazione"
 
 msgid "advanced properties"
 msgstr "proprietà avanzate"
@@ -1214,11 +1217,17 @@ msgstr "autore"
 msgid "ban this IP!"
 msgstr ""
 
+msgid "bibliographies"
+msgstr "bibliografie"
+
 msgid "birthdate"
 msgstr ""
 
 msgid "blocked"
 msgstr "bloccato"
+
+msgid "books"
+msgstr "libri"
 
 msgid "bounce to email"
 msgstr ""
@@ -1343,6 +1352,9 @@ msgstr "descrizione"
 msgid "details"
 msgstr ""
 
+msgid "documents"
+msgstr "documenti"
+
 msgid "draft"
 msgstr ""
 
@@ -1357,6 +1369,9 @@ msgstr "fine"
 
 msgid "end has to be a valid date in the following format:"
 msgstr ""
+
+msgid "events"
+msgstr "eventi"
 
 msgid "fax"
 msgstr ""
@@ -1388,8 +1403,14 @@ msgstr ""
 msgid "for object type"
 msgstr ""
 
+msgid "forms"
+msgstr ""
+
 msgid "from"
 msgstr "da"
+
+msgid "galleries"
+msgstr "gallerie"
 
 msgid "get from list"
 msgstr ""
@@ -1413,6 +1434,9 @@ msgid "insert more questions"
 msgstr ""
 
 msgid "isbn/issn"
+msgstr ""
+
+msgid "items"
 msgstr ""
 
 msgid "lang"
@@ -1487,6 +1511,9 @@ msgstr ""
 msgid "move"
 msgstr "sposta"
 
+msgid "multimedia"
+msgstr ""
+
 msgid "multimedia descriptions"
 msgstr ""
 
@@ -1501,6 +1528,12 @@ msgstr "nuova pubblicazione"
 
 msgid "new section"
 msgstr "nuova sezione"
+
+msgid "news"
+msgstr "notizie"
+
+msgid "newsletter"
+msgstr ""
 
 msgid "newsletter title"
 msgstr ""
@@ -1519,9 +1552,6 @@ msgstr ""
 
 msgid "no"
 msgstr ""
-
-msgid "no contents"
-msgstr "nessun contenuto"
 
 msgid "no custom properties defined"
 msgstr ""
@@ -1688,6 +1718,15 @@ msgstr ""
 msgid "sections"
 msgstr "sezioni"
 
+msgid "see comments from this IP"
+msgstr ""
+
+msgid "see comments from this email"
+msgstr ""
+
+msgid "see comments on this content"
+msgstr ""
+
 msgid "see results"
 msgstr ""
 
@@ -1748,6 +1787,9 @@ msgstr ""
 msgid "state"
 msgstr ""
 
+msgid "statistics"
+msgstr "statistiche"
+
 msgid "status"
 msgstr ""
 
@@ -1799,6 +1841,9 @@ msgstr "traduzione di"
 msgid "translation to"
 msgstr ""
 
+msgid "translations"
+msgstr "traduzioni"
+
 msgid "type"
 msgstr "tipo"
 
@@ -1827,6 +1872,9 @@ msgid "web site"
 msgstr ""
 
 msgid "webmark saved"
+msgstr ""
+
+msgid "webmarks"
 msgstr ""
 
 msgid "website"
@@ -1865,6 +1913,9 @@ msgstr "i tuoi 5 ultimi elementi"
 msgid "your message"
 msgstr ""
 
+#~ msgid "no contents"
+#~ msgstr "nessun contenuto"
+
 #~ msgid "Add new item"
 #~ msgstr "Aggiungi nuovo elemento"
 
@@ -1874,14 +1925,8 @@ msgstr ""
 #~ msgid "all events"
 #~ msgstr "tutti gli eventi"
 
-#~ msgid "documents"
-#~ msgstr "documenti"
-
 #~ msgid "Events"
 #~ msgstr "Eventi"
-
-#~ msgid "events"
-#~ msgstr "eventi"
 
 #~ msgid "No events found"
 #~ msgstr "Nessun evento trovato"
