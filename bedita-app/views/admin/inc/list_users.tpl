@@ -13,9 +13,9 @@
 		<th>{t}Action{/t}</th>
 	</tr>
 	{foreach from=$users item=u}
-	<tr rel="{$html->url('/admin/viewUser/')}{$u.User.id}">
-		<td>{$u.User.id}</td>
-		<td>{$u.User.userid}</td>
+	<tr>
+		<td><a href="{$html->url('/admin/viewUser/')}{$u.User.id}">{$u.User.id}</a></td>
+		<td><a href="{$html->url('/admin/viewUser/')}{$u.User.id}">{$u.User.userid}</a></td>
 		<td>{$u.User.realname}</td>
 		<td>{$u.User.valid}</td>
 		<td>{$u.User.created|date_format:$conf->dateTimePattern}</td>
