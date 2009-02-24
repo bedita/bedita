@@ -30,7 +30,6 @@
  */
 class User extends BEAppModel
 {
-	var $name = 'User';
 
 	var $validate = array(
 		'userid' => array(
@@ -41,6 +40,12 @@ class User extends BEAppModel
 		)
 	);
 
+	protected $modelBindings = array( 
+		"detailed" =>  array("Group", "Card", "Permission"),
+		"default" => array("Group", "Card"),
+		"minimum" => array()		
+	);
+	
 	var $hasAndBelongsToMany = array(
 			'Group',
 			'Card' =>

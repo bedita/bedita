@@ -103,7 +103,7 @@ class="{literal}{required:true}{/literal}" title="{t}Check at least one group{/t
 						onclick="javascript:localUpdateGroupsChecked(this);"/>
 					&nbsp;<label id="lgroup{$gname}" for="group{$gname}">{$gname}</label>
 					</td>
-					<th>{if in_array($gname,$conf->authorizedGroups)} <span class="evidence">*</span> {/if}</th>
+					<th>{if in_array($gname,$authGroups)} <span class="evidence">*</span> {/if}</th>
 				</tr>
 				{/foreach}
 

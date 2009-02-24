@@ -81,17 +81,15 @@ class BeAuthComponent extends Object {
 	 * @return boolean 
 	 */
 	function login ($userid, $password, $policy=null) {
-		if(!isset($this->User)) {
-			$this->User = new User() ;
-		}
-		
+
+		$this->User = ClassRegistry::init('User');
+		$this->User->create();
 		$conditions = array(
 			"User.userid" 	=> $userid,
 			"User.passwd" 	=> md5($password),
 		);
 		
-		$this->User->recursive = 1;
-		$this->User->unbindModel(array('hasMany' => array('Permission')));
+		$this->User->containLevel("default");
 		$u = $this->User->find($conditions);
 		
 		if(!$this->loginPolicy($userid, $u, $policy))
@@ -118,12 +116,12 @@ class BeAuthComponent extends Object {
 	 * @return boolean
 	 */
 	function loginPolicy($userid, $u, $policy) {
+		$this->User = ClassRegistry::init('User');
+
 		// Se fallisce esce
 		if(empty($u["User"])) {
 			// look for existing user
-			
-			$this->User->recursive = 1;
-			$this->User->unbindModel(array('hasMany' => array('Permission')));
+			$this->User->containLevel("default");
 			$u2 = $this->User->find(array("User.userid" => $userid));
 			if(!empty($u2["User"])) {
 				$u2["User"]["last_login_err"]= date('Y-m-d H:i:s');
@@ -142,7 +140,6 @@ class BeAuthComponent extends Object {
 			$policy['maxLoginAttempts'] = $config->maxLoginAttempts;
 			$policy['maxNumDaysInactivity'] = $config->maxNumDaysInactivity;
 			$policy['maxNumDaysValidity'] = $config->maxNumDaysValidity;
-			$policy['authorizedGroups'] = $config->authorizedGroups;
 		}
 
 		// check activity & validity
@@ -165,10 +162,15 @@ class BeAuthComponent extends Object {
 		
 		// check group auth
 		$groups = array();
-		foreach ($u['Group'] as $g)
+		$authorized = false;
+		foreach ($u['Group'] as $g) {
 			array_push($groups, $g['name']) ;
+			if($g['backend_auth'] == 1) {
+				$authorized = true;
+			}
+		}
 
-		if(count(array_intersect($groups, $policy['authorizedGroups'])) === 0) {
+		if($authorized === false) {
 			$this->log("User login not authorized: ".$userid);
 			// TODO: special message?? or not for security???
 			return false;
@@ -193,12 +195,8 @@ class BeAuthComponent extends Object {
 	}
 
 	function changePassword($userid, $password) {
-		if(!isset($this->User)) {
-			$this->User = new User() ;
-		}
-		
-		$this->User->recursive = 1;
-		$this->User->unbindModel(array('hasMany' => array('Permission')));
+		$this->User = ClassRegistry::init('User');
+		$this->User->containLevel("default");
 		$u = $this->User->find(array("User.userid" => $userid));
 		$u["User"]["passwd"] = md5($password);
 		$u["User"]["num_login_err"]=0;
@@ -260,9 +258,8 @@ class BeAuthComponent extends Object {
 	 * @param unknown_type $userData
 	 */
 	public function createUser($userData, $groups=NULL) {
-		$user = new User() ;
-		$user->recursive = 1;
-		$user->unbindModel(array('hasMany' => array('Permission')));
+		$user = ClassRegistry::init('User');
+		$user->containLevel("minimum");
 		$u = $user->findByUserid($userData['User']['userid']);
 		if(!empty($u["User"])) {
 			$this->log("User ".$userData['User']['userid']." already created");
@@ -301,12 +298,11 @@ class BeAuthComponent extends Object {
 	}
 	
 	public function removeGroup($groupName) {
-		$config =& Configure::getInstance();
-		if (in_array($groupName, $config->basicGroups)) {
+		$groupModel = ClassRegistry::init('Group');
+		$g =  $groupModel->findByName($groupName);
+		if ($g['Group']['immutable'] == 1) {
 			throw new BeditaException(sprintf(__("Immutable group %s", true),$groupName));
 		}
-		$groupModel = new Group();
-		$g =  $groupModel->findByName($groupName);
 		if(!$groupModel->del($g['Group']['id'])) {
 			throw new BeditaException(__("Error removing group",true));
 		}
@@ -314,11 +310,19 @@ class BeAuthComponent extends Object {
 	}
 	
 	public function saveGroup($groupData) {
-		$config =& Configure::getInstance();
-		if (in_array($groupData['Group']['name'], $config->basicGroups)) {
-			throw new BeditaException(__("Immutable group",true));
+		$group = ClassRegistry::init('Group');
+		$group->create();
+		if(isset($groupData['Group']['id'])) {
+			$immutable = $group->field('immutable', array('id' => $groupData['Group']['id']));
+			if($immutable == 1) {
+				throw new BeditaException(__("Immutable group",true));
+			}
+		} else { // check existing group
+			$id = $group->field('id', array('name' => $groupData['Group']['name']));
+			if(!empty($id)) {
+				throw new BeditaException(__("Existing group",true));
+			}
 		}
-		$group = new Group();
 		if(!$group->save($groupData))
 			throw new BeditaException(__("Error saving group",true), $group->validationErrors);
 		if(!isset($groupData['Group']['id']))
@@ -328,8 +332,8 @@ class BeAuthComponent extends Object {
 	
 	public function removeUser($userId) {
 		// TODO: come fare con oggetti associati??? sono cancellati di default??
-		$user = new User();
-		$user->unbindModel(array('hasMany' => array('Permission')));
+		$user = ClassRegistry::init('User');
+		$user->containLevel("minimum");
 		$u = $user->findByUserid($userId);
 		if(empty($u["User"])) {
 			throw new BeditaException(__("User not present",true));

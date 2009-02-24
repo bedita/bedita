@@ -15,8 +15,6 @@ if (file_exists (BEDITA_CORE_PATH . DS . "config" . DS . "bedita.cfg.php") ) {
 // EDITABLE STUFF         ///////////////
 //////////////////////////////////////////////////////
 
-$config['authorizedGroups'] = array('frontend');
-
 $config['draft']            = false;
 $config['frontendNickname'] = 'nomefrontend';
 $config['frontendAreaId'] 	= 1;

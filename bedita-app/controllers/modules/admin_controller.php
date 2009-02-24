@@ -50,6 +50,7 @@ class AdminController extends ModulesController {
 	
 	function showUsers() {
 		$allGroups = $this->Group->findAll();
+		$authGroups = array();
 		$userGroups = array();
 		if(isset($user)) {
 			foreach ($user['Group'] as $g) {
@@ -62,9 +63,12 @@ class AdminController extends ModulesController {
 			if(array_search($g['Group']['name'],$userGroups) !== false)
 				$isGroup = true;
 			$formGroups[$g['Group']['name']] = $isGroup;
+			if($g['Group']['backend_auth'] == 1)
+				$authGroups[] = $g['Group']['name'];
 		}
 		$this->set('users', $this->User->findAll());
 		$this->set('formGroups',  $formGroups);
+		$this->set('authGroups',  $authGroups);
 		$this->layout = null;
 	}
 
@@ -155,28 +159,24 @@ class AdminController extends ModulesController {
 			}
 		}
 		$formGroups = array();
+		$authGroups = array();
 		foreach ($allGroups as $g) {
 			$isGroup=false;
 			if(array_search($g['Group']['name'],$userGroups) !== false)
 				$isGroup = true;
 			$formGroups[$g['Group']['name']] = $isGroup;
+			if($g['Group']['backend_auth'] == 1)
+				$authGroups[] = $g['Group']['name'];
 		}
 		
 		$this->set('userdetail',  $userdetail['User']);
 		$this->set('formGroups',  $formGroups);
+		$this->set('authGroups',  $authGroups);
 		$this->set('userdetailModules', $userdetailModules) ;
 	 }
 
 	private function loadGroups() {
-		$config =& Configure::getInstance();
-		$groups = $this->paginate('Group');
-		foreach ($groups as &$g) {
-			$immutable=false;
-			if (in_array($g['Group']['name'], $config->basicGroups))
-				$immutable=true;
-			$g['Group']['immutable'] = $immutable;
-		}
-	  	return $groups;
+		return $this->paginate('Group');
 	}
 	 
 	/**
@@ -241,11 +241,7 @@ class AdminController extends ModulesController {
 	  
 	  function removeGroup($id) {
 	 	$this->checkWriteModulePermission();
-	  	$groupName="";
-	  	$g = $this->Group->findById($id);
-	  	if(isset($g)) {
-	  		$groupName=$g['Group']['name'];
-	  	}
+	  	$groupName = $this->Group->field("name", array("id" => $id));
 	  	$this->BeAuth->removeGroup($groupName);
 		$this->eventInfo("group ".$groupName." deleted");
 		$this->userInfoMessage(__("Group deleted",true));

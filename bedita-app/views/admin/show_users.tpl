@@ -97,7 +97,7 @@ $(document).ready(function() {
 	<td>
 		<input class="ugroup" type="checkbox" id="group_{$gname}" name="data[groups][{$gname}]"/>
 		&nbsp;<label id="lgroup{$gname}" for="group{$gname}">{$gname}</label>
-		{if in_array($gname,$conf->authorizedGroups)} <span class="evidence">*</span> {/if}
+		{if in_array($gname,$authGroups)} <span class="evidence">*</span> {/if}
 	</td>
 </tr>
 {/foreach}

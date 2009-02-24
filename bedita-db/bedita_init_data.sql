@@ -28,13 +28,13 @@ INSERT INTO object_types (id, name, module) VALUES
 -- ----------------------------------
 INSERT INTO `users` ( id, `userid` , `realname` , `passwd` ) VALUES (1, 'bedita', 'BEdita', MD5( 'bedita' ));
 
-INSERT INTO `groups` ( `name` ) VALUES 
-('administrator'), 
-('guest'),
-('editor'),
-('reader'),
-('frontend'),
-('translator');
+INSERT INTO `groups` ( `name`, `backend_auth`, `immutable` ) VALUES 
+('administrator', 1, 1), 
+('guest', 1, 0),
+('editor', 1, 0),
+('reader', 1, 0),
+('frontend', 0, 0),
+('translator', 1, 1);
 
 INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES (1, (SELECT id FROM groups WHERE name = 'administrator'));
 

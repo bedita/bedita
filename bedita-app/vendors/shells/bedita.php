@@ -220,7 +220,7 @@ class BeditaShell extends Shell {
 					$this->updateDb();
 					$this->out("");
 					$this->out("");
-					$res = $this->in("Do you want checking BEdita status? [y/n]");
+					$res = $this->in("Do you want to check BEdita status? [y/n]");
 					if($res != "y") {
 			       		$this->out("Bye");
 			       		return;
@@ -241,7 +241,7 @@ class BeditaShell extends Shell {
 			}
 		} else {
 			$this->hr();
-			$this->out("HINT: check the database existence and edit \$default array in bedita-app/config/database.php, have a look to CakePHP documentation.");
+			$this->out("HINT: check database existence/setup and edit \$default array in bedita-app/config/database.php, have a look to CakePHP documentation.");
 			$this->out("");
 		}
 	}

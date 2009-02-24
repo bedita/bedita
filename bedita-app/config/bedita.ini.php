@@ -191,14 +191,6 @@ $config['passwdRegex']    = "/^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){6,40}$/"
 $config['passwdRegexMsg'] = "Your password must be at least 6 characters long and contain at least one number";
 
 
-// Groups
-$config['authorizedGroups'] = array ('administrator', 'editor', 'reader', 'translator');
-
-// Predefined groups
-$config['basicGroups']      = array ('administrator', 'editor', 'reader', 'guest', 'translator');
-
-
-
 /**
  ** ******************************************
  **  More specific settings

@@ -122,11 +122,12 @@ CREATE TABLE `banned_ips` (
 CREATE TABLE groups (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(32) NOT NULL,
-  backend_auth BOOL NOT NULL DEFAULT '1',
+  backend_auth BOOL NOT NULL DEFAULT '0',
   immutable BOOL NOT NULL DEFAULT '0',
   created datetime default NULL,
   modified datetime default NULL,
- PRIMARY KEY(id)
+  PRIMARY KEY(id),
+  UNIQUE KEY name (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE users (

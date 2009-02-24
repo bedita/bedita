@@ -11,7 +11,7 @@
 	{foreach from=$groups|default:'' item=g}
 	<tr class="rowList">	
 		<td><a href="{$html->url('/admin/viewGroup/')}{$g.Group.id}">{$g.Group.name}</a></td>
-		<td>{if in_array($g.Group.name,$conf->authorizedGroups)}{t}Authorized{/t}{else}{t}Not Authorized{/t}{/if}</td>
+		<td>{if $g.Group.backend_auth}{t}Authorized{/t}{else}{t}Not Authorized{/t}{/if}</td>
 		{if $g.Group.immutable}	
 		<td>-</td>
 		<td>-</td>
@@ -42,7 +42,7 @@
 					<th><label id="lgroupname" for="groupname">{t}Group Name{/t}</label></th>
 					<td><input type="text" id="groupname" name="data[Group][name]" value="{$group.Group.name|default:''}" onkeyup="cutBlank(this);"/>
 					</td>
-			{if isset($group)}
+				{if isset($group)}
 					<td>
 						{if ($module_modify eq '1')}
 							<input type="button" name="deleteGroup" value="{t}Remove{/t}" 
@@ -61,8 +61,12 @@
 							</a>
 						{/foreach}
 					</td>
+				{/if}
+					<td>
+						<input type="checkbox" name="data[Group][backend_auth]" value="1"
+							{if isset($group) && $group.Group.backend_auth == 1} checked="checked"{/if} /> {t}Access to Backend{/t}
+					</td>
 				</tr>
-			{/if}
 		</table>
 		
 </fieldset>				
