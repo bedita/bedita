@@ -116,14 +116,14 @@ $(document).ready(function() {
 				</td>				
 				<td class="center">
 					<input type="radio" 
-						name="data[ModuleFlags][{$mod.Module.label}]" value="" {if !isset($group)}checked="checked"{elseif ($mod.Module.flag == 0)}checked="checked"{/if}/>
+						name="data[ModuleFlags][{$mod.Module.name}]" value="" {if !isset($group)}checked="checked"{elseif ($mod.Module.flag == 0)}checked="checked"{/if}/>
 				</td>
 				<td class="center">
-					<input type="radio" name="data[ModuleFlags][{$mod.Module.label}]" value="{$conf->BEDITA_PERMS_READ}" 
+					<input type="radio" name="data[ModuleFlags][{$mod.Module.name}]" value="{$conf->BEDITA_PERMS_READ}" 
 							{if ($mod.Module.flag == $conf->BEDITA_PERMS_READ)}checked="checked"{/if}/>
 				</td>
 				<td class="center">
-					<input type="radio" name="data[ModuleFlags][{$mod.Module.label}]" value="{$conf->BEDITA_PERMS_READ_MODIFY}" 
+					<input type="radio" name="data[ModuleFlags][{$mod.Module.name}]" value="{$conf->BEDITA_PERMS_READ_MODIFY}" 
 							{if ($mod.Module.flag & $conf->BEDITA_PERMS_MODIFY)}checked="checked"{/if} />
 				</td>
 			</tr>
