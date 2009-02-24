@@ -1,24 +1,3 @@
-<script type="text/javascript">
-{literal}
-
-$.validator.setDefaults({ 
-	//submitHandler: function() { alert("submitted!"); },
-	success: function(label) {
-		// set &nbsp; as text for IE
-		label.html("&nbsp;").addClass("checked");
-		}
-	});
-jQuery.validator.addMethod(
-		"lettersnumbersonly",
-		function(value, element) { return /^[a-z0-9]+$/i.test(value); },
-		"{/literal}{t}Letters or numbers only please{/t}{literal}");
-$(document).ready(function() {
-	$("#groupform").validate(); 
-});
-
-{/literal}
-</script>
-
 
 
 <table class="indexlist">
@@ -30,8 +9,8 @@ $(document).ready(function() {
 		<th></th>
 	</tr>
 	{foreach from=$groups|default:'' item=g}
-	<tr class="rowList" rel="{$html->url('/admin/viewGroup/')}{$g.Group.id}">	
-		<td>{$g.Group.name}</td>
+	<tr class="rowList">	
+		<td><a href="{$html->url('/admin/viewGroup/')}{$g.Group.id}">{$g.Group.name}</a></td>
 		<td>{if in_array($g.Group.name,$conf->authorizedGroups)}{t}Authorized{/t}{else}{t}Not Authorized{/t}{/if}</td>
 		{if $g.Group.immutable}	
 		<td>-</td>
@@ -61,8 +40,7 @@ $(document).ready(function() {
 		<table class="bordered">
 				<tr>
 					<th><label id="lgroupname" for="groupname">{t}Group Name{/t}</label></th>
-					<td><input type="text" id="groupname" name="data[Group][name]" value="{$group.Group.name|default:''}" onkeyup="cutBlank(this);"
-							class="{literal}{required:true,lettersnumbersonly:true,minLength:6}{/literal}" title="{t 1='6'}Group name is required (at least %1 chars, no white spaces and special chars){/t}"/>
+					<td><input type="text" id="groupname" name="data[Group][name]" value="{$group.Group.name|default:''}" onkeyup="cutBlank(this);"/>
 					</td>
 			{if isset($group)}
 					<td>
