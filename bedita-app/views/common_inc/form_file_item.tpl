@@ -53,11 +53,7 @@ $(document).ready(function(){
 		<a href="{$linkUrl}"><img src="{$session->webroot}img/iconset/88px/audio.png" /></a>	
 	
 	{else}
-		
-		<img src="/img/iconset/88px/text.png" />
-		{*
-		<a href="{$conf->mediaUrl}{$filePath}" target="_blank"><img src="{$session->webroot}img/mime/{$item.mime_type}.gif" /></a>
-		*}
+		{$beEmbedMedia->object($item)}
 	{/if}
 	
 	</div>

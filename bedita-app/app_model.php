@@ -782,9 +782,10 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
 									"Content"),
 				"default" => array("BEObject" => array(	"ObjectProperty", 
 														"LangText", 
-														"ObjectType"), 
+														"ObjectType",
+														"Category"), 
 									"Content"),
-				"minimum" => array("BEObject" => array("ObjectType"), "Content")		
+				"minimum" => array("BEObject" => array("ObjectType","Category"), "Content")		
 	);
 	
 	var $actsAs 	= array(
@@ -837,9 +838,10 @@ class BeditaStreamModel extends BEAppObjectModel {
 									"Content", "Stream"),
 				"default" => array("BEObject" => array(	"ObjectProperty", 
 														"LangText", 
-														"ObjectType"), 
+														"ObjectType",
+														"Category"), 
 									"Content", "Stream"),
-				"minimum" => array("BEObject" => array("ObjectType"),"Content", "Stream")		
+				"minimum" => array("BEObject" => array("ObjectType","Category"),"Content", "Stream")		
 	);
 	
 	

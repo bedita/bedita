@@ -53,6 +53,7 @@ class StreamsController extends AppController {
 		}
 		
 		$filter["object_type_id"] = $ot;
+		$filter["mediatype"] = true;
 		if (!empty($text)) {
 			$text = urldecode($text);
 			$filter["search"] = $text;

@@ -27,6 +27,7 @@ class BeThumbHelper extends AppHelper {
 	private $_imagetype = array ("", "gif", "jpg", "png", "jpeg");
 	private $_defaultimagetype = 2; // defaults to 2 [= JPG]
 
+	private $_mimeType = array("image/gif", "image/jpeg", "image/png");
 
 	// empties (see private method _resetObjects)
 	private $_resample    = false;
@@ -87,8 +88,11 @@ class BeThumbHelper extends AppHelper {
 			$this->_triggerError ( $this->_helpername . ": '" . $be_obj['name'] . "' is not a valid Bedita image object (object type is " . $be_obj['mime_type'] . ")", E_USER_NOTICE ) ;
 			return $this->_conf['imgMissingFile'];
 		}
+		elseif (!in_array($be_obj["mime_type"], $this->_mimeType))
+		{
+			return false;
+		}
 		else $this->_resetObjects();
-
 
 		// read params as an associative array or multiple variable
 		$expectedArgs = array ('width', 'height', 'longside', 'mode', 'modeparam', 'type', 'upscale');

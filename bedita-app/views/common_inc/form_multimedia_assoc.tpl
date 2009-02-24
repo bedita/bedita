@@ -173,27 +173,21 @@ $(document).ready(function(){
 			</thead>
  			*}
 			<tbody>
-			{foreach from=$items item='mobj' key='mkey'}
-				{assign var="thumbWidth" value = 45}
-				{assign var="thumbHeight" value = 45}
+			
+			{assign var="thumbWidth" value = 45}
+			{assign var="thumbHeight" value = 45}
+			{assign_associative var="params" width=$thumbWidth height=$thumbHeight}
+			{assign_associative var="attributes" style="width:45px;"}
+			
+			{foreach from=$items item='mobj' key='mkey'}	
 			<tr class="rowList" id="tr_{$mobj.id}">
 				
 				<td style="width:12px;"><input type="checkbox" value="{$mobj.id}" name="chk_bedita_item" class="itemCheck"/></td>
 				
 				<td style="width:{$thumbWidth}px;">
-					
-					{if $conf->objectTypes[$mobj.object_type_id].name == "image"}
-					{assign_associative var="params" width=$thumbWidth height=$thumbHeight}
-					<a title="show details" href="{$html->url('/multimedia/view/')}{$mobj.id}" target="_blank">					
-						{$beEmbedMedia->object($mobj,$params, $params)}
-					</a>
-
-					{elseif $conf->objectTypes[$mobj.object_type_id].name == "video"}
-						{assign_associative var="attributes" style="width:30px;heigth:30px;"}
-						<div><a href="{$mobj.path}" target="_blank">{$beEmbedMedia->object($mobj, null, $attributes) }</a></div>
-					{else}
-						<div><a href="{$conf->mediaUrl}{$mobj.path}" target="_blank"><img src="{$session->webroot}img/mime/{$mobj.mime_type}.gif" /></a></div>
-					{/if}
+				<a title="show details" href="{$html->url('/multimedia/view/')}{$mobj.id}" target="_blank">
+					{$beEmbedMedia->object($mobj,$params, $attributes)}
+				</a>
 				</td>
 				
 				{* <td>{$mobj.id}</td> *}

@@ -116,6 +116,11 @@ class BeEmbedMediaHelper extends AppHelper {
 	private function showImage ($obj, $params, $htmlAttributes)
 	{
 		$src = $this->getImageSrc($obj, $params);
+		
+		if (!$src) {
+			$src = $this->getMediaTypeImage($obj);
+		}
+		
 		if (!empty($params["URLonly"]))
 			return $src;
 		elseif ($params["presentation"] == "link")
@@ -147,21 +152,25 @@ class BeEmbedMediaHelper extends AppHelper {
 	 */
 	private function showVideo($obj, $params, $htmlAttributes)
 	{
+		if (!preg_match(Configure::read("validate_resorce.URL"), $obj["path"])) {
+			$obj['path'] = $this->_conf["url"] . $obj["path"]; 
+		}
 		$URLonly = (!empty($params["URLonly"]))? true : false;
 		if ($params["presentation"] == "thumb") {
-			$output = $this->MediaProvider->thumbnail($obj, $htmlAttributes, $URLonly);				
+			$output = $this->MediaProvider->thumbnail($obj, $htmlAttributes, $URLonly);
+			if (empty($output))	{
+				$img = $this->getMediaTypeImage($obj);
+				$output = $this->Html->image($img, $htmlAttributes);
+			}
 		} elseif ($params["presentation"] == "full") {
 			$output = $this->MediaProvider->embed($obj, $htmlAttributes);
 		} elseif ($params["presentation"] == "link") {
 			$src = $this->MediaProvider->sourceEmbed($obj);
-			if ($URLonly)
-				return $src;
-			else
-				return $this->Html->link($src, $obj['title'], $htmlAttributes);
+			$output = (!empty($URLonly))? $src : $this->Html->link($src, $obj['title'], $htmlAttributes);
 		}
 		
 		if (empty($output)) {
-			//$output = $this->Html->image("default video image", $htmlAttributes);
+			$output = $obj['path'];
 		}
 		
 		return $output;
@@ -181,11 +190,16 @@ class BeEmbedMediaHelper extends AppHelper {
 		if (!preg_match(Configure::read("validate_resorce.URL"), $obj["path"])) {
 			$obj['path'] = $this->_conf["url"] . $obj["path"]; 
 		}
+		
+		if (!empty($params["URLonly"]))
+			return $obj['path'];
 
-		if ($params["presentation"] == "link")
+		if ($params["presentation"] == "link") {
 			return $this->Html->link($obj['path'], $obj['title'], $htmlAttributes);
-		else
-			return $this->Html->image("iconset/88px/audio.png", $htmlAttributes);
+		} else {
+			$img = $this->getMediaTypeImage($obj);
+			return $this->Html->image($img, $htmlAttributes);
+		}
 	}
 	
 	
@@ -198,10 +212,33 @@ class BeEmbedMediaHelper extends AppHelper {
 	 * @return string, html
 	 */
 	private function showBEFile($obj, $params, $htmlAttributes) {
-		//@todo: definire immagine di default per BEFile
-		return "";
+		if (!preg_match(Configure::read("validate_resorce.URL"), $obj["path"])) {
+			$obj['path'] = $this->_conf["url"] . $obj["path"]; 
+		}
+		
+		if (!empty($params["URLonly"]))
+			return $obj['path'];
+		
+		if ($params["presentation"] == "thumb") {
+			$img = $this->getMediaTypeImage($obj);
+			return $this->Html->image($img, $htmlAttributes);
+		} else {
+			return $this->Html->link($obj['path'], $obj['title'], $htmlAttributes);
+		}
 	}
 
+	protected function getMediaTypeImage($obj) {
+		$img = "iconset/88px/notype.png";
+		if (!empty($obj["mediatype"]) && file_exists("img/iconset/88px/" . $obj["mediatype"] . ".png")) {
+			$img = "iconset/88px/" . $obj["mediatype"] . ".png";
+		} elseif (!empty($obj["Category"])) {
+			$imgname = (!is_array($obj["Category"]))? $obj["Category"] : $obj["Category"][0]["name"];
+			if (file_exists("img/iconset/88px/" . $imgname . ".png")) {
+				$img = "iconset/88px/" . $imgname . ".png";
+			} 
+		}
+		return $img;
+	}
 
 }
 ?>

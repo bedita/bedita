@@ -75,7 +75,7 @@
 	
 	
 		<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
-			<img src="{$session->webroot}img/mime/{$object.mime_type}.gif" />
+			{$beEmbedMedia->object($object)}
 		</a>
 	
 	
