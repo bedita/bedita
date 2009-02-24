@@ -98,6 +98,10 @@ $(document).ready(function(){
 
 ...........................................*/
 
+	
+	
+		
+	
 	$(".modules *[rel]").css("cursor","pointer");
 
 	$(".modules *").mouseover(function () {

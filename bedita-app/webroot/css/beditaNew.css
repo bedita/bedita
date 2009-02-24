@@ -293,10 +293,11 @@ UL.modules {
 
 
 .bedita 	{background-color:#FFFFFF !important; 
-			font:normal 1.75em Georgia, "Times New Roman", Times, serif !important; ; 
-			line-height:0.75em !important;
+			font:normal 1.75em Georgia, "Times New Roman", Times, serif !important;
+			line-height:1em !important;
 			color:#996600  !important;
 			}
+
 
 .default 		{background-color:#CCCCCC !important; color:#000000 !important}
 
@@ -1511,8 +1512,12 @@ INPUT[type=text],INPUT[type=password], textarea {
 	-moz-border-radius : 7px; 
 	-webkit-border-radius : 7px;
 	-khtml-border-radius: 7px;
+	border:1px solid silver;
 }
 
+INPUT.big {
+	font-size:1.315em;
+}
 
 INPUT[type=button], INPUT[type=submit]  {
 	text-transform:uppercase;

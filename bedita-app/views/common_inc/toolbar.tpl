@@ -25,13 +25,13 @@
 		<table>
 		<tr>
 			<td>
-			<span class="evidence">{$beToolbar->size()}&nbsp;</span> {t}{$itemName|default:$moduleName}{/t}
+			<span class="evidence">{$beToolbar->size()} &nbsp;</span> {t}{$itemName|default:$moduleName}{/t}
 			</td>
 			
 			<td>
 				{$beToolbar->first('page','','page')}
 				<span class="evidence"> {$beToolbar->current()} </span> 
-				{t}of{/t} 
+				{t}of{/t}  &nbsp;
 				<span class="evidence"> 
 					{$beToolbar->last($beToolbar->pages(),'',$beToolbar->pages())}
 				</span>

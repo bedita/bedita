@@ -1,10 +1,27 @@
+<script type="text/javascript">
+{literal}
+$(document).ready(function(){
 
+	$(".indexlist TD").not(".checklist").not(".go").css("cursor","pointer").click(function(i) {
+		document.location = $(this).parent().find("a:first").attr("href"); 
+	} );
+	
+	{/literal}{if !empty($group)}{literal}
+	
+		$('.tab').BEtabsopen();
+	
+	{/literal}{/if}{literal}
+	
+});
+
+{/literal}
+//-->
+</script>	
 
 <table class="indexlist">
 	<tr>
 		<th>{$paginator->sort('Name', 'name')}</th>
 		<th>{t}Access to Backend{/t}</th>
-		<th>{$paginator->sort('Created', 'created')}</th>
 		<th>{$paginator->sort('Modified', 'modified')}</th>
 		<th></th>
 	</tr>
@@ -17,9 +34,8 @@
 		<td>-</td>
 		<td>-</td>
 		{else}
-		<td>{$g.Group.created}</td>
 		<td>{$g.Group.modified}</td>
-		<td>{if ($module_modify eq '1')}
+		<td class="go">{if ($module_modify eq '1')}
 			<input type="button" name="deleteGroup" value="{t}Remove{/t}" 
 			onclick="javascript:delGroupDialog('{$g.Group.name}',{$g.Group.id});"/>
 			{else}-{/if}
@@ -30,9 +46,7 @@
 </table>
 
 <div class="tab"><h2>{t}Group properties {/t}</h2></div>
-
 <fieldset id="groupForm">	
-
 	{if isset($group)}
 		<input type="hidden" name="data[Group][id]" value="{$group.Group.id}"/>
 	{/if}
@@ -68,7 +82,6 @@
 					</td>
 				</tr>
 		</table>
-		
 </fieldset>				
 
 

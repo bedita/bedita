@@ -23,7 +23,6 @@
 		{image_info var="imageInfo" file=$fileUrl}
 		
 		{assign_associative var="params" width=500}
-		{assign_associative var="htmlAttr" width=500}
 		
 		{$beEmbedMedia->object($object,$params,$htmlAttr)}
 		

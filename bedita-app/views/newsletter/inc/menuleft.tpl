@@ -3,7 +3,7 @@
 <div class="primacolonna">
 
 
-		<div class="modules"><label class="bedita" rel="{$html->url('/')}">BEdita 3.0</label></div>
+		<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->version}</label></div>
 
 	
 		{include file="../common_inc/messages.tpl"}

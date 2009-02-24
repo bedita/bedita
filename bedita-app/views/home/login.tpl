@@ -24,7 +24,7 @@ $().ready(function() {
 
 	
 <div class="primacolonna">
-	 <div class="modules"><label class="bedita" rel="{$html->url('/')}">BEdita 3.0</label></div>
+	 <div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->version}</label></div>
 	 
 	 
 	<div class="insidecol colophon">	
@@ -49,16 +49,29 @@ $().ready(function() {
 
 
 <div style="width:180px; margin-left:310px; padding-top:25px;">
-<form action="{$html->url('/authentications/login')}" method="post" name="loginForm" id="loginForm" class="cmxform">
+<form action="{$html->url('/authentications/login')}" method="post" name="loginForm" id="loginForm" class="cmxform" style="padding-left:5px;">
 	<fieldset>
 		<input type="hidden" name="data[login][URLOK]" value="{$beurl->here()}" id="loginURLOK" />
 		
 		<label class="block" id="luserid" for="userid">{t}Username{/t}</label>
-		<input style="width:103px" type="text" name="data[login][userid]" id="userid" class="{literal}{required:true}{/literal}" title="{t}Username is required{/t}"/></td>
+		<input class="big" style="width:103px" type="text" name="data[login][userid]" id="userid" class="{literal}{required:true}{/literal}" title="{t}Username is required{/t}"/></td>
 		<label class="block" id="lpasswd" for="passwd">{t}Password{/t}</label>
-		<input style="width:103px" type="password" name="data[login][passwd]" id="passwd" class="{literal}{required:true}{/literal}" title="{t}Password is required{/t}"/>
+		<input class="big" style="width:103px; margin-bottom:10px;" type="password" name="data[login][passwd]" id="passwd" class="{literal}{required:true}{/literal}" title="{t}Password is required{/t}"/>
 		
 		<input class="bemaincommands" type="submit" value="{t}Enter{/t}"/>
 	</fieldset>
+	</form>
 </div>
+
+<div class="quartacolonna" style="border-left:1px solid gray; padding:5px 0px 0px 10px; width:420px; left:440px; top:20px;">
+	<div style="display:none">
+	<label class="block">{t}Hai dimenticato username o password?{/t}</label>
+	Scrivi qui la tua <label>{t}email{/t}:&nbsp;</label>
+	<br /><input class="big" style="width:153px" type="text" title="{t}Username is required{/t}"/></td>
+	<input class="bemaincommands" type="submit" value="{t}Send{/t}"/>
+</div>
+
+
+</div>
+
 

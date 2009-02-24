@@ -1,3 +1,15 @@
+<script type="text/javascript">
+{literal}
+$(document).ready(function(){
+
+	$(".indexlist TD").not(".checklist").not(".go").css("cursor","pointer").click(function(i) {
+		document.location = $(this).parent().find("a:first").attr("href"); 
+	} );
+});
+
+{/literal}
+//-->
+</script>	
 
 
 <form action="{$html->url('/admin/users')}" method="post" name="userForm" id="userForm">
@@ -15,12 +27,12 @@
 	{foreach from=$users item=u}
 	<tr>
 		<td><a href="{$html->url('/admin/viewUser/')}{$u.User.id}">{$u.User.id}</a></td>
-		<td><a href="{$html->url('/admin/viewUser/')}{$u.User.id}">{$u.User.userid}</a></td>
+		<td>{$u.User.userid}</td>
 		<td>{$u.User.realname}</td>
 		<td>{$u.User.valid}</td>
 		<td>{$u.User.created|date_format:$conf->dateTimePattern}</td>
 		<td>{$u.User.last_login|date_format:$conf->dateTimePattern}</td>
-		<td>
+		<td class="go">
 			{if $module_modify eq '1' && $BEAuthUser.userid ne $u.User.userid}
 			<input type="button" name="removeUser" value="{t}Remove{/t}" id="user_{$u.User.id}" onclick="javascript:delUserDialog('{$u.User.userid}',{$u.User.id});"/>
 			{/if}

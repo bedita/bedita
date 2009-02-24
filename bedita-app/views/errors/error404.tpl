@@ -14,7 +14,7 @@
 <body>
 
 <div class="primacolonna">
-	<div class="modules"><label class="bedita" rel="{$html->url('/')}">BEdita 3.0</label></div>	
+	<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->version}</label></div>	
 </div>
 
 <div class="secondacolonna">

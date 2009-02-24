@@ -5,11 +5,8 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
-	{if !empty($method) && $method != "index"}
-		{assign var="back" value=$session->read("backFromView")}
-	{else}
-		{assign_concat var="back" 0=$html->url('/') 1=$currentModule.path}
-	{/if}
+	{assign_concat var="back" 0=$html->url('/') 1=$currentModule.path}
+
 
 	<div class="modules">
 		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>

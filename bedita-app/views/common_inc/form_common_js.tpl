@@ -78,18 +78,20 @@ $(document).ready(function(){
 
 {/literal}{/if}{literal}
 
+
 {/literal}{if !empty($object.Permissions) && !($perms->isDeletable($user.userid,$user.groups,$object.Permissions))}{literal}
 		
-		$("#delBEObject").attr("disabled",true);
+		//$("#delBEObject").attr("disabled",true);
 
 {/literal}{/if}{literal}
 
 {/literal}{if !empty($object.Permissions) && !($perms->isWritable($user.userid,$user.groups,$object.Permissions))}{literal}
 
-		$("#saveBEObject,#cloneBEObject,#delBEObject").attr("disabled",true);
-		$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");
+		//$("#saveBEObject,#cloneBEObject,#delBEObject").attr("disabled",true);
+		//$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");
 	
 {/literal}{/if}{literal}
+
 
 {/literal}{if !empty($object.start) && ($object.start > ($smarty.now|date_format:"%Y-%m-%d %T"))}{literal}
 		

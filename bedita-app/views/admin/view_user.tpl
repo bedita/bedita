@@ -11,8 +11,7 @@
 {literal}
 <script type="text/javascript">
 	$(document).ready(function(){
-		var openAtStart ="#details";
-		$(openAtStart).prev(".tab").BEtabstoggle();
+		openAtStart("#details");
 	});
 </script>
 {/literal}
