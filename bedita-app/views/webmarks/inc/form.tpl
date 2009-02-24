@@ -82,4 +82,7 @@ var url="{$html->url('/webmarks/checkUrl')}";
 	
 </fieldset>
 
-	{include file="../common_inc/form_categories.tpl"}
+{include file="../common_inc/form_categories.tpl"}
+
+{include file="../common_inc/form_tags.tpl"}
+
