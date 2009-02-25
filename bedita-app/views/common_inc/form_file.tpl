@@ -24,7 +24,7 @@
 		
 		{assign_associative var="params" width=500}
 		
-		{$beEmbedMedia->object($object,$params,$htmlAttr)}
+		{$beEmbedMedia->object($object,$params)}
 		
 
 		
