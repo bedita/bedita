@@ -1,4 +1,13 @@
+{$javascript->link("jquery/jquery.disable.text.select", true)}
+
 <script type="text/javascript">
+	
+    $(function() {
+        $('.disableSelection').disableTextSelect();
+    });	
+	
+	
+	
 var urlGetObj		= '{$html->url("/streams/get_item_form_by_id")}' ;
 var urlGetAllItemNoAssoc = "{$html->url("/streams/showStreams")}/{$object.id|default:'0'}";
 var containerItem = "#multimediaItems";
@@ -82,9 +91,10 @@ $(document).ready(function()
 	$(containerItem).sortable ({
 		distance: 20,
 		opacity:0.7,
+		//handle: $(".multimediaitem").add(".multimediaitem img"), //try to fix IE7 handle on images, but don't work acc!
 		update: $(this).fixItemsPriority
 	}).css("cursor","move");
-	
+
 	$("#reposItems").click( function () {
 		$("#loading").show();
 		$("#ajaxSubcontainer").show();
@@ -108,13 +118,16 @@ $(document).ready(function()
 
 <hr />
 <input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$relation}][0][switch]" value="{$relation}" />
+
+
 {foreach from=$attach item="item"}
-	<div class="multimediaitem itemBox {if $item.status != "on"} off{/if}" id="item_{$item.id}">
+	<div class="multimediaitem itemBox {if $item.status != "on"} off{/if} disableSelection" id="item_{$item.id}">
 		
 			{include file="../common_inc/form_file_item.tpl"}
 			
 	</div>
 {/foreach}
+
 
 </fieldset>
 

@@ -53,7 +53,9 @@ $(document).ready(function(){
 		<a href="{$linkUrl}"><img src="{$session->webroot}img/iconset/88px/audio.png" /></a>	
 	
 	{else}
+
 		{$beEmbedMedia->object($item)}
+	
 	{/if}
 	
 	</div>
