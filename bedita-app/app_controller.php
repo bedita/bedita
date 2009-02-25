@@ -665,7 +665,7 @@ abstract class ModulesController extends AppController {
 	 * @param $obj_id object id
 	 */
 	public function previewsForObject($sections,$obj_id,$status) {
-		$previews = array();;
+		$previews = array();
 		if(empty($obj_id) || empty($sections))
 			return $previews;
 		foreach($sections as $section_id) {
@@ -673,9 +673,9 @@ abstract class ModulesController extends AppController {
 			if(!empty($a)) {
 				$desc = $this->BEObject->field('title',array("id=$section_id"));
 				$field = ($status=='on') ? 'public_url' : 'staging_url';
-				if(!empty($a['Area'][$field])) {
+				if(!empty($a[$field])) {
 					$previews[]=array(
-						'url'=>$a['Area'][$field]."/section/$section_id/$obj_id",
+						'url'=>$a[$field]."/section/$section_id/$obj_id",
 						'desc'=>$desc);
 				}
 			}
