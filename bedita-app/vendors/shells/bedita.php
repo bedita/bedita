@@ -883,6 +883,20 @@ class BeditaShell extends Shell {
         }
     }
     
+    public function updateVersion() {
+    	
+    	$res = system("svnversion");
+		$s = split(":", $res);
+		$svnRevision = $s[count($s)-1];
+		$versionFile = APP . 'config' . DS . 'bedita.version.php';
+		$beditaVersion = "3.0.alpha1.". $svnRevision;
+		$handle = fopen($versionFile, 'w');
+		fwrite($handle, "<?php\n\$config['Bedita.version'] = '".$beditaVersion. "';\n?>");
+		fclose($handle);
+		$this->out("Updated to: $beditaVersion");
+		
+    }
+    
 	function help() {
         $this->out('Available functions:');
         $this->out('1. updateDb: update database with bedita-db sql scripts');
@@ -929,6 +943,8 @@ class BeditaShell extends Shell {
   		$this->out(' ');
   		$this->out('   Usage: createRelease -script <release-config-script.php>');
         $this->out(' ');
+        $this->out('8. updateVersion: updates version number from svn local info [if present]');
+  		$this->out(' ');
 	}
 }
 
