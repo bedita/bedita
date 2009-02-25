@@ -66,16 +66,17 @@ $(document).ready(function(){
 	{capture name="theader"}
 		<tr>
 			<th></th>
-			<th>{$beToolbar->order('title', 'Title')}</th>
+			<th>{$beToolbar->order('title', 'title')}</th>
 			<th>{$beToolbar->order('id', 'id')}</th>
-			<th style="text-align:center">{$beToolbar->order('status', 'Status')}</th>
-			<th>{$beToolbar->order('modified', 'Modified')}</th>
+			<th style="text-align:center">{$beToolbar->order('status', 'status')}</th>
+			<th>{$beToolbar->order('modified', 'modified')}</th>
 			<th style="text-align:center">
 				{assign_associative var="htmlAttributes" alt="comments" border="0"} 
 				{$beToolbar->order('num_of_comment', '', 'iconComments.gif', $htmlAttributes)}
 			</th>			
-			<th>{$beToolbar->order('lang', 'Lang')}</th>
-			<th>Notes</th>
+			<th>{$beToolbar->order('lang', 'lang')}</th>
+			<th>{$beToolbar->order('note', 'notes')}</th>
+
 		</tr>
 	{/capture}
 		

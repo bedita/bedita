@@ -20,7 +20,7 @@ Menu a DX
 			
 	<div id="editornotes" style="margin-top:-10px; padding:10px; background-color:white;">
 	{strip}
-		<label>editor notes:</label>
+		<label>{t}editor notes{/t}:</label>
 		<textarea name="data[note]" class="autogrowarea editornotes">
 		  {$object.note|default:''}
 		</textarea>

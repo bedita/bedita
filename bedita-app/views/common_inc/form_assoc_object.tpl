@@ -15,7 +15,7 @@
 
 	
 	<td>
-		{$objRelated.title|default:'<i>[no title]</i>'}
+		{$objRelated.title|default:'<i>[no title]</i>'|truncate:18:'~':true}
 	</td>
 
 {if $rel == "download"}

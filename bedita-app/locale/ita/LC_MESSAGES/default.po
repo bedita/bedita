@@ -226,22 +226,22 @@ msgid "Create new"
 msgstr ""
 
 msgid "Create new document"
-msgstr "Crea nuovo documento"
+msgstr "Nuovo documento"
 
 msgid "Create new event"
-msgstr "Crea nuovo evento"
+msgstr "Nuovo evento"
 
 msgid "Create new gallery"
-msgstr ""
+msgstr "Nuova galleria"
 
 msgid "Create new publishing"
-msgstr "Crea una nuova pubblicazione"
+msgstr "Nuova pubblicazione"
 
 msgid "Create new question"
 msgstr ""
 
 msgid "Create new section"
-msgstr "Crea una nuova sezione"
+msgstr "Nuova sezione"
 
 msgid "Create new user"
 msgstr ""
@@ -1134,7 +1134,7 @@ msgid "X"
 msgstr ""
 
 msgid "Yes"
-msgstr ""
+msgstr "Sì"
 
 msgid "You can't use remote file"
 msgstr ""
@@ -1176,7 +1176,7 @@ msgid "add user"
 msgstr ""
 
 msgid "address"
-msgstr ""
+msgstr "indirizzo"
 
 msgid "addressbook"
 msgstr "rubrica"
@@ -1357,6 +1357,9 @@ msgstr "documenti"
 
 msgid "draft"
 msgstr ""
+
+msgid "editor notes"
+msgstr "note redazionali"
 
 msgid "email"
 msgstr ""
@@ -1570,6 +1573,9 @@ msgstr ""
 
 msgid "not yet sent"
 msgstr ""
+
+msgid "notes"
+msgstr "note"
 
 msgid "number"
 msgstr ""
@@ -1937,5 +1943,4 @@ msgstr ""
 #~ msgid "Position"
 #~ msgstr "Posizione"
 
-#~ msgid "notes"
-#~ msgstr "note"
+

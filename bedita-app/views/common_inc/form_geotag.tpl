@@ -18,11 +18,12 @@
 	<th>{t}longitude{/t}:</th>
 	<td><input type="text" style="width:100px;" name="data[GeoTag][0][longitude]" value="{if !empty($d.longitude)}{$d.longitude}{/if}"></td>
 </tr>
+{*
 <tr>
 	<th>{t}Gmaps LookaT{/t}:</th>
 	<td colspan=3><textarea name="data[GeoTag][0][gmaps_lookat]" class="autogrowarea" style="height:16px; width:300px;">{if !empty($d.gmaps_lookat)}{$d.gmaps_lookat}{/if}</textarea></td>
 </tr>
-
+*}
 </table>
 
 
