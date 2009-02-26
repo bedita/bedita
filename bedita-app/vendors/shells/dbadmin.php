@@ -207,6 +207,58 @@ class DbadminShell extends Shell {
 		$this->out($countOperations . " rows on db updated");
 		$this->out("done");
 	}
+	
+	public function updateVideoThumb() {
+		
+		$conf = Configure::getInstance() ;
+		App::import('Component', 'BeBlipTv');
+		$this->BeBlipTv = new BeBlipTvComponent();
+		
+		$videoModel = ClassRegistry::init("Video");
+		$conditions = array();
+		$countOperations = 0;
+		
+		if (!isset($this->params['all'])) {
+			$conditions[] = "thumbnail IS NULL"; 
+		}
+		
+		$videos = $videoModel->find("all", array(
+					"conditions" => $conditions,
+					"contain" => array("Stream")
+				)
+			);
+		
+		$this->hr();
+		$this->out("Update video thumbnail");
+		$this->hr();
+		
+		if (!empty($videos)) {
+			foreach ($videos as $v) {
+				if ($v["provider"] == "youtube") {
+					$config = $conf->media_providers_default_conf['youtube'] ;
+					Configure::load($config);
+					$thumbnail	= sprintf($conf->youtube["urlthumb"], $v['uid']);
+				} elseif ($v["provider"] == "blip") {
+					if(!($this->BeBlipTv->getInfoVideo($v["uid"]) )) {
+						throw new BEditaMediaProviderException(__("Multimedia  not found",true)) ;
+					}
+					$thumbnail = $this->BeBlipTv->info['thumbnailUrl'];
+				}
+				
+				if (!empty($v["provider"])) {
+					$videoModel->id = $v["id"];
+					if (!$videoModel->saveField("thumbnail", $thumbnail))
+						throw new BeditaException(__("Error saving thumbnail field", true));
+					
+					$this->out("video: " . $v["path"] . ", thumbnail: " . $thumbnail);
+					$countOperations++;
+				}
+				
+			}
+		}
+		$this->out($countOperations . " rows on db updated");
+		$this->out("done");
+	}
 
 	function help() {
 		$this->out('Available functions:');
@@ -227,6 +279,12 @@ class DbadminShell extends Shell {
         $this->out('    Usage: setImageDimensions [-all]');
         $this->out(' ');
         $this->out("    -all \t set dimension for all images, otherwise only for image with dimensions no defined in db");
+        $this->out(' ');
+        $this->out("5. updateVideoThumb: update video thumbnail from external provider");
+        $this->out(' ');
+        $this->out('    Usage: updateVideoThumb [-all]');
+        $this->out(' ');
+        $this->out("    -all \t update all video, otherwise only video with no thumbnail defined in db");
         $this->out(' ');
 	}
 	

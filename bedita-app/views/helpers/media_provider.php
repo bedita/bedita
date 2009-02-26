@@ -73,17 +73,18 @@ class MediaProviderHelper extends AppHelper {
 class YoutubeMedia {
 	var $helper = null ;
 	
-	var $thumbTag	= "http://i.ytimg.com/vi/%s/default.jpg" ;
-	var $embedTag	= '
-<embed src="http://www.youtube.com/v/%s%s" type="application/x-shockwave-flash" wmode="transparent" width="%d" height="%d"></embed>	
-	';
-	
 	function __construct(&$helper) {
 		$this->helper = $helper ;
 	}
 	
 	function thumbnail(&$obj, &$htmlAttributes, $URLonly) {
-		$src = sprintf($this->thumbTag, $obj['uid']);
+		$this->conf 	= Configure::getInstance() ;
+		$config = $this->conf->media_providers_default_conf['youtube'] ;
+		Configure::load($config) ;
+		if (!empty($obj["thumbnail"]) && preg_match(Configure::read("validate_resorce.URL"), $obj["thumbnail"]))
+			$src = $obj["thumbnail"];
+		else
+			$src = sprintf($this->conf->youtube["urlthumb"], $obj['uid']);
 		return (!$URLonly)? $this->helper->Html->image($src, $htmlAttributes) : $src;
 	}
 	
@@ -96,12 +97,7 @@ class YoutubeMedia {
 	 */
 	function embed(&$obj, &$attributes) {
 		$this->conf 	= Configure::getInstance() ;
-		
-		// Definisce il file di configurazione da caricare
 		$config = $this->conf->media_providers_default_conf['youtube'] ;
-		if(isset($attributes["configure"])) {
-			$config = $attributes["configure"] ;
-		}
 		Configure::load($config) ;
 		if(!isset($this->conf->youtube)) return "" ;
 		
@@ -109,6 +105,9 @@ class YoutubeMedia {
 		$attributes = array_merge($this->conf->youtube, $attributes) ;
 		$width = $attributes['width'] ;
 		$height = $attributes['height'] ;
+		$embedTag = $attributes["embedTag"];
+		unset($attributes["embedTag"]);
+		unset($attributes["urlthumb"]);
 		unset($attributes['conf']) ;
 		unset($attributes['width']) ;
 		unset($attributes['height']) ;
@@ -117,7 +116,7 @@ class YoutubeMedia {
 			$params .= "&$key=$value" ;
 		}
 
-		return trim(sprintf($this->embedTag, $obj['uid'], $params, $width, $height)) ;
+		return trim(sprintf($embedTag, $obj['uid'], $params, $width, $height)) ;
 	}
 	
 	/**
@@ -137,20 +136,22 @@ class YoutubeMedia {
 class BlipMedia {
 	var $helper = null ;
 	
-	var $thumbTag	= "http://i.ytimg.com/vi/%s/default.jpg" ;
-	
 	function __construct(&$helper) {		
 		$this->helper = $helper ;		
 	}
 	
 	function thumbnail(&$obj, &$htmlAttributes, $URLonly) {
-		if(!class_exists("BeBlipTvComponent")){
-			App::import('Component', "BeBlipTv");
+		if (empty($obj["thumbnail"])) {
+			if(!class_exists("BeBlipTvComponent")){
+				App::import('Component', "BeBlipTv");
+			}
+			$Component = new BeBlipTvComponent();
+			$Component->getInfoVideo($obj['uid']) ;
+			
+			$src = sprintf($Component->info['thumbnailUrl'], $obj['uid']);
+		} elseif (preg_match(Configure::read("validate_resorce.URL"), $obj["thumbnail"])) {
+			$src = $obj["thumbnail"];
 		}
-		$Component = new BeBlipTvComponent();
-		$Component->getInfoVideo($obj['uid']) ;
-		
-		$src = sprintf($Component->info['thumbnailUrl'], $obj['uid']);
 		return (!$URLonly)? $this->helper->Html->image($src, $htmlAttributes) : $src;
 	}
 	

@@ -183,22 +183,26 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 				$dataURL['name']		= preg_replace("/[\'\"]/", "", $dataURL['title']) ;
 				$dataURL['mime_type']	= "video/$provider" ;
 				$dataURL['path']		= $url ;
-				$dataURL['provider']	=  $provider ;
-				$dataURL['uid']  	 	=  $name ;
+				$dataURL['provider']	= $provider ;
+				$dataURL['uid']  	 	= $name ;
+				$dataURL['thumbnail']	= $this->getThumbnail($dataURL);
 			} break ;
 			case 'blip': {
 				if(!($this->BeBlipTv->getInfoVideo($name) )) {
 					throw new BEditaMediaProviderException(__("Multimedia  not found",true)) ;
 				}
 				
-				if(@empty($dataURL['title'])) $dataURL['title'] = $this->BeBlipTv->info['title'] ;
-				else $dataURL['title'] = trim($dataURL['title']) ;
+				if(@empty($dataURL['title']))
+					$dataURL['title'] = $this->BeBlipTv->info['title'] ;
+				else
+					$dataURL['title'] = trim($dataURL['title']) ;
 								
 				$dataURL['name']		= preg_replace("/[\'\"]/", "", $dataURL['title']) ;
 				$dataURL['mime_type']	= "video/$provider" ;
 				$dataURL['path']		= $this->BeBlipTv->info['url'] ;
-				$dataURL['provider']	=  $provider ;
-				$dataURL['uid']  	 	=  $name ;
+				$dataURL['provider']	= $provider ;
+				$dataURL['uid']  	 	= $name ;
+				$dataURL['thumbnail']	= $this->BeBlipTv->info['thumbnailUrl'];
 			} break ;
 			default:
 				$dataURL['path'] = $dataURL["url"];
@@ -239,6 +243,34 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 		}
 	}
 	
+	
+	function getThumbnail($data) {
+		if (empty($data["provider"]) || empty($data["uid"])) {
+			$url = (!empty($data['url']))? $data['url'] : $data['path'];
+			$this->recognizeMediaProvider($url, $provider, $uid);
+		} else {
+			$provider = $data["provider"];
+			$uid = $data["uid"];
+		}
+		
+		$thumbnail = null;
+		
+		if ($provider == "youtube") {
+			$this->conf = Configure::getInstance() ;
+			$config = $this->conf->media_providers_default_conf['youtube'] ;
+			Configure::load($config);
+			$thumbnail = sprintf($this->conf->youtube["urlthumb"], $uid);
+		} elseif ($provider == "blip") {
+			if (empty($this->BeBlipTv->info)) {
+				if(!($this->BeBlipTv->getInfoVideo($uid) )) {
+					throw new BEditaMediaProviderException(__("Multimedia  not found",true)) ;
+				}
+			}
+			$thumbnail	= $this->BeBlipTv->info['thumbnailUrl'];
+		}
+		return $thumbnail;
+	}
+	
 	/**
 	 * recognize provider from url
 	 */
@@ -257,5 +289,5 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 		$provider = "";
 		return false ;
 	}
-} ;
+}
 ?>

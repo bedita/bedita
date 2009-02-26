@@ -432,6 +432,7 @@ CREATE TABLE videos (
   id INTEGER UNSIGNED NOT NULL,
   provider VARCHAR( 255 ) NULL ,
   uid VARCHAR( 255 ) NULL,
+  thumbnail VARCHAR (255) NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES streams(id)

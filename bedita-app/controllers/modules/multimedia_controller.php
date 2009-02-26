@@ -148,6 +148,10 @@ class MultimediaController extends ModulesController {
 		} else {
 			$model = (!empty($this->data["id"]))? $this->BEObject->getType($this->data["id"]) : "BEFile";
 			
+			if ($model == "Video") {
+				$this->data["thumbnail"] = $this->BeUploadToObj->getThumbnail($this->data);
+			}
+			
 			if(!$this->{$model}->save($this->data)) {
 				throw new BeditaException(__("Error saving multimedia", true), $this->{$model}->validationErrors);
 			}
