@@ -338,6 +338,18 @@ UL.modules {
 	background-position: center;
 }
 
+.modules .expired {
+	background: transparent url(../img/iconPast.png);
+	background-repeat:no-repeat !important;
+	background-position: center;
+}
+
+.modules .today {
+	background: transparent url(../img/iconToday.png);
+	background-repeat:no-repeat !important;
+	background-position: center;
+}
+
 .modules .trashed {
 	background: transparent url(../img/iconTrashed.png);
 	background-repeat:no-repeat !important;
@@ -780,7 +792,10 @@ TABLE.indexlist {
 }
 
 .indexlist TD.checklist {
-	width:15px; padding:7px 0px 0px 0px;
+	width:15px; padding:0px 0px 0px 0px;
+	vertical-align:middle;
+	text-align:right;
+	white-space:nowrap;
 }
 
 .indexlist TR:Hover {

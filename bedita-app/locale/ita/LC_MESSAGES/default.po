@@ -806,7 +806,7 @@ msgid "Not Authorized"
 msgstr ""
 
 msgid "Notes"
-msgstr ""
+msgstr "Note"
 
 msgid "Notice"
 msgstr ""
@@ -867,7 +867,7 @@ msgid "Previews"
 msgstr ""
 
 msgid "Properties"
-msgstr ""
+msgstr "Proprietà"
 
 msgid "Public sites users statistics"
 msgstr ""

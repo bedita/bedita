@@ -61,7 +61,6 @@ $(document).ready(function(){
 
 	<input type="hidden" name="data[id]"/>
 
-
 	<table class="indexlist">
 	{capture name="theader"}
 		<tr>
@@ -86,11 +85,28 @@ $(document).ready(function(){
 		
 		<tr class="obj {$objects[i].status}">
 			<td class="checklist">
+			{if ($objects[i].start|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}
+			
+				<img title="{t}object scheduled in the future{/t}" src="{$html->url('/')}img/iconFuture.png" style="height:28px; vertical-align:middle;">
+			
+			{elseif !empty($objects[i].end) && ($objects[i].end|date_format:"%Y%m%d") < ($smarty.now|date_format:"%Y%m%d")}
+			
+				<img title="{t}object expired{/t}" src="{$html->url('/')}img/iconPast.png" style="height:28px; vertical-align:middle;">
+			
+			{elseif (($objects[i].start|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d")) or (($objects[i].end|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d"))}
+			
+				<img title="{t}object scheduled today{/t}" src="{$html->url('/')}img/iconToday.png" style="height:28px; vertical-align:middle;">
+
+			{/if}
+			
 			{if (empty($objects[i].fixed))}
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
 			{/if}
+			
 			</td>
-			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a></td>
+			<td>
+				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a>
+			</td>
 			<td>{$objects[i].id}</td>
 			<td style="text-align:center">{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>

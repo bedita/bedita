@@ -99,6 +99,25 @@ $(document).ready(function(){
 
 {/literal}{/if}{literal}
 
+{/literal}{if !empty($object.end) && ($object.end < ($smarty.now|date_format:"%Y-%m-%d %T"))}{literal}
+		
+		$(".secondacolonna .modules label").addClass("expired").attr("title","expired object");
+
+{/literal}{/if}{literal}
+
+
+{/literal}{if !empty($object.start) && ($object.start|date_format:"%Y-%m-%d" == ($smarty.now|date_format:"%Y-%m-%d"))}{literal}
+		
+		$(".secondacolonna .modules label").addClass("today").attr("title","object scheduled to start today");
+
+{/literal}{/if}{literal}
+
+{/literal}{if !empty($object.end) && ($object.end|date_format:"%Y-%m-%d" == ($smarty.now|date_format:"%Y-%m-%d"))}{literal}
+		
+		$(".secondacolonna .modules label").addClass("today").attr("title","object scheduled to end today");
+
+{/literal}{/if}{literal}
+
 
 {/literal}{if !empty($object.fixed) && ($object.fixed == 1)}{literal}
 
