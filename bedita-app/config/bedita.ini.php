@@ -32,10 +32,19 @@
 
 $config = array() ;
  
+$config["projectName"] = ""; // override in bedita.cfg
+
+$config["userVersion"] = "BEdita 3.0"; // don't override
+
+$config["majorVersion"] = "3.0.aplha1"; // don't override -- admin/system
+
  
 //////////////////////////////////////////////////////
 // EDITABLE STUFF                      ///////////////
 //////////////////////////////////////////////////////
+
+
+
 
 
 /**

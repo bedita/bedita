@@ -19,6 +19,14 @@
 				{t}all {$itemName|default:$moduleName}{/t}
 			
 			{/if}
+			
+			
+			{if !empty($stringSearched)}
+			
+				&nbsp; maching the query: “ <span style="color:white" class="evidence">{$stringSearched}</span> ”
+				
+			{/if}
+			
 		</h2>
 		
 		
@@ -32,8 +40,10 @@
 				{$beToolbar->first('page','','page')}
 				<span class="evidence"> {$beToolbar->current()} </span> 
 				{t}of{/t}  &nbsp;
-				<span class="evidence"> 
+				<span class="evidence">
+					{if ($beToolbar->pages()) > 0}
 					{$beToolbar->last($beToolbar->pages(),'',$beToolbar->pages())}
+					{else}1{/if}
 				</span>
 			</td>
 			

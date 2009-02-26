@@ -249,6 +249,13 @@ $(document).ready(function(){
 		window.location = ($(this).attr("rel"));
 	});
 
+/*
+	$(".indexlist THEAD TH").click(function() {
+		
+		$(this).toggleClass("on");	
+		
+	});
+*/
 
 /*...........................................    
 

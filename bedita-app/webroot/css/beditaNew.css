@@ -802,6 +802,11 @@ TABLE.indexlist {
 	background-color:#d8d8d8;
 }
 
+TABLE.indexlist TH.on * {
+	color:red !important;
+}
+
+
 .condensed TD, .condensed TH {
 	padding:2px;
 }

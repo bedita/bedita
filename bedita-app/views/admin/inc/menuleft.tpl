@@ -5,7 +5,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 <div class="primacolonna">
 	
-	<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->version}</label></div>
+	<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->userVersion}</label></div>
 		
 	<ul class="menuleft insidecol">
 		<li>{$tr->link('New user', '/admin/viewUser')}</li>

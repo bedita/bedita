@@ -63,6 +63,7 @@ $(document).ready(function(){
 
 	<table class="indexlist">
 	{capture name="theader"}
+		<thead>
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('title', 'title')}</th>
@@ -75,8 +76,8 @@ $(document).ready(function(){
 			</th>			
 			<th>{$beToolbar->order('lang', 'lang')}</th>
 			<th>{$beToolbar->order('note', 'notes')}</th>
-
 		</tr>
+		</thead>
 	{/capture}
 		
 		{$smarty.capture.theader}

@@ -34,7 +34,7 @@ $(document).ready(function() {
 <ul class="modules">
 
     <li class="bedita" rel="{$html->url('/')}">
-		{$conf->projectName|default:$conf->version}
+		{$conf->projectName|default:$conf->userVersion}
 	</li>
 	
 
