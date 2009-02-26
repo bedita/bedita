@@ -84,6 +84,11 @@ abstract class FrontendController extends AppController {
 			// set publication data for template
 			$this->set('publication', $this->publication);
 		}
+		
+		// set filterPublicationDate
+		$filterPubDate = Configure::read("filterPublicationDate");
+		if (isset($filterPubDate)) 
+			$this->checkPubDate = $filterPubDate;
 	}
 
 	/**
@@ -518,6 +523,14 @@ abstract class FrontendController extends AppController {
 		$dir = (!empty($options["dir"]))? $options["dir"] : ($priorityOrder == "asc");
 		$page = (!empty($options["page"]))? $options["page"] : 1;
 		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
+		
+		// add rules for start and end pubblication date
+		if ($this->checkPubDate == true) {
+			if (empty($filter["Content.start"]))
+				$filter["Content.start"] = "<= '" . date("Y-m-d") . "' OR `Content`.start IS NULL";
+			if (empty($filter["Content.end"]))
+				$filter["Content.end"] = ">= '" . date("Y-m-d") . "' OR `Content`.end IS NULL";
+		}
 		
 		$items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
 		if(!empty($items) && !empty($items['items'])) {

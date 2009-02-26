@@ -435,10 +435,11 @@ class BEAppModel extends AppModel {
 				$key = "`BEObject`." . $key;
 			
 			$fields .= ", " . $key;
-			if (is_array($val)) 
+			if (is_array($val)) {
 				$conditions[] = $key . " IN (" . implode(",", $val) . ")";
-			elseif (!empty($val))
-				$conditions[] = $key . "='" . $val . "'";
+			} elseif (!empty($val)) {
+				$conditions[] = (preg_match("/^[<|>]/", $val))? "(".$key." ".$val.")" : $key . "='" . $val . "'";
+			}
 
 			if (count($arr = explode(".", $key)) == 2 ) {
 				$modelName = $arr[0];
