@@ -12,7 +12,7 @@
 	</ul>
 {/if}
 
-
+{*
 <ul class="menuleft insidecol">
 	<li>
 		<a href="javascript:void(0)" onclick="$('#previews2').slideToggle();">{t}Preview{/t}</a>
@@ -25,3 +25,4 @@
 		</ul>
 	</li>
 </ul>
+*}
