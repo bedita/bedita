@@ -1,3 +1,16 @@
+{*
+
+tutto disabilitato in atesa di tempi migliori
+vedi: 
+https://dev.channelweb.it/bedita/ticket/156
+https://dev.channelweb.it/bedita/ticket/157
+
+*}
+
+{*
+
+
+
 
 <script type="text/javascript">
 {literal}
@@ -240,7 +253,7 @@ function deleteTRPerm(el) {
 		<select id="inputAddPermUser" name="name">
 		</select>
 	</td>
-	<td><input type="hidden" name="switch" value="user"/></td> {* DO NOT TRANSLATE user!!! It's a switch for table *}
+	<td><input type="hidden" name="switch" value="user"/></td> <!-- DO NOT TRANSLATE user!!! It's a switch for table   -->
 	<td><input type="checkbox" name="read" value="{$conf->BEDITA_PERMS_READ}"/></td>
 	<td><input type="checkbox" name="modify" value="{$conf->BEDITA_PERMS_MODIFY}"/></td>
 	<td><input type="checkbox" name="delete" value="{$conf->BEDITA_PERMS_DELETE}"/></td>
@@ -260,7 +273,7 @@ function deleteTRPerm(el) {
 		<select id="inputAddPermGroup" name="name">
 		</select>
 	</td>
-	<td><input type="hidden" name="switch" value="group"/></td> {* DO NOT TRANSLATE group!!! It's a switch for table *}
+	<td><input type="hidden" name="switch" value="group"/></td<!-- DO NOT TRANSLATE group!!! It's a switch for table -->
 	<td><input type="checkbox" name="read" value="{$conf->BEDITA_PERMS_READ}"/></td>
 	<td><input type="checkbox" name="modify" value="{$conf->BEDITA_PERMS_MODIFY}"/></td>
 	<td><input type="checkbox" name="delete" value="{$conf->BEDITA_PERMS_DELETE}"/></td>
@@ -268,3 +281,6 @@ function deleteTRPerm(el) {
 </tr>
 </table>
 </fieldset>
+
+
+*}
