@@ -91,12 +91,13 @@ class StatisticsController extends ModulesController {
 					"order" => "count DESC"	
 				)
 			);
+		$totalObj = array();
 		foreach ($countTotal as $c) {
 			$totalObj[$c["ObjectType"]["name"]] = $c[0]["count"];
 		}
 
 		$this->set("totalObjectsNumber", $totalObj);
-		$this->set("maxTotalObjectsNumber", max($totalObj));
+		$this->set("maxTotalObjectsNumber", (!empty($totalObj)) ? max($totalObj) : 0);
 	 }
 	 
 	 
