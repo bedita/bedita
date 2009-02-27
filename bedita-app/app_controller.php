@@ -675,7 +675,8 @@ abstract class ModulesController extends AppController {
 				$field = ($status=='on') ? 'public_url' : 'staging_url';
 				if(!empty($a[$field])) {
 					$previews[]=array(
-						'url'=>$a[$field]."/section/$section_id/$obj_id",
+						//'url'=>$a[$field]."/section/$section_id/$obj_id",
+						'url'=>$a[$field]."/$obj_id",
 						'desc'=>$desc);
 				}
 			}
