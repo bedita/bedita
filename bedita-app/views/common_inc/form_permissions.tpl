@@ -6,7 +6,7 @@ https://dev.channelweb.it/bedita/ticket/156
 https://dev.channelweb.it/bedita/ticket/157
 
 *}
-
+{*
 <script type="text/javascript">
 {literal}
 /*
@@ -277,3 +277,4 @@ function deleteTRPerm(el) {
 </table>
 </fieldset>
 
+*}
