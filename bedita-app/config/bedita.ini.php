@@ -326,7 +326,7 @@ $config["defaultObjRelationType"] = array(
 		"left" 		=> array(),
 		"right" 		=> array()	
 	),
-	"see-also" => array(
+	"seealso" => array(
 		"hidden" => false,
 		"left" 		=> array(18,19,20,21,22,29,34),
 		"right" 		=> array()	
