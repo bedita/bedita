@@ -32,7 +32,7 @@ class TranslationsController extends ModulesController {
 
 	var $helpers 	= array('BeTree','BeToolbar');
 	var $uses = array("BEObject","LangText");
-	var $components = array("BeLangText","Permission");
+	var $components = array("BeLangText");
 	protected $moduleName = 'translations';
 	
 	public function index($order = "", $dir = true, $page = 1, $dim = 20) {
@@ -85,8 +85,8 @@ class TranslationsController extends ModulesController {
 			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
 		// Verify object permits
-		if($new && !$this->Permission->verify($this->data['master_id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-			throw new BeditaException(__("Error: bad permissions", true));
+//		if($new && !$this->Permission->verify($this->data['master_id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+//			throw new BeditaException(__("Error: bad permissions", true));
 		foreach($this->data['LangText'] as $k => $v) {
 			$this->data['LangText'][$k]['lang'] = $this->data['translation_lang'];
 			if(empty($this->data['LangText'][$k]['object_id'])) { // if object_id is defined => it's a translation for an attach
@@ -134,9 +134,9 @@ class TranslationsController extends ModulesController {
 		} else {
 			if(empty($this->data['id'])) 
 				throw new BeditaException(__("No data", true));
-			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
-				throw new BeditaException(__("Error delete permissions", true));
-			}
+//			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
+//				throw new BeditaException(__("Error delete permissions", true));
+//			}
 			$objectsToDel = array($this->data['id']);
 			$objectsListDesc = $this->data['id'];
 		}
@@ -164,9 +164,9 @@ class TranslationsController extends ModulesController {
 		} else {
 			if(empty($this->data['id'])) 
 				throw new BeditaException(__("No data", true));
-			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) {
-				throw new BeditaException(__("Error saving status for translations", true));
-			}
+//			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) {
+//				throw new BeditaException(__("Error saving status for translations", true));
+//			}
 			$objectsToModify = array($this->data['id']);
 			$objectsListDesc = $this->data['id'];
 		}

@@ -282,15 +282,14 @@ class BEObject extends BEAppModel
 		
 		// Salva eventuali permessi
 		$permissions = false ;
-		if(isset($this->data["Permissions"])) $permissions = $this->data["Permissions"] ;
-		else if(isset($this->data[$this->name]["Permissions"])) $permissions = $this->data[$this->name]["Permissions"] ;
+		if(isset($this->data["Permissions"])) 
+			$permissions = $this->data["Permissions"] ;
+		else if(isset($this->data[$this->name]["Permissions"])) 
+			$permissions = $this->data[$this->name]["Permissions"] ;
 		
 		if($permissions) {
 		
-			if(!class_exists('Permission')) {
-				loadModel('Permission') ;
-			}
-			$Permission = new Permission() ;		
+			$Permission = ClassRegistry::init('Permission');		
 			// Aggiunge
 			$this->_array2perms($permissions, $formatedPerms) ;
 			for($i=0; $i < count($formatedPerms) ; $i++) {
@@ -405,7 +404,7 @@ class BEObject extends BEAppModel
 			'ip_created' 		=> array('_getDefaultIP',			(isset($data['ip_created']))?$data['ip_created']:null),
 			'user_created'		=> array('_getIDCurrentUser', 		((isset($data[$this->primaryKey]) && empty($data[$this->primaryKey])) || !isset($data[$this->primaryKey]))? (isset($data['user_created'])?$data['user_created']:true) :false),
 			'user_modified'		=> array('_getIDCurrentUser', 		(isset($data['user_modified'])?$data['user_modified']:true)), 
-			'Permissions' 		=> array('_getDefaultPermission', 	(isset($data['Permission']))?$data['Permission']:null, (isset($data['object_type_id']))?$data['object_type_id']:0),
+//			'Permissions' 		=> array('_getDefaultPermission', 	(isset($data['Permission']))?$data['Permission']:null, (isset($data['object_type_id']))?$data['object_type_id']:0),
 		) ;
 		
 		foreach ($default as $name => $rule) {
@@ -573,21 +572,21 @@ class BEObject extends BEAppModel
 		return ((isset($conf->defaultLang))?$conf->defaultLang:'') ;
 	}
 	
-	private function _getDefaultPermission($value, $object_type_id) {
-		if(isset($value) && is_array($value)) return $value ;
-		
-		$conf = Configure::getInstance() ;
-		$permissions = &$conf->permissions ;
-		
-		// Aggiunge i permessi di default solo se sta creando un nuovo oggetto
-		if(isset($this->data[$this->name][$this->primaryKey])) return null ;
-		
-		// Seleziona i permessi in base al tipo di oggetti
-		if(isset($permissions[$object_type_id])) 	return $permissions[$object_type_id] ;
-		else if (isset($permissions['all']))		return $permissions['all'] ;
-		
-		return null ;
-	}
+//	private function _getDefaultPermission($value, $object_type_id) {
+//		if(isset($value) && is_array($value)) return $value ;
+//		
+//		$conf = Configure::getInstance() ;
+//		$permissions = &$conf->permissions ;
+//		
+//		// Aggiunge i permessi di default solo se sta creando un nuovo oggetto
+//		if(isset($this->data[$this->name][$this->primaryKey])) return null ;
+//		
+//		// Seleziona i permessi in base al tipo di oggetti
+//		if(isset($permissions[$object_type_id])) 	return $permissions[$object_type_id] ;
+//		else if (isset($permissions['all']))		return $permissions['all'] ;
+//		
+//		return null ;
+//	}
 	
 	private function _getDefaultIP($value = null) {
 		if(isset($value)) 

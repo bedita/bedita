@@ -131,8 +131,8 @@ class MultimediaController extends ModulesController {
 		$new = (empty($this->data['id'])) ? true : false ;
 		
 		// Verify object permits
-		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-			throw new BeditaException(__("Error modify permissions", true));
+//		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+//			throw new BeditaException(__("Error modify permissions", true));
 		
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave() ;	
@@ -175,8 +175,8 @@ class MultimediaController extends ModulesController {
 		// update permissions
 		if(!isset($this->data['Permissions'])) 
 			$this->data['Permissions'] = array() ;
-		$this->Permission->saveFromPOST($this->Stream->id, $this->data['Permissions'], 
-				!empty($this->data['recursiveApplyPermissions']), 'document');
+//		$this->Permission->saveFromPOST($this->Stream->id, $this->data['Permissions'], 
+//				!empty($this->data['recursiveApplyPermissions']), 'document');
 		$this->Transaction->commit() ;
 		$this->userInfoMessage(__("Multimedia object saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("multimedia object [". $this->data["title"]."] saved");

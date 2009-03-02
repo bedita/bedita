@@ -262,16 +262,16 @@ class BEAppModel extends AppModel {
 			$fields .= ", `Tree`.*";
 			$from .= ", trees AS `Tree`";
 			$conditions[] = " `Tree`.`id`=`BEObject`.`id`" ;
-			if (!empty($userid))
-				$conditions[] 	= " prmsUserByID ('{$userid}', Tree.id, ".BEDITA_PERMS_READ.") > 0 " ;
+//			if (!empty($userid))
+//				$conditions[] 	= " prmsUserByID ('{$userid}', Tree.id, ".BEDITA_PERMS_READ.") > 0 " ;
 			
 			if($all)
 				$conditions[] = " path LIKE (CONCAT((SELECT path FROM trees WHERE id = {$id}), '/%')) " ;
 			else
 				$conditions[] = array("parent_id" => $id) ;
 		} else {
-			if (!empty($userid))
-				$conditions[] 	= " prmsUserByID ('{$userid}', `BEObject`.id, ".BEDITA_PERMS_READ.") > 0 " ;
+//			if (!empty($userid))
+//				$conditions[] 	= " prmsUserByID ('{$userid}', `BEObject`.id, ".BEDITA_PERMS_READ.") > 0 " ;
 		}
 		
 		// build sql conditions

@@ -31,7 +31,7 @@
 class CommentsController extends ModulesController {
 	
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'Permission', 'BeLangText');
+	var $components = array('BeTree', 'BeLangText');
 	var $uses = array('Comment');
 	
 	protected $moduleName = 'comments';
@@ -69,8 +69,8 @@ class CommentsController extends ModulesController {
 			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
 		// Verify object permits
-		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-			throw new BeditaException(__("Error modify permissions", true));
+//		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+//			throw new BeditaException(__("Error modify permissions", true));
 		
 		$this->Transaction->begin() ;
 		// Save data

@@ -32,7 +32,7 @@ class BibliographiesController extends ModulesController {
 	var $name = 'Bibliographies';
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'Permission', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
+	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
 
 	var $uses = array('BEObject', 'Bibliography', 'Tree') ;
 	protected $moduleName = 'bibliographies';

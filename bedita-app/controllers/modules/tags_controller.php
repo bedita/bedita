@@ -32,7 +32,7 @@
 class TagsController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'Permission');
+	var $components = array('BeTree');
 	var $uses = array('Category') ;
 	
 	protected $moduleName = 'tags';

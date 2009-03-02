@@ -530,9 +530,9 @@ abstract class ModulesController extends AppController {
 		} else {
 			if(empty($this->data['id'])) 
 				throw new BeditaException(__("No data", true));
-			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
-				throw new BeditaException(__("Error delete permissions", true));
-			}
+//			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
+//				throw new BeditaException(__("Error delete permissions", true));
+//			}
 			$objectsToDel = array($this->data['id']);
 		}
 
@@ -541,9 +541,9 @@ abstract class ModulesController extends AppController {
 		$beObject = ClassRegistry::init("BEObject");
 		
 		foreach ($objectsToDel as $id) {
-			if(!$this->Permission->verify($id, $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
-				throw new BeditaException(__("Error delete permissions", true));
-			}
+//			if(!$this->Permission->verify($id, $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
+//				throw new BeditaException(__("Error delete permissions", true));
+//			}
 			
 			if ($beObject->isFixed($id)) {
 				throw new BeditaException(__("Error, trying to delete fixed object!", true));
@@ -811,8 +811,8 @@ abstract class ModulesController extends AppController {
 			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
 		// Verify object permits
-		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-			throw new BeditaException(__("Error modify permissions", true));
+//		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+//			throw new BeditaException(__("Error modify permissions", true));
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave() ;
 
@@ -846,8 +846,8 @@ abstract class ModulesController extends AppController {
 		// update permissions
 		if(!isset($this->data['Permissions'])) 
 			$this->data['Permissions'] = array() ;
-		$this->Permission->saveFromPOST($beModel->id, $this->data['Permissions'], 
-	 			!empty($this->data['recursiveApplyPermissions']), $name);
+//		$this->Permission->saveFromPOST($beModel->id, $this->data['Permissions'], 
+//	 			!empty($this->data['recursiveApplyPermissions']), $name);
 	}
 
 	protected function showCategories(BEAppModel $beModel) {
