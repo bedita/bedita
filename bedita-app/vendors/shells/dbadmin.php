@@ -235,9 +235,7 @@ class DbadminShell extends Shell {
 		if (!empty($videos)) {
 			foreach ($videos as $v) {
 				if ($v["provider"] == "youtube") {
-					$config = $conf->media_providers_default_conf['youtube'] ;
-					Configure::load($config);
-					$thumbnail	= sprintf($conf->youtube["urlthumb"], $v['uid']);
+					$thumbnail	= sprintf($conf->provider_params["youtube"]["urlthumb"], $v['uid']);
 				} elseif ($v["provider"] == "blip") {
 					if(!($this->BeBlipTv->getInfoVideo($v["uid"]) )) {
 						throw new BEditaMediaProviderException(__("Multimedia  not found",true)) ;

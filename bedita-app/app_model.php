@@ -326,6 +326,11 @@ class BEAppModel extends AppModel {
 				unset($tmp[$i]["ReferenceObject"]);
 			}
 			
+			if (!empty($tmp[$i]["DateItem"])) {
+				$tmpToAdd["DateItem"] = $tmp[$i]["DateItem"];
+				unset($tmp[$i]["DateItem"]);
+			}
+			
 			$recordset['items'][] = array_merge($this->am($tmp[$i]), $tmpToAdd);
 		}
 		
@@ -449,7 +454,10 @@ class BEAppModel extends AppModel {
 					// create join with BEObject
 					if (empty($from) || !strstr($from, $f_str)) {
 						$from .= ", " . $f_str;
-						$conditions[] = "`BEObject`.id=`" . $model->alias . "`.id";
+						if ($model->hasField("object_id"))
+							$conditions[] = "`BEObject`.id=`" . $model->alias . "`.object_id";
+						else
+							$conditions[] = "`BEObject`.id=`" . $model->alias . "`.id";
 					}
 				}
 				

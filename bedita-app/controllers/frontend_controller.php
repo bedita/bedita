@@ -520,7 +520,7 @@ abstract class FrontendController extends AppController {
 		
 		$filter = (!empty($options["filter"]))? $options["filter"] : false;
 		$order = (!empty($options["order"]))? $options["order"] : "priority";
-		$dir = (!empty($options["dir"]))? $options["dir"] : ($priorityOrder == "asc");
+		$dir = (isset($options["dir"]))? $options["dir"] : ($priorityOrder == "asc");
 		$page = (!empty($options["page"]))? $options["page"] : 1;
 		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
 		
@@ -533,6 +533,7 @@ abstract class FrontendController extends AppController {
 		}
 		
 		$items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
+		
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);

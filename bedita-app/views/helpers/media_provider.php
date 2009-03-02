@@ -79,8 +79,6 @@ class YoutubeMedia {
 	
 	function thumbnail(&$obj, &$htmlAttributes, $URLonly) {
 		$this->conf 	= Configure::getInstance() ;
-		$config = $this->conf->media_providers_default_conf['youtube'] ;
-		Configure::load($config) ;
 		if (!empty($obj["thumbnail"]) && preg_match(Configure::read("validate_resorce.URL"), $obj["thumbnail"]))
 			$src = $obj["thumbnail"];
 		else
@@ -97,15 +95,15 @@ class YoutubeMedia {
 	 */
 	function embed(&$obj, &$attributes) {
 		$this->conf 	= Configure::getInstance() ;
-		$config = $this->conf->media_providers_default_conf['youtube'] ;
-		Configure::load($config) ;
-		if(!isset($this->conf->youtube)) return "" ;
+		if(!isset($this->conf->provider_params["youtube"])) 
+			return "" ;
 		
 		// formatta le variabili
-		$attributes = array_merge($this->conf->youtube, $attributes) ;
+		$attributes = array_merge($this->conf->provider_params["youtube"], $attributes) ;
 		$width = $attributes['width'] ;
 		$height = $attributes['height'] ;
 		$embedTag = $attributes["embedTag"];
+		
 		unset($attributes["embedTag"]);
 		unset($attributes["urlthumb"]);
 		unset($attributes['conf']) ;

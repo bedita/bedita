@@ -43,15 +43,15 @@ class Event extends BeditaContentModel
 													"RelatedObject",
 													"Category"
 													),
-									"DateItem"),
+									"DateItem", "GeoTag"),
 				"default" 	=> array("BEObject" => array("ObjectProperty", "LangText", 
 								"ObjectType", "Category", "RelatedObject"),
-								"DateItem"),
+								"DateItem", "GeoTag"),
 				"minimum" => array("BEObject" => array("ObjectType"))
 	);
     
 	var $actsAs 	= array(
-			'CompactResult' 		=> array('DateItem'),
+			'CompactResult' 		=> array('DateItem', 'GeoTag'),
 			'DeleteObject' 			=> 'objects',
 	); 	 
 
@@ -59,6 +59,11 @@ class Event extends BeditaContentModel
 			'DateItem' =>
 				array(
 					'className'		=> 'DateItem',
+					'foreignKey'	=> 'object_id',
+					'dependent'		=> true
+				),
+			'GeoTag' =>
+				array(
 					'foreignKey'	=> 'object_id',
 					'dependent'		=> true
 				)

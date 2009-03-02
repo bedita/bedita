@@ -601,9 +601,19 @@ $config['media_providers'] = array(
 /**
  *  file conf for media provider
  */
-$config['media_providers_default_conf']  = array(
-	"youtube"	=> "mediaprovider.youtube.ini",
-	"blip"		=> "mediaprovider.blip.ini"
+$config['provider_params']  = array(
+	"youtube"	=> array(
+		"width" 	=> 320,
+		"height" 	=> 200,
+		"urlthumb"	=> "http://i.ytimg.com/vi/%s/default.jpg",
+		"embedTag" 	=> "<embed src='http://www.youtube.com/v/%s%s' type='application/x-shockwave-flash' wmode='transparent' width='%d' height='%d'></embed>"
+	),
+	"blip" => array(
+		"width"		=> 320,
+		"height"	=> 200,
+		"urlinfo" 	=> "http://www.blip.tv/file/%s?skin=json",
+		"urlembed"	=> "http://www.blip.tv/players/embed/?posts_id=%s&players_id=-1&skin=json&callback=DoSomethingActions.playerSelector.gotEmbedCode"
+	)
 ) ;
 
 /**

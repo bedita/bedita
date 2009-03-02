@@ -257,9 +257,7 @@ class BeUploadToObjComponent extends SwfUploadComponent {
 		
 		if ($provider == "youtube") {
 			$this->conf = Configure::getInstance() ;
-			$config = $this->conf->media_providers_default_conf['youtube'] ;
-			Configure::load($config);
-			$thumbnail = sprintf($this->conf->youtube["urlthumb"], $uid);
+			$thumbnail = sprintf($this->conf->provider_params["youtube"]["urlthumb"], $uid);
 		} elseif ($provider == "blip") {
 			if (empty($this->BeBlipTv->info)) {
 				if(!($this->BeBlipTv->getInfoVideo($uid) )) {

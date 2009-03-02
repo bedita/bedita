@@ -57,14 +57,17 @@ class BeBlipTvComponent extends Object {
 		$conf = Configure::getInstance() ;
 		$this->info = null ;
 		
-		Configure::load($conf->media_providers_default_conf['blip']) ;
-		if(!isset($conf->blip)) return false ;
+		if(!isset($conf->provider_params["blip"])) return false ;
 		
-		$urlinfo = $conf->blip['urlinfo'];
+		$urlinfo = $conf->provider_params["blip"]['urlinfo'];
 		if (!empty($attributes["width"]))
 			$urlinfo .= "&amp;width=" . $attributes["width"];
+		elseif (!empty($conf->provider_params["blip"]["width"]))
+			$urlinfo .= "&amp;width=" . $conf->provider_params["blip"]["width"];
 		if (!empty($attributes["height"]))
-			$urlinfo .= "&amp;height=" . $attributes["height"];  
+			$urlinfo .= "&amp;height=" . $attributes["height"];
+		elseif (!empty($conf->provider_params["blip"]["height"]))
+			$urlinfo .= "&amp;height=" . $conf->provider_params["blip"]["height"];  
 		
 		// Preleva le informazioni
 		$fp = fopen(sprintf($urlinfo, $id), "r") ;
