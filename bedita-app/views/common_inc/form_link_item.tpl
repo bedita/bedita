@@ -22,5 +22,6 @@
 </select>
 *}
 <td>
+	<a style="font-weight:bold;" href="{$objRelated.url}" target="_blank"> GO </a>&nbsp;
 	<input type="button" class="remove" title="remove" value="{t}X{/t}" />
 </td>
