@@ -23,5 +23,6 @@
 *}
 <td>
 	<a style="font-weight:bold;" href="{$objRelated.url}" target="_blank"> GO </a>&nbsp;
+	<input type="button" class="BEbutton link" onClick="window.open($(this).attr('href'));" href="{$html->url('/')}webmarks/view/{$objRelated.id}" name="details" value="››" />&nbsp;
 	<input type="button" class="remove" title="remove" value="{t}X{/t}" />
 </td>
