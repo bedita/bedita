@@ -410,6 +410,8 @@ CREATE TABLE areas (
   public_url VARCHAR(255) NULL,
   staging_url VARCHAR(255) NULL,
   email VARCHAR(255) NULL,
+  `stats_code` TEXT(255) NULL,
+  `stats_provider` ENUM('analytics','piwik') DEFAULT NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
