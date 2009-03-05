@@ -243,7 +243,7 @@ class BEAppModel extends AppModel {
 			$order = "title";
 	
 		if (!empty($status))
-			$conditions[] = array('status' => $status) ;
+			$conditions[] = array('`BEObject`.status' => $status) ;
 		
 		if(!empty($excludeIds))
 			$conditions["NOT"] = array(array("`BEObject`.id" => $excludeIds));
