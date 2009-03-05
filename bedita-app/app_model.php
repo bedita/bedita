@@ -249,6 +249,10 @@ class BEAppModel extends AppModel {
 			$conditions["NOT"] = array(array("`BEObject`.id" => $excludeIds));
 		
 		// get specific query elements
+		if (!$this->Behaviors->attached('BuildFilter')) {
+			$this->Behaviors->attach('BuildFilter');
+		}
+		
 		list($otherFields, $otherFrom, $otherConditions, $otherGroup, $otherOrder) = $this->getSqlItems($filter);
 
 		if (!empty($otherFields))
@@ -337,134 +341,6 @@ class BEAppModel extends AppModel {
 		return $recordset ;
 	}
 
-	/**
-	 * set conditions, from, fields, group and order from $filter
-	 *
-	 * @param array $filter
-	 * @return array
-	 */
-	private function getSqlItems($filter) {
-		$conditions = array();
-		$from = "";
-		$fields = "";
-		$group = "";
-		$order = "";
-		
-		// define particular behaviors: put first LEFT, INNER, RIGHT specific join then join build in WHERE condition
-		if (array_key_exists("object_user", $filter)) {
-			$fields .= ", `ObjectUser`.user_id AS user_id";
-			$from .= " LEFT OUTER JOIN object_users AS `ObjectUser` ON `BEObject`.id=`ObjectUser`.object_id";
-			unset($filter["object_user"]);
-		}
-		
-		if (array_key_exists("count_annotation", $filter)) {
-			$annotationModel = ClassRegistry::init($filter["count_annotation"]);
-			$refObj_type_id = Configure::read("objectTypes." . strtolower($annotationModel->name) . ".id");
-			$fields .= ", COUNT(`" . $annotationModel->name . "`.id) AS num_of_" . Inflector::underscore($annotationModel->name);
-			$from .= " LEFT OUTER JOIN annotations AS `" . $annotationModel->name . "` ON `BEObject`.id=`" . $annotationModel->name . "`.object_id
-					LEFT OUTER JOIN objects AS `RefObj`ON (`RefObj`.id = `" . $annotationModel->name . "`.id AND `RefObj`.object_type_id=" . $refObj_type_id . ")";
-			unset($filter["count_annotation"]);
-		}
-		
-		if (array_key_exists("mediatype", $filter)) {
-			$fields .= ", `Category`.name AS mediatype";
-			$from .= " LEFT OUTER JOIN object_categories AS `ObjectCategory` ON `BEObject`.id=`ObjectCategory`.object_id
-					LEFT OUTER JOIN categories AS `Category` ON `ObjectCategory`.category_id=`Category`.id";
-			unset($filter["mediatype"]);
-			$mediatype = true;
-		}
-		
-		if (array_key_exists("search", $filter)) {
-			$fields .= ", `SearchText`.`object_id` AS `oid`, SUM( MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."') * `SearchText`.`relevance` ) AS `points`";
-			$from .= ", search_texts AS `SearchText`";
-			$conditions[] = "`SearchText`.`object_id` = `BEObject`.`id` AND `SearchText`.`lang` = `BEObject`.`lang` AND MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."')";
-			$order .= "points DESC ";
-			unset($filter["search"]);	
-		}
-		
-		if (array_key_exists("category", $filter)) {
-			$cat_field = (is_numeric($filter["category"]))? "id" : "name";
-			if (empty($mediatype))
-				$from .= ", categories AS `Category`, object_categories AS `ObjectCategory`";
-			$conditions[] = "`Category`." . $cat_field . "='" . $filter["category"] . "' 
-							AND `ObjectCategory`.object_id=`BEObject`.id
-							AND `ObjectCategory`.category_id=`Category`.id
-							AND `Category`.object_type_id IS NOT NULL";
-			unset($filter["category"]);
-		}
-		
-		if (array_key_exists("relation", $filter)) {
-			$filter["ObjectRelation.switch"] = $filter["relation"];
-			unset($filter["relation"]);
-		}
-			
-		if (array_key_exists("rel_object_id", $filter)) {
-			$filter["ObjectRelation.object_id"] = $filter["rel_object_id"];
-			unset($filter["rel_object_id"]);
-		}
-		
-		if (array_key_exists("rel_detail", $filter)) {
-			if (!empty($filter["rel_detail"])) {
-				if (!isset($filter["ObjectRelation.switch"]))
-					$filter["ObjectRelation.switch"] = "";
-				$fields .= ", `RelatedObject`.*";
-				$from .= ", objects AS `RelatedObject`";
-				$conditions[] = "`ObjectRelation`.object_id=`RelatedObject`.id";
-				$order .= ( (!empty($order))? "," : "" ) . "ObjectRelation.priority";
-			}
-			unset($filter["rel_detail"]);
-		}
-		
-		if (array_key_exists("ref_object_details", $filter)) {
-			if (!empty($filter["ref_object_details"])) {
-				$fields .= ", `ReferenceObject`.*";
-				$from .= ", objects AS `ReferenceObject`";
-				$conditions[] = "`" . ClassRegistry::init($filter["ref_object_details"])->alias . "`.object_id=`ReferenceObject`.id";
-			}
-			unset($filter["ref_object_details"]);
-		}
-		
-		if (array_key_exists("mail_group", $filter)) {
-			$from .= ", mail_group_cards AS `MailGroupCard`";
-			$conditions[] = "`MailGroupCard`.mail_group_id='" . $filter["mail_group"] . "' 
-							AND `MailGroupCard`.card_id=`BEObject`.id";
-			unset($filter["mail_group"]);
-		}
-		
-		
-		// ordinary behavior
-		$beObject = ClassRegistry::init("BEObject");
-		
-		foreach ($filter as $key => $val) {
-			if ($beObject->hasField($key))
-				$key = "`BEObject`." . $key;
-			
-			$fields .= ", " . $key;
-			if (is_array($val)) {
-				$conditions[] = $key . " IN (" . implode(",", $val) . ")";
-			} elseif (!empty($val)) {
-				$conditions[] = (preg_match("/^[<|>]/", $val))? "(".$key." ".$val.")" : $key . "='" . $val . "'";
-			}
-
-			if (count($arr = explode(".", $key)) == 2 ) {
-				$modelName = $arr[0];
-				if (!strstr($modelName,"BEObject") && $modelName != "Content") {
-					$model = ClassRegistry::init($modelName);
-					$f_str = $model->useTable . " as `" . $model->alias . "`";
-					// create join with BEObject
-					if (empty($from) || !strstr($from, $f_str)) {
-						$from .= ", " . $f_str;
-						if ($model->hasField("object_id"))
-							$conditions[] = "`BEObject`.id=`" . $model->alias . "`.object_id";
-						else
-							$conditions[] = "`BEObject`.id=`" . $model->alias . "`.id";
-					}
-				}
-				
-			}
-		}
-		return array($fields, $from ,$conditions, $group, $order);
-	}
 }
 
 ///////////////////////////////////////////////////////////////
