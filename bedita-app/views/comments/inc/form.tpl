@@ -81,6 +81,8 @@
 </table>
 </fieldset>
 
+{include file="../common_inc/form_geotag.tpl"}
+
 <div class="tab"><h2>{t}altro{/t}</h2></div>
 <fieldset id="altro">
 <ul>

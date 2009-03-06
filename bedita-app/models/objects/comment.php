@@ -32,6 +32,16 @@ class Comment extends BeditaAnnotationModel
 {
 	var $useTable = 'annotations';
 
+	var $actsAs = array(
+		'CompactResult' => array('GeoTag')
+	); 
+	
+	protected $modelBindings = array( 
+		"detailed" =>  array("BEObject" => array("ObjectType"), "ReferenceObject", "GeoTag"),
+		"default" =>  array("BEObject" => array("ObjectType"), "ReferenceObject", "GeoTag"),
+		"minimum" => array("BEObject" => array("ObjectType"))
+	);
+	
 	var $validate = array(
 			'author' => array(
 				'required' 		=> true
@@ -51,12 +61,24 @@ class Comment extends BeditaAnnotationModel
 	   			'message' 		=> 'URL not valid'
 	   		)
 	   );
+
+	var $hasMany = array(
+		'GeoTag' =>
+			array(
+				'foreignKey'	=> 'object_id',
+				'dependent'		=> true
+			)
+	) ;
 	   
-	   	function beforeValidate() {
-        	$data = &$this->data[$this->name] ;
-        	if(isset($data['url']) && $data['url'] == "http://") {
-        		unset($data['url']);
-        	}
-	   	}
+	function beforeValidate() {
+       	$data = &$this->data[$this->name] ;
+        if(isset($data['url']) && $data['url'] == "http://") {
+        	unset($data['url']);
+        }
+   	}
+   	
+	function afterSave() {
+		return $this->updateHasManyAssoc();
+	}
 }
 ?>
