@@ -80,7 +80,7 @@ class BeAuthComponent extends Object {
 	 * @param string $password
 	 * @return boolean 
 	 */
-	function login ($userid, $password, $policy=null) {
+	function login ($userid, $password, $policy=null, $auth_group_name=null) {
 
 		$this->User = ClassRegistry::init('User');
 		$this->User->create();
@@ -91,10 +91,10 @@ class BeAuthComponent extends Object {
 		
 		$this->User->containLevel("default");
 		$u = $this->User->find($conditions);
-		
-		if(!$this->loginPolicy($userid, $u, $policy))
+
+		if(!$this->loginPolicy($userid, $u, $policy, $auth_group_name))
 			return false ;
-			
+
 		$this->allow = $u['User']['valid'];
 		$this->User->compact($u) ;
 		$this->user = $u;
@@ -115,7 +115,7 @@ class BeAuthComponent extends Object {
 	 * Check policy using $policy array or config if null
 	 * @return boolean
 	 */
-	function loginPolicy($userid, $u, $policy) {
+	function loginPolicy($userid, $u, $policy, $auth_group_name) {
 		$this->User = ClassRegistry::init('User');
 
 		// Se fallisce esce
@@ -165,7 +165,7 @@ class BeAuthComponent extends Object {
 		$authorized = false;
 		foreach ($u['Group'] as $g) {
 			array_push($groups, $g['name']) ;
-			if($g['backend_auth'] == 1) {
+			if( ($g['backend_auth'] == 1) || ($g['name'] == $auth_group_name) ) {
 				$authorized = true;
 			}
 		}
