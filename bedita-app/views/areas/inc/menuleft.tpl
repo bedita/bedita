@@ -25,10 +25,12 @@ Menu a SX valido per tutte le pagine del controller.
 	</ul>
 	{/if}
 	
+	{if ($method != "viewArea" && $method != "viewSection")}
 	<div class="insidecol publishingtree">	
 			{if !empty($tree)}{$beTree->view($tree)}{/if}
 	</div>
-
+	{/if}
+	
 	<div style="margin-top:40px;">
 	{include file="../common_inc/messages.tpl"}
 	</div>

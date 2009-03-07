@@ -1,3 +1,5 @@
+<fieldset id="properties">
+
 {literal}
 <script language="JavaScript" type="text/javascript">
 $(document).ready(function(){
@@ -14,7 +16,6 @@ $(document).ready(function(){
 
 {include file="../common_inc/form_common_js.tpl"}
 
-<fieldset id="properties">
 
 <input type="hidden" name="data[id]" value="{$object.id|default:null}"/>
 <input type="hidden" name="data[fixed]" value="{$object.fixed|default:0}"/>
@@ -46,11 +47,6 @@ $(document).ready(function(){
 					<th>{t}description{/t}:</th>
 					<td><textarea class="autogrowarea" name="data[description]">{$object.description|default:""}</textarea></td>
 			</tr>
-	</table>
-	
-	<hr />
-	
-	<table class="areaform">
 			<tr>
 			
 					<th>{t}status{/t}:</th>
@@ -58,33 +54,15 @@ $(document).ready(function(){
 						{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator="&nbsp;"}
 					</td>
 			</tr>
-
 			<tr>
-					<th>{t}language{/t}:</th>
-					<td>
-					{assign var=object_lang value=$object.lang|default:$conf->defaultLang}
-					<select name="data[lang]" id="main_lang">
-						{foreach key=val item=label from=$conf->langOptions name=langfe}
-						<option {if $val==$object_lang}selected="selected"{/if} value="{$val}">{$label}</option>
-						{/foreach}
-						{foreach key=val item=label from=$conf->langsIso name=langfe}
-						<option {if $val==$object_lang}selected="selected"{/if} value="{$val}">{$label}</option>
-						{/foreach}
-					</select>
-					</td>
-				</tr>
-			<tr>
-				<th>{t}nickname{/t}:(id:{$object.id|default:null})</th>
+				<th>
+					syndicate:
+				</th>
 				<td>
-					<input id="nicknameBEObject" type="text" name="data[nickname]" value="{$object.nickname|default:null}" />
-					
+					<div class="ico_rss" style="float:left; vertical-align:middle; margin-right:10px; width:24px; height:24px;">&nbsp;</div>
+					<input style="margin-top:4px" type="checkbox" name="data[syndicate]" value="on" {if $object.syndicate|default:'off'=='on'}checked{/if} />
 				</td>
 			</tr>
-	</table>
-	
-	<hr />
-	
-	<table class="areaform">
 			<tr>
 			
 					<th>{t}order{/t}:</th>
@@ -93,20 +71,32 @@ $(document).ready(function(){
 						<input type="radio" name="data[priority_order]" value="desc" {if $object.priority_order|default:'asc'=="desc"}checked{/if} />{t}desc{/t}
 					</td>
 			</tr>
-	<tr>
-		<th></th>
-		<td>
-			<ul id="mediatypes" style="margin-top:10px; margin-left:0px">
-				<li class="ico_rss">syndicate <input type="checkbox" name="data[syndicate]" value="on" {if $object.syndicate|default:'off'=='on'}checked{/if}/></li>
-			</ul>
-		</td>
-	</tr>
 	</table>
 	
-	<hr />
+</fieldset>
+
+	<br />
+	
+<div class="tab"><h2>{t}More properties{/t}</h2></div>
+
+<div>
 	
 	<table class="areaform">
-			
+
+			<tr>
+				<th>{t}language{/t}:</th>
+				<td>
+				{assign var=object_lang value=$object.lang|default:$conf->defaultLang}
+				<select name="data[lang]" id="main_lang">
+					{foreach key=val item=label from=$conf->langOptions name=langfe}
+					<option {if $val==$object_lang}selected="selected"{/if} value="{$val}">{$label}</option>
+					{/foreach}
+					{foreach key=val item=label from=$conf->langsIso name=langfe}
+					<option {if $val==$object_lang}selected="selected"{/if} value="{$val}">{$label}</option>
+					{/foreach}
+				</select>
+				</td>
+			</tr>	
 			<tr>
 				<td><label>{t}publisher{/t}:</label></td>
 				<td><input type="text" name="publisher" value="" /></td>
@@ -130,32 +120,25 @@ $(document).ready(function(){
 					</select>
 				</td>
 			</tr>
-
+			<tr>
+				<th>{t}nickname{/t}:</th>
+				<td>
+					<input id="nicknameBEObject" type="text" name="data[nickname]" value="{$object.nickname|default:null}" />
+		
+				</td>
+			</tr>
+				<tr>
+				<th>id:</th>
+				<td>{$object.id|default:null}</td>
+			</tr>
 		</table>
 	
 
-</fieldset>	
+</div>	
 
-	<br />
-	
+
 	{include file="../common_inc/form_translations.tpl" object=$object|default:null}
+	<hr />
 	{include file="../common_inc/form_custom_properties.tpl"}
 	{include file="../common_inc/form_permissions.tpl" el=$object|default:null recursion=true}
 	
-	
-{*if (!empty($method) && $method == "viewSection")}			
-
-
-
-{else}
-	
-	<hr />
-	<a href="{$html->url('/areas/viewSection/')}{$object.id}">
-	
-		{t}Edit more details{/t}
-
-	</a>
-	<hr />
-{/if*}
-
-

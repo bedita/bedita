@@ -1,3 +1,5 @@
+<fieldset id="properties">	
+
 {literal}
 <script language="JavaScript" type="text/javascript">
 $(document).ready(function(){
@@ -15,16 +17,13 @@ $(document).ready(function(){
 {include file="../common_inc/form_common_js.tpl"}
 
 {assign var=object_lang value=$object.lang|default:$conf->defaultLang}
-
-<fieldset id="properties">	
-
 	
 	<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 	<input type="hidden" name="data[title]" value="{$object.title|default:''}"/>
 	<input type="hidden" name="data[fixed]" value="{$object.fixed|default:0}"/>
 	
 
-	<table class="areaform">
+	<table class="areaform" style="margin-bottom:10px">
 
 		<tr>
 			<th>{t}title{/t}:</th>
@@ -44,17 +43,28 @@ $(document).ready(function(){
 				<textarea class="autogrowarea" name="data[description]">{$object.description|default:''|escape:'html'|escape:'quotes'}</textarea>
 			</td>
 		</tr>
-	</table>
-	
-	<hr />
-	
-	<table class="areaform">
 		<tr>
 			<th>{t}status{/t}:</th>
 			<td id="status">
 				{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator=" "}
 			</td>
 		</tr>
+		<tr>
+			<th>
+				syndicate:</th>
+			<td>
+				<div class="ico_rss" style="float:left; vertical-align:middle; margin-right:10px; width:24px; height:24px;">&nbsp;</div>
+				<input style="margin-top:4px" type="checkbox" name="data[syndicate]" value="on" {if $object.syndicate|default:'off'=='on'}checked{/if} />
+			</td>
+		</tr>
+	</table>
+	
+
+
+<div class="tab"><h2>{t}More properties{/t}</h2></div>
+
+<div>
+	<table class="areaform">
 		<tr>
 			<th>{t}main language{/t}:</th>
 			<td>
@@ -69,24 +79,16 @@ $(document).ready(function(){
 			</td>
 		</tr>
 	<tr>
-		<th>{t}nickname{/t}: (id:{$object.id|default:null})</th>
+		<th>{t}nickname{/t}:</th>
 		<td>
 			<input id="nicknameBEObject" type="text" name="data[nickname]" value="{$object.nickname|default:''|escape:'html'|escape:'quotes'}" />
 		</td>
 	</tr>
-	</table>
-	
-	<hr />
-	
-	<table class="areaform">
-	<tr>
-		<th></th>
-		<td>
-			<ul id="mediatypes" style="margin-top:0px; margin-left:0px">
-				<li class="ico_rss">syndicate <input type="checkbox" name="data[syndicate]" value="on" {if $object.syndicate|default:'off'=='on'}checked{/if}/></li>
-			</ul>
-		</td>
-	</tr>	
+			</tr>
+				<tr>
+				<th>id:</th>
+				<td>{$object.id|default:null}</td>
+			</tr>
 	</table>
 	
 	<hr />
@@ -151,10 +153,34 @@ $(document).ready(function(){
 	</tr>
 	</table>
 
-</fieldset>
+</div>
+
+<div class="tab"><h2>{t}Statistics{/t}</h2></div>
+	<fieldset>
+		
+		<h2>Google analytics</h2>
+		<input type="hidden" name="data[stats_provider]" value="{$object.stats_provider|default:''}" />
+		<textarea name="data[stats_code]" class="shortdesc autogrowarea" style="font-size:0.8em; color:gray; width:470px;">{$object.stats_code|default:''}</textarea>
+		<a href="https://www.google.com/analytics/reporting/?reset=1&id=6824393" target="_blank">
+			› access statistics
+		</a>
+		<hr />
+		<h2>PWik</h2>
+		<input type="hidden" name="data[stats_provider]" value="{$object.stats_provider|default:''}" />
+		<textarea name="data[stats_code]" class="shortdesc autogrowarea" style="font-size:0.8em; color:gray; width:470px;">{$object.stats_code|default:''}</textarea>
+		<a href="https://www.google.com/analytics/reporting/?reset=1&id=6824393" target="_blank">
+			› access statistics
+		</a>
+		
+
+	</fieldset>
+
 
 	{include file="../common_inc/form_translations.tpl" object=$object|default:null}
+	<hr />
+	
 	{include file="../common_inc/form_custom_properties.tpl"}
+	
 	{include file="../common_inc/form_permissions.tpl" el=$object|default:null recursion=true}
 	
 
