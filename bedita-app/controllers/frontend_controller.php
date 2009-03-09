@@ -462,7 +462,7 @@ abstract class FrontendController extends AppController {
 			}
 		}
 		if (!empty($obj['Annotation'])) {
-			$this->setupAnnotations($obj);
+			$this->setupAnnotations($obj, $this->status);
 		}
 		unset($obj['Annotation']);
 		
@@ -837,8 +837,10 @@ abstract class FrontendController extends AppController {
 			$commentsFlag = $beObject->field("comments", array("id" => $this->data['object_id']));
 			if($commentsFlag == 'moderated') {
 				 $this->data["status"] = "draft";
+				 $userMsgOK = "Your message has been sent and it's waiting approval.";
 			} else if ($commentsFlag == 'on'){
 				 $this->data["status"] = 'on';
+				 $userMsgOK = "Your message has been saved.";
 			} else {
 				 throw new BeditaException(__("Post comment disabled", true));
 			}
@@ -863,7 +865,7 @@ abstract class FrontendController extends AppController {
 					throw new BeditaException(__("Error saving comment", true), $this->Comment->validationErrors);
 				}
 				$this->Transaction->commit();
-				$this->userInfoMessage(__("Comment saved", true));
+				$this->userInfoMessage(__($userMsgOK, true));
 			} catch (BeditaException $ex) {
 				$this->Transaction->rollback();
 				$this->log($ex->errorTrace());
@@ -885,7 +887,8 @@ abstract class FrontendController extends AppController {
 				$this->render(null, null, $this->params["form"]["render"] .".tpl");
 			}
 		} else {
-			$this->redirect($this->referer());
+			$urlToRedirect = ($commentsFlag == 'on')? $this->referer() . "/#comment-".$this->Comment->id : $this->referer(); 
+			$this->redirect($urlToRedirect);
 		}
 
 	}
