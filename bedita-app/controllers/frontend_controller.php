@@ -361,7 +361,7 @@ abstract class FrontendController extends AppController {
 	}
 	
 	private function outputXML($data) {
-		header("content-type: text/xml");
+		header("content-type: text/xml; charset=utf-8");
 		if(!in_array('Xml', $this->helpers)) {
        		$this->helpers[] = 'Xml';
 		}
