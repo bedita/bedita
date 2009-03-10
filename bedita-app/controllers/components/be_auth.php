@@ -65,13 +65,29 @@ class BeAuthComponent extends Object {
 		$this->controller 	= $controller;
 		$this->Session 		= &$controller->Session;
 		
-		if(isset($this->Session) && $this->Session->valid() &&  $this->Session->check($this->sessionKey)) {
+		if($this->checkSessionKey()) {
 			$this->user 	= $this->Session->read($this->sessionKey);
 			$this->allow 	= $this->Session->read($this->allowKey);
 		}
 		$this->controller->set($this->sessionKey, $this->user);
 		$this->controller->set($this->allowKey, $this->allow);
 	}
+
+	private function checkSessionKey() {
+		$res = true;
+		if(!isset($this->Session)) {
+			$res = false;
+			$this->log("Session component not set!", LOG_INFO);
+		} else if(!$this->Session->valid()) {
+			$res = false;
+			$this->log("Session not valid!", LOG_INFO);
+		} else if(!$this->Session->check($this->sessionKey)) {
+			$res = false;
+			$this->log("Session key not found: ".$this->sessionKey, LOG_INFO);
+		}
+		return $res;
+	}
+	
 	
 	/**
 	 * Esegue il riconoscimento dell'utente
@@ -234,7 +250,7 @@ class BeAuthComponent extends Object {
 	 */
 	public function isLogged() {
 		
-		if (isset($this->Session) && $this->Session->valid() &&  $this->Session->check($this->sessionKey)) {
+		if ($this->checkSessionKey()) {
 			if(@empty($this->user)) $this->user 	= $this->Session->read($this->sessionKey);
 			$this->controller->set($this->sessionKey, $this->user);
 			
