@@ -70,7 +70,7 @@ $(document).ready(function(){
 
 	<ul class="info_file_item">
 		<li>
-			<input class="info_file_item" style="border:0px;" type="text" value="{$item.title|default:""}" 
+			<input class="info_file_item" style="border:0px;" type="text" value="{$item.title|escape:'htmlall':'UTF-8'|default:""}" 
 			name="data[RelatedObject][{$relation}][{$item.id}][title]" />
 		</li>
 		<li>
