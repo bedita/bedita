@@ -885,8 +885,13 @@ class BeditaShell extends Shell {
     
     public function updateVersion() {
     	
-    	$res = system("svnversion");
-		$s = split(":", $res);
+    	chdir(APP);
+    	exec("svnversion", $res, $retval);
+    	if($retval !== 0) {
+			$this->out("Error executing 'svnversion', bye.");
+			return;
+		}
+		$s = split(":", $res[0]);
 		$svnRevision = $s[count($s)-1];
 		$versionFile = APP . 'config' . DS . 'bedita.version.php';
 		$beditaVersion = "3.0.alpha1.". $svnRevision;
