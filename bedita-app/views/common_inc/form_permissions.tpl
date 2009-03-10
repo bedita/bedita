@@ -1,3 +1,4 @@
+<!-- disabled permissisons -->
 {*
 
 tutto disabilitato in atesa di tempi migliori
