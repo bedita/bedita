@@ -61,7 +61,7 @@ var url="{$html->url('/webmarks/checkUrl')}";
 			<td>{$object.http_code|default:''}</td>
 		</tr>
 		<tr>
-			<td><input type="button" id="checkUrl" value="Check url" /></td><td><span id="http_code_result"></span></td>
+			<td><input type="button" id="checkUrl" value="{t}Check url{/t}" /></td><td><span id="http_code_result"></span></td>
 		</tr>
 		<tr>
 			<th style="vertical-align:top">{t}referenced objects list{/t}:</th>

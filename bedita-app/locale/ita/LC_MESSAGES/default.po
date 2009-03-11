@@ -566,10 +566,10 @@ msgid "Items"
 msgstr ""
 
 msgid "Last check"
-msgstr ""
+msgstr "Ultima verifica"
 
 msgid "Last result"
-msgstr ""
+msgstr "Ultimo risultato"
 
 msgid "Letters or numbers only please"
 msgstr ""
@@ -1683,7 +1683,7 @@ msgid "reference"
 msgstr ""
 
 msgid "referenced objects list"
-msgstr ""
+msgstr "Inserito in"
 
 msgid "remove"
 msgstr ""
