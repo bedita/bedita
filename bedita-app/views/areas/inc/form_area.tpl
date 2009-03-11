@@ -3,12 +3,12 @@
 {literal}
 <script language="JavaScript" type="text/javascript">
 $(document).ready(function(){
-	
+
 	$(".autogrowarea").autogrow({
 		lineHeight: 16
 	});
 	$(".areaform input[type='text'], .areaform textarea").width(340);
-	
+
 
 });
 </script>
@@ -63,7 +63,7 @@ $(document).ready(function(){
 
 <div class="tab"><h2>{t}More properties{/t}</h2></div>
 
-<div>
+<div id="moreproperties">
 	<table class="areaform">
 		<tr>
 			<th>{t}main language{/t}:</th>
@@ -156,20 +156,35 @@ $(document).ready(function(){
 </div>
 
 <div class="tab"><h2>{t}Statistics{/t}</h2></div>
-	<fieldset>
-		
-		<h2>Google analytics</h2>
-		<input type="hidden" name="data[stats_provider]" value="{$object.stats_provider|default:''}" />
-		<textarea name="data[stats_code]" class="shortdesc autogrowarea" style="font-size:0.8em; color:gray; width:470px;">{$object.stats_code|default:''}</textarea>
-		<a href="https://www.google.com/analytics/reporting/?reset=1&id=" target="_blank">
+	<fieldset id="statistics">
+	<table class="areaform">
+	<tr>
+		<th>{t}Provider{/t}:</th>
+		<td>
+			<select name="stats_provider">
+				<option value="analytics">Google analytics</option>
+				<option value="PWik">PWik</option>
+				<option>Altro</option>
+			</select>
+		</td>
+		<td>
+			<a href="https://www.google.com/analytics/reporting/" target="_blank">
 			› access statistics
-		</a>
+			</a>
+		</td>
+	<tr>
+		<th>{t}Code{/t}:</th>
+		<td colspan="2">
+			<textarea name="stats_code" style="font-size:0.8em; color:gray; width:470px;">{$object.stats_code|default:''}</textarea>
+		</td>
+	</tr>
+	</table>
+		
 	</fieldset>
 
 
 	{include file="../common_inc/form_translations.tpl" object=$object|default:null}
-	<hr />
-	
+
 	{include file="../common_inc/form_custom_properties.tpl"}
 	
 	{include file="../common_inc/form_permissions.tpl" el=$object|default:null recursion=true}

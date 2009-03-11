@@ -138,7 +138,6 @@ $(document).ready(function(){
 
 
 	{include file="../common_inc/form_translations.tpl" object=$object|default:null}
-	<hr />
 	{include file="../common_inc/form_custom_properties.tpl"}
 	{include file="../common_inc/form_permissions.tpl" el=$object|default:null recursion=true}
 	

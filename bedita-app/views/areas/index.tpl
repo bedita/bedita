@@ -36,7 +36,6 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 </script>
 
 
-
 </head>
 
 
