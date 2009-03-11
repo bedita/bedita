@@ -38,16 +38,7 @@ $config["userVersion"] = "BEdita 3.0"; // don't override
 
 $config["majorVersion"] = "3.0.aplha1"; // don't override -- admin/system
 
- 
-//////////////////////////////////////////////////////
-// EDITABLE STUFF                      ///////////////
-//////////////////////////////////////////////////////
-
-
-
-
-
-/**
+ /**
  ** ******************************************
  **  FileSystem Paths, URIs, Files defaults
  ** ******************************************
@@ -71,11 +62,6 @@ $config['imgMissingFile'] = "/img/iconMissingImage_130x85.gif" ;
 
 // FileSystem directory for temporary file storage
 $config['tmp'] = "/tmp" ;
-
-
-
-
-
 
 
 /**
@@ -117,7 +103,6 @@ $config['type'] = "txt" ;  // ------ SISTEMARE ------------
 
 // Status of new objects
 $config['status'] = "draft" ;  // ------ SISTEMARE ------------
-//$config['defaultStatus'] = "draft" ;
 
 
 // TinyMCE Rich Text Editor for long_text ['true' to enable]
@@ -374,11 +359,15 @@ $config["defaultOneWayRelation"] = array();
 $config["cfgOneWayRelation"] = array();
 
 // Default reserved words [avoided in nickname creation]
-$config["defaultReservedWords"] = array("section", "content", "rss", "feed");
+$config["defaultReservedWords"] = array("section", "content", "rss", "feed", "download");
 
 // Cfg reserved words (as in local cfg)
 $config["cfgReservedWords"] = array();
 
+// download - redirect extensions to mediaURL [FrontenController::download]
+$config["redirectExtensionsDownload"] = array ();
+// download - redirect mimetypes to mediaURL [FrontenController::download]
+$config["redirectMimeTypesDownload"] = array ();
 
 /**
  * Definisce le variabili utilizzate per la gestione delle sessioni

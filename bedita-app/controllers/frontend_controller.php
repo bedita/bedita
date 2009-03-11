@@ -812,6 +812,65 @@ abstract class FrontendController extends AppController {
 		return $result;
 	}
 	
+	public function download($name) {
+		if(empty($name))
+			throw new BeditaException(__("Content not found", true));
+		
+		$id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
+		$object_type_id = $this->BEObject->findObjectTypeId($id);
+		// verify type
+		$conf = Configure::getInstance() ;
+		$types = array($conf->objectTypes['image']['id'], $conf->objectTypes['video']['id'],
+			$conf->objectTypes['befile']['id'], $conf->objectTypes['audio']['id']);
+		if(($object_type_id === false) || !in_array($object_type_id, $types))
+			throw new BeditaException(__("Content not found", true));
+
+		$obj = $this->loadObj($id);
+		// check 'download' relation
+		// TODO: check relatedObject status????
+		$objRel = ClassRegistry::init("ObjectRelation");
+		$relatedObjectId = $objRel->find('first', 
+				array('conditions' => array("ObjectRelation.id" => $id, 
+						"ObjectRelation.switch" => "download"), 'fields' => array('object_id')));
+		if($relatedObjectId === false) {
+			throw new BeditaException(__("Content not found", true));
+		}
+
+		// media with provider or file on filesystem? TODO: use DS?? 
+		if(!empty($obj['provider']) || $obj['path'][0] !== "/") {
+			$this->redirect($obj['path']);
+		}
+
+		// TODO: for some extensions or mime-types redirect to media URL
+		if(isset($conf->redirectMimeTypesDownload) && 
+			in_array($obj['mime_type'], $conf->redirectMimeTypesDownload)) {
+			$this->redirect($conf->mediaUrl.$obj['path']);
+		}
+			
+		$path = ($conf->mediaRoot).$obj['path'];
+		$f = new File($path);
+		$info = $f->info();
+		if(isset($conf->redirectExtensionsDownload) && 
+				in_array($info['extension'], $conf->redirectExtensionsDownload)) {
+			$this->redirect($conf->mediaUrl.$obj['path']);
+		}	
+			
+		// use readfile
+		// TODO: optimizations! use X-Sendfile ? 
+		header('Content-Description: File Transfer');
+		header('Content-Type: '.$obj['mime_type']);
+		header('Content-Disposition: attachment; filename='.$obj['name']);
+		header('Content-Transfer-Encoding: binary');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		header('Pragma: public');
+		header('Content-Length: ' . $obj['size']);
+		ob_clean();
+   		flush();
+		readfile($path);
+		exit();
+	}
+	
 	/**
 	 * show image for captch
 	 *
