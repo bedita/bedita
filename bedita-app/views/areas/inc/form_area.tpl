@@ -161,7 +161,7 @@ $(document).ready(function(){
 		<h2>Google analytics</h2>
 		<input type="hidden" name="data[stats_provider]" value="{$object.stats_provider|default:''}" />
 		<textarea name="data[stats_code]" class="shortdesc autogrowarea" style="font-size:0.8em; color:gray; width:470px;">{$object.stats_code|default:''}</textarea>
-		<a href="https://www.google.com/analytics/reporting/?reset=1&id=6824393" target="_blank">
+		<a href="https://www.google.com/analytics/reporting/?reset=1&id=" target="_blank">
 			› access statistics
 		</a>
 	</fieldset>
