@@ -295,6 +295,43 @@ abstract class FrontendController extends AppController {
 		}
 		return $result;
 	}
+	
+	public function sitemapxml() {
+		$this->sitemap(true);
+	}
+
+	public function sitemap($xml_out = false) {
+		$conf = Configure::getInstance() ;
+		$extract_all = (!empty($conf->sitemapAllContent)) ? $conf->sitemapAllContent : false;
+		if(!in_array('BeTree', $this->helpers)) {
+			$this->helpers[] = 'BeTree';
+		}
+		$urlset = array();
+		if($xml_out) {
+			$filter = null;
+			if(!$extract_all) {
+				$filter = array();
+				$filter["object_type_id"] = $conf->objectTypes['section']["id"];
+			}
+			$sections = $this->BeTree->getDiscendents($conf->frontendAreaId,$this->status,$filter) ;
+			$sectionsTree = $sections['items'];
+		} else {
+			$sectionsTree = $this->loadSectionsTree($conf->frontendAreaId,$extract_all) ;
+		}
+		$i=0;
+		$public_url = $this->Area->field('public_url', array('id' => $conf->frontendAreaId));
+		foreach($sectionsTree as $k => $v) {
+			$urlset[$i] = array();
+			$urlset[$i]['loc'] = $public_url."/".$v['nickname'];
+			//$urlset['lastmode'] = '';
+			//$urlset[$i]['changefreq'] = 'always'; /*always,hourly,daily,weekly,monthly,yearly,never*/
+			//$urlset[$i]['priority'] = '0.5';
+			$i++;
+		}
+		$this->set('sections_tree',$this->BeTree->getSectionsTree());
+		$this->set('urlset',$urlset);
+		$this->layout = NULL;
+	}
 
 	/**
 	 * Publish RSS feed with contents inside section $sectionName
