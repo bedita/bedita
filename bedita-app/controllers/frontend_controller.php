@@ -589,7 +589,6 @@ abstract class FrontendController extends AppController {
 	
 	}
 	
-	
 	public function content($name) {
 		if(empty($name))
 			throw new BeditaException(__("Content not found", true));
@@ -824,29 +823,75 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @param string $tplVar
 	 */
-	public function loadTags($tplVar=null) {
+	public function loadTags($tplVar=null, $cloud=true) {
 		$tplVar = (empty($tplVar))? "listTags" : $tplVar;
 		$category = ClassRegistry::init("Category");
-		$this->set($tplVar, $category->getTags(false, $this->status));
+		$this->set($tplVar, $category->getTags(false, $this->status, $cloud));
 	}
 	
 	/**
-	 * return contents for a specific tag
+	 * return objects for a specific tag
 	 *
-	 * @param string $tag tag label 
+	 * @param string $tag tag label
+	 * @params array $options search options
+	 * 				"section" => name or id section
+	 * 				"filter" => particular filter
+	 * 				"order", "dir", "dim", "page" used like pagination parameters
 	 * @return array
 	 */
-	protected function loadContentsByTag($tag) {
-		$category = ClassRegistry::init("Category");
-		// remove '+' from $tag, if coming from url
-		$tag = str_replace("+", " ", $tag);
-		$contents = $category->getContentsByTag($tag);
-		$result = array();
-		foreach ($contents as $c) {
-			$object = $this->loadObj($c["id"]);
-			$result[$object['object_type']][] = $object;
+	protected function loadObjectsByTag($tag, $options=array()) {
+		
+		$section_id = null;
+		if (!empty($options["section"])) {
+			$section_id = (is_numeric($options["section"]))? $options["section"] : $this->BEObject->getIdFromNickname($options["section"]);
+			$this->checkParentStatus($section_id);
 		}
-		return $result;
+		
+		// remove '+' from $tag, if coming from url
+		$tag = strtolower(str_replace("+", " ", $tag));
+		
+		$tagDetail = ClassRegistry::init("Category")->find("first", array(
+					"conditions" => array("name" => $tag, "object_type_id IS NULL", "status" => $this->status)
+				)
+			);
+		
+		if (empty($tagDetail))
+			throw new BeditaException(__("No tag founded", true));
+		
+		$this->getPassedArgs();
+		$filter = (!empty($options["filter"]))? $options["filter"] : false;
+		$filter["tag"] = $tag;
+		$order = "";
+		if (!empty($options["order"])) {
+			$order = $options["order"];
+		} elseif (!empty($section_id)) {
+			$order = "priority";
+		}
+		$dir = (isset($options["dir"]))? $options["dir"] : 1;
+		$page = (!empty($options["page"]))? $options["page"] : 1;
+		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
+		
+		// add rules for start and end pubblication date
+		if ($this->checkPubDate == true) {
+			if (empty($filter["Content.start"]))
+				$filter["Content.start"] = "<= '" . date("Y-m-d") . "' OR `Content`.start IS NULL";
+			if (empty($filter["Content.end"]))
+				$filter["Content.end"] = ">= '" . date("Y-m-d") . "' OR `Content`.end IS NULL";
+		}
+		
+		$contents = $this->BeTree->getChildren($section_id, $this->status, $filter, $order, $dir, $page, $dim);
+		
+		$result = $tagDetail;
+
+		foreach ($contents["items"] as $c) {
+			$object = $this->loadObj($c["id"]);
+			if ($this->sectionOptions["itemsByType"])
+				$result[$object['object_type']][] = $object;
+			else
+				$result["items"][] = $object;
+		}
+		
+		return array_merge($result, array("toolbar" => $contents["toolbar"]));
 	}
 	
 	public function download($name) {
