@@ -11,6 +11,8 @@ $rel["removeFiles"]= array(
 	"bedita-app".DS."controllers".DS."modules".DS."newsletter_controller.php",
 	"bedita-app".DS."controllers".DS."modules".DS."bibliographies_controller.php",
 	"bedita-app".DS."controllers".DS."modules".DS."books_controller.php",
+	"bedita-app".DS."controllers".DS."modules".DS."forms_controller.php",
+	"bedita-app".DS."controllers".DS."modules".DS."statistics_controller.php",
 );
 
 $rel["removeDirs"]= array(
@@ -19,6 +21,8 @@ $rel["removeDirs"]= array(
 	"bedita-app".DS."views".DS."bibliographies",
 	"bedita-app".DS."views".DS."books",
 	"bedita-app".DS."views".DS."newsletter",
+	"bedita-app".DS."views".DS."forms",
+	"bedita-app".DS."views".DS."statistics",
 );
 
 $rel["createDirs"] = array(
