@@ -238,10 +238,6 @@ class BEAppModel extends AppModel {
 		$conditions = array();
 		$groupClausole = "GROUP BY `BEObject`.id";
 		
-		// if $order is empty and not performing search then set a default order
-		if (empty($order) && empty($filter["search"]))
-			$order = "title";
-	
 		if (!empty($status))
 			$conditions[] = array('`BEObject`.status' => $status) ;
 		
@@ -273,11 +269,27 @@ class BEAppModel extends AppModel {
 				$conditions[] = " path LIKE (CONCAT((SELECT path FROM trees WHERE id = {$id}), '/%')) " ;
 			else
 				$conditions[] = array("parent_id" => $id) ;
+			
+			if(empty($order)) {
+				$order = "`Tree`.priority";
+				$section = ClassRegistry::init("Section");
+				$priorityOrder = $section->field("priority_order", array("id" => $id));
+				if(empty($priorityOrder))
+					$priorityOrder = "asc";
+				$dir = ($priorityOrder == "asc");
+			}
+				
 		} else {
 //			if (!empty($userid))
 //				$conditions[] 	= " prmsUserByID ('{$userid}', `BEObject`.id, ".BEDITA_PERMS_READ.") > 0 " ;
 		}
 		
+		// if $order is empty and not performing search then set a default order
+		if (empty($order) && empty($filter["search"])) {
+			$order = "`BEObject`.id";
+			$dir = false;
+		}
+	
 		// build sql conditions
 		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
 		$sqlClausole = $db->conditions($conditions, true, true) ;
