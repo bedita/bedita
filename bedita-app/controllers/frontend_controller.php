@@ -296,8 +296,10 @@ abstract class FrontendController extends AppController {
 		return $result;
 	}
 	
-	public function sitemapxml() {
+	public function sitemapXml() {
 		$this->sitemap(true);
+		$this->layout = NULL;
+		header("Content-type: text/xml; charset=utf-8");
 	}
 
 	public function sitemap($xml_out = false) {
@@ -330,7 +332,6 @@ abstract class FrontendController extends AppController {
 		}
 		$this->set('sections_tree',$this->BeTree->getSectionsTree());
 		$this->set('urlset',$urlset);
-		$this->layout = NULL;
 	}
 
 	/**
@@ -695,6 +696,19 @@ abstract class FrontendController extends AppController {
 		if(empty($name))
 			throw new BeditaException(__("Content not found", true));
 		
+		// look if reserverd 
+		if(in_array($name, Configure::read("defaultReservedWords")) ||
+			in_array($name, Configure::read("cfgReservedWords"))) {
+			$name = str_replace(".", "_", $name); // example: sitemap.xml => sitemap_xml
+			$this->action = $name;
+			$methodName = $name[0] . substr(Inflector::camelize($name), 1);
+			// check method
+			if(method_exists($this, $methodName)) {
+				$this->{$methodName}($name2); // TODO: extend with more arguments				
+			}
+			return;
+		}
+			
 		$id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
 		$object_type_id = $this->BEObject->findObjectTypeId($id);
 		
