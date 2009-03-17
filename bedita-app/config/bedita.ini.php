@@ -360,13 +360,13 @@ $config["cfgOneWayRelation"] = array();
 
 // Default reserved words [avoided in nickname creation]
 $config["defaultReservedWords"] = array("section", "content", "rss", "feed", 
-	"download", "sitemap", "sitemap.xml", "sitemap_xml");
+	"download", "xml", "xmlobject", "sitemap", "sitemap.xml", "sitemap_xml");
 
 // Cfg reserved words (as in local cfg)
 $config["cfgReservedWords"] = array();
 
 // download - redirect extensions to mediaURL [FrontenController::download]
-$config["redirectExtensionsDownload"] = array ();
+$config["redirectExtensionsDownload"] = array ("gz", "tar", "zip");
 // download - redirect mimetypes to mediaURL [FrontenController::download]
 $config["redirectMimeTypesDownload"] = array ();
 

@@ -37,16 +37,5 @@
 	Router::connect('/lang/*', array('controller' => 'pages', 'action' => 'changeLang'));
 	Router::connect('/section/*', array('controller' => 'pages', 'action' => 'section'));
 	Router::connect('/content/*', array('controller' => 'pages', 'action' => 'content'));
-	Router::connect('/sitemap', array('controller' => 'pages', 'action' => 'sitemap'));
-	Router::connect('/sitemap.xml', array('controller' => 'pages', 'action' => 'sitemapxml'));
-/**
- * feeds
- */ 
-    Router::connect('/rss/*', array('controller' => 'pages', 'action' => 'rss'));
-    Router::connect('/feed/*', array('controller' => 'pages', 'action' => 'rss'));
-    
-    Router::connect('/xml/*', array('controller' => 'pages', 'action' => 'xml'));
-    Router::connect('/xmlobject/*', array('controller' => 'pages', 'action' => 'xmlobject'));
-    
     Router::connect('/(?!pages)(.*)', array('controller' => 'pages', "action" => "route"));
 ?>
