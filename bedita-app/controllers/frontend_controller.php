@@ -623,14 +623,27 @@ abstract class FrontendController extends AppController {
 	 * @param string/int $secName: section nick or section id
 	 * @param string/int $contentName: content nick or content id
 	 */
-	public function section($secName, $contentName=null) {
+	public function section() {
 		
+		$args = func_get_args();
+		$secName = $args[0];
 		if (is_numeric($secName)) {
 			$sectionId = $secName;
 			$secName = $this->BEObject->getNicknameFromId($sectionId);
 		} else {
 			$sectionId = $this->BEObject->getIdFromNickname($secName);
 		}		
+		
+		$contentName = isset($args[1]) ? $args[1] : null;
+		$content_id = null;
+		if(!empty($contentName)) {
+			$content_id = is_numeric($contentName) ? $contentName : $this->BEObject->getIdFromNickname($contentName);
+			$contentType = $this->BEObject->getType($content_id);
+			if($contentType === "Section") {
+				array_shift($args);
+				return call_user_func_array(array($this, "section"), $args);
+			}
+		}
 		
 		$secNameFilter = str_replace("-","_",$secName);
 		// section before filter
@@ -643,8 +656,8 @@ abstract class FrontendController extends AppController {
 		$section["pathSection"] = $this->getPath($sectionId);
 		$this->getPassedArgs();
 		
-		if(!empty($contentName)) {
-			$content_id = is_numeric($contentName) ? $contentName : $this->BEObject->getIdFromNickname($contentName);
+
+		if(!empty($content_id)) {
 			$section['currentContent'] = $this->loadObj($content_id);
 			
 			if ($this->sectionOptions["showAllContents"]) {
@@ -692,10 +705,13 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @param unknown_type $name, id or nickname
 	 */
-	public function route($name, $name2=null) {
-		if(empty($name))
+	public function route() {
+
+		$args = func_get_args();
+		if(count($args) === 0 || empty($args[0]))
 			throw new BeditaException(__("Content not found", true));
-		
+
+		$name = $args[0];
 		// look if reserverd 
 		if(in_array($name, Configure::read("defaultReservedWords")) ||
 			in_array($name, Configure::read("cfgReservedWords"))) {
@@ -704,7 +720,8 @@ abstract class FrontendController extends AppController {
 			$methodName = $name[0] . substr(Inflector::camelize($name), 1);
 			// check method
 			if(method_exists($this, $methodName)) {
-				$this->{$methodName}($name2); // TODO: extend with more arguments				
+				array_shift($args);
+				call_user_func_array(array($this, $methodName), $args);
 			}
 			return;
 		}
@@ -713,7 +730,8 @@ abstract class FrontendController extends AppController {
 		$object_type_id = $this->BEObject->findObjectTypeId($id);
 		
 		if ($object_type_id == Configure::read("objectTypes.section.id") || $object_type_id == Configure::read("objectTypes.area.id")) {
-			$this->setAction("section",$id, $name2);
+			$this->action = "section";
+			call_user_func_array(array($this, "section"), $args);
 		} else {
 			$this->content($id);
 		}
@@ -950,7 +968,8 @@ abstract class FrontendController extends AppController {
 				in_array($info['extension'], $conf->redirectExtensionsDownload)) {
 			$this->redirect($conf->mediaUrl.$obj['path']);
 		}	
-			
+
+		Configure::write('debug', 0);
 		// use readfile
 		// TODO: optimizations! use X-Sendfile ? 
 		header('Content-Description: File Transfer');
