@@ -672,12 +672,12 @@ abstract class ModulesController extends AppController {
 		foreach($sections as $section_id) {
 			$a = $this->BeTree->getAreaForSection($section_id);
 			if(!empty($a) && !in_array($a['id'], $pubId)) {
-				$desc = $this->BEObject->field('title',array("id=$section_id"));
+				//$desc = $this->BEObject->field('title',array("id=$section_id"));
 				$field = ($status=='on') ? 'public_url' : 'staging_url';
 				if(!empty($a[$field])) {
 					$previews[]=array(
 						'url'=>$a[$field]."/$obj_id",
-						'desc'=>$desc);
+						'desc'=>$a['title']." | " . $field);
 				}
 				$pubId[] = $a['id'];
 			}
