@@ -405,13 +405,14 @@ CREATE TABLE streams (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE areas (
-  id INTEGER UNSIGNED NOT NULL,
-  public_name VARCHAR(255) NULL,
-  public_url VARCHAR(255) NULL,
-  staging_url VARCHAR(255) NULL,
-  email VARCHAR(255) NULL,
-  `stats_code` TEXT(255) NULL,
-  `stats_provider` ENUM('analytics','piwik') DEFAULT NULL,
+  `id` INTEGER UNSIGNED NOT NULL,
+  `public_name` VARCHAR(255) NULL,
+  `public_url` VARCHAR(255) NULL,
+  `staging_url` VARCHAR(255) NULL,
+  `email` VARCHAR(255) NULL,
+  `stats_code` TEXT NULL,
+  `stats_provider` VARCHAR(255) NULL,
+  `stats_provider_url` TEXT NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)

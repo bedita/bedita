@@ -78,6 +78,11 @@ class StatisticsController extends ModulesController {
 		$this->countRelations(array_merge($params, array("id" => $id)));
 		
 		$this->set('tree', $this->BeTree->getSectionsTree());
+		
+		// publications
+		$area = $this->loadModelByType("Area");
+		$area->containLevel('default');
+		$this->set('publications', $area->find('all'));
 	 }
 	
 	 

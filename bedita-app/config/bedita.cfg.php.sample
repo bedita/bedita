@@ -98,6 +98,11 @@ $config["projectName"] = "TEST";
  **  Local installation specific settings
  ** ******************************************
  */
+ 
+// apache log statistics url - e.g. awstats ...
+//$config["logStatsUrl"] = array(
+//	"pub-nickname" => "http://user:passwd@awstatsurl",
+//);
 
 // Relations - local objects' relation types
 // $config["objRelationType"] = array ("language", "parent");

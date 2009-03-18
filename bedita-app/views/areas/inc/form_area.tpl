@@ -161,21 +161,28 @@ $(document).ready(function(){
 	<tr>
 		<th>{t}Provider{/t}:</th>
 		<td>
-			<select name="stats_provider">
-				<option value="analytics">Google analytics</option>
-				<option value="PWik">PWik</option>
-				<option>Altro</option>
+			<select name="data[stats_provider]">
+				<option value="analytics" {if "analytics"==$object.stats_provider}selected="selected"{/if}>Google analytics</option>
+				<option value="PWik" {if "piwik"==$object.stats_provider}selected="selected"{/if}>PWik</option>
+				<option value="" {if empty($object.stats_provider)}selected="selected"{/if}>Nessuno</option>
 			</select>
 		</td>
+	</tr>
+	<tr>
+		<th>{t}Provider URL{/t}:</th>
 		<td>
-			<a href="https://www.google.com/analytics/reporting/" target="_blank">
+			<input type="text" name="data[stats_provider_url]" value="{$object.stats_provider_url|default:''}"/>
+			{if isset($object.stats_provider_url)}
+			<a href="{$object.stats_provider_url}" target="_blank">
 			› access statistics
 			</a>
+			{/if}
 		</td>
+	</tr>
 	<tr>
 		<th>{t}Code{/t}:</th>
 		<td colspan="2">
-			<textarea name="stats_code" style="font-size:0.8em; color:gray; width:470px;">{$object.stats_code|default:''}</textarea>
+			<textarea name="data[stats_code]" style="font-size:0.8em; color:gray; width:470px;">{$object.stats_code|default:''}</textarea>
 		</td>
 	</tr>
 	</table>
