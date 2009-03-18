@@ -677,7 +677,9 @@ abstract class ModulesController extends AppController {
 				if(!empty($a[$field])) {
 					$previews[]=array(
 						'url'=>$a[$field]."/$obj_id",
-						'desc'=>$a['title']." | " . $field);
+						'desc'=>$a['title'],
+						'kurl'=>$field
+						);
 				}
 				$pubId[] = $a['id'];
 			}
