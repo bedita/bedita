@@ -49,6 +49,7 @@ $(document).ready(function(){
 				{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator=" "}
 			</td>
 		</tr>
+		{*
 		<tr>
 			<th>
 				syndicate:</th>
@@ -57,6 +58,7 @@ $(document).ready(function(){
 				<input style="margin-top:4px" type="checkbox" name="data[syndicate]" value="on" {if $object.syndicate|default:'off'=='on'}checked{/if} />
 			</td>
 		</tr>
+		*}
 	</table>
 	
 
@@ -162,7 +164,7 @@ $(document).ready(function(){
 		<th>{t}Provider{/t}:</th>
 		<td>
 			<select name="data[stats_provider]">
-				<option value="analytics" {if "analytics"==$object.stats_provider}selected="selected"{/if}>Google analytics</option>
+				<option value="GoogleAnalytics" {if "GoogleAnalytics"==$object.stats_provider}selected="selected"{/if}>Google analytics</option>
 				<option value="PWik" {if "piwik"==$object.stats_provider}selected="selected"{/if}>PWik</option>
 				<option value="" {if empty($object.stats_provider)}selected="selected"{/if}>Nessuno</option>
 			</select>

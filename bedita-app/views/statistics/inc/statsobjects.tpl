@@ -1,3 +1,4 @@
+{strip}
 
 <div class="tab"><h2>{t}BEdita contents statistics{/t}</h2></div>
 	<div id="objects">
@@ -79,11 +80,7 @@
 			{/if}
 			{/foreach}
 		</table>
-		
-		
-		
-		<hr />
-		
 
+</div>
 
-	</div>
+{/strip}
