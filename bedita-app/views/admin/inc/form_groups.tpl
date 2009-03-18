@@ -26,7 +26,7 @@ $(document).ready(function(){
 		<th></th>
 	</tr>
 	{foreach from=$groups|default:'' item=g}
-	<tr class="rowList">	
+	<tr class="rowList {if ($g.Group.id == $group.Group.id)}on{/if}">	
 		<td><a href="{$html->url('/admin/viewGroup/')}{$g.Group.id}">{$g.Group.name}</a></td>
 		<td>{if $g.Group.backend_auth}{t}Authorized{/t}{else}{t}Not Authorized{/t}{/if}</td>
 		{if $g.Group.immutable}	
@@ -45,7 +45,8 @@ $(document).ready(function(){
   	{/foreach}
 </table>
 
-<div class="tab"><h2>{t}Group properties {/t}</h2></div>
+
+<div class="tab"><h2>{$group.Group.name|default:'New'|upper} {t}group properties {/t}</h2></div>
 <fieldset id="groupForm">	
 	{if isset($group)}
 		<input type="hidden" name="data[Group][id]" value="{$group.Group.id}"/>
@@ -85,7 +86,7 @@ $(document).ready(function(){
 </fieldset>				
 
 
-<div class="tab"><h2>{t}Group modules access{/t}</h2></div>
+<div class="tab"><h2>{$group.Group.name|default:'New'|upper} {t}group modules access{/t}</h2></div>
 
 <fieldset id="modulesaccess">	
 
