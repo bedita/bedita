@@ -658,7 +658,7 @@ abstract class ModulesController extends AppController {
 	}
 
 	/**
-	 * Return preview links for $obj_id in $sections
+	 * Return preview links for $obj_id in publications
 	 * 
 	 * @return array of previews - single preview is like array('url'=>'...','desc'=>'...')
 	 * @param $sections array of section id
@@ -668,17 +668,18 @@ abstract class ModulesController extends AppController {
 		$previews = array();
 		if(empty($obj_id) || empty($sections))
 			return $previews;
+		$pubId = array();
 		foreach($sections as $section_id) {
 			$a = $this->BeTree->getAreaForSection($section_id);
-			if(!empty($a)) {
+			if(!empty($a) && !in_array($a['id'], $pubId)) {
 				$desc = $this->BEObject->field('title',array("id=$section_id"));
 				$field = ($status=='on') ? 'public_url' : 'staging_url';
 				if(!empty($a[$field])) {
 					$previews[]=array(
-						//'url'=>$a[$field]."/section/$section_id/$obj_id",
 						'url'=>$a[$field]."/$obj_id",
 						'desc'=>$desc);
 				}
+				$pubId[] = $a['id'];
 			}
 		}
 		return $previews;
