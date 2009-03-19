@@ -39,6 +39,7 @@ class BeAuthComponent extends Object {
 	var $changePasswd	= false;
 	var $sessionKey = "BEAuthUser" ;
 	var $allowKey 	= "BEAuthAllow" ;
+	const SESSION_INFO_KEY = "BESession" ;
 	var $authResult	= 'OK';
 	
 	function __construct() {
@@ -77,13 +78,12 @@ class BeAuthComponent extends Object {
 		$res = true;
 		if(!isset($this->Session)) {
 			$res = false;
-			$this->log("Session component not set!", LOG_INFO);
+			$this->log("Session component not set!");
 		} else if(!$this->Session->valid()) {
 			$res = false;
-			$this->log("Session not valid!", LOG_INFO);
+			$this->log("Session not valid!");
 		} else if(!$this->Session->check($this->sessionKey)) {
 			$res = false;
-			$this->log("Session key not found: ".$this->sessionKey, LOG_INFO);
 		}
 		return $res;
 	}
@@ -253,6 +253,10 @@ class BeAuthComponent extends Object {
 		if ($this->checkSessionKey()) {
 			if(@empty($this->user)) $this->user 	= $this->Session->read($this->sessionKey);
 			$this->controller->set($this->sessionKey, $this->user);
+			// update session info
+			$sessionInfo = array("userAgent" => $_SERVER['HTTP_USER_AGENT'], 
+				"ipNumber" => $_SERVER['REMOTE_ADDR'], "time" => time());
+			$this->Session->write(self::SESSION_INFO_KEY, $sessionInfo);
 			
 			return true ;
 		} else {
