@@ -259,7 +259,7 @@ class AdminController extends ModulesController {
 	 private function beditaVersion() {
 	 	$c = Configure::getInstance();
 		if (!isset($c->Bedita['version'])) {
-			$versionFile = ROOT . DS . APP_DIR . DS . 'config' . DS . 'bedita.version.php';
+			$versionFile = APP . 'config' . DS . 'bedita.version.php';
 			if(file_exists($versionFile))
 				require($versionFile);
 			else
