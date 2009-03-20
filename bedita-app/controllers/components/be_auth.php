@@ -364,6 +364,7 @@ class BeAuthComponent extends Object {
 	public function connectedUser() {
 		$connectedUser = array();
 		$sessionDb = Configure::read('Session.database');
+		$validity = Configure::read('beSessionValidity');
 		if ( (Configure::read('Session.save') == "database") && !empty($sessionDb) ) {
 			$db =& ConnectionManager::getDataSource($sessionDb);
 			$table = $db->fullTableName(Configure::read('Session.table'), false);
@@ -374,7 +375,10 @@ class BeAuthComponent extends Object {
 			foreach($res as $key => $val) {
 				$unserialized_data = $this->unserializesession($val[$table]['data']);
 				if(!empty($unserialized_data) && !empty($unserialized_data['BEAuthUser']) && !empty($unserialized_data['BEAuthUser']['userid'])) {
-					$connectedUser[]=$unserialized_data['BEAuthUser']['userid'];
+					if((time() - $unserialized_data['BESession']['time']) < ($validity*60) ) {
+						$connectedUser['users'][]=$unserialized_data['BEAuthUser']['userid'];
+					}
+					$connectedUser['besessions'][]=$unserialized_data['BESession'];
 				}
 			}
 		}
