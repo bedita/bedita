@@ -223,6 +223,8 @@ class BEAppModel extends AppModel {
 	 *							"category" => "val" search by category id or category name
 	 *							"relation" => "val" search by object_relations swicth
 	 *							"rel_object_id" => "val" search object relateds to a particular object (object_relation object_id)
+	 *							...
+	 *							see all in BuildFilter behavior
 	 *
 	 * @param string $order		field to order result (id, status, modified..)
 	 * @param boolean $dir		true (default), ascending, otherwiese descending.
