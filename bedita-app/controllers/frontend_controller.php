@@ -318,7 +318,9 @@ abstract class FrontendController extends AppController {
 			$sections = $this->BeTree->getDiscendents($conf->frontendAreaId,$this->status,$filter) ;
 			$sectionsTree = $sections['items'];
 		} else {
+			$this->baseLevel = true;
 			$sectionsTree = $this->loadSectionsTree($conf->frontendAreaId,$extract_all) ;
+			$this->baseLevel = false;
 		}
 		$i=0;
 		$public_url = $this->Area->field('public_url', array('id' => $conf->frontendAreaId));
@@ -330,7 +332,7 @@ abstract class FrontendController extends AppController {
 			//$urlset[$i]['priority'] = '0.5';
 			$i++;
 		}
-		$this->set('sections_tree',$this->BeTree->getSectionsTree());
+		$this->set('sections_tree',$sectionsTree);
 		$this->set('urlset',$urlset);
 	}
 

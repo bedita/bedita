@@ -14,7 +14,7 @@ if (file_exists (BEDITA_CORE_PATH . DS . "config" . DS . "bedita.cfg.php") ) {
 //////////////////////////////////////////////////////
 // EDITABLE STUFF         ///////////////
 //////////////////////////////////////////////////////
-
+$config['sitemapAllContent'] = true;
 $config['draft']            = false;
 $config['frontendNickname'] = 'nomefrontend';
 $config['frontendAreaId'] 	= 1;
@@ -53,7 +53,7 @@ $config['modelBindings'] = array(
 	'Video' => array("BEObject" => array("LangText"), "Content", "Stream"),
 	'BEFile' => array("BEObject" => array("LangText"), "Content"),
 	'Gallery' => array("BEObject" => array("LangText")),
-	'Comment' => array("BEObject" => array("RelatedObject"), "Content"),
+	'Comment' => array("BEObject" => array("RelatedObject")),
 	'ShortNews' => array("BEObject" => array("LangText","RelatedObject", "Category"))
 
 ) ;
