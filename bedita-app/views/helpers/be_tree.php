@@ -146,7 +146,8 @@ class BeTreeHelper extends Helper {
 		if (!empty($sections)) {
 			$output .= '<ul id="sitemap">';
 			foreach($sections as $section) {
-				$output .= '<li class="section">' . $section['title'] . '</li>';
+				$output .= '<li class="Section">';
+				$output .= $section['title'];
 				if(!empty($section['objects']['childContents'])) {
 					$output .= '<ul class="contents">';
 					$children = $section['objects']['childContents'];
@@ -155,6 +156,7 @@ class BeTreeHelper extends Helper {
 					}
 					$output .= '</ul>';
 				}
+				$output .= '</li>';
 				if(!empty($section['sections'])) {
 					$output .= '<li>' . $this->designsitemap($section['sections']) . '</li>';
 				}

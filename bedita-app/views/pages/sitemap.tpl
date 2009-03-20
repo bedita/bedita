@@ -3,7 +3,7 @@
 {literal}
 	ul#sitemap { border: solid blue 1px; }
 	ul.contents { border: solid green 1px; }
-	li.section, li.Section {color:#626151 !important;}
+	li.Section {color:#626151 !important;}
 	li.Document {color:#ff6600 !important;}
 	li.Gallery {color:#FFBF00 !important;}
 	li.Event {color:#0099CC !important;}
