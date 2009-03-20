@@ -129,30 +129,38 @@ class BeTreeHelper extends Helper {
 	}
 
 	/**
-	 * output a tree
+	 * output sitemap tree
 	 *
-	 * @param array $tree, publications tree
+	 * @param array $sections, sections tree
 	 * @param string $inputType, type of input to prepend to section name (checkbox, radio)
 	 * @param array $parent_ids, array of ids parent
 	 * @return html for simple view tree
 	 */
-	public function sitemap($sections=array()) {
-		$output = $this->designsitemap($sections);
+	public function sitemap($sections=array(),$public_url='/') {
+		$output = $this->designsitemap($sections,$public_url);
 		return $this->output($output);
 	}
 
-	private function designsitemap($sections=array()) {
+	private function designsitemap($sections=array(),$public_url='/') {
 		$output = '';
 		if (!empty($sections)) {
 			$output .= '<ul id="sitemap">';
 			foreach($sections as $section) {
 				$output .= '<li class="Section">';
+				$url = $public_url . '/' . $section['nickname'];
+				$output .= '<a href="' . $url . '">';
 				$output .= $section['title'];
+				$output .= '</a>';
 				if(!empty($section['objects']['childContents'])) {
 					$output .= '<ul class="contents">';
 					$children = $section['objects']['childContents'];
 					foreach($children as $child) {
-						$output .= '<li class="' . Configure::read('objectTypes.' . $child['object_type_id'] . ".model") . '">' . $child['title'] . '</li>';
+						$output .= '<li class="' . Configure::read('objectTypes.' . $child['object_type_id'] . ".model") . '">';
+						$url = $public_url . '/' . $section['nickname'] . '/' . $child['nickname'];
+						$output .= '<a href="' . $url . '">';
+						$output .= $child['title'];
+						$output .= '</a>';
+						$output .= '</li>';
 					}
 					$output .= '</ul>';
 				}

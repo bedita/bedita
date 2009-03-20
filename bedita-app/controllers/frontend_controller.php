@@ -334,6 +334,11 @@ abstract class FrontendController extends AppController {
 		}
 		$this->set('sections_tree',$sectionsTree);
 		$this->set('urlset',$urlset);
+		$this->set('public_url',$public_url);
+		// sitemap before render
+		if (method_exists($this,"sitemapBeforeRender")) {
+			$this->{"sitemapBeforeRender"}();
+		}
 	}
 
 	/**
