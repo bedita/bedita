@@ -42,6 +42,8 @@ abstract class FrontendController extends AppController {
 	protected $xmlFormat = "attributes"; // possible values "tags", "attributes"
 	protected $publication = "";
 	protected $captchaOptions = array(); // default defined in captcha component
+	protected $annotationOptions = array("comment" => array());
+	protected $tagOptions = array();
 
 	protected function checkLogin() {
 		return false; // every frontend has to implement checkLogin
@@ -661,9 +663,8 @@ abstract class FrontendController extends AppController {
 		$section = $this->loadObj($sectionId);
 		
 		$section["pathSection"] = $this->getPath($sectionId);
-		$this->getPassedArgs();
+		$this->sectionOptions["childrenParams"] = $this->getPassedArgs();
 		
-
 		if(!empty($content_id)) {
 			$section['currentContent'] = $this->loadObj($content_id);
 			
@@ -897,7 +898,7 @@ abstract class FrontendController extends AppController {
 		if (empty($tagDetail))
 			throw new BeditaException(__("No tag founded", true));
 		
-		$this->getPassedArgs();
+		$options = array_merge($this->tagOptions, $options, $this->getPassedArgs());
 		$filter = (!empty($options["filter"]))? $options["filter"] : false;
 		$filter["tag"] = $tag;
 		$order = "";
@@ -931,6 +932,39 @@ abstract class FrontendController extends AppController {
 		}
 		
 		return array_merge($result, array("toolbar" => $contents["toolbar"]));
+	}
+	
+	/**
+	 * load annotation referenced to some object
+	 * 
+	 * @param string $annotationType, object type of the annotation i.e. "comment"
+	 * @param $objectName, reference object nickname or id 
+	 * @param array $options, specific options (pagination, filter) that override annotationOptions attribute
+	 * @return array of annotations
+	 */
+	protected function loadAnnotations($annotationType, $objectName, $options=array()) {
+		
+		if (empty($annotationType) || empty($objectName))
+			throw new BeditaException(__("Annotation type or object_id missing", true));
+		
+		$object_id = (is_numeric($objectName))? $objectName : $this->BEObject->getIdFromNickname($objectName);
+		
+		$options = array_merge($this->annotationOptions[$annotationType], $options, $this->getPassedArgs());
+		$filter = (!empty($options["filter"]))? $options["filter"] : array();
+		$filter["object_type_id"] = Configure::read("objectTypes." . $annotationType . ".id");
+		$filter[Configure::read("objectTypes." . $annotationType . ".model") . ".object_id"] = $object_id;
+		$order = (!empty($options["order"]))? $options["order"] : "BEObject.created";
+		$dir = (isset($options["dir"]))? $options["dir"] : 1;
+		$page = (!empty($options["page"]))? $options["page"] : 1;
+		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
+		
+		$annotations = $this->BeTree->getChildren(null, $this->status, $filter, $order, $dir, $page, $dim);
+		$result = array();
+		foreach ($annotations["items"] as $a) {
+			$object = $this->loadObj($a["id"]);
+			$result[Configure::read("objectTypes." . $annotationType . ".model")][] = $object;
+		}
+		return array_merge($result, array("toolbar" => $annotations["toolbar"]));
 	}
 	
 	public function download($name) {
@@ -1101,17 +1135,19 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
-	 * get passed args by name and set sectionOptions["childrenParams"]
+	 * get passed args by name and return
 	 *
 	 */
 	private function getPassedArgs() {
+		$args = array();
 		if (!empty($this->passedArgs)) {
 			foreach ($this->passedArgs as $key => $val) {
 				if (!is_numeric($key)) {
-					$this->sectionOptions["childrenParams"][$key] = $val;
+					$args[$key] = $val;
 				}
 			}
 		}
+		return $args;
 	}
 	
 	protected function showDraft() {
