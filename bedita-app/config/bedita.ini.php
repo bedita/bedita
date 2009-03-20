@@ -120,7 +120,7 @@ $config['uploadType'] = "flash";
 $config['unitTestUserId'] = 1;
 
 // bedita session time duration in minutes
-$config['beSessionValidity'] = 1;
+$config['beSessionValidity'] = 30;
 /**
  ** ******************************************
  **  Image and Video defaults
