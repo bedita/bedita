@@ -3,5 +3,5 @@
 
 <h3>Sections Tree</h3>
 <pre>
-{dump var=$sections}
+{dump var=$sectionsTree}
 </pre>

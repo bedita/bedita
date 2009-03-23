@@ -15,15 +15,13 @@ class PagesController extends FrontendController {
 	 * load common data, for all frontend pages...
 	 */ 
 	protected function beditaBeforeFilter() {
-		$this->set('pageTitle', "test page");
 		$this->set('feedNames', $this->Section->feedsAvailable(Configure::read("frontendAreaId")));
+		$this->set('sectionsTree', $this->loadSectionsTree(Configure::read("frontendAreaId")));
 	}
 	
 	public function index() {
-		$conf  = Configure::getInstance() ;
-		$sectionsTree = $this->loadSectionsTree($conf->frontendAreaId);
-		$this->set('sections', $sectionsTree);
 	}
+	
 }
 
 ?>

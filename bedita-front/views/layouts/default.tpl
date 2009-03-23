@@ -1,7 +1,7 @@
 {$html->docType('xhtml-trans')}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">
 <head>
-	<title> </title>
+	<title>{$publication.public_name|default:$publication.title}{if !empty($section)} | {$section.title}{/if}</title>
 	<link rel="icon" href="{$session->webroot}favicon.ico" type="image/x-icon" />
 	<link rel="shortcut icon" href="{$session->webroot}favicon.ico" type="image/x-icon" />
 
