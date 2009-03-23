@@ -46,13 +46,13 @@
 	if (!defined('CAKE_CORE_INCLUDE_PATH')) {
 		 //define ('CAKE_CORE_INCLUDE_PATH', 'FULL PATH TO DIRECTORY WHERE CAKE CORE IS INSTALLED. DO NOT ADD A TRAILING DIRECTORY SEPARATOR');
 		 //You should also use the DS define to separate your directories
-		 define('CAKE_CORE_INCLUDE_PATH', ROOT. DS . "bedita");
+		 define('CAKE_CORE_INCLUDE_PATH', ROOT);
 	}
 	
 	if (!defined('BEDITA_CORE_PATH')) {
 		 //define ('BEDITA_CORE_PATH', 'FULL PATH TO BEDITA CORE, bedita-app included, NO DIRECTORY SEPARATOR');
 		 //You should also use the DS define to separate your directories
-		 define('BEDITA_CORE_PATH', ROOT. DS . "bedita" . DS. "bedita-app");
+		 define('BEDITA_CORE_PATH', ROOT . DS. "bedita-app");
 	}
 		
 ///////////////////////////////
