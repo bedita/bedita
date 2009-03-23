@@ -16,6 +16,7 @@ if (file_exists (BEDITA_CORE_PATH . DS . "config" . DS . "bedita.cfg.php") ) {
 //////////////////////////////////////////////////////
 $config['sitemapAllContent'] = true;
 $config['draft']            = false;
+$config['filterPublicationDate'] = true;
 $config['frontendNickname'] = 'nomefrontend';
 $config['frontendAreaId'] 	= 1;
 $config['frontendUser']     = array ("userid" => null);
