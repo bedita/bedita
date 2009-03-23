@@ -46,15 +46,16 @@ $config['modelBindings'] = array(
 
 	'Area' => array("BEObject" => array("LangText")),
 	'Section' => array("BEObject" => array("LangText")),
- 	'Document' => array("BEObject" => array("LangText", "UserCreated","RelatedObject", "Category")),
+ 	'Document' => array("BEObject" => array("LangText", "UserCreated","RelatedObject", "Annotation", "Category")),
 	'Event' => array("BEObject" => array("LangText","RelatedObject", "Category"), "DateItem"),
 	'Image' => array("BEObject" => array("LangText"), "Content", "Stream"),
 	'Audio' => array("BEObject" => array("LangText"), "Content"),
 	'Video' => array("BEObject" => array("LangText"), "Content", "Stream"),
 	'BEFile' => array("BEObject" => array("LangText"), "Content"),
-	'Gallery' => array("BEObject" => array("LangText")),
-	'Comment' => array("BEObject" => array("RelatedObject")),
-	'ShortNews' => array("BEObject" => array("LangText","RelatedObject", "Category"))
+	'Gallery' => array("BEObject" => array("LangText", "RelatedObject")),
+	'Comment' => array("BEObject", "GeoTag"),
+	'ShortNews' => array("BEObject" => array("LangText","RelatedObject", "Category")),
+	'Card' => array("BEObject" => array("LangText","RelatedObject"), "GeoTag")
 
 ) ;
 
