@@ -663,7 +663,7 @@ abstract class FrontendController extends AppController {
 		$section = $this->loadObj($sectionId);
 		
 		$section["pathSection"] = $this->getPath($sectionId);
-		$this->sectionOptions["childrenParams"] = $this->getPassedArgs();
+		$this->sectionOptions["childrenParams"] = array_merge($this->sectionOptions["childrenParams"],$this->getPassedArgs());
 		
 		if(!empty($content_id)) {
 			$section['currentContent'] = $this->loadObj($content_id);
