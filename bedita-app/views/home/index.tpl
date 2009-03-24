@@ -136,7 +136,12 @@ $(document).ready(function() {
 	<ul class="bordered">
 	{section name="i" loop=$connectedUser}
 		{foreach from=$connectedUser[i] key=usr item=usrdata}
-		<li><a title="{$usrdata.realname} | {$usrdata.userAgent} | {$usrdata.ipNumber}" href="#">{$usr}</a>
+		<li>
+		{if isset($moduleList.admin) }
+		<a title="{$usrdata.realname} | {$usrdata.userAgent} | {$usrdata.ipNumber}" href="{$html->url('/')}admin/viewUser/{$usrdata.id}">{$usr}</a>
+		{else}		
+		<a title="{$usrdata.realname}" href="#">{$usr}</a>
+		{/if}
 		</li>
 		{/foreach}
 	{/section}
