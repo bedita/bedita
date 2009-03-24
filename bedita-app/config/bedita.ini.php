@@ -284,6 +284,9 @@ $config['objectTypes'] = array(
 	38			 => array("id" => 38, "name" => "biblioitem", "module" => null, "model" => "BiblioItem"),
 	"biblioitem" 	 => array("id" => 38, "name" => "biblioitem", "module" => null, "model" => "BiblioItem"),
 	
+	39			 => array("id" => 39, "name" => "editornote", "module" => null, "model" => "EditorNote"),
+	"editornote" 	 => array("id" => 39, "name" => "editornote", "module" => null, "model" => "EditorNote"),
+	
 	// define array of objects that can be related to other
 	'related'	=> array("id" => array(18,19,20,21,22,29,34)),
 

@@ -22,6 +22,11 @@ class CommentTestData extends BeditaTestData {
 			'email' => "wadama@bsg.com",
 			'url' => "www.fightthecylons.com",
 		),
+
+		'editornote' => array(
+			'title' => "the final five",
+			'description' => "you are one of them!",
+		),
 		
 	);
 }

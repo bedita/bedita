@@ -597,9 +597,11 @@ class BEObject extends BEAppModel
 	}
 	
 	private function _getIDCurrentUser($get = true) {
-		if(!$get) return null ;
+		if(!$get) 
+			return null ;
 		
-		if(is_string($get)) return $get ;
+		if(is_numeric($get)) 
+			return $get ;
 		
 		// read user data from session or from configure
 		$conf = Configure::getInstance();

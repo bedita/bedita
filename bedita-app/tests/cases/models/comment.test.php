@@ -32,10 +32,10 @@ require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
 class CommentTestCase extends BeditaTestCase {
 	
-	var $uses = array("Comment", "Document");
+	var $uses = array("Comment", "Document", "EditorNote");
 	
-	function testComment() {
-		$this->requiredData(array("document", "comment"));
+	function testCommentAndNote() {
+		$this->requiredData(array("document", "comment", "editornote"));
 		$result = $this->Document->save($this->data['document']) ;
 		$this->assertNotEqual($result,false);		
 		$idDoc = $this->Document->id;
@@ -45,14 +45,18 @@ class CommentTestCase extends BeditaTestCase {
 		$this->assertNotEqual($result,false);		
 		$idComm = $this->Comment->id;
 
+		$this->data['editornote']['object_id'] = $idDoc;
+		$result = $this->EditorNote->save($this->data['editornote']) ;
+		$this->assertNotEqual($result,false);		
+		$idNote = $this->EditorNote->id;
+		
 		// load doc and check comments
 		$this->Document->containLevel("detailed");
 		$result = $this->Document->findById($idDoc);
 		$this->assertNotEqual($result,false);		
 		pr("Document: ");
 		pr($result);
-		$this->assertEqual(count($result['Annotation']),1);		
-		$this->assertEqual($result['Annotation'][0]['id'], $idComm);		
+		$this->assertEqual(count($result['Annotation']),2);		
 		$this->Comment->containLevel("detailed");
 		$result = $this->Comment->findById($idComm);
 		$this->assertNotEqual($result, false);		
@@ -62,13 +66,25 @@ class CommentTestCase extends BeditaTestCase {
 		$this->assertEqual($result['object_id'], $idDoc);		
 		$this->assertEqual($result['ReferenceObject']['id'], $idDoc);		
 		
+		$this->EditorNote->containLevel("detailed");
+		$result = $this->EditorNote->findById($idNote);
+		$this->assertNotEqual($result, false);		
+		pr("EditorNote: ");
+		pr($result);
+		$this->assertEqual($result['description'], $this->data['editornote']['description']);		
+		$this->assertEqual($result['object_id'], $idDoc);		
+		$this->assertEqual($result['ReferenceObject']['id'], $idDoc);		
+		
 		// remove document
-//		$result = $this->Document->delete($idDoc);
-//		$this->assertEqual($result, true);		
+		$result = $this->Document->delete($idDoc);
+		$this->assertEqual($result, true);		
 		// check comment removed
-//		$result = $this->Comment->findById($idComm);
-//		$this->assertEqual($result, false);				
- 	}
+		$result = $this->Comment->findById($idComm);
+		$this->assertEqual($result, false);				
+		// check note removed
+		$result = $this->EditorNote->findById($idComm);
+		$this->assertEqual($result, false);				
+	}
 	
  	public   function __construct () {
 		parent::__construct('Comment', dirname(__FILE__)) ;

@@ -207,6 +207,57 @@ class DbadminShell extends Shell {
 		$this->out($countOperations . " rows on db updated");
 		$this->out("done");
 	}
+
+	public function annotate() {
+		if (!isset($this->params['id'])) {
+			$id = $this->in("Select object id to annotate: ");
+		} else {
+			$id = $this->params['id'];
+		}
+		$objModel = ClassRegistry::init("BEObject");
+		$objData = $objModel->findById($id);
+		if(empty($objData)) {
+			$this->out("Object id " . $id . " not found. Bye.");
+			return;
+		}
+		if (!isset($this->params['type'])) {
+			$type = $this->in("Select annotation type: editor[n]ote/[c]omment");
+		} else {
+			$type = $this->params['type'];		
+		}
+		
+		if(!in_array($type, array("editornote", "comment"))) {
+			if($type === "c")    {
+				$type = "comment";
+			} else if($type === "e" || $type === "n") {
+				$type = "editornote";
+			} else {
+				$this->out("Wrong annotation type: ". $type);
+				return;
+			}
+		}
+		
+		$inputs = array("comment" => array("title", "description", "author", "email", "url"),
+						"editornote" => array("title", "description"));
+		
+		$this->hr();
+		$this->out("please provide [$type] input data");
+		$this->hr();
+		$data = array("object_id" => $id, "ip_created" => "127.0.0.1", "user_created" => 1, "user_modified" => 1);
+		foreach ($inputs[$type] as $req) {
+			$resp = $this->in("[$req]:");
+			$data[$req]=$resp;			
+		}
+		
+		$conf = Configure::getInstance() ;
+		$modelClass = $conf->objectTypes[$type]['model'];
+		$model = ClassRegistry::init($modelClass);
+		if(!$model->save($data)) {
+			$this->out("Error saving data for model ".$modelClass);
+			return;
+		}
+		$this->out("$type saved. Bye");
+	}
 	
 	public function updateVideoThumb() {
 		
@@ -280,9 +331,16 @@ class DbadminShell extends Shell {
         $this->out(' ');
         $this->out("5. updateVideoThumb: update video thumbnail from external provider");
         $this->out(' ');
-        $this->out('    Usage: updateVideoThumb [-all]');
+        $this->out('    Usage: updateVideoThumb [-id]');
         $this->out(' ');
         $this->out("    -all \t update all video, otherwise only video with no thumbnail defined in db");
+        $this->out(' ');
+        $this->out("6. annotate: add comment/editor note to object");
+        $this->out(' ');
+        $this->out('    Usage: annotate [-id <object-it>] [-type <annotation-type>] ');
+        $this->out(' ');
+        $this->out("    -id \t object id to annotate");
+        $this->out("    -type \t 'editornote' or 'comment'");
         $this->out(' ');
 	}
 	

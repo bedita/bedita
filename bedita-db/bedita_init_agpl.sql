@@ -15,6 +15,7 @@ INSERT INTO object_types (id, name, module) VALUES
 (21, 'event', 'events'),
 (22, 'document', 'documents'),
 (33, 'link', 'webmarks'),
+(39, 'editornote', NULL),
 (34, 'card', 'addressbook');
 	
 -- ----------------------------------
