@@ -66,8 +66,7 @@ class HomeController extends AppController {
 	 	$connectedUser = $this->BeAuth->connectedUser();
 	 	$this->set("lastModBYUser", $lastModBYUser);
 	 	$this->set("lastMod", $lastMod);
-		$this->set("connectedUser", $connectedUser['users']);
-		$this->set("BESession", $connectedUser['besessions']);
+		$this->set("connectedUser", $connectedUser);
 		$this->set("noFooter", true);
 	 }
 	 

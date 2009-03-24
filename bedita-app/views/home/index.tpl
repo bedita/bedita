@@ -132,18 +132,13 @@ $(document).ready(function() {
 	{/section}
 	</ul>
 
-{* esempio per vedere i dati di BESession *}
-<div class="tab"><h2>{t}sessions{/t}</h2></div>
-	<ul class="bordered">
-	{section name="j" loop=$BESession}
-		<li>USERAGENT: {$BESession[j].userAgent} --- IP: {$BESession[j].ipNumber}</li>
-	{/section}
-	</ul>
-{* fine esempio *}
 <div class="tab"><h2>{t}connected user{/t}</h2></div>
 	<ul class="bordered">
 	{section name="i" loop=$connectedUser}
-		<li>{$connectedUser[i]}</li>
+		{foreach from=$connectedUser[i] key=usr item=usrdata}
+		<li><a title="{$usrdata.realname} | {$usrdata.userAgent} | {$usrdata.ipNumber}" href="#">{$usr}</a>
+		</li>
+		{/foreach}
 	{/section}
 	</ul>
 

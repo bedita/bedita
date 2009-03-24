@@ -119,8 +119,8 @@ $config['uploadType'] = "flash";
 // bedita user for unit test
 $config['unitTestUserId'] = 1;
 
-// bedita session time duration in minutes
-$config['beSessionValidity'] = 30;
+// activity timeout used in Home/"connected user" time duration in minutes
+$config['activityTimeout'] = 20;
 /**
  ** ******************************************
  **  Image and Video defaults

@@ -118,6 +118,8 @@ class BeAuthComponent extends Object {
 		if(isset($this->Session)) {
 			$this->Session->write($this->sessionKey, $this->user);
 			$this->Session->write($this->allowKey, $this->allow);
+			$this->Session->write(self::SESSION_INFO_KEY, array("userAgent" => $_SERVER['HTTP_USER_AGENT'], 
+				"ipNumber" => $_SERVER['REMOTE_ADDR'], "time" => time()));
 		}
 
 		if(isset($this->controller)) {
@@ -254,9 +256,8 @@ class BeAuthComponent extends Object {
 			if(@empty($this->user)) $this->user 	= $this->Session->read($this->sessionKey);
 			$this->controller->set($this->sessionKey, $this->user);
 			// update session info
-			$sessionInfo = array("userAgent" => $_SERVER['HTTP_USER_AGENT'], 
-				"ipNumber" => $_SERVER['REMOTE_ADDR'], "time" => time());
-			$this->Session->write(self::SESSION_INFO_KEY, $sessionInfo);
+			$this->Session->write(self::SESSION_INFO_KEY, array("userAgent" => $_SERVER['HTTP_USER_AGENT'], 
+				"ipNumber" => $_SERVER['REMOTE_ADDR'], "time" => time()));
 			
 			return true ;
 		} else {
@@ -363,22 +364,21 @@ class BeAuthComponent extends Object {
 	
 	public function connectedUser() {
 		$connectedUser = array();
+		$res = array();
 		$sessionDb = Configure::read('Session.database');
-		$validity = Configure::read('beSessionValidity');
 		if ( (Configure::read('Session.save') == "database") && !empty($sessionDb) ) {
 			$db =& ConnectionManager::getDataSource($sessionDb);
 			$table = $db->fullTableName(Configure::read('Session.table'), false);
 			$res = $db->query("SELECT " . $db->name($table.'.data') . " FROM " . $db->name($table) . " WHERE " . $db->name($table.'.expires') . " >= " . time(), false);
-			if (empty($res)) {
-				return $connectedUser;
-			}
-			foreach($res as $key => $val) {
-				$unserialized_data = $this->unserializesession($val[$table]['data']);
-				if(!empty($unserialized_data) && !empty($unserialized_data['BEAuthUser']) && !empty($unserialized_data['BEAuthUser']['userid'])) {
-					if((time() - $unserialized_data['BESession']['time']) < ($validity*60) ) {
-						$connectedUser['users'][]=$unserialized_data['BEAuthUser']['userid'];
-					}
-					$connectedUser['besessions'][]=$unserialized_data['BESession'];
+		}
+		foreach($res as $key => $val) {
+			$unserialized_data = $this->unserializesession($val[$table]['data']);
+			if(!empty($unserialized_data) && !empty($unserialized_data['BEAuthUser']) && !empty($unserialized_data['BESession'])) {
+				$timeout = Configure::read('activityTimeout');
+				if((time() - $unserialized_data['BESession']['time']) < ($timeout*60) ) {
+					$usr = $unserialized_data['BEAuthUser']['userid'];
+					$connectedUser[]= array($usr => array_merge($unserialized_data['BEAuthUser'], 
+						$unserialized_data['BESession']));
 				}
 			}
 		}
