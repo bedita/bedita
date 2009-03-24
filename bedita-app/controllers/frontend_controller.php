@@ -337,12 +337,11 @@ abstract class FrontendController extends AppController {
 		$this->set('sections_tree',$sectionsTree);
 		$this->set('urlset',$urlset);
 		$this->set('public_url',$public_url);
-		// sitemap before render
-		if (method_exists($this,"sitemapBeforeRender")) {
-			$this->{"sitemapBeforeRender"}();
-		}
+		$this->sitemapBeforeRender();
 	}
 
+	protected function sitemapBeforeRender() {}
+	
 	/**
 	 * Publish RSS feed with contents inside section $sectionName
 	 *
@@ -632,10 +631,8 @@ abstract class FrontendController extends AppController {
 	 * @param string/int $secName: section nick or section id
 	 * @param string/int $contentName: content nick or content id
 	 */
-	public function section() {
+	public function section($secName, $contentName = null) {
 		
-		$args = func_get_args();
-		$secName = $args[0];
 		if (is_numeric($secName)) {
 			$sectionId = $secName;
 			$secName = $this->BEObject->getNicknameFromId($sectionId);
@@ -643,12 +640,12 @@ abstract class FrontendController extends AppController {
 			$sectionId = $this->BEObject->getIdFromNickname($secName);
 		}		
 		
-		$contentName = isset($args[1]) ? $args[1] : null;
 		$content_id = null;
 		if(!empty($contentName)) {
 			$content_id = is_numeric($contentName) ? $contentName : $this->BEObject->getIdFromNickname($contentName);
 			$contentType = $this->BEObject->getType($content_id);
 			if($contentType === "Section") {
+				$args = func_get_args();
 				array_shift($args);
 				return call_user_func_array(array($this, "section"), $args);
 			}
@@ -725,6 +722,11 @@ abstract class FrontendController extends AppController {
 			in_array($name, Configure::read("cfgReservedWords"))) {
 			$name = str_replace(".", "_", $name); // example: sitemap.xml => sitemap_xml
 			$this->action = $name;
+			// load object with nickname $name if exists
+			$id = $this->BEObject->getIdFromNickname($name);
+			if(!empty($id)) {
+				$this->loadAndSetObj($id, "object");
+			}
 			$methodName = $name[0] . substr(Inflector::camelize($name), 1);
 			// check method
 			if(method_exists($this, $methodName)) {
