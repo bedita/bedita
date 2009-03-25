@@ -22,7 +22,7 @@ class BeAuthTestData extends BeditaTestData {
 		'bad.group' => array('Group' => array('name' => null)), 
 		'new.user'	=> array('User' => array('userid' => 'nuovoutente', 'passwd' => 'nuovapass')), 
         'new.user.bad.pass' => 'wrongpassword',
-	    'new.user.groups' =>array('guest','frustrated'),
+	    'new.user.groups' =>array('frustrated'),
 		'new.group.name' => 'supergeeks',
 		'policy'  => array(
 			'maxLoginAttempts' => 5,
