@@ -22,14 +22,13 @@
 /**
 
  */
-class FormsController extends ModulesController {
-	var $name = 'Forms';
+class QuestionnairesController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeLangText', 'BeFileHandler');
 
 	var $uses = array('BEObject', 'Document', 'Tree') ;
-	protected $moduleName = 'forms';
+	protected $moduleName = 'questionnaires';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
     	$conf  = Configure::getInstance() ;
@@ -49,11 +48,6 @@ class FormsController extends ModulesController {
     	$conf  = Configure::getInstance() ;
 		$this->paginatedList($id, @$filter, $order, $dir, $page, $dim);
 	 }
-
-
-
-
-
 
 }	
 
