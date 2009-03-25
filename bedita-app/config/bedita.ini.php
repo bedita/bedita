@@ -222,9 +222,31 @@ define("BEDITA_DOMANDA_GRADO",			0x5) ;
 define("BEDITA_DOMANDA_TXTSEMPLICE",	0x6) ;
 
 
+/**
+ * BEdita modules
+ */
+$config['modules'] = array(
+	"areas" => array("id" => 1, "label" => "publishing"),
+	"admin" => array("id" => 2, "label" => "admin"),
+	"translations" => array("id" => 3, "label" => "translations"),
+	"documents" => array("id" => 6, "label" => "documents"),
+	"news" => array("id" => 7, "label" => "news"),
+	"galleries" => array("id" => 8, "label" => "galleries"),
+	"events" => array("id" => 10, "label" => "events"),
+	"bibliographies" => array("id" => 11, "label" => "bibliographies"),
+	"webmarks" => array("id" => 12, "label" => "webmarks"),
+	"books" => array("id" => 13, "label" => "books"),
+	"questionnaires" => array("id" => 14, "label" => "questionnaires"),
+	"addressbook" => array("id" => 16, "label" => "addressbook"),
+	"newsletter" => array("id" => 18, "label" => "newsletter"),
+	"statistics" => array("id" => 23, "label" => "statistics"),
+	"tags" => array("id" => 24, "label" => "tags"),
+	"comments" => array("id" => 25, "label" => "comments"),
+	"multimedia" => array("id" => 26, "label" => "multimedia"),
+);
 
 /**
- * definisce i tipi i oggetti ammessi
+ * object types, main properties
  */
 $config['objectTypes'] = array(
 	1			=> array("id" => 1, "name" => "area", "module" => "areas", "model" => "Area"),
@@ -384,46 +406,13 @@ $config['session'] = array (
 
 
 /**
- * Permessi di default
+ * Default permissions
  */
 $config['permissions'] = array(
 	'all'	=> array(
 		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
 		array('guest', 			'group', (BEDITA_PERMS_READ)),
 	),
-	$config['objectTypes']['section']['id']	=> array(
-		array('guest', 			'group', (BEDITA_PERMS_READ)),
-		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
-	),
-	$config['objectTypes']['area']['id']	=> array(
-		array('guest', 			'group', (BEDITA_PERMS_READ)),
-		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
-	),
-	$config['objectTypes']['document']['id']	=> array(
-		array('guest', 			'group', (BEDITA_PERMS_READ)),
-		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
-	),
-	$config['objectTypes']['image']['id']	=> array(
-		array('guest', 			'group', (BEDITA_PERMS_READ)),
-		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
-	),
-	$config['objectTypes']['audio']['id']	=> array(
-		array('guest', 			'group', (BEDITA_PERMS_READ)),
-		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
-	),
-	$config['objectTypes']['video']['id']	=> array(
-		array('guest', 			'group', (BEDITA_PERMS_READ)),
-		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
-	),
-	$config['objectTypes']['befile']['id']	=> array(
-		array('guest', 			'group', (BEDITA_PERMS_READ)),
-		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
-	),
-	$config['objectTypes']['gallery']['id']	=> array(
-		array('guest', 			'group', (BEDITA_PERMS_READ)),
-		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
-	),
-	
 );
 
 

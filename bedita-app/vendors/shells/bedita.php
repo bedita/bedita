@@ -901,6 +901,92 @@ class BeditaShell extends Shell {
 		$this->out("Updated to: $beditaVersion");
 		
     }
+
+    public function modules() {
+    	$module = ClassRegistry::init("Module");
+		if (isset($this->params['list'])) {
+			$mods = $module->find('all', array("conditions" => array("status" =>"on")));
+			$modNames = array();
+			foreach ($mods as $m) {
+				$modNames[$m["Module"]["id"]] = $m["Module"]["name"];
+			}
+			$this->hr();
+			$this->out("Current modules on istance " . Configure::read("projectName") . ":");
+			$this->hr();	
+			print_r($modNames);
+			$modsAvailable = Configure::read("modules");
+			$modsNot = array();
+			foreach ($modsAvailable as $k => $v) {
+				if(!in_array($k, $modNames))
+					$modsNot[$v['id']] = $k;
+			}
+			if(empty($modsNot)) {
+				$this->out("\nAll Modules present");
+			} else {
+				$this->hr();
+				$this->out("Modules not present in " . Configure::read("projectName") . ":");
+				$this->hr();
+				print_r($modsNot);
+			}
+		}
+		if (isset($this->params['add'])) {
+			$modName = $this->params['add'];
+			if (empty($modName)) {
+	        	$this->out("module name is mandatory");
+				return;
+			}
+			$modsAvailable = Configure::read("modules");
+			if(!array_key_exists($modName,$modsAvailable)) {
+	        	$this->out("Unknown module name: " . $modName);
+				return;
+			}
+    		$data = $modsAvailable[$modName];
+    		if(!isset($data['path']))
+    			$data['path'] = $modName;
+    		if(!isset($data['label']))
+    			$data['label'] = $modName;
+    		$data['name'] = $modName;
+    		$data['status'] = "on";
+    		$namePresent = $module->field("name", array("name" => $modName));
+    		if(!empty($namePresent)) {
+    			$data['id'] = $module->field("id", array("name" => $modName));
+    		} else {
+    			$idPresent = $module->field("id", array("id" => $data['id']));
+	    		if(!empty($idPresent)) {
+		        	$this->out("id " . $idPresent . " already present");
+	    			unset($data['id']);	
+	    		}
+    		}
+    		if(!$module->save($data)) {
+	        	$this->out("error saving module " . $modName);
+				return;
+    		}
+    		App::import('Component',"BePermissionModule");
+			$bePermsMod = new BePermissionModuleComponent();
+			$perms =  array(array("administrator", BePermissionModuleComponent::SWITCH_GROUP, BEDITA_PERMS_READ_MODIFY));
+			$bePermsMod->add($modName, $perms);
+	        $this->out("Module " . $modName . " added");
+		}
+		if (isset($this->params['del'])) {
+			$modName = $this->params['del'];
+			if (empty($modName)) {
+	        	$this->out("module name is mandatory");
+				return;
+			}
+    		$id = $module->field("id", array("name" => $modName));
+    		if(empty($id)) {
+	        	$this->out("Module " . $modName . " not present");
+				return;
+    		}
+    		$module->id = $id;
+    		if(!$module->saveField("status", "off")) {
+	        	$this->out("Error removing module");
+				return;
+    		}
+    		$this->out("Module " . $modName . " disabled");
+		}    		
+    }
+    
     
 	function help() {
         $this->out('Available functions:');
@@ -915,7 +1001,7 @@ class BeditaShell extends Shell {
   		$this->out(' ');
   		$this->out('2. cleanup: cleanup cahe, compile, log files');
         $this->out(' ');
-        $this->out('    Usage: cleanup [-frontend <frontend path>] [-nologs] [-media]');
+        $this->out('    Usage: cleanup [-frontend <frontend path>] [-logs] [-media]');
         $this->out(' ');
         $this->out("    -frontend \t clean files in <frontend path> [use frontend /app path]");
         $this->out("    -logs \t clean log files");
@@ -950,6 +1036,10 @@ class BeditaShell extends Shell {
         $this->out(' ');
         $this->out('8. updateVersion: updates version number from svn local info [if present]');
   		$this->out(' ');
+        $this->out('9. modules: simple operations on BEdita modules list/add/del');
+  		$this->out(' ');
+  		$this->out('   Usage: modules [-list] [-add <module-name>] [-del <module-name>]');
+        $this->out(' ');
 	}
 }
 
