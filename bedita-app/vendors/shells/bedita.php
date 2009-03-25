@@ -903,6 +903,10 @@ class BeditaShell extends Shell {
     }
 
     public function modules() {
+		if(!array_key_exists("add", $this->params) && 
+			!array_key_exists("del", $this->params)) {
+			$this->params['list'] = ""; // add default -list option
+		}
     	$module = ClassRegistry::init("Module");
 		if (isset($this->params['list'])) {
 			$mods = $module->find('all', array("conditions" => array("status" =>"on")));
@@ -931,7 +935,7 @@ class BeditaShell extends Shell {
 		}
 		if (isset($this->params['add'])) {
 			$modName = $this->params['add'];
-			if (empty($modName)) {
+			if (empty($modName) || $modName == 1) {
 	        	$this->out("module name is mandatory");
 				return;
 			}
@@ -965,12 +969,12 @@ class BeditaShell extends Shell {
 			$bePermsMod = new BePermissionModuleComponent();
 			$perms =  array(array("administrator", BePermissionModuleComponent::SWITCH_GROUP, BEDITA_PERMS_READ_MODIFY));
 			$bePermsMod->add($modName, $perms);
-	        $this->out("Module " . $modName . " added");
+	        $this->out("Module " . $modName . " added/enabled");
 		}
 		if (isset($this->params['del'])) {
 			$modName = $this->params['del'];
-			if (empty($modName)) {
-	        	$this->out("module name is mandatory");
+			if (empty($modName) || $modName == 1) {
+			   	$this->out("module name is mandatory");
 				return;
 			}
     		$id = $module->field("id", array("name" => $modName));
