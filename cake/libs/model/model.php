@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: model.php 7961 2008-12-25 23:21:36Z gwoo $ */
+/* SVN FILE: $Id: model.php 8120 2009-03-19 20:25:10Z gwoo $ */
 /**
  * Object-relational mapper.
  *
@@ -19,9 +19,9 @@
  * @package       cake
  * @subpackage    cake.cake.libs.model
  * @since         CakePHP(tm) v 0.10.0.0
- * @version       $Revision: 7961 $
+ * @version       $Revision: 8120 $
  * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2008-12-25 17:21:36 -0600 (Thu, 25 Dec 2008) $
+ * @lastmodified  $Date: 2009-03-19 13:25:10 -0700 (Thu, 19 Mar 2009) $
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -221,7 +221,7 @@ class Model extends Overloadable {
 /**
  * Holds the Behavior objects currently bound to this model.
  *
- * @var object
+ * @var BehaviorCollection
  * @access public
  */
 	var $Behaviors = null;
@@ -280,10 +280,11 @@ class Model extends Overloadable {
  * @access private
  */
 	var $__associationKeys = array(
-			'belongsTo' => array('className', 'foreignKey', 'conditions', 'fields', 'order', 'counterCache'),
-			'hasOne' => array('className', 'foreignKey','conditions', 'fields','order', 'dependent'),
-			'hasMany' => array('className', 'foreignKey', 'conditions', 'fields', 'order', 'limit', 'offset', 'dependent', 'exclusive', 'finderQuery', 'counterQuery'),
-			'hasAndBelongsToMany' => array('className', 'joinTable', 'with', 'foreignKey', 'associationForeignKey', 'conditions', 'fields', 'order', 'limit', 'offset', 'unique', 'finderQuery', 'deleteQuery', 'insertQuery'));
+		'belongsTo' => array('className', 'foreignKey', 'conditions', 'fields', 'order', 'counterCache'),
+		'hasOne' => array('className', 'foreignKey','conditions', 'fields','order', 'dependent'),
+		'hasMany' => array('className', 'foreignKey', 'conditions', 'fields', 'order', 'limit', 'offset', 'dependent', 'exclusive', 'finderQuery', 'counterQuery'),
+		'hasAndBelongsToMany' => array('className', 'joinTable', 'with', 'foreignKey', 'associationForeignKey', 'conditions', 'fields', 'order', 'limit', 'offset', 'unique', 'finderQuery', 'deleteQuery', 'insertQuery')
+	);
 /**
  * Holds provided/generated association key names and other data for all associations.
  *
@@ -1209,9 +1210,8 @@ class Model extends Overloadable {
 				foreach ($this->_schema as $field => $properties) {
 					if ($this->primaryKey === $field) {
 						$fInfo = $this->_schema[$field];
-						$isUUID = (
-							($fInfo['type'] === 'string' && $fInfo['length'] === 36) ||
-							($fInfo['type'] === 'binary' && $fInfo['length'] === 16)
+						$isUUID = ($fInfo['length'] === 36 &&
+							($fInfo['type'] === 'string' || $fInfo['type'] === 'binary')
 						);
 						if (empty($this->data[$this->alias][$this->primaryKey]) && $isUUID) {
 							list($fields[], $values[]) = array($this->primaryKey, String::uuid());
@@ -1278,10 +1278,26 @@ class Model extends Overloadable {
 					'fields' => $this->hasAndBelongsToMany[$assoc]['associationForeignKey']
 				));
 
-				$isUUID = !empty($this->{$join}->primaryKey) && (($this->{$join}->_schema[$this->{$join}->primaryKey]['type'] === 'string' && $this->{$join}->_schema[$this->{$join}->primaryKey]['length'] === 36)
-						|| ($this->{$join}->_schema[$this->{$join}->primaryKey]['type'] === 'binary' && $this->{$join}->_schema[$this->{$join}->primaryKey]['length'] === 16));
+				$isUUID = !empty($this->{$join}->primaryKey) && (
+						$this->{$join}->_schema[$this->{$join}->primaryKey]['length'] === 36 && (
+						$this->{$join}->_schema[$this->{$join}->primaryKey]['type'] === 'string' ||
+						$this->{$join}->_schema[$this->{$join}->primaryKey]['type'] === 'binary'
+					)
+				);
 
 				$newData = $newValues = array();
+				$primaryAdded = false;
+
+				$fields =  array(
+					$db->name($this->hasAndBelongsToMany[$assoc]['foreignKey']),
+					$db->name($this->hasAndBelongsToMany[$assoc]['associationForeignKey'])
+				);
+
+				$idField = $db->name($this->{$join}->primaryKey);
+				if ($isUUID && !in_array($idField, $fields)) {
+					$fields[] = $idField;
+					$primaryAdded = true;
+				}
 
 				foreach ((array)$data as $row) {
 					if ((is_string($row) && (strlen($row) == 36 || strlen($row) == 16)) || is_numeric($row)) {
@@ -1289,7 +1305,7 @@ class Model extends Overloadable {
 							$db->value($id, $this->getColumnType($this->primaryKey)),
 							$db->value($row)
 						);
-						if ($isUUID) {
+						if ($isUUID && $primaryAdded) {
 							$values[] = $db->value(String::uuid());
 						}
 						$values = join(',', $values);
@@ -1297,6 +1313,17 @@ class Model extends Overloadable {
 						unset($values);
 					} elseif (isset($row[$this->hasAndBelongsToMany[$assoc]['associationForeignKey']])) {
 						$newData[] = $row;
+					} elseif (isset($row[$join][$this->hasAndBelongsToMany[$assoc]['associationForeignKey']])) {
+						$newData[] = $row[$join];
+					}
+				}
+
+				if ($this->hasAndBelongsToMany[$assoc]['unique']) {
+					$associationForeignKey = "{$join}." . $this->hasAndBelongsToMany[$assoc]['associationForeignKey'];
+					$oldLinks = Set::extract($links, "{n}.{$associationForeignKey}");
+					if (!empty($oldLinks)) {
+ 						$conditions[$associationForeignKey] = $oldLinks;
+						$db->delete($this->{$join}, $conditions);
 					}
 				}
 
@@ -1308,23 +1335,7 @@ class Model extends Overloadable {
 					}
 				}
 
-				if (empty($newData) && $this->hasAndBelongsToMany[$assoc]['unique']) {
-					$associationForeignKey = "{$join}." . $this->hasAndBelongsToMany[$assoc]['associationForeignKey'];
-					$oldLinks = Set::extract($links, "{n}.{$associationForeignKey}");
-					if (!empty($oldLinks)) {
- 						$conditions[$associationForeignKey] = $oldLinks;
-						$db->delete($this->{$join}, $conditions);
-					}
-				}
-
 				if (!empty($newValues)) {
-					$fields =  array(
-						$db->name($this->hasAndBelongsToMany[$assoc]['foreignKey']),
-						$db->name($this->hasAndBelongsToMany[$assoc]['associationForeignKey'])
-					);
-					if ($isUUID) {
-						$fields[] = $db->name($this->{$join}->primaryKey);
-					}
 					$fields =  join(',', $fields);
 					$db->insertMulti($this->{$join}, $fields, $newValues);
 				}
@@ -1508,7 +1519,6 @@ class Model extends Overloadable {
 						case 'belongsTo':
 							if ($this->__save($this->{$association}, $values, $options)) {
 								$data[$this->alias][$this->belongsTo[$association]['foreignKey']] = $this->{$association}->id;
-								unset($data[$association]);
 							} else {
 								$validationErrors[$association] = $this->{$association}->validationErrors;
 								$validates = false;
@@ -1673,7 +1683,7 @@ class Model extends Overloadable {
 			$this->id = $id;
 
 			if (!empty($this->belongsTo)) {
-				$keys = $this->find('first', array('fields', $this->__collectForeignKeys()));
+				$keys = $this->find('first', array('fields' => $this->__collectForeignKeys()));
 			}
 
 			if ($db->delete($this)) {
@@ -1754,7 +1764,7 @@ class Model extends Overloadable {
 
 		foreach ($this->hasAndBelongsToMany as $assoc => $data) {
 			$records = $this->{$data['with']}->find('all', array(
-				'conditions' => array_merge(array($data['foreignKey'] => $id), (array) $data['conditions']),
+				'conditions' => array_merge(array($this->{$data['with']}->escapeField($data['foreignKey']) => $id)),
 				'fields' => $this->{$data['with']}->primaryKey,
 				'recursive' => -1
 			));
@@ -2333,9 +2343,15 @@ class Model extends Overloadable {
 		$this->exists();
 
 		$_validate = $this->validate;
-		if (array_key_exists('fieldList', $options) && is_array($options['fieldList']) && !empty($options['fieldList'])) {
+		$whitelist = $this->whitelist;
+
+		if (array_key_exists('fieldList', $options)) {
+			$whitelist = $options['fieldList'];
+		}
+
+		if (!empty($whitelist)) {
 			$validate = array();
-			foreach ($options['fieldList'] as $f) {
+			foreach ((array)$whitelist as $f) {
 				if (!empty($this->validate[$f])) {
 					$validate[$f] = $this->validate[$f];
 				}

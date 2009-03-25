@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: session.php 7945 2008-12-19 02:16:01Z gwoo $ */
+/* SVN FILE: $Id: session.php 8120 2009-03-19 20:25:10Z gwoo $ */
 /**
  * Session class for Cake.
  *
@@ -22,9 +22,9 @@
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v .0.10.0.1222
- * @version       $Revision: 7945 $
+ * @version       $Revision: 8120 $
  * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @lastmodified  $Date: 2009-03-19 13:25:10 -0700 (Thu, 19 Mar 2009) $
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -349,7 +349,9 @@ class CakeSession extends Object {
 		if (empty($var)) {
 			return false;
 		}
-		$this->watchKeys[] = $var;
+		if (!in_array($var, $this->watchKeys, true)) {
+			$this->watchKeys[] = $var;
+		}
 	}
 /**
  * Tells Session to stop watching a given key path
@@ -398,21 +400,11 @@ class CakeSession extends Object {
  * @access public
  */
 	function destroy() {
-		$sessionpath = session_save_path();
-		if (empty($sessionpath)) {
-			$sessionpath = "/tmp";
-		}
-
-		if (isset($_COOKIE[session_name()])) {
-			setcookie(Configure::read('Session.cookie'), '', time() - 42000, $this->path);
-		}
-
 		$_SESSION = array();
-		$file = $sessionpath . DS . "sess_" . session_id();
-		@session_destroy();
-		@unlink ($file);
 		$this->__construct($this->path);
+		$this->start();
 		$this->renew();
+		$this->_checkValid();
 	}
 /**
  * Helper method to initialize a session, based on Cake core settings.
@@ -447,7 +439,7 @@ class CakeSession extends Object {
 
 		switch (Configure::read('Session.save')) {
 			case 'cake':
-				if (!isset($_SESSION)) {
+				if (empty($_SESSION)) {
 					if ($iniSet) {
 						ini_set('session.use_trans_sid', 0);
 						ini_set('url_rewriter.tags', '');
@@ -462,7 +454,7 @@ class CakeSession extends Object {
 				}
 			break;
 			case 'database':
-				if (!isset($_SESSION)) {
+				if (empty($_SESSION)) {
 					if (Configure::read('Session.table') === null) {
 						trigger_error(__("You must set the all Configure::write('Session.*') in core.php to use database storage"), E_USER_WARNING);
 						exit();
@@ -489,7 +481,7 @@ class CakeSession extends Object {
 													array('CakeSession', '__gc'));
 			break;
 			case 'php':
-				if (!isset($_SESSION)) {
+				if (empty($_SESSION)) {
 					if ($iniSet) {
 						ini_set('session.use_trans_sid', 0);
 						ini_set('session.name', Configure::read('Session.cookie'));
@@ -499,7 +491,7 @@ class CakeSession extends Object {
 				}
 			break;
 			case 'cache':
-				if (!isset($_SESSION)) {
+				if (empty($_SESSION)) {
 					if (!class_exists('Cache')) {
 						uses('Cache');
 					}
@@ -521,7 +513,7 @@ class CakeSession extends Object {
 													array('CakeSession', '__gc'));
 			break;
 			default:
-				if (!isset($_SESSION)) {
+				if (empty($_SESSION)) {
 					$config = CONFIGS . Configure::read('Session.save') . '.php';
 
 					if (is_file($config)) {
@@ -538,7 +530,7 @@ class CakeSession extends Object {
  */
 	function __startSession() {
 		if (headers_sent()) {
-			if (!isset($_SESSION)) {
+			if (empty($_SESSION)) {
 				$_SESSION = array();
 			}
 			return false;
@@ -581,10 +573,8 @@ class CakeSession extends Object {
 				$this->__setError(1, 'Session Highjacking Attempted !!!');
 			}
 		} else {
-			srand ((double)microtime() * 1000000);
 			$this->write('Config.userAgent', $this->_userAgent);
 			$this->write('Config.time', $this->sessionTime);
-			$this->write('Config.rand', mt_rand());
 			$this->write('Config.timeout', 10);
 			$this->valid = true;
 			$this->__setError(1, 'Session is valid');
@@ -603,7 +593,7 @@ class CakeSession extends Object {
 			if (empty($sessionpath)) {
 				$sessionpath = "/tmp";
 			}
-			if (isset($_COOKIE[session_name()])) {
+			if (session_id() != "" || isset($_COOKIE[session_name()])) {
 				setcookie(Configure::read('Session.cookie'), '', time() - 42000, $this->path);
 			}
 			session_regenerate_id(true);

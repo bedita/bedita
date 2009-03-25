@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: multibyte.php 7945 2008-12-19 02:16:01Z gwoo $ */
+/* SVN FILE: $Id: multibyte.php 8004 2009-01-16 20:15:21Z gwoo $ */
 /**
  * Multibyte handling methods.
  *
@@ -18,9 +18,9 @@
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 1.2.0.6833
- * @version       $Revision: 7945 $
+ * @version       $Revision: 8004 $
  * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @lastmodified  $Date: 2009-01-16 12:15:21 -0800 (Fri, 16 Jan 2009) $
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 if (function_exists('mb_internal_encoding')) {
@@ -966,6 +966,7 @@ class Multibyte extends Object {
 		}
 		$string = array_values($string);
 
+		$value = array();
 		for ($i = 0; $i < $length; $i++) {
 			$value[] = $string[$i];
 		}

@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: validation.php 7961 2008-12-25 23:21:36Z gwoo $ */
+/* SVN FILE: $Id: validation.php 8004 2009-01-16 20:15:21Z gwoo $ */
 /**
  * Validation Class.  Used for validation of model data
  *
@@ -19,9 +19,9 @@
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 1.2.0.3830
- * @version       $Revision: 7961 $
+ * @version       $Revision: 8004 $
  * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2008-12-25 17:21:36 -0600 (Thu, 25 Dec 2008) $
+ * @lastmodified  $Date: 2009-01-16 12:15:21 -0800 (Fri, 16 Jan 2009) $
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -632,7 +632,7 @@ class Validation extends Object {
 	function multiple($check, $options = array()) {
 		$defaults = array('in' => null, 'max' => null, 'min' => null);
 		$options = array_merge($defaults, $options);
-		$check = array_filter($check);
+		$check = array_filter((array)$check);
 		if (empty($check)) {
 			return false;
 		}

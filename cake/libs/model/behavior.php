@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: behavior.php 7945 2008-12-19 02:16:01Z gwoo $ */
+/* SVN FILE: $Id: behavior.php 8120 2009-03-19 20:25:10Z gwoo $ */
 /**
  * Model behaviors base class.
  *
@@ -19,9 +19,9 @@
  * @package       cake
  * @subpackage    cake.cake.libs.model
  * @since         CakePHP(tm) v 1.2.0.0
- * @version       $Revision: 7945 $
+ * @version       $Revision: 8120 $
  * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @lastmodified  $Date: 2009-03-19 13:25:10 -0700 (Thu, 19 Mar 2009) $
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -205,11 +205,11 @@ class ModelBehavior extends Object {
  * @subpackage    cake.cake.libs.model
  */
 class BehaviorCollection extends Object {
-
 /**
  * Stores a reference to the attached name
  *
- * @var object
+ * @var string
+ * @access public
  */
 	var $modelName = null;
 /**
@@ -273,10 +273,19 @@ class BehaviorCollection extends Object {
 		}
 
 		if (!isset($this->{$name})) {
-			if (PHP5) {
-				$this->{$name} = new $class;
+			if (ClassRegistry::isKeySet($class)) {
+				if (PHP5) {
+					$this->{$name} = ClassRegistry::getObject($class);
+				} else {
+					$this->{$name} =& ClassRegistry::getObject($class);
+				}
 			} else {
-				$this->{$name} =& new $class;
+				if (PHP5) {
+					$this->{$name} = new $class;
+				} else {
+					$this->{$name} =& new $class;
+				}
+				ClassRegistry::addObject($class, $this->{$name});
 			}
 		} elseif (isset($this->{$name}->settings) && isset($this->{$name}->settings[$this->modelName])) {
 			if ($config !== null && $config !== false) {
@@ -285,6 +294,9 @@ class BehaviorCollection extends Object {
 				$config = array();
 			}
 		}
+		if (empty($config)) {
+			$config = array();
+		}
 		$this->{$name}->setup(ClassRegistry::getObject($this->modelName), $config);
 
 		foreach ($this->{$name}->mapMethods as $method => $alias) {
@@ -292,11 +304,18 @@ class BehaviorCollection extends Object {
 		}
 		$methods = get_class_methods($this->{$name});
 		$parentMethods = array_flip(get_class_methods('ModelBehavior'));
-		$callbacks = array('setup' => true, 'cleanup' => true, 'beforeFind' => true, 'afterFind' => true, 'beforeSave' => true, 'afterSave' => true, 'beforeDelete' => true, 'afterDelete' => true, 'afterError' => true);
+		$callbacks = array(
+			'setup', 'cleanup', 'beforeFind', 'afterFind', 'beforeSave', 'afterSave',
+			'beforeDelete', 'afterDelete', 'afterError'
+		);
 
 		foreach ($methods as $m) {
 			if (!isset($parentMethods[$m])) {
-				if ($m[0] != '_' && !array_key_exists($m, $this->__methods) && !isset($callbacks[$m])) {
+				$methodAllowed = (
+					$m[0] != '_' && !array_key_exists($m, $this->__methods) &&
+					!in_array($m, $callbacks)
+				);
+				if ($methodAllowed) {
 					$this->__methods[$m] = array($m, $name);
 				}
 			}
@@ -360,9 +379,9 @@ class BehaviorCollection extends Object {
  * Gets the list of currently-enabled behaviors, or, the current status of a single behavior
  *
  * @param string $name Optional.  The name of the behavior to check the status of.  If omitted,
- *						returns an array of currently-enabled behaviors
+ *   returns an array of currently-enabled behaviors
  * @return mixed If $name is specified, returns the boolean status of the corresponding behavior.
- *               Otherwise, returns an array of all enabled behaviors.
+ *   Otherwise, returns an array of all enabled behaviors.
  * @access public
  */
 	function enabled($name = null) {
@@ -460,9 +479,9 @@ class BehaviorCollection extends Object {
  * Gets the list of attached behaviors, or, whether the given behavior is attached
  *
  * @param string $name Optional.  The name of the behavior to check the status of.  If omitted,
- *						returns an array of currently-attached behaviors
+ *   returns an array of currently-attached behaviors
  * @return mixed If $name is specified, returns the boolean status of the corresponding behavior.
- *               Otherwise, returns an array of all attached behaviors.
+ *    Otherwise, returns an array of all attached behaviors.
  * @access public
  */
 	function attached($name = null) {

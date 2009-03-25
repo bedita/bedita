@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: cake_reporter.php 7945 2008-12-19 02:16:01Z gwoo $ */
+/* SVN FILE: $Id: cake_reporter.php 8004 2009-01-16 20:15:21Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -19,9 +19,9 @@
  * @package       cake
  * @subpackage    cake.cake.tests.libs
  * @since         CakePHP(tm) v 1.2.0.4433
- * @version       $Revision: 7945 $
+ * @version       $Revision: 8004 $
  * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @lastmodified  $Date: 2009-01-16 12:15:21 -0800 (Fri, 16 Jan 2009) $
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 /**
@@ -54,7 +54,6 @@ class CakeHtmlReporter extends SimpleReporter {
  */
 	function paintHeader($testName) {
 		$this->sendNoCacheHeaders();
-		ob_start();
 		echo "<h2>$testName</h2>\n";
 		echo "<ul class='tests'>\n";
 	}
@@ -82,7 +81,6 @@ class CakeHtmlReporter extends SimpleReporter {
  */
 	function paintFooter($test_name) {
 		$colour = ($this->getFailCount() + $this->getExceptionCount() > 0 ? "red" : "green");
-		ob_start();
 		echo "</ul>\n";
 		echo "<div style=\"";
 		echo "padding: 8px; margin: 1em 0; background-color: $colour; color: white;";
@@ -104,7 +102,6 @@ class CakeHtmlReporter extends SimpleReporter {
  * @access public
  */
 	function paintFail($message) {
-		ob_start();
 		parent::paintFail($message);
 		echo "<li class='fail'>\n";
 		echo "<span>Failed</span>";
@@ -123,7 +120,6 @@ class CakeHtmlReporter extends SimpleReporter {
  * @access public
  */
 	function paintPass($message) {
-		ob_start();
 		parent::paintPass($message);
 
 		if ($this->_show_passes) {
@@ -142,7 +138,6 @@ class CakeHtmlReporter extends SimpleReporter {
  * @access public
  */
 	function paintError($message) {
-		ob_start();
 		parent::paintError($message);
 		echo "<li class='error'>\n";
 		echo "<span>Error</span>";
@@ -158,7 +153,6 @@ class CakeHtmlReporter extends SimpleReporter {
  * @access public
  */
 	function paintException($exception) {
-		ob_start();
 		parent::paintException($exception);
 		echo "<li class='fail'>\n";
 		echo "<span>Exception</span>";
@@ -178,7 +172,6 @@ class CakeHtmlReporter extends SimpleReporter {
  * @access public
  */
 	function paintSkip($message) {
-		ob_start();
 		parent::paintSkip($message);
 		echo "<li class='skipped'>\n";
 		echo "<span>Skipped</span> ";
@@ -191,7 +184,6 @@ class CakeHtmlReporter extends SimpleReporter {
  * @access public
  */
 	function paintFormattedMessage($message) {
-		ob_start();
 		echo '<pre>' . $this->_htmlEntities($message) . '</pre>';
 	}
 /**

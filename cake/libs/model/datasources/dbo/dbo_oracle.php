@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_oracle.php 7945 2008-12-19 02:16:01Z gwoo $ */
+/* SVN FILE: $Id: dbo_oracle.php 8004 2009-01-16 20:15:21Z gwoo $ */
 /**
  * Oracle layer for DBO.
  *
@@ -19,9 +19,9 @@
  * @package       cake
  * @subpackage    cake.cake.libs.model.datasources.dbo
  * @since         CakePHP v 1.2.0.4041
- * @version       $Revision: 7945 $
+ * @version       $Revision: 8004 $
  * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2008-12-18 20:16:01 -0600 (Thu, 18 Dec 2008) $
+ * @lastmodified  $Date: 2009-01-16 12:15:21 -0800 (Fri, 16 Jan 2009) $
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -454,7 +454,6 @@ class DboOracle extends DboSource {
 		while($r = $this->fetchRow()) {
 			$sources[] = strtolower($r[0]['name']);
 		}
-		parent::listSources($sources);
 		return $sources;
 	}
 /**
@@ -835,7 +834,8 @@ class DboOracle extends DboSource {
 
 		switch($column) {
 			case 'date':
-				$data = date('Y-m-d H:i:s', strtotime($data));
+				$date = new DateTime($data);
+				$data = $date->format('Y-m-d H:i:s');
 				$data = "TO_DATE('$data', 'YYYY-MM-DD HH24:MI:SS')";
 			break;
 			case 'integer' :
@@ -975,7 +975,7 @@ class DboOracle extends DboSource {
 					$ins = array_chunk($ins, 1000);
 					foreach ($ins as $i) {
 						$q = str_replace('{$__cakeID__$}', join(', ', $i), $query);
-						$q = str_replace('=  (', 'IN (', $q);
+						$q = str_replace('= (', 'IN (', $q);
 						$res = $this->fetchAll($q, $model->cacheQueries, $model->alias);
 						$fetch = array_merge($fetch, $res);
 					}
@@ -1019,7 +1019,7 @@ class DboOracle extends DboSource {
 					$ins = array_chunk($ins, 1000);
 					foreach ($ins as $i) {
 						$q = str_replace('{$__cakeID__$}', '(' .join(', ', $i) .')', $query);
-						$q = str_replace('=  (', 'IN (', $q);
+						$q = str_replace('= (', 'IN (', $q);
 						$q = str_replace('  WHERE 1 = 1', '', $q);
 
 
