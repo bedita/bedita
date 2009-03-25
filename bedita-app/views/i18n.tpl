@@ -14,7 +14,7 @@ Strings to translate not present in .tpl/.php files
 {t}bibliographies{/t}
 {t}webmarks{/t}
 {t}books{/t}
-{t}forms{/t}
+{t}questionnaires{/t}
 {t}addressbook{/t}
 {t}newsletter{/t}
 {t}statistics{/t}
