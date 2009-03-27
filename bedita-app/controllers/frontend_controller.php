@@ -321,7 +321,10 @@ abstract class FrontendController extends AppController {
 			$sectionsTree = $sections['items'];
 		} else {
 			$this->baseLevel = true;
+			$itemsByType = $this->sectionOptions["itemsByType"];
+			$this->sectionOptions["itemsByType"] = false;
 			$sectionsTree = $this->loadSectionsTree($conf->frontendAreaId,$extract_all) ;
+			$this->sectionOptions["itemsByType"] = $itemsByType;
 			$this->baseLevel = false;
 		}
 		$i=0;
@@ -329,7 +332,7 @@ abstract class FrontendController extends AppController {
 		foreach($sectionsTree as $k => $v) {
 			$urlset[$i] = array();
 			$urlset[$i]['loc'] = $public_url."/".$v['nickname'];
-			//$urlset['lastmode'] = '';
+			//$urlset['lastmode'] = $this->BeTree->getChildren($id, null, $filter, "title", true, $page, $dim=1);
 			//$urlset[$i]['changefreq'] = 'always'; /*always,hourly,daily,weekly,monthly,yearly,never*/
 			//$urlset[$i]['priority'] = '0.5';
 			$i++;
