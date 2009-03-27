@@ -399,6 +399,18 @@ class BeFileHandlerComponent extends Object {
 		
 	}
 	
+	public function getMimeType($file) {
+		$mime_type = false;
+		if (class_exists("finfo")) {
+			$file_info = new finfo(FILEINFO_MIME);
+			$mime_type = $file_info->buffer(file_get_contents($file)); 
+		} else {
+			// deprecated function
+			$mime_type = mime_content_type($file);
+		}
+		return $mime_type;
+	}
+	
 	/**
 	 * Crea target con source (file temporaneo) con l'oggetto transazionale
 	 *

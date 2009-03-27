@@ -1560,3 +1560,26 @@ INPUT[type=button], INPUT[type=submit]  {
 
 
 
+.fileUploadQueueItem {
+	font: 11px Verdana, Geneva, sans-serif;
+	background-color: #F5F5F5;
+	border: 3px solid #E5E5E5;
+	margin-top: 5px;
+	padding: 10px;
+	width: 300px;
+}
+.fileUploadQueueItem .cancel {
+	float: right;
+}
+.fileUploadProgress {
+	background-color: #FFFFFF;
+	border-top: 1px solid #808080;
+	border-left: 1px solid #808080;
+	border-right: 1px solid #C5C5C5;
+	border-bottom: 1px solid #C5C5C5;
+	margin-top: 10px;
+	width: 100%;
+}
+.fileUploadProgressBar {
+	background-color: #0099FF;
+}

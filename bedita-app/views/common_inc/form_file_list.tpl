@@ -145,7 +145,8 @@ $(document).ready(function()
 <div class="htabcontainer" id="addmultimediacontents">
 
 	<div class="htabcontent" id="uploadItems">
-		{include file="../common_inc/form_upload_ajax.tpl"}
+		{*include file="../common_inc/form_upload_ajax.tpl"*}
+		{include file="../common_inc/form_upload_multi.tpl"}
 	</div>
 
 	

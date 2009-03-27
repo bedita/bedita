@@ -107,7 +107,8 @@ class StreamsController extends AppController {
 		}
 		$rec = $this->BEObject->recursive ;
 		$this->BEObject->recursive = -1 ;
-		if(!($ret = $this->BEObject->read('object_type_id', $id))) throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
+		if(!($ret = $this->BEObject->read('object_type_id', $id))) 
+			throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
 		$this->BEObject->recursive = $rec ;
 		$modelClass = $conf->objectTypes[$ret["BEObject"]["object_type_id"]]["model"];
 
@@ -124,7 +125,7 @@ class StreamsController extends AppController {
 		$this->set('imageUrl',	@$imageURL);
 		$this->set('priority',	@$priority);
 		$this->set('relation',	@$relation);
-		$this->layout = "empty" ;
+		$this->layout = "ajax" ;
 	}
 	
 	/**
