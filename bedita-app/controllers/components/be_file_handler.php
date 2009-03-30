@@ -404,7 +404,7 @@ class BeFileHandlerComponent extends Object {
 		if (class_exists("finfo")) {
 			$file_info = new finfo(FILEINFO_MIME);
 			$mime_type = $file_info->buffer(file_get_contents($file)); 
-		} else {
+		} elseif (function_exists('mime_content_type')) {
 			// deprecated function
 			$mime_type = mime_content_type($file);
 		}
