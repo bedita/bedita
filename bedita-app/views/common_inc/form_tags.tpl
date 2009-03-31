@@ -27,23 +27,18 @@ $(document).ready(function(){
 		}
 	});	
 });
-
-
-
-
 //-->
 </script>
 {/literal}
 
 <div class="tab"><h2>{t}Tags{/t}</h2></div>
 <fieldset id="tags">
-	
 
 	<label>{t}add comma separated words{/t}:</label>
 	<br/>
 	
 	{strip}
-	<textarea name="tags" class="autogrowarea" style="display:block; width:470px" id="tagsArea">
+	<textarea name="tags" class="autogrowarea" style="display:block; margin-bottom:10px; width:470px" id="tagsArea">
 	{if !empty($object.Tag)}
 		{foreach from=$object.Tag item="tag" name="ft"}
 			{$tag.label}{if !$smarty.foreach.ft.last}, {/if}
@@ -56,13 +51,8 @@ $(document).ready(function(){
 		{t}Show system tags{/t}
 	</a>
 	
-	
-	<hr />
-	
 	<div id="loadingTags" class="generalLoading" title="{t}Loading data{/t}">&nbsp;</div>
 	
-	<div id="listExistingTags" class="tag graced" style="display: none; text-align:justify;"></div>
-
+	<div id="listExistingTags" class="tag graced" style="display: none; margin-top:5px; text-align:justify;"></div>
 
 </fieldset>
-

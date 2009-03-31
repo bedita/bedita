@@ -13,6 +13,9 @@ $(document).ready(function() {
 		multi: true,
 		auto: true,
 		'cancelImg': webroot + 'img/uploadCancel.png',
+		'buttonImg': webroot + 'img/multiupload-browse.png',
+		width: 124,
+		buttonText : 'browssssse',
 		displayData: 'percentage',
 		onComplete: completeUpload
 	});
@@ -35,5 +38,6 @@ function completeUpload(event, queueID, fileObj,response) {
 //-->
 </script>
 
-
+<div style="padding:20px 0px 0px 20px">
 <input type="file" name="Filedata" id="inputFiledata" />
+</div>
