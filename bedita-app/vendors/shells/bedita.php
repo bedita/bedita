@@ -991,6 +991,44 @@ class BeditaShell extends Shell {
 		}    		
     }
     
+    public function mimeTypes() {
+    	$mimeFile = null;
+    	if (isset($this->params['f'])) {
+            $mimeFile = $this->params['f'];
+    	} else {
+    		$this->out("mime.types file is mandatory, bye");
+    	}
+    	if(!file_exists($mimeFile)) {
+    		$this->out("$mimeFile not found, bye");
+    		return;
+    	}
+		$mimeArray = array();
+    	$lines = file($mimeFile);
+		foreach ($lines as $l) {
+			$l = trim($l);
+			if(!empty($l) && $l[0] !== "#") {
+				$fields = split(' ', $l);
+				if(count($fields) > 1) {
+					for ($i = 1 ; $i < count($fields); $i++) {
+						$k = strtolower($fields[$i]);
+						if(!empty($k)) {
+							$mimeArray[$k] = $fields[0];
+						}
+					}
+				}
+			}
+		}
+		$beditaMimeFile = APP . 'config' . DS . 'mime.types.php';
+		$handle = fopen($beditaMimeFile, 'w');
+		fwrite($handle, "<?php\n\$config['mimeTypes'] = array(\n");
+		ksort($mimeArray);
+		foreach ($mimeArray as $k => $v) {
+			fwrite($handle, "  \"$k\" => \"$v\",\n");
+		}
+		fwrite($handle, ");\n?>");
+		fclose($handle);
+		$this->out("Mime types updated to: $beditaMimeFile");
+    }
     
 	function help() {
         $this->out('Available functions:');
@@ -1043,6 +1081,10 @@ class BeditaShell extends Shell {
         $this->out('9. modules: simple operations on BEdita modules list/add/del');
   		$this->out(' ');
   		$this->out('   Usage: modules [-list] [-add <module-name>] [-del <module-name>]');
+        $this->out(' ');
+        $this->out('10. mimeTypes: update config/mime.types.php from standard mime.types file');
+  		$this->out(' ');
+  		$this->out('   Usage: mimeTypes -f <mime.types-file>');
         $this->out(' ');
 	}
 }
