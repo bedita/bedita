@@ -17,6 +17,6 @@
 <div id="footerPage">
 </div>
 
-{$cakeDebug}
+{if empty($conf->staging) && !empty($publication.stats_code)}{$publication.stats_code}{/if}
 </body>
 </html>

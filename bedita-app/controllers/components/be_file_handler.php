@@ -399,15 +399,25 @@ class BeFileHandlerComponent extends Object {
 		
 	}
 	
-	public function getMimeType($file) {
-		$mime_type = false;
+	public function getMimeType($data) {
 		if (class_exists("finfo")) {
 			$file_info = new finfo(FILEINFO_MIME);
-			$mime_type = $file_info->buffer(file_get_contents($file)); 
+			$mime_type = $file_info->buffer(file_get_contents($data["tmp_name"])); 
 		} elseif (function_exists('mime_content_type')) {
 			// deprecated function
-			$mime_type = mime_content_type($file);
+			$mime_type = mime_content_type($data["tmp_name"]);
+		} else {
+			include_once APP_PATH.'config'.DS.'mime.types.php';
+			$extension = strtolower( substr( $data["name"], strrpos($data["name"],".")+1 ) );
+			if (!empty($extension) && array_key_exists($extension,$config["mimeTypes"])) {
+				$mime_type = $config["mimeTypes"][$extension];
+			}
 		}
+		
+		// if not retrieved mime type from file, get mime type passed from browser
+		if (empty($mime_type))
+			$mime_type = $data['type'];
+		
 		return $mime_type;
 	}
 	
