@@ -74,7 +74,7 @@ abstract class FrontendController extends AppController {
 			$this->status[] = "draft";
 			
 		// check publication status		
-		$pubStatus = $this->BEObject->field("status", array("nickname" => Configure::read("frontendNickname")));
+		$pubStatus = $this->BEObject->field("status", array("id" => Configure::read("frontendAreaId")));
 				
 		if ($pubStatus != "on") {
 			$this->status = array('on', 'off', 'draft');

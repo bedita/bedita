@@ -50,6 +50,17 @@ INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUE
 ('25','comments', 'comments', 'comments', 'on', '7'),
 ('26','multimedia', 'multimedia', 'multimedia', 'on', '4');
 
+-- --------------------------------------
+-- default empty frontend/publishing
+-- --------------------------------------
+
+INSERT INTO `objects` (`id`, `object_type_id`, `status`, `title`, `nickname`, `user_created`, `user_modified`) 
+VALUES (1, 1, 'on', 'Publishing', 'publishing', 1, 1);
+INSERT INTO `areas` (`id`, `public_name`) 
+VALUES (1, 'bedita publishing');
+INSERT INTO `trees` (`id`, `parent_id`, `path`, `parent_path`, `priority`) VALUES
+(1, NULL, '/1', '/', 1);
+
 
 -- administrator permissions
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
