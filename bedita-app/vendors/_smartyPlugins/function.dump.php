@@ -14,7 +14,7 @@
 function smarty_function_dump($params, &$smarty)
 {
 	$vars = &$smarty->get_template_vars();
-	if (!empty($params["var"])) {
+	if (isset($params["var"])) {
 		$vars = &$params["var"] ;
 	}
 	
