@@ -5,6 +5,7 @@
 <!--
 var webroot = "{$html->webroot}";
 var multiUploadUrl = "{$html->url('/')}files/upload";
+var u_id = "{$session->read("BEAuthUser.id")}";
 {literal}
 $(document).ready(function() {
 	$('#inputFiledata').fileUpload({
@@ -17,7 +18,8 @@ $(document).ready(function() {
 		width: 124,
 		buttonText : 'browssssse',
 		displayData: 'percentage',
-		onComplete: completeUpload
+		onComplete: completeUpload,
+		scriptData: {userid: u_id}
 	});
 });
 

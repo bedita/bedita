@@ -37,8 +37,11 @@ class FilesController extends AppController {
 	function upload () {
 		$this->layout = "ajax";
 		try {
+			$data=array();
+			if (!empty($_GET["userid"]))
+				$data = array("user_created" => $_GET["userid"], "user_modified" => $_GET["userid"]);
 			$this->Transaction->begin() ;
-			$id = $this->BeUploadToObj->upload() ;
+			$id = $this->BeUploadToObj->upload($data) ;
 			$this->Transaction->commit();
 			$response = array("fileId" => $id, "fileUploaded" => true);
 			$this->set("response", $id);			
