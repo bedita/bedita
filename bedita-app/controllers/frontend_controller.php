@@ -761,12 +761,13 @@ abstract class FrontendController extends AppController {
 		$path = $this->Tree->field("parent_path", array("id" => $object_id));
 		$parents = explode("/", trim($path,"/"));
 		if (!empty($parents[0])) {
+			$oldBaseLevel = $this->baseLevel; 
 			$this->baseLevel = true;
 			foreach ($parents as $p) {
 				if ($p != $this->publication["id"])
 					$pathArr[$p] = $this->loadObj($p);
 			}
-			$this->baseLevel = false;
+			$this->baseLevel = $oldBaseLevel;
 		}
 		return $pathArr;
 	}
