@@ -10,10 +10,10 @@
 	<th>{t}status{/t}</th>
 </tr>
 {foreach from=$object.LangText.status item=i key=k}
-<tr class="rowList" rel="{$html->url('/translations/view/')}{$object.id}/{$k}">
-	<td>{$conf->langOptions[$k]}</td>
-	<td>{$object.LangText.title.$k|default:""}</td>
-	<td>{$i}</td>
+<tr>
+	<td><a href="{$html->url('/translations/view/')}{$object.id}/{$k}">{$conf->langOptions[$k]}</a></td>
+	<td><a href="{$html->url('/translations/view/')}{$object.id}/{$k}">{$object.LangText.title.$k|default:""}</a></td>
+	<td><a href="{$html->url('/translations/view/')}{$object.id}/{$k}">{$i}</a></td>
 </tr>
 {/foreach}
 </table>
