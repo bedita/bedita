@@ -1106,7 +1106,6 @@ INPUT.priority {
 ...........................................*/
 
 A.BEbutton  {
-	background-color:#F2F2F2;
 	padding:4px 8px 4px 8px !important;
 }
 
@@ -1120,12 +1119,15 @@ A.BEbutton  {
 .bemaincommands, .modalbutton, .BEbutton, input[type=submit], input[type=button] {
 
 	/* background:#F2F2F2 url(../images/BEbutton_dark.gif) repeat-x scroll left top; */
-	background-color:#F2F2F2
+	background-color:#F2F2F2;
 	line-height:1.2em;
 	border-color:#BBBBBB;
 	color:#333;
 	
 	-moz-border-radius:9px;
+	border-radius : 9px; 
+	-webkit-border-radius : 9px;
+	-khtml-border-radius: 9px;
 	-moz-box-sizing:content-box;
 	
 	border-style:solid;
