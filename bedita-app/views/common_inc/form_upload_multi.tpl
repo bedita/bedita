@@ -31,6 +31,7 @@ function completeUpload(event, queueID, fileObj,response) {
 	} else {
 		objids = new Array();
 		objids[0] = response;
+		$("#loading").show();
 		commitUploadItem(objids, "attach");
 		return true;
 	}
