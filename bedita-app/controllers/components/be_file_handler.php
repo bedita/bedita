@@ -400,9 +400,12 @@ class BeFileHandlerComponent extends Object {
 	}
 	
 	public function getMimeType($data) {
-		if (class_exists("finfo")) {
-			$file_info = new finfo(FILEINFO_MIME);
-			$mime_type = $file_info->buffer(file_get_contents($data["tmp_name"])); 
+		if (function_exists('finfo_file')) {
+			$handle = finfo_open(FILEINFO_MIME);
+			$mime_type = finfo_file($handle,$data["tmp_name"]);
+		} elseif (function_exists('mime_content_type')) {
+			// deprecated function
+			$mime_type = mime_content_type($data["tmp_name"]);
 		} else {
 			include_once APP_PATH.'config'.DS.'mime.types.php';
 			$extension = strtolower( substr( $data["name"], strrpos($data["name"],".")+1 ) );
