@@ -387,7 +387,7 @@ $config["cfgOneWayRelation"] = array();
 
 // Default reserved words [avoided in nickname creation]
 $config["defaultReservedWords"] = array("section", "content", "rss", "feed", 
-	"download", "xml", "xmlobject", "sitemap", "sitemap.xml", "sitemap_xml");
+	"download", "xml", "xmlobject", "sitemap", "sitemap.xml", "sitemap_xml", "json");
 
 // Cfg reserved words (as in local cfg)
 $config["cfgReservedWords"] = array();

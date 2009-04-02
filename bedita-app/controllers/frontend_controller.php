@@ -382,6 +382,20 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
+	 * output a json object of returned array by section or content method
+	 * @param $name
+	 * @return unknown_type $name, nickname or id
+	 */
+	public function json($name) {
+		$this->route($name);
+		header("Content-Type: application/json");
+		$this->view = 'View';
+		$this->layout = null;
+		$this->action = "json";
+		$this->set("data", $this->viewVars["section"]);
+	}
+	
+	/**
 	 * output an xml of returned array by section or content method
 	 *
 	 * passing a "format" named parameters in the url obtain an xml "attributes" format or an xml "tags" format
