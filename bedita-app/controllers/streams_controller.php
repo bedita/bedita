@@ -97,8 +97,10 @@ class StreamsController extends AppController {
 	 */
 	public function get_item_form_by_id($id =null) {	
 		$this->_get_item_form($this->params['form']['id']) ;
+		if (!empty($this->params['form']['template'])) {
+			$this->render(null,null,VIEWS.$this->params['form']['template']);
+		}
 	}
-
 	
 	private function _get_item_form($id) {
 		$conf  = Configure::getInstance() ;

@@ -4,6 +4,33 @@
 
 {*$javascript->link("jquery/jquery.MultiFile.pack", false)*}
 
+<script type="text/javascript">
+	
+	
+var urlGetObj		= '{$html->url("/streams/get_item_form_by_id")}' ;
+var containerItem = "#multimediaItems";
+
+{literal}
+function commitUploadItem(IDs, rel) {
+
+	//var currClass =  $(".multimediaitem:last").attr("class");
+	//alert(currClass);
+	var emptyDiv = "<div  class='multimediaitem itemBox gold'><\/div>";
+	for(var i=0 ; i < IDs.length ; i++)
+	{
+		var id = escape(IDs[i]) ;
+
+		$(emptyDiv).load(
+			urlGetObj, {'id': id, 'relation':rel, 'template':'common_inc/file_item.tpl'}, function (responseText, textStatus, XMLHttpRequest)
+			{
+				$("#loading").hide();
+				$(containerItem).append(this); 
+			}
+		)
+	}	
+}
+{/literal}
+</script>
 </head>
 
 <body>
@@ -24,14 +51,11 @@
 
 	<div class="tab"><h2>{t}Add multiple items{/t}</h2></div>
 	<div>
-		
-		<input type="file" class="multi"/>
-		<hr />
-		<input type="submit" value="  {t}add{/t}   " />
-	
+		<div id="loading" style="clear:both" class="multimediaitem itemBox small">&nbsp;</div>
+		<div id="multimediaItems"></div>
+			
+		<div style="clear:both;">{include file="../common_inc/form_upload_multi.tpl"}</div>		
 	</div>
-
-
 	
 </div>
 
