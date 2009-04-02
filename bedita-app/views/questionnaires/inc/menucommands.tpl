@@ -14,13 +14,22 @@ Menu a SX valido per tutte le pagine del controller.
 	<div class="modules">
 		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
 	</div> 
+
+	{if !empty($method) && $method == "viewResults"}
 	
-	{if !empty($method) && $method != "index" && $method != "indexQuestions"}
+	
+	{elseif !empty($method) && $method != "index" && $method != "indexQuestions"}
 	
 	<div class="insidecol">
+		
 		<input class="bemaincommands" type="button" value=" {t}save{/t} " name="save" id="saveBEObject" />
 		<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" id="cloneBEObject" />
 		<input class="bemaincommands" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" />
+		
+		{if !empty($object)}
+		<hr />
+		<input class="bemaincommands" onClick="window.location.href='{$html->url('index_sessions_results/')}'" type="button" value="{t}view results{/t}" />
+		{/if}
 	
 		{include file="../common_inc/prevnext.tpl"}
 
@@ -84,11 +93,6 @@ Menu a SX valido per tutte le pagine del controller.
 				</li>
 				
 			</ul>
-
-
-
-
-
 
 
 	{/if}

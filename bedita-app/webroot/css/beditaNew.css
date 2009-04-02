@@ -20,7 +20,7 @@ http://www.chialab.it 2007
 
 ...........................................*/
 
-* { margin:0; padding:0; list-style:none;}
+* { margin:0; padding:0;}
 
 BODY, .bodybg {
 	background:#cccccc url(../img/sfomain.png) repeat-x fixed;
@@ -40,6 +40,8 @@ a:focus, a:active {outline:0px;}
 a:link, a:visited, a:active {text-decoration: none; }
 
 a:hover {text-decoration: none;}
+
+UL {list-style:none;}
 
 UL UL {margin-left:20px;}
 
@@ -179,6 +181,14 @@ UL UL {margin-left:20px;}
 
 ...........................................*/
 
+
+/*
+@font-face{
+font-family:'BEfont';
+src: url('../fonts/BellGothicStd-Black.otf') format('opentype');
+}
+*/
+
 BODY {font-size:12px; font-family: "Arial", "Helvetica", sans-serif; line-height:1.5em;}
 
 H1 {font:normal 2em "Georgia", "Times New Roman", Times, serif; line-height:1em}
@@ -282,7 +292,7 @@ UL.modules {
 .bibliographies, .bibliography {background-color:#999966 !important;}
 .ecommerce 					{background-color:#771717 !important;}
 .webmark, .webmarks 		{background-color:#6600cc !important;}
-.form, .forms 				{background-color:#801f2b !important;}
+.questionnaires, .questions, .question	{background-color:#801f2b !important;}
 .bookings, .booking 		{background-color:#99CC33 !important;}
 .faq, .faqs 				{background-color:#CC3333 !important;}
 .print 						{background-color:#CC9900 !important;}

@@ -39,6 +39,19 @@ class QuestionnairesController extends ModulesController {
 		$this->viewObject($this->Document, $id);
 	 }
 
+
+	public function index_sessions_results() {
+
+	}
+
+	public function view_session_results() {
+
+	}
+
+	public function view_sessions_average() {
+
+	}
+
 	 public function view_question($id = null) {
 	 	$this->viewObject($this->Document, $id);
 
