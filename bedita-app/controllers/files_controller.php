@@ -32,7 +32,7 @@ class FilesController extends AppController {
 	
 	var $helpers 	= array('Html');
 	var $uses		= array('Stream','BEObject') ;
-	var $components = array('Transaction', 'BeUploadToObj');
+	var $components = array('Transaction', 'BeUploadToObj', 'RequestHandler');
 
 	function upload () {
 		$this->layout = "ajax";
@@ -118,7 +118,8 @@ class FilesController extends AppController {
 	}
 
 	function beditaBeforeFilter() {
-		if(isset($this->params['form']['Filedata'])) { // skip auth check, to avoid session error with flash
+		// upload multiplo
+		if ($this->RequestHandler->isFlash()) {
 			$this->skipCheck = true;
 		}
 	}
