@@ -681,7 +681,7 @@ abstract class FrontendController extends AppController {
 		
 		if(!empty($content_id)) {
 			$section['currentContent'] = $this->loadObj($content_id);
-			$this->set("contentRequested", true);
+			$section["contentRequested"] = true;
 			
 			if ($this->sectionOptions["showAllContents"]) {
 				$this->baseLevel = true;
