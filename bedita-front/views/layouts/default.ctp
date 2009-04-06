@@ -11,8 +11,8 @@
 	<?php if (!empty($section)) echo " | " . $section['title']; ?></title>
 	<link rel="icon" href="<php echo $session->webroot; ?>favicon.ico" type="image/x-icon" />
 	<link rel="shortcut icon" href="<php echo $session->webroot; ?>favicon.ico" type="image/x-icon" />
+	<?php echo $html->charset('utf-8');?>
 	<meta name="author" content="" />
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<meta http-equiv="Content-Style-Type" content="text/css" />
 	<?php foreach($feedNames as $feed): ?>
 	<link rel="alternate" type="application/rss+xml" title="<?php echo $feed['title']; ?> 
