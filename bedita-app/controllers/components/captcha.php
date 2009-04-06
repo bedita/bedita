@@ -101,7 +101,7 @@ class CaptchaComponent extends Object {
 		
 		// Create an image using our original image and adding the detail
 		for ($i=0; $i< strlen($str); $i++)	{
-			imagettftext($image, 14+rand(0,8), -20+rand(0,40), ($i+0.3)*$charSpace, ($height/2)+rand(0,10), $colour, $this->fontType, $str{$i});
+			imagettftext($image, 14+mt_rand(0,8), -20+mt_rand(0,40), ($i+0.3)*$charSpace, ($height/2)+mt_rand(0,10), $colour, $this->fontType, $str{$i});
 		}
 		
 		// Output the image as a png
