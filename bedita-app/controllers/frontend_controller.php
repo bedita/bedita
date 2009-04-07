@@ -301,6 +301,7 @@ abstract class FrontendController extends AppController {
 	public function sitemapXml() {
 		$this->sitemap(true);
 		$this->layout = NULL;
+		$this->view = "Smarty";
 		header("Content-type: text/xml; charset=utf-8");
 	}
 
