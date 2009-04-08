@@ -300,7 +300,7 @@ abstract class FrontendController extends AppController {
 	
 	public function sitemapXml() {
 		$this->sitemap(true);
-		$this->layout = NULL;
+		$this->layout = null;
 		$this->view = "Smarty";
 		header("Content-type: text/xml; charset=utf-8");
 	}
@@ -308,10 +308,7 @@ abstract class FrontendController extends AppController {
 	public function sitemap($xml_out = false) {
 		$conf = Configure::getInstance() ;
 		$extract_all = (!empty($conf->sitemapAllContent)) ? $conf->sitemapAllContent : false;
-		if(!in_array('BeTree', $this->helpers)) {
-			$this->helpers[] = 'BeTree';
-		}
-		$urlset = array();
+		
 		if($xml_out) {
 			$filter = null;
 			if(!$extract_all) {
@@ -320,7 +317,21 @@ abstract class FrontendController extends AppController {
 			}
 			$sections = $this->BeTree->getDiscendents($conf->frontendAreaId,$this->status,$filter) ;
 			$sectionsTree = $sections['items'];
+			$urlset = array();
+			$i=0;
+			foreach($sectionsTree as $k => $v) {
+				$urlset[$i] = array();
+				$urlset[$i]['loc'] = $this->publication["public_url"]."/".$v['nickname'];
+				//$urlset['lastmode'] = $this->BeTree->getChildren($id, null, $filter, "title", true, $page, $dim=1);
+				//$urlset[$i]['changefreq'] = 'always'; /*always,hourly,daily,weekly,monthly,yearly,never*/
+				//$urlset[$i]['priority'] = '0.5';
+				$i++;
+			}
+			$this->set('urlset',$urlset);
 		} else {
+			if(!in_array('BeTree', $this->helpers)) {
+				$this->helpers[] = 'BeTree';
+			}
 			$this->baseLevel = true;
 			$itemsByType = $this->sectionOptions["itemsByType"];
 			$this->sectionOptions["itemsByType"] = false;
@@ -328,19 +339,8 @@ abstract class FrontendController extends AppController {
 			$this->sectionOptions["itemsByType"] = $itemsByType;
 			$this->baseLevel = false;
 		}
-		$i=0;
-		$public_url = $this->Area->field('public_url', array('id' => $conf->frontendAreaId));
-		foreach($sectionsTree as $k => $v) {
-			$urlset[$i] = array();
-			$urlset[$i]['loc'] = $public_url."/".$v['nickname'];
-			//$urlset['lastmode'] = $this->BeTree->getChildren($id, null, $filter, "title", true, $page, $dim=1);
-			//$urlset[$i]['changefreq'] = 'always'; /*always,hourly,daily,weekly,monthly,yearly,never*/
-			//$urlset[$i]['priority'] = '0.5';
-			$i++;
-		}
+		
 		$this->set('sections_tree',$sectionsTree);
-		$this->set('urlset',$urlset);
-		$this->set('public_url',$public_url);
 		$this->sitemapBeforeRender();
 	}
 

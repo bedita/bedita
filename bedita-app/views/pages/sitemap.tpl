@@ -1,4 +1,4 @@
-{* esempio di stile per la sitemap *}
+{* esempio di stile per la sitemap
 <style type="text/css">
 {literal}
 	ul#sitemap { border: solid blue 1px; }
@@ -25,4 +25,5 @@
 	li.Statistic a, li.Stat a {color:#788279 !important;}
 {/literal}
 </style>
-{$beTree->sitemap($sections_tree,$public_url)}
+*}
+{$beTree->sitemap($sections_tree,$publication.public_url)}

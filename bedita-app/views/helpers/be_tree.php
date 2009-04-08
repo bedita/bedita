@@ -17,67 +17,12 @@ class BeTreeHelper extends Helper {
 	var $helpers = array("Html");
 
 	var $tags = array(
-		'tree'		=> "<ul class=\"publishingtree\" id=\"%s\">\n\t%s\n</ul>\n",
-		'children'	=> "<ul>%s</ul>\n",
-
-		'area'		=> "<li class=\"area\">\n\t<input type='hidden' name='id' value='%s'/>\n\t<span class=\"AreaItem\">%s</span>\n\t%s\n</li>\n",
-		'section'	=> "<li class=\"section\">\n\t<input type='hidden' name='id' value='%s'/>\n\t<span class=\"SectionItem\">%s</span>\n\t%s\n</li>\n",
-	
 		'option'	=> "<option value=\"%s\"%s>%s</option>",
 		'checkbox'	=> "<input type=\"checkbox\" name=\"data[destination][]\" value=\"%s\" %s/>",
 		'radio'	=> "<input type=\"radio\" name=\"data[destination]\" value=\"%s\" %s/>"
 	) ;
 
-	/**
-	 * Scrive l'albero dei contenuti.
-	 * Per il formato dell'albero vedere il:
-	 *		BeTreeComponent::getSectionsTree()
-	 *
-	 * @param array $id		ID da assegnare al tag UL radice della treeView
-	 * @param array $data	array con i dati
-	 * @param 		$excludeSubTreeId	ID dell'oggetto/sottoalbero da escludere
-	 * @return string
-	 */
-	function tree($id, &$data, $excludeSubTreeId = null) {
-		$html = "" ;
-
-		for ($i=0; $i < count($data) ; $i++) {
-			$html .= $this->treeBranch($data[$i],$excludeSubTreeId) ;
-		}
-
-		$html = sprintf($this->tags['tree'], $id, $html) ;
-
-		return $html ;
-	}
-
-	private function treeBranch(&$item, $excludeSubTreeId = null)  {
-		if( ($excludeSubTreeId != null) && ($item['id'] == $excludeSubTreeId) )
-			return "";
 		
-		$conf = Configure::getInstance() ;
-
-		$key = array_search($item['object_type_id'], $conf->objectTypes) ;
-
-		if(!isset($this->tags[$key])) return "" ;
-
-		// Preleva il testo dei figli
-		$txtChildren = "" ;
-		if(isset($item['children'])) {
-			for($i=0; $i < count($item['children']) ; $i++) {
-				$txtChildren .= $this->treeBranch($item['children'][$i], $excludeSubTreeId) ;
-			}
-			if(count($item['children'])) {
-				$txtChildren = sprintf($this->tags['children'], $txtChildren) ;
-			}
-		}
-		
-		// Crea l'html per il tag
-		$txt = sprintf($this->tags[$key], $item['id'], $item['title'], $txtChildren) ;
-
-		return $txt ;
-	}
-	
-	
 	/**
 	 * output a tree
 	 *
@@ -132,19 +77,19 @@ class BeTreeHelper extends Helper {
 	 * output sitemap tree
 	 *
 	 * @param array $sections, sections tree
-	 * @param string $inputType, type of input to prepend to section name (checkbox, radio)
-	 * @param array $parent_ids, array of ids parent
-	 * @return html for simple view tree
+	 * @param string $public_url, public url of publishing
+	 * @return html for sitemap
 	 */
 	public function sitemap($sections=array(),$public_url='/') {
-		$output = $this->designsitemap($sections,$public_url);
+		$output = '<ul id="sitemap">';
+		$output .= $this->designsitemap($sections,$public_url);
+		$output .= '</ul>';
 		return $this->output($output);
 	}
 
 	private function designsitemap($sections=array(),$public_url='/') {
 		$output = '';
 		if (!empty($sections)) {
-			$output .= '<ul id="sitemap">';
 			foreach($sections as $section) {
 				$output .= '<li class="Section">';
 				$url = $public_url . '/' . $section['nickname'];
@@ -166,10 +111,9 @@ class BeTreeHelper extends Helper {
 				}
 				$output .= '</li>';
 				if(!empty($section['sections'])) {
-					$output .= '<li>' . $this->designsitemap($section['sections']) . '</li>';
+					$output .= '<li><ul>' . $this->designsitemap($section['sections'],$public_url) . '</ul></li>';
 				}
 			}
-			$output .= '</ul>';
 		}
 		return $output;
 	}
