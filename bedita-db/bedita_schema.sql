@@ -308,12 +308,14 @@ CREATE TABLE annotations (
 -- 
 CREATE TABLE trees (
   id INTEGER UNSIGNED NOT NULL,
+  area_id INTEGER UNSIGNED NULL,
   parent_id INTEGER UNSIGNED NULL,
   path MEDIUMTEXT NOT NULL,
   parent_path MEDIUMTEXT NULL,
   priority INTEGER UNSIGNED NULL,
-  INDEX trees_FKIndex1(id),
-  INDEX trees_FKIndex2(parent_id),
+  INDEX id_idx(id),
+  INDEX parent_idx(parent_id),
+  INDEX area_idx(area_id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
       ON DELETE NO ACTION
