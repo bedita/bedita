@@ -22,6 +22,8 @@ INSERT INTO object_types (id, name, module) VALUES
 (37, 'author', NULL),
 (38, 'biblioitem', NULL),
 (39, 'editornote', NULL),
+(40, 'question', 'questionnaires'),
+(41, 'questionnaire', 'questionnaires'),
 (34, 'card', 'addressbook');
 
 -- ----------------------------------

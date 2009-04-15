@@ -38,7 +38,6 @@ DROP VIEW IF EXISTS `view_sections`;
 DROP VIEW IF EXISTS `view_streams`;
 DROP TABLE IF EXISTS `custom_properties`;
 DROP TABLE IF EXISTS `faq_questions`;
-DROP TABLE IF EXISTS `questions`;
 DROP TABLE IF EXISTS `question_types`;
 
 -- current tables --
@@ -88,6 +87,7 @@ DROP TABLE IF EXISTS `groups`;
 DROP TABLE IF EXISTS `event_logs`;
 DROP TABLE IF EXISTS `search_texts`;
 DROP TABLE IF EXISTS `banned_ips`;
+DROP TABLE IF EXISTS `questions`;
 
 CREATE TABLE cake_sessions (
   id varchar(255) NOT NULL default '',
@@ -759,6 +759,33 @@ CREATE TABLE `search_texts` (
   KEY `object_id` (`object_id`,`lang`),
   FULLTEXT KEY `content` (`content`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='search texts table';
+
+CREATE TABLE questions (
+  `id` INTEGER UNSIGNED NOT NULL,
+  `question_type` enum('number', 'multiple', 'check_single', 'check_multi', 'rank', 'text', 'check_open') default 'text',
+  `max_chars` INTEGER NULL,
+  PRIMARY KEY(id),
+  KEY `question_type_idx` (`question_type`),
+  FOREIGN KEY(id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+
+CREATE TABLE question_answers (
+  `id` INTEGER UNSIGNED NOT NULL,
+  `id_question` UNSIGNED NOT NULL, 
+  `description` TEXT NULL, 
+  `correct` BOOLEAN NULL, 
+  PRIMARY KEY(id),
+  KEY `question_id_idx` (`question_id`),
+  FOREIGN KEY(id_question)
+    REFERENCES questions(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
 
 -- ------------------------------------------
 -- Permessi

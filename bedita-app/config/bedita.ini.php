@@ -309,6 +309,12 @@ $config['objectTypes'] = array(
 	39			 => array("id" => 39, "name" => "editornote", "module" => null, "model" => "EditorNote"),
 	"editornote" 	 => array("id" => 39, "name" => "editornote", "module" => null, "model" => "EditorNote"),
 	
+	40			 	=> array("id" => 40, "name" => "question", "module" => "questionnaires", "model" => "Question"),
+	"question" 		=> array("id" => 40, "name" => "question", "module" => "questionnaires", "model" => "Question"),
+	
+	41			 	=> array("id" => 41, "name" => "questionnaire", "module" => "questionnaires", "model" => "Questionnaire"),
+	"questionnaire" => array("id" => 41, "name" => "questionnaire", "module" => "questionnaires", "model" => "Questionnaire"),
+	
 	// define array of objects that can be related to other
 	'related'	=> array("id" => array(18,19,20,21,22,29,34)),
 
