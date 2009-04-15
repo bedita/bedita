@@ -11,7 +11,9 @@
 class AreaTestData extends BeditaTestData {
 	var $data =  array(
 		'area'	=> array(
-			'title' => 'Test title'
+			'title' => 'Test title',
+			'syndicate' => 'off',
+			'priority_order' => 'desc'
 		)
 	);
 }

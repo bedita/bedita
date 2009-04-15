@@ -31,7 +31,10 @@
 class Area extends BeditaCollectionModel
 {
 
-	var $actsAs = array();
+	var $actsAs = array(
+		'ForeignDependenceSave' => array('SectionDummy'),
+		'RemoveDummyName'		
+	);
 	
 	public $searchFields = array("title" => 10 , "description" => 6, 
 		"public_name" => 10, "public_url" => 8);
@@ -42,13 +45,27 @@ class Area extends BeditaCollectionModel
 									"UserModified", 
 									"Permissions",
 									"ObjectProperty",
-									"LangText")),
+									"LangText"),
+								"SectionDummy"),
 
        		"default" => array("BEObject" => array("ObjectProperty", 
-								"LangText", "ObjectType")),
+								"LangText", "ObjectType"), "SectionDummy"),
 
 			"minimum" => array("BEObject" => array("ObjectType"))		
 	);
+	
+	var $hasOne = array(
+			'BEObject' => array(
+					'className'		=> 'BEObject',
+					'conditions'   => '',
+					'foreignKey'	=> 'id',
+					'dependent'		=> true
+				),
+			'SectionDummy' => array(
+					'className'		=> 'SectionDummy',
+					'foreignKey'	=> 'id'
+				),
+	) ;		
 
 	var $validate = array(
 		'title'	=> array(
@@ -56,15 +73,16 @@ class Area extends BeditaCollectionModel
 			'required' => true
 		),
 	);
-	
+		
 	function afterSave($created) {
 		if (!$created) 
 			return ;
 		
 		$tree = ClassRegistry::init('Tree', 'Model');
-		$tree->appendChild($this->id, null) ;		
+		$tree->appendChild($this->id, null) ;	
 	}
-
+	
+	
 	/**
 	 * Esegue ricorsivamente solo la clonazione dei figli di tipo: Section e Community,
 	 * gli altri reinscerisce un link

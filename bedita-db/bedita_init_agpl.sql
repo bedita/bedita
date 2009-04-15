@@ -58,6 +58,8 @@ INSERT INTO `objects` (`id`, `object_type_id`, `status`, `title`, `nickname`, `u
 VALUES (1, 1, 'on', 'Publishing', 'publishing', 1, 1);
 INSERT INTO `areas` (`id`, `public_name`) 
 VALUES (1, 'bedita publishing');
+INSERT INTO `sections` (`id`, `syndicate`, `priority_order`)
+VALUES (1, 'off', 'asc');
 INSERT INTO `trees` (`id`, `parent_id`, `path`, `parent_path`, `priority`) VALUES
 (1, NULL, '/1', '/', 1);
 

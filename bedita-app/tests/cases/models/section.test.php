@@ -32,7 +32,7 @@ require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
 class SectionTestCase extends BeditaTestCase {
 
- 	var $uses		= array('Section', 'Tree') ;
+ 	var $uses		= array('Section', 'Tree', 'Area') ;
     var $dataSource	= 'default' ;	
 
 	function testActsAs() {
@@ -51,7 +51,82 @@ class SectionTestCase extends BeditaTestCase {
 	 		pr($result);
 		}
 		
- 	} 
+ 	}
+ 	
+ 	function testMinInsert() {
+ 		$this->setDefaultDataSource('test') ;
+ 		echo '<h2>Using database: <b>'. ConnectionManager::getDataSource('test')->config['database'] .'</b></h2>';
+
+		$this->requiredData(array("tree"));
+		$result = $this->Area->save($this->data['tree']['area']) ;
+		$this->assertEqual($result,true);		
+		if(!$result) {
+			debug($this->Area->validationErrors);
+			return ;
+		}
+		$area_id = $this->Area->id;
+		$resultArea = $this->Area->findById($area_id);
+		pr("<h4>Area created:</h4>");
+		pr($resultArea);
+		
+		$this->data['tree']['section']['parent_id'] = $this->Area->id;
+		$result = $this->Section->save($this->data['tree']['section']);
+		$this->assertEqual($result,true);		
+		if(!$result) {
+			debug($this->Section->validationErrors);
+			return ;
+		}
+		$section_id = $this->Section->id;
+		$resultSection = $this->Section->findById($section_id);
+		pr("<h4>Section created:</h4>");
+		pr($resultSection);
+		
+		$this->data['tree']['subsection']['parent_id'] = $section_id;
+		$this->Section->create();
+		$result = $this->Section->save($this->data['tree']['subsection']);
+		$this->assertEqual($result,true);		
+		if(!$result) {
+			debug($this->Section->validationErrors);
+			return ;
+		}
+		$subsection_id = $this->Section->id;
+		$resultSubsection = $this->Section->findById($subsection_id);
+		pr("<h4>Subsection created:</h4>");
+		pr($resultSubsection);
+		
+		echo "<hr/>";
+		pr("<h4>Publishing tree path:</h4>");
+		$result = $this->Tree->findById($area_id);
+		$this->assertEqual($result["Tree"]["path"], '/'.$area_id);
+		pr($result["Tree"]["path"]);
+		
+		pr("<h4>Section tree path:</h4>");
+		$result = $this->Tree->findById($section_id);
+		$this->assertEqual($result["Tree"]["path"], '/'.$area_id . '/' .$section_id);
+		pr($result["Tree"]["path"]);
+		
+		pr("<h4>Subsection tree path:</h4>");
+		$result = $this->Tree->findById($subsection_id);
+		$this->assertEqual($result["Tree"]["path"], '/'.$area_id . '/' .$section_id . '/' . $subsection_id);
+		pr($result["Tree"]["path"]);
+		
+		echo "<hr/>";
+		
+		// remove subsection
+		$result = $this->Section->delete($subsection_id);
+		$this->assertEqual($result,true);		
+		pr("Subsection removed");
+		
+		//remove section
+		$result = $this->Section->delete($section_id);
+		$this->assertEqual($result,true);		
+		pr("Section removed");
+		
+		// remove publication
+		$result = $this->Area->delete($this->Area->{$this->Area->primaryKey});
+		$this->assertEqual($result,true);		
+		pr("Area removed");
+	} 
  	
 	public   function __construct () {
 		parent::__construct('Section', dirname(__FILE__)) ;

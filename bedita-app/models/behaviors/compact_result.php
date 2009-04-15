@@ -71,7 +71,7 @@ class CompactResultBehavior extends ModelBehavior {
 		$this->_removeFields($model, $results) ;
   		
 		return $results ;	
-  }
+	}
 
   
   	/**

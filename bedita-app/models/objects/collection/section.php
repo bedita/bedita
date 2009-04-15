@@ -123,8 +123,13 @@ class Section extends BeditaCollectionModel
 	}
     
 	public function feedsAvailable($areaId) {
-        $this->bindModel( array('hasOne' => array('Tree' =>
-											array('foreignKey'	=> 'id',)) ), false);
+        $this->bindModel( array(
+        	'hasOne' => array(
+        		'Tree' => array('foreignKey' => 'id')
+        		)
+        	)
+        );
+		
         $feeds = $this->find('all', array(
                 'conditions' => array('Section.syndicate' => 'on', 'BEObject.status' => 'on', "Tree.path LIKE '/$areaId/%'"), 
                 'fields' => array('BEObject.nickname', 'BEObject.title'),
@@ -134,6 +139,7 @@ class Section extends BeditaCollectionModel
         foreach ($feeds as $f) {
         	$feedNames[] = $f['BEObject'];	
         }
+        
         return $feedNames;
     }
     

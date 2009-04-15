@@ -527,16 +527,7 @@ class AreasController extends ModulesController {
 	private function loadSectionDetails($id, $objectTypeId) {
 			
 		$model = ClassRegistry::init(Configure::read("objectTypes.".$objectTypeId.".model"));
-		
-		$model->contain(array(
-					"BEObject" => array("ObjectType", 
-										"UserCreated", 
-										"UserModified", 
-										"Permissions",
-										"ObjectProperty",
-										"LangText"
-										)
-						));
+		$model->containLevel("detailed");
 		if(!($collection = $model->findById($id))) {
 			throw new BeditaException(sprintf(__("Error loading section: %d", true), $id));
 		}
