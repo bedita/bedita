@@ -775,12 +775,12 @@ CREATE TABLE questions (
 
 CREATE TABLE question_answers (
   `id` INTEGER UNSIGNED NOT NULL,
-  `id_question` UNSIGNED NOT NULL, 
+  `question_id` INTEGER UNSIGNED NOT NULL, 
   `description` TEXT NULL, 
-  `correct` BOOLEAN NULL, 
+  `correct` BOOL NULL, 
   PRIMARY KEY(id),
   KEY `question_id_idx` (`question_id`),
-  FOREIGN KEY(id_question)
+  FOREIGN KEY(question_id)
     REFERENCES questions(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
