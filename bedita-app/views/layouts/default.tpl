@@ -68,11 +68,9 @@
 *}
 
 {if empty($noFooter)}
-<div id="footerPage">
 
 {include file="../common_inc/footer.tpl"}
 
-</div>
 {/if}
 
 
