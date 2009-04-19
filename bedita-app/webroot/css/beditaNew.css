@@ -1614,5 +1614,11 @@ INPUT[type=button], INPUT[type=submit]  {
 	background-color: #0099FF;
 }
 
-
+#vcontainer {
+	border:5px solid #000;
+			border-radius : 11px; 
+	-moz-border-radius : 11px; 
+	-webkit-border-radius : 11px;
+	-khtml-border-radius: 11px;"
+}
 
