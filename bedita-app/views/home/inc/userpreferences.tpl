@@ -39,13 +39,13 @@
 	<td>
 		<input type="checkbox"> {t}new comments{/t}
 		<br />
-		<input type="checkbox"> {t}notes on my contents{/t}
+		<input type="checkbox"> {t}new notes{/t}
 		<br />
-		<input type="checkbox"> {t}my contents editings{/t}
+		<input type="checkbox"> {t}changes on my contents{/t}
 		<br />
 		<input type="checkbox"> {t}statistics{/t}
 		<br />
-		<input type="checkbox"> {t}closest schedulings{/t}
+		<input type="checkbox"> {t}deadlines{/t}
 		
 	</td>
 </tr>
