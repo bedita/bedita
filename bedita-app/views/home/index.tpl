@@ -30,14 +30,12 @@ $(document).ready(function() {
 
 <body class="home">
 
-
 <ul class="modules">
 
     <li class="bedita" rel="{$html->url('/')}">
 		{$conf->projectName|default:$conf->userVersion}
 	</li>
 	
-
 
 {foreach name=module1 from=$moduleList key=k item=mod}
 	{if ($mod.status == 'on')}
@@ -53,22 +51,18 @@ $(document).ready(function() {
 				{*<br /><span style="font-size:1.5em" class="graced">{$mod.id}</span>*}
 			</li>	
 	{/if}
-	
-
-	
+		
     {if $smarty.foreach.module1.iteration == 2}
 	
 	<li class="welcome">
+		<a href="javascript:void(0)" onClick="$('#userpreferences').BEtabstoggle();">
 		<h1>{t}welcome{/t}</h1>
-		{$BEAuthUser.realname}
-		<br  />
-		
+		{$BEAuthUser.realname}</a>
 	</li>
 	
 	{/if}
 	
 {/foreach}
-
 
 	<li class="colophon">
 
@@ -99,7 +93,6 @@ $(document).ready(function() {
 
 
 <div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
-	
 	<ul class="bordered">
 	{section name="n" loop=$lastModBYUser}
 		<li><span class="listrecent {$lastModBYUser[n].ObjectType.module}">&nbsp;</span>
@@ -107,6 +100,11 @@ $(document).ready(function() {
 	{/section}
 	</ul>
 	
+<div class="tab" id="userpreferences"><h2>{t}your profile and preferences{/t}</h2></div>
+<div>
+	{include file="inc/userpreferences.tpl"}
+
+</div>
 
 
 <div class="tab"><h2>{t}search{/t}</h2></div>
@@ -182,11 +180,19 @@ $(document).ready(function(){
 
 <div class="tab"><h2 id="callTags">{t}tags{/t}</h2></div>
 <div>
-	<div id="loadingTags" class="generalLoading" title="{t}Loading data{/t}">&nbsp;</div>
-	
+	<div id="loadingTags" class="generalLoading" title="{t}Loading data{/t}">&nbsp;</div>	
 	<div id="listExistingTags" class="tag graced" style="display: none; text-align:justify;"></div>
 </div>
 
-</div>	
+
+
+
+
+</div>
+
+
+		
+		
+		
 <p style="clear:both; margin-bottom:20px;" />
 

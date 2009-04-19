@@ -63,12 +63,16 @@ $().ready(function() {
 	</form>
 </div>
 
-<div class="quartacolonna" style="border-left:1px solid gray; padding:5px 0px 0px 10px; width:420px; left:440px; top:20px;">
-	<div style="display:none">
-	<label class="block">{t}Hai dimenticato username o password?{/t}</label>
+<div class="quartacolonna" style="border-left:1px solid gray; padding:120px 0px 0px 10px; width:420px; left:440px; top:20px;">
+<label class="block"><a href='javascript:void(0)' onClick="$('#pswforget').toggle('fast')">{t}Hai dimenticato username o password?{/t}</a></label>
+<div id="pswforget" style="display:none">
 	Scrivi qui la tua <label>{t}email{/t}:&nbsp;</label>
-	<br /><input class="big" style="width:153px" type="text" title="{t}Username is required{/t}"/></td>
+	<br />
+	<input class="big" style="width:153px" type="text" title="{t}Username is required{/t}"/>
 	<input class="bemaincommands" type="submit" value="{t}Send{/t}"/>
+	
+	<hr />
+	oppure <label><a href="mailto:{$conf->projectAdmin}">contatta l'amministratore</a></label>	
 </div>
 
 
