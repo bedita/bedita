@@ -1,1 +1,0 @@
-{include file="../pages/form_multimedia_assoc.tpl" itemType='Multimedia' items=$multimedia controller='multimedia'}
