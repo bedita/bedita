@@ -7,7 +7,7 @@
 
 	{include file="../common_inc/form_properties.tpl" doctype=false comments=true}
 	
-	{include file="../common_inc/form_short_desc_lang.tpl"}
+	{include file="../common_inc/form_long_desc_lang.tpl" height=200}
 
 	{include file="../common_inc/form_biblioitems.tpl"}
 	

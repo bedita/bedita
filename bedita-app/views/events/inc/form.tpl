@@ -12,7 +12,7 @@
 	
 	{include file="../common_inc/form_categories.tpl"}
 	
-	{include file="../common_inc/form_long_desc_lang.tpl"}
+	{include file="../common_inc/form_long_desc_lang.tpl" height=400}
 	
 	{include file="../common_inc/form_file_list.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
 

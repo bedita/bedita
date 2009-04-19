@@ -9,7 +9,7 @@
 	
 	{include file="../common_inc/form_tree.tpl"}
 	
-	{include file="../common_inc/form_long_desc_lang.tpl"}
+	{include file="../common_inc/form_long_desc_lang.tpl" addshorttext=true height=400}
 	
 	{include file="../common_inc/form_file_list.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
 
