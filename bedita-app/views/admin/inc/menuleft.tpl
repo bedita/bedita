@@ -9,7 +9,7 @@ Menu a SX valido per tutte le pagine del controller.
 		
 	<ul class="menuleft insidecol">
 		<li {if $method eq 'index'}class="on"{/if}>{$tr->link('Users', '/admin/')}</li>
-		<li {if $method eq 'viewUser'}class="on"{/if}>{$tr->link('New user', '/admin/viewUser')}</li>
+		<li {if $method eq 'viewUser' && (empty($userdetail))}class="on"{/if}>{$tr->link('New user', '/admin/viewUser')}</li>
 		<li {if $method eq 'groups'}class="on"{/if}>{$tr->link('User groups', '/admin/groups')}</li>
 	</ul>
 	
