@@ -58,7 +58,8 @@ class Card extends BEAppObjectModel {
 	
 	var $hasAndBelongsToMany = array(
 			"MailGroup" => array(
-							"joinTable"	=> "mail_group_cards"
+							"joinTable"	=> "mail_group_cards",
+							"with" => "MailGroupCard"
 						)
 		);
 	

@@ -35,7 +35,10 @@ class MailGroup extends BEAppModel
 	
 	var $hasAndBelongsToMany = array(
 
-			"Card" => array("joinTable"	=> "mail_group_cards"),
+			"Card" => array(
+				"joinTable"	=> "mail_group_cards",
+				"with" => "MailGroupCard"
+			),
 			
 			"MailMessage" => array("joinTable" => "mail_group_messages")
 	
