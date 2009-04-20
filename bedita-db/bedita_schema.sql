@@ -88,6 +88,7 @@ DROP TABLE IF EXISTS `event_logs`;
 DROP TABLE IF EXISTS `search_texts`;
 DROP TABLE IF EXISTS `banned_ips`;
 DROP TABLE IF EXISTS `questions`;
+DROP TABLE IF EXISTS `question_answers`;
 
 CREATE TABLE cake_sessions (
   id varchar(255) NOT NULL default '',
@@ -762,7 +763,7 @@ CREATE TABLE `search_texts` (
 
 CREATE TABLE questions (
   `id` INTEGER UNSIGNED NOT NULL,
-  `question_type` enum('number', 'multiple', 'check_single', 'check_multi', 'rank', 'text', 'check_open') default 'text',
+  `question_type` VARCHAR(32) NOT NULL,
   `max_chars` INTEGER NULL,
   PRIMARY KEY(id),
   KEY `question_type_idx` (`question_type`),
