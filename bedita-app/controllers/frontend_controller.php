@@ -298,6 +298,26 @@ abstract class FrontendController extends AppController {
 		return $result;
 	}
 	
+	/**
+	 * load all publications
+	 * 
+	 * @param string $tplVar, var name for template. 
+	 * 		  If not defined result will be set to "publicationsList" var
+	 * 
+	 */
+	public function loadPublications($tplVar=null) {
+		$publications = array();
+		$filter = array("object_type_id" => Configure::read("objectTypes.area.id"));
+		$res = $this->BEObject->findObjects(null, null, $this->status, $filter);
+		if (!empty($res["items"])) {
+			foreach ($res["items"] as $pub) {
+				$publications[] = $this->loadObj($pub["id"]);
+			}
+		}
+		$tplVar = (!empty($tplVar))? $tplVar : "publicationsList";
+		$this->set($tplVar, $publications);
+	}
+	
 	public function sitemapXml() {
 		$this->sitemap(true);
 		$this->layout = null;
