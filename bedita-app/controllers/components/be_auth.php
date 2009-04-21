@@ -42,15 +42,6 @@ class BeAuthComponent extends Object {
 	const SESSION_INFO_KEY = "BESession" ;
 	var $authResult	= 'OK';
 	
-	function __construct() {
-		if(!class_exists('User')) {
-			App::import('Model', 'User') ;
-		}
-		if(!class_exists('Group')) {
-			App::import('Model', 'Group') ;
-		}
-		parent::__construct() ;
-	} 
 
 	/**
 	 * Definisce l'utente corrente se gia' loggato e/o valido
@@ -292,12 +283,19 @@ class BeAuthComponent extends Object {
 			throw new BeditaException(__("Error saving user",true), $user->validationErrors);
 		return true;
 	}
+	
+	public function checkConfirmPassword($password, $confirmedPassword) {
+		if (trim($password) !== trim($confirmedPassword)) {
+			return false;
+		}
+		return true;
+	}
 
 	private function userGroupModel(&$userData, $groups) {
 		if(isset($groups)) {
 			$userData['Group']= array();
 			$userData['Group']['Group']= array();
-			$groupModel = new Group() ;
+			$groupModel = ClassRegistry::init('Group');
 			foreach ($groups as $g) {
 				$group =  $groupModel->findByName($g);
 				array_push($userData['Group']['Group'], $group['Group']['id']) ;
@@ -309,7 +307,7 @@ class BeAuthComponent extends Object {
 		if(isset($userData['User']['passwd']))
 			$userData['User']['passwd'] = md5($userData['User']['passwd']);
 		$this->userGroupModel($userData, $groups);
-		$user = new User() ;
+		$user = ClassRegistry::init('User');
 		if($userData['User']['valid'] == '1') { // reset number of login error, if user is valid
 			$userData['User']['num_login_err'] = '0';
 		}

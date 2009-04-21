@@ -83,13 +83,19 @@ class AdminController extends ModulesController {
 		}
 
 		if(!isset($this->data['User']['id'])) {
+			if (!$this->BeAuth->checkConfirmPassword($this->params['form']['pwd'], $this->data['User']['passwd']))
+				throw new BeditaException(__("Passwords mismatch",true));
 			$this->BeAuth->createUser($this->data, $userGroups);
 			$this->eventInfo("user ".$this->data['User']['userid']." created");
 			$this->userInfoMessage(__("User created",true));
 		} else {
-			$pass = $this->data['User']['passwd']; 
-			if($pass === null || strlen(trim($pass)) < 1 )
+			$pass = trim($this->data['User']['passwd']);
+			$confirmPass = trim($this->params['form']['pwd']);
+			if(empty($pass) && empty($confirmPass)) {
 				unset($this->data['User']['passwd']);
+			} elseif (!$this->BeAuth->checkConfirmPassword($this->params['form']['pwd'], $this->data['User']['passwd'])) {
+				throw new BeditaException(__("Passwords mismatch",true));
+			}
 			$this->BeAuth->updateUser($this->data, $userGroups);
 			$this->eventInfo("user ".$this->data['User']['userid']." updated");
 			$this->userInfoMessage(__("User updated",true));
@@ -375,7 +381,7 @@ class AdminController extends ModulesController {
 	 						),
 	 	 		"saveUser" => 	array(
  								"OK"	=> "/admin/index",
-	 							"ERROR"	=> "/admin/viewUser" 
+	 							"ERROR"	=> $this->referer() 
 	 						),
 				"removeUser" => 	array(
 	 							"OK"	=> "/admin",

@@ -31,7 +31,7 @@
  *  */
 class HomeController extends AppController {
 
-	var $uses = "BEObject";
+	var $uses = array("BEObject");
 	var $helpers = array();
 
 	 function index() {
@@ -70,25 +70,76 @@ class HomeController extends AppController {
 		$this->set("noFooter", true);
 	 }
 	 
-	 public function search($page=1, $dim=5) {
+	public function search($page=1, $dim=5) {
 
-	 	$this->layout = null;
-	 	
-	 	if (!empty($this->params["form"]["searchstring"])) {
-		 	$conf  = Configure::getInstance();
+		$this->layout = null;
+		 
+		if (!empty($this->params["form"]["searchstring"])) {
+			$conf  = Configure::getInstance();
 			$filter["search"] = addslashes($this->params["form"]["searchstring"]);
-
-		 	$user = $this->Session->read("BEAuthUser");
-
-		 	$objects = $this->BEObject->findObjects(null, $user["id"], null, $filter, null, true, $page, $dim);
-		 	// get objects module
-		 	foreach ($objects["items"] as $key => $o) {
-		 		$condition = "id=".$o['object_type_id'];
-		 		$objects["items"][$key]["module"] = $this->BEObject->ObjectType->field("module", $condition);
-		 	}
-		 	$this->set("objects", $objects);
-	 	}
+			
+			$user = $this->Session->read("BEAuthUser");
+			
+			$objects = $this->BEObject->findObjects(null, $user["id"], null, $filter, null, true, $page, $dim);
+			// get objects module
+			foreach ($objects["items"] as $key => $o) {
+				$condition = "id=".$o['object_type_id'];
+				$objects["items"][$key]["module"] = $this->BEObject->ObjectType->field("module", $condition);
+			}
+			$this->set("objects", $objects);
+		}
+	}
+	 
+	 public function editProfile() {
+	 	if (empty($this->data['User']['id']))
+	 		throw new BeditaException(__("No user data", true));
+	 	
+	 	$oldPwd = trim($this->params['form']['oldpwd']);
+	 	$pwd = trim($this->data['User']['passwd']);
+		$confirmPwd = trim($this->params['form']['pwd']);
+		
+		$userModel = ClassRegistry::init("User");
+		
+		if(empty($pwd) && empty($confirmPwd)) {
+			unset($this->data['User']['passwd']);
+		} else {
+			$user = $userModel->find("first", array(
+		 			"conditions" => array(
+		 				"id" => $this->data["User"]["id"],
+		 				"passwd" => md5($oldPwd)
+		 			),
+		 			"contain" => array()
+		 		)
+		 	);
+		 	
+		 	if (!$user)
+		 		throw new BeditaException(__("Wrong old user password", true));
+		 		
+			if (!$this->BeAuth->checkConfirmPassword($pwd, $confirmPwd))
+				throw new BeditaException(__("Passwords mismatch",true));
+		}
+		
+	 	$this->Transaction->begin();
+	 	$this->BeAuth->updateUser($this->data);
+	 	$this->Transaction->commit();
+	 	$userModel->containLevel("default");
+	 	$user = $userModel->findById($this->data["User"]["id"]);
+	 	$userModel->compact($user);
+	 	$this->Session->write($this->BeAuth->sessionKey, $user);
+		$this->eventInfo("user ".$this->data['User']['userid']." updated");
+		$this->userInfoMessage(__("User updated",true));
 	 }
 	 
+	 
+	protected function forward($action, $esito) {
+ 	 	$REDIRECT = array(
+			"editProfile" => array(
+ 							"OK"	=> "/home/index",
+ 							"ERROR"	=> "/home/index"
+ 						)
+ 			);
+	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
+	 	return false;
+	 }
 }
 
