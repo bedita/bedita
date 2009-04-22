@@ -28,8 +28,7 @@
  * 
  * $Id$
  */
-class Question extends BeditaContentModel
+class QuestionAnswer extends BEAppModel
 {
-	var $useTable = 'contents';	
 }
 ?>

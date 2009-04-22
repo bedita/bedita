@@ -39,7 +39,7 @@
     
 	{include file="inc/menucommands.tpl" method="viewQuestion" fixed = true}
 
-<form action="{$html->url('/forms/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+<form action="{$html->url('/questionnaires/saveQuestion')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
 	<div class="main">

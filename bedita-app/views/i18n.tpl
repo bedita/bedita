@@ -22,4 +22,13 @@ Strings to translate not present in .tpl/.php files
 {t}comments{/t}
 {t}multimedia{/t}
 
+-- QUESTION TYPES
+{t}multiple choiche{/t}
+{t}checkbox single choice{/t}
+{t}pulldown single choice{/t}
+{t}open answer{/t}
+{t}check open{/t}
+{t}degree{/t}
+{t}number{/t}
+
 *}

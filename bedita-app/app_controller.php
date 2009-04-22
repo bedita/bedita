@@ -555,8 +555,8 @@ abstract class ModulesController extends AppController {
 			} else {
 				if(!$this->BeFileHandler->del($id))
 					throw new BeditaException(__("Error deleting object: ", true) . $id);
-				$objectsListDesc .= $id . ",";
 			}
+			$objectsListDesc .= $id . ",";
 		}
 		$this->Transaction->commit() ;
 		return trim($objectsListDesc, ",");

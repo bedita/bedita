@@ -25,18 +25,18 @@
 class QuestionnairesController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeLangText', 'BeFileHandler');
+	var $components = array('BeLangText');
 
-	var $uses = array('BEObject', 'Document', 'Tree') ;
+	var $uses = array('BEObject', 'Question', 'Questionnaire',  'Tree') ;
 	protected $moduleName = 'questionnaires';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
-    	$conf  = Configure::getInstance() ;
-		$this->paginatedList($id, @$filter, $order, $dir, $page, $dim);
+    	$filter["object_type_id"] = Configure::read("objectTypes.questionnaire.id");
+		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 	 }
 	
 	 public function view($id = null) {
-		$this->viewObject($this->Document, $id);
+		$this->viewObject($this->Questionnaire, $id);
 	 }
 
 
@@ -53,14 +53,71 @@ class QuestionnairesController extends ModulesController {
 	}
 
 	 public function view_question($id = null) {
-	 	$this->viewObject($this->Document, $id);
+	 	$this->viewObject($this->Question, $id);
 
 	 }
 
 	public function index_questions($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
-    	$conf  = Configure::getInstance() ;
-		$this->paginatedList($id, @$filter, $order, $dir, $page, $dim);
+    	$filter["object_type_id"] = Configure::read("objectTypes.question.id");
+		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 	 }
+	 
+	 public function saveQuestion() {
+	 	$this->checkWriteModulePermission();
+	 	if (empty($this->data["QuestionAnswer"])) {
+	 		$this->data["QuestionAnswer"] = array();
+	 	}
+		$this->Transaction->begin();
+		$this->saveObject($this->Question);
+	 	$this->Transaction->commit() ;
+ 		$this->userInfoMessage(__("Question saved", true)." - ".$this->data["title"]);
+		$this->eventInfo("question [id=". $this->data["id"]."] saved");
+	 }
+	 
+	public function delete() {
+		$modelName = $this->BEObject->getType($this->data["id"]);	
+		$method = "delete" . $modelName;
+		if (!method_exists($this, $method)) {
+			$this->redirect($this->referer());
+		}
+		$this->action = $method;
+		$this->{$method}();
+	}
+	
+	public function changeStatusQuestions() {
+		$this->changeStatusObjects();
+	}
+	
+	public function deleteQuestion() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("Question");
+		$this->userInfoMessage(__("Questions deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("Questions " . $objectsListDeleted . " deleted");
+	}
+	 
+	
+	 protected function forward($action, $esito) {
+		$REDIRECT = array( 
+			"saveQuestion"	=> 	array(
+							"OK"	=> "/questionnaires/view_question/".@$this->Question->id,
+							"ERROR"	=> "/questionnaires/view_question/".@$this->Question->id 
+							),
+			"addItemsToAreaSection"	=> 	array(
+							"OK"	=> '/questionnaires/index',
+							"ERROR"	=> '/questionnaires/index' 
+							),
+			"changeStatusQuestions"	=> 	array(
+							"OK"	=> '/questionnaires/index_questions',
+							"ERROR"	=> '/questionnaires/index_questions' 
+							),
+			"deleteQuestion"	=> 	array(
+							"OK"	=> '/questionnaires/index_questions',
+							"ERROR"	=> '/questionnaires/index_questions' 
+							)
+		);
+		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
+		return false ;
+	}
 
 }	
 

@@ -30,6 +30,48 @@
  */
 class Question extends BEAppObjectModel
 {
-	var $actsAs = array();
+	var $actsAs = array("CompactResult" => array("QuestionAnswer"));
+		
+	var $hasMany = array(
+		"QuestionAnswer" => array('order' => 'QuestionAnswer.priority ASC')
+	);
+	
+	protected $modelBindings = array( 
+				"detailed" =>  array("BEObject" => array("ObjectType", 
+															"UserCreated", 
+															"UserModified", 
+															"Permissions",
+															"ObjectProperty",
+															"LangText",
+															"RelatedObject",
+															"Annotation",
+															"Category"
+															),
+									"QuestionAnswer"),
+				"default" => array("BEObject" => array("ObjectProperty", 
+									"LangText", "ObjectType", "Annotation",
+									"Category", "RelatedObject" ), "QuestionAnswer"),
+
+				"minimum" => array("BEObject" => array("ObjectType"))		
+	);
+	
+	public $searchFields = array("title" => 10 , "description" => 6);	
+	
+	public function beforeSave() {
+		$dataAnswer =& $this->data["Question"]["QuestionAnswer"];
+		if (!empty($dataAnswer)) {
+			foreach($dataAnswer as $key => $answer) {
+				$dataAnswer[$key]["description"] = trim($answer["description"]);
+				if (empty($dataAnswer[$key]["description"])) {
+					unset($dataAnswer[$key]);
+				}
+			}
+		}
+		return true;
+	}
+	
+	function afterSave() {
+		return $this->updateHasManyAssoc();
+	}
 }
 ?>

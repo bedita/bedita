@@ -2,13 +2,11 @@
 
 <script type="text/javascript">
 <!--
-var urlDelete = "{$html->url('delete/')}" ;
+var urlDelete = "{$html->url('deleteQuestion/')}" ;
 var message = "{t}Are you sure that you want to delete the item?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
-var URLBase = "{$html->url('index/')}" ;
-var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
-var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
-
+var URLBase = "{$html->url('index_questions/')}" ;
+var urlChangeStatus = "{$html->url('changeStatusQuestions/')}";
 
 {literal}
 $(document).ready(function(){
@@ -74,7 +72,7 @@ $(document).ready(function(){
 		</tr>
 	</table>
 
-{section name="i" loop=10}
+	{section name="i" loop=$objects}
 
 	<div class="questionbox{if $objects[i].status != 'on'} off {/if}">
 		
@@ -127,26 +125,6 @@ $(document).ready(function(){
 							</select>
 			<input id="changestatusSelected" type="button" value=" ok " />
 	<hr />
-	
-	{if !empty($tree)}
-			
-
-			
-			<select style="width:75px">
-				<option> {t}copy{/t} </option>
-				<option> {t}move{/t} </option>
-			</select>
-			
-			  &nbsp;to:  &nbsp;
-			
-			<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
-			{$beTree->option($tree)}
-			</select>
-			
-			<input id="assocObjects" type="button" value=" ok " />
-	<hr />
-	{/if}
-
 	
 	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
 	

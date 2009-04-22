@@ -210,17 +210,6 @@ define("BEDITA_PERMS_CREATE",	0x8) ;
 
 define("BEDITA_PERMS_READ_MODIFY",	BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) ;
 
-/**
- * Costanti per la definizione delle tipologie
- * di domande
- */
-define("BEDITA_DOMANDA_MULTIPLA",		0x1) ;
-define("BEDITA_DOMANDA_SINGOLA",		0x2) ;
-define("BEDITA_DOMANDA_TXTLIBERO",		0x3) ;
-define("BEDITA_DOMANDA_CHECKOPEN",		0x4) ;
-define("BEDITA_DOMANDA_GRADO",			0x5) ;
-define("BEDITA_DOMANDA_TXTSEMPLICE",	0x6) ;
-
 
 /**
  * BEdita modules
@@ -421,11 +410,18 @@ $config['permissions'] = array(
 	),
 );
 
-
 /**
- * Tipologia di default, domande
+ * question types
  */
-$config['questionTypeDefault'] = BEDITA_DOMANDA_TXTSEMPLICE ;
+$config['questionTypes'] = array(
+	"multiple" => "multiple choiche",
+	"single_checkbox" => "checkbox single choice",
+	"single_pulldown" => "pulldown single choice",
+	"freetext" => "open answer",
+	"checkopen" => "check open",
+	"degree" => "degree",
+	"number" => "number"
+);
 
 /**
  * 

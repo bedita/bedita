@@ -2,7 +2,7 @@
 
 <script type="text/javascript">
 <!--
-var urlDelete = "{$html->url('delete/')}" ;
+var urlDelete = "{$html->url('deleteQuestionnaire/')}" ;
 var message = "{t}Are you sure that you want to delete the item?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
 var URLBase = "{$html->url('index/')}" ;
@@ -77,8 +77,7 @@ $(document).ready(function(){
 		
 		{$smarty.capture.theader}
 	
-		{*section name="i" loop=$objects*}
-		{section name="i" loop=10}
+		{section name="i" loop=$objects}
 		<tr>
 			<td class="checklist">
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}"/>

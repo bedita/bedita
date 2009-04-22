@@ -562,35 +562,30 @@ class BEAppObjectModel extends BEAppModel {
 	
 	protected function updateHasManyAssoc() {
 		
-		$db =& ConnectionManager::getDataSource($this->useDbConfig);
-		
-		// Scorre le associazioni hasMany
 		foreach ($this->hasMany as $name => $assoc) {
-			
-			if (isset($this->data[$this->name][$name])) {
-				$model 		= new $assoc['className']() ; 
 				
-				// Cancella le precedenti associazioni
-				$table 		= (isset($model->useTable)) ? $model->useTable : ($db->name($db->fullTableName($assoc->className))) ;
+			if (isset($this->data[$this->name][$name])) {
+				$model 		= ClassRegistry::init($assoc['className']) ; 
+				
+				// delete previous associations
 				$id 		= (isset($this->data[$this->name]['id'])) ? $this->data[$this->name]['id'] : $this->getInsertID() ;		
 				$foreignK	= $assoc['foreignKey'] ;
 				
-				$db->query("DELETE FROM {$table} WHERE {$foreignK} = '{$id}'");
+				$model->deleteAll(array($foreignK => $id));
 				
-				// Se non ci sono dati da salvare esce
+				// if there isn't data to save then exit
 				if (!isset($this->data[$this->name][$name]) || !(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name]))) 
 					continue ;
 				
-				// Salva le nuove associazioni
+				// save new associations
 				$size = count($this->data[$this->name][$name]) ;
 				for ($i=0; $i < $size ; $i++) {
-					$modelTmp	 	 = new $assoc['className']() ; 
+					$model->create(); 
 					$data 			 = &$this->data[$this->name][$name][$i] ;
 					$data[$foreignK] = $id ; 
-					if(!$modelTmp->save($data)) 
+					if(!$model->save($data)) 
 						return false ;
 					
-					unset($modelTmp);
 				}
 			}
 		}

@@ -775,10 +775,11 @@ CREATE TABLE questions (
 
 
 CREATE TABLE question_answers (
-  `id` INTEGER UNSIGNED NOT NULL,
+  `id` INTEGER UNSIGNED NOT NULL auto_increment,
   `question_id` INTEGER UNSIGNED NOT NULL, 
   `description` TEXT NULL, 
   `correct` BOOL NULL, 
+  `priority` INTEGER UNSIGNED NULL,
   PRIMARY KEY(id),
   KEY `question_id_idx` (`question_id`),
   FOREIGN KEY(question_id)
