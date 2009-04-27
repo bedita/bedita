@@ -22,11 +22,11 @@
 /**
  * 
  * @link			http://www.bedita.com
- * @version			$Revision: 1627 $
- * @modifiedby 		$LastChangedBy: bato $
- * @lastmodified	$LastChangedDate: 2009-01-02 20:21:19 +0100 (ven, 02 gen 2009) $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: document.test.php 1627 2009-01-02 19:21:19Z bato $
+ * $Id$
  */
 require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
