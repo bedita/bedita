@@ -232,7 +232,9 @@ abstract class FrontendController extends AppController {
 			
 			$sectionObject = $this->loadObj($s['id']);			
 			if($loadContents) {
-				$sectionObject['objects'] = $this->loadSectionObjects($s['id']);	
+				$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")));
+				 $objs = $this->loadSectionObjects($s['id'], $option);
+				 $sectionObject['objects'] = (!$this->sectionOptions["itemsByType"] && !empty($objs["childContents"]))? $objs["childContents"] : $objs;
 			}
 			if ($depth > 1)
 				$sectionObject['sections'] = $this->loadSectionsTree($s['id'], $loadContents, $exclude_nicknames, $depth-1);
@@ -287,7 +289,9 @@ abstract class FrontendController extends AppController {
 				}
 				
 				if($loadContents) {
-					$sectionObject['objects'] = $this->loadSectionObjects($s['id']);	
+					$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")));
+					$objs = $this->loadSectionObjects($s['id'], $option);	
+					$sectionObject['objects'] = (!$this->sectionOptions["itemsByType"] && !empty($objs["childContents"]))? $objs["childContents"] : $objs;
 				}
 				$result[$level][] = $sectionObject;
 				
