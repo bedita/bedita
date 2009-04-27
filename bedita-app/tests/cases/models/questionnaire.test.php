@@ -22,17 +22,17 @@
 /**
  * 
  * @link			http://www.bedita.com
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
+ * @version			$Revision: 1627 $
+ * @modifiedby 		$LastChangedBy: bato $
+ * @lastmodified	$LastChangedDate: 2009-01-02 20:21:19 +0100 (ven, 02 gen 2009) $
  * 
- * $Id$
+ * $Id: document.test.php 1627 2009-01-02 19:21:19Z bato $
  */
 require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
-class QuestionTestCase extends BeditaTestCase {
+class QuestionnaireTestCase extends BeditaTestCase {
 
- 	var $uses		= array('Question') ;
+ 	var $uses		= array('Questionnaire', 'Question') ;
     var $dataSource	= 'test' ;	
  	var $components	= array('Transaction') ;
 
@@ -42,31 +42,46 @@ class QuestionTestCase extends BeditaTestCase {
     //      TEST METHODS
     /////////////////////////////////////////////////
  	function testActsAs() {
- 		$this->checkDuplicateBehavior($this->Question);
+ 		$this->checkDuplicateBehavior($this->Questionnaire);
  	}
  	
  	function testInsert() {
 		$this->requiredData(array("insert"));
-		$result = $this->Question->save($this->data['insert']['multiple']) ;
+		
+		foreach ($this->data['insert']['questions'] as $key => $question) {
+			$this->Question->create();
+			$result = $this->Question->save($question);
+			if(!$result) {
+				debug($this->Question->validationErrors);
+				return ;
+			}
+			$question_id = $this->Question->id;
+			$this->data['insert']['questionnaire']['RelatedObject']['question'][$question_id] = array(
+				'id' => $question_id,
+				'priority' => $key+1
+			);
+		}
+		
+		$result = $this->Questionnaire->save($this->data['insert']['questionnaire']) ;
 		$this->assertEqual($result,true);		
 		if(!$result) {
-			debug($this->Question->validationErrors);
+			debug($this->Questionnaire->validationErrors);
 			return ;
 		}
 		
-		$result = $this->Question->findById($this->Question->id);
-		pr("Question created:");
+		$result = $this->Questionnaire->findById($this->Questionnaire->id);
+		pr("Questionnaire created:");
 		pr($result);
-		$this->inserted[] = $this->Question->id;
+		$this->inserted[] = $this->Questionnaire->id;
 	} 
 	
 	
  	function testDelete() {
-        pr("Removinge inserted questions:");
+        pr("Removinge inserted Questionnaires:");
         foreach ($this->inserted as $ins) {
-        	$result = $this->Question->delete($ins);
+        	$result = $this->Questionnaire->delete($ins);
 			$this->assertEqual($result, true);		
-			pr("Questions deleted");
+			pr("Questionnaires deleted");
         }        
  	}
  	
@@ -79,7 +94,7 @@ class QuestionTestCase extends BeditaTestCase {
 	}
 	
 	public   function __construct () {
-		parent::__construct('Question', dirname(__FILE__)) ;
+		parent::__construct('Questionnaire', dirname(__FILE__)) ;
 	}	
 }
 

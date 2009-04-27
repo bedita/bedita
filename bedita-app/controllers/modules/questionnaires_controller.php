@@ -33,13 +33,22 @@ class QuestionnairesController extends ModulesController {
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
     	$filter["object_type_id"] = Configure::read("objectTypes.questionnaire.id");
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
-	 }
+	}
 	
-	 public function view($id = null) {
+	public function view($id = null) {
 		$this->viewObject($this->Questionnaire, $id);
-	 }
+	}
 
+	public function save() {
+		$this->checkWriteModulePermission();
+		$this->Transaction->begin();
+		$this->saveObject($this->Questionnaire);
+	 	$this->Transaction->commit() ;
+ 		$this->userInfoMessage(__("Questionnaire saved", true)." - ".$this->data["title"]);
+		$this->eventInfo("questionnaire [id=". $this->data["id"]."] saved");	
+	}
 
+	 
 	public function index_sessions_results() {
 
 	}
@@ -94,17 +103,42 @@ class QuestionnairesController extends ModulesController {
 		$this->userInfoMessage(__("Questions deleted", true) . " -  " . $objectsListDeleted);
 		$this->eventInfo("Questions " . $objectsListDeleted . " deleted");
 	}
-	 
 	
-	 protected function forward($action, $esito) {
+	public function deleteQuestionnaire() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("Questionnaire");
+		$this->userInfoMessage(__("Questionnaires deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("Questionnaires " . $objectsListDeleted . " deleted");
+	}
+	
+	
+	public function loadQuestionAjax() {
+		$conditions = array("Question.id" => explode( ",", trim($this->params["form"]["object_selected"],",") ));
+		$this->Question->containLevel("minimum");
+		$questions = $this->Question->find("all", array("conditions" => $conditions) ) ;
+		$this->set("objsRelated", $questions);
+		$this->set("rel", $this->params["form"]["relation"]);
+		$this->layout = "ajax";
+		$this->render(null, null, VIEWS . "questionnaires/inc/form_question_ajax.tpl");
+	}
+	
+	protected function forward($action, $esito) {
 		$REDIRECT = array( 
 			"saveQuestion"	=> 	array(
 							"OK"	=> "/questionnaires/view_question/".@$this->Question->id,
 							"ERROR"	=> "/questionnaires/view_question/".@$this->Question->id 
 							),
+			"save"	=> 	array(
+							"OK"	=> "/questionnaires/view/".@$this->Questionnaire->id,
+							"ERROR"	=> "/questionnaires/view/".@$this->Questionnaire->id 
+							),
 			"addItemsToAreaSection"	=> 	array(
 							"OK"	=> '/questionnaires/index',
 							"ERROR"	=> '/questionnaires/index' 
+							),
+			"changeStatusObjects" => 	array(
+							"OK"	=> '/questionnaires',
+							"ERROR"	=> '/questionnaires' 
 							),
 			"changeStatusQuestions"	=> 	array(
 							"OK"	=> '/questionnaires/index_questions',
@@ -113,6 +147,10 @@ class QuestionnairesController extends ModulesController {
 			"deleteQuestion"	=> 	array(
 							"OK"	=> '/questionnaires/index_questions',
 							"ERROR"	=> '/questionnaires/index_questions' 
+							),
+			"deleteQuestionnaire"	=> 	array(
+							"OK"	=> '/questionnaires/index',
+							"ERROR"	=> '/questionnaires/index' 
 							)
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

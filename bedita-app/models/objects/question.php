@@ -58,8 +58,8 @@ class Question extends BEAppObjectModel
 	public $searchFields = array("title" => 10 , "description" => 6);	
 	
 	public function beforeSave() {
-		$dataAnswer =& $this->data["Question"]["QuestionAnswer"];
-		if (!empty($dataAnswer)) {
+		if (!empty($this->data["Question"]["QuestionAnswer"])) {
+			$dataAnswer =& $this->data["Question"]["QuestionAnswer"];
 			foreach($dataAnswer as $key => $answer) {
 				$dataAnswer[$key]["description"] = trim($answer["description"]);
 				if (empty($dataAnswer[$key]["description"])) {

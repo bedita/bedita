@@ -290,69 +290,14 @@ class AreasController extends ModulesController {
 
 	/* AJAX CALLS */
 
-		
-	/**
-	 * load section object
-	 *
-	 * @param int $id
-	 */
-	public function loadSectionAjax($id) {
-		// Load languages
-		if(Configure::read("langOptionsIso") == true) {
-			Configure::load('langs.iso') ;
-		}
-
-		$this->layout = null;
-		
-		$tplFile = "form_area.tpl";
-		
-		if (!empty($id)) {
-			$ot_id = $this->BEObject->field("object_type_id", array("BEObject.id" => $id));
-			$this->loadSectionDetails($id, $ot_id);
-			$tplFile = "form_" . strtolower(Configure::read("objectTypes.".$ot_id.".model")) . ".tpl";
-		}
-		
-		$this->render(null, null, VIEWS . "areas/inc/" . $tplFile);
-		
-	}
-
-
-	/**
-	 * load contents for a section
-	 *
-	 * @param int $id
-	 * 
-	 */
-	public function listContentAjax($id) {
-		$this->layout = null;
-		if (!empty($id)) {
-			$this->loadContents($id);
-		}
-		$this->render(null, null, VIEWS."areas/inc/list_content_ajax.tpl");
-	}
-	
-	
-	/**
-	 * load children section 
-	 *
-	 * @param int $id
-	 * 
-	 */
-	public function listSectionAjax($id) {
-		$this->layout = null;
-		if (!empty($id)) {
-			$this->loadSections($id);
-		}
-		$this->render(null, null, VIEWS."areas/inc/list_sections_ajax.tpl");
-	}
-	
 	/**
 	 * called via ajax
 	 * Show list of objects for relation, append to section,...
 	 * 
 	 * @param int $main_object_id, object id of main object used to exclude association with itself 
 	 * @param string $relation, relation type
-	 * @param string $objectTypes name of objectType to filter. It has to be a string that defined a group of type
+	 * @param int $main_object_type_id, object_type_id of main object. Used if $main_object_id is not defined or empty
+	 * @param string $objectType name of objectType to filter. It has to be a string that defined a group of type
 	 * 							  defined in bedita.ini.php (i.e. 'related' 'leafs',...)
 	 * 							  Used if $this->parmas["form"]["objectType"] and $relation are empty	
 	 * 
@@ -435,8 +380,7 @@ class AreasController extends ModulesController {
 		$tree = $this->BeTree->getSectionsTree() ;
 		$this->set('tree',$tree);
 		
-		if (!empty($relation))
-			$this->set("relation", $relation);
+		$this->set("relation", $relation);
 		
 		$this->set("main_object_id", $main_object_id);
 		$this->set("object_type_id", $main_object_type_id);
@@ -454,6 +398,11 @@ class AreasController extends ModulesController {
 	 * load objects selected to main view to prepare association form
 	 *
 	 * @param int $main_object_id, object id of main object used to exclude association with itself 
+	 * @param string $objectType, object type used to filter
+	 * @param string $tplname, template name without '.tpl' 
+	 * 				 if it contains dots replace it with /
+	 * 				 i.e. areas.inc.list_object become areas/inc/list_object.tpl
+	 * 				  
 	 */
 	public function loadObjectToAssoc($main_object_id=null, $objectType=null, $tplname=null) {
 		
@@ -478,10 +427,66 @@ class AreasController extends ModulesController {
 		$this->set("objsRelated", $objRelated);
 		$this->set("rel", $this->params["form"]["relation"]);
 		$this->layout = null;
-		$tplname = (empty($tplname))? "common_inc/form_assoc_object.tpl" : "areas/inc/" . $tplname;
+		$tplname = (empty($tplname))? "common_inc/form_assoc_object.tpl" : str_replace(".", "/", $tplname) . ".tpl";
 		$this->render(null, null, VIEWS . $tplname);
 	}
+		
+	/**
+	 * load section object
+	 *
+	 * @param int $id
+	 */
+	public function loadSectionAjax($id) {
+		// Load languages
+		if(Configure::read("langOptionsIso") == true) {
+			Configure::load('langs.iso') ;
+		}
+
+		$this->layout = null;
+		
+		$tplFile = "form_area.tpl";
+		
+		if (!empty($id)) {
+			$ot_id = $this->BEObject->field("object_type_id", array("BEObject.id" => $id));
+			$this->loadSectionDetails($id, $ot_id);
+			$tplFile = "form_" . strtolower(Configure::read("objectTypes.".$ot_id.".model")) . ".tpl";
+		}
+		
+		$this->render(null, null, VIEWS . "areas/inc/" . $tplFile);
+		
+	}
+
+
+	/**
+	 * load contents for a section
+	 *
+	 * @param int $id
+	 * 
+	 */
+	public function listContentAjax($id) {
+		$this->layout = null;
+		if (!empty($id)) {
+			$this->loadContents($id);
+		}
+		$this->render(null, null, VIEWS."areas/inc/list_content_ajax.tpl");
+	}
 	
+	
+	/**
+	 * load children section 
+	 *
+	 * @param int $id
+	 * 
+	 */
+	public function listSectionAjax($id) {
+		$this->layout = null;
+		if (!empty($id)) {
+			$this->loadSections($id);
+		}
+		$this->render(null, null, VIEWS."areas/inc/list_sections_ajax.tpl");
+	}
+	
+		
 	 /**
 	  * Return associative array representing areas/sections tree
 	  *

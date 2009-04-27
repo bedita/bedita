@@ -1,9 +1,51 @@
+<script type="text/javascript">
+<!--
+var urlAddObjToAssQuestion = "{$html->url('/questionnaires/loadQuestionAjax')}";
+
+function questionRefreshButton() {
+	$("#loadQuestion").hide();
+	$("#questionAssociated").find("input[@name='details']").click(function() {
+		location.href = $(this).attr("rel");
+	});
 	
+	$("#questionAssociated").find("input[@name='remove']").click(function() {
+		tableToReorder = $(this).parents("table");
+		$(this).parents("tr").remove();
+		tableToReorder.fixItemsPriority();
+	});
+}
+
+{literal}
+function addObjToAssocQuestion(url, postdata) {
+	$.post(url, postdata, function(html){
+		$("#loadQuestion").show();
+		$("#questionAssociated tr:last").after(html);
+		$("#questionAssociated").fixItemsPriority();
+		$("#questionAssociated").find("tbody").sortable("refresh");
+		questionRefreshButton();
+	});
+}
+
+$(document).ready(function() {
+	$("#questionAssociated").find("tbody").sortable ({
+		distance: 20,
+		opacity:0.7,
+		update: $(this).fixItemsPriority
+	}).css("cursor","move");
+
+	questionRefreshButton();
+});
+
+{/literal}
+//-->
+</script>
 	
 <div class="tab"><h2>{t}Questions{/t}</h2></div>
 
 <fieldset id="questions">
-	<table class="indexlist">
+	<div class="loader" id="loadQuestion"><span></span></div>
+	<input type="hidden" class="relationTypeHidden" name="data[RelatedObject][question][0][switch]" value="question" />
+	<table class="indexlist" id="questionAssociated">
 		<tr>
 			<th></th>
 			<th>title</th>
@@ -11,21 +53,17 @@
 			<th>status</th>
 			<th></th>
 		</tr>
-	{section name="o" loop=8}
-		<tr>
-			<td>{$smarty.section.o.iteration}</td>
-			<td>Quanti conchiglie per 55 lische?</td>
-			<td>scelta multipla</td>
-			<td style="text-align:center">on</td>
-			<td>
-				<input type="button" title="{t}details{/t}" value="»" />
-				<input type="button" title="{t}remove{/t}" value="x" />
-			</td>
-		</tr>
-	{/section}
+		<tbody>
+		{if !empty($relObjects.question)}
+			{include file="inc/form_question_ajax.tpl" objsRelated=$relObjects.question}
+		{/if}
+		</tbody>
+	</table>
+	
+	<table class="indexlist">
 	<tr>
 		<th colspan="5" style="padding:10px; text-align:center">
-			<input class="modalbutton" type="button" value="{t}insert more questions{/t}" />
+			<input class="modalbutton" type="button" value="{t}insert more questions{/t}" rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/question/{$object_type_id}" />
 		</th>
 	</tr>
 	</table>

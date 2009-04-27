@@ -28,8 +28,28 @@
  * 
  * $Id$
  */
-class Questionnaire extends BeditaSimpleObjectModel
+class Questionnaire extends BeditaContentModel
 {
+	var $useTable = 'contents';
 	var $actsAs = array();
+	
+	protected $modelBindings = array( 
+				"detailed" =>  array("BEObject" => array("ObjectType", 
+															"UserCreated", 
+															"UserModified", 
+															"Permissions",
+															"ObjectProperty",
+															"LangText",
+															"RelatedObject",
+															"Annotation",
+															"Category"
+															),
+									),
+				"default" => array("BEObject" => array("ObjectProperty", 
+									"LangText", "ObjectType", "Annotation",
+									"Category", "RelatedObject" )),
+
+				"minimum" => array("BEObject" => array("ObjectType"))		
+	);
 }
 ?>

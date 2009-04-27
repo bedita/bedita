@@ -2,9 +2,16 @@
 <!--
 
 var urlShowObj = "{$html->here}";
-if (!urlAddObjToAss) 
-	var urlAddObjToAss = "{$html->url('/areas/loadObjectToAssoc')}";
+if (typeof urlAddObjToAss{$relation|default:'norelation'|capitalize} == "string") {
+	var urlToAdd = urlAddObjToAss{$relation|capitalize}
+} else if (typeof urlAddObjToAss == "string") { 
+	var urlToAdd = urlAddObjToAss;
+} else {
+	var urlToAdd = "{$html->url('/areas/loadObjectToAssoc')}";
+}
+
 var relType = "{$relation|default:""}";
+var suffix = "{$relation|default:""|capitalize}";
 
 {literal}
 function loadObjToAssoc(page) {
@@ -52,8 +59,13 @@ $(document).ready(function() {
 			$("#modal").hide();
 			$("#modaloverlay").hide();
 			
-			// addObjToAssoc function has to be defined in other template (i.e. common_inc/form_assoc_objects.tpl)
-			addObjToAssoc(urlAddObjToAss, obj_sel);
+			// if addObjToAssoc + suffix is defined use it (i.e. addObjToAssocQuestion in questionnaires/form_list_questions.tpl)
+			// else addObjToAssoc function has to be defined in other template (i.e. common_inc/form_assoc_objects.tpl)
+			if (eval("typeof addObjToAssoc" + suffix) == 'function') {
+				eval("addObjToAssoc" + suffix)(urlToAdd, obj_sel);
+			} else {
+				addObjToAssoc(urlToAdd, obj_sel);
+			}
 			
 		}
 	});

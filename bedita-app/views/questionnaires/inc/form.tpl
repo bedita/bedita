@@ -5,7 +5,7 @@
 
 	{include file="../common_inc/form_title_subtitle.tpl"}
 
-	{include file="./inc/form_list_questions.tpl"}
+	{include file="./inc/form_list_questions.tpl" object_type_id=$conf->objectTypes.questionnaire.id}
 	
 
 	{include file="../common_inc/form_properties.tpl" doctype=false comments=false}

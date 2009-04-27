@@ -305,7 +305,7 @@ $config['objectTypes'] = array(
 	"questionnaire" => array("id" => 41, "name" => "questionnaire", "module" => "questionnaires", "model" => "Questionnaire"),
 	
 	// define array of objects that can be related to other
-	'related'	=> array("id" => array(18,19,20,21,22,29,34)),
+	'related'	=> array("id" => array(18,19,20,21,22,29,34,41)),
 
 	// define array of objects that are leafs of the tree
 	'leafs'		=> array("id" => array(18,19,20,21,22,29,34))
@@ -368,7 +368,11 @@ $config["defaultObjRelationType"] = array(
 		"left" => array(19),
 		"right" => array(38)
 	),
-	
+	"question" => array(
+		"hidden" => true,
+		"left" => array(41),
+		"right" => array(40)
+	)
 );
 
 // Relations - local objects' relation types
