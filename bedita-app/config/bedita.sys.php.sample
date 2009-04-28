@@ -24,11 +24,11 @@
  					overrides settings in bedita.ini
  * 
  * @link			http://www.bedita.com
- * @version			$Revision: 1839 $
- * @modifiedby 		$LastChangedBy: ste $
- * @lastmodified	$LastChangedDate: 2009-03-18 15:42:30 +0100 (mer, 18 mar 2009) $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: bedita.sys.php.sample 1839 2009-03-18 14:42:30Z ste $
+ * $Id$
  */
 
 
