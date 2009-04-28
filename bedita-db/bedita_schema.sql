@@ -43,6 +43,7 @@ DROP TABLE IF EXISTS `questions`;
 DROP TABLE IF EXISTS `question_answers`;
 DROP TABLE IF EXISTS `search_texts`;
 DROP TABLE IF EXISTS `sections`;
+DROP TABLE IF EXISTS `section_types`;
 DROP TABLE IF EXISTS `streams`;
 DROP TABLE IF EXISTS `trees`;
 DROP TABLE IF EXISTS `users`;
@@ -390,12 +391,29 @@ CREATE TABLE sections (
   id INTEGER UNSIGNED NOT NULL,
   syndicate ENUM('on','off') DEFAULT 'on',
   priority_order ENUM('asc','desc') DEFAULT 'asc',
+  last_modified DATETIME NULL,
+  map_priority FLOAT(2,1) NULL,
+  map_changefreq VARCHAR(128) NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE section_types (
+  id INTEGER UNSIGNED NOT NULL,
+  section_id INTEGER UNSIGNED NOT NULL,
+  object_type_id INTEGER UNSIGNED NOT NULL,
+  restricted TINYINT NULL,
+  predefined TINYINT NULL,
+  PRIMARY KEY(id),
+  FOREIGN KEY(section_id)
+    REFERENCES sections(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
 
 CREATE TABLE videos (
   id INTEGER UNSIGNED NOT NULL,
@@ -416,7 +434,9 @@ CREATE TABLE categories (
   `name` varchar(255) NOT NULL,
   `object_type_id` int(10) unsigned default NULL,
   `priority` int(10) unsigned default NULL,
-  `status` enum('on','off','draft','staging') NOT NULL default 'draft',
+  `parent_id` INTEGER UNSIGNED NULL,
+  `parent_path` MEDIUMTEXT NULL,
+  `status` enum('on','off') NOT NULL default 'on',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `area_name_type` (`area_id`,`name`,`object_type_id`),
   KEY `object_type_id` (`object_type_id`),
