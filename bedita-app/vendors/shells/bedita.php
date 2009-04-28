@@ -380,6 +380,19 @@ class BeditaShell extends Shell {
 		unlink($sqlFileName);
 		$this->out("$dbCfg database updated");
 
+		// import configuration file
+		$cfgFileName = ROOT.DS.APP_DIR.DS."config".DS."bedita.cfg.php";
+		if (file_exists($cfgFileName)) {
+			$res = $this->in($cfgFileName. " already exists, overwrite with new configuration? [y/n]");
+			if($res == "y") {
+       			$this->importCfg($tmpBasePath."bedita.cfg.php",$cfgFileName);
+			} else {
+				$this->out("Configuration not updated!");
+			}
+		} else {
+			$this->importCfg($tmpBasePath."bedita.cfg.php",$cfgFileName);
+		}
+		
 		$mediaRoot = Configure::read("mediaRoot");
 		
 		// update media root dir
@@ -442,8 +455,9 @@ class BeditaShell extends Shell {
 			throw new Exception("Error opening file: ".$sqlFileName);
 		$dbDump->tableDetails($tables, $handle);
 		fclose($handle);
-       	$this->out("Exporting to $expFile");
        	
+       	$this->out("Exporting to $expFile");
+       	       	       	
 		$compress = null;
 		if (isset($this->params['compress']) || (substr($expFile, strlen($expFile)-3) == ".gz")) {
             $compress = "gz";
@@ -453,11 +467,19 @@ class BeditaShell extends Shell {
 			throw new Exception("Error opening archive $expFile");
        	}
        	
-		$contents = file_get_contents($sqlFileName);
-		if(!$tar->addString("bedita-data.sql", $contents))
+		if(!$tar->addString("bedita-data.sql", file_get_contents($sqlFileName)))
 			throw new Exception("Error adding SQL file to archive");
-		unset($contents);
-       	$this->out("SQL data exported");
+       	
+		$this->out("SQL data exported");
+       	
+    	$cfgFileName = ROOT.DS.APP_DIR.DS."config".DS."bedita.cfg.php";
+       	if (file_exists($cfgFileName)) {
+	       	if(!$tar->addString("bedita.cfg.php", file_get_contents($cfgFileName)))
+				throw new Exception("Error adding configuration file to archive");
+	       	
+			$this->out("Configuration file exported");
+       	}
+		       	
        	$this->out("Exporting media files");
        	
 		$mediaRoot = Configure::read("mediaRoot");
@@ -556,6 +578,14 @@ class BeditaShell extends Shell {
 		}
     }
     
+    private function importCfg($source,$destination) {
+    	if (!copy($source, $destination)) {
+    		throw new Exception("Error copying " . $source . " to " . $destination);
+    	} else {
+    		$this->out("Configuration file " . $destination . " updated.");
+    	}
+    }
+    
     function test() {
 		pr($this->params);
 		pr($this->args);
@@ -652,13 +682,10 @@ class BeditaShell extends Shell {
 
     private function removeMediaFiles() {
 		$mediaRoot = Configure::read("mediaRoot");
-    	$this->__clean($mediaRoot . DS. 'imgcache');
 		$folder= new Folder($mediaRoot);
         $dirs = $folder->ls();
         foreach ($dirs[0] as $d) {
-            if($d !== 'imgcache') {
-            	$folder->delete($mediaRoot . DS. $d);
-            }
+            $folder->delete($mediaRoot . DS. $d);
         }
         $this->out('Media files cleaned.');
     	

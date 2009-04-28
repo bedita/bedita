@@ -52,10 +52,6 @@ $config['mediaRoot'] = ROOT . DS . "media";
 $config['mediaUrl'] = 'http://localhost/media';
 
 
-// Multimedia - cache folder (without trailing slashes, inside 'mediaRoot')
-$config['imgCache'] = 'imgcache';
-
-
 // Multimedia - image file substituting missing content (as now used in thumb smarty plugin)
 $config['imgMissingFile'] = "/img/iconMissingImage_130x85.gif" ;
 
@@ -626,4 +622,16 @@ $config['newsletterCss'] = "base.css";
  * Default value in milliseconds, between autosave of objects (status draft or off)
  */
 $config['autosaveTime'] = 120000; // two minutes
+
+
+
+/**
+ * Specific System settings
+ * ALWAYS AT THE END of bedita.ini.php
+ */
+$appPath = (defined("BEDITA_CORE_PATH"))? BEDITA_CORE_PATH . DS : APP;
+if (file_exists ($appPath."config".DS."bedita.sys.php") ) {
+	include_once($appPath."config".DS."bedita.sys.php") ;	
+}
+unset($appPath);
 ?>

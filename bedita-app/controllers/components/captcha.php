@@ -38,9 +38,9 @@ class CaptchaComponent extends Object {
 	function startup(&$controller) {
 		$this->controller = &$controller;
 		// set default
-		$appPath = (defined("BEDITA_CORE_PATH"))? BEDITA_CORE_PATH : APP;
-		$this->background = $appPath . "/webroot/captcha/img/button.png";
-		$this->fontType = $appPath . "/webroot/captcha/fonts/Vera.ttf";
+		$appPath = (defined("BEDITA_CORE_PATH"))? BEDITA_CORE_PATH . DS : APP;
+		$this->background = $appPath . "webroot".DS."captcha".DS."img".DS."button.png";
+		$this->fontType = $appPath . "webroot".DS."captcha".DS."fonts".DS."Vera.ttf";
 	}
 	
 	public function image($options=array()) {
@@ -61,12 +61,12 @@ class CaptchaComponent extends Object {
 		header('Content-type: image/png'); 
 					
 		// Create a background image
-		if (is_dir(APP . "webroot/captcha/img/")) {
-			foreach (glob(APP . "webroot/captcha/img/*.png") as $filename) {
+		if (is_dir(APP . "webroot".DS."captcha".DS."img")) {
+			foreach (glob(APP . "webroot".DS."captcha".DS."img".DS."*.png") as $filename) {
 			    $bgArr[] = $filename;
 			}
 		} else {
-			foreach (glob(BEDITA_CORE_PATH . "webroot/captcha/img/*.png") as $filename) {
+			foreach (glob(BEDITA_CORE_PATH . "webroot".DS."captcha".DS."img".DS."*.png") as $filename) {
 			    $bgArr[] = $filename;
 			}
 		}
@@ -80,12 +80,12 @@ class CaptchaComponent extends Object {
 		$colour = imagecolorallocate($image, $this->fontColor["red"], $this->fontColor["green"], $this->fontColor["blue"]);
 		
 		// Set the font
-		if (is_dir(APP . "webroot/captcha/fonts")) {
-			foreach (glob(APP . "webroot/captcha/fonts/*.ttf") as $filename) {
+		if (is_dir(APP . "webroot".DS."captcha".DS."fonts")) {
+			foreach (glob(APP . "webroot".DS."captcha".DS."fonts".DS."*.ttf") as $filename) {
 			    $fontArr[] = $filename;
 			}
 		} else {
-			foreach (glob(BEDITA_CORE_PATH . "webroot/captcha/fonts/*.ttf") as $filename) {
+			foreach (glob(BEDITA_CORE_PATH . "webroot".DS."captcha".DS."fonts".DS."*.ttf") as $filename) {
 			    $fontArr[] = $filename;
 			}
 		}

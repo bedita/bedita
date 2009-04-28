@@ -33,34 +33,6 @@
 
 $config["projectName"] = "TEST";
 
-
-/**
- ** ******************************************
- **  FileSystem Paths, URIs, Files defaults
- ** ******************************************
- */
-
-// Multimedia - files' root folder on filesystem (use DS as Directory Separator, without trailing slash)
-// $config['mediaRoot'] = ROOT . DS . "media";
-
-
-// Multimedia - URL prefix (without trailing slash)
-// $config['mediaUrl'] = 'http://localhost/media';
-
-
-// Multimedia - cache folder (without trailing slashes, inside MEDIA_ROOT)
-// $config['imgCache'] = 'imgcache';
-
-
-// FileSystem directory for temporary file storage
-// $config['tmp'] = "/tmp" ;
-
-
-
-
-
-
-
 /**
  ** ******************************************
  **  Content and UI Elements defaults
@@ -99,11 +71,6 @@ $config["projectName"] = "TEST";
  ** ******************************************
  */
  
-// apache log statistics url - e.g. awstats ...
-//$config["logStatsUrl"] = array(
-//	"pub-nickname" => "http://user:passwd@awstatsurl",
-//);
-
 // Relations - local objects' relation types
 // $config["objRelationType"] = array ("language", "parent");
 
@@ -130,27 +97,10 @@ $config["projectName"] = "TEST";
 //$config['langOptionsIso'] = false; 
 
 
-
 // $config['searchFields'] = array(
 //	'ModelName' => array('title'=> 6, 'description' => 4),
 //) ;
 
-
-// smtp server configuration
-// $config['smtpOptions'] = array(
-//	 'port'=>'25',
-//	 'timeout'=>'30',
-//	 'host' => 'your.smtp.server',
-//	 'username'=>'your_smtp_username',
-//	 'password'=>'your_smtp_password'
-//);
-
-// mail support configuration
-//$config["mailSupport"] = array(
-//	"from" => "bedita-support@...",	
-//	'to' => "bedita-support@...",
-//	'subject' => "[bedita] error message",
-//);
 
 // specific css filename for newsletter templates
 //$config['newsletterCss'] = "base.css";

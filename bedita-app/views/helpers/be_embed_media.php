@@ -39,7 +39,6 @@ class BeEmbedMediaHelper extends AppHelper {
 		$this->_conf = Configure::read('media') ;
 		$this->_conf['root']  = Configure::read('mediaRoot');
 		$this->_conf['url']   = Configure::read('mediaUrl');
-		$this->_conf['cache'] = Configure::read('imgCache');
 		$this->_conf['tmp']   = Configure::read('tmp');
 		$this->_conf['imgMissingFile'] = Configure::read('imgMissingFile');
 	}

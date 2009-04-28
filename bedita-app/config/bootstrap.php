@@ -74,7 +74,7 @@ enableSubFoldersOn(ROOT.DS.APP_DIR.'/models', $modelPaths);
 Configure::load("bedita.ini") ;
 
 // load local installation specific settings
-if ( file_exists (ROOT.DS.APP_DIR.DS."config/bedita.cfg.php") ) {
+if ( file_exists (ROOT.DS.APP_DIR.DS."config".DS."bedita.cfg.php") ) {
 	Configure::load("bedita.cfg") ;	
 }
 
