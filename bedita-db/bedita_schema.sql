@@ -3,92 +3,53 @@
 -- 
 SET FOREIGN_KEY_CHECKS=0;
 
-DROP VIEW IF EXISTS `view_permissions` ;
-DROP VIEW IF EXISTS `view_trees` ;
-
--- old tables/views --
-DROP TABLE IF EXISTS `answers`;
-DROP TABLE IF EXISTS `documents`;
-DROP TABLE IF EXISTS `base_documents`;
-DROP TABLE IF EXISTS `content_bases`;
-DROP TABLE IF EXISTS `content_bases_objects`;
-DROP TABLE IF EXISTS `content_objects`;
-DROP TABLE IF EXISTS `content_bases_object_categories`;
-DROP TABLE IF EXISTS `events`;
-DROP TABLE IF EXISTS `short_news`;
-DROP TABLE IF EXISTS `audio`;
-DROP TABLE IF EXISTS `video`;
-DROP TABLE IF EXISTS `content_bases_object_categories`;
-DROP TABLE IF EXISTS `contents_object_categories`;
-DROP TABLE IF EXISTS `newsletters`;
-DROP TABLE IF EXISTS `files`;
-DROP TABLE IF EXISTS `audios`;
-DROP TABLE IF EXISTS `collections`;
-DROP TABLE IF EXISTS `bibliographies`;
-DROP TABLE IF EXISTS `biblio_items`;
-DROP TABLE IF EXISTS `mail_addresses`;
-DROP TABLE IF EXISTS `mail_group_addresses`;
-DROP VIEW IF EXISTS `view_galleries` ;
-DROP VIEW IF EXISTS `view_communities`;
-DROP VIEW IF EXISTS `view_faqs`;
-DROP VIEW IF EXISTS `view_questionnaires`;
-DROP VIEW IF EXISTS `view_timelines`;
-DROP VIEW IF EXISTS `view_scrolls`;
-DROP VIEW IF EXISTS `view_sections`;
-DROP VIEW IF EXISTS `view_streams`;
-DROP TABLE IF EXISTS `custom_properties`;
-DROP TABLE IF EXISTS `faq_questions`;
-DROP TABLE IF EXISTS `question_types`;
-
--- current tables --
-DROP TABLE IF EXISTS `cake_sessions`;
-DROP TABLE IF EXISTS `links`;
-DROP TABLE IF EXISTS `cards`;
-DROP TABLE IF EXISTS `products`;
-DROP TABLE IF EXISTS `books`;
-DROP TABLE IF EXISTS `date_items`;
-DROP TABLE IF EXISTS `geo_tags`;
-DROP TABLE IF EXISTS `object_users`;
-DROP TABLE IF EXISTS `object_relations`;
-DROP TABLE IF EXISTS `object_categories`;
-DROP TABLE IF EXISTS `object_properties`;
-DROP TABLE IF EXISTS `object_editors`;
-DROP TABLE IF EXISTS `contents`;
-DROP TABLE IF EXISTS `authors`;
-DROP TABLE IF EXISTS `images`;
-DROP TABLE IF EXISTS `categories`;
-DROP TABLE IF EXISTS `audio_videos`;
-DROP TABLE IF EXISTS `videos`;
+DROP TABLE IF EXISTS `annotations`;
 DROP TABLE IF EXISTS `areas`;
-DROP TABLE IF EXISTS `sections`;
-DROP TABLE IF EXISTS `streams`;
-DROP TABLE IF EXISTS `mail_messages`;
-DROP TABLE IF EXISTS `mail_templates`;
+DROP TABLE IF EXISTS `authors`;
+DROP TABLE IF EXISTS `banned_ips`;
+DROP TABLE IF EXISTS `books`;
+DROP TABLE IF EXISTS `cards`;
+DROP TABLE IF EXISTS `cake_sessions`;
+DROP TABLE IF EXISTS `categories`;
+DROP TABLE IF EXISTS `contents`;
+DROP TABLE IF EXISTS `date_items`;
+DROP TABLE IF EXISTS `event_logs`;
+DROP TABLE IF EXISTS `geo_tags`;
+DROP TABLE IF EXISTS `groups`;
+DROP TABLE IF EXISTS `groups_users`;
+DROP TABLE IF EXISTS `images`;
+DROP TABLE IF EXISTS `lang_texts`;
+DROP TABLE IF EXISTS `links`;
 DROP TABLE IF EXISTS `mail_groups`;
 DROP TABLE IF EXISTS `mail_group_cards`;
 DROP TABLE IF EXISTS `mail_group_messages`;
 DROP TABLE IF EXISTS `mail_jobs`;
-DROP TABLE IF EXISTS `lang_texts`;
-DROP TABLE IF EXISTS `permissions`;
+DROP TABLE IF EXISTS `mail_messages`;
+DROP TABLE IF EXISTS `mail_templates`;
+DROP TABLE IF EXISTS `modules`;
+DROP TABLE IF EXISTS `objects`;
+DROP TABLE IF EXISTS `object_categories`;
+DROP TABLE IF EXISTS `object_editors`;
+DROP TABLE IF EXISTS `object_properties`;
+DROP TABLE IF EXISTS `object_relations`;
+DROP TABLE IF EXISTS `object_types`;
 DROP TABLE IF EXISTS `object_users`;
-DROP TABLE IF EXISTS `versions`;
-DROP TABLE IF EXISTS `trees`;
-DROP TABLE IF EXISTS `comments`;
-DROP TABLE IF EXISTS `annotations`;
+DROP TABLE IF EXISTS `permissions`;
+DROP TABLE IF EXISTS `permission_modules`;
+DROP TABLE IF EXISTS `products`;
 DROP TABLE IF EXISTS `properties`;
 DROP TABLE IF EXISTS `property_options`;
-DROP TABLE IF EXISTS `objects`;
-DROP TABLE IF EXISTS `object_types`;
-DROP TABLE IF EXISTS `groups_users`;
-DROP TABLE IF EXISTS `permission_modules`;
-DROP TABLE IF EXISTS `modules`;
-DROP TABLE IF EXISTS `users`;
-DROP TABLE IF EXISTS `groups`;
-DROP TABLE IF EXISTS `event_logs`;
-DROP TABLE IF EXISTS `search_texts`;
-DROP TABLE IF EXISTS `banned_ips`;
 DROP TABLE IF EXISTS `questions`;
 DROP TABLE IF EXISTS `question_answers`;
+DROP TABLE IF EXISTS `search_texts`;
+DROP TABLE IF EXISTS `sections`;
+DROP TABLE IF EXISTS `streams`;
+DROP TABLE IF EXISTS `trees`;
+DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `versions`;
+DROP TABLE IF EXISTS `videos`;
+DROP VIEW IF EXISTS `view_permissions` ;
+DROP VIEW IF EXISTS `view_trees` ;
 
 CREATE TABLE cake_sessions (
   id varchar(255) NOT NULL default '',
@@ -144,6 +105,8 @@ CREATE TABLE users (
   created datetime default NULL,
   modified datetime default NULL,
   level TINYINT(1) NOT NULL DEFAULT '0',
+  auth_type varchar(255) default NULL,
+  auth_params TEXT default NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY userid (userid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -175,7 +138,7 @@ CREATE TABLE object_types (
 CREATE TABLE objects (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   object_type_id INTEGER UNSIGNED NOT NULL,
-  `status` ENUM('on','off','draft','staging') DEFAULT 'draft',
+  `status` ENUM('on','off','draft') DEFAULT 'draft',
   created DATETIME NULL,
   modified DATETIME NULL,
   title VARCHAR(255) NULL,
