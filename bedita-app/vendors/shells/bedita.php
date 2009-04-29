@@ -380,18 +380,26 @@ class BeditaShell extends Shell {
 		unlink($sqlFileName);
 		$this->out("$dbCfg database updated");
 
-		// import configuration file
-		$cfgFileName = ROOT.DS.APP_DIR.DS."config".DS."bedita.cfg.php";
-		if (file_exists($cfgFileName)) {
-			$res = $this->in($cfgFileName. " already exists, overwrite with new configuration? [y/n]");
-			if($res == "y") {
-       			$this->importCfg($tmpBasePath."bedita.cfg.php",$cfgFileName);
+        $this->hr();
+		// import new configuration file, if present
+		$newCfgFileName = $tmpBasePath."bedita.cfg.php";
+		if (file_exists($newCfgFileName)) {
+			// overwrite current cfg file
+			$cfgFileName = ROOT.DS.APP_DIR.DS."config".DS."bedita.cfg.php";
+			if (file_exists($cfgFileName)) {
+				$res = $this->in($cfgFileName. " already exists, overwrite with new configuration? [y/n]");
+				if($res == "y") {
+	       			$this->importCfg($newCfgFileName, $cfgFileName);
+				} else {
+					$this->out("Configuration not updated!");
+				}
 			} else {
-				$this->out("Configuration not updated!");
+				$this->importCfg($newCfgFileName,$cfgFileName);
 			}
 		} else {
-			$this->importCfg($tmpBasePath."bedita.cfg.php",$cfgFileName);
+			$this->out("Configuration 'bedita.cfg.php' not present in .tar file");
 		}
+		$this->hr();
 		
 		$mediaRoot = Configure::read("mediaRoot");
 		
