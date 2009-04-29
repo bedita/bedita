@@ -231,12 +231,12 @@ class BeditaShell extends Shell {
 					$this->checkApp();
 				} else {
 					$this->hr();
-					$this->out("HINT: edit \$config['mediaRoot'] in bedita-app/config/bedita.cfg.php, if necessary uncomment it.");
+					$this->out("HINT: edit \$config['mediaRoot'] in bedita-app/config/bedita.sys.php, if necessary uncomment it.");
 					$this->out("");
 				}
 			}  else {
 				$this->hr();
-				$this->out("HINT: edit \$config['mediaUrl'] in bedita-app/config/bedita.cfg.php, if necessary uncomment it.");
+				$this->out("HINT: edit \$config['mediaUrl'] in bedita-app/config/bedita.sys.php, if necessary uncomment it.");
 				$this->out("");
 			}
 		} else {
@@ -711,7 +711,9 @@ class BeditaShell extends Shell {
         // config/database.php
         $this->checkAppFile($appPath.DS."config".DS."database.php");
         if (!isset($this->params['frontend'])) {
-	        // config/bedita.cfg.php
+	        //config/bedita.sys.php
+        	$this->checkAppFile($appPath.DS."config".DS."bedita.sys.php");
+        	// config/bedita.cfg.php
 	        $this->checkAppFile($appPath.DS."config".DS."bedita.cfg.php");
         }
         // index.php
