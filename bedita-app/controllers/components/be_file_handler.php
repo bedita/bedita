@@ -118,17 +118,15 @@ class BeFileHandlerComponent extends Object {
 	 * @param integer $id	object id
 	 */
 	function del($id) {
-		if(!($path = $this->Stream->read("path", $id))) return true ;
-		$path = (isset($path['Stream']['path']))?$path['Stream']['path']:$path ;
-		// If file path is local, delete
+		if(!($path = $this->Stream->read("path", $id))) 
+			return true ;
+		$path = (isset($path['Stream']['path']))? $path['Stream']['path'] : $path ;
+		// delete local file
 		if(!$this->_isURL($path)) {
-			if(!$this->Transaction->rm(Configure::read("mediaRoot").$path)) return false ;
+			$this->_removeFile($path) ;	
 		}
 		$model = $this->BEObject->getType($id) ;
-		if(!class_exists($model)) {
-			loadModel($model) ;
-		}
-		$mod = new $model() ;
+		$mod = ClassRegistry::init($model);
 	 	if(!$mod->del($id)) {
 			throw new BEditaDeleteStreamObjException(__("Error deleting stream object",true)) ;	
 	 	}
@@ -469,6 +467,13 @@ class BeFileHandlerComponent extends Object {
 			if(!$this->Transaction->rm($path))
 				return false ;
 			
+			//remove thumb cached and cache directory
+			$cacheDir = dirname($path) . DS . substr(pathinfo($path, PATHINFO_FILENAME),0,5) . "_" . md5(basename($path));
+			if (is_dir($cacheDir)) {
+				$cacheFolder = new Folder($cacheDir);
+				$cacheFolder->delete();
+			}
+			
 			// Se la directory contenitore e' vuota, la cancella
 			$dir = dirname($path) ;
 			while($dir != Configure::read("mediaRoot")) {
@@ -509,7 +514,8 @@ class BeFileHandlerComponent extends Object {
    		
    		// Determina le directory dove salvare il file
 		$md5 = md5($name) ;
-		preg_match("/(\w{2,2})(\w{2,2})(\w{2,2})(\w{2,2})/", $md5, $dirs) ;
+		//preg_match("/(\w{2,2})(\w{2,2})(\w{2,2})(\w{2,2})/", $md5, $dirs) ;
+		preg_match("/(\w{2})(\w{2})/", $md5, $dirs) ;
 		array_shift($dirs) ;
 		
 		$pointPosition = strrpos($name,".");

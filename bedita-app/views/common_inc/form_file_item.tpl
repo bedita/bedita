@@ -14,8 +14,6 @@
 {assign_concat var="linkUrl"            0=$html->url('/multimedia/view/') 1=$item.id}
 
 {assign_concat var="imageAltAttribute"	0="alt='"  1=$item.title 2="'"}
-{assign_concat var="mediaCacheBaseURL"	0=$conf->mediaUrl  1="/" 2=$conf->imgCache 3="/"}
-{assign_concat var="mediaCachePATH"		0=$conf->mediaRoot 1=$conf->DS 2=$conf->imgCache 3=$conf->DS}
 
 {assign_associative var="params" width=$thumbWidth height=$thumbHeight longside=false mode="fill" modeparam="000000" type=null upscale=false}
 {assign_associative var="htmlAttr" width=$thumbWidth height=$thumbHeight alt=$item.title title=$item.name}

@@ -116,7 +116,11 @@ class BeThumbHelper extends AppHelper {
 		$this->_imageInfo['filename']	= $be_obj['name'];
 		$this->_imageInfo['ext']		= end ( explode ( '.', $this->_imageInfo['filename'] ) );
 		$this->_imageInfo['filepath']	= $this->_conf['root'] . $this->_imageInfo['path'];  // absolute
-
+		$this->_imageInfo['filenameBase'] = pathinfo($this->_imageInfo['filepath'], PATHINFO_FILENAME);
+		$this->_imageInfo['filenameMD5'] = md5($this->_imageInfo['filename']);
+		$this->_imageInfo['cacheDirectory'] = dirname($this->_imageInfo['filepath']) . DS . 
+											  substr($this->_imageInfo['filenameBase'],0,5) . "_" . 
+											  $this->_imageInfo['filenameMD5'];
 
 		// test source file
 		if ( !$this->_testForSource () )
@@ -392,10 +396,9 @@ class BeThumbHelper extends AppHelper {
 		$this->_imageInfo['modified'] = filemtime ($this->_imageInfo['filepath']);
 		$this->_imageInfo['hash']     = md5 ( $this->_imageInfo['filename'] . $this->_imageInfo['modified'] . join($this->_imageTarget) );
 	
-	
 		// destination filename = orig_filename + "_" + w + "x" + h + "_" + hash + "." + ext
-		return pathinfo ( $this->_imageInfo['filepath'], PATHINFO_FILENAME )				. "_" .
-							$this->_imageTarget['w'] . "x" . $this->_imageTarget['h']		. "_" .
+		return $this->_imageInfo['filenameBase'] . "_" .
+							$this->_imageTarget['w'] . "x" . $this->_imageTarget['h'] . "_" .
 							$this->_imageInfo['hash'] . "." . $this->_imageTarget['type'];
 	}
 
@@ -407,10 +410,26 @@ class BeThumbHelper extends AppHelper {
 	private function _targetFilePath ()
 	{
 		// cached file is in the same folder as original
-		if ( $this->_imageTarget['filename'] )
-			return dirname ($this->_imageInfo['filepath']) . DS . $this->_imageTarget['filename'];
+		if ( $this->_imageTarget['filename']) 
+		{
+			if (!file_exists($this->_imageInfo['cacheDirectory']))
+			{
+				if (!mkdir($this->_imageInfo['cacheDirectory']))
+				{
+					return false;
+				}
+			}
+			elseif (!is_dir($this->_imageInfo['cacheDirectory']))
+			{
+				return false;
+			}
+			
+			return $this->_imageInfo['cacheDirectory'] . DS . $this->_imageTarget['filename'];
+		}
 		else
-			return false;	
+		{
+			return false;
+		}
 	}
 
 
@@ -442,12 +461,12 @@ class BeThumbHelper extends AppHelper {
 
 
 	/*
-	 * effectively call phpThumb class (vendor), resaple image and cache file
+	 * effectively call phpThumb class (vendor), resample image and cache file
 	 */
 	private function _resample ()
 	{
 		// import and instantiate phpThumb class from vendors
-		app::import ('Vendor', 'phpthumb', array ('file' => 'phpThumb' . DS . 'phpthumb.class.php') );
+		App::import ('Vendor', 'phpthumb', array ('file' => 'phpThumb' . DS . 'phpthumb.class.php') );
 		$thumbnail = new phpthumb;
 		$thumbnail->resetObject(); // important if calling the same object for multiple images
 
@@ -462,7 +481,7 @@ class BeThumbHelper extends AppHelper {
 		$thumbnail->config_output_format         = $this->_imageTarget['type'];
 		$thumbnail->config_temp_directory        = $this->_conf['tmp'] ;
 		$thumbnail->cache_filename               = $this->_imageTarget['filename'];
-		$thumbnail->config_cache_directory       = dirname ($this->_imageInfo['filepath']);
+		$thumbnail->config_cache_directory       = $this->_imageInfo['cacheDirectory'];
 		$thumbnail->config_error_die_on_error    = true;
 		$thumbnail->config_cache_disable_warning = true;
 		$thumbnail->config_prefer_imagemagick    = true;
@@ -680,7 +699,11 @@ class BeThumbHelper extends AppHelper {
 		$PathPcs = explode ("/", $URLpcs['path']);
 		$URLpcs['file'] = end ($PathPcs);
 		unset ($PathPcs[key($PathPcs)]);
-		$URLpcs['dir'] = implode ("/", $PathPcs);
+		$URLpcs['dir'] = implode ("/", $PathPcs); 
+		if (file_exists($this->_imageInfo['cacheDirectory']) && is_dir($this->_imageInfo['cacheDirectory']))
+		{
+			$URLpcs['dir'] .= DS . substr($this->_imageInfo['filenameBase'],0,5) . "_" . $this->_imageInfo['filenameMD5'];;
+		}
 		return ($URLpcs);
 	}
 	
