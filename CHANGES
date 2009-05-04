@@ -1,8 +1,40 @@
+Version 3.0.beta1
+
+ User-visible changes:
+	* #52: added section fields to map statistics url, statistics provider and code to add at the end of every page (visible in Publishing module)
+	* #83: improved preview feature
+	* #151: correct users logged info and added session information 
+	* #116: multiple upload (with jquery.uploadify)
+	* "short text" only presents in "documents" and in the contents with field "abstract" already filled
+	* #169: added minimal user preferences in homepage to change password and other (only change password, name and email work for now)
+	* many improvements on user interface 
+ 
+ Frontend changes:
+ 	* #132: automagic sitemap generation in both XML and views way by www.example.com/sitemap.xml and www.example.com/sitemap
+  	* #132: improved FrontendController::route to manage special cases (/sitemap, /download, /xml, /robots.txt....) without specific routing rules
+  	* manage /section/subsection/subsubsection frontend URL to show subsubsection
+  	* added FrontendController::loadAnnotations method to allow comments pagination
+  	* added FrontendController::json method to get json object (/json/nickname_object)
+  	* added FrontendController::loadPublications to get all publications of a BEdita instance
+  	
+ Developer-visible changes:
+ 	* upgrade to Cakephp 1.2.2.8120
+ 	* added cake.bat file to use shell scripts (convenient script to call Cakephp shell for Windows users)
+	* #167: new infrastructure to new note system. Missing UI
+	* #116 added mime type array (and shell script to generate it) used in upload files when PECL fileinfo extension isn't present	
+	* #164: publications extend sections. Infrastructure with dummy model for object that extends other object
+	* #171: split bedita.cfg.php in two files. bedita.sys.php containing specific server configuration and bedita.cfg.php containing specific BEdita instance configuration (like relationship between objects)
+	* files uploaded in two subdirectories level instead of four and add cache directory with thumbnail for any image type files
+	* bugfix
+  
+
+
+
 Version 3.0.alpha1
 
  User-visible changes:
-  * FIRST PUBLIC RELASE - change details from next release
+ 	* FIRST PUBLIC RELEASE - change details from next release
 
   
  Developer-visible changes:
-  * FIRST PUBLIC RELASE - change details from next release
+ 	* FIRST PUBLIC RELEASE - change details from next release
