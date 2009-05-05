@@ -4,7 +4,7 @@ $rel["password"]="...";
 $rel["url"]="https://svn.channelweb.it/bedita/trunk";
 
 $rel["releaseDir"]=".";
-$rel["releaseBaseName"]="BEdita-agpl-3.0.alpha1.";
+$rel["releaseBaseName"]="BEdita-agpl-3.0.beta1.";
 
 $rel["removeFiles"]= array( 
 	"bedita-db".DS."bedita_init_data.sql",

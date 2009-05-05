@@ -7,7 +7,7 @@ Version 3.0.beta1
 	* #116: multiple upload (with jquery.uploadify)
 	* "short text" only presents in "documents" and in the contents with field "abstract" already filled
 	* #169: added minimal user preferences in homepage to change password and other (only change password, name and email work for now)
-	* many improvements on user interface 
+	* many minor UI improvements 
  
  Frontend changes:
  	* #132: automagic sitemap generation in both XML and views way by www.example.com/sitemap.xml and www.example.com/sitemap
@@ -25,9 +25,8 @@ Version 3.0.beta1
 	* #164: publications extend sections. Infrastructure with dummy model for object that extends other object
 	* #171: split bedita.cfg.php in two files. bedita.sys.php containing specific server configuration and bedita.cfg.php containing specific BEdita instance configuration (like relationship between objects)
 	* files uploaded in two subdirectories level instead of four and add cache directory with thumbnail for any image type files
-	* bugfix
+	* other small bugfixes
   
-
 
 
 Version 3.0.alpha1
