@@ -100,9 +100,8 @@ abstract class FrontendController extends AppController {
 	protected function setupLocale() {
 
 		$this->currLang = $this->Session->read('Config.language');
-
+		$conf = Configure::getInstance();
 		if($this->currLang === null || empty($this->currLang)) {
-			$conf = Configure::getInstance();
 			if (isset($conf->cookieName["langSelect"])) {
 				$lang = $this->Cookie->read($conf->cookieName["langSelect"]);
 			}
@@ -116,8 +115,8 @@ abstract class FrontendController extends AppController {
 				if(!isset($this->currLang)) {
 					$this->currLang = $conf->frontendLang;
 				} else if(!array_key_exists($this->currLang, $conf->frontendLangs)) {
-					if (isset($conf->frontendLangsMap) && $lang = $conf->frontendLangsMap[$this->currLang]) {
-						$this->currLang = (!empty($lang))? $lang : $conf->frontendLang;
+					if (!empty($conf->frontendLangsMap[$this->currLang])) {
+						$this->currLang = $conf->frontendLangsMap[$this->currLang];
 					} else {
 						$this->currLang = $conf->frontendLang;
 					}
@@ -128,6 +127,12 @@ abstract class FrontendController extends AppController {
 			Configure::write('Config.language', $this->currLang);
 		}
 		$this->set('currLang', $this->currLang);
+		if(isset( $conf->datePatternLocale[$this->currLang])) {
+			Configure::write('datePattern', $conf->datePatternLocale[$this->currLang]);
+		}
+		if(isset( $conf->dateTimePatternLocale[$this->currLang])) {
+			Configure::write('dateTimePattern', $conf->dateTimePatternLocale[$this->currLang]);
+		}
 	}
 
 	public function changeLang($lang, $forward = null) {
@@ -538,6 +543,8 @@ abstract class FrontendController extends AppController {
 		if($this->checkPubDate && !$this->checkPubblicationDate($obj)) {
 			throw new BeditaException(__("Content not found", true));
 		}
+		
+		$obj["publication_date"] = (!empty($obj["start"]))? $obj["start"] : $obj["created"];
 
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
 

@@ -124,11 +124,10 @@ class AppController extends Controller
 	protected function setupLocale() {
 
 		$this->currLang = $this->Session->read('Config.language');
-
+		$conf = Configure::getInstance();
 		if($this->currLang === null || empty($this->currLang)) {
 			// read Cookie
 			$lang = $this->Cookie->read('bedita.lang');
-			$conf = Configure::getInstance();
 			if(isset($lang) && $conf->multilang === true) {
 				$this->Session->write('Config.language', $lang);
 				$this->currLang = $lang;
