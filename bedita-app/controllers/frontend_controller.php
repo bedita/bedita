@@ -398,7 +398,10 @@ abstract class FrontendController extends AppController {
 	   if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);
-	            $rssItems[] = array( 'title' => $obj['title'], 'description' => $obj['description'],
+				$description = $obj['description'];
+				$description .= (!empty($obj['abstract']) && !empty($description))? "<hr/>" .  $obj['abstract'] : $obj['abstract'];
+				$description .= (!empty($obj['body']) && !empty($description))? "<hr/>" .  $obj['body'] : $obj['body'];
+	            $rssItems[] = array( 'title' => $obj['title'], 'description' => $description,
 	                'pubDate' => $obj['created'], 'link' => "/section/".$s['nickname']."/".$item['id']);
 			}
 		}
