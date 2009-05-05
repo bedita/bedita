@@ -15,6 +15,7 @@ if (file_exists (BEDITA_CORE_PATH . DS . "config" . DS . "bedita.cfg.php") ) {
 // EDITABLE STUFF         ///////////////
 //////////////////////////////////////////////////////
 $config['sitemapAllContent'] = true;
+$config['staging'] 			= false;
 $config['draft']            = false;
 $config['filterPublicationDate'] = true;
 $config['frontendAreaId'] 	= 1;
