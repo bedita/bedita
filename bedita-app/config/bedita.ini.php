@@ -44,6 +44,9 @@ $config["majorVersion"] = "3.0.aplha1"; // don't override -- admin/system
  ** ******************************************
  */
 
+// BEdita URL
+$config['beditaUrl'] = "http://localhost/bedita"; // override in bedita.sys
+
 // Multimedia - files' root folder on filesystem (use DS as Directory Separator, without trailing slash)
 $config['mediaRoot'] = ROOT . DS . "media";
 
