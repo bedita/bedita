@@ -40,6 +40,7 @@ $rel["renameFiles"]= array(
 	"bedita-db".DS."bedita_init_agpl.sql" => "bedita-db".DS."bedita_init_data.sql",
 	"bedita-app".DS."config".DS."core.php.sample" => "bedita-app".DS."config".DS."core.php",
 	"bedita-app".DS."config".DS."database.php.sample" => "bedita-app".DS."config".DS."database.php",
+	"bedita-app".DS."config".DS."bedita.sys.php.sample" => "bedita-app".DS."config".DS."bedita.sys.php",
 	"bedita-app".DS."config".DS."bedita.cfg.php.sample" => "bedita-app".DS."config".DS."bedita.cfg.php",
 	"bedita-app".DS."webroot".DS."index.php.sample" => "bedita-app".DS."webroot".DS."index.php",
 	"bedita-front".DS."config".DS."core.php.sample" => "bedita-front".DS."config".DS."core.php",
