@@ -280,7 +280,7 @@ $(document).ready(function(){
 		<label>{t}title{/t}:</label><br />
 		<input type="text" id="title_master" name="" value="{$object_master.title}" readonly="readonly"/><br />
 		{if !empty($object_master.description)}
-		<label>{t}tescription{/t}:</label><br />
+		<label>{t}description{/t}:</label><br />
 		<textarea id="subtitle" style="height:30px" class="shortdesc autogrowarea" name="">{$object_master.description}</textarea>
 		{/if}
 	</fieldset>
