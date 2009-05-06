@@ -35,22 +35,90 @@ if(defined('BEDITA_CORE_PATH')) {
 
 abstract class FrontendController extends AppController {
 
+	/**
+	 * object status used to filter 
+	 * 
+	 * @var array
+	 */
 	private $status = array('on');
+	
+	/**
+	 * true to check Content.start >= now
+	 * 
+	 * @var boolean 
+	 */
 	protected $checkPubDate = true;
+	
+	/**
+	 * true to load objects in base level mode (BEObject without relations and LangText model are loaded)
+	 * 
+	 * @var boolean
+	 */
 	protected $baseLevel = false;
+	
+	/**
+	 * default options used to find sections' children
+	 * 		"showAllContents" => true to get all sections' children when a content is selected
+	 * 							 false to get only content selected
+	 * 		"itemsByType" => true to divide children by type (i.e. Document, Event,....)
+	 * 						 false to put all content type children in 'childContents' array and section type children in 'sectionChilds'
+	 * 		"childrenParams" array to define special filters and pagination options   
+	 * 
+	 * @var array
+	 */
 	protected $sectionOptions = array("showAllContents" => true, "itemsByType" => false, "childrenParams" => array());
-	protected $xmlFormat = "attributes"; // possible values "tags", "attributes"
+	
+	/**
+	 * set the XML format to display, possible values "tags", "attributes"
+	 * 
+	 * @var string
+	 */
+	protected $xmlFormat = "attributes";
+	
+	/**
+	 * current publication
+	 * 
+	 * @var unknown_type
+	 */
 	protected $publication = "";
-	protected $captchaOptions = array(); // default defined in captcha component
+	
+	/**
+	 * default defined in captcha component
+	 * 
+	 * @var array
+	 */
+	protected $captchaOptions = array();
+	
+	/**
+	 * annotation options
+	 * 		object type => find options (filter and pagination)
+	 * 
+	 * @var array
+	 */
 	protected $annotationOptions = array("comment" => array());
+	
+	/**
+	 * tag options
+	 * 
+	 * @var array
+	 */
 	protected $tagOptions = array();
 
+	
+	/**
+	 * every frontend has to implement checkLogin
+	 * 
+	 * @see bedita-app/AppController#checkLogin()
+	 */
 	protected function checkLogin() {
-		return false; // every frontend has to implement checkLogin
+		return false;
 	}
 	
 	/**
+	 * called before action to initialize
 	 * $uses & $components array don't work... (abstract class ??)
+	 * 
+	 * @see bedita-app/AppController#initAttributes()
 	 */
 	final protected function initAttributes() {
 		if(!isset($this->BEObject)) {
@@ -94,8 +162,9 @@ abstract class FrontendController extends AppController {
 	}
 
 	/**
-	 * Called in beforefilter...session, cookie, http agent...
-	 *
+	 * override AppController::setupLocale. Used setup specific locale
+	 * 
+	 * @see bedita-app/AppController#setupLocale()
 	 */
 	protected function setupLocale() {
 
@@ -135,6 +204,13 @@ abstract class FrontendController extends AppController {
 		}
 	}
 
+	/**
+	 * change language
+	 * 
+	 * @param string $lang
+	 * @param string $forward redirect action after changing language. If it's null redirect to refere
+	 * @return unknown_type
+	 */
 	public function changeLang($lang, $forward = null) {
 
 		if (empty($lang)) {
@@ -167,7 +243,7 @@ abstract class FrontendController extends AppController {
 	}
 
 	
-		/**
+	/**
 	 * check if current date is compatible with required pubblication dates (start/end date)
 	 *
 	 * @param array $obj
@@ -186,6 +262,12 @@ abstract class FrontendController extends AppController {
 		return true;
 	}
 	
+	/**
+	 * handle Exceptions
+	 * 
+	 * @param Exception $ex
+	 * @return unknown_type
+	 */
 	public static function handleExceptions(Exception $ex) {
 
 		if ($ex instanceof BeditaPublicationException) {
@@ -207,6 +289,10 @@ abstract class FrontendController extends AppController {
 		}
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see bedita-app/AppController#handleError()
+	 */
 	public function handleError($eventMsg, $userMsg, $errTrace) {
 		if(Configure::read('debug') > 0) {
 			$this->log($errTrace);
@@ -219,9 +305,9 @@ abstract class FrontendController extends AppController {
 	* @param integer $parentName		parent nickname or id 
 	* @param bool $loadContents			if it's true load all contents too. Default false
 	* @param array $exclude_nicknames	list exclude sections 
-	* @param integer $depth				tree's depth level (default=1000 => all levels)
+	* @param integer $depth				tree's depth level (default=10000 => all levels)
 	* */
-	protected function loadSectionsTree($parentName,  $loadContents=false, array $exclude_nicknames=null, $depth=1000) {
+	protected function loadSectionsTree($parentName,  $loadContents=false, array $exclude_nicknames=null, $depth=10000) {
 
 		$conf = Configure::getInstance(); 
 		$parent_id = is_numeric($parentName) ? $parentName: $this->BEObject->getIdFromNickname($parentName);
@@ -327,6 +413,11 @@ abstract class FrontendController extends AppController {
 		$this->set($tplVar, $publications);
 	}
 	
+	/**
+	 * preapre an XML containing sitemap specification
+	 * view in bedita-app/views/pages/sitemap_xml.tpl
+	 * 
+	 */
 	public function sitemapXml() {
 		$this->sitemap(true);
 		$this->layout = null;
@@ -334,6 +425,12 @@ abstract class FrontendController extends AppController {
 		header("Content-type: text/xml; charset=utf-8");
 	}
 
+	/**
+	 * build array for sitemap
+	 * 
+	 * @param bool $xml_out
+	 * @return array
+	 */
 	public function sitemap($xml_out = false) {
 		$conf = Configure::getInstance() ;
 		$extract_all = (!empty($conf->sitemapAllContent)) ? $conf->sitemapAllContent : false;
@@ -373,6 +470,9 @@ abstract class FrontendController extends AppController {
 		$this->sitemapBeforeRender();
 	}
 
+	/**
+	 * called after build default sitemap array to customize it
+	 */
 	protected function sitemapBeforeRender() {}
 	
 	/**
@@ -449,13 +549,18 @@ abstract class FrontendController extends AppController {
 	 * i.e. http://www.example.com/xmlobject/nickname/format:tags output a tag style xml 
 	 * default is defined by class attribute xmlFormat
 	 * 
-	 * @param unknown_type $name, nickname or id
+	 * @param string $name, nickname or id
 	 */
 	public function xmlobject($name) {
 		$object = (is_numeric($name))? $this->loadObj($name) : $this->loadObjByNick($name);
 		$this->outputXML(array("object" => $object));
 	}
 	
+	/**
+	 * prepare to XML output
+	 * 
+	 * @param $data
+	 */
 	private function outputXML($data) {
 		header("content-type: text/xml; charset=utf-8");
 		if(!in_array('Xml', $this->helpers)) {
@@ -497,7 +602,7 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
-	 * Load bedita Object, set view var with $var_name or object type (e.g. "Document", "Event"..)
+	 * Load bedita Object and set view var with $var_name or object type (e.g. "Document", "Event"..)
 	 * Returns object loaded
 	 * Throws Exception on errors
 	 *
@@ -569,11 +674,16 @@ abstract class FrontendController extends AppController {
 	}
 
 	/**
-	 * Load and set objects in section $parent_id
+	 * Load objects in section $parent_id and set in view vars an array for each object type
+	 * (e.g. in view you will have
+	 * 		$Document => array(0 => ..., 1 => ...)
+	 * 		$Event"  => array(0 => ..., 1 => ...)
+	 * )
 	 *
 	 * @param int $parent_id
+	 * @param array $options, filter and pagination options
 	 */
-	protected function loadAndSetSectionObjects($parent_id) {
+	protected function loadAndSetSectionObjects($parent_id, $options=array()) {
 		$sectionItems = $this->loadSectionObjects($parent_id);
 		foreach($sectionItems as $key => $objs) {
 			$this->set($key, $objs);
@@ -581,9 +691,10 @@ abstract class FrontendController extends AppController {
 	}
 
 	/**
-	 * Load and set objects in section $parentNick
+	 * Load objects in section $parentNick and set in view vars an array for each object type
 	 *
 	 * @param string $parentNick
+	 * @param array $options, filter and pagination options
 	 */
 	protected function loadAndSetSectionObjectsByNick($parentNick, $options=array()) {
 		$sectionItems = $this->loadSectionObjectsByNick($parentNick, $options);
@@ -592,6 +703,14 @@ abstract class FrontendController extends AppController {
 		}
 	}
 	
+	/**
+	 * Load objects in section $parentNick
+	 *
+	 * @param string $parentNick
+	 * @param array $options, filter and pagination options
+	 * 
+	 * @return array
+	 */
 	protected function loadSectionObjectsByNick($parentNick, $options=array()) {
 		return $this->loadSectionObjects($this->BEObject->getIdFromNickname($parentNick), $options);
 	}	
@@ -600,6 +719,8 @@ abstract class FrontendController extends AppController {
 	 * Load objects in section $parent_id
 	 *
 	 * @param int $parent_id
+	 * @param array $options, filter and pagination options
+	 * 
 	 * @return array
 	 */
 	protected function loadSectionObjects($parent_id, $options=array()) {
@@ -650,6 +771,11 @@ abstract class FrontendController extends AppController {
 	
 	}
 	
+	/**
+	 * find first section that contain content ($name) then call section method
+	 * 
+	 * @param $name, id or content nickname
+	 */
 	public function content($name) {
 		if(empty($name))
 			throw new BeditaException(__("Content not found", true));
@@ -674,8 +800,8 @@ abstract class FrontendController extends AppController {
 	 * 
 	 * Set section and:
 	 * if $contentName=null set all contents in section
-	 * if $contentName is defined set single content (default)
-	 * if $contentName is defined and $this->showAllContents=true set content and other contents too 
+	 * if $contentName is defined set single content
+	 * if $contentName is defined and $this->showAllContents=true set content and other contents too (default) 
 	 * 
 	 * Execute 'sectionNickname'BeforeFilter and/or 'sectionNickName'BeforeRender 
 	 * if they're set in the controller (i.e. pages_controller.php)				
@@ -759,9 +885,8 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
-	 * route to section or content
+	 * route to section, content or another method defined in reservedWords
 	 *
-	 * @param unknown_type $name, id or nickname
 	 */
 	public function route() {
 
@@ -801,7 +926,7 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
-	 * find parent path of $object_id (exclude publication)
+	 * find parent path of $object_id (excluded publication)
 	 *
 	 * @param int $object_id
 	 * @return array (the keys are object's id)
@@ -918,6 +1043,8 @@ abstract class FrontendController extends AppController {
 	 * load all tag
 	 *
 	 * @param string $tplVar
+	 * @param bool $cloud, if true set 'class' key 
+	 * 			(possible value: smallestTag, largestTag, largeTag, mediumTag, smallTag)
 	 */
 	public function loadTags($tplVar=null, $cloud=true) {
 		$tplVar = (empty($tplVar))? "listTags" : $tplVar;
@@ -993,7 +1120,7 @@ abstract class FrontendController extends AppController {
 	/**
 	 * load annotation referenced to some object
 	 * 
-	 * @param string $annotationType, object type of the annotation i.e. "comment"
+	 * @param string $annotationType, object type of the annotation e.g. "comment"
 	 * @param $objectName, reference object nickname or id 
 	 * @param array $options, specific options (pagination, filter) that override annotationOptions attribute
 	 * @return array of annotations
@@ -1023,6 +1150,11 @@ abstract class FrontendController extends AppController {
 		return array_merge($result, array("toolbar" => $annotations["toolbar"]));
 	}
 	
+	/**
+	 * force download of media object
+	 * 
+	 * @param $name id or object nickname
+	 */
 	public function download($name) {
 		if(empty($name))
 			throw new BeditaException(__("Content not found", true));
@@ -1084,7 +1216,7 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
-	 * show image for captch
+	 * show image for captcha
 	 *
 	 */
 	public function captchaImage() {	
@@ -1097,6 +1229,14 @@ abstract class FrontendController extends AppController {
 		$this->Captcha->image($this->captchaOptions);
 	}
 	
+	/**
+	 * save comment relative to an object, set 'info' flash message 
+	 * throw Exception in case of error and set 'error' flash message
+	 * 
+	 * If it's called by ajax request then render $this->params["form"]["render"] template
+	 * else redirect to referer
+	 *  
+	 */
 	public function saveComment() {
 		if (!empty($this->data)) {
 			if(!isset($this->Comment)) {
@@ -1206,17 +1346,26 @@ abstract class FrontendController extends AppController {
 		return $args;
 	}
 	
+	/**
+	 * add "draft" status to class attribute $status 
+	 */
 	protected function showDraft() {
 		$this->status[] = "draft";
 	}
 	
+	/**
+	 * return class attribute $status
+	 * @return array 
+	 */
 	public function getStatus() {
 		return $this->status;
 	}
 }
 
 
-// Exception class
+/**
+ * BeditaPublication specific Exception
+ */
 class BeditaPublicationException extends BeditaException {
 	
 	public $status;
