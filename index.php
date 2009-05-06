@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: index.php 5811 2007-10-20 06:39:14Z phpnut $ */
+/* SVN FILE: $Id: index.php 7945 2008-12-19 02:16:01Z gwoo $ */
 /**
  * Requests collector.
  *
@@ -9,33 +9,30 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) : Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2007, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2007, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 5811 $
- * @modifiedby		$LastChangedBy: phpnut $
- * @lastmodified	$Date: 2007-10-20 01:39:14 -0500 (Sat, 20 Oct 2007) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @since         CakePHP(tm) v 0.2.9
+ * @version       $Revision: 7945 $
+ * @modifiedby    $LastChangedBy: gwoo $
+ * @lastmodified  $Date: 2008-12-18 18:16:01 -0800 (Thu, 18 Dec 2008) $
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  *  Get Cake's root directory
  */
-	define('APP_DIR', 'bedita-app');
+	define('APP_DIR', 'app');
 	define('DS', DIRECTORY_SEPARATOR);
 	define('ROOT', dirname(__FILE__));
-	define('WEBROOT_DIR',  'webroot');
+	define('WEBROOT_DIR', 'webroot');
 	define('WWW_ROOT', ROOT . DS . APP_DIR . DS . WEBROOT_DIR . DS);
-	
 /**
  * This only needs to be changed if the cake installed libs are located
  * outside of the distributed directory structure.
@@ -62,4 +59,4 @@
 	$bootstrap = true;
 	$url = null;
 	require APP_DIR . DS . WEBROOT_DIR . DS . 'index.php';
-?>	
+?>
