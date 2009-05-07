@@ -1233,8 +1233,9 @@ abstract class FrontendController extends AppController {
 	 * save comment relative to an object, set 'info' flash message 
 	 * throw Exception in case of error and set 'error' flash message
 	 * 
-	 * If it's called by ajax request then render $this->params["form"]["render"] template
-	 * else redirect to referer
+	 * If it's ajax request then if not empty $this->params["form"]["render"] renders it 
+	 * 
+	 * elseif  it's not ajax request then redirect to referer
 	 *  
 	 */
 	public function saveComment() {
@@ -1295,7 +1296,7 @@ abstract class FrontendController extends AppController {
 		if($this->RequestHandler->isAjax()) { 
 			$this->layout = "ajax";
 			if (!empty($this->params["form"]["render"])) { 
-				$this->render(null, null, $this->params["form"]["render"] .".tpl");
+				$this->render(null, null, $this->params["form"]["render"]);
 			}
 		} else {
 			$urlToRedirect = ($commentsFlag == 'on')? $this->referer() . "/#comment-".$this->Comment->id : $this->referer(); 
