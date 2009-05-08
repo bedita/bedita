@@ -615,6 +615,10 @@ class NewsletterController extends ModulesController {
 	 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
+			"cloneObject"	=> 	array(
+							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
+							"ERROR"	=> $this->referer() 
+							),
 			"save"	=> 	array(
 							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
 							"ERROR"	=> $this->referer() 
