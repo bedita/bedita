@@ -46,15 +46,18 @@ function commitUploadItem(IDs, rel) {
 
 <div class="mainfull">
 
-	{include file="../common_inc/list_streams.tpl" method="index" streamTitle="multimedia"}
+	{include file="./inc/list_streams.tpl" method="index" streamTitle="multimedia"}
 	
 
 	<div class="tab"><h2>{t}Add multiple items{/t}</h2></div>
-	<div>
+	
+	<div class="htabcontent">
+		<div style="clear:both; margin:-20px 0px 20px -20px">{include file="../common_inc/form_upload_multi.tpl"}</div>		 
+
 		<div id="loading" style="clear:both" class="multimediaitem itemBox small">&nbsp;</div>
 		<div id="multimediaItems"></div>
 			
-		<div style="clear:both;">{include file="../common_inc/form_upload_multi.tpl"}</div>		
+
 	</div>
 	
 </div>

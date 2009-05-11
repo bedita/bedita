@@ -72,7 +72,10 @@ $(document).ready(function(){
 			<div class="multimediaitem itemBox{if $item.status != "on"} off{/if}">
 				
 				{include file="../common_inc/file_item.tpl"}
-	
+				<table border=0 padding="0" spacing="0" style="width:100%">
+					<td style="text-align:left;">{if (empty($item.fixed))}<input  type="checkbox" name="objects_selected[]" class="objectCheck" title="{$item.id}" value="{$item.id}" />{/if}</td>
+					<td style="text-align:right;"><a href="" class="BEbutton">+</a></td>
+				</table>
 			</div>
 		{/foreach}
 	</div>
@@ -170,7 +173,7 @@ $(document).ready(function(){
 <br />
 
 <div class="tab"><h2>{t}Bulk actions on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
-<div>
+<div class="htabcontent" style="width:620px">
 
 {t}change status to{/t}: 	<select style="width:75px" id="newStatus" name="newStatus">
 								<option value=""> -- </option>

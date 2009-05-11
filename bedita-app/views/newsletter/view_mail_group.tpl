@@ -112,7 +112,16 @@ $(document).ready(function() {
 			</td>
 			<td>
 				<input type="hidden" name="data[MailGroup][id]" value="{$object.id|default:''}" />
-				<input type="text" id="groupname" name="data[MailGroup][group_name]" value="{$object.group_name|default:''}" />
+				<input type="text" style="width:360px;" id="groupname" name="data[MailGroup][group_name]" value="{$object.group_name|default:''}" />
+			</td>
+		</tr>
+		<tr>
+			<td colspan=2>{assign var='mailgroup_visible' value=$object.visible|default:'1'}
+				<input type="radio" name="data[MailGroup][visible]" value="1" {if $mailgroup_visible=='1'}checked="true"{/if}/>
+				<label for="visible">{t}public list	{/t}</label> (people can subscribe)
+			&nbsp;
+				<input type="radio" name="data[MailGroup][visible]" value="0" {if $mailgroup_visible=='0'}checked="true"{/if}/>
+				<label for="visible">{t}private list {/t}</label> (back-end insertions only)
 			</td>
 		</tr>
 		<tr>
@@ -127,15 +136,6 @@ $(document).ready(function() {
 				</select>
 			</td>
 		</tr>
-		<tr>
-			<td colspan=2>{assign var='mailgroup_visible' value=$object.visible|default:'1'}
-				<input type="radio" name="data[MailGroup][visible]" value="1" {if $mailgroup_visible=='1'}checked="true"{/if}/>
-				<label for="visible">{t}public list	{/t}</label> (people can subscribe)
-			&nbsp;
-				<input type="radio" name="data[MailGroup][visible]" value="0" {if $mailgroup_visible=='0'}checked="true"{/if}/>
-				<label for="visible">{t}private list {/t}</label> (back-end insertions only)
-			</td>
-		</tr>
 		</table>
 	</fieldset>
 	
@@ -145,7 +145,7 @@ $(document).ready(function() {
 		<tr>
 			<td colspan="2">{assign var='mailgroup_opting_method' value=$object.optingmethod|default:''}
 				<label for="optingmethod">{t}subscribing method{/t}:</label>
-				&nbsp;&nbsp;{$mailgroup_opting_method}
+				&nbsp;&nbsp;
 				<select id="optingmethod" name="data[MailGroup][security]">
 					<option value="none"{if $mailgroup_opting_method == 'none'} selected{/if}>Single opt-in (no confirmation required)</option>
 					<option value="all"{if $mailgroup_opting_method == 'all'} selected{/if}>Double opt-in (confirmation required)</option>

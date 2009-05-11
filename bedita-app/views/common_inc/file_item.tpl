@@ -39,11 +39,6 @@
 	{else}
 	
 		{$beEmbedMedia->object($item,null)}
-		{*
-		<img alt="{$item.mediatype|default:'notype'}" 
-		title="{$item.mediatype|default:'notype'} | {$item.title}" 
-		src="{$html->webroot}img/iconset/88px/{$item.mediatype|default:'notype'}.png" />
-		*}
 			
 {/if}
 	</a>
@@ -68,11 +63,6 @@
 			{$item.created|date_format:'%b %e, %Y'}
 		</li>
 	</ul>
-
-
-
-
-
 
 
 {/strip}
