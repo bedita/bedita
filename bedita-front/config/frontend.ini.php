@@ -18,7 +18,7 @@ $config['sitemapAllContent'] = true;
 $config['staging'] 			= false;
 $config['draft']            = false;
 $config['filterPublicationDate'] = true;
-$config['frontendAreaId'] 	= 22;
+$config['frontendAreaId'] 	= 1;
 $config['frontendUser']     = array ("userid" => null);
 $config['frontendLang']     = 'ita';
 $config['frontendLangs']    = array (
