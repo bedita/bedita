@@ -103,7 +103,13 @@ abstract class FrontendController extends AppController {
 	 * @var array
 	 */
 	protected $tagOptions = array();
-
+	
+	/**
+	 * search options, attribute used on search
+	 * 
+	 * @var array
+	 */
+	protected $searchOptions = array("order" => "title", "dir" => 1, "dim" => 50, "page" => 1, "filter" => false);
 	
 	/**
 	 * every frontend has to implement checkLogin
@@ -467,13 +473,8 @@ abstract class FrontendController extends AppController {
 		}
 		
 		$this->set('sections_tree',$sectionsTree);
-		$this->sitemapBeforeRender();
 	}
 
-	/**
-	 * called after build default sitemap array to customize it
-	 */
-	protected function sitemapBeforeRender() {}
 	
 	/**
 	 * Publish RSS feed with contents inside section $sectionName
@@ -906,10 +907,18 @@ abstract class FrontendController extends AppController {
 				$this->loadAndSetObj($id, "object");
 			}
 			$methodName = $name[0] . substr(Inflector::camelize($name), 1);
+			// check before filter method
+			if (method_exists($this, $methodName . "BeforeFilter")) {
+				$this->{$methodName . "BeforeFilter"}();
+			}
 			// check method
 			if(method_exists($this, $methodName)) {
 				array_shift($args);
 				call_user_func_array(array($this, $methodName), $args);
+			}
+			// check before render method
+			if (method_exists($this, $methodName . "BeforeRender")) {
+				$this->{$methodName . "BeforeRender"}();
 			}
 			return;
 		}
@@ -925,6 +934,15 @@ abstract class FrontendController extends AppController {
 		}
 	}
 	
+	
+	public function search() {
+		if(!in_array('BeToolbar', $this->helpers)) {
+       		$this->helpers[] = 'BeToolbar';
+		}
+		$this->searchOptions = array_merge($this->searchOptions,$this->getPassedArgs());
+		$result = $this->BeTree->getDiscendents($this->publication["id"], $this->status, $this->searchOptions["filter"], $this->searchOptions["order"], $this->searchOptions["dir"], $this->searchOptions["page"], $this->searchOptions["dim"]);
+		$this->set("searchResult", $result); 
+	}
 	/**
 	 * find parent path of $object_id (excluded publication)
 	 *

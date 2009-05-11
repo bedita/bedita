@@ -22,6 +22,16 @@ class BeToolbarHelper extends AppHelper {
 	) ;
 
 	/**
+	 * initialize toolbar in params['toolbar']
+	 * 
+	 * @param array $toolbar
+	 * @return unknown_type
+	 */
+	function init(&$toolbar) {
+		$this->params['toolbar'] = $toolbar;
+	}
+	
+	/**
 	 * Costruisce il link per la pagina sucessiva
 	 *
 	 * @param string $title				Label link
