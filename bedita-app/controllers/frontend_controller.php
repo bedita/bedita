@@ -827,6 +827,9 @@ abstract class FrontendController extends AppController {
 				$args = func_get_args();
 				array_shift($args);
 				return call_user_func_array(array($this, "section"), $args);
+			// check that contentName is a child of secName
+			} elseif ( $this->Tree->find('count',array("conditions" => array("id" => $content_id, "parent_id" => $sectionId))) == 0 ) {	
+				throw new BeditaException(__("Content " . $contentName . " doesn't belong to " . $secName, true));
 			}
 		}
 		
