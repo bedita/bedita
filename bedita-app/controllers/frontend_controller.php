@@ -1074,6 +1074,17 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
+	 * find all objects tagged by $name and set results for view
+	 * 
+	 * @param string $name
+	 */
+	public function tag($name) {
+		$this->baseLevel = true;
+		$this->set("tag",$this->loadObjectsByTag($name));
+		$this->baseLevel = false;
+	}
+	
+	/**
 	 * return objects for a specific tag
 	 *
 	 * @param string $tag tag label
@@ -1303,6 +1314,7 @@ abstract class FrontendController extends AppController {
 				$this->Transaction->rollback();
 				$this->log($ex->errorTrace());
 				$this->userErrorMessage($ex->getMessage());
+				$error = true;
 			}
 	
 		}
@@ -1320,7 +1332,11 @@ abstract class FrontendController extends AppController {
 				$this->render(null, null, $this->params["form"]["render"]);
 			}
 		} else {
-			$urlToRedirect = ($commentsFlag == 'on')? $this->referer() . "/#comment-".$this->Comment->id : $this->referer(); 
+			$urlToRedirect = $this->referer();
+			if (!empty($error))
+				$urlToRedirect .= "/#error";
+			elseif ($commentsFlag == 'on')
+				$urlToRedirect .= "/#comment-".$this->Comment->id; 
 			$this->redirect($urlToRedirect);
 		}
 

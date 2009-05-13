@@ -36,7 +36,7 @@ $config["projectName"] = ""; // override in bedita.cfg
 
 $config["userVersion"] = "BEdita 3.0"; // don't override
 
-$config["majorVersion"] = "3.0.beta1"; // don't override -- admin/system
+$config["majorVersion"] = "3.0.aplha1"; // don't override -- admin/system
 
  /**
  ** ******************************************
@@ -382,7 +382,7 @@ $config["cfgOneWayRelation"] = array();
 // Default reserved words [avoided in nickname creation]
 $config["defaultReservedWords"] = array("section", "content", "rss", "feed", 
 	"download", "xml", "xmlobject", "sitemap", "sitemap.xml", "sitemap_xml", 
-	"json", "captchaImage", "saveComment", "search");
+	"json", "captchaImage", "saveComment", "search", "tag");
 
 // Cfg reserved words (as in local cfg)
 $config["cfgReservedWords"] = array();

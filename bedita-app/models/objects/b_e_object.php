@@ -246,7 +246,7 @@ class BEObject extends BEAppModel
 		// Scorre le associazioni hasMany
 		foreach ($this->hasMany as $name => $assoc) {
 			// Non gestisce i permessi
-			if($name == 'Permissions' || $name == 'RelatedObject')
+			if($name == 'Permissions' || $name == 'RelatedObject' || $name == 'Annotation')
 				continue ;
 			
 			$db 		=& ConnectionManager::getDataSource($this->useDbConfig);
