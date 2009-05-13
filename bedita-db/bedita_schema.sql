@@ -108,6 +108,12 @@ CREATE TABLE users (
   level TINYINT(1) NOT NULL DEFAULT '0',
   auth_type varchar(255) default NULL,
   auth_params TEXT default NULL,
+  lang CHAR(3) NULL,
+  time_zone CHAR(9) NULL COMMENT 'format UTC+/-hh:mm - eg UTC+11:30',
+  comments ENUM('never','mine','all') default NULL,
+  notes ENUM('never','mine','all') default NULL,
+  notify_changes TINYINT(1) DEFAULT NULL,
+  reports TINYINT(1) DEFAULT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY userid (userid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
