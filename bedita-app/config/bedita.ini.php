@@ -36,7 +36,7 @@ $config["projectName"] = ""; // override in bedita.cfg
 
 $config["userVersion"] = "BEdita 3.0"; // don't override
 
-$config["majorVersion"] = "3.0.aplha1"; // don't override -- admin/system
+$config["majorVersion"] = "3.0.beta1"; // don't override -- admin/system
 
  /**
  ** ******************************************
@@ -57,10 +57,6 @@ $config['mediaUrl'] = 'http://localhost/media';
 
 // Multimedia - image file substituting missing content (as now used in thumb smarty plugin)
 $config['imgMissingFile'] = "/img/iconMissingImage_130x85.gif" ;
-
-
-// FileSystem directory for temporary file storage
-$config['tmp'] = "/tmp" ;
 
 
 /**
