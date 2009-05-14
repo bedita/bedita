@@ -17,9 +17,10 @@
 	<td><label>{t}language{/t}</label></td>
 	<td>
 {if !empty($conf->multilang) && $conf->multilang}
-	<select>
+	<select name="data[User][lang]">
+		<option value="">--</option>
 	{foreach key=key item=item name=l from=$conf->langsSystem}
-		<option value="{$html->base}/lang/{$key}" {if $session->read('Config.language') == $key}selected{/if}>{$item}</option>
+		<option value="{$key}" {if $key == $BEAuthUser.lang}selected{/if}>{$item}</option>
 	{/foreach}
 	</select>
 {/if}
@@ -43,16 +44,22 @@
 <tr>
 	<td><label>{t}notify me by email{/t}</label></td>
 	<td>
-		<input type="checkbox"> {t}new comments{/t}
+		<select name="data[User][comments]"> 
+			<option value="never"{if $BEAuthUser.comments == "never"} selected{/if}>{t}never{/t}</option>
+			<option value="mine"{if $BEAuthUser.comments == "mine"} selected{/if}>{t}mine{/t}</option>
+			<option value="all"{if $BEAuthUser.comments == "all"} selected{/if}>{t}all{/t}</option>
+		</select> {t}new comments{/t}
 		<br />
-		<input type="checkbox"> {t}new notes{/t}
+		<select name="data[User][notes]"> 
+			<option value="never"{if $BEAuthUser.notes == "never"} selected{/if}>{t}never{/t}</option>
+			<option value="mine"{if $BEAuthUser.notes == "mine"} selected{/if}>{t}mine{/t}</option>
+			<option value="all"{if $BEAuthUser.notes == "all"} selected{/if}>{t}all{/t}</option>
+		</select> {t}new notes{/t}
 		<br />
-		<input type="checkbox"> {t}changes on my contents{/t}
-		<br />
-		<input type="checkbox"> {t}statistics{/t}
-		<br />
-		<input type="checkbox"> {t}deadlines{/t}
-		
+		<input type="checkbox" name="data[User][notify_changes]" value="1"{if $BEAuthUser.notify_changes == 1} checked{/if}> {t}changes on my contents{/t}
+		{*<br />
+		<input type="checkbox"> {t}reports{/t}
+		*}
 	</td>
 </tr>
 </table>

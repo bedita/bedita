@@ -119,6 +119,12 @@ class HomeController extends AppController {
 				throw new BeditaException(__("Passwords mismatch",true));
 		}
 		
+		if (empty($this->data["User"]["notify_changes"])) {
+			$this->data["User"]["notify_changes"] = null;
+		}
+	 	if (empty($this->data["User"]["lang"])) {
+			$this->data["User"]["lang"] = null;
+		}
 	 	$this->Transaction->begin();
 	 	$this->BeAuth->updateUser($this->data);
 	 	$this->Transaction->commit();
@@ -126,6 +132,8 @@ class HomeController extends AppController {
 	 	$user = $userModel->findById($this->data["User"]["id"]);
 	 	$userModel->compact($user);
 	 	$this->Session->write($this->BeAuth->sessionKey, $user);
+	 	if (!empty($user["lang"]))
+	 		$this->Session->write('Config.language',$user["lang"]);
 		$this->eventInfo("user ".$this->data['User']['userid']." updated");
 		$this->userInfoMessage(__("User updated",true));
 	 }

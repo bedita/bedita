@@ -111,6 +111,8 @@ class BeAuthComponent extends Object {
 			$this->Session->write($this->allowKey, $this->allow);
 			$this->Session->write(self::SESSION_INFO_KEY, array("userAgent" => $_SERVER['HTTP_USER_AGENT'], 
 				"ipNumber" => $_SERVER['REMOTE_ADDR'], "time" => time()));
+			if (!empty($this->user["lang"]))
+				$this->Session->write('Config.language',$this->user["lang"]);
 		}
 
 		if(isset($this->controller)) {
