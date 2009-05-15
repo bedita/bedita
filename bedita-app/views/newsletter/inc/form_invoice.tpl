@@ -61,11 +61,12 @@ $(document).ready(function() {
 		{/if}
 	</tr>
 </table>
-
 	<div class="modalcommands newsletter">
 		<input type="button" id="testNewsletter" value="  test newsletter  " {if !($object.id|default:false)}disabled="disabled"{/if}/> 
+		{if (empty($object) || ($object.mail_status!='sent' && $object.mail_status!='pending'))}
 		&nbsp;&nbsp;
-		<input type="button" id="sendNewsletter" value="  SEND newsletter  " {if !($object.id|default:false)}disabled="disabled"{/if}/>
+		<input type="button" id="sendNewsletter" value="  SEND newsletter  " />
+		{/if}
 	</div>
 	
 	<em>{t}Newsletter must be saved before sending{/t}</em>

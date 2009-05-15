@@ -98,7 +98,9 @@ class MailMessage extends BeditaContentModel
         if(!empty($data['start_sending']) && !empty($data['start_sending_time'])) {
             $data['start_sending'] .= " " . $data['start_sending_time'];
         }
-
+		if(empty($data['subject'])) {
+			$data['subject'] = $data['title'];
+		}
         return true;
 	}
 }
