@@ -102,6 +102,7 @@ $(document).ready(function() {
 	
 <div class="tab" id="userpreferences"><h2>{t}your profile and preferences{/t}</h2></div>
 <div>
+	
 	{include file="inc/userpreferences.tpl"}
 
 </div>

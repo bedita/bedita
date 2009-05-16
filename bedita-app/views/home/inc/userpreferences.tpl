@@ -1,7 +1,8 @@
 <form action="{$html->url('/home/editProfile')}" method="post">
 <table class="condensed">
 <tr>
-	<td><label class="simple" id="lrealname" for="realname">{t}name{/t}</label></td>	<td>
+	<td><label class="simple" id="lrealname" for="realname">{t}name{/t}</label></td>
+	<td>
 	<input type="hidden" name="data[User][id]" value="{$BEAuthUser.id}"/>
 	<input type="hidden" name="data[User][userid]" value="{$BEAuthUser.userid}"/>
 	<input type="hidden" name="data[User][valid]" value="{$BEAuthUser.valid}"/>
@@ -9,7 +10,8 @@
 	</td>
 </tr>
 <tr>
-	<td><label class="simple" id="lemail" for="email">{t}email{/t}</label></td>	<td><input type="text" id="email" name="data[User][email]" value="{$BEAuthUser.email}" class="{literal}{email:true}{/literal}" title="{t}Use a valid email{/t}"/></td>
+	<td><label class="simple" id="lemail" for="email">{t}email{/t}</label></td>
+	<td><input type="text" id="email" name="data[User][email]" value="{$BEAuthUser.email}" class="{literal}{email:true}{/literal}" title="{t}Use a valid email{/t}"/></td>
 </tr>
 
 
@@ -30,36 +32,70 @@
 <tr><td colspan=2><hr /></td></tr>
 
 <tr>
-	<td><label class="simple">{t}old psw{/t}</label></td>	<td><input type="password" name="oldpwd" value="" id="oldpwd" class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}" title="{$tr->t($conf->passwdRegexMsg)}"/></td>
+	<td><label class="simple">{t}old psw{/t}</label></td>
+	<td><input type="password" name="oldpwd" value="" id="oldpwd" class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}" title="{$tr->t($conf->passwdRegexMsg)}"/></td>
 </tr>
 <tr>
-	<td><label class="simple">{t}new psw{/t}</label></td>	<td><input type="password" name="pwd" value="" id="pwd" class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}" </td>
+	<td><label class="simple">{t}new psw{/t}</label></td>
+	<td><input type="password" name="pwd" value="" id="pwd" class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}" </td>
 </tr>
 <tr>
-	<td><label class="simple">{t}new again{/t}</label></td>	<td><input type="password" name="data[User][passwd]" value="" class="{literal}{equalTo:'#pwd'}{/literal}" title="{t}Passwords should be equal{/t}"/></td>
+	<td><label class="simple">{t}new again{/t}</label></td>
+	<td><input type="password" name="data[User][passwd]" value="" class="{literal}{equalTo:'#pwd'}{/literal}" title="{t}Passwords should be equal{/t}"/></td>
 </tr>
 
 <tr><td colspan=2><hr /></td></tr>
 
+</table>
+
+{literal}
+<script type="text/javascript">
+$(document).ready(function(){
+$(".checko").change(function(){
+	var target = $(this).attr('rel');
+	if ($(this).is(':checked'))	{
+	  	$('#'+target).show().val(['all']);
+	} else {
+		$('#'+target).hide().val(['never']);
+	}
+});
+});
+</script>
+{/literal}
+
+<table class="condensed">
 <tr>
-	<td><label>{t}notify me by email{/t}</label></td>
+	<td colspan=2><label>{t}notify me by email{/t}</label></td>
+</tr>
+<tr>
 	<td>
-		<select name="data[User][comments]"> 
-			<option value="never"{if $BEAuthUser.comments == "never"} selected{/if}>{t}never{/t}</option>
-			<option value="mine"{if $BEAuthUser.comments == "mine"} selected{/if}>{t}mine{/t}</option>
+		<input class="checko" rel="usercomments" type="checkbox" {if !empty($BEAuthUser.comments) && ($BEAuthUser.comments != "never")} checked{/if}>
+		{t}new comments{/t}
+	</td>
+	<td>
+		<select id="usercomments" name="data[User][comments]" {if empty($BEAuthUser.comments) or ($BEAuthUser.comments == "never")}style="display:none"{/if}>
+			<option value="mine"{if $BEAuthUser.comments == "mine"} selected{/if}>{t}on my stuff only{/t}</option>
 			<option value="all"{if $BEAuthUser.comments == "all"} selected{/if}>{t}all{/t}</option>
-		</select> {t}new comments{/t}
-		<br />
-		<select name="data[User][notes]"> 
-			<option value="never"{if $BEAuthUser.notes == "never"} selected{/if}>{t}never{/t}</option>
-			<option value="mine"{if $BEAuthUser.notes == "mine"} selected{/if}>{t}mine{/t}</option>
+			<option value="never"{if $BEAuthUser.comments == "never"} selected{/if}>{t}never{/t}</option>
+		</select>
+	</td>
+</tr>
+<tr>
+	<td>
+		<input class="checko" rel="usernotes" type="checkbox" {if !empty($BEAuthUser.notes) && ($BEAuthUser.notes != "never")} checked{/if}>
+		{t}new notes{/t}</td>
+	<td>
+		<select id="usernotes" name="data[User][notes]" {if empty($BEAuthUser.notes) or ($BEAuthUser.notes == "never")}style="display:none"{/if}> 
+			<option value="mine"{if $BEAuthUser.notes == "mine"} selected{/if}>{t}on my stuff only{/t}</option>
 			<option value="all"{if $BEAuthUser.notes == "all"} selected{/if}>{t}all{/t}</option>
-		</select> {t}new notes{/t}
-		<br />
-		<input type="checkbox" name="data[User][notify_changes]" value="1"{if $BEAuthUser.notify_changes == 1} checked{/if}> {t}changes on my contents{/t}
-		{*<br />
-		<input type="checkbox"> {t}reports{/t}
-		*}
+			<option value="never"{if $BEAuthUser.notes == "never"} selected{/if}>{t}never{/t}</option>
+		</select>
+	</td>
+</tr>
+<tr>
+	<td colspan=2>
+		<input type="checkbox" name="data[User][notify_changes]" value="1"{if $BEAuthUser.notify_changes == 1} checked{/if}>
+		{t}changes on my contents{/t}
 	</td>
 </tr>
 </table>
