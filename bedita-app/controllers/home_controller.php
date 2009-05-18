@@ -125,6 +125,12 @@ class HomeController extends AppController {
 	 	if (empty($this->data["User"]["lang"])) {
 			$this->data["User"]["lang"] = null;
 		}
+		if (empty($this->params["form"]["comments"])) {
+			$this->data["User"]["comments"] = "never";
+		}
+		 if (empty($this->params["form"]["notes"])) {
+			$this->data["User"]["notes"] = "never";
+		}
 	 	$this->Transaction->begin();
 	 	$this->BeAuth->updateUser($this->data);
 	 	$this->Transaction->commit();

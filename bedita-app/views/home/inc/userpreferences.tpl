@@ -69,26 +69,24 @@ $(".checko").change(function(){
 </tr>
 <tr>
 	<td>
-		<input class="checko" rel="usercomments" type="checkbox" {if !empty($BEAuthUser.comments) && ($BEAuthUser.comments != "never")} checked{/if}>
+		<input class="checko" name="comments" value="1" rel="usercomments" type="checkbox" {if !empty($BEAuthUser.comments) && ($BEAuthUser.comments != "never")} checked{/if}>
 		{t}new comments{/t}
 	</td>
 	<td>
 		<select id="usercomments" name="data[User][comments]" {if empty($BEAuthUser.comments) or ($BEAuthUser.comments == "never")}style="display:none"{/if}>
 			<option value="mine"{if $BEAuthUser.comments == "mine"} selected{/if}>{t}on my stuff only{/t}</option>
 			<option value="all"{if $BEAuthUser.comments == "all"} selected{/if}>{t}all{/t}</option>
-			<option value="never"{if $BEAuthUser.comments == "never"} selected{/if}>{t}never{/t}</option>
 		</select>
 	</td>
 </tr>
 <tr>
 	<td>
-		<input class="checko" rel="usernotes" type="checkbox" {if !empty($BEAuthUser.notes) && ($BEAuthUser.notes != "never")} checked{/if}>
+		<input class="checko" name="notes" value="1" rel="usernotes" type="checkbox" {if !empty($BEAuthUser.notes) && ($BEAuthUser.notes != "never")} checked{/if}>
 		{t}new notes{/t}</td>
 	<td>
 		<select id="usernotes" name="data[User][notes]" {if empty($BEAuthUser.notes) or ($BEAuthUser.notes == "never")}style="display:none"{/if}> 
 			<option value="mine"{if $BEAuthUser.notes == "mine"} selected{/if}>{t}on my stuff only{/t}</option>
 			<option value="all"{if $BEAuthUser.notes == "all"} selected{/if}>{t}all{/t}</option>
-			<option value="never"{if $BEAuthUser.notes == "never"} selected{/if}>{t}never{/t}</option>
 		</select>
 	</td>
 </tr>
