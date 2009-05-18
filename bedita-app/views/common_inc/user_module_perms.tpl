@@ -12,15 +12,16 @@
 	{/if}
 {/if}
 
-{if !empty($conf->multilang) && $conf->multilang}
+{*if !empty($conf->multilang) && $conf->multilang}
 	<li>
 	{foreach key=key item=item name=l from=$conf->langsSystem}
 		<a {if $session->read('Config.language') == $key}class="on"{/if} href="{$html->base}/lang/{$key}">› {$item}</a>
 		<br />
 	{/foreach}
 	</li>
-{/if}	
+{/if*}	
 
+	<li><a href="{$html->url('/')}">› {t}Home{/t}</a></li>
 {if !empty($BEAuthUser.userid)}
 	<li><a href="{$html->url('/authentications/logout')}">› {t}Exit{/t}</a></li>
 {/if}
