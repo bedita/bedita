@@ -568,7 +568,7 @@ UL.menuleft {
 
 .htab LI, .htab TD {
 	text-align:center;
-	padding:2px;
+	padding:4px;
 	cursor:pointer;
 	display:table-cell;
 }
@@ -820,6 +820,13 @@ TABLE.indexlist TH.on * {
 .condensed TD, .condensed TH {
 	padding:2px;
 }
+
+.valigntop TD {vertical-align:top}
+
+.ultracondensed TD, .ultracondensed TH {
+	padding:0px;
+}
+
 
 
 /*...........................................    
@@ -1385,6 +1392,10 @@ LI.welcome {
 	margin-bottom:5px;
 }
 
+.dashboard H2.open {
+	background-color:#333;
+}
+
 
 /*...........................................
  
@@ -1460,7 +1471,60 @@ Table.graph .value {
 .questionbox.off {	
 	opacity:0.5
 }	
-	
+
+
+
+/*...........................................    
+
+    accessories
+
+...........................................*/
+
+.editornotes {
+	line-height: 16px!important; 
+	width:146px; 
+	padding:5px;
+	font:normal 12px Arial,Helvetica, sans-serif;
+	/* background: transparent url('../img/sfo_zebranotes.gif'); */
+}
+
+textarea.editornotes  {
+	color: #9a5830; 
+}
+
+P.editornotes {
+	color: gray;
+	padding:0px;
+	width:auto; 
+	margin-bottom:5px;
+	padding-top:5px;
+	padding-left:5px;
+	line-height:1.2em !important;
+}
+
+#editornotes IMG {
+	margin-bottom:5px
+}
+
+#editornotes .date {
+	color:#666; 
+	font-size:0.8em;
+	white-space:nowrap; vertical-align:bottom; text-align:right;
+	width:100%;
+}
+
+#editornotes .autor {
+	font-size:0.9em;
+	vertical-align:bottom; 
+	font-weight:bold;
+	white-space:nowrap; 
+}
+
+.editorheader {
+	border-bottom:1px solid silver;
+}
+
+
 /*...........................................    
 
     accessories
@@ -1497,14 +1561,6 @@ Table.graph .value {
 	
 }
 
-.editornotes {
-	line-height: 16px!important; 
-	width:146px; 
-	padding:5px;
-	font:normal 12px Arial,Helvetica, sans-serif;
-	color: #9a5830; 
-	/* background: transparent url('../img/sfo_zebranotes.gif'); */
-}
 
 .listobjnav  {
 	text-align:center;
@@ -1619,6 +1675,6 @@ INPUT[type=button], INPUT[type=submit]  {
 			border-radius : 11px; 
 	-moz-border-radius : 11px; 
 	-webkit-border-radius : 11px;
-	-khtml-border-radius: 11px;"
+	-khtml-border-radius: 11px;
 }
 

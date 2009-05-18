@@ -22,9 +22,14 @@ $(document).ready(function() {
 	});
 	
 });
-{/literal}
+
+    $(document).ready(function(){	
+		openAtStart("#search");
+    });
+	
 //-->
 </script>
+{/literal}
 
 </head>
 
@@ -36,7 +41,6 @@ $(document).ready(function() {
 		{$conf->projectName|default:$conf->userVersion}
 	</li>
 	
-
 {foreach name=module1 from=$moduleList key=k item=mod}
 	{if ($mod.status == 'on')}
 	
@@ -84,8 +88,6 @@ $(document).ready(function() {
 
 
 
-
-
 <div class="dashboard">
 
 
@@ -93,15 +95,15 @@ $(document).ready(function() {
 
 
 <div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
-	<ul class="bordered">
+	<ul id="recent" class="bordered">
 	{section name="n" loop=$lastModBYUser}
 		<li><span class="listrecent {$lastModBYUser[n].ObjectType.module}">&nbsp;</span>
 		<a title="{$lastModBYUser[n].ObjectType.module} | {$lastModBYUser[n].BEObject.modified}" href="{$html->url('/')}{$lastModBYUser[n].ObjectType.module}/view/{$lastModBYUser[n].BEObject.id}">{$lastModBYUser[n].BEObject.title|default:'<i>[no title]</i>'}</a></li>
 	{/section}
 	</ul>
 	
-<div class="tab" id="userpreferences"><h2>{t}your profile and preferences{/t}</h2></div>
-<div>
+<div class="tab"><h2>{t}your profile and preferences{/t}</h2></div>
+<div id="userpreferences">
 	
 	{include file="inc/userpreferences.tpl"}
 
@@ -109,7 +111,7 @@ $(document).ready(function() {
 
 
 <div class="tab"><h2>{t}search{/t}</h2></div>
-	<div>
+	<div id="search">
 		<form action="">
 			{*<label class="block" for="searchstring">{t}search string{/t}:</label>*}
 			<input type="text" name="searchstring" id="searchstring" value=""/>
@@ -122,7 +124,7 @@ $(document).ready(function() {
 
 
 <div class="tab"><h2>{t}all recent items{/t}</h2></div>
-	<ul class="bordered">
+	<ul id="allrecent" class="bordered">
 	{section name="n" loop=$lastMod}
 		<li>
 			<span class="listrecent {$lastMod[n].ObjectType.module}">&nbsp;&nbsp;</span>
@@ -132,7 +134,7 @@ $(document).ready(function() {
 	</ul>
 
 <div class="tab"><h2>{t}connected user{/t}</h2></div>
-	<ul class="bordered">
+	<ul id="connected" class="bordered">
 	{section name="i" loop=$connectedUser}
 		{foreach from=$connectedUser[i] key=usr item=usrdata}
 		<li>
@@ -180,7 +182,7 @@ $(document).ready(function(){
 {/literal}
 
 <div class="tab"><h2 id="callTags">{t}tags{/t}</h2></div>
-<div>
+<div id="tags">
 	<div id="loadingTags" class="generalLoading" title="{t}Loading data{/t}">&nbsp;</div>	
 	<div id="listExistingTags" class="tag graced" style="display: none; text-align:justify;"></div>
 </div>

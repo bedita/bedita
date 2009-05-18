@@ -325,8 +325,15 @@ $(document).ready(function(){
 
 	$(".multimediaitemToolbar.viewlist").click(function () {
 		
-		$("#viewlist").toggle();
-		$("#viewthumb").toggle();
+		$(".vlist, .imagebox, .info_file_item").toggle();
+		
+		$('.multimediaitem').css("float","none");
+		
+		$('.vlist').css("white-space","nowrap");
+		
+		//alert(1);
+
+		
 	});
 	
 	$(".multimediaitemToolbar.viewsmall").click(function () {
@@ -484,6 +491,19 @@ jQuery.fn.BEmodal = function(){
 
 
 
+/*...........................................    
+
+   editor notes
+
+...........................................*/
+
+	$('.editorheader').css("cursor","pointer").click(function () {
+		$(this).next().slideToggle('fast');
+	});
+
+
+
+
 });
 
 /*...........................................    
@@ -551,3 +571,4 @@ function openAtStart(defaultOpen) {
 }
 
 
+	
