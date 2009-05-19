@@ -28,7 +28,7 @@
 /**
  *  Get Cake's root directory
  */
-	define('APP_DIR', 'app');
+	define('APP_DIR', 'bedita-app');
 	define('DS', DIRECTORY_SEPARATOR);
 	define('ROOT', dirname(__FILE__));
 	define('WEBROOT_DIR', 'webroot');
