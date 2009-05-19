@@ -30,22 +30,6 @@
 		
 	{elseif ($object.provider|default:false)}
 		
-		{*
-		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="px; " 3="height:" 4=$conf->videoThumbHeight 5="px;"}
-		{assign_associative var="attributes" style=$myStyle}
-
-		<a href="{$object.path}" target="_blank">
-			{$beEmbedMedia->object($object,null,$attributes)}
-		</a>
-		<embed 
-			src	= "{$html->webroot}swf/mediaplayer.swf" 
-			width	= "{$conf->videoWidth}"
-			height	= "{$conf->videoHeight}"
-			allowscriptaccess = "always"
-			allowfullscreen = "true"
-			flashvars = "file={$mediaProvider->sourceEmbed($object) }&backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0x000000&overstretch=true&searchbar=false&autostart=false"
-		/>
-		*}
 	
 		{assign_associative var="params" presentation="full"}
 		{assign_associative var="htmlAttr" width=$conf->media.video.width height=$conf->media.video.height}
@@ -70,9 +54,22 @@
 		/>
 		
 		
+	{elseif ($object.mime_type == "application/x-shockwave-flash")}
+
+		
+		
+		<embed 
+			src		= "{$conf->mediaUrl}{$object.path}" 
+			width	= "500"
+			height	= "375"
+			allowscriptaccess = "always"
+			allowfullscreen = "true"
+			flashvars = "backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0x000000&overstretch=false&searchbar=false&autostart=false"
+		/>
+				
+		
 	{else}
-	
-	
+			
 		<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
 			{$beEmbedMedia->object($object)}
 		</a>
