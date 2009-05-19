@@ -72,7 +72,7 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 			// salva il/i parent
 			$run = true ;
 			$model->$name->create();
-			if(!$model->$name->save($data)) {
+			if(!$res = $model->$name->save($data)) {
 				$model->validationErrors = $model->$name->validationErrors ;
 				// Se e' gia' stato creato il primo elemento, torna esegue la cancellazione
 				if(!$first) {
@@ -88,6 +88,10 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 					$id = $model->$name->getInsertID() ;
 					$model->data[$model->name]['id'] = $id;
 				}
+				
+				if ($firstModel == "BEObject" && !empty($res["BEObject"]["user_modified"]))
+					$model->data[$model->name]["user_modified"] = $res["BEObject"]["user_modified"];
+				
 				$first  = false ;
 			}
 		}

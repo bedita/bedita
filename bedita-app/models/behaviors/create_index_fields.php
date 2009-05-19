@@ -47,7 +47,7 @@ class CreateIndexFieldsBehavior extends ModelBehavior {
 		// preleva l'oggetto appena creato/salvato
 		$bviorCompactResults 	= $model->bviorCompactResults ;
 		$model->bviorCompactResults = true ;
-		$mode->contain(array("BEObject"));
+		$model->contain(array("BEObject"));
 		if(!($data = $model->findById($model->{$model->primaryKey}))) 
 		  throw new BeditaException("Error loading {$model}");
 		$model->bviorCompactResults 	= $bviorCompactResults ;
