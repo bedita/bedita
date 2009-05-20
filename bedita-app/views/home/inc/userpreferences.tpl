@@ -37,7 +37,7 @@
 </tr>
 <tr>
 	<td><label class="simple">{t}new psw{/t}</label></td>
-	<td><input type="password" name="pwd" value="" id="pwd" class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}" </td>
+	<td><input type="password" name="pwd" value="" id="pwd" class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}"></td>
 </tr>
 <tr>
 	<td><label class="simple">{t}new again{/t}</label></td>
