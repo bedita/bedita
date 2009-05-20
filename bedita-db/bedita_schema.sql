@@ -575,6 +575,7 @@ CREATE TABLE links (
   `target` enum('_self','_blank','parent','top','popup') default NULL,
   `http_code` MEDIUMTEXT NULL,
   `http_response_date` DATETIME NULL,
+  `source_type` VARCHAR(64) NULL COMMENT 'can be rss, wikipedia, archive.org, localresource....',
   PRIMARY KEY(id),
   KEY `idx_url` (`url`),
   FOREIGN KEY(id)
@@ -690,14 +691,16 @@ CREATE TABLE `mail_group_messages` (
 
 CREATE TABLE mail_jobs (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  mail_message_id INTEGER UNSIGNED NOT NULL,
-  card_id INTEGER UNSIGNED NOT NULL,
+  mail_message_id INTEGER UNSIGNED,
+  card_id INTEGER UNSIGNED,
   status ENUM ('unsent','sent','failed') NOT NULL DEFAULT 'unsent',
   sending_date DATETIME NULL,
   created DATETIME NULL,
   modified DATETIME NULL,
   priority INTEGER UNSIGNED NULL,
   mail_body TEXT NULL,
+  recipient MEDIUMTEXT NULL COMMENT 'used if card_is and mail_message_id are null, one or more comma separeted addresses',
+  mail_params TEXT NULL COMMENT 'serialized array with: reply-to, sender, subject, signature...',
   PRIMARY KEY(id),
   INDEX card_id_index(card_id),
   INDEX mail_message_id_index(mail_message_id),
