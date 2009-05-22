@@ -120,7 +120,7 @@ abstract class FrontendController extends AppController {
 		return false;
 	}
 	
-	protected function login($groups=array()) {
+	private function login($groups=array()) {
 		if (!empty($this->data["login"])) {
 			$userid 	= (isset($this->data["login"]["userid"])) ? $this->data["login"]["userid"] : "" ;
 			$password 	= (isset($this->data["login"]["passwd"])) ? $this->data["login"]["passwd"] : "" ;
@@ -130,7 +130,7 @@ abstract class FrontendController extends AppController {
 			}
 			if(!$this->BeAuth->login($userid, $password, null, $groups)) {
 				//$this->loginEvent('warn', $userid, "login not authorized");
-				$this->userErrorMessage(__("Wrong username/password or no authorization", true));
+				$this->userErrorMessage(__("Wrong username/password or session expired", true));
 				return false;
 			}
 			$this->eventInfo("FRONTEND logged in: publication " . $this->publication["title"]);
