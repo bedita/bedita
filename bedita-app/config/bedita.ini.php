@@ -66,30 +66,32 @@ $config['imgMissingFile'] = "/img/iconMissingImage_130x85.gif" ;
  */
 
 // User Interface default language [see also 'multilang' below]
-$config['Config']['language'] = "ita"; // or "eng", "spa", "por"
+$config['Config']['language'] = "eng"; // or "ita", "eng", "spa", "por"
 
 // Set 'multilang' true for user choice [also set 'multilang' true if $config['Config']['language'] is set]
 $config['multilang'] = true;
-$config['defaultLang'] = "ita"; // default fallback
+$config['defaultLang'] = "eng"; // default fallback
 
 
-// Dates - default presentation format [syntax used by strftime php function]
-$config['datePattern'] 	= "%d/%m/%Y" ;  //
+/* Dates - default presentation format [syntax used by strftime php function]
+ * It is used for datepicker calendar. Format has to contain %d,%m,%Y tags
+ */
+$config['datePattern'] 	= "%m-%d-%Y" ;  //
 
-// Date patterns for different locales (here language codes.... not completely correct)
+/* Date patterns for different locales (here language codes.... not completely correct)
+ * It is used for datepicker calendar. Format has to contain %d,%m,%Y tags
+ */
 $config['datePatternLocale'] = array(
-	"eng"	=> "%m-%d-%Y",
+	"ita"	=> "%d/%m/%Y"
 );
 
 // Default date time pattern
-$config['dateTimePattern'] 	= "%d/%m/%Y %H:%M:%S" ;  //
+$config['dateTimePattern'] 	= "%m-%d-%Y  %H:%M:%S";  //
 
 $config['dateTimePatternLocale'] = array(
-	"eng"	=> "%m-%d-%Y  %H:%M:%S"
+	"ita"	=> "%d/%m/%Y %H:%M:%S" 
 );
 
-// Dates - validation format [day=dd, month=mm, year=yyyy]
-$config['dateFormatValidation'] = "dd/mm/yyyy" ;
 
 // Texts in documents ['html', 'txt', 'txtParsed']
 $config['type'] = "txt" ;  // ------ SISTEMARE ------------
