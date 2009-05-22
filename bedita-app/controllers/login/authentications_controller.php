@@ -31,7 +31,6 @@
  */
 class AuthenticationsController extends AppController {
 
-	public $components = array('Session');
 	public $uses = array();
 	
 	/**

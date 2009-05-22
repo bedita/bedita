@@ -49,7 +49,7 @@ class BeAuthComponent extends Object {
 	 * 
 	 * @param object $controller
 	 */
-	function startup(&$controller)
+	function initialize(&$controller)
 	{
 		$conf = Configure::getInstance() ;		
 		$this->sessionKey = $conf->session["sessionUserKey"] ;
@@ -87,7 +87,7 @@ class BeAuthComponent extends Object {
 	 * @param string $password
 	 * @return boolean 
 	 */
-	function login ($userid, $password, $policy=null, $auth_group_name=null) {
+	function login ($userid, $password, $policy=null, $auth_group_name=array()) {
 
 		$this->User = ClassRegistry::init('User');
 		$this->User->create();
@@ -126,7 +126,7 @@ class BeAuthComponent extends Object {
 	 * Check policy using $policy array or config if null
 	 * @return boolean
 	 */
-	function loginPolicy($userid, $u, $policy, $auth_group_name) {
+	function loginPolicy($userid, $u, $policy, $auth_group_name=array()) {
 		$this->User = ClassRegistry::init('User');
 
 		// Se fallisce esce
@@ -176,7 +176,7 @@ class BeAuthComponent extends Object {
 		$authorized = false;
 		foreach ($u['Group'] as $g) {
 			array_push($groups, $g['name']) ;
-			if( ($g['backend_auth'] == 1) || ($g['name'] == $auth_group_name) ) {
+			if( $g['backend_auth'] == 1 || in_array($g['name'], $auth_group_name) ) {
 				$authorized = true;
 			}
 		}
@@ -264,6 +264,24 @@ class BeAuthComponent extends Object {
 		$this->controller->set($this->allowKey, $this->allow);
 		
 		return false ;
+	}
+	
+	public function isUserGroupAuthorized($groups=array()) {
+		if (empty($this->user)) {
+			if (!$this->isLogged())
+				return false;
+		}
+		$backendGroups = ClassRegistry::init('Group')->find("list", array(
+				"fields" => "name",
+				"conditions" => array("backend_auth" => 1)
+				)
+			);
+		$groups = array_merge($backendGroups,$groups);
+		$groupsIntersect = array_intersect($this->user["groups"], $groups);
+		if (empty($groupsIntersect)) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**

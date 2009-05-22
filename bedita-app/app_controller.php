@@ -111,7 +111,6 @@ class AppController extends Controller
 			return;
 		}
 		// Check login
-		$this->BeAuth->startup($this) ;
 		$this->set('conf',  Configure::getInstance());
 		// check/setup localization
 		$this->setupLocale();
@@ -457,6 +456,98 @@ class AppController extends Controller
 		}
 	}
 	
+	protected function saveObject(BEAppModel $beModel) {
+
+		if(empty($this->data)) 
+			throw new BeditaException( __("No data", true));
+		$new = (empty($this->data['id'])) ? true : false ;
+		// Verify object permits
+//		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+//			throw new BeditaException(__("Error modify permissions", true));
+		// Format custom properties
+		$this->BeCustomProperty->setupForSave() ;
+
+		$name = strtolower($beModel->name);
+		
+		$categoryModel = ClassRegistry::init("Category");
+		$tagList = array();
+		if (!empty($this->params["form"]["tags"]))
+			$tagList = $categoryModel->saveTagList($this->params["form"]["tags"]);
+		$this->data["Category"] = (!empty($this->data["Category"]))? array_merge($this->data["Category"], $tagList) : $tagList;
+		
+		$fixed = false;
+		if(!$new) {
+			$fixed = $this->BEObject->isFixed($this->data['id']);
+			if($fixed) { // unset pubblication date, TODO: throw exception if pub date is set! 
+				unset($this->data['start']);
+				unset($this->data['end']);
+			}
+		}
+			
+		if(!$beModel->save($this->data)) {
+			throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
+		}
+
+		if(!$fixed) {
+			if(!isset($this->data['destination'])) 
+				$this->data['destination'] = array() ;
+			$this->BeTree->updateTree($beModel->id, $this->data['destination']);
+		}
+
+		// update permissions
+		if(!isset($this->data['Permissions'])) 
+			$this->data['Permissions'] = array() ;
+//		$this->Permission->saveFromPOST($beModel->id, $this->data['Permissions'], 
+//	 			!empty($this->data['recursiveApplyPermissions']), $name);
+	}
+	
+	/**
+	 * Delete objects
+	 *
+	 * @param model name 
+	 * @return string of objects'ids deleted
+	 */
+	protected function deleteObjects($model) {
+		$objectsToDel = array();
+		$objectsListDesc = "";
+		
+		if(!empty($this->params['form']['objects_selected'])) {
+			$objectsToDel = $this->params['form']['objects_selected'];
+		} else {
+			if(empty($this->data['id'])) 
+				throw new BeditaException(__("No data", true));
+//			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
+//				throw new BeditaException(__("Error delete permissions", true));
+//			}
+			$objectsToDel = array($this->data['id']);
+		}
+
+		$this->Transaction->begin() ;
+
+		$beObject = ClassRegistry::init("BEObject");
+		
+		foreach ($objectsToDel as $id) {
+//			if(!$this->Permission->verify($id, $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
+//				throw new BeditaException(__("Error delete permissions", true));
+//			}
+			
+			if ($beObject->isFixed($id)) {
+				throw new BeditaException(__("Error, trying to delete fixed object!", true));
+			}
+
+			if ($model != "Stream") {
+				if(!$this->{$model}->delete($id))
+					throw new BeditaException(__("Error deleting object: ", true) . $id);
+			} else {
+				if(!$this->BeFileHandler->del($id))
+					throw new BeditaException(__("Error deleting object: ", true) . $id);
+			}
+			$objectsListDesc .= $id . ",";
+		}
+		$this->Transaction->commit() ;
+		return trim($objectsListDesc, ",");
+	}
+	
 }
 
 /**
@@ -514,53 +605,7 @@ abstract class ModulesController extends AppController {
 		$this->setSessionForObjectDetail($objects['items']);
 	}
 	
-	/**
-	 * Delete objects
-	 *
-	 * @param model name 
-	 * @return string of objects'ids deleted
-	 */
-	protected function deleteObjects($model) {
-		$objectsToDel = array();
-		$objectsListDesc = "";
-		
-		if(!empty($this->params['form']['objects_selected'])) {
-			$objectsToDel = $this->params['form']['objects_selected'];
-		} else {
-			if(empty($this->data['id'])) 
-				throw new BeditaException(__("No data", true));
-//			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
-//				throw new BeditaException(__("Error delete permissions", true));
-//			}
-			$objectsToDel = array($this->data['id']);
-		}
-
-		$this->Transaction->begin() ;
-
-		$beObject = ClassRegistry::init("BEObject");
-		
-		foreach ($objectsToDel as $id) {
-//			if(!$this->Permission->verify($id, $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
-//				throw new BeditaException(__("Error delete permissions", true));
-//			}
-			
-			if ($beObject->isFixed($id)) {
-				throw new BeditaException(__("Error, trying to delete fixed object!", true));
-			}
-
-			if ($model != "Stream") {
-				if(!$this->{$model}->delete($id))
-					throw new BeditaException(__("Error deleting object: ", true) . $id);
-			} else {
-				if(!$this->BeFileHandler->del($id))
-					throw new BeditaException(__("Error deleting object: ", true) . $id);
-			}
-			$objectsListDesc .= $id . ",";
-		}
-		$this->Transaction->commit() ;
-		return trim($objectsListDesc, ",");
-	}
-
+	
 	public function changeStatusObjects($modelName=null) {
 		$objectsToModify = array();
 		$objectsListDesc = "";
@@ -805,51 +850,6 @@ abstract class ModulesController extends AppController {
 			$this->Session->write('backFromView', rtrim($this->base,"/") . "/" . $modulePath);
 			$this->Session->write("prevNext", "");
 		}
-	}
-	
-	protected function saveObject(BEAppModel $beModel) {
-
-		if(empty($this->data)) 
-			throw new BeditaException( __("No data", true));
-		$new = (empty($this->data['id'])) ? true : false ;
-		// Verify object permits
-//		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-//			throw new BeditaException(__("Error modify permissions", true));
-		// Format custom properties
-		$this->BeCustomProperty->setupForSave() ;
-
-		$name = strtolower($beModel->name);
-		
-		$categoryModel = ClassRegistry::init("Category");
-		$tagList = array();
-		if (!empty($this->params["form"]["tags"]))
-			$tagList = $categoryModel->saveTagList($this->params["form"]["tags"]);
-		$this->data["Category"] = (!empty($this->data["Category"]))? array_merge($this->data["Category"], $tagList) : $tagList;
-		
-		$fixed = false;
-		if(!$new) {
-			$fixed = $this->BEObject->isFixed($this->data['id']);
-			if($fixed) { // unset pubblication date, TODO: throw exception if pub date is set! 
-				unset($this->data['start']);
-				unset($this->data['end']);
-			}
-		}
-			
-		if(!$beModel->save($this->data)) {
-			throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
-		}
-
-		if(!$fixed) {
-			if(!isset($this->data['destination'])) 
-				$this->data['destination'] = array() ;
-			$this->BeTree->updateTree($beModel->id, $this->data['destination']);
-		}
-
-		// update permissions
-		if(!isset($this->data['Permissions'])) 
-			$this->data['Permissions'] = array() ;
-//		$this->Permission->saveFromPOST($beModel->id, $this->data['Permissions'], 
-//	 			!empty($this->data['recursiveApplyPermissions']), $name);
 	}
 
 	protected function showCategories(BEAppModel $beModel) {

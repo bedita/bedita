@@ -120,6 +120,42 @@ abstract class FrontendController extends AppController {
 		return false;
 	}
 	
+	protected function login($groups=array()) {
+		if (!empty($this->data["login"])) {
+			$userid 	= (isset($this->data["login"]["userid"])) ? $this->data["login"]["userid"] : "" ;
+			$password 	= (isset($this->data["login"]["passwd"])) ? $this->data["login"]["passwd"] : "" ;
+			$confGroups = Configure::read("authorizedGroups");
+			if (empty($groups) && !empty($confGroups)) {
+				$groups = Configure::read("authorizedGroups");
+			}
+			if(!$this->BeAuth->login($userid, $password, null, $groups)) {
+				//$this->loginEvent('warn', $userid, "login not authorized");
+				$this->userErrorMessage(__("Wrong username/password or no authorization", true));
+				return false;
+			}
+			$this->eventInfo("FRONTEND logged in: publication " . $this->publication["title"]);
+			return true;
+		}
+		return false;
+	}
+	
+	public function logout() {
+		$this->BeAuth->logout();
+		$this->eventInfo("FRONTEND logged out: publication " . $this->publication["title"]);
+		$this->redirect("/");
+	}
+	
+	protected function checkIsLogged($groups=array()) {
+		if(!$this->BeAuth->isLogged()) { 
+			return $this->login($groups);
+		}
+		if (!$this->BeAuth->isUserGroupAuthorized($groups)) {
+			$this->userErrorMessage(__("User not authorized to enter", true));
+			return false;
+		}
+		return true;
+	}
+	
 	/**
 	 * called before action to initialize
 	 * $uses & $components array don't work... (abstract class ??)
@@ -1340,6 +1376,47 @@ abstract class FrontendController extends AppController {
 			$this->redirect($urlToRedirect);
 		}
 
+	}
+	
+	protected function save() {
+		try {
+			if (empty($this->data["object_type_id"]))
+				throw new BeditaException(__("no object type defined",true));
+			$modelName = Configure::read("objectTypes.".$this->data["object_type_id"].".model");
+			$objectModel = ClassRegistry::init($modelName);
+			$this->Transaction->begin();
+			$this->saveObject($objectModel);
+			$this->Transaction->commit();
+			$this->userInfoMessage(__($modelName . " saved",true));
+			$this->eventInfo("news [". $objectModel->id ."] saved");
+			return true;
+		} catch (BeditaException $ex) {
+			$this->Transaction->rollback();
+			$this->log($ex->errorTrace());
+			$this->userErrorMessage($ex->getMessage());
+			return false;
+		}
+	}
+	
+	protected function delete() {
+		try {
+			if (!empty($this->data["object_type_id"])) {
+				$object_type_id = $this->data["object_type_id"];
+			} elseif (!empty($this->data["id"])) {
+				$object_type_id = $this->BEObject->findObjectTypeId($this->data["id"]);
+			} else {
+				throw new BeditaException(__("no object type defined",true));
+			}
+			$modelName = Configure::read("objectTypes.".$object_type_id.".model");
+			$this->{$modelName} = ClassRegistry::init($modelName);
+			$objectsDeleted = $this->deleteObjects($modelName);
+			$this->userInfoMessage(__($objectsDeleted . " deleted",true));
+			return true;
+		} catch (BeditaException $ex) {
+			$this->log($ex->errorTrace());
+			$this->userErrorMessage($ex->getMessage());
+			return false;
+		}
 	}
 	
 	/**
