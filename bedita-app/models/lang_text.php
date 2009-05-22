@@ -85,12 +85,12 @@ class LangText extends BEAppModel
 		}
 
 		$otherOrder = "";
-		if (array_key_exists("search", $filter)) {
-			$fields .= ", `SearchText`.`object_id` AS `oid`, SUM( MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."') * `SearchText`.`relevance` ) AS `points`";
+		if (array_key_exists("query", $filter)) {
+			$fields .= ", `SearchText`.`object_id` AS `oid`, SUM( MATCH (`SearchText`.`content`) AGAINST ('".$filter["query"]."') * `SearchText`.`relevance` ) AS `points`";
 			$from .= ", search_texts AS `SearchText`";
-			$conditions[] = "`SearchText`.`object_id` = `BEObject`.`id` AND `SearchText`.`lang` = `LangText`.`lang` AND MATCH (`SearchText`.`content`) AGAINST ('".$filter["search"]."')";
+			$conditions[] = "`SearchText`.`object_id` = `BEObject`.`id` AND `SearchText`.`lang` = `LangText`.`lang` AND MATCH (`SearchText`.`content`) AGAINST ('".$filter["query"]."')";
 			$otherOrder = "points DESC ";
-			unset($filter["search"]);	
+			unset($filter["query"]);	
 		}
 		
 		// build sql conditions

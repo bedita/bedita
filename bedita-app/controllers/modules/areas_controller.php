@@ -363,7 +363,7 @@ class AreasController extends ModulesController {
 		
 		// set search filter
 		if (!empty($this->params["form"]["search"]))
-			$filter["search"] = addslashes($this->params["form"]["search"]);
+			$filter["query"] = addslashes($this->params["form"]["search"]);
 		
 		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
 			

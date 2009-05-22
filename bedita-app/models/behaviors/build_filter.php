@@ -130,7 +130,7 @@ class BuildFilterBehavior extends ModelBehavior {
 				. $this->from;
 	}
 	
-	private function searchFilter($value) {
+	private function queryFilter($value) {
 		$this->fields .= ", `SearchText`.`object_id` AS `oid`, SUM( MATCH (`SearchText`.`content`) AGAINST ('" . $value . "') * `SearchText`.`relevance` ) AS `points`";
 		$this->from .= ", search_texts AS `SearchText`";
 		$this->conditions[] = "`SearchText`.`object_id` = `BEObject`.`id` AND `SearchText`.`lang` = `BEObject`.`lang` AND MATCH (`SearchText`.`content`) AGAINST ('" . $value . "')";

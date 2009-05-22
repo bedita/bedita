@@ -77,13 +77,13 @@ class BeTreeComponent extends Object {
 			$this->filter["tag"] = $this->controller->passedArgs["tag"];
 
 		if (!empty($this->controller->params["form"]["searchstring"])) {
-			$this->filter["search"] = addslashes($this->controller->params["form"]["searchstring"]);
-			$this->controller->params["named"]["search"] = urlencode($this->controller->params["form"]["searchstring"]);
+			$this->filter["query"] = addslashes($this->controller->params["form"]["searchstring"]);
+			$this->controller->params["named"]["query"] = urlencode($this->controller->params["form"]["searchstring"]);
 			$this->controller->set("stringSearched", $this->controller->params["form"]["searchstring"]);
-		} elseif (!empty($this->controller->passedArgs["search"])) {
-			$this->controller->params["named"]["search"] = urlencode($this->controller->passedArgs["search"]);
-			$this->filter["search"] = addslashes(urldecode($this->controller->passedArgs["search"]));
-			$this->controller->set("stringSearched", urldecode($this->controller->passedArgs["search"]));
+		} elseif (!empty($this->controller->passedArgs["query"])) {
+			$this->controller->params["named"]["query"] = urlencode($this->controller->passedArgs["query"]);
+			$this->filter["query"] = addslashes(urldecode($this->controller->passedArgs["query"]));
+			$this->controller->set("stringSearched", urldecode($this->controller->passedArgs["query"]));
 		}
 	}
 	

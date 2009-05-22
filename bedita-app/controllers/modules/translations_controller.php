@@ -217,11 +217,11 @@ class TranslationsController extends ModulesController {
 		}
 		
 		if(!empty($this->params["form"]["searchstring"])) {
-			$filter['search'] = $this->params["form"]["searchstring"];
-			$this->params["named"]["search"] = $filter['search'];
-		} elseif (!empty($this->passedArgs["search"])) {
-			$filter['search'] = $this->passedArgs["search"];
-			$this->params["named"]["search"] = $filter['search'];
+			$filter['query'] = $this->params["form"]["searchstring"];
+			$this->params["named"]["query"] = $filter['query'];
+		} elseif (!empty($this->passedArgs["query"])) {
+			$filter['query'] = $this->passedArgs["query"];
+			$this->params["named"]["query"] = $filter['query'];
 		}
 		
 		$this->set("statusSelected",$filter['status']);
