@@ -54,7 +54,7 @@ $().ready(function() {
 		<input type="hidden" name="data[login][URLOK]" value="{$beurl->here()}" id="loginURLOK" />
 		
 		<label class="block" id="luserid" for="userid">{t}Username{/t}</label>
-		<input class="big" style="width:103px" type="text" name="data[login][userid]" id="userid" class="{literal}{required:true}{/literal}" title="{t}Username is required{/t}"/></td>
+		<input class="big" style="width:103px" type="text" name="data[login][userid]" id="userid" class="{literal}{required:true}{/literal}" title="{t}Username is required{/t}"/>
 		<label class="block" id="lpasswd" for="passwd">{t}Password{/t}</label>
 		<input class="big" style="width:103px; margin-bottom:10px;" type="password" name="data[login][passwd]" id="passwd" class="{literal}{required:true}{/literal}" title="{t}Password is required{/t}"/>
 		
@@ -64,15 +64,16 @@ $().ready(function() {
 </div>
 
 <div class="quartacolonna" style="border-left:1px solid gray; padding:120px 0px 0px 10px; width:420px; left:440px; top:20px;">
-<label class="block"><a href='javascript:void(0)' onClick="$('#pswforget').toggle('fast')">{t}Hai dimenticato username o password?{/t}</a></label>
+<label class="block"><a href='javascript:void(0)' onClick="$('#pswforget').toggle('fast')">{t}Forgotten username or password?{/t}</a></label>
 <div id="pswforget" style="display:none">
-	Scrivi qui la tua <label>{t}email{/t}:&nbsp;</label>
+	{t}Write your email here{/t}:&nbsp;
 	<br />
 	<input class="big" style="width:153px" type="text" title="{t}Username is required{/t}"/>
 	<input class="bemaincommands" type="submit" value="{t}Send{/t}"/>
 	
 	<hr />
-	oppure <label><a href="mailto:{$conf->projectAdmin}">contatta l'amministratore</a></label>	
+	{if isset($conf->projectAdmin)}
+	{t}or{/t} <label><a href="mailto:{$conf->projectAdmin}">{t}contact the project admin{/t}</a></label>{/if}
 </div>
 
 
