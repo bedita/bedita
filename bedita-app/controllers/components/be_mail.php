@@ -307,26 +307,26 @@ class BeMailComponent extends Object {
 		
 	}
 	
-	public function notify($object, $users) {
-		$data["from"] = "a.pagliarini@channelweb.it";
-		$projectname = Configure::read("projectName");
-		if (empty($projectname))
-			$projectname = "BEdita";
-		$data["subject"] = "[".$projectname."] " . 
-							Configure::read("objectTypes." . $object["object_type_id"].".name") . ": " .
-							"\"". $object["title"] ."\"";
-		$data["body"] = __("Object created or modified",true) . ": " . $object["title"] . "\n";
-		$data["body"] .= __("Author creator", true) . ": " . $object["UserCreated"]["realname"] . "\n";
-		$data["body"] .= __("Last modified by", true) . ": " . $object["UserModified"]["realname"] . "\n";
-		$data["body"] .= __("Link", true) . ": " . Configure::read("beditaUrl") . "/" . 
-						Configure::read("objectTypes." . $object["object_type_id"] . "module") . "/view/" . $object["id"];
-		
-		foreach ($users as $u) {
-			$data["to"] = $u["User"]["email"];
-//			if (!$this->send($data))
-//				$this->log(__("Notification mail delivery failed", true) . "-" . $this->Email->smtpError);
-		}
-	}
+//	public function notify($object, $users) {
+//		$data["from"] = "pincopallo@channelweb.it";
+//		$projectname = Configure::read("projectName");
+//		if (empty($projectname))
+//			$projectname = "BEdita";
+//		$data["subject"] = "[".$projectname."] " . 
+//							Configure::read("objectTypes." . $object["object_type_id"].".name") . ": " .
+//							"\"". $object["title"] ."\"";
+//		$data["body"] = __("Object created or modified",true) . ": " . $object["title"] . "\n";
+//		$data["body"] .= __("Author creator", true) . ": " . $object["UserCreated"]["realname"] . "\n";
+//		$data["body"] .= __("Last modified by", true) . ": " . $object["UserModified"]["realname"] . "\n";
+//		$data["body"] .= __("Link", true) . ": " . Configure::read("beditaUrl") . "/" . 
+//						Configure::read("objectTypes." . $object["object_type_id"] . "module") . "/view/" . $object["id"];
+//		
+//		foreach ($users as $u) {
+//			$data["to"] = $u["User"]["email"];
+////			if (!$this->send($data))
+////				$this->log(__("Notification mail delivery failed", true) . "-" . $this->Email->smtpError);
+//		}
+//	}
 	
 	/**
 	 * prepare data for email sending
