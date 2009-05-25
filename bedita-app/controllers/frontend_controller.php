@@ -112,6 +112,14 @@ abstract class FrontendController extends AppController {
 	protected $searchOptions = array("order" => "title", "dir" => 1, "dim" => 50, "page" => 1, "filter" => false);
 	
 	/**
+	 * path to redirect after logout action
+	 * 
+	 * @var string
+	 */
+	protected $logoutRedirectTo = "/";
+	
+	
+	/**
 	 * every frontend has to implement checkLogin
 	 * 
 	 * @see bedita-app/AppController#checkLogin()
@@ -139,10 +147,12 @@ abstract class FrontendController extends AppController {
 		return false;
 	}
 	
-	public function logout() {
+	public function logout($autoRedirect=true) {
 		$this->BeAuth->logout();
 		$this->eventInfo("FRONTEND logged out: publication " . $this->publication["title"]);
-		$this->redirect("/");
+		if ($autoRedirect) {
+			$this->redirect($this->logoutRedirectTo);
+		}
 	}
 	
 	protected function checkIsLogged($groups=array()) {
