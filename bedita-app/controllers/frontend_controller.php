@@ -244,6 +244,9 @@ abstract class FrontendController extends AppController {
 		if(isset( $conf->dateTimePatternLocale[$this->currLang])) {
 			Configure::write('dateTimePattern', $conf->dateTimePatternLocale[$this->currLang]);
 		}
+		$dateFormatValidation = $conf->datePattern;
+		$dateFormatValidation = preg_replace(array("/%d/", "/%m/", "/%Y/"), array("dd","mm","yyyy"), $dateFormatValidation);
+		Configure::write('dateFormatValidation', $dateFormatValidation);
 	}
 
 	/**
