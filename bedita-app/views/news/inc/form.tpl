@@ -25,7 +25,7 @@
 	
 	{include file="../common_inc/form_assoc_objects.tpl" object_type_id=$conf->objectTypes.shortnews.id}
 	
-	{*include file="../common_inc/form_advanced_properties.tpl" el=$object*}
+	{include file="../common_inc/form_advanced_properties.tpl" el=$object}
 	
 	{include file="../common_inc/form_custom_properties.tpl"}
 	
