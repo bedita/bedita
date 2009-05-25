@@ -417,12 +417,34 @@ $config['permissions'] = array(
  */
 $config['questionTypes'] = array(
 	"multiple" => "multiple choiche",
-	"single_checkbox" => "checkbox single choice",
+	"single_radio" => "radio single choice",
 	"single_pulldown" => "pulldown single choice",
 	"freetext" => "open answer",
 	"checkopen" => "check open",
 	"degree" => "degree",
 	"number" => "number"
+);
+
+/**
+ * question difficulty 
+ */
+$config['questionDifficulty'] = array(
+	1 => "1 | very easy",
+	2 => "2 | easy",
+	3 => "3 | normal",
+	4 => "4 | hard",
+	5 => "5 | very hard"
+);
+
+
+/**
+ * education Level 
+ */
+$config['eduLevel'] = array(
+	1 => "scuola primaria",
+	2 => "scuola secondaria di primo grado",
+	3 => "scuola secondaria di secondo grado",
+	4 => "università"
 );
 
 /**
