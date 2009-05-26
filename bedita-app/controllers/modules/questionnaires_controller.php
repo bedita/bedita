@@ -45,7 +45,7 @@ class QuestionnairesController extends ModulesController {
 		$this->saveObject($this->Questionnaire);
 	 	$this->Transaction->commit() ;
  		$this->userInfoMessage(__("Questionnaire saved", true)." - ".$this->data["title"]);
-		$this->eventInfo("questionnaire [id=". $this->data["id"]."] saved");	
+		$this->eventInfo("questionnaire [id=". $this->Questionnaire->id ."] saved");	
 	}
 
 	 
@@ -80,7 +80,7 @@ class QuestionnairesController extends ModulesController {
 		$this->saveObject($this->Question);
 	 	$this->Transaction->commit() ;
  		$this->userInfoMessage(__("Question saved", true)." - ".$this->data["title"]);
-		$this->eventInfo("question [id=". $this->data["id"]."] saved");
+		$this->eventInfo("question [id=". $this->Question->id."] saved");
 	 }
 	 
 	public function delete() {
@@ -109,6 +109,20 @@ class QuestionnairesController extends ModulesController {
 		$objectsListDeleted = $this->deleteObjects("Questionnaire");
 		$this->userInfoMessage(__("Questionnaires deleted", true) . " -  " . $objectsListDeleted);
 		$this->eventInfo("Questionnaires " . $objectsListDeleted . " deleted");
+	}
+	
+	public function cloneObject() {
+		$object_type_id = ClassRegistry::init("BEObject")->findObjectTypeId($this->data['id']);
+		unset($this->data['id']);
+		$this->data['status']='draft';
+		$this->data['fixed'] = 0;
+		if ($object_type_id == Configure::read('objectTypes.question.id')) {
+			$this->saveQuestion();
+			$this->action = "saveQuestion";
+		} else {
+			$this->save();
+			$this->action = "save";
+		}
 	}
 	
 	
