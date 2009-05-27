@@ -296,7 +296,7 @@ CREATE TABLE contents (
   subject VARCHAR(255) NULL,
   abstract MEDIUMTEXT NULL,
   body MEDIUMTEXT NULL,
-  type ENUM('html','txt','txtParsed') DEFAULT 'txt',
+  `type` VARCHAR(30) NULL COMMENT 'generic content type, future use...',
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
