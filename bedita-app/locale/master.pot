@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2009-02-21 12:27:55\n"
+"POT-Creation-Date: 2009-05-22 17:40:55\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -45,6 +45,9 @@ msgstr ""
 msgid "Advanced Properties"
 msgstr ""
 
+msgid "Annotation type or object_id missing"
+msgstr ""
+
 msgid "Apply permissions recursively"
 msgstr ""
 
@@ -78,10 +81,10 @@ msgstr ""
 msgid "Area tree saved"
 msgstr ""
 
-msgid "Attachments"
+msgid "Author"
 msgstr ""
 
-msgid "Author"
+msgid "Author creator"
 msgstr ""
 
 msgid "Authorized"
@@ -174,7 +177,13 @@ msgstr ""
 msgid "Check at least one group"
 msgstr ""
 
+msgid "Check url"
+msgstr ""
+
 msgid "Choose document type"
+msgstr ""
+
+msgid "Code"
 msgstr ""
 
 msgid "Comment saved"
@@ -210,13 +219,13 @@ msgstr ""
 msgid "Contacts"
 msgstr ""
 
+msgid "Content "
+msgstr ""
+
 msgid "Content not found"
 msgstr ""
 
 msgid "Create"
-msgstr ""
-
-msgid "Create list"
 msgstr ""
 
 msgid "Create new"
@@ -229,6 +238,9 @@ msgid "Create new event"
 msgstr ""
 
 msgid "Create new gallery"
+msgstr ""
+
+msgid "Create new list"
 msgstr ""
 
 msgid "Create new publishing"
@@ -297,7 +309,7 @@ msgstr ""
 msgid "Duplicate property name for the same object"
 msgstr ""
 
-msgid "Edit more details"
+msgid "Editor notes"
 msgstr ""
 
 msgid "Email"
@@ -465,6 +477,9 @@ msgstr ""
 msgid "Exif - Main Data"
 msgstr ""
 
+msgid "Existing group"
+msgstr ""
+
 msgid "Exit"
 msgstr ""
 
@@ -475,6 +490,9 @@ msgid "File already exists in the filesystem"
 msgstr ""
 
 msgid "Find it"
+msgstr ""
+
+msgid "Forgotten username or password?"
 msgstr ""
 
 msgid "Galleries deleted"
@@ -513,15 +531,6 @@ msgstr ""
 msgid "Group deleted"
 msgstr ""
 
-msgid "Group modules access"
-msgstr ""
-
-msgid "Group name is required (at least %1 chars, no white spaces and special chars)"
-msgstr ""
-
-msgid "Group properties "
-msgstr ""
-
 msgid "Groups"
 msgstr ""
 
@@ -529,6 +538,9 @@ msgid "Height"
 msgstr ""
 
 msgid "Hide system tags"
+msgstr ""
+
+msgid "Home"
 msgstr ""
 
 msgid "Human readable type"
@@ -564,10 +576,10 @@ msgstr ""
 msgid "Last check"
 msgstr ""
 
-msgid "Last result"
+msgid "Last modified by"
 msgstr ""
 
-msgid "Letters or numbers only please"
+msgid "Last result"
 msgstr ""
 
 msgid "License is required (at least %1 alphanumerical char)"
@@ -675,6 +687,9 @@ msgstr ""
 msgid "More data"
 msgstr ""
 
+msgid "More properties"
+msgstr ""
+
 msgid "Multimedia  not found"
 msgstr ""
 
@@ -777,6 +792,9 @@ msgstr ""
 msgid "No subscribers"
 msgstr ""
 
+msgid "No tag founded"
+msgstr ""
+
 msgid "No tag in text area"
 msgstr ""
 
@@ -798,6 +816,9 @@ msgstr ""
 msgid "No tree found"
 msgstr ""
 
+msgid "No user data"
+msgstr ""
+
 msgid "Not Authorized"
 msgstr ""
 
@@ -807,7 +828,13 @@ msgstr ""
 msgid "Notice"
 msgstr ""
 
+msgid "Notification mail delivery failed"
+msgstr ""
+
 msgid "Number of objects"
+msgstr ""
+
+msgid "Object created or modified"
 msgstr ""
 
 msgid "Occurrences"
@@ -834,10 +861,10 @@ msgstr ""
 msgid "Password is required"
 msgstr ""
 
-msgid "Passwords should be equal"
+msgid "Passwords mismatch"
 msgstr ""
 
-msgid "Permission"
+msgid "Passwords should be equal"
 msgstr ""
 
 msgid "Permissions"
@@ -864,6 +891,12 @@ msgstr ""
 msgid "Properties"
 msgstr ""
 
+msgid "Provider"
+msgstr ""
+
+msgid "Provider URL"
+msgstr ""
+
 msgid "Public sites users statistics"
 msgstr ""
 
@@ -876,19 +909,31 @@ msgstr ""
 msgid "Question detail"
 msgstr ""
 
+msgid "Question saved"
+msgstr ""
+
+msgid "Questionnaire saved"
+msgstr ""
+
+msgid "Questionnaires deleted"
+msgstr ""
+
 msgid "Questionnaires list"
 msgstr ""
 
 msgid "Questions"
 msgstr ""
 
+msgid "Questions and answers"
+msgstr ""
+
+msgid "Questions deleted"
+msgstr ""
+
 msgid "Questions list"
 msgstr ""
 
 msgid "Queue is empty"
-msgstr ""
-
-msgid "Read"
 msgstr ""
 
 msgid "Read and modify"
@@ -948,6 +993,9 @@ msgstr ""
 msgid "Select by type"
 msgstr ""
 
+msgid "Send"
+msgstr ""
+
 msgid "Send email to"
 msgstr ""
 
@@ -961,6 +1009,9 @@ msgid "Show system tags"
 msgstr ""
 
 msgid "Show translations in"
+msgstr ""
+
+msgid "Statistics"
 msgstr ""
 
 msgid "Status"
@@ -979,6 +1030,9 @@ msgid "Subscribers associated to list"
 msgstr ""
 
 msgid "Subtitle, description"
+msgstr ""
+
+msgid "Summary"
 msgstr ""
 
 msgid "System events"
@@ -1098,6 +1152,9 @@ msgstr ""
 msgid "User name is required (at least %1 chars, without white spaces and special chars)"
 msgstr ""
 
+msgid "User not authorized to enter"
+msgstr ""
+
 msgid "User not present"
 msgstr ""
 
@@ -1119,7 +1176,16 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
+msgid "Write your email here"
+msgstr ""
+
+msgid "Wrong old user password"
+msgstr ""
+
 msgid "Wrong username/password or no authorization"
+msgstr ""
+
+msgid "Wrong username/password or session expired"
 msgstr ""
 
 msgid "X"
@@ -1135,6 +1201,12 @@ msgid "abstract:"
 msgstr ""
 
 msgid "accept this IP!"
+msgstr ""
+
+msgid "access "
+msgstr ""
+
+msgid "access server log statistics"
 msgstr ""
 
 msgid "add"
@@ -1227,9 +1299,6 @@ msgstr ""
 msgid "browse your disk"
 msgstr ""
 
-msgid "cancel"
-msgstr ""
-
 msgid "change status"
 msgstr ""
 
@@ -1239,10 +1308,19 @@ msgstr ""
 msgid "change status to:"
 msgstr ""
 
+msgid "changes on my contents"
+msgstr ""
+
+msgid "check open"
+msgstr ""
+
 msgid "check selected links"
 msgstr ""
 
 msgid "check urls"
+msgstr ""
+
+msgid "checkbox single choice"
 msgstr ""
 
 msgid "choose document type"
@@ -1267,6 +1345,9 @@ msgid "connected user"
 msgstr ""
 
 msgid "contact email"
+msgstr ""
+
+msgid "contact the project admin"
 msgstr ""
 
 msgid "contents"
@@ -1323,6 +1404,9 @@ msgstr ""
 msgid "default language"
 msgstr ""
 
+msgid "degree"
+msgstr ""
+
 msgid "delete"
 msgstr ""
 
@@ -1348,6 +1432,9 @@ msgid "documents"
 msgstr ""
 
 msgid "draft"
+msgstr ""
+
+msgid "editor notes"
 msgstr ""
 
 msgid "email"
@@ -1395,9 +1482,6 @@ msgstr ""
 msgid "for object type"
 msgstr ""
 
-msgid "forms"
-msgstr ""
-
 msgid "from"
 msgstr ""
 
@@ -1408,6 +1492,12 @@ msgid "get from list"
 msgstr ""
 
 msgid "go"
+msgstr ""
+
+msgid "group modules access"
+msgstr ""
+
+msgid "group properties "
 msgstr ""
 
 msgid "height"
@@ -1512,7 +1602,22 @@ msgstr ""
 msgid "multiple choice"
 msgstr ""
 
+msgid "multiple choiche"
+msgstr ""
+
 msgid "name"
+msgstr ""
+
+msgid "new again"
+msgstr ""
+
+msgid "new comments"
+msgstr ""
+
+msgid "new notes"
+msgstr ""
+
+msgid "new psw"
 msgstr ""
 
 msgid "new publishing"
@@ -1548,6 +1653,9 @@ msgstr ""
 msgid "no custom properties defined"
 msgstr ""
 
+msgid "no object type defined"
+msgstr ""
+
 msgid "no referenced objects"
 msgstr ""
 
@@ -1563,7 +1671,19 @@ msgstr ""
 msgid "not yet sent"
 msgstr ""
 
+msgid "notify me by email"
+msgstr ""
+
 msgid "number"
+msgstr ""
+
+msgid "object expired"
+msgstr ""
+
+msgid "object scheduled in the future"
+msgstr ""
+
+msgid "object scheduled today"
 msgstr ""
 
 msgid "of"
@@ -1575,10 +1695,22 @@ msgstr ""
 msgid "off"
 msgstr ""
 
+msgid "old psw"
+msgstr ""
+
 msgid "on"
 msgstr ""
 
+msgid "on my stuff only"
+msgstr ""
+
+msgid "open answer"
+msgstr ""
+
 msgid "open file in a separate window"
+msgstr ""
+
+msgid "open in new window"
 msgstr ""
 
 msgid "operazioni"
@@ -1653,6 +1785,12 @@ msgstr ""
 msgid "publishing"
 msgstr ""
 
+msgid "pulldown single choice"
+msgstr ""
+
+msgid "questionnaires"
+msgstr ""
+
 msgid "read"
 msgstr ""
 
@@ -1692,6 +1830,9 @@ msgstr ""
 msgid "save"
 msgstr ""
 
+msgid "save profile"
+msgstr ""
+
 msgid "scheduled"
 msgstr ""
 
@@ -1717,9 +1858,6 @@ msgid "see comments from this email"
 msgstr ""
 
 msgid "see comments on this content"
-msgstr ""
-
-msgid "see results"
 msgstr ""
 
 msgid "select an item to associate"
@@ -1809,9 +1947,6 @@ msgstr ""
 msgid "template"
 msgstr ""
 
-msgid "tescription"
-msgstr ""
-
 msgid "text"
 msgstr ""
 
@@ -1860,6 +1995,9 @@ msgstr ""
 msgid "view"
 msgstr ""
 
+msgid "view results"
+msgstr ""
+
 msgid "web site"
 msgstr ""
 
@@ -1903,4 +2041,7 @@ msgid "your 5 recent items"
 msgstr ""
 
 msgid "your message"
+msgstr ""
+
+msgid "your profile and preferences"
 msgstr ""
