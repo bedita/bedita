@@ -4,6 +4,7 @@
 SET FOREIGN_KEY_CHECKS=0;
 
 DROP TABLE IF EXISTS `annotations`;
+DROP TABLE IF EXISTS `answers`;
 DROP TABLE IF EXISTS `areas`;
 DROP TABLE IF EXISTS `authors`;
 DROP TABLE IF EXISTS `banned_ips`;
@@ -41,6 +42,7 @@ DROP TABLE IF EXISTS `properties`;
 DROP TABLE IF EXISTS `property_options`;
 DROP TABLE IF EXISTS `questions`;
 DROP TABLE IF EXISTS `question_answers`;
+DROP TABLE IF EXISTS `questionnaire_results`;
 DROP TABLE IF EXISTS `search_texts`;
 DROP TABLE IF EXISTS `sections`;
 DROP TABLE IF EXISTS `section_types`;
@@ -51,6 +53,55 @@ DROP TABLE IF EXISTS `versions`;
 DROP TABLE IF EXISTS `videos`;
 DROP VIEW IF EXISTS `view_permissions` ;
 DROP VIEW IF EXISTS `view_trees` ;
+
+CREATE TABLE annotations (
+  id INTEGER UNSIGNED NOT NULL,
+  object_id INTEGER UNSIGNED NOT NULL,
+  author VARCHAR(255) NULL,
+  email VARCHAR(255) NULL,
+  url VARCHAR(255) NULL,
+  thread_path MEDIUMTEXT NULL,
+  rating INTEGER UNSIGNED NULL,
+  PRIMARY KEY(id),
+  INDEX `author_idx`(author),
+  INDEX `objects_idx` (`object_id`),
+  FOREIGN KEY(id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE answers (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  questionnaire_result_id INTEGER UNSIGNED NOT NULL,
+  question_id INTEGER UNSIGNED NOT NULL,
+  question_answer_id INTEGER UNSIGNED NULL,
+  created DATETIME NOT NULL,
+  answer TEXT NULL,
+  final TINYINT NOT NULL DEFAULT 1 COMMENT 'last/final answer??',
+  PRIMARY KEY(id),
+  INDEX `result_idx` (`questionnaire_result_id`),
+  INDEX `question_idx` (`question_id`),
+  INDEX `question_answer_idx` (`question_answer_id`),
+  FOREIGN KEY(questionnaire_result_id)
+    REFERENCES questionnaire_results(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(question_id)
+    REFERENCES questions(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(question_answer_id)
+    REFERENCES question_answers(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'user answers to questions';
+
 
 CREATE TABLE cake_sessions (
   id varchar(255) NOT NULL default '',
@@ -252,27 +303,6 @@ CREATE TABLE contents (
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE annotations (
-  id INTEGER UNSIGNED NOT NULL,
-  object_id INTEGER UNSIGNED NOT NULL,
-  author VARCHAR(255) NULL,
-  email VARCHAR(255) NULL,
-  url VARCHAR(255) NULL,
-  thread_path MEDIUMTEXT NULL,
-  rating INTEGER UNSIGNED NULL,
-  PRIMARY KEY(id),
-  INDEX `author_idx`(author),
-  INDEX `objects_idx` (`object_id`),
-  FOREIGN KEY(id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(object_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 
 -- La cancellazione deve essere gestita separatamente
@@ -780,9 +810,26 @@ CREATE TABLE question_answers (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
+CREATE TABLE questionnaire_results (
+  id INTEGER UNSIGNED NOT NULL,
+  object_id INTEGER UNSIGNED NOT NULL,
+  completed TINYINT NOT NULL DEFAULT 0,
+  rating INTEGER UNSIGNED NULL,
+  evaluation TEXT NULL,
+  PRIMARY KEY(id),
+  INDEX `objects_idx` (`object_id`),
+  FOREIGN KEY(id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='questionnaire result/filling/compilation';
 
 -- ------------------------------------------
--- Permessi
+-- Permissions
 -- ------------------------------------------
 
 CREATE  VIEW `view_permissions` AS 
