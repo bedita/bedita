@@ -137,32 +137,31 @@ $(document).ready(function(){
 	
 {if !empty($objects)}
 
-<div style="white-space:nowrap">
-	
+<div style="white-space:nowrap">	
 	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
 	&nbsp;&nbsp;&nbsp;
 	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
 	&nbsp;&nbsp;&nbsp
 	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
-
-	
 </div>
 
 <br />
 
 <div class="tab"><h2>{t}Bulk actions on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
-<div>
-
-{t}change status to:{/t} 	<select style="width:75px" id="newStatus" name="newStatus">
-								<option value=""> -- </option>
-								{html_options options=$conf->statusOptions}
-							</select>
-			<input id="changestatusSelected" type="button" value=" ok " />
-	<hr />
-	
-	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
-	
-</div>
+	<div>
+		{t}change status to:{/t}
+		<select style="width:75px" id="newStatus" name="newStatus">
+			<option value=""> -- </option>
+			{html_options options=$conf->statusOptions}
+		</select>
+		<input id="changestatusSelected" type="button" value=" ok " />
+		<hr />
+		<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
+		<hr />
+		Create a new questionnaire with selected elements &nbsp;&nbsp; | &nbsp;&nbsp; title: <input type="text" />  <input type="button" value=" create " />
+		<hr />
+		Apply a tag: <input type="text" />  <input type="button" value=" add " />
+	</div>
 
 {/if}
 

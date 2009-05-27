@@ -61,7 +61,7 @@ $(document).ready(function(){
 		<ul class="menuleft insidecol">
 			<li><a href="javascript:void(0)" onClick="$('#groups').slideToggle();">{t}Select by category{/t}</a></li>
 				
-				<ul id="groups">
+				<ul class="subchoice" id="groups">
 					<li><a href="">matematica</a></li>
 					<li><a href="">fisica</a></li>
 					<li><a href="">geologia</a></li>
@@ -74,7 +74,7 @@ $(document).ready(function(){
 		<ul class="menuleft insidecol">
 			<li><a href="javascript:void(0)" onClick="$('#types').slideToggle();">{t}Select by type{/t}</a></li>
 				
-				<ul id="types" style="display:none;">
+				<ul class="subchoice" id="types">
 					{foreach from=$conf->questionTypes item="label" key="value"}
 					<li {if ((@$html->params.named.filter == 'questionTypes') && ($html->params.named.value == $value))}class="on"{/if}>
 						<a href="{$html->url('/')}{$currentModule.path}/{$html->action}/filter:questionTypes/value:{$value}">{$label}</a></li>
@@ -86,7 +86,7 @@ $(document).ready(function(){
 		<ul class="menuleft insidecol">
 			<li><a href="javascript:void(0)" onClick="$('#difficulty').slideToggle();">{t}Select by difficulty{/t}</a></li>
 				
-				<ul id="difficulty" style="display:none;">
+				<ul class="subchoice" id="difficulty">
 					{foreach from=$conf->questionDifficulty item="label" key="value"}
 					<li {if ((@$html->params.named.filter == 'difficulty') && ($html->params.named.value == $value))}class="on"{/if}>
 						<a href="{$html->url('/')}{$currentModule.path}/{$html->action}/filter:difficulty/value:{$value}">{$label}</a></li>
@@ -98,7 +98,7 @@ $(document).ready(function(){
 		<ul class="menuleft insidecol">
 			<li><a href="javascript:void(0)" onClick="$('#eduLevel').slideToggle();">{t}Select by eduLevel{/t}</a></li>
 				
-				<ul id="eduLevel" style="display:none;">
+				<ul class="subchoice" id="eduLevel">
 					{foreach from=$conf->eduLevel item="label" key="value"}
 					<li {if ((@$html->params.named.filter == 'eduLevel') && ($html->params.named.value == $value))}class="on"{/if}>
 						<a href="{$html->url('/')}{$currentModule.path}/{$html->action}/filter:eduLevel/value:{$value}">{$label}</a></li>
