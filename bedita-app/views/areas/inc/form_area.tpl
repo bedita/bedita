@@ -46,7 +46,7 @@ $(document).ready(function(){
 		<tr>
 			<th>{t}status{/t}:</th>
 			<td id="status">
-				{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator=" "}
+				{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator=" "}
 			</td>
 		</tr>
 		

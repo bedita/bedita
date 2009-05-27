@@ -9,7 +9,7 @@
 		<th>{t}Status{/t}:</th>
 		<td colspan="3">
 			{html_radios name="data[status]" options=$conf->statusOptions 
-			selected=$object.status|default:$conf->status separator="&nbsp;"}
+			selected=$object.status|default:$conf->defaultStatus separator="&nbsp;"}
 		</td>
 
 	</tr>

@@ -4,7 +4,7 @@
 *}
 
 
-{include file="../common_inc/form_properties.tpl" doctype=false publication=false}
+{include file="../common_inc/form_properties.tpl" publication=false}
 
 {include file="../common_inc/form_title_subtitle.tpl"}
 

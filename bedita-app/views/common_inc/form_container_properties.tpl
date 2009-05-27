@@ -36,12 +36,7 @@ $(document).ready(function(){
 
 	<hr/>
 	<span style="font-weight:bold;">{t}status{/t}:</span>:
-	{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator=" "}
-	{if (isset($doctype) && !empty($doctype))}
-	<span style="font-weight:bold;">{t}Choose document type{/t}:</span>
-	{html_radios name="data[object_type_id]" options=$conf->docTypeOptions selected=$object.object_type_id|default:'22' separator="&nbsp;"}
-	<hr/>
-	{/if}
+	{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator=" "}
 	<table class="tableForm" border="0">
 	<tr>
 		<td class="label">{t}default language{/t}:</td>

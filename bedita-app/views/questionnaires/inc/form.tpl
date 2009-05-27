@@ -8,7 +8,7 @@
 	{include file="./inc/form_list_questions.tpl" object_type_id=$conf->objectTypes.questionnaire.id}
 	
 
-	{include file="../common_inc/form_properties.tpl" doctype=false comments=false}
+	{include file="../common_inc/form_properties.tpl" comments=false}
 	
 	{include file="../common_inc/form_assoc_objects.tpl" object_type_id=$conf->objectTypes.document.id}	
 	

@@ -15,15 +15,6 @@
 		</td>
 	</tr>
 
-	{if (isset($doctype) && !empty($doctype))}
-	<tr>
-		<th>{t}choose document type{/t}:</th>
-		<td>
-			{html_radios name="data[object_type_id]" options=$conf->docTypeOptions selected=$object.object_type_id|default:'22' separator="&nbsp;"}
-		</td>
-	</tr>
-	{/if}
-
 	{if ($object)}
 		<tr>
 			<th>{t}created by{/t}:</th>

@@ -36,7 +36,7 @@ $config["projectName"] = ""; // override in bedita.cfg
 
 $config["userVersion"] = "BEdita 3.0"; // don't override
 
-$config["majorVersion"] = "3.0.aplha1"; // don't override -- admin/system
+$config["majorVersion"] = "3.0.beta1"; // don't override -- admin/system
 
  /**
  ** ******************************************
@@ -93,14 +93,8 @@ $config['dateTimePatternLocale'] = array(
 );
 
 
-// Texts in documents ['html', 'txt', 'txtParsed']
-$config['type'] = "txt" ;  // ------ SISTEMARE ------------
-//$config['defaultTxtType'] = "txt" ;
-
-
-// Status of new objects
-$config['status'] = "draft" ;  // ------ SISTEMARE ------------
-
+// Default status of new objects
+$config['defaultStatus'] = "draft" ;
 
 // TinyMCE Rich Text Editor for long_text ['true' to enable]
 $config['mce'] = true;
@@ -118,12 +112,12 @@ $config['unitTestUserId'] = 1;
 
 // activity timeout used in Home/"connected user" time duration in minutes
 $config['activityTimeout'] = 20;
+
 /**
  ** ******************************************
  **  Image and Video defaults
  ** ******************************************
  */
-
 $config['media']['image']['thumbWidth']  = 130;      // px - was $config['thumbWidth']
 $config['media']['image']['thumbHeight'] = 85;       // px - was $config['thumbHeight']
 $config['media']['image']['thumbMode']   = "crop";   // crop, fill, croponly, stretch - thumb mode
@@ -149,7 +143,7 @@ $config['media']['audio']['height']      = 20;       // px - was $config['audioH
 
 
 /************************************************************
- * COMPATIBILITA' - RIMUOVERE - START
+ * COMPATIBILITY - TO REMOVE - START
 ************************************************************/
 
 $config['thumbWidth']       = $config['media']['image']['thumbWidth'] ;
@@ -162,7 +156,7 @@ $config['audioWidth']       = $config['media']['audio']['width'] ;
 $config['audioHeight']      = $config['media']['audio']['height'] ;	
 
 /************************************************************
- * COMPATIBILITA' - RIMUOVERE - END
+ * COMPATIBILITY - TO REMOVE - END
 ************************************************************/
 
 
@@ -198,7 +192,7 @@ $config['DS']        = DS;
 
 
 /**
- * Costanti per la definizione dei permessi
+ * Permissions constants
  */
 define("BEDITA_PERMS_READ",		0x1) ;
 define("BEDITA_PERMS_MODIFY",	0x2) ;
@@ -395,10 +389,10 @@ $config["redirectExtensionsDownload"] = array ("gz", "tar", "zip");
 $config["redirectMimeTypesDownload"] = array ();
 
 /**
- * Definisce le variabili utilizzate per la gestione delle sessioni
+ * Session handling parameters
  */
 $config['session'] = array (
-	"sessionUserKey"	=> "BEAuthUser", 		// Nome con cui salvato in sessione info. utente connesso
+	"sessionUserKey"	=> "BEAuthUser", // Nome con cui salvato in sessione info. utente connesso
 ) ;
 
 
@@ -439,6 +433,7 @@ $config['questionDifficulty'] = array(
 
 /**
  * education Level 
+ * TODO: i18n!! how??
  */
 $config['eduLevel'] = array(
 	1 => "scuola primaria",
@@ -449,7 +444,7 @@ $config['eduLevel'] = array(
 
 /**
  * 
- * Options selezione status
+ * Options status select
  * 
  */
 $config['statusOptions'] = array(
@@ -459,7 +454,7 @@ $config['statusOptions'] = array(
 ) ;
 
 /**
- * Lang selection options ISO-639-3 - Language options for contents
+ * Lang selection options ISO-639-3 - Default language options for contents
  */
 $config['langOptions'] = array(
 		"ara" => "Arabic",
@@ -524,35 +519,9 @@ $config['langOptionsIso'] = false;
 // media types for multimedia association
 $config['mediaTypes'] = array('image','video','audio','text','spreadsheet','presentation','drawing','chart','formula');
 
-/**
- * 
- * Options selezione tipologia Cutom properties
- * 
- */
-$config['customPropTypeOptions'] = array(
-	"integer"	=> "integer",
-	"bool"		=> "boolean",
-	"float"		=> "float",
-	"string"	=> "string",
-	"stream"	=> "stream"
-) ;
 
 /**
- * Options radio button tipi di documenti da seelzionare
- */
-$config['docTypeOptions'] = array(
-	"22"	=> "Documento",
-	"23"	=> "Link oggetto BEdita",
-	"24"	=> "Link",
-) ;
-
-
-/**
- * Variabili utilizzate da Smarty per definire permessi
- * 
- */
-/**
- * Costanti per la definizione dei permessi
+ * Permission params, for Smarty 
  */
 $config['BEDITA_PERMS_READ'] 	= BEDITA_PERMS_READ ;
 $config['BEDITA_PERMS_MODIFY'] 	= BEDITA_PERMS_MODIFY ;
@@ -582,7 +551,7 @@ $config['validate_resorce'] = array(
 				'/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/'
 			   ),
 	/**
-	 * ELenco dei MIME accettati per i diversi tipi di oggetti
+	 * Accepted MIME types for different obj types
 	 */
 	'mime'	=> array(
 				'Image'			=> array('/image\/\.*/'),
@@ -593,7 +562,7 @@ $config['validate_resorce'] = array(
 ) ;
 
 /**
- *  For insert video from external media provider
+ *  Videos from external media provider
  */
 $config['media_providers'] = array(
 	"youtube"	=> array(
@@ -609,7 +578,7 @@ $config['media_providers'] = array(
 ) ;
 
 /**
- *  file conf for media provider
+ *  media provider config
  */
 $config['provider_params']  = array(
 	"youtube"	=> array(
@@ -646,8 +615,6 @@ $config['newsletterCss'] = "base.css";
  * Default value in milliseconds, between autosave of objects (status draft or off)
  */
 $config['autosaveTime'] = 120000; // two minutes
-
-
 
 /**
  * Specific System settings

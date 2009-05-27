@@ -5,7 +5,7 @@
 
 	{include file="../common_inc/form_title_subtitle.tpl"}
 
-	{include file="../common_inc/form_properties.tpl" doctype=false comments=true}
+	{include file="../common_inc/form_properties.tpl" comments=true}
 	
 	{include file="../common_inc/form_tree.tpl"}
 	

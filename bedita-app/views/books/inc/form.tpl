@@ -4,7 +4,7 @@
 	
 	{include file="./inc/form_book_detail.tpl"}
 	
-	{include file="./inc/form_properties.tpl" doctype=false comments=true}	
+	{include file="./inc/form_properties.tpl" comments=true}	
 	
 	{include file="../common_inc/form_tree.tpl"}
 	

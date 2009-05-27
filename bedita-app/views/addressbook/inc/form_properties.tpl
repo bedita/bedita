@@ -28,7 +28,7 @@ function removeUserFromCard() {
 	<tr>
 		<th>{t}Status{/t}:</th>
 		<td colspan="4">
-			{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->status separator="&nbsp;"}
+			{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator="&nbsp;"}
 		</td>
 	</tr>
 

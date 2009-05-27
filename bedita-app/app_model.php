@@ -115,21 +115,6 @@ class BEAppModel extends AppModel {
 			$data[$key] = null;
 		}
 	}
-	
-	/**
-	 * Default text format
-	 *
-	 * @param unknown_type $value
-	 * @return unknown
-	 */
-	protected function getDefaultTextFormat($value = null) {
-		$labels = array('html', 'txt', 'txtParsed') ;
-		if(isset($value) && in_array($value, $labels)) 
-			return $value ;
-		$conf = Configure::getInstance() ;
-		return ((isset($conf->type))?$conf->type:'') ;
-	}
-	
 		
 	/**
 	 * Object search Toolbar
