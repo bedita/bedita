@@ -158,7 +158,7 @@ class BeEmbedMediaHelper extends AppHelper {
 		if ($params["presentation"] == "thumb") {
 			$output = $this->MediaProvider->thumbnail($obj, $htmlAttributes, $URLonly);
 			if (empty($output))	{
-				$img = $this->getMediaTypeImage($obj);
+				$img = (!empty($obj["thumbnail"]))? $obj["thumbnail"] : $this->getMediaTypeImage($obj);
 				$output = $this->Html->image($img, $htmlAttributes);
 			}
 		} elseif ($params["presentation"] == "full") {

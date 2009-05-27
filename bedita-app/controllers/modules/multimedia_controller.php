@@ -148,7 +148,7 @@ class MultimediaController extends ModulesController {
 		} else {
 			$model = (!empty($this->data["id"]))? $this->BEObject->getType($this->data["id"]) : "BEFile";
 			
-			if ($model == "Video") {
+			if ($model == "Video" && empty($this->data["thumbnail"])) {
 				$this->data["thumbnail"] = $this->BeUploadToObj->getThumbnail($this->data);
 			}
 			

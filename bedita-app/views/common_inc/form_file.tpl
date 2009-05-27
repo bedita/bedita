@@ -35,7 +35,7 @@
 		{assign_associative var="htmlAttr" width=$conf->media.video.width height=$conf->media.video.height}
 		
 		{$beEmbedMedia->object($object,$params,$htmlAttr)}
-		
+	
 		
 	{elseif strtolower($object.ObjectType.name) == "audio"}
 	
@@ -77,7 +77,15 @@
 	
 	{/if}
 
-
+{if $object.ObjectType.name == "video"}
+<div style="clear:left;">
+{t}thumbnail{/t}<br/>
+<input type="text" name="data[thumbnail]" value="{$object.thumbnail|default:''}" style="width: 350px;"/>
+{if !empty($object.thumbnail)}
+	<img src="{$object.thumbnail}" alt=""/>
+{/if}
+</div> 
+{/if}
 
 
 <table class="bordered" style="margin-top:10px; border:1px solid #999; width:100%; clear:both">
