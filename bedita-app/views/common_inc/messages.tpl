@@ -14,7 +14,15 @@ $(document).ready ( function () {literal} { {/literal}
 
 {elseif ($msg->check('Message.warn'))}
 
+	{literal}
+		$("#messagesDiv")
+			.show()															// fade in msg
+			//.pause( {/literal} {$conf->msgPause} {literal} )				// pause 4 secs
+			.animate({opacity: 1.0}, {/literal}{$conf->msgPause}{literal}) 	// pause
+			.fadeOut(1000);													// fade out msg
 
+	{/literal}
+	
 {elseif ($msg->check('Message.info'))}
 	{literal}
 		$("#messagesDiv")
