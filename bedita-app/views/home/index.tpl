@@ -62,6 +62,7 @@ $(document).ready(function() {
 		<a href="javascript:void(0)" onClick="$('#userpreferences').BEtabstoggle();">
 		<h1>{t}welcome{/t}</h1>
 		{$BEAuthUser.realname}</a>
+		
 	</li>
 	
 	{/if}
@@ -86,9 +87,10 @@ $(document).ready(function() {
 	
 </ul> 
 
-
+<div style="position:absolute; left:580px; top:19px; z-index:400">{include file="../common_inc/messages.tpl"}</div>
 
 <div class="dashboard">
+
 
 
 <h1>{*t}dashboard{/t*}</h1>
