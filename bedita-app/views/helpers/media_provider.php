@@ -27,6 +27,9 @@ class MediaProviderHelper extends AppHelper {
 	function thumbnail(&$obj, $htmlAttributes = array(), $URLonly=false ) {
 		if(!isset($obj['provider'])) return "" ;
 		
+		if (!empty($obj["thumbnail"]) && preg_match(Configure::read("validate_resorce.URL"), $obj["thumbnail"]))
+			return (!$URLonly)? $this->Html->image($obj["thumbnail"], $htmlAttributes) : $obj["thumbnail"];
+		
 		$media = null ;
 		switch ($obj['provider']) {
 			case 'youtube': $media = new YoutubeMedia($this) ; break ;
@@ -79,10 +82,7 @@ class YoutubeMedia {
 	
 	function thumbnail(&$obj, &$htmlAttributes, $URLonly) {
 		$this->conf 	= Configure::getInstance() ;
-		if (!empty($obj["thumbnail"]) && preg_match(Configure::read("validate_resorce.URL"), $obj["thumbnail"]))
-			$src = $obj["thumbnail"];
-		else
-			$src = sprintf($this->conf->youtube["urlthumb"], $obj['uid']);
+		$src = sprintf($this->conf->youtube["urlthumb"], $obj['uid']);
 		return (!$URLonly)? $this->helper->Html->image($src, $htmlAttributes) : $src;
 	}
 	
@@ -139,17 +139,13 @@ class BlipMedia {
 	}
 	
 	function thumbnail(&$obj, &$htmlAttributes, $URLonly) {
-		if (empty($obj["thumbnail"])) {
-			if(!class_exists("BeBlipTvComponent")){
-				App::import('Component', "BeBlipTv");
-			}
-			$Component = new BeBlipTvComponent();
-			$Component->getInfoVideo($obj['uid']) ;
-			
-			$src = sprintf($Component->info['thumbnailUrl'], $obj['uid']);
-		} elseif (preg_match(Configure::read("validate_resorce.URL"), $obj["thumbnail"])) {
-			$src = $obj["thumbnail"];
+		if(!class_exists("BeBlipTvComponent")){
+			App::import('Component', "BeBlipTv");
 		}
+		$Component = new BeBlipTvComponent();
+		$Component->getInfoVideo($obj['uid']) ;
+		
+		$src = sprintf($Component->info['thumbnailUrl'], $obj['uid']);
 		return (!$URLonly)? $this->helper->Html->image($src, $htmlAttributes) : $src;
 	}
 	

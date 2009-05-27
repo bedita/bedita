@@ -156,10 +156,14 @@ class BeEmbedMediaHelper extends AppHelper {
 		}
 		$URLonly = (!empty($params["URLonly"]))? true : false;
 		if ($params["presentation"] == "thumb") {
-			$output = $this->MediaProvider->thumbnail($obj, $htmlAttributes, $URLonly);
-			if (empty($output))	{
-				$img = (!empty($obj["thumbnail"]))? $obj["thumbnail"] : $this->getMediaTypeImage($obj);
-				$output = $this->Html->image($img, $htmlAttributes);
+			if (!empty($obj["thumbnail"]) && preg_match(Configure::read("validate_resorce.URL"), $obj["thumbnail"])) {
+				$output = ($URLonly)? $obj["thumbnail"] : $this->Html->image($obj["thumbnail"], $htmlAttributes); 
+			} else {
+				$output = $this->MediaProvider->thumbnail($obj, $htmlAttributes, $URLonly);
+				if (empty($output))	{
+					$img = $this->getMediaTypeImage($obj);
+					$output = $this->Html->image($img, $htmlAttributes);
+				}
 			}
 		} elseif ($params["presentation"] == "full") {
 			$output = $this->MediaProvider->embed($obj, $htmlAttributes);
