@@ -76,7 +76,7 @@ class HomeController extends AppController {
 		 
 		if (!empty($this->params["form"]["searchstring"])) {
 			$conf  = Configure::getInstance();
-			$filter["search"] = addslashes($this->params["form"]["searchstring"]);
+			$filter["query"] = addslashes($this->params["form"]["searchstring"]);
 			
 			$user = $this->Session->read("BEAuthUser");
 			
