@@ -2,14 +2,11 @@
 ** form form template
 *}
 
-
    <div class="tab"><h2>{t}Question detail{/t}</h2></div>
 
 		<fieldset id="question">
-		
 			
 		<table class="bordered">
-		
 			<tr>
 				<th>{t}title{/t}:</th>
 				<td>
@@ -32,117 +29,76 @@
 						<option value="{$value}"{if $value == $object.question_type|default:""} selected{/if}>{t}{$label}{/t}</option>
 					{/foreach}
 					</select>
-				</td>
-			</tr>
-
-
-{literal}
-
-<script>
-
-$(document).ready(function(){	
-
-	$(".add").click(function (){
-		var row = $(this).parent().parent("tr");
-		$(row).clone(true).insertAfter(row).addClass("newrow").find(".iteration").empty();
-	});
-	
-	$(".remove").click(function (){
-		//da fare if not:first
-		var row = $(this).parent().parent("tr");
-		$(row).remove();
- 	});
-
-	showAnswers();
-
-
-});
-
-
-$("#tipoID").change(function () {
-	showAnswers();
-});
-
-function showAnswers() {
-	$(".answers div").hide();
-	$(".answers div :input").attr("disabled", "disabled");
-	$(".answers div :checkbox").attr("disabled", "disabled");
-	var kind = $("#tipoID option:selected").val();
-	$("." + kind).show();
-	$("." + kind + " :input").attr("disabled", "");
-	$("." + kind + " :checkbox").attr("disabled", "");
-}
-
-</script>
-{/literal}
-
-
-			<tr>
-				<th>{t}answers{/t}:</th>
-				<td class="answers">
 					
-					<!--  -->
+					{literal}
+					<!-- preview functions -->
+					<script type="text/javascript">
+						function previewcontainer() {
+							$('#preview').toggleValue("CLOSE PREVIEW","PREVIEW");
+							var qtype = $('#tipoID OPTION:selected').val();
+							$('#preview_container_question DIV').not('.p_'+qtype).toggle();
+							$('#preview_container_question').toggle();
+						}
+					</script>
+					{/literal}
 					
-					<div style="display:none" class="multiple single_checkbox single_pulldown checkopen">
-						<table>
-						{if !empty($object.QuestionAnswer)}
-							{foreach from=$object.QuestionAnswer item="answer" name="fca"}
-								<tr>
-									<td class="iteration" style="padding-left:0px;">{$smarty.foreach.fca.iteration}.&nbsp;
-										<input type="hidden" name="data[QuestionAnswer][{$smarty.foreach.fca.index}][priority]" value="{$smarty.foreach.fca.iteration}" />
-									</td>
-									<td><textarea style="height:32px; width:240px !important;" name="data[QuestionAnswer][{$smarty.foreach.fca.index}][description]" class="autogrowarea">{$answer.description}</textarea></td>
-									<td>
-										&nbsp;&nbsp;<input type="checkbox" name="data[QuestionAnswer][{$smarty.foreach.fca.index}][correct]" value="1"{if $answer.correct == 1} checked="checked"{/if}>&nbsp;{t}correct{/t}&nbsp;&nbsp;&nbsp;
-									</td>
-									<td>
-										<input type="button" class="add" title="{t}add{/t}" value="+" />
-									</td>
-									<td>
-										<input type="button" class="remove" title="{t}remove{/t}" value="-" />
-									</td>
-									<td>
-										
-									</td>
-								</tr>
-							{/foreach}
-						{else} 
-							{section name="w" loop=5}
-								<tr>
-									<td class="iteration" style="padding-left:0px;">{$smarty.section.w.iteration}.&nbsp;
-										<input type="hidden" name="data[QuestionAnswer][{$smarty.section.w.index}][priority]" value="{$smarty.section.w.iteration}" />
-									</td>
-									<td><textarea style="height:32px; width:240px !important;" name="data[QuestionAnswer][{$smarty.section.w.index}][description]" class="autogrowarea"></textarea></td>
-									<td>
-										&nbsp;&nbsp;<input type="checkbox" name="data[QuestionAnswer][{$smarty.section.w.index}][correct]" value="1">&nbsp;{t}correct{/t}&nbsp;&nbsp;&nbsp;
-									</td>
-									<td>
-										<input type="button" class="add" title="{t}add{/t}" value="+" />
-									</td>
-									<td>
-										<input type="button" class="remove" title="{t}remove{/t}" value="-" />
-									</td>
-									<td>
-										
-									</td>
-								</tr>
-							{/section}
-						{/if}
-						</table>
-					</div>
-					
-					<!--  -->
-					
-					<div style="display:none" class="freetext">
-						
-						max characters: <input style="width:60px" type="text" name="data[max_chars]" value="{$object.max_chars|default:''}" />
-						
-						
-					</div>
-					
-				</td>
-			</tr>
+					&nbsp; <input type="button" value="PREVIEW" id="preview" class="BEbutton" onClick="previewcontainer()" />
 				
+				</td>
+			</tr>
+			
+		<tr>
+			<td colspan=2 style="padding:0px; border:0px">
+			
+			{include file="./inc/question_preview.tpl"}	
+			
+			</td>
+		</tr>
+
+		<tr>
+			<th>{t}answers{/t}:</th>
+			<td class="answers">
+				
+			{include file="./inc/answers_list.tpl"}	
+				
+			</td>
+		</tr>
+		
+		<tr>
+			<th>{t}edu level{/t}:</th>
+			<td>
+				<select name="data[edu_level]" id="eduLevel">
+					<option value="">--</option>
+				{foreach from=$conf->eduLevel item="label" key="value"}
+					<option value="{$value}"{if $value == $object.edu_level|default:""} selected{/if}>{t}{$label}{/t}</option>
+				{/foreach}
+				</select>
+			</td>
+		</tr>
+
+		<tr>
+			<th>{t}difficulty{/t}:</th>
+			<td>
+				<select name="data[question_difficulty]" id="difficulty">
+					<option value="">--</option>
+				{foreach from=$conf->questionDifficulty item="label" key="value"}
+					<option value="{$value}"{if $value == $object.question_difficulty|default:""} selected{/if}>{t}{$label}{/t}</option>
+				{/foreach}
+				</select>
+			</td>
+		</tr>
+	
+	</table>
+	
+	</fieldset>
+
+
+   <div class="tab"><h2>{t}Question properties{/t}</h2></div>
+
+	<fieldset id="properties">	
+			
+		<table class="bordered">
+
 			<tr>
 		
 				<th>{t}status{/t}:</th>
@@ -152,7 +108,9 @@ function showAnswers() {
 						<input type="hidden" name="data[fixed]" value="1" />
 						<input type="hidden" name="data[status]" value="{$object.status}" />
 					{else}
+
 						{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator="&nbsp;"}
+
 					{/if}
 				</td>
 		
@@ -186,7 +144,7 @@ function showAnswers() {
 	
 	</fieldset>
 
-	{include file="../common_inc/form_file_list.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
+	{*include file="../common_inc/form_file_list.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'*}
 
 	{include file="../common_inc/form_tags.tpl"}
 		

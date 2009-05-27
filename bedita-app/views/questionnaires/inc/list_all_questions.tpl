@@ -61,41 +61,75 @@ $(document).ready(function(){
 	<input type="hidden" name="data[id]"/>
 
 	<table class="indexlist">
+	{capture name="theader"}
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('title', 'Title')}</th>
 			<th>{$beToolbar->order('type', 'Type')}</th>
 			<th>{$beToolbar->order('status', 'Status')}</th>
 			<th>{$beToolbar->order('published', 'Modified')}</th>
-			<th>{$beToolbar->order('sessions', 'Sessions')}</th>
 			<th>{$beToolbar->order('note', 'Notes')}</th>
+			<th></th>
 		</tr>
-	</table>
-
+	{/capture}
+	
+	{$smarty.capture.theader}
+	
 	{section name="i" loop=$objects}
+	<tr>
+		<td class="checklist" style="padding-top:5px; vertical-align:top">
+			<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}"/>
+		</td>
+		<td>
+			<a href="{$html->url('view_question/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a>
+			<div style="display:none; color:gray; font-style:italic" class="listitemdesc">{$objects[i].description|nl2br}</div>
+		</td>
+		<td>multiple_choice</td>
+		<td style="text-align:center">{$objects[i].status|upper}</td>
+		<td>{$objects[i].modified|date_format:'%d-%m-%y'}</td>
+		<td>{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
+	</tr>
+	
+	{sectionelse}
+	
+		<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>
+	
+	{/section}
+	
+	{if ($smarty.section.i.total) >= 10}
+			
+		{$smarty.capture.theader}
+				
+	{/if}
+
+
+</table>
+
+
+	{*section name="i" loop=$objects}
 
 	<div class="questionbox{if $objects[i].status != 'on'} off {/if}">
 		
 		<input style="vertical-align:top;" 
 		type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
 		&nbsp; 
-		{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}
+		{if $objects[i].note|default:''}<img style="margin:-2px;" src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}
 		
 		<h2 style="margin:2px 0px 5px 0px;">
 			<a style="color:#8C3540" href="{$html->url('view_question/')}{$objects[i].id}">{$objects[i].title|truncate:36:'~':true|default:"<i>[no title]</i>"}</a>
 		</h2>
-		<label>lastmod</label>: {$objects[i].modified|date_format:'%d %b %y'}	
+		<label>tipo</label>: scelta multipla
 		<br />
 		<label>status</label>: {$objects[i].status|upper}
-		<br />
-		<label>tipo</label>: scelta multipla
+		&nbsp;
+		<label>lastmod</label>: {$objects[i].modified|date_format:'%d-%m-%y'}	
 	</div>
 			
 	{sectionelse}
 		
-			{t}No questions found{/t}
+			<p style="margin:10px">{t}No questions found{/t}</p>
 		
-	{/section}
+	{/section*}
 
 <br style="clear:both" />
 <hr />

@@ -3,6 +3,25 @@ Template incluso.
 Menu a SX valido per tutte le pagine del controller.
 *}
 
+
+<script type="text/javascript">
+<!--
+{literal}
+$(document).ready(function(){
+
+	
+	$(".on").parents().show();
+	
+
+});
+
+
+{/literal}
+
+//-->
+</script>
+
+
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 
 	{if !empty($method) && $method != "index"}
@@ -21,12 +40,12 @@ Menu a SX valido per tutte le pagine del controller.
 	{elseif !empty($method) && $method != "index" && $method != "indexQuestions"}
 	
 	<div class="insidecol">
-		
+
 		<input class="bemaincommands" type="button" value=" {t}save{/t} " name="save" id="saveBEObject" />
 		<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" id="cloneBEObject" />
 		<input class="bemaincommands" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" />
 		
-		{if !empty($object)}
+		{if !empty($object)  && $method == "view"}
 		<hr />
 		<input class="bemaincommands" onClick="window.location.href='{$html->url('index_sessions_results/')}'" type="button" value="{t}view results{/t}" />
 		{/if}
@@ -42,7 +61,7 @@ Menu a SX valido per tutte le pagine del controller.
 		<ul class="menuleft insidecol">
 			<li><a href="javascript:void(0)" onClick="$('#groups').slideToggle();">{t}Select by category{/t}</a></li>
 				
-				<ul id="groups" style="margin-top:10px;">
+				<ul id="groups">
 					<li><a href="">matematica</a></li>
 					<li><a href="">fisica</a></li>
 					<li><a href="">geologia</a></li>
@@ -52,7 +71,43 @@ Menu a SX valido per tutte le pagine del controller.
 				</ul>
 		</ul>
 
+		<ul class="menuleft insidecol">
+			<li><a href="javascript:void(0)" onClick="$('#types').slideToggle();">{t}Select by type{/t}</a></li>
+				
+				<ul id="types" style="display:none;">
+					{foreach from=$conf->questionTypes item="label" key="value"}
+					<li {if ((@$html->params.named.filter == 'questionTypes') && ($html->params.named.value == $value))}class="on"{/if}>
+						<a href="{$html->url('/')}{$currentModule.path}/{$html->action}/filter:questionTypes/value:{$value}">{$label}</a></li>
+					{/foreach}
+					<li class="all">all</li>
+				</ul>
+		</ul>
 
+		<ul class="menuleft insidecol">
+			<li><a href="javascript:void(0)" onClick="$('#difficulty').slideToggle();">{t}Select by difficulty{/t}</a></li>
+				
+				<ul id="difficulty" style="display:none;">
+					{foreach from=$conf->questionDifficulty item="label" key="value"}
+					<li {if ((@$html->params.named.filter == 'difficulty') && ($html->params.named.value == $value))}class="on"{/if}>
+						<a href="{$html->url('/')}{$currentModule.path}/{$html->action}/filter:difficulty/value:{$value}">{$label}</a></li>
+					{/foreach}
+					<li class="all">all</li>
+				</ul>
+		</ul>
+		
+		<ul class="menuleft insidecol">
+			<li><a href="javascript:void(0)" onClick="$('#eduLevel').slideToggle();">{t}Select by eduLevel{/t}</a></li>
+				
+				<ul id="eduLevel" style="display:none;">
+					{foreach from=$conf->eduLevel item="label" key="value"}
+					<li {if ((@$html->params.named.filter == 'eduLevel') && ($html->params.named.value == $value))}class="on"{/if}>
+						<a href="{$html->url('/')}{$currentModule.path}/{$html->action}/filter:eduLevel/value:{$value}">{$label}</a></li>
+					{/foreach}
+					<li class="all">all</li>
+				</ul>
+		</ul>
+		
+		
 			{literal}
 			<script type="text/javascript">
 			<!--
@@ -98,3 +153,5 @@ Menu a SX valido per tutte le pagine del controller.
 	{/if}
 
 </div>
+
+	
