@@ -28,43 +28,54 @@
  * 
  * $Id$
  */
-/**
- * i18n - translation helper
- * 
- * @author ste@channelweb.it
- */
-class TrHelper extends Helper {
-	/**
-	 * Included helpers.
-	 *
-	 * @var array
-	 */
-	var $helpers = array('Html');
-			
-	function t($s, $return = false) {
-		return __($s, $return);
+class BeBotrComponent extends Object {
+	
+	private $cfg = array(
+		'api_key'       => '9a7b72c4210d05ace1acc85abf9c1721',
+		'api_secret'    => 'f27b477c723c8a00',
+        'endpoint'      => 'http://manage.bitsontherun.com/services/',
+        'auth_endpoint' => 'http://manage.bitsontherun.com/services/auth/?',
+        'feed_endpoint'	=> 'http://manage.bitsontherun.com/services/feeds',
+		'conn_timeout'	=> 5,
+		'io_timeout'	=> 5,
+	);
+	
+	function startup(&$controller) {
+		$this->controller 	= $controller;
 	}
 	
-	/**
-	* Normal translation using i18n in cake php
-	*/
-	function translate($s, $return = false) {
-		return __($s, $return);
-	}
+	function getAuthUrl($perms, $frob=''){
 
-	/**
-	* translate html->link url...
-	*/
-	function link($s, $u) {
-		$tr = __($s, true);
-		return $this->Html->link($tr, $u);
+		$args = array(
+			'api_key'	=> $this->cfg['api_key'],
+			'perms'		=> $perms,
+		);
+
+		if (strlen($frob)){ $args['frob'] = $frob; }
+
+		$args['api_sig'] = $this->signArgs($args);
+
+		#
+		# build the url params
+		#
+
+		$pairs =  array();
+		foreach($args as $k => $v){
+			$pairs[] = urlencode($k).'='.urlencode($v);
+		}
+
+		return $this->cfg['auth_endpoint'].implode('&', $pairs);
 	}
 	
-	/**
-	* Normal translation using i18n in cake php
-	*/
-	function translatePlural($s, $plural, $count, $return = false) {
-		return __($s, $plural, $count, $return);
+	function signArgs($args){
+		ksort($args);
+		$a = '';
+		foreach($args as $k => $v){
+			$a .= $k . $v;
+		}
+		return md5($this->cfg['api_secret'].$a);
 	}
+ 	
 }
+ 
 ?>

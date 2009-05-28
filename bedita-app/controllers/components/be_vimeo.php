@@ -23,11 +23,11 @@
  * Blip TV media component
  *  
  * @link			http://www.bedita.com
- * @version			$Revision: 1805 $
- * @modifiedby 		$LastChangedBy: bato $
- * @lastmodified	$LastChangedDate: 2009-03-02 16:46:36 +0100 (lun, 02 mar 2009) $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: be_blip_tv.php 1805 2009-03-02 15:46:36Z bato $
+ * $Id$
  */
 class BeVimeoComponent extends Object {
 	var $controller	;
