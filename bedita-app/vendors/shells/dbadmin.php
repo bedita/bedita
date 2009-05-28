@@ -262,8 +262,8 @@ class DbadminShell extends Shell {
 	public function updateVideoThumb() {
 		
 		$conf = Configure::getInstance() ;
-		App::import('Component', 'BeBlipTv');
-		$this->BeBlipTv = new BeBlipTvComponent();
+		App::import('Component', 'BeBlip');
+		$this->BeBlip = new BeBlipComponent();
 		
 		$videoModel = ClassRegistry::init("Video");
 		$conditions = array();
@@ -288,10 +288,10 @@ class DbadminShell extends Shell {
 				if ($v["provider"] == "youtube") {
 					$thumbnail	= sprintf($conf->provider_params["youtube"]["urlthumb"], $v['uid']);
 				} elseif ($v["provider"] == "blip") {
-					if(!($this->BeBlipTv->getInfoVideo($v["uid"]) )) {
+					if(!($this->BeBlip->getInfoVideo($v["uid"]) )) {
 						throw new BEditaMediaProviderException(__("Multimedia  not found",true)) ;
 					}
-					$thumbnail = $this->BeBlipTv->info['thumbnailUrl'];
+					$thumbnail = $this->BeBlip->info['thumbnailUrl'];
 				}
 				
 				if (!empty($v["provider"])) {

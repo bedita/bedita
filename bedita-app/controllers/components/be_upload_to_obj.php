@@ -29,14 +29,9 @@
  * $Id$
  */
 class BeUploadToObjComponent extends Object {
-	var $components	= array('BeFileHandler', 'BeBlipTv') ;
+	var $components	= array('BeFileHandler', 'BeBlip', 'BeVimeo', 'BeYoutube') ;
 
- 	/**
-	 * Contructor function
-	 * @param Object &$controller pointer to calling controller
-	 */
 	function startup(&$controller) {
-		//keep tabs on mr. controller's params
 		$this->params = $controller->params;
 		$this->BeFileHandler->startup($controller) ;
 	}
@@ -95,43 +90,28 @@ class BeUploadToObjComponent extends Object {
 		$result = false ;
 		$getInfoURL = false;
 		
-		$url = $this->recognizeMediaProvider($dataURL['url'], $provider, $name);
+		$url = $this->recognizeMediaProvider($dataURL['url'], $provider, $uid);
 		
-		// Prepare data
-		switch($provider) {
-			case 'youtube': {
-				$dataURL['title']		= (!empty($dataURL['title'])) ? trim($dataURL['title']) : 'youtube video';
-				$dataURL['name']		= preg_replace("/[\'\"]/", "", $dataURL['title']) ;
-				$dataURL['mime_type']	= "video/$provider" ;
-				$dataURL['path']		= $url ;
-				$dataURL['provider']	= $provider ;
-				$dataURL['uid']  	 	= $name ;
-				$dataURL['thumbnail']	= $this->getThumbnail($dataURL);
-			} break ;
-			case 'blip': {
-				if(!($this->BeBlipTv->getInfoVideo($name) )) {
-					throw new BEditaMediaProviderException(__("Multimedia  not found",true)) ;
+		if (!empty($provider)) {
+			$dataURL['provider']	= $provider ;
+			$dataURL['uid']  	 	= $uid ;
+		
+			$componentName = Inflector::camelize("be_" . $provider);
+			if (isset($this->{$componentName}) && method_exists($this->{$componentName}, "setInfoToSave")) {
+				if (!$this->{$componentName}->setInfoToSave($dataURL)) {
+					throw new BEditaMediaProviderException(__("Multimedia Provider not found or error preparing data to save",true)) ;
 				}
-				
-				if(@empty($dataURL['title']))
-					$dataURL['title'] = $this->BeBlipTv->info['title'] ;
-				else
-					$dataURL['title'] = trim($dataURL['title']) ;
-								
-				$dataURL['name']		= preg_replace("/[\'\"]/", "", $dataURL['title']) ;
-				$dataURL['mime_type']	= "video/$provider" ;
-				$dataURL['path']		= $this->BeBlipTv->info['url'] ;
-				$dataURL['provider']	= $provider ;
-				$dataURL['uid']  	 	= $name ;
-				$dataURL['thumbnail']	= $this->BeBlipTv->info['thumbnailUrl'];
-			} break ;
-			default:
-				$dataURL['path'] = $dataURL["url"];
-				$getInfoURL = true;
-				break;
+			} else {
+				throw new BEditaMediaProviderException(__("Multimedia provider is not managed",true)) ;
+			}
 			
+		} else {
+			$dataURL['provider'] = null;
+			$dataURL['uid'] = null;
+			$dataURL['path'] = $dataURL["url"];
+			$getInfoURL = true;
 		}
-
+		
 		if (empty($dataURL["status"]))
 			$dataURL['status'] = "on";
 		
@@ -179,16 +159,13 @@ class BeUploadToObjComponent extends Object {
 			
 			$thumbnail = null;
 			
-			if ($provider == "youtube") {
-				$this->conf = Configure::getInstance() ;
-				$thumbnail = sprintf($this->conf->provider_params["youtube"]["urlthumb"], $uid);
-			} elseif ($provider == "blip") {
-				if (empty($this->BeBlipTv->info)) {
-					if(!($this->BeBlipTv->getInfoVideo($uid) )) {
-						throw new BEditaMediaProviderException(__("Multimedia  not found",true)) ;
-					}
+			$componentName = Inflector::camelize("be_" . $provider);
+			if (isset($this->{$componentName}) && method_exists($this->{$componentName}, "getInfoVideo")) {
+				if (!$thumbnail	= $this->{$componentName}->getThumbnail($uid)) {
+					throw new BEditaMediaProviderException(__("Multimedia Provider not found or error getting thumbnail",true)) ;
 				}
-				$thumbnail	= $this->BeBlipTv->info['thumbnailUrl'];
+			} else {
+				throw new BEditaMediaProviderException(__("Multimedia provider is not managed",true)) ;
 			}
 		}
 		return $thumbnail;
@@ -212,5 +189,6 @@ class BeUploadToObjComponent extends Object {
 		$provider = "";
 		return false ;
 	}
+	
 }
 ?>

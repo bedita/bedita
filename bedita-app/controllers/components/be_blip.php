@@ -29,7 +29,7 @@
  * 
  * $Id$
  */
-class BeBlipTvComponent extends Object {
+class BeBlipComponent extends Object {
 	var $controller	;
 	var $info = null ;
 	var $embed = null ;
@@ -117,6 +117,38 @@ class BeBlipTvComponent extends Object {
 		return $this->embed  ;
 	}
 	
+	/**
+	 * get thumbnail
+	 * @param $id
+	 * @return url, false if error occurs
+	 */
+	public function getThumbnail($id) {
+		if(!$this->getInfoVideo($id)) {
+			return false;
+		}
+		return $this->info['thumbnailUrl'];
+	}
+	
+	/**
+	 * set data to save multimediamedia object
+	 * @param $id
+	 * @param $data
+	 * @return boolean
+	 */
+	public function setInfoToSave(&$data) {
+		if(!$this->getInfoVideo($data["uid"])) {
+			return false;
+		}
+		
+		$data['title'] = (empty($data['title']))? $this->info['title'] : trim($data['title']);
+		$data['description'] = (empty($data['description']))? $this->info['description'] : $data['description'];
+		$data['path']		= $this->info['url'] ;
+		if (empty($data['thumbnail']))
+			$data['thumbnail']	= $this->info['thumbnailUrl'];
+		$data['name']		= preg_replace("/[\'\"]/", "", $data['title']);
+		$data['mime_type']	= "video/".$data["provider"];
+		return true;
+	}
 }
 
 /**

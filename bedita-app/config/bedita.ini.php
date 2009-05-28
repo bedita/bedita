@@ -567,14 +567,18 @@ $config['validate_resorce'] = array(
 $config['media_providers'] = array(
 	"youtube"	=> array(
 			'/^http:\/\/\w{3}\.youtube\.com\/watch\?v=(.[^&]+)/',
-			'/http:\/\/youtube\.com\/watch\?v=(.[^&]+)/',
-			'/http:\/\/[a-z]{2}\.youtube\.com\/watch\?v=(.[^&]+)/'
+			'/^http:\/\/youtube\.com\/watch\?v=(.[^&]+)/',
+			'/^http:\/\/[a-z]{2}\.youtube\.com\/watch\?v=(.[^&]+)/'
 
 	) ,
 	"blip"	=> array(
 			'/^http:\/\/\w{3}\.blip\.tv\/file\/(\d+)\?{0,1}.*/',
-			'/http:\/\/blip\.tv\/file\/(\d+)\?{0,1}.*/'
-	) 
+			'/^http:\/\/blip\.tv\/file\/(\d+)\?{0,1}.*/'
+	),
+	"vimeo" => array(
+			'/^http:\/\/\w{3}\.vimeo\.com\/(\d+)/',
+			'/^http:\/\/vimeo\.com\/(\d+)/'
+	)
 ) ;
 
 /**
@@ -592,6 +596,12 @@ $config['provider_params']  = array(
 		"height"	=> 200,
 		"urlinfo" 	=> "http://www.blip.tv/file/%s?skin=json",
 		"urlembed"	=> "http://www.blip.tv/players/embed/?posts_id=%s&players_id=-1&skin=json&callback=DoSomethingActions.playerSelector.gotEmbedCode"
+	),
+	"vimeo" => array(
+		"width"		=> 320,
+		"height"	=> 200,
+		"urlinfo" 	=> "http://vimeo.com/api/clip/%s.%s",
+		"urlembed"	=> "http://vimeo.com/api/oembed.json?url=%s"
 	)
 ) ;
 
