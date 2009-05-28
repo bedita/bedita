@@ -14,7 +14,7 @@
 		<input type="button" class="add" title="{t}add{/t}" value="+" />
 	</td>
 	<td>
-		<input type="button" class="remove" title="{t}remove{/t}" value="-" />
+		<input type="button" class="remove" title="{t}delete{/t}" value="-" />
 		<input type="button" style="display:none;" class="undo" value="{t}u{/t}" />
 	</td>
 </tr>
