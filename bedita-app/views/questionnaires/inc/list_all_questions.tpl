@@ -76,7 +76,7 @@ $(document).ready(function(){
 	{$smarty.capture.theader}
 	
 	{section name="i" loop=$objects}
-	<tr>
+	<tr class="obj {$objects[i].status}">
 		<td class="checklist" style="padding-top:5px; vertical-align:top">
 			<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}"/>
 		</td>
@@ -156,11 +156,11 @@ $(document).ready(function(){
 		</select>
 		<input id="changestatusSelected" type="button" value=" ok " />
 		<hr />
-		<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
-		<hr />
 		Create a new questionnaire with selected elements &nbsp;&nbsp; | &nbsp;&nbsp; title: <input type="text" />  <input type="button" value=" create " />
 		<hr />
-		Apply a tag: <input type="text" />  <input type="button" value=" add " />
+		Apply tags: <input type="text" />  <input type="button" value=" ok " />
+		<hr />
+		<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
 	</div>
 
 {/if}

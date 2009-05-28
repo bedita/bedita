@@ -31,18 +31,48 @@
 					</select>
 					
 					{literal}
-					<!-- preview functions -->
+					
 					<script type="text/javascript">
-						function previewcontainer() {
-							$('#preview').toggleValue("CLOSE PREVIEW","PREVIEW");
-							var qtype = $('#tipoID OPTION:selected').val();
-							$('#preview_container_question DIV').not('.p_'+qtype).toggle();
-							$('#preview_container_question').toggle();
+						function showAnswers() {
+							$(".answers div").hide();
+							$(".answers div :input").attr("disabled", "disabled");
+							$(".answers div :checkbox").attr("disabled", "disabled");
+							var kind = $("#tipoID option:selected").val();
+							$("." + kind).show();
+							$("." + kind + " :input").attr("disabled", "");
+							$("." + kind + " :checkbox").attr("disabled", "");
 						}
+						
+						$("#tipoID").change(function () {
+							showAnswers();
+							$('#preview_container_question').hide();
+							$('#preview').val("EXAMPLE");
+						});
+						
+						//preview functions
+						$(document).ready(function(){	
+							$("#preview").toggle( 
+							function () 
+							{ 
+								var qtype = $('#tipoID OPTION:selected').val();
+								$('#preview').toggleValue("CLOSE EXAMPLE","EXAMPLE");
+								$('#preview_container_question DIV').not('.p_'+qtype).toggle();
+								$('#preview_container_question').toggle();
+							    $('#tipoID').attr("disabled", true); 
+							}, 
+							function () 
+							{ 
+								var qtype = $('#tipoID OPTION:selected').val();
+								$('#preview').toggleValue("CLOSE EXAMPLE","EXAMPLE");
+								$('#preview_container_question DIV').not('.p_'+qtype).toggle();
+								$('#preview_container_question').toggle();
+							    $('#tipoID').removeAttr("disabled"); 
+							});
+						});
 					</script>
 					{/literal}
 					
-					&nbsp; <input type="button" value="PREVIEW" id="preview" class="BEbutton" onClick="previewcontainer()" />
+					&nbsp; <input type="button" value="EXAMPLE" id="preview" class="BEbutton" />
 				
 				</td>
 			</tr>
@@ -55,9 +85,7 @@
 			</td>
 		</tr>
 
-		<tr>
-			<th colspan=2>{t}answers{/t}:</th>
-		</tr>
+
 		<tr>
 			<td colspan=2 class="answers">
 				
