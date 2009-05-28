@@ -1,5 +1,5 @@
 {*
-** form form template
+** form question template
 *}
 
    <div class="tab"><h2>{t}Question detail{/t}</h2></div>
@@ -56,8 +56,10 @@
 		</tr>
 
 		<tr>
-			<th>{t}answers{/t}:</th>
-			<td class="answers">
+			<th colspan=2>{t}answers{/t}:</th>
+		</tr>
+		<tr>
+			<td colspan=2 class="answers">
 				
 			{include file="./inc/answers_list.tpl"}	
 				

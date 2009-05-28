@@ -23,6 +23,7 @@ $(document).ready(function(){
 		var row = $(this).parent().parent("tr");
 		$(row).clone(true).insertAfter(row).addClass("newrow").find("textarea").text("");
 		$("#answers").fixItemsPriority();
+		
 	});
 	
 	$(".remove").click(function (){
@@ -57,13 +58,18 @@ $(document).ready(function(){
 	<table id="answers">
 	{if !empty($object.QuestionAnswer)}
 		{foreach from=$object.QuestionAnswer item="answer" name="fca"}
+			{assign var="i" value=$smarty.foreach.fca.index}
+			{assign var="it" value=$smarty.foreach.fca.iteration}
 			<tr>
-				<td style="vertical-align:top; padding-left:0px;">
-					<input class="iteration" type="text" style="width:14px" name="data[QuestionAnswer][{$smarty.foreach.fca.index}][priority]" value="{$smarty.foreach.fca.iteration}" />
+				<td style="vertical-align:top; white-space:nowrap; cursor:move; padding:2px 5px; border:0px solid red;">
+					: :
 				</td>
-				<td><textarea style="height:32px; width:240px !important;" name="data[QuestionAnswer][{$smarty.foreach.fca.index}][description]" class="autogrowarea">{$answer.description}</textarea></td>
+				<td style="vertical-align:top; padding-left:5px;">
+					<input class="iteration" tabindex="5000" type="text" style="text-align:center; margin-right:10px; width:20px" name="data[QuestionAnswer][{$i}][priority]" value="{$it}" />
+				</td>
+				<td><textarea style="height:32px; width:280px !important;" name="data[QuestionAnswer][{$i}][description]" class="autogrowarea">{$answer.description}</textarea></td>
 				<td>
-					&nbsp;&nbsp;<input type="checkbox" name="data[QuestionAnswer][{$smarty.foreach.fca.index}][correct]" value="1" 
+					&nbsp;&nbsp;<input type="checkbox" name="data[QuestionAnswer][{$i}][correct]" value="1" 
 					{if $answer.correct == 1} checked="checked"{/if}>&nbsp;{t}correct{/t}&nbsp;&nbsp;&nbsp;
 				</td>
 				<td>
@@ -75,24 +81,29 @@ $(document).ready(function(){
 				</td>
 			</tr>
 		{/foreach}
-	{else} 
+		
+	{else}
 		{section name="w" loop=3}
+			{assign var="i" value=$smarty.section.w.index}
+			{assign var="it" value=$smarty.section.w.iteration}
 			<tr>
-				<td style="padding-left:0px;">
-					<input class="iteration" type="text" name="data[QuestionAnswer][{$smarty.section.w.index}][priority]" value="{$smarty.section.w.iteration}" />
+				<td style="vertical-align:top; white-space:nowrap; cursor:move; padding:2px 5px; border:0px solid red;">
+					: :
 				</td>
-				<td><textarea style="height:32px; width:240px !important;" name="data[QuestionAnswer][{$smarty.section.w.index}][description]" class="autogrowarea"></textarea></td>
+				<td style="vertical-align:top; padding-left:5px;">
+					<input class="iteration" tabindex="5000" type="text" style="text-align:center; margin-right:10px; width:20px" name="data[QuestionAnswer][{$i}][priority]" value="{$it}" />
+				</td>
 				<td>
-					&nbsp;&nbsp;<input type="checkbox" name="data[QuestionAnswer][{$smarty.section.w.index}][correct]" value="1">&nbsp;{t}correct{/t}&nbsp;&nbsp;&nbsp;
+					<textarea style="height:32px; width:280px !important;" name="data[QuestionAnswer][{$i}][description]" class="autogrowarea"></textarea></td>
+				<td>
+					&nbsp;&nbsp;<input type="checkbox" name="data[QuestionAnswer][{$i}][correct]" value="1">&nbsp;{t}correct{/t}&nbsp;&nbsp;&nbsp;
 				</td>
 				<td>
 					<input type="button" class="add" title="{t}add{/t}" value="+" />
 				</td>
 				<td>
 					<input type="button" class="remove" title="{t}remove{/t}" value="-" />
-				</td>
-				<td>
-					
+					<input type="button" style="display:none;" class="undo" value="{t}u{/t}" />
 				</td>
 			</tr>
 		{/section}
