@@ -33,7 +33,7 @@ class MultimediaController extends ModulesController {
 	var $name = 'Multimedia';
 
 	var $helpers 	= array('BeTree', 'BeToolbar', 'MediaProvider');
-	var $components = array('BeTree', 'Permission', 'BeFileHandler', 'BeUploadToObj', 'BeBotr');
+	var $components = array('BeTree', 'Permission', 'BeFileHandler', 'BeUploadToObj');
 
 	// This controller does not use a model
 	var $uses = array('Stream', 'Image', 'Audio', 'Video', 'BEObject', 'Tree', 'User', 'Group','Category','BEFile') ;
@@ -235,23 +235,6 @@ class MultimediaController extends ModulesController {
 	 * Form page to upload multimedia through URL
 	 */
 	function frm_upload_url() {
-	}
-	
-	function botr_info() {
-		if (empty($_GET['frob'])) {
-	        # We're not authenticated yet, ask for WRITE permissions
-	        $authurl = $this->BeBotr->getAuthUrl("write");
-	        if (empty($authurl)) {
-	            echo "Error: no auth url received";
-	            return;
-	        } else {
-	            # Ok, got the URL. Redirect to it, so user can grant permissions.
-	            header("Location: " . $authurl);
-	            exit;
-	        }
-	    } else {
-	    	pr($_GET['frob']);exit;
-	    }
 	}
 	 
 	protected function forward($action, $esito) {
