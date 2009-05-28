@@ -27,9 +27,10 @@ $(document).ready(function(){
 	
 	$(".remove").click(function (){
 		var row = $(this).parent().parent("tr");
-		$(row).css("opacity","0.2");		
+		$(row).css("opacity","0.3");		
 		$("input", row).attr("disabled", true);
 		$(".undo", row).show().attr("disabled", false);
+		$(".iteration, textarea", row).css("text-decoration","line-through");
 		$(".add,.remove", row).hide();
 		$("#answers").fixItemsPriority();
  	});
@@ -40,6 +41,7 @@ $(document).ready(function(){
 		$("input", row).attr("disabled", false);
 		$(".undo", row).hide();
 		$(".add,.remove", row).show();
+		$(".iteration, textarea", row).css("text-decoration","none");
 		$("#answers").fixItemsPriority();
  	});
 	
@@ -76,8 +78,8 @@ $(document).ready(function(){
 	{else} 
 		{section name="w" loop=3}
 			<tr>
-				<td class="iteration" style="padding-left:0px;">{$smarty.section.w.iteration}.&nbsp;
-					<input type="text" name="data[QuestionAnswer][{$smarty.section.w.index}][priority]" value="{$smarty.section.w.iteration}" />
+				<td style="padding-left:0px;">
+					<input class="iteration" type="text" name="data[QuestionAnswer][{$smarty.section.w.index}][priority]" value="{$smarty.section.w.iteration}" />
 				</td>
 				<td><textarea style="height:32px; width:240px !important;" name="data[QuestionAnswer][{$smarty.section.w.index}][description]" class="autogrowarea"></textarea></td>
 				<td>
