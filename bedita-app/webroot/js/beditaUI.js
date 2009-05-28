@@ -26,6 +26,27 @@ function customRange(input)
  * Extend JQuery
  */
  
+ /*...........................................    
+
+   Base addon functions
+
+...........................................*/	
+
+
+jQuery.fn.toggleText = function(a, b) {
+	return this.each(function() {
+		jQuery(this).text(jQuery(this).text() == a ? b : a);
+	});
+};
+
+jQuery.fn.toggleValue = function(a, b) {
+	return this.each(function() {
+		jQuery(this).val(jQuery(this).val() == a ? b : a);
+	});
+};
+
+
+
 jQuery.fn.extend({
 	check: function() {
 		return this.each(function() { this.checked = true; });

@@ -13,6 +13,45 @@ http://www.chialab.it 2007
 */
 
 
+/*...........................................    
+
+    Reset
+
+...........................................*/
+
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
+	margin:0;
+	padding:0;
+	outline:0
+}
+table {
+	border-collapse:collapse;
+	border-spacing:0;
+}
+fieldset,img { 
+	border:0;
+}
+address,caption,cite,code,dfn,em,strong,th,var {
+	font-style:normal;
+	font-weight:normal;
+}
+ol,ul {
+	list-style:none;
+}
+caption,th {
+	text-align:left;
+}
+h1,h2,h3,h4,h5,h6 {
+	font-size:100%;
+	font-weight:normal;
+}
+q:before,q:after {
+	content:'';
+}
+abbr,acronym { border:0;
+}
+
+
 
 /*...........................................    
 
@@ -20,7 +59,6 @@ http://www.chialab.it 2007
 
 ...........................................*/
 
-* { margin:0; padding:0;}
 
 BODY, .bodybg {
 	background:#cccccc url(../img/sfomain.png) repeat-x fixed;
@@ -494,6 +532,25 @@ UL.menuleft {
 	color:#FFFFFF;
 }
 
+.menuleft LI.all {
+	list-style:none;
+}
+
+.menuleft .subchoice {
+	display:none;
+}
+.subchoice LI.on {
+	list-style:none;
+	margin-left:-20px;
+	background-color:white;
+	padding:2px 2px 2px 20px;
+	margin-bottom:0px;
+	font-weight:normal;
+}
+
+.subchoice .on A:Hover {
+	color:#333;
+}
 
 
 /*...........................................
@@ -1462,16 +1519,22 @@ Table.graph .value {
 }
 
 .questionbox {	
-	width:150px; height:120px; 
+	width:200px; height:90px; 
 	color: #333; line-height:1.2em; padding:5px; 
 	border-radius : 11px; -moz-border-radius : 11px; -webkit-border-radius : 11px; 
 	float:left; background-color:white; margin:10px 0px 0px 10px; 
+}
+
+.questionbox H2 {	
+ height:35px;
 }
 
 .questionbox.off {	
 	opacity:0.5
 }	
 
+#preview_container_question {display:none; background-color:white; margin-top:-1px; border:1px solid silver;}
+#preview_container_question DIV {margin:20px; color:#333; font-size:14px; }
 
 
 /*...........................................    
