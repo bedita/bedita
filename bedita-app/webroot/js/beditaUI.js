@@ -87,7 +87,7 @@ jQuery.fn.extend({
 
 			priority = parseInt( (arguments.length > 0 && typeof(arguments[0]) != 'object' && typeof(arguments[0]) != 'undefined')? arguments[0] : $(this).find("input[name*='[priority]']:first").val() );
 			
-			$(this).find("input[name*='[priority]']").each(function(index)
+			$(this).find("input[name*='[priority]']:enabled").each(function(index)
 			{
 				$(this).val(priority--)								// update priority
 				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');
@@ -96,7 +96,7 @@ jQuery.fn.extend({
 		} else {
 			priority = parseInt( (arguments.length > 0 && typeof(arguments[0]) != 'object' && typeof(arguments[0]) != 'undefined')? arguments[0] : 1 );
 			
-			$(this).find("input[name*='[priority]']").each(function(index)
+			$(this).find("input[name*='[priority]']:enabled").each(function(index)
 			{
 				$(this).val(priority++)								// update priority
 				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');	// pulse effect

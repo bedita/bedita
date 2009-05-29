@@ -787,6 +787,8 @@ CREATE TABLE questions (
   `id` INTEGER UNSIGNED NOT NULL,
   `question_type` VARCHAR(32) NOT NULL,
   `max_chars` INTEGER NULL,
+  `question_difficulty` INT(11) NULL,
+  `edu_level` INT(11) NULL,
   PRIMARY KEY(id),
   KEY `question_type_idx` (`question_type`),
   FOREIGN KEY(id)
