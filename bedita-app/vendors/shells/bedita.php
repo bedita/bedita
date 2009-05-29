@@ -1074,6 +1074,13 @@ class BeditaShell extends Shell {
 			'Last modified' => 'modified',
 			'Additional data' => 'note',
 			'Name' => 'name',
+                        'Surname' => 'surname',
+                        'Phone' => 'phone',
+                        'Address' => 'street_address',
+                        'CAP' => 'zipcode',
+                        'City' => 'city',
+                        'State' => 'state',
+                        'Country' => 'country',
 			'Your birthday is' => 'birthdate',
 			'Gender' => 'gender',
 			'Country' => 'country'
