@@ -66,8 +66,15 @@ class QuestionnairesController extends ModulesController {
 
 	 }
 
-	public function index_questions($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
+	public function index_questions($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
+		if (!empty($this->passedArgs["question_type"]))
+			$filter["question_type"] = $this->passedArgs["question_type"];
+		if (!empty($this->passedArgs["question_difficulty"]))
+			$filter["question_difficulty"] = $this->passedArgs["question_difficulty"];
+		if (!empty($this->passedArgs["edu_level"]))
+			$filter["edu_level"] = $this->passedArgs["edu_level"];
     	$filter["object_type_id"] = Configure::read("objectTypes.question.id");
+    	$filter["Question.*"] = "";
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 	 }
 	 

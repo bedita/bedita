@@ -56,7 +56,8 @@ $(document).ready(function(){
 	</div>
 	
 	{elseif $method == "indexQuestions"}
-	
+		
+		{assign var="currentUrl" value=$beurl->getUrl()}
 
 		<ul class="menuleft insidecol">
 			<li><a href="javascript:void(0)" onClick="$('#groups').slideToggle();">{t}Select by category{/t}</a></li>
@@ -76,10 +77,10 @@ $(document).ready(function(){
 				
 				<ul class="subchoice" id="types">
 					{foreach from=$conf->questionTypes item="label" key="value"}
-					<li {if ((@$html->params.named.filter == 'questionTypes') && ($html->params.named.value == $value))}class="on"{/if}>
-						<a href="{$html->url('/')}{$currentModule.path}/{$html->action}/filter:questionTypes/value:{$value}">{$label}</a></li>
+					<li {if $html->params.named.question_type|default:'' == $value}class="on"{/if}>
+						<a href="{$currentUrl}/question_type:{$value}">{$label}</a></li>
 					{/foreach}
-					<li class="all">all</li>
+					<li class="all"><a href="{$beurl->getUrl('question_type')}">{t}all{/t}</a></li>
 				</ul>
 		</ul>
 
@@ -88,10 +89,10 @@ $(document).ready(function(){
 				
 				<ul class="subchoice" id="difficulty">
 					{foreach from=$conf->questionDifficulty item="label" key="value"}
-					<li {if ((@$html->params.named.filter == 'difficulty') && ($html->params.named.value == $value))}class="on"{/if}>
-						<a href="{$html->url('/')}{$currentModule.path}/{$html->action}/filter:difficulty/value:{$value}">{$label}</a></li>
+					<li {if $html->params.named.question_difficulty|default:'' == $value}class="on"{/if}>
+						<a href="{$currentUrl}/question_difficulty:{$value}">{$label}</a></li>
 					{/foreach}
-					<li class="all">all</li>
+					<li class="all"><a href="{$beurl->getUrl('question_difficulty')}">{t}all{/t}</a></li>
 				</ul>
 		</ul>
 		
@@ -100,10 +101,10 @@ $(document).ready(function(){
 				
 				<ul class="subchoice" id="eduLevel">
 					{foreach from=$conf->eduLevel item="label" key="value"}
-					<li {if ((@$html->params.named.filter == 'eduLevel') && ($html->params.named.value == $value))}class="on"{/if}>
-						<a href="{$html->url('/')}{$currentModule.path}/{$html->action}/filter:eduLevel/value:{$value}">{$label}</a></li>
+					<li {if $html->params.named.edu_level|default:'' == $value}class="on"{/if}>
+						<a href="{$currentUrl}/edu_level:{$value}">{$label}</a></li>
 					{/foreach}
-					<li class="all">all</li>
+					<li class="all"><a href="{$beurl->getUrl('edu_level')}">{t}all{/t}</a></li>
 				</ul>
 		</ul>
 		

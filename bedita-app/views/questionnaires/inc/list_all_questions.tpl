@@ -65,7 +65,7 @@ $(document).ready(function(){
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('title', 'Title')}</th>
-			<th>{$beToolbar->order('type', 'Type')}</th>
+			<th>{$beToolbar->order('question_type', 'Type')}</th>
 			<th>{$beToolbar->order('status', 'Status')}</th>
 			<th>{$beToolbar->order('published', 'Modified')}</th>
 			<th>{$beToolbar->order('note', 'Notes')}</th>
@@ -84,7 +84,10 @@ $(document).ready(function(){
 			<a href="{$html->url('view_question/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a>
 			<div style="display:none; color:gray; font-style:italic" class="listitemdesc">{$objects[i].description|nl2br}</div>
 		</td>
-		<td>multiple_choice</td>
+		<td>
+			{assign var="qtype" value=$objects[i].question_type}
+			{t}{$conf->questionTypes[$qtype]}{/t}
+		</td>
 		<td style="text-align:center">{$objects[i].status|upper}</td>
 		<td>{$objects[i].modified|date_format:'%d-%m-%y'}</td>
 		<td>{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>

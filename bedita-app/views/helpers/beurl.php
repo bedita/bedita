@@ -48,6 +48,45 @@ class BeurlHelper extends Helper {
 		}
 		return $newUrl ;
 	}
+	
+	/**
+	 * return url to here
+	 * 
+	 * @param $cleanFromFields, field or array of fields passed by name that you want to clean in url
+	 * @return url
+	 */
+	function getUrl($cleanFromFields=null) {
+		$paramsNamed = $this->params["named"];
+		if (!empty($cleanFromFields)) {
+			$paramsNamed = $this->cleanPassedArgs($cleanFromFields);
+		}
+		$data = array_merge($this->params["pass"], $paramsNamed);
+		$url = Router::url($data);
+		return $this->output($url);
+	}
+	
+	/**
+	 * return array without parmas passed to the method
+	 * 
+	 * @param $cleanFromFields
+	 * @return array of params cleaned
+	 */
+	private function cleanPassedArgs($cleanFromFields) {
+		$paramsNamed = $this->params["named"];
+		if (!is_array($cleanFromFields)) {
+			if (isset($paramsNamed[$cleanFromFields])) {
+				unset($paramsNamed[$cleanFromFields]);
+			}
+		} else {
+			foreach ($cleanFromFields as $field) {
+				if (isset($paramsNamed[$field])) {
+					unset($paramsNamed[$field]);
+				}
+			}
+		}
+		return $paramsNamed;
+	}
+	
 }
 
 ?>
