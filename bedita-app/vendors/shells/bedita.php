@@ -24,7 +24,8 @@ App::import('Model', 'Stream');
 App::import('Component', 'Transaction');
 App::import('vendor', "splitter_sql");
 App::import('vendor', "Archive_Tar", true, array(), "Tar.php");
-
+App::import('Core', 'Controller');
+App::import('Controller', 'App'); // BeditaException
 /**
  * 
  * @link			http://www.bedita.com
@@ -1066,7 +1067,101 @@ class BeditaShell extends Shell {
 		fclose($handle);
 		$this->out("Mime types updated to: $beditaMimeFile");
     }
-    
+
+	function importUsersNewsletter() {
+		$phplist_to_card = array(
+			'Email' => 'email',
+			'Last modified' => 'modified',
+			'Additional data' => 'note',
+			'Name' => 'name',
+			'Your birthday is' => 'birthdate',
+			'Gender' => 'gender',
+			'Country' => 'country'
+		);
+		$sep = (!empty($this->params['sep'])) ? $this->params['sep'] : "\t";
+		$this->out("Importing user data from file: '" . $this->params['f'] . "' | using separator: '" . $sep . "' | associating to mailgroup: '" . $this->params['mailgroup'] . "'");
+		$lines = @file($this->params['f']);
+		if(!$lines) {
+			$this->out("INFO: File " . $this->params['f'] . " not found: import aborted");
+			return false;
+		}
+		$this->out("INFO: File " . $this->params['f'] . " found OK");
+		$mailgroup = ClassRegistry::init("MailGroup");
+		$mail_group_name = $mailgroup->field("group_name", array("id" => $this->params['mailgroup']));
+		if(empty($mail_group_name)) {
+			$this->out("INFO: Mail group " . $this->params['mailgroup'] . " not found: import aborted");
+			return false;
+		}
+		$card = ClassRegistry::init("Card");
+		$mailgroupcard = ClassRegistry::init("MailGroupCard");
+		$content = array();
+		$new_cards_counter = 0;
+		$cards_not_saved_counter = 0;
+		$cards_group_saved_counter = 0;
+		$cards_group_not_saved_counter = 0;
+		$cards_already_present = 0;
+		$cards_group_already_present = 0;
+		$this->out(".............................................");
+		foreach ($lines as $line_num => $line) {
+			if($line_num==0) {
+				$attributes = explode($sep,$line);
+			} else {
+				$data = array("ip_created" => "127.0.0.1", "user_created" => 1, "user_modified" => 1);
+				$content[$line_num] = explode($sep,$line);
+				foreach($content[$line_num] as $key => $value) {
+					if (!empty($phplist_to_card[$attributes[$key]])) {
+						$data[$phplist_to_card[$attributes[$key]]] = $value;
+					}
+				}
+				if ( !($card_id = $card->field("id", array("newsletter_email" => $data['email']))) ) {
+					$data['title'] = (!empty($data['name'])) ? $data['name'] : $data['email'];
+					$data['newsletter_email'] = $data['email'];
+					$data["joinGroup"][0]["mail_group_id"] = $this->params['mailgroup'];
+					$data["joinGroup"][0]["status"] = "confirmed";
+					$card->create();
+					if(!($card->save($data))) {
+						$this->out($line_num . ":ERROR: error saving card '" . $data['email'] . "'");
+						$cards_not_saved_counter++;
+					} else {
+						$this->out($line_num . ":INFO: saved card '" . $data['email'] . "'");
+						$new_cards_counter++;
+						$this->out($line_num . ":INFO: saved card/mailgroup association for '" . $data['email'] . "' / '" . $mail_group_name . "'");
+						$cards_group_saved_counter++;
+					}
+					$card_id = $card->id;
+				} else {
+					$this->out($line_num . ":INFO: card '" . $data['email'] . "' already present (skip save)");
+					$cards_already_present++;
+					if (!$mailgroupcard->field("id", array("mail_group_id" => $this->params['mailgroup'], "card_id" => $card_id)) ) {
+						$dataJoin = array();
+						$dataJoin["MailGroupCard"]["mail_group_id"] = $this->params['mailgroup'];
+						$dataJoin["MailGroupCard"]["card_id"] = $card_id;
+						$dataJoin["MailGroupCard"]["status"] = "confirmed";
+						$dataJoin["MailGroupCard"]["hash"] = md5($card_id . microtime() . $mail_group_name);
+						$mailgroupcard->create();
+						if (!$mailgroupcard->save($dataJoin)) {
+							$this->out($line_num . ":ERROR: error saving card/mailgroup association for '" . $data['email'] . "' / '" . $mail_group_name . "'");
+							$cards_group_not_saved_counter++;
+						} else {
+							$this->out($line_num . ":INFO: saved card/mailgroup association for '" . $data['email'] . "' / '" . $mail_group_name . "'");
+							$cards_group_saved_counter++;
+						}
+					} else {
+						$this->out($line_num . ":INFO: card '" . $data['email'] . "' / mailgroup '" . $mail_group_name . "' association already present (skip save)");
+						$cards_group_already_present++;
+					}
+				}
+			}
+		}
+		$this->out(".............................................");
+		$this->out("INFO: " . $new_cards_counter . " new cards saved");
+		$this->out("INFO: " . $cards_already_present . " cards were already present (not saved)");
+		$this->out("INFO: " . $cards_group_already_present . " cards/mail group association were already present (not saved)");
+		$this->out("INFO: " . $cards_not_saved_counter . " not saved (error on saving)");
+		$this->out("INFO: " . $cards_group_saved_counter . " cards associated to mail group " . $mail_group_name);
+		$this->out("INFO: " . $cards_group_not_saved_counter . " cards not associated to mail group " . $mail_group_name . " (error on saving)");
+	}
+
 	function help() {
         $this->out('Available functions:');
         $this->out('1. updateDb: update database with bedita-db sql scripts');
@@ -1078,7 +1173,7 @@ class BeditaShell extends Shell {
   		$this->out("    -data <sql>     \t use <sql> data dump, use absolute path if not in bedita-db/");
   		$this->out("    -media <zipfile> \t restore media files in <zipfile>");
   		$this->out(' ');
-  		$this->out('2. cleanup: cleanup cahe, compile, log files');
+  		$this->out('2. cleanup: cleanup cache, compile, log files');
         $this->out(' ');
         $this->out('    Usage: cleanup [-frontend <frontend path>] [-logs] [-media]');
         $this->out(' ');
@@ -1122,6 +1217,10 @@ class BeditaShell extends Shell {
         $this->out('10. mimeTypes: update config/mime.types.php from standard mime.types file');
   		$this->out(' ');
   		$this->out('   Usage: mimeTypes -f <mime.types-file>');
+        $this->out(' ');
+		$this->out('11. importUsersNewsletter: import users from file csv to cards, associating them to a newsletter mailgroup');
+		$this->out(' ');
+  		$this->out('   Usage: importUsersNewsletter -f <users-file> -sep <separator> -mailgroup <id mailgroup>');
         $this->out(' ');
 	}
 }
