@@ -2,6 +2,107 @@
 ** form question template
 *}
 
+{literal}
+<script type="text/javascript">
+
+	
+	function multiplePreview() {
+		var formElement = "<input type=\"checkbox\" name=\"p\">";
+		var htmlBlock = "";
+		$("#answers textarea").each(function() {
+			htmlBlock += formElement + " " + $(this).val() + "<br/>";
+		});
+		return htmlBlock;
+	}
+
+	function single_radioPreview() {
+		var formElement = "<input type=\"radio\" name=\"p\">";
+		var htmlBlock = "";
+		$("#answers textarea").each(function() {
+			htmlBlock += formElement + " " + $(this).val() + "<br/>";
+		});
+		return htmlBlock;
+	}
+
+	function single_pulldownPreview() {
+		var htmlBlock = "";
+		$("#answers textarea").each(function() {
+			htmlBlock += "<option> " + $(this).val() + "</option>";
+		});
+		return "<select>" + htmlBlock + "</select>";
+	}
+
+	function freetextPreview() {
+		var maxChars = $("input[name='data[max_chars]']").val();
+		var introtext = "{/literal}{t}Write your answer. Max chars is{/t}{literal} " + maxChars;
+		var htmlBlock = "<textarea style=\"width:280px;\"></textarea>";
+		return introtext + htmlBlock;
+	}
+
+	function checkopenPreview() {
+		var checkElement = "<input type=\"checkbox\" name=\"p\">";
+		var textElement = "<input type=\"text\" />";
+		var htmlBlock = "";
+		$("#answers textarea").each(function() {
+			htmlBlock += checkElement + " " + $(this).val() + ", {/literal}{t}specify{/t}{literal}:" + textElement + "<br/>";
+		});
+		return htmlBlock;
+	}
+
+	function degreePreview() {
+		var checkElement = "<input type=\"checkbox\" name=\"p\">";
+		var selectElement = "<select name=\"\"><option>1</option><option>2</option><option>3</option><option>4</option></select><br />"
+		var htmlBlock = "";
+		$("#answers textarea").each(function() {
+			htmlBlock += checkElement + " " + $(this).val() + selectElement;
+		});
+		return htmlBlock;
+	}
+	
+	function showAnswers() {
+		$(".answers div").hide();
+		$(".answers div :input").attr("disabled", "disabled");
+		$(".answers div :checkbox").attr("disabled", "disabled");
+		var kind = $("#tipoID option:selected").val();
+		$("." + kind).show();
+		$("." + kind + " :input").attr("disabled", "");
+		$("." + kind + " :checkbox").attr("disabled", "");
+	}
+	
+	
+	//preview functions
+	$(document).ready(function(){
+		$("#tipoID").change(function () {
+			showAnswers();
+			$('#preview_container_question').hide();
+			$('#preview').val("EXAMPLE");
+		});
+			
+		$("#preview").toggle( 
+		function () 
+		{ 
+			var qtype = $('#tipoID OPTION:selected').val();
+			$('#preview').toggleValue("CLOSE EXAMPLE","EXAMPLE");
+			$('#preview_container_question DIV').not('.p_'+qtype).toggle();
+			var htmlBlock = window[qtype + "Preview"]();
+			$('#preview_container_question .p_' + qtype).append(htmlBlock);
+			$('#preview_container_question').toggle();
+		    $('#tipoID').attr("disabled", true);
+		}, 
+		function () 
+		{ 
+			var qtype = $('#tipoID OPTION:selected').val();
+			$('#preview').toggleValue("CLOSE EXAMPLE","EXAMPLE");
+			$('#preview_container_question DIV').not('.p_'+qtype).toggle();
+			$('#preview_container_question').toggle();
+		    $('#tipoID').removeAttr("disabled");
+		    //window[qtype + "Preview"](false);
+		    $('#preview_container_question .p_' + qtype).empty();
+		});
+	});
+</script>
+{/literal}
+
    <div class="tab"><h2>{t}Question detail{/t}</h2></div>
 
 		<fieldset id="question">
@@ -29,49 +130,7 @@
 						<option value="{$value}"{if $value == $object.question_type|default:""} selected{/if}>{t}{$label}{/t}</option>
 					{/foreach}
 					</select>
-					
-					{literal}
-					
-					<script type="text/javascript">
-						function showAnswers() {
-							$(".answers div").hide();
-							$(".answers div :input").attr("disabled", "disabled");
-							$(".answers div :checkbox").attr("disabled", "disabled");
-							var kind = $("#tipoID option:selected").val();
-							$("." + kind).show();
-							$("." + kind + " :input").attr("disabled", "");
-							$("." + kind + " :checkbox").attr("disabled", "");
-						}
-						
-						$("#tipoID").change(function () {
-							showAnswers();
-							$('#preview_container_question').hide();
-							$('#preview').val("EXAMPLE");
-						});
-						
-						//preview functions
-						$(document).ready(function(){	
-							$("#preview").toggle( 
-							function () 
-							{ 
-								var qtype = $('#tipoID OPTION:selected').val();
-								$('#preview').toggleValue("CLOSE EXAMPLE","EXAMPLE");
-								$('#preview_container_question DIV').not('.p_'+qtype).toggle();
-								$('#preview_container_question').toggle();
-							    $('#tipoID').attr("disabled", true); 
-							}, 
-							function () 
-							{ 
-								var qtype = $('#tipoID OPTION:selected').val();
-								$('#preview').toggleValue("CLOSE EXAMPLE","EXAMPLE");
-								$('#preview_container_question DIV').not('.p_'+qtype).toggle();
-								$('#preview_container_question').toggle();
-							    $('#tipoID').removeAttr("disabled"); 
-							});
-						});
-					</script>
-					{/literal}
-					
+															
 					&nbsp; <input type="button" value="EXAMPLE" id="preview" class="BEbutton" />
 				
 				</td>
