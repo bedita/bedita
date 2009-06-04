@@ -255,7 +255,7 @@ class BEAppModel extends AppModel {
 			if($all)
 				$conditions[] = " path LIKE (CONCAT((SELECT path FROM trees WHERE id = {$id}), '/%')) " ;
 			else
-				$conditions[] = array("parent_id" => $id) ;
+				$conditions[] = array("`Tree`.parent_id" => $id) ;
 			
 			if(empty($order)) {
 				$order = "`Tree`.priority";

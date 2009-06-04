@@ -1169,7 +1169,7 @@ abstract class FrontendController extends AppController {
 		if (!empty($options["order"])) {
 			$order = $options["order"];
 		} elseif (!empty($section_id)) {
-			$order = "priority";
+			$order = "`Tree`.priority";
 		}
 		$dir = (isset($options["dir"]))? $options["dir"] : 1;
 		$page = (!empty($options["page"]))? $options["page"] : 1;

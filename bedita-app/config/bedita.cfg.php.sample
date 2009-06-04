@@ -48,12 +48,10 @@ $config["projectName"] = "BEdita 3.0";
 
 
 // Texts in documents ['html', 'txt', 'txtParsed']
-// $config['type'] = "txt" ;  // ------ SISTEMARE IL NOME FA CA'  ------------
 //$config['defaultTxtType'] = "txt" ;
 
 
 // Status of new objects
-// $config['status'] = "draft" ;  // ------ SISTEMARE IL NOME FA CA' ------------
 //$config['defaultStatus'] = "draft" ;
 
 
@@ -72,7 +70,10 @@ $config["projectName"] = "BEdita 3.0";
  */
  
 // Relations - local objects' relation types
-// $config["objRelationType"] = array ("language", "parent");
+// $config["objRelationType"] = array(
+// 		"language" => array(), 
+// 		"parent" => array()
+// );
 
 // One-way relation
 // $config["cfgOneWayRelation"] = array("parent");
