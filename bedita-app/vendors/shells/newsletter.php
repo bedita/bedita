@@ -109,7 +109,7 @@ class NewsletterShell extends Shell {
 				$content[$line_num] = explode($separator,$line);
 				foreach($content[$line_num] as $key => $value) {
 					if (!empty($phplist_to_card[$attributes[$key]])) {
-						$data[$phplist_to_card[$attributes[$key]]] = $value;
+						$data[$phplist_to_card[$attributes[$key]]] = trim($value);
 					}
 				}
 				if ( !($card_id = $card->field("id", array("newsletter_email" => $data['email']))) ) {
