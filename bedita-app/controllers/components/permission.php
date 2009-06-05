@@ -227,23 +227,6 @@ class PermissionComponent extends Object {
 	}
 	
 	/**
-	 * Torna i permessi di default (se ci sono) per un dato tipo di 
-	 * oggetto.
-	 *
-	 * @param integer $objectType	Tipo di oggetto in $conf->objectTypes
-	 * @param array $perms			{0..N} dove torna il risultato
-	 * @return array $perms			{0..N} dove torna il risultato 
-	 */
-	function getDefaultByType($objectType) {
-		$conf  		= Configure::getInstance() ;
-		
-		if(isset($conf->permissions[$objectType])) 	return $conf->permissions[$objectType] ;
-		else if(isset($conf->permissions['all'])) 	return $conf->permissions['all'] ;
-		
-		return array() ;
-	}
-	
-	/**
 	 * Salva i per permessi dell'oggetto  provenienti da un form _POST.
 	 * Dato l'oggetto, cancella i permessi non + presenti (ad eccezzione quelli del gruppo administrator)
 	 * e inserisce gli altri.

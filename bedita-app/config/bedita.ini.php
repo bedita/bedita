@@ -192,14 +192,22 @@ $config['DS']        = DS;
 
 
 /**
- * Permissions constants
+ * Modules/objects permissions
  */
-define("BEDITA_PERMS_READ",		0x1) ;
-define("BEDITA_PERMS_MODIFY",	0x2) ;
-define("BEDITA_PERMS_DELETE",	0x4) ;
-define("BEDITA_PERMS_CREATE",	0x8) ;
+define("BEDITA_PERMS_READ",	0x1) ; // read-only module permission
+define("BEDITA_PERMS_MODIFY",		0x2) ;
+define("BEDITA_PERMS_READ_MODIFY",	BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) ; // read-write module permission
+define("OBJ_PERMS_READ_FRONT",	0x1) ; // frontend access permission
+define("OBJ_PERMS_WRITE",		0x2) ; // write permission on object
 
-define("BEDITA_PERMS_READ_MODIFY",	BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) ;
+/**
+ * Permission params, for Smarty 
+ */
+$config['BEDITA_PERMS_READ'] 	= BEDITA_PERMS_READ ;
+$config['BEDITA_PERMS_MODIFY'] 	= BEDITA_PERMS_MODIFY ;
+$config['BEDITA_PERMS_READ_MODIFY'] = BEDITA_PERMS_READ_MODIFY;
+$config['OBJ_PERMS_READ_FRONT'] 	= OBJ_PERMS_READ_FRONT ;
+$config['OBJ_PERMS_WRITE'] 	= OBJ_PERMS_WRITE ;
 
 
 /**
@@ -397,16 +405,6 @@ $config['session'] = array (
 
 
 /**
- * Default permissions
- */
-$config['permissions'] = array(
-	'all'	=> array(
-		array('administrator', 	'group', (BEDITA_PERMS_READ|BEDITA_PERMS_CREATE|BEDITA_PERMS_MODIFY|BEDITA_PERMS_DELETE)),
-		array('guest', 			'group', (BEDITA_PERMS_READ)),
-	),
-);
-
-/**
  * question types
  */
 $config['questionTypes'] = array(
@@ -519,15 +517,6 @@ $config['langOptionsIso'] = false;
 // media types for multimedia association
 $config['mediaTypes'] = array('image','video','audio','text','spreadsheet','presentation','drawing','chart','formula');
 
-
-/**
- * Permission params, for Smarty 
- */
-$config['BEDITA_PERMS_READ'] 	= BEDITA_PERMS_READ ;
-$config['BEDITA_PERMS_MODIFY'] 	= BEDITA_PERMS_MODIFY ;
-$config['BEDITA_PERMS_DELETE'] 	= BEDITA_PERMS_DELETE ;
-$config['BEDITA_PERMS_CREATE'] 	= BEDITA_PERMS_CREATE ;
-$config['BEDITA_PERMS_READ_MODIFY'] = BEDITA_PERMS_READ_MODIFY;
 
 /**
  * Variabili utilizza per il riconscimento e gestione URL remoti e file remoti
