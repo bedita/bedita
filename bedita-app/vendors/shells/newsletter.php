@@ -105,7 +105,7 @@ class NewsletterShell extends Shell {
 					$cards_not_saved_counter . " cards with error/s (not saved), " .
 					$cards_save_forced . " cards forced to be saved (skip validation)");
 				}
-				$data = array("ip_created" => "127.0.0.1", "user_created" => 1, "user_modified" => 1);
+				$data = array("ip_created" => "127.0.0.1", "user_created" => 1, "user_modified" => 1, "status" => "on");
 				$content[$line_num] = explode($separator,$line);
 				foreach($content[$line_num] as $key => $value) {
 					if (!empty($phplist_to_card[$attributes[$key]])) {
@@ -185,6 +185,7 @@ class NewsletterShell extends Shell {
 							fwrite($handle_result,"[" . date('Y-m-d H:i:s') . "] - line $line_num - INFO saved card/mailgroup association for '" . $data['email'] . "' / '" . $mail_group_name . "'\n");
 							$cards_group_saved_counter++;
 						}
+						unset($dataJoin);
 					} else {
 						if($verbose_log) {
 							$this->out("[" . date('Y-m-d H:i:s') . "] - line $line_num - INFO card '" . $data['email'] . "' / mailgroup '" . $mail_group_name . "' association already present (skip save)");
@@ -193,6 +194,7 @@ class NewsletterShell extends Shell {
 						$cards_group_already_present++;
 					}
 				}
+				unset($data);
 			}
 		}
 		fwrite($handle_result,"[" . date('Y-m-d H:i:s') . "] INFO: " . $new_cards_counter . " new cards saved\n");
