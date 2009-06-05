@@ -114,6 +114,9 @@ class NewsletterShell extends Shell {
 				}
 				if ( !($card_id = $card->field("id", array("newsletter_email" => $data['email']))) ) {
 					$data['title'] = (!empty($data['name'])) ? $data['name'] : $data['email'];
+					if(strpos($data['title'],'Utente Newsletter Goodwill') !== false) {
+						$data['title'] = $data['email'];
+					}
 					$data['newsletter_email'] = $data['email'];
 					$data["joinGroup"][0]["mail_group_id"] = $this->params['mailgroup'];
 					$data["joinGroup"][0]["status"] = "confirmed";
