@@ -195,7 +195,7 @@ $config['DS']        = DS;
  * Modules/objects permissions
  */
 define("BEDITA_PERMS_READ",	0x1) ; // read-only module permission
-define("BEDITA_PERMS_MODIFY",		0x2) ;
+define("BEDITA_PERMS_MODIFY",	0x2) ;
 define("BEDITA_PERMS_READ_MODIFY",	BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) ; // read-write module permission
 define("OBJ_PERMS_READ_FRONT",	0x1) ; // frontend access permission
 define("OBJ_PERMS_WRITE",		0x2) ; // write permission on object
@@ -413,19 +413,18 @@ $config['questionTypes'] = array(
 	"single_pulldown" => "pulldown single choice",
 	"freetext" => "open answer",
 	"checkopen" => "check open",
-	"degree" => "degree",
-	"number" => "number"
+	"degree" => "degree"
 );
 
 /**
  * question difficulty 
  */
 $config['questionDifficulty'] = array(
-	1 => "1 | very easy",
-	2 => "2 | easy",
-	3 => "3 | normal",
-	4 => "4 | hard",
-	5 => "5 | very hard"
+	1 => "very easy",
+	2 => "easy",
+	3 => "normal",
+	4 => "hard",
+	5 => "very hard"
 );
 
 
