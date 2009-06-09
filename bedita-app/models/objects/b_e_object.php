@@ -280,29 +280,17 @@ class BEObject extends BEAppModel
 						
 		}
 		
-		// Salva eventuali permessi
-		$permissions = false ;
+		$permissions = false;
 		if(isset($this->data["Permissions"])) 
 			$permissions = $this->data["Permissions"] ;
 		else if(isset($this->data[$this->name]["Permissions"])) 
 			$permissions = $this->data[$this->name]["Permissions"] ;
 		
-		if($permissions) {
-		
-			$Permission = ClassRegistry::init('Permission');		
-			// Aggiunge
-			$this->_array2perms($permissions, $formatedPerms) ;
-			for($i=0; $i < count($formatedPerms) ; $i++) {
-				$item = &$formatedPerms[$i] ;
-					
-				if($Permission->replace($this->{$this->primaryKey}, $item['name'], $item['switch'], $item['flag']) === false) {
-					return false ;
-				}				
-			}
+		if(is_array($permissions)) {
+			$Permission = ClassRegistry::init('Permission');
+			$Permission->replace($this->{$this->primaryKey}, $permissions);
 		}
-		
-		
-		// save realtions between objects
+		// save relations between objects
 		if (!empty($this->data['BEObject']['RelatedObject'])) {
 			
 			
@@ -646,29 +634,7 @@ class BEObject extends BEAppModel
 			$type		=> $val
 		) ;	
 	}
-	
-	
-	/**
-	 * Transform permission array ==> cake-style associative array
-	 *
-	 * @param array $arr	{0..N} item:
-	 * 						0:ugid, 1:switch, 2:flag 
-	 * @param array $perms	dove torna l'array associativo:
-	 * 						ugid => ; switch => ; flag => 
-	 */
-	private function _array2perms(&$arr, &$perms) {
-		$perms = array() ;
-		if(!count($arr))  return ;
-
-		foreach ($arr as $item) {
-			$perms[] = array(
-					'name'		=> $item[0],
-					'switch'	=> $item[1],
-					'flag'		=> (isset($item[2]))?$item[2]:null,
-			) ;
-		}
-	}
-	
+		
 	function getIdFromNickname($nickname) {
 		return $this->field("id", array("nickname" => $nickname));
 	}

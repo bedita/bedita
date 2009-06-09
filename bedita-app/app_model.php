@@ -501,15 +501,6 @@ class BEAppObjectModel extends BEAppModel {
 			return ;
 		}
 
-		// copia i permessi
-		if(!isset($this->Permission)) {
-			if(!class_exists('Permission')){
-				loadModel('Permission');
-			}
-			$this->Permission = new Permission() ;
-		}
-		$this->Permission->clonePermissions($this->{$this->primaryKey}, $this->{$_this->primaryKey}) ;
-
 		// copia le proprieta' oggetto clonato
 		$this->copyPropertiesFromObj($_this);
 	}

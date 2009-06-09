@@ -79,14 +79,9 @@ $(document).ready(function(){
 {/literal}{/if}{literal}
 
 
-{/literal}{if !empty($object.Permissions) && !($perms->isDeletable($user.userid,$user.groups,$object.Permissions))}{literal}
-		
-		//$("#delBEObject").attr("disabled",true);
-
-{/literal}{/if}{literal}
-
 {/literal}{if !empty($object.Permissions) && !($perms->isWritable($user.userid,$user.groups,$object.Permissions))}{literal}
 
+		//$("#delBEObject").attr("disabled",true);
 		//$("#saveBEObject,#cloneBEObject,#delBEObject").attr("disabled",true);
 		//$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");
 	

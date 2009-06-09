@@ -34,7 +34,7 @@ App::import('Core', 'l10n');
 class AppController extends Controller
 {
 	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "Msg", "MediaProvider", "Perms", 'BeEmbedMedia', 'BeThumb');
-	var $components = array('BeAuth', 'BeTree', 'BePermissionModule', 'BeCustomProperty', 'Permission', 'Transaction', 'Cookie', 'Session');
+	var $components = array('BeAuth', 'BeTree', 'BePermissionModule', 'BeCustomProperty', 'Transaction', 'Cookie', 'Session');
 	var $uses = array('EventLog') ;
 	
 	protected $moduleName = NULL;
@@ -458,15 +458,23 @@ class AppController extends Controller
 			$objectArray['num_of_'.Inflector::underscore($k)] = $v;
 		}
 	}
+
+	protected function checkObjectWritePermission($objectId) {
+		$permission = ClassRegistry::init('Permission');
+		if(!$permission->isWritable($this->data['id'], $this->BeAuth->user))
+			throw new BeditaException(__("No write permissions on object", true));
+	}
 	
 	protected function saveObject(BEAppModel $beModel) {
 
 		if(empty($this->data)) 
 			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
-		// Verify object permits
-//		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-//			throw new BeditaException(__("Error modify permissions", true));
+
+		if(!$new) {
+			$this->checkObjectWritePermission($this->data['id']);
+		}
+
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave() ;
 
@@ -487,6 +495,9 @@ class AppController extends Controller
 			}
 		}
 			
+		if(!isset($this->data['Permissions'])) 
+			$this->data['Permissions'] = array() ;
+		
 		if(!$beModel->save($this->data)) {
 			throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
 		}
@@ -496,12 +507,6 @@ class AppController extends Controller
 				$this->data['destination'] = array() ;
 			$this->BeTree->updateTree($beModel->id, $this->data['destination']);
 		}
-
-		// update permissions
-		if(!isset($this->data['Permissions'])) 
-			$this->data['Permissions'] = array() ;
-//		$this->Permission->saveFromPOST($beModel->id, $this->data['Permissions'], 
-//	 			!empty($this->data['recursiveApplyPermissions']), $name);
 	}
 	
 	/**
@@ -519,9 +524,6 @@ class AppController extends Controller
 		} else {
 			if(empty($this->data['id'])) 
 				throw new BeditaException(__("No data", true));
-//			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
-//				throw new BeditaException(__("Error delete permissions", true));
-//			}
 			$objectsToDel = array($this->data['id']);
 		}
 
@@ -530,9 +532,7 @@ class AppController extends Controller
 		$beObject = ClassRegistry::init("BEObject");
 		
 		foreach ($objectsToDel as $id) {
-//			if(!$this->Permission->verify($id, $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
-//				throw new BeditaException(__("Error delete permissions", true));
-//			}
+			$this->checkObjectWritePermission($id);
 			
 			if ($beObject->isFixed($id)) {
 				throw new BeditaException(__("Error, trying to delete fixed object!", true));
@@ -563,7 +563,7 @@ abstract class ModulesController extends AppController {
 		if(isset($this->moduleName) && !($this->modulePerms & BEDITA_PERMS_MODIFY)) {
 				throw new BeditaException(__("No write permissions in module", true));
 		}
-	}
+	}	
 	
 	/**
 	 * Method for paginated objects, used in ModuleController::index()...

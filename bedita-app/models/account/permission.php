@@ -30,7 +30,6 @@
  */
 class Permission extends BEAppModel
 {
-	var $name = 'Permission';
 	
 	var $belongsTo = array(
 		'User' =>
@@ -48,107 +47,115 @@ class Permission extends BEAppModel
 	);
 
 	/**
-	 * Aggiunge e/o modifica un permesso per un oggetto.
+	 * Add object permissions
 	 *
-	 * @param integer $id		ID dell'oggetto trattato
-	 * @param string $name		userid o nome gruppo
-	 * @param string $switch	user(/group
-	 * @param integer $flag		bit dei permessi da settare
+	 * @param integer $objId	object id
+	 * @param array $perms		array like (array("flag"=>1, "switch" => "group", "name" => "guest"), array(...))
 	 */
-	function replace($id, $name, $switch, $flag) {
-		return $this->query("CALL replacePermission({$id}, '{$name}', '{$switch}', {$flag})") ;
+	public function add($objectId, $perms) {
+		foreach ($perms as $d) {
+			$d["object_id"] = $objectId;
+			$this->create();
+			if($d["switch"] == "group") {
+				$group = ClassRegistry::init("Group");
+				$d["ugid"] = $group->field('id', array('name'=>$d["name"]));
+			} else {
+				$user = ClassRegistry::init("User");
+				$d["ugid"] = $user->field('id', array('userid'=>$d["name"]));
+			}
+			if(!$this->save($d)) {
+				throw new BeditaException(__("Error saving permissions", true), 
+					"obj: $objectId - permissions: ". var_export($perms, true));
+				;
+			}
+		}
+	}
+	
+	/**
+	 * Remove all object permissions.
+	 *
+	 * @param integer $objectId		object ID
+	 */
+	public function removeAll($objectId) {
+		if(!$this->deleteAll(array("object_id" => $objectId), false))
+			throw new BeditaException(__("Error removing permissions", true), "object id: $objectId");
 	}	
+	
+	/**
+	 * Updates/replaces object permissions
+	 *
+	 * @param integer $objId	object id
+	 * @param array $perms		array like (array("flag"=>1, "switch" => "group", "name" => "guest"), array(...))
+	 */
+	public function replace($objectId, $perms) {
+		$this->removeAll($objectId);
+		$this->add($objectId, $perms);
+	}	
+	
+	/**
+	 * Is the current object in POST writable by user??
+	 *
+	 * @param integer $objectId
+	 * @param array $userData      user data, like array("id" => .., "userid" => ..., "groups" => array("administrator", "frontend",...))
+	 * @return boolean
+	 */
+	public function isWritable($objectId, array &$userData) {
+		// administrator can always write....
+		if(!empty($userData['groups']) && in_array("administrator",$userData['groups'])) {
+			return true;		
+		}
+		$perms = $this->find('all', array("conditions" => 
+			array("object_id" => $objectId, "flag" => OBJ_PERMS_WRITE)));
+		if(empty($perms))
+			return true;
+
+		$res = false;
+		foreach ($perms as $p) {
+			if(!empty($p['User']['id']) && $userData['id'] == $p['User']['id']) {
+				return true;
+			}
+			if(!empty($p['Group']['name']) && in_array($p['Group']['name'], $userData['groups'])) {
+				return true;
+			}
+		}
+		return $res;
+	}
 	
 	/**
 	 * Cancella  un permesso per un oggetto.
 	 *
 	 * @param integer $id		ID dell'oggetto trattato
-	 * @param string $name		userid o nome gruppo
-	 * @param string $switch	user(/group
+	 * @param array $perms		array like (array("flag"=>1, "switch" => "group", "name" => "guest"), array(...))
 	 */
-	function remove($id, $name, $switch) {
-		return $this->query("CALL deletePermission({$id}, '{$name}', '{$switch}')") ;
+	public function remove($objectId, $perms) {
+
+		foreach ($perms as $p) {
+			$conditions = array("object_id" => $objectId, "switch" => $p["switch"]);
+			if (isset($p["flag"])) {
+				$conditions["flag"] = $p["flag"];
+			}
+			if($p["switch"] == "group") {
+				$group = ClassRegistry::init("Group");
+				$conditions["ugid"] = $group->field('id', array('name' => $p["name"]));
+			} else {
+				$user = ClassRegistry::init("User");
+				$conditions["ugid"] = $user->field('id', array('userid' => $p["name"]));
+			}
+			if(!$this->deleteAll($conditions, false))
+				throw new BeditaException(__("Error removing permissions", true), "object id: $objectId");
+		}
 	}	
 
-	/**
-	 * Cancella tutti i permessi di un oggetto.
-	 *
-	 * @param integer $id		ID dell'oggetto trattato
-	 */
-	function removeAll($id) {
-		return $this->query("DELETE FROM permissions WHERE object_id = {$id}") ;
-	}	
 
 	/**
-	 * Aggiunge e/o modifica un permesso per gli oggetti di una ramificazione nell'albero.
+	 * Load all object permissions
 	 *
-	 * @param integer $id		ID dell'oggetto root
-	 * @param string $name		userid o nome gruppo
-	 * @param string $switch	user(/group
-	 * @param integer $flag		bit dei permessi da settare
+	 * @param integer $objectId
+	 * @return array (permissions)
 	 */
-	function replaceTree($id, $name, $switch, $flag) {
-		return $this->query("CALL replacePermissionTree({$id}, '{$name}', '{$switch}', {$flag})") ;
-	}	
-
-	/**
-	 * Cancella  un permesso per gli oggetti di una ramificazione nell'albero.
-	 *
-	 * @param integer $id		ID dell'oggetto root
-	 * @param string $name		userid o nome gruppo
-	 * @param string $switch	user(/group
-	 */
-	function removeTree($id, $name, $switch) {
-		return $this->query("CALL deletePermissionTree({$id}, '{$name}', '{$switch}')") ;
-	}	
-
-	/**
-	 * Cancella tutti i permessi per gli oggetti di una ramificazione nell'albero.
-	 *
-	 * @param integer $id		ID dell'oggetto root
-	 */
-	function removeAllTree($id) {
-		return $this->query("CALL deleteAllPermissionTree({$id})") ;
-	}	
-	
-	/**
-	 * Torna un intero superiore a 0 se l'utente ha i permessi richiesti
-	 * su un dato oggetto.
-	 *
-	 * @param string $userid
-	 * @param integer $object_id
-	 * @param integer $operations
-	 * @return integer
-	 */
-	function permsByUserid($userid, $object_id, $operations) {
-		$ret =  $this->query("SELECT prmsUserByID('{$userid}', {$object_id}, {$operations}) AS perms") ;
-		
-		return $ret[0][0]['perms'] ;
+	public function load($objectId) {
+		return $this->find('all', array("conditions" => array("object_id" => $objectId)));
 	}
 
-	/**
-	 * Torna un intero superiore a 0 se il gruppo ha i permessi richiesti
-	 * su un dato oggetto.
-	 *
-	 * @param string $groupid
-	 * @param integer $object_id
-	 * @param integer $operations
-	 * @return integer
-	 */
-	function permsByGroup($groupid, $object_id, $operations) {
-		$ret =  $this->query("SELECT prmsGroupByName('{$groupid}', {$object_id}, {$operations}) AS perms") ;
-		
-		return $ret[0][0]['perms'] ;
-	}
-
-	/**
-	 * Clona i permessi di un oggetto.
-	 *
-	 * @param integer $id		ID dell'oggetto da clonare
-	 * @param integer $idnew	ID dell'oggetto che assume i permessi
-	 */
-	function clonePermissions($id, $idnew) {
-		return $this->query("CALL clonePermission({$id}, '{$idnew}')") ;
-	}	
 }
 ?>

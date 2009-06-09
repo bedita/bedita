@@ -7,7 +7,7 @@ https://dev.channelweb.it/bedita/ticket/156
 https://dev.channelweb.it/bedita/ticket/157
 
 *}
-{*
+
 <script type="text/javascript">
 var urlLoad = "{$html->url('/admin/loadUsersGroupsAjax')}";
 var permissionLoaded = false;
@@ -132,4 +132,3 @@ function refreshRemovePermButton() {
 </table>
 </fieldset>
 
-*}

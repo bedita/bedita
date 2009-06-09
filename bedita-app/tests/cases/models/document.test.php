@@ -34,7 +34,7 @@ class DocumentTestCase extends BeditaTestCase {
 
  	var $uses		= array('BEObject','Document', 'SearchText', 'Tree') ;
     var $dataSource	= 'test' ;	
- 	var $components	= array('Transaction', 'Permission') ;
+ 	var $components	= array('Transaction') ;
 
  	protected $inserted = array();
  	

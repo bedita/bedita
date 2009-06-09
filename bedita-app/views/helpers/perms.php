@@ -49,11 +49,6 @@ class PermsHelper extends Helper {
 		return $this->checkPerm($user,$groups,$permissions,$conf->BEDITA_PERMS_MODIFY);
 	}
 
-	public function isDeletable($user,$groups,$permissions) {
-		$conf = Configure::getInstance();
-		return $this->checkPerm($user,$groups,$permissions,$conf->BEDITA_PERMS_DELETE);
-	}
-
 	private function checkPerm($u,$g_arr,$p_arr,$p) {
 		if(empty($p_arr))
 			return true;
