@@ -2,7 +2,7 @@
 
 <script type="text/javascript">
 <!--
-var urlAddObjToAss = "{$html->url('/areas/loadObjectToAssoc')}/{$object.id|default:0}/leafs/areas.inc.list_contents_for_section";
+var urlAddObjToAss = "{$html->url('/pages/loadObjectToAssoc')}/{$object.id|default:0}/leafs/areas.inc.list_contents_for_section";
 var priorityOrder = "{$priorityOrder|default:'asc'}";
 
 {literal}
@@ -148,7 +148,7 @@ $(document).ready(function() {
 
 
 	<br />
-	<input style="width:220px" type="button" rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/0/0/leafs" class="modalbutton" value=" {t}add contents{/t} " />
+	<input style="width:220px" type="button" rel="{$html->url('/pages/showObjects/')}{$object.id|default:0}/0/0/leafs" class="modalbutton" value=" {t}add contents{/t} " />
 	
 	<hr />
 </div>	

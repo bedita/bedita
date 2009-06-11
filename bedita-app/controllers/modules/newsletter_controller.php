@@ -589,7 +589,7 @@ class NewsletterController extends ModulesController {
 		
 			$this->Transaction->begin() ;
 			foreach ($this->params['form']['objects_selected'] as $id) {
-				
+				$this->checkObjectWritePermission($id);
 				$this->Card->id = $id;
 				if(!$this->Card->saveField('mail_status',$this->params['form']["newStatus"]))
 					throw new BeditaException(__("Error saving status for item: ", true) . $id);

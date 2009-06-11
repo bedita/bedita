@@ -63,7 +63,7 @@ $(document).ready(function() {
 	<table class="indexlist">
 	<tr>
 		<th colspan="5" style="padding:10px; text-align:center">
-			<input class="modalbutton" type="button" value="{t}insert more questions{/t}" rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/question/{$object_type_id}" />
+			<input class="modalbutton" type="button" value="{t}insert more questions{/t}" rel="{$html->url('/pages/showObjects/')}{$object.id|default:0}/question/{$object_type_id}" />
 		</th>
 	</tr>
 	</table>

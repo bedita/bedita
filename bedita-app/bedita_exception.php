@@ -64,6 +64,25 @@ class BeditaException extends Exception
 }
 
 /**
+ * 
+ */
+class BeditaAjaxException extends BeditaException
+{
+	private $outputType = "html";
+	
+	public function __construct($message = NULL, $details = NULL, $res  = AppController::ERROR, $code = 0) {
+		if (!empty($details["output"])) {
+			$this->outputType = $details["output"];
+		}
+		parent::__construct($message,$details,$res,$code);
+	}
+	
+	public function getOutputType() {
+		return $this->outputType;
+	}
+}
+
+/**
  * 		BEditaIOException		// Generic I/O Error
  */
 class BEditaIOException extends BeditaException

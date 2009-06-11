@@ -76,7 +76,7 @@ class DocumentsController extends ModulesController {
 							), 
 			"save"	=> 	array(
 							"OK"	=> "/documents/view/".@$this->Document->id,
-							"ERROR"	=> "/documents/view/".@$this->Document->id 
+							"ERROR"	=> $this->referer()  
 							), 
 			"delete" =>	array(
 							"OK"	=> "/documents",

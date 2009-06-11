@@ -126,7 +126,7 @@ tinyMCE.init({
 		<td nowrap>
 			{assign var=rel value='author'}
 			<input type="button" class="modalbutton" title="{$rel|upper} : {t}select from author repository{/t}"
-				rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/{$rel}/"  
+				rel="{$html->url('/pages/showObjects/')}{$object.id|default:0}/{$rel}/"  
 				value="{t}get from list{/t}" />
 			<input type="button" title="{t}add item{/t}" style="width:25px" value="+" />	
 		</td>

@@ -7,7 +7,7 @@ if (typeof urlAddObjToAss{$relation|default:'norelation'|capitalize} == "string"
 } else if (typeof urlAddObjToAss == "string") { 
 	var urlToAdd = urlAddObjToAss;
 } else {
-	var urlToAdd = "{$html->url('/areas/loadObjectToAssoc')}";
+	var urlToAdd = "{$html->url('/pages/loadObjectToAssoc')}";
 }
 
 var relType = "{$relation|default:""}";
@@ -138,7 +138,7 @@ padding:5px 0px 5px 30px; margin-bottom:1px; font-weight:bold; cursor:pointer;">
 	<div id="loadObjInModal" class="loader"><span></span></div>
 	
 	<div id="assocObjContainer">
-		{include file="inc/list_contents_to_assoc.tpl"}
+		{include file="list_contents_to_assoc.tpl"}
 	</div>
 
 	<div class="modalcommands">

@@ -76,6 +76,19 @@ class AppError extends ErrorHandler {
 		echo $this->controller->output;		
 	}
 
+	public function handleAjaxException(array $messages) {
+		$this->controller->handleError($messages['details'], $messages['msg'], $this->errorTrace);
+		if (!empty($messages['output'])) {
+			if ($messages['output'] == "json") {
+				header("Content-Type: application/json");
+				$this->controller->set("json", true);
+			}
+		}
+		App::import('View', "Smarty");
+		$viewObj = new SmartyView($this->controller);
+		echo $viewObj->render(null, "ajax", VIEWS."errors/error_ajax.tpl");
+	}
+	
 	public function handleExceptionFrontend(array $messages) {
 		$current = AppController::currentController();
 		if(isset($current)) {

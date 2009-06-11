@@ -9,7 +9,7 @@ https://dev.channelweb.it/bedita/ticket/157
 *}
 
 <script type="text/javascript">
-var urlLoad = "{$html->url('/admin/loadUsersGroupsAjax')}";
+var urlLoad = "{$html->url('/pages/loadUsersGroupsAjax')}";
 var permissionLoaded = false;
 var permissions = new Array();
 permissions[{$conf->OBJ_PERMS_READ_FRONT}] = "{t}frontend access{/t}";
@@ -20,14 +20,14 @@ $(document).ready(function(){
 	
 	$("#permissionsTab").click(function() {
 		if (!permissionLoaded) {
-			$("#loaderug").show();
-			$("#inputAddPermGroup").load(urlLoad, {itype:'group'}, function() {
-				$("#loaderug").hide();
-				permissionLoaded = true;
-			});
+			loadUserGroupAjax(urlLoad);
 		}
 	});
 
+	if ($("#permissionsTab h2").attr("class") == "open documents") {
+		loadUserGroupAjax(urlLoad);
+	}
+	
 	$("#cmdAddGroupPerm").click(function() {
 		var name = $("#inputAddPermGroup").val();
 		var type = "group";
@@ -60,6 +60,14 @@ $(document).ready(function(){
 function refreshRemovePermButton() {
 	$("#frmCustomPermissions").find("input[type='button']").click(function() {
 		$(this).parents("tr").remove();
+	});
+}
+
+function loadUserGroupAjax(url) {
+	$("#loaderug").show();
+	$("#inputAddPermGroup").load(url, {itype:'group'}, function() {
+		$("#loaderug").hide();
+		permissionLoaded = true;
 	});
 }
 
@@ -116,8 +124,7 @@ function refreshRemovePermButton() {
 
 <tr id="addPermGroupTR">
 	<td style="white-space:nowrap">
-		<select id="inputAddPermGroup" name="name">
-		</select>
+		<select id="inputAddPermGroup" name="name"></select>
 	</td>
 
 	<td>

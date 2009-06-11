@@ -34,7 +34,7 @@ App::import('Core', 'l10n');
 class AppController extends Controller
 {
 	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "Msg", "MediaProvider", "Perms", 'BeEmbedMedia', 'BeThumb');
-	var $components = array('BeAuth', 'BeTree', 'BePermissionModule', 'BeCustomProperty', 'Transaction', 'Cookie', 'Session');
+	var $components = array('BeAuth', 'BeTree', 'BePermissionModule', 'BeCustomProperty', 'Transaction', 'Cookie', 'Session', 'RequestHandler');
 	var $uses = array('EventLog') ;
 	
 	protected $moduleName = NULL;
@@ -68,7 +68,11 @@ class AppController extends Controller
 	
 	public static function handleExceptions(BeditaException $ex) {
 		include_once (APP . 'app_error.php');
-		return new AppError('handleException', array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
+		if ($ex instanceof BeditaAjaxException) {
+			return new AppError("handleAjaxException", array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
+				'result' => $ex->result, 'output' => $ex->getOutputType()), $ex->errorTrace());
+		} 
+		return new AppError("handleException", array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
 				'result' => $ex->result), $ex->errorTrace());
 	}
 
@@ -303,9 +307,12 @@ class AppController extends Controller
 			}
 			$this->set("module_modify",(isset($this->moduleName) && ($this->modulePerms & BEDITA_PERMS_MODIFY)) ? "1" : "0");
 			if(!isset($this->modulePerms) || !($this->modulePerms & BEDITA_PERMS_READ)) {
-					$logMsg = "Module [". $this->moduleName.  "] access not authorized";
-					$this->handleError($logMsg, __("Module access not authorized",true), $logMsg);
-					$this->redirect("/");
+				if ($this->RequestHandler->isAjax()) {
+					throw new BeditaAjaxException(__("You haven't grants for this operation", true));
+				}
+				$logMsg = "Module [". $this->moduleName.  "] access not authorized";
+				$this->handleError($logMsg, __("Module access not authorized",true), $logMsg);
+				$this->redirect("/");
 			}
 			$this->set('moduleName', $this->moduleName);
 			if (!empty($this->moduleName))
@@ -313,8 +320,6 @@ class AppController extends Controller
 				
 		
 		}
-		
-		
 		
 		$_loginRunning = false ;
 
@@ -461,7 +466,7 @@ class AppController extends Controller
 
 	protected function checkObjectWritePermission($objectId) {
 		$permission = ClassRegistry::init('Permission');
-		if(!$permission->isWritable($this->data['id'], $this->BeAuth->user))
+		if(!$permission->isWritable($objectId, $this->BeAuth->user))
 			throw new BeditaException(__("No write permissions on object", true));
 	}
 	
@@ -623,8 +628,8 @@ abstract class ModulesController extends AppController {
 				$modelName = "BEObject";
 			
 			foreach ($objectsToModify as $id) {
+				$this->checkObjectWritePermission($id);
 				$model = $this->loadModelByType($modelName);
-				
 				if ($beObject->isFixed($id)) {
 					throw new BeditaException(__("Error: changing status to a fixed object!", true));
 				}

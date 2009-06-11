@@ -1,7 +1,7 @@
 {$javascript->link("jquery/jquery.disable.text.select", true)}
 
 <script type="text/javascript">
-//var urlAddObjToAss= "{$html->url('/areas/loadObjectToAssoc/')}{$object.id}";
+//var urlAddObjToAss= "{$html->url('/pages/loadObjectToAssoc/')}{$object.id}";
 <!--
 {literal}
 
@@ -98,7 +98,7 @@ $(function() {
 		</table>
 		
 		<input type="button" class="modalbutton" title="{t}{$rel}{/t} : {t}select an item to associate{/t}"
-		rel="{$html->url('/areas/showObjects/')}{$object.id|default:0}/{$rel}/{$object_type_id}" style="width:200px" 
+		rel="{$html->url('/pages/showObjects/')}{$object.id|default:0}/{$rel}/{$object_type_id}" style="width:200px" 
 		value="  {t}connect new items{/t}  " />
 		
 		{*
