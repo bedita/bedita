@@ -221,6 +221,81 @@ class NewsletterShell extends Shell {
 		fclose($handle_error_2);
 	}
 
+	function createFilesListsFromPhplist() {
+		$phplist_to_card = array(
+			'Last modified' => 'modified',
+			'Lastmodified' => 'modified',
+			'Additional data' => 'note',
+			'Additionaldata' => 'note',
+			'Name' => 'name',
+			'Surname' => 'surname',
+			'Phone' => 'phone',
+			'Address' => 'street_address',
+			'CAP' => 'zipcode',
+			'City' => 'city',
+			'State' => 'state',
+			'Country' => 'country',
+			'Your birthday is' => 'birthdate',
+			'Yourbirthdayis' => 'birthdate',
+			'Gender' => 'gender',
+			'Country' => 'country',
+			'List Membership' => 'list_name',
+			'ListMembership' => 'list_name'
+		);
+		$separator = (!empty($this->params['sep'])) ? $this->params['sep'] : "\t";
+
+		$lines = @file($this->params['f']);
+		if(!$lines) {
+			$this->out("[" . date('Y-m-d H:i:s') . "] INFO: File " . $this->params['f'] . " not found: operation aborted");
+			return false;
+		}
+		$this->out("[" . date('Y-m-d H:i:s') . "] INFO: File " . $this->params['f'] . " found OK");
+
+		$data = array();
+		$content = array();
+		$files = array(); // 'lista' => 'nome file'
+		$handle = array();
+		$code_entities_match = array(' ','--','&quot;','!','@','#','$','%','^','&','*','(',')','_','+','{','}','|',':','"','<','>','?','[',']','\\',';',"'",',','.','/','*','+','~','`','=');
+		$code_entities_replace = array('','','','','','','','','','','','','','','','','','','','.','','','','','','');
+		$this->out(".............................................");
+		foreach ($lines as $line_num => $line) {
+			if($line_num==0) {
+				$attributes = explode($separator,$line);
+				foreach($attributes as $k => $v) {
+					$attributes[$k] = preg_replace('/\s*/m','',$v);
+				}
+			} else {
+				if(($line_num>1) && ($line_num%100 == 1)) { // every 100 lines, print a summary...
+					$this->out("[" . date('Y-m-d H:i:s') . "] INFO: " . ($line_num-1) . " lines processed: ");
+				}
+				$content[$line_num] = explode($separator,$line);
+				foreach($content[$line_num] as $key => $value) {
+					if (!empty($phplist_to_card[$attributes[$key]])) {
+						$data[$phplist_to_card[$attributes[$key]]] = trim($value);
+					}
+					if(!empty($data['list_name'])) {
+						if(!array_key_exists($data['list_name'],$files)) {
+							$files[$data['list_name']] = preg_replace('/\s*/m','',$data['list_name']);
+							$files[$data['list_name']] = str_replace($code_entities_match, $code_entities_replace, $files[$data['list_name']]) . ".csv"; 
+							if(file_exists($files[$data['list_name']])) {
+								unlink($files[$data['list_name']]);
+							}
+							$handle[$data['list_name']] = fopen($files[$data['list_name']],"a+");
+						}
+						// write row on file
+						fwrite($handle[$data['list_name']],$line . "\n");
+					}
+				}
+			}
+		}
+		foreach($files as $l => $f) {
+			fclose($handle[$l]);
+			$this->out("[" . date('Y-m-d H:i:s') . "] INFO: created file '$f' for list '$l'");
+		}
+		$this->out(".............................................");
+		$this->out("[" . date('Y-m-d H:i:s') . "] INFO: end");
+	}
+
 	function help() {
 		$this->out('Available functions:');
 		$this->out('1. importUsersNewsletterFromPhplist: import users from file csv to cards, associating them to a newsletter mailgroup');
@@ -229,7 +304,7 @@ class NewsletterShell extends Shell {
 		$this->out('   Usage 2 (verbose log): importUsersNewsletterFromPhplist -f <users-file> -sep <separator> -mailgroup <id mailgroup> -v');
 		$this->out('   Usage 3 (force import): importUsersNewsletterFromPhplist -f <users-file> -sep <separator> -mailgroup <id mailgroup> -force');
 		$this->out(' ');
-		$this->out(' ');
+		$this->out('2. createFilesListsFromPhplist: create files for each list found in the phplist export file ');
 	}
 }
 
