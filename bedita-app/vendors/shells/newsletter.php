@@ -35,8 +35,8 @@ class NewsletterShell extends Shell {
 	function importUsersNewsletterFromPhplist() {
 		$phplist_to_card = array(
 			'Email' => 'email',
-			'Last modified' => 'modified',
-			'Additional data' => 'note',
+			'Lastmodified' => 'modified',
+			'Additionaldata' => 'note',
 			'Name' => 'name',
 			'Surname' => 'surname',
 			'Phone' => 'phone',
@@ -45,7 +45,7 @@ class NewsletterShell extends Shell {
 			'City' => 'city',
 			'State' => 'state',
 			'Country' => 'country',
-			'Your birthday is' => 'birthdate',
+			'Yourbirthdayis' => 'birthdate',
 			'Gender' => 'gender',
 			'Country' => 'country'
 		);
@@ -96,6 +96,9 @@ class NewsletterShell extends Shell {
 			fflush($handle_error);
 			if($line_num==0) {
 				$attributes = explode($separator,$line);
+				foreach($attributes as $k => $v) {
+					$attributes[$k] = preg_replace('/\s*/m','',$v);
+				}
 			} else {
 				if(($line_num>1) && ($line_num%100 == 1)) { // every 100 lines, print a summary...
 					$this->out("[" . date('Y-m-d H:i:s') . "] INFO: " .
@@ -266,25 +269,26 @@ class NewsletterShell extends Shell {
 				}
 			} else {
 				if(($line_num>1) && ($line_num%100 == 1)) { // every 100 lines, print a summary...
-					$this->out("[" . date('Y-m-d H:i:s') . "] INFO: " . ($line_num-1) . " lines processed: ");
+					$this->out("[" . date('Y-m-d H:i:s') . "] INFO: " . ($line_num-1) . " lines processed");
 				}
 				$content[$line_num] = explode($separator,$line);
 				foreach($content[$line_num] as $key => $value) {
 					if (!empty($phplist_to_card[$attributes[$key]])) {
 						$data[$phplist_to_card[$attributes[$key]]] = trim($value);
 					}
-					if(!empty($data['list_name'])) {
-						if(!array_key_exists($data['list_name'],$files)) {
-							$files[$data['list_name']] = preg_replace('/\s*/m','',$data['list_name']);
-							$files[$data['list_name']] = str_replace($code_entities_match, $code_entities_replace, $files[$data['list_name']]) . ".csv"; 
-							if(file_exists($files[$data['list_name']])) {
-								unlink($files[$data['list_name']]);
-							}
-							$handle[$data['list_name']] = fopen($files[$data['list_name']],"a+");
+				}
+				if(!empty($data['list_name'])) {
+					if(!array_key_exists($data['list_name'],$files)) {
+						$files[$data['list_name']] = preg_replace('/\s*/m','',$data['list_name']);
+						$files[$data['list_name']] = str_replace($code_entities_match, $code_entities_replace, $files[$data['list_name']]) . ".csv"; 
+						if(file_exists($files[$data['list_name']])) {
+							unlink($files[$data['list_name']]);
 						}
-						// write row on file
-						fwrite($handle[$data['list_name']],$line . "\n");
+						$handle[$data['list_name']] = fopen($files[$data['list_name']],"a+");
+						fwrite($handle[$data['list_name']],$lines[0]);
 					}
+					// write row on file
+					fwrite($handle[$data['list_name']],$line);
 				}
 			}
 		}
