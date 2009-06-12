@@ -226,9 +226,7 @@ class NewsletterShell extends Shell {
 
 	function createFilesListsFromPhplist() {
 		$phplist_to_card = array(
-			'Last modified' => 'modified',
 			'Lastmodified' => 'modified',
-			'Additional data' => 'note',
 			'Additionaldata' => 'note',
 			'Name' => 'name',
 			'Surname' => 'surname',
@@ -238,11 +236,9 @@ class NewsletterShell extends Shell {
 			'City' => 'city',
 			'State' => 'state',
 			'Country' => 'country',
-			'Your birthday is' => 'birthdate',
 			'Yourbirthdayis' => 'birthdate',
 			'Gender' => 'gender',
 			'Country' => 'country',
-			'List Membership' => 'list_name',
 			'ListMembership' => 'list_name'
 		);
 		$separator = (!empty($this->params['sep'])) ? $this->params['sep'] : "\t";
