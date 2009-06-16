@@ -26,6 +26,8 @@ App::import('vendor', "splitter_sql");
 App::import('vendor', "Archive_Tar", true, array(), "Tar.php");
 App::import('Core', 'Controller');
 App::import('Controller', 'App'); // BeditaException
+require_once 'bedita_base.php';
+
 /**
  * 
  * @link			http://www.bedita.com
@@ -190,7 +192,7 @@ class DbDump {
 	
 }
 
-class BeditaShell extends Shell {
+class BeditaShell extends BeditaBaseShell {
 
 	const DEFAULT_TAR_FILE 	= 'bedita-export.tar' ;
 	const DEFAULT_ARCHIVE_FILE 	= 'bedita-export.tar.gz' ;
@@ -515,67 +517,6 @@ class BeditaShell extends Shell {
         $this->out("$expFile created");
     }
 
-	private function check_sys_get_temp_dir() {
-		if ( !function_exists('sys_get_temp_dir') ) {
-		    // Based on http://www.phpit.net/
-		    // article/creating-zip-tar-archives-dynamically-php/2/
-		    function sys_get_temp_dir()
-		    {
-		        // Try to get from environment variable
-		        if ( !empty($_ENV['TMP']) )
-		        {
-		            return realpath( $_ENV['TMP'] );
-		        }
-		        else if ( !empty($_ENV['TMPDIR']) )
-		        {
-		            return realpath( $_ENV['TMPDIR'] );
-		        }
-		        else if ( !empty($_ENV['TEMP']) )
-		        {
-		            return realpath( $_ENV['TEMP'] );
-		        }
-		
-		        // Detect by creating a temporary file
-		        else
-		        {
-		            // Try to use system's temporary directory
-		            // as random name shouldn't exist
-		            $temp_file = tempnam( md5(uniqid(rand(), TRUE)), '' );
-		            if ( $temp_file )
-		            {
-		                $temp_dir = realpath( dirname($temp_file) );
-		                unlink( $temp_file );
-		                return $temp_dir;
-		            }
-		            else
-		            {
-		                return FALSE;
-		            }
-		        }
-		    }
-		}
-	}
-
-    private function setupTempDir() {
-    	$basePath = sys_get_temp_dir().DS."bedita-export-tmp".DS;
-		if(!is_dir($basePath)) {
-			if(!mkdir($basePath))
-				throw new Exception("Error creating temp dir: ".$basePath);
-		} else {
-    		$this->__clean($basePath);
-		}
-    	return $basePath;
-    }
-
-    private function cleanTempDir() {
-    	$exportPath = sys_get_temp_dir().DS."bedita-export-tmp".DS;
-    	$folder= new Folder();
-    	if(!$folder->delete($exportPath)) {
-			throw new Exception("Error deleting dir $exportPath");
-        }
-    }
-	
-    
     private function extractMediaZip($zipFile) {
 		$zip = new ZipArchive;
 		if ($zip->open($zipFile) === TRUE) {
@@ -595,11 +536,6 @@ class BeditaShell extends Shell {
     	}
     }
     
-    function test() {
-		pr($this->params);
-		pr($this->args);
-    }
-
 	public function checkMedia() {
 
 		$stream = new Stream();
@@ -644,27 +580,6 @@ class BeditaShell extends Shell {
         }
 	}    
     
-    private function __clean($path) {
-        
-        $folder=& new Folder($path);
-        $list = $folder->ls();
-
-        foreach ($list[0] as $d) {
-        	if($d[0] != '.') { // don't delete hidden dirs (.svn,...)
-	        	if(!$folder->delete($folder->path.DS.$d)) {
-	                throw new Exception("Error deleting dir $d");
-	            }
-        	}
-        }
-        foreach ($list[1] as $f) {
-        	$file = new File($folder->path.DS.$f);
-        	if(!$file->delete()) {
-                throw new Exception("Error deleting file $f");
-            }
-        }
-        return ;
-    }    
-        
     function cleanup() {
 		$basePath = TMP;
     	if (isset($this->params['frontend'])) {
@@ -760,109 +675,6 @@ class BeditaShell extends Shell {
 		
     }
 
-    public function createRelease() {
-    	$scr = $this->params['script'];
-		if (empty($scr)) {
-	        $this->out("script file is mandatory, use -script ");
-			return;
-		}
-		$this->out("Using script: $scr");
-		include_once($scr);
-    	if(empty($rel) || !is_array($rel)) {
-	        $this->out("no parameters in script $scr");
-			return;
-    	}
-    	$this->check_sys_get_temp_dir();
-		$tmpBasePath = $this->setupTempDir();
-       	$this->out("Using temp dir: $tmpBasePath");
-		$exportPath = $tmpBasePath . "bedita";
-		
-		
-    	$svnExport = "svn export --non-interactive --username ". 
-    			$rel['user'] . " --password " . $rel['password'] . 
-    			" " . $rel['url'] . " " . $exportPath;
-		$this->out("Svn command: $svnExport");
-    	$res = system($svnExport);
-		$this->out("Result: $res");
-		$s = split(" ", $res);
-		$svnRelease = $s[count($s)-1];
-		$this->out("Svn release: $svnRelease");
-		
-		foreach ($rel["removeFiles"] as $f) {
-			$fp = $exportPath.DS.$f;
-			$this->out("remove: $fp");
-			if(!unlink($fp)) {
-	        	throw new Exception("Error deleting file " . $fp);
-			}
-		}
-
-		$folder= new Folder($exportPath);
-		foreach ($rel["removeDirs"] as $d) {
-			$p = $exportPath.DS.$d;
-			$this->out("remove: $p");
-			if(!$folder->delete($p)) {
-	        	throw new Exception("Error deleting dir " . $p);
-			}
-		}
-		
-		foreach ($rel["createDirs"] as $d) {
-			$p = $exportPath.DS.$d;
-			$this->out("create dirs: " . $p);
-			if (!$folder->create($p)) {
-				throw new Exception("Error creating dir " . $p);
-			}
-			$this->out("create empty file in: " . $p);
-			if (!$fileObj = new File($p . DS . "empty", true)) {
-				throw new Exception("Error creating empty file in " . $p);
-			}
-		}
-		
-		foreach ($rel["renameFiles"] as $from => $to) {
-			$p1 = $exportPath.DS.$from;
-			$p2 = $exportPath.DS.$to;
-			$this->out("rename: $p1 => $p2");
-			if(!rename($p1, $p2)) {
-	        	throw new Exception("Error renaming " . $p1. " to " .$p2);
-			};
-		}
-		
-    	foreach ($rel["createFiles"] as $f) {
-			$p = $exportPath.DS.$f;
-			$this->out("create file: " . $p);
-			if (!$fileObj = new File($p, true)) {
-				throw new Exception("Error creating empty file " . $p);
-			}
-		}
-		
-		// create version file
-		$versionFileContent="<?php\n\$config['Bedita.version'] = '". $rel["releaseBaseName"]. $svnRelease . "';\n?>";
-		$handle = fopen($exportPath.DS.$rel["versionFileName"], 'w');
-		fwrite($handle, $versionFileContent);
-		fclose($handle);
-		
-		$releaseFile = $rel["releaseDir"]. DS . $rel["releaseBaseName"]. $svnRelease . "tar";
-		
-    	if(file_exists($releaseFile)) {
-			$res = $this->in("$releaseFile exists, overwrite? [y/n]");
-			if($res == "y") {
-				if(!unlink($releaseFile)){
-					throw new Exception("Error deleting $releaseFile");
-				}
-			} else {
-				$this->out("Export aborted. Bye.");
-				return;
-			}
-		}
-		$this->out("Creating: $releaseFile");
-		
-		$command = "cd " . $tmpBasePath . " && " . "tar cfp " . $releaseFile . " bedita";
-       	$this->out("Executing shell command: " . $command);
-       	$this->out(shell_exec($command));
-       	
-       	$this->cleanTempDir();
-        $this->out("$releaseFile created");
-    }
-    
 	private function checkAppDirPerms($dirPath) {
 		if (is_dir($dirPath)) {
 			$this->out("$dirPath - perms: ".sprintf("%o",(fileperms($dirPath) & 511)));
@@ -921,25 +733,7 @@ class BeditaShell extends Shell {
         }
     }
     
-    public function updateVersion() {
-    	
-    	chdir(APP);
-    	exec("svnversion", $res, $retval);
-    	if($retval !== 0) {
-			$this->out("Error executing 'svnversion', bye.");
-			return;
-		}
-		$s = split(":", $res[0]);
-		$svnRevision = $s[count($s)-1];
-		$versionFile = APP . 'config' . DS . 'bedita.version.php';
-		$beditaVersion = "3.0.alpha1.". $svnRevision;
-		$handle = fopen($versionFile, 'w');
-		fwrite($handle, "<?php\n\$config['Bedita.version'] = '".$beditaVersion. "';\n?>");
-		fclose($handle);
-		$this->out("Updated to: $beditaVersion");
-		
-    }
-
+    
     public function modules() {
 		if(!array_key_exists("add", $this->params) && 
 			!array_key_exists("del", $this->params)) {
@@ -1110,17 +904,11 @@ class BeditaShell extends Shell {
         $this->out(' ');
         $this->out("    -frontend \t check files in <frontend path> [use frontend /app path]");
         $this->out(' ');
-        $this->out('7. createRelease: creates bedita release from svn');
-  		$this->out(' ');
-  		$this->out('   Usage: createRelease -script <release-config-script.php>');
-        $this->out(' ');
-        $this->out('8. updateVersion: updates version number from svn local info [if present]');
-  		$this->out(' ');
-        $this->out('9. modules: simple operations on BEdita modules list/add/del');
+        $this->out('7. modules: simple operations on BEdita modules list/add/del');
   		$this->out(' ');
   		$this->out('   Usage: modules [-list] [-add <module-name>] [-del <module-name>]');
         $this->out(' ');
-        $this->out('10. mimeTypes: update config/mime.types.php from standard mime.types file');
+        $this->out('8. mimeTypes: update config/mime.types.php from standard mime.types file');
   		$this->out(' ');
   		$this->out('   Usage: mimeTypes -f <mime.types-file>');
         $this->out(' ');
