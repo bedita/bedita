@@ -111,6 +111,8 @@ class MultimediaController extends ModulesController {
 			$imageURL 	= $this->BeFileHandler->url($id) ;
 			
 			$this->set('objectProperty', $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $model->name . ".id")));
+		} else {
+			Configure::write("defaultStatus", "on"); // set default ON for new objects
 		}
 		// data for template
 		$this->set('object',	@$obj);

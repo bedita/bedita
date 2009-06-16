@@ -1,18 +1,20 @@
 
-<div class="tab"><h2>{t}Embedded in{/t}</h2></div>
+<div class="tab"><h2>{t}Referenced in{/t}</h2></div>
 <fieldset id="relationships">
-	{if !empty($object.relations.attach)}
-		{foreach from=$object.relations.attach item="o"}
-		<ul class="bordered">
-		
-			<li><span title="{$o.ObjectType.name}" class="listrecent {$o.ObjectType.module}">&nbsp;</span>
-			<a href="{$html->url('/')}{$o.ObjectType.module}/view/{$o.id}">{$o.title|default:'<i>[no title]</i>'}</a></li>
-		
-		</ul>
-		{/foreach}
-
+	{if empty($object.relations)}
+		{t}No references{/t}
 	{else}
-		{t}Embedded in no objects{/t}
+		{foreach from=$object.relations key="name" item="related"}
+		<h3>{$name}:</h3>
+			{foreach from=$related item="o"}
+			<ul class="bordered">
+			
+				<li><span title="{$o.ObjectType.name}" class="listrecent {$o.ObjectType.module}">&nbsp;</span>
+				<a href="{$html->url('/')}{$o.ObjectType.module}/view/{$o.id}">{$o.title|default:'<i>[no title]</i>'}</a></li>
+			
+			</ul>
+			{/foreach}
+		{/foreach}
 	{/if}
 
 
