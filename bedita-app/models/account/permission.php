@@ -93,23 +93,56 @@ class Permission extends BEAppModel
 	}	
 	
 	/**
-	 * Is the current object in POST writable by user??
+	 * Is object ($objectId) writable by user?
 	 *
 	 * @param integer $objectId
-	 * @param array $userData      user data, like array("id" => .., "userid" => ..., "groups" => array("administrator", "frontend",...))
-	 * @return boolean
+	 * @param array $userData user data, like array("id" => .., "userid" => ..., "groups" => array("administrator", "frontend",...))
+	 * @param $perms permission array defined like in checkPermissionByUser() call
+	 * 				 if it's defined use this else get permission by $objectId
+	 * @return boolean, true if it's writable
 	 */
-	public function isWritable($objectId, array &$userData) {
+	public function isWritable($objectId, array &$userData, $perms=array()) {
 		// administrator can always write....
 		if(!empty($userData['groups']) && in_array("administrator",$userData['groups'])) {
 			return true;		
 		}
-		$perms = $this->find('all', array("conditions" => 
-			array("object_id" => $objectId, "flag" => OBJ_PERMS_WRITE)));
+		if (empty($perms)) {
+			$perms = $this->isPermissionSetted($objectId, OBJ_PERMS_WRITE);
+		}
+		return $this->checkPermissionByUser($perms, $userData);
+	}
+	
+	/**
+	 * Is object ($objectId) accessible by user in frontend?
+	 * 
+	 * @param $objectId
+	 * @param $userData  user data, like array("id" => .., "userid" => ..., "groups" => array("administrator", "frontend",...))
+	 * @param $perms permission array defined like in checkPermissionByUser() call
+	 * 				 if it's defined use this else get permission by $objectId
+	 * @return boolean, true if it's accessible
+	 */
+	public function isAccessibleByFrontend($objectId, array &$userData, $perms=array()) {
+		if (empty($perms)) {
+			$perms = $this->isPermissionSetted($objectId, OBJ_PERMS_READ_FRONT);
+		}
+		return $this->checkPermissionByUser($perms, $userData);
+	}
+	
+	/**
+	 * check if user or user groups are in $perms array
+	 * 
+	 * @param $perms permission array like return from find("all)
+	 * 						array(
+	 * 							0 => array("Permission" => array(...), "User" => array(...), "Group" => array(...)),
+	 * 							1 => ....
+	 * 						)
+	 * @param $userData user data, like array("id" => .., "userid" => ..., "groups" => array("administrator", "frontend",...))
+	 * @return boolean (true if user have permission false otherwise)
+	 */
+	public function checkPermissionByUser($perms=array(), array &$userData) {
 		if(empty($perms))
 			return true;
 
-		$res = false;
 		foreach ($perms as $p) {
 			if(!empty($p['User']['id']) && $userData['id'] == $p['User']['id']) {
 				return true;
@@ -118,7 +151,25 @@ class Permission extends BEAppModel
 				return true;
 			}
 		}
-		return $res;
+		return false;
+	}
+	
+	/**
+	 * check if a permission over an object is setted 
+	 * 
+	 * @param $objectId
+	 * @param $flag permission
+	 * @return array of perms with users and groups or false if no permission is setted
+	 */
+	public function isPermissionSetted($objectId, $flag) {
+		$result = $this->find('all', array(
+				"conditions" => array("object_id" => $objectId, "flag" => $flag)
+			)
+		);
+
+		$ret = (!empty($result))? $result : false;
+		
+		return $ret;
 	}
 	
 	/**

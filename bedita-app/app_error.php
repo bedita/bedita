@@ -102,6 +102,17 @@ class AppError extends ErrorHandler {
 		echo $viewObj->render(null, "error", VIEWS."errors/error404.tpl");				
 	}
 	
+	public function handleExceptionFrontAccess(array $messages) {
+		$currentController = AppController::currentController();
+		$currentController->handleError($messages['details'], $messages['msg'], $this->errorTrace);
+		if ($messages["errorType"] == "unlogged") {
+			$currentController->Session->write("frontendLoginForm", true);
+			echo $currentController->render("login");
+		} elseif ($messages["errorType"] == "unauthorized") {
+			echo $currentController->render("unauthorized");
+		}
+	}
+	
 	private function sendMail($mailMsg) {
 		$mailSupport = Configure::read('mailSupport');
 		if(!empty($mailSupport)) {

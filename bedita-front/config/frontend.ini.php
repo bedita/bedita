@@ -20,6 +20,7 @@ $config['draft']            = false;
 $config['filterPublicationDate'] = true;
 $config['frontendAreaId'] 	= 1;
 $config['frontendUser']     = array ("userid" => null);
+$config['authorizedGroups'] = array();
 $config['frontendLang']     = 'ita';
 $config['frontendLangs']    = array (
 									"ita"	=> "italiano",

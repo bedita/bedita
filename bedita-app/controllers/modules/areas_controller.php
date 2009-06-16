@@ -125,15 +125,19 @@ class AreasController extends ModulesController {
 		if(empty($this->data))
 			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
-//		// Verify permits for the object
-//		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-//			throw new BeditaException(__("Error modify permissions", true));
+		// Verify permissions for the object
+		if(!$new) { 
+			$this->checkObjectWritePermission($this->data['id']);
+		}
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave() ;
 		// Format translations for fields
 
 		if(empty($this->data["syndicate"]))
 			$this->data["syndicate"] = 'off';
+			
+		if(!isset($this->data['Permissions'])) 
+			$this->data['Permissions'] = array() ;
 		
 		$this->Transaction->begin() ;
 		// Save data
@@ -162,16 +166,9 @@ class AreasController extends ModulesController {
 				if (!$this->Tree->setPriority($r['id'], $r['priority'], $id)) {
 					throw new BeditaException( __("Error during reorder children priority", true), $r["id"]);
 				}
-				
 			}
 		}
-				
-		// update permits
-		$perms = isset($this->data["Permissions"])?$this->data["Permissions"]:array();
-//		if(!$this->Permission->saveFromPOST($id, $perms,
-//			(empty($this->data['recursiveApplyPermissions'])?false:true), 'area'))  {
-//			throw new BeditaException( __("Error saving permissions", true));
-//		}
+		
 		$this->Transaction->commit() ;
 		$this->userInfoMessage(__("Area saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("area ". $this->data["title"]."saved");
@@ -188,12 +185,14 @@ class AreasController extends ModulesController {
 			throw new BeditaException(__("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
 		// Verify permissions for the object
-//		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-//				throw new BeditaException( __("Error modifying permissions", true));
+		if(!$new) { 
+			$this->checkObjectWritePermission($this->data['id']);
+		}
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave() ;
 		
-		$this->Transaction->begin() ;
+		if(!isset($this->data['Permissions'])) 
+			$this->data['Permissions'] = array() ;
 
 		if(empty($this->data["syndicate"]))
 			$this->data["syndicate"] = 'off';
@@ -201,6 +200,8 @@ class AreasController extends ModulesController {
 		if(empty($this->data["parent_id"]))
 			throw new BeditaException( __("Missing parent", true));
 		
+		$this->Transaction->begin() ;
+			
 		if(!$this->Section->save($this->data))
 			throw new BeditaException( __("Error saving section", true), $this->Section->validationErrors );
 		
@@ -234,17 +235,9 @@ class AreasController extends ModulesController {
 				if (!$this->Tree->setPriority($r['id'], $r['priority'], $id)) {
 					throw new BeditaException( __("Error during reorder children priority", true), $r["id"]);
 				}
-				
 			}
-			
-			
 		}
-		// update permits
-		$perms = isset($this->data["Permissions"]) ? $this->data["Permissions"] : array();
-//		if(!$this->Permission->saveFromPOST($id, $perms,	 
-//			(empty($this->data['recursiveApplyPermissions'])?false:true), 'section')) {
-//				throw new BeditaException( __("Error saving permissions", true));
-//		}
+		
 		$this->Transaction->commit() ;
 		$this->userInfoMessage(__("Section saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("section [". $this->data["title"]."] saved");

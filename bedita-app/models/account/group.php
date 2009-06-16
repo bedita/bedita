@@ -44,6 +44,15 @@ class Group extends BEAppModel
 		$this->bindModel( array("hasAndBelongsToMany" => array("User")) );
 		return true;
 	}
+	
+	function getList($conditions=array()) {
+		$groups = $this->find("list", array(
+				"conditions" => $conditions,
+				"fields" => "name"
+			)
+		);
+		return $groups;
+	}
 
 }
 ?>

@@ -158,4 +158,47 @@ class BEditaUploadPHPException extends BeditaException
 		parent::__construct($this->phpError[$numberError], $details, $res, $code);
 	}
 }
+
+
+/** ###########################
+ *	FRONTEND specific Exception 
+ */
+
+/**
+ * BeditaPublication specific Exception
+ */
+class BeditaPublicationException extends BeditaException {
+	
+	public $status;
+	
+	public function __construct($status) {
+   		$this->status = $status;
+    }
+	
+}
+
+class BeditaFrontAccessException extends BeditaException {
+	
+	private $errorType;
+	
+	public function __construct($message = NULL, $details = NULL, $res  = AppController::ERROR, $code = 0) {
+		if (!empty($details["errorType"])) {
+			$this->errorType = $details["errorType"];
+		}
+		
+		if (empty($message)) {
+			if ($this->errorType == "unlogged")
+				$messages = __("You have to be logged to access to this item",true);
+			elseif ($this->errorType == "unauthorized")
+				$messages = __("You aren't authorized to access to this item",true);
+		}
+		
+		parent::__construct($message,$details,$res,$code);
+	}
+	
+	public function getErrorType() {
+		return $this->errorType;
+	}
+	
+}
 ?>

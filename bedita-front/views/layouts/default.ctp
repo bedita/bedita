@@ -14,10 +14,14 @@
 	<?php echo $html->charset('utf-8');?>
 	<meta name="author" content="" />
 	<meta http-equiv="Content-Style-Type" content="text/css" />
-	<?php foreach($feedNames as $feed): ?>
-	<link rel="alternate" type="application/rss+xml" title="<?php echo $feed['title']; ?> 
-		href="<?php echo $html->url('/rss') . '/' . $feed['nickname']; ?>" />
-	<?php endforeach; ?>
+	<?php 
+	if (!empty($feedNames)):
+		foreach($feedNames as $feed): ?>
+		<link rel="alternate" type="application/rss+xml" title="<?php echo $feed['title']; ?> 
+			href="<?php echo $html->url('/rss') . '/' . $feed['nickname']; ?>" />
+		<?php endforeach;
+	endif; 
+	?>
 	
 <?php echo $content_for_layout; ?>
 

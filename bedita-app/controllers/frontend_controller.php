@@ -112,12 +112,38 @@ abstract class FrontendController extends AppController {
 	protected $searchOptions = array("order" => "title", "dir" => 1, "dim" => 50, "page" => 1, "filter" => false);
 	
 	/**
+	 * user logged in or not
+	 * 
+	 * @var bool
+	 */
+	private $logged = false;
+	
+	/**
 	 * path to redirect after logout action
 	 * 
 	 * @var string
 	 */
-	protected $logoutRedirectTo = "/";
+	protected $loginRedirect = "/";
 	
+	/**
+	 * path to redirect after logout action
+	 * 
+	 * @var string
+	 */
+	protected $logoutRedirect = "/";
+	
+	/**
+	 * if it's true show unauthorized objects for user in list setting "authorized" => false in object array
+	 * else the unauthorized objects aren't in list (default)
+	 * 
+	 * main objects requested are always blocked if user is not authorized to see them
+	 * 
+	 * @var bool
+	 */
+	protected $showUnauthorized = false;
+
+	const UNLOGGED = "unlogged";
+	const UNAUTHORIZED = "unauthorized";
 	
 	/**
 	 * every frontend has to implement checkLogin
@@ -128,34 +154,46 @@ abstract class FrontendController extends AppController {
 		return false;
 	}
 	
-	private function login($groups=array()) {
-		if (!empty($this->data["login"])) {
-			$userid 	= (isset($this->data["login"]["userid"])) ? $this->data["login"]["userid"] : "" ;
-			$password 	= (isset($this->data["login"]["passwd"])) ? $this->data["login"]["passwd"] : "" ;
+	private function login(array $groups) {
+		if (!empty($this->params["form"]["login"]) && $this->Session->read("frontendLoginForm") == true ) {
+			$this->Session->del("frontendLoginForm");
+			$userid 	= (isset($this->params["form"]["login"]["userid"])) ? $this->params["form"]["login"]["userid"] : "" ;
+			$password 	= (isset($this->params["form"]["login"]["passwd"])) ? $this->params["form"]["login"]["passwd"] : "" ;
+			
 			$confGroups = Configure::read("authorizedGroups");
-			if (empty($groups) && !empty($confGroups)) {
-				$groups = Configure::read("authorizedGroups");
-			}
 			if(!$this->BeAuth->login($userid, $password, null, $groups)) {
 				//$this->loginEvent('warn', $userid, "login not authorized");
 				$this->userErrorMessage(__("Wrong username/password or session expired", true));
-				return false;
+			} else {
+				$this->eventInfo("FRONTEND logged in publication");
 			}
-			$this->eventInfo("FRONTEND logged in: publication " . $this->publication["title"]);
+			$redirect = (!empty($this->params["form"]["backURL"]))? $this->params["form"]["backURL"] : $this->loginRedirect;
+			
+			$this->redirect($redirect);
 			return true;
 		}
 		return false;
 	}
 	
-	public function logout($autoRedirect=true) {
+	protected function logout($autoRedirect=true) {
 		$this->BeAuth->logout();
 		$this->eventInfo("FRONTEND logged out: publication " . $this->publication["title"]);
 		if ($autoRedirect) {
-			$this->redirect($this->logoutRedirectTo);
+			$this->redirect($this->logoutRedirect);
 		}
 	}
 	
+	/**
+	 * check if there's an active session and if at least one group user is authorized to access frontend
+	 *  
+	 * @param $groups, if empty and is not defined "authorizedGroups" array in frontend.ini.php use all frontend groups
+	 * @return boolean
+	 */
 	protected function checkIsLogged($groups=array()) {
+		if (empty($groups)) {
+			$confGroups = Configure::read("authorizedGroups");
+			$groups = (!empty($confGroups))? $confGroups : ClassRegistry::init("Group")->getList(array("backend_auth" => 0)); 
+		}
 		if(!$this->BeAuth->isLogged()) { 
 			return $this->login($groups);
 		}
@@ -192,7 +230,7 @@ abstract class FrontendController extends AppController {
 		$conf = Configure::getInstance() ;
 		if (!empty($conf->draft))
 			$this->status[] = "draft";
-			
+		
 		// check publication status		
 		$pubStatus = $this->BEObject->field("status", array("id" => Configure::read("frontendAreaId")));
 				
@@ -201,16 +239,33 @@ abstract class FrontendController extends AppController {
 			$this->publication = $this->loadObj(Configure::read("frontendAreaId"));
 			$this->set('publication', $this->publication);
 			throw new BeditaPublicationException($pubStatus);
-		} else {
-			$this->publication = $this->loadObj(Configure::read("frontendAreaId"));
-			// set publication data for template
-			$this->set('publication', $this->publication);
 		}
 		
+		// check is logged
+		$this->logged = $this->checkIsLogged();
+		$defaultShow = $this->showUnauthorized;
+		$this->showUnauthorized = true;
+		$this->publication = $this->loadObj(Configure::read("frontendAreaId"),false);
+		$this->showUnauthorized = $defaultShow;
+		// set publication data for template
+		$this->set('publication', $this->publication);
+		
+		// if user hasn't permissions to access at the publication throws exception
+		if ( (empty($this->params["pass"][0]) || $this->params["pass"][0] != "logout") && !$this->publication["authorized"]) {
+			if (!$this->logged)
+				$errorType = self::UNLOGGED;
+			else
+				$errorType = self::UNAUTHORIZED;
+			$this->setupLocale();
+			$this->beditaBeforeFilter();
+			throw new BeditaFrontAccessException(null, array("errorType" => $errorType));
+		}
+						
 		// set filterPublicationDate
 		$filterPubDate = Configure::read("filterPublicationDate");
 		if (isset($filterPubDate)) 
 			$this->checkPubDate = $filterPubDate;
+			
 	}
 
 	/**
@@ -328,6 +383,17 @@ abstract class FrontendController extends AppController {
 		if ($ex instanceof BeditaPublicationException) {
 			$currentController = AppController::currentController();
 			echo $currentController->render(false, $ex->status);
+		} elseif ($ex instanceof BeditaFrontAccessException) {
+			$errorType = $ex->getErrorType();
+			$params = array(
+				'details' => $ex->getDetails(), 
+				'msg' => $ex->getMessage(), 
+				'result' => $ex->result,
+				'errorType' => $ex->getErrorType()
+			);
+			
+			include_once (APP . 'app_error.php');
+			return new AppError('handleExceptionFrontAccess', $params, $ex->errorTrace());
 		} else {
 			
 			if($ex instanceof BeditaException) {
@@ -376,15 +442,17 @@ abstract class FrontendController extends AppController {
 			if(!empty($exclude_nicknames) && in_array($s['nickname'], $exclude_nicknames)) 
 				continue ;
 			
-			$sectionObject = $this->loadObj($s['id']);			
-			if($loadContents) {
-				$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")));
-				 $objs = $this->loadSectionObjects($s['id'], $option);
-				 $sectionObject['objects'] = (!$this->sectionOptions["itemsByType"] && !empty($objs["childContents"]))? $objs["childContents"] : $objs;
+			$sectionObject = $this->loadObj($s['id'],false);
+			if ($sectionObject !== self::UNAUTHORIZED) {			
+				if($loadContents) {
+					$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")));
+					 $objs = $this->loadSectionObjects($s['id'], $option);
+					 $sectionObject['objects'] = (!$this->sectionOptions["itemsByType"] && !empty($objs["childContents"]))? $objs["childContents"] : $objs;
+				}
+				if ($depth > 1)
+					$sectionObject['sections'] = $this->loadSectionsTree($s['id'], $loadContents, $exclude_nicknames, $depth-1);
+				$result[] = $sectionObject;
 			}
-			if ($depth > 1)
-				$sectionObject['sections'] = $this->loadSectionsTree($s['id'], $loadContents, $exclude_nicknames, $depth-1);
-			$result[] = $sectionObject;
 		}
 
 		return $result;
@@ -428,18 +496,19 @@ abstract class FrontendController extends AppController {
 				if(!empty($exclude_nicknames) && in_array($s['nickname'], $exclude_nicknames)) 
 					continue ;
 				
-				$sectionObject = $this->loadObj($s['id']);
-				
-				if (in_array($s["id"], $parents)) {
-				 	$sectionObject["selected"] = true;
+				$sectionObject = $this->loadObj($s['id'],false);
+				if ($sectionObject !== self::UNAUTHORIZED) {
+					if (in_array($s["id"], $parents)) {
+					 	$sectionObject["selected"] = true;
+					}
+					
+					if($loadContents) {
+						$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")));
+						$objs = $this->loadSectionObjects($s['id'], $option);	
+						$sectionObject['objects'] = (!$this->sectionOptions["itemsByType"] && !empty($objs["childContents"]))? $objs["childContents"] : $objs;
+					}
+					$result[$level][] = $sectionObject;
 				}
-				
-				if($loadContents) {
-					$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")));
-					$objs = $this->loadSectionObjects($s['id'], $option);	
-					$sectionObject['objects'] = (!$this->sectionOptions["itemsByType"] && !empty($objs["childContents"]))? $objs["childContents"] : $objs;
-				}
-				$result[$level][] = $sectionObject;
 				
 			}
 
@@ -461,7 +530,9 @@ abstract class FrontendController extends AppController {
 		$res = $this->BEObject->findObjects(null, null, $this->status, $filter);
 		if (!empty($res["items"])) {
 			foreach ($res["items"] as $pub) {
-				$publications[] = $this->loadObj($pub["id"]);
+				$obj = $this->loadObj($pub["id"],false);
+				if ($obj !== self::UNAUTHORIZED)
+					$publications[] = $obj;
 			}
 		}
 		$tplVar = (!empty($tplVar))? $tplVar : "publicationsList";
@@ -670,11 +741,37 @@ abstract class FrontendController extends AppController {
 	 * Throws Exception on errors
 	 *
 	 * @param int $obj_id
-	 * @return array
+	 * @param bool $blockAccess
+	 * 				true => if user is unlogged eturn UNLOGGED constant
+	 * 						if user hasn't permission to access at the object return UNAUTHORIZED constant
+	 * 						(used when load pages main object like in section method)
+	 * 				false => if user unlogged dosen't block the action
+	 * 						 if user unauthorized to access at the object and $this->showUnauthorized=true 
+	 * 						 	load object detail setting "authorized" => false in object array
+	 * 						(used when load objects list like in loadSectionObjects method)
+	 * @return array object detail
 	 */
-	protected function loadObj($obj_id) {
+	protected function loadObj($obj_id, $blockAccess=true) {
 		if($obj_id === null)
 			throw new BeditaException(__("Content not found", true));
+		
+		$authorized = false;
+			
+		// check permissions
+		$permissionModel = ClassRegistry::init("Permission");
+		if ($perms = $permissionModel->isPermissionSetted($obj_id, OBJ_PERMS_READ_FRONT)) {
+			if (!$this->logged && $blockAccess)
+				return self::UNLOGGED;
+			
+			if ($this->logged && $permissionModel->checkPermissionByUser($perms, $this->BeAuth->user)) {
+				$authorized = true;
+			}
+		} else {
+			$authorized = true;
+		}
+		
+		if ($authorized == false && ($blockAccess || !$this->showUnauthorized))
+			return self::UNAUTHORIZED;
 		
 		$modelType = $this->BEObject->getType($obj_id);
 		if(!isset($this->{$modelType})) {
@@ -718,8 +815,9 @@ abstract class FrontendController extends AppController {
 			$this->setupAnnotations($obj, $this->status);
 		}
 		unset($obj['Annotation']);
-		
 		$obj['object_type'] = $modelType;
+		$obj['authorized'] = $authorized;
+		
 		return $obj;
 	}
 
@@ -805,14 +903,16 @@ abstract class FrontendController extends AppController {
 		
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
-				$obj = $this->loadObj($item['id']);
-				if ($this->sectionOptions["itemsByType"]) {
-					$sectionItems[$obj['object_type']][] = $obj;
-				} else {
-					if ($obj["object_type"] == Configure::read("objectTypes.section.model"))
-						$sectionItems["childSections"][] = $obj;
-					else
-						$sectionItems["childContents"][] = $obj;
+				$obj = $this->loadObj($item['id'], false);
+				if ($obj !== self::UNAUTHORIZED) {
+					if ($this->sectionOptions["itemsByType"]) {
+						$sectionItems[$obj['object_type']][] = $obj;
+					} else {
+						if ($obj["object_type"] == Configure::read("objectTypes.section.model"))
+							$sectionItems["childSections"][] = $obj;
+						else
+							$sectionItems["childContents"][] = $obj;
+					}
 				}
 			}
 			$sectionItems["toolbar"] = $items['toolbar'];
@@ -889,12 +989,17 @@ abstract class FrontendController extends AppController {
 		}
 		
 		$section = $this->loadObj($sectionId);
-		
+		if ($section === self::UNLOGGED || $section === self::UNAUTHORIZED)
+			throw new BeditaFrontAccessException(null, array("errorType" => $section));
+
 		$section["pathSection"] = $this->getPath($sectionId);
 		$this->sectionOptions["childrenParams"] = array_merge($this->sectionOptions["childrenParams"],$this->getPassedArgs());
 		
 		if(!empty($content_id)) {
 			$section['currentContent'] = $this->loadObj($content_id);
+			if ($section['currentContent'] === self::UNLOGGED || $section['currentContent'] === self::UNAUTHORIZED)
+				throw new BeditaFrontAccessException(null, array("errorType" => $section['currentContent']));
+			
 			$section["contentRequested"] = true;
 			
 			if ($this->sectionOptions["showAllContents"]) {
@@ -995,6 +1100,7 @@ abstract class FrontendController extends AppController {
 		$result = $this->BeTree->getDiscendents($this->publication["id"], $this->status, $this->searchOptions["filter"], $this->searchOptions["order"], $this->searchOptions["dir"], $this->searchOptions["page"], $this->searchOptions["dim"]);
 		$this->set("searchResult", $result); 
 	}
+	
 	/**
 	 * find parent path of $object_id (excluded publication)
 	 *
@@ -1009,8 +1115,11 @@ abstract class FrontendController extends AppController {
 			$oldBaseLevel = $this->baseLevel; 
 			$this->baseLevel = true;
 			foreach ($parents as $p) {
-				if ($p != $this->publication["id"])
+				if ($p != $this->publication["id"]) {
 					$pathArr[$p] = $this->loadObj($p);
+					if ($pathArr[$p] === self::UNLOGGED || $pathArr[$p] === self::UNAUTHORIZED)
+						throw new BeditaFrontAccessException(null, array("errorType" => $pathArr[$p]));
+				}
 			}
 			$this->baseLevel = $oldBaseLevel;
 		}
@@ -1188,11 +1297,13 @@ abstract class FrontendController extends AppController {
 		$result = $tagDetail;
 
 		foreach ($contents["items"] as $c) {
-			$object = $this->loadObj($c["id"]);
-			if ($this->sectionOptions["itemsByType"])
-				$result[$object['object_type']][] = $object;
-			else
-				$result["items"][] = $object;
+			$object = $this->loadObj($c["id"],false);
+			if ($object !== self::UNAUTHORIZED) {
+				if ($this->sectionOptions["itemsByType"])
+					$result[$object['object_type']][] = $object;
+				else
+					$result["items"][] = $object;
+			}
 		}
 		
 		return array_merge($result, array("toolbar" => $contents["toolbar"]));
@@ -1225,8 +1336,9 @@ abstract class FrontendController extends AppController {
 		$annotations = $this->BeTree->getChildren(null, $this->status, $filter, $order, $dir, $page, $dim);
 		$result = array();
 		foreach ($annotations["items"] as $a) {
-			$object = $this->loadObj($a["id"]);
-			$result[Configure::read("objectTypes." . $annotationType . ".model")][] = $object;
+			$object = $this->loadObj($a["id"],false);
+			if ($object !== self::UNAUTHORIZED)
+				$result[Configure::read("objectTypes." . $annotationType . ".model")][] = $object;
 		}
 		return array_merge($result, array("toolbar" => $annotations["toolbar"]));
 	}
@@ -1250,6 +1362,9 @@ abstract class FrontendController extends AppController {
 			throw new BeditaException(__("Content not found", true));
 
 		$obj = $this->loadObj($id);
+		if ($obj === self::UNLOGGED || $obj === self::UNAUTHORIZED)
+			throw new BeditaFrontAccessException(null, array("errorType" => $obj));
+		
 		// check 'download' relation
 		// TODO: check relatedObject status????
 		$objRel = ClassRegistry::init("ObjectRelation");
@@ -1490,17 +1605,4 @@ abstract class FrontendController extends AppController {
 	}
 }
 
-
-/**
- * BeditaPublication specific Exception
- */
-class BeditaPublicationException extends BeditaException {
-	
-	public $status;
-	
-	public function __construct($status) {
-   		$this->status = $status;
-    }
-	
-}
 ?>

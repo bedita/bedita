@@ -107,6 +107,8 @@ class AppController extends Controller
 
 		self::$current = $this;
 		$this->view = 'Smarty';
+		$this->set('conf',  Configure::getInstance());
+		
 		// convienience methods for frontends
 		$this->initAttributes();
 
@@ -114,12 +116,11 @@ class AppController extends Controller
 	 	if(isset($this->data["login"]) || $this->name === 'Authentications') {
 			return;
 		}
-		// Check login
-		$this->set('conf',  Configure::getInstance());
+				
 		// check/setup localization
 		$this->setupLocale();
 		$this->beditaBeforeFilter() ;
-		
+		// Check login
 		if(!$this->checkLogin($this->skipCheck)) 
 			return;
 	}
