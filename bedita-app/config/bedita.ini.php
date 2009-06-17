@@ -490,8 +490,8 @@ $config['langOptions'] = array(
 
 // ISO-639-3 codes - User interface language options (backend)
 $config['langsSystem'] = array(
-	"ita"	=> "italiano",
 	"eng"	=> "english",
+	"ita"	=> "italiano",
 	"deu"	=> "deutsch",
 	"por"	=> "portuguěs"
 
