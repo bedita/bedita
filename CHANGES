@@ -1,3 +1,50 @@
+Version 3.0.beta2
+
+ User-visible changes:
+	* added newsletter module
+	* fix newsletter clone
+	* fix bug: comments could be deleted on object saving
+	* #183 - newsletter: controls/bugfix/enhancement
+	* dashboard: persistent tabs
+	* multimedia: enhanced swf flash embed 
+	* webmarks: images added
+	* fix bug: error saving date patterns different from "dd/mm/yyyy", locale pattern automatic set
+	* fix search in home
+	* dashboard: added warning/info/error messages
+	* i18n: translations update
+	* added thumbnail field in videos
+	* #157 miminal form for object permissions
+	* multimedia: default status ON for new items, fixed referenced objects list detail 
+
+ Frontend changes:
+	* #144 basic search on a single frontend
+	* fix bug calling /section/nicksection/nickcontent where content not in section => error 404
+	* added FrontendController::tag + "tag" reserved word
+	* saveComment: added /#error in returned url on error
+	* added logic to check authorized groups in frontend login
+	* methods saveObject, deleteObjects moved to AppController -> reused in FrontendController
+	* added FrontendController::$logoutRedirectTo, overridable in pages_controller
+	* #157 basic frontend permission on objects handling 
+
+ Developer-visible changes:
+	* cakephp updated to 1.2.3.8166
+	* added/updated api docs comments
+	* #169 - schema changes, user settings
+	* #169 - saving user preferences: language and notifications
+	* #101 - notify mail added
+	* #144 - changed search GET paramenter search => query
+	* added dateFormatValidation in setuplocale
+	* override cloneObject in controller, more object types
+	* bedita.ini config refactoring: status --> defaultStatus, removed: type, customPropTypeOptions, docTypeOptions
+	* #185 - newsletter: import from CSV/phplist
+	* refactoring media provider system, upload, added "vimeo" media provider
+	* fix and update on video thumbs
+	* Tree.priority and order in filtered conditions, avoding conflicts with categories and other fields
+	* #157 - obj permissions, removed PermissionComponent, removed permissions procedures, rewrite model Permission
+	* 2 permission types: frontent access, object write
+	* saveObject: check user "object write" permissions
+	* shell script refactoring - BeditaBaseShell
+
 Version 3.0.beta1
 
  User-visible changes:
