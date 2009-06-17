@@ -48,11 +48,6 @@
 // $config['mediaUrl'] = 'http://localhost/media';
 
 
-// FileSystem directory for temporary file storage
-// $config['tmp'] = "/tmp" ;
-
-
-
 /**
  ** ******************************************
  **  Statistics settings

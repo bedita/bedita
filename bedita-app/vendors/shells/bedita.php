@@ -647,15 +647,16 @@ class BeditaShell extends BeditaBaseShell {
         // tmp/logs
         $this->checkAppDirPerms($appPath.DS."tmp".DS."logs");
 
-		// mediaRoot, mediaUrl
+		// mediaRoot, mediaUrl, beditaUrl
 		$this->hr();
 		$this->out("Checking media dir and url");
 		$this->hr();
 		$mediaRoot = Configure::read("mediaRoot");
-		@$this->checkAppDirPerms($mediaRoot);
+		@$this->checkAppDirPerms($mediaRoot, "mediaRoot: ");
 		$mediaUrl = Configure::read("mediaUrl");
-		@$this->checkAppUrl($mediaUrl);
-
+		@$this->checkAppUrl($mediaUrl, "mediaUrl: ");
+		@$this->checkAppUrl(Configure::read("beditaUrl"), "beditaUrl: ");
+		
 		// database connection
 		@$this->checkAppDbConnection();
 		
@@ -675,12 +676,12 @@ class BeditaShell extends BeditaBaseShell {
 		
     }
 
-	private function checkAppDirPerms($dirPath) {
+	private function checkAppDirPerms($dirPath, $msg = "") {
 		if (is_dir($dirPath)) {
-			$this->out("$dirPath - perms: ".sprintf("%o",(fileperms($dirPath) & 511)));
+			$this->out($msg . $dirPath. " - perms: ".sprintf("%o",(fileperms($dirPath) & 511)));
 			return true;
 		} else {
-			$this->out($dirPath .  " doesn't exist or it isn't a directory!");
+			$this->out($msg. $dirPath . " doesn't exist or it isn't a directory!");
 			return false;
 		}
 	}
@@ -705,20 +706,20 @@ class BeditaShell extends BeditaBaseShell {
 		}
 	}
 
-	private function checkAppUrl($url) {
+	private function checkAppUrl($url, $msg = "") {
 		$headers = get_headers($url); 
 		if($headers && !strstr($headers[0], "404")) {
-			$this->out("$url: ok.");
+			$this->out($msg . $url . ": ok.");
 			return true;
 		} else {
-			$this->out("$url: unreachable.");
+			$this->out($msg . $url . ": unreachable.");
 			return false;
 		}
 	}
 
-    private function checkAppFile($filePath) {
+    private function checkAppFile($filePath, $msg = "") {
         if(!file_exists($filePath)) {
-        	$this->out("$filePath: NOT FOUND!");
+        	$this->out($msg . $filePath . ": NOT FOUND!");
             $sampleFile = $filePath.".sample";
         	if(file_exists($sampleFile)) {
                 $res = $this->in("$sampleFile found, create copy? [y/n]");
@@ -729,7 +730,7 @@ class BeditaShell extends BeditaBaseShell {
                 }
         	}
         } else {
-            $this->out("$filePath: ok.");
+            $this->out($msg . $filePath . ": ok.");
         }
     }
     
