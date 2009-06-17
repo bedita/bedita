@@ -297,6 +297,7 @@ CREATE TABLE contents (
   abstract MEDIUMTEXT NULL,
   body MEDIUMTEXT NULL,
   `type` VARCHAR(30) NULL COMMENT 'generic content type, future use...',
+  duration INTEGER UNSIGNED NULL COMMENT 'in seconds',
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
