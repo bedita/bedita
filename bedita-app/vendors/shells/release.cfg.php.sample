@@ -4,15 +4,16 @@ $rel["password"]="...";
 $rel["url"]="https://svn.channelweb.it/bedita/trunk";
 
 $rel["releaseDir"]=".";
-$rel["releaseBaseName"]="BEdita-agpl-3.0.beta1.";
+$rel["releaseBaseName"]="BEdita-agpl-3.0.beta2.";
 
 $rel["removeFiles"]= array( 
 	"bedita-db".DS."bedita_init_data.sql",
-	"bedita-app".DS."controllers".DS."modules".DS."newsletter_controller.php",
 	"bedita-app".DS."controllers".DS."modules".DS."bibliographies_controller.php",
 	"bedita-app".DS."controllers".DS."modules".DS."books_controller.php",
 	"bedita-app".DS."controllers".DS."modules".DS."questionnaires_controller.php",
 	"bedita-app".DS."controllers".DS."modules".DS."statistics_controller.php",
+	"bedita-app".DS."vendors".DS."shells".DS."deploy.php",
+	"bedita-app".DS."vendors".DS."shells".DS."release.cfg.php.sample",
 );
 
 $rel["removeDirs"]= array(
@@ -20,7 +21,6 @@ $rel["removeDirs"]= array(
 	"bedita-doc",
 	"bedita-app".DS."views".DS."bibliographies",
 	"bedita-app".DS."views".DS."books",
-	"bedita-app".DS."views".DS."newsletter",
 	"bedita-app".DS."views".DS."questionnaires",
 	"bedita-app".DS."views".DS."statistics",
 );
@@ -40,11 +40,8 @@ $rel["renameFiles"]= array(
 	"bedita-db".DS."bedita_init_agpl.sql" => "bedita-db".DS."bedita_init_data.sql",
 	"bedita-app".DS."config".DS."core.php.sample" => "bedita-app".DS."config".DS."core.php",
 	"bedita-app".DS."config".DS."database.php.sample" => "bedita-app".DS."config".DS."database.php",
-	"bedita-app".DS."config".DS."bedita.sys.php.sample" => "bedita-app".DS."config".DS."bedita.sys.php",
 	"bedita-app".DS."config".DS."bedita.cfg.php.sample" => "bedita-app".DS."config".DS."bedita.cfg.php",
 	"bedita-app".DS."webroot".DS."index.php.sample" => "bedita-app".DS."webroot".DS."index.php",
-	"bedita-front".DS."config".DS."core.php.sample" => "bedita-front".DS."config".DS."core.php",
-	"bedita-front".DS."webroot".DS."index.php.sample" => "bedita-front".DS."webroot".DS."index.php"
 );
 
 $rel["createFiles"] = array("bedita-app".DS."webroot".DS."test.php");

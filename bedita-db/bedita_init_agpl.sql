@@ -16,6 +16,8 @@ INSERT INTO object_types (id, name, module) VALUES
 (22, 'document', 'documents'),
 (33, 'link', 'webmarks'),
 (39, 'editornote', NULL),
+(35, 'mailmessage', 'newsletter'),
+(36, 'mailtemplate', 'newsletter'),
 (34, 'card', 'addressbook');
 	
 -- ----------------------------------
@@ -46,6 +48,7 @@ INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUE
 ('10','events', 'events', 'events', 'on', '3'),
 ('12','webmarks', 'webmarks', 'webmarks', 'on', '12'),
 ('16','addressbook', 'addressbook', 'addressbook', 'on', '10'),
+('18','newsletter', 'newsletter', 'newsletter', 'on', '11'),
 ('24','tags', 'tags', 'tags', 'on', '6'),
 ('25','comments', 'comments', 'comments', 'on', '7'),
 ('26','multimedia', 'multimedia', 'multimedia', 'on', '4');
@@ -99,6 +102,9 @@ INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'addressbook'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE name = 'newsletter'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'webmarks'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 
@@ -134,6 +140,9 @@ INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'addressbook'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE name = 'newsletter'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'webmarks'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 -- reader perms
@@ -166,6 +175,9 @@ VALUES ((SELECT id FROM modules WHERE name = 'translations'), (SELECT id FROM gr
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'addressbook'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE name = 'newsletter'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'webmarks'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
