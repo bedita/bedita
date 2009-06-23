@@ -75,29 +75,28 @@ $(document).ready(function(){
 		
 		{$smarty.capture.theader}
 	
-		{*section name="i" loop=$objects*}
-		{section name="i" loop=25}
+		{foreach from=$objects item="o" name="fclist"}
 		<tr>
 			<td class="checklist">
 				<input type="checkbox" name="objects_selected[]" class="objectCheck"  />
 			</td>
-			<td><a href="{$html->url('view_session_results')}">Maria Balditto</a></td>
+			<td><a href="{$html->url('view_session_results')}/{$o.id}">{$o.UserCreated.realname}</a></td>
 			<td>Liceo Primo Levi, Bologna</td>
-			<td>212.148.122.56</td>
-			<td>23 oct 2009: 12.24.15</td>
+			<td>{$o.ip_created}</td>
+			<td>aggiungere data di completamento</td>
 			<td style="text-align:center">85%</td>
 			<td><img src="{$html->webroot}img/iconNotes.gif" alt="notes" /></td>
 		</tr>
 		
 		
 		
-		{sectionelse}
+		{foreachelse}
 		
 			<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>
 		
-		{/section}
+		{/foreach}
 		
-{if ($smarty.section.i.total) >= 10}
+{if ($smarty.foreach.fclist.total) >= 10}
 		
 			{$smarty.capture.theader}
 			

@@ -51,5 +51,6 @@ class Questionnaire extends BeditaContentModel
 
 				"minimum" => array("BEObject" => array("ObjectType"))		
 	);
+	
 }
 ?>

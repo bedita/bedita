@@ -524,7 +524,7 @@ abstract class FrontendController extends AppController {
 	 * 		  If not defined result will be set to "publicationsList" var
 	 * 
 	 */
-	public function loadPublications($tplVar=null) {
+	protected function loadPublications($tplVar=null) {
 		$publications = array();
 		$filter = array("object_type_id" => Configure::read("objectTypes.area.id"));
 		$res = $this->BEObject->findObjects(null, null, $this->status, $filter);
@@ -1506,17 +1506,19 @@ abstract class FrontendController extends AppController {
 
 	}
 	
-	protected function save() {
+	protected function save($modelName=null) {
+		if (!$this->checkIsLogged())
+			throw new BeditaFrontAccessException(null, array("errorType" => self::UNLOGGED));
 		try {
-			if (empty($this->data["object_type_id"]))
+			if (empty($modelName) && empty($this->data["object_type_id"]))
 				throw new BeditaException(__("no object type defined",true));
-			$modelName = Configure::read("objectTypes.".$this->data["object_type_id"].".model");
+			$modelName = (empty($modelName))? Configure::read("objectTypes.".$this->data["object_type_id"].".model") : $modelName;
 			$objectModel = ClassRegistry::init($modelName);
 			$this->Transaction->begin();
 			$this->saveObject($objectModel);
 			$this->Transaction->commit();
 			$this->userInfoMessage(__($modelName . " saved",true));
-			$this->eventInfo("news [". $objectModel->id ."] saved");
+			$this->eventInfo("object [". $objectModel->id ."] saved");
 			return true;
 		} catch (BeditaException $ex) {
 			$this->Transaction->rollback();
@@ -1527,6 +1529,8 @@ abstract class FrontendController extends AppController {
 	}
 	
 	protected function delete() {
+		if (!$this->checkIsLogged())
+			throw new BeditaFrontAccessException(null, array("errorType" => self::UNLOGGED));
 		try {
 			if (!empty($this->data["object_type_id"])) {
 				$object_type_id = $this->data["object_type_id"];

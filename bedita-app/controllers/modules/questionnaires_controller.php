@@ -27,7 +27,7 @@ class QuestionnairesController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeLangText');
 
-	var $uses = array('BEObject', 'Question', 'Questionnaire',  'Tree') ;
+	var $uses = array('BEObject', 'Question', 'Questionnaire', 'QuestionnaireResult', 'Tree') ;
 	protected $moduleName = 'questionnaires';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
@@ -49,12 +49,30 @@ class QuestionnairesController extends ModulesController {
 	}
 
 	 
-	public function index_sessions_results() {
-
+	public function index_sessions_results($questionnaire_id, $order = "", $dir = true, $page = 1, $dim = 20) {
+		$filter["object_type_id"] = Configure::read("objectTypes.questionnaireresult.id");
+		$filter["QuestionnaireResult.object_id"] = $questionnaire_id;
+		$this->paginatedList(null, $filter, $order, $dir, $page, $dim);
+		foreach ($this->viewVars["objects"] as $key => $objs) {
+			$user = ClassRegistry::init("User")->find("first", array(
+					"conditions" => array("id" => $objs["user_created"]),
+					"contain" => array()
+				)
+			);
+			$this->viewVars["objects"][$key]["UserCreated"] = $user["User"]; 
+		}
 	}
 
-	public function view_session_results() {
-
+	public function view_session_results($id) {
+		$this->viewObject($this->QuestionnaireResult, $id);
+		$this->Questionnaire->containLevel("default");
+		$questionnaire = $this->Questionnaire->find("first", array("conditions" => array("Questionnaire.id" => $this->viewVars["object"]["object_id"])));
+		if (!empty($questionnaire['RelatedObject'])) {
+			$questionnaire["relations"] = $this->objectRelationArray($questionnaire['RelatedObject']);
+			unset($questionnaire['RelatedObject']);
+		}
+		pr($questionnaire);
+		pr($this->viewVars["object"]);exit;
 	}
 
 	public function view_sessions_average() {

@@ -28,8 +28,35 @@
  * 
  * $Id$
  */
-class Answer extends BeditaContentModel
-{
-	var $useTable = 'contents';	
+
+require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
+
+class QuestionnaireResultTestCase extends BeditaTestCase {
+
+	var $uses = array('QuestionnaireResult') ;
+	
+	var $dataSource	= 'test' ;	
+ 	var $components	= array('Transaction') ;
+ 	
+ 	/////////////////////////////////////////////////
+    //      TEST METHODS
+    /////////////////////////////////////////////////
+ 	function testActsAs() {
+ 		$this->checkDuplicateBehavior($this->QuestionnaireResult);
+ 	}
+	
+ 	
+ 	 /////////////////////////////////////////////////
+	//     END TEST METHODS
+	/////////////////////////////////////////////////
+	protected function cleanUp() {
+		$this->Transaction->rollback() ;
+	}
+	
+	public   function __construct () {
+		parent::__construct('QuestionnaireResult', dirname(__FILE__)) ;
+	}
+		
 }
+ 
 ?>

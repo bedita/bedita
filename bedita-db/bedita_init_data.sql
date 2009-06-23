@@ -17,6 +17,7 @@ INSERT INTO object_types (id, name, module) VALUES
 (21, 'event', 'events'),
 (22, 'document', 'documents'),
 (33, 'link', 'webmarks'),
+(34, 'card', 'addressbook'),
 (35, 'mailmessage', 'newsletter'),
 (36, 'mailtemplate', 'newsletter'),
 (37, 'author', NULL),
@@ -24,7 +25,7 @@ INSERT INTO object_types (id, name, module) VALUES
 (39, 'editornote', NULL),
 (40, 'question', 'questionnaires'),
 (41, 'questionnaire', 'questionnaires'),
-(34, 'card', 'addressbook');
+(42, 'questionnaireresult', 'questionnaires');
 
 -- ----------------------------------
 -- default user and groups
