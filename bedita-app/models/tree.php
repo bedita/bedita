@@ -71,30 +71,43 @@ class Tree extends BEAppModel
 	}
 
 	/**
-	 * Torna il parent/ i parent dell'albero
+	 * get parent or array of parents
 	 *
 	 * @param integer $id
-	 *
-	 * @return mixed	integer, se solo un parent
-	 * 					array, se inserito in + parent
-	 * 					false, in caso d'errore
+	 * @param integer $area_id, publication id: if defined search parent only inside the publication
+	 * 
+	 * @return mixed	integer, if only one parent founded
+	 * 					array, if two or more parents founded
+	 * 					false, error or none parent founded
 	 */
-	function getParent($id = null) {
-		if (isset($id)) {
-			$this->id = $id ;
+	//TODO: when area_id will be managed change LIKE condition with area_id => $area_id condition
+	function getParent($id, $area_id=null) {
+		if (empty($id)) {
+			return false;
 		}
-		$id = $this->id ;
+		$conditions["id"] = $id;
+		if (!empty($area_id)) {
+			$conditions[] = "parent_path LIKE '/" . $area_id . "/%'";	
+		}
+		
+		$ret = $this->find("all", array(
+				"conditions" => $conditions,
+				"fields" => array("parent_id")
+			)
+		);
+		
+		if(!$ret) {
+			return false;
+		}
 
-		if(($ret = $this->query("SELECT parent_id FROM  trees WHERE id = {$id}")) === false) {
+		if(!count($ret)) {
 			return false ;
-		}
-
-		if(!count($ret)) return false ;
-		else if(count($ret) == 1) return $ret[0]['trees']['parent_id'] ;
-		else {
+		} else if (count($ret) == 1) {
+			return $ret[0]['Tree']['parent_id'] ;
+		} else {
 			$tmp = array() ;
 			for($i=0; $i < count($ret) ; $i++) {
-				$tmp[] = $ret[$i]['trees']['parent_id'] ;
+				$tmp[] = $ret[$i]['Tree']['parent_id'] ;
 			}
 
 			return $tmp ;

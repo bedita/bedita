@@ -1127,6 +1127,21 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
+	 * get array of parents that contain the object specified by $object_id
+	 *  
+	 * @param integer $object_id
+	 * @return array
+	 */
+	protected function getParentsObject($object_id) {
+		$parents_id = $this->BeTree->getParents($object_id, $this->publication["id"]);
+		$parents = array();
+		foreach ($parents_id as $id) {
+			$parents[] = $this->loadObj($id, false);
+		}
+		return $parents;
+	}
+	
+	/**
 	 * build archive tree
 	 *
 	 * Array(
