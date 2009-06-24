@@ -154,6 +154,15 @@ abstract class FrontendController extends AppController {
 		return false;
 	}
 	
+	/**
+	 * try to login user with some groups
+	 * return false if it fails to login 
+	 * 		try to login user if there is POST data correct and if it's setted session var "frontendLoginForm"
+	 * 		"frontendLoginForm" is setted when BeditaFrontAccessException is called and user not logged
+	 * 
+	 * @param array $groups
+	 * @return boolean
+	 */
 	private function login(array $groups) {
 		if (!empty($this->params["form"]["login"]) && $this->Session->read("frontendLoginForm") == true ) {
 			$this->Session->del("frontendLoginForm");
@@ -164,6 +173,7 @@ abstract class FrontendController extends AppController {
 			if(!$this->BeAuth->login($userid, $password, null, $groups)) {
 				//$this->loginEvent('warn', $userid, "login not authorized");
 				$this->userErrorMessage(__("Wrong username/password or session expired", true));
+				return false;
 			} else {
 				$this->eventInfo("FRONTEND logged in publication");
 			}
@@ -185,15 +195,13 @@ abstract class FrontendController extends AppController {
 	
 	/**
 	 * check if there's an active session and if at least one group user is authorized to access frontend
-	 *  
-	 * @param $groups, if empty and is not defined "authorizedGroups" array in frontend.ini.php use all frontend groups
+	 * if is not defined "authorizedGroups" array in frontend.ini.php use all frontend groups
+	 * 
 	 * @return boolean
 	 */
-	protected function checkIsLogged($groups=array()) {
-		if (empty($groups)) {
-			$confGroups = Configure::read("authorizedGroups");
-			$groups = (!empty($confGroups))? $confGroups : ClassRegistry::init("Group")->getList(array("backend_auth" => 0)); 
-		}
+	protected function checkIsLogged() {	
+		$confGroups = Configure::read("authorizedGroups");
+		$groups = (!empty($confGroups))? $confGroups : ClassRegistry::init("Group")->getList(array("backend_auth" => 0)); 
 		if(!$this->BeAuth->isLogged()) { 
 			return $this->login($groups);
 		}
@@ -202,6 +210,15 @@ abstract class FrontendController extends AppController {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * get private logged var
+	 * 
+	 * @return boolean
+	 */
+	protected function isLogged() {
+		return $this->logged;
 	}
 	
 	/**
