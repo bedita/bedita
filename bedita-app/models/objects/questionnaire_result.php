@@ -70,13 +70,12 @@ class QuestionnaireResult extends BEAppObjectModel {
 				$this->updateOldAnswers($this->data["QuestionnaireResult"]["Answer"]);
 			
 			$question_id = false;
-			$freetextType = Configure::read("questionTypes.freetext");
 			foreach ($this->data["QuestionnaireResult"]["Answer"] as $key => $answer) {
 				if ($question_id != $answer["question_id"]) { 
 					$question_type = $this->Answer->Question->field("question_type", array("id" => $answer["question_id"]));
 				}
 								
-				if ( ($question_type == $freetextType && !empty($answer["answer"])) || !empty($answer["question_answer_id"]) ) {
+				if ( ($question_type == "freetext" && !empty($answer["answer"])) || !empty($answer["question_answer_id"]) ) {
 					$answer["questionnaire_result_id"] = $this->id;
 					$this->Answer->create();
 					if (!$this->Answer->save($answer))
@@ -95,6 +94,15 @@ class QuestionnaireResult extends BEAppObjectModel {
 					throw new BeditaException(__("error saving compiling time",true));
 			}
 		}
+	}
+	
+	public function afterFind($results) {
+		if (!empty($results[0])) {
+			foreach ($results as $key => $val) {
+				$results[$key]["correct_answers"] = $this->Answer->countCorrectAnswers($val["id"]);		
+			}
+		}
+		return $results;
 	}
 	
 	

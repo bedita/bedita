@@ -30,10 +30,11 @@
  */
 class Question extends BEAppObjectModel
 {
-	var $actsAs = array("CompactResult" => array("QuestionAnswer"));
+	var $actsAs = array("CompactResult" => array("QuestionAnswer","Answer"));
 		
 	var $hasMany = array(
-		"QuestionAnswer" => array('order' => 'QuestionAnswer.priority ASC')
+		"QuestionAnswer" => array('order' => 'QuestionAnswer.priority ASC'),
+		"Answer"
 	);
 	
 	protected $modelBindings = array( 

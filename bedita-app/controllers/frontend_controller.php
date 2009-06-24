@@ -1150,7 +1150,7 @@ abstract class FrontendController extends AppController {
 	 * @param unknown_type $secName section id or section nickname
 	 * @return array
 	 */
-	public function loadArchiveTree($secName, $options=array()) {
+	protected function loadArchiveTree($secName, $options=array()) {
 		
 		$section_id = (is_numeric($secName))? $secName : $this->BEObject->getIdFromNickname($secName);
 		
@@ -1519,7 +1519,7 @@ abstract class FrontendController extends AppController {
 			$this->Transaction->commit();
 			$this->userInfoMessage(__($modelName . " saved",true));
 			$this->eventInfo("object [". $objectModel->id ."] saved");
-			return true;
+			return $objectModel->id;
 		} catch (BeditaException $ex) {
 			$this->Transaction->rollback();
 			$this->log($ex->errorTrace());

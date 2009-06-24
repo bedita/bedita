@@ -30,5 +30,6 @@
  */
 class QuestionAnswer extends BEAppModel
 {
+	public $hasMany = array("Answer");
 }
 ?>

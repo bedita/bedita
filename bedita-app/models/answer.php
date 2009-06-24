@@ -33,6 +33,14 @@ class Answer extends BEAppModel
 
 	var $belongsTo = array("QuestionnaireResult", "Question", "QuestionAnswer");
 	
+	public function countCorrectAnswers($questionnaire_result_id) {
+		$corrects = $this->find("count", array(
+				"conditions" => array("QuestionAnswer.correct" => 1, "questionnaire_result_id" => $questionnaire_result_id)
+			)
+		);
+		return $corrects;
+	}
+	
 	
 }
 ?>
