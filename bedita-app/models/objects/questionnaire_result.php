@@ -99,8 +99,16 @@ class QuestionnaireResult extends BEAppObjectModel {
 	public function afterFind($results) {
 		if (!empty($results[0]) && empty($results[0][0]["count"])) {
 			foreach ($results as $key => $val) {
-				if (!empty($val["id"]))
-					$results[$key]["correct_answers"] = $this->Answer->countCorrectAnswers($val["id"]);		
+				if (!empty($val["id"])) {
+					$results[$key]["correct_answers"] = $this->Answer->countCorrectAnswers($val["id"]);
+				}
+				if (!empty($val["DateItem"])) {
+					$totalTime = 0;
+					foreach ($val["DateItem"] as $dateitem) {
+						$totalTime += strtotime($dateitem["end"]) - strtotime($dateitem["start"]);
+					}
+					$results[$key]["total_time"] = $totalTime;
+				}		
 			}
 		}
 		return $results;
