@@ -97,9 +97,10 @@ class QuestionnaireResult extends BEAppObjectModel {
 	}
 	
 	public function afterFind($results) {
-		if (!empty($results[0])) {
+		if (!empty($results[0]) && empty($results[0][0]["count"])) {
 			foreach ($results as $key => $val) {
-				$results[$key]["correct_answers"] = $this->Answer->countCorrectAnswers($val["id"]);		
+				if (!empty($val["id"]))
+					$results[$key]["correct_answers"] = $this->Answer->countCorrectAnswers($val["id"]);		
 			}
 		}
 		return $results;

@@ -35,7 +35,8 @@ class Answer extends BEAppModel
 	
 	public function countCorrectAnswers($questionnaire_result_id) {
 		$corrects = $this->find("count", array(
-				"conditions" => array("QuestionAnswer.correct" => 1, "questionnaire_result_id" => $questionnaire_result_id)
+				"conditions" => array("QuestionAnswer.correct" => 1, "questionnaire_result_id" => $questionnaire_result_id),
+				"contain" => array("QuestionAnswer")
 			)
 		);
 		return $corrects;

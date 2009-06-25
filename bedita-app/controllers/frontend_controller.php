@@ -1539,7 +1539,7 @@ abstract class FrontendController extends AppController {
 	}
 	
 	protected function save($modelName=null) {
-		if (!$this->checkIsLogged())
+		if (!$this->logged)
 			throw new BeditaFrontAccessException(null, array("errorType" => self::UNLOGGED));
 		try {
 			if (empty($modelName) && empty($this->data["object_type_id"]))
@@ -1561,7 +1561,7 @@ abstract class FrontendController extends AppController {
 	}
 	
 	protected function delete() {
-		if (!$this->checkIsLogged())
+		if (!$this->logged)
 			throw new BeditaFrontAccessException(null, array("errorType" => self::UNLOGGED));
 		try {
 			if (!empty($this->data["object_type_id"])) {

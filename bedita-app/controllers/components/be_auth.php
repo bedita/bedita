@@ -411,5 +411,9 @@ class BeAuthComponent extends Object {
 		}
 		return $result;
 	}
+	
+	public function getUserSession() {
+		return ($this->checkSessionKey())? $this->Session->read($this->sessionKey) : false; 
+	} 
 }
 ?>
