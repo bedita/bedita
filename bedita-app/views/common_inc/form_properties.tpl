@@ -84,6 +84,13 @@
 		</td>
 	</tr>
 	{/if}
+	
+	<tr>
+		<th>{t}duration in minutes{/t}:</th>
+		<td>
+			<input type="text" name="data[duration]" value="{if !empty($object.duration)}{$object.duration/60}{/if}" />
+		</td>
+	</tr>
 </table>
 	
 </fieldset>

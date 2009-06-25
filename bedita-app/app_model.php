@@ -115,6 +115,15 @@ class BEAppModel extends AppModel {
 			$data[$key] = null;
 		}
 	}
+	
+	protected function checkDuration($key) {
+		$data = &$this->data[$this->name];
+		if(empty($data[$key]) || !is_numeric($data[$key])) {
+			$data[$key] = null;
+		} else {
+			$data[$key] = $data[$key]*60;
+		}
+	}
 		
 	/**
 	 * Object search Toolbar
@@ -575,6 +584,7 @@ class BEAppObjectModel extends BEAppModel {
     protected function validateContent() {
     	$this->checkDate('start');
     	$this->checkDate('end');
+    	$this->checkDuration('duration');
         return true ;
     }
 
