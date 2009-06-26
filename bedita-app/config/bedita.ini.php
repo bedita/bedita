@@ -310,7 +310,7 @@ $config['objectTypes'] = array(
 	'related'	=> array("id" => array(18,19,20,21,22,29,34,41)),
 
 	// define array of objects that are leafs of the tree
-	'leafs'		=> array("id" => array(18,19,20,21,22,29,34,41))
+	'leafs'		=> array("id" => array(18,19,20,21,22,29,33,34,41))
 );
 
 
