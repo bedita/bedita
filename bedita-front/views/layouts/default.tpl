@@ -13,6 +13,9 @@
 	<link rel="alternate" type="application/rss+xml" title="{$feed.title}" href="{$html->url('/rss')}/{$feed.nickname}" />
 {/foreach}
 {/if}
+</head>
+
+<body>
 
 {$content_for_layout}
 
