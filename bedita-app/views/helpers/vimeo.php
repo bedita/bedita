@@ -49,7 +49,7 @@ class VimeoHelper extends AppHelper {
 	 * @return html embed video
 	 */
 	function embed(&$obj, $attributes) {
-		
+		$conf = Configure::getInstance();
 		$url = rawurlencode($obj["path"]);
 		if (empty($attributes["width"]) && empty($attributes["height"])) {
 			$attributes["width"] = $conf->provider_params["vimeo"]["width"];

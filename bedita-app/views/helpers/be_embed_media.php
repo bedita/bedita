@@ -136,7 +136,7 @@ class BeEmbedMediaHelper extends AppHelper {
 		if (!empty($params["URLonly"]))
 			return $src;
 		elseif ($params["presentation"] == "link")
-			return $this->Html->link($src, $obj["title"], $htmlAttributes);
+			return $this->Html->link($obj['title'],$src, $htmlAttributes);
 		else
 			return $this->Html->image($src, $htmlAttributes);
 	}
@@ -182,7 +182,7 @@ class BeEmbedMediaHelper extends AppHelper {
 			$output = $this->MediaProvider->embed($obj, $htmlAttributes);
 		} elseif ($params["presentation"] == "link") {
 			$src = $this->MediaProvider->sourceEmbed($obj);
-			$output = (!empty($URLonly))? $src : $this->Html->link($src, $obj['title'], $htmlAttributes);
+			$output = (!empty($URLonly))? $src : $this->Html->link($obj['title'],$src, $htmlAttributes);
 		}
 		
 		if (empty($output)) {
@@ -211,7 +211,7 @@ class BeEmbedMediaHelper extends AppHelper {
 			return $obj['path'];
 
 		if ($params["presentation"] == "link") {
-			return $this->Html->link($obj['path'], $obj['title'], $htmlAttributes);
+			return $this->Html->link($obj['title'],$obj['path'], $htmlAttributes);
 		} else {
 			$img = $this->getMediaTypeImage($obj);
 			return $this->Html->image($img, $htmlAttributes);
@@ -239,7 +239,7 @@ class BeEmbedMediaHelper extends AppHelper {
 			$img = $this->getMediaTypeImage($obj);
 			return $this->Html->image($img, $htmlAttributes);
 		} else {
-			return $this->Html->link($obj['path'], $obj['title'], $htmlAttributes);
+			return $this->Html->link($obj['title'],$obj['path'], $htmlAttributes);
 		}
 	}
 
