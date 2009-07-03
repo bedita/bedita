@@ -1,0 +1,1 @@
+{$view->element('subscribe_newsletter',$groupsByArea)}	

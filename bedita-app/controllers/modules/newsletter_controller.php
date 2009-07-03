@@ -194,7 +194,7 @@ class NewsletterController extends ModulesController {
 		$result = array();
 		foreach($mg as $k => $v) {
 			$v["MailGroup"]["subscribers"] = $this->MailGroupCard->find("count", array(
-					"conditions" => array("mail_group_id" => $v["MailGroup"]["id"])
+					"conditions" => array("mail_group_id" => $v["MailGroup"]["id"],"service_type"=>'newsletter')
 				)
 			);
 			$v["MailGroup"]["publishing"] = $v["Area"]["BEObject"]["title"];
@@ -229,7 +229,8 @@ class NewsletterController extends ModulesController {
 			$filter = array(
 				"object_type_id" => Configure::read("objectTypes.card.id"),
 				"Card.*" => "",
-				"mail_group" => $id
+				"mail_group" => $id,
+				"service_type" => 'newsletter'
 			);
 			$card = $this->BeTree->getChildren(null, null, $filter, null, true, 1, 10) ;
 			$this->set("subscribers", $card["items"]);

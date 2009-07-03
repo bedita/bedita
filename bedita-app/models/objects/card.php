@@ -59,7 +59,8 @@ class Card extends BEAppObjectModel {
 	var $hasAndBelongsToMany = array(
 			"MailGroup" => array(
 							"joinTable"	=> "mail_group_cards",
-							"with" => "MailGroupCard"
+							"with" => "MailGroupCard",
+							"conditions" => array("MailGroupCard.service_type" => 'newsletter')
 						)
 		);
 	
@@ -98,9 +99,19 @@ class Card extends BEAppObjectModel {
 		return true;
 	}
 	
+	function beforeSave() {
+		if (!empty($this->data["Card"]["joinGroup"]) ) {
+			if(empty($this->data["Card"]["email"]) && empty($this->data["Card"]["newsletter_email"]) ) {
+				throw new BeditaException(__("Error saving card", true), "Missing email for newsletters associations.");
+			}
+			if(empty($this->data["Card"]["newsletter_email"])) {
+				$this->data["Card"]["newsletter_email"] = $this->data["Card"]["email"];
+			}
+		}
+		return true;
+	}
 	
 	function afterSave($created) {
-		
 		// save join with mail groups
 		if (!empty($this->data["Card"]["joinGroup"])) {
 		
@@ -116,7 +127,7 @@ class Card extends BEAppObjectModel {
 				// rebuild active join
 				if (!empty($joinData["mail_group_id"])) {
 					$joinData["card_id"] = $this->id;
-					
+					$joinData["service_type"] = "newsletter";
 					if (empty($joinData["hash"])) {
 						$groupname = $this->MailGroup->field("group_name", array("id" => $joinData["mail_group_id"]));
 						$joinData["hash"] = md5($this->id . microtime() . $groupname);

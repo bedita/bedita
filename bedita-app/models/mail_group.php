@@ -37,7 +37,8 @@ class MailGroup extends BEAppModel
 
 			"Card" => array(
 				"joinTable"	=> "mail_group_cards",
-				"with" => "MailGroupCard"
+				"with" => "MailGroupCard",
+				"conditions" => "Card.newsletter_email IS NOT NULL"
 			),
 			
 			"MailMessage" => array("joinTable" => "mail_group_messages")
@@ -67,7 +68,7 @@ class MailGroup extends BEAppModel
 			$contain[] = "Card.id=" . $card_id;
 		if (!empty($message_id))
 			$contain[] = "MailMessage.id=" . $message_id;
-		
+
 		$groups = $this->find("all", array(
 								'contain' => $contain
 								)
@@ -81,11 +82,13 @@ class MailGroup extends BEAppModel
 							"order" => "title", 
 							"fields" => "BEObject.title")
 							);
-		
+
 		foreach ($groups as $g) {
 			
 			if (!empty($card_id) && !empty($g["Card"])) {
-				$g["MailGroup"]["subscribed"] = true;
+				if (!empty($g["Card"][0]["MailGroupCard"]["service_type"]) && $g["Card"][0]["MailGroupCard"]["service_type"] == 'newsletter' ) {
+					$g["MailGroup"]["subscribed"] = true;
+				}
 				$g["MailGroup"]["MailGroupCard"] = $g["Card"][0]["MailGroupCard"];
 			}
 			if (!empty($message_id) && !empty($g["MailMessage"])) {
