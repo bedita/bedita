@@ -87,7 +87,7 @@ class BeNewsletterComponent extends Object {
 				array('conditions' => array(
 					"MailGroupCard.mail_group_id"=>$n['mail_group_id'],
 					"MailGroupCard.card_id" => $c['id'],
-					"MailGroupCard.service_type='newsletter'"
+					"MailGroupCard.service_type='newsletter_frontend_subscribe'"
 					),
 					'contain'=>array()
 				)
@@ -128,7 +128,7 @@ class BeNewsletterComponent extends Object {
 				"MailGroupCard.mail_group_id"=>$params['mail_group_id'],
 				"MailGroupCard.card_id" => $params['card_id'],
 				"MailGroupCard.hash" => $params['hash'],
-				"MailGroupCard.service_type='newsletter'",
+				"MailGroupCard.service_type='newsletter_frontend_subscribe'",
 				"MailGroupCard.status='pending'"
 				),
 				'contain'=>array()
@@ -170,7 +170,7 @@ class BeNewsletterComponent extends Object {
 				"MailGroupCard.mail_group_id"=>$params['mail_group_id'],
 				"MailGroupCard.card_id" => $params['card_id'],
 				"MailGroupCard.hash" => $params['hash'],
-				"MailGroupCard.service_type='newsletter'",
+				"MailGroupCard.service_type='newsletter_frontend_subscribe'",
 				"MailGroupCard.status='confirmed'"
 				),
 				'contain'=>array()
@@ -191,7 +191,7 @@ class BeNewsletterComponent extends Object {
 		$data['mail_group_id'] = $mail_group_id;
 		$data['status'] = ($mode==0) ? 'confirmed' : 'pending';
 		$data['command'] = 'confirm';
-		$data['service_type'] = 'newsletter';
+		$data['service_type'] = 'newsletter_frontend_subscribe';
 		$data["hash"] = md5($card_id . microtime() . $mail_group_name);
 		$mail_group_card->save($data);
 		return $data;
