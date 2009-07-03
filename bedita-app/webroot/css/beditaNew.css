@@ -646,6 +646,11 @@ UL.menuleft {
 }
 
 
+.whitebox {
+	background:transparent url(../img/sfohtabscontent.png) repeat-x;
+	min-height:150px;
+}
+
 
 /*...........................................    
 

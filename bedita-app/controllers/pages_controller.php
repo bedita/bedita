@@ -211,6 +211,33 @@ class PagesController extends AppController {
 		}
 		$this->layout="ajax";
 	}
+	
+
+	/**
+	 * Print a document/object undsoweiter
+	 * 	parametri
+	 *  l'id dell'oggetto
+	 *  il layout di pagina
+	 *  la pubblicazione di riferimento per la grafica (context)
+	 *  cosa fa:
+	 *  in base al context e al layout sceglie le viste opportune
+	 *  se il contesto è BEdita stesso (default) prepara un report con tutto l'oggetto e tutti i suoi metadati 
+	 *  prendendo le diverse viste (layout) da BEdita-app
+	 *  se il contesto è una pubblicazione, prende le viste da templates dentro alle singole pubblicazioni
+	 *  che il grafico avrà opportunamente preparato quando ha skinnato il frontend
+	 *  
+	 *  
+	 */
+	public function printme() {
+
+		$id 			= $this->data['id'];
+		pr($this->data);
+	
+		exit;
+		
+	}	
+	
+	
 	 
 }
 
