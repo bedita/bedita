@@ -202,8 +202,9 @@ abstract class FrontendController extends AppController {
 	protected function checkIsLogged() {	
 		$confGroups = Configure::read("authorizedGroups");
 		$groups = (!empty($confGroups))? $confGroups : ClassRegistry::init("Group")->getList(array("backend_auth" => 0)); 
-		if(!$this->BeAuth->isLogged()) { 
-			return $this->login($groups);
+		if(!$this->BeAuth->isLogged()) {
+			$frontendGroupsCanLoggin = (Configure::read("staging") === true)? array() : $groups; 
+			return $this->login($frontendGroupsCanLoggin);
 		}
 		if (!$this->BeAuth->isUserGroupAuthorized($groups)) {
 			$this->userErrorMessage(__("User not authorized to enter", true));
@@ -267,8 +268,11 @@ abstract class FrontendController extends AppController {
 		// set publication data for template
 		$this->set('publication', $this->publication);
 		
-		// if user hasn't permissions to access at the publication throws exception
-		if ( (empty($this->params["pass"][0]) || $this->params["pass"][0] != "logout") && !$this->publication["authorized"]) {
+		/* if user is unlogged and it's a staging site OR
+		 * if user hasn't permissions to access at the publication 
+		 * throws exception
+		 */
+		if ( (!$this->logged && Configure::read("staging") === true) || ((empty($this->params["pass"][0]) || $this->params["pass"][0] != "logout") && !$this->publication["authorized"])) {
 			if (!$this->logged)
 				$errorType = self::UNLOGGED;
 			else
