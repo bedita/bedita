@@ -24,7 +24,6 @@
 
 </head>
 <body>
-	
 
     {include file="../common_inc/modulesmenu.tpl"}
     
@@ -38,17 +37,9 @@
     
 	{include file="inc/menucommands.tpl" method="view" fixed = true}
 
-<form action="{$html->url('/webmarks/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
-<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
-
 	<div class="main">
 		
 		{include file="inc/form.tpl"}
 		
 	</div>
-
-	{include file="../common_inc/menuright.tpl"}
-
-</form>
-
-	
+{include file="../common_inc/menuright.tpl"}

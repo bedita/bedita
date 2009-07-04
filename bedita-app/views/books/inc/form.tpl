@@ -1,7 +1,10 @@
 {*
 ** books form template
 *}
-	
+
+<form action="{$html->url('/books/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
+
 	{include file="./inc/form_book_detail.tpl"}
 	
 	{include file="./inc/form_properties.tpl" comments=true}	
@@ -18,6 +21,4 @@
 
 	{include file="./inc/form_advanced_properties.tpl" el=$object}
 
-
-
-
+</form>

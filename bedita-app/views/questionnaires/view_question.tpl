@@ -23,8 +23,7 @@
 {include file="../common_inc/form_common_js.tpl"}
 
 </head>
-<body>
-	
+<body>	
 	
     {include file="../common_inc/modulesmenu.tpl"}
     
@@ -39,15 +38,8 @@
     
 	{include file="inc/menucommands.tpl" method="viewQuestion" fixed = true}
 
-<form action="{$html->url('/questionnaires/saveQuestion')}" method="post" name="updateForm" id="updateForm" class="cmxform">
-<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
-
 	<div class="main">
 		 {include file="inc/form_question.tpl"}
     </div>
     
 	{include file="../common_inc/menuright.tpl"}
-	
-</form>
-	
-	

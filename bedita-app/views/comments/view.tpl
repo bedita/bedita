@@ -1,13 +1,9 @@
-
 {$javascript->link("jquery/jquery.form")}
 
 {literal}
 <script type="text/javascript">
     $(document).ready(function(){
-		
-		openAtStart("#details,#altro");
-		$(openAtStart).prev(".tab").BEtabstoggle();
-		
+		openAtStart("#details");
     });
 </script>
 {/literal}
@@ -37,7 +33,7 @@ $(document).ready(function(){
 
 {include file="../common_inc/modulesmenu.tpl"}
 
-{include file="inc/menuleft.tpl"}
+{include file="inc/menuleft.tpl" method="view"}
 
 <div class="head">
 	
@@ -47,14 +43,7 @@ $(document).ready(function(){
 
 {assign var=objIndex value=0}
 
-
 {include file="inc/menucommands.tpl" fixed=true method="view"}
-
-
-<form action="{$html->url('/comments/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
-<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
-<input type="hidden" name="data[title]" value="{$object.title|default:''}" />
-<input type="hidden" name="data[nickname]" value="{$object.nickname|default:''}" />
 
 <div class="main">	
 	
@@ -62,10 +51,7 @@ $(document).ready(function(){
 		
 </div>
 
-
 {include file="../common_inc/menuright.tpl"}
 
-
-</form>
 
 

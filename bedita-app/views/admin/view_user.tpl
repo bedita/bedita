@@ -38,8 +38,6 @@
 
 </div>
 
-<form action="{$html->url('/admin/saveUser')}" method="post" name="userForm" id="userForm" class="cmxform">
-
 {include file="inc/menucommands.tpl" method="viewUser" fixed=true}
 
 <div class="main">
@@ -49,7 +47,5 @@
 </div>
 
 {include file="../common_inc/menuright.tpl"}
-
-</form>
 
 

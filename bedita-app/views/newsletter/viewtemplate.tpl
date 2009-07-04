@@ -39,18 +39,10 @@
 
 {include file="inc/menucommands.tpl" method="viewtemplate" fixed = true}
 
-<form action="{$html->url('/newsletter/saveTemplate')}" method="post" name="updateForm" id="updateForm" class="">
-<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
-
 <div class="main">	
 	
 	{include file="inc/form_template.tpl"}
 		
 </div>
-
-{include file="../common_inc/menuright.tpl"}
-
-</form>
-
-
+{include file="../common_inc/menuright.tpl"}
 

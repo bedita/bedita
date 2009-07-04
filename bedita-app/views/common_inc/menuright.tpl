@@ -16,7 +16,7 @@ Menu a DX
 <div class="quartacolonna">	
 	
 	<div class="tab"><h2>{t}Editors Notes{/t}</h2></div>
-<!-- old notes -->
+<!-- old notes 
 	<div id="editornotes" style="margin-top:-10px; padding:10px; background-color:white;">
 	{strip}
 		<label>{t}editor notes{/t}:</label>
@@ -25,31 +25,37 @@ Menu a DX
 		</textarea>
 	{/strip}
 	</div>
-<!-- end old notes -->
+ end old notes -->
+ 
+
+ 
 {bedev}
 	<div id="editornotes" style="margin-top:-10px; padding:10px; background-color:white;">
 	{*dump var=$object.EditorNote*}
 	{strip}
+
+		<table class="ultracondensed" style="width:100%">
+		<tr>
+			<td class="author">you</td>
+			<td class="date">now</td>
+			<td><img src="{$html->webroot}img/iconNotes.gif" alt="notes" /></td>
+		</tr>
+		</table>
+		<textarea name="data[note]" class="autogrowarea editornotes"></textarea>
+		<input type="submit" style="margin-bottom:10px; margin-top:5px" value="{t}send{/t}" />
+		
 	{if (!empty($object.EditorNote))}
-		{section name=p loop=$object.EditorNote|@sortby:"created"}
+		{section name=p loop=$object.EditorNote}
 		<table class="editorheader ultracondensed" style="width:100%">
 		<tr>
-			<td class="autor">{$object.EditorNote[p].user_created}</td>
+			<td class="author">{$object.EditorNote[p].creator|default:$object.EditorNote[p].user_created}</td>
 			<td class="date">{$object.EditorNote[p].created}</td>
 		</tr>
 		</table>
 		<p class="editornotes">{$object.EditorNote[p].description}</p>
 		{/section}
 	{/if}
-		<table class="ultracondensed" style="width:100%">
-		<tr>
-			<td class="autor">you</td>
-			<td class="date">now</td>
-			<td><img src="{$html->webroot}img/iconNotes.gif" alt="notes" /></td>
-		</tr>
-		</table>
-		<textarea name="data[note]" class="autogrowarea editornotes"></textarea>
-		<input type="submit" style="margin-top:5px" value="{t}send{/t}" />
+
 	
 	{/strip}
 	{include file="../common_inc/BEiconstest.tpl}	

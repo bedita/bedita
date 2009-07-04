@@ -63,7 +63,8 @@ $(document).ready(function() {
 {/literal}
 {/if}
 
-
+<form action="{$html->url('/newsletter/saveTemplate')}" method="post" name="updateForm" id="updateForm" class="">
+<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
 	<div class="tab"><h2>{t}Configuration{/t}</h2></div>
 	
@@ -183,8 +184,6 @@ ________________________________
 
 	
 	</fieldset>
-	
 
-	
-
+</form>
 

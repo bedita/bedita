@@ -95,9 +95,7 @@ $(document).ready(function() {
 	
 </div>
 
-
 {include file="inc/menucommands.tpl" method="viewmailgroup" fixed = true}
-
 
 <div class="main">	
 
@@ -211,15 +209,8 @@ $(document).ready(function() {
 		<textarea name="addsubscribers" id="addsubscribers" style="width:100%" class="autogrowarea"></textarea>
 </fieldset>
 
-
 </form>	
 	
 </div>
 
-
 {include file="../common_inc/menuright.tpl"}
-
-
-
-
-

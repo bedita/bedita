@@ -1,5 +1,3 @@
-
-
 </head>
 
 <body>
@@ -30,6 +28,4 @@
 
 	{include file="inc/list_invoices.tpl"}
 	
-
 </div>
-

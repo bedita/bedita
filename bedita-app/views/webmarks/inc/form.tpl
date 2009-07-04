@@ -19,6 +19,9 @@ var url="{$html->url('/webmarks/checkUrl')}";
 {/literal}
 </script>
 
+<form action="{$html->url('/webmarks/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
+
 {* title and description *}
 
 <div class="tab"><h2>{t}Title{/t}</h2></div>
@@ -90,3 +93,4 @@ var url="{$html->url('/webmarks/checkUrl')}";
 
 {include file="../common_inc/form_tags.tpl"}
 
+</form>

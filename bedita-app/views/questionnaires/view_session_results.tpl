@@ -25,7 +25,6 @@
 </head>
 <body>
 	
-	
     {include file="../common_inc/modulesmenu.tpl"}
     
 	{include file="inc/menuleft.tpl" method="viewQuestion"}
@@ -37,8 +36,7 @@
 		completed on <b>23 oct 2009 </b>at <b>12.24.15</b>
 		
     </div>
-    
-    
+
 	{include file="inc/menucommands.tpl" method="viewResults" fixed = true}
 
 <form action="{$html->url('/forms/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
@@ -100,12 +98,8 @@
 			<fieldset id="editor">
 					
 			</fieldset>
-			
-			
+		
     </div>
-    
-	{include file="../common_inc/menuright.tpl"}
-	
 </form>
-	
-	
+
+{include file="../common_inc/menuright.tpl"}

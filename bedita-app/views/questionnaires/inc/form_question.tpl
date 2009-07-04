@@ -103,6 +103,9 @@
 </script>
 {/literal}
 
+<form action="{$html->url('/questionnaires/saveQuestion')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
+
    <div class="tab"><h2>{t}Question detail{/t}</h2></div>
 
 		<fieldset id="question">
@@ -241,5 +244,4 @@
 
 	{include file="../common_inc/form_advanced_properties.tpl" el=$object}
 	
-
-	
+</form>

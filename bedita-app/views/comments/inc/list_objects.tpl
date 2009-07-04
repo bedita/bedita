@@ -1,5 +1,3 @@
-
-
 <script type="text/javascript">
 <!--
 var urlDelete = "{$html->url('delete/')}" ;
@@ -9,10 +7,8 @@ var URLBase = "{$html->url('index/')}" ;
 var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
 var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 
-
 {literal}
 $(document).ready(function(){
-
 
 	$("TABLE.indexList TD.cellList").click(function(i) { 
 		document.location = $(this).parent().find("a:first").attr("href"); 

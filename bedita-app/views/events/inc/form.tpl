@@ -2,6 +2,9 @@
 ** event form template
 *}
 
+<form action="{$html->url('/events/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
+
 	{include file="../common_inc/form_title_subtitle.tpl"}
 
 	{include file="../common_inc/form_properties.tpl" comments=true}
@@ -32,4 +35,4 @@
 	
 	{include file="../common_inc/form_permissions.tpl" el=$object recursion=true}
 	
-
+</form>

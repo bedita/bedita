@@ -86,56 +86,6 @@ function changeStatusTranslations() {
 	<input type="hidden" name="objects_selected" id="objects_selected"/>
 	
 
-	<table class="indexlist">
-	{capture name="theader"}
-		<tr>
-			<th></th>
-			<th>{$beToolbar->order('title', 'master title')}</th>
-			<th>{$beToolbar->order('LangText.title', 'title')}</th>
-			<th>{$beToolbar->order('object_type_id', 'Type')}</th>
-			<th>{$beToolbar->order('LangText.lang', 'Language')}</th>
-			<th>{$beToolbar->order('LangText.status', 'Status')}</th>
-		</tr>
-	{/capture}
-
-		{$smarty.capture.theader}
-	
-		{section name="i" loop=$translations}
-		
-		{assign var="oid" value=$translations[i].LangText.object_id}
-		{assign var="olang" value=$translations[i].LangText.lang}
-		{assign var="ot" value=$translations[i].BEObject.object_type_id}
-		{assign var="mtitle" value=$translations[i].BEObject.title}
-		
-		<tr class="obj {$translations[i].LangText.status}">
-			<td class="checklist">
-				<input  type="checkbox" name="object_chk" class="objectCheck" title="{$translations[i].LangText.id}" />
-			</td>
-			<td>
-				{$mtitle|default:'<i>[no title]</i>'|truncate:38:true} &nbsp;
-			</td>
-			<td><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations[i].LangText.title|default:'<i>[no title]</i>'|truncate:38:true}</a></td>
-			<td>
-				<span class="listrecent {$conf->objectTypes[$ot].model|lower}">&nbsp;</span>
-				{$conf->objectTypes[$ot].model}
-			</td>
-			<td>{$olang}</td>
-			<td>{$translations[i].LangText.status}</td>
-		</tr>
-		{sectionelse}
-			<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>
-		{/section}
-
-{if ($smarty.section.i.total) >= 10}
-	{$smarty.capture.theader}
-{/if}
-
-
-</table>
-
-<br />
-
-
 	
 <div class="tab"><h2>{t}filters{/t}</h2></div>
 <div>
@@ -169,6 +119,56 @@ function changeStatusTranslations() {
 {/if}
 	
 	</div>
+	<table class="indexlist">
+	{capture name="theader"}
+		<tr>
+			<th></th>
+			<th>{$beToolbar->order('title', 'master title')}</th>
+			<th>{$beToolbar->order('LangText.title', 'title')}</th>
+			<th>{$beToolbar->order('object_type_id', 'Type')}</th>
+			<th>{$beToolbar->order('LangText.lang', 'Language')}</th>
+			<th>{$beToolbar->order('LangText.status', 'Status')}</th>
+		</tr>
+	{/capture}
+
+		{$smarty.capture.theader}	
+	
+		{section name="i" loop=$translations}
+	
+
+		{assign var="oid" value=$translations[i].LangText.object_id}
+		{assign var="olang" value=$translations[i].LangText.lang}
+		{assign var="ot" value=$translations[i].BEObject.object_type_id}
+		{assign var="mtitle" value=$translations[i].BEObject.title}
+		
+		<tr class="obj {$translations[i].LangText.status}">
+			<td class="checklist">
+				<input  type="checkbox" name="object_chk" class="objectCheck" title="{$translations[i].LangText.id}" />
+			</td>
+			<td>
+				{$mtitle|default:'<i>[no title]</i>'|truncate:38:true} &nbsp;
+			</td>
+			<td><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations[i].LangText.title|default:'<i>[no title]</i>'|truncate:38:true}</a></td>
+			<td>
+				<span class="listrecent {$conf->objectTypes[$ot].model|lower}">&nbsp;</span>
+				{$conf->objectTypes[$ot].model}
+			</td>
+			<td>{$olang}</td>
+			<td>{$translations[i].LangText.status}</td>
+
+		</tr>
+		{sectionelse}
+			<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>
+		{/section}
+
+{if ($smarty.section.i.total) >= 10}
+	{$smarty.capture.theader}
+{/if}
+
+
+</table>
+
+<br />
 
 {if !empty($translations)}
 	

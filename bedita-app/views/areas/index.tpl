@@ -7,8 +7,7 @@
 
 <script type="text/javascript">
 <!--
-
-/* define urls for ajax calls. Used in module.areas.js */
+/* define urls for ajax calls. Used in webroot/js/module.areas.js */
 ajaxContentsUrl 		= "{$html->url('/areas/listContentAjax')}";
 ajaxSectionsUrl 		= "{$html->url('/areas/listSectionAjax')}";
 ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
@@ -35,14 +34,9 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 {/if}
 </script>
 
-
 </head>
 
-
-
 <body>
-
-
 
 {include file="../common_inc/modulesmenu.tpl"}
 
@@ -67,7 +61,6 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 <!--
 	<div class="tab"><h2>{t}Details{/t} of &nbsp; <span class="graced" style="font-size:1.5em" id="sectionTitle"></span></h2></div>
 -->
-	
 	
 	<fieldset style="padding:0px" id="properties">		
 	
@@ -123,7 +116,7 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 
 </div>
 
-{*include file="../common_inc/menuright.tpl"*}
-
 </form>
+
+{include file="../common_inc/menuright.tpl"}
 

@@ -13,7 +13,6 @@
 		margin-bottom:10px;
 	}
 
-
 </style>
 </head>
 
@@ -27,14 +26,9 @@
 
 <div class="head">
 	
-
-		
 		<h1>Overview</h1>
 
-
-
 </div> 
-
 
 <div class="mainfull" style="padding-right:0px; margin-right:0px;">
 	
@@ -107,8 +101,6 @@
 		{/if}
 
 		</table>
-
-	
 
 </div>
 </div>

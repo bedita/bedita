@@ -1,3 +1,7 @@
+<form action="{$html->url('/comments/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
+<input type="hidden" name="data[title]" value="{$object.title|default:''}" />
+<input type="hidden" name="data[nickname]" value="{$object.nickname|default:''}" />
 
 <div class="tab"><h2>comment#{$object.id} on {$object.ReferenceObject.title}</h2></div>
 
@@ -83,12 +87,5 @@
 
 {include file="../common_inc/form_geotag.tpl"}
 
-<div class="tab"><h2>{t}altro{/t}</h2></div>
-<fieldset id="altro">
-<ul>
-	<li><a href="{$html->url('/comments/index')}/ip_created:{$object.ip_created|default:''}">{t}see comments from this IP{/t}</a></li>
-	<li><a href="{$html->url('/comments/index')}/email:{$object.email|default:''}">{t}see comments from this email{/t}</a></li>
-	<li><a href="{$html->url('/comments/index')}/comment_object_id:{$object.object_id|default:''}">{t}see comments on this content{/t}</a></li>
-</ul>
-</fieldset>
+</form>
 

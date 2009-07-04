@@ -1,5 +1,3 @@
-
-
 </head>
 
 <body>
@@ -10,12 +8,8 @@
 
 {include file="inc/menucommands.tpl" method="templates" fixed=false}
 
-
-
 <div class="mainfull">
 
 	{include file="inc/list_templates.tpl"}
 	
-
 </div>
-

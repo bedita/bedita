@@ -1,3 +1,5 @@
+<form action="{$html->url('/admin/saveGroup')}" method="post" name="groupForm" id="groupForm" class="cmxform">
+
 <script type="text/javascript">
 {literal}
 $(document).ready(function(){
@@ -129,4 +131,4 @@ $(document).ready(function(){
 		
 </fieldset>
 
-
+</form>

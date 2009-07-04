@@ -1,5 +1,3 @@
-
-
 </head>
 
 <body>
@@ -12,12 +10,8 @@
 
 {include file="../common_inc/toolbar.tpl"}
 
-
-
 <div class="mainfull">
 
 	{include file="inc/list_objects_newsletter.tpl" method="index"}
 	
-
 </div>
-

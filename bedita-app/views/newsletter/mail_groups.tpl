@@ -16,11 +16,8 @@
 
 {include file="inc/menucommands.tpl" method="mailgroups"}
 
-
 <div class="mainfull">
 	
 {include file="inc/list_mail_groups.tpl" method="mailgroups"}
 
 </div>
-
-

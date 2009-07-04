@@ -38,11 +38,6 @@ function delGroupDialog(name,objectid) {
 </div>
 
 
-
-
-
-<form action="{$html->url('/admin/saveGroup')}" method="post" name="groupForm" id="groupForm" class="cmxform">
-
 {include file="inc/menucommands.tpl" method="groups" fixed=true}
 
 <div class="main">
@@ -50,7 +45,4 @@ function delGroupDialog(name,objectid) {
 	{include file="inc/form_groups.tpl"}
 
 </div>
-
-{include file="../common_inc/menuright.tpl"}
-
-</form>
+{include file="../common_inc/menuright.tpl"}

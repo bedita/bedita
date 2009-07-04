@@ -40,16 +40,7 @@ $(document).ready( function ()
 	
 </div>
 
-<form action="{$html->url('/tags/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
-
-<input type="hidden" name="data[id]" value="{$tag.id|default:''}"/>
-<input type="hidden" name="tags_selected[0]" value="{$tag.id|default:''}"/>
-<input type="hidden" name="data[name]" value="{$tag.name|default:''}"/>
-
 {include file="inc/menucommands.tpl" method="view" fixed=true}
-
-
-
 
 <div class="main">
 	
@@ -57,5 +48,4 @@ $(document).ready( function ()
 
 </div>
 
-</form>
-
+{include file="../common_inc/menuright.tpl"}

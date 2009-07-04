@@ -14,7 +14,6 @@
 	{$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
 
-
 <script type="text/javascript">
 	{literal}
 	$(document).ready( function ()
@@ -42,22 +41,11 @@
 
 {assign var=objIndex value=0}
 
-
 {include file="inc/menucommands.tpl" method="view" fixed = true}
-
-<form action="{$html->url('/bibliographies/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
-<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
 <div class="main">	
 	
 	{include file="inc/form.tpl"}
 		
 </div>
-
-
-{include file="../common_inc/menuright.tpl"}
-
-</form>
-
-
-
+{include file="../common_inc/menuright.tpl"}
