@@ -7,17 +7,16 @@ Menu a DX
 <script type="text/javascript">
 {literal}
 	$(document).ready( function (){
-		$("#editornotes").prev(".tab").BEtabstoggle();
+		$("#editornotes").prev(".tab").BEtabsopen();
 	});
 {/literal}
 </script>
 {/if}
 
 <div class="quartacolonna">	
-
 	
-	<div class="tab"><h2>{t}Notes{/t}</h2></div>
-			
+	<div class="tab"><h2>{t}Editors Notes{/t}</h2></div>
+<!-- old notes -->
 	<div id="editornotes" style="margin-top:-10px; padding:10px; background-color:white;">
 	{strip}
 		<label>{t}editor notes{/t}:</label>
@@ -25,49 +24,37 @@ Menu a DX
 		  {$object.note|default:''}
 		</textarea>
 	{/strip}
-		
-	{literal}
-	<script type="text/javascript">
-		$(document).ready(function(){
-			
-			$(".icons LI").css("cursor","pointer").mouseover(function() {
-				var myclass = $(this).attr("rel");
-				$(".secondacolonna .modules label").removeClass().addClass("{/literal}{$moduleName}{literal}").addClass(""+myclass+"");
-			});
-		});
-	</script>
-	{/literal}
-	
-	{* <a href="javascript:void(0)" onClick="$('.test').toggle()">test</a> *}
 	</div>
+<!-- end old notes -->
+{bedev}
+	<div id="editornotes" style="margin-top:-10px; padding:10px; background-color:white;">
+	{*dump var=$object.EditorNote*}
+	{strip}
+	{if (!empty($object.EditorNote))}
+		{section name=p loop=$object.EditorNote|@sortby:"created"}
+		<table class="editorheader ultracondensed" style="width:100%">
+		<tr>
+			<td class="autor">{$object.EditorNote[p].user_created}</td>
+			<td class="date">{$object.EditorNote[p].created}</td>
+		</tr>
+		</table>
+		<p class="editornotes">{$object.EditorNote[p].description}</p>
+		{/section}
+	{/if}
+		<table class="ultracondensed" style="width:100%">
+		<tr>
+			<td class="autor">you</td>
+			<td class="date">now</td>
+			<td><img src="{$html->webroot}img/iconNotes.gif" alt="notes" /></td>
+		</tr>
+		</table>
+		<textarea name="data[note]" class="autogrowarea editornotes"></textarea>
+		<input type="submit" style="margin-top:5px" value="{t}send{/t}" />
 	
-	
-	
-	<div class="test" style="display:none">
-		
-		<ul class="icons">
-			<li>ecco le varie icone di stato:</li>
-			<li rel="readonly">Readonly</li>
-			<li rel="fixedobject">Fixed</li>
-			<li rel="lock">Locked</li>
-			<li rel="future">Future</li>
-			<li rel="trashed">Trashed</li>
-			<li rel="concurrentuser">Concurrentuser</li>
-			<li rel="alert">Alert</li>
-			<li rel="error">Error</li>
-			<li rel="pending">Pending</li>
-			<li rel="unsent">Unsent</li>
-			<li rel="save">Save</li>
-		</ul>
-		
-		<input type="button" title="Io sono un test per la modale" rel="{$html->webroot}testmodal.html'" class="modalbutton" value="modal test example" />
-			
-			
-		<ul style="margin:10px 0px 10px 0px; border:1px solid gray; border-width:1px 0px 1px 0px">
-			<li><a href="javascript:$('.main .tab').BEtabsopen();" class="openclose">open all TABS</a></li>
-			<li><a href="javascript:$('.main .tab').BEtabsclose();" class="openclose">close all TABS</a></li>
-		</ul>	
-	
+	{/strip}
+	{include file="../common_inc/BEiconstest.tpl}	
 	</div>
-
+{/bedev}
 </div>
+
+
