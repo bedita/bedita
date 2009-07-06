@@ -30,7 +30,7 @@
  */
 class QuestionnaireResult extends BEAppObjectModel {
  	
-	public $actsAs = array("compactResult" => array("Answer","DateItem"));
+	public $actsAs = array("CompactResult" => array("Answer","DateItem"));
 	public $searchFields = array();
 	
 	protected $modelBindings = array( 
@@ -94,6 +94,14 @@ class QuestionnaireResult extends BEAppObjectModel {
 					throw new BeditaException(__("error saving compiling time",true));
 			}
 		}
+		
+		if (!empty($this->data["QuestionnaireResult"]["completed"])) {
+			$rating = $this->estimatedRating($this->id, $this->data["QuestionnaireResult"]["object_id"]);
+			if ($rating === false)
+				throw new BeditaException(__("error calculating rating", true));
+			if (!$this->saveField("rating",$rating))
+				throw new BeditaException(__("error saving rating",true));
+		}
 	}
 	
 	public function afterFind($results) {
@@ -114,6 +122,84 @@ class QuestionnaireResult extends BEAppObjectModel {
 		return $results;
 	}
 	
+	/**
+	 * calculate questionnaire result rating
+	 * 
+	 * @param $questionnaire_result_id
+	 * @param $questionnaire_id if null get it from questionnaire_result
+	 * @return integer rating
+	 */
+	public function estimatedRating($questionnaire_result_id, $questionnaire_id=null) {
+		if (empty($questionnaire_id)) {
+			$questionnaire_id = $this->field("object_id", array("id" => $questionnaire_result_id, "completed" => 1));
+		}
+		$relModel = ClassRegistry::init("RelatedObject");
+		$rel = $relModel->find("all", array(
+							"conditions" => array("id" => $questionnaire_id, "switch" => "question")
+						)
+					);
+		$countQuestions = count($rel);
+		if ($countQuestions == 0) {
+			return false;
+		}
+		$questionModel = ClassRegistry::init("Question");		
+		$correctedAnswers = 0;
+		foreach ($rel as $r) {
+			$question = $questionModel->find("first", array(
+					"conditions" => array("Question.id" => $r["RelatedObject"]["object_id"]),
+					"contain" => array(
+						"BEObject",
+						"QuestionAnswer" => array("Answer.questionnaire_result_id=".$questionnaire_result_id),
+						"Answer" => array("questionnaire_result_id=".$questionnaire_result_id." AND final = 1")
+					)
+				)
+			);
+			
+			// multiple question type => correct if all correct possible answers have been checked
+			if ($question["question_type"] == "multiple") {
+				$correct = true;
+				foreach ($question["QuestionAnswer"] as $qa) {
+					if ( ($qa["correct"] && empty($qa["Answer"])) || (!$qa["correct"] && !empty($qa["Answer"])) ) {
+						$correct = false;
+						break;
+					}
+				}
+			// single radio/pulldown queston type => correct if the only correct answer is checked
+			} elseif ($question["question_type"] == "single_radio" || $question["question_type"] == "single_pulldown") {
+				$correct = false;
+				foreach ($question["QuestionAnswer"] as $qa) {
+					if ($qa["correct"] && !empty($qa["Answer"])) {
+						$correct = true;
+						break;
+					}
+				}
+			// freetext question type => correct if it's not left blank
+			} elseif ($question["question_type"] == "freetext") {
+				$correct = (!empty($question["Answer"]))? true : false;
+			// checkopen/degree question type => correct like multiple and if a specified value for possible answers is equal at the answer
+			} elseif ($question["question_type"] == "checkopen" || $question["question_type"] == "degree") {
+				$correct = true;
+				foreach ($question["QuestionAnswer"] as $qa) {
+					if ( ($qa["correct"] && empty($qa["Answer"])) || (!$qa["correct"] && !empty($qa["Answer"])) ) {
+						$correct = false;
+						break;
+					} elseif ($qa["correct"] && !empty($qa["Answer"])) {
+						if ( !empty($qa["correct_value"]) && $qa["correct_value"] != $qa["Answer"]["answer"]) {
+							$correct = false;
+							break;
+						}
+					}
+				}
+			}
+			
+			if ($correct) {
+				$correctedAnswers++;	
+			}
+		}
+
+		return round(($correctedAnswers/$countQuestions)*100);
+		
+	}
 	
 	/**
 	 * called before answers are saved 
