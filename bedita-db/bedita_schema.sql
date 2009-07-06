@@ -806,6 +806,7 @@ CREATE TABLE question_answers (
   `question_id` INTEGER UNSIGNED NOT NULL, 
   `description` TEXT NULL, 
   `correct` BOOL NULL, 
+  `correct_value` VARCHAR(255) NULL DEFAULT NULL,
   `priority` INTEGER UNSIGNED NULL,
   PRIMARY KEY(id),
   KEY `question_id_idx` (`question_id`),
