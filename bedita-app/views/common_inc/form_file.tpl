@@ -2,6 +2,8 @@
 ** detail of media item
 *}
 
+{$javascript->link("swfobject",false)}
+
 {if (isset($object)) and (!empty($object.path))}
 
 <div class="tab"><h2>{t}File{/t}</h2></div>
@@ -28,17 +30,16 @@
 		
 
 		
-	{elseif ($object.provider|default:false)}
-		
+	{elseif strtolower(($object.ObjectType.name) == "video")}
 	
-		{assign_associative var="params" presentation="full"}
-		{assign_associative var="htmlAttr" width=$conf->media.video.width height=$conf->media.video.height}
+		{assign_associative var="params" presentation="full" useProviderPlayer="true"}
+		{assign_associative var="htmlAttr" width=$conf->media.video.width height=$conf->media.video.height id="multimediaitemvideo"}
 		
 		{$beEmbedMedia->object($object,$params,$htmlAttr)}
-	
+		<div id="multimediaitemvideo">
+		</div>
 		
 	{elseif strtolower($object.ObjectType.name) == "audio"}
-	
 	
 		<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
 			<img src="{$session->webroot}img/mime/{$object.mime_type}.gif" />
@@ -56,8 +57,6 @@
 		
 	{elseif ($object.mime_type == "application/x-shockwave-flash")}
 
-		
-		
 		<embed 
 			src		= "{$conf->mediaUrl}{$object.path}" 
 			width	= "500"
@@ -66,8 +65,7 @@
 			allowfullscreen = "true"
 			flashvars = "backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0x000000&overstretch=false&searchbar=false&autostart=false"
 		/>
-				
-		
+			
 	{else}
 			
 		<a href="{$conf->mediaUrl}{$object.path}" target="_blank">

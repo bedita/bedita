@@ -547,7 +547,7 @@ $config['validate_resorce'] = array(
 	'mime'	=> array(
 				'Image'			=> array('/image\/\.*/'),
 				'Audio'			=> array('/audio\/\.*/'),
-				'Video'			=> array('/video\/\.*/'),
+				'Video'			=> array('/video\/\.*/','/application\/flash-video/'),
 				'BEFile'		=> array('/application\/\.*/', '/text\/\.*/', '/beexternalsource/')
 				)
 ) ;

@@ -164,6 +164,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	 */
 	private function showVideo($obj, $params, $htmlAttributes)
 	{
+	
 		if (!preg_match(Configure::read("validate_resorce.URL"), $obj["path"])) {
 			$obj['path'] = $this->_conf["url"] . $obj["path"]; 
 		}
@@ -179,7 +180,7 @@ class BeEmbedMediaHelper extends AppHelper {
 				}
 			}
 		} elseif ($params["presentation"] == "full") {
-			$output = $this->MediaProvider->embed($obj, $htmlAttributes);
+			$output = $this->MediaProvider->embed($obj, $params, $htmlAttributes);
 		} elseif ($params["presentation"] == "link") {
 			$src = $this->MediaProvider->sourceEmbed($obj);
 			$output = (!empty($URLonly))? $src : $this->Html->link($obj['title'],$src, $htmlAttributes);

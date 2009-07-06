@@ -30,7 +30,7 @@
  */
 class MediaProviderHelper extends AppHelper {
 	
-	var $helpers = array('Html','Youtube','Blip','Vimeo');
+	var $helpers = array('Html','Youtube','Blip','Vimeo','BeEmbedFlash');
 	
 	var $conf = null ;
 
@@ -54,25 +54,40 @@ class MediaProviderHelper extends AppHelper {
 	/**
 	 * get embed video
 	 */
-	function embed(&$obj, $attributes = array() ) {
-		if (!$helperName = $this->getHelperName($obj))
-			return "";
-			
-		return $this->{$helperName}->embed($obj, $attributes) ;
+	function embed(&$obj, $params = array(), $attributes = array() ) {
+		
+		//caso in cui non esiste un helper specifico per gestire il tipo di video
+		if (!$helperName = $this->getHelperName($obj)){
+			$obj['path'] = ($this->checkURL($obj['path'])) ? $obj['path'] : Configure::read('mediaUrl').$obj['path'];
+			return  $this->BeEmbedFlash->embed($obj, $params, $attributes);
+		}
+		
+		//esiste l'helper ed  stato l'uso del player remoto specifico 
+		if (!empty($params['useProviderPlayer'])) {
+			return $this->{$helperName}->embed($obj, $attributes);
+		}else {
+			//esiste l'helper, ma non essendo stato forzato il player esterno prova a riprodurlo usando prima il player interno
+			$obj['path'] = $this->sourceEmbed($obj);
+			$res = $this->BeEmbedFlash->embed($obj, $params, $attributes);
+			if ( $res === false ) {
+				$res =  $this->{$helperName}->embed($obj, $attributes) ;
+			}
+			return $res;
+		}
 	}
 	
 	/**
 	 * get source url
 	 */
-	function sourceEmbed(&$obj ) {
+	function sourceEmbed(&$obj) {
 		if (!$helperName = $this->getHelperName($obj))
 			return "";
-		
-		return $this->{$helperName}->sourceEmbed($obj) ;
+			
+		return $this->{$helperName}->sourceEmbed($obj);
 	}
 	
 	private function getHelperName(&$obj) {
-		if(!isset($obj['provider'])) 
+		if(empty($obj['provider'])) 
 			return false ;
 		$helperName = Inflector::camelize($obj['provider']);
 		if (!isset($this->{$helperName})) {
@@ -80,6 +95,15 @@ class MediaProviderHelper extends AppHelper {
 		}
 		return $helperName;
 	}
+	
+	private function checkURL($url) {
+		foreach (Configure::read('validate_resorce.allow') as $reg) {
+			if(preg_match($reg, $url)) 
+				return true;
+		}
+		return false;
+	}
+	
 }
 
 ?>

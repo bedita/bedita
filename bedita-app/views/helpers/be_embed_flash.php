@@ -1,0 +1,105 @@
+<?php
+
+class BeEmbedFlashHelper extends AppHelper {
+	
+	private $heightDef = ""; 
+	private $widthDef = "";
+	private $playerDefault = ""; 
+	
+	public function embedSwf ($swfUrl, $attributes = array(), $flashvars = array(), $params = array()) {
+		
+		$width = (!empty($attributes['width'])) ? $attributes['width'] : $this->widthDef;
+		$height = $attributes['height'];
+		$id = $attributes['id'];
+		
+		if (!empty($attributes['src'])) {
+			unset($attributes['src']);
+		}
+		
+		$fv  = json_encode($flashvars);
+		$par = json_encode($params);
+		$att = json_encode($attributes);
+		
+		$output = '<script type="text/javascript">swfobject.embedSWF("'.$swfUrl.'","'.$id.'","'.$width.'","'.$height.'", "9.0.0","expressInstall.swf",'.$fv.','.$par.','.$att.');</script>';
+		return $output;
+	}
+	
+	
+	public function embedFlv ( $flvUrl, $attributes = array(), $flashvars = array(), $params = array(), $provider = array()) {
+		$appPath = (defined("BEDITA_CORE_PATH"))? BEDITA_CORE_PATH . DS : APP;
+		$beditaUrl = Configure::read('beditaUrl');
+		$this->playerDefault = $beditaUrl."/swf/flowplayer.swf";
+		$swfUrl = empty($attributes['src']) ? $this->playerDefault : $beditaUrl."/swf/".$attributes['src'] ;
+
+		$pathParts = pathinfo($swfUrl);
+		$methodName = "embed".Inflector::camelize($pathParts['filename']);
+		
+		if (method_exists($this, $methodName ) ) {
+			return $this->$methodName($swfUrl, $flvUrl, $attributes, $flashvars, $params);
+		} 		
+		return $this->embedSwf( $swfUrl , $attributes, $flashvars, $params );		
+	}
+	
+	
+	
+	public function embed ($obj , $params, $htmlAttributes ) {
+		
+		$flashvars = empty($params['flashvars']) ? array() : $params['flashvars'];	
+		$flashParams = empty($params['params']) ? array() : $params['params'];	
+		
+		//if ($obj['provider'] =='youtube')
+		//	$provider = array('provider'=>$obj['provider'], 'videoId'=>obj['uid']);
+			
+		$path_parts = pathinfo($obj['path']);
+		if (empty($path_parts['extension']))
+			return false;
+		if ($path_parts['extension'] == 'flv') {			
+			return $this->embedFlv($obj['path'], $htmlAttributes, $flashvars, $flashParams /*, $provider*/);	
+		} else if ($path_parts['extension'] == 'swf') {
+			 return $this->embedSwf($obj['path'], $htmlAttributes, $flashvars, $flashParams);
+		} else {
+			return false;
+		}
+		
+	} 
+	
+	private function embedFlowplayer($swfUrl, $flvUrl, $attributes, $flashvars, $params, $provider = array()) {
+		$flashvars['config'] = array();
+		$stringPlugins='';
+		
+		if (empty($flashvars['clip'])) {
+			$flashvars['config'] = "{'clip':{'url':'".$flvUrl."'}}";
+		} else {
+			$stringClip = json_encode($flashvars['clip']);
+			
+			if (!empty($flashvars['plugins'])) {
+				$stringPlugins = json_encode($flashvars['plugins']);
+				
+				$flashvars['config'] = "{'clip':".$stringClip.", 'plugins':".$stringPlugins."}";
+			}else  {
+				$flashvars['config'] = "{'clip':".$stringClip."}";
+			}
+			
+			
+			unset($flashvars['clip']);
+			unset($flashvars['plugins']);
+		}
+		
+		return $this->embedSwf( $swfUrl , $attributes, $flashvars, $params );
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+?>
