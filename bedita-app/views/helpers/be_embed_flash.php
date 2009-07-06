@@ -68,23 +68,20 @@ class BeEmbedFlashHelper extends AppHelper {
 		$stringPlugins='';
 		
 		if (empty($flashvars['clip'])) {
-			$flashvars['config'] = "{'clip':{'url':'".$flvUrl."'}}";
-		} else {
+			$flashvars['config'] = "{'clip':{'url':'".$flvUrl."'}";
+		}else{
 			$stringClip = json_encode($flashvars['clip']);
-			
-			if (!empty($flashvars['plugins'])) {
-				$stringPlugins = json_encode($flashvars['plugins']);
-				
-				$flashvars['config'] = "{'clip':".$stringClip.", 'plugins':".$stringPlugins."}";
-			}else  {
-				$flashvars['config'] = "{'clip':".$stringClip."}";
-			}
-			
-			
-			unset($flashvars['clip']);
-			unset($flashvars['plugins']);
+			$flashvars['config'] = "{'clip':".$stringClip;
 		}
 		
+		if (!empty($flashvars['plugins'])) {
+			$stringPlugins = json_encode($flashvars['plugins']);
+			$flashvars['config'] = $flashvars['config'].", 'plugins':".$stringPlugins;
+		}
+		
+		$flashvars['config'] = $flashvars['config']."}";
+		unset($flashvars['clip']);
+		unset($flashvars['plugins']);
 		return $this->embedSwf( $swfUrl , $attributes, $flashvars, $params );
 	}
 	
