@@ -17,15 +17,18 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 	
 	{if $module_modify eq '1'}
 	<div class="insidecol">
-		
+
+
+
+	
 		{if $method == "viewUser"}
 		
-			<input type="submit" id="submit" name="save" class="submit" 
+			<input class="bemaincommands" type="button" name="save" onClick="$('#userForm').submit()" 
 			value="{if isset($userdetail)}{t}Save{/t}{else}{t}create{/t}{/if}" />
-		
+
 		{elseif $method == "groups"}
 		
-			<input type="submit" name="save" class="submit" 
+			<input class="bemaincommands" type="button" name="save" onClick="$('#groupForm').submit()" 
 			value="{if isset($group)}{t}Modify{/t}{else}{t}create group{/t}{/if}" />
 		
 		

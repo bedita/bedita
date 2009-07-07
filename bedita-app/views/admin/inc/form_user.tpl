@@ -1,5 +1,5 @@
 <form action="{$html->url('/admin/saveUser')}" method="post" name="userForm" id="userForm" class="cmxform">
-
+			
 <div class="tab"><h2>{t}User details{/t}</h2></div>
 
 <fieldset id="details">	
