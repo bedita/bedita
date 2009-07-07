@@ -33,6 +33,6 @@
 
 </form>
 	{bedev}
-	{include file="../common_inc/form_print.tpl" el=$object recursion=true}
+	{include file="../common_inc/form_print.tpl"}
 	{/bedev}
 	
