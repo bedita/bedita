@@ -204,6 +204,37 @@ class PagesController extends AppController {
 			$this->set("itemsList", ClassRegistry::init("Group")->find('list', array("order" => "name")));
 		}
 	}
+	
+	/**
+	 * save editor note
+	 * if it fails throw BeditaAjaxException managed like json object
+	 */
+	public function saveNote() {
+		$this->ajaxCheck();
+		$this->Transaction->begin();
+		try {
+			$editorNoteModel = ClassRegistry::init("EditorNote");
+			$this->saveObject($editorNoteModel);
+			$this->Transaction->commit();
+			$this->set("data", array("id" => $editorNoteModel->id));
+			$this->view = "View";
+			$this->render("json");
+		} catch (BeditaException $ex) {
+			throw new BeditaAjaxException(__("Error saving note", true), array("output" => "json"));
+		}
+	}
+	
+	/**
+	 * load an editor
+	 */
+	public function loadNote() {
+		$this->ajaxCheck();
+		$editorNoteModel = ClassRegistry::init("EditorNote");
+		$this->set("note", $editorNoteModel->find("first", array(
+									"conditions" => array("EditorNote.id" => $this->params["form"]["id"]))
+								)
+					);
+	}
 
 	private function ajaxCheck() {
 		if (!$this->RequestHandler->isAjax()) {

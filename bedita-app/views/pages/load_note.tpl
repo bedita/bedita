@@ -1,0 +1,1 @@
+{include file="../common_inc/single_note.tpl"}

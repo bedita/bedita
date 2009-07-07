@@ -655,8 +655,8 @@ class BeditaAnnotationModel extends BEAppObjectModel {
 	); 
 	
 	protected $modelBindings = array( 
-		"detailed" =>  array("BEObject" => array("ObjectType"), "ReferenceObject"),
-		"default" =>  array("BEObject" => array("ObjectType"), "ReferenceObject"),
+		"detailed" =>  array("BEObject" => array("ObjectType","UserCreated"), "ReferenceObject"),
+		"default" =>  array("BEObject" => array("ObjectType","UserCreated"), "ReferenceObject"),
 		"minimum" => array("BEObject" => array("ObjectType"))
 	);
 	
