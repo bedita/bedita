@@ -8,6 +8,7 @@ Menu a DX
 var urlLoadNote = "{$html->url('/pages/loadNote')}";
 var urlDelNote = "{$html->url('/pages/deleteNote')}";
 var comunicationErrorMsg = "{t}Comunication error{/t}";
+var confirmDelNoteMsg = "{t}Are you sure that you want to delete the note?{/t}";
 
 {literal}
 $(document).ready( function (){
@@ -28,27 +29,28 @@ $(document).ready( function (){
 	$("#listNote").find("input[@name=deletenote]").click(function() {
 		var tr = $(this).parents("tr:first");
 		var postdata = {id: $(this).attr("rel")};
-		$.ajax({
-			type: "POST",
-			url: urlDelNote,
-			data: postdata,
-			dataType: "json",
-			beforeSend: function() {$("#noteloader").show();},
-			success: function(data){
-				if (data.errorMsg) {
-					alert(data.errorMsg);
+		if (confirm(confirmDelNoteMsg)) {
+			$.ajax({
+				type: "POST",
+				url: urlDelNote,
+				data: postdata,
+				dataType: "json",
+				beforeSend: function() {$("#noteloader").show();},
+				success: function(data){
+					if (data.errorMsg) {
+						alert(data.errorMsg);
+						$("#noteloader").hide();
+					} else {
+						$("#noteloader").hide();
+						tr.remove();
+					}
+				},
+				error: function() {
+					alert(comunicationErrorMsg);
 					$("#noteloader").hide();
-				} else {
-					$("#noteloader").hide();
-					tr.remove();
 				}
-			},
-			error: function() {
-				alert(comunicationErrorMsg);
-				$("#noteloader").hide();
-			}
-		});
-					
+			});
+		}
 	});
 });	
 
