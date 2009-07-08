@@ -40,13 +40,16 @@ class HomeController extends AppController {
 	 	$user = $this->Session->read("BEAuthUser");
 	 	$lastModBYUser = array();
 	 	$lastMod = array();
+	 	$excludedObjectTypes = array($conf->objectTypes["editornote"]["id"]);
+	 	if (!empty($conf->objectTypes["questionnaireresult"]["id"]))
+	 		$excludedObjectTypes[] = $conf->objectTypes["questionnaireresult"]["id"];
 	 	
 	 	$lastModBYUser = $this->BEObject->find("all", array(
 		 								"contain" 		=> array("ObjectType"),
 		 								"fields"		=> array("id", "title", "modified", "object_type_id", "ObjectType.module"),
 		 								"conditions" 	=> array(
 		 														"user_modified = '" . $user["id"] . "'",
-	 															"object_type_id != " . $conf->objectTypes["link"]["id"]
+	 															'NOT' => array('object_type_id' => $excludedObjectTypes)
 	 														),
 		 								"order"			=> array("modified DESC"),
 		 								"limit"			=> 5
@@ -57,7 +60,7 @@ class HomeController extends AppController {
 		 								"contain" 		=> array("ObjectType"),
 		 								"fields"		=> array("id", "title", "modified", "object_type_id", "ObjectType.module"),
 		 								"conditions" 	=> array(
-	 															"object_type_id != " . $conf->objectTypes["link"]["id"]
+	 															'NOT' => array('object_type_id' => $excludedObjectTypes)
 	 														),
 	 									"order"			=> array("modified DESC"),
 		 								"limit"			=> 10
