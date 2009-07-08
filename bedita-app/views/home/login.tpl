@@ -64,6 +64,7 @@ $().ready(function() {
 </div>
 
 <div class="quartacolonna" style="border-left:1px solid gray; padding:120px 0px 0px 10px; width:420px; left:440px; top:20px;">
+{bedev}
 <label class="block"><a href='javascript:void(0)' onClick="$('#pswforget').toggle('fast')">{t}Forgotten username or password?{/t}</a></label>
 <div id="pswforget" style="display:none">
 	{t}Write your email here{/t}:&nbsp;
@@ -75,7 +76,7 @@ $().ready(function() {
 	{if isset($conf->projectAdmin)}
 	{t}or{/t} <label><a href="mailto:{$conf->projectAdmin}">{t}contact the project admin{/t}</a></label>{/if}
 </div>
-
+{/bedev}
 
 </div>
 
