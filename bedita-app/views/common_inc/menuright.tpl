@@ -55,7 +55,7 @@ function showNoteResponse(data) {
  
 {bedev}
 	<div id="editornotes" style="margin-top:-10px; padding:10px; background-color:white;">
-	{*dump var=$object.EditorNote*}
+	{*dump var=$object.EditorNote|@sortby:'id'*}
 	{strip}
 
 		<table class="ultracondensed" style="width:100%">
