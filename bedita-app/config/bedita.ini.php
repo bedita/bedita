@@ -38,6 +38,8 @@ $config["userVersion"] = "BEdita 3.0"; // don't override
 
 $config["majorVersion"] = "3.0.beta2"; // don't override -- admin/system
 
+$config["helpBaseUrl"] = "http://help.bedita.com/v30/"; // don't override -- 
+
  /**
  ** ******************************************
  **  FileSystem Paths, URIs, Files defaults
