@@ -238,6 +238,23 @@ class PagesController extends AppController {
 								)
 					);
 	}
+	
+	public function deleteNote() {
+		$this->ajaxCheck();
+		if (empty($this->params["form"]["id"]))
+			throw new BeditaAjaxException(__("Error deleting note, missing id", true), array("output" => "json"));
+		
+		$this->data["id"] = $this->params["form"]["id"];
+		try {
+			$objectsListDeleted = $this->deleteObjects("EditorNote");
+			$this->eventInfo("editor note $objectsListDeleted deleted");
+			$this->set("data", array("id" => $objectsListDeleted));
+			$this->view = "View";
+			$this->render("json");
+		} catch (BeditaException $ex) {
+			throw new BeditaAjaxException(__("Error deleting note", true), array("output" => "json"));
+		}
+	}
 
 	private function ajaxCheck() {
 		if (!$this->RequestHandler->isAjax()) {

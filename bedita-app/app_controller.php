@@ -545,7 +545,7 @@ class AppController extends Controller
 			}
 
 			if ($model != "Stream") {
-				if(!$this->{$model}->delete($id))
+				if(!ClassRegistry::init($model)->delete($id))
 					throw new BeditaException(__("Error deleting object: ", true) . $id);
 			} else {
 				if(!$this->BeFileHandler->del($id))

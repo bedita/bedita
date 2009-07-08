@@ -4,22 +4,53 @@ Menu a DX
 *}
 
 
-
-
 <script type="text/javascript">
 var urlLoadNote = "{$html->url('/pages/loadNote')}";
-{literal}
-	$(document).ready( function (){
-		$("#editornotes").prev(".tab").BEtabsopen();
+var urlDelNote = "{$html->url('/pages/deleteNote')}";
+var comunicationErrorMsg = "{t}Comunication error{/t}";
 
-		var optionsNoteForm = {
-			beforeSubmit: function() {$("#noteloader").show();},
-			success: showNoteResponse,
+{literal}
+$(document).ready( function (){
+	$("#editornotes").prev(".tab").BEtabsopen();
+
+	var optionsNoteForm = {
+		beforeSubmit: function() {$("#noteloader").show();},
+		success: showNoteResponse,
+		dataType: "json",
+		resetForm: true,
+		error: function() {
+			alert(comunicationErrorMsg);
+			$("#noteloader").hide();
+		}
+	}; 
+	$("#saveNote").ajaxForm(optionsNoteForm);
+	
+	$("#listNote").find("input[@name=deletenote]").click(function() {
+		var tr = $(this).parents("tr:first");
+		var postdata = {id: $(this).attr("rel")};
+		$.ajax({
+			type: "POST",
+			url: urlDelNote,
+			data: postdata,
 			dataType: "json",
-			resetForm: true
-		}; 
-		$("#saveNote").ajaxForm(optionsNoteForm);
-	});	
+			beforeSend: function() {$("#noteloader").show();},
+			success: function(data){
+				if (data.errorMsg) {
+					alert(data.errorMsg);
+					$("#noteloader").hide();
+				} else {
+					$("#noteloader").hide();
+					tr.remove();
+				}
+			},
+			error: function() {
+				alert(comunicationErrorMsg);
+				$("#noteloader").hide();
+			}
+		});
+					
+	});
+});	
 
 function showNoteResponse(data) {
 	if (data.errorMsg) {
@@ -28,7 +59,7 @@ function showNoteResponse(data) {
 	} else {
 		var emptyDiv = "<div><\/div>";
 		$(emptyDiv).load(urlLoadNote, data, function() {
-			$("#listNote").append(this);
+			$("#listNote").prepend(this);
 			$("#noteloader").hide();
 		});
 	}
@@ -55,7 +86,7 @@ function showNoteResponse(data) {
  
 {bedev}
 	<div id="editornotes" style="margin-top:-10px; padding:10px; background-color:white;">
-	{*dump var=$object.EditorNote|@sortby:'id'*}
+	{*dump var=$object.EditorNote|@array_reverse*}
 	{strip}
 
 		<table class="ultracondensed" style="width:100%">
@@ -75,9 +106,9 @@ function showNoteResponse(data) {
 	
 		<div id="listNote">
 		{if (!empty($object.EditorNote))}
-			{section name=p loop=$object.EditorNote}
-				{include file="../common_inc/single_note.tpl" note=$object.EditorNote[p]}
-			{/section}
+			{foreach from=$object.EditorNote|@array_reverse item="note"}
+				{include file="../common_inc/single_note.tpl"}
+			{/foreach}
 		{/if}
 		</div>
 
