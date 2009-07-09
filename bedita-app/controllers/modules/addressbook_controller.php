@@ -43,7 +43,7 @@ class AddressbookController extends ModulesController {
 		$filter["Card.country"] = "";
 		$filter["Card.company_name"] = "";
 		$filter["object_user"] = "";
-		
+		$filter["count_annotation"] = "EditorNote";
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim); 
 
 		$categories = $this->Category->find("all", array(

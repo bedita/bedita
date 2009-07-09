@@ -35,7 +35,8 @@ class WebmarksController extends ModulesController {
 		$conf  = Configure::getInstance() ;
 		$filter = array(
 			'object_type_id'=>$conf->objectTypes['link']['id'],
-			'Link.*'=>""
+			'Link.*'=>"",
+			'count_annotation' => 'EditorNote'
 		);
 		$this->paginatedList($id, @$filter, $order, $dir, $page, $dim);
 		

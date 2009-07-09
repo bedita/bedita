@@ -92,7 +92,7 @@ $(document).ready(function(){
 			<td>{if empty($objects[i].user_id)}{t}no{/t}{else}{t}yes{/t}{/if}</td>
 			<td>{$objects[i].country}</td>
 			<td>{$objects[i].id}</td>
-			<td>{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
+			<td>{if $objects[i].num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 		</tr>
 		
 		

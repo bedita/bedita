@@ -96,7 +96,7 @@ $(document).ready(function(){
 				<input type="button" value="go" onclick="window.open('{$objects[i].url|default:''}','_blank')" />	
 			</td>
 			
-			<td>{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
+			<td>{if $objects[i].num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 		</tr>
 		
 		

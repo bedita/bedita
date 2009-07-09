@@ -90,7 +90,7 @@ $(document).ready(function(){
 		</td>
 		<td style="text-align:center">{$objects[i].status|upper}</td>
 		<td>{$objects[i].modified|date_format:'%d-%m-%y'}</td>
-		<td>{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
+		<td>{if $objects[i].num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 	</tr>
 	
 	{sectionelse}

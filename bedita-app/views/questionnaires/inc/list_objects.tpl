@@ -86,7 +86,7 @@ $(document).ready(function(){
 			<td>{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
 			<td style="text-align:center">12</td>
-			<td>{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
+			<td>{if $objects[i].num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 			<td class="go">
 				<a class="BEbutton" href="{$html->url('index_sessions_results/')}{$objects[i].id}">{t}view results{/t}</a>
 			</td>

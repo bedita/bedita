@@ -32,6 +32,7 @@ class QuestionnairesController extends ModulesController {
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
     	$filter["object_type_id"] = Configure::read("objectTypes.questionnaire.id");
+    	$filter["count_annotation"] = array("EditorNote");
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 	}
 	
@@ -93,6 +94,7 @@ class QuestionnairesController extends ModulesController {
 			$filter["edu_level"] = $this->passedArgs["edu_level"];
     	$filter["object_type_id"] = Configure::read("objectTypes.question.id");
     	$filter["Question.*"] = "";
+    	$filter["count_annotation"] = array("EditorNote");
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 	 }
 	 

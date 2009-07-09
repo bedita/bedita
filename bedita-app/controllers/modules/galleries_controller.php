@@ -38,7 +38,7 @@ class GalleriesController extends ModulesController {
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 10) {
 		$conf  = Configure::getInstance() ;
 		$filter["object_type_id"] = $conf->objectTypes['gallery']["id"];
-		$filter["count_annotation"] = "Comment";
+		$filter["count_annotation"] = array("Comment","EditorNote");
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 	}
 

@@ -75,7 +75,7 @@ $(document).ready(function(){
 				{$beToolbar->order('num_of_comment', '', 'iconComments.gif', $htmlAttributes)}
 			</th>			
 			<th>{$beToolbar->order('lang', 'lang')}</th>
-			<th>{$beToolbar->order('note', 'notes')}</th>
+			<th>{$beToolbar->order('num_of_editor_note', 'notes')}</th>
 		</tr>
 		</thead>
 	{/capture}
@@ -113,7 +113,7 @@ $(document).ready(function(){
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
 			<td style="text-align:center">{$objects[i].num_of_comment|default:0}</td>
 			<td>{$objects[i].lang}</td>
-			<td>{if $objects[i].note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
+			<td>{if $objects[i].num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 		</tr>
 		
 		

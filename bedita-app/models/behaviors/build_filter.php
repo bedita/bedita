@@ -115,12 +115,36 @@ class BuildFilterBehavior extends ModelBehavior {
 	}
 	
 	private function count_annotationFilter($value) {
-		$annotationModel = ClassRegistry::init($value);
-		$refObj_type_id = Configure::read("objectTypes." . strtolower($annotationModel->name) . ".id");
-		$this->fields .= ", COUNT(`" . $annotationModel->name . "`.id) AS num_of_" . Inflector::underscore($annotationModel->name);
-		$this->from = " LEFT OUTER JOIN annotations AS `" . $annotationModel->name . "` ON `BEObject`.id=`" . $annotationModel->name . "`.object_id
-				LEFT OUTER JOIN objects AS `RefObj`ON (`RefObj`.id = `" . $annotationModel->name . "`.id AND `RefObj`.object_type_id=" . $refObj_type_id . ")"
-				. $this->from;
+		if (!is_array($value)) {
+			$value = array($value);
+		}
+		
+		if (!empty($this->filter["object_type_id"])) {
+			$object_type_id = $this->filter["object_type_id"];
+		} elseif (!empty($this->filter["BEObject.object_type_id"])) {
+			$object_type_id = $this->filter["BEObject.object_type_id"];
+		}
+		
+		foreach ($value as $key => $annotationType) {
+			$annotationModel = ClassRegistry::init($annotationType);
+			$refObj_type_id = Configure::read("objectTypes." . strtolower($annotationModel->name) . ".id");
+			$numOf = "num_of_" . Inflector::underscore($annotationModel->name);
+			$this->fields .= ", SUM(" . $numOf . ") AS " . $numOf;
+			$from = " LEFT OUTER JOIN (
+						SELECT DISTINCT `BEObject`.id, COUNT(`" . $annotationModel->name . "`.id) AS " . $numOf ."
+						FROM objects AS `BEObject` 
+						LEFT OUTER JOIN annotations AS `" . $annotationModel->name . "` ON `BEObject`.id=`" . $annotationModel->name . "`.object_id
+						RIGHT OUTER JOIN objects AS `RefObj`ON (`RefObj`.id = `" . $annotationModel->name . "`.id AND `RefObj`.object_type_id=" . $refObj_type_id . ")
+					";
+			if (!empty($object_type_id)) {
+				$from .= (is_array($object_type_id))? "WHERE `BEObject`.object_type_id IN (" . implode(",", $object_type_id) . ")" : "WHERE `BEObject`.object_type_id=".$object_type_id;
+			}
+			
+			$from .= " GROUP BY `BEObject`.id
+					) AS `".$annotationModel->name."` ON `".$annotationModel->name."`.id = `BEObject`.id";
+			
+			$this->from = $from . $this->from;
+		}
 	}
 	
 	private function mediatypeFilter() {
