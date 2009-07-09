@@ -223,7 +223,8 @@ class PagesController extends AppController {
 			$this->view = "View";
 			$this->render("json");
 		} catch (BeditaException $ex) {
-			throw new BeditaAjaxException(__("Error saving note", true), array("output" => "json"));
+			$errorMsg = "Error saving note";
+			throw new BeditaAjaxException(__("Error saving note", true), array_merge($editorNoteModel->validationErrors, array("output" => "json")));
 		}
 	}
 	

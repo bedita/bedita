@@ -34,5 +34,13 @@ class EditorNote extends BeditaAnnotationModel
 	
 	var $actsAs = array();
 	
+	var $validate = array(
+    	'description' => array( 
+        	'rule' => 'notEmpty',
+        	'message' => 'This field cannot be left blank'
+    	)
+    );
+	
+	
 }
 ?>

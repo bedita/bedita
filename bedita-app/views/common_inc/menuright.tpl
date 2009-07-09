@@ -27,30 +27,7 @@ $(document).ready( function (){
 	$("#saveNote").ajaxForm(optionsNoteForm);
 	
 	$("#listNote").find("input[@name=deletenote]").click(function() {
-		var tr = $(this).parents("tr:first");
-		var postdata = {id: $(this).attr("rel")};
-		if (confirm(confirmDelNoteMsg)) {
-			$.ajax({
-				type: "POST",
-				url: urlDelNote,
-				data: postdata,
-				dataType: "json",
-				beforeSend: function() {$("#noteloader").show();},
-				success: function(data){
-					if (data.errorMsg) {
-						alert(data.errorMsg);
-						$("#noteloader").hide();
-					} else {
-						$("#noteloader").hide();
-						tr.remove();
-					}
-				},
-				error: function() {
-					alert(comunicationErrorMsg);
-					$("#noteloader").hide();
-				}
-			});
-		}
+		refreshNoteList($(this));
 	});
 });	
 
@@ -63,6 +40,36 @@ function showNoteResponse(data) {
 		$(emptyDiv).load(urlLoadNote, data, function() {
 			$("#listNote").prepend(this);
 			$("#noteloader").hide();
+			$(this).find("input[@name=deletenote]").click(function() {
+				refreshNoteList($(this));
+			});
+		});
+	}
+}
+
+function refreshNoteList(delButton) {
+	var div = delButton.parents("div:first");
+	var postdata = {id: delButton.attr("rel")};
+	if (confirm(confirmDelNoteMsg)) {
+		$.ajax({
+			type: "POST",
+			url: urlDelNote,
+			data: postdata,
+			dataType: "json",
+			beforeSend: function() {$("#noteloader").show();},
+			success: function(data){
+				if (data.errorMsg) {
+					alert(data.errorMsg);
+					$("#noteloader").hide();
+				} else {
+					$("#noteloader").hide();
+					div.remove();
+				}
+			},
+			error: function() {
+				alert(comunicationErrorMsg);
+				$("#noteloader").hide();
+			}
 		});
 	}
 }
