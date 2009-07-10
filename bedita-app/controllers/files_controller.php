@@ -44,7 +44,7 @@ class FilesController extends AppController {
 			$id = $this->BeUploadToObj->upload($data) ;
 			$this->Transaction->commit();
 			$response = array("fileId" => $id, "fileUploaded" => true);
-			$this->set("response", $id);			
+			$this->set("response", $id);
 		} catch(BeditaException $ex) {
 			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);

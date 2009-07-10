@@ -221,6 +221,7 @@ class PagesController extends AppController {
 			$this->Transaction->commit();
 			$this->set("data", array("id" => $editorNoteModel->id));
 			$this->view = "View";
+			header("Content-Type: application/json");
 			$this->render("json");
 		} catch (BeditaException $ex) {
 			$errorMsg = "Error saving note";
