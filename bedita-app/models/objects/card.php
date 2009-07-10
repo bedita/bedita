@@ -59,8 +59,7 @@ class Card extends BEAppObjectModel {
 	var $hasAndBelongsToMany = array(
 			"MailGroup" => array(
 							"joinTable"	=> "mail_group_cards",
-							"with" => "MailGroupCard",
-							"conditions" => array("MailGroupCard.service_type" => 'newsletter')
+							"with" => "MailGroupCard"
 						)
 		);
 	
@@ -127,7 +126,6 @@ class Card extends BEAppObjectModel {
 				// rebuild active join
 				if (!empty($joinData["mail_group_id"])) {
 					$joinData["card_id"] = $this->id;
-					$joinData["service_type"] = "newsletter";
 					if (empty($joinData["hash"])) {
 						$groupname = $this->MailGroup->field("group_name", array("id" => $joinData["mail_group_id"]));
 						$joinData["hash"] = md5($this->id . microtime() . $groupname);

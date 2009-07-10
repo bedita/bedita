@@ -691,8 +691,6 @@ CREATE TABLE `mail_group_cards` (
   `command` enum('confirm','delete','modify') NOT NULL default 'confirm',
   `hash` varchar(255) default NULL,
   `created` datetime default NULL,
-  `modified` datetime default NULL,
-  `service_type` varchar(255) NOT NULL default 'newsletter',
   PRIMARY KEY(id),
   INDEX `card_id_index` (`card_id`),
   INDEX `mail_group_id_index` (`mail_group_id`),
