@@ -105,7 +105,10 @@ $(document).ready(function() {
 		{else}
 		{assign var='action' value=view}
 		{/if}
-		<a title="{$lastModBYUser[n].ObjectType.module} | {$lastModBYUser[n].BEObject.modified}" href="{$html->url('/')}{$lastModBYUser[n].ObjectType.module}/{$action}/{$lastModBYUser[n].BEObject.id}">{$lastModBYUser[n].BEObject.title|default:'<i>[no title]</i>'}</a></li>
+		<a title="{$lastModBYUser[n].ObjectType.module} | {$lastModBYUser[n].BEObject.modified}" href="{$html->url('/')}{$lastModBYUser[n].ObjectType.module}/{$action}/{$lastModBYUser[n].BEObject.id}">
+			{$lastModBYUser[n].BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
+	{sectionelse}
+		<li><i>{t}you have no recent items{/t}</i></li>
 	{/section}
 	</ul>
 	
@@ -141,10 +144,22 @@ $(document).ready(function() {
 		<li>
 			<span class="listrecent {$lastMod[n].ObjectType.module}">&nbsp;&nbsp;</span>
 			&nbsp;<a title="{$lastMod[n].ObjectType.module} | {$lastMod[n].BEObject.modified}" href="{$html->url('/')}{$lastMod[n].ObjectType.module}/{$action}/{$lastMod[n].BEObject.id}">
-				{$lastMod[n].BEObject.title|default:'<i>[no title]</i>'}</a></li>
+				{$lastMod[n].BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
 	{/section}
 	</ul>
 
+{bedev}
+<div class="tab"><h2>{t}last editor's notes{/t}</h2></div>
+	<ul id="lastnotes" class="bordered">
+		{foreach from=$notes item="note"}
+			<li>{$note.UserCreated.realname|default:$note.UserCreated.userid|default:$note.creator|default:$note.user_created}, 
+			on "<i>{$note.ReferenceObject.title|strip_tags|truncate:36:'~':true|default:'[no title]'}'</i>"</li>
+		{foreachelse}
+			<li>{t}no notes{/t}</li>
+		{/foreach}
+	</ul>
+{/bedev}
+	
 <div class="tab"><h2>{t}connected user{/t}</h2></div>
 	<ul id="connected" class="bordered">
 	{section name="i" loop=$connectedUser}
