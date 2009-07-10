@@ -3,12 +3,12 @@
 <tr>
 	<td class="author">{$note.UserCreated.realname|default:$note.UserCreated.userid|default:$note.creator|default:$note.user_created}</td>
 	<td class="date">{$note.created|date_format:$conf->dateTimePattern}</td>
-	<td>
-	{if $note.user_created == $BEAuthUser.id}
-		<input type="button" rel="{$note.id}" style="font-size:9px !important; padding:0px 0px 0px 0px" name="deletenote" value="x" />
-	{/if}
-	</td>
 </tr>
 </table>
 <p class="editornotes">{$note.description}</p>
+{if $note.user_created == $BEAuthUser.id}
+	<input type="button" rel="{$note.id}" 
+	style="font-size:9px !important; text-transform:lowercase; margin:0px 0px 0px 120px;" 
+	name="deletenote" value="{t}delete{/t}" />
+{/if}
 </div>
