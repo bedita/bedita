@@ -519,7 +519,7 @@ $config['langsIso'] = array();
 $config['langOptionsIso'] = false;
 
 // media types for multimedia association
-$config['mediaTypes'] = array('image','video','audio','text','spreadsheet','presentation','drawing','chart','formula');
+$config['mediaTypes'] = array('image','video','audio','text','spreadsheet','presentation','drawing','chart','formula','application');
 
 
 /**
