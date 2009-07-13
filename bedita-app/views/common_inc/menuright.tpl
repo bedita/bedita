@@ -3,7 +3,6 @@ Template incluso.
 Menu a DX
 *}
 
-
 <script type="text/javascript">
 var urlLoadNote = "{$html->url('/pages/loadNote')}";
 var urlDelNote = "{$html->url('/pages/deleteNote')}";
@@ -92,8 +91,6 @@ function refreshNoteList(delButton) {
  end old notes -->
  
 
- 
-{bedev}
 	<div id="editornotes" style="margin-top:-10px; padding:10px; background-color:white;">
 	{*dump var=$object.EditorNote|@array_reverse*}
 	{strip}
@@ -121,11 +118,8 @@ function refreshNoteList(delButton) {
 		{/if}
 		</div>
 
-	
 	{/strip}
 	{include file="../common_inc/BEiconstest.tpl}	
 	</div>
-{/bedev}
+
 </div>
-
-
