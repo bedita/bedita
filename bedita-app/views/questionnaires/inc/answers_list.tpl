@@ -61,7 +61,7 @@ $(document).ready(function(){
 
 <div style="display:none" class="multiple single_radio single_pulldown checkopen degree">
 
-	answers:
+	{t}answers{/t}:
 	
 	<table id="answers" style="margin-top:5px;">
 	{if !empty($object.QuestionAnswer)}

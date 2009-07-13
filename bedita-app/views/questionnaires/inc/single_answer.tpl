@@ -15,6 +15,6 @@
 	</td>
 	<td>
 		<input type="button" class="remove" title="{t}delete{/t}" value="-" />
-		<input type="button" style="display:none;" class="undo" value="{t}u{/t}" />
+		<input type="button" style="display:none;" class="undo" title="{t}undo{/t}" value="u" />
 	</td>
 </tr>

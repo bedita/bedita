@@ -232,7 +232,7 @@ msgid "Create"
 msgstr ""
 
 msgid "Create new"
-msgstr ""
+msgstr "Crea nuovo"
 
 msgid "Create new document"
 msgstr "Nuovo documento"
@@ -250,16 +250,16 @@ msgid "Create new publishing"
 msgstr "Nuova pubblicazione"
 
 msgid "Create new question"
-msgstr ""
+msgstr "Crea nuovo quesito"
 
 msgid "Create new section"
 msgstr "Nuova sezione"
 
 msgid "Create new user"
-msgstr ""
+msgstr "Crea un nuovo utente"
 
 msgid "Create news"
-msgstr ""
+msgstr "Crea una news"
 
 msgid "Creator is required (at least %1 alphanumerical char)"
 msgstr ""
@@ -280,10 +280,10 @@ msgid "Delete selected items"
 msgstr "Elimina gli elementi selezionati"
 
 msgid "Description"
-msgstr ""
+msgstr "Descrizione"
 
 msgid "Details"
-msgstr ""
+msgstr "Dettagli"
 
 msgid "Dimensions"
 msgstr "Dimensione"
@@ -313,7 +313,7 @@ msgid "Duplicate property name for the same object"
 msgstr ""
 
 msgid "Editor notes"
-msgstr ""
+msgstr "Note redazionali"
 
 msgid "Email"
 msgstr ""
@@ -331,7 +331,7 @@ msgid "Enter"
 msgstr ""
 
 msgid "Error"
-msgstr ""
+msgstr "Errore"
 
 msgid "Error adding subscriber "
 msgstr ""
@@ -790,7 +790,7 @@ msgid "No object id specified"
 msgstr ""
 
 msgid "No questions found"
-msgstr ""
+msgstr "Nessun quesito trovato"
 
 msgid "No subscribers"
 msgstr ""
@@ -911,31 +911,31 @@ msgid "Publishing tree"
 msgstr "Albero delle pubblicazioni"
 
 msgid "Question detail"
-msgstr ""
+msgstr "Dettagli quesito"
 
 msgid "Question saved"
-msgstr ""
+msgstr "Quesito salvato"
 
 msgid "Questionnaire saved"
-msgstr ""
+msgstr "Questionario salvato"
 
 msgid "Questionnaires deleted"
-msgstr ""
+msgstr "Questionario eliminato"
 
 msgid "Questionnaires list"
-msgstr ""
+msgstr "Lista dei Questionari"
 
 msgid "Questions"
-msgstr ""
+msgstr "Quesiti"
 
 msgid "Questions and answers"
-msgstr ""
+msgstr "Quesiti e risposte"
 
-msgid "Questions deleted"
-msgstr ""
+msgid "Question deleted"
+msgstr "Quesito eliminato"
 
 msgid "Questions list"
-msgstr ""
+msgstr "Lista dei Quesiti"
 
 msgid "Queue is empty"
 msgstr ""
@@ -989,7 +989,7 @@ msgid "Select by category"
 msgstr "Seleziona per categoria"
 
 msgid "Select by tag"
-msgstr ""
+msgstr "Seleziona per Tag"
 
 msgid "Select by template"
 msgstr ""
@@ -998,7 +998,7 @@ msgid "Select by type"
 msgstr "Seleziona per tipo"
 
 msgid "Send"
-msgstr ""
+msgstr "Invia"
 
 msgid "Send email to"
 msgstr ""
@@ -1262,7 +1262,7 @@ msgid "advanced properties"
 msgstr "proprietà avanzate"
 
 msgid "all"
-msgstr ""
+msgstr "tutti"
 
 msgid "all recent items"
 msgstr "elementi recenti"
@@ -1364,7 +1364,7 @@ msgid "copy"
 msgstr "copia"
 
 msgid "correct"
-msgstr ""
+msgstr "corretta"
 
 msgid "country"
 msgstr ""
@@ -1520,7 +1520,7 @@ msgid "in recipient groups"
 msgstr ""
 
 msgid "insert more questions"
-msgstr ""
+msgstr "inserisci quesiti"
 
 msgid "isbn/issn"
 msgstr ""
@@ -1796,7 +1796,7 @@ msgid "pulldown single choice"
 msgstr ""
 
 msgid "questionnaires"
-msgstr ""
+msgstr "questionari"
 
 msgid "read"
 msgstr "lettura"
@@ -1955,7 +1955,7 @@ msgid "template"
 msgstr ""
 
 msgid "text"
-msgstr ""
+msgstr "testo"
 
 msgid "title"
 msgstr "titolo"
@@ -2003,7 +2003,7 @@ msgid "view"
 msgstr ""
 
 msgid "view results"
-msgstr ""
+msgstr "vedi i risultati"
 
 msgid "web site"
 msgstr ""

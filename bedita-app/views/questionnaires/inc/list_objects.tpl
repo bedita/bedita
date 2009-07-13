@@ -1,5 +1,3 @@
-
-
 <script type="text/javascript">
 <!--
 var urlDelete = "{$html->url('deleteQuestionnaire/')}" ;
@@ -9,14 +7,12 @@ var URLBase = "{$html->url('index/')}" ;
 var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
 var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 
-
 {literal}
 $(document).ready(function(){
 
 	$(".indexlist TD").not(".checklist").css("cursor","pointer").click(function(i) {
 		document.location = $(this).parent().find("a:first").attr("href"); 
 	} );
-	
 	
 	/* select/unselect each item's checkbox */
 	$(".selectAll").bind("click", function(e) {
@@ -49,14 +45,10 @@ $(document).ready(function(){
 	});
 });
 
-
 {/literal}
 
 //-->
-</script>	
-
-
-	
+</script>
 	
 	<form method="post" action="" id="formObject">
 
@@ -91,9 +83,7 @@ $(document).ready(function(){
 				<a class="BEbutton" href="{$html->url('index_sessions_results/')}{$objects[i].id}">{t}view results{/t}</a>
 			</td>
 		</tr>
-		
-		
-		
+	
 		{sectionelse}
 		
 			<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>
@@ -102,14 +92,11 @@ $(document).ready(function(){
 		
 {if ($smarty.section.i.total) >= 10}
 		
-			{$smarty.capture.theader}
+		{$smarty.capture.theader}
 			
 {/if}
 
-
 </table>
-
-
 
 <br />
 	
@@ -123,7 +110,6 @@ $(document).ready(function(){
 	&nbsp;&nbsp;&nbsp
 	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
 
-	
 </div>
 
 <br />

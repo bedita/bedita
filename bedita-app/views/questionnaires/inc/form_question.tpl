@@ -4,7 +4,6 @@
 
 {literal}
 <script type="text/javascript">
-
 	
 	function multiplePreview() {
 		var formElement = "<input type=\"checkbox\" name=\"p\">";
@@ -67,8 +66,7 @@
 		$("." + kind).show();
 		$("." + kind + " :input").attr("disabled", "");
 		$("." + kind + " :checkbox").attr("disabled", "");
-	}
-	
+	}	
 	
 	//preview functions
 	$(document).ready(function(){
@@ -147,7 +145,6 @@
 			</td>
 		</tr>
 
-
 		<tr>
 			<td colspan=2 class="answers">
 				
@@ -183,7 +180,6 @@
 	</table>
 	
 	</fieldset>
-
 
    <div class="tab"><h2>{t}Question properties{/t}</h2></div>
 
