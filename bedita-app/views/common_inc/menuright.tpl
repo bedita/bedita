@@ -90,7 +90,6 @@ function refreshNoteList(delButton) {
 	</div>
  end old notes -->
  
-
 	<div id="editornotes" style="margin-top:-10px; padding:10px; background-color:white;">
 	{*dump var=$object.EditorNote|@array_reverse*}
 	{strip}
@@ -117,9 +116,14 @@ function refreshNoteList(delButton) {
 			{/foreach}
 		{/if}
 		</div>
-
+	
 	{/strip}
+	 
+	{bedev}
 	{include file="../common_inc/BEiconstest.tpl}	
+	{/bedev}
+	
 	</div>
-
 </div>
+
+
