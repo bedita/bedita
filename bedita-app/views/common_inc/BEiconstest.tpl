@@ -12,11 +12,14 @@
 	</script>
 	{/literal}
 	
+{bedev}
 	<a href="javascript:void(0)" onClick="$('.test').toggle()">test</a>
+{/bedev}
 	</div>
 	
 	
 	
+{bedev}
 	<div class="test" style="display:none">
 		
 		<ul class="icons">
@@ -37,3 +40,4 @@
 		<input type="button" title="Io sono un test per la modale" rel="{$html->webroot}testmodal.html'" class="modalbutton" value="modal test example" />
 
 	</div>
+{/bedev}
