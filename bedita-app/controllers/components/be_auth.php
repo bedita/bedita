@@ -299,6 +299,7 @@ class BeAuthComponent extends Object {
 		}
 		$userData['User']['passwd'] = md5($userData['User']['passwd']);
 		$this->userGroupModel($userData, $groups);
+		$user->Behaviors->attach('Notify');
 		if(!$user->save($userData))
 			throw new BeditaException(__("Error saving user",true), $user->validationErrors);
 		return true;
@@ -331,6 +332,7 @@ class BeAuthComponent extends Object {
 		if($userData['User']['valid'] == '1') { // reset number of login error, if user is valid
 			$userData['User']['num_login_err'] = '0';
 		}
+		$user->Behaviors->attach('Notify');
 		if(!$user->save($userData))
 			throw new BeditaException(__("Error updating user",true), $user->validationErrors);
 		return true;

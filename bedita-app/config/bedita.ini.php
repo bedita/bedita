@@ -604,6 +604,14 @@ $config['provider_params']  = array(
 $config['modelBindings'] = array() ;
 
 
+// default email fields -- override in bedita.cfg or bedita.sys
+$config['mailOptions'] = array(
+	"sender" => "noreply@bedita.com", 
+	"reply_to" => "noreply@bedita.com", 
+	"signature" => "powered by BEdita - http://www.bedita.com",
+);
+
+
 /**
  *  Default model bindings for Containable Behaviour 
  */

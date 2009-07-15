@@ -345,7 +345,7 @@ class NewsletterController extends ModulesController {
 		//$data["to"] = "batopa@gmail.com";
 		//$data["from"] = "a.pagliarini@channelweb.it";
 		//$data["subject"] = "";
-		//$data["replayTo"] = "";
+		//$data["replyTo"] = "";
 		//$data["body"] = "<p>zxczx</p>";
 		//$this->BeMail->sendMail($data);
 		//pr($data);

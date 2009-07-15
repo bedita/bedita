@@ -32,7 +32,7 @@ class EditorNote extends BeditaAnnotationModel
 {
 	var $useTable = 'annotations';
 	
-	var $actsAs = array();
+	var $actsAs = array('Notify');
 	
 	var $validate = array(
     	'description' => array( 

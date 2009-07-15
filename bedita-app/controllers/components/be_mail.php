@@ -74,7 +74,7 @@ class BeMailComponent extends Object {
 		$data["to"] = $to;
 		$data["from"] = $res["sender"];
 		$data["subject"] = $res["subject"];
-		$data["replayTo"] = $res["replay_to"];
+		$data["replyTo"] = $res["reply_to"];
 		$data["mailType"] = ($html)? "html" : "txt";
 		
 		$data["body"] = $this->prepareMailBody($res, $html);
@@ -273,7 +273,7 @@ class BeMailComponent extends Object {
 			if ($job["Card"]["mail_status"] == "valid") {
 				$data["to"] = $job["Card"]["newsletter_email"];
 				$data["from"] = $job["MailMessage"]["sender"];
-				$data["replayTo"] = $job["MailMessage"]["replay_to"];
+				$data["replyTo"] = $job["MailMessage"]["reply_to"];
 				$data["subject"] = $job["MailMessage"]["Content"]["subject"];
 				$data["mailType"] = (!empty($job["Card"]["mail_html"]))? "html" : "txt";
 				$data["body"] = $job["MailJob"]["mail_body"];
@@ -307,26 +307,42 @@ class BeMailComponent extends Object {
 		
 	}
 	
-//	public function notify($object, $users) {
-//		$data["from"] = "pincopallo@channelweb.it";
-//		$projectname = Configure::read("projectName");
-//		if (empty($projectname))
-//			$projectname = "BEdita";
-//		$data["subject"] = "[".$projectname."] " . 
-//							Configure::read("objectTypes." . $object["object_type_id"].".name") . ": " .
-//							"\"". $object["title"] ."\"";
-//		$data["body"] = __("Object created or modified",true) . ": " . $object["title"] . "\n";
-//		$data["body"] .= __("Author creator", true) . ": " . $object["UserCreated"]["realname"] . "\n";
-//		$data["body"] .= __("Last modified by", true) . ": " . $object["UserModified"]["realname"] . "\n";
-//		$data["body"] .= __("Link", true) . ": " . Configure::read("beditaUrl") . "/" . 
-//						Configure::read("objectTypes." . $object["object_type_id"] . "module") . "/view/" . $object["id"];
-//		
-//		foreach ($users as $u) {
-//			$data["to"] = $u["User"]["email"];
-////			if (!$this->send($data))
-////				$this->log(__("Notification mail delivery failed", true) . "-" . $this->Email->smtpError);
-//		}
-//	}
+	public function notify() {
+
+		$jobModel = ClassRegistry::init("MailJob");
+		$jobModel->containLevel("minimum");
+		$conditions = array("mail_message_id is NULL" , 
+			"status" => "unsent");
+
+		$jobsToSend = $jobModel->find('all', array("conditions" => $conditions));
+		
+		foreach ($jobsToSend as $job) {
+			$jobModel->id = $job['MailJob']['id'];
+			$jobModel->saveField("status", "pending");
+		}
+		
+		$data = array();
+		foreach ($jobsToSend as $job) {
+			$mailParams = unserialize($job['MailJob']['mail_params']);
+			$data["to"] = $job["MailJob"]["recipient"];
+			$data["from"] = $mailParams["sender"];
+			$data["replyTo"] = $mailParams["reply_to"];
+			$data["subject"] = $mailParams["subject"];
+			$data["mailType"] = "txt";
+			$data["body"] = $job["MailJob"]["mail_body"];
+			if(!empty($mailParams["signature"])) {
+				$data["body"] .= "\n\n--\n" . $mailParams["signature"];
+			}
+			$jobModel->id = $job['MailJob']['id'];
+			if (!$this->send($data)) {
+				$this->log(__("Notification mail delivery failed", true) . "-" . $this->Email->smtpError);
+				$jobModel->saveField("status", "failed");
+			} else {
+				$jobModel->saveField("status", "sent");
+				$jobModel->saveField("sending_date", date("Y-m-d H:i:s"));
+			}
+		}
+	}
 	
 	/**
 	 * prepare data for email sending
@@ -349,7 +365,7 @@ class BeMailComponent extends Object {
 		$this->Email->to = $data["to"];
 		$this->Email->from = $data["from"]; 
 		$this->Email->subject = $data["subject"];
-		$this->Email->replyTo = (!empty($data["replayTo"]))? $data["replayTo"] : "";
+		$this->Email->replyTo = (!empty($data["replyTo"]))? $data["replyTo"] : "";
 		$this->Email->sendAs = (!empty($data["mailType"]))? $data["mailType"] : "txt";
 		if (!empty($data["cc"]) && is_array($data["cc"]))
 			$this->Email->cc = $data["cc"];

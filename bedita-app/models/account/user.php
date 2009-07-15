@@ -103,7 +103,7 @@ class User extends BEAppModel
 		$conditionBase = array("email IS NOT NULL AND email <> '' AND valid=1");
 		$conditions = array_merge($conditionBase, $conditions);
 		return $this->find("all", array(
-				"fields" => array("id", "userid","realname","email"),
+				"fields" => array("id", "userid", "realname", "passwd", "email", "lang"),
 				"conditions" => $conditions,
 				"contain" => array()
 				)

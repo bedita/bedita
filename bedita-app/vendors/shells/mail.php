@@ -20,12 +20,15 @@
  */
 
 App::import('Core', 'Controller');
-App::import('Controller', 'App'); // BeditaException
 App::import('Component', 'BeMail');
 
 /**
+ * Default shell script for email notifications and newsletters.
+ * To put in cron/crontab for normal use, launch at prompt using "./cake.sh mail"
+ * WARNING: before using the script check your mail settings
+ *   - $config['mailOptions'] basic mail params like sender, reply-to, signature... in config/bedita.cfg.php
+ * 	 - $config['smtpOptions'] smtp settings ... in config/bedita.sys.ph
  * 
- * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -55,6 +58,7 @@ class MailShell extends Shell {
 	function main() {
 
 		try {
+			$this->BeMail->notify();
 			$msgIds = $this->BeMail->lockMessages();
 			if (!empty($msgIds))
 			{
@@ -70,7 +74,7 @@ class MailShell extends Shell {
 	
 	
 	function help() {
-		$this->out("Shell script to send newsletters");
+		$this->out("Shell script to send notifications and newsletters");
 	}
 	
 }
