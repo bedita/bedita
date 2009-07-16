@@ -350,7 +350,17 @@ class BeditaShell extends BeditaBaseShell {
        	}
        	$tar->extract($tmpBasePath);
        	
-		$sqlFileName = $tmpBasePath."bedita-data.sql";
+		// check if media files are present
+       	$tmpMediaDir = $tmpBasePath."media";
+       	if(!file_exists($tmpMediaDir)) {
+			$res = $this->in("ACHTUNG! Media files not present in import file, proceed? [y/n]");
+			if($res != "y") {
+	       		$this->out("Bye");
+				return;
+			}
+       	}
+       	
+       	$sqlFileName = $tmpBasePath."bedita-data.sql";
 		
         $this->hr();
 		$db = ConnectionManager::getDataSource($dbCfg);
@@ -491,28 +501,35 @@ class BeditaShell extends BeditaBaseShell {
 			$this->out("Configuration file exported");
        	}
 		       	
-       	$this->out("Exporting media files");
+       	if (isset($this->params['nomedia'])) { // exclude media files
+	       	
+       		$this->out("Media files not exported!");
+       		
+       	} else {
        	
-		$mediaRoot = Configure::read("mediaRoot");
-       	$folder=& new Folder($mediaRoot);
-        $tree= $folder->tree($mediaRoot, false);
-        foreach ($tree as $files) {
-            foreach ($files as $file) {
-                if (!is_dir($file)) {
-     				$contents = file_get_contents($file);
-        			if ( $contents === false ) {
-						throw new Exception("Error reading file content: $file");
-       				}
-					$p = substr($file, strlen($mediaRoot));	
-					if(!$tar->addString("media".$p, $contents)) {
-						throw new Exception("Error adding $file to tar file");
-					}
-//					echo "before unset ". memory_get_usage()." RAM used.\n";
-					unset($contents);
-//					echo 'after unset  '. memory_get_usage()." RAM used.\n";
-                }
-            }
-        }
+	       	$this->out("Exporting media files");
+	       	
+			$mediaRoot = Configure::read("mediaRoot");
+	       	$folder=& new Folder($mediaRoot);
+	        $tree= $folder->tree($mediaRoot, false);
+	        foreach ($tree as $files) {
+	            foreach ($files as $file) {
+	                if (!is_dir($file)) {
+	     				$contents = file_get_contents($file);
+	        			if ( $contents === false ) {
+							throw new Exception("Error reading file content: $file");
+	       				}
+						$p = substr($file, strlen($mediaRoot));	
+						if(!$tar->addString("media".$p, $contents)) {
+							throw new Exception("Error adding $file to tar file");
+						}
+	//					echo "before unset ". memory_get_usage()." RAM used.\n";
+						unset($contents);
+	//					echo 'after unset  '. memory_get_usage()." RAM used.\n";
+	                }
+	            }
+	        }
+       	}
 		$this->cleanTempDir();
         $this->out("$expFile created");
     }
@@ -890,7 +907,8 @@ class BeditaShell extends BeditaBaseShell {
         $this->out(' ');
   		$this->out("    -f <tar-gz-filename>\t file to export, default ".self::DEFAULT_ARCHIVE_FILE);
         $this->out("    -compress \t gz compression (automagically applied if file extension is .gz)");
-  		$this->out(' ');
+        $this->out("    -nomedia  \t don't export media files in tar");
+        $this->out(' ');
         $this->out('5. import: import media files and data dump');
   		$this->out(' ');
   		$this->out('    Usage: import [-f <tar-gz-filename>] [-db <dbname>] [-y]');
