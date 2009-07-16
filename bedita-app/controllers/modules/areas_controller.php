@@ -385,7 +385,11 @@ class AreasController extends ModulesController {
 		if(!($collection = $model->findById($id))) {
 			throw new BeditaException(sprintf(__("Error loading section: %d", true), $id));
 		}
-				
+		// additional control on id -- if a row on a table model is missing (e.g. sections) field id can be null
+		if(empty($collection['id'])) {
+			throw new BeditaException(sprintf(__("Error loading section: %d", true), $id));
+		}
+		
 		$this->set('objectProperty', $this->BeCustomProperty->setupForView($collection));
 		$this->set('object',$collection);
 		$this->set('tree', $this->BeTree->getSectionsTree());
