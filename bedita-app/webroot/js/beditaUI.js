@@ -504,11 +504,6 @@ jQuery.fn.BEmodal = function(){
    help
 
 ...........................................*/
-	
-	$('.helptrigger').click(function () {
-		$('#helpcontainer, .quartacolonna, .main, .mainhalf, .mainfull, .insidecol').toggle();
-		$(this).toggleClass("helpon");
-	});
 
 
 

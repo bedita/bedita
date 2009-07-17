@@ -265,6 +265,31 @@ class PagesController extends AppController {
 		$this->layout="ajax";
 	}
 	
+	function helpOnline() {
+		$args = func_get_args();
+		$count = func_num_args();
+		if($count > 2) { // controller -> action
+			$count = 2;
+		}
+		$url = "http://help.bedita.com";
+		$path = "";
+		$module = (!empty($args[0])) ? $args[0] : null;
+		$action = (!empty($args[1])) ? $args[1] : null;
+		for($i=0;$i<$count;$i++) {
+			$url .= "/" . $args[$i];
+			$path .= " " . $args[$i];
+		}
+		$result = @get_headers($url);
+		if(preg_match("|200|",$result[0])) {
+			$result = file_get_contents($url);
+		} else {
+			$result = "404";
+		}
+		$this->set('module',$module);
+		$this->set('action',$action);
+		$this->set('path',$path);
+		$this->set('result',$result);
+	}
 
 	/**
 	 * Print a document/object undsoweiter
