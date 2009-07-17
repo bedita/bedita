@@ -60,6 +60,8 @@ $config['mediaUrl'] = 'http://localhost/media';
 // Multimedia - image file substituting missing content (as now used in thumb smarty plugin)
 $config['imgMissingFile'] = "/img/iconMissingImage_130x85.gif" ;
 
+// Help online base url
+$config["helpBaseUrl"] = "http://help.bedita.com";
 
 /**
  ** ******************************************

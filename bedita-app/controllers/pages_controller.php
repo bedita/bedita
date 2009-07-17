@@ -271,7 +271,7 @@ class PagesController extends AppController {
 		if($count > 2) { // controller -> action
 			$count = 2;
 		}
-		$url = "http://help.bedita.com";
+		$url = Configure::read("helpBaseUrl");
 		$path = "";
 		$module = (!empty($args[0])) ? $args[0] : null;
 		$action = (!empty($args[1])) ? $args[1] : null;
