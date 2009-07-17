@@ -285,7 +285,7 @@ class NewsletterController extends ModulesController {
 						
 					$this->MailGroupCard->create();
 					if (!$this->MailGroupCard->save($dataJoin))
-						throw new BeditaException(__("Error join group", true), $this->MailGroupCard->validationErrors);
+						throw new BeditaException(__("Error on join between card and mail group", true), $this->MailGroupCard->validationErrors);
 				}
 				
 			}

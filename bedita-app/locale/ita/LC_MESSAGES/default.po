@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-05-22 17:40:55\n"
+"POT-Creation-Date: 2009-07-17 17:52:01\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -32,13 +32,13 @@ msgid "Add event date"
 msgstr "Aggiungi data evento"
 
 msgid "Add multiple items"
-msgstr ""
+msgstr "Aggiungi elementi multipli"
 
 msgid "Add new category"
 msgstr "Aggiungi nuova categoria"
 
 msgid "Add selected items"
-msgstr ""
+msgstr "Aggiungi gli elementi selezionati"
 
 msgid "Address"
 msgstr "Indirizzo"
@@ -47,189 +47,188 @@ msgid "Advanced Properties"
 msgstr "Proprietà avanzate"
 
 msgid "Annotation type or object_id missing"
-msgstr ""
-
-msgid "Apply permissions recursively"
-msgstr ""
+msgstr "Tipo di annotazione o object_id mancanti"
 
 msgid "Are you sure that you want to delete selected items?"
 msgstr "Sicuro di voler eliminare gli elementi selezionati?"
 
 msgid "Are you sure that you want to delete selected tags?"
-msgstr ""
+msgstr "Sicuro di voler eliminare i tag selezionati?"
 
 msgid "Are you sure that you want to delete the item?"
 msgstr "Sicuro di voler eliminare l'elemento?"
 
+msgid "Are you sure that you want to delete the note?"
+msgstr "Sicuro di voler eliminare la nota?"
+
 msgid "Are you sure that you want to delete the tag?"
-msgstr ""
+msgstr "Sicuro di voler eliminare il tag?"
 
 msgid "Are you sure you want to accept this IP?"
-msgstr ""
+msgstr "Sicuro di voler accettare questo IP"
 
 msgid "Are you sure you want to ban this IP?"
-msgstr ""
+msgstr "Sicuro di voler interdire l'accesso a questo IP (ban)?"
 
 msgid ""
 "Are you sure you want to cancel and reload this document? All unsaved "
 "changes will be lost"
 msgstr ""
+"Sicuro di voler annullare le modifiche e di voler ricaricare questo "
+"documento? Tutte le modifiche non salvate saranno perdute"
 
 msgid "Area deleted"
-msgstr ""
+msgstr "Area eliminata"
 
 msgid "Area saved"
-msgstr ""
+msgstr "Area salvata"
 
 msgid "Area tree saved"
-msgstr ""
+msgstr "Albero area salvato"
 
 msgid "Author"
-msgstr ""
-
-msgid "Author creator"
-msgstr ""
+msgstr "Autore"
 
 msgid "Authorized"
-msgstr ""
+msgstr "Autorizzato"
 
 msgid "Auto-remove forbidden"
-msgstr ""
+msgstr "Eliminazione-automatica proibita"
 
 msgid "B.Edita"
 msgstr ""
 
 msgid "BEdita contents statistics"
-msgstr ""
+msgstr "Statistiche contenuti BEdita"
 
 msgid "BEdita editors activity statistics"
-msgstr ""
+msgstr "Statistiche attivita' editori BEdita"
 
 msgid "Backend user restricted area"
-msgstr ""
+msgstr "Area con accesso ristretto agli utenti del backend"
 
 msgid "Bad data"
-msgstr ""
+msgstr "Dati non validi"
 
 msgid "Bad transaction state"
-msgstr ""
+msgstr "Stato transazione non valido"
 
 msgid "Bedita3 main dashboard"
-msgstr ""
+msgstr "Dashboard di Bedita3"
 
 msgid "Bibliography deleted"
-msgstr ""
+msgstr "Bibliografia eliminata"
 
 msgid "Bit depth"
-msgstr ""
+msgstr "Profondita' in bit"
 
 msgid "Book deleted"
-msgstr ""
+msgstr "Libro eliminato"
 
 msgid "Book details"
-msgstr ""
+msgstr "Dettagli libro"
 
 msgid "Book saved"
-msgstr ""
+msgstr "Libro salvato"
 
 msgid "Books"
 msgstr "Libri"
 
 msgid "Browse"
-msgstr ""
+msgstr "Sfoglia"
 
 msgid "Bulk actions on"
 msgstr "Operazioni su"
 
 msgid "Cancel queue"
-msgstr ""
+msgstr "Cancella coda"
 
 msgid "Captcha image and text don't match"
-msgstr ""
+msgstr "Immagine captcha e testo non corrispondono"
 
 msgid "Card"
-msgstr ""
+msgstr "Scheda"
 
 msgid "Card saved"
-msgstr ""
+msgstr "Scheda salvata"
 
 msgid "Cards deleted"
-msgstr ""
+msgstr "Schede eliminate"
 
 msgid "Categories"
 msgstr "Categorie"
 
 msgid "Category deleted"
-msgstr ""
+msgstr "Categoria eliminata"
 
 msgid "Category saved"
-msgstr ""
+msgstr "Categoria salvata"
 
 msgid "Change"
-msgstr ""
+msgstr "Modifica"
 
 msgid "Change Password"
-msgstr ""
+msgstr "Modifica Password"
 
 msgid "Change this file with another"
 msgstr "Sostituisci il file"
 
 msgid "Channels"
-msgstr ""
+msgstr "Canali"
 
 msgid "Check at least one group"
-msgstr ""
+msgstr "Seleziona almeno un gruppo"
 
 msgid "Check url"
-msgstr ""
-
-msgid "Choose document type"
-msgstr ""
+msgstr "Verifica url"
 
 msgid "Code"
-msgstr ""
+msgstr "Codice"
 
 msgid "Comment saved"
-msgstr ""
+msgstr "Commento salvato"
 
 msgid "Comments"
-msgstr ""
+msgstr "Commenti"
 
 msgid "Comments deleted"
-msgstr ""
+msgstr "Commenti eliminati"
+
+msgid "Communication error"
+msgstr "Errore di comunicazione"
 
 msgid "Company / institution"
-msgstr ""
+msgstr "Azienda / istituzione"
 
 msgid "Compile"
-msgstr ""
+msgstr "Compila"
 
 msgid "Configuration"
-msgstr ""
+msgstr "Configurazione"
 
 msgid "Confirm password"
-msgstr ""
+msgstr "Conferma la password"
 
 msgid "Confirmation-In mail message"
-msgstr ""
+msgstr "Messaggio mail di conferma (in arrivo)"
 
 msgid "Confirmation-Out mail message"
-msgstr ""
+msgstr "Messaggio mail di conferma (in uscita)"
 
 msgid "Connect to multimedia gallery"
-msgstr ""
+msgstr "Collega a galleria multimediale"
 
 msgid "Contacts"
-msgstr ""
+msgstr "Contatti"
 
 msgid "Content "
-msgstr ""
+msgstr "Contenuto "
 
 msgid "Content not found"
-msgstr ""
+msgstr "Contenuto non trovato"
 
 msgid "Create"
-msgstr ""
+msgstr "Crea"
 
 msgid "Create new"
 msgstr "Crea nuovo"
@@ -244,7 +243,7 @@ msgid "Create new gallery"
 msgstr "Nuova galleria"
 
 msgid "Create new list"
-msgstr ""
+msgstr "Crea nuova lista"
 
 msgid "Create new publishing"
 msgstr "Nuova pubblicazione"
@@ -262,16 +261,16 @@ msgid "Create news"
 msgstr "Crea una news"
 
 msgid "Creator is required (at least %1 alphanumerical char)"
-msgstr ""
+msgstr "Campo creatore obbligatorio (almeno %1 caratteri alfanumerici)"
 
 msgid "Custom Properties"
-msgstr ""
+msgstr "Proprieta' Personalizzate"
 
 msgid "Custom properties"
-msgstr ""
+msgstr "Proprieta' personalizzate"
 
 msgid "Custom property saved"
-msgstr ""
+msgstr "Proprieta' personalizzata salvata"
 
 msgid "Delete"
 msgstr "Elimina"
@@ -289,19 +288,16 @@ msgid "Dimensions"
 msgstr "Dimensione"
 
 msgid "Display details in frontend"
-msgstr ""
-
-msgid "Do you really want to delete the permission"
-msgstr ""
+msgstr "Visualizza dettagli nel frontend"
 
 msgid "Do you really want to remove group"
-msgstr ""
+msgstr "Sicuro di voler eliminare il gruppo"
 
 msgid "Do you really want to remove user"
-msgstr ""
+msgstr "Sicuro di voler eliminare l'utente"
 
 msgid "Do you want unsubscribe selected items?"
-msgstr ""
+msgstr "Sicuro di voler disiscrivere gli elementi selezionati"
 
 msgid "Document saved"
 msgstr "Documento salvato"
@@ -310,160 +306,175 @@ msgid "Documents deleted"
 msgstr "Documento eliminato"
 
 msgid "Duplicate property name for the same object"
-msgstr ""
+msgstr "Nome proprieta' duplicato per lo stesso oggetto"
 
 msgid "Editor notes"
 msgstr "Note redazionali"
 
+msgid "Editors Notes"
+msgstr "Note Editori"
+
 msgid "Email"
 msgstr ""
 
-msgid "Embedded in"
-msgstr "Inserito in"
-
-msgid "Embedded in no objects"
-msgstr "l'elemento non è inserito da nessuna parte"
-
 msgid "Empty data"
-msgstr ""
+msgstr "Dati vuoti"
 
 msgid "Enter"
-msgstr ""
+msgstr "Accedi"
 
 msgid "Error"
 msgstr "Errore"
 
 msgid "Error adding subscriber "
-msgstr ""
+msgstr "Errore in inserimento subscriber "
 
 msgid "Error adding subscribers"
-msgstr ""
+msgstr "Errore in inserimento subscriber"
 
 msgid "Error changing password"
-msgstr ""
+msgstr "Errore in modifica password"
 
 msgid "Error checking url for link: "
-msgstr ""
+msgstr "Errore in controllo url per collegamento:"
 
-msgid "Error create jobs"
-msgstr ""
-
-msgid "Error delete permissions"
-msgstr ""
+msgid "Error creating jobs"
+msgstr "Errore in creazione processi"
 
 msgid "Error deleting custom property "
-msgstr ""
+msgstr "Errore in eliminazione proprieta' custom "
+
+msgid "Error deleting note"
+msgstr "Errore in eliminazione nota"
+
+msgid "Error deleting note, missing id"
+msgstr "Errore in eliminazione nota, manca id"
 
 msgid "Error deleting object: %d"
-msgstr ""
+msgstr "Errore in eliminazione oggetto: %d"
+
+msgid "Error deleting permissions"
+msgstr "Errore in eliminazione permessi"
 
 msgid "Error deleting stream object"
-msgstr ""
+msgstr "Errore in eliminazione oggetto stream"
 
 msgid "Error deleting translation: "
-msgstr ""
+msgstr "Errore in eliminazione traduzione:"
 
 msgid "Error during reorder children priority"
-msgstr ""
+msgstr "Errore in riordinamento priorita' figli"
 
 msgid "Error during upload: missing url"
-msgstr ""
+msgstr "Errore in upload: manca url"
 
 msgid "Error finding mail message "
-msgstr ""
+msgstr "Errore nella ricerca del messaggio di posta "
 
-msgid "Error get id object: %d"
-msgstr ""
+msgid "Error getting id object: %d"
+msgstr "Errore in lettura oggetto id: %d"
 
-msgid "Error get id object: %s"
-msgstr ""
+msgid "Error getting id object: %s"
+msgstr "Errore in lettura oggetto id: %s"
 
-msgid "Error get object: %d"
-msgstr ""
-
-msgid "Error join group"
-msgstr ""
+msgid "Error getting object: %d"
+msgstr "Errore in lettura oggetto: %d"
 
 msgid "Error loading area: %d"
-msgstr ""
+msgstr "Errore in caricamento area: %d"
 
 msgid "Error loading comment: %d"
-msgstr ""
+msgstr "Errore in caricamento commento: %d"
 
 msgid "Error loading object: %d"
-msgstr ""
+msgstr "Errore in caricamento oggetto: %d"
 
 msgid "Error loading section: %d"
-msgstr ""
+msgstr "Errore in caricamento sezione: %d"
 
 msgid "Error loading tag: "
-msgstr ""
-
-msgid "Error modify permissions"
-msgstr ""
+msgstr "Errore in caricamento tag: "
 
 msgid "Error modifying permissions"
-msgstr ""
+msgstr "Errore in modifica permessi"
+
+msgid "Error on join between card and mail group"
+msgstr "Errore su unione tra scheda e gruppo di posta"
+
+msgid "Error on subscribing: empty 'newsletter_email'"
+msgstr "Errore in sottoscrizione: 'newsletter_email' vuota"
+
+msgid "Error on subscribing: no data"
+msgstr "Errore in sottoscrizione: nessun dato"
+
+msgid "Error on subscribing: no mail_group indicated"
+msgstr "Errore in sottoscrizione: nessun mail_group indicato"
 
 msgid "Error removing group"
-msgstr ""
+msgstr "Errore in eliminazione gruppo"
 
-msgid "Error save tree from _POST"
-msgstr ""
+msgid "Error removing mail group card"
+msgstr "Errore in eliminazione scheda di grouppo di posta"
 
 msgid "Error saving area"
-msgstr ""
+msgstr "Errore in salvataggio dati area"
 
 msgid "Error saving comment"
-msgstr ""
+msgstr "Errore in salvataggio dati commento"
 
 msgid "Error saving custom property"
-msgstr ""
+msgstr "Errore in salvataggio dati proprieta' personalizzata"
 
 msgid "Error saving group"
-msgstr ""
+msgstr "Errore in salvataggio dati gruppo"
 
 msgid "Error saving mail group"
-msgstr ""
+msgstr "Errore in salvataggio dati gruppo di posta"
+
+msgid "Error saving mail group card"
+msgstr "Errore in salvataggio dati scheda del gruppo di posta"
 
 msgid "Error saving multimedia"
-msgstr ""
+msgstr "Errore in salvataggio dati multimedia"
+
+msgid "Error saving note"
+msgstr "Errore in salvataggio dati nota"
 
 msgid "Error saving options"
-msgstr ""
-
-msgid "Error saving permissions"
-msgstr ""
+msgstr "Errore in salvataggio opzioni"
 
 msgid "Error saving section"
-msgstr ""
+msgstr "Errore in salvataggio dati sezione"
 
 msgid "Error saving status for item: "
-msgstr ""
+msgstr "Errore in salvataggio stato per elemento: "
 
 msgid "Error saving status for translation: "
-msgstr ""
+msgstr "Errore in salvataggio stato per traduzione: "
 
 msgid "Error saving status for translations"
-msgstr ""
+msgstr "Errore in salvataggio stato per traduzioni: "
 
 msgid "Error saving stream object"
-msgstr ""
+msgstr "Errore in salvataggio oggetto stream"
 
 msgid "Error saving tag"
-msgstr ""
+msgstr "Errore in salvataggio dati tag"
+
+msgid "Error saving tree from _POST"
+msgstr "Errore in salvataggio dati albero da _POST"
 
 msgid "Error saving user"
-msgstr ""
+msgstr "Errore in salvataggio dati utente"
 
 msgid "Error updating user"
-msgstr ""
+msgstr "Errore in aggiornamento dati utente"
 
 msgid "Error: bad permissions"
-msgstr ""
+msgstr "Errore: permessi non validi"
 
 msgid "Errors during upload"
-msgstr ""
+msgstr "Errore durante l'upload"
 
 msgid "Event calendar"
 msgstr "Calendario"
@@ -481,40 +492,40 @@ msgid "Exif - Main Data"
 msgstr ""
 
 msgid "Existing group"
-msgstr ""
+msgstr "Gruppo esistente"
 
 msgid "Exit"
-msgstr ""
+msgstr "Esci"
 
 msgid "File"
 msgstr ""
 
 msgid "File already exists in the filesystem"
-msgstr ""
+msgstr "Il file esiste gia' nel sistema"
 
 msgid "Find it"
-msgstr ""
+msgstr "Trova"
 
 msgid "Forgotten username or password?"
-msgstr ""
+msgstr "Hai dimenticato l'utente o la password?"
 
 msgid "Galleries deleted"
-msgstr ""
+msgstr "Gallerie eliminate"
 
 msgid "Gallery associated to this document"
-msgstr ""
+msgstr "Galleria associata a questo documento"
 
 msgid "Gallery saved"
-msgstr ""
+msgstr "Galleria salvata"
 
 msgid "Generic categories"
-msgstr ""
+msgstr "Categorie generiche"
 
 msgid "Geotag"
 msgstr ""
 
 msgid "Get contents"
-msgstr ""
+msgstr "Leggi contenuti"
 
 msgid "Gmaps LookaT"
 msgstr ""
@@ -523,22 +534,22 @@ msgid "Go to page"
 msgstr "Vai alla pagina"
 
 msgid "Group "
-msgstr ""
+msgstr "Gruppo"
 
 msgid "Group Name"
-msgstr ""
+msgstr "Nome Gruppo"
 
 msgid "Group authorized to Backend"
-msgstr ""
+msgstr "Gruppo autorizzato al Backend"
 
 msgid "Group deleted"
-msgstr ""
+msgstr "Gruppo eliminato"
 
 msgid "Groups"
-msgstr ""
+msgstr "Gruppi"
 
 msgid "Height"
-msgstr ""
+msgstr "Altezza"
 
 msgid "Hide system tags"
 msgstr "Nascondi i Tag"
@@ -553,16 +564,19 @@ msgid "IP"
 msgstr ""
 
 msgid "IP accepted"
-msgstr ""
+msgstr "IP accettato"
 
 msgid "IP banned"
-msgstr ""
+msgstr "IP rifiutato (banned)"
+
+msgid "If you have any problems try with browser upload"
+msgstr "In caso di problemi provare con upload del browser "
 
 msgid "Immutable group"
-msgstr ""
+msgstr "Gruppo non modificabile"
 
 msgid "Immutable group %s"
-msgstr ""
+msgstr "Gruppo non modificabile %s"
 
 msgid "Invoice"
 msgstr ""
@@ -571,99 +585,101 @@ msgid "Invoices"
 msgstr ""
 
 msgid "Item Type"
-msgstr ""
+msgstr "Tipo Elemento"
 
 msgid "Items"
-msgstr ""
+msgstr "Elementi"
 
 msgid "Last check"
 msgstr "Ultima verifica"
-
-msgid "Last modified by"
-msgstr ""
 
 msgid "Last result"
 msgstr "Ultimo risultato"
 
 msgid "License is required (at least %1 alphanumerical char)"
-msgstr ""
+msgstr "Campo licenza obbligatorio (almeno %1 caratteri alfanumerici)"
 
 msgid "Link"
-msgstr ""
+msgstr "Collegamento"
 
 msgid "Links"
-msgstr ""
+msgstr "Collegamenti"
 
 msgid "Lists"
-msgstr ""
+msgstr "Liste"
 
 msgid "Loading data"
-msgstr ""
+msgstr "Dati in caricamento"
 
 msgid "Login"
-msgstr ""
+msgstr "Accesso"
 
 msgid "Long Text"
-msgstr ""
+msgstr "Testo Lungo"
 
 msgid "MIME type not found"
-msgstr ""
+msgstr "Tipo MIME non trovato"
 
 msgid "Mail Group deleted"
-msgstr ""
+msgstr "Gruppo di Posta eliminato"
 
 msgid "Mail Group saved"
-msgstr ""
+msgstr "Gruppo di Posta salvato"
 
 msgid "Mail delivery failed"
-msgstr ""
+msgstr "Invio posta fallito"
 
 msgid "Mail message deleted"
-msgstr ""
+msgstr "Messaggio di posta eliminato"
 
 msgid "Mail message lock failed: id "
-msgstr ""
+msgstr "Blocco messaggio di posta fallito: id "
 
 msgid "Mail message saved"
-msgstr ""
+msgstr "Messaggio di posta salvato"
 
 msgid "Mail ready to be sent on "
-msgstr ""
+msgstr "Posta pronta per l'invio il "
 
 msgid "Mail template saved"
-msgstr ""
+msgstr "Template di posta salvata"
 
 msgid "Media already exists in the system"
-msgstr ""
+msgstr "Media gia' esiste nel sistema"
 
 msgid "Media type"
-msgstr ""
+msgstr "Tipo Media"
 
 msgid "Message template"
-msgstr ""
+msgstr "Template messaggio"
 
 msgid "Missing from field"
-msgstr ""
+msgstr "Campo 'Da' mancante"
 
 msgid "Missing invoices"
 msgstr ""
 
 msgid "Missing list name"
-msgstr ""
+msgstr "Lista nomi mancante"
 
 msgid "Missing message id or recipient"
-msgstr ""
+msgstr "Manca id messaggio o recipiente"
 
 msgid "Missing options"
-msgstr ""
+msgstr "Opzioni mancanti"
 
 msgid "Missing parent"
-msgstr ""
+msgstr "Parent mancante"
 
 msgid "Missing publishing"
 msgstr "Pubblicazione mancante"
 
 msgid "Missing recipient"
+msgstr "Recipiente mancante"
+
+msgid ""
+"Missing referenced object.nIf you are creating new item you have to save it "
+"before adding a note"
 msgstr ""
 
 msgid "Missing sending date"
@@ -693,7 +709,10 @@ msgstr "Altri dati"
 msgid "More properties"
 msgstr ""
 
-msgid "Multimedia  not found"
+msgid "Multimedia Provider not found or error getting thumbnail"
+msgstr ""
+
+msgid "Multimedia Provider not found or error preparing data to save"
 msgstr ""
 
 msgid "Multimedia deleted"
@@ -703,6 +722,9 @@ msgid "Multimedia items"
 msgstr "Elementi multimediali"
 
 msgid "Multimedia object saved"
+msgstr ""
+
+msgid "Multimedia provider is not managed"
 msgstr ""
 
 msgid "Name"
@@ -730,6 +752,9 @@ msgid "New link"
 msgstr ""
 
 msgid "New password"
+msgstr ""
+
+msgid "New question"
 msgstr ""
 
 msgid "New tag"
@@ -792,6 +817,9 @@ msgstr ""
 msgid "No questions found"
 msgstr "Nessun quesito trovato"
 
+msgid "No references"
+msgstr ""
+
 msgid "No subscribers"
 msgstr ""
 
@@ -807,7 +835,7 @@ msgstr ""
 msgid "No tags found."
 msgstr "Nessun tag trovato"
 
-msgid "No template avaible"
+msgid "No template available"
 msgstr ""
 
 msgid "No templates found"
@@ -825,9 +853,6 @@ msgstr ""
 msgid "Not Authorized"
 msgstr ""
 
-msgid "Notes"
-msgstr "Note"
-
 msgid "Notice"
 msgstr ""
 
@@ -837,13 +862,7 @@ msgstr ""
 msgid "Number of objects"
 msgstr ""
 
-msgid "Object created or modified"
-msgstr ""
-
 msgid "Occurrences"
-msgstr ""
-
-msgid "Ocurrences"
 msgstr ""
 
 msgid "Open Calendar"
@@ -886,10 +905,19 @@ msgstr ""
 msgid "Please enter a valid time in the %1 format"
 msgstr ""
 
+msgid "Please fill in all required fields"
+msgstr ""
+
 msgid "Post comment disabled"
 msgstr ""
 
 msgid "Previews"
+msgstr ""
+
+msgid "Print"
+msgstr ""
+
+msgid "Print layout"
 msgstr ""
 
 msgid "Properties"
@@ -913,6 +941,9 @@ msgstr "Albero delle pubblicazioni"
 msgid "Question detail"
 msgstr "Dettagli quesito"
 
+msgid "Question properties"
+msgstr ""
+
 msgid "Question saved"
 msgstr "Quesito salvato"
 
@@ -931,8 +962,8 @@ msgstr "Quesiti"
 msgid "Questions and answers"
 msgstr "Quesiti e risposte"
 
-msgid "Question deleted"
-msgstr "Quesito eliminato"
+msgid "Questions deleted"
+msgstr ""
 
 msgid "Questions list"
 msgstr "Lista dei Quesiti"
@@ -953,6 +984,9 @@ msgid "Real name is required (at least %1 alphanumerical chars)"
 msgstr ""
 
 msgid "Recent newsletters "
+msgstr ""
+
+msgid "Referenced in"
 msgstr ""
 
 msgid "Relationships"
@@ -982,11 +1016,14 @@ msgstr "Sezione salvata"
 msgid "Select a user from the list"
 msgstr ""
 
-msgid "Select at least one type of permission"
-msgstr ""
-
 msgid "Select by category"
 msgstr "Seleziona per categoria"
+
+msgid "Select by difficulty"
+msgstr ""
+
+msgid "Select by eduLevel"
+msgstr ""
 
 msgid "Select by tag"
 msgstr "Seleziona per Tag"
@@ -1079,6 +1116,9 @@ msgid ""
 "The content is fixed: it's not possible to change the position in the tree"
 msgstr ""
 
+msgid "This help page is under construction: coming soon"
+msgstr ""
+
 msgid "This object is fixed - some data is readonly"
 msgstr ""
 
@@ -1130,6 +1170,9 @@ msgstr ""
 msgid "Use a valid email"
 msgstr ""
 
+msgid "Use the multiple upload"
+msgstr ""
+
 msgid "User"
 msgstr ""
 
@@ -1154,11 +1197,6 @@ msgstr ""
 msgid "User name"
 msgstr ""
 
-msgid ""
-"User name is required (at least %1 chars, without white spaces and special "
-"chars)"
-msgstr ""
-
 msgid "User not authorized to enter"
 msgstr ""
 
@@ -1181,6 +1219,9 @@ msgid "Warning"
 msgstr ""
 
 msgid "Width"
+msgstr ""
+
+msgid "Write your answer. Max chars is"
 msgstr ""
 
 msgid "Write your email here"
@@ -1243,9 +1284,6 @@ msgstr "aggiungi"
 msgid "add more tags"
 msgstr ""
 
-msgid "add user"
-msgstr ""
-
 msgid "address"
 msgstr "indirizzo"
 
@@ -1266,9 +1304,6 @@ msgstr "tutti"
 
 msgid "all recent items"
 msgstr "elementi recenti"
-
-msgid "altro"
-msgstr ""
 
 msgid "answers"
 msgstr ""
@@ -1329,9 +1364,6 @@ msgstr ""
 
 msgid "checkbox single choice"
 msgstr ""
-
-msgid "choose document type"
-msgstr "scegli il tipo documento"
 
 msgid "city and zip code"
 msgstr "città e cap"
@@ -1435,14 +1467,23 @@ msgstr "descrizione"
 msgid "details"
 msgstr ""
 
+msgid "difficulty"
+msgstr ""
+
 msgid "documents"
 msgstr "documenti"
 
 msgid "draft"
 msgstr ""
 
+msgid "duration in minutes"
+msgstr ""
+
 msgid "editor notes"
 msgstr "note redazionali"
+
+msgid "edu level"
+msgstr ""
 
 msgid "email"
 msgstr ""
@@ -1492,6 +1533,9 @@ msgstr ""
 msgid "from"
 msgstr "da"
 
+msgid "frontend access"
+msgstr ""
+
 msgid "galleries"
 msgstr "gallerie"
 
@@ -1535,6 +1579,9 @@ msgid "language"
 msgstr "lingua"
 
 msgid "last"
+msgstr ""
+
+msgid "last editor's notes"
 msgstr ""
 
 msgid "last login"
@@ -1591,8 +1638,14 @@ msgstr ""
 msgid "modified"
 msgstr "modificato"
 
-msgid "modify"
-msgstr "modifica"
+msgid "more from this IP"
+msgstr ""
+
+msgid "more from this email"
+msgstr ""
+
+msgid "more on this content"
+msgstr ""
 
 msgid "more results"
 msgstr ""
@@ -1607,9 +1660,6 @@ msgid "multimedia descriptions"
 msgstr ""
 
 msgid "multiple choice"
-msgstr ""
-
-msgid "multiple choiche"
 msgstr ""
 
 msgid "name"
@@ -1658,6 +1708,9 @@ msgid "no"
 msgstr ""
 
 msgid "no custom properties defined"
+msgstr ""
+
+msgid "no notes"
 msgstr ""
 
 msgid "no object type defined"
@@ -1744,6 +1797,9 @@ msgstr "pagina"
 msgid "pending"
 msgstr ""
 
+msgid "permission"
+msgstr ""
+
 msgid "phone"
 msgstr ""
 
@@ -1758,6 +1814,12 @@ msgstr ""
 
 msgid "previous page"
 msgstr "pagina precedente"
+
+msgid "print"
+msgstr ""
+
+msgid "print context"
+msgstr ""
 
 msgid "priority"
 msgstr "priorità"
@@ -1798,9 +1860,6 @@ msgstr ""
 msgid "questionnaires"
 msgstr "questionari"
 
-msgid "read"
-msgstr "lettura"
-
 msgid "realname"
 msgstr ""
 
@@ -1815,9 +1874,6 @@ msgstr ""
 
 msgid "referenced objects list"
 msgstr "Inserito in"
-
-msgid "remove"
-msgstr ""
 
 msgid "remove from users"
 msgstr ""
@@ -1840,6 +1896,9 @@ msgstr "salva"
 msgid "save profile"
 msgstr ""
 
+msgid "saved item"
+msgstr ""
+
 msgid "scheduled"
 msgstr ""
 
@@ -1852,20 +1911,8 @@ msgstr "cerca"
 msgid "search string"
 msgstr "stringa di ricerca"
 
-msgid "search string:"
-msgstr ""
-
 msgid "sections"
 msgstr "sezioni"
-
-msgid "see comments from this IP"
-msgstr ""
-
-msgid "see comments from this email"
-msgstr ""
-
-msgid "see comments on this content"
-msgstr ""
 
 msgid "select an item to associate"
 msgstr "seleziona un elemento da collegare"
@@ -1886,6 +1933,9 @@ msgid "selected records"
 msgstr "elementi selezionati"
 
 msgid "selected subscribers"
+msgstr ""
+
+msgid "send"
 msgstr ""
 
 msgid "sender"
@@ -1911,6 +1961,9 @@ msgstr ""
 
 msgid "size"
 msgstr "dimensione"
+
+msgid "specify"
+msgstr ""
 
 msgid "staging url"
 msgstr ""
@@ -1957,6 +2010,9 @@ msgstr ""
 msgid "text"
 msgstr "testo"
 
+msgid "thumbnail"
+msgstr ""
+
 msgid "title"
 msgstr "titolo"
 
@@ -1980,6 +2036,9 @@ msgstr "traduzioni"
 
 msgid "type"
 msgstr "tipo"
+
+msgid "undo"
+msgstr ""
 
 msgid "upload new items"
 msgstr "carica nuovi elementi"
@@ -2035,6 +2094,9 @@ msgstr ""
 msgid "word"
 msgstr "parola"
 
+msgid "write"
+msgstr ""
+
 msgid "write new item"
 msgstr ""
 
@@ -2044,6 +2106,9 @@ msgstr "anno"
 msgid "yes"
 msgstr "sì"
 
+msgid "you have no recent items"
+msgstr ""
+
 msgid "your 5 recent items"
 msgstr "i tuoi 5 ultimi elementi"
 
@@ -2052,6 +2117,27 @@ msgstr ""
 
 msgid "your profile and preferences"
 msgstr ""
+
+#~ msgid "Embedded in"
+#~ msgstr "Inserito in"
+
+#~ msgid "Embedded in no objects"
+#~ msgstr "l'elemento non è inserito da nessuna parte"
+
+#~ msgid "Notes"
+#~ msgstr "Note"
+
+#~ msgid "Question deleted"
+#~ msgstr "Quesito eliminato"
+
+#~ msgid "choose document type"
+#~ msgstr "scegli il tipo documento"
+
+#~ msgid "modify"
+#~ msgstr "modifica"
+
+#~ msgid "read"
+#~ msgstr "lettura"
 
 #~ msgid "notes"
 #~ msgstr "note"

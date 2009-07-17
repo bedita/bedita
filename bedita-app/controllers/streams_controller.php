@@ -86,7 +86,7 @@ class StreamsController extends AppController {
 	 */
 	public function get_item_form($filename = null) {
 		$filename = urldecode($this->params['form']['filename']) ;
-		if(!($id = $this->Stream->getIdFromFilename($filename))) throw new BeditaException(sprintf(__("Error get id object: %d", true), $id));
+		if(!($id = $this->Stream->getIdFromFilename($filename))) throw new BeditaException(sprintf(__("Error getting id object: %d", true), $id));
 		$this->_get_item_form($id) ;
 	}
 	 
@@ -110,7 +110,7 @@ class StreamsController extends AppController {
 		$rec = $this->BEObject->recursive ;
 		$this->BEObject->recursive = -1 ;
 		if(!($ret = $this->BEObject->read('object_type_id', $id))) 
-			throw new BeditaException(sprintf(__("Error get object: %d", true), $id));
+			throw new BeditaException(sprintf(__("Error getting object: %d", true), $id));
 		$this->BEObject->recursive = $rec ;
 		$modelClass = $conf->objectTypes[$ret["BEObject"]["object_type_id"]]["model"];
 

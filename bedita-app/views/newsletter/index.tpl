@@ -51,7 +51,7 @@
 		{foreach from=$templates item="temp"}
 			<li><a href="{$html->url('/newsletter/viewtemplate/')}{$temp.BEObject.id}">{$temp.BEObject.title}</a></li>
 		{foreachelse}
-			<li>{t}No template avaible{/t}</li>
+			<li>{t}No template available{/t}</li>
 		{/foreach}
 		
 		</ul>

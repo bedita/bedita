@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2009-05-22 17:40:55\n"
+"POT-Creation-Date: 2009-07-17 17:52:01\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -48,9 +48,6 @@ msgstr ""
 msgid "Annotation type or object_id missing"
 msgstr ""
 
-msgid "Apply permissions recursively"
-msgstr ""
-
 msgid "Are you sure that you want to delete selected items?"
 msgstr ""
 
@@ -58,6 +55,9 @@ msgid "Are you sure that you want to delete selected tags?"
 msgstr ""
 
 msgid "Are you sure that you want to delete the item?"
+msgstr ""
+
+msgid "Are you sure that you want to delete the note?"
 msgstr ""
 
 msgid "Are you sure that you want to delete the tag?"
@@ -82,9 +82,6 @@ msgid "Area tree saved"
 msgstr ""
 
 msgid "Author"
-msgstr ""
-
-msgid "Author creator"
 msgstr ""
 
 msgid "Authorized"
@@ -180,9 +177,6 @@ msgstr ""
 msgid "Check url"
 msgstr ""
 
-msgid "Choose document type"
-msgstr ""
-
 msgid "Code"
 msgstr ""
 
@@ -193,6 +187,9 @@ msgid "Comments"
 msgstr ""
 
 msgid "Comments deleted"
+msgstr ""
+
+msgid "Communication error"
 msgstr ""
 
 msgid "Company / institution"
@@ -288,9 +285,6 @@ msgstr ""
 msgid "Display details in frontend"
 msgstr ""
 
-msgid "Do you really want to delete the permission"
-msgstr ""
-
 msgid "Do you really want to remove group"
 msgstr ""
 
@@ -312,13 +306,10 @@ msgstr ""
 msgid "Editor notes"
 msgstr ""
 
+msgid "Editors Notes"
+msgstr ""
+
 msgid "Email"
-msgstr ""
-
-msgid "Embedded in"
-msgstr ""
-
-msgid "Embedded in no objects"
 msgstr ""
 
 msgid "Empty data"
@@ -342,16 +333,22 @@ msgstr ""
 msgid "Error checking url for link: "
 msgstr ""
 
-msgid "Error create jobs"
-msgstr ""
-
-msgid "Error delete permissions"
+msgid "Error creating jobs"
 msgstr ""
 
 msgid "Error deleting custom property "
 msgstr ""
 
+msgid "Error deleting note"
+msgstr ""
+
+msgid "Error deleting note, missing id"
+msgstr ""
+
 msgid "Error deleting object: %d"
+msgstr ""
+
+msgid "Error deleting permissions"
 msgstr ""
 
 msgid "Error deleting stream object"
@@ -369,16 +366,13 @@ msgstr ""
 msgid "Error finding mail message "
 msgstr ""
 
-msgid "Error get id object: %d"
+msgid "Error getting id object: %d"
 msgstr ""
 
-msgid "Error get id object: %s"
+msgid "Error getting id object: %s"
 msgstr ""
 
-msgid "Error get object: %d"
-msgstr ""
-
-msgid "Error join group"
+msgid "Error getting object: %d"
 msgstr ""
 
 msgid "Error loading area: %d"
@@ -396,16 +390,25 @@ msgstr ""
 msgid "Error loading tag: "
 msgstr ""
 
-msgid "Error modify permissions"
+msgid "Error modifying permissions"
 msgstr ""
 
-msgid "Error modifying permissions"
+msgid "Error on join between card and mail group"
+msgstr ""
+
+msgid "Error on subscribing: empty 'newsletter_email'"
+msgstr ""
+
+msgid "Error on subscribing: no data"
+msgstr ""
+
+msgid "Error on subscribing: no mail_group indicated"
 msgstr ""
 
 msgid "Error removing group"
 msgstr ""
 
-msgid "Error save tree from _POST"
+msgid "Error removing mail group card"
 msgstr ""
 
 msgid "Error saving area"
@@ -423,13 +426,16 @@ msgstr ""
 msgid "Error saving mail group"
 msgstr ""
 
+msgid "Error saving mail group card"
+msgstr ""
+
 msgid "Error saving multimedia"
 msgstr ""
 
-msgid "Error saving options"
+msgid "Error saving note"
 msgstr ""
 
-msgid "Error saving permissions"
+msgid "Error saving options"
 msgstr ""
 
 msgid "Error saving section"
@@ -448,6 +454,9 @@ msgid "Error saving stream object"
 msgstr ""
 
 msgid "Error saving tag"
+msgstr ""
+
+msgid "Error saving tree from _POST"
 msgstr ""
 
 msgid "Error saving user"
@@ -555,6 +564,9 @@ msgstr ""
 msgid "IP banned"
 msgstr ""
 
+msgid "If you have any problems try with browser upload"
+msgstr ""
+
 msgid "Immutable group"
 msgstr ""
 
@@ -574,9 +586,6 @@ msgid "Items"
 msgstr ""
 
 msgid "Last check"
-msgstr ""
-
-msgid "Last modified by"
 msgstr ""
 
 msgid "Last result"
@@ -663,6 +672,9 @@ msgstr ""
 msgid "Missing recipient"
 msgstr ""
 
+msgid "Missing referenced object.nIf you are creating new item you have to save it before adding a note"
+msgstr ""
+
 msgid "Missing sending date"
 msgstr ""
 
@@ -690,7 +702,10 @@ msgstr ""
 msgid "More properties"
 msgstr ""
 
-msgid "Multimedia  not found"
+msgid "Multimedia Provider not found or error getting thumbnail"
+msgstr ""
+
+msgid "Multimedia Provider not found or error preparing data to save"
 msgstr ""
 
 msgid "Multimedia deleted"
@@ -700,6 +715,9 @@ msgid "Multimedia items"
 msgstr ""
 
 msgid "Multimedia object saved"
+msgstr ""
+
+msgid "Multimedia provider is not managed"
 msgstr ""
 
 msgid "Name"
@@ -727,6 +745,9 @@ msgid "New link"
 msgstr ""
 
 msgid "New password"
+msgstr ""
+
+msgid "New question"
 msgstr ""
 
 msgid "New tag"
@@ -789,6 +810,9 @@ msgstr ""
 msgid "No questions found"
 msgstr ""
 
+msgid "No references"
+msgstr ""
+
 msgid "No subscribers"
 msgstr ""
 
@@ -804,7 +828,7 @@ msgstr ""
 msgid "No tags found."
 msgstr ""
 
-msgid "No template avaible"
+msgid "No template available"
 msgstr ""
 
 msgid "No templates found"
@@ -822,9 +846,6 @@ msgstr ""
 msgid "Not Authorized"
 msgstr ""
 
-msgid "Notes"
-msgstr ""
-
 msgid "Notice"
 msgstr ""
 
@@ -834,13 +855,7 @@ msgstr ""
 msgid "Number of objects"
 msgstr ""
 
-msgid "Object created or modified"
-msgstr ""
-
 msgid "Occurrences"
-msgstr ""
-
-msgid "Ocurrences"
 msgstr ""
 
 msgid "Open Calendar"
@@ -882,10 +897,19 @@ msgstr ""
 msgid "Please enter a valid time in the %1 format"
 msgstr ""
 
+msgid "Please fill in all required fields"
+msgstr ""
+
 msgid "Post comment disabled"
 msgstr ""
 
 msgid "Previews"
+msgstr ""
+
+msgid "Print"
+msgstr ""
+
+msgid "Print layout"
 msgstr ""
 
 msgid "Properties"
@@ -907,6 +931,9 @@ msgid "Publishing tree"
 msgstr ""
 
 msgid "Question detail"
+msgstr ""
+
+msgid "Question properties"
 msgstr ""
 
 msgid "Question saved"
@@ -951,6 +978,9 @@ msgstr ""
 msgid "Recent newsletters "
 msgstr ""
 
+msgid "Referenced in"
+msgstr ""
+
 msgid "Relationships"
 msgstr ""
 
@@ -978,10 +1008,13 @@ msgstr ""
 msgid "Select a user from the list"
 msgstr ""
 
-msgid "Select at least one type of permission"
+msgid "Select by category"
 msgstr ""
 
-msgid "Select by category"
+msgid "Select by difficulty"
+msgstr ""
+
+msgid "Select by eduLevel"
 msgstr ""
 
 msgid "Select by tag"
@@ -1074,6 +1107,9 @@ msgstr ""
 msgid "The content is fixed: it's not possible to change the position in the tree"
 msgstr ""
 
+msgid "This help page is under construction: coming soon"
+msgstr ""
+
 msgid "This object is fixed - some data is readonly"
 msgstr ""
 
@@ -1125,6 +1161,9 @@ msgstr ""
 msgid "Use a valid email"
 msgstr ""
 
+msgid "Use the multiple upload"
+msgstr ""
+
 msgid "User"
 msgstr ""
 
@@ -1149,9 +1188,6 @@ msgstr ""
 msgid "User name"
 msgstr ""
 
-msgid "User name is required (at least %1 chars, without white spaces and special chars)"
-msgstr ""
-
 msgid "User not authorized to enter"
 msgstr ""
 
@@ -1174,6 +1210,9 @@ msgid "Warning"
 msgstr ""
 
 msgid "Width"
+msgstr ""
+
+msgid "Write your answer. Max chars is"
 msgstr ""
 
 msgid "Write your email here"
@@ -1236,9 +1275,6 @@ msgstr ""
 msgid "add more tags"
 msgstr ""
 
-msgid "add user"
-msgstr ""
-
 msgid "address"
 msgstr ""
 
@@ -1258,9 +1294,6 @@ msgid "all"
 msgstr ""
 
 msgid "all recent items"
-msgstr ""
-
-msgid "altro"
 msgstr ""
 
 msgid "answers"
@@ -1321,9 +1354,6 @@ msgid "check urls"
 msgstr ""
 
 msgid "checkbox single choice"
-msgstr ""
-
-msgid "choose document type"
 msgstr ""
 
 msgid "city and zip code"
@@ -1428,13 +1458,22 @@ msgstr ""
 msgid "details"
 msgstr ""
 
+msgid "difficulty"
+msgstr ""
+
 msgid "documents"
 msgstr ""
 
 msgid "draft"
 msgstr ""
 
+msgid "duration in minutes"
+msgstr ""
+
 msgid "editor notes"
+msgstr ""
+
+msgid "edu level"
 msgstr ""
 
 msgid "email"
@@ -1485,6 +1524,9 @@ msgstr ""
 msgid "from"
 msgstr ""
 
+msgid "frontend access"
+msgstr ""
+
 msgid "galleries"
 msgstr ""
 
@@ -1528,6 +1570,9 @@ msgid "language"
 msgstr ""
 
 msgid "last"
+msgstr ""
+
+msgid "last editor's notes"
 msgstr ""
 
 msgid "last login"
@@ -1584,7 +1629,13 @@ msgstr ""
 msgid "modified"
 msgstr ""
 
-msgid "modify"
+msgid "more from this IP"
+msgstr ""
+
+msgid "more from this email"
+msgstr ""
+
+msgid "more on this content"
 msgstr ""
 
 msgid "more results"
@@ -1600,9 +1651,6 @@ msgid "multimedia descriptions"
 msgstr ""
 
 msgid "multiple choice"
-msgstr ""
-
-msgid "multiple choiche"
 msgstr ""
 
 msgid "name"
@@ -1651,6 +1699,9 @@ msgid "no"
 msgstr ""
 
 msgid "no custom properties defined"
+msgstr ""
+
+msgid "no notes"
 msgstr ""
 
 msgid "no object type defined"
@@ -1737,6 +1788,9 @@ msgstr ""
 msgid "pending"
 msgstr ""
 
+msgid "permission"
+msgstr ""
+
 msgid "phone"
 msgstr ""
 
@@ -1750,6 +1804,12 @@ msgid "prev"
 msgstr ""
 
 msgid "previous page"
+msgstr ""
+
+msgid "print"
+msgstr ""
+
+msgid "print context"
 msgstr ""
 
 msgid "priority"
@@ -1791,9 +1851,6 @@ msgstr ""
 msgid "questionnaires"
 msgstr ""
 
-msgid "read"
-msgstr ""
-
 msgid "realname"
 msgstr ""
 
@@ -1807,9 +1864,6 @@ msgid "reference"
 msgstr ""
 
 msgid "referenced objects list"
-msgstr ""
-
-msgid "remove"
 msgstr ""
 
 msgid "remove from users"
@@ -1833,6 +1887,9 @@ msgstr ""
 msgid "save profile"
 msgstr ""
 
+msgid "saved item"
+msgstr ""
+
 msgid "scheduled"
 msgstr ""
 
@@ -1845,19 +1902,7 @@ msgstr ""
 msgid "search string"
 msgstr ""
 
-msgid "search string:"
-msgstr ""
-
 msgid "sections"
-msgstr ""
-
-msgid "see comments from this IP"
-msgstr ""
-
-msgid "see comments from this email"
-msgstr ""
-
-msgid "see comments on this content"
 msgstr ""
 
 msgid "select an item to associate"
@@ -1879,6 +1924,9 @@ msgid "selected records"
 msgstr ""
 
 msgid "selected subscribers"
+msgstr ""
+
+msgid "send"
 msgstr ""
 
 msgid "sender"
@@ -1903,6 +1951,9 @@ msgid "signature"
 msgstr ""
 
 msgid "size"
+msgstr ""
+
+msgid "specify"
 msgstr ""
 
 msgid "staging url"
@@ -1950,6 +2001,9 @@ msgstr ""
 msgid "text"
 msgstr ""
 
+msgid "thumbnail"
+msgstr ""
+
 msgid "title"
 msgstr ""
 
@@ -1972,6 +2026,9 @@ msgid "translations"
 msgstr ""
 
 msgid "type"
+msgstr ""
+
+msgid "undo"
 msgstr ""
 
 msgid "upload new items"
@@ -2028,6 +2085,9 @@ msgstr ""
 msgid "word"
 msgstr ""
 
+msgid "write"
+msgstr ""
+
 msgid "write new item"
 msgstr ""
 
@@ -2035,6 +2095,9 @@ msgid "year"
 msgstr ""
 
 msgid "yes"
+msgstr ""
+
+msgid "you have no recent items"
 msgstr ""
 
 msgid "your 5 recent items"

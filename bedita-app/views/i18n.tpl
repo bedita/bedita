@@ -23,7 +23,7 @@ Strings to translate not present in .tpl/.php files
 {t}multimedia{/t}
 
 -- QUESTION TYPES
-{t}multiple choiche{/t}
+{t}multiple choice{/t}
 {t}checkbox single choice{/t}
 {t}pulldown single choice{/t}
 {t}open answer{/t}

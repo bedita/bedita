@@ -6,7 +6,7 @@ Menu a DX
 <script type="text/javascript">
 var urlLoadNote = "{$html->url('/pages/loadNote')}";
 var urlDelNote = "{$html->url('/pages/deleteNote')}";
-var comunicationErrorMsg = "{t}Comunication error{/t}";
+var comunicationErrorMsg = "{t}Communication error{/t}";
 var confirmDelNoteMsg = "{t}Are you sure that you want to delete the note?{/t}";
 
 {literal}

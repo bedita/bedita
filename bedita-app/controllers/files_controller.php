@@ -98,7 +98,7 @@ class FilesController extends AppController {
  		if(!isset($this->params['form']['filename'])) throw new BeditaException(sprintf(__("No data", true), $id));
 	 	$this->Transaction->begin() ;
 	 	// Get object id from filename
-		if(!($id = $this->Stream->getIdFromFilename($this->params['form']['filename']))) throw new BeditaException(sprintf(__("Error get id object: %s", true), $this->params['form']['filename']));
+		if(!($id = $this->Stream->getIdFromFilename($this->params['form']['filename']))) throw new BeditaException(sprintf(__("Error getting id object: %s", true), $this->params['form']['filename']));
 	 	// Delete data
 	 	if(!$this->BeFileHandler->del($id)) throw new BeditaException(sprintf(__("Error deleting object: %d", true), $id));
 	 	$this->Transaction->commit() ;

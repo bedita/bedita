@@ -233,7 +233,7 @@ class BeMailComponent extends Object {
 							
 							$jobModel->create();
 							if (!$jobModel->save($data))
-								throw new BeditaException(__("Error create jobs"),true);
+								throw new BeditaException(__("Error creating jobs"),true);
 						}
 					}
 					

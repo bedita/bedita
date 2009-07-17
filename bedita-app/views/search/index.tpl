@@ -82,7 +82,7 @@ function delObjects() {
 	<tr>
 		<th>{$paginator->sort('Name', 'label')}</th>
 		<th>{$paginator->sort('Status', 'status')}</th>
-		<th class="center">{$paginator->sort('Ocurrences', 'occurences')}</th>
+		<th class="center">{$paginator->sort('Occurrences', 'occurences')}</th>
 		<th>Id</th>
 		<th></th>
 	</tr>

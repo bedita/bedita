@@ -135,7 +135,7 @@ class TranslationsController extends ModulesController {
 			if(empty($this->data['id'])) 
 				throw new BeditaException(__("No data", true));
 //			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
-//				throw new BeditaException(__("Error delete permissions", true));
+//				throw new BeditaException(__("Error deleting permissions", true));
 //			}
 			$objectsToDel = array($this->data['id']);
 			$objectsListDesc = $this->data['id'];

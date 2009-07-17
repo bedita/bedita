@@ -134,7 +134,7 @@ class MultimediaController extends ModulesController {
 		
 		// Verify object permits
 //		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-//			throw new BeditaException(__("Error modify permissions", true));
+//			throw new BeditaException(__("Error modifying permissions", true));
 		
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave() ;	

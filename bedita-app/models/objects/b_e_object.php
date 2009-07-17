@@ -367,7 +367,7 @@ class BEObject extends BEAppModel
 			}
 			foreach ($queriesModified as $qMod) {
 				if ($db->query($qMod)  === false)
-					throw new BeditaException(__("Error modifing title and description", true), $qMod);
+					throw new BeditaException(__("Error modifying title and description", true), $qMod);
 			}
 		}
 		

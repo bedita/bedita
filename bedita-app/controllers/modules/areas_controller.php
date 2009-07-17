@@ -110,7 +110,7 @@ class AreasController extends ModulesController {
 		// Get the tree
 		$this->_getTreeFromPOST($this->data["tree"], $tree) ;
 		// Save data changes
-		if(!$this->Tree->moveAll($tree)) throw new BeditaException( __("Error save tree from _POST", true));
+		if(!$this->Tree->moveAll($tree)) throw new BeditaException( __("Error saving tree from _POST", true));
 		$this->Transaction->commit() ;
 		$this->userInfoMessage(__("Area tree saved", true));
 		$this->eventInfo("area tree saved");
