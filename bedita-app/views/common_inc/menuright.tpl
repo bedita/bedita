@@ -77,18 +77,10 @@ function refreshNoteList(delButton) {
 
 
 <div class="quartacolonna">	
-	
+
+{if !empty($object)}
+
 	<div class="tab"><h2>{t}Editors Notes{/t}</h2></div>
-<!-- old notes 
-	<div id="editornotes" style="margin-top:-10px; padding:10px; background-color:white;">
-	{strip}
-		<label>{t}editor notes{/t}:</label>
-		<textarea name="data[note]" class="autogrowarea editornotes">
-		  {$object.note|default:''}
-		</textarea>
-	{/strip}
-	</div>
- end old notes -->
  
 	<div id="editornotes" style="margin-top:-10px; padding:10px; background-color:white;">
 	{*dump var=$object.EditorNote|@array_reverse*}
@@ -118,12 +110,20 @@ function refreshNoteList(delButton) {
 		</div>
 	
 	{/strip}
-	 
-	{bedev}
-	{include file="../common_inc/BEiconstest.tpl}	
-	{/bedev}
-	
 	</div>
+
+{/if}
+
+	{bedev}
+		<div class="tab"><h2>{t}Test stuff{/t}</h2></div>
+		<div style="padding:10px; background-color:white;">
+		{include file="../common_inc/BEiconstest.tpl}	
+		</div>
+	{/bedev}
+
+
+
+
 </div>
 
 
