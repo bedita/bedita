@@ -40,6 +40,8 @@ $(document).ready( function ()
 	
 </div>
 
+<form action="{$html->url('/tags/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+
 {include file="inc/menucommands.tpl" method="view" fixed=true}
 
 <div class="main">
@@ -47,5 +49,7 @@ $(document).ready( function ()
 	{include file="inc/form.tpl"}	
 
 </div>
+
+</form>
 
 {include file="../common_inc/menuright.tpl"}

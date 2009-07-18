@@ -1,4 +1,3 @@
-<form action="{$html->url('/tags/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 
 <input type="hidden" name="data[id]" value="{$tag.id|default:''}"/>
 <input type="hidden" name="tags_selected[0]" value="{$tag.id|default:''}"/>
@@ -49,4 +48,4 @@
 
 </fieldset>
 
-</form>
+
