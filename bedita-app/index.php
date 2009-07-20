@@ -5,7 +5,7 @@
  *
  * \section intro_sec Introduction
  *
- * <img src="http://www.bedita.com/img/BEAPIDoc.jpg" align="left">Welcome to the API documentation of BEdita.<BR>
+ * Welcome to the API documentation of BEdita.<BR>
  * You can browse these pages using the menu on the left or executing searches in the form above.
  * <P>Note that, since BEdita development is in beta stage, this documentation is being updated continuously: here and there you could find missing paragraphs, misleading links and anchors and so on.<BR>
  * Please be patient or contribute ;-)</P> 
