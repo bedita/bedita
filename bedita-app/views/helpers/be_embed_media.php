@@ -243,16 +243,55 @@ class BeEmbedMediaHelper extends AppHelper {
 			return $this->Html->link($obj['title'],$obj['path'], $htmlAttributes);
 		}
 	}
-
+	
+	/** private function showApplication($obj, $params, $htmlAttributes) {
+		
+		
+		
+		 * 	controllo che sia tipo flash (database)
+		 *  presentation = full -> chiamata generica swf
+		 *  
+		 *  presentation = thumb -> ?? icona di default
+		 *  
+		 *  $appPath = (defined("BEDITA_CORE_PATH"))? BEDITA_CORE_PATH . DS : APP;
+		 * 
+		 *
+		
+		if ($params["presentation"] == "full") {
+			
+			if ($obj["applications_name"] == "swf") {
+				$output = $this->beEmbedFlash->embedSwf($obj, $params, $htmlAttributes);
+			}
+		} elseif ($params["presentation"] == "thumb") {
+			
+			$imgThumb = $this->getMediaTypeImage($obj);
+			$output = $this->Html->image($imgThumb, $htmlAttributes);
+		}
+		
+		return $output;
+		
+	}*/
+	
+	
+	
 	protected function getMediaTypeImage($obj) {
-		$img = "iconset/88px/notype.png";
-		if (!empty($obj["mediatype"]) && file_exists("img/iconset/88px/" . $obj["mediatype"] . ".png")) {
-			$img = "iconset/88px/" . $obj["mediatype"] . ".png";
+		
+		$img = "iconset/88px/";
+		
+		if ( defined("BEDITA_CORE_PATH") ) {
+			if (is_dir(APP."webroot".DS."img".DS."iconset") ) {
+				$img = "iconset".DS;
+			}else {
+				$img = Configure::read("beditaUrl")."/img/".$img;
+			}
+		}
+		if (!empty($obj["mediatype"])) {
+			$img = $img . $obj["mediatype"] . ".png";
 		} elseif (!empty($obj["Category"])) {
 			$imgname = (!is_array($obj["Category"]))? $obj["Category"] : $obj["Category"][0]["name"];
-			if (file_exists("img/iconset/88px/" . $imgname . ".png")) {
-				$img = "iconset/88px/" . $imgname . ".png";
-			} 
+			$img = $img . $imgname . ".png";
+		}else {
+			$img = "iconset/88px/notype.png";
 		}
 		return $img;
 	}
