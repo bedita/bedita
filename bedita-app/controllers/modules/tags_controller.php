@@ -68,9 +68,9 @@ class TagsController extends ModulesController {
 		if(empty($this->data)) 
 			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
-		if($this->Category->tagLabelPresent($this->data["label"])) {
-			$this->userInfoMessage(__("Tag already present", true)." - ".$this->data["label"]);
-			return;
+		$exclude_id = (empty($this->data['id']))? null : $this->data['id'];
+		if($this->Category->tagLabelPresent($this->data["label"],$exclude_id)) {
+			throw new BeditaException(__("Tag already present", true)." - ".$this->data["label"]);
 		}
 		
 		// format custom properties
@@ -145,7 +145,7 @@ class TagsController extends ModulesController {
 		$REDIRECT = array(
 			"save"	=> 	array(
 								"OK"	=> "/tags/view/{$this->Category->id}",
-								"ERROR"	=> "/tags/view/{$this->Category->id}" 
+								"ERROR"	=> $this->referer() 
 						), 
 			"delete" =>	array(
 								"OK"	=> "/tags",

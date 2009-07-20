@@ -56,10 +56,14 @@ class Category extends BEAppModel {
 		return $result;			
 	}
 
-	public function tagLabelPresent($label) {
+	public function tagLabelPresent($label, $exclude_id=null) {
 		$name = $this->uniqueLabelName($label);
 		$tagDB = $this->find("first", 
 			array("conditions" => "object_type_id IS NULL AND name='".addslashes($name)."' collate utf8_bin") );
+		
+		if (!empty($exclude_id) && $exclude_id == $tagDB["id"])
+			return false;
+		
 		return !empty($tagDB);
 	}
 
