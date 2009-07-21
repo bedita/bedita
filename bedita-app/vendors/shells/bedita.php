@@ -880,6 +880,28 @@ class BeditaShell extends BeditaBaseShell {
 		$this->out("Mime types updated to: $beditaMimeFile");
     }
 
+    public function updateObjectTypes() {
+	
+		$objType = ClassRegistry::init("ObjectType");
+		// from 1 to 999 - core models
+		if(!$objType->deleteAll("id < 1000")){ 
+			throw new BeditaException(__("Error removing object types", true));
+		}
+		
+		$types = Configure::read("objectTypes");
+		foreach ($types as $k => $v) {
+			if(is_numeric($k)) {
+				$objType->create();
+				if(!$objType->save($v)) {
+					throw new BeditaException(__("Error saving object type", true) . " id: $k");
+				}
+				$this->out("updated type: " . $v["name"]);
+			}
+		}
+		$this->out("done");
+	}
+	
+    
 	function help() {
         $this->out('Available functions:');
         $this->out('1. updateDb: update database with bedita-db sql scripts');
@@ -931,6 +953,8 @@ class BeditaShell extends BeditaBaseShell {
   		$this->out(' ');
   		$this->out('   Usage: mimeTypes -f <mime.types-file>');
         $this->out(' ');
+        $this->out('9. updateObjectTypes: update object_types table');
+  		$this->out(' ');
 	}
 }
 
