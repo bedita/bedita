@@ -25,32 +25,15 @@
  * @lastmodified	$Date: 2007-02-02 07:31:21 -0600 (Fri, 02 Feb 2007) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-/**
- * Here, we are connecting '/' (base path) to controller called 'Pages',
- * its action called 'display', and we pass a param to select the view file
- * to use (in this case, /app/views/pages/home.thtml)...
- */
+
 	Router::connect('/', array('controller' => 'home', 'action' => 'index'));
-/**
- * ...and connect the rest of 'Pages' controller's urls.
- */
 	Router::connect('/logout', array('controller' => 'authentications', 'action' => 'logout'));
+	// generic view
+	Router::connect('/view/*', array('controller' => 'home', 'action' => 'view'));
 	
 /**
  * route to switch locale
  */
 	Router::connect('/lang/*', array('controller' => 'pages', 'action' => 'changeLang'));
-
-/**
- * route for areas/sections
- */
-	Router::connect('/areas/view', array('controller' => 'areas', 'action' => 'index'));
-	Router::connect('/areas/view/*', array('controller' => 'areas', 'action' => 'index'));
-
-/**
- * Then we connect url '/test' to our test controller. This is helpfull in
- * developement.
- */
-	Router::connect('/tests', array('controller' => 'tests', 'action' => 'index'));
 
 ?>

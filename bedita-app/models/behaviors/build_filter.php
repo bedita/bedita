@@ -106,6 +106,18 @@ class BuildFilterBehavior extends ModelBehavior {
 			$filter["ObjectRelation.object_id"] = $filter["rel_object_id"];
 			unset($filter["rel_object_id"]);
 		}
+		if (array_key_exists("ref_object_details", $filter)) {
+			$mod = $filter["ref_object_details"];
+			$found = false;
+			foreach ($filter as $k => $v) {
+				if(strstr($k, $mod.".")) {
+					$found = true;
+				}
+			}
+			if(!$found) {
+				$filter[$mod.".*"] = "";
+			}
+		}
 		$this->filter = $filter;
 	}
 	
@@ -204,6 +216,12 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->from .= ", mail_group_cards AS `MailGroupCard`";
 		$this->conditions[] = "`MailGroupCard`.mail_group_id='" . $value . "' 
 						AND `MailGroupCard`.card_id=`BEObject`.id";
+	}
+
+	private function user_createdFilter() {
+		$this->fields .= ", `User`.userid, `User`.realname";
+		$this->from .= ", users AS `User`";
+		$this->conditions[] = "`User`.id=`BEObject`.user_created";
 	}
 }
  

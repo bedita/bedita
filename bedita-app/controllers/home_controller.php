@@ -40,7 +40,7 @@ class HomeController extends AppController {
 	 	$user = $this->Session->read("BEAuthUser");
 	 	$lastModBYUser = array();
 	 	$lastMod = array();
-	 	$excludedObjectTypes = array($conf->objectTypes["editornote"]["id"]);
+	 	$excludedObjectTypes = array($conf->objectTypes["editornote"]["id"], $conf->objectTypes["comment"]["id"]);
 	 	if (!empty($conf->objectTypes["questionnaireresult"]["id"]))
 	 		$excludedObjectTypes[] = $conf->objectTypes["questionnaireresult"]["id"];
 	 	
@@ -66,12 +66,43 @@ class HomeController extends AppController {
 		 								"limit"			=> 10
 	 								)
 	 						);
+
+	 	$filter = array();
+	 	$filter["object_type_id"] = $conf->objectTypes['comment']["id"];
+		$filter["ref_object_details"] = "Comment";
+	 	$lastComments = $this->BEObject->findObjects(null, null, null, $filter, "modified", true, 1, 10);
+	 	
+	 	$filter["object_type_id"] = $conf->objectTypes['editornote']["id"];
+		$filter["ref_object_details"] = "EditorNote";
+		$filter["user_created"] = "";
+		$lastNotes = $this->BEObject->findObjects(null, null, null, $filter, "modified", true, 1, 10);
+		
 	 	$connectedUser = $this->BeAuth->connectedUser();
 	 	$this->set("lastModBYUser", $lastModBYUser);
 	 	$this->set("lastMod", $lastMod);
-		$this->set("connectedUser", $connectedUser);
+	 	$this->set("lastNotes", $lastNotes["items"]);
+	 	$this->set("lastComments", $lastComments["items"]);
+	 	$this->set("connectedUser", $connectedUser);
 		$this->set("noFooter", true);
 	 }
+
+	/**
+	 * Generic view methods redirects to specific module controller checking object type
+	 *
+	 * @param integer $id - object id to view
+	 */
+	public function view($id) {
+		
+		$this->action = "index";
+		$typeId = $this->BEObject->findObjectTypeId($id);
+		$conf  = Configure::getInstance();
+		if(!isset($conf->objectTypes[$typeId]["module"])) {
+	 		throw new BeditaException(__("No module found for object", true));
+		}
+		$module = $conf->objectTypes[$typeId]["module"];
+		$this->redirect("/".$module . "/view/" . $id);
+	}
+
 	 
 	public function search($page=1, $dim=5) {
 
@@ -152,6 +183,9 @@ class HomeController extends AppController {
  	 	$REDIRECT = array(
 			"editProfile" => array(
  							"OK"	=> "/home/index",
+ 							"ERROR"	=> "/home/index"
+ 						),
+			"view" => array(
  							"ERROR"	=> "/home/index"
  						)
  			);

@@ -151,11 +151,21 @@ $(document).ready(function() {
 {bedev}
 <div class="tab"><h2>{t}last editor's notes{/t}</h2></div>
 	<ul id="lastnotes" class="bordered">
-		{foreach from=$notes item="note"}
-			<li>{$note.UserCreated.realname|default:$note.UserCreated.userid|default:$note.creator|default:$note.user_created}, 
-			on "<i>{$note.ReferenceObject.title|strip_tags|truncate:36:'~':true|default:'[no title]'}'</i>"</li>
+		{foreach from=$lastNotes item="note"}
+			<li>{$note.realname|default:$note.userid}, 
+			{t}on{/t} "<i><a href="{$html->url('/')}view/{$note.ReferenceObject.id}">{$note.ReferenceObject.title|strip_tags|truncate:36:'~':true|default:'[no title]'}'</a></i>"</li>
 		{foreachelse}
 			<li>{t}no notes{/t}</li>
+		{/foreach}
+	</ul>
+
+<div class="tab"><h2>{t}last comments{/t}</h2></div>
+	<ul id="lastcomments" class="bordered">
+		{foreach from=$lastComments item="cmt"}
+			<li>{$cmt.author|default:''}, 
+			{t}on{/t} "<i><a href="{$html->url('/')}view/{$cmt.ReferenceObject.id}">{$cmt.ReferenceObject.title|strip_tags|truncate:36:'~':true|default:'[no title]'}'</a></i>"</li>
+		{foreachelse}
+			<li>{t}no comments{/t}</li>
 		{/foreach}
 	</ul>
 {/bedev}
