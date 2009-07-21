@@ -42,21 +42,22 @@ class AreasController extends ModulesController {
 	 * Area tree and sections
 	 * 
 	 */
-	function index($id=null) {
-		if (!empty($id)) {
-			$ot_id = $this->BEObject->field("object_type_id", array("BEObject.id" => $id));
-			$this->loadSectionDetails($id,$ot_id);
-			$this->loadContents($id);
-			$this->loadSections($id);
-			$formToUse = strtolower(Configure::read("objectTypes.".$ot_id.".model"));
-		} else {
-			$tree = $this->BeTree->getSectionsTree() ;
-			$this->set('tree',$tree);
-			$formToUse = "area";
-		}
-		$this->set("formToUse", $formToUse);
+	function index() {
+		$tree = $this->BeTree->getSectionsTree() ;
+		$this->set('tree',$tree);
+		$this->set("formToUse", "area");
 	}
 
+	public function view($id) {
+		$this->action = "index";
+		$ot_id = $this->BEObject->field("object_type_id", array("BEObject.id" => $id));
+		$this->loadSectionDetails($id,$ot_id);
+		$this->loadContents($id);
+		$this->loadSections($id);
+		$formToUse = strtolower(Configure::read("objectTypes.".$ot_id.".model"));
+		$this->set("formToUse", $formToUse);
+	}
+	
 	 /**
 	  * Preleva l'area selezionata.
 	  * Se non viene passato nessun id, presente il form per una nuova area
