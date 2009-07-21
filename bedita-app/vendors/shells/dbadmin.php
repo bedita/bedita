@@ -248,7 +248,7 @@ class DbadminShell extends Shell {
 			$resp = $this->in("[$req]:");
 			$data[$req]=$resp;			
 		}
-		
+		$data["status"] = "on";
 		$conf = Configure::getInstance() ;
 		$modelClass = $conf->objectTypes[$type]['model'];
 		$model = ClassRegistry::init($modelClass);
