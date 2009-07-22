@@ -114,6 +114,7 @@ class BeLangTextComponent extends Object {
 								}
 							}
 						}
+						$object["curr_lang"] = $lang; //displayed language != from original.... 
 					// avaible languages
 					} else {
 						$object["languages"][$langAvailable] = array();
