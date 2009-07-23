@@ -77,12 +77,15 @@ class NotifyBehavior extends ModelBehavior {
 			
 			$this->prepareUserSettingsMail($model, $created);
 			
-		} else if (!$created && !empty($data["user_modified"])) {
+		} else if (!$created && !empty($data["user_modified"]) 
+				&& !empty($data["user_created"])) {
 			$userModel = ClassRegistry::init("User");
 			$data['author'] = $userModel->field("userid",array("id" => $data["user_modified"]));
 			$creator = $userModel->getUsersToNotify(array("notify_changes" => "1", 
 				"id = " . $data["user_created"], "id <> " . $data["user_modified"]));
-			$this->prepareObjectChangeMail($creator, $model);
+			if(!empty($creator)) {
+				$this->prepareObjectChangeMail($creator, $model);
+			}
 		}
 	}
 	

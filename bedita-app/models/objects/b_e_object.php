@@ -390,9 +390,8 @@ class BEObject extends BEAppModel
 	 	$default = array(
 			'lang' 				=> array('_getDefaultLang', 		(isset($data['lang']))?$data['lang']:null),
 			'ip_created' 		=> array('_getDefaultIP',			(isset($data['ip_created']))?$data['ip_created']:null),
-			'user_created'		=> array('_getIDCurrentUser', 		((isset($data[$this->primaryKey]) && empty($data[$this->primaryKey])) || !isset($data[$this->primaryKey]))? (isset($data['user_created'])?$data['user_created']:true) :false),
+			'user_created'		=> array('_getIDCurrentUser', 		(isset($data['user_created'])?$data['user_created']:true)),
 			'user_modified'		=> array('_getIDCurrentUser', 		(isset($data['user_modified'])?$data['user_modified']:true)), 
-//			'Permissions' 		=> array('_getDefaultPermission', 	(isset($data['Permission']))?$data['Permission']:null, (isset($data['object_type_id']))?$data['object_type_id']:0),
 		) ;
 		
 		foreach ($default as $name => $rule) {
@@ -585,9 +584,6 @@ class BEObject extends BEAppModel
 	}
 	
 	private function _getIDCurrentUser($get = true) {
-		if(!$get) 
-			return null ;
-		
 		if(is_numeric($get)) 
 			return $get ;
 		
