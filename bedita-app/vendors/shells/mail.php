@@ -35,7 +35,6 @@ App::import('Component', 'BeMail');
  * 
  * $Id$
  */
-
 class MailShell extends Shell {
 	
 	var $BeMail;

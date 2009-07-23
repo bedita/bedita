@@ -29,8 +29,6 @@ App::import('Controller', 'App'); // BeditaException
 require_once 'bedita_base.php';
 
 /**
- * 
- * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -192,6 +190,14 @@ class DbDump {
 	
 }
 
+/**
+ * Main bedita shell script: basic methods services, including
+ * - import/export of complete instances
+ * - fresh init/install
+ * - cache, compiled templates cleanups
+ * - application and media files consistency check
+ *
+ */
 class BeditaShell extends BeditaBaseShell {
 
 	const DEFAULT_TAR_FILE 	= 'bedita-export.tar' ;
@@ -904,6 +910,9 @@ class BeditaShell extends BeditaBaseShell {
     
 	function help() {
         $this->out('Available functions:');
+  		$this->out(' ');
+        $this->out('0. init: initialize a new BEdita instance from scratch');
+  		$this->out(' ');
         $this->out('1. updateDb: update database with bedita-db sql scripts');
   		$this->out(' ');
         $this->out('    Usage: updateDb [-db <dbname>] [-data <sql>] [-nodata] [-media <zipfile>]');

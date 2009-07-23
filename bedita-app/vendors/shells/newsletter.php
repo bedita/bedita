@@ -22,11 +22,12 @@
 App::import('Core', 'Controller');
 App::import('Controller', 'App');
 /**
+ * Newsletter shell: methods to import/export newsletter data (for example phplist filters), 
+ * other newsletter related utilities
  * 
- * @link			http://www.bedita.com
- * @version			$Revision:  $
- * @modifiedby 		$LastChangedBy:  $
- * @lastmodified	$LastChangedDate: $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
  * $Id: bedita.php 2015 2009-05-29 14:18:06Z dante $
  */

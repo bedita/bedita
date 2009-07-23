@@ -26,8 +26,6 @@ App::import('Controller', 'App'); // BeditaException
 App::import('Model', 'Document');
 
 /**
- * 
- * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -38,6 +36,10 @@ class DumpModel extends AppModel {
 	var $useTable = "objects";
 };
 
+/**
+ * Migration scripts base class
+ *
+ */
 abstract class MigrationBase {
 	
 	protected $model;
@@ -107,6 +109,13 @@ abstract class MigrationBase {
     abstract public function createExport();
 };
 
+/**
+ * Migration shell: shell script to migrate BEdita instances from previous versions.
+ * You have to create a specific 'migration' script (defining a Migration class that extends MigrationBase), 
+ * like:
+ * class Migration extends MigrationBase {
+ * }
+ */
 class MigrateShell extends Shell {
 
 	const DEFAULT_MIGRATION_DUMP = 'bedita-migration.sql' ;

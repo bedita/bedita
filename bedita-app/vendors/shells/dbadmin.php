@@ -24,15 +24,15 @@ App::import('Core', 'Controller');
 App::import('Controller', 'App'); // BeditaException
 
 /**
+ * Dbadmin shell: generic methods to check/fix some db data, for example translations, multimedia.
+ * Some other methods to insert test objects data.
  * 
- * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
  * 
  * $Id$
  */
-
 class DbadminShell extends Shell {
 
 	public function rebuildIndex() {

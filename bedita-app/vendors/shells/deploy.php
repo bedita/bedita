@@ -19,17 +19,18 @@
  *------------------------------------------------------------------->8-----
  */
 
+require_once 'bedita_base.php';
+
 /**
+ * Deploy shell: methods to createa releases, version update, 
+ * (TODO) update from SVN or from tarball ,
  * 
- * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
  * 
  * $Id$
  */
-require_once 'bedita_base.php';
-
 class DeployShell extends BeditaBaseShell {
 	
 	const DEFAULT_RELEASE_FILE 	= 'release.cfg.php' ;

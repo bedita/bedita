@@ -20,15 +20,15 @@
  */
 
 /**
+ * Gettext shell: methods to parse templates/php files, extract i18n entries and update
+ * .po files (gettext files)
  * 
- * @link			http://www.bedita.com
  * @version		$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
  * 
  * $Id$
  */
-
 class GettextShell extends Shell {
 
 	protected $poResult = array();

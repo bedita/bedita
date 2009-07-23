@@ -20,8 +20,8 @@
  */
 
 /**
+ * Base class for bedita shell scripts: provides common filesystem related methods.
  * 
- * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
