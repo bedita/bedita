@@ -260,9 +260,10 @@ class BeFileHandlerComponent extends Object {
 				
 				$data["object_type_id"] = Configure::read("objectTypes." . strtolower($modelType["name"]) . ".id");
 				// delete old data from specific table
-				$this->{$prevModel}->Behaviors->disable('DeleteObject');
-				$this->{$prevModel}->del($data["id"], false);
-				$this->{$prevModel}->Behaviors->enable('DeleteObject');
+				$prevMediaModel = ClassRegistry::init($prevModel);
+				$prevMediaModel->Behaviors->disable('DeleteObject');
+				$prevMediaModel->del($data["id"], false);
+				$prevMediaModel->Behaviors->enable('DeleteObject');
 				
 				// delete file on filesystem
 				if(($stream["Stream"]["path"] && !$this->_isURL($stream["Stream"]["path"]))) {
