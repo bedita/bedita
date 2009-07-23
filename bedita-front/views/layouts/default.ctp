@@ -21,8 +21,11 @@
 			href="<?php echo $html->url('/rss') . '/' . $feed['nickname']; ?>" />
 		<?php endforeach;
 	endif; 
-	?>
 	
+	echo $scripts_for_layout;
+	?>
+</head>
+<body>
 <?php echo $content_for_layout; ?>
 
 <div id="footerPage">

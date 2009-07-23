@@ -59,7 +59,6 @@
  */
 class BeFileHandlerComponent extends Object {
 
-	var $uses 		= array('BEObject', 'Stream', 'BEFile', 'Image', 'Audio', 'Video') ;
 	var $components = array('Transaction');
 	var $paranoid 	= true ;
 	
@@ -67,11 +66,6 @@ class BeFileHandlerComponent extends Object {
 	var $validateErrors = false ;
 
 	function __construct() {
-		foreach ($this->uses as $model) {
-			if(!class_exists($model))
-				App::import('Model', $model) ;
-			$this->{$model} = new $model() ;
-		}
 		foreach ($this->components as $component) {
 			if(isset($this->{$component})) continue;
 			$className = $component . 'Component' ;
@@ -85,7 +79,7 @@ class BeFileHandlerComponent extends Object {
 	{
 		$conf = Configure::getInstance() ;
 		$this->controller 	= $controller;
-		if(isset($conf->validate_resorce['paranoid'])) $this->paranoid  = (boolean) $conf->validate_resorce['paranoid'] ;
+		if(isset($conf->validate_resource['paranoid'])) $this->paranoid  = (boolean) $conf->validate_resource['paranoid'] ;
 	}
 
 	/**
@@ -118,14 +112,14 @@ class BeFileHandlerComponent extends Object {
 	 * @param integer $id	object id
 	 */
 	function del($id) {
-		if(!($path = $this->Stream->read("path", $id))) 
+		if(!($path = ClassRegistry::init("Stream")->read("path", $id))) 
 			return true ;
 		$path = (isset($path['Stream']['path']))? $path['Stream']['path'] : $path ;
 		// delete local file
 		if(!$this->_isURL($path)) {
 			$this->_removeFile($path) ;	
 		}
-		$model = $this->BEObject->getType($id) ;
+		$model = ClassRegistry::init("BEObject")->getType($id) ;
 		$mod = ClassRegistry::init($model);
 	 	if(!$mod->del($id)) {
 			throw new BEditaDeleteStreamObjException(__("Error deleting stream object",true)) ;	
@@ -138,7 +132,7 @@ class BeFileHandlerComponent extends Object {
 	 * @param integer $id	object id
 	 */
 	function url($id) {
-		if(!($ret = $this->Stream->read("path", $id))) return false ;
+		if(!($ret = ClassRegistry::init("Stream")->read("path", $id))) return false ;
 		$path = $ret['Stream']['path'] ;
 		return ($this->_isURL($path)) ? $path : (Configure::read("mediaUrl").$path);
 	}
@@ -148,7 +142,7 @@ class BeFileHandlerComponent extends Object {
 	 * @param integer $id	object id
 	 */
 	function path($id) {
-		if(!($ret = $this->Stream->read("path", $id))) return false ;
+		if(!($ret = ClassRegistry::init("Stream")->read("path", $id))) return false ;
 		$path = $ret['Stream']['path'] ;
 		return ($this->_isURL($path)) ? $path : (Configure::read("mediaUrl").$path);
 	}
@@ -165,7 +159,7 @@ class BeFileHandlerComponent extends Object {
 		$clausoles = array() ;
 		$clausoles[] = array("path" => trim($path)) ;
 		if(isset($id)) $clausoles[] = array("id " => "not {$id}") ;
-		$ret = $this->Stream->find($clausoles, 'id') ;
+		$ret = ClassRegistry::init("Stream")->find($clausoles, 'id') ;
 		if(!count($ret)) return false ;
 				
 		return $ret['Stream']['id'] ;
@@ -201,7 +195,7 @@ class BeFileHandlerComponent extends Object {
 					throw new BEditaFileExistException(__("Media already exists in the system",true)) ;
 	
 				// if present in filesystem delete it
-				$stream = $this->Stream->read('path', $data['id']);
+				$stream = ClassRegistry::init("Stream")->read('path', $data['id']);
 				if((!empty($stream["Stream"]["path"]) && !$this->_isURL($stream['Stream']['path']))) {
 					$this->_removeFile($stream['Stream']['path']) ;		
 				}
@@ -224,15 +218,17 @@ class BeFileHandlerComponent extends Object {
 
 		$data["hash_file"] = hash_file("md5", $sourcePath);
 
+		$streamModel = ClassRegistry::init("Stream");
+		
 		// check if hash file exists
-		if (!$clone && ($stream_id = $this->Stream->field("id", array("hash_file" => $data["hash_file"]))) ) {
+		if (!$clone && ($stream_id = $streamModel->field("id", array("hash_file" => $data["hash_file"]))) ) {
 			throw new BEditaFileExistException(__("File already exists in the filesystem",true)) ;
 		}
 		
 		$targetPath	= $this->getPathTargetFile($data['name']);
 		
 		if (!empty($data["id"])) {
-			$ret = $this->Stream->read('path', $data["id"]);
+			$ret = $streamModel->read('path', $data["id"]);
 				
 			// Se e' presente un path ad file su file system, cancella
 			if((!empty($ret['Stream']['path']) && !$this->_isURL($ret['Stream']['path']))) {
@@ -250,20 +246,19 @@ class BeFileHandlerComponent extends Object {
 	private function _create(&$data) {
 	
 		if (!$modelType = $this->_getTypeFromMIME($data["mime_type"])) {
-			throw new BEditaMIMEException(__("MIME type not found",true).": ".$data['mime_type'].
-					" - matches: ".$modelType) ;
+			throw new BEditaMIMEException(__("MIME type not found",true).": ".$data['mime_type']) ;
 		}
 		
 		if (!empty($data["id"])) {
-			$stream = $this->Stream->read(array('mime_type','path'), $data["id"]) ;
-			$object_type_id = $this->BEObject->field("object_type_id", array("id" => $data["id"]));
+			$stream = ClassRegistry::init("Stream")->read(array('mime_type','path'), $data["id"]) ;
+			$object_type_id = ClassRegistry::init("BEObject")->field("object_type_id", array("id" => $data["id"]));
 			$prevModel = Configure::read("objectTypes." . $object_type_id . ".model");
 			
 			// change object type
-			if ($modelType != $prevModel) {
+			if ($modelType["name"] != $prevModel) {
 				
 				
-				$data["object_type_id"] = Configure::read("objectTypes." . strtolower($modelType) . ".id");
+				$data["object_type_id"] = Configure::read("objectTypes." . strtolower($modelType["name"]) . ".id");
 				// delete old data from specific table
 				$this->{$prevModel}->Behaviors->disable('DeleteObject');
 				$this->{$prevModel}->del($data["id"], false);
@@ -276,33 +271,48 @@ class BeFileHandlerComponent extends Object {
 			}
 		}
 		
-		switch($modelType) {
-			case 'BEFile':
-			case 'Audio':
-			case 'Video':
-				break ;
-			case 'Image':
-				$path = ($this->_isURL($data["path"]))? $data["path"] : Configure::read("mediaRoot") . $data['path'];
-				if ( $imageSize =@ getimagesize($path) )
-				{
-					if (!empty($imageSize[0]))
-						$data["width"] = $imageSize[0];
-					if (!empty($imageSize[1]))
-						$data["height"] = $imageSize[1];
-				}
-				break ;
+		if (method_exists($this, "set" . $modelType["name"] . "Data")) {
+			if (!empty($modelType["specificType"])) {
+				$this->{"set" . $modelType["name"] . "Data"}($data, $modelType["specificType"]);
+			} else {
+				$this->{"set" . $modelType["name"] . "Data"}($data);
+			}
 		}
 		
-		$data['Category'] = (!empty($data['Category']))? array_merge($data['Category'],$this->getCategoryMediaType($data,$modelType)) : $this->getCategoryMediaType($data,$modelType);
+		$data['Category'] = (!empty($data['Category']))? array_merge($data['Category'],$this->getCategoryMediaType($data,$modelType["name"])) : $this->getCategoryMediaType($data,$modelType["name"]);
 		
-		$this->{$modelType}->create();
-		
-		if(!($ret = $this->{$modelType}->save($data))) {
-			throw new BEditaSaveStreamObjException(__("Error saving stream object",true), $this->{$modelType}->validationErrors) ;
+		$mediaModel = ClassRegistry::init($modelType["name"]);
+		$mediaModel->create();
+		if(!($ret = $mediaModel->save($data))) {
+			throw new BEditaSaveStreamObjException(__("Error saving stream object",true), $mediaModel->validationErrors) ;
 		}
-		return ($this->{$modelType}->{$this->{$modelType}->primaryKey}) ;
+		return ($mediaModel->{$mediaModel->primaryKey}) ;
 	}
 
+	private function setImageData(&$data) {
+		$this->getImageSize($data);
+	}
+	
+	private function setApplicationData(&$data, $application_name) {
+		$data["application_name"] = $application_name;
+		$app_details = Configure::read("validate_resource.mime.Application");
+		$data["application_type"] = $app_details[$application_name]["application_type"];
+		$data["application_label"] = $app_details[$application_name]["label"];
+		if ($application_name == "flash") {
+			$this->getImageSize($data);
+		}
+	}
+	
+	private function getImageSize(&$data) {
+		$path = ($this->_isURL($data["path"]))? $data["path"] : Configure::read("mediaRoot") . $data['path'];
+		if ( $imageSize =@ getimagesize($path) )
+		{
+			if (!empty($imageSize[0]))
+				$data["width"] = $imageSize[0];
+			if (!empty($imageSize[1]))
+				$data["height"] = $imageSize[1];
+		}
+	}
 	
 	private function getCategoryMediaType($data, $modelType) {
 		$cat = array();
@@ -327,7 +337,7 @@ class BeFileHandlerComponent extends Object {
 	private function _isURL($path) {
 		$conf 		= Configure::getInstance() ;
 		
-		if(preg_match($conf->validate_resorce['URL'], $path)) return true ;
+		if(preg_match($conf->validate_resource['URL'], $path)) return true ;
 		else return false ;
 	}
 
@@ -337,7 +347,7 @@ class BeFileHandlerComponent extends Object {
 	private function _regularURL($URL) {
 		$conf 		= Configure::getInstance() ;
 		
-		foreach ($conf->validate_resorce['allow'] as $reg) {
+		foreach ($conf->validate_resource['allow'] as $reg) {
 			if(preg_match($reg, $URL)) return true ;
 		}
 
@@ -345,30 +355,30 @@ class BeFileHandlerComponent extends Object {
 	}
 			
 	/**
-	 * Torna il nome del model a cui MIME corrisponde
+	 * return array with model name and eventually specific type (see $config[validate_resource][mime][Application]) 
+	 * from mime type
 	 *
-	 * @param string $mime	MIME  tyep da cercare 
-	 * @param string $model	Se presente verifica se puo' tornare il tipo di oggetto dato
+	 * @param string $mime	mime type 
 	 */
-	private function _getTypeFromMIME($mime, $model = null) {
+	private function _getTypeFromMIME($mime) {
 		$conf 		= Configure::getInstance() ;
-		if(@empty($mime))	
+		if(empty($mime))	
 			return false ;
-		if(isset($model) && isset($conf->validate_resorce['mime'][$model] )) {
-			$regs = $conf->validate_resorce['mime'][$model] ;
-			foreach ($regs as $reg) {
-				if(preg_match($reg, $mime)) 
-					return $model ;
-			}
-		} else {
-			$models = $conf->validate_resorce['mime'] ;
-			foreach ($models as $model => $regs) {
-				foreach ($regs as $reg) {
-					if(preg_match($reg, $mime)) 
-						return $model ;
-				}
+		
+		$models = $conf->validate_resource['mime'] ;
+		foreach ($models as $model => $regs) {
+			foreach ($regs as $key => $reg) {
+				if (is_array($reg)) {
+					foreach ($reg["mime_type"] as $val) {
+						if(preg_match($val, $mime)) 
+							return array("name" => $model, "specificType" => $key) ;
+					}
+				} elseif(preg_match($reg, $mime)) {
+					return array("name" => $model) ;
+				}	
 			}
 		}
+		
 		return false ;
 	}
 

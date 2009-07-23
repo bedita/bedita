@@ -43,7 +43,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	 *
 	 * @var array
 	 */
-	var $helpers = array('Html', 'BeThumb', 'MediaProvider');
+	var $helpers = array('Html', 'BeThumb', 'MediaProvider', 'BeEmbedFlash');
 	
 	
 	function __construct()
@@ -144,7 +144,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	
 	private function getImageSrc($obj, $params) {
 		// not local file
-		if(preg_match(Configure::read("validate_resorce.URL"), $obj["path"])) {
+		if(preg_match(Configure::read("validate_resource.URL"), $obj["path"])) {
 			$src = $obj['path'];
 		//local file
 		} else {
@@ -165,12 +165,12 @@ class BeEmbedMediaHelper extends AppHelper {
 	private function showVideo($obj, $params, $htmlAttributes)
 	{
 	
-		if (!preg_match(Configure::read("validate_resorce.URL"), $obj["path"])) {
+		if (!preg_match(Configure::read("validate_resource.URL"), $obj["path"])) {
 			$obj['path'] = $this->_conf["url"] . $obj["path"]; 
 		}
 		$URLonly = (!empty($params["URLonly"]))? true : false;
 		if ($params["presentation"] == "thumb") {
-			if (!empty($obj["thumbnail"]) && preg_match(Configure::read("validate_resorce.URL"), $obj["thumbnail"])) {
+			if (!empty($obj["thumbnail"]) && preg_match(Configure::read("validate_resource.URL"), $obj["thumbnail"])) {
 				$output = ($URLonly)? $obj["thumbnail"] : $this->Html->image($obj["thumbnail"], $htmlAttributes); 
 			} else {
 				$output = $this->MediaProvider->thumbnail($obj, $htmlAttributes, $URLonly);
@@ -204,7 +204,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	 */
 	private function showAudio($obj, $params, $htmlAttributes)
 	{
-		if (!preg_match(Configure::read("validate_resorce.URL"), $obj["path"])) {
+		if (!preg_match(Configure::read("validate_resource.URL"), $obj["path"])) {
 			$obj['path'] = $this->_conf["url"] . $obj["path"]; 
 		}
 		
@@ -229,7 +229,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	 * @return string, html
 	 */
 	private function showBEFile($obj, $params, $htmlAttributes) {
-		if (!preg_match(Configure::read("validate_resorce.URL"), $obj["path"])) {
+		if (!preg_match(Configure::read("validate_resource.URL"), $obj["path"])) {
 			$obj['path'] = $this->_conf["url"] . $obj["path"]; 
 		}
 		
@@ -244,10 +244,10 @@ class BeEmbedMediaHelper extends AppHelper {
 		}
 	}
 	
-	/** private function showApplication($obj, $params, $htmlAttributes) {
+	private function showApplication($obj, $params, $htmlAttributes) {
 		
 		
-		
+		/*		
 		 * 	controllo che sia tipo flash (database)
 		 *  presentation = full -> chiamata generica swf
 		 *  
@@ -255,12 +255,21 @@ class BeEmbedMediaHelper extends AppHelper {
 		 *  
 		 *  $appPath = (defined("BEDITA_CORE_PATH"))? BEDITA_CORE_PATH . DS : APP;
 		 * 
-		 *
+		 */
 		
 		if ($params["presentation"] == "full") {
 			
-			if ($obj["applications_name"] == "swf") {
-				$output = $this->beEmbedFlash->embedSwf($obj, $params, $htmlAttributes);
+			if ($obj["application_name"] == "flash") {
+				if (!preg_match(Configure::read("validate_resource.URL"), $obj["path"])) {
+					$obj['path'] = $this->_conf["url"] . $obj["path"]; 
+				}
+				if (empty($htmlAttributes["width"]) && !empty($obj["width"])) {
+					$htmlAttributes["width"] = $obj["width"];
+				}
+				if (empty($htmlAttributes["height"]) && !empty($obj["height"])) {
+					$htmlAttributes["height"] = $obj["height"];
+				}
+				$output = $this->BeEmbedFlash->embed($obj, $params, $htmlAttributes);
 			}
 		} elseif ($params["presentation"] == "thumb") {
 			
@@ -270,7 +279,7 @@ class BeEmbedMediaHelper extends AppHelper {
 		
 		return $output;
 		
-	}*/
+	}
 	
 	
 	

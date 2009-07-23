@@ -271,6 +271,9 @@ $config['objectTypes'] = array(
 	29			=> array("id" => 29, "name" => "gallery", "module" => "galleries", "model" => "Gallery"),
 	"gallery"	=> array("id" => 29, "name" => "gallery", "module" => "galleries", "model" => "Gallery"),
 	
+	30			  => array("id" => 30, "name" => "application", "module" => "multimedia", "model" => "Application"),
+	"application" => array("id" => 30, "name" => "application", "module" => "multimedia", "model" => "Application"),
+	
 	31			=> array("id" => 31, "name" => "audio", "module" => "multimedia", "model" => "Audio"),
 	"audio"		=> array("id" => 31, "name" => "audio", "module" => "multimedia", "model" => "Audio"),
 	
@@ -343,7 +346,7 @@ $config["defaultObjRelationType"] = array(
 	),
 	"download" => array(
 		"hidden" => false,
-		"left" 		=> array(10,12,31,32),
+		"left" 		=> array(10,12,30,31,32),
 		"right" 		=> array()	
 	),
 	"gallery" => array(
@@ -353,7 +356,7 @@ $config["defaultObjRelationType"] = array(
 	),
 	"attach" => array(
 		"hidden" => true,
-		"left" => array(10,12,31,32),
+		"left" => array(10,12,30,31,32),
 		"right" => array()
 	),
 	"link" => array(
@@ -524,7 +527,7 @@ $config['mediaTypes'] = array('image','video','audio','text','spreadsheet','pres
 /**
  * Variabili utilizza per il riconscimento e gestione URL remoti e file remoti
  */
-$config['validate_resorce'] = array(
+$config['validate_resource'] = array(
 	'paranoid'	=> true,	/**
 							 * Se true, non accetta remote URL se 'allow_url_fopen'
 							 * e' a false.
@@ -549,9 +552,17 @@ $config['validate_resorce'] = array(
 				'Image'			=> array('/image\/\.*/'),
 				'Audio'			=> array('/audio\/\.*/'),
 				'Video'			=> array('/video\/\.*/','/application\/flash-video/'),
+			    'Application'	=> array(
+							    		"flash" => array(
+												"mime_type" => array('/application\/x-shockwave-flash/'),
+												"application_type" => "application/x-shockwave-flash",
+												"label" => "Adobe Flash"
+											)
+									),
 				'BEFile'		=> array('/application\/\.*/', '/text\/\.*/', '/beexternalsource/')
 				)
 ) ;
+
 
 /**
  *  Videos from external media provider

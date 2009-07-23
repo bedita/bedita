@@ -7,6 +7,7 @@ INSERT INTO object_types (id, name, module) VALUES
 (3, 'section', 'areas'),
 (10, 'befile', 'multimedia'),
 (12, 'image', 'multimedia'),
+(30, 'application', 'multimedia'),
 (31, 'audio', 'multimedia'),
 (32, 'video', 'multimedia'),
 (29, 'gallery', 'galleries'),

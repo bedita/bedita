@@ -129,7 +129,7 @@ class BeUploadToObjComponent extends Object {
 		if (!empty($data["id"]))
 			unset($data["id"]);
 			
-		if(preg_match(Configure::read("validate_resorce.URL"), $data["path"])) {
+		if(preg_match(Configure::read("validate_resource.URL"), $data["path"])) {
 			$data['url'] = $data["path"];
 			return $this->uploadFromURL($data, true);
 		} else {
@@ -146,7 +146,7 @@ class BeUploadToObjComponent extends Object {
 	
 	
 	function getThumbnail($data) {
-		if (!empty($data["thumbnail"]) && preg_match(Configure::read("validate_resorce.URL"), $data["thumbnail"])) {
+		if (!empty($data["thumbnail"]) && preg_match(Configure::read("validate_resource.URL"), $data["thumbnail"])) {
 			$thumbnail = $data["thumbnail"]; 	
 		} else {
 			if (empty($data["provider"]) || empty($data["uid"])) {

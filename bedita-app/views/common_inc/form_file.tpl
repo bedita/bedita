@@ -2,7 +2,6 @@
 ** detail of media item
 *}
 
-{$javascript->link("swfobject",false)}
 
 {if (isset($object)) and (!empty($object.path))}
 
@@ -32,12 +31,10 @@
 		
 	{elseif strtolower(($object.ObjectType.name) == "video")}
 	
-		{assign_associative var="params" presentation="full" useProviderPlayer="true"}
+		{assign_associative var="params" presentation="full" useProviderPlayer="false"}
 		{assign_associative var="htmlAttr" width=$conf->media.video.width height=$conf->media.video.height id="multimediaitemvideo"}
 		
 		{$beEmbedMedia->object($object,$params,$htmlAttr)}
-		<div id="multimediaitemvideo">
-		</div>
 		
 	{elseif strtolower($object.ObjectType.name) == "audio"}
 	
@@ -53,19 +50,13 @@
 			allowfullscreen = "true"
 			flashvars = "file={$conf->mediaUrl}{$object.path}&backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0x000000&overstretch=true&searchbar=false&autostart=false"
 		/>
+	
+	{elseif strtolower($object.ObjectType.name) == "application"}
 		
+		{assign_associative var="htmlAttributes" id="appContainer"} 
+		{assign_associative var="params" presentation="full"}
+		{$beEmbedMedia->object($object,$params,$htmlAttributes)}
 		
-	{elseif ($object.mime_type == "application/x-shockwave-flash")}
-
-		<embed 
-			src		= "{$conf->mediaUrl}{$object.path}" 
-			width	= "500"
-			height	= "375"
-			allowscriptaccess = "always"
-			allowfullscreen = "true"
-			flashvars = "backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0x000000&overstretch=false&searchbar=false&autostart=false"
-		/>
-			
 	{else}
 			
 		<a href="{$conf->mediaUrl}{$object.path}" target="_blank">

@@ -55,7 +55,8 @@ class MultimediaController extends ModulesController {
 			$conf->objectTypes['befile']["id"],
 			$conf->objectTypes['image']["id"],
 			$conf->objectTypes['audio']["id"],
-			$conf->objectTypes['video']["id"]
+			$conf->objectTypes['video']["id"],
+			$conf->objectTypes['application']["id"]
 		);
 		$filter["mediatype"] = 1;
 		$bedita_items = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;

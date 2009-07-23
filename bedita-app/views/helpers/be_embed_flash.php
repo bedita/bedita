@@ -2,15 +2,15 @@
 
 class BeEmbedFlashHelper extends AppHelper {
 	
+	public $helpers = array("Javascript");
 	private $heightDef = ""; 
 	private $widthDef = "";
-	private $playerDefault = ""; 
+	private $playerDefault = "";
 	
 	public function embedSwf ($swfUrl, $attributes = array(), $flashvars = array(), $params = array()) {
-		
 		$width = (!empty($attributes['width'])) ? $attributes['width'] : $this->widthDef;
-		$height = $attributes['height'];
-		$id = $attributes['id'];
+		$height = (!empty($attributes['height'])) ? $attributes['height'] : $this->heightDef;
+		$id = (!empty($attributes['id']))? $attributes['id'] : "be_id_" . microtime();
 		
 		if (!empty($attributes['src'])) {
 			unset($attributes['src']);
@@ -20,7 +20,12 @@ class BeEmbedFlashHelper extends AppHelper {
 		$par = json_encode($params);
 		$att = json_encode($attributes);
 		
-		$output = '<script type="text/javascript">swfobject.embedSWF("'.$swfUrl.'","'.$id.'","'.$width.'","'.$height.'", "9.0.0","expressInstall.swf",'.$fv.','.$par.','.$att.');</script>';
+		if ( defined("BEDITA_CORE_PATH") && !file_exists(APP . "webroot/js/swfobject.js")) {
+			$output = $this->Javascript->link(Configure::read('beditaUrl') . "/js/swfobject.js",false);
+		} else {
+			$output = $this->Javascript->link("swfobject",false);
+		}
+		$output .= '<script type="text/javascript">swfobject.embedSWF("'.$swfUrl.'","'.$id.'","'.$width.'","'.$height.'", "9.0.0","expressInstall.swf",'.$fv.','.$par.','.$att.');</script><div id="'.$id.'"></div>';
 		return $output;
 	}
 	

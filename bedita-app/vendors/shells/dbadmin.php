@@ -143,7 +143,7 @@ class DbadminShell extends Shell {
 			foreach ($streams as $s) {
 				
 				// if it's not an url build hash
-				if (!preg_match($conf->validate_resorce['URL'], $s["Stream"]["path"])) {
+				if (!preg_match($conf->validate_resource['URL'], $s["Stream"]["path"])) {
 					$hash = hash_file("md5", $conf->mediaRoot . $s["Stream"]["path"]);
 					if ($hash === false)
 						 throw new BeditaException(__("Building Hash file failed", true));
@@ -185,7 +185,7 @@ class DbadminShell extends Shell {
 			foreach ($images as $i) {
 				
 				// if it's not an url get image size
-				if (!preg_match($conf->validate_resorce['URL'], $i["path"])) {
+				if (!preg_match($conf->validate_resource['URL'], $i["path"])) {
 					
 					if ( !$imageSize =@ getimagesize($conf->mediaRoot . $i['path']) )
 						throw new BeditaException(__("Get image size failed", true));

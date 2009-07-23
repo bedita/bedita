@@ -42,7 +42,7 @@ class MediaProviderHelper extends AppHelper {
 	 * get img tag for thumbnail
 	 */
 	function thumbnail(&$obj, $htmlAttributes = array(), $URLonly=false ) {
-		if (!empty($obj["thumbnail"]) && preg_match(Configure::read("validate_resorce.URL"), $obj["thumbnail"]))
+		if (!empty($obj["thumbnail"]) && preg_match(Configure::read("validate_resource.URL"), $obj["thumbnail"]))
 			return (!$URLonly)? $this->Html->image($obj["thumbnail"], $htmlAttributes) : $obj["thumbnail"];
 		
 		if (!$helperName = $this->getHelperName($obj))
@@ -62,7 +62,7 @@ class MediaProviderHelper extends AppHelper {
 			return  $this->BeEmbedFlash->embed($obj, $params, $attributes);
 		}
 		
-		//esiste l'helper ed  stato l'uso del player remoto specifico 
+		//esiste l'helper ed ï¿½ stato l'uso del player remoto specifico 
 		if (!empty($params['useProviderPlayer'])) {
 			return $this->{$helperName}->embed($obj, $attributes);
 		}else {
@@ -97,7 +97,7 @@ class MediaProviderHelper extends AppHelper {
 	}
 	
 	private function checkURL($url) {
-		foreach (Configure::read('validate_resorce.allow') as $reg) {
+		foreach (Configure::read('validate_resource.allow') as $reg) {
 			if(preg_match($reg, $url)) 
 				return true;
 		}

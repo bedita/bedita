@@ -5,6 +5,7 @@ SET FOREIGN_KEY_CHECKS=0;
 
 DROP TABLE IF EXISTS `annotations`;
 DROP TABLE IF EXISTS `answers`;
+DROP TABLE IF EXISTS `applications`;
 DROP TABLE IF EXISTS `areas`;
 DROP TABLE IF EXISTS `authors`;
 DROP TABLE IF EXISTS `banned_ips`;
@@ -451,6 +452,22 @@ CREATE TABLE section_types (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
+CREATE TABLE applications (
+  id INTEGER UNSIGNED NOT NULL,
+  application_name VARCHAR(255) NOT NULL,
+  application_label VARCHAR(255) NULL,
+  application_version VARCHAR(50) NULL,
+  application_type VARCHAR (255) NOT NULL,
+  text_dir ENUM('ltr','rtl') DEFAULT 'ltr',
+  text_lang VARCHAR (255) NULL,
+  width INT (5) NULL,
+  height INT (5) NULL,
+  PRIMARY KEY(id),
+  FOREIGN KEY(id)
+    REFERENCES streams(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE videos (
   id INTEGER UNSIGNED NOT NULL,
