@@ -36,6 +36,7 @@ class FilesController extends AppController {
 
 	function upload () {
 		$this->layout = "ajax";
+		header("Content-Type: application/json");
 		try {
 			$data=array();
 			if (!empty($_GET["userid"]))

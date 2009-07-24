@@ -1,4 +1,5 @@
-{$javascript->link('jquery/jquery.uploadify', false)}
+{$javascript->link('swfobject', false)}
+{$javascript->link('jquery/jquery.uploadify.v2.0.0.min', false)}
 
 <script type="text/javascript">
 <!--
@@ -9,8 +10,8 @@ var u_id = "{$session->read("BEAuthUser.id")}";
 $(document).ready(function() {
 
 	if (getFlashVersion() !== false) {
-		$('#inputFiledata').fileUpload({
-			'uploader': webroot + 'swf/uploader.swf',
+		$('#inputFiledata').uploadify({
+			'uploader': webroot + 'swf/uploadify.swf',
 			'script':    multiUploadUrl,
 			multi: true,
 			auto: true,

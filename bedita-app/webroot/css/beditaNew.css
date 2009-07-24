@@ -1720,23 +1720,25 @@ INPUT[type=button], INPUT[type=submit]  {
 
 
 
-.fileUploadQueueItem {
+.uploadifyQueueItem {
 	border: 1px solid silver !important;
 	margin-top: 5px;
 	padding: 10px;
 	width: 300px;
 }
-.fileUploadQueueItem .cancel {
+.uploadifyQueueItem .cancel {
 	float: right;
 }
-.fileUploadProgress {
+.uploadifyProgress {
 	background-color: #FFFFFF;
 	border-top: 0px solid red;
 	margin-top: 10px;
 	width: 100%;
 }
-.fileUploadProgressBar {
+.uploadifyProgressBar {
 	background-color: #0099FF;
+	width: 1px;
+	height: 3px;
 }
 
 #vcontainer {
