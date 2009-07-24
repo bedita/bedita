@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-07-17 17:52:01\n"
+"POT-Creation-Date: 2009-07-24 10:38:10\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -806,6 +806,9 @@ msgstr ""
 msgid "No mail group found"
 msgstr ""
 
+msgid "No module found for object"
+msgstr ""
+
 msgid "No newsletters found"
 msgstr ""
 
@@ -901,9 +904,6 @@ msgid ""
 msgstr "Indicar uma data no formato %1 e maior da data anterior"
 
 msgid "Please enter a valid time in the %1 format"
-msgstr ""
-
-msgid "Please fill in all required fields"
 msgstr ""
 
 msgid "Post comment disabled"
@@ -1104,6 +1104,9 @@ msgstr ""
 msgid "Test mail sent to "
 msgstr ""
 
+msgid "Test stuff"
+msgstr ""
+
 msgid "Text"
 msgstr ""
 
@@ -1194,6 +1197,12 @@ msgstr ""
 
 msgid "User name"
 msgstr "Nome usuário"
+
+msgid ""
+"User name is required (at least %1 chars, without white spaces and special "
+"chars)"
+msgstr ""
+"Nome usuário obligatório (%1 carácteres, sem espaço e carácteres especiais)"
 
 msgid "User not authorized to enter"
 msgstr ""
@@ -1477,9 +1486,6 @@ msgstr ""
 msgid "duration in minutes"
 msgstr ""
 
-msgid "editor notes"
-msgstr ""
-
 msgid "edu level"
 msgstr ""
 
@@ -1577,6 +1583,9 @@ msgid "language"
 msgstr ""
 
 msgid "last"
+msgstr ""
+
+msgid "last comments"
 msgstr ""
 
 msgid "last editor's notes"
@@ -1705,6 +1714,9 @@ msgstr ""
 msgid "no"
 msgstr ""
 
+msgid "no comments"
+msgstr ""
+
 msgid "no custom properties defined"
 msgstr ""
 
@@ -1771,7 +1783,7 @@ msgstr ""
 msgid "open in new window"
 msgstr ""
 
-msgid "operazioni"
+msgid "operations"
 msgstr ""
 
 msgid "option list"
@@ -1892,9 +1904,6 @@ msgid "save"
 msgstr ""
 
 msgid "save profile"
-msgstr ""
-
-msgid "saved item"
 msgstr ""
 
 msgid "scheduled"
@@ -2127,13 +2136,6 @@ msgstr ""
 
 #~ msgid "Select at least one type of permission"
 #~ msgstr "Selecionar um tipo de permiso"
-
-#~ msgid ""
-#~ "User name is required (at least %1 chars, without white spaces and "
-#~ "special chars)"
-#~ msgstr ""
-#~ "Nome usuário obligatório (%1 carácteres, sem espaço e carácteres "
-#~ "especiais)"
 
 #~ msgid "modify"
 #~ msgstr "editar"
