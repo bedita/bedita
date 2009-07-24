@@ -499,8 +499,8 @@ $config['langOptions'] = array(
 $config['langsSystem'] = array(
 	"eng"	=> "english",
 	"ita"	=> "italiano",
-	"deu"	=> "deutsch",
-	"por"	=> "portuguěs"
+//	"deu"	=> "deutsch",
+//	"por"	=> "portuguěs"
 
 ) ;
 
