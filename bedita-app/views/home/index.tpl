@@ -163,7 +163,7 @@ $(document).ready(function() {
 	<ul id="lastcomments" class="bordered">
 		{foreach from=$lastComments item="cmt"}
 			<li>{$cmt.author|default:''}, 
-			{t}on{/t} "<i><a href="{$html->url('/')}view/{$cmt.ReferenceObject.id}">{$cmt.ReferenceObject.title|strip_tags|truncate:36:'~':true|default:'[no title]'}'</a></i>"</li>
+			{t}on{/t} "<i><a href="{$html->url('/')}view/{$cmt.id}">{$cmt.ReferenceObject.title|strip_tags|truncate:36:'~':true|default:'[no title]'}'</a></i>"</li>
 		{foreachelse}
 			<li>{t}no comments{/t}</li>
 		{/foreach}

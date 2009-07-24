@@ -57,6 +57,10 @@ class CommentsController extends ModulesController {
 			}
 		}
 		$this->set('object',	$obj);
+		
+		$conf  = Configure::getInstance();
+		$this->set('referenceType', $conf->objectTypes[$obj["ReferenceObject"]["object_type_id"]]);
+		
 		$bannedIP = ClassRegistry::init("BannedIp");
         if($bannedIP->isBanned($obj['ip_created'])) {
 			$this->set('banned', true);
