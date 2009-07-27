@@ -33,23 +33,51 @@ App::import('Controller', 'App');
  */
 class NewsletterShell extends Shell {
 
-	function importUsersNewsletterFromPhplist() {
-		$phplist_to_card = array(
-			'Email' => 'email',
-			'Lastmodified' => 'modified',
-			'Additionaldata' => 'note',
-			'Name' => 'name',
-			'Surname' => 'surname',
-			'Phone' => 'phone',
-			'Address' => 'street_address',
-			'CAP' => 'zipcode',
-			'City' => 'city',
-			'State' => 'state',
-			'Country' => 'country',
-			'Yourbirthdayis' => 'birthdate',
-			'Gender' => 'gender',
-			'Country' => 'country'
-		);
+	private $baseLogs;
+	
+	/**
+	 * map phplist database fields to BEdita database fields
+	 */
+	private $phplist_to_card = array(
+				'Email' => 'email',
+				'Lastmodified' => 'modified',
+				'SendthisuserHTMLemails' => 'mail_html',
+				'Additionaldata' => 'note',
+				'Name' => 'name',
+				'Surname' => 'surname',
+				'Phone' => 'phone',
+				'Address' => 'street_address',
+				'CAP' => 'zipcode',
+				'City' => 'city',
+				'State' => 'state',
+				'Country' => 'country',
+				'Yourbirthdayis' => 'birthdate',
+				'Gender' => 'gender',
+				'Country' => 'country',
+				'ListMembership' => 'list_name'
+			);
+	
+	public function startup() {
+		$this->_welcome();
+		$this->baseLogs =  APP . 'tmp' . DS . 'logs' . DS;
+	}
+	
+	public function import() {
+		$from = (!empty($this->params['from']))? $this->params['from'] : "phplist";
+		$methodName = "importFrom" . Inflector::camelize($from);
+		if (method_exists($this, $methodName)) {
+			$this->{$methodName}();
+		} else {
+			$this->out("Import from " . $from . " is not supported");
+		}
+	}  
+	
+	private function importFromPhplist() {
+		if (empty($this->params['mailgroup'])) {
+			$this->out("Missing mailgroup id. Params -mailgroup is required importing from PHPLIST.");
+			exit;
+		}
+		
 		$separator = (!empty($this->params['sep'])) ? $this->params['sep'] : "\t";
 		$verbose_log = isset($this->params['v']);
 		$force_import = isset($this->params['force']);
@@ -79,18 +107,19 @@ class NewsletterShell extends Shell {
 		$cards_already_present = 0;
 		$cards_group_already_present = 0;
 		$cards_save_forced = 0;
-		if(file_exists('import-result.log')) {
-			unlink('import-result.log');
+		
+		if(file_exists($this->baseLogs.'newsletter-import-result.log')) {
+			unlink($this->baseLogs.'newsletter-import-result.log');
 		}
-		if(file_exists('import-error.log')) {
-			unlink('import-error.log');
+		if(file_exists($this->baseLogs.'newsletter-import-error.log')) {
+			unlink($this->baseLogs.'newsletter-import-error.log');
 		}
-		if(file_exists('import-error-cards.txt')) {
-			unlink('import-error-cards.txt');
+		if(file_exists($this->baseLogs.'newsletter-import-error-cards.txt')) {
+			unlink($this->baseLogs.'newsletter-import-error-cards.txt');
 		}
-		$handle_result = fopen('import-result.log',"a+");
-		$handle_error = fopen('import-error.log',"a+");
-		$handle_error_2 = fopen('import-error-cards.txt',"a+");
+		$handle_result = fopen($this->baseLogs.'newsletter-import-result.log',"a+");
+		$handle_error = fopen($this->baseLogs.'newsletter-import-error.log',"a+");
+		$handle_error_2 = fopen($this->baseLogs.'newsletter-import-error-cards.txt',"a+");
 		$this->out(".............................................");
 		foreach ($lines as $line_num => $line) {
 			fflush($handle_result);
@@ -112,8 +141,8 @@ class NewsletterShell extends Shell {
 				$data = array("ip_created" => "127.0.0.1", "user_created" => 1, "user_modified" => 1, "status" => "on");
 				$content[$line_num] = explode($separator,$line);
 				foreach($content[$line_num] as $key => $value) {
-					if (!empty($phplist_to_card[$attributes[$key]])) {
-						$data[$phplist_to_card[$attributes[$key]]] = trim($value);
+					if (!empty($this->phplist_to_card[$attributes[$key]])) {
+						$data[$this->phplist_to_card[$attributes[$key]]] = trim($value);
 					}
 				}
 				if ( !($card_id = $card->field("id", array("newsletter_email" => $data['email']))) ) {
@@ -128,15 +157,14 @@ class NewsletterShell extends Shell {
 					if(!($card->save($data))) {
 						if($verbose_log) {
 							$this->out("[" . date('Y-m-d H:i:s') . "] - line $line_num - ERROR error saving card '" . $data['email'] . "'");
+							$this->out($card->validationErrors);
 							if($force_import) {
 								$this->out("[" . date('Y-m-d H:i:s') . "] - line $line_num - INFO forcing to save card '" . $data['email'] . "'");
 							}
 						}
 						if($force_import) {
 							$card->create();
-							$validate = $card->validate;
-							$card->validate = array(); // forcing save
-							if(!($card->save($data))) {
+							if(!($card->save($data,false))) {
 								if($verbose_log) {
 									$this->out("[" . date('Y-m-d H:i:s') . "] - line $line_num - ERROR error forcing to save card '" . $data['email'] . "'");
 								}
@@ -145,7 +173,6 @@ class NewsletterShell extends Shell {
 								$cards_save_forced++;
 								$cards_not_saved_counter--;
 							}
-							$card->validate = $validate; // restore validation
 						}
 						fwrite($handle_error,"[" . date('Y-m-d H:i:s') . "] - line $line_num - ERROR error saving card '" . $data['email'] . "'\n");
 						fwrite($handle_error,$line . "'\n");
@@ -217,33 +244,16 @@ class NewsletterShell extends Shell {
 		$this->out("[" . date('Y-m-d H:i:s') . "] INFO: " . $cards_save_forced . " forced to be saved (skip validation)");
 		$this->out("[" . date('Y-m-d H:i:s') . "] INFO: " . $cards_group_saved_counter . " cards associated to mail group " . $mail_group_name);
 		$this->out("[" . date('Y-m-d H:i:s') . "] INFO: " . $cards_group_not_saved_counter . " cards not associated to mail group " . $mail_group_name . " (error on saving)");
-		$this->out("[" . date('Y-m-d H:i:s') . "] INFO:  created/modified file import-result.log");
-		$this->out("[" . date('Y-m-d H:i:s') . "] INFO:  created/modified file import-error.log");
-		$this->out("[" . date('Y-m-d H:i:s') . "] INFO:  created/modified file import-error-cards.txt");
+		$this->out("[" . date('Y-m-d H:i:s') . "] INFO:  created/modified file " . $this->baseLogs . "import-result.log");
+		$this->out("[" . date('Y-m-d H:i:s') . "] INFO:  created/modified file " . $this->baseLogs . "import-error.log");
+		$this->out("[" . date('Y-m-d H:i:s') . "] INFO:  created/modified file " . $this->baseLogs . "import-error-cards.txt");
 		fclose($handle_result);
 		fclose($handle_error);
 		fclose($handle_error_2);
 	}
 
-	function createFilesListsFromPhplist() {
-		$phplist_to_card = array(
-			'Lastmodified' => 'modified',
-			'Additionaldata' => 'note',
-			'Name' => 'name',
-			'Surname' => 'surname',
-			'Phone' => 'phone',
-			'Address' => 'street_address',
-			'CAP' => 'zipcode',
-			'City' => 'city',
-			'State' => 'state',
-			'Country' => 'country',
-			'Yourbirthdayis' => 'birthdate',
-			'Gender' => 'gender',
-			'Country' => 'country',
-			'ListMembership' => 'list_name'
-		);
+	function createFilesListsFromPhplist() {		
 		$separator = (!empty($this->params['sep'])) ? $this->params['sep'] : "\t";
-
 		$lines = @file($this->params['f']);
 		if(!$lines) {
 			$this->out("[" . date('Y-m-d H:i:s') . "] INFO: File " . $this->params['f'] . " not found: operation aborted");
@@ -270,8 +280,8 @@ class NewsletterShell extends Shell {
 				}
 				$content[$line_num] = explode($separator,$line);
 				foreach($content[$line_num] as $key => $value) {
-					if (!empty($phplist_to_card[$attributes[$key]])) {
-						$data[$phplist_to_card[$attributes[$key]]] = trim($value);
+					if (!empty($this->phplist_to_card[$attributes[$key]])) {
+						$data[$this->phplist_to_card[$attributes[$key]]] = trim($value);
 					}
 				}
 				if(!empty($data['list_name'])) {
@@ -299,11 +309,16 @@ class NewsletterShell extends Shell {
 
 	function help() {
 		$this->out('Available functions:');
-		$this->out('1. importUsersNewsletterFromPhplist: import users from file csv to cards, associating them to a newsletter mailgroup');
+		$this->out('1. import: import data from specific source (default phplist)');
 		$this->out(' ');
-		$this->out('   Usage 1: importUsersNewsletterFromPhplist -f <users-file> -sep <separator> -mailgroup <id mailgroup>');
-		$this->out('   Usage 2 (verbose log): importUsersNewsletterFromPhplist -f <users-file> -sep <separator> -mailgroup <id mailgroup> -v');
-		$this->out('   Usage 3 (force import): importUsersNewsletterFromPhplist -f <users-file> -sep <separator> -mailgroup <id mailgroup> -force');
+		$this->out('	Usage: import -f <import-file-name> [-mailgroup <mailgroup id>] [-from <importsource>] [-sep <separator>] [-v] [-force]');
+		$this->out(' ');
+		$this->out('	-f <import-file-name>\t file to import');
+		$this->out('	-mailgroup <mailgroup id>\t mailgroup id to associating imported users');
+		$this->out('	-from <importsource>\t import source type for example from phplist csv export');
+		$this->out('	-sep <separator>\t separator (if it\'s needed, for example if you import from csv)');
+		$this->out('	-v verbose mode');
+		$this->out('	-force try to save with validation errors too');
 		$this->out(' ');
 		$this->out('2. createFilesListsFromPhplist: create files for each list found in the phplist export file ');
 	}

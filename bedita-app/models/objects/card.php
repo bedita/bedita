@@ -74,17 +74,17 @@ class Card extends BEAppObjectModel {
 	
 	var $validate = array(
 		'email' => array(
-			'rule' => array('email', true), // attempt to verify that the host for the address is valid
+			'rule' => 'email',
 			'allowEmpty' => true,
 			'message' => 'Please supply a valid email address.'
  		),
  		'email2' => array(
-			'rule' => array('email', true),
+			'rule' => 'email',
 			'allowEmpty' => true,
 			'message' => 'Please supply a valid email address.'
  		),
  		'newsletter_email' => array(
-			'rule' => array('email', true),
+			'rule' => 'email',
 			'allowEmpty' => true,
 			'message' => 'Please supply a valid email address.'
  		)
