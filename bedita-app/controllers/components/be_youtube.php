@@ -52,6 +52,7 @@ class BeYoutubeComponent extends Object {
 		$data['title']		= (!empty($data['title'])) ? trim($data['title']) : 'youtube video';
 		$data['name']		= preg_replace("/[\'\"]/", "", $data['title']) ;
 		$data['mime_type']	= "video/" . $data["provider"] ;
+		$data['path']		= $data['url'];
 		if (empty($data['thumbnail']))
 			$data['thumbnail']	= $this->getThumbnail($data["uid"]);
 		return true;
