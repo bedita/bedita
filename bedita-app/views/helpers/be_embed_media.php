@@ -266,9 +266,23 @@ class BeEmbedMediaHelper extends AppHelper {
 				if (empty($htmlAttributes["width"]) && !empty($obj["width"])) {
 					$htmlAttributes["width"] = $obj["width"];
 				}
+				
 				if (empty($htmlAttributes["height"]) && !empty($obj["height"])) {
 					$htmlAttributes["height"] = $obj["height"];
 				}
+				
+				if (empty($htmlAttributes["application_version"]) && !empty($obj["application_version"])) {
+					$htmlAttributes["application_version"] = $obj["application_version"];
+				}
+		
+				if (empty($htmlAttributes["dir"]) && !empty($obj["text_dir"])) {
+					$htmlAttributes["dir"] = $obj["text_dir"];
+				}
+				
+				if (empty($htmlAttributes["lang"]) && !empty($obj["text_lang"])) {
+					$htmlAttributes["lang"] = $obj["text_lang"];
+				}
+				
 				$output = $this->BeEmbedFlash->embed($obj, $params, $htmlAttributes);
 			}
 		} elseif ($params["presentation"] == "thumb") {

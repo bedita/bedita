@@ -6,11 +6,13 @@ class BeEmbedFlashHelper extends AppHelper {
 	private $heightDef = ""; 
 	private $widthDef = "";
 	private $playerDefault = "";
+	private $appVerDef = "9.0.0",
 	
 	public function embedSwf ($swfUrl, $attributes = array(), $flashvars = array(), $params = array()) {
 		$width = (!empty($attributes['width'])) ? $attributes['width'] : $this->widthDef;
 		$height = (!empty($attributes['height'])) ? $attributes['height'] : $this->heightDef;
 		$id = (!empty($attributes['id']))? $attributes['id'] : "be_id_" . microtime();
+		$app_ver = (!empty($attributes['application_version']))? $attributes['application_version'] : $this->appVerDef;
 		
 		if (!empty($attributes['src'])) {
 			unset($attributes['src']);
@@ -25,7 +27,7 @@ class BeEmbedFlashHelper extends AppHelper {
 		} else {
 			$output = $this->Javascript->link("swfobject",false);
 		}
-		$output .= '<script type="text/javascript">swfobject.embedSWF("'.$swfUrl.'","'.$id.'","'.$width.'","'.$height.'", "9.0.0","expressInstall.swf",'.$fv.','.$par.','.$att.');</script><div id="'.$id.'"></div>';
+		$output .= '<script type="text/javascript">swfobject.embedSWF("'.$swfUrl.'","'.$id.'","'.$width.'","'.$height.'","'.$app_ver.'","expressInstall.swf",'.$fv.','.$par.','.$att.');</script><div id="'.$id.'"></div>';
 		return $output;
 	}
 	
@@ -54,10 +56,11 @@ class BeEmbedFlashHelper extends AppHelper {
 		
 		//if ($obj['provider'] =='youtube')
 		//	$provider = array('provider'=>$obj['provider'], 'videoId'=>obj['uid']);
-			
+
 		$path_parts = pathinfo($obj['path']);
 		if (empty($path_parts['extension']))
 			return false;
+			
 		if ($path_parts['extension'] == 'flv') {			
 			return $this->embedFlv($obj['path'], $htmlAttributes, $flashvars, $flashParams /*, $provider*/);	
 		} else if ($path_parts['extension'] == 'swf') {
