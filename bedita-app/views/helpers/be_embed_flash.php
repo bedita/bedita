@@ -6,7 +6,7 @@ class BeEmbedFlashHelper extends AppHelper {
 	private $heightDef = ""; 
 	private $widthDef = "";
 	private $playerDefault = "";
-	private $appVerDef = "9.0.0",
+	private $appVerDef = "9.0.0";
 	
 	public function embedSwf ($swfUrl, $attributes = array(), $flashvars = array(), $params = array()) {
 		$width = (!empty($attributes['width'])) ? $attributes['width'] : $this->widthDef;
