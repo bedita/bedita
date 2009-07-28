@@ -53,6 +53,10 @@
         	@mysql_close($cid);		
 		}
 		$res['phpVersion'] = phpversion();
+		$res['phpExtensions'] = get_loaded_extensions();
+		$res['osVersion'] = php_uname();
+		$res['beditaPath'] = APP;
+		$res['cakePath'] = CAKE_CORE_INCLUDE_PATH;
 		return $res;
 	}
 	

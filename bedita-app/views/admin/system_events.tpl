@@ -7,7 +7,7 @@
 {literal}
 <script type="text/javascript">
 	$(document).ready(function(){
-		var openAtStart ="#system_info";
+		var openAtStart ="#system_events";
 		$(openAtStart).prev(".tab").BEtabstoggle();
 	});
 </script>
@@ -15,16 +15,24 @@
 
 </head>
 
+
 <body>
 
 {include file="../common_inc/modulesmenu.tpl"}
 
-{include file="inc/menuleft.tpl" method="systemInfo"}
+{include file="inc/menuleft.tpl" method="systemEvents"}
 
-{include file="inc/menucommands.tpl" method="systemInfo" fixed=true}
+{include file="inc/menucommands.tpl" method="systemEvents" fixed=true}
+
+<div class="head">
+	<div class="toolbar" style="white-space:nowrap">
+	<h2>{t}System events{/t}</h2>
+	{include file="./inc/toolbar.tpl" label_items='events'}
+	</div>
+</div>
 
 <div class="mainfull">
 	
-	{include file="inc/form_info.tpl" method="systemInfo"}
+	{include file="inc/form_events.tpl"}
 
 </div>

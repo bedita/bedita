@@ -20,6 +20,7 @@ Menu a SX valido per tutte le pagine del controller.
 	
 	<ul class="menuleft insidecol">
 		<li {if $method eq 'systemInfo'}class="on"{/if}>{$tr->link('System Info', '/admin/systemInfo')}</li>						
+		<li {if $method eq 'systemEvents'}class="on"{/if}>{$tr->link('System Events', '/admin/systemEvents')}</li>						
 	</ul>
 
 

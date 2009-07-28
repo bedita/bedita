@@ -1,42 +1,64 @@
 <div class="tab"><h2>{t}System info {/t}</h2></div>
+
 <fieldset id="system_info">
-	
 <div>	
 	
-		<ul class="bordered">
-			<li><label>bedita:</label>  {$conf->Bedita.version}</li>
-			<li><label>cake:</label>   {$conf->Cake.version}</li>
-			<li><label>php:</label>    {$sys.phpVersion}</li>
-			<li><label>mysql:</label>  server {$sys.mysqlServer} - client {$sys.mysqlClient}</li>
-		</ul>
-
-</div>
-</fieldset>
-
-<div class="tab"><h2>{t}System events{/t}</h2></div>
-
-<fieldset id="system_events">
-<div>
-
-
-
 <table class="indexlist">
 	<tr>
-		<th>{$paginator->sort('Date', 'created')}</th>
-		<th>{$paginator->sort('Level', 'level')}</th>
-		<th>{$paginator->sort('User', 'user')}</th>
-		<th>{$paginator->sort('Msg', 'msg')}</th>
-		<th>{$paginator->sort('Context', 'context')}</th>
+		<td></td>
+		<td><label>{t}Software versions{/t}</label></td>
 	</tr>
-	{foreach from=$events item=e}
 	<tr>
-		<td style="white-space:nowrap">{$e.EventLog.created}</td>
-		<td class="{$e.EventLog.level}">{$e.EventLog.level}</td>
-		<td>{$e.EventLog.user}</td>
-		<td>{$e.EventLog.msg}</td>
-		<td>{$e.EventLog.context}</td>
+		<td><label>BEdita</label></td>
+		<td>{$conf->Bedita.version}</td>
 	</tr>
-	{/foreach}
+	<tr>
+		<td><label>CakePHP</label></td>
+		<td>{$conf->version()}</td>
+	</tr>
+	<tr>
+		<td><label>PHP</label></td>
+		<td>{$sys.phpVersion}</td>
+	<tr>
+		<td><label>PHP extensions</label></td>
+		<td>{foreach from=$sys.phpExtensions item="ext"} {$ext}{/foreach}</td>
+	</tr>
+	<tr>
+		<td><label>MySQL</label></td>
+		<td>server {$sys.mysqlServer} - client {$sys.mysqlClient}</td>
+	</tr>
+	<tr>
+		<td><label>Operating System</label></td>
+		<td>{$sys.osVersion}</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><label>{t}URLs and paths{/t}</label></td>
+	</tr>
+	<tr>
+		<td><label>Media files URL</label></td>
+		<td><a href="{$conf->mediaUrl}" target="_blank">{$conf->mediaUrl}</a></td>
+	</tr>
+	<tr>
+		<td><label>Media files root path</label></td>
+		<td>{$conf->mediaRoot}</td>
+	</tr>
+	<tr>
+		<td><label>BEdita URL</label></td>
+		<td><a href="{$conf->beditaUrl}" target="_blank">{$conf->beditaUrl}</a></td>
+	</tr>
+	<tr>
+		<td><label>BEdita app path</label></td>
+		<td>{$sys.beditaPath}</td>
+	</tr>
+	<tr>
+		<td><label>CakePHP path</label></td>
+		<td>{$sys.cakePath}</td>
+	</tr>
 </table>
 
 </div>

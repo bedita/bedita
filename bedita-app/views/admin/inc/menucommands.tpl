@@ -32,7 +32,7 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 			value="{if isset($group)}{t}Modify{/t}{else}{t}create group{/t}{/if}" />
 		
 		
-		{elseif $method == "systemInfo"}
+		{elseif $method == "systemEvents"}
 		
 			<form action="{$html->url('/admin/deleteEventLog')}" method="post">
 			<input type="submit" value="{t}delete all{/t}"/>

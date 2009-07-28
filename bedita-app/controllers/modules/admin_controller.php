@@ -253,15 +253,18 @@ class AdminController extends ModulesController {
 		$this->userInfoMessage(__("Group deleted",true));
 	  }
 
-	  /**
+	 /**
 	 * show system Info
 	 */
 	 public function systemInfo() { 	
 	 	$this->beditaVersion();
-		$this->set('events', $this->paginate('EventLog'));
 		$this->set('sys', $this->BeSystem->systemInfo());
 	 }
 
+	 public function systemEvents() { 	
+		$this->set('events', $this->paginate('EventLog'));
+	 }
+	 
 	 private function beditaVersion() {
 	 	$c = Configure::getInstance();
 		if (!isset($c->Bedita['version'])) {
@@ -270,7 +273,7 @@ class AdminController extends ModulesController {
 				require($versionFile);
 			else
 				$config['Bedita.version'] = "--";
-			$c->write($config);
+			$c->write('Bedita.version', $config['Bedita.version']);
 		}
 	 }
 	 
@@ -374,8 +377,8 @@ class AdminController extends ModulesController {
 	 							"ERROR"	=> "/admin/groups" 
 	 						),
 				"deleteEventLog" => 	array(
- 								"OK"	=> self::VIEW_FWD.'systemInfo',
-	 							"ERROR"	=> self::VIEW_FWD.'systemInfo'
+ 								"OK"	=> self::VIEW_FWD.'systemEvents',
+	 							"ERROR"	=> self::VIEW_FWD.'systemEvents'
 	 						),
 	 			"removeGroup" => 	array(
  								"OK"	=> "/admin/groups",
