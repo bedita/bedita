@@ -150,22 +150,26 @@ class AppError extends ErrorHandler {
 	
 	function __outputMessage($template) {
 		$tpl = "";
-		if(empty($this->controller->viewVars["errorType"])) {
-			$this->controller->set("errorType", $template);
-		}
+		$viewVars = $this->controller->viewVars;
 		if(empty($this->controller->viewVars["conf"])) {
 			$this->controller->set('conf', Configure::getInstance());
+		} else {
+			unset($viewVars['conf']);
 		}
+		
 		if(in_array($template, $this->error404)) {
 			header('HTTP/1.1 404 Not Found');
 			$tpl = "error404.tpl";
-			$this->log(" 404 Not Found - $template: " . var_export($this->controller->viewVars, TRUE));
+			$this->log(" 404 Not Found - $template: " . var_export($viewVars, TRUE));
 		} else {
 			header('HTTP/1.1 500 Internal Server Error');
 			$tpl = "error500.tpl";
-			$errMsg = " 500 Internal Error - $template: " . var_export($this->controller->viewVars, TRUE);
+			$errMsg = " 500 Internal Error - $template: " . var_export($viewVars, TRUE);
 			$this->log($errMsg);
 			$this->sendMail($errMsg);
+		}
+		if(empty($this->controller->viewVars["errorType"])) {
+			$this->controller->set("errorType", $template);
 		}
 		$this->restoreDebugLevel();
 		App::import('View', "Smarty");
