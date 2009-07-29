@@ -42,7 +42,9 @@ function removeUserFromCard() {
 					{t}no user data{/t}
 				{/if}
 			</span>
-			<input type="hidden" id="user_id" name="data[User][0]" value="{$object.User.0.id|default:''}"/>
+			<input type="hidden" id="user_id" name="data[ObjectUser][card][0][user_id]" value="{$object.User.0.id|default:''}"/>
+			<input type="hidden" name="data[ObjectUser][card][0][object_id]" value="{$object.id|default:''}"/>
+			<input type="hidden" name="data[ObjectUser][card][0][switch]" value="card"/>
 			&nbsp;&nbsp;&nbsp;
 			{if empty($object.User)}
 			<input type="button" class="modalbutton" name="edit" value="  {t}promote as user{/t}  "

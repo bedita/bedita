@@ -132,11 +132,12 @@ class BEObject extends BEAppModel
 			),
 		'User' =>
 			   array(
-			    'className'    => 'User',
-			    'joinTable'       => 'object_users',
-			    'foreignKey'      => 'object_id',
+			    'className'    			=> 'User',
+			    'joinTable'       		=> 'object_users',
+			    'foreignKey'      		=> 'object_id',
 			    'associationForeignKey' => 'user_id',
-			    'unique'    => true
+			    'unique'    			=> true,
+			   	'with' 					=> 'ObjectUser'
 			   )
 	);	
 
@@ -234,7 +235,8 @@ class BEObject extends BEAppModel
 		  }
 		}
 		$this->unbindModel(array("hasMany"=>array("LangText")));
-
+		$this->oldBindUser = $this->hasAndBelongsToMany["User"];
+		$this->unbindModel(array("hasAndBelongsToMany"=>array("User")));
 		return true ;
 	}
 	
@@ -243,9 +245,9 @@ class BEObject extends BEAppModel
 	 */
 	function afterSave() {
 		
-		// Scorre le associazioni hasMany
+		// hasMany relations
 		foreach ($this->hasMany as $name => $assoc) {
-			// Non gestisce i permessi
+			// skip specific manage
 			if($name == 'Permissions' || $name == 'RelatedObject' || $name == 'Annotation')
 				continue ;
 			
@@ -279,7 +281,38 @@ class BEObject extends BEAppModel
 			}
 						
 		}
-		
+
+		// build ObjectUser Relation
+		if (isset($this->data['BEObject']["ObjectUser"])) {
+			$objectUserModel = ClassRegistry::init("ObjectUser");
+			if (empty($this->data['BEObject']["ObjectUser"])) {
+				$objectUserModel->deleteAll(array(
+						"object_id" => $this->id
+					)
+				);
+			} else {
+				foreach ($this->data['BEObject']["ObjectUser"] as $switch => $objUserArr) {
+					$objectUserModel->deleteAll(array(
+							"object_id" => $this->id,
+							"switch" => $switch
+						)
+					);
+					if (is_array($objUserArr)) {
+						foreach ($objUserArr as $objUserData) {
+							if (!empty($objUserData["user_id"])) {
+								if (empty($objUserData["object_id"]))
+									$objUserData["object_id"] = $this->id;
+								$objectUserModel->create();
+								if (!$objectUserModel->save($objUserData)) {
+									throw new BeditaException(__("error saving object_users relations",true));
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+				
 		$permissions = false;
 		if(isset($this->data["Permissions"])) 
 			$permissions = $this->data["Permissions"] ;
@@ -371,6 +404,7 @@ class BEObject extends BEAppModel
 			}
 		}
 		
+		$this->bindModel(array("hasAndBelongsToMany" => array("User" => $this->oldBindUser)));
 		return true ;
 	}
 	

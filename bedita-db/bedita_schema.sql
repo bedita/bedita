@@ -350,9 +350,14 @@ CREATE TABLE versions (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE object_users (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   object_id INTEGER UNSIGNED NOT NULL,
   user_id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(object_id, user_id),
+  switch VARCHAR(63) NOT NULL DEFAULT 'card',
+  priority INTEGER(11) NULL,
+  params TEXT NULL,
+  PRIMARY KEY(id),
+  UNIQUE KEY `object_id_user_id_switch` (`object_id`,`user_id`,`switch`),
   INDEX object_id_FKIndex1(object_id),
   INDEX user_id_FKIndex2(user_id),
   FOREIGN KEY(object_id)

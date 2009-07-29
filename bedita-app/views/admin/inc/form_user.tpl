@@ -69,7 +69,7 @@
 		<tr>
 			<th>{t}created{/t}</th>
 			<td>{$userdetail.created|date_format:$conf->dateTimePattern}</td>
-		</tr
+		</tr>
 		<tr>
 			<th>{t}modified{/t}</th>
 			<td>{$userdetail.modified|date_format:$conf->dateTimePattern}</td>
@@ -77,7 +77,13 @@
 		
 		<tr>
 			<th>{t}addressbook details{/t}</th>
-			<td>NO / <a href="{$html->url('/')}addressbook/view/">YES</a></td>
+			<td>
+				{if !empty($objectUser.card)}
+					<a href="{$html->url('/')}addressbook/view/{$objectUser.card.0.id}">YES</a>
+				{else}
+					NO
+				{/if}	
+			</td>
 		</tr>
 
 </table>

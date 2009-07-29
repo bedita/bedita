@@ -41,22 +41,12 @@ class User extends BEAppModel
 	);
 
 	protected $modelBindings = array( 
-		"detailed" =>  array("Group", "Card", "Permission"),
-		"default" => array("Group", "Card"),
+		"detailed" =>  array("Group", "ObjectUser", "Permission"),
+		"default" => array("Group", "ObjectUser"),
 		"minimum" => array()		
 	);
 	
-	var $hasAndBelongsToMany = array(
-			'Group',
-			'Card' =>
-				array(
-					'className'    => 'Card',
-					'joinTable'       => 'object_users',
-					'foreignKey'      => 'user_id',
-					'associationForeignKey' => 'object_id',
-					'unique'    => true
-				)
-			);
+	var $hasAndBelongsToMany = array('Group');
 
 	var $hasMany = array(
 		'Permission' =>
@@ -66,7 +56,8 @@ class User extends BEAppModel
 				'fields'		=> 'Permission.object_id, Permission.switch, Permission.flag',
 				'foreignKey'	=> 'id',
 				'dependent'		=> true
-			)
+			),
+		'ObjectUser'
 	);
 
 	private $hBTM = null; 
@@ -81,10 +72,10 @@ class User extends BEAppModel
     }
         
     /**
-	 * Viene riformattato il risultato:
+	 * Compact and reformat result
 	 * 		id => ; passwd => ; realname => ; userid => ; groups => array({1..N} nomi_grupppi)
 	 *
-	 * @param unknown_type $user
+	 * @param array $user
 	 */
 	function compact(&$user) {
 		unset($user['Permission']) ;
@@ -109,5 +100,6 @@ class User extends BEAppModel
 				)
 			);
 	}
+	
 }
 ?>
