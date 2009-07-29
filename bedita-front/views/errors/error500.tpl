@@ -1,13 +1,15 @@
-{*
-** Error 500 - Smarty template
-** Replacement for default CakePHP error500.ctp
-** 
-*}
 <h2>Error 500 - Internal Server Error </h2>
 
-{* Da finire
-<p class="error">
-	<strong><?php __('Error'); ?>: </strong>
-	<?php echo $message; ?>
-</p>
-*}
+{if $conf->debug >= 1} 
+<pre>
+ErrorType:	{$errorType|default:''}
+Details: 	{$details|default:''}
+Result: 	{$result|default:''}
+
+Action: 	{$action|default:''}
+Controller: {$controller|default:''}
+File: 		{$file|default:''}
+Title: 		{$title|default:''}
+
+</pre>
+{/if}

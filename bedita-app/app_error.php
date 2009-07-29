@@ -42,11 +42,18 @@ class AppError extends ErrorHandler {
 		Configure::write('debug', 1);
 		$this->errorTrace = $trace;
 		parent::__construct($method, $messages);
-		Configure::write('debug', $this->debugLevel); // restore level
+		$this->restoreDebugLevel();
 	}
 
+	public function restoreDebugLevel() {
+		if(isset($this->debugLevel)) {
+			Configure::write('debug', $this->debugLevel); // restore level
+		}
+	}
+	
 	public function handleException(array $messages) {
 
+		$this->restoreDebugLevel();
 		$current = AppController::currentController();
 		if(isset($current)) {
 			try {
@@ -84,6 +91,7 @@ class AppError extends ErrorHandler {
 				$this->controller->set("json", true);
 			}
 		}
+		$this->restoreDebugLevel();
 		App::import('View', "Smarty");
 		$viewObj = new SmartyView($this->controller);
 		echo $viewObj->render(null, "ajax", VIEWS."errors/error_ajax.tpl");
@@ -97,6 +105,7 @@ class AppError extends ErrorHandler {
 		}
 		header('HTTP/1.1 404 Not Found');
 		$this->controller->set($messages);
+		$this->restoreDebugLevel();
 		App::import('View', "Smarty");
 		$viewObj = new SmartyView($this->controller);
 		echo $viewObj->render(null, "error", VIEWS."errors/error404.tpl");				
@@ -104,6 +113,8 @@ class AppError extends ErrorHandler {
 	
 	public function handleExceptionFrontAccess(array $messages) {
 		$currentController = AppController::currentController();
+		$currentController->set($messages);
+		$this->restoreDebugLevel();
 		$currentController->handleError($messages['details'], $messages['msg'], $this->errorTrace);
 		if ($messages["errorType"] == "unlogged") {
 			$currentController->Session->write("frontendLoginForm", true);
@@ -134,14 +145,17 @@ class AppError extends ErrorHandler {
 
 	// use cake output only in debug mode
 	function _outputMessage($template) {
-		if($this->debugLevel > 0)
-			parent::_outputMessage($template);	
-		else
-			$this->__outputMessage($template);
+		$this->__outputMessage($template);
 	}
 	
 	function __outputMessage($template) {
 		$tpl = "";
+		if(empty($this->controller->viewVars["errorType"])) {
+			$this->controller->set("errorType", $template);
+		}
+		if(empty($this->controller->viewVars["conf"])) {
+			$this->controller->set('conf', Configure::getInstance());
+		}
 		if(in_array($template, $this->error404)) {
 			header('HTTP/1.1 404 Not Found');
 			$tpl = "error404.tpl";
@@ -153,6 +167,7 @@ class AppError extends ErrorHandler {
 			$this->log($errMsg);
 			$this->sendMail($errMsg);
 		}
+		$this->restoreDebugLevel();
 		App::import('View', "Smarty");
 		$viewObj = new SmartyView($this->controller);
 		echo $viewObj->render(null, "error", VIEWS."errors/" . $tpl);				
