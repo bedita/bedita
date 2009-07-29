@@ -20,7 +20,7 @@
 						<li>
 						<input type="checkbox" name="data[joinGroup][{$index}][mail_group_id]" value="{$group.id}"{if !empty($group.subscribed)} checked{/if}/> {$group.group_name}
 						<input type="hidden" name="data[joinGroup][{$index}][id]" value="{$group.MailGroupCard.id|default:""}" />
-						<input type="hidden" name="data[joinGroup][{$index}][status]" value="{$group.MailGroupCard.status|default:"confirmed"} />
+						<input type="hidden" name="data[joinGroup][{$index}][status]" value="{$group.MailGroupCard.status|default:"confirmed"}" />
 						<input type="hidden" name="data[joinGroup][{$index}][command]" value="{$group.MailGroupCard.command|default:"confirm"}" />
 						<input type="hidden" name="data[joinGroup][{$index}][hash]" value="{$group.MailGroupCard.hash|default:""}" />
 						<input type="hidden" name="data[joinGroup][{$index++}][created]" value="{$group.MailGroupCard.created|default:""}" />

@@ -25,7 +25,7 @@ $(document).ready(function() {
 
 	$("#userToCard").click(function() {
 		id = $(".uradio:checked").attr("value");
-		username = $(".uradio:checked").attr("name");
+		username = $(".uradio:checked").attr("rel");
 		$("#modal").hide();
 		$("#modaloverlay").hide();
 		addUserToCard(id,username);
@@ -72,7 +72,7 @@ $(document).ready(function() {
 	{foreach from=$users item=u}
 	{if empty($u.Card)}
 	<tr>
-		<td style="text-align:right"><input type="radio" class="uradio" value="{$u.User.id}" name="{$u.User.userid}" /></td>
+		<td style="text-align:right"><input type="radio" class="uradio" value="{$u.User.id}" rel="{$u.User.userid}" name="usertoassociate"/></td>
 		<td>{$u.User.userid}</td>
 		<td>{$u.User.realname}</td>
 	</tr>

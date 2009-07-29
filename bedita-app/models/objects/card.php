@@ -98,14 +98,12 @@ class Card extends BEAppObjectModel {
 		return true;
 	}
 	
-	function beforeSave() {
-		if (!empty($this->data["Card"]["joinGroup"]) ) {
-			if(empty($this->data["Card"]["email"]) && empty($this->data["Card"]["newsletter_email"]) ) {
-				throw new BeditaException(__("Error saving card", true), "Missing email for newsletters associations.");
-			}
-			if(empty($this->data["Card"]["newsletter_email"])) {
-				$this->data["Card"]["newsletter_email"] = $this->data["Card"]["email"];
-			}
+	function beforeSave() {	
+		if(empty($this->data["Card"]["email"]) && empty($this->data["Card"]["newsletter_email"]) ) {
+			unset($this->data["Card"]["joinGroup"]);
+		}
+		if(empty($this->data["Card"]["newsletter_email"])) {
+			$this->data["Card"]["newsletter_email"] = $this->data["Card"]["email"];
 		}
 		return true;
 	}
