@@ -40,9 +40,10 @@
 	
 		<th>{t}Commented item{/t}:</th>
 		<td colspan="3">
-			
-			<a href="{$html->url('/')}/view/{$object.ReferenceObject.id}"><span title="{$referenceType.name}" class="listrecent {$referenceType.module}">&nbsp;</span>
-				{$object.ReferenceObject.title|default:'<i>[no title]</i>'}
+			{assign var="o" value=$object.ReferenceObject}
+			<a href="{$html->url('/')}view/{$o.id}"><span title="{$conf->objectTypes[$o.object_type_id].name}" 
+				class="listrecent {$conf->objectTypes[$o.object_type_id].module}">&nbsp;</span>
+				{$o.title|default:'<i>[no title]</i>'}
 			</a>
 		</td>
 	
