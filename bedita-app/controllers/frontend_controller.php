@@ -256,7 +256,7 @@ abstract class FrontendController extends AppController {
 			$this->status = array('on', 'off', 'draft');
 			$this->publication = $this->loadObj(Configure::read("frontendAreaId"));
 			$this->set('publication', $this->publication);
-			throw new BeditaPublicationException($pubStatus);
+			throw new BeditaPublicationException("Publication not ON", array("layout" => $pubStatus));
 		}
 		
 		// check is logged
@@ -403,7 +403,7 @@ abstract class FrontendController extends AppController {
 
 		if ($ex instanceof BeditaPublicationException) {
 			$currentController = AppController::currentController();
-			echo $currentController->render(false, $ex->status);
+			echo $currentController->render(false, $ex->getLayout());
 		} elseif ($ex instanceof BeditaFrontAccessException) {
 			$errorType = $ex->getErrorType();
 			$params = array(
@@ -1133,6 +1133,9 @@ abstract class FrontendController extends AppController {
 		$path = $this->Tree->field("parent_path", array("id" => $object_id));
 		$parents = explode("/", trim($path,"/"));
 		if (!empty($parents[0])) {
+			if($parents[0] != $this->publication["id"]) {
+				throw new BeditaException("Wrong publication: " . $parents[0]);
+			}
 			$oldBaseLevel = $this->baseLevel; 
 			$this->baseLevel = true;
 			foreach ($parents as $p) {
@@ -1305,7 +1308,7 @@ abstract class FrontendController extends AppController {
 			);
 		
 		if (empty($tagDetail))
-			throw new BeditaException(__("No tag founded", true));
+			throw new BeditaException(__("No tag found", true));
 		
 		$options = array_merge($this->tagOptions, $options, $this->getPassedArgs());
 		$filter = (!empty($options["filter"]))? $options["filter"] : false;

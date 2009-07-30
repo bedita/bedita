@@ -168,13 +168,18 @@ class BEditaUploadPHPException extends BeditaException
  * BeditaPublication specific Exception
  */
 class BeditaPublicationException extends BeditaException {
+	private $layout = "draft";
+
+	public function __construct($message = NULL, $details = NULL, $res  = AppController::ERROR, $code = 0) {
+		if (!empty($details["layout"])) {
+			$this->layout = $details["layout"];
+		}
+		parent::__construct($message,$details,$res,$code);
+	}
 	
-	public $status;
-	
-	public function __construct($status) {
-   		$this->status = $status;
-    }
-	
+	public function getLayout() {
+		return $this->layout;
+	}
 }
 
 class BeditaFrontAccessException extends BeditaException {
