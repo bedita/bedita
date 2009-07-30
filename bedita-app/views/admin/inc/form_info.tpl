@@ -1,3 +1,14 @@
+<script type="text/javascript">
+{literal}
+$(document).ready(function(){
+	var v = $().jquery;
+	$("#jquery-version").text(v);
+});
+{/literal}
+//-->
+</script>	
+
+
 <div class="tab"><h2>{t}System info {/t}</h2></div>
 
 <fieldset id="system_info">
@@ -6,7 +17,7 @@
 <table class="indexlist">
 	<tr>
 		<td></td>
-		<td><label>{t}Software versions{/t}</label></td>
+		<td><label>{t}Software{/t}</label></td>
 	</tr>
 	<tr>
 		<td><label>BEdita</label></td>
@@ -25,7 +36,15 @@
 	</tr>
 	<tr>
 		<td><label>MySQL</label></td>
-		<td>server {$sys.mysqlServer} - client {$sys.mysqlClient}</td>
+		<td>server: {$sys.mysqlServer} - client: {$sys.mysqlClient} - host: {$sys.mysqlHost} - db: {$sys.mysqlDb}</td>
+	</tr>
+	<tr>
+		<td><label>Smarty</label></td>
+		<td>{$smarty.version}</td>
+	<tr>
+	<tr>
+		<td><label>JQuery</label></td>
+		<td><p id="jquery-version"></p></td>
 	</tr>
 	<tr>
 		<td><label>Operating System</label></td>

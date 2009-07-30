@@ -52,6 +52,8 @@
 			$res['mysqlClient'] = @mysqli_get_client_info();
         	@mysql_close($cid);		
 		}
+		$res['mysqlHost'] = $db->config['host'];
+		$res['mysqlDb'] = $db->config['database'];
 		$res['phpVersion'] = phpversion();
 		$res['phpExtensions'] = get_loaded_extensions();
 		$res['osVersion'] = php_uname();
