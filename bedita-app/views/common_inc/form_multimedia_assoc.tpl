@@ -32,17 +32,6 @@ $(document).ready(function(){
 		var check = $("input:checkbox",$(this).parent().parent()).get(0).checked ;
 		$("input:checkbox",$(this).parent().parent()).get(0).checked = !check ;
 	}) ;
-	/* select/unselect each item's checkbox */
-	$(".selectAll").bind("click", function(e) {
-		var status = this.checked;
-		$(".itemCheck").each(function() { this.checked = status; });
-	}) ;
-	/* select/unselect main checkbox if all item's checkboxes are checked */
-	$(".itemCheck").bind("click", function(e) {
-		var status = true;
-		$(".itemCheck").each(function() { if (!this.checked) return status = false;});
-		$(".selectAll").each(function() { this.checked = status;});
-	}) ;
 	
 	$("#searchMultimedia").bind("click", function() {
 		var textToSearch = escape($("#searchMultimediaText").val());

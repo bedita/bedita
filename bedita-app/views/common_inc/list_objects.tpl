@@ -17,18 +17,6 @@ $(document).ready(function(){
 		document.location = $(this).parent().find("a:first").attr("href"); 
 	} );
 	
-	/* select/unselect each item's checkbox */
-	$(".selectAll").bind("click", function(e) {
-		var status = this.checked;
-		$(".objectCheck").each(function() { this.checked = status; });
-	}) ;
-	/* select/unselect main checkbox if all item's checkboxes are checked */
-	$(".objectCheck").bind("click", function(e) {
-		var status = true;
-		$(".objectCheck").each(function() { if (!this.checked) return status = false;});
-		$(".selectAll").each(function() { this.checked = status;});
-	}) ;
-	
 	$("#deleteSelected").bind("click", function() {
 		if(!confirm(messageSelected)) 
 			return false ;	
@@ -151,7 +139,7 @@ $(document).ready(function(){
 
 <br />
 
-<div class="tab"><h2>{t}Bulk actions on{/t}&nbsp;<span class="selecteditems evidence"></span>&nbsp;{t}selected records{/t}</h2></div>
+<div class="tab"><h2>{t}Bulk actions on{/t}&nbsp;<span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
 <div>
 
 {t}change status to{/t}: 	<select style="width:75px" id="newStatus" name="newStatus">

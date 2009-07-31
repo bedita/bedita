@@ -14,17 +14,6 @@ $(document).ready(function(){
 		document.location = $(this).parent().find("a:first").attr("href"); 
 	} );
 	
-	/* select/unselect each item's checkbox */
-	$(".selectAll").bind("click", function(e) {
-		var status = this.checked;
-		$(".objectCheck").each(function() { this.checked = status; });
-	}) ;
-	/* select/unselect main checkbox if all item's checkboxes are checked */
-	$(".objectCheck").bind("click", function(e) {
-		var status = true;
-		$(".objectCheck").each(function() { if (!this.checked) return status = false;});
-		$(".selectAll").each(function() { this.checked = status;});
-	}) ;
 	
 	$("#deleteSelected").bind("click", function() {
 		if(!confirm(message)) 

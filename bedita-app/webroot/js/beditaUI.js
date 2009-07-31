@@ -490,14 +490,18 @@ jQuery.fn.BEmodal = function(){
 ...........................................*/
 
 
-	$('.selecteditems').text($(".objectCheck:checked").length);	
-	
-	$('#formObject').change(function () {
+	$('.selecteditems').text($(".objectCheck:checked").length);
+	$(".selectAll").bind("click", function(e) {
+		var status = this.checked;
+		$(".objectCheck").each(function() { this.checked = status; });
 		$('.selecteditems').text($(".objectCheck:checked").length);
-	});
-
-
-
+	}) ;
+	$(".objectCheck").bind("click", function(e) {
+		var status = true;
+		$(".objectCheck").each(function() { if (!this.checked) return status = false;});
+		$(".selectAll").each(function() { this.checked = status;});
+		$('.selecteditems').text($(".objectCheck:checked").length);
+	}) ;
 
 /*...........................................    
 
