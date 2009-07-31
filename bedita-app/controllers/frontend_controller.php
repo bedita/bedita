@@ -1394,7 +1394,7 @@ abstract class FrontendController extends AppController {
 		// verify type
 		$conf = Configure::getInstance() ;
 		$types = array($conf->objectTypes['image']['id'], $conf->objectTypes['video']['id'],
-			$conf->objectTypes['befile']['id'], $conf->objectTypes['audio']['id']);
+			$conf->objectTypes['befile']['id'], $conf->objectTypes['audio']['id'], $conf->objectTypes['application']['id']);
 		if(($object_type_id === false) || !in_array($object_type_id, $types))
 			throw new BeditaException(__("Content not found", true));
 
