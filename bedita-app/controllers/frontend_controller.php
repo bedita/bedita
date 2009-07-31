@@ -157,13 +157,13 @@ abstract class FrontendController extends AppController {
 	/**
 	 * try to login user with some groups
 	 * return false if it fails to login 
-	 * 		try to login user if there is POST data correct and if the POST call doesn't come from external resource 
+	 * 		try to login user if there is POST data correct 
 	 * 
 	 * @param array $groups
 	 * @return boolean
 	 */
 	private function login(array $groups) {
-		if (!empty($this->params["form"]["login"]) && stripos($this->referer(),"/") === 0 ) {
+		if (!empty($this->params["form"]["login"])) {
 			$userid 	= (isset($this->params["form"]["login"]["userid"])) ? $this->params["form"]["login"]["userid"] : "" ;
 			$password 	= (isset($this->params["form"]["login"]["passwd"])) ? $this->params["form"]["login"]["passwd"] : "" ;
 			
