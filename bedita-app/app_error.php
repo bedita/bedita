@@ -117,7 +117,6 @@ class AppError extends ErrorHandler {
 		$this->restoreDebugLevel();
 		$currentController->handleError($messages['details'], $messages['msg'], $this->errorTrace);
 		if ($messages["errorType"] == "unlogged") {
-			$currentController->Session->write("frontendLoginForm", true);
 			echo $currentController->render("login");
 		} elseif ($messages["errorType"] == "unauthorized") {
 			echo $currentController->render("unauthorized");
