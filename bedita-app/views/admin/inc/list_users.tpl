@@ -19,7 +19,7 @@ $(document).ready(function(){
 		<th>{$paginator->sort('id', 'id')}</th>
 		<th>{$paginator->sort('User', 'userid')}</th>
 		<th>{$paginator->sort('Name', 'realname')}</th>
-		<th>{$paginator->sort('Valid', 'valid')}</th>
+		<th>{$paginator->sort('Blocked', 'valid')}</th>
 		<th>{$paginator->sort('Created', 'created')}</th>
 		<th>{$paginator->sort('Last login', 'last_login')}</th>
 		<th>{t}Action{/t}</th>
@@ -29,7 +29,7 @@ $(document).ready(function(){
 		<td><a href="{$html->url('/admin/viewUser/')}{$u.User.id}">{$u.User.id}</a></td>
 		<td>{$u.User.userid}</td>
 		<td>{$u.User.realname}</td>
-		<td>{$u.User.valid}</td>
+		<td>{if $u.User.valid=='1'}{t}No{/t}{else}{t}Yes{/t}{/if}</td>
 		<td>{$u.User.created|date_format:$conf->dateTimePattern}</td>
 		<td>{$u.User.last_login|date_format:$conf->dateTimePattern}</td>
 		<td class="go">
