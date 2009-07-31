@@ -70,11 +70,9 @@ msgstr "Sicuro di voler accettare questo IP"
 msgid "Are you sure you want to ban this IP?"
 msgstr "Sicuro di voler interdire l'accesso a questo IP (ban)?"
 
-msgid ""
-"Are you sure you want to cancel and reload this document? All unsaved "
+msgid "Are you sure you want to cancel and reload this document? All unsaved"
 "changes will be lost"
-msgstr ""
-"Sicuro di voler annullare le modifiche e di voler ricaricare questo "
+msgstr "Sicuro di voler annullare le modifiche e di voler ricaricare questo"
 "documento? Tutte le modifiche non salvate saranno perdute"
 
 msgid "Area deleted"
@@ -102,7 +100,7 @@ msgid "BEdita contents statistics"
 msgstr "Statistiche contenuti BEdita"
 
 msgid "BEdita editors activity statistics"
-msgstr "Statistiche attivita' editori BEdita"
+msgstr "Statistiche attività editori BEdita"
 
 msgid "Backend user restricted area"
 msgstr "Area con accesso ristretto agli utenti del backend"
@@ -120,7 +118,7 @@ msgid "Bibliography deleted"
 msgstr "Bibliografia eliminata"
 
 msgid "Bit depth"
-msgstr "Profondita' in bit"
+msgstr "Profondità in bit"
 
 msgid "Book deleted"
 msgstr "Libro eliminato"
@@ -264,13 +262,13 @@ msgid "Creator is required (at least %1 alphanumerical char)"
 msgstr "Campo creatore obbligatorio (almeno %1 caratteri alfanumerici)"
 
 msgid "Custom Properties"
-msgstr "Proprieta' Personalizzate"
+msgstr "Proprietà Personalizzate"
 
 msgid "Custom properties"
-msgstr "Proprieta' personalizzate"
+msgstr "Proprietà personalizzate"
 
 msgid "Custom property saved"
-msgstr "Proprieta' personalizzata salvata"
+msgstr "Proprietà personalizzata salvata"
 
 msgid "Delete"
 msgstr "Elimina"
@@ -306,7 +304,7 @@ msgid "Documents deleted"
 msgstr "Documento eliminato"
 
 msgid "Duplicate property name for the same object"
-msgstr "Nome proprieta' duplicato per lo stesso oggetto"
+msgstr "Nome proprietà duplicato per lo stesso oggetto"
 
 msgid "Editor notes"
 msgstr "Note redazionali"
@@ -342,7 +340,7 @@ msgid "Error creating jobs"
 msgstr "Errore in creazione processi"
 
 msgid "Error deleting custom property "
-msgstr "Errore in eliminazione proprieta' custom "
+msgstr "Errore in eliminazione proprietà custom "
 
 msgid "Error deleting note"
 msgstr "Errore in eliminazione nota"
@@ -363,7 +361,7 @@ msgid "Error deleting translation: "
 msgstr "Errore in eliminazione traduzione:"
 
 msgid "Error during reorder children priority"
-msgstr "Errore in riordinamento priorita' figli"
+msgstr "Errore in riordinamento priorità figli"
 
 msgid "Error during upload: missing url"
 msgstr "Errore in upload: manca url"
@@ -423,7 +421,7 @@ msgid "Error saving comment"
 msgstr "Errore in salvataggio dati commento"
 
 msgid "Error saving custom property"
-msgstr "Errore in salvataggio dati proprieta' personalizzata"
+msgstr "Errore in salvataggio dati proprietà personalizzata"
 
 msgid "Error saving group"
 msgstr "Errore in salvataggio dati gruppo"
@@ -501,7 +499,7 @@ msgid "File"
 msgstr ""
 
 msgid "File already exists in the filesystem"
-msgstr "Il file esiste gia' nel sistema"
+msgstr "Il file esiste già nel sistema"
 
 msgid "Find it"
 msgstr "Trova"
@@ -645,7 +643,7 @@ msgid "Mail template saved"
 msgstr "Template di posta salvata"
 
 msgid "Media already exists in the system"
-msgstr "Media gia' esiste nel sistema"
+msgstr "Media già esiste nel sistema"
 
 msgid "Media type"
 msgstr "Tipo Media"
@@ -677,11 +675,9 @@ msgstr "Pubblicazione mancante"
 msgid "Missing recipient"
 msgstr "Destinatario mancante"
 
-msgid ""
-"Missing referenced object.nIf you are creating new item you have to save it "
+msgid "Missing referenced object.nIf you are creating new item you have to save it"
 "before adding a note"
-msgstr ""
-"Oggetto referenziato non trovato.nSe stai creando un nuovo elemento devi "
+msgstr "Oggetto referenziato non trovato.nSe stai creando un nuovo elemento devi"
 "salvarloprima di aggiungere una nota"
 
 msgid "Missing sending date"
@@ -709,16 +705,14 @@ msgid "More data"
 msgstr "Altri dati"
 
 msgid "More properties"
-msgstr "Altre proprieta'"
+msgstr "Altre proprietà"
 
 msgid "Multimedia Provider not found or error getting thumbnail"
-msgstr ""
-"Non e' stato trovato il multimedia provider o si e' verificato un errore "
+msgstr "Non è stato trovato il multimedia provider o si è verificato un errore"
 "nell'ottenere la miniatura"
 
 msgid "Multimedia Provider not found or error preparing data to save"
-msgstr ""
-"Non e' stato trovato il multimedia provider o si e' verificato un errore "
+msgstr "Non è stato trovato il multimedia provider o si è verificato un errore"
 "nella preparazione dei dati da salvare"
 
 msgid "Multimedia deleted"
@@ -731,13 +725,13 @@ msgid "Multimedia object saved"
 msgstr "Oggetto multimedia salvato"
 
 msgid "Multimedia provider is not managed"
-msgstr "Il multimedia provider non e' supportato"
+msgstr "Il multimedia provider non è supportato"
 
 msgid "Name"
 msgstr "Nome"
 
 msgid "Name is required (at least %1 alphanumerical char)"
-msgstr "Il campo Nome e' obbligatorio (almeno %1 caratteri alfanumerici)"
+msgstr "Il campo Nome è obbligatorio (almeno %1 caratteri alfanumerici)"
 
 msgid "New Book"
 msgstr "Nuovo Libro"
@@ -890,7 +884,7 @@ msgid "Password"
 msgstr ""
 
 msgid "Password is required"
-msgstr "Il campo Password e' obbligatorio"
+msgstr "Il campo Password è obbligatorio"
 
 msgid "Passwords mismatch"
 msgstr "Le password non corrispondono"
@@ -907,10 +901,8 @@ msgstr "Persona"
 msgid "Please enter a valid date in the %1 format"
 msgstr "Inserire una data valida nel formato %1"
 
-msgid ""
-"Please enter a valid date in the %1 format and greater than the previous date"
-msgstr ""
-"Inserire una data valida nel formato %1 e successiva alla data "
+msgid "Please enter a valid date in the %1 format and greater than the previous date"
+msgstr "Inserire una data valida nel formato %1 e successiva alla data"
 "precedentemente inserita"
 
 msgid "Please enter a valid time in the %1 format"
@@ -950,7 +942,7 @@ msgid "Question detail"
 msgstr "Dettagli quesito"
 
 msgid "Question properties"
-msgstr "Proprieta' del quesito"
+msgstr "Proprietà del quesito"
 
 msgid "Question saved"
 msgstr "Quesito salvato"
@@ -1007,7 +999,7 @@ msgid "Resource "
 msgstr "Risorsa "
 
 msgid "Rights is required (at least %1 alphanumerical char)"
-msgstr "Il campo Diritti e' obbligatorio (almeno %1 caratteri alfanumerici)"
+msgstr "Il campo Diritti è obbligatorio (almeno %1 caratteri alfanumerici)"
 
 msgid "Save"
 msgstr "Salva"
@@ -1028,7 +1020,7 @@ msgid "Select by category"
 msgstr "Seleziona per categoria"
 
 msgid "Select by difficulty"
-msgstr "Seleziona per difficolta'"
+msgstr "Seleziona per difficoltà"
 
 msgid "Select by eduLevel"
 msgstr "Seleziona per livello-istruzione"
@@ -1091,7 +1083,7 @@ msgid "System info "
 msgstr "Informazioni di sistema "
 
 msgid "Tag already present"
-msgstr "Tag gia' presente"
+msgstr "Tag già presente"
 
 msgid "Tag deleted"
 msgstr "Tag eliminato"
@@ -1123,16 +1115,14 @@ msgstr "Testo"
 msgid "Text doesn't match image"
 msgstr "Il testo non corrisponde all'immagine"
 
-msgid ""
-"The content is fixed: it's not possible to change the position in the tree"
-msgstr ""
-"Contenuto immodificabile: non e' possibile cambiarne la posizione nell'albero"
+msgid "The content is fixed: it's not possible to change the position in the tree"
+msgstr "Contenuto immodificabile: non è possibile cambiarne la posizione nell'albero"
 
 msgid "This help page is under construction: coming soon"
-msgstr "Questa pagina di aiuto e' in costruzione: disponibile prossimamente"
+msgstr "Questa pagina di aiuto è in costruzione: disponibile prossimamente"
 
 msgid "This object is fixed - some data is readonly"
-msgstr "Questo oggetto e' immodificabile - alcuni dati sono in sola lettura"
+msgstr "Questo oggetto è immodificabile - alcuni dati sono in sola lettura"
 
 msgid "Title"
 msgstr "Titolo"
@@ -1189,7 +1179,7 @@ msgid "User"
 msgstr "Utente"
 
 msgid "User already created"
-msgstr "Utente gia' creato"
+msgstr "Utente già creato"
 
 msgid "User blocked"
 msgstr "Utente bloccato"
@@ -1209,12 +1199,10 @@ msgstr "Login utente temporaneamente bloccato"
 msgid "User name"
 msgstr "Nome utente"
 
-msgid ""
-"User name is required (at least %1 chars, without white spaces and special "
+msgid "User name is required (at least %1 chars, without white spaces and special"
 "chars)"
-msgstr ""
-"Il campo Nome utente e' obbligatorio (almeno %1 caratteri, senza spazi e "
-"caratteri speciali "
+msgstr "Il campo Nome utente è obbligatorio (almeno %1 caratteri, senza spazi e"
+"caratteri speciali"
 
 msgid "User not authorized to enter"
 msgstr "Utente non autorizzato all'accesso"
@@ -1229,7 +1217,7 @@ msgid "Username"
 msgstr ""
 
 msgid "Username is required"
-msgstr "Il campo Username e' obbligatorio"
+msgstr "Il campo Username è obbligatorio"
 
 msgid "Users of this group"
 msgstr "Utenti di questo gruppo"
@@ -1241,7 +1229,7 @@ msgid "Width"
 msgstr "larghezza"
 
 msgid "Write your answer. Max chars is"
-msgstr "Scrivi la tua risposta. Massimo numero di caratteri e'"
+msgstr "Scrivi la tua risposta. Massimo numero di caratteri è"
 
 msgid "Write your email here"
 msgstr "Scrivi la tua email qui"
@@ -1301,7 +1289,7 @@ msgid "add item"
 msgstr "aggiungi"
 
 msgid "add more tags"
-msgstr "aggiungi piu' tag"
+msgstr "aggiungi più tag"
 
 msgid "address"
 msgstr "indirizzo"
@@ -1475,7 +1463,7 @@ msgid "delete selected items"
 msgstr "elimina gli elementi selezionati"
 
 msgid "depth"
-msgstr "profondita'"
+msgstr "profondità"
 
 msgid "desc"
 msgstr ""
@@ -1487,7 +1475,7 @@ msgid "details"
 msgstr "dettagli"
 
 msgid "difficulty"
-msgstr "difficolta'"
+msgstr "difficoltà"
 
 msgid "documents"
 msgstr "documenti"
@@ -1565,7 +1553,7 @@ msgid "group modules access"
 msgstr "accesso gruppo moduli"
 
 msgid "group properties "
-msgstr "proprieta' gruppo"
+msgstr "proprietà gruppo"
 
 msgid "height"
 msgstr "altezza"
@@ -1658,16 +1646,16 @@ msgid "modified"
 msgstr "modificato"
 
 msgid "more from this IP"
-msgstr "di piu' da questo IP"
+msgstr "di più da questo IP"
 
 msgid "more from this email"
-msgstr "di piu' da questo email"
+msgstr "di più da questo email"
 
 msgid "more on this content"
-msgstr "di piu' su questo contenuto"
+msgstr "di più su questo contenuto"
 
 msgid "more results"
-msgstr "piu' risultati"
+msgstr "più risultati"
 
 msgid "move"
 msgstr "sposta"
@@ -1730,13 +1718,13 @@ msgid "no comments"
 msgstr "nessun commento"
 
 msgid "no custom properties defined"
-msgstr "nessuna proprieta' personalizzata e' stata definita"
+msgstr "nessuna proprietà personalizzata è stata definita"
 
 msgid "no notes"
 msgstr "nessuna nota"
 
 msgid "no object type defined"
-msgstr "nessun tipo oggetto e' stato definito"
+msgstr "nessun tipo oggetto è stato definito"
 
 msgid "no referenced objects"
 msgstr "nessun oggetto referenziato"
@@ -1859,7 +1847,7 @@ msgid "properties"
 msgstr "proprietà"
 
 msgid "property name"
-msgstr "nome proprieta'"
+msgstr "nome proprietà"
 
 msgid "public list\t"
 msgstr "lista pubblica\t"
@@ -2187,3 +2175,4 @@ msgstr "parentela"
 
 msgid "Position"
 msgstr "Posizione"
+
