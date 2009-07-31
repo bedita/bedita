@@ -4,9 +4,9 @@
 <fieldset id="books">
 	
 
-
 {section name=b loop=5}
 
+{bedev}
 <table class="bordered" style="border:1px solid gray; margin-bottom:20px;">
 	<tr>
 		<td style="width:33%">
@@ -27,11 +27,9 @@
 			In sostanza dovrebbero essere delel relazioni di tipo bilioitem? tra doc e books, una raccolta di books, bho
 			</div>
 		</td>
-		
 	</tr>
 	<tr>
 		<td>
-
 			<input class="BEbutton link" href="/books/view/923" name="details" type="button" value="details">
 			<input class="BEbutton" name="remove" type="button" value="remove">
 		</td>
@@ -41,7 +39,8 @@
 		
 	</tr>
 
-</table>	
+</table>
+{/bedev}
 
 {/section}
 
@@ -58,67 +57,69 @@
 		
 		<table>
 		<tr>
-			<th>Titolo</th><td><input type="text" name="title" value=""></td>
-			<th>Description</th>
+			<th>{t}Title{/t}</th><td><input type="text" name="title" value=""></td>
+			<th>{t}Description{/t}</th>
 		</tr>
 		<tr>
-			<th>Autore</th><td><input type="text" name="author" value=""></td>
+			<th>{t}Author{/t}</th><td><input type="text" name="author" value=""></td>
 			<td rowspan="4">
 				<textarea style="height:150px" name="description"></textarea>
 			</td>
 		</tr>
 		<tr>
-			<th>Luogo e anno</th><td><input type="text" name="place" value=""></td>
+			<th>{t}Place and year{/t}</th><td><input type="text" name="place" value=""></td>
 		</tr>
 		<tr>
-			<th>Isbn/issn/bid</th><td><input type="text" name="code" value=""></td>
+			<th>{t}Isbn/issn/bid{/t}</th><td><input type="text" name="code" value=""></td>
 		</tr>
 		<tr>
-			<td style="vertical-align:middle;"><input type="submit" value="   add   "></td>
+			<td style="vertical-align:middle;"><input type="submit" value="   {t}add{/t}   "></td>
 		</tr>
 		</table>
 	
 	</div>
 
 	<div class="htabcontent" id="addbycode">
-		<label>Insert code string </label>
+		<label>{t}Insert code string{/t}</label>
 		<input type="text" name="code" value="">
 		<p  style="margin-top:10px">
-		<label>and get data </label><select>
-			<option>from SEBINA by ISBN/ISSN</option>
-			<option>from SEBINA by BID</option>
-			<option>from web by isbn</option>	
+		<label>{t}and get data{/t} </label><select>
+			<option>{t}from{/t} SEBINA {t}by{/t} ISBN/ISSN</option>
+			<option>{t}from{/t} SEBINA {t}by{/t} BID</option>
+			<option>{t}from{/t} web {t}by{/t} isbn</option>	
 		</select>
 		
-		<input type="button" value="   search   ">
+		<input type="button" value="   {t}search{/t}   ">
 		</p>
+		{bedev}
 		<hr />
-		<h3>Result:</h3>
+		<h3>{t}Result{/t}:</h3>
 		Title: Io sono il titolo,
 		<br />
-		Author: io sono l'autore
+		{t}Author{/t}: io sono l'autore
 		<br />
-		Publisher: io le'editore, year: 2008
+		{t}Publisher{/t}: io le'editore, year: 2008
 		<hr />
-		<input type="button" value="   add   ">
+		<input type="button" value="   {t}add{/t}   ">
+		{/bedev}
 	</div>
 	
 	<div class="htabcontent" id="repositoryBooks">
 		<table>
 			<tr>
-				<th>Cerca</th>
+				<th>{t}Search{/t}</th>
 				<td>
-					<input type="checkbox"> autore
-					<input type="checkbox"> titolo
-					<input type="checkbox"> editore
-					<input type="checkbox"> codice (ISBN/ISSN/BID)
+					<input type="checkbox"> {t}author{/t}
+					<input type="checkbox"> {t}title{/t}
+					<input type="checkbox"> {t}editor{/t}
+					<input type="checkbox"> {t}code (ISBN/ISSN/BID){/t}
 				</td>
 			</tr>
 			<tr>
 				<td></td>
 					<td>
 					<input type="text" name="search" value="">&nbsp;
-					<input id="qw" type="button" rel="{$html->url('/')}books/listAllBooks" class="modalbutton" value="  go  ">
+					<input id="qw" type="button" rel="{$html->url('/')}books/listAllBooks" class="modalbutton" value="  {t}go{/t}  ">
 				</td>
 			</tr>
 		</table>

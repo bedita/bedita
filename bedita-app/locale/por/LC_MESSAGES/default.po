@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-07-24 10:38:10\n"
+"POT-Creation-Date: 2009-07-31 13:19:14\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -186,6 +186,9 @@ msgstr ""
 msgid "Comment saved"
 msgstr ""
 
+msgid "Commented item"
+msgstr ""
+
 msgid "Comments"
 msgstr ""
 
@@ -223,6 +226,9 @@ msgid "Content "
 msgstr ""
 
 msgid "Content not found"
+msgstr ""
+
+msgid "Contents with more comments (first 20)"
 msgstr ""
 
 msgid "Create"
@@ -426,6 +432,9 @@ msgstr ""
 msgid "Error saving group"
 msgstr ""
 
+msgid "Error saving link"
+msgstr ""
+
 msgid "Error saving mail group"
 msgstr ""
 
@@ -486,6 +495,9 @@ msgstr ""
 msgid "Events deleted"
 msgstr ""
 
+msgid "Evolution of content production, during the time"
+msgstr ""
+
 msgid "Exif - Main Data"
 msgstr ""
 
@@ -494,6 +506,9 @@ msgstr ""
 
 msgid "Exit"
 msgstr "Sair"
+
+msgid "Export to"
+msgstr ""
 
 msgid "File"
 msgstr "Arquivo"
@@ -546,6 +561,9 @@ msgstr ""
 msgid "Groups"
 msgstr "Grupos"
 
+msgid "HTML version"
+msgstr ""
+
 msgid "Height"
 msgstr ""
 
@@ -576,10 +594,19 @@ msgstr ""
 msgid "Immutable group %s"
 msgstr ""
 
+msgid "Import"
+msgstr ""
+
+msgid "Insert code string"
+msgstr ""
+
 msgid "Invoice"
 msgstr ""
 
 msgid "Invoices"
+msgstr ""
+
+msgid "Isbn/issn/bid"
 msgstr ""
 
 msgid "Item Type"
@@ -779,6 +806,12 @@ msgstr ""
 msgid "Newsletters"
 msgstr ""
 
+msgid "Newsletters sent this month"
+msgstr ""
+
+msgid "Newsletters sent this year"
+msgstr ""
+
 msgid "No"
 msgstr "Não"
 
@@ -824,7 +857,7 @@ msgstr ""
 msgid "No subscribers"
 msgstr ""
 
-msgid "No tag founded"
+msgid "No tag found"
 msgstr ""
 
 msgid "No tag in text area"
@@ -854,6 +887,9 @@ msgstr ""
 msgid "Not Authorized"
 msgstr ""
 
+msgid "Notes"
+msgstr ""
+
 msgid "Notice"
 msgstr ""
 
@@ -861,6 +897,12 @@ msgid "Notification mail delivery failed"
 msgstr ""
 
 msgid "Number of objects"
+msgstr ""
+
+msgid "Objects that were produced"
+msgstr ""
+
+msgid "Objects with multiple relationships"
 msgstr ""
 
 msgid "Occurrences"
@@ -876,6 +918,9 @@ msgid "Orientation"
 msgstr ""
 
 msgid "Original Title"
+msgstr ""
+
+msgid "PLAIN TEXT version"
 msgstr ""
 
 msgid "Password"
@@ -894,6 +939,9 @@ msgid "Permissions"
 msgstr "Permisos"
 
 msgid "Person"
+msgstr ""
+
+msgid "Place and year"
 msgstr ""
 
 msgid "Please enter a valid date in the %1 format"
@@ -929,6 +977,9 @@ msgstr ""
 
 msgid "Public sites users statistics"
 msgstr ""
+
+msgid "Publisher"
+msgstr "Publicador"
 
 msgid "Publisher is required (at least %1 alphanumerical char)"
 msgstr "Publicador obligatório (não menos de %1 carácter alfanumérico)"
@@ -969,6 +1020,9 @@ msgstr ""
 msgid "Queue is empty"
 msgstr "Lista vacia"
 
+msgid "Queued"
+msgstr ""
+
 msgid "Read and modify"
 msgstr "Leitura e editação"
 
@@ -994,6 +1048,9 @@ msgid "Remove"
 msgstr "Borrar"
 
 msgid "Resource "
+msgstr ""
+
+msgid "Result"
 msgstr ""
 
 msgid "Rights is required (at least %1 alphanumerical char)"
@@ -1050,6 +1107,9 @@ msgstr "Mostrar os tag no sistema"
 msgid "Show translations in"
 msgstr ""
 
+msgid "Software"
+msgstr ""
+
 msgid "Statistics"
 msgstr ""
 
@@ -1057,6 +1117,12 @@ msgid "Status"
 msgstr "Estado"
 
 msgid "Subject"
+msgstr ""
+
+msgid "Subscribed this month"
+msgstr ""
+
+msgid "Subscribed this week"
 msgstr ""
 
 msgid "Subscriber lists"
@@ -1129,6 +1195,12 @@ msgstr "Títolo"
 msgid "Title is required"
 msgstr "Títolo obligatório"
 
+msgid "Total Subscribers"
+msgstr ""
+
+msgid "Total newsletters sent"
+msgstr ""
+
 msgid "Translation deleted"
 msgstr ""
 
@@ -1145,6 +1217,9 @@ msgid "URL not valid"
 msgstr "URL não valido"
 
 msgid "URL unattainable"
+msgstr ""
+
+msgid "URLs and paths"
 msgstr ""
 
 msgid "Unsubscribe selected items"
@@ -1221,6 +1296,9 @@ msgstr "Nome usuário obligatório"
 
 msgid "Users of this group"
 msgstr "Usuários do grupo"
+
+msgid "View all"
+msgstr ""
 
 msgid "Warning"
 msgstr ""
@@ -1312,6 +1390,9 @@ msgstr ""
 msgid "all recent items"
 msgstr ""
 
+msgid "and get data"
+msgstr ""
+
 msgid "answers"
 msgstr ""
 
@@ -1348,6 +1429,9 @@ msgstr ""
 msgid "browse your disk"
 msgstr ""
 
+msgid "by"
+msgstr ""
+
 msgid "change status"
 msgstr ""
 
@@ -1379,6 +1463,9 @@ msgid "clone"
 msgstr ""
 
 msgid "close"
+msgstr ""
+
+msgid "code (ISBN/ISSN/BID)"
 msgstr ""
 
 msgid "comments"
@@ -1486,6 +1573,9 @@ msgstr ""
 msgid "duration in minutes"
 msgstr ""
 
+msgid "editor"
+msgstr ""
+
 msgid "edu level"
 msgstr ""
 
@@ -1559,6 +1649,9 @@ msgid "height"
 msgstr ""
 
 msgid "help"
+msgstr ""
+
+msgid "illustrator"
 msgstr ""
 
 msgid "image"
@@ -1672,6 +1765,9 @@ msgstr ""
 msgid "name"
 msgstr "nome"
 
+msgid "name and surname"
+msgstr ""
+
 msgid "new again"
 msgstr ""
 
@@ -1763,6 +1859,9 @@ msgid "of master id"
 msgstr ""
 
 msgid "off"
+msgstr ""
+
+msgid "ok"
 msgstr ""
 
 msgid "old psw"
@@ -1900,6 +1999,9 @@ msgstr ""
 msgid "rights"
 msgstr ""
 
+msgid "role"
+msgstr ""
+
 msgid "save"
 msgstr ""
 
@@ -1967,6 +2069,9 @@ msgid "signature"
 msgstr ""
 
 msgid "size"
+msgstr ""
+
+msgid "speaker"
 msgstr ""
 
 msgid "specify"
@@ -2041,6 +2146,9 @@ msgstr ""
 msgid "translations"
 msgstr ""
 
+msgid "translator"
+msgstr ""
+
 msgid "type"
 msgstr "tipo"
 
@@ -2051,6 +2159,9 @@ msgid "upload new items"
 msgstr ""
 
 msgid "url"
+msgstr ""
+
+msgid "use template"
 msgstr ""
 
 msgid "username"
@@ -2476,9 +2587,6 @@ msgstr ""
 
 #~ msgid "Creator"
 #~ msgstr "Criador"
-
-#~ msgid "Publisher"
-#~ msgstr "Publicador"
 
 #~ msgid "Rights"
 #~ msgstr "Direitos"

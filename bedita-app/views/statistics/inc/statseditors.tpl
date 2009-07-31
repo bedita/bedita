@@ -1,7 +1,7 @@
 <div class="tab"><h2>{t}BEdita editors activity statistics{/t}</h2></div>
 	<div>	
 
-		<h2>Oggetti prodotti</h2>
+		<h2>{t}Objects that were produced{/t}</h2>
 
 		<table class="graph">
 			{foreach from=$objectsForUser key="user_id" item="user"}

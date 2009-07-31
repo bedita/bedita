@@ -11,7 +11,7 @@
 		<ul class="menuleft insidecol">
 
 			<li {if $method eq "newsletters"}class="on"{/if}>
-				<a href="{$html->url('/newsletter/newsletters')}">Newsletters</a>
+				<a href="{$html->url('/newsletter/newsletters')}">{t}Newsletters{/t}</a>
 			</li>
 			
 		</ul>

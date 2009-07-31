@@ -23,7 +23,7 @@
 		
 		<hr />
 		
-		<h2>Evoluzione nel tempo della produzione di contenuti</h2>
+		<h2>{t}Evolution of content production, during the time{/t}</h2>
 		
 		<table class="graph">
 			{foreach from=$timeEvolution key="date" item="types" name=""}
@@ -44,7 +44,7 @@
 		
 		<hr />	
 
-		<h2>Contenuti più commentati (primi 20)</h2>
+		<h2>{t}Contents with more comments (first 20){/t}</h2>
 		
 		<table class="graph">
 			{foreach from=$contentCommented item="c"}
@@ -62,7 +62,7 @@
 	
 		<hr />
 		
-		<h2>Oggetti con più relazioni</h2>
+		<h2>{t}Objects with multiple relationships{/t}</h2>
 
 		<table class="graph">
 			{foreach from=$relatedObject item="c"}

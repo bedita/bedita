@@ -74,7 +74,7 @@ $(document).ready(function(){
 			<th>{$beToolbar->order('http_code', 'Check result')}</th>
 			<th style="text-align:center">{$beToolbar->order('status', 'Status')}</th>
 			<th style="text-align:center">{t}Link{/t}</th>
-			<th>Notes</th>
+			<th>{t}Notes{/t}</th>
 		</tr>
 	{/capture}
 		
@@ -93,7 +93,7 @@ $(document).ready(function(){
 			<td>{$objects[i].http_code|default:''}</td>
 			<td style="text-align:center">{$objects[i].status}</td>
 		<td class="go">
-				<input type="button" value="go" onclick="window.open('{$objects[i].url|default:''}','_blank')" />	
+				<input type="button" value="{t}go{/t}" onclick="window.open('{$objects[i].url|default:''}','_blank')" />	
 			</td>
 			
 			<td>{if $objects[i].num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
@@ -145,7 +145,7 @@ $(document).ready(function(){
 			<option value=""> -- </option>
 			{html_options options=$conf->statusOptions}
 		</select>
-		<input id="changestatusSelected" type="button" value=" ok " />
+		<input id="changestatusSelected" type="button" value=" {t}ok{/t} " />
 		
 		<hr />
 		
@@ -153,7 +153,7 @@ $(document).ready(function(){
 		
 		<hr />
 		
-		Export to:
+		{t}Export to{/t}:
 		<select name="export">
 			<option>Delicious(XBEL)</option>
 			<option>Excel</option>

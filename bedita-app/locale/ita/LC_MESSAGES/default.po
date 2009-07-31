@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-07-24 10:38:10\n"
+"POT-Creation-Date: 2009-07-31 13:19:14\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -186,6 +186,9 @@ msgstr "Codice"
 msgid "Comment saved"
 msgstr "Commento salvato"
 
+msgid "Commented item"
+msgstr "Elemento commentato"
+
 msgid "Comments"
 msgstr "Commenti"
 
@@ -224,6 +227,9 @@ msgstr "Contenuto "
 
 msgid "Content not found"
 msgstr "Contenuto non trovato"
+
+msgid "Contents with more comments (first 20)"
+msgstr "Contenuti più commentati"
 
 msgid "Create"
 msgstr "Crea"
@@ -426,6 +432,9 @@ msgstr "Errore in salvataggio dati proprietà personalizzata"
 msgid "Error saving group"
 msgstr "Errore in salvataggio dati gruppo"
 
+msgid "Error saving link"
+msgstr "Errore in salvataggio collegamento"
+
 msgid "Error saving mail group"
 msgstr "Errore in salvataggio dati gruppo di posta"
 
@@ -486,6 +495,9 @@ msgstr "Inizio"
 msgid "Events deleted"
 msgstr "Eventi eliminati"
 
+msgid "Evolution of content production, during the time"
+msgstr "Evoluzione nel tempo della produzione di contenuti"
+
 msgid "Exif - Main Data"
 msgstr ""
 
@@ -494,6 +506,9 @@ msgstr "Gruppo esistente"
 
 msgid "Exit"
 msgstr "Esci"
+
+msgid "Export to"
+msgstr "Esporta a"
 
 msgid "File"
 msgstr ""
@@ -546,6 +561,9 @@ msgstr "Gruppo eliminato"
 msgid "Groups"
 msgstr "Gruppi"
 
+msgid "HTML version"
+msgstr "versione HTML"
+
 msgid "Height"
 msgstr "Altezza"
 
@@ -576,10 +594,19 @@ msgstr "Gruppo non modificabile"
 msgid "Immutable group %s"
 msgstr "Gruppo non modificabile %s"
 
+msgid "Import"
+msgstr "Importa"
+
+msgid "Insert code string"
+msgstr "Inserisci stringa codice"
+
 msgid "Invoice"
 msgstr ""
 
 msgid "Invoices"
+msgstr "Invoice"
+
+msgid "Isbn/issn/bid"
 msgstr ""
 
 msgid "Item Type"
@@ -773,13 +800,19 @@ msgid "News saved"
 msgstr "News salvata"
 
 msgid "Newsletter must be saved before sending"
-msgstr "La Newsletter deve essere salvato prima dell'invio"
+msgstr "La Newsletter deve essere salvata prima dell'invio"
 
 msgid "Newsletter subscriptions"
 msgstr "Sottoscrizioni della Newsletter"
 
 msgid "Newsletters"
 msgstr "Newsletter"
+
+msgid "Newsletters sent this month"
+msgstr "Newsletter inviate questo mese"
+
+msgid "Newsletters sent this year"
+msgstr "Newsletter inviate quest'anno"
 
 msgid "No"
 msgstr "No"
@@ -856,6 +889,9 @@ msgstr "Nessun dato utente"
 msgid "Not Authorized"
 msgstr "Non Autorizzato"
 
+msgid "Notes"
+msgstr "Note"
+
 msgid "Notice"
 msgstr "Informazione"
 
@@ -864,6 +900,12 @@ msgstr "Consegna mail di notifica fallita"
 
 msgid "Number of objects"
 msgstr "Numero di oggetti"
+
+msgid "Objects that were produced"
+msgstr "Oggetti prodotti"
+
+msgid "Objects with multiple relationships"
+msgstr "Oggetti con più relazioni"
 
 msgid "Occurrences"
 msgstr "Occorrenze"
@@ -879,6 +921,9 @@ msgstr "Orientamento"
 
 msgid "Original Title"
 msgstr "Titolo Originale"
+
+msgid "PLAIN TEXT version"
+msgstr "versione SOLO TESTO"
 
 msgid "Password"
 msgstr ""
@@ -897,6 +942,9 @@ msgstr "Permessi"
 
 msgid "Person"
 msgstr "Persona"
+
+msgid "Place and year"
+msgstr "Luogo e anno"
 
 msgid "Please enter a valid date in the %1 format"
 msgstr "Inserire una data valida nel formato %1"
@@ -931,6 +979,9 @@ msgstr "URL del Provider"
 
 msgid "Public sites users statistics"
 msgstr "Statistiche degli utenti ai siti pubblici"
+
+msgid "Publisher"
+msgstr "Pubblicato da"
 
 msgid "Publisher is required (at least %1 alphanumerical char)"
 msgstr "La pubblicazione è obbligatoria (almeno %1 carattere alfanumerico)"
@@ -971,6 +1022,9 @@ msgstr "Lista dei Quesiti"
 msgid "Queue is empty"
 msgstr "Coda vuota"
 
+msgid "Queued"
+msgstr "In coda"
+
 msgid "Read and modify"
 msgstr "Lettura e modifica"
 
@@ -997,6 +1051,9 @@ msgstr "Rimuovi"
 
 msgid "Resource "
 msgstr "Risorsa "
+
+msgid "Result"
+msgstr "Risultato"
 
 msgid "Rights is required (at least %1 alphanumerical char)"
 msgstr "Il campo Diritti è obbligatorio (almeno %1 caratteri alfanumerici)"
@@ -1052,6 +1109,9 @@ msgstr "Mostra i tag già esistenti"
 msgid "Show translations in"
 msgstr "Mostra traduzioni in"
 
+msgid "Software"
+msgstr ""
+
 msgid "Statistics"
 msgstr "Statistiche"
 
@@ -1060,6 +1120,12 @@ msgstr "Stato"
 
 msgid "Subject"
 msgstr "Soggetto"
+
+msgid "Subscribed this month"
+msgstr "Iscritti questo mese"
+
+msgid "Subscribed this week"
+msgstr "Iscritti questa settimana"
 
 msgid "Subscriber lists"
 msgstr "Liste iscritti"
@@ -1130,6 +1196,12 @@ msgstr "Titolo"
 msgid "Title is required"
 msgstr "Il titolo è necesario"
 
+msgid "Total Subscribers"
+msgstr "Totale iscritti"
+
+msgid "Total newsletters sent"
+msgstr "Totale newsletter inviate"
+
 msgid "Translation deleted"
 msgstr "Traduzione eliminata"
 
@@ -1147,6 +1219,9 @@ msgstr "URL non valido"
 
 msgid "URL unattainable"
 msgstr "URL irraggiungibile"
+
+msgid "URLs and paths"
+msgstr "URL e percorsi"
 
 msgid "Unsubscribe selected items"
 msgstr "Disiscrivi gli elementi selezionati"
@@ -1221,6 +1296,9 @@ msgstr "Il campo Username è obbligatorio"
 
 msgid "Users of this group"
 msgstr "Utenti di questo gruppo"
+
+msgid "View all"
+msgstr "Visualizza tutti"
 
 msgid "Warning"
 msgstr ""
@@ -1312,6 +1390,9 @@ msgstr "tutti"
 msgid "all recent items"
 msgstr "elementi recenti"
 
+msgid "and get data"
+msgstr "e prendi i dati"
+
 msgid "answers"
 msgstr "risposte"
 
@@ -1348,6 +1429,9 @@ msgstr "rimanda all'email (bounce)"
 msgid "browse your disk"
 msgstr "sfoglia, cerca nel disco"
 
+msgid "by"
+msgstr "per"
+
 msgid "change status"
 msgstr "cambia status"
 
@@ -1380,6 +1464,9 @@ msgstr "clona"
 
 msgid "close"
 msgstr "chiudi"
+
+msgid "code (ISBN/ISSN/BID)"
+msgstr "codice (ISBN/ISSN/BID)"
 
 msgid "comments"
 msgstr "commenti"
@@ -1486,6 +1573,9 @@ msgstr ""
 msgid "duration in minutes"
 msgstr "durata in minuti"
 
+msgid "editor"
+msgstr "editore"
+
 msgid "edu level"
 msgstr "livello di istruzione"
 
@@ -1560,6 +1650,9 @@ msgstr "altezza"
 
 msgid "help"
 msgstr "aiuto"
+
+msgid "illustrator"
+msgstr "illustratore"
 
 msgid "image"
 msgstr "immagine"
@@ -1672,6 +1765,9 @@ msgstr "scelta multipla"
 msgid "name"
 msgstr "nome"
 
+msgid "name and surname"
+msgstr "nome e cognome"
+
 msgid "new again"
 msgstr "ancora la nuova"
 
@@ -1763,6 +1859,9 @@ msgid "of master id"
 msgstr "di id principale"
 
 msgid "off"
+msgstr ""
+
+msgid "ok"
 msgstr ""
 
 msgid "old psw"
@@ -1900,6 +1999,9 @@ msgstr "si trova in"
 msgid "rights"
 msgstr "diritti"
 
+msgid "role"
+msgstr "ruolo"
+
 msgid "save"
 msgstr "salva"
 
@@ -1968,6 +2070,9 @@ msgstr "firma"
 
 msgid "size"
 msgstr "dimensione"
+
+msgid "speaker"
+msgstr ""
 
 msgid "specify"
 msgstr "specifica"
@@ -2041,6 +2146,9 @@ msgstr "traduzione al"
 msgid "translations"
 msgstr "traduzioni"
 
+msgid "translator"
+msgstr "traduttore"
+
 msgid "type"
 msgstr "tipo"
 
@@ -2052,6 +2160,9 @@ msgstr "carica nuovi elementi"
 
 msgid "url"
 msgstr ""
+
+msgid "use template"
+msgstr "usa template"
 
 msgid "username"
 msgstr "nome utente"
@@ -2125,6 +2236,12 @@ msgstr "il tuo messaggio"
 msgid "your profile and preferences"
 msgstr "il tuo profilo e le tue preferenze"
 
+msgid "Objects with multiple relactions"
+msgstr "Oggetti con più relazioni"
+
+msgid "No tag founded"
+msgstr "Nessun tag trovato"
+
 msgid "editor notes"
 msgstr "note redazionali"
 
@@ -2133,9 +2250,6 @@ msgstr "Inserito in"
 
 msgid "Embedded in no objects"
 msgstr "l'elemento non è inserito da nessuna parte"
-
-msgid "Notes"
-msgstr "Note"
 
 msgid "Question deleted"
 msgstr "Quesito eliminato"
@@ -2175,4 +2289,3 @@ msgstr "parentela"
 
 msgid "Position"
 msgstr "Posizione"
-

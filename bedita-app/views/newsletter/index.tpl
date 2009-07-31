@@ -35,13 +35,13 @@
 <div class="mainhalf">
 	<div class="tab"><h2>{t}Subscribers{/t}</h2></div>
 		<ul class="bordered">
-			<li>Subscribed this week: <b>{$subscribedWeek|default:0}</b></li>
-			<li>Subscribed this month: <b>{$subscribedMonth|default:0}</b></li>
-			<li>Total Subscribers: <b>{$subscribedTotal|default:0}</b></li>
+			<li>{t}Subscribed this week{/t}: <b>{$subscribedWeek|default:0}</b></li>
+			<li>{t}Subscribed this month{/t}: <b>{$subscribedMonth|default:0}</b></li>
+			<li>{t}Total Subscribers{/t}: <b>{$subscribedTotal|default:0}</b></li>
 			<li>
-				<b><a href="{$html->url('/addressbook/')}">View all</a></b> 
+				<b><a href="{$html->url('/addressbook/')}">{t}View all{/t}</a></b> 
 				&nbsp;&nbsp;|&nbsp;&nbsp;
-				<b><a href="{$html->url('/addressbook/import')}">Import</a></b> 
+				<b><a href="{$html->url('/addressbook/import')}">{t}Import{/t}</a></b> 
 			</li>
 		</ul>
 
@@ -62,10 +62,10 @@
 	
 	<div class="tab"><h2>{t}Newsletters{/t}</h2></div>
 		<ul class="bordered">
-			<li>Newsletters sent this month: <b>{$sentThisMonth|default:0} </b></li>
-			<li>Newsletters sent this year: <b>{$sentThisYear|default:0}</b> </li>
-			<li>Queued: <b>{$queued|default:0}</b> </li>		 
-			<li>Total newsletters sent: <b>{$sentTotal|default:0}</b></li>
+			<li>{t}Newsletters sent this month{/t}: <b>{$sentThisMonth|default:0} </b></li>
+			<li>{t}Newsletters sent this year{/t}: <b>{$sentThisYear|default:0}</b> </li>
+			<li>{t}Queued{/t}: <b>{$queued|default:0}</b> </li>		 
+			<li>{t}Total newsletters sent{/t}: <b>{$sentTotal|default:0}</b></li>
 		</ul>
 	
 	<div class="tab"><h2>{t}Recent newsletters {/t}</h2></div>

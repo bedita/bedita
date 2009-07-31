@@ -77,7 +77,7 @@ tinyMCE.init({
 
 <table class="booksauthor" border=0 style="width:100%;">
 <tr>
-	<td></td><td style="padding:0px 0px 0px 10px">nome e cognome</td><td style="padding:0px 0px 0px 10px">ruolo</td>
+	<td></td><td style="padding:0px 0px 0px 10px">{t}name and surname{/t}</td><td style="padding:0px 0px 0px 10px">{t}role{/t}</td>
 </tr>
 {if !empty($relObjects.author)}
 {foreach from=$relObjects.author name=i item=author}
@@ -91,11 +91,11 @@ tinyMCE.init({
 		</td>
 		<td>	
 			<select style="width:60px" class="authorrole" >
-				<option>author</option>
-				<option>editor</option>
-				<option>illustrator</option>
-				<option>translator</option>
-				<option>speaker</option>
+				<option>{t}author{/t}</option>
+				<option>{t}editor{/t}</option>
+				<option>{t}illustrator{/t}</option>
+				<option>{t}translator{/t}</option>
+				<option>{t}speaker{/t}</option>
 			</select>
 		</td>
 		<td nowrap>
@@ -116,11 +116,11 @@ tinyMCE.init({
 		</td>
 		<td>
 			<select style="width:60px" name="data[authorrole]" class="authorrole" >
-				<option>author</option>
-				<option>editor</option>
-				<option>illustrator</option>
-				<option>translator</option>
-				<option>speaker</option>
+				<option>{t}author{/t}</option>
+				<option>{t}editor{/t}</option>
+				<option>{t}illustrator{/t}</option>
+				<option>{t}translator{/t}</option>
+				<option>{t}speaker{/t}</option>
 			</select>
 		</td>
 		<td nowrap>

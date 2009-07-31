@@ -146,7 +146,7 @@ $(document).ready(function() {
 
 	&nbsp;&nbsp;
 	
-	<label>use template :</label>
+	<label>{t}use template{/t}:</label>
 	<input type="hidden" name="data[RelatedObject][template][0][switch]" value="template" />
 	<select name="data[RelatedObject][template][1][id]" id="changeTemplate">
 		<option value="">--</option>
@@ -157,16 +157,16 @@ $(document).ready(function() {
 			{foreach from=$pub.MailTemplate item="temp"}
 				<option rel="{$pub.public_url}" value="{$temp.id}"{if !empty($relObjects.template) && $relObjects.template.0.id == $temp.id} selected{/if}>&nbsp;&nbsp;&nbsp;{$temp.title}</option>
 			{/foreach}
-		{/foreach}		
-	</select>	
+		{/foreach}
+	</select>
 
 	<hr />
 	
 	<div id="loaderContent" class="loader"><span></span></div>
 	
 	<table class="htab">
-		<td rel="html">HTML version</td>
-		<td rel="txt">PLAIN TEXT version</td>
+		<td rel="html">{t}HTML version{/t}</td>
+		<td rel="txt">{t}PLAIN TEXT version{/t}</td>
 	</table>
 	
 	<div class="htabcontainer" id="templatebody">
