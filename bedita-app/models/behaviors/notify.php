@@ -58,6 +58,10 @@ class NotifyBehavior extends ModelBehavior {
 			);
 			
 			$userField = $this->modelNameToUserField[$model->name];
+			// exit if comment has been modified (not created)
+			if(isset($data["user_modified"]) && $userField == "comments") { 
+				return;
+			}
 			$userModel = ClassRegistry::init("User");
 			$conditions = array("(" .$userField . "='all' 
 								OR (" .$userField . "='mine' AND id='". $c["ReferenceObject"]["user_created"] ."'
@@ -66,10 +70,10 @@ class NotifyBehavior extends ModelBehavior {
 				$conditions[] = "id <> " . $data["user_modified"];
 			}
 			$users = $userModel->getUsersToNotify($conditions);
-			$data['author'] = empty($c['author']) ? 
-				$userModel->field("userid",array("id" => $data["user_modified"])) : $c['author'];
-			$data['email'] = $c['email'];
-			$data['url'] = $c['url'];
+			if(empty($data['author'])) {
+				$data['author'] = $userModel->field("userid",
+					array("id" => $data["user_modified"]));
+			}
 			$data['object_title'] = $c["ReferenceObject"]["title"];
 			
 			$this->prepareAnnotationMail($users, $model);
@@ -116,13 +120,19 @@ class NotifyBehavior extends ModelBehavior {
 		$this->loadMessages();
 		$modData =& $model->data[$model->alias];
 		
+		$msgType = strtolower($model->alias); // note or comment 
+		if($msgType == "comment") {
+			$modData["url_id"] = $modData["id"]; // if comment, point to comment detail
+		} else {
+			$modData["url_id"] = $modData["object_id"]; // if note, point to annotated obj
+		}
+		
 		$params = array("author" => $modData["author"],
 			"title" => $modData["object_title"],
-			"url" => Configure::read("beditaUrl") . "/view/" . $modData["object_id"],
+			"url" => Configure::read("beditaUrl") . "/view/" . $modData["url_id"],
 			"beditaUrl" => Configure::read("beditaUrl"),
 			"text" => $modData["description"],
 		);
-		$msgType = strtolower($model->alias); // note or comment 
 		$this->createMailJob($users, $model, $msgType, $params);
 	}
 	

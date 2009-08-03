@@ -50,12 +50,12 @@ $notify["comment"]["eng"] = array(
 
 	"mail_body" => "Hi [\$user], " .
 	"\nthis is an automatic notification email from BEdita system at " .
-	"\n [\$beditaUrl]",
+	"\n [\$beditaUrl]" .
 	"\nA new comment has been added by [\$author] on '[\$title]' "	.
 	"\n\n ------------" .
-	"\n[\$text]" . 
+	"\n[\$text]" .
 	"\n ------------" .
-	"\n Look at [\$url]"
+	"\n\n Look at [\$url]"
 );
 
 // Message for new user
