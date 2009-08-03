@@ -430,7 +430,7 @@ class BEObject extends BEAppModel
 			$data['ip_created'] = $this->_getDefaultIP();
 		}
 		// user created? - only for new objects
-		if(!empty($data['user_created']) && !isset($data['id'])) {
+		if(empty($data['user_created']) && !isset($data['id'])) {
 			$data['user_created'] = $this->_getIDCurrentUser();
 		}
 		// user modified
