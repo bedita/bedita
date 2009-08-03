@@ -421,27 +421,23 @@ class BEObject extends BEAppModel
 			$data['title'] = trim($data['title']);
 		}
 
-	 	$default = array(
-			'lang' 				=> array('_getDefaultLang', 		(isset($data['lang']))?$data['lang']:null),
-			'ip_created' 		=> array('_getDefaultIP',			(isset($data['ip_created']))?$data['ip_created']:null),
-			'user_created'		=> array('_getIDCurrentUser', 		(isset($data['user_created'])?$data['user_created']:true)),
-			'user_modified'		=> array('_getIDCurrentUser', 		(isset($data['user_modified'])?$data['user_modified']:true)), 
-		) ;
-		
-		foreach ($default as $name => $rule) {
-			if(!is_array($rule)) {
-				$data[$name] = $rule ;
-				continue ;
-			}
-			
-			$method = $rule[0];
-			unset($rule[0]);
-			
-			if (method_exists($this, $method)) {
-				$data[$name] = call_user_func_array(array(&$this, $method), $rule);
-			} 
+		// set language -- disable for comments?
+		if(!isset($data['lang'])) {
+			$data['lang'] = $this->_getDefaultLang();
 		}
-
+		// check/set IP
+		if(!isset($data['ip_created']) && !isset($data['id'])) {
+			$data['ip_created'] = $this->_getDefaultIP();
+		}
+		// user created? - only for new objects
+		if(!empty($data['user_created']) && !isset($data['id'])) {
+			$data['user_created'] = $this->_getIDCurrentUser();
+		}
+		// user modified
+		if(!isset($data['user_modified'])) {
+			$data['user_modified'] = $this->_getIDCurrentUser();
+		}
+		
 		// nickname: verify nick and status change, object not fixed
 		if(isset($data['id'])) {
 			$currObj = $this->find("first", array(
@@ -586,9 +582,7 @@ class BEObject extends BEAppModel
 		return $nickname ;
 	}
 	
-	private function _getDefaultLang($value = null) {
-		if(isset($value)) return $value ;
-
+	private function _getDefaultLang() {
 		$conf = Configure::getInstance() ;
 		return ((isset($conf->defaultLang))?$conf->defaultLang:'') ;
 	}
@@ -609,18 +603,12 @@ class BEObject extends BEAppModel
 //		return null ;
 //	}
 	
-	private function _getDefaultIP($value = null) {
-		if(isset($value)) 
-			return $value ;
+	private function _getDefaultIP() {
 		$IP = $_SERVER['REMOTE_ADDR'] ;
-	
 		return $IP ;
 	}
 	
-	private function _getIDCurrentUser($get = true) {
-		if(is_numeric($get)) 
-			return $get ;
-		
+	private function _getIDCurrentUser() {
 		// read user data from session or from configure
 		$conf = Configure::getInstance();
 		$userId=0; 
