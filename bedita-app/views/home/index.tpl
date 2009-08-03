@@ -148,7 +148,6 @@ $(document).ready(function() {
 	{/section}
 	</ul>
 
-{bedev}
 <div class="tab"><h2>{t}last editor's notes{/t}</h2></div>
 	<ul id="lastnotes" class="bordered">
 		{foreach from=$lastNotes item="note"}
@@ -168,7 +167,6 @@ $(document).ready(function() {
 			<li>{t}no comments{/t}</li>
 		{/foreach}
 	</ul>
-{/bedev}
 	
 <div class="tab"><h2>{t}connected user{/t}</h2></div>
 	<ul id="connected" class="bordered">
