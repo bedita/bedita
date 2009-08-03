@@ -85,8 +85,12 @@ class StatisticsController extends ModulesController {
 		$this->set('publications', $area->find('all'));
 	 }
 	
-	 
-	 private function totalObjects($params) {
+		public function view() {
+			$this->action = "index";
+			$this->index($this->passedArgs["id"]);
+		}
+
+		private function totalObjects($params) {
 	 	// number of objects
 		$countTotal = $this->BEObject->find("all", array(
 					"fields" => "COUNT(DISTINCT `BEObject`.id) as count, `ObjectType`.id, `ObjectType`.name",
