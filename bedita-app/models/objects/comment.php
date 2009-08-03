@@ -38,7 +38,8 @@ class Comment extends BeditaAnnotationModel
 	); 
 	
 	protected $modelBindings = array( 
-		"detailed" =>  array("BEObject" => array("ObjectType"), "ReferenceObject", "GeoTag"),
+		"detailed" =>  array("BEObject" => array("ObjectType","UserCreated", 
+			"UserModified"), "ReferenceObject", "GeoTag"),
 		"default" =>  array("BEObject" => array("ObjectType"), "ReferenceObject", "GeoTag"),
 		"minimum" => array("BEObject" => array("ObjectType"))
 	);

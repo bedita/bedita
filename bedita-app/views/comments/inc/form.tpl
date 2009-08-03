@@ -2,6 +2,7 @@
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 <input type="hidden" name="data[title]" value="{$object.title|default:''}" />
 <input type="hidden" name="data[nickname]" value="{$object.nickname|default:''}" />
+<input type="hidden" name="data[object_id]" value="{$object.ReferenceObject.id}" />
 
 <div class="tab"><h2>comment#{$object.id} on {$object.ReferenceObject.title}</h2></div>
 
@@ -53,8 +54,15 @@
 	<tr>
 		<th>{t}created on{/t}:</th>
 		<td>{$object.created|date_format:$conf->dateTimePattern}</td>
-		<th>{t}last modified on{/t}:</th>
+		<th>{if isset($object.UserCreated.id)}{t}from{/t}:{/if}</th>
+		<td>{if isset($object.UserCreated.id)}{$object.UserCreated.userid}{/if}</td>
+	</tr>
+
+	<tr>
+		<th>{t}modified on{/t}:</th>
 		<td>{$object.modified|date_format:$conf->dateTimePattern}</td>
+		<th>{if isset($object.UserModified.id)}{t}from{/t}:{/if}</th>
+		<td>{if isset($object.UserModified.id)}{$object.UserModified.userid}{/if}</td>
 	</tr>
 	
 	<tr>
@@ -81,6 +89,7 @@
 		<th>{t}IP{/t}:</th>
 		<td>
 		{$object.ip_created}
+		<input type="hidden" name="data[ip_created]" value="{$object.ip_created}"/>
 		<input type="hidden" name="data[ip_to_ban]" value="{$object.ip_created}"/>
 		</td>
 		<td colspan="2">
