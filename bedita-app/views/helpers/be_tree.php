@@ -62,7 +62,7 @@ class BeTreeHelper extends Helper {
 			foreach ($tree as $publication) {
 								
 				if (empty($inputType)) {
-					$url = $this->Html->url('/') . $this->params["controller"] . "/view/id:" . $publication["id"];
+					$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $publication["id"];
 					if ( (!empty($this->params["named"]["id"]) && $this->params["named"]["id"] == $publication["id"]) 
 							|| !empty($this->params["pass"][0]) && $this->params["pass"][0] == $publication["id"]) {
 						$class = " class='on'";
@@ -183,7 +183,7 @@ class BeTreeHelper extends Helper {
 		foreach ($branch as $section) {
 			
 			if (empty($inputType)) {
-				$url = $this->Html->url('/') . $this->params["controller"] . "/view/id:" . $section["id"];
+				$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $section["id"];
 				if ( (!empty($this->params["named"]["id"]) && $this->params["named"]["id"] == $section["id"]) 
 						|| !empty($this->params["pass"][0]) && $this->params["pass"][0] == $section["id"]) {
 					$class = " class='on'";
