@@ -1,0 +1,2 @@
+1249464117
+a:4:{s:2:"id";a:5:{s:4:"type";s:7:"integer";s:4:"null";b:0;s:7:"default";N;s:6:"length";i:10;s:3:"key";s:5:"index";}s:11:"property_id";a:5:{s:4:"type";s:7:"integer";s:4:"null";b:0;s:7:"default";N;s:6:"length";i:10;s:3:"key";s:5:"index";}s:9:"object_id";a:5:{s:4:"type";s:7:"integer";s:4:"null";b:0;s:7:"default";N;s:6:"length";i:10;s:3:"key";s:5:"index";}s:14:"property_value";a:4:{s:4:"type";s:4:"text";s:4:"null";b:0;s:7:"default";N;s:6:"length";N;}}
