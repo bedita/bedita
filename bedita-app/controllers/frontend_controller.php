@@ -167,7 +167,6 @@ abstract class FrontendController extends AppController {
 			$userid 	= (isset($this->params["form"]["login"]["userid"])) ? $this->params["form"]["login"]["userid"] : "" ;
 			$password 	= (isset($this->params["form"]["login"]["passwd"])) ? $this->params["form"]["login"]["passwd"] : "" ;
 			
-			$confGroups = Configure::read("authorizedGroups");
 			if(!$this->BeAuth->login($userid, $password, null, $groups)) {
 				//$this->loginEvent('warn', $userid, "login not authorized");
 				$this->userErrorMessage(__("Wrong username/password or session expired", true));
@@ -192,22 +191,27 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
-	 * check if there's an active session and if at least one group user is authorized to access frontend
-	 * if is not defined "authorizedGroups" array in frontend.ini.php use all frontend groups
+	 * check if there's an active session and try to login if user not logged
+	 *  - if "authorizedGroups" array defined in frontend.ini.php, user has to be in one of those groups
+	 *  - if "staging" is defined only backend authorized groups are permitted 
+	 *	- otherwise any group is accepted
 	 * 
 	 * @return boolean
 	 */
 	protected function checkIsLogged() {	
-		$confGroups = Configure::read("authorizedGroups");
-		$groups = (!empty($confGroups))? $confGroups : ClassRegistry::init("Group")->getList(array("backend_auth" => 0)); 
 		if(!$this->BeAuth->isLogged()) {
-			$frontendGroupsCanLoggin = (Configure::read("staging") === true)? array() : $groups; 
-			return $this->login($frontendGroupsCanLoggin);
+			if(Configure::read("staging") === true) {
+				$frontendGroupsCanLogin = array(); // only backend authorized groups
+			} else {
+				// frontend only authorized groups (default empty)
+				$confGroups = Configure::read("authorizedGroups");
+				// which groups? authorized groups if defined, or any group 
+				$frontendGroupsCanLogin = (!empty($confGroups))? $confGroups : 
+					ClassRegistry::init("Group")->getList(array("backend_auth" => 0)); 
+			}
+			return $this->login($frontendGroupsCanLogin);
 		}
-		if (!$this->BeAuth->isUserGroupAuthorized($groups)) {
-			$this->userErrorMessage(__("User not authorized to enter", true));
-			return false;
-		}
+
 		return true;
 	}
 	
