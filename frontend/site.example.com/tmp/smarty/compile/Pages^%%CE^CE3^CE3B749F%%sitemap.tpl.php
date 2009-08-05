@@ -1,3 +1,0 @@
-<?php /* Smarty version 2.6.18, created on 2009-08-05 10:53:08
-         compiled from /home/ste/workspace/bedita/frontend/site.example.com/views/pages/sitemap.tpl */ ?>
-<?php echo ''; ?><?php echo $this->_tpl_vars['view']->element('header'); ?><?php echo '<div class="main"><div class="content-main sitemap">'; ?><?php $this->assign('public_url', ""); ?><?php echo ''; ?><?php echo $this->_tpl_vars['beTree']->sitemap($this->_tpl_vars['sections_tree'],$this->_tpl_vars['public_url']); ?><?php echo '</div></div>'; ?><?php echo $this->_tpl_vars['view']->element('footer'); ?><?php echo ''; ?>
