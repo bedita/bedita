@@ -299,20 +299,26 @@ class PagesController extends AppController {
 		$this->layout="ajax";
 	}
 	
-	function helpOnline() {
+	/**
+	 * Provides on line Help contents, called via AJAX like /pages/helpOnline/$controller/$action
+	 * 2 arguments at least mandatory
+	 */
+	public function helpOnline() {
 		$args = func_get_args();
 		$count = func_num_args();
-		if($count > 2) { // controller -> action
-			$count = 2;
+		if($count < 2) {
+			throw new BeditaException(__("Error invoking online help", true));
 		}
 		$url = Configure::read("helpBaseUrl");
-		$path = "";
-		$module = (!empty($args[0])) ? $args[0] : null;
-		$action = (!empty($args[1])) ? $args[1] : null;
-		for($i=0;$i<$count;$i++) {
-			$url .= "/" . $args[$i];
-			$path .= " " . $args[$i];
-		}
+		$module = $args[0];
+		$action = $args[1];
+		
+		$path = " " . $module . " " . $action;
+		// help online URL convention is <base-url>/<module-name>-module/<module-name>-<action-name>
+		// example: <base-url>/events-module/events-view
+		$url = Configure::read("helpBaseUrl") . 
+			"/$module-module/$module-$action";
+
 		$result = @get_headers($url);
 		if(preg_match("|200|",$result[0])) {
 			$result = file_get_contents($url);
