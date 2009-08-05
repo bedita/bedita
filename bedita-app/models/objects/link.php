@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -20,8 +20,8 @@
  */
 
 /**
+ * Webmark/Link class: generic web link, URL, URI model
  * 
- * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -80,6 +80,30 @@ class Link extends BEAppObjectModel {
 	public function isHttps($url) {
 		if(strlen($url)<10) return false;
 		return (substr($url,0,8) == "https://");
+	}
+	
+	/**
+	 * Check URL format, prepends http:// if absent
+	 *
+	 * @param string $url
+	 * @return string
+	 */
+	public function checkUrl($url) {
+		$u = trim($url);
+		if(!$this->isHttp($u) && !$this->isHttps($u)) {
+			$u = "http://" . $u;
+		}
+		return $u;
+	}
+	
+	public function readHtmlTitle($url) {
+		$html = @file_get_contents($url);
+		$title = "";
+		if(!empty($html)) {
+			preg_match("/<title>(.+)<\/title>/siU", $html, $t);
+			$title = $t[1];
+		}
+		return $title;
 	}
 }
 ?>

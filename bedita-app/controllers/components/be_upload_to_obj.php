@@ -91,6 +91,10 @@ class BeUploadToObjComponent extends Object {
 		$getInfoURL = false;
 		
 		$url = $this->recognizeMediaProvider($dataURL['url'], $provider, $uid);
+		if(empty($dataURL['title'])) {
+			$link = ClassRegistry::init("Link");
+			$dataURL['title'] = $link->readHtmlTitle($dataURL['url']);
+		}
 		
 		if (!empty($provider)) {
 			$dataURL['provider']	= $provider ;

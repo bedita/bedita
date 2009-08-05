@@ -56,6 +56,19 @@ class WebmarksController extends ModulesController {
 
 	public function save() {
 		$this->checkWriteModulePermission();
+		// normalize url and look for duplicates
+		$this->data['url'] = $this->Link->checkUrl($this->data['url']);
+		$link =  $this->Link->find('all',array('conditions' =>array('url' => $this->data['url'])));
+		if(!empty($link)) {
+			$this->Link->id = $link[0]['id'];
+			$this->userWarnMessage(__("webmark already present", true)." - ".$link[0]['id'] . " - " .$link[0]['title']);
+			$this->setResult("WARN");
+			return;
+		}
+		// try to read title from URL directly
+		if(empty($this->data['title'])) { 
+			$this->data['title'] = $this->Link->readHtmlTitle($this->data['url']);
+		}
 		$this->Transaction->begin();
 		$this->saveObject($this->Link);
 		$this->Transaction->commit();
@@ -151,6 +164,7 @@ class WebmarksController extends ModulesController {
 										),
 				"save"	=> 	array(
 										"OK"	=> "/webmarks/view/{$this->Link->id}",
+										"WARN"	=> "/webmarks/view/{$this->Link->id}", 
 										"ERROR"	=> "/webmarks/view/" 
 									), 
 				"delete" =>	array(

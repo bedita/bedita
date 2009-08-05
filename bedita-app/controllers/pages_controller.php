@@ -268,16 +268,18 @@ class PagesController extends AppController {
 		$this->data["status"] = "on";
 	 	$this->Transaction->begin() ;
 		$linkModel = $this->loadModelByType("Link");
-		$url = $this->data['url'];
-		$title = $this->data['title'];
-		if(!$linkModel->isHttp($url) && !$linkModel->isHttps($url)) {
-			$url = "http://" . $url;
-			$this->data['url'] = $url;
-		}
-		$link = $linkModel->find('all',array('conditions' =>array('url' => $url,'title' => $title)));
+		$this->data['url'] = $linkModel->checkUrl($this->data['url']);
+		
+		$link = $linkModel->find('all',array('conditions' =>array('url' => $this->data['url'])));
 		if(!empty($link)) {
 			$linkModel->id = $link[0]['id'];
+			if(empty($this->data['title'])) {
+				$this->data['title'] = $link[0]['title'];
+			}
 		} else {
+			if(empty($this->data['title'])) { // try to read title from URL directly
+				$this->data['title'] = $linkModel->readHtmlTitle($this->data['url']);
+			}
 			if(!$linkModel->save($this->data)) {
 				throw new BeditaException(__("Error saving link", true), $linkModel->validationErrors);
 			}
