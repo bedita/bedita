@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: scaffold.php 8120 2009-03-19 20:25:10Z gwoo $ */
+/* SVN FILE: $Id: scaffold.php 8283 2009-08-03 20:49:17Z gwoo $ */
 /**
  * Scaffold.
  *
@@ -19,9 +19,9 @@
  * @package       cake
  * @subpackage    cake.cake.libs.controller
  * @since         Cake v 0.10.0.1076
- * @version       $Revision: 8120 $
+ * @version       $Revision: 8283 $
  * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2009-03-19 13:25:10 -0700 (Thu, 19 Mar 2009) $
+ * @lastmodified  $Date: 2009-08-03 13:49:17 -0700 (Mon, 03 Aug 2009) $
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -161,13 +161,13 @@ class Scaffold extends Object {
 		$displayField = $this->ScaffoldModel->displayField;
 		$singularVar = Inflector::variable($modelClass);
 		$pluralVar = Inflector::variable($this->controller->name);
-		$singularHumanName = Inflector::humanize($modelClass);
-		$pluralHumanName = Inflector::humanize($this->controller->name);
+		$singularHumanName = Inflector::humanize(Inflector::underscore($modelClass));
+		$pluralHumanName = Inflector::humanize(Inflector::underscore($this->controller->name));
 		$scaffoldFields = array_keys($this->ScaffoldModel->schema());
 		$associations = $this->__associations();
 
 		$this->controller->set(compact('modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
-								'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations'));
+			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations'));
 
 		if ($this->controller->view && $this->controller->view !== 'Theme') {
 			$this->controller->view = 'scaffold';
@@ -378,7 +378,7 @@ class Scaffold extends Object {
  * @access private
  */
 	function __scaffold($params) {
-		$db = &ConnectionManager::getDataSource($this->ScaffoldModel->useDbConfig);
+		$db =& ConnectionManager::getDataSource($this->ScaffoldModel->useDbConfig);
 		$admin = Configure::read('Routing.admin');
 
 		if (isset($db)) {

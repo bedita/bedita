@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: security.php 7945 2008-12-19 02:16:01Z gwoo $ */
+/* SVN FILE: $Id: security.php 8283 2009-08-03 20:49:17Z gwoo $ */
 /**
  * Short description for file.
  *
@@ -19,9 +19,9 @@
  * @package       cake
  * @subpackage    cake.cake.libs.controller.components
  * @since         CakePHP(tm) v 0.10.8.2156
- * @version       $Revision: 7945 $
+ * @version       $Revision: 8283 $
  * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2008-12-18 18:16:01 -0800 (Thu, 18 Dec 2008) $
+ * @lastmodified  $Date: 2009-08-03 13:49:17 -0700 (Mon, 03 Aug 2009) $
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -323,7 +323,7 @@ class SecurityComponent extends Object {
 
 		if (strtolower($options['type']) == 'digest') {
 			$out[] = 'qop="auth"';
-			$out[] = 'nonce="' . uniqid() . '"';
+			$out[] = 'nonce="' . uniqid("") . '"';
 			$out[] = 'opaque="' . md5($options['realm']).'"';
 		}
 

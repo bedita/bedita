@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: schema.php 7961 2008-12-25 23:21:36Z gwoo $ */
+/* SVN FILE: $Id: schema.php 8283 2009-08-03 20:49:17Z gwoo $ */
 /**
  * Command-line database management utility to automate programmer chores.
  *
@@ -20,9 +20,9 @@
  * @package       cake
  * @subpackage    cake.cake.console.libs
  * @since         CakePHP(tm) v 1.2.0.5550
- * @version       $Revision: 7961 $
+ * @version       $Revision: 8283 $
  * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2008-12-25 15:21:36 -0800 (Thu, 25 Dec 2008) $
+ * @lastmodified  $Date: 2009-08-03 13:49:17 -0700 (Mon, 03 Aug 2009) $
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('File');
@@ -199,7 +199,7 @@ class SchemaShell extends Shell {
 			}
 		}
 		$db =& ConnectionManager::getDataSource($this->Schema->connection);
-		$contents = "#". $Schema->name ." sql generated on: " . date('Y-m-d H:m:s') . " : ". time()."\n\n";
+		$contents = "#" . $Schema->name . " sql generated on: " . date('Y-m-d H:i:s') . " : " . time() . "\n\n";
 		$contents .= $db->dropSchema($Schema) . "\n\n". $db->createSchema($Schema);
 		if ($write) {
 			if (strpos($write, '.sql') === false) {

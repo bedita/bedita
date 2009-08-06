@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: view.php 7961 2008-12-25 23:21:36Z gwoo $ */
+/* SVN FILE: $Id: view.php 8283 2009-08-03 20:49:17Z gwoo $ */
 /**
  * Methods for displaying presentation data in the view.
  *
@@ -17,9 +17,9 @@
  * @package       cake
  * @subpackage    cake.cake.libs.view
  * @since         CakePHP(tm) v 0.10.0.1076
- * @version       $Revision: 7961 $
+ * @version       $Revision: 8283 $
  * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2008-12-25 15:21:36 -0800 (Thu, 25 Dec 2008) $
+ * @lastmodified  $Date: 2009-08-03 13:49:17 -0700 (Mon, 03 Aug 2009) $
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -417,6 +417,10 @@ class View extends Object {
  */
 	function renderLayout($content_for_layout, $layout = null) {
 		$layoutFileName = $this->_getLayoutFileName($layout);
+		if (empty($layoutFileName)) {
+			return $this->output;
+		}
+
 		$debug = '';
 
 		if (isset($this->viewVars['cakeDebug']) && Configure::read() > 2) {
@@ -800,7 +804,7 @@ class View extends Object {
 			}
 		}
 
-		$paths = $this->_paths($this->plugin);
+		$paths = $this->_paths(Inflector::underscore($this->plugin));
 
 		foreach ($paths as $path) {
 			if (file_exists($path . $name . $this->ext)) {
@@ -840,7 +844,7 @@ class View extends Object {
 		if (!is_null($this->layoutPath)) {
 			$subDir = $this->layoutPath . DS;
 		}
-		$paths = $this->_paths($this->plugin);
+		$paths = $this->_paths(Inflector::underscore($this->plugin));
 		$file = 'layouts' . DS . $subDir . $name;
 
 		$exts = array($this->ext, '.ctp', '.thtml');
@@ -892,7 +896,7 @@ class View extends Object {
 		$paths = array();
 		$viewPaths = Configure::read('viewPaths');
 
-		if ($plugin !== null) {
+		if (!empty($plugin)) {
 			$count = count($viewPaths);
 			for ($i = 0; $i < $count; $i++) {
 				$paths[] = $viewPaths[$i] . 'plugins' . DS . $plugin . DS;

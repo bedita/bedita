@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: cake_test_case.php 8166 2009-05-04 21:17:19Z gwoo $ */
+/* SVN FILE: $Id: cake_test_case.php 8283 2009-08-03 20:49:17Z gwoo $ */
 /**
  * CakeTestCase file
  *
@@ -19,9 +19,9 @@
  * @package       cake
  * @subpackage    cake.cake.tests.libs
  * @since         CakePHP(tm) v 1.2.0.4667
- * @version       $Revision: 8166 $
+ * @version       $Revision: 8283 $
  * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2009-05-04 14:17:19 -0700 (Mon, 04 May 2009) $
+ * @lastmodified  $Date: 2009-08-03 13:49:17 -0700 (Mon, 03 Aug 2009) $
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!class_exists('dispatcher')) {
@@ -425,10 +425,11 @@ class CakeTestCase extends UnitTestCase {
 				return;
 			}
 			foreach ($this->_fixtures as $fixture) {
-				if (in_array($fixture->table, $sources)) {
+				$table = $this->db->config['prefix'] . $fixture->table;
+				if (in_array($table, $sources)) {
 					$fixture->drop($this->db);
 					$fixture->create($this->db);
-				} elseif (!in_array($fixture->table, $sources)) {
+				} elseif (!in_array($table, $sources)) {
 					$fixture->create($this->db);
 				}
 			}

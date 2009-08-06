@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: schema.php 8120 2009-03-19 20:25:10Z gwoo $ */
+/* SVN FILE: $Id: schema.php 8283 2009-08-03 20:49:17Z gwoo $ */
 /**
  * Schema database management for CakePHP.
  *
@@ -17,9 +17,9 @@
  * @package       cake
  * @subpackage    cake.cake.libs.model
  * @since         CakePHP(tm) v 1.2.0.5550
- * @version       $Revision: 8120 $
+ * @version       $Revision: 8283 $
  * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2009-03-19 13:25:10 -0700 (Thu, 19 Mar 2009) $
+ * @lastmodified  $Date: 2009-08-03 13:49:17 -0700 (Mon, 03 Aug 2009) $
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Model', 'ConnectionManager');
@@ -338,7 +338,7 @@ class CakeSchema extends Object {
 							$col = "\t\t'indexes' => array(";
 							$props = array();
 							foreach ((array)$value as $key => $index) {
-								$props[] = "'{$key}' => array(".join(', ',  $this->__values($index)).")";
+								$props[] = "'{$key}' => array(" . join(', ',  $this->__values($index)) . ")";
 							}
 							$col .= join(', ', $props);
 						}
@@ -446,7 +446,7 @@ class CakeSchema extends Object {
 		if (is_array($values)) {
 			foreach ($values as $key => $val) {
 				if (is_array($val)) {
-					$vals[] = "'{$key}' => array('".join("', '",  $val)."')";
+					$vals[] = "'{$key}' => array('" . join("', '",  $val) . "')";
 				} else if (!is_numeric($key)) {
 					$val = var_export($val, true);
 					$vals[] = "'{$key}' => {$val}";
