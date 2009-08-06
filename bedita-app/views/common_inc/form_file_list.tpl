@@ -1,12 +1,12 @@
 {$javascript->link("jquery/jquery.disable.text.select", true)}
 
+{literal}
 <script type="text/javascript">
 	
     $(function() {
         $('.disableSelection').disableTextSelect();
     });	
-	
-	
+{/literal}
 	
 var urlGetObj		= '{$html->url("/streams/get_item_form_by_id")}' ;
 var urlGetAllItemNoAssoc = '{$html->url("/streams/showStreams")}/{$object.id|default:'0'}';
