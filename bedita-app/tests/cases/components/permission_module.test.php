@@ -233,10 +233,6 @@ class PermissionModuleTestCase extends BeditaTestCase {
 		pr("Verifica permessi di lettura gruppo 'guest' (true) - $ret") ;
 		$this->assertEqual((boolean)$ret, true);
 		
-		$ret = $this->BePermissionModule->verifyGroup('areas', 'guest', BEDITA_PERMS_DELETE) ;
-		pr("Verifica permessi di cancellazione gruppo 'guest' (false) - $ret") ;
-		$this->assertEqual((boolean)$ret, false);
-
 		$this->Transaction->rollback() ;
 	} 
 

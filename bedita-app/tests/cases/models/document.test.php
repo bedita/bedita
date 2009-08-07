@@ -66,7 +66,7 @@ class DocumentTestCase extends BeditaTestCase {
  		foreach ($searches as $s) {
 	 		pr("Search string:".$s);
 			$res = $this->BEObject->findObjects(null, null, null, 
-				array(22, "search" => $s));
+				array(22, "query" => $s));
 	 		pr($res);
  		}
 
@@ -75,7 +75,7 @@ class DocumentTestCase extends BeditaTestCase {
 	 		foreach ($searches as $s) {
 		 		pr("Tree id: $treeId - search string:".$s);
 				$res = $this->BEObject->findObjects($treeId, null, null,
-					array(22, "search" => $s));
+					array(22, "query" => $s));
 		 		pr($res);
 	 		}
  		}

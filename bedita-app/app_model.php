@@ -210,7 +210,7 @@ class BEAppModel extends AppModel {
 	 * @param array  $filter	example of filter: 
 	 * 							"object_type_id" => array(21,22,...),
 	 *							"ModelName.fieldname => "value",
-	 * 							"search" => "text to search"
+	 * 							"query" => "text to search"
 	 * 							....
 	 *
 	 *							reserved filter words:
