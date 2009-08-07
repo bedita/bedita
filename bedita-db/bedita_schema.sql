@@ -725,8 +725,6 @@ CREATE TABLE `mail_group_cards` (
   `mail_group_id` INTEGER UNSIGNED NOT NULL,
   `card_id` INTEGER UNSIGNED NOT NULL,
   `status` enum('pending','confirmed') NOT NULL default 'pending',
-  `command` enum('confirm','delete','modify') NOT NULL default 'confirm',
-  `hash` varchar(255) default NULL,
   `created` datetime default NULL,
   PRIMARY KEY(id),
   INDEX `card_id_index` (`card_id`),
