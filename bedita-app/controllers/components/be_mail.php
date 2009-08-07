@@ -114,7 +114,7 @@ class BeMailComponent extends Object {
 						
 			if ($html) {
 				// get css
-				//$css = (!empty($templatePublicationUrl))? $templatePublicationUrl . "/css/" . Configure::read("newsletterCss") : "";
+				$css = (!empty($templatePublicationUrl))? $templatePublicationUrl . "/css/" . Configure::read("newsletterCss") : "";
 				$htmlMsg = "<html><head></head><body>%s%s</body></html>";
 				$style = "";
 				if (!empty($css))
