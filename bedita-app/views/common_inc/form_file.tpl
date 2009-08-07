@@ -76,7 +76,6 @@
 </div> 
 {/if}
 
-
 <table class="bordered" style="margin-top:10px; border:1px solid #999; width:100%; clear:both">
 
 	<tr>
@@ -89,6 +88,34 @@
 		<th>{t}filesize{/t}:</th>
 		<td>{$object.size|filesize}</td>
 	</tr>
+{if strtolower($object.ObjectType.name) == "application"}
+	
+	<tr>
+		<th>{t}Width{/t}:</th>
+		<td><input type="text" name="data[width]" value="{$object.width}"/></td>
+		<th>{t}Height{/t}:</th>
+		<td><input type="text" name="data[height]" value="{$object.height}"/></td>
+	</tr>
+	<tr>
+		<th>{t}Version{/t}:</th>
+		<td colspan="3"><input type="text" name="data[application_version]" value="{$object.application_version}"/></td>
+	</tr>
+	<tr>
+		<th>{t}Text direction{/t}:</th>
+		<td colspan="3">
+			<select name="data[text_dir]">
+				<option value=""></option>
+				<option value="ltr" {if $object.text_dir == 'ltr'}selected="selected"{/if}>{t}left to right{/t}</option>
+				<option value="rtl" {if $object.text_dir == 'rtl'}selected="selected"{/if}>{t}right to left{/t}</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<th>{t}Text lang{/t}:</th>
+		<td colspan="3"><input type="text" name="data[text_lang]" value="{$object.text_lang}"/></td>
+	</tr>
+
+{/if}
 
 
 {if ($object.ObjectType.name == "image")}
