@@ -12,7 +12,7 @@ class PagesController extends FrontendController {
 		$this->set('feedNames', $this->Section->feedsAvailable(Configure::read("frontendAreaId")));
 		$this->set('sectionsTree', $this->loadSectionsTree(Configure::read("frontendAreaId")));
 		// uncomment to use ctp file instead of tpl file for templates
-		$this->view = "View"; 
+//		$this->view = "View"; 
 	}
 
 	public function index() {
