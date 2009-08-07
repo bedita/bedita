@@ -19,6 +19,7 @@ DROP TABLE IF EXISTS `event_logs`;
 DROP TABLE IF EXISTS `geo_tags`;
 DROP TABLE IF EXISTS `groups`;
 DROP TABLE IF EXISTS `groups_users`;
+DROP TABLE IF EXISTS `hash_jobs`;
 DROP TABLE IF EXISTS `images`;
 DROP TABLE IF EXISTS `lang_texts`;
 DROP TABLE IF EXISTS `links`;
@@ -186,6 +187,20 @@ CREATE TABLE groups_users (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
+CREATE TABLE `hash_jobs` (
+  `id` int(11) unsigned NOT NULL auto_increment,
+  `service_type` varchar(255) default NULL COMMENT 'type of hash operations',
+  `user_id` int(11) unsigned NOT NULL,
+  `params` text COMMENT 'serialized specific params for hash operation',
+  `hash` varchar(255) NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  `expired` datetime NOT NULL COMMENT 'hash expired datetime',
+  `status` enum('pending','expired','closed','failed') NOT NULL default 'pending',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `hash` (`hash`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='contains hash operations, for example subscribe/unsubscribe';
 
 CREATE TABLE object_types (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
