@@ -1,6 +1,6 @@
 	
 <form action="{$html->url('/pages/printme')}" target="print" method="post">
-<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
+<input type="hidden" name="id" value="{$object.id|default:''}"/>
 
 <div class="tab"><h2>{t}Print{/t}</h2></div>
 <fieldset class="whitebox" id="print">
@@ -9,11 +9,11 @@
 		<tr>
 			<th><label>{t}Print layout{/t}:</label></th>
 			<td>{$html->image('/img/print_tab_1fold.png')}</td>
-			<td><input type="radio" name="data[printlayout]" value="1fold"> <label>A4</label></td>
+			<td><input type="radio" name="printLayout" value="1fold"> <label>A4</label></td>
 			<td>{$html->image('/img/print_tab_2fold.png')}</td>
-			<td><input type="radio" name="data[printlayout]" value="2fold"> <label>A4 2</label></td>
+			<td><input type="radio" name="printLayout" value="2fold"> <label>A4 2</label></td>
 			<td>{$html->image('/img/print_tab_3fold.png')}</td>
-			<td><input type="radio" name="data[printlayout]" value="3fold"> <label>A4 3</label></td>
+			<td><input type="radio" name="printLayout" value="3fold"> <label>A4 3</label></td>
 		</tr>
 	</table>
 	<hr />

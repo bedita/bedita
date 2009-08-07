@@ -343,7 +343,9 @@ class NewsletterController extends ModulesController {
 		$this->checkWriteModulePermission();
 		if (empty($this->data["MailGroup"]))
 			$this->data["MailGroup"] = array();
-		
+		if (empty($this->data["subject"])) {
+			$this->data["subject"] = $this->data["title"];
+		}
 		$this->Transaction->begin();
 		$this->saveObject($this->MailMessage);
 	 	$this->Transaction->commit() ;

@@ -1612,6 +1612,21 @@ abstract class FrontendController extends AppController {
 
 	}
 	
+	public function printme($id=null, $printLayout=null) {
+		if (!empty($this->params["form"]["id"]))
+			$id = $this->params["form"]["id"];
+		if (!empty($this->params["form"]["printLayout"]))
+			$id = $this->params["form"]["printLayout"];
+		$objectData = $this->loadObj($id);
+		$this->layout = "print";
+		$this->set("printLayout", $printLayout);
+		$this->set("object", $objectData);
+		if (file_exists(APP."views".DS."pages".DS.$printLayout.".tpl"))
+			$this->render($printLayout);
+		else
+			$this->render("print");		
+	}
+	
 	protected function save($modelName=null) {
 		if (!$this->logged)
 			throw new BeditaFrontAccessException(null, array("errorType" => self::UNLOGGED));

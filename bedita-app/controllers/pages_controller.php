@@ -50,6 +50,28 @@ class PagesController extends AppController {
 		$this->redirect($this->referer());
 	}
 	
+	/**
+	 * Print an object 
+	 */
+	public function printme() {
+		$id = $this->params["form"]["id"];
+		$printLayout = $this->params["form"]["printLayout"];
+		$object_type_id = ClassRegistry::init("BEObject")->findObjectTypeId($id);
+		$objectModel = $this->loadModelByObjectTypeId($object_type_id);
+		$objectModel->containLevel("detailed");
+		if (!$objectData = $objectModel->findById($id)) {
+			throw new BeditaException(__("Error finding object", true));
+		}
+		$this->layout = "print";
+		$this->set("printLayout", $printLayout);
+		$this->set("object", $objectData);
+		if (file_exists(APP."views".DS."pages".DS.$printLayout.".tpl"))
+			$this->render($printLayout);
+		else
+			$this->render("print");
+		
+	}	
+	
 
 	/* AJAX CALLS */
 
@@ -330,33 +352,7 @@ class PagesController extends AppController {
 		$this->set('path',$path);
 		$this->set('result',$result);
 	}
-
-	/**
-	 * Print a document/object undsoweiter
-	 * 	parametri
-	 *  l'id dell'oggetto
-	 *  il layout di pagina
-	 *  la pubblicazione di riferimento per la grafica (context)
-	 *  cosa fa:
-	 *  in base al context e al layout sceglie le viste opportune
-	 *  se il contesto è BEdita stesso (default) prepara un report con tutto l'oggetto e tutti i suoi metadati 
-	 *  prendendo le diverse viste (layout) da BEdita-app
-	 *  se il contesto è una pubblicazione, prende le viste da templates dentro alle singole pubblicazioni
-	 *  che il grafico avrà opportunamente preparato quando ha skinnato il frontend
-	 *  
-	 *  
-	 */
-	public function printme() {
-
-		$id 			= $this->data['id'];
-		pr($this->data);
-	
-		exit;
-		
-	}	
-	
-	
-	 
+ 
 }
 
 ?>

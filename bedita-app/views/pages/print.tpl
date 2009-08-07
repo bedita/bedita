@@ -1,0 +1,2 @@
+<pre>
+{dump var=$object}

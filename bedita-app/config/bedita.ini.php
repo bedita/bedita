@@ -394,7 +394,7 @@ $config["cfgOneWayRelation"] = array();
 $config["defaultReservedWords"] = array("section", "content", "rss", "feed", 
 	"download", "xml", "xmlobject", "sitemap", "sitemap.xml", "sitemap_xml", 
 	"json", "captchaImage", "saveComment", "search", "tag", "login", "logout", 
-	"hashjob", "subscribe");
+	"hashjob", "subscribe", "printme");
 
 // Cfg reserved words (as in local cfg)
 $config["cfgReservedWords"] = array();
