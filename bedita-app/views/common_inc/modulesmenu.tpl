@@ -5,7 +5,9 @@ var remote_url_response = "{$html->url('/pages/helpOnline/')}{$params.controller
 $().ready(function(e){
 	$('.helptrigger').click(function () {
 		if( !($('#helpcontainer').is(':visible')) ) {
-			$("#helpcontent").load(remote_url_response);
+			$.get(remote_url_response, function(html){
+				$(html).find(".textC").appendTo("#helpcontent") ;
+			});
 		} else {
 			$("#helpcontent").html("");
 		}
