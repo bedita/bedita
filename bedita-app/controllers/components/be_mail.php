@@ -114,14 +114,17 @@ class BeMailComponent extends Object {
 						
 			if ($html) {
 				// get css
-				$css = (!empty($templatePublicationUrl))? $templatePublicationUrl . "/css/" . Configure::read("newsletterCss") : "";
-				$htmlMsg = "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"" . $css . "\" /></head><body>%s</body></html>";
+				//$css = (!empty($templatePublicationUrl))? $templatePublicationUrl . "/css/" . Configure::read("newsletterCss") : "";
+				$htmlMsg = "<html><head></head><body>%s%s</body></html>";
+				$style = "";
+				if (!empty($css))
+					$style = "<style>" . @file_get_contents($css) . "</style>";
 				$htmlBody = str_replace("[\$newsletterTitle]", $message["title"], $template["body"]);
 				$htmlBody = preg_replace("/<!--bedita content block-->[\s\S]*<!--bedita content block-->/", $message["body"], $htmlBody);
 				$htmlBody = str_replace("[\$signature]", $message["signature"], $htmlBody);
 				$htmlBody = str_replace("[\$signoutlink]", $unsubscribeurl, $htmlBody);
 				$htmlBody = str_replace("[\$privacydisclaimer]", $message["privacy_disclaimer"], $htmlBody);
-				$body = sprintf($htmlMsg, $htmlBody);
+				$body = sprintf($htmlMsg, $style, $htmlBody);
 			} else {
 				$txtBody = str_replace("[\$newsletterTitle]",  strip_tags($message["title"]), $template["abstract"]);
 				$txtBody = preg_replace("/<!--bedita content block-->[\s\S]*<!--bedita content block-->/", $message["abstract"], $txtBody);

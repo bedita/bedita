@@ -128,7 +128,7 @@ class BeHashComponent extends Object {
 					$data["HashJob"]["hash"] = $hash_job->generateHash();
 					$data["HashJob"]["expired"] = date("Y-m-d H:i:s", time() + Configure::read("hashExpiredTime"));
 					$hash_job->create();
-					if (!$hash_job->save(&$data["HashJob"])) {
+					if (!$hash_job->save($data["HashJob"])) {
 						throw new BeditaException(__("Error generating hash confirmation for " . $newsletter_email,true));
 					}
 					$joindata['status'] = 'pending';
@@ -274,7 +274,7 @@ class BeHashComponent extends Object {
 		$data["HashJob"]['mail_group_id'] = $data['mail_group_id'];
 		$data["HashJob"]["hash"] = $hashjobModel->generateHash();
 		$data["HashJob"]["expired"] = date("Y-m-d H:i:s", time() + Configure::read("hashExpiredTime"));
-		if (!$hashjobModel->save(&$data["HashJob"])) {
+		if (!$hashjobModel->save($data["HashJob"])) {
 			throw new BeditaException(__("Error generating hash confirmation for " . $newsletter_email,true));
 		}
 
