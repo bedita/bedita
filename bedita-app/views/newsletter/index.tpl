@@ -1,10 +1,9 @@
+{literal}
 <script type="text/javascript">
-	{literal}
 	$(document).ready( function ()
 	{
 		$('.tab').BEtabstoggle();
 	});
-	{/literal}
 </script>
 
 <style>
@@ -14,6 +13,8 @@
 	}
 
 </style>
+{/literal}
+
 </head>
 
 <body>
