@@ -34,7 +34,7 @@ App::import('Core', 'l10n');
 class AppController extends Controller
 {
 	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "Msg", "MediaProvider", "Perms", 'BeEmbedMedia', 'BeThumb');
-	var $components = array('BeAuth', 'BeTree', 'BePermissionModule', 'BeCustomProperty', 'Transaction', 'Cookie', 'Session', 'RequestHandler');
+	var $components = array('BeAuth', 'BeTree', 'BePermissionModule', 'BeCustomProperty', 'Transaction', 'Cookie', 'Session', 'RequestHandler','BeHash');
 	var $uses = array('EventLog') ;
 	
 	protected $moduleName = NULL;

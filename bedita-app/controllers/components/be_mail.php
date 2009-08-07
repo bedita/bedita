@@ -87,10 +87,17 @@ class BeMailComponent extends Object {
 	 *
 	 * @param array $message, mail_message array from a find on MailMessage 
 	 * @param bool $html, mail type
+	 * @param int $mail_group_id used to get publishing public url and built unsubscribe link
+	 * @param $card_id used to built unsubscribe link
 	 * @return body (html or txt) of the message
 	 */
-	private function prepareMailBody($message, $html=true) {
-		
+	private function prepareMailBody($message, $html=true, $mail_group_id=null, $card_id=null) {
+		if (!empty($mail_group_id)) {
+			$publicationUrl = ClassRegistry::init("MailGroup")->getPublicationUrlByGroup($mail_group_id);
+			if (!empty($card_id)) {
+				$unsubscribeurl = $publicationUrl . "/hashjob/newsletter_unsubscribe/mail_group_id:".$mail_group_id."/card_id:".$card_id;
+			}
+		}
 		if (!empty($message["RelatedObject"]) && $message["RelatedObject"][0]["switch"] == "template") {
 
 			$mailTemplate = ClassRegistry::init("MailTemplate");
@@ -100,24 +107,26 @@ class BeMailComponent extends Object {
 				)
 			);
 			
+			$treeModel = ClassRegistry::init("Tree");
+			$pub_id = $treeModel->getParent($template["id"]);
+			$areaModel = ClassRegistry::init("Area");
+			$templatePublicationUrl = $areaModel->field("public_url", array("id" => $pub_id));
+						
 			if ($html) {
 				// get css
-				$treeModel = ClassRegistry::init("Tree");
-				$pub_id = $treeModel->getParent($template["id"]);
-				$areaModel = ClassRegistry::init("Area");
-				$publicationUrl = $areaModel->field("public_url", array("id" => $pub_id));
-				
-				$css = (!empty($publicationUrl))? $publicationUrl . "/css/" . Configure::read("newsletterCss") : "";
+				$css = (!empty($templatePublicationUrl))? $templatePublicationUrl . "/css/" . Configure::read("newsletterCss") : "";
 				$htmlMsg = "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"" . $css . "\" /></head><body>%s</body></html>";
 				$htmlBody = str_replace("[\$newsletterTitle]", $message["title"], $template["body"]);
 				$htmlBody = preg_replace("/<!--bedita content block-->[\s\S]*<!--bedita content block-->/", $message["body"], $htmlBody);
 				$htmlBody = str_replace("[\$signature]", $message["signature"], $htmlBody);
+				$htmlBody = str_replace("[\$signoutlink]", $unsubscribeurl, $htmlBody);
 				$htmlBody = str_replace("[\$privacydisclaimer]", $message["privacy_disclaimer"], $htmlBody);
 				$body = sprintf($htmlMsg, $htmlBody);
 			} else {
 				$txtBody = str_replace("[\$newsletterTitle]",  strip_tags($message["title"]), $template["abstract"]);
 				$txtBody = preg_replace("/<!--bedita content block-->[\s\S]*<!--bedita content block-->/", $message["abstract"], $txtBody);
 				$txtBody = str_replace("[\$signature]", $message["signature"], $txtBody);
+				$txtBody = str_replace("[\$signoutlink]", $unsubscribeurl, $txtBody);
 				$body = str_replace("[\$privacydisclaimer]", $message["privacy_disclaimer"], $txtBody);
 			}
 			
@@ -127,6 +136,7 @@ class BeMailComponent extends Object {
 		
 		return ($html)? $message["body"] : $message["abstract"];
 	}
+
 	
 	/**
 	 * send single mail from $data array
@@ -213,6 +223,7 @@ class BeMailComponent extends Object {
 					$res = $groupCardModel->find("all", array(
 						"conditions" => array(
 							"mail_group_id" => $group["id"],
+							"MailGroupCard.status" => "confirmed",
 							"Card.mail_status" => "valid")
 						)
 					);
@@ -229,7 +240,7 @@ class BeMailComponent extends Object {
 							$data["card_id"] = $groupCard["MailGroupCard"]["card_id"];
 							
 							// prepare mail body using template
-							$data["mail_body"] = $this->prepareMailBody($message, $groupCard["Card"]["mail_html"]);
+							$data["mail_body"] = $this->prepareMailBody($message, $groupCard["Card"]["mail_html"], $group["id"], $data["card_id"]);
 							
 							$jobModel->create();
 							if (!$jobModel->save($data))
@@ -371,6 +382,9 @@ class BeMailComponent extends Object {
 			$this->Email->cc = $data["cc"];
 		if (!empty($data["bcc"]) && is_array($data["bcc"]))
 			$this->Email->bcc = $data["bcc"];
+		
+		// force the default line length (70) to avoid breakline in url
+		$this->Email->lineLength = "500";
 	}
 	
 	
@@ -384,13 +398,5 @@ class BeMailComponent extends Object {
 	
 }
 
-
-/**
- * BeditaMailException
- *
- */
-class BeditaMailException extends BeditaException
-{
-}
 
 ?>

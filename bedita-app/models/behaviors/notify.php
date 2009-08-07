@@ -185,9 +185,9 @@ class NotifyBehavior extends ModelBehavior {
 		$localMsg = $appPath."config".DS."notify".DS."local.msg.php";
 		$notify = array();
 		if (file_exists ($localMsg) ) {
-			require_once($localMsg);
+			require($localMsg);
 		} else {
-			require_once($appPath."config".DS."notify".DS."default.msg.php");
+			require($appPath."config".DS."notify".DS."default.msg.php");
 		}
 		$this->notifyMsg = &$notify;
 	}

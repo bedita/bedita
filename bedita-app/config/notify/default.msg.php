@@ -92,4 +92,36 @@ $notify["updateUser"]["eng"] = array(
 	"\n[\$text]" 
 );
 
+// Message for newsletter subscribe
+$notify["newsletterConfirmSubscribe"]["eng"] = array(
+	"subject" => "[BEdita] subscribe to newsletter \"[\$title]\"",
+	"mail_body" => "Hi [\$user], " .
+					"\nyou are now subscribed to \"[\$title]\" newsletter." .
+					"\n\nTo confirm your subscrition and activate it click on the following link" .
+					"\n[\$url]",
+	"viewsMsg" => "You are now subscribed to <b>[\$title]</b>. Soon you'll recieve an email to confirm subscription."
+);
+
+$notify["newsletterSubscribed"]["eng"] = array(
+	"subject" => "[BEdita] subscribe confirmation to newsletter \"[\$title]\"",
+	"mail_body" => "Hi [\$user], " .
+					"\n\nyour subscription is now active, soon you'll receive the \"[\$title]\" newsletter.",
+	"viewsMsg" => "You are now subscribed to newsletter <b>[\$title]</b>."
+);
+
+// Message for newsletter unsubscribe
+$notify["newsletterConfirmUnsubscribe"]["eng"] = array(
+	"subject" => "[BEdita] unsubscribe to newsletter \"[\$title]\"",
+	"mail_body" => "Hi [\$user], " .
+					"\n\nTo delete your subscrition at \"[\$title]\" click on the following link" .
+					"\n[\$url]",
+	"viewsMsg" => "Soon you'll recieve an email to confirm your unsubscription from <b>\"[\$title]\"</b>."
+);
+
+$notify["newsletterUnsubscribed"]["eng"] = array(
+	"subject" => "[BEdita] unsubscribed to newsletter \"[\$title]\"",
+	"mail_body" => "Hi [\$user], " .
+					"\n\nyou have been unsubscribed from \"[\$title]\"",
+	"viewsMsg" => "You have been unsubscribed from <b>\"[\$title]\"</b>."
+);
 ?>

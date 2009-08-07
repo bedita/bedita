@@ -33,8 +33,9 @@ class BeditaException extends Exception
 {
 	public $result;
 	protected $errorDetails; // details for log file
+	const ERROR 	= 'ERROR' ;
 	
-	public function __construct($message = NULL, $details = NULL, $res  = AppController::ERROR, $code = 0) {
+	public function __construct($message = NULL, $details = NULL, $res  = self::ERROR, $code = 0) {
    		if(empty($message)) {
    			$message = __("Unexpected error, operation failed",true);
    		}
@@ -70,7 +71,7 @@ class BeditaAjaxException extends BeditaException
 {
 	private $outputType = "html";
 	
-	public function __construct($message = NULL, $details = NULL, $res  = AppController::ERROR, $code = 0) {
+	public function __construct($message = NULL, $details = NULL, $res  = self::ERROR, $code = 0) {
 		if (!empty($details["output"])) {
 			$this->outputType = $details["output"];
 		}
@@ -154,11 +155,18 @@ class BEditaUploadPHPException extends BeditaException
 							UPLOAD_ERR_EXTENSION	=> "File upload stopped by extension"
 							); 
 	
-	public function __construct($numberError, $details = NULL, $res  = AppController::ERROR, $code = 0) {
+	public function __construct($numberError, $details = NULL, $res  = self::ERROR, $code = 0) {
 		parent::__construct($this->phpError[$numberError], $details, $res, $code);
 	}
 }
 
+/**
+ * BeditaMailException
+ *
+ */
+class BeditaMailException extends BeditaException
+{
+}
 
 /** ###########################
  *	FRONTEND specific Exception 
@@ -170,7 +178,7 @@ class BEditaUploadPHPException extends BeditaException
 class BeditaPublicationException extends BeditaException {
 	private $layout = "draft";
 
-	public function __construct($message = NULL, $details = NULL, $res  = AppController::ERROR, $code = 0) {
+	public function __construct($message = NULL, $details = NULL, $res  = self::ERROR, $code = 0) {
 		if (!empty($details["layout"])) {
 			$this->layout = $details["layout"];
 		}
@@ -186,7 +194,7 @@ class BeditaFrontAccessException extends BeditaException {
 	
 	private $errorType;
 	
-	public function __construct($message = NULL, $details = NULL, $res  = AppController::ERROR, $code = 0) {
+	public function __construct($message = NULL, $details = NULL, $res  = self::ERROR, $code = 0) {
 		if (!empty($details["errorType"])) {
 			$this->errorType = $details["errorType"];
 		}

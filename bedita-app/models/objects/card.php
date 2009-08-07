@@ -124,14 +124,14 @@ class Card extends BEAppObjectModel {
 				// rebuild active join
 				if (!empty($joinData["mail_group_id"])) {
 					$joinData["card_id"] = $this->id;
-					if (empty($joinData["hash"])) {
-						$groupname = $this->MailGroup->field("group_name", array("id" => $joinData["mail_group_id"]));
-						$joinData["hash"] = md5($this->id . microtime() . $groupname);
-					}
+//					if (empty($joinData["hash"])) {
+//						$groupname = $this->MailGroup->field("group_name", array("id" => $joinData["mail_group_id"]));
+//						$joinData["hash"] = md5($this->id . microtime() . $groupname);
+//					}
 					
-					if (empty($joinData["created"]))
-						unset($joinData["created"]);
-										
+//					if (empty($joinData["created"]))
+//						unset($joinData["created"]);
+					
 					$mailGroupCard->create();
 					if (!$mailGroupCard->save($joinData))
 						throw new BeditaException(__("Error creating join between card and groups", true), "Saving error");

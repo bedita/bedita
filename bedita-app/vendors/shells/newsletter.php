@@ -146,7 +146,11 @@ class NewsletterShell extends Shell {
 					}
 				}
 				if ( !($card_id = $card->field("id", array("newsletter_email" => $data['email']))) ) {
-					$data['title'] = (!empty($data['name'])) ? $data['name'] : $data['email'];
+					if (empty($data['name'])) {
+						$data['title'] = $data['name'] = $data['email'];
+					} else {
+						$data['title'] = $data['name'];
+					}
 					if(strpos($data['title'],'Utente Newsletter Goodwill') !== false) {
 						$data['title'] = $data['email'];
 					}

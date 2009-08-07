@@ -393,7 +393,8 @@ $config["cfgOneWayRelation"] = array();
 // Default reserved words [avoided in nickname creation]
 $config["defaultReservedWords"] = array("section", "content", "rss", "feed", 
 	"download", "xml", "xmlobject", "sitemap", "sitemap.xml", "sitemap_xml", 
-	"json", "captchaImage", "saveComment", "search", "tag", "login", "logout");
+	"json", "captchaImage", "saveComment", "search", "tag", "login", "logout", 
+	"hashjob", "subscribe");
 
 // Cfg reserved words (as in local cfg)
 $config["cfgReservedWords"] = array();
@@ -636,6 +637,11 @@ $config['newsletterCss'] = "base.css";
  * Default value in milliseconds, between autosave of objects (status draft or off)
  */
 $config['autosaveTime'] = 120000; // two minutes
+
+/**
+ * Hash jobs expired time in seconds (7 days)
+ */
+$config['hashExpiredTime'] = 604800;
 
 /**
  * Specific System settings

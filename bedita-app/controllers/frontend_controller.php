@@ -1125,6 +1125,71 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
+	 * public subscribe page, used for newsletter/frontend subscribe/unsubscribe
+	 * 
+	 * @param string $what
+	 * @return unknown_type
+	 */
+	public function subscribe($what="newsletter") {
+		if ($what == "newsletter") {
+			$mailGroupModel = ClassRegistry::init("MailGroup");
+			$mailgroups = $mailGroupModel->find("all", array(
+						"conditions" => array(
+							"area_id" => $this->publication["id"],
+							"visible" => 1
+						),
+						"contain" => array()
+					)
+				);
+			$this->set("mailgroups", $mailgroups);
+		}
+	}
+	
+	/**
+	 * manage hash request like newsletter/frontend subscribe/unsubscribe
+	 * 
+	 * @param string $service_type
+	 * @param string $hash
+	 * @return unknown_type
+	 */
+	public function hashjob($service_type=null, $hash=null) {
+		if (!empty($service_type) || !empty($hash)) {
+			
+			if (!empty($hash)) {
+				
+				if (!$hashRow = $this->BeHash->getHashRow($hash)) {
+					$this->redirect("/hashjob");
+				}
+				$service_type = $hashRow["service_type"];
+				$method = (!empty($hashRow["command"]))?  $hashRow["service_type"] . "_" . $hashRow["command"] : $hashRow["service_type"];
+				$method = Inflector::camelize($method);
+				$method{0} = strtolower($method{0});
+				$this->data["HashJob"] = $hashRow;
+				
+			// first hash operation
+			} else {
+				if (empty($service_type)) {
+					throw new BeditaException(__("missing service type", true));
+				}
+				$method = Inflector::camelize($service_type);
+				$method{0} = strtolower($method{0});
+				$this->data["HashJob"]["service_type"] = $service_type;
+				$this->data = array_merge($this->data, $this->getPassedArgs());
+			}
+			
+			if (!method_exists($this->BeHash, $method)) {
+				throw new BeditaException(__("missing method to manage hash case", true));
+			}
+			
+			$this->Transaction->begin(); 
+			$this->BeHash->{$method}($this->data);
+			$this->Transaction->commit();
+			$this->redirect("/hashjob");
+		}
+		
+	}
+	
+	/**
 	 * find parent path of $object_id (excluded publication)
 	 *
 	 * @param int $object_id

@@ -62,7 +62,8 @@ class MailMessage extends BeditaContentModel
 															"UserCreated", 
 															"UserModified", 
 															"Permissions",
-															"RelatedObject"
+															"RelatedObject",
+															"Annotation"
 															),
 									 "Content", "MailGroup"
 									),

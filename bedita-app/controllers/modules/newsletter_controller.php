@@ -245,6 +245,15 @@ class NewsletterController extends ModulesController {
 									)
 								);
 		$this->set("groups", $this->MailGroup->find("all", array("order" => "group_name ASC")));
+		
+		$localMsg = APP."config".DS."notify".DS."local.msg.php";
+		if (file_exists ($localMsg) ) {
+			require($localMsg);
+		} else {
+			require(APP."config".DS."notify".DS."default.msg.php");
+		}
+		$this->set("default_confirmation_in_message", $notify["newsletterSubscribed"]["eng"]["mail_body"]);
+		$this->set("default_confirmation_out_message", $notify["newsletterUnsubscribed"]["eng"]["mail_body"]);
 	}
 
 

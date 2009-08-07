@@ -58,7 +58,8 @@ class MailTemplate extends BeditaContentModel
 				"detailed" =>  array("BEObject" => array("ObjectType", 
 															"UserCreated", 
 															"UserModified", 
-															"Permissions"),
+															"Permissions",
+															"Annotation"),
 									 "Content"
 									),
 				"default" => array("BEObject" => array("ObjectType"), "Content"),

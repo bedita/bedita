@@ -154,12 +154,12 @@ $(document).ready(function() {
 			<td style="vertical-align:top">
 				<label for="confirmin">{t}Confirmation-In mail message{/t}:</label>
 				<br />
-				<textarea name="data[MailGroup][confirmation_in_message]" id="optinmessage" style="width:220px" class="autogrowarea">{$object.confirmation_in_message|default:''}</textarea>
+				<textarea name="data[MailGroup][confirmation_in_message]" id="optinmessage" style="width:220px" class="autogrowarea">{$object.confirmation_in_message|default:$default_confirmation_in_message}</textarea>
 			</td>
 			<td style="vertical-align:top">
 				<label for="confirmout">{t}Confirmation-Out mail message{/t}:</label>
 				<br />
-				<textarea name="data[MailGroup][confirmation_out_message]" id="optoutmessage" style="width:220px" class="autogrowarea">{$object.confirmation_out_message|default:''}</textarea>
+				<textarea name="data[MailGroup][confirmation_out_message]" id="optoutmessage" style="width:220px" class="autogrowarea">{$object.confirmation_out_message|default:$default_confirmation_out_message}</textarea>
 			</td>
 		</tr>
 	</table>
