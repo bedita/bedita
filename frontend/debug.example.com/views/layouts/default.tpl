@@ -8,11 +8,14 @@
 	{$html->charset('utf-8')}
 	<meta name="author" content="" />
 	<meta http-equiv="Content-Style-Type" content="text/css" />
-{if !empty($feedNames)}
-{foreach from=$feedNames item=feed}
-	<link rel="alternate" type="application/rss+xml" title="{$feed.title}" href="{$html->url('/rss')}/{$feed.nickname}" />
-{/foreach}
-{/if}
+	
+	{$html->css('base')}
+	
+	{if !empty($feedNames)}
+	{foreach from=$feedNames item=feed}
+		<link rel="alternate" type="application/rss+xml" title="{$feed.title}" href="{$html->url('/rss')}/{$feed.nickname}" />
+	{/foreach}
+	{/if}
 	{$scripts_for_layout}
 </head>
 
