@@ -4,7 +4,7 @@
  * -------------------------------------------------------------
  * Type:     modifier
  * Name:     get_type
- * Purpose:  torna una stringa che rappresenta il tipo di dato
+ * Purpose:  returns a string representing item type
  * -------------------------------------------------------------
  */
 
@@ -14,8 +14,9 @@ function smarty_modifier_get_type($item) {
 	if(is_bool($item)) 		return "bool" ;
 	if(is_float($item)) 	return "float" ;
 	if(is_string($item)) 	return "string" ;
+	if(is_object($item))	return get_class($item) . " class";
 	
-	return "stream" ;
+	return gettype($item) ;
 }
 /////////////////////////////////////////////
 
