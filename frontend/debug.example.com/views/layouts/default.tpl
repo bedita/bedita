@@ -16,7 +16,22 @@
 		<link rel="alternate" type="application/rss+xml" title="{$feed.title}" href="{$html->url('/rss')}/{$feed.nickname}" />
 	{/foreach}
 	{/if}
+
+	{$javascript->link('jquery')}
+
 	{$scripts_for_layout}
+
+	<script type="text/javascript">
+	{literal}
+	$(document).ready(function() {
+		$('.open-close-link').click(function(){
+				$(this).next('div').toggle();
+			}
+		);
+	}
+	);
+	{/literal}
+	</script>
 </head>
 
 <body>

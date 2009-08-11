@@ -39,30 +39,30 @@ if (file_exists (BEDITA_CORE_PATH . DS . "config" . DS . "bedita.cfg.php") ) {
 //////////////////////////////////////////////////////
 
 /**
- * show all contents in sitemap. If it's false show only sections' tree
- */ 
-$config['sitemapAllContent'] = true;
+ * Publication id referenced by frontend, 
+ * change if different from id = 1 (default)
+ */
+$config['frontendAreaId'] 	= 1;
 
-/**
- * staging site
- */  
-$config['staging'] 			= false;
 
 /**
  * show or not objects with status = draft
+ * default: show only objects with status = ON
  */ 
 $config['draft']            = false;
+
+
+/**
+ * staging site ? default: false -> production site
+ */  
+$config['staging'] 			= false;
+
 
 /**
  * check the objects publication date and throw a 404 error if the publication date of the object requested 
  * is expired or is in the future
  */   
 $config['filterPublicationDate'] = true;
-
-/**
- * Publication id referenced by frontend
- */
-$config['frontendAreaId'] 	= 1;
 
 /**
  * array of frontend groups that can access frontend
@@ -100,6 +100,13 @@ $config['frontendLangsMap'] = array(
 	"en_gb"	=> "eng"
 ) ;
 								
+
+/**
+ * show all contents in sitemap. If it's false show only sections' tree
+ */ 
+$config['sitemapAllContent'] = true;
+
+
 /**
  * default model bindings for BEdita objects
  */

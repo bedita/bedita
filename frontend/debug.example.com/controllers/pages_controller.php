@@ -14,10 +14,6 @@ class PagesController extends FrontendController {
 		// uncomment to use ctp file instead of tpl file for templates
 //		$this->view = "View"; 
 	}
-
-	public function index() {
-	}
-
 }
 
 ?>
