@@ -3,6 +3,7 @@
 -- 
 SET FOREIGN_KEY_CHECKS=0;
 
+DROP TABLE IF EXISTS `aliases`;
 DROP TABLE IF EXISTS `annotations`;
 DROP TABLE IF EXISTS `answers`;
 DROP TABLE IF EXISTS `applications`;
@@ -27,6 +28,7 @@ DROP TABLE IF EXISTS `mail_groups`;
 DROP TABLE IF EXISTS `mail_group_cards`;
 DROP TABLE IF EXISTS `mail_group_messages`;
 DROP TABLE IF EXISTS `mail_jobs`;
+DROP TABLE IF EXISTS `mail_logs`;
 DROP TABLE IF EXISTS `mail_messages`;
 DROP TABLE IF EXISTS `mail_templates`;
 DROP TABLE IF EXISTS `modules`;
@@ -55,6 +57,21 @@ DROP TABLE IF EXISTS `versions`;
 DROP TABLE IF EXISTS `videos`;
 DROP VIEW IF EXISTS `view_permissions` ;
 DROP VIEW IF EXISTS `view_trees` ;
+
+CREATE TABLE `aliases` (
+`id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+`object_id` INTEGER UNSIGNED NOT NULL,
+`nickname_alias` VARCHAR( 255 ) NOT NULL COMMENT 'alternative nickname',
+`lang` CHAR( 3 ) NULL COMMENT 'alias preferred language, can be NULL',
+PRIMARY KEY (`id` ) ,
+UNIQUE (`nickname_alias`) ,
+INDEX (`object_id`),
+FOREIGN KEY(object_id)
+   REFERENCES objects(id)
+     ON DELETE CASCADE
+     ON UPDATE NO ACTION
+) ENGINE = InnoDB CHARACTER SET utf8 COMMENT = 'Object nickname aliases (mainly frontend URLs)';
+
 
 CREATE TABLE annotations (
   id INTEGER UNSIGNED NOT NULL,
@@ -331,6 +348,7 @@ CREATE TABLE trees (
   path MEDIUMTEXT NOT NULL,
   parent_path MEDIUMTEXT NULL,
   priority INTEGER UNSIGNED NULL,
+  menu INTEGER UNSIGNED NULL,
   INDEX id_idx(id),
   INDEX parent_idx(parent_id),
   INDEX area_idx(area_id),
@@ -767,6 +785,7 @@ CREATE TABLE mail_jobs (
   mail_body TEXT NULL,
   recipient MEDIUMTEXT NULL COMMENT 'used if card_is and mail_message_id are null, one or more comma separeted addresses',
   mail_params TEXT NULL COMMENT 'serialized array with: reply-to, sender, subject, signature...',
+  smtp_err TEXT NULL COMMENT 'SMTP error message on sending failure',
   PRIMARY KEY(id),
   INDEX card_id_index(card_id),
   INDEX mail_message_id_index(mail_message_id),
@@ -778,6 +797,19 @@ CREATE TABLE mail_jobs (
     REFERENCES cards(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `mail_logs` (
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `msg` MEDIUMTEXT NOT NULL,
+  `level` set('info','warn','err') NOT NULL default 'info',
+  `created` datetime NOT NULL,
+  `recipient` VARCHAR(255) NULL,
+  `subject` VARCHAR(255) NULL,
+  `mail_params` TEXT NULL COMMENT 'on failure, serialized array with: reply-to, sender, subject, signature...',
+  PRIMARY KEY(id),
+  INDEX (`recipient`),
+  INDEX (`created`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `modules` (
