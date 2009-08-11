@@ -166,6 +166,16 @@ class BEditaUploadPHPException extends BeditaException
  */
 class BeditaMailException extends BeditaException
 {
+	private $smtp_error = "";
+
+	public function __construct($message = NULL, $smtp_err = "") {
+		$this->smtp_error = $smtp_err;
+		parent::__construct($message,$smtp_err);
+	}
+	
+	public function getSmtpError() {
+		return $this->smtp_error;
+	}
 }
 
 /** ###########################

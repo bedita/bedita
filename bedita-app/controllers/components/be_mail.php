@@ -146,11 +146,31 @@ class BeMailComponent extends Object {
 	 *
 	 * @param array $data
 	 */
-	public function sendMail($data=array()) {
-		if (!$this->send($data))
+	public function sendMail($data=array(), $createLog = true) {
+		if (!$this->send($data)) {
+			if($createLog) {
+				$this->mailLog("ERROR: " . $this->Email->smtpError, "err",
+					$data["to"], $data["subject"], $data);
+			}
 			throw new BeditaMailException(__("Mail delivery failed", true), $this->Email->smtpError);
+		}
+		if($createLog) {
+			$this->mailLog("sent OK", "info", $data["to"], $data["subject"]);		
+		}
 	}
 	
+	private function mailLog($msg, $level = "info", $recipient = null, 
+			$subj = null, array& $data = array()) {
+
+		$mailLog = ClassRegistry::init("MailLog");
+		$logData = array("MailLog"=>array("msg"=>$msg, 
+			"recipient" => $recipient, "level" => $level, 
+			"subject" => $subj));
+		if(!empty($data)) {
+			$logData["MailLog"]["mail_params"]	= serialize($data);
+		}
+		$mailLog->save($logData);
+	}
 	
 	/**
 	 * set to pending messages with status=unsent and start_sending <= now
@@ -296,12 +316,13 @@ class BeMailComponent extends Object {
 				unset($job["Card"]);
 					
 				try {
-					$this->sendMail($data);
+					$this->sendMail($data, false);
 					$job["MailJob"]["sending_date"] = date("Y-m-d H:i:s",time());
 					$job["MailJob"]["status"] = "sent";
 					$jobModel->save($job);
 				} catch(BeditaMailException $ex) {
 					$job["MailJob"]["status"] = "failed";
+					$job["MailJob"]["smtp_err"] = $ex->getSmtpError();
 					$jobModel->save($job);
 					$this->log($ex->errorTrace());
 				}
@@ -351,6 +372,7 @@ class BeMailComponent extends Object {
 			if (!$this->send($data)) {
 				$this->log(__("Notification mail delivery failed", true) . "-" . $this->Email->smtpError);
 				$jobModel->saveField("status", "failed");
+				$jobModel->saveField("smtp_err", $this->Email->smtpError);
 			} else {
 				$jobModel->saveField("status", "sent");
 				$jobModel->saveField("sending_date", date("Y-m-d H:i:s"));
