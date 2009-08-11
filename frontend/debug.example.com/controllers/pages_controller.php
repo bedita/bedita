@@ -2,7 +2,7 @@
 
 class PagesController extends FrontendController {
 
-	var $helpers 	= array('Rss');
+	var $helpers 	= array();
 	var $uses = array() ;
 	
 	/**
