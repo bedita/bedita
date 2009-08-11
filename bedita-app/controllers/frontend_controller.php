@@ -1016,6 +1016,14 @@ abstract class FrontendController extends AppController {
 			throw new BeditaFrontAccessException(null, array("errorType" => $section));
 
 		$section["pathSection"] = $this->getPath($sectionId);
+		
+		$sectionPath = "";
+		foreach ($section["pathSection"] as $ps) {
+			$sectionPath .= "/" . $ps["nickname"];
+		}
+		$sectionPath .= "/" . $section["nickname"];
+		$section["path"] = $sectionPath;
+		
 		$this->sectionOptions["childrenParams"] = array_merge($this->sectionOptions["childrenParams"],$this->getPassedArgs());
 		
 		if(!empty($content_id)) {
@@ -1024,6 +1032,7 @@ abstract class FrontendController extends AppController {
 				throw new BeditaFrontAccessException(null, array("errorType" => $section['currentContent']));
 			
 			$section["contentRequested"] = true;
+			$section["contentPath"] = $section["path"] . "/" . $section['currentContent']['nickname'];
 			
 			if ($this->sectionOptions["showAllContents"]) {
 				$this->baseLevel = true;
