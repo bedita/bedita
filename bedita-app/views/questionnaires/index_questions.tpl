@@ -7,7 +7,7 @@
 
 {include file="inc/menuleft.tpl" method="indexQuestions"}
 
-{include file="inc/menucommands.tpl" method="indexQuestions" fixed = true}
+{include file="inc/menucommands.tpl" method="indexQuestions" fixed = false}
 
 {include file="../common_inc/toolbar.tpl" itemName="questions"}
 
