@@ -21,8 +21,8 @@
 				{$paginator->current()}
 			{/if}
 			</span>
-		</td>
-		<td>{$paginator->next('next', null, 'next',$optionsPagDisable)}  <span class="evidence"> &nbsp;</span></td>
+		</td>{* TODO: i18n su 'next' e 'prev' *}
+		<td>{$paginator->next('next',null,'next',$optionsPagDisable)}  <span class="evidence"> &nbsp;</span></td>
 		<td>{$paginator->prev('prev',null,'prev',$optionsPagDisable)}  <span class="evidence"> &nbsp;</span></td>
 	</tr>
 </table>

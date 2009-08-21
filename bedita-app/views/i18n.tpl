@@ -42,4 +42,8 @@ Strings to translate not present in .tpl/.php files
 {t}No bibliographies found{/t}
 {t}No questionnaires found{/t}
 {t}No newsletter found{/t}
+
+// module admin
+{t}Users{/t}
+{t}users{/t}
 *}

@@ -15,7 +15,7 @@ $(document).ready(function(){
 <form action="{$html->url('/admin/users')}" method="post" name="userForm" id="userForm">
 
 <table class="indexlist">
-	<tr>
+	<tr>{* TODO: i18n sulle colonne in sort*}
 		<th>{$paginator->sort('id', 'id')}</th>
 		<th>{$paginator->sort('User', 'userid')}</th>
 		<th>{$paginator->sort('Name', 'realname')}</th>

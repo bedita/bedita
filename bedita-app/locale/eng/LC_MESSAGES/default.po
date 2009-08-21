@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-08-21 14:51:36\n"
+"POT-Creation-Date: 2009-08-21 16:49:39\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -1206,6 +1206,9 @@ msgstr ""
 msgid "System info "
 msgstr ""
 
+msgid "System users"
+msgstr ""
+
 msgid "Tag already present"
 msgstr ""
 
@@ -1363,6 +1366,9 @@ msgid "Username"
 msgstr ""
 
 msgid "Username is required"
+msgstr ""
+
+msgid "Users"
 msgstr ""
 
 msgid "Users of this group"

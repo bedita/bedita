@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2009-08-21 14:52:55\n"
+"POT-Creation-Date: 2009-08-21 16:51:50\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -1200,6 +1200,9 @@ msgstr ""
 msgid "System info "
 msgstr ""
 
+msgid "System users"
+msgstr ""
+
 msgid "Tag already present"
 msgstr ""
 
@@ -1354,6 +1357,9 @@ msgid "Username"
 msgstr ""
 
 msgid "Username is required"
+msgstr ""
+
+msgid "Users"
 msgstr ""
 
 msgid "Users of this group"

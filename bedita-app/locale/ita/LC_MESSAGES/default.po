@@ -1142,11 +1142,14 @@ msgstr "Sottotitolo, descrizione"
 msgid "Summary"
 msgstr "Sommario"
 
-msgid "System events"
+msgid "System Events"
 msgstr "Eventi di sistema"
 
-msgid "System info "
-msgstr "Informazioni di sistema "
+msgid "System Info"
+msgstr "Informazioni di sistema"
+
+msgid "System users"
+msgstr "Utenti del sistema"
 
 msgid "Tag already present"
 msgstr "Tag già presente"
@@ -1379,7 +1382,7 @@ msgid "addressbook details"
 msgstr "dettagli rubrica"
 
 msgid "admin"
-msgstr "amminstrazione"
+msgstr "amministrazione"
 
 msgid "advanced properties"
 msgstr "proprietà avanzate"
@@ -2319,3 +2322,9 @@ msgstr "Nessun questionario trovato"
 
 msgid "No newsletter found"
 msgstr "Nessuna newsletter trovata "
+
+msgid "Users"
+msgstr "Utenti"
+
+msgid "users"
+msgstr "utenti"

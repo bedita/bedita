@@ -46,11 +46,11 @@ $(document).ready(function(){
 	{capture name="theader"}
 		<tr>
 			<th></th>
-			<th>{$beToolbar->order('title', 'Title')}</th>
-			<th>{$beToolbar->order('status', 'Status')}</th>
-			<th>{$beToolbar->order('modified', 'Modified')}</th>
-			<th>{$beToolbar->order('sessions', 'Sessions')}</th>
-			<th>{$beToolbar->order('note', 'Notes')}</th>
+			<th>{$beToolbar->order('title', 'title')}</th>
+			<th>{$beToolbar->order('status', 'status')}</th>
+			<th>{$beToolbar->order('modified', 'modified')}</th>
+			<th>{$beToolbar->order('sessions', 'sessions')}</th>
+			<th>{$beToolbar->order('note', 'notes')}</th>
 			<th></th>
 		</tr>
 	{/capture}
