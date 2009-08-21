@@ -1,15 +1,15 @@
 <script type="text/javascript">
 <!--
-
+{literal}
 var urlShowObj = "{$html->here}";
-if (typeof urlAddObjToAss{$relation|default:'norelation'|capitalize} == "string") {
-	var urlToAdd = urlAddObjToAss{$relation|capitalize}
+if (typeof urlAddObjToAss{/literal}{$relation|default:'norelation'|capitalize}{literal} == "string") {
+	var urlToAdd = urlAddObjToAss{/literal}{$relation|capitalize}{literal}
 } else if (typeof urlAddObjToAss == "string") { 
 	var urlToAdd = urlAddObjToAss;
 } else {
-	var urlToAdd = "{$html->url('/pages/loadObjectToAssoc')}";
+	var urlToAdd = "{/literal}{$html->url('/pages/loadObjectToAssoc')}{literal}";
 }
-
+{/literal}
 var relType = "{$relation|default:""}";
 var suffix = "{$relation|default:""|capitalize}";
 
