@@ -74,7 +74,7 @@ $(document).ready(function(){
 		
 		<tr class="obj {$objects[i].status}">
 			<td class="checklist">
-			{if ($objects[i].start|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}
+			{if !empty($objects[i].start) && ($objects[i].start|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}
 			
 				<img title="{t}object scheduled in the future{/t}" src="{$html->url('/')}img/iconFuture.png" style="height:28px; vertical-align:middle;">
 			
@@ -82,7 +82,7 @@ $(document).ready(function(){
 			
 				<img title="{t}object expired{/t}" src="{$html->url('/')}img/iconPast.png" style="height:28px; vertical-align:middle;">
 			
-			{elseif (($objects[i].start|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d")) or (($objects[i].end|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d"))}
+			{elseif (!empty($objects[i].start) && (($objects[i].start|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d"))) or ( !empty($objects[i].end) && (($objects[i].end|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d")))}
 			
 				<img title="{t}object scheduled today{/t}" src="{$html->url('/')}img/iconToday.png" style="height:28px; vertical-align:middle;">
 
