@@ -2289,3 +2289,33 @@ msgstr "parentela"
 
 msgid "Position"
 msgstr "Posizione"
+
+msgid "No documents found"
+msgstr "Nessun documento trovato"
+
+msgid "No galleries found"
+msgstr "Nessuna galleria trovata"
+
+msgid "No comments found"
+msgstr "Nessun commento trovato"
+
+msgid "No news found"
+msgstr "Nessuna news trovata"
+
+msgid "No addressbook found"
+msgstr "Nessuna rubrica trovata"
+
+msgid "No webmarks found"
+msgstr "Nessun webmark trovato"
+
+msgid "No books found"
+msgstr "Nessun libro trovato"
+
+msgid "No bibliographies found"
+msgstr "Nessun bibliografia trovata"
+
+msgid "No questionnaires found"
+msgstr "Nessun questionario trovato"
+
+msgid "No newsletter found"
+msgstr "Nessuna newsletter trovata "

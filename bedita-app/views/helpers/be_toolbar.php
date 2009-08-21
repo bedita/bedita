@@ -283,7 +283,7 @@ class BeToolbarHelper extends AppHelper {
 	private function _scroll($where, $title, $options, $disabledTitle, $disabledOption) {
 		$page = (isset($this->params['toolbar'][$where]))?$this->params['toolbar'][$where]:false ;
 
-		// Non c'e' la pagina sucessiva o la toolar, link disabilitato
+		// Non c'e' la pagina successiva o la toolbar, link disabilitato
 		if(!$page) {
 			return $this->_output($disabledTitle, $disabledOption) ;
 		}
@@ -300,7 +300,7 @@ class BeToolbarHelper extends AppHelper {
 		return $this->output(
 			sprintf(
 					(($text)?$this->tags['with_text']:$this->tags['without_text']),
-					$this->_parseAttributes($options, null, ' ', ''), $text
+					$this->_parseAttributes($options, null, ' ', ''), __($text,true)
 			)
 		);
 	}

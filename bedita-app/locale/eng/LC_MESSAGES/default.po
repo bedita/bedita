@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-07-31 13:19:14\n"
+"POT-Creation-Date: 2009-08-21 14:51:36\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -375,6 +375,12 @@ msgstr ""
 msgid "Error finding mail message "
 msgstr ""
 
+msgid "Error finding object"
+msgstr ""
+
+msgid "Error generating hash confirmation for "
+msgstr ""
+
 msgid "Error getting id object: %d"
 msgstr ""
 
@@ -384,10 +390,16 @@ msgstr ""
 msgid "Error getting object: %d"
 msgstr ""
 
+msgid "Error invoking online help"
+msgstr ""
+
 msgid "Error loading area: %d"
 msgstr ""
 
 msgid "Error loading comment: %d"
+msgstr ""
+
+msgid "Error loading mail group detail: id="
 msgstr ""
 
 msgid "Error loading object: %d"
@@ -414,13 +426,16 @@ msgstr ""
 msgid "Error on subscribing: no mail_group indicated"
 msgstr ""
 
+msgid "Error removing association mail group card"
+msgstr ""
+
 msgid "Error removing group"
 msgstr ""
 
-msgid "Error removing mail group card"
+msgid "Error saving area"
 msgstr ""
 
-msgid "Error saving area"
+msgid "Error saving card for "
 msgstr ""
 
 msgid "Error saving comment"
@@ -430,6 +445,9 @@ msgid "Error saving custom property"
 msgstr ""
 
 msgid "Error saving group"
+msgstr ""
+
+msgid "Error saving hash status"
 msgstr ""
 
 msgid "Error saving link"
@@ -472,6 +490,9 @@ msgid "Error saving tree from _POST"
 msgstr ""
 
 msgid "Error saving user"
+msgstr ""
+
+msgid "Error subscribing "
 msgstr ""
 
 msgid "Error updating user"
@@ -562,6 +583,12 @@ msgid "Groups"
 msgstr ""
 
 msgid "HTML version"
+msgstr ""
+
+msgid "Hash isn't valid."
+msgstr ""
+
+msgid "Hash not valid or expired."
 msgstr ""
 
 msgid "Height"
@@ -685,6 +712,9 @@ msgid "Missing invoices"
 msgstr ""
 
 msgid "Missing list name"
+msgstr ""
+
+msgid "Missing mail group id"
 msgstr ""
 
 msgid "Missing message id or recipient"
@@ -818,13 +848,31 @@ msgstr ""
 msgid "No access"
 msgstr ""
 
+msgid "No addressbook found"
+msgstr ""
+
+msgid "No bibliographies found"
+msgstr ""
+
+msgid "No books found"
+msgstr ""
+
 msgid "No categories found"
+msgstr ""
+
+msgid "No comments found"
 msgstr ""
 
 msgid "No data"
 msgstr ""
 
+msgid "No documents found"
+msgstr ""
+
 msgid "No file in the form"
+msgstr ""
+
+msgid "No galleries found"
 msgstr ""
 
 msgid "No gallery"
@@ -842,10 +890,19 @@ msgstr ""
 msgid "No module found for object"
 msgstr ""
 
+msgid "No news found"
+msgstr ""
+
+msgid "No newsletter found"
+msgstr ""
+
 msgid "No newsletters found"
 msgstr ""
 
 msgid "No object id specified"
+msgstr ""
+
+msgid "No questionnaires found"
 msgstr ""
 
 msgid "No questions found"
@@ -882,6 +939,9 @@ msgid "No tree found"
 msgstr ""
 
 msgid "No user data"
+msgstr ""
+
+msgid "No webmarks found"
 msgstr ""
 
 msgid "Not Authorized"
@@ -1176,7 +1236,13 @@ msgstr ""
 msgid "Text"
 msgstr ""
 
+msgid "Text direction"
+msgstr ""
+
 msgid "Text doesn't match image"
+msgstr ""
+
+msgid "Text lang"
 msgstr ""
 
 msgid ""
@@ -1267,6 +1333,9 @@ msgstr ""
 msgid "User groups"
 msgstr ""
 
+msgid "User is not subscribed to mail group"
+msgstr ""
+
 msgid "User login temporary blocked"
 msgstr ""
 
@@ -1278,7 +1347,10 @@ msgid ""
 "chars)"
 msgstr ""
 
-msgid "User not authorized to enter"
+msgid "User not associated to mailgroup or he is in pending status"
+msgstr ""
+
+msgid "User not associated to mailgroup or he isn't in pending status"
 msgstr ""
 
 msgid "User not present"
@@ -1294,6 +1366,9 @@ msgid "Username is required"
 msgstr ""
 
 msgid "Users of this group"
+msgstr ""
+
+msgid "Version"
 msgstr ""
 
 msgid "View all"
@@ -1644,6 +1719,9 @@ msgstr ""
 msgid "group properties "
 msgstr ""
 
+msgid "hashjob for unsubscribe already in use"
+msgstr ""
+
 msgid "height"
 msgstr ""
 
@@ -1701,6 +1779,9 @@ msgstr ""
 msgid "latitude"
 msgstr ""
 
+msgid "left to right"
+msgstr ""
+
 msgid "license"
 msgstr ""
 
@@ -1734,7 +1815,22 @@ msgstr ""
 msgid "mime type"
 msgstr ""
 
+msgid "missing card id"
+msgstr ""
+
+msgid "missing mail group id"
+msgstr ""
+
+msgid "missing method to manage hash case"
+msgstr ""
+
+msgid "missing service type"
+msgstr ""
+
 msgid "modified"
+msgstr ""
+
+msgid "modified on"
 msgstr ""
 
 msgid "more from this IP"
@@ -1995,6 +2091,9 @@ msgstr ""
 msgid "reside in"
 msgstr ""
 
+msgid "right to left"
+msgstr ""
+
 msgid "rights"
 msgstr ""
 
@@ -2182,6 +2281,9 @@ msgid "view results"
 msgstr ""
 
 msgid "web site"
+msgstr ""
+
+msgid "webmark already present"
 msgstr ""
 
 msgid "webmark saved"

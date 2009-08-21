@@ -31,4 +31,15 @@ Strings to translate not present in .tpl/.php files
 {t}degree{/t}
 {t}number{/t}
 
+// messages
+{t}No documents found{/t}
+{t}No galleries found{/t}
+{t}No comments found{/t}
+{t}No news found{/t}
+{t}No addressbook found{/t}
+{t}No webmarks found{/t}
+{t}No books found{/t}
+{t}No bibliographies found{/t}
+{t}No questionnaires found{/t}
+{t}No newsletter found{/t}
 *}
