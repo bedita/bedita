@@ -13,7 +13,7 @@
 	<td colspan=3><input type="text" style="width:300px;" name="data[GeoTag][0][address]" value="{if !empty($d.address)}{$d.address}{/if}"></td>
 </tr>
 <tr>
-	<th>{t}latitude{/t}:</th
+	<th>{t}latitude{/t}:</th>
 	<td><input type="text" style="width:100px;" name="data[GeoTag][0][latitude]" value="{if !empty($d.latitude)}{$d.latitude}{/if}"></td>
 	<th>{t}longitude{/t}:</th>
 	<td><input type="text" style="width:100px;" name="data[GeoTag][0][longitude]" value="{if !empty($d.longitude)}{$d.longitude}{/if}"></td>
