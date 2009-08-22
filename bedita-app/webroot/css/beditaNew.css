@@ -1692,6 +1692,9 @@ P.editornotes {
 	font-size:20px!important; margin: 0px 0px 20px 0px
 }
 
+.loadingHelp {
+	background: transparent url(../img/loadingAnimation.gif) no-repeat center 200px ;
+}
 
 
 /* bordi tondi? */
