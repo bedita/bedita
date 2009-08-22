@@ -7,10 +7,8 @@
 
 <div class="tab"><h2>{t}File{/t}</h2></div>
 
-
 <fieldset id="multimediaitem" style="margin-left:-10px;">
 
-		
 <div id="multimediaiteminside">
 
 
@@ -26,7 +24,6 @@
 		{assign_associative var="params" width=500}
 		
 		{$beEmbedMedia->object($object,$params)}
-		
 
 		
 	{elseif strtolower(($object.ObjectType.name) == "video")}
@@ -92,9 +89,9 @@
 	
 	<tr>
 		<th>{t}Width{/t}:</th>
-		<td><input type="text" name="data[width]" value="{$object.width}"/></td>
+		<td><input type="text" size="6" name="data[width]" value="{$object.width}"/></td>
 		<th>{t}Height{/t}:</th>
-		<td><input type="text" name="data[height]" value="{$object.height}"/></td>
+		<td><input type="text" size="6" name="data[height]" value="{$object.height}"/></td>
 	</tr>
 	<tr>
 		<th>{t}Version{/t}:</th>

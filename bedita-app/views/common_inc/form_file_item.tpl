@@ -77,9 +77,9 @@ $(document).ready(function(){
 			<br />
 			<table style="width:100%">
 				<tr>
-					<td><a rel="{$linkUrl} #multimediaiteminside" class="modalbutton">details</a></td>
-					<td><a href="{$linkUrl}" target="_blank">edit</a></td>
-					<td><a href="javascript: void(0);" onclick="removeItem('item_{$item.id}')">remove</a></td>
+					<td><a rel="{$linkUrl} #multimediaiteminside" class="modalbutton">{t}details{/t}</a></td>
+					<td><a href="{$linkUrl}" target="_blank">{t}edit{/t}</a></td>
+					<td><a href="javascript: void(0);" onclick="removeItem('item_{$item.id}')">{t}remove{/t}</a></td>
 				</tr>
 			</table>
 		</li>
