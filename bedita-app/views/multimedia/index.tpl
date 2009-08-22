@@ -86,7 +86,12 @@ function resetError() {
 
 	{include file="./inc/list_streams.tpl" method="index" streamTitle="multimedia"}
 	
-
+	{bedev}
+	{*
+	{include file="./inc/list_streams_table.tpl" method="index" streamTitle="multimedia"}
+	 *}
+	{/bedev}
+	
 	<div class="tab"><h2>{t}Add multiple items{/t}</h2></div>
 	
 	<div class="htabcontent">
