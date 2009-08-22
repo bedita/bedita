@@ -25,6 +25,12 @@ $(document).ready(function(){
 //-->
 </script>	
 
+<style>
+	{literal}
+	.vlist {display:none}
+	{/literal}
+</style>
+
 
 <form method="post" action="" id="formObject">
 
@@ -33,10 +39,12 @@ $(document).ready(function(){
 	{capture name="theader"}
 		<tr>
 			<th colspan="2" nowrap>
+				{* 
 				<img class="multimediaitemToolbar viewlist" src="{$html->webroot}img/iconML-list.png" />
 				<img class="multimediaitemToolbar viewsmall" src="{$html->webroot}img/iconML-small.png" />
 				<img class="multimediaitemToolbar viewthumb" src="{$html->webroot}img/iconML-thumb.png" />
-				order by:
+				*}
+				 order by:
 			</th>
 			<th>{$beToolbar->order('id', 'id')}</th>
 			<th>{$beToolbar->order('title', 'Title')}</th>
@@ -54,95 +62,38 @@ $(document).ready(function(){
 	</table>
 
 	<br style="clear:both" />
-	
-		
+	{strip}	
 		{foreach from=$objects item="item"}
 			<div class="multimediaitem itemBox{if $item.status != "on"} off{/if}">
 				
 				{include file="../common_inc/file_item.tpl"}
+				
 				<table border=0 padding="0" spacing="0" style="width:100%">
-					<td style="text-align:left;">{if (empty($item.fixed))}<input  type="checkbox" name="objects_selected[]" class="objectCheck" title="{$item.id}" value="{$item.id}" />{/if}</td>
+					<tr>
+						
+					<td style="text-align:left;">
+					{if (empty($item.fixed))}
+					<input  type="checkbox" name="objects_selected[]" class="objectCheck" title="{$item.id}" value="{$item.id}" />
+					{/if}</td>	
+	
+					<td class="vlist">{$item.id}</td>
+					<td class="vlist"><a href="{$html->url('view/')}{$item.id}">{$item.title}</a></td>
+					<td class="vlist">{$item.name}</td>
+					<td class="vlist">{$item.mediatype}</td>
+					<td class="vlist">{math equation="x/y" x=$item.size|default:0 y=1024 format="%d"|default:""} KB</td>
+					<td class="vlist">{$item.status}</td>
+					<td class="vlist">{$item.created|date_format:'%b %e, %Y'}</td>
+									
 					<td style="text-align:right;"><a href="" class="BEbutton">+</a></td>
+				</tr>	
 				</table>
+				
 			</div>
 		{/foreach}
 	</div>
-		
+	
+	{/strip}
 	<br style="margin:0px; line-height:0px; clear:both" />
-	
-	<table class="indexlist" id="viewlist" style="display:none;">
-		
-		{$smarty.capture.theader}
-		
-		{section name="i" loop=$objects}
-	<tr>
-
-{strip}
-
-		{assign var="thumbWidth" 		value = 45}
-		{assign var="thumbHeight" 		value = 34}
-		{assign var="filePath"			value = $objects[i].path}
-		{assign var="mediaPath"         value = $conf->mediaRoot}
-		{assign var="mediaUrl"         value = $conf->mediaUrl}
-
-		<td style="width:{$thumbWidth}px">
-	
-		<div style="width:{$thumbWidth}px; border:4px solid white;">		
-		
-			{if strtolower($objects[i].ObjectType.name) == "image"}	
-			<a href="{$html->url('view/')}{$objects[i].id}">
-				{assign_associative var="params" width=$thumbWidth height=$thumbHeight mode="crop"}
-				{assign_associative var="htmlAttr" width=$thumbWidth height=$thumbHeight}	
-				{$beEmbedMedia->object($objects[i],$params,$htmlAttr)}
-			</a>
-						
-			{elseif ($objects[i].provider|default:false)}
-			
-				{assign_associative var="htmlAttr" width="30" heigth="30"}
-				<a href="{$filePath}" target="_blank">{$beEmbedMedia->object($objects[i],null,$htmlAttr)}</a>
-			
-			{else}
-			
-				<a href="{$conf->mediaUrl}{$filePath}" target="_blank">
-					<img src="{$session->webroot}img/mime/{$objects[i].mime_type}.gif" />
-				</a>
-
-			{/if}
-		
-		</div>
-			
-		</td>
-{/strip}
-	
-		<td style="width:15px;">
-		{if (empty($objects[i].fixed))}
-			<input  type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
-		{/if}
-		</td>
-		
-		<td>{$objects[i].id}</td>
-		<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title}</a></td>
-		<td>{$objects[i].name}</td>
-		<td>{$objects[i].mediatype}</td>
-		<td>{math equation="x/y" x=$objects[i].size|default:0 y=1024 format="%d"|default:""} KB</td>
-		<td>{$objects[i].status}</td>
-		<td>{$objects[i].created|date_format:'%b %e, %Y'}</td>
-	
-	</tr>				
-	
-		{sectionelse}
-		
-			<td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td>
-		
-		{/section}
-
-		{if ($smarty.section.i.total) >= 10}
-				
-					{$smarty.capture.theader}
-					
-		{/if}
-
-	</table>
 
 
 {if !empty($objects)}
