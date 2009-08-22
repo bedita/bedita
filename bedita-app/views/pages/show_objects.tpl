@@ -1,7 +1,7 @@
 <script type="text/javascript">
 <!--
+var urlShowObj = "{$html->here}";
 {literal}
-var urlShowObj = "{/literal}{$html->here}{literal}";
 if (typeof urlAddObjToAss{/literal}{$relation|default:'norelation'|capitalize}{literal} == "string") {
 	var urlToAdd = urlAddObjToAss{/literal}{$relation|capitalize}{literal}
 } else if (typeof urlAddObjToAss == "string") { 
