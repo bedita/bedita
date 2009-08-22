@@ -2,6 +2,8 @@
 <!--
 var urlAddObjToAssQuestion = "{$html->url('/questionnaires/loadQuestionAjax')}";
 
+{literal}
+
 function questionRefreshButton() {
 	$("#loadQuestion").hide();
 	$("#questionAssociated").find("input[@name='details']").click(function() {
@@ -15,7 +17,7 @@ function questionRefreshButton() {
 	});
 }
 
-{literal}
+
 function addObjToAssocQuestion(url, postdata) {
 	$.post(url, postdata, function(html){
 		$("#loadQuestion").show();
