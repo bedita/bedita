@@ -4,10 +4,14 @@ var remote_url_response = "{$html->url('/pages/helpOnline/')}{$params.controller
 {literal}
 $().ready(function(e){
 	$('.helptrigger').click(function () {
-		if( !($('#helpcontainer').is(':visible')) ) {
+		if( !($('#helpcontainer').is(':visible')) ) {	
+				
+			$("#helpcontainer").addClass("loadingHelp");
+			
 			$.get(remote_url_response, function(html){
-				$(html).find(".textC").appendTo("#helpcontent") ;
-			});
+				$(html).find(".textC").appendTo("#helpcontent");
+				$("#helpcontainer").removeClass("loadingHelp");
+			});			
 		} else {
 			$("#helpcontent").html("");
 		}
