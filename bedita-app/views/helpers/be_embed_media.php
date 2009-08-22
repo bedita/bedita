@@ -265,10 +265,14 @@ class BeEmbedMediaHelper extends AppHelper {
 				}
 				if (empty($htmlAttributes["width"]) && !empty($obj["width"])) {
 					$htmlAttributes["width"] = $obj["width"];
+				} else {
+					$htmlAttributes["width"] = 320;
 				}
 				
 				if (empty($htmlAttributes["height"]) && !empty($obj["height"])) {
 					$htmlAttributes["height"] = $obj["height"];
+				} else {
+					$htmlAttributes["height"] = 200;
 				}
 				
 				if (empty($htmlAttributes["application_version"]) && !empty($obj["application_version"])) {
