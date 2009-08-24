@@ -117,6 +117,6 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 </div>
 
 </form>
-
+{bedev}
 {include file="../common_inc/menuright.tpl"}
-
+{/bedev}
