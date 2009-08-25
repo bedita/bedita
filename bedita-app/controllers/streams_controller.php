@@ -57,7 +57,7 @@ class StreamsController extends AppController {
 		$filter["mediatype"] = true;
 		if (!empty($text)) {
 			$text = urldecode($text);
-			$filter["search"] = $text;
+			$filter["query"] = $text;
 		}
 		
 		$bedita_items = $this->BEObject->findObjects(null, null, null, $filter, $order=null, $dir=true, $page, $dim, false, $relations_id)  ;
