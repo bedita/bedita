@@ -881,6 +881,60 @@ abstract class ModulesController extends AppController {
 		}
 		return $availableRelations;
 	}
-		
+	
+	/**
+	 * Generic view method: to override in real modules or create specific view methods 
+	 * if more types are handled by this module, like view[ModelName] (e.g. viewDocument, viewEvent...)
+	 * This methods will be called automagically....
+	 * 
+	 * @param integer $id object id to view
+	 */
+	public function view($id) {
+		$modelName = $this->BEObject->getType($id);	
+		$method = "view" . $modelName;
+		if (!method_exists($this, $method)) {
+			throw new BeditaException(__("Missing view method", true)." - ".$method);
+		}
+		$this->action = $method;
+		$this->{$method}($id);
+	}	
+	
+	/**
+	 * Generic delete method: to override in real modules.
+	 * If more types are handled by this module create specific delete methods 
+	 * like delete[ModelName] (e.g. deleteDocument, deleteEvent...)
+	 * This methods will be called automagically....
+	 */
+	public function delete() {
+		$modelName = $this->BEObject->getType($this->data["id"]);	
+		$method = "delete" . $modelName;
+		if (!method_exists($this, $method)) {
+			throw new BeditaException(__("Missing delete method", true)." - ".$method);
+		}
+		$this->action = $method;
+		$this->{$method}();
+	}
+	
+	/**
+	 * Generic save method: to override in real modules.
+	 * If more types are handled by this module create specific 'save' methods 
+	 * like save[ModelName] (e.g. saveDocument, saveEvent...)
+	 * This methods will be called automagically....
+	 */
+	public function save() {
+		if(!empty($this->data["id"])) {
+			$modelName = $this->BEObject->getType($this->data["id"]);	
+		} else {
+			$objTypeId = $this->data["object_type_id"];
+			$modelName = Configure::read("objectTypes.$objTypeId.model");	
+		}
+		$method = "save" . $modelName;
+		if (!method_exists($this, $method)) {
+			throw new BeditaException(__("Missing save method", true)." - ".$method);
+		}
+		$this->action = $method;
+		$this->{$method}();
+	}
+	
 }
 ?>

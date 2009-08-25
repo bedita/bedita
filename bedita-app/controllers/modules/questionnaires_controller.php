@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -36,11 +36,11 @@ class QuestionnairesController extends ModulesController {
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 	}
 	
-	public function view($id = null) {
+	public function viewQuestionnaire($id = null) {
 		$this->viewObject($this->Questionnaire, $id);
 	}
 
-	public function save() {
+	public function saveQuestionnaire() {
 		$this->checkWriteModulePermission();
 		$this->Transaction->begin();
 		$this->saveObject($this->Questionnaire);
@@ -80,12 +80,11 @@ class QuestionnairesController extends ModulesController {
 
 	}
 
-	 public function view_question($id = null) {
+	 public function viewQuestion($id = null) {
 	 	$this->viewObject($this->Question, $id);
-
 	 }
 
-	public function index_questions($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
+	public function indexQuestions($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		if (!empty($this->passedArgs["question_type"]))
 			$filter["question_type"] = $this->passedArgs["question_type"];
 		if (!empty($this->passedArgs["question_difficulty"]))
@@ -110,16 +109,6 @@ class QuestionnairesController extends ModulesController {
 		$this->eventInfo("question [id=". $this->Question->id."] saved");
 	 }
 	 
-	public function delete() {
-		$modelName = $this->BEObject->getType($this->data["id"]);	
-		$method = "delete" . $modelName;
-		if (!method_exists($this, $method)) {
-			$this->redirect($this->referer());
-		}
-		$this->action = $method;
-		$this->{$method}();
-	}
-	
 	public function changeStatusQuestions() {
 		$this->changeStatusObjects();
 	}
@@ -166,10 +155,10 @@ class QuestionnairesController extends ModulesController {
 	protected function forward($action, $esito) {
 		$REDIRECT = array( 
 			"saveQuestion"	=> 	array(
-							"OK"	=> "/questionnaires/view_question/".@$this->Question->id,
-							"ERROR"	=> "/questionnaires/view_question/".@$this->Question->id 
+							"OK"	=> "/questionnaires/view/".@$this->Question->id,
+							"ERROR"	=> "/questionnaires/view/".@$this->Question->id 
 							),
-			"save"	=> 	array(
+			"saveQuestionnaire"	=> 	array(
 							"OK"	=> "/questionnaires/view/".@$this->Questionnaire->id,
 							"ERROR"	=> "/questionnaires/view/".@$this->Questionnaire->id 
 							),

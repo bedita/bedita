@@ -103,6 +103,7 @@
 
 <form action="{$html->url('/questionnaires/saveQuestion')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
+<input type="hidden" name="data[object_type_id]" value="{$conf->objectTypes.question.id}"/>
 
    <div class="tab"><h2>{t}Question detail{/t}</h2></div>
 

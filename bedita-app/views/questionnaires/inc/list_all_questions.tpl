@@ -68,7 +68,7 @@ $(document).ready(function(){
 			<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}"/>
 		</td>
 		<td>
-			<a href="{$html->url('view_question/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a>
+			<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a>
 			<div style="display:none; color:gray; font-style:italic" class="listitemdesc">{$objects[i].description|nl2br}</div>
 		</td>
 		<td>
@@ -106,7 +106,7 @@ $(document).ready(function(){
 		{if $objects[i].note|default:''}<img style="margin:-2px;" src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}
 		
 		<h2 style="margin:2px 0px 5px 0px;">
-			<a style="color:#8C3540" href="{$html->url('view_question/')}{$objects[i].id}">{$objects[i].title|truncate:36:'~':true|default:"<i>[no title]</i>"}</a>
+			<a style="color:#8C3540" href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:36:'~':true|default:"<i>[no title]</i>"}</a>
 		</h2>
 		<label>tipo</label>: scelta multipla
 		<br />

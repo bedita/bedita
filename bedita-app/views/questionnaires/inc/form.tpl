@@ -4,6 +4,7 @@
 
 <form action="{$html->url('/questionnaires/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
+<input type="hidden" name="data[object_type_id]" value="{$conf->objectTypes.questionnaire.id}"/>
 
 	{include file="../common_inc/form_title_subtitle.tpl"}
 

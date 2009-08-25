@@ -16,17 +16,17 @@ Menu a SX valido per tutte le pagine del controller.
 			<a href="{$html->url('/')}{$currentModule.path}/index">{t}Questionnaires list{/t}</a>
 		</li>
 		<li {if $method eq "view" && (empty($object))}class="on"{/if}>
-			<a href="{$html->url('/')}{$currentModule.path}/view">{t}Create new{/t}</a>
+			<a href="{$html->url('/')}{$currentModule.path}/viewQuestionnaire">{t}Create new{/t}</a>
 		</li>
 	</ul>
 	
 	<ul class="menuleft insidecol">
 				
 		<li {if $method eq "indexQuestions"}class="on"{/if}>
-			<a href="{$html->url('/')}{$currentModule.path}/index_questions">{t}Questions list{/t}</a>
+			<a href="{$html->url('/')}{$currentModule.path}/indexQuestions">{t}Questions list{/t}</a>
 		</li>
 		<li {if $method eq "viewQuestion" && (empty($object))}class="on"{/if}>
-			<a href="{$html->url('/')}{$currentModule.path}/view_question">{t}Create new question{/t}</a>
+			<a href="{$html->url('/')}{$currentModule.path}/viewQuestion">{t}Create new question{/t}</a>
 		</li>
 	
 	</ul>
