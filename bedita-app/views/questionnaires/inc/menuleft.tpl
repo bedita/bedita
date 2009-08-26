@@ -35,7 +35,15 @@ Menu a SX valido per tutte le pagine del controller.
 {include file="../common_inc/export.tpl"}
 
 
-
+	{if (!empty($method)) && $method eq "index"}
+	<div class="insidecol publishingtree">
+		
+			{$beTree->view($tree)}
+	
+	</div>
+	{/if}
+	
+	
 {if $method eq "view"}
 {include file="../common_inc/previews.tpl"}
 {/if}

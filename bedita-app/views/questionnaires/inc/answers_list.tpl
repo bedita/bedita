@@ -20,11 +20,12 @@ function reindexQuestions() {
 	});
 }
 
-$(document).ready(function(){	
+$(document).ready(function(){
 
 	$(".add").click(function (){
 		var row = $(this).parent().parent("tr");
-		$(row).clone(true).insertAfter(row).addClass("newrow").find("textarea").text("");
+		var mytxtarea = $(row).clone(true).insertAfter(row).addClass("newrow").find("textarea");
+		$(mytxtarea).html('');
 		$("#answers").fixItemsPriority();
 		reindexQuestions();
 		

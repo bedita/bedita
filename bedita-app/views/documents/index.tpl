@@ -1,5 +1,3 @@
-
-
 </head>
 
 <body>
@@ -10,17 +8,10 @@
 
 {include file="inc/menucommands.tpl" method="index"}
 
-
 {include file="../common_inc/toolbar.tpl"}
-
-
 
 <div class="mainfull">
 	
 	{include file="../common_inc/list_objects.tpl" method="index"}
 	
-
 </div>
-
-
-

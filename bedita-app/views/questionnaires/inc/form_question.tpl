@@ -2,6 +2,21 @@
 ** form question template
 *}
 
+{if ($conf->mce|default:true)}
+	
+	{$javascript->link("tiny_mce/tiny_mce", false)}
+	{$javascript->link("tiny_mce/jquery.tinymce", false)}
+	{$javascript->link("tiny_mce/tiny_mce_BEquestions_init", false)}
+
+
+{elseif ($conf->wymeditor|default:true)}
+
+	{$javascript->link("wymeditor/jquery.wymeditor.pack", false)}
+	{$javascript->link("wymeditor/wymeditor_default_init", false)}
+
+{/if}
+
+
 {literal}
 <script type="text/javascript">
 	
@@ -120,7 +135,7 @@
 			<tr>
 				<th>{t}text{/t}:</th>
 				<td>
-					<textarea id="subtitle" style="width:380px; height:80px" class="shortdesc autogrowarea" name="data[description]">{$object.description|default:''|escape:'html'}</textarea>
+					<textarea id="subtitle" style="width:380px; height:80px" class="shortdesc mce" name="data[description]">{$object.description|default:''|escape:'html'}</textarea>
 				</td>
 			</tr>
 			
