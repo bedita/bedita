@@ -331,16 +331,20 @@ class PagesController extends AppController {
 		if($count < 2) {
 			throw new BeditaException(__("Error invoking online help", true));
 		}
-		$url = Configure::read("helpBaseUrl");
 		$module = $args[0];
 		$action = $args[1];
 		
 		$path = " " . $module . " " . $action;
+		$url = Configure::read("helpBaseUrl");
+
+		// add language choice
+		$langChoice = "/lang:" . $this->currLang;
+		
 		// help online URL convention is <base-url>/<module-name>-module/<module-name>-<action-name>
 		// example: <base-url>/events-module/events-view
-		$url = Configure::read("helpBaseUrl") . 
-			"/$module-module/$module-$action";
+		$url .= "/$module-module/$module-$action" . $langChoice;
 
+		$this->log($url);	
 		$result = @get_headers($url);
 		if(preg_match("|200|",$result[0])) {
 			$result = file_get_contents($url);
