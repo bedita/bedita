@@ -44,7 +44,7 @@
 
 <div class="head">
 	
-	<h1>{t}{if !empty($object.person_title)}{$object.person_title}. {/if}{$object.title|default:"New Item"}{/t}</h1>
+	<h1>{if !empty($object)}{$object.title|default:"<i>[no title]</i>"}{else}<i>[{t}New item{/t}]</i>{/if}</h1>
 	
 </div>
 

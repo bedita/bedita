@@ -74,13 +74,18 @@ class AddressbookController extends ModulesController {
 		$this->Transaction->begin();
 		$kind = ($this->data['company']==0) ? 'person' : 'cmp';
 		if($kind == 'person') {
-			$this->data['title'] = $this->data['person']['name']." ".$this->data['person']['surname'];
+			if(!empty($this->data['person']['name']) || !empty($this->data['person']['name'])) {
+				$this->data['title'] = $this->data['person']['name']." ".$this->data['person']['surname'];
+			}
 			$this->data['birthdate'] = $this->data['person']['birthdate'];
 			$this->data['deathdate'] = $this->data['person']['deathdate'];
 		} else {
-			$this->data['title'] = $this->data['cmp']['company_name'];
+			if(!empty($this->data['cmp']['company_name'])) {
+				$this->data['title'] = $this->data['cmp']['company_name'];
+			}
 			$this->data['company_name'] = $this->data['cmp']['company_name'];
 		}
+
 		$this->data['name'] = $this->data[$kind]['name'];
 		$this->data['surname'] = $this->data[$kind]['surname'];
 		$this->data['person_title'] = $this->data[$kind]['person_title'];
@@ -90,6 +95,9 @@ class AddressbookController extends ModulesController {
 		
 		$this->saveObject($this->Card);
 	 	$this->Transaction->commit();
+	 	if(empty($this->data["title"])) {
+	 		$this->data["title"] = "";
+	 	}
 		$this->userInfoMessage(__("Card saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("card [". $this->data["title"]."] saved");
 	}

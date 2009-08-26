@@ -48,10 +48,6 @@
 				<input type="radio" name="data[mail_html]" value="0"{if $object.mail_html|default:1 == 0} checked{/if}> {t}no{/t}
 			</td>
 		</tr>
-		<tr>
-			<th>{t}received Messages{/t}:</th>
-			<td colspan="2">144</td>
-		</tr>
 		</table>
 </fieldset>
 {/if}
