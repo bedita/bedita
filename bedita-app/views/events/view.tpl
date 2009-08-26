@@ -13,7 +13,7 @@
 {literal}
 <script type="text/javascript">
     $(document).ready(function(){
-		openAtStart("#title,#eventDates");
+		openAtStart("#title,#eventDates,#geotag,#promoter");
     });
 </script>
 {/literal}
