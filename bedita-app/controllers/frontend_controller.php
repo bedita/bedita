@@ -163,7 +163,6 @@ abstract class FrontendController extends AppController {
 	 * @return boolean
 	 */
 	private function login(array $groups) {
-		
 		if (!empty($this->params["form"]["login"])) {
 			$userid 	= (isset($this->params["form"]["login"]["userid"])) ? $this->params["form"]["login"]["userid"] : "" ;
 			$password 	= (isset($this->params["form"]["login"]["passwd"])) ? $this->params["form"]["login"]["passwd"] : "" ;
@@ -1280,7 +1279,7 @@ abstract class FrontendController extends AppController {
 		
 		$oldItemsByType = $this->sectionOptions['itemsByType'];
 		$this->sectionOptions['itemsByType'] = true;
-		$items = $this->loadSectionObjects($section_id);
+		$items = $this->loadSectionObjects($section_id,$options);
 		unset($this->modelBindings);
 		$this->sectionOptions['itemsByType'] = $oldItemsByType;
 		
@@ -1321,8 +1320,9 @@ abstract class FrontendController extends AppController {
 					
 					$countYear = 0;
 					foreach ($month as $key => $i) {
-						$countYear += count($i);
-						$archive[$type][$year][$key]["total"] = count($i);
+						$countItem = count($i);
+						$countYear += $countItem;
+						$archive[$type][$year][$key]["total"] = $countItem;
 						$archive[$type][$year][$key]["monthName"] = __($monthName[$key],true);
 					}
 					$archive[$type][$year]["total"] = $countYear;

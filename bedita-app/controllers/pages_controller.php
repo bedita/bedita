@@ -62,6 +62,12 @@ class PagesController extends AppController {
 		if (!$objectData = $objectModel->findById($id)) {
 			throw new BeditaException(__("Error finding object", true));
 		}
+		if (!empty($objectData['RelatedObject'])) {
+			$objectData['relations'] = $this->objectRelationArray($obj['RelatedObject']);
+		}
+		if (!empty($objectData['Annotation'])) {
+			$this->setupAnnotations($objectData);
+		}
 		$this->layout = "print";
 		$this->set("printLayout", $printLayout);
 		$this->set("object", $objectData);

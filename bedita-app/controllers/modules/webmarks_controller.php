@@ -58,7 +58,11 @@ class WebmarksController extends ModulesController {
 		$this->checkWriteModulePermission();
 		// normalize url and look for duplicates
 		$this->data['url'] = $this->Link->checkUrl($this->data['url']);
-		$link =  $this->Link->find('all',array('conditions' =>array('url' => $this->data['url'])));
+		$conditions = array('url' => $this->data['url']);
+		if (!empty($this->data["id"])) {
+			$conditions[] = "Link.id <>" . $this->data["id"];
+		}
+		$link =  $this->Link->find('all',array('conditions' => $conditions));
 		if(!empty($link)) {
 			$this->Link->id = $link[0]['id'];
 			$this->userWarnMessage(__("webmark already present", true)." - ".$link[0]['id'] . " - " .$link[0]['title']);
@@ -160,6 +164,7 @@ class WebmarksController extends ModulesController {
 		$REDIRECT = array(
 				"cloneObject"	=> 	array(
 										"OK"	=> "/webmarks/view/{$this->Link->id}",
+										"WARN"	=> "/webmarks/view/{$this->Link->id}", 
 										"ERROR"	=> "/webmarks/view/{$this->Link->id}" 
 										),
 				"save"	=> 	array(
