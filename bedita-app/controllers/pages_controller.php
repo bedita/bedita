@@ -56,6 +56,12 @@ class PagesController extends AppController {
 	public function printme() {
 		$id = $this->params["form"]["id"];
 		$printLayout = $this->params["form"]["printLayout"];
+		if (!empty($this->params["form"]["printcontext"])) {
+			$publication_url = ClassRegistry::init("Area")->field("public_url", array("id" => $this->params["form"]["printcontext"]));
+			if (!empty($publication_url)) {
+				$this->redirect($publication_url . "/printme/" . $id . "/" . $printLayout);
+			}
+		}
 		$object_type_id = ClassRegistry::init("BEObject")->findObjectTypeId($id);
 		$objectModel = $this->loadModelByObjectTypeId($object_type_id);
 		$objectModel->containLevel("detailed");
