@@ -46,6 +46,9 @@ $rel["renameFiles"]= array(
 	"bedita-app".DS."webroot".DS."index.php.sample" => "bedita-app".DS."webroot".DS."index.php",
 	"bedita-front".DS."config".DS."core.php.sample" => "bedita-front".DS."config".DS."core.php",
 	"bedita-front".DS."webroot".DS."index.php.sample" => "bedita-front".DS."webroot".DS."index.php"
+	"frontend".DS."debug.example.com".DS."config".DS."core.php.sample" => "frontend".DS."debug.example.com".DS."config".DS."core.php",
+	"frontend".DS."site.example.com".DS."config".DS."core.php.sample" => "frontend".DS."site.example.com".DS."config".DS."core.php",
+	"frontend".DS."dummy.example.com".DS."config".DS."core.php.sample" => "frontend".DS."dummy.example.com".DS."config".DS."core.php",
 );
 
 $rel["createFiles"] = array("bedita-app".DS."webroot".DS."test.php");
