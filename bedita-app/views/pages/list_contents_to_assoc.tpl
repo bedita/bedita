@@ -29,7 +29,7 @@ $(document).ready(function() {
 			<th>{t}title{/t}</th>
 			<th style="text-align:center">{t}type{/t}</th>
 			<th style="text-align:center">{t}status{/t}</th>
-			<th style="text-align:center">{t}date{/t}</th>
+			<th style="text-align:center">{t}modified{/t}</th>
 			<th style="text-align:center">{t}lang{/t}</th>
 			<th style="text-align:center">Id</th>
 		</tr>
@@ -45,7 +45,7 @@ $(document).ready(function() {
 				<span class="listrecent {$objToAss.moduleName}" style="margin:0px 0px 0px 10px">&nbsp;</span>
 			</td>
 			<td style="text-align:center">{$objToAss.status}</td>
-			<td style="text-align:center">{$objToAss.created|date_format:$conf->datePattern}</td>
+			<td style="text-align:center">{$objToAss.modified|date_format:$conf->datePattern}</td>
 			<td style="text-align:center">{$objToAss.lang}</td>
 			<td style="text-align:center">{$objToAss.id}</td>
 		</tr>
