@@ -164,7 +164,7 @@ class PagesController extends AppController {
 		
 		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
 			
-		$objects = $this->BeTree->getChildren($id, null, $filter, "title", true, $page, $dim=20) ;
+		$objects = $this->BeTree->getChildren($id, null, $filter, "modified", false, $page, $dim=20) ;
 		
 		foreach ($objects["items"] as $key => $obj) {
 			if ($obj["id"] != $main_object_id)
