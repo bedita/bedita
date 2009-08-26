@@ -119,7 +119,7 @@ abstract class FrontendController extends AppController {
 	private $logged = false;
 	
 	/**
-	 * path to redirect after logout action
+	 * path to redirect after login action
 	 * 
 	 * @var string
 	 */
@@ -163,6 +163,7 @@ abstract class FrontendController extends AppController {
 	 * @return boolean
 	 */
 	private function login(array $groups) {
+		
 		if (!empty($this->params["form"]["login"])) {
 			$userid 	= (isset($this->params["form"]["login"]["userid"])) ? $this->params["form"]["login"]["userid"] : "" ;
 			$password 	= (isset($this->params["form"]["login"]["passwd"])) ? $this->params["form"]["login"]["passwd"] : "" ;
