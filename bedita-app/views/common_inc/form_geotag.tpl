@@ -1,5 +1,5 @@
 
-<div class="tab"><h2>{t}Geotag{/t}</h2></div>
+<div class="tab"><h2>{t}{$title|default:'Geotag'}{/t}</h2></div>
 
 <fieldset id="geotag">
 
