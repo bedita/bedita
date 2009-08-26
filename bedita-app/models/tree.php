@@ -493,7 +493,7 @@ class Tree extends BEAppModel
 	 * @param integer $page		Page number (for pagination)
 	 * @param integer $dim		Page dim (for pagination)
 	 */
-	function getDiscendents($id = null, $userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
+	function getDescendants($id = null, $userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
 		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, true) ;
 	}
 

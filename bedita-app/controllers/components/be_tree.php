@@ -151,18 +151,18 @@ class BeTreeComponent extends Object {
 	}
 	
 	/**
-	 * Return discendents of a tree node
+	 * Return descendants of a tree node
 	 *
 	 * @param integer $id		node ID
 	 */
-	function getDiscendents($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
+	function getDescendants($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
 		$conf  = Configure::getInstance() ;
 		// Get user data
 		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : null ;
 		
 		$filter = ($filter)? array_merge($this->filter, $filter) : $this->filter;
 			
-		$objs = &  $this->Tree->getDiscendents($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
+		$objs = &  $this->Tree->getDescendants($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
 		
 		return  $objs ;
 	}

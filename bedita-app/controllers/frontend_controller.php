@@ -590,7 +590,7 @@ abstract class FrontendController extends AppController {
 				$filter = array();
 				$filter["object_type_id"] = $conf->objectTypes['section']["id"];
 			}
-			$sections = $this->BeTree->getDiscendents($conf->frontendAreaId,$this->status,$filter) ;
+			$sections = $this->BeTree->getDescendants($conf->frontendAreaId,$this->status,$filter) ;
 			$sectionsTree = $sections['items'];
 			$urlset = array();
 			$i=0;
@@ -1129,7 +1129,7 @@ abstract class FrontendController extends AppController {
        		$this->helpers[] = 'BeToolbar';
 		}
 		$this->searchOptions = array_merge($this->searchOptions,$this->getPassedArgs());
-		$result = $this->BeTree->getDiscendents($this->publication["id"], $this->status, $this->searchOptions["filter"], $this->searchOptions["order"], $this->searchOptions["dir"], $this->searchOptions["page"], $this->searchOptions["dim"]);
+		$result = $this->BeTree->getDescendants($this->publication["id"], $this->status, $this->searchOptions["filter"], $this->searchOptions["order"], $this->searchOptions["dir"], $this->searchOptions["page"], $this->searchOptions["dim"]);
 		$this->set("searchResult", $result); 
 	}
 	

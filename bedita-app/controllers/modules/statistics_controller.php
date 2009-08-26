@@ -40,7 +40,7 @@ class StatisticsController extends ModulesController {
 		// get section parents
 		if (!empty($id)) {
 			$parentArr[] = $id;
-			$discendents = $this->BeTree->getDiscendents($id, null, array("object_type_id" => Configure::read("objectTypes.section.id")));
+			$discendents = $this->BeTree->getDescendants($id, null, array("object_type_id" => Configure::read("objectTypes.section.id")));
 			
 			if (!empty($discendents["items"])) {
 				foreach($discendents["items"] as $item) {

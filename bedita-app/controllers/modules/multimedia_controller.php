@@ -221,7 +221,7 @@ class MultimediaController extends ModulesController {
 			array("dir", "boolean", &$dir)
 		) ;
 		$ot = &$conf->objectTypes ; 
-		$multimedia = $this->BeTree->getDiscendents(null, null, array($ot['image']["id"], $ot['audio']["id"], $ot['video']["id"]), $order, $dir, $page, $dim)  ;
+		$multimedia = $this->BeTree->getDescendants(null, null, array($ot['image']["id"], $ot['audio']["id"], $ot['video']["id"]), $order, $dir, $page, $dim)  ;
 		for($i=0; $i < count($multimedia['items']) ; $i++) {
 			$id = $multimedia['items'][$i]['id'] ;
 			$ret = $this->Stream->findById($id) ;
