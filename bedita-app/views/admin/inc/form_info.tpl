@@ -1,8 +1,15 @@
+{if ($conf->mce|default:true)}
+	{$javascript->link("tiny_mce/tiny_mce", false)}
+{/if}
 <script type="text/javascript">
 {literal}
 $(document).ready(function(){
 	var v = $().jquery;
 	$("#jquery-version").text(v);
+	if(tinymce != undefined) {
+		v = tinymce.majorVersion + "." + tinymce.minorVersion;
+		$("#tinymce-version").text(v);
+	}
 });
 {/literal}
 //-->
@@ -46,6 +53,12 @@ $(document).ready(function(){
 		<td><label>JQuery</label></td>
 		<td><p id="jquery-version"></p></td>
 	</tr>
+{if ($conf->mce|default:true)}
+	<tr>
+		<td><label>TinyMCE</label></td>
+		<td><p id="tinymce-version"></p></td>
+	</tr>
+{/if}	
 	<tr>
 		<td><label>Operating System</label></td>
 		<td>{$sys.osVersion}</td>
