@@ -203,9 +203,9 @@ $(document).ready(function() {
 </fieldset>
 {/if}
 
-<div class="tab"><h2>Add new subscribers</h2></div>
+<div class="tab"><h2>{t}Add new subscribers{/t}</h2></div>
 <fieldset id="">
-		Qui si apre un mondo che ppalle, email separate da virgole, check delle preesistenza e tutat cosa che pppppp
+		{t}Write here comma-separated email addresses{/t}
 		<textarea name="addsubscribers" id="addsubscribers" style="width:100%" class="autogrowarea"></textarea>
 </fieldset>
 
