@@ -109,12 +109,14 @@ class DeployShell extends BeditaBaseShell {
 		}
 		
 		// create version file
-		$versionFileContent="<?php\n\$config['Bedita.version'] = '". $rel["releaseBaseName"]. $svnRelease . "';\n?>";
+		// release name is : base name + majorversione (like 3.0.beta1) + svn revision
+		$releaseName = $rel["releaseBaseName"] . "-" . Configure::read("majorVersion") . "." . $svnRelease;
+		$versionFileContent="<?php\n\$config['Bedita.version'] = '". $releaseName . "';\n?>";
 		$handle = fopen($exportPath.DS.$rel["versionFileName"], 'w');
 		fwrite($handle, $versionFileContent);
 		fclose($handle);
 		
-		$releaseFile = $rel["releaseDir"]. DS . $rel["releaseBaseName"]. $svnRelease . "tar";
+		$releaseFile = $rel["releaseDir"]. DS . $releaseName . "tar";
 		
     	if(file_exists($releaseFile)) {
 			$res = $this->in("$releaseFile exists, overwrite? [y/n]");
