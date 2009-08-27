@@ -1142,6 +1142,9 @@ msgstr "Sottotitolo, descrizione"
 msgid "Summary"
 msgstr "Sommario"
 
+msgid "System events"
+msgstr "Eventi di sistema"
+
 msgid "System Events"
 msgstr "Eventi di sistema"
 
