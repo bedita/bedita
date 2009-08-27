@@ -70,21 +70,19 @@ $(document).ready(function(){
 				
 				<table border=0 padding="0" spacing="0" style="width:100%">
 					<tr>
-						
+					<td colspan=2 class="vlist">{$item.id}</td>
+					<td colspan=2 class="vlist"><a href="{$html->url('view/')}{$item.id}">{$item.title}</a></td>
+					<td colspan=2 class="vlist">{$item.name}</td>
+					<td colspan=2 class="vlist">{$item.mediatype}</td>
+					<td colspan=2 class="vlist">{math equation="x/y" x=$item.size|default:0 y=1024 format="%d"|default:""} KB</td>
+					<td colspan=2 class="vlist">{$item.status}</td>
+					<td colspan=2 class="vlist">{$item.created|date_format:'%b %e, %Y'}</td>
+					{if (empty($item.fixed))}	
 					<td style="text-align:left;">
-					{if (empty($item.fixed))}
-					<input  type="checkbox" name="objects_selected[]" class="objectCheck" title="{$item.id}" value="{$item.id}" />
-					{/if}</td>	
-	
-					<td class="vlist">{$item.id}</td>
-					<td class="vlist"><a href="{$html->url('view/')}{$item.id}">{$item.title}</a></td>
-					<td class="vlist">{$item.name}</td>
-					<td class="vlist">{$item.mediatype}</td>
-					<td class="vlist">{math equation="x/y" x=$item.size|default:0 y=1024 format="%d"|default:""} KB</td>
-					<td class="vlist">{$item.status}</td>
-					<td class="vlist">{$item.created|date_format:'%b %e, %Y'}</td>
-									
-					<td style="text-align:right;"><a href="" class="BEbutton">+</a></td>
+					<input type="checkbox" style="width:15px" name="objects_selected[]" class="objectCheck" title="{$item.id}" value="{$item.id}" />
+					</td>
+					{/if}			
+					<td style="text-align:right;"><a href="{$html->url('view/')}{$item.id}" class="BEbutton">+</a></td>
 				</tr>	
 				</table>
 				
