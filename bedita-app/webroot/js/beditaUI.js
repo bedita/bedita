@@ -552,9 +552,9 @@ document.onkeydown = function(e){
 		//$('.tab').BEtabsopen();
 		//helptrigger
 		
-	} else if(keycode == 112){ // 
+	} else if(keycode == 122){ // 
 		
-		$('.helptrigger').click();
+		//$('.helptrigger').click();
 	
 	
 	} else if(keycode == 188){ // 
