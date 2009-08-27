@@ -1,26 +1,3 @@
-{assign var='params' value=$html->params}
-<script type="text/javascript">
-var remote_url_response = "{$html->url('/pages/helpOnline/')}{$params.controller}/{$params.action}";
-{literal}
-$().ready(function(e){
-	$('.helptrigger').click(function () {
-		if( !($('#helpcontainer').is(':visible')) ) {	
-				
-			$("#helpcontainer").addClass("loadingHelp");
-			
-			$.get(remote_url_response, function(html){
-				$(html).find(".textC").appendTo("#helpcontent");
-				$("#helpcontainer").removeClass("loadingHelp");
-			});			
-		} else {
-			$("#helpcontent").html("");
-		}
-		$('#helpcontainer, .quartacolonna, .main, .mainhalf, .mainfull, .insidecol').toggle();
-		$(this).toggleClass("helpon");
-	});
-});
-{/literal}
-</script>
 <div class="modulesmenucaption">go to: &nbsp;<a>be</a></div>
 
 <ul class="modulesmenu">

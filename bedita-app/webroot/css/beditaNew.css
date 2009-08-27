@@ -1692,6 +1692,11 @@ P.editornotes {
 	font-size:20px!important; margin: 0px 0px 20px 0px
 }
 
+#helpcontainer2 {
+	width:620px; min-height:590px;
+	margin:20px; color:#333; font-size:14px;
+}
+
 .loadingHelp {
 	background: transparent url(../img/loadingAnimation.gif) no-repeat center 200px ;
 }
