@@ -20,7 +20,7 @@
 
 {if $rel == "download"}
 
-	<td>{$objRelated.mime_type|default:''}</td>
+	<td>{$objRelated.mime_type|default:''|truncate:18:'~':true}</td>
 	
 	<td style="text-align:right">{$objRelated.size|default:0|filesize}</td>
 
@@ -31,7 +31,9 @@
 	<td>{$objRelated.lang|default:''}</td>
 	
 	<td style="text-align:right; white-space:nowrap">
-		<input class="BEbutton link" rel="{$html->url('/')}{$objRelated.ObjectType.module}/view/{$objRelated.id}" name="details" type="button" value="details">
+		<input class="BEbutton link" 
+		title="{$objRelated.title|default:'[no title]'}, {$objRelated.mime_type|default:''}" 
+		rel="{$html->url('/')}{$objRelated.ObjectType.module}/view/{$objRelated.id}" name="details" type="button" value="details">
 		<input class="BEbutton" name="remove" type="button" value="x">
 	</td>
 
