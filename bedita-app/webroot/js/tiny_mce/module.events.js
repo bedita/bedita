@@ -1,3 +1,0 @@
-/**
-events custom js
-*/
