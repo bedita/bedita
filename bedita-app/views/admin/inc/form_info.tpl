@@ -19,12 +19,10 @@ $(document).ready(function(){
 <div class="tab"><h2>{t}System info {/t}</h2></div>
 
 <fieldset id="system_info">
-<div>	
 	
 <table class="indexlist">
 	<tr>
-		<td></td>
-		<td><label>{t}Software{/t}</label></td>
+		<th colspan="2" style="text-transform:uppercase">{t}Software{/t}</th>
 	</tr>
 	<tr>
 		<td><label>BEdita</label></td>
@@ -39,7 +37,7 @@ $(document).ready(function(){
 		<td>{$sys.phpVersion}</td>
 	<tr>
 		<td><label>PHP extensions</label></td>
-		<td>{foreach from=$sys.phpExtensions item="ext"} {$ext}{/foreach}</td>
+		<td style="width:480px">{foreach from=$sys.phpExtensions item="ext"} {$ext}{/foreach}</td>
 	</tr>
 	<tr>
 		<td><label>MySQL</label></td>
@@ -63,13 +61,9 @@ $(document).ready(function(){
 		<td><label>Operating System</label></td>
 		<td>{$sys.osVersion}</td>
 	</tr>
+
 	<tr>
-		<td></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td></td>
-		<td><label>{t}URLs and paths{/t}</label></td>
+		<th colspan="2" style="text-transform:uppercase">{t}URLs and paths{/t}</th>
 	</tr>
 	<tr>
 		<td><label>Media files URL</label></td>
@@ -93,5 +87,4 @@ $(document).ready(function(){
 	</tr>
 </table>
 
-</div>
 </fieldset>
