@@ -94,7 +94,7 @@
 					
 			</fieldset>
 			
-   			<div class="tab"><h2>{t}Editor notes{/t}</h2></div>
+   			<div class="tab"><h2>{t}Notes{/t}</h2></div>
 			<fieldset id="editor">
 					
 			</fieldset>

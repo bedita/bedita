@@ -148,7 +148,7 @@ $(document).ready(function() {
 	{/section}
 	</ul>
 
-<div class="tab"><h2>{t}last editor's notes{/t}</h2></div>
+<div class="tab"><h2>{t}last notes{/t}</h2></div>
 	<ul id="lastnotes" class="bordered">
 		{foreach from=$lastNotes item="note"}
 			<li>{$note.realname|default:$note.userid}, 

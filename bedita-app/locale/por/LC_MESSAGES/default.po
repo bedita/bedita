@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-08-21 16:49:39\n"
+"POT-Creation-Date: 2009-08-27 17:32:22\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -35,6 +35,9 @@ msgid "Add multiple items"
 msgstr ""
 
 msgid "Add new category"
+msgstr ""
+
+msgid "Add new subscribers"
 msgstr ""
 
 msgid "Add selected items"
@@ -312,12 +315,6 @@ msgstr "Documentos borrados"
 msgid "Duplicate property name for the same object"
 msgstr ""
 
-msgid "Editor notes"
-msgstr ""
-
-msgid "Editors Notes"
-msgstr ""
-
 msgid "Email"
 msgstr ""
 
@@ -504,6 +501,9 @@ msgstr ""
 msgid "Errors during upload"
 msgstr "Errores no anexar"
 
+msgid "Event Promoter"
+msgstr ""
+
 msgid "Event calendar"
 msgstr "Calendario evento"
 
@@ -553,9 +553,6 @@ msgid "Gallery saved"
 msgstr "Galeria guardada"
 
 msgid "Generic categories"
-msgstr ""
-
-msgid "Geotag"
 msgstr ""
 
 msgid "Get contents"
@@ -1387,6 +1384,9 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
+msgid "Write here comma-separated email addresses"
+msgstr ""
+
 msgid "Write your answer. Max chars is"
 msgstr ""
 
@@ -1570,7 +1570,7 @@ msgstr ""
 msgid "copy"
 msgstr ""
 
-msgid "correct"
+msgid "correct answer"
 msgstr ""
 
 msgid "country"
@@ -1652,6 +1652,9 @@ msgid "draft"
 msgstr ""
 
 msgid "duration in minutes"
+msgstr ""
+
+msgid "edit"
 msgstr ""
 
 msgid "editor"
@@ -1765,9 +1768,6 @@ msgstr ""
 msgid "last comments"
 msgstr ""
 
-msgid "last editor's notes"
-msgstr ""
-
 msgid "last login"
 msgstr ""
 
@@ -1778,6 +1778,9 @@ msgid "last modified by"
 msgstr ""
 
 msgid "last modified on"
+msgstr ""
+
+msgid "last notes"
 msgstr ""
 
 msgid "last page"
@@ -1975,6 +1978,9 @@ msgstr ""
 msgid "on my stuff only"
 msgstr ""
 
+msgid "online from"
+msgstr ""
+
 msgid "open answer"
 msgstr ""
 
@@ -2044,6 +2050,9 @@ msgstr ""
 msgid "promote as user"
 msgstr ""
 
+msgid "promoter name"
+msgstr ""
+
 msgid "properties"
 msgstr ""
 
@@ -2074,9 +2083,6 @@ msgstr ""
 msgid "realname"
 msgstr ""
 
-msgid "received Messages"
-msgstr ""
-
 msgid "recipients"
 msgstr ""
 
@@ -2084,6 +2090,9 @@ msgid "reference"
 msgstr ""
 
 msgid "referenced objects list"
+msgstr ""
+
+msgid "remove"
 msgstr ""
 
 msgid "remove from users"
@@ -2270,6 +2279,9 @@ msgid "use template"
 msgstr ""
 
 msgid "username"
+msgstr ""
+
+msgid "users"
 msgstr ""
 
 msgid "valid"

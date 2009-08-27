@@ -80,7 +80,7 @@ function refreshNoteList(delButton) {
 
 {if !empty($object)}
 
-	<div class="tab"><h2>{t}Editors Notes{/t}</h2></div>
+	<div class="tab"><h2>{t}Notes{/t}</h2></div>
  
 	<div id="editornotes" style="margin-top:-10px; padding:10px; background-color:white;">
 	{*dump var=$object.EditorNote|@array_reverse*}
