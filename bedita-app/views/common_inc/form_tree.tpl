@@ -14,7 +14,6 @@ $(document).ready(function(){
 //-->
 </script>
 
-	
 <div class="tab"><h2>{t}{if empty($tpl_title)}Position{else}{$tpl_title}{/if}{/t}</h2></div>
 
 <fieldset id="whereto">
@@ -25,7 +24,9 @@ $(document).ready(function(){
 	{else}
 
 		<div class="publishingtree" style="width:auto; margin-left:10px;">
-		{$beTree->view($tree, "checkbox", $parents)}
+		
+			{include file="../common_inc/tree.tpl" checkbox=true}
+		
 		</div>
 		
 	{/if}

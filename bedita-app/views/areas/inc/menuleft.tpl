@@ -27,7 +27,11 @@ Menu a SX valido per tutte le pagine del controller.
 	
 	{if ($method != "viewArea" && $method != "viewSection")}
 	<div class="insidecol publishingtree">	
-			{if !empty($tree)}{$beTree->view($tree)}{/if}
+			{if !empty($tree)}
+			
+			{include file="../common_inc/tree.tpl"}
+			
+			{/if}
 	</div>
 	{/if}
 	

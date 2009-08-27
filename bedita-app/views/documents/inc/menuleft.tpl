@@ -21,16 +21,19 @@ Menu a SX valido per tutte le pagine del controller.
 
 	{if (!empty($method)) && $method eq "index"}
 	<div class="insidecol publishingtree">
-		
-			{$beTree->view($tree)}
+
+		{include file="../common_inc/tree.tpl"}
 	
 	</div>
 	{/if}
 
+	
 {if $method eq "view"}
 {include file="../common_inc/previews.tpl"}
 {/if}
 
 {include file="../common_inc/user_module_perms.tpl"}
 
+
+	
 </div>

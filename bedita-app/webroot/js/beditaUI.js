@@ -285,33 +285,25 @@ $(document).ready(function(){
 ...........................................*/	
 
 
-
-	$(".publishingtree DIV UL").hide();
+	//$(".publishingtree DIV UL").hide();
 
 	$(".publishingtree h2").before("<div class='plusminus'></div>");
 
 	
 	$(".publishingtree .plusminus").click(function () {
-			$(this).toggleClass("on").parent("div").find("ul").toggle();
+			$(this).toggleClass("on").parent("div").find("ul").toggle('slow');
 	});
 
-
-
 	$(".publishingtree h2 A").click(function () {
-		
 			if ($(this).attr("rel")) {
 				window.location = $(this).attr("rel");
-			}
-			
-		
+			}	
 	});
 
 	$(".publishingtree LI A").click(function () {
-
 			if ($(this).attr("rel")) {
 				window.location = $(this).attr("rel");
 			}
-
 	});
 	
 	$(".publishingtree LI A.on").parents("DIV:first").find("UL").show();

@@ -71,7 +71,7 @@ class BeTreeHelper extends Helper {
 					}
 				}
 				
-				$output .= "<div><h2 id='pub_" . $publication['id'] . "'>";
+				$output .= "<div class='pub'><h2 id='pub_" . $publication['id'] . "'>";
 				
 				$output .= "<a ".$class." rel='" . $url . "'>";
 				
@@ -178,7 +178,7 @@ class BeTreeHelper extends Helper {
 	private function designBranch($branch, $inputType, $parent_ids) {
 		$url = "";
 		$class = "";
-		$res = "<ul>";
+		$res = "<ul class='menutree'>";
 		
 		foreach ($branch as $section) {
 			

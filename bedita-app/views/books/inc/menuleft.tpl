@@ -25,7 +25,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 		<div class="insidecol publishingtree">
 			
-				{$beTree->view($tree)}
+			{include file="../common_inc/tree.tpl"}
 		
 		</div>
 

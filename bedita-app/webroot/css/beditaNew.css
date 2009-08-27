@@ -662,10 +662,10 @@ UL.menuleft {
 	width:260px;
 }
 
-.publishingtree DIV {
-	margin-top: 10px;
-	margin-left: -10px;
+.publishingtree DIV.pub {
+	margin: 0px 0px 0px 0px;
 	clear:both;
+	/*border:1px solid red;*/
 }
 
 .publishingtree H2 A {
@@ -673,6 +673,8 @@ UL.menuleft {
 	padding:2px 0px 5px 5px;
 	margin-left:10px;
 }
+
+
 
 .publishingtree H2 A.on {
 	font-weight:normal;
@@ -692,11 +694,12 @@ UL.menuleft {
 	background-position: right 0px ;
 	height:25px;
 	width:25px;
-	margin-top:0px;
+	margin:0px 0px 20px -10px;
+	background-position: right -25px !important;
 }
 
 .publishingtree .plusminus.on {
-	background-position: right -25px !important;
+	background-position: right 0px !important;
 	background-color: transparent;
 }
 
@@ -709,18 +712,17 @@ UL.menuleft {
 	margin-left:10px;
 }
 
+/*
 .publishingtree LI  {
-	padding:0px; margin:0px;
+	padding:2px; margin:0px;
 	list-style-type:none;
 	list-style-position: outside;
-	border-left:1px dotted #666666;
+	border-left:0px dotted #666666;
 	border-top:0px dashed #999999;
 }
-
+*/
 .publishingtree LI A {
-	display:block;
-	padding:3px 0px 3px 10px;
-
+	padding:5px;
 }
 
 .publishingtree A {
