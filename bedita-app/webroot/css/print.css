@@ -1,0 +1,56 @@
+BODY {
+	font-size:12px; font-family: "Arial", "Helvetica", sans-serif; line-height:1.5em;
+	height:297mm;
+	width:210mm;	
+}
+
+.standardreport {
+	margin:5mm; padding:5mm; border:1pt solid gray;
+}
+
+H1 {line-height:1em}
+
+H2 { line-height:1em}
+
+UL, LI {padding:0px; margin:0px;}
+
+LI UL LI {padding-left:2em;}
+
+
+label {font-weight:bold; color:#333;}
+
+LI {padding:2px; list-style:none; border-top:1px solid silver;}
+
+P {margin:0px; padding:0px; }
+
+
+/*...........................................
+ 
+    Modules
+
+...........................................*/
+
+.modules {
+	width:140px;
+	height:140px;
+}
+
+
+.modules label {
+	display:block;
+	font-size: 1.16em ;
+	width:120px; height:120px; 
+	padding:10px;
+	margin: 0px;
+	background-color:#CCCCCC; 
+	color:#000;
+	float:left;
+	font-weight:normal;
+}
+
+
+.bedita 	{background-color:#996600 !important; 
+			font:normal 1.75em Georgia, "Times New Roman", Times, serif !important;
+			line-height:1em !important;
+			color:#FFF  !important;
+			}

@@ -3,7 +3,8 @@
 <head>
 	<title>BEdita | {$title_for_layout} | {$html->action}</title>
 	
-	{$html->css('print', null, "media='print'")}
+	{$html->css('print', null, "media='all'")}
+	
 	{assign_concat var="cssfile" 0=$smarty.const.APP 1="webroot" 2=$smarty.const.DS 3="css" 4=$smarty.const.DS 5=$printLayout 6=".css"}
 	{if file_exists($cssfile)}
 		{$html->css($printLayout)}
