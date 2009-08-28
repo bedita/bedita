@@ -28,26 +28,16 @@
 		
 	{elseif strtolower(($object.ObjectType.name) == "video")}
 	
-		{assign_associative var="params" presentation="full" useProviderPlayer="false"}
-		{assign_associative var="htmlAttr" width=$conf->media.video.width height=$conf->media.video.height id="multimediaitemvideo"}
+		{assign_associative var="params" presentation="full"}
+		{assign_associative var="htmlAttr" id="multimediaitemvideo"}
 		
 		{$beEmbedMedia->object($object,$params,$htmlAttr)}
 		
 	{elseif strtolower($object.ObjectType.name) == "audio"}
 	
-		<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
-			<img src="{$session->webroot}img/mime/{$object.mime_type}.gif" />
-		</a>
-	
-		<embed 
-			src		= "{$html->webroot}swf/mediaplayer.swf" 
-			width	= "{$conf->audioWidth}"
-			height	= "{$conf->audioHeight}"
-			allowscriptaccess = "always"
-			allowfullscreen = "true"
-			flashvars = "file={$conf->mediaUrl}{$object.path}&backcolor=0x000000&frontcolor=0xFFFFFF&lightcolor=0x000000&overstretch=true&searchbar=false&autostart=false"
-		/>
-	
+		{assign_associative var="htmlAttr" id="multimediaitemaudio"}
+		{$beEmbedMedia->object($object, null, $htmlAttr)}
+		
 	{elseif strtolower($object.ObjectType.name) == "application"}
 		
 		{assign_associative var="htmlAttributes" id="appContainer"} 

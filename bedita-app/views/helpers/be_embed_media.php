@@ -37,6 +37,13 @@ class BeEmbedMediaHelper extends AppHelper {
   //  private $_output  = false;
 	private $_conf    = array ();
 
+	private $defaultPresentation = array(
+		"Image" => "thumb",
+		"Video" => "full",
+		"Audio" => "full",
+		"Application" => "full",
+		"BEFile" => "link"
+	);
 
 	/**
 	 * Included helpers.
@@ -66,7 +73,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	 * @param array obj, BEdita Multimedia Object
 	 * @param array params, optional, parameters used by external helpers such as BeThumb->image
 	 * 		   possible value for params:
-	 * 			"presentation" => "thumb" (default), "full", "link"
+	 * 			"presentation" => "thumb", "full", "link" (default defined by $defaultPresentation attribute)
 	 * 			"URLonly" => if setted return only url
 	 * 
 	 * 			## USED only for image thumbnail on filesystem ##
@@ -86,10 +93,9 @@ class BeEmbedMediaHelper extends AppHelper {
 	 */
 	public function object ( $obj, $params = null, $htmlAttributes=array() )
 	{
-		$params["presentation"] = (!empty($params["presentation"]))? $params["presentation"] : "thumb";
-		
 		// get object type
 		$model = $this->getType ($obj);
+		$params["presentation"] = (!empty($params["presentation"]))? $params["presentation"] : $this->defaultPresentation[$model];
 		$method = "show" . ucfirst($params["presentation"]) . $model;
 		
 		if (method_exists($this, "show" . ucfirst($params["presentation"]) . $model)) {
@@ -213,6 +219,12 @@ class BeEmbedMediaHelper extends AppHelper {
 
 		if ($params["presentation"] == "link") {
 			return $this->Html->link($obj['title'],$obj['path'], $htmlAttributes);
+		} elseif ($params["presentation"] == "full") {
+			$output = $this->MediaProvider->embed($obj, $params, $htmlAttributes);
+			if (empty($output)) {
+				$output = $obj['path'];
+			}
+			return $output;
 		} else {
 			$img = $this->getMediaTypeImage($obj);
 			return $this->Html->image($img, $htmlAttributes);
@@ -244,19 +256,7 @@ class BeEmbedMediaHelper extends AppHelper {
 		}
 	}
 	
-	private function showApplication($obj, $params, $htmlAttributes) {
-		
-		
-		/*		
-		 * 	controllo che sia tipo flash (database)
-		 *  presentation = full -> chiamata generica swf
-		 *  
-		 *  presentation = thumb -> ?? icona di default
-		 *  
-		 *  $appPath = (defined("BEDITA_CORE_PATH"))? BEDITA_CORE_PATH . DS : APP;
-		 * 
-		 */
-		
+	private function showApplication($obj, $params, $htmlAttributes) {		
 		if ($params["presentation"] == "full") {
 			
 			if ($obj["application_name"] == "flash") {

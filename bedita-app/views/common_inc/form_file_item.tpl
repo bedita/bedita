@@ -15,7 +15,7 @@
 
 {assign_concat var="imageAltAttribute"	0="alt='"  1=$item.title 2="'"}
 
-{assign_associative var="params" width=$thumbWidth height=$thumbHeight longside=false mode="fill" modeparam="000000" type=null upscale=false}
+{assign_associative var="params" presentation="thumb" width=$thumbWidth height=$thumbHeight longside=false mode="fill" modeparam="000000" type=null upscale=false}
 {assign_associative var="htmlAttr" width=$thumbWidth height=$thumbHeight alt=$item.title title=$item.name}
 
 {literal}
@@ -44,7 +44,7 @@ $(document).ready(function(){
 	
 		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="px; " 3="height:" 4=$conf->videoThumbHeight 5="px;"}
 		{assign_associative var="attributes" style=$myStyle}
-		{$beEmbedMedia->object($item,null,$attributes)}
+		{$beEmbedMedia->object($item,$params,$attributes)}
 	
 	{elseif strtolower($item.ObjectType.name) == "audio"}
 	
@@ -52,7 +52,7 @@ $(document).ready(function(){
 	
 	{else}
 
-		{$beEmbedMedia->object($item)}
+		{$beEmbedMedia->object($item, $params)}
 	
 	{/if}
 	

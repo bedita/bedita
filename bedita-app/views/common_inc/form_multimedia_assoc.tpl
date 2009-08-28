@@ -165,7 +165,7 @@ $(document).ready(function(){
 			
 			{assign var="thumbWidth" value = 45}
 			{assign var="thumbHeight" value = 45}
-			{assign_associative var="params" width=$thumbWidth height=$thumbHeight}
+			{assign_associative var="params" presentation="thumb" width=$thumbWidth height=$thumbHeight}
 			{assign_associative var="attributes" style="width:45px;"}
 			
 			{foreach from=$items item='mobj' key='mkey'}	

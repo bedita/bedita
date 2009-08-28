@@ -56,17 +56,17 @@ class MediaProviderHelper extends AppHelper {
 	 */
 	function embed(&$obj, $params = array(), $attributes = array() ) {
 		
-		//caso in cui non esiste un helper specifico per gestire il tipo di video
+		// provider helper to manage video/audio type don't exists
 		if (!$helperName = $this->getHelperName($obj)){
 			$obj['path'] = ($this->checkURL($obj['path'])) ? $obj['path'] : Configure::read('mediaUrl').$obj['path'];
 			return  $this->BeEmbedFlash->embed($obj, $params, $attributes);
 		}
 		
-		//esiste l'helper ed � stato l'uso del player remoto specifico 
+		// provider helper exists and it's setted to use provider helper 
 		if (!empty($params['useProviderPlayer'])) {
 			return $this->{$helperName}->embed($obj, $attributes);
-		}else {
-			//esiste l'helper, ma non essendo stato forzato il player esterno prova a riprodurlo usando prima il player interno
+		} else {
+			// try to use internal player
 			$obj['path'] = $this->sourceEmbed($obj);
 			$res = $this->BeEmbedFlash->embed($obj, $params, $attributes);
 			if ( $res === false ) {

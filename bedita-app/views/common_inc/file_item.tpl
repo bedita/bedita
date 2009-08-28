@@ -15,6 +15,7 @@
 	<div style="overflow:hidden; height:{$thumbHeight}px" class="imagebox">
 
 	<a href="{$linkUrl}">
+	
 	{if strtolower($item.ObjectType.name) == "image"}
 		{assign_associative var="params" width=$thumbWidth height=$thumbHeight mode="fill" upscale=false}
 		{assign_associative var="htmlAttr" width=$thumbWidth height=$thumbHeight alt=$item.title title=$item.name}
@@ -30,17 +31,21 @@
 			
 		{/if}
 
-	{elseif ($item.provider|default:false)}
-	
-		{assign_associative var="htmlAttr" width=$conf->videoThumbWidth height=$conf->videoThumbHeight alt=$item.title title=$item.name}
-		{$beEmbedMedia->object($item,null,$htmlAttr)}
+	{elseif strtolower($item.ObjectType.name) == "video"}
+		{assign_associative var="params" presentation="thumb"}
+		{if !empty($item.provider)}
+			{assign_associative var="htmlAttr" width=$conf->videoThumbWidth height=$conf->videoThumbHeight alt=$item.title title=$item.name}
+		{else}
+			{assign var="htmlAttr" value=null}
+		{/if}
+		{$beEmbedMedia->object($item,$params,$htmlAttr)}
 	
 	
 	{else}
-	
-		{$beEmbedMedia->object($item,null)}
+		{assign_associative var="params" presentation="thumb"}
+		{$beEmbedMedia->object($item,$params)}
 			
-{/if}
+	{/if}
 	</a>
 	</div>
 	

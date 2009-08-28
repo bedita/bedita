@@ -136,9 +136,11 @@ $config['media']['video']['width']       = 300;      // px - was $config['videoW
 $config['media']['video']['height']      = 250;      // px - was $config['videoHeight']
 $config['media']['video']['thumbWidth']  = 130;      // px - was $config['videoThumbWidth']
 $config['media']['video']['thumbHeight'] = 85;       // px - was $config['videoThumbHeight']
+$config['media']['video']['player'] 	 = "flowplayer.swf";
 
 $config['media']['audio']['width']       = 300;      // px - was $config['audioWidth']
-$config['media']['audio']['height']      = 20;       // px - was $config['audioHeight']
+$config['media']['audio']['height']      = 24;       // px - was $config['audioHeight']
+$config['media']['audio']['player'] 	 = "flowplayer.swf";
 
 
 
@@ -590,20 +592,20 @@ $config['media_providers'] = array(
  */
 $config['provider_params']  = array(
 	"youtube"	=> array(
-		"width" 	=> 320,
-		"height" 	=> 200,
+		"width" 	=> 300,
+		"height" 	=> 250,
 		"urlthumb"	=> "http://i.ytimg.com/vi/%s/default.jpg",
 		"embedTag" 	=> "<embed src='http://www.youtube.com/v/%s%s' type='application/x-shockwave-flash' wmode='transparent' width='%d' height='%d'></embed>"
 	),
 	"blip" => array(
-		"width"		=> 320,
-		"height"	=> 200,
+		"width"		=> 300,
+		"height"	=> 250,
 		"urlinfo" 	=> "http://www.blip.tv/file/%s?skin=json",
 		"urlembed"	=> "http://www.blip.tv/players/embed/?posts_id=%s&players_id=-1&skin=json&callback=DoSomethingActions.playerSelector.gotEmbedCode"
 	),
 	"vimeo" => array(
-		"width"		=> 320,
-		"height"	=> 200,
+		"width"		=> 300,
+		"height"	=> 250,
 		"urlinfo" 	=> "http://vimeo.com/api/clip/%s.%s",
 		"urlembed"	=> "http://vimeo.com/api/oembed.json?url=%s"
 	)
