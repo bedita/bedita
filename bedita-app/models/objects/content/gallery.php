@@ -42,11 +42,12 @@ class Gallery extends BeditaContentModel
 													"ObjectProperty",
 													"LangText",
 													"RelatedObject",
+													"Annotation",
 													"Category")),
 		
 		       "default" => array("BEObject" => array("ObjectProperty", 
 							"LangText", "ObjectType", 
-							"Category", "RelatedObject" )),
+							"Category", "RelatedObject","Annotation")),
 		
 		"minimum" => array("BEObject" => array("ObjectType"))		
 	);

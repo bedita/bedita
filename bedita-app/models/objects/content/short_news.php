@@ -42,11 +42,12 @@ class ShortNews extends BeditaContentModel
 													"ObjectProperty",
 													"LangText",
 													"RelatedObject",
-													"Category")),
+													"Category",
+													"Annotation")),
 		
 		       "default" => array("BEObject" => array("ObjectProperty", 
 							"LangText", "ObjectType", 
-							"Category", "RelatedObject" )),
+							"Category", "RelatedObject", "Annotation" )),
 		
 		"minimum" => array("BEObject" => array("ObjectType"))		
 	);
