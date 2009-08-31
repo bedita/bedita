@@ -8,7 +8,7 @@ $(document).ready(function(){
 	$(".menutree").treeview({
 		animated: "slow",
 		collapsed: true,
-		unique: true,
+		unique: false,
 		persist: "cookie"
 	});
 

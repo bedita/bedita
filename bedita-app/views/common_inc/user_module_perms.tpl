@@ -1,4 +1,4 @@
-<div class="insidecol" style="margin-top:200px; padding-top:5px; padding-bottom:5px; border-top:5px solid gray; border-bottom:5px solid gray;">
+<div class="insidecol" style="margin-top:50px; padding-top:5px; padding-bottom:5px; border-top:5px solid gray; border-bottom:5px solid gray;">
 
 {if !empty($BEAuthUser.userid)}
 {t}User{/t}: <span class="on">{$BEAuthUser.realname}</span>
