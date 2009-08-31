@@ -1340,11 +1340,20 @@ abstract class FrontendController extends AppController {
 	 * @param string $tplVar
 	 * @param bool $cloud, if true set 'class' key 
 	 * 			(possible value: smallestTag, largestTag, largeTag, mediumTag, smallTag)
+	 * @param bool $shuffle, if true shuffle the tags else order by label
+	 * @param int $tagShowed, define how much tags have to be returned (null = all tags)
 	 */
-	public function loadTags($tplVar=null, $cloud=true) {
+	public function loadTags($tplVar=null, $cloud=true, $shuffle=false, $tagShowed=null) {
 		$tplVar = (empty($tplVar))? "listTags" : $tplVar;
 		$category = ClassRegistry::init("Category");
-		$this->set($tplVar, $category->getTags(false, $this->status, $cloud));
+		$tags = $category->getTags(false, $this->status, $cloud);
+		if ($shuffle) {
+			shuffle($tags);
+		}
+		if (!empty($tagShowed)) {
+			$tags = array_slice($tags,0,$tagShowed);
+		}
+		$this->set($tplVar, $tags);
 	}
 	
 	/**
