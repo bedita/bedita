@@ -69,7 +69,7 @@ class PagesController extends AppController {
 			throw new BeditaException(__("Error finding object", true));
 		}
 		if (!empty($objectData['RelatedObject'])) {
-			$objectData['relations'] = $this->objectRelationArray($obj['RelatedObject']);
+			$objectData['relations'] = $this->objectRelationArray($objectData['RelatedObject']);
 		}
 		if (!empty($objectData['Annotation'])) {
 			$this->setupAnnotations($objectData);
