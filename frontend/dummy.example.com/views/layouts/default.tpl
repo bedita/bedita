@@ -6,6 +6,7 @@
 	<link rel="shortcut icon" href="{$html->webroot}favicon.ico" type="image/x-icon" />
 
 	{$html->charset('utf-8')}
+	{$scripts_for_layout}
 </head>
 
 <body>

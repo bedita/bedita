@@ -41,6 +41,7 @@
 	{$javascript->link("jquery.pngFix.pack")}
 	{$javascript->link("bedita")}
 	{$javascript->link("jquery.thickbox.BEfrontend")}
+	{$scripts_for_layout}
 	
 </head>
 
