@@ -18,6 +18,7 @@ $rel["removeFiles"]= array(
 
 $rel["removeDirs"]= array(
 	"bedita-deploy",
+	"bedita-doc".DS."api".DS."html",
 	"bedita-doc".DS."model",
 	"bedita-doc".DS."view",
 	"bedita-app".DS."views".DS."bibliographies",

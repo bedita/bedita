@@ -1,3 +1,68 @@
+Version 3.0.RC
+
+ User-visible changes:
+
+	* introduced editor notes (save/delete ajax)
+	* fixed "recent items" lists in dashboard (no comments/notes/other stuff)
+	* #195 - online help
+	* last notes/comments in dashboard
+	* localization updates, only english-italian languages
+	* admin: system events & system info in 2 pages
+	* admin/systemInfo - added jquery, smarty, tinyMCE version info, mysql host and database
+	* #205 - fix layout on IE7
+	* #202 - fixed IE7 & IE8 flash upload problem
+	* fixed multimedia list view
+	* #193 events: modified view (promoter/location)
+
+
+ Frontend changes:
+
+	* little changes on checKIsLogged and login method
+	* documented frontend.ini.php variables
+	* #135 - staging sites have authentication
+	* #122 newsletter: subscribe/unsubscribe from frontend
+	* fixed exceptions handling for contents not in current publication
+	* frontend: new dir structure, 2 frontends: debug.example.com, site.example.com
+	* frontend: nickname based complete paths - $section["path"] and $section["contentPath"]
+	* fixed parent filter on specific publishing 
+
+ Developer-visibile changes:
+
+	* fix some bugs using HtmlHelper::link
+	* update release.cfg.php.sample
+	* </head> and <body> default layout
+	* tag {bedev}{/bedev} to hide unimplemented features
+	* api docs - doxygen customization, variuos updates
+	* global <form> tags cleanup
+	* embed helper: flash, swf, flv
+	* #116 ajax upload: automatic fallback if flash plugin not available, link to switc to/from browser upload
+	* #198 multimedia: new model Application
+	* #101 - email notification
+	* bedita export without media files, -nomedia option 
+	* generic /vew method/url in backend
+	* #197 Application object management and getMediaTypeImage function improvements
+	* bedita shell: sync object_types table with bedita.ini (updateObjectTypes)
+	* $object["curr_lang"] contains current language if different from main "lang"
+	* update uploadify
+	* #185 fix import from phplist
+	* #203 fixed, addLink ajax method in pages_controller with all other ajax methods
+	* fixed bug uploading youtube video
+	* #204 new schema for object_users, free relations between users and objects
+	* fix diagnostics - error 404/500 details if 'debug' level >= 1
+	* fixed handlig of user_modified, user_created, ip_created in BEObject model
+	* comments: fixed notification msg, notification not sent if comment updated from backend
+	* links/URLs: fetch title automatically if not set - new link, Links tab, new multimedia obj via URL
+	* update to cakePHP 1.2.4.8284
+	* update to Smarty 2.6.26
+	* new table hash_jobs
+	* fix unit tests
+	* #196 print layout
+	* #209 - mail log for mail sent without jobs, added mail_jobs.smtp_err on mail job failure
+	* addressbook: various fixes
+	* update TinyMCE 3.2.6
+	* default audioplauer: flowplayer
+
+
 Version 3.0.beta2
 
  User-visible changes:
