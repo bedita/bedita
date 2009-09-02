@@ -13,7 +13,7 @@ var urlGetAllItemNoAssoc = '{$html->url("/streams/showStreams")}/{$object.id|def
 var containerItem = "#multimediaItems";
 
 {literal}
-function commitUploadItem(IDs, rel) {
+function commitUploadItem(IDs) {
 
 	var currClass =  $(".multimediaitem:last").attr("class");
 	//alert(currClass);
@@ -23,7 +23,7 @@ function commitUploadItem(IDs, rel) {
 		var id = escape(IDs[i]) ;
 
 		$(emptyDiv).load(
-			urlGetObj, {'id': id, 'relation':rel}, function (responseText, textStatus, XMLHttpRequest)
+			urlGetObj, {'id': id, 'relation':"attach"}, function (responseText, textStatus, XMLHttpRequest)
 			{
 				$("#loading").hide();
 				$(containerItem).append(this).fixItemsPriority(); 
@@ -46,7 +46,7 @@ function showResponse(data) {
 			tmp[countFile++] = entry['fileId'];
 		});
 
-		commitUploadItem(tmp, "attach");
+		commitUploadItem(tmp);
 	}
 
 		$("#addmultimedia").find("input[@type=text]").attr("value", "");

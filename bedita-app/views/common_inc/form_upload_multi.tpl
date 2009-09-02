@@ -1,16 +1,21 @@
 {$javascript->link('swfobject', false)}
 {$javascript->link('jquery/jquery.uploadify.v2.0.0.min', false)}
+{if empty($uploadIdSuffix)}
+	{assign var=uploadIdSuffix value=""}
+{/if}
 
 <script type="text/javascript">
 <!--
 var webroot = "{$html->webroot}";
 var multiUploadUrl = "{$html->url('/')}files/upload";
 var u_id = "{$session->read("BEAuthUser.id")}";
+var uploadIdSuffix = "{$uploadIdSuffix}";
+
 {literal}
 $(document).ready(function() {
 
 	if (getFlashVersion() !== false) {
-		$('#inputFiledata').uploadify({
+		$('#inputFiledata{/literal}{$uploadIdSuffix}{literal}').uploadify({
 			'uploader': webroot + 'swf/uploadify.swf',
 			'script':    multiUploadUrl,
 			multi: true,
@@ -20,76 +25,52 @@ $(document).ready(function() {
 			width: 124,
 			buttonText : 'browssssse',
 			displayData: 'percentage',
-			onComplete: completeUpload,
+			onComplete: completeUpload{/literal}{$uploadIdSuffix}{literal},
 			scriptData: {userid: u_id}
 		});
 
-		$("#flashUploadContainer a").click(function() {
-			$("#ajaxUploadContainer").show();
-			$("#flashUploadContainer").hide();
+		$("#flashUploadContainer{/literal}{$uploadIdSuffix}{literal} a").click(function() {
+			$("#ajaxUploadContainer{/literal}{$uploadIdSuffix}{literal}").show();
+			$("#flashUploadContainer{/literal}{$uploadIdSuffix}{literal}").hide();
 		});
 
-		$("#ajaxUploadContainer a").click(function() {
-			$("#ajaxUploadContainer").hide();
-			$("#flashUploadContainer").show();
+		$("#ajaxUploadContainer{/literal}{$uploadIdSuffix}{literal} a").click(function() {
+			$("#ajaxUploadContainer{/literal}{$uploadIdSuffix}{literal}").hide();
+			$("#flashUploadContainer{/literal}{$uploadIdSuffix}{literal}").show();
 		});
 		
 	} else {
-		$("#flashUploadContainer").hide();
-		$("#ajaxUploadContainer").show();
-		$("#ajaxUploadContainer a").hide();
+		$("#flashUploadContainer{/literal}{$uploadIdSuffix}{literal}").hide();
+		$("#ajaxUploadContainer{/literal}{$uploadIdSuffix}{literal}").show();
+		$("#ajaxUploadContainer{/literal}{$uploadIdSuffix}{literal} a").hide();
 	}
 
 	
 });
 
-function completeUpload(event, queueID, fileObj,response) {
+function completeUpload{/literal}{$uploadIdSuffix}{literal}(event, queueID, fileObj,response) {
 	if (isNaN(parseInt(response))) {
-		$("#inputFiledata" + queueID + " .fileName").text(" Error - " + fileObj.name + " - " + response);
-		$("#inputFiledata" + queueID).css({'border': '3px solid #FBCBBC', 'background-color': '#FDE5DD'});
+		$("#inputFiledata{/literal}{$uploadIdSuffix}{literal}" + queueID + " .fileName").text(" Error - " + fileObj.name + " - " + response);
+		$("#inputFiledata{/literal}{$uploadIdSuffix}{literal}" + queueID).css({'border': '3px solid #FBCBBC', 'background-color': '#FDE5DD'});
 		return false;
 	} else {
 		objids = new Array();
 		objids[0] = response;
-		$("#loading").show();
-		commitUploadItem(objids, "attach");
+		$("#loading{/literal}{$uploadIdSuffix}{literal}").show();
+		commitUploadItem{/literal}{$uploadIdSuffix}{literal}(objids);
 		return true;
 	}
 }
 
-function getFlashVersion(){ 
-	// ie 
-	try { 
-		try { 
-			// avoid fp6 minor version lookup issues 
-			// see: http://blog.deconcept.com/2006/01/11/getvariable-setvariable-crash-internet-explorer-flash-6/ 
-			var axo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash.6'); 
-      		try { 
-				axo.AllowScriptAccess = 'always'; 
-			} catch(e) {
-				return '6,0,0';
-			} 
-    	} catch(e) {} 
-    	return new ActiveXObject('ShockwaveFlash.ShockwaveFlash').GetVariable('$version').replace(/\D+/g, ',').match(/^,?(.+),?$/)[1]; 
-	// other browsers 
-	} catch(e) { 
-		try { 
-			if(navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin){ 
-				return (navigator.plugins["Shockwave Flash 2.0"] || navigator.plugins["Shockwave Flash"]).description.replace(/\D+/g, ",").match(/^,?(.+),?$/)[1]; 
-			} 
-		} catch(e) {} 
-	} 
 
-  	return false; 
-} 
 
 {/literal}
 //-->
 </script>
 
-<div id="flashUploadContainer" style="padding:20px 0px 0px 20px">
-<input type="file" name="Filedata" id="inputFiledata" />
+<div id="flashUploadContainer{$uploadIdSuffix|default:''}" style="padding:20px 0px 0px 20px">
+<input type="file" name="Filedata{$uploadIdSuffix}" id="inputFiledata{$uploadIdSuffix}" />
 <p><a href="javascript:void(0);">{t}If you have any problems try with browser upload{/t}</a></p>
 </div>
 
-{include file="../common_inc/form_upload_ajax.tpl"}
+{include file="../common_inc/form_upload_ajax.tpl" uploadIdSuffix=$uploadIdSuffix}

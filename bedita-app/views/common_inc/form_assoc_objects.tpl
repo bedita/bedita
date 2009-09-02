@@ -1,7 +1,7 @@
 {$javascript->link("jquery/jquery.disable.text.select", true)}
 
 <script type="text/javascript">
-//var urlAddObjToAss= "{$html->url('/pages/loadObjectToAssoc/')}{$object.id}";
+var urlAddObjToAss= "{$html->url('/pages/loadObjectToAssoc/')}{$object.id}";
 <!--
 {literal}
 
@@ -18,12 +18,48 @@ function relatedRefreshButton() {
 }
 
 function addObjToAssoc(url, postdata) {
+	$("#loadingDownloadRel").show();
 	$.post(url, postdata, function(html){
-		$("#relationType_" + postdata.relation + " tr:last").after(html);
+		$("#loadingDownloadRel").hide();
+		$("#relationType_" + postdata.relation + " table:first").find("tr:last").after(html);
 		$("#relationType_" + postdata.relation).fixItemsPriority();
 		$("#relationContainer table").find("tbody").sortable("refresh");
 		relatedRefreshButton();
 	});
+}
+
+function commitUploadItemDownloadRel(IDs) {
+	obj_sel = {};
+	obj_sel.object_selected = "";
+	for(var i=0 ; i < IDs.length ; i++) {
+		obj_sel.object_selected += IDs[i] + ",";
+	}
+	obj_sel.relation = "download";
+	addObjToAssoc(urlAddObjToAss, obj_sel);	
+}
+
+function showResponseDownloadRel(data) {
+	if (data.UploadErrorMsg) {
+		$("#loadingDownloadRel").hide();
+		$("#ajaxUploadContainerDownloadRel").append("<label class='error'>"+data.UploadErrorMsg+"<\/label>").addClass("error");
+	} else {
+		var tmp = new Array() ;
+		var countFile = 0; 
+		$.each(data, function(entryIndex, entry) {
+			tmp[countFile++] = entry['fileId'];
+		});
+
+		commitUploadItemDownloadRel(tmp);
+	}
+	
+	$("#ajaxUploadContainerDownloadRel").find("input[@type=text]").attr("value", "");
+	$("#ajaxUploadContainerDownloadRel").find("input[@type=file]").attr("value", "");
+	$("#ajaxUploadContainerDownloadRel").find("textarea").attr("value", "");
+}
+
+function resetErrorDownloadRel() {
+	$("#ajaxUploadContainerDownloadRel").find("label").remove();
+	$("#loadingDownloadRel").show();
 }
 
 $(document).ready(function() {
@@ -55,6 +91,19 @@ $(document).ready(function() {
 			$(this).val("");
 		}
 	});
+
+	// upload ajax for download relation
+	var optionsFormDownloadRel = {
+		beforeSubmit:	resetErrorDownloadRel,
+		success:		showResponseDownloadRel,  // post-submit callback  
+		dataType:		'json',        // 'xml', 'script', or 'json' (expected server response type)
+		url: "{/literal}{$html->url('/files/uploadAjax/DownloadRel')}{literal}"
+	};
+
+	$("#uploadFormDownloadRel").click(function() {
+		$('#updateForm').ajaxSubmit(optionsFormDownloadRel);
+		return false;
+	});
 	
 });
 
@@ -72,7 +121,7 @@ $(function() {
 
 <fieldset id="frmAssocObject">
 	
-	<div id="loadingAssoc" class="generalLoading" title="{t}Loading data{/t}"></div>
+	<div id="loadingDownloadRel" class="loader" title="{t}Loading data{/t}"></div>
 	
 	<table class="htab">
 	{foreach from=$availabeRelations item="rel"}
@@ -100,6 +149,10 @@ $(function() {
 		<input type="button" class="modalbutton" title="{t}{$rel}{/t} : {t}select an item to associate{/t}"
 		rel="{$html->url('/pages/showObjects/')}{$object.id|default:0}/{$rel}/{$object_type_id}" style="width:200px" 
 		value="  {t}connect new items{/t}  " />
+		
+		{if $rel == "download"}
+			{include file="../common_inc/form_upload_multi.tpl" uploadIdSuffix="DownloadRel"}
+		{/if}
 		
 		{*
 		<br /><br />

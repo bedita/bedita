@@ -54,12 +54,19 @@ class FilesController extends AppController {
 		}
 	}
 	
-	function uploadAjax () {
+	function uploadAjax ($uploadSuffix=null) {
 		$this->layout = "ajax";
 		try {
 			$this->Transaction->begin() ;
-			$this->params['form']['streamUploaded']['lang'] = $this->data["lang"];
-			$id = $this->BeUploadToObj->upload($this->params["form"]["streamUploaded"]) ;
+			$formUploadFields = 'streamUploaded';
+			$formFileName = 'Filedata';
+			if (!empty($uploadSuffix)) {
+				$formUploadFields .= $uploadSuffix;
+				unset($this->params["form"]["Filedata"]);
+				$formFileName .= $uploadSuffix;
+			}
+			$this->params['form'][$formUploadFields]['lang'] = $this->data["lang"];
+			$id = $this->BeUploadToObj->upload($this->params["form"][$formUploadFields],$formFileName) ;
 			$this->Transaction->commit();
 			$this->set("fileId", $id);
 			$this->set("fileUploaded", true);

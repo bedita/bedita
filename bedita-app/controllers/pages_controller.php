@@ -214,9 +214,22 @@ class PagesController extends AppController {
 		$objRelated = array();
 
 		foreach ($objects as $key => $obj) {
-			if (empty($main_object_id) || $objects[$key]["BEObject"]["id"] != $main_object_id)
+			if (empty($main_object_id) || $objects[$key]["BEObject"]["id"] != $main_object_id) {
 				$obj["BEObject"]["module"] = $obj["ObjectType"]["module"];
+				// for media file get mime_type and size too
+				if ($this->params["form"]["relation"] == "download") {
+					$streamFields = ClassRegistry::init("Stream")->find("first", array(
+							"conditions" => array(
+								"id" => $obj["BEObject"]["id"]
+							),
+							"fields" => array("mime_type", "size")
+						)
+					);
+					$obj["BEObject"]["mime_type"] = $streamFields["Stream"]["mime_type"];
+					$obj["BEObject"]["size"] = $streamFields["Stream"]["size"];
+				}
 				$objRelated[] = array_merge($obj["BEObject"], array("ObjectType" => $obj["ObjectType"]));
+			}
 		}
 		
 		$this->set("objsRelated", $objRelated);

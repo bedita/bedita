@@ -41,19 +41,19 @@ class BeUploadToObjComponent extends Object {
 	 
 	 * @return object_id if upload was successful, false otherwise.
 	 */
-	function upload($dataStream=null) {
+	function upload($dataStream=null, $formFileName="Filedata") {
 		$result = false ;
-		if (empty($this->params["form"]["Filedata"]["name"]))
+		if (empty($this->params["form"][$formFileName]["name"]))
 			throw new BEditaException(__("No file in the form", true));
 
-		if ($this->params['form']['Filedata']['error'])
-			throw new BEditaUploadPHPException($this->params['form']['Filedata']['error']);
+		if ($this->params['form'][$formFileName]['error'])
+			throw new BEditaUploadPHPException($this->params['form'][$formFileName]['error']);
 			
 		// Prepare data
 		if (!empty($dataStream)) {
-			$data = array_merge($dataStream, $this->params['form']['Filedata']);
+			$data = array_merge($dataStream, $this->params['form'][$formFileName]);
 		} else {
-			$data = $this->params['form']['Filedata'];
+			$data = $this->params['form'][$formFileName];
 		}
 		$data['mime_type'] = $this->BeFileHandler->getMimeType($data);
 		unset($data['type']);

@@ -26,7 +26,7 @@ $(document).ready(function() {
 	});
 });
 			
-function commitUploadItem(IDs, rel) {
+function commitUploadItem(IDs) {
 
 	var emptyDiv = "<div  class='multimediaitem itemBox gold'><\/div>";
 	for(var i=0 ; i < IDs.length ; i++)
@@ -34,7 +34,7 @@ function commitUploadItem(IDs, rel) {
 		var id = escape(IDs[i]) ;
 
 		$(emptyDiv).load(
-			urlGetObj, {'id': id, 'relation':rel, 'template':'common_inc/file_item.tpl'}, function (responseText, textStatus, XMLHttpRequest)
+			urlGetObj, {'id': id, 'relation':'attach', 'template':'common_inc/file_item.tpl'}, function (responseText, textStatus, XMLHttpRequest)
 			{
 				$("#loading").hide();
 				$(containerItem).append(this); 
@@ -54,7 +54,7 @@ function showResponse(data) {
 			tmp[countFile++] = entry['fileId'];
 		});
 
-		commitUploadItem(tmp, "attach");
+		commitUploadItem(tmp);
 	}
 	
 	$("#ajaxUploadContainer").find("input[@type=text]").attr("value", "");
