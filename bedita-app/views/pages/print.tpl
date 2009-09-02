@@ -23,25 +23,36 @@
 		{else}
 		
 			<ul>
-				{foreach name="second" from=$v key=kk item=vv}
+				{foreach name="second" from=$v key=k2 item=v2}
 					<li {if ($smarty.foreach.second.index == 0)}style="border:0px solid silver"{/if}>
-						<label>{t}{$kk}{/t}:</label>
+						<label>{t}{$k2}{/t}:</label>
 						
-						{if !(is_array($vv))} 
-							{$vv} 
+						{if !(is_array($v2))} 
+							{$v2} 
 						{else}
 						<ul>
-							{foreach from=$vv key=kkk item=vvv}
+							{foreach from=$v2 key=k3 item=v3}
 								<li>
-									<label>{t}{$kkk}{/t}:</label>
-										{if !(is_array($vvv))} 
-											{$vvv} 
+									<label>{t}{$k3}{/t}:</label>
+										{if !(is_array($v3))} 
+											{$v3} 
 										{else}
 										<ul>
-											{foreach from=$vvv key=kkkk item=vvvv}
+											{foreach from=$v3 key=k4 item=v4}
 												<li>
-													<label>{t}{$kkkk}{/t}:</label>
-														{$vvvv}
+													<label>{t}{$k4}{/t}:</label>
+														{if !(is_array($v4))} 
+															{$v4} 
+														{else}
+														<ul>
+															{foreach from=$v4 key=k5 item=v5}
+																<li>
+																	<label>{t}{$k5}{/t}:</label>
+																		{$v5}
+																</li>
+															{/foreach}
+														</ul>
+														{/if}
 												</li>
 											{/foreach}
 										</ul>
