@@ -23,6 +23,7 @@ $(document).ready(function() {
 			'cancelImg': webroot + 'img/uploadCancel.png',
 			'buttonImg': webroot + 'img/multiupload-browse.png',
 			width: 124,
+			wmode:"transparent",
 			buttonText : 'browssssse',
 			displayData: 'percentage',
 			onComplete: completeUpload{/literal}{$uploadIdSuffix}{literal},
@@ -68,7 +69,7 @@ function completeUpload{/literal}{$uploadIdSuffix}{literal}(event, queueID, file
 //-->
 </script>
 
-<div id="flashUploadContainer{$uploadIdSuffix|default:''}" style="padding:20px 0px 0px 20px">
+<div id="flashUploadContainer{$uploadIdSuffix|default:''}" style="padding:20px 0px 0px 0px">
 <input type="file" name="Filedata{$uploadIdSuffix}" id="inputFiledata{$uploadIdSuffix}" />
 <p><a href="javascript:void(0);">{t}If you have any problems try with browser upload{/t}</a></p>
 </div>
