@@ -31,3 +31,5 @@
 {include file="../common_inc/form_file_exif.tpl"}
 
 </form>
+
+	{include file="../common_inc/form_print.tpl"}

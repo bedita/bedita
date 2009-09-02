@@ -9,11 +9,11 @@
 		<tr>
 			<th><label>{t}Print layout{/t}:</label></th>
 			<td>{$html->image('/img/print_tab_1fold.png')}</td>
-			<td><input type="radio" name="printLayout" value="print_1fold"> <label>A4</label></td>
+			<td><input type="radio" name="printLayout" checked='checked' value="print_1col"> <label>1col</label></td>
 			<td>{$html->image('/img/print_tab_2fold.png')}</td>
-			<td><input type="radio" name="printLayout" value="print_2fold"> <label>A4 2</label></td>
+			<td><input type="radio" name="printLayout" value="print_2col"> <label>2col</label></td>
 			<td>{$html->image('/img/print_tab_3fold.png')}</td>
-			<td><input type="radio" name="printLayout" value="print_3fold"> <label>A4 3</label></td>
+			<td><input type="radio" name="printLayout" value="print_3col"> <label>3col</label></td>
 		</tr>
 	</table>
 	<hr />

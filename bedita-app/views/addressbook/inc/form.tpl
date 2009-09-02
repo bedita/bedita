@@ -30,3 +30,5 @@
 
 </form>
 
+
+	{include file="../common_inc/form_print.tpl"}

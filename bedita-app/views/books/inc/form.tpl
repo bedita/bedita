@@ -22,3 +22,6 @@
 	{include file="./inc/form_advanced_properties.tpl" el=$object}
 
 </form>
+
+
+	{include file="../common_inc/form_print.tpl"}
