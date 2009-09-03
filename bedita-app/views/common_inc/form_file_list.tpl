@@ -89,8 +89,8 @@ $(document).ready(function()
 	});
 
 	$(containerItem).sortable ({
-		//distance: 20,
-		//opacity:0.7,
+		distance: 5,
+		opacity:0.7,
 		//handle: $(".multimediaitem").add(".multimediaitem img"), //try to fix IE7 handle on images, but don't work acc!
 		update: $(this).fixItemsPriority
 	}).css("cursor","move");
