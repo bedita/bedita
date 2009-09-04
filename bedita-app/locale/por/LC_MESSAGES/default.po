@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-08-27 17:32:22\n"
+"POT-Creation-Date: 2009-09-04 14:29:54\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -971,6 +971,9 @@ msgstr ""
 msgid "Operations on"
 msgstr ""
 
+msgid "Operations on above records"
+msgstr ""
+
 msgid "Orientation"
 msgstr ""
 
@@ -1468,7 +1471,40 @@ msgstr ""
 msgid "all"
 msgstr ""
 
+msgid "all bibliographies"
+msgstr ""
+
+msgid "all books"
+msgstr ""
+
+msgid "all cards"
+msgstr ""
+
+msgid "all comments"
+msgstr ""
+
+msgid "all galleries"
+msgstr ""
+
+msgid "all multimedia"
+msgstr ""
+
+msgid "all news"
+msgstr ""
+
+msgid "all newsletter"
+msgstr ""
+
 msgid "all recent items"
+msgstr ""
+
+msgid "all tags"
+msgstr ""
+
+msgid "all translations"
+msgstr ""
+
+msgid "all webmarks"
 msgstr ""
 
 msgid "and get data"
@@ -1513,6 +1549,9 @@ msgstr ""
 msgid "by"
 msgstr ""
 
+msgid "cards"
+msgstr ""
+
 msgid "change status"
 msgstr ""
 
@@ -1526,6 +1565,9 @@ msgid "changes on my contents"
 msgstr ""
 
 msgid "check open"
+msgstr ""
+
+msgid "check result"
 msgstr ""
 
 msgid "check selected links"
@@ -1648,6 +1690,9 @@ msgstr ""
 msgid "documents"
 msgstr "documentos"
 
+msgid "download"
+msgstr ""
+
 msgid "draft"
 msgstr ""
 
@@ -1750,6 +1795,12 @@ msgstr ""
 msgid "insert more questions"
 msgstr ""
 
+msgid "inserted on"
+msgstr ""
+
+msgid "is user"
+msgstr ""
+
 msgid "isbn/issn"
 msgstr ""
 
@@ -1766,6 +1817,9 @@ msgid "last"
 msgstr ""
 
 msgid "last comments"
+msgstr ""
+
+msgid "last invoice"
 msgstr ""
 
 msgid "last login"
@@ -1817,6 +1871,9 @@ msgid "male"
 msgstr ""
 
 msgid "master language"
+msgstr ""
+
+msgid "master title"
 msgstr ""
 
 msgid "message board"
@@ -1957,6 +2014,9 @@ msgstr ""
 msgid "object scheduled today"
 msgstr ""
 
+msgid "object title"
+msgstr ""
+
 msgid "of"
 msgstr "de"
 
@@ -2003,6 +2063,9 @@ msgid "or"
 msgstr ""
 
 msgid "order"
+msgstr ""
+
+msgid "order by"
 msgstr ""
 
 msgid "other"
@@ -2136,6 +2199,9 @@ msgstr ""
 
 msgid "sections"
 msgstr "seções"
+
+msgid "seealso"
+msgstr ""
 
 msgid "select an item to associate"
 msgstr ""

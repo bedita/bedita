@@ -59,7 +59,7 @@ $(document).ready(function(){
 			<th></th>
 			<th>{$beToolbar->order('title', 'Title')}</th>
 			<th>{$beToolbar->order('url', 'Url')}</th>
-			<th>{$beToolbar->order('http_code', 'Check result')}</th>
+			<th>{$beToolbar->order('http_code', 'check result')}</th>
 			<th style="text-align:center">{$beToolbar->order('status', 'Status')}</th>
 			<th style="text-align:center">{t}Link{/t}</th>
 			<th>{t}Notes{/t}</th>

@@ -52,13 +52,13 @@ $(document).ready(function(){
 	{capture name="theader"}
 		<tr>
 			<th></th>
-			<th>{$beToolbar->order('title', 'Title')}</th>
-			<th>{$beToolbar->order('ReferenceObject.title', 'Object title')}</th>
+			<th>{$beToolbar->order('title','Title')}</th>
+			<th>{$beToolbar->order('ReferenceObject.title','object title')}</th>
 			<th>{$beToolbar->order('status', 'Status')}</th>
-			<th>{$beToolbar->order('created', 'Inserted on')}</th>
-			<th>{$beToolbar->order('email', 'email')}</th>
+			<th>{$beToolbar->order('created','inserted on')}</th>
+			<th>{$beToolbar->order('email','email')}</th>
 			<th>{$beToolbar->order('ip_created', 'IP')}</th>	
-			<th>{$beToolbar->order('id', 'id')}</th>
+			<th>{$beToolbar->order('id','id')}</th>
 		</tr>
 	{/capture}
 		

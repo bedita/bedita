@@ -14,7 +14,7 @@ Menu a SX valido per tutte le pagine del controller.
 	<ul class="menuleft insidecol">
 			<li {if $method eq 'index'}class="on"{/if}>{$tr->link('Tags', '/tags')}</li>
 		{if $module_modify eq '1'}
-			<li {if $method eq 'view'}class="on"{/if}>{$tr->link('New Tag', '/tags/view')}</li>
+			<li {if $method eq 'view'}class="on"{/if}>{$tr->link('New tag', '/tags/view')}</li>
 		{/if}
 									
 	</ul>

@@ -13,7 +13,7 @@
 			
 			{else}
 			
-				all {$moduleName}
+				{t}all {$moduleName}{/t}
 			
 			{/if}
 		</h2>

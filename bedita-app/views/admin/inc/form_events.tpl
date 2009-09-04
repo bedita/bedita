@@ -2,16 +2,18 @@
 
 <fieldset id="system_events">
 <div>
-
-
-
+{assign var='label_date' value=$tr->t('date',true)}
+{assign var='label_level' value=$tr->t('level',true)}
+{assign var='label_user' value=$tr->t('User',true)}
+{assign var='label_msg' value=$tr->t('msg',true)}
+{assign var='label_context' value=$tr->t('context',true)}
 <table class="indexlist">
 	<tr>
-		<th>{$paginator->sort('Date', 'created')}</th>
-		<th>{$paginator->sort('Level', 'level')}</th>
-		<th>{$paginator->sort('User', 'user')}</th>
-		<th>{$paginator->sort('Msg', 'msg')}</th>
-		<th>{$paginator->sort('Context', 'context')}</th>
+		<th>{$paginator->sort($label_date,'created')}</th>
+		<th>{$paginator->sort($label_level,'level')}</th>
+		<th>{$paginator->sort($label_user,'user')}</th>
+		<th>{$paginator->sort($label_msg,'msg')}</th>
+		<th>{$paginator->sort($label_context,'context')}</th>
 	</tr>
 	{foreach from=$events item=e}
 	<tr>

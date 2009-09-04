@@ -46,4 +46,24 @@ Strings to translate not present in .tpl/.php files
 // module admin
 {t}Users{/t}
 {t}users{/t}
+
+{t}seealso{/t}
+{t}download{/t}
+{t}all bibliographies{/t}
+{t}all books{/t}
+{t}check result{/t}
+{t}all webmarks{/t}
+{t}all newsletter{/t}
+{t}last invoice{/t}
+{t}all cards{/t}
+{t}cards{/t}
+{t}all news{/t}
+{t}all translations{/t}
+{t}master title{/t}
+{t}object title{/t}
+{t}inserted on{/t}
+{t}all comments{/t}
+{t}all tags{/t}
+{t}all galleries{/t}
+{t}all multimedia{/t}
 *}

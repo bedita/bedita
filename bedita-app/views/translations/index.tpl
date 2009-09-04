@@ -113,8 +113,8 @@ function changeStatusTranslations() {
 			<th></th>
 			<th>{$beToolbar->order('title', 'master title')}</th>
 			<th>{$beToolbar->order('LangText.title', 'title')}</th>
-			<th>{$beToolbar->order('object_type_id', 'Type')}</th>
-			<th>{$beToolbar->order('LangText.lang', 'Language')}</th>
+			<th>{$beToolbar->order('object_type_id', 'type')}</th>
+			<th>{$beToolbar->order('LangText.lang', 'language')}</th>
 			<th>{$beToolbar->order('LangText.status', 'Status')}</th>
 		</tr>
 	{/capture}
@@ -160,7 +160,7 @@ function changeStatusTranslations() {
 
 {if !empty($translations)}
 	
-	<div class="tab"><h2>Operations on above records</h2></div>
+	<div class="tab"><h2>{t}Operations on above records{/t}</h2></div>
 	<div>
 		<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
 		<hr />

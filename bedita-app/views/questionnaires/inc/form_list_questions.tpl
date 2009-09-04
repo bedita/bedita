@@ -50,9 +50,9 @@ $(document).ready(function() {
 	<table class="indexlist" id="questionAssociated">
 		<tr>
 			<th></th>
-			<th>title</th>
-			<th>type</th>
-			<th>status</th>
+			<th>{t}title{/t}</th>
+			<th>{t}type{/t}</th>
+			<th>{t}status{/t}</th>
 			<th></th>
 		</tr>
 		<tbody>

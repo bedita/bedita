@@ -44,16 +44,15 @@ $(document).ready(function(){
 				<img class="multimediaitemToolbar viewsmall" src="{$html->webroot}img/iconML-small.png" />
 				<img class="multimediaitemToolbar viewthumb" src="{$html->webroot}img/iconML-thumb.png" />
 				*}
-				 order by:
+				 {t}order by{/t}:
 			</th>
-			<th>{$beToolbar->order('id', 'id')}</th>
-			<th>{$beToolbar->order('title', 'Title')}</th>
-			<th>{$beToolbar->order('name', 'Name')}</th>
-			<th>{$beToolbar->order('mediatype', 'Type')}</th>
-			<th>size</th>
-			
-			<th>{$beToolbar->order('status', 'Status')}</th>
-			<th>{$beToolbar->order('modified', 'Modified')}</th>		
+			<th>{$beToolbar->order('id','id')}</th>
+			<th>{$beToolbar->order('title','Title')}</th>
+			<th>{$beToolbar->order('name','Name')}</th>
+			<th>{$beToolbar->order('mediatype','type')}</th>
+			<th>{t}size{/t}</th>
+			<th>{$beToolbar->order('status','Status')}</th>
+			<th>{$beToolbar->order('modified','modified')}</th>
 		</tr>
 	{/capture}
 		

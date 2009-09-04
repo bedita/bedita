@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-07-31 13:19:14\n"
+"POT-Creation-Date: 2009-09-04 12:13:04\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -36,6 +36,9 @@ msgstr "Aggiungi elementi multipli"
 
 msgid "Add new category"
 msgstr "Aggiungi nuova categoria"
+
+msgid "Add new subscribers"
+msgstr "Aggiungi nuovi iscritti"
 
 msgid "Add selected items"
 msgstr "Aggiungi gli elementi selezionati"
@@ -375,6 +378,12 @@ msgstr "Errore in upload: manca url"
 msgid "Error finding mail message "
 msgstr "Errore nella ricerca del messaggio di posta "
 
+msgid "Error finding object"
+msgstr "Errore in ricerca oggetto"
+
+msgid "Error generating hash confirmation for "
+msgstr "Errore in generazione hash di conferma per "
+
 msgid "Error getting id object: %d"
 msgstr "Errore in lettura oggetto id: %d"
 
@@ -384,11 +393,17 @@ msgstr "Errore in lettura oggetto id: %s"
 msgid "Error getting object: %d"
 msgstr "Errore in lettura oggetto: %d"
 
+msgid "Error invoking online help"
+msgstr "Errore nell'invocazione dell'help online"
+
 msgid "Error loading area: %d"
 msgstr "Errore in caricamento area: %d"
 
 msgid "Error loading comment: %d"
 msgstr "Errore in caricamento commento: %d"
+
+msgid "Error loading mail group detail: id="
+msgstr "Errore in caricamento dettagli gruppo di posta: id="
 
 msgid "Error loading object: %d"
 msgstr "Errore in caricamento oggetto: %d"
@@ -423,6 +438,9 @@ msgstr "Errore in eliminazione scheda di grouppo di posta"
 msgid "Error saving area"
 msgstr "Errore in salvataggio dati area"
 
+msgid "Error saving card for "
+msgstr "Errore in salvataggio scheda per "
+
 msgid "Error saving comment"
 msgstr "Errore in salvataggio dati commento"
 
@@ -431,6 +449,9 @@ msgstr "Errore in salvataggio dati proprietà personalizzata"
 
 msgid "Error saving group"
 msgstr "Errore in salvataggio dati gruppo"
+
+msgid "Error saving hash status"
+msgstr "Errore in salvataggio stato hash"
 
 msgid "Error saving link"
 msgstr "Errore in salvataggio collegamento"
@@ -474,6 +495,9 @@ msgstr "Errore in salvataggio dati albero da _POST"
 msgid "Error saving user"
 msgstr "Errore in salvataggio dati utente"
 
+msgid "Error subscribing "
+msgstr "Errore in iscrizione "
+
 msgid "Error updating user"
 msgstr "Errore in aggiornamento dati utente"
 
@@ -482,6 +506,9 @@ msgstr "Errore: permessi non validi"
 
 msgid "Errors during upload"
 msgstr "Errore durante l'upload"
+
+msgid "Event Promoter"
+msgstr "Promotore evento"
 
 msgid "Event calendar"
 msgstr "Calendario"
@@ -564,6 +591,12 @@ msgstr "Gruppi"
 msgid "HTML version"
 msgstr "versione HTML"
 
+msgid "Hash isn't valid."
+msgstr "Hash non è valido"
+
+msgid "Hash not valid or expired."
+msgstr "Hash non valido o scaduto."
+
 msgid "Height"
 msgstr "Altezza"
 
@@ -574,7 +607,7 @@ msgid "Home"
 msgstr ""
 
 msgid "Human readable type"
-msgstr ""
+msgstr "Tipo semplificato"
 
 msgid "IP"
 msgstr ""
@@ -682,10 +715,13 @@ msgid "Missing from field"
 msgstr "Campo 'Da' mancante"
 
 msgid "Missing invoices"
-msgstr ""
+msgstr "Invoice mancanti"
 
 msgid "Missing list name"
 msgstr "Lista nomi mancante"
+
+msgid "Missing mail group id"
+msgstr "Id gruppo di posta mancante"
 
 msgid "Missing message id or recipient"
 msgstr "Manca id messaggio o destinatario"
@@ -820,14 +856,32 @@ msgstr "No"
 msgid "No access"
 msgstr "Non accessibile"
 
+msgid "No addressbook found"
+msgstr "Nessuna rubrica trovata"
+
+msgid "No bibliographies found"
+msgstr "Nessun bibliografia trovata"
+
+msgid "No books found"
+msgstr "Nessun libro trovato"
+
 msgid "No categories found"
 msgstr "Nessuna categoria trovata"
+
+msgid "No comments found"
+msgstr "Nessun commento trovato"
 
 msgid "No data"
 msgstr "Nessun dato"
 
+msgid "No documents found"
+msgstr "Nessun documento trovato"
+
 msgid "No file in the form"
 msgstr "Nessun file nel form"
+
+msgid "No galleries found"
+msgstr "Nessuna galleria trovata"
 
 msgid "No gallery"
 msgstr "Nessuna galleria"
@@ -844,11 +898,20 @@ msgstr "Nessun gruppo di posta trovato"
 msgid "No module found for object"
 msgstr "Nessun modulo trovato per l'oggetto"
 
+msgid "No news found"
+msgstr "Nessuna news trovata"
+
+msgid "No newsletter found"
+msgstr "Nessuna newsletter trovata "
+
 msgid "No newsletters found"
 msgstr "Nessuna newsletter trovata"
 
 msgid "No object id specified"
 msgstr "Nessun id oggetto specificato"
+
+msgid "No questionnaires found"
+msgstr "Nessun questionario trovato"
 
 msgid "No questions found"
 msgstr "Nessun quesito trovato"
@@ -859,7 +922,7 @@ msgstr "Nessuna relazione"
 msgid "No subscribers"
 msgstr "Nessun iscritto"
 
-msgid "No tag founded"
+msgid "No tag found"
 msgstr "Nessun tag trovato"
 
 msgid "No tag in text area"
@@ -885,6 +948,9 @@ msgstr "Nessun albero trovato"
 
 msgid "No user data"
 msgstr "Nessun dato utente"
+
+msgid "No webmarks found"
+msgstr "Nessun webmark trovato"
 
 msgid "Not Authorized"
 msgstr "Non Autorizzato"
@@ -1010,11 +1076,17 @@ msgstr "Lista dei Questionari"
 msgid "Questions"
 msgstr "Quesiti"
 
+msgid "all questions"
+msgstr "tutti i quesiti"
+
+msgid "questions"
+msgstr "quesiti"
+
 msgid "Questions and answers"
 msgstr "Quesiti e risposte"
 
 msgid "Questions deleted"
-msgstr ""
+msgstr "Quesiti eliminati"
 
 msgid "Questions list"
 msgstr "Lista dei Quesiti"
@@ -1184,8 +1256,14 @@ msgstr "Cosa di test"
 msgid "Text"
 msgstr "Testo"
 
+msgid "Text direction"
+msgstr "Direzione testo"
+
 msgid "Text doesn't match image"
 msgstr "Il testo non corrisponde all'immagine"
+
+msgid "Text lang"
+msgstr "Lingua testo"
 
 msgid "The content is fixed: it's not possible to change the position in the tree"
 msgstr "Contenuto immodificabile: non è possibile cambiarne la posizione nell'albero"
@@ -1274,6 +1352,9 @@ msgstr "Dettagli utente"
 msgid "User groups"
 msgstr "Gruppi utente"
 
+msgid "User is not subscribed to mail group"
+msgstr "L'utente non è iscritto al gruppo di posta"
+
 msgid "User login temporary blocked"
 msgstr "Login utente temporaneamente bloccato"
 
@@ -1284,6 +1365,12 @@ msgid "User name is required (at least %1 chars, without white spaces and specia
 "chars)"
 msgstr "Il campo Nome utente è obbligatorio (almeno %1 caratteri, senza spazi e"
 "caratteri speciali"
+
+msgid "User not associated to mailgroup or he is in pending status"
+msgstr "L'utente non è associato al gruppo di posta o è in attesa di approvazione"
+
+msgid "User not associated to mailgroup or he isn't in pending status"
+msgstr "L'utente"
 
 msgid "User not authorized to enter"
 msgstr "Utente non autorizzato all'accesso"
@@ -1300,17 +1387,26 @@ msgstr ""
 msgid "Username is required"
 msgstr "Il campo Username è obbligatorio"
 
+msgid "Users"
+msgstr "Utenti"
+
 msgid "Users of this group"
 msgstr "Utenti di questo gruppo"
+
+msgid "Version"
+msgstr "Versione"
 
 msgid "View all"
 msgstr "Visualizza tutti"
 
 msgid "Warning"
-msgstr ""
+msgstr "Attenzione"
 
 msgid "Width"
 msgstr "larghezza"
+
+msgid "Write here comma-separated email addresses"
+msgstr "Scrivere qui gli indirizzi email separati da virgole"
 
 msgid "Write your answer. Max chars is"
 msgstr "Scrivi la tua risposta. Massimo numero di caratteri è"
@@ -1498,6 +1594,9 @@ msgstr "copia"
 msgid "correct"
 msgstr "corretta"
 
+msgid "correct answer"
+msgstr "risposta corretta"
+
 msgid "country"
 msgstr "paese"
 
@@ -1579,6 +1678,9 @@ msgstr ""
 msgid "duration in minutes"
 msgstr "durata in minuti"
 
+msgid "edit"
+msgstr ""
+
 msgid "editor"
 msgstr "editore"
 
@@ -1651,6 +1753,9 @@ msgstr "accesso gruppo moduli"
 msgid "group properties "
 msgstr "proprietà gruppo"
 
+msgid "hashjob for unsubscribe already in use"
+msgstr "hashjob per eliminare sottoscrizione già in uso"
+
 msgid "height"
 msgstr "altezza"
 
@@ -1702,11 +1807,20 @@ msgstr "ultima modifica di"
 msgid "last modified on"
 msgstr "ultima modifica il"
 
+msgid "last notes"
+msgstr "ultime note"
+
+msgid "notes"
+msgstr "note"
+
 msgid "last page"
 msgstr "ultima pagina"
 
 msgid "latitude"
 msgstr "latitudine"
+
+msgid "left to right"
+msgstr "da sinistra a destra"
 
 msgid "license"
 msgstr "licenza"
@@ -1741,8 +1855,23 @@ msgstr "area messaggi"
 msgid "mime type"
 msgstr ""
 
+msgid "missing card id"
+msgstr "id scheda mancante"
+
+msgid "missing mail group id"
+msgstr "id del gruppo di posta mancante"
+
+msgid "missing method to manage hash case"
+msgstr "metodo per gestire hash mancante"
+
+msgid "missing service type"
+msgstr "tipo servizio mancante"
+
 msgid "modified"
 msgstr "modificato"
+
+msgid "modified on"
+msgstr "modificato il"
 
 msgid "more from this IP"
 msgstr "di più da questo IP"
@@ -1879,6 +2008,9 @@ msgstr ""
 msgid "on my stuff only"
 msgstr "su cose mie soltanto"
 
+msgid "online from"
+msgstr "online dal"
+
 msgid "open answer"
 msgstr "risposta aperta"
 
@@ -1948,6 +2080,9 @@ msgstr "lista privata "
 msgid "promote as user"
 msgstr "promuovi a utente"
 
+msgid "promoter name"
+msgstr "nome promotore"
+
 msgid "properties"
 msgstr "proprietà"
 
@@ -1990,6 +2125,9 @@ msgstr "riferimento"
 msgid "referenced objects list"
 msgstr "Inserito in"
 
+msgid "remove"
+msgstr "rimuovi"
+
 msgid "remove from users"
 msgstr "rimuovi dagli utenti"
 
@@ -2001,6 +2139,9 @@ msgstr "obbligatorio"
 
 msgid "reside in"
 msgstr "si trova in"
+
+msgid "right to left"
+msgstr "da destra a sinistra"
 
 msgid "rights"
 msgstr "diritti"
@@ -2099,7 +2240,7 @@ msgid "statistics"
 msgstr "statistiche"
 
 msgid "status"
-msgstr ""
+msgstr "stato"
 
 msgid "street name and #"
 msgstr "nome strada e numero"
@@ -2120,7 +2261,7 @@ msgid "tags"
 msgstr "tag"
 
 msgid "target"
-msgstr ""
+msgstr "destinatario"
 
 msgid "template"
 msgstr ""
@@ -2173,6 +2314,9 @@ msgstr "usa template"
 msgid "username"
 msgstr "nome utente"
 
+msgid "users"
+msgstr "utenti"
+
 msgid "valid"
 msgstr "valido"
 
@@ -2190,6 +2334,9 @@ msgstr "vedi i risultati"
 
 msgid "web site"
 msgstr "sito web"
+
+msgid "webmark already present"
+msgstr "webmark già presente"
 
 msgid "webmark saved"
 msgstr "webmark salvato"
@@ -2245,8 +2392,20 @@ msgstr "il tuo profilo e le tue preferenze"
 msgid "Objects with multiple relactions"
 msgstr "Oggetti con più relazioni"
 
-msgid "No tag founded"
-msgstr "Nessun tag trovato"
+msgid "level"
+msgstr "livello"
+
+msgid "msg"
+msgstr "messaggio"
+
+msgid "context"
+msgstr "contesto"
+
+msgid "all questionnaires"
+msgstr "tutti i questionari"
+
+msgid "Position"
+msgstr "Posizione"
 
 msgid "editor notes"
 msgstr "note redazionali"
@@ -2269,9 +2428,6 @@ msgstr "modifica"
 msgid "read"
 msgstr "lettura"
 
-msgid "notes"
-msgstr "note"
-
 msgid "no contents"
 msgstr "nessun contenuto"
 
@@ -2293,41 +2449,68 @@ msgstr "Nessun evento trovato"
 msgid "parent"
 msgstr "parentela"
 
-msgid "Position"
-msgstr "Posizione"
+msgid "seealso"
+msgstr "vedi anche"
 
-msgid "No documents found"
-msgstr "Nessun documento trovato"
+msgid "download"
+msgstr "scarica"
 
-msgid "No galleries found"
-msgstr "Nessuna galleria trovata"
+msgid "all bibliographies"
+msgstr "tutte le bibliografie"
 
-msgid "No comments found"
-msgstr "Nessun commento trovato"
+msgid "all books"
+msgstr "tutti i libri"
 
-msgid "No news found"
-msgstr "Nessuna news trovata"
+msgid "check result"
+msgstr "verifica"
 
-msgid "No addressbook found"
-msgstr "Nessuna rubrica trovata"
+msgid "all webmarks"
+msgstr "tutti i webmark"
 
-msgid "No webmarks found"
-msgstr "Nessun webmark trovato"
+msgid "all newsletter"
+msgstr "tutte le newsletter"
 
-msgid "No books found"
-msgstr "Nessun libro trovato"
+msgid "last invoice"
+msgstr "ultimo invoice"
 
-msgid "No bibliographies found"
-msgstr "Nessun bibliografia trovata"
+msgid "all cards"
+msgstr "tutte le schede"
 
-msgid "No questionnaires found"
-msgstr "Nessun questionario trovato"
+msgid "cards"
+msgstr "schede"
 
-msgid "No newsletter found"
-msgstr "Nessuna newsletter trovata "
+msgid "is user"
+msgstr "è un utente"
 
-msgid "Users"
-msgstr "Utenti"
+msgid "all news"
+msgstr "tutte le news"
 
-msgid "users"
-msgstr "utenti"
+msgid "all translations"
+msgstr "tutte le traduzioni"
+
+msgid "master title"
+msgstr "titolo principale"
+
+msgid "Operations on above records"
+msgstr "Operazioni sui record sopra selezionati"
+
+msgid "object title"
+msgstr "titolo oggetto"
+
+msgid "inserted on"
+msgstr "inserito il"
+
+msgid "all comments"
+msgstr "tutti i commenti"
+
+msgid "all tags"
+msgstr "tutti i tag"
+
+msgid "all galleries"
+msgstr "tutte le gallerie"
+
+msgid "all multimedia"
+msgstr "tutti i multimedia"
+
+msgid "order by"
+msgstr "ordinamento per"

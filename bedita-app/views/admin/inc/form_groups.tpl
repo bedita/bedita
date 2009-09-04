@@ -19,12 +19,13 @@ $(document).ready(function(){
 {/literal}
 //-->
 </script>	
-
+{assign var='p_name' value=$tr->t('name',true)}
+{assign var='p_modified' value=$tr->t('modified',true)}
 <table class="indexlist">
 	<tr>
-		<th>{$paginator->sort('Name', 'name')}</th>
+		<th>{$paginator->sort($p_name,'name')}</th>
 		<th>{t}Access to Backend{/t}</th>
-		<th>{$paginator->sort('Modified', 'modified')}</th>
+		<th>{$paginator->sort($p_modified,'modified')}</th>
 		<th></th>
 	</tr>
 	{foreach from=$groups|default:'' item=g}

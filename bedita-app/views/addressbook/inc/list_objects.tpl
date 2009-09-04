@@ -54,14 +54,14 @@ $(document).ready(function(){
 	{capture name="theader"}
 		<tr>
 			<th></th>
-			<th>{$beToolbar->order('title', 'name')}</th>
-			<th>{$beToolbar->order('company_name', 'company')}</th>
-			<th>{$beToolbar->order('status', 'Status')}</th>
-			<th>{$beToolbar->order('modified', 'Modified')}</th>
-			<th>is user</th>
-			<th>{$beToolbar->order('country', 'Country')}</th>
-			<th>{$beToolbar->order('id', 'id')}</th>
-			<th>{$beToolbar->order('note', 'Notes')}</th>	
+			<th>{$beToolbar->order('title','name')}</th>
+			<th>{$beToolbar->order('company_name','company')}</th>
+			<th>{$beToolbar->order('status','Status')}</th>
+			<th>{$beToolbar->order('modified','modified')}</th>
+			<th>{t}is user{/t}</th>
+			<th>{$beToolbar->order('country','country')}</th>
+			<th>{$beToolbar->order('id','id')}</th>
+			<th>{$beToolbar->order('note','Notes')}</th>	
 		</tr>
 	{/capture}
 		

@@ -13,15 +13,20 @@ $(document).ready(function(){
 
 
 <form action="{$html->url('/admin/users')}" method="post" name="userForm" id="userForm">
-
+{assign var='label_id' value=$tr->t('id',true)}
+{assign var='label_userid' value=$tr->t('User',true)}
+{assign var='label_realname' value=$tr->t('name',true)}
+{assign var='label_valid' value=$tr->t('blocked',true)}
+{assign var='label_created' value=$tr->t('created',true)}
+{assign var='label_last_login' value=$tr->t('last login',true)}
 <table class="indexlist">
 	<tr>{* TODO: i18n sulle colonne in sort*}
-		<th>{$paginator->sort('id', 'id')}</th>
-		<th>{$paginator->sort('User', 'userid')}</th>
-		<th>{$paginator->sort('Name', 'realname')}</th>
-		<th>{$paginator->sort('Blocked', 'valid')}</th>
-		<th>{$paginator->sort('Created', 'created')}</th>
-		<th>{$paginator->sort('Last login', 'last_login')}</th>
+		<th>{$paginator->sort($label_id,'id')}</th>
+		<th>{$paginator->sort($label_userid,'userid')}</th>
+		<th>{$paginator->sort($label_realname,'realname')}</th>
+		<th>{$paginator->sort($label_valid,'valid')}</th>
+		<th>{$paginator->sort($label_created,'created')}</th>
+		<th>{$paginator->sort($label_last_login,'last_login')}</th>
 		<th>{t}Action{/t}</th>
 	</tr>
 	{foreach from=$users item=u}
