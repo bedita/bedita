@@ -38,7 +38,7 @@ class BeEmbedFlashHelper extends AppHelper {
 	public function embedSwf ($swfUrl, $attributes = array(), $flashvars = array(), $params = array()) {
 		$width = (!empty($attributes['width'])) ? $attributes['width'] : $this->widthDef;
 		$height = (!empty($attributes['height'])) ? $attributes['height'] : $this->heightDef;
-		$id = (!empty($attributes['id']))? $attributes['id'] : "be_id_" . microtime();
+		$id = (!empty($attributes['id']))? $attributes['id'] : "be_id_" . str_replace(" ","",microtime());
 		$app_ver = (!empty($attributes['application_version']))? $attributes['application_version'] : $this->appVerDef;
 		
 		if (!empty($attributes['src'])) {
@@ -107,7 +107,10 @@ class BeEmbedFlashHelper extends AppHelper {
 			
 		if ($obj["object_type_id"] == Configure::read("objectTypes.audio.id") && $extension == 'mp3') {
 			return $this->embedAudio($obj['path'], $htmlAttributes, $flashvars, $flashParams);	
-		} elseif ($extension == 'flv') {			
+		} elseif ($extension == 'flv') {
+			if (!empty($obj['thumbnail'])) {
+				$flashvars['thumbnail'] = $obj['thumbnail']; 
+			}			
 			return $this->embedFlv($obj['path'], $htmlAttributes, $flashvars, $flashParams);	
 		} else if ($extension == 'swf') {
 			 return $this->embedSwf($obj['path'], $htmlAttributes, $flashvars, $flashParams);
@@ -125,35 +128,44 @@ class BeEmbedFlashHelper extends AppHelper {
 		return strtolower($path_parts['extension']);
 	}
 	
-	private function embedFlowplayer($swfUrl, $flvUrl, $attributes, $flashvars, $params, $fileType) {
+	public function embedFlowplayer($swfUrl, $mediaUrl, $attributes, $flashvars, $params, $fileType) {
 		$defaultAudioPlayer = array("controls" => array("fullscreen" => false));
-		$flashvars['config'] = array();
-		$stringPlugins='';
+		
+		if  (empty($flashvars['config'])) {
+			$flashvars['config'] = array();
+		}
 		
 		if (empty($flashvars['clip'])) {
-			$flashvars['config'] = "{'clip':{'url':'".$flvUrl."','autoPlay':false}";
-		}else{
-			$stringClip = json_encode($flashvars['clip']);
-			$flashvars['config'] = "{'clip':".$stringClip;
+			$flashvars['config']['clip'] = array("autoPlay" => false);
 		}
 		
-		if (!empty($flashvars['plugins'])) {
-			if ($fileType == "audio" && empty($flashvars['plugins']['controls'])) {
-				$flashvars['plugins'] = array_merge($flashvars['plugins'], $defaultAudioPlayer);
+		if (empty($flashvars['config']['playlist'])) {
+			$flashvars['config']['playlist'] = array();
+		}
+		if (!empty($flashvars['thumbnail'])) {
+			array_unshift($flashvars['config']['playlist'], 
+						  array("url" => $flashvars['thumbnail'], "autoPlay" => "true"), 
+						  $mediaUrl
+			);
+			unset($flashvars['thumbnail']);
+		} else {
+			array_unshift($flashvars['config']['playlist'], $mediaUrl);
+		}
+		
+		if (!empty($flashvars['config']['plugins'])) {
+			if ($fileType == "audio" && empty($flashvars['config']['plugins']['controls'])) {
+				$flashvars['config']['plugins'] = array_merge($flashvars['config']['plugins'], $defaultAudioPlayer);
 			}
-			$stringPlugins = json_encode($flashvars['plugins']);
-			$flashvars['config'] = $flashvars['config'].", 'plugins':".$stringPlugins;
 		} elseif ($fileType == "audio") {
-			$flashvars['config'] = $flashvars['config'].", 'plugins':".json_encode($defaultAudioPlayer);
+			$flashvars['config']['plugins'] = $defaultAudioPlayer;
 		}
 		
-		$flashvars['config'] = $flashvars['config']."}";
-		unset($flashvars['clip']);
-		unset($flashvars['plugins']);
+		$flashvars['config'] = json_encode($flashvars['config']);
+		
 		return $this->embedSwf( $swfUrl , $attributes, $flashvars, $params );
 	}
 	
-	private function embedWpaudioplayer($swfUrl, $audioFileUrl, $attributes, $flashvars, $params) {
+	public function embedWpaudioplayer($swfUrl, $audioFileUrl, $attributes, $flashvars, $params) {
 		$flashvars["soundFile"] = $audioFileUrl;
 		return $this->embedSwf( $swfUrl , $attributes, $flashvars, $params );				 
 	}

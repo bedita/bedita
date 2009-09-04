@@ -1,5 +1,5 @@
 {$javascript->link('swfobject', false)}
-{$javascript->link('jquery/jquery.uploadify.v2.0.0.min', false)}
+{$javascript->link('jquery/jquery.uploadify.min', false)}
 {if empty($uploadIdSuffix)}
 	{assign var=uploadIdSuffix value=""}
 {/if}
