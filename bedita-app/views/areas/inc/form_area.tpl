@@ -23,6 +23,8 @@ $(document).ready(function(){
 	<input type="hidden" name="data[fixed]" value="{$object.fixed|default:0}"/>
 	
 
+<div class="tab"><h2>{t}Properties{/t}</h2></div>	
+
 	<table class="areaform" style="margin-bottom:10px">
 
 		<tr>

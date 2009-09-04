@@ -48,8 +48,6 @@
 <div class="main">
 	<form action="{$html->url('/areas/saveArea')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 	
-<div class="tab"><h2>{t}Properties{/t}</h2></div>	
-	
 	{include file="inc/form_area.tpl" method="viewArea"}
 	
 </div>
