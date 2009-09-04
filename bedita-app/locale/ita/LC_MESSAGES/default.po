@@ -565,7 +565,7 @@ msgid "Geotag"
 msgstr ""
 
 msgid "Get contents"
-msgstr "Leggi contenuti"
+msgstr "Prendi i contenuti"
 
 msgid "Gmaps LookaT"
 msgstr ""
@@ -634,10 +634,10 @@ msgid "Insert code string"
 msgstr "Inserisci stringa codice"
 
 msgid "Invoice"
-msgstr ""
+msgstr "Invio"
 
 msgid "Invoices"
-msgstr "Invoice"
+msgstr "Invii"
 
 msgid "Isbn/issn/bid"
 msgstr ""
@@ -887,7 +887,7 @@ msgid "No gallery"
 msgstr "Nessuna galleria"
 
 msgid "No invoices"
-msgstr "Nessun invoice"
+msgstr "Nessun invio"
 
 msgid "No item found"
 msgstr "Nessun elemento trovato"
@@ -1625,7 +1625,7 @@ msgid "creator"
 msgstr "autore"
 
 msgid "currently in job"
-msgstr "attualmente nel processo"
+msgstr "in corso"
 
 msgid "data attributes"
 msgstr "attributi dati"
@@ -1934,7 +1934,7 @@ msgid "next"
 msgstr "succ"
 
 msgid "next invoice at"
-msgstr "prossimo invoice a"
+msgstr "prossimo invio a"
 
 msgid "next page"
 msgstr "prossima pagina"
