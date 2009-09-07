@@ -50,7 +50,7 @@ class BeEmbedFlashHelper extends AppHelper {
 		$att = json_encode($attributes);
 		
 		if ( defined("BEDITA_CORE_PATH") && !file_exists(APP . "webroot/js/swfobject.js")) {
-			$output = $this->Javascript->link(Configure::read('beditaUrl') . "/js/swfobject.js",false);
+			$output = $this->Javascript->link(BEDITA_CORE_PATH . "webroot/js/swfobject.js",false);
 		} else {
 			$output = $this->Javascript->link("swfobject",false);
 		}
