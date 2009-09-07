@@ -400,12 +400,22 @@ class BeFileHandlerComponent extends Object {
 		// get mime type
 		if (!($headers = @get_headers($data["path"],1)))
 			throw new BEditaInfoException(__("URL unattainable",true));
-		
-		if (!strstr($headers["0"], "200"))
+
+		// if redirect response try to reach the redirect location
+		if (stristr($headers[0], "redirect")) {
+			if (empty($headers["Location"]))
+				throw new BEditaInfoException(__("URL unattainable",true));
+			if (!($headers = @get_headers($headers["Location"],1)))
+				throw new BEditaInfoException(__("URL unattainable",true));
+		}
+
+		if (!strstr($headers[0], "200"))
 			throw new BEditaInfoException(__("URL unattainable",true));
-		
-		$data["mime_type"] = (!empty($headers["Content-Type"]))? $headers["Content-Type"] : $data["mime_type"] = "beexternalsource";
-		
+
+		$data["mime_type"] = $this->getMimeTypeByExtension($data["path"]);
+		if (!$data["mime_type"]) {
+			$data["mime_type"] = (!empty($headers["Content-Type"]))? $headers["Content-Type"] : $data["mime_type"] = "beexternalsource";
+		}
 	}
 	
 	public function getMimeType($data) {
@@ -426,7 +436,7 @@ class BeFileHandlerComponent extends Object {
 	public function getMimeTypeByExtension($filename) {
 		$mime_type = false;
 		include_once APP_PATH.'config'.DS.'mime.types.php';
-			$extension = strtolower( substr( $filename, strrpos($filename,".")+1 ) );
+			$extension = strtolower( pathinfo($filename, PATHINFO_EXTENSION) );
 			if (!empty($extension) && array_key_exists($extension,$config["mimeTypes"])) {
 				$mime_type = $config["mimeTypes"][$extension];
 		}

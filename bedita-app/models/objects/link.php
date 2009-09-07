@@ -102,7 +102,8 @@ class Link extends BEAppObjectModel {
 		$title = "";
 		if(!empty($html)) {
 			preg_match("/<title>(.+)<\/title>/siU", $html, $t);
-			$title = $t[1];
+			if (!empty($t[1]))
+				$title = $t[1];
 		}
 		return $title;
 	}

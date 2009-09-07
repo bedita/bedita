@@ -163,13 +163,15 @@ class BeUploadToObjComponent extends Object {
 			
 			$thumbnail = null;
 			
-			$componentName = Inflector::camelize("be_" . $provider);
-			if (isset($this->{$componentName}) && method_exists($this->{$componentName}, "getInfoVideo")) {
-				if (!$thumbnail	= $this->{$componentName}->getThumbnail($uid)) {
-					throw new BEditaMediaProviderException(__("Multimedia Provider not found or error getting thumbnail",true)) ;
+			if (!empty($provider)) {
+				$componentName = Inflector::camelize("be_" . $provider);
+				if (isset($this->{$componentName}) && method_exists($this->{$componentName}, "getInfoVideo")) {
+					if (!$thumbnail	= $this->{$componentName}->getThumbnail($uid)) {
+						throw new BEditaMediaProviderException(__("Multimedia Provider not found or error getting thumbnail",true)) ;
+					}
+				} else {
+					throw new BEditaMediaProviderException(__("Multimedia provider is not managed",true)) ;
 				}
-			} else {
-				throw new BEditaMediaProviderException(__("Multimedia provider is not managed",true)) ;
 			}
 		}
 		return $thumbnail;
