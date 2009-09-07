@@ -135,7 +135,7 @@ class BeEmbedFlashHelper extends AppHelper {
 			$flashvars['config'] = array();
 		}
 		
-		if (empty($flashvars['clip'])) {
+		if (empty($flashvars['config']['clip'])) {
 			$flashvars['config']['clip'] = array("autoPlay" => false);
 		}
 		
