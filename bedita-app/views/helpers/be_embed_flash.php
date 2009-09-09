@@ -38,9 +38,10 @@ class BeEmbedFlashHelper extends AppHelper {
 	public function embedSwf ($swfUrl, $attributes = array(), $flashvars = array(), $params = array()) {
 		$width = (!empty($attributes['width'])) ? $attributes['width'] : $this->widthDef;
 		$height = (!empty($attributes['height'])) ? $attributes['height'] : $this->heightDef;
-		$id = (!empty($attributes['id']))? $attributes['id'] : "be_id_" . str_replace(" ","",microtime());
 		$app_ver = (!empty($attributes['application_version']))? $attributes['application_version'] : $this->appVerDef;
-		
+		if (empty($attributes['id'])) {
+			$attributes['id'] = preg_replace("/[\s\.]/", "", "be_id_" . microtime());
+		}
 		if (!empty($attributes['src'])) {
 			unset($attributes['src']);
 		}
@@ -50,11 +51,11 @@ class BeEmbedFlashHelper extends AppHelper {
 		$att = json_encode($attributes);
 		
 		if ( defined("BEDITA_CORE_PATH") && !file_exists(APP . "webroot/js/swfobject.js")) {
-			$output = $this->Javascript->link(BEDITA_CORE_PATH . "webroot/js/swfobject.js",false);
+			$output = $this->Javascript->link(Configure::read('beditaUrl') . "/js/swfobject.js",false);
 		} else {
 			$output = $this->Javascript->link("swfobject",false);
 		}
-		$output .= '<script type="text/javascript">swfobject.embedSWF("'.$swfUrl.'","'.$id.'","'.$width.'","'.$height.'","'.$app_ver.'","expressInstall.swf",'.$fv.','.$par.','.$att.');</script><div id="'.$id.'"></div>';
+		$output .= '<script type="text/javascript">swfobject.embedSWF("'.$swfUrl.'","'.$attributes['id'].'","'.$width.'","'.$height.'","'.$app_ver.'","expressInstall.swf",'.$fv.','.$par.','.$att.');</script><div id="'.$attributes['id'].'"></div>';
 		return $output;
 	}
 	
@@ -131,38 +132,57 @@ class BeEmbedFlashHelper extends AppHelper {
 	public function embedFlowplayer($swfUrl, $mediaUrl, $attributes, $flashvars, $params, $fileType) {
 		$defaultAudioPlayer = array("controls" => array("fullscreen" => false));
 		
-		if  (empty($flashvars['config'])) {
-			$flashvars['config'] = array();
+		if (empty($flashvars['clip'])) {
+			$flashvars['clip'] = array("autoPlay" => false);
 		}
 		
-		if (empty($flashvars['config']['clip'])) {
-			$flashvars['config']['clip'] = array("autoPlay" => false);
-		}
-		
-		if (empty($flashvars['config']['playlist'])) {
-			$flashvars['config']['playlist'] = array();
+		if (empty($flashvars['playlist'])) {
+			$flashvars['playlist'] = array();
 		}
 		if (!empty($flashvars['thumbnail'])) {
-			array_unshift($flashvars['config']['playlist'], 
+			array_unshift($flashvars['playlist'], 
 						  array("url" => $flashvars['thumbnail'], "autoPlay" => "true"), 
 						  $mediaUrl
 			);
 			unset($flashvars['thumbnail']);
 		} else {
-			array_unshift($flashvars['config']['playlist'], $mediaUrl);
+			array_unshift($flashvars['playlist'], $mediaUrl);
 		}
 		
-		if (!empty($flashvars['config']['plugins'])) {
-			if ($fileType == "audio" && empty($flashvars['config']['plugins']['controls'])) {
-				$flashvars['config']['plugins'] = array_merge($flashvars['config']['plugins'], $defaultAudioPlayer);
+		if (!empty($flashvars['plugins'])) {
+			if ($fileType == "audio" && empty($flashvars['plugins']['controls'])) {
+				$flashvars['plugins'] = array_merge($flashvars['plugins'], $defaultAudioPlayer);
 			}
 		} elseif ($fileType == "audio") {
-			$flashvars['config']['plugins'] = $defaultAudioPlayer;
+			$flashvars['plugins'] = $defaultAudioPlayer;
 		}
 		
-		$flashvars['config'] = json_encode($flashvars['config']);
+		if (empty($attributes['id'])) {
+			$attributes['id'] = preg_replace("/[\s\.]/", "", "be_id_" . microtime());
+		}
 		
-		return $this->embedSwf( $swfUrl , $attributes, $flashvars, $params );
+		$params = array_merge($params, array('src' => $swfUrl));
+		if (defined("BEDITA_CORE_PATH") && !file_exists(APP . "webroot/js/flowplayer.min.js")) {
+			$output = $this->Javascript->link(Configure::read('beditaUrl') . "/js/flowplayer.min.js",false);
+		} else {
+			$output = $this->Javascript->link("flowplayer.min",false);
+		}
+		
+		$output .= "<script type='text/javascript'>" . 
+			"flowplayer('".$attributes['id']."', ".json_encode($params).", ".json_encode($flashvars).");".
+		"</script>";
+		
+		$width = $attributes["width"];
+		$height = $attributes["height"];
+		unset($attributes["width"]);
+		unset($attributes["height"]);
+		$output .= "<div";
+		foreach ($attributes as $key => $val) {
+			$output .= " " . $key . "=\"" . $val . "\"";
+		}
+		$output .= " style=\"width: ". $width ."px; height: ". $height ."px;\"";
+		$output .= "></div>";
+		return $output;
 	}
 	
 	public function embedWpaudioplayer($swfUrl, $audioFileUrl, $attributes, $flashvars, $params) {
