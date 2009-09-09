@@ -309,6 +309,51 @@ class DbadminShell extends Shell {
 		$this->out("done");
 	}
 
+	public function orphans() {
+		if (!isset($this->params['type'])) {
+			$this->out("object type is mandatory");
+		}
+		$type = $this->params['type'];
+		$objTypeId = Configure::read("objectTypes." . $type . ".id");
+		if(empty($objTypeId)) {
+			$this->out("object type " . $type . " not found");
+		}
+		$modelType = Configure::read("objectTypes." . $type . ".model");
+		$model = ClassRegistry::init($modelType);
+		$objModel = ClassRegistry::init("BEObject");
+		$objects = $objModel->find("all", array(
+		 						"contain" 	=> array(),
+		 						"fields"	=> array("id", "title", "nickname"),
+ 								"conditions" => array("object_type_id" => $objTypeId)));
+		$treeModel = ClassRegistry::init("Tree");
+		$found = false;
+		foreach ($objects as $o) {
+			$obj = $o["BEObject"];
+			$id = $treeModel->field("id", array("id" => $obj["id"]));
+			if(empty($id)) {
+				if(!$found) {
+					$this->out("orphans found");
+					$found = true;
+				}
+				$this->out("orphan id: " . $obj["id"] . " - title: '" . $obj["title"] . 
+					"' - nickname: " . $obj["nickname"]);
+				$res = $this->in("delete object? [y/n]");
+				if($res != "y") {
+					$this->out("$type not deleted, id: " . $obj["id"]);
+				} else {
+					if(!$model->delete($obj["id"])) {
+						throw new BeditaException("Error deleting object: " . $obj["id"]);
+					}
+					$this->out("$type with id: " . $obj["id"] . " deleted");
+				}
+				
+			}
+		}
+		if(!$found) {
+			$this->out("No orphans found of type ". $type);
+		}
+	}
+	
 	function help() {
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
@@ -341,6 +386,12 @@ class DbadminShell extends Shell {
         $this->out(' ');
         $this->out("    -id \t object id to annotate");
         $this->out("    -type \t 'editornote' or 'comment'");
+        $this->out(' ');
+        $this->out("7. orphans: searche and remove orphaned objects (not in tree)");
+        $this->out(' ');
+        $this->out('    Usage: orphans -type <model-type> ');
+        $this->out(' ');
+        $this->out("    -type \t model type like 'section' or 'document'");
         $this->out(' ');
 	}
 	
