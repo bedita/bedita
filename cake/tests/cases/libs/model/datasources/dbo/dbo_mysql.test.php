@@ -1,61 +1,55 @@
 <?php
-/* SVN FILE: $Id: dbo_mysql.test.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id$ */
 /**
- * DboMysql test
+ * DboMysqlTest file
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link			http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs
- * @since			CakePHP(tm) v 1.2.0
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs
+ * @since         CakePHP(tm) v 1.2.0
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
-if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
-	define('CAKEPHP_UNIT_TEST_EXECUTION', 1);
-}
 App::import('Core', array('Model', 'DataSource', 'DboSource', 'DboMysql'));
 
-
+Mock::generatePartial('DboMysql', 'QueryMockDboMysql', array('query'));
 /**
- * Short description for class.
+ * DboMysqlTestDb class
  *
- * @package		cake.tests
- * @subpackage	cake.tests.cases.libs.model.datasources
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model.datasources
  */
 class DboMysqlTestDb extends DboMysql {
 /**
  * simulated property
- * 
+ *
  * @var array
  * @access public
  */
 	var $simulated = array();
 /**
  * testing property
- * 
+ *
  * @var bool true
  * @access public
  */
 	var $testing = true;
 /**
  * execute method
- * 
- * @param mixed $sql 
+ *
+ * @param mixed $sql
  * @access protected
  * @return void
  */
@@ -68,7 +62,7 @@ class DboMysqlTestDb extends DboMysql {
 	}
 /**
  * getLastQuery method
- * 
+ *
  * @access public
  * @return void
  */
@@ -77,33 +71,33 @@ class DboMysqlTestDb extends DboMysql {
 	}
 }
 /**
- * Short description for class.
+ * MysqlTestModel class
  *
- * @package		cake.tests
- * @subpackage	cake.tests.cases.libs.model.datasources
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model.datasources
  */
 class MysqlTestModel extends Model {
 /**
  * name property
- * 
+ *
  * @var string 'MysqlTestModel'
  * @access public
  */
 	var $name = 'MysqlTestModel';
 /**
  * useTable property
- * 
+ *
  * @var bool false
  * @access public
  */
 	var $useTable = false;
 /**
  * find method
- * 
- * @param mixed $conditions 
- * @param mixed $fields 
- * @param mixed $order 
- * @param mixed $recursive 
+ *
+ * @param mixed $conditions
+ * @param mixed $fields
+ * @param mixed $order
+ * @param mixed $recursive
  * @access public
  * @return void
  */
@@ -112,11 +106,11 @@ class MysqlTestModel extends Model {
 	}
 /**
  * findAll method
- * 
- * @param mixed $conditions 
- * @param mixed $fields 
- * @param mixed $order 
- * @param mixed $recursive 
+ *
+ * @param mixed $conditions
+ * @param mixed $fields
+ * @param mixed $order
+ * @param mixed $recursive
  * @access public
  * @return void
  */
@@ -125,7 +119,7 @@ class MysqlTestModel extends Model {
 	}
 /**
  * schema method
- * 
+ *
  * @access public
  * @return void
  */
@@ -153,16 +147,16 @@ class MysqlTestModel extends Model {
 	}
 }
 /**
- * The test class for the DboMysql
+ * DboMysqlTest class
  *
- * @package		cake.tests
- * @subpackage	cake.tests.cases.libs.model.datasources.dbo
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model.datasources.dbo
  */
 class DboMysqlTest extends CakeTestCase {
 /**
  * The Dbo instance to be tested
  *
- * @var object
+ * @var DboSource
  * @access public
  */
 	var $Db = null;
@@ -173,7 +167,7 @@ class DboMysqlTest extends CakeTestCase {
  */
 	function skip() {
 		$this->_initDb();
-		$this->skipif($this->db->config['driver'] != 'mysql', 'MySQL connection not available');
+		$this->skipUnless($this->db->config['driver'] == 'mysql', '%s MySQL connection not available');
 	}
 /**
  * Sets up a Dbo class instance for testing
@@ -192,6 +186,23 @@ class DboMysqlTest extends CakeTestCase {
  */
 	function tearDown() {
 		unset($this->db);
+	}
+/**
+ * startCase
+ *
+ * @return void
+ **/
+	function startCase() {
+		$this->_debug = Configure::read('debug');
+		Configure::write('debug', 1);
+	}
+/**
+ * endCase
+ *
+ * @return void
+ **/
+	function endCase() {
+		Configure::write('debug', $this->_debug);
 	}
 /**
  * Test Dbo value method
@@ -238,7 +249,7 @@ class DboMysqlTest extends CakeTestCase {
 		$expected = 'NULL';
 		$result = $this->db->value('', 'integer');
 		$this->assertEqual($expected, $result);
-		
+
 		$expected = 'NULL';
 		$result = $this->db->value('', 'boolean');
 		$this->assertEqual($expected, $result);
@@ -253,7 +264,7 @@ class DboMysqlTest extends CakeTestCase {
 	}
 /**
  * testTinyintCasting method
- * 
+ *
  * @access public
  * @return void
  */
@@ -289,6 +300,279 @@ class DboMysqlTest extends CakeTestCase {
 
 		$this->db->query('DROP TABLE ' . $this->db->fullTableName('tinyint'));
 	}
-}
+/**
+ * testIndexDetection method
+ *
+ * @return void
+ * @access public
+ */
+	function testIndexDetection() {
+		$this->db->cacheSources = $this->db->testing = false;
 
+		$name = $this->db->fullTableName('simple');
+		$this->db->query('CREATE TABLE ' . $name . ' (id int(11) AUTO_INCREMENT, bool tinyint(1), small_int tinyint(2), primary key(id));');
+		$expected = array('PRIMARY' => array('column' => 'id', 'unique' => 1));
+		$result = $this->db->index($name, false);
+		$this->assertEqual($expected, $result);
+		$this->db->query('DROP TABLE ' . $name);
+
+		$name = $this->db->fullTableName('with_a_key');
+		$this->db->query('CREATE TABLE ' . $name . ' (id int(11) AUTO_INCREMENT, bool tinyint(1), small_int tinyint(2), primary key(id), KEY `pointless_bool` ( `bool` ));');
+		$expected = array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1),
+			'pointless_bool' => array('column' => 'bool', 'unique' => 0),
+		);
+		$result = $this->db->index($name, false);
+		$this->assertEqual($expected, $result);
+		$this->db->query('DROP TABLE ' . $name);
+
+		$name = $this->db->fullTableName('with_two_keys');
+		$this->db->query('CREATE TABLE ' . $name . ' (id int(11) AUTO_INCREMENT, bool tinyint(1), small_int tinyint(2), primary key(id), KEY `pointless_bool` ( `bool` ), KEY `pointless_small_int` ( `small_int` ));');
+		$expected = array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1),
+			'pointless_bool' => array('column' => 'bool', 'unique' => 0),
+			'pointless_small_int' => array('column' => 'small_int', 'unique' => 0),
+		);
+		$result = $this->db->index($name, false);
+		$this->assertEqual($expected, $result);
+		$this->db->query('DROP TABLE ' . $name);
+
+		$name = $this->db->fullTableName('with_compound_keys');
+		$this->db->query('CREATE TABLE ' . $name . ' (id int(11) AUTO_INCREMENT, bool tinyint(1), small_int tinyint(2), primary key(id), KEY `pointless_bool` ( `bool` ), KEY `pointless_small_int` ( `small_int` ), KEY `one_way` ( `bool`, `small_int` ));');
+		$expected = array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1),
+			'pointless_bool' => array('column' => 'bool', 'unique' => 0),
+			'pointless_small_int' => array('column' => 'small_int', 'unique' => 0),
+			'one_way' => array('column' => array('bool', 'small_int'), 'unique' => 0),
+		);
+		$result = $this->db->index($name, false);
+		$this->assertEqual($expected, $result);
+		$this->db->query('DROP TABLE ' . $name);
+
+		$name = $this->db->fullTableName('with_multiple_compound_keys');
+		$this->db->query('CREATE TABLE ' . $name . ' (id int(11) AUTO_INCREMENT, bool tinyint(1), small_int tinyint(2), primary key(id), KEY `pointless_bool` ( `bool` ), KEY `pointless_small_int` ( `small_int` ), KEY `one_way` ( `bool`, `small_int` ), KEY `other_way` ( `small_int`, `bool` ));');
+		$expected = array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1),
+			'pointless_bool' => array('column' => 'bool', 'unique' => 0),
+			'pointless_small_int' => array('column' => 'small_int', 'unique' => 0),
+			'one_way' => array('column' => array('bool', 'small_int'), 'unique' => 0),
+			'other_way' => array('column' => array('small_int', 'bool'), 'unique' => 0),
+		);
+		$result = $this->db->index($name, false);
+		$this->assertEqual($expected, $result);
+		$this->db->query('DROP TABLE ' . $name);
+	}
+/**
+ * MySQL 4.x returns index data in a different format,
+ * Using a mock ensure that MySQL 4.x output is properly parsed.
+ *
+ * @return void
+ **/
+	function testIndexOnMySQL4Output() {
+		$name = $this->db->fullTableName('simple');
+
+		$mockDbo =& new QueryMockDboMysql($this);
+		$columnData = array(
+			array('0' => array(
+				'Table' => 'with_compound_keys',
+				'Non_unique' => '0',
+				'Key_name' => 'PRIMARY',
+				'Seq_in_index' => '1',
+				'Column_name' => 'id',
+				'Collation' => 'A',
+				'Cardinality' => '0',
+				'Sub_part' => NULL,
+				'Packed' => NULL,
+				'Null' => '',
+				'Index_type' => 'BTREE',
+				'Comment' => ''
+			)),
+			array('0' => array(
+				'Table' => 'with_compound_keys',
+				'Non_unique' => '1',
+				'Key_name' => 'pointless_bool',
+				'Seq_in_index' => '1',
+				'Column_name' => 'bool',
+				'Collation' => 'A',
+				'Cardinality' => NULL,
+				'Sub_part' => NULL,
+				'Packed' => NULL,
+				'Null' => 'YES',
+				'Index_type' => 'BTREE',
+				'Comment' => ''
+			)),
+			array('0' => array(
+				'Table' => 'with_compound_keys',
+				'Non_unique' => '1',
+				'Key_name' => 'pointless_small_int',
+				'Seq_in_index' => '1',
+				'Column_name' => 'small_int',
+				'Collation' => 'A',
+				'Cardinality' => NULL,
+				'Sub_part' => NULL,
+				'Packed' => NULL,
+				'Null' => 'YES',
+				'Index_type' => 'BTREE',
+				'Comment' => ''
+			)),
+			array('0' => array(
+				'Table' => 'with_compound_keys',
+				'Non_unique' => '1',
+				'Key_name' => 'one_way',
+				'Seq_in_index' => '1',
+				'Column_name' => 'bool',
+				'Collation' => 'A',
+				'Cardinality' => NULL,
+				'Sub_part' => NULL,
+				'Packed' => NULL,
+				'Null' => 'YES',
+				'Index_type' => 'BTREE',
+				'Comment' => ''
+			)),
+			array('0' => array(
+				'Table' => 'with_compound_keys',
+				'Non_unique' => '1',
+				'Key_name' => 'one_way',
+				'Seq_in_index' => '2',
+				'Column_name' => 'small_int',
+				'Collation' => 'A',
+				'Cardinality' => NULL,
+				'Sub_part' => NULL,
+				'Packed' => NULL,
+				'Null' => 'YES',
+				'Index_type' => 'BTREE',
+				'Comment' => ''
+			))
+		);
+		$mockDbo->setReturnValue('query', $columnData, array('SHOW INDEX FROM ' . $name));
+
+		$result = $mockDbo->index($name, false);
+		$expected = array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1),
+			'pointless_bool' => array('column' => 'bool', 'unique' => 0),
+			'pointless_small_int' => array('column' => 'small_int', 'unique' => 0),
+			'one_way' => array('column' => array('bool', 'small_int'), 'unique' => 0),
+		);
+		$this->assertEqual($result, $expected);
+	}
+/**
+ * testColumn method
+ *
+ * @return void
+ * @access public
+ */
+	function testColumn() {
+		$result = $this->db->column('varchar(50)');
+		$expected = 'string';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->db->column('text');
+		$expected = 'text';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->db->column('int(11)');
+		$expected = 'integer';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->db->column('int(11) unsigned');
+		$expected = 'integer';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->db->column('tinyint(1)');
+		$expected = 'boolean';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->db->column('boolean');
+		$expected = 'boolean';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->db->column('float');
+		$expected = 'float';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->db->column('float unsigned');
+		$expected = 'float';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->db->column('double unsigned');
+		$expected = 'float';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->db->column('decimal(14,7) unsigned');
+		$expected = 'float';
+		$this->assertEqual($result, $expected);
+	}
+/**
+ * testAlterSchemaIndexes method
+ *
+ * @access public
+ * @return void
+ */
+	function testAlterSchemaIndexes() {
+		App::import('Core', 'Schema');
+		$this->db->cacheSources = $this->db->testing = false;
+
+		$schema1 =& new CakeSchema(array(
+			'name' => 'AlterTest1',
+			'connection' => 'test_suite',
+			'altertest' => array(
+				'id' => array('type' => 'integer', 'null' => false, 'default' => 0),
+				'name' => array('type' => 'string', 'null' => false, 'length' => 50),
+				'group1' => array('type' => 'integer', 'null' => true),
+				'group2' => array('type' => 'integer', 'null' => true)
+		)));
+		$this->db->query($this->db->createSchema($schema1));
+
+		$schema2 =& new CakeSchema(array(
+			'name' => 'AlterTest2',
+			'connection' => 'test_suite',
+			'altertest' => array(
+				'id' => array('type' => 'integer', 'null' => false, 'default' => 0),
+				'name' => array('type' => 'string', 'null' => false, 'length' => 50),
+				'group1' => array('type' => 'integer', 'null' => true),
+				'group2' => array('type' => 'integer', 'null' => true),
+				'indexes' => array(
+					'name_idx' => array('column' => 'name', 'unique' => 0),
+					'group_idx' => array('column' => 'group1', 'unique' => 0),
+					'compound_idx' => array('column' => array('group1', 'group2'), 'unique' => 0),
+					'PRIMARY' => array('column' => 'id', 'unique' => 1))
+		)));
+		$this->db->query($this->db->alterSchema($schema2->compare($schema1)));
+
+		$indexes = $this->db->index('altertest');
+		$this->assertEqual($schema2->tables['altertest']['indexes'], $indexes);
+
+		// Change three indexes, delete one and add another one
+		$schema3 =& new CakeSchema(array(
+			'name' => 'AlterTest3',
+			'connection' => 'test_suite',
+			'altertest' => array(
+				'id' => array('type' => 'integer', 'null' => false, 'default' => 0),
+				'name' => array('type' => 'string', 'null' => false, 'length' => 50),
+				'group1' => array('type' => 'integer', 'null' => true),
+				'group2' => array('type' => 'integer', 'null' => true),
+				'indexes' => array(
+					'name_idx' => array('column' => 'name', 'unique' => 1),
+					'group_idx' => array('column' => 'group2', 'unique' => 0),
+					'compound_idx' => array('column' => array('group2', 'group1'), 'unique' => 0),
+					'id_name_idx' => array('column' => array('id', 'name'), 'unique' => 0))
+		)));
+
+		$this->db->query($this->db->alterSchema($schema3->compare($schema2)));
+
+		$indexes = $this->db->index('altertest');
+		$this->assertEqual($schema3->tables['altertest']['indexes'], $indexes);
+
+		// Compare us to ourself.
+		$this->assertEqual($schema3->compare($schema3), array());
+
+		// Drop the indexes
+		$this->db->query($this->db->alterSchema($schema1->compare($schema3)));
+
+		$indexes = $this->db->index('altertest');
+		$this->assertEqual(array(), $indexes);
+
+		$this->db->query($this->db->dropSchema($schema1));
+	}
+}
 ?>

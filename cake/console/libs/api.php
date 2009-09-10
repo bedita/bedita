@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: api.php 8283 2009-08-03 20:49:17Z gwoo $ */
+/* SVN FILE: $Id$ */
 /**
  * API shell to get CakePHP core method signatures.
  *
@@ -19,9 +19,9 @@
  * @package       cake
  * @subpackage    cake.cake.console.libs
  * @since         CakePHP(tm) v 1.2.0.5012
- * @version       $Revision: 8283 $
- * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2009-08-03 13:49:17 -0700 (Mon, 03 Aug 2009) $
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -117,7 +117,7 @@ class ApiShell extends Shell {
 				$this->out($list);
 
 				$methods = array_keys($parsed);
-				while ($number = $this->in(__('Select a number to see the more information about a specific method. q to quit. l to list.', true), null, 'q')) {
+				while ($number = strtolower($this->in(__('Select a number to see the more information about a specific method. q to quit. l to list.', true), null, 'q'))) {
 					if ($number === 'q') {
 						$this->out(__('Done', true));
 						$this->_stop();

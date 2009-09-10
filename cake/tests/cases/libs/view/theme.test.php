@@ -1,32 +1,31 @@
 <?php
-/* SVN FILE: $Id: theme.test.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id$ */
 /**
- * Short description for file.
+ * ThemeViewTest file
  *
  * Long description for file
  *
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
- * @package			cake.tests
- * @subpackage		cake.tests.cases.libs
- * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs
+ * @since         CakePHP(tm) v 1.2.0.4206
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
+ * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', array('Theme', 'Controller'));
+
 if (!class_exists('ErrorHandler')) {
 	App::import('Core', array('Error'));
 }
@@ -36,8 +35,8 @@ if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
 /**
  * ThemePostsController class
  *
- * @package              cake
- * @subpackage           cake.tests.cases.libs.view
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.view
  */
 class ThemePostsController extends Controller {
 /**
@@ -63,8 +62,8 @@ class ThemePostsController extends Controller {
 /**
  * ThemeViewTestErrorHandler class
  *
- * @package              cake
- * @subpackage           cake.tests.cases.libs.view
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.view
  */
 class ThemeViewTestErrorHandler extends ErrorHandler {
 /**
@@ -80,8 +79,8 @@ class ThemeViewTestErrorHandler extends ErrorHandler {
 /**
  * TestThemeView class
  *
- * @package              cake
- * @subpackage           cake.tests.cases.libs.view
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.view
  */
 class TestThemeView extends ThemeView {
 /**
@@ -128,12 +127,11 @@ class TestThemeView extends ThemeView {
 		return $error;
 	}
 }
-
 /**
- * Short description for class.
+ * ThemeViewTest class
  *
- * @package		cake.tests
- * @subpackage	cake.tests.cases.libs
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs
  */
 class ThemeViewTest extends CakeTestCase {
 /**
@@ -149,6 +147,17 @@ class ThemeViewTest extends CakeTestCase {
 		$this->PostsController->viewPath = 'posts';
 		$this->PostsController->index();
 		$this->ThemeView = new ThemeView($this->PostsController);
+	}
+/**
+ * tearDown method
+ *
+ * @access public
+ * @return void
+ */
+	function tearDown() {
+		unset($this->ThemeView);
+		unset($this->PostsController);
+		unset($this->Controller);
 	}
 /**
  * testPluginGetTemplate method
@@ -261,17 +270,6 @@ class ThemeViewTest extends CakeTestCase {
 		set_error_handler('simpleTestErrorHandler');
 		$this->assertPattern("/Missing Layout/", $expected);
 		$this->assertPattern("/views(\/|\\\)themed(\/|\\\)my_theme(\/|\\\)layouts(\/|\\\)whatever.ctp/", $expected);
-	}
-/**
- * tearDown method
- *
- * @access public
- * @return void
- */
-	function tearDown() {
-		unset($this->ThemeView);
-		unset($this->PostsController);
-		unset($this->Controller);
 	}
 }
 ?>

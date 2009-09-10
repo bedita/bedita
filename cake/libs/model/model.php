@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: model.php 8283 2009-08-03 20:49:17Z gwoo $ */
+/* SVN FILE: $Id$ */
 /**
  * Object-relational mapper.
  *
@@ -19,9 +19,9 @@
  * @package       cake
  * @subpackage    cake.cake.libs.model
  * @since         CakePHP(tm) v 0.10.0.0
- * @version       $Revision: 8283 $
- * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2009-08-03 13:49:17 -0700 (Mon, 03 Aug 2009) $
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -1789,8 +1789,6 @@ class Model extends Overloadable {
  * @access protected
  */
 	function _deleteLinks($id) {
-		$db =& ConnectionManager::getDataSource($this->useDbConfig);
-
 		foreach ($this->hasAndBelongsToMany as $assoc => $data) {
 			$records = $this->{$data['with']}->find('all', array(
 				'conditions' => array_merge(array($this->{$data['with']}->escapeField($data['foreignKey']) => $id)),

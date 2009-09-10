@@ -1,37 +1,35 @@
 <?php
-/* SVN FILE: $Id: object.test.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id$ */
 /**
- * Short description for file.
+ * ObjectTest file
  *
  * Long description for file
  *
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
- * @package			cake.tests
- * @subpackage		cake.tests.cases.libs
- * @since			CakePHP(tm) v 1.2.0.5432
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs
+ * @since         CakePHP(tm) v 1.2.0.5432
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
+ * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', array('Object', 'Controller', 'Model'));
 /**
  * RequestActionPost class
  *
- * @package              cake
- * @subpackage           cake.tests.cases.libs.object
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.object
  */
 class RequestActionPost extends CakeTestModel {
 /**
@@ -52,8 +50,8 @@ class RequestActionPost extends CakeTestModel {
 /**
  * RequestActionController class
  *
- * @package              cake
- * @subpackage           cake.tests.cases.libs
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs
  */
 class RequestActionController extends Controller {
 /**
@@ -102,12 +100,59 @@ class RequestActionController extends Controller {
 		$data = $this->paginate();
 		return true;
 	}
+/**
+ * post pass, testing post passing
+ *
+ * @return array
+ **/
+	function post_pass() {
+		return $this->data;
+	}
+/**
+ * test param passing and parsing.
+ *
+ * @return array
+ */
+	function params_pass() {
+		return $this->params;
+	}
+}
+/**
+ * RequestActionPersistentController class
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs
+ */
+class RequestActionPersistentController extends Controller {
+/**
+* uses property
+*
+* @var array
+* @access public
+*/
+	var $uses = array('PersisterOne');
+
+/**
+* persistModel property
+*
+* @var array
+* @access public
+*/
+	var $persistModel = true;
+/**
+ * post pass, testing post passing
+ *
+ * @return array
+ **/
+	function index() {
+		return 'This is a test';
+	}
 }
 /**
  * TestObject class
  *
- * @package              cake
- * @subpackage           cake.tests.cases.libs
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs
  */
 class TestObject extends Object {
 /**
@@ -226,7 +271,6 @@ class TestObject extends Object {
 	function methodWithOptionalParam($param = null) {
 		$this->methodCalls[] = array('methodWithOptionalParam' => array($param));
 	}
-
 /**
  * testPersist
  *
@@ -236,25 +280,21 @@ class TestObject extends Object {
 		return $this->_persist($name, $return, $object, $type);
 	}
 }
-
-
 /**
- * ObjectTestModel
+ * ObjectTestModel class
  *
- * @package    cake.tests
- * @subpackage cake.tests.cases.libs
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs
  */
 class ObjectTestModel extends CakeTestModel {
 	var $useTable = false;
 	var $name = 'ObjectTestModel';
 }
-
-
 /**
- * Object Test Class
+ * Object Test class
  *
- * @package    cake.tests
- * @subpackage cake.tests.cases.libs
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs
  */
 class ObjectTest extends CakeTestCase {
 /**
@@ -262,7 +302,7 @@ class ObjectTest extends CakeTestCase {
  *
  * @var string
  **/
-	var $fixtures = array('core.post');
+	var $fixtures = array('core.post', 'core.comment');
 /**
  * setUp method
  *
@@ -271,6 +311,15 @@ class ObjectTest extends CakeTestCase {
  */
 	function setUp() {
 		$this->object = new TestObject();
+	}
+/**
+ * tearDown method
+ *
+ * @access public
+ * @return void
+ */
+	function tearDown() {
+		unset($this->object);
 	}
 /**
  * testLog method
@@ -360,6 +409,104 @@ class ObjectTest extends CakeTestCase {
 		$this->assertEqual('ObjectTestModel', $newModel->name);
 
 		@unlink(CACHE . 'persistent' . DS . 'objecttestmodel.php');
+
+		Configure::write('Cache.disable', $cacheDisable);
+	}
+/**
+ * testPersistWithRequestAction method
+ *
+ * @access public
+ * @return void
+ */
+	function testPersistWithBehavior() {
+		ClassRegistry::flush();
+
+		$cacheDisable = Configure::read('Cache.disable');
+		Configure::write('Cache.disable', false);
+
+		Configure::write('modelPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'models'. DS));
+		Configure::write('behaviorPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'models'. DS . 'behaviors' . DS));
+
+		$this->assertFalse(class_exists('PersisterOneBehaviorBehavior'));
+		$this->assertFalse(class_exists('PersisterTwoBehaviorBehavior'));
+
+		$Controller = new RequestActionPersistentController();
+		$Controller->persistModel = true;
+		$Controller->constructClasses();
+
+		$this->assertTrue(file_exists(CACHE . 'persistent' . DS . 'persisterone.php'));
+		$this->assertTrue(file_exists(CACHE . 'persistent' . DS . 'persisteroneregistry.php'));
+
+		$contents = str_replace('"PersisterOne"', '"PersisterTwo"', file_get_contents(CACHE . 'persistent' . DS . 'persisteroneregistry.php'));
+		$contents = str_replace('persister_one_', 'persister_two_', file_get_contents(CACHE . 'persistent' . DS . 'persisteroneregistry.php'));
+
+		$result = file_put_contents(CACHE . 'persistent' . DS . 'persisteroneregistry.php', $contents);
+
+		$this->assertTrue(class_exists('PersisterOneBehaviorBehavior'));
+		$this->assertFalse(class_exists('PersisterTwoBehaviorBehavior'));
+
+		$Controller = new RequestActionPersistentController();
+		$Controller->persistModel = true;
+		$Controller->constructClasses();
+
+		$this->assertTrue(class_exists('PersisterOneBehaviorBehavior'));
+		$this->assertTrue(class_exists('PersisterTwoBehaviorBehavior'));
+
+		@unlink(CACHE . 'persistent' . DS . 'persisterone.php');
+		@unlink(CACHE . 'persistent' . DS . 'persisteroneregistry.php');
+	}
+/**
+ * testPersistWithBehaviorAndRequestAction method
+ *
+ * @see testPersistWithBehavior
+ * @access public
+ * @return void
+ */
+	function testPersistWithBehaviorAndRequestAction() {
+		ClassRegistry::flush();
+
+		$cacheDisable = Configure::read('Cache.disable');
+		Configure::write('Cache.disable', false);
+
+		$this->assertFalse(class_exists('ContainableBehavior'));
+
+		Configure::write('modelPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'models'. DS));
+		Configure::write('behaviorPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'models'. DS . 'behaviors' . DS));
+
+		$this->assertFalse(class_exists('PersistOneBehaviorBehavior'));
+		$this->assertFalse(class_exists('PersistTwoBehaviorBehavior'));
+
+		$Controller = new RequestActionPersistentController();
+		$Controller->persistModel = true;
+		$Controller->constructClasses();
+
+		$this->assertTrue(file_exists(CACHE . 'persistent' . DS . 'persisterone.php'));
+		$this->assertTrue(file_exists(CACHE . 'persistent' . DS . 'persisteroneregistry.php'));
+
+		$keys = ClassRegistry::keys();
+		$this->assertEqual($keys, array('persister_one', 'comment', 'persister_one_behavior_behavior'));
+
+		ob_start();
+		$Controller->set('content_for_layout', 'cool');
+		$Controller->render('index', 'ajax', '/layouts/ajax');
+		$result = ob_get_clean();
+
+		$keys = ClassRegistry::keys();
+		$this->assertEqual($keys, array('persister_one', 'comment', 'persister_one_behavior_behavior', 'view'));
+
+		$result = $this->object->requestAction('/request_action_persistent/index');
+		$expected = 'This is a test';
+		$this->assertEqual($result, $expected);
+
+		@unlink(CACHE . 'persistent' . DS . 'persisterone.php');
+		@unlink(CACHE . 'persistent' . DS . 'persisteroneregistry.php');
+
+		$Controller = new RequestActionPersistentController();
+		$Controller->persistModel = true;
+		$Controller->constructClasses();
+
+		@unlink(CACHE . 'persistent' . DS . 'persisterone.php');
+		@unlink(CACHE . 'persistent' . DS . 'persisteroneregistry.php');
 
 		Configure::write('Cache.disable', $cacheDisable);
 	}
@@ -524,11 +671,61 @@ class ObjectTest extends CakeTestCase {
 		$result = $this->object->requestAction(array('controller'=>'request_action', 'action'=>'paginate_request_action'));
 		$this->assertTrue($result);
 
+		$result = $this->object->requestAction(array('controller'=>'request_action', 'action'=>'paginate_request_action'), array('pass' => array(5), 'named' => array('param' => 'value')));
+		$this->assertTrue($result);
+
 		Configure::write('controllerPaths', $_back['controller']);
 		Configure::write('viewPaths', $_back['view']);
 		Configure::write('pluginPaths', $_back['plugin']);
 	}
+/**
+ * Test that requestAction() is populating $this->params properly
+ *
+ * @access public
+ * @return void
+ */
+	function testRequestActionParamParseAndPass() {
+		$result = $this->object->requestAction('/request_action/params_pass');
+		$this->assertTrue(isset($result['url']['url']));
+		$this->assertEqual($result['url']['url'], '/request_action/params_pass');
+		$this->assertEqual($result['controller'], 'request_action');
+		$this->assertEqual($result['action'], 'params_pass');
+		$this->assertEqual($result['form'], array());
+		$this->assertEqual($result['plugin'], null);
 
+		$result = $this->object->requestAction('/request_action/params_pass/sort:desc/limit:5');
+		$expected = array('sort' => 'desc', 'limit' => 5,);
+		$this->assertEqual($result['named'], $expected);
+
+		$result = $this->object->requestAction(array('controller' => 'request_action', 'action' => 'params_pass'), array('named' => array('sort' => 'desc', 'limit' => 5)));
+		$this->assertEqual($result['named'], $expected);
+	}
+/**
+ * test requestAction and POST parameter passing, and not passing when url is an array.
+ *
+ * @access public
+ * @return void
+ */
+	function testRequestActionPostPassing() {
+		$_tmp = $_POST;
+
+		$_POST = array('data' => array(
+			'item' => 'value'
+		));
+		$result = $this->object->requestAction(array('controller' => 'request_action', 'action' => 'post_pass'));
+		$expected = array();
+		$this->assertEqual($expected, $result);
+
+		$result = $this->object->requestAction(array('controller' => 'request_action', 'action' => 'post_pass'), array('data' => $_POST['data']));
+		$expected = $_POST['data'];
+		$this->assertEqual($expected, $result);
+
+		$result = $this->object->requestAction('/request_action/post_pass');
+		$expected = $_POST['data'];
+		$this->assertEqual($expected, $result);
+
+		$_POST = $_tmp;
+	}
 /**
  * testCakeError
  *
@@ -536,15 +733,6 @@ class ObjectTest extends CakeTestCase {
  **/
 	function testCakeError() {
 
-	}
-/**
- * tearDown method
- *
- * @access public
- * @return void
- */
-	function tearDown() {
-		unset($this->object);
 	}
 }
 ?>

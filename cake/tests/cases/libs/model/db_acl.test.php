@@ -1,211 +1,204 @@
 <?php
-/* SVN FILE: $Id: db_acl.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id$ */
 /**
- * Short description for file.
+ * DbAclTest file
  *
  * Long description for file
  *
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
- * @package			cake.tests
- * @subpackage		cake.tests.cases.libs.controller.components.dbacl.models
- * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 05:09:03 -0400 (Fri, 27 Jun 2008) $
- * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.controller.components.dbacl.models
+ * @since         CakePHP(tm) v 1.2.0.4206
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
+ * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
 	define('CAKEPHP_UNIT_TEST_EXECUTION', 1);
 }
-
 App::import('Component', 'Acl');
 App::import('Core', 'db_acl');
-
 /**
-* DB ACL wrapper test class
-*
-* @package		cake.tests
-* @subpackage	cake.tests.cases.libs.controller.components
-*/
+ * DB ACL wrapper test class
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.controller.components
+ */
 class DbAclNodeTestBase extends AclNode {
 /**
  * useDbConfig property
- * 
+ *
  * @var string 'test_suite'
  * @access public
  */
 	var $useDbConfig = 'test_suite';
 /**
  * cacheSources property
- * 
+ *
  * @var bool false
  * @access public
  */
 	var $cacheSources = false;
 }
-
 /**
-* Aro Test Wrapper
-*
-* @package		cake.tests
-* @subpackage	cake.tests.cases.libs.controller.components
-*/
+ * Aro Test Wrapper
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.controller.components
+ */
 class DbAroTest extends DbAclNodeTestBase {
 /**
  * name property
- * 
+ *
  * @var string 'DbAroTest'
  * @access public
  */
 	var $name = 'DbAroTest';
 /**
  * useTable property
- * 
+ *
  * @var string 'aros'
  * @access public
  */
 	var $useTable = 'aros';
 /**
  * hasAndBelongsToMany property
- * 
+ *
  * @var array
  * @access public
  */
 	var $hasAndBelongsToMany = array('DbAcoTest' => array('with' => 'DbPermissionTest'));
 }
-
 /**
-* Aco Test Wrapper
-*
-* @package		cake.tests
-* @subpackage	cake.tests.cases.libs.controller.components
-*/
+ * Aco Test Wrapper
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.controller.components
+ */
 class DbAcoTest extends DbAclNodeTestBase {
 /**
  * name property
- * 
+ *
  * @var string 'DbAcoTest'
  * @access public
  */
 	var $name = 'DbAcoTest';
 /**
  * useTable property
- * 
+ *
  * @var string 'acos'
  * @access public
  */
 	var $useTable = 'acos';
 /**
  * hasAndBelongsToMany property
- * 
+ *
  * @var array
  * @access public
  */
 	var $hasAndBelongsToMany = array('DbAroTest' => array('with' => 'DbPermissionTest'));
 }
-
 /**
-* Permission Test Wrapper
-*
-* @package		cake.tests
-* @subpackage	cake.tests.cases.libs.controller.components
-*/
+ * Permission Test Wrapper
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.controller.components
+ */
 class DbPermissionTest extends CakeTestModel {
 /**
  * name property
- * 
+ *
  * @var string 'DbPermissionTest'
  * @access public
  */
 	var $name = 'DbPermissionTest';
 /**
  * useTable property
- * 
+ *
  * @var string 'aros_acos'
  * @access public
  */
 	var $useTable = 'aros_acos';
 /**
  * cacheQueries property
- * 
+ *
  * @var bool false
  * @access public
  */
 	var $cacheQueries = false;
 /**
  * belongsTo property
- * 
+ *
  * @var array
  * @access public
  */
 	var $belongsTo = array('DbAroTest' => array('foreignKey' => 'aro_id'), 'DbAcoTest' => array('foreignKey' => 'aco_id'));
 }
 /**
-* Short description for class.
-*
-* @package		cake.tests
-* @subpackage	cake.tests.cases.libs.controller.components
-*/
+ * DboActionTest class
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.controller.components
+ */
 class DbAcoActionTest extends CakeTestModel {
 /**
  * name property
- * 
+ *
  * @var string 'DbAcoActionTest'
  * @access public
  */
 	var $name = 'DbAcoActionTest';
 /**
  * useTable property
- * 
+ *
  * @var string 'aco_actions'
  * @access public
  */
 	var $useTable = 'aco_actions';
 /**
  * belongsTo property
- * 
+ *
  * @var array
  * @access public
  */
 	var $belongsTo = array('DbAcoTest' => array('foreignKey' => 'aco_id'));
 }
 /**
-* Short description for class.
-*
-* @package		cake.tests
-* @subpackage	cake.tests.cases.libs.controller.components
-*/
+ * DbAroUserTest class
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.controller.components
+ */
 class DbAroUserTest extends CakeTestModel {
 /**
  * name property
- * 
+ *
  * @var string 'AuthUser'
  * @access public
  */
 	var $name = 'AuthUser';
 /**
  * useTable property
- * 
+ *
  * @var string 'auth_users'
  * @access public
  */
 	var $useTable = 'auth_users';
 	/**
  * bindNode method
- * 
- * @param mixed $ref 
+ *
+ * @param mixed $ref
  * @access public
  * @return void
  */
@@ -217,17 +210,16 @@ class DbAroUserTest extends CakeTestModel {
 		}
 	}
 }
-
 /**
-* Short description for class.
-*
-* @package		cake.tests
-* @subpackage	cake.tests.cases.libs.controller.components
-*/
+ * DbAclTest class
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.controller.components
+ */
 class DbAclTest extends DbAcl {
 /**
  * construct method
- * 
+ *
  * @access private
  * @return void
  */
@@ -239,22 +231,22 @@ class DbAclTest extends DbAcl {
 	}
 }
 /**
- * Short description for class.
+ * AclNodeTest class
  *
- * @package		cake.tests
- * @subpackage	cake.tests.cases.libs.controller.components.dbacl.models
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.controller.components.dbacl.models
  */
 class AclNodeTest extends CakeTestCase {
 /**
  * fixtures property
- * 
+ *
  * @var array
  * @access public
  */
 	var $fixtures = array('core.aro', 'core.aco', 'core.aros_aco', 'core.aco_action', 'core.auth_user');
 /**
  * setUp method
- * 
+ *
  * @access public
  * @return void
  */
@@ -264,7 +256,7 @@ class AclNodeTest extends CakeTestCase {
 	}
 /**
  * testNode method
- * 
+ *
  * @access public
  * @return void
  */
@@ -299,13 +291,13 @@ class AclNodeTest extends CakeTestCase {
 
 		$result = Set::extract($Aco->node('Controller2/action3/record5'), '{n}.DbAcoTest.id');
 		$this->assertFalse($result);
-		
+
 		$result = $Aco->node('');
 		$this->assertEqual($result, null);
 	}
 	/**
  * testNodeArrayFind method
- * 
+ *
  * @access public
  * @return void
  */
@@ -319,11 +311,11 @@ class AclNodeTest extends CakeTestCase {
 		Configure::write('DbAclbindMode', 'array');
 		$result = Set::extract($Aro->node(array('DbAroUserTest' => array('id' => 4, 'foreign_key' => 2))), '{n}.DbAroTest.id');
 		$expected = array(4);
-		$this->assertEqual($result, $expected);	
+		$this->assertEqual($result, $expected);
 	}
 	/**
  * testNodeObjectFind method
- * 
+ *
  * @access public
  * @return void
  */
@@ -334,16 +326,16 @@ class AclNodeTest extends CakeTestCase {
 		$result = Set::extract($Aro->node($Model), '{n}.DbAroTest.id');
 		$expected = array(3, 2, 1);
 		$this->assertEqual($result, $expected);
-		
+
 		$Model->id = 2;
 		$result = Set::extract($Aro->node($Model), '{n}.DbAroTest.id');
 		$expected = array(4, 2, 1);
 		$this->assertEqual($result, $expected);
-		
+
 	}
 /**
  * testNodeAliasParenting method
- * 
+ *
  * @access public
  * @return void
  */

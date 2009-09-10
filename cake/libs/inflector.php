@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: inflector.php 8283 2009-08-03 20:49:17Z gwoo $ */
+/* SVN FILE: $Id$ */
 /**
  * Pluralize and singularize English words.
  *
@@ -19,9 +19,9 @@
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 0.2.9
- * @version       $Revision: 8283 $
- * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2009-08-03 13:49:17 -0700 (Mon, 03 Aug 2009) $
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -318,7 +318,8 @@ class Inflector extends Object {
 			'nexus', 'Niasese', 'Pekingese', 'Piedmontese', 'pincers', 'Pistoiese', 'pliers', 'Portuguese', 'proceedings',
 			'rabies', 'rice', 'rhinoceros', 'salmon', 'Sarawakese', 'scissors', 'sea[- ]bass', 'series', 'Shavese', 'shears',
 			'siemens', 'species', 'swine', 'testes', 'trousers', 'trout', 'tuna', 'Vermontese', 'Wenchowese',
-			'whiting', 'wildebeest', 'Yengeese');
+			'whiting', 'wildebeest', 'Yengeese'
+		);
 
 		$coreIrregularSingular = array(
 			'atlases' => 'atlas',
@@ -349,7 +350,9 @@ class Inflector extends Object {
 			'soliloquies' => 'soliloquy',
 			'testes' => 'testis',
 			'trilbys' => 'trilby',
-			'turfs' => 'turf');
+			'turfs' => 'turf',
+			'waves' => 'wave'
+		);
 
 		$singularRules = Set::pushDiff($this->__singularRules, $coreSingularRules);
 		$uninflected = Set::pushDiff($this->__uninflectedSingular, $coreUninflectedSingular);

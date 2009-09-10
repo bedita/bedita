@@ -1,43 +1,59 @@
 <?php
-/* SVN FILE: $Id: session.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id$ */
 /**
- * Short description for file.
+ * SessionHelperTest file
  *
  * Long description for file
  *
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
- * @package			cake.tests
- * @subpackage		cake.tests.cases.libs.view.helpers
- * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7296 $
- * @modifiedby		$LastChangedBy: gwoo $
- * @lastmodified	$Date: 2008-06-27 05:09:03 -0400 (Fri, 27 Jun 2008) $
- * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.view.helpers
+ * @since         CakePHP(tm) v 1.2.0.4206
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
+ * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
 	define('CAKEPHP_UNIT_TEST_EXECUTION', 1);
 }
-
+if (!class_exists('AppError')) {
+App::import('Error');
+	/**
+	 * AppController class
+	 *
+	 * @package       cake
+	 * @subpackage    cake.tests.cases.libs
+	 */
+	class AppError extends ErrorHandler {
+	/**
+	 * _stop method
+	 *
+	 * @access public
+	 * @return void
+	 */
+		function _stop() {
+			return;
+		}
+	}
+}
 App::import('Core', array('Helper', 'AppHelper', 'Controller', 'View'));
 App::import('Helper', array('Session'));
-
 /**
- * Short description for class.
+ * SessionHelperTest class
  *
- * @package		cake.tests
- * @subpackage	cake.tests.cases.libs.view.helpers
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.view.helpers
  */
 class SessionHelperTest extends CakeTestCase {
 /**
@@ -147,7 +163,9 @@ class SessionHelperTest extends CakeTestCase {
 		$result = ob_get_clean();
 		$this->assertEqual($result, $expected);
 
+		$_viewPaths = Configure::read('viewPaths');
 		Configure::write('viewPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views'. DS));
+
 		$controller = new Controller();
 		$this->Session->view = new View($controller);
 
@@ -169,6 +187,36 @@ class SessionHelperTest extends CakeTestCase {
 		$expected = 'Bare message';
 		$this->assertEqual($result, $expected);
 		$this->assertFalse($this->Session->check('Message.bare'));
+
+		Configure::write('viewPaths', $_viewPaths);
+	}
+/**
+ * testFlash method
+ *
+ * @access public
+ * @return void
+ */
+	function testFlashMissingLayout() {
+		$_SESSION = array(
+			'Message' => array(
+				'notification' => array(
+					'layout' => 'does_not_exist',
+					'params' => array('title' => 'Notice!', 'name' => 'Alert!'),
+					'message' => 'This is a test of the emergency broadcasting system',
+				)
+			)
+		);
+
+		$controller = new Controller();
+		$this->Session->view = new View($controller);
+
+		ob_start();
+		$this->Session->flash('notification');
+		$result = ob_get_contents();
+		ob_clean();
+
+		$this->assertPattern("/Missing Layout/", $result);
+		$this->assertPattern("/layouts\/does_not_exist.ctp/", $result);
 	}
 /**
  * testID method
@@ -228,5 +276,4 @@ class SessionHelperTest extends CakeTestCase {
 		//$this->assertFalse($this->Session->valid());
 	}
 }
-
 ?>

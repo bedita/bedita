@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: schema.php 8283 2009-08-03 20:49:17Z gwoo $ */
+/* SVN FILE: $Id$ */
 /**
  * Schema database management for CakePHP.
  *
@@ -17,9 +17,9 @@
  * @package       cake
  * @subpackage    cake.cake.libs.model
  * @since         CakePHP(tm) v 1.2.0.5550
- * @version       $Revision: 8283 $
- * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2009-08-03 13:49:17 -0700 (Mon, 03 Aug 2009) $
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Model', 'ConnectionManager');
@@ -172,6 +172,7 @@ class CakeSchema extends Object {
  * - 'connection' - the db connection to use
  * - 'name' - name of the schema
  * - 'models' - a list of models to use, or false to ignore models
+ *
  * @param array $options schema object properties
  * @return array Array indexed by name and tables
  * @access public

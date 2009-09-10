@@ -1,43 +1,43 @@
 <?php
-/* SVN FILE: $Id: dbo_oracle.test.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id$ */
 /**
- * DboOracle test
+ * DboOracleTest file
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link			http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake.libs
- * @since			CakePHP(tm) v 1.2.0
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package       cake
+ * @subpackage    cake.cake.libs
+ * @since         CakePHP(tm) v 1.2.0
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
 	define('CAKEPHP_UNIT_TEST_EXECUTION', 1);
 }
-require_once LIBS.'model'.DS.'datasources'.DS.'dbo_source.php';
-require_once LIBS.'model'.DS.'datasources'.DS.'dbo'.DS.'dbo_oracle.php';
-
+require_once LIBS . 'model' . DS . 'datasources' . DS . 'dbo_source.php';
+require_once LIBS . 'model' . DS . 'datasources' . DS . 'dbo' . DS . 'dbo_oracle.php';
 /**
  * DboOracleTest class
  *
- * @package				 cake
- * @subpackage			 cake.tests.cases.libs.model.datasources.dbo
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model.datasources.dbo
  */
 class DboOracleTest extends CakeTestCase {
+/**
+ * fixtures property
+ */
+	var $fixtures = array('core.oracle_user');
 /**
  * setup method
  *
@@ -53,13 +53,10 @@ class DboOracleTest extends CakeTestCase {
  * @access public
  * @return void
  */
-	function skip($case = null) {
-		$this->_initDb();
-		if ($this->db->config['driver'] != 'oracle' && $case) {
-			pr("Oracle connection not available not available for " . $case);
-			return true;
-		}
-	}
+    function skip() {
+    	$this->_initDb();
+    	$this->skipUnless($this->db->config['driver'] == 'oracle', '%s Oracle connection not available');
+    }
 /**
  * testLastErrorStatement method
  *
@@ -89,13 +86,15 @@ class DboOracleTest extends CakeTestCase {
 		}
 
 		$config = $this->db->config;
+		$old_pw = $this->db->config['password'];
 		$this->db->config['password'] = 'keepmeout';
 		$this->db->connect();
 		$e = $this->db->lastError();
 		$r = 'ORA-01017: invalid username/password; logon denied';
 		$this->assertEqual($e, $r);
+		$this->db->config['password'] = $old_pw;
+		$this->db->connect();
 	}
-
 /**
  * testName method
  *
@@ -128,5 +127,4 @@ class DboOracleTest extends CakeTestCase {
 
 	}
 }
-
 ?>

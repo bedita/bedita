@@ -3,7 +3,7 @@
 {if $contentTemplate}
 	<div style="clear: both">
 	{if !empty($obj.relations.attach)}
-		{assign_associative var="params" width=96 height=96 mode="fill" upscale=false URLonly=1}
+		{assign_associative var="params" presentation="thumb" width=96 height=96 mode="fill" upscale=false URLonly=1}
 		{assign_concat var="src" 0='src="' 1=$beEmbedMedia->object($obj.relations.attach.0,$params) 2='"'}
 		{assign var="content" value=$contentTemplate|regex_replace:'/src="[\S]*?"/':$src}
 	{else}
@@ -24,7 +24,7 @@
 {else}
 	<div style="clear: both">
 	{if !empty($obj.relations.attach)}
-		{assign_associative var="params" width=96 height=96 mode="fill" upscale=false}
+		{assign_associative var="params" presentation="thumb" width=96 height=96 mode="fill" upscale=false}
 		{assign_associative var="htmlAttr" width=96 height=96}
 		<div style="float:left;margin:0px 20px 20px 0px;">
 		{$beEmbedMedia->object($obj.relations.attach.0,$params,$htmlAttr)}

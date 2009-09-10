@@ -1,35 +1,35 @@
 <?php
-/* SVN FILE: $Id: behavior.test.php 7296 2008-06-27 09:09:03Z gwoo $ */
+/* SVN FILE: $Id$ */
 /**
- * Short description for behavior.test.php
+ * BehaviorTest file
  *
  * Long description for behavior.test.php
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) : Rapid Development Framework <http://www.cakephp.org/>
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright            CakePHP(tm) : Rapid Development Framework <http://www.cakephp.org/>
- * @link                 http://www.cakephp.org
- * @package              cake
- * @subpackage           cake.tests.cases.libs.model
- * @since                1.2
- * @version              $Revision: 7296 $
- * @modifiedBy           $LastChangedBy: gwoo $
- * @lastModified         $Date: 2008-06-27 05:09:03 -0400 (Fri, 27 Jun 2008) $
- * @license              http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * @link          http://www.cakephp.org
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model
+ * @since         1.2
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
+App::import('Model', 'AppModel');
 require_once dirname(__FILE__) . DS . 'models.php';
 /**
- * Short description for class.
+ * TestBehavior class
  *
- * @package		cake.tests
- * @subpackage	cake.tests.cases.libs.model
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model
  */
 class TestBehavior extends ModelBehavior {
 /**
@@ -257,7 +257,7 @@ class TestBehavior extends ModelBehavior {
 		}
 		echo "onError trigger success";
 	}
-		/**
+/**
  * beforeTest method
  *
  * @param mixed $model
@@ -265,8 +265,8 @@ class TestBehavior extends ModelBehavior {
  * @return void
  */
 	function beforeTest(&$model) {
-		$model->beforeTestResult[] = get_class($this);
-		return get_class($this);
+		$model->beforeTestResult[] = strtolower(get_class($this));
+		return strtolower(get_class($this));
 	}
 /**
  * testMethod method
@@ -324,26 +324,76 @@ class TestBehavior extends ModelBehavior {
 /**
  * Test2Behavior class
  *
- * @package              cake
- * @subpackage           cake.tests.cases.libs.model
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model
  */
 class Test2Behavior extends TestBehavior{
-
 }
 /**
  * Test3Behavior class
  *
- * @package              cake
- * @subpackage           cake.tests.cases.libs.model
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model
  */
 class Test3Behavior extends TestBehavior{
-
+}
+/**
+ * Test4Behavior class
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model
+ */
+class Test4Behavior extends ModelBehavior{
+	function setup(&$model, $config = null) {
+		$model->bindModel(
+			array('hasMany' => array('Comment'))
+		);
+	}
+}
+/**
+ * Test5Behavior class
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model
+ */
+class Test5Behavior extends ModelBehavior{
+	function setup(&$model, $config = null) {
+		$model->bindModel(
+			array('belongsTo' => array('User'))
+		);
+	}
+}
+/**
+ * Test6Behavior class
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model
+ */
+class Test6Behavior extends ModelBehavior{
+	function setup(&$model, $config = null) {
+		$model->bindModel(
+			array('hasAndBelongsToMany' => array('Tag'))
+		);
+	}
+}
+/**
+ * Test7Behavior class
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model
+ */
+class Test7Behavior extends ModelBehavior{
+	function setup(&$model, $config = null) {
+		$model->bindModel(
+			array('hasOne' => array('Attachment'))
+		);
+	}
 }
 /**
  * BehaviorTest class
  *
- * @package              cake
- * @subpackage           cake.tests.cases.libs.model
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model
  */
 class BehaviorTest extends CakeTestCase {
 /**
@@ -352,7 +402,19 @@ class BehaviorTest extends CakeTestCase {
  * @var array
  * @access public
  */
-	var $fixtures = array('core.apple', 'core.sample');
+	var $fixtures = array(
+		'core.apple', 'core.sample', 'core.article', 'core.user', 'core.comment',
+		'core.attachment', 'core.tag', 'core.articles_tag'
+	);
+/**
+ * tearDown method
+ *
+ * @access public
+ * @return void
+ */
+	function tearDown() {
+		ClassRegistry::flush();
+	}
 /**
  * testBehaviorBinding method
  *
@@ -374,8 +436,11 @@ class BehaviorTest extends CakeTestCase {
 		$this->assertIdentical($Apple->Sample->Behaviors->attached(), array('Test'));
 		$this->assertEqual($Apple->Sample->Behaviors->Test->settings['Sample'], array('beforeFind' => 'on', 'afterFind' => 'off', 'key2' => 'value2'));
 
-		$this->assertEqual(array_keys($Apple->Behaviors->Test->settings), array('Apple'));
-		$this->assertEqual(array_keys($Apple->Sample->Behaviors->Test->settings), array('Sample'));
+		$this->assertEqual(array_keys($Apple->Behaviors->Test->settings), array('Apple', 'Sample'));
+		$this->assertIdentical(
+			$Apple->Sample->Behaviors->Test->settings,
+			$Apple->Behaviors->Test->settings
+		);
 		$this->assertNotIdentical($Apple->Behaviors->Test->settings['Apple'], $Apple->Sample->Behaviors->Test->settings['Sample']);
 
 		$Apple->Behaviors->attach('Test', array('key2' => 'value2', 'key3' => 'value3', 'beforeFind' => 'off'));
@@ -397,14 +462,20 @@ class BehaviorTest extends CakeTestCase {
 		$this->assertFalse($Apple->Behaviors->attach('NoSuchBehavior'));
 
 		$Apple->Behaviors->attach('Plugin.Test', array('key' => 'new value'));
-		$this->assertEqual($Apple->Behaviors->Test->settings['Apple'], array('beforeFind' => 'off', 'afterFind' => 'off', 'key' => 'new value', 'key2' => 'value2', 'key3' => 'value3'));
+		$expected = array(
+			'beforeFind' => 'off', 'afterFind' => 'off', 'key' => 'new value',
+			'key2' => 'value2', 'key3' => 'value3'
+		);
+		$this->assertEqual($Apple->Behaviors->Test->settings['Apple'], $expected);
 
 		$current = $Apple->Behaviors->Test->settings['Apple'];
 		$expected = array_merge($current, array('mangle' => 'trigger mangled'));
 		$Apple->Behaviors->attach('Test', array('mangle' => 'trigger'));
 		$this->assertEqual($Apple->Behaviors->Test->settings['Apple'], $expected);
+
 		$Apple->Behaviors->attach('Test');
 		$expected = array_merge($current, array('mangle' => 'trigger mangled mangled'));
+
 		$this->assertEqual($Apple->Behaviors->Test->settings['Apple'], $expected);
 		$Apple->Behaviors->attach('Test', array('mangle' => 'trigger'));
 		$expected = array_merge($current, array('mangle' => 'trigger mangled'));
@@ -912,35 +983,87 @@ class BehaviorTest extends CakeTestCase {
  * @return void
  */
 	function testBehaviorTrigger() {
-		$Apple = new Apple();
+		$Apple =& new Apple();
 		$Apple->Behaviors->attach('Test');
 		$Apple->Behaviors->attach('Test2');
 		$Apple->Behaviors->attach('Test3');
 
 		$Apple->beforeTestResult = array();
 		$Apple->Behaviors->trigger($Apple, 'beforeTest');
-		$expected = array('TestBehavior', 'Test2Behavior', 'Test3Behavior');
+		$expected = array('testbehavior', 'test2behavior', 'test3behavior');
 		$this->assertIdentical($Apple->beforeTestResult, $expected);
 
 		$Apple->beforeTestResult = array();
-		$Apple->Behaviors->trigger($Apple, 'beforeTest', array(), array('break' => true, 'breakOn' => 'Test2Behavior'));
-		$expected = array('TestBehavior', 'Test2Behavior');
+		$Apple->Behaviors->trigger($Apple, 'beforeTest', array(), array('break' => true, 'breakOn' => 'test2behavior'));
+		$expected = array('testbehavior', 'test2behavior');
 		$this->assertIdentical($Apple->beforeTestResult, $expected);
 
 		$Apple->beforeTestResult = array();
-		$Apple->Behaviors->trigger($Apple, 'beforeTest', array(), array('break' => true, 'breakOn' => array('Test2Behavior', 'Test3Behavior')));
-		$expected = array('TestBehavior', 'Test2Behavior');
+		$Apple->Behaviors->trigger($Apple, 'beforeTest', array(), array('break' => true, 'breakOn' => array('test2behavior', 'test3behavior')));
+		$expected = array('testbehavior', 'test2behavior');
 		$this->assertIdentical($Apple->beforeTestResult, $expected);
 	}
 /**
- * tearDown method
+ * undocumented function
+ *
+ * @return void
+ * @access public
+ */
+	function testBindModelCallsInBehaviors() {
+		$this->loadFixtures('Article', 'Comment');
+
+		// hasMany
+		$Article = new Article();
+		$Article->unbindModel(array('hasMany' => array('Comment')));
+		$result = $Article->find('first');
+		$this->assertFalse(array_key_exists('Comment', $result));
+
+		$Article->Behaviors->attach('Test4');
+		$result = $Article->find('first');
+		$this->assertTrue(array_key_exists('Comment', $result));
+
+		// belongsTo
+		$Article->unbindModel(array('belongsTo' => array('User')));
+		$result = $Article->find('first');
+		$this->assertFalse(array_key_exists('User', $result));
+
+		$Article->Behaviors->attach('Test5');
+		$result = $Article->find('first');
+		$this->assertTrue(array_key_exists('User', $result));
+
+		// hasAndBelongsToMany
+		$Article->unbindModel(array('hasAndBelongsToMany' => array('Tag')));
+		$result = $Article->find('first');
+		$this->assertFalse(array_key_exists('Tag', $result));
+
+		$Article->Behaviors->attach('Test6');
+		$result = $Article->find('first');
+		$this->assertTrue(array_key_exists('Comment', $result));
+
+		// hasOne
+		$Comment = new Comment();
+		$Comment->unbindModel(array('hasOne' => array('Attachment')));
+		$result = $Comment->find('first');
+		$this->assertFalse(array_key_exists('Attachment', $result));
+
+		$Comment->Behaviors->attach('Test7');
+		$result = $Comment->find('first');
+		$this->assertTrue(array_key_exists('Attachment', $result));
+	}
+/**
+ * Test attach and detaching
  *
  * @access public
  * @return void
- */
-	function tearDown() {
-		ClassRegistry::flush();
+ **/
+	function testBehaviorAttachAndDetach() {
+		$Sample =& new Sample();
+		$Sample->actsAs = array('Test3' => array('bar'), 'Test2' => array('foo', 'bar'));
+		$Sample->Behaviors->init($Sample->alias, $Sample->actsAs);
+		$Sample->Behaviors->attach('Test2');
+		$Sample->Behaviors->detach('Test3');
+
+		$Sample->Behaviors->trigger($Sample, 'beforeTest');
 	}
 }
-
 ?>

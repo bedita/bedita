@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: email.php 8283 2009-08-03 20:49:17Z gwoo $ */
+/* SVN FILE: $Id$ */
 /**
  * Short description for file.
  *
@@ -19,9 +19,9 @@
  * @package       cake
  * @subpackage    cake.cake.libs.controller.components
  * @since         CakePHP(tm) v 1.2.0.3467
- * @version       $Revision: 8283 $
- * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2009-08-03 13:49:17 -0700 (Mon, 03 Aug 2009) $
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -680,10 +680,14 @@ class EmailComponent extends Object{
 			return false;
 		}
 
+		$httpHost = env('HTTP_HOST');
+
 		if (isset($this->smtpOptions['client'])) {
 			$host = $this->smtpOptions['client'];
+		} elseif (!empty($httpHost)) {
+			$host = $httpHost;
 		} else {
-			$host = env('HTTP_HOST');
+			$host = 'localhost';
 		}
 
 		if (!$this->__smtpSend("HELO {$host}", '250')) {

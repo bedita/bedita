@@ -1,45 +1,45 @@
-<?php 
-/* SVN FILE: $Id: ad_fixture.php 7690 2008-10-02 04:56:53Z nate $ */
+<?php
+/* SVN FILE: $Id$ */
 /**
  * Short description for ad_fixture.php
- * 
+ *
  * Long description for ad_fixture.php
- * 
+ *
  * PHP versions 4 and 5
- * 
- * CakePHP(tm) : Rapid Development Framework <http://www.cakephp.org/>
- * 
+ *
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
- * 
+ *
  * @filesource
- * @copyright            CakePHP(tm) : Rapid Development Framework <http://www.cakephp.org/>
- * @link                 http://www.cakephp.org
- * @package              cake
- * @subpackage           cake.tests.fixtures
- * @since                1.2
- * @version              $Revision: 7690 $
- * @modifiedBy           $LastChangedBy: nate $
- * @lastModified         $Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license              http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * @link          http://www.cakephp.org
+ * @package       cake
+ * @subpackage    cake.tests.fixtures
+ * @since         1.2
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
  * AdFixture class
- * 
- * @package              cake
- * @subpackage           cake.tests.fixtures
+ *
+ * @package       cake
+ * @subpackage    cake.tests.fixtures
  */
 class AdFixture extends CakeTestFixture {
 /**
  * name property
- * 
+ *
  * @var string 'Ad'
  * @access public
  */
-	var $name = 'Ad';    
+	var $name = 'Ad';
 /**
  * fields property
- * 
+ *
  * @var array
  * @access public
  */
@@ -53,7 +53,7 @@ class AdFixture extends CakeTestFixture {
 	);
 /**
  * records property
- * 
+ *
  * @var array
  * @access public
  */
@@ -66,6 +66,6 @@ class AdFixture extends CakeTestFixture {
 		array('parent_id' => null, 'lft' => 10, 'rght' => 11, 'campaign_id' => 2, 'name' => 'Alborg'),
 		array('parent_id' => null, 'lft' => 13, 'rght' => 14, 'campaign_id' => 3, 'name' => 'New York')
 	);
-} 
+}
 
 ?>

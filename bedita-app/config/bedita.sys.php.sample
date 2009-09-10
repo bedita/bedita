@@ -73,8 +73,7 @@
 //	'timeout' => '30',
 //	'host' => 'your.smtp.server',
 //	'username' => 'your_smtp_username',
-//	'password' => 'your_smtp_password',
-//	'client' => 'client ip' // required if HTTP_HOST=localhost, see phpinfo()	
+//	'password' => 'your_smtp_password'
 //);
 
 // mail support configuration

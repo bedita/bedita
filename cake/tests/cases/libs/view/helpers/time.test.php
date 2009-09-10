@@ -1,43 +1,40 @@
 <?php
-/* SVN FILE: $Id: time.test.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id$ */
 /**
- * Short description for file.
+ * TimeHelperTest file
  *
  * Long description for file
  *
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
- * @package			cake.tests
- * @subpackage		cake.tests.cases.libs.view.helpers
- * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.view.helpers
+ * @since         CakePHP(tm) v 1.2.0.4206
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
+ * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
 	define('CAKEPHP_UNIT_TEST_EXECUTION', 1);
 }
 App::import('Helper', 'Time');
-
 /**
- * Time Test Case
+ * TimeHelperTest class
  *
- * @package		cake.tests
- * @subpackage	cake.tests.cases.libs.view.helpers
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.view.helpers
  */
-class TimeTest extends CakeTestCase {
+class TimeHelperTest extends CakeTestCase {
 /**
  * setUp method
  *
@@ -46,6 +43,15 @@ class TimeTest extends CakeTestCase {
  */
 	function setUp() {
 		$this->Time = new TimeHelper();
+	}
+/**
+ * tearDown method
+ *
+ * @access public
+ * @return void
+ */
+	function tearDown() {
+		unset($this->Time);
 	}
 /**
  * testToQuarter method
@@ -266,10 +272,27 @@ class TimeTest extends CakeTestCase {
 
 		$result = $this->Time->timeAgoInWords(strtotime('-13 months, -5 days'), array('end' => '2 years'));
 		$this->assertEqual($result, '1 year, 1 month, 5 days ago');
-		
+
 		$fourHours = $this->Time->timeAgoInWords(strtotime('-5 days, -2 hours'), array('userOffset' => -4));
 		$result = $this->Time->timeAgoInWords(strtotime('-5 days, -2 hours'), array('userOffset' => 4));
-		$this->assertEqual($fourHours, $result);		
+		$this->assertEqual($fourHours, $result);
+
+		$result = $this->Time->timeAgoInWords(strtotime('-2 hours'));
+		$expected = '2 hours ago';
+		$this->assertEqual($expected, $result);
+
+		$result = $this->Time->timeAgoInWords(strtotime('-12 minutes'));
+		$expected = '12 minutes ago';
+		$this->assertEqual($expected, $result);
+
+		$result = $this->Time->timeAgoInWords(strtotime('-12 seconds'));
+		$expected = '12 seconds ago';
+		$this->assertEqual($expected, $result);
+
+		$time = strtotime('-3 years -12 months');
+		$result = $this->Time->timeAgoInWords($time);
+		$expected = 'on ' . date('j/n/y', $time);
+		$this->assertEqual($expected, $result);
 	}
 /**
  * testRelative method
@@ -284,12 +307,12 @@ class TimeTest extends CakeTestCase {
 		$this->assertEqual($result, '1 week');
 	}
 /**
- * testOfNice method
+ * testNice method
  *
  * @access public
  * @return void
  */
-	function testOfNice() {
+	function testNice() {
 		$time = time() + 2 * DAY;
 		$this->assertEqual(date('D, M jS Y, H:i', $time), $this->Time->nice($time));
 
@@ -305,13 +328,13 @@ class TimeTest extends CakeTestCase {
 		$time = null;
 		$this->assertEqual(date('D, M jS Y, H:i', time()), $this->Time->nice($time));
 	}
-	/**
- * testOfNiceShort method
+/**
+ * testNiceShort method
  *
  * @access public
  * @return void
  */
-	function testOfNiceShort() {
+	function testNiceShort() {
 		$time = time() + 2 * DAY;
 		if (date('Y', $time) == date('Y')) {
 			$this->assertEqual(date('M jS, H:i', $time), $this->Time->niceShort($time));
@@ -325,13 +348,13 @@ class TimeTest extends CakeTestCase {
 		$time = time() - DAY;
 		$this->assertEqual('Yesterday, '.date('H:i', $time), $this->Time->niceShort($time));
 	}
-	/**
- * testOfDaysAsSql method
+/**
+ * testDaysAsSql method
  *
  * @access public
  * @return void
  */
-	function testOfDaysAsSql() {
+	function testDaysAsSql() {
 		$begin = time();
 		$end = time() + DAY;
 		$field = 'my_field';
@@ -339,12 +362,12 @@ class TimeTest extends CakeTestCase {
 		$this->assertEqual($expected, $this->Time->daysAsSql($begin, $end, $field));
 	}
 /**
- * testOfDayAsSql method
+ * testDayAsSql method
  *
  * @access public
  * @return void
  */
-	function testOfDayAsSql() {
+	function testDayAsSql() {
 		$time = time();
 		$field = 'my_field';
 		$expected = '(my_field >= \''.date('Y-m-d', $time).' 00:00:00\') AND (my_field <= \''.date('Y-m-d', $time).' 23:59:59\')';
@@ -365,30 +388,30 @@ class TimeTest extends CakeTestCase {
 		$this->assertEqual(false, $this->Time->toUnix(null));
 	}
 /**
- * testOfToAtom method
+ * testToAtom method
  *
  * @access public
  * @return void
  */
-	function testOfToAtom() {
+	function testToAtom() {
 		$this->assertEqual(date('Y-m-d\TH:i:s\Z'), $this->Time->toAtom(time()));
 	}
 /**
- * testOfToRss method
+ * testToRss method
  *
  * @access public
  * @return void
  */
-	function testOfToRss() {
+	function testToRss() {
 		$this->assertEqual(date('r'), $this->Time->toRss(time()));
 	}
 /**
- * testOfFormat method
+ * testFormat method
  *
  * @access public
  * @return void
  */
-	function testOfFormat() {
+	function testFormat() {
 		$format = 'D-M-Y';
 		$arr = array(time(), strtotime('+1 days'), strtotime('+1 days'), strtotime('+0 days'));
 		foreach ($arr as $val) {
@@ -404,7 +427,7 @@ class TimeTest extends CakeTestCase {
  * @access public
  * @return void
  */
-	function testOfGmt() {
+	function testGmt() {
 		$hour = 3;
 		$min = 4;
 		$sec = 2;
@@ -425,12 +448,12 @@ class TimeTest extends CakeTestCase {
 		$this->assertEqual($expected, $this->Time->gmt(null));
 	}
 /**
- * testOfIsToday method
+ * testIsToday method
  *
  * @access public
  * @return void
  */
-	function testOfIsToday() {
+	function testIsToday() {
 		$result = $this->Time->isToday('+1 day');
 		$this->assertFalse($result);
 		$result = $this->Time->isToday('+1 days');
@@ -440,13 +463,13 @@ class TimeTest extends CakeTestCase {
 		$result = $this->Time->isToday('-1 day');
 		$this->assertFalse($result);
 	}
-	/**
- * testOfIsThisWeek method
+/**
+ * testIsThisWeek method
  *
  * @access public
  * @return void
  */
-	function testOfIsThisWeek() {
+	function testIsThisWeek() {
 		switch (date('D')) {
 			case 'Mon' :
 				for ($i = 0; $i < 6; $i++) {
@@ -499,13 +522,13 @@ class TimeTest extends CakeTestCase {
 				break;
 		}
 	}
-	/**
- * testOfIsThisMonth method
+/**
+ * testIsThisMonth method
  *
  * @access public
  * @return void
  */
-	function testOfIsThisMonth() {
+	function testIsThisMonth() {
 		$result = $this->Time->isThisMonth('+0 day');
 		$this->assertTrue($result);
 		$result = $this->Time->isThisMonth($time = mktime(0, 0, 0, date('m'), mt_rand(1, 28), date('Y')));
@@ -516,25 +539,25 @@ class TimeTest extends CakeTestCase {
 		$this->assertFalse($result);
 
 	}
-	/**
- * testOfIsThisYear method
+/**
+ * testIsThisYear method
  *
  * @access public
  * @return void
  */
-	function testOfIsThisYear() {
+	function testIsThisYear() {
 		$result = $this->Time->isThisYear('+0 day');
 		$this->assertTrue($result);
 		$result = $this->Time->isThisYear(mktime(0, 0, 0, mt_rand(1, 12), mt_rand(1, 28), date('Y')));
 		$this->assertTrue($result);
 	}
 	/**
- * testOfWasYesterday method
+ * testWasYesterday method
  *
  * @access public
  * @return void
  */
-	function testOfWasYesterday() {
+	function testWasYesterday() {
 		$result = $this->Time->wasYesterday('+1 day');
 		$this->assertFalse($result);
 		$result = $this->Time->wasYesterday('+1 days');
@@ -549,12 +572,12 @@ class TimeTest extends CakeTestCase {
 		$this->assertFalse($result);
 	}
 	/**
- * testOfIsTomorrow method
+ * testIsTomorrow method
  *
  * @access public
  * @return void
  */
-	function testOfIsTomorrow() {
+	function testIsTomorrow() {
 		$result = $this->Time->isTomorrow('+1 day');
 		$this->assertTrue($result);
 		$result = $this->Time->isTomorrow('+1 days');
@@ -565,12 +588,12 @@ class TimeTest extends CakeTestCase {
 		$this->assertFalse($result);
 	}
 /**
- * testOfWasWithinLast method
+ * testWasWithinLast method
  *
  * @access public
  * @return void
  */
-	function testOfWasWithinLast() {
+	function testWasWithinLast() {
 		$this->assertTrue($this->Time->wasWithinLast('1 day', '-1 day'));
 		$this->assertTrue($this->Time->wasWithinLast('1 week', '-1 week'));
 		$this->assertTrue($this->Time->wasWithinLast('1 year', '-1 year'));
@@ -625,13 +648,26 @@ class TimeTest extends CakeTestCase {
 		$this->assertEqual($result, $expected);
 	}
 /**
- * tearDown method
+ * test fromString()
  *
  * @access public
  * @return void
  */
-	function tearDown() {
-		unset($this->Time);
+	function testFromString() {
+		$result = $this->Time->fromString('');
+		$this->assertFalse($result);
+
+		$result = $this->Time->fromString(0, 0);
+		$this->assertFalse($result);
+
+		$result = $this->Time->fromString('+1 hour');
+		$expected = strtotime('+1 hour');
+		$this->assertEqual($result, $expected);
+
+		$timezone = date('Z', time());
+		$result = $this->Time->fromString('+1 hour', $timezone);
+		$expected = $this->Time->convert(strtotime('+1 hour'), $timezone);
+		$this->assertEqual($result, $expected);
 	}
 }
 ?>

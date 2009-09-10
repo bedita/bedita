@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: dbo_mssql.php 8283 2009-08-03 20:49:17Z gwoo $ */
+/* SVN FILE: $Id$ */
 /**
  * MS SQL layer for DBO
  *
@@ -19,9 +19,9 @@
  * @package       cake
  * @subpackage    cake.cake.libs.model.datasources.dbo
  * @since         CakePHP(tm) v 0.10.5.1790
- * @version       $Revision: 8283 $
- * @modifiedby    $LastChangedBy: gwoo $
- * @lastmodified  $Date: 2009-08-03 13:49:17 -0700 (Mon, 03 Aug 2009) $
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -257,6 +257,9 @@ class DboMssql extends DboSource {
 			return $parent;
 		}
 		if ($data === null) {
+			return 'NULL';
+		}
+		if (in_array($column, array('integer', 'float', 'binary')) && $data === '') {
 			return 'NULL';
 		}
 		if ($data === '') {
@@ -703,8 +706,8 @@ class DboMssql extends DboSource {
 
 		foreach ($indexes as $name => $value) {
 			if ($name == 'PRIMARY') {
-				$out = 'PRIMARY KEY  (' . $this->name($value['column']) . ')';
-			} else {
+				$join[] = 'PRIMARY KEY (' . $this->name($value['column']) . ')';
+			} else if (isset($value['unique']) && $value['unique']) {
 				$out = "ALTER TABLE {$table} ADD CONSTRAINT {$name} UNIQUE";
 
 				if (is_array($value['column'])) {
@@ -713,8 +716,8 @@ class DboMssql extends DboSource {
 					$value['column'] = $this->name($value['column']);
 				}
 				$out .= "({$value['column']});";
+				$join[] = $out;
 			}
-			$join[] = $out;
 		}
 		return $join;
 	}

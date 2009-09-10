@@ -1,77 +1,82 @@
 <?php
-/* SVN FILE: $Id: cake_test_case.test.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id$ */
 /**
- * CakeTestCase TestCase
+ * CakeTestCaseTest file
  *
- * Test Case for CakeTestCase Class
+ * Test Case for CakeTestCase class
  *
  * PHP versions 4 and 5
  *
- * CakePHP :  Rapid Development Framework <http://www.cakephp.org/>
+ * CakePHP :  Rapid Development Framework (http://www.cakephp.org)
  * Copyright 2006-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2006-2008, Cake Software Foundation, Inc.
- * @link			http://www.cakefoundation.org/projects/info/cakephp CakePHP Project
- * @package			cake
- * @subpackage		cake.cake.libs.
- * @since			CakePHP v 1.2.0.4487
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright     Copyright 2006-2008, Cake Software Foundation, Inc.
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP Project
+ * @package       cake
+ * @subpackage    cake.cake.libs.
+ * @since         CakePHP v 1.2.0.4487
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Core', 'CakeTestCase');
-App::import('Core', 'AppController');
+
+if (!class_exists('AppController')) {
+	require_once LIBS . 'controller' . DS . 'app_controller.php';
+} elseif (!defined('APP_CONTROLLER_EXISTS')) {
+	define('APP_CONTROLLER_EXISTS', true);
+}
 
 Mock::generate('CakeHtmlReporter');
 Mock::generate('CakeTestCase', 'CakeDispatcherMockTestCase');
 
 SimpleTest::ignore('SubjectCakeTestCase');
 SimpleTest::ignore('CakeDispatcherMockTestCase');
-
 /**
-* SubjectCakeTestCase
-*
-* @package    cake.tests
-* @subpackage cake.tests.cases.libs
-*/
+ * SubjectCakeTestCase
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs
+ */
 class SubjectCakeTestCase extends CakeTestCase {
 /**
  * Feed a Mocked Reporter to the subject case
  * prevents its pass/fails from affecting the real test
  *
- * @param string $reporter 
+ * @param string $reporter
  * @access public
  * @return void
  */
 	function setReporter(&$reporter) {
 		$this->_reporter = &$reporter;
-	} 
-	
+	}
+/**
+ * testDummy method
+ *
+ * @return void
+ * @access public
+ */
 	function testDummy() {
-		
 	}
 }
-
 /**
  * CakeTestCaseTest
  *
- * @package cake.tests
- * @subpackage cake.tests.cases.libs
- **/
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs
+ */
 class CakeTestCaseTest extends CakeTestCase {
 /**
  * setUp
- * 
+ *
  * @access public
  * @return void
- */	
+ */
 	function setUp() {
 		$this->Case =& new SubjectCakeTestCase();
 		$reporter =& new MockCakeHtmlReporter();
@@ -79,15 +84,25 @@ class CakeTestCaseTest extends CakeTestCase {
 		$this->Reporter = $reporter;
 	}
 /**
- * testAssertGoodTags 
+ * tearDown
  *
  * @access public
  * @return void
- */	
+ */
+	function tearDown() {
+		unset($this->Case);
+		unset($this->Reporter);
+	}
+/**
+ * testAssertGoodTags
+ *
+ * @access public
+ * @return void
+ */
 	function testAssertGoodTags() {
 		$this->Reporter->expectAtLeastOnce('paintPass');
 		$this->Reporter->expectNever('paintFail');
-		
+
 		$input = '<p>Text</p>';
 		$pattern = array(
 			'<p',
@@ -95,7 +110,7 @@ class CakeTestCaseTest extends CakeTestCase {
 			'/p',
 		);
 		$this->assertTrue($this->Case->assertTags($input, $pattern));
-		
+
 		$input = '<a href="/test.html" class="active">My link</a>';
 		$pattern = array(
 			'a' => array('href' => '/test.html', 'class' => 'active'),
@@ -110,7 +125,7 @@ class CakeTestCaseTest extends CakeTestCase {
 			'/a'
 		);
 		$this->assertTrue($this->Case->assertTags($input, $pattern));
-		
+
 		$input = "<a    href=\"/test.html\"\t\n\tclass=\"active\"\tid=\"primary\">\t<span>My link</span></a>";
 		$pattern = array(
 			'a' => array('id' => 'primary', 'href' => '/test.html', 'class' => 'active'),
@@ -120,7 +135,7 @@ class CakeTestCaseTest extends CakeTestCase {
 			'/a'
 		);
 		$this->assertTrue($this->Case->assertTags($input, $pattern));
-		
+
 		$input = '<p class="info"><a href="/test.html" class="active"><strong onClick="alert(\'hey\');">My link</strong></a></p>';
 		$pattern = array(
 			'p' => array('class' => 'info'),
@@ -135,14 +150,14 @@ class CakeTestCaseTest extends CakeTestCase {
 	}
 /**
  * testBadAssertTags
- * 			
+ *
  * @access public
  * @return void
  */
 	function testBadAssertTags() {
 		$this->Reporter->expectAtLeastOnce('paintFail');
 		$this->Reporter->expectNever('paintPass');
-		
+
 		$input = '<a href="/test.html" class="active">My link</a>';
 		$pattern = array(
 			'a' => array('hRef' => '/test.html', 'clAss' => 'active'),
@@ -150,7 +165,7 @@ class CakeTestCaseTest extends CakeTestCase {
 			'/a'
 		);
 		$this->assertFalse($this->Case->assertTags($input, $pattern));
-		
+
 		$input = '<a href="/test.html" class="active">My link</a>';
 		$pattern = array(
 			'<a' => array('href' => '/test.html', 'class' => 'active'),
@@ -161,24 +176,24 @@ class CakeTestCaseTest extends CakeTestCase {
 	}
 /**
  * testBefore
- * 	
+ *
  * @access public
  * @return void
- */	
+ */
 	function testBefore() {
 		$this->Case->before('testDummy');
 		$this->assertFalse(isset($this->Case->db));
-		
+
 		$this->Case->fixtures = array('core.post');
 		$this->Case->before('start');
 		$this->assertTrue(isset($this->Case->db));
 		$this->assertTrue(isset($this->Case->_fixtures['core.post']));
 		$this->assertTrue(is_a($this->Case->_fixtures['core.post'], 'CakeTestFixture'));
-		$this->assertEqual($this->Case->_fixtureClassMap['Post'], 'core.post');	
+		$this->assertEqual($this->Case->_fixtureClassMap['Post'], 'core.post');
 	}
 /**
  * testAfter
- * 
+ *
  * @access public
  * @return void
  */
@@ -204,6 +219,7 @@ class CakeTestCaseTest extends CakeTestCase {
 		$this->Case->before('start');
 		$this->expectError();
 		$this->Case->loadFixtures('Wrong!');
+		$this->Case->end();
 	}
 /**
  * testGetTests Method
@@ -216,7 +232,6 @@ class CakeTestCaseTest extends CakeTestCase {
 		$this->assertEqual(array_slice($result, 0, 2), array('start', 'startCase'));
 		$this->assertEqual(array_slice($result, -2), array('endCase', 'end'));
 	}
-	
 /**
  * TestTestAction
  *
@@ -227,12 +242,14 @@ class CakeTestCaseTest extends CakeTestCase {
 		$_back = array(
 			'controller' => Configure::read('controllerPaths'),
 			'view' => Configure::read('viewPaths'),
+			'model' => Configure::read('modelPaths'),
 			'plugin' => Configure::read('pluginPaths')
 		);
 		Configure::write('controllerPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'controllers' . DS));
 		Configure::write('viewPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views' . DS));
+		Configure::write('modelPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'models' . DS));
 		Configure::write('pluginPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS));
-		
+
 		$result = $this->Case->testAction('/tests_apps/index', array('return' => 'view'));
 		$this->assertPattern('/This is the TestsAppsController index view/', $result);
 
@@ -243,27 +260,33 @@ class CakeTestCaseTest extends CakeTestCase {
 
 		$result = $this->Case->testAction('/tests_apps/some_method', array('return' => 'result'));
 		$this->assertEqual($result, 5);
-		
+
 		$result = $this->Case->testAction('/tests_apps/set_action', array('return' => 'vars'));
 		$this->assertEqual($result, array('var' => 'string'));
+
+		$db =& ConnectionManager::getDataSource('test_suite');
+		$fixture =& new PostFixture();
+		$fixture->create($db);
 
 		$result = $this->Case->testAction('/tests_apps_posts/add', array('return' => 'vars'));
 		$this->assertTrue(array_key_exists('posts', $result));
 		$this->assertEqual(count($result['posts']), 1);
-		
+
 		$result = $this->Case->testAction('/tests_apps_posts/url_var/var1:value1/var2:val2', array(
 			'return' => 'vars',
 			'method' => 'get',
 		));
-		$this->assertEqual(array_keys($result['params']['url']), array('case', 'output', 'url'));
+		$this->assertTrue(isset($result['params']['url']['url']));
+		$this->assertTrue(isset($result['params']['url']['output']));
 		$this->assertEqual(array_keys($result['params']['named']), array('var1', 'var2'));
-		
+
 		$result = $this->Case->testAction('/tests_apps_posts/url_var/gogo/val2', array(
 			'return' => 'vars',
 			'method' => 'get',
 		));
 		$this->assertEqual($result['params']['pass'], array('gogo', 'val2'));
-		
+
+
 		$result = $this->Case->testAction('/tests_apps_posts/url_var', array(
 			'return' => 'vars',
 			'method' => 'get',
@@ -272,8 +295,11 @@ class CakeTestCaseTest extends CakeTestCase {
 				'blue' => 'mana'
 			)
 		));
-		$this->assertEqual(array_keys($result['params']['url']), array('case', 'output', 'red', 'blue', 'url'));				
-		
+		$this->assertTrue(isset($result['params']['url']['output']));
+		$this->assertTrue(isset($result['params']['url']['red']));
+		$this->assertTrue(isset($result['params']['url']['blue']));
+		$this->assertTrue(isset($result['params']['url']['url']));
+
 		$result = $this->Case->testAction('/tests_apps_posts/post_var', array(
 			'return' => 'vars',
 			'method' => 'post',
@@ -283,7 +309,67 @@ class CakeTestCaseTest extends CakeTestCase {
 			)
 		));
 		$this->assertEqual(array_keys($result['data']), array('name', 'pork'));
+		$fixture->drop($db);
 
+		$db =& ConnectionManager::getDataSource('test_suite');
+		$_backPrefix = $db->config['prefix'];
+		$db->config['prefix'] = 'cake_testaction_test_suite_';
+
+		$config = $db->config;
+		$config['prefix'] = 'cake_testcase_test_';
+
+		ConnectionManager::create('cake_test_case', $config);
+		$db2 =& ConnectionManager::getDataSource('cake_test_case');
+
+		$fixture =& new PostFixture($db2);
+		$fixture->create($db2);
+		$fixture->insert($db2);
+
+		$result = $this->Case->testAction('/tests_apps_posts/fixtured', array(
+			'return' => 'vars',
+			'fixturize' => true,
+			'connection' => 'cake_test_case',
+		));
+		$this->assertTrue(isset($result['posts']));
+		$this->assertEqual(count($result['posts']), 3);
+		$tables = $db2->listSources();
+		$this->assertFalse(in_array('cake_testaction_test_suite_posts', $tables));
+
+		$fixture->drop($db2);
+
+		$db =& ConnectionManager::getDataSource('test_suite');
+
+		//test that drop tables behaves as exepected with testAction
+		$db =& ConnectionManager::getDataSource('test_suite');
+		$_backPrefix = $db->config['prefix'];
+		$db->config['prefix'] = 'cake_testaction_test_suite_';
+
+		$config = $db->config;
+		$config['prefix'] = 'cake_testcase_test_';
+
+		ConnectionManager::create('cake_test_case', $config);
+		$db =& ConnectionManager::getDataSource('cake_test_case');
+		$fixture =& new PostFixture($db);
+		$fixture->create($db);
+		$fixture->insert($db);
+
+		$this->Case->dropTables = false;
+		$result = $this->Case->testAction('/tests_apps_posts/fixtured', array(
+			'return' => 'vars',
+			'fixturize' => true,
+			'connection' => 'cake_test_case',
+		));
+
+		$tables = $db->listSources();
+		$this->assertTrue(in_array('cake_testaction_test_suite_posts', $tables));
+
+		$fixture->drop($db);
+		$db =& ConnectionManager::getDataSource('test_suite');
+		$db->config['prefix'] = $_backPrefix;
+		$fixture->drop($db);
+
+
+		Configure::write('modelPaths', $_back['model']);
 		Configure::write('controllerPaths', $_back['controller']);
 		Configure::write('viewPaths', $_back['view']);
 		Configure::write('pluginPaths', $_back['plugin']);
@@ -312,31 +398,21 @@ class CakeTestCaseTest extends CakeTestCase {
 		Configure::write('controllerPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'controllers' . DS));
 		Configure::write('viewPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views' . DS));
 		Configure::write('pluginPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS));
-		
+
 		$Dispatcher =& new CakeTestDispatcher();
 		$Case =& new CakeDispatcherMockTestCase();
-		
+
 		$Case->expectOnce('startController');
 		$Case->expectOnce('endController');
-		
+
 		$Dispatcher->testCase($Case);
 		$this->assertTrue(isset($Dispatcher->testCase));
-		
+
 		$return = $Dispatcher->dispatch('/tests_apps/index', array('autoRender' => 0, 'return' => 1, 'requested' => 1));
 
 		Configure::write('controllerPaths', $_back['controller']);
 		Configure::write('viewPaths', $_back['view']);
 		Configure::write('pluginPaths', $_back['plugin']);
-	}
-/**
- * tearDown
- *
- * @access public
- * @return void
- */		
-	function tearDown() {
-		unset($this->Case);
-		unset($this->Reporter);
 	}
 }
 ?>

@@ -1,50 +1,52 @@
 <?php
-/* SVN FILE: $Id: security.test.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id$ */
 /**
- * Short description for file.
+ * SecurityComponentTest file
  *
  * Long description for file
  *
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
- * @package			cake.tests
- * @subpackage		cake.tests.cases.libs.controller.components
- * @since			CakePHP(tm) v 1.2.0.5435
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.controller.components
+ * @since         CakePHP(tm) v 1.2.0.5435
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
+ * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Component', 'Security');
-
 /**
-* Short description for class.
+* TestSecurityComponent
 *
-* @package		cake.tests
-* @subpackage	cake.tests.cases.libs.controller.components
+* @package       cake
+* @subpackage    cake.tests.cases.libs.controller.components
 */
 class TestSecurityComponent extends SecurityComponent {
-
+/**
+ * validatePost method
+ *
+ * @param Controller $controller
+ * @return unknown
+ */
 	function validatePost(&$controller) {
 		return $this->_validatePost($controller);
 	}
 }
 /**
-* Short description for class.
+* SecurityTestController
 *
-* @package		cake.tests
-* @subpackage	cake.tests.cases.libs.controller.components
+* @package       cake
+* @subpackage    cake.tests.cases.libs.controller.components
 */
 class SecurityTestController extends Controller {
 /**
@@ -69,6 +71,13 @@ class SecurityTestController extends Controller {
  */
 	var $failed = false;
 /**
+ * Used for keeping track of headers in test
+ *
+ * @var array
+ * @access public
+ */
+	var $testHeaders = array();
+/**
  * fail method
  *
  * @access public
@@ -89,15 +98,38 @@ class SecurityTestController extends Controller {
 	function redirect($option, $code, $exit) {
 		return $code;
 	}
-}
-
 /**
- * Short description for class.
+ * Conveinence method for header()
  *
- * @package		cake.tests
- * @subpackage	cake.tests.cases.libs.controller.components
+ * @param string $status
+ * @return void
+ * @access public
+ */
+	function header($status) {
+		$this->testHeaders[] = $status;
+	}
+}
+/**
+ * SecurityComponentTest class
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.controller.components
  */
 class SecurityComponentTest extends CakeTestCase {
+/**
+ * Controller property
+ *
+ * @var SecurityTestController
+ * @access public
+ */
+	var $Controller;
+/**
+ * oldSalt property
+ *
+ * @var string
+ * @access public
+ */
+	var $oldSalt;
 /**
  * setUp method
  *
@@ -109,23 +141,22 @@ class SecurityComponentTest extends CakeTestCase {
 		$this->Controller->Component->init($this->Controller);
 		$this->Controller->Security =& $this->Controller->TestSecurity;
 		$this->Controller->Security->blackHoleCallback = 'fail';
-
 		$this->oldSalt = Configure::read('Security.salt');
 		Configure::write('Security.salt', 'foo!');
 	}
 /**
- * Tear-down method.  Resets environment state.
+ * Tear-down method. Resets environment state.
  *
  * @access public
  * @return void
  */
 	function tearDown() {
+		Configure::write('Security.salt', $this->oldSalt);
+		$this->Controller->Session->del('_Token');
 		unset($this->Controller->Security);
 		unset($this->Controller->Component);
 		unset($this->Controller);
-		Configure::write('Security.salt', $this->oldSalt);
 	}
-
 /**
  * testStartup method
  *
@@ -186,7 +217,7 @@ class SecurityComponentTest extends CakeTestCase {
 	function testRequireSecureSucceed() {
 		$_SERVER['REQUEST_METHOD'] = 'Secure';
 		$this->Controller->action = 'posted';
-		$_SERVER['HTTPS'] = true;
+		$_SERVER['HTTPS'] = 'on';
 		$this->Controller->Security->requireSecure('posted');
 		$this->Controller->Security->startup($this->Controller);
 		$this->assertFalse($this->Controller->failed);
@@ -332,6 +363,14 @@ class SecurityComponentTest extends CakeTestCase {
  * @return void
  */
 	function testDigestAuth() {
+		$skip = $this->skipIf((version_compare(PHP_VERSION, '5.1') == -1) XOR (!function_exists('apache_request_headers')),
+			"%s Cannot run Digest Auth test for PHP versions < 5.1"
+		);
+
+		if ($skip) {
+			return;
+		}
+
 		$this->Controller->action = 'posted';
 		$_SERVER['PHP_AUTH_DIGEST'] = $digest = <<<DIGEST
 		Digest username="Mufasa",
@@ -488,6 +527,23 @@ DIGEST;
 		$this->assertTrue($this->Controller->Security->validatePost($this->Controller));
 	}
 /**
+ * Tests validation of checkbox arrays
+ *
+ * @access public
+ * @return void
+ */
+	function testValidatePostArray() {
+		$this->Controller->Security->startup($this->Controller);
+		$key = $this->Controller->params['_Token']['key'];
+		$fields = 'f7d573650a295b94e0938d32b323fde775e5f32b%3An%3A0%3A%7B%7D';
+
+		$this->Controller->data = array(
+			'Model' => array('multi_field' => array('1', '3')),
+			'_Token' => compact('key', 'fields')
+		);
+		$this->assertTrue($this->Controller->Security->validatePost($this->Controller));
+	}
+/**
  * testValidatePostNoModel method
  *
  * @access public
@@ -549,6 +605,45 @@ DIGEST;
 				)
 			),
 			'_Token' => compact('key', 'fields')
+		);
+		$result = $this->Controller->Security->validatePost($this->Controller);
+		$this->assertTrue($result);
+	}
+/**
+ * test ValidatePost with multiple select elements.
+ *
+ * @return void
+ **/
+	function testValidatePostMultipleSelect() {
+		$this->Controller->Security->startup($this->Controller);
+		$key = $this->Controller->params['_Token']['key'];
+		$fields = '422cde416475abc171568be690a98cad20e66079%3An%3A0%3A%7B%7D';
+
+		$this->Controller->data = array(
+			'Tag' => array('Tag' => array(1, 2)),
+			'_Token' => compact('key', 'fields'),
+		);
+		$result = $this->Controller->Security->validatePost($this->Controller);
+		$this->assertTrue($result);
+
+		$this->Controller->data = array(
+			'Tag' => array('Tag' => array(1, 2, 3)),
+			'_Token' => compact('key', 'fields'),
+		);
+		$result = $this->Controller->Security->validatePost($this->Controller);
+		$this->assertTrue($result);
+
+		$this->Controller->data = array(
+			'Tag' => array('Tag' => array(1, 2, 3, 4)),
+			'_Token' => compact('key', 'fields'),
+		);
+		$result = $this->Controller->Security->validatePost($this->Controller);
+		$this->assertTrue($result);
+
+		$fields = '19464422eafe977ee729c59222af07f983010c5f%3An%3A0%3A%7B%7D';
+		$this->Controller->data = array(
+			'User.password' => 'bar', 'User.name' => 'foo', 'User.is_valid' => '1',
+			'Tag' => array('Tag' => array(1)), '_Token' => compact('key', 'fields'),
 		);
 		$result = $this->Controller->Security->validatePost($this->Controller);
 		$this->assertTrue($result);
@@ -705,7 +800,6 @@ DIGEST;
 		$result = $this->Controller->Security->validatePost($this->Controller);
 		$this->assertTrue($result);
 	}
-
 /**
  * testValidateHasManyRecordsPass method
  *
@@ -950,6 +1044,62 @@ DIGEST;
 		$result = $this->Controller->Security->validatePost($this->Controller);
 		$this->assertTrue($result);
 	}
-}
+/**
+ * testRadio method
+ *
+ * @access public
+ * @return void
+ */
+	function testRadio() {
+		$this->Controller->Security->startup($this->Controller);
+		$key = $this->Controller->params['_Token']['key'];
+		$fields = '575ef54ca4fc8cab468d6d898e9acd3a9671c17e%3An%3A0%3A%7B%7D';
 
+		$this->Controller->data = array(
+			'_Token' => compact('key', 'fields')
+		);
+		$result = $this->Controller->Security->validatePost($this->Controller);
+		$this->assertFalse($result);
+
+		$this->Controller->data = array(
+			'_Token' => compact('key', 'fields'),
+			'Test' => array('test' => '')
+		);
+		$result = $this->Controller->Security->validatePost($this->Controller);
+		$this->assertTrue($result);
+
+		$this->Controller->data = array(
+			'_Token' => compact('key', 'fields'),
+			'Test' => array('test' => '1')
+		);
+		$result = $this->Controller->Security->validatePost($this->Controller);
+		$this->assertTrue($result);
+
+		$this->Controller->data = array(
+			'_Token' => compact('key', 'fields'),
+			'Test' => array('test' => '2')
+		);
+		$result = $this->Controller->Security->validatePost($this->Controller);
+		$this->assertTrue($result);
+	}
+/**
+ * testInvalidAuthHeaders method
+ *
+ * @access public
+ * @return void
+ */
+	function testInvalidAuthHeaders() {
+		$this->Controller->Security->blackHoleCallback = null;
+		$_SERVER['PHP_AUTH_USER'] = 'admin';
+		$_SERVER['PHP_AUTH_PW'] = 'password';
+		$realm = 'cakephp.org';
+		$loginData = array('type' => 'basic', 'realm' => $realm);
+		$this->Controller->Security->requireLogin($loginData);
+		$this->Controller->Security->startup($this->Controller);
+
+		$expected = 'WWW-Authenticate: Basic realm="'.$realm.'"';
+		$this->assertEqual(count($this->Controller->testHeaders), 1);
+		$this->assertEqual(current($this->Controller->testHeaders), $expected);
+	}
+}
 ?>

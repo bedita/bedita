@@ -1,32 +1,31 @@
 <?php
-/* SVN FILE: $Id: view.test.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id$ */
 /**
- * Short description for file.
+ * ViewTest file
  *
  * Long description for file
  *
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
- * @package			cake.tests
- * @subpackage		cake.tests.cases.libs
- * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs
+ * @since         CakePHP(tm) v 1.2.0.4206
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
+ * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', array('View', 'Controller'));
+
 if (!class_exists('ErrorHandler')) {
 	App::import('Core', array('Error'));
 }
@@ -36,8 +35,8 @@ if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
 /**
  * ViewPostsController class
  *
- * @package              cake
- * @subpackage           cake.tests.cases.libs.view
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.view
  */
 class ViewPostsController extends Controller {
 /**
@@ -80,8 +79,8 @@ class ViewPostsController extends Controller {
 /**
  * ViewTestErrorHandler class
  *
- * @package              cake
- * @subpackage           cake.tests.cases.libs.view
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.view
  */
 class ViewTestErrorHandler extends ErrorHandler {
 /**
@@ -97,8 +96,8 @@ class ViewTestErrorHandler extends ErrorHandler {
 /**
  * TestView class
  *
- * @package              cake
- * @subpackage           cake.tests.cases.libs.view
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.view
  */
 class TestView extends View {
 /**
@@ -145,6 +144,18 @@ class TestView extends View {
 		return $this->_loadHelpers($loaded, $helpers, $parent);
 	}
 /**
+ * paths method
+ *
+ * @param string $plugin
+ * @param boolean $cached
+ * @access public
+ * @return void
+ */
+	function paths($plugin = null, $cached = true) {
+		return $this->_paths($plugin, $cached);
+	}
+
+/**
  * cakeError method
  *
  * @param mixed $method
@@ -160,8 +171,8 @@ class TestView extends View {
 /**
  * TestAfterHelper class
  *
- * @package              cake
- * @subpackage           cake.tests.cases.libs.view
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.view
  */
 class TestAfterHelper extends Helper {
 /**
@@ -191,11 +202,12 @@ class TestAfterHelper extends Helper {
 		$View->output .= 'modified in the afterlife';
 	}
 }
+Mock::generate('Helper', 'CallbackMockHelper');
 /**
- * Short description for class.
+ * ViewTest class
  *
- * @package		cake.tests
- * @subpackage	cake.tests.cases.libs
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs
  */
 class ViewTest extends CakeTestCase {
 /**
@@ -213,6 +225,17 @@ class ViewTest extends CakeTestCase {
 		$this->View = new View($this->PostsController);
 	}
 /**
+ * tearDown method
+ *
+ * @access public
+ * @return void
+ */
+	function tearDown() {
+		unset($this->View);
+		unset($this->PostsController);
+		unset($this->Controller);
+	}
+/**
  * testPluginGetTemplate method
  *
  * @access public
@@ -220,6 +243,62 @@ class ViewTest extends CakeTestCase {
  */
 	function testPluginGetTemplate() {
 		$this->Controller->plugin = 'test_plugin';
+		$this->Controller->name = 'TestPlugin';
+		$this->Controller->viewPath = 'tests';
+		$this->Controller->action = 'index';
+
+		$View = new TestView($this->Controller);
+		Configure::write('pluginPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS));
+		Configure::write('viewPaths', array(
+			TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views' . DS,
+			TEST_CAKE_CORE_INCLUDE_PATH . 'libs' . DS . 'view' . DS,
+		));
+
+		$expected = TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS .'test_plugin' . DS . 'views' . DS .'tests' . DS .'index.ctp';
+		$result = $View->getViewFileName('index');
+		$this->assertEqual($result, $expected);
+
+		$expected = TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS .'test_plugin' . DS . 'views' . DS . 'layouts' . DS .'default.ctp';
+		$result = $View->getLayoutFileName();
+		$this->assertEqual($result, $expected);
+	}
+/**
+ * test that plugin/$plugin_name is only appended to the paths it should be.
+ *
+ * @return void
+ **/
+	function testPluginPathGeneration() {
+		$this->Controller->plugin = 'test_plugin';
+		$this->Controller->name = 'TestPlugin';
+		$this->Controller->viewPath = 'tests';
+		$this->Controller->action = 'index';
+
+		Configure::write('viewPaths', array(
+			TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views' . DS,
+			TEST_CAKE_CORE_INCLUDE_PATH . 'libs' . DS . 'view' . DS,
+		));
+
+		$View = new TestView($this->Controller);
+		$paths = $View->paths();
+		$this->assertEqual($paths, Configure::read('viewPaths'));
+
+		$paths = $View->paths('test_plugin');
+		$expected = array(
+			TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views' . DS . 'plugins' . DS . 'test_plugin' . DS,
+			TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS . 'test_plugin' . DS . 'views' . DS,
+			TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views' . DS,
+			TEST_CAKE_CORE_INCLUDE_PATH . 'libs' . DS . 'view' . DS
+		);
+		$this->assertEqual($paths, $expected);
+	}
+
+/**
+ * test that CamelCase plugins still find their view files.
+ *
+ * @return void
+ **/
+	function testCamelCasePluginGetTemplate() {
+		$this->Controller->plugin = 'TestPlugin';
 		$this->Controller->name = 'TestPlugin';
 		$this->Controller->viewPath = 'tests';
 		$this->Controller->action = 'index';
@@ -402,7 +481,7 @@ class ViewTest extends CakeTestCase {
 
 		$cached = false;
 		$result = $View->element($element, array('cache'=>'+1 second'));
-		if(file_exists(CACHE . 'views' . DS . 'element_cache_'.$element)) {
+		if (file_exists(CACHE . 'views' . DS . 'element_cache_'.$element)) {
 			$cached = true;
 			unlink(CACHE . 'views' . DS . 'element_cache_'.$element);
 		}
@@ -410,7 +489,7 @@ class ViewTest extends CakeTestCase {
 
 		$cached = false;
 		$result = $View->element($element, array('cache'=>'+1 second', 'other_param'=> true, 'anotherParam'=> true));
-		if(file_exists(CACHE . 'views' . DS . 'element_cache_other_param_anotherParam_'.$element)) {
+		if (file_exists(CACHE . 'views' . DS . 'element_cache_other_param_anotherParam_'.$element)) {
 			$cached = true;
 			unlink(CACHE . 'views' . DS . 'element_cache_other_param_anotherParam_'.$element);
 		}
@@ -418,7 +497,7 @@ class ViewTest extends CakeTestCase {
 
 		$cached = false;
 		$result = $View->element($element, array('cache'=>array('time'=>'+1 second', 'key'=>'/whatever/here')));
-		if(file_exists(CACHE . 'views' . DS . 'element_'.Inflector::slug('/whatever/here').'_'.$element)) {
+		if (file_exists(CACHE . 'views' . DS . 'element_'.Inflector::slug('/whatever/here').'_'.$element)) {
 			$cached = true;
 			unlink(CACHE . 'views' . DS . 'element_'.Inflector::slug('/whatever/here').'_'.$element);
 		}
@@ -426,7 +505,7 @@ class ViewTest extends CakeTestCase {
 
 		$cached = false;
 		$result = $View->element($element, array('cache'=>array('time'=>'+1 second', 'key'=>'whatever_here')));
-		if(file_exists(CACHE . 'views' . DS . 'element_whatever_here_'.$element)) {
+		if (file_exists(CACHE . 'views' . DS . 'element_whatever_here_'.$element)) {
 			$cached = true;
 			unlink(CACHE . 'views' . DS . 'element_whatever_here_'.$element);
 		}
@@ -454,6 +533,22 @@ class ViewTest extends CakeTestCase {
 		$result = $View->loadHelpers($loaded, array('TestPlugin.PluggedHelper'));
 		$this->assertTrue(is_object($result['PluggedHelper']));
 		$this->assertTrue(is_object($result['PluggedHelper']->OtherHelper));
+	}
+/**
+ * test the correct triggering of helper callbacks
+ *
+ * @return void
+ **/
+	function testHelperCallbackTriggering() {
+		$this->PostsController->helpers = array('Html', 'CallbackMock');
+		$View =& new TestView($this->PostsController);
+		$loaded = array();
+		$View->loaded = $View->loadHelpers($loaded, $this->PostsController->helpers);
+		$View->loaded['CallbackMock']->expectOnce('beforeRender');
+		$View->loaded['CallbackMock']->expectOnce('afterRender');
+		$View->loaded['CallbackMock']->expectOnce('beforeLayout');
+		$View->loaded['CallbackMock']->expectOnce('afterLayout');
+		$View->render('index');
 	}
 /**
  * testBeforeLayout method
@@ -718,17 +813,6 @@ class ViewTest extends CakeTestCase {
 
 		$this->assertPattern("/<meta http-equiv=\"Content-Type\" content=\"text\/html; charset=utf-8\" \/><title>/", $result);
 		$this->assertPattern("/<div id=\"content\">posts index<\/div>/", $result);
-	}
-/**
- * tearDown method
- *
- * @access public
- * @return void
- */
-	function tearDown() {
-		unset($this->View);
-		unset($this->PostsController);
-		unset($this->Controller);
 	}
 }
 ?>

@@ -1,42 +1,61 @@
 <?php
-/* SVN FILE: $Id: session.test.php 7690 2008-10-02 04:56:53Z nate $ */
+/* SVN FILE: $Id$ */
 /**
- * Short description for file.
+ * SessionTest file
  *
  * Long description for file
  *
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
+ * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
- * @link				https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
- * @package			cake.tests
- * @subpackage		cake.tests.cases.libs
- * @since			CakePHP(tm) v 1.2.0.4206
- * @version			$Revision: 7690 $
- * @modifiedby		$LastChangedBy: nate $
- * @lastmodified	$Date: 2008-10-02 00:56:53 -0400 (Thu, 02 Oct 2008) $
- * @license			http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
+ * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs
+ * @since         CakePHP(tm) v 1.2.0.4206
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
+ * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!class_exists('CakeSession')) {
 	App::import('Core', 'Session');
 }
 /**
- * Short description for class.
+ * SessionTest class
  *
- * @package    cake.tests
- * @subpackage cake.tests.cases.libs
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs
  */
 class SessionTest extends CakeTestCase {
 	var $fixtures = array('core.session');
+/**
+ * startCase method
+ *
+ * @access public
+ * @return void
+ */
+	function startCase() {
+		// Make sure garbage colector will be called
+		$this->__gc_divisor = ini_get('session.gc_divisor');
+		ini_set('session.gc_divisor', '1');
+	}
+/**
+ * endCase method
+ *
+ * @access public
+ * @return void
+ */
+	function endCase() {
+		// Revert to the default setting
+		ini_set('session.gc_divisor', $this->__gc_divisor);
+	}
 /**
  * setUp method
  *
@@ -47,6 +66,22 @@ class SessionTest extends CakeTestCase {
 		$this->Session =& new CakeSession();
 		$this->Session->start();
 		$this->Session->_checkValid();
+	}
+/**
+ * testSessionPath
+ *
+ * @access public
+ * @return void
+ */
+	function testSessionPath() {
+		$Session = new CakeSession('/index.php');
+		$this->assertEqual('/', $Session->path);
+
+		$Session = new CakeSession('/sub_dir/index.php');
+		$this->assertEqual('/sub_dir/', $Session->path);
+
+		$Session = new CakeSession('');
+		$this->assertEqual('/', $Session->path, 'Session path is empty, with "" as $base needs to be / %s');
 	}
 /**
  * testCheck method
@@ -82,7 +117,7 @@ class SessionTest extends CakeTestCase {
 		$this->assertTrue(isset($result['testing']));
 		$this->assertTrue(isset($result['Config']));
 		$this->assertTrue(isset($result['Config']['userAgent']));
-		
+
 		$this->Session->write('This.is.a.deep.array.my.friend', 'value');
 		$result = $this->Session->read('This.is.a.deep.array.my.friend');
 		$this->assertEqual('value', $result);
@@ -371,6 +406,11 @@ class SessionTest extends CakeTestCase {
 		$this->Session->destroy();
 		$this->assertFalse($this->Session->read('SessionTestCase'));
 		session_write_close();
+
+		unset($_SESSION);
+		ini_set('session.save_handler', 'files');
+		Configure::write('Session.save', 'php');
+		$this->setUp();
 	}
 }
 ?>
