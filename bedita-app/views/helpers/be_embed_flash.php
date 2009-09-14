@@ -131,6 +131,8 @@ class BeEmbedFlashHelper extends AppHelper {
 	
 	public function embedFlowplayer($swfUrl, $mediaUrl, $attributes, $flashvars, $params, $fileType) {
 		$defaultAudioPlayer = array("controls" => array("fullscreen" => false));
+		$defaultVideoPlayer = array("controls" => array());
+		$timeDisabled = array("controls" => array("time" => false));
 		
 		if (empty($flashvars['clip'])) {
 			$flashvars['clip'] = array("autoPlay" => false);
@@ -153,9 +155,20 @@ class BeEmbedFlashHelper extends AppHelper {
 			if ($fileType == "audio" && empty($flashvars['plugins']['controls'])) {
 				$flashvars['plugins'] = array_merge($flashvars['plugins'], $defaultAudioPlayer);
 			}
-		} elseif ($fileType == "audio") {
-			$flashvars['plugins'] = $defaultAudioPlayer;
-		}
+			if ($attributes['width'] < 280 && empty($flashvars['plugins']['controls']['time']) ) {
+				$flashvars['plugins'] = array_merge($flashvars['plugins'], $timeDisabled);
+			}
+			
+		} else {
+			if ($fileType == "audio") {
+				$flashvars['plugins'] = $defaultAudioPlayer;
+			}elseif ($fileType == "video") {
+				$flashvars['plugins'] = $defaultVideoPlayer;
+			}
+			if ($attributes['width'] < 280) {
+				$flashvars['plugins'] = array_merge($flashvars['plugins'], $timeDisabled);
+			}
+		} 
 		
 		if (empty($attributes['id'])) {
 			$attributes['id'] = preg_replace("/[\s\.]/", "", "be_id_" . microtime());
