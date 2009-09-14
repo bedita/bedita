@@ -6,17 +6,20 @@
 			{assign_associative var="paramsBig" width=680 mode="fill" upscale=false URLonly=true}
 			{assign_associative var="params" width=220 mode="fill" upscale=false}
 			{assign_associative var="paramsVideo" presentation="full"}
-			{assign_associative var="paramsHtml" height=165 width=220}
+			{assign_associative var="paramsHtmlAudio" width="220"}
+			{assign_associative var="paramsHtml" height=165 width=220}		
 
 			{section name=i loop=$attach}
 			<div class="related">
-				{if $attach[i].object_type_id == $conf->objectTypes.video.id}
-					{$beEmbedMedia->object($attach[i],$paramsVideo, $paramsHtml)}
-				{else}
+				{if $attach[i].object_type_id == $conf->objectTypes.image.id}
 					<a class="thickbox" href="{$beEmbedMedia->object($attach[i],$paramsBig)}" 
 					title="{$attach[i].description}" rel="gallery">
 					{$beEmbedMedia->object($attach[i],$params)}
 					</a>
+				{elseif $attach[i].object_type_id == $conf->objectTypes.audio.id}
+					{$beEmbedMedia->object($attach[i],null, $paramsHtmlAudio)}
+				{else}
+					{$beEmbedMedia->object($attach[i],$paramsVideo, $paramsHtml)}
 				{/if}
 					<p class="dida">{$attach[i].description}</p>
 			</div>
