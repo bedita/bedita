@@ -46,7 +46,7 @@ class TransactionComponent extends Object {
 	
 	function init($dbConfigName = 'default', $pathTmp = '/tmp') {
 		if(!isset(self::$transFS)) {
-			self::$transFS = &new transactionFS($pathTmp) ;
+			self::$transFS = new transactionFS($pathTmp) ;
 		}
 		self::$dbConfig 		= (isset($dbConfigName))?$dbConfigName:'default' ;
 		self::$transFS->tmpPath = $pathTmp ;

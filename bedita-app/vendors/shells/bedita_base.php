@@ -99,7 +99,7 @@ class BeditaBaseShell extends Shell {
 
     protected function __clean($path) {
         
-        $folder=& new Folder($path);
+        $folder = new Folder($path);
         $list = $folder->ls();
 
         foreach ($list[0] as $d) {

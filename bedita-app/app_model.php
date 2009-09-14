@@ -895,7 +895,7 @@ class BeditaCollectionModel extends BEAppObjectModel {
 	 */
 	function getChildren($id = null, $userid = null, $status = null, $filter = false, $page = 1, $dim = 100000) {
 		if(!class_exists('Tree')) loadModel('Tree');
-		$tree 	=& new Tree();
+		$tree 	= new Tree();
 
 		$tree->setRoot($this->id);
 		return $tree->getChildren($id, $userid, $status, $filter, $page, $dim)  ;
@@ -922,7 +922,7 @@ class BeditaCollectionModel extends BEAppObjectModel {
 	protected function insertChildrenClone() {
 		$conf  	= Configure::getInstance() ;
 
-		$tree 	=& new Tree();
+		$tree 	= new Tree();
 
 		// Preleva l'elenco dei contenuti
 		if(!($queries = $tree->getAll($this->oldID))) throw new BEditaErrorCloneException("BEAppCollectionModel::getItems") ;
@@ -945,7 +945,7 @@ class BeditaCollectionModel extends BEAppObjectModel {
 	function appendChild($id, $idParent = null, $priority = null) {
 		if(!class_exists('Tree')) loadModel('Tree');
 
-		$tree =& new Tree();
+		$tree = new Tree();
 		$ret = $tree->appendChild($id, (isset($idParent)?$idParent:$this->id)) ;
 		if($priority!=null)
 			$tree->setPriority($id,$priority,(isset($idParent)?$idParent:$this->id)) ;
@@ -955,7 +955,7 @@ class BeditaCollectionModel extends BEAppObjectModel {
 	function removeChildren($idParent = null) {
 		if(!class_exists('Tree')) loadModel('Tree');
 
-		$tree =& new Tree();
+		$tree = new Tree();
 		$ret = $tree->removeChildren((isset($idParent)?$idParent:$this->id)) ;
 		
 		return $ret ;

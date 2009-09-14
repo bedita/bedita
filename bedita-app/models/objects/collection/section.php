@@ -82,7 +82,7 @@ class Section extends BeditaCollectionModel
 	protected function _formatDataForClone(&$data, $source = null) {
 		if(!class_exists('Tree')) loadModel('Tree');
 
-		$tree =& new Tree();
+		$tree = new Tree();
 		
 		$data['parent_id'] = $tree->getParent($data['id'])  ;		
 		parent::_formatDataForClone($data);
@@ -95,7 +95,7 @@ class Section extends BeditaCollectionModel
 	 */
 	protected function insertChildrenClone() {
 		$conf  	= Configure::getInstance() ;
-		$tree 	=& new Tree();
+		$tree 	= new Tree();
 		
 		// Preleva l'elenco dei figli
 		$children = $tree->getChildren($this->oldID , null, null, false, 1, 10000000) ;

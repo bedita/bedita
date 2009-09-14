@@ -116,7 +116,7 @@ class BeditaTestCase extends CakeTestCase {
 			return ;
 		}
 
-		$testData = &new $dataClass() ;
+		$testData = new $dataClass() ;
 		$r = new ReflectionClass($dataClass);
 		$dataParent = $r->getParentClass()->getName();
 		if($dataParent != "BeditaTestData") {
@@ -155,7 +155,7 @@ class BeditaTestCase extends CakeTestCase {
 
 					$className = $componentClass . 'Component' ;
 					if (class_exists($className)) {
-						$component =& new $className();
+						$component = new $className();
 						$this->{$componentClass} =& $component;
 						if(method_exists($component, "startup")) {
 							$component->startup($this->testController);
@@ -191,7 +191,7 @@ class BeditaTestCase extends CakeTestCase {
 
 			$this->_originalDefaultDB = &$_this->_dataSources['default'] ;
 
-			$_this->_dataSources['default'] =& new $class($_this->config->{$name});
+			$_this->_dataSources['default'] = new $class($_this->config->{$name});
 			$_this->_dataSources['default']->configKeyName = $name;
 		} else {
 			trigger_error(sprintf(__("ConnectionManager::getDataSource - Non-existent data source %s", true), $name), E_USER_ERROR);

@@ -89,7 +89,7 @@ function shutdownTransation() {
 	
 	if(Configure::read("bedita.transaction") != null) {
 		App::import('Component','Transaction');
-		$Transaction =& new TransactionComponent();
+		$Transaction = new TransactionComponent();
 		
 		$Transaction->init() ;
 		$Transaction->rollback() ;

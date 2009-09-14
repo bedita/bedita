@@ -90,7 +90,7 @@ class Area extends BeditaCollectionModel
 	 */
 	protected function insertChildrenClone() {
 		$conf  	= Configure::getInstance() ;
-		$tree 	=& new Tree();
+		$tree 	= new Tree();
 		
 		// Preleva l'elenco dei figli
 		$children = $tree->getChildren($this->oldID , null, null, false, 1, 10000000) ;

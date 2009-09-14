@@ -24,8 +24,6 @@ App::import('Model', 'Stream');
 App::import('Component', 'Transaction');
 App::import('vendor', "splitter_sql");
 App::import('vendor', "Archive_Tar", true, array(), "Tar.php");
-App::import('Core', 'Controller');
-App::import('Controller', 'App'); // BeditaException
 require_once 'bedita_base.php';
 
 /**
@@ -213,15 +211,15 @@ class BeditaShell extends BeditaBaseShell {
 			$this->hr();
 			$this->out("");
 			$this->hr();
-			$this->out("CHECKING MEDIA URL");
-			$mediaUrl = Configure::read("mediaUrl");
-			if (@$this->checkAppUrl($mediaUrl)) {
+			$this->out("CHECKING MEDIA ROOT");
+			$mediaRoot = Configure::read("mediaRoot");
+			if (@$this->checkAppDirPerms($mediaRoot)) {
 				$this->hr();
 				$this->out("");
 				$this->hr();
-				$this->out("CHECKING MEDIA ROOT");
-				$mediaRoot = Configure::read("mediaRoot");
-				if ($this->checkAppDirPerms($mediaRoot)) {
+				$this->out("CHECKING MEDIA URLs");
+				$mediaUrl = Configure::read("mediaUrl");
+				if ($this->checkAppUrl($mediaUrl)) {
 					$this->hr();
 					$this->out("");
 					$this->hr();
@@ -240,12 +238,12 @@ class BeditaShell extends BeditaBaseShell {
 					$this->checkApp();
 				} else {
 					$this->hr();
-					$this->out("HINT: edit \$config['mediaRoot'] in bedita-app/config/bedita.sys.php, if necessary uncomment it.");
+					$this->out("HINT: edit \$config['mediaUrl'] in bedita-app/config/bedita.sys.php, if necessary uncomment it.");
 					$this->out("");
 				}
 			}  else {
 				$this->hr();
-				$this->out("HINT: edit \$config['mediaUrl'] in bedita-app/config/bedita.sys.php, if necessary uncomment it.");
+				$this->out("HINT: edit \$config['mediaRoot'] in bedita-app/config/bedita.sys.php, if necessary uncomment it.");
 				$this->out("");
 			}
 		} else {
@@ -292,7 +290,7 @@ class BeditaShell extends BeditaBaseShell {
         $transaction = new TransactionComponent($dbCfg);
 		$transaction->begin();
         
-        $this->DataSourceTest =& new DataSourceTest();
+        $this->DataSourceTest = new DataSourceTest();
 		$script = SQL_SCRIPT_PATH . "bedita_schema.sql";
 		$this->out("Update schema from $script");
 		$this->DataSourceTest->executeQuery($db,$script);
@@ -385,7 +383,7 @@ class BeditaShell extends BeditaBaseShell {
         $transaction = new TransactionComponent($dbCfg);
 		$transaction->begin();
         
-        $this->DataSourceTest =& new DataSourceTest();
+        $this->DataSourceTest = new DataSourceTest();
 		$script = SQL_SCRIPT_PATH . "bedita_schema.sql";
 		$this->out("Update schema from $script");
 		$this->DataSourceTest->executeQuery($db,$script);
@@ -516,7 +514,7 @@ class BeditaShell extends BeditaBaseShell {
 	       	$this->out("Exporting media files");
 	       	
 			$mediaRoot = Configure::read("mediaRoot");
-	       	$folder=& new Folder($mediaRoot);
+	       	$folder = new Folder($mediaRoot);
 	        $tree= $folder->tree($mediaRoot, false);
 	        foreach ($tree as $files) {
 	            foreach ($files as $file) {
@@ -565,13 +563,13 @@ class BeditaShell extends BeditaBaseShell {
         // check filesystem
 		$this->out("checkMedia - checking filesystem");
 		$mediaRoot = Configure::read("mediaRoot");
-		$folder=& new Folder($mediaRoot);
+		$folder = new Folder($mediaRoot);
         $tree= $folder->tree($mediaRoot, false);
 		$mediaOk = true;
         foreach ($tree as $files) {
             foreach ($files as $file) {
                 if (!is_dir($file)) {
-                    $file=& new File($file);
+                    $file = new File($file);
 					$p = substr($file->pwd(), strlen($mediaRoot));
 					if(stripos($p, "/imgcache/") !== 0) {
 						$f = $stream->findByPath($p);
