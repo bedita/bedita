@@ -22,7 +22,6 @@
 /**
  * Authentication test
  * 
- * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -35,28 +34,37 @@ class AuthenticationControllerTestCase extends BeditaTestCase {
 
     var $dataSource	= 'test' ;
     var $data		= null ;
-	var $components	= array('Session') ;
+	var $components	= array('Session', 'BeAuth') ;
 
 	////////////////////////////////////////////////////////////////
 	function testLoginOk() {
-		pr("Logging in....") ;
+		pr("Create user and log in....") ;
+
+		$this->assertTrue($this->BeAuth->createUser($this->data['new.user'], array('administrator')));
 		
-		$ret = $this->testAction('/authentications/login',	array('data' => $this->data['login'], 'method' => 'post'));
-		pr($ret);
+		$return = array('return' => 'result', 
+			'data' => array('login' => $this->data['new.user']['User'], 
+				'method' => 'post'));
+		$this->testAction('/authentications/login',	$return);
 		
 		$user 	= $this->Session->read('BEAuthUser') ;
 		$allow 	= $this->Session->read('BEAuthAllow') ;
+		pr($user);
+		pr("allow: " . $allow);
 		
-		$this->assertEqual($user['userid'], $this->data['login']['login']['userid']);
+		pr($this->Session);
+		$this->assertEqual($user['userid'], $this->data['new.user']['User']['userid']);
+		$this->assertEqual($allow, 1);
 	} 
 
 	function testLogout() {
 		pr("Closing session....") ;
 		
 		$this->testAction('/authentications/logout');
-		$user 	= $this->Session->read('BEAuthUser') ;
-		$allow 	= $this->Session->read('BEAuthAllow') ;
+		$user = $this->Session->read('BEAuthUser') ;
 		$this->assertEqual($user, null);
+
+		$this->assertTrue($this->BeAuth->removeUser($this->data['new.user']['User']['userid']));
 	}
 	
 	public   function __construct () {

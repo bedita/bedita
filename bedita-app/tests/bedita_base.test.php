@@ -156,7 +156,7 @@ class BeditaTestCase extends CakeTestCase {
 					$className = $componentClass . 'Component' ;
 					if (class_exists($className)) {
 						$component = new $className();
-						$this->{$componentClass} =& $component;
+						$this->{$componentClass} = $component;
 						if(method_exists($component, "startup")) {
 							$component->startup($this->testController);
 						}
