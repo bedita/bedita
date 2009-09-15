@@ -1,5 +1,9 @@
 {strip}
 
+{if isset($conf->staging) && ($conf->staging)}
+{$view->element('staging_toolbar')}
+{/if}
+
 {$view->element('header')}
 
 <div class="main">

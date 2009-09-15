@@ -48,10 +48,6 @@
 
 <body>
 
-{if isset($conf->staging) && ($conf->staging)}
-{include file="./_BEdita_staging_toolbar.tpl"}
-{/if}
-
 
 {$content_for_layout}
 
