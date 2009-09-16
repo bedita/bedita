@@ -21,7 +21,6 @@
 
 /**
  * 
- * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -72,7 +71,7 @@ class TransactionTestCase extends BeditaTestCase {
 		$this->_insert($this->Area, $this->data['minimo']) ;
 		
 		$this->Transaction->commit() ;
-		pr('Operazione di commit, il DB deve risultare modificato') ;
+		pr('Commit, DB has to be modified') ;
 		
 		$numRecordEnd = $this->_getNumRecordsTable() ; 
 		
@@ -206,7 +205,7 @@ class TransactionTestCase extends BeditaTestCase {
 			$ret = array_values($tables[$i]['TABLE_NAMES']) ;
 			
 			$q = "SELECT count(*) AS num FROM {$ret[0]} ";
-			$nums = $model->query($q);
+			$nums = $model->query($q, false);
 			
 			$count += $nums[0][0]['num'] ;
 		}
