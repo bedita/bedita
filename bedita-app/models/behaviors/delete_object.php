@@ -88,7 +88,12 @@ class DeleteObjectBehavior extends ModelBehavior {
 
 		// Cancella i riferimenti del'oggetto nell'albero
 		$tree = ClassRegistry::init('Tree');
-		$tree->del($model->id) ;
+		if (!$tree->deleteAll(array("id" => $model->id))) {
+			throw new BeditaException(__("Error deleting tree",true));	
+		}
+		if (!$tree->deleteAll(array("path LIKE '%/".$model->id."/%'"))) {
+			throw new BeditaException(__("Error deleting children tree",true));
+		}
 
 		$st = ClassRegistry::init('SearchText');
 		$st->deleteAll("object_id=".$model->id) ;

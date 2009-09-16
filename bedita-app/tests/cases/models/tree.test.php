@@ -65,6 +65,39 @@ class TreeTestCase extends BeditaTestCase {
 		echo $this->buildHtmlTree($tree);
  	}
  	
+	public function testAppendChild() {
+		$idParent = $this->savedIds["Section 1"];
+		$idParent2 = $this->savedIds["Section 12"];
+		$idDoc = $this->savedIds["Document 1"];
+		$res = $this->Tree->appendChild($idDoc, $idParent);
+		if ($this->assertTrue($res, "Error appending Document 1 to Section 1")) {
+			pr("<span style='color: green'>Document 1 appended to Section 1</span>");
+		} 
+		$res = $this->Tree->appendChild($idDoc, $idParent2);
+		if ($this->assertTrue($res, "Error appending Document 1 to Section 12")) {
+			pr("<span style='color: green'>Document 1 appended to Section 12</span>");
+		}
+		
+		pr("Tree:");
+		pr($this->Tree->find("all", array("conditions" => array("id" => $this->savedIds["Document 1"]))));
+	}
+	
+	public function testDeleteAppendedChild() {
+		$idDoc = $this->savedIds["Document 1"];
+		$res = ClassRegistry::init("Document")->del($idDoc);
+		if ($this->assertTrue($res)) {
+			pr("<span style='color: green'>Document 1 deleted</span>");
+		}
+		
+		$res = $this->Tree->find("all", array("conditions" => array("id" => $this->savedIds["Document 1"])));
+		if ($this->assertEqual(array(), $res)) {
+			pr("<span style='color: green'>Document 1 deleted from tree</span>");
+		} else {
+			pr("Tree:");
+			pr($res);
+		}
+	}
+	
 	public function testDeleteBranch() {
 		$idSection = $this->savedIds["Section 3"];
 		$descendants = $this->Tree->getDescendants($idSection);
@@ -107,6 +140,7 @@ class TreeTestCase extends BeditaTestCase {
 		//$tree = $this->Tree->getAll();
 		//echo $this->buildHtmlTree($tree);
 	}
+	
 	 
 
 	public function __construct () {
@@ -116,7 +150,7 @@ class TreeTestCase extends BeditaTestCase {
 	private function buildHtmlTree($tree) {
  		$htmlTree = "";
  		foreach ($tree as $root) {
-			$htmlTree .= "<h2>" . $root["title"] . " - " .$root["status"] . "</h2>";
+			$htmlTree .= "<h2>" . $root["title"] . " - id: " . $root["id"] . " - " .$root["status"] . "</h2>";
 			if (!empty($root["children"])) {
 				$htmlTree .= $this->buildHtmlBranch($root["children"]);
 			}
@@ -127,7 +161,7 @@ class TreeTestCase extends BeditaTestCase {
  	private function buildHtmlBranch($branch) {
  		$htmlBranch = "<ul style='padding-left: 10px;'>";
  		foreach ($branch as $b) {
- 			$htmlBranch .= "<li style='list-style: circle; padding:0; margin: 10px; font-size: 1.2em;'>" . $b["title"] . " - " .$b["status"] . "</li>";
+ 			$htmlBranch .= "<li style='list-style: circle; padding:0; margin: 10px; font-size: 1.2em;'>" . $b["title"] . " - id: " . $b["id"] . " - "  .$b["status"] . "</li>";
  			if (!empty($b["children"])) {
  				$htmlBranch .= $this->buildHtmlBranch($b["children"]);
  			}

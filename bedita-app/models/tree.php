@@ -183,28 +183,6 @@ class Tree extends BEAppModel
 		return (($ret === false)?false:true) ;
 	}
 
-	function removeChildren($idParent = false) {
-		if (!empty($idParent)) {
-			$this->id = $idParent ;
-		}
-		
-		// preleva i figli
-		$conditions = array() ;
-		$this->_getCondition_parentID($conditions, $this->id) ;
-		$sqlClausole = ConnectionManager::getDataSource($this->useDbConfig)->conditions($conditions, true, true) ;
-		
-		$children = $this->query("SELECT id FROM view_trees {$sqlClausole}") ;
-		
-		// Cancella i rami di cui i figli sono radice
-		for ($i =0; $i < count($children); $i++) {
-			$tmp = $this->am($children[$i]);
-			
-			if($this->query("CALL deleteTreeWithParent({$tmp['id']}, {$this->id})") === false) return false ;
-		}
-				
-		return true ;
-	}
-
 	function setPriority($id, $priority, $idParent = false) {
 		if (!empty($idParent)) {
 			$this->id = $idParent ;
@@ -224,22 +202,6 @@ class Tree extends BEAppModel
 		if(!empty($ret[0][0]["parent"])) return  false ;
 
  		$ret = $this->query("CALL moveTree({$id}, {$idOldParent}, {$idNewParent})");
-		return (($ret === false)?false:true) ;
-	}
-
-	/**
-	 * Cancella il ramo con la root con un determinato id.
-	 */
-	function del($id = null, $idParent = null) {
-		if (empty($id))
-			throw new BeditaException(__("Missing id to delete tree branch", true));
-		if (!empty($id)) {
-			$this->id = $id;
-		}
-		$id = $this->id;
-		if(isset($idParent)) $ret = $this->query("CALL deleteTreeWithParent({$id}, {$idParent})");
-		else $ret = $this->query("CALL deleteTree({$id})");
-		
 		return (($ret === false)?false:true) ;
 	}
 

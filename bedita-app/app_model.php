@@ -952,15 +952,6 @@ class BeditaCollectionModel extends BEAppObjectModel {
 		return $ret ;
 	}
 
-	function removeChildren($idParent = null) {
-		if(!class_exists('Tree')) loadModel('Tree');
-
-		$tree = new Tree();
-		$ret = $tree->removeChildren((isset($idParent)?$idParent:$this->id)) ;
-		
-		return $ret ;
-	}
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
