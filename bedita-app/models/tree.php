@@ -231,6 +231,8 @@ class Tree extends BEAppModel
 	 * Cancella il ramo con la root con un determinato id.
 	 */
 	function del($id = null, $idParent = null) {
+		if (empty($id))
+			throw new BeditaException(__("Missing id to delete tree branch", true));
 		if (!empty($id)) {
 			$this->id = $id;
 		}
@@ -246,19 +248,19 @@ class Tree extends BEAppModel
 	 * @param integer $id		root id.
 	 * @param string $userid	user. if null: no permission check (default); if '': guest user
 	 * @param string $status	only objs with this status 
-	 * @param array $filter		object types id (no "search" text query!!), default: false (all)
+	 * @param array $filter		see BEAppModel::findObjects
 	 */
-	function getAll($id = null, $userid = null, $status = null, $filter = false) {
+	function getAll($id = null, $userid = null, $status = null, $filter = array()) {
 
 		// build tree
 		$roots 	= array() ;
 		$tree 	= array() ;
+		
+		if (empty($id)) {
+			$filter["Tree.*"] = "";
+		}
 
-		$filter2["object_type_id"] = $filter;
-		if (empty($id))
-			$filter2["Tree.*"] = "";
-
-		$res = $this->findObjects($id, $userid, $status, $filter2, "parent_path, priority");
+		$res = $this->findObjects($id, $userid, $status, $filter, "parent_path, priority",true,1,100000,true);
 
 		foreach ($res["items"] as $root) {
 
@@ -267,30 +269,32 @@ class Tree extends BEAppModel
 
 			if(isset($root['parent_id']) && isset($roots[$root['parent_id']])) {
 				$roots[$root['parent_id']]['children'][] = &$root ;
-			} else {
-				$tree[] = &$root ;
+			} elseif (!empty($root['parent_id'])) {
+				$this->putBranchInTree($tree, $root);
+			} elseif ( (empty($id) && $root["object_type_id"] == Configure::read("objectTypes.area.id"))
+					|| ($id == $root["id"]) ) {
+				$tree[] = &$root;
 			}
-
+		
 			unset($root);
 		}
+		
+		return $tree ;
+	}
 	
-		// scarta tutti i rami che non sono root e che non coincidono con $id
-		// sono rami su cui l'utente non ha permessi sui parent
-		$tmp = array() ;
-		for ($i=0; $i < count($tree) ; $i++) {
-			if(isset($id) && $tree[$i]['id'] == $id) {
-				$tmp[] = &$tree[$i] ;
-				continue ;
-			}
-
-			if(!isset($id) && empty($tree[$i]['parent_id'])) {
-				$tmp[] = &$tree[$i] ;
-
-				continue ;
+	/**
+	 * search where have to stay $branch in $tree and put in  
+	 * @param array $tree
+	 * @param array $branch to put in tree 
+	 */
+	private function putBranchInTree(&$tree, $branch) {
+		foreach ($tree as $k => $t) {
+			if (!empty($branch['parent_id']) && $t["id"] == $branch['parent_id']) {
+				$tree[$k]['children'][] = $branch;
+			} elseif (!empty($t['children'])) {
+				$this->putBranchInTree($t['children'], $branch);
 			}
 		}
-
-		return $tmp ;
 	}
 
 	/**
@@ -472,13 +476,13 @@ class Tree extends BEAppModel
 	 * @param integer $page		Page number (for pagination)
 	 * @param integer $dim		Page dim (for pagination)
 	 */
-	function getChildren($id = null, $userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
+	function getChildren($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir  = true, $page = 1, $dim = 100000) {
 		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, false) ;
 	}
 
 	/**
-	 * Discendents of id element (all elements in tree).
-	 * (see: beobject->find(), to search not using content tree ).
+	 * Descendants of id element (all elements in tree).
+	 * (see: BEObject->find(), to search not using content tree ).
 	 * If userid present, only objects with read permissione, if ' ' - guest/anonymous user,
 	 * if userid = null -> no permission check.
 	 * Filter: object types, search text query.
@@ -493,7 +497,7 @@ class Tree extends BEAppModel
 	 * @param integer $page		Page number (for pagination)
 	 * @param integer $dim		Page dim (for pagination)
 	 */
-	function getDescendants($id = null, $userid = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
+	function getDescendants($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir  = true, $page = 1, $dim = 100000) {
 		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, true) ;
 	}
 

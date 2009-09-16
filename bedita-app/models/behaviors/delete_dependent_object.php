@@ -20,93 +20,58 @@
  */
 
 /**
+ * Behavior to remove descendants of the object deleted 
  * 
- * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
  * 
  * $Id$
  */
-
-/**
- * Perform a children object delete dependant to original object to delete
- */
 class DeleteDependentObjectBehavior extends ModelBehavior {
 	var $config = array();
+	private $descendants = array();
 	
 	function setup(&$model, $config = array()) {
-		$this->config[$model->name] = $config ; // nomi dei tipi di oggetti da prelevare
+		$this->config[$model->name] = $config ; // object type to delete
 	}
 
 	/**
-	 * Preleva gli oggetti figli da cancellare
-	 *
-	 * @return unknown
+	 * find the descendants to delete
 	 */
-	
 	function beforeDelete(&$model) {
 		// Se non vengono indicati delle tipologie di oggetti, esce
 		if(!count($this->config[$model->name])) return ;
 		
-		$filter = false ;
+		$filter = array() ;
 		$conf  = Configure::getInstance() ;
 		
 		foreach ($this->config[$model->name] as $type) {
 			if(!is_array($filter)) $filter = array() ;
-			$filter[] = $conf->objectTypes[strtolower($type)]["id"] ;
+			$filter["object_type_id"][] = $conf->objectTypes[strtolower($type)]["id"] ;
 		}
 		
-		// Se sono stati selezionati tipi specifici, aggiunge anche il tipo del model corrente
-		if($filter) {
-			$filter[] = $conf->objectTypes[strtolower($model->name)]["id"] ;
-		}
-		
-		// Preleva gli oggetti discendenti 
-//		if(!class_exists('Tree')) loadModel('Tree');		
-//		$tree = new Tree ;
-		$tree = ClassRegistry::init("Tree");
-		$descendents = $tree->getAll($model->id, null, null, $filter) ;
-		
-		
-//		$descendents = $model->findObjects($model->id, null, null, $filter, null, true, 1, 100000, true);
-		
-//		foreach ($descendents["items"] as $item) {
-//			if(!$this->_deleteDescs($item)) {
-//				return false ;
-//			}
-//		}
-		for ($i=0; isset($descendents[0]['children']) && $i <count($descendents[0]['children']) ; $i++) {
-			if(!$this->_deleteDescs($descendents[0]['children'][$i])) {
-				return false ;
-			}
-		}
+		// get descendants
+		$this->descendants = $model->findObjects($model->id, null, null, $filter, "priority", true, 1, 100000, true);
 		
 		return true ;
 	}
-
-	private function _deleteDescs(&$tree) {
-		for ($i=0; $i <count($tree['children']) ; $i++) {
-			if(!$this->_deleteDescs($tree['children'][$i])) {
-				return false ;
+	
+	/**
+	 * delete the descendants finded previously
+	 */
+	public function afterDelete(&$model) {
+		if (!empty($model->tmpTable))
+			$model->table = $model->tmpTable;
+		
+		if (!empty($this->descendants["items"])) {
+			foreach ($this->descendants["items"] as $item) {
+				$modelDescName = Configure::read("objectTypes.".$item["object_type_id"].".model");
+				if(!ClassRegistry::init($modelDescName)->del($item["id"])) {
+					throw new BeditaException(__("Error deleting depending object " . $item["title"], true));
+				}
 			}
 		}
-		
-		// Preleva la tipologia dell'oggetto
-		$conf  = Configure::getInstance() ;
-		
-		if(!isset($conf->objectTypes[$tree['object_type_id']]["model"])) return true ;
-		$modelName 	= $conf->objectTypes[$tree['object_type_id']]["model"];
-		
-//		if(!class_exists($modelName)) loadModel($modelName);		
-//		$model = new $modelName ;
-
-		$model = ClassRegistry::init($modelName);
-		
-		// Cancella l'oggetto
-		$result = $model->del($tree['id']);
-		
-		return $result ;
 	}
 	
 }

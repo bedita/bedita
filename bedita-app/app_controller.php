@@ -789,7 +789,7 @@ abstract class ModulesController extends AppController {
 		$this->set('availabeRelations', $this->getAvailableRelations($name));
 		
 		$this->set('parents',	$parents_id);
-		$this->set('tree', 		$this->BeTree->getSectionsTree($name));
+		$this->set('tree', 		$this->BeTree->getSectionsTree());
 		$this->set('previews',	$previews);
 		$categoryModel = ClassRegistry::init("Category");
 		$areaCategory = $categoryModel->getCategoriesByArea(Configure::read('objectTypes.'.$name.'.id'));

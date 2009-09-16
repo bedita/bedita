@@ -87,16 +87,10 @@ class DeleteObjectBehavior extends ModelBehavior {
 		$model->table =  (isset($configure) && is_string($configure)) ? $configure : $model->table ;
 
 		// Cancella i riferimenti del'oggetto nell'albero
-		if(!class_exists('Tree')){
-			App::import('Model','Tree');
-		}		
-		$tree = new Tree ;
+		$tree = ClassRegistry::init('Tree');
 		$tree->del($model->id) ;
 
-		if(!class_exists('SearchText')){
-			App::import('Model','SearchText');
-		}		
-		$st = new SearchText ;
+		$st = ClassRegistry::init('SearchText');
 		$st->deleteAll("object_id=".$model->id) ;
 		
 		return true ;
@@ -107,15 +101,17 @@ class DeleteObjectBehavior extends ModelBehavior {
 	 *
 	 */
 	function afterDelete(&$model) {
-		
-		// Ripristina le associazioni
-		foreach ($model->tmpAssociations as $association => $v) {
-			$model->$association = $v ;
+		if (!empty($model->tmpTable)) {
+			$model->table = $model->tmpTable ;
+			unset($model->tmpTable) ;
 		}
-		unset($model->tmpAssociations) ;
-		
-		$model->table = $model->tmpTable ;
-		unset($model->tmpTable) ;
+		if (!empty($model->tmpAssociations)) {
+			// Ripristina le associazioni
+			foreach ($model->tmpAssociations as $association => $v) {
+				$model->$association = $v ;
+			}
+			unset($model->tmpAssociations) ;
+		}
 	}
 
 	/**
