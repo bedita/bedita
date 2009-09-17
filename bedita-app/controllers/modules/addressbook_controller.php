@@ -142,7 +142,10 @@ class AddressbookController extends ModulesController {
 		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
 	}
 
-
+	public function cloneObject() {
+		unset($this->data['ObjectUser']);
+		parent::cloneObject();
+	}
 
 
 	protected function forward($action, $esito) {
@@ -164,15 +167,17 @@ class AddressbookController extends ModulesController {
 							"ERROR"	=> "/addressbook" 
 							),			
  			"saveCategories" 	=> array(
- 										"OK"	=> "/addressbook/categories",
- 										"ERROR"	=> "/addressbook/categories"
+ 							"OK"	=> "/addressbook/categories",
+ 							"ERROR"	=> "/addressbook/categories"
  									),
  			"deleteCategories" 	=> array(
- 										"OK"	=> "/addressbook/categories",
- 										"ERROR"	=> "/addressbook/categories"
+ 							"OK"	=> "/addressbook/categories",
+ 							"ERROR"	=> "/addressbook/categories"
  									),
-
-
+			"addItemsToAreaSection"	=> 	array(
+							"OK"	=> "/addressbook",
+							"ERROR"	=> "/addressbook" 
+							)
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;

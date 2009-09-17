@@ -235,7 +235,6 @@ class BEObject extends BEAppModel
 		  }
 		}
 		$this->unbindModel(array("hasMany"=>array("LangText")));
-		$this->oldBindUser = $this->hasAndBelongsToMany["User"];
 		$this->unbindModel(array("hasAndBelongsToMany"=>array("User")));
 		return true ;
 	}
@@ -404,7 +403,6 @@ class BEObject extends BEAppModel
 			}
 		}
 		
-		$this->bindModel(array("hasAndBelongsToMany" => array("User" => $this->oldBindUser)));
 		return true ;
 	}
 	

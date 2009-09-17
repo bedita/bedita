@@ -22,7 +22,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 {include file="../common_inc/export.tpl"}
 
-{*if (!empty($method)) && $method eq "index"}
+{if (!empty($method)) && $method eq "index"}
 
 		<div class="insidecol publishingtree">
 			
@@ -30,7 +30,7 @@ Menu a SX valido per tutte le pagine del controller.
 		
 		</div>
 
-{/if*}
+{/if}
 	
 {include file="../common_inc/previews.tpl"}
 
