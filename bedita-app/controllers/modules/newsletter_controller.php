@@ -84,31 +84,32 @@ class NewsletterController extends ModulesController {
 			)
 		);
 		
-		
-		$this->Card->contain(array("BEObject"));
-		$subscribedWeek = $this->Card->find("count", array(
+		$subscribedWeek = $this->MailGroupCard->find("count", array(
 				"conditions" => array(
-					"Card.newsletter_email IS NOT NULL AND Card.newsletter_email <> ''",
-					"BEObject.created >= '" . date("Y-m-d", mktime(0,0,0,date("m"),  date('d')-7,  date("Y"))) . " 00:00:00'",
-					"BEObject.object_type_id" => Configure::read("objectTypes.card.id")
-				)
+					"created >= '" . date("Y-m-d", mktime(0,0,0,date("m"),  date('d')-7,  date("Y"))) . " 00:00:00'",
+					"status" => "confirmed",
+					"Card.mail_status" => "valid"
+				),
+				"contain" => array("Card")
 			)
 		);
 		
-		$subscribedMonth = $this->Card->find("count", array(
+		$subscribedMonth = $this->MailGroupCard->find("count", array(
 				"conditions" => array(
-					"Card.newsletter_email IS NOT NULL AND Card.newsletter_email <> ''",
-					"BEObject.created >= '" . $firstDayOfmonth . "'",
-					"BEObject.object_type_id" => Configure::read("objectTypes.card.id")
-				)
+					"created >= '" . $firstDayOfmonth ."'",
+					"status" => "confirmed",
+					"Card.mail_status" => "valid"
+				),
+				"contain" => array("Card")
 			)
 		);
 		
-		$subscribedTotal = $this->Card->find("count", array(
+		$subscribedTotal = $this->MailGroupCard->find("count", array(
 				"conditions" => array(
-					"Card.newsletter_email IS NOT NULL AND Card.newsletter_email <> ''",
-					"BEObject.object_type_id" => Configure::read("objectTypes.card.id")
-				)
+					"status" => "confirmed",
+					"Card.mail_status" => "valid"
+				),
+				"contain" => array("Card")
 			)
 		);
 
