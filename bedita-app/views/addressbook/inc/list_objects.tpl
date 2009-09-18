@@ -134,13 +134,13 @@ $(document).ready(function(){
 	{if !empty($tree)}
 			
 
-			
+			{*
 			<select style="width:75px">
 				<option> {t}copy{/t} </option>
 				<option> {t}move{/t} </option>
 			</select>
-			
-			  &nbsp;to:  &nbsp;
+			*}
+			{t}copy{/t}  &nbsp;{t}to{/t}:  &nbsp;
 			
 			<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
 			{$beTree->option($tree)}
