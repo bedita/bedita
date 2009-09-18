@@ -40,9 +40,9 @@
 			<li>{t}Subscribed this month{/t}: <b>{$subscribedMonth|default:0}</b></li>
 			<li>{t}Total Subscribers{/t}: <b>{$subscribedTotal|default:0}</b></li>
 			<li>
-				<b><a href="{$html->url('/addressbook/')}">{t}View all{/t}</a></b> 
+				<b><a href="{$html->url('/newsletter/mailGroups')}">{t}View all{/t}</a></b> 
 				&nbsp;&nbsp;|&nbsp;&nbsp;
-				<b><a href="{$html->url('/addressbook/import')}">{t}Import{/t}</a></b> 
+				<b><a href="{$html->url('/newsletter/mailGroups')}">{t}Import{/t}</a></b> 
 			</li>
 		</ul>
 
@@ -54,9 +54,8 @@
 		{foreachelse}
 			<li>{t}No template available{/t}</li>
 		{/foreach}
-		
 		</ul>
-		
+
 </div>
 	
 <div class="mainhalf" style="margin-right:0px;">
@@ -71,17 +70,17 @@
 	
 	<div class="tab"><h2>{t}Recent newsletters {/t}</h2></div>
 	
-		<table class="bordered">
+		<table class="bordered" style="width:100%">
 		{if !empty($recentMsg)}
 			<tr>
-				<th>{t}title{/t}</th>
+				<th style="width:100%">{t}title{/t}</th>
 				<th>{t}Sent on{/t}</th>
 			</tr>
 			
 			{foreach from=$recentMsg item="msg"}
 			<tr>
-				<td>{$msg.title}</td>
-				<td>
+				<td><a href="{$html->url('/newsletter/view/')}{$msg.id}">{$msg.title}</a></td>
+				<td style="white-space:nowrap">
 				{if $msg.mail_status == "sent"}
 					{$msg.start_sending|date_format:$conf->datePattern}
 				{else}

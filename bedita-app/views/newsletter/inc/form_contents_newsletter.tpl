@@ -126,25 +126,27 @@ $(document).ready(function() {
 <div class="tab"><h2>{t}Compile{/t}</h2></div>
 
 <fieldset id="contents">
-
-
+	
 	<label>{t}Title{/t}: </label>
 	{assign_concat var="default" 0="Newsletter | " 1=$smarty.now|date_format:"%B %Y"}
 	<input type="text" id="title" name="data[title]" 
 	value="{$object.title|default:$default|escape:'html'|escape:'quotes'}" id="titleBEObject"/>
 
-
+{*
+<!--
 	<hr />
-	
 	<label>{t}Subject{/t}: </label>
-	<input type="text" id="subject" name="data[subject]" 
-	value="{$object.subject|default:null}" id="subjectBEObject"/>
+
+	<input type="hidden" id="subject" name="data[subject]" value="" id="subjectBEObject"/>
+-->	
+*}
 
 	<hr />
 
 	<input class="modalbutton" type="button" value="{t}Get contents{/t}" rel="{$html->url('/pages/showObjects/0/0/0/leafs')}" style="width:200px" />
 
 	&nbsp;&nbsp;
+	
 	
 	<label>{t}use template{/t}:</label>
 	<input type="hidden" name="data[RelatedObject][template][0][switch]" value="template" />

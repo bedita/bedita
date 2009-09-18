@@ -58,7 +58,7 @@ function submitSubscribers(url) {
 
 $(document).ready(function() {
 	
-	openAtStart("#details,#subscribers");
+	openAtStart("#details,#divSubscribers,#addsubscribers");
 
 	initSubscribers();
 	
@@ -101,113 +101,13 @@ $(document).ready(function() {
 
 <form method="post" id="updateForm" action="{$html->url('saveMailGroups')}">	
 
-<div class="tab"><h2>List details</h2></div>
-<fieldset id="details">
-	<table class="bordered">
-		<tr>
-			<td>
-				<label for="groupname">{t}list name{/t}:</label>
-			</td>
-			<td>
-				<input type="hidden" name="data[MailGroup][id]" value="{$object.id|default:''}" />
-				<input type="text" style="width:360px;" id="groupname" name="data[MailGroup][group_name]" value="{$object.group_name|default:''}" />
-			</td>
-		</tr>
-		<tr>
-			<td colspan=2>{assign var='mailgroup_visible' value=$object.visible|default:'1'}
-				<input type="radio" name="data[MailGroup][visible]" value="1" {if $mailgroup_visible=='1'}checked="true"{/if}/>
-				<label for="visible">{t}public list	{/t}</label> (people can subscribe)
-			&nbsp;
-				<input type="radio" name="data[MailGroup][visible]" value="0" {if $mailgroup_visible=='0'}checked="true"{/if}/>
-				<label for="visible">{t}private list {/t}</label> (back-end insertions only)
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label for="publishing">{t}publishing{/t}:</label>
-			</td>
-			<td>{assign var='mailgroup_area_id' value=$object.area_id|default:''}
-				<select style="width:220px" name="data[MailGroup][area_id]">
-					{foreach from=$areasList key="area_id" item="public_name"}
-					<option value="{$area_id}"{if $area_id == $mailgroup_area_id} selected{/if}>{$public_name}</option>
-					{/foreach}
-				</select>
-			</td>
-		</tr>
-		</table>
-	</fieldset>
-	
-<div class="tab"><h2>Config and messages</h2></div>
-<fieldset id="configmessages">		
-	<table class="bordered">
-		<tr>
-			<td colspan="2">{assign var='mailgroup_opting_method' value=$object.optingmethod|default:''}
-				<label for="optingmethod">{t}subscribing method{/t}:</label>
-				&nbsp;&nbsp;
-				<select id="optingmethod" name="data[MailGroup][security]">
-					<option value="none"{if $mailgroup_opting_method == 'none'} selected{/if}>Single opt-in (no confirmation required)</option>
-					<option value="all"{if $mailgroup_opting_method == 'all'} selected{/if}>Double opt-in (confirmation required)</option>
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td style="vertical-align:top">
-				<label for="confirmin">{t}Confirmation-In mail message{/t}:</label>
-				<br />
-				<textarea name="data[MailGroup][confirmation_in_message]" id="optinmessage" style="width:220px" class="autogrowarea">{$object.confirmation_in_message|default:$default_confirmation_in_message}</textarea>
-			</td>
-			<td style="vertical-align:top">
-				<label for="confirmout">{t}Confirmation-Out mail message{/t}:</label>
-				<br />
-				<textarea name="data[MailGroup][confirmation_out_message]" id="optoutmessage" style="width:220px" class="autogrowarea">{$object.confirmation_out_message|default:$default_confirmation_out_message}</textarea>
-			</td>
-		</tr>
-	</table>
-</fieldset>
+{include file="inc/list_details.tpl"}
 
-{if !empty($object)}
-<div class="tab"><h2>Subscribers</h2></div>
-<div id="divSubscribers">{include file="inc/list_subscribers.tpl"}</div>
+{include file="inc/list_subscribers.tpl"}
 
+{include file="inc/add_subscribers.tpl"}
 
-<div class="tab"><h2>{t}Operations on{/t} <span class="selecteditems evidence"></span> {t}selected subscribers{/t}</h2></div>
-<fieldset>
-		<select name="operation" style="width:75px">
-			<option> {t}copy{/t} </option>
-			<option> {t}move{/t} </option>
-		</select>
-		&nbsp;to:&nbsp;
-		<select name="destination">
-			{if !empty($groups)}
-			{foreach from=$groups item="group"}
-				{if $group.MailGroup.id != $object.id}
-				<option value="{$group.MailGroup.id}">{$group.MailGroup.group_name}</option>
-				{/if}
-			{/foreach}
-			{/if}
-		</select>
-		<input id="assocCard" type="button" value=" ok " />
-	
-	<hr />
-	
-		{t}change status to:{/t}&nbsp;&nbsp;
-		<select style="width:75px" id="newStatus" name="newStatus">
-			<option value="valid">{t}valid{/t}</option>
-			<option value="blocked">{t}blocked{/t}</option>
-		</select>
-		<input id="changestatusSelected" type="button" value=" ok " />
-	
-	<hr />
-
-	<input id="deleteSelected" type="button" value="X {t}Unsubscribe selected items{/t}"/>
-</fieldset>
-{/if}
-
-<div class="tab"><h2>{t}Add new subscribers{/t}</h2></div>
-<fieldset id="">
-		{t}Write here comma-separated email addresses{/t}
-		<textarea name="addsubscribers" id="addsubscribers" style="width:100%" class="autogrowarea"></textarea>
-</fieldset>
+{include file="inc/list_config_messages.tpl"}
 
 </form>	
 	

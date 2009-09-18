@@ -422,17 +422,31 @@ UL.modules {
 	background-position: center;
 }
 
+.modules .unsent {
+	background: transparent url(../img/iconUnsent.png);
+	background-repeat:no-repeat !important;
+	background-position: center;
+}
+
 .modules .pending {
 	background: transparent url(../img/iconPending.png);
 	background-repeat:no-repeat !important;
 	background-position: center;
 }
 
-.modules .unsent {
-	background: transparent url(../img/iconUnsent.png);
+.modules .pendingAlert {
+	background: transparent url(../img/iconPendingAlert.png);
 	background-repeat:no-repeat !important;
 	background-position: center;
 }
+
+.modules .sent {
+	background: transparent url(../img/iconSent.png);
+	background-repeat:no-repeat !important;
+	background-position: center;
+}
+
+
 
 .modules .save {
 	background: transparent url(../img/iconSave.png);

@@ -123,14 +123,30 @@ $(document).ready(function(){
 		
 {/literal}{/if}{literal}
 
-{/literal}{if (!empty($object.mail_status) && $object.mail_status == "pending")}{literal}
+{/literal}{if ($object.mail_status == "draft")}{literal}
 		
-		$(".secondacolonna .modules label").addClass("pending").attr("title","pending invoice");
+		$(".secondacolonna .modules label").addClass("unsent").attr("title","unsent message");
 		
-{/literal}{elseif (!empty($object.mail_status) && $object.mail_status == "unsent")}{literal}
+{/literal}{elseif ($object.mail_status == "unsent")}{literal}
 
 		$(".secondacolonna .modules label").addClass("unsent").attr("title","unsent message");
-			
+
+{/literal}{elseif ($object.mail_status == "pending")}{literal}
+		
+		$(".secondacolonna .modules label").addClass("pending").attr("title","pending invoice");
+
+{/literal}{elseif ($object.mail_status == "pendingAlert")}{literal}
+		
+		$(".secondacolonna .modules label").addClass("pendingAlert").attr("title","shortly scheduled invoice");
+
+{/literal}{elseif ($object.mail_status == "inJob")}{literal}
+		
+		$(".secondacolonna .modules label").addClass("inJob").attr("title","in job");
+		
+{/literal}{elseif ($object.mail_status == "sent")}{literal}
+
+		$(".secondacolonna .modules label").addClass("sent").attr("title","sent message");
+				
 {/literal}{/if}{literal}
 
 

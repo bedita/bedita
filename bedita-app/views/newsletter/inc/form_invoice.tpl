@@ -21,10 +21,6 @@ $(document).ready(function() {
 
 <fieldset id="invoice">			
 
-<!--
-<fieldset id="schedule">			
--->
-		
 <table class="bordered" style="width:100%">
 
 	<tr>
@@ -33,23 +29,25 @@ $(document).ready(function() {
 		<th>{t}status{/t}:</th>
 	</tr>
 	<tr>
-		<td>
+		<td style="vertical-align:top">
 	<input size=10 type="text" class="dateinput" name="data[start_sending]" id="eventStart" value="{if !empty($object.start_sending)}{$object.start_sending|date_format:$conf->datePattern}{/if}"/>
 	<input size=5 type="text" id="timeStart" name="data[start_sending_time]" value="{if !empty($object.start_sending)}{$object.start_sending|date_format:"%H:%M"}{/if}" />
 
-		</td>
+		</tdstyle>
 		<td>
 		{if !empty($groupsByArea)}
 			{foreach from=$groupsByArea item="groups" key="pub"}
 				<ul>
-				{$pub}
-				
-				{foreach from=$groups item="group" name="fc"}
-					<li>
-					<input type="checkbox" name="data[MailGroup][]" value="{$group.id}"{if !empty($group.MailMessage)} checked{/if}/> {$group.group_name}
+					<li style="padding:2px;">
+						<b>{$pub|upper}</b>
+						<ul style="margin:0px">
+						{foreach from=$groups item="group" name="fc"}
+							<li style="padding:2px;">
+							<input type="checkbox" name="data[MailGroup][]" value="{$group.id}"{if !empty($group.MailMessage)} checked{/if}/> {$group.group_name}
+							</li>
+						{/foreach}
+						</ul>
 					</li>
-				{/foreach}
-				
 				</ul>
 			{/foreach}
 		{/if}
@@ -57,7 +55,7 @@ $(document).ready(function() {
 		{if !empty($object.mail_status) && $object.mail_status == "pending"}
 			<td class="info" style="text-decoration: blink;">{t}currently in job{/t}</td>
 		{else}
-			<td class="info">{t}{$object.mail_status|default:"draft"}{/t}</td>
+			<td class="info">{t}{$object.mail_status|default:''}{/t}</td>
 		{/if}
 	</tr>
 </table>
@@ -72,3 +70,6 @@ $(document).ready(function() {
 	<em>{t}Newsletter must be saved before sending{/t}</em>
 	
 </fieldset>
+
+{dump var=$object}
+	

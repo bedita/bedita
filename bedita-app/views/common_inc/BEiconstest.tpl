@@ -21,8 +21,12 @@ $(document).ready(function(){
 	<li rel="concurrentuser">Concurrentuser</li>
 	<li rel="alert">Alert</li>
 	<li rel="error">Error</li>
-	<li rel="pending">Pending</li>
+
 	<li rel="unsent">Unsent</li>
+	<li rel="pending">Pending</li>
+	<li rel="pendingAlert">Pending Alert</li>
+	<li rel="sent">Sent</li>
+	
 	<li rel="save">Save</li>
 </ul>
 

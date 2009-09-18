@@ -78,10 +78,25 @@ Menu a SX valido per tutte le pagine del controller.
 	{elseif !empty($method) && $method != "index"}
 	
 		<div class="insidecol">
+		{if ($object.mail_status == "inJob")}
+			
+			<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" id="cloneBEObject" />
+			
+		{elseif ($object.mail_status == "sent")}
+			
+			<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" id="cloneBEObject" />
+			<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" />
+			
+		{else}
+			
 			<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" id="saveBEObject" />
 			<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" id="cloneBEObject" />
 			<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" />
+		
+		{/if}
+
 		</div>
+	
 	
 	{/if}
 
