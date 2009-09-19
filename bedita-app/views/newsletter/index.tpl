@@ -38,7 +38,7 @@
 		<ul class="bordered">
 			<li>{t}Subscribed this week{/t}: <b>{$subscribedWeek|default:0}</b></li>
 			<li>{t}Subscribed this month{/t}: <b>{$subscribedMonth|default:0}</b></li>
-			<li>{t}Total Subscribers{/t}: <b>{$subscribedTotal|default:0}</b></li>
+			<li>{t}Total Subscribers{/t}: <b class="evidence">{$subscribedTotal|default:0}</b></li>
 			<li>
 				<b><a href="{$html->url('/newsletter/mailGroups')}">{t}View all{/t}</a></b> 
 				&nbsp;&nbsp;|&nbsp;&nbsp;
@@ -54,6 +54,11 @@
 		{foreachelse}
 			<li>{t}No template available{/t}</li>
 		{/foreach}
+			<li>
+				<b><a href="{$html->url('/newsletter/templates')}">View all</a></b>
+					&nbsp;&nbsp;|&nbsp;&nbsp;
+				<b><a href="{$html->url('/newsletter/viewtemplate')}">{t}Create new{/t}</a></b> 
+			</li>
 		</ul>
 
 </div>
@@ -64,13 +69,18 @@
 		<ul class="bordered">
 			<li>{t}Newsletters sent this month{/t}: <b>{$sentThisMonth|default:0} </b></li>
 			<li>{t}Newsletters sent this year{/t}: <b>{$sentThisYear|default:0}</b> </li>
-			<li>{t}Queued{/t}: <b>{$queued|default:0}</b> </li>		 
-			<li>{t}Total newsletters sent{/t}: <b>{$sentTotal|default:0}</b></li>
+			<li>
+				{t}Total newsletters sent{/t}: <b>{$sentTotal|default:0}</b> 
+				&nbsp; &nbsp; | &nbsp; &nbsp; 
+				{t}Queued{/t}: <b class="evidence">{$queued|default:0}</b> </li>		 
+			<li>
+				<b><a href="{$html->url('/newsletter/invoices')}">View invoices</a></b>
+			</li>
 		</ul>
 	
 	<div class="tab"><h2>{t}Recent newsletters {/t}</h2></div>
 	
-		<table class="bordered" style="width:100%">
+		<table class="bordered" border=0 style="margin-top:-5px; width:100%">
 		{if !empty($recentMsg)}
 			<tr>
 				<th style="width:100%">{t}title{/t}</th>
@@ -97,7 +107,12 @@
 				</td>
 			</tr>
 		{else}
-			<tr><td colspan="2" style="border:0;">{t}No newsletters found{/t}</td></tr>
+			<tr><td colspan="2" style="width:340px;">{t}No newsletters found{/t}</td></tr>
+			<tr>	
+				<td colspan="2" style="border-bottom:0px;">
+					<b><a href="{$html->url('/newsletter/view')}">Create new</a></b>
+				</td>
+			</tr>
 		{/if}
 
 		</table>

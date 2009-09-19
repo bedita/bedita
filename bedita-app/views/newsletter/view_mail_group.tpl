@@ -105,7 +105,6 @@ $(document).ready(function() {
 
 {include file="inc/list_subscribers.tpl"}
 
-{include file="inc/add_subscribers.tpl"}
 
 {include file="inc/list_config_messages.tpl"}
 

@@ -29,11 +29,11 @@ $(document).ready(function() {
 		<th>{t}status{/t}:</th>
 	</tr>
 	<tr>
-		<td style="vertical-align:top">
+		<td style="vertical-align:middle">
 	<input size=10 type="text" class="dateinput" name="data[start_sending]" id="eventStart" value="{if !empty($object.start_sending)}{$object.start_sending|date_format:$conf->datePattern}{/if}"/>
 	<input size=5 type="text" id="timeStart" name="data[start_sending_time]" value="{if !empty($object.start_sending)}{$object.start_sending|date_format:"%H:%M"}{/if}" />
 
-		</tdstyle>
+		</td>
 		<td>
 		{if !empty($groupsByArea)}
 			{foreach from=$groupsByArea item="groups" key="pub"}
@@ -52,24 +52,32 @@ $(document).ready(function() {
 			{/foreach}
 		{/if}
 		</td>
-		{if !empty($object.mail_status) && $object.mail_status == "pending"}
+		
+		{if !empty($object.mail_status) && $object.mail_status == "injob"}
 			<td class="info" style="text-decoration: blink;">{t}currently in job{/t}</td>
 		{else}
 			<td class="info">{t}{$object.mail_status|default:''}{/t}</td>
 		{/if}
+		
 	</tr>
 </table>
 	<div class="modalcommands newsletter">
 		<input type="button" id="testNewsletter" value="  test newsletter  " {if !($object.id|default:false)}disabled="disabled"{/if}/> 
-		{if (empty($object) || ($object.mail_status!='sent' && $object.mail_status!='pending'))}
+		{if (empty($object) || ($object.mail_status!='sent' && $object.mail_status != 'injob'))}
 		&nbsp;&nbsp;
-		<input type="button" id="sendNewsletter" value="  SEND newsletter  " />
+		<input type="button" id="sendNewsletter" value="  SAVE & QUEUE newsletter  " />
 		{/if}
 	</div>
 	
-	<em>{t}Newsletter must be saved before sending{/t}</em>
-	
 </fieldset>
 
-{dump var=$object}
+{*dump var=$object*}
+
+
+
+
+
+
+
+
 	

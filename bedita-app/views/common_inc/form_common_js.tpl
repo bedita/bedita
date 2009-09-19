@@ -23,7 +23,6 @@ $(document).ready(function(){
 	$("#cancelBEObject").hide().click(function() {
 		if(confirm("{/literal}{t}Are you sure you want to cancel and reload this document? All unsaved changes will be lost{/t}{literal}")) {
 			window.location.reload();
-			//location.reload();
 		}
 	;
 	});
@@ -123,29 +122,31 @@ $(document).ready(function(){
 		
 {/literal}{/if}{literal}
 
-{/literal}{if ($object.mail_status == "draft")}{literal}
-		
-		$(".secondacolonna .modules label").addClass("unsent").attr("title","unsent message");
-		
-{/literal}{elseif ($object.mail_status == "unsent")}{literal}
-
-		$(".secondacolonna .modules label").addClass("unsent").attr("title","unsent message");
-
-{/literal}{elseif ($object.mail_status == "pending")}{literal}
-		
-		$(".secondacolonna .modules label").addClass("pending").attr("title","pending invoice");
-
-{/literal}{elseif ($object.mail_status == "pendingAlert")}{literal}
-		
-		$(".secondacolonna .modules label").addClass("pendingAlert").attr("title","shortly scheduled invoice");
-
-{/literal}{elseif ($object.mail_status == "inJob")}{literal}
-		
-		$(".secondacolonna .modules label").addClass("inJob").attr("title","in job");
-		
-{/literal}{elseif ($object.mail_status == "sent")}{literal}
+{/literal}{if (@$object.mail_status == "sent")}{literal}
 
 		$(".secondacolonna .modules label").addClass("sent").attr("title","sent message");
+		
+{/literal}{elseif (@$object.mail_status == "inJob")}{literal}
+		
+		$(".secondacolonna .modules label").addClass("inJob").attr("title","in job");
+
+		//un'ora prima dell'invio avverte 
+{/literal}{elseif ( $object.start_sending < ($smarty.now+3600|date_format:"%Y-%m-%d %T") )}{literal}
+		
+		$(".secondacolonna .modules label").addClass("pendingAlert").attr("title","shortly scheduled invoice");	
+		alert('Attenzione! La newsletter sta per essere inviata oggi\nalle {/literal}{$object.start_sending|date_format:'%H:%M'}{literal}\nogni modifica che fai potrebbe non essere applicata se non salvi in tempo');
+
+{/literal}{elseif (@$object.mail_status == "pending")}{literal}
+		
+		$(".secondacolonna .modules label").addClass("pending").attr("title","pending invoice");
+	
+{/literal}{elseif (@$object.mail_status == "unsent")}{literal}
+
+		$(".secondacolonna .modules label").addClass("unsent").attr("title","unsent message");
+
+{/literal}{elseif (@$object.mail_status == "draft")}{literal}
+		
+		$(".secondacolonna .modules label").addClass("unsent").attr("title","unsent message");
 				
 {/literal}{/if}{literal}
 
@@ -156,7 +157,7 @@ $(document).ready(function(){
 	
 	$("#updateForm *").change(function () {
 
-		$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object").attr("rel","");
+		$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 		$("#cancelBEObject").show();
 	});
 

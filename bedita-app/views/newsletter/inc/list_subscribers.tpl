@@ -55,6 +55,8 @@
 </fieldset>
 
 
+{include file="inc/add_subscribers.tpl"}
+
 <div class="tab"><h2>{t}Operations on{/t} <span class="selecteditems evidence"></span> {t}selected subscribers{/t}</h2></div>
 <fieldset id="bulk">
 		<select name="operation" style="width:75px">
