@@ -131,7 +131,7 @@ $(document).ready(function(){
 		$(".secondacolonna .modules label").addClass("inJob").attr("title","in job");
 
 		//un'ora prima dell'invio avverte 
-{/literal}{elseif ( $object.start_sending < ($smarty.now+3600|date_format:"%Y-%m-%d %T") )}{literal}
+{/literal}{elseif ( (!empty($object.start_sending)) && ( $object.start_sending < ($smarty.now+3600|date_format:"%Y-%m-%d %T") ) )}{literal}
 		
 		$(".secondacolonna .modules label").addClass("pendingAlert").attr("title","shortly scheduled invoice");	
 		alert('Attenzione! La newsletter sta per essere inviata oggi\nalle {/literal}{$object.start_sending|date_format:'%H:%M'}{literal}\nogni modifica che fai potrebbe non essere applicata se non salvi in tempo');
