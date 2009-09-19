@@ -905,6 +905,9 @@ TABLE.indexlist TH.on * {
 	padding:0px;
 }
 
+.vtop TD {
+	vertical-align:top;
+}
 
 
 /*...........................................    
