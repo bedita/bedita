@@ -131,21 +131,19 @@ $(document).ready(function(){
 		$(".secondacolonna .modules label").addClass("inJob").attr("title","in job");
 
 		//un'ora prima dell'invio avverte 
-{/literal}{elseif ( (!empty($object.start_sending)) && ( $object.start_sending < ($smarty.now+3600|date_format:"%Y-%m-%d %T") ) )}{literal}
+{/literal}{elseif ( (!empty($object.start_sending)) && ($object.start_sending < ($smarty.now+3600|date_format:"%Y-%m-%d %T")) )}{literal}
 		
 		$(".secondacolonna .modules label").addClass("pendingAlert").attr("title","shortly scheduled invoice");	
+		{/literal}{if $object.start_sending > ($smarty.now|date_format:"%Y-%m-%d %T") }{literal}
 		alert('Attenzione! La newsletter sta per essere inviata oggi\nalle {/literal}{$object.start_sending|date_format:'%H:%M'}{literal}\nogni modifica che fai potrebbe non essere applicata se non salvi in tempo');
-
+		{/literal}{/if}{literal}
+		
 {/literal}{elseif (@$object.mail_status == "pending")}{literal}
 		
 		$(".secondacolonna .modules label").addClass("pending").attr("title","pending invoice");
 	
 {/literal}{elseif (@$object.mail_status == "unsent")}{literal}
 
-		$(".secondacolonna .modules label").addClass("unsent").attr("title","unsent message");
-
-{/literal}{elseif (@$object.mail_status == "draft")}{literal}
-		
 		$(".secondacolonna .modules label").addClass("unsent").attr("title","unsent message");
 				
 {/literal}{/if}{literal}
