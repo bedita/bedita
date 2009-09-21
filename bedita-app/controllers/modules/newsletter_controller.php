@@ -59,7 +59,7 @@ class NewsletterController extends ModulesController {
 		);
 		
 		$queued = $this->MailMessage->find("count", array(
-				"conditions" => array( "mail_status" => array("unsent", "pending") )
+				"conditions" => array( "mail_status" => array("pending", "injob") )
 			)
 		);
 		
@@ -324,7 +324,7 @@ class NewsletterController extends ModulesController {
 		if (empty($this->data["start_sending"]))
 			throw new BeditaException(__("Missing sending date", true));
 		
-		$this->data["mail_status"] = "unsent";	
+		$this->data["mail_status"] = "pending";	
 		$this->saveMessage();
 		$this->userInfoMessage(__("Mail ready to be sent on ", true) . $this->data["start_sending"]);
 		$this->eventInfo("mail [". $this->data["title"]."] prepared for sending");
@@ -354,14 +354,15 @@ class NewsletterController extends ModulesController {
 	
 	public function test() {
 //		$this->BeMail->sendMailById(8,"batopa@gmail.com");
-		//$data["to"] = "batopa@gmail.com";
-		//$data["from"] = "a.pagliarini@channelweb.it";
-		//$data["subject"] = "";
-		//$data["replyTo"] = "";
-		//$data["body"] = "<p>zxczx</p>";
-		//$this->BeMail->sendMail($data);
-		//pr($data);
-		//$msg = $this->BeMail->lockMessages();
+		$data["to"] = "batopa@gmail.com";
+		$data["from"] = "a.pagliarini@channelweb.it";
+		$data["subject"] = "test";
+		$data["mailType"] = "html";
+		$data["replyTo"] = "";
+		$data["body"] = "<style>p {color: red;}</style><p style='font-weight: bold;'>Bella lì</p>";
+		$this->BeMail->sendMail($data);
+		pr($data);
+//		$msg = $this->BeMail->lockMessages();
 //		$this->BeMail->createJobs(array(93));
 //		$this->BeMail->sendQueuedJobs(array(93));
 		exit;
@@ -427,7 +428,7 @@ class NewsletterController extends ModulesController {
 
 		$msg = array();
 		$msg = $this->MailMessage->find("all", array(
-			"conditions" => array("MailMessage.mail_status" => array("pending", "unsent")),
+			"conditions" => array("MailMessage.mail_status" => array("pending", "injob")),
 			"contain"	=> array("BEObject" => array("RelatedObject"), "MailGroup")
 			)
 		);
@@ -440,16 +441,16 @@ class NewsletterController extends ModulesController {
 		}
 		unset($this->modelBindings["MailTemplate"]);
 		
-		$pending = $this->MailMessage->find("count", array(
-			"conditions" => array("MailMessage.mail_status" => array("pending"))
+		$inJob = $this->MailMessage->find("count", array(
+			"conditions" => array("MailMessage.mail_status" => array("injob"))
 			)
 		);
 		
-		$nextInvoice = $this->MailMessage->field("start_sending", array("mail_status" => "unsent"), "start_sending ASC");
+		$nextInvoice = $this->MailMessage->field("start_sending", array("mail_status" => "pending"), "start_sending ASC");
 		
 		$this->set("objects", $msg);
 		$this->set("scheduled", count($msg));
-		$this->set("pending", $pending);
+		$this->set("inJob", $inJob);
 		$this->set("nextInvoiceDate", $nextInvoice);
 
 	}

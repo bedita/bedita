@@ -708,7 +708,7 @@ CREATE TABLE cards (
 
 CREATE TABLE mail_messages (
   id INTEGER UNSIGNED NOT NULL,
-  mail_status ENUM('draft', 'unsent','pending','sent') DEFAULT 'draft' NOT NULL,
+  mail_status ENUM('unsent','pending','injob','sent') DEFAULT 'unsent' NOT NULL,
   start_sending DATETIME DEFAULT NULL,
   end_sending DATETIME DEFAULT NULL,
   sender VARCHAR(255) NOT NULL,

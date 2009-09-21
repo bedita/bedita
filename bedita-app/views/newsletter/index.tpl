@@ -55,7 +55,7 @@
 			<li>{t}No template available{/t}</li>
 		{/foreach}
 			<li>
-				<b><a href="{$html->url('/newsletter/templates')}">View all</a></b>
+				<b><a href="{$html->url('/newsletter/templates')}">{t}View all{/t}</a></b>
 					&nbsp;&nbsp;|&nbsp;&nbsp;
 				<b><a href="{$html->url('/newsletter/viewtemplate')}">{t}Create new{/t}</a></b> 
 			</li>
@@ -74,7 +74,7 @@
 				&nbsp; &nbsp; | &nbsp; &nbsp; 
 				{t}Queued{/t}: <b class="evidence">{$queued|default:0}</b> </li>		 
 			<li>
-				<b><a href="{$html->url('/newsletter/invoices')}">View invoices</a></b>
+				<b><a href="{$html->url('/newsletter/invoices')}">{t}View invoices{/t}</a></b>
 			</li>
 		</ul>
 	
@@ -101,16 +101,16 @@
 			{/foreach}
 			<tr>	
 				<td colspan="2" style="border-bottom:0px;">
-					<b><a href="{$html->url('/newsletter/newsletters')}">View all</a></b>
+					<b><a href="{$html->url('/newsletter/newsletters')}">{t}View all{/t}</a></b>
 					&nbsp;&nbsp;|&nbsp;&nbsp;
-					<b><a href="{$html->url('/newsletter/view')}">Create new</a></b>
+					<b><a href="{$html->url('/newsletter/view')}">{t}Create new{/t}</a></b>
 				</td>
 			</tr>
 		{else}
 			<tr><td colspan="2" style="width:340px;">{t}No newsletters found{/t}</td></tr>
 			<tr>	
 				<td colspan="2" style="border-bottom:0px;">
-					<b><a href="{$html->url('/newsletter/view')}">Create new</a></b>
+					<b><a href="{$html->url('/newsletter/view')}">{t}Create new{/t}</a></b>
 				</td>
 			</tr>
 		{/if}

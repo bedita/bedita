@@ -173,7 +173,7 @@ class BeMailComponent extends Object {
 	}
 	
 	/**
-	 * set to pending messages with status=unsent and start_sending <= now
+	 * set to "injob" messages with status=pending and start_sending <= now
 	 *
 	 */
 	public function lockMessages() {
@@ -184,7 +184,7 @@ class BeMailComponent extends Object {
 		
 		$msgToLock = $mailMsgModel->find("all", array(
 									"conditions" => array(
-											"MailMessage.mail_status" => "unsent",
+											"MailMessage.mail_status" => "pending",
 											"MailMessage.start_sending <= '" . date("Y-m-d H:i:s",time()) . "'",
 											)
 									)
@@ -195,7 +195,7 @@ class BeMailComponent extends Object {
 			foreach ($msgToLock as $key => $message) {
 				if (!empty($message["MailGroup"])) {
 					$mailMsgModel->id = $message["id"];
-					if (!$mailMsgModel->saveField("mail_status", "pending")) {
+					if (!$mailMsgModel->saveField("mail_status", "injob")) {
 						throw new BeditaException(__("Mail message lock failed: id " . $message["id"]), true);
 					}
 					
@@ -210,7 +210,7 @@ class BeMailComponent extends Object {
 	}
 	
 	/**
-	 * create jobs from message with status pending
+	 * create jobs from message with status "injob"
 	 */
 	public function createJobs(array $msgIds) {
 		
@@ -221,7 +221,7 @@ class BeMailComponent extends Object {
 		
 		$msgToSend = $mailMsgModel->find("all", array(
 									"conditions" => array(
-										"MailMessage.mail_status" => "pending",
+										"MailMessage.mail_status" => "injob",
 										"MailMessage.id" => $msgIds
 										),
 									"contain" => array("BEObject" => array("RelatedObject"), "Content", "MailGroup")
