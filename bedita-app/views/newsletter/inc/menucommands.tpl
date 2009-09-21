@@ -47,7 +47,8 @@ Menu a SX valido per tutte le pagine del controller.
 		<ul class="menuleft insidecol">
 			<li {if $method eq "view"}class="on"{/if}><a href="{$html->url('/newsletter/view')}">{t}Create new{/t}</a></li>
 		</ul>
-			
+		
+		{bedev}
 		<ul class="menuleft insidecol">
 			<li><a href="javascript:void(0)" onClick="$('#templates').slideToggle();">{t}Select by template{/t}</a></li>
 				<ul id="templates" class="bordered">
@@ -58,7 +59,9 @@ Menu a SX valido per tutte le pagine del controller.
 					<li class="on">All</li>
 				</ul>
 		</ul>
-	
+		{/bedev}
+		
+		
 	{elseif $method eq "mailgroups"}
 	
 		<ul class="menuleft insidecol">
@@ -78,7 +81,7 @@ Menu a SX valido per tutte le pagine del controller.
 	{elseif !empty($method) && $method != "index"}
 	
 		<div class="insidecol">
-		{if ($object.mail_status == "inJob")}
+		{if ($object.mail_status == "injob")}
 			
 			<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" id="cloneBEObject" />
 			
@@ -94,6 +97,7 @@ Menu a SX valido per tutte le pagine del controller.
 			<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" />
 		
 		{/if}
+
 
 		</div>
 	

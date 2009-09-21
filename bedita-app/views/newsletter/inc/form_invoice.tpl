@@ -54,7 +54,7 @@ $(document).ready(function() {
 		</td>
 		
 		{if !empty($object.mail_status) && $object.mail_status == "injob"}
-			<td class="info" style="text-decoration: blink;">{t}currently in job{/t}</td>
+			<td style="color:red; text-decoration: blink;">{t} in job{/t}</td>
 		{else}
 			<td class="info">{t}{$object.mail_status|default:''}{/t}</td>
 		{/if}
@@ -72,12 +72,3 @@ $(document).ready(function() {
 </fieldset>
 
 {*dump var=$object*}
-
-
-
-
-
-
-
-
-	

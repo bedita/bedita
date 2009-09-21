@@ -11,16 +11,15 @@
 	{foreach from=$objects item="obj"}
 		<tr>
 			<td>{$obj.start_sending|date_format:$conf->dateTimePattern}</td>
-			<td style="text-align:center">
 				
-				{if ( (!empty($obj.start_sending)) && ( $obj.start_sending < ($smarty.now+3600|date_format:"%Y-%m-%d %T") ) )}
-					{assign var="status" value="pendingAlert"}
-				{/if}
-						
-				<img alt="{$obj.mail_status}" title="{$obj.mail_status}" style="width:18px" src="/img/icon{$status|default:$obj.mail_status}.png" />
+			{if !empty($obj.mail_status) && $obj.mail_status == "injob"}
+				<td style="color:red; text-decoration: blink;">{t}in job{/t}</td>
+			{elseif  ($obj.mail_status == "pending")}
+				<td class="info">{t}{$obj.mail_status|default:''}{/t}</td>
+			{else}
+				<td>{t}{$obj.mail_status|default:''}{/t}</td>
+			{/if}
 				
-				{assign var="status" value=""}
-			</td>
 			<td><a title="details of '{$obj.title}'" href="{$html->url('/newsletter/view/')}{$obj.id}">{$obj.title}</a></td>
 			<td style="padding-left:20px">
 				<ul style="list-style-type:disc">

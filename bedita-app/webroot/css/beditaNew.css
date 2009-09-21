@@ -446,7 +446,11 @@ UL.modules {
 	background-position: center;
 }
 
-
+.modules .injob {
+	background: transparent url(../img/iconinjob.png);
+	background-repeat:no-repeat !important;
+	background-position: center;
+}
 
 .modules .save {
 	background: transparent url(../img/iconSave.png);

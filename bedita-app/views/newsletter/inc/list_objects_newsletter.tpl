@@ -1,5 +1,4 @@
 
-
 <script type="text/javascript">
 <!--
 var urlDelete = "{$html->url('delete/')}" ;
@@ -39,8 +38,6 @@ $(document).ready(function(){
 </script>	
 
 
-	
-	
 	<form method="post" action="" id="formObject">
 
 	<input type="hidden" name="data[id]"/>
@@ -63,16 +60,26 @@ $(document).ready(function(){
 		
 		{section name="i" loop=$objects}
 		
-		<tr class="obj {$objects[i].status}">
-			<td style="width:15px; padding:7px 0px 0px 0px;">
+		<tr class="obj {$objects[i].mail_status}">
+			<td style="width:15px;">
 			{if (empty($objects[i].fixed))}
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
 			{/if}
 			</td>
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a></td>
 			<td>{$objects[i].id}</td>
-			<td>{$objects[i].mail_status}</td>
-			<td>{*$objects[i].sent|date_format:$conf->dateTimePattern*}</td>
+
+			{if !empty($objects[i].mail_status) && $objects[i].mail_status == "injob"}
+				<td style="color:red; text-decoration: blink;">{t}in job{/t}</td>
+			{elseif  ($objects[i].mail_status == "pending")}
+				<td class="info">{t}{$objects[i].mail_status|default:''}{/t}</td>
+			{else}
+				<td>{t}{$objects[i].mail_status|default:''}{/t}</td>
+			{/if}
+					
+			
+			<td>{if !empty($objects[i].sent)}{$objects[i].sent|date_format:$conf->dateTimePattern} {/if}</td>
+			
 			<td>
 			{if !empty($objects[i].relations.template)}
 				<a href="{$html->url('/newsletter/viewtemplate/')}{$objects[i].relations.template.0.id}">{$objects[i].relations.template.0.title}</a>
@@ -112,24 +119,7 @@ $(document).ready(function(){
 	
 </div>
 
-<br />
 
-<div class="tab"><h2>{t}Operations on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
-<div>
-
-{t}change status to:{/t} 	<select style="width:75px" id="newStatus" name="newStatus">
-								<option value=""> -- </option>
-								{html_options options=$conf->statusOptions}
-							</select>
-			<input id="changestatusSelected" type="button" value=" ok " />
-	<hr />
-	
-
-
-	
-	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
-	
-</div>
 
 {/if}
 
