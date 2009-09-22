@@ -20,7 +20,7 @@ Menu a SX valido per tutte le pagine del controller.
 	{if $method eq "templates"}
 
 		<ul class="menuleft insidecol bordered">
-			<li><a href="{$html->url('/newsletter/viewtemplate')}">{t}New template{/t}</a></li>
+			<li><a href="{$html->url('/newsletter/viewMailTemplate')}">{t}New template{/t}</a></li>
 		</ul>
 
 	{elseif $method eq "newsletters"}
@@ -45,7 +45,7 @@ Menu a SX valido per tutte le pagine del controller.
 		{/literal}
 		
 		<ul class="menuleft insidecol">
-			<li {if $method eq "view"}class="on"{/if}><a href="{$html->url('/newsletter/view')}">{t}Create new{/t}</a></li>
+			<li {if $method eq "view"}class="on"{/if}><a href="{$html->url('/newsletter/viewMailMessage')}">{t}Create new{/t}</a></li>
 		</ul>
 		
 		{bedev}

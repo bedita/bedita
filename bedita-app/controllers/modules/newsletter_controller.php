@@ -131,7 +131,7 @@ class NewsletterController extends ModulesController {
 	  *
 	  * @param integer $id
 	  */
-	function view($id = null) {
+	function viewMailMessage($id = null) {
 		$this->viewObject($this->MailMessage, $id);
 		$this->set("groupsByArea", $this->MailGroup->getGroupsByArea(null, null, $id));
 		
@@ -354,12 +354,20 @@ class NewsletterController extends ModulesController {
 	
 	public function test() {
 //		$this->BeMail->sendMailById(8,"batopa@gmail.com");
-		$data["to"] = "batopa@gmail.com";
+		$data["to"] = "a.pagliarini@channelweb.it";
 		$data["from"] = "a.pagliarini@channelweb.it";
 		$data["subject"] = "test";
 		$data["mailType"] = "html";
 		$data["replyTo"] = "";
-		$data["body"] = "<style>p {color: red;}</style><p style='font-weight: bold;'>Bella lì</p>";
+		$data["body"] = "
+			<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">
+			<html>
+			<head>
+			<meta content=\"text/html;charset=utf-8\" http-equiv=\"Content-Type\">
+			</head>
+			<body><style>p {color: red;}</style><p style='font-weight: bold;'><b>Bella lì</b></p>
+			</body>
+			</html>";
 		$this->BeMail->sendMail($data);
 		pr($data);
 //		$msg = $this->BeMail->lockMessages();
@@ -390,7 +398,7 @@ class NewsletterController extends ModulesController {
 		$this->set("objects", $templates);
 	 }
 
-	function viewtemplate($id=null) {
+	function viewMailTemplate($id=null) {
 		$this->viewObject($this->MailTemplate, $id);
 		// get publishing public_url
 		if (!empty($this->viewVars["tree"])) {
@@ -422,6 +430,26 @@ class NewsletterController extends ModulesController {
 	 	$this->Transaction->commit() ;
  		$this->userInfoMessage(__("Mail template saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("mail template [". $this->data["title"]."] saved");
+	}
+	
+	public function cloneObject() {
+		$object_type_id = ClassRegistry::init("BEObject")->findObjectTypeId($this->data['id']);
+		unset($this->data['id']);
+		$this->data['status']='draft';
+		$this->data['fixed'] = 0;
+		if ($object_type_id == Configure::read("objectTypes.mailmessage.id")) {
+			if (!empty($this->data['start_sending']) && !empty($this->data['MailGroup'])) {
+				$this->data['mail_status'] = 'pending';
+			} else {
+				$this->data['start_sending'] = "";
+				$this->data['start_sending_time'] = "";
+				$this->data['MailGroup'] = array();
+			}
+			$this->save();
+		} elseif ($object_type_id == Configure::read("objectTypes.mailtemplate.id")) {
+			$this->saveTemplate();
+			$this->action = "cloneTemplate";
+		}
 	}
 	
 	function invoices() {
@@ -632,6 +660,10 @@ class NewsletterController extends ModulesController {
 							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
 							"ERROR"	=> $this->referer() 
 							),
+			"cloneTemplate"	=> 	array(
+							"OK"	=> "/newsletter/view/".@$this->MailTemplate->id,
+							"ERROR"	=> $this->referer() 
+							),
 			"save"	=> 	array(
 							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
 							"ERROR"	=> $this->referer() 
@@ -649,7 +681,7 @@ class NewsletterController extends ModulesController {
 							"ERROR"	=> "/newsletter/newsletters"
 							),
 			"saveTemplate"	=> 	array(
-							"OK"	=> "/newsletter/viewtemplate/".@$this->MailTemplate->id,
+							"OK"	=> "/newsletter/view/".@$this->MailTemplate->id,
 							"ERROR"	=> $this->referer()
 							),
 			"saveMailGroups"=> array(

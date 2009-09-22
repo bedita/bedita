@@ -100,12 +100,7 @@ $(document).ready(function() {
 	<ul id="recent" class="bordered">
 	{section name="n" loop=$lastModBYUser}
 		<li><span class="listrecent {$lastModBYUser[n].ObjectType.module}">&nbsp;</span>
-		{if $lastModBYUser[n].BEObject.object_type_id == $conf->objectTypes.mailtemplate.id}
-		{assign var='action' value=viewtemplate}
-		{else}
-		{assign var='action' value=view}
-		{/if}
-		<a title="{$lastModBYUser[n].ObjectType.module} | {$lastModBYUser[n].BEObject.modified}" href="{$html->url('/')}{$lastModBYUser[n].ObjectType.module}/{$action}/{$lastModBYUser[n].BEObject.id}">
+		<a title="{$lastModBYUser[n].ObjectType.module} | {$lastModBYUser[n].BEObject.modified}" href="{$html->url('/')}{$lastModBYUser[n].ObjectType.module}/view/{$lastModBYUser[n].BEObject.id}">
 			{$lastModBYUser[n].BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
 	{sectionelse}
 		<li><i>{t}you have no recent items{/t}</i></li>
@@ -136,14 +131,9 @@ $(document).ready(function() {
 <div class="tab"><h2>{t}all recent items{/t}</h2></div>
 	<ul id="allrecent" class="bordered">
 	{section name="n" loop=$lastMod}
-		{if $lastMod[n].BEObject.object_type_id == $conf->objectTypes.mailtemplate.id}
-		{assign var='action' value=viewtemplate}
-		{else}
-		{assign var='action' value=view}
-		{/if}
 		<li>
 			<span class="listrecent {$lastMod[n].ObjectType.module}">&nbsp;&nbsp;</span>
-			&nbsp;<a title="{$lastMod[n].ObjectType.module} | {$lastMod[n].BEObject.modified}" href="{$html->url('/')}{$lastMod[n].ObjectType.module}/{$action}/{$lastMod[n].BEObject.id}">
+			&nbsp;<a title="{$lastMod[n].ObjectType.module} | {$lastMod[n].BEObject.modified}" href="{$html->url('/')}{$lastMod[n].ObjectType.module}/view/{$lastMod[n].BEObject.id}">
 				{$lastMod[n].BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
 	{/section}
 	</ul>

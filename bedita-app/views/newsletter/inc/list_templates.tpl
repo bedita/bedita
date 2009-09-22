@@ -13,7 +13,7 @@
 		{if !empty($objects)}		
 		{foreach from=$objects item="template"}
 
-			<tr rel="{$html->url('/newsletter/viewtemplate/')}{$template.id}">
+			<tr rel="{$html->url('/newsletter/viewMailTemplate/')}{$template.id}">
 
 				<td>
 					{$template.title}

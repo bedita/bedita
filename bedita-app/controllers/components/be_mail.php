@@ -98,6 +98,9 @@ class BeMailComponent extends Object {
 				$unsubscribeurl = $publicationUrl . "/hashjob/newsletter_unsubscribe/mail_group_id:".$mail_group_id."/card_id:".$card_id;
 			}
 		}
+		if (empty($unsubscribeurl)) {
+			$unsubscribeurl = "";
+		}
 		if (!empty($message["RelatedObject"]) && $message["RelatedObject"][0]["switch"] == "template") {
 
 			$mailTemplate = ClassRegistry::init("MailTemplate");
@@ -117,8 +120,9 @@ class BeMailComponent extends Object {
 				$css = (!empty($templatePublicationUrl))? $templatePublicationUrl . "/css/" . Configure::read("newsletterCss") : "";
 				$htmlMsg = "<html><head></head><body>%s%s</body></html>";
 				$style = "";
-				if (!empty($css))
+				if (!empty($css)) {
 					$style = "<style>" . @file_get_contents($css) . "</style>";
+				}
 				$htmlBody = str_replace("[\$newsletterTitle]", $message["title"], $template["body"]);
 				$htmlBody = preg_replace("/<!--bedita content block-->[\s\S]*<!--bedita content block-->/", $message["body"], $htmlBody);
 				$htmlBody = str_replace("[\$signature]", $message["signature"], $htmlBody);
