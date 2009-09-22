@@ -16,7 +16,15 @@
 			<tr>
 				<td><span class="evidence">{$inJob}&nbsp;</span> {t}in job{/t}</td>
 				<td><span class="evidence"> {$scheduled} &nbsp;</span> {t}scheduled{/t}</td>
-				<td>{t}next invoice at{/t}: <span class="evidence">{$nextInvoiceDate|date_format:$conf->dateTimePattern}</span></td>
+				<td>
+
+					{t}next invoice{/t}:&nbsp;&nbsp;<span class="evidence">
+						{if (($nextInvoiceDate|date_format:$conf->datePattern) == ($smarty.now|date_format:$conf->datePattern))}
+							{t}today{/t}
+						{else} 
+						{$nextInvoiceDate|date_format:$conf->datePattern} {/if}</span>
+					&nbsp;{t}at{/t}&nbsp;&nbsp;<span class="evidence">{$nextInvoiceDate|date_format:"%H:%M"}</span>
+				</td>
 			</tr>
 		</table>
 		

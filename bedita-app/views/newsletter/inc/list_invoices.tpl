@@ -33,7 +33,7 @@
 				{$obj.relations.template.0.title}
 			{/if}
 			</td>*}
-			<td style="text-align:right">{$obj.id}</td>
+			<td style="text-align:center">{$obj.id}</td>
 		</tr>
 	{foreachelse}
 		<tr><td colspan="100">{t}No invoices{/t}</td></tr>
