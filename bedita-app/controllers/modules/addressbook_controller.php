@@ -89,6 +89,7 @@ class AddressbookController extends ModulesController {
 		$this->data['name'] = $this->data[$kind]['name'];
 		$this->data['surname'] = $this->data[$kind]['surname'];
 		$this->data['person_title'] = $this->data[$kind]['person_title'];
+		$this->data['company_name'] = $this->data[$kind]['company_name'];
 		if(empty($this->data['User'][0])) {
 			$this->data['User'] = array();
 		}

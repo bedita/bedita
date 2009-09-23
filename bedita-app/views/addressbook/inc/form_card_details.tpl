@@ -101,13 +101,16 @@ $(".htab TD[rel:company]").click();
 			</tr>
 			<tr>
 				<th>{t}name{/t}:</th>
-				<td><input type="text" name="data[person][name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td			
+				<td><input type="text" name="data[person][name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>
 			</tr>
 			<tr>				
 				<th>{t}surname{/t}:</th>
 				<td><input type="text" name="data[person][surname]" value="{$object.surname|escape:'html'|escape:'quotes'}" /></td>
 			</tr>	
-
+			<tr>
+				<th>{t}company{/t}:</th>
+				<td><input type="text" name="data[person][company_name]" value="{$object.company_name|escape:'html'|escape:'quotes'}" /></td>				
+			</tr>
 			<tr>
 				<td colspan="3">
 					<input type="radio" name="data[gender]" value="male" {if (!empty($object.gender) && $object.gender=='male')}checked="checked"{/if}/> {t}male{/t} &nbsp&nbsp
