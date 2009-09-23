@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-09-04 14:29:54\n"
+"POT-Creation-Date: 2009-09-23 13:03:12\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -9,6 +9,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid " in job"
+msgstr ""
 
 msgid "(Un)Select All"
 msgstr ""
@@ -824,9 +827,6 @@ msgstr ""
 msgid "News saved"
 msgstr ""
 
-msgid "Newsletter must be saved before sending"
-msgstr ""
-
 msgid "Newsletter subscriptions"
 msgstr ""
 
@@ -1381,6 +1381,9 @@ msgstr ""
 msgid "View all"
 msgstr ""
 
+msgid "View invoices"
+msgstr ""
+
 msgid "Warning"
 msgstr ""
 
@@ -1519,6 +1522,9 @@ msgstr ""
 msgid "associate"
 msgstr ""
 
+msgid "at"
+msgstr ""
+
 msgid "audio"
 msgstr ""
 
@@ -1594,6 +1600,9 @@ msgstr ""
 msgid "comments"
 msgstr "comentários"
 
+msgid "company"
+msgstr ""
+
 msgid "connect new items"
 msgstr ""
 
@@ -1640,9 +1649,6 @@ msgid "created on"
 msgstr ""
 
 msgid "creator"
-msgstr ""
-
-msgid "currently in job"
 msgstr ""
 
 msgid "data attributes"
@@ -1788,6 +1794,9 @@ msgstr ""
 
 msgid "image"
 msgstr "imagem"
+
+msgid "in job"
+msgstr ""
 
 msgid "in recipient groups"
 msgstr ""
@@ -1960,7 +1969,7 @@ msgstr ""
 msgid "next"
 msgstr ""
 
-msgid "next invoice at"
+msgid "next invoice"
 msgstr ""
 
 msgid "next page"
@@ -2074,9 +2083,6 @@ msgstr "outro"
 msgid "page"
 msgstr "página"
 
-msgid "pending"
-msgstr ""
-
 msgid "permission"
 msgstr ""
 
@@ -2144,9 +2150,6 @@ msgid "questionnaires"
 msgstr ""
 
 msgid "realname"
-msgstr ""
-
-msgid "recipients"
 msgstr ""
 
 msgid "reference"
@@ -2312,6 +2315,12 @@ msgid "to"
 msgstr ""
 
 msgid "to recipients"
+msgstr ""
+
+msgid "to:"
+msgstr ""
+
+msgid "today"
 msgstr ""
 
 msgid "transgender"

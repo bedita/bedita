@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-09-04 12:13:04\n"
+"POT-Creation-Date: 2009-09-23 13:09:41\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -9,6 +9,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid " in job"
+msgstr ""
 
 msgid "(Un)Select All"
 msgstr "(De)Seleziona tutto"
@@ -73,7 +76,8 @@ msgstr "Sicuro di voler accettare questo IP"
 msgid "Are you sure you want to ban this IP?"
 msgstr "Sicuro di voler interdire l'accesso a questo IP (ban)?"
 
-msgid "Are you sure you want to cancel and reload this document? All unsaved"
+msgid ""
+"Are you sure you want to cancel and reload this document? All unsaved "
 "changes will be lost"
 msgstr "Sicuro di voler annullare le modifiche e di voler ricaricare questo"
 "documento? Tutte le modifiche non salvate saranno perdute"
@@ -315,12 +319,6 @@ msgstr "Documento eliminato"
 msgid "Duplicate property name for the same object"
 msgstr "Nome proprietà duplicato per lo stesso oggetto"
 
-msgid "Editor notes"
-msgstr "Note redazionali"
-
-msgid "Editors Notes"
-msgstr "Note Editori"
-
 msgid "Email"
 msgstr ""
 
@@ -429,11 +427,11 @@ msgstr "Errore in sottoscrizione: nessun dato"
 msgid "Error on subscribing: no mail_group indicated"
 msgstr "Errore in sottoscrizione: nessun mail_group indicato"
 
+msgid "Error removing association mail group card"
+msgstr "Errore in eliminazione associazione fra scheda e gruppo di posta"
+
 msgid "Error removing group"
 msgstr "Errore in eliminazione gruppo"
-
-msgid "Error removing mail group card"
-msgstr "Errore in eliminazione scheda di grouppo di posta"
 
 msgid "Error saving area"
 msgstr "Errore in salvataggio dati area"
@@ -560,9 +558,6 @@ msgstr "Galleria salvata"
 
 msgid "Generic categories"
 msgstr "Categorie generiche"
-
-msgid "Geotag"
-msgstr ""
 
 msgid "Get contents"
 msgstr "Prendi i contenuti"
@@ -738,7 +733,8 @@ msgstr "Pubblicazione mancante"
 msgid "Missing recipient"
 msgstr "Destinatario mancante"
 
-msgid "Missing referenced object.nIf you are creating new item you have to save it"
+msgid ""
+"Missing referenced object.nIf you are creating new item you have to save it "
 "before adding a note"
 msgstr "Oggetto referenziato non trovato.nSe stai creando un nuovo elemento devi"
 "salvarloprima di aggiungere una nota"
@@ -771,12 +767,14 @@ msgid "More properties"
 msgstr "Altre proprietà"
 
 msgid "Multimedia Provider not found or error getting thumbnail"
-msgstr "Non è stato trovato il multimedia provider o si è verificato un errore"
-"nell'ottenere la miniatura"
+msgstr ""
+"Non è stato trovato il multimedia provider o si è verificato un "
+"errore nell'ottenere la miniatura"
 
 msgid "Multimedia Provider not found or error preparing data to save"
-msgstr "Non è stato trovato il multimedia provider o si è verificato un errore"
-"nella preparazione dei dati da salvare"
+msgstr ""
+"Non è stato trovato il multimedia provider o si è verificato un errorenella "
+"preparazione dei dati da salvare"
 
 msgid "Multimedia deleted"
 msgstr "Multimedia eliminato"
@@ -834,9 +832,6 @@ msgstr "News eliminata"
 
 msgid "News saved"
 msgstr "News salvata"
-
-msgid "Newsletter must be saved before sending"
-msgstr "La Newsletter deve essere salvata prima dell'invio"
 
 msgid "Newsletter subscriptions"
 msgstr "Sottoscrizioni della Newsletter"
@@ -982,6 +977,9 @@ msgstr "Apri Calendario"
 msgid "Operations on"
 msgstr "Operazioni su"
 
+msgid "Operations on above records"
+msgstr "Operazioni sui record sopra selezionati"
+
 msgid "Orientation"
 msgstr "Orientamento"
 
@@ -1015,9 +1013,11 @@ msgstr "Luogo e anno"
 msgid "Please enter a valid date in the %1 format"
 msgstr "Inserire una data valida nel formato %1"
 
-msgid "Please enter a valid date in the %1 format and greater than the previous date"
-msgstr "Inserire una data valida nel formato %1 e successiva alla data"
-"precedentemente inserita"
+msgid ""
+"Please enter a valid date in the %1 format and greater than the previous date"
+msgstr ""
+"Inserire una data valida nel formato %1 e successiva alla "
+"dataprecedentemente inserita"
 
 msgid "Please enter a valid time in the %1 format"
 msgstr "Inserire un orario valido nel formato %1"
@@ -1075,12 +1075,6 @@ msgstr "Lista dei Questionari"
 
 msgid "Questions"
 msgstr "Quesiti"
-
-msgid "all questions"
-msgstr "tutti i quesiti"
-
-msgid "questions"
-msgstr "quesiti"
 
 msgid "Questions and answers"
 msgstr "Quesiti e risposte"
@@ -1217,10 +1211,7 @@ msgstr "Sommario"
 msgid "System events"
 msgstr "Eventi di sistema"
 
-msgid "System Events"
-msgstr "Eventi di sistema"
-
-msgid "System Info"
+msgid "System info"
 msgstr "Informazioni di sistema"
 
 msgid "System users"
@@ -1265,8 +1256,10 @@ msgstr "Il testo non corrisponde all'immagine"
 msgid "Text lang"
 msgstr "Lingua testo"
 
-msgid "The content is fixed: it's not possible to change the position in the tree"
-msgstr "Contenuto immodificabile: non è possibile cambiarne la posizione nell'albero"
+msgid ""
+"The content is fixed: it's not possible to change the position in the tree"
+msgstr ""
+"Contenuto immodificabile: non è possibile cambiarne la posizione nell'albero"
 
 msgid "This help page is under construction: coming soon"
 msgstr "Questa pagina di aiuto è in costruzione: disponibile prossimamente"
@@ -1361,19 +1354,18 @@ msgstr "Login utente temporaneamente bloccato"
 msgid "User name"
 msgstr "Nome utente"
 
-msgid "User name is required (at least %1 chars, without white spaces and special"
+msgid ""
+"User name is required (at least %1 chars, without white spaces and special "
 "chars)"
 msgstr "Il campo Nome utente è obbligatorio (almeno %1 caratteri, senza spazi e"
 "caratteri speciali"
 
 msgid "User not associated to mailgroup or he is in pending status"
-msgstr "L'utente non è associato al gruppo di posta o è in attesa di approvazione"
+msgstr ""
+"L'utente non è associato al gruppo di posta o è in attesa di approvazione"
 
 msgid "User not associated to mailgroup or he isn't in pending status"
 msgstr "L'utente"
-
-msgid "User not authorized to enter"
-msgstr "Utente non autorizzato all'accesso"
 
 msgid "User not present"
 msgstr "Utente non presente"
@@ -1398,6 +1390,9 @@ msgstr "Versione"
 
 msgid "View all"
 msgstr "Visualizza tutti"
+
+msgid "View invoices"
+msgstr "Vedi invii"
 
 msgid "Warning"
 msgstr "Attenzione"
@@ -1489,8 +1484,41 @@ msgstr "proprietà avanzate"
 msgid "all"
 msgstr "tutti"
 
+msgid "all bibliographies"
+msgstr "tutte le bibliografie"
+
+msgid "all books"
+msgstr "tutti i libri"
+
+msgid "all cards"
+msgstr "tutte le schede"
+
+msgid "all comments"
+msgstr "tutti i commenti"
+
+msgid "all galleries"
+msgstr "tutte le gallerie"
+
+msgid "all multimedia"
+msgstr "tutti i multimedia"
+
+msgid "all news"
+msgstr "tutte le news"
+
+msgid "all newsletter"
+msgstr "tutte le newsletter"
+
 msgid "all recent items"
 msgstr "elementi recenti"
+
+msgid "all tags"
+msgstr "tutti i tag"
+
+msgid "all translations"
+msgstr "tutte le traduzioni"
+
+msgid "all webmarks"
+msgstr "tutti i webmark"
 
 msgid "and get data"
 msgstr "e prendi i dati"
@@ -1503,6 +1531,9 @@ msgstr ""
 
 msgid "associate"
 msgstr "associa"
+
+msgid "at"
+msgstr ""
 
 msgid "audio"
 msgstr ""
@@ -1534,6 +1565,9 @@ msgstr "sfoglia, cerca nel disco"
 msgid "by"
 msgstr "per"
 
+msgid "cards"
+msgstr "schede"
+
 msgid "change status"
 msgstr "cambia status"
 
@@ -1548,6 +1582,9 @@ msgstr "cambi sui miei contenuti"
 
 msgid "check open"
 msgstr ""
+
+msgid "check result"
+msgstr "verifica"
 
 msgid "check selected links"
 msgstr "verifica i collegamenti selezionati"
@@ -1573,6 +1610,9 @@ msgstr "codice (ISBN/ISSN/BID)"
 msgid "comments"
 msgstr "commenti"
 
+msgid "company"
+msgstr "azienda"
+
 msgid "connect new items"
 msgstr "collega nuovi elementi"
 
@@ -1590,9 +1630,6 @@ msgstr "contenuti"
 
 msgid "copy"
 msgstr "copia"
-
-msgid "correct"
-msgstr "corretta"
 
 msgid "correct answer"
 msgstr "risposta corretta"
@@ -1623,9 +1660,6 @@ msgstr "creato il"
 
 msgid "creator"
 msgstr "autore"
-
-msgid "currently in job"
-msgstr "in corso"
 
 msgid "data attributes"
 msgstr "attributi dati"
@@ -1671,6 +1705,9 @@ msgstr "difficoltà"
 
 msgid "documents"
 msgstr "documenti"
+
+msgid "download"
+msgstr "scarica"
 
 msgid "draft"
 msgstr ""
@@ -1768,11 +1805,20 @@ msgstr "illustratore"
 msgid "image"
 msgstr "immagine"
 
+msgid "in job"
+msgstr ""
+
 msgid "in recipient groups"
 msgstr "in gruppi destinatari"
 
 msgid "insert more questions"
 msgstr "inserisci quesiti"
+
+msgid "inserted on"
+msgstr "inserito il"
+
+msgid "is user"
+msgstr "è un utente"
 
 msgid "isbn/issn"
 msgstr ""
@@ -1792,8 +1838,8 @@ msgstr "ultimo"
 msgid "last comments"
 msgstr "ultimi commenti"
 
-msgid "last editor's notes"
-msgstr "ultime note editore"
+msgid "last invoice"
+msgstr "ultimo invoice"
 
 msgid "last login"
 msgstr "ultimo login"
@@ -1809,9 +1855,6 @@ msgstr "ultima modifica il"
 
 msgid "last notes"
 msgstr "ultime note"
-
-msgid "notes"
-msgstr "note"
 
 msgid "last page"
 msgstr "ultima pagina"
@@ -1848,6 +1891,9 @@ msgstr "uomo"
 
 msgid "master language"
 msgstr "lingua principale"
+
+msgid "master title"
+msgstr "titolo principale"
 
 msgid "message board"
 msgstr "area messaggi"
@@ -1933,8 +1979,8 @@ msgstr "titolo newsletter"
 msgid "next"
 msgstr "succ"
 
-msgid "next invoice at"
-msgstr "prossimo invio a"
+msgid "next invoice"
+msgstr "prossimo invio"
 
 msgid "next page"
 msgstr "prossima pagina"
@@ -1987,6 +2033,9 @@ msgstr "oggetto programmato in futuro"
 msgid "object scheduled today"
 msgstr "oggetto programmato oggi"
 
+msgid "object title"
+msgstr "titolo oggetto"
+
 msgid "of"
 msgstr "di"
 
@@ -2035,14 +2084,14 @@ msgstr "o"
 msgid "order"
 msgstr "ordine"
 
+msgid "order by"
+msgstr "ordinamento per"
+
 msgid "other"
 msgstr "altro"
 
 msgid "page"
 msgstr "pagina"
-
-msgid "pending"
-msgstr "pendente"
 
 msgid "permission"
 msgstr "permesso"
@@ -2113,12 +2162,6 @@ msgstr "questionari"
 msgid "realname"
 msgstr "nome reale"
 
-msgid "received Messages"
-msgstr "Messaggi ricevuti"
-
-msgid "recipients"
-msgstr "destinatari"
-
 msgid "reference"
 msgstr "riferimento"
 
@@ -2169,6 +2212,9 @@ msgstr "stringa di ricerca"
 
 msgid "sections"
 msgstr "sezioni"
+
+msgid "seealso"
+msgstr "vedi anche"
 
 msgid "select an item to associate"
 msgstr "seleziona un elemento da collegare"
@@ -2281,6 +2327,12 @@ msgstr "al"
 msgid "to recipients"
 msgstr "ai destinatari"
 
+msgid "to:"
+msgstr ""
+
+msgid "today"
+msgstr "oggi"
+
 msgid "transgender"
 msgstr ""
 
@@ -2389,128 +2441,134 @@ msgstr "il tuo messaggio"
 msgid "your profile and preferences"
 msgstr "il tuo profilo e le tue preferenze"
 
-msgid "Objects with multiple relactions"
-msgstr "Oggetti con più relazioni"
+#~ msgid ""
+#~ "Are you sure you want to cancel and reload this document? All "
+#~ "unsavedchanges will be lost"
+#~ msgstr ""
+#~ "Sicuro di voler annullare le modifiche e di voler ricaricare "
+#~ "questodocumento? Tutte le modifiche non salvate saranno perdute"
 
-msgid "level"
-msgstr "livello"
+#~ msgid "Editor notes"
+#~ msgstr "Note redazionali"
 
-msgid "msg"
-msgstr "messaggio"
+#~ msgid "Editors Notes"
+#~ msgstr "Note Editori"
 
-msgid "context"
-msgstr "contesto"
+#~ msgid "Error removing mail group card"
+#~ msgstr "Errore in eliminazione scheda di grouppo di posta"
 
-msgid "all questionnaires"
-msgstr "tutti i questionari"
+#~ msgid ""
+#~ "Missing referenced object.nIf you are creating new item you have to save "
+#~ "itbefore adding a note"
+#~ msgstr ""
+#~ "Oggetto referenziato non trovato.nSe stai creando un nuovo elemento "
+#~ "devisalvarloprima di aggiungere una nota"
 
-msgid "Position"
-msgstr "Posizione"
+#~ msgid "Newsletter must be saved before sending"
+#~ msgstr "La Newsletter deve essere salvata prima dell'invio"
 
-msgid "editor notes"
-msgstr "note redazionali"
+#~ msgid "all questions"
+#~ msgstr "tutti i quesiti"
 
-msgid "Embedded in"
-msgstr "Inserito in"
+#~ msgid "questions"
+#~ msgstr "quesiti"
 
-msgid "Embedded in no objects"
-msgstr "l'elemento non è inserito da nessuna parte"
+#~ msgid "System Events"
+#~ msgstr "Eventi di sistema"
 
-msgid "Question deleted"
-msgstr "Quesito eliminato"
+#~ msgid "System Info"
+#~ msgstr "Informazioni di sistema"
 
-msgid "choose document type"
-msgstr "scegli il tipo documento"
+#~ msgid ""
+#~ "User name is required (at least %1 chars, without white spaces and "
+#~ "specialchars)"
+#~ msgstr ""
+#~ "Il campo Nome utente è obbligatorio (almeno %1 caratteri, senza spazi "
+#~ "ecaratteri speciali"
 
-msgid "modify"
-msgstr "modifica"
+#~ msgid "User not authorized to enter"
+#~ msgstr "Utente non autorizzato all'accesso"
 
-msgid "read"
-msgstr "lettura"
+#~ msgid "correct"
+#~ msgstr "corretta"
 
-msgid "no contents"
-msgstr "nessun contenuto"
+#~ msgid "currently in job"
+#~ msgstr "in corso"
 
-msgid "Add new item"
-msgstr "Aggiungi nuovo elemento"
+#~ msgid "last editor's notes"
+#~ msgstr "ultime note editore"
 
-msgid "all documents"
-msgstr "tutti i documenti"
+#~ msgid "notes"
+#~ msgstr "note"
 
-msgid "all events"
-msgstr "tutti gli eventi"
+#~ msgid "next invoice at"
+#~ msgstr "prossimo invio a"
 
-msgid "Events"
-msgstr "Eventi"
+#~ msgid "pending"
+#~ msgstr "pendente"
 
-msgid "No events found"
-msgstr "Nessun evento trovato"
+#~ msgid "received Messages"
+#~ msgstr "Messaggi ricevuti"
 
-msgid "parent"
-msgstr "parentela"
+#~ msgid "recipients"
+#~ msgstr "destinatari"
 
-msgid "seealso"
-msgstr "vedi anche"
+#~ msgid "Objects with multiple relactions"
+#~ msgstr "Oggetti con più relazioni"
 
-msgid "download"
-msgstr "scarica"
+#~ msgid "level"
+#~ msgstr "livello"
 
-msgid "all bibliographies"
-msgstr "tutte le bibliografie"
+#~ msgid "msg"
+#~ msgstr "messaggio"
 
-msgid "all books"
-msgstr "tutti i libri"
+#~ msgid "context"
+#~ msgstr "contesto"
 
-msgid "check result"
-msgstr "verifica"
+#~ msgid "all questionnaires"
+#~ msgstr "tutti i questionari"
 
-msgid "all webmarks"
-msgstr "tutti i webmark"
+#~ msgid "Position"
+#~ msgstr "Posizione"
 
-msgid "all newsletter"
-msgstr "tutte le newsletter"
+#~ msgid "editor notes"
+#~ msgstr "note redazionali"
 
-msgid "last invoice"
-msgstr "ultimo invoice"
+#~ msgid "Embedded in"
+#~ msgstr "Inserito in"
 
-msgid "all cards"
-msgstr "tutte le schede"
+#~ msgid "Embedded in no objects"
+#~ msgstr "l'elemento non è inserito da nessuna parte"
 
-msgid "cards"
-msgstr "schede"
+#~ msgid "Question deleted"
+#~ msgstr "Quesito eliminato"
 
-msgid "is user"
-msgstr "è un utente"
+#~ msgid "choose document type"
+#~ msgstr "scegli il tipo documento"
 
-msgid "all news"
-msgstr "tutte le news"
+#~ msgid "modify"
+#~ msgstr "modifica"
 
-msgid "all translations"
-msgstr "tutte le traduzioni"
+#~ msgid "read"
+#~ msgstr "lettura"
 
-msgid "master title"
-msgstr "titolo principale"
+#~ msgid "no contents"
+#~ msgstr "nessun contenuto"
 
-msgid "Operations on above records"
-msgstr "Operazioni sui record sopra selezionati"
+#~ msgid "Add new item"
+#~ msgstr "Aggiungi nuovo elemento"
 
-msgid "object title"
-msgstr "titolo oggetto"
+#~ msgid "all documents"
+#~ msgstr "tutti i documenti"
 
-msgid "inserted on"
-msgstr "inserito il"
+#~ msgid "all events"
+#~ msgstr "tutti gli eventi"
 
-msgid "all comments"
-msgstr "tutti i commenti"
+#~ msgid "Events"
+#~ msgstr "Eventi"
 
-msgid "all tags"
-msgstr "tutti i tag"
+#~ msgid "No events found"
+#~ msgstr "Nessun evento trovato"
 
-msgid "all galleries"
-msgstr "tutte le gallerie"
-
-msgid "all multimedia"
-msgstr "tutti i multimedia"
-
-msgid "order by"
-msgstr "ordinamento per"
+#~ msgid "parent"
+#~ msgstr "parentela"

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2009-09-04 14:29:54\n"
+"POT-Creation-Date: 2009-09-23 13:09:41\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -8,6 +8,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=utf-8\n"
 
+
+msgid " in job"
+msgstr ""
 
 msgid "(Un)Select All"
 msgstr ""
@@ -819,9 +822,6 @@ msgstr ""
 msgid "News saved"
 msgstr ""
 
-msgid "Newsletter must be saved before sending"
-msgstr ""
-
 msgid "Newsletter subscriptions"
 msgstr ""
 
@@ -1371,6 +1371,9 @@ msgstr ""
 msgid "View all"
 msgstr ""
 
+msgid "View invoices"
+msgstr ""
+
 msgid "Warning"
 msgstr ""
 
@@ -1509,6 +1512,9 @@ msgstr ""
 msgid "associate"
 msgstr ""
 
+msgid "at"
+msgstr ""
+
 msgid "audio"
 msgstr ""
 
@@ -1584,6 +1590,9 @@ msgstr ""
 msgid "comments"
 msgstr ""
 
+msgid "company"
+msgstr ""
+
 msgid "connect new items"
 msgstr ""
 
@@ -1630,9 +1639,6 @@ msgid "created on"
 msgstr ""
 
 msgid "creator"
-msgstr ""
-
-msgid "currently in job"
 msgstr ""
 
 msgid "data attributes"
@@ -1777,6 +1783,9 @@ msgid "illustrator"
 msgstr ""
 
 msgid "image"
+msgstr ""
+
+msgid "in job"
 msgstr ""
 
 msgid "in recipient groups"
@@ -1950,7 +1959,7 @@ msgstr ""
 msgid "next"
 msgstr ""
 
-msgid "next invoice at"
+msgid "next invoice"
 msgstr ""
 
 msgid "next page"
@@ -2064,9 +2073,6 @@ msgstr ""
 msgid "page"
 msgstr ""
 
-msgid "pending"
-msgstr ""
-
 msgid "permission"
 msgstr ""
 
@@ -2134,9 +2140,6 @@ msgid "questionnaires"
 msgstr ""
 
 msgid "realname"
-msgstr ""
-
-msgid "recipients"
 msgstr ""
 
 msgid "reference"
@@ -2302,6 +2305,12 @@ msgid "to"
 msgstr ""
 
 msgid "to recipients"
+msgstr ""
+
+msgid "to:"
+msgstr ""
+
+msgid "today"
 msgstr ""
 
 msgid "transgender"
