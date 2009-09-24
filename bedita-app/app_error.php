@@ -117,10 +117,12 @@ class AppError extends ErrorHandler {
 		$this->restoreDebugLevel();
 		$currentController->handleError($messages['details'], $messages['msg'], $this->errorTrace);
 		if ($messages["errorType"] == "unlogged") {
-			echo $currentController->render("login");
+			$viewName = "login";
 		} elseif ($messages["errorType"] == "unauthorized") {
-			echo $currentController->render("unauthorized");
+			$viewName = "unauthorized";
 		}
+		$viewFile = (file_exists(VIEWS."pages".DS.$viewName.".tpl"))? VIEWS."pages".DS.$viewName.".tpl" : VIEWS."pages".DS.$viewName.".ctp";
+		echo $currentController->render(null,null,$viewFile);
 	}
 	
 	private function sendMail($mailMsg) {

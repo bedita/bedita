@@ -155,31 +155,16 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
-	 * try to login user with some groups
-	 * return false if it fails to login 
-	 * 		try to login user if there is POST data correct 
+	 * show login form or redirect if user is already logged
 	 * 
-	 * @param array $groups
-	 * @return boolean
+	 * @param $backName nickname or id of section to go after login
 	 */
-	private function login(array $groups) {
-		if (!empty($this->params["form"]["login"])) {
-			$userid 	= (isset($this->params["form"]["login"]["userid"])) ? $this->params["form"]["login"]["userid"] : "" ;
-			$password 	= (isset($this->params["form"]["login"]["passwd"])) ? $this->params["form"]["login"]["passwd"] : "" ;
-			
-			if(!$this->BeAuth->login($userid, $password, null, $groups)) {
-				//$this->loginEvent('warn', $userid, "login not authorized");
-				$this->userErrorMessage(__("Wrong username/password or session expired", true));
-				return false;
-			} else {
-				$this->eventInfo("FRONTEND logged in publication");
-			}
-			$redirect = (!empty($this->params["form"]["backURL"]))? $this->params["form"]["backURL"] : $this->loginRedirect;
-			
-			$this->redirect($redirect);
-			return true;
+	protected function login($backName=null) {
+		$urlToGo = (!empty($backName))? Router::url('/'. $backName, true) : $this->loginRedirect;
+		if ($this->isLogged()) {
+			$this->redirect($urlToGo);
 		}
-		return false;
+		throw new BeditaFrontAccessException(null, array("errorType" => self::UNLOGGED));
 	}
 	
 	protected function logout($autoRedirect=true) {
@@ -209,9 +194,25 @@ abstract class FrontendController extends AppController {
 				$frontendGroupsCanLogin = (!empty($confGroups))? $confGroups : 
 					ClassRegistry::init("Group")->getList(array("backend_auth" => 0)); 
 			}
-			return $this->login($frontendGroupsCanLogin);
+			// try to login user if POST data are corrected 
+			if (!empty($this->params["form"]["login"])) {
+				$userid 	= (isset($this->params["form"]["login"]["userid"])) ? $this->params["form"]["login"]["userid"] : "" ;
+				$password 	= (isset($this->params["form"]["login"]["passwd"])) ? $this->params["form"]["login"]["passwd"] : "" ;
+				
+				if(!$this->BeAuth->login($userid, $password, null, $frontendGroupsCanLogin)) {
+					//$this->loginEvent('warn', $userid, "login not authorized");
+					$this->userErrorMessage(__("Wrong username/password or session expired", true));
+					return false;
+				} else {
+					$this->eventInfo("FRONTEND logged in publication");
+				}
+				$redirect = (!empty($this->params["form"]["backURL"]))? $this->params["form"]["backURL"] : $this->loginRedirect;
+				
+				$this->redirect($redirect);
+				return true;
+			}
+			return false;
 		}
-
 		return true;
 	}
 	
@@ -283,7 +284,13 @@ abstract class FrontendController extends AppController {
 			$this->beditaBeforeFilter();
 			throw new BeditaFrontAccessException(null, array("errorType" => $errorType));
 		}
-						
+		
+		// workaround to avoid direct access to protected and private methods from url
+		$method = new ReflectionMethod($this, $this->action);
+		if (!$method->isPublic()) {
+			throw new BeditaException(__("Call to a protected or private method in a wrong context", true)); 
+		}
+		
 		// set filterPublicationDate
 		$filterPubDate = Configure::read("filterPublicationDate");
 		if (isset($filterPubDate)) 
@@ -765,9 +772,9 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @param int $obj_id
 	 * @param bool $blockAccess
-	 * 				true => if user is unlogged eturn UNLOGGED constant
+	 * 				true => if user is unlogged return UNLOGGED constant
 	 * 						if user hasn't permission to access at the object return UNAUTHORIZED constant
-	 * 						(used when load pages main object like in section method)
+	 * 						(used when load main object like in section method)
 	 * 				false => if user unlogged dosen't block the action
 	 * 						 if user unauthorized to access at the object and $this->showUnauthorized=true 
 	 * 						 	load object detail setting "authorized" => false in object array
