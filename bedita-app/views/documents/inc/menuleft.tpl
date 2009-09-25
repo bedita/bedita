@@ -10,11 +10,11 @@ Menu a SX valido per tutte le pagine del controller.
 	{include file="../common_inc/messages.tpl"}
 
 	<ul class="menuleft insidecol">
-	{if $module_modify eq '1'}
-
+		<li {if $method eq 'index'}class="on"{/if}>{$tr->link('Documents', '/documents')}</li>
+		<li {if $method eq 'categories'}class="on"{/if}>{$tr->link('Categories', '/documents/categories')}</li>
+		{if $module_modify eq '1'}
 		<li><a href="{$html->url('/')}{$currentModule.path}/view">{t}Create new document{/t}</a></li>
-
-	{/if}
+		{/if}
 	</ul>
 
 {include file="../common_inc/export.tpl"}

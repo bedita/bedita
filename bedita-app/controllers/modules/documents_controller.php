@@ -34,7 +34,7 @@ class DocumentsController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeLangText', 'BeFileHandler');
 
-	var $uses = array('BEObject', 'Document', 'Tree') ;
+	var $uses = array('BEObject', 'Document', 'Tree','Category') ;
 	protected $moduleName = 'documents';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
@@ -64,6 +64,35 @@ class DocumentsController extends ModulesController {
 		$this->eventInfo("documents $objectsListDeleted deleted");
 	}
 
+	public function categories() {
+		$this->showCategories($this->Document);
+	}
+	
+	public function saveCategories() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data["label"])) 
+			throw new BeditaException( __("No data", true));
+		$this->Transaction->begin() ;
+		if(!$this->Category->save($this->data)) {
+			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
+		}
+		$this->Transaction->commit();
+		$this->userInfoMessage(__("Category saved", true)." - ".$this->data["label"]);
+		$this->eventInfo("category [" .$this->data["label"] . "] saved");
+	}
+
+	public function deleteCategories() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data["id"])) 
+			throw new BeditaException( __("No data", true));
+		$this->Transaction->begin() ;
+		if(!$this->Category->del($this->data["id"])) {
+			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
+		}
+		$this->Transaction->commit();
+		$this->userInfoMessage(__("Category deleted", true) . " -  " . $this->data["label"]);
+		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
+	}
 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
@@ -77,7 +106,15 @@ class DocumentsController extends ModulesController {
 			"save"	=> 	array(
 							"OK"	=> "/documents/view/".@$this->Document->id,
 							"ERROR"	=> $this->referer()  
-							), 
+							),
+			"saveCategories" 	=> array(
+							"OK"	=> "/documents/categories",
+							"ERROR"	=> "/documents/categories"
+							),
+			"deleteCategories" 	=> array(
+							"OK"	=> "/documents/categories",
+							"ERROR"	=> "/documents/categories"
+							),
 			"delete" =>	array(
 							"OK"	=> "/documents",
 							"ERROR"	=> $this->referer()
