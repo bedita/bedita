@@ -7,8 +7,8 @@
 
 	<link rel="icon" href="{$session->webroot}favicon.ico" type="image/gif" />
 	<link rel="shortcut icon" href="{$session->webroot}favicon.gif" type="image/gif" />
-	
-	<meta name="description" content="{$section.currentContent.description|default:$publication.description}" />
+
+	<meta name="description" content="{$section.currentContent.description|default:$publication.description|strip_tags:false}" />
 	<meta name="author" content="{$publication.creator}" />
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<meta http-equiv="Content-Style-Type" content="text/css" />

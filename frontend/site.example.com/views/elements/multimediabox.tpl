@@ -1,8 +1,8 @@
 <!-- ajax images -->
 
-<div class="giannicontainer">	
+<div class="sampleboxcontainer">	
 
-	<div class="giannibox">
+	<div class="samplebox">
 		
 		<div id="loader" name="loader">
 			

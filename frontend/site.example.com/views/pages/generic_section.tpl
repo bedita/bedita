@@ -8,7 +8,7 @@
 
 <div class="main">
 
-	<div class="content-main">
+	<div class="content-main">	
 
 	{$view->element('menu')}
 
@@ -31,9 +31,17 @@
 		
 		<h1>{$section.currentContent.title}</h1>
 
+		{if !empty($section.currentContent.Tag)}
+		tags:  | {foreach from=$section.currentContent.Tag item="tag"}<a href="{$html->url('/tag/')}{$tag.url_label}">{$tag.label}</a> | {/foreach}<br/>
+		{/if}
+		{if !empty($section.currentContent.Category)}
+		categories:  | {foreach from=$section.currentContent.Category item="cat"}{$cat.label} | {/foreach}<br/>
+		{/if}
+		
 		<h3>{$section.currentContent.description}</h3>
 
 		<p class="testo">{$section.currentContent.body}</p>
+		
 		
 		{assign_associative var="options" object=$section.currentContent showForm=true}
 		{$view->element('show_comments', $options)}

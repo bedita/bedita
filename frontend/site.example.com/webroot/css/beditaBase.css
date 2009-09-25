@@ -1,19 +1,5 @@
 @charset "utf-8";
 
-/*
-
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-CSS Created by Chialab.it
-
-http://www.chialab.it 2008
-
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-*/
-
-
-
 /*...........................................    
 
     General, elements
@@ -25,7 +11,7 @@ http://www.chialab.it 2008
 }
 
 BODY {
-	background: #9aad56 url("../img/sfo_mainW.png") repeat-x;
+	background: #779CC4 url("../img/sfo_mainW.png") repeat-x;
 	height:auto;
 }
 
@@ -169,7 +155,7 @@ textarea, Input[type=text] {
 	font-size:20px;
 	color:#FFFFFF;
 	/*background: #9a9b8c url("/img/sfo_headmenu.png") left bottom repeat-x;*/
-	background: #9aad56 url("../img/sfo_headmenu.png") left bottom repeat-x;
+	background: #779CC4 url("../img/sfo_headmenu.png") left bottom repeat-x;
 	margin-top:-20px;
 	padding-top:25px;
 	cursor:default;
@@ -177,45 +163,6 @@ textarea, Input[type=text] {
 	z-index:10;
 
 }
-
-/*...........................................    
-
-    subsection
-
-...........................................*/
-
-
-UL.subsection {
-	background-color:#EDEDED;
-	margin-bottom:-30px;
-	position:absolute;
-	margin-top:0px;
-	width:auto;
-	display:none;
-	padding:0px;
-	z-index:10;
-	border:1px solid #9AAD56;
-}
-
-.subsection LI {line-height:0.5em; width:auto; padding:0px; clear:both; width:100%;}
-
-.subsection LI A {
-	color:gray!important;
-	font-size:14px!important;
-	background:none!important;
-	cursor:pointer!important;
-	margin-top:5px!important;
-	padding-top:0px!important;
-	margin-bottom:3px!important;
-	padding-top:2px!important;
-}
-
-.subsection LI A:hover {color:#FF4500!important;}
-
-.subsection LI:hover {background-color:white;}
-
-.subsectionon {padding-top:0px; white-space:nowrap!important; clear:both;}
-
 
 /*...........................................    
 
@@ -270,13 +217,6 @@ UL.subsection {
 
 .textC.twocols {width:410px; border-right:1px solid silver; }
 
-
-.menuM {margin:0px; padding:0px;}
-
-.menuM LI {margin:0px; padding:0px 0px 0px 0px; clear:both; white-space:nowrap;}
-
-.menuM LI A {margin:5px 0px 0px 4px; float:left;}
-
 .testo {margin-top:10px;}
 
 .dida {padding:5px 0 10px 0; font-size:0.85em; line-height:1em; font-style:italic;}
@@ -311,10 +251,6 @@ UL.subsection {
 	margin:0px 0px 5px 5px;
 }
 
-.pulslabel {
-	display:block; padding-top:7px; border:0px solid red;
-}
-
 .go  {color:white; float:left; margin-right:5px; vertical-align:middle; background-color:#3366ff; }
 .go A {color:white; }
 
@@ -330,20 +266,7 @@ UL.subsection {
 
 .galleryC {width:440px; float:left; margin-left:20px; border-right:0px solid silver;}
 
-.overlayXXX {
-	position:absolute; 
-	z-index:50;
-	width:100%;
-	height:100%;
-	background-color:black;
-	opacity:0.8;
-	top: 0;
-	left: 0;
-	margin:0px;
-	padding:0px;
-}
-
-.giannibox {
+.samplebox {
 	position:absolute; 
 	z-index:80;
 	padding-top:285px;
@@ -351,7 +274,7 @@ UL.subsection {
 	top:0px;
 }
 
-.giannicontainer {display:none;}
+.sampleboxcontainer {display:none;}
 
 .accajax {}
 
@@ -389,7 +312,7 @@ UL.subsection {
 	line-height:1em;
 }
 
-.subdocs P {padding-left:14px; font:18px "Georgia", serif; color:#9AAD56!important; margin-bottom:3px;}
+.subdocs P {padding-left:14px; font:18px "Georgia", serif; color:#779CC4!important; margin-bottom:3px;}
 
 .subdocs P:first-letter {text-transform:uppercase;}
 
@@ -399,9 +322,9 @@ UL.subsection {
 
 .subdocs LI A:hover, .subon {color:#FF4500!important;}
 
-.subdocs H1 {color:#000; margin-bottom:5px; margin-top:15px; padding:5px 0px 5px 15px; border-bottom:1px solid #9aad56}
+.subdocs H1 {color:#000; margin-bottom:5px; margin-top:15px; padding:5px 0px 5px 15px; border-bottom:1px solid #779CC4}
 
-.subdocs H1.on, .subdocs H1:Hover {color:white; background-color:#9aad56;}
+.subdocs H1.on, .subdocs H1:Hover {color:white; background-color:#779CC4;}
 
 .subdocs H1 A {color:#000;}
 
