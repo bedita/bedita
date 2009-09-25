@@ -31,6 +31,10 @@
 		
 		<h1>{$section.currentContent.title}</h1>
 
+		[{t}created on{/t} {$section.currentContent.created|date_format:$conf->dateTimePattern} {t}by{/t} <i>{$section.currentContent.creator|default:$section.currentContent.UserCreated.realname}</i>]<br/>
+		[{t}modified on{/t} {$section.currentContent.modified|date_format:$conf->dateTimePattern}]<br/>
+		[{t}comments{/t}: {if ($section.currentContent.comments == 'off')}{t}off{/t}{else}{$section.currentContent.num_of_comment|default:0}{/if}]<br/>
+
 		{if !empty($section.currentContent.Tag)}
 		tags:  | {foreach from=$section.currentContent.Tag item="tag"}<a href="{$html->url('/tag/')}{$tag.url_label}">{$tag.label}</a> | {/foreach}<br/>
 		{/if}
@@ -41,8 +45,8 @@
 		<h3>{$section.currentContent.description}</h3>
 
 		<p class="testo">{$section.currentContent.body}</p>
-		
-		
+
+		<hr/>
 		{assign_associative var="options" object=$section.currentContent showForm=true}
 		{$view->element('show_comments', $options)}
 

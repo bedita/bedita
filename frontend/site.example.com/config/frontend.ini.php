@@ -111,13 +111,13 @@ $config['modelBindings'] = array(
 	'BEFile' => array("BEObject" => array("LangText"), "Content"),
 	'Card' => array("BEObject" => array("LangText","RelatedObject"), "GeoTag"),
 	'Comment' => array("BEObject" => array("RelatedObject"), "GeoTag"),
-	'Document' => array("BEObject" => array("LangText", "UserCreated","RelatedObject", "Category", "Annotation")),
-	'Event' => array("BEObject" => array("LangText","RelatedObject", "Category"), "DateItem"),
-	'Gallery' => array("BEObject" => array("LangText", "RelatedObject", "Category")),
+	'Document' => array("BEObject" => array("LangText","UserCreated","RelatedObject", "Category", "Annotation")),
+	'Event' => array("BEObject" => array("LangText","UserCreated","RelatedObject", "Category"), "DateItem"),
+	'Gallery' => array("BEObject" => array("LangText","RelatedObject", "Category")),
 	'Image' => array("BEObject" => array("LangText"), "Content", "Stream"),
 	'Link' => array("BEObject" => array("LangText","RelatedObject")),
 	'Section' => array("BEObject" => array("LangText")),
-	'ShortNews' => array("BEObject" => array("LangText","RelatedObject", "Category")),
+	'ShortNews' => array("BEObject" => array("LangText","UserCreated","RelatedObject", "Category")),
 	'Video' => array("BEObject" => array("LangText"), "Content", "Stream"),
 
 ) ;
