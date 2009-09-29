@@ -16,7 +16,7 @@ $(document).ready(function(){
 </script>	
 
 
-<div class="tab"><h2>{t}System info {/t}</h2></div>
+<div class="tab"><h2>{t}System info{/t}</h2></div>
 
 <fieldset id="system_info">
 	
