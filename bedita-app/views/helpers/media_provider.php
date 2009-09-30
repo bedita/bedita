@@ -30,7 +30,7 @@
  */
 class MediaProviderHelper extends AppHelper {
 	
-	var $helpers = array('Html','Youtube','Blip','Vimeo','BeEmbedFlash');
+	var $helpers = array('Html');
 	
 	var $conf = null ;
 
@@ -45,10 +45,10 @@ class MediaProviderHelper extends AppHelper {
 		if (!empty($obj["thumbnail"]) && preg_match(Configure::read("validate_resource.URL"), $obj["thumbnail"]))
 			return (!$URLonly)? $this->Html->image($obj["thumbnail"], $htmlAttributes) : $obj["thumbnail"];
 		
-		if (!$helperName = $this->getHelperName($obj))
+		if (!$helper = $this->getProviderHelper($obj))
 			return "";
 		
-		return $this->{$helperName}->thumbnail($obj, $htmlAttributes, $URLonly);
+		return $helper->thumbnail($obj, $htmlAttributes, $URLonly);
 	}
 	
 	/**
@@ -57,20 +57,22 @@ class MediaProviderHelper extends AppHelper {
 	function embed(&$obj, $params = array(), $attributes = array() ) {
 		
 		// provider helper to manage video/audio type don't exists
-		if (!$helperName = $this->getHelperName($obj)){
+		if (!$helper = $this->getProviderHelper($obj)){
 			$obj['path'] = ($this->checkURL($obj['path'])) ? $obj['path'] : Configure::read('mediaUrl').$obj['path'];
-			return  $this->BeEmbedFlash->embed($obj, $params, $attributes);
+			$beEmbedFlash = $this->getHelper("BeEmbedFlash");
+			return  $beEmbedFlash->embed($obj, $params, $attributes);
 		}
 		
 		// provider helper exists and it's setted to use provider helper 
 		if (!empty($params['useProviderPlayer'])) {
-			return $this->{$helperName}->embed($obj, $attributes);
+			return $helper->embed($obj, $attributes);
 		} else {
 			// try to use internal player
 			$obj['path'] = $this->sourceEmbed($obj);
-			$res = $this->BeEmbedFlash->embed($obj, $params, $attributes);
+			$beEmbedFlash = $this->getHelper("BeEmbedFlash");
+			$res = $beEmbedFlash->embed($obj, $params, $attributes);
 			if ( $res === false ) {
-				$res =  $this->{$helperName}->embed($obj, $attributes) ;
+				$res =  $helper->embed($obj, $attributes) ;
 			}
 			return $res;
 		}
@@ -80,20 +82,17 @@ class MediaProviderHelper extends AppHelper {
 	 * get source url
 	 */
 	function sourceEmbed(&$obj) {
-		if (!$helperName = $this->getHelperName($obj))
+		if (!$helper = $this->getProviderHelper($obj))
 			return "";
 			
-		return $this->{$helperName}->sourceEmbed($obj);
+		return $helper->sourceEmbed($obj);
 	}
 	
-	private function getHelperName(&$obj) {
-		if(empty($obj['provider'])) 
+	private function getProviderHelper(&$obj) {
+		if(empty($obj["provider"])) 
 			return false ;
-		$helperName = Inflector::camelize($obj['provider']);
-		if (!isset($this->{$helperName})) {
-			return false;
-		}
-		return $helperName;
+		$helperName = Inflector::camelize($obj["provider"]);
+		return $this->getHelper($helperName);
 	}
 	
 	private function checkURL($url) {
