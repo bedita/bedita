@@ -76,6 +76,15 @@ tinyMCE.init({
 <hr />
 
 <table class="booksauthor" border=0 style="width:100%;">
+
+<tr>
+	<th>{t}creator{/t}:</th>
+	<td>
+		<input type="text" style="width:380px" name="data[creator]" value="{$object.creator|default:''|escape:'html'|escape:'quotes'}" />
+	</td>
+	
+</tr>
+{*  bedev}
 <tr>
 	<td></td><td style="padding:0px 0px 0px 10px">{t}name and surname{/t}</td><td style="padding:0px 0px 0px 10px">{t}role{/t}</td>
 </tr>
@@ -105,7 +114,7 @@ tinyMCE.init({
 {/foreach}
 {/if}
 
-{*http://memory.loc.gov/cocoon/loc.terms/relators/dc-relators.html*}
+<!-- http://memory.loc.gov/cocoon/loc.terms/relators/dc-relators.html -->
 
 <input type="hidden" name="data[RelatedObject][author][0][switch]" value="author"/>
 	<tr>
@@ -131,7 +140,10 @@ tinyMCE.init({
 			<input type="button" title="{t}add item{/t}" style="width:25px" value="+" />	
 		</td>
 	</tr>
+
+{/bedev*}
 </table>
+
 
 <hr />
 

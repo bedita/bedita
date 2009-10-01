@@ -96,10 +96,18 @@ $(document).ready(function(){
 					{/foreach}
 				</select>
 				</td>
+			</tr>
+			<tr>
+				<th>{t}creator{/t}:</th>
+				<td>
+					<input type="text" name="data[creator]" value="{$object.creator|default:''|escape:'html'|escape:'quotes'}"
+					class="{literal}{required:true,minLength:1}{/literal}" title="{t 1='1'}Creator is required (at least %1 alphanumerical char){/t}"/>
+				</td>
+				
 			</tr>	
 			<tr>
 				<td><label>{t}publisher{/t}:</label></td>
-				<td><input type="text" name="publisher" value="" /></td>
+				<td><input type="text" name="data[publisher]" value="{$object.publisher|default:null}" /></td>
 			</tr>
 			<tr>
 				<td><strong>&copy; {t}rights{/t}:</strong></td>
