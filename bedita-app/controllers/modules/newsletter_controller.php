@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -152,9 +152,6 @@ class NewsletterController extends ModulesController {
 		$this->set("templateByArea", $pub);
 	 }
 
-	 /**
-	  * Get all newsletters.
-	  */
 	function newsletters($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$filter["object_type_id"] = Configure::read("objectTypes.mailmessage.id");
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);

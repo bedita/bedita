@@ -23,7 +23,7 @@
  * Helper base class
  * contains common helpers methods
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$

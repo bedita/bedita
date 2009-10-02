@@ -22,7 +22,7 @@
 /**
  * bedita.ini.php - settings, constants, variables for BEdita local installation
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$

@@ -27,7 +27,7 @@
  * BEDITA_PERMS_READ	0x1
  * BEDITA_PERMS_MODIFY	0x2
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$

@@ -22,7 +22,7 @@
 /**
  * Module Multimedia: management of Image, Audio, Video objects
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -39,9 +39,6 @@ class MultimediaController extends ModulesController {
 	var $uses = array('Application','Stream', 'Image', 'Audio', 'Video', 'BEObject', 'Tree', 'User', 'Group','Category','BEFile') ;
 	protected $moduleName = 'multimedia';
 	
-	 /**
-	 * Show multimedia item list
-	 */
 	 function index($id = null, $order = "id", $dir = 0, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
 		$this->setup_args(
@@ -76,11 +73,6 @@ class MultimediaController extends ModulesController {
 		$this->setSessionForObjectDetail($bedita_items['items']);
 	 }
 
-	 /**
-	  * Show object for $id
-	  * If $id is not passed, show new multimedia object page
-	  * @param integer $id
-	  */
 	function view($id = null) {
 		$conf  = Configure::getInstance() ;
 		$this->setup_args(array("id", "integer", &$id)) ;

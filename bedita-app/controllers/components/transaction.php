@@ -22,7 +22,7 @@
 /**
  * Componente per la gestione di transazioni su + model contemporaneamente
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -61,7 +61,7 @@ class TransactionComponent extends Object {
 	}
 
 	/**
-	 * Inizia una transazione
+	 * Start a transaction
 	 *
 	 * @return unknown
 	 */
@@ -83,11 +83,7 @@ class TransactionComponent extends Object {
 		else 
 			throw new BeditatException(__("Bad transaction state",true));
 	}
-	/**
-	 * Fine positiva di una transazione
-	 *
-	 * @return unknown
-	 */
+
 	public function commit() {
 		$this->setupDB() ;
 		
@@ -98,11 +94,6 @@ class TransactionComponent extends Object {
 		return true;
 	}
 
-	/**
-	 * Fine negativa di una transazione
-	 *
-	 * @return unknown
-	 */
 	public function rollback() {
 
 		$ret = false;		
@@ -143,22 +134,22 @@ class TransactionComponent extends Object {
 	}
 
 	/**
-	 * Crea un file con i dati passati
+	 * Create a file in $path from data $arrData
 	 *
-	 * @param string $path		path del nuovo file da creare
-	 * @param string $arrDati	dati da inserire nel file
+	 * @param string $path		path to new file
+	 * @param string $arrData	data for file
 	 * @return string
 	 */
-	function makeFromData($path, &$arrDati) {
-		return self::$transFS->makeFileFromData($path, $arrDati) ;
+	function makeFromData($path, &$arrData) {
+		return self::$transFS->makeFileFromData($path, $arrData) ;
 	}
 	
 	
 	/**
-	 * Crea un file dal file passato
+	 * Create a new file, from an old one
 	 *
-	 * @param string $path				path del nuovo file da creare
-	 * @param string $pathFileSource	file sorgente
+	 * @param string $path				path of the new file
+	 * @param string $pathFileSource	source file
 	 * @return string
 	 */
 	function makeFromFile($path, $pathFileSource) {
@@ -166,10 +157,10 @@ class TransactionComponent extends Object {
 	}
 
 	/**
-	 * Cambia i dati di un file
+	 * Replace data in file
 	 *
-	 * @param string path		File da cambiare
-	 * @param string $arrDati	Nuovi dati
+	 * @param string path		file
+	 * @param string $arrDati	data
 	 * @return boolean
 	 */
 	function replaceData($path, &$arrDati) {
@@ -177,7 +168,7 @@ class TransactionComponent extends Object {
 	}	
 	
 	/**
-	 * Cancella un file
+	 * Remove a file
 	 *
 	 * @param unknown_type $path
 	 * @return unknown
@@ -187,7 +178,7 @@ class TransactionComponent extends Object {
 	}
 
 	/**
-	 * Sposta un file
+	 * Move a file
 	 *
 	 * @param unknown_type $newPath
 	 * @param unknown_type $pathSource
@@ -198,7 +189,7 @@ class TransactionComponent extends Object {
 	}
 
 	/**
-	 * Copia un file
+	 * Copy a file
 	 *
 	 * @param unknown_type $newPath
 	 * @param unknown_type $pathSource
@@ -209,7 +200,7 @@ class TransactionComponent extends Object {
 	}
 	
 	/**
-	 * Crea una directory
+	 * Create a directory
 	 *
 	 * @param unknown_type $newDir
 	 * @param unknown_type $mode
@@ -220,7 +211,7 @@ class TransactionComponent extends Object {
 	}
 
 	/**
-	 * Cancella una directory
+	 * Remove a directory
 	 *
 	 * @param unknown_type $rmDir
 	 * @return unknown
@@ -230,7 +221,7 @@ class TransactionComponent extends Object {
 	}
 
 	/**
-	 * Sposta una directory e il suo contenuto
+	 * Move a directory and its content
 	 *
 	 * @param unknown_type $pathNewParent
 	 * @param unknown_type $oldPath
@@ -245,19 +236,19 @@ class TransactionComponent extends Object {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * 
- * Alla creazione dell'oggetto se ci sono delle operazioni pendenti esegue il Rollback ().
- * Le operazioni sono rese permanenti solo con Commit().
- * Le copie dei file da cancellare sono inseriti in una directory temporanea.
+ * On object creation, if there are pending operations, 'rollback' is called.
+ * Operations are permanent, after 'commit'.
+ * File to delete copies are moved to a temporary directory.
  * 
- * struttura dati (uno stack):
+ * sample data structure:
  * array(
  *	array("cmd" => <comando>, "roolCmd" => <comando>, "params" => array(..)),
  *	array("cmd" => <comando>, "roolCmd" => <comando>, "params" => array(..)),
  *	...................................................
  * )
- * "cmd"		comando eseguito
- * "roolCmd"	comando inverso
- * "params"	array con i parametri per il rollback, (il numero ed il significato definito da ogni singola operazione)
+ * "cmd"		command executed
+ * "roolCmd"	rollback command
+ * "params"	rollback parameters
 */
 class transactionFS {
 	var $commands				= null ;			// array con i dati
@@ -265,7 +256,6 @@ class transactionFS {
 	var $error					= false ;			// true se c'e' stato un errore
 	var $tmpPath				= '/tmp';
 	
-	// COSTRUTTORE
 	function __construct($tmpPath = '/tmp') {
 		$this->commands = array() ;
 		$this->tmpPath 	= $tmpPath ;
@@ -303,10 +293,10 @@ class transactionFS {
 	
 	
 	/**
-	 * Crea un file con i dati passati
+	 * Create a file from data
 	 *
-	 * @param string $path		path del nuovo file da creare
-	 * @param string $arrDati	dati da inserire nel file
+	 * @param string $path		file path
+	 * @param string $arrDati	data
 	 * @return string
 	 */
 	function makeFileFromData($path, &$arrDati) {
@@ -317,7 +307,7 @@ class transactionFS {
 		
 		$ret = fwrite(fopen($path, "wb"), $arrDati, strlen($arrDati)) ;
 
-		// Salva l'operazione
+		// Save the operation
 		$item = array("cmd"	=> "makeFile", "rollCmd" => "_rollMakeFile", 	
 		  "params" => array("path" => $path)) ;
 		array_push($this->commands, $item);
@@ -327,17 +317,17 @@ class transactionFS {
 	
 	
 	/**
-	 * Crea un file dal file passato
+	 * Create a file from another one
 	 *
-	 * @param string $path				path del nuovo file da creare
-	 * @param string $pathFileSource	file sorgente
+	 * @param string $path				file path
+	 * @param string $pathFileSource	source file path
 	 * @return string
 	 */
 	function makeFileFromFile($path, $pathFileSource) {
 		if(!copy($pathFileSource, $path)) 
 		    throw new BEditaIOException("Error in file copy $pathFileSource - $path");
 		
-		// Salva l'operazione
+		// Save the operation
 		$item = array("cmd"	=> "makeFile", "rollCmd" => "_rollMakeFile", 
 		  "params" => array("path" => $path)) ;
 		array_push($this->commands, $item);
@@ -346,26 +336,26 @@ class transactionFS {
 	}
 
 	/**
-	 * Cambia i dati di un file
+	 * Replace file data
 	 *
-	 * @param string path		File da cambiare
-	 * @param string $arrDati	Nuovi dati
+	 * @param string path		File path
+	 * @param string $arrDati	Data
 	 * @return boolean
 	 */
 	function replaceFileData($path, &$arrDati) {
-		// crea un file temporaneo
+		// temporary file
 		$tmpfname = tempnam ($this->tmpPath, "UF");
 		if(!is_string($tmpfname)) 
             throw new BEditaIOException("Bad temp file $tmpfname");
 
-		// salva e copia i vecchi dati
+		// old data, save and copy
 		if(!copy($path, $tmpfname)) 
             throw new BEditaIOException("Error in file copy $path - $tmpfname");
 		
         if(fwrite(fopen($path, "wb"), $arrDati, strlen($arrDati)) == -1) 
             throw new BEditaIOException("Error opening/writing file $path");
 
-		// Salva l'operazione
+		// save the operation
 		$item = array("cmd"	=> "replaceFileData", "rollCmd" => "_rollReplaceFileData", 	
 		  "params" => array("source" => $tmpfname, "dest" => $path)) ;
 		array_push($this->commands, $item);
@@ -374,7 +364,7 @@ class transactionFS {
 	}	
 	
 	/**
-	 * Cancella un file
+	 * Remove a file
 	 *
 	 * @param unknown_type $path
 	 * @return unknown
@@ -384,14 +374,14 @@ class transactionFS {
 		if(!is_string($tmpfname))
             throw new BEditaIOException("Bad temp file $tmpfname");
 		
-		// salva e copia i vecchi dati
+		// old data, save and copy
 		if(!copy($path, $tmpfname))
            throw new BEditaIOException("Error in file copy $path - $tmpfname");
 		
 		if(!unlink($path))
            throw new BEditaIOException("Error in unlink $path");
 		
-		// Salva l'operazione
+		// Save the operation
 		$item = array("cmd"	=> "rmFile", "rollCmd" => "_rollRmFile", 	
 		  "params" => array("source" => $tmpfname, "dest" => $path)) ;
 		array_push($this->commands, $item);
@@ -400,7 +390,7 @@ class transactionFS {
 	}
 
 	/**
-	 * Sposta un file
+	 * Move a file
 	 *
 	 * @param unknown_type $newPath
 	 * @param unknown_type $pathSource
@@ -414,7 +404,7 @@ class transactionFS {
 		if(!unlink($pathSource))
           throw new BEditaIOException("Error in unlink $pathSource");
 		
-		// Salva l'operazione
+		// Save the operation
 		$item = array("cmd"	=> "mvFile", "rollCmd" => "_rollMvFile", 	
 		  "params" => array("source" => $newPath, "dest" => $pathSource)) ;
 		array_push($this->commands, $item);
@@ -423,18 +413,18 @@ class transactionFS {
 	}
 
 	/**
-	 * Copia un file
+	 * Copy a file
 	 *
 	 * @param unknown_type $newPath
 	 * @param unknown_type $pathSource
 	 * @return unknown
 	 */
 	function cpFile($newPath, $pathSource) {
-		// salva e copia i vecchi dati
+		// old data, save and copy
 		if(!copy($pathSource, $newPath))
            throw new BEditaIOException("Error in file copy $pathSource - $newPath");
 		
-		// Salva l'operazione
+		// Save the operation
 		$item = array("cmd"	=> "cpFile", "rollCmd" => "_rollCpFile", 	
 		  "params" => array("source" => $newPath)) ;
 		array_push($this->commands, $item);
@@ -444,7 +434,7 @@ class transactionFS {
 	
 	/**
 	 * 
-	 * Cambia directory
+	 * Change directory
 	 *
 	 * @param string $newDir
 	 * @return unknown
@@ -455,7 +445,7 @@ class transactionFS {
             throw new BEditaIOException("Error changing dir $newDir");
 		$newDir = getcwd() ;
 		
-		// Salva l'operazione
+		// Save the operation
 		$item = array("cmd"	=> "chdir", "rollCmd" => "_rollChdir", 	
 		  "params" => array("path" => $oldDir)) ;
 		array_push($this->commands, $item) ;
@@ -464,7 +454,7 @@ class transactionFS {
 	}
 	
 	/**
-	 * Crea una directory
+	 * Create a directory
 	 *
 	 * @param unknown_type $newDir
 	 * @param unknown_type $mode
@@ -480,7 +470,7 @@ class transactionFS {
 		if(!chdir($oldDir)) 
 			throw new BEditaIOException("Error changing dir $oldDir");
 
-		// Salva l'operazione
+		// Save the operation
 		$item = array("cmd"	=> "mkdir", "rollCmd" => "_rollMkdir", 	"params" => array("path" => $newDir)) ;
 		array_push($this->commands, $item); 
 		
@@ -488,14 +478,13 @@ class transactionFS {
 	}
 
 	/**
-	 * Cancella una directory
+	 * Remove a directory
 	 *
 	 * @param unknown_type $rmDir
 	 * @return unknown
 	 */
 	function rmdir($rmDir) {
 
-		// Preleva il path assoluto della dir da cancellare e i supi permessi
 		$oldDir = getcwd() ;
 		if(!chdir($rmDir)) 
 		   throw new BEditaIOException("Error changing dir $rmDir");
@@ -508,7 +497,7 @@ class transactionFS {
 		if(!rmdir($rmDir)) 
             throw new BEditaIOException("Error removing dir $rmDir");
 		
-		// Salva l'operazione
+		// Save the operation
 		$item = array("cmd"	=> "rmdir", "rollCmd" => "_rollRmdir", 	
 		      "params" => array("path" => $rmDir, "perms" => $rmPerms)) ;
 		array_push($this->commands, $item);
@@ -517,7 +506,7 @@ class transactionFS {
 	}
 
 	/**
-	 * Sposta una directory e il suo contenuto
+	 * Move a directory and its content
 	 *
 	 * @param unknown_type $pathNewParent
 	 * @param unknown_type $oldPath
@@ -525,7 +514,6 @@ class transactionFS {
 	 */
 	function mvDir($pathNewParent, $oldPath) {
 
-		// Preleva il path assoluto della vecchia dir parent
 		$pathDir = getcwd() ;
 		if(!chdir($oldPath))
            throw new BEditaIOException("Error changing dir $oldPath");
@@ -535,18 +523,18 @@ class transactionFS {
 		if(!chdir($pathDir)) 
            throw new BEditaIOException("Error changing dir $pathDir");
 		
-		// Sposta
+		// Move
 		$args = array() ; $ret = 0 ;
 		exec("mv $oldPath $pathNewParent", $args, $ret) ;
 		if($ret) 
            throw new BEditaIOException("Error in 'mv $oldPath $pathNewParent'");
 		
-		// Produce il nuovo path
+		// new path
 		$name = basename($oldPath) ;
 		if(substr($pathNewParent, -1) == "/") $newPath = "$oldParentPath"."$name" ;
 		else $newPath = "$oldParentPath/$name" ;
 		
-		// Salva l'operazione
+		// Save the operation
 		$item = array("cmd"	=> "mvDir", "rollCmd" => "_rollMvDir", 	
 		  "params" => array("path" => $newPath, "target" => $oldParentPath)) ;
 		array_push($this->commands, $item);
@@ -557,7 +545,7 @@ class transactionFS {
 
 	//////////////////////////////////////////////////
 	/**
-	 * Funzioni di rollback
+	 * Rollback functions
 	 */
 	private function _rollMakeFile($path) {
 		if(!unlink($path)) return false ;
@@ -603,7 +591,7 @@ class transactionFS {
 	}
 
 	function _rollMvDir($path, $target) {
-		// Sposta
+		// Move
 		$args = array() ; $ret = 0 ;
 		exec("mv $path $target", $args, $ret) ;
 		if($ret) return false ;

@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -277,7 +277,7 @@ class PagesController extends AppController {
 	}
 	
 	/**
-	 * load an editor
+	 * load an editor note
 	 */
 	public function loadNote() {
 		$this->ajaxCheck();

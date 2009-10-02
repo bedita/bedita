@@ -22,7 +22,7 @@
 /**
  * Frontend base class (Frontend API)
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -570,7 +570,7 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
-	 * preapre an XML containing sitemap specification
+	 * prepare an XML containing sitemap specification
 	 * view in bedita-app/views/pages/sitemap_xml.tpl
 	 * 
 	 */

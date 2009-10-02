@@ -23,7 +23,7 @@
  * 	- login, session start
  * 	- user/group creation/handling
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$

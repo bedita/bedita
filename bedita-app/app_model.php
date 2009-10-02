@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /*-----8<--------------------------------------------------------------------
  * 
  * BEdita - a semantic content management framework
@@ -21,7 +21,7 @@
 
 
 /**
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -30,6 +30,7 @@
  */
 
 class AppModel extends Model{
+
 	var $actsAs 	= array("Containable");
 }
 
@@ -41,11 +42,10 @@ class BEAppModel extends AppModel {
 	protected $modelBindings = array();
 	
 	/**
-	 * Collassa il risultato di un record in un array unico
+	 * Merge record result in one array
 	 * 
-	 * @param array record	record da collassare
-	 * 
-	 * @return array		record collassato
+	 * @param array record	record data
+	 * @return array		record merged to single array
 	 */
 	function am($record) {
 		$tmp = array() ;
@@ -354,8 +354,7 @@ class BEAppModel extends AppModel {
 ///////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
 /**
- * Classe utilizata per le viste nn fa niente 
- * un solo metodo: afterFind
+ * Class user for views
  */
 class _emptyAfterFindView {
 	function afterFind($result) { return $result ; }
@@ -421,10 +420,6 @@ class BEAppObjectModel extends BEAppModel {
 		return $res;
 	}
 		
-	/**
- 	* Sovrascrive e poi chiama la funzione del parent xch� deve settare
- 	* ove necessario, il tipo di oggetto da salvare
- 	*/
 	function save($data = null, $validate = true, $fieldList = array()) {
 		$conf = Configure::getInstance() ;
 
@@ -460,9 +455,8 @@ class BEAppObjectModel extends BEAppModel {
 		$result = parent::save($data, $validate, $fieldList) ;
 		
 		/**
-		 * @todo VERIFICARE se nn da problemi.
-		 * azzero il valore di BEObject->{BEObject->primaryKey} per 
-		 * permettere salvataggi sucessivi.
+		 * TODO: verify
+		 * reset value of BEObject->{BEObject->primaryKey} to enable to save successively.
 		 */
 		/*
 		if(isset($this->BEObject)) {
@@ -472,15 +466,10 @@ class BEAppObjectModel extends BEAppModel {
 		return $result ;
 	}
 	
-	/**
-	 * Un oggetto crea un clone di se stesso.
-	 *
-	 */
 	function __clone() {
 		$className 	= get_class($this) ;
 		$_this		= new $className() ;
 
-		// Se non e' settato nessun oggetto, esce
 		if(@empty($this->{$this->primaryKey})) {
 			$this->copyPropertiesFromObj($_this);
 
@@ -489,16 +478,15 @@ class BEAppObjectModel extends BEAppModel {
 
 		$i = 0 ;
 
-		// Preleva i dati dell'oggetto
+		// Get object data
 		$data = $this->findById($this->{$this->primaryKey}) ;
 
-		// Formatta i dati
+		// Prepare data
 		$_this->_formatDataForClone($data, $this) ;
 
 		/**
-		 * NOTA.
-		 * Se il primo campo dati non e' un array, il salvataggio funziona correttamente.
-		 * funzioni model:save -->  model::set --> model::countDim
+		 * If first field is not an array, it saves correctly.
+		 * functions model:save -->  model::set --> model::countDim
 		 */
 		$tmp = array("title" => $data["title"]) ;
 		$data = am($tmp, $data) ;
@@ -510,7 +498,6 @@ class BEAppObjectModel extends BEAppModel {
 			return ;
 		}
 
-		// copia le proprieta' oggetto clonato
 		$this->copyPropertiesFromObj($_this);
 	}
 
@@ -521,12 +508,10 @@ class BEAppObjectModel extends BEAppModel {
 	}
 
 	/**
-	 * Formatta i dati per la creazione di un clone, ogni tipo
-	 * di oggetto esegue operazioni specifiche richiamando, sempre
-	 * parent::_formatDataForClone.
+	 * Prepare data to create clone
 	 *
-	 * @param array $data		Dati da formattare
-	 * @param object $source	Oggetto sorgente
+	 * @param array $data		Data to prepare
+	 * @param object $source	Source object
 	 */
 	protected function _formatDataForClone(&$data, $source = null) {
 
@@ -862,15 +847,15 @@ class BeditaCollectionModel extends BEAppObjectModel {
 				)
 	) ;			
 	
-/**
-	 * Se true esegue la clonazione anche dei figli, altrimenti no
+	/**
+	 * If true recursive clonation (children clonation)
 	 *
 	 * @var boolean
 	 */
 	var $recursionClone = true ;
 
 	/**
-	 * ID del'oggetto da clonare
+	 * ID of the object to clone
 	 *
 	 * @var integer
 	 */
@@ -878,20 +863,19 @@ class BeditaCollectionModel extends BEAppObjectModel {
 
 
 	/**
-	 * Preleva i figli di cui id e' radice.
-	 * Se l'userid e' presente, preleva solo gli oggetti di cui ha i permessi, se '' � un utente anonimo,
-	 * altrimenti li prende tutti.
-	 * Si possono selezionare i tipi di oggetti da prelevare.
+	 * Get children of the object whose id is $id.
+	 * If $userid is present, get objects for whom $userid has permitions, if $userid is '' anonymous user.
+	 * Result filtered by object type/s $filter, and status $status
 	 *
-	 * @param integer $id		id della radice da selezionare.
-	 * @param string $userid	l'utente che accede. Se null: non controlla i permessi. Se '': utente guest.
-	 * 							Default: non verifica i permessi.
-	 * @param string $status	Prende oggetti solo con lo status passato
-	 * @param array $filter		definisce i tipi gli oggetti da prelevare. Es.:
-	 * 							1, 3, 22 ... aree, sezioni, documenti.
-	 * 							Default: tutti.
-	 * @param integer $page		Numero di pagina da selezionare
-	 * @param integer $dim		Dimensione della pagina
+	 * @param integer $id		
+	 * @param string $userid	If null: no permitions check. If '': user guest.
+	 * 							Default: no permitions check.
+	 * @param string $status	Status of the objects to get
+	 * @param array $filter		Types of the objects to get. Ex.:
+	 * 							1, 3, 22 ... publications, sections, documents.
+	 * 							Default: all.
+	 * @param integer $page		Number of page to select
+	 * @param integer $dim		Dimension of the page
 	 */
 	function getChildren($id = null, $userid = null, $status = null, $filter = false, $page = 1, $dim = 100000) {
 		if(!class_exists('Tree')) loadModel('Tree');
@@ -908,12 +892,11 @@ class BeditaCollectionModel extends BEAppObjectModel {
 		$oldID 		= $this->id ;
 		$recursion 	= (isset($this->recursionClone)) ? $this->recursionClone : true ;
 
-		// Clona l'oggetto
 		parent::__clone();
 		$this->oldID 			= $oldID ;
 		$this->recursionClone 	= $recursion ;
 
-		// Clona ricorsivamente i figli
+		// Clone children recursively
 		if($this->recursionClone) {
 			$this->insertChildrenClone() ;
 		}
@@ -924,10 +907,10 @@ class BeditaCollectionModel extends BEAppObjectModel {
 
 		$tree 	= new Tree();
 
-		// Preleva l'elenco dei contenuti
+		// Get contents list
 		if(!($queries = $tree->getAll($this->oldID))) throw new BEditaErrorCloneException("BEAppCollectionModel::getItems") ;
 
-		// crea le nuove associazioni
+		// create new associations
 		for ($i=0; $i < count($queries[0]["children"]) ; $i++) {
 			$className	= $conf->objectTypes[$queries[0]["children"][$i]['object_type_id']]["model"] ;
 			$item 		= new $className() ;
@@ -958,7 +941,7 @@ class BeditaCollectionModel extends BEAppObjectModel {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  *
- * Eccezione sollevata quando i tenta di clonare un oggetto che non si puo' clonare
+ * Exception on cloning a not clonable object
  *
  */
 class BEditaCloneModelException extends Exception
@@ -973,7 +956,7 @@ class BEditaCloneModelException extends Exception
 
 /**
  *
- * Eccezione sollevata quando avviene un errore nella clonazione
+ * Exception on clonation
  *
  */
 class BEditaErrorCloneException extends Exception

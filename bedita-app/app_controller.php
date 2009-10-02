@@ -24,7 +24,7 @@ App::import('Core', 'l10n');
 /**
  * Controller base class for backends+frontends
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -40,8 +40,7 @@ class AppController extends Controller
 	protected $moduleName = NULL;
 	protected $modulePerms = NULL;
 	/**
-	 * tipologie di esito operazione e esisto dell'operazione
-	 *
+	 * Result types for methods
 	 */
 	const OK 		= 'OK' ;
 	const ERROR 	= 'ERROR' ;
@@ -166,17 +165,16 @@ class AppController extends Controller
 	}
 	
 	/**
-	 * Gestisce il redirect in base all'esito di un metodo.
-	 * Se c'e' nel form:
-	 * 		$this->data['OK'] o $this->data['ERROR']
-	 *  	seleziona.
+	 * Redirect and class method result.
+	 * If form contains:
+	 * 		$this->data['OK'] or $this->data['ERROR']
+	 * redirect to thes values (on OK, on ERROR)
 	 * 
-	 * Se nella classe è definito:
-	 * 		$this->REDIRECT[<nome_metodo>]['OK'] o $this->REDIRECT[<nome_metodo>]['ERROR']
-	 *  	seleziona.
+	 * If the class defines:
+	 * 		$this->REDIRECT[<method_name>]['OK'] or $this->REDIRECT[<method_name>]['ERROR']
+	 * redirect to thes values (on OK, on ERROR)
 	 * 
-	 * Altrimenti non fa il redirect
-	 * 
+	 * Otherwise no redirect
 	 */
 	final function beforeRender() {
 		
@@ -273,10 +271,10 @@ class AppController extends Controller
 	}
 	
 	/**
-	 * Verifica dell'accesso al modulo dell'utente.
-	 * Deve essere inserito il componente: BeAuth.
+	 * Modules access: verify user permits.
+	 * Uses BeAuth Component.
 	 * 
-	 * Preleva l'elenco dei moduli visibili dall'utente corrente.
+	 * Load the list of the modules availables for the user.
 	 */
 	protected function checkLogin() {
 		static  $_loginRunning = false ;
@@ -328,14 +326,13 @@ class AppController extends Controller
 	}
 	
 	/**
-	 * Esegue il setup delle variabili passate ad una funzione del controller.
-	 * Se la viarbile e' nul, usa il valore in $this->params[url] che contiene i
-	 * valori da _GET.
-	 * Parametri:
-	 * 0..N array con i seguenti valori:
-	 * 		0	nome della variabile
-	 * 		1	stringa con il tipo da assumere (per la funzione settype)
-	 * 		2	reference alla variabile da modificare
+	 * Function arguments setup.
+	 * If variable is null, use $this->params[url].
+	 * Parameters:
+	 * 0..N array:
+	 * 		0	var name
+	 * 		1	type [string] (for the function settype)
+	 * 		2	reference to the variable to modify
 	 *
 	 */
 	protected function setup_args() {
@@ -343,7 +340,7 @@ class AppController extends Controller
 		$args = func_get_args() ;
 		
 		for($i=0; $i < $size ; $i++) {
-			// Se il parametro e' in params o in pass, lo preleva e lo inserisce
+			// If parameter is in 'params' or in 'pass', load it
 			if(isset($this->params["url"][$args[$i][0]]) && !empty($this->params["url"][$args[$i][0]])) {
 				$args[$i][2] = $this->params["url"][$args[$i][0]] ;
 				$this->passedArgs[$args[$i][0]] = $this->params["url"][$args[$i][0]] ;
@@ -356,7 +353,7 @@ class AppController extends Controller
 				$args[$i][2] = $this->passedArgs[$args[$i][0]] ;
 			}
 			
-			// Se il valore non e' nullo, ne definisce il tipo e lo inserisce in namedArgs
+			// If value is not null, define type and insert in 'namedArgs'
 			if(!is_null($args[$i][2])) {
 				settype($args[$i][2], $args[$i][1]) ;
 				$this->params["url"][$args[$i][0]] = $args[$i][2] ;

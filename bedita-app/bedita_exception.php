@@ -22,7 +22,7 @@
 /**
  * Bedita exceptions definitions, loaded from bootstrap.php
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -64,9 +64,6 @@ class BeditaException extends Exception
     }
 }
 
-/**
- * 
- */
 class BeditaAjaxException extends BeditaException
 {
 	private $outputType = "html";

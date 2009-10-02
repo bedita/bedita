@@ -24,7 +24,7 @@ App::import('Core', 'Error');
 /**
  * BEdita/cake error handler (backends+frontends)
  *  
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$

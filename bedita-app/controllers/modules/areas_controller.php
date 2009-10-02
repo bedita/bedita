@@ -20,9 +20,9 @@
  */
 
 /**
- * Controller entrata modulo Aree, gestione aree e gestione sessioni
+ * Controller module Publications: managing of publications, sections and sessions
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -38,10 +38,6 @@ class AreasController extends ModulesController {
 	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType') ;
 	protected $moduleName = 'areas';
 	 
-	/**
-	 * Area tree and sections
-	 * 
-	 */
 	function index() {
 		$tree = $this->BeTree->getSectionsTree() ;
 		$this->set('tree',$tree);
@@ -58,12 +54,6 @@ class AreasController extends ModulesController {
 		$this->set("formToUse", $formToUse);
 	}
 	
-	 /**
-	  * Preleva l'area selezionata.
-	  * Se non viene passato nessun id, presente il form per una nuova area
-	  *
-	  * @param integer $id
-	  */
 	function viewArea($id = null) {
 		// Get selected area
 		$area = null ;
@@ -85,11 +75,6 @@ class AreasController extends ModulesController {
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
 	}
 
-	 /**
-	  * empty form for a new section
-	  *
-	  * @param integer $id
-	  */
 	function viewSection($id=null) {
 		if (!empty($id)) {
 			$this->loadSectionDetails($id,Configure::read("objectTypes.section.id"));
@@ -101,9 +86,6 @@ class AreasController extends ModulesController {
 	}
 	
 	
-	 /**
-	  * Save data tree
-	  */
 	function saveTree() {
 		$this->checkWriteModulePermission();
 		$this->Transaction->begin() ;
@@ -143,6 +125,7 @@ class AreasController extends ModulesController {
 		$this->Transaction->begin() ;
 		// Save data
 		if(!$this->Area->save($this->data))
+
 			throw new BeditaException( __("Error saving area", true),  $this->Area->validationErrors);
 		
 		$id = $this->Area->getID();
@@ -204,7 +187,9 @@ class AreasController extends ModulesController {
 		$this->Transaction->begin() ;
 			
 		if(!$this->Section->save($this->data))
+
 			throw new BeditaException( __("Error saving section", true), $this->Section->validationErrors );
+
 		
 		$id = $this->Section->getID();
 		// Move section in the right tree position, if necessary
@@ -260,9 +245,6 @@ class AreasController extends ModulesController {
 		}
 	}
 	
-	 /**
-	  * Delete area
-	  */
 	private function deleteArea() {
 		$this->checkWriteModulePermission();
 		$objectsListDeleted = $this->deleteObjects("Area");
@@ -270,9 +252,6 @@ class AreasController extends ModulesController {
 		$this->eventInfo("area [". $objectsListDeleted."] deleted");
 	}
 
-	/**
-	  * Delete section
-	  */
 	private function deleteSection() {
 		$this->checkWriteModulePermission();
 		$objectsListDeleted = $this->deleteObjects("Section");
@@ -338,7 +317,7 @@ class AreasController extends ModulesController {
 	
 		
 	 /**
-	  * Return associative array representing areas/sections tree
+	  * Return associative array representing publications/sections tree
 	  *
 	  * @param unknown_type $data
 	  * @param unknown_type $tree

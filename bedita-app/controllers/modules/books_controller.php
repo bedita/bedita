@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -76,12 +76,6 @@ class BooksController extends ModulesController {
 		$this->eventInfo("books $objectsListDeleted deleted");
 	}
 
-	/**
-	 * load all books test da eliminare
-	 *
-	 * @param array $filters
-	 * 
-	 */
 	public function listAllBooks($filters = null) {
 		$this->layout = null;
 		$this->render(null, null, VIEWS."books/inc/list_all_books.tpl");

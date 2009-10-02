@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision: 1627 $
  * @modifiedby 		$LastChangedBy: bato $
  * @lastmodified	$LastChangedDate: 2009-01-02 20:21:19 +0100 (ven, 02 gen 2009) $

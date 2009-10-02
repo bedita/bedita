@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -55,20 +55,11 @@ class AddressbookController extends ModulesController {
 		$this->set("categories", $categories);
 	 }
 
-	 /**
-	  * Get address.
-	  * If id is null, empty document
-	  *
-	  * @param integer $id
-	  */
 	function view($id = null) {
 		$this->viewObject($this->Card, $id);
 		$this->set("groupsByArea", $this->MailGroup->getGroupsByArea(null, $id));
 	}
 
-	/**
-	 * Creates/updates card
-	 */
 	function save() {
 		$this->checkWriteModulePermission();
 		$this->Transaction->begin();
@@ -103,9 +94,6 @@ class AddressbookController extends ModulesController {
 		$this->eventInfo("card [". $this->data["title"]."] saved");
 	}
 
-	/**
-	  * Delete a card.
-	  */
 	function delete() {
 		$this->checkWriteModulePermission();
 		$objectsListDeleted = $this->deleteObjects("Card");
