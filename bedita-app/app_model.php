@@ -1,9 +1,9 @@
-﻿<?php
+<?php
 /*-----8<--------------------------------------------------------------------
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -353,9 +353,8 @@ class BEAppModel extends AppModel {
 
 ///////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
-/**
- * Class user for views
- */
+
+// Internal class user for views
 class _emptyAfterFindView {
 	function afterFind($result) { return $result ; }
 }
@@ -944,7 +943,7 @@ class BeditaCollectionModel extends BEAppObjectModel {
  * Exception on cloning a not clonable object
  *
  */
-class BEditaCloneModelException extends Exception
+class BEditaCloneModelException extends BeditaException
 {
     // Redefine the exception so message isn't optional
     public function __construct($model, $code  = 0) {
@@ -959,7 +958,7 @@ class BEditaCloneModelException extends Exception
  * Exception on clonation
  *
  */
-class BEditaErrorCloneException extends Exception
+class BEditaErrorCloneException extends BeditaException
 {
     // Redefine the exception so message isn't optional
     public function __construct($msg, $code  = 0) {

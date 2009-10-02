@@ -28,7 +28,7 @@
  * 
  * $Id$
  */
-class BeurlHelper extends Helper {
+class BeurlHelper extends AppHelper {
 	/**
 	 * Included helpers.
 	 *

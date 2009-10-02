@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -28,7 +28,7 @@
  * 
  * $Id$
  */
-class BeTreeHelper extends Helper {
+class BeTreeHelper extends AppHelper {
 	/**
 	 * Included helpers.
 	 *

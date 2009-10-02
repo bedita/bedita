@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -46,7 +46,7 @@ class TransactionComponent extends Object {
 	
 	function init($dbConfigName = 'default', $pathTmp = '/tmp') {
 		if(!isset(self::$transFS)) {
-			self::$transFS = new transactionFS($pathTmp) ;
+			self::$transFS = new TransactionFS($pathTmp) ;
 		}
 		self::$dbConfig 		= (isset($dbConfigName))?$dbConfigName:'default' ;
 		self::$transFS->tmpPath = $pathTmp ;
@@ -234,7 +234,8 @@ class TransactionComponent extends Object {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
+
+/*
  * 
  * On object creation, if there are pending operations, 'rollback' is called.
  * Operations are permanent, after 'commit'.
@@ -250,7 +251,7 @@ class TransactionComponent extends Object {
  * "roolCmd"	rollback command
  * "params"	rollback parameters
 */
-class transactionFS {
+class TransactionFS {
 	var $commands				= null ;			// array con i dati
 	var $errorMsg				= "" ;				// Ultimo msg d'errore
 	var $error					= false ;			// true se c'e' stato un errore

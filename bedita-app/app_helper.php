@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -19,6 +19,8 @@
  *------------------------------------------------------------------->8-----
  */
 
+App::import('Core', 'Helper');
+
 /**
  * Helper base class
  * contains common helpers methods
@@ -30,9 +32,6 @@
  * 
  * $Id$
  */
-
-App::import('Core', 'Helper');
-
 class AppHelper extends Helper {
  	
 	/**

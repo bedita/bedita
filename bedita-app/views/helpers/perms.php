@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -35,7 +35,7 @@
  * BEDITA_PERMS_MODIFY",		0x2
  * BEDITA_PERMS_READ_MODIFY",	BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY
  */
-class PermsHelper extends Helper {
+class PermsHelper extends AppHelper {
 
 	public function isReadable($user,$groups,$permissions) {
 		$conf = Configure::getInstance();
