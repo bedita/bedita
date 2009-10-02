@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2009-05-13 17:40:38\n"
+"POT-Creation-Date: 2009-10-02 14:37:44\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -15,13 +15,7 @@ msgstr ""
 msgid "Comments"
 msgstr ""
 
-msgid "Links"
-msgstr ""
-
 msgid "Objects tagged by"
-msgstr ""
-
-msgid "Tags cloud"
 msgstr ""
 
 msgid "Write a comment"
@@ -30,7 +24,13 @@ msgstr ""
 msgid "Write the text you see in the image above"
 msgstr ""
 
-msgid "by"
+msgid "at"
+msgstr ""
+
+msgid "byAuthor"
+msgstr ""
+
+msgid "comments"
 msgstr ""
 
 msgid "email"
@@ -39,16 +39,22 @@ msgstr ""
 msgid "location"
 msgstr ""
 
+msgid "modified on"
+msgstr ""
+
 msgid "name"
 msgstr ""
 
 msgid "published on"
 msgstr ""
 
-msgid "search"
+msgid "send comment"
 msgstr ""
 
-msgid "send comment"
+msgid "submit"
+msgstr ""
+
+msgid "text"
 msgstr ""
 
 msgid "web site"

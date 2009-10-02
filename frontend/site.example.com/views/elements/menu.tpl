@@ -1,3 +1,15 @@
+{if ($section.id != $publication.id) && ($section.nickname != 'footer-docs')}
+<div class="breadcrumb">
+	<a href="{$html->url('/')}" >{$publication.public_name|default:$publication.title}</a>&nbsp;&gt;&nbsp; 
+	{if (!empty($section.pathSection))}
+	{foreach from=$section.pathSection item="sec"}
+	<a href="{$html->url('/')}{$sec.nickname}" >{$sec.title}</a>&nbsp;&gt;&nbsp;
+	{/foreach}
+	{/if}
+	<a href="{$html->url('/')}{$section.nickname}" class="subon" >{$section.title}</a>
+</div>
+{/if}
+
 <div class="subdocs">
 
 	<ul>		
@@ -17,17 +29,5 @@
 
 </div>
 
-{if ($section.id != $publication.id) && ($section.nickname != 'footer-docs')}
-<div class="breadcrumb">
-	<h2>
-		<a href="{$html->url('/')}" >{$publication.public_name|default:$publication.title}</a>&nbsp;&gt;&nbsp; 
-		{if (!empty($section.pathSection))}
-		{foreach from=$section.pathSection item="sec"}
-		<a href="{$html->url('/')}{$sec.nickname}" >{$sec.title}</a>&nbsp;&gt;&nbsp;
-		{/foreach}
-		{/if}
-		<a href="{$html->url('/')}{$section.nickname}" class="subon" >{$section.title}</a>
-	</h2>
-</div>
-{/if}
+
 	
