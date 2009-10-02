@@ -36,7 +36,7 @@
 	{if !empty($showForm)}{$view->element('form_comments')}{/if}
 	
 {else}
-	<hr/>
+	{if $section.currentContent.num_of_comment|default:0 > 0}<hr/>{/if}
 	<span style="color: red">{t}This item is closed to comments{/t}</span> 
 
 {/if}
