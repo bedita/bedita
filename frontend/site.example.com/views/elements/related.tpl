@@ -5,7 +5,6 @@
 			{if !empty($attach)}
 			{assign_associative var="paramsBig" width=680 mode="fill" upscale=false URLonly=true}
 			{assign_associative var="params" width=220 mode="fill" upscale=false}
-			{assign_associative var="paramsVideo" presentation="full"}
 			{assign_associative var="paramsHtmlAudio" width="220"}
 			{assign_associative var="paramsHtml" height=165 width=220}		
 
@@ -19,9 +18,12 @@
 				{elseif $attach[i].object_type_id == $conf->objectTypes.audio.id}
 					{$beEmbedMedia->object($attach[i],null, $paramsHtmlAudio)}
 				{else}
-					{$beEmbedMedia->object($attach[i],$paramsVideo, $paramsHtml)}
+					{$beEmbedMedia->object($attach[i],null, $paramsHtml)}
 				{/if}
-					<p class="dida">{$attach[i].description}</p>
+				
+				<p class="dida">
+				<span style="font-style: normal; font-weight: bold;">{$attach[i].title}</span><br/>
+				{$attach[i].description}</p>
 			</div>
 			{/section}
 			{/if}

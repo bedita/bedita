@@ -1,3 +1,4 @@
+<hr/>
 <div class="commentform">
 
 	{if ($msg->check('Message.error'))}
