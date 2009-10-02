@@ -1707,7 +1707,7 @@ msgid "documents"
 msgstr "documenti"
 
 msgid "download"
-msgstr "scarica"
+msgstr "download"
 
 msgid "draft"
 msgstr ""
