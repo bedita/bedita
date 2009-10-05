@@ -20,33 +20,25 @@
  */
 
 /**
- * Componente per la gestione dell'upload dei file, salvataggio, modifica, delete
- * e interfaccia ai file remoti.
- * I file vanno manipolati utilizzando il componente Transaction....
+ * File upload, save, modify, delete, manage (remote as well).
+ * Uses Transaction component.
  * 
- * Dati da passare per salvare/modificare un oggetto co n un file:
+ * Data to be passed to save an object with a file:
  * 
- * 		path		Indica dove il file temporaneo con i dati
- * 					o l'URL dove risiede il file.
- * 		name		Nome del file originale
- * 		type		MIME type, se assente cerca di ricavarlo dal nome file o dall'intestazione (@todo)
- * 		size		Dimensione del file se un URL tenta di leggerla da remoto 
+ * 		path		temporary file path or URL
+ * 		name		Name of original file
+ * 		type		MIME type, if not set, try to get from file name (@todo)
+ * 		size		file size, if URL, try to read remote file size
  *  
- * Se le operazioni di salvataggio e cancellazione vanno fate utilizzando questo componente:
- * - Gestisce i file in modo transazionale (modifiche definitive con un $Transaction->commit() )
- * - Esegue il controllo di tipo (MIME) e crea un oggetto di tipo corretto
- * - Per gli URL esegue un controllo (regex) sull'URL
- * - torna in modo corretto e trasparente l'URL al file
- * - Torna le seguenti eccezioni:
- * 		BEditaFileExistException		// File gia' presente nel sistema sistema - nella creazione
- * 		BEditaInfoException				// Informazioni del file non accessibili
- * 		BEditaMIMEException				// MIME type del file non trovato o non corrispondente al tipo di obj
- * 		BEditaURLRxception				// Violazione regole dell'URL
- * 		BEditaSaveStreamObjException	// Errore creazione/ modifica oggetto 
- * 		BEditaDeleteStreamObjException	// Errore cancellazione obj
+ * Exceptions:
+ * 		BEditaFileExistException		// File already exists (thrown in creation)
+ * 		BEditaInfoException				// File info not readable (access denied or no data)
+ * 		BEditaMIMEException				// MIME type not found or not corresponding to object type
+ * 		BEditaURLRxception				// URL rules violated
+ * 		BEditaSaveStreamObjException	// Error creating/modifying object 
+ * 		BEditaDeleteStreamObjException	// Error deleting object
  * 
- * Se paranoid == false. Non tenta di prelevare le informazioni da remoto e quindi non serve
- * 'allow_php_fopen'. Le informazioni di MIME devono essere passate con i dati per gli URL.
+ * If paranoid == false: remote info not loaded ['allow_php_fopen' not necessary]. Mime info should be passed with data for URLs.
  * 
  * File paths saved on DB are relative to $config['mediaRoot']
  * 
@@ -174,11 +166,11 @@ class BeFileHandlerComponent extends Object {
 			throw new BEditaURLException(__("URL not valid",true)) ;
 
 		if($getInfoUrl && $this->paranoid) {
-			// Permesso di usare file remoti
+			// Remote file management
 			if(!ini_get('allow_url_fopen')) 
 				throw new BEditaAllowURLException(__("You can't use remote file",true)) ;
 			
-			// Preleva MIME type
+			// Get MIME type
 			$this->getInfoURL($data);
 
 		}
@@ -230,7 +222,7 @@ class BeFileHandlerComponent extends Object {
 		if (!empty($data["id"])) {
 			$ret = $streamModel->read('path', $data["id"]);
 				
-			// Se e' presente un path ad file su file system, cancella
+			// if present a path to a file on filesystem, delete it
 			if((!empty($ret['Stream']['path']) && !$this->_isURL($ret['Stream']['path']))) {
 				$this->_removeFile($ret['Stream']['path']) ;		
 			}
@@ -331,7 +323,7 @@ class BeFileHandlerComponent extends Object {
 	}
 	
 	/**
-	 * Torna TRUE se il path e' un URL
+	 * If $path is an URL, return TRUE
 	 *
 	 * @param unknown_type $path
 	 */
@@ -343,7 +335,7 @@ class BeFileHandlerComponent extends Object {
 	}
 
 	/**
-	 * Torna true se l'URL supera le regole definite in configurazione
+	 * If $URL is valid, return TRUE
 	 */
 	private function _regularURL($URL) {
 		$conf 		= Configure::getInstance() ;
@@ -444,7 +436,7 @@ class BeFileHandlerComponent extends Object {
 	}
 	
 	/**
-	 * Crea target con source (file temporaneo) con l'oggetto transazionale
+	 * Create target with source (temporary file), through transactional object
 	 *
 	 * @param string $sourcePath
 	 * @param string $targetPath
@@ -452,7 +444,7 @@ class BeFileHandlerComponent extends Object {
 	private function _putFile($sourcePath, $targetPath) {
 		if(empty($targetPath)) return false ;
 		
-		// Determina quali directory creare per registrare il file
+		// Temporary directories to create
 		$tmp = Configure::read("mediaRoot") . $targetPath ;
 		$stack = array() ;
 		$dir = dirname($tmp) ;
@@ -466,7 +458,7 @@ class BeFileHandlerComponent extends Object {
 		} 
 		unset($dir) ;
 		
-		// Crea le directory non ancora presenti
+		// Creating directories
 		while(($current = array_pop($stack))) {
 			if(!$this->Transaction->mkdir($current)) return false ;
 		}
@@ -475,7 +467,7 @@ class BeFileHandlerComponent extends Object {
 	}	
 
 	/**
-	 * Cancella un file da file system con l'oggetto transazionale
+	 * Delete a file from file system with transactional object
 	 *
 	 * @param string $path
 	 */
@@ -484,21 +476,21 @@ class BeFileHandlerComponent extends Object {
 		
 		if (file_exists($path)) {
 		
-			// Cancella
+			// Remove
 			if(!$this->Transaction->rm($path))
 				return false ;
 			
-			//remove thumb cached and cache directory
+			// remove thumb cached and cache directory
 			$cacheDir = dirname($path) . DS . substr(pathinfo($path, PATHINFO_FILENAME),0,5) . "_" . md5(basename($path));
 			if (is_dir($cacheDir)) {
 				$cacheFolder = new Folder($cacheDir);
 				$cacheFolder->delete();
 			}
 			
-			// Se la directory contenitore e' vuota, la cancella
+			// If container direcotry is empty, remove it
 			$dir = dirname($path) ;
 			while($dir != Configure::read("mediaRoot")) {
-				// Verifica che sia vuota
+				// Verify that it's empty
 				$vuota = true ;
 				if($handle = opendir($dir)) {
 				    while (false !== ($file = readdir($handle))) {
@@ -510,7 +502,7 @@ class BeFileHandlerComponent extends Object {
 	    			closedir($handle);				
 				}
 				
-				// Se vuota cancella altrimenti interrompe
+				// If empty remove, break otherwise
 				if($vuota) {
 					if(!$this->Transaction->rmdir($dir))
 						return false ;
@@ -527,13 +519,12 @@ class BeFileHandlerComponent extends Object {
 
 
   	/**
-  	 * Torna il path dove inserire il file uploadato
+  	 * Get path where to save uploaded file
   	 *
   	 * @param string $name 	Nome del file
   	 */
 	function getPathTargetFile(&$name)  {
-   		
-   		// Determina le directory dove salvare il file
+		
 		$md5 = md5($name) ;
 		//preg_match("/(\w{2,2})(\w{2,2})(\w{2,2})(\w{2,2})/", $md5, $dirs) ;
 		preg_match("/(\w{2})(\w{2})/", $md5, $dirs) ;

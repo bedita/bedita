@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Upload component: common file, multimedia file, third party multimedia url (bliptv, vimeo, youtube, etc.)
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

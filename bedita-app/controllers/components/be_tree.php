@@ -20,10 +20,9 @@
  */
 
 /**
- * Accesse e gestione dell'albero dei contenuti.
+ * Management of the tree of the contents.
  * 
- * I permessi sono espressi in un integer che raprresenta una combinazione 
- * di bit definiti nel file di configurazione (bedita.ini.php):
+ * Permits with bits representation (bedita.ini.php):
  * BEDITA_PERMS_READ	0x1
  * BEDITA_PERMS_MODIFY	0x2
  * 
@@ -92,14 +91,13 @@ class BeTreeComponent extends Object {
 	}
 
 	/**
-	 * Torna l'albero delle aree e delle sezioni a cui l'utente connesso
-	 * pu� accedere almeno in lettura.
+	 * Tree of publications and sections for user connected
 	 *
 	 */
 	function getSectionsTree() {
 		$conf  = Configure::getInstance() ;
 		
-		// Preleva l'utente connesso
+		// Get connected user
 		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : '' ;
 		$filter = array(
 			"object_type_id" => array($conf->objectTypes['area']['id'],$conf->objectTypes['section']['id']) 
@@ -117,8 +115,7 @@ class BeTreeComponent extends Object {
 	}
 
 	/**
-	 * Torna l'albero con espanso solo quello dove l'oggetto selezionato � presente.
-	 * Mantiene solo i figli.
+	 * Get tree with one branch expanded (the branch where object $id is)
 	 *
 	 * @param integer $id
 	 */
@@ -135,14 +132,14 @@ class BeTreeComponent extends Object {
 	}
 	
 	/**
-	 * Torna l'elenco dei figli di un data nodo dell'albero
+	 * Get children for node $id
 	 *
-	 * @param integer $id		ID del nodo
+	 * @param integer $id		node ID
 	 */
 	function getChildren($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
 		$conf  = Configure::getInstance() ;
 		
-		// Preleva l'utente connesso
+		// Get user connected
 		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : null ;
 		
 		$filter = ($filter)? array_merge($this->filter, $filter) : $this->filter;
@@ -170,9 +167,9 @@ class BeTreeComponent extends Object {
 	}
 	
 	/**
-	 * Stante un path "/<...>/<...>/..." torna l'idi dell'oggetto puntato
+	 * Get object id from path $path
 	 * 
-	 * @param integer $path	Path dell'oggetto da trovare
+	 * @param integer $path	Path of the object to find
 	 */
 	function getIdFromNickname($path) {
 		return $this->_getIdFromNickname($path) ;
@@ -229,13 +226,13 @@ class BeTreeComponent extends Object {
 	/////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Cancella i rami che non contengono id
+	 * Delete branches that don't contain object $id
 	 *
-	 * @param array $trees	albero dove cercare
-	 * @param integer $id	oggetto da cercare
+	 * @param array $tree	tree where to perform search
+	 * @param integer $id	object to search
 	 */
 	private function _searchRootDeleteOther(&$tree, $id) {
-		// Se la radice cercata
+		// If it's the root...
 		if($tree['id'] == $id) {
 			for($i=0; $i < count($tree['children']) ; $i++) {
 				unset($tree['children'][$i]['children']) ;
@@ -244,7 +241,7 @@ class BeTreeComponent extends Object {
 			return true ;
 		}
 		
-		// Cerca tra i discendenti
+		// Search in children trees
 		$found = null ;
 		for($i=0; $i < count($tree['children']) ; $i++) {
 			if($this->_searchRootDeleteOther($tree['children'][$i], $id)) {
@@ -252,7 +249,7 @@ class BeTreeComponent extends Object {
 			} 
 		}
 		
-		// Se ha trovato cancella i rami da escludere
+		// If branches to exclude were found, delete them
 		if(isset($found)) {
 			$tmp = $tree['children'][$found] ;
 			

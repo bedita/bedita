@@ -34,7 +34,7 @@ class BeMailComponent extends Object {
 	
 	/**
 	 * startup component
-	 * set smtp options if it's in cofiguration (bedita.sys.php)	
+	 * set smtp options if it's in configuration (bedita.sys.php)	
 	 * @param unknown_type $controller
 	 */
 	function startup(&$controller=null) {
@@ -87,7 +87,7 @@ class BeMailComponent extends Object {
 	 *
 	 * @param array $message, mail_message array from a find on MailMessage 
 	 * @param bool $html, mail type
-	 * @param int $mail_group_id used to get publishing public url and built unsubscribe link
+	 * @param int $mail_group_id used to get publishing public url and build unsubscribe link
 	 * @param $card_id used to built unsubscribe link
 	 * @return body (html or txt) of the message
 	 */
@@ -256,7 +256,7 @@ class BeMailComponent extends Object {
 					);
 
 					foreach ($res as $groupCard) {
-						// create job only if it dosen't exist
+						// create job only if it doesn't exist
 						if ($jobModel->find("count", array(
 														"conditions" => array(
 																"card_id" => $groupCard["MailGroupCard"]["card_id"],

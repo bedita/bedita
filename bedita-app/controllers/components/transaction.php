@@ -20,7 +20,7 @@
  */
 
 /**
- * Componente per la gestione di transazioni su + model contemporaneamente
+ * Transaction component
  * 
  *
  * @version			$Revision$
@@ -243,8 +243,8 @@ class TransactionComponent extends Object {
  * 
  * sample data structure:
  * array(
- *	array("cmd" => <comando>, "roolCmd" => <comando>, "params" => array(..)),
- *	array("cmd" => <comando>, "roolCmd" => <comando>, "params" => array(..)),
+ *	array("cmd" => <command>, "roolCmd" => <command>, "params" => array(..)),
+ *	array("cmd" => <command>, "roolCmd" => <command>, "params" => array(..)),
  *	...................................................
  * )
  * "cmd"		command executed
@@ -252,9 +252,9 @@ class TransactionComponent extends Object {
  * "params"	rollback parameters
 */
 class TransactionFS {
-	var $commands				= null ;			// array con i dati
-	var $errorMsg				= "" ;				// Ultimo msg d'errore
-	var $error					= false ;			// true se c'e' stato un errore
+	var $commands				= null ;			// data array
+	var $errorMsg				= "" ;				// Last error
+	var $error					= false ;			// true if a problem occurred
 	var $tmpPath				= '/tmp';
 	
 	function __construct($tmpPath = '/tmp') {
@@ -494,7 +494,7 @@ class TransactionFS {
             throw new BEditaIOException("Error changing dir $oldDir");
 		$rmPerms = fileperms($rmDir);
 		
-		// Cancella
+		// Delete
 		if(!rmdir($rmDir)) 
             throw new BEditaIOException("Error removing dir $rmDir");
 		

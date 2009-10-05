@@ -38,18 +38,16 @@ class BeBlipComponent extends Object {
 		parent::__construct() ;
 	} 
 
-	/**
-	 */
 	function startup(&$controller)
 	{
-		$conf = Configure::getInstance() ;		
+		$conf = Configure::getInstance() ;
 		
 		$this->controller 	= $controller;
 	}
 	
 	
 	/**
-	 * Torna i dati di uno specifico video
+	 * Get info for a clip video
 	 *
 	 * @return unknown
 	 */
@@ -69,7 +67,7 @@ class BeBlipComponent extends Object {
 		elseif (!empty($conf->provider_params["blip"]["height"]))
 			$urlinfo .= "&amp;height=" . $conf->provider_params["blip"]["height"];  
 		
-		// Preleva le informazioni
+		// Get info
 		$fp = fopen(sprintf($urlinfo, $id), "r") ;
 		$json = "" ;
 		while(!feof($fp)) {
@@ -78,19 +76,17 @@ class BeBlipComponent extends Object {
 		@fclose($fp) ;
 		if(!$json) return false ;
 		
-		/**
-		 *  formatta la stringa
-		**/
-		// elimina la aprte iniziale e finale che non fa parte della stringa
+		// format the string
+		// remove start and end, that are not part of the string
 		$json = preg_replace(array("/^\s*blip_ws_results\s*\(\s*\[\s*/m", "/\s*\]\s*\)\s*;\s*$/mi"), "", $json) ;
 	
-		// Eliina i commenti, danno errore
+		// remove comments
 		$json = preg_replace('/(\/\*[\s\S]*?\*\/?[\r]?[\n]?[\r\n])/m', '', $json) ;
 		
-		// cambia gli apici, non gli paicciono...
+		// remove single quotes
 		$json = preg_replace("/\'/mi", "\"", $json) ;
 
-		// Preleva l'array associativo
+		// get assoc array
 		$ret = json_decode($json, true) ;
 		if(!($ret = json_decode($json, true))) return false ;
 		
@@ -100,7 +96,7 @@ class BeBlipComponent extends Object {
 	}
 	
 	/**
-	 * Torna il codice embed
+	 * Get embed code for video
 	 *
 	 * @return unknown
 	 */
@@ -152,7 +148,7 @@ class BeBlipComponent extends Object {
 }
 
 /**
- * ESEMPIO:
+ * EXAMPLE:
  * 
  Array
 (

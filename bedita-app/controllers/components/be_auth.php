@@ -44,8 +44,7 @@ class BeAuthComponent extends Object {
 	
 
 	/**
-	 * Definisce l'utente corrente se gia' loggato e/o valido
-	 * altrimenti setta a null.
+	 * Set current user, if already logged in and/or valid
 	 * 
 	 * @param object $controller
 	 */
@@ -81,7 +80,7 @@ class BeAuthComponent extends Object {
 	
 	
 	/**
-	 * Esegue il riconoscimento dell'utente
+	 * User authentication
 	 *
 	 * @param string $userid
 	 * @param string $password
@@ -129,7 +128,7 @@ class BeAuthComponent extends Object {
 	function loginPolicy($userid, $u, $policy, $auth_group_name=array()) {
 		$this->User = ClassRegistry::init('User');
 
-		// Se fallisce esce
+		// If fails, exit
 		if(empty($u["User"])) {
 			// look for existing user
 			$this->User->containLevel("default");
@@ -217,8 +216,7 @@ class BeAuthComponent extends Object {
 	}
 	
 	/**
-	 * Esegue la sconnessione dell'utente e cancella i dati di sessione
-	 * connessi all'utente.
+	 * User logout: remove session data for the user
 	 *
 	 * @return boolean
 	 */
@@ -238,11 +236,6 @@ class BeAuthComponent extends Object {
 		return true ;
 	}
 	
-	/**
-	 * Torna true se l'utente e' riconosciuto e la sessione valida.
-	 *
-	 * @return unknown
-	 */
 	public function isLogged() {
 		
 		if ($this->checkSessionKey()) {
@@ -372,7 +365,7 @@ class BeAuthComponent extends Object {
 	}
 	
 	public function removeUser($userId) {
-		// TODO: come fare con oggetti associati??? sono cancellati di default??
+		// TODO: how can we do with related objects??? default removal??
 		$user = ClassRegistry::init('User');
 		$user->containLevel("minimum");
 		$u = $user->findByUserid($userId);

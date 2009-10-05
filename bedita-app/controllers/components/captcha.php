@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Captcha creation and management
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

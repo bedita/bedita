@@ -74,7 +74,7 @@ class BeVimeoComponent extends Object {
 	}
 	
 	/**
-	 * set data to save multimediamedia object
+	 * set data to save multimedia object
 	 * @param $id
 	 * @param $data
 	 * @return boolean

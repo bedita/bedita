@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Youtube media component
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
@@ -43,7 +43,7 @@ class BeYoutubeComponent extends Object {
 	}
 	
 	/**
-	 * set data to save multimediamedia object
+	 * set data to save multimedia object
 	 * @param $id
 	 * @param $data
 	 * @return boolean
