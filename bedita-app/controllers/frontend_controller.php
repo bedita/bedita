@@ -637,6 +637,7 @@ abstract class FrontendController extends AppController {
 	   		throw new BeditaException(__("Content not found", true));
 	   }
 	   
+	   $this->setSectionPath($s, $s["id"]);
 	   $channel = array( 'title' => $this->publication["public_name"] . " - " . $s['title'] , 
         'link' => "/section/".$sectionName,
 //        'url' => Router::url("/section/".$sectionName),
@@ -653,7 +654,7 @@ abstract class FrontendController extends AppController {
 				$description .= (!empty($obj['abstract']) && !empty($description))? "<hr/>" .  $obj['abstract'] : $obj['abstract'];
 				$description .= (!empty($obj['body']) && !empty($description))? "<hr/>" .  $obj['body'] : $obj['body'];
 	            $rssItems[] = array( 'title' => $obj['title'], 'description' => $description,
-	                'pubDate' => $obj['created'], 'link' => "/section/".$s['nickname']."/".$item['id']);
+	                'pubDate' => $obj['created'], 'link' => $s['path']."/".$item['nickname']);
 			}
 		}
        $this->set('items', $rssItems);
@@ -1022,15 +1023,8 @@ abstract class FrontendController extends AppController {
 		if ($section === self::UNLOGGED || $section === self::UNAUTHORIZED)
 			throw new BeditaFrontAccessException(null, array("errorType" => $section));
 
-		$section["pathSection"] = $this->getPath($sectionId);
-		
-		$sectionPath = "";
-		foreach ($section["pathSection"] as $ps) {
-			$sectionPath .= "/" . $ps["nickname"];
-		}
-		$sectionPath .= "/" . $section["nickname"];
-		$section["path"] = $sectionPath;
-		
+		// set $section["pathSection"] and $section["path"] -- canonical path
+		$this->setSectionPath($section, $sectionId);
 		$this->sectionOptions["childrenParams"] = array_merge($this->sectionOptions["childrenParams"],$this->getPassedArgs());
 		
 		if(!empty($content_id)) {
@@ -1080,6 +1074,17 @@ abstract class FrontendController extends AppController {
 			$this->{$secNameFilter . "BeforeRender"}();
 		}
 	}
+
+	protected function setSectionPath(array &$section, $sectionId) {
+		$section["pathSection"] = $this->getPath($sectionId);
+		$sectionPath = "";
+		foreach ($section["pathSection"] as $ps) {
+			$sectionPath .= "/" . $ps["nickname"];
+		}
+		$sectionPath .= "/" . $section["nickname"];
+		$section["path"] = $sectionPath;
+	}
+	
 	
 	/**
 	 * route to section, content or another method defined in reservedWords
