@@ -42,7 +42,7 @@ $(document).ready(function(){
 		
 	{elseif ($item.provider|default:false)}
 	
-		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="px; " 3="height:" 4=$conf->videoThumbHeight 5="px;"}
+		{assign_concat var="myStyle" 0="width:" 1=$conf->media.video.thumbWidth 2="px; " 3="height:" 4=$conf->media.video.thumbHeight 5="px;"}
 		{assign_associative var="attributes" style=$myStyle}
 		{$beEmbedMedia->object($item,$params,$attributes)}
 	

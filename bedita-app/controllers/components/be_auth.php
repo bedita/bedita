@@ -23,7 +23,7 @@
  * 	- login, session start
  * 	- user/group creation/handling
  * 
- *
+ * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -290,7 +290,9 @@ class BeAuthComponent extends Object {
 			$this->log("User ".$userData['User']['userid']." already created");
 			throw new BeditaException(__("User already created",true));
 		}
-		$userData['User']['passwd'] = md5($userData['User']['passwd']);
+		if (!empty($userData['User']['passwd'])) {
+			$userData['User']['passwd'] = md5($userData['User']['passwd']);
+		}
 		$this->userGroupModel($userData, $groups);
 		$user->Behaviors->attach('Notify');
 		if(!$user->save($userData))

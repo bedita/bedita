@@ -52,8 +52,8 @@ class VimeoHelper extends AppHelper {
 		$conf = Configure::getInstance();
 		$url = rawurlencode($obj["path"]);
 		if (empty($attributes["width"]) && empty($attributes["height"])) {
-			$attributes["width"] = $conf->provider_params["vimeo"]["width"];
-			$attributes["height"] = $conf->provider_params["vimeo"]["height"];
+			$attributes["width"] = $conf->media_providers["vimeo"]["params"]["width"];
+			$attributes["height"] = $conf->media_providers["vimeo"]["params"]["height"];
 		}
 		foreach ($attributes as $key => $val) {
 			$url .= "&" . $key . "=" . $val; 
@@ -82,7 +82,8 @@ class VimeoHelper extends AppHelper {
 	 * @return unknown_type
 	 */
 	private function oEmbedVideo($url) {
-		if (!$json = file_get_contents(sprintf(Configure::read("provider_params.vimeo.urlembed"), $url))) {
+		$vimeoParams = Configure::read("media_providers.vimeo.params");
+		if (!$json = file_get_contents(sprintf($vimeoParams["urlembed"], $url))) {
 			return false;
 		}
 		$oEmbedInfo = (json_decode($json,true));

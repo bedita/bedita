@@ -47,10 +47,10 @@ class BeVimeoComponent extends Object {
 		$conf = Configure::getInstance() ;
 		$this->info = null ;
 		
-		if(!isset($conf->provider_params["vimeo"])) 
+		if(!isset($conf->media_providers["vimeo"]["params"])) 
 			return false ;
 		
-		$urlinfo = $conf->provider_params["vimeo"]['urlinfo'];
+		$urlinfo = $conf->media_providers["vimeo"]["params"]['urlinfo'];
  
 		if (!$info = file_get_contents(sprintf($urlinfo, $id, "php"))) {
 			return false;

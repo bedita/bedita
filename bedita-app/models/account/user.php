@@ -35,7 +35,7 @@ class User extends BEAppModel
 		'userid' => array(
 			'rule' => 'notEmpty'
 		),
-		'pasword' => array(
+		'passwd' => array(
 			'rule' => 'notEmpty'
 		)
 	);

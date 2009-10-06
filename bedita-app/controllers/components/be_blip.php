@@ -22,7 +22,7 @@
 /**
  * Blip TV media component
  *  
- *
+ * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -55,17 +55,17 @@ class BeBlipComponent extends Object {
 		$conf = Configure::getInstance() ;
 		$this->info = null ;
 		
-		if(!isset($conf->provider_params["blip"])) return false ;
+		if(!isset($conf->media_providers["blip"]["params"])) return false ;
 		
-		$urlinfo = $conf->provider_params["blip"]['urlinfo'];
+		$urlinfo = $conf->media_providers["blip"]["params"]['urlinfo'];
 		if (!empty($attributes["width"]))
 			$urlinfo .= "&amp;width=" . $attributes["width"];
-		elseif (!empty($conf->provider_params["blip"]["width"]))
-			$urlinfo .= "&amp;width=" . $conf->provider_params["blip"]["width"];
+		elseif (!empty($conf->media_providers["blip"]["params"]["width"]))
+			$urlinfo .= "&amp;width=" . $conf->media_providers["blip"]["params"]["width"];
 		if (!empty($attributes["height"]))
 			$urlinfo .= "&amp;height=" . $attributes["height"];
-		elseif (!empty($conf->provider_params["blip"]["height"]))
-			$urlinfo .= "&amp;height=" . $conf->provider_params["blip"]["height"];  
+		elseif (!empty($conf->media_providers["blip"]["params"]["height"]))
+			$urlinfo .= "&amp;height=" . $conf->media_providers["blip"]["params"]["height"];  
 		
 		// Get info
 		$fp = fopen(sprintf($urlinfo, $id), "r") ;

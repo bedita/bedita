@@ -54,7 +54,7 @@
 	{/if}
 
 {if $object.ObjectType.name == "video"}
-<div style="clear:left;">
+<div style="clear:left; margin-top: 20px;">
 {t}thumbnail{/t}<br/>
 <input type="text" name="data[thumbnail]" value="{$object.thumbnail|default:''}" style="width: 350px;"/>
 {if !empty($object.thumbnail)}

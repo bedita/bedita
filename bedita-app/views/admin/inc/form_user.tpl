@@ -33,8 +33,7 @@
 		 	<th>{if empty($userdetail.id)}{t}New password{/t}{else}{t}Password{/t}{/if}</th>
 			<td>
 				<input type="password" name="pwd" value="" id="pwd"
-					class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}" 
-			    	title="{$tr->t($conf->passwdRegexMsg)}"/>&nbsp;</td>
+					class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}"/>&nbsp;</td>
 			
 		</tr>
 		<tr>

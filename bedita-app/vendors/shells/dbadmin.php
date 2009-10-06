@@ -286,7 +286,7 @@ class DbadminShell extends Shell {
 		if (!empty($videos)) {
 			foreach ($videos as $v) {
 				if ($v["provider"] == "youtube") {
-					$thumbnail	= sprintf($conf->provider_params["youtube"]["urlthumb"], $v['uid']);
+					$thumbnail	= sprintf($conf->media_providers["youtube"]["params"]["urlthumb"], $v['uid']);
 				} elseif ($v["provider"] == "blip") {
 					if(!($this->BeBlip->getInfoVideo($v["uid"]) )) {
 						throw new BEditaMediaProviderException(__("Multimedia  not found",true)) ;

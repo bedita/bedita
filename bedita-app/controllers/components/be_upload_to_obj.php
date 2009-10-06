@@ -165,7 +165,7 @@ class BeUploadToObjComponent extends Object {
 			
 			if (!empty($provider)) {
 				$componentName = Inflector::camelize("be_" . $provider);
-				if (isset($this->{$componentName}) && method_exists($this->{$componentName}, "getInfoVideo")) {
+				if (isset($this->{$componentName}) && method_exists($this->{$componentName}, "getThumbnail")) {
 					if (!$thumbnail	= $this->{$componentName}->getThumbnail($uid)) {
 						throw new BEditaMediaProviderException(__("Multimedia Provider not found or error getting thumbnail",true)) ;
 					}
@@ -184,7 +184,7 @@ class BeUploadToObjComponent extends Object {
 		$conf 		= Configure::getInstance() ;
 		
 		foreach($conf->media_providers as $provider => $expressions) {
-			foreach($expressions as $expression) {
+			foreach($expressions["regexp"] as $expression) {
 				if(preg_match($expression, $url, $matched)) {
 					$uid = $matched[1] ;
 					

@@ -395,10 +395,12 @@ class BeFileHandlerComponent extends Object {
 
 		// if redirect response try to reach the redirect location
 		if (stristr($headers[0], "redirect")) {
-			if (empty($headers["Location"]))
+			if (empty($headers["Location"])) {
 				throw new BEditaInfoException(__("URL unattainable",true));
-			if (!($headers = @get_headers($headers["Location"],1)))
+			}
+			if (!($headers = @get_headers($headers["Location"],1))) {
 				throw new BEditaInfoException(__("URL unattainable",true));
+			}
 		}
 
 		if (!strstr($headers[0], "200"))

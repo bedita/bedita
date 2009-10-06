@@ -38,7 +38,8 @@ class BeYoutubeComponent extends Object {
 	}
 	
 	public function getThumbnail($uid) {
-		$thumbnail = sprintf(Configure::read("provider_params.youtube.urlthumb"), $uid);
+		$youtubeParams = Configure::read("media_providers.youtube.params");
+		$thumbnail = sprintf($youtubeParams["urlthumb"], $uid);
 		return $thumbnail;
 	}
 	

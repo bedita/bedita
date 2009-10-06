@@ -34,7 +34,7 @@
 	{elseif strtolower($item.ObjectType.name) == "video"}
 		{assign_associative var="params" presentation="thumb"}
 		{if !empty($item.provider)}
-			{assign_associative var="htmlAttr" width=$conf->videoThumbWidth height=$conf->videoThumbHeight alt=$item.title title=$item.name}
+			{assign_associative var="htmlAttr" width=$conf->media.video.thumbWidth height=$conf->media.video.thumbHeight alt=$item.title title=$item.name}
 		{else}
 			{assign var="htmlAttr" value=null}
 		{/if}

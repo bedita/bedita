@@ -38,14 +38,17 @@
  ** ******************************************
  */
 // BEdita URL
-// $config['beditaUrl'] = "http://localhost/bedita";
+$config['beditaUrl'] = "http://localhost/bedita";
 
-// Multimedia - files' root folder on filesystem (use DS as Directory Separator, without trailing slash)
-// $config['mediaRoot'] = ROOT . DS . "media";
-
+/** Multimedia - files' root folder on filesystem (absolute path)
+ **
+ **	On Linux could be /var/www/bedita/bedita-app/webroot/files
+ ** On Windows could be C:\\xampp\\htdocs\\bedita\\bedita-app\\webroot\\files 
+ */
+$config['mediaRoot'] = "/var/www/bedita/bedita-app/webroot/files";
 
 // Multimedia - URL prefix (without trailing slash)
-// $config['mediaUrl'] = 'http://localhost/media';
+$config['mediaUrl'] = 'http://localhost/bedita/files';
 
 
 /**
@@ -60,14 +63,15 @@
 //);
 
 
-
 /**
  ** ******************************************
  **  SMTP and mail support settings
  ** ******************************************
  */
  
-// smtp server configuration
+/** 
+ ** smtp server configuration used for any kind of mail (notifications, newsletters, etc...)
+ */
 //$config['smtpOptions'] = array(
 //	'port' => '25',
 //	'timeout' => '30',
@@ -76,7 +80,10 @@
 //	'password' => 'your_smtp_password'
 //);
 
-// mail support configuration
+/**
+ * mail support configuration
+ * uncomment and fill to send error messages to your support
+ */
 //$config["mailSupport"] = array(
 //	"from" => "bedita-support@...",	
 //	'to' => "bedita-support@...",

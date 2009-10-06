@@ -31,6 +31,7 @@
  * $Id$
  */
 
+// BEdita instance name 
 $config["projectName"] = "BEdita 3.0";
 
 /**
@@ -44,24 +45,13 @@ $config["projectName"] = "BEdita 3.0";
 
 // Set 'multilang' true for user choice [also set 'multilang' true if $config['Config']['language'] is set]
 // $config['multilang'] = true;
-// $config['defaultLang'] = "ita"; // default fallback
-
-
-// Texts in documents ['html', 'txt', 'txtParsed']
-//$config['defaultTxtType'] = "txt" ;
-
+// $config['defaultLang'] = "eng"; // default fallback
 
 // Status of new objects
 //$config['defaultStatus'] = "draft" ;
 
-
 // TinyMCE Rich Text Editor for long_text ['false' to disable - defaults true]
 // $config['mce'] = true;
-
-
-// Upload mode ['flash', 'ajax']
-// $config['uploadType'] = "flash";
-
 
 /**
  ** ******************************************
@@ -69,14 +59,16 @@ $config["projectName"] = "BEdita 3.0";
  ** ******************************************
  */
  
-// Relations - local objects' relation types
+/**
+ ** Relations - local objects' relation types
+ ** define here custom semantic relations
+ */
 // $config["objRelationType"] = array(
-// 		"language" => array(), 
-// 		"parent" => array()
+// 		"language" => array()
 // );
 
-// One-way relation
-// $config["cfgOneWayRelation"] = array("parent");
+// One-way relation, array of objRelationType keys
+// $config["cfgOneWayRelation"] = array();
 
 // Reserved words [avoided in nickname creation]
 // $config["cfgReservedWords"] = array();
@@ -98,6 +90,7 @@ $config["projectName"] = "BEdita 3.0";
 //$config['langOptionsIso'] = false; 
 
 
+// default values for fulltext search
 // $config['searchFields'] = array(
 //	'ModelName' => array('title'=> 6, 'description' => 4),
 //) ;

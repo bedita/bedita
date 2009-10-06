@@ -34,7 +34,7 @@ class YoutubeHelper extends AppHelper {
 	
 	function thumbnail($obj, $htmlAttributes, $URLonly) {
 		$this->conf = Configure::getInstance() ;
-		$src = sprintf($this->conf->youtube["urlthumb"], $obj['uid']);
+		$src = sprintf($this->conf->media_providers["youtube"]["params"]["urlthumb"], $obj['uid']);
 		return (!$URLonly)? $this->Html->image($src, $htmlAttributes) : $src;
 	}
 	
@@ -47,11 +47,11 @@ class YoutubeHelper extends AppHelper {
 	 */
 	function embed($obj, $attributes) {
 		$this->conf 	= Configure::getInstance() ;
-		if(!isset($this->conf->provider_params["youtube"])) 
+		if(!isset($this->conf->media_providers["youtube"]["params"])) 
 			return "" ;
 		
 		// formatta le variabili
-		$attributes = array_merge($this->conf->provider_params["youtube"], $attributes) ;
+		$attributes = array_merge($this->conf->media_providers["youtube"]["params"], $attributes) ;
 		$width = $attributes['width'] ;
 		$height = $attributes['height'] ;
 		$embedTag = $attributes["embedTag"];
