@@ -116,7 +116,8 @@ $(document).ready(function(){
 {/literal}{if !empty($object.fixed) && ($object.fixed == 1)}{literal}
 
 		$("#nicknameBEObject,#start,#end").attr("readonly",true);
-		$("#status input,#delBEObject").attr("disabled",true);
+		$("#status input").attr("readonly",true);
+		$("#delBEObject").attr("disabled",true);
 		$("#areaSectionAssoc").attr("disabled",true);
 		$(".secondacolonna .modules label").addClass("fixedobject").attr("title","fixed object");
 		

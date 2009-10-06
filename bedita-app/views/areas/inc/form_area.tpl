@@ -48,7 +48,13 @@ $(document).ready(function(){
 		<tr>
 			<th>{t}status{/t}:</th>
 			<td id="status">
-				{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator=" "}
+				{if $object.fixed == 1}
+					{t}This object is fixed - some data is readonly{/t}
+					<input type="hidden" name="data[fixed]" value="1" />
+					<input type="hidden" name="data[status]" value="{$object.status}" />
+				{else}
+					{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator=" "}
+				{/if}
 			</td>
 		</tr>
 		
