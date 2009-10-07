@@ -1592,14 +1592,24 @@ abstract class FrontendController extends AppController {
 					throw new BeditaException(__("Error saving comment", true));
         		}
 				
-				// check captcha				
-				if(!isset($this->Captcha)) {
-					App::import('Component', 'Captcha');
-					$this->Captcha = new CaptchaComponent();
-					$this->Captcha->startup($this);
+				// check captcha if not logged
+				if (!$this->logged) {			
+					if(!isset($this->Captcha)) {
+						App::import('Component', 'Captcha');
+						$this->Captcha = new CaptchaComponent();
+						$this->Captcha->startup($this);
+					}
+					$this->Captcha->checkCaptcha();
+				// set User data
+				} else {
+					$userdata = $this->Session->read($this->BeAuth->sessionKey);
+					$this->data["user_created"] = $userdata["id"];
+					$this->data["user_modified"] = $userdata["id"];
+					$this->data["author"] = (!empty($userdata["realname"]))? $userdata["realname"] : $userdata["userid"];
+					if ( (trim($userdata["email"]) != "") ) {
+						$this->data["email"] = $userdata["email"];
+					}
 				}
-				$this->Captcha->checkCaptcha();
-				
 				$this->Transaction->begin();
 				if (!$this->Comment->save($this->data)) {
 					throw new BeditaException(__("Error saving comment", true), $this->Comment->validationErrors);
