@@ -9,12 +9,12 @@
 	{foreach from=$object.Comment item="comment" name="fc_com"}
 
 		{if $smarty.foreach.fc_com.index == 0}
-			<h3 style="margin-top:30px;">{$smarty.foreach.fc_com.total}&nbsp; 
+			<h3 style="margin:30px 0 20px 0;">{$smarty.foreach.fc_com.total}&nbsp; 
 			{if $smarty.foreach.fc_com.total == 1}{t}Comment{/t}{else}{t}Comments{/t}{/if}</h3>
 		{/if}
 		
 		<a name="comment-{$comment.id}"></a>
-		<div class=commentContainer>
+		<div class="commentContainer">
 			<h3>
 			{if !empty($comment.url)}
 				<a href="{$comment.url}" target="_blank">{$comment.author}</a>

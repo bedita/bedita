@@ -55,7 +55,7 @@ H3 {font:bold 1em "Georgia", serif;}
 
 strong {font:normal 1.15em "Georgia", serif; color:#000;}
 
-textarea, Input[type=text] {
+textarea, Input[type=text], Input[type=password] {
 	font:normal 1em "Georgia", serif;
 	border:1px solid silver;
 	padding:0.35em;
@@ -413,10 +413,11 @@ H2.post_description p {color: grey;}
 	
 ............................................*/
 
-/*.commentContainer {padding: 5px; background-color: #efefef; margin: 0 0 2px 0; border-top: 1px solid #cfcfcf;}*/
+.commentContainer {padding: 5px; background-color: #fff; margin: 0 0 2px 0; border-top: 1px solid #ddd;}
 
 .commentform {
-	margin-top:40px;	
+	margin-top:40px;
+	line-height: 0.8em;
 }
 
 .commentform LABEL {
