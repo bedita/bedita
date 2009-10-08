@@ -846,6 +846,13 @@ abstract class FrontendController extends AppController {
 			$this->setupAnnotations($obj, $this->status);
 		}
 		unset($obj['Annotation']);
+		
+		if (!empty($obj['ObjectProperty'])) {
+			foreach ($obj['ObjectProperty'] as $prop) {
+				$properties[$prop["name"]] = $prop;
+			}
+			$obj['ObjectProperty'] = $properties;
+		}
 		$obj['object_type'] = $modelType;
 		$obj['authorized'] = $authorized;
 		
