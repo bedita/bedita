@@ -510,7 +510,7 @@ class BeThumbHelper extends AppHelper {
 		{
 			// fill
 			case 1:
-				$thumbnail->far = true;  // force aspect ratio
+				$thumbnail->far = $thumbnail->aoe;  // force aspect ratio
 				$thumbnail->iar = false; // ignore aspect ratio
 				$thumbnail->zc  = false; // zoom crop to center
 				$thumbnail->bg  = $this->_imageTarget['fillcolor']; // fill color
