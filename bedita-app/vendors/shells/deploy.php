@@ -164,7 +164,7 @@ class DeployShell extends BeditaBaseShell {
         $this->out('Available functions:');
         $this->out('1. release: creates bedita release from svn');
   		$this->out(' ');
-  		$this->out('   Usage: createRelease -script <release-config-script.php>');
+  		$this->out('   Usage: release -script <release-config-script.php>');
         $this->out(' ');
         $this->out('2. updateVersion: updates version number from svn local info [if present]');
   		$this->out(' ');
