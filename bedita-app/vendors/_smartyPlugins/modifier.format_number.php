@@ -4,8 +4,7 @@
  * -------------------------------------------------------------
  * Type:     modifier
  * Name:     format_number
- * Purpose:  formatta il numero con decimale e separatore delle 
- *			  migliaia 
+ * Purpose:  format number with decimal separator and thousands separator
  * -------------------------------------------------------------
  */
 

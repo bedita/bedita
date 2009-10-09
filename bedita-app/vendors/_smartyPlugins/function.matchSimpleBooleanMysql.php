@@ -7,24 +7,22 @@
  * Name:     matchSimpleBooleanMysql
  * Version:  1.0
  * Author:   giangi
- * Purpose:  Torna un array con 2 valori:
- *				 una stringa per la ricerca con MATCH in MySQL("match" ->);
- *				 e 1 array con le parole (con '.' ) èer la ricerca con REGEXP
- * 			 ("regexp" ->) sempre in MySQL.
- *           Ricerca semplice:
- *           le parole devono esere tutte presenti e accetta stringhe
+ * Purpose:  Return an array with 2 values:
+ *				 a string for the search with MATCH in MySQL("match" ->);
+ *				 and 1 array with the words (with '.' ) for the search with REGEXP ("regexp" ->) in MySQL.
+ *           Simple search: words should be all present, and accept strings
  * Input:    var = Smarty var name expression
  * --------------------------------------------------------------------
  */
 function smarty_function_matchSimpleBooleanMysql($params, &$smarty)
 {
-	// setup variabili
+	// setup variables
    if (@empty($params["var"])) {
        $smarty->trigger_error("assign: missing 'var' parameter");
        return;
    }
 	
-	// Esegue il parsing
+	// parsing
 	$expression = (string)@$params["expression"] ;
 	
    if (!@empty($expression)) {
@@ -43,18 +41,18 @@ function smarty_function_matchSimpleBooleanMysql($params, &$smarty)
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /*
 ParserExpression.
-Data una stringa, torna l'elenco delle parole (lettere e numeri) e le stringhe (" ... ")
-Notazione:
+Parse a string and return an array of words (letters and numbers) and the strings " ... "
+Notation:
 literal	:= (a-z|A-Z|0-9)(a-z|A-Z|_|0-9|.)*
 string	:= ('"') (.)* ('"')		???
 
-tutto il resto viene scartato
+Discard the elements not matching
 
-Le funzioni da passare alla classe sono per:
+Functions to pass to the class are:
 letterale(string lett)
 stringa(string text)
 
-Se non si vuole gestire un tipo di oggetto non si setta la funzione specifica
+If it's not necessary to manage an object type, don't set the specific function
 */
 class ParserExpression {
 	var $fnc_letterale					= null ;
@@ -78,7 +76,7 @@ class ParserExpression {
 	
 	function lex(&$expression) {
 	
-		// Se e' all'interno di una stringa torna tutti i caratteri fino a fine stringa
+		// If inside string, return all characters until the end of the string
 		if($this->_LEX_INSIDE_STRING) {
 			$regexp = "/^([^(?!\\\\)\\". $this->_LEX_START_STRING ."]*)/xi" ;
 //			$regexp = "/^([^\\". $this->_LEX_START_STRING ."]*)/xi" ;
@@ -94,15 +92,15 @@ class ParserExpression {
 			return ;
 		}
 	
-		// Elimina gli spazi iniziali
+		// Left trim
 		$expression = preg_replace("/^\s+/xi", "", $expression) ;
 		
-		// cerca i letterali anche con i punti
+		// Search literals (dots included)
 		if(preg_match("/^\s*([a-zA-Z_0-9][a-zA-Z_0-9\.]+)/xi", $expression, $matches)) {
 			$expression = substr($expression, strlen($matches[0])) ;
 			$this->_LEX_BUFFER = $matches[1] ;
 			
-			// Verifica la presenza di punti
+			// Verify if contains dots
 			if(preg_match("/\./xi", $matches[0])) {
 				return $this->LEX_LETTERAL_WITH_POINTS ;
 			} else {
@@ -110,14 +108,14 @@ class ParserExpression {
 			}
 		}
 /*
-		// cerca i letterali senza punti
+		// search for literals without dots
 		if(preg_match("/^\s*([a-zA-Z_0-9][a-zA-Z_0-9]+)/xi", $expression, $matches)) {
 			$expression = substr($expression, strlen($matches[0])) ;
 			$this->_LEX_BUFFER = $matches[1] ;
 			return $this->LEX_LETTERAL ;
 		}
 */
-		// Inizio stringa
+		// String start
 		if(preg_match("/^\s*(\")/xi", $expression, $matches)) {
 			$expression = substr($expression, 1) ;
 			$this->_LEX_START_STRING = $matches[1] ;
@@ -171,9 +169,9 @@ class ParserExpression {
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /*
-Da una stringa torna un'espressione da utilizzare nella ricerca MATCH binaria di MySQL.
-viene inserito un + d'avanti ad ogni parola, vengo lasciate immutate le stringhe.
-Scartati tutti gli altri simboli.
+Parse a string, return an expression to use in the binary search MATCH of MySQL.
+a "+" is put before every word, strings are not changed.
+Discard other symbols
 */
 class parseSimpleExpSearch  {
 	var $listParams = array() ;
@@ -212,7 +210,7 @@ class parseSimpleExpSearch  {
 	}
 	
 	/*
-	Parametri:
+	Parameters:
 	*/
 	function parse($expression, $labels = false) {
 		$ret = array() ;

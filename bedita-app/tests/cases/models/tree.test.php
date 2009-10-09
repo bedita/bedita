@@ -136,7 +136,7 @@ class TreeTestCase extends BeditaTestCase {
 			}
 		}
 		
-		// following operations doesn't work because queries are cached in protected attribute Datasource::_queryCache but no method to delete it exist
+		// following operations don't work because queries are cached in protected attribute Datasource::_queryCache but no method to delete exists
 		//$tree = $this->Tree->getAll();
 		//echo $this->buildHtmlTree($tree);
 	}

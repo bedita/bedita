@@ -5,9 +5,9 @@
  * Type:     modifier
  * Name:     linkalize
  * Purpose:  change an email address or URL into a clickable HTML link
- * Da fare: deve funzionare anche con l'a capo e coi caratteri speciali nell'url(la virgola o il # ad ex.)
- * Da fare passare i parametri target (_blank oppure _self(default))
- * Da fare: passare un parametro "truncate" che tronca ad un dato valore gli url troppo lunghi
+ * TODO: fix with newline and special characters on url (comma or # etc.)
+ * TODO: pass target parameters (_blank or _self(default))
+ * TODO: pass a parameter "truncate" that truncate at a specified value the urls that are too long
  * -------------------------------------------------------------
  */
 function smarty_modifier_linkalize($string, $target)

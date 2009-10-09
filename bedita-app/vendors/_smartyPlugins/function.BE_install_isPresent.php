@@ -5,7 +5,7 @@
  * -------------------------------------------------------------
  * Type:     function
  * Name:     BE_install_isPresent
- * Purpose:  torna TRUE se il modulo passato e' installato
+ * Purpose:  return TRUE if the module passed is installed
  * -------------------------------------------------------------
  */
 function smarty_function_BE_install_isPresent($params, &$smarty)

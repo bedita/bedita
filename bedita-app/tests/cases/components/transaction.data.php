@@ -11,17 +11,17 @@
 
 class TransactionTestData extends BeditaTestData {
 	var $data =  array(
-		'minimo'	=> array('title' 			=> 'Titolo di test'),
+		'minimo'	=> array('title' 			=> 'Test title'),
 		
 		'makeFileFromData'	=> array(
-				'title' 	=> 'Titolo test File', 
+				'title' 	=> 'Test title File', 
 				'name'		=> 'txtFileTest.txt',
 				'mime_type'		=> 'plain/txt',
 				'data'		=> "Questo file e' una prova"
 		),
 		
 		'makeFileFromFile'		=> array(
-				'title' 		=> 'Titolo test File', 
+				'title' 		=> 'Test title File', 
 				'name'			=> 'test_target.jpg',
 				'mime_type'			=> 'image/jpeg',
 				'nameSource'	=> 'test.jpg'

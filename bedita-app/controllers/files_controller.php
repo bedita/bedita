@@ -126,14 +126,14 @@ class FilesController extends AppController {
 	}
 
 	function beditaBeforeFilter() {
-		// upload multiplo
+		// multiple upload
 		if ($this->RequestHandler->isFlash()) {
 			$this->skipCheck = true;
 		}
 	}
 
 	/**
-	 * Override AppController handleError to don't save message in session
+	 * Override AppController handleError to not save message in session
 	 */
 	public function handleError($eventMsg, $userMsg, $errTrace) {
 		$this->log($errTrace);

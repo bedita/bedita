@@ -51,39 +51,39 @@ class SchemaTestCase extends BeditaTestCase {
     	$tables2 = $this->tableList($model);
     	$tableDetails2 = $this->tableDetails($tables2, $model);
 
-    	$this->assertTrue(count($tables1) == count($tables2), "Numero di tabelle differente!");
+    	$this->assertTrue(count($tables1) == count($tables2), "Number of tables is different!");
     	$diff = array_diff($tables1, $tables2);
-    	$this->assertTrue(empty($diff), "Tabelle in $db1 non presenti in $db2!");
+    	$this->assertTrue(empty($diff), "Tables in $db1 not present in $db2!");
 		if(!empty($diff)) {
 			pr($diff);
 		}
     	$diff = array_diff($tables2, $tables1);
-    	$this->assertTrue(empty($diff), "Tabelle in $db2 non presenti in $db1!");
+    	$this->assertTrue(empty($diff), "Tables in $db2 not present in $db1!");
 		if(!empty($diff)) {
 			pr($diff);
 		}
 
-		// analisi tabella per tabella
+		// analysis table by table
 		$commonTables = array_intersect($tables1, $tables2);
 		foreach ($commonTables as $t) {
 			$tabDb1 = $tableDetails1[$t];
 			$tabDb2 = $tableDetails2[$t];
 
 			foreach ($tabDb1 as $k=>$v) {
-	    		$this->assertNotNull($tabDb2[$k], "Campo $t.$k mancante su $db2!");
+	    		$this->assertNotNull($tabDb2[$k], "Field $t.$k missing on $db2!");
 				if(isset($tabDb2[$k])) {
 		    		$diff = array_diff_assoc($v, $tabDb2[$k]);
-		    		$this->assertTrue(empty($diff), "Campo $t.$k su $db1 diverso da $db2!");
+		    		$this->assertTrue(empty($diff), "Field $t.$k on $db1 is different than in $db2!");
 					if(!empty($diff)) {
 						pr($diff);
 					}
 				}
 			}
 			foreach ($tabDb2 as $k=>$v) {
-	    		$this->assertNotNull($tabDb1[$k], "Campo $t.$k mancante su $db1!");
+	    		$this->assertNotNull($tabDb1[$k], "Field $t.$k missing on $db1!");
 				if(isset($tabDb1[$k])) {
 		    		$diff = array_diff_assoc($v, $tabDb1[$k]);
-		    		$this->assertTrue(empty($diff), "Campo $t.$k su $db2 diverso da $db1!");
+		    		$this->assertTrue(empty($diff), "Field $t.$k on $db2 is different than in $db1!");
 					if(!empty($diff)) {
 						pr($diff);
 					}

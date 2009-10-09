@@ -44,7 +44,7 @@ class CreateIndexFieldsBehavior extends ModelBehavior {
 		if(!isset($model->{$model->primaryKey})) 
 		  throw new BeditaException("Missing primary key from {$model}");	
 		
-		// preleva l'oggetto appena creato/salvato
+		// get object created/saved
 		$bviorCompactResults 	= $model->bviorCompactResults ;
 		$model->bviorCompactResults = true ;
 		$model->contain(array("BEObject"));

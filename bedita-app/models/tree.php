@@ -39,24 +39,24 @@ class Tree extends BEAppModel
 	}
 
 	/**
-	 * definisce la radice dell'albero
+	 * Define tree root
 	 */
 	function setRoot($id) {
 		$this->id = $id ;
 	}
 
 	/**
-	 * ritorna l'indice  della radice dell'albero
+	 * Return root id
 	 */
 	function getRoot() {
 		return $this->id  ;
 	}
 
 	/**
-	 * Crea il clone di una determinata ramificazione.
+	 * Create clone of a tree/subtree
 	 *
-	 * @param integer $newId	Id radice ramificazione clonata
-	 * @param integer $id		Id ramificazione
+	 * @param integer $newId	new Id (clone)
+	 * @param integer $id		Id (original tree)
 	 */
 	function cloneTree($newId, $id = null) {
 		if (isset($id)) {
@@ -197,7 +197,7 @@ class Tree extends BEAppModel
 			$id = $this->id;
 		}
 
-		// Verifica che il nuovo parent non sia un discendente dell'albero da spostare
+		// Verify that new parent is not a descendant on the tree to move
 		$ret = $this->query("SELECT isParentTree({$id}, {$idNewParent}) AS parent");
 		if(!empty($ret[0][0]["parent"])) return  false ;
 
@@ -260,16 +260,16 @@ class Tree extends BEAppModel
 	}
 
 	/**
-	 * Riorganizza le posizioni dell'intero albero passato.
+	 * Organize positions of elements on the tree $tree
 	 *
-	 * @param array $tree	Item con l'albero.
+	 * @param array $tree	the tree.
 	 * 						{0..N}:
-	 * 							id			Id dell'elemento
-	 * 							parent		Nuovo parent
-	 * 							children	Elenco dei discendenti
+	 * 							id		element Id
+	 * 							parent		new parent
+	 * 							children	descendants list
 	 */
 	function moveAll(&$tree) {
-		// Cerca tutti parent_id dei rami passati e il priority
+		// Search all parent_id and priority of branches
 		$IDs = array() ;
 		$this->_getIDs($tree, $IDs) ;
 		$this->_setPriority($tree) ;
@@ -288,15 +288,14 @@ class Tree extends BEAppModel
 		unset($IDs) ;
 		unset($ret) ;
 
-		// Salva le ramificazioni spostate
+		// Save branches moved
 		$ret = $this->_moveAll($tree, $IDOldParents, $IDOldPriorities) ;
 
 		return $ret ;
 	}
 
 	/**
-	 * Preleva i path dell'oggetto passato dove al posto degli id
- 	 * ci sono i nickname
+	 * Get path for object $id, with nickname instead of id
  	 *
  	 * @param integer  $id
 	 * @return array/string
@@ -314,7 +313,7 @@ class Tree extends BEAppModel
 		$IDs = array() ;
 		$paths = array() ;
 		
-		// Preleva gli ID 
+		// Get IDs 
 		if(!count($ret)) return false ;
 		else if(count($ret) == 1) {
 			$paths[] = $ret[0]['trees']['path'] ;
@@ -336,7 +335,7 @@ class Tree extends BEAppModel
 			}
 		}
 		
-		// Preleva i nickname
+		// Get nicknames
 		$tmp = array() ;
 		foreach ($IDs as $id => $value) {
 			$tmp[] = $id ;
@@ -349,7 +348,7 @@ class Tree extends BEAppModel
 			$IDs[$ret[$i]['objects']['id']] = $ret[$i]['objects']['nickname'] ;
 		}
 		
-		// Trasforma i path
+		// Transform paths
 		for($i=0; $i < count($paths) ; $i++) {
 			$tmp = explode("/", $paths[$i]);
 		
@@ -368,7 +367,7 @@ class Tree extends BEAppModel
 			$id = $this->id;
 		}
 
-		// Verifica che il nuovo parent non sia un discendente dell'albero da spostare
+		// Verify that the new parent is nota a descendant on the tree to move
 		$ret = $this->query("SELECT isParentTree({$idParent}, {$id}) AS parent");
 		
 		if(empty($ret[0][0]["parent"])) return  false ;
@@ -381,7 +380,7 @@ class Tree extends BEAppModel
 			$id = $this->id;
 		}
 
-		// Verifica che il nuovo parent non sia un discendente dell'albero da spostare
+		// Verify that the new parent is nota a descendant on the tree to move
 		$ret = $this->query("SELECT id FROM objects where nickname = '{$nickname}' ");
 		if(!isset($ret[0]['objects']["id"])) return  false ;
 
@@ -464,9 +463,8 @@ class Tree extends BEAppModel
 	}
 
 	/**
-	 * Torna l'ID delll'oggetto con un determinato nickname che ha come parent.
-	 * Se ci sono + figli con lo stesso nick, torna il primo
-	 * parent_id
+	 * Get ID of object with nickname $nickname. If $parent_id is specified, the object should have the parent $parent_id
+	 * If there are objects with the same nickname, it returns the first found
 	 *
 	 * @param string $nickname
 	 * @param integer $parent_id		

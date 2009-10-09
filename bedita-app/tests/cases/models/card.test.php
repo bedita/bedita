@@ -70,7 +70,7 @@ class CardTestCase extends BeditaTestCase {
 	} 
 	
  	function testDelete() {
-        pr("Removinge inserted cards:");
+        pr("Removing inserted cards:");
         foreach ($this->inserted as $ins) {
         	$result = $this->Card->delete($ins);
 			$this->assertEqual($result, true);		

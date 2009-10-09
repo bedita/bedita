@@ -81,7 +81,7 @@ class Category extends BEAppModel {
 	}
 	
 	/**
-	 * Definisce i valori di default.
+	 * Define default values
 	 */		
 	function beforeValidate() {
 		$data = &$this->data[$this->name] ;
@@ -279,7 +279,7 @@ class Category extends BEAppModel {
 	
 	
 	public function getContentsByTag($label) {
-		// bind association on th fly
+		// bind association on the fly
 		$hasAndBelongsToMany = array(
 			'BEObject' =>
 				array(

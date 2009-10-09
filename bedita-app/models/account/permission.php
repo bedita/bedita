@@ -155,7 +155,7 @@ class Permission extends BEAppModel
 	}
 	
 	/**
-	 * check if a permission over an object is setted 
+	 * check if a permission over an object is set 
 	 * 
 	 * @param $objectId
 	 * @param $flag permission
@@ -173,9 +173,9 @@ class Permission extends BEAppModel
 	}
 	
 	/**
-	 * Cancella  un permesso per un oggetto.
+	 * Delete a permit for an object
 	 *
-	 * @param integer $id		ID dell'oggetto trattato
+	 * @param integer $id		object ID
 	 * @param array $perms		array like (array("flag"=>1, "switch" => "group", "name" => "guest"), array(...))
 	 */
 	public function remove($objectId, $perms) {

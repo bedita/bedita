@@ -79,15 +79,12 @@ class AuthenticationsController extends AppController {
 			$this->result=self::ERROR;
 		}
    }
-   
-	/**
-	 * logout
-	 */
+
 	function logout() {
 		$this->eventInfo("logged out");
 		$this->BeAuth->logout() ;
 	}
-	
+
 	 protected function forward($action, $esito) {
 	 	$REDIRECT = array(
 	 			"logout"	=> 	array(

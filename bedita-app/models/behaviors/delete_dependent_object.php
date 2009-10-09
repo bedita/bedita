@@ -40,7 +40,7 @@ class DeleteDependentObjectBehavior extends ModelBehavior {
 	 * find the descendants to delete
 	 */
 	function beforeDelete(&$model) {
-		// Se non vengono indicati delle tipologie di oggetti, esce
+		// If no object types, return
 		if(!count($this->config[$model->name])) return ;
 		
 		$filter = array() ;
@@ -58,7 +58,7 @@ class DeleteDependentObjectBehavior extends ModelBehavior {
 	}
 	
 	/**
-	 * delete the descendants finded previously
+	 * delete the descendants found previously
 	 */
 	public function afterDelete(&$model) {
 		if (!empty($model->tmpTable))

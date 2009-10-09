@@ -47,9 +47,8 @@ class DeleteObjectBehavior extends ModelBehavior {
 	}
 
 	/**
-	 * Elimina tutte le associazioni, saranno reiserite dopo la cancellazione.
-	 * Dati i vincoli (foreignKey)  tra le tabelle in DB, viene forzata la 
-	 * cancellazione del record della tabella iniziale, objects
+	 * Delete all associations, they will be re-established after deleting
+	 * Considering foreignKeys among tables, force deleting records on table 'objects'
 	 *
 	 * if specified delete related object too
 	 * @return unknown
@@ -86,7 +85,7 @@ class DeleteObjectBehavior extends ModelBehavior {
 		
 		$model->table =  (isset($configure) && is_string($configure)) ? $configure : $model->table ;
 
-		// Cancella i riferimenti del'oggetto nell'albero
+		// Delete object references on tree as well
 		$tree = ClassRegistry::init('Tree');
 		if (!$tree->deleteAll(array("id" => $model->id))) {
 			throw new BeditaException(__("Error deleting tree",true));	
@@ -102,7 +101,7 @@ class DeleteObjectBehavior extends ModelBehavior {
 	}
 
 	/**
-	 * Reinserice le associazioni
+	 * Re-establish associations (insert associations)
 	 *
 	 */
 	function afterDelete(&$model) {
@@ -111,7 +110,7 @@ class DeleteObjectBehavior extends ModelBehavior {
 			unset($model->tmpTable) ;
 		}
 		if (!empty($model->tmpAssociations)) {
-			// Ripristina le associazioni
+			// Re-establish associations
 			foreach ($model->tmpAssociations as $association => $v) {
 				$model->$association = $v ;
 			}

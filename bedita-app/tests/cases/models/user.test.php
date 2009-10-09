@@ -60,7 +60,7 @@ class UserTestCase extends BeditaTestCase {
 	} 
 	
  	function testDelete() {
-        pr("Removinge inserted users:");
+        pr("Removing inserted users:");
         foreach ($this->inserted as $ins) {
         	$result = $this->User->delete($ins);
 			$this->assertEqual($result, true);		

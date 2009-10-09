@@ -72,12 +72,11 @@ class Section extends BeditaCollectionModel
 	//////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Formatta i dati per la creazione di un clone, ogni tipo
-	 * di oggetto esegue operazioni specifiche richiamando.
-	 * Trova l'id del ramo in cui e' inserita
+	 * Format data for the creation of a clone; every object type execute specific operation calling this method
+	 * Find the id of the branch where the object is
 	 *
-	 * @param array $data		Dati da formattare
-	 * @param object $source	Oggetto sorgente
+	 * @param array $data		Data to format
+	 * @param object $source	Source object
 	 */
 	protected function _formatDataForClone(&$data, $source = null) {
 		if(!class_exists('Tree')) loadModel('Tree');
@@ -89,9 +88,7 @@ class Section extends BeditaCollectionModel
 	}	
 	
 	/**
-	 * Esegue ricorsivamente solo la clonazione dei figli di tipo: Section e Community,
-	 * gli altri reinscerisce un link
-	 *
+	 * Execute recursively only the clonation of types: Section e Community, for the others insert a link
 	 */
 	protected function insertChildrenClone() {
 		$conf  	= Configure::getInstance() ;

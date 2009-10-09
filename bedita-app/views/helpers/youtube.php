@@ -50,7 +50,7 @@ class YoutubeHelper extends AppHelper {
 		if(!isset($this->conf->media_providers["youtube"]["params"])) 
 			return "" ;
 		
-		// formatta le variabili
+		// format variables
 		$attributes = array_merge($this->conf->media_providers["youtube"]["params"], $attributes) ;
 		$width = $attributes['width'] ;
 		$height = $attributes['height'] ;

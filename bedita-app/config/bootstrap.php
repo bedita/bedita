@@ -92,7 +92,7 @@ function shutdownTransation() {
 	}
 }
 
-// Registra la funzione di shutdown
+// Register transaction shutdown function
 register_shutdown_function('shutdownTransation');
 
 //EOF

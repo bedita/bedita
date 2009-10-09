@@ -51,8 +51,8 @@ function smarty_function_edit_url_query($params, &$smarty) {
 	}
 
 	// rebuild query
-	// $parsed['query'] = http_build_query($query); # funzione documentata ma non ancora implementata nella nostra versione
-	// metodo alternativo
+	// $parsed['query'] = http_build_query($query); # function documented but still not implemented in our version
+	// another method
 	foreach ($query as $_key => $_value) {
 
 		if ( !empty($queryString) ) $queryString .= "&";

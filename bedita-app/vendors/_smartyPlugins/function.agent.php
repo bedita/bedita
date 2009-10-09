@@ -5,9 +5,9 @@
  * -------------------------------------------------------------
  * Type:     function
  * Name:     agent
- * Purpose:  riconoscimento dell' user_agent.
- 			 Parametri:
-			 var	nome della variabile dove inserire il risultato. Un'array con i seguenti valori:
+ * Purpose:  get user_agent.
+ 			 Parameters:
+			 var	variable that will contain the result. An array with following values:
 			    [IE] => true/false
 			    [IE5] => true/false
 			    [IE6] => true/false

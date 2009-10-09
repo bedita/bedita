@@ -66,7 +66,7 @@ class BeurlHelper extends AppHelper {
 	}
 	
 	/**
-	 * return array without parmas passed to the method
+	 * return array without params passed to the method
 	 * 
 	 * @param $cleanFromFields
 	 * @return array of params cleaned

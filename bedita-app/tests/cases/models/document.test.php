@@ -83,7 +83,7 @@ class DocumentTestCase extends BeditaTestCase {
  	}	
 	
  	function testDelete() {
-        pr("Removinge inserted documents:");
+        pr("Removing inserted documents:");
         foreach ($this->inserted as $ins) {
         	$result = $this->Document->delete($ins);
 			$this->assertEqual($result, true);		

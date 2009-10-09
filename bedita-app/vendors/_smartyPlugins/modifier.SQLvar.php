@@ -4,8 +4,8 @@
  * ------------------------------------------------------------
  * Type:     modifier
  * Name:     mysqlvar
- * Purpose:  setup variabile da inserire in una stringa SQL 
- * 			 inserisce NULL aggiunge gli slash
+ * Purpose:  variable setup to insert into an SQL string 
+ * 			 insert NULL add slashes
  * ------------------------------------------------------------
  */
 function smarty_modifier_SQLvar($var) {
