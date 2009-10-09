@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * News content
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

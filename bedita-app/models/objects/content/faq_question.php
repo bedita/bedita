@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Frequently asked questions content
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

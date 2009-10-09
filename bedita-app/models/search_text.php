@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Search text object
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

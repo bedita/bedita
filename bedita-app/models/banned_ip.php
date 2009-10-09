@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Banned ip object
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

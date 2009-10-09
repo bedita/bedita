@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Mail group card for addressbook
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

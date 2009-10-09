@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Tree structure
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

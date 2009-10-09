@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Answer object. Related to QuestionnaireResult, Question, QuestionAnswer.
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

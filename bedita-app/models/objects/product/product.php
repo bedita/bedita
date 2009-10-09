@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Base product
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

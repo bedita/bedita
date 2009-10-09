@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Video stream
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

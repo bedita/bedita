@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Book product
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

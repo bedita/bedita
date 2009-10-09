@@ -74,7 +74,7 @@ class YoutubeHelper extends AppHelper {
 	 * @param array $obj
 	 * @return youtube path
 	 */
-	function sourceEmbed($obj) {
+	function sourceEmbed(array &$obj) {
 		return $obj['path'] ;
 	}
 	

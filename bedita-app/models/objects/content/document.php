@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Document content
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Result for questionnaire
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

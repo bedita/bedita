@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Author object
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

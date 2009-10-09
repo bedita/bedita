@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Basic Stream
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Mail template for email
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

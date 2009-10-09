@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Base annotation
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

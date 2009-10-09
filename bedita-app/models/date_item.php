@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Base Date object
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

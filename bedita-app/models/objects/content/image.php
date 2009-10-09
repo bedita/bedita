@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Image stream
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

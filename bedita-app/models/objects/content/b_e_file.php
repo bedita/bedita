@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * File stream
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

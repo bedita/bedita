@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Question answer object
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

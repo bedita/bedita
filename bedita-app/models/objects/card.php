@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Addressbook card object
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

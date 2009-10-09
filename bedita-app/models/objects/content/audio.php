@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Audio stream
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

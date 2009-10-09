@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Log for Event
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

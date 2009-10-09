@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Relation object
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

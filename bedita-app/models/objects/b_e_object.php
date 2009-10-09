@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Basical object
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

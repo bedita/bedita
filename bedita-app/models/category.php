@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Generic category
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

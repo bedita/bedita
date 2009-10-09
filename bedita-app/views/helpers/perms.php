@@ -20,20 +20,17 @@
  */
 
 /**
- * 
+ * Object permission helper
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
  * 
  * $Id$
- */
-/**
- * Perms helper library.
  * 
- * BEDITA_PERMS_READ",			0x1
- * BEDITA_PERMS_MODIFY",		0x2
- * BEDITA_PERMS_READ_MODIFY",	BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY
+ * BEDITA_PERMS_READ,			0x1
+ * BEDITA_PERMS_MODIFY,			0x2
+ * BEDITA_PERMS_READ_MODIFY,	BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY
  */
 class PermsHelper extends AppHelper {
 

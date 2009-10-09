@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Hash asynchronous job object
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

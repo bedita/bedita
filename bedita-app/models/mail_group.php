@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Mail group object
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

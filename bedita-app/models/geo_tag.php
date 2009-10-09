@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Geographic tag object - geographical identification metadata
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

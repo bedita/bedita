@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Property object
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

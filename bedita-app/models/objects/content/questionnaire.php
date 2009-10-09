@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Questionnaire content
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Lang text object for translation
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Section of website/publication
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

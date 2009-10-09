@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Multimedia gallery
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

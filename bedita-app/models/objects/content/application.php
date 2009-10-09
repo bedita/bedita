@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Multimedia application object
  *
  * @version			$Revision: 1627 $
  * @modifiedby 		$LastChangedBy: bato $

@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Generic content object
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
