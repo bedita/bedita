@@ -70,7 +70,7 @@ class BeVimeoComponent extends Object {
 		if(!$this->getInfoVideo($id)) {
 			return false;
 		}
-		return $this->info['thumbnail_large'];
+		return $this->info['thumbnail_medium'];
 	}
 	
 	/**
@@ -88,7 +88,7 @@ class BeVimeoComponent extends Object {
 		$data['description'] = (empty($data['description']))? $this->info['description'] : $data['description'];
 		$data['path']		= $this->info['url'] ;
 		if (empty($data['thumbnail']))
-			$data['thumbnail']	= $this->info['thumbnail_large'];
+			$data['thumbnail']	= $this->info['thumbnail_medium'];
 		$data['name']		= preg_replace("/[\'\"]/", "", $data['title']);
 		$data['mime_type']	= "video/".$data["provider"];
 		return true;
