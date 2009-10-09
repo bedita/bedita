@@ -563,7 +563,7 @@ $config['media_providers'] = array(
 		"params" => array(
 			"width"		=> 300,
 			"height"	=> 250,
-			"urlinfo" 	=> "http://vimeo.com/api/clip/%s.%s",
+			"urlinfo" 	=> "http://vimeo.com/api/v2/video/%s.%s",
 			"urlembed"	=> "http://vimeo.com/api/oembed.json?url=%s"
 		)
 	)

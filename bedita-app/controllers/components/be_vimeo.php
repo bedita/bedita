@@ -85,7 +85,7 @@ class BeVimeoComponent extends Object {
 		}
 		
 		$data['title'] = (empty($data['title']))? $this->info['title'] : trim($data['title']);
-		$data['description'] = (empty($data['description']))? $this->info['caption'] : $data['description'];
+		$data['description'] = (empty($data['description']))? $this->info['description'] : $data['description'];
 		$data['path']		= $this->info['url'] ;
 		if (empty($data['thumbnail']))
 			$data['thumbnail']	= $this->info['thumbnail_large'];
