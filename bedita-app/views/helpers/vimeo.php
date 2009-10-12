@@ -58,7 +58,9 @@ class VimeoHelper extends AppHelper {
 		foreach ($attributes as $key => $val) {
 			$url .= "&" . $key . "=" . $val; 
 		}
-		if (!$oEmbed = $this->oEmbedVideo($url)) {
+		$vimeoParams = Configure::read("media_providers.vimeo.params");
+		$url = sprintf($vimeoParams["urlembed"], $url);
+		if (!$oEmbed = $this->oEmbedInfo($url)) {
 			return false;
 		}
 						
@@ -73,21 +75,6 @@ class VimeoHelper extends AppHelper {
 	 */
 	function sourceEmbed($obj) {
 		return $obj['path'] ;
-	}
-	
-	/**
-	 * get oEmbed data (http://vimeo.com/api/docs/oembed)
-	 * 
-	 * @param $url
-	 * @return unknown_type
-	 */
-	private function oEmbedVideo($url) {
-		$vimeoParams = Configure::read("media_providers.vimeo.params");
-		if (!$json = file_get_contents(sprintf($vimeoParams["urlembed"], $url))) {
-			return false;
-		}
-		$oEmbedInfo = (json_decode($json,true));
-		return $oEmbedInfo;
 	}
 	
 }

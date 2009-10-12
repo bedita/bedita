@@ -75,6 +75,29 @@ class AppHelper extends Helper {
 		return $helperObject;
 	}
 	
+	/**
+	 * return oEmbed format (see http://www.oembed.com)
+	 * 
+	 * @param $url, URL on third party sites
+	 * @param $arrayFrom, specify which format is expected (json, xml) to build array in the right way
+	 * 					if != "json" and != "xml" return original oEmbed format (i.e. JSON object or XML) 
+	 * @return array
+	 */
+	protected function oEmbedInfo($url, $arrayFrom="json") {
+		if (!$oEmbedInfo = file_get_contents($url)) {
+			return false;
+		}
+		if ($arrayFrom == "json") {
+			$oEmbedInfo = (json_decode($oEmbedInfo,true));
+		} elseif ($arrayFrom == "xml") {
+			$xml = ClassRegistry::init("Xml", "Core");
+			$xml->load($oEmbedInfo);
+			$oEmbedInfo = Set::reverse($xml);
+			$oEmbedInfo = $oEmbedInfo["Oembed"];
+		}
+		return $oEmbedInfo;
+	}
+	
 }
  
 ?>

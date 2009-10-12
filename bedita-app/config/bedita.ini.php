@@ -540,7 +540,7 @@ $config['media_providers'] = array(
 			"width" 	=> 300,
 			"height" 	=> 250,
 			"urlthumb"	=> "http://i.ytimg.com/vi/%s/default.jpg",
-			"embedTag" 	=> "<embed src='http://www.youtube.com/v/%s%s' type='application/x-shockwave-flash' wmode='transparent' width='%d' height='%d'></embed>"
+			"urlembed"	=> "http://www.youtube.com/oembed?url=%s"
 		)
 	),
 	"blip"	=> array(
@@ -552,7 +552,7 @@ $config['media_providers'] = array(
 			"width"		=> 300,
 			"height"	=> 250,
 			"urlinfo" 	=> "http://www.blip.tv/file/%s?skin=json",
-			"urlembed"	=> "http://www.blip.tv/players/embed/?posts_id=%s&players_id=-1&skin=json&callback=DoSomethingActions.playerSelector.gotEmbedCode"
+			"urlembed"	=> "http://blip.tv/oembed/?url=%s"
 		)
 	),
 	"vimeo"	=> array(

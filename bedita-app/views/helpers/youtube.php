@@ -50,23 +50,21 @@ class YoutubeHelper extends AppHelper {
 		if(!isset($this->conf->media_providers["youtube"]["params"])) 
 			return "" ;
 		
-		// format variables
-		$attributes = array_merge($this->conf->media_providers["youtube"]["params"], $attributes) ;
-		$width = $attributes['width'] ;
-		$height = $attributes['height'] ;
-		$embedTag = $attributes["embedTag"];
-		
-		unset($attributes["embedTag"]);
-		unset($attributes["urlthumb"]);
-		unset($attributes['conf']) ;
-		unset($attributes['width']) ;
-		unset($attributes['height']) ;
-		$params = "" ;
-		foreach ($attributes as $key => $value) {
-			$params .= "&$key=$value" ;
+		if (empty($attributes["width"])) { 
+			$attributes["width"] = $this->conf->media_providers["youtube"]["params"]["width"];
+		}
+		if (empty($attributes["height"])) { 
+			$attributes["height"] = $this->conf->media_providers["youtube"]["params"]["height"];
 		}
 
-		return trim(sprintf($embedTag, $obj['uid'], $params, $width, $height)) ;
+		$url = rawurlencode($obj["path"]);
+		$url .= "&format=json&maxwidth=" . $attributes["width"] . "&maxheight=" . $attributes["height"];
+		$url = sprintf($this->conf->media_providers["youtube"]["params"]["urlembed"], $url);
+		if (!$oEmbed = $this->oEmbedInfo($url)) {
+			return false;
+		}
+						
+		return $oEmbed["html"] ;
 	}
 	
 	/**
