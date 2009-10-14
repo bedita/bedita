@@ -628,10 +628,28 @@ abstract class FrontendController extends AppController {
 		
 		if($xml_out) {
 
-			$urlset[] = array();
-			$i=0;
+			$pubMap = array();
+			$pubMap['loc'] = $this->publication["public_url"];
+			$pubMap['lastmod'] =  !empty($this->publication['last_modified']) ?
+				substr($this->publication["last_modified"], 0, 10) : substr($this->publication["modified"], 0, 10);
+			$pubMap['priority'] = !empty($this->publication['map_priority']) ? 
+				$this->publication['map_priority'] : null;
+			$pubMap['changefreq'] = !empty($this->publication['map_changefreq']) ? 
+				$this->publication['map_changefreq'] : null;
+			$urlset[] = $pubMap;
+			if($extract_all) {
+				$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")),
+						"sectionPath" => "");
+				$objs = $this->loadSectionObjects($conf->frontendAreaId, $option);
+				$resultObjects = (!$this->sectionOptions["itemsByType"] && !empty($objs["childContents"]))? $objs["childContents"] : $objs;
+				if(!empty($resultObjects)) {
+					$sectionsTree = array_merge($resultObjects, $sectionsTree);
+				}
+			}				
+
+			$i = count($urlset);
 			$sectionModel = ClassRegistry::init("Section");
-			foreach($sectionsTree as $k => $v) {
+			foreach($sectionsTree as $v) {
 				$urlset[$i] = array();
 				$urlset[$i]['loc'] = $this->publication["public_url"]. $v['canonicalPath'];
 				
@@ -655,8 +673,6 @@ abstract class FrontendController extends AppController {
 					$urlset[$i]['lastmod'] = substr($v["modified"], 0, 10);
 					
 				}
-				//$urlset[$i]['changefreq'] = 'always'; /*always,hourly,daily,weekly,monthly,yearly,never*/
-				//$urlset[$i]['priority'] = '0.5';
 				$i++;
 			}
 			$this->set('urlset',$urlset);
@@ -987,7 +1003,7 @@ abstract class FrontendController extends AppController {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id'], false);
 				if ($obj !== self::UNAUTHORIZED) {
-					if(!empty($options["sectionPath"])) {
+					if(isset($options["sectionPath"])) {
 						$obj["canonicalPath"] = $options["sectionPath"] . "/" . $obj["nickname"];
 					}	
 					if ($this->sectionOptions["itemsByType"]) {
