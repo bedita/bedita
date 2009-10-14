@@ -641,6 +641,8 @@ abstract class FrontendController extends AppController {
 						array("conditions" => array("id"=>$v["id"]), "contain" => array()));
 					if(!empty($secFields['last_modified'])) {
 						$urlset[$i]['lastmod'] = substr($secFields['last_modified'], 0, 10);
+					} else {
+						$urlset[$i]['lastmod'] = substr($v["modified"], 0, 10);
 					}
 					if(!empty($secFields['map_priority'])) {
 						$urlset[$i]['priority'] = $secFields['map_priority'];
