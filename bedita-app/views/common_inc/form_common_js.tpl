@@ -78,7 +78,13 @@ $(document).ready(function(){
 {/literal}{/if}{literal}
 
 
-{/literal}{if !empty($object.Permissions) && !($perms->isWritable($user.userid,$user.groups,$object.Permissions))}{literal}
+{/literal}{if !empty($object.Permissions)}{literal}
+
+		$(".secondacolonna .modules label").addClass("lock").attr("title","object with limited permissions");
+	
+{/literal}{/if}{literal}
+
+{/literal}{if !($perms->isWritable($user.userid,$user.groups,$object.Permissions))}{literal}
 
 		//$("#delBEObject").attr("disabled",true);
 		//$("#saveBEObject,#cloneBEObject,#delBEObject").attr("disabled",true);

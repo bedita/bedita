@@ -8,14 +8,18 @@ $(document).ready(function(){
 		lineHeight: 16
 	});
 	$(".areaform input[type='text'], .areaform textarea").width(340);
-	
-
+	/*
+	{/literal}{if !empty($object.Permissions)}{literal}
+		$(".head H1").prepend("<img src='/img/iconLocked.png' style='vertical-align:sub' alt='permissions set' />");
+	{/literal}{/if}{literal}
+	*/
 });
 </script>
 {/literal}
+		
+
 
 {include file="../common_inc/form_common_js.tpl"}
-
 
 <input type="hidden" name="data[id]" value="{$object.id|default:null}"/>
 <input type="hidden" name="data[fixed]" value="{$object.fixed|default:0}"/>

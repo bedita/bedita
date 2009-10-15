@@ -27,7 +27,9 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 
 	{literal}
 	$(document).ready(function() {
+	
 		$(".publishingtree H2:first A").click();
+	
 	});
 	{/literal}
 
@@ -38,6 +40,7 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 
 <body>
 
+
 {include file="../common_inc/modulesmenu.tpl"}
 
 {include file="inc/menuleft.tpl" method="index"}
@@ -45,7 +48,7 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 {include file="inc/menucommands.tpl" fixed=false}
 
 <div class="head">
-		
+
 	<h1>{t}Publishing tree{/t}</h1>
 
 </div> 

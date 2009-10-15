@@ -80,13 +80,14 @@ function loadUserGroupAjax(url) {
 <fieldset id="permissions">
 <div class="loader" id="loaderug"></div>
 
-<table class="indexlist" id="frmCustomPermissions">
+<table class="indexlist" border=0 id="frmCustomPermissions">
+{if !empty($el.Permissions)}
 <tr>
-	<th>{t}name{/t}</th>
-	<th>{t}permission{/t}</th>
+	<th style="width:190px">{t}name{/t}</th>
+	<th style="width:190px">{t}permission{/t}</th>
 	<th>&nbsp;</th>
 </tr>
-{if !empty($el.Permissions)}
+
 	{section name=i loop=$el.Permissions}
 	{assign var="perm" 	value=$el.Permissions[i]}
 	{assign var="i" 	value=$smarty.section.i.index}
@@ -111,14 +112,19 @@ function loadUserGroupAjax(url) {
 		</tr>	
 		
 	{/section}
-
+{else}
+<tr>
+	<th style="width:190px"></th>
+	<th style="width:190px"></th>
+	<th>&nbsp;</th>
+</tr>
 {/if}
 </table>
 
-<table class="indexlist" id="selCustomPermissions">
+<table class="indexlist" border=0 id="selCustomPermissions">
 <tr>
-	<th>{t}add group{/t}:</th>
-	<th>{t}permission{/t}</th>
+	<th style="width:190px">{t}add group{/t}:</th>
+	<th style="width:190px">{t}permission{/t}</th>
 	<th>&nbsp;</th>
 </tr>
 
