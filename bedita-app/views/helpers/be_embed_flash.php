@@ -35,6 +35,15 @@ class BeEmbedFlashHelper extends AppHelper {
 	private $widthDef = "";
 	private $appVerDef = "9.0.0";
 	
+	/**
+	 * embed SWF flash object using swfobject
+	 * 
+	 * @param $swfUrl
+	 * @param $attributes
+	 * @param $flashvars
+	 * @param $params
+	 * @return html code
+	 */
 	public function embedSwf ($swfUrl, $attributes = array(), $flashvars = array(), $params = array()) {
 		$width = (!empty($attributes['width'])) ? $attributes['width'] : $this->widthDef;
 		$height = (!empty($attributes['height'])) ? $attributes['height'] : $this->heightDef;
@@ -68,6 +77,16 @@ class BeEmbedFlashHelper extends AppHelper {
 		return $this->embedPlayer($audioFile, $attributes, $flashvars, $params, "audio");	
 	}
 	
+	/**
+	 * generate code to embed video/audio player
+	 * 
+	 * @param $fileToPlay
+	 * @param $attributes
+	 * @param $flashvars
+	 * @param $params
+	 * @param $fileType
+	 * @return unknown_type
+	 */
 	public function embedPlayer($fileToPlay, $attributes = array(), $flashvars = array(), $params = array(), $fileType=null) {
 		if (empty($fileType)) {
 			$extension = $this->getFileExtension($fileToPlay);
@@ -98,7 +117,14 @@ class BeEmbedFlashHelper extends AppHelper {
 	}
 	
 	
-	
+	/**
+	 * embed generic flash object (video, swf, audio mp3)
+	 * 
+	 * @param $obj BEdita multimedia object
+	 * @param $params contains flashvars, params <param> tag
+	 * @param $htmlAttributes
+	 * @return html code
+	 */
 	public function embed($obj , $params, $htmlAttributes ) {
 		
 		$flashvars = empty($params['flashvars']) ? array() : $params['flashvars'];	
@@ -129,6 +155,19 @@ class BeEmbedFlashHelper extends AppHelper {
 		return strtolower($path_parts['extension']);
 	}
 	
+	/**
+	 * generate code for embed Flowplayer
+	 * default behavior: generate <div></div> and flowplayer javascript call
+	 * 			$params[htmlEmbed] = true => generate directly HTML code (<object....><param>...<embed/>...</object>) no javascript 
+	 * 
+	 * @param string $swfUrl
+	 * @param string $mediaUrl, audio/video file (mp3/flv)
+	 * @param array $attributes, html attributes
+	 * @param array $flashvars
+	 * @param array $params
+	 * @param string $fileType, video/audio
+	 * @return code for views
+	 */
 	public function embedFlowplayer($swfUrl, $mediaUrl, $attributes, $flashvars, $params, $fileType) {
 		$defaultAudioPlayer = array("controls" => array("fullscreen" => false));
 		$defaultVideoPlayer = array("controls" => array());
@@ -174,33 +213,64 @@ class BeEmbedFlashHelper extends AppHelper {
 			$attributes['id'] = preg_replace("/[\s\.]/", "", "be_id_" . microtime());
 		}
 		
-		$params = array_merge($params, array('src' => $swfUrl));
-		if (defined("BEDITA_CORE_PATH") && !file_exists(APP . "webroot/js/flowplayer.min.js")) {
-			$output = $this->Javascript->link(Configure::read('beditaUrl') . "/js/flowplayer.min.js",false);
+		if (!empty($params["htmlEmbed"])) {
+			unset($params["htmlEmbed"]);
+			$flashvars = "config=" . json_encode($flashvars);
+			$output = $this->embedHtml($swfUrl, $attributes, $flashvars, $params);
 		} else {
-			$output = $this->Javascript->link("flowplayer.min",false);
+			$params = array_merge($params, array('src' => $swfUrl));
+			if (defined("BEDITA_CORE_PATH") && !file_exists(APP . "webroot/js/flowplayer.min.js")) {
+				$output = $this->Javascript->link(Configure::read('beditaUrl') . "/js/flowplayer.min.js",false);
+			} else {
+				$output = $this->Javascript->link("flowplayer.min",false);
+			}
+			
+			$output .= "<script type='text/javascript'>" . 
+				"flowplayer('".$attributes['id']."', ".json_encode($params).", ".json_encode($flashvars).");".
+			"</script>";
+			
+			$width = $attributes["width"];
+			$height = $attributes["height"];
+			unset($attributes["width"]);
+			unset($attributes["height"]);
+			$output .= "<div";
+			foreach ($attributes as $key => $val) {
+				$output .= " " . $key . "=\"" . $val . "\"";
+			}
+			$output .= " style=\"width: ". $width ."px; height: ". $height ."px; z-index: 200;\"";
+			$output .= "></div>";
 		}
-		
-		$output .= "<script type='text/javascript'>" . 
-			"flowplayer('".$attributes['id']."', ".json_encode($params).", ".json_encode($flashvars).");".
-		"</script>";
-		
-		$width = $attributes["width"];
-		$height = $attributes["height"];
-		unset($attributes["width"]);
-		unset($attributes["height"]);
-		$output .= "<div";
-		foreach ($attributes as $key => $val) {
-			$output .= " " . $key . "=\"" . $val . "\"";
-		}
-		$output .= " style=\"width: ". $width ."px; height: ". $height ."px;\"";
-		$output .= "></div>";
 		return $output;
 	}
 	
 	public function embedWpaudioplayer($swfUrl, $audioFileUrl, $attributes, $flashvars, $params) {
 		$flashvars["soundFile"] = $audioFileUrl;
 		return $this->embedSwf( $swfUrl , $attributes, $flashvars, $params );				 
+	}
+	
+	/**
+	 * generate HTML code for embedding flash object  
+	 * @param $swfUrl
+	 * @param $attributes
+	 * @param $flashvars
+	 * @param $params
+	 * @return HTML code
+	 */
+	public function embedHtml($swfUrl, $attributes, $flashvars=array(), $params=array()) {
+		$flashvars = (is_array($flashvars))? json_encode($flashvars) : $flashvars;
+		$output = "<object id='".$attributes["id"]."' classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000'". 
+				 	 " width='".$attributes["width"]."' height=".$attributes["height"]."'>".
+				  "<param name='movie' value='".$swfUrl."' />". 
+				  "<param name='flashvars' value='".$flashvars."' />";
+		foreach ($params as $key => $value) {
+			$output .= "<param name='".$key."' value='".$value."' />";
+		}
+		$output.= "<embed type='application/x-shockwave-flash'" .
+					" width='".$attributes["width"]."' height=".$attributes["height"]."'". 
+					" src='".$swfUrl."'".
+					" flashvars='".$flashvars."'/>".
+				  "</object>";
+		return $output;
 	}
 }
 
