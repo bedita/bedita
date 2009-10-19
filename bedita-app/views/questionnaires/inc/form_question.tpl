@@ -223,12 +223,11 @@
 				<td>
 					<ul>
 					{foreach from=$object.RelatedObject item=item}
+					{if ($item.switch == "question")}
 						<li>&bull; <a title="{$item.object_id}" href="/view/{$item.object_id}">{$item.object_id}</a></li>
-					{foreachelse}
-						<li>&bull; <i>{t}nowhere{/t}</i></li>
+					{/if}
 					{/foreach}
 					</ul>
-					
 				</td>
 				
 			</tr>
