@@ -54,7 +54,7 @@ $(document).ready(function(){
 	{capture name="theader"}
 		<tr>
 			<th></th>
-			<th>{$beToolbar->order('title','name')}</th>
+			<th>{$beToolbar->order('title','name')}&nbsp;&nbsp;&nbsp;&nbsp;{$beToolbar->order('surname','surname')}</th>
 			<th>{$beToolbar->order('company_name','company')}</th>
 			<th>{$beToolbar->order('status','Status')}</th>
 			<th>{$beToolbar->order('modified','modified')}</th>
