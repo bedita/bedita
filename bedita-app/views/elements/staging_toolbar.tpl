@@ -120,20 +120,16 @@ $(document).ready(function(){
 	});
 */
 
-$(".stagingmenu LI A").toggle(
+$(".stagingmenu LI A").click(
       function () {
-       	var myLeft = $(this).position().left;
-		var trigged  = $(this).attr("rel");
-		$(".stagingsubmenu").slideUp('normal');
-		$("#"+trigged+"").css("left",myLeft).slideDown('normal');
-      },
-      function () {
-		$(".stagingsubmenu").slideUp('normal');
+        var myLeft 	= $(this).position().left;
+		var rel  	= $(this).attr("rel");
+		var trigged  	= $("#"+rel+"");
+		$(".stagingsubmenu").not(trigged).slideUp('normal');
+		$(trigged).css("left",myLeft).slideToggle('normal');
+
       }
     );
-
-
-
 
 	$(".openclose").click(function(){
 		$(".stagingsubmenu").hide();
@@ -174,7 +170,7 @@ $(".stagingmenu LI A").toggle(
 		{/if}
 		
 		<li class="openclose arrow" style="list-style:none; padding:0px; margin:0px; margin-top:-2px; font-size:2em; cursor:pointer;">
-			<a>‹</a>
+			‹
 		</li>
 	</ul>
 
