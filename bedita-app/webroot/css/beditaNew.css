@@ -1682,6 +1682,11 @@ P.editornotes {
 	padding-top:5px;
 }
 
+
+.bedev {
+	background-color:pink;
+}
+
 /*...........................................    
 
    Print Layout
@@ -1782,7 +1787,7 @@ INPUT[type=button], INPUT[type=submit]  {
 
 #vcontainer {
 	border:5px solid #000;
-			border-radius : 11px; 
+	border-radius : 11px; 
 	-moz-border-radius : 11px; 
 	-webkit-border-radius : 11px;
 	-khtml-border-radius: 11px;

@@ -24,7 +24,7 @@ function smarty_block_bedev($params, $text, &$smarty)
 	if(!defined('BEDITA_DEV_SYSTEM'))
 		return;
 
-	return "<div style='border: 1px solid red;'>".$text."</div>";
+	return "<div class='bedev'>".$text."</div>";
 }
 
 ?>
