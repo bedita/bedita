@@ -97,10 +97,17 @@ class AddressbookController extends ModulesController {
 	function delete() {
 		$this->checkWriteModulePermission();
 		$objectsListDeleted = $this->deleteObjects("Card");
+		$this->userInfoMessage(__("Card deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("card $objectsListDeleted deleted");
+	}
+
+	function deleteSelected() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("Card");
 		$this->userInfoMessage(__("Cards deleted", true) . " -  " . $objectsListDeleted);
 		$this->eventInfo("cards $objectsListDeleted deleted");
 	}
-
+	
 	public function categories() {
 		$this->showCategories($this->Card);
 	}
@@ -148,12 +155,16 @@ class AddressbookController extends ModulesController {
 							"ERROR"	=> "/addressbook/view/".@$this->Card->id 
 							), 
 			"delete" =>	array(
-							"OK"	=> "/addressbook",
+							"OK"	=> $this->Session->read('backFromView'),
 							"ERROR"	=> "/addressbook/view/".@$this->params['pass'][0]
 							),
+			"deleteSelected" =>	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+							),
 			"changeStatusObjects"	=> 	array(
-							"OK"	=> "/addressbook",
-							"ERROR"	=> "/addressbook" 
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							),			
  			"saveCategories" 	=> array(
  							"OK"	=> "/addressbook/categories",
@@ -164,9 +175,9 @@ class AddressbookController extends ModulesController {
  							"ERROR"	=> "/addressbook/categories"
  									),
 			"addItemsToAreaSection"	=> 	array(
-							"OK"	=> "/addressbook",
-							"ERROR"	=> "/addressbook" 
-							)
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+ 			)
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;
