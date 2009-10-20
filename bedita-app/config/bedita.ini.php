@@ -171,7 +171,7 @@ $config['audioHeight']      = $config['media']['audio']['height'] ;
  ** ******************************************
  */
 
-$config['maxLoginAttempts']     = 3;
+$config['maxLoginAttempts']     = 13;
 $config['maxNumDaysInactivity'] = 180;
 $config['maxNumDaysValidity']   = 60;
 
