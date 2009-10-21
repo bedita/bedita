@@ -61,6 +61,67 @@ class NewsletterShell extends Shell {
 		$this->_welcome();
 		$this->baseLogs =  APP . 'tmp' . DS . 'logs' . DS;
 	}
+
+	public function addCards() {
+		
+		if (empty($this->params['mailgroup'])) {
+			$this->out("Missing mailgroup. Params -mailgroup is required.");
+			return;
+		}
+		
+		$mgParam = $this->params['mailgroup'];
+		$mailgroup = ClassRegistry::init("MailGroup");
+		$mailGroupId = $mailgroup->field("id", array("group_name" => $mgParam));
+		if(empty($mailGroupId)) {
+			$this->out("mailgroup not found.");
+			return;
+		}
+
+		$mgc = ClassRegistry::init("MailGroupCard");
+		
+		$cardModel = ClassRegistry::init("Card");
+		$condition = array("status" => "on");
+		
+		$categoryId = null;
+		
+		if(!empty($this->params['c'])) {
+			$categoryModel = ClassRegistry::init("Category");
+			$categoryModel->bviorCompactResults = false;
+			$categoryId = $categoryModel->field("id", array("name" => $this->params['c']));
+			if(empty($categoryId)) {
+				$this->out("category not found.");
+				return;
+			}
+		}
+
+		$cardsId = $cardModel->find('all', array("condition" => $condition, 
+			"fields" => array("Card.id"), "contain" => array("BEObject"=>array("Category"))));		
+		$count = 0;
+		foreach ($cardsId as $card) {
+			$data = array("status" => "confirmed", "mail_group_id" => $mailGroupId,
+				"card_id" => $card["id"]);
+
+			$save = false;
+			if($categoryId != null) {
+				foreach($card["Category"] as $cat) {
+					if($cat["id"] == $categoryId) {
+						$save = true;
+					}
+				}
+			} else {
+				$save = true;
+			}
+
+			if($save) {
+				$mgc->create();
+				if(!$mgc->save($data)) {
+					throw new BeditaException("Error adding card: " . $card["id"]);
+				}
+				$count++;
+			}
+		}
+		$this->out("Added $count cards to mailgroup $mgParam - $mailGroupId");
+	}
 	
 	public function import() {
 		$from = (!empty($this->params['from']))? $this->params['from'] : "phplist";
@@ -317,14 +378,22 @@ class NewsletterShell extends Shell {
 		$this->out(' ');
 		$this->out('	Usage: import -f <import-file-name> [-mailgroup <mailgroup id>] [-from <importsource>] [-sep <separator>] [-v] [-force]');
 		$this->out(' ');
-		$this->out('	-f <import-file-name>\t file to import');
-		$this->out('	-mailgroup <mailgroup id>\t mailgroup id to associating imported users');
-		$this->out('	-from <importsource>\t import source type for example from phplist csv export');
-		$this->out('	-sep <separator>\t separator (if it\'s needed, for example if you import from csv)');
-		$this->out('	-v verbose mode');
-		$this->out('	-force try to save with validation errors too');
+		$this->out("	-f <import-file-name>\t file to import");
+		$this->out("	-mailgroup <mailgroup id>\t mailgroup id to associating imported users");
+		$this->out("	-from <importsource>\t import source type for example from phplist csv export");
+		$this->out("	-sep <separator>\t separator (if it\'s needed, for example if you import from csv)");
+		$this->out("	-v verbose mode");
+		$this->out("	-force try to save with validation errors too");
 		$this->out(' ');
 		$this->out('2. createFilesListsFromPhplist: create files for each list found in the phplist export file ');
+		$this->out(' ');
+		$this->out('3. addCards: add cards to mailgroup, all or by category');
+		$this->out(' ');
+		$this->out('	Usage: addCards -mailgroup <mailgroup name> [-c <category name>]');
+		$this->out(' ');
+		$this->out("	-mailgroup <mailgroup name>\t name of mail group / list");
+		$this->out("	-c <category name>\t select cards by category (default: all)");
+		$this->out(' ');
 	}
 }
 

@@ -747,6 +747,7 @@ CREATE TABLE `mail_group_cards` (
   PRIMARY KEY(id),
   INDEX `card_id_index` (`card_id`),
   INDEX `mail_group_id_index` (`mail_group_id`),
+  UNIQUE KEY `mail_group_card` (`card_id`, `mail_group_id`),
   FOREIGN KEY(card_id)
     REFERENCES cards(id)
       ON DELETE CASCADE
