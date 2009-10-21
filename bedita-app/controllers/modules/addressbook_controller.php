@@ -56,6 +56,9 @@ class AddressbookController extends ModulesController {
 	 }
 
 	function view($id = null) {
+		if($id == null) {
+			Configure::write("defaultStatus", "on"); // set default ON for new objects
+		}
 		$this->viewObject($this->Card, $id);
 		$this->set("groupsByArea", $this->MailGroup->getGroupsByArea(null, $id));
 	}
