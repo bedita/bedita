@@ -490,6 +490,7 @@ class EmailComponent extends Object{
 		} elseif ($this->sendAs === 'html') {
 			$this->__header[] = 'Content-Type: text/html; charset=' . $this->charset;
 		} elseif ($this->sendAs === 'both') {
+			$this->__createBoundary();
 			$this->__header[] = 'Content-Type: multipart/alternative; boundary="alt-' . $this->__boundary . '"';
 		}
 
