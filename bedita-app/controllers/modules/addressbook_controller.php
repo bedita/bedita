@@ -41,6 +41,7 @@ class AddressbookController extends ModulesController {
 		$conf  = Configure::getInstance() ;
 		$filter["object_type_id"] = $conf->objectTypes['card']["id"];
 		$filter["Card.country"] = "";
+		$filter["Card.email"] = "";
 		$filter["Card.company_name"] = "";
 		$filter["object_user"] = "";
 		$filter["count_annotation"] = "EditorNote";
