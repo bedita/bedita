@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-09-23 13:03:12\n"
+"POT-Creation-Date: 2009-10-21 14:59:18\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -144,6 +144,9 @@ msgstr ""
 msgid "Bulk actions on"
 msgstr ""
 
+msgid "Call to a protected or private method in a wrong context"
+msgstr ""
+
 msgid "Cancel queue"
 msgstr ""
 
@@ -151,6 +154,9 @@ msgid "Captcha image and text don't match"
 msgstr ""
 
 msgid "Card"
+msgstr ""
+
+msgid "Card deleted"
 msgstr ""
 
 msgid "Card saved"
@@ -544,6 +550,9 @@ msgid "Find it"
 msgstr ""
 
 msgid "Forgotten username or password?"
+msgstr ""
+
+msgid "Full news at"
 msgstr ""
 
 msgid "Galleries deleted"
@@ -1203,7 +1212,7 @@ msgstr ""
 msgid "System events"
 msgstr ""
 
-msgid "System info "
+msgid "System info"
 msgstr ""
 
 msgid "System users"
@@ -1262,6 +1271,9 @@ msgid "Title"
 msgstr ""
 
 msgid "Title is required"
+msgstr ""
+
+msgid "To unsubscribe"
 msgstr ""
 
 msgid "Total Subscribers"
@@ -1615,6 +1627,9 @@ msgid "contact the project admin"
 msgstr ""
 
 msgid "contents"
+msgstr ""
+
+msgid "continue"
 msgstr ""
 
 msgid "copy"
@@ -2164,6 +2179,9 @@ msgid "remove from users"
 msgstr ""
 
 msgid "remove item"
+msgstr ""
+
+msgid "reply to"
 msgstr ""
 
 msgid "required"

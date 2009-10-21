@@ -132,6 +132,9 @@ msgstr ""
 msgid "Bulk actions on"
 msgstr ""
 
+msgid "Call to a protected or private method in a wrong context"
+msgstr ""
+
 msgid "Cancel queue"
 msgstr ""
 
@@ -139,6 +142,9 @@ msgid "Captcha image and text don't match"
 msgstr ""
 
 msgid "Card"
+msgstr ""
+
+msgid "Card deleted"
 msgstr ""
 
 msgid "Card saved"
@@ -532,6 +538,9 @@ msgid "Find it"
 msgstr ""
 
 msgid "Forgotten username or password?"
+msgstr ""
+
+msgid "Full news at"
 msgstr ""
 
 msgid "Galleries deleted"
@@ -1191,7 +1200,7 @@ msgstr ""
 msgid "System events"
 msgstr ""
 
-msgid "System info "
+msgid "System info"
 msgstr ""
 
 msgid "System users"
@@ -1250,6 +1259,9 @@ msgid "Title"
 msgstr ""
 
 msgid "Title is required"
+msgstr ""
+
+msgid "To unsubscribe"
 msgstr ""
 
 msgid "Total Subscribers"
@@ -1603,6 +1615,9 @@ msgid "contact the project admin"
 msgstr ""
 
 msgid "contents"
+msgstr ""
+
+msgid "continue"
 msgstr ""
 
 msgid "copy"
@@ -2152,6 +2167,9 @@ msgid "remove from users"
 msgstr ""
 
 msgid "remove item"
+msgstr ""
+
+msgid "reply to"
 msgstr ""
 
 msgid "required"

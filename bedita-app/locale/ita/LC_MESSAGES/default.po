@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-09-23 13:09:41\n"
+"POT-Creation-Date: 2009-10-21 14:59:18\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -79,8 +79,9 @@ msgstr "Sicuro di voler interdire l'accesso a questo IP (ban)?"
 msgid ""
 "Are you sure you want to cancel and reload this document? All unsaved "
 "changes will be lost"
-msgstr "Sicuro di voler annullare le modifiche e di voler ricaricare questo"
-"documento? Tutte le modifiche non salvate saranno perdute"
+msgstr ""
+"Sicuro di voler annullare le modifiche e di voler ricaricare "
+"questodocumento? Tutte le modifiche non salvate saranno perdute"
 
 msgid "Area deleted"
 msgstr "Area eliminata"
@@ -145,6 +146,9 @@ msgstr "Sfoglia"
 msgid "Bulk actions on"
 msgstr "Operazioni su"
 
+msgid "Call to a protected or private method in a wrong context"
+msgstr ""
+
 msgid "Cancel queue"
 msgstr "Cancella coda"
 
@@ -153,6 +157,9 @@ msgstr "Immagine captcha e testo non corrispondono"
 
 msgid "Card"
 msgstr "Scheda"
+
+msgid "Card deleted"
+msgstr "Card eliminata"
 
 msgid "Card saved"
 msgstr "Scheda salvata"
@@ -547,6 +554,9 @@ msgstr "Trova"
 msgid "Forgotten username or password?"
 msgstr "Hai dimenticato l'utente o la password?"
 
+msgid "Full news at"
+msgstr "Continua su"
+
 msgid "Galleries deleted"
 msgstr "Gallerie eliminate"
 
@@ -736,8 +746,9 @@ msgstr "Destinatario mancante"
 msgid ""
 "Missing referenced object.nIf you are creating new item you have to save it "
 "before adding a note"
-msgstr "Oggetto referenziato non trovato.nSe stai creando un nuovo elemento devi"
-"salvarloprima di aggiungere una nota"
+msgstr ""
+"Oggetto referenziato non trovato.nSe stai creando un nuovo elemento "
+"devisalvarloprima di aggiungere una nota"
 
 msgid "Missing sending date"
 msgstr "Manca la data invio"
@@ -768,8 +779,8 @@ msgstr "Altre proprietà"
 
 msgid "Multimedia Provider not found or error getting thumbnail"
 msgstr ""
-"Non è stato trovato il multimedia provider o si è verificato un "
-"errore nell'ottenere la miniatura"
+"Non è stato trovato il multimedia provider o si è verificato un errore "
+"nell'ottenere la miniatura"
 
 msgid "Multimedia Provider not found or error preparing data to save"
 msgstr ""
@@ -1273,6 +1284,9 @@ msgstr "Titolo"
 msgid "Title is required"
 msgstr "Il titolo è necesario"
 
+msgid "To unsubscribe"
+msgstr "Per disiscriversi"
+
 msgid "Total Subscribers"
 msgstr "Totale iscritti"
 
@@ -1357,8 +1371,9 @@ msgstr "Nome utente"
 msgid ""
 "User name is required (at least %1 chars, without white spaces and special "
 "chars)"
-msgstr "Il campo Nome utente è obbligatorio (almeno %1 caratteri, senza spazi e"
-"caratteri speciali"
+msgstr ""
+"Il campo Nome utente è obbligatorio (almeno %1 caratteri, senza spazi "
+"ecaratteri speciali"
 
 msgid "User not associated to mailgroup or he is in pending status"
 msgstr ""
@@ -1627,6 +1642,9 @@ msgstr "contatta l'amministratore del progetto"
 
 msgid "contents"
 msgstr "contenuti"
+
+msgid "continue"
+msgstr "continua"
 
 msgid "copy"
 msgstr "copia"
@@ -2176,6 +2194,9 @@ msgstr "rimuovi dagli utenti"
 
 msgid "remove item"
 msgstr "rimuovi elemento"
+
+msgid "reply to"
+msgstr ""
 
 msgid "required"
 msgstr "obbligatorio"

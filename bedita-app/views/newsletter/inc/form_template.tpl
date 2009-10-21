@@ -151,7 +151,7 @@ $(document).ready(function() {
 				<hr style="clear:both" />
 				[$signature]
 				<hr />
-				Per disiscriversi <a href="[$signoutlink]">[$signoutlink]</a>
+				{t}To unsubscribe{/t} <a href="[$signoutlink]">[$signoutlink]</a>
 				<p>
 				[$privacydisclaimer]
 				</p>
@@ -175,7 +175,7 @@ ________________________________
 ---------------
 [$signature]
 ________________________________
-Per disiscriversi [$signoutlink]
+{t}To unsubscribe{/t} [$signoutlink]
 ________________________________
 [$privacydisclaimer]
 {/if}
