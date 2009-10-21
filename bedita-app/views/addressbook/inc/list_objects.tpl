@@ -59,6 +59,7 @@ $(document).ready(function(){
 			<th>{$beToolbar->order('status','Status')}</th>
 			<th>{$beToolbar->order('modified','modified')}</th>
 			<th>{t}is user{/t}</th>
+			<th>{$beToolbar->order('email','email')}</th>
 			<th>{$beToolbar->order('country','country')}</th>
 			<th>{$beToolbar->order('id','id')}</th>
 			<th>{$beToolbar->order('note','Notes')}</th>	
@@ -78,6 +79,7 @@ $(document).ready(function(){
 			<td>{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
 			<td>{if empty($objects[i].user_id)}{t}no{/t}{else}{t}yes{/t}{/if}</td>
+			<td>{$objects[i].email|default:''}</td>
 			<td>{$objects[i].country}</td>
 			<td>{$objects[i].id}</td>
 			<td>{if $objects[i].num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
