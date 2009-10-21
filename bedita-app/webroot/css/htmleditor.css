@@ -17,6 +17,11 @@ H3 {font-size:1.2em; font-weight:normal; margin:0px}
 H4 {line-height:1em; margin: 5px 0px 0px 0px}
 
 blockquote {
-	padding:20px;
+	padding-left:10px;
 }
 
+dfn {color:green; text-decoration:underline}
+
+DT, DL {color: #653214;}
+
+CODE {color: #ff6600}
