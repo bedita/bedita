@@ -24,7 +24,7 @@ function smarty_block_bedev($params, $text, &$smarty)
 	if(!defined('BEDITA_DEV_SYSTEM'))
 		return;
 
-	return $text;
+	return "<div class='bedev'>".$text."</div>";
 }
 
 ?>

@@ -88,6 +88,10 @@ $(document).ready(function(){
 
 			{/if}
 			
+			{if !empty($objects[i].Permissions)}
+				<img title="{t}permissions set{/t}" src="{$html->url('/')}img//iconLocked.png" style="height:28px; vertical-align:middle;">
+			{/if}
+			
 			{if (empty($objects[i].fixed))}
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
 			{/if}
@@ -120,7 +124,6 @@ $(document).ready(function(){
 
 
 </table>
-
 
 <br />
 	

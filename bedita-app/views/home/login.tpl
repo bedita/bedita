@@ -12,7 +12,8 @@ $.validator.setDefaults({
 	success: function(label) { label.html("&nbsp;").addClass("checked");}
 });
 $().ready(function() { 
-	$("#loginform").validate(); 
+	$("#loginform").validate();
+	$("#userid").focus();
 });
 {/literal}
 //-->
@@ -54,11 +55,11 @@ $().ready(function() {
 		<input type="hidden" name="data[login][URLOK]" value="{$beurl->here()}" id="loginURLOK" />
 		
 		<label class="block" id="luserid" for="userid">{t}Username{/t}</label>
-		<input class="big" style="width:103px" type="text" name="data[login][userid]" id="userid" class="{literal}{required:true}{/literal}" title="{t}Username is required{/t}"/>
+		<input class="big" tabindex="1" style="width:103px" type="text" name="data[login][userid]" id="userid" class="{literal}{required:true}{/literal}" title="{t}Username is required{/t}"/>
 		<label class="block" id="lpasswd" for="passwd">{t}Password{/t}</label>
-		<input class="big" style="width:103px; margin-bottom:10px;" type="password" name="data[login][passwd]" id="passwd" class="{literal}{required:true}{/literal}" title="{t}Password is required{/t}"/>
+		<input class="big" tabindex="2" style="width:103px; margin-bottom:10px;" type="password" name="data[login][passwd]" id="passwd" class="{literal}{required:true}{/literal}" title="{t}Password is required{/t}"/>
 		
-		<input class="bemaincommands" type="submit" value="{t}Enter{/t}"/>
+		<input class="bemaincommands" tabindex="2" type="submit" value="{t}Enter{/t}"/>
 	</fieldset>
 	</form>
 </div>

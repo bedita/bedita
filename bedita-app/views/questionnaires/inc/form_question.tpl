@@ -202,7 +202,6 @@
 	<fieldset id="properties">	
 			
 		<table class="bordered">
-
 			<tr>
 		
 				<th>{t}status{/t}:</th>
@@ -219,7 +218,19 @@
 				</td>
 		
 			</tr>
-		
+			<tr>
+				<th>{t}included in questionnaires{/t}:</th>
+				<td>
+					<ul>
+					{foreach from=$object.RelatedObject item=item}
+					{if ($item.switch == "question")}
+						<li>&bull; <a title="{$item.object_id}" href="/view/{$item.object_id}">{$item.object_id}</a></li>
+					{/if}
+					{/foreach}
+					</ul>
+				</td>
+				
+			</tr>
 		
 			<tr>
 				<th>{t}author{/t}:</th>
@@ -255,5 +266,7 @@
 	{include file="../common_inc/form_translations.tpl"}
 
 	{include file="../common_inc/form_advanced_properties.tpl" el=$object}
+
+	
 	
 </form>

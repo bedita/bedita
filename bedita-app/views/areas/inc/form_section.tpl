@@ -8,14 +8,18 @@ $(document).ready(function(){
 		lineHeight: 16
 	});
 	$(".areaform input[type='text'], .areaform textarea").width(340);
-	
-
+	/*
+	{/literal}{if !empty($object.Permissions)}{literal}
+		$(".head H1").prepend("<img src='/img/iconLocked.png' style='vertical-align:sub' alt='permissions set' />");
+	{/literal}{/if}{literal}
+	*/
 });
 </script>
 {/literal}
+		
+
 
 {include file="../common_inc/form_common_js.tpl"}
-
 
 <input type="hidden" name="data[id]" value="{$object.id|default:null}"/>
 <input type="hidden" name="data[fixed]" value="{$object.fixed|default:0}"/>
@@ -96,10 +100,18 @@ $(document).ready(function(){
 					{/foreach}
 				</select>
 				</td>
+			</tr>
+			<tr>
+				<th>{t}creator{/t}:</th>
+				<td>
+					<input type="text" name="data[creator]" value="{$object.creator|default:''|escape:'html'|escape:'quotes'}"
+					class="{literal}{required:true,minLength:1}{/literal}" title="{t 1='1'}Creator is required (at least %1 alphanumerical char){/t}"/>
+				</td>
+				
 			</tr>	
 			<tr>
 				<td><label>{t}publisher{/t}:</label></td>
-				<td><input type="text" name="publisher" value="" /></td>
+				<td><input type="text" name="data[publisher]" value="{$object.publisher|default:null}" /></td>
 			</tr>
 			<tr>
 				<td><strong>&copy; {t}rights{/t}:</strong></td>

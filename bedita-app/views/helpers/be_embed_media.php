@@ -257,21 +257,24 @@ class BeEmbedMediaHelper extends AppHelper {
 	}
 	
 	private function showApplication($obj, $params, $htmlAttributes) {		
+
 		if ($params["presentation"] == "full") {
 			
 			if ($obj["application_name"] == "flash") {
+				
 				if (!preg_match(Configure::read("validate_resource.URL"), $obj["path"])) {
 					$obj['path'] = $this->_conf["url"] . $obj["path"]; 
 				}
+				
 				if (empty($htmlAttributes["width"]) && !empty($obj["width"])) {
 					$htmlAttributes["width"] = $obj["width"];
-				} else {
+				} elseif (empty($htmlAttributes["width"])) {
 					$htmlAttributes["width"] = 320;
 				}
 				
 				if (empty($htmlAttributes["height"]) && !empty($obj["height"])) {
 					$htmlAttributes["height"] = $obj["height"];
-				} else {
+				} elseif (empty($htmlAttributes["height"])) {
 					$htmlAttributes["height"] = 200;
 				}
 				

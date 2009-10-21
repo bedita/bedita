@@ -126,7 +126,8 @@ $config['media']['audio']['player'] 	 = "flowplayer.swf"; // flash player file (
  **  Login (backend) and Security Policies
  ** ******************************************
  */
-$config['maxLoginAttempts']     = 3;
+
+$config['maxLoginAttempts']     = 10;
 $config['maxNumDaysInactivity'] = 180;
 $config['maxNumDaysValidity']   = 60;
 
