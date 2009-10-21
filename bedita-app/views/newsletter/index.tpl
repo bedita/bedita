@@ -46,40 +46,7 @@
 			</li>
 		</ul>
 
-
-	<div class="tab"><h2>{t}Templates{/t}</h2></div>
-		<ul class="bordered">
-		{foreach from=$templates item="temp"}
-			<li><a href="{$html->url('/newsletter/viewtemplate/')}{$temp.BEObject.id}">{$temp.BEObject.title}</a></li>
-		{foreachelse}
-			<li>{t}No template available{/t}</li>
-		{/foreach}
-			<li>
-				<b><a href="{$html->url('/newsletter/templates')}">{t}View all{/t}</a></b>
-					&nbsp;&nbsp;|&nbsp;&nbsp;
-				<b><a href="{$html->url('/newsletter/viewtemplate')}">{t}Create new{/t}</a></b> 
-			</li>
-		</ul>
-
-</div>
-	
-<div class="mainhalf" style="margin-right:0px;">
-	
-	<div class="tab"><h2>{t}Newsletters{/t}</h2></div>
-		<ul class="bordered">
-			<li>{t}Newsletters sent this month{/t}: <b>{$sentThisMonth|default:0} </b></li>
-			<li>{t}Newsletters sent this year{/t}: <b>{$sentThisYear|default:0}</b> </li>
-			<li>
-				{t}Total newsletters sent{/t}: <b>{$sentTotal|default:0}</b> 
-				&nbsp; &nbsp; | &nbsp; &nbsp; 
-				{t}Queued{/t}: <b class="evidence">{$queued|default:0}</b> </li>		 
-			<li>
-				<b><a href="{$html->url('/newsletter/invoices')}">{t}View invoices{/t}</a></b>
-			</li>
-		</ul>
-	
-	<div class="tab"><h2>{t}Recent newsletters {/t}</h2></div>
-	
+	<div class="tab"><h2>{t}Newsletters {/t}</h2></div>
 		<table class="bordered" border=0 style="margin-top:-5px; width:100%">
 		{if !empty($recentMsg)}
 			<tr>
@@ -110,12 +77,43 @@
 			<tr><td colspan="2" style="width:340px;">{t}No newsletters found{/t}</td></tr>
 			<tr>	
 				<td colspan="2" style="border-bottom:0px;">
-					<b><a href="{$html->url('/newsletter/view')}">{t}Create new{/t}</a></b>
+					<b><a href="{$html->url('/newsletter/viewMailMessage')}">{t}Create new{/t}</a></b>
 				</td>
 			</tr>
 		{/if}
 
 		</table>
+		
+</div>
+	
+<div class="mainhalf" style="margin-right:0px;">
+	
+	<div class="tab"><h2>{t}Invoices{/t}</h2></div>
+		<ul class="bordered">
+			<li>{t}Newsletters sent this month{/t}: <b>{$sentThisMonth|default:0} </b></li>
+			<li>{t}Newsletters sent this year{/t}: <b>{$sentThisYear|default:0}</b> </li>
+			<li>
+				{t}Total newsletters sent{/t}: <b>{$sentTotal|default:0}</b> 
+				&nbsp; &nbsp; | &nbsp; &nbsp; 
+				{t}Queued{/t}: <b class="evidence">{$queued|default:0}</b> </li>		 
+			<li>
+				<b><a href="{$html->url('/newsletter/invoices')}">{t}View invoices{/t}</a></b>
+			</li>
+		</ul>
+	
+	<div class="tab"><h2>{t}Templates{/t}</h2></div>
+		<ul class="bordered">
+		{foreach from=$templates item="temp"}
+			<li><a href="{$html->url('/newsletter/viewtemplate/')}{$temp.BEObject.id}">{$temp.BEObject.title}</a></li>
+		{foreachelse}
+			<li>{t}No template available{/t}</li>
+		{/foreach}
+			<li>
+				<b><a href="{$html->url('/newsletter/templates')}">{t}View all{/t}</a></b>
+					&nbsp;&nbsp;|&nbsp;&nbsp;
+				<b><a href="{$html->url('/newsletter/viewMailTemplate')}">{t}Create new{/t}</a></b> 
+			</li>
+		</ul>
 
 </div>
 </div>
