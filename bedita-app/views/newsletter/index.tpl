@@ -56,7 +56,7 @@
 			
 			{foreach from=$recentMsg item="msg"}
 			<tr>
-				<td><a href="{$html->url('/newsletter/view/')}{$msg.id}">{$msg.title}</a></td>
+				<td><a href="{$html->url('/newsletter/viewMailMessage/')}{$msg.id}">{$msg.title}</a></td>
 				<td style="white-space:nowrap">
 				{if $msg.mail_status == "sent"}
 					{$msg.start_sending|date_format:$conf->datePattern}
@@ -70,7 +70,7 @@
 				<td colspan="2" style="border-bottom:0px;">
 					<b><a href="{$html->url('/newsletter/newsletters')}">{t}View all{/t}</a></b>
 					&nbsp;&nbsp;|&nbsp;&nbsp;
-					<b><a href="{$html->url('/newsletter/view')}">{t}Create new{/t}</a></b>
+					<b><a href="{$html->url('/newsletter/viewMailMessage')}">{t}Create new{/t}</a></b>
 				</td>
 			</tr>
 		{else}
@@ -104,7 +104,7 @@
 	<div class="tab"><h2>{t}Templates{/t}</h2></div>
 		<ul class="bordered">
 		{foreach from=$templates item="temp"}
-			<li><a href="{$html->url('/newsletter/viewtemplate/')}{$temp.BEObject.id}">{$temp.BEObject.title}</a></li>
+			<li><a href="{$html->url('/newsletter/viewMailTemplate/')}{$temp.BEObject.id}">{$temp.BEObject.title}</a></li>
 		{foreachelse}
 			<li>{t}No template available{/t}</li>
 		{/foreach}
