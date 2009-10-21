@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2009-10-21 14:59:18\n"
+"POT-Creation-Date: 2009-10-21 17:02:12\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -205,9 +205,6 @@ msgid "Comments deleted"
 msgstr ""
 
 msgid "Communication error"
-msgstr ""
-
-msgid "Company / institution"
 msgstr ""
 
 msgid "Compile"
@@ -978,6 +975,9 @@ msgstr ""
 msgid "Operations on above records"
 msgstr ""
 
+msgid "Organization"
+msgstr ""
+
 msgid "Orientation"
 msgstr ""
 
@@ -1602,9 +1602,6 @@ msgstr ""
 msgid "comments"
 msgstr ""
 
-msgid "company"
-msgstr ""
-
 msgid "connect new items"
 msgstr ""
 
@@ -1804,6 +1801,9 @@ msgid "in job"
 msgstr ""
 
 msgid "in recipient groups"
+msgstr ""
+
+msgid "included in questionnaires"
 msgstr ""
 
 msgid "insert more questions"
@@ -2082,6 +2082,9 @@ msgstr ""
 msgid "order by"
 msgstr ""
 
+msgid "organization"
+msgstr ""
+
 msgid "other"
 msgstr ""
 
@@ -2089,6 +2092,9 @@ msgid "page"
 msgstr ""
 
 msgid "permission"
+msgstr ""
+
+msgid "permissions set"
 msgstr ""
 
 msgid "phone"
