@@ -79,7 +79,7 @@ $(".htab TD[rel:company]").click();
 		{t}Person{/t}</td>
 	<td id="companyh" rel="company">
 		<input type="radio" name="data[company]" value="1" {if (!empty($object.id)&&($object.company==1))}checked="checked"{/if} />
-		{t}Company / institution{/t}</td>
+		{t}Organization{/t}</td>
 </table>
 
 		
@@ -108,7 +108,7 @@ $(".htab TD[rel:company]").click();
 				<td><input type="text" name="data[person][surname]" value="{$object.surname|escape:'html'|escape:'quotes'}" /></td>
 			</tr>	
 			<tr>
-				<th>{t}company{/t}:</th>
+				<th>{t}organization{/t}:</th>
 				<td><input type="text" name="data[person][company_name]" value="{$object.company_name|escape:'html'|escape:'quotes'}" /></td>				
 			</tr>
 			<tr>
