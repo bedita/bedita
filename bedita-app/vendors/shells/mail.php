@@ -38,6 +38,7 @@ App::import('Component', 'BeMail');
 class MailShell extends Shell {
 	
 	var $BeMail;
+	var $Controller;
 
 	/**
 	 * startup method for MailShell, initialize BeMail Component
@@ -46,11 +47,13 @@ class MailShell extends Shell {
 	 * @return 
 	 */
 	function startup() {
-		if (!empty($this->Dispatch->shellCommand) && $this->Dispatch->shellCommand != "main") 
+		if (!empty($this->Dispatch->shellCommand) && $this->Dispatch->shellCommand != "main") {
 			$this->_welcome();
-		
-		$this->BeMail = new BeMailComponent();
-		$this->BeMail->startup(); 
+		}
+		$this->Controller = new Controller();
+		$this->Controller->view = "Smarty";
+		$this->BeMail = new BeMailComponent(); 
+		$this->BeMail->startup($this->Controller);
 	}
 
 	

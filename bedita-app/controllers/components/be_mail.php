@@ -32,20 +32,26 @@ class BeMailComponent extends Object {
 
 	var $components = array("Email");
 	
+	private $layoutNewsletter = "newsletter";
+	
+	private $templateNewsletter = "newsletter";
+	
+	private $boundaryPlaceholder = "[[[--BOUNDARY--]]]";
+	
 	/**
 	 * startup component
 	 * set smtp options if it's in configuration (bedita.sys.php)	
 	 * @param unknown_type $controller
 	 */
 	function startup(&$controller=null) {
-		if ($controller === null) {
-			foreach ($this->components as $comp) {
+		$this->Controller = &$controller;
+		foreach ($this->components as $comp) {
+			if (!isset($this->$comp)) {
 				App::import('Component', $comp);
 				$componentName = $comp . "Component";
-				$this->{$comp} = new $componentName() ;
+				$this->{$comp} = new $componentName($this->Controller) ;
+				$this->{$comp}->initialize($this->Controller);
 			}
-		} else {
-			$this->controller = &$controller;	
 		}
 		
 		$smtpOptions = Configure::read("smtpOptions");
@@ -75,10 +81,10 @@ class BeMailComponent extends Object {
 		$data["from"] = $res["sender"];
 		$data["subject"] = $res["subject"];
 		$data["replyTo"] = $res["reply_to"];
-		$data["mailType"] = ($html)? "html" : "txt";
+		$data["mailType"] = ($html)? "both" : "txt";
 		
 		$data["body"] = $this->prepareMailBody($res, $html);
-
+		
 		$this->sendMail($data);
 	}
 	
@@ -114,34 +120,34 @@ class BeMailComponent extends Object {
 			$pub_id = $treeModel->getParent($template["id"]);
 			$areaModel = ClassRegistry::init("Area");
 			$templatePublicationUrl = $areaModel->field("public_url", array("id" => $pub_id));
-						
+
+			$txtBody = str_replace("[\$newsletterTitle]",  strip_tags($message["title"]), $template["abstract"]);
+			$txtBody = preg_replace("/<!--bedita content block-->[\s\S]*<!--bedita content block-->/", $message["abstract"], $txtBody);
+			$txtBody = str_replace("[\$signature]", $message["signature"], $txtBody);
+			$txtBody = str_replace("[\$signoutlink]", $unsubscribeurl, $txtBody);
+			$body = str_replace("[\$privacydisclaimer]", $message["privacy_disclaimer"], $txtBody);
+			
 			if ($html) {
 				// get css
 				$css = (!empty($templatePublicationUrl))? $templatePublicationUrl . "/css/" . Configure::read("newsletterCss") : "";
-				$htmlMsg = "<html><head></head><body>%s%s</body></html>";
+				$htmlMsg = "<html><head>%s</head><body>%s</body></html>";
 				$style = "";
 				if (!empty($css)) {
-					$style = "<style>" . @file_get_contents($css) . "</style>";
+					$style = '<link rel="stylesheet" type="text/css" href="'.$css.'" />';
 				}
 				$htmlBody = str_replace("[\$newsletterTitle]", $message["title"], $template["body"]);
 				$htmlBody = preg_replace("/<!--bedita content block-->[\s\S]*<!--bedita content block-->/", $message["body"], $htmlBody);
 				$htmlBody = str_replace("[\$signature]", $message["signature"], $htmlBody);
 				$htmlBody = str_replace("[\$signoutlink]", $unsubscribeurl, $htmlBody);
 				$htmlBody = str_replace("[\$privacydisclaimer]", $message["privacy_disclaimer"], $htmlBody);
-				$body = sprintf($htmlMsg, $style, $htmlBody);
-			} else {
-				$txtBody = str_replace("[\$newsletterTitle]",  strip_tags($message["title"]), $template["abstract"]);
-				$txtBody = preg_replace("/<!--bedita content block-->[\s\S]*<!--bedita content block-->/", $message["abstract"], $txtBody);
-				$txtBody = str_replace("[\$signature]", $message["signature"], $txtBody);
-				$txtBody = str_replace("[\$signoutlink]", $unsubscribeurl, $txtBody);
-				$body = str_replace("[\$privacydisclaimer]", $message["privacy_disclaimer"], $txtBody);
+				$body .= $this->boundaryPlaceholder . sprintf($htmlMsg, $style, $htmlBody);
 			}
 			
 			return $body;
 			
 		}
 		
-		return ($html)? $message["body"] : $message["abstract"];
+		return ($html)? $message["abstract"] . $this->boundaryPlaceholder . "<html><body>".$message["body"]."</body></html>" : $message["abstract"];
 	}
 
 	
@@ -313,9 +319,8 @@ class BeMailComponent extends Object {
 				$data["from"] = $job["MailMessage"]["sender"];
 				$data["replyTo"] = $job["MailMessage"]["reply_to"];
 				$data["subject"] = $job["MailMessage"]["Content"]["subject"];
-				$data["mailType"] = (!empty($job["Card"]["mail_html"]))? "html" : "txt";
+				$data["mailType"] = (!empty($job["Card"]["mail_html"]))? "both" : "txt";			
 				$data["body"] = $job["MailJob"]["mail_body"];
-				
 				unset($job["MailMessage"]);
 				unset($job["Card"]);
 					
@@ -331,6 +336,7 @@ class BeMailComponent extends Object {
 					$this->log($ex->errorTrace());
 				}
 			}
+			
 		}
 
 		// set messages mail_status to sent
@@ -389,7 +395,7 @@ class BeMailComponent extends Object {
 	 *
 	 * @param array $data
 	 */
-	private function prepareData($data) {
+	private function prepareData(&$data) {
 		$this->Email->reset();
 		
 		// check required fields
@@ -407,13 +413,25 @@ class BeMailComponent extends Object {
 		$this->Email->subject = $data["subject"];
 		$this->Email->replyTo = (!empty($data["replyTo"]))? $data["replyTo"] : "";
 		$this->Email->sendAs = (!empty($data["mailType"]))? $data["mailType"] : "txt";
-		if (!empty($data["cc"]) && is_array($data["cc"]))
+		if (!empty($data["cc"]) && is_array($data["cc"])) {
 			$this->Email->cc = $data["cc"];
-		if (!empty($data["bcc"]) && is_array($data["bcc"]))
+		}
+		if (!empty($data["bcc"]) && is_array($data["bcc"])) {
 			$this->Email->bcc = $data["bcc"];
+		}
 		
 		// force the default line length (70) to avoid breakline in url
 		$this->Email->lineLength = "500";
+		
+		// set template vars for html mail
+		if ($this->Email->sendAs == "both" && strstr($data["body"], $this->boundaryPlaceholder)) {
+			$bodyParts = explode($this->boundaryPlaceholder, $data["body"]);
+			$this->Controller->set("textContent", $bodyParts[0]);
+			$this->Controller->set("htmlContent", $bodyParts[1]);
+			$this->Email->layout = (!empty($data["layout"]))? $data["layout"] : $this->layoutNewsletter;
+			$this->Email->template = (!empty($data["template"]))? $data["template"] : $this->templateNewsletter;
+			$data["body"] = null;
+		}
 	}
 	
 	

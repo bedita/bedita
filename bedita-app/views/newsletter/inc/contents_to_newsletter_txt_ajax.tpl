@@ -7,6 +7,9 @@
 {assign_concat var="regexp" 0="/\[" 1="\\$" 2="body.*\]/"}
 {assign var="content" value=$content|regex_replace:$regexp:$bodyTruncated}
 {$content}
+{if !empty($public_url)}
+{t}Full news at{/t} {$public_url}/{$obj.nickname}
+{/if}
 {/strip}
 {else}
 

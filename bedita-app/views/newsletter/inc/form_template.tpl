@@ -95,6 +95,10 @@ $(document).ready(function() {
 			<td><input type="text" name="data[sender]" value="{$object.sender|default:null}"/></td>
 		</tr>
 		<tr>
+			<td>{t}reply to{/t}</td>
+			<td><input type="text" name="data[reply_to]" value="{$object.reply_to|default:null}"/></td>
+		</tr>
+		<tr>
 			<td>{t}bounce to email{/t}</td>
 			<td><input type="text" name="data[bounce_to]" value="{$object.bounce_to|default:null}" /></td>
 		</tr>

@@ -347,35 +347,9 @@ class NewsletterController extends ModulesController {
 		$this->Transaction->begin();
 		$this->saveObject($this->MailMessage);
 	 	$this->Transaction->commit() ;
-	}
+	}	
 	
-	public function test() {
-//		$this->BeMail->sendMailById(8,"batopa@gmail.com");
-		$data["to"] = "a.pagliarini@channelweb.it";
-		$data["from"] = "a.pagliarini@channelweb.it";
-		$data["subject"] = "test";
-		$data["mailType"] = "html";
-		$data["replyTo"] = "";
-		$data["body"] = "
-			<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">
-			<html>
-			<head>
-			<meta content=\"text/html;charset=utf-8\" http-equiv=\"Content-Type\">
-			</head>
-			<body><style>p {color: red;}</style><p style='font-weight: bold;'><b>Bella lì</b></p>
-			</body>
-			</html>";
-		$this->BeMail->sendMail($data);
-		pr($data);
-//		$msg = $this->BeMail->lockMessages();
-//		$this->BeMail->createJobs(array(93));
-//		$this->BeMail->sendQueuedJobs(array(93));
-		exit;
-	}
-	
-	
-	
-	function templates() {
+	public function templates() {
 		$this->MailTemplate->containLevel("minimum");
 		$templates = $this->MailTemplate->find("all", array(
 											"conditions" => array("BEObject.object_type_id" => Configure::read("objectTypes.mailtemplate.id"))
@@ -395,7 +369,7 @@ class NewsletterController extends ModulesController {
 		$this->set("objects", $templates);
 	 }
 
-	function viewMailTemplate($id=null) {
+	public function viewMailTemplate($id=null) {
 		$this->viewObject($this->MailTemplate, $id);
 		// get publishing public_url
 		if (!empty($this->viewVars["tree"])) {
@@ -418,7 +392,7 @@ class NewsletterController extends ModulesController {
 		}
 	 }
 	
-	function saveTemplate() {
+	public function saveTemplate() {
 		$this->checkWriteModulePermission();
 		if(empty($this->data["destination"]))
 			throw new BeditaException( __("Missing publishing", true));
@@ -449,7 +423,7 @@ class NewsletterController extends ModulesController {
 		}
 	}
 	
-	function invoices() {
+	public function invoices() {
 
 		$msg = array();
 		$msg = $this->MailMessage->find("all", array(
@@ -537,13 +511,16 @@ class NewsletterController extends ModulesController {
 					$truncateNumber = $bodyMatches[1];
 				}
 			}
-
+			
+			$publication_id = ClassRegistry::init("Tree")->field("parent_id", array("id" => $template_id));
+			$public_url = ClassRegistry::init("Area")->field("public_url", array("id" => $publication_id));
 		}
 		
 		$this->layout = null;
 		$this->set("objects", $objects);
 		$this->set("contentTemplate", (!empty($contentTemplate))? $contentTemplate : "" );
 		$this->set("truncateNumber", (!empty($truncateNumber))? $truncateNumber : "" );
+		$this->set("public_url", (!empty($public_url))? $public_url : "" );
 		$tpl = (empty($this->params["form"]["txt"]))? "contents_to_newsletter_ajax.tpl" : "contents_to_newsletter_txt_ajax.tpl";
 		$this->render(null, null, VIEWS . "newsletter/inc/" . $tpl);
 	}
