@@ -174,11 +174,11 @@ $(document).ready(function() {
 	<div class="htabcontainer" id="templatebody">
 		
 		<div class="htabcontent" id="html">
-			<textarea id="htmltextarea" name="data[body]" style="height:300px" class="mce">{$object.body|default:null}</textarea>
+			<textarea id="htmltextarea" name="data[body]" style="height:350px" class="mce">{$object.body|default:null}</textarea>
 		</div>
 		
 		<div class="htabcontent" id="txt">
-			<textarea id="txtarea" name="data[abstract]" style="height:300px; border:1px solid silver; width:450px" class="autogrowarea">{$object.abstract|default:null}</textarea>
+			<textarea id="txtarea" name="data[abstract]" style="height:350px; border:1px solid silver; width:450px">{$object.abstract|default:null}</textarea>
 		</div>
 		
 	</div>
