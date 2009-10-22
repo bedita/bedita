@@ -508,7 +508,13 @@ class NewsletterController extends ModulesController {
  
 				// get truncate number of chars
 				if (preg_match("/\[" . preg_quote("$") ."body\|truncate:(\d*)\]/", $contentTemplate, $bodyMatches)) {
-					$truncateNumber = $bodyMatches[1];
+					$bodyTruncateNumber = $bodyMatches[1];
+				}
+				if (preg_match("/\[" . preg_quote("$") ."abstract\|truncate:(\d*)\]/", $contentTemplate, $bodyMatches)) {
+					$abstractTruncateNumber = $bodyMatches[1];
+				}
+				if (preg_match("/\[" . preg_quote("$") ."description\|truncate:(\d*)\]/", $contentTemplate, $bodyMatches)) {
+					$descriptionTruncateNumber = $bodyMatches[1];
 				}
 			}
 			
@@ -519,7 +525,9 @@ class NewsletterController extends ModulesController {
 		$this->layout = null;
 		$this->set("objects", $objects);
 		$this->set("contentTemplate", (!empty($contentTemplate))? $contentTemplate : "" );
-		$this->set("truncateNumber", (!empty($truncateNumber))? $truncateNumber : "" );
+		$this->set("bodyTruncateNumber", (!empty($bodyTruncateNumber))? $bodyTruncateNumber : "" );
+		$this->set("abstractTruncateNumber", (!empty($abstractTruncateNumber))? $abstractTruncateNumber : "" );
+		$this->set("descriptionTruncateNumber", (!empty($descriptionTruncateNumber))? $descriptionTruncateNumber : "" );
 		$this->set("public_url", (!empty($public_url))? $public_url : "" );
 		$tpl = (empty($this->params["form"]["txt"]))? "contents_to_newsletter_ajax.tpl" : "contents_to_newsletter_txt_ajax.tpl";
 		$this->render(null, null, VIEWS . "newsletter/inc/" . $tpl);
