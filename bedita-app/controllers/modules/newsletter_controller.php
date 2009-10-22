@@ -545,6 +545,7 @@ class NewsletterController extends ModulesController {
 		
 		$card = $this->BeTree->getChildren(null, null, $filter, $order, $dir, $page, $dim) ;
 		$this->set("subscribers", $card["items"]);
+		$this->set("object", true);
 		$this->params['toolbar'] = &$card['toolbar'] ;
 		$this->layout = null;
 		$this->render(null, null, VIEWS . "newsletter/inc/list_subscribers.tpl");
@@ -593,9 +594,9 @@ class NewsletterController extends ModulesController {
 			$this->Transaction->commit();
 			//$this->userInfoMessage(__("Subscribers associated to list", true) . " - " . $groupname);
 			$this->eventInfo("Subscribers associated to list " . $this->params["form"]["destination"]);
-			// set to forward callback
-			$this->MailGroup->id = $old_group_id;
 		}
+		// set to forward callback
+		$this->MailGroup->id = $old_group_id;
 	}
 	
 	public function changeCardStatus($mail_group_id=null) {

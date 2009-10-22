@@ -11,6 +11,7 @@ var urlListSubscribers = "{$html->url('/newsletter/listSubscribers')}";
 
 {literal}
 function initSubscribers() {
+
 	$("#paginateSubscribers a, #orderSubscribers a").each(function() {
 		searched = "view_mail_group";
 		specificParams = $(this).attr("href");
@@ -26,7 +27,7 @@ function initSubscribers() {
 	
 	$("#paginateSubscribers a, #orderSubscribers a").click(function() {
 		$("#loaderListSubscribers").show();
-		$("#divSubscribers").load($(this).attr("rel"), function() {
+		$("#subscribers").load($(this).attr("rel"), function() {
 			$("#loaderListSubscribers").hide();
 			initSubscribers();
 		});
@@ -49,7 +50,7 @@ function submitSubscribers(url) {
 			'newStatus': $("select[@name=newStatus]").val()
 		},
 		function(htmlcode) {
-			$("#divSubscribers").html(htmlcode);
+			$("#subscribers").html(htmlcode);
 			$("#loaderListSubscribers").hide();
 			initSubscribers();
 		}	
@@ -103,7 +104,7 @@ $(document).ready(function() {
 
 {include file="inc/list_details.tpl"}
 
-{include file="inc/list_subscribers.tpl"}
+{include file="inc/form_subscribers.tpl"}
 
 
 {include file="inc/list_config_messages.tpl"}
