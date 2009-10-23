@@ -1,6 +1,13 @@
 {literal}
 <script type="text/javascript">
 
+	function toggleEditor(id) {
+		if (!tinyMCE.get(id))
+		tinyMCE.execCommand('mceAddControl', false, id);
+		else
+		tinyMCE.execCommand('mceRemoveControl', false, id);
+	}
+			
 function reindexQuestions() {
 	var fieldName = "";
 	var updateFieldName = ""
@@ -22,13 +29,33 @@ function reindexQuestions() {
 
 $(document).ready(function(){
 
+	$(".toggleMCE").click(function (){
+		var mceid = $(this).attr('rel');
+		toggleEditor(mceid);
+	});
+			
 	$(".add").click(function (){
+
 		var row = $(this).parent().parent("tr");
-		var mytxtarea = $(row).clone(true).insertAfter(row).addClass("newrow").find("textarea");
-		$(mytxtarea).html('');
+		
+		//disabilta mce prima di clonare
+		var mceid = $(row).find("textarea").attr('id');
+		tinyMCE.execCommand('mceRemoveControl', false, mceid);
+		
+		//clona e aggiunge nuopvo id al row e alla textarea
+		var newrowid = "new"+($(".newrow").size())+mceid;
+		alert(newrowid);
+		var newtextareaid = "t"+newrowid;
+		var mytxtarea = $(row).clone(true).insertAfter(row).addClass("newrow").attr("id",newrowid).find("textarea").html('').attr("id",newtextareaid);
+		//prpare il toggler di mce
+		$("#"+newrowid+" .toggleMCE").attr("rel",newtextareaid);
+		
+		//riabilita
+		tinyMCE.execCommand('mceAddControl', false, mceid);
+		tinyMCE.execCommand('mceAddControl', false, newtextareaid);
+		
 		$("#answers").fixItemsPriority();
 		reindexQuestions();
-		
 	});
 	
 	$(".remove").click(function (){

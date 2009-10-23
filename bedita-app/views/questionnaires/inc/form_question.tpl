@@ -7,7 +7,7 @@
 	{$javascript->link("tiny_mce/tiny_mce", false)}
 	{$javascript->link("tiny_mce/jquery.tinymce", false)}
 	{$javascript->link("tiny_mce/tiny_mce_BEquestions_init", false)}
-
+	{$javascript->link("tiny_mce/tiny_mce_BEanswers_init", false)}
 
 {elseif ($conf->wymeditor|default:true)}
 
@@ -19,7 +19,7 @@
 
 {literal}
 <script type="text/javascript">
-	
+			
 	function multiplePreview() {
 		var formElement = "<input type=\"checkbox\" name=\"p\">";
 		var htmlBlock = "";
@@ -136,6 +136,7 @@
 				<th>{t}text{/t}:</th>
 				<td>
 					<textarea id="subtitle" style="width:380px; height:80px" class="shortdesc mce" name="data[description]">{$object.description|default:''|escape:'html'}</textarea>
+					
 				</td>
 			</tr>
 			
