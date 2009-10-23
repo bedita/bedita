@@ -98,15 +98,15 @@ class BeMailComponent extends Object {
 	 * @return body (html or txt) of the message
 	 */
 	private function prepareMailBody($message, $html=true, $mail_group_id=null, $card_id=null) {
+		$unsubscribeurl = "";
+		$subscriberName = "";
 		if (!empty($mail_group_id)) {
 			$publicationUrl = ClassRegistry::init("MailGroup")->getPublicationUrlByGroup($mail_group_id);
 			if (!empty($card_id)) {
 				$unsubscribeurl = $publicationUrl . "/hashjob/newsletter_unsubscribe/mail_group_id:".$mail_group_id."/card_id:".$card_id;
 			}
 		}
-		if (empty($unsubscribeurl)) {
-			$unsubscribeurl = "";
-		}
+
 		if (!empty($message["RelatedObject"]) && $message["RelatedObject"][0]["switch"] == "template") {
 
 			$mailTemplate = ClassRegistry::init("MailTemplate");
@@ -122,6 +122,24 @@ class BeMailComponent extends Object {
 			$templatePublicationUrl = $areaModel->field("public_url", array("id" => $pub_id));
 
 			$txtBody = str_replace("[\$newsletterTitle]",  strip_tags($message["title"]), $template["abstract"]);
+			if (strstr($txtBody,"[\$subscriber]") && !empty($card_id)) {
+				$card = ClassRegistry::init("Card")->find("first", array(
+						"conditions" => array("id" => $card_id),
+						"contain" => array()	
+					)
+				);
+				if (!empty($card["company"]) && $card["company"] == 1) {
+					$subscriberName = $card["company_name"];
+				} else {
+					if (!empty($card["name"])) {
+						$subscriberName = $card["name"];
+					}
+					if (!empty($card["surname"])) {
+						$subscriberName .= " " . $card["surname"];
+					} 
+				}
+			}
+			$txtBody = str_replace("[\$subscriber]",  $subscriberName, $txtBody);
 			$txtBody = preg_replace("/<!--bedita content block-->[\s\S]*<!--bedita content block-->/", $message["abstract"], $txtBody);
 			$txtBody = str_replace("[\$signature]", $message["signature"], $txtBody);
 			$txtBody = str_replace("[\$signoutlink]", $unsubscribeurl, $txtBody);
@@ -136,6 +154,7 @@ class BeMailComponent extends Object {
 					$style = '<link rel="stylesheet" type="text/css" href="'.$css.'" />';
 				}
 				$htmlBody = str_replace("[\$newsletterTitle]", $message["title"], $template["body"]);
+				$htmlBody = str_replace("[\$subscriber]",  $subscriberName, $htmlBody);
 				$htmlBody = preg_replace("/<!--bedita content block-->[\s\S]*<!--bedita content block-->/", $message["body"], $htmlBody);
 				$htmlBody = str_replace("[\$signature]", $message["signature"], $htmlBody);
 				$htmlBody = str_replace("[\$signoutlink]", $unsubscribeurl, $htmlBody);
