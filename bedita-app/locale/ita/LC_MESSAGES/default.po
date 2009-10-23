@@ -79,8 +79,7 @@ msgstr "Sicuro di voler interdire l'accesso a questo IP (ban)?"
 msgid ""
 "Are you sure you want to cancel and reload this document? All unsaved "
 "changes will be lost"
-msgstr ""
-"Sicuro di voler annullare le modifiche e di voler ricaricare "
+msgstr "Sicuro di voler annullare le modifiche e di voler ricaricare "
 "questodocumento? Tutte le modifiche non salvate saranno perdute"
 
 msgid "Area deleted"
@@ -743,8 +742,7 @@ msgstr "Destinatario mancante"
 msgid ""
 "Missing referenced object.nIf you are creating new item you have to save it "
 "before adding a note"
-msgstr ""
-"Oggetto referenziato non trovato. Se stai creando un nuovo elemento devi "
+msgstr "Oggetto referenziato non trovato. Se stai creando un nuovo elemento devi "
 "salvarlo prima di aggiungere una nota"
 
 msgid "Missing sending date"
@@ -775,13 +773,11 @@ msgid "More properties"
 msgstr "Altre proprietà"
 
 msgid "Multimedia Provider not found or error getting thumbnail"
-msgstr ""
-"Non è stato trovato il multimedia provider o si è verificato un errore "
+msgstr "Non è stato trovato il multimedia provider o si è verificato un errore "
 "nell'ottenere la miniatura"
 
 msgid "Multimedia Provider not found or error preparing data to save"
-msgstr ""
-"Non è stato trovato il multimedia provider o si è verificato un errorenella "
+msgstr "Non è stato trovato il multimedia provider o si è verificato un errorenella "
 "preparazione dei dati da salvare"
 
 msgid "Multimedia deleted"
@@ -1026,8 +1022,7 @@ msgstr "Inserire una data valida nel formato %1"
 
 msgid ""
 "Please enter a valid date in the %1 format and greater than the previous date"
-msgstr ""
-"Inserire una data valida nel formato %1 e successiva alla "
+msgstr "Inserire una data valida nel formato %1 e successiva alla "
 "dataprecedentemente inserita"
 
 msgid "Please enter a valid time in the %1 format"
@@ -1269,8 +1264,7 @@ msgstr "Lingua testo"
 
 msgid ""
 "The content is fixed: it's not possible to change the position in the tree"
-msgstr ""
-"Contenuto immodificabile: non è possibile cambiarne la posizione nell'albero"
+msgstr "Contenuto immodificabile: non è possibile cambiarne la posizione nell'albero"
 
 msgid "This help page is under construction: coming soon"
 msgstr "Questa pagina di aiuto è in costruzione: disponibile prossimamente"
@@ -1285,7 +1279,7 @@ msgid "Title is required"
 msgstr "Il titolo è necesario"
 
 msgid "To unsubscribe"
-msgstr ""
+msgstr "Per disiscriverti"
 
 msgid "Total Subscribers"
 msgstr "Totale iscritti"
@@ -1371,13 +1365,11 @@ msgstr "Nome utente"
 msgid ""
 "User name is required (at least %1 chars, without white spaces and special "
 "chars)"
-msgstr ""
-"Il campo Nome utente è obbligatorio (almeno %1 caratteri, senza spazi "
+msgstr "Il campo Nome utente è obbligatorio (almeno %1 caratteri, senza spazi "
 "ecaratteri speciali"
 
 msgid "User not associated to mailgroup or he is in pending status"
-msgstr ""
-"L'utente non è associato al gruppo di posta o è in attesa di approvazione"
+msgstr "L'utente non è associato al gruppo di posta o è in attesa di approvazione"
 
 msgid "User not associated to mailgroup or he isn't in pending status"
 msgstr "L'utente"
@@ -2468,140 +2460,3 @@ msgstr "il tuo messaggio"
 msgid "your profile and preferences"
 msgstr "il tuo profilo e le tue preferenze"
 
-#~ msgid "Company / institution"
-#~ msgstr "Azienda / istituzione"
-
-#~ msgid "company"
-#~ msgstr "azienda"
-
-#~ msgid ""
-#~ "Are you sure you want to cancel and reload this document? All "
-#~ "unsavedchanges will be lost"
-#~ msgstr ""
-#~ "Sicuro di voler annullare le modifiche e di voler ricaricare "
-#~ "questodocumento? Tutte le modifiche non salvate saranno perdute"
-
-#~ msgid "Editor notes"
-#~ msgstr "Note redazionali"
-
-#~ msgid "Editors Notes"
-#~ msgstr "Note Editori"
-
-#~ msgid "Error removing mail group card"
-#~ msgstr "Errore in eliminazione scheda di grouppo di posta"
-
-#~ msgid ""
-#~ "Missing referenced object.nIf you are creating new item you have to save "
-#~ "itbefore adding a note"
-#~ msgstr ""
-#~ "Oggetto referenziato non trovato.nSe stai creando un nuovo elemento "
-#~ "devisalvarloprima di aggiungere una nota"
-
-#~ msgid "Newsletter must be saved before sending"
-#~ msgstr "La Newsletter deve essere salvata prima dell'invio"
-
-#~ msgid "all questions"
-#~ msgstr "tutti i quesiti"
-
-#~ msgid "questions"
-#~ msgstr "quesiti"
-
-#~ msgid "System Events"
-#~ msgstr "Eventi di sistema"
-
-#~ msgid "System Info"
-#~ msgstr "Informazioni di sistema"
-
-#~ msgid ""
-#~ "User name is required (at least %1 chars, without white spaces and "
-#~ "specialchars)"
-#~ msgstr ""
-#~ "Il campo Nome utente è obbligatorio (almeno %1 caratteri, senza spazi "
-#~ "ecaratteri speciali"
-
-#~ msgid "User not authorized to enter"
-#~ msgstr "Utente non autorizzato all'accesso"
-
-#~ msgid "correct"
-#~ msgstr "corretta"
-
-#~ msgid "currently in job"
-#~ msgstr "in corso"
-
-#~ msgid "last editor's notes"
-#~ msgstr "ultime note editore"
-
-#~ msgid "notes"
-#~ msgstr "note"
-
-#~ msgid "next invoice at"
-#~ msgstr "prossimo invio a"
-
-#~ msgid "pending"
-#~ msgstr "pendente"
-
-#~ msgid "received Messages"
-#~ msgstr "Messaggi ricevuti"
-
-#~ msgid "recipients"
-#~ msgstr "destinatari"
-
-#~ msgid "Objects with multiple relactions"
-#~ msgstr "Oggetti con più relazioni"
-
-#~ msgid "level"
-#~ msgstr "livello"
-
-#~ msgid "msg"
-#~ msgstr "messaggio"
-
-#~ msgid "context"
-#~ msgstr "contesto"
-
-#~ msgid "all questionnaires"
-#~ msgstr "tutti i questionari"
-
-#~ msgid "Position"
-#~ msgstr "Posizione"
-
-#~ msgid "editor notes"
-#~ msgstr "note redazionali"
-
-#~ msgid "Embedded in"
-#~ msgstr "Inserito in"
-
-#~ msgid "Embedded in no objects"
-#~ msgstr "l'elemento non è inserito da nessuna parte"
-
-#~ msgid "Question deleted"
-#~ msgstr "Quesito eliminato"
-
-#~ msgid "choose document type"
-#~ msgstr "scegli il tipo documento"
-
-#~ msgid "modify"
-#~ msgstr "modifica"
-
-#~ msgid "read"
-#~ msgstr "lettura"
-
-#~ msgid "no contents"
-#~ msgstr "nessun contenuto"
-
-#~ msgid "Add new item"
-#~ msgstr "Aggiungi nuovo elemento"
-
-#~ msgid "all documents"
-#~ msgstr "tutti i documenti"
-
-#~ msgid "all events"
-#~ msgstr "tutti gli eventi"
-
-#~ msgid "Events"
-#~ msgstr "Eventi"
-
-#~ msgid "No events found"
-#~ msgstr "Nessun evento trovato"
-
-#~ msgid "parent"
-#~ msgstr "parentela"
