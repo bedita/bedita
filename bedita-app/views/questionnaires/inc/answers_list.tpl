@@ -44,7 +44,6 @@ $(document).ready(function(){
 		
 		//clona e aggiunge nuopvo id al row e alla textarea
 		var newrowid = "new"+($(".newrow").size())+mceid;
-		alert(newrowid);
 		var newtextareaid = "t"+newrowid;
 		var mytxtarea = $(row).clone(true).insertAfter(row).addClass("newrow").attr("id",newrowid).find("textarea").html('').attr("id",newtextareaid);
 		//prpare il toggler di mce
