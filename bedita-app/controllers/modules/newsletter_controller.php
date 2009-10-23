@@ -304,15 +304,15 @@ class NewsletterController extends ModulesController {
 
 	public function deleteMailGroups() {
 		$this->checkWriteModulePermission();
-		if(empty($this->data["id"])) 
+		if(empty($this->data["MailGroup"]["id"])) 
  	 	    throw new BeditaException( __("No data", true));
  	 	$this->Transaction->begin() ;
-		if(!$this->MailGroup->del($this->data["id"])) {
+		if(!$this->MailGroup->del($this->data["MailGroup"]["id"])) {
 			throw new BeditaException(__("Error saving mail group", true), $this->MailGroup->validationErrors);
 		}
 		$this->Transaction->commit();
-		$this->userInfoMessage(__("Mail Group deleted", true) . " -  " . $this->data["group_name"]);
-		$this->eventInfo("mail group " . $this->data["id"] . "-" . $this->data["group_name"] . " deleted");
+		$this->userInfoMessage(__("Mail Group deleted", true) . " -  " . $this->data["MailGroup"]["group_name"]);
+		$this->eventInfo("mail group " . $this->data["MailGroup"]["id"] . "-" . $this->data["MailGroup"]["group_name"] . " deleted");
 	}
 
 	public function sendNewsletter() {

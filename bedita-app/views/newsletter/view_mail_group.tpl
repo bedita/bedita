@@ -81,6 +81,7 @@ $(document).ready(function() {
 //-->
 </script>
 
+{assign var="delparam" value="/newsletter/deleteMailGroups"}
 {include file="../common_inc/form_common_js.tpl"}
 
 </head>

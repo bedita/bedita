@@ -70,7 +70,7 @@ $(document).ready(function(){
 
 {/literal}{/if}{literal}
 
-{/literal}{if $module_modify != 1}{literal}
+{/literal}{if (!empty($module_modify) && ($module_modify != 1))}{literal}
 		
 		$("#saveBEObject,#delBEObject").attr("disabled",true);
 		$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");
@@ -84,13 +84,12 @@ $(document).ready(function(){
 	
 {/literal}{/if}{literal}
 
-{/literal}{if !($perms->isWritable($user.userid,$user.groups,$object.Permissions))}{literal}
-
+{/literal}{*  {if !($perms->isWritable($user.userid,$user.groups,$object.Permissions))}{literal}
 		//$("#delBEObject").attr("disabled",true);
 		//$("#saveBEObject,#cloneBEObject,#delBEObject").attr("disabled",true);
 		//$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");
 	
-{/literal}{/if}{literal}
+{/literal}{/if}*}{literal}
 
 
 {/literal}{if !empty($object.start) && ($object.start > ($smarty.now|date_format:"%Y-%m-%d %T"))}{literal}
