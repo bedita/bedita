@@ -114,4 +114,4 @@ $(document).ready(function() {
 	
 </div>
 
-{include file="../common_inc/menuright.tpl"}
+{include file="../common_inc/menuright.tpl" object=""}
