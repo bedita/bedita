@@ -115,7 +115,7 @@ class EventsController extends ModulesController {
 	 									), 
 	 			"delete" 			=>	array(
 	 										"OK"	=> $this->Session->read('backFromView'),
-	 										"ERROR"	=> "/events/view/{@$this->params['pass'][0]}" 
+	 										"ERROR"	=> $this->referer()
 	 									), 
 	 			"saveCategories" 	=> array(
 	 										"OK"	=> "/events/categories",

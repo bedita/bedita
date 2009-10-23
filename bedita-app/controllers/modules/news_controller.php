@@ -114,7 +114,7 @@ class NewsController extends ModulesController {
 									), 
 				"delete" =>	array(
 										"OK"	=> $this->Session->read('backFromView'),
-										"ERROR"	=> "/news/view/{@$this->params['pass'][0]}" 
+										"ERROR"	=> $this->referer()
 									), 
 				"saveCategories" 	=> array(
 										"OK"	=> "/news/categories",
