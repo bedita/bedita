@@ -48,7 +48,8 @@ $(document).ready(function(){
 		}
 	});
 	
-	$.datepicker.setDefaults({
+
+$.datepicker.setDefaults({
 		speed: 'fast', 
 		showOn: 'both',
 		closeAtTop: false, 
@@ -62,6 +63,7 @@ $(document).ready(function(){
 	
 	$("input.dateinput").datepicker();
 
+
 {/literal}
 
 {if empty($object.id)}{literal}
@@ -70,27 +72,26 @@ $(document).ready(function(){
 
 {/literal}{/if}{literal}
 
-{/literal}{if $module_modify != 1}{literal}
+{/literal}{if (!empty($module_modify) && ($module_modify != 1))}{literal}
 		
 		$("#saveBEObject,#delBEObject").attr("disabled",true);
 		$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");
 
 {/literal}{/if}{literal}
 
-
 {/literal}{if !empty($object.Permissions)}{literal}
 
 		$(".secondacolonna .modules label").addClass("lock").attr("title","object with limited permissions");
+
 	
 {/literal}{/if}{literal}
 
-{/literal}{if !($perms->isWritable($user.userid,$user.groups,$object.Permissions))}{literal}
-
+{/literal}{*  {if !($perms->isWritable($user.userid,$user.groups,$object.Permissions))}{literal}
 		//$("#delBEObject").attr("disabled",true);
 		//$("#saveBEObject,#cloneBEObject,#delBEObject").attr("disabled",true);
 		//$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");
 	
-{/literal}{/if}{literal}
+{/literal}{/if}*}{literal}
 
 
 {/literal}{if !empty($object.start) && ($object.start > ($smarty.now|date_format:"%Y-%m-%d %T"))}{literal}

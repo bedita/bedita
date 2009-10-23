@@ -1,5 +1,10 @@
 <fieldset id="properties">
 
+{$javascript->link("jquery/ui/ui.datepicker.min", false)}
+{if $currLang != "eng"}
+{$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
+{/if}
+
 {literal}
 <script language="JavaScript" type="text/javascript">
 $(document).ready(function(){

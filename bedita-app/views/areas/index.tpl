@@ -3,7 +3,12 @@
 
 {$javascript->link("jquery/ui/ui.sortable.min", true)}
 {$javascript->link("jquery/jquery.selectboxes.pack", false)}
+
 {$javascript->link("jquery/ui/ui.datepicker.min", false)}
+{if $currLang != "eng"}
+{$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
+{/if}
+
 
 <script type="text/javascript">
 <!--
