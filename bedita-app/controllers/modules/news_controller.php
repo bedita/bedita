@@ -56,9 +56,15 @@ class NewsController extends ModulesController {
  		$this->userInfoMessage(__("News saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("news [". $this->data["title"]."] saved");
 	 }
-	
 
-	 public function delete() {
+	public function delete() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("ShortNews");
+		$this->userInfoMessage(__("News deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("News $objectsListDeleted deleted");
+	}
+
+	public function deleteSelected() {
 		$this->checkWriteModulePermission();
 		$objectsListDeleted = $this->deleteObjects("ShortNews");
 		$this->userInfoMessage(__("News deleted", true) . " -  " . $objectsListDeleted);
@@ -104,10 +110,10 @@ class NewsController extends ModulesController {
 										),
 				"save"	=> 	array(
 										"OK"	=> "/news/view/{$this->ShortNews->id}",
-										"ERROR"	=> "/news" 
+										"ERROR"	=> $this->referer() 
 									), 
 				"delete" =>	array(
-										"OK"	=> "/news",
+										"OK"	=> $this->Session->read('backFromView'),
 										"ERROR"	=> "/news/view/{@$this->params['pass'][0]}" 
 									), 
 				"saveCategories" 	=> array(
@@ -119,12 +125,12 @@ class NewsController extends ModulesController {
 										"ERROR"	=> "/news/categories"
 										),
 				"addItemsToAreaSection"	=> 	array(
-										"OK"	=> "/news",
-										"ERROR"	=> "/news" 
+										"OK"	=> $this->referer(),
+										"ERROR"	=> $this->referer() 
 										),
 				"changeStatusObjects"	=> 	array(
-										"OK"	=> "/news",
-										"ERROR"	=> "/news" 
+										"OK"	=> $this->referer(),
+										"ERROR"	=> $this->referer() 
 										)
 		) ;
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

@@ -76,6 +76,13 @@ class BooksController extends ModulesController {
 		$this->eventInfo("books $objectsListDeleted deleted");
 	}
 
+	public function deleteSelected() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("Book");
+		$this->userInfoMessage(__("Book deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("books $objectsListDeleted deleted");
+	}
+
 	public function listAllBooks($filters = null) {
 		$this->layout = null;
 		$this->render(null, null, VIEWS."books/inc/list_all_books.tpl");
@@ -92,16 +99,20 @@ class BooksController extends ModulesController {
 							"ERROR"	=> "/books/view/{$this->Book->id}" 
 							), 
 			"delete" =>	array(
-							"OK"	=> "/books",
-							"ERROR"	=> "/books/view/{@$this->params['pass'][0]}" 
+							"OK"	=> $this->Session->read('backFromView'),
+							"ERROR"	=> $this->referer() 
+							), 
+			"deleteSelected" =>	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							),
 			"addItemsToAreaSection"	=> 	array(
-							"OK"	=> "/books",
-							"ERROR"	=> "/books" 
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							),
 			"changeStatusObjects"	=> 	array(
-							"OK"	=> "/books",
-							"ERROR"	=> "/books" 
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							)
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

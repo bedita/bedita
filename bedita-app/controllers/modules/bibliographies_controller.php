@@ -66,6 +66,12 @@ class BibliographiesController extends ModulesController {
 		$this->eventInfo("bibliographies $objectsListDeleted deleted");
 	}
 
+	public function deleteSelected() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("Bibliography");
+		$this->userInfoMessage(__("Bibliography deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("bibliographies $objectsListDeleted deleted");
+	}
 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
@@ -78,16 +84,20 @@ class BibliographiesController extends ModulesController {
 							"ERROR"	=> "/bibliographies/view/{$this->Bibliography->id}" 
 							), 
 			"delete" =>	array(
-							"OK"	=> "/bibliographies",
-							"ERROR"	=> "/bibliographies/view/{@$this->params['pass'][0]}" 
+							"OK"	=> $this->Session->read('backFromView'),
+							"ERROR"	=> $this->referer()
+							), 
+			"deleteSelected" =>	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer()
 							),
 			"addItemsToAreaSection"	=> 	array(
-							"OK"	=> "/bibliographies",
-							"ERROR"	=> "/bibliographies" 
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							),
 			"changeStatusObjects"	=> 	array(
-							"OK"	=> "/bibliographies",
-							"ERROR"	=> "/bibliographies" 
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							)
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

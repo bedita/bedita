@@ -660,8 +660,8 @@ class NewsletterController extends ModulesController {
 							"ERROR"	=> $this->referer() 
 							),
 			"delete" =>	array(
-							"OK"	=> "/newsletter/newsletters",
-							"ERROR"	=> "/newsletter/newsletters"
+							"OK"	=> $this->Session->read('backFromView'),
+							"ERROR"	=> $this->referer()
 							),
 			"saveTemplate"	=> 	array(
 							"OK"	=> "/newsletter/view/".@$this->MailTemplate->id,

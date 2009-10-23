@@ -87,6 +87,13 @@ class WebmarksController extends ModulesController {
 		$this->eventInfo("News $objectsListDeleted deleted");
 	}
 
+	public function deleteSelected() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("Link");
+		$this->userInfoMessage(__("News deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("News $objectsListDeleted deleted");
+	}
+
 	public function categories() {
 		$this->showCategories($this->Link);
 	}
@@ -171,11 +178,15 @@ class WebmarksController extends ModulesController {
 										"OK"	=> "/webmarks/view/{$this->Link->id}",
 										"WARN"	=> "/webmarks/view/{$this->Link->id}", 
 										"ERROR"	=> "/webmarks/view/" 
-									), 
+									),
 				"delete" =>	array(
-										"OK"	=> "/webmarks",
-										"ERROR"	=> "/webmarks/view/{@$this->params['pass'][0]}" 
-									), 
+										"OK"	=> $this->Session->read('backFromView'),
+										"ERROR"	=> $this->referer() 
+									),
+				"deleteSelected" =>	array(
+										"OK"	=> $this->referer(),
+										"ERROR"	=> $this->referer() 
+									),
 				"saveCategories" 	=> array(
 										"OK"	=> "/webmarks/categories",
 										"ERROR"	=> "/webmarks/categories"
@@ -185,16 +196,16 @@ class WebmarksController extends ModulesController {
 										"ERROR"	=> "/webmarks/categories"
 										),
 				"addItemsToAreaSection"	=> 	array(
-										"OK"	=> "/webmarks",
-										"ERROR"	=> "/webmarks" 
+										"OK"	=> $this->referer(),
+										"ERROR"	=> $this->referer() 
 										),
 				"changeStatusObjects"	=> 	array(
-										"OK"	=> "/webmarks",
-										"ERROR"	=> "/webmarks" 
+										"OK"	=> $this->referer(),
+										"ERROR"	=> $this->referer() 
 										),
 				"checkMultiUrl"		=> 	array(
-										"OK"	=> "/webmarks",
-										"ERROR"	=> "/webmarks" 
+										"OK"	=> $this->referer(),
+										"ERROR"	=> $this->referer() 
 										)
 		) ;
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

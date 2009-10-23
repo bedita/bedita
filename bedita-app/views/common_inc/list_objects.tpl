@@ -1,7 +1,7 @@
 
 <script type="text/javascript">
 <!--
-var urlDelete = "{$html->url('delete/')}" ;
+var urlDelete = "{$html->url('deleteSelected/')}" ;
 var message = "{t}Are you sure that you want to delete the item?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
 var URLBase = "{$html->url('index/')}" ;

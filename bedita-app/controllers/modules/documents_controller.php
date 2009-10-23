@@ -64,6 +64,13 @@ class DocumentsController extends ModulesController {
 		$this->eventInfo("documents $objectsListDeleted deleted");
 	}
 
+	public function deleteSelected() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("Document");
+		$this->userInfoMessage(__("Documents deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("documents $objectsListDeleted deleted");
+	}
+
 	public function categories() {
 		$this->showCategories($this->Document);
 	}
@@ -105,7 +112,7 @@ class DocumentsController extends ModulesController {
 							), 
 			"save"	=> 	array(
 							"OK"	=> "/documents/view/".@$this->Document->id,
-							"ERROR"	=> $this->referer()  
+							"ERROR"	=> $this->referer()
 							),
 			"saveCategories" 	=> array(
 							"OK"	=> "/documents/categories",
@@ -116,16 +123,20 @@ class DocumentsController extends ModulesController {
 							"ERROR"	=> "/documents/categories"
 							),
 			"delete" =>	array(
-							"OK"	=> "/documents",
+							"OK"	=> $this->Session->read('backFromView'),
 							"ERROR"	=> $this->referer()
 							),
+			"deleteSelected" =>	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+							),
 			"addItemsToAreaSection"	=> 	array(
-							"OK"	=> "/documents",
-							"ERROR"	=> "/documents" 
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							),
 			"changeStatusObjects"	=> 	array(
-							"OK"	=> "/documents",
-							"ERROR"	=> "/documents" 
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							)
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

@@ -6,7 +6,7 @@
 <body>
 <script type="text/javascript">
 <!--
-var urlDelete = "{$html->url('delete/')}";
+var urlDelete = "{$html->url('deleteSelected/')}";
 var message = "{t}Are you sure that you want to delete the tag?{/t}";
 var messageSelected = "{t}Are you sure that you want to delete selected tags?{/t}";
 var URLBase = "{$html->url('index/')}";
@@ -63,7 +63,6 @@ $(document).ready(function() {
 
 <form method="post" action="" id="formObject">
 
-					
 	<table class="indexlist">
 
 	<tr>

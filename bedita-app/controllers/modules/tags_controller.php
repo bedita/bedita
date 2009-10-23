@@ -101,6 +101,20 @@ class TagsController extends ModulesController {
 		$this->eventInfo("Tag $tagsListDeleted deleted");
 	}
 
+	public function deleteSelected() {
+		$this->checkWriteModulePermission();
+		if(empty($this->params["form"]["tags_selected"])) 
+			throw new BeditaException( __("No tag selected", true));
+		$this->Transaction->begin();
+		foreach ($this->params["form"]["tags_selected"] as $id) {
+			$this->Category->del($id); 
+		}
+		$this->Transaction->commit();
+		$tagsListDeleted = implode(",", $this->params["form"]["tags_selected"]);
+		$this->userInfoMessage(__("Tag deleted", true) . " -  " . $tagsListDeleted);
+		$this->eventInfo("Tag $tagsListDeleted deleted");
+	}
+
 	public function listAllTags($href=false) {
 		$this->layout = "empty";
 		$this->set("listTags",$this->Category->getTags(true, null, true));
@@ -146,18 +160,22 @@ class TagsController extends ModulesController {
 			"save"	=> 	array(
 								"OK"	=> "/tags/view/{$this->Category->id}",
 								"ERROR"	=> $this->referer() 
-						), 
-			"delete" =>	array(
-								"OK"	=> "/tags",
-								"ERROR"	=> "/tags" 
 						),
+			"delete"	=> 	array(
+								"OK"	=> $this->Session->read('backFromView'),
+								"ERROR"	=> $this->referer()
+							),
+			"deleteSelected" =>	array(
+								"OK"	=> $this->referer(),
+								"ERROR"	=> $this->referer() 
+								),
 			"addMultipleTags" => array(
-								"OK"	=> "/tags",
-								"ERROR"	=> "/tags" 
+								"OK"	=> $this->referer(),
+								"ERROR"	=> $this->referer() 
 						),
 			"changeStatus" => array(
-								"OK"	=> "/tags",
-								"ERROR"	=> "/tags" 
+								"OK"	=> $this->referer(),
+								"ERROR"	=> $this->referer() 
 						)
 		) ;
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

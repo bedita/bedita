@@ -182,17 +182,20 @@ class MultimediaController extends ModulesController {
 		$this->data['fixed'] = 0;
 		$this->Stream->id = $this->BeUploadToObj->cloneMediaObject($this->data);
 	}
-	
-	 /**
-	 * Delete multimedia object
-	 */
-	function delete($id = null) {
+
+	function delete() {
 		$this->checkWriteModulePermission();
 		$objectsListDeleted = $this->deleteObjects("Stream");
 		$this->userInfoMessage(__("Multimedia deleted", true) . " -  " . $objectsListDeleted);
 		$this->eventInfo("multimedia $objectsListDeleted deleted");
 	}
 
+	function deleteSelected() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("Stream");
+		$this->userInfoMessage(__("Multimedia deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("multimedia $objectsListDeleted deleted");
+	}
 
 	/**
 	 * Form page to upload multimedia objects
@@ -255,12 +258,20 @@ class MultimediaController extends ModulesController {
 							"ERROR" => "/multimedia/view/".@$this->data['id'] 
 							), 
 			"delete"	=> 	array(
-							"OK"	=> "./",
+							"OK"	=> $this->Session->read('backFromView'),
 							"ERROR"	=> $this->referer()
 							),
+			"deleteSelected" =>	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+							),
+			"addItemsToAreaSection"	=> 	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+							),
 			"changeStatusObjects"	=> 	array(
-							"OK"	=> "/multimedia",
-							"ERROR"	=> "/multimedia"
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							)
 						);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
