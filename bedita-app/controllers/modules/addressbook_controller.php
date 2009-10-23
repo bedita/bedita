@@ -159,7 +159,7 @@ class AddressbookController extends ModulesController {
 							"ERROR"	=> "/addressbook/view/".@$this->Card->id 
 							), 
 			"delete" =>	array(
-							"OK"	=> $this->Session->read('backFromView'),
+							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
 							"ERROR"	=> "/addressbook/view/".@$this->params['pass'][0]
 							),
 			"deleteSelected" =>	array(

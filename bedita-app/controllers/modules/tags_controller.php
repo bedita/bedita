@@ -162,7 +162,7 @@ class TagsController extends ModulesController {
 								"ERROR"	=> $this->referer() 
 						),
 			"delete"	=> 	array(
-								"OK"	=> $this->Session->read('backFromView'),
+								"OK"	=> "/tags",
 								"ERROR"	=> $this->referer()
 							),
 			"deleteSelected" =>	array(

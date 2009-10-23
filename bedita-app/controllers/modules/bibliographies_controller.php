@@ -84,7 +84,7 @@ class BibliographiesController extends ModulesController {
 							"ERROR"	=> "/bibliographies/view/{$this->Bibliography->id}" 
 							), 
 			"delete" =>	array(
-							"OK"	=> $this->Session->read('backFromView'),
+							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
 							"ERROR"	=> $this->referer()
 							), 
 			"deleteSelected" =>	array(

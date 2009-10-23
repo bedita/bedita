@@ -59,8 +59,14 @@ class AppController extends Controller
 	 * @var array
 	 */
 	protected $modelBindings = array();
-	/////////////////////////////////		
-	/////////////////////////////////		
+	
+	/**
+	 * Full url prefix
+	 * 
+	 * @var string
+	 */
+	protected $fullBaseUrl = "";
+			
 	public static function currentController() {
 		return self::$current;
 	}
@@ -179,8 +185,11 @@ class AppController extends Controller
 	final function beforeRender() {
 		
 		// convienience methods for frontends [like beforeRender]
-        $this->beditaBeforeRender() ;
+        $this->beditaBeforeRender();
 		
+		if (defined('FULL_BASE_URL')) {
+			$this->fullBaseUrl = FULL_BASE_URL;
+		}
 		if(isset($this->data[$this->result])) {
 			$this->redirUrl($this->data[$this->result]);
 		

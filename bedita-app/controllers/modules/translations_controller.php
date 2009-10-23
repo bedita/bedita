@@ -242,7 +242,7 @@ class TranslationsController extends ModulesController {
 											),
 			"view"	=> 						array("ERROR"	=> "/translations"),
 			"delete"	=> 					array(
-												"OK"	=> $this->Session->read('backFromView'),
+												"OK"	=> "/translations",
 												"ERROR" => $this->referer()
 											),
 			"deleteTranslations"	=> 		array(

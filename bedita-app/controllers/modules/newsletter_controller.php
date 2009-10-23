@@ -39,7 +39,6 @@ class NewsletterController extends ModulesController {
 	protected $moduleName = 'newsletter';
 	
     public function index() {
-    	
     	$firstDayOfmonth = date("Y") . "-" . date("m") . "-01 00:00:00";
 		$this->MailMessage->recursive = -1;
 		$sentThisMonth = $this->MailMessage->find("count", array(
@@ -660,7 +659,7 @@ class NewsletterController extends ModulesController {
 							"ERROR"	=> $this->referer() 
 							),
 			"delete" =>	array(
-							"OK"	=> $this->Session->read('backFromView'),
+							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
 							"ERROR"	=> $this->referer()
 							),
 			"saveTemplate"	=> 	array(

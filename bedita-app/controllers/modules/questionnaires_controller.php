@@ -179,7 +179,7 @@ class QuestionnairesController extends ModulesController {
 							"ERROR"	=> '/questionnaires/index_questions' 
 							),
 			"deleteQuestionnaire"	=> 	array(
-							"OK"	=> $this->Session->read('backFromView'),
+							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
 							"ERROR"	=> $this->referer()
 							)
 		);

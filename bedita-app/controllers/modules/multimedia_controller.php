@@ -258,7 +258,7 @@ class MultimediaController extends ModulesController {
 							"ERROR" => "/multimedia/view/".@$this->data['id'] 
 							), 
 			"delete"	=> 	array(
-							"OK"	=> $this->Session->read('backFromView'),
+							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
 							"ERROR"	=> $this->referer()
 							),
 			"deleteSelected" =>	array(
