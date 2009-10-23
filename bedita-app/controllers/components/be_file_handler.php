@@ -104,12 +104,13 @@ class BeFileHandlerComponent extends Object {
 	 * @param integer $id	object id
 	 */
 	function del($id) {
-		if(!($path = ClassRegistry::init("Stream")->read("path", $id))) 
-			return true ;
-		$path = (isset($path['Stream']['path']))? $path['Stream']['path'] : $path ;
-		// delete local file
-		if(!$this->_isURL($path)) {
-			$this->_removeFile($path) ;	
+		$path = ClassRegistry::init("Stream")->read("path", $id);
+		$path = (isset($path['Stream']['path'])) ? $path['Stream']['path'] : $path ;
+		if(!empty($path)) {
+			// delete local file
+			if(!$this->_isURL($path)) {
+				$this->_removeFile($path) ;	
+			}
 		}
 		$model = ClassRegistry::init("BEObject")->getType($id) ;
 		$mod = ClassRegistry::init($model);
