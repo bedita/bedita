@@ -258,7 +258,15 @@ class BeMailComponent extends Object {
 								);
 
 		$groupCardModel = ClassRegistry::init("MailGroupCard");
-		$groupCardModel->contain("Card");
+		$groupCardModel->bindModel(array(
+				"belongsTo" => array(
+					'BEObject' => array(
+						'className'		=> 'BEObject',
+						'foreignKey'	=> 'card_id'
+					)
+				)
+			), false);
+		$groupCardModel->contain("Card", "BEObject");
 		
 		$jobModel = ClassRegistry::init("MailJob");
 		$jobModel->containLevel("default");
@@ -276,7 +284,9 @@ class BeMailComponent extends Object {
 						"conditions" => array(
 							"mail_group_id" => $group["id"],
 							"MailGroupCard.status" => "confirmed",
-							"Card.mail_status" => "valid")
+							"Card.mail_status" => "valid",
+							"BEObject.status" => "on"
+							)
 						)
 					);
 
@@ -302,7 +312,12 @@ class BeMailComponent extends Object {
 					
 				}
 			}
-		}	
+		}
+
+		$groupCardModel->unbindModel(
+			array("belongsTo" => array('BEObject')),
+			false
+		);
 	}
 	
 	
@@ -353,6 +368,10 @@ class BeMailComponent extends Object {
 					$job["MailJob"]["smtp_err"] = $ex->getSmtpError();
 					$jobModel->save($job);
 					$this->log($ex->errorTrace());
+				} catch (BeditaException $ex) {
+					$job["MailJob"]["status"] = "failed";
+					$jobModel->save($job);
+					$this->log($ex->errorTrace());
 				}
 			}
 			
@@ -367,7 +386,7 @@ class BeMailComponent extends Object {
 			$dataMsg["end_sending"] = date("Y-m-d H:i:s");
 			$mailMsgModel->save($dataMsg, false);
 		}
-		$mailMsgModel->Behaviors->disable('ForeignDependenceSave'); 
+		$mailMsgModel->Behaviors->enable('ForeignDependenceSave'); 
 		
 	}
 	
