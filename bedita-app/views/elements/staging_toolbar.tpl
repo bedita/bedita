@@ -1,4 +1,60 @@
 {literal}
+	
+<script type="text/javascript">
+$(document).ready(function(){
+
+/*
+	$(".stagingmenu LI A").click(function(){
+		var myLeft = $(this).position().left;
+		var trigged  = $(this).attr("rel");
+		$(".stagingsubmenu").slideUp('normal');
+		$("#"+trigged+"").css("left",myLeft).slideDown('normal');
+	});
+*/
+
+$(".stagingmenu LI A").click(
+      function () {
+        var myLeft 	= $(this).position().left;
+		var rel  	= $(this).attr("rel");
+		var trigged  	= $("#"+rel+"");
+		$(".stagingsubmenu").not(trigged).slideUp('normal');
+		$(trigged).css("left",myLeft-60).slideToggle('normal');
+
+      }
+    );
+
+	$(".openclose").click(function(){
+		$(".stagingsubmenu").hide();
+		$(".stagingmenu LI.in").toggle('normal');
+		$(".openclose.arrow").toggleText("›","‹");
+	});
+
+/*
+$(".stagingsubmenu, .stagingmenu").hover(
+      function () {
+        $(this).css("opacity","0.98");
+      }, 
+      function () {
+        $(this).css("opacity","0.8");
+      }
+    );
+*/
+
+$(".stagingsubmenu TR:has(TD A)").css("cursor","pointer").click(function(){
+		window.location.href = $("TD A",this).attr("href");
+	}).hover(
+      function () {
+        $(this).css("background-color","#666");
+      }, 
+      function () {
+        $(this).css("background-color","transparent");
+      }
+    );
+
+});
+</script>
+
+
 <style type="text/css">
 
 BODY {
@@ -30,13 +86,16 @@ padding-top:30px;
 	position:absolute;
 	z-index:500;
 	/*
-opacity:0.8;
+opacity:0.8
 */
+
 }
 
-.stagingsubmenu table TR:hover {
-	background-color:#666;
+.stagingsubmenu {
+	
 }
+	
+
 .BEdita_staging_toolbar UL {
 	margin:0px 0px 0px 0px !important;
 	padding:0px 0px 0px 0px !important;
@@ -108,39 +167,7 @@ border-radius : 7px;
 
 </style>
 
-<script type="text/javascript">
-$(document).ready(function(){
 
-/*
-	$(".stagingmenu LI A").click(function(){
-		var myLeft = $(this).position().left;
-		var trigged  = $(this).attr("rel");
-		$(".stagingsubmenu").slideUp('normal');
-		$("#"+trigged+"").css("left",myLeft).slideDown('normal');
-	});
-*/
-
-$(".stagingmenu LI A").click(
-      function () {
-        var myLeft 	= $(this).position().left;
-		var rel  	= $(this).attr("rel");
-		var trigged  	= $("#"+rel+"");
-		$(".stagingsubmenu").not(trigged).slideUp('normal');
-		$(trigged).css("left",myLeft).slideToggle('normal');
-
-      }
-    );
-
-	$(".openclose").click(function(){
-		$(".stagingsubmenu").hide();
-		$(".stagingmenu LI.in").toggle('normal');
-		$(".openclose.arrow").toggleText("›","‹");
-	});
-
-
-});
-</script>
-	
 {/literal}
 
 <div class="BEdita_staging_toolbar">
@@ -151,11 +178,11 @@ $(".stagingmenu LI A").click(
 {*		<li class="in">{$publication.staging_url}</li>*}
 		{if !empty($section.currentContent.id)}
 		<li class="in">
-			<a rel="pageinfo">Page info</a>
+			<a rel="pageinfo">Edit this page</a>
 		</li>
-		<li class="in">
+{*		<li class="in">
 			<a rel="pageedit">Edit this page</a>
-		</li>
+		</li>*}
 		{/if}
 		{if !empty($section.id)}
 		<li class="in">
@@ -182,6 +209,34 @@ $(".stagingmenu LI A").click(
 <div id="pageinfo" class="stagingsubmenu">
 	<table>
 		<tr>
+			<th>current content [{$current.lang}] :</th>
+			<td><a title="nickname: {$current.nickname}" target="_blank" href="{$conf->beditaUrl}/view/{$current.id}">{$current.title|truncate:64|default:"[no title]"}</a></td>
+		</tr>
+		{foreach from=$current.languages item=tit key=lang}
+		{if $lang != $current.lang}
+		<tr>
+			<th>translation [{$lang}] :</th>
+			<td><a target="_blank" href="{$conf->beditaUrl}/translations/view/{$current.id}/{$lang}">{$tit.title|truncate:64|default:"[no title]"}</a></td>
+		</tr>
+		{/if}
+		{/foreach}
+		{if !empty($current.relations)}
+		<tr>
+			<th>RELATIONS</th>
+			<td></td>
+		</tr>
+		
+		{foreach from=$current.relations item=related key=relname}
+		{foreach from=$related item=r}
+		<tr>
+			<th>{$relname}:</th>
+			<td><a title="nickname: {$r.nickname}" target="_blank" href="{$conf->beditaUrl}/view/{$r.id}">{$r.title|truncate:64|default:"[no title]"}</a></td>
+		</tr>
+		{/foreach}
+		{/foreach}
+		
+		{/if}
+<tr  style="border-top:1px solid gray">
 			<th>creator:</th><td>{$current.UserCreated.realname|default:$current.UserCreated.userid}</td>
 		</tr>
 		<tr>
@@ -212,45 +267,6 @@ $(".stagingmenu LI A").click(
 		<tr>
 			<th>nickname:</th><td>{$current.nickname}</td>
 		</tr>
-	</table>
-</div>
-<div id="pageedit" class="stagingsubmenu">
-	<table>
-		<tr>
-			<th>current content [{$current.lang}]:</th>
-			<td><a title="nickname: {$current.nickname}" target="_blank" href="{$conf->beditaUrl}/view/{$current.id}">{$current.title|truncate:64|default:"[no title]"}</a></td>
-		</tr>
-		{if !empty($current.curr_lang)}
-		<tr>
-			<th>[{$current.curr_lang}] translation  [current]:</th>
-			<td><a target="_blank" href="{$conf->beditaUrl}/translations/view/{$current.id}/{$current.curr_lang}">{$current.title|truncate:64|default:"[no title]"}</a></td>
-		</tr>
-		{/if}
-		{foreach from=$current.languages item=tit key=lang}
-		{if $lang != $current.lang}
-		<tr>
-			<th>[{$lang}] translation:</th>
-			<td><a target="_blank" href="{$conf->beditaUrl}/translations/view/{$current.id}/{$lang}">{$tit.title|truncate:64|default:"[no title]"}</a></td>
-		</tr>
-		{/if}
-		{/foreach}
-		{if !empty($current.relations)}
-		<tr>
-			<th>RELATIONS</th>
-			<td></td>
-		</tr>
-		
-		{foreach from=$current.relations item=related key=relname}
-		{foreach from=$related item=r}
-		<tr>
-			<th>{$relname}:</th>
-			<td><a title="nickname: {$r.nickname}" target="_blank" href="{$conf->beditaUrl}/view/{$r.id}">{$r.title|truncate:64|default:"[no title]"}</a></td>
-		</tr>
-		{/foreach}
-		{/foreach}
-		
-		{/if}
-
 	</table>
 </div>
 {/if}
