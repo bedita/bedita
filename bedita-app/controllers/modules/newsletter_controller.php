@@ -451,7 +451,15 @@ class NewsletterController extends ModulesController {
 			$this->action = "cloneTemplate";
 		}
 	}
-	
+
+	public function viewInvoice($id) {
+
+		$this->viewObject($this->MailMessage, $id);
+
+ 	}
+
+
+
 	function invoices() {
 
 		$msg = array();
