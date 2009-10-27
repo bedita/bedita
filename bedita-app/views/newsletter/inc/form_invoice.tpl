@@ -30,8 +30,8 @@ $(document).ready(function() {
 	</tr>
 	<tr>
 		<td style="vertical-align:middle">
-	<input size=10 type="text" class="dateinput" name="data[start_sending]" id="eventStart" value="{if !empty($object.start_sending)}{$object.start_sending|date_format:$conf->datePattern}{/if}"/>
-	<input size=5 type="text" id="timeStart" name="data[start_sending_time]" value="{if !empty($object.start_sending)}{$object.start_sending|date_format:"%H:%M"}{/if}" />
+			<input size=10 {if ($object.mail_status == "sent")}disabled=1{/if} type="text" class="dateinput" name="data[start_sending]" id="eventStart" value="{if !empty($object.start_sending)}{$object.start_sending|date_format:$conf->datePattern}{/if}"/>
+			<input size=5 {if ($object.mail_status == "sent")}disabled=1{/if} type="text" id="timeStart" name="data[start_sending_time]" value="{if !empty($object.start_sending)}{$object.start_sending|date_format:"%H:%M"}{/if}" />
 
 		</td>
 		<td>
@@ -43,7 +43,9 @@ $(document).ready(function() {
 						<ul style="margin:0px">
 						{foreach from=$groups item="group" name="fc"}
 							<li style="padding:2px;">
-							<input type="checkbox" name="data[MailGroup][]" value="{$group.id}"{if !empty($group.MailMessage)} checked{/if}/> {$group.group_name}
+							<input type="checkbox" 
+							{if ($object.mail_status == "sent")}disabled=1{/if}
+							name="data[MailGroup][]" value="{$group.id}"{if !empty($group.MailMessage)} checked{/if}/> {$group.group_name}
 							</li>
 						{/foreach}
 						</ul>
@@ -65,7 +67,14 @@ $(document).ready(function() {
 		<input type="button" id="testNewsletter" value="  test newsletter  " {if !($object.id|default:false)}disabled="disabled"{/if}/> 
 		{if (empty($object) || ($object.mail_status!='sent' && $object.mail_status != 'injob'))}
 		&nbsp;&nbsp;
-		<input type="button" id="sendNewsletter" value="  SAVE & QUEUE newsletter  " />
+		{if ($object.mail_status == "sent")}
+			<p style="color:#FFF; padding:4px">
+			{t}Newsletter sent. To schedule another invoice, please clone this object.{/t}
+			</p>
+		{else}
+			<input type="button" id="sendNewsletter" value="  SAVE & QUEUE newsletter  " />
+		{/if}
+		
 		{/if}
 	</div>
 	
