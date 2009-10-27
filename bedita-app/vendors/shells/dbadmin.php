@@ -354,6 +354,60 @@ class DbadminShell extends Shell {
 		}
 	}
 	
+	public function importCsv() {
+		if (!isset($this->params['f'])) {
+			$this->out("file to import is mandatory");
+			return;
+		}
+		if(!file_exists($this->params['f'])) {
+			$this->out("csv file " . $this->params['f'] . " not found");
+			return;
+		}
+		
+		if (!isset($this->params['type'])) {
+			$this->out("object type is mandatory");
+			return;
+		}
+		$type = $this->params['type'];
+		$objTypeId = Configure::read("objectTypes." . $type . ".id");
+		if(empty($objTypeId)) {
+			$this->out("object type " . $type . " not found");
+		}
+		$modelType = Configure::read("objectTypes." . $type . ".model");
+		$model = ClassRegistry::init($modelType);
+
+		$defaults = array( 
+			"status" => "on",
+			"user_created" => "1",
+			"user_modified" => "1",
+			"ip_created" => "127.0.0.1",
+		);
+		
+		$this->out("Importing from " . $this->params['f'] . " objects of type $type");
+		$this->out("........ ");
+		$row = 1;
+		$handle = fopen($this->params['f'], "r");
+		// read header
+		$keys = fgetcsv($handle, 1000, ",");
+		$numKeys = count($keys);
+		$data = array();
+		while (($fields = fgetcsv($handle, 1000, ",")) !== FALSE) {
+	    	$row++;
+			for ($c=0; $c < $numKeys; $c++) {
+				$data[$keys[$c]] = empty($fields[$c]) ? null : $fields[$c]; 
+			}
+			$model->create();
+			$d = array_merge($defaults, $data);
+			if(!$model->save($d)) {
+				throw new BeditaException("Error saving object: " . print_r($data, true) . " \nrow: $row \nvalidation: " . print_r($model->validationErrors, true));
+			}
+		}
+		fclose($handle);
+		$nObj = $row-1;
+		$this->out("Done. $nObj objects of type " . $type . " inserted.");
+	}
+	
+	
 	function help() {
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
@@ -392,6 +446,13 @@ class DbadminShell extends Shell {
         $this->out('    Usage: orphans -type <model-type> ');
         $this->out(' ');
         $this->out("    -type \t model type like 'section' or 'document'");
+        $this->out(' ');
+        $this->out("8. importCsv: import objects from csv file");
+        $this->out(' ');
+        $this->out('    Usage: importCsv -f <csv-file> -type <model-type> ');
+        $this->out(' ');
+        $this->out("    -f \t csv file path");
+        $this->out("    -type \t model type like 'document' or 'event' to import");
         $this->out(' ');
 	}
 	
