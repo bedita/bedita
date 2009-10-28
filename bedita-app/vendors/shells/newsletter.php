@@ -122,6 +122,66 @@ class NewsletterShell extends Shell {
 		}
 		$this->out("Added $count cards to mailgroup $mgParam - $mailGroupId");
 	}
+
+	public function merge() {
+		if (empty($this->params['from'])) {
+			$this->out("Missing 'from' parameter, -from is required.");
+			return;
+		}
+		$from = $this->params['from'];
+		$mailGroup = ClassRegistry::init("MailGroup");
+		$idFrom = $mailGroup->field("id", array("group_name" => $from));
+		if(empty ($idFrom)) {
+			$this->out("Mail group '$from' not found");
+			return;
+		}
+
+		if (empty($this->params['to'])) {
+			$this->out("Missing 'to' parameter, -to is required.");
+			return;
+		}
+		$to = $this->params['to'];
+		if ($from == $to) {
+			$this->out("Mail groups have to be different.");
+			return;
+		}
+		
+		$idTo = $mailGroup->field("id", array("group_name" => $to));
+		if(empty ($idTo)) {
+			$this->out("Mail group '$to'' not found");
+			return;
+		}
+
+		$mgc = ClassRegistry::init("MailGroupCard");
+		$mgcId = $mgc->find('all', array("condition" => array("mail_group_id" => $idFrom)));		
+	
+		$count = 0;	
+		foreach ($mgcId as $mId) {
+			$idFound = $mgc->field("id",
+				array("mail_group_id" => $idTo, 
+				"card_id" => $mId["MailGroupCard"]["card_id"]));
+			if(empty($idFound)) {
+				$mgc->id = $mId['MailGroupCard']['id'];
+				if(!$mgc->saveField("mail_group_id", $idTo)) {
+					throw new BeditaException(__("Error saving mail group card",true));
+				}
+				$count++;
+			}
+		}
+		$this->out("Moved $count cards from mailgroup '$from'' to '$to'");
+		$res = $this->in("Do you want to remove mailgroup '$from'? [y/n]");
+		if($res != "y") {
+			$this->out("Bye");
+			return;
+		} else {
+			if(!$mailGroup->del($idFrom)) {
+			 	throw new BeditaException("Error removing mail group $mailGroup");
+			}
+			$this->out("Done");
+		}
+		
+	}
+	
 	
 	public function import() {
 		$from = (!empty($this->params['from']))? $this->params['from'] : "phplist";
@@ -393,6 +453,13 @@ class NewsletterShell extends Shell {
 		$this->out(' ');
 		$this->out("	-mailgroup <mailgroup name>\t name of mail group / list");
 		$this->out("	-c <category name>\t select cards by category (default: all)");
+		$this->out(' ');
+		$this->out('4. merge: merge a mailgroup into another');
+		$this->out(' ');
+		$this->out('	Usage: merge -from <mailgroup-name> -to <mailgroup-name>');
+		$this->out(' ');
+		$this->out("	-from <mailgroup-name>\t name of source mail group / list");
+		$this->out("	-to <mailgroup-name>\t name of destination mail group / list");
 		$this->out(' ');
 	}
 }
