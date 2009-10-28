@@ -595,6 +595,11 @@ $config['searchFields'] = array() ;
 $config['newsletterCss'] = "base.css";
 
 /**
+ * default timeout in minutes to assume mail jobs blocked and try to resend
+ */
+$config['newsletterTimeout'] = 15;
+
+/**
  * Default value in milliseconds, between autosave of objects (status draft or off)
  */
 $config['autosaveTime'] = 120000; // two minutes

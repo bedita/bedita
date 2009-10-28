@@ -37,8 +37,8 @@ App::import('Component', 'BeMail');
  */
 class MailShell extends Shell {
 	
-	var $BeMail;
-	var $Controller;
+	protected $BeMail;
+	protected $Controller;
 
 	/**
 	 * startup method for MailShell, initialize BeMail Component
@@ -58,21 +58,28 @@ class MailShell extends Shell {
 
 	
 	function main() {
-
 		try {
 			$this->BeMail->notify();
+		} catch (BeditaException $ex) {
+			$this->log("Error: " . $ex->errorTrace());
+		}
+		
+		$timeout = (!empty($this->params["timeout"]))? $this->params["timeout"] : Configure::read("newsletterTimeout");
+		$msgIdsBlocked = $this->BeMail->getMessagesBlocked($timeout);
+		
+		try {
+		
 			$msgIds = $this->BeMail->lockMessages();
-			if (!empty($msgIds))
-			{
-				$this->BeMail->createJobs($msgIds);
-				$this->BeMail->sendQueuedJobs($msgIds);
-			}
+			$this->BeMail->createJobs($msgIds);
+			$msgIds = array_merge($msgIds,$msgIdsBlocked);
+			$this->BeMail->sendQueuedJobs($msgIds);
 				
 		} catch (BeditaException $ex) {
 			$this->log("Error: " . $ex->errorTrace());
 		}
 	
 	}
+	
 	
 	
 	function help() {

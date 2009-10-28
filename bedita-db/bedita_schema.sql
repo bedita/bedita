@@ -787,6 +787,7 @@ CREATE TABLE mail_jobs (
   recipient MEDIUMTEXT NULL COMMENT 'used if card_is and mail_message_id are null, one or more comma separeted addresses',
   mail_params TEXT NULL COMMENT 'serialized array with: reply-to, sender, subject, signature...',
   smtp_err TEXT NULL COMMENT 'SMTP error message on sending failure',
+  process_info INTEGER NULL COMMENT 'pid of process delegates to send this mail job',
   PRIMARY KEY(id),
   INDEX card_id_index(card_id),
   INDEX mail_message_id_index(mail_message_id),

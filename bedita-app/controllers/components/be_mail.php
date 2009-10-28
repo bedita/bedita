@@ -243,14 +243,14 @@ class BeMailComponent extends Object {
 	 */
 	public function createJobs(array $msgIds) {
 		
-		if (empty($msgIds))
+		if (empty($msgIds)) {
 			return ;
-			
-		$mailMsgModel = ClassRegistry::init("MailMessage");
+		}
 		
+		$mailMsgModel = ClassRegistry::init("MailMessage");
 		$msgToSend = $mailMsgModel->find("all", array(
 									"conditions" => array(
-										"MailMessage.mail_status" => "injob",
+										//"MailMessage.mail_status" => "injob",
 										"MailMessage.id" => $msgIds
 										),
 									"contain" => array("BEObject" => array("RelatedObject"), "Content", "MailGroup")
@@ -272,6 +272,7 @@ class BeMailComponent extends Object {
 		$jobModel->containLevel("default");
 
 		$data["status"] = "unsent";
+		$data["process_info"] = getmypid();
 		
 		foreach ($msgToSend as $message) {
 					
@@ -296,8 +297,9 @@ class BeMailComponent extends Object {
 														"conditions" => array(
 																"card_id" => $groupCard["MailGroupCard"]["card_id"],
 																"mail_message_id" => $message["id"]
-																)
-															)
+																),
+														"contain" => array()
+														)
 											) == 0) {
 							$data["card_id"] = $groupCard["MailGroupCard"]["card_id"];
 							
@@ -305,8 +307,9 @@ class BeMailComponent extends Object {
 							$data["mail_body"] = $this->prepareMailBody($message, $groupCard["Card"]["mail_html"], $group["id"], $data["card_id"]);
 							
 							$jobModel->create();
-							if (!$jobModel->save($data))
+							if (!$jobModel->save($data)) {
 								throw new BeditaException(__("Error creating jobs"),true);
+							}
 						}
 					}
 					
@@ -327,15 +330,17 @@ class BeMailComponent extends Object {
 	 */
 	public function sendQueuedJobs(array $msgIds) {
 		
-		if (empty($msgIds))
+		if (empty($msgIds)) {
 			return ;
-		
+		}
+		$process_info = getmypid();
 		$jobModel = ClassRegistry::init("MailJob");
 		$jobModel->containLevel("detailed");
 		$jobsToDo = $jobModel->find("all", array(
 								"conditions" => array(
 									"MailJob.status" => "unsent",
-									"MailJob.mail_message_id" => $msgIds
+									"MailJob.mail_message_id" => $msgIds,
+									"MailJob.process_info" => $process_info
 								)
 							)
 						);
@@ -357,21 +362,34 @@ class BeMailComponent extends Object {
 				$data["body"] = $job["MailJob"]["mail_body"];
 				unset($job["MailMessage"]);
 				unset($job["Card"]);
-					
-				try {
-					$this->sendMail($data, false);
-					$job["MailJob"]["sending_date"] = date("Y-m-d H:i:s",time());
-					$job["MailJob"]["status"] = "sent";
-					$jobModel->save($job);
-				} catch(BeditaMailException $ex) {
-					$job["MailJob"]["status"] = "failed";
-					$job["MailJob"]["smtp_err"] = $ex->getSmtpError();
-					$jobModel->save($job);
-					$this->log($ex->errorTrace());
-				} catch (BeditaException $ex) {
-					$job["MailJob"]["status"] = "failed";
-					$jobModel->save($job);
-					$this->log($ex->errorTrace());
+				
+				$count = $jobModel->find("count", array(
+								"conditions" => array(
+									"MailJob.status" => "unsent",
+									"MailJob.id" => $job["MailJob"]["id"],
+									"MailJob.process_info" => $process_info
+								)
+							)
+						);
+				
+				if ($count == 0) {
+					$this->log("MailJob " . $job["MailJob"]["id"] . " handled by another process");
+				} else {
+					try {
+						$this->sendMail($data, false);
+						$job["MailJob"]["sending_date"] = date("Y-m-d H:i:s",time());
+						$job["MailJob"]["status"] = "sent";
+						$jobModel->save($job);
+					} catch(BeditaMailException $ex) {
+						$job["MailJob"]["status"] = "failed";
+						$job["MailJob"]["smtp_err"] = $ex->getSmtpError();
+						$jobModel->save($job);
+						$this->log($ex->errorTrace());
+					} catch (BeditaException $ex) {
+						$job["MailJob"]["status"] = "failed";
+						$jobModel->save($job);
+						$this->log($ex->errorTrace());
+					}
 				}
 			}
 			
@@ -426,6 +444,61 @@ class BeMailComponent extends Object {
 				$jobModel->saveField("sending_date", date("Y-m-d H:i:s"));
 			}
 		}
+	}
+	
+	/**
+	 * return array of messages that result blocked and
+	 * update pid of mail jobs blocked
+	 *  
+	 * @param int $timeout, time in minute for check when a message is considered blocked
+	 * @return array of message ids
+	 */
+	public function getMessagesBlocked($timeout=20) {
+		$msgBlocked = array();
+		$process_info = getmypid();
+		$timeoutTS = mktime(date("H"), date("i")-$timeout, date("s"), date("n"), date("j"), date("Y"));
+		$timeoutDate = date("Y-m-d H:i:s", $timeoutTS);
+		$messageModel = ClassRegistry::init("MailMessage");
+		$messageInJob = $messageModel->find("all", array(
+				"conditions" => array(
+					"mail_status" => "injob",
+					"start_sending < '" . $timeoutDate . "'"
+				),
+				"fields" => array("id"),
+				"contain" => array()
+			)
+		);
+		
+		if (!empty($messageInJob)) {
+			$jobModel = ClassRegistry::init("MailJob");
+			foreach ($messageInJob as $m) {  
+				
+				$lastSendingDate = $jobModel->field("sending_date", array("mail_message_id" => $m["id"]), "sending_date DESC");
+
+				if ($lastSendingDate < $timeoutDate) {
+					$jobsBlocked = $jobModel->find("all", array(
+							"conditions" => array(
+								"mail_message_id" => $m["id"],
+								"status" => "unsent",
+								"created < '" . $timeoutDate . "'"
+							),
+							"contain" => array()
+						)
+					);
+					
+					if (!empty($jobsBlocked)) {
+						foreach ($jobsBlocked as $job) {
+							$data["id"] = $job["MailJob"]["id"];
+							$data["process_info"] = $process_info;
+							$jobModel->save($data);
+						}
+						$msgBlocked[] = $m["id"];
+					}
+				}
+			}
+		}
+		
+		return $msgBlocked;
 	}
 	
 	/**
