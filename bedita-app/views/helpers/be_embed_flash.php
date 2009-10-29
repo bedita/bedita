@@ -40,7 +40,7 @@ class BeEmbedFlashHelper extends AppHelper {
 		$height = (!empty($attributes['height'])) ? $attributes['height'] : $this->heightDef;
 		$app_ver = (!empty($attributes['application_version']))? $attributes['application_version'] : $this->appVerDef;
 		if (empty($attributes['id'])) {
-			$attributes['id'] = preg_replace("/[\s\.]/", "", "be_id_" . microtime());
+			$attributes['id'] = "be_id_" . rand(10000, 11000) . rand(1, 10000);
 		}
 		if (!empty($attributes['src'])) {
 			unset($attributes['src']);
@@ -55,7 +55,7 @@ class BeEmbedFlashHelper extends AppHelper {
 		} else {
 			$output = $this->Javascript->link("swfobject",false);
 		}
-		$output .= '<script type="text/javascript">swfobject.embedSWF("'.$swfUrl.'","'.$attributes['id'].'","'.$width.'","'.$height.'","'.$app_ver.'","expressInstall.swf",'.$fv.','.$par.','.$att.');</script><div id="'.$attributes['id'].'"></div>';
+		$output .= '<div id="'.$attributes['id'].'"></div><script type="text/javascript">swfobject.embedSWF("'.$swfUrl.'","'.$attributes['id'].'","'.$width.'","'.$height.'","'.$app_ver.'","expressInstall.swf",'.$fv.','.$par.','.$att.');</script>';
 		return $output;
 	}
 	
