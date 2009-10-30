@@ -23,7 +23,7 @@
 				{/if}
 				</h3>
 				
-				<p>{$comment.created|date_format:$conf->datePattern}</p>
+				<p>{$beFront->date($comment.created)}</p>
 				
 				<p>{$comment.description|nl2br}</p>
 			</div>

@@ -10,8 +10,6 @@
 	</ul>
 	
 	<ul class="footel" style="border:0px; width:140px;">
-		<li>{$publication.public_name|default:$publication.title}<br />{$smarty.now|date_format:"%Y"}</li>
+		<li>{$publication.public_name|default:$publication.title}<br />{$beFront->year($smarty.now)}</li>
 	</ul>
 </div>
-
-

@@ -189,6 +189,8 @@ class AreasController extends ModulesController {
 		if(!$new) { 
 			$this->checkObjectWritePermission($this->data['id']);
 		}
+		if(empty($this->data['parent_id'])) 
+			throw new BeditaException(__("No publication", true));
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave() ;
 		
@@ -449,11 +451,11 @@ class AreasController extends ModulesController {
 								), 
 			"saveArea"	=> 	array(
 									"OK"	=> "/areas/view/{$this->Area->id}",
-									"ERROR"	=> "/areas/view/{$this->Area->id}" 
+									"ERROR"	=> $this->referer()
 								), 
 			"saveSection"	=> 	array(
 									"OK"	=> "/areas/view/{$this->Section->id}",
-									"ERROR"	=> "/areas/view/{$this->Section->id}"
+									"ERROR"	=> $this->referer()
 								), 
 			"delete"	=> 	array(
 									"OK"	=> "./",
