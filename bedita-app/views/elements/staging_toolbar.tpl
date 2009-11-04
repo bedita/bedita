@@ -41,7 +41,7 @@ $(".stagingsubmenu, .stagingmenu").hover(
 */
 
 $(".stagingsubmenu TR:has(TD A)").css("cursor","pointer").click(function(){
-		window.location.href = $("TD A",this).attr("href");
+		//window.parent.location.href = $("TD A",this).attr("href");
 	}).hover(
       function () {
         $(this).css("background-color","#666");
