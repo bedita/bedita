@@ -179,6 +179,11 @@ $config['maxNumDaysValidity']   = 60;
 $config['passwdRegex']    = "/^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){6,40}$/";
 $config['passwdRegexMsg'] = "Your password must be at least 6 characters long and contain at least one number";
 
+// auth external services supported
+$config['extAuthTypes'] = array(
+	'openid', 'shibboleth',
+);
+
 
 /**
  ** ******************************************
