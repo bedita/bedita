@@ -28,7 +28,7 @@
 		<table class="bordered">
 			
 		<tr>
-			<th><label for="authselect">{t}Authentication service{/t}</label></th>
+			<th><label>{t}Authentication service{/t}</label></th>
 			<td>
 				<select id="authselect" name="data[User][auth_type]">
 					<option label="BEdita" value="" selected>BEdita ( default )  </option>
