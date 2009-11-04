@@ -118,8 +118,8 @@ class AppError extends ErrorHandler {
 		$currentController->handleError($messages['details'], $messages['msg'], $this->errorTrace);
 		if ($messages["errorType"] == "unlogged") {
 			$viewName = "login";
-		} elseif ($messages["errorType"] == "unauthorized") {
-			$viewName = "unauthorized";
+		} else {
+			$viewName = $messages["errorType"];
 		}
 		$viewFile = (file_exists(VIEWS."pages".DS.$viewName.".tpl"))? VIEWS."pages".DS.$viewName.".tpl" : VIEWS."pages".DS.$viewName.".ctp";
 		echo $currentController->render(null,null,$viewFile);

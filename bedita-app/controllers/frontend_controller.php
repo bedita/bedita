@@ -164,7 +164,7 @@ abstract class FrontendController extends AppController {
 		if ($this->isLogged()) {
 			$this->redirect($urlToGo);
 		}
-		throw new BeditaFrontAccessException(null, array("errorType" => self::UNLOGGED));
+		$this->accessDenied(self::UNLOGGED);
 	}
 	
 	protected function logout($autoRedirect=true) {
@@ -173,6 +173,28 @@ abstract class FrontendController extends AppController {
 		if ($autoRedirect) {
 			$this->redirect($this->logoutRedirect);
 		}
+	}
+	
+	/**
+	 * manage access denied. If you want another behavior override it in pages_controller
+	 * 
+	 * user unlogged: render login view (if user doesn't arrive from login page set info message)
+	 * user unauthorized to access that item: render unauthorized view (set error message)
+	 * 
+	 * for other custom type will try to render a view with $type name 
+	 * 		(i.e. $type="access_denied" render views/pages/access_denied.[tpl|ctp] template)
+	 * 
+	 * @param string $type, which type of access denied 
+	 */
+	protected function accessDenied($type) {
+		if (self::UNLOGGED && !strstr($this->here,"/login")) {
+			$message = __("You have to be logged to access that item",true);
+			$this->userInfoMessage($message);
+		} elseif ($type == self::UNAUTHORIZED) {
+			$message = __("You aren't authorized to access that item",true);
+			$this->userErrorMessage($message);
+		}
+		throw new BeditaFrontAccessException(null, array("errorType" => $type));
 	}
 	
 	/**
@@ -276,13 +298,14 @@ abstract class FrontendController extends AppController {
 		 * throws exception
 		 */
 		if ( (!$this->logged && Configure::read("staging") === true) || ((empty($this->params["pass"][0]) || $this->params["pass"][0] != "logout") && !$this->publication["authorized"])) {
-			if (!$this->logged)
+			if (!$this->logged) {
 				$errorType = self::UNLOGGED;
-			else
+			} else {
 				$errorType = self::UNAUTHORIZED;
+			}
 			$this->setupLocale();
 			$this->beditaBeforeFilter();
-			throw new BeditaFrontAccessException(null, array("errorType" => $errorType));
+			$this->accessDenied($errorType);
 		}
 		
 		// workaround to avoid direct access to protected and private methods from url
@@ -1026,9 +1049,10 @@ abstract class FrontendController extends AppController {
 		}
 		
 		$section = $this->loadObj($sectionId);
-		if ($section === self::UNLOGGED || $section === self::UNAUTHORIZED)
-			throw new BeditaFrontAccessException(null, array("errorType" => $section));
-
+		if ($section === self::UNLOGGED || $section === self::UNAUTHORIZED) {
+			$this->accessDenied($section);
+		}
+		
 		$section["pathSection"] = $this->getPath($sectionId);
 		
 		$sectionPath = "";
@@ -1042,8 +1066,9 @@ abstract class FrontendController extends AppController {
 		
 		if(!empty($content_id)) {
 			$section['currentContent'] = $this->loadObj($content_id);
-			if ($section['currentContent'] === self::UNLOGGED || $section['currentContent'] === self::UNAUTHORIZED)
-				throw new BeditaFrontAccessException(null, array("errorType" => $section['currentContent']));
+			if ($section['currentContent'] === self::UNLOGGED || $section['currentContent'] === self::UNAUTHORIZED) {
+				$this->accessDenied($section['currentContent']);
+			}
 			
 			$section["contentRequested"] = true;
 			$section["contentPath"] = $section["path"] . "/" . $section['currentContent']['nickname'];
@@ -1231,8 +1256,9 @@ abstract class FrontendController extends AppController {
 			foreach ($parents as $p) {
 				if ($p != $this->publication["id"]) {
 					$pathArr[$p] = $this->loadObj($p);
-					if ($pathArr[$p] === self::UNLOGGED || $pathArr[$p] === self::UNAUTHORIZED)
-						throw new BeditaFrontAccessException(null, array("errorType" => $pathArr[$p]));
+					if ($pathArr[$p] === self::UNLOGGED || $pathArr[$p] === self::UNAUTHORIZED) {
+						$this->accessDenied($pathArr[$p]);
+					}
 				}
 			}
 			$this->baseLevel = $oldBaseLevel;
@@ -1501,8 +1527,9 @@ abstract class FrontendController extends AppController {
 			throw new BeditaException(__("Content not found", true));
 
 		$obj = $this->loadObj($id);
-		if ($obj === self::UNLOGGED || $obj === self::UNAUTHORIZED)
-			throw new BeditaFrontAccessException(null, array("errorType" => $obj));
+		if ($obj === self::UNLOGGED || $obj === self::UNAUTHORIZED) {
+			$this->accessDenied($obj);
+		}
 		
 		// check 'download' relation
 		// TODO: check relatedObject status????
@@ -1671,11 +1698,13 @@ abstract class FrontendController extends AppController {
 	}
 	
 	protected function save($modelName=null) {
-		if (!$this->logged)
-			throw new BeditaFrontAccessException(null, array("errorType" => self::UNLOGGED));
+		if (!$this->logged) {
+			$this->accessDenied(self::UNLOGGED);
+		}
 		try {
-			if (empty($modelName) && empty($this->data["object_type_id"]))
+			if (empty($modelName) && empty($this->data["object_type_id"])) {
 				throw new BeditaException(__("no object type defined",true));
+			}
 			$modelName = (empty($modelName))? Configure::read("objectTypes.".$this->data["object_type_id"].".model") : $modelName;
 			$objectModel = ClassRegistry::init($modelName);
 			$this->Transaction->begin();
@@ -1693,8 +1722,9 @@ abstract class FrontendController extends AppController {
 	}
 	
 	protected function delete() {
-		if (!$this->logged)
-			throw new BeditaFrontAccessException(null, array("errorType" => self::UNLOGGED));
+		if (!$this->logged) {
+			$this->accessDenied(self::UNLOGGED);
+		}
 		try {
 			if (!empty($this->data["object_type_id"])) {
 				$object_type_id = $this->data["object_type_id"];
