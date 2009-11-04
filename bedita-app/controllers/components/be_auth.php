@@ -106,19 +106,8 @@ class BeAuthComponent extends Object {
 		$this->User->compact($u) ;
 		$this->user = $u;
 		
-		if(isset($this->Session)) {
-			$this->Session->write($this->sessionKey, $this->user);
-			$this->Session->write($this->allowKey, $this->allow);
-			$this->Session->write(self::SESSION_INFO_KEY, array("userAgent" => $_SERVER['HTTP_USER_AGENT'], 
-				"ipNumber" => $_SERVER['REMOTE_ADDR'], "time" => time()));
-			if (!empty($this->user["lang"]))
-				$this->Session->write('Config.language',$this->user["lang"]);
-		}
-
-		if(isset($this->controller)) {
-			$this->controller->set($this->sessionKey, $this->user);
-			$this->controller->set($this->allowKey, $this->allow);
-		}
+		$this->setSessionVars();
+		
 		return true ;
 	}
 	
@@ -417,5 +406,22 @@ class BeAuthComponent extends Object {
 	public function getUserSession() {
 		return ($this->checkSessionKey())? $this->Session->read($this->sessionKey) : false; 
 	} 
+	
+	public function setSessionVars() {
+		if(isset($this->Session)) {
+			$this->Session->write($this->sessionKey, $this->user);
+			$this->Session->write($this->allowKey, $this->allow);
+			$this->Session->write(self::SESSION_INFO_KEY, array("userAgent" => $_SERVER['HTTP_USER_AGENT'], 
+				"ipNumber" => $_SERVER['REMOTE_ADDR'], "time" => time()));
+			if (!empty($this->user["lang"])) {
+				$this->Session->write('Config.language',$this->user["lang"]);
+			}
+		}
+
+		if(isset($this->controller)) {
+			$this->controller->set($this->sessionKey, $this->user);
+			$this->controller->set($this->allowKey, $this->allow);
+		}
+	}
 }
 ?>
