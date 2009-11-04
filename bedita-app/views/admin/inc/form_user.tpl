@@ -1,3 +1,24 @@
+{literal}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("input[type=password]").val("");
+			
+			$("#authselect").change(function() {
+				var au = $(this).val();
+				if (au != "") {
+					$("#authType").show();
+					$("#defaultAuth").hide();
+					$("#authType .auth_name").text(au);
+				} else {
+					$("#authType").hide();
+					$("#defaultAuth").show();
+				};
+			});
+			
+		});
+	</script>
+{/literal}
+
 <form action="{$html->url('/admin/saveUser')}" method="post" name="userForm" id="userForm" class="cmxform">
 			
 <div class="tab"><h2>{t}User details{/t}</h2></div>
@@ -5,6 +26,16 @@
 <fieldset id="details">	
 
 		<table class="bordered">
+			
+		<tr>
+			<th><label id="lemail" for="email">{t}Authentication service{/t}</label></th>
+			<td>
+				<select id="authselect" name="data[User][auth_type]">
+					<option label="BEdita" value="" selected>BEdita ( default )  </option>
+					{html_options values=$conf->extAuthTypes output=$conf->extAuthTypes selected=$userdetail.auth_type}
+				</select>
+		</tr>
+	
 		<tr>
 			<th>
 				<label id="lusername" for="username">{t}User name{/t}</label>
@@ -14,6 +45,42 @@
 				<input type="text" id="username" name="data[User][userid]" value="{$userdetail.userid}" onkeyup="cutBlank(this);" 
 					class="{literal}{required:true,lettersnumbersonly:true,minLength:6}{/literal}" title="{t 1='6'}User name is required (at least %1 chars, without white spaces and special chars){/t}"/>&nbsp;</td>
 		</tr>
+		
+		<tbody id="defaultAuth" {if ($userdetail.auth_type|default:'')}style="display:none"{/if}>
+			<tr>
+			 	<th>{t}New password{/t}</th>
+				<td>
+					<input type="password" name="pwd" value="" id="pwd"
+						class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}" 
+				    	title="{$tr->t($conf->passwdRegexMsg)}"/>&nbsp;</td>
+			</tr>
+			<tr>
+				<th>{t}Confirm password{/t}</th>
+				<td>
+					<input type="password" name="data[User][passwd]" value=""
+				class="{literal}{equalTo:'#pwd'}{/literal}" title="{t}Passwords should be equal{/t}"/>&nbsp;</td>
+			</tr>
+		</tbody>
+
+
+		<tbody id="authType" {if (!$userdetail.auth_type|default:'')}style="display:none"{/if}>
+			<tr>
+				<th>{t}Password{/t}</th>
+				<td>
+					{t}authentication provided by{/t} <span class="auth_name evidence">{$userdetail.auth_type|default:'external service'}</span>
+				</td>	
+			</tr>
+			<tr>
+				<th><span class="auth_name">{$userdetail.auth_type|default:'external service'}</span> userid</th>
+				<td><input type="text" name="" value="" />&nbsp;</td>
+			</tr>
+		</tbody>
+		
+				
+		
+		
+		
+		
 		<tr>
 			<th><label id="lrealname" for="realname">{t}Real name{/t}</label></th>
 			<td>
@@ -29,22 +96,6 @@
 		</tr>
 		
 
-		<tr>
-		 	<th>{if empty($userdetail.id)}{t}New password{/t}{else}{t}Password{/t}{/if}</th>
-			<td>
-				<input type="password" name="pwd" value="" id="pwd"
-					class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}" 
-			    	title="{$tr->t($conf->passwdRegexMsg)}"/>&nbsp;</td>
-			
-		</tr>
-		<tr>
-			<th>{t}Confirm password{/t}</th>
-			<td>
-				<input type="password" name="data[User][passwd]" value=""
-			class="{literal}{equalTo:'#pwd'}{/literal}" title="{t}Passwords should be equal{/t}"/>&nbsp;</td>
-			
-		</tr>
-		
 		<tr>
 			<th>{t}User blocked{/t}</th>
 				{if isset($userdetail)}
