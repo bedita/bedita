@@ -175,6 +175,9 @@ class AdminController extends ModulesController {
 				$authGroups[] = $g['Group']['name'];
 		}
 		
+		if(!empty($userdetail['User']['auth_params'])) {
+			$userdetail['User']['auth_params'] = unserialize($userdetail['User']['auth_params']);
+		}
 		$this->set('userdetail',  $userdetail['User']);
 		if (is_array($userdetail["ObjectUser"]))
 			$this->set('objectUser', $this->objectRelationArray($userdetail["ObjectUser"]));

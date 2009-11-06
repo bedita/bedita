@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -42,8 +42,7 @@ class BeAuthComponent extends Object {
 	
 
 	/**
-	 * Definisce l'utente corrente se gia' loggato e/o valido
-	 * altrimenti setta a null.
+	 * Set current user, if already logged in and/or valid
 	 * 
 	 * @param object $controller
 	 */
@@ -77,13 +76,40 @@ class BeAuthComponent extends Object {
 	
 	
 	/**
-	 * Esegue il riconoscimento dell'utente
+	 * User authentication on external service (OpenID. LDAP, Shibbolet...)
+	 *
+	 * @param string $userid
+	 * @return boolean 
+	 */
+	public function externalLogin($userid, $extAuthType, array $extAuthOptions = array()) {
+		$userModel = ClassRegistry::init('User');
+		// if user / auth_type not foud return false
+		$user->create();
+		$conditions = array("User.userid" 	=> $userid, "User.auth_type" => $extAuthType );
+		$userModel->containLevel("default");
+		$u = $this->User->find($conditions);
+		if(empty($u["User"])) {
+			$this->logout() ;
+			return false ;
+		}
+		// load authType component
+		$componentClass = "Be" . Inflector::camelize($extAuthType) . "Component";
+		// TODO: load component dynamically??
+		if(!App::import($componentClass, "Component")) {
+			throw new BeditaException(__("External auth component not found: ",true) . $extAuthType);
+		}
+		$authComponent = new $componentClass();
+		
+	}
+	
+	/**
+	 * User authentication
 	 *
 	 * @param string $userid
 	 * @param string $password
 	 * @return boolean 
 	 */
-	function login ($userid, $password, $policy=null, $auth_group_name=array()) {
+	public function login($userid, $password, $policy=null, $auth_group_name=array()) {
 
 		$this->User = ClassRegistry::init('User');
 		$this->User->create();
@@ -111,10 +137,10 @@ class BeAuthComponent extends Object {
 	 * Check policy using $policy array or config if null
 	 * @return boolean
 	 */
-	function loginPolicy($userid, $u, $policy, $auth_group_name=array()) {
+	private function loginPolicy($userid, $u, $policy, $auth_group_name=array()) {
 		$this->User = ClassRegistry::init('User');
 
-		// Se fallisce esce
+		// If fails, exit
 		if(empty($u["User"])) {
 			// look for existing user
 			$this->User->containLevel("default");
@@ -190,7 +216,7 @@ class BeAuthComponent extends Object {
 		return true;
 	}
 
-	function changePassword($userid, $password) {
+	public function changePassword($userid, $password) {
 		$this->User = ClassRegistry::init('User');
 		$this->User->containLevel("default");
 		$u = $this->User->find(array("User.userid" => $userid));
@@ -202,12 +228,11 @@ class BeAuthComponent extends Object {
 	}
 	
 	/**
-	 * Esegue la sconnessione dell'utente e cancella i dati di sessione
-	 * connessi all'utente.
+	 * User logout: remove session data for the user
 	 *
 	 * @return boolean
 	 */
-	function logout() {
+	public function logout() {
 		$this->user = null ;
 		
 		if(isset($this->Session)) {
@@ -220,11 +245,6 @@ class BeAuthComponent extends Object {
 		return true ;
 	}
 	
-	/**
-	 * Torna true se l'utente e' riconosciuto e la sessione valida.
-	 *
-	 * @return unknown
-	 */
 	public function isLogged() {
 		
 		if ($this->checkSessionKey()) {
@@ -277,7 +297,15 @@ class BeAuthComponent extends Object {
 			$this->log("User ".$userData['User']['userid']." already created");
 			throw new BeditaException(__("User already created",true));
 		}
-		$userData['User']['passwd'] = md5($userData['User']['passwd']);
+		if (!empty($userData['User']['passwd'])) {
+			$userData['User']['passwd'] = md5($userData['User']['passwd']);
+		}
+		// serialize auth_params
+		if(!empty($userData['User']['auth_type'])) {
+			$authParamArray = $userData['User']['auth_params'];
+			$userData['User']['auth_params'] = serialize($authParamArray);
+		}
+		
 		$this->userGroupModel($userData, $groups);
 		$user->Behaviors->attach('Notify');
 		if(!$user->save($userData))
@@ -312,6 +340,12 @@ class BeAuthComponent extends Object {
 		if($userData['User']['valid'] == '1') { // reset number of login error, if user is valid
 			$userData['User']['num_login_err'] = '0';
 		}
+		// serialize auth_params
+		if(!empty($userData['User']['auth_type'])) {
+			$authParamArray = $userData['User']['auth_params'];
+			$userData['User']['auth_params'] = serialize($authParamArray);
+		}
+		
 		$user->Behaviors->attach('Notify');
 		if(!$user->save($userData))
 			throw new BeditaException(__("Error updating user",true), $user->validationErrors);
@@ -352,7 +386,7 @@ class BeAuthComponent extends Object {
 	}
 	
 	public function removeUser($userId) {
-		// TODO: come fare con oggetti associati??? sono cancellati di default??
+		// TODO: how can we do with related objects??? default removal??
 		$user = ClassRegistry::init('User');
 		$user->containLevel("minimum");
 		$u = $user->findByUserid($userId);

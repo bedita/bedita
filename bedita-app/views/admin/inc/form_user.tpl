@@ -72,7 +72,13 @@
 			</tr>
 			<tr>
 				<th><span class="auth_name">{$userdetail.auth_type|default:'external service'}</span> userid</th>
-				<td><input type="text" name="" value="" />&nbsp;</td>
+				<td><input type="text" name="data[User][auth_params][userid]" value="{$userdetail.auth_params.userid|default:''}" />&nbsp;
+				{foreach from=$userdetail.auth_params item="val" key="k"}
+					{if $k != 'userid'}
+					 <input type="hidden" name="data[User][auth_params][{$k}]" value="{$val}"/>
+					{/if}
+				{/foreach}
+				</td>
 			</tr>
 		</tbody>
 		
