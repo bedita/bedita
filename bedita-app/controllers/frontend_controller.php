@@ -187,7 +187,7 @@ abstract class FrontendController extends AppController {
 	 * @param string $type, which type of access denied 
 	 */
 	protected function accessDenied($type) {
-		if (self::UNLOGGED && !strstr($this->here,"/login")) {
+		if ($type == self::UNLOGGED && !strstr($this->here,"/login")) {
 			$message = __("You have to be logged to access that item",true);
 			$this->userInfoMessage($message);
 		} elseif ($type == self::UNAUTHORIZED) {
