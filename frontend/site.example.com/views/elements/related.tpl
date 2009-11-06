@@ -26,7 +26,7 @@
 			{/section}
 			{/if}
 			
-			{assign var="seealso" value=$section.currentContent.relations.seealso|default:''}
+			{assign var="seealso" value=$beFront->seealso($section)}
 			{if !empty($seealso)}
 			<div class="related">
 			<h2>See also:</h2>

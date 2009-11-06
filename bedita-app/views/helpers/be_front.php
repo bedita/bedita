@@ -47,6 +47,41 @@ class BeFrontHelper extends AppHelper {
 		return $pub . " - " . $sec;
 	}
 
+	public function metaDescription($section,$publication) {
+		$content = (!empty($section['currentContent']['description'])) ? $section['currentContent']['description'] : $publication['description'];
+		$html = '<meta name="description" content="' . strip_tags($content) . '" />';
+		return $html;
+	}
+
+	public function metaDc($publication) {
+		$title = (!empty($publication['public_name'])) ? $publication['public_name'] : $publication['title'];
+		$html = '<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />';
+		$html.= "\n" . '<meta name="DC.title" 			content="' . $title . '" />';
+		$html.= "\n" . '<meta name="DC.description" 	content="' . $publication['description'] . '" />';
+		$html.= "\n" . '<meta name="DC.language" 		content="' . $publication['lang'] . '" />';
+		$html.= "\n" . '<meta name="DC.creator" 		content="' . $publication['creator'] . '" />';
+		$html.= "\n" . '<meta name="DC.publisher" 		content="' . $publication['publisher'] . '" />';
+		$html.= "\n" . '<meta name="DC.date" 			content="' . $publication['created'] . '" />';
+		$html.= "\n" . '<meta name="DC.modified" 		content="' . $publication['modified'] . '" />';
+		$html.= "\n" . '<meta name="DC.format" 			content="text/html" />';
+		$html.= "\n" . '<meta name="DC.identifier" 		content="' . $publication['id'] . '" />';
+		$html.= "\n" . '<meta name="DC.rights" 			content="' . $publication['rights'] . '" />';
+		$html.= "\n" . '<meta name="DC.license" 		content="' . $publication['license'] . '" />';
+		return $html;
+	}
+
+	public function metaAll($publication,$section) {
+		$html = $this->metaDescription($section,$publication);
+		$html.= "\n" . '<meta name="author" content="' . $publication['creator'] . '" />';
+		$html.= "\n" . '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
+		$html.= "\n" . '<meta http-equiv="Content-Style-Type" content="text/css" />';
+		return $html;
+	}
+
+	public function seealso($section)  {
+		return (!empty($section['currentContent']['relations']['seealso'])) ? $section['currentContent']['relations.seealso'] : '';
+	}
+
 	public function date($date,$format = null) {
 		if($format==null) {
 			$conf = Configure::getInstance();

@@ -3,32 +3,14 @@
 <head>
 	<title>{$beFront->title($publication,$section)}</title>
 
-	<meta http-equiv="Content-Style-Type" content="text/css" />
-
 	<link rel="icon" href="{$session->webroot}favicon.ico" type="image/gif" />
 	<link rel="shortcut icon" href="{$session->webroot}favicon.gif" type="image/gif" />
 
-	<meta name="description" content="{$section.currentContent.description|default:$publication.description|strip_tags:false}" />
-	<meta name="author" content="{$publication.creator}" />
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<meta http-equiv="Content-Style-Type" content="text/css" />
+	{$beFront->metaAll($section,$publication)}
 	
-    <!-- RTF dublin core dataset -->
-    
-    <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
-    <meta name="DC.title" 		content="{$publication.public_name|default:$publication.title}" />
-    <meta name="DC.description" content="{$publication.description}" />
-	<meta name="DC.language" 	content="{$publication.lang}" />
-    <meta name="DC.creator" 	content="{$publication.creator}" />
-    <meta name="DC.publisher" 	content="{$publication.publisher}" />
-    <meta name="DC.date" 		content="{$publication.created}" />
-	<meta name="DC.modified" 	content="{$publication.modified}" />
-	<meta name="DC.format" 		content="text/html" />
-	<meta name="DC.identifier"  content="{$publication.id}" />
-    <meta name="DC.rights" 		content="{$publication.rights}" />
- 	<meta name="DC.license" 	content="{$publication.license}" />
-
-    <!-- end -->
+	<!-- RTF dublin core dataset -->
+	{$beFront->metaDc($publication)}
+	<!-- end -->
 
 	{foreach from=$feedNames item=feed}
 	<link rel="alternate" type="application/rss+xml" title="{$feed.title}" href="{$html->url('/rss')}/{$feed.nickname}" />
