@@ -26,7 +26,7 @@
 			{/section}
 			{/if}
 			
-			{assign var="seealso" value=$beFront->seealso($section)}
+			{assign var="seealso" value=$beFront->seealso()}
 			{if !empty($seealso)}
 			<div class="related">
 			<h2>See also:</h2>

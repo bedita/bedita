@@ -32,14 +32,29 @@
  */
 class BeFrontHelper extends AppHelper {
 
-	public function title($publication,$section = null,$order='asc') {
-		$pub = (!empty($publication['public_name']))?$publication['public_name']:$publication['title'];
-		if(empty($section) || empty($section['title'])) {
+	private $_publication;
+	private $_section;
+	private $_currentContent;
+	private $_conf;
+	private $_datePattern;
+
+	public function __construct() {
+		$view = ClassRegistry::getObject('view');
+		$this->_publication = (!empty($view->viewVars['publication'])) ? $view->viewVars['publication'] : null;
+		$this->_section =  (!empty($view->viewVars['section'])) ? $view->viewVars['section'] : null;
+		$this->_currentContent = (!empty($view->viewVars['section']['currentContent'])) ? $view->viewVars['section']['currentContent'] : null;
+		$this->_conf = Configure::getInstance();
+		$this->_datePattern = $this->_conf->datePattern;
+	}
+
+	public function title($order='asc') {
+		$pub = (!empty($this->_publication['public_name'])) ? $this->_publication['public_name'] : $this->_publication['title'];
+		if(empty($this->_section) || empty($this->_section['title'])) {
 			return $pub;
 		}
-		$sec = $section['title'];
-		if(!empty($section['contentRequested']) && ($section['contentRequested'] == 1) ) {
-			$sec = $section['currentContent']['title'];
+		$sec = $this->_section['title'];
+		if(!empty($this->_section['contentRequested']) && ($this->_section['contentRequested'] == 1) ) {
+			$sec = $this->_currentContent['title'];
 		}
 		if($order=='asc') {
 			return $sec . " - " . $pub;
@@ -47,14 +62,14 @@ class BeFrontHelper extends AppHelper {
 		return $pub . " - " . $sec;
 	}
 
-	public function metaDescription($publication,$section) {
-		$content = (!empty($section['currentContent']['description'])) ? $section['currentContent']['description'] : $publication['description'];
+	public function metaDescription() {
+		$content = (!empty($this->_currentContent['description'])) ? $this->_currentContent['description'] : $this->_publication['description'];
 		$html = '<meta name="description" content="' . strip_tags($content) . '" />';
 		return $html;
 	}
 
-	public function metaDc($publication,$section) {
-		$object = (!empty($section['currentContent'])) ? $section['currentContent'] : $publication;
+	public function metaDc() {
+		$object = (!empty($this->_currentContent)) ? $this->_currentContent : $this->_publication;
 		$title = (!empty($object['public_name'])) ? $object['public_name'] : $object['title'];
 		$html = '<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />';
 		$html.= "\n" . '<meta name="DC.title" 			content="' . $title . '" />';
@@ -80,31 +95,23 @@ class BeFrontHelper extends AppHelper {
 		return $html;
 	}
 
-	public function metaAll($publication,$section) {
-		$html = $this->metaDescription($publication,$section);
-		$html.= "\n" . '<meta name="author" content="' . $publication['creator'] . '" />';
+	public function metaAll() {
+		$html = $this->metaDescription();
+		$html.= "\n" . '<meta name="author" content="' . $this->_publication['creator'] . '" />';
 		$html.= "\n" . '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
 		$html.= "\n" . '<meta http-equiv="Content-Style-Type" content="text/css" />';
 		return $html;
 	}
 
-	public function seealso($section)  {
-		return (!empty($section['currentContent']['relations']['seealso'])) ? $section['currentContent']['relations.seealso'] : '';
+	public function seealso()  {
+		return (!empty($this->_currentContent['relations']['seealso'])) ? $this->_currentContent['relations']['seealso'] : '';
 	}
 
 	public function date($date,$format = null) {
-		if($format==null) {
-			$conf = Configure::getInstance();
-			$format = $conf->datePattern;
-		}
 		return $this->format($date,$format);
 	}
 
 	public function dateTime($date,$format = null) {
-		if($format==null) {
-			$conf = Configure::getInstance();
-			$format = $conf->dateTimePattern;
-		}
 		return $this->format($date,$format);
 	}
 
@@ -129,6 +136,7 @@ class BeFrontHelper extends AppHelper {
 	}
 
 	private function format($string, $format = '%b %e, %Y', $default_date = '') {
+		$format = ($format!=null) ? $format : $this->_datePattern;
 		if ($string != '') {
 			$timestamp = $this->make_timestamp($string);
 		} elseif ($default_date != '') {
