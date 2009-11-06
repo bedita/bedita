@@ -64,6 +64,9 @@ class BeditaException extends Exception
     }
 }
 
+class BeditaRuntimeException extends BeditaException 
+{	
+}
 /**
  * 
  */

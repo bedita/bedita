@@ -97,6 +97,20 @@ class AppError extends ErrorHandler {
 		echo $viewObj->render(null, "ajax", VIEWS."errors/error_ajax.tpl");
 	}
 	
+	public function handleExceptionRuntime(array $messages) {
+		$current = AppController::currentController();
+		if(isset($current)) {
+			$this->controller = $current;
+			$this->controller->handleError($messages['details'], $messages['msg'], $this->errorTrace);
+		}
+		header('HTTP/1.1 500 Internal Server Error');
+		$this->controller->set($messages);
+		$this->restoreDebugLevel();
+		App::import('View', "Smarty");
+		$viewObj = new SmartyView($this->controller);
+		echo $viewObj->render(null, "error", VIEWS."errors/error500.tpl");				
+	}
+	
 	public function handleExceptionFrontend(array $messages) {
 		$current = AppController::currentController();
 		if(isset($current)) {

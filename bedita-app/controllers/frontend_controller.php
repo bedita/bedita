@@ -447,6 +447,11 @@ abstract class FrontendController extends AppController {
 			
 			include_once (APP . 'app_error.php');
 			return new AppError('handleExceptionFrontAccess', $params, $ex->errorTrace());
+		} elseif ($ex instanceof BeditaRuntimeException) {
+			include_once (APP . 'app_error.php');
+			return new AppError('handleExceptionRuntime', 
+					array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
+					'result' => $ex->result), $ex->errorTrace());
 		} else {
 			
 			if($ex instanceof BeditaException) {
