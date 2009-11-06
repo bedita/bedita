@@ -6,10 +6,10 @@
 	<link rel="icon" href="{$session->webroot}favicon.ico" type="image/gif" />
 	<link rel="shortcut icon" href="{$session->webroot}favicon.gif" type="image/gif" />
 
-	{$beFront->metaAll($section,$publication)}
+	{$beFront->metaAll($publication,$section)}
 	
 	<!-- RTF dublin core dataset -->
-	{$beFront->metaDc($publication)}
+	{$beFront->metaDc($publication,$section)}
 	<!-- end -->
 
 	{foreach from=$feedNames item=feed}
