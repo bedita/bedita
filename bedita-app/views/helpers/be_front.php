@@ -47,31 +47,41 @@ class BeFrontHelper extends AppHelper {
 		return $pub . " - " . $sec;
 	}
 
-	public function metaDescription($section,$publication) {
+	public function metaDescription($publication,$section) {
 		$content = (!empty($section['currentContent']['description'])) ? $section['currentContent']['description'] : $publication['description'];
 		$html = '<meta name="description" content="' . strip_tags($content) . '" />';
 		return $html;
 	}
 
-	public function metaDc($publication) {
-		$title = (!empty($publication['public_name'])) ? $publication['public_name'] : $publication['title'];
+	public function metaDc($publication,$section) {
+		$object = (!empty($section['currentContent'])) ? $section['currentContent'] : $publication;
+		$title = (!empty($object['public_name'])) ? $object['public_name'] : $object['title'];
 		$html = '<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />';
 		$html.= "\n" . '<meta name="DC.title" 			content="' . $title . '" />';
-		$html.= "\n" . '<meta name="DC.description" 	content="' . $publication['description'] . '" />';
-		$html.= "\n" . '<meta name="DC.language" 		content="' . $publication['lang'] . '" />';
-		$html.= "\n" . '<meta name="DC.creator" 		content="' . $publication['creator'] . '" />';
-		$html.= "\n" . '<meta name="DC.publisher" 		content="' . $publication['publisher'] . '" />';
-		$html.= "\n" . '<meta name="DC.date" 			content="' . $publication['created'] . '" />';
-		$html.= "\n" . '<meta name="DC.modified" 		content="' . $publication['modified'] . '" />';
+		if(!empty($object['description'])) 
+			$html.= "\n" . '<meta name="DC.description" 	content="' . $object['description'] . '" />';
+		if(!empty($object['lang'])) 
+			$html.= "\n" . '<meta name="DC.language" 		content="' . $object['lang'] . '" />';
+		if(!empty($object['creator'])) 
+			$html.= "\n" . '<meta name="DC.creator" 		content="' . $object['creator'] . '" />';
+		if(!empty($object['publisher'])) 
+			$html.= "\n" . '<meta name="DC.publisher" 		content="' . $object['publisher'] . '" />';
+		if(!empty($object['created'])) 
+			$html.= "\n" . '<meta name="DC.date" 			content="' . $object['created'] . '" />';
+		if(!empty($object['modified'])) 
+			$html.= "\n" . '<meta name="DC.modified" 		content="' . $object['modified'] . '" />';
 		$html.= "\n" . '<meta name="DC.format" 			content="text/html" />';
-		$html.= "\n" . '<meta name="DC.identifier" 		content="' . $publication['id'] . '" />';
-		$html.= "\n" . '<meta name="DC.rights" 			content="' . $publication['rights'] . '" />';
-		$html.= "\n" . '<meta name="DC.license" 		content="' . $publication['license'] . '" />';
+		if(!empty($object['id'])) 
+			$html.= "\n" . '<meta name="DC.identifier" 		content="' . $object['id'] . '" />';
+		if(!empty($object['rights'])) 
+			$html.= "\n" . '<meta name="DC.rights" 			content="' . $object['rights'] . '" />';
+		if(!empty($object['license'])) 
+			$html.= "\n" . '<meta name="DC.license" 		content="' . $object['license'] . '" />';
 		return $html;
 	}
 
 	public function metaAll($publication,$section) {
-		$html = $this->metaDescription($section,$publication);
+		$html = $this->metaDescription($publication,$section);
 		$html.= "\n" . '<meta name="author" content="' . $publication['creator'] . '" />';
 		$html.= "\n" . '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
 		$html.= "\n" . '<meta http-equiv="Content-Style-Type" content="text/css" />';
