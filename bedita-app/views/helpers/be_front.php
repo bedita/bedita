@@ -66,8 +66,8 @@ class BeFrontHelper extends AppHelper {
 			$html.= "\n" . '<meta name="DC.creator" 		content="' . $object['creator'] . '" />';
 		if(!empty($object['publisher'])) 
 			$html.= "\n" . '<meta name="DC.publisher" 		content="' . $object['publisher'] . '" />';
-		if(!empty($object['created'])) 
-			$html.= "\n" . '<meta name="DC.date" 			content="' . $object['created'] . '" />';
+		if(!empty($object['date'])) 
+			$html.= "\n" . '<meta name="DC.date" 			content="' . $object['date'] . '" />';
 		if(!empty($object['modified'])) 
 			$html.= "\n" . '<meta name="DC.modified" 		content="' . $object['modified'] . '" />';
 		$html.= "\n" . '<meta name="DC.format" 			content="text/html" />';
