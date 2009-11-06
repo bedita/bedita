@@ -34,8 +34,7 @@ class Group extends BEAppModel
 
 	var $validate = array(
 		'name' => array(
-	        'rule' => 'alphaNumeric',
-	        'required' => true
+	        'rule' => 'notEmpty'
 		)
 	);
 

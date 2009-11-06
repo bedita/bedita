@@ -34,11 +34,9 @@ class BeAuthComponent extends Object {
 	var $controller	;
 	var $Session	= null ;
 	var $user		= null ;
-	var $allow		= null;
 	var $isValid	= true;
 	var $changePasswd	= false;
 	var $sessionKey = "BEAuthUser" ;
-	var $allowKey 	= "BEAuthAllow" ;
 	const SESSION_INFO_KEY = "BESession" ;
 	var $authResult	= 'OK';
 	
@@ -59,10 +57,8 @@ class BeAuthComponent extends Object {
 		
 		if($this->checkSessionKey()) {
 			$this->user 	= $this->Session->read($this->sessionKey);
-			$this->allow 	= $this->Session->read($this->allowKey);
 		}
 		$this->controller->set($this->sessionKey, $this->user);
-		$this->controller->set($this->allowKey, $this->allow);
 	}
 
 	private function checkSessionKey() {
@@ -99,10 +95,10 @@ class BeAuthComponent extends Object {
 		$this->User->containLevel("default");
 		$u = $this->User->find($conditions);
 
-		if(!$this->loginPolicy($userid, $u, $policy, $auth_group_name))
+		if(!$this->loginPolicy($userid, $u, $policy, $auth_group_name)) {
 			return false ;
+		}
 
-		$this->allow = $u['User']['valid'];
 		$this->User->compact($u) ;
 		$this->user = $u;
 		
@@ -213,16 +209,13 @@ class BeAuthComponent extends Object {
 	 */
 	function logout() {
 		$this->user = null ;
-		$this->allow = false ;
 		
 		if(isset($this->Session)) {
 			$this->Session->delete($this->sessionKey);
-			$this->Session->delete($this->allowKey);
 		}
 		
 		if(isset($this->controller)) {
 			$this->controller->set($this->sessionKey, null);
-			$this->controller->set($this->allowKey, null);
 		}		
 		return true ;
 	}
@@ -243,14 +236,12 @@ class BeAuthComponent extends Object {
 			
 			return true ;
 		} else {
-			$this->user 	= null ;
-			$this->allow	= false ;
+			$this->user = null;
 		}
 		
 		if(!isset($this->controller)) return false ;
 		
 		$this->controller->set($this->sessionKey, $this->user);
-		$this->controller->set($this->allowKey, $this->allow);
 		
 		return false ;
 	}
@@ -410,7 +401,6 @@ class BeAuthComponent extends Object {
 	public function setSessionVars() {
 		if(isset($this->Session)) {
 			$this->Session->write($this->sessionKey, $this->user);
-			$this->Session->write($this->allowKey, $this->allow);
 			$this->Session->write(self::SESSION_INFO_KEY, array("userAgent" => $_SERVER['HTTP_USER_AGENT'], 
 				"ipNumber" => $_SERVER['REMOTE_ADDR'], "time" => time()));
 			if (!empty($this->user["lang"])) {
@@ -420,7 +410,6 @@ class BeAuthComponent extends Object {
 
 		if(isset($this->controller)) {
 			$this->controller->set($this->sessionKey, $this->user);
-			$this->controller->set($this->allowKey, $this->allow);
 		}
 	}
 }
