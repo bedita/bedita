@@ -157,7 +157,10 @@ class AdminController extends ModulesController {
 			$userdetailModules = NULL;
 		}
 
-		$allGroups = $this->Group->findAll();
+		$allGroups = $this->Group->find("all", array(
+				"contain" => array()
+			)
+		);
 		$userGroups = array();
 		if(isset($userdetail)) {
 			foreach ($userdetail['Group'] as $g) {
@@ -175,9 +178,6 @@ class AdminController extends ModulesController {
 				$authGroups[] = $g['Group']['name'];
 		}
 		
-		if(!empty($userdetail['User']['auth_params'])) {
-			$userdetail['User']['auth_params'] = unserialize($userdetail['User']['auth_params']);
-		}
 		$this->set('userdetail',  $userdetail['User']);
 		if (is_array($userdetail["ObjectUser"]))
 			$this->set('objectUser', $this->objectRelationArray($userdetail["ObjectUser"]));

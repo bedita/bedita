@@ -101,5 +101,29 @@ class User extends BEAppModel
 			);
 	}
 	
+	function afterFind($results) {
+		if(!empty($results)) {
+			foreach ($results as &$u) {
+				if (!empty($u['User']['auth_params'])) {
+					$u['User']['auth_params'] = unserialize($u['User']['auth_params']);
+				}
+			}
+		}
+		return $results;
+	}
+	
+	function beforeSave() {
+		if (!empty($this->data["User"]["auth_params"]) && is_array($this->data["User"]["auth_params"])) {
+			$this->data["User"]["auth_params"] = serialize($this->data["User"]["auth_params"]);
+		} elseif (!empty($this->data["User"][0])) {
+			foreach ($this->data["User"] as &$u) {
+				if (!empty($u["auth_params"]) && is_array($u["auth_params"])) {
+					$u["auth_params"] = serialize($u["auth_params"]);
+				}
+			}
+		}
+		return true;
+	}
+	
 }
 ?>

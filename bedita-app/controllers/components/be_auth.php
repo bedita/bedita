@@ -300,14 +300,6 @@ class BeAuthComponent extends Object {
 		if (!empty($userData['User']['passwd'])) {
 			$userData['User']['passwd'] = md5($userData['User']['passwd']);
 		}
-		// serialize auth_params
-		if(!empty($userData['User']['auth_type'])) {
-			$authParamArray = $userData['User']['auth_params'];
-			$userData['User']['auth_params'] = serialize($authParamArray);
-		} else {
-			unset($userData['User']['auth_type']);
-			unset($userData['User']['auth_params']);
-		}
 		
 		$this->userGroupModel($userData, $groups);
 		$user->Behaviors->attach('Notify');
@@ -342,14 +334,6 @@ class BeAuthComponent extends Object {
 		$user = ClassRegistry::init('User');
 		if($userData['User']['valid'] == '1') { // reset number of login error, if user is valid
 			$userData['User']['num_login_err'] = '0';
-		}
-		// serialize auth_params
-		if(!empty($userData['User']['auth_type'])) {
-			$authParamArray = $userData['User']['auth_params'];
-			$userData['User']['auth_params'] = serialize($authParamArray);
-		} else {
-			unset($userData['User']['auth_type']);
-			unset($userData['User']['auth_params']);
 		}
 		
 		$user->Behaviors->attach('Notify');
