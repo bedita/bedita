@@ -304,6 +304,9 @@ class BeAuthComponent extends Object {
 		if(!empty($userData['User']['auth_type'])) {
 			$authParamArray = $userData['User']['auth_params'];
 			$userData['User']['auth_params'] = serialize($authParamArray);
+		} else {
+			unset($userData['User']['auth_type']);
+			unset($userData['User']['auth_params']);
 		}
 		
 		$this->userGroupModel($userData, $groups);
@@ -344,6 +347,9 @@ class BeAuthComponent extends Object {
 		if(!empty($userData['User']['auth_type'])) {
 			$authParamArray = $userData['User']['auth_params'];
 			$userData['User']['auth_params'] = serialize($authParamArray);
+		} else {
+			unset($userData['User']['auth_type']);
+			unset($userData['User']['auth_params']);
 		}
 		
 		$user->Behaviors->attach('Notify');
