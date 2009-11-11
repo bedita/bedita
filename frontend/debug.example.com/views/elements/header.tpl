@@ -14,13 +14,13 @@
 	{/foreach}
 {/if}
 {if ($section.id != $publication.id)}
-	<a href="{$html->url($section.path)}" >{$section.title}</a>
+	<a href="{$html->url($section.canonicalPath)}" >{$section.title}</a>
 {/if}
 <br/>
 
 {if !empty($section.currentContent)}
 <hr/>
-<h3>{t}current content{/t}: <a href="{$html->url($section.path)}/{$section.currentContent.nickname}" >{$section.currentContent.title}</a></h3>
+<h3>{t}current content{/t}: <a href="{$html->url($section.currentContent.canonicalPath)}" >{$section.currentContent.title}</a></h3>
 <a href="javascript:void(0)" class="open-close-link">{t}show/hide{/t}</a>
 <div style="display: none">
 <pre>
@@ -34,7 +34,7 @@
 <h3>{t}sections in this section{/t}: $section.childSections</h3>
 <ul>
 	{foreach from=$section.childSections item="subsection"}
-		<li><a href="{$html->url('/')}{$subsection.nickname}">{$subsection.title}</a></li>
+		<li><a href="{$html->url($subsection.canonicalPath)}">{$subsection.title}</a></li>
 	{/foreach}
 </ul>
 {/if}
@@ -44,7 +44,7 @@
 <h3>{t}contents in this section{/t}: $section.childContents</h3>
 <ul>
 	{foreach from=$section.childContents item="object"}
-		<li><a href="{$html->url('/')}{$section.nickname}/{$object.nickname}">{$object.title}</a></li>
+		<li><a href="{$html->url($object.canonicalPath)}">{$object.title}</a></li>
 	{/foreach}
 </ul>
 {/if}

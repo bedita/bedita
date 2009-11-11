@@ -1,3 +1,4 @@
+<hr/>
 <div class="commentform">
 
 	{if ($msg->check('Message.error'))}
@@ -12,7 +13,6 @@
 	<form action="{$html->url('/saveComment')}" method="post">
 		<input type="hidden" name="data[object_id]" value="{$section.currentContent.id}" />
 	<fieldset>	
-	
 	{assign var="userLogged" value=$session->read($conf->session.sessionUserKey)}
 	{if empty($userLogged)}	
 		<label>{t}name{/t}</label><br/>

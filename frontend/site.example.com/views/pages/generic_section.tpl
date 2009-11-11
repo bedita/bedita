@@ -42,9 +42,9 @@
 		categories:  | {foreach from=$section.currentContent.Category item="cat"}{$cat.label} | {/foreach}<br/>
 		{/if}
 		
-		<h3>{$section.currentContent.description}</h3>
+		<h3 style="margin-top: 20px;">{$section.currentContent.description}</h3>
 
-		<p class="testo">{$section.currentContent.body}</p>
+		<p class="testo">{$section.currentContent.body|default:""}</p>
 
 		<hr/>
 		{assign_associative var="options" object=$section.currentContent showForm=true}

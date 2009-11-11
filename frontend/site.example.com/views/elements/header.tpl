@@ -35,7 +35,7 @@
 		{if !empty($section) && ( $section.nickname|default:'' == $m.nickname|default:'' || !empty($section.pathSection[$m.id]) )}
 			class="on"
 		{/if}>
-		<a title="{$m.title}" href="{$html->url('/')}{$m.nickname}">{$m.title}</a>
+		<a title="{$m.title}" href="{$html->url($m.canonicalPath)}">{$m.title}</a>
 		</li>
 	{/foreach}
 	</ul>

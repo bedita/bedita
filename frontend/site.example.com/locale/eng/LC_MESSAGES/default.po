@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-05-13 17:40:38\n"
+"POT-Creation-Date: 2009-10-02 16:01:38\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -16,14 +16,11 @@ msgstr "Comment"
 msgid "Comments"
 msgstr "Comments"
 
-msgid "Links"
-msgstr "Links"
-
 msgid "Objects tagged by"
 msgstr "Objects tagged by"
 
-msgid "Tags cloud"
-msgstr "Tags cloud"
+msgid "This item is closed to comments"
+msgstr ""
 
 msgid "Write a comment"
 msgstr "Write a comment"
@@ -31,8 +28,14 @@ msgstr "Write a comment"
 msgid "Write the text you see in the image above"
 msgstr "Write the text you see in the image above"
 
-msgid "by"
+msgid "at"
+msgstr ""
+
+msgid "byAuthor"
 msgstr "by"
+
+msgid "comments"
+msgstr ""
 
 msgid "email"
 msgstr "email"
@@ -40,20 +43,23 @@ msgstr "email"
 msgid "location"
 msgstr "location"
 
+msgid "modified on"
+msgstr ""
+
 msgid "name"
 msgstr "name"
 
 msgid "published on"
 msgstr "published on"
 
-msgid "search"
-msgstr "search"
-
 msgid "send comment"
 msgstr "send comment"
 
+msgid "submit"
+msgstr ""
+
+msgid "text"
+msgstr ""
+
 msgid "web site"
 msgstr "web site"
-
-#~ msgid "Useful link"
-#~ msgstr "Useful link"
