@@ -110,7 +110,8 @@ class DeployShell extends BeditaBaseShell {
 		
 		// create version file
 		// release name is : base name + majorversione (like 3.0.beta1) + svn revision
-		$releaseName = $rel["releaseBaseName"] . "-" . Configure::read("majorVersion") . "." . $svnRelease;
+		$codeName = empty($rel["releaseCodeName"]) ? "" : $rel["releaseCodeName"] . ".";
+		$releaseName = $rel["releaseBaseName"] . "-" . Configure::read("majorVersion") . "." . $svnRelease . $codeName;
 		$versionFileContent="<?php\n\$config['Bedita.version'] = '". $releaseName . "';\n?>";
 		$handle = fopen($exportPath.DS.$rel["versionFileName"], 'w');
 		fwrite($handle, $versionFileContent);
