@@ -145,10 +145,8 @@ abstract class FrontendController extends AppController {
 	const UNLOGGED = "unlogged";
 	const UNAUTHORIZED = "unauthorized";
 	
-	/**
-	 * every frontend has to implement checkLogin
-	 * 
-	 * @see bedita-app/AppController#checkLogin()
+	/**	 
+	 * @todo: join with checkIsLogged
 	 */
 	protected function checkLogin() {
 		return false;
