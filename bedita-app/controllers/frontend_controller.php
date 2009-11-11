@@ -22,7 +22,7 @@
 /**
  * Frontend base class (Frontend API)
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -145,10 +145,8 @@ abstract class FrontendController extends AppController {
 	const UNLOGGED = "unlogged";
 	const UNAUTHORIZED = "unauthorized";
 	
-	/**
-	 * every frontend has to implement checkLogin
-	 * 
-	 * @see bedita-app/AppController#checkLogin()
+	/**	 
+	 * @todo: join with checkIsLogged
 	 */
 	protected function checkLogin() {
 		return false;
@@ -313,7 +311,6 @@ abstract class FrontendController extends AppController {
 		if (!$method->isPublic()) {
 			throw new BeditaException(__("Call to a protected or private method in a wrong context", true)); 
 		}
-		
 		// set filterPublicationDate
 		$filterPubDate = Configure::read("filterPublicationDate");
 		if (isset($filterPubDate)) 
@@ -486,7 +483,7 @@ abstract class FrontendController extends AppController {
 	* @param array $exclude_nicknames	list exclude sections 
 	* @param integer $depth				tree's depth level (default=10000 => all levels)
 	* */
-	protected function loadSectionsTree($parentName,  $loadContents=false, array $exclude_nicknames=null, $depth=10000) {
+	protected function loadSectionsTree($parentName,  $loadContents=false, array $exclude_nicknames=null, $depth=10000, $flatMode=false) {
 
 		$conf = Configure::getInstance(); 
 		$parent_id = is_numeric($parentName) ? $parentName: $this->BEObject->getIdFromNickname($parentName);
@@ -501,15 +498,42 @@ abstract class FrontendController extends AppController {
 				continue ;
 			
 			$sectionObject = $this->loadObj($s['id'],false);
+			$pathSection = $this->getPath($s['id']);
+			$sectionPath = "";
+			foreach ($pathSection as $ps) {
+				$sectionPath .= "/" . $ps["nickname"];
+			}
+			$sectionPath .= "/" . $sectionObject["nickname"];
+			$sectionObject["canonicalPath"] = $sectionPath;
+			
 			if ($sectionObject !== self::UNAUTHORIZED) {			
 				if($loadContents) {
-					$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")));
-					 $objs = $this->loadSectionObjects($s['id'], $option);
-					 $sectionObject['objects'] = (!$this->sectionOptions["itemsByType"] && !empty($objs["childContents"]))? $objs["childContents"] : $objs;
+					$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")),
+						"sectionPath" => $sectionObject["canonicalPath"]);
+					$objs = $this->loadSectionObjects($s['id'], $option);
+					$resultObjects = (!$this->sectionOptions["itemsByType"] && !empty($objs["childContents"]))? $objs["childContents"] : $objs;
 				}
-				if ($depth > 1)
-					$sectionObject['sections'] = $this->loadSectionsTree($s['id'], $loadContents, $exclude_nicknames, $depth-1);
-				$result[] = $sectionObject;
+				if ($depth > 1) {
+					$resultSections = $this->loadSectionsTree($s['id'], $loadContents, $exclude_nicknames, $depth-1, $flatMode);
+				}
+				if(!$flatMode) {
+					if(!empty($resultObjects)) {
+						$sectionObject['objects'] = $resultObjects;
+					}
+					if(!empty($resultSections)) {
+						$sectionObject['sections'] = $resultSections;
+					}
+					$result[] = $sectionObject;
+				} else {
+
+					$result[] = $sectionObject;
+					if(!empty($resultSections)) {
+						$result = array_merge($result, $resultSections);
+					}
+					if(!empty($resultObjects)) {
+						$result = array_merge($result, $resultObjects);
+					}
+				}
 			}
 		}
 
@@ -598,7 +622,7 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
-	 * preapre an XML containing sitemap specification
+	 * prepare an XML containing sitemap specification
 	 * view in bedita-app/views/pages/sitemap_xml.tpl
 	 * 
 	 */
@@ -619,22 +643,61 @@ abstract class FrontendController extends AppController {
 		$conf = Configure::getInstance() ;
 		$extract_all = (!empty($conf->sitemapAllContent)) ? $conf->sitemapAllContent : false;
 		
+		$this->baseLevel = true;
+		$itemsByType = $this->sectionOptions["itemsByType"];
+		$this->sectionOptions["itemsByType"] = false;
+		$flatMode = $xml_out? true : false;
+		$sectionsTree = $this->loadSectionsTree($conf->frontendAreaId,$extract_all, null, 10000, $flatMode) ;
+		$this->sectionOptions["itemsByType"] = $itemsByType;
+		$this->baseLevel = false;
+		
 		if($xml_out) {
-			$filter = null;
-			if(!$extract_all) {
-				$filter = array();
-				$filter["object_type_id"] = $conf->objectTypes['section']["id"];
-			}
-			$sections = $this->BeTree->getDescendants($conf->frontendAreaId,$this->status,$filter) ;
-			$sectionsTree = $sections['items'];
-			$urlset = array();
-			$i=0;
-			foreach($sectionsTree as $k => $v) {
+
+			$pubMap = array();
+			$pubMap['loc'] = $this->publication["public_url"];
+			$pubMap['lastmod'] =  !empty($this->publication['last_modified']) ?
+				substr($this->publication["last_modified"], 0, 10) : substr($this->publication["modified"], 0, 10);
+			$pubMap['priority'] = !empty($this->publication['map_priority']) ? 
+				$this->publication['map_priority'] : null;
+			$pubMap['changefreq'] = !empty($this->publication['map_changefreq']) ? 
+				$this->publication['map_changefreq'] : null;
+			$urlset[] = $pubMap;
+			if($extract_all) {
+				$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")),
+						"sectionPath" => "");
+				$objs = $this->loadSectionObjects($conf->frontendAreaId, $option);
+				$resultObjects = (!$this->sectionOptions["itemsByType"] && !empty($objs["childContents"]))? $objs["childContents"] : $objs;
+				if(!empty($resultObjects)) {
+					$sectionsTree = array_merge($resultObjects, $sectionsTree);
+				}
+			}				
+
+			$i = count($urlset);
+			$sectionModel = ClassRegistry::init("Section");
+			foreach($sectionsTree as $v) {
 				$urlset[$i] = array();
-				$urlset[$i]['loc'] = $this->publication["public_url"]."/".$v['nickname'];
-				//$urlset['lastmode'] = $this->BeTree->getChildren($id, null, $filter, "title", true, $page, $dim=1);
-				//$urlset[$i]['changefreq'] = 'always'; /*always,hourly,daily,weekly,monthly,yearly,never*/
-				//$urlset[$i]['priority'] = '0.5';
+				$urlset[$i]['loc'] = $this->publication["public_url"]. $v['canonicalPath'];
+				
+				if($v['object_type_id'] == $conf->objectTypes["section"]["id"]) {
+					
+					$secFields = $sectionModel->find("first", 
+						array("conditions" => array("id"=>$v["id"]), "contain" => array()));
+					if(!empty($secFields['last_modified'])) {
+						$urlset[$i]['lastmod'] = substr($secFields['last_modified'], 0, 10);
+					} else {
+						$urlset[$i]['lastmod'] = substr($v["modified"], 0, 10);
+					}
+					if(!empty($secFields['map_priority'])) {
+						$urlset[$i]['priority'] = $secFields['map_priority'];
+					}
+					if(!empty($secFields['map_changefreq'])) {
+						$urlset[$i]['changefreq'] = $secFields['map_changefreq'];
+					}
+					
+				} else {
+					$urlset[$i]['lastmod'] = substr($v["modified"], 0, 10);
+					
+				}
 				$i++;
 			}
 			$this->set('urlset',$urlset);
@@ -642,12 +705,6 @@ abstract class FrontendController extends AppController {
 			if(!in_array('BeTree', $this->helpers)) {
 				$this->helpers[] = 'BeTree';
 			}
-			$this->baseLevel = true;
-			$itemsByType = $this->sectionOptions["itemsByType"];
-			$this->sectionOptions["itemsByType"] = false;
-			$sectionsTree = $this->loadSectionsTree($conf->frontendAreaId,$extract_all) ;
-			$this->sectionOptions["itemsByType"] = $itemsByType;
-			$this->baseLevel = false;
 		}
 		
 		$this->set('sections_tree',$sectionsTree);
@@ -665,6 +722,7 @@ abstract class FrontendController extends AppController {
 	   		throw new BeditaException(__("Content not found", true));
 	   }
 	   
+	   $this->setSectionPath($s, $s["id"]);
 	   $channel = array( 'title' => $this->publication["public_name"] . " - " . $s['title'] , 
         'link' => "/section/".$sectionName,
 //        'url' => Router::url("/section/".$sectionName),
@@ -681,7 +739,7 @@ abstract class FrontendController extends AppController {
 				$description .= (!empty($obj['abstract']) && !empty($description))? "<hr/>" .  $obj['abstract'] : $obj['abstract'];
 				$description .= (!empty($obj['body']) && !empty($description))? "<hr/>" .  $obj['body'] : $obj['body'];
 	            $rssItems[] = array( 'title' => $obj['title'], 'description' => $description,
-	                'pubDate' => $obj['created'], 'link' => "/section/".$s['nickname']."/".$item['id']);
+	                'pubDate' => $obj['created'], 'link' => $s['path']."/".$item['nickname']);
 			}
 		}
        $this->set('items', $rssItems);
@@ -970,6 +1028,9 @@ abstract class FrontendController extends AppController {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id'], false);
 				if ($obj !== self::UNAUTHORIZED) {
+					if(isset($options["sectionPath"])) {
+						$obj["canonicalPath"] = $options["sectionPath"] . "/" . $obj["nickname"];
+					}	
 					if ($this->sectionOptions["itemsByType"]) {
 						$sectionItems[$obj['object_type']][] = $obj;
 					} else {
@@ -1058,17 +1119,11 @@ abstract class FrontendController extends AppController {
 			$this->accessDenied($section);
 		}
 		
-		$section["pathSection"] = $this->getPath($sectionId);
-		
-		$sectionPath = "";
-		foreach ($section["pathSection"] as $ps) {
-			$sectionPath .= "/" . $ps["nickname"];
-		}
-		$sectionPath .= "/" . $section["nickname"];
-		$section["path"] = $sectionPath;
-		
+		$this->setSectionPath($section, $sectionId);
 		$this->sectionOptions["childrenParams"] = array_merge($this->sectionOptions["childrenParams"],$this->getPassedArgs());
-		
+				
+		$this->sectionOptions["childrenParams"]["sectionPath"] = $section["canonicalPath"];
+				
 		if(!empty($content_id)) {
 			$section['currentContent'] = $this->loadObj($content_id);
 			if ($section['currentContent'] === self::UNLOGGED || $section['currentContent'] === self::UNAUTHORIZED) {
@@ -1076,13 +1131,12 @@ abstract class FrontendController extends AppController {
 			}
 			
 			$section["contentRequested"] = true;
-			$section["contentPath"] = $section["path"] . "/" . $section['currentContent']['nickname'];
+			$section["contentPath"] = $section["canonicalPath"] . "/" . $section['currentContent']['nickname'];
 			
 			if ($this->sectionOptions["showAllContents"]) {
 				$this->baseLevel = true;
 				$checkPubDate = $this->checkPubDate;
 				$this->checkPubDate = false;
-				
 				$tmp = $this->loadSectionObjects($sectionId, $this->sectionOptions["childrenParams"]);
 				if (!$this->sectionOptions["itemsByType"])
 					$section = array_merge($section, $tmp);
@@ -1117,6 +1171,17 @@ abstract class FrontendController extends AppController {
 			$this->{$secNameFilter . "BeforeRender"}();
 		}
 	}
+
+	protected function setSectionPath(array &$section, $sectionId) {
+		$section["pathSection"] = $this->getPath($sectionId);
+		$sectionPath = "";
+		foreach ($section["pathSection"] as $ps) {
+			$sectionPath .= "/" . $ps["nickname"];
+		}
+		$sectionPath .= "/" . $section["nickname"];
+		$section["canonicalPath"] = $sectionPath;
+	}
+	
 	
 	/**
 	 * route to section, content or another method defined in reservedWords
@@ -1649,6 +1714,7 @@ abstract class FrontendController extends AppController {
 						$this->data["email"] = $userdata["email"];
 					}
 				}
+				
 				$this->Transaction->begin();
 				if (!$this->Comment->save($this->data)) {
 					throw new BeditaException(__("Error saving comment", true), $this->Comment->validationErrors);
