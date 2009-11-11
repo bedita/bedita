@@ -23,6 +23,7 @@ Version 3.0 - betula
 	* bugfix - click on box "translations" back to translations module
 	* #228 ui:preserve list filter on bulk operations and single delete
 	* remove notes from mail group details
+	* fix upload file in Windows
 	
  
  Frontend changes:

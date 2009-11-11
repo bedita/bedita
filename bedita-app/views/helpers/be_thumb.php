@@ -130,6 +130,9 @@ class BeThumbHelper extends AppHelper {
 		$this->_imageInfo['filename']	= $be_obj['name'];
 		$this->_imageInfo['ext']		= end ( explode ( '.', $this->_imageInfo['filename'] ) );
 		$this->_imageInfo['filepath']	= $this->_conf['root'] . $this->_imageInfo['path'];  // absolute
+		if (DS != "/") {
+			$this->_imageInfo['filepath'] = str_replace("/", DS, $this->_imageInfo['filepath']);
+		}
 		$this->_imageInfo['filenameBase'] = pathinfo($this->_imageInfo['filepath'], PATHINFO_FILENAME);
 		$this->_imageInfo['filenameMD5'] = md5($this->_imageInfo['filename']);
 		$this->_imageInfo['cacheDirectory'] = dirname($this->_imageInfo['filepath']) . DS . 
@@ -716,7 +719,7 @@ class BeThumbHelper extends AppHelper {
 		$URLpcs['dir'] = implode ("/", $PathPcs); 
 		if (file_exists($this->_imageInfo['cacheDirectory']) && is_dir($this->_imageInfo['cacheDirectory']))
 		{
-			$URLpcs['dir'] .= DS . substr($this->_imageInfo['filenameBase'],0,5) . "_" . $this->_imageInfo['filenameMD5'];;
+			$URLpcs['dir'] .= "/" . substr($this->_imageInfo['filenameBase'],0,5) . "_" . $this->_imageInfo['filenameMD5'];;
 		}
 		return ($URLpcs);
 	}

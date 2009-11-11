@@ -231,7 +231,7 @@ class BeFileHandlerComponent extends Object {
 
 		// Create file
 		if(!$this->_putFile($sourcePath, $targetPath)) return false ;
-		$data['path'] = $targetPath ;
+		$data['path'] = (DS == "/")? $targetPath : str_replace(DS, "/", $targetPath);
 		// Create object
 		return $this->_create($data) ;
 	}
@@ -475,6 +475,9 @@ class BeFileHandlerComponent extends Object {
 	 * @param string $path
 	 */
 	private function _removeFile($path) {
+		if (DS != "/") {
+			$path = str_replace("/", DS, $path);
+		}
 		$path = Configure::read("mediaRoot") . $path ;
 		
 		if (file_exists($path)) {
