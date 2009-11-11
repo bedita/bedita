@@ -1,6 +1,3 @@
-msgid " in job"
-msgstr ""
-
 msgid "(Un)Select All"
 msgstr ""
 
@@ -85,9 +82,6 @@ msgid "Authorized"
 msgstr ""
 
 msgid "Auto-remove forbidden"
-msgstr ""
-
-msgid "B.Edita"
 msgstr ""
 
 msgid "BEdita contents statistics"
@@ -660,9 +654,6 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-msgid "Long Text"
-msgstr ""
-
 msgid "MIME type not found"
 msgstr ""
 
@@ -726,9 +717,7 @@ msgstr ""
 msgid "Missing recipient"
 msgstr ""
 
-msgid ""
-"Missing referenced object.nIf you are creating new item you have to save it "
-"before adding a note"
+msgid "Missing referenced object. Save new item before adding a note"
 msgstr ""
 
 msgid "Missing sending date"
@@ -821,10 +810,16 @@ msgstr ""
 msgid "News saved"
 msgstr ""
 
+msgid "Newsletter sent. To schedule another invoice, please clone this object."
+msgstr ""
+
 msgid "Newsletter subscriptions"
 msgstr ""
 
 msgid "Newsletters"
+msgstr ""
+
+msgid "Newsletters "
 msgstr ""
 
 msgid "Newsletters sent this month"
@@ -1090,9 +1085,6 @@ msgid "Real name"
 msgstr ""
 
 msgid "Real name is required (at least %1 alphanumerical chars)"
-msgstr ""
-
-msgid "Recent newsletters "
 msgstr ""
 
 msgid "Referenced in"
@@ -1465,9 +1457,6 @@ msgid "addressbook details"
 msgstr ""
 
 msgid "admin"
-msgstr ""
-
-msgid "advanced properties"
 msgstr ""
 
 msgid "all"

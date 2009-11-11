@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-10-21 17:02:12\n"
+"POT-Creation-Date: 2009-11-11 10:47:29\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -9,9 +9,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-msgid " in job"
-msgstr ""
 
 msgid "(Un)Select All"
 msgstr "(De)Seleziona tutto"
@@ -76,11 +73,9 @@ msgstr "Sicuro di voler accettare questo IP"
 msgid "Are you sure you want to ban this IP?"
 msgstr "Sicuro di voler interdire l'accesso a questo IP (ban)?"
 
-msgid ""
-"Are you sure you want to cancel and reload this document? All unsaved "
+msgid "Are you sure you want to cancel and reload this document? All unsaved"
 "changes will be lost"
-msgstr "Sicuro di voler annullare le modifiche e di voler ricaricare "
-"questodocumento? Tutte le modifiche non salvate saranno perdute"
+msgstr ""
 
 msgid "Area deleted"
 msgstr "Area eliminata"
@@ -99,9 +94,6 @@ msgstr "Autorizzato"
 
 msgid "Auto-remove forbidden"
 msgstr "Eliminazione-automatica proibita"
-
-msgid "B.Edita"
-msgstr ""
 
 msgid "BEdita contents statistics"
 msgstr "Statistiche contenuti BEdita"
@@ -158,7 +150,7 @@ msgid "Card"
 msgstr "Scheda"
 
 msgid "Card deleted"
-msgstr ""
+msgstr "Scheda rimossa"
 
 msgid "Card saved"
 msgstr "Scheda salvata"
@@ -551,7 +543,7 @@ msgid "Forgotten username or password?"
 msgstr "Hai dimenticato l'utente o la password?"
 
 msgid "Full news at"
-msgstr ""
+msgstr "Notizie complete qui"
 
 msgid "Galleries deleted"
 msgstr "Gallerie eliminate"
@@ -673,9 +665,6 @@ msgstr "Dati in caricamento"
 msgid "Login"
 msgstr "Accesso"
 
-msgid "Long Text"
-msgstr "Testo Lungo"
-
 msgid "MIME type not found"
 msgstr "Tipo MIME non trovato"
 
@@ -739,11 +728,8 @@ msgstr "Pubblicazione mancante"
 msgid "Missing recipient"
 msgstr "Destinatario mancante"
 
-msgid ""
-"Missing referenced object.nIf you are creating new item you have to save it "
-"before adding a note"
-msgstr "Oggetto referenziato non trovato. Se stai creando un nuovo elemento devi "
-"salvarlo prima di aggiungere una nota"
+msgid "Missing referenced object. Save new item before adding a note"
+msgstr "Manca l'oggetto referenziato. Salva il nuovo elemento prima di aggiungere una nota"
 
 msgid "Missing sending date"
 msgstr "Manca la data invio"
@@ -773,12 +759,12 @@ msgid "More properties"
 msgstr "Altre proprietà"
 
 msgid "Multimedia Provider not found or error getting thumbnail"
-msgstr "Non è stato trovato il multimedia provider o si è verificato un errore "
-"nell'ottenere la miniatura"
+msgstr "Non è stato trovato il multimedia provider o si è verificato"
+"unerrorenell'ottenere la miniatura"
 
 msgid "Multimedia Provider not found or error preparing data to save"
-msgstr "Non è stato trovato il multimedia provider o si è verificato un errorenella "
-"preparazione dei dati da salvare"
+msgstr "Non è stato trovato il multimedia provider o si è verificato"
+"unerrorenellapreparazione dei dati da salvare"
 
 msgid "Multimedia deleted"
 msgstr "Multimedia eliminato"
@@ -837,11 +823,17 @@ msgstr "News eliminata"
 msgid "News saved"
 msgstr "News salvata"
 
+msgid "Newsletter sent. To schedule another invoice, please clone this object."
+msgstr "Newsletter inviata. Per programmare un altro invio clona questo elemento"
+
 msgid "Newsletter subscriptions"
 msgstr "Sottoscrizioni della Newsletter"
 
 msgid "Newsletters"
 msgstr "Newsletter"
+
+msgid "Newsletters "
+msgstr ""
 
 msgid "Newsletters sent this month"
 msgstr "Newsletter inviate questo mese"
@@ -1020,10 +1012,9 @@ msgstr "Luogo e anno"
 msgid "Please enter a valid date in the %1 format"
 msgstr "Inserire una data valida nel formato %1"
 
-msgid ""
-"Please enter a valid date in the %1 format and greater than the previous date"
-msgstr "Inserire una data valida nel formato %1 e successiva alla "
-"dataprecedentemente inserita"
+msgid "Please enter a valid date in the %1 format and greater than the previous date"
+msgstr "Inserire una data valida nel formato %1 e successiva"
+"alladataprecedentementeinserita"
 
 msgid "Please enter a valid time in the %1 format"
 msgstr "Inserire un orario valido nel formato %1"
@@ -1108,9 +1099,6 @@ msgstr "Nome reale"
 
 msgid "Real name is required (at least %1 alphanumerical chars)"
 msgstr "Il nome reale e obbligatorio (almeno %1 caratteri alfanumerici)"
-
-msgid "Recent newsletters "
-msgstr "Newsletter recenti "
 
 msgid "Referenced in"
 msgstr "Referenziato in"
@@ -1262,8 +1250,7 @@ msgstr "Il testo non corrisponde all'immagine"
 msgid "Text lang"
 msgstr "Lingua testo"
 
-msgid ""
-"The content is fixed: it's not possible to change the position in the tree"
+msgid "The content is fixed: it's not possible to change the position in the tree"
 msgstr "Contenuto immodificabile: non è possibile cambiarne la posizione nell'albero"
 
 msgid "This help page is under construction: coming soon"
@@ -1362,11 +1349,9 @@ msgstr "Login utente temporaneamente bloccato"
 msgid "User name"
 msgstr "Nome utente"
 
-msgid ""
-"User name is required (at least %1 chars, without white spaces and special "
+msgid "User name is required (at least %1 chars, without white spaces and special"
 "chars)"
-msgstr "Il campo Nome utente è obbligatorio (almeno %1 caratteri, senza spazi "
-"ecaratteri speciali"
+msgstr "Il nome utente è obbligatorio (almeno %1 caratteri, senza spazi e caratteri speciali)"
 
 msgid "User not associated to mailgroup or he is in pending status"
 msgstr "L'utente non è associato al gruppo di posta o è in attesa di approvazione"
@@ -1484,9 +1469,6 @@ msgstr "dettagli rubrica"
 
 msgid "admin"
 msgstr "amministrazione"
-
-msgid "advanced properties"
-msgstr "proprietà avanzate"
 
 msgid "all"
 msgstr "tutti"
@@ -1813,13 +1795,13 @@ msgid "image"
 msgstr "immagine"
 
 msgid "in job"
-msgstr ""
+msgstr "in corso"
 
 msgid "in recipient groups"
 msgstr "in gruppi destinatari"
 
 msgid "included in questionnaires"
-msgstr ""
+msgstr "incluso nel questionario"
 
 msgid "insert more questions"
 msgstr "inserisci quesiti"
@@ -2110,7 +2092,7 @@ msgid "permission"
 msgstr "permesso"
 
 msgid "permissions set"
-msgstr ""
+msgstr "permessi impostati"
 
 msgid "phone"
 msgstr "telefono"

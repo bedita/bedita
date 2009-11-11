@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2009-10-21 17:02:12\n"
+"POT-Creation-Date: 2009-11-11 10:47:29\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -9,9 +9,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-msgid " in job"
-msgstr ""
 
 msgid "(Un)Select All"
 msgstr ""
@@ -97,9 +94,6 @@ msgid "Authorized"
 msgstr "Autorizado"
 
 msgid "Auto-remove forbidden"
-msgstr ""
-
-msgid "B.Edita"
 msgstr ""
 
 msgid "BEdita contents statistics"
@@ -672,9 +666,6 @@ msgstr "Cargando datos"
 msgid "Login"
 msgstr ""
 
-msgid "Long Text"
-msgstr "Texto Extenso"
-
 msgid "MIME type not found"
 msgstr "MIME type não encontrado"
 
@@ -738,9 +729,7 @@ msgstr ""
 msgid "Missing recipient"
 msgstr ""
 
-msgid ""
-"Missing referenced object.nIf you are creating new item you have to save it "
-"before adding a note"
+msgid "Missing referenced object. Save new item before adding a note"
 msgstr ""
 
 msgid "Missing sending date"
@@ -833,10 +822,16 @@ msgstr ""
 msgid "News saved"
 msgstr ""
 
+msgid "Newsletter sent. To schedule another invoice, please clone this object."
+msgstr ""
+
 msgid "Newsletter subscriptions"
 msgstr ""
 
 msgid "Newsletters"
+msgstr ""
+
+msgid "Newsletters "
 msgstr ""
 
 msgid "Newsletters sent this month"
@@ -1103,9 +1098,6 @@ msgstr "Nome real"
 
 msgid "Real name is required (at least %1 alphanumerical chars)"
 msgstr "Nome real obligatório (%1 carácteres alfanuméricos)"
-
-msgid "Recent newsletters "
-msgstr ""
 
 msgid "Referenced in"
 msgstr ""
@@ -1478,9 +1470,6 @@ msgid "addressbook details"
 msgstr ""
 
 msgid "admin"
-msgstr ""
-
-msgid "advanced properties"
 msgstr ""
 
 msgid "all"
@@ -2454,6 +2443,9 @@ msgstr ""
 
 msgid "your profile and preferences"
 msgstr ""
+
+#~ msgid "Long Text"
+#~ msgstr "Texto Extenso"
 
 #~ msgid "Apply permissions recursively"
 #~ msgstr "Aplicar permisos recorsivamente"

@@ -56,7 +56,7 @@ $(document).ready(function() {
 		</td>
 		
 		{if !empty($object.mail_status) && $object.mail_status == "injob"}
-			<td style="color:red; text-decoration: blink;">{t} in job{/t}</td>
+			<td style="color:red; text-decoration: blink;">{t}in job{/t}</td>
 		{else}
 			<td class="info">{t}{$object.mail_status|default:''}{/t}</td>
 		{/if}
