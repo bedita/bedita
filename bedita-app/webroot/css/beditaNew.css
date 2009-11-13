@@ -340,7 +340,11 @@ UL.modules {
 
 
 
-.bedita 	{background-color:#FFFFFF !important; 
+.bedita 	{
+			background-color: #FFF !important;
+			background-image: url(/img/BElogogray.gif) !important;
+			background-repeat:no-repeat !important;
+			background-position: left bottom;
 			font:normal 1.75em Georgia, "Times New Roman", Times, serif !important;
 			line-height:1em !important;
 			color:#996600  !important;
@@ -484,6 +488,7 @@ UL.modulesmenu {
 	padding:0px 5px 0px 5px;
 	color:white;
 }
+
 
 
 .modulesmenu .over {
