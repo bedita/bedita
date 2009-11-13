@@ -6,19 +6,19 @@
 
 {assign var="thumbWidth" 		value = 130}
 {assign var="thumbHeight" 		value = 98}
-{assign var="fileName"			value = $item.filename|default:$item.name}
+{assign var="fileName"			value = $item.filename|default:$item.name|default:''}
 {assign_concat var="linkUrl" 0=$html->url('/multimedia/view/') 1=$item.id}
 
 {strip}
 
-	
 	<div style="overflow:hidden; height:{$thumbHeight}px" class="imagebox">
 
 	<a href="{$linkUrl}">
-	
-	{if strtolower($item.ObjectType.name) == "image"}
-		{assign_associative var="params" width=$thumbWidth height=$thumbHeight mode="fill" upscale=false}
-		{assign_associative var="htmlAttr" width=$thumbWidth height=$thumbHeight alt=$item.title title=$item.name}
+		
+	{if strtolower($item.ObjectType.name|default:'') == "image"}
+
+		{assign_associative var="params" width=$thumbWidth height=$thumbHeight longside=false mode="fill" modeparam="000000" type=null upscale=false}
+		{assign_associative var="htmlAttr" alt=$item.title title=$item.name|default:''}
 		
 		{if !empty($fileName) }
 			
@@ -31,17 +31,21 @@
 			
 		{/if}
 
-	{elseif strtolower($item.ObjectType.name) == "video"}
+	{elseif strtolower($item.ObjectType.name|default:'') == "video"}
+	
 		{assign_associative var="params" presentation="thumb"}
+	
 		{if !empty($item.provider)}
 			{assign_associative var="htmlAttr" width=$conf->videoThumbWidth height=$conf->videoThumbHeight alt=$item.title title=$item.name}
 		{else}
 			{assign var="htmlAttr" value=null}
 		{/if}
+	
 		{$beEmbedMedia->object($item,$params,$htmlAttr)}
 	
 	
 	{else}
+	
 		{assign_associative var="params" presentation="thumb"}
 		{$beEmbedMedia->object($item,$params)}
 			
@@ -55,7 +59,7 @@
 		<li style="line-height:1.2em; height:1.2em; overflow:hidden">
 			{$item.title|default:'<i>[no title]</i>'}
 		</li>
-{if strtolower($item.ObjectType.name) == "image"}
+{if strtolower($item.ObjectType.name|default:'') == "image"}
 		<li style="line-height:1.2em; height:1.2em; overflow:hidden">
 			{$item.width}x{$item.height}px, {$item.size|default:0|filesize}
 		</li>
