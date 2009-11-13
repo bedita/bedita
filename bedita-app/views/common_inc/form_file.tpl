@@ -20,8 +20,8 @@
 			{assign var="fileUrl"  value=$object.path}
 		{/if}
 		{image_info var="imageInfo" file=$fileUrl}
-		
-		{assign_associative var="params" width=500}
+
+		{assign_associative var="params" width=500 longside=false mode="fill" modeparam="000000" type=null upscale=false}
 		
 		{$beEmbedMedia->object($object,$params)}
 
