@@ -15,8 +15,8 @@
 
 {assign_concat var="imageAltAttribute"	0="alt='"  1=$item.title 2="'"}
 
-{assign_associative var="params" presentation="thumb" width=$thumbWidth height=$thumbHeight longside=false mode="fill" modeparam="000000" type=null upscale=false}
-{assign_associative var="htmlAttr" width=$thumbWidth height=$thumbHeight alt=$item.title title=$item.name}
+{assign_associative var="params" width=$thumbWidth height=$thumbHeight longside=false mode="fill" modeparam="000000" type=null upscale=false}
+{assign_associative var="htmlAttr" alt=$item.title title=$item.name}
 
 {literal}
 <script type="text/javascript">
@@ -42,7 +42,7 @@ $(document).ready(function(){
 		
 	{elseif ($item.provider|default:false)}
 	
-		{assign_concat var="myStyle" 0="width:" 1=$conf->media.video.thumbWidth 2="px; " 3="height:" 4=$conf->media.video.thumbHeight 5="px;"}
+		{assign_concat var="myStyle" 0="width:" 1=$conf->videoThumbWidth 2="px; " 3="height:" 4=$conf->videoThumbHeight 5="px;"}
 		{assign_associative var="attributes" style=$myStyle}
 		{$beEmbedMedia->object($item,$params,$attributes)}
 	

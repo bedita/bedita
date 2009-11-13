@@ -20,8 +20,8 @@
 			{assign var="fileUrl"  value=$object.path}
 		{/if}
 		{image_info var="imageInfo" file=$fileUrl}
-		
-		{assign_associative var="params" width=500}
+
+		{assign_associative var="params" width=500 longside=false mode="fill" modeparam="000000" type=null upscale=false}
 		
 		{$beEmbedMedia->object($object,$params)}
 
@@ -54,7 +54,7 @@
 	{/if}
 
 {if $object.ObjectType.name == "video"}
-<div style="clear:left; margin-top: 20px;">
+<div style="clear:left;">
 {t}thumbnail{/t}<br/>
 <input type="text" name="data[thumbnail]" value="{$object.thumbnail|default:''}" style="width: 350px;"/>
 {if !empty($object.thumbnail)}
