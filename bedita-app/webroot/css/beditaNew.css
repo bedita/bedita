@@ -489,7 +489,9 @@ UL.modulesmenu {
 	color:white;
 }
 
-
+.modulesmenu .bedita {
+	background-image: none !important;
+}
 
 .modulesmenu .over {
 	border-bottom:5px solid #CCCCCC;
