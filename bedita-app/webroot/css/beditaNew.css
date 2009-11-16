@@ -342,7 +342,7 @@ UL.modules {
 
 .bedita 	{
 			background-color: #FFF !important;
-			background-image: url(/img/BElogogray.gif) !important;
+			background-image: url(../img/BElogogray.gif) !important;
 			background-repeat:no-repeat !important;
 			background-position: left bottom;
 			font:normal 1.75em Georgia, "Times New Roman", Times, serif !important;
