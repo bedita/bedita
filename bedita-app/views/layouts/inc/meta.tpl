@@ -5,7 +5,9 @@
 *}
 
 	{$html->charset()}
-	{$html->meta('icon')}
+
+	<link rel="icon" href="{$session->webroot}favicon.ico" type="image/gif" />
+	<link rel="shortcut icon" href="{$session->webroot}favicon30.gif" type="image/gif" />
 	<meta http-equiv="Content-Style-Type" content="text/css" />
 
 	<meta name="author" content="ChannelWeb srl - Chialab srl" />
