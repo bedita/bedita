@@ -1,4 +1,3 @@
-{*
 <h3>{t}sections tree{/t}: $sectionsTree</h3>
 <a href="javascript:void(0)" class="open-close-link">{t}show/hide{/t}</a>
 <div style="display: none">
@@ -15,4 +14,3 @@
 {/foreach}
 </ul>
 {/if}
-*}
