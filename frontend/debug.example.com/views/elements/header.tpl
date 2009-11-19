@@ -1,11 +1,23 @@
-<h3>{t}current language{/t}: {$currLang} - {t}other available{/t}: 
+{*<h3>{t}current language{/t}: {$currLang} - {t}other available{/t}: 
 {foreach from=$conf->frontendLangs item="g" key="k"}
 	{if $currLang != $k} <a title="{$g}" href="{$html->url('/')}lang/{$k}">{$k} - {$g}</a>
 	{/if}
 {/foreach}
 </h3>
-<hr/>
+<hr/>*}
 
+<div class="header">
+	<h1><a href="{$html->url('/')}" title="{$publication.title}">{$publication.title}</a></h1><h2>{$publication.description}</h2>
+	<h3>{$publication.public_name}</h3>
+	
+	<a href="{$html->url('/')}" title="chialab"><img src="/img/pesce.png" alt="chialab" /></a>
+
+</div>
+
+
+
+
+{if (!empty($section))}
 <h3>{t}section breadcrumb{/t}:  </h3>
 <a href="{$html->url('/')}" >{$publication.public_name|default:$publication.title}</a>&nbsp;&gt;&nbsp; 
 {if (!empty($section.pathSection))}
@@ -14,9 +26,11 @@
 	{/foreach}
 {/if}
 {if ($section.id != $publication.id)}
-	<a href="{$html->url($section.canonicalPath)}" >{$section.title}</a>
+	{*<a href="{$html->url($section.canonicalPath)}" >{$section.title}</a>*}
 {/if}
 <br/>
+{/if}
+
 
 {if !empty($section.currentContent)}
 <hr/>

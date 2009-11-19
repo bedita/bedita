@@ -18,6 +18,7 @@
 	{/if}
 
 	{$javascript->link('jquery')}
+	{$javascript->link('frontend')}
 
 	{$scripts_for_layout}
 
