@@ -1,1 +1,113 @@
-@CHARSET "UTF-8";
+@charset "utf-8";
+/*
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+CSS Created by Chialab.it
+
+http://www.chialab.it 2009
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+*/
+
+
+/*...........................................    
+
+    General, elements
+
+...........................................*/
+
+* {
+	padding:0; margin:0; border:0; outline:0; color:#000;
+}
+
+BODY {
+	background: white;
+	height:auto;
+	margin:0px;
+	padding:0px;
+	background-color:#f0f0ed;
+}
+
+P {margin-bottom:0.5em;}
+
+OL, UL {
+	margin:10px;
+	padding:10px;
+}
+
+UL UL, OL OL {
+	margin:0px 10px 10px 10px;
+	padding:5px 10px 10px 10px;
+}
+
+
+CODE {color:#FF4500;}
+
+A {text-decoration:none; color:black}
+A:hover {color:#0A2B54;}
+
+A {outline:0; }
+
+:focus {
+	outline: 0;
+} 
+
+HR {height:0px; border:0px; margin:10px 0px 10px 0px; border-top:1px solid #666}
+
+
+/*...........................................    
+
+    Typography
+
+...........................................*/
+
+
+BODY {font-family:Verdana, Geneva, Arial, Helvetica, sans-serif; font-size:14px;}
+
+H1 {font-size:1em; font-weight:bold;}
+
+H2 {font-size:1em; font-weight:normal; color:#ee7f00;}
+
+H3 {font-size:1em; font-weight:normal;}
+
+.header H1 {float:left; margin-right:5px;}
+
+
+/*...........................................    
+
+    Structure
+
+...........................................*/
+
+.header {margin:10px 0px 0px 10px;}
+
+.main {width:960px; position:relative; z-index:50; float:left; margin-top:30px;}
+
+.menuleft {width:auto; position:absolute; top:0px; z-index:100; left:0px;}
+
+.menuleft UL {list-style-type:none!important; margin:0px 0px 0px 10px; padding:0px;}
+
+.center {float:left; margin-left:155px;}
+
+.intro {font-size:2.1em; color:#ccc;}
+
+.imgHome {margin:0px; padding:0px; float:left;}
+
+
+/*...........................................    
+
+    Modules
+
+...........................................*/
+
+.modulo1 {width:145px; margin-right:15px;}
+
+.modulo2 {width:305px; margin-right:15px;}
+
+.modulo3 {width:465px; margin-right:15px;}
+
+.modulo4 {width:625px; margin-right:15px;}
+
+.modulo5 {width:785px; margin-right:15px;}
