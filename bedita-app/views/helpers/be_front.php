@@ -162,7 +162,7 @@ class BeFrontHelper extends AppHelper {
 	
 	private function make_timestamp($string) {
 		if(empty($string)) {
-			// use "noew":
+			// use "now":
 			$time = time();
 		} elseif (preg_match('/^\d{14}$/', $string)) {
 			// it is mysql timestamp format of YYYYMMDDHHMMSS?			

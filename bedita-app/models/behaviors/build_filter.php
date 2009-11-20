@@ -162,7 +162,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	private function mediatypeFilter() {
 		$this->fields .= ", `Category`.name AS mediatype";
 		$this->from = " LEFT OUTER JOIN object_categories AS `ObjectCategory` ON `BEObject`.id=`ObjectCategory`.object_id
-				LEFT OUTER JOIN categories AS `Category` ON `ObjectCategory`.category_id=`Category`.id"
+				LEFT OUTER JOIN categories AS `Category` ON `ObjectCategory`.category_id=`Category`.id AND `Category`.object_type_id IS NOT NULL"
 				. $this->from;
 	}
 	
