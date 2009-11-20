@@ -318,8 +318,14 @@ class BeFileHandlerComponent extends Object {
 	private function getCategoryMediaType($data, $modelType) {
 		$cat = array();
 		// if empty mediatype try to get it from modelName
-		if (empty($data['mediatype']) && $modelType != "BEFile") {
-			$data['mediatype'] = strtolower($modelType);
+		if (empty($data['mediatype'])) {
+			if($modelType != "BEFile") {
+				$data['mediatype'] = strtolower($modelType);
+			} else {
+				Configure::load('mediatype.ini');
+				$c = Configure::getInstance();
+				$data['mediatype'] = $c->mediaTypeMapping[$data['mime_type']];
+			}
 		}
 		
 		if (!empty($data['mediatype'])) {
