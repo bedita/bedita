@@ -25,6 +25,9 @@
 	{assign var="content" value=$content|regex_replace:$regexp:$bodyTruncated}
 	
 	{$content}
+	{if !empty($public_url)}
+		<a href="{$public_url}/{$obj.nickname}" title="{t}continue{/t}">[{t}continue{/t}]</a>
+	{/if}
 	</div>
 	
 {else}
