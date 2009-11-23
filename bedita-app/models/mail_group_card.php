@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Mail group card for addressbook
  * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

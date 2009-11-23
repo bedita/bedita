@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Mail group object
  * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

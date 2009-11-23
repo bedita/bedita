@@ -41,4 +41,4 @@
 		
 </table>
 		
-{dump var=$objects}
+{*dump var=$objects*}

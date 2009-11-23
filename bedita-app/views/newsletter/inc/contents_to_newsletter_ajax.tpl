@@ -11,11 +11,17 @@
 	{/if}
 	
 	{assign var="content" value=$content|replace:"[\$title]":$obj.title}
-	{assign var="content" value=$content|replace:"[\$description]":$obj.description}
 	
-	{assign var="bodyTruncated" value=$obj.body|html_substr:$truncateNumber:"..."}
+	{assign var="descriptionTruncated" value=$obj.description|html_substr:$descriptionTruncateNumber:"..."}
+	{assign_concat var="regexp" 0="/\[" 1="\\$" 2="description.*\]/"}
+	{assign var="content" value=$content|regex_replace:$regexp:$descriptionTruncated}
+	
+	{assign var="abstractTruncated" value=$obj.abstract|html_substr:$abstractTruncateNumber:"..."}
+	{assign_concat var="regexp" 0="/\[" 1="\\$" 2="abstract.*\]/"}
+	{assign var="content" value=$content|regex_replace:$regexp:$abstractTruncated}
+	
+	{assign var="bodyTruncated" value=$obj.body|html_substr:$bodyTruncateNumber:"..."}
 	{assign_concat var="regexp" 0="/\[" 1="\\$" 2="body.*\]/"}
-	
 	{assign var="content" value=$content|regex_replace:$regexp:$bodyTruncated}
 	
 	{$content}

@@ -29,7 +29,7 @@ $(document).ready(function(){
 			<th>{t}list name{/t}</th>
 			<th>{t}status{/t}</th>
 			<th>{t}subscribers{/t}</th>
-			<th>{t}publishing{/t}</th>
+			<th>{t}publication{/t}</th>
 			<th>Id</th>
 		</tr>
 

@@ -5,7 +5,7 @@
 
 		<tr>
 			<th>{t}name{/t}</th>
-			<th>{t}publishing{/t}</th>
+			<th>{t}publication{/t}</th>
 			<th>{t}sender{/t}</th>
 			<th>Id</th>
 		</tr>

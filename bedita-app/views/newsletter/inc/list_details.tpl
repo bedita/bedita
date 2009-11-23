@@ -12,7 +12,7 @@
 		</tr>
 		<tr>
 			<td>
-				<label for="publishing">{t}publishing{/t}:</label>
+				<label for="publishing">{t}publication{/t}:</label>
 			</td>
 			<td>{assign var='mailgroup_area_id' value=$object.area_id|default:''}
 				<select style="width:220px" name="data[MailGroup][area_id]">
