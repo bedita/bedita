@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: http://docs.bedita.com/sitemap.xml
+Sitemap: http://site.example.com/sitemap.xml
