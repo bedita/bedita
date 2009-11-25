@@ -20,8 +20,8 @@
  */
 
 /**
- * 
- * @link			http://www.bedita.com
+ * Question answer object
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$

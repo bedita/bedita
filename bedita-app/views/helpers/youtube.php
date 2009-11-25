@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -34,7 +34,7 @@ class YoutubeHelper extends AppHelper {
 	
 	function thumbnail($obj, $htmlAttributes, $URLonly) {
 		$this->conf = Configure::getInstance() ;
-		$src = sprintf($this->conf->youtube["urlthumb"], $obj['uid']);
+		$src = sprintf($this->conf->media_providers["youtube"]["params"]["urlthumb"], $obj['uid']);
 		return (!$URLonly)? $this->Html->image($src, $htmlAttributes) : $src;
 	}
 	
@@ -47,26 +47,24 @@ class YoutubeHelper extends AppHelper {
 	 */
 	function embed($obj, $attributes) {
 		$this->conf 	= Configure::getInstance() ;
-		if(!isset($this->conf->provider_params["youtube"])) 
+		if(!isset($this->conf->media_providers["youtube"]["params"])) 
 			return "" ;
 		
-		// formatta le variabili
-		$attributes = array_merge($this->conf->provider_params["youtube"], $attributes) ;
-		$width = $attributes['width'] ;
-		$height = $attributes['height'] ;
-		$embedTag = $attributes["embedTag"];
-		
-		unset($attributes["embedTag"]);
-		unset($attributes["urlthumb"]);
-		unset($attributes['conf']) ;
-		unset($attributes['width']) ;
-		unset($attributes['height']) ;
-		$params = "" ;
-		foreach ($attributes as $key => $value) {
-			$params .= "&$key=$value" ;
+		if (empty($attributes["width"])) { 
+			$attributes["width"] = $this->conf->media_providers["youtube"]["params"]["width"];
+		}
+		if (empty($attributes["height"])) { 
+			$attributes["height"] = $this->conf->media_providers["youtube"]["params"]["height"];
 		}
 
-		return trim(sprintf($embedTag, $obj['uid'], $params, $width, $height)) ;
+		$url = rawurlencode($obj["path"]);
+		$url .= "&format=json&maxwidth=" . $attributes["width"] . "&maxheight=" . $attributes["height"];
+		$url = sprintf($this->conf->media_providers["youtube"]["params"]["urlembed"], $url);
+		if (!$oEmbed = $this->oEmbedInfo($url)) {
+			return false;
+		}
+						
+		return $oEmbed["html"] ;
 	}
 	
 	/**
@@ -74,7 +72,7 @@ class YoutubeHelper extends AppHelper {
 	 * @param array $obj
 	 * @return youtube path
 	 */
-	function sourceEmbed($obj) {
+	function sourceEmbed(array &$obj) {
 		return $obj['path'] ;
 	}
 	

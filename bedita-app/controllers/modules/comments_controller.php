@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -97,31 +97,42 @@ class CommentsController extends ModulesController {
 			$this->eventInfo("IP [". $ip."] accepted");
 		}
 	 }
-	 
+
 	public function delete() {
 		$this->checkWriteModulePermission();
 		$objectsListDeleted = $this->deleteObjects("Comment");
 		$this->userInfoMessage(__("Comments deleted", true) . " -  " . $objectsListDeleted);
 		$this->eventInfo("Comments $objectsListDeleted deleted");
 	} 
-	 
+
+	public function deleteSelected() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("Comment");
+		$this->userInfoMessage(__("Comments deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("Comments $objectsListDeleted deleted");
+	} 
+
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"save"	=> 	array(
 							"OK"	=> "/comments/view/{$this->Comment->id}",
 							"ERROR"	=> "/comments/view" 
-							), 
+							),
 			"delete" =>	array(
-							"OK"	=> "/comments",
-							"ERROR"	=> "/comments/view/{@$this->params['pass'][0]}" 
+							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
+							"ERROR"	=> $this->referer() 
+							),
+			"deleteSelected" =>	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							),
 			"banIp"	=> 	array(
 							"OK"	=> "/comments/view/{$this->data['id']}",
 							"ERROR"	=> "/comments/view" 
 							), 
 			"changeStatusObjects"	=> 	array(
-							"OK"	=> "/comments",
-							"ERROR"	=> "/comments" 
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							)
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

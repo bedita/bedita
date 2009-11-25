@@ -50,7 +50,7 @@ class BeHashComponent extends Object {
 				"conditions" => array("hash" => $hash)
 			)
 		);
-		// no hash finded or no service_type defined or hash expired
+		// no hash found or no service_type defined or hash expired
 		if ( empty($hashRow["HashJob"]) || empty($hashRow["HashJob"]["service_type"]) || $hashRow["HashJob"]["status"] == "expired") {
 			$this->controller->Session->setFlash(__("Hash not valid or expired.",true), NULL, NULL, 'info');
 			return false;
@@ -234,7 +234,7 @@ class BeHashComponent extends Object {
 		if (empty($data['card_id']))
 			throw new BeditaException(__("missing card id", true));
 		
-		// check if there are other hash unsubscribe for mail_group_id
+		// check if there are other unsubscribe hashes for mail_group_id
 		$hashjobModel = ClassRegistry::init("HashJob");
 		$hashjobs = $hashjobModel->find("all", array(
 				"conditions" => array(

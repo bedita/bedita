@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -77,7 +77,7 @@ class QuestionnaireTestCase extends BeditaTestCase {
 	
 	
  	function testDelete() {
-        pr("Removinge inserted Questionnaires:");
+        pr("Removing inserted Questionnaires:");
         foreach ($this->inserted as $ins) {
         	$result = $this->Questionnaire->delete($ins);
 			$this->assertEqual($result, true);		

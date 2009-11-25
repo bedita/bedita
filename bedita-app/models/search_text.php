@@ -20,8 +20,8 @@
  */
 
 /**
- * 
- * @link			http://www.bedita.com
+ * Search text object
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$

@@ -20,8 +20,8 @@
  */
 
 /**
- * 
- * @link			http://www.bedita.com
+ * Event content. Associated to items DateItem (event start and end) and GeoTag (event location)
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$

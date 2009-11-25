@@ -20,8 +20,8 @@
  */
 
 /**
- * 
- * @link			http://www.bedita.com
+ * Property Option object
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$

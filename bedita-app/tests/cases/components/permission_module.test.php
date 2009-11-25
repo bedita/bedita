@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -45,10 +45,10 @@ class PermissionModuleTestCase extends BeditaTestCase {
 		$prevPerms = $this->BePermissionModule->load('areas') ;
 		// add perms
 		$ret = $this->BePermissionModule->add('areas', $this->data['addPerms1']) ;
-		pr("Aggiunta permessi modulo") ;
+		pr("Added permits for module") ;
 		$this->assertEqual($ret,true);
 		
-		// laod new perms and calc expected
+		// load new perms and calc expected
 		$newPerms = $this->BePermissionModule->load('areas') ;
 		sort($newPerms);
 		
@@ -100,7 +100,7 @@ class PermissionModuleTestCase extends BeditaTestCase {
 		$prevPermsAdmin = $this->BePermissionModule->load('admin') ;
 		
 		$ret = $this->BePermissionModule->add(array('admin', 'areas'), $this->data['addPerms1']) ;
-		pr("Aggiunta permessi moduli") ;
+		pr("Added permits for module") ;
 		$this->assertEqual($ret,true);
 		
 		$perms = $this->BePermissionModule->load('admin') ;
@@ -131,15 +131,15 @@ class PermissionModuleTestCase extends BeditaTestCase {
 	function testDeleteBySingleModule() {	
 		$this->Transaction->begin() ;
 		
-		// Aggiunge i permessi
+		// Add permits
 		$ret = $this->BePermissionModule->add('areas', $this->data['addPerms1']) ;
-		pr("Aggiunta permessi") ;
+		pr("Added permits") ;
 		$this->assertEqual($ret,true);
 
 		$newPerms = $this->BePermissionModule->load('areas') ;
 		sort($newPerms);
 		$ret = $this->BePermissionModule->remove('areas', $this->data['removePerms1']) ;
-		pr("Cancella i permessi") ;
+		pr("Removed permits") ;
 		$this->assertEqual($ret,true);
 
 		$expectedPerms = $newPerms;
@@ -153,10 +153,10 @@ class PermissionModuleTestCase extends BeditaTestCase {
 			}
 		}
 		
-		// Carica i permessi creati
+		// Load created permits
 		$perms = $this->BePermissionModule->load('areas') ;
 		sort($perms);
-		pr("Verifica permessi cancellati") ;
+		pr("Verify removed permits") ;
 		$this->assertEqual($expectedPerms, $perms);
 
 		$this->Transaction->rollback() ;
@@ -165,19 +165,19 @@ class PermissionModuleTestCase extends BeditaTestCase {
 	function testDeleteAllBySingleModule() {	
 		$this->Transaction->begin() ;
 		
-		// Aggiunge i permessi
+		// Add permits
 		$ret = $this->BePermissionModule->add('areas', $this->data['addPerms1']) ;
-		pr("Aggiunta permessi") ;
+		pr("Added permits") ;
 		$this->assertEqual($ret,true);
 
-		// cancella i permessi
+		// Remove permits
 		$ret = $this->BePermissionModule->removeAll('areas') ;
-		pr("Cancella i permessi") ;
+		pr("Removed permits") ;
 		$this->assertEqual($ret,true);
 		
-		// Carica i permessi creati
+		// Load created permits
 		$perms = $this->BePermissionModule->load('areas') ;
-		pr("Verifica permessi cancella") ;
+		pr("Verify removed permits") ;
 		$this->assertEqual(array(), $perms);
 
 		$this->Transaction->rollback() ;
@@ -191,15 +191,15 @@ class PermissionModuleTestCase extends BeditaTestCase {
 		pr("Create user") ;
 		$this->assertTrue($this->BeAuth->createUser($this->data['user.test']));
 		
-		// Aggiunge i permessi
+		// Add permits
 		$ret = $this->BePermissionModule->add('areas', $this->data['add.perms.user']) ;
-		pr("Aggiunta permessi - $ret") ;
+		pr("Added permits - $ret") ;
 		$this->assertEqual($ret,true);
 		
-		// Verifica dei permessi
+		// Verify permits
 		$userid = $this->data['user.test']['User']['userid'];
 		$ret = $this->BePermissionModule->verify('areas', $userid, BEDITA_PERMS_READ) ;
-		pr("Verifica permessi di modifica - $ret");
+		pr("Verify write permits - $ret");
 		$this->assertEqual($ret, true);
 		$ret = $this->BePermissionModule->verify('areas', $userid, BEDITA_PERMS_MODIFY) ;
 		$this->assertEqual($ret, false);
@@ -210,9 +210,9 @@ class PermissionModuleTestCase extends BeditaTestCase {
 
 		// remove perms
 		$ret = $this->BePermissionModule->remove('areas', $this->data['remove.perms.user']) ;
-		pr("Cancella i permessi") ;
+		pr("Removed permits") ;
 		$this->assertEqual($ret, true);
-		// @todo non va...
+		// @todo not working...
 //		$ret = $this->BePermissionModule->verify('areas', '', BEDITA_PERMS_READ) ;
 //		pr("Verifica permessi di lettura utente anonimo (true) - $ret") ;
 //		$this->assertEqual($ret, true);
@@ -223,14 +223,14 @@ class PermissionModuleTestCase extends BeditaTestCase {
 	function testPermissionsByGroup() {	
 		$this->Transaction->begin() ;
 		
-		// Aggiunge i permessi
+		// Add permits
 		$ret = $this->BePermissionModule->add('areas', $this->data['addPerms1']) ;
-		pr("Aggiunta permessi - $ret") ;
+		pr("Added permits - $ret") ;
 		$this->assertEqual($ret,true);
 		
-		// Verifica dei permessi
+		// Verify permits
 		$ret = $this->BePermissionModule->verifyGroup('areas', 'guest', BEDITA_PERMS_READ) ;
-		pr("Verifica permessi di lettura gruppo 'guest' (true) - $ret") ;
+		pr("Verify read permits for group 'guest' (true) - $ret") ;
 		$this->assertEqual((boolean)$ret, true);
 		
 		$this->Transaction->rollback() ;
@@ -246,7 +246,7 @@ class PermissionModuleTestCase extends BeditaTestCase {
 		
 		$this->BePermissionModule->updateGroupPermission($groupId, $moduleFlags);
 		
-		pr("Verifica permessi inseriti \n");
+		pr("Verify inserted permits \n");
 		pr($moduleFlags);
 		foreach ($moduleFlags as $k=>$v) {
 			$this->assertEqual($this->BePermissionModule->verifyGroup($k, $groupName, $v), true);
@@ -258,28 +258,28 @@ class PermissionModuleTestCase extends BeditaTestCase {
 	function testGetListModuleReadableByUserid() {	
 		$this->Transaction->begin() ;
 		
-		// Verifica dei permessi
+		// Verify permits
 		$ret = $this->BePermissionModule->getListModules('bedita') ;
-		pr("Permessi utente bedita");	
+		pr("Permits for user bedita");	
 		pr($ret);	
 		
-		// Aggiunge i permessi
+		// Add permits
 //		$ret = $this->BePermissionModule->add('areas', $this->data['add.perms.guest']) ;
-//		pr("Aggiunta permessi") ;
+//		pr("Added permits") ;
 //		$this->assertEqual($ret, true);
 //		
-//		// Verifica dei permessi
+//		// Verify permits
 //		$ret = $this->BePermissionModule->getListModules('bedita') ;
-//		pr("Permessi utente bedita");	
+//		pr("Permits for user bedita");	
 //		pr($ret);	
 //
 //		$ret = $this->BePermissionModule->remove('areas', $this->data['remove.perms.guest']) ;
-//		pr("Cancella i permessi") ;
+//		pr("Removed permits") ;
 //		$this->assertEqual($ret,true);
 //		
-//		// Verifica dei permessi
+//		// Verify permits
 //		$ret = $this->BePermissionModule->getListModules('bedita') ;
-//		pr("Permessi utente bedita");	
+//		pr("Permits for user bedita");	
 //		pr($ret);	
 		
 		$this->Transaction->rollback() ;

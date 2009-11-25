@@ -22,7 +22,7 @@
 /**
  * Custom properties handling component
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -44,16 +44,16 @@ class BeCustomPropertyComponent extends Object {
 	}
 	
 	/**
-	 * Aggiunge 1 o + permessi a 1 o + moduli.
+	 * Add 1 or more permits to 1 or more modules.
 	 * 
 	 *
-	 * @param mixed $names	Se una stringa, e' il nome di modulo solo
-	 * 						se un array, {0..N} nomi di moduli
+	 * @param mixed $names	If string, name of module
+	 * 						if array, {0..N} names of modules
 	 * @param array $perms	{1..N} items:
 	 * 						name, switch, flag
-	 * 							name	userid o nome gruppo
-	 * 							switch  PermissionComponent::SWITCH_USER o PermissionComponent::SWITCH_GROUP
-	 * 							flag	insieme di bit con le operazioni sopra definite
+	 * 							name	userid or name of group
+	 * 							switch  PermissionComponent::SWITCH_USER or PermissionComponent::SWITCH_GROUP
+	 * 							flag	set of bits, with operations defined above
 	 * @return boolean
 	 */
 	function add($names, &$perms) {

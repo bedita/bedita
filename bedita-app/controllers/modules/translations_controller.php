@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -243,15 +243,15 @@ class TranslationsController extends ModulesController {
 			"view"	=> 						array("ERROR"	=> "/translations"),
 			"delete"	=> 					array(
 												"OK"	=> "/translations",
-												"ERROR" => "/translations"
+												"ERROR" => $this->referer()
 											),
 			"deleteTranslations"	=> 		array(
-												"OK"	=> "/translations",
-												"ERROR" => "/translations"
+												"OK"	=> $this->referer(),
+												"ERROR" => $this->referer()
 											),
 			"changeStatusTranslations"	=> 	array(
-												"OK"	=> "/translations",
-												"ERROR" => "/translations"
+												"OK"	=> $this->referer(),
+												"ERROR" => $this->referer()
 											),
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

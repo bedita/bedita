@@ -20,8 +20,8 @@
  */
 
 /**
- * 
- * @link			http://www.bedita.com
+ * Base annotation
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$

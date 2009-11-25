@@ -96,7 +96,7 @@
 		<tr>
 			<th><label id="lemail" for="email">{t}Email{/t}</label></th>
 			<td>
-				<input type="text" id="email" name="data[User][email]" value="{$userdetail.email|default:' '}"
+				<input type="text" id="email" name="data[User][email]" value="{$userdetail.email|default:''}"
 			class="{literal}{email:true}{/literal}" title="{t}Use a valid email{/t}"/>&nbsp;</td>
 
 		</tr>

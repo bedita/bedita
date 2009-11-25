@@ -22,7 +22,7 @@
 /**
  * Module Multimedia: management of Image, Audio, Video objects
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -39,9 +39,6 @@ class MultimediaController extends ModulesController {
 	var $uses = array('Application','Stream', 'Image', 'Audio', 'Video', 'BEObject', 'Tree', 'User', 'Group','Category','BEFile') ;
 	protected $moduleName = 'multimedia';
 	
-	 /**
-	 * Show multimedia item list
-	 */
 	 function index($id = null, $order = "id", $dir = 0, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
 		$this->setup_args(
@@ -76,11 +73,6 @@ class MultimediaController extends ModulesController {
 		$this->setSessionForObjectDetail($bedita_items['items']);
 	 }
 
-	 /**
-	  * Show object for $id
-	  * If $id is not passed, show new multimedia object page
-	  * @param integer $id
-	  */
 	function view($id = null) {
 		$conf  = Configure::getInstance() ;
 		$this->setup_args(array("id", "integer", &$id)) ;
@@ -190,17 +182,20 @@ class MultimediaController extends ModulesController {
 		$this->data['fixed'] = 0;
 		$this->Stream->id = $this->BeUploadToObj->cloneMediaObject($this->data);
 	}
-	
-	 /**
-	 * Delete multimedia object
-	 */
-	function delete($id = null) {
+
+	function delete() {
 		$this->checkWriteModulePermission();
 		$objectsListDeleted = $this->deleteObjects("Stream");
 		$this->userInfoMessage(__("Multimedia deleted", true) . " -  " . $objectsListDeleted);
 		$this->eventInfo("multimedia $objectsListDeleted deleted");
 	}
 
+	function deleteSelected() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("Stream");
+		$this->userInfoMessage(__("Multimedia deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("multimedia $objectsListDeleted deleted");
+	}
 
 	/**
 	 * Form page to upload multimedia objects
@@ -263,12 +258,20 @@ class MultimediaController extends ModulesController {
 							"ERROR" => "/multimedia/view/".@$this->data['id'] 
 							), 
 			"delete"	=> 	array(
-							"OK"	=> "./",
+							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
 							"ERROR"	=> $this->referer()
 							),
+			"deleteSelected" =>	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+							),
+			"addItemsToAreaSection"	=> 	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+							),
 			"changeStatusObjects"	=> 	array(
-							"OK"	=> "/multimedia",
-							"ERROR"	=> "/multimedia"
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							)
 						);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

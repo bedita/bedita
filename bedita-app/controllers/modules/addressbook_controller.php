@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -41,6 +41,7 @@ class AddressbookController extends ModulesController {
 		$conf  = Configure::getInstance() ;
 		$filter["object_type_id"] = $conf->objectTypes['card']["id"];
 		$filter["Card.country"] = "";
+		$filter["Card.email"] = "";
 		$filter["Card.company_name"] = "";
 		$filter["object_user"] = "";
 		$filter["count_annotation"] = "EditorNote";
@@ -55,20 +56,14 @@ class AddressbookController extends ModulesController {
 		$this->set("categories", $categories);
 	 }
 
-	 /**
-	  * Get address.
-	  * If id is null, empty document
-	  *
-	  * @param integer $id
-	  */
 	function view($id = null) {
+		if($id == null) {
+			Configure::write("defaultStatus", "on"); // set default ON for new objects
+		}
 		$this->viewObject($this->Card, $id);
 		$this->set("groupsByArea", $this->MailGroup->getGroupsByArea(null, $id));
 	}
 
-	/**
-	 * Creates/updates card
-	 */
 	function save() {
 		$this->checkWriteModulePermission();
 		$this->Transaction->begin();
@@ -103,16 +98,20 @@ class AddressbookController extends ModulesController {
 		$this->eventInfo("card [". $this->data["title"]."] saved");
 	}
 
-	/**
-	  * Delete a card.
-	  */
 	function delete() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("Card");
+		$this->userInfoMessage(__("Card deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("card $objectsListDeleted deleted");
+	}
+
+	function deleteSelected() {
 		$this->checkWriteModulePermission();
 		$objectsListDeleted = $this->deleteObjects("Card");
 		$this->userInfoMessage(__("Cards deleted", true) . " -  " . $objectsListDeleted);
 		$this->eventInfo("cards $objectsListDeleted deleted");
 	}
-
+	
 	public function categories() {
 		$this->showCategories($this->Card);
 	}
@@ -160,12 +159,16 @@ class AddressbookController extends ModulesController {
 							"ERROR"	=> "/addressbook/view/".@$this->Card->id 
 							), 
 			"delete" =>	array(
-							"OK"	=> "/addressbook",
+							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
 							"ERROR"	=> "/addressbook/view/".@$this->params['pass'][0]
 							),
+			"deleteSelected" =>	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+							),
 			"changeStatusObjects"	=> 	array(
-							"OK"	=> "/addressbook",
-							"ERROR"	=> "/addressbook" 
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							),			
  			"saveCategories" 	=> array(
  							"OK"	=> "/addressbook/categories",
@@ -176,9 +179,9 @@ class AddressbookController extends ModulesController {
  							"ERROR"	=> "/addressbook/categories"
  									),
 			"addItemsToAreaSection"	=> 	array(
-							"OK"	=> "/addressbook",
-							"ERROR"	=> "/addressbook" 
-							)
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+ 			)
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;

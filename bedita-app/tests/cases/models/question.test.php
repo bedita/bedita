@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -62,7 +62,7 @@ class QuestionTestCase extends BeditaTestCase {
 	
 	
  	function testDelete() {
-        pr("Removinge inserted questions:");
+        pr("Removing inserted questions:");
         foreach ($this->inserted as $ins) {
         	$result = $this->Question->delete($ins);
 			$this->assertEqual($result, true);		

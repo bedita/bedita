@@ -29,15 +29,8 @@ $(document).ready(function(){
 {/if}
 
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
-
-	{if !empty($method) && $method != "index"}
-		{assign var="back" value=$session->read("backFromView")}
-	{else}
-		{assign_concat var="back" 0=$html->url('/') 1=$currentModule.path}
-	{/if}
-
 	<div class="modules">
-		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
+		<label class="{$moduleName}" rel="{$html->url('/translations')}">{t}{$currentModule.label}{/t}</label>
 	</div>
 	
 	

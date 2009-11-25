@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -142,7 +142,7 @@ class BeditaTestCase extends CakeTestCase {
 			}
 		}
 
-		// carica i components
+		// load components
 		if (isset($this->components)) {
 			if($this->components !== null && ($this->components !== array())){
 
@@ -167,14 +167,14 @@ class BeditaTestCase extends CakeTestCase {
 				}
 			}
 		}
-		// Cambia il dataSource di default
+		// Set dataSource
 		if(isset($this->dataSource))
 			$this->setDefaultDataSource($this->dataSource) ;
 		
 	}
 
 	/**
-	 * Cambio il data source di default
+	 * Set datasource
 	 */
 	protected function setDefaultDataSource($name) {
 		$_this =& ConnectionManager::getInstance();
@@ -202,7 +202,7 @@ class BeditaTestCase extends CakeTestCase {
 	}
 
 	/**
-	 * Resetta data source di default
+	 * Reset data source to default
 	 */
 	protected function resetDefaultDataSource() {
 		$_this =& ConnectionManager::getInstance();

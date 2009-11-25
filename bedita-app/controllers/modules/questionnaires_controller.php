@@ -163,12 +163,12 @@ class QuestionnairesController extends ModulesController {
 							"ERROR"	=> "/questionnaires/view/".@$this->Questionnaire->id 
 							),
 			"addItemsToAreaSection"	=> 	array(
-							"OK"	=> '/questionnaires/index',
-							"ERROR"	=> '/questionnaires/index' 
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							),
 			"changeStatusObjects" => 	array(
-							"OK"	=> '/questionnaires',
-							"ERROR"	=> '/questionnaires' 
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							),
 			"changeStatusQuestions"	=> 	array(
 							"OK"	=> '/questionnaires/index_questions',
@@ -179,8 +179,8 @@ class QuestionnairesController extends ModulesController {
 							"ERROR"	=> '/questionnaires/index_questions' 
 							),
 			"deleteQuestionnaire"	=> 	array(
-							"OK"	=> '/questionnaires/index',
-							"ERROR"	=> '/questionnaires/index' 
+							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
+							"ERROR"	=> $this->referer()
 							)
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

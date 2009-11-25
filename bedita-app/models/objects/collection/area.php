@@ -20,8 +20,8 @@
  */
 
 /**
- * 
- * @link			http://www.bedita.com
+ * Publication data
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -84,18 +84,16 @@ class Area extends BeditaCollectionModel
 	
 	
 	/**
-	 * Esegue ricorsivamente solo la clonazione dei figli di tipo: Section e Community,
-	 * gli altri reinscerisce un link
-	 *
+	 * Execute recursively only clonation of types: Section and Community, for the others, insert a link
 	 */
 	protected function insertChildrenClone() {
 		$conf  	= Configure::getInstance() ;
 		$tree 	= new Tree();
 		
-		// Preleva l'elenco dei figli
+		// Get children
 		$children = $tree->getChildren($this->oldID , null, null, false, 1, 10000000) ;
 		
-		// crea le nuove associazioni
+		// create new associations
 		for ($i=0; $i < count($children["items"]) ; $i++) {
 			$item = $children["items"][$i] ;
 			

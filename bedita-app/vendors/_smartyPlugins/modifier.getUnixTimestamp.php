@@ -4,8 +4,8 @@
  * -------------------------------------------------------------
  * Type:     modifier
  * Name:     getUnixTimestamp
- * Purpose:  Torna da una data (aaaa-mm-gg) un unix timestamp (num di seccondi da ...)
- * Authoe: ANDREA
+ * Purpose:  transform a date 'aaaa-mm-gg' into unix timestamp (number of seconds from '01-01-1970')
+ * Author: ANDREA
  * -------------------------------------------------------------
  */
 

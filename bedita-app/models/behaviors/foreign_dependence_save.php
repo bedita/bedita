@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -31,10 +31,8 @@
 
 /**
  * 
- * Serve per gestire le dipendenze
- * imposte dalle foreign key.
- * Con Configure vengono passati i nomi dei models da gestire prima 
- * del model corrente.
+ * Foreign key dependencies on save management
+ * Models names to manage passed through Configure
  *
  */
 
@@ -46,21 +44,20 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 	}
 
 	/**
-	 * Se sono stati definiti dei models da salvare precedentemente 
-	 * al corrent, gli passa i dati e ne richiede il salvataggio.
+	 * If some model/s has to be saved before current, related data is passed and saving is performed
 	 *
 	 * @param object $model
 	 * @return boolean
 	 */
 	function beforeSave(&$model) {
-		$first 		= true ;		// true, quando processa il primo model (se necessario crea il nuovo id)
-		$id			= null ;		// Se presente e' stato creato un nuovo elemento
-		$firstModel	= null ;		// Il nome del Model iniziale
+		$first 		= true ;		// true, first model processing (if necessary, new id is created)
+		$id			= null ;	// If present, a new element has been created
+		$firstModel	= null ;		// First model name
 		
 		foreach ($this->config[$model->name] as $name) {
 
 			$data = array($name => $model->data[$model->name]);
-			// Se il model ha delle associazioni hasAndBelongsToMany, formatta l'array di dati
+			// if model has relationships hasAndBelongsToMany, format data array
 			if(count($model->$name->hasAndBelongsToMany))  {
 				foreach ($model->$name->hasAndBelongsToMany as $k => $assoc) {
 					if(isset($data[$name][$k])) {
@@ -69,19 +66,19 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 				}
 			}
 				
-			// salva il/i parent
+			// save parent/s
 			$run = true ;
 			$model->$name->create();
 			if(!$res = $model->$name->save($data)) {
 				$model->validationErrors = $model->$name->validationErrors ;
-				// Se e' gia' stato creato il primo elemento, torna esegue la cancellazione
+				// If first element has been created already, performe delete and return
 				if(!$first) {
 					$model->$firstModel->delete($id) ;
 				}
 				return false ;
 			}
 			
-			// Se e' il primo model della lista, preleva l'ID eventaule inserito
+			// If it's first model on the list, get ID inserted
 			if($first) {
 				$firstModel = $name ;
 				if(empty($model->data[$model->name]['id'])) {

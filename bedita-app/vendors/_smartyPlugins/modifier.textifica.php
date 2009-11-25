@@ -4,8 +4,8 @@
  * -------------------------------------------------------------
  * Type:     modifier
  * Name:     textifica
- * Purpose:  formatta il testo
- * converte in html, converte gli url, converte nl2br
+ * Purpose:  format text
+ * convert html, convert urls, convert nl2br
  * -------------------------------------------------------------
  */
 //{*$newsDetail[i].testo|strip_tags|nl2br|clickableLinks|wordwrap:20:"\n":true*}

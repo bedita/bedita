@@ -49,8 +49,6 @@ tinyMCE.init({
 	remove_script_host : false,
 	document_base_url : "/"
 
-
-
 });
 
 	</script>
@@ -145,7 +143,7 @@ $(document).ready(function(){
 	</fieldset>
 
 	{if !empty($object_master.abstract) || !empty($object_master.body)}
-	<div class="tab2"><h2>{t}Long Text{/t}</h2></div>
+	<div class="tab2"><h2>{t}Text{/t}</h2></div>
 
 	<fieldset rel="long_desc_langs_container">
 		{if !empty($object_master.abstract)}
@@ -212,7 +210,7 @@ $(document).ready(function(){
 
 {/if}
 
-	<div class="tab2"><h2>{t}advanced properties{/t}</h2></div>
+	<div class="tab2"><h2>{t}Advanced Properties{/t}</h2></div>
 	<fieldset rel="advancedproperties">
 	<table class="bordered">
 		<tr>
@@ -286,7 +284,7 @@ $(document).ready(function(){
 	</fieldset>
 
 	{if !empty($object_master.abstract) || !empty($object_master.body)}
-	<div class="tab2"><h2>{t}Long Text{/t}</h2></div>
+	<div class="tab2"><h2>{t}Text{/t}</h2></div>
 
 	<fieldset rel="long_desc_langs_container">
 		{if !empty($object_master.abstract)}
@@ -328,7 +326,7 @@ $(document).ready(function(){
 	</fieldset>
 {/if}
 
-	<div class="tab2"><h2>{t}advanced properties{/t}</h2></div>
+	<div class="tab2"><h2>{t}Advanced Properties{/t}</h2></div>
 	<fieldset rel="advancedproperties">
 
 	<table class="bordered">

@@ -1,5 +1,5 @@
 <?php
-// da pulire e corregegre fare riferimento a:
+// TODO: clean and correct, see:
 // http://www.sil.org/ISO639-3/iso-639-3_20081110.tab
 	$config['langsIso'] = array(
 		 "abk"=>"Abkhazian",

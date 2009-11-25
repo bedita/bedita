@@ -26,7 +26,7 @@
  * To add a port number use 'port' => #
  *
  */
-if (!defined('SQL_SCRIPT_PATH')) { // cambiare opportunamente questo path
+if (!defined('SQL_SCRIPT_PATH')) { // customize this path, according to your setup
 	define('SQL_SCRIPT_PATH', ROOT . DS . "bedita-db" . DS);
 }
 class DATABASE_CONFIG

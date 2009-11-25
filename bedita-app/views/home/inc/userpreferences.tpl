@@ -33,7 +33,7 @@
 
 <tr>
 	<td><label class="simple">{t}old psw{/t}</label></td>
-	<td><input type="password" name="oldpwd" value="" id="oldpwd" class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}" title="{$tr->t($conf->passwdRegexMsg)}"/></td>
+	<td><input type="password" name="oldpwd" value="" id="oldpwd" class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}"/></td>
 </tr>
 <tr>
 	<td><label class="simple">{t}new psw{/t}</label></td>

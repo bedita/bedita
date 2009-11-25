@@ -7,7 +7,7 @@
  * Name:     colorize_smarty
  * Version:  1.0
  * Author:   xho - Christiano Presuttu
- * Purpose:  Colora i tag di smarty in una stringa tramite un output filter. Usa Smarty e la fuzione esterna colorizeString
+ * Purpose:  Color smarty tags in a string, through output filter. User smarty and colorizeString function
  * Input:    stringa da modificare
  * -------------------------------------------------------------
  */
@@ -19,7 +19,7 @@ function smarty_modifier_colorize_smarty($string, $color="red") {
         return;
     }
 
-	// definiamo le variabili
+	// define variables
 	$ld = "{";
 	$rd = "}";
 	$pattern = "/{$ld}\s*(.*?)\s*{$rd}/s";

@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -259,7 +259,7 @@ class PagesController extends AppController {
 	public function saveNote() {
 		$this->ajaxCheck();
 		if (empty($this->data["object_id"]))
-			throw new BeditaAjaxException(__("Missing referenced object.\nIf you are creating new item you have to save it before adding a note", true), array("output" => "json"));
+			throw new BeditaAjaxException(__("Missing referenced object. Save new item before adding a note", true), array("output" => "json"));
 		
 		$this->Transaction->begin();
 		try {
@@ -277,7 +277,7 @@ class PagesController extends AppController {
 	}
 	
 	/**
-	 * load an editor
+	 * load an editor note
 	 */
 	public function loadNote() {
 		$this->ajaxCheck();

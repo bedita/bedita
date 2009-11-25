@@ -72,7 +72,7 @@ class SplitterSql {
 
 	function lex(&$expression) {
 	
-		// Se e' all'interno di una stringa torna tutti i caratteri fino a fine stringa
+		// If inside a string, return all characters until end of string
 		if($this->_LEX_INSIDE_STRING) {
 			$regexp = "/^([^\\". $this->_LEX_START_STRING ."]*)/xi" ;
 			if(preg_match($regexp, $expression, $matches)) {
@@ -86,20 +86,20 @@ class SplitterSql {
 			return ;
 		}
 		
-		// Se e' un commento elimina
+		// If a comment, delete it
 		if(preg_match("/^\s*--(.*)/xi", $expression, $matches)) {
 			$expression = preg_replace("/^\s*--(.*)/xi", "", $expression) ;
 			return $this->LEX_COMMENT ;
 		}
 		
-		// Se e' un commento a + linee
+		// If a comment on more lines, delete it
 //		if(preg_match("/\*.*?\*\// si", $expression, $matches)) {
 //			$expression = substr($expression, strlen($matches[0])+2) ;
 //			$this->_LEX_INSIDE_COMMENT = true ;
 //			return $this->LEX_COMMENT ;
 //		}
 
-		// Cerca il comando che delimita 
+		// Search for delimiter command
 		if(preg_match("/^\s* delimiter \s+ (.+)/xi", $expression, $matches)) {
 			$expression = substr($expression, strlen(($matches[0]))) ;
 			$this->_LEX_DELIMITER_COMMAND = trim($matches[1]) ;
@@ -107,7 +107,7 @@ class SplitterSql {
 			return $this->LEX_DELIMITER ;
 		}
 		
-		// Inizio stringa
+		// Start of string
 		if(preg_match("/^\s*(\"|\')/xi", $expression, $matches)) {
 			$expression = substr($expression, 1) ;
 			$this->_LEX_START_STRING = $matches[1] ;
@@ -115,12 +115,11 @@ class SplitterSql {
 			return $this->LEX_STRING ;
 		}
 	
-		// Preleva il comando
-		
+		// Get the command
 		$reg = preg_replace("/\//", "\\/", $this->_LEX_DELIMITER_COMMAND);
 		if(preg_match("/.*?(\"|\'|".$reg.")/si", $expression, $matches)) {
 
-			// Preleva il comando
+			// Get the command
 			if($matches[1] == $this->_LEX_DELIMITER_COMMAND) {
 				$this->_LEX_BUFFER = substr($matches[0], 0, strlen($matches[0])-strlen($this->_LEX_DELIMITER_COMMAND)) ;
 				$expression = substr($expression, strlen($matches[0])) ;

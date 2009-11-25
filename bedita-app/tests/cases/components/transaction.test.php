@@ -90,7 +90,7 @@ class TransactionTestCase extends BeditaTestCase {
 		$this->_insert($this->Event, $this->data['minimo']) ;
 		
 		$this->Transaction->rollback() ;
-		pr('Operazione di rollback, il DB torna alla situazione precedente') ;
+		pr('Rollback, previous Database operations cancelled. Data restored') ;
 		
 		$numRecordEnd = $this->_getNumRecordsTable() ; 
 		
@@ -98,7 +98,7 @@ class TransactionTestCase extends BeditaTestCase {
 	} 
 
 	function testRollbackMakeFileFromData() {
-		pr('Crea un oggetto BEFile passando i dati e salvando i dati su file ed esegue il rollback ') ;
+		pr('Create a BEFile object, save on file and rollback ') ;
 		$data 	= $this->data['makeFileFromData'] ;
 		
 		// start transaction
@@ -111,7 +111,7 @@ class TransactionTestCase extends BeditaTestCase {
 		pr("File creato") ;
 		$this->assertEqual(file_exists($path), true);
 		
-		// Inserisce l'oggetto in DB
+		// Insert object into the DB
 		$data['size'] = filesize($path) ;
 		$data['path'] = $path ;
 		$numRecordBegin = $this->_getNumRecordsTable() ; 
@@ -124,34 +124,33 @@ class TransactionTestCase extends BeditaTestCase {
 		pr("Oggetto Creato: {$this->BEFile->id}") ;
 		pr($obj) ;
 		
-		// annulla tutto
+		// rollback
 		$this->Transaction->rollback() ;		
 		
-		// test cambianti
 		$numRecordEnd = $this->_getNumRecordsTable() ; 
-		pr('DB invariato') ;
+		pr('DB not changed') ;
 		$this->assertEqual($numRecordBegin,$numRecordEnd);
 		
-		pr('File assente') ;
+		pr('File not found') ;
 		$this->assertEqual(file_exists($path), false);
 	} 
 
 	function testRollbackMakeFileFromFile() {
-		pr('Crea un oggetto Image passando da un file presente ed esegue il rollback ') ;
+		pr('Create an Image object from file and rollback ') ;
 		$data 	= $this->data['makeFileFromFile'] ;
 		
-		// Inizio transazione
+		// Start transaction
 		$this->Transaction->init('default', Configure::read("tmp")) ;	
 		$this->Transaction->begin() ;
 		
-		// Inserisce il file in File System
+		// Insert file on the File System
 		$srcPath = dirname(__FILE__) ;
 		$path = TMP;
 		$ret  = $this->Transaction->makeFromFile(($path . DS . $data['name']), ($srcPath . DS . $data['nameSource'])) ;
 		pr("File creato") ;
 		$this->assertEqual(file_exists($path . DS . $data['name']), true);
 		
-		// Inserisce l'oggetto in DB
+		// Insert object into the DB
 		$data['size'] = filesize($path . DS . $data['name']) ;
 		$data['path'] = $path . DS . $data['name'] ;
 		$numRecordBegin = $this->_getNumRecordsTable() ; 
@@ -164,15 +163,14 @@ class TransactionTestCase extends BeditaTestCase {
 		pr("Oggetto Creato: {$this->Image->id}") ;
 		pr($obj) ;
 		
-		// annulla tutto
+		// rollback
 		$this->Transaction->rollback() ;		
 		
-		// test cambianti
 		$numRecordEnd = $this->_getNumRecordsTable() ; 
-		pr('DB invariato') ;
+		pr('DB not changed') ;
 		$this->assertEqual($numRecordBegin,$numRecordEnd);
 		
-		pr('File assente') ;
+		pr('File not found') ;
 		$this->assertEqual(file_exists($path . DS . $data['name']), false);
 	} 
 

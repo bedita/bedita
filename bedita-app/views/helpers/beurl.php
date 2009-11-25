@@ -21,14 +21,14 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
  * 
  * $Id$
  */
-class BeurlHelper extends Helper {
+class BeurlHelper extends AppHelper {
 	/**
 	 * Included helpers.
 	 *
@@ -66,7 +66,7 @@ class BeurlHelper extends Helper {
 	}
 	
 	/**
-	 * return array without parmas passed to the method
+	 * return array without params passed to the method
 	 * 
 	 * @param $cleanFromFields
 	 * @return array of params cleaned

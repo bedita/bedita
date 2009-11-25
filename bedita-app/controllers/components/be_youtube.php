@@ -20,8 +20,8 @@
  */
 
 /**
- * 
- * @link			http://www.bedita.com
+ * Youtube media component
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -38,12 +38,13 @@ class BeYoutubeComponent extends Object {
 	}
 	
 	public function getThumbnail($uid) {
-		$thumbnail = sprintf(Configure::read("provider_params.youtube.urlthumb"), $uid);
+		$youtubeParams = Configure::read("media_providers.youtube.params");
+		$thumbnail = sprintf($youtubeParams["urlthumb"], $uid);
 		return $thumbnail;
 	}
 	
 	/**
-	 * set data to save multimediamedia object
+	 * set data to save multimedia object
 	 * @param $id
 	 * @param $data
 	 * @return boolean

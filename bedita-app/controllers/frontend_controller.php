@@ -1665,7 +1665,7 @@ abstract class FrontendController extends AppController {
 	 * save comment relative to an object, set 'info' flash message 
 	 * throw Exception in case of error and set 'error' flash message
 	 * 
-	 * If it's ajax request then if not empty $this->params["form"]["render"] renders it 
+	 * If it's ajax request and if not empty $this->params["form"]["render"] renders it 
 	 * 
 	 * elseif  it's not ajax request then redirect to referer
 	 *  
@@ -1753,6 +1753,14 @@ abstract class FrontendController extends AppController {
 
 	}
 	
+	/**
+	 * show an object in print mode with specific layout and view
+	 * CakePHP layout: print (if dosen't exists in frontend app use backend print layout)
+	 * use print view if not set a specific $printLayout 
+	 * 
+	 * @param $id
+	 * @param $printLayout, the view template to use
+	 */
 	public function printme($id=null, $printLayout=null) {
 		if (!empty($this->params["form"]["id"]))
 			$id = $this->params["form"]["id"];
@@ -1768,6 +1776,13 @@ abstract class FrontendController extends AppController {
 			$this->render("print");		
 	}
 	
+	/**
+	 * save a BEdita object. User has to be logged
+	 * 
+	 * @param $modelName (Document, Event, ....). 
+	 * 		  If undefined get object type from $this->data["object_type_id"]
+	 * @return false on error, object_id saved on success
+	 */
 	protected function save($modelName=null) {
 		if (!$this->logged) {
 			$this->accessDenied(self::UNLOGGED);
@@ -1792,6 +1807,11 @@ abstract class FrontendController extends AppController {
 		}
 	}
 	
+	/**
+	 * delete a BEdita object. User has to be logged
+	 * 
+	 * @return boolean
+	 */
 	protected function delete() {
 		if (!$this->logged) {
 			$this->accessDenied(self::UNLOGGED);

@@ -36,28 +36,11 @@ $config["projectName"] = ""; // override in bedita.cfg
 
 $config["userVersion"] = "BEdita 3.0"; // don't override
 
-$config["majorVersion"] = "3.0.RC"; // don't override -- admin/system
+$config["majorVersion"] = "3.0"; // don't override -- admin/system
 
 $config["helpBaseUrl"] = "http://docs.bedita.com/behelp/v30"; // don't override -- 
 
- /**
- ** ******************************************
- **  FileSystem Paths, URIs, Files defaults
- ** ******************************************
- */
-
-// BEdita URL
-$config['beditaUrl'] = "http://localhost/bedita"; // override in bedita.sys
-
-// Multimedia - files' root folder on filesystem (use DS as Directory Separator, without trailing slash)
-$config['mediaRoot'] = ROOT . DS . "media";
-
-
-// Multimedia - URL prefix (without trailing slash)
-$config['mediaUrl'] = 'http://localhost/media';
-
-
-// Multimedia - image file substituting missing content (as now used in thumb smarty plugin)
+// Multimedia - image file substituting missing content (as now used in BeThumb helper)
 $config['imgMissingFile'] = "/img/iconMissingImage_130x85.gif" ;
 
 /**
@@ -77,9 +60,9 @@ $config['defaultLang'] = "eng"; // default fallback
 /* Dates - default presentation format [syntax used by strftime php function]
  * It is used for datepicker calendar. Format has to contain %d,%m,%Y tags
  */
-$config['datePattern'] 	= "%m-%d-%Y" ;  //
+$config['datePattern'] 	= "%m-%d-%Y" ;
 
-/* Date patterns for different locales (here language codes.... not completely correct)
+/* Date patterns for different locales
  * It is used for datepicker calendar. Format has to contain %d,%m,%Y tags
  */
 $config['datePatternLocale'] = array(
@@ -100,13 +83,8 @@ $config['defaultStatus'] = "draft" ;
 // TinyMCE Rich Text Editor for long_text ['true' to enable]
 $config['mce'] = true;
 
-
 // Application messages - temporary messages duration
 $config['msgPause'] = 3000;		// milliseconds
-
-
-// Upload mode ['flash', 'ajax']
-$config['uploadType'] = "flash";
 
 // bedita user for unit test
 $config['unitTestUserId'] = 1;
@@ -116,11 +94,11 @@ $config['activityTimeout'] = 20;
 
 /**
  ** ******************************************
- **  Image and Video defaults
+ **  Image, Video and Audio defaults
  ** ******************************************
  */
-$config['media']['image']['thumbWidth']  = 130;      // px - was $config['thumbWidth']
-$config['media']['image']['thumbHeight'] = 85;       // px - was $config['thumbHeight']
+$config['media']['image']['thumbWidth']  = 130;      // px thumb width
+$config['media']['image']['thumbHeight'] = 85;       // px thumb height
 $config['media']['image']['thumbMode']   = "crop";   // crop, fill, croponly, stretch - thumb mode
 $config['media']['image']['thumbFill']   = "FFFFFF"; // hex - fill color when thumb mode is fill
 $config['media']['image']['thumbCrop']   = "C";      // string, crop mode when thumb mode is crop/croponly 'C', 'T', 'B', 'L', 'R', 'TL', 'TR', 'BL', 'BR'
@@ -132,37 +110,15 @@ $config['media']['image']['wmi']['f']    = "";       // string, path to watermar
 $config['media']['image']['wmi']['a']    = "C";      // string, wm alignment B=bottom, T=top, L=left, R=right, C=centre, *=tile, 2 letters ie TL, or absolute position in px
 $config['media']['image']['wmi']['o']    = 100;      // int, wm opacity 0 (transparent) to 100 (opaque)
  
-$config['media']['video']['width']       = 300;      // px - was $config['videoWidth']
-$config['media']['video']['height']      = 250;      // px - was $config['videoHeight']
-$config['media']['video']['thumbWidth']  = 130;      // px - was $config['videoThumbWidth']
-$config['media']['video']['thumbHeight'] = 85;       // px - was $config['videoThumbHeight']
-$config['media']['video']['player'] 	 = "flowplayer.swf";
+$config['media']['video']['width']       = 300;      // px video player width
+$config['media']['video']['height']      = 250;      // px video player height
+$config['media']['video']['thumbWidth']  = 130;      // px thumb height
+$config['media']['video']['thumbHeight'] = 85;       // px thumb height
+$config['media']['video']['player'] 	 = "flowplayer.swf"; // flash player file (it has to stay in webroot/swf directory)
 
-$config['media']['audio']['width']       = 300;      // px - was $config['audioWidth']
-$config['media']['audio']['height']      = 24;       // px - was $config['audioHeight']
-$config['media']['audio']['player'] 	 = "flowplayer.swf";
-
-
-
-
-/************************************************************
- * COMPATIBILITY - TO REMOVE - START
-************************************************************/
-
-$config['thumbWidth']       = $config['media']['image']['thumbWidth'] ;
-$config['thumbHeight']      = $config['media']['image']['thumbHeight'] ;
-$config['videoWidth']       = $config['media']['video']['width'];
-$config['videoHeight']      = $config['media']['video']['height'] ;
-$config['videoThumbWidth']  = $config['media']['video']['thumbWidth'] ;
-$config['videoThumbHeight'] = $config['media']['video']['thumbHeight'] ;	
-$config['audioWidth']       = $config['media']['audio']['width'] ;	
-$config['audioHeight']      = $config['media']['audio']['height'] ;	
-
-/************************************************************
- * COMPATIBILITY - TO REMOVE - END
-************************************************************/
-
-
+$config['media']['audio']['width']       = 300;      // px - audio player width
+$config['media']['audio']['height']      = 24;       // px - audio player height
+$config['media']['audio']['player'] 	 = "flowplayer.swf"; // flash player file (it has to stay in webroot/swf directory)
 
 
 /**
@@ -171,18 +127,9 @@ $config['audioHeight']      = $config['media']['audio']['height'] ;
  ** ******************************************
  */
 
-$config['maxLoginAttempts']     = 13;
+$config['maxLoginAttempts']     = 10;
 $config['maxNumDaysInactivity'] = 180;
 $config['maxNumDaysValidity']   = 60;
-
-// Password
-$config['passwdRegex']    = "/^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x20-\x7E]){6,40}$/";
-$config['passwdRegexMsg'] = "Your password must be at least 6 characters long and contain at least one number";
-
-// auth external services supported
-$config['extAuthTypes'] = array(
-	'openid', 'shibboleth',
-);
 
 
 /**
@@ -191,13 +138,10 @@ $config['extAuthTypes'] = array(
  ** ******************************************
  */
 
-
 /**
- ** Import PHP constants for smarty templates
- ** (since you cannot access php constants within Smarty) 
+ ** Import PHP constants for smarty templates 
  */
 $config['DS']        = DS;
-
 
 /**
  * Modules/objects permissions
@@ -238,7 +182,7 @@ $config['modules'] = array(
 	"statistics" => array("id" => 23, "label" => "statistics"),
 	"tags" => array("id" => 24, "label" => "tags"),
 	"comments" => array("id" => 25, "label" => "comments"),
-	"multimedia" => array("id" => 26, "label" => "multimedia"),
+	"multimedia" => array("id" => 26, "label" => "multimedia")
 );
 
 /**
@@ -318,10 +262,13 @@ $config['objectTypes'] = array(
 	"questionnaireresult" => array("id" => 42, "name" => "questionnaireresult", "module" => "questionnaires", "model" => "QuestionnaireResult"),
 	
 	// define array of objects that can be related to other
-	'related'	=> array("id" => array(18,19,20,21,22,29,34,41)),
+	'related'	=> array("id" => array(18,19,20,21,22,29,34,41,37,38)),
 
 	// define array of objects that are leafs of the tree
-	'leafs'		=> array("id" => array(18,19,20,21,22,29,33,34,41))
+	'leafs'		=> array("id" => array(18,19,20,21,22,29,33,34,37,38,41)),
+	
+	// define array of multimedia objects
+	'multimedia' => array("id" => array(10,12,30,31,32))
 );
 
 
@@ -388,13 +335,16 @@ $config["defaultObjRelationType"] = array(
 	)
 );
 
-// Relations - local objects' relation types
+// Relations - local objects' relation types (override in bedita.cfg)
 $config["objRelationType"] = array ();
 
-// One-way relation
+/**
+ * One-way relation
+ * array of relations' label that define one-way relations
+ */ 
 $config["defaultOneWayRelation"] = array();
 
-// Cfg One-way relation (as in local cfg)
+// Cfg One-way relation (override in bedita.cfg)
 $config["cfgOneWayRelation"] = array();
 
 // Default reserved words [avoided in nickname creation]
@@ -403,7 +353,7 @@ $config["defaultReservedWords"] = array("section", "content", "rss", "feed",
 	"json", "captchaImage", "saveComment", "search", "tag", "login", "logout", 
 	"hashjob", "subscribe", "printme");
 
-// Cfg reserved words (as in local cfg)
+// Cfg reserved words (override in bedita.cfg)
 $config["cfgReservedWords"] = array();
 
 // download - redirect extensions to mediaURL [FrontenController::download]
@@ -415,7 +365,7 @@ $config["redirectMimeTypesDownload"] = array ();
  * Session handling parameters
  */
 $config['session'] = array (
-	"sessionUserKey"	=> "BEAuthUser", // Nome con cui salvato in sessione info. utente connesso
+	"sessionUserKey"	=> "BEAuthUser", // session var name of info user connected
 ) ;
 
 
@@ -528,33 +478,35 @@ $config['langsIso'] = array();
 // add langs.iso.php to language options for content 
 $config['langOptionsIso'] = false;
 
-// media types for multimedia association
+// media types for objects in multimedia module
 $config['mediaTypes'] = array('image','video','audio','text','spreadsheet','presentation','drawing','chart','formula','application');
 
 
 /**
- * Variabili utilizza per il riconscimento e gestione URL remoti e file remoti
+ * variables used for accepting remote URL and for identifying a BEdita object type from mime  
  */
 $config['validate_resource'] = array(
-	'paranoid'	=> true,	/**
-							 * Se true, non accetta remote URL se 'allow_url_fopen'
-							 * e' a false.
-							 * 
-							 * False, usa l'URL passato e il MIME type viene passato con i dati. Size non
-							 * puo' essere determinata. Opzione utilizzabile nei casi in cui allow_url_fopen
-							 * non permette l'uso di file remoti.
-							 **/
-							
+	'paranoid'	=> true,	// if true and 'allow_url_fopen'=false doesn't accept remte URL
+
+	// generic URL
 	'URL'	=> '/^\s*[a-z\d\+\-\.]+\:\/\//i',
-	/**
-	 *  Inserire tutte le regole che si vogliono. L'URL non e' accettato se non passa almeno 1 regola data
-	 */
+	
+	 // URL allowed
 	'allow'	=> array( 
 				'/^\s*http:\/\/(.*)\.(html|htm)$/',
 				'/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/'
 			   ),
 	/**
-	 * Accepted MIME types for different obj types
+	 * Accepted MIME types for different object types
+	 * The structure is:
+	 * 		ModelName => array(mime type regular expressions) 
+	 * or
+	 * 		ModelName => array(
+	 * 			"specific type" => array(
+	 * 				"mime_type" => array(mime type regular expressions),
+	 * 				other parameters...
+	 * 			)
+	 * 		)
 	 */
 	'mime'	=> array(
 				'Image'			=> array('/image\/\.*/'),
@@ -573,46 +525,48 @@ $config['validate_resource'] = array(
 
 
 /**
- *  Videos from external media provider
+ *  Supported media providers
+ *  
+ *  for any providers supported are defined an array of regexp to identify provider and media id 
+ *  and an array of params
  */
 $config['media_providers'] = array(
 	"youtube"	=> array(
+		"regexp" => array(
 			'/^http:\/\/\w{3}\.youtube\.com\/watch\?v=(.[^&]+)/',
 			'/^http:\/\/youtube\.com\/watch\?v=(.[^&]+)/',
 			'/^http:\/\/[a-z]{2}\.youtube\.com\/watch\?v=(.[^&]+)/'
-
-	) ,
+		),
+		"params" => array(
+			"width" 	=> 300,
+			"height" 	=> 250,
+			"urlthumb"	=> "http://i.ytimg.com/vi/%s/default.jpg",
+			"urlembed"	=> "http://www.youtube.com/oembed?url=%s"
+		)
+	),
 	"blip"	=> array(
+		"regexp" => array(
 			'/^http:\/\/\w{3}\.blip\.tv\/file\/(\d+)\?{0,1}.*/',
 			'/^http:\/\/blip\.tv\/file\/(\d+)\?{0,1}.*/'
+		),
+		"params" => array(
+			"width"		=> 300,
+			"height"	=> 250,
+			"urlinfo" 	=> "http://www.blip.tv/file/%s?skin=json",
+			"urlembed"	=> "http://blip.tv/oembed/?url=%s"
+		)
 	),
-	"vimeo" => array(
+	"vimeo"	=> array(
+		"regexp" => array(
 			'/^http:\/\/\w{3}\.vimeo\.com\/(\d+)/',
 			'/^http:\/\/vimeo\.com\/(\d+)/'
-	)
-) ;
-
-/**
- *  media provider config
- */
-$config['provider_params']  = array(
-	"youtube"	=> array(
-		"width" 	=> 300,
-		"height" 	=> 250,
-		"urlthumb"	=> "http://i.ytimg.com/vi/%s/default.jpg",
-		"embedTag" 	=> "<embed src='http://www.youtube.com/v/%s%s' type='application/x-shockwave-flash' wmode='transparent' width='%d' height='%d'></embed>"
-	),
-	"blip" => array(
-		"width"		=> 300,
-		"height"	=> 250,
-		"urlinfo" 	=> "http://www.blip.tv/file/%s?skin=json",
-		"urlembed"	=> "http://www.blip.tv/players/embed/?posts_id=%s&players_id=-1&skin=json&callback=DoSomethingActions.playerSelector.gotEmbedCode"
-	),
-	"vimeo" => array(
-		"width"		=> 300,
-		"height"	=> 250,
-		"urlinfo" 	=> "http://vimeo.com/api/clip/%s.%s",
-		"urlembed"	=> "http://vimeo.com/api/oembed.json?url=%s"
+		),
+		"params" => array(
+			"width"		=> 300,
+			"height"	=> 250,
+			"urlinfo" 	=> "http://vimeo.com/api/v2/video/%s.%s",
+			"urlembed"	=> "http://vimeo.com/api/oembed.json?url=%s"
+		)
 	)
 ) ;
 
@@ -631,7 +585,7 @@ $config['mailOptions'] = array(
 
 
 /**
- *  Default model bindings for Containable Behaviour 
+ *  default values for fulltext search. Override in bedita.cfg  
  */
 $config['searchFields'] = array() ;
 
@@ -639,6 +593,11 @@ $config['searchFields'] = array() ;
  * Default css filename for newsletter templates
  */
 $config['newsletterCss'] = "base.css";
+
+/**
+ * default timeout in minutes to assume mail jobs blocked and try to resend
+ */
+$config['newsletterTimeout'] = 15;
 
 /**
  * Default value in milliseconds, between autosave of objects (status draft or off)

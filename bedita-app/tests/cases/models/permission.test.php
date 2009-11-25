@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -309,11 +309,11 @@ class PermissionTestCase extends BeditaTestCase {
 	
 	
 	private function _insert($model, $data) {
-		// Crea
+		// Create
 		$result = $model->save($data) ;
 		$this->assertEqual($result,true);		
 		
-		// Visualizza
+		// View
 		$obj = $model->findById($model->id) ;
 		pr("Created object: {$model->id}") ;
 		

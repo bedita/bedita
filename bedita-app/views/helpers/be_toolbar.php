@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -52,59 +52,59 @@ class BeToolbarHelper extends AppHelper {
 	}
 	
 	/**
-	 * Costruisce il link per la pagina sucessiva
+	 * Return the link (html anchor tag) for the next page
 	 *
-	 * @param string $title				Label link
-	 * @param array $option				Attributi HTML per il link
-	 * @param string $disabledTitle		Label link disabilitato
-	 * @param array  $disabledOption	Attributi HTML per il link disabilitato
-	 * 									(se presente inserisce un tag SPAN)
+	 * @param string $title			Label link
+	 * @param array $option			HTML attributes for link
+	 * @param string $disabledTitle		Label link disabled
+	 * @param array  $disabledOption	HTML attributes for link disabled
+	 * 									(if present, insert a tag SPAN)
 	 */
 	function next($title = ' > ', $options = array(), $disabledTitle = ' > ', $disabledOption = array()) {
 		return $this->_scroll('next', $title, $options, $disabledTitle, $disabledOption) ;
 	}
 
 	/**
-	 * Costruisce il link per la pagina precedente
+	 * Return the link (html anchor tag) for the previous page
 	 *
-	 * @param string $title				Label link
-	 * @param array $option				Attributi HTML per il link
-	 * @param string $disabledTitle		Label link disabilitato
-	 * @param array  $disabledOption	Attributi HTML per il link disabilitato
-	 * 									(se presente inserisce un tag SPAN)
+	 * @param string $title			Label link
+	 * @param array $option			HTML attributes for link
+	 * @param string $disabledTitle		Label link disabled
+	 * @param array  $disabledOption	HTML attributes for link disabled
+	 * 									(if present, insert a tag SPAN)
 	 */
 	function prev($title = ' < ', $options = array(), $disabledTitle = ' < ', $disabledOption = array()) {
 		return $this->_scroll('prev', $title, $options, $disabledTitle, $disabledOption) ;
 	}
 
 	/**
-	 * Costruisce il link per la prima pagina
+	 * Return the link (html anchor tag) for the first page
 	 *
-	 * @param string $title				Label link
-	 * @param array $option				Attributi HTML per il link
-	 * @param string $disabledTitle		Label link disabilitato
-	 * @param array  $disabledOption	Attributi HTML per il link disabilitato
-	 * 									(se presente inserisce un tag SPAN)
+	 * @param string $title			Label link
+	 * @param array $option			HTML attributes for link
+	 * @param string $disabledTitle		Label link disabled
+	 * @param array  $disabledOption	HTML attributes for link disabled
+	 * 									(if present, insert a tag SPAN)
 	 */
 	function first($title = ' |< ', $options = array(), $disabledTitle = ' |< ', $disabledOption = array()) {
 		return $this->_scroll('first', $title, $options, $disabledTitle, $disabledOption) ;
 	}
 
 	/**
-	 * Costruisce il link per l'ultima pagina
+	 * Return the link (html anchor tag) for the last page
 	 *
-	 * @param string $title				Label link
-	 * @param array $option				Attributi HTML per il link
-	 * @param string $disabledTitle		Label link disabilitato
-	 * @param array  $disabledOption	Attributi HTML per il link disabilitato
-	 * 									(se presente inserisce un tag SPAN)
+	 * @param string $title			Label link
+	 * @param array $option			HTML attributes for link
+	 * @param string $disabledTitle		Label link disabled
+	 * @param array  $disabledOption	HTML attributes for link disabled
+	 * 									(if present, insert a tag SPAN)
 	 */
 	function last($title = ' >| ', $options = array(), $disabledTitle = ' >| ', $disabledOption = array()) {
 		return $this->_scroll('last', $title, $options, $disabledTitle, $disabledOption) ;
 	}
 
 	/**
-	 * Torna il numero di record trovati
+	 * Return number of records found
 	 *
 	 */
 	function size() {
@@ -112,7 +112,7 @@ class BeToolbarHelper extends AppHelper {
 	}
 
 	/**
-	 * Torna la pagina corrente
+	 * Return current page
 	 *
 	 */
 	function current() {
@@ -120,7 +120,7 @@ class BeToolbarHelper extends AppHelper {
 	}
 
 	/**
-	 * Torna il numero totale di pagine
+	 * Return total number of pages
 	 *
 	 */
 	function pages() {
@@ -128,15 +128,15 @@ class BeToolbarHelper extends AppHelper {
 	}
 
 	/**
-	 * Visualizza il tag select per la selezione delle dimensioni della lista
+	 * View page size html select tag
 	 *
-	 * @param array $htmlAttributes		Array associativo con gli attributi HTML
+	 * @param array $htmlAttributes		associative Array with HTML attributes
 	 * @param arry $options				Array. Default: 1, 5, 10,20, 50, 100
 	 */
 	function changeDim($htmlAttributes = array(), $options = array(1, 5, 10, 20, 50, 100)) {
 		if(!isset($this->params['toolbar']['dim'])) return "" ;
 
-		// Definisce lo script per il cambio di pagina
+		// Define script for page change
 		$data = $this->getPassedArgs();
 		unset($data["page"]);
 		unset($data["dim"]);
@@ -153,7 +153,7 @@ class BeToolbarHelper extends AppHelper {
 	function changeDimSelect($selectId, $htmlAttributes = array(), $options = array(1, 5, 10, 20, 50, 100)) {
 		if(!isset($this->params['toolbar']['dim'])) return "" ;
 
-		// Definisce lo script per il cambio di pagina
+		// Define script for page change
 		$data = $this->getPassedArgs();
 		unset($data["page"]);
 		unset($data["dim"]);
@@ -169,22 +169,22 @@ class BeToolbarHelper extends AppHelper {
 	}
 
 	/**
-	 * Cambia la pagina selezionata
+	 * Change selected page
 	 *
-	 * @param array $htmlAttributes		Array associativo con gli attributi HTML
-	 * @param arry $items				numero di pagine selezionabili prima e dopo la corrente. Default: 5
+	 * @param array $htmlAttributes		associative Array with HTML attributes
+	 * @param arry $items				number of available pages, before and after current. Default: 5
 	 */
 	function changePage($htmlAttributes = array(),	$items = 5) {
 		if(!isset($this->params['toolbar']['page'])) return "" ;
 
-		// Definisce lo script per il cambio di pagina
+		// Define script for page change
 		$data = $this->getPassedArgs();
 		unset($data["page"]);
 		$url = Router::url($data) ;
 		
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/page:'+ this[this.selectedIndex].value" ;
 
-		// Definisce il numero di pagine selezionabili
+		// Define the number of pages available
 		$pages = array() ;
 		for($i = $this->params['toolbar']['page']; $i >= 1 ; $i--) {
 			$pages[] =  $i ;
@@ -195,7 +195,7 @@ class BeToolbarHelper extends AppHelper {
 		}
 		sort($pages) ;
 
-		// Visualizza il select
+		// View select
 		$tmp = array() ;
 		foreach ($pages as $k) $tmp[$k] = $k ;
 		$pages = $tmp ;
@@ -206,14 +206,14 @@ class BeToolbarHelper extends AppHelper {
 	function changePageSelect($selectId, $htmlAttributes = array(),	$items = 5) {
 		if(!isset($this->params['toolbar']['page'])) return "" ;
 
-		// Definisce lo script per il cambio di pagina
+		// Define script for page change
 		$data = $this->getPassedArgs();
 		unset($data["page"]);
 		$url = Router::url($data) ;
 		if($this->params["action"] == "index" && !preg_match("/\/index\//i", $url )) $url .= "/".$this->params["action"] ;		
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/page:'+ this[this.selectedIndex].value" ;
 
-		// Definisce il numero di pagine selezionabili
+		// Define the number of pages available
 		$pages = array() ;
 		for($i = $this->params['toolbar']['page']; $i >= 1 ; $i--) {
 			$pages[] =  $i ;
@@ -224,7 +224,7 @@ class BeToolbarHelper extends AppHelper {
 		}
 		sort($pages) ;
 
-		// Visualizza il select
+		// View select
 		$tmp = array() ;
 		foreach ($pages as $k) $tmp[$k] = $k ;
 		$pages = $tmp ;
@@ -233,13 +233,13 @@ class BeToolbarHelper extends AppHelper {
 	}
 
 	/**
-	 * Cambia l'ordina della lista
+	 * Change list order
 	 *
-	 * @param string $field				Nome del campo su cui si fa l'ordinamento
-	 * @param string $title				Titolo al link. Default: nome del campo
-	 * @param array $htmlAttributes		Array associativo con gli attributi HTML
-	 * @param boolean $dir				Se presente impone la direzione. 1: ascendente, 0: discendente
-	 * 									altrimenti mette la direzione opposta della corrente.
+	 * @param string $field				Field for the "order by"
+	 * @param string $title				Title for the link. Default: field name
+	 * @param array $htmlAttributes			associative Array with HTML attributes
+	 * @param boolean $dir				Se presente impone la direzione. 1: ascending, 0: descending
+	 * 									otherwise, !(<current value>)
 	 */
 	function order($field, $title="", $image="", $htmlAttributes = array(), $dir=null) {
 		
@@ -271,24 +271,24 @@ class BeToolbarHelper extends AppHelper {
 	}
 
 	/**
-	 * Costruisce il link per la pagina indicata
+	 * Return the link (html anchor tag) for the page $where
 	 *
-	 * @param string $where				pagina richiesta (next, prev, first, last)
-	 * @param string $title				Label link
-	 * @param array $option				Attributi HTML per il link
-	 * @param string $disabledTitle		Label link disabilitato
-	 * @param array  $disabledOption	Attributi HTML per il link disabilitato
-	 * 									(se presente inserisce un tag SPAN)
+	 * @param string $where			page target (next, prev, first, last)
+	 * @param string $title			Label link
+	 * @param array $option			HTML attributes for link
+	 * @param string $disabledTitle		Label link disabled
+	 * @param array  $disabledOption	HTML attributes for link disabled
+	 * 									(if present, insert a tag SPAN)
 	 */
 	private function _scroll($where, $title, $options, $disabledTitle, $disabledOption) {
 		$page = (isset($this->params['toolbar'][$where]))?$this->params['toolbar'][$where]:false ;
 
-		// Non c'e' la pagina successiva o la toolbar, link disabilitato
+		// Next page not found or toolbar not found, link disabled
 		if(!$page) {
 			return $this->_output($disabledTitle, $disabledOption) ;
 		}
 
-		// Crea l'url
+		// Create url
 		$data = $this->getPassedArgs();
 		$data['page'] = $page ;
 

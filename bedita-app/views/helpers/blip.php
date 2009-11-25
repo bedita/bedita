@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -31,13 +31,11 @@
 class BlipHelper extends AppHelper {
 	
 	var $helpers = array("Html");
+	private $blipComponent;
 	
 	function thumbnail(&$obj, $htmlAttributes, $URLonly) {
-		if(!class_exists("BeBlipComponent")){
-			App::import('Component', "BeBlip");
-		}
-		$Component = new BeBlipComponent();
-		$Component->getInfoVideo($obj['uid']);
+		$this->initBlipComponent();
+		$this->blipComponent->getInfoVideo($obj['uid']);
 		
 		$src = sprintf($Component->info['thumbnailUrl'], $obj['uid']);
 		return (!$URLonly)? $this->Html->image($src, $htmlAttributes) : $src;
@@ -51,13 +49,28 @@ class BlipHelper extends AppHelper {
 	 * @return html embed video
 	 */
 	function embed(&$obj, $attributes) {
-		if(!class_exists("BeBlipComponent")){
-			App::import('Component', "BeBlip");
+		$this->conf 	= Configure::getInstance() ;
+		if(!isset($this->conf->media_providers["blip"]["params"])) 
+			return "" ;
+		
+		if (empty($attributes["width"])) { 
+			$attributes["width"] = $this->conf->media_providers["blip"]["params"]["width"];
 		}
-		$Component = new BeBlipComponent();
-		$Component->getEmbedVideo($obj['uid'], $attributes) ;
-	
-		return $Component->embed ;
+		if (empty($attributes["height"])) { 
+			$attributes["height"] = $this->conf->media_providers["blip"]["params"]["height"];
+		}
+
+		$url = rawurlencode($obj["path"]);
+		$url .= "&format=json";
+		$url = sprintf($this->conf->media_providers["blip"]["params"]["urlembed"], $url);
+		if (!$oEmbed = $this->oEmbedInfo($url)) {
+			return false;
+		}
+		
+		$oEmbed["html"] = preg_replace('/width="\d*"/', 'width="'. $attributes["width"] . '"', $oEmbed["html"]);
+		$oEmbed["html"] = preg_replace('/height="\d*"/', 'height="'. $attributes["height"] . '"', $oEmbed["html"]);
+		
+		return $oEmbed["html"] ;
 	}
 	
 	/**
@@ -66,12 +79,8 @@ class BlipHelper extends AppHelper {
 	 * @return unknown
 	 */
 	function sourceEmbed(&$obj) {
-		if(!class_exists("BeBlipComponent")){
-			App::import('Component', "BeBlip");
-		}
-		$Component = new BeBlipComponent();
-		
-		$info = $Component->getInfoVideo($obj['uid']);
+		$this->initBlipComponent();
+		$info = $this->blipComponent->getInfoVideo($obj['uid']);
 	
 		if(preg_match("/^http:\/\/blip.tv\/file\/get\/.*\.flv/",$info["mediaUrl"],$matched)) {
 			return $matched[0] ;
@@ -80,6 +89,17 @@ class BlipHelper extends AppHelper {
 		return "" ;
 	}
 	
+	/**
+	 * create new instance of BlipComponent if not instanced yet
+	 */
+	private function initBlipComponent() {
+		if (empty($this->blipComponent) || !($this->blipComponent instanceof BlipComponent)) {
+			if(!class_exists("BeBlipComponent")){
+				App::import('Component', "BeBlip");
+			}
+			$this->blipComponent = new BeBlipComponent();	
+		}
+	}
 }
  
 ?>

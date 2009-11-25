@@ -5,9 +5,9 @@
  * Type:     modifier
  * Name:     clickableLinks
  * Purpose:  change an email address or URL into a clickable HTML link
- * Da fare: deve funzionare anche con l'a capo e coi caratteri speciali nell'url(la virgola o il # ad ex.)
- * Da fare passare i parametri target (_blank oppure _self(default))
- * Da fare: passare un parametro "truncate" che tronca ad un dato valore gli url troppo lungi
+ * TODO: Fix with newline and other special characters in the url (comma or # etc.)
+ * TODO: pass the target parameters (_blank or _self(default))
+ * TODO: pass a parameter "truncate" that truncates at a certain value the urls that are too long
  * -------------------------------------------------------------
  */
 function smarty_modifier_clickableLinks($text)

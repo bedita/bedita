@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -67,7 +67,7 @@ class CompactResultBehavior extends ModelBehavior {
 		if (isset($model->bviorCompactResults) && $model->bviorCompactResults === true)
   		    $this->_compactStart($model, $results);
 
-  		// toglie i campi richiesti
+  		// remove fields specified
 		$this->_removeFields($model, $results) ;
   		
 		return $results ;	
@@ -75,7 +75,7 @@ class CompactResultBehavior extends ModelBehavior {
 
   
   	/**
-  	 * Toglie dal risultato in campi richiesti
+  	 * Remove from result fields specified
   	 *
   	 * @param unknown_type $model
   	 * @param unknown_type $results
@@ -83,14 +83,14 @@ class CompactResultBehavior extends ModelBehavior {
 	private function _removeFields(&$model, &$results) {
 		if(empty($model->bviorHideFields) || empty($results)) return ;
 		
-		// toglie le proprieta'
+		// remove field
 		for($i=0; $i < count($model->bviorHideFields) ; $i++) {
 			if(array_key_exists($model->bviorHideFields[$i], $results)) {
 				unset($results[$model->bviorHideFields[$i]]) ;
 			}
 		} 
 		
-		// verifica tra i figli
+		// verify among children
 		foreach ($results as $k => $v) {
 			if(!is_array($results[$k])) continue ;
 			

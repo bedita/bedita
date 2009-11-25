@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2009-09-23 13:09:41\n"
+"POT-Creation-Date: 2009-11-11 10:47:29\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -8,9 +8,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=utf-8\n"
 
-
-msgid " in job"
-msgstr ""
 
 msgid "(Un)Select All"
 msgstr ""
@@ -96,9 +93,6 @@ msgstr ""
 msgid "Auto-remove forbidden"
 msgstr ""
 
-msgid "B.Edita"
-msgstr ""
-
 msgid "BEdita contents statistics"
 msgstr ""
 
@@ -141,6 +135,9 @@ msgstr ""
 msgid "Bulk actions on"
 msgstr ""
 
+msgid "Call to a protected or private method in a wrong context"
+msgstr ""
+
 msgid "Cancel queue"
 msgstr ""
 
@@ -148,6 +145,9 @@ msgid "Captcha image and text don't match"
 msgstr ""
 
 msgid "Card"
+msgstr ""
+
+msgid "Card deleted"
 msgstr ""
 
 msgid "Card saved"
@@ -199,9 +199,6 @@ msgid "Comments deleted"
 msgstr ""
 
 msgid "Communication error"
-msgstr ""
-
-msgid "Company / institution"
 msgstr ""
 
 msgid "Compile"
@@ -543,6 +540,9 @@ msgstr ""
 msgid "Forgotten username or password?"
 msgstr ""
 
+msgid "Full news at"
+msgstr ""
+
 msgid "Galleries deleted"
 msgstr ""
 
@@ -663,9 +663,6 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-msgid "Long Text"
-msgstr ""
-
 msgid "MIME type not found"
 msgstr ""
 
@@ -723,13 +720,13 @@ msgstr ""
 msgid "Missing parent"
 msgstr ""
 
-msgid "Missing publishing"
+msgid "Missing publication"
 msgstr ""
 
 msgid "Missing recipient"
 msgstr ""
 
-msgid "Missing referenced object.nIf you are creating new item you have to save it before adding a note"
+msgid "Missing referenced object. Save new item before adding a note"
 msgstr ""
 
 msgid "Missing sending date"
@@ -822,10 +819,16 @@ msgstr ""
 msgid "News saved"
 msgstr ""
 
+msgid "Newsletter sent. To schedule another invoice, please clone this object."
+msgstr ""
+
 msgid "Newsletter subscriptions"
 msgstr ""
 
 msgid "Newsletters"
+msgstr ""
+
+msgid "Newsletters "
 msgstr ""
 
 msgid "Newsletters sent this month"
@@ -969,6 +972,9 @@ msgstr ""
 msgid "Operations on above records"
 msgstr ""
 
+msgid "Organization"
+msgstr ""
+
 msgid "Orientation"
 msgstr ""
 
@@ -1038,7 +1044,7 @@ msgstr ""
 msgid "Publisher is required (at least %1 alphanumerical char)"
 msgstr ""
 
-msgid "Publishing tree"
+msgid "Publication tree"
 msgstr ""
 
 msgid "Question detail"
@@ -1087,9 +1093,6 @@ msgid "Real name"
 msgstr ""
 
 msgid "Real name is required (at least %1 alphanumerical chars)"
-msgstr ""
-
-msgid "Recent newsletters "
 msgstr ""
 
 msgid "Referenced in"
@@ -1197,7 +1200,7 @@ msgstr ""
 msgid "System events"
 msgstr ""
 
-msgid "System info "
+msgid "System info"
 msgstr ""
 
 msgid "System users"
@@ -1255,6 +1258,9 @@ msgid "Title"
 msgstr ""
 
 msgid "Title is required"
+msgstr ""
+
+msgid "To unsubscribe"
 msgstr ""
 
 msgid "Total Subscribers"
@@ -1458,9 +1464,6 @@ msgstr ""
 msgid "admin"
 msgstr ""
 
-msgid "advanced properties"
-msgstr ""
-
 msgid "all"
 msgstr ""
 
@@ -1590,9 +1593,6 @@ msgstr ""
 msgid "comments"
 msgstr ""
 
-msgid "company"
-msgstr ""
-
 msgid "connect new items"
 msgstr ""
 
@@ -1606,6 +1606,9 @@ msgid "contact the project admin"
 msgstr ""
 
 msgid "contents"
+msgstr ""
+
+msgid "continue"
 msgstr ""
 
 msgid "copy"
@@ -1791,6 +1794,9 @@ msgstr ""
 msgid "in recipient groups"
 msgstr ""
 
+msgid "included in questionnaires"
+msgstr ""
+
 msgid "insert more questions"
 msgstr ""
 
@@ -1941,7 +1947,7 @@ msgstr ""
 msgid "new psw"
 msgstr ""
 
-msgid "new publishing"
+msgid "new publication"
 msgstr ""
 
 msgid "new section"
@@ -2067,6 +2073,9 @@ msgstr ""
 msgid "order by"
 msgstr ""
 
+msgid "organization"
+msgstr ""
+
 msgid "other"
 msgstr ""
 
@@ -2074,6 +2083,9 @@ msgid "page"
 msgstr ""
 
 msgid "permission"
+msgstr ""
+
+msgid "permissions set"
 msgstr ""
 
 msgid "phone"
@@ -2130,7 +2142,7 @@ msgstr ""
 msgid "publisher"
 msgstr ""
 
-msgid "publishing"
+msgid "publication"
 msgstr ""
 
 msgid "pulldown single choice"
@@ -2155,6 +2167,9 @@ msgid "remove from users"
 msgstr ""
 
 msgid "remove item"
+msgstr ""
+
+msgid "reply to"
 msgstr ""
 
 msgid "required"

@@ -32,7 +32,7 @@
 <h1>
 	{if (empty($object))}
 	
-		{t}Create new publishing{/t}
+		{t}Create new publication{/t}
 	
 	{else}
 	

@@ -20,14 +20,13 @@
  */
 
 /**
- * Componente per la gestione dei permessi sugl' oggetti
+ * Object permits management
  * 
- * I permessi sono espressi in un integer che raprresenta una combinazione 
- * di bit definiti nel file di configurazione (bedita.ini.php):
+ * Permits are defined by a bit representation (bedita.ini.php):
  * BEDITA_PERMS_READ	0x1
  * BEDITA_PERMS_MODIFY	0x2
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -58,7 +57,7 @@ class BePermissionModuleComponent extends Object {
 	
 	
 	/**
-	 * Torna l'elenco dei moduli a cui l'utente puo' accedere
+	 * Get list of modules available for user
 	 *
 	 * @param string $userid	utente che vuole accedere
 	 * @param boolean $all		se false solo  i moduli a cui ha accesso (BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY)
@@ -113,16 +112,16 @@ class BePermissionModuleComponent extends Object {
 	}
 	
 	/**
-	 * Aggiunge 1 o + permessi a 1 o + moduli.
+	 * Add 1 or more permits to 1 or more modules.
 	 * 
 	 *
-	 * @param mixed $names	Se una stringa, e' il nome di modulo solo
-	 * 						se un array, {0..N} nomi di moduli
+	 * @param mixed $names	If string, name of module
+	 * 						if array, {0..N} names of modules
 	 * @param array $perms	{1..N} items:
 	 * 						name, switch, flag
-	 * 							name	userid o nome gruppo
-	 * 							switch  PermissionComponent::SWITCH_USER o PermissionComponent::SWITCH_GROUP
-	 * 							flag	insieme di bit con le operazioni sopra definite
+	 * 							name	userid or name of group
+	 * 							switch  PermissionComponent::SWITCH_USER or PermissionComponent::SWITCH_GROUP
+	 * 							flag	set of bits with the operations defined above
 	 * @return boolean
 	 */
 	function add($names, &$perms) {
@@ -144,15 +143,15 @@ class BePermissionModuleComponent extends Object {
 	}
 	
 	/**
-	 * Rimuove 1 o + permessi a 1 o + moduli.
+	 * Remove 1 or more permits to 1 or more modules.
 	 * 
 	 *
-	 * @param mixed $names	Se una stringa, e' il nome di modulo solo
-	 * 						se un array, {0..N} nomi di moduli
+	 * @param mixed $names	If string, name of module
+	 * 						if array, {0..N} names of modules
 	 * @param array $perms	{1..N} items:
 	 * 						name, switch, flag
-	 * 							name	userid o nome gruppo
-	 * 							switch  PermissionComponent::SWITCH_USER o PermissionComponent::SWITCH_GROUP
+	 * 							name	userid or name of group
+	 * 							switch  PermissionComponent::SWITCH_USER or PermissionComponent::SWITCH_GROUP
 	 * @return boolean
 	 */
 	function remove($names, $perms) {
@@ -174,11 +173,11 @@ class BePermissionModuleComponent extends Object {
 	}
 	
 	/**
-	 * Come remove ma rimuove tutti i permessi per i moduli
+	 * Like remove(), but force removing all permits for modules
 	 *
-	 * @param mixed $names	Se una stringa, e' il nome di modulo solo
-	 * 						se un array, {0..N} nomi di moduli
-	 * @param array				{1..N} Permessi
+	 * @param mixed $names	If string, name of permit
+	 * 						if array, {0..N} names of permits
+	 * @param array				{1..N} permits
 	 * @return boolean
 	 */
 	function removeAll($names) {
@@ -193,10 +192,10 @@ class BePermissionModuleComponent extends Object {
 	}
 	
 	/**
-	 * Carica i permessi per un dato modulo
+	 * Load permits for a module $name
 	 *
-	 * @param string $name	Modulo
-	 * @return array $perms	Permessi individuati o FALSE
+	 * @param string $name	Module
+	 * @return array $perms	Permits found or FALSE
 	 */
 	function load($name) {
 		$condition = "Module.name = '{$name}'" ;
@@ -209,12 +208,11 @@ class BePermissionModuleComponent extends Object {
 	}
 	
 	/**
-	 * Torna true se l'operazione richiesta � permesse su un dato
-	 * modulo per un dato utente interno al sistema.
+	 * Verify that operation $op is allowed for user $userid on module $name
 	 *
-	 * @param string $name	Modulo da verificare.
-	 * @param string $userid	Userid utente da verificare
-	 * @param integer $op		Operazione richiesta
+	 * @param string $name	Module
+	 * @param string $userid	Userid
+	 * @param integer $op		Operation
 	 * @return boolean
 	 */
 	function verify($name, $userid, $op) {
@@ -222,12 +220,11 @@ class BePermissionModuleComponent extends Object {
 	}
 	
 	/**
-	 * Torna true se l'operazione richiesta � permesse su un dato
-	 * oggetto per un dato gruppo di utenti.
+	 * Verify that operation $op is allowed for group $groupid on module $name
 	 *
-	 * @param string $name		Modulo da verificare.
-	 * @param string $groupid	NOme gruppo da verificare
-	 * @param integer $op		Operazione richiesta
+	 * @param string $name		Module
+	 * @param string $groupid	Group
+	 * @param integer $op		Operation
 	 * @return boolean
 	 */
 	function verifyGroup($name, $groupid, $op) {
@@ -235,11 +232,11 @@ class BePermissionModuleComponent extends Object {
 	}
 
 	/**
-	 * Trasforma un array in un array associativo x Cake
+	 * Load array of permits $perms, from data in $arr
 	 *
 	 * @param array $arr	{0..N} item:
 	 * 						0:ugid, 1:switch, 2:flag 
-	 * @param array $perms	dove torna l'array associativo:
+	 * @param array $perms	result array:
 	 * 						ugid => ; switch => ; flag => 
 	 */
 	private function array2perms(&$arr, &$perms) {

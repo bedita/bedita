@@ -13,7 +13,7 @@ rules[1]='loginPasswd:Password|minlength|6';
 
 <div id="loginStatusBox">
 	<div class="beditaButton" onClick = "document.location ='{$html->url('/')}'">
-		<span style="font:bold 17px Verdana">{t}B.Edita{/t}</span><br/><b>&gt;</b>
+		<span style="font:bold 17px Verdana">BEdita</span><br/><b>&gt;</b>
 		<a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a><br/><br/><p>
 	</div>
 	<div class="menuLeft">

@@ -22,7 +22,7 @@
 /**
  * Administration: users, groups, eventlogs....
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -41,9 +41,6 @@ class AdminController extends ModulesController {
 	 ); 
 	 protected $moduleName = 'admin';
 	 
-	/**
-	 * show users
-	 */
 	 function index() { 	
 		$this->set('users', $this->paginate('User'));
 	}
@@ -190,9 +187,6 @@ class AdminController extends ModulesController {
 		return $this->paginate('Group');
 	}
 	 
-	/**
-	 * show groups
-	 */
 	 function groups() { 	
 		$this->set('groups', $this->loadGroups());
 		$this->set('group',  NULL);
@@ -258,9 +252,6 @@ class AdminController extends ModulesController {
 		$this->userInfoMessage(__("Group deleted",true));
 	  }
 
-	 /**
-	 * show system Info
-	 */
 	 public function systemInfo() { 	
 	 	$this->beditaVersion();
 		$this->set('sys', $this->BeSystem->systemInfo());
@@ -290,9 +281,6 @@ class AdminController extends ModulesController {
 		$this->set('sys', $this->BeSystem->systemInfo());
 	 }
 
- 	/**
-	 * show customproperties
-	 */
 	public function customproperties() { 	
 		$properties = ClassRegistry::init("Property")->find("all", array(
 							"contain" => "PropertyOption"

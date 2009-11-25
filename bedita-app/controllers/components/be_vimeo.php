@@ -22,7 +22,7 @@
 /**
  * Blip TV media component
  *  
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -47,10 +47,10 @@ class BeVimeoComponent extends Object {
 		$conf = Configure::getInstance() ;
 		$this->info = null ;
 		
-		if(!isset($conf->provider_params["vimeo"])) 
+		if(!isset($conf->media_providers["vimeo"]["params"])) 
 			return false ;
 		
-		$urlinfo = $conf->provider_params["vimeo"]['urlinfo'];
+		$urlinfo = $conf->media_providers["vimeo"]["params"]['urlinfo'];
  
 		if (!$info = file_get_contents(sprintf($urlinfo, $id, "php"))) {
 			return false;
@@ -70,11 +70,11 @@ class BeVimeoComponent extends Object {
 		if(!$this->getInfoVideo($id)) {
 			return false;
 		}
-		return $this->info['thumbnail_large'];
+		return $this->info['thumbnail_medium'];
 	}
 	
 	/**
-	 * set data to save multimediamedia object
+	 * set data to save multimedia object
 	 * @param $id
 	 * @param $data
 	 * @return boolean
@@ -85,10 +85,12 @@ class BeVimeoComponent extends Object {
 		}
 		
 		$data['title'] = (empty($data['title']))? $this->info['title'] : trim($data['title']);
-		$data['description'] = (empty($data['description']))? $this->info['caption'] : $data['description'];
+		$data['description'] = (empty($data['description']))? $this->info['description'] : $data['description'];
 		$data['path']		= $this->info['url'] ;
 		if (empty($data['thumbnail']))
-			$data['thumbnail']	= $this->info['thumbnail_large'];
+			$data['thumbnail']	= $this->info['thumbnail_medium'];
+		if (empty($data['duration']))
+			$data['duration']	= $this->info['duration']/60;
 		$data['name']		= preg_replace("/[\'\"]/", "", $data['title']);
 		$data['mime_type']	= "video/".$data["provider"];
 		return true;

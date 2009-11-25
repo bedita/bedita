@@ -4,7 +4,7 @@
  * -------------------------------------------------------------
  * Type:     modifier
  * Name:     filesize
- * Purpose:  torna la dimensione da bytes ad altro + leggibile
+ * Purpose:  return size in Kilobyte, Megabyte, Gigabyte or Terabyte
  * -------------------------------------------------------------
  */
 

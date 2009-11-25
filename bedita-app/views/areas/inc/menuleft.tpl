@@ -14,7 +14,7 @@ Menu a SX valido per tutte le pagine del controller.
 	<ul class="menuleft insidecol">
 		<li id="newArea" {if $method eq 'viewArea'}class="on"{/if}>
 			<a href="{$html->url('/')}{$currentModule.path}/viewArea">
-				{t}new publishing{/t}
+				{t}new publication{/t}
 			</a>
 		</li>
 		<li id="newSection" {if $method eq 'viewSection'}class="on"{/if}>

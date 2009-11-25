@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -54,40 +54,39 @@ class PermissionModule extends BEAppModel
 			),
 	);
 	/**
-	 * Aggiunge e/o modifica un permesso per un modulo.
+	 * Add/modify permits for a module
 	 *
-	 * @param string $module	nome del modulo
-	 * @param string $name		userid o nome gruppo
-	 * @param string $switch	user(/group
-	 * @param integer $flag		bit dei permessi da settare
+	 * @param string $module	module name
+	 * @param string $name		userid or group name
+	 * @param string $switch	user/group
+	 * @param integer $flag		permits bits
 	 */
 	function replace($module, $name, $switch, $flag) {
 		return $this->query("CALL replacePermissionModule('{$module}', '{$name}', '{$switch}', {$flag})") ;
 	}	
 	
 	/**
-	 * Cancella  un permesso per un modulo.
+	 * Delete a permit for a module
 	 *
-	 * @param string $module	nome del modulo
-	 * @param string $name		userid o nome gruppo
-	 * @param string $switch	user(/group
+	 * @param string $module	module name
+	 * @param string $name		userid or group name
+	 * @param string $switch	user/group
 	 */
 	function remove($module, $name, $switch) {
 		return $this->query("CALL deletePermissionModule('{$module}', '{$name}', '{$switch}')") ;
 	}	
 
 	/**
-	 * Cancella tutti i permessi di un modulo.
+	 * Delete all permits of a module
 	 *
-	 * @param string $module	nome del modulo
+	 * @param string $module	module name
 	 */
 	function removeAll($module) {
 		return $this->query("DELETE FROM permission_modules WHERE module_id = (SELECT id FROM modules WHERE name = '{$module}')") ;
 	}	
 
 	/**
-	 * Torna un intero superiore a 0 se l'utente ha i permessi richiesti
-	 * su un dato oggetto.
+	 * Return an integer greater than 0, if user $userid has permits on module $module
 	 *
 	 * @param string $userid
 	 * @param string $module
@@ -101,8 +100,7 @@ class PermissionModule extends BEAppModel
 	}
 
 	/**
-	 * Torna un intero superiore a 0 se il gruppo ha i permessi richiesti
-	 * su un dato oggetto.
+	 * Return an integer greater than 0 if group $groupid has permits on module $module
 	 *
 	 * @param string $groupid
 	 * @param string $module

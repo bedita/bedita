@@ -8,7 +8,7 @@
  * Version:  1.0
  * Author:   xho - Christiano Presuttu
  * Purpose:  Replace occurences of string starting with http:// (ftp, https), www, name@domain.ext with relative html anchor
- * Input:    stringa da modificare, target (default to _blank)
+ * Input:    string to modify, target (default to _blank)
  * -------------------------------------------------------------
  */
 //error_reporting(E_ALL);

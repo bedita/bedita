@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -64,6 +64,13 @@ class GalleriesController extends ModulesController {
 		$this->eventInfo("galleries $objectsListDeleted deleted");
 	}
 
+	public function deleteSelected() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("Gallery");
+		$this->userInfoMessage(__("Galleries deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("galleries $objectsListDeleted deleted");
+	}
+
 	protected function forward($action, $esito) {
 		$REDIRECT = array("cloneObject"	=> 	array(
 							"OK"	=> "/galleries/view/".@$this->Gallery->id,
@@ -74,17 +81,21 @@ class GalleriesController extends ModulesController {
 							"ERROR"	=> "./view/{$this->Gallery->id}"
 							),
 						"delete"	=> 	array(
-							"OK"	=> "./",
-							"ERROR"	=> "./view/{@$this->params['pass'][0]}"
+							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
+							"ERROR"	=> $this->referer()
+							),
+						"deleteSelected" =>	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							),
 						"addItemsToAreaSection"	=> 	array(
-							"OK"	=> "/galleries",
-							"ERROR"	=> "/galleries" 
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
 							),
 						"changeStatusObjects"	=> 	array(
-							"OK"	=> "/galleries",
-							"ERROR"	=> "/galleries" 
-						)	
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+							)
 						);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito];
 		return false;

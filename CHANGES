@@ -1,3 +1,86 @@
+Version 3.0 - betula
+
+ User-visible changes:
+ 	* #196 - print layout, standard BEdita report. Introduced print option for BEdita objects 
+ 	* #81 - upload files directly in download relation tab
+ 	* fix multimedia items drag&drop and sort in IE7
+ 	* complete UI english/italian localization
+ 	* fix upload from URL
+ 	* fix video thumbnails in newsletter messages
+ 	* automatic remove of time in flowplayer when player width is too small
+ 	* #221 - fixed number of subscribed in newsletter main page
+ 	* #98 - improved newsletter module interface
+ 	* addressbook: company name for a person
+ 	* categories in Documents module
+ 	* vimeo video: get thumbnail_medium instead of large
+ 	* newsletter email (html) send in correct format (with -alt-- and boundary code between plain text and html type)
+	* added link (continue) at the end of contents inserted in a newsletter message (if use template associated to a publication)
+	* added "reply to" field in template form
+	* default card status ON
+	* many fix in addressbook module
+	* fix ajax bug in operations on list subscribers
+	* newsletter: added [$abstract] and [$subscriber] placeholders. Truncate options on [$description] and [$abstract]
+	* bugfix - click on box "translations" back to translations module
+	* #228 ui:preserve list filter on bulk operations and single delete
+	* remove notes from mail group details
+	* fix upload file in Windows
+	
+ 
+ Frontend changes:
+ 	* beEmbedFlash helper include swfobject automaticaly from BEdita backend using BEDITA_CORE_PATH
+ 	* #222 - staging toolbar for every frontend
+ 	* restyled site.example.com (html and css) 
+ 	* comments: skip capthca and use users data for users logged in frontend
+ 	* custom properties array reformatted with label as key
+ 	* #132 many fix on sitemap (xml and html)
+ 	* #211 canonicalPath for helpers, and pages/templates
+ 	* fix urls -> use .canonicalPath
+ 	
+ 
+ Developer-visibile changes:
+ 	* php 5.3 support
+	* update cakephp to 1.2.5
+	* update to swfobject 2.2
+	* update to uploadify 2.1.0
+	* update to flowplayer to 3.1.4
+	* update webroot/index.php and core.php.sample in backend and frontends
+	* #196 - print layout, create a structure to build own frontend print layouts
+	* beEmbedFlash helper now support flowplayer playlists
+	* beEmbedFlash embed Flowplayer useing flowplayer.min.js instead of swfobject for IE7 problems
+	* introduced Alias model for create nickname aliases
+	* shell: dbadmin orphans, search and remove orphan objects (not in tree)
+	* fix unit tests
+	* #219 - fix delete of subsections when remove a section/publication
+	* Tree unit test
+	* #194 - delete wrong store procedure to clean tree. Cleaning tree on deleting object done through php code
+	* #220 - fixed error on bulk actions
+	* fixed clone card (added specific javascript)
+	* change enum options in mail_status field
+	* i18n update
+	* #224 - vcard import, shell script -- merge
+	* add AppHelper base class in backend and include it in frontends
+	* refactor for apidoc
+	* fix 'fixed' handling
+	* update comments on bedita.ini, bedita.sys, bedita.cfg
+	* refactoring of media_providers config array in bedita.ini
+	* deploy script and release.cfg fix
+	* workaround to avoid phpThum bug when use imagemagick and upscale=false
+	* added duration in blip and vimeo videos
+	* some changes on helpers video to use oEmbed format
+	* #206 - partial nickname alias handling -- load frontend and object save
+	* beEmbedFlash helper: option for embed flash object directly with html code (no javascript used)
+	* patched cakePHP EmailComponent on line 493 to create boundary when email sent in text and html (both mode) 
+	* shell newsletter: method to add cards to mail_group
+	* bugfix - delete multimedia item with no file associated
+	* added $fullBaseUrl attribute of AppController class. Used in forward methods
+	* newsletter-send: managed BeditaException in sendQueuedJobs and create jobs only for "ON" card
+	* shell script: dbadmin bulk import from csv
+	* shell newsletter: mail group lists merge
+	* mail jobs handled by process pid to allow sending newsletter messages with jobs unexpectedly terminated
+	* db schema: added UNSIGNED and INDEX at process_info on mail_jobs
+	
+
+
 Version 3.0.RC
 
  User-visible changes:

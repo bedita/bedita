@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -61,7 +61,14 @@ class EventsController extends ModulesController {
 		$this->userInfoMessage(__("Events deleted", true) . " -  " . $objectsListDeleted);
 		$this->eventInfo("Events $objectsListDeleted deleted");
 	}
-	
+
+	public function deleteSelected() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("Event");
+		$this->userInfoMessage(__("Events deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("Events $objectsListDeleted deleted");
+	}
+
 	public function categories() {
 		$this->showCategories($this->Event);
 	}
@@ -107,8 +114,8 @@ class EventsController extends ModulesController {
 	 										"ERROR"	=> "/events" 
 	 									), 
 	 			"delete" 			=>	array(
-	 										"OK"	=> "/events",
-	 										"ERROR"	=> "/events/view/{@$this->params['pass'][0]}" 
+	 										"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
+	 										"ERROR"	=> $this->referer()
 	 									), 
 	 			"saveCategories" 	=> array(
 	 										"OK"	=> "/events/categories",
@@ -118,13 +125,17 @@ class EventsController extends ModulesController {
 	 										"OK"	=> "/events/categories",
 	 										"ERROR"	=> "/events/categories"
 	 									),
-	 			"addItemsToAreaSection"	=> 	array(
-										"OK"	=> "/events",
-										"ERROR"	=> "/events" 
+				"deleteSelected" =>	array(
+											"OK"	=> $this->referer(),
+											"ERROR"	=> $this->referer() 
+										),
+				"addItemsToAreaSection"	=> 	array(
+											"OK"	=> $this->referer(),
+											"ERROR"	=> $this->referer() 
 										),
 				"changeStatusObjects"	=> 	array(
-										"OK"	=> "/events",
-										"ERROR"	=> "/events" 
+											"OK"	=> $this->referer(),
+											"ERROR"	=> $this->referer() 
 										)
 	 		) ;
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

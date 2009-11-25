@@ -54,7 +54,7 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 
 <div class="head">
 
-	<h1>{t}Publishing tree{/t}</h1>
+	<h1>{t}Publication tree{/t}</h1>
 
 </div> 
 

@@ -42,6 +42,8 @@
 		categories:  | {foreach from=$section.currentContent.Category item="cat"}{$cat.label} | {/foreach}<br/>
 		{/if}
 		
+		<h3>{$section.currentContent.description}</h3>
+		<hr/>
 		<h3 style="margin-top: 20px;">{$section.currentContent.description}</h3>
 
 		<p class="testo">{$section.currentContent.body|default:""}</p>

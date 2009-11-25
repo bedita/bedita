@@ -1,7 +1,7 @@
 <?php
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -11,9 +11,9 @@
 class GalleryTestData extends BeditaTestData {
 	var $data =  array(
 		"insert" => array(
-			'title' 		=> 'Gallery di prova',
-			 'abstract'		=> 'un qualche abstract',
-			 'body'		=> 'un qualche body pure...'
+			'title' 		=> 'Test Gallery',
+			 'abstract'		=> 'Some abstract',
+			 'body'		=> 'Some data about this gallery'
 		)
 	) ;
 }

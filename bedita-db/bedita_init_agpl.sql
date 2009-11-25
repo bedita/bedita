@@ -50,6 +50,7 @@ INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUE
 ('12','webmarks', 'webmarks', 'webmarks', 'on', '12'),
 ('16','addressbook', 'addressbook', 'addressbook', 'on', '10'),
 ('18','newsletter', 'newsletter', 'newsletter', 'on', '11'),
+('23','statistics', 'statistics', 'statistics', 'on', '16'),
 ('24','tags', 'tags', 'tags', 'on', '6'),
 ('25','comments', 'comments', 'comments', 'on', '7'),
 ('26','multimedia', 'multimedia', 'multimedia', 'on', '4');
@@ -59,9 +60,9 @@ INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUE
 -- --------------------------------------
 
 INSERT INTO `objects` (`id`, `object_type_id`, `status`, `title`, `nickname`, `user_created`, `user_modified`) 
-VALUES (1, 1, 'on', 'Publishing', 'publishing', 1, 1);
+VALUES (1, 1, 'on', 'Publication', 'publication', 1, 1);
 INSERT INTO `areas` (`id`, `public_name`) 
-VALUES (1, 'bedita publishing');
+VALUES (1, 'bedita publication');
 INSERT INTO `sections` (`id`, `syndicate`, `priority_order`)
 VALUES (1, 'off', 'asc');
 INSERT INTO `trees` (`id`, `parent_id`, `path`, `parent_path`, `priority`) VALUES
@@ -103,6 +104,9 @@ INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'addressbook'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE name = 'statistics'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'newsletter'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
@@ -141,6 +145,9 @@ INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'addressbook'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE name = 'statistics'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'newsletter'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
@@ -176,6 +183,9 @@ VALUES ((SELECT id FROM modules WHERE name = 'translations'), (SELECT id FROM gr
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'addressbook'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
+
+INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
+VALUES ((SELECT id FROM modules WHERE name = 'statistics'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'newsletter'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );

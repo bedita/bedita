@@ -22,7 +22,7 @@
 /**
  * Authentication controller
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -79,15 +79,12 @@ class AuthenticationsController extends AppController {
 			$this->result=self::ERROR;
 		}
    }
-   
-	/**
-	 * logout
-	 */
+
 	function logout() {
 		$this->eventInfo("logged out");
 		$this->BeAuth->logout() ;
 	}
-	
+
 	 protected function forward($action, $esito) {
 	 	$REDIRECT = array(
 	 			"logout"	=> 	array(

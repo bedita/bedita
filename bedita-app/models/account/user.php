@@ -21,7 +21,7 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -35,8 +35,12 @@ class User extends BEAppModel
 		'userid' => array(
 			'rule' => 'notEmpty'
 		),
-		'pasword' => array(
+		'passwd' => array(
 			'rule' => 'notEmpty'
+		),
+		'email' => array(
+			'rule' => 'email',
+			'allowEmpty' => true
 		)
 	);
 

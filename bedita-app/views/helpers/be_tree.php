@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -21,14 +21,14 @@
 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
  * 
  * $Id$
  */
-class BeTreeHelper extends Helper {
+class BeTreeHelper extends AppHelper {
 	/**
 	 * Included helpers.
 	 *
@@ -112,16 +112,16 @@ class BeTreeHelper extends Helper {
 		if (!empty($sections)) {
 			foreach($sections as $section) {
 				$output .= '<li class="Section">';
-				$url = $public_url . '/' . $section['nickname'];
+				$url = $public_url . $section['canonicalPath'];
 				$output .= '<a href="' . $url . '">';
 				$output .= $section['title'];
 				$output .= '</a>';
-				if(!empty($section['objects']['childContents'])) {
+				if(!empty($section['objects'])) {
 					$output .= '<ul class="contents">';
-					$children = $section['objects']['childContents'];
+					$children = $section['objects'];
 					foreach($children as $child) {
 						$output .= '<li class="' . Configure::read('objectTypes.' . $child['object_type_id'] . ".model") . '">';
-						$url = $public_url . '/' . $section['nickname'] . '/' . $child['nickname'];
+						$url = $public_url . $child['canonicalPath'];
 						$output .= '<a href="' . $url . '">';
 						$output .= $child['title'];
 						$output .= '</a>';

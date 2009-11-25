@@ -30,7 +30,7 @@ $(document).ready(function(){
 		<tr>
 			<th>{t}name{/t}</th>
 			<th>{t}status{/t}</th>
-			<th>{t}publishing{/t}</th>
+			<th>{t}publication{/t}</th>
 			<th>Id</th>
 			<th>&nbsp;</th>
 		</tr>
@@ -94,7 +94,7 @@ $(document).ready(function(){
 			<tr>
 			<th>{t}name{/t}</th>
 			<th>{t}status{/t}</th>
-			<th>{t}publishing{/t}</th>
+			<th>{t}publication{/t}</th>
 			<th>&nbsp;</th>
 			</tr>
 			<tr>

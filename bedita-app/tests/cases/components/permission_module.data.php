@@ -1,7 +1,7 @@
 <?php 
 /**
  * 
- * @link			http://www.bedita.com
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -13,7 +13,7 @@ define("MODIFY_READ",	BEDITA_PERMS_MODIFY|BEDITA_PERMS_READ) ;
 
 class PermissionModuleTestData extends BeditaTestData {
 	var $data =  array(
-		'minimo'	=> array('title' 			=> 'Titolo di test'),
+		'minimo'	=> array('title' 			=> 'Test title'),
 		'removePerms1' => array(
 				array('bedita', 		'user')
 		),

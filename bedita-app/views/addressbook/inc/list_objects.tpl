@@ -2,7 +2,7 @@
 
 <script type="text/javascript">
 <!--
-var urlDelete = "{$html->url('delete/')}" ;
+var urlDelete = "{$html->url('deleteSelected/')}" ;
 var message = "{t}Are you sure that you want to delete the item?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
 var URLBase = "{$html->url('index/')}" ;
@@ -55,7 +55,7 @@ $(document).ready(function(){
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('title','name')}&nbsp;&nbsp;&nbsp;&nbsp;{$beToolbar->order('surname','surname')}</th>
-			<th>{$beToolbar->order('company_name','company')}</th>
+			<th>{$beToolbar->order('company_name','organization')}</th>
 			<th>{$beToolbar->order('status','Status')}</th>
 			<th>{$beToolbar->order('modified','modified')}</th>
 			<th>{t}is user{/t}</th>

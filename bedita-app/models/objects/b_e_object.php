@@ -20,8 +20,8 @@
  */
 
 /**
- * 
- * @link			http://www.bedita.com
+ * Basical object
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -561,6 +561,8 @@ class BEObject extends BEAppModel
 			$nickname = $nickname_base . "-0";
 		};
 
+
+		$aliasModel = ClassRegistry::init("Alias");		
 		while (!$nickOk) {
 			
 			$cond = "WHERE BEObject.nickname = '{$nickname}'";
@@ -571,8 +573,13 @@ class BEObject extends BEAppModel
 			
 			// check nickname in db and in reservedWords
 			if ($numNickDb == 0 && !in_array($nickname, $reservedWords)) {
-				$nickOk = true;
-			} else {
+				// check aliases
+				$object_id = $aliasModel->field("object_id", array("nickname_alias" => $nickname));
+				if(empty($object_id)) {
+					$nickOk = true;
+				}
+			}
+			if(!$nickOk) {
 				$nickname = $nickname_base . "-" . $countNick++;
 			}
 		}
@@ -652,7 +659,12 @@ class BEObject extends BEAppModel
 	}
 		
 	function getIdFromNickname($nickname) {
-		return $this->field("id", array("nickname" => $nickname));
+		$id = $this->field("id", array("nickname" => $nickname));
+		if(empty($id)) { // if nickname not found lookup aliases
+			$aliasModel = ClassRegistry::init("Alias");
+			$id = $aliasModel->field("object_id", array("nickname_alias" => $nickname));
+		}
+		return $id; 
 	}
 
 	function getNicknameFromId($id) {
