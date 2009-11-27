@@ -6,7 +6,7 @@
 	<a href="{$html->url($sec.canonicalPath)}" >{$sec.title}</a>&nbsp;&gt;&nbsp;
 	{/foreach}
 	{/if}
-	<a href="{$html->url($sec.canonicalPath)}" class="subon" >{$section.title}</a>
+	<a href="{$html->url($section.canonicalPath)}" class="subon" >{$section.title}</a>
 </div>
 {/if}
 

@@ -63,9 +63,11 @@ class BeFrontHelper extends AppHelper {
 	}
 
 	public function metaDescription() {
-		$content = (!empty($this->_currentContent['description'])) ? $this->_currentContent['description'] : $this->_publication['description'];
-		$html = '<meta name="description" content="' . strip_tags($content) . '" />';
-		return $html;
+		$content = $this->get_value_for_field("description");
+		if(empty($content)) {
+			return "";
+		}
+		return '<meta name="description" content="' . strip_tags($content) . '" />';
 	}
 
 	public function metaDc() {
@@ -73,31 +75,42 @@ class BeFrontHelper extends AppHelper {
 		$title = (!empty($object['public_name'])) ? $object['public_name'] : $object['title'];
 		$html = '<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />';
 		$html.= "\n" . '<meta name="DC.title" 			content="' . $title . '" />';
-		if(!empty($object['description'])) 
-			$html.= "\n" . '<meta name="DC.description" 	content="' . $object['description'] . '" />';
-		if(!empty($object['lang'])) 
-			$html.= "\n" . '<meta name="DC.language" 		content="' . $object['lang'] . '" />';
-		if(!empty($object['creator'])) 
-			$html.= "\n" . '<meta name="DC.creator" 		content="' . $object['creator'] . '" />';
-		if(!empty($object['publisher'])) 
-			$html.= "\n" . '<meta name="DC.publisher" 		content="' . $object['publisher'] . '" />';
-		if(!empty($object['date'])) 
-			$html.= "\n" . '<meta name="DC.date" 			content="' . $object['date'] . '" />';
-		if(!empty($object['modified'])) 
-			$html.= "\n" . '<meta name="DC.modified" 		content="' . $object['modified'] . '" />';
+		$content = $this->get_value_for_field("description");
+		if(!empty($content)) 
+			$html.= "\n" . '<meta name="DC.description" 	content="' . strip_tags($content) . '" />';
+		$content = $this->get_value_for_field("lang");
+		if(!empty($content)) 
+			$html.= "\n" . '<meta name="DC.language" 		content="' . strip_tags($content) . '" />';
+		$content = $this->get_value_for_field("creator");
+		if(!empty($content)) 
+			$html.= "\n" . '<meta name="DC.creator" 		content="' . strip_tags($content) . '" />';
+		$content = $this->get_value_for_field("publisher");
+		if(!empty($content)) 
+			$html.= "\n" . '<meta name="DC.publisher" 		content="' . strip_tags($content) . '" />';
+		$content = $this->get_value_for_field("date");
+		if(!empty($content)) 
+			$html.= "\n" . '<meta name="DC.date" 			content="' . strip_tags($content) . '" />';
+		$content = $this->get_value_for_field("modified");
+		if(!empty($content)) 
+			$html.= "\n" . '<meta name="DC.modified" 		content="' . strip_tags($content) . '" />';
 		$html.= "\n" . '<meta name="DC.format" 			content="text/html" />';
-		if(!empty($object['id'])) 
-			$html.= "\n" . '<meta name="DC.identifier" 		content="' . $object['id'] . '" />';
-		if(!empty($object['rights'])) 
-			$html.= "\n" . '<meta name="DC.rights" 			content="' . $object['rights'] . '" />';
-		if(!empty($object['license'])) 
-			$html.= "\n" . '<meta name="DC.license" 		content="' . $object['license'] . '" />';
+		$content = $this->get_value_for_field("id");
+		if(!empty($content)) 
+			$html.= "\n" . '<meta name="DC.identifier" 		content="' . strip_tags($content) . '" />';
+		$content = $this->get_value_for_field("rights");
+		if(!empty($content)) 
+			$html.= "\n" . '<meta name="DC.rights" 			content="' . strip_tags($content) . '" />';
+		$content = $this->get_value_for_field("license");
+		if(!empty($content)) 
+			$html.= "\n" . '<meta name="DC.license" 		content="' . strip_tags($content) . '" />';
 		return $html;
 	}
 
 	public function metaAll() {
 		$html = $this->metaDescription();
-		$html.= "\n" . '<meta name="author" content="' . $this->_publication['creator'] . '" />';
+		$content = $this->get_value_for_field("license");
+		if(!empty($content))
+			$html.= "\n" . '<meta name="author" content="' . $this->_publication['creator'] . '" />';
 		$html.= "\n" . '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
 		$html.= "\n" . '<meta http-equiv="Content-Style-Type" content="text/css" />';
 		return $html;
@@ -180,6 +193,21 @@ class BeFrontHelper extends AppHelper {
 			}
 		}
 		return $time;
+	}
+
+	private function get_value_for_field($field) {
+		$current = $this->_currentContent;
+		$section = $this->_section;
+		$publish = $this->_publication;
+		if(!empty($current[$field])) {
+			$content = $current[$field];
+		} else if(!empty($section[$field])) {
+			$content = $section[$field];
+		} else  if(!empty($publish[$field])) {
+			$content = $publish[$field];
+		} else {
+			return "";
+		}
 	}
 }
  
