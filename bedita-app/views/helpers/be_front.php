@@ -208,6 +208,7 @@ class BeFrontHelper extends AppHelper {
 		} else {
 			return "";
 		}
+		return $content;
 	}
 }
  
