@@ -1,6 +1,6 @@
 <?php
-	if(file_exists(VIEWS . 'sections/' . $section['nickname'] . '.ctp')) {
-		include(VIEWS . 'sections/' . $section['nickname'] . '.ctp');
+	if(file_exists(VIEWS . 'pages/' . $section['nickname'] . '.ctp')) {
+		include(VIEWS . 'pages/' . $section['nickname'] . '.ctp');
 	} else {
 		include(VIEWS . 'pages/generic_section.ctp');
 	}
