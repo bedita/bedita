@@ -275,7 +275,7 @@ class NewsletterController extends ModulesController {
 				$sub = trim($sub);
 				// if it's not already present save card and join group
 				if ( !($card_id = $this->Card->field("id", array("newsletter_email" => $sub))) ) {
-					$dataCard = array("title" => $sub, "name" => $sub, "newsletter_email" => $sub);
+					$dataCard = array("title" => $sub, "name" => $sub, "newsletter_email" => $sub, "status" => "on");
 					$dataCard["joinGroup"][0]["mail_group_id"] = $mail_group_id;
 					$dataCard["joinGroup"][0]["status"] = "confirmed";
 					$this->Card->create();
