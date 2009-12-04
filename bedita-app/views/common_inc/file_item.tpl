@@ -27,7 +27,7 @@
 			
 		{else}
 		
-			<img  alt="{$item.mediatype|default:'notype'}" title="{$item.mediatype|default:'notype'} | {$item.title}" src="/img/iconset/88px/{$item.mediatype|default:'notype'}.png" />
+			<img  alt="{$item.mediatype|default:'notype'}" title="{$item.mediatype|default:'notype'} | {$item.title}" src="{$html->webroot}img/iconset/88px/{$item.mediatype|default:'notype'}.png" />
 			
 		{/if}
 

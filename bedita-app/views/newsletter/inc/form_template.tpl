@@ -142,7 +142,7 @@ $(document).ready(function() {
 				<h1>[$newsletterTitle]</h1>
 				<hr />
 				<!--bedita content block-->
-				<img src="/img/{$imagenotizia|default:'px.gif'}" 
+				<img src="{$html->webroot}img/{$imagenotizia|default:'px.gif'}" 
 				style="float:left; background-color: silver; width:96px; height:96px; margin:0px 20px 20px 0px;" />
 				<h2>[$title]</h2>
 				<h3>[$description]</h3>

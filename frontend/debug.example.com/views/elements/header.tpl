@@ -10,7 +10,7 @@
 	<h1><a href="{$html->url('/')}" title="{$publication.title}">{$publication.title}</a></h1><h2>{$publication.description}</h2>
 	<h3>{$publication.public_name}</h3>
 	
-	<a href="{$html->url('/')}" title="chialab"><img src="/img/pesce.png" alt="chialab" /></a>
+	<a href="{$html->url('/')}" title="chialab"><img src="{$html->webroot}img/pesce.png" alt="chialab" /></a>
 
 </div>
 
