@@ -110,6 +110,8 @@
 
 {include file="../common_inc/form_geotag.tpl"}
 
+{include file="../common_inc/form_file_list.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
+
 </form>
 
 

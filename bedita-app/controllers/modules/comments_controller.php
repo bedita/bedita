@@ -48,20 +48,14 @@ class CommentsController extends ModulesController {
 	 }
 	 
 	public function view($id = null) {
-		$obj = null ;
-		$relations = array();
-		if($id) {
-			$this->Comment->containLevel("detailed");
-			if(!($obj = $this->Comment->findById($id))) {
-				 throw new BeditaException(sprintf(__("Error loading comment: %d", true), $id));
-			}
+		$this->viewObject($this->Comment, $id);
+		if(!empty($id)) {
+			$bannedIP = ClassRegistry::init("BannedIp");
+	        if($bannedIP->isBanned($this->viewVars['object']['ip_created'])) {
+				$this->set('banned', true);
+	        }
 		}
-		$this->set('object',	$obj);
-		$bannedIP = ClassRegistry::init("BannedIp");
-        if($bannedIP->isBanned($obj['ip_created'])) {
-			$this->set('banned', true);
-        }
-	 }
+	}
 	 
 	public function save() {
 		$this->checkWriteModulePermission();

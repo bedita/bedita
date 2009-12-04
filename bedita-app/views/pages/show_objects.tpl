@@ -78,7 +78,7 @@ $(document).ready(function() {
 <div class="bodybg">
 
 <div class="searchTrigger" style="
-background:white url('{$html->url('/')}img/piumeno.gif') no-repeat left 2px; 
+background:white url('{$html->webroot}img/piumeno.gif') no-repeat left 2px; 
 padding:5px 0px 5px 30px; margin-bottom:1px; font-weight:bold; cursor:pointer;">
 	{t}Search{/t} 
 </div>
