@@ -52,7 +52,7 @@
 				<td>
 					<input type="password" name="pwd" value="" id="pwd"
 						class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}" 
-				    	title="{$tr->t($conf->passwdRegexMsg)}"/>&nbsp;</td>
+				    	title="{$tr->t($conf->passwdRegexMsg)|default:''}"/>&nbsp;</td>
 			</tr>
 			<tr>
 				<th>{t}Confirm password{/t}</th>
