@@ -15,7 +15,7 @@ $(document).ready(function(){
 	$(".areaform input[type='text'], .areaform textarea").width(340);
 	/*
 	{/literal}{if !empty($object.Permissions)}{literal}
-		$(".head H1").prepend("<img src='/img/iconLocked.png' style='vertical-align:sub' alt='permissions set' />");
+		$(".head H1").prepend("<img src='{/literal}{$html->webroot}{literal}img/iconLocked.png' style='vertical-align:sub' alt='permissions set' />");
 	{/literal}{/if}{literal}
 	*/
 });
