@@ -605,7 +605,7 @@ class BeditaSimpleObjectModel extends BEAppObjectModel {
 
 class BeditaContentModel extends BEAppObjectModel {
 	
-	public $searchFields = array("title" => 10 , "description" => 6, 
+	public $searchFields = array("title" => 10 , "creator" => 6, "description" => 6, 
 		"subject" => 4, "abstract" => 4, "body" => 4);	
 	
 	function beforeValidate() {

@@ -32,7 +32,7 @@ class Book extends BeditaProductModel
 {
 	var $actsAs = array();
 	
-	public $searchFields = array("title" => 10 , "description" => 6, 
+	public $searchFields = array("title" => 10 , "creator" => 6, "description" => 6, 
 		"subject" => 4, "abstract" => 4, "isbn" => 10, "publisher" => 4);	
 	
 	function beforeValidate() {
