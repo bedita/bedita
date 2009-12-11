@@ -105,6 +105,16 @@ class BEditaAllowURLException extends BeditaException
  */
 class BEditaFileExistException extends BeditaException
 {
+	protected $object_id;
+
+	public function __construct($message, $details = NULL, $res  = self::ERROR, $code = 0) {
+		$this->object_id = (!empty($details['id'])) ? $details['id'] : null;
+		parent::__construct($message, $details, $res, $code);
+	}
+	
+	public function getObjectId() {
+		return $this->object_id;
+	}
 }
 
 /**

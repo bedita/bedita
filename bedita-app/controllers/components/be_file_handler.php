@@ -215,7 +215,7 @@ class BeFileHandlerComponent extends Object {
 		
 		// check if hash file exists
 		if (!$clone && ($stream_id = $streamModel->field("id", array("hash_file" => $data["hash_file"]))) ) {
-			throw new BEditaFileExistException(__("File already exists in the filesystem",true)) ;
+			throw new BEditaFileExistException(__("File already exists in the filesystem",true),array("id"=>$stream_id)) ;
 		}
 		
 		$targetPath	= $this->getPathTargetFile($data['name']);
