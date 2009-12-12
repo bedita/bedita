@@ -25,3 +25,7 @@ dfn {color:green; text-decoration:underline}
 DT, DL {color: #653214;}
 
 CODE {color: #ff6600}
+
+.placeholder {
+	background-color:#ff3300;
+}

@@ -9,7 +9,7 @@
 
 	{include file="../common_inc/form_properties.tpl" comments=true}
 	
-	{include file="../common_inc/form_long_desc_lang.tpl" height=200}
+	{include file="../common_inc/form_textbody.tpl" height=200}
 
 	{include file="../common_inc/form_biblioitems.tpl"}
 	

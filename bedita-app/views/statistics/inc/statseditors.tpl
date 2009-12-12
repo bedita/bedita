@@ -7,7 +7,7 @@
 			{foreach from=$objectsForUser key="user_id" item="user"}
 			<tr>
 				<td class="label">{$user.realname}</td>
-				<td>
+				<td style="white-space:nowrap;">
 				{foreach from=$user.objects key="objectType" item="num"}
 					{if isset($conf->objectTypes[$objectType].module)}
 					{math assign="pixel" equation="(x/y)*350" x=$num y=$maxObjectsForUser}

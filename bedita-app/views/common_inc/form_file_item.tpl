@@ -45,7 +45,14 @@ $(document).ready(function(){
 		{assign_concat var="myStyle" 0="width:" 1=$conf->media.video.thumbWidth 2="px; " 3="height:" 4=$conf->media.video.thumbHeight 5="px;"}
 		{assign_associative var="attributes" style=$myStyle}
 		{$beEmbedMedia->object($item,$params,$attributes)}
+		
+	{elseif strtolower(($item.ObjectType.name) == "video")}
 	
+		{assign_associative var="params" presentation="full"}
+		{assign_associative var="htmlAttr" width=130 height=100}
+		
+		{$beEmbedMedia->object($item,$params,$htmlAttr)}
+			
 	{elseif strtolower($item.ObjectType.name) == "audio"}
 	
 		<a href="{$linkUrl}"><img src="{$session->webroot}img/iconset/88px/audio.png" /></a>	

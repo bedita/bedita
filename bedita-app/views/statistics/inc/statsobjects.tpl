@@ -11,7 +11,7 @@
 				{if isset($conf->objectTypes[$objectType].module)}
 				<tr>
 					<td class="label">{$objectType}</td>
-					<td>
+					<td style="white-space:nowrap;">
 						{math assign="pixel" equation="(x/y)*400" x=$num y=$maxTotalObjectsNumber}
 						<div style="width:{$pixel}px;" class="{$conf->objectTypes[$objectType].module}">&nbsp;</div> <span class="value">{$num}</span>
 					</td>
@@ -29,7 +29,7 @@
 			{foreach from=$timeEvolution key="date" item="types" name=""}
 			<tr>
 				<td class="label">{$date|date_format:"%b %Y"}</td>
-				<td>
+				<td style="white-space:nowrap;">
 				{foreach from=$types key="objectType" item="num"}
 					{if isset($conf->objectTypes[$objectType].module)}
 					{math assign="pixel" equation="(x/y)*400" x=$num y=$maxTotalTimeEvolution}
@@ -52,7 +52,7 @@
 			{if isset($c.ObjectType.module)}
 			<tr>
 				<td class="label">{$c.title|truncate:20|default:'<i>[no title]</i>'}</td>
-				<td>
+				<td style="white-space:nowrap;">
 					<div style="width:{$pixel}px;" class="{$c.ObjectType.module}">&nbsp</div><span class="value">{$c.count_relations}</span>
 				</td>
 			</tr>
@@ -73,7 +73,7 @@
 					<a href="{$html->url('/')}{$c.ObjectType.module}/view/{$c.id}">
 					{$c.title|truncate:20|default:'<i>[no title]</i>'}</a>
 				</td>
-				<td>
+				<td style="white-space:nowrap;">
 					<div style="width:{$pixel}px;" class="{$c.ObjectType.module}">&nbsp</div><span class="value">{$c.count_relations}</span>
 				</td>
 			</tr>

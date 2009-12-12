@@ -29,8 +29,7 @@
 	{elseif strtolower(($object.ObjectType.name) == "video")}
 	
 		{assign_associative var="params" presentation="full"}
-		{assign_associative var="htmlAttr" id="multimediaitemvideo"}
-		
+		{assign_associative var="htmlAttr" width=500 height=345}
 		{$beEmbedMedia->object($object,$params,$htmlAttr)}
 		
 	{elseif strtolower($object.ObjectType.name) == "audio"}

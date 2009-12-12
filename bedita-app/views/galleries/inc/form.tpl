@@ -11,7 +11,7 @@
 
 {include file="../common_inc/form_tags.tpl"}
 
-{include file="../common_inc/form_long_desc_lang.tpl"}
+{include file="../common_inc/form_textbody.tpl"}
 	
 {include file="../common_inc/form_translations.tpl"}
 

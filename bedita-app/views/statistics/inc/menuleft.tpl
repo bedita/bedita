@@ -10,11 +10,10 @@ Menu a SX valido per tutte le pagine del controller.
 	{include file="../common_inc/messages.tpl"}
 
 
-
 	{if (!empty($method)) && $method eq "index"}
 	<div class="insidecol publishingtree">
-		
-			{$beTree->view($tree)}
+
+		{include file="../common_inc/tree.tpl"}
 	
 	</div>
 	{/if}

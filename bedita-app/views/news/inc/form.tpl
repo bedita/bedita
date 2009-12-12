@@ -13,7 +13,7 @@
 	
 	{include file="../common_inc/form_categories.tpl"}
 	
-	{include file="../common_inc/form_long_desc_lang.tpl"}
+	{include file="../common_inc/form_textbody.tpl"}
 	
 	{include file="../common_inc/form_file_list.tpl" containerId='attachContainer' collection="true" relation='attach' title='Attachments'}
 

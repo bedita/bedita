@@ -34,7 +34,7 @@
 
 </div>
 
-<div class="main">
+<div class="mainfull">
 
 {include file="inc/statsobjects.tpl"}
 
