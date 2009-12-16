@@ -83,6 +83,8 @@ class DboMysqlBase extends DboSource {
 		'time' => array('name' => 'time', 'format' => 'H:i:s', 'formatter' => 'date'),
 		'date' => array('name' => 'date', 'format' => 'Y-m-d', 'formatter' => 'date'),
 		'binary' => array('name' => 'blob'),
+		'enum' => array('name' => 'enum'),
+		'set' => array('name' => 'set'),
 		'boolean' => array('name' => 'tinyint', 'limit' => '1')
 	);
 /**
@@ -459,7 +461,8 @@ class DboMysql extends DboMysqlBase {
 					'null'		=> ($column[0]['Null'] == 'YES' ? true : false),
 					'default'	=> $column[0]['Default'],
 					'length'	=> $this->length($column[0]['Type']),
-				);
+					'values'	=> $this->values($column[0]['Type']),
+				);				
 				if (!empty($column[0]['Key']) && isset($this->index[$column[0]['Key']])) {
 					$fields[$column[0]['Field']]['key']	= $this->index[$column[0]['Key']];
 				}
@@ -604,7 +607,10 @@ class DboMysql extends DboMysqlBase {
 			return 'float';
 		}
 		if (strpos($col, 'enum') !== false) {
-			return "enum($vals)";
+			return "enum";
+		}
+		if (strpos($col, 'set') !== false) {
+			return "set";
 		}
 		return 'text';
 	}
