@@ -64,35 +64,9 @@
 	
 /*	
 	public function update($sqlDataFile=null,$media=null) {
-		// update database (schema,procedure,data)
-		$this->executeScript(SQL_SCRIPT_PATH . "bedita_schema.sql");
-		$this->executeScript(SQL_SCRIPT_PATH . "bedita_procedure.sql");
-		if($sqlDataFile!=null) {
-			$this->executeInsert($sqlDataFile);
-		}
-		
-		if ($media!=null)) {
-            $this->extractFile($media,MEDIA_ROOT);
-    	}
-		
-		// check media
-		$this->checkMedia();
 	}
 
 	public function import($exportFile) {
-		
-		$this->$basepath = $this->setupTempDir();
-		
-		// step 1 - extract file
-		$this->extractFile($exportFile,$this->basepath);
-		
-		// step 2 - import database (schema,procedure,data)
-		$this->executeScript(SQL_SCRIPT_PATH . "bedita_schema.sql");
-		$this->executeScript(SQL_SCRIPT_PATH . "bedita_procedure.sql");
-		$this->executeInsert($this->basepath . "bedita-data.sql");
-		
-		// step 3 - copy media folder into MEDIA_ROOT
-		$this->copyFolder($this->basepath.'media',MEDIA_ROOT);
 	}
 	
 	public function export() {

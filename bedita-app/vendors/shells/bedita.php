@@ -224,7 +224,7 @@ class BeditaShell extends BeditaBaseShell {
 					$this->out("");
 					$this->hr();
 					$this->out("INITIALIZE DATABASE");
-					$this->updateDb();
+					$this->initDb();
 					$this->out("");
 					$this->out("");
 					$res = $this->in("Do you want to check BEdita status? [y/n]");
@@ -253,20 +253,17 @@ class BeditaShell extends BeditaBaseShell {
 		}
 	}
 	
-	function updateDb() {
+	function initDb() {
         $dbCfg = 'default';
     	if (isset($this->params['db'])) {
             $dbCfg = $this->params['db'];
     	}
 		
-		if (!defined('SQL_SCRIPT_PATH')) { // cambiare opportunamente questo path
-	        $this->out("SQL_SCRIPT_PATH has to be defined in ".APP_DIR."/config/database.php");
-			return;
-		}
-    	$sqlDataDump = SQL_SCRIPT_PATH . 'bedita_init_data.sql';
+		$sqlScriptPath = APP_DIR . DS ."config" . DS . "sql" . DS;
+		$sqlDataDump = $sqlScriptPath . 'bedita_init_data.sql';
     	if (isset($this->params['data'])) {
-            if(file_exists(SQL_SCRIPT_PATH . $this->params['data'])) {
-    			$sqlDataDump = SQL_SCRIPT_PATH .$this->params['data'];
+            if(file_exists($sqlScriptPath . $this->params['data'])) {
+    			$sqlDataDump = $sqlScriptPath .$this->params['data'];
             } else {
     			$sqlDataDump = $this->params['data'];
             	if(!file_exists($sqlDataDump)) {
@@ -291,11 +288,11 @@ class BeditaShell extends BeditaBaseShell {
 		$transaction->begin();
         
         $this->DataSourceTest = new DataSourceTest();
-		$script = SQL_SCRIPT_PATH . "bedita_schema.sql";
+		$script = $sqlScriptPath . "bedita_schema.sql";
 		$this->out("Update schema from $script");
 		$this->DataSourceTest->executeQuery($db,$script);
 
-		$script = SQL_SCRIPT_PATH . "bedita_procedure.sql";
+		$script = $sqlScriptPath . "bedita_procedure.sql";
 		$this->out("Create procedures from $script");
         $this->DataSourceTest->executeQuery($db,$script);
         
@@ -322,11 +319,7 @@ class BeditaShell extends BeditaBaseShell {
     	if (isset($this->params['db'])) {
             $dbCfg = $this->params['db'];
     	}
-		if (!defined('SQL_SCRIPT_PATH')) { // cambiare opportunamente questo path
-	        $this->out("SQL_SCRIPT_PATH has to be defined in ".APP_DIR."/config/database.php");
-			return;
-		}
-		
+
 		$answerYes = false;
     	if (isset($this->params['y'])) {
             $answerYes = true;
@@ -383,12 +376,13 @@ class BeditaShell extends BeditaBaseShell {
         $transaction = new TransactionComponent($dbCfg);
 		$transaction->begin();
         
-        $this->DataSourceTest = new DataSourceTest();
-		$script = SQL_SCRIPT_PATH . "bedita_schema.sql";
+    	$sqlScriptPath = APP_DIR . DS ."config" . DS . "sql" . DS;
+		$this->DataSourceTest = new DataSourceTest();
+		$script = $sqlScriptPath . "bedita_schema.sql";
 		$this->out("Update schema from $script");
 		$this->DataSourceTest->executeQuery($db,$script);
 
-		$script = SQL_SCRIPT_PATH . "bedita_procedure.sql";
+		$script = $sqlScriptPath . "bedita_procedure.sql";
 		$this->out("Create procedures from $script");
         $this->DataSourceTest->executeQuery($db,$script);
         
@@ -911,9 +905,9 @@ class BeditaShell extends BeditaBaseShell {
   		$this->out(' ');
         $this->out('0. init: initialize a new BEdita instance from scratch');
   		$this->out(' ');
-        $this->out('1. updateDb: update database with bedita-db sql scripts');
+        $this->out('1. initDb: initialize database with bedita-db sql scripts');
   		$this->out(' ');
-        $this->out('    Usage: updateDb [-db <dbname>] [-data <sql>] [-nodata] [-media <zipfile>]');
+        $this->out('    Usage: initDb [-db <dbname>] [-data <sql>] [-nodata] [-media <zipfile>]');
   		$this->out(' ');
   		$this->out("    -db <dbname>\t use db configuration <dbname> specified in config/database.php");
   		$this->out("    -nodata <sql>   \t don't insert data");
