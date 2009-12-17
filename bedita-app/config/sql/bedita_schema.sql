@@ -822,6 +822,7 @@ CREATE TABLE `modules` (
   `path` varchar(255) NOT NULL,
   `status` enum('on','off') NOT NULL default 'on',
   `priority` int(11) default NULL,
+  `type` enum('core','plugin') NOT NULL default 'core',
   PRIMARY KEY  (`id`),
   UNIQUE KEY name (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;

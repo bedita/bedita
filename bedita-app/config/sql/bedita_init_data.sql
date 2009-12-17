@@ -5,28 +5,28 @@
 INSERT INTO object_types (id, name, module) VALUES
 (1, 'area', 'areas'),
 (3, 'section', 'areas'),
-(10, 'befile', 'multimedia'),
+(10, 'b_e_file', 'multimedia'),
 (12, 'image', 'multimedia'),
 (30, 'application', 'multimedia'),
 (31, 'audio', 'multimedia'),
 (32, 'video', 'multimedia'),
 (29, 'gallery', 'galleries'),
 (13, 'comment', 'comments'),
-(18, 'shortnews', 'news'),
+(18, 'short_news', 'news'),
 (19, 'bibliography', 'bibliographies'),
 (20, 'book', 'books'),
 (21, 'event', 'events'),
 (22, 'document', 'documents'),
 (33, 'link', 'webmarks'),
 (34, 'card', 'addressbook'),
-(35, 'mailmessage', 'newsletter'),
-(36, 'mailtemplate', 'newsletter'),
+(35, 'mail_message', 'newsletter'),
+(36, 'mail_template', 'newsletter'),
 (37, 'author', NULL),
-(38, 'biblioitem', NULL),
-(39, 'editornote', NULL),
+(38, 'biblio_item', NULL),
+(39, 'editor_note', NULL),
 (40, 'question', 'questionnaires'),
 (41, 'questionnaire', 'questionnaires'),
-(42, 'questionnaireresult', 'questionnaires');
+(42, 'questionnaire_result', 'questionnaires');
 
 -- ----------------------------------
 -- default user and groups

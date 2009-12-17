@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* BeditaApp schema generated on: 2009-12-16 11:12:47 : 1260959327*/
+/* BeditaApp schema generated on: 2009-12-17 11:12:26 : 1261045526*/
 class BeditaAppSchema extends CakeSchema {
 	var $name = 'BeditaApp';
 
@@ -223,7 +223,7 @@ class BeditaAppSchema extends CakeSchema {
 		'card_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'status' => array('type' => 'enum', 'null' => false, 'default' => 'pending', 'length' => 9, 'values' => '\'pending\',\'confirmed\''),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'card_id_index' => array('column' => 'card_id', 'unique' => 0), 'mail_group_id_index' => array('column' => 'mail_group_id', 'unique' => 0))
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'mail_group_card' => array('column' => array('card_id', 'mail_group_id'), 'unique' => 1), 'card_id_index' => array('column' => 'card_id', 'unique' => 0), 'mail_group_id_index' => array('column' => 'mail_group_id', 'unique' => 0))
 	);
 	var $mail_group_messages = array(
 		'mail_group_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
@@ -268,7 +268,7 @@ class BeditaAppSchema extends CakeSchema {
 	);
 	var $mail_messages = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
-		'mail_status' => array('type' => 'enum', 'null' => false, 'default' => 'unsent', 'length' => 7, 'values' => '\'unsent\',\'injob\',\'pending\',\'sent\''),
+		'mail_status' => array('type' => 'enum', 'null' => false, 'default' => 'unsent', 'length' => 7, 'values' => '\'unsent\',\'pending\',\'injob\',\'sent\''),
 		'start_sending' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'end_sending' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'sender' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL),
@@ -287,6 +287,7 @@ class BeditaAppSchema extends CakeSchema {
 		'path' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL),
 		'status' => array('type' => 'enum', 'null' => false, 'default' => 'on', 'length' => 3, 'values' => '\'on\',\'off\''),
 		'priority' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'values' => NULL),
+		'type' => array('type' => 'enum', 'null' => false, 'default' => 'core', 'length' => 6, 'values' => '\'core\',\'plugin\''),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'name' => array('column' => 'name', 'unique' => 1))
 	);
 	var $object_categories = array(
