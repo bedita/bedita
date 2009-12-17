@@ -64,8 +64,8 @@ $(document).ready(function(){
 	{strip}	
 		{foreach from=$objects item="item"}
 			<div class="multimediaitem itemBox{if $item.status != "on"} off{/if}">
-				
-				{include file="../common_inc/file_item.tpl"}
+				{assign_associative var="params" item=$item}
+				{$view->element('file_item',$params)}
 				
 				<table border=0 padding="0" spacing="0" style="width:100%">
 					<tr>

@@ -226,11 +226,11 @@ class DbadminShell extends Shell {
 			$type = $this->params['type'];		
 		}
 		
-		if(!in_array($type, array("editornote", "comment"))) {
+		if(!in_array($type, array("editor_note", "comment"))) {
 			if($type === "c")    {
 				$type = "comment";
 			} else if($type === "e" || $type === "n") {
-				$type = "editornote";
+				$type = "editor_note";
 			} else {
 				$this->out("Wrong annotation type: ". $type);
 				return;
@@ -238,7 +238,7 @@ class DbadminShell extends Shell {
 		}
 		
 		$inputs = array("comment" => array("title", "description", "author", "email", "url"),
-						"editornote" => array("title", "description"));
+						"editor_note" => array("title", "description"));
 		
 		$this->hr();
 		$this->out("please provide [$type] input data");
@@ -249,8 +249,10 @@ class DbadminShell extends Shell {
 			$data[$req]=$resp;			
 		}
 		$data["status"] = "on";
-		$conf = Configure::getInstance() ;
-		$modelClass = $conf->objectTypes[$type]['model'];
+		//$conf = Configure::getInstance() ;
+		//pr($conf->objectTypes);exit;
+		//$modelClass = $conf->objectTypes[$type]['model'];
+		$modelClass = Inflector::camelize($type);
 		$model = ClassRegistry::init($modelClass);
 		if(!$model->save($data)) {
 			$this->out("Error saving data for model ".$modelClass);
@@ -439,7 +441,7 @@ class DbadminShell extends Shell {
         $this->out('    Usage: annotate [-id <object-it>] [-type <annotation-type>] ');
         $this->out(' ');
         $this->out("    -id \t object id to annotate");
-        $this->out("    -type \t 'editornote' or 'comment'");
+        $this->out("    -type \t 'editor_note' or 'comment'");
         $this->out(' ');
         $this->out("7. orphans: searche and remove orphaned objects (not in tree)");
         $this->out(' ');

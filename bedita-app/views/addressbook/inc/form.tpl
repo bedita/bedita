@@ -12,23 +12,25 @@
 	
 	{include file="./inc/form_newsletter_subscription.tpl"}
 	
-	{include file="../common_inc/form_categories.tpl"}
+	{$view->element('form_categories')}
 	
-	{include file="../common_inc/form_tree.tpl"}
+	{$view->element('form_tree')}
 	
-	{include file="../common_inc/form_file_list.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
+	{assign_associative var="params" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
+	{$view->element('form_file_list', $params)}
 
-	{include file="../common_inc/form_tags.tpl"}
+	{$view->element('form_tags')}
 	
-	{include file="../common_inc/form_geotag.tpl"}
+	{$view->element('form_geotag')}
 	
-	{include file="../common_inc/form_assoc_objects.tpl" object_type_id=$conf->objectTypes.card.id}
+	{assign_associative var="params" object_type_id=$conf->objectTypes.card.id}
+	{$view->element('form_assoc_objects', $params)}
 	
 	{include file="./inc/form_advanced_properties.tpl" el=$object}
 	
-	{include file="../common_inc/form_custom_properties.tpl"}
+	{$view->element('form_custom_properties')}
 
 </form>
 
 
-	{include file="../common_inc/form_print.tpl"}
+	{$view->element('form_print')}

@@ -85,12 +85,13 @@ var url="{$html->url('/webmarks/checkUrl')}";
 	
 </fieldset>
 
-{include file="../common_inc/form_tree.tpl"}
+{$view->element('form_tree')}
 	
-{include file="../common_inc/form_categories.tpl"}
+{$view->element('form_categories')}
 
-{include file="../common_inc/form_file_list.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
+{assign_associative var="params" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
+{$view->element('form_file_list',$params)}
 
-{include file="../common_inc/form_tags.tpl"}
+{$view->element('form_tags')}
 
 </form>

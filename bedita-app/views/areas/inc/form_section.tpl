@@ -24,7 +24,7 @@ $(document).ready(function(){
 		
 
 
-{include file="../common_inc/form_common_js.tpl"}
+{$view->element('form_common_js')}
 
 <input type="hidden" name="data[id]" value="{$object.id|default:null}"/>
 <input type="hidden" name="data[fixed]" value="{$object.fixed|default:0}"/>
@@ -152,9 +152,12 @@ $(document).ready(function(){
 	
 
 </div>	
-
-
-	{include file="../common_inc/form_translations.tpl" object=$object|default:null}
-	{include file="../common_inc/form_custom_properties.tpl"}
-	{include file="../common_inc/form_permissions.tpl" el=$object|default:null recursion=true}
 	
+	{assign_associative var="params" object=$object|default:null}
+	{$view->element('form_translations', $params)}
+
+	{$view->element('form_custom_properties')}
+	
+	{assign_associative var="params" el=$object|default:null recursion=true}
+	{$view->element('form_permissions', $params)}
+

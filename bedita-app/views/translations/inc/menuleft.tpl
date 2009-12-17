@@ -10,7 +10,7 @@ Menu a SX valido per tutte le pagine del controller.
 		<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->userVersion}</label></div>
 
 
-	{include file="../common_inc/messages.tpl"}
+	{$view->element('messages')}
 	
 {*
 		<ul class="menuleft insidecol">
@@ -18,7 +18,7 @@ Menu a SX valido per tutte le pagine del controller.
 		</ul>
 *}
 
-	{include file="../common_inc/user_module_perms.tpl"}
+	{$view->element('user_module_perms')}
 
 
 </div>

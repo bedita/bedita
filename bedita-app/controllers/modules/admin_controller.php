@@ -277,7 +277,7 @@ class AdminController extends ModulesController {
 	 	$this->checkWriteModulePermission();
 	 	$this->beditaVersion();
 	 	$this->EventLog->deleteAll("id > 0");
-		$this->set('events', array());
+		$this->set('events', $this->paginate('EventLog'));
 		$this->set('sys', $this->BeSystem->systemInfo());
 	 }
 

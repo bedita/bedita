@@ -1,10 +1,10 @@
 {*
 ** news view template
 *}
-{$html->css("ui.datepicker")}
+{$html->css("ui.datepicker", null, null, false)}
 {$javascript->link("jquery/jquery.form", false)}
 {$javascript->link("jquery/jquery.treeview", false)}
-{$javascript->link("jquery/jquery.selectboxes.pack")}
+{$javascript->link("jquery/jquery.selectboxes.pack", false)}
 {$javascript->link("jquery/ui/ui.sortable.min", true)}
 {$javascript->link("jquery/ui/ui.datepicker.min", false)}
 {if $currLang != "eng"}
@@ -19,12 +19,10 @@
 </script>
 {/literal}
 
-{include file="../common_inc/form_common_js.tpl"}
+{$view->element('form_common_js')}
 
-</head>
-<body>
 
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl" method="view"}
 
@@ -43,4 +41,5 @@
 	{include file="inc/form.tpl"}
 		
 </div>
-{include file="../common_inc/menuright.tpl"}
+
+{$view->element('menuright')}

@@ -1,12 +1,12 @@
+{$view->set("method", $method)}
 
-	
 <div class="primacolonna">
 
 
 		<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->userVersion}</label></div>
 
 	
-		{include file="../common_inc/messages.tpl"}
+		{$view->element('messages')}
 	
 		<ul class="menuleft insidecol">
 
@@ -33,7 +33,7 @@
 		
 		</ul>
 		
-	{include file="../common_inc/user_module_perms.tpl"}
+	{$view->element('user_module_perms')}
 		
 
 </div>

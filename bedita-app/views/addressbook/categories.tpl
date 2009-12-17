@@ -1,10 +1,6 @@
 {$javascript->link("jquery/jquery.changealert", false)}
 
-</head>
-
-<body>
-	
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl" method="categories"}
 
@@ -18,8 +14,9 @@
 
 
 <div class="mainfull">
-	
-{include file="../common_inc/list_categories.tpl" method="categories"}
+
+{assign_associative var="params" method="categories"}
+{$view->element('list_categories', $params)}
 
 </div>
 

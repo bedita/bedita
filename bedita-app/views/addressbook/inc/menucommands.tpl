@@ -4,8 +4,7 @@ Menu a SX valido per tutte le pagine del controller.
 *}
 
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
-	
-	{if !empty($method) && $method != "index"}
+	{if !empty($view->action) && $view->action != "index"}
 		{assign var="back" value=$session->read("backFromView")}
 	{else}
 		{assign_concat var="back" 0=$html->url('/') 1=$currentModule.path}
@@ -17,7 +16,7 @@ Menu a SX valido per tutte le pagine del controller.
 	
 	{assign var="user" value=$session->read('BEAuthUser')}
 	
-	{if $method == "view" && $module_modify eq '1'}
+	{if $view->action == "view" && $module_modify eq '1'}
 	<script type="text/javascript">
 	{literal}
 	$(document).ready(function() {
@@ -53,9 +52,9 @@ Menu a SX valido per tutte le pagine del controller.
 		<input class="bemaincommands" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" />
 	</div>
 	
-	{include file="../common_inc/prevnext.tpl"}
+	{$view->element('prevnext')}
 	
-	{elseif $method == "index"}
+	{elseif $view->action == "index"}
 	
 
 		{if !empty($categories)}

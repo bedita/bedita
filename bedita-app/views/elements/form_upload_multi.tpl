@@ -74,4 +74,5 @@ function completeUpload{/literal}{$uploadIdSuffix}{literal}(event, queueID, file
 <p><a href="javascript:void(0);">{t}If you have any problems try with browser upload{/t}</a></p>
 </div>
 
-{include file="../common_inc/form_upload_ajax.tpl" uploadIdSuffix=$uploadIdSuffix}
+{assign_associative var="params" uploadIdSuffix=$uploadIdSuffix}
+{$view->element('form_upload_ajax', $params)}

@@ -32,6 +32,8 @@ class Application extends BeditaStreamModel
 {
 	var $actsAs = array();
 	
+	public $objectTypesGroups = array("multimedia");
+	
 	public $applicationType = array(
 		"flash" => array(
 			"mime_type" => array("application/x-shockwave-flash"),

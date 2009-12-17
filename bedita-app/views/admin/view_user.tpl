@@ -1,12 +1,9 @@
-{$html->css('module.superadmin')}
-{$javascript->link("jquery/interface", false)}
 {$javascript->link("form", false)}
 {$javascript->link("jquery/jquery.form", false)}
 {$javascript->link("jquery/jquery.cmxforms", false)}
 {$javascript->link("jquery/jquery.metadata", false)}
 {$javascript->link("jquery/jquery.validate", false)}
 {$javascript->link("jquery/jquery.changealert", false)}
-{$javascript->link("jquery/ui/ui.datepicker.min", false)}
 
 {literal}
 <script type="text/javascript">
@@ -16,13 +13,9 @@
 </script>
 {/literal}
 
-{include file="../common_inc/form_common_js.tpl"}
+{$view->element('form_common_js')}
 
-</head>
-
-<body>
-
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl" method="viewUser"}
 
@@ -46,6 +39,6 @@
 
 </div>
 
-{*include file="../common_inc/menuright.tpl"*}
+{*$view->element('menuright')*}
 
 

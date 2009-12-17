@@ -25,7 +25,8 @@ $(document).ready(function(){
 
 		<div class="publishingtree" style="width:auto; margin-left:10px;">
 		
-			{include file="../common_inc/tree.tpl" checkbox=true}
+			{assign_associative var="params" checkbox=true}
+			{$view->element('tree', $params)}
 		
 		</div>
 		

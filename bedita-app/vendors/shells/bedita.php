@@ -606,6 +606,7 @@ class BeditaShell extends BeditaBaseShell {
     	   $this->__clean($basePath . 'logs');
             $this->out('Logs cleaned.');
         }
+        Cache::clear();
         $this->__clean($basePath . 'cache' . DS . 'models');
         $this->__clean($basePath . 'cache' . DS . 'persistent');        
         $this->__clean($basePath . 'cache' . DS . 'views');        

@@ -1,3 +1,4 @@
+{$html->css("ui.datepicker", null, null, false)}
 {$javascript->link("jquery/jquery.form", false)}
 {$javascript->link("jquery/jquery.autogrow", false)}
 
@@ -41,14 +42,10 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 {/if}
 </script>
 
-</head>
 
-<body>
+{$view->element('modulesmenu')}
 
-
-{include file="../common_inc/modulesmenu.tpl"}
-
-{include file="inc/menuleft.tpl" method="index"}
+{include file="inc/menuleft.tpl"}
 
 {include file="inc/menucommands.tpl" fixed=false}
 
@@ -126,5 +123,5 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 
 </form>
 {bedev}
-{include file="../common_inc/menuright.tpl"}
+{$view->element('menuright')}
 {/bedev}

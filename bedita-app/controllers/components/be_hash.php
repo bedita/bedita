@@ -363,13 +363,12 @@ class BeHashComponent extends Object {
 	
 	protected function loadMessages() {
 		// load local messages if present
-		$appPath = (defined("BEDITA_CORE_PATH"))? BEDITA_CORE_PATH . DS : APP;
-		$localMsg = $appPath."config".DS."notify".DS."local.msg.php";
+		$localMsg = BEDITA_CORE_PATH.DS."config".DS."notify".DS."local.msg.php";
 		$notify = array();
 		if (file_exists ($localMsg) ) {
 			require($localMsg);
 		} else {
-			require($appPath."config".DS."notify".DS."default.msg.php");
+			require(BEDITA_CORE_PATH.DS."config".DS."notify".DS."default.msg.php");
 		}
 		$this->notifyMsg = &$notify;
 	}

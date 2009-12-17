@@ -382,7 +382,7 @@ abstract class FrontendController extends AppController {
 			throw new BeditaException("wrong lang selected: ".$lang);
 		}
 		$this->Session->write('Config.language', $lang);
-		$this->Cookie->write($conf->cookieName["langSelect"], $lang, null, '+350 day'); 
+		$this->Cookie->write($conf->cookieName["langSelect"], $lang, false, '+350 day'); 
 		$this->currLang = $lang;
 
 		if(!empty($forward)) {
@@ -1592,7 +1592,7 @@ abstract class FrontendController extends AppController {
 		// verify type
 		$conf = Configure::getInstance() ;
 		$types = array($conf->objectTypes['image']['id'], $conf->objectTypes['video']['id'],
-			$conf->objectTypes['befile']['id'], $conf->objectTypes['audio']['id'], $conf->objectTypes['application']['id']);
+			$conf->objectTypes['b_e_file']['id'], $conf->objectTypes['audio']['id'], $conf->objectTypes['application']['id']);
 		if(($object_type_id === false) || !in_array($object_type_id, $types))
 			throw new BeditaException(__("Content not found", true));
 

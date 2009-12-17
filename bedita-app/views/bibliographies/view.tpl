@@ -2,7 +2,7 @@
 ** bibliography view template
 *}
 
-{$html->css("ui.datepicker")}
+{$html->css("ui.datepicker", null, null, false)}
 
 {$javascript->link("jquery/jquery.form", false)}
 {$javascript->link("jquery/jquery.treeview", false)}
@@ -24,14 +24,12 @@
 	{/literal}
 </script>
 
-{include file="../common_inc/form_common_js.tpl"}
+{$view->element('form_common_js')}
 
-</head>
-<body>
 
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
-{include file="inc/menuleft.tpl" method="view"}
+{include file="inc/menuleft.tpl"}
 
 <div class="head">
 	
@@ -41,11 +39,12 @@
 
 {assign var=objIndex value=0}
 
-{include file="inc/menucommands.tpl" method="view" fixed = true}
+{include file="inc/menucommands.tpl" fixed = true}
 
 <div class="main">	
 	
 	{include file="inc/form.tpl"}
 		
 </div>
-{include file="../common_inc/menuright.tpl"}
+
+{$view->element('menuright')}

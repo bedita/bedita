@@ -260,13 +260,15 @@
 	
 	</fieldset>
 
-	{include file="../common_inc/form_file_list.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
+	{assign_associative var="params" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
+	{$view->element('form_file_list', $params)}
 
-	{include file="../common_inc/form_tags.tpl"}
+	{$view->element('form_tags')}
 		
-	{include file="../common_inc/form_translations.tpl"}
+	{$view->element('form_translations')}
 
-	{include file="../common_inc/form_advanced_properties.tpl" el=$object}
+	{assign_associative var="params" el=$object}
+	{$view->element('form_advanced_properties', $params)}
 
 	
 	

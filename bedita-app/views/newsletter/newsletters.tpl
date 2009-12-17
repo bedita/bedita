@@ -1,14 +1,12 @@
-</head>
 
-<body>
 
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl" method="newsletters"}
 
 {include file="inc/menucommands.tpl" method="newsletters" fixed=true}
 
-{include file="../common_inc/toolbar.tpl"}
+{$view->element('toolbar')}
 
 <div class="mainfull">
 

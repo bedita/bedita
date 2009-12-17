@@ -1,22 +1,18 @@
 
+{$view->element('modulesmenu')}
 
-</head>
+{include file="inc/menuleft.tpl"}
 
-<body>
+{include file="inc/menucommands.tpl"}
 
-{include file="../common_inc/modulesmenu.tpl"}
-
-{include file="inc/menuleft.tpl" method="index"}
-
-{include file="inc/menucommands.tpl" method="index"}
-
-{include file="../common_inc/toolbar.tpl"}
+{$view->element('toolbar')}
 
 
 
 <div class="mainfull">
 
-	{include file="../common_inc/list_objects.tpl" method="index"}
+	{assign_associative var="params" method="index"}
+	{$view->element('list_objects',$params)}
 	
 
 </div>

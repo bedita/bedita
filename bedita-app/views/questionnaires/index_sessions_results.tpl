@@ -1,15 +1,13 @@
 
-</head>
 
-<body>
-
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl" method="viewResults"}
 
 {include file="inc/menucommands.tpl" method="viewResults" fixed = true}
 
-{include file="../common_inc/toolbar.tpl" itemName="sessions" title="Sessions of «Titolo del questionario»"}
+{assign_associative var="params" itemName="sessions" title="Sessions of «Titolo del questionario»"}
+{$view->element('toolbar', $params)}
 
 <div class="mainfull">
 	

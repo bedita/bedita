@@ -74,7 +74,7 @@ $(document).ready(function(){
 {/literal}
 
 
-{include file="../common_inc/form_common_js.tpl"}
+{$view->element('form_common_js')}
 
 <form action="{$html->url('/translations/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object_translation.id.status|default:''}"/>
@@ -165,7 +165,7 @@ $(document).ready(function(){
 
 {if !empty($object_master.relations.attach) && $object_master.object_type_id != $conf->objectTypes.image.id
 											&& $object_master.object_type_id != $conf->objectTypes.video.id
-											&& $object_master.object_type_id != $conf->objectTypes.befile.id}
+											&& $object_master.object_type_id != $conf->objectTypes.b_e_file.id}
 
 	<div class="tab2"><h2>{t}multimedia descriptions{/t}</h2></div>
 	<fieldset rel="multimedia">
@@ -302,7 +302,7 @@ $(document).ready(function(){
 
 {if !empty($object_master.relations.attach) && $object_master.object_type_id != $conf->objectTypes.image.id
 											&& $object_master.object_type_id != $conf->objectTypes.video.id
-											&& $object_master.object_type_id != $conf->objectTypes.befile.id}
+											&& $object_master.object_type_id != $conf->objectTypes.b_e_file.id}
 	<div class="tab2"><h2>{t}multimedia descriptions{/t}</h2></div>
 	<fieldset rel="multimedia">
 		

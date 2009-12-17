@@ -104,7 +104,8 @@ function refreshNoteList(delButton) {
 		<div id="listNote">
 		{if (!empty($object.EditorNote))}
 			{foreach from=$object.EditorNote|@array_reverse item="note"}
-				{include file="../common_inc/single_note.tpl"}
+				{assign_associative var="params" note=$note}
+				{$view->element('single_note', $params)}
 			{/foreach}
 		{/if}
 		</div>
@@ -117,7 +118,7 @@ function refreshNoteList(delButton) {
 	{bedev}
 		<div class="tab"><h2>{t}Test stuff{/t}</h2></div>
 		<div style="padding:10px; background-color:white;">
-		{include file="../common_inc/BEiconstest.tpl}	
+		{$view->element('BEiconstest')}
 		</div>
 	{/bedev}
 

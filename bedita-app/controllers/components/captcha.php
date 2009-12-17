@@ -38,9 +38,8 @@ class CaptchaComponent extends Object {
 	function startup(&$controller) {
 		$this->controller = &$controller;
 		// set default
-		$appPath = (defined("BEDITA_CORE_PATH"))? BEDITA_CORE_PATH . DS : APP;
-		$this->background = $appPath . "webroot".DS."captcha".DS."img".DS."button.png";
-		$this->fontType = $appPath . "webroot".DS."captcha".DS."fonts".DS."Vera.ttf";
+		$this->background = BEDITA_CORE_PATH . DS . "webroot".DS."captcha".DS."img".DS."button.png";
+		$this->fontType = BEDITA_CORE_PATH . DS . "webroot".DS."captcha".DS."fonts".DS."Vera.ttf";
 	}
 	
 	public function image($options=array()) {
@@ -54,10 +53,18 @@ class CaptchaComponent extends Object {
 		// put captcha id in session
 		$this->controller->Session->write("captcha_id", $str);
 		
-		// Set the content type
-		header('Cache-control: no-cache, no-store, max-age=0, must-revalidate');
+		// send several headers to make sure the image is not cached
+		// taken directly from the PHP Manual
+
+		// Expire in the past, always modified
 		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); 
+		// HTTP/1.1
+		header("Cache-Control: no-store, no-cache, must-revalidate");
+		header("Cache-Control: post-check=0, pre-check=0", false); 
+		// HTTP/1.0
 		header('Pragma: no-cache');
+		//content type
 		header('Content-type: image/png'); 
 					
 		// Create a background image

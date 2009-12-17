@@ -1,22 +1,18 @@
 
 
-</head>
-
-<body>
-
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl" method="index"}
 
 {include file="inc/menucommands.tpl" method="index"}
 
-{include file="../common_inc/toolbar.tpl"}
+{$view->element('toolbar')}
 
 
 
 <div class="mainfull">
 
-	{include file="../common_inc/list_objects.tpl" method="index"}
+	{$view->element('list_objects')}
 	
 
 </div>

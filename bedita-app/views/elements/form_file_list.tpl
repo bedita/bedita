@@ -106,6 +106,10 @@ $(document).ready(function()
 {/literal}
 </script>
 
+{$view->set('containerId',$containerId)}
+{$view->set('collection',$collection)}
+{$view->set('relation',$relation)}
+{$view->set('title',$title)}
 
 <div class="tab"><h2>{t}Multimedia items{/t}</h2></div>	
 
@@ -119,11 +123,10 @@ $(document).ready(function()
 <hr />
 <input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$relation}][0][switch]" value="{$relation}" />
 
-
 {foreach from=$attach item="item"}
 	<div class="multimediaitem itemBox {if $item.status != "on"} off{/if} disableSelection" id="item_{$item.id}">
-		
-			{include file="../common_inc/form_file_item.tpl"}
+			{assign_associative var="params" item=$item}
+			{$view->element('form_file_item',$params)}
 			
 	</div>
 {/foreach}
@@ -145,7 +148,7 @@ $(document).ready(function()
 <div class="htabcontainer" id="addmultimediacontents">
 
 	<div class="htabcontent" id="uploadItems">
-		{include file="../common_inc/form_upload_multi.tpl"}
+		{$view->element('form_upload_multi')}
 	</div>
 
 	

@@ -54,7 +54,9 @@ class Document extends BeditaContentModel
 	var $actsAs 	= array(
 		'CompactResult' 		=> array('GeoTag'),
 		'Notify',
-	); 
+	);
+
+	public $objectTypesGroups = array("leafs", "related");
 
 	var $hasMany = array(
 		'GeoTag' =>

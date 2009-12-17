@@ -8,9 +8,6 @@ rules[1]='loginPasswd:Password|minlength|6';
 {/literal}
 </script>
 
-</head>
-<body>
-
 <div id="loginStatusBox">
 	<div class="beditaButton" onClick = "document.location ='{$html->url('/')}'">
 		<span style="font:bold 17px Verdana">BEdita</span><br/><b>&gt;</b>

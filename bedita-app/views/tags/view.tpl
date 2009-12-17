@@ -1,4 +1,4 @@
-{$html->css('tree')}
+{$html->css('tree', null, null, false)}
 {$javascript->link("form", false)}
 {$javascript->link("jquery/jquery.changealert", false)}
 {$javascript->link("jquery/jquery.form", false)}
@@ -20,13 +20,10 @@ $(document).ready( function ()
 
 {/literal}
 </script>
-</head>
 
-<body>
+{$view->element('modulesmenu')}
 
-{include file="../common_inc/modulesmenu.tpl"}
-
-{include file="inc/menuleft.tpl" method="view"}
+{include file="inc/menuleft.tpl"}
 
 <div class="head">
 
@@ -42,7 +39,7 @@ $(document).ready( function ()
 
 <form action="{$html->url('/tags/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 
-{include file="inc/menucommands.tpl" method="view" fixed=true}
+{include file="inc/menucommands.tpl" fixed=true}
 
 <div class="main">
 	
@@ -52,4 +49,4 @@ $(document).ready( function ()
 
 </form>
 
-{include file="../common_inc/menuright.tpl"}
+{$view->element('menuright')}

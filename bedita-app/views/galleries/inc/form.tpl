@@ -1,28 +1,33 @@
 <form action="{$html->url('/galleries/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
-{include file="../common_inc/form_title_subtitle.tpl"}
+{$view->element('form_title_subtitle')}
 
-{include file="../common_inc/form_properties.tpl" comments=true}
+{assign_associative var="params" comments=true}
+{$view->element('form_properties', $params)}
 
-{include file="../common_inc/form_tree.tpl"}
+{$view->element('form_tree')}
 
-{include file="../common_inc/form_file_list.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
+{assign_associative var="params" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
+{$view->element('form_file_list', $params)}
 
-{include file="../common_inc/form_tags.tpl"}
+{$view->element('form_tags')}
 
-{include file="../common_inc/form_textbody.tpl"}
+{$view->element('form_textbody')}
 	
-{include file="../common_inc/form_translations.tpl"}
+{$view->element('form_translations')}
 
-{include file="../common_inc/form_assoc_objects.tpl" object_type_id=$conf->objectTypes.gallery.id}
+{assign_associative var="params" object_type_id=$conf->objectTypes.gallery.id}
+{$view->element('form_assoc_objects', $params)}
 	
-{include file="../common_inc/form_advanced_properties.tpl" el=$object}
+{assign_associative var="params" el=$object}
+{$view->element('form_advanced_properties', $params)}
 
-{include file="../common_inc/form_custom_properties.tpl"}
+{$view->element('form_custom_properties')}
 
-{include file="../common_inc/form_permissions.tpl" el=$object recursion=true}
+{assign_associative var="params" el=$object recursion=true}
+{$view->element('form_permissions', $params)}
 
 </form>
 
-	{include file="../common_inc/form_print.tpl"}
+	{$view->element('form_print')}

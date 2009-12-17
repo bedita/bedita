@@ -36,7 +36,7 @@ $(document).ready(function(){
 	
 	{assign var="user" value=$session->read('BEAuthUser')}
 
-	{if !empty($method) && $method != "index"} 
+	{if !empty($view->action) && $view->action != "index"} 
 	<div class="insidecol">
 		{if $module_modify eq '1'}		
 			<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" />

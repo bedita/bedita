@@ -1,22 +1,20 @@
 
+{$view->set('method', $view->action)}
 
-</head>
+{$view->element('modulesmenu')}
 
-<body>
+{include file="inc/menuleft.tpl"}
 
-{include file="../common_inc/modulesmenu.tpl"}
+{include file="inc/menucommands.tpl"}
 
-{include file="inc/menuleft.tpl" method="index"}
-
-{include file="inc/menucommands.tpl" method="index"}
-
-{include file="../common_inc/toolbar.tpl" itemName="cards"}
+{assign_associative var="params" itemName="cards"}
+{$view->element('toolbar', $params)}
 
 
 
 <div class="mainfull">
 
-	{include file="inc/list_objects.tpl" method="index"}
+	{include file="inc/list_objects.tpl"}
 	
 
 </div>

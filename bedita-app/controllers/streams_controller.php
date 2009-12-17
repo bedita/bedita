@@ -44,7 +44,7 @@ class StreamsController extends AppController {
 		$ot  = array($conf->objectTypes['image']["id"],
 					$conf->objectTypes['audio']["id"],
 					$conf->objectTypes['video']["id"],
-					$conf->objectTypes['befile']["id"],
+					$conf->objectTypes['b_e_file']["id"],
 					$conf->objectTypes['application']["id"]
 				);
 		

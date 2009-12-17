@@ -9,19 +9,21 @@
 	
 	{include file="./inc/form_properties.tpl" comments=true}	
 	
-	{include file="../common_inc/form_tree.tpl"}
+	{$view->element('form_tree')}
 	
-	{include file="../common_inc/form_file_list.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
+	{assign_associative var="params" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
+	{$view->element('form_file_list', $params)}
 
-	{include file="../common_inc/form_tags.tpl"}
+	{$view->element('form_tags')}
 	
-	{include file="../common_inc/form_translations.tpl"}
+	{$view->element('form_translations')}
 	
-	{include file="../common_inc/form_assoc_objects.tpl" object_type_id=$conf->objectTypes.book.id}
+	{assign_associative var="params" object_type_id=$conf->objectTypes.book.id}
+	{$view->element('form_assoc_objects', $params)}
 
 	{include file="./inc/form_advanced_properties.tpl" el=$object}
 
 </form>
 
 
-	{include file="../common_inc/form_print.tpl"}
+	{$view->element('form_print')}

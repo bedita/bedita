@@ -218,10 +218,6 @@ function beCancelQueue() {
 </script>
 
 
-
-</head>
-<body>
-
 		<div id="uploadBox" style="border:5px solid red; padding:5px;">
 			<div id="wrapper">
 				<div id="content">

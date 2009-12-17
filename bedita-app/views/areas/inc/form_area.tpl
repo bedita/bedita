@@ -14,7 +14,7 @@ $(document).ready(function(){
 </script>
 {/literal}
 
-{include file="../common_inc/form_common_js.tpl"}
+{$view->element('form_common_js')}
 
 {assign var=object_lang value=$object.lang|default:$conf->defaultLang}
 	
@@ -48,7 +48,7 @@ $(document).ready(function(){
 		<tr>
 			<th>{t}status{/t}:</th>
 			<td id="status">
-				{if $object.fixed == 1}
+				{if $object.fixed|default:'' == 1}
 					{t}This object is fixed - some data is readonly{/t}
 					<input type="hidden" name="data[fixed]" value="1" />
 					<input type="hidden" name="data[status]" value="{$object.status}" />
@@ -207,10 +207,12 @@ $(document).ready(function(){
 	</fieldset>
 
 
-	{include file="../common_inc/form_translations.tpl" object=$object|default:null}
+	{assign_associative var="params" object=$object|default:null}
+	{$view->element('form_translations', $params)}
 
-	{include file="../common_inc/form_custom_properties.tpl"}
+	{$view->element('form_custom_properties')}
 	
-	{include file="../common_inc/form_permissions.tpl" el=$object|default:null recursion=true}
+	{assign_associative var="params" el=$object|default:null recursion=true}
+	{$view->element('form_permissions', $params)}
 	
 

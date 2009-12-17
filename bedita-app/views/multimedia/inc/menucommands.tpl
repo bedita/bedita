@@ -1,4 +1,4 @@
-{assign var='method' value=$method|default:'index'}
+{assign var='method' value=$view->action|default:'index'}
 
 {*
 Template incluso.
@@ -8,7 +8,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
-	{if !empty($method) && $method != "index"}
+	{if !empty($view->action) && $view->action != "index"}
 		{assign var="back" value=$session->read("backFromView")}
 	{else}
 		{assign_concat var="back" 0=$html->url('/') 1=$currentModule.path}
@@ -18,20 +18,20 @@ Menu a SX valido per tutte le pagine del controller.
 		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
 	</div> 
 	
-	{if !empty($method) && $method != "index"}
+	{if !empty($view->action) && $view->action != "index"}
 	<div class="insidecol">
 		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" id="saveBEObject" />
 		<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" id="cloneBEObject" />
 		<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" />
 	</div>
 	
-		{include file="../common_inc/prevnext.tpl"}
+		{$view->element('prevnext')}
 	
 	{/if}
 
 	{assign var='cat' value=$categorySearched|default:''}
 
-	{if $method == "index"}
+	{if $view->action == "index"}
 		<ul class="menuleft insidecol">
 			<li><a href="javascript:void(0)" onClick="$('#mediatypes').slideToggle();">{t}Select by type{/t}</a></li>
 				<ul id="mediatypes" {if empty($categorySearched)}style="display:none"{/if}>

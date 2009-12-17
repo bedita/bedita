@@ -116,7 +116,7 @@ $(function() {
 </script>
 
 
-
+{$view->set("object_type_id",$object_type_id)}
 <div class="tab"><h2>{t}Relationships{/t}</h2></div>
 
 <fieldset id="frmAssocObject">
@@ -139,7 +139,8 @@ $(function() {
 		<table class="indexlist" style="width:100%; margin-bottom:10px;">
 			<tbody class="disableSelection">
 			{if !empty($relObjects.$rel)}
-				{include file="../common_inc/form_assoc_object.tpl" objsRelated=$relObjects.$rel}
+				{assign_associative var="params" objsRelated=$relObjects.$rel rel=$rel}
+				{$view->element('form_assoc_object', $params)}
 			{else}
 				<tr><td colspan="10"></td></tr>
 			{/if}
@@ -151,7 +152,8 @@ $(function() {
 		value="  {t}connect new items{/t}  " />
 		
 		{if $rel == "download"}
-			{include file="../common_inc/form_upload_multi.tpl" uploadIdSuffix="DownloadRel"}
+			{assign_associative var="params" uploadIdSuffix="DownloadRel"}
+			{$view->element('form_upload_multi', $params)}
 		{/if}
 		
 		{*

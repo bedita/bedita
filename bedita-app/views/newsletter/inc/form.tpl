@@ -10,7 +10,8 @@
 
 	{include file="inc/form_invoice.tpl"}
 		
-	{include file="../common_inc/form_advanced_properties.tpl" el=$object}
+	{assign_associative var="params" el=$object}
+	{$view->element('form_advanced_properties', $params)}
 	
 </form>
 

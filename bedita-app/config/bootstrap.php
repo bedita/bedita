@@ -45,6 +45,9 @@
 
 $modelPaths = array();
 $controllerPaths = array();
+$componentPaths = array();
+$behaviorPaths = array();
+$helperPaths = array();
 
 $excludedDirs = array("behaviors", "datasources", "components");
 
@@ -63,40 +66,60 @@ function enableSubFoldersOn($baseDir, &$var, &$exclude) {
   chdir($cwd);
 }
 
-enableSubFoldersOn(ROOT.DS.APP_DIR.'/controllers', $controllerPaths, $excludedDirs);
-enableSubFoldersOn(ROOT.DS.APP_DIR.'/models', $modelPaths, $excludedDirs); 
 
+// backend specific bootstrap
+if (!defined("BEDITA_CORE_PATH")) {
+	define("BEDITA_CORE_PATH", ROOT.DS.APP_DIR);
+	define("BACKEND_APP", true);
+	$controllerPaths = array();
+	enableSubFoldersOn(BEDITA_CORE_PATH.DS.'controllers', $controllerPaths, $excludedDirs);
+	
+	function shutdownTransation() {
+		if(Configure::read("bedita.transaction") != null) {
+			App::import('Component','Transaction');
+			$Transaction = new TransactionComponent();
+			$Transaction->init() ;
+			$Transaction->rollback() ;
+		}
+	}
+	
+	// Register transaction shutdown function
+	register_shutdown_function('shutdownTransation');
+	
+	/**
+	 ** Load BEdita settings and define constants
+	 */
+	
+	// load defaults
+	Configure::load("bedita.ini") ;
+	
+	// load local installation specific settings
+	if ( file_exists (BEDITA_CORE_PATH . DS . "config".DS."bedita.cfg.php") ) {
+		Configure::load("bedita.cfg") ;	
+	}
 
-
+// frontends specific bootstrap
+} else {
+	define("BACKEND_APP", false);
+	$modelPaths[]=BEDITA_CORE_PATH . DS . 'models' . DS;
+	$viewPaths=array(BEDITA_CORE_PATH . DS . 'views' . DS);
+	$componentPaths[] = BEDITA_CORE_PATH . DS . 'controllers' . DS . 'components' . DS;
+	$behaviorPaths[] = BEDITA_CORE_PATH . DS . 'models' . DS . 'behaviors' . DS;
+	$helperPaths[] = BEDITA_CORE_PATH . DS . 'views' . DS . 'helpers' . DS;
+}
 
 /**
- ** Load BEdita settings and define constants
+ * backend and frontend commons bootstrap operations
  */
+$modelPaths[] = BEDITA_CORE_PATH.DS."plugins".DS."addons".DS."models";
+$componentPaths[] = BEDITA_CORE_PATH.DS."plugins".DS."addons".DS."components"; 
+enableSubFoldersOn(BEDITA_CORE_PATH.DS.'models', $modelPaths, $excludedDirs);
 
-// load defaults
-Configure::load("bedita.ini") ;
-
-// load local installation specific settings
-if ( file_exists (ROOT.DS.APP_DIR.DS."config".DS."bedita.cfg.php") ) {
-	Configure::load("bedita.cfg") ;	
-}
+// common bedita libs path
+define('BEDITA_LIBS', BEDITA_CORE_PATH . DS .'libs');
 
 // common exceptions definitions
-require ROOT.DS.APP_DIR.DS."bedita_exception.php";
-
-function shutdownTransation() {
-	
-	if(Configure::read("bedita.transaction") != null) {
-		App::import('Component','Transaction');
-		$Transaction = new TransactionComponent();
-		
-		$Transaction->init() ;
-		$Transaction->rollback() ;
-	}
-}
-
-// Register transaction shutdown function
-register_shutdown_function('shutdownTransation');
+require_once BEDITA_CORE_PATH . DS . "bedita_exception.php";
 
 //EOF
 ?>

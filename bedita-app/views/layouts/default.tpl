@@ -32,35 +32,23 @@
 	{$javascript->link("jquery/ui/ui.core.min")}
 	{$javascript->link("jquery/ui/ui.draggable.min")}
 
-
-
-{*
-** Page Specific Content
-** contains </head> tag, closed inside each module's view
-*}
-
-
+</head>
+<body{if !empty($bodyClass)} class="{$bodyClass}"{/if}>
 
 {$content_for_layout}
-
-
-
 	
 {*
 ** Help container
 *}
 
-{include file="../common_inc/help.tpl"}
-
-
+{$view->element('help')}
 
 
 {*
 ** Modal container
 *}
 
-{include file="../common_inc/modal.tpl"}
-
+{$view->element('modal')}
 
 
 {*
@@ -69,19 +57,9 @@
 
 {if empty($noFooter)}
 
-{include file="../common_inc/footer.tpl"}
+{$view->element('footer')}
 
 {/if}
-
-
-{* CakePHP Debug - start *}
-{if $conf->debug && $cakeDebug}
-<p style="color: red;"><br />Cake Debug Follows:</p>
-<hr style="border-top: 1px dashed red; height: 1px; width: 715px;" align="left" />
-<pre style="font-family: "Courier New", Courier, monospace; font-size: 10px;">{$cakeDebug}</pre>
-{/if}
-{* CakePHP Debug - end *}
-
 
 
 {* HTML document's end *}

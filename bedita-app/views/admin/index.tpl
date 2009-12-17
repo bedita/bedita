@@ -15,15 +15,11 @@
 //-->
 </script>
 
-</head>
+{$view->element('modulesmenu')}
 
-<body>
+{include file="inc/menuleft.tpl"}
 
-{include file="../common_inc/modulesmenu.tpl"}
-
-{include file="inc/menuleft.tpl" method="index"}
-
-{include file="inc/menucommands.tpl" method="index"}
+{include file="inc/menucommands.tpl"}
 
 
 <div class="head">

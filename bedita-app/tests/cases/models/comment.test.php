@@ -35,7 +35,7 @@ class CommentTestCase extends BeditaTestCase {
 	var $uses = array("Comment", "Document", "EditorNote");
 	
 	function testCommentAndNote() {
-		$this->requiredData(array("document", "comment", "editornote"));
+		$this->requiredData(array("document", "comment", "editor_note"));
 		$result = $this->Document->save($this->data['document']) ;
 		$this->assertNotEqual($result,false);		
 		$idDoc = $this->Document->id;
@@ -45,8 +45,8 @@ class CommentTestCase extends BeditaTestCase {
 		$this->assertNotEqual($result,false);		
 		$idComm = $this->Comment->id;
 
-		$this->data['editornote']['object_id'] = $idDoc;
-		$result = $this->EditorNote->save($this->data['editornote']) ;
+		$this->data['editor_note']['object_id'] = $idDoc;
+		$result = $this->EditorNote->save($this->data['editor_note']) ;
 		$this->assertNotEqual($result,false);		
 		$idNote = $this->EditorNote->id;
 		
@@ -71,7 +71,7 @@ class CommentTestCase extends BeditaTestCase {
 		$this->assertNotEqual($result, false);		
 		pr("EditorNote: ");
 		pr($result);
-		$this->assertEqual($result['description'], $this->data['editornote']['description']);		
+		$this->assertEqual($result['description'], $this->data['editor_note']['description']);		
 		$this->assertEqual($result['object_id'], $idDoc);		
 		$this->assertEqual($result['ReferenceObject']['id'], $idDoc);		
 		

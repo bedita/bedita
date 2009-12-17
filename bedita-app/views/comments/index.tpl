@@ -1,26 +1,23 @@
-{$html->css('tree')}
-{$javascript->link("jquery.treeview")}
-{$javascript->link("jquery.changealert")}
+{$html->css('tree', null, null, false)}
+{$javascript->link("jquery.treeview", false)}
+{$javascript->link("jquery.changealert", false)}
 
-</head>
-
-<body>
 
 {assign var="p" value=$beToolbar->params}
 {assign var="toolbarstring" value=$p.named}
 
 
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
-{include file="inc/menuleft.tpl" method="index"}
+{include file="inc/menuleft.tpl"}
 
-{include file="inc/menucommands.tpl" method="index"}
+{include file="inc/menucommands.tpl"}
 
-{include file="../common_inc/toolbar.tpl"}
+{$view->element('toolbar')}
 
 <div class="mainfull">
 
-	{include file="inc/list_objects.tpl" method="index"}
+	{include file="inc/list_objects.tpl"}
 	
 </div>
 

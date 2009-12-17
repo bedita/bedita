@@ -40,7 +40,7 @@ class HomeController extends AppController {
 	 	$user = $this->Session->read("BEAuthUser");
 	 	$lastModBYUser = array();
 	 	$lastMod = array();
-	 	$excludedObjectTypes = array($conf->objectTypes["editornote"]["id"], $conf->objectTypes["comment"]["id"]);
+	 	$excludedObjectTypes = array($conf->objectTypes["editor_note"]["id"], $conf->objectTypes["comment"]["id"]);
 	 	if (!empty($conf->objectTypes["questionnaireresult"]["id"]))
 	 		$excludedObjectTypes[] = $conf->objectTypes["questionnaireresult"]["id"];
 	 	
@@ -72,7 +72,7 @@ class HomeController extends AppController {
 		$filter["ref_object_details"] = "Comment";
 	 	$lastComments = $this->BEObject->findObjects(null, null, null, $filter, "modified", false, 1, 10);
 	 	
-	 	$filter["object_type_id"] = $conf->objectTypes['editornote']["id"];
+	 	$filter["object_type_id"] = $conf->objectTypes['editor_note']["id"];
 		$filter["ref_object_details"] = "EditorNote";
 		$filter["user_created"] = "";
 		$lastNotes = $this->BEObject->findObjects(null, null, null, $filter,  "modified", false, 1, 10);
@@ -84,6 +84,7 @@ class HomeController extends AppController {
 	 	$this->set("lastComments", $lastComments["items"]);
 	 	$this->set("connectedUser", $connectedUser);
 		$this->set("noFooter", true);
+		$this->set("bodyClass", "home");
 	 }
 
 	/**

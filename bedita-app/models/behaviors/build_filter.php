@@ -139,7 +139,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		
 		foreach ($value as $key => $annotationType) {
 			$annotationModel = ClassRegistry::init($annotationType);
-			$refObj_type_id = Configure::read("objectTypes." . strtolower($annotationModel->name) . ".id");
+			$refObj_type_id = Configure::read("objectTypes." . Inflector::underscore($annotationModel->name) . ".id");
 			$numOf = "num_of_" . Inflector::underscore($annotationModel->name);
 			$this->fields .= ", SUM(" . $numOf . ") AS " . $numOf;
 			$from = " LEFT OUTER JOIN (

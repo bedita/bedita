@@ -23,7 +23,7 @@ class CommentTestData extends BeditaTestData {
 			'url' => "www.fightthecylons.com",
 		),
 
-		'editornote' => array(
+		'editor_note' => array(
 			'title' => "the final five",
 			'description' => "you are one of them!",
 		),

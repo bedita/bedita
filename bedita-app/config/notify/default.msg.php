@@ -18,7 +18,7 @@
  */
 
 // Message for new note
-$notify["editornote"]["eng"] = array(
+$notify["editor_note"]["eng"] = array(
 	"subject" => "[BEdita] new note on '[\$title]'",
 
 	"mail_body" => "Hi [\$user], " .
@@ -31,7 +31,7 @@ $notify["editornote"]["eng"] = array(
 	"\n Look at [\$url]"
 );
 
-$notify["editornote"]["ita"] = array(
+$notify["editor_note"]["ita"] = array(
 	"subject" => "[BEdita] nuova nota su '[\$title]'",
 
 	"mail_body" => "Ciao [\$user], " .

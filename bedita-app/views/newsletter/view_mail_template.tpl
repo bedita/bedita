@@ -2,10 +2,10 @@
 ** subscriber view template
 *}
 
-{$html->css("ui.datepicker")}
+{$html->css("ui.datepicker", null, null, false)}
 
 {$javascript->link("jquery/jquery.form", false)}
-{$javascript->link("jquery/jquery.selectboxes.pack")}
+{$javascript->link("jquery/jquery.selectboxes.pack", false)}
 
 {$javascript->link("jquery/ui/ui.sortable.min", false)}
 {$javascript->link("jquery/ui/ui.datepicker.min", false)}
@@ -22,12 +22,11 @@
 	{/literal}
 </script>
 
-{include file="../common_inc/form_common_js.tpl" submiturl=""}
+{assign_associative var="params"  submiturl=""}
+{$view->element('form_common_js', $params)}
 
-</head>
-<body>
 
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl" method="templates"}
 
@@ -44,5 +43,6 @@
 	{include file="inc/form_template.tpl"}
 		
 </div>
-{include file="../common_inc/menuright.tpl"}
+
+{$view->element('menuright')}
 

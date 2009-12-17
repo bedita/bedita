@@ -82,12 +82,10 @@ $(document).ready(function() {
 </script>
 
 {assign var="delparam" value="/newsletter/deleteMailGroups"}
-{include file="../common_inc/form_common_js.tpl"}
 
-</head>
-<body>
+{$view->element('form_common_js')}
 
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl" method="mailgroups"}
 
@@ -114,4 +112,4 @@ $(document).ready(function() {
 	
 </div>
 
-{include file="../common_inc/menuright.tpl" object=""}
+{$view->element('menuright')}

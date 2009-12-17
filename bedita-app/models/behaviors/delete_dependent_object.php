@@ -48,7 +48,7 @@ class DeleteDependentObjectBehavior extends ModelBehavior {
 		
 		foreach ($this->config[$model->name] as $type) {
 			if(!is_array($filter)) $filter = array() ;
-			$filter["object_type_id"][] = $conf->objectTypes[strtolower($type)]["id"] ;
+			$filter["object_type_id"][] = $conf->objectTypes[Inflector::underscore($type)]["id"] ;
 		}
 		
 		// get descendants

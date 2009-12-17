@@ -10,26 +10,27 @@
 <input  type="hidden" name="data[name]" value="{$object.name}" />
 <input  type="hidden" name="data[mime_type]" value="{$object.mime_type}" />
 
-{include file="../common_inc/form_properties.tpl" publication=false}
+{assign_associative var="params" publication=false}
+{$view->element('form_properties', $params)}
 
-{include file="../common_inc/form_title_subtitle.tpl"}
+{$view->element('form_title_subtitle')}
 
 {include file="inc/form_mediatype.tpl"}
 
-{include file="../common_inc/form_file.tpl"}
+{$view->element('form_file')}
 
 {if !empty($object)}
 	{include file="inc/list_relationships.tpl"}
 {/if}
 
-{include file="../common_inc/form_tags.tpl"}
+{$view->element('form_tags')}
 
-{include file="../common_inc/form_advanced_properties.tpl"}
+{$view->element('form_advanced_properties')}
 
-{include file="../common_inc/form_custom_properties.tpl"}
+{$view->element('form_custom_properties')}
 
-{include file="../common_inc/form_file_exif.tpl"}
+{$view->element('form_file_exif')}
 
 </form>
 
-	{include file="../common_inc/form_print.tpl"}
+	{$view->element('form_print')}

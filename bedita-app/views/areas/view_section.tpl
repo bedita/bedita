@@ -1,6 +1,6 @@
 {$javascript->link("jquery/jquery.selectboxes.pack", false)}
 
-{$html->css('tree')}
+{$html->css('tree', null, null, false)}
 {$javascript->link("jquery/jquery.treeview", false)}
 
 {$javascript->link("form", false)}
@@ -22,11 +22,7 @@
 </script>
 
 
-</head>
-
-<body>
-
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl" method="viewSection"}
 
@@ -56,4 +52,4 @@
 	</form>
 </div>
 
-{include file="../common_inc/menuright.tpl"}
+{$view->element('menuright')}

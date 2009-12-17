@@ -20,6 +20,8 @@
  */
 
 App::import('Core', 'l10n');
+App::import("File", "BeLib", true, array(BEDITA_LIBS), "be_lib.php");
+BeLib::getObject("BeConfigure")->initConfig();
 
 /**
  * Controller base class for backends+frontends
@@ -108,11 +110,76 @@ class AppController extends Controller
 
 	protected function initAttributes() {}	
 	
-	final function beforeFilter() {
+	/**
+	 * 1) cache object types array and module plugged configuration
+	 * 2) add models and components module plugin paths to BEdita core paths
+	 * 
+	 */
+	protected function cacheConf() {
+		$conf = Configure::getInstance();
+		$configurations = array();
+				
+		if(file_exists(BEDITA_CORE_PATH . DS . 'plugins'.DS.'addons'.DS.'config'.DS.'config.php')) {
+			include BEDITA_CORE_PATH . DS . 'plugins'.DS.'addons'.DS.'config'.DS.'config.php';
+		}
 
+		$moduleModel = ClassRegistry::init("Module");
+		$modules = $moduleModel->find("all", array(
+				"conditions" => array("type" => "plugin", "status" => "on")
+			)
+		);
+		if (!empty($modules)) {
+			$addPath = array();
+			foreach ($modules as $m) {
+				$modulePath = BEDITA_CORE_PATH . DS . "plugins" . DS . $m["Module"]["name"];
+				if (file_exists($modulePath . "config" . DS . "config.php")) {
+					include $modulePath . "config" . DS . "config.php";
+				}
+				$config["modules"][$m["Module"]["name"]] = array(
+					"id" => $m["Module"]["id"],
+					"label" => $m["Module"]["label"]
+				);
+				$conf->modelPaths[] = $modulePath . DS . "models";
+				$conf->componentPaths[] = $modulePath . DS . "components";
+			}
+		}
+		$conf->plugged = array();
+		if (!empty($config)) {
+			$conf->plugged = $config;
+		}
+		$configurations["plugged"] = $conf->plugged;
+		
+		$objectTypeModel = ClassRegistry::init("ObjectType");
+		$ot = $objectTypeModel->find("all");
+		if (!empty($ot)) {
+			$configurations["objectTypes"] = array();
+			foreach ($ot as $type) {
+				$modelName = Inflector::camelize($type["ObjectType"]["name"]);
+				$configurations["objectTypes"][$type["ObjectType"]["id"]] = $configurations["objectTypes"][$type["ObjectType"]["name"]] = array(
+					"id" => $type["ObjectType"]["id"],
+					"name" => $type["ObjectType"]["name"],
+					"module" => $type["ObjectType"]["module"],
+					"model" => $modelName
+				);
+				$objModel = ClassRegistry::init($modelName);
+				if (!empty($objModel->objectTypesGroups)) {
+					foreach($objModel->objectTypesGroups as $group) {
+						$configurations["objectTypes"][$group]["id"][] = $type["ObjectType"]["id"];
+					}
+				}
+			}			
+			$conf->objectTypes = $configurations["objectTypes"];
+		}
+		
+		Cache::write('beConfig', $configurations);
+	}
+	
+	final function beforeFilter() {
 		self::$current = $this;
 		$this->view = 'Smarty';
-		$this->set('conf',  Configure::getInstance());
+		$conf = Configure::getInstance();
+		
+		$this->set('conf',  $conf);
 		
 		// convienience methods for frontends
 		$this->initAttributes();
@@ -376,7 +443,11 @@ class AppController extends Controller
 	
 	protected function loadModelByObjectTypeId($obj_type_id) {
 		$conf  = Configure::getInstance();
-		$modelClass = $conf->objectTypes[$obj_type_id]["model"];
+		if (isset($conf->objectTypes[$obj_type_id])) {
+			$modelClass = $conf->objectTypes[$obj_type_id]["model"];
+		} else {
+			$modelClass = $conf->objectTypesExt[$obj_type_id]["model"];
+		}
 		return $this->loadModelByType($modelClass);
 	}
 
@@ -490,7 +561,7 @@ class AppController extends Controller
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave() ;
 
-		$name = strtolower($beModel->name);
+		$name = Inflector::underscore($beModel->name);
 		
 		$categoryModel = ClassRegistry::init("Category");
 		$tagList = array();
@@ -561,6 +632,38 @@ class AppController extends Controller
 		}
 		$this->Transaction->commit() ;
 		return trim($objectsListDesc, ",");
+	}
+	
+	/**
+	 * return an array with all relations merging defaultObjRelationType, objRelationType, plugged.objRelationType
+	 * 
+	 * @return array
+	 */
+	protected function mergeAllRelations() {
+		$defaultObjRel = Configure::read("defaultObjRelationType");
+		$cfgObjRel = Configure::read("objRelationType");
+		$pluggedObjRel = Configure::read("plugged.objRelationType");
+		if (!empty($cfgObjRel)) {
+			foreach($cfgObjRel as $relation => $rules) {
+				if (isset($defaultObjRel[$relation])) {
+					$defaultObjRel[$relation]["left"] = array_merge($defaultObjRel[$relation]["left"], $rules["left"]);
+					$defaultObjRel[$relation]["right"] = array_merge($defaultObjRel[$relation]["right"], $rules["right"]);
+				} else {
+					$defaultObjRel[$relation] = $rules;
+				}
+			}
+		}
+		if (!empty($pluggedObjRel)) {
+			foreach($pluggedObjRel as $relation => $rules) {
+				if (isset($defaultObjRel[$relation])) {
+					$defaultObjRel[$relation]["left"] = array_merge($defaultObjRel[$relation]["left"], $rules["left"]);
+					$defaultObjRel[$relation]["right"] = array_merge($defaultObjRel[$relation]["right"], $rules["right"]);
+				} else {
+					$defaultObjRel[$relation] = $rules;
+				}
+			}
+		}
+		return $defaultObjRel;
 	}
 	
 }
@@ -735,7 +838,7 @@ abstract class ModulesController extends AppController {
 				$this->setResult(self::ERROR);
 			}
 		}
-		$this->render(null, null, VIEWS."common_inc/autosave.tpl");
+		$this->render(null, null, VIEWS."elements/autosave.tpl");
 	}
 */
 	protected function viewObject(BEAppModel $beModel, $id = null) {
@@ -747,7 +850,7 @@ abstract class ModulesController extends AppController {
 		$relations = array();
 		$relationsCount = array();
 		$previews = array();
-		$name = strtolower($beModel->name);
+		$name = Inflector::underscore($beModel->name);
 		if(isset($id)) {
 			$beModel->containLevel("detailed");
 			if(!($obj = $beModel->findById($id))) {
@@ -837,7 +940,7 @@ abstract class ModulesController extends AppController {
 
 	protected function showCategories(BEAppModel $beModel) {
 		$conf  = Configure::getInstance() ;
-		$type = $conf->objectTypes[strtolower($beModel->name)]["id"];
+		$type = $conf->objectTypes[Inflector::underscore($beModel->name)]["id"];
 		$categoryModel = ClassRegistry::init("Category");
 		$this->set("categories", $categoryModel->findAll("Category.object_type_id=".$type));
 		$this->set("object_type_id", $type);
@@ -851,7 +954,7 @@ abstract class ModulesController extends AppController {
 	}
 	
 	/**
-	 * return an array of available relations for common object defined form $objectType
+	 * return an array of available relations for common object defined from $objectType
 	 * relations with "hidden" set to true are excluded from array  
 	 * 
 	 * @param string $objectType
@@ -859,7 +962,7 @@ abstract class ModulesController extends AppController {
 	 */
 	protected function getAvailableRelations($objectType) {
 		$objectTypeId = Configure::read("objectTypes." . $objectType . ".id");
-		$allRelations = array_merge(Configure::read("objRelationType"), Configure::read("defaultObjRelationType"));
+		$allRelations = $this->mergeAllRelations();
 		$availableRelations = array();
 		foreach ($allRelations as $relation => $rule) {
 			if (empty($rule["hidden"])) {
@@ -886,6 +989,30 @@ abstract class ModulesController extends AppController {
 			}
 		}
 		return $availableRelations;
+	}
+	
+	
+	/**
+	 * return array of object types belong to module 
+	 * 
+	 * @param string $moduleName
+	 * @return array
+	 */
+	protected function getModuleObjectTypes($moduleName) {
+		$otModel = ClassRegistry::init("ObjectType");
+		$ot = $otModel->find("all", array(
+				"conditions" => array("module" => $moduleName),
+				"fields" => "id",
+				"contain" => array()
+			)
+		);
+		$objectTypes = array();
+		if (!empty($ot)) {
+			foreach ($ot as $o) {
+				$objectTypes[] = $o["ObjectType"]["id"];
+			}
+		}
+		return $objectTypes;
 	}
 	
 	/**

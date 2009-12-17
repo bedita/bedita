@@ -1,4 +1,3 @@
-{$html->css('module.superadmin')}
 {$javascript->link("form", false)}
 {$javascript->link("jquery/jquery.form", false)}
 {$javascript->link("jquery/jquery.cmxforms", false)}
@@ -21,11 +20,8 @@ function delGroupDialog(name,objectid) {
 //-->
 </script>
 
-</head>
 
-<body>
-
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl" method="groups"}
 
@@ -45,4 +41,4 @@ function delGroupDialog(name,objectid) {
 	{include file="inc/form_groups.tpl"}
 
 </div>
-{include file="../common_inc/menuright.tpl"}
+{$view->element('menuright')}

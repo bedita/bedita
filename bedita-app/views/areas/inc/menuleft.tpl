@@ -3,7 +3,7 @@ Template incluso.
 Menu a SX valido per tutte le pagine del controller.
 *}
 
-{assign var='method' value=$method|default:'index'}
+{assign var='method' value=$view->action|default:'index'}
 
 <div class="primacolonna">
 		
@@ -29,18 +29,18 @@ Menu a SX valido per tutte le pagine del controller.
 	<div class="insidecol publishingtree">	
 			{if !empty($tree)}
 			
-			{include file="../common_inc/tree.tpl"}
+			{$view->element('tree')}
 			
 			{/if}
 	</div>
 	{/if}
 	
 	<div style="margin-top:40px;">
-	{include file="../common_inc/messages.tpl"}
+	{$view->element('messages')}
 	</div>
 	
 
-	{include file="../common_inc/user_module_perms.tpl"}
+	{$view->element('user_module_perms')}
 	
 </div>
 

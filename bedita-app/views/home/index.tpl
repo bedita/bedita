@@ -31,9 +31,6 @@ $(document).ready(function() {
 </script>
 {/literal}
 
-</head>
-
-<body class="home">
 
 <ul class="modules">
 
@@ -78,7 +75,7 @@ $(document).ready(function() {
 			{/foreach} 
 		{/if}	
 		<hr />
-		{include file="../common_inc/colophon.tpl"}
+		{$view->element('colophon')}
 		<hr />
 		<a href="{$html->url('/authentications/logout')}">› {t}Exit{/t}</a>
 	</li>
@@ -87,7 +84,7 @@ $(document).ready(function() {
 	
 </ul> 
 
-<div style="position:absolute; left:580px; top:19px; z-index:400">{include file="../common_inc/messages.tpl"}</div>
+<div style="position:absolute; left:580px; top:19px; z-index:400">{$view->element('messages')}</div>
 
 <div class="dashboard">
 

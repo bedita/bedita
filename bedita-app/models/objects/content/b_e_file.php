@@ -32,5 +32,6 @@ class BEFile extends BeditaSimpleStreamModel
 {
 	var $useTable	= "streams" ;
 	var $actsAs = array();
+	public $objectTypesGroups = array("multimedia");
 }
 ?>

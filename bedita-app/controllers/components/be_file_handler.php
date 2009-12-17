@@ -251,7 +251,7 @@ class BeFileHandlerComponent extends Object {
 			if ($modelType["name"] != $prevModel) {
 				
 				
-				$data["object_type_id"] = Configure::read("objectTypes." . strtolower($modelType["name"]) . ".id");
+				$data["object_type_id"] = Configure::read("objectTypes." . Inflector::underscore($modelType["name"]) . ".id");
 				// delete old data from specific table
 				$prevMediaModel = ClassRegistry::init($prevModel);
 				$prevMediaModel->Behaviors->disable('DeleteObject');
@@ -313,7 +313,7 @@ class BeFileHandlerComponent extends Object {
 		// if empty mediatype try to get it from modelName
 		if (empty($data['mediatype'])) {
 			if($modelType != "BEFile") {
-				$data['mediatype'] = strtolower($modelType);
+				$data['mediatype'] = Inflector::underscore($modelType);
 			} else {
 				Configure::load('mediatype.ini');
 				$c = Configure::getInstance();
@@ -323,7 +323,7 @@ class BeFileHandlerComponent extends Object {
 		
 		if (!empty($data['mediatype'])) {
 			$category = ClassRegistry::init("Category");
-			$objetc_type_id = Configure::read("objectTypes." . strtolower($modelType) . ".id");
+			$objetc_type_id = Configure::read("objectTypes." . Inflector::underscore($modelType) . ".id");
 			$cat = $category->checkMediaType($objetc_type_id, $data['mediatype']);	
 		}
 		return $cat;
@@ -437,9 +437,9 @@ class BeFileHandlerComponent extends Object {
 	public function getMimeTypeByExtension($filename) {
 		$mime_type = false;
 		include_once APP_PATH.'config'.DS.'mime.types.php';
-			$extension = strtolower( pathinfo($filename, PATHINFO_EXTENSION) );
-			if (!empty($extension) && array_key_exists($extension,$config["mimeTypes"])) {
-				$mime_type = $config["mimeTypes"][$extension];
+		$extension = strtolower( pathinfo($filename, PATHINFO_EXTENSION) );
+		if (!empty($extension) && array_key_exists($extension,$config["mimeTypes"])) {
+			$mime_type = $config["mimeTypes"][$extension];
 		}
 		return $mime_type;
 	}

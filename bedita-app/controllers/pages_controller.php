@@ -103,12 +103,13 @@ class PagesController extends AppController {
 		$this->ajaxCheck();
 		$id = (!empty($this->params["form"]["parent_id"]))? $this->params["form"]["parent_id"] : null;
 		
+		$conf = Configure::getInstance();
 		// default
-		$objectTypeIds = Configure::read("objectTypes.related.id");
+		$objectTypeIds = $conf->objectTypes["related"]["id"];
 		
 		if (!empty($relation)) {
 			
-			$relTypes = array_merge(Configure::read("objRelationType"), Configure::read("defaultObjRelationType"));
+			$relTypes = $this->mergeAllRelations();
 			
 			if (!empty($relTypes[$relation])) {
 				
@@ -117,30 +118,34 @@ class PagesController extends AppController {
 				}
 				
 				$objectTypeName = Configure::read("objectTypes." . $main_object_type_id . ".name");
-				
+
 				if (!empty($relTypes[$relation][$objectTypeName])) {
-					$objectTypeIds = $relTypes[$relation][$objectTypeName];
+					$ot = $relTypes[$relation][$objectTypeName];
 				} elseif (key_exists("left", $relTypes[$relation]) 
 							&& key_exists("right", $relTypes[$relation])
 							&& is_array($relTypes[$relation]["left"])
 							&& is_array($relTypes[$relation]["right"])
 							) {
 				
-					if (in_array($main_object_type_id, $relTypes[$relation]["left"])) {
+					if (in_array($objectTypeName, $relTypes[$relation]["left"])) {
 						if (!empty($relTypes[$relation]["right"]))
-							$objectTypeIds = $relTypes[$relation]["right"];
-					} elseif (in_array($main_object_type_id, $relTypes[$relation]["right"])) {
+							$ot = $relTypes[$relation]["right"];
+					} elseif (in_array($objectTypeName, $relTypes[$relation]["right"])) {
 						if (!empty($relTypes[$relation]["left"]))
-							$objectTypeIds = $relTypes[$relation]["left"];
-					} elseif (empty($relTypes[$relation]["left"])) { 
-						$objectTypeIds = $relTypes[$relation]["right"];
-					} elseif (empty($relTypes[$relation]["right"])) {
-						$objectTypeIds = $relTypes[$relation]["left"];
-					} else {
-						$objectTypeIds = array(0);	
+							$ot = $relTypes[$relation]["left"];
+					} elseif (empty($relTypes[$relation]["left"]) && !empty($relTypes[$relation]["right"])) { 
+						$ot = $relTypes[$relation]["right"];
+					} elseif (empty($relTypes[$relation]["right"]) && !empty($relTypes[$relation]["left"])) {
+						$ot = $relTypes[$relation]["left"];
 					}
 				}
-
+				
+				if (!empty($ot)) {
+					$objectTypeIds = array();
+					foreach ($ot as $val) {
+						$objectTypeIds[] = $conf->objectTypes[$val]["id"];
+					}
+				}
 			}
 			
 		} else {
@@ -234,7 +239,7 @@ class PagesController extends AppController {
 		
 		$this->set("objsRelated", $objRelated);
 		$this->set("rel", $this->params["form"]["relation"]);
-		$tplname = (empty($tplname))? "common_inc/form_assoc_object.tpl" : str_replace(".", "/", $tplname) . ".tpl";
+		$tplname = (empty($tplname))? "elements/form_assoc_object.tpl" : str_replace(".", "/", $tplname) . ".tpl";
 		$this->render(null, null, VIEWS . $tplname);
 	}
 	

@@ -100,7 +100,7 @@
 			
 			// Add by BEdita team - Giangi
 			$this->_smarty->plugins_dir[] = ROOT . DS . APP_DIR . DS . 'vendors' . DS . '_smartyPlugins' ;
-			if(defined('BEDITA_CORE_PATH'))
+			if(!BACKEND_APP)
 				$this->_smarty->plugins_dir[] = BEDITA_CORE_PATH . DS . 'vendors' . DS . '_smartyPlugins';
 			
 

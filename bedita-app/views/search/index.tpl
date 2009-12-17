@@ -1,12 +1,8 @@
-{$html->css('tree')}
+{$html->css('tree', null, null, false)}
 {$javascript->link("jquery/jquery.treeview", false)}
-{$javascript->link("jquery/interface", false)}
 {$javascript->link("form", false)}
 {$javascript->link("jquery/jquery.changealert", false)}
 
-</head>
-
-<body>
 
 <script type="text/javascript">
 <!--

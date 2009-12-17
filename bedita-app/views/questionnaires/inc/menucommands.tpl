@@ -21,7 +21,7 @@ $(document).ready(function(){
 //-->
 </script>
 
-
+{$view->set("method", $method)}
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 
 	{if !empty($method) && $method != "index"}
@@ -50,7 +50,7 @@ $(document).ready(function(){
 		<input class="bemaincommands" onClick="window.location.href='{$html->url('index_sessions_results/')}'" type="button" value="{t}view results{/t}" />
 		{/if}
 	
-		{include file="../common_inc/prevnext.tpl"}
+		{$view->element('prevnext')}
 
 		
 	</div>

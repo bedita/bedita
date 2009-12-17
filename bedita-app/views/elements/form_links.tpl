@@ -71,7 +71,8 @@ $(document).ready(function() {
 			{if isset($relObjects.link)}
 			
 				{foreach from=$relObjects.link item="objRelated" name="linkForeach"}
-					<tr>{include file="../common_inc/form_link_item.tpl"}</tr>
+					{assign_associative var="params" objRelated=$objRelated}
+					<tr>{$view->element('form_link_item',$params)}</tr>
 				{/foreach}
 			
 			{/if}

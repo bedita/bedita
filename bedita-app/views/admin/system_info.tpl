@@ -1,6 +1,4 @@
-{$html->css('module.superadmin')}
 {$javascript->link("jquery/jquery.treeview", false)}
-{$javascript->link("jquery/interface", false)}
 {$javascript->link("form", false)}
 {$javascript->link("jquery/jquery.changealert", false)}
 
@@ -13,11 +11,7 @@
 </script>
 {/literal}
 
-</head>
-
-<body>
-
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl" method="systemInfo"}
 

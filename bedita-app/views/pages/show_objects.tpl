@@ -60,7 +60,7 @@ $(document).ready(function() {
 			$("#modaloverlay").hide();
 			
 			// if addObjToAssoc + suffix is defined use it (i.e. addObjToAssocQuestion in questionnaires/form_list_questions.tpl)
-			// else addObjToAssoc function has to be defined in other template (i.e. common_inc/form_assoc_objects.tpl)
+			// else addObjToAssoc function has to be defined in other template (i.e. elements/form_assoc_objects.tpl)
 			if (eval("typeof addObjToAssoc" + suffix) == 'function') {
 				eval("addObjToAssoc" + suffix)(urlToAdd, obj_sel);
 			} else {

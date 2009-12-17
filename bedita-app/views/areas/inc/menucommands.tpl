@@ -14,7 +14,7 @@ Menu comandi a SX valido per tutte le pagine del controller.
 		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
 	</div> 
 	
-	{if !empty($method) && ($method == "viewArea" or $method == "viewSection")}
+	{if !empty($view->action) && ($view->action == "viewArea" or $view->action == "viewSection")}
 	
 	<div class="insidecol">
 		<input class="bemaincommands" type="button" value=" {t}save{/t} " name="save" id="saveBEObject" />

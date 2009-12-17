@@ -45,6 +45,8 @@ class Author extends BEAppObjectModel
 
 				"minimum" => array("BEObject" => array("ObjectType"))		
 		);
+		
+	public $objectTypesGroups = array("leafs", "related");
 	
 }
 ?>

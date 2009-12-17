@@ -33,6 +33,7 @@ class BiblioItem extends BeditaAnnotationModel
 {
 
 	var $useTable = 'annotations';
+	public $objectTypesGroups = array("leafs", "related");
 
 }
 ?>

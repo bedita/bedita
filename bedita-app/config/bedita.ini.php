@@ -185,92 +185,6 @@ $config['modules'] = array(
 	"multimedia" => array("id" => 26, "label" => "multimedia")
 );
 
-/**
- * object types, main properties
- */
-$config['objectTypes'] = array(
-	1			=> array("id" => 1, "name" => "area", "module" => "areas", "model" => "Area"),
-	"area"		=> array("id" => 1, "name" => "area", "module" => "areas", "model" => "Area"),
-	
-	3			=> array("id" => 3, "name" => "section", "module" => "areas", "model" => "Section"),
-	"section"	=> array("id" => 3, "name" => "section", "module" => "areas", "model" => "Section"),
-	
-	10			=> array("id" => 10, "name" => "befile", "module" => "multimedia", "model" => "BEFile"),
-	"befile"	=> array("id" => 10, "name" => "befile", "module" => "multimedia", "model" => "BEFile"),
-	
-	12			=> array("id" => 12, "name" => "image", "module" => "multimedia", "model" => "Image"),
-	"image"		=> array("id" => 12, "name" => "image", "module" => "multimedia", "model" => "Image"),
-	
-	13			=> array("id" => 13, "name" => "comment", "module" => "comments", "model" => "Comment"),
-	"comment"	=> array("id" => 13, "name" => "comment", "module" => "comments", "model" => "Comment"),
-	
-	18			=> array("id" => 18, "name" => "shortnews", "module" => "news", "model" => "ShortNews"),
-	"shortnews"	=> array("id" => 18, "name" => "shortnews", "module" => "news", "model" => "ShortNews"),
-	
-	19			   => array("id" => 19, "name" => "bibliography", "module" => "bibliographies", "model" => "Bibliography"),
-	"bibliography" => array("id" => 19, "name" => "bibliography", "module" => "bibliographies", "model" => "Bibliography"),
-	
-	20			=> array("id" => 20, "name" => "book", "module" => "books", "model" => "Book"),
-	"book"		=> array("id" => 20, "name" => "book", "module" => "books", "model" => "Book"),
-	
-	21			=> array("id" => 21, "name" => "event", "module" => "events", "model" => "Event"),
-	"event"		=> array("id" => 21, "name" => "event", "module" => "events", "model" => "Event"),
-	
-	22			=> array("id" => 22, "name" => "document", "module" => "documents", "model" => "Document"),
-	"document"	=> array("id" => 22, "name" => "document", "module" => "documents", "model" => "Document"),
-	
-	29			=> array("id" => 29, "name" => "gallery", "module" => "galleries", "model" => "Gallery"),
-	"gallery"	=> array("id" => 29, "name" => "gallery", "module" => "galleries", "model" => "Gallery"),
-	
-	30			  => array("id" => 30, "name" => "application", "module" => "multimedia", "model" => "Application"),
-	"application" => array("id" => 30, "name" => "application", "module" => "multimedia", "model" => "Application"),
-	
-	31			=> array("id" => 31, "name" => "audio", "module" => "multimedia", "model" => "Audio"),
-	"audio"		=> array("id" => 31, "name" => "audio", "module" => "multimedia", "model" => "Audio"),
-	
-	32			=> array("id" => 32, "name" => "video", "module" => "multimedia", "model" => "Video"),
-	"video"		=> array("id" => 32, "name" => "video", "module" => "multimedia", "model" => "Video"),
-	
-	33			=> array("id" => 33, "name" => "link", "module" => "webmarks", "model" => "Link"),
-	"link"		=> array("id" => 33, "name" => "link", "module" => "webmarks", "model" => "Link"),
-	
-	34			=> array("id" => 34, "name" => "card", "module" => "addressbook", "model" => "Card"),
-	"card"		=> array("id" => 34, "name" => "card", "module" => "addressbook", "model" => "Card"),
-	
-	35			  => array("id" => 35, "name" => "mailmessage", "module" => "newsletter", "model" => "MailMessage"),
-	"mailmessage" => array("id" => 35, "name" => "mailmessage", "module" => "newsletter", "model" => "MailMessage"),
-	
-	36			   => array("id" => 36, "name" => "mailtemplate", "module" => "newsletter", "model" => "MailTemplate"),
-	"mailtemplate" => array("id" => 36, "name" => "mailtemplate", "module" => "newsletter", "model" => "MailTemplate"),
-	
-	37			 => array("id" => 37, "name" => "author", "module" => null, "model" => "Author"),
-	"author" 	 => array("id" => 37, "name" => "author", "module" => null, "model" => "Author"),
-	
-	38			 => array("id" => 38, "name" => "biblioitem", "module" => null, "model" => "BiblioItem"),
-	"biblioitem" 	 => array("id" => 38, "name" => "biblioitem", "module" => null, "model" => "BiblioItem"),
-	
-	39			 => array("id" => 39, "name" => "editornote", "module" => null, "model" => "EditorNote"),
-	"editornote" 	 => array("id" => 39, "name" => "editornote", "module" => null, "model" => "EditorNote"),
-	
-	40			 	=> array("id" => 40, "name" => "question", "module" => "questionnaires", "model" => "Question"),
-	"question" 		=> array("id" => 40, "name" => "question", "module" => "questionnaires", "model" => "Question"),
-	
-	41			 	=> array("id" => 41, "name" => "questionnaire", "module" => "questionnaires", "model" => "Questionnaire"),
-	"questionnaire" => array("id" => 41, "name" => "questionnaire", "module" => "questionnaires", "model" => "Questionnaire"),
-	
-	42			 	=> array("id" => 42, "name" => "questionnaireresult", "module" => "questionnaires", "model" => "QuestionnaireResult"),
-	"questionnaireresult" => array("id" => 42, "name" => "questionnaireresult", "module" => "questionnaires", "model" => "QuestionnaireResult"),
-	
-	// define array of objects that can be related to other
-	'related'	=> array("id" => array(18,19,20,21,22,29,34,41,37,38)),
-
-	// define array of objects that are leafs of the tree
-	'leafs'		=> array("id" => array(18,19,20,21,22,29,33,34,37,38,41)),
-	
-	// define array of multimedia objects
-	'multimedia' => array("id" => array(10,12,30,31,32))
-);
-
 
 /*
  * Relations - default objects' relation types
@@ -295,43 +209,43 @@ $config["defaultObjRelationType"] = array(
 	),
 	"seealso" => array(
 		"hidden" => false,
-		"left" 		=> array(18,19,20,21,22,29,34),
+		"left" 		=> array("short_news","bibliography","book","event","document","gallery","card"),
 		"right" 		=> array()	
 	),
 	"download" => array(
 		"hidden" => false,
-		"left" 		=> array(10,12,30,31,32),
+		"left" 		=> array("b_e_file","image","application","audio","video"),
 		"right" 		=> array()	
 	),
 	"gallery" => array(
 		"hidden" => true,
-		"left" 		=> array(29),
+		"left" 		=> array("gallery"),
 		"right" 		=> array()	
 	),
 	"attach" => array(
 		"hidden" => true,
-		"left" => array(10,12,30,31,32),
+		"left" => array("b_e_file","image","application","audio","video"),
 		"right" => array()
 	),
 	"link" => array(
 		"hidden" => true,
-		"left" => array(33),
+		"left" => array("link"),
 		"right" => array()
 	),
 	"author" => array(
 		"hidden" => true,
-		"left" => array(20),
-		"right" => array(37)
+		"left" => array("book"),
+		"right" => array("author")
 	),
 	"bibliography" => array(
 		"hidden" => true,
-		"left" => array(19),
-		"right" => array(38)
+		"left" => array("bibliography"),
+		"right" => array("biblio_item")
 	),
 	"question" => array(
 		"hidden" => true,
-		"left" => array(41),
-		"right" => array(40)
+		"left" => array("questionnaire"),
+		"right" => array("question")
 	)
 );
 
@@ -613,9 +527,7 @@ $config['hashExpiredTime'] = 604800;
  * Specific System settings
  * ALWAYS AT THE END of bedita.ini.php
  */
-$appPath = (defined("BEDITA_CORE_PATH"))? BEDITA_CORE_PATH . DS : APP;
-if (file_exists ($appPath."config".DS."bedita.sys.php") ) {
-	include_once($appPath."config".DS."bedita.sys.php") ;	
+if (file_exists (BEDITA_CORE_PATH. DS ."config".DS."bedita.sys.php") ) {
+	include_once(BEDITA_CORE_PATH. DS ."config".DS."bedita.sys.php") ;	
 }
-unset($appPath);
 ?>

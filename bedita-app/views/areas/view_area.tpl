@@ -1,4 +1,4 @@
-{$html->css('tree')}
+{$html->css('tree', null, null, false)}
 {$javascript->link("jquery/jquery.treeview", false)}
 
 {$javascript->link("form", false)}
@@ -20,13 +20,10 @@
 	{/literal}
 </script>
 
-</head>
 
-<body>
+{$view->element('modulesmenu')}
 
-{include file="../common_inc/modulesmenu.tpl"}
-
-{include file="inc/menuleft.tpl" method="viewArea"}
+{include file="inc/menuleft.tpl"}
 
 <div class="head">
 <h1>
@@ -42,16 +39,16 @@
 </h1>	
 </div> 
 
-{include file="inc/menucommands.tpl" method="viewArea" fixed=true}
+{include file="inc/menucommands.tpl" fixed=true}
 
 
 <div class="main">
 	<form action="{$html->url('/areas/saveArea')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 	
-	{include file="inc/form_area.tpl" method="viewArea"}
+	{include file="inc/form_area.tpl"}
 	
 </div>
 
-{include file="../common_inc/menuright.tpl"}
+{$view->element('menuright')}
 
 

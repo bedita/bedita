@@ -14,7 +14,7 @@
 
 </ul>
 
-{include file="../common_inc/colophon.tpl"}
+{$view->element('colophon')}
 
 <div id="handlerChangeAlert"></div>
 

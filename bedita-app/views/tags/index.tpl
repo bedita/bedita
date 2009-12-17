@@ -1,9 +1,6 @@
 
 {$javascript->link("form", false)}
 
-</head>
-
-<body>
 <script type="text/javascript">
 <!--
 var urlDelete = "{$html->url('deleteSelected/')}";
@@ -51,11 +48,11 @@ $(document).ready(function() {
 </script>
 {/literal}
 
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
-{include file="inc/menuleft.tpl" method="index"}
+{include file="inc/menuleft.tpl"}
 
-{include file="inc/menucommands.tpl" method="index"}
+{include file="inc/menucommands.tpl"}
 
 {include file="inc/toolbar.tpl"}
 

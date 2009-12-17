@@ -108,11 +108,12 @@
 </table>
 </fieldset>
 
-{include file="../common_inc/form_geotag.tpl"}
+{$view->element('form_geotag')}
 
-{include file="../common_inc/form_file_list.tpl" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
+{assign_associative var="params" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
+{$view->element('form_file_list', $params)}
 
 </form>
 
 
-	{include file="../common_inc/form_print.tpl"}
+	{$view->element('form_print')}

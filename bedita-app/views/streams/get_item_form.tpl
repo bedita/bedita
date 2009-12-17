@@ -1,1 +1,1 @@
-{include file="../common_inc/form_file_item.tpl"}
+{$view->element('form_file_item')}

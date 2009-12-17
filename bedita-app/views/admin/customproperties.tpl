@@ -1,4 +1,3 @@
-{$html->css('module.superadmin')}
 {$javascript->link("form", false)}
 {$javascript->link("jquery/jquery.form", false)}
 {$javascript->link("jquery/jquery.cmxforms", false)}
@@ -34,11 +33,7 @@ $(document).ready(function(){
 {/literal}
 </script>
 
-</head>
-
-<body>
-
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl" method="customproperties"}
 

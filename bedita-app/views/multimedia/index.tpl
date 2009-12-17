@@ -1,4 +1,3 @@
-{$javascript->link("jquery/interface", false)}
 {$javascript->link("form", false)}
 {$javascript->link("jquery/jquery.form", false)}
 {$javascript->link("jquery/jquery.changealert", false)}
@@ -34,7 +33,7 @@ function commitUploadItem(IDs) {
 		var id = escape(IDs[i]) ;
 
 		$(emptyDiv).load(
-			urlGetObj, {'id': id, 'relation':'attach', 'template':'common_inc/file_item.tpl'}, function (responseText, textStatus, XMLHttpRequest)
+			urlGetObj, {'id': id, 'relation':'attach', 'template':'elements/file_item.tpl'}, function (responseText, textStatus, XMLHttpRequest)
 			{
 				$("#loading").hide();
 				$(containerItem).append(this); 
@@ -69,26 +68,23 @@ function resetError() {
 
 {/literal}
 </script>
-</head>
-
-<body>
 
 
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
-{include file="inc/menuleft.tpl" method="index"}
+{include file="inc/menuleft.tpl"}
 
-{include file="inc/menucommands.tpl" method="index" fixed=true}
+{include file="inc/menucommands.tpl" fixed=true}
 
-{include file="../common_inc/toolbar.tpl"}
+{$view->element('toolbar')}
 
 <div class="mainfull">
 
-	{include file="./inc/list_streams.tpl" method="index" streamTitle="multimedia"}
+	{include file="./inc/list_streams.tpl" streamTitle="multimedia"}
 	
 	{bedev}
 	{*
-	{include file="./inc/list_streams_table.tpl" method="index" streamTitle="multimedia"}
+	{include file="./inc/list_streams_table.tpl" streamTitle="multimedia"}
 	 *}
 	{/bedev}
 	
@@ -98,7 +94,7 @@ function resetError() {
 		<div style="clear:both; margin:-20px 0px 20px -20px">
 		{* form needed for ajax upload *}
 		<form id="uploadAjaxMedia" action="#" method="post" enctype="multipart/form-data">
-		{include file="../common_inc/form_upload_multi.tpl"}
+		{$view->element('form_upload_multi')}
 		</form>
 		</div>		 
 

@@ -49,7 +49,7 @@ class MultimediaController extends ModulesController {
 			array("dir", "boolean", &$dir)
 		) ;
 		$filter["object_type_id"] = array(
-			$conf->objectTypes['befile']["id"],
+			$conf->objectTypes['b_e_file']["id"],
 			$conf->objectTypes['image']["id"],
 			$conf->objectTypes['audio']["id"],
 			$conf->objectTypes['video']["id"],
@@ -153,7 +153,7 @@ class MultimediaController extends ModulesController {
 			$this->Stream->id = $this->{$model}->id;
 			
 			if (!empty($this->params['form']['mediatype'])) {
-				$objetc_type_id = Configure::read("objectTypes." . strtolower($model) . ".id");
+				$objetc_type_id = Configure::read("objectTypes." . Inflector::underscore($model) . ".id");
 				$this->data['Category'] = array_merge($this->data['Category'], $this->Category->checkMediaType($objetc_type_id, $this->params['form']['mediatype']));
 			}
 			

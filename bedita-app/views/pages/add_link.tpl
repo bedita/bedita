@@ -4,5 +4,5 @@
 		<p>{$msg->userMsg('error')|capitalize}</p>
 	</div>
 {else}
-{include file="../common_inc/form_link_item.tpl"}
+{$view->element('form_link_item')}
 {/if}

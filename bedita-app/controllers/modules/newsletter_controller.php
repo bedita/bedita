@@ -69,7 +69,7 @@ class NewsletterController extends ModulesController {
 		
 		$this->MailTemplate->BEObject->recursive = -1;
 		$templates = $this->MailTemplate->BEObject->find("all", array(
-				"conditions" => array("object_type_id" => Configure::read("objectTypes.mailtemplate.id")),
+				"conditions" => array("object_type_id" => Configure::read("objectTypes.mail_template.id")),
 				"fields" => array("id", "title"),
 				"order" => "title ASC"
 			)
@@ -77,7 +77,7 @@ class NewsletterController extends ModulesController {
 		
 		$this->MailMessage->containLevel("minimum");
 		$recentMsg = $this->MailMessage->find("all", array(
-				"conditions" => array("BEObject.object_type_id" => Configure::read("objectTypes.mailmessage.id")),
+				"conditions" => array("BEObject.object_type_id" => Configure::read("objectTypes.mail_message.id")),
 				"order" => "MailMessage.start_sending DESC",
 				"limit"	=> 5
 			)
@@ -136,7 +136,7 @@ class NewsletterController extends ModulesController {
 		
 		$areaModel = ClassRegistry::init("Area");				
 		$pub = $areaModel->find("all", array("contain" => array("BEObject")));
-		$filter["object_type_id"] = Configure::read("objectTypes.mailtemplate.id");
+		$filter["object_type_id"] = Configure::read("objectTypes.mail_template.id");
 		foreach ($pub as $key => $p) {
 			$temp = $this->BeTree->getChildren($p["id"], null, $filter);
 			$pub[$key]["MailTemplate"] = $temp["items"];
@@ -152,7 +152,7 @@ class NewsletterController extends ModulesController {
 	 }
 
 	function newsletters($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
-		$filter["object_type_id"] = Configure::read("objectTypes.mailmessage.id");
+		$filter["object_type_id"] = Configure::read("objectTypes.mail_message.id");
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 		foreach ($this->viewVars["objects"] as $key => $obj) {
 			$msg = $this->MailMessage->find("first", array(
@@ -351,7 +351,7 @@ class NewsletterController extends ModulesController {
 	public function templates() {
 		$this->MailTemplate->containLevel("minimum");
 		$templates = $this->MailTemplate->find("all", array(
-											"conditions" => array("BEObject.object_type_id" => Configure::read("objectTypes.mailtemplate.id"))
+											"conditions" => array("BEObject.object_type_id" => Configure::read("objectTypes.mail_template.id"))
 											)
 		);
 		foreach ($templates as $key => $t) {
@@ -407,7 +407,7 @@ class NewsletterController extends ModulesController {
 		unset($this->data['id']);
 		$this->data['status']='draft';
 		$this->data['fixed'] = 0;
-		if ($object_type_id == Configure::read("objectTypes.mailmessage.id")) {
+		if ($object_type_id == Configure::read("objectTypes.mail_message.id")) {
 			if (!empty($this->data['start_sending']) && !empty($this->data['MailGroup'])) {
 				$this->data['mail_status'] = 'pending';
 			} else {
@@ -416,7 +416,7 @@ class NewsletterController extends ModulesController {
 				$this->data['MailGroup'] = array();
 			}
 			$this->save();
-		} elseif ($object_type_id == Configure::read("objectTypes.mailtemplate.id")) {
+		} elseif ($object_type_id == Configure::read("objectTypes.mail_template.id")) {
 			$this->saveTemplate();
 			$this->action = "cloneTemplate";
 		}

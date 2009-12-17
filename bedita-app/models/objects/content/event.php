@@ -54,7 +54,9 @@ class Event extends BeditaContentModel
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('DateItem', 'GeoTag'),
 			'DeleteObject' 			=> 'objects',
-	); 	 
+	);
+	
+	public $objectTypesGroups = array("leafs", "related");
 
 	var $hasMany = array(
 			'DateItem' =>

@@ -1,4 +1,4 @@
-{$javascript->link("jquery/jquery.form")}
+{$javascript->link("jquery/jquery.form", false)}
 
 {literal}
 <script type="text/javascript">
@@ -27,13 +27,9 @@ $(document).ready(function(){
 {/literal}
 </script>
 
-</head>
+{$view->element('modulesmenu')}
 
-<body>
-
-{include file="../common_inc/modulesmenu.tpl"}
-
-{include file="inc/menuleft.tpl" method="view"}
+{include file="inc/menuleft.tpl"}
 
 <div class="head">
 	
@@ -43,7 +39,7 @@ $(document).ready(function(){
 
 {assign var=objIndex value=0}
 
-{include file="inc/menucommands.tpl" fixed=true method="view"}
+{include file="inc/menucommands.tpl" fixed=true}
 
 <div class="main">	
 	
@@ -51,7 +47,7 @@ $(document).ready(function(){
 		
 </div>
 
-{include file="../common_inc/menuright.tpl"}
+{$view->element('menuright')}
 
 
 

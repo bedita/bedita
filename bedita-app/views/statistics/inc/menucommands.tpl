@@ -3,11 +3,9 @@ Template incluso.
 Menu a SX valido per tutte le pagine del controller.
 *}
 
-{assign var='method' value=$method|default:'index'}
-
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
-	{if !empty($method) && $method != "index"}
+	{if !empty($view->action) && $view->action != "index"}
 		{assign var="back" value=$session->read("backFromView")}
 	{else}
 		{assign_concat var="back" 0=$html->url('/') 1=$currentModule.path}
@@ -18,7 +16,7 @@ Menu a SX valido per tutte le pagine del controller.
 	</div> 
 	
 	
-	{if $method == "view" && $module_modify eq '1'}
+	{if $view->action == "view" && $module_modify eq '1'}
 	<div class="insidecol">
 		
 		<input class="submit" type="submit" value=" {t}Save{/t} " name="save"/>	

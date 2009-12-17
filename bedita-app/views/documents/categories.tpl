@@ -1,12 +1,8 @@
 {$javascript->link("jquery/jquery.changealert", false)}
-
-</head>
-
-<body>
 	
-{include file="../common_inc/modulesmenu.tpl" method="categories"}
+{$view->element('modulesmenu')}
 
-{include file="inc/menuleft.tpl" method="categories"}
+{include file="inc/menuleft.tpl"}
 
 <div class="head">
 	
@@ -14,11 +10,11 @@
 
 </div>
 
-{include file="inc/menucommands.tpl" method="index"}
+{include file="inc/menucommands.tpl"}
 
 
 <div class="main">
-{include file="../common_inc/list_categories.tpl" method="categories"}
+{$view->element('list_categories')}
 </div>
 
 

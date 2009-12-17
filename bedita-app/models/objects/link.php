@@ -46,6 +46,8 @@ class Link extends BEAppObjectModel {
 
 				"minimum" => array("BEObject" => array("ObjectType"))
 		);
+		
+	public $objectTypesGroups = array("leafs");
 
 	public function beforeSave() {
 		if(!empty($this->data['Link']['url'])) { // when saveField() is called, no url checks should be done

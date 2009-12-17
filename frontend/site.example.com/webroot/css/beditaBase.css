@@ -525,7 +525,7 @@ BODY.staging {
 .translations				{background-color:#FF00FF !important;}
 .addressbook, .card			{background-color:#009933 !important;}
 .attachments 				{background-color:gray !important;}
-.news, .shortnews 			{background-color:#003366 !important;}
+.news, .short_news 			{background-color:#003366 !important;}
 .newsletter 				{background-color:#6666FF !important;}
 .books, .book				{background-color:#996633 !important;}
 .bibliographies, .bibliography {background-color:#999966 !important;}

@@ -31,5 +31,6 @@
 class Image extends BeditaStreamModel
 {
 	var $actsAs = array();
+	public $objectTypesGroups = array("multimedia");
 }
 ?>

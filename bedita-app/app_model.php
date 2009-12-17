@@ -367,7 +367,7 @@ class BEAppObjectModel extends BEAppModel {
 			'SearchTextSave',
 			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteObject' 			=> 'objects',
-	); 
+	);
 	
 	var $hasOne= array(
 			'BEObject' =>
@@ -379,6 +379,8 @@ class BEAppObjectModel extends BEAppModel {
 			)
 		);
 
+	public $objectTypesGroups = array();
+	
 	/**
 	 * Overrides field, don't use CompactResult in field()
 	 *
@@ -423,9 +425,9 @@ class BEAppObjectModel extends BEAppModel {
 		$conf = Configure::getInstance() ;
 
 		if(isset($data['BEObject']) && empty($data['BEObject']['object_type_id'])) {
-			$data['BEObject']['object_type_id'] = $conf->objectTypes[strtolower($this->name)]["id"] ;
+			$data['BEObject']['object_type_id'] = $conf->objectTypes[Inflector::underscore($this->name)]["id"] ;
 		} else if(!isset($data['object_type_id']) || empty($data['object_type_id'])) {
-			$data['object_type_id'] = $conf->objectTypes[strtolower($this->name)]["id"] ;
+			$data['object_type_id'] = $conf->objectTypes[Inflector::underscore($this->name)]["id"] ;
 		}
 
 		// Se c'e' la chiave primaria vuota la toglie
@@ -573,11 +575,11 @@ class BEAppObjectModel extends BEAppModel {
     }
 
     public function checkType($objTypeId) {
-    	return ($objTypeId == Configure::read("objectTypes.".strtolower($this->name).".id"));
+    	return ($objTypeId == Configure::read("objectTypes.".Inflector::underscore($this->name).".id"));
     }
     
     public function getTypeId() {
-        return Configure::read("objectTypes.".strtolower($this->name).".id");
+        return Configure::read("objectTypes.".Inflector::underscore($this->name).".id");
     }
 }
 

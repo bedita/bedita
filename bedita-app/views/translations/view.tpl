@@ -4,12 +4,9 @@
 
 {$javascript->link("jquery/ui/ui.datepicker.min", false)}
 
-</head>
-<body>
+{$view->element('modulesmenu')}
 
-{include file="../common_inc/modulesmenu.tpl"}
-
-{include file="inc/menuleft.tpl" method="view"}
+{include file="inc/menuleft.tpl"}
 
 <div class="head">
 	{if !empty($object_translation.title)}<h1>{$object_translation.title|default:'<i>[no title]</i>'}</h1>{/if}
@@ -21,7 +18,7 @@
 {assign var=objIndex value=0}
 
 
-{include file="inc/menucommands.tpl" method="view" fixed = true}
+{include file="inc/menucommands.tpl" fixed = true}
 
 
 <div class="mainfull">	
@@ -31,4 +28,4 @@
 </div>
 
 
-{*include file="../common_inc/menuright.tpl"*}
+{*$view->element('menuright')*}

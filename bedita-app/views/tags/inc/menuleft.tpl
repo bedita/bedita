@@ -3,23 +3,21 @@ Template incluso.
 Menu a SX valido per tutte le pagine del controller.
 *}
 
-{assign var='method' value=$method|default:'index'}
-
 <div class="primacolonna">
 	
 	<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->userVersion}</label></div>
 
-	{include file="../common_inc/messages.tpl"}
+	{$view->element('messages')}
 	
 	<ul class="menuleft insidecol">
-			<li {if $method eq 'index'}class="on"{/if}>{$tr->link('Tags', '/tags')}</li>
+			<li {if $view->action eq 'index'}class="on"{/if}>{$tr->link('Tags', '/tags')}</li>
 		{if $module_modify eq '1'}
-			<li {if $method eq 'view'}class="on"{/if}>{$tr->link('New tag', '/tags/view')}</li>
+			<li {if $view->action eq 'view'}class="on"{/if}>{$tr->link('New tag', '/tags/view')}</li>
 		{/if}
 									
 	</ul>
 
-	{include file="../common_inc/user_module_perms.tpl"}
+	{$view->element('user_module_perms')}
 
 </div>
 

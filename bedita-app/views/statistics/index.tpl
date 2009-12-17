@@ -13,12 +13,8 @@
 {/literal}
 
 
-</head>
 
-<body>
-
-
-{include file="../common_inc/modulesmenu.tpl"}
+{$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl" method="index"}
 

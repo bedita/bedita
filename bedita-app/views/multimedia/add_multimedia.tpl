@@ -15,7 +15,7 @@
 <div class="htabcontainer" id="addmultimediacontents">
 
 	<div class="htabcontent" id="uploadItems">
-		{include file="../common_inc/form_upload_ajax.tpl"}
+		{$view->element('form_upload_ajax')}
 	</div>
 
 	

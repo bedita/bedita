@@ -2,7 +2,7 @@
 Template incluso.
 Menu a SX valido per tutte le pagine del controller.
 *}
-
+{$view->set('method', $method)}
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 
 	{if !empty($method) && $method != "index"}
@@ -23,7 +23,7 @@ Menu a SX valido per tutte le pagine del controller.
 		<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" id="cloneBEObject" />
 		<input class="bemaincommands" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" />
 	
-		{include file="../common_inc/prevnext.tpl"}
+		{$view->element('prevnext')}
 		
 	</div>
 	

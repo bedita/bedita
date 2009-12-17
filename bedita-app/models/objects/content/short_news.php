@@ -51,6 +51,8 @@ class ShortNews extends BeditaContentModel
 		
 		"minimum" => array("BEObject" => array("ObjectType"))		
 	);
+	
+	public $objectTypesGroups = array("leafs", "related");
 	   
 }
 ?>

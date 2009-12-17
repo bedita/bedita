@@ -19,10 +19,6 @@ $().ready(function() {
 //-->
 </script>
 
-
-</head>
-<body>
-
 	
 <div class="primacolonna">
 	 <div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->userVersion}</label></div>
@@ -30,7 +26,7 @@ $().ready(function() {
 	 
 	<div class="insidecol colophon">	
 	
-		{include file="../common_inc/colophon.tpl"}
+		{$view->element('colophon')}
 	
 	</div>
 	 
@@ -43,7 +39,7 @@ $().ready(function() {
 	   <label class="admin">{t}Login{/t}</label>
 	</div> 
 	
-	{include file="../common_inc/messages.tpl"}
+	{$view->element('messages')}
 	
 
 </div>
