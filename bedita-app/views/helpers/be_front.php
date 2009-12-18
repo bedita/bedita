@@ -63,7 +63,7 @@ class BeFrontHelper extends AppHelper {
 	}
 
 	public function metaDescription() {
-		$content = $this->get_value_for_field("description");
+		$content = $this->get_description();
 		if(empty($content)) {
 			return "";
 		}
@@ -75,7 +75,7 @@ class BeFrontHelper extends AppHelper {
 		$title = (!empty($object['public_name'])) ? $object['public_name'] : $object['title'];
 		$html = '<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />';
 		$html.= "\n" . '<meta name="DC.title" 			content="' . $title . '" />';
-		$content = $this->get_value_for_field("description");
+		$content = $this->get_description();
 		if(!empty($content)) 
 			$html.= "\n" . '<meta name="DC.description" 	content="' . strip_tags($content) . '" />';
 		$content = $this->get_value_for_field("lang");
@@ -204,7 +204,28 @@ class BeFrontHelper extends AppHelper {
 			$content = $current[$field];
 		} else if(!empty($section[$field])) {
 			$content = $section[$field];
-		} else  if(!empty($publish[$field])) {
+		} else if(!empty($publish[$field])) {
+			$content = $publish[$field];
+		} else {
+			return "";
+		}
+		return $content;
+	}
+
+	private function get_description() {
+		$field = "description";
+		$current = $this->_currentContent;
+		$section = $this->_section;
+		$publish = $this->_publication;
+		if(!empty($current["description"])) {
+			$content = $current["description"];
+		} else if(!empty($current["abstract"])) {
+			$content = substr($current["abstract"],0,255);
+		} else if(!empty($current["body"])) {
+			$content = substr($current["body"],0,255);
+		} else if(!empty($section[$field])) {
+			$content = $section[$field];
+		} else if(!empty($publish[$field])) {
 			$content = $publish[$field];
 		} else {
 			return "";
