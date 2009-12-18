@@ -38,7 +38,7 @@ class CommentsController extends ModulesController {
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
-		$filter["object_type_id"] = $conf->objectTypes['comment']["id"];
+		$filter["object_type_id"] = $this->getModuleObjectTypes("comments");
 		$filter["ref_object_details"] = "Comment";
 		$filter["Comment.email"] = (!empty($this->passedArgs["email"]))? $this->passedArgs["email"] : "";
 		if (!empty($this->passedArgs["ip_created"]))
@@ -48,15 +48,21 @@ class CommentsController extends ModulesController {
 	 }
 	 
 	public function view($id = null) {
-		$this->viewObject($this->Comment, $id);
-		if(!empty($id)) {
+		if($id != null) {
+			$beobj = ClassRegistry::init('BEObject');
+			$ot = $beobj->findObjectTypeId($id);
+			$o_types = $this->getModuleObjectTypes("comments");
+			if(in_array($ot,$o_types)) {
+				$modelClass = $this->loadModelByObjectTypeId($ot);
+				$this->viewObject($modelClass, $id);
+			}
 			$bannedIP = ClassRegistry::init("BannedIp");
-	        if($bannedIP->isBanned($this->viewVars['object']['ip_created'])) {
+			if($bannedIP->isBanned($this->viewVars['object']['ip_created'])) {
 				$this->set('banned', true);
-	        }
+			}
 		}
 	}
-	 
+
 	public function save() {
 		$this->checkWriteModulePermission();
 		if(empty($this->data)) 
