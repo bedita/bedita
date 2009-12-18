@@ -40,8 +40,9 @@ class BeConfigure {
 	public function initConfig() {
 		if (($cachedConfig = Cache::read('beConfig')) === false) {
 			$cachedConfig = $this->cacheConfig();
+		} else {
+			$this->addModulesPaths($cachedConfig);
 		}
-		$this->addModulesPaths($cachedConfig);
 	}
 	
 	/**
@@ -84,6 +85,7 @@ class BeConfigure {
 			$conf->plugged = $config;
 		}
 		$configurations["plugged"] = $conf->plugged;
+		$this->addModulesPaths($configurations);
 		
 		$objectTypeModel = ClassRegistry::init("ObjectType");
 		$ot = $objectTypeModel->find("all");
