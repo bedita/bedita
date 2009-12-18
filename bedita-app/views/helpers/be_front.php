@@ -113,6 +113,7 @@ class BeFrontHelper extends AppHelper {
 			$html.= "\n" . '<meta name="author" content="' . $this->_publication['creator'] . '" />';
 		$html.= "\n" . '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
 		$html.= "\n" . '<meta http-equiv="Content-Style-Type" content="text/css" />';
+		$html.= "\n" . '<meta name="generator" content="' . $this->_conf->userVersion . '" />';
 		return $html;
 	}
 
