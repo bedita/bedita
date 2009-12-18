@@ -193,7 +193,22 @@
 				</select>
 			</td>
 		</tr>
-	
+
+		<tr>
+			<th>{t}Correct answer suggestion{/t}:</th>
+			<td>
+				<textarea id="subtitle" style="width:380px; height:80px" class="mcea" name="data[text_ok]">{$object.text_ok|default:""}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<th>{t}On error suggestion{/t}:</th>
+			<td>
+				<textarea id="subtitle" style="width:380px; height:80px" class="mcea" name="data[text_fail]">{$object.text_fail|default:""}</textarea>
+			</td>
+		</tr>
+		
+		
+		
 	</table>
 	
 	</fieldset>
