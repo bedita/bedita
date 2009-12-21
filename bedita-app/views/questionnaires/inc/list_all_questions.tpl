@@ -55,7 +55,8 @@ $(document).ready(function(){
 			<th>{$beToolbar->order('question_type','type')}</th>
 			<th>{$beToolbar->order('status','Status')}</th>
 			<th>{$beToolbar->order('modified','modified')}</th>
-			<th>{$beToolbar->order('note','notes')}</th>
+			<th>{$beToolbar->order('question_difficulty','Difficulty')}</th>
+			<th>{$beToolbar->order('num_of_editor_note','notes')}</th>
 			<th></th>
 		</tr>
 	{/capture}
@@ -77,6 +78,10 @@ $(document).ready(function(){
 		</td>
 		<td style="text-align:center">{$objects[i].status|upper}</td>
 		<td>{$objects[i].modified|date_format:'%d-%m-%y'}</td>
+		<td>
+			{assign var="qdiff" value=$objects[i].question_difficulty|default:0}
+			{if !empty($qdiff)}{$conf->questionDifficulty[$qdiff]}{/if}
+		</td>
 		<td>{if $objects[i].num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 	</tr>
 	
@@ -94,6 +99,8 @@ $(document).ready(function(){
 
 
 </table>
+
+
 
 
 	{*section name="i" loop=$objects}
