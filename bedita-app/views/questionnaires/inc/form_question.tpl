@@ -193,23 +193,26 @@
 				</select>
 			</td>
 		</tr>
+		</table>
+	</fieldset>
 
+   <div class="tab"><h2>{t}Question suggestions{/t}</h2></div>
+
+	<fieldset id="suggestions">	
+		<table class="bordered">
 		<tr>
-			<th>{t}Correct answer suggestion{/t}:</th>
+			<th>{t}If  error{/t}:</th>
 			<td>
-				<textarea id="subtitle" style="width:380px; height:80px" class="mcea" name="data[text_ok]">{$object.text_ok|default:""}</textarea>
+				<textarea id="subtitle" style="width:380px; height:80px" class="mce" name="data[text_fail]">{$object.text_fail|default:""}</textarea>
 			</td>
 		</tr>
 		<tr>
-			<th>{t}On error suggestion{/t}:</th>
+			<th>{t}If correct{/t}:</th>
 			<td>
-				<textarea id="subtitle" style="width:380px; height:80px" class="mcea" name="data[text_fail]">{$object.text_fail|default:""}</textarea>
+				<textarea id="subtitle" style="width:380px; height:80px" class="mce" name="data[text_ok]">{$object.text_ok|default:""}</textarea>
 			</td>
 		</tr>
-		
-		
-		
-	</table>
+		</table>
 	
 	</fieldset>
 
