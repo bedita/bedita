@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* BeditaApp schema generated on: 2009-12-17 11:12:26 : 1261045526*/
+/* BeditaApp schema generated on: 2009-12-21 13:12:15 : 1261398195*/
 class BeditaAppSchema extends CakeSchema {
 	var $name = 'BeditaApp';
 
@@ -418,6 +418,8 @@ class BeditaAppSchema extends CakeSchema {
 		'max_chars' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'question_difficulty' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'edu_level' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'values' => NULL),
+		'text_ok' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
+		'text_fail' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'question_type_idx' => array('column' => 'question_type', 'unique' => 0))
 	);
 	var $search_texts = array(
