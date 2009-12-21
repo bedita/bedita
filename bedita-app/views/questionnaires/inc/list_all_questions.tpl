@@ -54,7 +54,7 @@ $(document).ready(function(){
 			<th>{$beToolbar->order('title','Title')}</th>
 			<th>{$beToolbar->order('question_type','type')}</th>
 			<th>{$beToolbar->order('status','Status')}</th>
-			<th>{$beToolbar->order('published','modified')}</th>
+			<th>{$beToolbar->order('modified','modified')}</th>
 			<th>{$beToolbar->order('note','notes')}</th>
 			<th></th>
 		</tr>
