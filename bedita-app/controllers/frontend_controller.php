@@ -1029,7 +1029,8 @@ abstract class FrontendController extends AppController {
 				$obj = $this->loadObj($item['id'], false);
 				if ($obj !== self::UNAUTHORIZED) {
 					if(isset($options["sectionPath"])) {
-						$obj["canonicalPath"] = $options["sectionPath"] . "/" . $obj["nickname"];
+						$obj["canonicalPath"] = ($options["sectionPath"] != "/") ? $options["sectionPath"] : "" 
+							. "/" . $obj["nickname"];
 					}	
 					if ($this->sectionOptions["itemsByType"]) {
 						$sectionItems[$obj['object_type']][] = $obj;
@@ -1132,6 +1133,7 @@ abstract class FrontendController extends AppController {
 			
 			$section["contentRequested"] = true;
 			$section["contentPath"] = $section["canonicalPath"] . "/" . $section['currentContent']['nickname'];
+			$section['currentContent']['canonicalPath'] = $section["contentPath"];
 			
 			if ($this->sectionOptions["showAllContents"]) {
 				$this->baseLevel = true;
@@ -1178,7 +1180,11 @@ abstract class FrontendController extends AppController {
 		foreach ($section["pathSection"] as $ps) {
 			$sectionPath .= "/" . $ps["nickname"];
 		}
-		$sectionPath .= "/" . $section["nickname"];
+		if($section["object_type_id"] == Configure::read("objectTypes.area.id")) {
+			$sectionPath .= "/"; 
+		} else {
+			$sectionPath .= "/" . $section["nickname"]; 
+		}
 		$section["canonicalPath"] = $sectionPath;
 	}
 	
