@@ -145,16 +145,21 @@ class AppError extends ErrorHandler {
 			App::import('Core', 'Email');
 			$email = new EmailComponent;
 			$email->from = $mailSupport['from'];
-			$email->to = $mailSupport['to'];
 			$email->subject = $mailSupport['subject'];
 			$smtpOptions = Configure::read("smtpOptions");
 			if (!empty($smtpOptions) && is_array($smtpOptions)) {
 				$email->smtpOptions = $smtpOptions;
 				$email->delivery = 'smtp';
 			}
-			if(!$email->send($mailMsg)) {
-				$this->log("mail send failed");
+			
+			$dest = explode(',', $mailSupport['to']);
+			foreach ($dest as $d) {
+				$email->to = $d;
+				if(!$email->send($mailMsg)) {
+					$this->log("mail send failed");
+				}
 			}
+			
 		}
 	}
 
