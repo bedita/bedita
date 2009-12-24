@@ -2,7 +2,7 @@
 <fieldset id="configmessages">		
 	<table class="bordered">
 		<tr>
-			<td colspan="2">{assign var='mailgroup_opting_method' value=$object.optingmethod|default:''}
+			<td colspan="2">{assign var='mailgroup_opting_method' value=$object.security|default:''}
 				<label for="optingmethod">{t}subscribing method{/t}:</label>
 				&nbsp;&nbsp;
 				<select id="optingmethod" name="data[MailGroup][security]">
