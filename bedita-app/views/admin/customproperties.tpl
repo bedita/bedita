@@ -74,7 +74,7 @@ $(document).ready(function(){
 					<select name="data[Property][object_type_id]">
 					{foreach from=$conf->objectTypes key="key" item="objectTypes"}
 					{if !empty($objectTypes.model) && is_numeric($key)}
-						<option value="{$objectTypes.id}" class="{$objectTypes.model|lower}" style="padding-left:5px"{if $p.object_type_id ==$objectTypes.id} selected="selected"{/if}> {$objectTypes.model|lower}</option>
+						<option value="{$objectTypes.id}" class="{$objectTypes.module}" style="padding-left:5px"{if $p.object_type_id ==$objectTypes.id} selected="selected"{/if}> {$objectTypes.name}</option>
 					{/if}
 					{/foreach}
 					</select>
@@ -145,7 +145,7 @@ $(document).ready(function(){
 				<select name="data[Property][object_type_id]">
 				{foreach from=$conf->objectTypes key="key" item="objectTypes"}
 				{if !empty($objectTypes.model) && is_numeric($key)}
-					<option value="{$objectTypes.id}" class="{$objectTypes.model|lower}" style="padding-left:5px"> {$objectTypes.model|lower}</option>
+					<option value="{$objectTypes.id}" class="{$objectTypes.module}" style="padding-left:5px"> {$objectTypes.name}</option>
 				{/if}
 				{/foreach}
 				</select>

@@ -209,7 +209,7 @@ $config["defaultObjRelationType"] = array(
 	),
 	"seealso" => array(
 		"hidden" => false,
-		"left" 		=> array("short_news","bibliography","book","event","document","gallery","card"),
+		"left" 		=> array(),
 		"right" 		=> array()	
 	),
 	"download" => array(

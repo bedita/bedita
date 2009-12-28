@@ -571,7 +571,7 @@ class AppController extends Controller
 		
 		$fixed = false;
 		if(!$new) {
-			$fixed = $this->BEObject->isFixed($this->data['id']);
+			$fixed = ClassRegistry::init("BEObject")->isFixed($this->data['id']);
 			if($fixed) { // unset pubblication date, TODO: throw exception if pub date is set! 
 				unset($this->data['start']);
 				unset($this->data['end']);
@@ -761,7 +761,8 @@ abstract class ModulesController extends AppController {
 			$objects_to_assoc = $this->params['form']['objects_selected'];
 			$destination = $this->data['destination'];
 		
-			$object_type_id = $this->BEObject->findObjectTypeId($destination);
+			$beObject = ClassRegistry::init("BEObject");
+			$object_type_id = $beObject->findObjectTypeId($destination);
 			$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
 			$modelLoaded->contain("BEObject");
 			if(!($section = $modelLoaded->findById($destination))) {
@@ -770,7 +771,7 @@ abstract class ModulesController extends AppController {
 			$this->Transaction->begin() ;
 			for($i=0; $i < count($objects_to_assoc) ; $i++) {
 				
-				if ($this->BEObject->isFixed($objects_to_assoc[$i])) {
+				if ($beObject->isFixed($objects_to_assoc[$i])) {
 					throw new BeditaException(__("Error: modifying a fixed object!", true));
 				}
 				
@@ -944,7 +945,7 @@ abstract class ModulesController extends AppController {
 		$categoryModel = ClassRegistry::init("Category");
 		$this->set("categories", $categoryModel->findAll("Category.object_type_id=".$type));
 		$this->set("object_type_id", $type);
-		$this->set("areasList", $this->BEObject->find('list', array(
+		$this->set("areasList", ClassRegistry::init("BEObject")->find('list', array(
 										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
 										"order" => "title", 
 										"fields" => "BEObject.title"
@@ -1023,7 +1024,7 @@ abstract class ModulesController extends AppController {
 	 * @param integer $id object id to view
 	 */
 	public function view($id) {
-		$modelName = $this->BEObject->getType($id);	
+		$modelName = ClassRegistry::init("BEObject")->getType($id);	
 		$method = "view" . $modelName;
 		if (!method_exists($this, $method)) {
 			throw new BeditaException(__("Missing view method", true)." - ".$method);
@@ -1039,7 +1040,7 @@ abstract class ModulesController extends AppController {
 	 * This methods will be called automagically....
 	 */
 	public function delete() {
-		$modelName = $this->BEObject->getType($this->data["id"]);	
+		$modelName = ClassRegistry::init("BEObject")->getType($this->data["id"]);	
 		$method = "delete" . $modelName;
 		if (!method_exists($this, $method)) {
 			throw new BeditaException(__("Missing delete method", true)." - ".$method);
@@ -1056,7 +1057,7 @@ abstract class ModulesController extends AppController {
 	 */
 	public function save() {
 		if(!empty($this->data["id"])) {
-			$modelName = $this->BEObject->getType($this->data["id"]);	
+			$modelName = ClassRegistry::init("BEObject")->getType($this->data["id"]);	
 		} else {
 			$objTypeId = $this->data["object_type_id"];
 			$modelName = Configure::read("objectTypes.$objTypeId.model");	

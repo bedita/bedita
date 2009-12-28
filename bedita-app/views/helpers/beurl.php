@@ -34,7 +34,7 @@ class BeurlHelper extends AppHelper {
 	 *
 	 * @var array
 	 */
-	var $helpers = array('Html');
+	var $helpers = array('Html','Javascript');
 		
 	/**
 	* 
@@ -64,6 +64,51 @@ class BeurlHelper extends AppHelper {
 		$url = Router::url($data);
 		return $this->output($url);
 	}
+	
+	/**
+	 * add css and js scripts for modules
+	 * 
+	 */
+	public function addModuleScripts() {
+		$view = ClassRegistry::getObject('view');
+		$moduleName = $view->getVar("moduleName");
+		$conf = Configure::getInstance();
+		$scriptsBasePath = APP . "webroot";
+		$plugin = false;
+		$output = "";
+		if (!empty($conf->plugged["modules"])) {
+			foreach ($conf->plugged["modules"] as $name => $m) {
+				$cssBase = "module_color";
+				$vendorsPath = APP . "plugins" . DS . $name . DS . "vendors";
+				if (file_exists($vendorsPath . DS . "css" . DS . $cssBase . ".css")) {
+					$output .= $this->Html->css("/" . $name . "/css/" . $cssBase) . "\n";
+				}
+				if ($name == $moduleName) {
+					$cssPath = $vendorsPath . DS . "css" . DS . "module.css";
+					$cssLink = "/" . $name . "/css/module";
+					$jsPath = $vendorsPath . DS . "js" . DS . "module.js";
+					$jsLink = "/" . $name . "/js/module";
+					$plugin = true;
+				}
+			}
+		}
+		if (!$plugin) {
+			$cssPath = $scriptsBasePath . DS . "css" . DS . "module." . $moduleName . ".css";
+			$cssLink = "module." . $moduleName;
+			$jsPath = $scriptsBasePath . DS . "js" . DS . "module." . $moduleName . ".js";
+			$jsLink = "module." . $moduleName;
+		}
+		
+		if (file_exists($cssPath)) {
+			$output .= $this->Html->css($cssLink) . "\n";
+		}
+		if (file_exists($jsPath)) {
+			$output .= $this->Javascript->link($jsLink) . "\n";
+		}
+		
+		return $this->output($output);
+	}
+	
 	
 	/**
 	 * return array without params passed to the method
