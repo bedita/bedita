@@ -24,11 +24,11 @@
  * Module Model class
  * 
  *
- * @version			$Revision: 2510 $
- * @modifiedby 		$LastChangedBy: bato $
- * @lastmodified	$LastChangedDate: 2009-12-17 13:36:03 +0100 (gio, 17 dic 2009) $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: app_controller.php 2510 2009-12-17 12:36:03Z bato $
+ * $Id$
  */
 class Module extends AppModel {
 	

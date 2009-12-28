@@ -30,7 +30,7 @@ BeLib::getObject("BeConfigure")->initConfig();
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
  * 
- * $Id: bedita.php 2015 2009-05-29 14:18:06Z dante $
+ * $Id$
  */
 class ModuleShell extends Shell {
 
@@ -112,6 +112,19 @@ class ModuleShell extends Shell {
 	
 	public function unplug() {
 		
+	}
+	
+function help() {
+        $this->out('Available functions:');
+  		$this->out(' ');
+        $this->out('0. plug: initialize a new BEdita module plugin');
+  		$this->out('    Usage: plug [-list] [-name <module-plugin-name>]');
+  		$this->out(' ');
+  		$this->out("    -list \t list all pluggable module available (default)");
+  		$this->out("    -name <module-plugin-name>   \t name of plugin you want to install");
+  		$this->out(' ');
+        $this->out('1. unplug: todo');
+  		$this->out(' ');
 	}
 	
 }
