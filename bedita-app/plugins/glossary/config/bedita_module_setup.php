@@ -23,11 +23,11 @@
  * glossary setup 
  * 
  *
- * @version			$Revision: 2530 $
- * @modifiedby 		$LastChangedBy: bato $
- * @lastmodified	$LastChangedDate: 2009-12-28 20:25:05 +0100 (lun, 28 dic 2009) $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: app_controller.php 2530 2009-12-28 19:25:05Z bato $
+ * $Id$
  */
 
 $moduleSetup = array(
