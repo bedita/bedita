@@ -30,7 +30,7 @@
  * 
  * $Id$
  */
-class Module extends AppModel {
+class Module extends BEAppModel {
 	
 	public function plugModule($pluginName, array $setup=array()) {
 		if (empty($pluginName) || empty($setup)) {
