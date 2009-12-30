@@ -49,6 +49,16 @@ class GlossaryController extends ModulesController {
 	
 	public function delete() {
 		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("DefinitionTerm");
+		$this->userInfoMessage(__("Glossary definition term deleted", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("glossary definition term $objectsListDeleted deleted");
+	}
+	
+	public function deleteSelected() {
+		$this->checkWriteModulePermission();
+		$objectsListDeleted = $this->deleteObjects("DefinitionTerm");
+		$this->userInfoMessage(__("Glossary definition term", true) . " -  " . $objectsListDeleted);
+		$this->eventInfo("glossary definition term $objectsListDeleted deleted");
 	}
 	
 	public function save() {

@@ -114,7 +114,7 @@ class ModuleShell extends Shell {
 		
 	}
 	
-function help() {
+	function help() {
         $this->out('Available functions:');
   		$this->out(' ');
         $this->out('0. plug: initialize a new BEdita module plugin');
