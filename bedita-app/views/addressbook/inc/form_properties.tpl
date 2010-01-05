@@ -55,7 +55,23 @@ function removeUserFromCard() {
 			{/if}
 		</td>
 	</tr>
+	
 
+	<tr>
+		<th>{t}comments{/t}:</th>
+		<td>
+			<input type="radio" name="data[comments]" value="off"{if empty($object.comments) || $object.comments=='off'} checked{/if}/>{t}No{/t} 
+			<input type="radio" name="data[comments]" value="on"{if !empty($object.comments) && $object.comments=='on'} checked{/if}/>{t}Yes{/t}
+			<input type="radio" name="data[comments]" value="moderated"{if !empty($object.comments) && $object.comments=='moderated'} checked{/if}/>{t}Moderated{/t}
+			&nbsp;&nbsp;
+			{if isset($moduleList.comments) && $moduleList.comments.status == "on"}
+				{if !empty($object.num_of_comment)}
+					<a href="{$html->url('/')}comments/index/comment_object_id:{$object.id}"><img style="vertical-align:middle" src="{$html->webroot}img/iconComments.gif" alt="comments" /> ({$object.num_of_comment}) {t}view{/t}</a>
+				{/if}
+			{/if}
+		</td>
+	</tr>
+	
 	{if isset($comments)}
 	<tr>
 		<th>{t}Display details in frontend{/t}:</th>
