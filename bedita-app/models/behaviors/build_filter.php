@@ -76,7 +76,7 @@ class BuildFilterBehavior extends ModelBehavior {
 						// create join with BEObject
 						if (empty($this->from) || !strstr($this->from, $f_str)) {
 							$this->from .= ", " . $f_str;
-							if (empty($model->hasOne["BEObject"]) && $model->hasField("object_id"))
+							if (empty($model->hasOne["BEObject"]) && $model->hasField("object_id") && $model->alias != "ObjectRelation")
 								$this->conditions[] = "`BEObject`.id=`" . $model->alias . "`.object_id";
 							else
 								$this->conditions[] = "`BEObject`.id=`" . $model->alias . "`.id";							
