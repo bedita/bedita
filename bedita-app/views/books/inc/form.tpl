@@ -16,6 +16,8 @@
 
 	{$view->element('form_tags')}
 	
+	{$view->element('form_links')}
+		
 	{$view->element('form_translations')}
 	
 	{assign_associative var="params" object_type_id=$conf->objectTypes.book.id}
