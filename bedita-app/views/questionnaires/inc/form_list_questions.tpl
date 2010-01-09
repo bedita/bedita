@@ -52,6 +52,7 @@ $(document).ready(function() {
 			<th></th>
 			<th>{t}title{/t}</th>
 			<th>{t}type{/t}</th>
+			<th>{t}diff{/t}</th>
 			<th>{t}status{/t}</th>
 			<th></th>
 		</tr>
