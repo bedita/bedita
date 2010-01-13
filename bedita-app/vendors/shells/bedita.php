@@ -498,7 +498,13 @@ class BeditaShell extends BeditaBaseShell {
 	       	
 			$this->out("Configuration file exported");
        	}
-		       	
+
+       	if(!$tar->addString("version.txt", Configure::read("majorVersion")))
+			throw new Exception("Error adding version file to archive");
+		
+		$this->out("Version file exported");
+			
+       	
        	if (isset($this->params['nomedia'])) { // exclude media files
 	       	
        		$this->out("Media files not exported!");
