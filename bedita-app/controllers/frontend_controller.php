@@ -1029,7 +1029,7 @@ abstract class FrontendController extends AppController {
 				$obj = $this->loadObj($item['id'], false);
 				if ($obj !== self::UNAUTHORIZED) {
 					if(isset($options["sectionPath"])) {
-						$obj["canonicalPath"] = ($options["sectionPath"] != "/") ? $options["sectionPath"] : "" 
+						$obj["canonicalPath"] = (($options["sectionPath"] != "/") ? $options["sectionPath"] : "") 
 							. "/" . $obj["nickname"];
 					}	
 					if ($this->sectionOptions["itemsByType"]) {
