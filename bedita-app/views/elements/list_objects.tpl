@@ -55,7 +55,7 @@ $(document).ready(function(){
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('title', 'title')}</th>
-			<th>{$beToolbar->order('id', 'id')}</th>
+			<th style="text-align:center">{$beToolbar->order('id', 'id')}</th>
 			<th style="text-align:center">{$beToolbar->order('status', 'status')}</th>
 			<th>{$beToolbar->order('modified', 'modified')}</th>
 			<th style="text-align:center">
@@ -93,14 +93,25 @@ $(document).ready(function(){
 			{/if}
 			
 			{if (empty($objects[i].fixed))}
-				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
+				<input style="margin-top:8px;" type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
 			{/if}
-			
+
+
 			</td>
-			<td>
+			<td style="min-width:300px">
 				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a>
+				<div class="description" id="desc_{$objects[i].id}">
+					nickname:{$objects[i].nickname}<br />
+					{$objects[i].description}
+				</div>
 			</td>
-			<td>{$objects[i].id}</td>
+			<td class="checklist detail" style="text-align:left; padding-top:4px;">
+				<a href="javascript:void(0)" onclick="$('#desc_{$objects[i].id}').slideToggle(); $('.plusminus',this).toggleText('+','-')">
+				<span class="plusminus">+</span>			
+				&nbsp;
+				{$objects[i].id}
+				</a>	
+			</td>
 			<td style="text-align:center">{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
 			<td style="text-align:center">{$objects[i].num_of_comment|default:0}</td>

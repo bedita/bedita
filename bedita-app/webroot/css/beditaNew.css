@@ -876,8 +876,12 @@ TABLE.indexlist {
 
 .indexlist TD  {
 	border-bottom:1px solid #d8d8d8;
+	vertical-align:top;
 }
 
+.indexlist TD .description  {
+	display:none; font-style:italic; width:300px; color:gray;
+}
 
 .indexlist TR[rel] {
 	cursor:pointer;
@@ -889,7 +893,7 @@ TABLE.indexlist {
 
 .indexlist TD.checklist {
 	width:15px; padding:0px 0px 0px 0px;
-	vertical-align:middle;
+	vertical-align:top;
 	text-align:right;
 	white-space:nowrap;
 }
