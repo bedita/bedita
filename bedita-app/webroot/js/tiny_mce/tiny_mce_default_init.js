@@ -24,7 +24,7 @@ tinyMCE.init({
     relative_urls : false,
 	convert_urls : false,
     remove_script_host : false,
-	document_base_url : "/",
+	document_base_url : "/"
 	
 	/*
 	// creare un plugin con i comenadi necessari
