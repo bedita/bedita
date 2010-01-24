@@ -17,7 +17,7 @@ tinyMCE.init({
 	width : "470",
 	
 	remove_redundant_brs : true,
-
+	entity_encoding : "raw", //All characters will be stored in non-entity form except these XML default entities: &amp; &lt; &gt; &quot;
 	
 	// Example content CSS (should be your site CSS)
 	content_css : "/css/htmleditor.css",
