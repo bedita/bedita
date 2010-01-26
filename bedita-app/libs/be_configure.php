@@ -69,8 +69,8 @@ class BeConfigure {
 			foreach ($modules as $m) {
 				$modulePath = BEDITA_CORE_PATH . DS . "plugins" . DS . $m["Module"]["name"];
 				if (is_dir($modulePath)) {
-					if (file_exists($modulePath . "config" . DS . "config.php")) {
-						include $modulePath . "config" . DS . "config.php";
+					if (file_exists($modulePath . DS . "config" . DS . "config.php")) {
+						include $modulePath . DS . "config" . DS . "config.php";
 					}
 					$config["modules"][$m["Module"]["name"]] = array(
 						"id" => $m["Module"]["id"],
