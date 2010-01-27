@@ -962,7 +962,6 @@ abstract class ModulesController extends AppController {
 	 * @return array
 	 */
 	protected function getAvailableRelations($objectType) {
-		$objectTypeId = Configure::read("objectTypes." . $objectType . ".id");
 		$allRelations = $this->mergeAllRelations();
 		$availableRelations = array();
 		foreach ($allRelations as $relation => $rule) {
@@ -979,8 +978,7 @@ abstract class ModulesController extends AppController {
 							&& is_array($rule["left"])
 							&& is_array($rule["right"])
 							) {
-				
-					if ( (in_array($objectTypeId, $rule["left"]) || in_array($objectTypeId, $rule["right"])) 
+					if ( (in_array($objectType, $rule["left"]) || in_array($objectType, $rule["right"])) 
 							|| (empty($rule["left"]) || empty($rule["right"]))) {
 						$availableRelations[] = $relation;
 					}
