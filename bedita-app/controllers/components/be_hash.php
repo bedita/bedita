@@ -355,6 +355,9 @@ class BeHashComponent extends Object {
 		$mail_message_data['to'] = $mailParams["newsletter_email"];
 		$mail_message_data['subject'] = $this->replacePlaceHolder($mailParams["subject"], $mailParams["params"]);
 		$mail_message_data['body'] = $this->replacePlaceHolder($mailParams["body"],$mailParams["params"]) . "\n\n\n" . $mailOptions["signature"];
+		if (strstr($mail_message_data['body'], "[[[--BOUNDARY--]]]")) {
+			$mail_message_data['mailType'] = "both";
+		}
 		$this->BeMail->sendMail($mail_message_data);
 		
 		if (!empty($mailParams["viewsMsg"]))
