@@ -1257,6 +1257,13 @@ abstract class FrontendController extends AppController {
        		$this->helpers[] = 'BeToolbar';
 		}
 		$this->searchOptions = array_merge($this->searchOptions,$this->getPassedArgs());
+		// add rules for start and end pubblication date
+		if ($this->checkPubDate["start"] == true && empty($this->searchOptions["filter"]["Content.start"])) {
+				$this->searchOptions["filter"]["Content.start"] = "<= '" . date("Y-m-d") . "' OR `Content`.start IS NULL";
+		}
+		if ($this->checkPubDate["end"] == true && empty($this->searchOptions["filter"]["Content.end"])) {
+				$this->searchOptions["filter"]["Content.end"] = ">= '" . date("Y-m-d") . "' OR `Content`.end IS NULL";
+		}
 		$result = $this->BeTree->getDescendants($this->publication["id"], $this->status, $this->searchOptions["filter"], $this->searchOptions["order"], $this->searchOptions["dir"], $this->searchOptions["page"], $this->searchOptions["dim"]);
 		$this->set("searchResult", $result); 
 	}
