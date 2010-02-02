@@ -43,11 +43,13 @@ abstract class FrontendController extends AppController {
 	private $status = array('on');
 	
 	/**
-	 * true to check Content.start >= now
+	 * define which publication date has to be checked
+	 * "start" = true to check Content.start <= now
+	 * "end" = true to check Content.end >= now
 	 * 
-	 * @var boolean 
+	 * @var array
 	 */
-	protected $checkPubDate = true;
+	protected $checkPubDate = array("start" => true, "end" => true);
 	
 	/**
 	 * true to load objects in base level mode (BEObject without relations and LangText model are loaded)
@@ -317,8 +319,15 @@ abstract class FrontendController extends AppController {
 		}
 		// set filterPublicationDate
 		$filterPubDate = Configure::read("filterPublicationDate");
-		if (isset($filterPubDate)) 
-			$this->checkPubDate = $filterPubDate;
+		if (isset($filterPubDate)) {
+			if (is_array($filterPubDate)) {
+				$this->checkPubDate = $filterPubDate;
+			} elseif ($filterPubDate === true) {
+				$this->checkPubDate = array("start" => true, "end" => true);
+			} elseif ($filterPubDate === false) {
+				$this->checkPubDate = array("start" => false, "end" => false);
+			}
+		}
 			
 	}
 
@@ -415,11 +424,11 @@ abstract class FrontendController extends AppController {
 	 */
 	protected function checkPubblicationDate(array $obj) {
 		$currDate = strftime("%Y-%m-%d");
-		if(isset($obj["start"])) {
+		if(isset($obj["start"]) && $this->checkPubDate["start"]) {
 			if(strncmp($currDate, $obj["start"], 10) < 0)
 				return false;
 		}
-		if(isset($obj["end"])) {
+		if(isset($obj["end"]) && $this->checkPubDate["end"]) {
 			if(strncmp($currDate, $obj["end"], 10) > 0)
 				return false;
 		}
@@ -915,7 +924,7 @@ abstract class FrontendController extends AppController {
 			throw new BeditaException(__("Content not found", true));
 		}
 							
-		if($this->checkPubDate && !$this->checkPubblicationDate($obj)) {
+		if(!$this->checkPubblicationDate($obj)) {
 			throw new BeditaException(__("Content not found", true));
 		}
 		
@@ -1019,10 +1028,10 @@ abstract class FrontendController extends AppController {
 		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
 		
 		// add rules for start and end pubblication date
-		if ($this->checkPubDate == true) {
-			if (empty($filter["Content.start"]))
+		if ($this->checkPubDate["start"] == true && empty($filter["Content.start"])) {
 				$filter["Content.start"] = "<= '" . date("Y-m-d") . "' OR `Content`.start IS NULL";
-			if (empty($filter["Content.end"]))
+		}
+		if ($this->checkPubDate["end"] == true && empty($filter["Content.end"])) {
 				$filter["Content.end"] = ">= '" . date("Y-m-d") . "' OR `Content`.end IS NULL";
 		}
 		
@@ -1142,7 +1151,7 @@ abstract class FrontendController extends AppController {
 			if ($this->sectionOptions["showAllContents"]) {
 				$this->baseLevel = true;
 				$checkPubDate = $this->checkPubDate;
-				$this->checkPubDate = false;
+				$this->checkPubDate = array("start" => false, "end" => false);
 				$tmp = $this->loadSectionObjects($sectionId, $this->sectionOptions["childrenParams"]);
 				if (!$this->sectionOptions["itemsByType"])
 					$section = array_merge($section, $tmp);
@@ -1530,10 +1539,10 @@ abstract class FrontendController extends AppController {
 		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
 		
 		// add rules for start and end pubblication date
-		if ($this->checkPubDate == true) {
-			if (empty($filter["Content.start"]))
+		if ($this->checkPubDate["start"] == true && empty($filter["Content.start"])) {
 				$filter["Content.start"] = "<= '" . date("Y-m-d") . "' OR `Content`.start IS NULL";
-			if (empty($filter["Content.end"]))
+		}
+		if ($this->checkPubDate["end"] == true && empty($filter["Content.end"])) {
 				$filter["Content.end"] = ">= '" . date("Y-m-d") . "' OR `Content`.end IS NULL";
 		}
 		
