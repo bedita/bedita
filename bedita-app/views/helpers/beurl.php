@@ -79,7 +79,7 @@ class BeurlHelper extends AppHelper {
 		if (!empty($conf->plugged["modules"])) {
 			foreach ($conf->plugged["modules"] as $name => $m) {
 				$cssBase = "module_color";
-				$vendorsPath = APP . "plugins" . DS . $name . DS . "vendors";
+				$vendorsPath = $m["pluginPath"] . DS . "vendors";
 				if (file_exists($vendorsPath . DS . "css" . DS . $cssBase . ".css")) {
 					$output .= $this->Html->css("/" . $name . "/css/" . $cssBase) . "\n";
 				}

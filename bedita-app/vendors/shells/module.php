@@ -43,16 +43,18 @@ class ModuleShell extends Shell {
 			)
 		);
 		
-		$pluginsBasePath = BEDITA_CORE_PATH . DS . "plugins";
+		$pluginPaths = Configure::getInstance()->pluginPaths;
 		
 		if ($op == "list") {
 		
 			$unpluggedModules = array();
-			$folder = new Folder($pluginsBasePath);
-			$plugins = $folder->ls(true, true);
-			foreach ($plugins[0] as $plugin) {
-				if (file_exists($pluginsBasePath . DS . $plugin . DS . "config" . DS . "bedita_module_setup.php") && !in_array($plugin, $pluggedModules)) {
-					$unpluggedModules[] = $plugin;
+			foreach ($pluginPaths as $pluginsBasePath) {
+				$folder = new Folder($pluginsBasePath);
+				$plugins = $folder->ls(true, true);
+				foreach ($plugins[0] as $plugin) {
+					if (file_exists($pluginsBasePath . $plugin . DS . "config" . DS . "bedita_module_setup.php") && !in_array($plugin, $pluggedModules)) {
+						$unpluggedModules[] = $plugin;
+					}
 				}
 			}
 	
@@ -82,16 +84,23 @@ class ModuleShell extends Shell {
 			
 		} elseif ($op == "name") {
 			$plugin = $this->params["name"];
-			if (!file_exists($pluginsBasePath . DS . $plugin . DS . "config" . DS . "bedita_module_setup.php") && !in_array($plugin, $pluggedModules)) {
+			$pluginsBasePath = false;
+			foreach ($pluginPaths as $pPath) {
+				if (file_exists($pPath . $plugin . DS . "config" . DS . "bedita_module_setup.php") && !in_array($plugin, $pluggedModules)) {
+					$pluginsBasePath = $pPath;	
+				}
+			}
+			if (!$pluginsBasePath) {
 				$this->out("Plugin doesn't exist");
 				return;
 			}
+			
 			if (in_array($plugin, $pluggedModules)) {
 				$this->out("Module " . $plugin . " is already installed.");
 				return;
 			}
 			
-			include $pluginsBasePath . DS . $plugin . DS . "config" . DS . "bedita_module_setup.php";
+			include $pluginsBasePath . $plugin . DS . "config" . DS . "bedita_module_setup.php";
 			$this->out("");
 			$this->out("You are about to plug in the module " . $plugin . " version " . $moduleSetup["version"]);
 			

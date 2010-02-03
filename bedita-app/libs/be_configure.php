@@ -58,6 +58,9 @@ class BeConfigure {
 		if(file_exists(BEDITA_CORE_PATH . DS . 'plugins'.DS.'addons'.DS.'config'.DS.'config.php')) {
 			include BEDITA_CORE_PATH . DS . 'plugins'.DS.'addons'.DS.'config'.DS.'config.php';
 		}
+		if(defined("BEDITA_PLUGINS_PATH") && file_exists(BEDITA_PLUGINS_PATH.DS.'addons'.DS.'config'.DS.'config.php')) {
+			include BEDITA_PLUGINS_PATH.DS.'addons'.DS.'config'.DS.'config.php';
+		}
 
 		$moduleModel = ClassRegistry::init("Module");
 		$modules = $moduleModel->find("all", array(
@@ -67,15 +70,19 @@ class BeConfigure {
 		if (!empty($modules)) {
 			$addPath = array();
 			foreach ($modules as $m) {
-				$modulePath = BEDITA_CORE_PATH . DS . "plugins" . DS . $m["Module"]["name"];
-				if (is_dir($modulePath)) {
-					if (file_exists($modulePath . DS . "config" . DS . "config.php")) {
-						include $modulePath . DS . "config" . DS . "config.php";
+				foreach ($conf->pluginPaths as $pluginPath) {
+					$modulePath = $pluginPath . $m["Module"]["name"];
+					if (is_dir($modulePath)) {
+						if (file_exists($modulePath . DS . "config" . DS . "config.php")) {
+							include $modulePath . DS . "config" . DS . "config.php";
+						}
+						$config["modules"][$m["Module"]["name"]] = array(
+							"id" => $m["Module"]["id"],
+							"label" => $m["Module"]["label"],
+							"pluginPath" => $modulePath
+						);
+						break;
 					}
-					$config["modules"][$m["Module"]["name"]] = array(
-						"id" => $m["Module"]["id"],
-						"label" => $m["Module"]["label"]
-					);
 				}
 			}
 		}
@@ -123,8 +130,8 @@ class BeConfigure {
 		$conf = Configure::getInstance();
 		if (!empty($cachedConfig["plugged"]["modules"])) {
 			foreach ($cachedConfig["plugged"]["modules"] as $name => $m) {
-				$conf->modelPaths[] = BEDITA_CORE_PATH . DS . "plugins" . DS . $name . DS . "models" . DS;
-				$conf->componentPaths[] = BEDITA_CORE_PATH . DS . "plugins" . DS . $name . DS . "components" .DS;
+				$conf->modelPaths[] = $m["pluginPath"] . DS . "models" . DS;
+				$conf->componentPaths[] = $m["pluginPath"] . DS . "components" .DS;
 			}
 		}
 		Configure::write($cachedConfig);

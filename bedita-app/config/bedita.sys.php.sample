@@ -50,6 +50,9 @@ $config['mediaRoot'] = "/var/www/bedita/bedita-app/webroot/files";
 // Multimedia - URL prefix (without trailing slash)
 $config['mediaUrl'] = 'http://localhost/bedita/files';
 
+// alternative bedita plugins path (absolute path)
+//define('BEDITA_PLUGINS_PATH', '/var/www/bedita/bedita-plugins');
+
 
 /**
  ** ******************************************
