@@ -916,7 +916,7 @@ abstract class FrontendController extends AppController {
 		$obj = $this->{$modelType}->find("first", array(
 								"conditions" => array(
 									"BEObject.id" => $obj_id,
-									"status" => $this->status
+									"BEObject.status" => $this->status
 									)
 								)
 							);
@@ -1765,7 +1765,8 @@ abstract class FrontendController extends AppController {
 		// if it's ajax call no redirect by referer
 		if($this->RequestHandler->isAjax()) { 
 			$this->layout = "ajax";
-			if (!empty($this->params["form"]["render"])) { 
+			$this->set('comment',$this->loadObj($this->Comment->id));
+			if (!empty($this->params["form"]["render"])) {
 				$this->render(null, null, $this->params["form"]["render"]);
 			}
 		} else {
