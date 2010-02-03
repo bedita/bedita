@@ -627,7 +627,15 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 	
 	public function save($data = null, $validate = true, $fieldList = array()) {
 		$conf = Configure::getInstance() ;
-
+		
+		$data2 = $data;
+		
+		foreach($data2 as $key => $value) {
+			if (!is_array($value)){
+				unset($data2[$key]);
+			}
+		}
+		
 		if(isset($data['BEObject']) && empty($data['BEObject']['object_type_id'])) {
 			$data['BEObject']['object_type_id'] = $conf->objectTypes[Inflector::underscore($this->name)]["id"] ;
 		} else if(!isset($data['object_type_id']) || empty($data['object_type_id'])) {
@@ -639,7 +647,7 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 		}
 		
 		$data = (!empty($data[$this->alias]))? array("BEObject" => $data[$this->alias]) : array("BEObject" => $data);
-
+		
 		$beObject = ClassRegistry::init("BEObject");
 		
 		// format data array for HABTM relations in cake way
@@ -662,9 +670,10 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 			return $res;
 		}
 		
-		$data2 = array("id" => $beObject->id);
-		
+		$data2["id"] = $beObject->id;
 		$res = parent::save($data2, $validate, $fieldList);
+		//$res = Model::save($data, $validate, $fieldList) ;
+		//$res = ClassRegistry::init("Model")->save($data2, $validate, $fieldList);
 		
 		return $res;
 	}
