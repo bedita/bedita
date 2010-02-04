@@ -107,6 +107,7 @@ if (!defined("BEDITA_CORE_PATH")) {
 	$componentPaths[] = BEDITA_CORE_PATH . DS . 'controllers' . DS . 'components' . DS;
 	$behaviorPaths[] = BEDITA_CORE_PATH . DS . 'models' . DS . 'behaviors' . DS;
 	$helperPaths[] = BEDITA_CORE_PATH . DS . 'views' . DS . 'helpers' . DS;
+	Configure::load("frontend.ini") ;
 }
 
 /**
