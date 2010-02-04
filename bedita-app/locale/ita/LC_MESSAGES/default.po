@@ -251,7 +251,7 @@ msgstr "Nuova galleria"
 msgid "Create new list"
 msgstr "Crea nuova lista"
 
-msgid "Create new publishing"
+msgid "Create new publication"
 msgstr "Nuova pubblicazione"
 
 msgid "Create new question"
@@ -1039,6 +1039,9 @@ msgstr ""
 
 msgid "Provider URL"
 msgstr "URL del Provider"
+
+msgid "Publications"
+msgstr "Pubblicazioni"
 
 msgid "Public sites users statistics"
 msgstr "Statistiche degli utenti ai siti pubblici"
