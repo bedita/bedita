@@ -23,6 +23,8 @@
 	
 	{$view->element('form_geotag')}
 	
+	{$view->element('form_translations')}
+	
 	{assign_associative var="params" object_type_id=$conf->objectTypes.card.id}
 	{$view->element('form_assoc_objects', $params)}
 	

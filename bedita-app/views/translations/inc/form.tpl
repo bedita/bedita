@@ -136,7 +136,7 @@ $(document).ready(function(){
 		{if !empty($object_translation.id.title)}<input type="hidden" name="data[LangText][1][id]" value="{$object_translation.id.title}"/>{/if}
 		{if !empty($object_master.description)}
 		<label>{t}description{/t}:</label><br />
-		<textarea id="subtitle" style="height:30px" class="shortdesc autogrowarea" name="data[LangText][2][text]">{if !empty($object_translation.description)}{$object_translation.description}{/if}</textarea>
+		<textarea id="subtitle" style="height:30px" class="{if $object_master.object_type_id == $conf->objectTypes.card.id}mce{else}autogrowarea{/if} shortdesc" name="data[LangText][2][text]">{if !empty($object_translation.description)}{$object_translation.description}{/if}</textarea>
 		<input type="hidden" name="data[LangText][2][name]" value="description"/>
 		{if !empty($object_translation.id.description)}<input type="hidden" name="data[LangText][2][id]" value="{$object_translation.id.description}"/>{/if}
 		{/if}
@@ -279,7 +279,7 @@ $(document).ready(function(){
 		<input type="text" id="title_master" name="" value="{$object_master.title}" readonly="readonly"/><br />
 		{if !empty($object_master.description)}
 		<label>{t}description{/t}:</label><br />
-		<textarea id="subtitle" style="height:30px" class="shortdesc autogrowarea" name="">{$object_master.description}</textarea>
+		<textarea id="subtitle" style="height:30px" class="shortdesc{if $object_master.object_type_id == $conf->objectTypes.card.id} mce{else} autogrowarea{/if}" name="">{$object_master.description}</textarea>
 		{/if}
 	</fieldset>
 
