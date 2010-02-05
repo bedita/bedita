@@ -77,17 +77,22 @@ class BeurlHelper extends AppHelper {
 		$plugin = false;
 		$output = "";
 		if (!empty($conf->plugged["modules"])) {
+			$modeRewrite = $conf->App['baseUrl'];
 			foreach ($conf->plugged["modules"] as $name => $m) {
 				$cssBase = "module_color";
 				$vendorsPath = $m["pluginPath"] . DS . "vendors";
+				$name_ok = $name;
+				if(!empty($modeRewrite)) {
+					$name_ok = "index.php/" . $name;
+				}
 				if (file_exists($vendorsPath . DS . "css" . DS . $cssBase . ".css")) {
-					$output .= $this->Html->css("/" . $name . "/css/" . $cssBase) . "\n";
+					$output .= $this->Html->css("/" . $name_ok . "/css/" . $cssBase) . "\n";
 				}
 				if ($name == $moduleName) {
 					$cssPath = $vendorsPath . DS . "css" . DS . "module.css";
-					$cssLink = "/" . $name . "/css/module";
+					$cssLink = "/" . $name_ok . "/css/module";
 					$jsPath = $vendorsPath . DS . "js" . DS . "module.js";
-					$jsLink = "/" . $name . "/js/module";
+					$jsLink = "/" . $name_ok . "/js/module";
 					$plugin = true;
 				}
 			}
