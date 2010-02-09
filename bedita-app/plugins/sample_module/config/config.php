@@ -23,11 +23,11 @@
  * Write here your module global configurations. This configurations will be loaded in every BEdita's page
  * For example use it to define objects relations with other BEdita objects  
  *
- * @version			$Revision: 2566 $
- * @modifiedby 		$LastChangedBy: niki $
- * @lastmodified	$LastChangedDate: 2010-01-27 10:36:17 +0100 (mer, 27 gen 2010) $
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: app_controller.php 2566 2010-01-27 09:36:17Z niki $
+ * $Id$
  */
 
 //$config["objRelationType"] = array(
