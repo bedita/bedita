@@ -10,7 +10,7 @@
 <a href="{$html->url('/')}" >{$publication.public_name|default:$publication.title}</a>&nbsp;&gt;&nbsp; 
 {if (!empty($section.pathSection))}
 	{foreach from=$section.pathSection item="sec"}
-	<a href="{$html->url('/')}{$sec.nickname}" >{$sec.title}</a>&nbsp;&gt;&nbsp;
+	<a href="{$html->url($sec.canonicalPath)}" >{$sec.title}</a>&nbsp;&gt;&nbsp;
 	{/foreach}
 {/if}
 {if ($section.id != $publication.id)}

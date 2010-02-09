@@ -1349,12 +1349,15 @@ abstract class FrontendController extends AppController {
 			}
 			$oldBaseLevel = $this->baseLevel; 
 			$this->baseLevel = true;
+			$currPath = "";
 			foreach ($parents as $p) {
 				if ($p != $this->publication["id"]) {
 					$pathArr[$p] = $this->loadObj($p);
 					if ($pathArr[$p] === self::UNLOGGED || $pathArr[$p] === self::UNAUTHORIZED) {
 						$this->accessDenied($pathArr[$p]);
 					}
+					$currPath .= "/" . $pathArr[$p]["nickname"];
+					$pathArr[$p]["canonicalPath"] = $currPath;
 				}
 			}
 			$this->baseLevel = $oldBaseLevel;
