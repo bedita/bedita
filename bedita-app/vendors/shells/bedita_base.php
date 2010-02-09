@@ -90,6 +90,20 @@ class BeditaBaseShell extends Shell {
         }
     }
 	
+    /**
+     * Read mandatory shell argument ($opt), 
+     * exit with err message if parameter not present
+     *
+     * @param unknown_type $opt
+     * @param unknown_type $errMsg
+     */
+    protected function mandatoryArgument($opt, $errMsg) {
+    	if (isset($this->params[$opt])) {
+            return $this->params[$opt];
+    	} else {
+    		$this->error("Missing parameters" , $errMsg);
+    	}
+    }
    
     public function test() {
 		pr($this->params);
