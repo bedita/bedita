@@ -413,6 +413,17 @@ class DbadminShell extends Shell {
 		$this->out("Done. $nObj objects of type " . $type . " inserted.");
 	}
 	
+	public function updateStreamFields() {
+		$streamModel = ClassRegistry::init("Stream");
+		$streams = $streamModel->find("all");
+		if (!empty($streams)) {
+			foreach ($streams as $s) {
+				if ($streamModel->updateStreamFields($s["Stream"]["id"])) {
+					$this->out("stream ".$s["Stream"]["id"]. " updated");
+				}
+			}
+		}
+	}
 	
 	function help() {
 		$this->out('Available functions:');
