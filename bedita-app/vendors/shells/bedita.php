@@ -207,50 +207,55 @@ class BeditaShell extends BeditaBaseShell {
 	 */
 	function init() {
 		$this->out("CHECKING DATABASE CONNECTION");
-		if ($this->checkAppDbConnection()) {
-			$this->hr();
-			$this->out("");
-			$this->hr();
-			$this->out("CHECKING MEDIA ROOT");
-			$mediaRoot = Configure::read("mediaRoot");
-			if (@$this->checkAppDirPerms($mediaRoot)) {
-				$this->hr();
-				$this->out("");
-				$this->hr();
-				$this->out("CHECKING MEDIA URLs");
-				$mediaUrl = Configure::read("mediaUrl");
-				if ($this->checkAppUrl($mediaUrl)) {
-					$this->hr();
-					$this->out("");
-					$this->hr();
-					$this->out("INITIALIZE DATABASE");
-					$this->initDb();
-					$this->out("");
-					$this->out("");
-					$res = $this->in("Do you want to check BEdita status? [y/n]");
-					if($res != "y") {
-			       		$this->out("Bye");
-			       		return;
-					}
-					$this->hr();
-					$this->out("BEdita STATUS");
-					$this->hr();
-					$this->checkApp();
-				} else {
-					$this->hr();
-					$this->out("HINT: edit \$config['mediaUrl'] in bedita-app/config/bedita.sys.php, if necessary uncomment it.");
-					$this->out("");
-				}
-			}  else {
-				$this->hr();
-				$this->out("HINT: edit \$config['mediaRoot'] in bedita-app/config/bedita.sys.php, if necessary uncomment it.");
-				$this->out("");
-			}
-		} else {
-			$this->hr();
+		$res = $this->checkAppDbConnection();
+		$this->hr();
+		if(!$res) {
 			$this->out("HINT: check database existence/setup and edit \$default array in bedita-app/config/database.php, have a look to CakePHP documentation.");
 			$this->out("");
+			return;
 		}
+		$this->out("");
+		$this->hr();
+		$this->out("CHECKING MEDIA ROOT");
+		$mediaRoot = Configure::read("mediaRoot");
+		$res = @$this->checkAppDirPerms($mediaRoot);
+		$this->hr();
+		if(!$res) {
+			$this->out("HINT: edit \$config['mediaRoot'] in bedita-app/config/bedita.sys.php, if necessary uncomment it.");
+			$ans = $this->in("Proceed anyway? [y/n]");
+			if($ans != "y") {
+		   		$this->out("Bye");
+				return;
+			}				
+		}
+
+		$this->out("CHECKING MEDIA URLs");
+		$mediaUrl = Configure::read("mediaUrl");
+		$res = $this->checkAppUrl($mediaUrl);
+		$this->hr();
+		if(!$res) {
+			$this->out("HINT: edit \$config['mediaUrl'] in bedita-app/config/bedita.sys.php, if necessary uncomment it.");
+			$ans = $this->in("Proceed anyway? [y/n]");
+			if($ans != "y") {
+		   		$this->out("Bye");
+				return;
+			}				
+		}
+				
+		$this->out("");
+		$this->hr();
+		$this->out("INITIALIZE DATABASE");
+		$this->initDb();
+		$this->out("");
+		$res = $this->in("Do you want to check BEdita status? [y/n]");
+		if($res != "y") {
+       		$this->out("Bye");
+       		return;
+		}
+		$this->hr();
+		$this->out("BEdita STATUS");
+		$this->hr();
+		$this->checkApp();
 	}
 	
 	function initDb() {
