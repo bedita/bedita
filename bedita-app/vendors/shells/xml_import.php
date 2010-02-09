@@ -29,11 +29,13 @@ BeLib::getObject("BeConfigure")->initConfig();
 class XmlImportShell extends BeditaBaseShell {
 	
 	protected $tagsIgnore = array("<em>", "<i>", "<dfn>", 
-		"<p>", "<ol>", "<li>", "<ul>", "<a>", "<h1>", "<h2>");
+		"<p>", "<ol>", "<li>", "<ul>", "<a>", "<h1>", "<h2>", "<sub>", "<sup>");
 
 	protected $tagsMove = array("<immagine>", "<box>");
 	
 	protected $tagsModified = array();
+	
+	protected $tagDelim = array("<" => "{", ">" => "}");
 	
 	protected $tagsNotFound = array();
 	
@@ -93,10 +95,10 @@ class XmlImportShell extends BeditaBaseShell {
 				$xmlData = array();
 		    	$this->cleanupTags($strXml, $xmlData);
 
-		    	$logFile->append("xml modified - main:\n");
-		    	$logFile->append($xmlData[0] . "\n");
-		    	$logFile->append("xml modified - media:\n");
-		    	$logFile->append($xmlData[1] . "\n");
+//		    	$logFile->append("xml modified - main:\n");
+//		    	$logFile->append($xmlData[0] . "\n");
+//		    	$logFile->append("xml modified - media:\n");
+//		    	$logFile->append($xmlData[1] . "\n");
 		    	
 		    	$xml = new XML($xmlData[0]);
 				$parsed = set::reverse($xml);
@@ -217,6 +219,7 @@ class XmlImportShell extends BeditaBaseShell {
 				throw new BeditaException("Error saving section - " . print_r($data, true));
 			}
 			$aliases[$data["alias"]] = $sectionModel->id;
+			$aliasModel->create();
 			$aliasModel->save(array("object_id" => $sectionModel->id, "nickname_alias" => $data["alias"]));
 		}
 		
@@ -265,6 +268,7 @@ class XmlImportShell extends BeditaBaseShell {
 			}
 			if(!empty($data["alias"])) {
 				$aliases[$data["alias"]] = $documentModel->id;
+				$aliasModel->create();
 				$aliasModel->save(array("object_id" => $documentModel->id, "nickname_alias" => $data["alias"]));
 			}
 		}
@@ -283,6 +287,7 @@ class XmlImportShell extends BeditaBaseShell {
 			}
 			if(!empty($data["alias"])) {
 				$aliases[$data["alias"]] = $imageModel->id;
+				$aliasModel->create();
 				$aliasModel->save(array("object_id" => $imageModel->id, "nickname_alias" => $data["alias"]));
 			}
 			$streamModel->updateStreamFields($imageModel->id);
@@ -312,19 +317,21 @@ class XmlImportShell extends BeditaBaseShell {
 	
 	private function checkTagText($text) {
 		$res = trim($text);
-		foreach ($this->tagsModified as $tag => $tagMod) {
-			$res = str_replace($tagMod, $tag, $res);
-		}
+//		foreach ($this->tagsModified as $tag => $tagMod) {
+//			$res = str_replace($tagMod, $tag, $res);
+//		}
+		$res = str_replace($this->tagDelim["<"], "<", $res);
+		$res = str_replace($this->tagDelim[">"], ">", $res);
 		return $res;
 	}
 	
 	private function initTagsModified() {
 		foreach ($this->tagsIgnore as $tag) {
 			$closeTag = str_replace("<", "</", $tag);
-			$modTagOpen = str_replace(">", "]", $tag); 
-			$modTagOpen = str_replace("<", "[", $modTagOpen); 
-			$modTagClosed = str_replace(">", "]", $closeTag); 
-			$modTagClosed = str_replace("<", "[", $modTagClosed); 
+			$modTagOpen = str_replace(">", $this->tagDelim[">"], $tag); 
+			$modTagOpen = str_replace("<", $this->tagDelim["<"], $modTagOpen); 
+			$modTagClosed = str_replace(">", $this->tagDelim[">"], $closeTag); 
+			$modTagClosed = str_replace("<", $this->tagDelim["<"], $modTagClosed); 
 			$this->tagsModified[$tag] = $modTagOpen;
 			$this->tagsModified[$closeTag] = $modTagClosed;
 		}
@@ -341,8 +348,8 @@ class XmlImportShell extends BeditaBaseShell {
 			// tags with attributes
 			while($pos) {
 				$endpos = strpos($modStr, ">", $pos);
-				$modStr{$pos} = "[";
-				$modStr{$endpos} = "]";
+				$modStr{$pos} = $this->tagDelim["<"];
+				$modStr{$endpos} = $this->tagDelim[">"];
 				$pos = strpos($modStr, $attribTag, $endpos);
 			}
 		}
@@ -359,10 +366,6 @@ class XmlImportShell extends BeditaBaseShell {
 				$pos = strpos($modStr, $mvTag, $pos);
 			}
 		}
-//		if(!empty($strMoved)) {
-//			$pos = strrpos($modStr, "</");
-//			$modStr = substr($modStr, 0, $pos-1) . $strMoved . substr($modStr, $pos);
-//		}
 		$data[0] = $modStr;
 		$data[1] = '<?xml version="1.0" encoding="utf-8"?><media>'. $strMoved . '</media>';
 //		return $modStr;
@@ -528,6 +531,11 @@ relations
 	
 	function help() {
 		$this->out("Shell script to import generic XML in BEdita");
+        $this->out(' ');
+        $this->out('  Usage: xml_import -path <xml-files-dir>');
+        $this->out("    -path <xml-files-dir>\t path to directory containing xml files");
+        $this->out(' ');
+  		
 	}
 	
 }
