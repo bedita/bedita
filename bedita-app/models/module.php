@@ -55,7 +55,7 @@ class Module extends BEAppModel {
 		}
 		$newModuleId = $this->id;
 		
-		if (!empty($setup["BeditaObjects"])) {
+		if (!empty($setup["BEditaObjects"])) {
 			if (!is_array($setup["BEditaObjects"])) {
 				$setup["BEditaObjects"] = array($setup["BEditaObjects"]);
 			}
