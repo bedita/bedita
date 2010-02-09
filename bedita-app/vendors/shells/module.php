@@ -101,9 +101,22 @@ class ModuleShell extends Shell {
 			}
 			
 			include $pluginsBasePath . $plugin . DS . "config" . DS . "bedita_module_setup.php";
+			$beditaVersion = Configure::read("majorVersion");
+			if ($beditaVersion != $moduleSetup["BEditaVersion"]) {
+				$this->out("");
+				$this->out("WARNING: installed version and version required mismatched!");
+				$this->out("BEdita version: " . $beditaVersion);
+				$this->out("BEdita version required by " . $plugin . ": " . $moduleSetup["BEditaVersion"]);
+				$command = $this->in("Do you want continue anyway?", array("yes", "no"), "no");
+				if ($command != "yes") {
+					$this->out("Bye");
+					return;
+				}
+			}
 			$this->out("");
 			$this->out("You are about to plug in the module " . $plugin . " version " . $moduleSetup["version"]);
-			
+			$this->out("Module description: " . $moduleSetup["description"]);
+			$this->out("");
 			$command = $this->in("Do you wanto to proceed?", array("yes", "no"), "yes");
 			if ($command != "yes") {
 				$this->out("Bye");

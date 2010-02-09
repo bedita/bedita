@@ -56,13 +56,13 @@ class Module extends BEAppModel {
 		$newModuleId = $this->id;
 		
 		if (!empty($setup["BeditaObjects"])) {
-			if (!is_array($setup["BeditaObjects"])) {
-				$setup["BeditaObjects"] = array($setup["BeditaObjects"]);
+			if (!is_array($setup["BEditaObjects"])) {
+				$setup["BEditaObjects"] = array($setup["BEditaObjects"]);
 			}
 			$otModel = ClassRegistry::init("ObjectType");
 			$maxid = $otModel->field("id", null, "id DESC");
 			$ot_id = ($maxid < 1000)? 1000 : $maxid + 1;  
-			foreach ($setup["BeditaObjects"] as $modelName) {
+			foreach ($setup["BEditaObjects"] as $modelName) {
 				$objectType = Inflector::underscore($modelName);
 				$obj = $otModel->find("count", array(
 						"conditions" => array("name" => $objectType),
