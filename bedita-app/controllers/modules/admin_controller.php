@@ -350,6 +350,21 @@ class AdminController extends ModulesController {
 	 		}
 	 	}
 	 }
+	 
+	 public function pluginModules() {
+	 	$moduleModel = ClassRegistry::init("Module");
+		$pluginModules = $moduleModel->getPluginModules();
+		$this->set("pluginModules", $pluginModules);
+	 }
+	 
+	public function plugModule() {
+		if (empty($this->params["form"]["pluginPath"])) {
+			throw new BeditaExceptions(__("Missing plugin path", true));
+		}
+		$moduleModel = ClassRegistry::init("Module");
+		include($this->params["form"]["pluginPath"] . $this->params["form"]["pluginName"] . DS . "config" . DS . "bedita_module_setup.php");
+	 	$moduleModel->plugModule($this->params["form"]["pluginName"], $moduleSetup);
+	 }
 
 	 protected function forward($action, $esito) {
 	 	 	$REDIRECT = array(
@@ -388,6 +403,10 @@ class AdminController extends ModulesController {
 				"deleteCustomProperties" =>	array(
 					 			"OK"	=> '/admin/customproperties',
 								"ERROR"	=> '/admin/customproperties'
+							),
+				"plugModule" => array(
+								"OK" => "/admin/pluginModules",
+								"ERROR" => "/admin/pluginModules",
 							)
 	 			);
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

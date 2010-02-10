@@ -32,6 +32,40 @@
  */
 class Module extends BEAppModel {
 	
+	public function getPluginModules() {
+		$pluggedModulesList = $this->find("list", array(
+				"fields" => array("name", "id"),
+				"conditions" => array("type" => "plugin")
+			)
+		);
+		
+		$pluginPaths = Configure::getInstance()->pluginPaths;
+		
+		$pluginModules = array("plugged" => array(), "unplugged" => array());
+		foreach ($pluginPaths as $pluginsBasePath) {
+			$folder = new Folder($pluginsBasePath);
+			$plugins = $folder->ls(true, true);
+			foreach ($plugins[0] as $plugin) {
+				if (file_exists($pluginsBasePath . $plugin . DS . "config" . DS . "bedita_module_setup.php")) {
+					include($pluginsBasePath . $plugin . DS . "config" . DS . "bedita_module_setup.php");
+					if (!array_key_exists($plugin, $pluggedModulesList)) {
+						$moduleSetup["pluginPath"] = $pluginsBasePath;
+						$moduleSetup["pluginName"] = $plugin;
+						$pluginModules["unplugged"][] = $moduleSetup;
+					} else {
+						$mod = $this->find("first", array(
+								"conditions" => array("id" => $pluggedModulesList[$plugin])
+							)
+						);
+						$pluginModules["plugged"][] = array_merge($mod["Module"], array("info" => $moduleSetup));
+					}
+				}
+			}
+		}
+		
+		return $pluginModules;
+	}
+	
 	public function plugModule($pluginName, array $setup=array()) {
 		if (empty($pluginName) || empty($setup)) {
 			return false;
@@ -41,7 +75,7 @@ class Module extends BEAppModel {
 			)
 		);
 		if ($c > 0) {
-			return false;
+			throw new BeditaException(__("A module with name " . $pluginName . " already exist", true));
 		}
 		
 		$data["Module"]["name"] = $pluginName;
