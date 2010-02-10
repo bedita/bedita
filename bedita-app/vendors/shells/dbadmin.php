@@ -187,22 +187,10 @@ class DbadminShell extends Shell {
 		
 		if (!empty($images)) {
 			foreach ($images as $i) {
-				
-				// if it's not an url get image size
-				if (!preg_match($conf->validate_resource['URL'], $i["path"])) {
-					
-					if ( !$imageSize =@ getimagesize($conf->mediaRoot . $i['path']) )
-						throw new BeditaException(__("Get image size failed", true));
-					
-					if ($imageSize[0] == 0  || $imageSize[1] == 0)
-						throw new BeditaException(__("Can't get dimension for " . $i['path'], true));
-						
-					$imageModel->id = $i["id"];
-					if (!$imageModel->saveField("width", $imageSize[0]))
-						throw new BeditaException(__("Error saving width field", true));
-					if (!$imageModel->saveField("height", $imageSize[1]))
-						throw new BeditaException(__("Error saving height field", true));
-					$this->out("file: " . $conf->mediaRoot . $i["path"] . ", dimension: " . $imageSize[0] . "x" . $imageSize[0] ." pixels");
+
+				if ($imageModel->setImageDimArray($i)) {
+					$this->out("file: " . $conf->mediaRoot . $i["path"] . 
+						", dimension: " . $i["width"] . "x" . $i["height"] ." pixels");
 					$countOperations++;
 				}
 				
