@@ -32,6 +32,11 @@ class Stream extends BEAppModel
 {
 
 	/**
+	 * @var array of mime types
+	 */
+	private $mimeTypes = array();
+	
+	/**
 	 * Get id from filename
 	 * @param string $filename
 	 */
@@ -45,6 +50,12 @@ class Stream extends BEAppModel
 		return $ret['Stream']['id'] ;
 	}
 	
+	/**
+	 * update fields in streams table
+	 * 
+	 * @param int $id
+	 * @return boolean (true if row is updated, false if not)
+	 */
 	public function updateStreamFields($id) {
 		
 		if (empty($id)) {
@@ -64,10 +75,12 @@ class Stream extends BEAppModel
 				return false;
 			}
 			
-			if ($isURL && ($provider = $this->getMediaProvider($stream["Stream"]["path"]))) {
+			if ($isURL && ($mediaProvider = $this->getMediaProvider($stream["Stream"]["path"]))) {
 				if (empty($stream["Stream"]["name"]) || empty($stream["Stream"]["mime_type"])) {
-					$componentName = Inflector::camelize("be_" . $provider);
+					$componentName = Inflector::camelize("be_" . $mediaProvider["provider"]);
+					$stream["Stream"] = array_merge($stream["Stream"],$mediaProvider);
 					App::import("Component", $componentName);
+					$componentName .= "Component";
 					$providerComponent = new $componentName();
 					$providerComponent->setInfoToSave($stream["Stream"]);
 				}
@@ -91,25 +104,39 @@ class Stream extends BEAppModel
 			if (!$this->save($stream)) {
 				throw new BeditaException(__("Error updating stream " . $id, true));
 			}
-			
-			// @todo: save image and application dimensions
 
 			return true;
 		}
+		
+		return false;
 	}
 	
+	/**
+	 * return media provider array or false if $url it's not managed 
+	 * 
+	 * @param $url
+	 * @return mixed array("provider" => "", "url" => "", "uid" => "") or false if not found
+	 */
 	public function getMediaProvider($url) {
 		$conf = Configure::getInstance();
 		foreach($conf->media_providers as $provider => $expressions) {
 			foreach($expressions["regexp"] as $expression) {
 				if(preg_match($expression, $url, $matched)) {
-					return $matched[0] ;
+					$mediaProvider = array("provider" => $provider, "url" => $matched[0], "uid" => $matched[1]);
+					return $mediaProvider;
 				}	
 			}
 		}
 		return false ;
 	}
 	
+	/**
+	 * get mime type by finfo_open (if function exist) or by file extension 
+	 * 
+	 * @param $path full path of file
+	 * @param $filename
+	 * @return string or false if mime_type not found
+	 */
 	public function getMimeType($path, $filename=null) {
 		if (empty($filename)) {
 			$filename = basename($path);
@@ -123,14 +150,39 @@ class Stream extends BEAppModel
 		return $mime_type;
 	}
 	
+	/**
+	 * get mime type by file extension
+	 * 
+	 * @param $filename
+	 * @return string or false if mime_type not found
+	 */
 	public function getMimeTypeByExtension($filename) {
 		$mime_type = false;
-		include(APP_PATH.'config'.DS.'mime.types.php');
+		if (empty($this->mimeTypes)) {
+			$this->setMimeTypes();
+		}		
 		$extension = strtolower( pathinfo($filename, PATHINFO_EXTENSION) );
-		if (!empty($extension) && array_key_exists($extension,$config["mimeTypes"])) {
-			$mime_type = $config["mimeTypes"][$extension];
+		if (!empty($extension) && array_key_exists($extension,$this->mimeTypes)) {
+			$mime_type = $this->mimeTypes[$extension];
 		}
 		return $mime_type;
+	}
+	
+	/**
+	 * set Stream::mimeTypes array using bedita-app/config/mimi.types.php file
+	 * @return void
+	 */
+	public function setMimeTypes() {
+		include(BEDITA_CORE_PATH.DS.'config'.DS.'mime.types.php');
+		$this->mimeTypes = $config["mimeTypes"];
+	}
+	
+	/**
+	 * get Stream::mimeTypes
+	 * @return array of mime type
+	 */
+	public function getMimeTypes() {
+		return $this->mimeTypes;
 	}
 	
 	

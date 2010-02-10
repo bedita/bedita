@@ -459,6 +459,8 @@ class DbadminShell extends Shell {
         $this->out("    -f \t csv file path");
         $this->out("    -type \t model type like 'document' or 'event' to import");
         $this->out(' ');
+		$this->out('9. updateStreamFields: update name (if empty), mime_type (if empty), size and hash_file fields of streams table');
+  		$this->out(' ');
 	}
 	
 }
