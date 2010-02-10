@@ -90,17 +90,18 @@ class BeUploadToObjComponent extends Object {
 		$result = false ;
 		$getInfoURL = false;
 		
-		$url = $this->recognizeMediaProvider($dataURL['url'], $provider, $uid);
+		$mediaProvider = ClassRegistry::init("Stream")->getMediaProvider($dataURL['url']);
+		
 		if(empty($dataURL['title'])) {
 			$link = ClassRegistry::init("Link");
 			$dataURL['title'] = $link->readHtmlTitle($dataURL['url']);
 		}
 		
-		if (!empty($provider)) {
-			$dataURL['provider']	= $provider ;
-			$dataURL['uid']  	 	= $uid ;
+		if (!empty($mediaProvider)) {
+			$dataURL['provider']	= $mediaProvider["provider"];
+			$dataURL['uid']  	 	= $mediaProvider["uid"];
 		
-			$componentName = Inflector::camelize("be_" . $provider);
+			$componentName = Inflector::camelize("be_" . $mediaProvider["provider"]);
 			if (isset($this->{$componentName}) && method_exists($this->{$componentName}, "setInfoToSave")) {
 				if (!$this->{$componentName}->setInfoToSave($dataURL)) {
 					throw new BEditaMediaProviderException(__("Multimedia Provider not found or error preparing data to save",true)) ;
@@ -155,7 +156,11 @@ class BeUploadToObjComponent extends Object {
 		} else {
 			if (empty($data["provider"]) || empty($data["uid"])) {
 				$url = (!empty($data['url']))? $data['url'] : $data['path'];
-				$this->recognizeMediaProvider($url, $provider, $uid);
+				$mediaProvider = ClassRegistry::init("Stream")->getMediaProvider($url);
+				if (!empty($mediaProvider)) {
+					$provider = $mediaProvider["provider"];
+					$uid = $mediaProvider["uid"];
+				}
 			} else {
 				$provider = $data["provider"];
 				$uid = $data["uid"];
@@ -176,25 +181,6 @@ class BeUploadToObjComponent extends Object {
 		}
 		return $thumbnail;
 	}
-	
-	/**
-	 * recognize provider from url
-	 */
-	private function recognizeMediaProvider($url, &$provider, &$uid) {
-		$conf 		= Configure::getInstance() ;
 		
-		foreach($conf->media_providers as $provider => $expressions) {
-			foreach($expressions["regexp"] as $expression) {
-				if(preg_match($expression, $url, $matched)) {
-					$uid = $matched[1] ;
-					
-					return $matched[0] ;
-				}	
-			}
-		}
-		$provider = "";
-		return false ;
-	}
-	
 }
 ?>

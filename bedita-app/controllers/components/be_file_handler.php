@@ -419,30 +419,23 @@ class BeFileHandlerComponent extends Object {
 		}
 	}
 	
+	/**
+	 * get mime type of stream
+	 * 
+	 * @param array $data
+	 * @return string
+	 */
 	public function getMimeType($data) {
-		if (function_exists("finfo_open")) {
-			$file_info = finfo_open(FILEINFO_MIME, APP_PATH.'config'.DS.'magic');
-			$mime_type = ($file_info)? finfo_file($file_info,$data["tmp_name"]) : $this->getMimeTypeByExtension($data["name"]);
-		} else {
-			$mime_type = $this->getMimeTypeByExtension($data["name"]);
-		}
+		$mime_type = ClassRegistry::init("Stream")->getMimeType($data["tmp_name"], $data["name"]);
 		
 		// if not retrieved mime type from file or extension, get mime type passed by browser
-		if (empty($mime_type))
+		if (empty($mime_type)) {
 			$mime_type = $data['type'];
+		}
 		
 		return $mime_type;
 	}
 	
-	public function getMimeTypeByExtension($filename) {
-		$mime_type = false;
-		include_once APP_PATH.'config'.DS.'mime.types.php';
-		$extension = strtolower( pathinfo($filename, PATHINFO_EXTENSION) );
-		if (!empty($extension) && array_key_exists($extension,$config["mimeTypes"])) {
-			$mime_type = $config["mimeTypes"][$extension];
-		}
-		return $mime_type;
-	}
 	
 	/**
 	 * Create target with source (temporary file), through transactional object
