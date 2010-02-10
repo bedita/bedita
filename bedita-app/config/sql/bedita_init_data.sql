@@ -70,8 +70,8 @@ INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUE
 -- default empty frontend/publishing
 -- --------------------------------------
 
-INSERT INTO `objects` (`id`, `object_type_id`, `status`, `title`, `nickname`, `user_created`, `user_modified`) 
-VALUES (1, 1, 'on', 'Publication', 'publication', 1, 1);
+INSERT INTO `objects` (`id`, `object_type_id`, `status`, `title`, `nickname`, `lang`, `ip_created`, `user_created`, `user_modified`) 
+VALUES (1, 1, 'on', 'Publication', 'publication', 'eng', '127.0.0.1', 1, 1);
 INSERT INTO `areas` (`id`, `public_name`) 
 VALUES (1, 'bedita publication');
 INSERT INTO `sections` (`id`, `syndicate`, `priority_order`)
