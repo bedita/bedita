@@ -88,12 +88,13 @@ class SearchText extends BEAppModel
 		
 		if(!empty($searchFields)) {
 			$indexFields = array_keys($searchFields);
+	        $lang = !empty($data['lang'])? $data["lang"] : Configure::read("defaultLang");
 			foreach ($data as $k => $v) {
 				if(in_array($k, $indexFields)) {
 	                if (!empty($v)) {
 						$sText = array(
 			                'object_id' => $data['id'],
-			                'lang'      => $data['lang'], 
+			                'lang'      => $lang, 
 			                'content'   => $v,
 			                'relevance' => $searchFields[$k]
 		                );
