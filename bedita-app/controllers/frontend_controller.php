@@ -1896,7 +1896,7 @@ abstract class FrontendController extends AppController {
 	 * get passed args by name and return
 	 *
 	 */
-	private function getPassedArgs() {
+	protected function getPassedArgs() {
 		$args = array();
 		if (!empty($this->passedArgs)) {
 			foreach ($this->passedArgs as $key => $val) {
