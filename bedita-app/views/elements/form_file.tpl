@@ -11,55 +11,55 @@
 
 <div id="multimediaiteminside">
 
+{if ($object.ObjectType.name == "image")}
 
-	{if ($object.ObjectType.name == "image")}
-
-		{if strpos($object.path,'/') === 0}
-			{assign_concat var="fileUrl"  0=$conf->mediaUrl  1=$object.path}
-		{else}
-			{assign var="fileUrl"  value=$object.path}
-		{/if}
-		{image_info var="imageInfo" file=$fileUrl}
-
-		{assign_associative var="params" width=500 longside=false mode="fill" modeparam="000000" type=null upscale=false}
-		
-		{$beEmbedMedia->object($object,$params)}
-
-		
-	{elseif strtolower(($object.ObjectType.name) == "video")}
-	
-		{assign_associative var="params" presentation="full"}
-		{assign_associative var="htmlAttr" width=500 height=345}
-		{$beEmbedMedia->object($object,$params,$htmlAttr)}
-		
-	{elseif strtolower($object.ObjectType.name) == "audio"}
-	
-		{assign_associative var="htmlAttr" id="multimediaitemaudio"}
-		{$beEmbedMedia->object($object, null, $htmlAttr)}
-		
-	{elseif strtolower($object.ObjectType.name) == "application"}
-		
-		{assign_associative var="htmlAttributes" id="appContainer"} 
-		{assign_associative var="params" presentation="full"}
-		{$beEmbedMedia->object($object,$params,$htmlAttributes)}
-		
+	{if strpos($object.path,'/') === 0}
+		{assign_concat var="fileUrl"  0=$conf->mediaUrl  1=$object.path}
 	{else}
-			
-		<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
-			{$beEmbedMedia->object($object)}
-		</a>
-	
-	
+		{assign var="fileUrl"  value=$object.path}
 	{/if}
+	{image_info var="imageInfo" file=$fileUrl}
 
-{if $object.ObjectType.name == "video"}
-<div style="clear:left;">
-{t}thumbnail{/t}<br/>
-<input type="text" name="data[thumbnail]" value="{$object.thumbnail|default:''}" style="width: 350px;"/>
-{if !empty($object.thumbnail)}
-	<img src="{$object.thumbnail}" alt=""/>
+	{assign_associative var="params" width=500 longside=false mode="fill" modeparam="000000" type=null upscale=false}
+	
+	{$beEmbedMedia->object($object,$params)}
+
+	
+{elseif strtolower(($object.ObjectType.name) == "video")}
+
+	{assign_associative var="params" presentation="full"}
+	{assign_associative var="htmlAttr" width=500 height=345}
+	{$beEmbedMedia->object($object,$params,$htmlAttr)}
+	
+{elseif strtolower($object.ObjectType.name) == "audio"}
+
+	{assign_associative var="htmlAttr" id="multimediaitemaudio"}
+	{$beEmbedMedia->object($object, null, $htmlAttr)}
+	
+{elseif strtolower($object.ObjectType.name) == "application"}
+	
+	{assign_associative var="htmlAttributes" id="appContainer"} 
+	{assign_associative var="params" presentation="full"}
+	{$beEmbedMedia->object($object,$params,$htmlAttributes)}
+	
+{else}
+		
+	<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
+		{$beEmbedMedia->object($object)}
+	</a>
+
+
 {/if}
-</div> 
+
+
+{if ($object.ObjectType.name != "image")}
+	<div style="clear:left;">
+	{t}thumbnail{/t}<br/>
+	<input type="text" name="data[thumbnail]" value="{$object.thumbnail|default:''}" style="width: 350px;"/>
+	{if !empty($object.thumbnail)}
+		<img src="{$object.thumbnail}" alt=""/>
+	{/if}
+	</div> 
 {/if}
 
 <table class="bordered" style="margin-top:10px; border:1px solid #999; width:100%; clear:both">
@@ -74,6 +74,7 @@
 		<th>{t}filesize{/t}:</th>
 		<td>{$object.size|filesize}</td>
 	</tr>
+
 {if strtolower($object.ObjectType.name) == "application"}
 	
 	<tr>
