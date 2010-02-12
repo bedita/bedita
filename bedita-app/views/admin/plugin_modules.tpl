@@ -47,7 +47,7 @@ $(document).ready(function() {
 				<input type="button" rel="{$html->url('/admin/toggleModule')}" value="{t}turn on{/t}"/>
 			{/if}
 			<br/><br/>
-			<input type="button" id="unplugButton" rel="{$html->url('/admin/unplugModule')}" value="{t}unplug{/t}"/>
+			<input type="button" id="unplugButton" rel="{$html->url('/admin/unplugModule')}" value="{t}plug-out{/t}"/>
 			</form>
 		</li>
 	{/foreach}
@@ -63,7 +63,7 @@ $(document).ready(function() {
 			version {$mod.version}<br/><br/>
 			<input type="hidden" value="{$mod.pluginPath}" name="pluginPath"/>
 			<input type="hidden" value="{$mod.pluginName}" name="pluginName"/>
-			<input type="submit" value="{t}plug{/t}"/>
+			<input type="submit" value="{t}plug-in{/t}"/>
 			</form>
 		</li>
 	{/foreach}
