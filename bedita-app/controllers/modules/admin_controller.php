@@ -351,20 +351,56 @@ class AdminController extends ModulesController {
 	 	}
 	 }
 	 
-	 public function pluginModules() {
+	public function pluginModules() {
 	 	$moduleModel = ClassRegistry::init("Module");
 		$pluginModules = $moduleModel->getPluginModules();
 		$this->set("pluginModules", $pluginModules);
-	 }
+	}
 	 
 	public function plugModule() {
+		$this->checkWriteModulePermission();
 		if (empty($this->params["form"]["pluginPath"])) {
 			throw new BeditaExceptions(__("Missing plugin path", true));
 		}
 		$moduleModel = ClassRegistry::init("Module");
 		include($this->params["form"]["pluginPath"] . $this->params["form"]["pluginName"] . DS . "config" . DS . "bedita_module_setup.php");
+		$this->Transaction->begin();
 	 	$moduleModel->plugModule($this->params["form"]["pluginName"], $moduleSetup);
-	 }
+	 	$this->Transaction->commit();
+	 	$this->eventInfo("module ".$this->params["form"]["pluginName"]." plugged succesfully");
+		$this->userInfoMessage($this->params["form"]["pluginName"] . " " . __("plugged succesfully",true));
+	}
+	 
+	public function toggleModule() {
+		$this->checkWriteModulePermission();
+		if (empty($this->data)) {
+			throw new BeditaException(__("Missing data", true));
+		}
+		$moduleModel = ClassRegistry::init("Module");
+		$this->Transaction->begin();
+		if (!$moduleModel->save($this->data)) {
+			throw new BeditaException(__("Error saving module data"));
+		}
+		$this->Transaction->commit();
+		BeLib::getObject("BeConfigure")->cacheConfig();
+		$this->eventInfo("module ".$this->params["form"]["pluginName"]." turned " . $this->data["status"]);
+		$msg = ($this->data["status"] == "on")? __("turned on", true) : __("turned off", true);; 
+		$this->userInfoMessage($this->params["form"]["pluginName"]." " .$msg);
+	}
+	 
+	public function unplugModule() {
+		$this->checkWriteModulePermission();
+		if (empty($this->data["id"])) {
+			throw new BeditaException(__("Missing data", true));
+		}
+		$moduleModel = ClassRegistry::init("Module");
+		include($this->params["form"]["pluginPath"] . $this->params["form"]["pluginName"] . DS . "config" . DS . "bedita_module_setup.php");
+		$this->Transaction->begin();
+	 	$moduleModel->unplugModule($this->data["id"], $moduleSetup);
+	 	$this->Transaction->commit();
+	 	$this->eventInfo("module ".$this->params["form"]["pluginName"]." unplugged succesfully");
+		$this->userInfoMessage($this->params["form"]["pluginName"] . " " . __("unplugged succesfully",true));
+	}
 
 	 protected function forward($action, $esito) {
 	 	 	$REDIRECT = array(
@@ -405,6 +441,14 @@ class AdminController extends ModulesController {
 								"ERROR"	=> '/admin/customproperties'
 							),
 				"plugModule" => array(
+								"OK" => "/admin/pluginModules",
+								"ERROR" => "/admin/pluginModules",
+							),
+				"toggleModule" => array(
+								"OK" => "/admin/pluginModules",
+								"ERROR" => "/admin/pluginModules",
+							),
+				"unplugModule" => array(
 								"OK" => "/admin/pluginModules",
 								"ERROR" => "/admin/pluginModules",
 							)

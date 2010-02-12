@@ -32,6 +32,11 @@
  */
 class Module extends BEAppModel {
 	
+	/**
+	 * get a list of module plugin available (plugged and unplugged)
+	 * 
+	 * @return array ("plugged" => array(), "unplugged" => array() )  
+	 */
 	public function getPluginModules() {
 		$pluggedModulesList = $this->find("list", array(
 				"fields" => array("name", "id"),
@@ -48,8 +53,8 @@ class Module extends BEAppModel {
 			foreach ($plugins[0] as $plugin) {
 				if (file_exists($pluginsBasePath . $plugin . DS . "config" . DS . "bedita_module_setup.php")) {
 					include($pluginsBasePath . $plugin . DS . "config" . DS . "bedita_module_setup.php");
+					$moduleSetup["pluginPath"] = $pluginsBasePath;
 					if (!array_key_exists($plugin, $pluggedModulesList)) {
-						$moduleSetup["pluginPath"] = $pluginsBasePath;
 						$moduleSetup["pluginName"] = $plugin;
 						$pluginModules["unplugged"][] = $moduleSetup;
 					} else {
@@ -66,6 +71,14 @@ class Module extends BEAppModel {
 		return $pluginModules;
 	}
 	
+	/**
+	 * plug a module 
+	 * insert module, eventually insert new object types, set modify permission at administrator group
+	 * 
+	 * @param string $pluginName
+	 * @param array $setup
+	 * @return bool
+	 */
 	public function plugModule($pluginName, array $setup=array()) {
 		if (empty($pluginName) || empty($setup)) {
 			return false;
@@ -129,6 +142,42 @@ class Module extends BEAppModel {
 		BeLib::getObject("BeConfigure")->cacheConfig();
 		
 		return true;
+	}
+	
+	/**
+	 * unplug module
+	 * delete row on modules table, all module objects and object type
+	 * @param $id
+	 * @param array $setup
+	 * @return unknown_type
+	 */
+	public function unplugModule($id, array $setup=array()) {
+		if (!$this->del($id)) {
+			throw new BeditaException(__("Error deleting module " . $setup["publicName"], true));
+		}
+		
+		if (!empty($setup["BEditaObjects"])) {
+			if (!is_array($setup["BEditaObjects"])) {
+				$setup["BEditaObjects"] = array($setup["BEditaObjects"]);
+			}
+			$otModel = ClassRegistry::init("ObjectType");
+			$beObject = ClassRegistry::init("BEObject");
+			foreach ($setup["BEditaObjects"] as $modelName) {
+				$objectType = Inflector::underscore($modelName);
+				$ot_id = $otModel->field("id", array("name" => $objectType));
+				// delete all objects 
+				if (!$beObject->deleteAll(array("object_type_id" => $ot_id))) {
+					throw new BeditaException(__("Error deleting objects " . $modelName, true));
+				}
+				// delete object type
+				if (!$otModel->delete($ot_id)) {
+					throw new BeditaException(__("Error deleting object type " . $objectType, true));
+				}
+			}
+		}
+		
+		// recaching configuration
+		BeLib::getObject("BeConfigure")->cacheConfig();
 	}
 	
 }

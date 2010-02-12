@@ -64,7 +64,7 @@ class BeConfigure {
 
 		$moduleModel = ClassRegistry::init("Module");
 		$modules = $moduleModel->find("all", array(
-				"conditions" => array("type" => "plugin", "status" => "on")
+				"conditions" => array("type" => "plugin")
 			)
 		);
 		if (!empty($modules)) {
