@@ -37,7 +37,7 @@ $(document).ready(function() {
 			
 			<br/><br/>
 			<input type="hidden" value="{$mod.id}" name="data[id]"/>
-			<input type="hidden" value="{$mod.label}" name="pluginName"/>
+			<input type="hidden" value="{$mod.name}" name="pluginName"/>
 			<input type="hidden" value="{$mod.info.pluginPath}" name="pluginPath"/>
 			{if $mod.status == "on"}
 				<input type="hidden" value="off" name="data[status]"/>
