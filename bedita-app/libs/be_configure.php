@@ -55,11 +55,11 @@ class BeConfigure {
 		$conf = Configure::getInstance();
 		$configurations = array();
 				
-		if(file_exists(BEDITA_CORE_PATH . DS . 'plugins'.DS.'addons'.DS.'config'.DS.'config.php')) {
-			include BEDITA_CORE_PATH . DS . 'plugins'.DS.'addons'.DS.'config'.DS.'config.php';
+		if (file_exists(BEDITA_CORE_PATH . DS . 'plugins' . DS . 'addons' . DS . 'config' . DS . 'config.php')) {
+			include BEDITA_CORE_PATH . DS . 'plugins' . DS . 'addons' . DS . 'config' . DS .'config.php';
 		}
-		if(defined("BEDITA_PLUGINS_PATH") && file_exists(BEDITA_PLUGINS_PATH.DS.'addons'.DS.'config'.DS.'config.php')) {
-			include BEDITA_PLUGINS_PATH.DS.'addons'.DS.'config'.DS.'config.php';
+		if (defined("BEDITA_PLUGINS_PATH") && file_exists(BEDITA_PLUGINS_PATH . DS . 'addons' . DS . 'config' . DS . 'config.php')) {
+			include BEDITA_PLUGINS_PATH . DS . 'addons' . DS . 'config' . DS . 'config.php';
 		}
 
 		$moduleModel = ClassRegistry::init("Module");

@@ -59,8 +59,8 @@ function enableSubFoldersOn($baseDir, &$var, &$exclude) {
   if(sizeof($dirs) > 0) { 
     foreach($dirs as $dir) { 
       if(!in_array($dir, $exclude)) {
-    	$var[] = $baseDir.DS.$dir.DS;
-       	enableSubFoldersOn($baseDir.DS.$dir, $var, $exclude) ;
+    	$var[] = $baseDir . DS . $dir . DS;
+       	enableSubFoldersOn($baseDir . DS .$dir, $var, $exclude) ;
       }
     }
   }
@@ -70,10 +70,10 @@ function enableSubFoldersOn($baseDir, &$var, &$exclude) {
 
 // backend specific bootstrap
 if (!defined("BEDITA_CORE_PATH")) {
-	define("BEDITA_CORE_PATH", ROOT.DS.APP_DIR);
+	define("BEDITA_CORE_PATH", ROOT . DS . APP_DIR);
 	define("BACKEND_APP", true);
 	$controllerPaths = array();
-	enableSubFoldersOn(BEDITA_CORE_PATH.DS.'controllers', $controllerPaths, $excludedDirs);
+	enableSubFoldersOn(BEDITA_CORE_PATH .DS . 'controllers', $controllerPaths, $excludedDirs);
 	
 	function shutdownTransation() {
 		if(Configure::read("bedita.transaction") != null) {
@@ -95,7 +95,7 @@ if (!defined("BEDITA_CORE_PATH")) {
 	Configure::load("bedita.ini") ;
 	
 	// load local installation specific settings
-	if ( file_exists (BEDITA_CORE_PATH . DS . "config".DS."bedita.cfg.php") ) {
+	if ( file_exists (BEDITA_CORE_PATH . DS . "config" . DS . "bedita.cfg.php") ) {
 		Configure::load("bedita.cfg") ;	
 	}
 
@@ -114,19 +114,21 @@ if (!defined("BEDITA_CORE_PATH")) {
  * backend and frontend commons bootstrap operations
  */
 if (is_dir(BEDITA_CORE_PATH . DS . 'plugins'.DS.'addons')) {
-	$modelPaths[] = BEDITA_CORE_PATH . DS . 'plugins'.DS.'addons'.DS.'models';
-	$componentPaths[] = BEDITA_CORE_PATH.DS."plugins".DS."addons".DS."components"; 
+	$modelPaths[] = BEDITA_CORE_PATH . DS . 'plugins' . DS . 'addons' . DS .'models';
+	$componentPaths[] = BEDITA_CORE_PATH . DS . "plugins" . DS . "addons" . DS . "components"; 
+	$helperPaths[] = BEDITA_CORE_PATH . DS . "plugins" . DS . "addons" . DS . "helpers"; 
 }
 
 if (defined("BEDITA_PLUGINS_PATH")) {
 	$pluginPaths[] = BEDITA_PLUGINS_PATH . DS;
 	if (is_dir(BEDITA_PLUGINS_PATH . DS.'addons')) {
-		$modelPaths[] = BEDITA_PLUGINS_PATH . DS.'addons'.DS.'models';
-		$componentPaths[] = BEDITA_PLUGINS_PATH . DS."addons".DS."components";
+		$modelPaths[] = BEDITA_PLUGINS_PATH . DS . 'addons' . DS . 'models';
+		$componentPaths[] = BEDITA_PLUGINS_PATH . DS . "addons" . DS . "components";
+		$helperPaths[] = BEDITA_PLUGINS_PATH . DS . "addons" . DS . "helpers";
 	}
 }
- 
-enableSubFoldersOn(BEDITA_CORE_PATH.DS.'models', $modelPaths, $excludedDirs);
+
+enableSubFoldersOn(BEDITA_CORE_PATH . DS . 'models', $modelPaths, $excludedDirs);
 
 // common bedita libs path
 define('BEDITA_LIBS', BEDITA_CORE_PATH . DS .'libs');
