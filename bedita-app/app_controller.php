@@ -239,7 +239,7 @@ class AppController extends Controller
 					}
 					$this->historyItem["id"] = $historyModel->id;
 					$this->BeAuth->updateSessionHistory($this->historyItem, $historyConf);
-				} else {
+				} elseif (!empty($historyConf["trackNotLogged"])) {
 					$historyModel->save($this->historyItem);
 				}
 				

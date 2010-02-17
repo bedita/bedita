@@ -137,14 +137,16 @@ $config["cookieName"] = array(
 );
 
 /**
- * save history navigation (override bedita.cfg.php)
+ * save history navigation
  
  * "sessionEntry" => number of history items in session
  * "showDuplicates" => false to not show duplicates in history session 
+ * "trackNotLogged" => true save history for all users (not logged too)
  */
 //$config["history"] = array(
 //	"sessionEntry" => 5,
-//	"showDuplicates" => false
+//	"showDuplicates" => false,
+//	"trackNotLogged" => false
 //);
 
 ?>
