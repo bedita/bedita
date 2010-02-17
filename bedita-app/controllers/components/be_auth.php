@@ -126,6 +126,14 @@ class BeAuthComponent extends Object {
 		}
 
 		$this->User->compact($u) ;
+				
+		// load history
+		$historyConf = Configure::read("history");
+		if (!empty($historyConf)) {
+			$group = ($historyConf["showDuplicates"] === false)? array("path", "area_id") : array();
+			$u["History"] = ClassRegistry::init("History")->getUserHistory($u["id"], $historyConf["sessionEntry"], $group);
+		}
+		
 		$this->user = $u;
 		
 		$this->setSessionVars();
@@ -236,12 +244,12 @@ class BeAuthComponent extends Object {
 		$this->user = null ;
 		
 		if(isset($this->Session)) {
-			$this->Session->delete($this->sessionKey);
+			$this->Session->destroy();
 		}
 		
 		if(isset($this->controller)) {
 			$this->controller->set($this->sessionKey, null);
-		}		
+		}
 		return true ;
 	}
 	
@@ -435,6 +443,34 @@ class BeAuthComponent extends Object {
 		if(isset($this->controller)) {
 			$this->controller->set($this->sessionKey, $this->user);
 		}
+	}
+	
+	public function updateSessionHistory($historyItem, $historyConf) {
+		if (empty($historyItem) || empty($historyConf)) {
+			return;
+		}
+		$history = $this->Session->read($this->sessionKey . ".History");
+		if (empty($history)) {
+			$history[] = $historyItem; 
+		} else {
+			if ($historyConf["showDuplicates"] === false) {
+				foreach ($history as $h) {
+					if ($h["path"] == $historyItem["path"]) {
+						$findPath = true;
+						break;
+					}
+				}
+			}
+			
+			if (empty($findPath)) {
+				if (count($history) == $historyConf["sessionEntry"]) {
+					array_pop($history);
+				}
+				array_unshift($history, $historyItem);
+			}
+		}
+		
+		$this->Session->write($this->sessionKey . ".History" , $history);
 	}
 }
 ?>

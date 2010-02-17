@@ -68,6 +68,13 @@ class AppController extends Controller
 	 * @var string
 	 */
 	protected $fullBaseUrl = "";
+	
+	/**
+	 * fields to save in history table
+	 * 
+	 * @var array, set to null to avoid history insert also with history configure var setted
+	 */
+	protected $historyItem = array();
 			
 	public static function currentController() {
 		return self::$current;
@@ -211,6 +218,35 @@ class AppController extends Controller
 		}
 	}
 	
+	final function afterFilter() {
+		// convienience methods for frontends [like afterFilter]
+		$this->beditaAfterFilter();
+		$this->updateHistory();
+	}
+	
+	protected function updateHistory() {
+		// save history if configured
+		if ($this->params["url"]["url"] != "/") {
+			$historyConf = Configure::read("history");
+			if ( !empty($historyConf) && $this->historyItem !== null && !$this->RequestHandler->isAjax() && !$this->RequestHandler->isFlash()) {
+				$historyModel = ClassRegistry::init("History");
+				$this->historyItem["path"] = ($this->params["url"]["url"]{0} != "/")? "/" . $this->params["url"]["url"] : $this->params["url"]["url"];
+				$user = $this->BeAuth->getUserSession();
+				if (!empty($user)) {
+					$this->historyItem["user_id"] = $user["id"];
+					if (!$historyModel->save($this->historyItem)) {
+						return;
+					}
+					$this->historyItem["id"] = $historyModel->id;
+					$this->BeAuth->updateSessionHistory($this->historyItem, $historyConf);
+				} else {
+					$historyModel->save($this->historyItem);
+				}
+				
+			}
+		}
+	}
+	
 	protected function forward($action, $outcome) {	return false ; }
 	
 	/**
@@ -224,6 +260,12 @@ class AppController extends Controller
      */
     protected function beditaBeforeRender() {
     }
+    
+	/**
+	 *  local 'afterFilter' (for backend or frontend)
+	 */
+	protected function beditaAfterFilter() {
+	}
 	
     protected function eventLog($level, $msg) {
 		$u = isset($this->BeAuth->user["userid"])? $this->BeAuth->user["userid"] : "-";
@@ -832,6 +874,8 @@ abstract class ModulesController extends AppController {
 				$parents_id = array($parents_id);
 		
 			$previews = $this->previewsForObject($parents_id, $id, $obj['status']);
+			
+			$this->historyItem["object_id"] = $id;
 		}
 		
 		$property = $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $name . ".id"));

@@ -21,6 +21,7 @@ DROP TABLE IF EXISTS `geo_tags`;
 DROP TABLE IF EXISTS `groups`;
 DROP TABLE IF EXISTS `groups_users`;
 DROP TABLE IF EXISTS `hash_jobs`;
+DROP TABLE IF EXISTS `history`;
 DROP TABLE IF EXISTS `images`;
 DROP TABLE IF EXISTS `lang_texts`;
 DROP TABLE IF EXISTS `links`;
@@ -218,6 +219,33 @@ CREATE TABLE `hash_jobs` (
   UNIQUE KEY `hash` (`hash`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='contains hash operations, for example subscribe/unsubscribe';
+
+CREATE TABLE history (
+  `id` INTEGER UNSIGNED NOT NULL  AUTO_INCREMENT,
+  `user_id` INTEGER UNSIGNED DEFAULT NULL,
+  `object_id` INTEGER UNSIGNED DEFAULT NULL,
+  `title` VARCHAR(255) NULL,
+  `area_id` INTEGER UNSIGNED DEFAULT NULL COMMENT 'NULL in backend history',
+  `path` VARCHAR(255) NOT NULL,
+  `created` DATETIME NULL,
+  PRIMARY KEY(id),
+  INDEX (`object_id`),
+  INDEX (`user_id`),
+  INDEX (`area_id`),
+  INDEX (`path`),
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(user_id)
+    REFERENCES users(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(area_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE object_types (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,

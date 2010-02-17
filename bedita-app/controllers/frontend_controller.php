@@ -294,6 +294,7 @@ abstract class FrontendController extends AppController {
 		$this->showUnauthorized = true;
 		$this->publication = $this->loadObj(Configure::read("frontendAreaId"),false);
 		$this->showUnauthorized = $defaultShow;
+		
 		// set publication data for template
 		$this->set('publication', $this->publication);
 		
@@ -328,7 +329,8 @@ abstract class FrontendController extends AppController {
 				$this->checkPubDate = array("start" => false, "end" => false);
 			}
 		}
-			
+		
+		$this->historyItem["area_id"] = $this->publication["id"];
 	}
 
 	/**
@@ -1148,15 +1150,19 @@ abstract class FrontendController extends AppController {
 			$section["contentPath"] = $section["canonicalPath"] . "/" . $section['currentContent']['nickname'];
 			$section['currentContent']['canonicalPath'] = $section["contentPath"];
 			
+			$this->historyItem["object_id"] = $content_id;
+			$this->historyItem["title"] = $section['currentContent']['title'];
+			
 			if ($this->sectionOptions["showAllContents"]) {
 				$this->baseLevel = true;
 				$checkPubDate = $this->checkPubDate;
 				$this->checkPubDate = array("start" => false, "end" => false);
 				$tmp = $this->loadSectionObjects($sectionId, $this->sectionOptions["childrenParams"]);
-				if (!$this->sectionOptions["itemsByType"])
+				if (!$this->sectionOptions["itemsByType"]) {
 					$section = array_merge($section, $tmp);
-				else
+				} else {
 					$section = array_merge($section, array("children" => $tmp));
+				}
 				
 				$this->baseLevel = false;
 				$this->checkPubDate = $checkPubDate;
@@ -1177,6 +1183,9 @@ abstract class FrontendController extends AppController {
 					$section = array_merge($section, array("currentContent" => $current[0], "children" => $tmp, "toolbar" => $toolbar));
 				}
 			}
+			
+			$this->historyItem["object_id"] = $sectionId;
+			$this->historyItem["title"] = $section['title'];
 		}
 
 		$this->set('section', $section);
@@ -1253,6 +1262,7 @@ abstract class FrontendController extends AppController {
 	
 	
 	public function search() {
+		$this->historyItem = null;
 		if(!in_array('BeToolbar', $this->helpers)) {
        		$this->helpers[] = 'BeToolbar';
 		}
@@ -1275,6 +1285,7 @@ abstract class FrontendController extends AppController {
 	 * @return unknown_type
 	 */
 	public function subscribe($what="newsletter") {
+		$this->historyItem = null;
 		if ($what == "newsletter") {
 			$mailGroupModel = ClassRegistry::init("MailGroup");
 			$mailgroups = $mailGroupModel->find("all", array(
@@ -1297,6 +1308,7 @@ abstract class FrontendController extends AppController {
 	 * @return unknown_type
 	 */
 	public function hashjob($service_type=null, $hash=null) {
+		$this->historyItem = null;
 		if (!empty($service_type) || !empty($hash)) {
 			
 			if (!empty($hash)) {
@@ -1680,7 +1692,8 @@ abstract class FrontendController extends AppController {
 	 * show image for captcha
 	 *
 	 */
-	public function captchaImage() {	
+	public function captchaImage() {
+		$this->historyItem = null;	
 		if(!isset($this->Captcha)) {
 			App::import('Component', 'Captcha');
 			$this->Captcha = new CaptchaComponent();
@@ -1700,6 +1713,7 @@ abstract class FrontendController extends AppController {
 	 *  
 	 */
 	public function saveComment() {
+		$this->historyItem = null;
 		if (!empty($this->data)) {
 			if(!isset($this->Comment)) {
 				$this->Comment = $this->loadModelByType("Comment");
