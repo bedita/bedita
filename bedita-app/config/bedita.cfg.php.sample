@@ -99,4 +99,15 @@ $config["projectName"] = "BEdita 3.0";
 // specific css filename for newsletter templates
 //$config['newsletterCss'] = "base.css";
 
+/**
+ * save history navigation
+ 
+ * "sessionEntry" => number of history items in session
+ * "showDuplicates" => false to not show duplicates in history session 
+ */
+//$config["history"] = array(
+//	"sessionEntry" => 5,
+//	"showDuplicates" => false
+//);
+
 ?>
