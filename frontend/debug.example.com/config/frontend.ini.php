@@ -136,4 +136,15 @@ $config["cookieName"] = array(
 	"langSelect" => "basicExampleLang"
 );
 
+/**
+ * save history navigation (override bedita.cfg.php)
+ 
+ * "sessionEntry" => number of history items in session
+ * "showDuplicates" => false to not show duplicates in history session 
+ */
+//$config["history"] = array(
+//	"sessionEntry" => 5,
+//	"showDuplicates" => false
+//);
+
 ?>
