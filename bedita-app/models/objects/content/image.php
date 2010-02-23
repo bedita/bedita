@@ -56,13 +56,17 @@ class Image extends BeditaStreamModel
 	public function setImageDimArray(array &$data) {
 		$conf = Configure::getInstance();
 		$res = false;
+		if(empty($data["path"])) {
+			throw new BeditaException(__("Missing img path", true) . " - " . print_r($data, true));
+		}
+		
 		if (!preg_match($conf->validate_resource['URL'], $data["path"])) {
 
 			if ( !$imageSize =@ getimagesize($conf->mediaRoot . $data['path']) )
-				throw new BeditaException(__("Get image size failed", true));
+				throw new BeditaException(__("Get image size failed", true) . " - " . $data['path']);
 					
 			if ($imageSize[0] == 0  || $imageSize[1] == 0)
-				throw new BeditaException(__("Can't get dimension for " . $data['path'], true));
+				throw new BeditaException(__("Can't get dimension ", true) . " - " . $data['path']);
 						
 			$this->id = $data["id"];
 			$data["width"] = $imageSize[0];
