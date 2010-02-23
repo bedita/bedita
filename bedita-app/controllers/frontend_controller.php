@@ -1111,8 +1111,14 @@ abstract class FrontendController extends AppController {
 		}		
 		
 		$content_id = null;
+		
 		if(!empty($contentName)) {
-			$content_id = is_numeric($contentName) ? $contentName : $this->BEObject->getIdFromNickname($contentName);
+			if (is_numeric($contentName)) {
+				$content_id = $contentName;
+				$contentName = $this->BEObject->getNicknameFromId($content_id);
+			} else {
+				$content_id = $this->BEObject->getIdFromNickname($contentName);
+			}
 			$contentType = $this->BEObject->getType($content_id);
 			if($contentType === "Section") {
 				$args = func_get_args();
@@ -1122,12 +1128,18 @@ abstract class FrontendController extends AppController {
 			} elseif ( $this->Tree->find('count',array("conditions" => array("id" => $content_id, "parent_id" => $sectionId))) == 0 ) {	
 				throw new BeditaException(__("Content " . $contentName . " doesn't belong to " . $secName, true));
 			}
+			$contentNameFilter = str_replace("-","_",$contentName);
 		}
 		
 		$secNameFilter = str_replace("-","_",$secName);
 		// section before filter
 		if (method_exists($this, $secNameFilter . "BeforeFilter")) {
-			$this->{$secNameFilter . "BeforeFilter"}();
+			$this->{$secNameFilter . "BeforeFilter"}($contentName);
+		}
+		
+		// content before filter
+		if ($contentName && method_exists($this, $contentNameFilter . "BeforeFilter")) {
+			$this->{$contentNameFilter . "BeforeFilter"}($secName);
 		}
 		
 		$section = $this->loadObj($sectionId);
@@ -1190,9 +1202,14 @@ abstract class FrontendController extends AppController {
 
 		$this->set('section', $section);
 		
-		// section after filter
+		// section before render
 		if (method_exists($this, $secNameFilter . "BeforeRender")) {
 			$this->{$secNameFilter . "BeforeRender"}();
+		}
+		
+		// content before render
+		if ($contentName && method_exists($this, $contentNameFilter . "BeforeRender")) {
+			$this->{$contentNameFilter . "BeforeRender"}();
 		}
 	}
 
