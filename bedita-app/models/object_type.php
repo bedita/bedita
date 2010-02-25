@@ -32,5 +32,33 @@ class ObjectType extends BEAppModel
 {
 	var $name = 'ObjectType';
 	
+	/**
+	 * return an unused id for module plugin and addons
+	 * @return int
+	 */
+	public function newPluggedId() {
+		$maxid = $this->field("id", null, "id DESC");
+		$ot_id = ($maxid < 1000)? 1000 : $maxid + 1;
+		return $ot_id;
+	}
+	
+	/**
+	 * purge object type and related objects
+	 * @param string $objectType
+	 * @return void
+	 */
+	public function purgeType($objectType) {
+		$ot_id = $this->field("id", array("name" => $objectType));
+		// delete all objects
+		$beObject = ClassRegistry::init("BEObject");
+		if (!$beObject->deleteAll(array("object_type_id" => $ot_id))) {
+			throw new BeditaException(__("Error deleting objects " . Inflector::camelize($objectType), true));
+		}
+		// delete object type
+		if (!$this->delete($ot_id)) {
+			throw new BeditaException(__("Error deleting object type " . $objectType, true));
+		}
+	} 
+	
 }
 ?>

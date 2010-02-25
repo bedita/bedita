@@ -350,13 +350,22 @@ class AdminController extends ModulesController {
 	 		}
 	 	}
 	 }
-	 
+
+	/**
+	 * list all plugged/unplugged plugin modules
+	 * @return void
+	 */
 	public function pluginModules() {
 	 	$moduleModel = ClassRegistry::init("Module");
 		$pluginModules = $moduleModel->getPluginModules();
 		$this->set("pluginModules", $pluginModules);
 	}
 	 
+	/**
+	 * plug in a module 
+	 * 
+	 * @return void
+	 */
 	public function plugModule() {
 		$this->checkWriteModulePermission();
 		if (empty($this->params["form"]["pluginPath"])) {
@@ -365,12 +374,16 @@ class AdminController extends ModulesController {
 		$moduleModel = ClassRegistry::init("Module");
 		include($this->params["form"]["pluginPath"] . $this->params["form"]["pluginName"] . DS . "config" . DS . "bedita_module_setup.php");
 		$this->Transaction->begin();
-	 	$moduleModel->plugModule($this->params["form"]["pluginName"], $moduleSetup);
+	 	$moduleModel->plugModule($this->params["form"]["pluginName"], $moduleSetup, $this->params["form"]["pluginPath"]);
 	 	$this->Transaction->commit();
 	 	$this->eventInfo("module ".$this->params["form"]["pluginName"]." plugged succesfully");
 		$this->userInfoMessage($this->params["form"]["pluginName"] . " " . __("plugged succesfully",true));
 	}
-	 
+	
+	/**
+	 * switch off => on and back a plugin module
+	 * @return void
+	 */
 	public function toggleModule() {
 		$this->checkWriteModulePermission();
 		if (empty($this->data)) {
@@ -388,6 +401,10 @@ class AdminController extends ModulesController {
 		$this->userInfoMessage($this->params["form"]["pluginName"]." " .$msg);
 	}
 	 
+	/**
+	 * plug out a module
+	 * @return void
+	 */
 	public function unplugModule() {
 		$this->checkWriteModulePermission();
 		if (empty($this->data["id"])) {
@@ -401,8 +418,64 @@ class AdminController extends ModulesController {
 	 	$this->eventInfo("module ".$this->params["form"]["pluginName"]." unplugged succesfully");
 		$this->userInfoMessage($this->params["form"]["pluginName"] . " " . __("unplugged succesfully",true));
 	}
+	
+	/**
+	 * list all available addons
+	 * @return void
+	 */
+	public function addons() {
+		$beLib = BeLib::getInstance();
+		$this->set("addons", $beLib->getAddons());
+	}
+	
+	/**
+	 * enable addon BEdita object type
+	 * @return void
+	 */
+	public function enableAddon() {
+	 	if (empty($this->params["form"])) {
+	 		throw new BeditaException(__("Missing form data", true));
+	 	}
+	 	$filePath = $this->params["form"]["path"] . DS . $this->params["form"]["file"];
+	 	$beLib = BeLib::getInstance();
+	 	if ($beLib->isFileNameUsed($this->params["form"]["file"], "model", array($this->params["form"]["path"]))) {
+	 		throw new BeditaException(__($this->params["form"]["file"] . " model is already present in the system. Can't create a new object type", true));
+	 	}
+	 	if (!$beLib->isBeditaObjectType($this->params["form"]["model"], $this->params["form"]["path"])) {
+	 		throw new BeditaException(__($this->params["form"]["model"] . " doesn't seem to be a BEdita object. It has to be extend BEAppObjectModel", true));
+	 	}
+	 	$model = $beLib->getObject($this->params["form"]["model"]);
+	 	$data["name"] = $this->params["form"]["type"];
+	 	if (!empty($model->module)) {
+	 		$data["module"] = $model->module;
+	 	}
+	 	$objectType = ClassRegistry::init("ObjectType");
+	 	$data["id"] = $objectType->newPluggedId();
+	 	if (!$objectType->save($data)) {
+	 		throw new BeditaException(__("Error saving object type", true));
+	 	}
+	 	
+	 	BeLib::getObject("BeConfigure")->cacheConfig();
+	}
+	 
+	/**
+	 * disable addon BEdita object type
+	 * @return void
+	 */
+	public function disableAddon() {
+	 	if (empty($this->params["form"]["type"])) {
+	 		throw new BeditaException(__("Missing form data", true));
+	 	}
+	 	$otModel = ClassRegistry::init("ObjectType");
+	 	$this->Transaction->begin();
+	 	$otModel->purgeType($this->params["form"]["type"]);
+	 	$this->Transaction->commit($this->params["form"]["type"]);
+	 	$this->eventInfo("addon ". $this->params["form"]["model"]." disable succesfully");
+		$this->userInfoMessage($this->params["form"]["model"] . " " . __("disable succesfully, all related objects are been deleted",true));
+		BeLib::getObject("BeConfigure")->cacheConfig();
+	}
 
-	 protected function forward($action, $esito) {
+	protected function forward($action, $esito) {
 	 	 	$REDIRECT = array(
 				"viewGroup" => 	array(
  								"OK"	=> self::VIEW_FWD.'groups',
@@ -451,11 +524,19 @@ class AdminController extends ModulesController {
 				"unplugModule" => array(
 								"OK" => "/admin/pluginModules",
 								"ERROR" => "/admin/pluginModules",
+							),
+				"enableAddon" => array(
+								"OK" => "/admin/addons",
+								"ERROR" => "/admin/addons",
+							),
+				"disableAddon" => array(
+								"OK" => "/admin/addons",
+								"ERROR" => "/admin/addons",
 							)
 	 			);
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 	 	return false;
-	 }
+	}
 	 
 }
 

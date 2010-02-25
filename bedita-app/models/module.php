@@ -79,7 +79,7 @@ class Module extends BEAppModel {
 	 * @param array $setup
 	 * @return bool
 	 */
-	public function plugModule($pluginName, array $setup=array()) {
+	public function plugModule($pluginName, array $setup=array(), $pluginPath=null) {
 		if (empty($pluginName) || empty($setup)) {
 			return false;
 		}
@@ -107,10 +107,30 @@ class Module extends BEAppModel {
 				$setup["BEditaObjects"] = array($setup["BEditaObjects"]);
 			}
 			$otModel = ClassRegistry::init("ObjectType");
-			$maxid = $otModel->field("id", null, "id DESC");
-			$ot_id = ($maxid < 1000)? 1000 : $maxid + 1;  
+			$ot_id = $otModel->newPluggedId();  
 			foreach ($setup["BEditaObjects"] as $modelName) {
 				$objectType = Inflector::underscore($modelName);
+				
+				$beLib = BeLib::getInstance();
+				if (empty($pluginPath)) {
+					$pluginPath = $beLib->getPluginPath($pluginName);
+				}
+				
+				$filename = $objectType . ".php";
+				$dirPath = $pluginPath . $pluginName . DS . "models" . DS;
+				
+				if (!file_exists($dirPath . $filename)) {
+					throw new BeditaException(__("File " . $filename . " doesn't find.", true));
+				}
+				
+				if ($beLib->isFileNameUsed($filename, "model")) {
+					throw new BeditaException(__($filename . " is already used. Please change your file and model name", true));
+				}
+				
+				if (!$beLib->isBeditaObjectType($modelName, $dirPath)) {
+					throw new BeditaException(__($modelName . " doesn't seem to be a BEdita object. It has to be extend BEAppObjectModel", true));
+				}
+				
 				$obj = $otModel->find("count", array(
 						"conditions" => array("name" => $objectType),
 						"contain" => array()
@@ -164,15 +184,7 @@ class Module extends BEAppModel {
 			$beObject = ClassRegistry::init("BEObject");
 			foreach ($setup["BEditaObjects"] as $modelName) {
 				$objectType = Inflector::underscore($modelName);
-				$ot_id = $otModel->field("id", array("name" => $objectType));
-				// delete all objects 
-				if (!$beObject->deleteAll(array("object_type_id" => $ot_id))) {
-					throw new BeditaException(__("Error deleting objects " . $modelName, true));
-				}
-				// delete object type
-				if (!$otModel->delete($ot_id)) {
-					throw new BeditaException(__("Error deleting object type " . $objectType, true));
-				}
+				$otModel->purgeType($objectType);
 			}
 		}
 		
