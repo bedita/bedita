@@ -32,6 +32,8 @@
  */
 class BeFrontHelper extends AppHelper {
 
+	var $helpers = array('Html');
+
 	private $_publication;
 	private $_section;
 	private $_currentContent;
@@ -119,6 +121,22 @@ class BeFrontHelper extends AppHelper {
 
 	public function seealso()  {
 		return (!empty($this->_currentContent['relations']['seealso'])) ? $this->_currentContent['relations']['seealso'] : '';
+	}
+
+	public function canonicalPath() {
+		$canonical_path = $this->_section["canonicalPath"];
+		if(empty($canonical_path)) {
+			return "";
+		}
+		$current_path = $this->Html->here;
+		if(!strstr($canonical_path,$current_path)) {
+			$public_url = $this->_publication[($this->_conf->staging) ? 'staging_url' : 'public_url'];
+			if(substr($public_url,-1) == "/") {
+				$public_url = substr($public_url,0,strlen($public_url)-1);
+			}
+			return '<link rel="canonical" href="' . $public_url . $this->Html->base . $canonical_path .'" />';
+		}
+		return "";
 	}
 
 	public function date($date,$format = null) {
