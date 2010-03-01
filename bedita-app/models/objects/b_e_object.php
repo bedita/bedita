@@ -119,6 +119,7 @@ class BEObject extends BEAppModel
 				'associationForeignKey'	=> 'object_id',
 				'order'					=> 'priority'
 			),
+		'Alias'
 		);
 	
 	var $hasAndBelongsToMany = array(
@@ -247,27 +248,30 @@ class BEObject extends BEAppModel
 		// hasMany relations
 		foreach ($this->hasMany as $name => $assoc) {
 			// skip specific manage
-			if($name == 'Permissions' || $name == 'RelatedObject' || $name == 'Annotation')
+			if($name == 'Permissions' || $name == 'RelatedObject' || $name == 'Annotation') {
 				continue ;
+			}
+
+			// if not set data array do nothing
+			if(!isset($this->data[$this->name][$name])) {
+				continue ;
+			}
 			
 			$db 		=& ConnectionManager::getDataSource($this->useDbConfig);
 			$model 		= new $assoc['className']() ; 
 			
-			// Cancella le precedenti associazioni
+			// delete previous associations
 			$table 		= (isset($model->useTable)) ? $model->useTable : ($db->name($db->fullTableName($assoc->className))) ;
 			$id 		= (isset($this->data[$this->name]['id'])) ? $this->data[$this->name]['id'] : $this->getInsertID() ;		
 			$foreignK	= $assoc['foreignKey'] ;
 			
 			$db->query("DELETE FROM {$table} WHERE {$foreignK} = '{$id}'");
 			
-			// Se non ci sono dati da salvare esce
-			if(!isset($this->data[$this->name][$name]))
+			if (!(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name]))) {
 				continue ;
+			}
 			
-			if (!(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name])))
-				continue ;
-			
-			// Salva le nuove associazioni
+			// save associations
 			$size = count($this->data[$this->name][$name]) ;
 			for ($i=0; $i < $size ; $i++) {
 				$modelTmp	 	 = new $assoc['className']() ; 
