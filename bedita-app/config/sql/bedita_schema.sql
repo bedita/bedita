@@ -186,7 +186,8 @@ CREATE TABLE users (
   notify_changes TINYINT(1) DEFAULT NULL,
   reports TINYINT(1) DEFAULT NULL,
   PRIMARY KEY  (id),
-  UNIQUE KEY userid (userid)
+  UNIQUE KEY userid (userid),
+  UNIQUE KEY email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE groups_users (

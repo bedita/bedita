@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* BeditaApp schema generated on: 2010-02-23 17:02:11 : 1266942131*/
+/* BeditaApp schema generated on: 2010-03-02 17:03:43 : 1267548883*/
 class BeditaAppSchema extends CakeSchema {
 	var $name = 'BeditaApp';
 
@@ -473,7 +473,7 @@ class BeditaAppSchema extends CakeSchema {
 		'userid' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 32, 'values' => NULL, 'key' => 'unique'),
 		'realname' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'passwd' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'email' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
+		'email' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL, 'key' => 'unique'),
 		'valid' => array('type' => 'boolean', 'null' => false, 'default' => '1', 'values' => NULL),
 		'last_login' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'last_login_err' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
@@ -489,7 +489,7 @@ class BeditaAppSchema extends CakeSchema {
 		'notes' => array('type' => 'enum', 'null' => true, 'default' => NULL, 'length' => 5, 'values' => '\'never\',\'mine\',\'all\''),
 		'notify_changes' => array('type' => 'boolean', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'reports' => array('type' => 'boolean', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'userid' => array('column' => 'userid', 'unique' => 1))
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'userid' => array('column' => 'userid', 'unique' => 1), 'email' => array('column' => 'email', 'unique' => 1))
 	);
 	var $versions = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
