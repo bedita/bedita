@@ -125,8 +125,8 @@ class HomeController extends AppController {
 		}
 	}
 	 
-	 public function editProfile() {
-	 	if (empty($this->data['User']['id']))
+	public function editProfile() {
+		if (empty($this->data['User']['id']))
 	 		throw new BeditaException(__("No user data", true));
 	 	
 	 	$oldPwd = trim($this->params['form']['oldpwd']);
@@ -177,7 +177,7 @@ class HomeController extends AppController {
 	 		$this->Session->write('Config.language',$user["lang"]);
 		$this->eventInfo("user ".$this->data['User']['userid']." updated");
 		$this->userInfoMessage(__("User updated",true));
-	 }
+	}
 	 
 	 
 	protected function forward($action, $esito) {

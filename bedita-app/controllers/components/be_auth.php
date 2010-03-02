@@ -225,14 +225,22 @@ class BeAuthComponent extends Object {
 	}
 
 	public function changePassword($userid, $password) {
+		if (empty($userid) || empty($password)) {
+			return false;
+		}
 		$this->User = ClassRegistry::init('User');
-		$this->User->containLevel("default");
-		$u = $this->User->find(array("User.userid" => $userid));
+		$u = $this->User->find("first", array(
+			"conditions" => array(
+				"User.userid" => $userid
+			),
+			"contain" => array()
+		));
 		$u["User"]["passwd"] = md5($password);
 		$u["User"]["num_login_err"]=0;
-		$u["User"]["last_login"]=date('Y-m-d H:i:s');
-		$this->User->save($u);
-		$this->user = $u;
+		if (!$this->User->save($u)) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**

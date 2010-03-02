@@ -38,10 +38,7 @@ class PagesController extends AppController {
 			$this->skipCheck = true;
 		}
 	}
-	
-	function changePasswd() {
-	}
-	
+		
 	function changeLang($lang = null) {
 		if (!empty($lang)) {
 			$this->Session->write('Config.language', $lang);

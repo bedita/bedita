@@ -30,9 +30,39 @@
  */
 class BeHashComponent extends Object {
 
+	/**
+	 *
+	 * @var controller instance
+	 */
 	private $controller;
+
+	/**
+	 * store notification messages
+	 *
+	 * @var array
+	 */
 	private $notifyMsg = null;
+
+	/**
+	 * other components
+	 *
+	 * @var array
+	 */
 	public $components = array("BeMail");
+
+	/**
+	 * if an hash job has to be closed after at the end of handleHash method
+	 *
+	 * @var boolean
+	 */
+	private $closeHashJob = true;
+
+	/**
+	 * say to handleHash where redirect. Set false to not execute redirect
+	 *
+	 * @var mixed
+	 */
+	private $redirectPath = false;
 	
 	/**
 	 * startup component
@@ -43,11 +73,86 @@ class BeHashComponent extends Object {
 		$this->BeMail->startup($this->controller);
 		$this->loadMessages();
 	}
+
+	/**
+	 * handle hash request like newsletter/frontend subscribe/unsubscribe
+	 *
+	 * @param string $service_type
+	 * @param string $hash
+	 * @param string $redirectPath
+	 *
+	 * @return void
+	 */
+	public function handleHash($service_type, $hash=null, $redirectPath=false) {
+		if (empty($service_type)) {
+			return false;
+		}
+		$this->redirectPath = $redirectPath;
+		$this->closeHashJob = true;
+		
+		if (!empty($hash)) {
+
+			if (!$hashRow = $this->getHashRow($hash)) {
+				return false;
+			}
+			$service_type = $hashRow["service_type"];
+			if (!empty($hashRow["command"])) {
+				if (empty($this->controller->params["named"]["command"]) || $hashRow["command"] != $this->controller->params["named"]["command"]) {
+					throw new BeditaException(__("Incorrect hash command", true));
+				}
+				$method = $hashRow["service_type"] . "_" . $hashRow["command"];
+			} else {
+				$method = $hashRow["service_type"];
+			}
+			$method = Inflector::camelize($method);
+			$method{0} = strtolower($method{0});
+			$this->controller->data["HashJob"] = $hashRow;
+
+		// first hash operation
+		} else {
+			if (empty($service_type)) {
+				throw new BeditaException(__("missing service type", true));
+			}
+			$method = Inflector::camelize($service_type);
+			$method{0} = strtolower($method{0});
+			$this->controller->data["HashJob"]["service_type"] = $service_type;
+			$this->controller->data = array_merge($this->controller->data, $this->controller->params["named"]);
+			$this->closeHashJob = false;
+		}
+
+		if (!method_exists($this, $method)) {
+			throw new BeditaException(__("missing method to manage hash case", true));
+		}
+
+		$this->controller->Transaction->begin();
+		$mailParams = $this->{$method}($this->controller->data);
+		if ($this->closeHashJob && !empty($hashRow["status"]) && $hashRow["status"] == "pending") {
+			$hashModel = ClassRegistry::init("HashJob");
+			$hashModel->id = $hashRow["id"];
+			if(!$hashModel->saveField("status", "closed")) {
+				throw new BeditaException(__("Error saving hash status",true));
+			}
+		}
+		if (!empty($mailParams)) {
+			$this->sendNotificationMail($mailParams);
+		}
+		$this->controller->Transaction->commit();
+
+		if (!empty($this->redirectPath)) {
+			$this->controller->redirect($this->redirectPath);
+		}
+
+		return true;
+
+	}
 	
 	public function getHashRow($hash) {
 		$hashModel = ClassRegistry::init("HashJob");
 		$hashRow = $hashModel->find("first", array(
-				"conditions" => array("hash" => $hash)
+				"conditions" => array(
+					"hash" => $hash,
+					"status" => "pending"
+				)
 			)
 		);
 		// no hash found or no service_type defined or hash expired
@@ -62,15 +167,15 @@ class BeHashComponent extends Object {
 	/**
 	 * subscribe to a newsletter
 	 */
-	public function newsletterSubscribe($data) {
+	private function newsletterSubscribe($data) {
 		if(empty($data)) {
-			throw new BeditaException(__("Error on subscribing: no data",true));
+			throw new BeditaHashException(__("Error on subscribing: no data",true));
 		}
 		if(empty($data['newsletter_email'])) {
-			throw new BeditaException(__("Error on subscribing: empty 'newsletter_email'",true));
+			throw new BeditaHashException(__("Error on subscribing: empty 'newsletter_email'",true));
 		}
 		if(empty($data['joinGroup'])) {
-			throw new BeditaException(__("Error on subscribing: no mail_group indicated",true));
+			throw new BeditaHashException(__("Error on subscribing: no mail_group indicated",true));
 		}
 		
 		$newsletter_email = $data['newsletter_email'];
@@ -80,7 +185,8 @@ class BeHashComponent extends Object {
 		if(empty($c)) {
 			$data['email'] = $data['newsletter_email'];
 			$data['title'] = (!empty($data['name'])) ? $data['name'] : $data['newsletter_email'];
-			$data['status'] = "on";
+			$data['status'] = "draft";
+			$data['note'] = "public newsletter subscribe";
 			unset($data['joinGroup']);
 			$card->create();
 			if(!($card->save($data))) {
@@ -126,7 +232,7 @@ class BeHashComponent extends Object {
 					$data["HashJob"]["command"] = 'confirm';
 					$data["HashJob"]['mail_group_id'] = $n['mail_group_id'];
 					$data["HashJob"]["hash"] = $hash_job->generateHash();
-					$data["HashJob"]["expired"] = date("Y-m-d H:i:s", time() + Configure::read("hashExpiredTime"));
+					$data["HashJob"]["expired"] = $hash_job->getExpirationDate();
 					$hash_job->create();
 					if (!$hash_job->save($data["HashJob"])) {
 						throw new BeditaException(__("Error generating hash confirmation for " . $newsletter_email,true));
@@ -134,7 +240,7 @@ class BeHashComponent extends Object {
 					$joindata['status'] = 'pending';
 					$body = $this->getNotifyText("newsletterConfirmSubscribe", "mail_body");
 					$subject = $this->getNotifyText("newsletterConfirmSubscribe", "subject");
-					$params["url"] = Router::url('/hashjob/exec/' . $data["HashJob"]["hash"] . "/confirm", true);
+					$params["url"] = Router::url('/hashjob/exec/' . $data["HashJob"]["hash"] . "/command:confirm", true);
 					$viewsMsg = $this->getNotifyText("newsletterConfirmSubscribe", "viewsMsg");
 				} else {
 					$joindata['status'] = 'confirmed';
@@ -150,14 +256,15 @@ class BeHashComponent extends Object {
 					throw new BeditaException(__("Error subscribing " . $newsletter_email,true));
 				}
 				
-				$this->sendNotificationMail(array(
-						"body" => $body,
-						"subject" => $subject,
-						"viewsMsg" => $viewsMsg,
-						"newsletter_email" => $newsletter_email,
-						"params" => $params
-					)
-				);				
+				$mailParams = array(
+					"body" => $body,
+					"subject" => $subject,
+					"viewsMsg" => $viewsMsg,
+					"email" => $newsletter_email,
+					"params" => $params
+				);
+
+				return $mailParams;
 			}
 		}
 	}
@@ -165,12 +272,12 @@ class BeHashComponent extends Object {
 	/**
 	 * confirm subscription to a newsletter
 	 */
-	public function newsletterSubscribeConfirm($data) {
+	private function newsletterSubscribeConfirm($data) {
 		if ($data["HashJob"]["status"] != "pending")
-			throw new BeditaException(__("Hash isn't valid.",true));
+			throw new BeditaHashException(__("Hash isn't valid.",true));
 		
 		if (empty($data["HashJob"]["mail_group_id"]))
-			throw new BeditaException(__("Missing mail group id",true));
+			throw new BeditaHashException(__("Missing mail group id",true));
 			
 		$mail_group_card = ClassRegistry::init('MailGroupCard');
 		$m = $mail_group_card->find(
@@ -184,23 +291,22 @@ class BeHashComponent extends Object {
 			)
 		);
 		
-		if (empty($m))
-			throw new BeditaException(__("User not associated to mailgroup or he isn't in pending status",true));
-		
+		if (empty($m)) {
+			throw new BeditaHashException(__("User not associated to mailgroup or he isn't in pending status",true));
+		}
 		
 		$mail_group_card->id = $m['MailGroupCard']['id'];
 		if(!$mail_group_card->saveField("status", "confirmed")) {
 			throw new BeditaException(__("Error saving mail group card",true));
 		}
 		
-		$hashModel = ClassRegistry::init("HashJob");
-		$hashModel->id = $data["HashJob"]["id"];
-		if(!$hashModel->saveField("status", "closed")) {
-			throw new BeditaException(__("Error saving hash status",true));
+		$beObject = ClassRegistry::init("BEObject");
+		$beObject->id = $data["HashJob"]['user_id'];
+		if (!$beObject->saveField("status", "on")) {
+			throw new BeditaException(__("Error setting on Card status", true));
 		}
-		
-		$card = ClassRegistry::init('Card');
-		
+
+		$card = ClassRegistry::init("Card");
 		$newsletter_email = $card->field('newsletter_email',array('id'=>$data["HashJob"]['user_id']));
 		$mail_group = ClassRegistry::init('MailGroup');
 		$mailGroup = $mail_group->find('first',array(
@@ -208,31 +314,30 @@ class BeHashComponent extends Object {
 			"contain" => array()
 			)
 		);
-		
-		$params = array(
-			"user" => $newsletter_email,
-			"title" => $mailGroup["MailGroup"]["group_name"]
-		);
 
-		$this->sendNotificationMail(array(
+		$mailParams = array(
 				"body" => ( (!empty($mailGroup["confirmation_in_message"]))? $mailGroup["confirmation_in_message"] : $this->getNotifyText("newsletterSubscribed", "mail_body") ),
 				"subject" => $this->getNotifyText("newsletterSubscribed", "subject"),
 				"viewsMsg" => $this->getNotifyText("newsletterSubscribed", "viewsMsg"),
-				"newsletter_email" => $newsletter_email,
-				"params" => $params
-			)
+				"email" => $newsletter_email,
+				"params" => array(
+					"user" => $newsletter_email,
+					"title" => $mailGroup["MailGroup"]["group_name"]
+				)
 		);
+
+		return $mailParams;
 		
 	}
 
 	/**
 	 * unsubscribe from a newsletter
 	 */
-	public function newsletterUnsubscribe($data) {
+	private function newsletterUnsubscribe($data) {
 		if (empty($data['mail_group_id']))
-			throw new BeditaException(__("missing mail group id", true));
+			throw new BeditaHashException(__("missing mail group id", true));
 		if (empty($data['card_id']))
-			throw new BeditaException(__("missing card id", true));
+			throw new BeditaHashException(__("missing card id", true));
 		
 		// check if there are other unsubscribe hashes for mail_group_id
 		$hashjobModel = ClassRegistry::init("HashJob");
@@ -249,7 +354,7 @@ class BeHashComponent extends Object {
 				if (!empty($hashRow["HashJob"]["mail_group_id"]) 
 						&& $hashRow["HashJob"]["mail_group_id"] == $data['mail_group_id']
 						&& $hashRow["HashJob"]['status'] == "pending") {
-					throw new BeditaException(__("hashjob for unsubscribe already in use", true));	
+					throw new BeditaHashException(__("hashjob for unsubscribe already in use", true));
 				}
 			}
 		}
@@ -266,14 +371,14 @@ class BeHashComponent extends Object {
 			)
 		);
 		if(empty($m)) {
-			throw new BeditaException(__("User is not subscribed to mail group", true));
+			throw new BeditaHashException(__("User is not subscribed to mail group", true));
 		}		
 		
 		$data["HashJob"]["user_id"] = $data["card_id"];
 		$data["HashJob"]["command"] = 'confirm';
 		$data["HashJob"]['mail_group_id'] = $data['mail_group_id'];
 		$data["HashJob"]["hash"] = $hashjobModel->generateHash();
-		$data["HashJob"]["expired"] = date("Y-m-d H:i:s", time() + Configure::read("hashExpiredTime"));
+		$data["HashJob"]["expired"] = $hashjobModel->getExpirationDate();
 		if (!$hashjobModel->save($data["HashJob"])) {
 			throw new BeditaException(__("Error generating hash confirmation for " . $newsletter_email,true));
 		}
@@ -281,30 +386,31 @@ class BeHashComponent extends Object {
 		$mail_group_name = ClassRegistry::init('MailGroup')->field("group_name", array("id" => $data["mail_group_id"]));
 		$newsletter_email = ClassRegistry::init('Card')->field("newsletter_email", array("id" => $data["card_id"]));
 
-		$params = array(
-			"user" => $newsletter_email,
-			"title" => $mail_group_name,
-			"url" => Router::url('/hashjob/exec/' . $data["HashJob"]["hash"] . "/confirm", true)
-		);
-		
-		$this->sendNotificationMail(array(
-				"body" => $this->getNotifyText("newsletterConfirmUnsubscribe", "mail_body"),
-				"subject" => $this->getNotifyText("newsletterConfirmUnsubscribe", "subject"),
-				"viewsMsg" => $this->getNotifyText("newsletterConfirmUnsubscribe", "viewsMsg"),
-				"newsletter_email" => $newsletter_email,
-				"params" => $params
+		$mailParams = array(
+			"body" => $this->getNotifyText("newsletterConfirmUnsubscribe", "mail_body"),
+			"subject" => $this->getNotifyText("newsletterConfirmUnsubscribe", "subject"),
+			"viewsMsg" => $this->getNotifyText("newsletterConfirmUnsubscribe", "viewsMsg"),
+			"email" => $newsletter_email,
+			"params" => array(
+				"user" => $newsletter_email,
+				"title" => $mail_group_name,
+				"url" => Router::url('/hashjob/exec/' . $data["HashJob"]["hash"] . "/command:confirm", true)
 			)
 		);
+
+		return $mailParams;
 		
 	}
 
-	public function newsletterUnsubscribeConfirm($data) {
-		if ($data["HashJob"]["status"] != "pending")
-			throw new BeditaException(__("Hash isn't valid.",true));
-		
-		if (empty($data["HashJob"]["mail_group_id"]))
-			throw new BeditaException(__("Missing mail group id",true));
-			
+	private function newsletterUnsubscribeConfirm($data) {
+		if ($data["HashJob"]["status"] != "pending") {
+			throw new BeditaHashException(__("Hash isn't valid.",true));
+		}
+
+		if (empty($data["HashJob"]["mail_group_id"])) {
+			throw new BeditaHashException(__("Missing mail group id",true));
+		}
+
 		$mail_group_card = ClassRegistry::init('MailGroupCard');
 		$m = $mail_group_card->find(
 			'first',
@@ -317,42 +423,145 @@ class BeHashComponent extends Object {
 			)
 		);
 		
-		if (empty($m))
-			throw new BeditaException(__("User not associated to mailgroup or he is in pending status",true));
-		
+		if (empty($m)) {
+			throw new BeditaHashException(__("User not associated to mailgroup or he is in pending status",true));
+		}
+
 		if(!$mail_group_card->delete($m['MailGroupCard']['id'])) {
 			throw new BeditaException(__("Error removing association mail group card",true));
 		}
-				
-		$hashModel = ClassRegistry::init("HashJob");
-		$hashModel->id = $data["HashJob"]["id"];
-		if(!$hashModel->saveField("status", "closed")) {
-			throw new BeditaException(__("Error saving hash status",true));
-		}
-
+		
 		$mail_group_name = ClassRegistry::init('MailGroup')->field("group_name", array("id" => $data["HashJob"]['mail_group_id']));
 		$newsletter_email = ClassRegistry::init('Card')->field("newsletter_email", array("id" => $data["HashJob"]['user_id']));
 
-		$params = array(
-			"user" => $newsletter_email,
-			"title" => $mail_group_name
+		$mailParams = array(
+			"body" => $this->getNotifyText("newsletterUnsubscribed", "mail_body"),
+			"subject" => $this->getNotifyText("newsletterUnsubscribed", "subject"),
+			"viewsMsg" => $this->getNotifyText("newsletterUnsubscribed", "viewsMsg"),
+			"email" => $newsletter_email,
+			"params" => array(
+				"user" => $newsletter_email,
+				"title" => $mail_group_name
+			)
 		);
 
-		$this->sendNotificationMail(array(
-				"body" => $this->getNotifyText("newsletterUnsubscribed", "mail_body"),
-				"subject" => $this->getNotifyText("newsletterUnsubscribed", "subject"),
-				"viewsMsg" => $this->getNotifyText("newsletterUnsubscribed", "viewsMsg"),
-				"newsletter_email" => $newsletter_email,
-				"params" => $params
+		return $mailParams;
+	}
+
+	/**
+	 * recover password. Send an email with hash to reset password
+	 *
+	 * @param array $data
+	 * @return array mail params
+	 */
+	private function recoverPassword($data) {
+		$this->controller->Session->del("userToChangePwd");
+		if (empty($data["email"])) {
+			throw new BeditaHashException(__("Missing email to send recover instructions", true));
+		}
+		$groupModel = ClassRegistry::init("Group");
+
+		if (BACKEND_APP) {
+			$groups = $groupModel->getList(array("backend_auth" => 1));
+			$urlBase = "/authentications/recoverPassword/exec/";
+		} else {
+			$groups = Configure::read("authorizedGroups");
+			if (empty($groups)) {
+				$groups = $groupModel->getList(array("backend_auth" => 0));
+			}
+			$urlBase = "/hashjob/exec/";
+		}
+
+		$userModel = ClassRegistry::init("User");
+		$user = $userModel->find("first", array(
+				"conditions" => array("email" => trim($data["email"])),
+				"contain" => array(
+					"Group" => array(
+						"conditions" => array("name" => $groups)
+					)
+				)
 			)
-		);		
+		);
+		if (empty($user["Group"])) {
+			throw new BeditaHashException(__("No user with access privileges found", true));
+		}
+
+		$hash_job = ClassRegistry::init("HashJob");
+		$data["HashJob"]["user_id"] = $user["User"]["id"];
+		$data["HashJob"]["command"] = 'change';
+		$data["HashJob"]["hash"] = $hash_job->generateHash();
+		$data["HashJob"]["expired"] = $hash_job->getExpirationDate();
+		if (!$hash_job->save($data["HashJob"])) {
+			throw new BeditaException(__("Error generating hash confirmation for " . $user["User"]["userid"],true));
+		}
+		
+		$mailParams = array(
+			"body" => $this->getNotifyText("recoverPassword", "mail_body"),
+			"subject" => $this->getNotifyText("recoverPassword", "subject"),
+			"viewsMsg" => $this->getNotifyText("recoverPassword", "viewsMsg"),
+			"email" => $user["User"]["email"],
+			"params" => array(
+				"title" => $user["User"]["realname"],
+				"user" => $user["User"]["userid"],
+				"url" => Router::url($urlBase . $data["HashJob"]["hash"] . "/command:change", true)
+			)
+		);
+
+		return $mailParams;
+		
+	}
+
+	private function recoverPasswordChange($data) {
+		$userToChangePwd = $this->controller->Session->read("userToChangePwd");
+		if (empty($userToChangePwd) || $userToChangePwd["User"]["id"] != $data["HashJob"]["user_id"]) {
+			$user = ClassRegistry::init("User")->find("first", array(
+				"conditions" => array("id" => $data["HashJob"]["user_id"])
+			));
+			if (empty($user)) {
+				throw new BeditaHashException(__("User not found", true));
+			}
+			$this->controller->Session->write("userToChangePwd", $user);
+			$this->redirectPath = false;
+			$this->closeHashJob = false;
+			return;
+		} else {
+			if (empty($data["User"]["passwd"])) {
+				throw new BeditaHashException(__("Missing data", true));
+			}
+			$pwd = trim($data["User"]["passwd"]);
+			$confirmPwd = trim($this->controller->params['form']['pwd']);
+			if (!$this->controller->BeAuth->checkConfirmPassword($pwd, $confirmPwd)) {
+				throw new BeditaHashException(__("Passwords mismatch", true));
+			}
+
+			if (!$this->controller->BeAuth->changePassword($userToChangePwd["User"]["userid"], $pwd)) {
+				throw new BeditaHashException(__("Error updating password", true));
+			}
+
+			$url = (BACKEND_APP)? "/" : "/login";
+
+			$mailParams = array(
+				"body" => $this->getNotifyText("recoverPasswordChange", "mail_body"),
+				"subject" => $this->getNotifyText("recoverPasswordChange", "subject"),
+				"viewsMsg" => $this->getNotifyText("recoverPasswordChange", "viewsMsg"),
+				"email" => $userToChangePwd["User"]["email"],
+				"params" => array(
+					"user" => $userToChangePwd["User"]["realname"],
+					"url" => Router::url($url, true)
+				)
+			);
+
+			$this->controller->Session->del("userToChangePwd");
+
+			return $mailParams;
+		}
 	}
 
 	private function sendNotificationMail(array $mailParams) {
 		$mailOptions = Configure::read("mailOptions");
 		$mail_message_data['from'] = $mailOptions["sender"];
 		$mail_message_data['reply_to'] = $mailOptions["reply_to"];
-		$mail_message_data['to'] = $mailParams["newsletter_email"];
+		$mail_message_data['to'] = $mailParams["email"];
 		$mail_message_data['subject'] = $this->replacePlaceHolder($mailParams["subject"], $mailParams["params"]);
 		$mail_message_data['body'] = $this->replacePlaceHolder($mailParams["body"],$mailParams["params"]) . "\n\n\n" . $mailOptions["signature"];
 		if (strstr($mail_message_data['body'], "[[[--BOUNDARY--]]]")) {
@@ -360,8 +569,11 @@ class BeHashComponent extends Object {
 		}
 		$this->BeMail->sendMail($mail_message_data);
 		
-		if (!empty($mailParams["viewsMsg"]))
-			$this->controller->Session->setFlash($this->replacePlaceHolder($mailParams["viewsMsg"], $mailParams["params"]), NULL, NULL, 'info');
+		if (!empty($mailParams["viewsMsg"])) {
+			$msg = $this->replacePlaceHolder($mailParams["viewsMsg"], $mailParams["params"]);
+			$this->controller->Session->setFlash($msg, NULL, NULL, 'info');
+			$this->controller->set("viewMsg", $msg);
+		}
 	}
 	
 	protected function loadMessages() {
@@ -386,12 +598,15 @@ class BeHashComponent extends Object {
 	}
 	
 	protected function replacePlaceHolder($text, array &$params) {
-		if (isset($params["user"])) 
+		if (isset($params["user"])) {
 			$text = str_replace("[\$user]", $params["user"], $text);
-		if (isset($params["title"]))
+		}
+		if (isset($params["title"])) {
 			$text = str_replace("[\$title]", $params["title"], $text);
-		if (isset($params["url"]))
+		}
+		if (isset($params["url"])) {
 			$text = str_replace("[\$url]", $params["url"], $text);
+		}
 		//$text = str_replace("[\$beditaUrl]", $params["beditaUrl"], $text);
 		return $text;		
 	}

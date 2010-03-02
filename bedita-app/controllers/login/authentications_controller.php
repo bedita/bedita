@@ -36,7 +36,7 @@ class AuthenticationsController extends AppController {
 	/**
 	 *  login through POST with redirection 
 	 */
-   function login() {
+	function login() {
 
 		$userid 	= (isset($this->data["login"]["userid"])) ? $this->data["login"]["userid"] : "" ;
 		$password 	= (isset($this->data["login"]["passwd"])) ? $this->data["login"]["passwd"] : "" ;
@@ -67,25 +67,65 @@ class AuthenticationsController extends AppController {
 		// redirect setup
 		if(isset($this->data["login"]["URLOK"])) 
 		 		$this->data['OK'] = $this->data["login"]["URLOK"];
-   }
-
-   function changePasswd() {
-
-		$userid 	= (isset($this->data["User"]["userid"])) ? $this->data["User"]["userid"] : "" ;
-		$password 	= (isset($this->data["login"]["passwd"])) ? $this->data["login"]["passwd"] : "" ;
-		
-		if(!$this->BeAuth->changePasswd($userid, $password)) {
-			$this->userErrorMessage(__("Error changing password", true));
-			$this->result=self::ERROR;
-		}
-   }
+	}
 
 	function logout() {
 		$this->eventInfo("logged out");
 		$this->BeAuth->logout() ;
 	}
 
-	 protected function forward($action, $esito) {
+	public function recoverPassword($service_type="recover_password", $hash=null) {
+		$this->setupLocale();
+		if (!empty($service_type) || !empty($hash)) {
+			try {
+				$redirectTo = (empty($hash))? "/" : null;
+				if (!$this->BeHash->handleHash($service_type, $hash, $redirectTo)) {
+					$this->redirect("/");
+				}
+			} catch (BeditaHashException $ex) {
+				$this->Transaction->rollback();
+				$this->userErrorMessage($ex->getMessage());
+				$this->eventError($ex->getDetails());
+			} catch (BeditaException $ex) {
+				$this->Transaction->rollback();
+				$this->userErrorMessage($ex->getMessage());
+				$this->eventError($ex->getDetails());
+				$this->redirect("/");
+			}
+			$this->render(null, null, VIEWS."pages/change_password.tpl");
+		}
+	}
+
+//	public function changePassword() {
+//		$userToChangePwd = $this->Session->read("userToChangePwd");
+//		if (empty($userToChangePwd)) {
+//			$this->redirect("/logout");
+//		}
+//
+//		if (!empty($this->data["User"]["userid"])) {
+//			$pwd = trim($this->data["User"]["passwd"]);
+//			$confirmPwd = trim($this->params['form']['pwd']);
+//			if (!$this->BeAuth->checkConfirmPassword($pwd, $confirmPwd)) {
+//				$this->userInfoMessage(__("Passwords mismatch", true));
+//				$this->render(null, null, VIEWS."pages/change_password.tpl");
+//				return;
+//			}
+//
+//			if (!$this->BeAuth->changePassword($this->data["User"]["userid"], $pwd)) {
+//				$this->userInfoMessage(__("Error updating password", true));
+//				$this->render(null, null, VIEWS."pages/change_password.tpl");
+//				return;
+//			}
+//
+//			$this->Session->del("userToChangePwd");
+//			$this->userInfoMessage(__("Password changed. Write username and password to login", true));
+//			$this->eventInfo("user " . $this->data["User"]["userid"] . " changed password through recover password");
+//			$this->redirect("/authentications/logout");
+//		}
+//	}
+
+
+	protected function forward($action, $esito) {
 	 	$REDIRECT = array(
 	 			"logout"	=> 	array(
 	 									"OK"	=> "/",

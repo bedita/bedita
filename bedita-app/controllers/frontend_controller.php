@@ -1322,44 +1322,18 @@ abstract class FrontendController extends AppController {
 	 * 
 	 * @param string $service_type
 	 * @param string $hash
-	 * @return unknown_type
+	 * @return void
 	 */
 	public function hashjob($service_type=null, $hash=null) {
-		$this->historyItem = null;
-		if (!empty($service_type) || !empty($hash)) {
-			
-			if (!empty($hash)) {
-				
-				if (!$hashRow = $this->BeHash->getHashRow($hash)) {
-					$this->redirect("/hashjob");
-				}
-				$service_type = $hashRow["service_type"];
-				$method = (!empty($hashRow["command"]))?  $hashRow["service_type"] . "_" . $hashRow["command"] : $hashRow["service_type"];
-				$method = Inflector::camelize($method);
-				$method{0} = strtolower($method{0});
-				$this->data["HashJob"] = $hashRow;
-				
-			// first hash operation
-			} else {
-				if (empty($service_type)) {
-					throw new BeditaException(__("missing service type", true));
-				}
-				$method = Inflector::camelize($service_type);
-				$method{0} = strtolower($method{0});
-				$this->data["HashJob"]["service_type"] = $service_type;
-				$this->data = array_merge($this->data, $this->getPassedArgs());
-			}
-			
-			if (!method_exists($this->BeHash, $method)) {
-				throw new BeditaException(__("missing method to manage hash case", true));
-			}
-			
-			$this->Transaction->begin(); 
-			$this->BeHash->{$method}($this->data);
-			$this->Transaction->commit();
-			$this->redirect("/hashjob");
+		try {
+			$this->BeHash->handleHash($service_type, $hash, "/hashjob");
+		} catch (BeditaHashException $ex) {
+			$this->Transaction->rollback();
+			$this->userErrorMessage($ex->getMessage());
+			$this->eventError($ex->getDetails());
+		} catch (BeditaException $ex) {
+			throw new BeditaRuntimeException($ex->getMessage(), $ex->getDetails());
 		}
-		
 	}
 	
 	/**
@@ -1921,22 +1895,6 @@ abstract class FrontendController extends AppController {
 			if ($countParent != $countParentStatus)
 				throw new BeditaException(__("Content not found", true));
 		}
-	}
-	
-	/**
-	 * get passed args by name and return
-	 *
-	 */
-	protected function getPassedArgs() {
-		$args = array();
-		if (!empty($this->passedArgs)) {
-			foreach ($this->passedArgs as $key => $val) {
-				if (!is_numeric($key)) {
-					$args[$key] = $val;
-				}
-			}
-		}
-		return $args;
 	}
 	
 	/**

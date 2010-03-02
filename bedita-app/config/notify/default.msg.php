@@ -124,4 +124,24 @@ $notify["newsletterUnsubscribed"]["eng"] = array(
 					"\n\nyou have been unsubscribed from \"[\$title]\"",
 	"viewsMsg" => "You have been unsubscribed from <b>\"[\$title]\"</b>."
 );
+
+// Message for recover password
+$notify["recoverPassword"]["eng"] = array(
+	"subject" => "[BEdita] username and password recovering",
+	"mail_body" => "Hi [\$title], " .
+					"\nyou have requested to recover username and/or password." .
+					"\n\nYour username is: [\$user]" .
+					"\n\nIf you don't remember your password click on the link below and follow the instructions" .
+					"\n[\$url]",
+	"viewsMsg" => "An email has been sent to you. Check your email and follow the instructions."
+);
+
+$notify["recoverPasswordChange"]["eng"] = array(
+	"subject" => "[BEdita] password changed",
+	"mail_body" => "Hi [\$user], " .
+					"\nyou password has been changed." .
+					"\n\nTo login go to" .
+					"\n[\$url]",
+	"viewsMsg" => "<a href='[\$url]'>Your password has been changed. Click here to login</a>"
+);
 ?>

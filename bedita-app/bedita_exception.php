@@ -191,6 +191,13 @@ class BeditaMailException extends BeditaException
 	}
 }
 
+/**
+ * BeditaHash specific Exception
+ */
+class BeditaHashException extends BeditaException
+{
+}
+
 /** ###########################
  *	FRONTEND specific Exception 
  */

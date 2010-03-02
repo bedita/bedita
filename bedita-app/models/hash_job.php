@@ -77,6 +77,19 @@ class HashJob extends BEAppModel {
 	public function generateHash() {
 		return md5(str_shuffle($this->hashString) . microtime());
 	}
+
+	/**
+	 * get hash expiration date
+	 *
+	 * @param int $hashExpiredTime expiration time in seconds
+	 * @return string expiration date in sql date format
+	 */
+	public function getExpirationDate($hashExpiredTime=null) {
+		if (empty($hashExpiredTime)) {
+			$hashExpiredTime = Configure::read("hashExpiredTime");
+		}
+		return date("Y-m-d H:i:s", time() + $hashExpiredTime);
+	}
 	
 }
 ?>

@@ -61,19 +61,19 @@ $().ready(function() {
 </div>
 
 <div class="quartacolonna" style="border-left:1px solid gray; padding:120px 0px 0px 10px; width:420px; left:440px; top:20px;">
-{bedev}
+
 <label class="block"><a href='javascript:void(0)' onClick="$('#pswforget').toggle('fast')">{t}Forgotten username or password?{/t}</a></label>
 <div id="pswforget" style="display:none">
+	<form method="post" action="{$html->url('/authentications/recoverPassword')}">
 	{t}Write your email here{/t}:&nbsp;
 	<br />
-	<input class="big" style="width:153px" type="text" title="{t}Username is required{/t}"/>
+	<input class="big" style="width:153px" type="text" name="data[email]"/>
 	<input class="bemaincommands" type="submit" value="{t}Send{/t}"/>
 	
 	<hr />
 	{if isset($conf->projectAdmin)}
 	{t}or{/t} <label><a href="mailto:{$conf->projectAdmin}">{t}contact the project admin{/t}</a></label>{/if}
 </div>
-{/bedev}
 
 </div>
 
