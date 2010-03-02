@@ -267,12 +267,6 @@ border-radius : 7px;
 		<tr>
 			<th>nickname:</th><td>{$current.nickname}</td>
 		</tr>
-		<tr>
-			<th>alias:</th>
-			<td>
-				{$current.Alias.0.nickname_alias|default:''}
-			</td>
-		</tr>
 	</table>
 </div>
 {/if}
