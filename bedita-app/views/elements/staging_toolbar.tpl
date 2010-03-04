@@ -267,6 +267,16 @@ border-radius : 7px;
 		<tr>
 			<th>nickname:</th><td>{$current.nickname}</td>
 		</tr>
+		<tr>
+			<th>alias:</th>
+			<td>
+				{if (!empty($current.Alias))}
+				{foreach from=$current.Alias item=alias}
+					{$alias.nickname_alias|default:''}<br />
+				{/foreach}
+				{/if}
+			</td>
+		</tr>
 	</table>
 </div>
 {/if}
