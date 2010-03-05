@@ -1,7 +1,7 @@
 <script type="text/javascript" charset="utf-8">
 $(document).ready ( function () {literal} { {/literal}
 
-{if ($msg->check('Message.error'))}
+{if ($session->check('Message.error'))}
 
 	{literal}
 	$(".secondacolonna .modules label").addClass("error").attr("title","error");
@@ -12,7 +12,7 @@ $(document).ready ( function () {literal} { {/literal}
 		});
 	{/literal}
 
-{elseif ($msg->check('Message.warn'))}
+{elseif ($session->check('Message.warn'))}
 
 	{literal}
 		$("#messagesDiv")
@@ -23,7 +23,7 @@ $(document).ready ( function () {literal} { {/literal}
 
 	{/literal}
 	
-{elseif ($msg->check('Message.info'))}
+{elseif ($session->check('Message.info'))}
 	{literal}
 		$("#messagesDiv")
 			.show()															// fade in msg
@@ -53,24 +53,24 @@ $(document).ready ( function () {literal} { {/literal}
 
 <div id="messagesDiv">
 
-	{if ($msg->check('Message.error'))}
+	{if ($session->check('Message.error'))}
 	<div class="message error">
 		<h2>{t}Error{/t}</h2>
-		<p>{$msg->userMsg('error')}</p>
+		<p>{$session->flash('error')}</p>
 	</div>
 	{/if}
 	
-	{if ($msg->check('Message.warn'))}
+	{if ($session->check('Message.warn'))}
 	<div class="message warn">
 		<h2>{t}Warning{/t}</h2>
-		<p>{$msg->userMsg('warn')}</p>
+		<p>{$session->flash('warn')}</p>
 	</div>
 	{/if}
 	
-	{if ($msg->check('Message.info'))}
+	{if ($session->check('Message.info'))}
 	<div class="message info">
 		<h2>{t}Notice{/t}</h2>
-		<p>{$msg->userMsg('info')}</p>
+		<p>{$session->flash('info')}</p>
 	</div>
 	{/if}
 	

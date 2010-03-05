@@ -35,7 +35,7 @@ BeLib::getObject("BeConfigure")->initConfig();
  */
 class AppController extends Controller
 {
-	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "Msg", "MediaProvider", "Perms", 'BeEmbedMedia', 'BeThumb');
+	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "MediaProvider", "Perms", 'BeEmbedMedia', 'BeThumb');
 	var $components = array('BeAuth', 'BeTree', 'BePermissionModule', 'BeCustomProperty', 'Transaction', 'Cookie', 'Session', 'RequestHandler','BeHash');
 	var $uses = array('EventLog') ;
 	
@@ -124,20 +124,23 @@ class AppController extends Controller
 		
 		$this->set('conf',  $conf);
 		
-		// convienience methods for frontends
+		// convienience methods for frontends or backend to init attibutes before any other operations
 		$this->initAttributes();
-
-	 	// Exit on login/logout
+	 	
 	 	if(isset($this->data["login"]) || $this->name === 'Authentications') {
 			return;
 		}
 				
 		// check/setup localization
 		$this->setupLocale();
-		$this->beditaBeforeFilter() ;
-		// Check login
-		if(!$this->checkLogin($this->skipCheck)) 
+		
+		// don't check logi on login/logout in backend application
+		if (BACKEND_APP && (isset($this->data["login"]) || $this->name === 'Authentications')) {
 			return;
+		}
+		
+		$this->checkLogin();
+		$this->beditaBeforeFilter();
 	}
 
 	protected function setupLocale() {

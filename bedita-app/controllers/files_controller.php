@@ -125,7 +125,7 @@ class FilesController extends AppController {
 		return $this->BEFile->findById($id);
 	}
 
-	function beditaBeforeFilter() {
+	protected function initAttributes() {
 		// multiple upload
 		if ($this->RequestHandler->isFlash()) {
 			$this->skipCheck = true;

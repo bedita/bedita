@@ -53,14 +53,6 @@ class AuthenticationsController extends AppController {
 			$this->result=self::ERROR;
 		}
 		
-		if($this->BeAuth->changePasswd) {
-			$this-> loginEvent('info', $userid, "change password");
-			$this->set("user", $this->BeAuth->user);
-			$this->result='PWD';
-			
-			return ;
-		}
-		
 		if($this->result === self::OK)
 			$this->eventInfo("logged in");
 		
@@ -96,35 +88,6 @@ class AuthenticationsController extends AppController {
 		}
 	}
 
-//	public function changePassword() {
-//		$userToChangePwd = $this->Session->read("userToChangePwd");
-//		if (empty($userToChangePwd)) {
-//			$this->redirect("/logout");
-//		}
-//
-//		if (!empty($this->data["User"]["userid"])) {
-//			$pwd = trim($this->data["User"]["passwd"]);
-//			$confirmPwd = trim($this->params['form']['pwd']);
-//			if (!$this->BeAuth->checkConfirmPassword($pwd, $confirmPwd)) {
-//				$this->userInfoMessage(__("Passwords mismatch", true));
-//				$this->render(null, null, VIEWS."pages/change_password.tpl");
-//				return;
-//			}
-//
-//			if (!$this->BeAuth->changePassword($this->data["User"]["userid"], $pwd)) {
-//				$this->userInfoMessage(__("Error updating password", true));
-//				$this->render(null, null, VIEWS."pages/change_password.tpl");
-//				return;
-//			}
-//
-//			$this->Session->del("userToChangePwd");
-//			$this->userInfoMessage(__("Password changed. Write username and password to login", true));
-//			$this->eventInfo("user " . $this->data["User"]["userid"] . " changed password through recover password");
-//			$this->redirect("/authentications/logout");
-//		}
-//	}
-
-
 	protected function forward($action, $esito) {
 	 	$REDIRECT = array(
 	 			"logout"	=> 	array(
@@ -137,12 +100,7 @@ class AuthenticationsController extends AppController {
 	 								),
 	 			"login"	=> 	array(
 	 									"OK"	=> "/",
-	 									"PWD"	=> "/pages/changePasswd",
-	 									"ERROR"	=> "/authentications/logout" 
-	 								),
-	 			"switchlang"	=> 	array(
-	 									"OK"	=> "/",
-	 									"ERROR"	=> "/authentications/logout" 
+	 									"ERROR"	=> "/" 
 	 								)
 	 	);
 	 	

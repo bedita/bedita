@@ -147,12 +147,70 @@ abstract class FrontendController extends AppController {
 	const UNLOGGED = "unlogged";
 	const UNAUTHORIZED = "unauthorized";
 	
-	/**	 
-	 * @todo: join with checkIsLogged
+	/**
+	 * set FrontendController::logged private attribute
+	 *
+	 * check if there's an active session and try to login if user not logged
+	 *  - if "authorizedGroups" array defined in frontend.ini.php, user has to be in one of those groups
+	 *  - if "staging" is defined only backend authorized groups are permitted
+	 *	- otherwise any group is accepted
+	 *
+	 * @return mixed
 	 */
 	protected function checkLogin() {
-		return false;
+		if ($this->skipCheck) {
+			return;
+		}
+		if(!$this->BeAuth->isLogged()) {
+			if(Configure::read("staging") === true) {
+				$frontendGroupsCanLogin = array(); // only backend authorized groups
+			} else {
+				// frontend only authorized groups (default empty)
+				$confGroups = Configure::read("authorizedGroups");
+				// which groups? authorized groups if defined, or any group
+				$frontendGroupsCanLogin = (!empty($confGroups))? $confGroups :
+					ClassRegistry::init("Group")->getList(array("backend_auth" => 0));
+			}
+			// try to login user if POST data are corrected
+			if (!empty($this->params["form"]["login"])) {
+				$userid 	= (isset($this->params["form"]["login"]["userid"])) ? $this->params["form"]["login"]["userid"] : "" ;
+				$password 	= (isset($this->params["form"]["login"]["passwd"])) ? $this->params["form"]["login"]["passwd"] : "" ;
+
+				if(!$this->BeAuth->login($userid, $password, null, $frontendGroupsCanLogin)) {
+					//$this->loginEvent('warn', $userid, "login not authorized");
+					$this->userErrorMessage(__("Wrong username/password or session expired", true));
+					$this->logged = false;
+					return false;
+				} else {
+					$this->eventInfo("FRONTEND logged in publication");
+				}
+				$redirect = (!empty($this->params["form"]["backURL"]))? $this->params["form"]["backURL"] : $this->loginRedirect;
+
+				$this->redirect($redirect);
+				return true;
+			}
+			$this->logged = false;
+		} else {
+			$this->logged = true;
+		}
+		
+
+		/* 
+		 * if user is unlogged and it's a staging site OR
+		 * if user hasn't permissions to access at the publication
+		 * throws exception
+		 */
+		if ( (!$this->logged && Configure::read("staging") === true) || ((empty($this->params["pass"][0]) || $this->params["pass"][0] != "logout") && !$this->publication["authorized"])) {
+			$errorType = (!$this->logged)? self::UNLOGGED : self::UNAUTHORIZED;
+			$this->accessDenied($errorType);
+		}
 	}
+
+	/**
+	 *  convienience method to do operations before login check
+	 *	for example you could set FrontendController::skipCheck to true avoiding user session check
+	 */
+	protected function beforeCheckLogin() {}
 	
 	/**
 	 * show login form or redirect if user is already logged
@@ -166,7 +224,12 @@ abstract class FrontendController extends AppController {
 		}
 		$this->accessDenied(self::UNLOGGED);
 	}
-	
+
+	/**
+	 * perform logout operation
+	 *
+	 * @param boolean $autoRedirect
+	 */
 	protected function logout($autoRedirect=true) {
 		$this->BeAuth->logout();
 		$this->eventInfo("FRONTEND logged out: publication " . $this->publication["title"]);
@@ -195,47 +258,6 @@ abstract class FrontendController extends AppController {
 			$this->userErrorMessage($message);
 		}
 		throw new BeditaFrontAccessException(null, array("errorType" => $type));
-	}
-	
-	/**
-	 * check if there's an active session and try to login if user not logged
-	 *  - if "authorizedGroups" array defined in frontend.ini.php, user has to be in one of those groups
-	 *  - if "staging" is defined only backend authorized groups are permitted 
-	 *	- otherwise any group is accepted
-	 * 
-	 * @return boolean
-	 */
-	protected function checkIsLogged() {	
-		if(!$this->BeAuth->isLogged()) {
-			if(Configure::read("staging") === true) {
-				$frontendGroupsCanLogin = array(); // only backend authorized groups
-			} else {
-				// frontend only authorized groups (default empty)
-				$confGroups = Configure::read("authorizedGroups");
-				// which groups? authorized groups if defined, or any group 
-				$frontendGroupsCanLogin = (!empty($confGroups))? $confGroups : 
-					ClassRegistry::init("Group")->getList(array("backend_auth" => 0)); 
-			}
-			// try to login user if POST data are corrected 
-			if (!empty($this->params["form"]["login"])) {
-				$userid 	= (isset($this->params["form"]["login"]["userid"])) ? $this->params["form"]["login"]["userid"] : "" ;
-				$password 	= (isset($this->params["form"]["login"]["passwd"])) ? $this->params["form"]["login"]["passwd"] : "" ;
-				
-				if(!$this->BeAuth->login($userid, $password, null, $frontendGroupsCanLogin)) {
-					//$this->loginEvent('warn', $userid, "login not authorized");
-					$this->userErrorMessage(__("Wrong username/password or session expired", true));
-					return false;
-				} else {
-					$this->eventInfo("FRONTEND logged in publication");
-				}
-				$redirect = (!empty($this->params["form"]["backURL"]))? $this->params["form"]["backURL"] : $this->loginRedirect;
-				
-				$this->redirect($redirect);
-				return true;
-			}
-			return false;
-		}
-		return true;
 	}
 	
 	/**
@@ -280,16 +302,12 @@ abstract class FrontendController extends AppController {
 		if ($pubStatus != "on") {
 			$this->status = array('on', 'off', 'draft');
 			$this->publication = $this->loadObj(Configure::read("frontendAreaId"));
-			$this->set('publication', $this->publication);
-
-						
-			if (Configure::read("draft") == false or ($pubStatus == "off")) throw new BeditaPublicationException("Publication not ON", array("layout" => $pubStatus));
-
-			//throw new BeditaPublicationException("Publication not ON", array("layout" => $pubStatus));
+			$this->set('publication', $this->publication);						
+			if (Configure::read("draft") == false or ($pubStatus == "off")) {
+				throw new BeditaPublicationException("Publication not ON", array("layout" => $pubStatus));
+			}
 		}
 		
-		// check is logged
-		$this->logged = $this->checkIsLogged();
 		$defaultShow = $this->showUnauthorized;
 		$this->showUnauthorized = true;
 		$this->publication = $this->loadObj(Configure::read("frontendAreaId"),false);
@@ -297,21 +315,6 @@ abstract class FrontendController extends AppController {
 		
 		// set publication data for template
 		$this->set('publication', $this->publication);
-		
-		/* if user is unlogged and it's a staging site OR
-		 * if user hasn't permissions to access at the publication 
-		 * throws exception
-		 */
-		if ( (!$this->logged && Configure::read("staging") === true) || ((empty($this->params["pass"][0]) || $this->params["pass"][0] != "logout") && !$this->publication["authorized"])) {
-			if (!$this->logged) {
-				$errorType = self::UNLOGGED;
-			} else {
-				$errorType = self::UNAUTHORIZED;
-			}
-			$this->setupLocale();
-			$this->beditaBeforeFilter();
-			$this->accessDenied($errorType);
-		}
 		
 		// workaround to avoid direct access to protected and private methods from url
 		$method = new ReflectionMethod($this, $this->action);
@@ -331,6 +334,8 @@ abstract class FrontendController extends AppController {
 		}
 		
 		$this->historyItem["area_id"] = $this->publication["id"];
+
+		$this->beforeCheckLogin();
 	}
 
 	/**
@@ -883,26 +888,29 @@ abstract class FrontendController extends AppController {
 	 * @return array object detail
 	 */
 	protected function loadObj($obj_id, $blockAccess=true) {
-		if($obj_id === null)
+		if($obj_id === null) {
 			throw new BeditaException(__("Content not found", true));
-		
-		$authorized = false;
+		}
+
+		$authorized = true;
 			
 		// check permissions
-		$permissionModel = ClassRegistry::init("Permission");
-		if ($perms = $permissionModel->isPermissionSetted($obj_id, OBJ_PERMS_READ_FRONT)) {
-			if (!$this->logged && $blockAccess)
-				return self::UNLOGGED;
-			
-			if ($this->logged && $permissionModel->checkPermissionByUser($perms, $this->BeAuth->user)) {
-				$authorized = true;
+		if (!$this->skipCheck) {
+			$permissionModel = ClassRegistry::init("Permission");
+			if ($perms = $permissionModel->isPermissionSetted($obj_id, OBJ_PERMS_READ_FRONT)) {
+				if (!$this->logged && $blockAccess) {
+					return self::UNLOGGED;
+				}
+
+				if ($this->logged && !$permissionModel->checkPermissionByUser($perms, $this->BeAuth->user)) {
+					$authorized = false;
+				}
 			}
-		} else {
-			$authorized = true;
 		}
 		
-		if ($authorized == false && ($blockAccess || !$this->showUnauthorized))
+		if ($authorized == false && ($blockAccess || !$this->showUnauthorized)) {
 			return self::UNAUTHORIZED;
+		}
 		
 		$modelType = $this->BEObject->getType($obj_id);
 		if(!isset($this->{$modelType})) {
