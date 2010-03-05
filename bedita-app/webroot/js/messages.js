@@ -4,7 +4,7 @@
  */
 
 <script type="text/javascript" charset="utf-8">
-{if ($msg->check('Message.info'))}
+{if ($session->check('Message.info'))}
 
 	{literal}
 	$(document).ready ( function () {
@@ -16,10 +16,10 @@
 	});
 	{/literal}
 
-{elseif ($msg->check('Message.warn'))}
+{elseif ($session->check('Message.warn'))}
 
 
-{elseif ($msg->check('Message.error'))}
+{elseif ($session->check('Message.error'))}
 
 	{literal}
 	$(document).ready ( function () {

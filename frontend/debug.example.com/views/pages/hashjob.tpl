@@ -1,10 +1,10 @@
-{if ($msg->check('Message.info'))}	
+{if ($session->check('Message.info'))}
 	<div class="message info">
-		{$msg->userMsg('info')}
+		{$session->flash('info')}
 	</div>
-{elseif ($msg->check('Message.error'))}
+{elseif ($session->check('Message.error'))}
 	<div class="message error">
-		{$msg->userMsg('error')}
+		{$session->flash('error')}
 	</div>
 {/if}
 

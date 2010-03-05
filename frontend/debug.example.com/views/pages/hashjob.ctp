@@ -1,9 +1,9 @@
-<?php if ($msg->check('Message.info')):?>
+<?php if ($session->check('Message.info')):?>
 	<div class="message info">
-		e($msg->userMsg('info'));
+		e($session->flash('info'));
 	</div>
-<?php elseif ($msg->check('Message.error')): ?>
+<?php elseif ($session->check('Message.error')): ?>
 	<div class="message error">
-		e($msg->userMsg('error'));
+		e($session->flash('error'));
 	</div>
 <?php endif;?>

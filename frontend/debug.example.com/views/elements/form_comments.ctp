@@ -1,9 +1,9 @@
 <div class="commentform">
 
-	<?php if (($msg->check('Message.error'))):?>
+	<?php if ($session->check('Message.error')):?>
 		<a name="error"></a>
 		<div class="message error">
-			<?php e($msg->userMsg('error'));?>
+			<?php e($session->flash('error'));?>
 		</div>
 	<?php endif;?>
 	
