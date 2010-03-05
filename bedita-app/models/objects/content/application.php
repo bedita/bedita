@@ -34,12 +34,16 @@ class Application extends BeditaStreamModel
 	
 	public $objectTypesGroups = array("multimedia");
 	
-	public $applicationType = array(
-		"flash" => array(
-			"mime_type" => array("application/x-shockwave-flash"),
-			"application_type" => "application/x-shockwave-flash",
-			"label" => "Adobe Flash"
-		)
-	);
+	public $applicationType = array();
+
+	public function  __construct() {
+		$appType = Configure::read("validate_resource.mime.Application");
+		foreach ($appType as &$a) {
+			foreach ($a["mime_type"] as &$v) {
+				$v = trim(stripslashes($v), "/");
+			}
+		}
+		$this->applicationType = $appType;
+	}
 }
 ?>

@@ -428,10 +428,15 @@ $config['validate_resource'] = array(
 				'Video'			=> array('/video\/\.*/','/application\/flash-video/'),
 			    'Application'	=> array(
 							    		"flash" => array(
-												"mime_type" => array('/application\/x-shockwave-flash/'),
-												"application_type" => "application/x-shockwave-flash",
-												"label" => "Adobe Flash"
-											)
+											"mime_type" => array('/application\/x-shockwave-flash/'),
+											"application_type" => "application/x-shockwave-flash",
+											"label" => "Adobe Flash"
+										),
+										"shockwave" => array(
+											"mime_type" => array('/application\/x-director/'),
+											"application_type" => "application/x-director",
+											"label" => "Adobe Director"
+										)
 									),
 				'BEFile'		=> array('/application\/\.*/', '/text\/\.*/', '/beexternalsource/')
 				)
