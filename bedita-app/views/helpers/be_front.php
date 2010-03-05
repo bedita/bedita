@@ -38,7 +38,6 @@ class BeFrontHelper extends AppHelper {
 	private $_section;
 	private $_currentContent;
 	private $_conf;
-	private $_datePattern;
 
 	public function __construct() {
 		$view = ClassRegistry::getObject('view');
@@ -46,7 +45,6 @@ class BeFrontHelper extends AppHelper {
 		$this->_section =  (!empty($view->viewVars['section'])) ? $view->viewVars['section'] : null;
 		$this->_currentContent = (!empty($view->viewVars['section']['currentContent'])) ? $view->viewVars['section']['currentContent'] : null;
 		$this->_conf = Configure::getInstance();
-		$this->_datePattern = $this->_conf->datePattern;
 	}
 
 	public function title($order='asc') {
@@ -137,81 +135,6 @@ class BeFrontHelper extends AppHelper {
 			return '<link rel="canonical" href="' . $public_url . $this->Html->base . $canonical_path .'" />';
 		}
 		return "";
-	}
-
-	public function date($date,$format = null) {
-		return $this->format($date,$format);
-	}
-
-	public function dateTime($date,$format = null) {
-		return $this->format($date,$format);
-	}
-
-	public function day($date) {
-		return $this->format($date,"%d");
-	}
-
-	public function dayName($date) {
-		return $this->format($date,"%A");
-	}
-
-	public function month($date) {
-		return $this->format($date,"%m");
-	}
-
-	public function monthName($date) {
-		return $this->format($date,"%B");
-	}
-
-	public function year($date) {
-		return $this->format($date,"%Y");
-	}
-
-	private function format($string, $format = '%b %e, %Y', $default_date = '') {
-		$format = ($format!=null) ? $format : $this->_datePattern;
-		if ($string != '') {
-			$timestamp = $this->make_timestamp($string);
-		} elseif ($default_date != '') {
-			$timestamp = $this->make_timestamp($default_date);
-		} else {
-			return;
-		}
-		if (DIRECTORY_SEPARATOR == '\\') {
-			$_win_from = array('%D',	   '%h', '%n', '%r',		  '%R',	'%t', '%T');
-			$_win_to   = array('%m/%d/%y', '%b', "\n", '%I:%M:%S %p', '%H:%M', "\t", '%H:%M:%S');
-			if (strpos($format, '%e') !== false) {
-				$_win_from[] = '%e';
-				$_win_to[]   = sprintf('%\' 2d', date('j', $timestamp));
-			}
-			if (strpos($format, '%l') !== false) {
-				$_win_from[] = '%l';
-				$_win_to[]   = sprintf('%\' 2d', date('h', $timestamp));
-			}
-			$format = str_replace($_win_from, $_win_to, $format);
-		}
-		return strftime($format, $timestamp);
-	}
-	
-	private function make_timestamp($string) {
-		if(empty($string)) {
-			// use "now":
-			$time = time();
-		} elseif (preg_match('/^\d{14}$/', $string)) {
-			// it is mysql timestamp format of YYYYMMDDHHMMSS?			
-			$time = mktime(substr($string, 8, 2),substr($string, 10, 2),substr($string, 12, 2),
-						   substr($string, 4, 2),substr($string, 6, 2),substr($string, 0, 4));
-		} elseif (is_numeric($string)) {
-			// it is a numeric string, we handle it as timestamp
-			$time = (int)$string;
-		} else {
-			// strtotime should handle it
-			$time = strtotime($string);
-			if ($time == -1 || $time === false) {
-				// strtotime() was not able to parse $string, use "now":
-				$time = time();
-			}
-		}
-		return $time;
 	}
 
 	private function get_value_for_field($field) {
