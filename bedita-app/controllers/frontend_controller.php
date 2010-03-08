@@ -1156,7 +1156,7 @@ abstract class FrontendController extends AppController {
 		}
 		
 		$this->setSectionPath($section, $sectionId);
-		$this->sectionOptions["childrenParams"] = array_merge($this->sectionOptions["childrenParams"],$this->getPassedArgs());
+		$this->sectionOptions["childrenParams"] = array_merge($this->sectionOptions["childrenParams"], $this->params["named"]);
 				
 		$this->sectionOptions["childrenParams"]["sectionPath"] = $section["canonicalPath"];
 				
@@ -1291,7 +1291,7 @@ abstract class FrontendController extends AppController {
 		if(!in_array('BeToolbar', $this->helpers)) {
        		$this->helpers[] = 'BeToolbar';
 		}
-		$this->searchOptions = array_merge($this->searchOptions,$this->getPassedArgs());
+		$this->searchOptions = array_merge($this->searchOptions, $this->params["named"]);
 		// add rules for start and end pubblication date
 		if ($this->checkPubDate["start"] == true && empty($this->searchOptions["filter"]["Content.start"])) {
 				$this->searchOptions["filter"]["Content.start"] = "<= '" . date("Y-m-d") . "' OR `Content`.start IS NULL";
@@ -1546,7 +1546,7 @@ abstract class FrontendController extends AppController {
 		if (empty($tagDetail))
 			throw new BeditaException(__("No tag found", true));
 		
-		$options = array_merge($this->tagOptions, $options, $this->getPassedArgs());
+		$options = array_merge($this->tagOptions, $options, $this->params["named"]);
 		$filter = (!empty($options["filter"]))? $options["filter"] : false;
 		$filter["tag"] = $tag;
 		$order = "";
@@ -1599,7 +1599,7 @@ abstract class FrontendController extends AppController {
 		
 		$object_id = (is_numeric($objectName))? $objectName : $this->BEObject->getIdFromNickname($objectName);
 		
-		$options = array_merge($this->annotationOptions[$annotationType], $options, $this->getPassedArgs());
+		$options = array_merge($this->annotationOptions[$annotationType], $options, $this->params["named"]);
 		$filter = (!empty($options["filter"]))? $options["filter"] : array();
 		$filter["object_type_id"] = Configure::read("objectTypes." . $annotationType . ".id");
 		$filter[Configure::read("objectTypes." . $annotationType . ".model") . ".object_id"] = $object_id;

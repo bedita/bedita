@@ -655,22 +655,6 @@ class AppController extends Controller
 		}
 		return $defaultObjRel;
 	}
-
-	/**
-	 * get passed args by name and return
-	 *
-	 */
-	protected function getPassedArgs() {
-		$args = array();
-		if (!empty($this->passedArgs)) {
-			foreach ($this->passedArgs as $key => $val) {
-				if (!is_numeric($key)) {
-					$args[$key] = $val;
-				}
-			}
-		}
-		return $args;
-	}
 	
 }
 
