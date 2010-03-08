@@ -117,6 +117,9 @@ class User extends BEAppModel
 	}
 	
 	function beforeSave() {
+		if (isset($this->data["User"]["email"]) && empty($this->data["User"]["email"])) {
+			$this->data["User"]["email"] = null;
+		}
 		if (!empty($this->data["User"]["auth_params"]) && is_array($this->data["User"]["auth_params"])) {
 			$this->data["User"]["auth_params"] = serialize($this->data["User"]["auth_params"]);
 		} elseif (!empty($this->data["User"][0])) {
