@@ -49,7 +49,9 @@ class DbadminShell extends Shell {
 		$this->hr();
 		$this->out("Objects:");
 		$this->hr();
-		
+
+		$failed = array();
+
 		foreach ($res as $r) {
 			$id = $r['BEObject']['id'];
 			$type = $beObj->getType($id);
@@ -57,7 +59,14 @@ class DbadminShell extends Shell {
 			$model->{$model->primaryKey}=$id;
 			$this->out("id: $id - type: $type");
 			$searchText->deleteAll("object_id=".$id);
-			$searchText->createSearchText($model);
+			try {
+				$searchText->createSearchText($model);
+			} catch (BeditaException $ex) {
+				$this->out("ERROR: " . $ex->getMessage());
+				$this->out("Probably there is an inconsistency in the tables that involve object with id " . $id);
+				$this->out("");
+				$failed[] = array("id" => $id, "error" => $ex->getMessage(), "check" => "Check that exists a row with id " . $id . " in all tables that involve the object.");
+			}
 		}
 		// lang texts
 		$this->hr();
@@ -75,6 +84,21 @@ class DbadminShell extends Shell {
 			}
 			$this->out("object_id: " . $r['LangText']['object_id'] . " - lang: " . $r['LangText']['lang']);
 			$searchText->saveLangTexts($dataLang);
+		}
+
+		if (!empty($failed)) {
+			$this->out("");
+			$this->hr();
+			$this->hr();
+			$this->out("ERRORS occured rebuilding index");
+			$this->hr();
+			$this->hr();
+			foreach($failed as $f) {
+				$this->out("id: " . $f["id"]);
+				$this->out("error: " . $f["error"]);
+				$this->out("suggestion: " . $f["check"]);
+				$this->hr();
+			}
 		}
 	}
 
