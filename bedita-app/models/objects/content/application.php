@@ -37,6 +37,7 @@ class Application extends BeditaStreamModel
 	public $applicationType = array();
 
 	public function  __construct() {
+		parent::__construct();
 		$appType = Configure::read("validate_resource.mime.Application");
 		foreach ($appType as &$a) {
 			foreach ($a["mime_type"] as &$v) {
