@@ -1641,12 +1641,15 @@ abstract class FrontendController extends AppController {
 			$this->accessDenied($obj);
 		}
 		
-		// check 'download' relation
+		// check 'download' or 'attach' relation
 		// TODO: check relatedObject status????
 		$objRel = ClassRegistry::init("ObjectRelation");
-		$relatedObjectId = $objRel->find('first', 
-				array('conditions' => array("ObjectRelation.id" => $id, 
-						"ObjectRelation.switch" => "download"), 'fields' => array('object_id')));
+		$relatedObjectId = $objRel->find('first', array(
+			'conditions' => array(
+				"ObjectRelation.id" => $id,
+				"ObjectRelation.switch" => array("download", "attach")
+			),
+			'fields' => array('object_id')));
 		if($relatedObjectId === false) {
 			throw new BeditaException(__("Content not found", true));
 		}
