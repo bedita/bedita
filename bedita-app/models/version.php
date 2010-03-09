@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2010 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -30,17 +30,94 @@
  */
 class Version extends BEAppModel
 {
-	var $name = 'Version';
-
-	var $hasMany = array(
-		'BEObject' =>
-			array(
-				'className'		=> 'BEObject',
-				'fields'		=> 'id',
-				'foreignKey'	=> 'id',
-			),
+	/**
+	 * fields not versioned/revisioned
+	 *
+	 * @var array
+	 */
+	private $noRevision = array("user_modified");
+	 
+	/**
+	 * Create a new revision, creating a 'diff' between two object data arrays
+	 * and saving a new record in 'versions'
+	 *
+	 * @param array $oldData
+	 * @param array $newData
+	 */	
+	public function addRevision(array& $oldData, array& $newData) {
 			
-	);
+		$vData = array("object_id" => $oldData["id"],
+			"created" => $oldData["modified"],
+			"user_id" => $oldData["user_created"]);
+		$lastRev = $this->field("revision", array("object_id" => $vData["object_id"]), 
+			"revision desc");
+		if(empty($lastRev)) {
+			$vData["revision"] = 1;
+		} else {
+			$vData["revision"] = $lastRev + 1;
+		}
+		$vData["diff"] = serialize($this->calcDiff($oldData, $newData));		
+		$this->create();
+		$this->save($vData);
+	}
 
+	private function calcDiff(array& $old, array &$new) {
+		$newDiff = array_diff_assoc($new, $old);
+		// remove relations, keep only old object fields/attribs
+		$diff = array();
+		foreach ($newDiff as $k => $v) {
+			if(!is_array($v) && !in_array($k, $this->noRevision)) {
+				$diff[$k] = !empty($old[$k]) ? $old[$k] : null;
+			}
+		}
+		return $diff;
+	}
+	
+	/**
+	 * Create a diff array containing only changed fields between last version 
+	 * and requested revision
+	 *
+	 * @param int $id, object id
+	 * @param int $revNum, revision number requested
+	 * @return array with revision information, 
+	 * 
+	 */
+	public function diffData($id, $revNum) {
+		// check $revNum
+		$r = $this->field("revision", array("object_id" => $id, 
+			"revision" => $revNum));
+		if(empty($r)) {
+			throw new BeditaException(__("Requeste revision not found"));
+		}
+		$diffs = $this->find("all", array("conditions" => 
+			array("Version.object_id" => $id, "Version.revision >= $revNum"),
+			"fields" => array("diff"), "order" => "Version.revision desc"));
+		$res = array();
+		foreach ($diffs as $d) {
+			$rd = unserialize($d["Version"]["diff"]);
+			$res = array_merge($res, $rd);
+		}
+		return $res;
+	}
+	
+	public function revisionData($id, $revNum, BEAppModel $model) {
+		$model->containLevel('minimum');
+		$currData = $model->findById($id);
+		foreach ($currData as $k => $v) {
+			if(is_array($v)) {
+				unset($currData[$k]);
+			}
+		}
+		$diff = $this->diffData($id, $revNum);	
+		return array_merge($currData, $diff);
+	}
+	
+	public function numRevisions($id) {
+		$count = $this->find("count", array(
+				"conditions" => array("Version.object_id" => $id)
+						)
+				);
+		return $count;
+	}
 }
 ?>

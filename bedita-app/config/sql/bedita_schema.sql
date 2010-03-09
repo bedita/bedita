@@ -402,6 +402,7 @@ CREATE TABLE versions (
   PRIMARY KEY(id),
   INDEX objects_index(object_id),
   INDEX user_index(user_id),
+  UNIQUE object_id_revision(object_id, revision),
   FOREIGN KEY(object_id)
     REFERENCES objects(id)
       ON DELETE CASCADE

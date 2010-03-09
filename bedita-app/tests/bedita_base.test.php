@@ -79,7 +79,7 @@ class BeditaTestCase extends CakeTestCase {
 		echo '<hr/>';
 	}
 
-	function requiredData($names) {
+	function requiredData(array $names) {
 		foreach ($names as $n) {
 			if(!isset($this->data[$n]))
 				throw new BeditaException("Missing required data: $n");

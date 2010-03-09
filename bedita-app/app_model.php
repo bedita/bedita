@@ -365,6 +365,7 @@ class BEAppObjectModel extends BEAppModel {
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'SearchTextSave',
+			'RevisionObject',
 			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteObject' 			=> 'objects',
 	);
