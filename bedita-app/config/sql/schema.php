@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* BeditaApp schema generated on: 2010-03-02 17:03:43 : 1267548883*/
+/* BeditaApp schema generated on: 2010-03-09 16:03:54 : 1268149794*/
 class BeditaAppSchema extends CakeSchema {
 	var $name = 'BeditaApp';
 
@@ -498,7 +498,7 @@ class BeditaAppSchema extends CakeSchema {
 		'user_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL, 'values' => NULL),
 		'diff' => array('type' => 'text', 'null' => false, 'default' => NULL, 'values' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'objects_index' => array('column' => 'object_id', 'unique' => 0), 'user_index' => array('column' => 'user_id', 'unique' => 0))
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'object_id_revision' => array('column' => array('object_id', 'revision'), 'unique' => 1), 'objects_index' => array('column' => 'object_id', 'unique' => 0), 'user_index' => array('column' => 'user_id', 'unique' => 0))
 	);
 	var $videos = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
