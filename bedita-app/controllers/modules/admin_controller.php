@@ -176,11 +176,14 @@ class AdminController extends ModulesController {
 		}
 		
 		$this->set('userdetail',  $userdetail['User']);
-		if (is_array($userdetail["ObjectUser"]))
+		if (is_array($userdetail["ObjectUser"])) {
 			$this->set('objectUser', $this->objectRelationArray($userdetail["ObjectUser"]));
+		}
 		$this->set('formGroups',  $formGroups);
 		$this->set('authGroups',  $authGroups);
 		$this->set('userdetailModules', $userdetailModules) ;
+
+		BeLib::getObject("BeConfigure")->setExtAuthTypes();
 	 }
 
 	private function loadGroups() {

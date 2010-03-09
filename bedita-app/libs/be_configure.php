@@ -136,5 +136,43 @@ class BeConfigure {
 		}
 		Configure::write($cachedConfig);
 	}
+
+	/**
+	 * write in configuration the external authorization types supported
+	 *
+	 * @return array of authorization type
+	 */
+	public function setExtAuthTypes() {
+		$beLib = BeLib::getInstance();
+		$addons = $beLib->getAddonsPaths();
+		$authTypes = array();
+		if (!empty($addons)) {
+			$folder = new Folder();
+			foreach ($addons as $a) {
+				if ($folder->cd($a . DS . "components")) {
+					$list = $folder->read(true, true);
+					if (!empty($list[1])) {
+						foreach ($list[1] as $componentFile) {
+							if (strstr($componentFile, "be_auth_")) {
+								$componentFile = basename($componentFile, ".php");
+								$componentClass = Inflector::camelize($componentFile);
+								if (App::import("Component", $componentClass)) {
+									$componentClass .= "Component";
+									$authComp = new $componentClass();
+									if (!$authComp->disabled) {
+										$authTypes[] = str_replace("be_auth_", "", $componentFile);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		Configure::write("extAuthTypes", $authTypes);
+		return $authTypes;
+	}
+
 }
 ?>

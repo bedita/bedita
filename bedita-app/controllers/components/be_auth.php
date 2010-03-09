@@ -93,11 +93,12 @@ class BeAuthComponent extends Object {
 			return false ;
 		}
 		// load authType component
-		$componentClass = "Be" . Inflector::camelize($extAuthType) . "Component";
+		$componentClass = "BeAuth" . Inflector::camelize($extAuthType);
 		// TODO: load component dynamically??
-		if(!App::import($componentClass, "Component")) {
+		if(!App::import("Component", $componentClass)) {
 			throw new BeditaException(__("External auth component not found: ",true) . $extAuthType);
 		}
+		$componentClass .= "Component";
 		$authComponent = new $componentClass();
 		
 	}
