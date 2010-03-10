@@ -139,7 +139,162 @@ class Card extends BEAppObjectModel {
 		
 		// save geotag
 		return $this->updateHasManyAssoc();
-
 	}
+	
+	/**
+	 * Import a Microsoft Outlook/Outlook Express CSV file
+	 *
+	 * @param string $csvFile, path to csv file file
+	 * @param array $options, default attributes array to use, 
+	 *  e.g. categories, "Category" => array (1,3,4..) - array of id-categories
+	 * @return results array, num of objects saved ("numSaved") and other data
+	 */
+	public function importCSVFile($csvFile, array $options = null) {
+		
+		$defaults = array( 
+			"status" => "on",
+			"user_created" => "1",
+			"user_modified" => "1",
+			"lang" => Configure::read("defaultLang"),
+			"ip_created" => "127.0.0.1",
+		);
+	
+		if(!empty($options)) {
+			$defaults = array_merge($defaults, $options);
+		}
+		
+		$row = 1;
+		$handle = fopen($csvFile, "r");
+		// read header
+		$csvKeys = fgetcsv($handle, 1000, ",");
+		// map CSV 
+		$beFields = array (
+			"Title" => "person_title", "First Name" => "name", "Middle Name", "Last Name" => "surname",
+			"Suffix", "E-mail Address" => "email", "E-mail 2 Address" => "email2", "E-mail 3 Address",
+			"Business Street","Business Street 2","Business Street 3","Business City",
+			"Business State" => "state", "Business Postal Code" => "zipcode", "Business Country" => "country",
+			"Home Street" => "street_address",
+			"Home Street 2","Home Street 3","Home City","Home State","Home Postal Code","Home Country",
+			"Other Street","Other Street 2","Other Street 3","Other City","Other State",
+			"Other Postal Code","Other Country","Company" => "company_name","Department",
+			"Job Title","Assistant's Phone","Business Fax" => "fax","Business Phone" => "phone",
+			"Business Phone 2" => "phone2" ,"Callback",
+			"Car Phone","Company Main Phone","Home Fax","Home Phone","Home Phone 2","ISDN","Mobile Phone",
+			"Other Fax","Other Phone","Pager","Primary Phone","Radio Phone","TTY/TDD Phone","Telex",
+			"Assistant's Name","Birthday" => "birthdate","Manager's Name","Notes","Other Address PO Box","Spouse",
+			"Web Page" => "website", "Personal Web Page" => "website"
+		);
+		
+		$numKeys = count($csvKeys);
+		$keys = array();
+		foreach ($csvKeys as $f) {
+			$keys[] = (!empty($beFields[$f])) ? $beFields[$f] : null; 
+		}
+		
+		$data = array();
+		while (($fields = fgetcsv($handle, 1000, ",")) !== FALSE) {
+	    	$row++;
+			for ($c=0; $c < $numKeys; $c++) {
+				if(!empty($keys[$c]) && !empty($fields[$c])) {
+					$data[$keys[$c]] = $fields[$c]; 
+				}
+			}
+			$this->create();
+			$d = array_merge($defaults, $data);
+			if(!empty($d["surname"])) {
+				$d["title"] = ((!empty($d["name"])) ? $d["name"] : "" ) . " " . $d["surname"];
+			}
+			if(!$this->save($d)) {
+				throw new BeditaException(__("Error saving card"),  
+					print_r($data, true) . " \nrow: $row \nvalidation: " . print_r($this->validationErrors, true));
+			}
+		}
+		fclose($handle);
+		return array("numSaved" => $row-1);		
+	}
+	
+	/**
+	 * Import a vCard/vcf file
+	 *
+	 * @param string $cardFile, path to vcard file
+	 * @param array $options, default attributes array to use, 
+	 *  e.g. categories, "Category" => array (1,3,4..) - array of id-categories
+	 * @return results array, num of objects saved ("numSaved") and other data
+	 */
+	public function importVCardFile($cardFile, array $options = null) {
+		$lines = file($cardFile);
+		if (!$lines) {
+			throw new BeditaException(__("Error reading vCard file") . ": " . $cardFile);
+		}
+		$defaults = array( 
+			"status" => "on",
+			"user_created" => "1",
+			"user_modified" => "1",
+			"lang" => Configure::read("defaultLang"),
+			"ip_created" => "127.0.0.1",
+		);
+		
+		if(!empty($options)) {
+			$defaults = array_merge($defaults, $options);
+		}
+		
+		$numSaved = 0;
+		$cards = $this->parseVCards($lines);
+		foreach ($cards as $c) {
+			$this->create();
+			$data = array_merge($defaults, $c);
+			if(!$this->save($data)) {
+				throw new BeditaException(__("Error saving card"), print_r($c, true) . " \nvalidation: " . print_r($this->validationErrors, true));
+			}
+			$numSaved++;
+		}
+
+		return array("numSaved" => $numSaved);		
+	}
+	
+	private function parseVCards(&$lines) {
+		App::import('vendor', "VCard", true, array(), "vcard.php");		
+		$cards = array();
+		$done = false;
+		while (!$done) {
+			$card = new VCard();
+			if(!$card->parse($lines)) {
+				$done = true;
+			} else {
+			
+				$property = $card->getProperty('N');
+				if (!$property) {
+					return "";
+				}
+				$n = $property->getComponents();
+				
+				$fnProp = $card->getProperty('FN');
+				
+				$nameProp = $card->getProperty('NAME');
+				$emailProp = $card->getProperties('EMAIL');
+				$telProp = $card->getProperties('TEL');
+				$orgProp = $card->getProperty('ORG');
+				
+				$item = array();
+				$item["title"] = !empty($nameProp->value) ? trim($nameProp->value) : (!empty($fnProp->value) ? trim($fnProp->value) : null );
+				
+				$item["name"] = !empty($n[1]) ? trim($n[1]) : null;
+				$item["surname"] = !empty($n[0]) ? trim($n[0]) : null;
+
+				$item["email"] = !empty($emailProp[0]->value) ? trim($emailProp[0]->value) : null;
+				$item["phone"] = !empty($telProp[0]->value) ? trim($telProp[0]->value) : null;
+				$item["email2"] = !empty($emailProp[1]->value) ? trim($emailProp[1]->value) : null;
+				$item["phone2"] = !empty($telProp[1]->value) ? trim($telProp[1]->value) : null;
+							
+				if(empty($item["title"])) {
+					$item["title"] = $item["name"] . " " . $item["surname"];
+				}
+				$item["company_name"] = !empty($orgProp->value) ? trim($orgProp->value) : null;
+				$cards[] = $item;
+			}
+		}
+		return $cards;
+	}
+
 }
 ?>

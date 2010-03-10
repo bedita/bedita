@@ -21,7 +21,6 @@
 
 App::import('Core', 'String');
 App::import('Core', 'Controller');
-App::import('Controller', 'App'); // BeditaException
 
 // load cached configurations
 App::import("File", "BeLib", true, array(BEDITA_LIBS), "be_lib.php");
@@ -37,7 +36,7 @@ BeLib::getObject("BeConfigure")->initConfig();
  * 
  * $Id$
  */
-class DbadminShell extends Shell {
+class DbadminShell extends BeditaBaseShell {
 
 	public function rebuildIndex() {
 		

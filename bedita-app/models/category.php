@@ -363,5 +363,35 @@ class Category extends BEAppModel {
 		return (Category::$dirTag)? strcmp($d1,$d2) : strcmp($d2,$d1);
 	}
 	
+	
+	/**
+	 * Search for category names, create if not already present, and
+	 * return array of corresponding id
+	 *
+	 * @param array $names, category names to search/create
+	 * @param int $objTypeId, category object type id
+	 * @return array of corresponding id-category
+	 */
+	public function findCreateCategories(array &$names, $objTypeId) {
+		$res = array();
+		// if not exists create
+		foreach ($names as $n) {
+			$this->create();
+			$n = trim($n);
+			$this->bviorCompactResults = false;
+			$idCat = $this->field('id', array('name' => $n, 'object_type_id' => $objTypeId));
+			$this->bviorCompactResults = true;
+			if(empty($idCat)) {
+				$dataCat = array('name'=> $n,'label' => $n,
+					'object_type_id' => $objTypeId, 'status'=>'on');
+				if(!$this->save($dataCat)) {
+					throw new BeditaException(__("Error saving category") . ": " . print_r($dataCat, true));
+				}
+				$idCat = $this->id;
+			}
+			$res[] = $idCat;
+		}
+		return $res;		
+	}
 }
 ?>
