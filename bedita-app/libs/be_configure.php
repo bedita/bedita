@@ -18,7 +18,7 @@
  * 
  *------------------------------------------------------------------->8-----
  */
-
+App::import('Model', 'ConnectionManager');
 /**
  * BeConfigure class handle BEdita configuration 
  *
@@ -51,7 +51,10 @@ class BeConfigure {
 	 * @return array configuration cached 
 	 */
 	public function cacheConfig() {
-		
+		$requiredTables = array("modules", "object_types");
+		if (!$this->tableExists($requiredTables)) {
+			return;
+		}
 		$conf = Configure::getInstance();
 		$configurations = array();
 				
@@ -172,6 +175,23 @@ class BeConfigure {
 		
 		Configure::write("extAuthTypes", $authTypes);
 		return $authTypes;
+	}
+
+	/**
+	 * check if table/s exist in certain database connection
+	 *
+	 * @param mixed $tableName, table name or array of table names
+	 * @param string $datasource, datasource to use
+	 * @return boolean
+	 */
+	public function tableExists($tableName, $datasource="default") {
+		$db = ConnectionManager::getDataSource($datasource);
+		$tables = $db->listSources();
+		if (!is_array($tableName)) {
+			$tableName = array($tableName);
+		}
+		$intersect = array_intersect($tableName, $tables);
+		return ($tableName === $intersect)? true : false;
 	}
 
 }

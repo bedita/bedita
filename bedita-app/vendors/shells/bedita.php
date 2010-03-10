@@ -310,6 +310,8 @@ class BeditaShell extends BeditaBaseShell {
        	$this->out("$dbCfg database updated");
 		$transaction->commit();
 		
+		BeLib::getObject("BeConfigure")->cacheConfig();
+		
 		if (isset($this->params['media'])) {
             $this->extractMediaZip($this->params['media']);
     	}
@@ -396,7 +398,9 @@ class BeditaShell extends BeditaBaseShell {
 		unlink($sqlFileName);
 		$this->out("$dbCfg database updated");
 
-        $this->hr();
+		BeLib::getObject("BeConfigure")->cacheConfig();
+
+		$this->hr();
 		// import new configuration file, if present
 		$newCfgFileName = $tmpBasePath."bedita.cfg.php";
 		if (file_exists($newCfgFileName)) {

@@ -20,8 +20,6 @@
  */
 
 require_once 'bedita_base.php';
-App::import("File", "BeLib", true, array(BEDITA_LIBS), "be_lib.php");
-BeLib::getObject("BeConfigure")->initConfig();
 
 /**
  * Shell script to import/export/manipulate cards.

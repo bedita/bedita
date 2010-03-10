@@ -19,8 +19,7 @@
  *------------------------------------------------------------------->8-----
  */
 
-App::import("File", "BeLib", true, array(BEDITA_LIBS), "be_lib.php");
-BeLib::getObject("BeConfigure")->initConfig();
+require_once 'bedita_base.php';
 
 /**
  * Newsletter shell: methods to import/export newsletter data (for example phplist filters), 
@@ -32,7 +31,7 @@ BeLib::getObject("BeConfigure")->initConfig();
  * 
  * $Id$
  */
-class ModuleShell extends Shell {
+class ModuleShell extends BeditaBaseShell {
 
 	public function plug() {
 		$op = (empty($this->params["name"]))? "list" : "name";

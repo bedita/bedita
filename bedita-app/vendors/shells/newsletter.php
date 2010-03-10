@@ -21,6 +21,9 @@
 
 App::import('Core', 'Controller');
 App::import('Controller', 'App');
+
+require_once 'bedita_base.php';
+
 /**
  * Newsletter shell: methods to import/export newsletter data (for example phplist filters), 
  * other newsletter related utilities
@@ -31,7 +34,7 @@ App::import('Controller', 'App');
  * 
  * $Id: bedita.php 2015 2009-05-29 14:18:06Z dante $
  */
-class NewsletterShell extends Shell {
+class NewsletterShell extends BeditaBaseShell {
 
 	private $baseLogs;
 	

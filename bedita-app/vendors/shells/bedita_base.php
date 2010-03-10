@@ -19,6 +19,10 @@
  *------------------------------------------------------------------->8-----
  */
 
+// load cached configurations
+App::import("File", "BeLib", true, array(BEDITA_LIBS), "be_lib.php");
+BeLib::getObject("BeConfigure")->initConfig();
+
 /**
  * Base class for bedita shell scripts: provides common filesystem related methods.
  * 

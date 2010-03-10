@@ -22,6 +22,8 @@
 App::import('Core', 'Controller');
 App::import('Component', 'BeMail');
 
+require_once 'bedita_base.php';
+
 /**
  * Default shell script for email notifications and newsletters.
  * To put in cron/crontab for normal use, launch at prompt using "./cake.sh mail"
@@ -35,7 +37,7 @@ App::import('Component', 'BeMail');
  * 
  * $Id$
  */
-class MailShell extends Shell {
+class MailShell extends BeditaBaseShell {
 	
 	protected $BeMail;
 	protected $Controller;

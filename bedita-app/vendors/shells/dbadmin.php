@@ -22,9 +22,7 @@
 App::import('Core', 'String');
 App::import('Core', 'Controller');
 
-// load cached configurations
-App::import("File", "BeLib", true, array(BEDITA_LIBS), "be_lib.php");
-BeLib::getObject("BeConfigure")->initConfig();
+require_once 'bedita_base.php';
 
 /**
  * Dbadmin shell: generic methods to check/fix some db data, for example translations, multimedia.
