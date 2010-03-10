@@ -843,6 +843,9 @@ abstract class ModulesController extends AppController {
 		$previews = array();
 		$name = Inflector::underscore($beModel->name);
 		if(isset($id)) {
+			$objEditor = ClassRegistry::init("ObjectEditor");
+			$objEditor->cleanup();
+			
 			$beModel->containLevel("detailed");
 			if(!($obj = $beModel->findById($id))) {
 				throw new BeditaException(__("Error loading $name: ", true).$id);
@@ -879,6 +882,10 @@ abstract class ModulesController extends AppController {
 			$previews = $this->previewsForObject($parents_id, $id, $obj['status']);
 			
 			$this->historyItem["object_id"] = $id;
+			// concurrent access
+			if($this->modulePerms & BEDITA_PERMS_MODIFY) {
+				$objEditor->updateAccess($id, $this->BeAuth->user["id"]);
+			}
 		}
 		
 		$property = $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $name . ".id"));

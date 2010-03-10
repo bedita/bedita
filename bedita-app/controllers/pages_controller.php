@@ -383,7 +383,16 @@ class PagesController extends AppController {
 		$this->set('path',$path);
 		$this->set('result',$result);
 	}
- 
+
+	public function updateEditor($objectId) {
+		$this->ajaxCheck();
+		$objectEditor = ClassRegistry::init("ObjectEditor"); 
+	 	$user = $this->Session->read("BEAuthUser");
+		$objectEditor->updateAccess($objectId, $user["id"]);
+		$objectEditor->cleanup();
+		// TODO: load other editors??
+	}
+
 }
 
 ?>
