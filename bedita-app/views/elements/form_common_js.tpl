@@ -168,7 +168,8 @@ $(document).ready(function(){
 
 {/literal}{if !empty($object.id)}{literal}
 
-	updateEditors();	
+	//Uncomment to start concurrent user check
+	//updateEditors();	
 
 {/literal}{/if}{literal}
 
