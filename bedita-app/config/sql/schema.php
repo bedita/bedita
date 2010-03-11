@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* BeditaApp schema generated on: 2010-03-09 17:03:12 : 1268152752*/
+/* BeditaApp schema generated on: 2010-03-11 10:03:48 : 1268300688*/
 class BeditaAppSchema extends CakeSchema {
 	var $name = 'BeditaApp';
 
@@ -304,6 +304,13 @@ class BeditaAppSchema extends CakeSchema {
 		'object_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'category_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'indexes' => array('PRIMARY' => array('column' => array('object_id', 'category_id'), 'unique' => 1), 'objects_has_categories_FKIndex1' => array('column' => 'object_id', 'unique' => 0), 'objects_has_categories_FKIndex2' => array('column' => 'category_id', 'unique' => 0))
+	);
+	var $object_editors = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
+		'object_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
+		'user_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
+		'last_access' => array('type' => 'timestamp', 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'values' => NULL),
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'object_id_index' => array('column' => 'object_id', 'unique' => 0), 'user_id_index' => array('column' => 'user_id', 'unique' => 0))
 	);
 	var $object_properties = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
