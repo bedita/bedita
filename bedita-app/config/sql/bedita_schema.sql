@@ -88,10 +88,6 @@ CREATE TABLE annotations (
   FOREIGN KEY(id)
     REFERENCES objects(id)
       ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(object_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

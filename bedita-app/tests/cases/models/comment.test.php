@@ -80,10 +80,18 @@ class CommentTestCase extends BeditaTestCase {
 		$this->assertEqual($result, true);		
 		// check comment removed
 		$result = $this->Comment->findById($idComm);
-		$this->assertEqual($result, false);				
+		$this->assertEqual($result, false);
+
+		$beObject = ClassRegistry::init("BEObject");
+		$resObj = $beObject->findById($idComm);
+		$this->assertEqual($resObj, false);
+					
 		// check note removed
-		$result = $this->EditorNote->findById($idComm);
-		$this->assertEqual($result, false);				
+		$result = $this->EditorNote->findById($idNote);
+		$this->assertEqual($result, false);
+
+		$resObj = $beObject->findById($idNote);
+		$this->assertEqual($resObj, false);
 	}
 	
  	public   function __construct () {

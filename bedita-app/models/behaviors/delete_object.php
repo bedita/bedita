@@ -41,7 +41,7 @@ class DeleteObjectBehavior extends ModelBehavior {
 	 * contain base table
 	 */
 	var $config = array();
-	
+
 	function setup(&$model, $config = array()) {
 		$this->config[$model->name] = $config ;
 	}
@@ -96,6 +96,8 @@ class DeleteObjectBehavior extends ModelBehavior {
 
 		$st = ClassRegistry::init('SearchText');
 		$st->deleteAll("object_id=".$model->id) ;
+
+		$this->deleteAnnotations($model->id);
 		
 		return true ;
 	}
@@ -154,5 +156,34 @@ class DeleteObjectBehavior extends ModelBehavior {
 		}
 		
 	}
+
+	/**
+	 * delete annotation objects like Comment, EditorNote, etc... related to main object
+	 *
+	 * @param int $object_id main object
+	 */
+	private function deleteAnnotations($object_id) {
+		// delete annotations
+		$annotation = ClassRegistry::init("Annotation");
+		$aList = $annotation->find("list", array(
+			"fields" => array("id"),
+			"conditions" => array("object_id" => $object_id)
+		));
+
+		if (!empty($aList)) {
+			$o = ClassRegistry::init('BEObject');
+			foreach ($aList as $id) {
+				$modelClass = $o->getType($id);
+
+				$model = ClassRegistry::init($modelClass);
+
+				if (!$model->del($id)) {
+					throw new BeditaException(__("Error deleting annotation " . $modelClass, true), "id: ". $id);
+				}
+			}
+		}
+
+	}
+
 }
 ?>
