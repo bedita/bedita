@@ -166,9 +166,26 @@ $(document).ready(function(){
 	});
 
 
+{/literal}{if !empty($object.id)}{literal}
 
+	updateEditors();	
+
+{/literal}{/if}{literal}
 
 });
+
+
+function updateEditors() {
+
+	checkTime = {/literal}{$conf->concurrentCheckTime};{literal}
+	submitUrl = {/literal}"{$html->url('/pages/updateEditor/')}"+"{$object.id}";{literal}
+	
+	$("#editors").load(submitUrl);
+	chatTimer=setTimeout(updateEditors,checkTime);
+	
+}
+
+
 {/literal}
 </script>
 

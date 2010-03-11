@@ -93,7 +93,7 @@ $config['unitTestUserId'] = 1;
 $config['activityTimeout'] = 20;
 
 // concurrent users check - time interval, duration in seconds
-$config["concurrentCheckTime"] = 120;
+$config["concurrentCheckTime"] = 10000;
 
 
 /**

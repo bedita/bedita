@@ -30,6 +30,9 @@
  */
 class ObjectEditor extends BEAppModel
 {
+	
+	public $belongsTo = array('User'		) ;
+	
 	/**
 	 * Creates a new record or updates last access for a user/editor on an object
 	 *
@@ -54,11 +57,21 @@ class ObjectEditor extends BEAppModel
 	 * Remove old/expired items
 	 */
 	public function cleanup() {
-		// TODO: remove items with 'last_access' < now - 2 x update-period
-		// FIXME: don't work...
-		$ts = time() - 2 * Configure::read("concurrentCheckTime") * 1000;
+		$ts = time() - 2 * Configure::read("concurrentCheckTime") / 1000;
 		$this->deleteAll("last_access < '" . date("Y-m-d H:i:s", $ts) . "'");
 	}
+	
+	
+	/**
+	 * Load current editors
+	 */
+	public function loadEditors($object_id) {
 
+		return $this->find("all", array(
+				"conditions" => array("object_id" => $object_id)
+			)
+		);
+	}
+	
 }
 ?>
