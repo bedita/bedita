@@ -127,13 +127,6 @@ class BeAuthComponent extends Object {
 		}
 
 		$this->User->compact($u) ;
-				
-		// load history
-		$historyConf = Configure::read("history");
-		if (!empty($historyConf)) {
-			$group = ($historyConf["showDuplicates"] === false)? array("path", "area_id") : array();
-			$u["History"] = ClassRegistry::init("History")->getUserHistory($u["id"], $historyConf["sessionEntry"], $group);
-		}
 		
 		$this->user = $u;
 		
@@ -304,7 +297,10 @@ class BeAuthComponent extends Object {
 	/**
 	 * Create new user
 	 *
-	 * @param unknown_type $userData
+	 * @param array $userData
+	 * @param array $groups (contains groups' names)
+	 *
+	 * @return int id of user created
 	 */
 	public function createUser($userData, $groups=NULL) {
 		$user = ClassRegistry::init('User');
@@ -322,7 +318,7 @@ class BeAuthComponent extends Object {
 		$user->Behaviors->attach('Notify');
 		if(!$user->save($userData))
 			throw new BeditaException(__("Error saving user",true), $user->validationErrors);
-		return true;
+		return $user->id;
 	}
 	
 	public function checkConfirmPassword($password, $confirmedPassword) {
@@ -441,6 +437,12 @@ class BeAuthComponent extends Object {
 	
 	public function setSessionVars() {
 		if(isset($this->Session)) {
+			// load history
+			$historyConf = Configure::read("history");
+			if (!empty($historyConf)) {
+				$groupBy = ($historyConf["showDuplicates"] === false)? array("path", "area_id") : array();
+				$this->user["History"] = ClassRegistry::init("History")->getUserHistory($this->user["id"], $historyConf["sessionEntry"], $groupBy);
+			}
 			$this->Session->write($this->sessionKey, $this->user);
 			$this->Session->write(self::SESSION_INFO_KEY, array("userAgent" => $_SERVER['HTTP_USER_AGENT'], 
 				"ipNumber" => $_SERVER['REMOTE_ADDR'], "time" => time()));
