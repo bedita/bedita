@@ -433,6 +433,33 @@ class DbadminShell extends BeditaBaseShell {
 			}
 		}
 	}
+
+	public function checkConsistency() {
+		$beObj = ClassRegistry::init("BEObject");
+		$beObj->contain();
+		$all_objects = $beObj->find('all',array("fields"=>array('id')));
+		$this->out(sizeof($all_objects) . " objects found");
+		$deleted = 0;
+		$inconsistent = 0;
+		foreach($all_objects as $k => $data) {
+			$type = $beObj->getType($data['BEObject']['id']);
+			$model = ClassRegistry::init($type);
+			$count = $model->find("count",
+				array("conditions"=>array("$type.id"=>$data['BEObject']['id']))
+			);
+			if($count === 0) {
+				$inconsistent++;
+				$res = $this->in("0 count for obj " . $data['BEObject']['id'] . " ($type). Do you want to delete the object " . $data['BEObject']['id'] . "? [y/n]");
+				if($res == "y") {
+					$this->out("Deleting object " . $data['BEObject']['id'] . " ...");
+					$beObj->del($data['BEObject']['id']);
+					$this->out("Object " . $data['BEObject']['id'] . " deleted");
+					$deleted++;
+				}
+			}
+		}
+		$this->out("Objects not consistent: $inconsistent; objects deleted: $deleted");
+	}
 	
 	function help() {
 		$this->out('Available functions:');
@@ -481,6 +508,8 @@ class DbadminShell extends BeditaBaseShell {
         $this->out("    -type \t model type like 'document' or 'event' to import");
         $this->out(' ');
 		$this->out('9. updateStreamFields: update name (if empty), mime_type (if empty), size and hash_file fields of streams table');
+  		$this->out(' ');
+  		$this->out("10. checkConsistency: check objects for consistency on database");
   		$this->out(' ');
 	}
 	
