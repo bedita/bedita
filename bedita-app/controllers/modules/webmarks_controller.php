@@ -39,15 +39,7 @@ class WebmarksController extends ModulesController {
 			'count_annotation' => 'EditorNote'
 		);
 		$this->paginatedList($id, @$filter, $order, $dir, $page, $dim);
-		
-		$categories = $this->Category->find("all", array(
-			"conditions" => "Category.object_type_id=".$conf->objectTypes['link']["id"],
-			"contain" => array()
-			)
-		);
-		
-		$this->set("categories", $categories);
-		
+		$this->loadCategories($filter["object_type_id"]);
 	}
 	
 	public function view($id = null) {
@@ -204,6 +196,14 @@ class WebmarksController extends ModulesController {
 										"ERROR"	=> $this->referer() 
 										),
 				"checkMultiUrl"		=> 	array(
+										"OK"	=> $this->referer(),
+										"ERROR"	=> $this->referer() 
+										),
+				"assocCategory"	=> 	array(
+										"OK"	=> $this->referer(),
+										"ERROR"	=> $this->referer() 
+										),
+				"disassocCategory"	=> 	array(
 										"OK"	=> $this->referer(),
 										"ERROR"	=> $this->referer() 
 										)

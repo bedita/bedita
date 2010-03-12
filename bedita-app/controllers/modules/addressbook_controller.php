@@ -46,14 +46,7 @@ class AddressbookController extends ModulesController {
 		$filter["object_user"] = "";
 		$filter["count_annotation"] = "EditorNote";
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim); 
-
-		$categories = $this->Category->find("all", array(
-			"conditions" => "Category.object_type_id=".$conf->objectTypes['card']["id"],
-			"contain" => array()
-			)
-		);
-		
-		$this->set("categories", $categories);
+		$this->loadCategories($filter["object_type_id"]);
 	 }
 
 	function view($id = null) {
@@ -181,7 +174,15 @@ class AddressbookController extends ModulesController {
 			"addItemsToAreaSection"	=> 	array(
 							"OK"	=> $this->referer(),
 							"ERROR"	=> $this->referer() 
- 			)
+ 			),
+			"assocCategory"	=> 	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+			),
+			"disassocCategory"	=> 	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+			)
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;

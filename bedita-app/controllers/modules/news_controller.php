@@ -41,6 +41,7 @@ class NewsController extends ModulesController {
 		$filter["object_type_id"] = $conf->objectTypes['short_news']["id"];
 		$filter["count_annotation"] = array("Comment","EditorNote");
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
+		$this->loadCategories($filter["object_type_id"]);
 	 }
 
 	public function view($id = null) {
@@ -131,6 +132,14 @@ class NewsController extends ModulesController {
 				"changeStatusObjects"	=> 	array(
 										"OK"	=> $this->referer(),
 										"ERROR"	=> $this->referer() 
+										),
+				"assocCategory"	=> 	array(
+											"OK"	=> $this->referer(),
+											"ERROR"	=> $this->referer() 
+										),
+				"disassocCategory"	=> 	array(
+											"OK"	=> $this->referer(),
+											"ERROR"	=> $this->referer() 
 										)
 		) ;
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

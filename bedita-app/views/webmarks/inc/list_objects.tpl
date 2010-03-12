@@ -9,6 +9,8 @@ var URLBase = "{$html->url('index/')}" ;
 var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
 var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 var urlCheckMulti = "{$html->url('checkMultiUrl/')}";
+var urlCategoryAssoc = "{$html->url('assocCategory/')}";
+var urlCategoryDisassoc = "{$html->url('disassocCategory/')}";
 
 {literal}
 $(document).ready(function(){
@@ -37,6 +39,15 @@ $(document).ready(function(){
 	
 	$("#checkSelected").bind("click", function() {
 		$("#formObject").attr("action", urlCheckMulti) ;
+		$("#formObject").submit() ;
+	});
+
+	$("#assocObjectsCategory").click( function() {
+		$("#formObject").attr("action", urlCategoryAssoc) ;
+		$("#formObject").submit() ;
+	});
+	$("#disassocObjectsCategory").click( function() {
+		$("#formObject").attr("action", urlCategoryDisassoc) ;
 		$("#formObject").submit() ;
 	});
 });
@@ -136,17 +147,29 @@ $(document).ready(function(){
 		<input id="changestatusSelected" type="button" value=" {t}ok{/t} " />
 		
 		<hr />
-		
+
+		{if !empty($categories)}
+			{t}category{/t}
+			<select id="objCategoryAssoc" class="objCategoryAssociation" name="data[category]">
+			<option value="">--</option>
+			{foreach from=$categories item='category' key='key'}
+			<option value="{$key}">{$category}</option>
+			{/foreach}
+			</select>
+			<input id="assocObjectsCategory" type="button" value="{t}Add association{/t}" /> / <input id="disassocObjectsCategory" type="button" value="{t}Remove association{/t}" />
+			<hr />
+		{/if}
+
 		<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
 		
 		<hr />
-		
+{beDev}
 		{t}Export to{/t}:
 		<select name="export">
 			<option>Delicious(XBEL)</option>
 			<option>Excel</option>
 		</select>
-	
+{/beDev}
 	</li>
 </ul>
 	</div>

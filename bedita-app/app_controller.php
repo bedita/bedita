@@ -743,7 +743,75 @@ abstract class ModulesController extends AppController {
 		}
 		return trim($objectsListDesc, ",");
 	}
-	 	
+
+	public function assocCategory() {
+		$this->checkWriteModulePermission();
+		if(!empty($this->params['form']['objects_selected'])) {
+			$objects_to_assoc = $this->params['form']['objects_selected'];
+			$category_id = $this->data['category'];
+			$beObject = ClassRegistry::init("BEObject");
+			$categories = array();
+			$this->Transaction->begin() ;
+			foreach($objects_to_assoc as $k => $id) {
+				$object_type_id = $beObject->findObjectTypeId($id);
+				$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
+				$modelLoaded->contain(array("BEObject"=>array("Category")));
+				$obj = $modelLoaded->findById($id);
+				$category_present = false;
+				foreach($obj['Category'] as $key => $cat) {
+					if($cat['id'] == $category_id) {
+						$category_present = true;
+					}
+					$categories[$cat['id']] = $cat['id'];
+				}
+				if(!$category_present) {
+					$categories[$category_id] = $category_id;
+					unset($obj['Category']);
+					$obj['Category'] = $categories;
+					$modelLoaded->create();
+					$modelLoaded->save($obj);
+				}
+			}
+			$this->Transaction->commit() ;
+			$this->userInfoMessage(__("Added items association to category", true) . " - " . $category_id);
+			$this->eventInfo("added items association to category " . $category_id);
+		}
+	}
+
+	public function disassocCategory() {
+		$this->checkWriteModulePermission();
+		if(!empty($this->params['form']['objects_selected'])) {
+			$objects_to_assoc = $this->params['form']['objects_selected'];
+			$category_id = $this->data['category'];
+			$beObject = ClassRegistry::init("BEObject");
+			$categories = array();
+			$this->Transaction->begin() ;
+			foreach($objects_to_assoc as $k => $id) {
+				$object_type_id = $beObject->findObjectTypeId($id);
+				$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
+				$modelLoaded->contain(array("BEObject"=>array("Category")));
+				$obj = $modelLoaded->findById($id);
+				$category_present = false;
+				foreach($obj['Category'] as $key => $cat) {
+					if($cat['id'] == $category_id) {
+						$category_present = true;
+					} else {
+						$categories[$cat['id']] = $cat['id'];
+					}
+				}
+				if($category_present) {
+					unset($obj['Category']);
+					$obj['Category'] = $categories;
+					$modelLoaded->create();
+					$modelLoaded->save($obj);
+				}
+			}
+			$this->Transaction->commit() ;
+			$this->userInfoMessage(__("Removed items association to category", true) . " - " . $category_id);
+			$this->eventInfo("removed items association to category " . $category_id);
+		}
+	}
+
 	public function addItemsToAreaSection() {
 		$this->checkWriteModulePermission();
 		
@@ -936,6 +1004,17 @@ abstract class ModulesController extends AppController {
 			$this->Session->write('backFromView', rtrim($this->base,"/") . "/" . $modulePath);
 			$this->Session->write("prevNext", "");
 		}
+	}
+
+	protected function loadCategories($objectTypes = array()) {
+		$categoryModel = ClassRegistry::init("Category");
+		$categoryModel->Behaviors->disable('CompactResult');
+		$categories = $categoryModel->find("list", array(
+			"fields" => array("id","label"),
+			"conditions" => array("object_type_id" => $objectTypes)
+		));
+		$categoryModel->Behaviors->enable('CompactResult');
+		$this->set("categories",$categories);
 	}
 
 	protected function showCategories(BEAppModel $beModel) {

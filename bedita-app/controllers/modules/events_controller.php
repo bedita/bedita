@@ -40,6 +40,7 @@ class EventsController extends ModulesController {
 		$filter["object_type_id"] = $conf->objectTypes['event']["id"];
 		$filter["count_annotation"] = array("Comment","EditorNote");
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
+		$this->loadCategories($filter["object_type_id"]);
 	 }
 
 	public function view($id = null) {
@@ -134,6 +135,14 @@ class EventsController extends ModulesController {
 											"ERROR"	=> $this->referer() 
 										),
 				"changeStatusObjects"	=> 	array(
+											"OK"	=> $this->referer(),
+											"ERROR"	=> $this->referer() 
+										),
+				"assocCategory"	=> 	array(
+											"OK"	=> $this->referer(),
+											"ERROR"	=> $this->referer() 
+										),
+				"disassocCategory"	=> 	array(
 											"OK"	=> $this->referer(),
 											"ERROR"	=> $this->referer() 
 										)
