@@ -1,11 +1,5 @@
-{if ($session->check('Message.info'))}
-	<div class="message info">
-		{$session->flash('info')}
-	</div>
-{elseif ($session->check('Message.error'))}
-	<div class="message error">
-		{$session->flash('error')}
-	</div>
+{if $session->flash('info')}
+{elseif $session->flash('error')}
 {/if}
 
 {if $session->read("userToChangePwd")}

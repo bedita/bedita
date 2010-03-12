@@ -145,7 +145,13 @@ class BeHashComponent extends Object {
 		return true;
 
 	}
-	
+
+	/**
+	 * get hash_jobs row
+	 *
+	 * @param string $hash
+	 * @return array HashJob row
+	 */
 	public function getHashRow($hash) {
 		$hashModel = ClassRegistry::init("HashJob");
 		$hashRow = $hashModel->find("first", array(
@@ -157,13 +163,131 @@ class BeHashComponent extends Object {
 		);
 		// no hash found or no service_type defined or hash expired
 		if ( empty($hashRow["HashJob"]) || empty($hashRow["HashJob"]["service_type"]) || $hashRow["HashJob"]["status"] == "expired") {
-			$this->controller->Session->setFlash(__("Hash not valid or expired.",true), NULL, NULL, 'info');
+			$this->controller->Session->setFlash(__("Hash not valid or expired.",true), "message", array("class" => "info"), 'info');
 			return false;
 		}
 	
 		return $hashRow["HashJob"];	
 	}
-	
+
+	/**
+	 * user sign up registration
+	 *
+	 * @param array $data
+	 * @return array
+	 */
+	private function userSignUp($data) {
+		if (empty($data['User'])) {
+			throw new BeditaHashException(__("Error on sign up: no data",true));
+		}
+
+		if (empty($data['User']['email'])) {
+			throw new BeditaHashException(__("Error on sign up: an email is required",true));
+		}
+
+		if (!$this->controller->BeAuth->checkConfirmPassword($this->controller->params['form']['pwd'], $data['User']['passwd'])) {
+			throw new BeditaHashException(__("Passwords mismatch",true));
+		}
+
+		if (!empty($data["groups"])) {
+			$groups = $data["groups"];
+			unset($data["groups"]);
+		} else {
+			$groups = Configure::read('authorizedGroups');
+			if (empty($groups)) {
+				$groups = ClassRegistry::init("Group")->getList(array("backend_auth" => 0));
+			}
+		}
+
+		$data["User"]["valid"] = 0;
+
+		if (empty($data['User']['realname'])) {
+			$data['User']['realname'] = $data['User']['userid'];
+		}
+
+		try {
+			$user_id = $this->controller->BeAuth->createUser($data, $groups);
+		} catch (BeditaException $ex) {
+			throw new BeditaHashException($ex->getMessage(), $ex->getDetails());
+		}
+
+		if (!empty($data["Card"])) {
+			$data["Card"]["ObjectUser"]["card"][0]["user_id"] = $user_id;
+			$data["Card"]["ObjectUser"]["card"][0]["switch"] = "card";
+			if (empty($data["Card"]["email"])) {
+				$data["Card"]["email"] = $data["User"]["email"];
+			}
+			if (empty($data["Card"]["title"])) {
+				$data["Card"]["title"] = $data["User"]["realname"];
+				if (!empty($data["Card"]["name"])) {
+					$data["Card"]["title"] = $data["Card"]["name"] . " ";
+					if (!empty($data["Card"]["surname"])) {
+						$data["Card"]["title"] .= $data["Card"]["surname"];
+					}
+				} elseif (!empty($data["Card"]["surname"])) {
+					$data["Card"]["title"] = $data["Card"]["surname"];
+				}
+			}
+			if (!ClassRegistry::init("Card")->save($data["Card"])) {
+				throw new BeditaHashException(__("Error saving data", true));
+			}
+		}
+
+		$hash_job = ClassRegistry::init("HashJob");
+		$data["HashJob"]["user_id"] = $user_id;
+		$data["HashJob"]["command"] = 'activation';
+		$data["HashJob"]["hash"] = $hash_job->generateHash();
+		$data["HashJob"]["expired"] = $hash_job->getExpirationDate();
+		if (!$hash_job->save($data["HashJob"])) {
+			throw new BeditaException(__("Error generating hash confirmation for " . $user["User"]["userid"],true));
+		}
+
+		$mailParams = array(
+			"body" => $this->getNotifyText("userSignUp", "mail_body"),
+			"subject" => $this->getNotifyText("userSignUp", "subject"),
+			"viewsMsg" => $this->getNotifyText("userSignUp", "viewsMsg"),
+			"email" => $data["User"]["email"],
+			"params" => array(
+				"title" => $this->controller->viewVars["publication"]["public_name"],
+				"user" => $data["User"]["userid"],
+				"url" => Router::url("/hashjob/exec/" . $data["HashJob"]["hash"] . "/command:activation", true)
+			)
+		);
+
+		return $mailParams;
+	}
+
+	private function userSignUpActivation($data) {
+		$userModel = ClassRegistry::init("User");
+		$user = $userModel->find("first", array(
+			"conditions" => array("id" => $data["HashJob"]["user_id"]),
+			"contain" => array()
+		));
+		if (empty($user)) {
+			throw new BeditaHashException(__("Hash isn't valid or user doesn't exist.",true));
+		}
+
+		$user["User"]["valid"] = 1;
+
+		if (!$userModel->save($user)) {
+			throw new BeditaException(__("Error saving user.",true));
+		}
+
+		$mailParams = array(
+			"body" => $this->getNotifyText("userSignUpActivation", "mail_body"),
+			"subject" => $this->getNotifyText("userSignUpActivation", "subject"),
+			"viewsMsg" => $this->getNotifyText("userSignUpActivation", "viewsMsg"),
+			"email" => $user["User"]["email"],
+			"params" => array(
+				"user" => $user["User"]["realname"],
+				"title" => $this->controller->viewVars["publication"]["public_name"],
+				"url" => Router::url("/login", true)
+			)
+		);
+
+		return $mailParams;
+	}
+
 	/**
 	 * subscribe to a newsletter
 	 */
@@ -571,7 +695,7 @@ class BeHashComponent extends Object {
 		
 		if (!empty($mailParams["viewsMsg"])) {
 			$msg = $this->replacePlaceHolder($mailParams["viewsMsg"], $mailParams["params"]);
-			$this->controller->Session->setFlash($msg, NULL, NULL, 'info');
+			$this->controller->Session->setFlash($msg, "message", array("class" => "info"), 'info');
 			$this->controller->set("viewMsg", $msg);
 		}
 	}

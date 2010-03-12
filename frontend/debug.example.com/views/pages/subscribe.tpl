@@ -1,4 +1,5 @@
-{if !empty($mailgroups)}
+{if $what == "newsletter" && !empty($mailgroups)}
 	{$view->element('subscribe_newsletter')}
-{else}
+{elseif $what == "user"}
+	{$view->element('signup')}
 {/if}	

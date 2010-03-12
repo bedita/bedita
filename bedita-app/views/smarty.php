@@ -150,7 +150,7 @@
 		{
 			$this->sv_processedTpl = NULL;
 			// clears all assigned variables to the smarty class
-			$this->_smarty->clear_all_assign();
+			//$this->_smarty->clear_all_assign();
             $loadedHelpers = array();
             if ($this->helpers != false && $loadHelpers === true) {
                 $loadedHelpers = $this->_loadHelpers($loadedHelpers, $this->helpers);

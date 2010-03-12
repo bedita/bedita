@@ -1,11 +1,7 @@
 <div class="commentform">
 
-	{if ($session->check('Message.error'))}
-		<a name="error"></a>
-		<div class="message error">
-			{$session->flash('error')}
-		</div>
-	{/if}
+	<a name="error"></a>
+	{if $session->flash('error')}{/if}
 	
 	<h3>{t}Write a comment{/t}</h3>
 	

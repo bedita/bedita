@@ -80,8 +80,10 @@ class AdminController extends ModulesController {
 		}
 
 		if(!isset($this->data['User']['id'])) {
-			if (!$this->BeAuth->checkConfirmPassword($this->params['form']['pwd'], $this->data['User']['passwd']))
+			if (!$this->BeAuth->checkConfirmPassword($this->params['form']['pwd'], $this->data['User']['passwd'])) {
 				throw new BeditaException(__("Passwords mismatch",true));
+			}
+			$this->data['User']['passwd'] = trim($this->data['User']['passwd']);
 			$this->BeAuth->createUser($this->data, $userGroups);
 			$this->eventInfo("user ".$this->data['User']['userid']." created");
 			$this->userInfoMessage(__("User created",true));

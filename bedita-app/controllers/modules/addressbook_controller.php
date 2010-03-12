@@ -62,7 +62,7 @@ class AddressbookController extends ModulesController {
 		$this->Transaction->begin();
 		$kind = ($this->data['company']==0) ? 'person' : 'cmp';
 		if($kind == 'person') {
-			if(!empty($this->data['person']['name']) || !empty($this->data['person']['name'])) {
+			if(!empty($this->data['person']['name']) || !empty($this->data['person']['surname'])) {
 				$this->data['title'] = $this->data['person']['name']." ".$this->data['person']['surname'];
 			}
 			$this->data['birthdate'] = $this->data['person']['birthdate'];

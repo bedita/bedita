@@ -5,8 +5,6 @@
 	{/if}
 {else}
 	<div style="padding-top:20px;">
-		{if ($session->check('Message.error'))}
-			<p>{$session->flash('error')}</p>
-		{/if}
+		{if $session->flash('error')}{/if}
 	</div>
 {/if}

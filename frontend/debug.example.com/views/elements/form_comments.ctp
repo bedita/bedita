@@ -1,11 +1,7 @@
 <div class="commentform">
 
-	<?php if ($session->check('Message.error')):?>
-		<a name="error"></a>
-		<div class="message error">
-			<?php e($session->flash('error'));?>
-		</div>
-	<?php endif;?>
+	<a name="error"></a>
+	<?php $session->flash('error');?>
 	
 	<h3><?php __("Write a comment", false);?></h3>
 	

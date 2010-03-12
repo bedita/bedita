@@ -1323,6 +1323,7 @@ abstract class FrontendController extends AppController {
 				);
 			$this->set("mailgroups", $mailgroups);
 		}
+		$this->set("what", $what);
 	}
 	
 	/**

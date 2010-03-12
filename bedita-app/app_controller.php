@@ -100,7 +100,7 @@ class AppController extends Controller
 				'result' => self::ERROR), $errTrace);
 	}
 	
-	public function handleError($eventMsg, $userMsg, $errTrace) {
+	public function handleError($eventMsg, $userMsg, $errTrace, $usrMsgParams=array()) {
 		$this->log($errTrace);
 		// end transactions if necessary
 		if(isset($this->Transaction)) {
@@ -108,7 +108,9 @@ class AppController extends Controller
 				$this->Transaction->rollback();
 		}
 		$this->eventError($eventMsg);
-		$this->userErrorMessage($userMsg);
+		$layout = (!isset($usrMsgParams["layout"]))? "message" : $usrMsgParams["layout"];
+		$params = (!isset($usrMsgParams["params"]))? array("class" => "error") : $usrMsgParams["params"];
+		$this->userErrorMessage($userMsg, $layout, $params);
 	}
 	
 	public function setResult($r) {
@@ -281,24 +283,24 @@ class AppController extends Controller
 	 * User error message (will appear in messages div)
 	 * @param string $msg
 	 */
-	protected function userErrorMessage($msg) {
-		$this->Session->setFlash($msg, NULL, NULL, 'error');
+	protected function userErrorMessage($msg, $layout="message", $params=array("class" => "error")) {
+		$this->Session->setFlash($msg, $layout, $params, 'error');
 	}
 
 	/**
 	 * User warning message (will appear in messages div)
 	 * @param string $msg
 	 */
-	protected function userWarnMessage($msg) {
-		$this->Session->setFlash($msg, NULL, NULL, 'warn');
+	protected function userWarnMessage($msg, $layout="message", $params=array("class" => "warn")) {
+		$this->Session->setFlash($msg, $layout, $params, 'warn');
 	}
 
 	/**
 	 * User info message (will appear in messages div)
 	 * @param string $msg
 	 */
-	protected function userInfoMessage($msg) {
-		$this->Session->setFlash($msg, NULL, NULL, 'info');
+	protected function userInfoMessage($msg, $layout="message", $params=array("class" => "info")) {
+		$this->Session->setFlash($msg, $layout, $params, 'info');
 	}
 	
 	/**

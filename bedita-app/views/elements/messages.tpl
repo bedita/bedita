@@ -52,26 +52,8 @@ $(document).ready ( function () {literal} { {/literal}
 
 
 <div id="messagesDiv">
-
-	{if ($session->check('Message.error'))}
-	<div class="message error">
-		<h2>{t}Error{/t}</h2>
-		<p>{$session->flash('error')}</p>
-	</div>
+	{if $session->flash('info')}
+	{elseif $session->flash('warn')}
+	{elseif $session->flash('error')}
 	{/if}
-	
-	{if ($session->check('Message.warn'))}
-	<div class="message warn">
-		<h2>{t}Warning{/t}</h2>
-		<p>{$session->flash('warn')}</p>
-	</div>
-	{/if}
-	
-	{if ($session->check('Message.info'))}
-	<div class="message info">
-		<h2>{t}Notice{/t}</h2>
-		<p>{$session->flash('info')}</p>
-	</div>
-	{/if}
-	
 </div>

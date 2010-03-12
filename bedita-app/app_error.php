@@ -84,7 +84,8 @@ class AppError extends ErrorHandler {
 	}
 
 	public function handleAjaxException(array $messages) {
-		$this->controller->handleError($messages['details'], $messages['msg'], $this->errorTrace);
+		$usrMsgParams = array("layout" => "", "params" => array());
+		$this->controller->handleError($messages['details'], $messages['msg'], $this->errorTrace, $usrMsgParams);
 		if (!empty($messages['output'])) {
 			if ($messages['output'] == "json") {
 				header("Content-Type: application/json");

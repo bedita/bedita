@@ -330,7 +330,7 @@ class PagesController extends AppController {
 				$this->data['title'] = $linkModel->readHtmlTitle($this->data['url']);
 			}
 			if(!$linkModel->save($this->data)) {
-				throw new BeditaException(__("Error saving link", true), $linkModel->validationErrors);
+				throw new BeditaAjaxException(__("Error saving link", true), $linkModel->validationErrors);
 			}
 		}
  		$this->Transaction->commit() ;
