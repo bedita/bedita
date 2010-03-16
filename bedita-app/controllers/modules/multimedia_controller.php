@@ -81,7 +81,7 @@ class MultimediaController extends ModulesController {
 		$parents_id = array();
 		if($id) {
 			$objEditor = ClassRegistry::init("ObjectEditor");
-			$objEditor->cleanup();
+			$objEditor->cleanup($id);
 			$model = ClassRegistry::init($this->BEObject->getType($id));
 			$model->containLevel("detailed");
 			if(!($obj = $model->findById($id))) {
@@ -121,12 +121,12 @@ class MultimediaController extends ModulesController {
 				$objEditor->updateAccess($id, $this->BeAuth->user["id"]);
 			}
 
+			$this->set('objectProperty', $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $model->name . ".id")));
 		} else {
 			Configure::write("defaultStatus", "on"); // set default ON for new objects
 		}
 
 		// data for template
-		$this->set('objectProperty', $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $model->name . ".id")));
 		$this->set('object',	@$obj);
 		$this->set('imagePath',	@$imagePath);
 		$this->set('imageUrl',	@$imageURL);
