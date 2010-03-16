@@ -914,7 +914,7 @@ abstract class ModulesController extends AppController {
 		$name = Inflector::underscore($beModel->name);
 		if(isset($id)) {
 			$objEditor = ClassRegistry::init("ObjectEditor");
-			$objEditor->cleanup();
+			$objEditor->cleanup($id);
 			
 			$beModel->containLevel("detailed");
 			if(!($obj = $beModel->findById($id))) {

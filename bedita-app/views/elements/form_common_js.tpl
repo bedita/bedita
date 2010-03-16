@@ -169,7 +169,7 @@ $(document).ready(function(){
 {/literal}{if !empty($object.id)}{literal}
 
 	//Uncomment to start concurrent user check
-	//updateEditors();	
+	updateEditors();	
 
 {/literal}{/if}{literal}
 

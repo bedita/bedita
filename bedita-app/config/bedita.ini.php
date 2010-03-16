@@ -92,8 +92,8 @@ $config['unitTestUserId'] = 1;
 // activity timeout used in Home/"connected user" time duration in minutes
 $config['activityTimeout'] = 20;
 
-// concurrent users check - time interval, duration in seconds
-$config["concurrentCheckTime"] = 10000;
+// concurrent users check - time interval, duration in milliseconds
+$config["concurrentCheckTime"] = 20000;
 
 
 /**
