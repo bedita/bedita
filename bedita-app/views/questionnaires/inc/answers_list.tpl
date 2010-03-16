@@ -86,7 +86,7 @@ $(document).ready(function(){
 </script>
 {/literal}
 
-<div style="display:none" class="multiple single_radio single_pulldown checkopen degree">
+<div style="display:none" class="multiple single_radio single_pulldown checkopen degree fill">
 
 	{t}answers{/t}:
 	
@@ -95,7 +95,7 @@ $(document).ready(function(){
 
 		{foreach from=$object.QuestionAnswer item="answer" name="fca"}
 			
-			{include file="./inc/single_answer.tpl" i=$smarty.foreach.fca.index it=$smarty.foreach.fca.iteration}	
+			{include file="./inc/single_answer.tpl" i=$smarty.foreach.fca.index it=$smarty.foreach.fca.iteration  question_type=$object.question_type}	
 
 		{/foreach}
 	
@@ -103,7 +103,7 @@ $(document).ready(function(){
 
 		{section name="w" loop=3}
 
-			{include file="./inc/single_answer.tpl" i=$smarty.section.w.index it=$smarty.section.w.iteration}	
+			{include file="./inc/single_answer.tpl" i=$smarty.section.w.index it=$smarty.section.w.iteration  question_type=$object.question_type}	
 
 		{/section}
 	{/if}

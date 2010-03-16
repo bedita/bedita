@@ -15,12 +15,20 @@
 		<!--
 		<input type="button" class="toggleMCE" rel="a{$answer.id|default:$it}" style="font-size:10px !important" value="html" />
 		-->
+
+		{if $question_type == "fill"}
 		
-		<input type="checkbox" name="data[QuestionAnswer][{$i}][correct]" value="1" {if @$answer.correct == 1} checked="checked"{/if}> &nbsp;{t}correct answer{/t}
-		{bedev}
-			&nbsp;&nbsp;
-			<input type="button" value="rinforzo">
-		{/bedev}
+			{t}correct answer{/t}: <input type="text" name="data[QuestionAnswer][{$i}][correct_value]" value="{$answer.correct_value|default:''}" />
+		
+		{else}
+		
+			<input type="checkbox" name="data[QuestionAnswer][{$i}][correct]" value="1" {if @$answer.correct == 1} checked="checked"{/if}> &nbsp;{t}correct answer{/t}
+			
+		{/if}
+		
 		</p>
+		
+		
+		
 	</td>
 </tr>

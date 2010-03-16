@@ -72,7 +72,18 @@
 		});
 		return htmlBlock;
 	}
-	
+
+	function fillPreview() {
+		var checkElement = "<input type=\"checkbox\" name=\"p\">";
+		var selectElement = "<select name=\"\"><option>1</option><option>2</option><option>3</option><option>4</option></select><br />"
+		var htmlBlock = "";
+		$("#answers textarea").each(function() {
+			htmlBlock += checkElement + " " + $(this).val() + selectElement;
+		});
+		return htmlBlock;
+	}
+		
+			
 	function showAnswers() {
 		$(".answers div").hide();
 		$(".answers div :input").attr("disabled", "disabled");

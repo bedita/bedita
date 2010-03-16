@@ -11,6 +11,7 @@
 	<div class="p_freetext"></div>
 	<div class="p_checkopen"></div>
 	<div class="p_degree"></div>
+	<div class="p_fill"></div>
 
 </div>
 
