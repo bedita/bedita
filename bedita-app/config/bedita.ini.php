@@ -296,7 +296,8 @@ $config['questionTypes'] = array(
 	"single_pulldown" => "pulldown single choice",
 	"freetext" => "open answer",
 	"checkopen" => "check open",
-	"degree" => "degree"
+	"degree" => "degree",
+	"fill" => "fill in the blanks"
 );
 
 /**
