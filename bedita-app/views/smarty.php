@@ -242,7 +242,10 @@
 					}
 				}
 			}
-			
+
+			// Add by BEdita team (modify) - force smarty template dir to _sv_template_dir
+			$this->_smarty->template_dir = $this->_sv_template_dir;
+
 			return $out;
 		}
 
