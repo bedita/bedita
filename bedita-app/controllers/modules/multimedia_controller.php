@@ -68,7 +68,7 @@ class MultimediaController extends ModulesController {
 		}
 		$this->params['toolbar'] = &$bedita_items['toolbar'] ;
 		// template data
-		$this->set('areasectiontree',$this->BeTree->getSectionsTree());
+		$this->set('tree',$this->BeTree->getSectionsTree());
 		$this->set('objects', $bedita_items['items']);
 		$this->setSessionForObjectDetail($bedita_items['items']);
 	 }
@@ -78,7 +78,10 @@ class MultimediaController extends ModulesController {
 		$this->setup_args(array("id", "integer", &$id)) ;
 		// Get object by $id
 		$obj = null ;
+		$parents_id = array();
 		if($id) {
+			$objEditor = ClassRegistry::init("ObjectEditor");
+			$objEditor->cleanup();
 			$model = ClassRegistry::init($this->BEObject->getType($id));
 			$model->containLevel("detailed");
 			if(!($obj = $model->findById($id))) {
@@ -102,12 +105,28 @@ class MultimediaController extends ModulesController {
 			
 			$imagePath 	= $this->BeFileHandler->path($id) ;
 			$imageURL 	= $this->BeFileHandler->url($id) ;
-			
-			$this->set('objectProperty', $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $model->name . ".id")));
+
+			$treeModel = ClassRegistry::init("Tree");
+			$parents_id = $treeModel->getParent($id) ;
+			if($parents_id === false)
+				$parents_id = array() ;
+			elseif(!is_array($parents_id))
+				$parents_id = array($parents_id);
+
+			$previews = $this->previewsForObject($parents_id, $id, $obj['status']);
+
+			$this->historyItem["object_id"] = $id;
+			// concurrent access
+			if($this->modulePerms & BEDITA_PERMS_MODIFY) {
+				$objEditor->updateAccess($id, $this->BeAuth->user["id"]);
+			}
+
 		} else {
 			Configure::write("defaultStatus", "on"); // set default ON for new objects
 		}
+
 		// data for template
+		$this->set('objectProperty', $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $model->name . ".id")));
 		$this->set('object',	@$obj);
 		$this->set('imagePath',	@$imagePath);
 		$this->set('imageUrl',	@$imageURL);
@@ -115,6 +134,8 @@ class MultimediaController extends ModulesController {
 		$this->User->displayField = 'userid';
 		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
+		$this->set('tree', $this->BeTree->getSectionsTree());
+		$this->set('parents',	$parents_id);
 		$this->setSessionForObjectDetail();
 	 }
 

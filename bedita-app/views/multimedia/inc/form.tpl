@@ -15,6 +15,8 @@
 
 {$view->element('form_title_subtitle')}
 
+{$view->element('form_tree')}
+
 {include file="inc/form_mediatype.tpl"}
 
 {$view->element('form_file')}

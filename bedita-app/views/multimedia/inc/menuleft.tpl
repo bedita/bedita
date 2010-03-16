@@ -21,6 +21,14 @@ Menu a SX valido per tutte le pagine del controller.
 
 {$view->element('export')}
 
+	{if (!empty($view->action)) && $view->action eq "index"}
+	<div class="insidecol publishingtree">
+
+		{$view->element('tree')}
+
+	</div>
+	{/if}
+
 {$view->element('user_module_perms')}
 
 </div>

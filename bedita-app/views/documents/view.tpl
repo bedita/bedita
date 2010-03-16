@@ -13,7 +13,7 @@
 
 {literal}
 <script type="text/javascript">
-    $(document).ready(function(){	
+    $(document).ready(function(){
 		openAtStart("#title,#long_desc_langs_container");
     });
 </script>
@@ -27,7 +27,7 @@
 {include file="inc/menuleft.tpl"}
 
 <div class="head">
-	
+
     <h1>{if !empty($object)}{$object.title|default:"<i>[no title]</i>"}{else}<i>[{t}New item{/t}]</i>{/if}</h1>
 </div>
 
@@ -41,7 +41,6 @@
 </div>
 
 {$view->element('menuright')}
-	
 
-	
-	
+
+

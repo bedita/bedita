@@ -31,7 +31,7 @@
 class Image extends BeditaStreamModel
 {
 	var $actsAs = array();
-	public $objectTypesGroups = array("multimedia");
+	public $objectTypesGroups = array("multimedia", "leafs", "related");
 	
 	/**
 	 * Set image width and height reading from file
