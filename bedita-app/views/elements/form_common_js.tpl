@@ -177,9 +177,10 @@ $(document).ready(function(){
 
 
 function updateEditors() {
-
-	checkTime = {/literal}{$conf->concurrentCheckTime};{literal}
-	submitUrl = {/literal}"{$html->url('/pages/updateEditor/')}"+"{$object.id}";{literal}
+	{/literal}
+	var checkTime = {$conf->concurrentCheckTime};
+	var submitUrl = "{$html->url('/pages/updateEditor/')}"+"{$object.id|default:''}";
+	{literal}
 	
 	$("#editors").load(submitUrl);
 	chatTimer=setTimeout(updateEditors,checkTime);
