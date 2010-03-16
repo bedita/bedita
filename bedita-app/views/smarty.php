@@ -148,9 +148,13 @@
 		
 		function _render($___viewFn, $___data_for_view, $loadHelpers = true, $cached = false)
 		{
+			// Add by BEdita team (modify) - used to restore smarty vars
+			$prevSmartyVars = $this->_smarty->get_template_vars();
+
 			$this->sv_processedTpl = NULL;
 			// clears all assigned variables to the smarty class
-			//$this->_smarty->clear_all_assign();
+			$this->_smarty->clear_all_assign();
+			
             $loadedHelpers = array();
             if ($this->helpers != false && $loadHelpers === true) {
                 $loadedHelpers = $this->_loadHelpers($loadedHelpers, $this->helpers);
@@ -187,10 +191,13 @@
 			// alright, let's load the data variables, being set by the controller
 			// this is pretty cheezy really. :D
 			// all by refs, to save on memory space
-			foreach(array_keys($___data_for_view) as $k)
-				$this->_smarty->assign_by_ref($k, $___data_for_view[$k]);
+			foreach(array_keys($___data_for_view) as $k) {
+				if (!is_object($k)) {
+					$this->_smarty->assign_by_ref($k, $___data_for_view[$k]);
+				}
+			}
 			$this->_smarty->assign_by_ref("view", $this);
-
+					
 			// Add by BEdita team (modify) - giangi
 			if($this->sv_processedTpl !== NULL)
 				$out = $this->_smarty->fetch('svck:' . basename($___viewFn));
@@ -219,10 +226,62 @@
 	                $cache->cache($___viewFn, $out, $cached);
 	            }
 	        }
-	        
+
+
+			// Add by BEdita team (modify) - unset local var (like $params in View::element)
+			foreach ($___data_for_view as $key => $value) {
+				if (!key_exists($key, $prevSmartyVars) && !key_exists($key, $this->loaded)) {
+					$this->_smarty->clear_assign($key);
+				}
+			}
+			// Add by BEdita team (modify) - restore smarty vars setted before clear_all_assign called
+			if (!empty($prevSmartyVars)) {
+				foreach ($prevSmartyVars as $k => $v) {
+					if ($this->_smarty->get_template_vars($k) === null) {
+						$this->_smarty->assign_by_ref($k, $prevSmartyVars[$k]);
+					}
+				}
+			}
+			
 			return $out;
 		}
-		
+
+
+		/**
+		 * Add by BEdita team
+		 *
+		 * Override View::set to set Smarty var too
+		 *
+		 * @param mixed $one see View::set (cake/libs/view/view.php)
+		 * @param mixed $two see View::set
+		 * @return unknow
+		 */
+		public function set($one, $two = null) {
+			$data = null;
+			if (is_array($one)) {
+				if (is_array($two)) {
+					$data = array_combine($one, $two);
+				} else {
+					$data = $one;
+				}
+			} else {
+				$data = array($one => $two);
+			}
+
+			if ($data == null) {
+				return false;
+			}
+
+			foreach ($data as $name => $value) {
+				if ($name == 'title') {
+					$this->pageTitle = $value;
+				} else {
+					$this->viewVars[$name] = $value;
+					$this->_smarty->assign_by_ref($name, $this->viewVars[$name]);
+				}
+			}
+		}
+
 		function & getSmarty()
 		{
 			return ($this->smarty);
