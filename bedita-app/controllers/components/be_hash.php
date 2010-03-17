@@ -206,7 +206,7 @@ class BeHashComponent extends Object {
 		}
 
 		try {
-			$user_id = $this->controller->BeAuth->createUser($data, $groups);
+			$user_id = $this->controller->BeAuth->createUser($data, $groups, false);
 		} catch (BeditaException $ex) {
 			throw new BeditaHashException($ex->getMessage(), $ex->getDetails());
 		}

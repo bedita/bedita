@@ -299,10 +299,11 @@ class BeAuthComponent extends Object {
 	 *
 	 * @param array $userData
 	 * @param array $groups (contains groups' names)
+	 * @param boolean $notify (send newUser backend notify)
 	 *
 	 * @return int id of user created
 	 */
-	public function createUser($userData, $groups=NULL) {
+	public function createUser($userData, $groups=NULL, $notify=true) {
 		$user = ClassRegistry::init('User');
 		$user->containLevel("minimum");
 		$u = $user->findByUserid($userData['User']['userid']);
@@ -315,7 +316,9 @@ class BeAuthComponent extends Object {
 		}
 		
 		$this->userGroupModel($userData, $groups);
-		$user->Behaviors->attach('Notify');
+		if ($notify) {
+			$user->Behaviors->attach('Notify');
+		}
 		if(!$user->save($userData))
 			throw new BeditaException(__("Error saving user",true), $user->validationErrors);
 		return $user->id;
