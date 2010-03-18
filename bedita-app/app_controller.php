@@ -884,24 +884,46 @@ abstract class ModulesController extends AppController {
 		$this->data['fixed'] = 0;
 		$this->save();
 	}
-/*
-	public function autosave() {
-		$this->layout = null;
-		if( !empty($this->data['status']) && ( ($this->data['status']=='draft') || ($this->data['status']=='off') ) ) {
-			try {
-				if(empty($this->data['title'])) {
-					$this->data['title'] = 'Draft ' . date("m.d.Y G:i:s");
-				}
-				$this->save();
-			} catch(BeditaException $ex) {
-				$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();
-				$this->log($errTrace);
-				$this->setResult(self::ERROR);
+
+	protected function checkAutoSave() {
+		
+		$new = (empty($this->data['id'])) ? true : false ;
+		$beObject = ClassRegistry::init("BEObject");
+		if(!$new) {
+			$objectId = $this->data['id'];
+			$status = $beObject->field("status", "id = $objectId");
+			if($status != "draft") {
+				throw new BeditaException(__("Autosave: bad status", true));
+			}
+			
+			// check perms on object/module
+		 	$user = $this->Session->read("BEAuthUser");
+			$permission = ClassRegistry::init('Permission');
+			if(!$permission->isWritable($objectId, $user)) {
+				throw new BeditaException(__("Autosave: no write permission", true));
+			}
+			
+			// check editors
+			$objectEditor = ClassRegistry::init("ObjectEditor"); 
+			$objectEditor->cleanup($objectId);
+			$res = $objectEditor->loadEditors($objectId);
+			if(count($res) > 1) {
+				throw new BeditaException(__("Autosave: other editors present", true));
 			}
 		}
-		$this->render(null, null, VIEWS."elements/autosave.tpl");
+		
+		if(!($this->modulePerms & BEDITA_PERMS_MODIFY)) {
+			throw new BeditaException(__("Autosave: no module permission", true));
+		}
 	}
-*/
+	
+	public function autoSaveObject(BEAppObjectModel $model) {
+		
+		$model->Behaviors->disable('RevisionObject');
+		$this->saveObject($model);
+	 	$model->Behaviors->enable('RevisionObject');	
+	}
+
 	protected function viewObject(BEAppModel $beModel, $id = null) {
 		if(Configure::read("langOptionsIso") == true) {
 			Configure::load('langs.iso') ;

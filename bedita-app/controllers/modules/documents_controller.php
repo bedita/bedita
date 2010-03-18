@@ -58,7 +58,16 @@ class DocumentsController extends ModulesController {
 		$this->eventInfo("document [". $this->data["title"]."] saved");
 	 }
 
-	public function delete() {
+	public function autosave() {
+		$this->checkAutoSave();
+		$this->Transaction->begin();
+		$this->autoSaveObject($this->Document);
+	 	$this->Transaction->commit() ;
+		// TODO: msg to user?
+	 }
+	 
+	 
+	 public function delete() {
 		$this->checkWriteModulePermission();
 		$objectsListDeleted = $this->deleteObjects("Document");
 		$this->userInfoMessage(__("Documents deleted", true) . " -  " . $objectsListDeleted);
@@ -146,8 +155,12 @@ class DocumentsController extends ModulesController {
 			"disassocCategory"	=> 	array(
 							"OK"	=> $this->referer(),
 							"ERROR"	=> $this->referer() 
-							)
-		);
+							),
+			"autosave"	=> 	array(
+							"OK"	=> "/documents/view/".@$this->Document->id,
+							"ERROR"	=> $this->referer()
+							),
+			);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;
 	}
