@@ -108,7 +108,7 @@ class BeLangTextComponent extends Object {
 									if($key == "title") {
 										$object["languages"][$object["lang"]][$key] = $object[$key];
 									}
-									if($key != "status") {
+									if($key != "status" && !empty($object["LangText"][$key][$lang])) {
 										$object[$key] = $object["LangText"][$key][$lang];
 									}
 								}
