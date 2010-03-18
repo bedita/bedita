@@ -40,7 +40,8 @@ class Link extends BEAppObjectModel {
 															"UserModified", 
 															"RelatedObject",
 															"Category",
-															"Annotation")),
+															"Annotation",
+															"Alias")),
 
 				"default" => array("BEObject" => array("ObjectType", "RelatedObject", "Category", "Annotation")),
 

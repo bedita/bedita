@@ -42,7 +42,8 @@ class Questionnaire extends BeditaContentModel
 															"LangText",
 															"RelatedObject",
 															"Annotation",
-															"Category"
+															"Category",
+															"Alias"
 															),
 									),
 				"default" => array("BEObject" => array("ObjectProperty", 

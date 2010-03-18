@@ -39,7 +39,8 @@ class Author extends BEAppObjectModel
 				"detailed" =>  array("BEObject" => array("ObjectType", 
 															"UserCreated", 
 															"UserModified", 
-															"RelatedObject")),
+															"RelatedObject",
+															"Alias")),
 
        			"default" => array("BEObject" => array("ObjectType", "RelatedObject" )),
 

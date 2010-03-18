@@ -43,7 +43,8 @@ class ShortNews extends BeditaContentModel
 													"LangText",
 													"RelatedObject",
 													"Category",
-													"Annotation")),
+													"Annotation",
+													"Alias")),
 		
 		       "default" => array("BEObject" => array("ObjectProperty", 
 							"LangText", "ObjectType", 

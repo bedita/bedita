@@ -40,7 +40,8 @@ class Section extends BeditaCollectionModel
 										"UserModified", 
 										"Permissions",
 										"ObjectProperty",
-										"LangText")),
+										"LangText",
+										"Alias")),
 
        			"default" => array("BEObject" => array("ObjectProperty", 
 									"LangText", "ObjectType")),
