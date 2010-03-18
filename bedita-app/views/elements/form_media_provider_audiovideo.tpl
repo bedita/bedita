@@ -16,8 +16,8 @@ function showResponse(data) {
 	    	tmp[countFile++] = entry['filename'];
 	    });
 	    // clear input form
-	    $("#uploadMediaProvider").find("input[@type=text]").attr("value", "");
-	    $("#uploadMediaProvider").find("input[@type=file]").attr("value", "");
+	    $("#uploadMediaProvider").find("input[type=text]").attr("value", "");
+	    $("#uploadMediaProvider").find("input[type=file]").attr("value", "");
 	    $("#uploadMediaProvider").find("textarea").attr("value", "");
 		commitFileUpload(tmp);
 	}
@@ -38,7 +38,7 @@ function showResponseMedia(data) {
     	var tmp = new Array(data['filename']) ;
     	commitFileUpload(tmp);
     	
-    	$("#uploadMediaProvider input[@type='text']").attr("value", "") ;
+    	$("#uploadMediaProvider input[type='text']").attr("value", "") ;
     }
 }
 
@@ -69,30 +69,30 @@ $(document).ready(function() {
     });
 	
 	/* image/video/audio switch - xho */
-	$("input[@name='itemType']").change(function ()
+	$("input[name='itemType']").change(function ()
 	{
-		if ( $("input[@value='image']").is(":checked") )
+		if ( $("input[value='image']").is(":checked") )
 		{
 			$("#addAudioForm").hide();
 			$("#addVideoForm").hide();
 			$("#addImageForm").show();
 			$("#addOtherForm").hide();
 		}
-		else if ( $("input[@value='video']").is(":checked") )
+		else if ( $("input[value='video']").is(":checked") )
 		{
 			$("#addAudioForm").hide();
 			$("#addImageForm").hide();
 			$("#addVideoForm").show();
 			$("#addOtherForm").hide();
 		}
-		else if ( $("input[@value='audio']").is(":checked") )
+		else if ( $("input[value='audio']").is(":checked") )
 		{
 			$("#addVideoForm").hide();
 			$("#addImageForm").show();
 			$("#addAudioForm").hide();
 			$("#addOtherForm").hide();
 		}
-		else if ( $("input[@value='other']").is(":checked") )
+		else if ( $("input[value='other']").is(":checked") )
 		{
 			$("#addAudioForm").hide();
 			$("#addVideoForm").hide();

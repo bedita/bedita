@@ -10,12 +10,12 @@ $(document).ready(function(){
 		return false;
 	});
 
-	$("input[@type=text]").bind("keyup", function(){
+	$("input[type=text]").bind("keyup", function(){
 		var text = $(this).val();
 		if (jQuery.trim(text) == "") {
-	   		$(this).parent().siblings().find("input[@type=submit]").attr("disabled", "disabled");
+	   		$(this).parent().siblings().find("input[type=submit]").attr("disabled", "disabled");
 		} else {
-	   		$(this).parent().siblings().find("input[@type=submit]").attr("disabled", "");
+	   		$(this).parent().siblings().find("input[type=submit]").attr("disabled", "");
 	    }
 	});
 	
@@ -44,7 +44,7 @@ $(document).ready(function(){
 				<td>
 					<input type="text" style="width:220px" name="data[label]" value="{$cat.label}" class="{literal}{required:true}{/literal}"/>
 				</td>
-				<td>
+				<td style="white-space:nowrap;">
 				
 					<input type="radio" name="data[status]" value="on" {if $cat.status == "on"}checked="true"{/if}/>on
 					&nbsp;
@@ -62,7 +62,7 @@ $(document).ready(function(){
 					</select>
 				</td>
 				<td>{$cat.id}</td>
-				<td>
+				<td style="white-space:nowrap; ">
 					<input type="hidden" name="data[id]" value="{$cat.id}"/>
 					<input type="hidden" name="data[object_type_id]" value="{$object_type_id}"/>
 					<input type="submit" value=" {t}save{/t} "/>
@@ -99,7 +99,7 @@ $(document).ready(function(){
 			</tr>
 			<tr>
 				<td><input type="text" style="width:220px" name="data[label]" value="" /></td>
-				<td>
+				<td style="white-space:nowrap; ">
 					<input type="radio" name="data[status]" value="on" checked="true"/>on
 					&nbsp;
 					<input type="radio" name="data[status]" value="off"/>off
@@ -112,7 +112,7 @@ $(document).ready(function(){
 							{/foreach}
 						</select>
 				</td>
-				<td style="width:140px; text-align:right">
+				<td style="white-space:nowrap; width:140px; text-align:right">
 					<input type="hidden" name="data[object_type_id]" value="{$object_type_id}"/>
 					<input type="submit" style="width:120px" value=" {t}save{/t} " />
 				</td>

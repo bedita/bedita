@@ -6,11 +6,11 @@ var urlAddObjToAssQuestion = "{$html->url('/questionnaires/loadQuestionAjax')}";
 
 function questionRefreshButton() {
 	$("#loadQuestion").hide();
-	$("#questionAssociated").find("input[@name='details']").click(function() {
+	$("#questionAssociated").find("input[name='details']").click(function() {
 		location.href = $(this).attr("rel");
 	});
 	
-	$("#questionAssociated").find("input[@name='remove']").click(function() {
+	$("#questionAssociated").find("input[name='remove']").click(function() {
 		tableToReorder = $(this).parents("table");
 		$(this).parents("tr").remove();
 		tableToReorder.fixItemsPriority();

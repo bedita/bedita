@@ -3,7 +3,7 @@
 var urlToSearch = "{$html->url('/home/search')}" 
 {literal}
 function loadSearch() {
-	$("#searchResult").load(urlToSearch, {searchstring: $("input[@name='searchstring']").val()}, function() {
+	$("#searchResult").load(urlToSearch, {searchstring: $("input[name='searchstring']").val()}, function() {
 			
 	});
 }
@@ -14,7 +14,7 @@ $(document).ready(function() {
 		loadSearch();
 	});
 	
-	$("input[@name='searchstring']").keypress(function(event) {
+	$("input[name='searchstring']").keypress(function(event) {
 		if (event.keyCode == 13 && $(this).val() != "") {
 			event.preventDefault();
 			loadSearch();

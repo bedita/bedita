@@ -45,9 +45,9 @@ function submitSubscribers(url) {
 	$.post(url,
 		{
 			'objects_selected[]': arrVal,
-			'operation': $("select[@name=operation]").val(),
-			'destination': $("select[@name=destination]").val(),
-			'newStatus': $("select[@name=newStatus]").val()
+			'operation': $("select[name=operation]").val(),
+			'destination': $("select[name=destination]").val(),
+			'newStatus': $("select[name=newStatus]").val()
 		},
 		function(htmlcode) {
 			$("#subscribers").html(htmlcode);

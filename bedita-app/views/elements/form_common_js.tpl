@@ -35,15 +35,15 @@ $(document).ready(function(){
 		{literal}
 	});
 	
-	$("div.insidecol input[@name='save']").click(function() {
+	$("div.insidecol input[name='save']").click(function() {
 		$("#updateForm").submit();
 	});
 	
-	$("div.insidecol input[@name='clone']").click(function() {
+	$("div.insidecol input[name='clone']").click(function() {
 		$("#updateForm").attr("action","{/literal}{$html->url('/')}{$submiturl}{literal}/cloneObject");
-		var cloneTitle=prompt("{/literal}{t}Title{/t}{literal}",$("input[@name='data[title]']").val()+"-copy");
+		var cloneTitle=prompt("{/literal}{t}Title{/t}{literal}",$("input[name='data[title]']").val()+"-copy");
 		if (cloneTitle) {
-			$("input[@name='data[title]']").attr("value",cloneTitle);
+			$("input[name='data[title]']").attr("value",cloneTitle);
 			$("#updateForm").submit();
 		}
 	});

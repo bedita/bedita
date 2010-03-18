@@ -14,7 +14,7 @@ $(document).ready(function(){
 		{literal}
 	});
 	
-	$("div.insidecol input[@name='save']").click(function() {
+	$("div.insidecol input[name='save']").click(function() {
 		$("#updateForm").submit();
 	});
 });

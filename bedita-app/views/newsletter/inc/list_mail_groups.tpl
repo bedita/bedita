@@ -10,12 +10,12 @@ $(document).ready(function(){
 		return false;
 	});
 
-	$("input[@type=text]").bind("keyup", function(){
+	$("input[type=text]").bind("keyup", function(){
 		var text = $(this).val();
 		if (jQuery.trim(text) == "") {
-	   		$(this).parent().siblings().find("input[@type=submit]").attr("disabled", "disabled");
+	   		$(this).parent().siblings().find("input[type=submit]").attr("disabled", "disabled");
 		} else {
-	   		$(this).parent().siblings().find("input[@type=submit]").attr("disabled", "");
+	   		$(this).parent().siblings().find("input[type=submit]").attr("disabled", "");
 	    }
 	});
 	

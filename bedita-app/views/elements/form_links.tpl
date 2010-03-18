@@ -19,7 +19,7 @@ function addItem() {
 		$("#listExistingLinks").append(this).fixItemsPriority() ; 
 	
 		$("#loadingLinks").hide();
-		$(this).find("input[@type='button']").click(function() {
+		$(this).find("input[type='button']").click(function() {
 			
 			$(this).parents("tr").remove();
 			$("#listExistingLinks").fixItemsPriority();

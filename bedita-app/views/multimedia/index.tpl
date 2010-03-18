@@ -56,8 +56,8 @@ function showResponse(data) {
 		commitUploadItem(tmp);
 	}
 	
-	$("#ajaxUploadContainer").find("input[@type=text]").attr("value", "");
-	$("#ajaxUploadContainer").find("input[@type=file]").attr("value", "");
+	$("#ajaxUploadContainer").find("input[type=text]").attr("value", "");
+	$("#ajaxUploadContainer").find("input[type=file]").attr("value", "");
 	$("#ajaxUploadContainer").find("textarea").attr("value", "");
 }
 

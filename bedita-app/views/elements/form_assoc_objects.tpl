@@ -6,11 +6,11 @@ var urlAddObjToAss= "{$html->url('/pages/loadObjectToAssoc/')}{$object.id}";
 {literal}
 
 function relatedRefreshButton() {
-	$("#relationContainer").find("input[@name='details']").click(function() {
+	$("#relationContainer").find("input[name='details']").click(function() {
 		location.href = $(this).attr("rel");
 	});
 	
-	$("#relationContainer").find("input[@name='remove']").click(function() {
+	$("#relationContainer").find("input[name='remove']").click(function() {
 		tableToReorder = $(this).parents("table");
 		$(this).parents("tr").remove();
 		tableToReorder.fixItemsPriority();
@@ -71,9 +71,9 @@ $(document).ready(function() {
 	
 	relatedRefreshButton();
 	
-	$("input[@name='addIds']").click(function() {
+	$("input[name='addIds']").click(function() {
 		obj_sel = {};
-		input_ids = $(this).siblings("input[@name='list_object_id']");
+		input_ids = $(this).siblings("input[name='list_object_id']");
 		obj_sel.object_selected = input_ids.val();
 		obj_sel.relation = $(this).siblings("input[name*='switch']").val();
 		addObjToAssoc(urlAddObjToAss, obj_sel);
@@ -81,7 +81,7 @@ $(document).ready(function() {
 	});
 	
 	// manage enter key on search text to prevent default submit
-	$("input[@name='list_object_id']").keypress(function(event) {
+	$("input[name='list_object_id']").keypress(function(event) {
 		if (event.keyCode == 13 && $(this).val() != "") {
 			event.preventDefault();
 			obj_sel = {};

@@ -20,25 +20,25 @@ Menu a SX valido per tutte le pagine del controller.
 	<script type="text/javascript">
 	{literal}
 	$(document).ready(function() {
-		var cloneButton = $("div.insidecol input[@name='clone']");
+		var cloneButton = $("div.insidecol input[name='clone']");
 		cloneButton.unbind("click");
 		cloneButton.click(function() {
 			$("#updateForm").attr("action","{/literal}{$html->url('/')}{literal}addressbook/cloneObject");
 			var company = $('input:radio[name*=company]:checked').val();
 			if (company == 0) {
 				var cloneTitle=prompt("{/literal}{t}name{/t},{t}surname{/t}{literal}",
-						$("input[@name='data[person][name]']").val() + "," +
-						$("input[@name='data[person][surname]']").val() +"-copy");
+						$("input[name='data[person][name]']").val() + "," +
+						$("input[name='data[person][surname]']").val() +"-copy");
 				if (cloneTitle) {
 					var nameArr =  cloneTitle.split(",");
-					$("input[@name='data[person][name]']").attr("value",nameArr[0]);
-					$("input[@name='data[person][surname]']").attr("value",nameArr[1]);
+					$("input[name='data[person][name]']").attr("value",nameArr[0]);
+					$("input[name='data[person][surname]']").attr("value",nameArr[1]);
 					$("#updateForm").submit();
 				}
 			} else {
-				var cloneTitle=prompt("{/literal}{t}name{/t}{literal}", $("input[@name='data[cmp][company_name]']").val() +"-copy");
+				var cloneTitle=prompt("{/literal}{t}name{/t}{literal}", $("input[name='data[cmp][company_name]']").val() +"-copy");
 				if (cloneTitle) {
-					$("input[@name='data[cmp][company_name]']").attr("value",cloneTitle);
+					$("input[name='data[cmp][company_name]']").attr("value",cloneTitle);
 					$("#updateForm").submit();
 				}
 			}

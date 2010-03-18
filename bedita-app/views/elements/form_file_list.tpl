@@ -49,8 +49,8 @@ function showResponse(data) {
 		commitUploadItem(tmp);
 	}
 
-		$("#addmultimedia").find("input[@type=text]").attr("value", "");
-		$("#addmultimedia").find("input[@type=file]").attr("value", "");
+		$("#addmultimedia").find("input[type=text]").attr("value", "");
+		$("#addmultimedia").find("input[type=file]").attr("value", "");
 		$("#addmultimedia").find("textarea").attr("value", "");
 }
 

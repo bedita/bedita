@@ -25,7 +25,7 @@ $(document).ready( function (){
 	}; 
 	$("#saveNote").ajaxForm(optionsNoteForm);
 	
-	$("#listNote").find("input[@name=deletenote]").click(function() {
+	$("#listNote").find("input[name=deletenote]").click(function() {
 		refreshNoteList($(this));
 	});
 });	
@@ -39,7 +39,7 @@ function showNoteResponse(data) {
 		$(emptyDiv).load(urlLoadNote, data, function() {
 			$("#listNote").prepend(this);
 			$("#noteloader").hide();
-			$(this).find("input[@name=deletenote]").click(function() {
+			$(this).find("input[name=deletenote]").click(function() {
 				refreshNoteList($(this));
 			});
 		});
