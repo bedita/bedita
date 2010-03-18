@@ -564,13 +564,18 @@ document.onkeydown = function(e){
 
 function openAtStart(defaultOpen) {
 
+
 	var cookieTitle = document.title;
 	var openAtStart = $.cookie(cookieTitle);
+	
+	//alert(openAtStart);
+	
 	if (openAtStart == null) {
 		var openAtStart = defaultOpen;
 	}
 	$(openAtStart).prev(".tab").BEtabstoggle();
 	
+
 	$(window).unload(function(){
 		openAtStart = new Array();
 		$(".tab").each(function(i){
@@ -580,6 +585,8 @@ function openAtStart(defaultOpen) {
 		});
 		$.cookie(cookieTitle, openAtStart);
 	});
+
+
 }
 
 
