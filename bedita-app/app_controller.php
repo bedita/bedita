@@ -849,32 +849,63 @@ abstract class ModulesController extends AppController {
 	}
 
 	/**
-	 * Return preview links for $obj_id in publications
-	 * 
-	 * @return array of previews - single preview is like array('url'=>'...','desc'=>'...')
-	 * @param $sections array of section id
-	 * @param $obj_id object id
+	 * Return preview links for $obj_nick in publications
+	 *
+	 * @param $sections array of section/area id
+	 * @param $obj_nick object nickname
+	 * @return array of previews divided by publications, all object's url are in "object_url" => array
 	 */
-	public function previewsForObject($sections,$obj_id,$status) {
+	public function previewsForObject($sections,$obj_nick) {
 		$previews = array();
-		if(empty($obj_id) || empty($sections))
+		if(empty($obj_nick) || empty($sections)) {
 			return $previews;
-		$pubId = array();
-		foreach($sections as $section_id) {
-			$a = $this->BeTree->getAreaForSection($section_id);
-			if(!empty($a) && !in_array($a['id'], $pubId)) {
-				//$desc = $this->BEObject->field('title',array("id=$section_id"));
-				$field = ($status=='on') ? 'public_url' : 'staging_url';
-				if(!empty($a[$field])) {
-					$previews[]=array(
-						'url'=>$a[$field]."/$obj_id",
-						'desc'=>$a['title'],
-						'kurl'=>$field
-						);
-				}
-				$pubId[] = $a['id'];
-			}
 		}
+
+		$treeModel = ClassRegistry::init("Tree");
+		$beObjectModel = ClassRegistry::init("BEObject");
+		$areaModel = ClassRegistry::init("Area");
+
+		$pubId = array();
+		foreach($sections as $key => $section_id) {
+			$path = $treeModel->field("parent_path", array("id" => $section_id));
+			$path = trim($path,"/");
+			$parents = array();
+			$nickPath = "";
+			if (!empty($path)) {
+				$parents = explode("/", $path);
+				$area_id = array_shift($parents);
+				if (!empty($parents)) {
+					foreach ($parents as $val) {
+						$nickPath .= "/" . $beObjectModel->getNicknameFromId($val);
+					}
+				}
+				$nickPath .= "/" . $beObjectModel->getNicknameFromId($section_id);
+			} else {
+				$area_id = $section_id;
+			}
+
+			$nickPath .= "/" . $obj_nick;
+			
+			if (empty($previews[$area_id])) {
+				$previews[$area_id] = $areaModel->find("first", array(
+					"conditions" => array("Area.id" => $area_id),
+					"contain" => array("BEObject")
+					)
+				);
+				$previews[$area_id]["object_url"] = array();
+			}
+
+			$obj_url = array();
+			if (!empty($previews[$area_id]["public_url"])) {
+				$obj_url["public_url"] = $previews[$area_id]["public_url"] . $nickPath;
+			}
+			if (!empty($previews[$area_id]["staging_url"])) {
+				$obj_url["staging_url"] = $previews[$area_id]["staging_url"] . $nickPath;
+			}
+
+			$previews[$area_id]["object_url"][] = $obj_url;
+		}
+		
 		return $previews;
 	}
 	
@@ -971,7 +1002,7 @@ abstract class ModulesController extends AppController {
 			elseif(!is_array($parents_id))
 				$parents_id = array($parents_id);
 		
-			$previews = $this->previewsForObject($parents_id, $id, $obj['status']);
+			$previews = $this->previewsForObject($parents_id, $obj["nickname"]);
 			
 			$this->historyItem["object_id"] = $id;
 			// concurrent access
