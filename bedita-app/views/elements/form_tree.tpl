@@ -7,6 +7,7 @@ $(document).ready(function(){
 	{if $object.fixed}
 		$("#whereto input[type=checkbox]").attr("disabled","disabled");
 	{/if}
+	
 	{literal}
 	
 });

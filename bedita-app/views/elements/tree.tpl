@@ -6,11 +6,14 @@
 $(document).ready(function(){
 	// third example
 	$(".menutree").treeview({
-		animated: "slow",
+		animated: "normal",
 		collapsed: true,
 		unique: false,
 		persist: "cookie"
 	});
+
+$(".menutree input:checked").parent().css("background-color","#dedede").parents("ul, li").show();
+
 
 });
 </script>

@@ -19,5 +19,6 @@
 			{$preview.url}/<b style="font-size:1.2em">{$object.nickname}</b>
 		</a></li>
 	{/foreach}
+
 	{/bedev}
 </fieldset>
