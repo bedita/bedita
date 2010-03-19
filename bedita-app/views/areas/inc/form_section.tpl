@@ -141,10 +141,21 @@ $(document).ready(function(){
 				<th>{t}nickname{/t}:</th>
 				<td>
 					<input id="nicknameBEObject" type="text" name="data[nickname]" value="{$object.nickname|default:null}" />
-		
 				</td>
 			</tr>
-				<tr>
+		{if !empty($object.Alias)}
+			<tr>
+				<th>{t}Alias{/t}:</th>
+				<td>
+					<ul>
+					{foreach from=$object.Alias item=alias}
+						{$alias.nickname_alias}
+					{/foreach}
+					</ul>
+				</td>
+			</tr>
+		{/if}			
+			<tr>
 				<th>id:</th>
 				<td>{$object.id|default:null}</td>
 			</tr>
