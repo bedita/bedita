@@ -160,20 +160,15 @@ $(document).ready(function(){
 */
 	
 	$("#updateForm *").change(function () {
-
 		$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 		$("#cancelBEObject").show();
-		
 	});
 /*
-
 	window.onbeforeunload = function () { 
-	
 		if ($(".secondacolonna .modules label").hasClass("save")) {
-  			return "You have unsaved changes."; 
+  			return "{/literal}{t}You have unsaved changes{/t}{literal}"; 
 		}
-	};
-	
+	};	
 */
 
 {/literal}{if !empty($object.id)}{literal}

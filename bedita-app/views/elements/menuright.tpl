@@ -117,7 +117,7 @@ function refreshNoteList(delButton) {
 
 	{bedev}
 		<div class="tab"><h2>{t}Test stuff{/t}</h2></div>
-		<div style="padding:10px; background-color:white;">
+		<div id="test" style="padding:10px; background-color:white;">
 		{$view->element('BEiconstest')}
 		</div>
 	{/bedev}

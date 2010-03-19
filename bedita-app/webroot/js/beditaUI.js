@@ -558,9 +558,9 @@ function openAtStart(defaultOpen) {
 	
 	//alert(openAtStart);
 	
-	//if (openAtStart == null) {
+	if (openAtStart == null) {
 		var openAtStart = defaultOpen;
-	//}
+	}
 	$(openAtStart).prev(".tab").BEtabstoggle();
 	
 
