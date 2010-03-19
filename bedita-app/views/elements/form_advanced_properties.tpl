@@ -13,7 +13,7 @@
 			<label>id:</label> {$object.id}
 		</td>
 	</tr>
-	
+
 	{if ($object)}
 		
 		{if !empty($object.Alias)}
