@@ -61,7 +61,7 @@ $(document).ready(function(){
 	{capture name="theader"}
 		<thead>
 		<tr>
-			<th></th>
+			<th>{$beToolbar->order('fixed', '&nbsp;')}</th>
 			<th>{$beToolbar->order('title', 'title')}</th>
 			<th style="text-align:center">{$beToolbar->order('id', 'id')}</th>
 			<th style="text-align:center">{$beToolbar->order('status', 'status')}</th>
@@ -102,6 +102,8 @@ $(document).ready(function(){
 			
 			{if (empty($objects[i].fixed))}
 				<input style="margin-top:8px;" type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
+			{else}
+				<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="margin-top:8px; height:12px;" />
 			{/if}
 
 
