@@ -155,6 +155,37 @@ class AddressbookController extends ModulesController {
 		$this->set("mailgroups",$mailgroups);
 	}
 
+	public function addToMailgroup() {
+		$this->checkWriteModulePermission();
+		$counter = 0;
+		if(!empty($this->params['form']['objects_selected'])) {
+			$objects_to_assoc = $this->params['form']['objects_selected'];
+			$mailgroup = $this->data['mailgroup'];
+			$MailGroupObj = ClassRegistry::init("MailGroupCard");
+			$this->Transaction->begin() ;
+			for($i = 0; $i < count($objects_to_assoc); $i++) {
+				// get email from  card
+				$email = $this->Card->field("newsletter_email", array("id" => $objects_to_assoc[$i]));
+				if(!empty($email)) { // if 'newsletter_email' skip saving
+					$data = array(
+						"card_id"=>$objects_to_assoc[$i],
+						"mail_group_id" => $mailgroup
+					);
+					$mg = $MailGroupObj->find("first",array('conditions' => $data));
+					if(empty($mg)) { // if relation already exists, skip saving
+						$data["status"] = "confirmed";
+						$MailGroupObj->create();
+						$MailGroupObj->save($data);
+						$counter++;
+					}
+				}
+			}
+			$this->Transaction->commit() ;
+			$this->userInfoMessage(__("$counter card(s) associated to mailgroup", true) . " - " . $mailgroup);
+			$this->eventInfo("$counter card(s) associated to mailgroup " . $mailgroup);
+		}
+	}
+
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"cloneObject"	=> 	array(
@@ -198,6 +229,10 @@ class AddressbookController extends ModulesController {
 							"ERROR"	=> $this->referer() 
 			),
 			"disassocCategory"	=> 	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+			),
+			"addToMailgroup"	=> 	array(
 							"OK"	=> $this->referer(),
 							"ERROR"	=> $this->referer() 
 			)

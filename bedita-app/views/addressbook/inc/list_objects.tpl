@@ -11,7 +11,7 @@ var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 var urlMoveToAreaSection = "{$html->url('moveItemsToAreaSection/')}";
 var urlCategoryAssoc = "{$html->url('assocCategory/')}";
 var urlCategoryDisassoc = "{$html->url('disassocCategory/')}";
-
+var urlMailgroupAssoc = "{$html->url('addToMailgroup/')}";
 
 {literal}
 $(document).ready(function(){
@@ -19,16 +19,14 @@ $(document).ready(function(){
 	$(".indexlist TD").not(".checklist").css("cursor","pointer").click(function(i) {
 		document.location = $(this).parent().find("a:first").attr("href"); 
 	} );
-	
-	
+
 	$("#deleteSelected").bind("click", function() {
 		if(!confirm(message)) 
 			return false ;	
 		$("#formObject").attr("action", urlDelete) ;
 		$("#formObject").submit() ;
 	});
-	
-	
+
 	$("#assocObjects").click( function() {
 		var url = urlAddToAreaSection;
 		if($('#areaSectionAssocOp')) {
@@ -50,9 +48,18 @@ $(document).ready(function(){
 		$("#formObject").attr("action", urlCategoryAssoc) ;
 		$("#formObject").submit() ;
 	});
+
 	$("#disassocObjectsCategory").click( function() {
 		$("#formObject").attr("action", urlCategoryDisassoc) ;
 		$("#formObject").submit() ;
+	});
+
+	$("#assocObjectsMailgroup").click( function() {
+		var mailgroup = $('#objMailgroupAssoc').val();
+		if(mailgroup != '') {
+			$("#formObject").attr("action", urlMailgroupAssoc) ;
+			$("#formObject").submit() ;
+		}
 	});
 });
 
@@ -184,10 +191,10 @@ $(document).ready(function(){
 		<input id="assocObjectsCategory" type="button" value="{t}Add association{/t}" /> / <input id="disassocObjectsCategory" type="button" value="{t}Remove association{/t}" />
 		<hr />
 	{/if}
-{beDev}
+
 	{if !empty($mailgroups)}
-		{t}Mailgroups{/t}
-		<select id="objMailgroupAssoc" class="objMailgroupAssociation" name="data[mailgroup]">
+		{t}mailgroups{/t}
+		<select id="objMailgroupAssoc" name="data[mailgroup]">
 		<option value="">--</option>
 		{foreach from=$mailgroups item='mailgroup' key='key'}
 		<option value="{$mailgroup.id}">{$mailgroup.group_name}</option>
@@ -196,7 +203,7 @@ $(document).ready(function(){
 		<input id="assocObjectsMailgroup" type="button" value="{t}Add association{/t}" /> / <input id="disassocObjectsMailgroup" type="button" value="{t}Remove association{/t}" />
 		<hr />
 	{/if}
-{/beDev}
+
 	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
 	
 </div>
