@@ -11,14 +11,32 @@
 	<label>{t}description{/t}:</label>
 	<br />
 	<textarea id="subtitle" style="margin-bottom:2px; height:30px" class="shortdesc autogrowarea" name="data[description]">{$object.description|default:''|escape:'html'}</textarea>
-	
-	{bedev}
-	<label>{t}public url{/t}:</label> 
-	{foreach from=$previews item="preview"}
-		<li><a class="graced" href="#nicknameBEObject" onclick="$('#advancedproperties').show(); $('#nicknameBEObject').focus()">
-			{$preview.url}/<b style="font-size:1.2em">{$object.nickname}</b>
-		</a></li>
-	{/foreach}
 
-	{/bedev}
 </fieldset>
+
+{bedev}
+<div class="tab"><h2>{t}Previews{/t}</h2></div>
+
+<fieldset id="previewsTab">
+	{foreach from=$previews item="pubs"}
+		<label>{$pubs.title}</label>
+		<ul>
+		{foreach from=$pubs.object_url item="object_url"}
+			<li><a class="graced" href="#nicknameBEObject" onclick="$('#advancedproperties').show(); $('#nicknameBEObject').focus()">
+				{$object_url.public_url}
+				</a>
+			</li>
+		{/foreach}
+		</ul>
+		<ul>
+		{foreach from=$pubs.object_url item="object_url"}
+			<li><a class="graced" href="#nicknameBEObject" onclick="$('#advancedproperties').show(); $('#nicknameBEObject').focus()">
+				{$object_url.staging_url}
+				</a>
+			</li>
+		{/foreach}
+		</ul>
+	{/foreach}
+</fieldset>
+
+{/bedev}

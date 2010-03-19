@@ -160,12 +160,24 @@ $(document).ready(function(){
 
 <div style="white-space:nowrap">
 	
-	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
-	&nbsp;&nbsp;&nbsp;
-	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
-	&nbsp;&nbsp;&nbsp
 	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
-
+	&nbsp;&nbsp;&nbsp
+	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
+	&nbsp;
+	{t}of{/t}&nbsp;
+	{if ($beToolbar->pages()) > 0}
+	{$beToolbar->last($beToolbar->pages(),'',$beToolbar->pages())}
+	{else}1{/if}
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
+	
+	&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;
+	{$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span>
+	| &nbsp;&nbsp;
+	{$beToolbar->next('next','','next')}  <span class="evidence"> &nbsp;</span>
+			
+			
 	
 </div>
 

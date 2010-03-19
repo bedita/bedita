@@ -1,8 +1,5 @@
-<!-- disabled permissisons -->
 {*
 
-tutto disabilitato in atesa di tempi migliori
-vedi: 
 https://dev.channelweb.it/bedita/ticket/156
 https://dev.channelweb.it/bedita/ticket/157
 
