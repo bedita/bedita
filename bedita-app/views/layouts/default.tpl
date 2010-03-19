@@ -26,6 +26,7 @@
 	{$javascript->link("jquery/ui/jquery-ui-1.8rc3.custom")}
 	{$javascript->link("jquery/ui/jquery.ui.draggable")}
 
+	
 </head>
 <body{if !empty($bodyClass)} class="{$bodyClass}"{/if}>
 

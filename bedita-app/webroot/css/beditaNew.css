@@ -1801,3 +1801,31 @@ INPUT[type=button], INPUT[type=submit]  {
 	-khtml-border-radius: 11px;
 }
 
+
+/*...........................................    
+
+   Tooltip
+
+...........................................*/
+
+
+.tip { 
+	background: transparent url(../img/black_arrow-up.png); 
+	padding:40px 20px 20px 20px; 
+	position:absolute;
+	z-index:100;
+	opacity:0.8;
+	width:169px;
+	height:62px;
+	font-size:14px;
+	color:#FFF;
+}
+
+.viewport-right {
+	background: red url(../img/black_arrow.png); 
+}
+	
+.viewport-bottom {
+	background: green url(../img/black_arrow.png); 
+}
+
