@@ -163,8 +163,18 @@ $(document).ready(function(){
 
 		$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 		$("#cancelBEObject").show();
+		
 	});
+/*
 
+	window.onbeforeunload = function () { 
+	
+		if ($(".secondacolonna .modules label").hasClass("save")) {
+  			return "You have unsaved changes."; 
+		}
+	};
+	
+*/
 
 {/literal}{if !empty($object.id)}{literal}
 

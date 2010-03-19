@@ -6,7 +6,6 @@
 <table class="bordered">
 
 	<tr>
-
 		<th>{t}nickname{/t}:</th>
 		<td>
 			<input type="text" id="nicknameBEObject" name="data[nickname]" style="width:280px" value="{$object.nickname|escape:'html'|escape:'quotes'}"/>
@@ -14,8 +13,21 @@
 			<label>id:</label> {$object.id}
 		</td>
 	</tr>
-
+	
 	{if ($object)}
+		
+		{if !empty($object.Alias)}
+		<tr>
+			<th>{t}Alias{/t}:</th>
+			<td>
+				<ul>
+				{foreach from=$object.Alias item=alias}
+					{$alias.nickname_alias}
+				{/foreach}
+				</ul>
+			</td>
+		</tr>
+		{/if}
 		<tr>
 			<th>{t}created by{/t}:</th>
 			<td>{if !empty($object.UserCreated.userid)}{$object.UserCreated.userid}{else}-{/if}</td>

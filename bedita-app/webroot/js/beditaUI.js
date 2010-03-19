@@ -183,7 +183,7 @@ $(document).ready(function(){
 
 /*...........................................    
 
-   TAB grigi
+   gray TABs
 
 ...........................................*/
 
@@ -224,7 +224,7 @@ $(document).ready(function(){
 
 /*...........................................    
 
-   TAB orizzontali
+   horizontal TABs
 
 ...........................................*/
 	
@@ -433,10 +433,7 @@ jQuery.fn.BEmodal = function(){
 	});
 */
 
-
 }
-
-
 
 
 	$(".modalbutton").click(function () {
@@ -444,9 +441,6 @@ jQuery.fn.BEmodal = function(){
 		$(this).BEmodal();
 
 	});
-
-
-
 
 
 /*...........................................    
@@ -460,8 +454,6 @@ jQuery.fn.BEmodal = function(){
 				window.open($(this).attr("href"));
 			}
 		});
-
-
 		
 /*...........................................    
 
@@ -473,8 +465,6 @@ jQuery.fn.BEmodal = function(){
 		lineHeight: 16
 	});
 						
-
-
 /*...........................................    
 
    bulk actions
@@ -512,8 +502,6 @@ jQuery.fn.BEmodal = function(){
 	$('.editorheader').css("cursor","pointer").click(function () {
 		$(this).next().slideToggle('fast');
 	});
-
-
 
 
 });
@@ -570,9 +558,9 @@ function openAtStart(defaultOpen) {
 	
 	//alert(openAtStart);
 	
-	if (openAtStart == null) {
+	//if (openAtStart == null) {
 		var openAtStart = defaultOpen;
-	}
+	//}
 	$(openAtStart).prev(".tab").BEtabstoggle();
 	
 
