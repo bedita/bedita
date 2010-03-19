@@ -814,6 +814,80 @@ abstract class ModulesController extends AppController {
 		}
 	}
 
+	public function moveItemsToAreaSection() {
+		$this->checkWriteModulePermission();
+		if(!empty($this->params['form']['objects_selected'])) {
+			$objects_to_assoc = $this->params['form']['objects_selected'];
+			$source = $this->data['source'];
+			$destination = $this->data['destination'];
+			$beObject = ClassRegistry::init("BEObject");
+			$object_type_id_source = $beObject->findObjectTypeId($source);
+			$object_type_id_dest = $beObject->findObjectTypeId($destination);
+			$modelTree = ClassRegistry::init("Tree");
+			$modelLoadedSource = $this->loadModelByObjectTypeId($object_type_id_source);
+			$modelLoadedSource->contain("BEObject");
+			if(!($section_source = $modelLoadedSource->findById($source))) {
+				throw new BeditaException(sprintf(__("Error loading section source: %d", true), $source));
+			}
+			$modelLoadedDest = $this->loadModelByObjectTypeId($object_type_id_dest);
+			$modelLoadedDest->contain("BEObject");
+			if(!($section_destination = $modelLoadedDest->findById($destination))) {
+				throw new BeditaException(sprintf(__("Error loading section dest: %d", true), $destination));
+			}
+			$this->Transaction->begin() ;
+			for($i=0; $i < count($objects_to_assoc) ; $i++) {
+				if ($beObject->isFixed($objects_to_assoc[$i])) {
+					throw new BeditaException(__("Error: modifying a fixed object!", true));
+				}
+				$parents = $this->BeTree->getParents($objects_to_assoc[$i]);
+				if (in_array($section_source['id'], $parents)) {
+					if(!$modelTree->removeChild($objects_to_assoc[$i],$section_source['id'])) {
+						throw new BeditaException( __("Error during remove child", true));
+					}
+				}
+				if (!in_array($section_destination['id'], $parents)) { 
+					if(!$modelTree->appendChild($objects_to_assoc[$i],$section_destination['id'])) {
+						throw new BeditaException( __("Error during append child", true));
+					}
+				}
+			}
+			$this->Transaction->commit() ;
+			$this->userInfoMessage(__("Items moved to area/section", true) . " - " . $section_destination['title']);
+			$this->eventInfo("items moved to area/section " . $section_destination['id']);
+		}
+	}
+	
+	public function removeItemsFromAreaSection() {
+		$this->checkWriteModulePermission();
+		if(!empty($this->params['form']['objects_selected'])) {
+			$objects_to_assoc = $this->params['form']['objects_selected'];
+			$destination = $this->data['destination'];
+			$beObject = ClassRegistry::init("BEObject");
+			$object_type_id = $beObject->findObjectTypeId($destination);
+			$modelTree = ClassRegistry::init("Tree");
+			$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
+			$modelLoaded->contain("BEObject");
+			if(!($section = $modelLoaded->findById($destination))) {
+				throw new BeditaException(sprintf(__("Error loading section: %d", true), $destination));
+			}
+			$this->Transaction->begin() ;
+			for($i=0; $i < count($objects_to_assoc) ; $i++) {
+				if ($beObject->isFixed($objects_to_assoc[$i])) {
+					throw new BeditaException(__("Error: modifying a fixed object!", true));
+				}
+				$parents = $this->BeTree->getParents($objects_to_assoc[$i]);
+				if (!in_array($section['id'], $parents)) { 
+					if(!$modelTree->removeChild($objects_to_assoc[$i],$section['id'])) {
+						throw new BeditaException( __("Error during remove child", true));
+					}
+				}
+			}
+			$this->Transaction->commit() ;
+			$this->userInfoMessage(__("Items removed from area/section", true) . " - " . $section['title']);
+			$this->eventInfo("items removed from area/section " . $section['id']);
+		}
+	}
+
 	public function addItemsToAreaSection() {
 		$this->checkWriteModulePermission();
 		

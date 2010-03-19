@@ -7,6 +7,7 @@ var messageSelected = "{t}Are you sure that you want to delete selected items?{/
 var URLBase = "{$html->url('index/')}" ;
 var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
 var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
+var urlMoveToAreaSection = "{$html->url('moveItemsToAreaSection/')}";
 var urlCategoryAssoc = "{$html->url('assocCategory/')}";
 var urlCategoryDisassoc = "{$html->url('disassocCategory/')}";
 
@@ -27,7 +28,14 @@ $(document).ready(function(){
 	
 	
 	$("#assocObjects").click( function() {
-		$("#formObject").attr("action", urlAddToAreaSection) ;
+		var url = urlAddToAreaSection;
+		if($('#areaSectionAssocOp')) {
+			op = $('#areaSectionAssocOp').val()
+			if(op == 'move') {
+				url = urlMoveToAreaSection;
+			}
+		}
+		$("#formObject").attr("action", url) ;
 		$("#formObject").submit() ;
 	});
 	
@@ -174,14 +182,23 @@ $(document).ready(function(){
 	<hr />
 	
 	{if !empty($tree)}
-
-			{t}copy{/t}  &nbsp;{t}to{/t}:  &nbsp;
-			
-			<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
-			{$beTree->option($tree)}
+		{assign var='named_arr' value=$view->params.named}
+		{if empty($named_arr)}
+			{t}copy{/t}
+		{else}
+			<select id="areaSectionAssocOp" name="areaSectionAssocOp" style="width:75px">
+				<option value="copy"> {t}copy{/t} </option>
+				<option value="move"> {t}move{/t} </option>
 			</select>
-			
-			<input id="assocObjects" type="button" value=" ok " />
+		{/if}
+		&nbsp;{t}to{/t}:  &nbsp;
+
+		<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
+		{$beTree->option($tree)}
+		</select>
+
+		<input type="hidden" name="data[source]" value="{$named_arr.id|default:''}" />
+		<input id="assocObjects" type="button" value=" ok " />
 	<hr />
 	{/if}
 

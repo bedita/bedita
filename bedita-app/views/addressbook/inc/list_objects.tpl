@@ -8,6 +8,7 @@ var messageSelected = "{t}Are you sure that you want to delete selected items?{/
 var URLBase = "{$html->url('index/')}" ;
 var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
 var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
+var urlMoveToAreaSection = "{$html->url('moveItemsToAreaSection/')}";
 var urlCategoryAssoc = "{$html->url('assocCategory/')}";
 var urlCategoryDisassoc = "{$html->url('disassocCategory/')}";
 
@@ -29,7 +30,14 @@ $(document).ready(function(){
 	
 	
 	$("#assocObjects").click( function() {
-		$("#formObject").attr("action", urlAddToAreaSection) ;
+		var url = urlAddToAreaSection;
+		if($('#areaSectionAssocOp')) {
+			op = $('#areaSectionAssocOp').val()
+			if(op == 'move') {
+				url = urlMoveToAreaSection;
+			}
+		}
+		$("#formObject").attr("action", url) ;
 		$("#formObject").submit() ;
 	});
 	
@@ -145,21 +153,23 @@ $(document).ready(function(){
 	<hr />
 	
 	{if !empty($tree)}
-			
+		{assign var='named_arr' value=$view->params.named}
+		{if empty($named_arr)}
+			{t}copy{/t}
+		{else}
+			<select id="areaSectionAssocOp" name="areaSectionAssocOp" style="width:75px">
+				<option value="copy"> {t}copy{/t} </option>
+				<option value="move"> {t}move{/t} </option>
+			</select>
+		{/if}
+		&nbsp;{t}to{/t}:  &nbsp;
 
-			{*
-			<select style="width:75px">
-				<option> {t}copy{/t} </option>
-				<option> {t}move{/t} </option>
-			</select>
-			*}
-			{t}copy{/t}  &nbsp;{t}to{/t}:  &nbsp;
-			
-			<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
-			{$beTree->option($tree)}
-			</select>
-			
-			<input id="assocObjects" type="button" value=" ok " />
+		<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
+		{$beTree->option($tree)}
+		</select>
+
+		<input type="hidden" name="data[source]" value="{$named_arr.id|default:''}" />
+		<input id="assocObjects" type="button" value=" ok " />
 	<hr />
 	{/if}
 
@@ -174,7 +184,19 @@ $(document).ready(function(){
 		<input id="assocObjectsCategory" type="button" value="{t}Add association{/t}" /> / <input id="disassocObjectsCategory" type="button" value="{t}Remove association{/t}" />
 		<hr />
 	{/if}
-
+{beDev}
+	{if !empty($mailgroups)}
+		{t}Mailgroups{/t}
+		<select id="objMailgroupAssoc" class="objMailgroupAssociation" name="data[mailgroup]">
+		<option value="">--</option>
+		{foreach from=$mailgroups item='mailgroup' key='key'}
+		<option value="{$mailgroup.id}">{$mailgroup.group_name}</option>
+		{/foreach}
+		</select>
+		<input id="assocObjectsMailgroup" type="button" value="{t}Add association{/t}" /> / <input id="disassocObjectsMailgroup" type="button" value="{t}Remove association{/t}" />
+		<hr />
+	{/if}
+{/beDev}
 	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
 	
 </div>

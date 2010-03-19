@@ -290,6 +290,10 @@ class MultimediaController extends ModulesController {
 							"OK"	=> $this->referer(),
 							"ERROR"	=> $this->referer() 
 							),
+			"moveItemsToAreaSection"	=> 	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+							),
 			"changeStatusObjects"	=> 	array(
 							"OK"	=> $this->referer(),
 							"ERROR"	=> $this->referer() 

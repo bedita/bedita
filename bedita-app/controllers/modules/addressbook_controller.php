@@ -47,6 +47,7 @@ class AddressbookController extends ModulesController {
 		$filter["count_annotation"] = "EditorNote";
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim); 
 		$this->loadCategories($filter["object_type_id"]);
+		$this->loadMailgroups();
 	 }
 
 	function view($id = null) {
@@ -140,6 +141,19 @@ class AddressbookController extends ModulesController {
 		parent::cloneObject();
 	}
 
+	private function loadMailgroups() {
+		$result = ClassRegistry::init("MailGroup")->find("all",
+			array(
+				"fields" => array("id","group_name"),
+				"contain" => array()
+			)
+		);
+		$mailgroups = array();
+		foreach($result as $k => $v) {
+			$mailgroups[$k] = $v['MailGroup'];
+		}
+		$this->set("mailgroups",$mailgroups);
+	}
 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
@@ -174,7 +188,11 @@ class AddressbookController extends ModulesController {
 			"addItemsToAreaSection"	=> 	array(
 							"OK"	=> $this->referer(),
 							"ERROR"	=> $this->referer() 
- 			),
+ 									),
+			"moveItemsToAreaSection"	=> 	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+ 									),
 			"assocCategory"	=> 	array(
 							"OK"	=> $this->referer(),
 							"ERROR"	=> $this->referer() 
