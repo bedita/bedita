@@ -24,11 +24,6 @@ Menu a SX valido per tutte le pagine del controller.
 		{$view->element('tree')}
 	
 	</div>
-	{else}
-		{bedev}
-			{t}Current editors{/t}: 
-			<div id="editors"></div>
-		{/bedev}
 	{/if}
 
 	
