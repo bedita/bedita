@@ -1,91 +1,15 @@
 {*
 ** translations form template
 *}
-{literal}
-<style type="text/css">
-
-	.mainhalf TEXTAREA, .mainhalf INPUT[type=text], .mainhalf TABLE.bordered {
-		width:320px !important;
-	}
-
-	.disabled {
-		opacity:0.6;	
-	}
-	.disabled TEXTAREA, .disabled INPUT[type=text] {
-		background-color:transparent;
-	}
-
-</style>
-{/literal}
-
-{$javascript->link("tiny_mce/tiny_mce")}
-{literal}
-<script language="javascript" type="text/javascript">
-
-tinyMCE.init({
-	// General options
-	mode : "textareas",
-	theme : "advanced",
-	editor_selector : "mce",
-	plugins : "safari,pagebreak,paste,fullscreen",
-
-	// Theme options
-	//theme_advanced_buttons1 : "bold,italic, | ,formatselect,bullist, | ,link,unlink,pastetext,pasteword, | ,charmap,fullscreen",
-	theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, link,unlink",
-	theme_advanced_buttons2 : "pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
-	theme_advanced_buttons3 : "", 
-	theme_advanced_toolbar_location : "top",
-	theme_advanced_toolbar_align : "left",
-	//theme_advanced_statusbar_location : "bottom",
-	//theme_advanced_resizing : true,
-	theme_advanced_blockformats : "p,h1,h2,h3,h4,blockquote,address",
-	width : "320",
-
-
-	// Example content CSS (should be your site CSS)
-	content_css : "/css/htmleditor.css",
-	relative_urls : false,
-	convert_urls : false,
-	remove_script_host : false,
-	document_base_url : "/"
-
-});
-
-	</script>
-{/literal}
-
-
-
-{literal}
-<script type="text/javascript">
-$(document).ready(function(){
-
-	$(".tab2").click(function () {
-		
-			var trigged = $(this).next().attr("rel") ;
-			//$(this).BEtabstoggle();
-			$("*[rel='"+trigged+"']").prev(".tab2").BEtabstoggle();
-
-	});
-
-	$('textarea.autogrowarea').css("line-height","1.2em").autogrow();
-});
-</script>
-{/literal}
-
-
-{$view->element('form_common_js')}
 
 <form action="{$html->url('/translations/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object_translation.id.status|default:''}"/>
 <input type="hidden" name="data[master_id]" value="{$object_master.id|default:''}"/>
 
-
-
 <div class="mainhalf">
 
 	<div class="tab2"><h2>{t}Properties{/t}</h2></div>
-	<fieldset rel="properties">
+	<fieldset id="tproperties" rel="properties">
 	<label>{t}translation to{/t}:</label>
 		{assign var=object_translated_lang value=$object_translation.lang|default:''}
 		
@@ -129,14 +53,15 @@ $(document).ready(function(){
 
 
 	<div class="tab2"><h2>{t}Title{/t}</h2></div>
-	<fieldset rel="title">
+	<fieldset id="ttitle" rel="title">
 		<label>{t}title{/t}:</label><br />
 		<input type="text" id="title" name="data[LangText][1][text]" value="{if !empty($object_translation.title)}{$object_translation.title}{/if}"/><br />
 		<input type="hidden" name="data[LangText][1][name]" value="title"/>
 		{if !empty($object_translation.id.title)}<input type="hidden" name="data[LangText][1][id]" value="{$object_translation.id.title}"/>{/if}
+		
 		{if !empty($object_master.description)}
 		<label>{t}description{/t}:</label><br />
-		<textarea id="subtitle" style="height:30px" class="{if $object_master.object_type_id == $conf->objectTypes.card.id}mce{else}autogrowarea{/if} shortdesc" name="data[LangText][2][text]">{if !empty($object_translation.description)}{$object_translation.description}{/if}</textarea>
+		<textarea id="subtitle" style="height:30px" class="mceSimple" name="data[LangText][2][text]">{if !empty($object_translation.description)}{$object_translation.description}{/if}</textarea>
 		<input type="hidden" name="data[LangText][2][name]" value="description"/>
 		{if !empty($object_translation.id.description)}<input type="hidden" name="data[LangText][2][id]" value="{$object_translation.id.description}"/>{/if}
 		{/if}
@@ -145,17 +70,17 @@ $(document).ready(function(){
 	{if !empty($object_master.abstract) || !empty($object_master.body)}
 	<div class="tab2"><h2>{t}Text{/t}</h2></div>
 
-	<fieldset rel="long_desc_langs_container">
+	<fieldset id="tlong_desc_langs_container" rel="long_desc_langs_container">
 		{if !empty($object_master.abstract)}
 		<label>{t}short text{/t}:</label><br />
-		<textarea name="data[LangText][3][text]" style="height:200px" class="mce">{if !empty($object_translation.abstract)}{$object_translation.abstract}{/if}</textarea>
+		<textarea name="data[LangText][3][text]" style="height:200px" class="mcet">{if !empty($object_translation.abstract)}{$object_translation.abstract}{/if}</textarea>
 		<input type="hidden" name="data[LangText][3][name]" value="abstract"/>
 		{if !empty($object_translation.id.abstract)}<input type="hidden" name="data[LangText][3][id]" value="{$object_translation.id.abstract}"/>{/if}
 		<br />
 		{/if}
 		{if !empty($object_master.body)}
 		<label>{t}long text{/t}:</label><br />
-		<textarea name="data[LangText][4][text]" style="height:400px" class="mce">{if !empty($object_translation.body)}{$object_translation.body}{/if}</textarea>
+		<textarea name="data[LangText][4][text]" style="height:400px" class="mcet">{if !empty($object_translation.body)}{$object_translation.body}{/if}</textarea>
 		<input type="hidden" name="data[LangText][4][name]" value="body"/>
 		{if !empty($object_translation.id.body)}<input type="hidden" name="data[LangText][4][id]" value="{$object_translation.id.body}"/>{/if}
 		{/if}
@@ -279,7 +204,7 @@ $(document).ready(function(){
 		<input type="text" id="title_master" name="" value="{$object_master.title}" readonly="readonly"/><br />
 		{if !empty($object_master.description)}
 		<label>{t}description{/t}:</label><br />
-		<textarea id="subtitle" style="height:30px" class="shortdesc{if $object_master.object_type_id == $conf->objectTypes.card.id} mce{else} autogrowarea{/if}" name="">{$object_master.description}</textarea>
+		<textarea class="mceSimple" name="">{$object_master.description}</textarea>
 		{/if}
 	</fieldset>
 
@@ -289,12 +214,12 @@ $(document).ready(function(){
 	<fieldset rel="long_desc_langs_container">
 		{if !empty($object_master.abstract)}
 		<label>{t}short text{/t}:</label><br />
-		<textarea name="" style="height:200px" class="mce">{$object_master.abstract}</textarea>
+		<textarea name="" style="height:200px" class="mcet">{$object_master.abstract}</textarea>
 		<br />
 		{/if}
 		{if !empty($object_master.body)}
 		<label>{t}long text{/t}:</label><br />
-		<textarea name="" style="height:400px" class="mce">{$object_master.body}</textarea>
+		<textarea name="" style="height:400px" class="mcet">{$object_master.body}</textarea>
 		{/if}
 	</fieldset>
 	{/if}

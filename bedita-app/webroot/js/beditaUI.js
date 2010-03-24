@@ -526,6 +526,12 @@ document.onkeydown = function(e){
 		} else {
 			$('.tab').BEtabsopen();
 		}
+
+		if ($('.tab2').next().is(":visible")) {
+			$('.tab2').BEtabsclose();
+		} else {
+			$('.tab2').BEtabsopen();
+		}
 		
 	} else if(keycode == 109){ // 
 		
