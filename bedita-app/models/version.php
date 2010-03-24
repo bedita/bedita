@@ -56,9 +56,12 @@ class Version extends BEAppModel
 		} else {
 			$vData["revision"] = $lastRev + 1;
 		}
-		$vData["diff"] = serialize($this->calcDiff($oldData, $newData));		
-		$this->create();
-		$this->save($vData);
+		$diff = $this->calcDiff($oldData, $newData);
+		if(!empty($diff)) {
+			$vData["diff"] = serialize($diff);		
+			$this->create();
+			$this->save($vData);
+		}
 	}
 
 	private function calcDiff(array& $old, array &$new) {
