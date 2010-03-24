@@ -42,7 +42,8 @@ class Document extends BeditaContentModel
 															"RelatedObject",
 															"Annotation",
 															"Category",
-															"Alias"
+															"Alias",
+															"Version"
 															),
 									"GeoTag"),
 				"default" => array("BEObject" => array("ObjectProperty", 
