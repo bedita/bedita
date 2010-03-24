@@ -113,13 +113,13 @@ opacity:0.8
 }
 
 .stagingmenu LI A {
-	color: silver;
+	color: silver  !important;
 	text-decoration:none;
 	cursor:pointer;
 }
 
 .stagingmenu LI A:Hover {
-	color: #FFF;
+	color: #FFF  !important;
 }
 
 .stagingsubmenu {
@@ -144,7 +144,7 @@ border-radius : 7px;
 .stagingsubmenu table * {
 	text-align:left;
 	font-size: 11px;
-	color:white;
+	color:white !important;
 	padding:4px;
 	vertical-align:top;
 }
