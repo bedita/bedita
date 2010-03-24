@@ -42,5 +42,3 @@
 
 {$view->element('menuright')}
 
-
-

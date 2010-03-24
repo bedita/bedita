@@ -6,7 +6,9 @@
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
 	{$view->element('form_title_subtitle')}
-
+	
+	{$view->element('form_previews')}
+	
 	{assign_associative var="params" comments=true}
 	{$view->element('form_properties', $params)}
 	
