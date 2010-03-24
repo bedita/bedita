@@ -7,6 +7,8 @@
 
 	{$view->element('form_title_subtitle')}
 
+	{$view->element('form_previews')}
+	
 	{assign_associative var="params" comments=true}
 	{$view->element('form_properties', $params)}
 	

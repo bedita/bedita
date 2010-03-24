@@ -9,7 +9,7 @@
 	{include file="./inc/form_card_details.tpl"}
 
 	{include file="./inc/form_properties.tpl"}
-	
+		
 	{include file="./inc/form_newsletter_subscription.tpl"}
 	
 	{$view->element('form_categories')}

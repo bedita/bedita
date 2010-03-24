@@ -4,13 +4,17 @@
 <fieldset id="advancedproperties">
 
 <table class="bordered">
-
+<tr>
+		<th>{t}id{/t}:</th>
+		<td>
+			{$object.id}
+		</td>
+	</tr>
 	<tr>
 		<th>{t}nickname{/t}:</th>
 		<td>
-			<input type="text" id="nicknameBEObject" name="data[nickname]" style="width:280px" value="{$object.nickname|escape:'html'|escape:'quotes'}"/>
-			&nbsp;&nbsp;
-			<label>id:</label> {$object.id}
+			{*<input type="text" id="nicknameBEObject" name="data[nickname]" style="width:280px" value="{$object.nickname|escape:'html'|escape:'quotes'}"/>*}
+			{$object.nickname}
 		</td>
 	</tr>
 

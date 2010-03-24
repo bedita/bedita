@@ -19,7 +19,7 @@
 
 	{if $object.status != "off" && $pubs.object_url.0.staging_url|default:''}	
 		<label>{$pubs.title} staging site</label>
-		<ul>
+		<ul style="margin-bottom:10px">
 		{foreach from=$pubs.object_url item="object_url"}
 			{if !empty($object_url.staging_url)}
 			<li style="border-bottom:1px solid gray; ">

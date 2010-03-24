@@ -26,11 +26,6 @@ Menu a SX valido per tutte le pagine del controller.
 	</div>
 	{/if}
 
-	
-{if $view->action eq "view"}
-{$view->element('previews')}
-{/if}
-
 {$view->element('user_module_perms')}
 	
 	

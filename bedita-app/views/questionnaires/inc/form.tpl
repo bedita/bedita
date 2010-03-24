@@ -8,6 +8,8 @@
 
 	{$view->element('form_title_subtitle')}
 
+	{$view->element('form_previews')}
+	
 	{include file="./inc/form_list_questions.tpl" object_type_id=$conf->objectTypes.questionnaire.id}
 
 	{assign_associative var="params" comments=false}

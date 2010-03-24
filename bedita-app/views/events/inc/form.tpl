@@ -7,6 +7,8 @@
 
 	{$view->element('form_title_subtitle')}
 
+	{$view->element('form_previews')}
+	
 	{$view->element('form_calendar_dates')}
 	
 	{assign_associative var="params" title="Event Locations"}
