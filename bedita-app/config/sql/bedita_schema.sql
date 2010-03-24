@@ -371,13 +371,14 @@ CREATE TABLE trees (
   id INTEGER UNSIGNED NOT NULL,
   area_id INTEGER UNSIGNED NULL,
   parent_id INTEGER UNSIGNED NULL,
-  path MEDIUMTEXT NOT NULL,
-  parent_path MEDIUMTEXT NULL,
+  path VARCHAR(255) NOT NULL,
+  parent_path VARCHAR(255) NULL,
   priority INTEGER UNSIGNED NULL,
   menu INTEGER UNSIGNED NULL,
   INDEX id_idx(id),
   INDEX parent_idx(parent_id),
   INDEX area_idx(area_id),
+  UNIQUE path(path),
   FOREIGN KEY(id)
     REFERENCES objects(id)
       ON DELETE NO ACTION

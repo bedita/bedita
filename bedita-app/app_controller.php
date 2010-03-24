@@ -894,7 +894,8 @@ abstract class ModulesController extends AppController {
 		if(!empty($this->params['form']['objects_selected'])) {
 			$objects_to_assoc = $this->params['form']['objects_selected'];
 			$destination = $this->data['destination'];
-		
+
+			$modelTree = ClassRegistry::init("Tree");
 			$beObject = ClassRegistry::init("BEObject");
 			$object_type_id = $beObject->findObjectTypeId($destination);
 			$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
@@ -911,7 +912,7 @@ abstract class ModulesController extends AppController {
 				
 				$parents = $this->BeTree->getParents($objects_to_assoc[$i]);
 				if (!in_array($section['id'], $parents)) { 
-					if(!$modelLoaded->appendChild($objects_to_assoc[$i],$section['id'])) {
+					if(!$modelTree->appendChild($objects_to_assoc[$i],$section['id'])) {
 						throw new BeditaException( __("Error during append child", true));
 					}
 				}

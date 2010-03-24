@@ -70,16 +70,17 @@ class TreeTestCase extends BeditaTestCase {
 		$idParent2 = $this->savedIds["Section 12"];
 		$idDoc = $this->savedIds["Document 1"];
 		$res = $this->Tree->appendChild($idDoc, $idParent);
-		if ($this->assertTrue($res, "Error appending Document 1 to Section 1")) {
-			pr("<span style='color: green'>Document 1 appended to Section 1</span>");
+		if ($this->assertTrue($res, "Error appending Document 1 (id=". $idDoc .") to Section 1 (id=" .$idParent .")")) {
+			pr("<span style='color: green'>Document 1 (id=". $idDoc .") appended to Section 1 (id=" .$idParent .")</span>");
 		} 
 		$res = $this->Tree->appendChild($idDoc, $idParent2);
-		if ($this->assertTrue($res, "Error appending Document 1 to Section 12")) {
-			pr("<span style='color: green'>Document 1 appended to Section 12</span>");
+		if ($this->assertTrue($res, "Error appending Document 1 (id=". $idDoc .") to Section 12 (id=" .$idParent2 .")")) {
+			pr("<span style='color: green'>Document 1 (id=". $idDoc .") appended to Section 12 (id=" .$idParent2 .")</span>");
 		}
 		
 		pr("Tree:");
-		pr($this->Tree->find("all", array("conditions" => array("id" => $this->savedIds["Document 1"]))));
+		$tree = $this->Tree->find("all", array("conditions" => array("id" => $this->savedIds["Document 1"])));
+		pr($tree);
 	}
 	
 	public function testDeleteAppendedChild() {
@@ -97,7 +98,130 @@ class TreeTestCase extends BeditaTestCase {
 			pr($res);
 		}
 	}
-	
+
+	public function testMove() {
+		$idToMove = $this->savedIds["Section 14"];
+		$idNewParent = $this->savedIds["Section 11"];
+		$idOldParent = $this->savedIds["Section 13"];
+		$children = array($this->savedIds["Section 18"], $this->savedIds["ShortNews 1"], $this->savedIds["Card 1"]);
+		$result = $this->Tree->move($idNewParent, $idOldParent, $idToMove);
+		if ($this->assertNotEqual(false, $result)) {
+			pr("<span style='color: green'>Section 14 (id:".$idToMove.") and its content moved from Section 13 (id:".$idOldParent.") to Section 11 (id:".$idNewParent.")</span>");
+		}
+
+		$res = $this->Tree->find("first", array(
+			"conditions" => array(
+				"id" => $idToMove,
+				"parent_id" => $idOldParent
+			)
+		));
+
+		if ($this->assertEqual(false, $res)) {
+			pr("<span style='color: green'>Section 13 (id:".$idOldParent.") is no longer parent of Section 14 (id:".$idToMove.")</span>");
+		}
+
+		$newPath = $this->Tree->field("path", array(
+			"id" => $idToMove,
+			"parent_id" => $idNewParent
+		));
+
+		$res = $this->Tree->find("all", array(
+			"conditions" => array(
+				"parent_path" => $newPath
+			)
+		));
+
+		$childTest = true;
+		foreach ($res as $r) {
+			if (!in_array($r["Tree"]["id"], $children)) {
+				$childTest = false;
+				break;
+			}
+		}
+
+		if ($this->assertIdentical(true, $childTest)) {
+			pr("<span style='color: green'>All children moved</span>");
+		}
+
+	}
+
+	public function testMovePriority() {
+		$prioritySec3 = $this->Tree->field("priority", array("id" => $this->savedIds["Section 3"]));
+		$prioritySec4 = $this->Tree->field("priority", array("id" => $this->savedIds["Section 4"]));
+		pr("priority Section 3: ".$prioritySec3);
+		pr("priority Section 4: ".$prioritySec4);
+
+		// move priority down
+		pr("<h3>moving priority down...</h3>");
+		$res = $this->Tree->movePriorityDown($this->savedIds["Section 3"], $this->savedIds["Publication 1"]);
+		if ($this->assertIdentical(true, $res)) {
+			pr("<span style='color: green'>Section 3 moved down</span>");
+		}
+		$newPrioritySec3 = $this->Tree->field("priority", array("id" => $this->savedIds["Section 3"]));
+		$newPrioritySec4 = $this->Tree->field("priority", array("id" => $this->savedIds["Section 4"]));
+		$this->assertEqual($newPrioritySec3, $prioritySec4);
+		$this->assertEqual($newPrioritySec4, $prioritySec3);
+		pr("priority Section 3 after move down: ".$newPrioritySec3);
+		pr("priority Section 4 after move down: ".$newPrioritySec4);
+
+		// move priority up
+		pr("<h3>moving priority up...</h3>");
+		$res = $this->Tree->movePriorityUp($this->savedIds["Section 3"], $this->savedIds["Publication 1"]);
+		if ($this->assertIdentical(true, $res)) {
+			pr("<span style='color: green'>Section 3 moved up</span>");
+		}
+		$newPrioritySec3 = $this->Tree->field("priority", array("id" => $this->savedIds["Section 3"]));
+		$newPrioritySec4 = $this->Tree->field("priority", array("id" => $this->savedIds["Section 4"]));
+		$this->assertEqual($newPrioritySec3, $prioritySec3);
+		$this->assertEqual($newPrioritySec4, $prioritySec4);
+		pr("priority Section 3 after move up: ".$newPrioritySec3);
+		pr("priority Section 4 after move up: ".$newPrioritySec4);
+
+		// test fail move down (last priority item)
+		$item = $this->Tree->find("first", array(
+			"conditions" => array(
+				"id" => $this->savedIds["Section 5"],
+				"parent_id" => $this->savedIds["Publication 1"]
+			)
+		));
+		$res = $this->Tree->movePriorityDown($this->savedIds["Section 5"], $this->savedIds["Publication 1"]);
+		$this->assertIdentical(false, $res);
+		$itemAfter = $this->Tree->find("first", array(
+			"conditions" => array(
+				"id" => $this->savedIds["Section 5"],
+				"parent_id" => $this->savedIds["Publication 1"]
+			)
+		));
+		$this->assertIdentical($item, $itemAfter);
+
+		// test fail move up (first priority item)
+		$item = $this->Tree->find("first", array(
+			"conditions" => array(
+				"id" => $this->savedIds["Section 1"],
+				"parent_id" => $this->savedIds["Publication 1"]
+			)
+		));
+		$res = $this->Tree->movePriorityUp($this->savedIds["Section 1"], $this->savedIds["Publication 1"]);
+		$this->assertIdentical(false, $res);
+		$itemAfter = $this->Tree->find("first", array(
+			"conditions" => array(
+				"id" => $this->savedIds["Section 1"],
+				"parent_id" => $this->savedIds["Publication 1"]
+			)
+		));
+		$this->assertIdentical($item, $itemAfter);
+	}
+
+	public function testSetPriority() {
+		$res = $this->Tree->setPriority($this->savedIds["Section 1"], 10, $this->savedIds["Publication 1"]);
+		$this->assertIdentical(true, $res);
+		$priority = $this->Tree->field("priority", array(
+			"id" => $this->savedIds["Section 1"],
+			"parent_id" => $this->savedIds["Publication 1"]
+		));
+		$this->assertEqual(10, $priority);
+	}
+
 	public function testDeleteBranch() {
 		$idSection = $this->savedIds["Section 3"];
 		$descendants = $this->Tree->getDescendants($idSection);
@@ -137,83 +261,6 @@ class TreeTestCase extends BeditaTestCase {
 		}
 		
 		// following operations don't work because queries are cached in protected attribute Datasource::_queryCache but no method to delete exists
-		//$tree = $this->Tree->getAll();
-		//echo $this->buildHtmlTree($tree);
-	}
-	
-	 
-	public function testAppendChild() {
-		$idParent = $this->savedIds["Section 1"];
-		$idParent2 = $this->savedIds["Section 12"];
-		$idDoc = $this->savedIds["Document 1"];
-		$res = $this->Tree->appendChild($idDoc, $idParent);
-		if ($this->assertTrue($res, "Error appending Document 1 to Section 1")) {
-			pr("<span style='color: green'>Document 1 appended to Section 1</span>");
-		} 
-		$res = $this->Tree->appendChild($idDoc, $idParent2);
-		if ($this->assertTrue($res, "Error appending Document 1 to Section 12")) {
-			pr("<span style='color: green'>Document 1 appended to Section 12</span>");
-		}
-		
-		pr("Tree:");
-		pr($this->Tree->find("all", array("conditions" => array("id" => $this->savedIds["Document 1"]))));
-	}
-	
-	public function testDeleteAppendedChild() {
-		$idDoc = $this->savedIds["Document 1"];
-		$res = ClassRegistry::init("Document")->del($idDoc);
-		if ($this->assertTrue($res)) {
-			pr("<span style='color: green'>Document 1 deleted</span>");
-		}
-		
-		$res = $this->Tree->find("all", array("conditions" => array("id" => $this->savedIds["Document 1"])));
-		if ($this->assertEqual(array(), $res)) {
-			pr("<span style='color: green'>Document 1 deleted from tree</span>");
-		} else {
-			pr("Tree:");
-			pr($res);
-		}
-	}
-	
-	public function testDeleteBranch() {
-		$idSection = $this->savedIds["Section 3"];
-		$descendants = $this->Tree->getDescendants($idSection);
-		$section = ClassRegistry::init("Section");
-			
-		$section->del($idSection);
-
-		$treeRes = $this->Tree->find("all", array("conditions" => array("path LIKE '%/".$idSection."/%'")));
-		if ($this->assertEqual(array(), $treeRes)) {
-			pr("<span style='color: green'>Tree cleaned</span>");
-		} else {
-			pr("<span style='color: red'>Tree not cleaned:</span>");
-			pr($treeRes);
-		}
-		
-		$res = $section->findById($idSection);
-		if ($this->assertEqual($res, array())) {
-			pr("<span style='color: green'>section Section 3 deleted</span>");
-		} else {
-			pr("<span style='color: red'>section Section 3 not deleted</span>");
-		}
-		
-		foreach ($descendants["items"] as $item) {
-			$modelName = Configure::read("objectTypes.".$item["object_type_id"].".model"); 
-			$res = ClassRegistry::init($modelName)->findById($item["id"]);
-			if ($modelName == "Section") {
-				if ($this->assertEqual($res, array())) {
-					pr("<span style='color: green'>subsection " . $item["title"] . " deleted</span>");
-				} else {
-					pr("<span style='color: red'>subsection " . $item["title"] . " not deleted</span>");
-				}
-			} else {
-				if ($this->assertNotEqual($res, array())) {
-					pr("<span style='color: green'>object " . $item["title"] . "  not deleted</span>");
-				}
-			}
-		}
-		
-		// following operations doesn't work because queries are cached in protected attribute Datasource::_queryCache but no method to delete it exist
 		//$tree = $this->Tree->getAll();
 		//echo $this->buildHtmlTree($tree);
 	}

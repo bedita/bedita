@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* BeditaApp schema generated on: 2010-03-11 10:03:48 : 1268300688*/
+/* BeditaApp schema generated on: 2010-03-24 17:03:57 : 1269448617*/
 class BeditaAppSchema extends CakeSchema {
 	var $name = 'BeditaApp';
 
@@ -466,14 +466,14 @@ class BeditaAppSchema extends CakeSchema {
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'hash_file_index' => array('column' => 'hash_file', 'unique' => 0))
 	);
 	var $trees = array(
-		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
+		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'area_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'parent_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
-		'path' => array('type' => 'text', 'null' => false, 'default' => NULL, 'values' => NULL),
-		'parent_path' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
+		'path' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL, 'key' => 'primary'),
+		'parent_path' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'priority' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'menu' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
-		'indexes' => array('id_idx' => array('column' => 'id', 'unique' => 0), 'parent_idx' => array('column' => 'parent_id', 'unique' => 0), 'area_idx' => array('column' => 'area_id', 'unique' => 0))
+		'indexes' => array('path' => array('column' => 'path', 'unique' => 1), 'id_idx' => array('column' => 'id', 'unique' => 0), 'parent_idx' => array('column' => 'parent_id', 'unique' => 0), 'area_idx' => array('column' => 'area_id', 'unique' => 0))
 	);
 	var $users = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),

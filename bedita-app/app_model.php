@@ -459,70 +459,6 @@ class BEAppObjectModel extends BEAppModel {
 		return $result ;
 	}
 	
-	function __clone() {
-		$className 	= get_class($this) ;
-		$_this		= new $className() ;
-
-		if(@empty($this->{$this->primaryKey})) {
-			$this->copyPropertiesFromObj($_this);
-
-			return ;
-		}
-
-		$i = 0 ;
-
-		// Get object data
-		$data = $this->findById($this->{$this->primaryKey}) ;
-
-		// Prepare data
-		$_this->_formatDataForClone($data, $this) ;
-
-		/**
-		 * If first field is not an array, it saves correctly.
-		 * functions model:save -->  model::set --> model::countDim
-		 */
-		$tmp = array("title" => $data["title"]) ;
-		$data = am($tmp, $data) ;
-
-		// Salva i dati, in caso d'errore, esce
-		if(!$_this->save($data)) {
-			$this->copyPropertiesFromObj($_this);
-
-			return ;
-		}
-
-		$this->copyPropertiesFromObj($_this);
-	}
-
-	private function copyPropertiesFromObj(&$obj) {
-		foreach ($obj as $key => $item) {
-			$this->{$key} = $item ;
-		}
-	}
-
-	/**
-	 * Prepare data to create clone
-	 *
-	 * @param array $data		Data to prepare
-	 * @param object $source	Source object
-	 */
-	protected function _formatDataForClone(&$data, $source = null) {
-
-		$labels = array($this->primaryKey, 'user_created', 'user_modified', 'Index') ;
-		foreach($labels as $label) unset($data[$label]) ;
-
-		/**
-		 * Gestione di dati specifici a diversi tipi di oggetti.
-	 	*/
-		for($i=0; isset($data['calendars']) && $i < count($data['calendars']) ; $i++) {
-			unset($data['calendars'][$i]['id']) ;
-		}
-
-		for($i=0; isset($data['links']) && $i < count($data['links']) ; $i++) {
-			unset($data['links'][$i]['id']) ;
-		}
-	}
-	
 	protected function updateHasManyAssoc() {
 		
 		foreach ($this->hasMany as $name => $assoc) {
@@ -782,10 +718,7 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
     function beforeValidate() {
         return $this->validateContent();
     }
-        
-	function __clone() {
-		throw new BEditaCloneModelException($this);
-	}		
+	
 }
 
 
@@ -849,10 +782,7 @@ class BeditaStreamModel extends BEAppObjectModel {
     function beforeValidate() {
         return $this->validateContent();
     }
-        
-	function __clone() {
-		throw new BEditaCloneModelException($this);
-	}		
+	
 }
 
 /**
@@ -920,7 +850,7 @@ class BeditaCollectionModel extends BEAppObjectModel {
 			'DeleteDependentObject'	=> array('section'),
 			'DeleteObject' 			=> 'objects'
 	); 
-	var $recursive 	= 2 ;
+	var $recursive 	= 2;
 
 	var $hasOne = array(
 			'BEObject' =>
@@ -930,128 +860,8 @@ class BeditaCollectionModel extends BEAppObjectModel {
 					'foreignKey'	=> 'id',
 					'dependent'		=> true
 				)
-	) ;			
-	
-	/**
-	 * If true recursive clonation (children clonation)
-	 *
-	 * @var boolean
-	 */
-	var $recursionClone = true ;
+	);
 
-	/**
-	 * ID of the object to clone
-	 *
-	 * @var integer
-	 */
-	var $oldID ;
-
-
-	/**
-	 * Get children of the object whose id is $id.
-	 * If $userid is present, get objects for whom $userid has permitions, if $userid is '' anonymous user.
-	 * Result filtered by object type/s $filter, and status $status
-	 *
-	 * @param integer $id		
-	 * @param string $userid	If null: no permitions check. If '': user guest.
-	 * 							Default: no permitions check.
-	 * @param string $status	Status of the objects to get
-	 * @param array $filter		Types of the objects to get. Ex.:
-	 * 							1, 3, 22 ... publications, sections, documents.
-	 * 							Default: all.
-	 * @param integer $page		Number of page to select
-	 * @param integer $dim		Dimension of the page
-	 */
-	function getChildren($id = null, $userid = null, $status = null, $filter = false, $page = 1, $dim = 100000) {
-		if(!class_exists('Tree')) loadModel('Tree');
-		$tree 	= new Tree();
-
-		$tree->setRoot($this->id);
-		return $tree->getChildren($id, $userid, $status, $filter, $page, $dim)  ;
-	}
-
-
-	function __clone() {
-		if(!class_exists('Tree')) loadModel('Tree');
-
-		$oldID 		= $this->id ;
-		$recursion 	= (isset($this->recursionClone)) ? $this->recursionClone : true ;
-
-		parent::__clone();
-		$this->oldID 			= $oldID ;
-		$this->recursionClone 	= $recursion ;
-
-		// Clone children recursively
-		if($this->recursionClone) {
-			$this->insertChildrenClone() ;
-		}
-	}
-
-	protected function insertChildrenClone() {
-		$conf  	= Configure::getInstance() ;
-
-		$tree 	= new Tree();
-
-		// Get contents list
-		if(!($queries = $tree->getAll($this->oldID))) throw new BEditaErrorCloneException("BEAppCollectionModel::getItems") ;
-
-		// create new associations
-		for ($i=0; $i < count($queries[0]["children"]) ; $i++) {
-			$className	= $conf->objectTypes[$queries[0]["children"][$i]['object_type_id']]["model"] ;
-			$item 		= new $className() ;
-			$item->id	= $queries[0]['children'][$i]['id'] ;
-
-			$clone = clone $item ;
-
-			if(!$tree->appendChild($clone->id, $this->id)) {
-				throw new BEditaErrorCloneException("BEAppCollectionModel::appendChild") ;
-			}
-		}
-
-	}
-
-	function appendChild($id, $idParent = null, $priority = null) {
-		if(!class_exists('Tree')) loadModel('Tree');
-
-		$tree = new Tree();
-		$ret = $tree->appendChild($id, (isset($idParent)?$idParent:$this->id)) ;
-		if($priority!=null)
-			$tree->setPriority($id,$priority,(isset($idParent)?$idParent:$this->id)) ;
-		return $ret ;
-	}
-
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- *
- * Exception on cloning a not clonable object
- *
- */
-class BEditaCloneModelException extends BeditaException
-{
-    // Redefine the exception so message isn't optional
-    public function __construct($model, $code  = 0) {
-
-        // make sure everything is assigned properly
-        parent::__construct($model->name, $code);
-    }
-}
-
-/**
- *
- * Exception on clonation
- *
- */
-class BEditaErrorCloneException extends BeditaException
-{
-    // Redefine the exception so message isn't optional
-    public function __construct($msg, $code  = 0) {
-
-        // make sure everything is assigned properly
-        parent::__construct($model->name, $code);
-    }
 }
 
 ?>

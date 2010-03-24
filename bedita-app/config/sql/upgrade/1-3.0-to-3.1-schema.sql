@@ -3,6 +3,9 @@ ALTER TABLE `questions` ADD `text_ok` text DEFAULT NULL, ADD `text_fail` text DE
 ALTER TABLE `annotations` DROP FOREIGN KEY `annotations_ibfk_2`;
 ALTER TABLE `versions` ADD UNIQUE object_id_revision(object_id, revision);
 ALTER TABLE `users` ADD UNIQUE email(email);
+ALTER TABLE `trees` CHANGE `path` `path` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `trees` CHANGE `parent_path` `parent_path` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `trees` ADD UNIQUE `path` ( `path` );
 
 CREATE TABLE history (
   `id` INTEGER UNSIGNED NOT NULL  AUTO_INCREMENT,

@@ -460,6 +460,23 @@ class DbadminShell extends BeditaBaseShell {
 		}
 		$this->out("Objects not consistent: $inconsistent; objects deleted: $deleted");
 	}
+
+	function updateTreeRoot() {
+		$treeModel = ClassRegistry::init("Tree");
+		$conditions = array();
+		$rows = $treeModel->find("all", array("conditions" => $conditions));
+		if (!empty($rows)) {
+			foreach ($rows as $r) {
+				$treeModel->create();
+				$r["Tree"]["area_id"] = $treeModel->getAreaIdByPath($r["Tree"]["parent_path"]);
+				if (!$treeModel->save($r)) {
+					$this->out("Error updating row with path " . $r["Tree"]["path"]);
+				} else {
+					$this->out("Row with path " . $r["Tree"]["path"] . " updated");
+				}
+			}
+		}
+	}
 	
 	function help() {
 		$this->out('Available functions:');
@@ -511,6 +528,8 @@ class DbadminShell extends BeditaBaseShell {
   		$this->out(' ');
   		$this->out("10. checkConsistency: check objects for consistency on database");
   		$this->out(' ');
+		$this->out("11. updateTreeRoot: update area_id field in trees table");
+        $this->out(' ');
 	}
 	
 }

@@ -13,7 +13,7 @@ class TreeTestData extends BeditaTestData {
 		
 		'buildTree' => array(
 			array('Area' => array(
-						'title' 	=> 'Publishing 1',
+						'title' 	=> 'Publication 1',
 						'status' => 'on',
 						'children'	=> array(
 							array('Section'	=> array('title' => 'Section 1', 'status' => 'on', 'children' => array(
@@ -36,7 +36,7 @@ class TreeTestData extends BeditaTestData {
 						)
 				  )),
 			array('Area' => array(
-						'title' 	=> 'Publishing 2',
+						'title' 	=> 'Publication 2',
 						'status' => 'off',
 						'children'	=> array(
 							array('Section'	=> array('title' => 'Section 10', 'status' => 'on' , 'children' => array(
@@ -44,7 +44,12 @@ class TreeTestData extends BeditaTestData {
 							))),
 							array('Section'	=> array('title' => 'Section 12', 'status' => 'on', 'children' => array())),
 							array('Section'	=> array('title' => 'Section 13', 'status' => 'off', 'children' => array(
-								array('Section'	=> array('title' => 'Section 14', 'status' => 'on', 'children' => array())),
+								array('Section'	=> array('title' => 'Section 14', 'status' => 'on', 'children' => array(
+									array('Section' => array('title' => 'Section 18', 'status' => 'on', 'children' => array(
+										array('Document' => array('title' => 'ShortNews 1', 'status' => 'on')),
+										array('Event' => array('title' => 'Card 1', 'status' => 'off'))
+									))))
+								)),
 								array('Section'	=> array('title' => 'Section 15', 'status' => 'draft', 'children' => array())),
 							))),
 							array('Section'	=> array('title' => 'Section 16', 'status' => 'on', 'children' => array())),

@@ -69,56 +69,6 @@ class Section extends BeditaCollectionModel
 			return false;
 		return true;
 	}
-
-	//////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////
-	/**
-	 * Format data for the creation of a clone; every object type execute specific operation calling this method
-	 * Find the id of the branch where the object is
-	 *
-	 * @param array $data		Data to format
-	 * @param object $source	Source object
-	 */
-	protected function _formatDataForClone(&$data, $source = null) {
-		if(!class_exists('Tree')) loadModel('Tree');
-
-		$tree = new Tree();
-		
-		$data['parent_id'] = $tree->getParent($data['id'])  ;		
-		parent::_formatDataForClone($data);
-	}	
-	
-	/**
-	 * Execute recursively only the clonation of types: Section e Community, for the others insert a link
-	 */
-	protected function insertChildrenClone() {
-		$conf  	= Configure::getInstance() ;
-		$tree 	= new Tree();
-		
-		// Preleva l'elenco dei figli
-		$children = $tree->getChildren($this->oldID , null, null, false, 1, 10000000) ;
-		
-		// crea le nuove associazioni
-		for ($i=0; $i < count($children["items"]) ; $i++) {
-			$item = $children["items"][$i] ;
-			
-			switch($item['object_type_id']) {
-				case $conf->objectTypes['section']["id"]:
-				case $conf->objectTypes['community']["id"]: {
-					$className	= $conf->objectTypes[$item['object_type_id']]["model"] ;
-					
-					$tmp = new $className() ;
-					$tmp->id = $item['id'] ;
-					
-					$clone = clone $tmp ; 
-					$tree->move($this->id, $this->oldID , $clone->id) ;
-				}  break ;
-				default: {
-					$tree->appendChild($item['id'], $this->id) ;
-				}
-			}
-		}
-	}
     
 	public function feedsAvailable($areaId) {
         $this->bindModel( array(
@@ -141,6 +91,5 @@ class Section extends BeditaCollectionModel
         return $feedNames;
     }
     
-	
 }
 ?>

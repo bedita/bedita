@@ -31,43 +31,13 @@
 class Tree extends BEAppModel
 {
 
-	/**
-	 * save: do nothing
-	 */
-	function save($data = null, $validate = true, $fieldList = array()) {
-		return true ;
-	}
+	public $primaryKey = "path";
 
-	/**
-	 * Define tree root
-	 */
-	function setRoot($id) {
-		$this->id = $id ;
-	}
-
-	/**
-	 * Return root id
-	 */
-	function getRoot() {
-		return $this->id  ;
-	}
-
-	/**
-	 * Create clone of a tree/subtree
-	 *
-	 * @param integer $newId	new Id (clone)
-	 * @param integer $id		Id (original tree)
-	 */
-	function cloneTree($newId, $id = null) {
-		if (isset($id)) {
-			$this->id = $id ;
+	function beforeSave() {
+		if (!empty($this->data["Tree"]) && empty($this->data["Tree"]["area_id"]) && !empty($this->data["Tree"]["path"])) {
+			$this->data["Tree"]["area_id"] = $this->getAreaIdByPath($this->data["Tree"]["path"]);
 		}
-		if(!isset($this->id)) return false ;
-
-		$id = $this->id ;
-
-		$ret = $this->query("CALL cloneTree({$id}, {$newId})");
-		return (($ret === false)?false:true) ;
+		return true;
 	}
 
 	/**
@@ -80,14 +50,13 @@ class Tree extends BEAppModel
 	 * 					array, if two or more parents founded
 	 * 					false, error or none parent founded
 	 */
-	//TODO: when area_id will be managed change LIKE condition with area_id => $area_id condition
 	function getParent($id, $area_id=null) {
 		if (empty($id)) {
 			return false;
 		}
 		$conditions["id"] = $id;
 		if (!empty($area_id)) {
-			$conditions[] = "parent_path LIKE '/" . $area_id . "/%'";	
+			$conditions["area_id"] = $area_id;
 		}
 		
 		$ret = $this->find("all", array(
@@ -115,94 +84,201 @@ class Tree extends BEAppModel
 	}
 
 	function getRootForSection($id) {
-		$path = $this->field("path", array("id"=>$id));
-		if($path === false) {
-			$this->log("No path found in Tree for id ".$id);
-			throw new BeditaException(__("No path found in Tree for id", true)." ".$id);
-		}
-		$path = substr($path,1);
-		$pos = strpos($path,"/");
-		if($pos === false)
-			return $path;
-		return substr($path,0, $pos);
+		$area_id = $this->field("area_id", array("id"=>$id));
+		return $area_id;
 	}
 
+	/**
+	 * append an object to a parent in tree
+	 *
+	 * @param int $id object id
+	 * @param int $idParent parent object id
+	 * @return boolean
+	 */
 	function appendChild($id, $idParent = null) {
-		$idParent = (empty($idParent)) ? "NULL" :  $idParent ;
+		// root
+		if (empty($idParent)) {
+			$data["Tree"] = array(
+				"id" => $id,
+				"area_id" => $id,
+				"path" => "/".$id,
+				"parent_path" => "/",
+				"priority" => 1
+			);
+		} else {
+			$parentPath = $this->field("path", array("id" => $idParent));
+			$area_id = $this->getAreaIdByPath($parentPath);
+			$maxPriority = $this->field("priority", array("parent_id" => $idParent), "priority DESC");
+			$maxPriority = (!empty($maxPriority))? $maxPriority + 1 : 1;
 
-		$ret = $this->query("CALL appendChildTree({$id}, {$idParent})");
+			$data["Tree"] = array(
+				"id" => $id,
+				"area_id" => $area_id,
+				"parent_id" => $idParent,
+				"path" => $parentPath . "/".$id,
+				"parent_path" => $parentPath,
+				"priority" => $maxPriority
+			);
+		}
+
+		$ret = $this->save($data);
+
 		return (($ret === false)?false:true) ;
 
 	}
 
-	function moveChildUp($id, $idParent = false) {
-		if (!empty($idParent)) {
-			$this->id = $idParent ;
-		}
-		$ret = $this->query("CALL moveChildTreeUp({$id}, {$this->id})");
-		return (($ret === false)?false:true) ;
+	public function getAreaIdByPath($path) {
+		$pathArr = explode("/", trim($path, "/"));
+		return $pathArr[0];
 	}
 
-	function moveChildDown($id, $idParent = false) {
-		if (!empty($idParent)) {
-			$this->id = $idParent ;
+	/**
+	 * move up or down a leaf tree inside a branch
+	 *
+	 * @param int $id object id to move
+	 * @param int $idParent parent object (branch)
+	 * @param boolean $up true move up (priority - 1), false move down (priority + 1)
+	 * @return boolean
+	 */
+	public function movePriority($id, $idParent, $up=true) {
+		$treeRow = $this->find("first", array(
+			"conditions" => array("id" => $id, "parent_id" => $idParent)
+		));
+
+		if (empty($treeRow)) {
+			return false;
 		}
-		$ret = $this->query("CALL moveChildTreeDown({$id}, {$this->id})");
-		return (($ret === false)?false:true) ;
+
+		$origPriority = $treeRow["Tree"]["priority"];
+
+		if ($up) {
+			$op = " < ";
+			$dir = "DESC";
+		} else {
+			$op = " > ";
+			$dir = "ASC";
+		}
+		$op = ($up)? " < " : " > ";
+		$otherRow = $this->find("first", array(
+			"conditions" => array("parent_id" => $idParent, "priority" . $op . $origPriority),
+			"limit" => 1,
+			"order" => "priority " . $dir
+		));
+		
+		if (empty($otherRow["Tree"]["priority"])) {
+			return false;
+		}
+
+		$treeRow["Tree"]["priority"] = $otherRow["Tree"]["priority"];
+		$otherRow["Tree"]["priority"] = $origPriority;
+
+		if (!$this->save($treeRow)) {
+			return false;
+		}
+		$this->create();
+		if (!$this->save($otherRow)) {
+			return false;
+		}
+
+		return true;
 	}
 
-	function moveChildFirst($id, $idParent = false) {
-		if (!empty($idParent)) {
-			$this->id = $idParent ;
-		}
-		$ret = $this->query("CALL moveChildTreeFirst({$id}, {$this->id})");
-		return (($ret === false)?false:true) ;
+	public function movePriorityUp($id, $idParent) {
+		return $this->movePriority($id, $idParent);
 	}
 
-	function moveChildLast($id, $idParent = false) {
-		if (!empty($idParent)) {
-			$this->id = $idParent ;
-		}
-		$ret = $this->query("CALL moveChildTreeLast({$id}, {$this->id})");
-		return (($ret === false)?false:true) ;
-	}
-
-	function switchChild($id, $priority, $idParent = false) {
-		if (!empty($idParent)) {
-			$this->id = $idParent ;
-		}
-		$ret = $this->query("CALL switchChildTree({$id}, {$this->id}, {$priority})");
-		return (($ret === false)?false:true) ;
+	public function movePriorityDown($id, $idParent) {
+		return $this->movePriority($id, $idParent, false);
 	}
 	
-	function removeChild($id, $idParent = false) {
-		if (!empty($idParent)) {
-			$this->id = $idParent ;
-		}
-		$ret = $this->query("DELETE FROM trees WHERE id = {$id} AND parent_id = {$this->id}");
+	function removeChild($id, $idParent) {
+		$ret = $this->deleteAll(array("id" => $id, "parent_id" => $idParent));
 		return (($ret === false)?false:true) ;
 	}
 
-	function setPriority($id, $priority, $idParent = false) {
-		if (!empty($idParent)) {
-			$this->id = $idParent ;
+	function setPriority($id, $priority, $idParent) {
+		$row = $this->find("first", array(
+			"conditions" => array(
+				"id" => $id,
+				"parent_id" => $idParent
+			)
+		));
+		if (empty($row["Tree"])) {
+			return false;
 		}
-		$ret =  $this->query("UPDATE trees SET priority = {$priority} WHERE id = {$id} AND parent_id = {$this->id}");
+		$row["Tree"]["priority"] = $priority;
+		$ret =  $this->save($row);
 		return (($ret === false)?false:true) ;
 	}
 
 
-	function move($idNewParent, $idOldParent, $id = NULL) {
-		if (empty($id)) {
-			$id = $this->id;
-		}
-
+	/**
+	 * move branch to another parent
+	 *
+	 * @param int $idNewParent
+	 * @param int $idOldParent
+	 * @param int $id
+	 * @return boolean
+	 */
+	function move($idNewParent, $idOldParent, $id) {
 		// Verify that new parent is not a descendant on the tree to move
-		$ret = $this->query("SELECT isParentTree({$id}, {$idNewParent}) AS parent");
-		if(!empty($ret[0][0]["parent"])) return  false ;
+		if ($this->isParent($id, $idNewParent)) {
+			return false;
+		}
 
- 		$ret = $this->query("CALL moveTree({$id}, {$idOldParent}, {$idNewParent})");
-		return (($ret === false)?false:true) ;
+		$rowToMove = $this->find("first", array(
+			"conditions" => array(
+				"id" => $id,
+				"parent_id" => $idOldParent
+			)
+		));
+
+		$newParentRow = $this->find("first", array(
+			"conditions" => array(
+				"id" => $idNewParent
+			)
+		));
+
+		$newParentPath = $newParentRow["Tree"]["path"];
+		$newPath = $newParentPath . "/" . $rowToMove["Tree"]["id"];
+		$oldPath = $rowToMove["Tree"]["path"];
+
+		$children = $this->find("all", array(
+			"conditions" => array("path LIKE" => $oldPath."/%")
+		));
+
+		if (!$this->del($rowToMove["Tree"]["path"])) {
+			return false;
+		}
+
+		$area_id = $this->getAreaIdByPath($newPath);
+		$rowToMove["Tree"]["parent_path"] = $newParentPath;
+		$rowToMove["Tree"]["path"] = $newPath;
+		$rowToMove["Tree"]["parent_id"] = $idNewParent;
+		$rowToMove["Tree"]["area_id"] = $area_id;
+
+		$maxBranchPriority = $this->field("priority", array("parent_id" => $idNewParent), "priority DESC");
+		$rowToMove["Tree"]["priority"] = (empty($maxBranchPriority))? 1 : $maxBranchPriority + 1;
+
+		$this->create();
+		if (!$this->save($rowToMove)) {
+			return false;
+		}
+
+		foreach ($children as $child) {
+			if (!$this->del($child["Tree"]["path"])) {
+				return false;
+			}
+			$child["Tree"]["parent_path"] = str_replace($oldPath, $newPath, $child["Tree"]["parent_path"]);
+			$child["Tree"]["path"] = str_replace($oldPath."/", $newPath."/", $child["Tree"]["path"]);
+			$child["Tree"]["area_id"] = $area_id;
+			$this->create();
+			if (!$this->save($child)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -223,8 +299,13 @@ class Tree extends BEAppModel
 		}
 
 		$res = $this->findObjects($id, $userid, $status, $filter, "parent_path, priority",true,1,100000,true);
+		$tree = $this->buildTree($res["items"]);
+		return $tree ;
+	}
 
-		foreach ($res["items"] as $root) {
+	public function buildTree($items) {
+		$tree = array();
+		foreach ($items as $root) {
 
 			$root['children']	= array() ;
 			$roots[$root['id']] = &$root ;
@@ -237,13 +318,12 @@ class Tree extends BEAppModel
 					|| ($id == $root["id"]) ) {
 				$tree[] = &$root;
 			}
-		
+
 			unset($root);
 		}
-		
-		return $tree ;
+		return $tree;
 	}
-	
+
 	/**
 	 * search where have to stay $branch in $tree and put in  
 	 * @param array $tree
@@ -260,165 +340,25 @@ class Tree extends BEAppModel
 	}
 
 	/**
-	 * Organize positions of elements on the tree $tree
+	 * check if $idParent is an ancestor
 	 *
-	 * @param array $tree	the tree.
-	 * 						{0..N}:
-	 * 							id		element Id
-	 * 							parent		new parent
-	 * 							children	descendants list
+	 * @param integer $idParent
+	 * @param integer $id
+	 * @return boolean
 	 */
-	function moveAll(&$tree) {
-		// Search all parent_id and priority of branches
-		$IDs = array() ;
-		$this->_getIDs($tree, $IDs) ;
-		$this->_setPriority($tree) ;
+	function isParent($idParent, $id) {
+		$c = $this->find("count", array(
+			"conditions" => array(
+				"parent_path LIKE" => "%/" . $idParent . "/%",
+				"id" => $id
+			)
+		));
 
-		if(!count($IDs)) return true ;
-		$IDs = implode(",", $IDs) ;
-		$ret = $this->query("SELECT id, parent_id, priority FROM trees WHERE id IN ({$IDs})");
-
-		$IDOldParents 	 = array() ;
-		$IDOldPriorities = array() ;
-
-		for($i=0; $i < count($ret) ; $i++) {
-			$IDOldParents[$ret[$i]["trees"]["id"]] 		= $ret[$i]["trees"]["parent_id"] ;
-			$IDOldPriorities[$ret[$i]["trees"]["id"]] 	= $ret[$i]["trees"]["priority"] ;
-		}
-		unset($IDs) ;
-		unset($ret) ;
-
-		// Save branches moved
-		$ret = $this->_moveAll($tree, $IDOldParents, $IDOldPriorities) ;
-
-		return $ret ;
-	}
-
-	/**
-	 * Get path for object $id, with nickname instead of id
- 	 *
- 	 * @param integer  $id
-	 * @return array/string
-	 */
-	function getPathNickname($id) {
-		if (isset($id)) {
-			$this->id = $id ;
-		}
-		$id = $this->id ;
-
-		if(($ret = $this->query("SELECT path FROM  trees WHERE id = {$id}")) === false) {
-			return false ;
+		if ($c === 0) {
+			return false;
 		}
 
-		$IDs = array() ;
-		$paths = array() ;
-		
-		// Get IDs 
-		if(!count($ret)) return false ;
-		else if(count($ret) == 1) {
-			$paths[] = $ret[0]['trees']['path'] ;
-			$tmp = explode("/", $ret[0]['trees']['path']) ;
-			foreach ($tmp as $id) {
-				if(@empty($id)) continue ;
-				$IDs[$id] = null ;
-			}
-		}
-		else {
-			$tmp = array() ;
-			for($i=0; $i < count($ret) ; $i++) {
-				$paths[] = $ret[$i]['trees']['path'] ;
-				$tmp = explode("/", $ret[$i]['trees']['path']) ;
-				foreach ($tmp as $id) {
-					if(@empty($id)) continue ;
-					$IDs[$id] = null ;
-				}
-			}
-		}
-		
-		// Get nicknames
-		$tmp = array() ;
-		foreach ($IDs as $id => $value) {
-			$tmp[] = $id ;
-		}
-		$tmp = implode(",", $tmp);
-		if(($ret = $this->query("SELECT id, nickname FROM  objects WHERE id IN({$tmp}) ")) === false) {
-			return false ;
-		}
-		for($i=0; $i < count($ret) ; $i++) {
-			$IDs[$ret[$i]['objects']['id']] = $ret[$i]['objects']['nickname'] ;
-		}
-		
-		// Transform paths
-		for($i=0; $i < count($paths) ; $i++) {
-			$tmp = explode("/", $paths[$i]);
-		
-			for($x=0; $x < count($tmp) ; $x++) {
-				if(!isset($IDs[$tmp[$x]])) continue ;
-				$tmp[$x] = $IDs[$tmp[$x]] ;
-			}
-			$paths[$i] = implode("/", $tmp) ;
-		}
-		
-		return $paths ;
-	}	
-
-	function isParent($idParent, $id = NULL) {
-		if (empty($id)) {
-			$id = $this->id;
-		}
-
-		// Verify that the new parent is nota a descendant on the tree to move
-		$ret = $this->query("SELECT isParentTree({$idParent}, {$id}) AS parent");
-		
-		if(empty($ret[0][0]["parent"])) return  false ;
-
-		return (($ret[0][0]["parent"])?true:false) ;
-	}
-	
-	function isParentByNickname($nickname, $id = NULL) {
-		if (empty($id)) {
-			$id = $this->id;
-		}
-
-		// Verify that the new parent is nota a descendant on the tree to move
-		$ret = $this->query("SELECT id FROM objects where nickname = '{$nickname}' ");
-		if(!isset($ret[0]['objects']["id"])) return  false ;
-
-		return $this->isParent($ret[0]['objects']["id"] , $id) ;
-	}
-	
-	
-	private function _moveAll(&$tree, &$IDOldParents, &$IDOldPriorities) {
-
-		for($i=0; $i < count($tree) ; $i++) {
-			if($tree[$i]["parent"] != $IDOldParents[$tree[$i]["id"]]) {
-				if(!$this->move($tree[$i]["parent"], $IDOldParents[$tree[$i]["id"]], $tree[$i]["id"])) return false ;
-			}
-			if($tree[$i]["priority"] != $IDOldParents[$tree[$i]["id"]] && isset($tree[$i]["parent"])) {
-				if(!$this->switchChild($tree[$i]["id"], $tree[$i]["priority"], $tree[$i]["parent"])) return false ;
-//				if(!$this->setPriority($tree[$i]["id"], $tree[$i]["priority"], $tree[$i]["parent"])) return false ;
-			}
-
-			if(!$this->_moveAll($tree[$i]["children"], $IDOldParents, $IDOldPriorities)) return false ;
-		}
-
-		return true ;
-	}
-
-	private function _getIDs(&$tree, &$IDs) {
-		for($i=0; $i < count($tree) ; $i++) {
-			$IDs[] = $tree[$i]["id"] ;
-
-			$this->_getIDs($tree[$i]["children"], $IDs) ;
-		}
-	}
-
-	private function _setPriority(&$tree) {
-		for($i=0; $i < count($tree) ; $i++) {
-			$tree[$i]["priority"] = $i+1 ;
-
-			$this->_setPriority($tree[$i]["children"]) ;
-		}
+		return true;
 	}
 
 	/**
@@ -461,46 +401,6 @@ class Tree extends BEAppModel
 	function getDescendants($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir  = true, $page = 1, $dim = 100000) {
 		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, true) ;
 	}
-
-	/**
-	 * Get ID of object with nickname $nickname. If $parent_id is specified, the object should have the parent $parent_id
-	 * If there are objects with the same nickname, it returns the first found
-	 *
-	 * @param string $nickname
-	 * @param integer $parent_id		
-	 */
-	function getIdFromNickname($nickname, $parent_id = null) {
-		if(isset($parent_id)) {
-			$sql = "SELECT trees.id FROM
-					trees INNER JOIN objects ON trees.id = objects.id AND parent_id = {$parent_id}
-					WHERE
-					nickname = '{$nickname}' LIMIT 1
-			" ;
-		} else {
-			$sql = "SELECT trees.* FROM
-					trees INNER JOIN objects ON trees.id = objects.id AND parent_id IS NULL 
-					WHERE
-					nickname = '{$nickname}' LIMIT 1
-			" ;
-		}
-		
-		$tmp  	= $this->query($sql) ;
-		return ((isset($tmp[0]['trees']['id'])) ? $tmp[0]['trees']['id'] : null) ;
-	}
-	
-	////////////////////////////////////////////////////////////////////////
-
-	private function _getCondition_parentID(&$conditions, $id = null) {
-		if(isset($this->id)) $conditions[] = array("parent_id" => $this->id) ;
-		else $conditions[] = array("parent_id" => null);
-	}
-
-	private function _getCondition_parentPath(&$conditions, $id = null) {
-		if(isset($id)) {
-			$conditions[] = " path LIKE (CONCAT((SELECT path FROM trees WHERE id = {$id}), '/%')) " ;
-		}
-	}
-
 
 }
 

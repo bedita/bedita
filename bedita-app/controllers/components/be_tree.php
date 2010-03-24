@@ -167,15 +167,6 @@ class BeTreeComponent extends Object {
 	}
 	
 	/**
-	 * Get object id from path $path
-	 * 
-	 * @param integer $path	Path of the object to find
-	 */
-	function getIdFromNickname($path) {
-		return $this->_getIdFromNickname($path) ;
-	}
-	
-	/**
 	 * Array of parent objects of $id...
 	 *
 	 * @param integer $id
@@ -212,15 +203,6 @@ class BeTreeComponent extends Object {
 			$this->Tree->appendChild($id, $parent_id) ;
 		}
 
-	}
-	
-	private function _getIdFromNickname($path) {
-		$nickname = basename($path) ;
-		if(@empty($nickname)) return null ;
-		
-		$parent_id = $this->_getIdFromNickname(dirname($path)) ;
-		
-		return $this->Tree->getIdFromNickname($nickname,  $parent_id) ;
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////

@@ -81,40 +81,6 @@ class Area extends BeditaCollectionModel
 		$tree = ClassRegistry::init('Tree', 'Model');
 		$tree->appendChild($this->id, null) ;	
 	}
-	
-	
-	/**
-	 * Execute recursively only clonation of types: Section and Community, for the others, insert a link
-	 */
-	protected function insertChildrenClone() {
-		$conf  	= Configure::getInstance() ;
-		$tree 	= new Tree();
-		
-		// Get children
-		$children = $tree->getChildren($this->oldID , null, null, false, 1, 10000000) ;
-		
-		// create new associations
-		for ($i=0; $i < count($children["items"]) ; $i++) {
-			$item = $children["items"][$i] ;
-			
-			switch($item['object_type_id']) {
-				case $conf->objectTypes['section']["id"]:
-				case $conf->objectTypes['community']["id"]: {
-					$className	= $conf->objectTypes[$item['object_type_id']]["model"] ;
-					
-					$tmp = new $className() ;
-					$tmp->id = $item['id'] ;
-					
-					$clone = clone $tmp ; 
-					$tree->move($this->id, $this->oldID , $clone->id) ;
-				}  break ;
-				default: {
-					$tree->appendChild($item['id'], $this->id) ;
-				}
-			}
-		}
-	}
-	
 
 }
 ?>

@@ -85,19 +85,6 @@ class AreasController extends ModulesController {
 		}
 	}
 	
-	
-	function saveTree() {
-		$this->checkWriteModulePermission();
-		$this->Transaction->begin() ;
-		if(@empty($this->data["tree"])) throw new BeditaException(__("No data", true));
-		// Get the tree
-		$this->_getTreeFromPOST($this->data["tree"], $tree) ;
-		// Save data changes
-		if(!$this->Tree->moveAll($tree)) throw new BeditaException( __("Error saving tree from _POST", true));
-		$this->Transaction->commit() ;
-		$this->userInfoMessage(__("Area tree saved", true));
-		$this->eventInfo("area tree saved");
-	}
 	 
 	 /**
 	  * Add or modify area
@@ -165,33 +152,37 @@ class AreasController extends ModulesController {
 	function saveSection() {
 		
 		$this->checkWriteModulePermission();
-		if(empty($this->data)) 
+		if(empty($this->data)) {
 			throw new BeditaException(__("No data", true));
+		}
 		$new = (empty($this->data['id'])) ? true : false ;
 		// Verify permissions for the object
-		if(!$new) { 
+		if (!$new) {
 			$this->checkObjectWritePermission($this->data['id']);
 		}
-		if(empty($this->data['parent_id'])) 
+		if (empty($this->data['parent_id'])) {
 			throw new BeditaException(__("No publication", true));
+		}
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave() ;
 		
-		if(!isset($this->data['Permissions'])) 
-			$this->data['Permissions'] = array() ;
+		if (!isset($this->data['Permissions'])) {
+			$this->data['Permissions'] = array();
+		}
 
-		if(empty($this->data["syndicate"]))
+		if (empty($this->data["syndicate"])) {
 			$this->data["syndicate"] = 'off';
+		}
 		
-		if(empty($this->data["parent_id"]))
+		if(empty($this->data["parent_id"])) {
 			throw new BeditaException( __("Missing parent", true));
+		}
 		
 		$this->Transaction->begin() ;
 			
-		if(!$this->Section->save($this->data))
-
+		if(!$this->Section->save($this->data)) {
 			throw new BeditaException( __("Error saving section", true), $this->Section->validationErrors );
-
+		}
 		
 		$id = $this->Section->getID();
 		// Move section in the right tree position, if necessary
@@ -200,8 +191,9 @@ class AreasController extends ModulesController {
 			if (!$this->BEObject->isFixed($id)) {
 				$oldParent = $this->Tree->getParent($id) ;
 				if($oldParent != $this->data["parent_id"]) {
-					if(!$this->Tree->move($this->data["parent_id"], $oldParent, $id))
+					if(!$this->Tree->move($this->data["parent_id"], $oldParent, $id)) {
 						throw new BeditaException( __("Error saving section", true));
+					}
 				}
 			}
 			
@@ -424,10 +416,6 @@ class AreasController extends ModulesController {
 	
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
-			"saveTree"	=> 	array(
-									"OK"	=> "./",
-									"ERROR"	=> "./" 
-								), 
 			"saveArea"	=> 	array(
 									"OK"	=> "/areas/view/{$this->Area->id}",
 									"ERROR"	=> $this->referer()
