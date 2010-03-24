@@ -99,7 +99,7 @@ msgid "BEdita contents statistics"
 msgstr "Statistiche contenuti BEdita"
 
 msgid "BEdita editors activity statistics"
-msgstr "Statistiche attività editori BEdita"
+msgstr "Statistiche attività redattori BEdita"
 
 msgid "Backend user restricted area"
 msgstr "Area con accesso ristretto agli utenti del backend"
@@ -1711,7 +1711,7 @@ msgid "edit"
 msgstr ""
 
 msgid "editor"
-msgstr "editore"
+msgstr "redattore"
 
 msgid "edu level"
 msgstr "livello di istruzione"
