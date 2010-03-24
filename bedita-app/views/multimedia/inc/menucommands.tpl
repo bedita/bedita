@@ -32,7 +32,7 @@ Menu a SX valido per tutte le pagine del controller.
 	{assign var='cat' value=$categorySearched|default:''}
 
 	{if $view->action == "index"}
-		<ul class="menuleft insidecol">
+		<ul class="menuleft insidecol catselector">
 			<li><a href="javascript:void(0)" onClick="$('#mediatypes').slideToggle();">{t}Select by type{/t}</a></li>
 				<ul id="mediatypes" {if empty($categorySearched)}style="display:none"{/if}>
 					

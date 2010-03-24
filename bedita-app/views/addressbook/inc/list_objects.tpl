@@ -1,5 +1,4 @@
 
-
 <script type="text/javascript">
 <!--
 var urlDelete = "{$html->url('deleteSelected/')}" ;
@@ -68,9 +67,6 @@ $(document).ready(function(){
 
 //-->
 </script>	
-
-
-	
 	
 	<form method="post" action="" id="formObject">
 
@@ -81,13 +77,13 @@ $(document).ready(function(){
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('title','name')}&nbsp;&nbsp;&nbsp;&nbsp;{$beToolbar->order('surname','surname')}</th>
-			<th>{$beToolbar->order('company_name','organization')}</th>
+{*			<th>{$beToolbar->order('company_name','organization')}</th>*}
+<th>{$beToolbar->order('id','id')}</th>
 			<th>{$beToolbar->order('status','Status')}</th>
 			<th>{$beToolbar->order('modified','modified')}</th>
 			<th>{t}is user{/t}</th>
 			<th>{$beToolbar->order('email','email')}</th>
 			<th>{$beToolbar->order('country','country')}</th>
-			<th>{$beToolbar->order('id','id')}</th>
 			<th>{$beToolbar->order('note','Notes')}</th>	
 		</tr>
 	{/capture}
@@ -97,17 +93,31 @@ $(document).ready(function(){
 		{section name="i" loop=$objects}
 		
 		<tr class="obj {$objects[i].status}">
-			<td class="checklist">
+			<td class="checklist" style="padding-top:5px">
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}"/>
 			</td>
-			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a></td>
-			<td>{$objects[i].company_name|default:''}</td>
-			<td>{$objects[i].status}</td>
+
+			<td style="min-width:200px">
+				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a>
+				<div class="description" id="desc_{$objects[i].id}">
+					nickname:{$objects[i].nickname}<br />
+					{$objects[i].description}
+				</div>
+			</td>
+			<td class="checklist detail" style="text-align:left; padding-top:4px;">
+				<a href="javascript:void(0)" onclick="$('#desc_{$objects[i].id}').slideToggle(); $('.plusminus',this).toggleText('+','-')">
+				<span class="plusminus">+</span>			
+				&nbsp;
+				{$objects[i].id}
+				</a>	
+			</td>
+		
+{*			<td>{$objects[i].company_name|default:''}</td>*}
+			<td style="text-align:center">{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
-			<td>{if empty($objects[i].user_id)}{t}no{/t}{else}{t}yes{/t}{/if}</td>
+			<td style="text-align:center">{if empty($objects[i].user_id)}{t}no{/t}{else}{t}yes{/t}{/if}</td>
 			<td>{$objects[i].email|default:''}</td>
 			<td>{$objects[i].country}</td>
-			<td>{$objects[i].id}</td>
 			<td>{if $objects[i].num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 		</tr>
 		
@@ -138,12 +148,22 @@ $(document).ready(function(){
 
 <div style="white-space:nowrap">
 	
-	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
-	&nbsp;&nbsp;&nbsp;
-	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
-	&nbsp;&nbsp;&nbsp
 	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
-
+	&nbsp;&nbsp;&nbsp
+	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
+	&nbsp;
+	{t}of{/t}&nbsp;
+	{if ($beToolbar->pages()) > 0}
+	{$beToolbar->last($beToolbar->pages(),'',$beToolbar->pages())}
+	{else}1{/if}
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
+	
+	&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;
+	{$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span>
+	| &nbsp;&nbsp;
+	{$beToolbar->next('next','','next')}  <span class="evidence"> &nbsp;</span>	
 	
 </div>
 

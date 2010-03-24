@@ -444,7 +444,7 @@ msgid "Error saving group"
 msgstr "Errore in salvataggio dati gruppo"
 
 msgid "Error saving hash status"
-msgstr "Errore in salvataggio stato hash"
+msgstr "Errore in salvataggio status hash"
 
 msgid "Error saving link"
 msgstr "Errore in salvataggio collegamento"
@@ -468,13 +468,13 @@ msgid "Error saving section"
 msgstr "Errore in salvataggio dati sezione"
 
 msgid "Error saving status for item: "
-msgstr "Errore in salvataggio stato per elemento: "
+msgstr "Errore in salvataggio status per elemento: "
 
 msgid "Error saving status for translation: "
-msgstr "Errore in salvataggio stato per traduzione: "
+msgstr "Errore in salvataggio status per traduzione: "
 
 msgid "Error saving status for translations"
-msgstr "Errore in salvataggio stato per traduzioni: "
+msgstr "Errore in salvataggio status per traduzioni: "
 
 msgid "Error saving stream object"
 msgstr "Errore in salvataggio oggetto stream"
@@ -1179,7 +1179,7 @@ msgid "Statistics"
 msgstr "Statistiche"
 
 msgid "Status"
-msgstr "Stato"
+msgstr "Status"
 
 msgid "Subject"
 msgstr "Soggetto"

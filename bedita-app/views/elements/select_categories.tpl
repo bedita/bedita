@@ -1,5 +1,5 @@
 {if !empty($categories)}
-<ul class="menuleft insidecol">
+<ul class="menuleft insidecol catselector">
 	<li><a href="javascript:void(0)" onClick="$('#groups').slideToggle();">{t}Select by category{/t}</a></li>
 	<ul id="groups" {if (empty($categorySearched))}style="display:none"{/if}>
 		{foreach key=cat_id item=cat_label from=$categories}

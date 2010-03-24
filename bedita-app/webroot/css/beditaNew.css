@@ -1350,8 +1350,6 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover {
 	font-size:2.2em;
 }
 
-
-
 /*...........................................    
 
     Ajax
@@ -1446,8 +1444,6 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover {
 	color:white;
 	cursor:pointer;
 }
-
-
 
 /*...........................................    
 
@@ -1625,12 +1621,6 @@ P.editornotes {
 }
 
 
-/*...........................................    
-
-    accessories
-
-...........................................*/
-
 .colophon {
 	width:240px !important;
 	background:transparent none !important;
@@ -1690,7 +1680,10 @@ P.editornotes {
 	padding-top:5px;
 }
 
-
+.catselector {
+	background-color: #B6B6B6 !important;	
+}
+	
 .bedev {
 	background-color:pink;
 }
