@@ -504,6 +504,15 @@ jQuery.fn.BEmodal = function(){
 	});
 
 
+/*...........................................    
+
+   statusInfo
+
+...........................................*/
+
+	//var objstatus = $(".secondacolonna .modules label").attr("class");
+
+
 });
 
 /*...........................................    
@@ -583,6 +592,11 @@ function openAtStart(defaultOpen) {
 
 }
 
+/*...........................................    
+
+   utility
+
+...........................................*/
 
 function getFlashVersion(){ 
 	// ie 

@@ -20,6 +20,21 @@ $(document).ready(function(){
 	
 	//alert("pop");
 
+	function checkStatus() {
+		var objstatus = $("input[name='data[status]']:checked").val();
+		if (objstatus == "draft") $("#saveBEObject").val("{/literal}{t}Save draft{/t}{literal}");
+		if (objstatus == "on") $("#saveBEObject").val("{/literal}{t}Publish{/t}{literal}");
+		if (objstatus == "off") $("#saveBEObject").val("{/literal}{t}Save{/t}{literal}");
+	}
+	
+	checkStatus();
+
+	$("input[name='data[status]']").click(function() {
+		checkStatus();
+	});
+	
+	
+
 	$("#cancelBEObject").hide().click(function() {
 		if(confirm("{/literal}{t}Are you sure you want to cancel and reload this document? All unsaved changes will be lost{/t}{literal}")) {
 			window.location.reload();
@@ -37,8 +52,25 @@ $(document).ready(function(){
 	
 	$("div.insidecol input[name='save']").click(function() {
 		$("#updateForm").submit();
-	});
+	});	
 	
+/*
+
+	$("div.insidecol input[name='save']").click(function() {
+		if ( $('.publishingtree input:checked').val() === undefined ) {	
+			var answer = confirm("{/literal}{t}This document is not on publishing tree. Continue?{/t}{literal}")
+			    if (answer){
+			       $("#updateForm").submit();
+			    }
+    		return false;  
+
+		} else {
+			$("#updateForm").submit();
+		}
+	});	
+	
+*/
+		
 	$("div.insidecol input[name='clone']").click(function() {
 		$("#updateForm").attr("action","{/literal}{$html->url('/')}{$submiturl}{literal}/cloneObject");
 		var cloneTitle=prompt("{/literal}{t}Title{/t}{literal}",$("input[name='data[title]']").val()+"-copy");
@@ -151,7 +183,13 @@ $(document).ready(function(){
 {/literal}{elseif (@$object.mail_status == "unsent")}{literal}
 
 		$(".secondacolonna .modules label").addClass("unsent").attr("title","unsent message");
-				
+
+{/literal}{elseif (@$object.status == "draft")}{literal}
+
+		$(".secondacolonna .modules label").addClass("draft").attr("title","draft message");
+		$(".head H1").css("color","#666");
+
+							
 {/literal}{/if}{literal}
 
 

@@ -361,6 +361,11 @@ UL.modules {
 	opacity:0.55;
 }
 
+.modules .draft {
+	background: transparent url(../img/iconDraft.png);
+	background-repeat:no-repeat !important;
+	background-position: center;
+}
 
 .modules .readonly {
 	background: transparent url(../img/iconReadonly.png);

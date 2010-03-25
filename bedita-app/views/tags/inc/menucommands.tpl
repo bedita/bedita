@@ -13,12 +13,12 @@ Menu a SX valido per tutte le pagine del controller.
 		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
 	</div> 
 	
-	{if $method == "view" && $module_modify eq '1'}
+	{if !empty($view->action) && $view->action != "index" && $view->action != "categories"}
 	<div class="insidecol">
 
-		<input type="submit" value=" {t}Save{/t} " name="save" />	
+		<input type="submit" value=" {t}Save{/t} " id="saveBEObject"name="save" />	
 		<input type="button" name="delete" id="delBEObject" value="{t}Delete{/t}"  {if !($tag.id|default:false)}disabled="1"{/if}/>
-
+	
 	</div>
 	
 	{/if}

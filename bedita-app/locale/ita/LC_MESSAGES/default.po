@@ -1124,6 +1124,9 @@ msgstr "Il campo Diritti è obbligatorio (almeno %1 caratteri alfanumerici)"
 msgid "Save"
 msgstr "Salva"
 
+msgid "Save draft"
+msgstr "Salva bozza"
+
 msgid "Search"
 msgstr "Cerca"
 
@@ -2147,6 +2150,9 @@ msgstr "nome pubblico"
 
 msgid "public url"
 msgstr "url pubblico"
+
+msgid "Publish"
+msgstr "Pubblica"
 
 msgid "publisher"
 msgstr "editore"

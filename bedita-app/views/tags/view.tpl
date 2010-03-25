@@ -4,14 +4,14 @@
 {$javascript->link("jquery/jquery.form", false)}
 {$javascript->link("jquery/jquery.cmxforms", false)}
 {$javascript->link("jquery/jquery.metadata", false)}
-{$javascript->link("jquery/jquery.validate", false)}
+
 
 <script type="text/javascript">
 {literal}
 $(document).ready( function ()
 {
 	openAtStart("#tagdetails");
-	$("#updateform").validate();
+
 	$("#delBEObject").submitConfirm({
 		action: "{/literal}{$html->url('delete/')}{literal}",
 		message: "{/literal}{t}Are you sure that you want to delete the tag?{/t}{literal}"
