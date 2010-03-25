@@ -49,6 +49,9 @@ msgstr "Indirizzo"
 msgid "Advanced Properties"
 msgstr "Proprietà avanzate"
 
+msgid "All unsaved changes will be lost"
+msgstr "Tutte le modifiche non salvate andranno perdute"
+
 msgid "Annotation type or object_id missing"
 msgstr "Tipo di annotazione o object_id mancanti"
 
@@ -73,8 +76,7 @@ msgstr "Sicuro di voler accettare questo IP"
 msgid "Are you sure you want to ban this IP?"
 msgstr "Sicuro di voler interdire l'accesso a questo IP (ban)?"
 
-msgid "Are you sure you want to cancel and reload this document? All unsaved"
-"changes will be lost"
+msgid "Are you sure you want to cancel and reload this document? All unsaved changes will be lost"
 msgstr ""
 
 msgid "Area deleted"

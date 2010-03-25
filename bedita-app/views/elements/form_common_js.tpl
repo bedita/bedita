@@ -50,10 +50,17 @@ $(document).ready(function(){
 		{literal}
 	});
 	
+	
 	$("div.insidecol input[name='save']").click(function() {
 		$("#updateForm").submit();
 	});	
-	
+/*
+	window.onbeforeunload = function () {
+		if ( $(".secondacolonna .modules label").hasClass("save") && (useUnload) ) {	
+			return "{/literal}{t}All unsaved changes will be lost{/t}{literal}";
+		}
+	};
+*/
 /*
 
 	$("div.insidecol input[name='save']").click(function() {
@@ -194,20 +201,16 @@ $(document).ready(function(){
 
 
 /*
-	check sulle modifiche non salvate
+	check sulle modifiche non salvate e variabile sul submit
 */
 	
 	$("#updateForm *").change(function () {
 		$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 		$("#cancelBEObject").show();
 	});
-/*
-	window.onbeforeunload = function () { 
-		if ($(".secondacolonna .modules label").hasClass("save")) {
-  			return "{/literal}{t}You have unsaved changes{/t}{literal}"; 
-		}
-	};	
-*/
+
+
+
 
 {/literal}{if !empty($object.id)}{literal}
 
