@@ -56,7 +56,7 @@ $(document).ready(function(){
 	});	
 /*
 	window.onbeforeunload = function () {
-		if ( $(".secondacolonna .modules label").hasClass("save") && (useUnload) ) {	
+		if ( $(".secondacolonna .modules label").hasClass("save") ) {	
 			return "{/literal}{t}All unsaved changes will be lost{/t}{literal}";
 		}
 	};
