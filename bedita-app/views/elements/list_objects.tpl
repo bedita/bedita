@@ -8,25 +8,24 @@ var URLBase = "{$html->url('index/')}" ;
 var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
 var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 var urlMoveToAreaSection = "{$html->url('moveItemsToAreaSection/')}";
+var urlRemoveFromAreaSection = "{$html->url('removeItemsFromAreaSection/')}";
 var urlCategoryAssoc = "{$html->url('assocCategory/')}";
 var urlCategoryDisassoc = "{$html->url('disassocCategory/')}";
 
 {literal}
 $(document).ready(function(){
 
-
 	$(".indexlist TD").not(".checklist").css("cursor","pointer").click(function(i) {
 		document.location = $(this).parent().find("a:first").attr("href"); 
 	} );
-	
+
 	$("#deleteSelected").bind("click", function() {
 		if(!confirm(messageSelected)) 
 			return false ;	
 		$("#formObject").attr("action", urlDelete) ;
 		$("#formObject").submit() ;
 	});
-	
-	
+
 	$("#assocObjects").click( function() {
 		var url = urlAddToAreaSection;
 		if($('#areaSectionAssocOp')) {
@@ -38,16 +37,22 @@ $(document).ready(function(){
 		$("#formObject").attr("action", url) ;
 		$("#formObject").submit() ;
 	});
-	
+
+	$("#removeFromAreaSection").click( function() {
+		$("#formObject").attr("action", urlRemoveFromAreaSection) ;
+		$("#formObject").submit() ;
+	});
+
 	$("#changestatusSelected").click( function() {
 		$("#formObject").attr("action", urlChangeStatus) ;
 		$("#formObject").submit() ;
 	});
-	
+
 	$("#assocObjectsCategory").click( function() {
 		$("#formObject").attr("action", urlCategoryAssoc) ;
 		$("#formObject").submit() ;
 	});
+
 	$("#disassocObjectsCategory").click( function() {
 		$("#formObject").attr("action", urlCategoryDisassoc) ;
 		$("#formObject").submit() ;
@@ -193,7 +198,7 @@ $(document).ready(function(){
 	
 	{if !empty($tree)}
 		{assign var='named_arr' value=$view->params.named}
-		{if empty($named_arr)}
+		{if empty($named_arr.id)}
 			{t}copy{/t}
 		{else}
 			<select id="areaSectionAssocOp" name="areaSectionAssocOp" style="width:75px">
@@ -209,7 +214,12 @@ $(document).ready(function(){
 
 		<input type="hidden" name="data[source]" value="{$named_arr.id|default:''}" />
 		<input id="assocObjects" type="button" value=" ok " />
-	<hr />
+		<hr />
+		
+		{if !empty($named_arr)}
+		<input id="removeFromAreaSection" type="button" value="{t}Remove selected from section{/t}" />
+		<hr/>
+		{/if}
 	{/if}
 
 	{if !empty($categories)}

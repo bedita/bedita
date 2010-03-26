@@ -8,6 +8,7 @@ var URLBase = "{$html->url('index/')}" ;
 var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
 var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 var urlMoveToAreaSection = "{$html->url('moveItemsToAreaSection/')}";
+var urlRemoveFromAreaSection = "{$html->url('removeItemsFromAreaSection/')}";
 var urlCategoryAssoc = "{$html->url('assocCategory/')}";
 var urlCategoryDisassoc = "{$html->url('disassocCategory/')}";
 var urlMailgroupAssoc = "{$html->url('addToMailgroup/')}";
@@ -37,7 +38,12 @@ $(document).ready(function(){
 		$("#formObject").attr("action", url) ;
 		$("#formObject").submit() ;
 	});
-	
+
+	$("#removeFromAreaSection").click( function() {
+		$("#formObject").attr("action", urlRemoveFromAreaSection) ;
+		$("#formObject").submit() ;
+	});
+
 	$("#changestatusSelected").click( function() {
 		$("#formObject").attr("action", urlChangeStatus) ;
 		$("#formObject").submit() ;
@@ -197,7 +203,12 @@ $(document).ready(function(){
 
 		<input type="hidden" name="data[source]" value="{$named_arr.id|default:''}" />
 		<input id="assocObjects" type="button" value=" ok " />
-	<hr />
+		<hr />
+
+		{if !empty($named_arr)}
+		<input id="removeFromAreaSection" type="button" value="{t}Remove selected from section{/t}" />
+		<hr/>
+		{/if}
 	{/if}
 
 	{if !empty($categories)}

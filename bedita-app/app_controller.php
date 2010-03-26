@@ -861,14 +861,14 @@ abstract class ModulesController extends AppController {
 		$this->checkWriteModulePermission();
 		if(!empty($this->params['form']['objects_selected'])) {
 			$objects_to_assoc = $this->params['form']['objects_selected'];
-			$destination = $this->data['destination'];
+			$source = $this->data['source'];
 			$beObject = ClassRegistry::init("BEObject");
-			$object_type_id = $beObject->findObjectTypeId($destination);
+			$object_type_id = $beObject->findObjectTypeId($source);
 			$modelTree = ClassRegistry::init("Tree");
 			$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
 			$modelLoaded->contain("BEObject");
-			if(!($section = $modelLoaded->findById($destination))) {
-				throw new BeditaException(sprintf(__("Error loading section: %d", true), $destination));
+			if(!($areaSection = $modelLoaded->findById($source))) {
+				throw new BeditaException(sprintf(__("Error loading section: %d", true), $source));
 			}
 			$this->Transaction->begin() ;
 			for($i=0; $i < count($objects_to_assoc) ; $i++) {
@@ -876,15 +876,15 @@ abstract class ModulesController extends AppController {
 					throw new BeditaException(__("Error: modifying a fixed object!", true));
 				}
 				$parents = $this->BeTree->getParents($objects_to_assoc[$i]);
-				if (!in_array($section['id'], $parents)) { 
-					if(!$modelTree->removeChild($objects_to_assoc[$i],$section['id'])) {
+				if (in_array($areaSection['id'], $parents)) { 
+					if(!$modelTree->removeChild($objects_to_assoc[$i],$areaSection['id'])) {
 						throw new BeditaException( __("Error during remove child", true));
 					}
 				}
 			}
 			$this->Transaction->commit() ;
-			$this->userInfoMessage(__("Items removed from area/section", true) . " - " . $section['title']);
-			$this->eventInfo("items removed from area/section " . $section['id']);
+			$this->userInfoMessage(__("Items removed from area/section", true) . " - " . $areaSection['title']);
+			$this->eventInfo("items removed from area/section " . $areaSection['id']);
 		}
 	}
 

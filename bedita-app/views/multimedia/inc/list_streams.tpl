@@ -7,6 +7,8 @@ var URLBase = "{$html->url('index/')}" ;
 var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
 var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 var urlMoveToAreaSection = "{$html->url('moveItemsToAreaSection/')}";
+var urlRemoveFromAreaSection = "{$html->url('removeItemsFromAreaSection/')}";
+
 {literal}
 $(document).ready(function(){
 	
@@ -26,6 +28,11 @@ $(document).ready(function(){
 			}
 		}
 		$("#formObject").attr("action", url) ;
+		$("#formObject").submit() ;
+	});
+
+	$("#removeFromAreaSection").click( function() {
+		$("#formObject").attr("action", urlRemoveFromAreaSection) ;
 		$("#formObject").submit() ;
 	});
 
@@ -135,7 +142,7 @@ $(document).ready(function(){
 	{if !empty($tree)}
 
 		{assign var='named_arr' value=$view->params.named}
-		{if empty($named_arr)}
+		{if empty($named_arr.id)}
 			{t}copy{/t}
 		{else}
 			<select id="areaSectionAssocOp" name="areaSectionAssocOp" style="width:75px">
@@ -151,7 +158,12 @@ $(document).ready(function(){
 
 		<input type="hidden" name="data[source]" value="{$named_arr.id|default:''}" />
 		<input id="assocObjects" type="button" value=" ok " />
-	<hr />
+		<hr />
+
+		{if !empty($named_arr)}
+		<input id="removeFromAreaSection" type="button" value="{t}Remove selected from section{/t}" />
+		<hr/>
+		{/if}
 	{/if}
 
 	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>

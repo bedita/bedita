@@ -224,6 +224,10 @@ class AddressbookController extends ModulesController {
 							"OK"	=> $this->referer(),
 							"ERROR"	=> $this->referer() 
  									),
+ 			"removeItemsFromAreaSection"	=> 	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer() 
+							),
 			"assocCategory"	=> 	array(
 							"OK"	=> $this->referer(),
 							"ERROR"	=> $this->referer() 

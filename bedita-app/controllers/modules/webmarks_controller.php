@@ -195,6 +195,10 @@ class WebmarksController extends ModulesController {
 										"OK"	=> $this->referer(),
 										"ERROR"	=> $this->referer() 
 										),
+				"removeItemsFromAreaSection"	=> 	array(
+										"OK"	=> $this->referer(),
+										"ERROR"	=> $this->referer() 
+										),
 				"changeStatusObjects"	=> 	array(
 										"OK"	=> $this->referer(),
 										"ERROR"	=> $this->referer() 
