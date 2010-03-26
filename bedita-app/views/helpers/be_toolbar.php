@@ -249,8 +249,10 @@ class BeToolbarHelper extends AppHelper {
 		
 		if(isset($data['order']) && $data['order'] == $field) {
 			if(!isset($dir)) $dir = (isset($data['dir']))  ? (!$data['dir']) : true  ;
+			$class = "SortUp";
 		}  else {
 			if(!isset($dir)) $dir = true ;
+			$class = "";
 		}
 
 		// Crea l'url
@@ -266,7 +268,7 @@ class BeToolbarHelper extends AppHelper {
 			$title = __($title, true);
 		}
 		
-		return '<a href="' . $url . '">' . $title . '</a>';
+		return '<a class="'.$class.'" href="' . $url . '">' . $title . '</a>';
 		
 	}
 

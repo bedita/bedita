@@ -111,17 +111,11 @@ jQuery.fn.extend({
 
 $(document).ready(function(){
 
-
-
 /*...........................................    
 
    moduloni
 
-...........................................*/
-
-	
-	
-		
+...........................................*/	
 	
 	$(".modules *[rel]").css("cursor","pointer");
 
@@ -143,15 +137,11 @@ $(document).ready(function(){
 
 	});
 
-
-
 /*...........................................    
 
    menu TOP moduli
 
 ...........................................*/
-
-
 
 	$(".modulesmenu li").mouseover(function (e) {		
 
@@ -169,16 +159,13 @@ $(document).ready(function(){
 
 		$(".modulesmenucaption").toggle();
 
-		$(".modulesmenucaption A").text("be");
-
-		
+		$(".modulesmenucaption A").text("be");		
 
 	}).click(function () {
 		if ($(this).attr("rel")) {
 			window.location = ($(this).attr("rel"));
 		}
 	});
-
 		
 
 /*...........................................    
@@ -210,17 +197,11 @@ $(document).ready(function(){
 	
 	};
 	
-	
-	
 	$(".tab").click(function (){
 		
 		$(this).BEtabstoggle() ;	
 
 	});
-
-
-
-
 
 /*...........................................    
 
@@ -244,9 +225,6 @@ $(document).ready(function(){
 		$(this).addClass("on");
 	
 	  });
-
-
-
 
 /*...........................................    
 
@@ -284,7 +262,6 @@ $(document).ready(function(){
 
 ...........................................*/	
 
-
 	//$(".publishingtree DIV UL").hide();
 
 	$(".publishingtree h2").before("<div class='plusminus'></div>");
@@ -315,8 +292,6 @@ $(document).ready(function(){
 
 ...........................................*/	
 
-	
-
 	$("#viewthumb .multimediaitem").mouseover(function () {
 
 	 	$(this).toggleClass("dark");
@@ -334,8 +309,6 @@ $(document).ready(function(){
 
 ...........................................*/
 
-
-
 	$(".multimediaitemToolbar.viewlist").click(function () {
 		
 		$(".vlist, .imagebox, .info_file_item").toggle();
@@ -343,10 +316,7 @@ $(document).ready(function(){
 		$('.multimediaitem').css("float","none");
 		
 		$('.vlist').css("white-space","nowrap");
-		
-		//alert(1);
-
-		
+	
 	});
 	
 	$(".multimediaitemToolbar.viewsmall").click(function () {
@@ -375,9 +345,6 @@ $(document).ready(function(){
 	$("#mediatypes LI.ico_all").click(function () {
 		$("#mediatypes LI").addClass("on");
 	});
-
-
-
 
 /*...........................................    
 
@@ -434,7 +401,6 @@ jQuery.fn.BEmodal = function(){
 */
 
 }
-
 
 	$(".modalbutton").click(function () {
 	
@@ -503,7 +469,6 @@ jQuery.fn.BEmodal = function(){
 		$(this).next().slideToggle('fast');
 	});
 
-
 /*...........................................    
 
    statusInfo
@@ -512,7 +477,7 @@ jQuery.fn.BEmodal = function(){
 
 	//var objstatus = $(".secondacolonna .modules label").attr("class");
 
-
+/* end of document ready() */
 });
 
 /*...........................................    
@@ -566,7 +531,6 @@ document.onkeydown = function(e){
 ...........................................*/
 
 function openAtStart(defaultOpen) {
-
 
 	var cookieTitle = document.title;
 	var openAtStart = $.cookie(cookieTitle);

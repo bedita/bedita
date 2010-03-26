@@ -926,6 +926,19 @@ TABLE.indexlist TH.on * {
 	vertical-align:top;
 }
 
+.sortableTable thead TH {
+	cursor:pointer;
+	color: #666;
+}
+
+th.headerSortUp , th.headerSortDown { 
+    color: #000 !important;
+} 
+
+.SortUp { 
+    color: red !important;
+} 
+
 
 /*...........................................    
 
