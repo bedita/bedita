@@ -15,7 +15,7 @@
 		</td>
 		<td class="commands" style="white-space:nowrap">
 			<input type="button" class="BEbutton link" onClick="window.location.href = ($(this).attr('href'));" 
-			href="{$html->url('/')}areas/index/{$s.id}" name="details" value="››" />
+			href="{$html->url('/')}areas/view/{$s.id}" name="details" value="››" />
 		</td>
 	</tr>
 {/foreach}
