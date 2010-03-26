@@ -1,7 +1,7 @@
 {strip}
 
 <div class="tab"><h2>{t}BEdita contents statistics{/t}</h2></div>
-	<div id="objects">
+	<div id="statsobjects">
 		
 		<h2>{t}Number of objects{/t}</h2>
 		
