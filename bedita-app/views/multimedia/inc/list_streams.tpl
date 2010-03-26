@@ -1,13 +1,13 @@
 <script type="text/javascript">
 <!--
-var urlDelete = "{$html->url('deleteSelected/')}" ;
 var message = "{t}Are you sure that you want to delete the item?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
-var URLBase = "{$html->url('index/')}" ;
-var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
-var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
-var urlMoveToAreaSection = "{$html->url('moveItemsToAreaSection/')}";
-var urlRemoveFromAreaSection = "{$html->url('removeItemsFromAreaSection/')}";
+var urls = Array();
+urls['deleteSelected'] = "{$html->url('deleteSelected/')}";
+urls['changestatusSelected'] = "{$html->url('changeStatusObjects/')}";
+urls['copyItemsSelectedToAreaSection'] = "{$html->url('addItemsToAreaSection/')}";
+urls['moveItemsSelectedToAreaSection'] = "{$html->url('moveItemsToAreaSection/')}";
+urls['removeFromAreaSection'] = "{$html->url('removeItemsFromAreaSection/')}";
 
 {literal}
 $(document).ready(function(){
@@ -15,31 +15,20 @@ $(document).ready(function(){
 	$("#deleteSelected").click(function() {
 		if(!confirm(message)) 
 			return false ;
-		$("#formObject").attr("action", urlDelete) ;
+		$("#formObject").attr("action", urls['deleteSelected']) ;
 		$("#formObject").submit() ;
 	});
 
 	$("#assocObjects").click( function() {
-		var url = urlAddToAreaSection;
-		if($('#areaSectionAssocOp')) {
-			op = $('#areaSectionAssocOp').val()
-			if(op == 'move') {
-				url = urlMoveToAreaSection;
-			}
-		}
-		$("#formObject").attr("action", url) ;
+		var op = ($('#areaSectionAssocOp').val()) ? $('#areaSectionAssocOp').val() : "copy";
+		$("#formObject").attr("action", urls[op + 'ItemsSelectedToAreaSection']) ;
 		$("#formObject").submit() ;
 	});
 
-	$("#removeFromAreaSection").click( function() {
-		$("#formObject").attr("action", urlRemoveFromAreaSection) ;
+	$(".opButton").click( function() {
+		$("#formObject").attr("action",urls[this.id]) ;
 		$("#formObject").submit() ;
-	});
-
-	$("#changestatusSelected").click( function() {
-		$("#formObject").attr("action", urlChangeStatus) ;
-		$("#formObject").submit() ;
-	});
+	});});
 });
 
 {/literal}
@@ -136,7 +125,7 @@ $(document).ready(function(){
 								<option value=""> -- </option>
 								{html_options options=$conf->statusOptions}
 							</select>
-			<input id="changestatusSelected" type="button" value=" ok " />
+			<input id="changestatusSelected" type="button" value=" ok " class="opButton" />
 	<hr />
 
 	{if !empty($tree)}
@@ -161,7 +150,7 @@ $(document).ready(function(){
 		<hr />
 
 		{if !empty($named_arr)}
-		<input id="removeFromAreaSection" type="button" value="{t}Remove selected from section{/t}" />
+		<input id="removeFromAreaSection" type="button" value="{t}Remove selected from section{/t}" class="opButton" />
 		<hr/>
 		{/if}
 	{/if}
