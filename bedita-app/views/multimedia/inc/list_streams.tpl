@@ -28,7 +28,7 @@ $(document).ready(function(){
 	$(".opButton").click( function() {
 		$("#formObject").attr("action",urls[this.id]) ;
 		$("#formObject").submit() ;
-	});});
+	});
 });
 
 {/literal}
