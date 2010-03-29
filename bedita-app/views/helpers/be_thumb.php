@@ -194,7 +194,7 @@ class BeThumbHelper extends AppHelper {
 			// set up the rest of image info array
 			$this->_imageInfo["w"]		= $_image_data [0];
 			$this->_imageInfo["h"]		= $_image_data [1];
-			$this->_imageInfo['type']	= $_image_data [2]; // 1=GIF, 2=JPG, 3=PNG
+			$this->_imageInfo['type']	= $this->_imagetype[$_image_data [2]]; // 1=GIF, 2=JPG, 3=PNG
 			unset ($_image_data);
 		}
 		else
