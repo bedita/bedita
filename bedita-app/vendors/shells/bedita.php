@@ -459,17 +459,8 @@ class BeditaShell extends BeditaBaseShell {
     	} else if(isset($this->params['nocompress'])) {
         	$expFile = self::DEFAULT_TAR_FILE;
     	}
-    	if(file_exists($expFile)) {
-			$res = $this->in("$expFile exists, overwrite? [y/n]");
-			if($res == "y") {
-				if(!unlink($expFile)){
-					throw new Exception("Error deleting $expFile");
-				}
-			} else {
-				$this->out("Export aborted. Bye.");
-				return;
-			}
-		}
+    	
+    	$this->checkExportFile($expFile);
 
 		$dbDump = new DbDump();
 		$tables = $dbDump->tableList();

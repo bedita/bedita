@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2010 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -94,7 +94,25 @@ class Card extends BEAppObjectModel {
 			'message' => 'Please supply a valid email address.'
  		)
  	);
-		
+
+ 	private $csvFields = array (
+			"Title" => "person_title", "First Name" => "name", "Middle Name", "Last Name" => "surname",
+			"Suffix", "E-mail Address" => "email", "E-mail 2 Address" => "email2", "E-mail 3 Address",
+			"Business Street","Business Street 2","Business Street 3","Business City",
+			"Business State" => "state", "Business Postal Code" => "zipcode", "Business Country" => "country",
+			"Home Street" => "street_address",
+			"Home Street 2","Home Street 3","Home City","Home State","Home Postal Code","Home Country",
+			"Other Street","Other Street 2","Other Street 3","Other City","Other State",
+			"Other Postal Code","Other Country","Company" => "company_name","Department",
+			"Job Title","Assistant's Phone","Business Fax" => "fax","Business Phone" => "phone",
+			"Business Phone 2" => "phone2" ,"Callback",
+			"Car Phone","Company Main Phone","Home Fax","Home Phone","Home Phone 2","ISDN","Mobile Phone",
+			"Other Fax","Other Phone","Pager","Primary Phone","Radio Phone","TTY/TDD Phone","Telex",
+			"Assistant's Name","Birthday" => "birthdate","Manager's Name","Notes","Other Address PO Box","Spouse",
+			"Web Page" => "website", "Personal Web Page" => "website"
+		);
+ 	
+ 	
 	function beforeValidate() {
 		
 		$this->checkDate('birthdate');
@@ -168,28 +186,10 @@ class Card extends BEAppObjectModel {
 		$handle = fopen($csvFile, "r");
 		// read header
 		$csvKeys = fgetcsv($handle, 1000, ",");
-		// map CSV 
-		$beFields = array (
-			"Title" => "person_title", "First Name" => "name", "Middle Name", "Last Name" => "surname",
-			"Suffix", "E-mail Address" => "email", "E-mail 2 Address" => "email2", "E-mail 3 Address",
-			"Business Street","Business Street 2","Business Street 3","Business City",
-			"Business State" => "state", "Business Postal Code" => "zipcode", "Business Country" => "country",
-			"Home Street" => "street_address",
-			"Home Street 2","Home Street 3","Home City","Home State","Home Postal Code","Home Country",
-			"Other Street","Other Street 2","Other Street 3","Other City","Other State",
-			"Other Postal Code","Other Country","Company" => "company_name","Department",
-			"Job Title","Assistant's Phone","Business Fax" => "fax","Business Phone" => "phone",
-			"Business Phone 2" => "phone2" ,"Callback",
-			"Car Phone","Company Main Phone","Home Fax","Home Phone","Home Phone 2","ISDN","Mobile Phone",
-			"Other Fax","Other Phone","Pager","Primary Phone","Radio Phone","TTY/TDD Phone","Telex",
-			"Assistant's Name","Birthday" => "birthdate","Manager's Name","Notes","Other Address PO Box","Spouse",
-			"Web Page" => "website", "Personal Web Page" => "website"
-		);
-		
 		$numKeys = count($csvKeys);
 		$keys = array();
 		foreach ($csvKeys as $f) {
-			$keys[] = (!empty($beFields[$f])) ? $beFields[$f] : null; 
+			$keys[] = (!empty($this->csvFields[$f])) ? $this->csvFields[$f] : null; 
 		}
 		
 		$data = array();
@@ -212,6 +212,44 @@ class Card extends BEAppObjectModel {
 		}
 		fclose($handle);
 		return array("numSaved" => $row-1);		
+	}
+
+	/**
+	 * Export model data to Microsoft Outlook CSV format - single line 
+	 *
+	 */
+	public function exportCSV() {
+		$res = "";
+		$data = $this->findById($this->id);
+		$first = true;
+		foreach ($this->csvFields as $k=>$v) {
+			if(!$first)
+				$res .= ",";
+			$res .= (empty($v) || is_numeric($k)) ? "" : "\"". $data[$v] . "\"";
+			$first = false;
+		}
+		return $res;
+	}
+
+	/**
+	 * Microsoft Outlook CSV header
+	 *
+	 * @return string
+	 */
+	public function headerCSV() {
+		$res = "";
+		$first = true;
+		foreach ($this->csvFields as $k=>$v) {
+			if(!$first)
+				$res .= ",";
+			if(is_numeric($k)) {
+				$res .= "\"$v\"";
+			} else {
+				$res .= "\"$k\"";
+			}
+			$first = false;
+		}
+		return $res;
 	}
 	
 	/**
@@ -251,6 +289,45 @@ class Card extends BEAppObjectModel {
 		}
 
 		return array("numSaved" => $numSaved);		
+	}
+
+	/**
+	 * Export model data to VCard format 
+	 *
+	 */
+	public function exportVCard() {
+		$data = $this->findById($this->id);
+		$res = "\nBEGIN:VCARD\nVERSION:3.0\n";
+		$data["vname"] = (empty($data["surname"]) ? "" : $data["surname"] . ";") .
+			(empty($data["name"]) ? "" : $data["name"]);
+		$res .= $this->vcardLine("N:$$\n", "vname", $data);
+		unset($data["vname"]);
+		$res .= $this->vcardLine("FN:$$\n", "title", $data);
+		$res .= $this->vcardLine("TITLE:$$\n", "person_title", $data);
+		$res .= $this->vcardLine("ORG:$$\n", "company_name", $data);
+		$res .= $this->vcardLine("TEL;TYPE=PREF:$$\n", "phone", $data);
+		$res .= $this->vcardLine("TEL:$$\n", "phone2", $data);
+		$res .= $this->vcardLine("TEL;TYPE=FAX:$$\n", "fax", $data);
+		$res .= $this->vcardLine("EMAIL;TYPE=PREF:$$\n", "email", $data);
+		$res .= $this->vcardLine("EMAIL:$$\n", "email2", $data);
+		$data["vaddr"] = (empty($data["street_address"]) ? "" : $data["street_address"] . ";") .
+			(empty($data["city"]) ? "" : $data["city"] . ";") . (empty($data["zipcode"]) ? "" : $data["zipcode"] . ";")
+			. (empty($data["country"]) ? "" : $data["country"] . ";");
+		$res .= $this->vcardLine("ADR:$$\n", "vaddr", $data);
+		unset($data["vaddr"]);
+		$res .= $this->vcardLine("BDAY:$$\n", "birthdate", $data);
+		$t = strtotime($data["modified"]);
+		$res .= "REV:" . date("Ymd", $t) . "T" . date("His", $t) . "Z\n";
+		$res .= "END:VCARD\n";
+		return $res;
+	}
+	
+	private function vcardLine($vline, $field, array& $data) {
+		$res = "";
+		if(!empty($data[$field])) {
+			$res = str_replace("$$", $data[$field], $vline);
+		}
+		return $res;
 	}
 	
 	private function parseVCards(&$lines) {

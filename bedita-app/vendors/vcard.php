@@ -63,7 +63,11 @@ class VCard
      */
     function getProperty($name)
     {
-        return $this->_map[$name][0];
+		if(!empty($this->_map[$name][0])) {
+    		return $this->_map[$name][0];
+		} else {
+			return null;
+		}
     }
 
     /**
@@ -72,7 +76,11 @@ class VCard
      */
     function getProperties($name)
     {
-        return $this->_map[$name];
+		if(!empty($this->_map[$name])) {
+    		return $this->_map[$name];
+		} else {
+			return null;
+		}
     }
 
     /**

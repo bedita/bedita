@@ -114,6 +114,19 @@ class BeditaBaseShell extends Shell {
 		pr($this->args);
     }
 
+    protected function checkExportFile($expFile) {
+    	if(file_exists($expFile)) {
+			$res = $this->in("$expFile exists, overwrite? [y/n]");
+			if($res == "y") {
+				if(!unlink($expFile)){
+					throw new Exception("Error deleting $expFile");
+				}
+			} else {
+				$this->out("Export aborted. Bye.");
+				exit;
+			}
+		}
+    }
 
     protected function __clean($path) {
         
