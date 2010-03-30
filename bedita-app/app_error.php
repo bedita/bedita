@@ -143,21 +143,21 @@ class AppError extends ErrorHandler {
 	private function sendMail($mailMsg) {
 		$mailSupport = Configure::read('mailSupport');
 		if(!empty($mailSupport)) {
-			App::import('Core', 'Email');
-			$email = new EmailComponent;
-			$email->from = $mailSupport['from'];
-			$email->subject = $mailSupport['subject'];
-			$smtpOptions = Configure::read("smtpOptions");
-			if (!empty($smtpOptions) && is_array($smtpOptions)) {
-				$email->smtpOptions = $smtpOptions;
-				$email->delivery = 'smtp';
-			}
+			App::import('Component', 'BeMail');
+			$email = new BeMailComponent;
+			$email->startup();
 			
+			$data = array();
+			$data["from"] = $mailSupport['from'];
+			$data["subject"] = $mailSupport['subject'];
+			$data["body"] = $mailMsg;
 			$dest = explode(',', $mailSupport['to']);
 			foreach ($dest as $d) {
-				$email->to = $d;
-				if(!$email->send($mailMsg)) {
-					$this->log("mail send failed");
+				$data["to"] = $d;
+				try {
+					$email->sendMail($data); 
+				} catch (BeditaMailException $e) {
+					$this->log("mail send failed " . $e->getDetails() . " - " . $e->getSmtpError());
 				}
 			}
 			
