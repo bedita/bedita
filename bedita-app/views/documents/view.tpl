@@ -21,13 +21,11 @@
 
 {$view->element('form_common_js')}
 
-
 {$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl"}
 
 <div class="head">
-
     <h1>{if !empty($object)}{$object.title|default:"<i>[no title]</i>"}{else}<i>[{t}New item{/t}]</i>{/if}</h1>
 </div>
 

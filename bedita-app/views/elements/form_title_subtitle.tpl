@@ -1,5 +1,18 @@
 {* title and description *}
 
+{if ($conf->mce|default:true)}
+	
+	{$javascript->link("tiny_mce/tiny_mce", false)}
+	{$javascript->link("tiny_mce/tiny_mce_default_init", false)}
+
+
+{elseif ($conf->wymeditor|default:true)}
+
+	{$javascript->link("wymeditor/jquery.wymeditor.pack", false)}
+	{$javascript->link("wymeditor/wymeditor_default_init", false)}
+
+{/if}
+
 <div class="tab"><h2>{t}Title{/t}</h2></div>
 
 <fieldset id="title">
