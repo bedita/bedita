@@ -34,8 +34,7 @@ INSERT INTO object_types (id, name, module) VALUES
 INSERT INTO `users` ( id, `userid` , `realname` , `passwd` ) VALUES (1, 'bedita', 'BEdita', MD5( 'bedita' ));
 
 INSERT INTO `groups` ( `name`, `backend_auth`, `immutable` ) VALUES 
-('administrator', 1, 1), 
-('guest', 1, 0),
+('administrator', 1, 1),
 ('editor', 1, 0),
 ('reader', 1, 0),
 ('frontend', 0, 0),

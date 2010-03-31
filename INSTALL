@@ -14,7 +14,7 @@ First it is necessary that some preliminary requirements are satisfied.
 You will need a system with:
 
     * PHP 5.2 or newer with modules gd, mbstring, gettext (recommended)
-    * MySQL 5.0.26 or newr version with Stored Procedures support
+    * MySQL 5.0.26 or newr version
     * Apache 2
     * shell access
 
@@ -25,7 +25,7 @@ If your system does support the requirements listed above you can download the p
 This package contains everything you need to setup and use BEdita.
 
 In particular you will find inside, the real BEdita application (bedita-app directory), 
-the SQL scripts needed to create tables/views and stored procedures (bedita-db dir), 
+the SQL scripts needed to create tables/views (bedita-db dir), 
 the CakePHP framework (cake folder), the template engine Smarty (vendors/smarty dir) 
 and the phpThumb library (vendors/phpThumb dir).
 Intallation

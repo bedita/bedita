@@ -30,14 +30,13 @@
  */
 class PermissionModule extends BEAppModel
 {
-	var $name 		= 'PermissionModule';
+	const SWITCH_USER = 'user';
+	const SWITCH_GROUP = 'group';
+
+	var $name = 'PermissionModule';
 
 	var $belongsTo = array(
-		'Module' =>
-			array(
-				'className'		=> 'Module',
-				'fields' 		=> 'label, path'
-			),
+		'Module',
 		'Group' =>
 			array(
 				'className'		=> 'Group',
@@ -60,9 +59,46 @@ class PermissionModule extends BEAppModel
 	 * @param string $name		userid or group name
 	 * @param string $switch	user/group
 	 * @param integer $flag		permits bits
+	 * @return boolean
 	 */
 	function replace($module, $name, $switch, $flag) {
-		return $this->query("CALL replacePermissionModule('{$module}', '{$name}', '{$switch}', {$flag})") ;
+		if ($switch == self::SWITCH_USER) {
+			$ugid = $this->User->field("id", array("userid" => $name));
+		} elseif ($switch == self::SWITCH_GROUP) {
+			$ugid = $this->Group->field("id", array("name" => $name));
+		}
+
+		if (empty($ugid)) {
+			return false;
+		}
+
+		$module_id = $this->Module->field("id", array("name" => $module));
+		if (empty($module_id)) {
+			return false;
+		}
+
+		$permModules = $this->find("first", array(
+			"conditions" => array(
+				"module_id" => $module_id,
+				"ugid" => $ugid,
+				"switch" => $switch
+			),
+			"contain" => array()
+		));
+		
+		if (empty($permModules)) {
+			$permModules["PermissionModule"]["module_id"] = $module_id;
+			$permModules["PermissionModule"]["ugid"] = $ugid;
+			$permModules["PermissionModule"]["switch"] = $switch;
+		}
+
+		$permModules["PermissionModule"]["flag"] = $flag;
+
+		if (!$this->save($permModules)) {
+			return false;
+		}
+
+		return true;
 	}	
 	
 	/**
@@ -71,19 +107,40 @@ class PermissionModule extends BEAppModel
 	 * @param string $module	module name
 	 * @param string $name		userid or group name
 	 * @param string $switch	user/group
+	 * @return boolean
 	 */
 	function remove($module, $name, $switch) {
-		return $this->query("CALL deletePermissionModule('{$module}', '{$name}', '{$switch}')") ;
+		if ($switch == self::SWITCH_USER) {
+			$ugid = $this->User->field("id", array("userid" => $name));
+		} elseif ($switch == self::SWITCH_GROUP) {
+			$ugid = $this->Group->field("id", array("name" => $name));
+		}
+		$module_id = $this->Module->field("id", array("name" => $module));
+		$result = $this->deleteAll(array(
+			"module_id" => $module_id,
+			"ugid" => $ugid,
+			"switch" => $switch
+		));
+		return $result;
 	}	
 
 	/**
-	 * Delete all permits of a module
+	 * Delete all permits of a module or an array of modules
 	 *
-	 * @param string $module	module name
+	 * @param mixed $names	string (module name) or array of module names
+	 * @return boolean
 	 */
-	function removeAll($module) {
-		return $this->query("DELETE FROM permission_modules WHERE module_id = (SELECT id FROM modules WHERE name = '{$module}')") ;
-	}	
+	function removeAll($modules) {
+		if(!is_array($modules)) {
+			$modules = array($modules);
+		}
+		foreach ($modules as $name) {
+			if (!$this->deleteAll(array("Module.name" => $name))) {
+				return false;
+			}
+		}
+		return true ;
+	}
 
 	/**
 	 * Return an integer greater than 0, if user $userid has permits on module $module
@@ -94,24 +151,160 @@ class PermissionModule extends BEAppModel
 	 * @return integer
 	 */
 	function permsByUserid($userid, $module, $operations) {
-		$ret =  $this->query("SELECT prmsModuleUserByID('{$userid}', '{$module}', {$operations}) AS perms") ;
+		$module_id = $this->Module->field("id", array("name" => $module));
+
+		$user = $this->User->find("first", array(
+			"conditions" => array("User.userid" => $userid),
+			"contain" => array("Group")
+		));
+
+		$groups = array();
+		foreach ($user["Group"] as $g) {
+			$groups[] = $g["id"];
+		}
+
+		$userModulePerms = $this->field("flag", array(
+			"module_id" => $module_id,
+			"ugid" => $user["User"]["id"],
+			"switch" => "user"
+		));
 		
-		return $ret[0][0]['perms'] ;
+		if (empty($userModulePerms)) {
+			$userModulePerms = 0;
+		}
+		$userModulePerms = $userModulePerms & $operations;
+
+		$gPerms = $this->find("all", array(
+			"fields" => "flag",
+			"conditions" => array(
+				"module_id" => $module_id,
+				"ugid" => $groups,
+				"switch" => "group"
+			),
+			"contain" => array()
+		));
+
+		$groupModulePerms = 0;
+		if (!empty($gPerms)) {
+			foreach ($gPerms as $gP) {
+				$groupModulePerms = $groupModulePerms | ($gP["PermissionModule"]["flag"] & $operations);
+			}
+		}
+
+		return $userModulePerms | $groupModulePerms;
 	}
 
 	/**
 	 * Return an integer greater than 0 if group $groupid has permits on module $module
 	 *
-	 * @param string $groupid
+	 * @param mixed $groupid Group.id or Group.name
 	 * @param string $module
 	 * @param integer $operations
 	 * @return integer
 	 */
 	function permsByGroup($groupid, $module, $operations) {
-		$ret =  $this->query("SELECT prmsModuleGroupByName('{$groupid}', '{$module}', {$operations}) AS perms") ;
+		if (!is_numeric($groupid)) {
+			$groupid = $this->Group->field("id", array("name" => $groupid));
+		}
+		$module_id = $this->Module->field("id", array("name" => $module));
 		
-		return $ret[0][0]['perms'] ;
+		$groupModulePerms = $this->field("flag", array(
+			"module_id" => $module_id,
+			"ugid" => $groupid,
+			"switch" => "group"
+		));
+		
+		if (empty($groupModulePerms)) {
+			$groupModulePerms = 0;
+		}
+
+		return $groupModulePerms & $operations;
 	}
-	
+
+	/**
+	 * Get list of modules available for user
+	 *
+	 * @param string $userid
+	 * @return array
+	 */
+	function getListModules($userid) {
+		$modules = $this->Module->find("all", array(
+			"conditions" => array("status" => "on"),
+			"order" => "priority ASC"
+		));
+		$resModules = array();
+		foreach ($modules as $m) {
+			$flag = $this->permsByUserid($userid, $m["Module"]["name"], BEDITA_PERMS_READ_MODIFY);
+			if ($flag) {
+				$resModules[$m["Module"]["name"]] = $m["Module"];
+				$resModules[$m["Module"]["name"]]["flag"] = $flag;
+			}
+		}
+
+		return $resModules;
+
+	}
+
+	public function getPermissionModulesForGroup($groupId) {
+		$conditions = array("ugid" => $groupId, "switch" => self::SWITCH_GROUP);
+		return $this->find("all", array("conditions" => $conditions, "contain" => array()));
+	}
+
+	/**
+	* change module permissions for a group
+	*
+	* @param $groupId
+	* @param $moduleFlags array ('module' => flag,....)
+	*/
+	public function updateGroupPermission($groupId, $moduleFlags) {
+		$conditions = array("ugid" => $groupId, "switch" => self::SWITCH_GROUP);
+		$this->deleteAll($conditions);
+		$g = $this->Group->findById($groupId);
+		$groupName = $g['Group']['name'];
+		foreach ($moduleFlags as $mod=>$flag) {
+			if(!empty($flag)) {
+				$perms = array(array(
+					"name" => $groupName,
+					"switch" => self::SWITCH_GROUP,
+					"flag" => $flag
+				));
+				$this->add($mod, $perms);
+			}
+		}
+	}
+
+	/**
+	 * Add 1 or more permits to 1 or more modules.
+	 *
+	 *
+	 * @param mixed $names	If string, name of module
+	 * 						if array, {0..N} names of modules
+	 * @param array $perms	{1..N} items:
+	 * 						name, switch, flag
+	 * 							name	userid or name of group
+	 * 							switch  PermissionComponent::SWITCH_USER or PermissionComponent::SWITCH_GROUP
+	 * 							flag	set of bits with the operations defined above
+	 * @return boolean
+	 */
+	function add($names, &$perms) {
+		if(!is_array($names)) {
+			$names = array($names);
+		}
+
+		foreach ($names as $name) {
+			foreach ($perms as $item) {
+				if (empty($item["flag"])) {
+					$item["flag"] = null;
+				}
+				$this->create();
+				if($this->replace($name, $item['name'], $item['switch'], $item['flag']) === false) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
 }
 ?>

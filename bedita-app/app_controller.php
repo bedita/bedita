@@ -36,7 +36,7 @@ BeLib::getObject("BeConfigure")->initConfig();
 class AppController extends Controller
 {
 	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "MediaProvider", "Perms", 'BeEmbedMedia', 'BeThumb');
-	var $components = array('BeAuth', 'BeTree', 'BePermissionModule', 'BeCustomProperty', 'Transaction', 'Cookie', 'Session', 'RequestHandler','BeHash');
+	var $components = array('BeAuth', 'BeTree', 'BeCustomProperty', 'Transaction', 'Cookie', 'Session', 'RequestHandler','BeHash');
 	var $uses = array('EventLog') ;
 	
 	protected $moduleName = NULL;
@@ -352,7 +352,7 @@ class AppController extends Controller
 		}
 		
 		// module list
-		$moduleList = $this->BePermissionModule->getListModules($this->BeAuth->user["userid"]);
+		$moduleList = ClassRegistry::init("PermissionModule")->getListModules($this->BeAuth->user["userid"]);
 		$this->set('moduleList', $moduleList) ;			
 		$this->set('moduleListInv', array_reverse($moduleList)) ;	
 		

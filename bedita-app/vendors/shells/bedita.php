@@ -296,10 +296,6 @@ class BeditaShell extends BeditaBaseShell {
 		$script = $sqlScriptPath . "bedita_schema.sql";
 		$this->out("Update schema from $script");
 		$this->DataSourceTest->executeQuery($db,$script);
-
-		$script = $sqlScriptPath . "bedita_procedure.sql";
-		$this->out("Create procedures from $script");
-        $this->DataSourceTest->executeQuery($db,$script);
         
 		if (isset($this->params['nodata'])) {
 			$this->out("No data inserted");
@@ -388,10 +384,6 @@ class BeditaShell extends BeditaBaseShell {
 		$script = $sqlScriptPath . "bedita_schema.sql";
 		$this->out("Update schema from $script");
 		$this->DataSourceTest->executeQuery($db,$script);
-
-		$script = $sqlScriptPath . "bedita_procedure.sql";
-		$this->out("Create procedures from $script");
-        $this->DataSourceTest->executeQuery($db,$script);
         
 		$this->out("Load data from $sqlFileName");
         $this->DataSourceTest->simpleInsert($db, $sqlFileName);
@@ -820,9 +812,14 @@ class BeditaShell extends BeditaBaseShell {
 	        	$this->out("error saving module " . $modName);
 				return;
     		}
-    		App::import('Component',"BePermissionModule");
-			$bePermsMod = new BePermissionModuleComponent();
-			$perms =  array(array("administrator", BePermissionModuleComponent::SWITCH_GROUP, BEDITA_PERMS_READ_MODIFY));
+			$bePermsMod = ClassRegistry::init("PermissionModule");
+			$perms =  array(
+				array(
+					"name" => "administrator",
+					"switch" => $bePermsMod->SWITCH_GROUP,
+					"flag" => BEDITA_PERMS_READ_MODIFY
+				)
+			);
 			$bePermsMod->add($modName, $perms);
 	        $this->out("Module " . $modName . " added/enabled");
 		}

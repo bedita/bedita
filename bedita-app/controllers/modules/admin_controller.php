@@ -147,9 +147,10 @@ class AdminController extends ModulesController {
 	  	
 	 	if(isset($id)) {
 	 		$userdetail = $this->User->findById($id) ;
-		  	if(empty($userdetail))
+		  	if(empty($userdetail)) {
 		  		throw new BeditaException(__("Bad data",true));
-	 		$userdetailModules = $this->BePermissionModule->getListModules($userdetail['User']['userid']);
+			}
+	 		$userdetailModules = ClassRegistry::init("PermissionModule")->getListModules($userdetail['User']['userid']);
 	 		
 		} else {
 			$userdetail = NULL;
@@ -210,7 +211,7 @@ class AdminController extends ModulesController {
 		$this->set('group', $g);
 		
 		$modules = $this->allModulesWithFlag();
-		$permsMod = $this->BePermissionModule->getPermissionModulesForGroup($id);
+		$permsMod = ClassRegistry::init("PermissionModule")->getPermissionModulesForGroup($id);
 		foreach ($permsMod as $p) {
 			$modId = $p['PermissionModule']['module_id'];
 			foreach ($modules as &$mod) {
@@ -242,7 +243,7 @@ class AdminController extends ModulesController {
 	  		$this->eventInfo("group ".$this->data['Group']['name']." update");
 		}
 		if(isset($this->data['ModuleFlags'])) {
-	  		$this->BePermissionModule->updateGroupPermission($groupId, $this->data['ModuleFlags']);
+	  		ClassRegistry::init("PermissionModule")->updateGroupPermission($groupId, $this->data['ModuleFlags']);
 	  	}
 	  	
 	  	$this->userInfoMessage(__("Group ".($newGroup? "created":"updated"),true));

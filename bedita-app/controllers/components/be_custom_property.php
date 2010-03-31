@@ -44,37 +44,6 @@ class BeCustomPropertyComponent extends Object {
 	}
 	
 	/**
-	 * Add 1 or more permits to 1 or more modules.
-	 * 
-	 *
-	 * @param mixed $names	If string, name of module
-	 * 						if array, {0..N} names of modules
-	 * @param array $perms	{1..N} items:
-	 * 						name, switch, flag
-	 * 							name	userid or name of group
-	 * 							switch  PermissionComponent::SWITCH_USER or PermissionComponent::SWITCH_GROUP
-	 * 							flag	set of bits, with operations defined above
-	 * @return boolean
-	 */
-	function add($names, &$perms) {
-		$this->array2perms($perms, $formatedPerms) ;
-		
-		if(!is_array($names)) $names = array($names); 
-		foreach ($names as $name) {
-			
-			for($i=0; $i < count($formatedPerms) ; $i++) {
-				$item = &$formatedPerms[$i] ;
-				
-				if($this->PermissionModule->replace($name, $item['name'], $item['switch'], $item['flag']) === false) {
-					return false ;
-				}				
-			}
-		}
-		
-		return true ;
-	}
-	
-	/**
 	 * unset property with empty property_value field from data form 
 	 */
 	function setupForSave() {
