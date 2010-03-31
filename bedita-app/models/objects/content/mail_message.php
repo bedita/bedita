@@ -22,11 +22,11 @@
 /**
  * Mail message content
  *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
+ * @version			$Revision: 2510 $
+ * @modifiedby 		$LastChangedBy: bato $
+ * @lastmodified	$LastChangedDate: 2009-12-17 13:36:03 +0100 (gio, 17 dic 2009) $
  * 
- * $Id$
+ * $Id: mail_message.php 2510 2009-12-17 12:36:03Z bato $
  */
 class MailMessage extends BeditaContentModel
 {
@@ -61,7 +61,7 @@ class MailMessage extends BeditaContentModel
 				"detailed" =>  array("BEObject" => array("ObjectType", 
 															"UserCreated", 
 															"UserModified", 
-															"Permissions",
+															"Permission",
 															"RelatedObject",
 															"Annotation"
 															),

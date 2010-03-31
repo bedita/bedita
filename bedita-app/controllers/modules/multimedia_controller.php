@@ -189,9 +189,9 @@ class MultimediaController extends ModulesController {
 		}
 
 		// update permissions
-		if(!isset($this->data['Permissions'])) 
-			$this->data['Permissions'] = array() ;
-//		$this->Permission->saveFromPOST($this->Stream->id, $this->data['Permissions'], 
+		if(!isset($this->data['Permission'])) 
+			$this->data['Permission'] = array() ;
+//		$this->Permission->saveFromPOST($this->Stream->id, $this->data['Permission'], 
 //				!empty($this->data['recursiveApplyPermissions']), 'document');
 		$this->Transaction->commit() ;
 		$this->userInfoMessage(__("Multimedia object saved", true)." - ".$this->data["title"]);

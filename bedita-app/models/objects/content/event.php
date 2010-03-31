@@ -37,7 +37,7 @@ class Event extends BeditaContentModel
 								"BEObject" => array("ObjectType", 
 													"UserCreated", 
 													"UserModified", 
-													"Permissions",
+													"Permission",
 													"ObjectProperty",
 													"LangText",
 													"RelatedObject",

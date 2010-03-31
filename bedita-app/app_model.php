@@ -548,7 +548,7 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 				"detailed" =>  array("BEObject" => array("ObjectType", 
 															"UserCreated", 
 															"UserModified", 
-															"Permissions",
+															"Permission",
 															"ObjectProperty",
 															"LangText",
 															"RelatedObject",
@@ -673,7 +673,7 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
 
 	protected $modelBindings = array( 
 				"detailed" => array("BEObject" => array("ObjectType",
-														"Permissions",
+														"Permission",
 														"UserCreated", 
 														"UserModified",
 														"RelatedObject",
@@ -729,7 +729,7 @@ class BeditaStreamModel extends BEAppObjectModel {
 	
 	protected $modelBindings = array( 
 				"detailed" => array("BEObject" => array("ObjectType",
-														"Permissions",
+														"Permission",
 														"UserCreated", 
 														"UserModified",
 														"RelatedObject",
@@ -796,7 +796,7 @@ class BeditaProductModel extends BEAppObjectModel {
 	
 		protected $modelBindings = array( 
 				"detailed" => array("BEObject" => array("ObjectType",
-														"Permissions",
+														"Permission",
 														"UserCreated", 
 														"UserModified",
 														"RelatedObject",

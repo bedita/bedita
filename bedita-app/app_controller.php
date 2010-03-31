@@ -570,8 +570,8 @@ class AppController extends Controller
 			}
 		}
 			
-		if(!isset($this->data['Permissions'])) 
-			$this->data['Permissions'] = array() ;
+		if(!isset($this->data['Permission'])) 
+			$this->data['Permission'] = array() ;
 		
 		if(!$beModel->save($this->data)) {
 			throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);

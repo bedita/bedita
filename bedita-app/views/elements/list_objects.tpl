@@ -88,7 +88,7 @@ $(document).ready(function(){
 
 			{/if}
 			
-			{if !empty($objects[i].Permissions)}
+			{if !empty($objects[i].Permission)}
 				<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="height:28px; vertical-align:top;">
 			{/if}
 			

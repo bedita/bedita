@@ -38,7 +38,7 @@ class Section extends BeditaCollectionModel
 				"detailed" =>  array("BEObject" => array("ObjectType", 
 										"UserCreated", 
 										"UserModified", 
-										"Permissions",
+										"Permission",
 										"ObjectProperty",
 										"LangText",
 										"Alias")),

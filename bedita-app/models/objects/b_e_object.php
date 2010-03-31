@@ -75,12 +75,7 @@ class BEObject extends BEAppModel
 	) ;
 	
 	var $hasMany = array(	
-		'Permissions' =>
-			array(
-				'className'		=> 'ViewPermission',
-				'fields'		=> 'name, switch, flag',
-				'foreignKey'	=> 'object_id',
-			),
+		'Permission',
 
 		'Version' =>
 			array(
@@ -214,6 +209,16 @@ class BEObject extends BEAppModel
 			$result["Category"] = $category;
 			$result["Tag"] = $tag;
 		}
+
+		if (!empty($result["Permission"])) {
+			foreach ($result["Permission"] as &$perm) {
+				if ($perm["switch"] == "group") {
+					$perm["name"] = $this->Permission->Group->field("name", array("id" => $perm["ugid"]));
+				} elseif ($perm["switch"] == "user") {
+					$perm["name"] = $this->Permission->User->field("name", array("id" => $perm["ugid"]));
+				}
+			}
+		}
 		
 		return $result ;
 	}
@@ -248,7 +253,7 @@ class BEObject extends BEAppModel
 		// hasMany relations
 		foreach ($this->hasMany as $name => $assoc) {
 			// skip specific manage
-			if($name == 'Permissions' || $name == 'RelatedObject' || $name == 'Annotation') {
+			if($name == 'Permission' || $name == 'RelatedObject' || $name == 'Annotation') {
 				continue ;
 			}
 
@@ -317,14 +322,13 @@ class BEObject extends BEAppModel
 		}
 				
 		$permissions = false;
-		if(isset($this->data["Permissions"])) 
-			$permissions = $this->data["Permissions"] ;
-		else if(isset($this->data[$this->name]["Permissions"])) 
-			$permissions = $this->data[$this->name]["Permissions"] ;
+		if(isset($this->data["Permission"]))
+			$permissions = $this->data["Permission"] ;
+		else if(isset($this->data[$this->name]["Permission"]))
+			$permissions = $this->data[$this->name]["Permission"] ;
 		
 		if(is_array($permissions)) {
-			$Permission = ClassRegistry::init('Permission');
-			$Permission->replace($this->{$this->primaryKey}, $permissions);
+			$this->Permission->replace($this->{$this->primaryKey}, $permissions);
 		}
 		// save relations between objects
 		if (!empty($this->data['BEObject']['RelatedObject'])) {

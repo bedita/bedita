@@ -41,7 +41,7 @@ class SampleObject extends BeditaContentModel {
 				"detailed" =>  array("BEObject" => array("ObjectType", 
 															"UserCreated", 
 															"UserModified", 
-															"Permissions",
+															"Permission",
 															"ObjectProperty",
 															"LangText",
 															"RelatedObject",

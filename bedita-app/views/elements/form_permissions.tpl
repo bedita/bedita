@@ -41,9 +41,9 @@ $(document).ready(function(){
 		var htmlBlock = "<tr id=\"permTR_" + index + "\"><td>" + name + "</td>" +
 						"<td>" + permissions[perm] + "</td>" + 
 						"<td>" +
-						"<input type=\"hidden\" name=\"data[Permissions]["+index+"][flag]\" value=\""+perm+"\"/>" + 
-						"<input type=\"hidden\" name=\"data[Permissions]["+index+"][switch]\" value=\""+type+"\"/>" +
-						"<input type=\"hidden\" name=\"data[Permissions]["+index+"][name]\" value=\""+name+"\"/>" +
+						"<input type=\"hidden\" name=\"data[Permission]["+index+"][flag]\" value=\""+perm+"\"/>" + 
+						"<input type=\"hidden\" name=\"data[Permission]["+index+"][switch]\" value=\""+type+"\"/>" +
+						"<input type=\"hidden\" name=\"data[Permission]["+index+"][name]\" value=\""+name+"\"/>" +
 						"<input type=\"button\" name=\"deletePerms\" value=\" x \"/>"+
 						"</td></tr>";
 		
@@ -78,21 +78,19 @@ function loadUserGroupAjax(url) {
 <div class="loader" id="loaderug"></div>
 
 <table class="indexlist" border=0 id="frmCustomPermissions">
-{if !empty($el.Permissions)}
+{if !empty($el.Permission)}
 <tr>
 	<th style="width:190px">{t}name{/t}</th>
 	<th style="width:190px">{t}permission{/t}</th>
 	<th>&nbsp;</th>
 </tr>
 
-	{section name=i loop=$el.Permissions}
-	{assign var="perm" 	value=$el.Permissions[i]}
+	{section name=i loop=$el.Permission}
+	{assign var="perm" 	value=$el.Permission[i]}
 	{assign var="i" 	value=$smarty.section.i.index}
 		
 		<tr id="permTR_{$i}">
-			<td>
-				{$perm.name}
-			</td>
+			<td>{$perm.name}</td>
 			<td>
 				{if $perm.flag == $conf->OBJ_PERMS_READ_FRONT}
 					{t}frontend access{/t}
@@ -101,9 +99,9 @@ function loadUserGroupAjax(url) {
 				{/if}
 			</td>
 			<td>
-				<input type="hidden" name="data[Permissions][{$i}][flag]" value="{$perm.flag}"/>
-				<input type="hidden" name="data[Permissions][{$i}][switch]" value="{$perm.switch|escape:'quotes'}"/>
-				<input type="hidden" name="data[Permissions][{$i}][name]" value="{$perm.name|escape:'quotes'}"/>
+				<input type="hidden" name="data[Permission][{$i}][flag]" value="{$perm.flag}"/>
+				<input type="hidden" name="data[Permission][{$i}][switch]" value="{$perm.switch|escape:'quotes'}"/>
+				<input type="hidden" name="data[Permission][{$i}][name]" value="{$perm.name|escape:'quotes'}"/>
 				<input type="button" name="deletePerms" value=" x "/>
 			</td>
 		</tr>	

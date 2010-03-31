@@ -117,13 +117,13 @@ $(document).ready(function(){
 {/literal}{/if}{literal}
 
 
-{/literal}{if !empty($object.Permissions)}{literal}
+{/literal}{if !empty($object.Permission)}{literal}
 
 		$(".secondacolonna .modules label").addClass("lock").attr("title","object with limited permissions");
 	
 {/literal}{/if}{literal}
 
-{/literal}{*  {if !($perms->isWritable($user.userid,$user.groups,$object.Permissions))}{literal}
+{/literal}{*  {if !($perms->isWritable($user.userid,$user.groups,$object.Permission))}{literal}
 		//$("#delBEObject").attr("disabled",true);
 		//$("#saveBEObject,#cloneBEObject,#delBEObject").attr("disabled",true);
 		//$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");

@@ -106,8 +106,8 @@ class AreasController extends ModulesController {
 		if(empty($this->data["syndicate"]))
 			$this->data["syndicate"] = 'off';
 			
-		if(!isset($this->data['Permissions'])) 
-			$this->data['Permissions'] = array() ;
+		if(!isset($this->data['Permission'])) 
+			$this->data['Permission'] = array() ;
 		
 		$this->Transaction->begin() ;
 		// Save data
@@ -166,8 +166,8 @@ class AreasController extends ModulesController {
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave() ;
 		
-		if (!isset($this->data['Permissions'])) {
-			$this->data['Permissions'] = array();
+		if (!isset($this->data['Permission'])) {
+			$this->data['Permission'] = array();
 		}
 
 		if (empty($this->data["syndicate"])) {

@@ -41,7 +41,7 @@ class Question extends BEAppObjectModel
 				"detailed" =>  array("BEObject" => array("ObjectType", 
 															"UserCreated", 
 															"UserModified", 
-															"Permissions",
+															"Permission",
 															"ObjectProperty",
 															"LangText",
 															"RelatedObject",

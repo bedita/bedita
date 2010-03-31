@@ -43,7 +43,7 @@ class Area extends BeditaCollectionModel
 			"detailed" =>  array("BEObject" => array("ObjectType", 
 									"UserCreated", 
 									"UserModified", 
-									"Permissions",
+									"Permission",
 									"ObjectProperty",
 									"LangText"),
 								"SectionDummy"),
