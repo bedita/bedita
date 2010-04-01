@@ -3,49 +3,22 @@ $(document).ready ( function () {literal} { {/literal}
 
 {if ($session->check('Message.error'))}
 
-	{literal}
 	$(".secondacolonna .modules label").addClass("error").attr("title","error");
-	$("#messagesDiv")
-		.show()							// fade in msg
-		.click( function() {
-			$(this).fadeOut('slow');	// fade out msg on click
-		});
-	{/literal}
+	$("#messagesDiv").triggerMessage("error");
 
 {elseif ($session->check('Message.warn'))}
 
-	{literal}
-		$("#messagesDiv")
-			.show()															// fade in msg
-			//.pause( {/literal} {$conf->msgPause} {literal} )				// pause 4 secs
-			.animate({opacity: 1.0}, {/literal}{$conf->msgPause}{literal}) 	// pause
-			.fadeOut(1000);													// fade out msg
-
-	{/literal}
+	$("#messagesDiv").triggerMessage("warn", {$conf->msgPause});
 	
 {elseif ($session->check('Message.info'))}
-	{literal}
-		$("#messagesDiv")
-			.show()															// fade in msg
-			//.pause( {/literal} {$conf->msgPause} {literal} )				// pause 4 secs
-			.animate({opacity: 1.0}, {/literal}{$conf->msgPause}{literal}) 	// pause
-			.fadeOut(1000);													// fade out msg
 
-	{/literal}
+	$("#messagesDiv").triggerMessage("info", {$conf->msgPause});
+
 {/if}
 
 {literal}
-	// hover for all messages
-	$("#messagesDiv").hover(
-		function() {
-			//$(this).addClass('messagesDivOver');
-			$(this).fadeOut('slow')
-		},
-		function() {
-			//$(this).removeClass('messagesDivOver');
-		}
-	);
-})
+
+});
 {/literal}
 </script>
 

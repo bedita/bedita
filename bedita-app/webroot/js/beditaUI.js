@@ -102,6 +102,39 @@ jQuery.fn.extend({
 				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');	// pulse effect
 			});
 		}
+	},
+
+	triggerMessage: function(type, pause) {
+		if (pause == undefined) {
+			pause = 4;
+		}
+		if (type == "error") {
+			$(this)
+				.show()
+				.click( function() {
+					$(this).fadeOut('slow');
+				});
+		} else if (type == "info") {
+			$(this)
+				.show()
+				.animate({opacity: 1.0}, pause)
+				.fadeOut(1000);
+		} else if (type == "warn") {
+			$(this)
+				.show()
+				.animate({opacity: 1.0}, pause)
+				.fadeOut(1000);
+		}
+
+		$(this).hover(
+			function() {
+				//$(this).addClass('messagesDivOver');
+				$(this).fadeOut('slow')
+			},
+			function() {
+				//$(this).removeClass('messagesDivOver');
+			}
+		);
 	}
 
 
