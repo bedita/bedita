@@ -197,12 +197,16 @@ $(document).ready(function(){
 	
 	};
 	
-	$(".tab").click(function (){
+	$(".tab:not('.stayopen')").click(function (){
 		
 		$(this).BEtabstoggle() ;	
 
 	});
 
+	
+	$(".tab.stayopen H2").addClass("open").addClass(currentclassmodule);
+
+	
 /*...........................................    
 
    horizontal TABs

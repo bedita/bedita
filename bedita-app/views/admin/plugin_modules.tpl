@@ -17,6 +17,29 @@ $(document).ready(function() {
 	});
 })
 </script>
+
+<style>
+	.modules INPUT {
+		width:105px;
+		margin-bottom:5px;
+	}
+	.modules#plugged {
+		margin-bottom:20px;
+	}
+		
+	.modules#unplugged LI {
+		background-color:#999 !important;
+	}
+
+	.modules LI {
+		margin-right:10px;
+	}
+			
+	.modules LI.off {
+		opacity:0.3;
+	}
+						
+</style>
 {/literal}
 
 {$view->element('modulesmenu')}
@@ -26,12 +49,14 @@ $(document).ready(function() {
 {include file="inc/menucommands.tpl" fixed=true}
 
 <div class="mainfull">
+
+{if !empty($pluginModules.plugged)}
 	
-	<h2>{t}Plugged modules{/t}</h2>
-	
+	<div class="tab stayopen"><h2>{t}Plugged modules{/t}</h2></div>
+
 	<ul class="modules" id="plugged">
 	{foreach from=$pluginModules.plugged item="mod"}
-		<li class="{$mod.name}">
+		<li class="{$mod.name} {$mod.status}">
 			<form action="{$html->url('/admin/plugModule')}" method="post">
 			{t}{$mod.label}{/t}
 			
@@ -46,16 +71,18 @@ $(document).ready(function() {
 				<input type="hidden" value="on" name="data[status]"/>
 				<input type="button" rel="{$html->url('/admin/toggleModule')}" value="{t}turn on{/t}"/>
 			{/if}
-			<br/><br/>
 			<input type="button" id="unplugButton" rel="{$html->url('/admin/unplugModule')}" value="{t}plug-out{/t}"/>
 			</form>
 		</li>
 	{/foreach}
 	</ul>
+{/if}	
+
+{if !empty($pluginModules.unplugged)}
 	
-	<h2>{t}Unplugged modules{/t}</h2>
+	<div class="tab stayopen"><h2>{t}Unplugged modules{/t}</h2></div>
 	
-	<ul class="modules">
+	<ul class="modules" id="unplugged">
 	{foreach from=$pluginModules.unplugged item="mod"}
 		<li>
 			<form action="{$html->url('/admin/plugModule')}" method="post">
@@ -68,5 +95,7 @@ $(document).ready(function() {
 		</li>
 	{/foreach}
 	</ul>
+
+{/if}
 
 </div>

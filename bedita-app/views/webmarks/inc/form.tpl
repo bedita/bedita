@@ -1,5 +1,5 @@
 {*
-** document form template
+** webmarks form template
 *}
 
 <script type="text/javascript">
@@ -18,6 +18,20 @@ var url="{$html->url('/webmarks/checkUrl')}";
 	
 {/literal}
 </script>
+
+{if ($conf->mce|default:true)}
+	
+	{$javascript->link("tiny_mce/tiny_mce", false)}
+	{$javascript->link("tiny_mce/tiny_mce_default_init", false)}
+
+
+{elseif ($conf->wymeditor|default:true)}
+
+	{$javascript->link("wymeditor/jquery.wymeditor.pack", false)}
+	{$javascript->link("wymeditor/wymeditor_default_init", false)}
+
+{/if}
+
 
 <form action="{$html->url('/webmarks/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
@@ -41,7 +55,7 @@ var url="{$html->url('/webmarks/checkUrl')}";
 	<br />
 	<label>{t}description{/t}:</label>
 	<br />
-	<textarea id="subtitle" style="height:30px" class="shortdesc autogrowarea" name="data[description]">{$object.description|default:''}</textarea>
+	<textarea id="subtitle" style="width:100%; margin-bottom:2px; height:30px" class="mceSimple" name="data[description]">{$object.description|default:''|escape:'html'}</textarea>
 
 </fieldset>
 

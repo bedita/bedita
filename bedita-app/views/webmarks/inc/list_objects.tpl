@@ -76,7 +76,7 @@ $(document).ready(function(){
 			{/if}
 			</td>
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a></td>
-			<td>{$objects[i].url|default:''}</td>
+			<td>{$objects[i].url|default:''|truncate:48:'(...)':true:true}</td>
 			<td>{$objects[i].http_code|default:''}</td>
 			<td style="text-align:center">{$objects[i].status}</td>
 		<td class="go">
