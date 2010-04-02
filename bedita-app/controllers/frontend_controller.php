@@ -1631,10 +1631,8 @@ abstract class FrontendController extends AppController {
 		$id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
 		$object_type_id = $this->BEObject->findObjectTypeId($id);
 		// verify type
-		$conf = Configure::getInstance() ;
-		$types = array($conf->objectTypes['image']['id'], $conf->objectTypes['video']['id'],
-			$conf->objectTypes['b_e_file']['id'], $conf->objectTypes['audio']['id'], $conf->objectTypes['application']['id']);
-		if(($object_type_id === false) || !in_array($object_type_id, $types))
+		$conf = Configure::getInstance();
+		if(($object_type_id === false) || !in_array($object_type_id, $conf->objectTypes['multimedia']['id']))
 			throw new BeditaException(__("Content not found", true));
 
 		$obj = $this->loadObj($id);
@@ -1651,7 +1649,9 @@ abstract class FrontendController extends AppController {
 				"ObjectRelation.switch" => array("download", "attach")
 			),
 			'fields' => array('object_id')));
-		if($relatedObjectId === false) {
+		// check if multimedia is on the tree
+		$isOnTree = ClassRegistry::init("Tree")->isParent($this->publication["id"], $id);
+		if($relatedObjectId === false && $isOnTree === false) {
 			throw new BeditaException(__("Content not found", true));
 		}
 
