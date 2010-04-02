@@ -1641,7 +1641,7 @@ abstract class FrontendController extends AppController {
 		}
 		
 		// check 'download' or 'attach' relation
-		// TODO: check relatedObject status????
+		// TODO: check relatedObject status and position on tree????
 		$objRel = ClassRegistry::init("ObjectRelation");
 		$relatedObjectId = $objRel->find('first', array(
 			'conditions' => array(
@@ -1650,7 +1650,7 @@ abstract class FrontendController extends AppController {
 			),
 			'fields' => array('object_id')));
 		// check if multimedia is on the tree
-		$isOnTree = ClassRegistry::init("Tree")->isParent($this->publication["id"], $id);
+		$isOnTree = ClassRegistry::init("Tree")->isOnTree($id, $this->publication["id"]);
 		if($relatedObjectId === false && $isOnTree === false) {
 			throw new BeditaException(__("Content not found", true));
 		}

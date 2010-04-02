@@ -362,6 +362,25 @@ class Tree extends BEAppModel
 	}
 
 	/**
+	 * check if an object is on the tree
+	 *
+	 * @param integer $id
+	 * @param integer $area_id if defined check if the object is a descendant of a publication
+	 * @return boolean
+	 */
+	public function isOnTree($id, $area_id=null) {
+		$conditions["id"] = $id;
+		if (!empty($area_id)) {
+			$conditions["area_id"] = $area_id;
+		}
+		$c = $this->find("count", array("conditions" => $conditions));
+		if ($c === 0) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * Children of id element (only 1 level in tree).
 	 * If userid != null, only objects with read permissione for user, if ' ' - use guest/anonymous user,
 	 * if userid = null -> no permission check.
