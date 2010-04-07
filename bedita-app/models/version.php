@@ -45,10 +45,9 @@ class Version extends BEAppModel
 	 * @param array $newData
 	 */	
 	public function addRevision(array& $oldData, array& $newData) {
-			
 		$vData = array("object_id" => $oldData["id"],
 			"created" => $oldData["modified"],
-			"user_id" => $oldData["user_created"]);
+			"user_id" => $oldData["user_modified"]);
 		$lastRev = $this->field("revision", array("object_id" => $vData["object_id"]), 
 			"revision desc");
 		if(empty($lastRev)) {
