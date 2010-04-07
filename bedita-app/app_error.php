@@ -85,13 +85,17 @@ class AppError extends ErrorHandler {
 
 	public function handleAjaxException(array $messages) {
 		$usrMsgParams = array("layout" => "", "params" => array());
-		$this->controller->handleError($messages['details'], $messages['msg'], $this->errorTrace, $usrMsgParams);
 		if (!empty($messages['output'])) {
-			if ($messages['output'] == "json") {
+			if ($messages['output'] == "beditaMsg" || $messages['output'] == "reload") {
+				$usrMsgParams = array();
+			} elseif ($messages['output'] == "json") {
 				header("Content-Type: application/json");
-				$this->controller->set("json", true);
 			}
+			$this->controller->set("output", $messages['output']);
+		} else {
+			$this->controller->set("output", "html");
 		}
+		$this->controller->handleError($messages['details'], $messages['msg'], $this->errorTrace, $usrMsgParams);
 		$this->restoreDebugLevel();
 		App::import('View', "Smarty");
 		$viewObj = new SmartyView($this->controller);

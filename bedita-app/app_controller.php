@@ -345,7 +345,10 @@ class AppController extends Controller
 		if($this->skipCheck) return true;
 
 		// Verify authorization
-		if(!$this->BeAuth->isLogged()) { 
+		if(!$this->BeAuth->isLogged()) {
+			if ($this->RequestHandler->isAjax()) {
+				throw new BeditaAjaxException(__("Session Expired", true), array("output" => "reload"));
+			}
 			echo $this->render(null, null, VIEWS."home".DS."login.tpl") ; 
 			$_loginRunning = false; 
 			exit;

@@ -116,7 +116,7 @@ class TagsController extends ModulesController {
 	}
 
 	public function listAllTags($href=false) {
-		$this->layout = "empty";
+		$this->layout = "ajax";
 		$this->set("listTags",$this->Category->getTags(true, null, true));
 		if ($href) 
 			$this->set("href", true);
