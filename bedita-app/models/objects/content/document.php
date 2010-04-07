@@ -43,7 +43,7 @@ class Document extends BeditaContentModel
 															"Annotation",
 															"Category",
 															"Alias",
-															"Version"
+															"Version" => array("User.realname", "User.userid")
 															),
 									"GeoTag"),
 				"default" => array("BEObject" => array("ObjectProperty", 

@@ -49,7 +49,9 @@ class Card extends BEAppObjectModel {
 															"Category",
 															"Annotation",
 															"User",
-															"Alias"), 
+															"Alias",
+															"Version" => array("User.realname", "User.userid")
+														),
 									"MailGroup", "GeoTag"),
 
 				"default" => array("BEObject" => array("ObjectProperty", 

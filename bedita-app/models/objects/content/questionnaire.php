@@ -43,7 +43,8 @@ class Questionnaire extends BeditaContentModel
 															"RelatedObject",
 															"Annotation",
 															"Category",
-															"Alias"
+															"Alias",
+															"Version" => array("User.realname", "User.userid")
 															),
 									),
 				"default" => array("BEObject" => array("ObjectProperty", 

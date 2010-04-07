@@ -40,7 +40,8 @@ class QuestionnaireResult extends BEAppObjectModel {
 															"Permission",
 															"ObjectProperty",
 															"LangText",
-															"Annotation"
+															"Annotation",
+															"Version" => array("User.realname", "User.userid")
 															),
 									 "DateItem", 
 									 "Answer" => array("QuestionAnswer")

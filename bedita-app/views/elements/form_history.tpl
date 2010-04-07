@@ -14,7 +14,7 @@
 		<td style="text-align:center"><a href="">{$h.revision}</a></td>
 		<td>{$h.created|date_format:$conf->dateTimePattern}</td>
 		{*<td>{$h.diff}</td>*}
-		<td>[{$h.user_id}]</td>
+		<td>[{$h.User.realname|default:$h.User.userid}]</td>
 	</tr>
 {/foreach}
 </table>

@@ -40,7 +40,10 @@ class Author extends BEAppObjectModel
 															"UserCreated", 
 															"UserModified", 
 															"RelatedObject",
-															"Alias")),
+															"Alias",
+															"Version" => array("User.realname", "User.userid")
+														)
+													),
 
        			"default" => array("BEObject" => array("ObjectType", "RelatedObject" )),
 

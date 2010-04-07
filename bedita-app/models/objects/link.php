@@ -41,7 +41,9 @@ class Link extends BEAppObjectModel {
 															"RelatedObject",
 															"Category",
 															"Annotation",
-															"Alias")),
+															"Alias",
+															"Version" => array("User.realname", "User.userid")
+														)),
 
 				"default" => array("BEObject" => array("ObjectType", "RelatedObject", "Category", "Annotation")),
 

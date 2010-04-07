@@ -46,7 +46,8 @@ class Question extends BEAppObjectModel
 															"LangText",
 															"RelatedObject",
 															"Annotation",
-															"Category"
+															"Category",
+															"Version" => array("User.realname", "User.userid")
 															),
 									"QuestionAnswer"),
 				"default" => array("BEObject" => array("ObjectProperty", 

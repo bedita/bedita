@@ -657,7 +657,11 @@ class BeditaAnnotationModel extends BEAppObjectModel {
 	); 
 	
 	protected $modelBindings = array( 
-		"detailed" =>  array("BEObject" => array("ObjectType","UserCreated"), "ReferenceObject"),
+		"detailed" =>  array("BEObject" => array(
+									"ObjectType",
+									"UserCreated",
+									"Version" => array("User.realname", "User.userid")
+								), "ReferenceObject"),
 		"default" =>  array("BEObject" => array("ObjectType","UserCreated"), "ReferenceObject"),
 		"minimum" => array("BEObject" => array("ObjectType"))
 	);
@@ -680,7 +684,9 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
 														"Annotation",
 														"Category",
 														"ObjectProperty",
-														"Alias"),
+														"Alias",
+														"Version" => array("User.realname", "User.userid")
+													),
 									"Content"),
 				"default" => array("BEObject" => array(	"ObjectProperty", 
 														"LangText", 
@@ -736,7 +742,9 @@ class BeditaStreamModel extends BEAppObjectModel {
 														"Category",
 														"ObjectProperty",
 														"Annotation",
-														"Alias"),
+														"Alias",
+														"Version" => array("User.realname", "User.userid")
+														),
 									"Content", "Stream"),
 				"default" => array("BEObject" => array(	"ObjectProperty", 
 														"LangText", 
@@ -802,7 +810,9 @@ class BeditaProductModel extends BEAppObjectModel {
 														"RelatedObject",
 														"Category",
 														"Annotation",
-														"Alias"),
+														"Alias",
+														"Version" => array("User.realname", "User.userid")
+													),
 									"Product"),
 				"default" => array("BEObject" => array(	"ObjectProperty", 
 														"LangText", 

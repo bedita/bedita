@@ -45,7 +45,9 @@ class Area extends BeditaCollectionModel
 									"UserModified", 
 									"Permission",
 									"ObjectProperty",
-									"LangText"),
+									"LangText",
+									"Version" => array("User.realname", "User.userid")
+								),
 								"SectionDummy"),
 
        		"default" => array("BEObject" => array("ObjectProperty", 

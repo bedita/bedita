@@ -43,7 +43,8 @@ class Event extends BeditaContentModel
 													"RelatedObject",
 													"Annotation",
 													"Category",
-													"Alias"
+													"Alias",
+													"Version" => array("User.realname", "User.userid")
 													),
 									"DateItem", "GeoTag"),
 				"default" 	=> array("BEObject" => array("ObjectProperty", "LangText", 

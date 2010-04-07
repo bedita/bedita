@@ -63,7 +63,8 @@ class MailMessage extends BeditaContentModel
 															"UserModified", 
 															"Permission",
 															"RelatedObject",
-															"Annotation"
+															"Annotation",
+															"Version" => array("User.realname", "User.userid")
 															),
 									 "Content", "MailGroup"
 									),

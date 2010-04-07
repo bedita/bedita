@@ -36,6 +36,8 @@ class Version extends BEAppModel
 	 * @var array
 	 */
 	private $noRevision = array("user_modified");
+
+	public $belongsTo = array("User");
 	 
 	/**
 	 * Create a new revision, creating a 'diff' between two object data arrays
