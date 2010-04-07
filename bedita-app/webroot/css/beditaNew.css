@@ -165,23 +165,25 @@ UL UL {margin-left:20px;}
 	width: 500px; 
 }
 
-.mainfull {
+.mainfull, .main.full {
 	top:160px;
 	min-width: 660px;
 	padding-right:20px;
 }
 
-.mainfull .tab{
-	width: 660px;
+.mainfull .tab, .main.full .tab {
+	/*
+width: 660px;
+*/
 }
 
-.mainhalf {
+.mainhalf, .main.half {
 	width: 340px;
 	margin-right:10px;
 	float:left;
 }
 
-.mainhalf .tab{
+.mainhalf .tab, .main.half .tab{
 	width: 340px;
 }
 
@@ -317,7 +319,8 @@ UL.modules {
 .galleries, .gallery 		{background-color:#FFBF00 !important;}
 .events, .event				{background-color:#0099CC !important;}
 .newsletter 				{background-color:#99cc33 !important;}
-.multimedia, .image, .audio, .video	{background-color:#ff0033 !important;}
+.multimedia, .image, .audio, .video, .b_e_file, .application	
+							{background-color:#ff0033 !important;}
 .admin 						{background-color:#333333 !important;}
 .tags 						{background-color:#336666 !important;}
 .comments, .comment			{background-color:#F08080 !important;}
@@ -329,8 +332,12 @@ UL.modules {
 .books, .book				{background-color:#996633 !important;}
 .bibliographies, .bibliography {background-color:#999966 !important;}
 .ecommerce 					{background-color:#771717 !important;}
-.webmark, .webmarks 		{background-color:#6600cc !important;}
-.questionnaires, .questions, .question	{background-color:#801f2b !important;}
+.webmark, .webmarks, .link 		{background-color:#6600cc !important;}
+
+.questionnaires,.questionnaire	{background-color:#801f2b !important;}
+.questions, .question		{background-color:#993333 !important;}
+.questionnaire_result		{background-color:#995050 !important;}
+
 .bookings, .booking 		{background-color:#99CC33 !important;}
 .faq, .faqs 				{background-color:#CC3333 !important;}
 .print 						{background-color:#CC9900 !important;}
@@ -1552,6 +1559,7 @@ Table.graph TD {
 }
 Table.graph TD.label {
 	text-align:right; padding-right:5px;
+	border-right:1px solid #666;
 }
 Table.graph TD DIV {
 	height:20px; border:0px solid gray;
