@@ -19,7 +19,7 @@
 				{foreach from=$user.objects key="objectType" item="num"}
 					{if isset($conf->objectTypes[$objectType].module)}
 					{math assign="pixel" equation="(x/y)*350" x=$num y=$maxObjectsForUser}
-					<div style="width:{$pixel}px;" class="{$conf->objectTypes[$objectType].module}">&nbsp</div>
+					<div title="{$objectType}" style="width:{$pixel}px;" class="{$objectType}">&nbsp</div>
 					{/if}
 				{/foreach}
 					{*<span class="value">{$totalObjectsForUser[$user_id]}</span>*}

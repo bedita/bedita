@@ -13,7 +13,7 @@
 					<td class="label">{$objectType}</td>
 					<td style="white-space:nowrap;">
 						{math assign="pixel" equation="(x/y)*400" x=$num y=$maxTotalObjectsNumber}
-						<div style="width:{$pixel}px;" class="{$conf->objectTypes[$objectType].module}">&nbsp;</div> <span class="value">{$num}</span>
+						<div title="{$objectType}" style="width:{$pixel}px;" class="{$objectType}">&nbsp;</div> <span class="value">{$num}</span>
 					</td>
 				</tr>
 				{/if}
@@ -33,7 +33,7 @@
 				{foreach from=$types key="objectType" item="num"}
 					{if isset($conf->objectTypes[$objectType].module)}
 					{math assign="pixel" equation="(x/y)*400" x=$num y=$maxTotalTimeEvolution}
-					<div style="width:{$pixel}px;" class="{$conf->objectTypes[$objectType].module}">&nbsp</div>
+					<div title="{$objectType}" style="width:{$pixel}px;" class="{$objectType}">&nbsp</div>
 					{/if}
 				{/foreach}
 					<span class="value">{$totalTimeEvolution[$date]}</span>
