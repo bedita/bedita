@@ -13,7 +13,7 @@
 					<td class="label">{$objectType}</td>
 					<td style="white-space:nowrap;">
 						{math assign="pixel" equation="(x/y)*400" x=$num y=$maxTotalObjectsNumber}
-						<div title="{$objectType}" style="width:{$pixel}px;" class="{$objectType}">&nbsp;</div> <span class="value">{$num}</span>
+						<div title="{$objectType}" style="width:{$pixel|format_number}px;" class="bar {$objectType}">&nbsp;</div> <span class="value">{$num}</span>
 					</td>
 				</tr>
 				{/if}
@@ -33,7 +33,7 @@
 				{foreach from=$types key="objectType" item="num"}
 					{if isset($conf->objectTypes[$objectType].module)}
 					{math assign="pixel" equation="(x/y)*400" x=$num y=$maxTotalTimeEvolution}
-					<div title="{$objectType}" style="width:{$pixel}px;" class="{$objectType}">&nbsp</div>
+					<div title="{$objectType}" style="width:{$pixel|format_number}px;" class="bar {$objectType}">&nbsp</div>
 					{/if}
 				{/foreach}
 					<span class="value">{$totalTimeEvolution[$date]}</span>
@@ -53,7 +53,7 @@
 			<tr>
 				<td class="label">{$c.title|truncate:20|default:'<i>[no title]</i>'}</td>
 				<td style="white-space:nowrap;">
-					<div style="width:{$pixel}px;" class="{$c.ObjectType.module}">&nbsp</div><span class="value">{$c.count_relations}</span>
+					<div style="width:{$pixel|format_number}px;" class="bar {$c.ObjectType.module}">&nbsp</div><span class="value">{$c.count_relations}</span>
 				</td>
 			</tr>
 			{/if}
@@ -74,7 +74,7 @@
 					{$c.title|truncate:20|default:'<i>[no title]</i>'}</a>
 				</td>
 				<td style="white-space:nowrap;">
-					<div style="width:{$pixel}px;" class="{$c.ObjectType.module}">&nbsp</div><span class="value">{$c.count_relations}</span>
+					<div style="width:{$pixel|format_number}px;" class="bar {$c.ObjectType.module}">&nbsp</div><span class="value">{$c.count_relations}</span>
 				</td>
 			</tr>
 			{/if}

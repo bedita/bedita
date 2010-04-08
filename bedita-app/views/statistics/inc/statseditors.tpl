@@ -12,18 +12,20 @@
 			{foreach from=$objectsForUser key="user_id" item="user"}
 			<tr>
 				<td class="label" onclick="window.location.href='/admin/viewUser/{$user.id}'" style="cursor:pointer; border-right:1px solid gray; border-bottom:0px solid gray">
-					{$user.realname}
+					<a href="{$html->url('/')}/admin/viewUser/{$user.id}">{$user.realname|default:$user.userid}</a>
 				</td>
+			{strip}
 			<td style="text-align:right; text-align:center; border-right:1px solid gray; border-bottom:0px solid gray"> {$totalObjectsForUser[$user_id]} </td>
 				<td style="white-space:nowrap;">
 				{foreach from=$user.objects key="objectType" item="num"}
 					{if isset($conf->objectTypes[$objectType].module)}
 					{math assign="pixel" equation="(x/y)*350" x=$num y=$maxObjectsForUser}
-					<div title="{$objectType}" style="width:{$pixel}px;" class="{$objectType}">&nbsp</div>
+					<div title="{$objectType}" style="width:{$pixel|format_number}px;" class="bar {$objectType}"></div>
 					{/if}
 				{/foreach}
 					{*<span class="value">{$totalObjectsForUser[$user_id]}</span>*}
 				</td>
+			{/strip}
 			</tr>
 			{/foreach}
 			</tbody>
