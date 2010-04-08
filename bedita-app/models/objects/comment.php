@@ -42,7 +42,7 @@ class Comment extends BeditaAnnotationModel
 												"ObjectType",
 												"UserCreated",
 												"UserModified",
-												"RelatedObject"
+												"RelatedObject",
 												"Version" => array("User.realname", "User.userid")
 											), "ReferenceObject", "GeoTag"),
 		"default" =>  array("BEObject" => array("ObjectType"), "ReferenceObject", "GeoTag"),
