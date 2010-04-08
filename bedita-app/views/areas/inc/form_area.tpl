@@ -1,19 +1,5 @@
 <fieldset id="properties">	
 
-{literal}
-<script language="JavaScript" type="text/javascript">
-$(document).ready(function(){
-
-	$(".autogrowarea").autogrow({
-		lineHeight: 16
-	});
-	$(".areaform input[type='text'], .areaform textarea").width(340);
-
-
-});
-</script>
-{/literal}
-
 {$view->element('form_common_js')}
 
 {assign var=object_lang value=$object.lang|default:$conf->defaultLang}
@@ -21,14 +7,14 @@ $(document).ready(function(){
 	<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 	<input type="hidden" name="data[title]" value="{$object.title|default:''}"/>
 
-<div class="tab"><h2>{t}Properties{/t}</h2></div>	
 
-	<table class="areaform" style="margin-bottom:10px">
+
+	<table class="areaform" border=0 style="margin-bottom:10px">
 
 		<tr>
 			<th>{t}title{/t}:</th>
 			<td>
-				<input id="titleBEObject" class="{literal}{required:true,minLength:1}{/literal}" title="{t}Title is required{/t}"	type="text" name="data[title]"	value="{$object.title|default:''|escape:'html'|escape:'quotes'}" />
+				<input id="titleBEObject" type="text" name="data[title]"	value="{$object.title|default:''|escape:'html'|escape:'quotes'}" />
 			</td>
 		</tr>
 		<tr>
@@ -40,36 +26,35 @@ $(document).ready(function(){
 		<tr>
 			<th>{t}description{/t}:</th>
 			<td>
-				<textarea class="autogrowarea" name="data[description]">{$object.description|default:''|escape:'html'|escape:'quotes'}</textarea>
+				<textarea class="mceSimple" name="data[description]">{$object.description|default:''|escape:'html'|escape:'quotes'}</textarea>
 			</td>
 		</tr>
 		<tr>
 			<th>{t}status{/t}:</th>
 			<td id="status">
-				{if $object.fixed|default:'' == 1}
-					{t}This object is fixed - some data is readonly{/t}
-					<input type="hidden" name="data[status]" value="{$object.status}" />
-				{else}
-					{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator=" "}
-				{/if}
-				
+			{if $object.fixed|default:'' == 1}
+				{t}This object is fixed - some data is readonly{/t}
+				<input type="hidden" name="data[status]" value="{$object.status}" />
+			{else}
+				{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator=" "}
+			{/if}	
 			{if in_array('administrator',$BEAuthUser.groups)}
 				&nbsp;&nbsp;&nbsp; <b>fixed</b>:&nbsp;&nbsp;<input type="checkbox" name="data[fixed]" value="1" {if !empty($object.fixed)}checked{/if} />
 			{else}
 				<input type="hidden" name="data[fixed]" value="{$object.fixed|default:0}" />
-			{/if}
+			{/if}		
 			</td>
 		</tr>
-		
 		<tr>
-			<th>
-				syndicate:</th>
+			<th>syndicate:</th>
 			<td>
-				<div class="ico_rss" style="float:left; vertical-align:middle; margin-right:10px; width:24px; height:24px;">&nbsp;</div>
-				<input style="margin-top:4px" type="checkbox" name="data[syndicate]" value="on" {if $object.syndicate|default:'off'=='on'}checked{/if} />
+					<div class="ico_rss {if $object.syndicate|default:'off'=='on'}on{/if}" 
+					style="float:left; vertical-align:middle; margin-right:10px; width:24px; height:24px;">&nbsp;</div>
+					<input style="margin-top:4px" type="checkbox" 
+					onclick="$('.ico_rss').toggleClass('on')"
+					name="data[syndicate]" value="on" {if $object.syndicate|default:'off'=='on'}checked{/if} />
 			</td>
 		</tr>
-		
 		<tr>
 			<th>{t}order{/t}:</th>
 			<td>
@@ -164,13 +149,20 @@ $(document).ready(function(){
 		
 	</tr>
 	<tr>
-		<th>{t}license{/t}:</th>
-		<td>
-			<input type="text" name="data[license]" value="{$object.license|default:''|escape:'html'|escape:'quotes'}"
-			class="{literal}{required:true,minLength:1}{/literal}" title="{t 1='1'}License is required (at least %1 alphanumerical char){/t}"/>
-		</td>
-		
-	</tr>
+				<td> <label>{t}license{/t}:</label></td>
+				<td>
+					<select name="data[license]">
+						<option value="">--</option>
+						<option  value="Creative Commons Attribuzione 2.5 Italia"{if !empty($object) && $object.license == "Creative Commons Attribuzione 2.5 Italia"} selected{/if}>Creative Commons Attribuzione 2.5 Italia</option>
+						<option  value="Creative Commons Attribuzione-Non commerciale 2.5 Italia"{if !empty($object) && $object.license == "Creative Commons Attribuzione-Non commerciale 2.5 Italia"} selected{/if}>Creative Commons Attribuzione-Non commerciale 2.5 Italia</option>
+						<option  value="Creative Commons Attribuzione-Condividi allo stesso modo 2.5 Italia"{if !empty($object) && $object.license == "Creative Commons Attribuzione-Condividi allo stesso modo 2.5 Italia"} selected{/if}>Creative Commons Attribuzione-Condividi allo stesso modo 2.5 Italia</option>
+						<option  value="Creative Commons Attribuzione-Non opere derivate 2.5 Italia"{if !empty($object) && $object.license == "Creative Commons Attribuzione-Non opere derivate 2.5 Italia"} selected{/if}>Creative Commons Attribuzione-Non opere derivate 2.5 Italia</option>
+						<option  value="Creative Commons Attribuzione-Non commerciale-Condividi allo stesso modo 2.5 Italia"{if !empty($object) && $object.license == "Creative Commons Attribuzione-Non commerciale-Condividi allo stesso modo 2.5 Italia"} selected{/if}>Creative Commons Attribuzione-Non commerciale-Condividi allo stesso modo 2.5 Italia</option>
+						<option  value="Creative Commons Attribuzione-Non commerciale-Non opere derivate 2.5 Italia"{if !empty($object) && $object.license == "Creative Commons Attribuzione-Non commerciale-Non opere derivate 2.5 Italia"} selected{/if}>Creative Commons Attribuzione-Non commerciale-Non opere derivate 2.5 Italia</option>
+						<option  value="Tutti i diritti riservati"{if !empty($object) && $object.license == "Tutti i diritti riservati"} selected{/if}>Tutti i diritti riservati</option>
+					</select>
+				</td>
+			</tr>
 	</table>
 
 </div>

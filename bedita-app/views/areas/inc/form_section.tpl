@@ -5,25 +5,6 @@
 {$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
 
-{literal}
-<script language="JavaScript" type="text/javascript">
-$(document).ready(function(){
-	
-	$(".autogrowarea").autogrow({
-		lineHeight: 16
-	});
-	$(".areaform input[type='text'], .areaform textarea").width(340);
-	/*
-	{/literal}{if !empty($object.Permission)}{literal}
-		$(".head H1").prepend("<img src='{/literal}{$html->webroot}{literal}img/iconLocked.png' style='vertical-align:sub' alt='permissions set' />");
-	{/literal}{/if}{literal}
-	*/
-});
-</script>
-{/literal}
-		
-
-
 {$view->element('form_common_js')}
 
 <input type="hidden" name="data[id]" value="{$object.id|default:null}"/>
@@ -32,7 +13,7 @@ $(document).ready(function(){
 
 			<tr>
 				<th>{t}title{/t}:</th>
-				<td><input type="text" id="titleBEObject" style="width:340px;" name="data[title]" value="{$object.title|default:""}"/></td>
+				<td><input type="text" id="titleBEObject" style="width:100%" name="data[title]" value="{$object.title|default:""}"/></td>
 			</tr>
 			<tr>
 				<td><label>{t}reside in{/t}:</label></td>
@@ -53,7 +34,7 @@ $(document).ready(function(){
 			</tr>
 			<tr>
 					<th>{t}description{/t}:</th>
-					<td><textarea class="autogrowarea" name="data[description]">{$object.description|default:""}</textarea></td>
+					<td><textarea style="width:100%" class="mceSimple" name="data[description]">{$object.description|default:""}</textarea></td>
 			</tr>
 			<tr>
 			
@@ -78,8 +59,11 @@ $(document).ready(function(){
 					syndicate:
 				</th>
 				<td>
-					<div class="ico_rss" style="float:left; vertical-align:middle; margin-right:10px; width:24px; height:24px;">&nbsp;</div>
-					<input style="margin-top:4px" type="checkbox" name="data[syndicate]" value="on" {if $object.syndicate|default:'off'=='on'}checked{/if} />
+					<div class="ico_rss {if $object.syndicate|default:'off'=='on'}on{/if}" 
+					style="float:left; vertical-align:middle; margin-right:10px; width:24px; height:24px;">&nbsp;</div>
+					<input style="margin-top:4px" type="checkbox" 
+					onclick="$('.ico_rss').toggleClass('on')"
+					name="data[syndicate]" value="on" {if $object.syndicate|default:'off'=='on'}checked{/if} />
 				</td>
 			</tr>
 			<tr>
@@ -95,7 +79,8 @@ $(document).ready(function(){
 </fieldset>
 
 	<br />
-	
+<fieldset>	
+
 <div class="tab"><h2>{t}More properties{/t}</h2></div>
 
 <div>
@@ -119,7 +104,7 @@ $(document).ready(function(){
 			<tr>
 				<th>{t}creator{/t}:</th>
 				<td>
-					<input type="text" name="data[creator]" value="{$object.creator|default:''|escape:'html'|escape:'quotes'}"
+					<input style="width:100%" type="text" name="data[creator]" value="{$object.creator|default:''|escape:'html'|escape:'quotes'}"
 					class="{literal}{required:true,minLength:1}{/literal}" title="{t 1='1'}Creator is required (at least %1 alphanumerical char){/t}"/>
 				</td>
 				
@@ -182,3 +167,4 @@ $(document).ready(function(){
 	{assign_associative var="params" el=$object|default:null recursion=true}
 	{$view->element('form_permissions', $params)}
 
+</fieldset>

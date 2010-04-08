@@ -452,7 +452,7 @@ jQuery.fn.BEmodal = function(){
 
 ...........................................*/
 
-		$(".BEbutton .link").click(function () {
+		$(".BEbutton .golink").click(function () {
 			if ($(this).attr("href")) {
 				window.open($(this).attr("href"));
 			}

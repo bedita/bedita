@@ -2298,7 +2298,7 @@ msgid "statistics"
 msgstr "statistiche"
 
 msgid "status"
-msgstr "stato"
+msgstr "status"
 
 msgid "street name and #"
 msgstr "nome strada e numero"

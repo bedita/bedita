@@ -61,7 +61,7 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 
 <div id="loading" style="position:absolute; left:320px; top:110px; ">&nbsp;</div>
 
-<div class="main" style="display:none">
+<div class="main full" style="display:none">
 
 <!--
 	<div class="tab"><h2>{t}Details{/t} of &nbsp; <span class="graced" style="font-size:1.5em" id="sectionTitle"></span></h2></div>
@@ -122,6 +122,6 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 </div>
 
 </form>
-{bedev}
+{*bedev}
 {$view->element('menuright')}
-{/bedev}
+{/bedev*}

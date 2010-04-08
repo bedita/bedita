@@ -1170,6 +1170,7 @@ UL#mediatypes  {
 .ico_chart {background-image: url('../img/iconset/24px/chart.png');}
 .ico_formula {background-image: url('../img/iconset/24px/formula.png');}
 .ico_rss {background-image: url('../img/iconset/24px/rss.png');}
+.ico_rss.on {background-image: url('../img/iconset/24px/rss-on.png');}
 .ico_application {background-image: url('../img/iconset/24px/application.png');}
 
 /*...........................................    
@@ -1535,7 +1536,8 @@ TABLE.areaform {
 	width:100%
 }
 .areaform INPUT[type=text], .areaform TEXTAREA, .areaform SELECT {
-	width:240px;
+	width:100%;
+
 	
 }
 .areaform TH {
