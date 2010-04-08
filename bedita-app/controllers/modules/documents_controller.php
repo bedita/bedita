@@ -47,6 +47,7 @@ class DocumentsController extends ModulesController {
 	
 	 public function view($id = null) {
 		$this->viewObject($this->Document, $id);
+		$this->set('autosave', true);
 	 }
 
 	public function save() {
@@ -59,11 +60,23 @@ class DocumentsController extends ModulesController {
 	 }
 
 	public function autosave() {
-		$this->checkAutoSave();
-		$this->Transaction->begin();
-		$this->autoSaveObject($this->Document);
-	 	$this->Transaction->commit() ;
-		// TODO: msg to user?
+		
+		$this->layout = 'ajax';
+		try {
+			$this->checkAutoSave();
+			$this->Transaction->begin();
+			//pr($this->data);exit;
+			$this->autoSaveObject($this->Document);
+		 	$this->Transaction->commit() ;
+		 	$time = strftime(Configure::read("dateTimePattern"), time());
+			$this->userInfoMessage(__("Document Saved on", true)."<br/>".$time);
+			$this->eventInfo("document [". $this->data["title"]."] saved");
+		 	$this->set('id', $this->Document->id);
+		} catch(BeditaException $be) {
+			$this->Transaction->rollback();
+			$this->userErrorMessage($be->getMessage());
+		}
+		$this->render(null, null, "/elements/flash_messages");
 	 }
 	 
 	 
@@ -163,11 +176,7 @@ class DocumentsController extends ModulesController {
 			"disassocCategory"	=> 	array(
 							"OK"	=> $this->referer(),
 							"ERROR"	=> $this->referer() 
-							),
-			"autosave"	=> 	array(
-							"OK"	=> "/documents/view/".@$this->Document->id,
-							"ERROR"	=> $this->referer()
-							),
+							)
 			);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;

@@ -95,6 +95,8 @@ $config['activityTimeout'] = 20;
 // concurrent users check - time interval, duration in milliseconds
 $config["concurrentCheckTime"] = 20000;
 
+// Autosave time check - time interval, duration in milliseconds
+$config["autoSaveTime"] = 60000;
 
 /**
  ** ******************************************

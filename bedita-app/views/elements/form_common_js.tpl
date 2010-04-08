@@ -207,20 +207,81 @@ $(document).ready(function(){
 	$("#updateForm *").change(function () {
 		$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 		$("#cancelBEObject").show();
+		{/literal}{if $autosave|default:false}{literal}
+		if (autoSaveTimer == undefined) 
+			autoSave();
+		{/literal}{/if}{literal}
 	});
 
-
-
+	$("input[name=data\\[status\\]]").change(function () {
+		{/literal}{if $autosave|default:false}{literal}
+			autoSave();
+		{/literal}{/if}{literal}
+	});
 
 {/literal}{if !empty($object.id)}{literal}
-
-	//Uncomment to start concurrent user check
-	updateEditors();	
-
+	updateEditors();
 {/literal}{/if}{literal}
+
+	var status = $("input[name=data\\[status\\]]:checked").attr('value');
 
 });
 
+var autoSaveTimer;
+
+function autoSave() {
+
+	{/literal}
+	var checkTime = {$conf->autoSaveTime};
+	var submitUrl = "{$html->url('/')}{$view->params.controller}/autosave/";
+	{literal}
+
+	var optionsForm = {
+			target: 		'#messagesDiv'
+		};
+
+	var newStatus = $("input[name=data\\[status\\]]:checked").attr('value');
+
+	if (status != newStatus) {
+		if (newStatus == 'on') {
+			clearTimeout(autoSaveTimer);
+			autoSaveTimer = undefined;
+			switchAutosave(newStatus);
+			
+		}else if (status == 'on'){
+
+			switchAutosave(newStatus);
+		}else if (checkTime > 0) {
+			autoSaveTimer = setTimeout(autoSave,checkTime);
+		}
+		status = newStatus;
+	} else if (checkTime > 0 && newStatus != 'on') {
+		autoSaveTimer = setTimeout(autoSave,checkTime);
+		optionsForm.url = submitUrl; // override form action
+		tinyMCE.triggerSave(true, true);
+		$('#updateForm').ajaxSubmit(optionsForm);
+	}else {
+		clearTimeout(autoSaveTimer);
+		autoSaveTimer = undefined;
+	}
+
+}
+
+function switchAutosave(status) {
+	{/literal}
+	var submitUrl = "{$html->url('/pages/showAjaxMessage/')}";
+	
+	{literal}
+	
+	if (status == 'on') {
+		var message = {/literal}'{t}Autosave Disabled{/t}'{literal};
+	}else {
+		var message = {/literal}'{t}Autosave Enabled{/t}'{literal};
+	}
+	
+	$("#messagesDiv").load(submitUrl,{msg:message,type:'info'});
+	
+}
 
 function updateEditors() {
 	{/literal}
@@ -229,12 +290,10 @@ function updateEditors() {
 	{literal}
 	
 	$("#editors").load(submitUrl);
-	chatTimer=setTimeout(updateEditors,checkTime);
-	
+	chatTimer=setTimeout(updateEditors,checkTime);	
 }
 
 
 {/literal}
 </script>
-
 

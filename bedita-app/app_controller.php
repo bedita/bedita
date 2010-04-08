@@ -942,7 +942,7 @@ abstract class ModulesController extends AppController {
 		if(!$new) {
 			$objectId = $this->data['id'];
 			$status = $beObject->field("status", "id = $objectId");
-			if($status != "draft") {
+			if($status == "on") {
 				throw new BeditaException(__("Autosave: bad status", true));
 			}
 			

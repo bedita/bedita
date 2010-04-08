@@ -393,7 +393,14 @@ class PagesController extends AppController {
 		$res = $objectEditor->loadEditors($objectId);
 		$this->set("editors", $res);
 	}
-
+	
+	public function showAjaxMessage() {
+		$this->ajaxCheck();
+		$methodName = 'user'.ucfirst($this->params['form']['type']).'Message';
+		$this->{$methodName}($this->params['form']['msg']);
+		$this->render(null, null, "/elements/flash_messages");
+	}
+	
 }
 
 ?>

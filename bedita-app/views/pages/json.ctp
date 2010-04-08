@@ -1,4 +1,3 @@
 <?php 
-echo $javascript->object($data);
-exit; 
+echo $javascript->object($data);exit;
 ?>

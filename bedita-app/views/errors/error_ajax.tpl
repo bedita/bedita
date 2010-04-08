@@ -1,8 +1,5 @@
 {if $output == "json"}
-	{if ($session->check('Message.error'))}
-		{assign_associative var="msgArr" errorMsg=$session->flash('error')}
-		{$javascript->object($msgArr)}
-	{/if}
+	{$javascript->object($errorMsg)}
 {elseif $output == "html"}
 	{if $session->flash('error')}{/if}
 {elseif $output == "beditaMsg"}
