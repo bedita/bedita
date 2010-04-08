@@ -30,7 +30,7 @@
 	</tr>
 	<tr>
 		<td>
-			<input class="BEbutton link" href="/books/view/923" name="details" type="button" value="details">
+			<input class="BEbutton golink" href="/books/view/923" name="details" type="button" value="details">
 			<input class="BEbutton" name="remove" type="button" value="remove">
 		</td>
 		<td>

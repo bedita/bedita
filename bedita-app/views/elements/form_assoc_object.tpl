@@ -31,7 +31,7 @@
 	<td>{$objRelated.lang|default:''}</td>
 	
 	<td style="text-align:right; white-space:nowrap">
-		<input class="BEbutton link" 
+		<input class="BEbutton golink" 
 		title="{$objRelated.title|default:'[no title]'}, {$objRelated.mime_type|default:''}" 
 		rel="{$html->url('/')}{$objRelated.ObjectType.module}/view/{$objRelated.id}" name="details" type="button" value="details">
 		<input class="BEbutton" name="remove" type="button" value="x">

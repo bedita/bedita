@@ -26,7 +26,7 @@ $(document).ready(function(){
 </select>
 *}
 <td style="white-space:nowrap">
-	<input type="button" class="BEbutton link" onClick="window.open($(this).attr('href'));" href="{$html->url('/')}webmarks/view/{$objRelated.id}" name="details" value="››" />&nbsp;
+	<input type="button" class="BEbutton golink" onClick="window.open($(this).attr('href'));" href="{$html->url('/')}webmarks/view/{$objRelated.id}" name="details" value="››" />&nbsp;
 	<input type="button" class="remove" title="remove" value="{t}X{/t}" />
 	&nbsp; <a href="{$objRelated.url}" title="{t}open in new window{/t}" target="_blank">open</a>
 	
