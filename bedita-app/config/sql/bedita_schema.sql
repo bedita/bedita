@@ -11,8 +11,8 @@ DROP TABLE IF EXISTS `areas`;
 DROP TABLE IF EXISTS `authors`;
 DROP TABLE IF EXISTS `banned_ips`;
 DROP TABLE IF EXISTS `books`;
-DROP TABLE IF EXISTS `cards`;
 DROP TABLE IF EXISTS `cake_sessions`;
+DROP TABLE IF EXISTS `cards`;
 DROP TABLE IF EXISTS `categories`;
 DROP TABLE IF EXISTS `contents`;
 DROP TABLE IF EXISTS `date_items`;
@@ -31,7 +31,6 @@ DROP TABLE IF EXISTS `mail_group_messages`;
 DROP TABLE IF EXISTS `mail_jobs`;
 DROP TABLE IF EXISTS `mail_logs`;
 DROP TABLE IF EXISTS `mail_messages`;
-DROP TABLE IF EXISTS `mail_templates`;
 DROP TABLE IF EXISTS `modules`;
 DROP TABLE IF EXISTS `objects`;
 DROP TABLE IF EXISTS `object_categories`;
@@ -45,9 +44,9 @@ DROP TABLE IF EXISTS `permission_modules`;
 DROP TABLE IF EXISTS `products`;
 DROP TABLE IF EXISTS `properties`;
 DROP TABLE IF EXISTS `property_options`;
+DROP TABLE IF EXISTS `questionnaire_results`;
 DROP TABLE IF EXISTS `questions`;
 DROP TABLE IF EXISTS `question_answers`;
-DROP TABLE IF EXISTS `questionnaire_results`;
 DROP TABLE IF EXISTS `search_texts`;
 DROP TABLE IF EXISTS `sections`;
 DROP TABLE IF EXISTS `section_types`;
@@ -56,32 +55,29 @@ DROP TABLE IF EXISTS `trees`;
 DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `versions`;
 DROP TABLE IF EXISTS `videos`;
-DROP VIEW IF EXISTS `view_permissions` ;
-DROP VIEW IF EXISTS `view_trees` ;
 
 CREATE TABLE `aliases` (
-`id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-`object_id` INTEGER UNSIGNED NOT NULL,
-`nickname_alias` VARCHAR( 255 ) NOT NULL COMMENT 'alternative nickname',
-`lang` CHAR( 3 ) NULL COMMENT 'alias preferred language, can be NULL',
-PRIMARY KEY (`id` ) ,
-UNIQUE (`nickname_alias`) ,
-INDEX (`object_id`),
-FOREIGN KEY(object_id)
-   REFERENCES objects(id)
-     ON DELETE CASCADE
-     ON UPDATE NO ACTION
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `object_id` INTEGER UNSIGNED NOT NULL,
+  `nickname_alias` VARCHAR( 255 ) NOT NULL COMMENT 'alternative nickname',
+  `lang` CHAR( 3 ) NULL COMMENT 'alias preferred language, can be NULL',
+  PRIMARY KEY (`id` ) ,
+  UNIQUE (`nickname_alias`) ,
+  INDEX (`object_id`),
+  FOREIGN KEY(object_id)
+  REFERENCES objects(id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
 ) ENGINE = InnoDB CHARACTER SET utf8 COMMENT = 'Object nickname aliases (mainly frontend URLs)';
-
 
 CREATE TABLE annotations (
   id INTEGER UNSIGNED NOT NULL,
   object_id INTEGER UNSIGNED NOT NULL,
-  author VARCHAR(255) NULL,
-  email VARCHAR(255) NULL,
-  url VARCHAR(255) NULL,
-  thread_path MEDIUMTEXT NULL,
-  rating INTEGER UNSIGNED NULL,
+  author VARCHAR(255) NULL COMMENT 'annotation author',
+  email VARCHAR(255) NULL COMMENT 'annotation author email',
+  url VARCHAR(255) NULL COMMENT 'annotation url, can be NULL',
+  thread_path MEDIUMTEXT NULL COMMENT 'path to thread, can be NULL',
+  rating INTEGER UNSIGNED NULL COMMENT 'object rating, can be NULL',
   PRIMARY KEY(id),
   INDEX `author_idx`(author),
   INDEX `objects_idx` (`object_id`),
@@ -91,14 +87,13 @@ CREATE TABLE annotations (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'object annotations, comments, notes';
 
-
 CREATE TABLE answers (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   questionnaire_result_id INTEGER UNSIGNED NOT NULL,
   question_id INTEGER UNSIGNED NOT NULL,
   question_answer_id INTEGER UNSIGNED NULL,
-  created DATETIME NOT NULL,
-  answer TEXT NULL,
+  created DATETIME NOT NULL COMMENT 'answer date',
+  answer TEXT NULL COMMENT 'answer text',
   final TINYINT NOT NULL DEFAULT 1 COMMENT 'last/final answer??',
   PRIMARY KEY(id),
   INDEX `result_idx` (`questionnaire_result_id`),
@@ -118,6 +113,73 @@ CREATE TABLE answers (
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'user answers to questions';
 
+CREATE TABLE applications (
+  id INTEGER UNSIGNED NOT NULL,
+  application_name VARCHAR(255) NOT NULL COMMENT 'name of application, for example flash',
+  application_label VARCHAR(255) NULL COMMENT 'label for application, for example Adobe Flash, can be NULL',
+  application_version VARCHAR(50) NULL COMMENT 'version of application, can be NULL',
+  application_type VARCHAR (255) NOT NULL COMMENT 'type of application, for example application/x-shockwave-flash',
+  text_dir ENUM('ltr','rtl') DEFAULT 'ltr' COMMENT 'text orientation (ltr:left to right;rtl: right to left)',
+  text_lang VARCHAR (255) NULL COMMENT 'text language, can be NULL',
+  width INT (5) NULL COMMENT 'application window width in pixels',
+  height INT (5) NULL COMMENT 'application window height in pixels',
+  PRIMARY KEY(id),
+  FOREIGN KEY(id)
+    REFERENCES streams(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'applications, for example flash, java applet, etc.' ;
+
+CREATE TABLE areas (
+  `id` INTEGER UNSIGNED NOT NULL,
+  `public_name` VARCHAR(255) NULL COMMENT 'public name for publication, can be NULL',
+  `public_url` VARCHAR(255) NULL COMMENT 'public url for publication, can be NULL',
+  `staging_url` VARCHAR(255) NULL COMMENT 'staging/test url for publication, can be NULL',
+  `email` VARCHAR(255) NULL COMMENT 'publication email, can be NULL',
+  `stats_code` TEXT NULL COMMENT 'statistics code, for example google stats code. can be NULL',
+  `stats_provider` VARCHAR(255) NULL COMMENT 'statistics provider, for example google. can be NULL',
+  `stats_provider_url` TEXT NULL COMMENT 'statistics provider url',
+  PRIMARY KEY(id),
+  FOREIGN KEY(id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'publications (web sites, etc.)' ;
+
+CREATE TABLE authors (
+  id INTEGER UNSIGNED NOT NULL,
+  name VARCHAR(60) NULL COMMENT 'author name, can be NULL',
+  surname VARCHAR(60) NULL COMMENT 'author surname, can be NULL',
+  PRIMARY KEY(id),
+  FOREIGN KEY(id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'contents authors' ;
+
+CREATE TABLE `banned_ips` (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  ip_address VARCHAR(15) NOT NULL,
+  created datetime NOT NULL COMMENT 'creation time',
+  modified datetime NOT NULL COMMENT 'last modified time',
+  status set('ban','accept') NOT NULL default 'ban' COMMENT 'ip status (ban/accept)',
+  PRIMARY KEY  (id),
+  UNIQUE KEY `ip_unique` (`ip_address`),
+  KEY status_idx (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'banned ips (mainly for comments)';
+
+CREATE TABLE books (
+  id INTEGER UNSIGNED NOT NULL,
+  isbn CHAR(13) NULL COMMENT 'Internationa standard book number, can be NULL',
+  year INT(4) NULL DEFAULT NULL COMMENT 'publication or edition year, can be NULL',
+  series VARCHAR(255) NULL COMMENT 'book serie, can be NULL',
+  location VARCHAR(255) NULL COMMENT 'book location (for library), can be NULL',
+  PRIMARY KEY(id),
+  FOREIGN KEY(id)
+    REFERENCES products(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'books' ;
 
 CREATE TABLE cake_sessions (
   id varchar(255) NOT NULL default '',
@@ -126,65 +188,123 @@ CREATE TABLE cake_sessions (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
+CREATE TABLE cards (
+  id INTEGER UNSIGNED NOT NULL,
+  name    VARCHAR(64) NULL COMMENT 'person name, can be NULL',
+  surname VARCHAR(64) NULL COMMENT 'person surname, can be NULL',
+  person_title VARCHAR(32) NULL COMMENT 'person title, for example Sir, Madame, Prof, Doct, ecc., can be NULL',
+  gender VARCHAR(32) NULL COMMENT 'gender, for example male, female, can be NULL',
+  birthdate DATE NULL COMMENT 'date of birth, can be NULL',
+  deathdate DATE NULL COMMENT 'date of death, can be NULL',
+  company BOOL NOT NULL DEFAULT '0' COMMENT 'is a company, default: false',
+  company_name VARCHAR(128) NULL COMMENT 'name of company, can be NULL',
+  company_kind VARCHAR(64) NULL COMMENT 'type of company, can be NULL',
+  street_address VARCHAR(255) NULL COMMENT 'address street, can be NULL',
+  street_number VARCHAR(32) NULL COMMENT 'address street number, can be NULL',
+  city VARCHAR(255) NULL COMMENT 'city, can be NULL',
+  zipcode VARCHAR(32) NULL COMMENT 'zipcode, can be NULL',
+  country VARCHAR(128) NULL COMMENT 'country, can be NULL',
+  state VARCHAR(128) NULL COMMENT 'state, can be NULL',
+  email VARCHAR(128) NULL COMMENT 'first email, can be NULL',
+  email2 VARCHAR(128) NULL COMMENT 'second email, can be NULL',
+  phone VARCHAR(32) NULL COMMENT 'first phone number, can be NULL',
+  phone2 VARCHAR(32) NULL COMMENT 'second phone number, can be NULL',
+  fax VARCHAR(32) NULL COMMENT 'fax number, can be NULL',
+  website VARCHAR(128) NULL COMMENT 'website url, can be NULL',
+  privacy_level TINYINT( 1 ) NOT NULL DEFAULT '0' COMMENT 'level of privacy (0-9), default 0',
+  newsletter_email VARCHAR(255) NULL COMMENT 'email for newsletter subscription, can be NULL',
+  mail_status enum('blocked','valid') NOT NULL default 'valid' COMMENT 'status of email address (blocked/valid)',
+  mail_bounce int(10) unsigned NOT NULL default '0' COMMENT 'mail bounce response, default 0',
+  mail_last_bounce_date datetime default NULL COMMENT 'date of last email check, can be NULL',
+  mail_html tinyint(1) NOT NULL default '1' COMMENT 'html confirmation email on subscription, default:1 (true)',
+  PRIMARY KEY(id),
+  FOREIGN KEY(id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'persons/companies cards, addressbook data, etc.' ;
+
+CREATE TABLE categories (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `area_id` int(10) unsigned default NULL,
+  `label` varchar(255) NOT NULL COMMENT 'label for category',
+  `name` varchar(255) NOT NULL COMMENT 'category name',
+  `object_type_id` int(10) unsigned default NULL,
+  `priority` int(10) unsigned default NULL COMMENT 'order priority',
+  `parent_id` INTEGER UNSIGNED NULL,
+  `parent_path` MEDIUMTEXT NULL COMMENT 'path to parent, can be NULL',
+  `status` enum('on','off') NOT NULL default 'on' COMMENT 'status of category (on/off)',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `name_type` (`name`,`object_type_id`),
+  KEY `object_type_id` (`object_type_id`),
+  KEY `index_label` (`label`),
+  KEY `index_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'general categories';
+
+CREATE TABLE `contents` (
+  `id` INTEGER UNSIGNED NOT NULL,
+  `start` DATETIME NULL ,
+  `end` DATETIME NULL,
+  `subject` VARCHAR(255) NULL,
+  `abstract` MEDIUMTEXT NULL,
+  `body` MEDIUMTEXT NULL,
+  `type` VARCHAR(30) NULL COMMENT 'generic content type, future use...',
+  `duration` INTEGER UNSIGNED NULL COMMENT 'in seconds',
+  PRIMARY KEY(id),
+  FOREIGN KEY(id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'general contents data' ;
+
+CREATE TABLE date_items (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  object_id INTEGER UNSIGNED NOT NULL,
+  `start` DATETIME NULL COMMENT 'start time, can be NULL',
+  `end` DATETIME NULL COMMENT 'end time, can be NULL',
+  PRIMARY KEY(id),
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'dates associated to objects' ;
+
 CREATE TABLE `event_logs` (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  user VARCHAR(32) NOT NULL,
-  created datetime NOT NULL,
-  msg VARCHAR(100) NOT NULL,
-  level set('debug','info','warn','err') NOT NULL default 'info',
-  context VARCHAR(32) DEFAULT NULL,
+  user VARCHAR(32) NOT NULL COMMENT 'event user',
+  created datetime NOT NULL COMMENT 'event time',
+  msg VARCHAR(100) NOT NULL COMMENT 'log content',
+  level set('debug','info','warn','err') NOT NULL default 'info' COMMENT 'log level (debug/info/warn/err)',
+  context VARCHAR(32) DEFAULT NULL COMMENT 'event context',
   PRIMARY KEY  (id),
   KEY user_idx (user),
   KEY date_idx (created)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'backend main events log';
 
-CREATE TABLE `banned_ips` (
+CREATE TABLE geo_tags (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  ip_address VARCHAR(15) NOT NULL,
-  created datetime NOT NULL,
-  modified datetime NOT NULL,
-  status set('ban','accept') NOT NULL default 'ban',
-  PRIMARY KEY  (id),
-  UNIQUE KEY `ip_unique` (`ip_address`),
-  KEY status_idx (status)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'banned ips (mainly for comments)';
+  object_id INTEGER UNSIGNED NOT NULL,
+  latitude FLOAT(9,6) NULL COMMENT 'latitude, can be NULL',
+  longitude FLOAT(9,6) NULL COMMENT 'longitude, can be NULL',
+  address VARCHAR(255) NULL COMMENT 'address, can be NULL',
+  gmaps_lookat MEDIUMTEXT NULL COMMENT 'google maps code, can be NULL',
+  PRIMARY KEY(id),
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'geotagging informations' ;
 
 CREATE TABLE groups (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  name VARCHAR(32) NOT NULL,
-  backend_auth BOOL NOT NULL DEFAULT '0',
-  immutable BOOL NOT NULL DEFAULT '0',
+  name VARCHAR(32) NOT NULL COMMENT 'group name',
+  backend_auth BOOL NOT NULL DEFAULT '0' COMMENT 'group authorized to backend (default: false)',
+  immutable BOOL NOT NULL DEFAULT '0' COMMENT 'group data immutable (default:false)',
   created datetime default NULL,
   modified datetime default NULL,
   PRIMARY KEY(id),
   UNIQUE KEY name (name)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE users (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  userid VARCHAR(32) NOT NULL ,
-  realname VARCHAR(255) NULL,
-  passwd VARCHAR(255) NULL,
-  email varchar(255) default NULL,
-  valid tinyint(1) NOT NULL default '1',
-  last_login datetime default NULL,
-  last_login_err datetime default NULL,
-  num_login_err int(11) NOT NULL default '0',
-  created datetime default NULL,
-  modified datetime default NULL,
-  level TINYINT(1) NOT NULL DEFAULT '0',
-  auth_type varchar(255) default NULL,
-  auth_params TEXT default NULL,
-  lang CHAR(3) NULL,
-  time_zone CHAR(9) NULL COMMENT 'format UTC+/-hh:mm - eg UTC+11:30',
-  comments ENUM('never','mine','all') default NULL COMMENT 'notify new comments option',
-  notes ENUM('never','mine','all') default NULL COMMENT 'notify new notes option',
-  notify_changes TINYINT(1) DEFAULT NULL,
-  reports TINYINT(1) DEFAULT NULL,
-  PRIMARY KEY  (id),
-  UNIQUE KEY userid (userid),
-  UNIQUE KEY email (email)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'generic groups';
 
 CREATE TABLE groups_users (
   user_id INTEGER UNSIGNED NOT NULL,
@@ -200,7 +320,7 @@ CREATE TABLE groups_users (
     REFERENCES groups(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'join table for groups/users';
 
 CREATE TABLE `hash_jobs` (
   `id` int(11) unsigned NOT NULL auto_increment,
@@ -211,7 +331,7 @@ CREATE TABLE `hash_jobs` (
   `created` datetime NOT NULL,
   `modified` datetime NOT NULL,
   `expired` datetime NOT NULL COMMENT 'hash expired datetime',
-  `status` enum('pending','expired','closed','failed') NOT NULL default 'pending',
+  `status` enum('pending','expired','closed','failed') NOT NULL default 'pending' COMMENT 'job status, can be pending/expired/closed/failed',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `hash` (`hash`),
   KEY `user_id` (`user_id`)
@@ -221,9 +341,9 @@ CREATE TABLE history (
   `id` INTEGER UNSIGNED NOT NULL  AUTO_INCREMENT,
   `user_id` INTEGER UNSIGNED DEFAULT NULL,
   `object_id` INTEGER UNSIGNED DEFAULT NULL,
-  `title` VARCHAR(255) NULL,
+  `title` VARCHAR(255) NULL COMMENT 'title, can be NULL',
   `area_id` INTEGER UNSIGNED DEFAULT NULL COMMENT 'NULL in backend history',
-  `path` VARCHAR(255) NOT NULL,
+  `path` VARCHAR(255) NOT NULL COMMENT '???',
   `created` DATETIME NULL,
   PRIMARY KEY(id),
   INDEX (`object_id`),
@@ -242,15 +362,168 @@ CREATE TABLE history (
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'history of users navigation, can be in backend/frontend';
 
-CREATE TABLE object_types (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  name VARCHAR(255) NULL,
-  module VARCHAR(32) NULL,
+CREATE TABLE images (
+  id INTEGER UNSIGNED NOT NULL,
+  width INT(5) UNSIGNED NULL COMMENT 'image width, can be NULL',
+  height INT(5) UNSIGNED NULL COMMENT 'image height, can be NULL',
   PRIMARY KEY(id),
+  FOREIGN KEY(id)
+    REFERENCES streams(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'image data' ;
+
+CREATE TABLE `lang_texts` (
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `object_id` INTEGER UNSIGNED NOT NULL,
+  `lang` CHAR(3) NOT NULL COMMENT 'language of translation, for example ita, eng, por',
+  `name` VARCHAR(255) NULL COMMENT 'field/attribute name',
+  `text` TEXT NULL COMMENT 'translation',
+  PRIMARY KEY(id),
+  INDEX lang_texts_FKIndex1(object_id),
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'translations of object fields/attributes' ;
+
+CREATE TABLE links (
+  id INTEGER UNSIGNED NOT NULL,
+  `url` varchar(255) default NULL COMMENT '???',
+  `target` enum('_self','_blank','parent','top','popup') default NULL COMMENT '???',
+  `http_code` MEDIUMTEXT NULL COMMENT '???',
+  `http_response_date` DATETIME NULL COMMENT '???',
+  `source_type` VARCHAR(64) NULL COMMENT 'can be rss, wikipedia, archive.org, localresource....',
+  PRIMARY KEY(id),
+  KEY `idx_url` (`url`),
+  FOREIGN KEY(id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
+
+CREATE TABLE `mail_groups` (
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `area_id` INTEGER UNSIGNED NOT NULL,
+  `group_name` varchar(255) NOT NULL COMMENT '???',
+  `visible` tinyint(1) NOT NULL default '1' COMMENT '???',
+  `security` enum('all','none') NOT NULL default 'all' COMMENT '???',
+  `confirmation_in_message` TEXT NULL COMMENT '???',
+  `confirmation_out_message` TEXT NULL COMMENT '???',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `group_name` (`group_name`),
+  KEY `area_id` (`area_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT = '???';
+
+CREATE TABLE `mail_group_cards` (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `mail_group_id` INTEGER UNSIGNED NOT NULL,
+  `card_id` INTEGER UNSIGNED NOT NULL,
+  `status` enum('pending','confirmed') NOT NULL default 'pending' COMMENT '???',
+  `created` datetime default NULL COMMENT '???',
+  PRIMARY KEY(id),
+  INDEX `card_id_index` (`card_id`),
+  INDEX `mail_group_id_index` (`mail_group_id`),
+  UNIQUE KEY `mail_group_card` (`card_id`, `mail_group_id`),
+  FOREIGN KEY(card_id)
+    REFERENCES cards(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(mail_group_id)
+    REFERENCES mail_groups(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???';
+
+CREATE TABLE `mail_group_messages` (
+  `mail_group_id` INTEGER UNSIGNED NOT NULL,
+  `mail_message_id` INTEGER UNSIGNED NOT NULL,
+  PRIMARY KEY(mail_group_id, mail_message_id),
+  INDEX `mail_group_id_index` (`mail_group_id`),
+  INDEX `mail_message_id_index` (`mail_message_id`),
+  FOREIGN KEY(mail_message_id)
+    REFERENCES mail_messages(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(mail_group_id)
+    REFERENCES mail_groups(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???';
+
+CREATE TABLE mail_jobs (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  mail_message_id INTEGER UNSIGNED,
+  card_id INTEGER UNSIGNED,
+  status ENUM ('unsent','pending','sent','failed') NOT NULL DEFAULT 'unsent' COMMENT '???',
+  sending_date DATETIME NULL COMMENT '???',
+  created DATETIME NULL COMMENT '???',
+  modified DATETIME NULL COMMENT '???',
+  priority INTEGER UNSIGNED NULL COMMENT '???',
+  mail_body TEXT NULL COMMENT '???',
+  recipient MEDIUMTEXT NULL COMMENT 'used if card_is and mail_message_id are null, one or more comma separeted addresses',
+  mail_params TEXT NULL COMMENT 'serialized array with: reply-to, sender, subject, signature...',
+  smtp_err TEXT NULL COMMENT 'SMTP error message on sending failure',
+  process_info INTEGER UNSIGNED NULL COMMENT 'pid of process delegates to send this mail job',
+  PRIMARY KEY(id),
+  INDEX card_id_index(card_id),
+  INDEX mail_message_id_index(mail_message_id),
+  INDEX process_info_index(process_info),
+  FOREIGN KEY(mail_message_id)
+    REFERENCES mail_messages(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(card_id)
+    REFERENCES cards(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???';
+
+CREATE TABLE `mail_logs` (
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `msg` MEDIUMTEXT NOT NULL COMMENT '???',
+  `level` set('info','warn','err') NOT NULL default 'info' COMMENT '???',
+  `created` datetime NOT NULL COMMENT '???',
+  `recipient` VARCHAR(255) NULL COMMENT '???',
+  `subject` VARCHAR(255) NULL COMMENT '???',
+  `mail_params` TEXT NULL COMMENT 'on failure, serialized array with: reply-to, sender, subject, signature...',
+  PRIMARY KEY(id),
+  INDEX (`recipient`),
+  INDEX (`created`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???';
+
+CREATE TABLE mail_messages (
+  id INTEGER UNSIGNED NOT NULL,
+  mail_status ENUM('unsent','pending','injob','sent') DEFAULT 'unsent' NOT NULL COMMENT '???',
+  start_sending DATETIME DEFAULT NULL COMMENT '???',
+  end_sending DATETIME DEFAULT NULL COMMENT '???',
+  sender VARCHAR(255) NOT NULL COMMENT '???',
+  reply_to VARCHAR(255) NOT NULL COMMENT '???',
+  bounce_to VARCHAR(255) NOT NULL COMMENT '???',
+  priority INTEGER UNSIGNED NULL COMMENT '???',
+  signature VARCHAR(255) NOT NULL COMMENT '???',
+  privacy_disclaimer TEXT NULL COMMENT '???',
+  stylesheet VARCHAR(255) DEFAULT NULL COMMENT '???',
+  PRIMARY KEY(id),
+  FOREIGN KEY(id)
+    REFERENCES contents(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???';
+
+CREATE TABLE `modules` (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) NOT NULL COMMENT '???',
+  `label` varchar(32) default NULL COMMENT '???',
+  `path` varchar(255) NOT NULL COMMENT '???',
+  `status` enum('on','off') NOT NULL default 'on' COMMENT '???',
+  `priority` int(11) default NULL COMMENT '???',
+  `type` enum('core','plugin') NOT NULL default 'core' COMMENT '???',
+  PRIMARY KEY  (`id`),
   UNIQUE KEY name (name)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
 
 CREATE TABLE objects (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -258,21 +531,21 @@ CREATE TABLE objects (
   `status` ENUM('on','off','draft') DEFAULT 'draft',
   created DATETIME NULL,
   modified DATETIME NULL,
-  title VARCHAR(255) NULL,
-  nickname VARCHAR(255) NULL,
-  description MEDIUMTEXT NULL,
-  current BOOL NULL DEFAULT '1',
-  lang CHAR(3) NULL,
+  title VARCHAR(255) NULL COMMENT '???',
+  nickname VARCHAR(255) NULL COMMENT '???',
+  description MEDIUMTEXT NULL COMMENT '???',
+  current BOOL NULL DEFAULT '1' COMMENT '???',
+  lang CHAR(3) NULL COMMENT '???',
   ip_created VARCHAR(15) NULL,
   user_created INTEGER UNSIGNED NULL,
   user_modified INTEGER UNSIGNED NULL,
-  rights VARCHAR(255) NULL,
-  license VARCHAR(255) NULL,
-  creator VARCHAR(255) NULL,
-  publisher VARCHAR(255) NULL,
-  note TEXT NULL,
-  fixed TINYINT(1) DEFAULT 0,
-  comments ENUM('on','off','moderated') DEFAULT 'off',
+  rights VARCHAR(255) NULL COMMENT '???',
+  license VARCHAR(255) NULL COMMENT '???',
+  creator VARCHAR(255) NULL COMMENT '???',
+  publisher VARCHAR(255) NULL COMMENT '???',
+  note TEXT NULL COMMENT '???',
+  fixed TINYINT(1) DEFAULT 0 COMMENT '???',
+  comments ENUM('on','off','moderated') DEFAULT 'off' COMMENT '???',
   PRIMARY KEY(id),
   INDEX objects_FKIndex1(object_type_id),
   FOREIGN KEY(user_created)
@@ -283,52 +556,23 @@ CREATE TABLE objects (
     REFERENCES users(id)
       ON DELETE NO ACTION
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???';
 
-
-CREATE TABLE properties (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  name VARCHAR(255) NOT NULL,
-  object_type_id INTEGER UNSIGNED NOT NULL,
-  property_type SET('number','date','text','options') NOT NULL,
-  multiple_choice TINYINT(1) default 0,
-  PRIMARY KEY(id),
-  UNIQUE name_type(name, object_type_id),
-  INDEX name_index(name),
-  INDEX type_index(object_type_id),
-  FOREIGN KEY(object_type_id)
-    REFERENCES object_types(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE property_options (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  property_id INTEGER UNSIGNED NOT NULL,
-  property_option TEXT not null,
-  PRIMARY KEY(id),
-  FOREIGN KEY(property_id)
-    REFERENCES properties(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE object_properties (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  property_id INTEGER UNSIGNED NOT NULL,
+CREATE TABLE object_categories (
   object_id INTEGER UNSIGNED NOT NULL,
-  property_value TEXT not null,
-  INDEX id_index(id),
-  INDEX property_id_index(property_id),
+  category_id INTEGER UNSIGNED NOT NULL,
+  PRIMARY KEY(object_id, category_id),
+  INDEX objects_has_categories_FKIndex1(object_id),
+  INDEX objects_has_categories_FKIndex2(category_id),
   FOREIGN KEY(object_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY(property_id)
-    REFERENCES properties(id)
+  FOREIGN KEY(category_id)
+    REFERENCES categories(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
 
 CREATE TABLE object_editors (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -346,35 +590,262 @@ CREATE TABLE object_editors (
     REFERENCES users(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
 
-CREATE TABLE contents (
+CREATE TABLE object_properties (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  property_id INTEGER UNSIGNED NOT NULL,
+  object_id INTEGER UNSIGNED NOT NULL,
+  property_value TEXT not null,
+  INDEX id_index(id),
+  INDEX property_id_index(property_id),
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(property_id)
+    REFERENCES properties(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
+
+CREATE TABLE object_relations (
+  object_id INTEGER UNSIGNED NOT NULL,
   id INTEGER UNSIGNED NOT NULL,
-  `start` DATETIME NULL ,
-  `end` DATETIME NULL,
-  subject VARCHAR(255) NULL,
-  abstract MEDIUMTEXT NULL,
-  body MEDIUMTEXT NULL,
-  `type` VARCHAR(30) NULL COMMENT 'generic content type, future use...',
-  duration INTEGER UNSIGNED NULL COMMENT 'in seconds',
+  switch varchar(63) NOT NULL default 'attach' COMMENT '???',
+  priority int(11) default NULL COMMENT '???',
+  PRIMARY KEY  (`object_id`,`id`,`switch`),
+  INDEX `related_objects_FKIndex1` (`id`),
+  INDEX `related_objects_FKIndex2` (`object_id`),
+  FOREIGN KEY(id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???';
+
+CREATE TABLE object_types (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NULL,
+  module VARCHAR(32) NULL,
+  PRIMARY KEY(id),
+  UNIQUE KEY name (name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???';
+
+CREATE TABLE object_users (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  object_id INTEGER UNSIGNED NOT NULL,
+  user_id INTEGER UNSIGNED NOT NULL,
+  switch VARCHAR(63) NOT NULL DEFAULT 'card' COMMENT '???',
+  priority INTEGER(11) NULL COMMENT '???',
+  params TEXT NULL COMMENT '???',
+  PRIMARY KEY(id),
+  UNIQUE KEY `object_id_user_id_switch` (`object_id`,`user_id`,`switch`),
+  INDEX object_id_FKIndex1(object_id),
+  INDEX user_id_FKIndex2(user_id),
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(user_id)
+    REFERENCES users(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
+
+CREATE TABLE permissions (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  object_id INTEGER UNSIGNED NOT NULL,
+  ugid INTEGER UNSIGNED NOT NULL,
+  switch SET('user','group') NOT NULL COMMENT '???',
+  flag INTEGER UNSIGNED NULL COMMENT '???',
+  PRIMARY KEY(`id`),
+  INDEX permissions_obj_inkdex(object_id),
+  INDEX permissions_ugid_switch(`ugid`, `switch`),
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
+
+CREATE TABLE `permission_modules` (
+  `id` int(10) NOT NULL auto_increment,
+  module_id INTEGER UNSIGNED NOT NULL,
+  ugid INTEGER UNSIGNED NOT NULL,
+  switch SET('user','group') NULL COMMENT '???',
+  flag INTEGER UNSIGNED NULL COMMENT '???',
+  PRIMARY KEY  (`id`),
+  INDEX permission_modules_FKIndex1(module_id),
+  INDEX permission_modules_FKIndex3(ugid),
+  FOREIGN KEY(module_id)
+    REFERENCES modules(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
+
+CREATE TABLE products (
+  id INTEGER UNSIGNED NOT NULL,
+  abstract MEDIUMTEXT NULL COMMENT '???',
+  body MEDIUMTEXT NULL COMMENT '???',
+  serial_number VARCHAR(128) NULL COMMENT '???',
+  weight DOUBLE NULL COMMENT '???',
+  width DOUBLE NULL COMMENT '???',
+  height DOUBLE NULL COMMENT '???',
+  depth DOUBLE NULL COMMENT '???',
+  volume DOUBLE NULL COMMENT '???',
+  length_unit VARCHAR(40) NULL COMMENT '???',
+  weight_unit VARCHAR(40) NULL COMMENT '???',
+  volume_unit VARCHAR(40) NULL COMMENT '???',
+  color VARCHAR(128) NULL COMMENT '???',
+  production_date DATETIME NULL COMMENT '???',
+  production_place VARCHAR(255) NULL COMMENT '???',
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
 
--- 
--- La cancellazione deve essere gestita separatamente
--- 
+CREATE TABLE properties (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  object_type_id INTEGER UNSIGNED NOT NULL,
+  property_type SET('number','date','text','options') NOT NULL COMMENT '???',
+  multiple_choice TINYINT(1) default 0 COMMENT '???',
+  PRIMARY KEY(id),
+  UNIQUE name_type(name, object_type_id),
+  INDEX name_index(name),
+  INDEX type_index(object_type_id),
+  FOREIGN KEY(object_type_id)
+    REFERENCES object_types(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
+
+CREATE TABLE property_options (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  property_id INTEGER UNSIGNED NOT NULL,
+  property_option TEXT not null COMMENT '???',
+  PRIMARY KEY(id),
+  FOREIGN KEY(property_id)
+    REFERENCES properties(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
+
+CREATE TABLE questions (
+  `id` INTEGER UNSIGNED NOT NULL,
+  `question_type` VARCHAR(32) NOT NULL COMMENT '???',
+  `max_chars` INTEGER NULL COMMENT '???',
+  `question_difficulty` INT(11) NULL COMMENT '???',
+  `edu_level` INT(11) NULL COMMENT '???',
+  `text_ok` TEXT NULL COMMENT '???',
+  `text_fail` TEXT NULL COMMENT '???',
+  PRIMARY KEY(id),
+  KEY `question_type_idx` (`question_type`),
+  FOREIGN KEY(id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
+
+CREATE TABLE question_answers (
+  `id` INTEGER UNSIGNED NOT NULL auto_increment,
+  `question_id` INTEGER UNSIGNED NOT NULL,
+  `description` TEXT NULL COMMENT '???',
+  `correct` BOOL NULL COMMENT '???',
+  `correct_value` VARCHAR(255) NULL DEFAULT NULL COMMENT '???',
+  `priority` INTEGER UNSIGNED NULL COMMENT '???',
+  PRIMARY KEY(id),
+  KEY `question_id_idx` (`question_id`),
+  FOREIGN KEY(question_id)
+    REFERENCES questions(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
+
+CREATE TABLE questionnaire_results (
+  id INTEGER UNSIGNED NOT NULL,
+  object_id INTEGER UNSIGNED NOT NULL,
+  completed TINYINT NOT NULL DEFAULT 0 COMMENT '???',
+  rating INTEGER UNSIGNED NULL COMMENT '???',
+  evaluation TEXT NULL COMMENT '???',
+  PRIMARY KEY(id),
+  INDEX `objects_idx` (`object_id`),
+  FOREIGN KEY(id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='questionnaire result/filling/compilation';
+
+CREATE TABLE `search_texts` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `object_id` int(10) unsigned NOT NULL,
+  `lang` varchar(3) NOT NULL COMMENT '???',
+  `content` mediumtext NOT NULL COMMENT '???',
+  `relevance` tinyint(4) NOT NULL default '1' COMMENT 'importance (1-10) range',
+  PRIMARY KEY  (`id`),
+  KEY `object_id` (`object_id`,`lang`),
+  FULLTEXT KEY `content` (`content`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='search texts table';
+
+CREATE TABLE sections (
+  id INTEGER UNSIGNED NOT NULL,
+  syndicate ENUM('on','off') DEFAULT 'on' COMMENT '???',
+  priority_order ENUM('asc','desc') DEFAULT 'asc' COMMENT '???',
+  last_modified DATETIME NULL,
+  map_priority FLOAT(2,1) NULL COMMENT '???',
+  map_changefreq VARCHAR(128) NULL COMMENT '???',
+  PRIMARY KEY(id),
+  FOREIGN KEY(id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
+
+CREATE TABLE section_types (
+  id INTEGER UNSIGNED NOT NULL,
+  section_id INTEGER UNSIGNED NOT NULL,
+  object_type_id INTEGER UNSIGNED NOT NULL,
+  restricted TINYINT NULL COMMENT '???',
+  predefined TINYINT NULL COMMENT '???',
+  PRIMARY KEY(id),
+  FOREIGN KEY(section_id)
+    REFERENCES sections(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
+
+CREATE TABLE streams (
+  id INTEGER UNSIGNED NOT NULL,
+  path VARCHAR(255) NOT NULL COMMENT '???',
+  name VARCHAR(255) NULL COMMENT '???',
+  mime_type VARCHAR(60) NULL COMMENT '???',
+  size INTEGER UNSIGNED NULL COMMENT '???',
+  hash_file VARCHAR(255) NULL COMMENT '???',
+  PRIMARY KEY(id),
+  INDEX hash_file_index(hash_file),
+  FOREIGN KEY(id)
+    REFERENCES contents(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
+
 CREATE TABLE trees (
   id INTEGER UNSIGNED NOT NULL,
   area_id INTEGER UNSIGNED NULL,
   parent_id INTEGER UNSIGNED NULL,
-  path VARCHAR(255) NOT NULL,
-  parent_path VARCHAR(255) NULL,
-  priority INTEGER UNSIGNED NULL,
-  menu INTEGER UNSIGNED NULL,
+  path VARCHAR(255) NOT NULL COMMENT '???',
+  parent_path VARCHAR(255) NULL COMMENT '???',
+  priority INTEGER UNSIGNED NULL COMMENT '???',
+  menu INTEGER UNSIGNED NULL COMMENT '???',
   INDEX id_idx(id),
   INDEX parent_idx(parent_id),
   INDEX area_idx(area_id),
@@ -387,12 +858,38 @@ CREATE TABLE trees (
     REFERENCES objects(id)
       ON DELETE NO ACTION
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
+
+CREATE TABLE users (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  userid VARCHAR(32) NOT NULL,
+  realname VARCHAR(255) NULL,
+  passwd VARCHAR(255) NULL,
+  email varchar(255) default NULL,
+  valid tinyint(1) NOT NULL default '1',
+  last_login datetime default NULL,
+  last_login_err datetime default NULL,
+  num_login_err int(11) NOT NULL default '0',
+  created datetime default NULL,
+  modified datetime default NULL,
+  level TINYINT(1) NOT NULL DEFAULT '0' COMMENT '???',
+  auth_type varchar(255) default NULL COMMENT '???',
+  auth_params TEXT default NULL COMMENT '???',
+  lang CHAR(3) NULL COMMENT '???',
+  time_zone CHAR(9) NULL COMMENT 'format UTC+/-hh:mm - eg UTC+11:30' COMMENT '???',
+  comments ENUM('never','mine','all') default NULL COMMENT 'notify new comments option',
+  notes ENUM('never','mine','all') default NULL COMMENT 'notify new notes option',
+  notify_changes TINYINT(1) DEFAULT NULL COMMENT '???',
+  reports TINYINT(1) DEFAULT NULL COMMENT '???',
+  PRIMARY KEY  (id),
+  UNIQUE KEY userid (userid),
+  UNIQUE KEY email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???';
 
 CREATE TABLE versions (
   `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   `object_id` INTEGER UNSIGNED NOT NULL,
-  `revision` INTEGER UNSIGNED NOT NULL,
+  `revision` INTEGER UNSIGNED NOT NULL COMMENT '???',
   `user_id` INTEGER UNSIGNED NOT NULL,
   `created` datetime NOT NULL,
   `diff` TEXT NOT NULL,
@@ -408,528 +905,16 @@ CREATE TABLE versions (
     REFERENCES users(id)
       ON DELETE NO ACTION
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE object_users (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  object_id INTEGER UNSIGNED NOT NULL,
-  user_id INTEGER UNSIGNED NOT NULL,
-  switch VARCHAR(63) NOT NULL DEFAULT 'card',
-  priority INTEGER(11) NULL,
-  params TEXT NULL,
-  PRIMARY KEY(id),
-  UNIQUE KEY `object_id_user_id_switch` (`object_id`,`user_id`,`switch`),
-  INDEX object_id_FKIndex1(object_id),
-  INDEX user_id_FKIndex2(user_id),
-  FOREIGN KEY(object_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(user_id)
-    REFERENCES users(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE permissions (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  object_id INTEGER UNSIGNED NOT NULL,
-  ugid INTEGER UNSIGNED NOT NULL,
-  switch SET('user','group') NOT NULL,
-  flag INTEGER UNSIGNED NULL,
-  PRIMARY KEY(`id`),
-  INDEX permissions_obj_inkdex(object_id),
-  INDEX permissions_ugid_switch(`ugid`, `switch`),
-  FOREIGN KEY(object_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE lang_texts (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  object_id INTEGER UNSIGNED NOT NULL,
-  lang CHAR(3) NOT NULL,
-  `name` VARCHAR(255) NULL,
-  `text` TEXT NULL,
-  PRIMARY KEY(id),
-  INDEX lang_texts_FKIndex1(object_id),
-  FOREIGN KEY(object_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE streams (
-  id INTEGER UNSIGNED NOT NULL,
-  path VARCHAR(255) NOT NULL ,
-  name VARCHAR(255) NULL,
-  mime_type VARCHAR(60) NULL,
-  size INTEGER UNSIGNED NULL,
-  hash_file VARCHAR(255) NULL,
-  PRIMARY KEY(id),
-  INDEX hash_file_index(hash_file),
-  FOREIGN KEY(id)
-    REFERENCES contents(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE areas (
-  `id` INTEGER UNSIGNED NOT NULL,
-  `public_name` VARCHAR(255) NULL,
-  `public_url` VARCHAR(255) NULL,
-  `staging_url` VARCHAR(255) NULL,
-  `email` VARCHAR(255) NULL,
-  `stats_code` TEXT NULL,
-  `stats_provider` VARCHAR(255) NULL,
-  `stats_provider_url` TEXT NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE sections (
-  id INTEGER UNSIGNED NOT NULL,
-  syndicate ENUM('on','off') DEFAULT 'on',
-  priority_order ENUM('asc','desc') DEFAULT 'asc',
-  last_modified DATETIME NULL,
-  map_priority FLOAT(2,1) NULL,
-  map_changefreq VARCHAR(128) NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE section_types (
-  id INTEGER UNSIGNED NOT NULL,
-  section_id INTEGER UNSIGNED NOT NULL,
-  object_type_id INTEGER UNSIGNED NOT NULL,
-  restricted TINYINT NULL,
-  predefined TINYINT NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(section_id)
-    REFERENCES sections(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE applications (
-  id INTEGER UNSIGNED NOT NULL,
-  application_name VARCHAR(255) NOT NULL,
-  application_label VARCHAR(255) NULL,
-  application_version VARCHAR(50) NULL,
-  application_type VARCHAR (255) NOT NULL,
-  text_dir ENUM('ltr','rtl') DEFAULT 'ltr',
-  text_lang VARCHAR (255) NULL,
-  width INT (5) NULL,
-  height INT (5) NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(id)
-    REFERENCES streams(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
 
 CREATE TABLE videos (
   id INTEGER UNSIGNED NOT NULL,
-  provider VARCHAR( 255 ) NULL ,
-  uid VARCHAR( 255 ) NULL,
-  thumbnail VARCHAR (255) NULL,
+  provider VARCHAR( 255 ) NULL COMMENT '???' ,
+  uid VARCHAR( 255 ) NULL COMMENT '???',
+  thumbnail VARCHAR (255) NULL COMMENT '???',
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES streams(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE categories (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `area_id` int(10) unsigned default NULL,
-  `label` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `object_type_id` int(10) unsigned default NULL,
-  `priority` int(10) unsigned default NULL,
-  `parent_id` INTEGER UNSIGNED NULL,
-  `parent_path` MEDIUMTEXT NULL,
-  `status` enum('on','off') NOT NULL default 'on',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `name_type` (`name`,`object_type_id`),
-  KEY `object_type_id` (`object_type_id`),
-  KEY `index_label` (`label`),
-  KEY `index_name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE images (
-  id INTEGER UNSIGNED NOT NULL,
-  width INT(5) UNSIGNED NULL,
-  height INT(5) UNSIGNED NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(id)
-    REFERENCES streams(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE authors (
-  id INTEGER UNSIGNED NOT NULL,
-  name VARCHAR(60) NULL,
-  surname VARCHAR(60) NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE object_relations (
-  object_id INTEGER UNSIGNED NOT NULL,
-  id INTEGER UNSIGNED NOT NULL,
-  switch varchar(63) NOT NULL default 'attach',
-  priority int(11) default NULL,
-  PRIMARY KEY  (`object_id`,`id`,`switch`),
-  INDEX `related_objects_FKIndex1` (`id`),
-  INDEX `related_objects_FKIndex2` (`object_id`),
-  FOREIGN KEY(id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(object_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE object_categories (
-  object_id INTEGER UNSIGNED NOT NULL,
-  category_id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(object_id, category_id),
-  INDEX objects_has_categories_FKIndex1(object_id),
-  INDEX objects_has_categories_FKIndex2(category_id),
-  FOREIGN KEY(object_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(category_id)
-    REFERENCES categories(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE date_items (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  object_id INTEGER UNSIGNED NOT NULL,
-  `start` DATETIME NULL,
-  `end` DATETIME NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(object_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE geo_tags (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  object_id INTEGER UNSIGNED NOT NULL,
-  latitude FLOAT(9,6) NULL,
-  longitude FLOAT(9,6) NULL,
-  address VARCHAR(255) NULL,
-  gmaps_lookat MEDIUMTEXT NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(object_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE products (
-  id INTEGER UNSIGNED NOT NULL,
-  abstract MEDIUMTEXT NULL,
-  body MEDIUMTEXT NULL,
-  serial_number VARCHAR(128) NULL,
-  weight DOUBLE NULL,
-  width DOUBLE NULL,
-  height DOUBLE NULL,
-  depth DOUBLE NULL,
-  volume DOUBLE NULL,
-  length_unit VARCHAR(40) NULL,
-  weight_unit VARCHAR(40) NULL,
-  volume_unit VARCHAR(40) NULL,
-  color VARCHAR(128) NULL,
-  production_date DATETIME NULL,
-  production_place VARCHAR(255) NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE books (
-  id INTEGER UNSIGNED NOT NULL,
-  isbn CHAR(13) NULL,
-  year INT(4) NULL DEFAULT NULL,
-  series VARCHAR(255) NULL,
-  location VARCHAR(255) NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(id)
-    REFERENCES products(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE links (
-  id INTEGER UNSIGNED NOT NULL,
-  `url` varchar(255) default NULL,
-  `target` enum('_self','_blank','parent','top','popup') default NULL,
-  `http_code` MEDIUMTEXT NULL,
-  `http_response_date` DATETIME NULL,
-  `source_type` VARCHAR(64) NULL COMMENT 'can be rss, wikipedia, archive.org, localresource....',
-  PRIMARY KEY(id),
-  KEY `idx_url` (`url`),
-  FOREIGN KEY(id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE cards (
-  id INTEGER UNSIGNED NOT NULL,
-  name    VARCHAR(64) NULL,
-  surname VARCHAR(64) NULL,
-  person_title VARCHAR(32) NULL,
-  gender VARCHAR(32) NULL,
-  birthdate DATE NULL,
-  deathdate DATE NULL,
-  company BOOL NOT NULL DEFAULT '0',
-  company_name VARCHAR(128) NULL,
-  company_kind VARCHAR(64) NULL,
-  street_address VARCHAR(255) NULL,
-  street_number VARCHAR(32) NULL,
-  city VARCHAR(255) NULL,
-  zipcode VARCHAR(32) NULL,
-  country VARCHAR(128) NULL,
-  state VARCHAR(128) NULL,
-  email VARCHAR(128) NULL,
-  email2 VARCHAR(128) NULL,
-  phone VARCHAR(32) NULL,
-  phone2 VARCHAR(32) NULL,
-  fax VARCHAR(32) NULL,
-  website VARCHAR(128) NULL,
-  privacy_level TINYINT( 1 ) NOT NULL DEFAULT '0',
-  newsletter_email VARCHAR(255) NULL,
-  mail_status enum('blocked','valid') NOT NULL default 'valid',
-  mail_bounce int(10) unsigned NOT NULL default '0',
-  mail_last_bounce_date datetime default NULL,
-  mail_html tinyint(1) NOT NULL default '1',
-  PRIMARY KEY(id),
-  FOREIGN KEY(id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE mail_messages (
-  id INTEGER UNSIGNED NOT NULL,
-  mail_status ENUM('unsent','pending','injob','sent') DEFAULT 'unsent' NOT NULL,
-  start_sending DATETIME DEFAULT NULL,
-  end_sending DATETIME DEFAULT NULL,
-  sender VARCHAR(255) NOT NULL,
-  reply_to VARCHAR(255) NOT NULL,
-  bounce_to VARCHAR(255) NOT NULL,
-  priority INTEGER UNSIGNED NULL,
-  signature VARCHAR(255) NOT NULL,
-  privacy_disclaimer TEXT NULL,
-  stylesheet VARCHAR(255) DEFAULT NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(id)
-    REFERENCES contents(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `mail_groups` (
-  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  `area_id` INTEGER UNSIGNED NOT NULL,
-  `group_name` varchar(255) NOT NULL,
-  `visible` tinyint(1) NOT NULL default '1',
-  `security` enum('all','none') NOT NULL default 'all',
-  `confirmation_in_message` TEXT NULL,
-  `confirmation_out_message` TEXT NULL,
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `group_name` (`group_name`),
-  KEY `area_id` (`area_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE `mail_group_cards` (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  `mail_group_id` INTEGER UNSIGNED NOT NULL,
-  `card_id` INTEGER UNSIGNED NOT NULL,
-  `status` enum('pending','confirmed') NOT NULL default 'pending',
-  `created` datetime default NULL,
-  PRIMARY KEY(id),
-  INDEX `card_id_index` (`card_id`),
-  INDEX `mail_group_id_index` (`mail_group_id`),
-  UNIQUE KEY `mail_group_card` (`card_id`, `mail_group_id`),
-  FOREIGN KEY(card_id)
-    REFERENCES cards(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(mail_group_id)
-    REFERENCES mail_groups(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `mail_group_messages` (
-  `mail_group_id` INTEGER UNSIGNED NOT NULL,
-  `mail_message_id` INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(mail_group_id, mail_message_id),
-  INDEX `mail_group_id_index` (`mail_group_id`),
-  INDEX `mail_message_id_index` (`mail_message_id`),
-  FOREIGN KEY(mail_message_id)
-    REFERENCES mail_messages(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(mail_group_id)
-    REFERENCES mail_groups(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE mail_jobs (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  mail_message_id INTEGER UNSIGNED,
-  card_id INTEGER UNSIGNED,
-  status ENUM ('unsent','pending','sent','failed') NOT NULL DEFAULT 'unsent',
-  sending_date DATETIME NULL,
-  created DATETIME NULL,
-  modified DATETIME NULL,
-  priority INTEGER UNSIGNED NULL,
-  mail_body TEXT NULL,
-  recipient MEDIUMTEXT NULL COMMENT 'used if card_is and mail_message_id are null, one or more comma separeted addresses',
-  mail_params TEXT NULL COMMENT 'serialized array with: reply-to, sender, subject, signature...',
-  smtp_err TEXT NULL COMMENT 'SMTP error message on sending failure',
-  process_info INTEGER UNSIGNED NULL COMMENT 'pid of process delegates to send this mail job',
-  PRIMARY KEY(id),
-  INDEX card_id_index(card_id),
-  INDEX mail_message_id_index(mail_message_id),
-  INDEX process_info_index(process_info),
-  FOREIGN KEY(mail_message_id)
-    REFERENCES mail_messages(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(card_id)
-    REFERENCES cards(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `mail_logs` (
-  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  `msg` MEDIUMTEXT NOT NULL,
-  `level` set('info','warn','err') NOT NULL default 'info',
-  `created` datetime NOT NULL,
-  `recipient` VARCHAR(255) NULL,
-  `subject` VARCHAR(255) NULL,
-  `mail_params` TEXT NULL COMMENT 'on failure, serialized array with: reply-to, sender, subject, signature...',
-  PRIMARY KEY(id),
-  INDEX (`recipient`),
-  INDEX (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `modules` (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL,
-  `label` varchar(32) default NULL,
-  `path` varchar(255) NOT NULL,
-  `status` enum('on','off') NOT NULL default 'on',
-  `priority` int(11) default NULL,
-  `type` enum('core','plugin') NOT NULL default 'core',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY name (name)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-
-CREATE TABLE `permission_modules` (
-  `id` int(10) NOT NULL auto_increment,
-  module_id INTEGER UNSIGNED NOT NULL,
-  ugid INTEGER UNSIGNED NOT NULL,
-  switch SET('user','group') NULL,
-  flag INTEGER UNSIGNED NULL,
-  PRIMARY KEY  (`id`),
-  INDEX permission_modules_FKIndex1(module_id),
-  INDEX permission_modules_FKIndex3(ugid),
-  FOREIGN KEY(module_id)
-    REFERENCES modules(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-
-CREATE TABLE `search_texts` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `object_id` int(10) unsigned NOT NULL,
-  `lang` varchar(3) NOT NULL,
-  `content` mediumtext NOT NULL,
-  `relevance` tinyint(4) NOT NULL default '1' COMMENT 'importance (1-10) range',
-  PRIMARY KEY  (`id`),
-  KEY `object_id` (`object_id`,`lang`),
-  FULLTEXT KEY `content` (`content`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='search texts table';
-
-CREATE TABLE questions (
-  `id` INTEGER UNSIGNED NOT NULL,
-  `question_type` VARCHAR(32) NOT NULL,
-  `max_chars` INTEGER NULL,
-  `question_difficulty` INT(11) NULL,
-  `edu_level` INT(11) NULL,
-  `text_ok` TEXT NULL ,
-  `text_fail` TEXT NULL,
-  PRIMARY KEY(id),
-  KEY `question_type_idx` (`question_type`),
-  FOREIGN KEY(id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-
-CREATE TABLE question_answers (
-  `id` INTEGER UNSIGNED NOT NULL auto_increment,
-  `question_id` INTEGER UNSIGNED NOT NULL, 
-  `description` TEXT NULL, 
-  `correct` BOOL NULL, 
-  `correct_value` VARCHAR(255) NULL DEFAULT NULL,
-  `priority` INTEGER UNSIGNED NULL,
-  PRIMARY KEY(id),
-  KEY `question_id_idx` (`question_id`),
-  FOREIGN KEY(question_id)
-    REFERENCES questions(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-CREATE TABLE questionnaire_results (
-  id INTEGER UNSIGNED NOT NULL,
-  object_id INTEGER UNSIGNED NOT NULL,
-  completed TINYINT NOT NULL DEFAULT 0,
-  rating INTEGER UNSIGNED NULL,
-  evaluation TEXT NULL,
-  PRIMARY KEY(id),
-  INDEX `objects_idx` (`object_id`),
-  FOREIGN KEY(id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(object_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='questionnaire result/filling/compilation';
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
