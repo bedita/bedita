@@ -89,7 +89,7 @@ CREATE TABLE annotations (
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'object annotations, comments, notes';
 
 
 CREATE TABLE answers (
@@ -136,7 +136,7 @@ CREATE TABLE `event_logs` (
   PRIMARY KEY  (id),
   KEY user_idx (user),
   KEY date_idx (created)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'backend main events log';
 
 CREATE TABLE `banned_ips` (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -147,7 +147,7 @@ CREATE TABLE `banned_ips` (
   PRIMARY KEY  (id),
   UNIQUE KEY `ip_unique` (`ip_address`),
   KEY status_idx (status)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'banned ips (mainly for comments)';
 
 CREATE TABLE groups (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
