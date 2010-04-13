@@ -85,7 +85,10 @@ class AppController extends Controller
 		if ($ex instanceof BeditaAjaxException) {
 			return new AppError("handleAjaxException", array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
 				'result' => $ex->result, 'output' => $ex->getOutputType()), $ex->errorTrace());
-		} 
+		} elseif (self::currentController()->RequestHandler->isAjax()) {
+			return new AppError("handleAjaxException", array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(),
+				'result' => $ex->result, 'output' => 'beditaMsg'), $ex->errorTrace());
+		}
 		return new AppError("handleException", array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
 				'result' => $ex->result), $ex->errorTrace());
 	}
@@ -936,7 +939,6 @@ abstract class ModulesController extends AppController {
 	}
 
 	protected function checkAutoSave() {
-		
 		$new = (empty($this->data['id'])) ? true : false ;
 		$beObject = ClassRegistry::init("BEObject");
 		if(!$new) {
@@ -968,10 +970,11 @@ abstract class ModulesController extends AppController {
 	}
 	
 	public function autoSaveObject(BEAppObjectModel $model) {
-		
+		$this->checkAutoSave();
 		$model->Behaviors->disable('RevisionObject');
 		$this->saveObject($model);
-	 	$model->Behaviors->enable('RevisionObject');	
+		$model->Behaviors->enable('RevisionObject');
+		$this->set('id', $model->id);
 	}
 
 	protected function viewObject(BEAppModel $beModel, $id = null) {

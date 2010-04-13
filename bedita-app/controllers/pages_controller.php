@@ -385,7 +385,7 @@ class PagesController extends AppController {
 	}
 
 	public function updateEditor($objectId) {
-		//$this->ajaxCheck();
+		$this->ajaxCheck();
 		$objectEditor = ClassRegistry::init("ObjectEditor"); 
 	 	$user = $this->Session->read("BEAuthUser");
 		$objectEditor->cleanup($objectId);

@@ -203,19 +203,13 @@ $(document).ready(function(){
 /*
 	check sulle modifiche non salvate e variabile sul submit
 */
-	
 	$("#updateForm *").change(function () {
 		$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 		$("#cancelBEObject").show();
 		{/literal}{if $autosave|default:false}{literal}
-		if (autoSaveTimer == undefined) 
+		if (autoSaveTimer == undefined || $(this).attr("name") == "data[status]") {
 			autoSave();
-		{/literal}{/if}{literal}
-	});
-
-	$("input[name=data\\[status\\]]").change(function () {
-		{/literal}{if $autosave|default:false}{literal}
-			autoSave();
+		}
 		{/literal}{/if}{literal}
 	});
 
@@ -223,64 +217,78 @@ $(document).ready(function(){
 	updateEditors();
 {/literal}{/if}{literal}
 
-	var status = $("input[name=data\\[status\\]]:checked").attr('value');
-
+	status = $("input[name=data\\[status\\]]:checked").attr('value');
+	if (status == "on") {
+		switchAutosave('off', false);
+	}
+	
 });
 
+var status;
 var autoSaveTimer;
 
 function autoSave() {
-
 	{/literal}
-	var checkTime = {$conf->autoSaveTime};
 	var submitUrl = "{$html->url('/')}{$view->params.controller}/autosave/";
 	{literal}
 
-	var optionsForm = {
-			target: 		'#messagesDiv'
-		};
+	var optionsForm = {target: '#messagesDiv'};
 
 	var newStatus = $("input[name=data\\[status\\]]:checked").attr('value');
 
 	if (status != newStatus) {
 		if (newStatus == 'on') {
-			clearTimeout(autoSaveTimer);
-			autoSaveTimer = undefined;
-			switchAutosave(newStatus);
-			
-		}else if (status == 'on'){
-
-			switchAutosave(newStatus);
-		}else if (checkTime > 0) {
-			autoSaveTimer = setTimeout(autoSave,checkTime);
+			switchAutosave('disable');
+		} else {
+			if (status == 'on') {
+				switchAutosave('enable');
+			} else {
+				switchAutosave('enable', false);
+			}
 		}
 		status = newStatus;
-	} else if (checkTime > 0 && newStatus != 'on') {
-		autoSaveTimer = setTimeout(autoSave,checkTime);
-		optionsForm.url = submitUrl; // override form action
-		tinyMCE.triggerSave(true, true);
-		$('#updateForm').ajaxSubmit(optionsForm);
-	}else {
-		clearTimeout(autoSaveTimer);
-		autoSaveTimer = undefined;
+	} else if (newStatus != 'on') {
+		if (autoSaveTimer != undefined) {
+			optionsForm.url = submitUrl; // override form action
+			tinyMCE.triggerSave(true, true);
+			$('#updateForm').ajaxSubmit(optionsForm);
+		}
+		switchAutosave('enable', false);
 	}
 
 }
 
-function switchAutosave(status) {
+function switchAutosave(action, triggerMsg) {
 	{/literal}
+	var checkTime = {$conf->autoSaveTime};
 	var submitUrl = "{$html->url('/pages/showAjaxMessage/')}";
-	
 	{literal}
-	
-	if (status == 'on') {
-		var message = {/literal}'{t}Autosave Disabled{/t}'{literal};
-	}else {
-		var message = {/literal}'{t}Autosave Enabled{/t}'{literal};
+
+	if (checkTime <= 0 || (autoSaveTimer === false && action != "on")) {
+		action = "off";
+		triggerMsg = false;
 	}
-	
-	$("#messagesDiv").load(submitUrl,{msg:message,type:'info'});
-	
+
+	switch (action) {
+		case "disable":
+			clearTimeout(autoSaveTimer);
+			autoSaveTimer = undefined;
+			var message = {/literal}'{t}Autosave disabled{/t}'{literal};
+			break;
+		case "enable":
+		case "on":
+			autoSaveTimer = setTimeout(autoSave,checkTime);
+			var message = {/literal}'{t}Autosave enabled{/t}'{literal};
+			break;
+		case "off":
+			clearTimeout(autoSaveTimer);
+			autoSaveTimer = false;
+			var message = {/literal}'{t}Autosave turned off{/t}'{literal};
+			break;
+	}
+	if (triggerMsg !== false) {
+		$("#messagesDiv").load(submitUrl,{msg:message,type:'info'});
+	}
 }
 
 function updateEditors() {

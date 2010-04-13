@@ -96,7 +96,7 @@ $config['activityTimeout'] = 20;
 $config["concurrentCheckTime"] = 20000;
 
 // Autosave time check - time interval, duration in milliseconds
-$config["autoSaveTime"] = 60000;
+$config["autoSaveTime"] = 120000;
 
 /**
  ** ******************************************
