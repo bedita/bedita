@@ -1315,18 +1315,18 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover {
 #messagesDiv {
 	/*background:transparent url(../img/shadowpattern160.png);*/
 	padding:10px; 
-	margin-top:-10px; margin-left:-10px;
 	width:140px; height:auto; 
-	display: none;
+	display: block;
+	top:10px; left:10px;
+	position:fixed !important;
 }
 
 .message {
 	line-height:1.2em;
 	width:120px; height:120px; 
 	padding:10px;
-	border-top:1px solid silver;
-	background-color:#FFF;
-	color:#000000;
+	background-color:#333;
+	color:#FFF;
 
 }
 
