@@ -43,11 +43,11 @@ class BeUploadToObjComponent extends Object {
 	 */
 	function upload($dataStream=null, $formFileName="Filedata") {
 		$result = false ;
-		if ($this->params['form'][$formFileName]['error']) {
-			throw new BEditaUploadPHPException($this->params['form'][$formFileName]['error']);
-		}
 		if (empty($this->params["form"][$formFileName]["name"])) {
 			throw new BEditaException(__("No file in the form", true));
+		}
+		if ($this->params['form'][$formFileName]['error']) {
+			throw new BEditaUploadPHPException($this->params['form'][$formFileName]['error']);
 		}
 		// Prepare data
 		if (!empty($dataStream)) {
