@@ -34,7 +34,7 @@
 		{/if}
 		<tr>
 			<th>{t}created by{/t}:</th>
-			<td>{if !empty($object.UserCreated.userid)}{$object.UserCreated.userid}{else}-{/if}</td>
+			<td>{$object.UserCreated.realname|default:''} [ {$object.UserCreated.userid|default:''} ]</td>
 		</tr>	
 		<tr>
 			<th>{t}created on{/t}:</th>
@@ -46,7 +46,7 @@
 		</tr>
 		<tr>
 			<th>{t}last modified by{/t}:</th>
-			<td>{if !empty($object.UserModified.userid)}{$object.UserModified.userid}{else}-{/if}</td>
+			<td>{$object.UserModified.realname|default:''} [ {$object.UserModified.userid|default:''} ]</td>
 		</tr>
 		
 	{/if}
