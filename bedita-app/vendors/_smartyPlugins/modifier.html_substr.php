@@ -14,7 +14,7 @@
 * Translation to PHP & Smarty: Edward Dale <scompt@scompt.com>
 * Modification to add a string: Sebastian Kuhlmann <sebastiankuhlmann@web.de>
 * 
-* bato modification: insert $addstring into last closed tag 
+* bato edit: insert $addstring into last closed tag
 *
 -------------------------------------------------------------
 */
@@ -103,7 +103,7 @@ function smarty_modifier_html_substr($string, $length, $addstring="")
 				// Close broken XHTML elements
 				while( sizeof( $tagsArray ) != 0 ) {
 					$aTag = array_pop( $tagsArray );
-					$ret .= $addstring."</" . $aTag . ">\n";
+					$ret .= (count($tagsArray) == 0)? $addstring . "</" . $aTag . ">" : "</" . $aTag . ">";
 				}
 			} else {
 				$ret .= $addstring;
