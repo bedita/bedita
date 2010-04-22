@@ -5,8 +5,11 @@
 	{literal}
 
 	<script type="text/javascript">
-		switchAutosave("off");
-
+		if ((autoSaveTimer !== false) && (autoSaveTimer != undefined))
+			switchAutosave("off", false);
+		else
+			switchAutosave("off");
+		
 		$(".secondacolonna .modules label:not(.concurrentuser)")
 		.addClass("concurrentuser")
 		.attr("title","Warning! More users are editing this document")
@@ -37,7 +40,9 @@
 	<script type="text/javascript">
 	{literal}
 	if (autoSaveTimer === false) {
-		switchAutosave("on");
+		var newStatus = $("input[name=data\\[status\\]]:checked").attr('value');
+		if ((status != 'on') && (status == newStatus))
+			switchAutosave("on");
 	}
 	{/literal}
 	</script>

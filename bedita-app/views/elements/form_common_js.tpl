@@ -207,7 +207,7 @@ $(document).ready(function(){
 		$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 		$("#cancelBEObject").show();
 		{/literal}{if $autosave|default:false}{literal}
-		if (autoSaveTimer == undefined || $(this).attr("name") == "data[status]") {
+		if (autoSaveTimer == undefined || ( $(this).attr("name") == "data[status]" && autoSaveTimer !== false ) ){
 			autoSave();
 		}
 		{/literal}{/if}{literal}
@@ -225,7 +225,7 @@ $(document).ready(function(){
 });
 
 var status;
-var autoSaveTimer;
+var autoSaveTimer; //Set to false to turn off autosave.
 
 function autoSave() {
 	{/literal}
