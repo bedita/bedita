@@ -24,7 +24,8 @@ tinyMCE.init({
     relative_urls : false,
 	convert_urls : false,
     remove_script_host : false,
-	document_base_url : "/"
+	document_base_url : "/",
+	onchange_callback : "onChangeHandler"
 });
 
 tinyMCE.init({
@@ -50,6 +51,7 @@ tinyMCE.init({
 	document_base_url : "/",
 	toolbar_align : "right",
 	force_br_newlines : true,
-    forced_root_block : '' // Needed for 3.x
+    forced_root_block : '', // Needed for 3.x
+    onchange_callback : "onChangeHandler"
 });
 

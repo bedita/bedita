@@ -200,6 +200,7 @@ $(document).ready(function(){
 {/literal}{/if}{literal}
 
 
+
 /*
 	check sulle modifiche non salvate e variabile sul submit
 */
@@ -223,6 +224,16 @@ $(document).ready(function(){
 	}
 	
 });
+
+function onChangeHandler(inst) {
+	$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
+	$("#cancelBEObject").show();
+	{/literal}{if $autosave|default:false}{literal}
+	if (autoSaveTimer == undefined || ( $(this).attr("name") == "data[status]" && autoSaveTimer !== false ) ){
+		autoSave();
+	}
+	{/literal}{/if}{literal}
+}
 
 var status;
 var autoSaveTimer; //Set to false to turn off autosave.
