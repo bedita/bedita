@@ -21,53 +21,53 @@
 function smarty_modifier_html_substr($string, $length, $addstring="")
 {
 	$addstring = " " . $addstring;
-	
+
 	if (strlen($string) > $length) {
 		if( !empty( $string ) && $length>0 ) {
 			$isText = true;
 			$ret = "";
 			$i = 0;
-			
+
 			$currentChar = "";
 			$lastSpacePosition = -1;
 			$lastChar = "";
-			
+
 			$tagsArray = array();
 			$currentTag = "";
-			$tagLevel = 0;
-			
+			$lastTagPosition = 0;
+
 			$noTagLength = strlen( strip_tags( $string ) );
-		
+
 			// Parser loop
 			for( $j=0; $j<strlen( $string ); $j++ ) {
-			
+
 				$currentChar = substr( $string, $j, 1 );
 				$ret .= $currentChar;
-		
+
 				// Lesser than event
 				if( $currentChar == "<") $isText = false;
-		
+
 				// Character handler
 				if( $isText ) {
-		
+
 					// Memorize last space position
-					if( $currentChar == " " ) { $lastSpacePosition = $j; }
+					if( $currentChar == " ") { $lastSpacePosition = $j; }
 					else { $lastChar = $currentChar; }
-		
+
 					$i++;
 				} else {
 					$currentTag .= $currentChar;
 				}
-		
+
 				// Greater than event
 				if( $currentChar == ">" ) {
 					$isText = true;
-		
+
 					// Opening tag handler
 					if( ( strpos( $currentTag, "<" ) !== FALSE ) &&
 					( strpos( $currentTag, "/>" ) === FALSE ) &&
 					( strpos( $currentTag, "</") === FALSE ) ) {
-		
+
 						// Tag has attribute(s)
 						if( strpos( $currentTag, " " ) !== FALSE ) {
 							$currentTag = substr( $currentTag, 1, strpos( $currentTag, " " ) - 1 );
@@ -75,30 +75,33 @@ function smarty_modifier_html_substr($string, $length, $addstring="")
 							// Tag doesn't have attribute(s)
 							$currentTag = substr( $currentTag, 1, -1 );
 						}
-		
+
 						array_push( $tagsArray, $currentTag );
-		
-					} else if( strpos( $currentTag, "</" ) !== FALSE ) {
+
+					} else if( strpos( $currentTag, "</" ) !== FALSE) {
+						$closeTagLength = strlen($currentTag);
 						array_pop( $tagsArray );
+						$lastTagPosition = $j;
 					}
-		
+
 					$currentTag = "";
 				}
-		
+
 				if( $i >= $length) {
 					break;
 				}
 			}
-		
+
 			// Cut HTML string at last space position
 			if( $length < $noTagLength ) {
 				if( $lastSpacePosition != -1 ) {
-					$ret = substr( $string, 0, $lastSpacePosition );
+					$stringLength = ($lastSpacePosition > $lastTagPosition)? $lastSpacePosition : $lastTagPosition;
+					$ret = substr( $string, 0, $stringLength );
 				} else {
 					$ret = substr( $string, $j );
 				}
 			}
-		
+
 			if (!empty($tagsArray)) {
 				// Close broken XHTML elements
 				while( sizeof( $tagsArray ) != 0 ) {
@@ -108,11 +111,11 @@ function smarty_modifier_html_substr($string, $length, $addstring="")
 			} else {
 				$ret .= $addstring;
 			}
-	
+
 		} else {
 			$ret = "";
 		}
-	
+
 		return $ret;
 		// only add string if text was cut
 //		if ( strlen($string) > $length ) {
