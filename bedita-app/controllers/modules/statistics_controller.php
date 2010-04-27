@@ -83,6 +83,14 @@ class StatisticsController extends ModulesController {
 		$area = $this->loadModelByType("Area");
 		$area->containLevel('default');
 		$this->set('publications', $area->find('all'));
+		
+		//usersStuff
+		$this->usersStuff($params);
+		
+		
+		
+		
+		
 	 }
 	
 		public function view() {
@@ -200,7 +208,6 @@ class StatisticsController extends ModulesController {
 		}
 	 }
 
-	 
 	 private function objectsForUser($params) {
 	 	
 	 	$this->User->contain();
@@ -232,6 +239,23 @@ class StatisticsController extends ModulesController {
 		$this->set("maxObjectsForUser", max($totalObjectsForUser));
 		
 	 }
+
+	 private function usersStuff($params) {
+		
+		$groupstats = $this->User->query("select *,id,name from groups");
+		
+		foreach ($groupstats as $key=>$value) {
+			$userscount = $this->User->query("select count(user_id) AS count from groups_users WHERE group_id = ".$value['groups']['id']." ");
+			$groupstats[$key]['groups']['userscount'] = $userscount[0][0]['count'];
+			$userscount = false;
+		}
+		
+		//pr($groupstats); exit;
+	
+		$this->set("groupstats", $groupstats);
+	 }
+
+
 	 
 }	
 
