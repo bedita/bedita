@@ -1,3 +1,164 @@
+Version 3.1.alfa - ulmus
+ User-visible changes:
+	* #234 - thumbnails error on category/tag
+	* #120 - external auth type services openid/shibboleth - user create/update
+	* $conf->extAuthTypes  options in form user admin
+	* added new icons
+	* card added in newletter list (comma separated email) created with status=on
+	* added association comment-attach
+	* fix <select> in subscription method (single opt-in, double opt-in)
+	* 'see also' relation links all 'related' object types
+	* fixing color on custom properties <select>
+	* version number in colophon
+	* list objects shows description and nickname
+	* custom property input text to textarea
+	* fix erroneous directory path for module inclusion
+	* added rich text editor in description translation for card objects
+	* plugin modules activation by UI (plug-in, turn on, turn off, plug-out)
+	* enable, disable addons through UI
+	* recover user password through hash
+	* added translations in multimedia/view
+	* #103 - objects versioning
+	* #84 - concurrent editors
+	* #230 - bulk operations on selected objects
+	* multimedia objects can be placed on the tree
+	* #70 - autosave
+	* object "fixed" property management added in form properties. Administration group users only
+	* object view: if section tree location is checked -> branch uncollappsed
+	* alias infos in object section detail
+	* new previews tab
+	* #240 UI improvement
+		- "nickname" editing moved to form_title_subtitle
+		- "previews" removed form "menuLeft" and moved to a Big gray Tab in form_previews
+		- added "nl2br" to editors notes
+		- description - HTML rich text con pochi bottoni
+		- save as draft button + draft object icon
+	* improved "continue" link on newsletter items
+	* #181 ui: alert su cambio pagina se oggetto modificato e non salvato
+	* #241 sort field in object list: added class 'SortableUp' in be_toolbar
+	* update statistics module
+	* admin/plugins skinning
+	* webmarks description w/html
+	* fix on append delete media on the tree in details view
+	* onchange_callback function added in the tiny_mce_default_ini.js
+
+ Frontend changes:
+	* fixed error on staging_toolbar
+	* added FrontendController method to handle access denied
+	* added BeditaRuntimeException and handled in FrontendController
+	* #211 - ui: generic BEdita helper (handle meta tag, canonicalPath)
+	* fix many errors on canonicalPath
+	* redefine $checkPubDate as array to check start and end publication date separately
+	* added check publication date in search method
+	* load last comment inserted when an ajax call is performed
+	* frontend configurations (frontend.ini.php) loaded in backend bootsrap
+	* fix bug: when module status is off it was reachable by url
+	* added content_nicknameBeforeFilter($sectionNickname) and content_nicknameBeforeRender callbacks
+	* passed parameters $contentNickname (populated only if a content is requested) to section_nicknameBeforeFilter to easly know if a content is requested before finding result
+	* alias in staging tooolbar
+	* Add callback beforeCheckLogin in FrontendController to perform operations before checkLogin method is called (for example to skip check)
+	* download permitted also for attach related object
+	* signup frontend
+	* bugfix: choosing a translation language left main language fields populated if object translation fields are empty
+	* FrontendController::dowload check if multimedia is an attachment/dowload or on the tree
+	* #139 handle session expired when an ajax call is performed.
+
+ Developer-visibile changes:
+	* set session vars moved to a own method
+	* removed $allowKey in BeAuth component (not used)
+	* change validation rule in Group.name (alphanumeric => notEmpty)
+	* moved serialize/unserialize auth_params in User model beforeSave and afterFind
+	* robots.txt examples fix
+	* exclude some dirs for modelPath, controllerPath
+	* moved bedita sql files to bedita-app/config/sql
+	* first cake schema generated
+	* #113 - patch to cake core libs to support mysql 'enum' and 'set' column types
+	* #121 infrastructure to plug module like CakePHP plugins
+		- introduced bedita-app/libs to 1st party library
+		- remove object types from bedita.ini.php and put in configuration runtime reading cache or database
+		- added plugins/addons (dummy cakePHP plugin) to plug Model, Component, etc...
+		- frontend bootstrap include backend bootstrap
+		- move common templates from common_inc to elements
+		- moved </head> and <body> from every templates to default layout
+	* multiple recipients for mailSupport ("to"=>'addr1@example.com, addr2@example.com')
+	* #217 - sql upgrade scripts
+	* added BeditaObjectModel base class for BEdita objects that use objects table as base table
+	* added module shell script and module model to plug new plugin-module
+	* link specific css and js for models made by helper
+	* Module model extends BEAppModel
+	* fix User::afterFind
+	* fix build filter error with keyword rel_object_id
+	* #235 - added version to bedita export
+	* script shell import XML
+	* Tiny Mce: All characters will be stored in non-entity form except these XML default entities: &amp; &lt; &gt; &quot;
+	* objectType string instead of objectTypeId to get avaiable relations
+	* hash operation send an email html+txt if it's present boundary placeholder [[[-BOUNDARY--]]] on messages
+	* loaded cached configurations
+	* added BEDITA_PLUGINS_PATH constant to define special bedita plugins path
+	* sample plugin module
+	* shell: xml import update/fix
+	* shell: bedita init - now you can proceed on error anyway
+	* plugins: default 'addons' dir - test shell
+	* xml import shell moved to 'plugins'
+	* image model: methods to set with/height from file
+	* search text: index if no lang is set (use default language)
+	* refined updateStreamFields in Stream model and added relative shell script
+	* refactoring to use new Stream model methods
+	* add unique key on object_type.name
+	* added in Configure::helperPaths plugins/addons/helpers and BEDITA_PLUGIN_PATH/addons/helpers
+	* navigation history
+	* added Alias to hasMany associations and modify afterSave to delete hasMany associations row only if it's set $this->data["ModelName"]
+	* refactoring of hash hanlder
+	* Refactoring beforeFilter flow to use checkLogin method in frontend
+	* remove Msg helper, used $session->flash directly
+	* added ObjectProperty to BeditaSimpleStreamModel::$modelBindings["detailed"]
+	* added BeTimeHelper that extends CakePHP TimeHelper
+	* added shockwave type to Application
+	* set to null email field when it's empty to avoid DUPLICATE ENTRY error on saving user without email
+	* removed method getPassedArgs... use instead $this->params["named"]
+	* Application::__construct call parent::__construct
+	* shell: try catch to avoid interrupting the rebuildIndex
+	* external Auth types build on runtime looking at addons/components/be_auth_* files
+	* shell: #224 - import vcard and ms CSV files
+	* shell: skipped cache configuration if missing required tables
+	* shell: #238 - shell:dbadmin - checkConsistency
+	* handle user message through layout
+	* modify smarty.php view to improve compatibility with cakePHP View class behavior
+	* smarty: modify assign_associative smarty plugins to create always a new array
+	* smarty: added smarty plugins to add items to an array
+	* update tinymce to 3.3.4 version
+	* update to Jquery 1.4.2 and Jquery UI to 1.8rc3
+	* preview array changed. All objects url are shown and are diveded by publication
+	* #125 store procedure removed
+	* fix wrong extension in .JPG file thumb
+	* #126 removed views (view_trees, view_permissions)
+	* added plugin jquery for trigger messages
+	* smarty: smarty.agent update
+	* update to CakePHP 1.2.7
+
+
+
+Version 3.0.1 - betula
+ User-visible changes:
+ 	* replace publishing with publication
+ 	* fixed wrong behavior on select country in addressbook (added jquery.selectboxes plugin)
+ 	* fix video thumbnails
+ 	* fix <select> in newsletter subscription method (single opt-in, double opt-in)
+
+ Frontend changes:
+ 	* fix including nickname.tpl(.ctp) view if exists and use views/pages instead of views/sections directory
+ 	* fix rss urls/links
+ 	* captcha generation bug solved (waiting for CakePHP to solve the srand bug ticket #140)
+ 	* fix canonicalPath
+
+ Developer-visibile changes:
+ 	* replacing deprecated videoThumbHeight with media.video.thumbHeight
+ 	* small shell fixes
+ 	* multiple recipients for mailSupport ("to"=>'addr1@example.com, addr2@example.com')
+ 	* fix build filter error with keyword rel_object_id
+
+
+
 Version 3.0 - betula
 
  User-visible changes:

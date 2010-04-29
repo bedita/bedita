@@ -86,11 +86,6 @@ class StatisticsController extends ModulesController {
 		
 		//usersStuff
 		$this->usersStuff($params);
-		
-		
-		
-		
-		
 	 }
 	
 		public function view() {
@@ -241,22 +236,17 @@ class StatisticsController extends ModulesController {
 	 }
 
 	 private function usersStuff($params) {
-		
-		$groupstats = $this->User->query("select *,id,name from groups");
-		
-		foreach ($groupstats as $key=>$value) {
-			$userscount = $this->User->query("select count(user_id) AS count from groups_users WHERE group_id = ".$value['groups']['id']." ");
-			$groupstats[$key]['groups']['userscount'] = $userscount[0][0]['count'];
-			$userscount = false;
+		$groupstats = $this->User->Group->find("all", array("contain" => array()));
+		$groupUserModel = ClassRegistry::init("GroupsUser");
+		foreach ($groupstats as $key => $value) {
+			$userscount = $groupUserModel->find("count", array(
+				"conditions" => array("group_id" => $value['Group']['id'])
+			));
+			$groupstats[$key]['Group']['userscount'] = $userscount;
 		}
-		
-		//pr($groupstats); exit;
-	
 		$this->set("groupstats", $groupstats);
 	 }
 
-
-	 
 }	
 
 ?>

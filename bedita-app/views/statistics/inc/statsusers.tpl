@@ -28,9 +28,9 @@
 			<tbody>
 			{foreach from=$groupstats item="item"}
 				<tr>
-					<td class="label">{$item.groups.name}</td>
+					<td class="label">{$item.Group.name}</td>
 					<td style="white-space:nowrap;">
-						<div style="width:{$item.groups.userscount}px;" class="bar">&nbsp;</div> <span class="value">{$item.groups.userscount}</span>
+						<div style="width:{$item.Group.userscount}px;" class="bar">&nbsp;</div> <span class="value">{$item.Group.userscount}</span>
 					</td>
 				</tr>
 			{/foreach}
