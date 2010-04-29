@@ -13,7 +13,6 @@ INSERT INTO object_types (id, name, module) VALUES
 (29, 'gallery', 'galleries'),
 (13, 'comment', 'comments'),
 (18, 'short_news', 'news'),
-(19, 'bibliography', 'bibliographies'),
 (20, 'book', 'books'),
 (21, 'event', 'events'),
 (22, 'document', 'documents'),
@@ -22,7 +21,6 @@ INSERT INTO object_types (id, name, module) VALUES
 (35, 'mail_message', 'newsletter'),
 (36, 'mail_template', 'newsletter'),
 (37, 'author', NULL),
-(38, 'biblio_item', NULL),
 (39, 'editor_note', NULL),
 (40, 'question', 'questionnaires'),
 (41, 'questionnaire', 'questionnaires'),
@@ -53,7 +51,6 @@ INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUE
 ('7','news', 'news', 'news', 'on', '9'),
 ('8','galleries', 'galleries', 'galleries', 'on', '5'),
 ('10','events', 'events', 'events', 'on', '3'),
-('11','bibliographies', 'bibliographies', 'bibliographies', 'on', '14'),
 ('12','webmarks', 'webmarks', 'webmarks', 'on', '12'),
 ('13','books', 'books', 'books', 'on', '13'),
 ('14', 'questionnaires', 'questionnaires', 'questionnaires', 'on', '15'),
@@ -113,9 +110,6 @@ INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'books'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE name = 'bibliographies'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
-
-INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'addressbook'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
@@ -163,9 +157,6 @@ INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'books'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE name = 'bibliographies'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
-
-INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'addressbook'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
@@ -210,9 +201,6 @@ VALUES ((SELECT id FROM modules WHERE name = 'translations'), (SELECT id FROM gr
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'books'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
-
-INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE name = 'bibliographies'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'addressbook'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );

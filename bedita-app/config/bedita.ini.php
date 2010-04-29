@@ -179,7 +179,6 @@ $config['modules'] = array(
 	"news" => array("id" => 7, "label" => "news"),
 	"galleries" => array("id" => 8, "label" => "galleries"),
 	"events" => array("id" => 10, "label" => "events"),
-	"bibliographies" => array("id" => 11, "label" => "bibliographies"),
 	"webmarks" => array("id" => 12, "label" => "webmarks"),
 	"books" => array("id" => 13, "label" => "books"),
 	"questionnaires" => array("id" => 14, "label" => "questionnaires"),
@@ -242,11 +241,6 @@ $config["defaultObjRelationType"] = array(
 		"hidden" => true,
 		"left" => array("book"),
 		"right" => array("author")
-	),
-	"bibliography" => array(
-		"hidden" => true,
-		"left" => array("bibliography"),
-		"right" => array("biblio_item")
 	),
 	"question" => array(
 		"hidden" => true,
