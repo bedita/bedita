@@ -4,7 +4,6 @@
 	<title>BEdita | {$currentModule.label|default:'home'} | {$html->action}</title>
 	
 	{agent var=agent}
-
 	
 	{if $agent.iPHONE or $agent.iPAD}
 		
@@ -16,8 +15,7 @@
 		<link rel="stylesheet" href="{$html->url('/css/')}beditaMobile.css" type="text/css" media="screen" title="main" charset="utf-8">
 		
 	{/if}
-
-			
+		
 	{include file="inc/meta.tpl"}
 	
 	{$html->css('beditaNew')}
