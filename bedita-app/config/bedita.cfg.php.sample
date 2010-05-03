@@ -31,8 +31,10 @@
  * $Id$
  */
 
+$config = array();
+
 // BEdita instance name 
-$config["projectName"] = "BEdita 3.0";
+//$config["projectName"] = "My Project Name";
 
 /**
  ** ******************************************

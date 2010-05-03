@@ -32,7 +32,7 @@
 
 $config = array() ;
  
-$config["projectName"] = ""; // override in bedita.cfg
+$config["projectName"] = "BEdita 3.1 alfa"; // override in bedita.cfg
 
 $config["userVersion"] = "BEdita 3.1.alfa"; // don't override
 
@@ -180,7 +180,6 @@ $config['modules'] = array(
 	"galleries" => array("id" => 8, "label" => "galleries"),
 	"events" => array("id" => 10, "label" => "events"),
 	"webmarks" => array("id" => 12, "label" => "webmarks"),
-	"books" => array("id" => 13, "label" => "books"),
 	"questionnaires" => array("id" => 14, "label" => "questionnaires"),
 	"addressbook" => array("id" => 16, "label" => "addressbook"),
 	"newsletter" => array("id" => 18, "label" => "newsletter"),
