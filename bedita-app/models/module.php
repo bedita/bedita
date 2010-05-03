@@ -138,7 +138,7 @@ class Module extends BEAppModel {
 				);
 				if ($obj == 0) {
 					$model = ClassRegistry::init($pluginName . "." . $modelName);
-					$objectTypeId = $model->objectTypeId;
+					$objectTypeId = (!empty($model->objectTypeId)) ? $model->objectTypeId : null;
 					if(!empty($objectTypeId)) {
 						$obj = $otModel->find("count", array(
 								"conditions" => array("id" => $objectTypeId),
