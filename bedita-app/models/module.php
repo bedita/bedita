@@ -137,7 +137,21 @@ class Module extends BEAppModel {
 					)
 				);
 				if ($obj == 0) {
-					$dataO["id"] = $ot_id++;
+					$model = ClassRegistry::init($pluginName . "." . $modelName);
+					$objectTypeId = $model->objectTypeId;
+					if(!empty($objectTypeId)) {
+						$obj = $otModel->find("count", array(
+								"conditions" => array("id" => $objectTypeId),
+								"contain" => array()
+							)
+						);
+						if ($obj > 0) {
+							throw new BeditaException(__("objectTypeId " . $objectTypeId . " is already in use: change objectTypeId for model " . $modelName, true));
+						}
+					} else {
+						$objectTypeId = $ot_id++;
+					}
+					$dataO["id"] = $objectTypeId;
 					$dataO["name"] = $objectType;
 					$dataO["module"] = $pluginName;
 					if (!$otModel->save($dataO)) {
