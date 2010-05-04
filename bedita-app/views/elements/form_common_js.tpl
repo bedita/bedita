@@ -14,12 +14,14 @@
 {assign var="submiturl" value=$submiturl|default:$currentModule.path}
 
 
+
+
 <script type="text/javascript">
 {literal}
 $(document).ready(function(){
 	
 	//alert("pop");
-
+	
 	function checkStatus() {
 		var objstatus = $("input[name='data[status]']:checked").val();
 		if (objstatus == "draft") $("#saveBEObject").val("{/literal}{t}Save draft{/t}{literal}");
@@ -50,10 +52,7 @@ $(document).ready(function(){
 		{literal}
 	});
 	
-	
-	$("div.insidecol input[name='save']").click(function() {
-		$("#updateForm").submit();
-	});	
+
 /*
 	window.onbeforeunload = function () {
 		if ( $(".secondacolonna .modules label").hasClass("save") ) {	
@@ -61,9 +60,13 @@ $(document).ready(function(){
 		}
 	};
 */
-/*
+
+
+
+{/literal}{if (@in_array($object.object_type_id, $conf->objectTypes.leafs.id))}{literal}
 
 	$("div.insidecol input[name='save']").click(function() {
+
 		if ( $('.publishingtree input:checked').val() === undefined ) {	
 			var answer = confirm("{/literal}{t}This document is not on publishing tree. Continue?{/t}{literal}")
 			    if (answer){
@@ -74,9 +77,16 @@ $(document).ready(function(){
 		} else {
 			$("#updateForm").submit();
 		}
-	});	
+	});
+
+{/literal}{else}{literal}
 	
-*/
+	$("div.insidecol input[name='save']").click(function() {
+		$("#updateForm").submit();
+	}
+	
+{/literal}{/if}{literal}	
+
 		
 	$("div.insidecol input[name='clone']").click(function() {
 		$("#updateForm").attr("action","{/literal}{$html->url('/')}{$submiturl}{literal}/cloneObject");
