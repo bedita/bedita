@@ -15,9 +15,6 @@ $(document).ready(function(){
 		{literal}
 	});
 
-	$("div.insidecol input[name='save']").click(function() {
-		$("#updateForm").submit();
-	});
 	
 	var urlBack = '{/literal}{$html->url("$back_url")}{literal}';
 	$("#backBEObject").click(function() {
