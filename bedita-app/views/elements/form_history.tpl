@@ -8,14 +8,20 @@
 	<th>{t}date{/t}</th>
 	<th>diff</th>
 	<th>{t}editor{/t}</th>
+	<th></th>
 </tr>
 {foreach from=$object.Version|@array_reverse item=h key=k}
-	<tr class="idtrigger" rel="diff-{$h.revision}">
-		<td style="text-align:center">{$h.revision}</td>
+	{*<tr class="idtrigger" rel="diff-{$h.revision}">*}
+	<tr>
+		<td style="text-align:center">
+			{$h.revision}
+		</td>
 		<td>{$h.created|date_format:$conf->dateTimePattern}</td>
 		<td>{$h.diff|unserialize|@count}</td>
 		<td>{$h.User.realname|default:''} [ {$h.User.userid|default:''} ]</td>
+		<td><a class="modalbutton" rel="/pages/revision/{$object.id}/{$h.revision}">  edit  </a></td>
 	</tr>
+	{*
 	<tr id="diff-{$h.revision}" style="display:none">
 		<td></td>
 		<td colspan=3 style="padding:0px;">
@@ -26,6 +32,7 @@
 			</table>
 		</td>
 	</tr>
+	*}
 {/foreach}
 </table>
 {else}
