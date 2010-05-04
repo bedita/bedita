@@ -2,7 +2,7 @@
 var unplugMessage = "{t}Unplugging the module will delete all related items. Do you want continue?{/t}";
 {literal}
 $(document).ready(function() {
-	$(".modules *").unbind("click");
+	$(".mainfull .modules *").unbind("click");
 	
 	$("#plugged input[type=button]").click(function() {
 		var form = $(this).parents("form");
@@ -41,6 +41,7 @@ $(document).ready(function() {
 						
 </style>
 {/literal}
+
 
 {$view->element('modulesmenu')}
 

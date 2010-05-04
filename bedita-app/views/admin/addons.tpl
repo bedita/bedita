@@ -5,7 +5,7 @@ $(document).ready(function() {
 		
 	$("#addonsOn input[type=button]").click(function() {
 		if (confirm(unplugMessage)) {
-			$(this).parents("form").submit();
+			$("form[name='disableAddon']").submit();
 		}
 	});
 	
@@ -21,52 +21,71 @@ $(document).ready(function() {
 
 <div class="mainfull">
 	
-	<h1>{t}Addons{/t}</h1>
+	<div class="tab stayopen"><h2>{t}Addons{/t}</h2></div>
 	
-	<h2 style="margin-top: 20px;">{t}BEdita object type model enabled{/t}</h2>
-	{if !empty($addons.models.objectTypes.on)}
-		<ul id="addonsOn">
-		{foreach from=$addons.models.objectTypes.on item="ot"}
-			<li>
-				<form action="{$html->url('/admin/disableAddon')}" method="post">
-				<input type="hidden" name="path" value="{$ot.path}">
-				<input type="hidden" name="model" value="{$ot.model}">
-				<input type="hidden" name="file" value="{$ot.file}">
-				<input type="hidden" name="type" value="{$ot.type}">
-				{$ot.model}
-				<input type="button" value="{t}OFF{/t}"/> 
-				</form>
-			</li>
-		{/foreach}
-		</ul>
-	{else}
-		{t}no items{/t}
-	{/if}
+	<fieldset>
 	
-	<h2 style="margin-top: 20px;">{t}BEdita object type model disabled{/t}</h2>
-	{if !empty($addons.models.objectTypes.off)}
-		<ul>
-		{foreach from=$addons.models.objectTypes.off item="ot"}
-			<li>
-				{if $ot.fileNameUsed}
-					<span style="color: red;">{$ot.file}: {t}file is already used, please change it to avoid malfunctioning{/t}</span>
-				{else}
-					<form action="{$html->url('/admin/enableAddon')}" method="post">
+	<table class="indexlist" style="float:left; width:49%; margin-right:10px;">
+		<tr><th colspan=2>{t}BEdita object type model enabled{/t}</th></tr>
+
+		{if !empty($addons.models.objectTypes.on)}
+			<tbody id="addonsOn">
+			{foreach from=$addons.models.objectTypes.on item="ot"}
+			<form name="disableAddon" action="{$html->url('/admin/disableAddon')}" method="post">
+				<tr>
+					<td>
 					<input type="hidden" name="path" value="{$ot.path}">
 					<input type="hidden" name="model" value="{$ot.model}">
 					<input type="hidden" name="file" value="{$ot.file}">
 					<input type="hidden" name="type" value="{$ot.type}">
 					{$ot.model}
-					<input type="submit" value="{t}ON{/t}"/>
-				{/if}
-			</li>
-		{/foreach}
-		</ul>
-	{else}
-		{t}no items{/t}
-	{/if}
+					</td>
+					<td>
+					<input type="button" value="{t}set OFF{/t}"/> 
+					</td>
+				</tr>
+			</form>
+			{/foreach}
+			</tbody>
+		{else}
+			<tr><td>{t}no items{/t}</td></tr>
+		{/if}
+	</table>
 	
-	<h2 style="margin-top: 20px;">{t}Other Models{/t}</h2>
+	<table class="indexlist" style="float:left; width:49%">
+		<tr><th colspan=2>{t}BEdita object type model disabled{/t}</th></tr>
+
+		{if !empty($addons.models.objectTypes.off)}
+			<tbody>
+			{foreach from=$addons.models.objectTypes.off item="ot"}
+				<tr>
+					{if $ot.fileNameUsed}
+						<td style="color: red;">{$ot.file}:</td><td style="color: red;">{t}file is already used, please change it to avoid malfunctioning{/t}</td>
+					{else}
+						<td>
+						<form action="{$html->url('/admin/enableAddon')}" method="post">
+						<input type="hidden" name="path" value="{$ot.path}">
+						<input type="hidden" name="model" value="{$ot.model}">
+						<input type="hidden" name="file" value="{$ot.file}">
+						<input type="hidden" name="type" value="{$ot.type}">
+						{$ot.model}
+						</td>
+						<td>
+						<input type="submit" value="{t}set ON{/t}"/>
+						</td>
+					{/if}
+				</tr>
+			{/foreach}
+			</tbody>
+		{else}
+			<tr><td>{t}no items{/t}</td></tr>
+		{/if}
+	</table>
+	</fieldset>
+
+	
+	<div class="tab stayopen"><h2>{t}Other Models{/t}</h2></div>
+	<fieldset>
 	{if !empty($addons.models.others)}
 		<ul>
 		{foreach from=$addons.models.others item="m"}
@@ -85,9 +104,12 @@ $(document).ready(function() {
 	{else}
 		{t}no items{/t}
 	{/if}
-	
-	<h2 style="margin-top: 20px;">{t}Components{/t}</h2>
-	{if !empty($addons.components)}
+	</fieldset>
+
+
+	<div class="tab stayopen"><h2>{t}Components{/t}</h2></div>
+	<fieldset>
+		{if !empty($addons.components)}
 		<ul>
 		{foreach from=$addons.components item="c"}
 			<li>
@@ -103,10 +125,12 @@ $(document).ready(function() {
 		{/foreach}
 		</ul>
 	{else}
-		{t}no items{/t}
+		<ul>{t}no items{/t}</ul>
 	{/if}
-	
-	<h2 style="margin-top: 20px;">{t}Helpers{/t}</h2>
+	</fieldset>
+		
+	<div class="tab stayopen"><h2>{t}Helpers{/t}</h2></div>
+	<fieldset>
 	{if !empty($addons.helpers)}
 		<ul>
 		{foreach from=$addons.components item="h"}
@@ -125,5 +149,6 @@ $(document).ready(function() {
 	{else}
 		{t}no items{/t}
 	{/if}
-
+	</fieldset>
+	
 </div>
