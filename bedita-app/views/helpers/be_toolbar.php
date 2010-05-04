@@ -295,7 +295,7 @@ class BeToolbarHelper extends AppHelper {
 		$data['page'] = $page ;
 
 		$url = Router::url($data) ;
-		return '<a href="' . $url . '">' . __($title, true) . '</a>';
+		return '<a title="go to '.$where.' page" href="' . $url . '">' . __($title, true) . '</a>';
 	}
 
 	private function _output($text, $options) {
