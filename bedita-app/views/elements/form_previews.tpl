@@ -31,6 +31,9 @@
 		{/foreach}
 		</ul>
 	{/if}
+	{foreachelse}
+	
+		<i>{t}No publication set{/t}</i>
 	{/foreach}
 	
 </fieldset>
