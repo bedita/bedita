@@ -2,10 +2,10 @@
 var unplugMessage = "{t}Disable object type will delete all related items. Do you want continue?{/t}";
 {literal}
 $(document).ready(function() {
-		
+
 	$("#addonsOn input[type=button]").click(function() {
 		if (confirm(unplugMessage)) {
-			$("form[name='disableAddon']").submit();
+			$(this).closest('tr').find('form').submit();
 		}
 	});
 	
@@ -31,20 +31,20 @@ $(document).ready(function() {
 		{if !empty($addons.models.objectTypes.on)}
 			<tbody id="addonsOn">
 			{foreach from=$addons.models.objectTypes.on item="ot"}
-			<form name="disableAddon" action="{$html->url('/admin/disableAddon')}" method="post">
 				<tr>
 					<td>
+					<form action="{$html->url('/admin/disableAddon')}" method="post">
 					<input type="hidden" name="path" value="{$ot.path}">
 					<input type="hidden" name="model" value="{$ot.model}">
 					<input type="hidden" name="file" value="{$ot.file}">
 					<input type="hidden" name="type" value="{$ot.type}">
 					{$ot.model}
+					</form>
 					</td>
 					<td>
 					<input type="button" value="{t}set OFF{/t}"/> 
 					</td>
 				</tr>
-			</form>
 			{/foreach}
 			</tbody>
 		{else}
