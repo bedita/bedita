@@ -280,7 +280,7 @@ $(document).ready(function(){
 
 	});
 
-	$(".indexlist TR[rel]").click(function() {
+	$(".indexlist TR[rel]:not('.idtrigger')").click(function() {
 		
 		window.location = ($(this).attr("rel"));
 	});
@@ -506,6 +506,19 @@ jQuery.fn.BEmodal = function(){
 		$(this).next().slideToggle('fast');
 	});
 
+
+/*...........................................    
+
+   accessories
+
+...........................................*/
+
+$(".idtrigger").css("cursor","pointer").click(function() {
+	var trigged  = $(this).attr("rel");
+	$("#"+trigged+"").toggle();
+});
+
+
 /*...........................................    
 
    statusInfo
@@ -516,6 +529,9 @@ jQuery.fn.BEmodal = function(){
 
 /* end of document ready() */
 });
+
+
+
 
 /*...........................................    
 
@@ -598,7 +614,8 @@ function openAtStart(defaultOpen) {
    utility
 
 ...........................................*/
-
+	  
+	  
 function getFlashVersion(){ 
 	// ie 
 	try { 
