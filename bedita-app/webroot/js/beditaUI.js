@@ -230,7 +230,7 @@ $(document).ready(function(){
 	
 	};
 	
-	$(".tab:not('.stayopen')").click(function (){
+	$(".tab:not(.stayopen)").click(function (){
 		
 		$(this).BEtabstoggle() ;	
 
@@ -280,7 +280,7 @@ $(document).ready(function(){
 
 	});
 
-	$(".indexlist TR[rel]:not('.idtrigger')").click(function() {
+	$(".indexlist TR[rel]").not('.idtrigger').click(function() {
 		
 		window.location = ($(this).attr("rel"));
 	});
