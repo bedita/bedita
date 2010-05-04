@@ -202,6 +202,9 @@ class BeTreeHelper extends AppHelper {
 			
 			$res .= $section["title"] . "</a>";
 			
+			if (!empty($inputType) && !empty($this->tags[$inputType])) {
+				$res .= "<a target='_blank' title='go to this section' href='".$this->Html->url('/areas/view/').$section['id']."'> › </a>";
+			}
 			
 			if (!empty($section["children"])) {
 				$res .= $this->designBranch($section["children"], $inputType, $parent_ids);
