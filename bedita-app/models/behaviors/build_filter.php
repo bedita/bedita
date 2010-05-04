@@ -223,6 +223,19 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->from .= ", users AS `User`";
 		$this->conditions[] = "`User`.id=`BEObject`.user_created";
 	}
+
+	/**
+	 * count objects' permissions
+	 *
+	 * @param mixed $value, if it's integer then count $value permissions
+	 */
+	private function count_permissionFilter($value) {
+		$this->fields .= ", COUNT(`Permission`.id) AS num_of_permission";
+		$this->from .= " LEFT OUTER JOIN permissions as `Permission` ON `Permission`.object_id = `BEObject`.id";
+		if (is_numeric($value)) {
+			$this->from .= " AND `Permission`.flag = " . $value;
+		}
+	}
 }
  
 ?>

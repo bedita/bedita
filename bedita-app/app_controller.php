@@ -708,9 +708,10 @@ abstract class ModulesController extends AppController {
 			$pubSel = $this->BeTree->getAreaForSection($id);
 		}
 		
+		$filter["count_permission"] = true;
+
 		$objects = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
-		$this->params['toolbar'] = &$objects['toolbar'] ;
-		
+		$this->params['toolbar'] = &$objects['toolbar'] ;	
 		// template data
 		$this->set('tree', $this->BeTree->getSectionsTree());
 		$this->set('sectionSel',$sectionSel);
