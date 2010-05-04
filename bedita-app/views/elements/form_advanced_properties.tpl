@@ -41,11 +41,11 @@
 			<td>{$object.created|date_format:$conf->dateTimePattern}</td>
 		</tr>	 
 		<tr>
-			<th>{t}last modified on{/t}:</th>
+			<th style="white-space:nowrap">{t}last modified on{/t}:</th>
 			<td>{$object.modified|date_format:$conf->dateTimePattern}</td>
 		</tr>
 		<tr>
-			<th>{t}last modified by{/t}:</th>
+			<th style="white-space:nowrap">{t}last modified by{/t}:</th>
 			<td>{$object.UserModified.realname|default:''} [ {$object.UserModified.userid|default:''} ]</td>
 		</tr>
 		
