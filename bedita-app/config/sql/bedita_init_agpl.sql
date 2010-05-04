@@ -39,7 +39,7 @@ INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES (1, (SELECT id FROM
 -- module data
 -- ---------------------------
 INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES
-('1','publishing', 'areas', 'areas', 'on', '1'),
+('1','publications', 'areas', 'areas', 'on', '1'),
 ('2','admin', 'admin', 'admin', 'on', '15'),
 ('3','translations', 'translations', 'translations', 'on', '8'),
 ('6','documents', 'documents', 'documents', 'on', '2'),
