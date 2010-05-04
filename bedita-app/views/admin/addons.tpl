@@ -62,8 +62,8 @@ $(document).ready(function() {
 					{if $ot.fileNameUsed}
 						<td style="color: red;">{$ot.file}:</td><td style="color: red;">{t}file is already used, please change it to avoid malfunctioning{/t}</td>
 					{else}
+					<form action="{$html->url('/admin/enableAddon')}" method="post">
 						<td>
-						<form action="{$html->url('/admin/enableAddon')}" method="post">
 						<input type="hidden" name="path" value="{$ot.path}">
 						<input type="hidden" name="model" value="{$ot.model}">
 						<input type="hidden" name="file" value="{$ot.file}">
@@ -73,6 +73,7 @@ $(document).ready(function() {
 						<td>
 						<input type="submit" value="{t}set ON{/t}"/>
 						</td>
+					</form>
 					{/if}
 				</tr>
 			{/foreach}
