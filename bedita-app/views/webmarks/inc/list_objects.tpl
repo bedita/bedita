@@ -178,13 +178,13 @@ $(document).ready(function(){
 		<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
 		
 		<hr />
-{beDev}
+{bedev}
 		{t}Export to{/t}:
 		<select name="export">
 			<option>Delicious(XBEL)</option>
 			<option>Excel</option>
 		</select>
-{/beDev}
+{/bedev}
 	</li>
 </ul>
 	</div>
