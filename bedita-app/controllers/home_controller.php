@@ -46,7 +46,7 @@ class HomeController extends AppController {
 	 	
 	 	$lastModBYUser = $this->BEObject->find("all", array(
 		 								"contain" 		=> array("ObjectType"),
-		 								"fields"		=> array("id", "title", "modified", "object_type_id", "ObjectType.module"),
+		 								"fields"		=> array("id", "title", "status", "modified", "object_type_id", "ObjectType.module"),
 		 								"conditions" 	=> array(
 		 														"user_modified = '" . $user["id"] . "'",
 	 															'NOT' => array('object_type_id' => $excludedObjectTypes)
@@ -58,7 +58,7 @@ class HomeController extends AppController {
 
 	 	$lastMod = $this->BEObject->find("all", array(
 		 								"contain" 		=> array("ObjectType"),
-		 								"fields"		=> array("id", "title", "modified", "object_type_id", "ObjectType.module"),
+		 								"fields"		=> array("id", "title", "status", "modified", "object_type_id", "ObjectType.module"),
 		 								"conditions" 	=> array(
 	 															'NOT' => array('object_type_id' => $excludedObjectTypes)
 	 														),
