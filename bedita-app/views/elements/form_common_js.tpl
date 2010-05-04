@@ -83,7 +83,7 @@ $(document).ready(function(){
 	
 	$("div.insidecol input[name='save']").click(function() {
 		$("#updateForm").submit();
-	}
+	});
 	
 {/literal}{/if}{literal}	
 
