@@ -308,6 +308,16 @@ UL.modules {
 	display:block; height:15px; width:15px; margin-left:-10px; margin-right:5px; float:left;
 }
 
+.smallist .on {
+	font-weight: normal;
+}
+.smallist .off {
+	color: gray;
+}
+.smallist .draft {
+	color: gray;
+}
+
 /*...........................................
  
     Each Modules appearence

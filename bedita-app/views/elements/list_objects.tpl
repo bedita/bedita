@@ -157,10 +157,9 @@ $(document).ready(function(){
 	
 	&nbsp;&nbsp;&nbsp;
 	&nbsp;&nbsp;
-	{$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span>
-	| &nbsp;&nbsp;
 	{$beToolbar->next('next','','next')}  <span class="evidence"> &nbsp;</span>	
-	
+	| &nbsp;&nbsp;
+	{$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span>
 </div>
 
 <br />

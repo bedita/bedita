@@ -94,14 +94,14 @@ $(document).ready(function() {
 
 
 <div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
-	<ul id="recent" class="bordered">
-	{section name="n" loop=$lastModBYUser}
-		<li><span class="listrecent {$lastModBYUser[n].ObjectType.module}">&nbsp;</span>
-		<a title="{$lastModBYUser[n].ObjectType.module} | {$lastModBYUser[n].BEObject.modified}" href="{$html->url('/')}{$lastModBYUser[n].ObjectType.module}/view/{$lastModBYUser[n].BEObject.id}">
-			{$lastModBYUser[n].BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
-	{sectionelse}
+	<ul id="recent" class="bordered smallist">
+	{foreach from=$lastModBYUser item=item}
+		<li><span class="listrecent {$item.ObjectType.module}">&nbsp;</span>
+		<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module} | {t}modified on{/t} {$item.BEObject.modified}" href="{$html->url('/')}{$item.ObjectType.module}/view/{$item.BEObject.id}">
+			{$item.BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
+	{foreachelse}
 		<li><i>{t}you have no recent items{/t}</i></li>
-	{/section}
+	{/foreach}
 	</ul>
 	
 <div class="tab"><h2>{t}your profile and preferences{/t}</h2></div>
@@ -126,13 +126,13 @@ $(document).ready(function() {
 
 
 <div class="tab"><h2>{t}all recent items{/t}</h2></div>
-	<ul id="allrecent" class="bordered">
-	{section name="n" loop=$lastMod}
+	<ul id="allrecent" class="bordered smallist">
+	{foreach from=$lastMod item=item}
 		<li>
-			<span class="listrecent {$lastMod[n].ObjectType.module}">&nbsp;&nbsp;</span>
-			&nbsp;<a title="{$lastMod[n].ObjectType.module} | {$lastMod[n].BEObject.modified}" href="{$html->url('/')}{$lastMod[n].ObjectType.module}/view/{$lastMod[n].BEObject.id}">
-				{$lastMod[n].BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
-	{/section}
+			<span class="listrecent {$item.ObjectType.module}">&nbsp;&nbsp;</span>
+			&nbsp;<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module} | {t}modified on{/t} {$item.BEObject.modified}" href="{$html->url('/')}{$item.ObjectType.module}/view/{$item.BEObject.id}">
+				{$item.BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
+	{/foreach}
 	</ul>
 
 <div class="tab"><h2>{t}last notes{/t}</h2></div>
