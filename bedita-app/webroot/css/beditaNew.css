@@ -919,13 +919,18 @@ TABLE.indexlist {
 }
 
 .indexlist TR:Hover {
-	background-color:#d8d8d8;
+	/*
+background-color:#d8d8d8;
+*/
 }
 
 TABLE.indexlist TH.on * {
 	color:red !important;
 }
 
+.indexlist TR.overChecked,.indexlist TR.overChecked:Hover {
+	background-color:#ffffff !important;
+}
 
 .condensed TD, .condensed TH {
 	padding:2px;

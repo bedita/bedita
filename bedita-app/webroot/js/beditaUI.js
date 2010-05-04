@@ -270,6 +270,7 @@ $(document).ready(function(){
 ...........................................*/
 
 
+
 	$(".indexlist TR").mouseover(function() {
 
 		$("TD",this).addClass("over");
@@ -280,6 +281,18 @@ $(document).ready(function(){
 
 	});
 
+
+
+	$(".indexlist TR:has(input:checked)").addClass("overChecked");
+	
+	$(".indexlist input.objectCheck").change(function(){
+
+		$(this).parents("TR").toggleClass("overChecked");
+
+	});
+
+
+	
 	$(".indexlist TR[rel]").not('.idtrigger').click(function() {
 		
 		window.location = ($(this).attr("rel"));
@@ -478,12 +491,18 @@ jQuery.fn.BEmodal = function(){
 	$('.selecteditems').text($(".objectCheck:checked").length);
 	$(".selectAll").bind("click", function(e) {
 		var status = this.checked;
-		$(".objectCheck").each(function() { this.checked = status; });
+		$(".objectCheck").each(function() { 
+			this.checked = status; 
+			if (this.checked) $(this).parents('TR').addClass('overChecked');
+			else $(this).parents('TR').removeClass('overChecked');
+		});
 		$('.selecteditems').text($(".objectCheck:checked").length);
 	}) ;
 	$(".objectCheck").bind("click", function(e) {
 		var status = true;
-		$(".objectCheck").each(function() { if (!this.checked) return status = false;});
+		$(".objectCheck").each(function() { 
+			if (!this.checked) return status = false;
+		});
 		$(".selectAll").each(function() { this.checked = status;});
 		$('.selecteditems').text($(".objectCheck:checked").length);
 	}) ;
