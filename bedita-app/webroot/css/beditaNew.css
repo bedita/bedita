@@ -807,6 +807,11 @@ UL.menuleft {
 	
 }
 
+.menutree LI.sec_draft A, .menutree LI.sec_off A {
+	color: gray !important;
+}
+	
+
 /*...........................................    
 
    Toolbar

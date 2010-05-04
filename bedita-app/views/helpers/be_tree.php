@@ -192,7 +192,7 @@ class BeTreeHelper extends AppHelper {
 				}
 			}
 			
-			$res .= "<li id='pub_" . $section['id'] . "'><a " . $class . " rel='" . $url . "'>";
+			$res .= "<li class='sec_".$section['status']."' id='pub_" . $section['id'] . "'><a " . $class . " rel='" . $url . "'>";
 			
 			if (!empty($inputType) && !empty($this->tags[$inputType])) {
 				$checked = (in_array($section["id"], $parent_ids))? "checked='checked'" : "";
