@@ -31,8 +31,8 @@
 		
 		<h1>{$section.currentContent.title}</h1>
 
-		[{t}created on{/t} {$beFront->dateTime($section.currentContent.created)} {t}by{/t} <i>{$section.currentContent.creator|default:$section.currentContent.UserCreated.realname}</i>]<br/>
-		[{t}modified on{/t} {$beFront->dateTime($section.currentContent.modified)}<br/>
+		[{t}created on{/t} {$beTime->dateTime($section.currentContent.created)} {t}by{/t} <i>{$section.currentContent.creator|default:$section.currentContent.UserCreated.realname}</i>]<br/>
+		[{t}modified on{/t} {$beTime->dateTime($section.currentContent.modified)}]<br/>
 		[{t}comments{/t}: {if ($section.currentContent.comments == 'off')}{t}off{/t}{else}{$section.currentContent.num_of_comment|default:0}{/if}]<br/>
 
 		{if !empty($section.currentContent.Tag)}

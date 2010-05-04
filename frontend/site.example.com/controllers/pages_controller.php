@@ -24,7 +24,7 @@
  */	
 class PagesController extends FrontendController {
 	
-	var $helpers = array('BeFront');
+	var $helpers = array('BeFront', 'BeTime');
 	var $components = array('BeTree');
 	var $uses = array('BEObject','Tree') ;	
 	
