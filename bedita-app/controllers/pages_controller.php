@@ -384,7 +384,13 @@ class PagesController extends AppController {
 		$this->set('result',$result);
 	}
 
+	/**
+	 * Ajax update of current object editors/viewers
+	 *
+	 * @param int $objectId - object id
+	 */
 	public function updateEditor($objectId) {
+		// TODO: check perms on object/module
 		$this->ajaxCheck();
 		$objectEditor = ClassRegistry::init("ObjectEditor"); 
 	 	$user = $this->Session->read("BEAuthUser");
@@ -400,6 +406,16 @@ class PagesController extends AppController {
 		$this->{$methodName}($this->params['form']['msg']);
 		$this->render(null, null, "/elements/flash_messages");
 	}
+	
+	public function revision($id, $rev) {
+		//$this->ajaxCheck();
+		$beObject = ClassRegistry::init("BEObject"); 
+		$modelName = $beObject->getType($id);
+		$model = $this->loadModelByType($modelName);
+		$this->viewRevision($model, $id, $rev);
+	}
+	
+	
 	
 }
 

@@ -663,6 +663,31 @@ class AppController extends Controller
 		}
 		return $defaultObjRel;
 	}
+
+	/**
+	 * View revision data for a specific object and revision number:
+	 *  * all data as in revision in $revision array
+	 *  * array of changed fields in $diff
+	 *
+	 * @param BEAppModel $beModel
+	 * @param int $id, object ud
+	 * @param int $rev, revision number
+	 */
+	protected function viewRevision(BEAppModel $beModel, $id, $rev) {
+		if(empty($id) || empty($rev)) {
+			throw new BeditaException(__("Missing object id or revision number", true));
+		}
+		$versionModel = ClassRegistry::init("Version");
+		$nRev = $versionModel->numRevisions($id);
+		if($rev < 1 || $rev > $nRev) {
+			throw new BeditaException(__("Wrong revision number", true));
+		}
+		$revisionData = $versionModel->revisionData($id, $rev, $beModel);
+		$diffData = $versionModel->diffData($id, $rev);
+		$this->set('revision',	$revisionData);
+		$this->set('diff',	$diffData);
+	}
+	
 	
 }
 
