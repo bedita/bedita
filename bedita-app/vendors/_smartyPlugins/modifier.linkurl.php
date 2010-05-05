@@ -24,7 +24,7 @@
 
 function smarty_modifier_linkurl($string, $length=50, $target="_blank", $link=true)
 	{
-	if (!function_exists(kuerzen)) {
+	if (!function_exists('kuerzen')) {
 	function kuerzen($string,$length)
 		{
 		$returner = $string;
