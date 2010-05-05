@@ -35,12 +35,18 @@ Version 3.1.alfa - ulmus
 		- save as draft button + draft object icon
 	* improved "continue" link on newsletter items
 	* #181 ui: alert su cambio pagina se oggetto modificato e non salvato
-	* #241 sort field in object list: added class 'SortableUp' in be_toolbar
+	* #241
+		- sort field in object list: added class 'SortableUp' in be_toolbar
+		- added filter to count permissions
+		- highlight selected item
+		- objects with permission have specific icon
+		- tooltip in toolbar
 	* update statistics module
-	* admin/plugins skinning
+	* admin module: plugins and addons skinning
 	* webmarks description w/html
 	* fix on append delete media on the tree in details view
 	* onchange_callback function added in the tiny_mce_default_ini.js
+	
 
  Frontend changes:
 	* fixed error on staging_toolbar
