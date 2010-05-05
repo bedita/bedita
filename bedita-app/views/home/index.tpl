@@ -97,7 +97,7 @@ $(document).ready(function() {
 	<ul id="recent" class="bordered smallist">
 	{foreach from=$lastModBYUser item=item}
 		<li><span class="listrecent {$item.ObjectType.module}">&nbsp;</span>
-		<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module} | {t}modified on{/t} {$item.BEObject.modified}" href="{$html->url('/')}{$item.ObjectType.module}/view/{$item.BEObject.id}">
+		<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module} | {t}modified on{/t} {$item.BEObject.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.ObjectType.module}/view/{$item.BEObject.id}">
 			{$item.BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
 	{foreachelse}
 		<li><i>{t}you have no recent items{/t}</i></li>
@@ -130,7 +130,7 @@ $(document).ready(function() {
 	{foreach from=$lastMod item=item}
 		<li>
 			<span class="listrecent {$item.ObjectType.module}">&nbsp;&nbsp;</span>
-			&nbsp;<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module} | {t}modified on{/t} {$item.BEObject.modified}" href="{$html->url('/')}{$item.ObjectType.module}/view/{$item.BEObject.id}">
+			&nbsp;<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module} | {t}modified on{/t} {$item.BEObject.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.ObjectType.module}/view/{$item.BEObject.id}">
 				{$item.BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
 	{/foreach}
 	</ul>

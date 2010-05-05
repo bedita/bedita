@@ -70,10 +70,10 @@ $config['datePatternLocale'] = array(
 );
 
 // Default date time pattern
-$config['dateTimePattern'] 	= "%m-%d-%Y  %H:%M:%S";  //
+$config['dateTimePattern'] 	= "%m-%d-%Y  %H:%M";  //
 
 $config['dateTimePatternLocale'] = array(
-	"ita"	=> "%d/%m/%Y %H:%M:%S" 
+	"ita"	=> "%d/%m/%Y %H:%M" 
 );
 
 
