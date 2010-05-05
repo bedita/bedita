@@ -6,7 +6,6 @@
 <tr>
 	<th style="text-align:center; width:20px;">{t}version{/t}</th>
 	<th>{t}date{/t}</th>
-	<th>diff</th>
 	<th>{t}editor{/t}</th>
 	<th></th>
 </tr>
@@ -17,7 +16,6 @@
 			{$h.revision}
 		</td>
 		<td>{$h.created|date_format:$conf->dateTimePattern}</td>
-		<td>{$h.diff|unserialize|@count}</td>
 		<td>{$h.User.realname|default:''} [ {$h.User.userid|default:''} ]</td>
 		<td><a class="modalbutton" rel="/pages/revision/{$object.id}/{$h.revision}">  edit  </a></td>
 	</tr>
