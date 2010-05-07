@@ -31,7 +31,7 @@
 class RevisionObjectBehavior extends ModelBehavior {
 
 	var $config = array();
-	private $prevData;
+	private $prevData = array();
 	
 	function setup($model, $config) {		
 	}
@@ -43,7 +43,7 @@ class RevisionObjectBehavior extends ModelBehavior {
 		
 		if(!empty($model->id)) {
 			$model->containLevel('minimum');
-			$this->prevData = $model->findById($model->id);
+			$this->prevData[$model->id] = $model->findById($model->id);
 		}
 		return true ;
 	}
@@ -55,7 +55,7 @@ class RevisionObjectBehavior extends ModelBehavior {
 
 		if(!$created) {
 			$version = ClassRegistry::init("Version");
-			$version->addRevision($this->prevData, $model->data[$model->name]);		
+			$version->addRevision($this->prevData[$model->id], $model->data[$model->name]);		
 		}
 	}
 	
