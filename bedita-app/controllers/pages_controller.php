@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008, 2009, 2010 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -407,8 +407,13 @@ class PagesController extends AppController {
 		$this->render(null, null, "/elements/flash_messages");
 	}
 	
+	/**
+	 * Show object revision information (specific revision)
+	 *
+	 * @param int $id, object id
+	 * @param int $rev, revision number
+	 */
 	public function revision($id, $rev) {
-		//$this->ajaxCheck();
 		$beObject = ClassRegistry::init("BEObject"); 
 		$modelName = $beObject->getType($id);
 		$model = $this->loadModelByType($modelName);

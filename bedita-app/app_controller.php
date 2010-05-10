@@ -685,11 +685,11 @@ class AppController extends Controller
 		$revisionData = $versionModel->revisionData($id, $rev, $beModel);
 		$diffData = $versionModel->diffData($id, $rev);
 		$this->set('totRevision',	$nRev);
-		$this->set('numRevision',	$rev);
 		$this->set('revision',	$revisionData);
 		$this->set('diff',	$diffData);
 		$versionRow = $versionModel->find("all", array("conditions" => 
 			array("Version.object_id" => $id, "Version.revision" => $rev)));
+		$this->set('version',	$versionRow[0]["Version"]);
 		$this->set('user',	$versionRow[0]["User"]);
 	}
 	

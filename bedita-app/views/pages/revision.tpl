@@ -1,10 +1,9 @@
 <div>
-	
 	<table class="bordered">
 	<thead>
 		<tr>
 			<td colspan=5>
-				Versione <b>2</b> di <b>5</b>, del {$smarty.now|date_format:'%d %B %Y %H:%M:%S'}, di <b>Nome Redattore</b>
+				{t}Version{/t} <b>{$version.revision}</b> / <b>{$totRevision}</b>, {$version.created|date_format:$conf->dateTimePattern}, {t}created by{/t} <b>{$user.realname|default:''} [ {$user.userid|default:''} ]</b>
 				<input type="button" class="BEbutton" style="margin-left:10px" value="ripristina" /> 
 				<input type="button" class="BEbutton" style="margin-left:10px" value="elimina" /> 
 			</td>

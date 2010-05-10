@@ -17,7 +17,7 @@
 		</td>
 		<td>{$h.created|date_format:$conf->dateTimePattern}</td>
 		<td>{$h.User.realname|default:''} [ {$h.User.userid|default:''} ]</td>
-		<td><a class="modalbutton" rel="/pages/revision/{$object.id}/{$h.revision}">  edit  </a></td>
+		<td><a class="modalbutton" rel="{$html->url('/pages/revision')}/{$object.id}/{$h.revision}">  edit  </a></td>
 	</tr>
 	{*
 	<tr id="diff-{$h.revision}" style="display:none">
