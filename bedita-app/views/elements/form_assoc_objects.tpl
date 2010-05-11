@@ -124,9 +124,11 @@ $(function() {
 	<div id="loadingDownloadRel" class="loader" title="{t}Loading data{/t}"></div>
 	
 	<table class="htab">
+	<tr>
 	{foreach from=$availabeRelations item="rel"}
-			<td rel="relationType_{$rel}">{t}{$rel}{/t}</td>
+		<td rel="relationType_{$rel}">{t}{$rel}{/t}</td>
 	{/foreach}
+	</tr>
 	</table>
 
 
