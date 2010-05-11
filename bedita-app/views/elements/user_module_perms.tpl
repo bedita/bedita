@@ -24,7 +24,6 @@
 	{foreach key=key item=item name=l from=$conf->langsSystem}	
 	<li style="padding-left:0px"><a {if $session->read('Config.language') == $key}class="on"{/if} href="{$html->base}/lang/{$key}">› {$item}</a></li>
 	{/foreach}
-	</li>
 </ul>
 {/if}
 
