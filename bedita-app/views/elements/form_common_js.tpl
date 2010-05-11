@@ -63,12 +63,12 @@ $(document).ready(function(){
 
 
 
-{/literal}{if (@in_array($object.object_type_id, $conf->objectTypes.leafs.id))}{literal}
+{/literal}{if (@in_array($object.object_type_id, $conf->objectTypes.tree.id))}{literal}
 
 	$("div.insidecol input[name='save']").click(function() {
 
 		if ( $('.publishingtree input:checked').val() === undefined ) {	
-			var answer = confirm("{/literal}{t}This document is not on publishing tree. Continue?{/t}{literal}")
+			var answer = confirm("{/literal}{t}This content is not on publishing tree. Continue?{/t}{literal}")
 			    if (answer){
 			       $("#updateForm").submit();
 			    }

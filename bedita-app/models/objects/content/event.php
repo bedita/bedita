@@ -58,7 +58,7 @@ class Event extends BeditaContentModel
 			'DeleteObject' 			=> 'objects',
 	);
 	
-	public $objectTypesGroups = array("leafs", "related");
+	public $objectTypesGroups = array("leafs", "related", "tree");
 
 	var $hasMany = array(
 			'DateItem' =>
