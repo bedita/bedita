@@ -53,15 +53,15 @@ $(document).ready(function(){
 	});
 	
 
-/*
 	window.onbeforeunload = function () {
-		if ( $(".secondacolonna .modules label").hasClass("save") ) {	
+		if ( !$(".secondacolonna .modules label").hasClass("submitForm") && $(".secondacolonna .modules label").hasClass("save")) {
 			return "{/literal}{t}All unsaved changes will be lost{/t}{literal}";
 		}
 	};
-*/
 
-
+	$("#updateForm").submit(function() {
+		$(".secondacolonna .modules label").addClass("submitForm");
+	});
 
 {/literal}{if (@in_array($object.object_type_id, $conf->objectTypes.tree.id))}{literal}
 
