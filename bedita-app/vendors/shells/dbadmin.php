@@ -478,6 +478,35 @@ class DbadminShell extends BeditaBaseShell {
 		}
 	}
 	
+	public function checkDbNames() {
+		// load reserved keywords
+		$sqlCfgPath = APP . DS . "config" . DS. "sql";
+		$sqlReservedFile = $sqlCfgPath . DS  . "reserved_words.php";
+		$this->out("Using SQL reserved keywords file: $sqlReservedFile");
+		require_once($sqlReservedFile);
+		
+		// load schema data
+		$schemaFile = $sqlCfgPath . DS  . "schema.php";
+		$this->out("Using BEdita schema file: $schemaFile");
+		App::import('Model', 'Schema');
+		require_once($schemaFile);
+		$schema = new BeditaAppSchema();		
+		foreach ($schema->tables as $tab => $cols) {
+			if(is_array($cols)) {
+				if(in_array($tab, $reserved_words)) {
+					$this->out("bad table name: $tab");
+				}
+				foreach ($cols as $n => $attr) {
+					if($n != "indexes" && in_array($n, $reserved_words)) {
+						$this->out("bad column name: $tab.$n");
+					}
+				}
+			}
+		}		
+	}
+	
+	
+	
 	function help() {
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
@@ -529,6 +558,8 @@ class DbadminShell extends BeditaBaseShell {
   		$this->out("10. checkConsistency: check objects for consistency on database");
   		$this->out(' ');
 		$this->out("11. updateTreeRoot: update area_id field in trees table");
+        $this->out(' ');
+		$this->out("12. checkDbNames: check database table/column names");
         $this->out(' ');
 	}
 	
