@@ -488,24 +488,39 @@ class DbadminShell extends BeditaBaseShell {
 		// load schema data
 		$schemaFile = $sqlCfgPath . DS  . "schema.php";
 		$this->out("Using BEdita schema file: $schemaFile");
+		$this->hr();
 		App::import('Model', 'Schema');
 		require_once($schemaFile);
+		$badNames = array();
 		$schema = new BeditaAppSchema();		
 		foreach ($schema->tables as $tab => $cols) {
 			if(is_array($cols)) {
 				if(in_array($tab, $reserved_words)) {
 					$this->out("bad table name: $tab");
+					if(!in_array($n, $badNames)) {
+						$badNames[]=$n;
+					}
 				}
 				foreach ($cols as $n => $attr) {
 					if($n != "indexes" && in_array($n, $reserved_words)) {
 						$this->out("bad column name: $tab.$n");
+						if(!in_array($n, $badNames)) {
+							$badNames[]=$n;
+						}
 					}
 				}
 			}
-		}		
+		}
+		if(!empty($badNames)) {
+			sort($badNames);
+			$bad = "";			
+			foreach ($badNames as $b) {
+				$bad .= " " . $b; 
+			}
+			$this->hr();
+			$this->out("bad names found: $bad");		
+		}
 	}
-	
-	
 	
 	function help() {
 		$this->out('Available functions:');
