@@ -20,10 +20,7 @@ INSERT INTO object_types (id, name, module) VALUES
 (35, 'mail_message', 'newsletter'),
 (36, 'mail_template', 'newsletter'),
 (37, 'author', NULL),
-(39, 'editor_note', NULL),
-(40, 'question', 'questionnaires'),
-(41, 'questionnaire', 'questionnaires'),
-(42, 'questionnaire_result', 'questionnaires');
+(39, 'editor_note', NULL);
 
 -- ----------------------------------
 -- default user and groups
@@ -51,7 +48,6 @@ INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUE
 ('8','galleries', 'galleries', 'galleries', 'on', '5'),
 ('10','events', 'events', 'events', 'on', '3'),
 ('12','webmarks', 'webmarks', 'webmarks', 'on', '12'),
-('14', 'questionnaires', 'questionnaires', 'questionnaires', 'on', '15'),
 ('16','addressbook', 'addressbook', 'addressbook', 'on', '10'),
 ('18','newsletter', 'newsletter', 'newsletter', 'on', '11'),
 ('23','statistics', 'statistics', 'statistics', 'on', '16'),
@@ -116,9 +112,6 @@ VALUES ((SELECT id FROM modules WHERE name = 'statistics'), (SELECT id FROM grou
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'webmarks'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
 
-INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE name = 'questionnaires'), (SELECT id FROM groups WHERE name = 'administrator'), 'group', '3' );
-
 
 -- editor perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
@@ -160,9 +153,6 @@ VALUES ((SELECT id FROM modules WHERE name = 'statistics'), (SELECT id FROM grou
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'webmarks'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
 
-INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE name = 'questionnaires'), (SELECT id FROM groups WHERE name = 'editor'), 'group', '3' );
-
 -- reader perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'areas'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
@@ -203,8 +193,6 @@ VALUES ((SELECT id FROM modules WHERE name = 'statistics'), (SELECT id FROM grou
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
 VALUES ((SELECT id FROM modules WHERE name = 'webmarks'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
-INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )
-VALUES ((SELECT id FROM modules WHERE name = 'questionnaires'), (SELECT id FROM groups WHERE name = 'reader'), 'group', '1' );
 
 -- translator perms
 INSERT INTO `permission_modules` ( `module_id` , `ugid` , `switch` , `flag` )

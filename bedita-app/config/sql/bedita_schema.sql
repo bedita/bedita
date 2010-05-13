@@ -5,7 +5,6 @@ SET FOREIGN_KEY_CHECKS=0;
 
 DROP TABLE IF EXISTS `aliases`;
 DROP TABLE IF EXISTS `annotations`;
-DROP TABLE IF EXISTS `answers`;
 DROP TABLE IF EXISTS `applications`;
 DROP TABLE IF EXISTS `areas`;
 DROP TABLE IF EXISTS `authors`;
@@ -43,9 +42,6 @@ DROP TABLE IF EXISTS `permission_modules`;
 DROP TABLE IF EXISTS `products`;
 DROP TABLE IF EXISTS `properties`;
 DROP TABLE IF EXISTS `property_options`;
-DROP TABLE IF EXISTS `questionnaire_results`;
-DROP TABLE IF EXISTS `questions`;
-DROP TABLE IF EXISTS `question_answers`;
 DROP TABLE IF EXISTS `search_texts`;
 DROP TABLE IF EXISTS `sections`;
 DROP TABLE IF EXISTS `section_types`;
@@ -85,32 +81,6 @@ CREATE TABLE annotations (
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'object annotations, comments, notes';
-
-CREATE TABLE answers (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  questionnaire_result_id INTEGER UNSIGNED NOT NULL,
-  question_id INTEGER UNSIGNED NOT NULL,
-  question_answer_id INTEGER UNSIGNED NULL,
-  created DATETIME NOT NULL COMMENT 'answer date',
-  answer TEXT NULL COMMENT 'answer text',
-  final TINYINT NOT NULL DEFAULT 1 COMMENT 'last/final answer??',
-  PRIMARY KEY(id),
-  INDEX `result_idx` (`questionnaire_result_id`),
-  INDEX `question_idx` (`question_id`),
-  INDEX `question_answer_idx` (`question_answer_id`),
-  FOREIGN KEY(questionnaire_result_id)
-    REFERENCES questionnaire_results(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(question_id)
-    REFERENCES questions(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(question_answer_id)
-    REFERENCES question_answers(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'user answers to questions';
 
 CREATE TABLE applications (
   id INTEGER UNSIGNED NOT NULL,
@@ -721,55 +691,6 @@ CREATE TABLE property_options (
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
-
-CREATE TABLE questions (
-  `id` INTEGER UNSIGNED NOT NULL,
-  `question_type` VARCHAR(32) NOT NULL COMMENT '???',
-  `max_chars` INTEGER NULL COMMENT '???',
-  `question_difficulty` INT(11) NULL COMMENT '???',
-  `edu_level` INT(11) NULL COMMENT '???',
-  `text_ok` TEXT NULL COMMENT '???',
-  `text_fail` TEXT NULL COMMENT '???',
-  PRIMARY KEY(id),
-  KEY `question_type_idx` (`question_type`),
-  FOREIGN KEY(id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
-
-CREATE TABLE question_answers (
-  `id` INTEGER UNSIGNED NOT NULL auto_increment,
-  `question_id` INTEGER UNSIGNED NOT NULL,
-  `description` TEXT NULL COMMENT '???',
-  `correct` BOOL NULL COMMENT '???',
-  `correct_value` VARCHAR(255) NULL DEFAULT NULL COMMENT '???',
-  `priority` INTEGER UNSIGNED NULL COMMENT '???',
-  PRIMARY KEY(id),
-  KEY `question_id_idx` (`question_id`),
-  FOREIGN KEY(question_id)
-    REFERENCES questions(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
-
-CREATE TABLE questionnaire_results (
-  id INTEGER UNSIGNED NOT NULL,
-  object_id INTEGER UNSIGNED NOT NULL,
-  completed TINYINT NOT NULL DEFAULT 0 COMMENT '???',
-  rating INTEGER UNSIGNED NULL COMMENT '???',
-  evaluation TEXT NULL COMMENT '???',
-  PRIMARY KEY(id),
-  INDEX `objects_idx` (`object_id`),
-  FOREIGN KEY(id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(object_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='questionnaire result/filling/compilation';
 
 CREATE TABLE `search_texts` (
   `id` int(10) unsigned NOT NULL auto_increment,

@@ -180,7 +180,6 @@ $config['modules'] = array(
 	"galleries" => array("id" => 8, "label" => "galleries"),
 	"events" => array("id" => 10, "label" => "events"),
 	"webmarks" => array("id" => 12, "label" => "webmarks"),
-	"questionnaires" => array("id" => 14, "label" => "questionnaires"),
 	"addressbook" => array("id" => 16, "label" => "addressbook"),
 	"newsletter" => array("id" => 18, "label" => "newsletter"),
 	"statistics" => array("id" => 23, "label" => "statistics"),
@@ -240,11 +239,6 @@ $config["defaultObjRelationType"] = array(
 		"hidden" => true,
 		"left" => array("book"),
 		"right" => array("author")
-	),
-	"question" => array(
-		"hidden" => true,
-		"left" => array("questionnaire"),
-		"right" => array("question")
 	)
 );
 
@@ -281,42 +275,6 @@ $config['session'] = array (
 	"sessionUserKey"	=> "BEAuthUser", // session var name of info user connected
 ) ;
 
-
-/**
- * question types
- */
-$config['questionTypes'] = array(
-	"multiple" => "multiple choiche",
-	"single_radio" => "radio single choice",
-	"single_pulldown" => "pulldown single choice",
-	"freetext" => "open answer",
-	"checkopen" => "check open",
-	"degree" => "degree",
-	"fill" => "fill in the blanks"
-);
-
-/**
- * question difficulty 
- */
-$config['questionDifficulty'] = array(
-	1 => "very easy",
-	2 => "easy",
-	3 => "normal",
-	4 => "hard",
-	5 => "very hard"
-);
-
-
-/**
- * education Level 
- * TODO: i18n!! how??
- */
-$config['eduLevel'] = array(
-	1 => "scuola primaria",
-	2 => "scuola secondaria di primo grado",
-	3 => "scuola secondaria di secondo grado",
-	4 => "università"
-);
 
 /**
  * 

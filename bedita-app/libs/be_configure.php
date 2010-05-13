@@ -193,6 +193,18 @@ class BeConfigure {
 		$intersect = array_intersect($tableName, $tables);
 		return ($tableName === $intersect)? true : false;
 	}
+	
+	public function loadPluginLocalConfig($pluginName) {
+		$pluginPath = BeLib::getInstance()->getPluginPath($pluginName) . $pluginName;	
+		
+		if ( file_exists($pluginPath . DS . 'config' . DS . 'config_local.php' )){
+			include $pluginPath . DS . 'config' . DS . 'config_local.php';
+			if (!empty($config)) {
+				Configure::write($config);
+			}
+		}
+		
+	}
 
 }
 ?>
