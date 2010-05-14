@@ -13,8 +13,17 @@ urls['removeFromAreaSection'] = "{$html->url('removeItemsFromAreaSection/')}";
 urls['assocObjectsCategory'] = "{$html->url('assocCategory/')}";
 urls['disassocObjectsCategory'] = "{$html->url('disassocCategory/')}";
 urls['checkSelected'] = "{$html->url('checkMultiUrl/')}";
-
+var no_items_checked_msg = "{t}No items selected{/t}";
 {literal}
+function count_check_selected() {
+	var checked = 0;
+	$('input[type=checkbox].objectCheck').each(function(){
+		if($(this).attr("checked")) {
+			checked++;
+		}
+	});
+	return checked;
+}
 $(document).ready(function(){
 
 	$(".indexlist TD").not(".checklist").not(".go").css("cursor","pointer").click(function(i) {
@@ -22,6 +31,10 @@ $(document).ready(function(){
 	} );
 
 	$("#deleteSelected").bind("click", function() {
+		if(count_check_selected()<1) {
+			alert(no_items_checked_msg);
+			return false;
+		}
 		if(!confirm(message)) 
 			return false ;	
 		$("#formObject").attr("action", urls['deleteSelected']) ;
@@ -29,12 +42,20 @@ $(document).ready(function(){
 	});
 
 	$("#assocObjects").click( function() {
+		if(count_check_selected()<1) {
+			alert(no_items_checked_msg);
+			return false;
+		}
 		var op = ($('#areaSectionAssocOp').val()) ? $('#areaSectionAssocOp').val() : "copy";
 		$("#formObject").attr("action", urls[op + 'ItemsSelectedToAreaSection']) ;
 		$("#formObject").submit() ;
 	});
 
 	$(".opButton").click( function() {
+		if(count_check_selected()<1) {
+			alert(no_items_checked_msg);
+			return false;
+		}
 		$("#formObject").attr("action",urls[this.id]) ;
 		$("#formObject").submit() ;
 	});
@@ -129,7 +150,6 @@ $(document).ready(function(){
 		
 		{t}change status to:{/t}
 		<select style="width:75px" id="newStatus" name="newStatus">
-			<option value=""> -- </option>
 			{html_options options=$conf->statusOptions}
 		</select>
 		<input id="changestatusSelected" type="button" value=" {t}ok{/t} " class="opButton" />
@@ -139,7 +159,6 @@ $(document).ready(function(){
 		{if !empty($categories)}
 			{t}category{/t}
 			<select id="objCategoryAssoc" class="objCategoryAssociation" name="data[category]">
-			<option value="">--</option>
 			{foreach from=$categories item='category' key='key'}
 			<option value="{$key}">{$category}</option>
 			{/foreach}

@@ -11,8 +11,18 @@ urls['moveItemsSelectedToAreaSection'] = "{$html->url('moveItemsToAreaSection/')
 urls['removeFromAreaSection'] = "{$html->url('removeItemsFromAreaSection/')}";
 urls['assocObjectsCategory'] = "{$html->url('assocCategory/')}";
 urls['disassocObjectsCategory'] = "{$html->url('disassocCategory/')}";
-
+var no_items_checked_msg = "{t}No items selected{/t}";
 {literal}
+function count_check_selected() {
+	var checked = 0;
+	$('input[type=checkbox].objectCheck').each(function(){
+		if($(this).attr("checked")) {
+			checked++;
+		}
+	});
+	return checked;
+}
+
 $(document).ready(function(){
 
 	$(".indexlist TD").not(".checklist").css("cursor","pointer").click(function(i) {
@@ -20,6 +30,10 @@ $(document).ready(function(){
 	} );
 
 	$("#deleteSelected").bind("click", function() {
+		if(count_check_selected()<1) {
+			alert(no_items_checked_msg);
+			return false;
+		}
 		if(!confirm(messageSelected)) 
 			return false ;	
 		$("#formObject").attr("action", urls['deleteSelected']) ;
@@ -27,12 +41,20 @@ $(document).ready(function(){
 	});
 
 	$("#assocObjects").click( function() {
+		if(count_check_selected()==0) {
+			alert(no_items_checked_msg);
+			return false;
+		}
 		var op = ($('#areaSectionAssocOp').val()) ? $('#areaSectionAssocOp').val() : "copy";
 		$("#formObject").attr("action", urls[op + 'ItemsSelectedToAreaSection']) ;
 		$("#formObject").submit() ;
 	});
 
 	$(".opButton").click( function() {
+		if(count_check_selected()==0) {
+			alert(no_items_checked_msg);
+			return false;
+		}
 		$("#formObject").attr("action",urls[this.id]) ;
 		$("#formObject").submit() ;
 	});
@@ -168,7 +190,6 @@ $(document).ready(function(){
 <div>
 
 {t}change status to{/t}: 	<select style="width:75px" id="newStatus" name="newStatus">
-								<option value=""> -- </option>
 								{html_options options=$conf->statusOptions}
 							</select>
 			<input id="changestatusSelected" type="button" value=" ok " class="opButton"/>

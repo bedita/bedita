@@ -9,11 +9,24 @@ var messageSelected = "{t}Are you sure that you want to delete selected tags?{/t
 var URLBase = "{$html->url('index/')}";
 var urlAddMultipleTags = "{$html->url('addMultipleTags/')}";
 var urlChangeStatus = "{$html->url('changeStatus/')}";
-
+var no_items_checked_msg = "{t}No items selected{/t}";
 {literal}
+function count_check_selected() {
+	var checked = 0;
+	$('input[type=checkbox].objectCheck').each(function(){
+		if($(this).attr("checked")) {
+			checked++;
+		}
+	});
+	return checked;
+}
 $(document).ready(function() {
 
 	$("#deleteSelected").bind("click", function() {
+		if(count_check_selected()<1) {
+			alert(no_items_checked_msg);
+			return false;
+		}
 		if(!confirm(messageSelected)) 
 			return false ;
 		$("#formObject").attr("action", urlDelete) ;
@@ -38,6 +51,10 @@ $(document).ready(function() {
 	});
 	
 	$("#changestatusSelected").click(function() {
+		if(count_check_selected()<1) {
+			alert(no_items_checked_msg);
+			return false;
+		}
 		$("#formObject").attr("action", urlChangeStatus) ;
 		$("#formObject").submit();
 	});
@@ -124,7 +141,6 @@ $(document).ready(function() {
 		
 		<hr>
 {t}change status to:{/t} 	<select style="width:75px" id="newStatus" name="newStatus">
-								<option value=""> -- </option>
 								{html_options options=$conf->statusOptions}
 							</select>
 			<input id="changestatusSelected" type="button" value=" ok " />
