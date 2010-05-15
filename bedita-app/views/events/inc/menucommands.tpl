@@ -21,6 +21,7 @@ Menu a SX valido per tutte le pagine del controller.
 	{if !empty($view->action) && $view->action != "index" && $view->action != "categories"}
 		<div class="insidecol">
 			<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" id="saveBEObject" />
+			<input class="bemaincommands" type="button" value=" {t}Publish{/t} " style="display:none" name="publish" id="publishBEObject" />
 			<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" id="cloneBEObject" />
 			<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" />
 		</div>
