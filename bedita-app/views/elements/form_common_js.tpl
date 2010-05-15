@@ -19,14 +19,18 @@
 <script type="text/javascript">
 {literal}
 $(document).ready(function(){
-	
-	//alert("pop");
+
+	$("#publishBEObject").hide().click(function() {
+			$("input[name='data[status]']").val("on");
+			$("#saveBEObject").click();
+
+	});
 	
 	function checkStatus() {
 		var objstatus = $("input[name='data[status]']:checked").val();
-		if (objstatus == "draft") $("#saveBEObject").val("{/literal}{t}Save draft{/t}{literal}");
-		if (objstatus == "on") $("#saveBEObject").val("{/literal}{t}Publish{/t}{literal}");
-		if (objstatus == "off") $("#saveBEObject").val("{/literal}{t}Save{/t}{literal}");
+		if (objstatus == "draft") { $("#saveBEObject").val("{/literal}{t}Save draft{/t}{literal}"); $("#publishBEObject").show(); }
+		if (objstatus == "off") { $("#saveBEObject").val("{/literal}{t}Save{/t}{literal}"); $("#publishBEObject").show(); }
+		if (objstatus == "on") { $("#saveBEObject").val("{/literal}{t}Save{/t}{literal}"); $("#publishBEObject").hide(); }
 	}
 	
 	checkStatus();
@@ -34,14 +38,12 @@ $(document).ready(function(){
 	$("input[name='data[status]']").click(function() {
 		checkStatus();
 	});
-	
-	
+
 
 	$("#cancelBEObject").hide().click(function() {
-		if(confirm("{/literal}{t}Are you sure you want to cancel and reload this document? All unsaved changes will be lost{/t}{literal}")) {
+		//if(confirm("{/literal}{t}Are you sure you want to cancel and reload this document? All unsaved changes will be lost{/t}{literal}")) {
 			window.location.reload();
-		}
-	;
+		//};
 	});
 	
 	$("#delBEObject").submitConfirm({
@@ -121,7 +123,7 @@ $(document).ready(function(){
 
 {/literal}{if (!empty($module_modify) && ($module_modify != 1))}{literal}
 		
-		$("#saveBEObject,#delBEObject").attr("disabled",true);
+		$("#saveBEObject,#delBEObject,#publishBEObject").attr("disabled",true);
 		$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");
 
 {/literal}{/if}{literal}

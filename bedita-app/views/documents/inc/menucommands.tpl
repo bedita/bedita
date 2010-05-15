@@ -23,12 +23,14 @@ a seconda del metodo
 	{if !empty($view->action) && $view->action != "index" && $view->action != "categories"}
 	
 	<div class="insidecol">
+		
 		<input class="bemaincommands" type="button" value=" {t}save{/t} " name="save" id="saveBEObject" />
+		<input class="bemaincommands" type="button" value=" {t}Publish{/t} " style="display:none" name="publish" id="publishBEObject" />
 		<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" id="cloneBEObject" />
-		<input class="bemaincommands" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" />
-	
+		<input class="bemaincommands" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" />		
+		<!-- <input class="bemaincommands" type="button" value="{t}undo{/t}" name="cancel" id="cancelBEObject" /> -->
+		
 		{$view->element('prevnext')}
-
 		
 	</div>
 	
