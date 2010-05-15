@@ -1591,43 +1591,6 @@ Table.graph .value {
 	padding-left:5px; vertical-align:middle;
 }
 
-/*...........................................
- 
-	 Specific template layout: questions and forms
-
-...........................................*/
-
-
-.answers TD {padding:0px; margin:0px; border:0px; vertical-align:bottom; padding-bottom:5px !important}
-
-.newrow textarea {
-	/*background-color:gold;*/
-	height:32px !important;
-	border:1px solid #8C3540;
-}
-.answers TD {
-	vertical-align:middle; 
-}
-
-.questionbox {	
-	width:200px; height:90px; 
-	color: #333; line-height:1.2em; padding:5px; 
-	border-radius : 11px; -moz-border-radius : 11px; -webkit-border-radius : 11px; 
-	float:left; background-color:white; margin:10px 0px 0px 10px; 
-}
-
-.questionbox H2 {	
- height:35px;
-}
-
-.questionbox.off {	
-	opacity:0.5
-}	
-
-#preview_container_question {display:none; background-color:white; margin-top:-1px; border:1px solid silver;}
-#preview_container_question DIV {margin:20px; color:#333; font-size:14px; }
-
-
 /*...........................................    
 
     accessories
