@@ -486,14 +486,25 @@ class DbadminShell extends BeditaBaseShell {
 		require_once($sqlReservedFile);
 		
 		// load schema data
-		$schemaFile = $sqlCfgPath . DS  . "schema.php";
-		$this->out("Using BEdita schema file: $schemaFile");
-		$this->hr();
 		App::import('Model', 'Schema');
-		require_once($schemaFile);
+		$tables = array();
 		$badNames = array();
-		$schema = new BeditaAppSchema();		
-		foreach ($schema->tables as $tab => $cols) {
+		if(isset($this->params['schema'])) {		
+			$schemaFile = $sqlCfgPath . DS  . "schema.php";
+			$this->out("Using BEdita schema file: $schemaFile");
+			require_once($schemaFile);
+			$schema = new BeditaAppSchema();
+			$tables = $schema->tables;		
+		} else {
+			$db = ConnectionManager::getDataSource('default');
+			$this->out("Reading from database: [host=" . 
+				$db->config['host'] .", database=". $db->config['database']."]");
+			$schema = new CakeSchema();
+			$schemaTabs = $schema->read();
+			$tables = $schemaTabs['tables'];		
+		}
+		$this->hr();
+		foreach ($tables as $tab => $cols) {
 			if(is_array($cols)) {
 				if(in_array($tab, $reserved_words)) {
 					$this->out("bad table name: $tab");
@@ -575,6 +586,10 @@ class DbadminShell extends BeditaBaseShell {
 		$this->out("11. updateTreeRoot: update area_id field in trees table");
         $this->out(' ');
 		$this->out("12. checkDbNames: check database table/column names");
+        $this->out(' ');
+        $this->out('    Usage: checkDbNames [-schema]');
+        $this->out(' ');
+        $this->out("    -schema \t use schema file - otherwise read directly from db (default)");
         $this->out(' ');
 	}
 	
