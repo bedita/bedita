@@ -40,12 +40,15 @@
 // BEdita URL
 $config['beditaUrl'] = "http://localhost/bedita";
 
-/** Multimedia - files' root folder on filesystem (absolute path)
+/** Multimedia - files root folder on filesystem (use absolute path, if you need to change it)
  **
  **	On Linux could be /var/www/bedita/bedita-app/webroot/files
- ** On Windows could be C:\\xampp\\htdocs\\bedita\\bedita-app\\webroot\\files 
+ ** On Windows could be C:\\xampp\\htdocs\\bedita\\bedita-app\\webroot\\files
+ ** Or you can use DS as crossplatform directory separator as in default
+ ** APP_PATH . "webroot" . DS . "files"
+ ** where APP_PATH constant points to bedita/bedita_app/ dir
  */
-$config['mediaRoot'] = "/var/www/bedita/bedita-app/webroot/files";
+$config['mediaRoot'] = APP_PATH . "webroot" . DS . "files";
 
 // Multimedia - URL prefix (without trailing slash)
 $config['mediaUrl'] = 'http://localhost/bedita/files';
