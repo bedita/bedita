@@ -48,17 +48,19 @@ class AuthenticationsController extends AppController {
 		}
 
 		if(!$this->BeAuth->isValid) {
-			$this-> loginEvent('warn', $userid, "login blocked");
+			$this->loginEvent('warn', $userid, "login blocked");
 			$this->userErrorMessage(__("User login temporary blocked", true));
 			$this->result=self::ERROR;
 		}
 		
-		if($this->result === self::OK)
+		if($this->result === self::OK) {
 			$this->eventInfo("logged in");
+		}
 		
 		// redirect setup
-		if(isset($this->data["login"]["URLOK"])) 
-		 		$this->data['OK'] = $this->data["login"]["URLOK"];
+		if(isset($this->data["login"]["URLOK"])) {
+			$this->data['OK'] = $this->data["login"]["URLOK"];
+		}
 	}
 
 	function logout() {

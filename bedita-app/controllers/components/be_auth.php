@@ -213,6 +213,7 @@ class BeAuthComponent extends Object {
         
 		if(!$this->isValid) {
 			$this->logout();
+			return false;
 		}
 		
 		return true;
