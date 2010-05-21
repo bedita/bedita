@@ -23,7 +23,6 @@ Menu a SX valido per tutte le pagine del controller.
 		var cloneButton = $("div.insidecol input[name='clone']");
 		cloneButton.unbind("click");
 		cloneButton.click(function() {
-			$("#updateForm").attr("action","{/literal}{$html->url('/')}{literal}addressbook/cloneObject");
 			var company = $('input:radio[name*=company]:checked').val();
 			if (company == 0) {
 				var cloneTitle=prompt("{/literal}{t}name{/t},{t}surname{/t}{literal}",
@@ -33,12 +32,14 @@ Menu a SX valido per tutte le pagine del controller.
 					var nameArr =  cloneTitle.split(",");
 					$("input[name='data[person][name]']").attr("value",nameArr[0]);
 					$("input[name='data[person][surname]']").attr("value",nameArr[1]);
+					$("#updateForm").attr("action","{/literal}{$html->url('/')}{literal}addressbook/cloneObject");
 					$("#updateForm").submit();
 				}
 			} else {
 				var cloneTitle=prompt("{/literal}{t}name{/t}{literal}", $("input[name='data[cmp][company_name]']").val() +"-copy");
 				if (cloneTitle) {
 					$("input[name='data[cmp][company_name]']").attr("value",cloneTitle);
+					$("#updateForm").attr("action","{/literal}{$html->url('/')}{literal}addressbook/cloneObject");
 					$("#updateForm").submit();
 				}
 			}
