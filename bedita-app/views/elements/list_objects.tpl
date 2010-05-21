@@ -12,6 +12,9 @@ urls['removeFromAreaSection'] = "{$html->url('removeItemsFromAreaSection/')}";
 urls['assocObjectsCategory'] = "{$html->url('assocCategory/')}";
 urls['disassocObjectsCategory'] = "{$html->url('disassocCategory/')}";
 var no_items_checked_msg = "{t}No items selected{/t}";
+var sel_status_msg = "{t}Select a status{/t}";
+var sel_category_msg = "{t}Select a category{/t}";
+var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 {literal}
 function count_check_selected() {
 	var checked = 0;
@@ -45,6 +48,10 @@ $(document).ready(function(){
 			alert(no_items_checked_msg);
 			return false;
 		}
+		if($('#areaSectionAssoc').val() == "") {
+			alert(sel_copy_to_msg);
+			return false;
+		}
 		var op = ($('#areaSectionAssocOp').val()) ? $('#areaSectionAssocOp').val() : "copy";
 		$("#formObject").attr("action", urls[op + 'ItemsSelectedToAreaSection']) ;
 		$("#formObject").submit() ;
@@ -54,6 +61,18 @@ $(document).ready(function(){
 		if(count_check_selected()==0) {
 			alert(no_items_checked_msg);
 			return false;
+		}
+		if(this.id.indexOf('changestatus') > -1) {
+			if($('#newStatus').val() == "") {
+				alert(sel_status_msg);
+				return false;
+			}
+		}
+		if(this.id.indexOf('assocObjectsCategory') > -1) {
+			if($('#objCategoryAssoc').val() == "") {
+				alert(sel_category_msg);
+				return false;
+			}
 		}
 		$("#formObject").attr("action",urls[this.id]) ;
 		$("#formObject").submit() ;

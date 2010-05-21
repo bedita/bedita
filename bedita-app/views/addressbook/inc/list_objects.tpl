@@ -12,8 +12,21 @@ urls['removeFromAreaSection'] = "{$html->url('removeItemsFromAreaSection/')}";
 urls['assocObjectsCategory'] = "{$html->url('assocCategory/')}";
 urls['disassocObjectsCategory'] = "{$html->url('disassocCategory/')}";
 urls['addToMailgroup'] = "{$html->url('addToMailgroup/')}";
-
+var no_items_checked_msg = "{t}No items selected{/t}";
+var sel_status_msg = "{t}Select a status{/t}";
+var sel_category_msg = "{t}Select a category{/t}";
+var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
+var sel_mailgroup_msg = "{t}Select a mailgroup{/t}";
 {literal}
+function count_check_selected() {
+	var checked = 0;
+	$('input[type=checkbox].objectCheck').each(function(){
+		if($(this).attr("checked")) {
+			checked++;
+		}
+	});
+	return checked;
+}
 $(document).ready(function(){
 
 	$(".indexlist TD").not(".checklist").css("cursor","pointer").click(function(i) {
@@ -21,6 +34,10 @@ $(document).ready(function(){
 	} );
 
 	$("#deleteSelected").bind("click", function() {
+		if(count_check_selected()<1) {
+			alert(no_items_checked_msg);
+			return false;
+		}
 		if(!confirm(message)) 
 			return false ;
 		$("#formObject").attr("action", urls['deleteSelected']) ;
@@ -28,6 +45,14 @@ $(document).ready(function(){
 	});
 
 	$("#assocObjects").click( function() {
+		if(count_check_selected()<1) {
+			alert(no_items_checked_msg);
+			return false;
+		}
+		if($('#areaSectionAssoc').val() == "") {
+			alert(sel_copy_to_msg);
+			return false;
+		}
 		var op = ($('#areaSectionAssocOp').val()) ? $('#areaSectionAssocOp').val() : "copy";
 		$("#formObject").attr("action", urls[op + 'ItemsSelectedToAreaSection']) ;
 		$("#formObject").submit() ;
@@ -35,6 +60,14 @@ $(document).ready(function(){
 
 	$("#assocObjectsMailgroup").click( function() {
 		var mailgroup = $('#objMailgroupAssoc').val();
+		if(count_check_selected()<1) {
+			alert(no_items_checked_msg);
+			return false;
+		}
+		if(mailgroup == "") {
+			alert(sel_mailgroup_msg);
+			return false;
+		}
 		if(mailgroup != '') {
 			$("#formObject").attr("action", urls['addToMailgroup']) ;
 			$("#formObject").submit() ;
@@ -42,6 +75,22 @@ $(document).ready(function(){
 	});
 
 	$(".opButton").click( function() {
+		if(count_check_selected()<1) {
+			alert(no_items_checked_msg);
+			return false;
+		}
+		if(this.id.indexOf('changestatus') > -1) {
+			if($('#newStatus').val() == "") {
+				alert(sel_status_msg);
+				return false;
+			}
+		}
+		if(this.id.indexOf('assocObjectsCategory') > -1) {
+			if($('#objCategoryAssoc').val() == "") {
+				alert(sel_category_msg);
+				return false;
+			}
+		}
 		$("#formObject").attr("action",urls[this.id]) ;
 		$("#formObject").submit() ;
 	});
