@@ -62,7 +62,7 @@ class DbadminShell extends BeditaBaseShell {
 				$this->out("ERROR: " . $ex->getMessage());
 				$this->out("Probably there is an inconsistency in the tables that involve object with id " . $id);
 				$this->out("");
-				$failed[] = array("id" => $id, "error" => $ex->getMessage(), "check" => "Check that exists a row with id " . $id . " in all tables that involve the object.");
+				$failed[] = array("id" => $id, "error" => $ex->getMessage());
 			}
 		}
 		// lang texts
@@ -93,8 +93,13 @@ class DbadminShell extends BeditaBaseShell {
 			foreach($failed as $f) {
 				$this->out("id: " . $f["id"]);
 				$this->out("error: " . $f["error"]);
-				$this->out("suggestion: " . $f["check"]);
 				$this->hr();
+			}
+			$res = $this->in("Do you want to check consistency in all tables that involve objects? [y/n]");
+			if($res == "y") {
+				$this->hr();
+				$this->out("CHECKING CONSISTENCY...");
+				$this->checkConsistency($f["id"]);
 			}
 		}
 	}
@@ -437,7 +442,7 @@ class DbadminShell extends BeditaBaseShell {
 	public function checkConsistency() {
 		$beObj = ClassRegistry::init("BEObject");
 		$beObj->contain();
-		$all_objects = $beObj->find('all',array("fields"=>array('id')));
+		$all_objects = $beObj->find('all',array("fields" => array('id')));
 		$this->out(sizeof($all_objects) . " objects found");
 		$deleted = 0;
 		$inconsistent = 0;
@@ -449,7 +454,8 @@ class DbadminShell extends BeditaBaseShell {
 			);
 			if($count === 0) {
 				$inconsistent++;
-				$res = $this->in("0 count for obj " . $data['BEObject']['id'] . " ($type). Do you want to delete the object " . $data['BEObject']['id'] . "? [y/n]");
+				$this->out("INCONSISTENCY found");
+				$res = $this->in("0 count for obj " . $data['BEObject']['id'] . " ($type). Do you want to delete object " . $data['BEObject']['id'] . "? [y/n]");
 				if($res == "y") {
 					$this->out("Deleting object " . $data['BEObject']['id'] . " ...");
 					$beObj->del($data['BEObject']['id']);
