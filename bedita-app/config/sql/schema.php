@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* BeditaApp schema generated on: 2010-03-24 17:03:57 : 1269448617*/
+/* BeditaApp schema generated on: 2010-05-24 16:05:21 : 1274710701*/
 class BeditaAppSchema extends CakeSchema {
 	var $name = 'BeditaApp';
 
@@ -27,16 +27,6 @@ class BeditaAppSchema extends CakeSchema {
 		'thread_path' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'rating' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'author_idx' => array('column' => 'author', 'unique' => 0), 'objects_idx' => array('column' => 'object_id', 'unique' => 0))
-	);
-	var $answers = array(
-		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
-		'questionnaire_result_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
-		'question_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
-		'question_answer_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
-		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL, 'values' => NULL),
-		'answer' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'final' => array('type' => 'integer', 'null' => false, 'default' => '1', 'length' => 4, 'values' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'result_idx' => array('column' => 'questionnaire_result_id', 'unique' => 0), 'question_idx' => array('column' => 'question_id', 'unique' => 0), 'question_answer_idx' => array('column' => 'question_answer_id', 'unique' => 0))
 	);
 	var $applications = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
@@ -404,33 +394,6 @@ class BeditaAppSchema extends CakeSchema {
 		'property_option' => array('type' => 'text', 'null' => false, 'default' => NULL, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'property_id' => array('column' => 'property_id', 'unique' => 0))
 	);
-	var $question_answers = array(
-		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
-		'question_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
-		'description' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'correct' => array('type' => 'boolean', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'correct_value' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'priority' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'question_id_idx' => array('column' => 'question_id', 'unique' => 0))
-	);
-	var $questionnaire_results = array(
-		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
-		'object_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
-		'completed' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 4, 'values' => NULL),
-		'rating' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
-		'evaluation' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'objects_idx' => array('column' => 'object_id', 'unique' => 0))
-	);
-	var $questions = array(
-		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
-		'question_type' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 32, 'values' => NULL, 'key' => 'index'),
-		'max_chars' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'question_difficulty' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'edu_level' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'text_ok' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'text_fail' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'question_type_idx' => array('column' => 'question_type', 'unique' => 0))
-	);
 	var $search_texts = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'object_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
@@ -505,13 +468,6 @@ class BeditaAppSchema extends CakeSchema {
 		'uid' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'thumbnail' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1))
-	);
-	var $view_permissions = array(
-		'object_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'values' => NULL),
-		'name' => array('type' => 'string', 'null' => false, 'length' => 32, 'values' => NULL),
-		'switch' => array('type' => 'string', 'null' => false, 'length' => 10, 'values' => NULL),
-		'flag' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'indexes' => array()
 	);
 }
 ?>
