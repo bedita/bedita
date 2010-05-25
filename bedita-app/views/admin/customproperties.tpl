@@ -56,7 +56,7 @@ $(document).ready(function(){
 	<table class="indexlist">
 		<tr>
 			<th>{t}property name{/t}</th>
-			<th>{t}for object type{/t}</th>
+			<th>{t}type{/t}</th>
 			<th>{t}data type{/t}</th>
 			<th>{t}option list{/t}</th>
 			<th>{t}data attributes{/t}</th>
@@ -131,7 +131,7 @@ $(document).ready(function(){
 	<table class="indexlist">
 		<tr>
 			<th>{t}property name{/t}</th>
-			<th>{t}for object type{/t}</th>
+			<th>{t}type{/t}</th>
 			<th>{t}data type{/t}</th>
 			<th>{t}option list{/t}</th>
 			<th>{t}data attributes{/t}</th>
