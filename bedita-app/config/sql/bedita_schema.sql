@@ -227,10 +227,10 @@ CREATE TABLE date_items (
 
 CREATE TABLE `event_logs` (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  user VARCHAR(32) NOT NULL COMMENT 'event user',
+  `userid` VARCHAR(32) NOT NULL COMMENT 'event user',
   created datetime NOT NULL COMMENT 'event time',
   msg VARCHAR(100) NOT NULL COMMENT 'log content',
-  level set('debug','info','warn','err') NOT NULL default 'info' COMMENT 'log level (debug/info/warn/err)',
+  `log_level` set('debug','info','warn','err') NOT NULL default 'info' COMMENT 'log level (debug/info/warn/err)',
   context VARCHAR(32) DEFAULT NULL COMMENT 'event context',
   PRIMARY KEY  (id),
   KEY user_idx (user),

@@ -113,8 +113,8 @@ class AuthenticationsController extends AppController {
 	 
 	
 	 private function loginEvent($level, $user, $msg) {
-		$event = array('EventLog'=>array("level"=>$level, 
-			"user"=>$user,"msg"=>$msg, "context"=>strtolower($this->name)));
+		$event = array('EventLog'=>array("log_level"=>$level, 
+			"userid"=>$user,"msg"=>$msg, "context"=>strtolower($this->name)));
 		$this->EventLog->save($event);
 	}
 	 

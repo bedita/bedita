@@ -134,12 +134,12 @@ class BeditaAppSchema extends CakeSchema {
 	);
 	var $event_logs = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
-		'user' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 32, 'values' => NULL, 'key' => 'index'),
+		'userid' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 32, 'values' => NULL, 'key' => 'index'),
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL, 'values' => NULL, 'key' => 'index'),
 		'msg' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 100, 'values' => NULL),
-		'level' => array('type' => 'set', 'null' => false, 'default' => 'info', 'length' => 5, 'values' => '\'debug\',\'info\',\'warn\',\'err\''),
+		'log_level' => array('type' => 'set', 'null' => false, 'default' => 'info', 'length' => 5, 'values' => '\'debug\',\'info\',\'warn\',\'err\''),
 		'context' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 32, 'values' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'user_idx' => array('column' => 'user', 'unique' => 0), 'date_idx' => array('column' => 'created', 'unique' => 0))
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'user_idx' => array('column' => 'userid', 'unique' => 0), 'date_idx' => array('column' => 'created', 'unique' => 0))
 	);
 	var $geo_tags = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),

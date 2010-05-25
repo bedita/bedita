@@ -277,8 +277,8 @@ class AppController extends Controller
 	
     protected function eventLog($level, $msg) {
 		$u = isset($this->BeAuth->user["userid"])? $this->BeAuth->user["userid"] : "-";
-		$event = array('EventLog'=>array("level"=>$level, 
-			"user"=>$u, "msg"=>$msg, "context"=>strtolower($this->name)));
+		$event = array('EventLog'=>array("log_level"=>$level, 
+			"userid"=>$u, "msg"=>$msg, "context"=>strtolower($this->name)));
 		$this->EventLog->save($event);
 	}
 	
