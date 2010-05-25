@@ -149,21 +149,21 @@ class AppError extends ErrorHandler {
 	private function sendMail($mailMsg) {
 		$mailSupport = Configure::read('mailSupport');
 		if(!empty($mailSupport)) {
-			App::import('Component', 'BeMail');
-			$email = new BeMailComponent;
-			$email->startup();
-			
+			$jobModel = ClassRegistry::init("MailJob");
+			$jobModel->containLevel("default");
 			$data = array();
-			$data["from"] = $mailSupport['from'];
-			$data["subject"] = $mailSupport['subject'];
-			$data["body"] = $mailMsg;
+			$data["status"] = "unsent";
+			$data["mail_params"] = serialize(array(
+						"sender" => $mailSupport['from'], 
+						"subject" => $mailSupport['subject'],
+			));
+			$data["mail_body"] = $mailMsg;
 			$dest = explode(',', $mailSupport['to']);
 			foreach ($dest as $d) {
-				$data["to"] = $d;
-				try {
-					$email->sendMail($data); 
-				} catch (BeditaMailException $e) {
-					$this->log("mail send failed " . $e->getDetails() . " - " . $e->getSmtpError());
+				$data["recipient"] = $d;
+				$jobModel->create();
+				if (!$jobModel->save($data)) {
+					$this->log(__("Error creating mail job") . "-" . print_r($data,true),true);
 				}
 			}
 			
