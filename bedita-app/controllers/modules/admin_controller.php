@@ -303,6 +303,11 @@ class AdminController extends ModulesController {
 	 		
 	 	$propertyModel = ClassRegistry::init("Property");
 	 	
+	 	$objTypeId = $this->data["Property"]["object_type_id"];
+	 	if(empty($objTypeId)){
+	 		$objTypeId = null;
+	 	}
+	 	
 	 	$conditions = array(
  					"name" => $this->data["Property"]["name"],
 	 				"object_type_id" => $this->data["Property"]["object_type_id"]
@@ -317,7 +322,7 @@ class AdminController extends ModulesController {
  		);
 		
  		if ($countProperties > 0)
- 			throw new BeditaException(__("Duplicate property name for the same object",true));
+ 			throw new BeditaException(__("Duplicate property name for the same type",true));
 
 	 	if (empty($this->data["Property"]["multiple_choice"]) || $this->data["Property"]["property_type"] != "options")
 	 		$this->data["Property"]["multiple_choice"] = 0;

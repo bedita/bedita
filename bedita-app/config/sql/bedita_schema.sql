@@ -47,6 +47,7 @@ DROP TABLE IF EXISTS `sections`;
 DROP TABLE IF EXISTS `section_types`;
 DROP TABLE IF EXISTS `streams`;
 DROP TABLE IF EXISTS `trees`;
+DROP TABLE IF EXISTS `user_properties`;
 DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `versions`;
 DROP TABLE IF EXISTS `videos`;
@@ -668,7 +669,7 @@ CREATE TABLE products (
 CREATE TABLE properties (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
-  object_type_id INTEGER UNSIGNED NOT NULL,
+  object_type_id INTEGER UNSIGNED NULL,
   property_type SET('number','date','text','options') NOT NULL COMMENT '???',
   multiple_choice TINYINT(1) default 0 COMMENT '???',
   PRIMARY KEY(id),
@@ -766,6 +767,25 @@ CREATE TABLE trees (
       ON DELETE NO ACTION
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
+
+
+CREATE TABLE user_properties (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  property_id INTEGER UNSIGNED NOT NULL,
+  user_id INTEGER UNSIGNED NOT NULL,
+  property_value TEXT not null,
+  INDEX id_index(id),
+  INDEX property_id_index(property_id),
+  FOREIGN KEY(user_id)
+    REFERENCES users(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(property_id)
+    REFERENCES properties(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'user custom properties values' ;
+
 
 CREATE TABLE users (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,

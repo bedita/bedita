@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* BeditaApp schema generated on: 2010-05-24 16:05:21 : 1274710701*/
+/* BeditaApp schema generated on: 2010-05-25 15:05:20 : 1274794880*/
 class BeditaAppSchema extends CakeSchema {
 	var $name = 'BeditaApp';
 
@@ -383,7 +383,7 @@ class BeditaAppSchema extends CakeSchema {
 	var $properties = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'name' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL, 'key' => 'index'),
-		'object_type_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
+		'object_type_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'property_type' => array('type' => 'set', 'null' => false, 'default' => NULL, 'length' => 7, 'values' => '\'number\',\'date\',\'text\',\'options\''),
 		'multiple_choice' => array('type' => 'boolean', 'null' => true, 'default' => '0', 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'name_type' => array('column' => array('name', 'object_type_id'), 'unique' => 1), 'name_index' => array('column' => 'name', 'unique' => 0), 'type_index' => array('column' => 'object_type_id', 'unique' => 0))
@@ -429,6 +429,13 @@ class BeditaAppSchema extends CakeSchema {
 		'priority' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'menu' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'indexes' => array('path' => array('column' => 'path', 'unique' => 1), 'id_idx' => array('column' => 'id', 'unique' => 0), 'parent_idx' => array('column' => 'parent_id', 'unique' => 0), 'area_idx' => array('column' => 'area_id', 'unique' => 0))
+	);
+	var $user_properties = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
+		'property_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
+		'user_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
+		'property_value' => array('type' => 'text', 'null' => false, 'default' => NULL, 'values' => NULL),
+		'indexes' => array('id_index' => array('column' => 'id', 'unique' => 0), 'property_id_index' => array('column' => 'property_id', 'unique' => 0), 'user_id' => array('column' => 'user_id', 'unique' => 0))
 	);
 	var $users = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
