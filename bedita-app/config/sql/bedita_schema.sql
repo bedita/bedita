@@ -234,7 +234,7 @@ CREATE TABLE `event_logs` (
   `log_level` set('debug','info','warn','err') NOT NULL default 'info' COMMENT 'log level (debug/info/warn/err)',
   context VARCHAR(32) DEFAULT NULL COMMENT 'event context',
   PRIMARY KEY  (id),
-  KEY user_idx (user),
+  KEY userid_idx (userid),
   KEY date_idx (created)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'backend main events log';
 
