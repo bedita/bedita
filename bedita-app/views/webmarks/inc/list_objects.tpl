@@ -69,11 +69,14 @@ $(document).ready(function(){
 				return false;
 			}
 		}
-		if(this.id.indexOf('assocObjectsCategory') > -1) {
+		if(this.id == 'assocObjectsCategory') {
 			if($('#objCategoryAssoc').val() == "") {
 				alert(sel_category_msg);
 				return false;
 			}
+		}
+		if(this.id == 'disassocObjectsCategory') {
+			$('#objCategoryAssoc').attr('value',$('#filter_category').val());
 		}
 		$("#formObject").attr("action",urls[this.id]) ;
 		$("#formObject").submit() ;
@@ -175,43 +178,52 @@ $(document).ready(function(){
 		
 		<hr />
 
+		{if !empty($tree)}	
+			{assign var='named_arr' value=$view->params.named}
+			{if empty($named_arr.id)}
+				{t}copy{/t}
+			{else}
+				<select id="areaSectionAssocOp" name="areaSectionAssocOp" style="width:75px">
+					<option value="copy"> {t}copy{/t} </option>
+					<option value="move"> {t}move{/t} </option>
+				</select>
+			{/if}
+			&nbsp;{t}to{/t}:  &nbsp;
+	
+			<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
+			{$beTree->option($tree)}
+			</select>
+	
+			<input type="hidden" name="data[source]" value="{$named_arr.id|default:''}" />
+			<input id="assocObjects" type="button" value=" ok " />
+			<hr />
+	
+			{if !empty($named_arr.id)}
+				{assign var='filter_section_id' value=$named_arr.id}
+				{assign var='filter_section_name' value=$pubSel.title|default:$sectionSel.title}
+				<input id="removeFromAreaSection" type="button" value="{t}Remove selected from{/t} '{$filter_section_name}'" class="opButton" />
+				<hr/>
+			{/if}
+		{/if}
+
 		{if !empty($categories)}
 			{t}category{/t}
 			<select id="objCategoryAssoc" class="objCategoryAssociation" name="data[category]">
+			<option value="">--</option>
 			{foreach from=$categories item='category' key='key'}
+			{if !empty($named_arr.category) && ($key == $named_arr.category)}{assign var='filter_category_name' value=$category}{/if}
 			<option value="{$key}">{$category}</option>
 			{/foreach}
 			</select>
-			<input id="assocObjectsCategory" type="button" value="{t}Add association{/t}" class="opButton" /> / <input id="disassocObjectsCategory" type="button" value="{t}Remove association{/t}" class="opButton" />
+			<input id="assocObjectsCategory" type="button" value="{t}Add association{/t}" class="opButton" />
 			<hr />
+			{if !empty($named_arr.category)}
+				{assign var='filter_category_id' value=$named_arr.category}
+				<input id="disassocObjectsCategory" type="button" value="{t}Remove selected from category{/t} '{$filter_category_name}'" class="opButton" />
+				<input id="filter_category" type="hidden" name="filter_category" value="{$filter_category_id}" />
+				<hr />
+			{/if}
 		{/if}
-
-	{if !empty($tree)}
-
-		{assign var='named_arr' value=$view->params.named}
-		{if empty($named_arr.id)}
-			{t}copy{/t}
-		{else}
-			<select id="areaSectionAssocOp" name="areaSectionAssocOp" style="width:75px">
-				<option value="copy"> {t}copy{/t} </option>
-				<option value="move"> {t}move{/t} </option>
-			</select>
-		{/if}
-		&nbsp;{t}to{/t}:  &nbsp;
-
-		<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
-		{$beTree->option($tree)}
-		</select>
-
-		<input type="hidden" name="data[source]" value="{$named_arr.id|default:''}" />
-		<input id="assocObjects" type="button" value=" ok " />
-		<hr />
-
-		{if !empty($named_arr)}
-		<input id="removeFromAreaSection" type="button" value="{t}Remove selected from section{/t}" />
-		<hr/>
-		{/if}
-	{/if}
 
 		<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
 		
