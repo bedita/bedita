@@ -83,6 +83,9 @@ class MultimediaController extends ModulesController {
 			$objEditor = ClassRegistry::init("ObjectEditor");
 			$objEditor->cleanup($id);
 			$model = ClassRegistry::init($this->BEObject->getType($id));
+			if (!in_array("multimedia", $model->objectTypesGroups)) {
+				throw new BeditaException(__("Error loading object", true));
+			}
 			$model->containLevel("detailed");
 			if(!($obj = $model->findById($id))) {
 				 throw new BeditaException(sprintf(__("Error loading object: %d", true), $id));
@@ -281,7 +284,10 @@ class MultimediaController extends ModulesController {
 			"save"  =>  array(
 							"OK"    => "/multimedia/view/".@$this->Stream->id,
 							"ERROR" => "/multimedia/view/".@$this->data['id'] 
-							), 
+							),
+			"view"	=> 	array(
+							"ERROR"	=> "/multimedia"
+							),
 			"delete"	=> 	array(
 							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
 							"ERROR"	=> $this->referer()
