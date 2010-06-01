@@ -1160,7 +1160,8 @@ class phpthumb_filters {
 
 			} else {
 
-			// this block for background color only
+				// this block for background color only
+
 				switch ($alignment) {
 					case '*':
 						// handled separately
@@ -1212,6 +1213,7 @@ class phpthumb_filters {
 						$text_origin_y = ImageSY($gdimg) + $TTFbox[1] - $margin + $originOffsetY;
 						break;
 				}
+
 				//ImageRectangle($gdimg, $text_origin_x + $min_x, $text_origin_y + $TTFbox[1], $text_origin_x + $min_x + $text_width, $text_origin_y + $TTFbox[1] - $text_height, $letter_color_text);
 				if (phpthumb_functions::IsHexColor($bg_color)) {
 					$text_background_alpha = round(127 * ((100 - min(max(0, $bg_opacity), 100)) / 100));
@@ -1232,8 +1234,10 @@ class phpthumb_filters {
 				//	$y_BR--;
 				//	$text_origin_y--;
 				//}
+				$this->DebugMessage('WatermarkText() calling ImageFilledRectangle($gdimg, '.$x_TL.', '.$y_TL.', '.$x_BR.', '.$y_BR.', $text_color_background)', __FILE__, __LINE__);
 				ImageFilledRectangle($gdimg, $x_TL, $y_TL, $x_BR, $y_BR, $text_color_background);
-			// end background color block
+
+				// end block for background color only
 
 
 				$y_offset = 0;
@@ -1273,6 +1277,7 @@ class phpthumb_filters {
 					}
 
 					//ImageTTFtext($gdimg, $size, $angle, $text_origin_x, $text_origin_y, $letter_color_text, $ttffont, $text);
+					$this->DebugMessage('WatermarkText() calling ImageTTFtext($gdimg, '.$size.', '.$angle.', '.$text_origin_x.', '.($text_origin_y + $y_offset).', $letter_color_text, '.$ttffont.', '.$line.')', __FILE__, __LINE__);
 					ImageTTFtext($gdimg, $size, $angle, $text_origin_x, $text_origin_y + $y_offset, $letter_color_text, $ttffont, $line);
 
 					$y_offset += $char_height;
@@ -1300,6 +1305,7 @@ class phpthumb_filters {
 				} else {
 					$text_color_background = phpthumb_functions::ImageHexColorAllocate($img_watermark, 'FFFFFF', false, 127);
 				}
+				$this->DebugMessage('WatermarkText() calling ImageFilledRectangle($img_watermark, 0, 0, '.ImageSX($img_watermark).', '.ImageSY($img_watermark).', $text_color_background)', __FILE__, __LINE__);
 				ImageFilledRectangle($img_watermark, 0, 0, ImageSX($img_watermark), ImageSY($img_watermark), $text_color_background);
 
 				if ($angle && function_exists('ImageRotate')) {
@@ -1316,26 +1322,64 @@ class phpthumb_filters {
 				foreach ($textlines as $key => $line) {
 					switch ($alignment) {
 						case 'C':
+							$x_offset = round(($text_width - (ImageFontWidth($size) * strlen($line))) / 2);
+							$originOffsetX = (ImageSX($gdimg) - ImageSX($img_watermark)) / 2;
+							$originOffsetY = (ImageSY($gdimg) - ImageSY($img_watermark)) / 2;
+							break;
+
 						case 'T':
+							$x_offset = round(($text_width - (ImageFontWidth($size) * strlen($line))) / 2);
+							$originOffsetX = (ImageSX($gdimg) - ImageSX($img_watermark)) / 2;
+							$originOffsetY = $margin;
+							break;
+
 						case 'B':
 							$x_offset = round(($text_width - (ImageFontWidth($size) * strlen($line))) / 2);
+							$originOffsetX = (ImageSX($gdimg) - ImageSX($img_watermark)) / 2;
+							$originOffsetY = ImageSY($gdimg) - ImageSY($img_watermark) - $margin;
 							break;
 
 						case 'L':
+							$x_offset = 0;
+							$originOffsetX = $margin;
+							$originOffsetY = (ImageSY($gdimg) - ImageSY($img_watermark)) / 2;
+							break;
+
 						case 'TL':
+							$x_offset = 0;
+							$originOffsetX = $margin;
+							$originOffsetY = $margin;
+							break;
+
 						case 'BL':
 							$x_offset = 0;
+							$originOffsetX = $margin;
+							$originOffsetY = ImageSY($gdimg) - ImageSY($img_watermark) - $margin;
 							break;
 
 						case 'R':
+							$x_offset = $text_width - (ImageFontWidth($size) * strlen($line));
+							$originOffsetX = ImageSX($gdimg) - ImageSX($img_watermark) - $margin;
+							$originOffsetY = (ImageSY($gdimg) - ImageSY($img_watermark)) / 2;
+							break;
+
 						case 'TR':
+							$x_offset = $text_width - (ImageFontWidth($size) * strlen($line));
+							$originOffsetX = ImageSX($gdimg) - ImageSX($img_watermark) - $margin;
+							$originOffsetY = $margin;
+							break;
+
 						case 'BR':
 						default:
 							$x_offset = $text_width - (ImageFontWidth($size) * strlen($line));
+							$originOffsetX = ImageSX($gdimg) - ImageSX($img_watermark) - $margin;
+							$originOffsetY = ImageSY($gdimg) - ImageSY($img_watermark) - $margin;
 							break;
 					}
+					$this->DebugMessage('WatermarkText() calling ImageString($img_watermark, '.$size.', '.$x_offset.', '.($key * ImageFontHeight($size)).', '.$line.', $text_color_watermark)', __FILE__, __LINE__);
 					ImageString($img_watermark, $size, $x_offset, $key * ImageFontHeight($size), $line, $text_color_watermark);
 					if ($angle && $img_watermark_mask) {
+						$this->DebugMessage('WatermarkText() calling ImageString($img_watermark_mask, '.$size.', '.$x_offset.', '.($key * ImageFontHeight($size)).', '.$text.', $mask_color_watermark)', __FILE__, __LINE__);
 						ImageString($img_watermark_mask, $size, $x_offset, $key * ImageFontHeight($size), $text, $mask_color_watermark);
 					}
 				}
@@ -1345,6 +1389,7 @@ class phpthumb_filters {
 					phpthumb_filters::ApplyMask($img_watermark_mask, $img_watermark);
 				}
 				//phpthumb_filters::WatermarkOverlay($gdimg, $img_watermark, $alignment, $opacity, $margin);
+				$this->DebugMessage('WatermarkText() calling phpthumb_filters::WatermarkOverlay($gdimg, $img_watermark, '.($originOffsetX.'x'.$originOffsetY).', '.$opacity.', 0)', __FILE__, __LINE__);
 				phpthumb_filters::WatermarkOverlay($gdimg, $img_watermark, $originOffsetX.'x'.$originOffsetY, $opacity, 0);
 				ImageDestroy($img_watermark);
 				return true;

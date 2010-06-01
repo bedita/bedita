@@ -1,1 +1,1 @@
-phpThumb_1.7.8
+phpThumb_1.7.9

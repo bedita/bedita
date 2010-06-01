@@ -196,6 +196,15 @@ class phpthumb_functions {
 	}
 
 
+	function TranslateWHbyAngle($width, $height, $angle) {
+		if (($angle % 180) == 0) {
+			return array($width, $height);
+		}
+		$newwidth  = (abs(sin(deg2rad($angle))) * $height) + (abs(cos(deg2rad($angle))) * $width);
+		$newheight = (abs(sin(deg2rad($angle))) * $width)  + (abs(cos(deg2rad($angle))) * $height);
+		return array($newwidth, $newheight);
+	}
+
 	function HexCharDisplay($string) {
 		$len = strlen($string);
 		$output = '';
@@ -407,7 +416,7 @@ class phpthumb_functions {
 			// limited by height
 			$new_width = $new_height * $old_aspect_ratio;
 		}
-		return array(round($new_width), round($new_height));
+		return array(intval(round($new_width)), intval(round($new_height)));
 	}
 
 
