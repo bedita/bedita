@@ -67,7 +67,7 @@ class BeConfigure {
 
 		$moduleModel = ClassRegistry::init("Module");
 		$modules = $moduleModel->find("all", array(
-				"conditions" => array("type" => "plugin")
+				"conditions" => array("module_type" => "plugin")
 			)
 		);
 		if (!empty($modules)) {
@@ -106,7 +106,7 @@ class BeConfigure {
 				$configurations["objectTypes"][$type["ObjectType"]["id"]] = $configurations["objectTypes"][$type["ObjectType"]["name"]] = array(
 					"id" => $type["ObjectType"]["id"],
 					"name" => $type["ObjectType"]["name"],
-					"module" => $type["ObjectType"]["module"],
+					"module_name" => $type["ObjectType"]["module_name"],
 					"model" => $modelName
 				);
 				$objModel = ClassRegistry::init($modelName);

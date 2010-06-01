@@ -97,18 +97,18 @@ class SectionTestCase extends BeditaTestCase {
 		echo "<hr/>";
 		pr("<h4>Publishing tree path:</h4>");
 		$result = $this->Tree->findById($area_id);
-		$this->assertEqual($result["Tree"]["path"], '/'.$area_id);
-		pr($result["Tree"]["path"]);
+		$this->assertEqual($result["Tree"]["object_path"], '/'.$area_id);
+		pr($result["Tree"]["object_path"]);
 		
 		pr("<h4>Section tree path:</h4>");
 		$result = $this->Tree->findById($section_id);
-		$this->assertEqual($result["Tree"]["path"], '/'.$area_id . '/' .$section_id);
-		pr($result["Tree"]["path"]);
+		$this->assertEqual($result["Tree"]["object_path"], '/'.$area_id . '/' .$section_id);
+		pr($result["Tree"]["object_path"]);
 		
 		pr("<h4>Subsection tree path:</h4>");
 		$result = $this->Tree->findById($subsection_id);
-		$this->assertEqual($result["Tree"]["path"], '/'.$area_id . '/' .$section_id . '/' . $subsection_id);
-		pr($result["Tree"]["path"]);
+		$this->assertEqual($result["Tree"]["object_path"], '/'.$area_id . '/' .$section_id . '/' . $subsection_id);
+		pr($result["Tree"]["object_path"]);
 		
 		echo "<hr/>";
 		

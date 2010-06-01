@@ -170,7 +170,6 @@ $(".htab TD[rel:company]").click();
 		<th>{t}street name and #{/t}:</th>
 		<td>
 			<input style="width:240px;" type="text" name="data[street_address]" value="{$object.street_address|escape:'html'|escape:'quotes'}" />
-			<input style="width:30px;" type="text" name="data[street_number]" value="{$object.street_number|escape:'html'|escape:'quotes'}" />
 		</td>
 	</tr>
 	<tr>
@@ -425,7 +424,7 @@ $(".htab TD[rel:company]").click();
 	</tr>
 	<tr>
 		<th>{t}state{/t}:</th>
-		<td><input type="text" name="data[state]" value="{$object.state|escape:'html'|escape:'quotes'}" /></td>
+		<td><input type="text" name="data[state_name]" value="{$object.state_name|escape:'html'|escape:'quotes'}" /></td>
 	</tr>
 </table>
 

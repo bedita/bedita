@@ -130,17 +130,17 @@ class BeEmbedFlashHelper extends AppHelper {
 		$flashvars = empty($params['flashvars']) ? array() : $params['flashvars'];	
 		$flashParams = empty($params['params']) ? array() : $params['params'];	
 		
-		$extension = $this->getFileExtension($obj['path']);
+		$extension = $this->getFileExtension($obj['uri']);
 			
 		if ($obj["object_type_id"] == Configure::read("objectTypes.audio.id") && $extension == 'mp3') {
-			return $this->embedAudio($obj['path'], $htmlAttributes, $flashvars, $flashParams);	
+			return $this->embedAudio($obj['uri'], $htmlAttributes, $flashvars, $flashParams);
 		} elseif ($extension == 'flv') {
 			if (!empty($obj['thumbnail'])) {
 				$flashvars['thumbnail'] = $obj['thumbnail']; 
 			}			
-			return $this->embedFlv($obj['path'], $htmlAttributes, $flashvars, $flashParams);	
+			return $this->embedFlv($obj['uri'], $htmlAttributes, $flashvars, $flashParams);
 		} else if ($extension == 'swf') {
-			 return $this->embedSwf($obj['path'], $htmlAttributes, $flashvars, $flashParams);
+			 return $this->embedSwf($obj['uri'], $htmlAttributes, $flashvars, $flashParams);
 		} else {
 			return false;
 		}

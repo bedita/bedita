@@ -126,7 +126,7 @@ class BeThumbHelper extends AppHelper {
 
 
 		// filepath & name
-		$this->_imageInfo['path']		= $be_obj['path'];
+		$this->_imageInfo['path']		= $be_obj['uri'];
 		$this->_imageInfo['filename']	= $be_obj['name'];
 		$this->_imageInfo['ext']		= end ( explode ( '.', $this->_imageInfo['filename'] ) );
 		$this->_imageInfo['filepath']	= $this->_conf['root'] . $this->_imageInfo['path'];  // absolute

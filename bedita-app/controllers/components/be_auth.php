@@ -444,7 +444,7 @@ class BeAuthComponent extends Object {
 			// load history
 			$historyConf = Configure::read("history");
 			if (!empty($historyConf)) {
-				$groupBy = ($historyConf["showDuplicates"] === false)? array("path", "area_id") : array();
+				$groupBy = ($historyConf["showDuplicates"] === false)? array("url", "area_id") : array();
 				$this->user["History"] = ClassRegistry::init("History")->getUserHistory($this->user["id"], $historyConf["sessionEntry"], $groupBy);
 			}
 			$this->Session->write($this->sessionKey, $this->user);
@@ -470,7 +470,7 @@ class BeAuthComponent extends Object {
 		} else {
 			if ($historyConf["showDuplicates"] === false) {
 				foreach ($history as $h) {
-					if ($h["path"] == $historyItem["path"]) {
+					if ($h["url"] == $historyItem["url"]) {
 						$findPath = true;
 						break;
 					}

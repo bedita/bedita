@@ -551,7 +551,7 @@ class BeditaShell extends BeditaBaseShell {
     
 	public function checkMedia() {
 
-		$stream = new Stream();
+		$stream = ClassRegistry::init("Stream");
         // check filesystem
 		$this->out("checkMedia - checking filesystem");
 		$mediaRoot = Configure::read("mediaRoot");
@@ -564,7 +564,7 @@ class BeditaShell extends BeditaBaseShell {
                     $file = new File($file);
 					$p = substr($file->pwd(), strlen($mediaRoot));
 					if(stripos($p, "/imgcache/") !== 0) {
-						$f = $stream->findByPath($p);
+						$f = $stream->findByUri($p);
 						if($f === false) {
 							$this->out("File $p not found on db!!");
 							$mediaOk = false;
@@ -581,7 +581,7 @@ class BeditaShell extends BeditaBaseShell {
         $allStream = $stream->findAll();
 		$mediaOk = true;
         foreach ($allStream as $v) {
-        	$p = $v['Stream']['path'];
+        	$p = $v['Stream']['uri'];
         	// if $p is a local path check existence
         	if((stripos($p, "/") === 0) && !file_exists($mediaRoot.$p)) {
 					$this->out("File $p not found on filesystem!!");
@@ -792,8 +792,8 @@ class BeditaShell extends BeditaBaseShell {
 				return;
 			}
     		$data = $modsAvailable[$modName];
-    		if(!isset($data['path']))
-    			$data['path'] = $modName;
+    		if(!isset($data['url']))
+    			$data['url'] = $modName;
     		if(!isset($data['label']))
     			$data['label'] = $modName;
     		$data['name'] = $modName;

@@ -170,7 +170,7 @@ class PagesController extends AppController {
 		
 		foreach ($objects["items"] as $key => $obj) {
 			if ($obj["id"] != $main_object_id)
-				$objects["items"][$key]["moduleName"] = ClassRegistry::init("ObjectType")->field("module", array("id" => $obj["object_type_id"]));
+				$objects["items"][$key]["moduleName"] = ClassRegistry::init("ObjectType")->field("module_name", array("id" => $obj["object_type_id"]));
 			else
 				unset($objects["items"][$key]);
 		}
@@ -217,18 +217,18 @@ class PagesController extends AppController {
 
 		foreach ($objects as $key => $obj) {
 			if (empty($main_object_id) || $objects[$key]["BEObject"]["id"] != $main_object_id) {
-				$obj["BEObject"]["module"] = $obj["ObjectType"]["module"];
+				$obj["BEObject"]["module_name"] = $obj["ObjectType"]["module_name"];
 				// for media file get mime_type and size too
 				if ($this->params["form"]["relation"] == "download") {
 					$streamFields = ClassRegistry::init("Stream")->find("first", array(
 							"conditions" => array(
 								"id" => $obj["BEObject"]["id"]
 							),
-							"fields" => array("mime_type", "size")
+							"fields" => array("mime_type", "file_size")
 						)
 					);
 					$obj["BEObject"]["mime_type"] = $streamFields["Stream"]["mime_type"];
-					$obj["BEObject"]["size"] = $streamFields["Stream"]["size"];
+					$obj["BEObject"]["file_size"] = $streamFields["Stream"]["file_size"];
 				}
 				$objRelated[] = array_merge($obj["BEObject"], array("ObjectType" => $obj["ObjectType"]));
 			}
@@ -378,7 +378,7 @@ class PagesController extends AppController {
 		} else {
 			$result = "404";
 		}
-		$this->set('module',$module);
+		$this->set('module_name',$module);
 		$this->set('action',$action);
 		$this->set('path',$path);
 		$this->set('result',$result);

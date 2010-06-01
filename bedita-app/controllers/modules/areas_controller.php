@@ -389,7 +389,7 @@ class AreasController extends ModulesController {
 		$contents = $this->BeTree->getChildren($id, null, $filter, "priority", ($priorityOrder == "asc"), $page, $dim);
 		
 		foreach ($contents["items"] as $key => $item) {
-			$contents["items"][$key]["module"]= $this->ObjectType->field("module", 
+			$contents["items"][$key]["module_name"]= $this->ObjectType->field("module_name",
 				array("id" => $item["object_type_id"]));
 		}
 		

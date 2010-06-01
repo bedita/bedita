@@ -75,7 +75,7 @@ $(document).ready(function(){
 						<option value="" class="admin" style="padding-left:5px"{if $p.object_type_id == null} selected="selected"{/if}> user</option>
 					{foreach from=$conf->objectTypes key="key" item="objectTypes"}
 					{if !empty($objectTypes.model) && is_numeric($key)}
-						<option value="{$objectTypes.id}" class="{$objectTypes.module}" style="padding-left:5px"{if $p.object_type_id ==$objectTypes.id} selected="selected"{/if}> {$objectTypes.name}</option>
+						<option value="{$objectTypes.id}" class="{$objectTypes.module_name}" style="padding-left:5px"{if $p.object_type_id ==$objectTypes.id} selected="selected"{/if}> {$objectTypes.name}</option>
 					{/if}
 					{/foreach}
 					</select>
@@ -147,7 +147,7 @@ $(document).ready(function(){
 				<option value="" class="admin" style="padding-left:5px"> user</option>
 				{foreach from=$conf->objectTypes key="key" item="objectTypes"}
 				{if !empty($objectTypes.model) && is_numeric($key)}
-					<option value="{$objectTypes.id}" class="{$objectTypes.module}" style="padding-left:5px"> {$objectTypes.name}</option>
+					<option value="{$objectTypes.id}" class="{$objectTypes.module_name}" style="padding-left:5px"> {$objectTypes.name}</option>
 				{/if}
 				{/foreach}
 				</select>

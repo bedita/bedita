@@ -248,14 +248,14 @@ border-radius : 7px;
 		<tr>
 			<th>status:</th><td>{$current.status|upper}</td>
 		</tr>
-		{if !empty($current.start)}
+		{if !empty($current.start_date)}
 		<tr>
-			<th>scheduled on:</th><td>{$current.start|date_format:"%d %b %Y"}</td>
+			<th>scheduled on:</th><td>{$current.start_date|date_format:"%d %b %Y"}</td>
 		</tr>
 		{/if}
-		{if !empty($current.end)}
+		{if !empty($current.end_date)}
 		<tr>
-			<th>until on:</th><td>{$current.end|date_format:"%d %b %Y"}</td>
+			<th>until on:</th><td>{$current.end_date|date_format:"%d %b %Y"}</td>
 		</tr>
 		{/if}
 		<tr>

@@ -2,24 +2,24 @@
 -- Basic initialization data
 --
 
-INSERT INTO object_types (id, name, module) VALUES (1, 'area', 'areas');
-INSERT INTO object_types (id, name, module) VALUES (3, 'section', 'areas');
-INSERT INTO object_types (id, name, module) VALUES (10, 'b_e_file', 'multimedia');
-INSERT INTO object_types (id, name, module) VALUES (12, 'image', 'multimedia');
-INSERT INTO object_types (id, name, module) VALUES (30, 'application', 'multimedia');
-INSERT INTO object_types (id, name, module) VALUES (31, 'audio', 'multimedia');
-INSERT INTO object_types (id, name, module) VALUES (32, 'video', 'multimedia');
-INSERT INTO object_types (id, name, module) VALUES (29, 'gallery', 'galleries');
-INSERT INTO object_types (id, name, module) VALUES (13, 'comment', 'comments');
-INSERT INTO object_types (id, name, module) VALUES (18, 'short_news', 'news');
-INSERT INTO object_types (id, name, module) VALUES (21, 'event', 'events');
-INSERT INTO object_types (id, name, module) VALUES (22, 'document', 'documents');
-INSERT INTO object_types (id, name, module) VALUES (33, 'link', 'webmarks');
-INSERT INTO object_types (id, name, module) VALUES (34, 'card', 'addressbook');
-INSERT INTO object_types (id, name, module) VALUES (35, 'mail_message', 'newsletter');
-INSERT INTO object_types (id, name, module) VALUES (36, 'mail_template', 'newsletter');
-INSERT INTO object_types (id, name, module) VALUES (37, 'author', NULL);
-INSERT INTO object_types (id, name, module) VALUES (39, 'editor_note', NULL);
+INSERT INTO object_types (id, name, module_name) VALUES (1, 'area', 'areas');
+INSERT INTO object_types (id, name, module_name) VALUES (3, 'section', 'areas');
+INSERT INTO object_types (id, name, module_name) VALUES (10, 'b_e_file', 'multimedia');
+INSERT INTO object_types (id, name, module_name) VALUES (12, 'image', 'multimedia');
+INSERT INTO object_types (id, name, module_name) VALUES (30, 'application', 'multimedia');
+INSERT INTO object_types (id, name, module_name) VALUES (31, 'audio', 'multimedia');
+INSERT INTO object_types (id, name, module_name) VALUES (32, 'video', 'multimedia');
+INSERT INTO object_types (id, name, module_name) VALUES (29, 'gallery', 'galleries');
+INSERT INTO object_types (id, name, module_name) VALUES (13, 'comment', 'comments');
+INSERT INTO object_types (id, name, module_name) VALUES (18, 'short_news', 'news');
+INSERT INTO object_types (id, name, module_name) VALUES (21, 'event', 'events');
+INSERT INTO object_types (id, name, module_name) VALUES (22, 'document', 'documents');
+INSERT INTO object_types (id, name, module_name) VALUES (33, 'link', 'webmarks');
+INSERT INTO object_types (id, name, module_name) VALUES (34, 'card', 'addressbook');
+INSERT INTO object_types (id, name, module_name) VALUES (35, 'mail_message', 'newsletter');
+INSERT INTO object_types (id, name, module_name) VALUES (36, 'mail_template', 'newsletter');
+INSERT INTO object_types (id, name, module_name) VALUES (37, 'author', NULL);
+INSERT INTO object_types (id, name, module_name) VALUES (39, 'editor_note', NULL);
 
 -- ----------------------------------
 -- default user and groups
@@ -37,20 +37,20 @@ INSERT INTO `groups_users` ( `user_id` , `group_id` ) VALUES (1, 1);
 -- ---------------------------
 -- module data
 -- ---------------------------
-INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES ('1','publications', 'areas', 'areas', 'on', '1');
-INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES ('2','admin', 'admin', 'admin', 'on', '15');
-INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES ('3','translations', 'translations', 'translations', 'on', '8');
-INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES ('6','documents', 'documents', 'documents', 'on', '2');
-INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES ('7','news', 'news', 'news', 'on', '9');
-INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES ('8','galleries', 'galleries', 'galleries', 'on', '5');
-INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES ('10','events', 'events', 'events', 'on', '3');
-INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES ('12','webmarks', 'webmarks', 'webmarks', 'on', '12');
-INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES ('16','addressbook', 'addressbook', 'addressbook', 'on', '10');
-INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES ('18','newsletter', 'newsletter', 'newsletter', 'on', '11');
-INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES ('23','statistics', 'statistics', 'statistics', 'on', '16');
-INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES ('24','tags', 'tags', 'tags', 'on', '6');
-INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES ('25','comments', 'comments', 'comments', 'on', '7');
-INSERT INTO `modules` (`id`,`label`, `name`, `path`, `status`, `priority`) VALUES ('26','multimedia', 'multimedia', 'multimedia', 'on', '4');
+INSERT INTO `modules` (`id`,`label`, `name`, `url`, `status`, `priority`) VALUES ('1','publications', 'areas', 'areas', 'on', '1');
+INSERT INTO `modules` (`id`,`label`, `name`, `url`, `status`, `priority`) VALUES ('2','admin', 'admin', 'admin', 'on', '15');
+INSERT INTO `modules` (`id`,`label`, `name`, `url`, `status`, `priority`) VALUES ('3','translations', 'translations', 'translations', 'on', '8');
+INSERT INTO `modules` (`id`,`label`, `name`, `url`, `status`, `priority`) VALUES ('6','documents', 'documents', 'documents', 'on', '2');
+INSERT INTO `modules` (`id`,`label`, `name`, `url`, `status`, `priority`) VALUES ('7','news', 'news', 'news', 'on', '9');
+INSERT INTO `modules` (`id`,`label`, `name`, `url`, `status`, `priority`) VALUES ('8','galleries', 'galleries', 'galleries', 'on', '5');
+INSERT INTO `modules` (`id`,`label`, `name`, `url`, `status`, `priority`) VALUES ('10','events', 'events', 'events', 'on', '3');
+INSERT INTO `modules` (`id`,`label`, `name`, `url`, `status`, `priority`) VALUES ('12','webmarks', 'webmarks', 'webmarks', 'on', '12');
+INSERT INTO `modules` (`id`,`label`, `name`, `url`, `status`, `priority`) VALUES ('16','addressbook', 'addressbook', 'addressbook', 'on', '10');
+INSERT INTO `modules` (`id`,`label`, `name`, `url`, `status`, `priority`) VALUES ('18','newsletter', 'newsletter', 'newsletter', 'on', '11');
+INSERT INTO `modules` (`id`,`label`, `name`, `url`, `status`, `priority`) VALUES ('23','statistics', 'statistics', 'statistics', 'on', '16');
+INSERT INTO `modules` (`id`,`label`, `name`, `url`, `status`, `priority`) VALUES ('24','tags', 'tags', 'tags', 'on', '6');
+INSERT INTO `modules` (`id`,`label`, `name`, `url`, `status`, `priority`) VALUES ('25','comments', 'comments', 'comments', 'on', '7');
+INSERT INTO `modules` (`id`,`label`, `name`, `url`, `status`, `priority`) VALUES ('26','multimedia', 'multimedia', 'multimedia', 'on', '4');
 
 
 -- --------------------------------------
@@ -63,7 +63,7 @@ INSERT INTO `areas` (`id`, `public_name`)
 VALUES (1, 'bedita publication');
 INSERT INTO `sections` (`id`, `syndicate`, `priority_order`)
 VALUES (1, 'off', 'asc');
-INSERT INTO `trees` (`id`, `parent_id`, `path`, `parent_path`, `priority`) VALUES
+INSERT INTO `trees` (`id`, `parent_id`, `object_path`, `parent_path`, `priority`) VALUES
 (1, NULL, '/1', '/', 1);
 
 -- --------------------------------------

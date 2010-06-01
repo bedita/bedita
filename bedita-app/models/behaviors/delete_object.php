@@ -90,7 +90,7 @@ class DeleteObjectBehavior extends ModelBehavior {
 		if (!$tree->deleteAll(array("id" => $model->id))) {
 			throw new BeditaException(__("Error deleting tree",true));	
 		}
-		if (!$tree->deleteAll(array("path LIKE '%/".$model->id."/%'"))) {
+		if (!$tree->deleteAll(array("object_path LIKE '%/".$model->id."/%'"))) {
 			throw new BeditaException(__("Error deleting children tree",true));
 		}
 

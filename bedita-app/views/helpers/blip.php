@@ -35,9 +35,9 @@ class BlipHelper extends AppHelper {
 	
 	function thumbnail(&$obj, $htmlAttributes, $URLonly) {
 		$this->initBlipComponent();
-		$this->blipComponent->getInfoVideo($obj['uid']);
+		$this->blipComponent->getInfoVideo($obj['video_uid']);
 		
-		$src = sprintf($Component->info['thumbnailUrl'], $obj['uid']);
+		$src = sprintf($Component->info['thumbnailUrl'], $obj['video_uid']);
 		return (!$URLonly)? $this->Html->image($src, $htmlAttributes) : $src;
 	}
 	
@@ -60,7 +60,7 @@ class BlipHelper extends AppHelper {
 			$attributes["height"] = $this->conf->media_providers["blip"]["params"]["height"];
 		}
 
-		$url = rawurlencode($obj["path"]);
+		$url = rawurlencode($obj["uri"]);
 		$url .= "&format=json";
 		$url = sprintf($this->conf->media_providers["blip"]["params"]["urlembed"], $url);
 		if (!$oEmbed = $this->oEmbedInfo($url)) {
@@ -80,7 +80,7 @@ class BlipHelper extends AppHelper {
 	 */
 	function sourceEmbed(&$obj) {
 		$this->initBlipComponent();
-		$info = $this->blipComponent->getInfoVideo($obj['uid']);
+		$info = $this->blipComponent->getInfoVideo($obj['video_uid']);
 	
 		if(preg_match("/^http:\/\/blip.tv\/file\/get\/.*\.flv/",$info["mediaUrl"],$matched)) {
 			return $matched[0] ;

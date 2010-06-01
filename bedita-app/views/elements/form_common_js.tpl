@@ -5,13 +5,13 @@
 ** controlli aggiuntivi specifici per il singolo form locale del modulo vanno nel suo module.js
 ** 
 ** parametri opzionali ricevuti:
-** submiturl = url, default: currentModule.path
+** submiturl = url, default: currentModule.url
 **
 *}
 
 
 {assign var="user" value=$session->read('BEAuthUser')}
-{assign var="submiturl" value=$submiturl|default:$currentModule.path}
+{assign var="submiturl" value=$submiturl|default:$currentModule.url}
 
 
 
@@ -143,26 +143,26 @@ $(document).ready(function(){
 {/literal}{/if}*}{literal}
 
 
-{/literal}{if !empty($object.start) && ($object.start > ($smarty.now|date_format:"%Y-%m-%d %T"))}{literal}
+{/literal}{if !empty($object.start_date) && ($object.start_date > ($smarty.now|date_format:"%Y-%m-%d %T"))}{literal}
 		
 		$(".secondacolonna .modules label").addClass("future").attr("title","object scheduled in the future");
 
 {/literal}{/if}{literal}
 
-{/literal}{if !empty($object.end) && ($object.end < ($smarty.now|date_format:"%Y-%m-%d %T"))}{literal}
+{/literal}{if !empty($object.end_date) && ($object.end_date < ($smarty.now|date_format:"%Y-%m-%d %T"))}{literal}
 		
 		$(".secondacolonna .modules label").addClass("expired").attr("title","expired object");
 
 {/literal}{/if}{literal}
 
 
-{/literal}{if !empty($object.start) && ($object.start|date_format:"%Y-%m-%d" == ($smarty.now|date_format:"%Y-%m-%d"))}{literal}
+{/literal}{if !empty($object.start_date) && ($object.start_date|date_format:"%Y-%m-%d" == ($smarty.now|date_format:"%Y-%m-%d"))}{literal}
 		
 		$(".secondacolonna .modules label").addClass("today").attr("title","object scheduled to start today");
 
 {/literal}{/if}{literal}
 
-{/literal}{if !empty($object.end) && ($object.end|date_format:"%Y-%m-%d" == ($smarty.now|date_format:"%Y-%m-%d"))}{literal}
+{/literal}{if !empty($object.end_date) && ($object.end_date|date_format:"%Y-%m-%d" == ($smarty.now|date_format:"%Y-%m-%d"))}{literal}
 		
 		$(".secondacolonna .modules label").addClass("today").attr("title","object scheduled to end today");
 

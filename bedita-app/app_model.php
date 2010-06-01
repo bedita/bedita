@@ -262,7 +262,7 @@ class BEAppModel extends AppModel {
 //				$conditions[] 	= " prmsUserByID ('{$userid}', Tree.id, ".BEDITA_PERMS_READ.") > 0 " ;
 			
 			if($all)
-				$conditions[] = " path LIKE (CONCAT((SELECT path FROM trees WHERE id = {$id}), '/%')) " ;
+				$conditions[] = " `Tree`.object_path LIKE (CONCAT((SELECT object_path FROM trees WHERE id = {$id}), '/%')) " ;
 			else
 				$conditions[] = array("`Tree`.parent_id" => $id) ;
 			
@@ -496,8 +496,8 @@ class BEAppObjectModel extends BEAppModel {
      * default values for Contents
      */     
     protected function validateContent() {
-    	$this->checkDate('start');
-    	$this->checkDate('end');
+    	$this->checkDate('start_date');
+    	$this->checkDate('end_date');
     	$this->checkDuration('duration');
         return true ;
     }

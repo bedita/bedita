@@ -182,7 +182,7 @@ $(document).ready(function(){
 				{* <td>{$mobj.id}</td> *}
 				<td>{$mobj.title|default:""}</td>
 				{* <td>{$mobj.name|default:""|truncate:24:"..."}</td> *}
-				<td>{$mobj.size|default:""|filesize}</td>
+				<td>{$mobj.file_size|default:""|filesize}</td>
 				
 				<td>{$mobj.lang}</td>
 				

@@ -52,7 +52,7 @@ class NewsletterShell extends BeditaBaseShell {
 				'Address' => 'street_address',
 				'CAP' => 'zipcode',
 				'City' => 'city',
-				'State' => 'state',
+				'State' => 'state_name',
 				'Country' => 'country',
 				'Yourbirthdayis' => 'birthdate',
 				'Gender' => 'gender',

@@ -20,7 +20,7 @@
  */
 
 /**
- * Event content. Associated to items DateItem (event start and end) and GeoTag (event location)
+ * Event content. Associated to items DateItem (event start_date and end_date) and GeoTag (event location)
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$

@@ -5,10 +5,10 @@
 
 {if $object.ObjectType.name == "image"}
 
-		{if strpos($object.path,'/') === 0}
-			{assign_concat var="fileUrl"  0=$conf->mediaUrl  1=$object.path}
+		{if strpos($object.uri,'/') === 0}
+			{assign_concat var="fileUrl"  0=$conf->mediaUrl  1=$object.uri}
 		{else}
-			{assign var="fileUrl"  value=$object.path}
+			{assign var="fileUrl"  value=$object.uri}
 		{/if}
 		{image_info var="imageInfo" file=$fileUrl}
 		

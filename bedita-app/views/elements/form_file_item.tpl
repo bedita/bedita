@@ -4,7 +4,7 @@
 
 {assign var="thumbWidth" 		value = 130}
 {assign var="thumbHeight" 		value = 98}
-{assign var="filePath"			value = $item.path}
+{assign var="filePath"			value = $item.uri}
 {assign var="fileName"			value = $item.filename|default:$item.name}
 {assign var="fileTitle"			value = $item.title}
 {assign var="newPriority"		value = $item.priority+1|default:$priority}

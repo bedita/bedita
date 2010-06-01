@@ -5,7 +5,7 @@
 {$javascript->link("jquery/ui/ui.datepicker.min", false)}
 
 <script type="text/javascript">
-{if !empty($object.path)}
+{if !empty($object.uri)}
 {literal}
 
     $(document).ready(function(){

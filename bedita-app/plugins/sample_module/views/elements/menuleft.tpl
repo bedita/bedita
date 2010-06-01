@@ -10,7 +10,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 	{$view->element("messages")}
 	
-		{assign_concat var="modulePath" 0="/" 1=$currentModule.path}
+		{assign_concat var="modulePath" 0="/" 1=$currentModule.url}
 		<ul class="menuleft insidecol">
 		<li {if $method eq 'index'}class="on"{/if}>{$tr->link($currentModule.label, $modulePath)}</li>
 		{if $module_modify eq '1'}

@@ -193,7 +193,7 @@ class BeMailComponent extends Object {
 
 		$mailLog = ClassRegistry::init("MailLog");
 		$logData = array("MailLog"=>array("msg"=>$msg, 
-			"recipient" => $recipient, "level" => $level, 
+			"recipient" => $recipient, "log_level" => $level,
 			"subject" => $subj));
 		if(!empty($data)) {
 			$logData["MailLog"]["mail_params"]	= serialize($data);

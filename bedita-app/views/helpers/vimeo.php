@@ -33,7 +33,7 @@ class VimeoHelper extends AppHelper {
 	var $helpers = array("Html");
 	
 	function thumbnail(&$obj, $htmlAttributes, $URLonly) {
-		$url = rawurlencode($obj["path"]);
+		$url = rawurlencode($obj["uri"]);
 		if (!$oEmbed = $this->oEmbedVideo($url)) {
 			return false;
 		}
@@ -50,7 +50,7 @@ class VimeoHelper extends AppHelper {
 	 */
 	function embed(&$obj, $attributes) {
 		$conf = Configure::getInstance();
-		$url = rawurlencode($obj["path"]);
+		$url = rawurlencode($obj["uri"]);
 		if (empty($attributes["width"]) && empty($attributes["height"])) {
 			$attributes["width"] = $conf->media_providers["vimeo"]["params"]["width"];
 			$attributes["height"] = $conf->media_providers["vimeo"]["params"]["height"];
@@ -74,7 +74,7 @@ class VimeoHelper extends AppHelper {
 	 * @return youtube path
 	 */
 	function sourceEmbed($obj) {
-		return $obj['path'] ;
+		return $obj['uri'] ;
 	}
 	
 }

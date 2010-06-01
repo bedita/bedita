@@ -86,8 +86,8 @@ var url="{$html->url('/webmarks/checkUrl')}";
 				{if !empty($relObjects.link)}
 					{foreach from=$relObjects.link item="o"}
 						<li>
-							<span class="listrecent {$o.ObjectType.module}" style="margin-left:0px">&nbsp;&nbsp;</span>
-							<a title="{$o.created}"  href="{$html->url('/')}{$o.ObjectType.module}/view/{$o.id}">{$o.title}</a>
+							<span class="listrecent {$o.ObjectType.module_name}" style="margin-left:0px">&nbsp;&nbsp;</span>
+							<a title="{$o.created}"  href="{$html->url('/')}{$o.ObjectType.module_name}/view/{$o.id}">{$o.title}</a>
 						</li>
 					{/foreach}
 				{else}

@@ -41,7 +41,7 @@ class TreeTestCase extends BeditaTestCase {
  		$this->Tree->cacheQueries = false;
  		pr("Building tree:");
  		// clean tree
- 		$this->Tree->deleteAll(array("path LIKE '/%'"));
+ 		$this->Tree->deleteAll(array("object_path LIKE '/%'"));
  		$this->requiredData(array("buildTree"));
  		$this->saveObject($this->data['buildTree']);
 		$tree = $this->Tree->getAll() ;
@@ -120,7 +120,7 @@ class TreeTestCase extends BeditaTestCase {
 			pr("<span style='color: green'>Section 13 (id:".$idOldParent.") is no longer parent of Section 14 (id:".$idToMove.")</span>");
 		}
 
-		$newPath = $this->Tree->field("path", array(
+		$newPath = $this->Tree->field("object_path", array(
 			"id" => $idToMove,
 			"parent_id" => $idNewParent
 		));
@@ -229,7 +229,7 @@ class TreeTestCase extends BeditaTestCase {
 			
 		$section->del($idSection);
 
-		$treeRes = $this->Tree->find("all", array("conditions" => array("path LIKE '%/".$idSection."/%'")));
+		$treeRes = $this->Tree->find("all", array("conditions" => array("object_path LIKE '%/".$idSection."/%'")));
 		if ($this->assertEqual(array(), $treeRes)) {
 			pr("<span style='color: green'>Tree cleaned</span>");
 		} else {

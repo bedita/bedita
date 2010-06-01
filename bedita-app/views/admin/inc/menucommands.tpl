@@ -5,7 +5,7 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
-	{assign_concat var="back" 0=$html->url('/') 1=$currentModule.path}
+	{assign_concat var="back" 0=$html->url('/') 1=$currentModule.url}
 
 
 	<div class="modules">

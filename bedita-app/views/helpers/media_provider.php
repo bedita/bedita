@@ -58,7 +58,7 @@ class MediaProviderHelper extends AppHelper {
 		
 		// provider helper to manage video/audio type don't exists
 		if (!$helper = $this->getProviderHelper($obj)){
-			$obj['path'] = ($this->checkURL($obj['path'])) ? $obj['path'] : Configure::read('mediaUrl').$obj['path'];
+			$obj['uri'] = ($this->checkURL($obj['uri'])) ? $obj['uri'] : Configure::read('mediaUrl').$obj['uri'];
 			$beEmbedFlash = $this->getHelper("BeEmbedFlash");
 			return  $beEmbedFlash->embed($obj, $params, $attributes);
 		}
@@ -68,7 +68,7 @@ class MediaProviderHelper extends AppHelper {
 			return $helper->embed($obj, $attributes);
 		} else {
 			// try to use internal player
-			$obj['path'] = $this->sourceEmbed($obj);
+			$obj['uri'] = $this->sourceEmbed($obj);
 			$beEmbedFlash = $this->getHelper("BeEmbedFlash");
 			$res = $beEmbedFlash->embed($obj, $params, $attributes);
 			if ( $res === false ) {

@@ -12,8 +12,8 @@ Menu a SX valido per tutte le pagine del controller.
 	<ul class="menuleft insidecol">
 	{if $module_modify eq '1'}
 
-			<li><a href="{$html->url('/')}{$currentModule.path}/view">{t}New link{/t}</a></li>
-			<li><a href="{$html->url('/')}{$currentModule.path}/categories">{t}Categories{/t}</a></li>
+			<li><a href="{$html->url('/')}{$currentModule.url}/view">{t}New link{/t}</a></li>
+			<li><a href="{$html->url('/')}{$currentModule.url}/categories">{t}Categories{/t}</a></li>
 	{/if}
 	</ul>
 

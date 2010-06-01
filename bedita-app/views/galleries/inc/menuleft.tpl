@@ -12,7 +12,7 @@ Menu a SX valido per tutte le pagine del controller.
 	<ul class="menuleft insidecol">
 	{if $module_modify eq '1'}
 
-		<li><a href="{$html->url('/')}{$currentModule.path}/view">{t}Create new gallery{/t}</a></li>
+		<li><a href="{$html->url('/')}{$currentModule.url}/view">{t}Create new gallery{/t}</a></li>
 
 	{/if}
 	</ul>

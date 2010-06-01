@@ -104,7 +104,7 @@ $(document).ready(function(){
 					<td colspan=2 class="vlist"><a href="{$html->url('view/')}{$item.id}">{$item.title}</a></td>
 					<td colspan=2 class="vlist">{$item.name}</td>
 					<td colspan=2 class="vlist">{$item.mediatype}</td>
-					<td colspan=2 class="vlist">{math equation="x/y" x=$item.size|default:0 y=1024 format="%d"|default:""} KB</td>
+					<td colspan=2 class="vlist">{math equation="x/y" x=$item.file_size|default:0 y=1024 format="%d"|default:""} KB</td>
 					<td colspan=2 class="vlist">{$item.status}</td>
 					<td colspan=2 class="vlist">{$item.created|date_format:'%b %e, %Y'}</td>
 					{if (empty($item.fixed))}	

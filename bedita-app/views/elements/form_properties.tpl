@@ -35,15 +35,15 @@
 			
 			
 			<input size="10" type="text" style="vertical-align:middle"
-			class="dateinput" name="data[start]" id="start" 
-			value="{if !empty($object.start)}{$object.start|date_format:$conf->datePattern}{/if}" />
+			class="dateinput" name="data[start_date]" id="start"
+			value="{if !empty($object.start_date)}{$object.start_date|date_format:$conf->datePattern}{/if}" />
 			&nbsp;
 			
 			<label>{t}to{/t}: </label>&nbsp;
 			
 			<input size="10" type="text" 
-			class="dateinput" name="data[end]" id="end" 
-			value="{if !empty($object.end)}{$object.end|date_format:$conf->datePattern}{/if}" />
+			class="dateinput" name="data[end_date]" id="end"
+			value="{if !empty($object.end_date)}{$object.end_date|date_format:$conf->datePattern}{/if}" />
 
 		</td>
 	</tr>

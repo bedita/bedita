@@ -8,7 +8,7 @@
 		<table class="graph">
 			{foreach from=$totalObjectsNumber key="objectType" item="num" name="fctotal"}
 				{if $num > 0} 
-				{if isset($conf->objectTypes[$objectType].module)}
+				{if isset($conf->objectTypes[$objectType].module_name)}
 				<tr>
 					<td class="label">{$objectType}</td>
 					<td style="white-space:nowrap;">
@@ -31,7 +31,7 @@
 				<td class="label">{$date|date_format:"%b %Y"}</td>
 				<td style="white-space:nowrap;">
 				{foreach from=$types key="objectType" item="num"}
-					{if isset($conf->objectTypes[$objectType].module)}
+					{if isset($conf->objectTypes[$objectType].module_name)}
 					{math assign="pixel" equation="(x/y)*400" x=$num y=$maxTotalTimeEvolution}
 					<div title="{$objectType}" style="width:{$pixel|format_number}px;" class="bar {$objectType}">&nbsp</div>
 					{/if}
@@ -49,11 +49,11 @@
 		<table class="graph">
 			{foreach from=$contentCommented item="c"}
 			{math assign="pixel" equation="(x/y)*350" x=$c.count_relations y=$maxContentCommented}
-			{if isset($c.ObjectType.module)}
+			{if isset($c.ObjectType.module_name)}
 			<tr>
 				<td class="label">{$c.title|truncate:20|default:'<i>[no title]</i>'}</td>
 				<td style="white-space:nowrap;">
-					<div style="width:{$pixel|format_number}px;" class="bar {$c.ObjectType.module}">&nbsp</div><span class="value">{$c.count_relations}</span>
+					<div style="width:{$pixel|format_number}px;" class="bar {$c.ObjectType.module_name}">&nbsp</div><span class="value">{$c.count_relations}</span>
 				</td>
 			</tr>
 			{/if}
@@ -67,14 +67,14 @@
 		<table class="graph">
 			{foreach from=$relatedObject item="c"}
 			{math assign="pixel" equation="(x/y)*350" x=$c.count_relations y=$maxRelatedObject}
-			{if isset($c.ObjectType.module)}
+			{if isset($c.ObjectType.module_name)}
 			<tr>
 				<td class="label">
-					<a href="{$html->url('/')}{$c.ObjectType.module}/view/{$c.id}">
+					<a href="{$html->url('/')}{$c.ObjectType.module_name}/view/{$c.id}">
 					{$c.title|truncate:20|default:'<i>[no title]</i>'}</a>
 				</td>
 				<td style="white-space:nowrap;">
-					<div style="width:{$pixel|format_number}px;" class="bar {$c.ObjectType.module}">&nbsp</div><span class="value">{$c.count_relations}</span>
+					<div style="width:{$pixel|format_number}px;" class="bar {$c.ObjectType.module_name}">&nbsp</div><span class="value">{$c.count_relations}</span>
 				</td>
 			</tr>
 			{/if}

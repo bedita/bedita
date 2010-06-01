@@ -106,7 +106,7 @@ $(document).ready(function(){
 			<tr class="rowList" id="tr_{$mod.Module.id}">
 				
 				<td>
-					<div style="float:left; vertical-align:middle; margin:0px 10px 0px -10px; width:20px;" class="{$mod.Module.path}">
+					<div style="float:left; vertical-align:middle; margin:0px 10px 0px -10px; width:20px;" class="{$mod.Module.url}">
 					&nbsp;</div>
 					
 					{$mod.Module.label}

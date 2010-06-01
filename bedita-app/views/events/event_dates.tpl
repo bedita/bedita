@@ -19,10 +19,10 @@ $(document).ready(function(){
 {foreach key="name" item="d" from=$object.DateItem}
 	<span style="font-weight:bold;">{t}Event start{/t}:</span>
 	<input type="text" class="{literal}{checkDate:true}{/literal}" title="{t}start has to be a valid date in the following format:{/t} {$conf->dateFormatValidation}" 
-		name="data[DateItem][{$name}][start]" id="eventStart{$name}" value="{if !empty($d.start)}{$d.start|date_format:$conf->datePattern}{/if}"/>
+		name="data[DateItem][{$name}][start_date]" id="eventStart{$name}" value="{if !empty($d.start_date)}{$d.start_date|date_format:$conf->datePattern}{/if}"/>
 	<span style="font-weight:bold;">{t}end{/t}:</span>
 	<input type="text" class="{literal}{checkDate:true}{/literal}" title="{t}end has to be a valid date in the following format:{/t} {$conf->dateFormatValidation}" 
-		name="data[DateItem][{$name}][end]" id="eventEnd{$name}" value="{if !empty($d.end)}{$d.end|date_format:$conf->datePattern}{/if}"/>
+		name="data[DateItem][{$name}][end_date]" id="eventEnd{$name}" value="{if !empty($d.end_date)}{$d.end_date|date_format:$conf->datePattern}{/if}"/>
 	<hr/>
 {/foreach}
 *}
@@ -31,9 +31,9 @@ $(document).ready(function(){
 	<br/>
 	<span style="font-weight:bold;">{t}start{/t}</span>
 	<input type="text" class="{literal}{{/literal}checkDate:'{$conf->dateFormatValidation}'{literal}}{/literal}" title="{t 1=$conf->dateFormatValidation}Please enter a valid date in the %1 format{/t}" 
-		name="data[DateItem][{$idx}][start]" id="eventStart" value="{if !empty($d.start)}{$d.start|date_format:$conf->datePattern}{/if}"/>
+		name="data[DateItem][{$idx}][start_date]" id="eventStart" value="{if !empty($d.start_date)}{$d.start_date|date_format:$conf->datePattern}{/if}"/>
 	<input type="text" id="timeStart" name="data[DateItem][{$idx}][timeStart]" class="{literal}{checkTime: true}{/literal}"  
-		title="{t 1='HH:mm'}Please enter a valid time in the %1 format{/t}" value="{if !empty($d.start)}{$d.start|date_format:"%H:%M"}{/if}" size="10"/>
+		title="{t 1='HH:mm'}Please enter a valid time in the %1 format{/t}" value="{if !empty($d.start_date)}{$d.start_date|date_format:"%H:%M"}{/if}" size="10"/>
 	<span style="font-weight:bold;">{t}end{/t}:</span>
 	{strip}
 	<input type="text" class="{literal}{{/literal}
@@ -41,10 +41,10 @@ $(document).ready(function(){
 									dateGreaterThen: new Array('{$conf->dateFormatValidation}','eventStart')
 							  {literal}}{/literal}" 
 						title="{t 1=$conf->dateFormatValidation}Please enter a valid date in the %1 format and greater than the previous date{/t}" 
-		name="data[DateItem][{$idx}][end]" id="eventEnd" value="{if !empty($d.end)}{$d.end|date_format:$conf->datePattern}{/if}"/>
+		name="data[DateItem][{$idx}][end_date]" id="eventEnd" value="{if !empty($d.end_date)}{$d.end_date|date_format:$conf->datePattern}{/if}"/>
 	{/strip}
 	<input id="timeEnd" name="data[DateItem][{$idx}][timeEnd]" type="text"  class="{literal}{checkTime: true}{/literal}"
-		title="{t 1='HH:mm'}Please enter a valid time in the %1 format{/t}" value="{if !empty($d.end)}{$d.end|date_format:"%H:%M"}{/if}" size="10"/>
+		title="{t 1='HH:mm'}Please enter a valid time in the %1 format{/t}" value="{if !empty($d.end_date)}{$d.end_date|date_format:"%H:%M"}{/if}" size="10"/>
 	<hr/>
 </fieldset>
 </div>

@@ -134,7 +134,6 @@ class BeEmbedMediaHelper extends AppHelper {
 	private function showImage ($obj, $params, $htmlAttributes)
 	{
 		$src = $this->getImageSrc($obj, $params);
-		
 		if (!$src) {
 			$src = $this->getMediaTypeImage($obj);
 		}
@@ -150,11 +149,11 @@ class BeEmbedMediaHelper extends AppHelper {
 	
 	private function getImageSrc($obj, $params) {
 		// not local file
-		if(preg_match(Configure::read("validate_resource.URL"), $obj["path"])) {
-			$src = $obj['path'];
+		if(preg_match(Configure::read("validate_resource.URL"), $obj["uri"])) {
+			$src = $obj['uri'];
 		//local file
 		} else {
-			$src = ($params["presentation"] == "thumb")? $this->BeThumb->image ($obj, $params) : $this->_conf['url'] . $obj['path'];
+			$src = ($params["presentation"] == "thumb")? $this->BeThumb->image ($obj, $params) : $this->_conf['url'] . $obj['uri'];
 		}
 		return $src;
 	}
@@ -171,8 +170,8 @@ class BeEmbedMediaHelper extends AppHelper {
 	private function showVideo($obj, $params, $htmlAttributes)
 	{
 	
-		if (!preg_match(Configure::read("validate_resource.URL"), $obj["path"])) {
-			$obj['path'] = $this->_conf["url"] . $obj["path"]; 
+		if (!preg_match(Configure::read("validate_resource.URL"), $obj["uri"])) {
+			$obj['uri'] = $this->_conf["url"] . $obj["uri"];
 		}
 		$URLonly = (!empty($params["URLonly"]))? true : false;
 		if ($params["presentation"] == "thumb") {
@@ -193,7 +192,7 @@ class BeEmbedMediaHelper extends AppHelper {
 		}
 		
 		if (empty($output)) {
-			$output = $obj['path'];
+			$output = $obj['uri'];
 		}
 		
 		return $output;
@@ -210,19 +209,19 @@ class BeEmbedMediaHelper extends AppHelper {
 	 */
 	private function showAudio($obj, $params, $htmlAttributes)
 	{
-		if (!preg_match(Configure::read("validate_resource.URL"), $obj["path"])) {
-			$obj['path'] = $this->_conf["url"] . $obj["path"]; 
+		if (!preg_match(Configure::read("validate_resource.URL"), $obj["uri"])) {
+			$obj['uri'] = $this->_conf["url"] . $obj["uri"];
 		}
 		
 		if (!empty($params["URLonly"]))
-			return $obj['path'];
+			return $obj['uri'];
 
 		if ($params["presentation"] == "link") {
-			return $this->Html->link($obj['title'],$obj['path'], $htmlAttributes);
+			return $this->Html->link($obj['title'],$obj['uri'], $htmlAttributes);
 		} elseif ($params["presentation"] == "full") {
 			$output = $this->MediaProvider->embed($obj, $params, $htmlAttributes);
 			if (empty($output)) {
-				$output = $obj['path'];
+				$output = $obj['uri'];
 			}
 			return $output;
 		} else {
@@ -241,18 +240,18 @@ class BeEmbedMediaHelper extends AppHelper {
 	 * @return string, html
 	 */
 	private function showBEFile($obj, $params, $htmlAttributes) {
-		if (!preg_match(Configure::read("validate_resource.URL"), $obj["path"])) {
-			$obj['path'] = $this->_conf["url"] . $obj["path"]; 
+		if (!preg_match(Configure::read("validate_resource.URL"), $obj["uri"])) {
+			$obj['uri'] = $this->_conf["url"] . $obj["uri"];
 		}
 		
 		if (!empty($params["URLonly"]))
-			return $obj['path'];
+			return $obj['uri'];
 		
 		if ($params["presentation"] == "thumb") {
 			$img = $this->getMediaTypeImage($obj);
 			return $this->Html->image($img, $htmlAttributes);
 		} else {
-			return $this->Html->link($obj['title'],$obj['path'], $htmlAttributes);
+			return $this->Html->link($obj['title'],$obj['uri'], $htmlAttributes);
 		}
 	}
 	
@@ -263,8 +262,8 @@ class BeEmbedMediaHelper extends AppHelper {
 			
 			if ($obj["application_name"] == "flash") {
 				
-				if (!preg_match(Configure::read("validate_resource.URL"), $obj["path"])) {
-					$obj['path'] = $this->_conf["url"] . $obj["path"]; 
+				if (!preg_match(Configure::read("validate_resource.URL"), $obj["uri"])) {
+					$obj['uri'] = $this->_conf["url"] . $obj["uri"];
 				}
 				
 				if (empty($htmlAttributes["width"]) && !empty($obj["width"])) {

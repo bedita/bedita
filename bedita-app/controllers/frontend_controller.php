@@ -44,8 +44,8 @@ abstract class FrontendController extends AppController {
 	
 	/**
 	 * define which publication date has to be checked
-	 * "start" = true to check Content.start <= now
-	 * "end" = true to check Content.end >= now
+	 * "start" = true to check Content.start_date <= now
+	 * "end" = true to check Content.end_date >= now
 	 * 
 	 * @var array
 	 */
@@ -431,12 +431,12 @@ abstract class FrontendController extends AppController {
 	 */
 	protected function checkPubblicationDate(array $obj) {
 		$currDate = strftime("%Y-%m-%d");
-		if(isset($obj["start"]) && $this->checkPubDate["start"]) {
-			if(strncmp($currDate, $obj["start"], 10) < 0)
+		if(isset($obj["start_date"]) && $this->checkPubDate["start"]) {
+			if(strncmp($currDate, $obj["start_date"], 10) < 0)
 				return false;
 		}
-		if(isset($obj["end"]) && $this->checkPubDate["end"]) {
-			if(strncmp($currDate, $obj["end"], 10) > 0)
+		if(isset($obj["end_date"]) && $this->checkPubDate["end"]) {
+			if(strncmp($currDate, $obj["end_date"], 10) > 0)
 				return false;
 		}
 		return true;
@@ -584,7 +584,7 @@ abstract class FrontendController extends AppController {
 		
 		$section_id = is_numeric($secName) ? $secName : $this->BEObject->getIdFromNickname($secName);
 		
-		$path = $this->Tree->field("path", array("id" => $section_id));
+		$path = $this->Tree->field("object_path", array("id" => $section_id));
 		$parents = explode("/", trim($path,"/"));
 		
 		$level = 0;
@@ -759,7 +759,7 @@ abstract class FrontendController extends AppController {
 				$description .= (!empty($obj['abstract']) && !empty($description))? "<hr/>" .  $obj['abstract'] : $obj['abstract'];
 				$description .= (!empty($obj['body']) && !empty($description))? "<hr/>" .  $obj['body'] : $obj['body'];
 	            $rssItems[] = array( 'title' => $obj['title'], 'description' => $description,
-	                'pubDate' => $obj['created'], 'link' => $s['path']."/".$item['nickname']);
+	                'pubDate' => $obj['created'], 'link' => $s['canonicalPath']."/".$item['nickname']);
 			}
 		}
        $this->set('items', $rssItems);
@@ -938,7 +938,7 @@ abstract class FrontendController extends AppController {
 			throw new BeditaException(__("Content not found", true));
 		}
 		
-		$obj["publication_date"] = (!empty($obj["start"]))? $obj["start"] : $obj["created"];
+		$obj["publication_date"] = (!empty($obj["start_date"]))? $obj["start_date"] : $obj["created"];
 
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
 
@@ -1038,11 +1038,11 @@ abstract class FrontendController extends AppController {
 		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
 		
 		// add rules for start and end pubblication date
-		if ($this->checkPubDate["start"] == true && empty($filter["Content.start"])) {
-				$filter["Content.start"] = "<= '" . date("Y-m-d") . "' OR `Content`.start IS NULL";
+		if ($this->checkPubDate["start"] == true && empty($filter["Content.start_date"])) {
+				$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR `Content`.start_date IS NULL";
 		}
-		if ($this->checkPubDate["end"] == true && empty($filter["Content.end"])) {
-				$filter["Content.end"] = ">= '" . date("Y-m-d") . "' OR `Content`.end IS NULL";
+		if ($this->checkPubDate["end"] == true && empty($filter["Content.end_date"])) {
+				$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR `Content`.end_date IS NULL";
 		}
 		
 		$items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
@@ -1083,7 +1083,7 @@ abstract class FrontendController extends AppController {
 		$content_id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
 		
 		// if it's defined frontend publication id then search content inside that publication else in all BEdita
-		$conditions = (!empty($this->publication["id"]))? "id = $content_id AND path LIKE '/" . $this->publication["id"] . "/%'" : "id = $content_id" ;
+		$conditions = (!empty($this->publication["id"]))? "id = $content_id AND object_path LIKE '/" . $this->publication["id"] . "/%'" : "id = $content_id" ;
 		
 		$section_id = $this->Tree->field('parent_id',$conditions, "priority");
 		
@@ -1293,11 +1293,11 @@ abstract class FrontendController extends AppController {
 		}
 		$this->searchOptions = array_merge($this->searchOptions, $this->params["named"]);
 		// add rules for start and end pubblication date
-		if ($this->checkPubDate["start"] == true && empty($this->searchOptions["filter"]["Content.start"])) {
-				$this->searchOptions["filter"]["Content.start"] = "<= '" . date("Y-m-d") . "' OR `Content`.start IS NULL";
+		if ($this->checkPubDate["start"] == true && empty($this->searchOptions["filter"]["Content.start_date"])) {
+				$this->searchOptions["filter"]["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR `Content`.start_date IS NULL";
 		}
-		if ($this->checkPubDate["end"] == true && empty($this->searchOptions["filter"]["Content.end"])) {
-				$this->searchOptions["filter"]["Content.end"] = ">= '" . date("Y-m-d") . "' OR `Content`.end IS NULL";
+		if ($this->checkPubDate["end"] == true && empty($this->searchOptions["filter"]["Content.end_date"])) {
+				$this->searchOptions["filter"]["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR `Content`.end_date IS NULL";
 		}
 		$result = $this->BeTree->getDescendants($this->publication["id"], $this->status, $this->searchOptions["filter"], $this->searchOptions["order"], $this->searchOptions["dir"], $this->searchOptions["page"], $this->searchOptions["dim"]);
 		$this->set("searchResult", $result); 
@@ -1443,10 +1443,10 @@ abstract class FrontendController extends AppController {
 				foreach ($itemGroup as $item) {
 					
 					// DateItem, pubblication or creation date
-					if(!empty($item["DateItem"][0]["start"]))
-						$refDate = $item["DateItem"][0]["start"];
+					if(!empty($item["DateItem"][0]["start_date"]))
+						$refDate = $item["DateItem"][0]["start_date"];
 					else
-						$refDate = isset($item["start"])? $item["start"] : $item["created"];
+						$refDate = isset($item["start_date"])? $item["start_date"] : $item["created"];
 					 
 					$data = explode("-", $refDate);
 					$year = $data[0];
@@ -1561,11 +1561,11 @@ abstract class FrontendController extends AppController {
 		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
 		
 		// add rules for start and end pubblication date
-		if ($this->checkPubDate["start"] == true && empty($filter["Content.start"])) {
-				$filter["Content.start"] = "<= '" . date("Y-m-d") . "' OR `Content`.start IS NULL";
+		if ($this->checkPubDate["start"] == true && empty($filter["Content.start_date"])) {
+				$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR `Content`.start_date IS NULL";
 		}
-		if ($this->checkPubDate["end"] == true && empty($filter["Content.end"])) {
-				$filter["Content.end"] = ">= '" . date("Y-m-d") . "' OR `Content`.end IS NULL";
+		if ($this->checkPubDate["end"] == true && empty($filter["Content.end_date"])) {
+				$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR `Content`.end_date IS NULL";
 		}
 		
 		$contents = $this->BeTree->getChildren($section_id, $this->status, $filter, $order, $dir, $page, $dim);
@@ -1656,22 +1656,22 @@ abstract class FrontendController extends AppController {
 		}
 
 		// media with provider or file on filesystem? TODO: use DS?? 
-		if(!empty($obj['provider']) || $obj['path'][0] !== "/") {
-			$this->redirect($obj['path']);
+		if(!empty($obj['provider']) || $obj['uri'][0] !== "/") {
+			$this->redirect($obj['uri']);
 		}
 
 		// TODO: for some extensions or mime-types redirect to media URL
 		if(isset($conf->redirectMimeTypesDownload) && 
 			in_array($obj['mime_type'], $conf->redirectMimeTypesDownload)) {
-			$this->redirect($conf->mediaUrl.$obj['path']);
+			$this->redirect($conf->mediaUrl.$obj['uri']);
 		}
 			
-		$path = ($conf->mediaRoot).$obj['path'];
+		$path = ($conf->mediaRoot).$obj['uri'];
 		$f = new File($path);
 		$info = $f->info();
 		if(isset($conf->redirectExtensionsDownload) && 
 				in_array($info['extension'], $conf->redirectExtensionsDownload)) {
-			$this->redirect($conf->mediaUrl.$obj['path']);
+			$this->redirect($conf->mediaUrl.$obj['uri']);
 		}	
 
 		Configure::write('debug', 0);
@@ -1684,7 +1684,7 @@ abstract class FrontendController extends AppController {
 		header('Expires: 0');
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		header('Pragma: public');
-		header('Content-Length: ' . $obj['size']);
+		header('Content-Length: ' . $obj['file_size']);
 		ob_clean();
    		flush();
 		readfile($path);

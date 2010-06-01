@@ -113,18 +113,6 @@ class FilesController extends AppController {
 	 	$this->layout = "empty" ;
 	}
 
-	function open($id) {
-		$file = $this->get($id);
-		if (isset($file)) {
-			$this->redirect($file['File']['path'] . $file['File']['name']);
-			exit();
-		}
-	}
-
-	function get($id) {
-		return $this->BEFile->findById($id);
-	}
-
 	protected function initAttributes() {
 		// multiple upload
 		if ($this->RequestHandler->isFlash()) {

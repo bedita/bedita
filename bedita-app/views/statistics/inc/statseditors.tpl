@@ -18,7 +18,7 @@
 			<td style="text-align:right; text-align:center; border-right:1px solid gray; border-bottom:0px solid gray"> {$totalObjectsForUser[$user_id]} </td>
 				<td style="white-space:nowrap;">
 				{foreach from=$user.objects key="objectType" item="num"}
-					{if isset($conf->objectTypes[$objectType].module)}
+					{if isset($conf->objectTypes[$objectType].module_name)}
 					{math assign="pixel" equation="(x/y)*350" x=$num y=$maxObjectsForUser}
 					<div title="{$objectType}" style="width:{$pixel|format_number}px;" class="bar {$objectType}"></div>
 					{/if}

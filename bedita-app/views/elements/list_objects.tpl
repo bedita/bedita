@@ -118,15 +118,15 @@ $(document).ready(function(){
 		
 		<tr class="obj {$objects[i].status}">
 			<td class="checklist">
-			{if !empty($objects[i].start) && ($objects[i].start|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}
+			{if !empty($objects[i].start_date) && ($objects[i].start_date|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}
 			
 				<img title="{t}object scheduled in the future{/t}" src="{$html->webroot}img/iconFuture.png" style="height:28px; vertical-align:top;">
 			
-			{elseif !empty($objects[i].end) && ($objects[i].end|date_format:"%Y%m%d") < ($smarty.now|date_format:"%Y%m%d")}
+			{elseif !empty($objects[i].end_date) && ($objects[i].end_date|date_format:"%Y%m%d") < ($smarty.now|date_format:"%Y%m%d")}
 			
 				<img title="{t}object expired{/t}" src="{$html->webroot}img/iconPast.png" style="height:28px; vertical-align:top;">
 			
-			{elseif (!empty($objects[i].start) && (($objects[i].start|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d"))) or ( !empty($objects[i].end) && (($objects[i].end|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d")))}
+			{elseif (!empty($objects[i].start_date) && (($objects[i].start_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d"))) or ( !empty($objects[i].end_date) && (($objects[i].end_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d")))}
 			
 				<img title="{t}object scheduled today{/t}" src="{$html->webroot}img/iconToday.png" style="height:28px; vertical-align:top;">
 

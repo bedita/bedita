@@ -112,8 +112,8 @@ class TransactionTestCase extends BeditaTestCase {
 		$this->assertEqual(file_exists($path), true);
 		
 		// Insert object into the DB
-		$data['size'] = filesize($path) ;
-		$data['path'] = $path ;
+		$data['file_size'] = filesize($path) ;
+		$data['uri'] = $path ;
 		$numRecordBegin = $this->_getNumRecordsTable() ; 
 		
 		$result = $this->BEFile->save($data) ;

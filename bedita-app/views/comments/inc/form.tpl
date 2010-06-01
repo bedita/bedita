@@ -43,7 +43,7 @@
 		<td colspan="3">
 			{assign var="o" value=$object.ReferenceObject}
 			<a href="{$html->url('/')}view/{$o.id}"><span title="{$conf->objectTypes[$o.object_type_id].name}" 
-				class="listrecent {$conf->objectTypes[$o.object_type_id].module}">&nbsp;</span>
+				class="listrecent {$conf->objectTypes[$o.object_type_id].module_name}">&nbsp;</span>
 				{$o.title|default:'<i>[no title]</i>'}
 			</a>
 		</td>

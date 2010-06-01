@@ -33,20 +33,20 @@ class DateItem extends BEAppModel
 	var $recursive = 0 ;
 
 	var $validate = array(
-//		'start' => array('rule' => 'notEmpty'),
-//		'end' => array('rule' => 'notEmpty')
+//		'start_date' => array('rule' => 'notEmpty'),
+//		'end_date' => array('rule' => 'notEmpty')
 	) ;
 	
 	function beforeValidate() {
 
-        $this->checkDate('start');
-        $this->checkDate('end');
+        $this->checkDate('start_date');
+        $this->checkDate('end_date');
         $data = &$this->data[$this->name] ;
-        if(!empty($data['start']) && !empty($data['timeStart'])) {
-            $data['start'] .= " " . $data['timeStart'];
+        if(!empty($data['start_date']) && !empty($data['timeStart'])) {
+            $data['start_date'] .= " " . $data['timeStart'];
         }
-        if (!empty($data['end']) && !empty($data['timeEnd'])) {
-            $data['end'] .= " " . $data['timeEnd'];
+        if (!empty($data['end_date']) && !empty($data['timeEnd'])) {
+            $data['end_date'] .= " " . $data['timeEnd'];
         }
         
         return true;

@@ -193,7 +193,7 @@ class="{literal}{required:true}{/literal}" title="{t}Check at least one group{/t
 				<tr>
 					<th style="white-space:nowrap">
 					<div style="float:left; vertical-align:middle; margin:0px 10px 0px -10px; width:20px;" 
-					class="{$mod.path}">
+					class="{$mod.url}">
 					&nbsp;</div>
 					
 					{$mod.label}

@@ -132,13 +132,13 @@ class BeBlipComponent extends Object {
 	 * @return boolean
 	 */
 	public function setInfoToSave(&$data) {
-		if(!$this->getInfoVideo($data["uid"])) {
+		if(!$this->getInfoVideo($data["video_uid"])) {
 			return false;
 		}
 		
 		$data['title'] = (empty($data['title']))? $this->info['title'] : trim($data['title']);
 		$data['description'] = (empty($data['description']))? $this->info['description'] : $data['description'];
-		$data['path']		= $this->info['url'] ;
+		$data['url']		= $this->info['url'] ;
 		if (empty($data['thumbnail']))
 			$data['thumbnail']	= $this->info['thumbnailUrl'];
 		if (empty($data['duration']))

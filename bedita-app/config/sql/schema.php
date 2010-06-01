@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* BeditaApp schema generated on: 2010-05-25 15:05:20 : 1274794880*/
+/* BeditaApp schema generated on: 2010-06-01 17:06:26 : 1275404427*/
 class BeditaAppSchema extends CakeSchema {
 	var $name = 'BeditaApp';
 
@@ -34,7 +34,7 @@ class BeditaAppSchema extends CakeSchema {
 		'application_label' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'application_version' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 50, 'values' => NULL),
 		'application_type' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL),
-		'text_dir' => array('type' => 'enum', 'null' => true, 'default' => 'ltr', 'length' => 3, 'values' => '\'ltr\',\'rtl\''),
+		'text_dir' => array('type' => 'string', 'null' => true, 'default' => 'ltr', 'length' => 10, 'values' => NULL),
 		'text_lang' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'width' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 5, 'values' => NULL),
 		'height' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 5, 'values' => NULL),
@@ -62,7 +62,7 @@ class BeditaAppSchema extends CakeSchema {
 		'ip_address' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 15, 'values' => NULL, 'key' => 'unique'),
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL, 'values' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => false, 'default' => NULL, 'values' => NULL),
-		'status' => array('type' => 'set', 'null' => false, 'default' => 'ban', 'length' => 6, 'values' => '\'ban\',\'accept\'', 'key' => 'index'),
+		'status' => array('type' => 'string', 'null' => false, 'default' => 'ban', 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'ip_unique' => array('column' => 'ip_address', 'unique' => 1), 'status_idx' => array('column' => 'status', 'unique' => 0))
 	);
 	var $cake_sessions = array(
@@ -83,11 +83,10 @@ class BeditaAppSchema extends CakeSchema {
 		'company_name' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 128, 'values' => NULL),
 		'company_kind' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 64, 'values' => NULL),
 		'street_address' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'street_number' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 32, 'values' => NULL),
 		'city' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'zipcode' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 32, 'values' => NULL),
 		'country' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 128, 'values' => NULL),
-		'state' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 128, 'values' => NULL),
+		'state_name' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 128, 'values' => NULL),
 		'email' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 128, 'values' => NULL),
 		'email2' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 128, 'values' => NULL),
 		'phone' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 32, 'values' => NULL),
@@ -96,7 +95,7 @@ class BeditaAppSchema extends CakeSchema {
 		'website' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 128, 'values' => NULL),
 		'privacy_level' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'values' => NULL),
 		'newsletter_email' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'mail_status' => array('type' => 'enum', 'null' => false, 'default' => 'valid', 'length' => 7, 'values' => '\'blocked\',\'valid\''),
+		'mail_status' => array('type' => 'string', 'null' => false, 'default' => 'valid', 'length' => 10, 'values' => NULL),
 		'mail_bounce' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 10, 'values' => NULL),
 		'mail_last_bounce_date' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'mail_html' => array('type' => 'boolean', 'null' => false, 'default' => '1', 'values' => NULL),
@@ -111,25 +110,24 @@ class BeditaAppSchema extends CakeSchema {
 		'priority' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'parent_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'parent_path' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'status' => array('type' => 'enum', 'null' => false, 'default' => 'on', 'length' => 3, 'values' => '\'on\',\'off\''),
+		'status' => array('type' => 'string', 'null' => false, 'default' => 'on', 'length' => 10, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'name_type' => array('column' => array('name', 'object_type_id'), 'unique' => 1), 'object_type_id' => array('column' => 'object_type_id', 'unique' => 0), 'index_label' => array('column' => 'label', 'unique' => 0), 'index_name' => array('column' => 'name', 'unique' => 0))
 	);
 	var $contents = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
-		'start' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'end' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
+		'start_date' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
+		'end_date' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'subject' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'abstract' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'body' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'type' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 30, 'values' => NULL),
 		'duration' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1))
 	);
 	var $date_items = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'object_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
-		'start' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'end' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
+		'start_date' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
+		'end_date' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'object_id' => array('column' => 'object_id', 'unique' => 0))
 	);
 	var $event_logs = array(
@@ -137,9 +135,9 @@ class BeditaAppSchema extends CakeSchema {
 		'userid' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 32, 'values' => NULL, 'key' => 'index'),
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL, 'values' => NULL, 'key' => 'index'),
 		'msg' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 100, 'values' => NULL),
-		'log_level' => array('type' => 'set', 'null' => false, 'default' => 'info', 'length' => 5, 'values' => '\'debug\',\'info\',\'warn\',\'err\''),
+		'log_level' => array('type' => 'string', 'null' => false, 'default' => 'info', 'length' => 10, 'values' => NULL),
 		'context' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 32, 'values' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'user_idx' => array('column' => 'userid', 'unique' => 0), 'date_idx' => array('column' => 'created', 'unique' => 0))
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'userid_idx' => array('column' => 'userid', 'unique' => 0), 'date_idx' => array('column' => 'created', 'unique' => 0))
 	);
 	var $geo_tags = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
@@ -173,7 +171,7 @@ class BeditaAppSchema extends CakeSchema {
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL, 'values' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => false, 'default' => NULL, 'values' => NULL),
 		'expired' => array('type' => 'datetime', 'null' => false, 'default' => NULL, 'values' => NULL),
-		'status' => array('type' => 'enum', 'null' => false, 'default' => 'pending', 'length' => 7, 'values' => '\'pending\',\'expired\',\'closed\',\'failed\''),
+		'status' => array('type' => 'string', 'null' => false, 'default' => 'pending', 'length' => 10, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'hash' => array('column' => 'hash', 'unique' => 1), 'user_id' => array('column' => 'user_id', 'unique' => 0))
 	);
 	var $history = array(
@@ -182,9 +180,9 @@ class BeditaAppSchema extends CakeSchema {
 		'object_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'title' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'area_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
-		'path' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL, 'key' => 'index'),
+		'url' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL, 'key' => 'index'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'object_id' => array('column' => 'object_id', 'unique' => 0), 'user_id' => array('column' => 'user_id', 'unique' => 0), 'area_id' => array('column' => 'area_id', 'unique' => 0), 'path' => array('column' => 'path', 'unique' => 0))
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'object_id' => array('column' => 'object_id', 'unique' => 0), 'user_id' => array('column' => 'user_id', 'unique' => 0), 'area_id' => array('column' => 'area_id', 'unique' => 0), 'url' => array('column' => 'url', 'unique' => 0))
 	);
 	var $images = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
@@ -203,7 +201,7 @@ class BeditaAppSchema extends CakeSchema {
 	var $links = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'url' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL, 'key' => 'index'),
-		'target' => array('type' => 'enum', 'null' => true, 'default' => NULL, 'length' => 6, 'values' => '\'_self\',\'_blank\',\'parent\',\'top\',\'popup\''),
+		'target' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'http_code' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'http_response_date' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'source_type' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 64, 'values' => NULL),
@@ -213,7 +211,7 @@ class BeditaAppSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'mail_group_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'card_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
-		'status' => array('type' => 'enum', 'null' => false, 'default' => 'pending', 'length' => 9, 'values' => '\'pending\',\'confirmed\''),
+		'status' => array('type' => 'string', 'null' => false, 'default' => 'pending', 'length' => 10, 'values' => NULL),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'mail_group_card' => array('column' => array('card_id', 'mail_group_id'), 'unique' => 1), 'card_id_index' => array('column' => 'card_id', 'unique' => 0), 'mail_group_id_index' => array('column' => 'mail_group_id', 'unique' => 0))
 	);
@@ -227,7 +225,7 @@ class BeditaAppSchema extends CakeSchema {
 		'area_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'group_name' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL, 'key' => 'unique'),
 		'visible' => array('type' => 'boolean', 'null' => false, 'default' => '1', 'values' => NULL),
-		'security' => array('type' => 'enum', 'null' => false, 'default' => 'all', 'length' => 4, 'values' => '\'all\',\'none\''),
+		'security' => array('type' => 'string', 'null' => false, 'default' => 'all', 'length' => 10, 'values' => NULL),
 		'confirmation_in_message' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'confirmation_out_message' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'group_name' => array('column' => 'group_name', 'unique' => 1), 'area_id' => array('column' => 'area_id', 'unique' => 0))
@@ -236,7 +234,7 @@ class BeditaAppSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'mail_message_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'card_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
-		'status' => array('type' => 'enum', 'null' => false, 'default' => 'unsent', 'length' => 7, 'values' => '\'unsent\',\'pending\',\'sent\',\'failed\''),
+		'status' => array('type' => 'string', 'null' => false, 'default' => 'unsent', 'length' => 10, 'values' => NULL),
 		'sending_date' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
@@ -251,7 +249,7 @@ class BeditaAppSchema extends CakeSchema {
 	var $mail_logs = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'msg' => array('type' => 'text', 'null' => false, 'default' => NULL, 'values' => NULL),
-		'level' => array('type' => 'set', 'null' => false, 'default' => 'info', 'length' => 4, 'values' => '\'info\',\'warn\',\'err\''),
+		'log_level' => array('type' => 'string', 'null' => false, 'default' => 'info', 'length' => 10, 'values' => NULL),
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL, 'values' => NULL, 'key' => 'index'),
 		'recipient' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL, 'key' => 'index'),
 		'subject' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
@@ -276,10 +274,10 @@ class BeditaAppSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'name' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 32, 'values' => NULL, 'key' => 'unique'),
 		'label' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 32, 'values' => NULL),
-		'path' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL),
-		'status' => array('type' => 'enum', 'null' => false, 'default' => 'on', 'length' => 3, 'values' => '\'on\',\'off\''),
+		'url' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL),
+		'status' => array('type' => 'string', 'null' => false, 'default' => 'on', 'length' => 10, 'values' => NULL),
 		'priority' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'type' => array('type' => 'enum', 'null' => false, 'default' => 'core', 'length' => 6, 'values' => '\'core\',\'plugin\''),
+		'module_type' => array('type' => 'string', 'null' => false, 'default' => 'core', 'length' => 10, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'name' => array('column' => 'name', 'unique' => 1))
 	);
 	var $object_categories = array(
@@ -311,7 +309,7 @@ class BeditaAppSchema extends CakeSchema {
 	var $object_types = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'name' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL, 'key' => 'unique'),
-		'module' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 32, 'values' => NULL),
+		'module_name' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 32, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'name' => array('column' => 'name', 'unique' => 1))
 	);
 	var $object_users = array(
@@ -326,13 +324,13 @@ class BeditaAppSchema extends CakeSchema {
 	var $objects = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'object_type_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
-		'status' => array('type' => 'enum', 'null' => true, 'default' => 'draft', 'length' => 5, 'values' => '\'on\',\'off\',\'draft\''),
+		'status' => array('type' => 'string', 'null' => true, 'default' => 'draft', 'length' => 10, 'values' => NULL),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'title' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'nickname' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'description' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'current' => array('type' => 'boolean', 'null' => true, 'default' => '1', 'values' => NULL),
+		'valid' => array('type' => 'boolean', 'null' => true, 'default' => '1', 'values' => NULL),
 		'lang' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 3, 'values' => NULL),
 		'ip_created' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 15, 'values' => NULL),
 		'user_created' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
@@ -343,7 +341,7 @@ class BeditaAppSchema extends CakeSchema {
 		'publisher' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'note' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'fixed' => array('type' => 'boolean', 'null' => true, 'default' => '0', 'values' => NULL),
-		'comments' => array('type' => 'enum', 'null' => true, 'default' => 'off', 'length' => 9, 'values' => '\'on\',\'off\',\'moderated\''),
+		'comments' => array('type' => 'string', 'null' => true, 'default' => 'off', 'length' => 10, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'objects_FKIndex1' => array('column' => 'object_type_id', 'unique' => 0), 'user_created' => array('column' => 'user_created', 'unique' => 0), 'user_modified' => array('column' => 'user_modified', 'unique' => 0))
 	);
 	var $permission_modules = array(
@@ -370,7 +368,7 @@ class BeditaAppSchema extends CakeSchema {
 		'weight' => array('type' => 'float', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'width' => array('type' => 'float', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'height' => array('type' => 'float', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'depth' => array('type' => 'float', 'null' => true, 'default' => NULL, 'values' => NULL),
+		'product_depth' => array('type' => 'float', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'volume' => array('type' => 'float', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'length_unit' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 40, 'values' => NULL),
 		'weight_unit' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 40, 'values' => NULL),
@@ -404,8 +402,8 @@ class BeditaAppSchema extends CakeSchema {
 	);
 	var $sections = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
-		'syndicate' => array('type' => 'enum', 'null' => true, 'default' => 'on', 'length' => 3, 'values' => '\'on\',\'off\''),
-		'priority_order' => array('type' => 'enum', 'null' => true, 'default' => 'asc', 'length' => 4, 'values' => '\'asc\',\'desc\''),
+		'syndicate' => array('type' => 'string', 'null' => true, 'default' => 'on', 'length' => 10, 'values' => NULL),
+		'priority_order' => array('type' => 'string', 'null' => true, 'default' => 'asc', 'length' => 10, 'values' => NULL),
 		'last_modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'map_priority' => array('type' => 'float', 'null' => true, 'default' => NULL, 'length' => '2,1', 'values' => NULL),
 		'map_changefreq' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 128, 'values' => NULL),
@@ -413,10 +411,10 @@ class BeditaAppSchema extends CakeSchema {
 	);
 	var $streams = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
-		'path' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL),
+		'uri' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL),
 		'name' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'mime_type' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 60, 'values' => NULL),
-		'size' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
+		'file_size' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'hash_file' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL, 'key' => 'index'),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'hash_file_index' => array('column' => 'hash_file', 'unique' => 0))
 	);
@@ -424,11 +422,11 @@ class BeditaAppSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'area_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'parent_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
-		'path' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL, 'key' => 'primary'),
+		'object_path' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL, 'key' => 'primary'),
 		'parent_path' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'priority' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'menu' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
-		'indexes' => array('path' => array('column' => 'path', 'unique' => 1), 'id_idx' => array('column' => 'id', 'unique' => 0), 'parent_idx' => array('column' => 'parent_id', 'unique' => 0), 'area_idx' => array('column' => 'area_id', 'unique' => 0))
+		'indexes' => array('object_path' => array('column' => 'object_path', 'unique' => 1), 'id_idx' => array('column' => 'id', 'unique' => 0), 'parent_idx' => array('column' => 'parent_id', 'unique' => 0), 'area_idx' => array('column' => 'area_id', 'unique' => 0))
 	);
 	var $user_properties = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
@@ -449,13 +447,13 @@ class BeditaAppSchema extends CakeSchema {
 		'num_login_err' => array('type' => 'integer', 'null' => false, 'default' => '0', 'values' => NULL),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'level' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'values' => NULL),
+		'user_level' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'values' => NULL),
 		'auth_type' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'auth_params' => array('type' => 'text', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'lang' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 3, 'values' => NULL),
 		'time_zone' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 9, 'values' => NULL),
-		'comments' => array('type' => 'enum', 'null' => true, 'default' => NULL, 'length' => 5, 'values' => '\'never\',\'mine\',\'all\''),
-		'notes' => array('type' => 'enum', 'null' => true, 'default' => NULL, 'length' => 5, 'values' => '\'never\',\'mine\',\'all\''),
+		'comments' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
+		'notes' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'notify_changes' => array('type' => 'boolean', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'reports' => array('type' => 'boolean', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'userid' => array('column' => 'userid', 'unique' => 1), 'email' => array('column' => 'email', 'unique' => 1))
@@ -472,7 +470,7 @@ class BeditaAppSchema extends CakeSchema {
 	var $videos = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'provider' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
-		'uid' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
+		'video_uid' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'thumbnail' => array('type' => 'string', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1))
 	);

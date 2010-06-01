@@ -46,7 +46,7 @@ class HomeController extends AppController {
 	 	
 	 	$lastModBYUser = $this->BEObject->find("all", array(
 		 								"contain" 		=> array("ObjectType"),
-		 								"fields"		=> array("id", "title", "status", "modified", "object_type_id", "ObjectType.module"),
+		 								"fields"		=> array("id", "title", "status", "modified", "object_type_id", "ObjectType.module_name"),
 		 								"conditions" 	=> array(
 		 														"user_modified = '" . $user["id"] . "'",
 	 															'NOT' => array('object_type_id' => $excludedObjectTypes)
@@ -58,7 +58,7 @@ class HomeController extends AppController {
 
 	 	$lastMod = $this->BEObject->find("all", array(
 		 								"contain" 		=> array("ObjectType"),
-		 								"fields"		=> array("id", "title", "status", "modified", "object_type_id", "ObjectType.module"),
+		 								"fields"		=> array("id", "title", "status", "modified", "object_type_id", "ObjectType.module_name"),
 		 								"conditions" 	=> array(
 	 															'NOT' => array('object_type_id' => $excludedObjectTypes)
 	 														),
@@ -97,10 +97,10 @@ class HomeController extends AppController {
 		$this->action = "index";
 		$typeId = $this->BEObject->findObjectTypeId($id);
 		$conf  = Configure::getInstance();
-		if(!isset($conf->objectTypes[$typeId]["module"])) {
+		if(!isset($conf->objectTypes[$typeId]["module_name"])) {
 	 		throw new BeditaException(__("No module found for object", true));
 		}
-		$module = $conf->objectTypes[$typeId]["module"];
+		$module = $conf->objectTypes[$typeId]["module_name"];
 		$this->redirect("/".$module . "/view/" . $id);
 	}
 
@@ -119,7 +119,7 @@ class HomeController extends AppController {
 			// get objects module
 			foreach ($objects["items"] as $key => $o) {
 				$condition = "id=".$o['object_type_id'];
-				$objects["items"][$key]["module"] = $this->BEObject->ObjectType->field("module", $condition);
+				$objects["items"][$key]["module_name"] = $this->BEObject->ObjectType->field("module_name", $condition);
 			}
 			$this->set("objects", $objects);
 		}

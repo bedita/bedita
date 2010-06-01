@@ -41,7 +41,7 @@ $(document).ready(function() {
 {foreach name=module1 from=$moduleList key=k item=mod}
 	{if ($mod.status == 'on')}
 	
-            {assign_concat var='linkPath' 0=$html->url('/') 1=$mod.path}
+            {assign_concat var='linkPath' 0=$html->url('/') 1=$mod.url}
 
             <li {if ($mod.flag & BEDITA_PERMS_READ) }
 					class="{$mod.name}" rel="{$linkPath}"
@@ -96,8 +96,8 @@ $(document).ready(function() {
 <div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
 	<ul id="recent" class="bordered smallist">
 	{foreach from=$lastModBYUser item=item}
-		<li><span class="listrecent {$item.ObjectType.module}">&nbsp;</span>
-		<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module} | {t}modified on{/t} {$item.BEObject.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.ObjectType.module}/view/{$item.BEObject.id}">
+		<li><span class="listrecent {$item.ObjectType.module_name}">&nbsp;</span>
+		<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module_name} | {t}modified on{/t} {$item.BEObject.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.ObjectType.module_name}/view/{$item.BEObject.id}">
 			{$item.BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
 	{foreachelse}
 		<li><i>{t}you have no recent items{/t}</i></li>
@@ -129,8 +129,8 @@ $(document).ready(function() {
 	<ul id="allrecent" class="bordered smallist">
 	{foreach from=$lastMod item=item}
 		<li>
-			<span class="listrecent {$item.ObjectType.module}">&nbsp;&nbsp;</span>
-			&nbsp;<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module} | {t}modified on{/t} {$item.BEObject.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.ObjectType.module}/view/{$item.BEObject.id}">
+			<span class="listrecent {$item.ObjectType.module_name}">&nbsp;&nbsp;</span>
+			&nbsp;<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module_name} | {t}modified on{/t} {$item.BEObject.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.ObjectType.module_name}/view/{$item.BEObject.id}">
 				{$item.BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
 	{/foreach}
 	</ul>

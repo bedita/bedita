@@ -30,7 +30,7 @@
 
 		{assign var="thumbWidth" 		value = 45}
 		{assign var="thumbHeight" 		value = 34}
-		{assign var="filePath"			value = $objects[i].path}
+		{assign var="filePath"			value = $objects[i].uri}
 		{assign var="mediaPath"         value = $conf->mediaRoot}
 		{assign var="mediaUrl"         value = $conf->mediaUrl}
 
@@ -73,7 +73,7 @@
 		<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title}</a></td>
 		<td>{$objects[i].name}</td>
 		<td>{$objects[i].mediatype}</td>
-		<td>{math equation="x/y" x=$objects[i].size|default:0 y=1024 format="%d"|default:""} KB</td>
+		<td>{math equation="x/y" x=$objects[i].file_size|default:0 y=1024 format="%d"|default:""} KB</td>
 		<td>{$objects[i].status}</td>
 		<td>{$objects[i].created|date_format:'%b %e, %Y'}</td>
 	

@@ -38,7 +38,7 @@ class ModuleShell extends BeditaBaseShell {
 		$moduleModel = ClassRegistry::init("Module");
 		$pluggedModules = $moduleModel->find("list", array(
 				"fields" => array("id", "name"),
-				"conditions" => array("type" => "plugin")
+				"conditions" => array("module_type" => "plugin")
 			)
 		);
 		

@@ -101,7 +101,7 @@ class Card extends BEAppObjectModel {
 			"Title" => "person_title", "First Name" => "name", "Middle Name", "Last Name" => "surname",
 			"Suffix", "E-mail Address" => "email", "E-mail 2 Address" => "email2", "E-mail 3 Address",
 			"Business Street","Business Street 2","Business Street 3","Business City",
-			"Business State" => "state", "Business Postal Code" => "zipcode", "Business Country" => "country",
+			"Business State" => "state_name", "Business Postal Code" => "zipcode", "Business Country" => "country",
 			"Home Street" => "street_address",
 			"Home Street 2","Home Street 3","Home City","Home State","Home Postal Code","Home Country",
 			"Other Street","Other Street 2","Other Street 3","Other City","Other State",

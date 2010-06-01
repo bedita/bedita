@@ -13,7 +13,7 @@ Menu a SX valido per tutte le pagine del controller.
 	{if $module_modify eq '1'}
 		<li {if $view->action eq 'index'}class="on"{/if}>{$tr->link('Events', '/events')}</li>
 		<li {if $view->action eq 'categories'}class="on"{/if}>{$tr->link('Categories', '/events/categories')}</li>
-		<li><a href="{$html->url('/')}{$currentModule.path}/view">{t}Create new event{/t}</a></li>
+		<li><a href="{$html->url('/')}{$currentModule.url}/view">{t}Create new event{/t}</a></li>
 
 	{/if}
 	</ul>

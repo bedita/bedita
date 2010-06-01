@@ -458,7 +458,7 @@ class AdminController extends ModulesController {
 	 	$model = $beLib->getObject($this->params["form"]["model"]);
 	 	$data["name"] = $this->params["form"]["type"];
 	 	if (!empty($model->module)) {
-	 		$data["module"] = $model->module;
+	 		$data["module_name"] = $model->module;
 	 	}
 	 	$objectType = ClassRegistry::init("ObjectType");
 	 	$data["id"] = $objectType->newPluggedId();

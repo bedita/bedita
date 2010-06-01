@@ -173,14 +173,14 @@ class DbadminShell extends BeditaBaseShell {
 			foreach ($streams as $s) {
 				
 				// if it's not an url build hash
-				if (!preg_match($conf->validate_resource['URL'], $s["Stream"]["path"])) {
-					$hash = hash_file("md5", $conf->mediaRoot . $s["Stream"]["path"]);
+				if (!preg_match($conf->validate_resource['URL'], $s["Stream"]["uri"])) {
+					$hash = hash_file("md5", $conf->mediaRoot . $s["Stream"]["uri"]);
 					if ($hash === false)
 						 throw new BeditaException(__("Building Hash file failed", true));
 					$streamModel->id = $s["Stream"]["id"];
 					if (!$streamModel->saveField("hash_file", $hash))
 						throw new BeditaException(__("Error saving hash_file field", true));
-					$this->out("file: " . $conf->mediaRoot . $s["Stream"]["path"] . ", hash: " . $hash);
+					$this->out("file: " . $conf->mediaRoot . $s["Stream"]["uri"] . ", hash: " . $hash);
 					$countOperations++;
 				}
 				
@@ -215,7 +215,7 @@ class DbadminShell extends BeditaBaseShell {
 			foreach ($images as $i) {
 
 				if ($imageModel->setImageDimArray($i)) {
-					$this->out("file: " . $conf->mediaRoot . $i["path"] . 
+					$this->out("file: " . $conf->mediaRoot . $i["uri"] .
 						", dimension: " . $i["width"] . "x" . $i["height"] ." pixels");
 					$countOperations++;
 				}
@@ -306,9 +306,9 @@ class DbadminShell extends BeditaBaseShell {
 		if (!empty($videos)) {
 			foreach ($videos as $v) {
 				if ($v["provider"] == "youtube") {
-					$thumbnail	= sprintf($conf->media_providers["youtube"]["params"]["urlthumb"], $v['uid']);
+					$thumbnail	= sprintf($conf->media_providers["youtube"]["params"]["urlthumb"], $v['video_uid']);
 				} elseif ($v["provider"] == "blip") {
-					if(!($this->BeBlip->getInfoVideo($v["uid"]) )) {
+					if(!($this->BeBlip->getInfoVideo($v["video_uid"]) )) {
 						throw new BEditaMediaProviderException(__("Multimedia  not found",true)) ;
 					}
 					$thumbnail = $this->BeBlip->info['thumbnailUrl'];
@@ -319,7 +319,7 @@ class DbadminShell extends BeditaBaseShell {
 					if (!$videoModel->saveField("thumbnail", $thumbnail))
 						throw new BeditaException(__("Error saving thumbnail field", true));
 					
-					$this->out("video: " . $v["path"] . ", thumbnail: " . $thumbnail);
+					$this->out("video: " . $v["uri"] . ", thumbnail: " . $thumbnail);
 					$countOperations++;
 				}
 				
@@ -476,9 +476,9 @@ class DbadminShell extends BeditaBaseShell {
 				$treeModel->create();
 				$r["Tree"]["area_id"] = $treeModel->getAreaIdByPath($r["Tree"]["parent_path"]);
 				if (!$treeModel->save($r)) {
-					$this->out("Error updating row with path " . $r["Tree"]["path"]);
+					$this->out("Error updating row with object_path " . $r["Tree"]["object_path"]);
 				} else {
-					$this->out("Row with path " . $r["Tree"]["path"] . " updated");
+					$this->out("Row with object_path " . $r["Tree"]["object_path"] . " updated");
 				}
 			}
 		}

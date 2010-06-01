@@ -7,7 +7,7 @@
 			style="width:25px"
 			size="3" maxlength="3"/>
 		</td>
-		<td style="padding:0px; padding-top:7px; width:10px"><span title="{$c.module}" class="listrecent {$c.module}" style="margin:0px"></span></td>
+		<td style="padding:0px; padding-top:7px; width:10px"><span title="{$c.module_name}" class="listrecent {$c.module_name}" style="margin:0px"></span></td>
 		<td>
 			{$c.title|default:'<i>[no title]</i>'|truncate:"64":"…":true}
 			<div class="description" style="width:auto" id="desc_{$c.id}">
@@ -28,7 +28,7 @@
 			{$c.lang}
 		</td>
 		<td class="commands" style="white-space:nowrap">
-			<input type="button" class="BEbutton golink" onClick="window.open($(this).attr('href'));" href="{$html->url('/')}{$c.module}/view/{$c.id}" name="details" value="››" />
+			<input type="button" class="BEbutton golink" onClick="window.open($(this).attr('href'));" href="{$html->url('/')}{$c.module_name}/view/{$c.id}" name="details" value="››" />
 			{if !empty($c.fixed)}
 				
 				<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="margin-left:10px; height:12px;" />

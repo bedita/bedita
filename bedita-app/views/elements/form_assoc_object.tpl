@@ -10,7 +10,7 @@
 
 
 	<td style="width:10px;">
-		<span title="{$objRelated.ObjectType.name}" class="listrecent {$objRelated.ObjectType.module|default:''}" style="margin:0px">&nbsp;</span>
+		<span title="{$objRelated.ObjectType.name}" class="listrecent {$objRelated.ObjectType.module_name|default:''}" style="margin:0px">&nbsp;</span>
 	</td>
 
 	
@@ -22,7 +22,7 @@
 
 	<td>{$objRelated.mime_type|default:''|truncate:18:'~':true}</td>
 	
-	<td style="text-align:right">{$objRelated.size|default:0|filesize}</td>
+	<td style="text-align:right">{$objRelated.file_size|default:0|filesize}</td>
 
 {/if}
 
@@ -33,7 +33,7 @@
 	<td style="text-align:right; white-space:nowrap">
 		<input class="BEbutton golink" 
 		title="{$objRelated.title|default:'[no title]'}, {$objRelated.mime_type|default:''}" 
-		rel="{$html->url('/')}{$objRelated.ObjectType.module}/view/{$objRelated.id}" name="details" type="button" value="details">
+		rel="{$html->url('/')}{$objRelated.ObjectType.module_name}/view/{$objRelated.id}" name="details" type="button" value="details">
 		<input class="BEbutton" name="remove" type="button" value="x">
 	</td>
 

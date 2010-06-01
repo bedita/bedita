@@ -31,11 +31,11 @@
 class Tree extends BEAppModel
 {
 
-	public $primaryKey = "path";
+	public $primaryKey = "object_path";
 
 	function beforeSave() {
-		if (!empty($this->data["Tree"]) && empty($this->data["Tree"]["area_id"]) && !empty($this->data["Tree"]["path"])) {
-			$this->data["Tree"]["area_id"] = $this->getAreaIdByPath($this->data["Tree"]["path"]);
+		if (!empty($this->data["Tree"]) && empty($this->data["Tree"]["area_id"]) && !empty($this->data["Tree"]["object_path"])) {
+			$this->data["Tree"]["area_id"] = $this->getAreaIdByPath($this->data["Tree"]["object_path"]);
 		}
 		return true;
 	}
@@ -101,12 +101,12 @@ class Tree extends BEAppModel
 			$data["Tree"] = array(
 				"id" => $id,
 				"area_id" => $id,
-				"path" => "/".$id,
+				"object_path" => "/".$id,
 				"parent_path" => "/",
 				"priority" => 1
 			);
 		} else {
-			$parentPath = $this->field("path", array("id" => $idParent));
+			$parentPath = $this->field("object_path", array("id" => $idParent));
 			$area_id = $this->getAreaIdByPath($parentPath);
 			$maxPriority = $this->field("priority", array("parent_id" => $idParent), "priority DESC");
 			$maxPriority = (!empty($maxPriority))? $maxPriority + 1 : 1;
@@ -115,7 +115,7 @@ class Tree extends BEAppModel
 				"id" => $id,
 				"area_id" => $area_id,
 				"parent_id" => $idParent,
-				"path" => $parentPath . "/".$id,
+				"object_path" => $parentPath . "/".$id,
 				"parent_path" => $parentPath,
 				"priority" => $maxPriority
 			);
@@ -239,21 +239,21 @@ class Tree extends BEAppModel
 			)
 		));
 
-		$newParentPath = $newParentRow["Tree"]["path"];
+		$newParentPath = $newParentRow["Tree"]["object_path"];
 		$newPath = $newParentPath . "/" . $rowToMove["Tree"]["id"];
-		$oldPath = $rowToMove["Tree"]["path"];
+		$oldPath = $rowToMove["Tree"]["object_path"];
 
 		$children = $this->find("all", array(
-			"conditions" => array("path LIKE" => $oldPath."/%")
+			"conditions" => array("object_path LIKE" => $oldPath."/%")
 		));
 
-		if (!$this->del($rowToMove["Tree"]["path"])) {
+		if (!$this->del($rowToMove["Tree"]["object_path"])) {
 			return false;
 		}
 
 		$area_id = $this->getAreaIdByPath($newPath);
 		$rowToMove["Tree"]["parent_path"] = $newParentPath;
-		$rowToMove["Tree"]["path"] = $newPath;
+		$rowToMove["Tree"]["object_path"] = $newPath;
 		$rowToMove["Tree"]["parent_id"] = $idNewParent;
 		$rowToMove["Tree"]["area_id"] = $area_id;
 
@@ -266,11 +266,11 @@ class Tree extends BEAppModel
 		}
 
 		foreach ($children as $child) {
-			if (!$this->del($child["Tree"]["path"])) {
+			if (!$this->del($child["Tree"]["object_path"])) {
 				return false;
 			}
 			$child["Tree"]["parent_path"] = str_replace($oldPath, $newPath, $child["Tree"]["parent_path"]);
-			$child["Tree"]["path"] = str_replace($oldPath."/", $newPath."/", $child["Tree"]["path"]);
+			$child["Tree"]["object_path"] = str_replace($oldPath."/", $newPath."/", $child["Tree"]["object_path"]);
 			$child["Tree"]["area_id"] = $area_id;
 			$this->create();
 			if (!$this->save($child)) {

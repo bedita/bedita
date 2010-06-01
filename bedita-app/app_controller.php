@@ -238,7 +238,7 @@ class AppController extends Controller
 			$historyConf = Configure::read("history");
 			if ( !empty($historyConf) && $this->historyItem !== null && !$this->RequestHandler->isAjax() && !$this->RequestHandler->isFlash()) {
 				$historyModel = ClassRegistry::init("History");
-				$this->historyItem["path"] = ($this->params["url"]["url"]{0} != "/")? "/" . $this->params["url"]["url"] : $this->params["url"]["url"];
+				$this->historyItem["url"] = ($this->params["url"]["url"]{0} != "/")? "/" . $this->params["url"]["url"] : $this->params["url"]["url"];
 				$user = $this->BeAuth->getUserSession();
 				if (!empty($user)) {
 					$this->historyItem["user_id"] = $user["id"];
@@ -492,8 +492,8 @@ class AppController extends Controller
 			}
             if (empty($status) || in_array($objDetail["status"],$status)) {
 				$objDetail['priority'] = $obj['priority'];
-				if(isset($objDetail['path']))
-					$objDetail['filename'] = substr($objDetail['path'],strripos($objDetail['path'],"/")+1);
+				if(isset($objDetail['url']))
+					$objDetail['filename'] = substr($objDetail['url'],strripos($objDetail['url'],"/")+1);
 				
 				// set fields with "mainLanguage" value. Usually used in frontend (frontend_controller.php)
 				if (!empty($options["mainLanguage"])) {
@@ -571,8 +571,8 @@ class AppController extends Controller
 		if(!$new) {
 			$fixed = ClassRegistry::init("BEObject")->isFixed($this->data['id']);
 			if($fixed) { // unset pubblication date, TODO: throw exception if pub date is set! 
-				unset($this->data['start']);
-				unset($this->data['end']);
+				unset($this->data['start_date']);
+				unset($this->data['end_date']);
 			}
 		}
 			
@@ -1091,7 +1091,7 @@ abstract class ModulesController extends AppController {
 	 * @param array $objects if it's defined prepare prevNext array for session
 	 */
 	protected function setSessionForObjectDetail($objects=null) {
-		$modulePath = $this->viewVars["currentModule"]["path"];	
+		$modulePath = $this->viewVars["currentModule"]["url"];
 		
 		// set array of previous and next objects
 		if (!empty($objects) && strstr($this->here, $modulePath)) {
@@ -1186,7 +1186,7 @@ abstract class ModulesController extends AppController {
 	protected function getModuleObjectTypes($moduleName) {
 		$otModel = ClassRegistry::init("ObjectType");
 		$ot = $otModel->find("all", array(
-				"conditions" => array("module" => $moduleName),
+				"conditions" => array("module_name" => $moduleName),
 				"fields" => "id",
 				"contain" => array()
 			)

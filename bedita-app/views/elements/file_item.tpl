@@ -61,11 +61,11 @@
 		</li>
 {if strtolower($item.ObjectType.name|default:'') == "image"}
 		<li style="line-height:1.2em; height:1.2em; overflow:hidden">
-			{$item.width}x{$item.height}px, {$item.size|default:0|filesize}
+			{$item.width}x{$item.height}px, {$item.file_size|default:0|filesize}
 		</li>
 {else}
 		<li style="line-height:1.2em; height:1.2em; white-space:nowrap; overflow:hidden">
-			{$item.mime_type} {$item.size|default:0|filesize}
+			{$item.mime_type} {$item.file_size|default:0|filesize}
 		</li>
 {/if}
 		<li style="line-height:1.2em; height:1.2em; overflow:hidden">

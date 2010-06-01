@@ -48,13 +48,11 @@ class AuthenticationControllerTestCase extends BeditaTestCase {
 		$this->testAction('/authentications/login',	$return);
 		
 		$user 	= $this->Session->read('BEAuthUser') ;
-		$allow 	= $this->Session->read('BEAuthAllow') ;
+		
 		pr($user);
-		pr("allow: " . $allow);
 		
 		pr($this->Session);
 		$this->assertEqual($user['userid'], $this->data['new.user']['User']['userid']);
-		$this->assertEqual($allow, 1);
 	} 
 
 	function testLogout() {

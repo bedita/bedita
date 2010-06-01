@@ -68,14 +68,14 @@ class Stream extends BEAppModel
 			"conditions" => array("id" => $id)
 		));
 		
-		if (!empty($stream["Stream"]["path"])) {
-			$isURL = (preg_match($conf->validate_resource['URL'], $stream["Stream"]["path"]))? true : false;
+		if (!empty($stream["Stream"]["uri"])) {
+			$isURL = (preg_match($conf->validate_resource['URL'], $stream["Stream"]["uri"]))? true : false;
 			
-			if (!$isURL && !file_exists($conf->mediaRoot . $stream["Stream"]["path"])) {
+			if (!$isURL && !file_exists($conf->mediaRoot . $stream["Stream"]["uri"])) {
 				return false;
 			}
 			
-			if ($isURL && ($mediaProvider = $this->getMediaProvider($stream["Stream"]["path"]))) {
+			if ($isURL && ($mediaProvider = $this->getMediaProvider($stream["Stream"]["uri"]))) {
 				if (empty($stream["Stream"]["name"]) || empty($stream["Stream"]["mime_type"])) {
 					$componentName = Inflector::camelize("be_" . $mediaProvider["provider"]);
 					$stream["Stream"] = array_merge($stream["Stream"],$mediaProvider);
@@ -86,16 +86,16 @@ class Stream extends BEAppModel
 				}
 			} else {
 				if (empty($stream["Stream"]["name"])) {
-					$stream["Stream"]["name"] = basename($stream["Stream"]["path"]);
+					$stream["Stream"]["name"] = basename($stream["Stream"]["uri"]);
 				}
 				
 				if (empty($stream["Stream"]["mime_type"])) {
-					$stream["Stream"]["mime_type"] = $this->getMimeType($conf->mediaRoot . $stream["Stream"]["path"], $stream["Stream"]["name"]);
+					$stream["Stream"]["mime_type"] = $this->getMimeType($conf->mediaRoot . $stream["Stream"]["uri"], $stream["Stream"]["name"]);
 				}
 				
 				if (!$isURL) {
-					$stream["Stream"]["size"] = filesize($conf->mediaRoot . $stream["Stream"]["path"]);
-					$stream["Stream"]["hash_file"] = hash_file("md5", $conf->mediaRoot . $stream["Stream"]["path"]);
+					$stream["Stream"]["file_size"] = filesize($conf->mediaRoot . $stream["Stream"]["uri"]);
+					$stream["Stream"]["hash_file"] = hash_file("md5", $conf->mediaRoot . $stream["Stream"]["uri"]);
 				}
 			}
 			
@@ -112,17 +112,17 @@ class Stream extends BEAppModel
 	}
 	
 	/**
-	 * return media provider array or false if $url it's not managed 
+	 * return media provider array or false if $uri it's not managed
 	 * 
-	 * @param $url
-	 * @return mixed array("provider" => "", "url" => "", "uid" => "") or false if not found
+	 * @param $uri
+	 * @return mixed array("provider" => "", "uri" => "", "video_uid" => "") or false if not found
 	 */
-	public function getMediaProvider($url) {
+	public function getMediaProvider($uri) {
 		$conf = Configure::getInstance();
 		foreach($conf->media_providers as $provider => $expressions) {
 			foreach($expressions["regexp"] as $expression) {
-				if(preg_match($expression, $url, $matched)) {
-					$mediaProvider = array("provider" => $provider, "url" => $matched[0], "uid" => $matched[1]);
+				if(preg_match($expression, $uri, $matched)) {
+					$mediaProvider = array("provider" => $provider, "uri" => $matched[0], "video_uid" => $matched[1]);
 					return $mediaProvider;
 				}	
 			}

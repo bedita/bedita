@@ -67,7 +67,7 @@ class BeUploadToObjComponent extends Object {
 		if (empty($data['title']))
 			$data['title'] = $data['name'];
 
-		$data['path']	= $data['tmp_name'] ;
+		$data['uri']	= $data['tmp_name'] ;
 
 		if (empty($data["status"]))
 			$data["status"] = "on";
@@ -98,8 +98,9 @@ class BeUploadToObjComponent extends Object {
 		}
 		
 		if (!empty($mediaProvider)) {
-			$dataURL['provider']	= $mediaProvider["provider"];
-			$dataURL['uid']  	 	= $mediaProvider["uid"];
+			$dataURL['provider'] = $mediaProvider["provider"];
+			$dataURL['video_uid'] = $mediaProvider["video_uid"];
+			$dataURL['uri'] = $mediaProvider["uri"];
 		
 			$componentName = Inflector::camelize("be_" . $mediaProvider["provider"]);
 			if (isset($this->{$componentName}) && method_exists($this->{$componentName}, "setInfoToSave")) {
@@ -112,8 +113,8 @@ class BeUploadToObjComponent extends Object {
 			
 		} else {
 			$dataURL['provider'] = null;
-			$dataURL['uid'] = null;
-			$dataURL['path'] = $dataURL["url"];
+			$dataURL['video_uid'] = null;
+			$dataURL['uri'] = $dataURL["url"];
 			$getInfoURL = true;
 		}
 		
@@ -131,16 +132,16 @@ class BeUploadToObjComponent extends Object {
 	}
 	
 	function cloneMediaObject($data) {
-		if (!empty($data["id"]))
+		if (!empty($data["id"])) {
 			unset($data["id"]);
-			
-		if(preg_match(Configure::read("validate_resource.URL"), $data["path"])) {
-			$data['url'] = $data["path"];
+		}
+		if(preg_match(Configure::read("validate_resource.URL"), $data["uri"])) {
+			$data["url"] = $data["uri"];
 			return $this->uploadFromURL($data, true);
 		} else {
-			$data['path'] = Configure::read("mediaRoot") . $data["path"];
-			if (empty($data["size"])) {
-				$data["size"] = filesize($data["path"]);
+			$data['uri'] = Configure::read("mediaRoot") . $data["uri"];
+			if (empty($data["file_size"])) {
+				$data["file_size"] = filesize($data["uri"]);
 			}
 			if (!empty($this->params['form']['mediatype'])) {
 				$data['mediatype'] = $this->params['form']['mediatype'];
@@ -154,16 +155,16 @@ class BeUploadToObjComponent extends Object {
 		if (!empty($data["thumbnail"]) && preg_match(Configure::read("validate_resource.URL"), $data["thumbnail"])) {
 			$thumbnail = $data["thumbnail"]; 	
 		} else {
-			if (empty($data["provider"]) || empty($data["uid"])) {
-				$url = (!empty($data['url']))? $data['url'] : $data['path'];
-				$mediaProvider = ClassRegistry::init("Stream")->getMediaProvider($url);
+			if (empty($data["provider"]) || empty($data["video_uid"])) {
+				$url = (!empty($data['url']))? $data['url'] : $data['uri'];
+				$mediaProvider = ClassRegistry::init("Stream")->getMediaProvider($data['url']);
 				if (!empty($mediaProvider)) {
 					$provider = $mediaProvider["provider"];
-					$uid = $mediaProvider["uid"];
+					$uid = $mediaProvider["video_uid"];
 				}
 			} else {
 				$provider = $data["provider"];
-				$uid = $data["uid"];
+				$uid = $data["video_uid"];
 			}
 			
 			$thumbnail = null;

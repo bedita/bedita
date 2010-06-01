@@ -82,7 +82,7 @@ class Section extends BeditaCollectionModel
         );
 		
         $feeds = $this->find('all', array(
-                'conditions' => array('Section.syndicate' => 'on', 'BEObject.status' => 'on', "Tree.path LIKE '/$areaId/%'"), 
+                'conditions' => array('Section.syndicate' => 'on', 'BEObject.status' => 'on', "Tree.object_path LIKE '/$areaId/%'"),
                 'fields' => array('BEObject.nickname', 'BEObject.title'),
                 'contain' => array("BEObject", "Tree"))
         );

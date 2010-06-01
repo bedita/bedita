@@ -2,7 +2,7 @@
 	
 	<div class="modules" style="float:left"><label class="bedita">{$conf->userVersion}<br /><br />{$conf->projectName|default:''}</label></div>
 	<div class="modules" style="float:left">
-		<label class="{$object.ObjectType.module|default:''}">
+		<label class="{$object.ObjectType.module_name|default:''}">
 			{$object.ObjectType.name|default:''}
 			<!-- <input type="button" onClick="print()" value="print me" style="margin:3	0px 0px 0px 30px" class="BEbutton"> -->
 		</label>

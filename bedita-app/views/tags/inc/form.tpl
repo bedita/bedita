@@ -35,8 +35,8 @@
 
 					{foreach from=$referenced item="ref"}
 						<li>
-						<span class="listrecent {$ref.ObjectType.module}" style="margin-left:0px">&nbsp;&nbsp;</span>
-						<a title="{$ref.created}" href="{$html->url('/')}{$ref.ObjectType.module}/view/{$ref.id}">{$ref.title|default:'<i>[no title]</i>'}</a>
+						<span class="listrecent {$ref.ObjectType.module_name}" style="margin-left:0px">&nbsp;&nbsp;</span>
+						<a title="{$ref.created}" href="{$html->url('/')}{$ref.ObjectType.module_name}/view/{$ref.id}">{$ref.title|default:'<i>[no title]</i>'}</a>
 						</li>
 					{/foreach}
 

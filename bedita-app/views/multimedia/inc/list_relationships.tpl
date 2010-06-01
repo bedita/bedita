@@ -9,8 +9,8 @@
 			{foreach from=$related item="o"}
 			<ul class="bordered">
 			
-				<li><span title="{$o.ObjectType.name}" class="listrecent {$o.ObjectType.module}">&nbsp;</span>
-				<a href="{$html->url('/')}{$o.ObjectType.module}/view/{$o.id}">{$o.title|default:'<i>[no title]</i>'}</a></li>
+				<li><span title="{$o.ObjectType.name}" class="listrecent {$o.ObjectType.module_name}">&nbsp;</span>
+				<a href="{$html->url('/')}{$o.ObjectType.module_name}/view/{$o.id}">{$o.title|default:'<i>[no title]</i>'}</a></li>
 			
 			</ul>
 			{/foreach}

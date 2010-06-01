@@ -3,7 +3,7 @@
 *}
 
 
-{if (isset($object)) and (!empty($object.path))}
+{if (isset($object)) and (!empty($object.uri))}
 
 <div class="tab"><h2>{t}File{/t}</h2></div>
 
@@ -13,15 +13,15 @@
 
 {if ($object.ObjectType.name == "image")}
 
-	{if strpos($object.path,'/') === 0}
-		{assign_concat var="fileUrl"  0=$conf->mediaUrl  1=$object.path}
+	{if strpos($object.uri,'/') === 0}
+		{assign_concat var="fileUrl"  0=$conf->mediaUrl  1=$object.uri}
 	{else}
-		{assign var="fileUrl"  value=$object.path}
+		{assign var="fileUrl"  value=$object.uri}
 	{/if}
 	{image_info var="imageInfo" file=$fileUrl}
 
 	{assign_associative var="params" width=500 longside=false mode="fill" modeparam="000000" type=null upscale=false}
-	
+
 	{$beEmbedMedia->object($object,$params)}
 
 	
@@ -44,7 +44,7 @@
 	
 {else}
 		
-	<a href="{$conf->mediaUrl}{$object.path}" target="_blank">
+	<a href="{$conf->mediaUrl}{$object.uri}" target="_blank">
 		{$beEmbedMedia->object($object)}
 	</a>
 
@@ -72,7 +72,7 @@
 		<th>{t}mime type{/t}:</th>
 		<td>{$object.mime_type|default:""}</td>
 		<th>{t}filesize{/t}:</th>
-		<td>{$object.size|filesize}</td>
+		<td>{$object.file_size|filesize}</td>
 	</tr>
 
 {if strtolower($object.ObjectType.name) == "application"}
@@ -129,10 +129,10 @@
 		<th></th>
 		<td>
 			
-			{if (substr($object.path,0,7) == 'http://') or (substr($object.path,0,8) == 'https://')}
-			<a target="_blank" href="{$object.path}">
+			{if (substr($object.uri,0,7) == 'http://') or (substr($object.uri,0,8) == 'https://')}
+			<a target="_blank" href="{$object.uri}">
 			{else}
-			<a target="_blank" href="{$conf->mediaUrl}{$object.path}">
+			<a target="_blank" href="{$conf->mediaUrl}{$object.uri}">
 			{/if}
 				› {t}open file in a separate window{/t}
 			</a>
@@ -149,7 +149,7 @@
 
 
 <div class="tab"><h2>
-	{if (!isset($object)) or (empty($object.path))}
+	{if (!isset($object)) or (empty($object.uri))}
 		{t}Upload new file{/t}
 	{else}
 		{t}Change this file with another{/t}

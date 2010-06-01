@@ -486,6 +486,33 @@ $config['autosaveTime'] = 120000; // two minutes
  */
 $config['hashExpiredTime'] = 604800;
 
+
+/**
+ * Reference for database VARCHAR fields with enumerated choiches
+ * first item is the default
+ */
+$config['referenceData'] = array(
+	"applications.text_dir" => array("ltr", "rtl"),
+	"banned_ips.status" => array("ban", "accept"),
+	"cards.mail_status" => array("valid", "blocked"),
+	"categories.status" => array("on", "off"),
+	"events.log_level" => array("debug", "info","warn", "err"),
+	"hash_job.status" => array("pending", "expired", "closed", "failed"),
+	"links.target" => array("_self", "_blank", "parent", "top", "popup"),
+	"mail_groups.security" => array("all", "none"),
+	"mail_group_cards.status" => array("pending", "confirmed"),
+	"mail_logs.log_level" => array("info","warn", "err"),
+	"mail_jobs.status" => array("unsent", "pending", "sent", "failed"),
+	"modules.status" => array("on", "off"),
+	"modules.module_type" => array("core", "plugin"),
+	"objects.status" => array("on", "off", "draft"),
+	"objects.comments" => array("on", "off", "moderated"),
+	"sections.syndicate" => array("on", "off"),
+	"sections.priority_order" => array("asc", "desc"),
+	"users.comments" => array("never", "mine", "all"),
+	"users.notes" => array("never", "mine", "all")
+);
+
 /**
  * Specific System settings
  * ALWAYS AT THE END of bedita.ini.php

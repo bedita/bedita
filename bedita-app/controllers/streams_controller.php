@@ -68,7 +68,7 @@ class StreamsController extends AppController {
 			$modelLoaded->containLevel("minimum");
 
 			if(($details = $modelLoaded->findById($value['id']))) {
-				$details['filename'] = substr($details['path'],strripos($details['path'],"/")+1);
+				$details['filename'] = substr($details['uri'],strripos($details['uri'],"/")+1);
 				$bedita_items['items'][$key] = array_merge($bedita_items['items'][$key], $details);	
 			}
 		}

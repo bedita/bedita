@@ -92,8 +92,8 @@ class MailMessage extends BeditaContentModel
 	
 	function beforeValidate() {
 
-        $this->checkDate('start');
-        $this->checkDate('end');
+        $this->checkDate('start_date');
+        $this->checkDate('end_date');
 		$this->checkDate('start_sending');
 
         $data = &$this->data[$this->name] ;
