@@ -66,6 +66,26 @@ class BeCustomPropertyComponent extends Object {
 		
 	}
 	
+	/**
+	 * unset property with empty property_value field from data form 
+	 */
+	function setupUserPropertyForSave() {
+		if (!empty($this->controller->data["UserProperty"])) {
+			$objProp = array();
+			foreach($this->controller->data["UserProperty"] as $key => $value) {
+				
+				if (!empty($value["property_value"])) {
+					$value["property_value"] = trim($value["property_value"]);
+					
+					if (!empty($value["property_value"])) {
+						$objProp[] = $value;
+					}
+				} 
+			}
+			$this->controller->data["UserProperty"] = $objProp;
+		}
+	}
+	
 	
 	/**
 	 * set property array of object for view
@@ -96,6 +116,34 @@ class BeCustomPropertyComponent extends Object {
 		
 		return $property;
 	}
+	
+	/**
+	 * set property array for user view
+	 *
+	 * @param array $obj, array of object data 
+	 * @param int $object_type_id
+	 * @return array
+	 */
+	function setupUserPropertyForView(&$user) {
+		
+		$property = array();
+		
+		if (empty($user["UserProperty"])) {
+
+			$propertyModel = ClassRegistry::init("Property");
+			$property = $propertyModel->find("all", array(
+							"conditions" => array("object_type_id" => null),
+							"contain" => array("PropertyOption")
+						)
+					);
+		} else {
+			$property = $user["UserProperty"];
+			unset($user["UserProperty"]);
+		}
+		
+		return $property;
+	}
+	
 }
 
 ?>

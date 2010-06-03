@@ -30,5 +30,10 @@
  */
 class UserProperty extends BEAppModel
 {
+	var $belongsTo = array(
+		"Property" => array(
+				"conditions" => array("Property.object_type_id" => null) ,
+		), 
+		"User");
 }
 ?>

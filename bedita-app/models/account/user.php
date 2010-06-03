@@ -45,8 +45,8 @@ class User extends BEAppModel
 	);
 
 	protected $modelBindings = array( 
-		"detailed" =>  array("Group", "ObjectUser", "Permission"),
-		"default" => array("Group", "ObjectUser"),
+		"detailed" =>  array("Group", "ObjectUser", "Permission", "UserProperty"),
+		"default" => array("Group", "ObjectUser", "UserProperty"),
 		"minimum" => array()		
 	);
 	
@@ -61,7 +61,8 @@ class User extends BEAppModel
 				'foreignKey'	=> 'id',
 				'dependent'		=> true
 			),
-		'ObjectUser'
+		'ObjectUser',
+		'UserProperty'
 	);
 
 	private $hBTM = null; 
@@ -106,10 +107,50 @@ class User extends BEAppModel
 	}
 	
 	function afterFind($results) {
-		if(!empty($results[0]) || !empty($result["User"])) {
+		if(!empty($results[0]) || !empty($results["User"])) {
 			foreach ($results as &$u) {
 				if (!empty($u['User']['auth_params'])) {
 					$u['User']['auth_params'] = unserialize($u['User']['auth_params']);
+				}
+			}
+		}
+		
+		foreach ($results as &$u) {
+			// format object properties
+			if(!empty($u['UserProperty']) && is_array($u['UserProperty'])) {
+				$propertyModel = ClassRegistry::init("Property");
+				$property = $propertyModel->find("all", array(
+									"conditions" => array("object_type_id" => null),
+									"contain" => array("PropertyOption")
+								)
+							);
+				if (!empty($property)) {
+					foreach ($property as $keyProp => $prop) {					
+						foreach ($u["UserProperty"] as $k => $value) {
+							if ($value["property_id"] == $prop["id"]) {
+								
+								if ($prop["multiple_choice"] != 0) {
+									$property[$keyProp]["value"][] = $value;
+								} else { 
+									$property[$keyProp]["value"] = $value;
+								}
+								
+								// set selected to true in PropertyOption array
+								if (!empty($prop["PropertyOption"])) {
+									foreach ($prop["PropertyOption"] as $n => $option) {
+										if ($option["property_option"] == $value["property_value"]) {
+											$property[$keyProp]["PropertyOption"][$n]["selected"] = true;
+										}
+									}
+								}
+								unset($u["UserProperty"][$k]);
+							}
+						}
+					}
+					$u["UserProperty"] = $property;
+					unset($property);
+				}else {
+					unset($u['UserProperty']);
 				}
 			}
 		}
@@ -130,6 +171,24 @@ class User extends BEAppModel
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Salva i dati delle associazioni tipo hasMany
+	 */
+	function afterSave() {
+		if (!empty($this->data['UserProperty'])) {
+			
+			$this->UserProperty->deleteAll(array('user_id' => $this->id));
+			foreach($this->data['UserProperty'] as $prop) {
+				$this->UserProperty->create();
+				$prop['user_id'] = $this->id; 
+				if (!$this->UserProperty->save($prop))
+					throw new BeditaException(__("Error saving user", true), "Error saving hasMany user property");
+			}
+			
+		}
+			
 	}
 	
 }

@@ -212,4 +212,6 @@ class="{literal}{required:true}{/literal}" title="{t}Check at least one group{/t
 </fieldset>
 {/if}
 
+{include file="inc/form_user_custom_properties.tpl"}
+
 </form>

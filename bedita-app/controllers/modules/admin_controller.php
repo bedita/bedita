@@ -78,7 +78,10 @@ class AdminController extends ModulesController {
 	 		foreach ($this->data['groups'] as $k=>$v)
 				array_push($userGroups, $k);
 		}
-
+		
+		// Format custom properties
+		$this->BeCustomProperty->setupUserPropertyForSave() ;
+		
 		if(!isset($this->data['User']['id'])) {
 			if (!$this->BeAuth->checkConfirmPassword($this->params['form']['pwd'], $this->data['User']['passwd'])) {
 				throw new BeditaException(__("Passwords mismatch",true));
@@ -185,7 +188,10 @@ class AdminController extends ModulesController {
 		$this->set('formGroups',  $formGroups);
 		$this->set('authGroups',  $authGroups);
 		$this->set('userdetailModules', $userdetailModules) ;
-
+		
+		$property = $this->BeCustomProperty->setupUserPropertyForView($userdetail);
+		$this->set('userProperty',  $property);
+		
 		BeLib::getObject("BeConfigure")->setExtAuthTypes();
 	 }
 
@@ -340,7 +346,7 @@ class AdminController extends ModulesController {
 	 			
 	 		$optionArr = explode(",", trim($this->data["options"],","));
 	 		foreach ($optionArr as $opt) {
-	 			$propOpt[] = array("property_id" => $propertyModel->id, "property_option" => $opt);
+	 			$propOpt[] = array("property_id" => $propertyModel->id, "property_option" => trim($opt));
 	 		}
 	 		if (!$propertyModel->PropertyOption->saveAll($propOpt)) {
 	 			throw new BeditaException(__("Error saving options",true));

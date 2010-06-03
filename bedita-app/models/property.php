@@ -30,9 +30,12 @@
  */
 class Property extends BEAppModel  {
 	
-	var $actsAs = array("CompactResult" => array("PropertyOption", "ObjectProperty"));
+	var $actsAs = array("CompactResult" => array("PropertyOption", "ObjectProperty", "UserProperty"));
  	
-	var $hasMany = array("PropertyOption", "ObjectProperty");
+	var $hasMany = array(
+		"PropertyOption", 
+		"ObjectProperty", 
+		"UserProperty");
 	
 	var $validate = array(
 		'name' => array(
