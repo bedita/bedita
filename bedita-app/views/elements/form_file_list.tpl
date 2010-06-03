@@ -38,7 +38,8 @@ function showResponse(data) {
 
 	if (data.UploadErrorMsg) {
 		$("#loading").hide();
-		$("#addmultimedia").append("<label class='error'>"+data.UploadErrorMsg+"<\/label>").addClass("error");
+		//$("#addmultimedia").append("<label class='error'>"+data.UploadErrorMsg+"<\/label>").addClass("error");
+		showMultimediaAjaxError(null, data.UploadErrorMsg, null);
 	} else {
 		var tmp = new Array() ;
 		var countFile = 0; 
@@ -52,6 +53,17 @@ function showResponse(data) {
 		$("#addmultimedia").find("input[type=text]").attr("value", "");
 		$("#addmultimedia").find("input[type=file]").attr("value", "");
 		$("#addmultimedia").find("textarea").attr("value", "");
+}
+
+function showMultimediaAjaxError(XMLHttpRequest, textStatus, errorThrown) {
+	var submitUrl = "{/literal}{$html->url('/pages/showAjaxMessage/')}{literal}";
+	var errorMsg = textStatus;
+	if (XMLHttpRequest != null && XMLHttpRequest.responseText) {
+		errorMsg += "<br/><br/> " + XMLHttpRequest.responseText;
+	}
+	$("#messagesDiv").load(submitUrl,{"msg":errorMsg,"type":"error"}, function() {
+		$("#loading").hide();
+	});
 }
 
 function resetError() {
@@ -73,7 +85,8 @@ $(document).ready(function()
 	var optionsForm = {
 		beforeSubmit:	resetError,
 		success:		showResponse,  // post-submit callback  
-		dataType:		'json'        // 'xml', 'script', or 'json' (expected server response type) 
+		dataType:		'json',        // 'xml', 'script', or 'json' (expected server response type)
+		error: showMultimediaAjaxError
 	};
 
 	$("#uploadForm").click(function() {

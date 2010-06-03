@@ -80,6 +80,7 @@ class FilesController extends AppController {
 
 	function uploadAjaxMediaProvider () {
 		$this->layout = "ajax";
+		header("Content-Type: application/json");
 		try {
 			if (!isset($this->params['form']['uploadByUrl']['url']))
 				throw new BEditaException(__("Error during upload: missing url",true)) ;

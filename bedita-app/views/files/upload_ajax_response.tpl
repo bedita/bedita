@@ -10,11 +10,11 @@
 {/if}
 
 {if $errorMsg|default:""}
-	{literal}{{/literal}UploadErrorMsg: "{$errorMsg}"{literal}}{/literal}
+	{literal}{{/literal}"UploadErrorMsg": "{$errorMsg}"{literal}}{/literal}
 {else}
 	[
 		{literal}{{/literal}
-			fileId:	"{$fileId|default:''}"
+			"fileId":	"{$fileId|default:''}"
 		{literal}}{/literal}
 	]
 {/if}
