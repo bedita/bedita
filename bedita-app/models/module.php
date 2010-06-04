@@ -153,7 +153,7 @@ class Module extends BEAppModel {
 					}
 					$dataO["id"] = $objectTypeId;
 					$dataO["name"] = $objectType;
-					$dataO["module"] = $pluginName;
+					$dataO["module_name"] = $pluginName;
 					if (!$otModel->save($dataO)) {
 						throw new BeditaException(__("error saving objectTypes", true));
 					}
