@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008, 2010 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -19,10 +19,9 @@
  *------------------------------------------------------------------->8-----
  */
 
-App::import('Model', 'DataSource');
+App::import('Model', 'BeSchema');
 App::import('Model', 'Stream');
 App::import('Component', 'Transaction');
-App::import('vendor', "splitter_sql");
 App::import('vendor', "Archive_Tar", true, array(), "Tar.php");
 require_once 'bedita_base.php';
 
@@ -33,160 +32,7 @@ require_once 'bedita_base.php';
  * 
  * $Id$
  */
-class DataSourceTest extends DataSource {
-	
-	function executeQuery($db,$script) {
-		$sql = file_get_contents($script);
-		$queries = array();
-		$SplitterSql = new SplitterSql() ;
-		$SplitterSql->parse($queries, $sql) ;
-		foreach($queries as $q) {	
-			if(strlen($q)>1) {
-				$res = $db->execute($q);
-				if($res === false) {
-					throw new Exception("Error executing query: ".$q."\n" . "db error msg: " . $db->error ."\n");
-				}
-			}
-		}
-	}
-	
-	function executeInsert($db,$script) {
-		// split in blocks
-		$blocks = $this->createChunks($script);
-
-		// call query to avoid foreign key checks, on data insert
-		$res = $db->execute("SET FOREIGN_KEY_CHECKS=0");
-		
-		// call parse on every block and populate $queries array
-		$queries = array();
-		$SplitterSql = new SplitterSql() ;
-		foreach($blocks as $key => $block) {
-			$SplitterSql->parse($queries, $block) ;
-			// call queries (except for views creation)
-			foreach($queries as $q) {	
-				if(strlen($q)>1) {
-					if(strpos($q,"CREATE ALGORITHM") === false) {
-						//echo "executing query " . $q . "\n";
-						$res = $db->execute($q);
-						if($res === false) {
-							throw new Exception("Error executing query: ".$q."\n");
-						}
-					}
-				}
-			}
-		}
-	}
-
-	function simpleInsert($db, $sqlFileName) {
-		$handle = fopen($sqlFileName, "r");
-		if($handle === FALSE) 
-			throw new Exception("Error opening file: ".$sqlFileName);
-		$q = "";
-		while(!feof($handle)) {
-			$line = fgets($handle);
-			if($line === FALSE && !feof($handle)) {
-				throw new Exception("Error reading file line");
-			}
-			if(strncmp($line, "INSERT INTO ", 12) == 0) {
-				if(strlen($q) > 0) {
-					$res = $db->execute($q);
-					if($res === false) {
-						throw new Exception("Error executing query: ".$q."\n");
-					}
-				}
-				$q="";
-			}
-			$q .= $line;
-		}
-		// last query...
-		if(strlen($q) > 0) {
-			$res = $db->execute($q);
-			if($res === false) {
-				throw new Exception("Error executing query: ".$q."\n");
-			}
-		}
-	}
-	
-	function createChunks($script) {
-		$chunks = array();
-		$handle = fopen($script, "r");
-		$data = "";
-		$counter=0;$ccounter=0;
-		$endchar = ");\n";
-		while (!feof($handle)) {
-		   $buffer = fgets($handle, 4096);
-		   $data.=$buffer;
-		   if($counter>500 && ( substr( $buffer, strlen( $buffer ) - strlen( $endchar ) ) == $endchar ) ) { // check if $counter > 500 and $buffer ends with );
-		   		$counter=0;
-				$chunks[$ccounter++]=$data;
-				$data="";
-		   } else {
-				$counter++;
-		   }
-		}
-		fclose($handle);
-		if(empty($chunks)) {
-			$chunks[0]=$data;
-		}
-		return $chunks;
-	}
-}
-
-class DumpModel extends AppModel {
-	var $useTable = "objects";
-};
-
-class DbDump {
-	
-	private $model = NULL;
-	
-	public function __construct() {
-		$this->model = new DumpModel();
-	}
-	
-	public function tableList() {
-   		$tables = $this->model->query("show tables");
-    	$res = array();
-    	foreach ($tables as $k=>$v) {
-    		$t1 = array_values($v);
-    		$t2 = array_values($t1[0]);
-    		if (strncasecmp($t2[0], 'view_', 5) !== 0 && 
-    			strncasecmp($t2[0], 'cake_', 5) !== 0) // exclude views and cake_ util tables
-    			$res[]=$t2[0] ;
-    	}
-    	return $res;
-    }
-    
-    public function tableDetails($tables, $handle) {
-
-    	fwrite($handle, "SET FOREIGN_KEY_CHECKS=0;\n");
-
-    	foreach ($tables as $t) {
-    		$this->model->setSource($t); 
-    		$select = $this->model->find('all');
-			foreach ($select as $sel) {
-				$fields = "";
-				$values = "";
-				$count = 0;
-				foreach ($sel['DumpModel'] as $k=>$v) {
-					if($v !== NULL) {
-						if($count > 0) {
-							$fields .= ",";
-							$values .= ",";
-						}
-						$fields .= "`$k`";
-						$values .= "'".addslashes($v)."'";
-						$count++;
-					}
-				}
-				$res = "INSERT INTO $t (".$fields.") VALUES ($values);\n";
-    			fwrite($handle, $res);
-			}
-    	}
-    	return $res;
-    }
-	
-}
+/*
 
 /**
  * Main bedita shell script: basic methods services, including
@@ -292,16 +138,16 @@ class BeditaShell extends BeditaBaseShell {
         $transaction = new TransactionComponent($dbCfg);
 		$transaction->begin();
         
-        $this->DataSourceTest = new DataSourceTest();
+        $beSchema = new BeSchema();
 		$script = $sqlScriptPath . "bedita_schema.sql";
 		$this->out("Update schema from $script");
-		$this->DataSourceTest->executeQuery($db,$script);
+		$beSchema->executeQuery($db, $script);
         
 		if (isset($this->params['nodata'])) {
 			$this->out("No data inserted");
 		} else {
 	        $this->out("Load data from $sqlDataDump");
-			$this->DataSourceTest->executeInsert($db, $sqlDataDump);
+			$beSchema->executeInsert($db, $sqlDataDump);
 		}
        	$this->out("$dbCfg database updated");
 		$transaction->commit();
@@ -379,14 +225,14 @@ class BeditaShell extends BeditaBaseShell {
         $transaction = new TransactionComponent($dbCfg);
 		$transaction->begin();
         
-    	$sqlScriptPath = APP_DIR . DS ."config" . DS . "sql" . DS;
-		$this->DataSourceTest = new DataSourceTest();
+    	$sqlScriptPath = APP ."config" . DS . "sql" . DS;
+		$beSchema = new BeSchema();
 		$script = $sqlScriptPath . "bedita_schema.sql";
 		$this->out("Update schema from $script");
-		$this->DataSourceTest->executeQuery($db,$script);
+		$beSchema->executeQuery($db, $script);
         
 		$this->out("Load data from $sqlFileName");
-        $this->DataSourceTest->simpleInsert($db, $sqlFileName);
+        $beSchema->simpleInsert($db, $sqlFileName);
 		unlink($sqlFileName);
 		$this->out("$dbCfg database updated");
 
@@ -397,7 +243,7 @@ class BeditaShell extends BeditaBaseShell {
 		$newCfgFileName = $tmpBasePath."bedita.cfg.php";
 		if (file_exists($newCfgFileName)) {
 			// overwrite current cfg file
-			$cfgFileName = ROOT.DS.APP_DIR.DS."config".DS."bedita.cfg.php";
+			$cfgFileName = APP ."config".DS."bedita.cfg.php";
 			if (file_exists($cfgFileName)) {
 				$res = $this->in($cfgFileName. " already exists, overwrite with new configuration? [y/n]");
 				if($res == "y") {
@@ -454,8 +300,8 @@ class BeditaShell extends BeditaBaseShell {
     	
     	$this->checkExportFile($expFile);
 
-		$dbDump = new DbDump();
-		$tables = $dbDump->tableList();
+		$beSchema = new BeSchema();
+		$tables = $beSchema->tableList();
 		$this->check_sys_get_temp_dir();
 		$tmpBasePath = $this->setupTempDir();
 		$sqlFileName = $tmpBasePath."bedita-data.sql";
@@ -464,7 +310,7 @@ class BeditaShell extends BeditaBaseShell {
 		$handle = fopen($sqlFileName, "w");
 		if($handle === FALSE) 
 			throw new Exception("Error opening file: ".$sqlFileName);
-		$dbDump->tableDetails($tables, $handle);
+		$beSchema->tableDetails($tables, $handle);
 		fclose($handle);
        	
        	$this->out("Exporting to $expFile");

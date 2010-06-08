@@ -539,6 +539,21 @@ class DbadminShell extends BeditaBaseShell {
 		}
 	}
 	
+	function testPlugin() {
+		
+		$pluginName = "books";
+		$schemaClass = Inflector::camelize($pluginName). "Schema";
+		App::import('Model', 'Schema');
+		$schemaFile = BEDITA_PLUGINS_PATH . DS  . $pluginName . DS . "config/sql/schema.php";
+		$this->out("Using BEdita schema file: $schemaFile");
+		require_once($schemaFile);
+		$schema = new $schemaClass();
+		$db = ConnectionManager::getDataSource("default");
+		$contents = "#" . $schema->name . " sql generated on: " . date('Y-m-d H:i:s') . " : " . time() . "\n\n";
+		$contents .= $db->dropSchema($schema) . "\n\n". $db->createSchema($schema);
+		$this->out($contents);
+	}
+	
 	function help() {
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
