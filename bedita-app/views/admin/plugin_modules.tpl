@@ -33,6 +33,7 @@ $(document).ready(function() {
 
 	.modules LI {
 		margin-right:10px;
+		margin-bottom:10px;
 	}
 			
 	.modules LI.off {
