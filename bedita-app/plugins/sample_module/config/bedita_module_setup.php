@@ -32,14 +32,19 @@
 $moduleSetup = array(
 
 	"publicName" => "Sample Module",
-	"author" => "Channelweb and Chialab",
+	"author" => "Channelweb & Chialab",
 	"website" => "http://www.bedita.com",
 	"emailAddress" => "info@bedita.com",
+	"description" => "BEdita plugin module example",
+	// plugin module version
 	"version" => "0.1",
+	// minimum BEdita version required by this module
 	"BEditaVersion" => "3.1",
-	"description" => "Example of BEdita's module plugin",
-	"BEditaObjects" => array("SampleObject") 
-
+	// model names that are BEdita objects: i.e. extend BEAppObjectModel
+	// don't list other model names (simple models)
+	"BEditaObjects" => array("SampleObjects"),
+	// extra database tables used/needed by this module 
+//	"tables" => array("sample_objects"),
 );
 
 ?>
