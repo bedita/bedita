@@ -20,7 +20,7 @@ blockquote {
 	padding-left:10px;
 }
 
-dfn {color:green; text-decoration:underline}
+dfn {font-style:normal; font-weight:bold; color:#003300;}
 
 DT, DL {color: #653214;}
 
@@ -29,3 +29,8 @@ CODE {color: #ff6600}
 .placeholder {
 	background-color:#ff3300;
 }
+
+.glossary {
+	color:#336633 !important;
+}
+
