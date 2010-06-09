@@ -24,7 +24,7 @@ class DumpModel extends AppModel {
 };    
 
 /**
- * Class that handles schema/db issues
+ * Utility class that handles schema/db issues
  * 
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
@@ -36,31 +36,6 @@ class BeSchema extends CakeSchema
 {
 	var $useTable = false;
 
-/*
-	var $fnc_stringa			= null ;
-	var $fnc_command			= null ;
-	var $fnc_error				= null ;
-
-	var $_LEX_BUFFER 			= "" ;
-	var	$_LEX_INSIDE_STRING 	= false ;
-	var	$_LEX_START_STRING 		= "" ;
-	var $_BUFFER_COMMAND		= "" ;
-	var $_LEX_DELIMITER_COMMAND	= ";" ;
-	
-	const LEX_STRING 		= 4 ;
-	const LEX_END_STRING	= 5 ;
-	const LEX_INIT_COMMAND 	= 6 ;
-	const LEX_COMMAND 		= 7 ;
-	const LEX_DELIMITER		= 8 ;
-	const LEX_COMMENT		= 9 ;
-	
-	const LEX_ERROR_STRING 	= 108 ;
-	const LEX_ERROR_COMMAND = 109 ;
-	
-	const LEX_ERROR = 1000 ;
-	const LEX_EOF	= 2000 ;
-*/
-		
 	function executeQuery($db, $script) {
 		$sql = file_get_contents($script);
 		$queries = array();
@@ -70,7 +45,7 @@ class BeSchema extends CakeSchema
 			if(strlen($q)>1) {
 				$res = $db->execute($q);
 				if($res === false) {
-					throw new Exception("Error executing query: ".$q."\n" . "db error msg: " . $db->error ."\n");
+					throw new BeditaException("Error executing query: ".$q."\n" . "db error msg: " . $db->error ."\n");
 				}
 			}
 		}
@@ -133,7 +108,7 @@ class BeSchema extends CakeSchema
 		}
 	}
 	
-	function createChunks($script) {
+	private function createChunks($script) {
 		$chunks = array();
 		$handle = fopen($script, "r");
 		$data = "";
@@ -157,15 +132,25 @@ class BeSchema extends CakeSchema
 		return $chunks;
 	}
 
-	public function tableList() {
+	public function readTables() {
 		$schemaTabs = $this->read();
 		if(isset($schemaTabs['tables']['missing'])) {
 			unset($schemaTabs['tables']['missing']);
 		}
-		return array_keys($schemaTabs['tables']);
+		return $schemaTabs['tables'];
+    }
+
+    public function tableMetaData($model, $db) {
+    	$tableMeta = $this->__columns($model);
+    	$tableMeta['indexes'] = $db->index($model);
+    	return $tableMeta;
     }
     
-	public function tableDetails($tables, $handle) {
+	public function tableList() {
+		return array_keys($this->readTables());
+    }
+    
+	public function tableDetails(array &$tables, $handle) {
 
     	fwrite($handle, "SET FOREIGN_KEY_CHECKS=0;\n");
 

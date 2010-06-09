@@ -135,6 +135,100 @@ class ModuleShell extends BeditaBaseShell {
 		
 	}
 	
+	
+	private function findPluginPath($pluginName) {
+		$res = null;
+		$pluginPaths = Configure::getInstance()->pluginPaths;
+		foreach ($pluginPaths as $p) {
+			if(file_exists($p . DS . $pluginName . DS . "config")) {
+				$res = $p;
+			}
+		}
+		return $res;
+	}	
+	
+	
+	function schema() {
+		
+		$pluginName = $this->params["name"];
+		if(empty($pluginName)) {
+			$this->out("Plugin name is mandatory");
+			return;
+		}
+		
+		$pluginPath = $this->findPluginPath($pluginName);
+		if($pluginPath == null) {
+			$this->out("Plugin $pluginName not found");
+			return;
+		}
+
+		$configPath = $pluginPath . DS  . $pluginName . DS . "config" . DS;
+		$setupFile =  $configPath . "bedita_module_setup.php";
+		if(!file_exists($setupFile)) {
+			$this->out("Plugin setup file for $pluginName not found");
+			return;
+		}
+		include($setupFile);
+		if(empty($moduleSetup["tables"])) {
+			$this->out("No tables defined for plugin $pluginName");
+			return;
+		}
+
+		$db =& ConnectionManager::getDataSource("default");
+		$options = array();
+		$tables = $moduleSetup["tables"];
+		$beSchema = ClassRegistry::init("BeSchema");
+		
+		foreach ($tables as $t) {
+			$modelName = Inflector::camelize($t);
+			$model = ClassRegistry::init($modelName);
+			$options["tables"][$t] = $beSchema->tableMetadata($model, $db);
+			ClassRegistry::removeObject($modelName);
+		}
+		
+		$schemaFile = $configPath . "sql". DS . "schema.php";
+		$skip = false;		
+		if(file_exists($schemaFile)) {
+			$command = $this->in("Schema file $schemaFile exists. Overwrite?", array("y", "n"), "y");
+			if ($command == "n") {
+				$skip = true;
+				$this->out("Skipping schema file generation");
+			}
+		}
+		
+		if(!$skip) {		
+			$this->out("Creating schema file: $schemaFile");
+			$name = Inflector::camelize($pluginName);
+			$options['name'] = $name;
+			$options['path'] = $configPath . "sql";
+			$beSchema->path = $options['path'];
+			$beSchema->write($options);
+		}
+		require_once($schemaFile);
+		$schemaName = $name . "Schema";
+		$schema = new $schemaName();
+
+		// sql schema
+		$sqlSchema = $configPath . "sql". DS . $db->config["driver"] . "_schema.sql";
+		$skip = false;		
+		if(file_exists($sqlSchema)) {
+			$command = $this->in("Schema file $sqlSchema exists. Overwrite?", array("y", "n"), "y");
+			if ($command == "n") {
+				$skip = true;
+				$this->out("Skipping schema file generation");
+			}
+		}
+		
+		if(!$skip) {		
+			$this->out("Creating schema file: $sqlSchema");		
+			$contents = "#" . $schema->name . " sql generated on: " . date('Y-m-d H:i:s') . " : " . time() . "\n\n";
+			$contents .= $db->dropSchema($schema) . "\n\n". $db->createSchema($schema);
+			$file = new File($sqlSchema, true);
+			$file->write($contents);
+		}
+		$this->out("Done");
+	}
+	
 	function help() {
         $this->out('Available functions:');
   		$this->out(' ');
@@ -146,6 +240,11 @@ class ModuleShell extends BeditaBaseShell {
   		$this->out(' ');
         $this->out('1. unplug: todo');
   		$this->out(' ');
+        $this->out('2. schema: generate schema files for a plugin');
+  		$this->out('    Usage: schema [-list] [-name <module-plugin-name>]');
+  		$this->out(' ');
+  		$this->out("    -name <module-plugin-name>   \t plugin name");
+        $this->out(' ');
 	}
 	
 }

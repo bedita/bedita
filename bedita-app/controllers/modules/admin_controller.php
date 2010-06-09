@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008, 2010 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -389,12 +389,13 @@ class AdminController extends ModulesController {
 			throw new BeditaExceptions(__("Missing plugin path", true));
 		}
 		$moduleModel = ClassRegistry::init("Module");
-		include($this->params["form"]["pluginPath"] . $this->params["form"]["pluginName"] . DS . "config" . DS . "bedita_module_setup.php");
+	 	$pluginName = $this->params["form"]["pluginName"];
+		include($this->params["form"]["pluginPath"] . $pluginName . DS . "config" . DS . "bedita_module_setup.php");
 		$this->Transaction->begin();
-	 	$moduleModel->plugModule($this->params["form"]["pluginName"], $moduleSetup, $this->params["form"]["pluginPath"]);
+	 	$moduleModel->plugModule($pluginName, $moduleSetup, $this->params["form"]["pluginPath"]);
 	 	$this->Transaction->commit();
-	 	$this->eventInfo("module ".$this->params["form"]["pluginName"]." plugged succesfully");
-		$this->userInfoMessage($this->params["form"]["pluginName"] . " " . __("plugged succesfully",true));
+	 	$this->eventInfo("module ".$pluginName." plugged succesfully");
+		$this->userInfoMessage($pluginName . " " . __("plugged succesfully",true));
 	}
 	
 	/**
@@ -428,7 +429,9 @@ class AdminController extends ModulesController {
 			throw new BeditaException(__("Missing data", true));
 		}
 		$moduleModel = ClassRegistry::init("Module");
-		include($this->params["form"]["pluginPath"] . $this->params["form"]["pluginName"] . DS . "config" . DS . "bedita_module_setup.php");
+		$pluginName = $this->params["form"]["pluginName"];
+		$pluginPath = $this->params["form"]["pluginPath"];		
+		include($pluginPath . $pluginName . DS . "config" . DS . "bedita_module_setup.php");
 		$this->Transaction->begin();
 	 	$moduleModel->unplugModule($this->data["id"], $moduleSetup);
 	 	$this->Transaction->commit();

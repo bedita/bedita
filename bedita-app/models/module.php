@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2010 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -79,7 +79,7 @@ class Module extends BEAppModel {
 	 * @param array $setup
 	 * @return bool
 	 */
-	public function plugModule($pluginName, array $setup=array(), $pluginPath=null) {
+	public function plugModule($pluginName, array& $setup, $pluginPath=null) {
 		if (empty($pluginName) || empty($setup)) {
 			return false;
 		}
@@ -106,19 +106,20 @@ class Module extends BEAppModel {
 			if (!is_array($setup["BEditaObjects"])) {
 				$setup["BEditaObjects"] = array($setup["BEditaObjects"]);
 			}
+			$beLib = BeLib::getInstance();
+			if (empty($pluginPath)) {
+				$pluginPath = $beLib->getPluginPath($pluginName);
+			}
+			// check db schema, create tables if needed
+			$this->handlePluginSchema($pluginName, $setup, $pluginPath);
+			
+			$dirPath = $pluginPath . $pluginName . DS . "models" . DS;
+			
 			$otModel = ClassRegistry::init("ObjectType");
 			$ot_id = $otModel->newPluggedId();  
 			foreach ($setup["BEditaObjects"] as $modelName) {
 				$objectType = Inflector::underscore($modelName);
-				
-				$beLib = BeLib::getInstance();
-				if (empty($pluginPath)) {
-					$pluginPath = $beLib->getPluginPath($pluginName);
-				}
-				
 				$filename = $objectType . ".php";
-				$dirPath = $pluginPath . $pluginName . DS . "models" . DS;
-				
 				if (!file_exists($dirPath . $filename)) {
 					throw new BeditaException(__("File " . $filename . " doesn't find.", true));
 				}
@@ -128,7 +129,7 @@ class Module extends BEAppModel {
 				}
 				
 				if (!$beLib->isBeditaObjectType($modelName, $dirPath)) {
-					throw new BeditaException(__($modelName . " doesn't seem to be a BEdita object. It has to be extend BEAppObjectModel", true));
+					throw new BeditaException(__($modelName . " doesn't seem to be a BEdita object. It has to extend BEAppObjectModel", true));
 				}
 				
 				$obj = $otModel->find("count", array(
@@ -178,6 +179,77 @@ class Module extends BEAppModel {
 		return true;
 	}
 	
+	private function createPluginSchema($pluginName, $pluginPath) {
+		// load and check schema
+		$schemaClass = Inflector::camelize($pluginName). "Schema";
+		App::import('Model', 'Schema');
+		$schemaPath = $pluginPath . DS  . $pluginName . DS . "config". DS. "sql" . DS;
+		$schemaFile = $schemaPath . "schema.php";
+		if(!file_exists($schemaFile)) {
+			throw new BeditaException(__("Missing schema file", true));
+		}
+		include($schemaFile);
+		return new $schemaClass();
+	}
+	
+	protected function handlePluginSchema($pluginName, array& $setup, $pluginPath) {
+		if(empty($setup["tables"])) {
+			return;
+		}
+		$schemaPath = $pluginPath . DS  . $pluginName . DS . "config". DS. "sql" . DS;
+		
+		$pluginSchema = $this->createPluginSchema($pluginName, $pluginPath);
+		$pluginTables = $pluginSchema->tables;
+		
+		$db =& ConnectionManager::getDataSource($this->useDbConfig);
+		$currentTables = $db->listSources();
+		
+		$beSchema = ClassRegistry::init("BeSchema");
+
+		$found = false;
+		$numTablesFound = 0;
+		$tabsNotFound = "";
+		foreach ($pluginTables as $tabName => $tabData) {
+			if(in_array($tabName, $currentTables)) {
+				$found = true;
+				$numTablesFound++;
+				
+				$modelName = Inflector::camelize($tabName);
+				$model = ClassRegistry::init($modelName);
+				
+				$tableMeta = $beSchema->tableMetaData($model, $db);
+				
+				// if fields do not match, error
+				// FIXME: doesn't work!! 
+				sort($tabData);
+				sort($tableMeta);
+				$diff = array_diff($tabData, $tableMeta);
+				if(!empty($diff)) {
+					throw new BeditaException(__("Database schema conflict", true));
+				}
+				ClassRegistry::removeObject($modelName);
+				
+			} else {
+				$tabsNotFound .= " '" . $tabName . "'";
+			}
+		}
+		if($found && $numTablesFound < count($pluginTables)) {
+			throw new BeditaException(__("Some plugin tables are missing", true) . $tabsNotFound);
+		}
+		
+		if(!$found) {
+			// find sql schema for current driver
+			$sqlSchema = $schemaPath . $db->config["driver"] . "_schema.sql";
+			if(!file_exists($sqlSchema)) {
+				throw new BeditaException(__("Database schema for current driver not found", true) . " [".$db->config["driver"]."]");
+			}
+			// execute script
+			$beSchema->executeQuery($db, $sqlSchema);	
+			$db->cacheSources = false;
+		}
+	}
+	
+	
 	/**
 	 * unplug module
 	 * delete row on modules table, all module objects and object type
@@ -185,7 +257,7 @@ class Module extends BEAppModel {
 	 * @param array $setup
 	 * @return unknown_type
 	 */
-	public function unplugModule($id, array $setup=array()) {
+	public function unplugModule($id, array& $setup) {
 		if (!$this->del($id)) {
 			throw new BeditaException(__("Error deleting module " . $setup["publicName"], true));
 		}
@@ -199,6 +271,15 @@ class Module extends BEAppModel {
 			foreach ($setup["BEditaObjects"] as $modelName) {
 				$objectType = Inflector::underscore($modelName);
 				$otModel->purgeType($objectType);
+			}
+		}
+		
+		// drop tables
+		if (!empty($setup["tables"])) {
+			$pluginTables = $setup["tables"];
+			foreach (array_reverse($pluginTables) as $t) {
+				$q = "DROP TABLE " . $t;
+				$this->query($q);
 			}
 		}
 		
