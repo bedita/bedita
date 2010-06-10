@@ -42,6 +42,9 @@ ALTER TABLE  `sections` CHANGE  `priority_order`  `priority_order` VARCHAR( 10 )
 ALTER TABLE  `users` CHANGE  `comments`  `comments` VARCHAR( 10 ) NULL DEFAULT NULL COMMENT  'notify new comments option (never, mine, all)';
 ALTER TABLE  `users` CHANGE  `notes`  `notes` VARCHAR( 10 ) NULL DEFAULT NULL COMMENT  'notify new notes option (never, mine, all)';
 ALTER TABLE  `banned_ips` CHANGE  `status`  `status` VARCHAR( 10 ) NOT NULL DEFAULT  'ban' COMMENT  'ip status (ban, accept)';
+ALTER TABLE `permissions` CHANGE `switch` `switch` VARCHAR( 10 ) NOT NULL COMMENT 'permission type (user,group)';
+ALTER TABLE `permission_modules` CHANGE `switch` `switch` VARCHAR( 10 ) NULL DEFAULT NULL COMMENT 'permission type (user,group)';
+ALTER TABLE `properties` CHANGE `property_type` `property_type` VARCHAR( 10 ) NOT NULL COMMENT '(number, date, text, options)';
 ALTER TABLE `contents` DROP `type`;
 ALTER TABLE  `cards` DROP  `street_number`;
 
