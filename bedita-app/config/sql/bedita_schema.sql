@@ -552,7 +552,7 @@ CREATE TABLE object_properties (
   property_id INTEGER UNSIGNED NOT NULL,
   object_id INTEGER UNSIGNED NOT NULL,
   property_value TEXT not null,
-  INDEX id_index(id),
+  PRIMARY KEY(id),
   INDEX property_id_index(property_id),
   FOREIGN KEY(object_id)
     REFERENCES objects(id)
@@ -772,7 +772,7 @@ CREATE TABLE user_properties (
   property_id INTEGER UNSIGNED NOT NULL,
   user_id INTEGER UNSIGNED NOT NULL,
   property_value TEXT not null,
-  INDEX id_index(id),
+  PRIMARY KEY(id),
   INDEX property_id_index(property_id),
   FOREIGN KEY(user_id)
     REFERENCES users(id)

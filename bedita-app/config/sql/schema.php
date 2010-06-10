@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* BeditaApp schema generated on: 2010-06-10 10:06:41 : 1276159901*/
+/* BeditaApp schema generated on: 2010-06-10 11:06:51 : 1276161951*/
 class BeditaAppSchema extends CakeSchema {
 	var $name = 'BeditaApp';
 
@@ -297,7 +297,7 @@ class BeditaAppSchema extends CakeSchema {
 		'property_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'object_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'property_value' => array('type' => 'text', 'null' => false, 'default' => NULL, 'values' => NULL),
-		'indexes' => array('id_index' => array('column' => 'id', 'unique' => 0), 'property_id_index' => array('column' => 'property_id', 'unique' => 0), 'object_id' => array('column' => 'object_id', 'unique' => 0))
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'property_id_index' => array('column' => 'property_id', 'unique' => 0), 'object_id' => array('column' => 'object_id', 'unique' => 0))
 	);
 	var $object_relations = array(
 		'object_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
@@ -433,7 +433,7 @@ class BeditaAppSchema extends CakeSchema {
 		'property_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'user_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'property_value' => array('type' => 'text', 'null' => false, 'default' => NULL, 'values' => NULL),
-		'indexes' => array('id_index' => array('column' => 'id', 'unique' => 0), 'property_id_index' => array('column' => 'property_id', 'unique' => 0), 'user_id' => array('column' => 'user_id', 'unique' => 0))
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'property_id_index' => array('column' => 'property_id', 'unique' => 0), 'user_id' => array('column' => 'user_id', 'unique' => 0))
 	);
 	var $users = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),

@@ -47,6 +47,8 @@ ALTER TABLE `permission_modules` CHANGE `switch` `switch` VARCHAR( 10 ) NULL DEF
 ALTER TABLE `properties` CHANGE `property_type` `property_type` VARCHAR( 10 ) NOT NULL COMMENT '(number, date, text, options)';
 ALTER TABLE `contents` DROP `type`;
 ALTER TABLE  `cards` DROP  `street_number`;
+ALTER TABLE `object_properties` ADD PRIMARY KEY ( `id` );
+ALTER TABLE `object_properties` DROP INDEX `id_index`;
 
 CREATE TABLE history (
   `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -80,7 +82,7 @@ CREATE TABLE user_properties (
   property_id INTEGER UNSIGNED NOT NULL,
   user_id INTEGER UNSIGNED NOT NULL,
   property_value TEXT not null,
-  INDEX id_index(id),
+  PRIMARY KEY(id),
   INDEX property_id_index(property_id),
   FOREIGN KEY(user_id)
     REFERENCES users(id)
