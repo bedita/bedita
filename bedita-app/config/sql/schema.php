@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* BeditaApp schema generated on: 2010-06-01 17:06:26 : 1275404427*/
+/* BeditaApp schema generated on: 2010-06-10 10:06:41 : 1276159901*/
 class BeditaAppSchema extends CakeSchema {
 	var $name = 'BeditaApp';
 
@@ -258,7 +258,7 @@ class BeditaAppSchema extends CakeSchema {
 	);
 	var $mail_messages = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
-		'mail_status' => array('type' => 'enum', 'null' => false, 'default' => 'unsent', 'length' => 7, 'values' => '\'unsent\',\'pending\',\'injob\',\'sent\''),
+		'mail_status' => array('type' => 'string', 'null' => false, 'default' => 'unsent', 'length' => 10, 'values' => NULL),
 		'start_sending' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'end_sending' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'values' => NULL),
 		'sender' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL),
@@ -348,7 +348,7 @@ class BeditaAppSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'module_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'ugid' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
-		'switch' => array('type' => 'set', 'null' => true, 'default' => NULL, 'length' => 5, 'values' => '\'user\',\'group\''),
+		'switch' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'flag' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'permission_modules_FKIndex1' => array('column' => 'module_id', 'unique' => 0), 'permission_modules_FKIndex3' => array('column' => 'ugid', 'unique' => 0))
 	);
@@ -356,7 +356,7 @@ class BeditaAppSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'object_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
 		'ugid' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
-		'switch' => array('type' => 'set', 'null' => false, 'default' => NULL, 'length' => 5, 'values' => '\'user\',\'group\''),
+		'switch' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'flag' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'permissions_obj_inkdex' => array('column' => 'object_id', 'unique' => 0), 'permissions_ugid_switch' => array('column' => array('ugid', 'switch'), 'unique' => 0))
 	);
@@ -382,7 +382,7 @@ class BeditaAppSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'primary'),
 		'name' => array('type' => 'string', 'null' => false, 'default' => NULL, 'values' => NULL, 'key' => 'index'),
 		'object_type_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'values' => NULL, 'key' => 'index'),
-		'property_type' => array('type' => 'set', 'null' => false, 'default' => NULL, 'length' => 7, 'values' => '\'number\',\'date\',\'text\',\'options\''),
+		'property_type' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 10, 'values' => NULL),
 		'multiple_choice' => array('type' => 'boolean', 'null' => true, 'default' => '0', 'values' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'name_type' => array('column' => array('name', 'object_type_id'), 'unique' => 1), 'name_index' => array('column' => 'name', 'unique' => 0), 'type_index' => array('column' => 'object_type_id', 'unique' => 0))
 	);
