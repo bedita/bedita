@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008, 2010 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -36,9 +36,18 @@ class BuildFilterBehavior extends ModelBehavior {
 	private $group = "";
 	private $order = "";
 	private $filter = array();
+	protected $startQuote = ""; // internal use: start quote
+	protected $endQuote = ""; // internal use: end quote
+	private $model = "";
 	
 	
 	function setup(&$model, $settings=array()) {
+    	$this->model = $model;
+		if(empty($this->sQ)) {
+			$db = ConnectionManager::getDataSource($model->useDbConfig);
+			$this->startQuote = $db->startQuote;
+			$this->endQuote = $db->endQuote;
+    	}
 	}
 	
 	/**
@@ -49,17 +58,30 @@ class BuildFilterBehavior extends ModelBehavior {
 	 */
 	function getSqlItems(&$model, $filter) {
 		$this->initVars($filter);
+		$s = $this->startQuote;
+		$e = $this->endQuote;
 		
 		$beObject = ClassRegistry::init("BEObject");
 		
+		// *CUSTOM QUERY*
 		foreach ($this->filter as $key => $val) {
 			
 			if (method_exists($this, $key . "Filter")) {
-				$this->{$key . "Filter"}($val);
+				$this->{$key . "Filter"}($s, $e, $val);
 			} else {
 			
-				if ($beObject->hasField($key))
-					$key = "`BEObject`." . $key;
+				if ($beObject->hasField($key)) {
+					$key = "{$s}BEObject{$e}." . $s . $key . $e;
+				} else {
+					
+					if(strstr($key, ".*")) {
+						$mod = str_replace(".*", "", $key);
+						$this->group .= "," . $this->model->fieldsString($mod);
+						$key = $s . $mod . $e . ".*";
+					} else {
+						$key = $s . str_replace(".", "{$e}.{$s}", $key) . $e;
+					}					
+				}
 				
 				$this->fields .= ", " . $key;
 				if (is_array($val)) {
@@ -69,17 +91,17 @@ class BuildFilterBehavior extends ModelBehavior {
 				}
 	
 				if (count($arr = explode(".", $key)) == 2 ) {
-					$modelName = $arr[0];
+					$modelName = str_replace(array($s, $e) ,"",$arr[0]);
 					if (!strstr($modelName,"BEObject") && $modelName != "Content") {
 						$model = ClassRegistry::init($modelName);
-						$f_str = $model->useTable . " as `" . $model->alias . "`";
+						$f_str = $s. $model->useTable . $e. " as " . $s. $model->alias . $e. "";
 						// create join with BEObject
 						if (empty($this->from) || !strstr($this->from, $f_str)) {
 							$this->from .= ", " . $f_str;
 							if (empty($model->hasOne["BEObject"]) && $model->hasField("object_id") && $model->alias != "ObjectRelation")
-								$this->conditions[] = "`BEObject`.id=`" . $model->alias . "`.object_id";
+								$this->conditions[] = "{$s}BEObject{$e}.{$s}id{$e}={$s}" . $model->alias . "{$e}.{$s}object_id{$e}";
 							else
-								$this->conditions[] = "`BEObject`.id=`" . $model->alias . "`.id";							
+								$this->conditions[] = "{$s}BEObject{$e}.{$s}id{$e}={$s}" . $model->alias . "{$e}.{$s}id{$e}";							
 						}
 					}
 					
@@ -121,12 +143,12 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->filter = $filter;
 	}
 	
-	private function object_userFilter() {
-		$this->fields .= ", `ObjectUser`.user_id AS user_id";
-		$this->from = " LEFT OUTER JOIN object_users AS `ObjectUser` ON `BEObject`.id=`ObjectUser`.object_id" . $this->from;
+	private function object_userFilter($s, $e) {
+		$this->fields .= ", ObjectUser.user_id AS user_id";
+		$this->from = " LEFT OUTER JOIN object_users AS ObjectUser ON BEObject.id=ObjectUser.object_id" . $this->from;
 	}
 	
-	private function count_annotationFilter($value) {
+	private function count_annotationFilter($s, $e, $value) {
 		if (!is_array($value)) {
 			$value = array($value);
 		}
@@ -143,85 +165,89 @@ class BuildFilterBehavior extends ModelBehavior {
 			$numOf = "num_of_" . Inflector::underscore($annotationModel->name);
 			$this->fields .= ", SUM(" . $numOf . ") AS " . $numOf;
 			$from = " LEFT OUTER JOIN (
-						SELECT DISTINCT `BEObject`.id, COUNT(`" . $annotationModel->name . "`.id) AS " . $numOf ."
-						FROM objects AS `BEObject` 
-						LEFT OUTER JOIN annotations AS `" . $annotationModel->name . "` ON `BEObject`.id=`" . $annotationModel->name . "`.object_id
-						RIGHT OUTER JOIN objects AS `RefObj`ON (`RefObj`.id = `" . $annotationModel->name . "`.id AND `RefObj`.object_type_id=" . $refObj_type_id . ")
+						SELECT DISTINCT {$s}BEObject{$e}.{$s}id{$e}, COUNT({$s}" . $annotationModel->name . "{$e}.{$s}id{$e}) AS " . $numOf ."
+						FROM {$s}objects{$e} AS {$s}BEObject{$e} 
+						LEFT OUTER JOIN {$s}annotations{$e} AS {$s}" . $annotationModel->name . "{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}" . $annotationModel->name . "{$e}.{$s}object_id{$e}
+						RIGHT OUTER JOIN {$s}objects{$e} AS {$s}RefObj{$e} ON ({$s}RefObj{$e}.{$s}id{$e} = {$s}" . $annotationModel->name . "{$e}.{$s}id{$e} AND {$s}RefObj{$e}.{$s}object_type_id{$e}=" . $refObj_type_id . ")
 					";
 			if (!empty($object_type_id)) {
-				$from .= (is_array($object_type_id))? "WHERE `BEObject`.object_type_id IN (" . implode(",", $object_type_id) . ")" : "WHERE `BEObject`.object_type_id=".$object_type_id;
+				$from .= (is_array($object_type_id))? "WHERE {$s}BEObject{$e}.{$s}object_type_id{$e} IN (" . implode(",", $object_type_id) . ")" : "WHERE {$s}BEObject{$e}.{$s}object_type_id{$e}=".$object_type_id;
 			}
 			
-			$from .= " GROUP BY `BEObject`.id
-					) AS `".$annotationModel->name."` ON `".$annotationModel->name."`.id = `BEObject`.id";
+			$from .= " GROUP BY {$s}BEObject{$e}.{$s}id{$e}
+					) AS {$s}".$annotationModel->name."{$e} ON {$s}".$annotationModel->name."{$e}.{$s}id{$e} = {$s}BEObject{$e}.{$s}id{$e}";
 			
 			$this->from = $from . $this->from;
 		}
 	}
 	
-	private function mediatypeFilter() {
-		$this->fields .= ", `Category`.name AS mediatype";
-		$this->from = " LEFT OUTER JOIN object_categories AS `ObjectCategory` ON `BEObject`.id=`ObjectCategory`.object_id
-				LEFT OUTER JOIN categories AS `Category` ON `ObjectCategory`.category_id=`Category`.id AND `Category`.object_type_id IS NOT NULL"
+	private function mediatypeFilter($s, $e) {
+		$this->fields .= ", Category.name AS mediatype";
+		$this->from = " LEFT OUTER JOIN object_categories AS ObjectCategory ON BEObject.id=ObjectCategory.object_id
+				LEFT OUTER JOIN categories AS Category ON ObjectCategory.category_id=Category.id AND Category.object_type_id IS NOT NULL"
 				. $this->from;
 	}
 	
-	private function queryFilter($value) {
-		$this->fields .= ", `SearchText`.`object_id` AS `oid`, SUM( MATCH (`SearchText`.`content`) AGAINST ('" . $value . "') * `SearchText`.`relevance` ) AS `points`";
-		$this->from .= ", search_texts AS `SearchText`";
-		$this->conditions[] = "`SearchText`.`object_id` = `BEObject`.`id` AND `SearchText`.`lang` = `BEObject`.`lang` AND MATCH (`SearchText`.`content`) AGAINST ('" . $value . "')";
+	private function queryFilter($s, $e, $value) {
+		$this->fields .= ", SearchText.object_id AS oid, SUM( MATCH (SearchText.content) AGAINST ('" . $value . "') * SearchText.relevance ) AS points";
+		$this->from .= ", search_texts AS SearchText";
+		$this->conditions[] = "SearchText.object_id = BEObject.id AND SearchText.lang = BEObject.lang AND MATCH (SearchText.content) AGAINST ('" . $value . "')";
 		$this->order .= "points DESC ";
 	}
 	
-	private function categoryFilter($value) {
+	private function categoryFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
-		if (!strstr($this->from, `Category`) && !array_key_exists("mediatype", $this->filter))
-			$this->from .= ", categories AS `Category`, object_categories AS `ObjectCategory`";
-		$this->conditions[] = "`Category`." . $cat_field . "='" . $value . "' 
-						AND `ObjectCategory`.object_id=`BEObject`.id
-						AND `ObjectCategory`.category_id=`Category`.id
-						AND `Category`.object_type_id IS NOT NULL";
+		if (!strstr($this->from, Category) && !array_key_exists("mediatype", $this->filter))
+			$this->from .= ", categories AS Category, object_categories AS ObjectCategory";
+		$this->conditions[] = "Category." . $cat_field . "='" . $value . "' 
+						AND ObjectCategory.object_id=BEObject.id
+						AND ObjectCategory.category_id=Category.id
+						AND Category.object_type_id IS NOT NULL";
 	}
 	
-	private function tagFilter($value) {
+	private function tagFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
-		if (!strstr($this->from, `Category`) && !array_key_exists("mediatype", $this->filter))
-			$this->from .= ", categories AS `Category`, object_categories AS `ObjectCategory`";
-		$this->conditions[] = "`Category`." . $cat_field . "='" . $value . "' 
-						AND `ObjectCategory`.object_id=`BEObject`.id
-						AND `ObjectCategory`.category_id=`Category`.id
-						AND `Category`.object_type_id IS NULL";
+		if (!strstr($this->from, Category) && !array_key_exists("mediatype", $this->filter))
+			$this->from .= ", categories AS Category, object_categories AS ObjectCategory";
+		$this->conditions[] = "Category." . $cat_field . "='" . $value . "' 
+						AND ObjectCategory.object_id=BEObject.id
+						AND ObjectCategory.category_id=Category.id
+						AND Category.object_type_id IS NULL";
 	}
 	
-	private function rel_detailFilter($value) {
+	private function rel_detailFilter($s, $e, $value) {
 		if (!empty($value)) {
 			if (!isset($this->filter["ObjectRelation.switch"]))
 				$this->filter["ObjectRelation.switch"] = "";
-			$this->fields .= ", `RelatedObject`.*";
-			$this->from .= ", objects AS `RelatedObject`";
-			$this->conditions[] = "`ObjectRelation`.object_id=`RelatedObject`.id";
+			$this->fields .= ", RelatedObject.*";
+			$this->from .= ", objects AS RelatedObject";
+			$this->conditions[] = "ObjectRelation.object_id=RelatedObject.id";
 			$this->order .= ( (!empty($this->order))? "," : "" ) . "ObjectRelation.priority";
 		}		
 	}
 	
-	private function ref_object_detailsFilter($value) {
+	private function ref_object_detailsFilter($s, $e, $value) {
 		if (!empty($value)) {
-			$this->fields .= ", `ReferenceObject`.*";
-			$this->from .= ", objects AS `ReferenceObject`";
-			$this->conditions[] = "`" . ClassRegistry::init($value)->alias . "`.object_id=`ReferenceObject`.id";
+			$refFields = $this->model->fieldsString("BEObject", "ReferenceObject");
+			$this->fields .= ", $refFields";
+			$this->from .= ", {$s}objects{$e} AS {$s}ReferenceObject{$e}";
+			$this->conditions[] = $s . ClassRegistry::init($value)->alias . "{$e}.{$s}object_id{$s}={$s}ReferenceObject{$e}.{$s}id{$e}";
+			$this->group .= "," . $refFields;
 		}
 	}
 	
-	private function mail_groupFilter($value) {
-		$this->from .= ", mail_group_cards AS `MailGroupCard`";
-		$this->conditions[] = "`MailGroupCard`.mail_group_id='" . $value . "' 
-						AND `MailGroupCard`.card_id=`BEObject`.id";
+	private function mail_groupFilter($s, $e, $value) {
+		$this->from .= ", mail_group_cards AS MailGroupCard";
+		$this->conditions[] = "MailGroupCard.mail_group_id='" . $value . "' 
+						AND MailGroupCard.card_id=BEObject.id";
 	}
 
-	private function user_createdFilter() {
-		$this->fields .= ", `User`.userid, `User`.realname";
-		$this->from .= ", users AS `User`";
-		$this->conditions[] = "`User`.id=`BEObject`.user_created";
+	private function user_createdFilter($s, $e) {
+		$locFields = ", {$s}User{$e}.{$s}userid{$e}, {$s}User{$e}.{$s}realname{$e}";
+		$this->fields .= $locFields;
+		$this->from .= ", {$s}users{$e} AS {$s}User{$e}";
+		$this->conditions[] = "{$s}User{$e}.{$s}id{$e}={$s}BEObject{$e}.{$s}user_created{$e}";
+		$this->group .= $locFields;
 	}
 
 	/**
@@ -229,11 +255,11 @@ class BuildFilterBehavior extends ModelBehavior {
 	 *
 	 * @param mixed $value, if it's integer then count $value permissions
 	 */
-	private function count_permissionFilter($value) {
-		$this->fields .= ", COUNT(`Permission`.id) AS num_of_permission";
-		$from = " LEFT OUTER JOIN permissions as `Permission` ON `Permission`.object_id = `BEObject`.id";
+	private function count_permissionFilter($s, $e, $value) {
+		$this->fields .= ", COUNT({$s}Permission{$e}.{$s}id{$e}) AS num_of_permission";
+		$from = " LEFT OUTER JOIN {$s}permissions{$e} as {$s}Permission{$e} ON {$s}Permission{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e}";
 		if (is_numeric($value)) {
-			$from .= " AND `Permission`.flag = " . $value;
+			$from .= " AND {$s}Permission{$e}.{$s}flag{$e} = " . $value;
 		}
 		$this->from = $from . $this->from;
 	}

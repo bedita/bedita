@@ -40,6 +40,8 @@ class AppModel extends Model{
 class BEAppModel extends AppModel {
 
 	protected $modelBindings = array();
+	protected $sQ = ""; // internal use: start quote
+	protected $eQ = ""; // internal use: end quote
 	
 	/**
 	 * Merge record result in one array
@@ -57,6 +59,24 @@ class BEAppModel extends AppModel {
 		return $tmp ;
 	}
 
+	protected function setupQuotes() {
+    	if(empty($this->sQ)) {
+			$db = ConnectionManager::getDataSource($this->useDbConfig);
+			$this->sQ = $db->startQuote;
+			$this->eQ = $db->endQuote;
+    	}
+	}
+	
+	public function getStartQuote() {
+		$this->setupQuotes();
+		return $this->sQ;
+	}
+
+	public function getEndQuote() {
+		$this->setupQuotes();
+		return $this->eQ;
+	}
+	
 	/**
 	 * Get SQL date format
 	 *
@@ -201,6 +221,18 @@ class BEAppModel extends AppModel {
 		$this->contain($this->modelBindings[$level]);
 	}
 	
+	public function fieldsString($modelName, $alias = null) {
+		$s = $this->getStartQuote();
+		$e = $this->getEndQuote();
+		$model = ClassRegistry::init($modelName);
+		$k = array_keys($model->schema());
+		if(empty($alias)) {
+			$alias = $modelName;
+		}
+		$res = $s . $alias . $e ."." . $s . implode("{$e},{$s}$alias{$e}.{$s}", $k) . $e;
+		return $res;		
+	}
+	
 	/**
 	 * perform an objects search
 	 * 
@@ -229,16 +261,23 @@ class BEAppModel extends AppModel {
 	 */
 	public function findObjects($id=null, $userid=null, $status=null, $filter=array(), $order=null, $dir=true, $page=1, $dim=100000, $all=false, $excludeIds=array()) {
 		
-		$fields  = "DISTINCT `BEObject`.*, `Content`.*" ;
-		$from = "objects as `BEObject` LEFT OUTER JOIN contents as `Content` ON `BEObject`.id=`Content`.id";
+		$s = $this->getStartQuote();
+		$e = $this->getEndQuote();
+		
+		$beObjFields = $this->fieldsString("BEObject");
+		$contentFields = $this->fieldsString("Content");
+		
+		$fields  = "DISTINCT {$beObjFields}, {$contentFields}" ;
+		$from = "{$s}objects{$e} as {$s}BEObject{$e} LEFT OUTER JOIN {$s}contents{$e} as {$s}Content{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}Content{$e}.{$s}id{$e}";
 		$conditions = array();
-		$groupClausole = "GROUP BY `BEObject`.id";
+		$groupClausole = "";
+		$groupClausole = "GROUP BY {$beObjFields}, {$contentFields}";
 		
 		if (!empty($status))
-			$conditions[] = array('`BEObject`.status' => $status) ;
+			$conditions[] = array("{$s}BEObject{$e}.{$s}status{$e}" => $status) ;
 		
 		if(!empty($excludeIds))
-			$conditions["NOT"] = array(array("`BEObject`.id" => $excludeIds));
+			$conditions["NOT"] = array(array("{$s}BEObject{$e}.{$s}id{$e}" => $excludeIds));
 		
 		// get specific query elements
 		if (!$this->Behaviors->attached('BuildFilter')) {
@@ -255,19 +294,21 @@ class BEAppModel extends AppModel {
 		$groupClausole .= $otherGroup; 
 		
 		if (!empty($id)) {
-			$fields .= ", `Tree`.*";
-			$from .= ", trees AS `Tree`";
-			$conditions[] = " `Tree`.`id`=`BEObject`.`id`" ;
+			$treeFields = $this->fieldsString("Tree");
+			$fields .= "," . $treeFields;
+			$groupClausole .= "," . $treeFields;
+			$from .= ", {$s}trees{$e} AS {$s}Tree{$e}";
+			$conditions[] = " {$s}Tree{$e}.{$s}id{$e}={$s}BEObject{$e}.{$s}id{$e}" ;
 //			if (!empty($userid))
 //				$conditions[] 	= " prmsUserByID ('{$userid}', Tree.id, ".BEDITA_PERMS_READ.") > 0 " ;
 			
 			if($all)
-				$conditions[] = " `Tree`.object_path LIKE (CONCAT((SELECT object_path FROM trees WHERE id = {$id}), '/%')) " ;
+				$conditions[] = " {$s}Tree{$e}.{$s}object_path{$e} LIKE (CONCAT((SELECT {$s}object_path{$e} FROM {$s}trees{$e} WHERE {$s}id{$e} = {$id}), '/%')) " ;
 			else
-				$conditions[] = array("`Tree`.parent_id" => $id) ;
+				$conditions[] = array("{$s}Tree{$e}.{$s}parent_id{$e}" => $id) ;
 			
 			if(empty($order)) {
-				$order = "`Tree`.priority";
+				$order = "{$s}Tree{$e}.{$s}priority{$e}";
 				$section = ClassRegistry::init("Section");
 				$priorityOrder = $section->field("priority_order", array("id" => $id));
 				if(empty($priorityOrder))
@@ -277,12 +318,12 @@ class BEAppModel extends AppModel {
 				
 		} else {
 //			if (!empty($userid))
-//				$conditions[] 	= " prmsUserByID ('{$userid}', `BEObject`.id, ".BEDITA_PERMS_READ.") > 0 " ;
+//				$conditions[] 	= " prmsUserByID ('{$userid}', BEObject.id, ".BEDITA_PERMS_READ.") > 0 " ;
 		}
 		
 		// if $order is empty and not performing search then set a default order
 		if (empty($order) && empty($filter["search"])) {
-			$order = "`BEObject`.id";
+			$order = "{$s}BEObject{$e}.{$s}id{$e}";
 			$dir = false;
 		}
 	
@@ -294,7 +335,7 @@ class BEAppModel extends AppModel {
 		if(is_string($order) && strlen($order)) {
 			$beObject = ClassRegistry::init("BEObject");
 			if ($beObject->hasField($order))
-				$order = "`BEObject`." . $order;
+				$order = "{$s}BEObject{$e}." . $order;
 			$ordItem = "{$order} " . ((!$dir)? " DESC " : "");
 			if(!empty($otherOrder)) {
 				$ordClausole = "ORDER BY " . $ordItem .", " . $otherOrder;
@@ -307,13 +348,16 @@ class BEAppModel extends AppModel {
 		
 		$limit 	= $this->getLimitClausole($page, $dim) ;
 		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
+		// *CUSTOM QUERY*
+//pr($query);		
 		$tmp  	= $this->query($query) ;
 
 		if ($tmp === false)
 			throw new BeditaException(__("Error finding objects", true));
 		
-		$queryCount = "SELECT COUNT(DISTINCT `BEObject`.id) AS count FROM {$from} {$sqlClausole}";
+		$queryCount = "SELECT COUNT(DISTINCT {$s}BEObject{$e}.{$s}id{$e}) AS count FROM {$from} {$sqlClausole}";
 
+		// *CUSTOM QUERY*
 		$tmpCount = $this->query($queryCount);
 		if ($tmpCount === false)
 			throw new BeditaException(__("Error counting objects", true));

@@ -40,8 +40,8 @@ $(document).ready(function(){
 		<td style="width:480px">{foreach from=$sys.phpExtensions item="ext"} {$ext}{/foreach}</td>
 	</tr>
 	<tr>
-		<td><label>MySQL</label></td>
-		<td>server: {$sys.mysqlServer} - client: {$sys.mysqlClient} - host: {$sys.mysqlHost} - db: {$sys.mysqlDb}</td>
+		<td><label>{$sys.db}</label></td>
+		<td>server: {$sys.dbServer} - client: {$sys.dbClient} - host: {$sys.dbHost} - db: {$sys.dbName}</td>
 	</tr>
 	<tr>
 		<td><label>Smarty</label></td>

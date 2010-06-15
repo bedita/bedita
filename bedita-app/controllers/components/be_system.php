@@ -43,17 +43,33 @@
 	function __construct() {
 	}
 
+	private function mysqlInfo($db, array& $res) {
+	    if ($cid = @mysqli_connect($db->config['host'], $db->config['login'], $db->config['password'])) {
+			$res['dbServer'] = @mysqli_get_server_info($cid);
+			$res['dbClient'] = @mysqli_get_client_info();
+        	@mysql_close($cid);		
+		}
+	}
+	
+	private function postgresInfo($db, array& $res) {
+	    if ($cid = @pg_connect("host=" .$db->config['host'] . " dbname=" . $db->config['database'] . 
+	    	" user=" . $db->config['login'] . " password=" . $db->config['password'])) {
+	    	$info = @pg_version($cid);
+	    	$res['dbServer'] = $info["server"];
+			$res['dbClient'] = $info["client"];
+        	@pg_close($cid);		
+		}
+	}
 	
 	public function systemInfo() {
 		$res = array();
 	    $db = ConnectionManager::getDataSource('default');
-		if ($cid = @mysqli_connect($db->config['host'], $db->config['login'], $db->config['password'])) {
-			$res['mysqlServer'] = @mysqli_get_server_info($cid);
-			$res['mysqlClient'] = @mysqli_get_client_info();
-        	@mysql_close($cid);		
-		}
-		$res['mysqlHost'] = $db->config['host'];
-		$res['mysqlDb'] = $db->config['database'];
+		$driverMethod = $db->config['driver'] . "Info";
+	    $this->{$driverMethod}($db, $res);
+	    $dbNames = array("mysql" => "MySQL", "postgres" => "PostgreSQL");
+		$res['db'] = $dbNames[$db->config['driver']];
+		$res['dbHost'] = $db->config['host'];
+		$res['dbName'] = $db->config['database'];
 		$res['phpVersion'] = phpversion();
 		$res['phpExtensions'] = get_loaded_extensions();
 		$res['osVersion'] = php_uname();

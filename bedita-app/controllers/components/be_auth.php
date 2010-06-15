@@ -413,7 +413,8 @@ class BeAuthComponent extends Object {
 			$res = $db->query("SELECT " . $db->name($table.'.data') . " FROM " . $db->name($table) . " WHERE " . $db->name($table.'.expires') . " >= " . time(), false);
 		}
 		foreach($res as $key => $val) {
-			$unserialized_data = $this->unserializesession($val[$table]['data']);
+			$sessiondata = !empty($val[$table]['data']) ? $val[$table]['data'] : $val[0]['data'];
+			$unserialized_data = $this->unserializesession($sessiondata);
 			if(!empty($unserialized_data) && !empty($unserialized_data['BEAuthUser']) && !empty($unserialized_data['BESession'])) {
 				$timeout = Configure::read('activityTimeout');
 				if((time() - $unserialized_data['BESession']['time']) < ($timeout*60) ) {

@@ -55,8 +55,12 @@ class BeSchema extends CakeSchema
 		// split in blocks
 		$blocks = $this->createChunks($script);
 
-		// call query to avoid foreign key checks, on data insert
-		$res = $db->execute("SET FOREIGN_KEY_CHECKS=0");
+		// call query to avoid foreign key checks, on data insert (mysql only)
+		if($db->config['driver'] === "mysql") {
+			// *CUSTOM QUERY*
+			$res = $db->execute("SET FOREIGN_KEY_CHECKS=0");
+		}
+		
 		
 		// call parse on every block and populate $queries array
 		$queries = array();

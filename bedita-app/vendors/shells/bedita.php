@@ -127,7 +127,8 @@ class BeditaShell extends BeditaBaseShell {
     	$db = ConnectionManager::getDataSource($dbCfg);
     	$hostName = $db->config['host'];
     	$dbName = $db->config['database'];
-		$this->out("Updating bedita db config: $dbCfg - [host=".$hostName.", database=".$dbName."]");
+    	$driver = $db->config['driver'];
+    	$this->out("Updating bedita db config: $dbCfg - $driver [host=".$hostName.", database=".$dbName."]");
 		$res = $this->in("ACHTUNG! Database $dbName will be replaced, proceed? [y/n]");
 		if($res != "y") {
        		$this->out("Bye");
@@ -139,7 +140,7 @@ class BeditaShell extends BeditaBaseShell {
 		$transaction->begin();
         
         $beSchema = new BeSchema();
-		$script = $sqlScriptPath . "bedita_schema.sql";
+		$script = $sqlScriptPath . "bedita_" . $driver . "_schema.sql";
 		$this->out("Update schema from $script");
 		$beSchema->executeQuery($db, $script);
         
@@ -211,8 +212,9 @@ class BeditaShell extends BeditaBaseShell {
         $this->hr();
 		$db = ConnectionManager::getDataSource($dbCfg);
     	$hostName = $db->config['host'];
+    	$driver = $db->config['driver'];
     	$dbName = $db->config['database'];
-		$this->out("Importing data using bedita db config: $dbCfg - [host=".$hostName.", database=".$dbName."]");
+		$this->out("Importing data using bedita db config: $dbCfg - $driver [host=".$hostName.", database=".$dbName."]");
 		if(!$answerYes) {
 			$res = $this->in("ACHTUNG! Database $dbName will be replaced, proceed? [y/n]");
 			if($res != "y") {
@@ -227,7 +229,7 @@ class BeditaShell extends BeditaBaseShell {
         
     	$sqlScriptPath = APP ."config" . DS . "sql" . DS;
 		$beSchema = new BeSchema();
-		$script = $sqlScriptPath . "bedita_schema.sql";
+		$script = $sqlScriptPath . "bedita_" . $db->config['driver'] . "_schema.sql";
 		$this->out("Update schema from $script");
 		$beSchema->executeQuery($db, $script);
         
@@ -553,8 +555,9 @@ class BeditaShell extends BeditaBaseShell {
 		}
 		$db1 = @ConnectionManager::getDataSource($dbCfg);
 		$hostName = $db1->config['host'];
+    	$driver = $db1->config['driver'];
 		$dbName = $db1->config['database'];
-		$this->out("Checking database connection: $dbCfg - [host=".$hostName.", database=".$dbName."]");
+		$this->out("Checking database connection: $dbCfg - $driver [host=".$hostName.", database=".$dbName."]");
 		$db = ConnectionManager::getInstance();
 		$connected = $db->getDataSource($dbCfg); 
 		if ($connected->isConnected()) {

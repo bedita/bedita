@@ -451,7 +451,7 @@ CREATE TABLE `mail_logs` (
 
 CREATE TABLE mail_messages (
   id INTEGER UNSIGNED NOT NULL,
-  mail_status VARCHAR(10) DEFAULT 'unsent' NOT NULL COMMENT '???',
+  mail_status ENUM('unsent','pending','injob','sent') DEFAULT 'unsent' NOT NULL COMMENT '???',
   start_sending DATETIME DEFAULT NULL COMMENT '???',
   end_sending DATETIME DEFAULT NULL COMMENT '???',
   sender VARCHAR(255) NOT NULL COMMENT '???',
@@ -552,7 +552,7 @@ CREATE TABLE object_properties (
   property_id INTEGER UNSIGNED NOT NULL,
   object_id INTEGER UNSIGNED NOT NULL,
   property_value TEXT not null,
-  PRIMARY KEY(id),
+  PRIMARY KEY(id), 
   INDEX property_id_index(property_id),
   FOREIGN KEY(object_id)
     REFERENCES objects(id)
@@ -583,7 +583,7 @@ CREATE TABLE object_relations (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???';
 
 CREATE TABLE object_types (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  id INTEGER UNSIGNED NOT NULL,
   name VARCHAR(255) NULL,
   module_name VARCHAR(32) NULL,
   PRIMARY KEY(id),
@@ -615,7 +615,7 @@ CREATE TABLE permissions (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   object_id INTEGER UNSIGNED NOT NULL,
   ugid INTEGER UNSIGNED NOT NULL,
-  switch VARCHAR(10) NOT NULL COMMENT 'permission type (user,group)',
+  switch SET('user','group') NOT NULL COMMENT '???',
   flag INTEGER UNSIGNED NULL COMMENT '???',
   PRIMARY KEY(`id`),
   INDEX permissions_obj_inkdex(object_id),
@@ -630,7 +630,7 @@ CREATE TABLE `permission_modules` (
   `id` int(10) NOT NULL auto_increment,
   module_id INTEGER UNSIGNED NOT NULL,
   ugid INTEGER UNSIGNED NOT NULL,
-  switch VARCHAR(10) NULL COMMENT 'permission type (user,group)',
+  switch SET('user','group') NULL COMMENT '???',
   flag INTEGER UNSIGNED NULL COMMENT '???',
   PRIMARY KEY  (`id`),
   INDEX permission_modules_FKIndex1(module_id),
@@ -668,7 +668,7 @@ CREATE TABLE properties (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   object_type_id INTEGER UNSIGNED NULL,
-  property_type VARCHAR(10) NOT NULL COMMENT '(number, date, text, options)',
+  property_type SET('number','date','text','options') NOT NULL COMMENT '???',
   multiple_choice TINYINT(1) default 0 COMMENT '???',
   PRIMARY KEY(id),
   UNIQUE name_type(name, object_type_id),
@@ -772,7 +772,7 @@ CREATE TABLE user_properties (
   property_id INTEGER UNSIGNED NOT NULL,
   user_id INTEGER UNSIGNED NOT NULL,
   property_value TEXT not null,
-  PRIMARY KEY(id),
+  PRIMARY KEY(id), 
   INDEX property_id_index(property_id),
   FOREIGN KEY(user_id)
     REFERENCES users(id)
