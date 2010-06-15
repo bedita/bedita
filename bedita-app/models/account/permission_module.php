@@ -174,15 +174,18 @@ class PermissionModule extends BEAppModel
 		}
 		$userModulePerms = $userModulePerms & $operations;
 
-		$gPerms = $this->find("all", array(
-			"fields" => "flag",
-			"conditions" => array(
-				"module_id" => $module_id,
-				"ugid" => $groups,
-				"switch" => "group"
-			),
-			"contain" => array()
-		));
+		$gPerms = array();
+		if(!empty($groups)) {
+			$gPerms = $this->find("all", array(
+				"fields" => "flag",
+				"conditions" => array(
+					"module_id" => $module_id,
+					"ugid" => $groups,
+					"switch" => "group"
+				),
+				"contain" => array()
+			));
+		}
 
 		$groupModulePerms = 0;
 		if (!empty($gPerms)) {
