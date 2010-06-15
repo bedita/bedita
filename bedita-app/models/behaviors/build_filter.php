@@ -80,6 +80,7 @@ class BuildFilterBehavior extends ModelBehavior {
 						$key = $s . $mod . $e . ".*";
 					} else {
 						$key = $s . str_replace(".", "{$e}.{$s}", $key) . $e;
+						$this->group .= "," . $key;
 					}					
 				}
 				
@@ -144,8 +145,9 @@ class BuildFilterBehavior extends ModelBehavior {
 	}
 	
 	private function object_userFilter($s, $e) {
-		$this->fields .= ", ObjectUser.user_id AS user_id";
-		$this->from = " LEFT OUTER JOIN object_users AS ObjectUser ON BEObject.id=ObjectUser.object_id" . $this->from;
+		$this->fields .= ", {$s}ObjectUser{$e}.{$s}user_id{$e} AS user_id";
+		$this->from = " LEFT OUTER JOIN {$s}object_users{$e} AS {$s}ObjectUser{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}ObjectUser{$e}.{$s}object_id{$e}" . $this->from;
+		$this->group .= ", user_id";
 	}
 	
 	private function count_annotationFilter($s, $e, $value) {
@@ -182,10 +184,11 @@ class BuildFilterBehavior extends ModelBehavior {
 	}
 	
 	private function mediatypeFilter($s, $e) {
-		$this->fields .= ", Category.name AS mediatype";
-		$this->from = " LEFT OUTER JOIN object_categories AS ObjectCategory ON BEObject.id=ObjectCategory.object_id
-				LEFT OUTER JOIN categories AS Category ON ObjectCategory.category_id=Category.id AND Category.object_type_id IS NOT NULL"
+		$this->fields .= ", {$s}Category{$e}.{$s}name{$e} AS mediatype";
+		$this->from = " LEFT OUTER JOIN {$s}object_categories{$e} AS {$s}ObjectCategory{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}ObjectCategory{$e}.{$s}object_id{$e}
+				LEFT OUTER JOIN {$s}categories{$e} AS {$s}Category{$e} ON {$s}ObjectCategory{$e}.{$s}category_id{$e}={$s}Category{$e}.{$s}id{$e} AND {$s}Category{$e}.{$s}object_type_id{$e} IS NOT NULL"
 				. $this->from;
+		$this->group .= ", mediatype";
 	}
 	
 	private function queryFilter($s, $e, $value) {
@@ -198,31 +201,33 @@ class BuildFilterBehavior extends ModelBehavior {
 	private function categoryFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
 		if (!strstr($this->from, Category) && !array_key_exists("mediatype", $this->filter))
-			$this->from .= ", categories AS Category, object_categories AS ObjectCategory";
-		$this->conditions[] = "Category." . $cat_field . "='" . $value . "' 
-						AND ObjectCategory.object_id=BEObject.id
-						AND ObjectCategory.category_id=Category.id
-						AND Category.object_type_id IS NOT NULL";
+			$this->from .= ", {$s}categories{$s} AS {$s}Category{$s}, {$s}object_categories{$s} AS {$s}ObjectCategory{$s}";
+		$this->conditions[] = "{$s}Category{$e}.{$s}" . $cat_field . "{$e}='" . $value . "' 
+						AND {$s}ObjectCategory{$e}.{$s}object_id{$e}={$s}BEObject{$e}.{$s}id{$e}
+						AND {$s}ObjectCategory{$e}.{$s}category_id{$e}={$s}Category{$e}.{$s}id{$e}
+						AND {$s}Category{$e}.{$s}object_type_id{$e} IS NOT NULL";
 	}
 	
 	private function tagFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
 		if (!strstr($this->from, Category) && !array_key_exists("mediatype", $this->filter))
-			$this->from .= ", categories AS Category, object_categories AS ObjectCategory";
-		$this->conditions[] = "Category." . $cat_field . "='" . $value . "' 
-						AND ObjectCategory.object_id=BEObject.id
-						AND ObjectCategory.category_id=Category.id
-						AND Category.object_type_id IS NULL";
+			$this->from .= ", {$s}categories{$e} AS {$s}Category{$e}, {$s}object_categories{$e} AS {$s}ObjectCategory{$e}";
+		$this->conditions[] = "{$s}Category{$e}.{$s}" . $cat_field . "{$e}='" . $value . "' 
+						AND {$s}ObjectCategory{$e}.{$s}object_id{$e}={$s}BEObject{$e}.{$s}id{$e}
+						AND {$s}ObjectCategory{$e}.{$s}category_id{$e}={$s}Category{$e}.{$s}id{$e}
+						AND {$s}Category{$e}.{$s}object_type_id{$e} IS NULL";
 	}
 	
 	private function rel_detailFilter($s, $e, $value) {
 		if (!empty($value)) {
 			if (!isset($this->filter["ObjectRelation.switch"]))
 				$this->filter["ObjectRelation.switch"] = "";
-			$this->fields .= ", RelatedObject.*";
-			$this->from .= ", objects AS RelatedObject";
-			$this->conditions[] = "ObjectRelation.object_id=RelatedObject.id";
-			$this->order .= ( (!empty($this->order))? "," : "" ) . "ObjectRelation.priority";
+			$relFields = $this->model->fieldsString("BEObject", "RelatedObject");
+			$this->fields .= ", " . $refFields;
+			$this->from .= ", {$s}objects{$e} AS {$s}RelatedObject{$e}";
+			$this->conditions[] = "{$s}ObjectRelation{$e}.{$s}object_id{$e}={$s}RelatedObject{$e}.{$s}id{$e}";
+			$this->order .= ( (!empty($this->order))? "," : "" ) . "{$s}ObjectRelation{$e}.{$s}priority{$e}";
+			$this->group .= ", " . $refFields;
 		}		
 	}
 	
@@ -237,9 +242,9 @@ class BuildFilterBehavior extends ModelBehavior {
 	}
 	
 	private function mail_groupFilter($s, $e, $value) {
-		$this->from .= ", mail_group_cards AS MailGroupCard";
-		$this->conditions[] = "MailGroupCard.mail_group_id='" . $value . "' 
-						AND MailGroupCard.card_id=BEObject.id";
+		$this->from .= ", {$s}mail_group_cards{$e} AS {$s}MailGroupCard{$e}";
+		$this->conditions[] = "{$s}MailGroupCard{$e}.{$s}mail_group_id{$e}='" . $value . "' 
+					AND {$s}MailGroupCard{$e}.{$s}card_id{$e}={$s}BEObject{$e}.{$s}id{$e}";
 	}
 
 	private function user_createdFilter($s, $e) {
