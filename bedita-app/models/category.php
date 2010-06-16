@@ -59,7 +59,7 @@ class Category extends BEAppModel {
 	public function tagLabelPresent($label, $exclude_id=null) {
 		$name = $this->uniqueLabelName($label);
 		$tagDB = $this->find("first", 
-			array("conditions" => "object_type_id IS NULL AND name='".addslashes($name)."' collate utf8_bin") );
+			array("conditions" => "object_type_id IS NULL AND name='".addslashes($name)."' " . $this->collateStatment() ) );
 		
 		if (!empty($exclude_id) && $exclude_id == $tagDB["id"])
 			return false;
@@ -140,6 +140,17 @@ class Category extends BEAppModel {
 		return $areaCategory;
 	}
 	
+	
+	private function collateStatment() {
+		$res = "";
+		$db =& ConnectionManager::getDataSource($this->useDbConfig);
+		// *MYSQL SPECIFIC*
+		if($db->config['driver'] == "mysql") {
+			$res = "collate utf8_bin";
+		}
+		return $res;
+	}
+	
 	/**
 	 * save a list of comma separated tag
 	 *
@@ -156,8 +167,11 @@ class Category extends BEAppModel {
 				
 				if (!empty($tag))  {
 					$name = $this->uniqueLabelName($tag);
+					
+					
 					$tagDB = $this->find("first", array(
-													"conditions" => "object_type_id IS NULL AND name='".addslashes($name)."' collate utf8_bin"
+													"conditions" => "object_type_id IS NULL AND name='".addslashes($name)."' " . 
+														$this->collateStatment()
 													)
 									);
 					if (empty($tagDB)) {
@@ -216,16 +230,18 @@ class Category extends BEAppModel {
 			$tags[$t['id']] = $t;
 		}
 
+		// *CUSTOM QUERY*
 		$sql = "SELECT categories.id, COUNT(object_categories.category_id) AS weight
 				FROM categories, object_categories
 				WHERE categories.object_type_id IS NULL
 				AND categories.id = object_categories.category_id
-				GROUP BY categories.id
+				GROUP BY categories.id, categories.label
 				ORDER BY categories.label ASC";
 		
 		$res = $this->query($sql);
 
 		if ($cloud) {
+			// *CUSTOM QUERY*
 			$sqlMax = "SELECT MAX(weight) AS max, MIN(weight) AS min FROM (" . $sql . ") tab";
 			$maxmin = $this->query($sqlMax);
 			$max = $maxmin[0][0]["max"];		
@@ -234,7 +250,7 @@ class Category extends BEAppModel {
 		}
 		
 		foreach ($res as $r) {
-			$key = $r['categories']['id'];
+			$key = !empty($r['categories']['id']) ? $r['categories']['id'] : $r[0]['id'] ;
 			$w = $r[0]['weight'];
 			$tags[$key]['weight'] = $w;
 			if ($cloud) {
@@ -300,7 +316,8 @@ class Category extends BEAppModel {
 		$this->bviorCompactResults = false;
 		$name = $this->uniqueLabelName($label);
 		$tag = $this->find("first", array(
-										"conditions" => "object_type_id IS NULL AND name='".addslashes($name)."' collate utf8_bin",
+										"conditions" => "object_type_id IS NULL AND name='".addslashes($name)."' ". 
+												$this->collateStatment(), 
 										"contain" => array("BEObject" => array("ObjectType"))
 									)
 						);

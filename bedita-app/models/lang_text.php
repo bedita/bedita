@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008, 2010 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -56,10 +56,17 @@ class LangText extends BEAppModel
 	
 	function findObjs($filter = null, $order = null, $dir  = true, $page = 1, $dim = 100000, $excludeIds=array()) {
 
-		$fields  = "DISTINCT `BEObject`.*, `LangText`.*" ;
-		$from = "lang_texts as `LangText` LEFT OUTER JOIN objects as `BEObject` ON `LangText`.object_id=`BEObject`.id";
+		$s = $this->getStartQuote();
+		$e = $this->getEndQuote();
+		
+		$beObjFields = $this->fieldsString("BEObject");
+		$langTextFields = $this->fieldsString("LangText");
+		
+		$fields  = "DISTINCT {$beObjFields}, {$langTextFields}" ;
+		$from = "{$s}lang_texts{$e} as {$s}LangText{$e} LEFT OUTER JOIN {$s}objects{$e} 
+			as {$s}BEObject{$e} ON {$s}LangText{$e}.{$s}object_id{$e}={$s}BEObject{$e}.{$s}id{$e}";
 		$conditions = array();
-		$groupClausole = "GROUP BY `LangText`.id";
+		$groupClausole = "GROUP BY {$beObjFields}, {$langTextFields}";
 		
 		$conditions = array("LangText.name = 'status'");
 		
@@ -73,10 +80,10 @@ class LangText extends BEAppModel
 			$conditions[]="LangText.object_id = '" . $filter['obj_id'] . "'";
 		}
 		if( !empty($order) && $order == "object_type_id")  {
-			$fields .= ", `ObjectType`.name";
-			$from .= ", object_types AS `ObjectType`";
-			$conditions[]="`ObjectType`.id = `BEObject`.object_type_id";
-			$order = "`ObjectType`.name";
+			$fields .= ", {$s}ObjectType.name{$e}";
+			$from .= ", {$s}object_types{$e} AS {$s}ObjectType{$e}";
+			$conditions[]="ObjectType.id = BEObject.object_type_id";
+			$order = "ObjectType.name";
 		}
 		if (!empty($order) && strstr($order,"LangText.")) {
 			$t = explode(".", $order);
@@ -86,9 +93,9 @@ class LangText extends BEAppModel
 
 		$otherOrder = "";
 		if (array_key_exists("query", $filter)) {
-			$fields .= ", `SearchText`.`object_id` AS `oid`, SUM( MATCH (`SearchText`.`content`) AGAINST ('".$filter["query"]."') * `SearchText`.`relevance` ) AS `points`";
-			$from .= ", search_texts AS `SearchText`";
-			$conditions[] = "`SearchText`.`object_id` = `BEObject`.`id` AND `SearchText`.`lang` = `LangText`.`lang` AND MATCH (`SearchText`.`content`) AGAINST ('".$filter["query"]."')";
+			$fields .= ", SearchText.object_id AS oid, SUM( MATCH (SearchText.content) AGAINST ('".$filter["query"]."') * SearchText.relevance ) AS points";
+			$from .= ", search_texts AS SearchText";
+			$conditions[] = "SearchText.object_id = BEObject.id AND SearchText.lang = LangText.lang AND MATCH (SearchText.content) AGAINST ('".$filter["query"]."')";
 			$otherOrder = "points DESC ";
 			unset($filter["query"]);	
 		}
@@ -101,7 +108,7 @@ class LangText extends BEAppModel
 		if(is_string($order) && strlen($order)) {
 			$beObject = ClassRegistry::init("BEObject");
 			if ($beObject->hasField($order))
-				$order = "`BEObject`." . $order;
+				$order = "{$s}BEObject{$e}.{$s}" . $order . $e;
 			$ordItem = "{$order} " . ((!$dir)? " DESC " : "");
 			if(!empty($otherOrder)) {
 				$ordClausole = "ORDER BY " . $ordItem .", " . $otherOrder;
@@ -113,6 +120,7 @@ class LangText extends BEAppModel
 		}
 		
 		$limit 	= $this->getLimitClausole($page, $dim) ;
+		// *CUSTOM QUERY*
 		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
 		$tmp  	= $this->query($query) ;
 
@@ -121,6 +129,7 @@ class LangText extends BEAppModel
 
 		$objects = array();
 		foreach($tmp as $tr) {
+//pr($tr);
 			$object_id = $tr['LangText']['object_id'];
 			$lang = $tr['LangText']['lang'];
 			$translationTitle = $this->field("text", 
@@ -132,7 +141,8 @@ class LangText extends BEAppModel
 				"BEObject" => $tr['BEObject']);
 		}
 
-		$queryCount = "SELECT COUNT(DISTINCT `BEObject`.id) AS count FROM {$from} {$sqlClausole}";
+		// *CUSTOM QUERY*
+		$queryCount = "SELECT COUNT(DISTINCT {$s}BEObject{$e}.{$s}id{$e}) AS count FROM {$from} {$sqlClausole}";
 		$tmpCount = $this->query($queryCount);
 		if ($tmpCount === false)
 			throw new BeditaException(__("Error counting translations", true));

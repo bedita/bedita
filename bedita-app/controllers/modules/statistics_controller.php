@@ -94,12 +94,14 @@ class StatisticsController extends ModulesController {
 		}
 
 		private function totalObjects($params) {
-	 	// number of objects
-		$countTotal = $this->BEObject->find("all", array(
-					"fields" => "COUNT(DISTINCT `BEObject`.id) as count, `ObjectType`.id, `ObjectType`.name",
+	 		// number of objects
+			$s = $this->BEObject->getStartQuote();
+			$e = $this->BEObject->getEndQuote();
+			$countTotal = $this->BEObject->find("all", array(
+					"fields" => array("COUNT(DISTINCT {$s}BEObject{$e}.{$s}id{$e}) as count", "ObjectType.id", "ObjectType.name"),
 					"conditions" => $params["conditions"],
 					"contain" => $params["contain"],
-					"group" => "`ObjectType`.id, `ObjectType`.name",
+					"group" => array("ObjectType.id", "ObjectType.name"),
 					"order" => "count DESC"	
 				)
 			);
@@ -116,19 +118,21 @@ class StatisticsController extends ModulesController {
 	 private function timeEvolution($params) {
 	 	$timeEvolution = array();
 	 	$totalTimeEvolution = array();
+		$s = $this->BEObject->getStartQuote();
+		$e = $this->BEObject->getEndQuote();
 	 	for ($i = 0; $i < 5; $i++) {
 			$firstDayMonthTS = mktime(0, 0, 0, date("m")-$i, 1, date("Y"));
 			$lastDayMonthTS = mktime(0, 0, 0, date("m")-$i+1, 0, date("Y"));
 			$firstDayMonth = date("Y-m-d", $firstDayMonthTS);
 			$lastDayMonth = date("Y-m-d", $lastDayMonthTS);
 			
-			$conditionsEvol = array_merge($params["conditions"], array("`BEObject`.created BETWEEN '" . $firstDayMonth . "' AND '" . $lastDayMonth ."'"));
+			$conditionsEvol = array_merge($params["conditions"], array("{$s}BEObject{$e}.{$s}created{$e} BETWEEN '" . $firstDayMonth . "' AND '" . $lastDayMonth ."'"));
 			
 			$countEvol = $this->BEObject->find("all", array(
-					"fields" => "COUNT(DISTINCT `BEObject`.id) as count, `ObjectType`.id, `ObjectType`.name",
+					"fields" => array("COUNT(DISTINCT {$s}BEObject{$s}.{$s}id{$s}) as count", "ObjectType.id", "ObjectType.name"),
 					"conditions" => $conditionsEvol,
 					"contain" => $params["contain"],
-					"group" => "`ObjectType`.id, `ObjectType`.name"	
+					"group" => array("ObjectType.id", "ObjectType.name")	
 				)
 			);
 
@@ -149,15 +153,17 @@ class StatisticsController extends ModulesController {
 	 
 	 private function countRelations($params) {
 	 	
+		$s = $this->BEObject->getStartQuote();
+		$e = $this->BEObject->getEndQuote();
 	 	$rel = array();
 	 	$max = 1;
 		$conditionsRel = $params["conditions"];
 		if (!empty($params["relation"])) { 	 	
 		 	$conditionsRel = array_merge(
-		 		$conditionsRel, array("`RelatedObject`.switch" => $params["relation"])
+		 		$conditionsRel, array("RelatedObject.switch" => $params["relation"])
 	 		);
 	 		if ($params["relation"] == "comment")
-	 			$conditionsRel[] = "`BEObject`.object_type_id <> " . Configure::read('objectTypes.comment.id');
+	 			$conditionsRel[] = "BEObject.object_type_id <> " . Configure::read('objectTypes.comment.id');
 		}
  		if (!empty($params["id"])) {
 		 	$bind = array(
@@ -179,9 +185,9 @@ class StatisticsController extends ModulesController {
  		$this->BEObject->RelatedObject->bindModel($bind);
  		
 	 	$countRel = $this->BEObject->RelatedObject->find("all", array(
-					"fields" => "COUNT(DISTINCT `RelatedObject`.object_id) as count_relations, `BEObject`.id",
+					"fields" => array("COUNT(DISTINCT {$s}RelatedObject{$e}.{$s}object_id{$e}) as count_relations", "BEObject.id"),
 					"conditions" => $conditionsRel,
-					"group" => "`BEObject`.id",
+					"group" => "BEObject.id",
 	 				"limit" => 20,
 	 				"order" => "count_relations DESC",
 	 				"contain" => $contain
@@ -205,16 +211,18 @@ class StatisticsController extends ModulesController {
 
 	 private function objectsForUser($params) {
 	 	
+		$s = $this->BEObject->getStartQuote();
+		$e = $this->BEObject->getEndQuote();
 	 	$this->User->contain();
 	 	$users = $this->User->find("all");
 	 	
 	 	foreach ($users as $k => $u) {
 	 		
 	 		$objects = $this->BEObject->find("all", array(
-					"fields" => "COUNT(DISTINCT `BEObject`.id) as count, `ObjectType`.id, `ObjectType`.name",
+					"fields" => array("COUNT(DISTINCT {$s}BEObject{$e}.{$s}id{$e}) as count", "ObjectType.id", "ObjectType.name"),
 					"conditions" => array_merge( $params["conditions"], array("user_created" => $u["User"]["id"]) ),
 					"contain" => $params["contain"],
-					"group" => "`ObjectType`.id, `ObjectType`.name",
+					"group" => array("ObjectType.id", "ObjectType.name"),
 					"order" => "count DESC"	
 				)
 			);
