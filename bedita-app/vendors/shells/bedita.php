@@ -236,6 +236,7 @@ class BeditaShell extends BeditaBaseShell {
 		$this->out("Load data from $sqlFileName");
         $beSchema->simpleInsert($db, $sqlFileName);
 		unlink($sqlFileName);
+        $beSchema->checkSequences($db);
 		$this->out("$dbCfg database updated");
 
 		BeLib::getObject("BeConfigure")->cacheConfig();
@@ -303,7 +304,7 @@ class BeditaShell extends BeditaBaseShell {
     	$this->checkExportFile($expFile);
 
 		$beSchema = new BeSchema();
-		$tables = $beSchema->tableList();
+		$tables = $beSchema->tableListOrdered();
 		$this->check_sys_get_temp_dir();
 		$tmpBasePath = $this->setupTempDir();
 		$sqlFileName = $tmpBasePath."bedita-data.sql";

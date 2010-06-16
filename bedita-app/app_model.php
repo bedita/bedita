@@ -349,7 +349,6 @@ class BEAppModel extends AppModel {
 		$limit 	= $this->getLimitClausole($page, $dim) ;
 		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
 		// *CUSTOM QUERY*
-//pr($query);		
 		$tmp  	= $this->query($query) ;
 
 		if ($tmp === false)

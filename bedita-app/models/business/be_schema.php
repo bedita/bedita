@@ -36,6 +36,8 @@ class BeSchema extends CakeSchema
 {
 	var $useTable = false;
 
+	static $tableOrder = array();
+	
 	function executeQuery($db, $script) {
 		$sql = file_get_contents($script);
 		$queries = array();
@@ -150,13 +152,78 @@ class BeSchema extends CakeSchema
     	return $tableMeta;
     }
     
+    /**
+     * Current tables array
+     *
+     * @return array, current bedita tables
+     */
 	public function tableList() {
 		return array_keys($this->readTables());
     }
     
-	public function tableDetails(array &$tables, $handle) {
+    /**
+     * Returns an array of tables ordered for INSERT statements (used in import/export)
+     *
+     * @return array, tables ordered for insert
+     */
+	public function tableListOrdered() {
+		$tabs = $this->tableList();
+		usort($tabs, array("BeSchema", "tableOrderCompare"));
+		return $tabs;
+    }
+    
+    public static function tableOrderCompare($a, $b) {
+    	if(empty(self::$tableOrder)) {
+    		$tabOrderFile = APP . DS . "config" . DS. "sql" . DS . "table_order.php";
+			include($tabOrderFile);
+    		self::$tableOrder = $table_order;
+    	}
+		$aPos = array_search($a, self::$tableOrder);
+		$bPos = array_search($b, self::$tableOrder);
+		if(empty($aPos))
+			return -1;
+		if(empty($bPos))
+			return 1;
+		return ($aPos < $bPos) ? -1 : 1;
+    }
 
-    	fwrite($handle, "SET FOREIGN_KEY_CHECKS=0;\n");
+    public function checkSequences($db) {
+    	$driver = $db->config['driver'];
+		if($driver == "postgres") {
+			$dumpModel = new DumpModel();
+			$result = $db->fetchAll("select sequence_name as name from information_schema.sequences");
+			$sequences = array();
+			foreach ($result as $item) {
+				$sequences[] = $item[0]['name'];
+			}
+			$tables = $this->tableList();
+			foreach ($tables as $t) {
+	    		$dumpModel->setSource($t); 
+	    		$dumpModel->create(); 
+	    		$sch = $dumpModel->schema();
+	    		if(!empty($sch["id"])) {
+		    		$max = $dumpModel->find('first', array("fields" => array("MAX(id) as max_id")));
+		    		$newVal = $max[0]['max_id'];
+					if(!empty($newVal)) {
+						$newVal++;
+						$seqName = $t . "_id_seq";
+						if(in_array($seqName, $sequences)) {
+							$q = "ALTER SEQUENCE $seqName RESTART WITH $newVal";
+				    		$res = $db->query($q);
+						}
+					}
+		    	}
+			}
+		}
+    }
+    
+    /**
+     * Dumps table data to file
+     *
+     * @param array $tables
+     * @param unknown_type $handle
+     */
+    public function tableDetails(array &$tables, $handle) {
 
 		$dumpModel = new DumpModel();
     	foreach ($tables as $t) {
@@ -172,7 +239,7 @@ class BeSchema extends CakeSchema
 							$fields .= ",";
 							$values .= ",";
 						}
-						$fields .= "`$k`";
+						$fields .= $k;
 						$values .= "'".addslashes($v)."'";
 						$count++;
 					}
@@ -181,7 +248,6 @@ class BeSchema extends CakeSchema
     			fwrite($handle, $res);
 			}
     	}
-    	return $res;
     }
 }
 
