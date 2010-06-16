@@ -231,19 +231,65 @@ class PermissionModule extends BEAppModel
 	 * @return array
 	 */
 	function getListModules($userid) {
+
+		$user = $this->User->find("first", array(
+			"conditions" => array("User.userid" => $userid),
+			"contain" => array("Group")
+		));
+
+		$groups = array();
+		foreach ($user["Group"] as $g) {
+			$groups[] = $g["id"];
+		}
+
+		$uPerms = $this->find("all", array(
+			"conditions" =>	array("ugid" => $user["User"]["id"], "switch" => "user"),
+			"fields" => array("module_id", "flag"),
+			"contain" => array()
+		));
+		
+		
+		$gPerms = array();
+		if(!empty($groups)) {
+			$gPerms = $this->find("all", array(
+				"fields" => array("module_id", "flag"),
+				"conditions" => array(
+					"ugid" => $groups,
+					"switch" => "group"
+				),
+				"contain" => array()
+			));
+		}
+
+		$perms = array();
+		foreach ($uPerms as $up) {
+			$idMod = $up["PermissionModule"]["module_id"];
+			$flag = $up["PermissionModule"]["flag"];
+			if($flag & BEDITA_PERMS_READ_MODIFY) {
+				$perms[$idMod] = $flag; 				
+			}
+		}
+		foreach ($gPerms as $gp) {
+			$idMod = $gp["PermissionModule"]["module_id"];
+			$flag = $gp["PermissionModule"]["flag"];
+			if(empty($perms[$idMod]) && ($flag & BEDITA_PERMS_READ_MODIFY)) {
+				$perms[$idMod] = $flag; 				
+			}
+		}
+		
 		$modules = $this->Module->find("all", array(
 			"conditions" => array("status" => "on"),
 			"order" => "priority ASC"
 		));
+
 		$resModules = array();
-		foreach ($modules as $m) {
-			$flag = $this->permsByUserid($userid, $m["Module"]["name"], BEDITA_PERMS_READ_MODIFY);
-			if ($flag) {
-				$resModules[$m["Module"]["name"]] = $m["Module"];
-				$resModules[$m["Module"]["name"]]["flag"] = $flag;
+		foreach ($modules as $mod) {
+			$idMod = $mod["Module"]["id"];
+			if(!empty($perms[$idMod])) {
+				$resModules[$mod["Module"]["name"]] = $mod["Module"];
+				$resModules[$mod["Module"]["name"]]["flag"] = BEDITA_PERMS_READ_MODIFY;
 			}
 		}
-
 		return $resModules;
 
 	}
