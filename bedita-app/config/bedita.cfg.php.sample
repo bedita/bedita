@@ -30,9 +30,9 @@
  * 
  * $Id$
  */
-
-$config = array();
-
+if (!isset($config)) {
+	$config = array();
+}
 // BEdita instance name 
 //$config["projectName"] = "My Project Name";
 
