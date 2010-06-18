@@ -71,15 +71,18 @@ class BeConfigure {
 			)
 		);
 		if (!empty($modules)) {
-			$addPath = array();
+			$pluginConfig = array();
 			foreach ($modules as $m) {
 				foreach ($conf->pluginPaths as $pluginPath) {
 					$modulePath = $pluginPath . $m["Module"]["name"];
 					if (is_dir($modulePath)) {
 						if (file_exists($modulePath . DS . "config" . DS . "config.php")) {
 							include $modulePath . DS . "config" . DS . "config.php";
+							if (!empty($config["objRelationType"])) {
+								$pluginConfig["objRelationType"] = (empty($pluginConfig["objRelationType"]))? $config["objRelationType"] : array_merge($pluginConfig["objRelationType"], $config["objRelationType"]);
+							}
 						}
-						$config["modules"][$m["Module"]["name"]] = array(
+						$pluginConfig["modules"][$m["Module"]["name"]] = array(
 							"id" => $m["Module"]["id"],
 							"label" => $m["Module"]["label"],
 							"pluginPath" => $modulePath
@@ -91,8 +94,8 @@ class BeConfigure {
 		}
 		
 		$conf->plugged = array();
-		if (!empty($config)) {
-			$conf->plugged = $config;
+		if (!empty($pluginConfig)) {
+			$conf->plugged = $pluginConfig;
 		}
 		$configurations["plugged"] = $conf->plugged;
 		$this->addModulesPaths($configurations);
