@@ -1,5 +1,4 @@
 ALTER TABLE `modules` ADD `type` enum('core','plugin') DEFAULT 'core' NOT NULL;
-ALTER TABLE `questions` ADD `text_ok` text DEFAULT NULL, ADD `text_fail` text DEFAULT NULL;
 ALTER TABLE `annotations` DROP FOREIGN KEY `annotations_ibfk_2`;
 ALTER TABLE `versions` ADD UNIQUE object_id_revision(object_id, revision);
 ALTER TABLE `users` ADD UNIQUE email(email);
@@ -15,15 +14,15 @@ ALTER TABLE `contents` CHANGE `start` `start_date` DATETIME;
 ALTER TABLE `contents` CHANGE `end` `end_date` DATETIME;
 ALTER TABLE `date_items` CHANGE `start` `start_date` DATETIME;
 ALTER TABLE `date_items` CHANGE `end` `end_date` DATETIME;
-ALTER TABLE `modules` CHANGE `path` `url` VARCHAR( 255 );
-ALTER TABLE `streams` CHANGE `path` `uri` VARCHAR( 255 );
+ALTER TABLE `modules` CHANGE `path` `url` VARCHAR( 255 ) NOT NULL;
+ALTER TABLE `streams` CHANGE `path` `uri` VARCHAR( 255 ) NOT NULL;
 ALTER TABLE `mail_logs` CHANGE `level` `log_level` VARCHAR(10) NOT NULL DEFAULT 'info' COMMENT '(info, warn, err)';
 ALTER TABLE  `modules` CHANGE  `type`  `module_type` VARCHAR( 10 ) NOT NULL DEFAULT  'core' COMMENT  '(core, plugin)';
 ALTER TABLE  `object_types` CHANGE  `module`  `module_name` VARCHAR( 32 );
-ALTER TABLE  `objects` CHANGE  `current`  `valid` TINYINT( 1 );
+ALTER TABLE  `objects` CHANGE  `current`  `valid` BOOL NULL DEFAULT '1';
 ALTER TABLE  `products` CHANGE  `depth`  `product_depth` DOUBLE;
 ALTER TABLE  `streams` CHANGE  `size`  `file_size` INT( 10 );
-ALTER TABLE  `users` CHANGE  `level`  `user_level` TINYINT( 1 );
+ALTER TABLE  `users` CHANGE  `level`  `user_level` tinyint(1) DEFAULT 0 NOT NULL;
 ALTER TABLE  `videos` CHANGE  `uid`  `video_uid` VARCHAR( 255 );
 ALTER TABLE  `applications` CHANGE  `text_dir`  `text_dir` VARCHAR( 10 ) NULL DEFAULT 'ltr' COMMENT 'text orientation (ltr:left to right;rtl: right to left)';
 ALTER TABLE  `cards` CHANGE  `mail_status`  `mail_status` VARCHAR( 10 ) NOT NULL DEFAULT 'valid' COMMENT 'status of email address (valid/blocked)';
@@ -33,7 +32,7 @@ ALTER TABLE  `links` CHANGE  `target`  `target` VARCHAR( 10 ) NULL DEFAULT NULL 
 ALTER TABLE  `mail_groups` CHANGE  `security`  `security` VARCHAR( 10 ) NOT NULL DEFAULT 'all' COMMENT 'secure level (all, none)';
 ALTER TABLE  `mail_group_cards` CHANGE  `status`  `status` VARCHAR( 10 ) NOT NULL DEFAULT  'pending' COMMENT 'describe subscription status (pending, confirmed)';
 ALTER TABLE  `mail_jobs` CHANGE  `status`  `status` VARCHAR( 10 ) NOT NULL DEFAULT  'unsent' COMMENT  'job status (unsent, pending, sent, failed)';
-ALTER TABLE  `mail_messages` CHANGE  `mail_status`  `mail_status` VARCHAR( 10 ) NOT NULL DEFAULT  'unsent' COMMENT 'sending status (unsent, pending, injob, sent)'
+ALTER TABLE  `mail_messages` CHANGE  `mail_status`  `mail_status` VARCHAR( 10 ) NOT NULL DEFAULT  'unsent' COMMENT 'sending status (unsent, pending, injob, sent)';
 ALTER TABLE  `modules` CHANGE  `status`  `status` VARCHAR( 10 ) NOT NULL DEFAULT  'on' COMMENT  '(on, off)';
 ALTER TABLE  `objects` CHANGE  `status`  `status` VARCHAR( 10 ) NULL DEFAULT  'draft' COMMENT  '(on, off, draft)';
 ALTER TABLE  `objects` CHANGE  `comments`  `comments` VARCHAR( 10 ) NULL DEFAULT  'off' COMMENT  'define if an object is commentable (on, off, moderated)';
@@ -49,6 +48,8 @@ ALTER TABLE `contents` DROP `type`;
 ALTER TABLE  `cards` DROP  `street_number`;
 ALTER TABLE `object_properties` ADD PRIMARY KEY ( `id` );
 ALTER TABLE `object_properties` DROP INDEX `id_index`;
+ALTER TABLE `event_logs` DROP KEY user_idx;
+ALTER TABLE `event_logs` ADD KEY userid_idx (`userid`);
 
 CREATE TABLE history (
   `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
