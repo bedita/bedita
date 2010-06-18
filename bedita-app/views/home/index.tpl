@@ -66,6 +66,9 @@ $(document).ready(function() {
 	
 {/foreach}
 
+
+
+
 	<li class="colophon">
 
 		{if !empty($conf->multilang) && $conf->multilang}

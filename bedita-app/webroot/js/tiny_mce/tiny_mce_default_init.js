@@ -22,7 +22,7 @@ tinyMCE.init({
    	dialog_type : "modal",
 	// Theme options
 	theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
-	theme_advanced_buttons2 : "mybutton,sub, sup, cite, abbr, del, attribs",
+	theme_advanced_buttons2 : "cleanup,sub,sup,del,|,formula,dfn,glossary,|,attribs",
 	theme_advanced_buttons3 : "",
 	theme_advanced_toolbar_location : "top",
 	theme_advanced_toolbar_align : "left",
@@ -30,7 +30,7 @@ tinyMCE.init({
 	//theme_advanced_resizing : true,
 	theme_advanced_blockformats : "p,h1,h2,h3,h4,blockquote,address,dt,dd,code,samp",
 	width : "100%",
-	
+
 	remove_redundant_brs : true,
 	entity_encoding : "raw", //All characters will be stored in non-entity form except these XML default entities: &amp; &lt; &gt; &quot;
 	
@@ -44,16 +44,50 @@ tinyMCE.init({
 
 	setup : function(ed) {
         // Add a custom button
-        ed.addButton('mybutton', {
+        ed.addButton('dfn', {
+			//label : 'dfn',
             title : 'definition',
-            image : '/img/dfn.png',
+            image : '/img/editor_dfn.png',
             onclick : function() {
 				// Add you own code to execute something on click
 				ed.focus();
                 ed.selection.setContent('<dfn>' + ed.selection.getContent() + '</dfn>');
             }
         });
+        // Add a custom button
+        ed.addButton('formula', {
+            title : 'formula',
+            image : '/img/editor_formula.png',
+            onclick : function() {
+				// Add you own code to execute something on click
+				ed.focus();
+                ed.selection.setContent('<span class="formula">' + ed.selection.getContent() + '</span>');
+            }
+        });
+
+        // Add a custom button
+        ed.addButton('glossary', {
+            title : 'glossary',
+            image : '/img/editor_glossary.png',
+            onclick : function() {
+				// Add you own code to execute something on click
+				ed.focus();
+                ed.selection.setContent('<dfn class="glossario">' + ed.selection.getContent() + '</dfn>');
+            }
+        });
+		
+	// Gets executed after DOM to HTML string serialization
+		ed.onPostProcess.add(function(ed, o) {
+			// State get is set when contents is extracted from editor
+			if (o.get) {
+				// Replace empty elements such <dfn></dfn>
+				o.content = o.content.replace('<dfn></dfn>', '');
+			}
+		});	
+		
+		
     }
+
 });
 
 

@@ -2,9 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">
 <head>
 	<title>BEdita | {$currentModule.label|default:'home'} | {$html->action}</title>
-	
-	{agent var=agent}
-	
+
 	{if $agent.iPHONE or $agent.iPAD}
 		
 		<meta name="viewport" content="user-scalable=yes, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>

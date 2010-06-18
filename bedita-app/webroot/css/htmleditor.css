@@ -3,7 +3,7 @@
 
 body, td {
 	font-family: "Verdana" , sans-serif;	
-	font-size:12px;
+	font-size:13px;
 	line-height:1.5em;
 }
 
@@ -20,17 +20,48 @@ blockquote {
 	padding-left:10px;
 }
 
-dfn {font-style:normal; font-weight:bold; color:#003300;}
+dfn {
+	font-style:normal; font-weight:bold; color:#003300;
+}
+
+/* mark a dfn insiede a dfn */
+
+dfn dfn {
+	border:2px dotted #ff0000;
+	padding:0 2px 0 2px;
+}
 
 DT, DL {color: #653214;}
 
 CODE {color: #ff6600}
 
+
+sup, sub {
+	height: 0;
+	line-height: 1;
+	vertical-align: baseline;
+	_vertical-align: bottom;
+	position: relative;
+}
+
+sup {
+	bottom: 1ex;
+}
+
+sub {
+	top: .5ex;
+}
+
+
 .placeholder {
 	background-color:#ff3300;
 }
 
-.glossary {
+.glossario {
 	color:#336633 !important;
+	text-decoration:underline;
 }
 
+.formula {
+	color:#ff6600 !important;
+}

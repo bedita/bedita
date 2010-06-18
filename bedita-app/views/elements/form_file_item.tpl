@@ -72,14 +72,15 @@ $(document).ready(function(){
 			name="data[RelatedObject][{$relation}][{$item.id}][title]" />
 		</li>
 		<li>
-			<textarea class="info_file_item" style="border:0px; border-bottom:1px solid silver;" 
+			<textarea class="info_file_item" style="width:100%; border:0px; border-bottom:0px solid silver;" 
 			name="data[RelatedObject][{$relation}][{$item.id}][description]">{$item.description|default:""}</textarea>
 			<br />
-			<table style="width:100%">
+			<table style="width:100%; margin-top:5px" class="ultracondensed">
 				<tr>
-					<td><a rel="{$linkUrl} #multimediaiteminside" class="modalbutton">{t}details{/t}</a></td>
-					<td><a href="{$linkUrl}" target="_blank">{t}edit{/t}</a></td>
-					<td><a href="javascript: void(0);" onclick="removeItem('item_{$item.id}')">{t}remove{/t}</a></td>
+					<td><a title="info" rel="{$linkUrl} #multimediaiteminside" style="padding:2px 6px 2px 6px !important" class="BEbutton modalbutton">{t}info{/t}</a></td>
+					<td><a title="edit" href="{$linkUrl}" style="padding:2px 6px 2px 6px !important" class="BEbutton" target="_blank">{t}edit{/t}</a></td>
+					<td><a title="remove" href="javascript: void(0);" style="padding:2px 6px 2px 6px !important" class="BEbutton" onclick="removeItem('item_{$item.id}')">{t}x{/t}</a></td>
+					
 				</tr>
 			</table>
 		</li>

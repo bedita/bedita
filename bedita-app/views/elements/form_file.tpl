@@ -62,7 +62,7 @@
 	</div> 
 {/if}
 
-<table class="bordered" style="margin-top:10px; border:1px solid #999; width:100%; clear:both">
+<table class="bordered" style="margin:10px auto; width:95%; border:1px solid #999; clear:both">
 
 	<tr>
 		<th>{t}filename{/t}:</th>
@@ -108,7 +108,7 @@
 {if ($object.ObjectType.name == "image")}
 	
 	<tr>
-		<th>{t}Human readable type{/t}:</th>
+		<th nowrap>{t}Human readable type{/t}:</th>
 		<td>{$imageInfo.hrtype}</td>
 		<th>{t}Orientation{/t}:</th>
 		<td>{$imageInfo.orientation}</td>
@@ -123,23 +123,37 @@
 		<th>{t}Bit depth{/t}:</th><td>{$imageInfo.bits}</td>
 		<th>{t}Channels{/t}:</th><td>{$imageInfo.channels}</td>
 	</tr>
-	
+
 {/if}
+	
 	<tr>
-		<th></th>
-		<td>
-			
-			{if (substr($object.uri,0,7) == 'http://') or (substr($object.uri,0,8) == 'https://')}
-			<a target="_blank" href="{$object.uri}">
-			{else}
-			<a target="_blank" href="{$conf->mediaUrl}{$object.uri}">
-			{/if}
-				› {t}open file in a separate window{/t}
+		<th>{t}Url{/t}: <!-- <input type="button" onclick="$('#mediaurl').copy();" value="{t}copy{/t}" /> --> </th>
+		<td colspan="3">
+
+		{if (substr($object.uri,0,7) == 'http://') or (substr($object.uri,0,8) == 'https://')}
+			{assign var="uri" value=$object.uri}
+		{else}
+			{assign_concat var="uri" 0=$conf->mediaUrl 1=$object.uri}
+		{/if}
+			<a target="_blank" id="mediaurl" href="{$uri}">
+				{$uri}
 			</a>
 		</td>
 	</tr>
-</table>
-
+	{if !empty($html->params.isAjax)}
+	<tr>
+		<th>{t}id{/t}:</th>
+		<td>
+			{$object.id}
+		</td>
+		<th>{t}Unique name{/t}:</th>
+		<td>
+			{$object.nickname}
+		</td>
+	</tr>
+	{/if}
+	</table>
+		
 </div>
 
 </fieldset>
