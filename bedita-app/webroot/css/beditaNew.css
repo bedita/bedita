@@ -612,7 +612,7 @@ UL.menuleft {
 
 .tab, .tab2  {
 	height:25px;
-	background:transparent url(../img/shadowh2-small.png) repeat left top;
+	/*background:transparent url(../img/shadowh2-small.png) repeat left top;*/
 	padding:10px 0px 10px 0px;
 	margin-top:-10px;
 }
