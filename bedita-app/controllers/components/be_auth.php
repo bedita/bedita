@@ -410,6 +410,7 @@ class BeAuthComponent extends Object {
 		if ( (Configure::read('Session.save') == "database") && !empty($sessionDb) ) {
 			$db =& ConnectionManager::getDataSource($sessionDb);
 			$table = $db->fullTableName(Configure::read('Session.table'), false);
+			// #CUSTOM QUERY
 			$res = $db->query("SELECT " . $db->name($table.'.data') . " FROM " . $db->name($table) . " WHERE " . $db->name($table.'.expires') . " >= " . time(), false);
 		}
 		foreach($res as $key => $val) {

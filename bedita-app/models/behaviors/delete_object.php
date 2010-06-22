@@ -133,7 +133,7 @@ class DeleteObjectBehavior extends ModelBehavior {
 		
 		$res = $o->find("first", array(
 									"contain" => array("RelatedObject"),
-									"conditions" => array("`BEObject`.id" => $object_id)
+									"conditions" => array("BEObject.id" => $object_id)
 									)
 							);
 		if (!empty($res["RelatedObject"])) {

@@ -269,7 +269,7 @@ class BEObject extends BEAppModel
 			$table 		= (isset($model->useTable)) ? $model->useTable : ($db->name($db->fullTableName($assoc->className))) ;
 			$id 		= (isset($this->data[$this->name]['id'])) ? $this->data[$this->name]['id'] : $this->getInsertID() ;		
 			$foreignK	= $assoc['foreignKey'] ;
-			
+			// #CUSTOM QUERY
 			$db->query("DELETE FROM {$table} WHERE {$foreignK} = '{$id}'");
 			
 			if (!(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name]))) {
@@ -354,14 +354,17 @@ class BEObject extends BEAppModel
 					$priority	= isset($val['priority']) ? "'{$val['priority']}'" : 'NULL' ;
 					
 					// Delete old associations
+					// #CUSTOM QUERY
 					$queriesDelete[$switch] = "DELETE FROM {$table} 
 											   WHERE ({$assoc['foreignKey']} = '{$this->id}' OR {$assoc['associationForeignKey']} = '{$this->id}')  
 											   AND switch = '{$switch}' ";
 					if (!empty($obj_id)) {
+						// #CUSTOM QUERY
 						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
 						
 						if(!in_array($switch,$oneWayRelation)) {
 							// find priority of inverse relation
+							// #CUSTOM QUERY
 							$inverseRel = $this->query("SELECT priority 
 														  FROM {$table} 
 														  WHERE id={$obj_id} 
@@ -369,11 +372,13 @@ class BEObject extends BEAppModel
 														  AND switch='{$switch}'");
 							
 							if (empty($inverseRel[0]["content_objects"]["priority"])) {
+								// #CUSTOM QUERY
 								$inverseRel = $this->query("SELECT MAX(priority)+1 AS priority FROM {$table} WHERE id={$obj_id} AND switch='{$switch}'");
 								$inversePriority = (empty($inverseRel[0][0]["priority"]))? 1 : $inverseRel[0][0]["priority"];
 							} else {
 								$inversePriority = $inverseRel[0]["content_objects"]["priority"];
 							}						
+							// #CUSTOM QUERY
 							$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$switch}', ". $inversePriority  .")" ;
 						}
 						
@@ -384,12 +389,14 @@ class BEObject extends BEAppModel
 						if($modified && $obj_id) {
 							$title 		= isset($val['title']) ? addslashes($val['title']) : "" ;
 							if($switch == 'link') {
+								// #CUSTOM QUERY
 								$queriesModified[] = "UPDATE objects  SET title = '{$title}' WHERE id = {$obj_id} " ;
 								$link = ClassRegistry::init('Link');
 								$link->id = $obj_id;
 								$link->saveField('url',$val['url']);
 							} else {
 								$description 	= isset($val['description']) ? addslashes($val['description']) : "" ;
+								// #CUSTOM QUERY
 								$queriesModified[] = "UPDATE objects  SET title = '{$title}', description = '{$description}' WHERE id = {$obj_id} " ;
 							}
 						}
@@ -524,7 +531,7 @@ class BEObject extends BEAppModel
 		if(@empty($id) || @empty($title)) return false ;
 		
 		$db 		= &ConnectionManager::getDataSource($this->useDbConfig);
-		
+		// #CUSTOM QUERY
 		$db->query("UPDATE objects  SET title =  '".addslashes($title)."', description = '".addslashes($description)."' WHERE id = {$id} " ) ;
 		
 		return true ;

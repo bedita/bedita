@@ -42,6 +42,7 @@ class BEAppModel extends AppModel {
 	protected $modelBindings = array();
 	protected $sQ = ""; // internal use: start quote
 	protected $eQ = ""; // internal use: end quote
+	protected $driver = ""; // internal use: database driver
 	
 	/**
 	 * Merge record result in one array
@@ -59,22 +60,28 @@ class BEAppModel extends AppModel {
 		return $tmp ;
 	}
 
-	protected function setupQuotes() {
-    	if(empty($this->sQ)) {
+	protected function setupDbParams() {
+    	if(empty($this->driver)) {
 			$db = ConnectionManager::getDataSource($this->useDbConfig);
+			$this->driver = $db->config['driver'];
 			$this->sQ = $db->startQuote;
 			$this->eQ = $db->endQuote;
     	}
 	}
 	
 	public function getStartQuote() {
-		$this->setupQuotes();
+		$this->setupDbParams();
 		return $this->sQ;
 	}
 
 	public function getEndQuote() {
-		$this->setupQuotes();
+		$this->setupDbParams();
 		return $this->eQ;
+	}
+
+	public function getDriver() {
+		$this->setupDbParams();
+		return $this->driver;
 	}
 	
 	/**
@@ -270,7 +277,6 @@ class BEAppModel extends AppModel {
 		$fields  = "DISTINCT {$beObjFields}, {$contentFields}" ;
 		$from = "{$s}objects{$e} as {$s}BEObject{$e} LEFT OUTER JOIN {$s}contents{$e} as {$s}Content{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}Content{$e}.{$s}id{$e}";
 		$conditions = array();
-		$groupClausole = "";
 		$groupClausole = "GROUP BY {$beObjFields}, {$contentFields}";
 		
 		if (!empty($status))
@@ -302,11 +308,19 @@ class BEAppModel extends AppModel {
 //			if (!empty($userid))
 //				$conditions[] 	= " prmsUserByID ('{$userid}', Tree.id, ".BEDITA_PERMS_READ.") > 0 " ;
 			
-			if($all)
-				$conditions[] = " {$s}Tree{$e}.{$s}object_path{$e} LIKE (CONCAT((SELECT {$s}object_path{$e} FROM {$s}trees{$e} WHERE {$s}id{$e} = {$id}), '/%')) " ;
-			else
+			if($all) {
+				$cond = "";
+				if($this->getDriver() == 'mysql') {
+					// #MYSQL
+					$cond = " {$s}Tree{$e}.{$s}object_path{$e} LIKE (CONCAT((SELECT {$s}object_path{$e} FROM {$s}trees{$e} WHERE {$s}id{$e} = {$id}), '/%')) " ;
+				} else {
+					// #POSTGRES -- NOT WORKING - SQL ERROR!!
+					$cond = " {$s}Tree{$e}.{$s}object_path{$e} LIKE ((SELECT {$s}object_path{$e} FROM {$s}trees{$e} WHERE {$s}id{$e} = {$id}) || '/%')) " ;
+				}
+				$conditions[] = $cond;
+			} else {
 				$conditions[] = array("{$s}Tree{$e}.{$s}parent_id{$e}" => $id) ;
-			
+			}
 			if(empty($order)) {
 				$order = "{$s}Tree{$e}.{$s}priority{$e}";
 				$section = ClassRegistry::init("Section");
@@ -348,7 +362,7 @@ class BEAppModel extends AppModel {
 		
 		$limit 	= $this->getLimitClausole($page, $dim) ;
 		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
-		// *CUSTOM QUERY*
+		// #CUSTOM QUERY
 		$tmp  	= $this->query($query) ;
 
 		if ($tmp === false)
@@ -356,7 +370,7 @@ class BEAppModel extends AppModel {
 		
 		$queryCount = "SELECT COUNT(DISTINCT {$s}BEObject{$e}.{$s}id{$e}) AS count FROM {$from} {$sqlClausole}";
 
-		// *CUSTOM QUERY*
+		// #CUSTOM QUERY
 		$tmpCount = $this->query($queryCount);
 		if ($tmpCount === false)
 			throw new BeditaException(__("Error counting objects", true));

@@ -143,9 +143,8 @@ class Category extends BEAppModel {
 	
 	private function collateStatment() {
 		$res = "";
-		$db =& ConnectionManager::getDataSource($this->useDbConfig);
-		// *MYSQL SPECIFIC*
-		if($db->config['driver'] == "mysql") {
+		// #MYSQL
+		if($this->getDriver() == "mysql") {
 			$res = "collate utf8_bin";
 		}
 		return $res;
@@ -230,7 +229,7 @@ class Category extends BEAppModel {
 			$tags[$t['id']] = $t;
 		}
 
-		// *CUSTOM QUERY*
+		// #CUSTOM QUERY
 		$sql = "SELECT categories.id, COUNT(object_categories.category_id) AS weight
 				FROM categories, object_categories
 				WHERE categories.object_type_id IS NULL
@@ -241,7 +240,7 @@ class Category extends BEAppModel {
 		$res = $this->query($sql);
 
 		if ($cloud) {
-			// *CUSTOM QUERY*
+			// #CUSTOM QUERY
 			$sqlMax = "SELECT MAX(weight) AS max, MIN(weight) AS min FROM (" . $sql . ") tab";
 			$maxmin = $this->query($sqlMax);
 			$max = $maxmin[0][0]["max"];		

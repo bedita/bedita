@@ -120,7 +120,7 @@ class LangText extends BEAppModel
 		}
 		
 		$limit 	= $this->getLimitClausole($page, $dim) ;
-		// *CUSTOM QUERY*
+		// #CUSTOM QUERY
 		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
 		$tmp  	= $this->query($query) ;
 
@@ -129,7 +129,6 @@ class LangText extends BEAppModel
 
 		$objects = array();
 		foreach($tmp as $tr) {
-//pr($tr);
 			$object_id = $tr['LangText']['object_id'];
 			$lang = $tr['LangText']['lang'];
 			$translationTitle = $this->field("text", 
@@ -141,7 +140,7 @@ class LangText extends BEAppModel
 				"BEObject" => $tr['BEObject']);
 		}
 
-		// *CUSTOM QUERY*
+		// #CUSTOM QUERY
 		$queryCount = "SELECT COUNT(DISTINCT {$s}BEObject{$e}.{$s}id{$e}) AS count FROM {$from} {$sqlClausole}";
 		$tmpCount = $this->query($queryCount);
 		if ($tmpCount === false)

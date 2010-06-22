@@ -59,7 +59,7 @@ class BeSchema extends CakeSchema
 
 		// call query to avoid foreign key checks, on data insert (mysql only)
 		if($db->config['driver'] === "mysql") {
-			// *CUSTOM QUERY*
+			// #CUSTOM QUERY
 			$res = $db->execute("SET FOREIGN_KEY_CHECKS=0");
 		}
 		
@@ -190,6 +190,7 @@ class BeSchema extends CakeSchema
     public function checkSequences($db) {
     	$driver = $db->config['driver'];
 		if($driver == "postgres") {
+			// #POSTGRES
 			$dumpModel = new DumpModel();
 			$result = $db->fetchAll("select sequence_name as name from information_schema.sequences");
 			$sequences = array();
@@ -244,6 +245,7 @@ class BeSchema extends CakeSchema
 						$count++;
 					}
 				}
+				// #CUSTOM QUERY
 				$res = "INSERT INTO $t (".$fields.") VALUES ($values);\n";
     			fwrite($handle, $res);
 			}

@@ -279,6 +279,7 @@ class Module extends BEAppModel {
 			$pluginTables = $setup["tables"];
 			foreach (array_reverse($pluginTables) as $t) {
 				$q = "DROP TABLE " . $t;
+				// #CUSTOM QUERY
 				$this->query($q);
 			}
 		}

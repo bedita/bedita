@@ -63,7 +63,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		
 		$beObject = ClassRegistry::init("BEObject");
 		
-		// *CUSTOM QUERY*
+		// #CUSTOM QUERY -- all class methods
 		foreach ($this->filter as $key => $val) {
 			
 			if (method_exists($this, $key . "Filter")) {
@@ -192,6 +192,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	}
 	
 	private function queryFilter($s, $e, $value) {
+		// #MYSQL
 		$this->fields .= ", SearchText.object_id AS oid, SUM( MATCH (SearchText.content) AGAINST ('" . $value . "') * SearchText.relevance ) AS points";
 		$this->from .= ", search_texts AS SearchText";
 		$this->conditions[] = "SearchText.object_id = BEObject.id AND SearchText.lang = BEObject.lang AND MATCH (SearchText.content) AGAINST ('" . $value . "')";
