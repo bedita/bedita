@@ -314,8 +314,8 @@ class BEAppModel extends AppModel {
 					// #MYSQL
 					$cond = " {$s}Tree{$e}.{$s}object_path{$e} LIKE (CONCAT((SELECT {$s}object_path{$e} FROM {$s}trees{$e} WHERE {$s}id{$e} = {$id}), '/%')) " ;
 				} else {
-					// #POSTGRES -- NOT WORKING - SQL ERROR!!
-					$cond = " {$s}Tree{$e}.{$s}object_path{$e} LIKE ((SELECT {$s}object_path{$e} FROM {$s}trees{$e} WHERE {$s}id{$e} = {$id}) || '/%')) " ;
+					// #POSTGRES
+					$cond = " {$s}Tree{$e}.{$s}object_path{$e} LIKE ((SELECT {$s}object_path{$e} FROM {$s}trees{$e} WHERE {$s}id{$e} = {$id}) || '/%') " ;
 				}
 				$conditions[] = $cond;
 			} else {
