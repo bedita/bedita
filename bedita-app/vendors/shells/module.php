@@ -178,6 +178,11 @@ class ModuleShell extends BeditaBaseShell {
 		$options = array();
 		$tables = $moduleSetup["tables"];
 		$beSchema = ClassRegistry::init("BeSchema");
+		$conf = Configure::getInstance();
+		
+		if (!in_array($pluginPath . DS  . $pluginName . DS . "model" . DS, $conf->modelPaths)){
+			$conf->modelPaths[] = $pluginPath . DS  . $pluginName . DS . "models" . DS;
+		}
 		
 		foreach ($tables as $t) {
 			$modelName = Inflector::camelize($t);

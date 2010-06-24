@@ -7,7 +7,7 @@
 
 <script type="text/javascript">
 var urlDelete = "{$html->url('deleteCustomProperties/')}";
-var message = "{t}Are you sure that you want to delete the item?{/t}";
+var message = "{t}Are you sure that you want to delete the property? this will also delete any properties data associated{/t}";
 {literal}
 $(document).ready(function(){
 	$(".delete").bind("click", function(){
@@ -72,12 +72,16 @@ $(document).ready(function(){
 				</td>
 				<td>
 					<select name="data[Property][object_type_id]">
-						<option value="" class="admin" style="padding-left:5px"{if $p.object_type_id == null} selected="selected"{/if}> user</option>
-					{foreach from=$conf->objectTypes key="key" item="objectTypes"}
-					{if !empty($objectTypes.model) && is_numeric($key)}
-						<option value="{$objectTypes.id}" class="{$objectTypes.module_name}" style="padding-left:5px"{if $p.object_type_id ==$objectTypes.id} selected="selected"{/if}> {$objectTypes.name}</option>
+					
+					{if $p.object_type_id == null}
+						<option value="" class="admin" style="padding-left:5px" selected="selected"> user</option>
+					{else}	
+						{foreach from=$conf->objectTypes key="key" item="objectTypes"}
+						{if !empty($objectTypes.model) && is_numeric($key)}
+							<option value="{$objectTypes.id}" class="{$objectTypes.module_name}" style="padding-left:5px"{if $p.object_type_id ==$objectTypes.id} selected="selected"{/if}> {$objectTypes.name}</option>
+						{/if}
+						{/foreach}
 					{/if}
-					{/foreach}
 					</select>
 				</td>
 				<td>

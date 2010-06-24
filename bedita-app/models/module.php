@@ -110,6 +110,12 @@ class Module extends BEAppModel {
 			if (empty($pluginPath)) {
 				$pluginPath = $beLib->getPluginPath($pluginName);
 			}
+			
+			$conf = Configure::getInstance();
+			if (!in_array($pluginPath . DS  . $pluginName . DS . "model" . DS, $conf->modelPaths)){
+				$conf->modelPaths[] = $pluginPath . DS  . $pluginName . DS . "models" . DS;
+			}
+			
 			// check db schema, create tables if needed
 			$this->handlePluginSchema($pluginName, $setup, $pluginPath);
 			
@@ -124,7 +130,7 @@ class Module extends BEAppModel {
 					throw new BeditaException(__("File " . $filename . " doesn't find.", true));
 				}
 				
-				if ($beLib->isFileNameUsed($filename, "model")) {
+				if ($beLib->isFileNameUsed($filename, "model", array($pluginPath . DS  . $pluginName . DS . "models" . DS))) {
 					throw new BeditaException(__($filename . " is already used. Please change your file and model name", true));
 				}
 				
@@ -205,7 +211,7 @@ class Module extends BEAppModel {
 		$currentTables = $db->listSources();
 		
 		$beSchema = ClassRegistry::init("BeSchema");
-
+		
 		$found = false;
 		$numTablesFound = 0;
 		$tabsNotFound = "";
