@@ -61,7 +61,7 @@ COMMENT ON COLUMN aliases.lang IS 'alias preferred language, can be NULL';
 
 
 CREATE TABLE annotations (
-    id serial,
+    id integer NOT NULL,
     object_id bigint NOT NULL,
     author character varying(255),
     email character varying(255),
@@ -77,7 +77,7 @@ COMMENT ON COLUMN annotations.thread_path IS 'path to thread, can be NULL';
 COMMENT ON COLUMN annotations.rating IS 'object rating, can be NULL';
 
 CREATE TABLE applications (
-    id serial,
+    id integer NOT NULL,
     application_name character varying(255) NOT NULL,
     application_label character varying(255),
     application_version character varying(50),
@@ -99,7 +99,7 @@ COMMENT ON COLUMN applications.width IS 'application window width in pixels';
 COMMENT ON COLUMN applications.height IS 'application window height in pixels';
 
 CREATE TABLE areas (
-    id serial,
+    id integer NOT NULL,
     public_name character varying(255),
     public_url character varying(255),
     staging_url character varying(255),
@@ -119,7 +119,7 @@ COMMENT ON COLUMN areas.stats_provider_url IS 'statistics provider url';
 
 
 CREATE TABLE authors (
-    id serial,
+    id integer NOT NULL,
     name character varying(60),
     surname character varying(60)
 );
@@ -147,7 +147,7 @@ CREATE TABLE cake_sessions (
 
 
 CREATE TABLE cards (
-    id serial,
+    id integer NOT NULL,
     name character varying(64),
     surname character varying(64),
     person_title character varying(32),
@@ -225,7 +225,7 @@ COMMENT ON COLUMN categories.parent_path IS 'path to parent, can be NULL';
 COMMENT ON COLUMN categories.status IS 'status of category (on/off)';
 
 CREATE TABLE contents (
-    id serial,
+    id integer NOT NULL,
     start_date timestamp without time zone,
     end_date timestamp without time zone,
     subject character varying(255),
@@ -254,30 +254,17 @@ CREATE TABLE event_logs (
     id serial,
     userid character varying(32) NOT NULL,
     created timestamp without time zone NOT NULL,
-    msg character varying(100) NOT NULL,
+    msg character varying(255) NOT NULL,
     log_level character varying(10) DEFAULT 'info'::character varying NOT NULL,
     context character varying(32)
 );
 
 
 COMMENT ON COLUMN event_logs.userid IS 'event user';
-
-
-
 COMMENT ON COLUMN event_logs.created IS 'event time';
-
-
-
 COMMENT ON COLUMN event_logs.msg IS 'log content';
-
-
-
 COMMENT ON COLUMN event_logs.log_level IS 'log level (debug, info, warn, err)';
-
-
-
 COMMENT ON COLUMN event_logs.context IS 'event context';
-
 
 
 CREATE TABLE geo_tags (
@@ -291,19 +278,9 @@ CREATE TABLE geo_tags (
 
 
 COMMENT ON COLUMN geo_tags.latitude IS 'latitude, can be NULL';
-
-
-
 COMMENT ON COLUMN geo_tags.longitude IS 'longitude, can be NULL';
-
-
-
 COMMENT ON COLUMN geo_tags.address IS 'address, can be NULL';
-
-
-
 COMMENT ON COLUMN geo_tags.gmaps_lookat IS 'google maps code, can be NULL';
-
 
 
 CREATE TABLE groups (
@@ -317,13 +294,7 @@ CREATE TABLE groups (
 
 
 COMMENT ON COLUMN groups.name IS 'group name';
-
-
-
 COMMENT ON COLUMN groups.backend_auth IS 'group authorized to backend (default: false)';
-
-
-
 COMMENT ON COLUMN groups.immutable IS 'group data immutable (default:false)';
 
 
@@ -347,17 +318,8 @@ CREATE TABLE hash_jobs (
 
 
 COMMENT ON COLUMN hash_jobs.service_type IS 'type of hash operations';
-
-
-
 COMMENT ON COLUMN hash_jobs.params IS 'serialized specific params for hash operation';
-
-
-
 COMMENT ON COLUMN hash_jobs.expired IS 'hash expired datetime';
-
-
-
 COMMENT ON COLUMN hash_jobs.status IS 'job status, can be pending/expired/closed/failed';
 
 
@@ -373,20 +335,16 @@ CREATE TABLE history (
 
 
 COMMENT ON COLUMN history.title IS 'title, can be NULL';
-
 COMMENT ON COLUMN history.area_id IS 'NULL in backend history';
-
 COMMENT ON COLUMN history.url IS '???';
 
-
 CREATE TABLE images (
-    id serial,
+    id integer NOT NULL,
     width bigint,
     height bigint
 );
 
 COMMENT ON COLUMN images.width IS 'image width, can be NULL';
-
 COMMENT ON COLUMN images.height IS 'image height, can be NULL';
 
 CREATE TABLE lang_texts (
@@ -399,13 +357,11 @@ CREATE TABLE lang_texts (
 
 
 COMMENT ON COLUMN lang_texts.lang IS 'language of translation, for example ita, eng, por';
-
 COMMENT ON COLUMN lang_texts.name IS 'field/attribute name';
-
 COMMENT ON COLUMN lang_texts.text IS 'translation';
 
 CREATE TABLE links (
-    id serial,
+    id integer NOT NULL,
     url character varying(255),
     target character varying(10),
     http_code text,
@@ -414,13 +370,9 @@ CREATE TABLE links (
 );
 
 COMMENT ON COLUMN links.url IS '???';
-
 COMMENT ON COLUMN links.target IS '(_self, _blank, parent, top, popup)';
-
 COMMENT ON COLUMN links.http_code IS '???';
-
 COMMENT ON COLUMN links.http_response_date IS '???';
-
 COMMENT ON COLUMN links.source_type IS 'can be rss, wikipedia, archive.org, localresource....';
 
 CREATE TABLE mail_group_cards (
@@ -433,7 +385,6 @@ CREATE TABLE mail_group_cards (
 
 
 COMMENT ON COLUMN mail_group_cards.status IS 'describe subscription status (pending, confirmed)';
-
 COMMENT ON COLUMN mail_group_cards.created IS '???';
 
 
@@ -456,13 +407,9 @@ CREATE TABLE mail_groups (
 
 
 COMMENT ON COLUMN mail_groups.group_name IS '???';
-
 COMMENT ON COLUMN mail_groups.visible IS '???';
-
 COMMENT ON COLUMN mail_groups.security IS 'secure level (all, none)';
-
 COMMENT ON COLUMN mail_groups.confirmation_in_message IS '???';
-
 COMMENT ON COLUMN mail_groups.confirmation_out_message IS '???';
 
 CREATE TABLE mail_jobs (
@@ -483,23 +430,14 @@ CREATE TABLE mail_jobs (
 
 
 COMMENT ON COLUMN mail_jobs.status IS 'job status (unsent, pending, sent, failed)';
-
 COMMENT ON COLUMN mail_jobs.sending_date IS '???';
-
 COMMENT ON COLUMN mail_jobs.created IS '???';
-
 COMMENT ON COLUMN mail_jobs.modified IS '???';
-
 COMMENT ON COLUMN mail_jobs.priority IS '???';
-
 COMMENT ON COLUMN mail_jobs.mail_body IS '???';
-
 COMMENT ON COLUMN mail_jobs.recipient IS 'used if card_is and mail_message_id are null, one or more comma separeted addresses';
-
 COMMENT ON COLUMN mail_jobs.mail_params IS 'serialized array with: reply-to, sender, subject, signature...';
-
 COMMENT ON COLUMN mail_jobs.smtp_err IS 'SMTP error message on sending failure';
-
 COMMENT ON COLUMN mail_jobs.process_info IS 'pid of process delegates to send this mail job';
 
 CREATE TABLE mail_logs (
@@ -514,27 +452,15 @@ CREATE TABLE mail_logs (
 
 
 COMMENT ON COLUMN mail_logs.msg IS '???';
-
 COMMENT ON COLUMN mail_logs.log_level IS '(info, warn, err)';
-
 COMMENT ON COLUMN mail_logs.created IS '???';
-
-
-
 COMMENT ON COLUMN mail_logs.recipient IS '???';
-
-
-
 COMMENT ON COLUMN mail_logs.subject IS '???';
-
-
-
 COMMENT ON COLUMN mail_logs.mail_params IS 'on failure, serialized array with: reply-to, sender, subject, signature...';
 
 
-
 CREATE TABLE mail_messages (
-    id serial,
+    id integer NOT NULL,
     mail_status character varying(10) DEFAULT 'unsent'::character varying NOT NULL,
     start_sending timestamp without time zone,
     end_sending timestamp without time zone,
@@ -661,11 +587,7 @@ CREATE TABLE object_relations (
 
 
 COMMENT ON COLUMN object_relations.switch IS '???';
-
-
-
 COMMENT ON COLUMN object_relations.priority IS '???';
-
 
 
 CREATE TABLE object_types (
@@ -688,15 +610,8 @@ CREATE TABLE object_users (
 
 
 COMMENT ON COLUMN object_users.switch IS '???';
-
-
-
 COMMENT ON COLUMN object_users.priority IS '???';
-
-
-
 COMMENT ON COLUMN object_users.params IS '???';
-
 
 
 CREATE TABLE objects (
@@ -725,29 +640,11 @@ CREATE TABLE objects (
 
 
 COMMENT ON COLUMN objects.status IS '(on, off, draft)';
-
-
-
 COMMENT ON COLUMN objects.title IS '???';
-
-
-
 COMMENT ON COLUMN objects.nickname IS '???';
-
-
-
 COMMENT ON COLUMN objects.description IS '???';
-
-
-
 COMMENT ON COLUMN objects.valid IS '???';
-
-
-
 COMMENT ON COLUMN objects.lang IS '???';
-
-
-
 COMMENT ON COLUMN objects.rights IS '???';
 
 
@@ -813,7 +710,7 @@ COMMENT ON COLUMN permissions.flag IS '???';
 
 
 CREATE TABLE products (
-    id serial,
+    id integer NOT NULL,
     abstract text,
     body text,
     serial_number character varying(128),
@@ -959,7 +856,7 @@ COMMENT ON COLUMN section_types.predefined IS '???';
 
 
 CREATE TABLE sections (
-    id serial,
+    id integer NOT NULL,
     syndicate character varying(10) DEFAULT 'on'::character varying,
     priority_order character varying(10) DEFAULT 'asc'::character varying,
     last_modified timestamp without time zone,
@@ -986,7 +883,7 @@ COMMENT ON COLUMN sections.map_changefreq IS '???';
 
 
 CREATE TABLE streams (
-    id serial,
+    id integer NOT NULL,
     uri character varying(255) NOT NULL,
     name character varying(255),
     mime_type character varying(60),
@@ -997,27 +894,15 @@ CREATE TABLE streams (
 
 
 COMMENT ON COLUMN streams.uri IS '???';
-
-
-
 COMMENT ON COLUMN streams.name IS '???';
-
-
-
 COMMENT ON COLUMN streams.mime_type IS '???';
-
-
-
 COMMENT ON COLUMN streams.file_size IS '???';
-
-
-
 COMMENT ON COLUMN streams.hash_file IS '???';
 
 
 
 CREATE TABLE trees (
-    id serial,
+    id integer NOT NULL,
     area_id bigint,
     parent_id bigint,
     object_path character varying(255) NOT NULL,
@@ -1129,7 +1014,7 @@ COMMENT ON COLUMN versions.revision IS '???';
 
 
 CREATE TABLE videos (
-    id serial,
+    id integer NOT NULL,
     provider character varying(255),
     video_uid character varying(255),
     thumbnail character varying(255)
