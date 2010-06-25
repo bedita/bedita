@@ -110,7 +110,7 @@ class BeditaShell extends BeditaBaseShell {
             $dbCfg = $this->params['db'];
     	}
 		
-		$sqlScriptPath = APP_DIR . DS ."config" . DS . "sql" . DS;
+		$sqlScriptPath = APP ."config" . DS . "sql" . DS;
 		$sqlDataDump = $sqlScriptPath . 'bedita_init_data.sql';
     	if (isset($this->params['data'])) {
             if(file_exists($sqlScriptPath . $this->params['data'])) {
@@ -150,7 +150,8 @@ class BeditaShell extends BeditaBaseShell {
 	        $this->out("Load data from $sqlDataDump");
 			$beSchema->executeInsert($db, $sqlDataDump);
 		}
-       	$this->out("$dbCfg database updated");
+       	$beSchema->checkSequences($db);
+		$this->out("$dbCfg database updated");
 		$transaction->commit();
 		
 		BeLib::getObject("BeConfigure")->cacheConfig();
@@ -332,7 +333,7 @@ class BeditaShell extends BeditaBaseShell {
        	
 		$this->out("SQL data exported");
        	
-    	$cfgFileName = ROOT.DS.APP_DIR.DS."config".DS."bedita.cfg.php";
+    	$cfgFileName = APP."config".DS."bedita.cfg.php";
        	if (file_exists($cfgFileName)) {
 	       	if(!$tar->addString("bedita.cfg.php", file_get_contents($cfgFileName)))
 				throw new Exception("Error adding configuration file to archive");

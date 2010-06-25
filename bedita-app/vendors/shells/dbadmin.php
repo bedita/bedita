@@ -443,6 +443,8 @@ class DbadminShell extends BeditaBaseShell {
 		$beObj = ClassRegistry::init("BEObject");
 		$beObj->contain();
 		$all_objects = $beObj->find('all',array("fields" => array('id')));
+		$this->hr();
+		$this->out("Checking objects");
 		$this->out(sizeof($all_objects) . " objects found");
 		$deleted = 0;
 		$inconsistent = 0;
@@ -465,6 +467,14 @@ class DbadminShell extends BeditaBaseShell {
 			}
 		}
 		$this->out("Objects not consistent: $inconsistent; objects deleted: $deleted");
+		// check 
+		$this->hr();
+		$this->out("Checking schema");
+		$beSchema = ClassRegistry::init("BeSchema");
+		$db = ConnectionManager::getDataSource('default');
+		$beSchema->checkSequences($db);
+		$this->hr();
+		$this->out("Done");
 	}
 
 	function updateTreeRoot() {
