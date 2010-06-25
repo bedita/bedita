@@ -30,5 +30,21 @@
  */
 class ObjectRelation extends BEAppModel
 {
+	/**
+	 * Create relation between objects
+	 *
+	 * TODO: sql query, not working with cake ->save() .. why??
+	 * 
+	 * @param int $id
+	 * @param int $objectId
+	 * @param string $switch
+	 * @param int $priority
+	 * @return unknown, $this->query() output
+	 */
+	public function createRelation ($id, $objectId, $switch, $priority) {
+		// #CUSTOM QUERY - TODO: use cake, how??
+		$q = "INSERT INTO object_relations (id, object_id, switch, priority) VALUES ({$id}, {$objectId}, '{$switch}', {$priority})";
+		return $this->query($q);
+	}
 }
 ?>
