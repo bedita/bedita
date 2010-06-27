@@ -2,45 +2,39 @@
 	
 <script type="text/javascript">
 $(document).ready(function(){
+	
+	var barstatus =  $.cookie('BEdita_staging');
+	$("#BEdita_staging_toolbar").attr('class',''+barstatus+'')
 
-/*
-	$(".stagingmenu LI A").click(function(){
-		var myLeft = $(this).position().left;
-		var trigged  = $(this).attr("rel");
-		$(".stagingsubmenu").slideUp('normal');
-		$("#"+trigged+"").css("left",myLeft).slideDown('normal');
-	});
-*/
-
-$(".stagingmenu LI A").click(
-      function () {
-        var myLeft 	= $(this).position().left;
+	//alert(barstatus);
+	
+	$(".stagingmenu LI A").click(function () {
+	    var myLeft 	= $(this).position().left;
 		var rel  	= $(this).attr("rel");
 		var trigged  	= $("#"+rel+"");
 		$(".stagingsubmenu").not(trigged).slideUp('normal');
 		$(trigged).css("left",myLeft-60).slideToggle('normal');
-
-      }
-    );
-
-	$(".openclose").click(function(){
-		$(".stagingsubmenu").hide();
-		$(".stagingmenu LI.in").toggle('normal');
-		$(".openclose.arrow").toggleText("›","‹");
 	});
 
-/*
-$(".stagingsubmenu, .stagingmenu").hover(
-      function () {
-        $(this).css("opacity","0.98");
-      }, 
-      function () {
-        $(this).css("opacity","0.8");
-      }
-    );
-*/
+	
+	$("#BEdita_staging_toolbar.close .stagingmenu LI.in").hide();
+	$("#BEdita_staging_toolbar.close .openclose.arrow").text("›");
+	
+	$(".openclose").click(function(){
+		$("#BEdita_staging_toolbar").toggleClass('close');
+		$(".stagingsubmenu").hide();
+		$(".stagingmenu LI.in").toggle(800);
+		$(".openclose.arrow").toggleText("›","‹");
+		
+		var barstatus = $("#BEdita_staging_toolbar").attr('class');
+		var options = { path: '/', expires: 10 };
+		$.cookie('BEdita_staging', barstatus, options);
+	});
+	
 
-$(".stagingsubmenu TR:has(TD A)").css("cursor","pointer").click(function(){
+
+
+	$(".stagingsubmenu TR:has(TD A)").css("cursor","pointer").click(function(){
 		//window.parent.location.href = $("TD A",this).attr("href");
 	}).hover(
       function () {
@@ -51,19 +45,13 @@ $(".stagingsubmenu TR:has(TD A)").css("cursor","pointer").click(function(){
       }
     );
 
+
 });
 </script>
 
-
 <style type="text/css">
 
-BODY {
-	/*
-padding-top:30px;
-*/
-}
-
-.BEdita_staging_toolbar {
+#BEdita_staging_toolbar {
 	font-size:13px !important;
 	font-family: 'Lucida grande', 'Segoe UI', Verdana, Arial, Helvetica, sans-serif !important; 
 	/*
@@ -92,11 +80,12 @@ opacity:0.8
 }
 
 .stagingsubmenu {
-	
-}
-	
 
-.BEdita_staging_toolbar UL {
+}
+
+
+
+#BEdita_staging_toolbar UL {
 	margin:0px 0px 0px 0px !important;
 	padding:0px 0px 0px 0px !important;
 }
@@ -170,7 +159,7 @@ border-radius : 7px;
 
 {/literal}
 
-<div class="BEdita_staging_toolbar">
+<div id="BEdita_staging_toolbar">
 <div class="stagingmenu">
 	<ul>
 		<li class="openclose" style="font-size:16px; font-family:'Georgia', sans-serif; cursor:pointer; list-style:none">BE</li>
@@ -315,4 +304,5 @@ border-radius : 7px;
 </div>
 {/if}
 </div>
+
 
