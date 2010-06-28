@@ -518,6 +518,15 @@ $config['referenceData'] = array(
 );
 
 /**
+ * default notify options when an user is created
+ * values available: never, mine, all
+ */
+$config["notifyOptions"] = array(
+	"comments" => "mine",
+	"notes" => "mine"
+);
+
+/**
  * Specific System settings
  * ALWAYS AT THE END of bedita.ini.php
  */

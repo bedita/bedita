@@ -170,6 +170,16 @@ class User extends BEAppModel
 				}
 			}
 		}
+
+		if (empty($this->data["User"]["id"])) {
+			if (empty($this->data["User"]["comments"])) {
+				$this->data["User"]["comments"] = Configure::read("notifyOptions.comments");
+			}
+			if (empty($this->data["User"]["notes"])) {
+				$this->data["User"]["notes"] = Configure::read("notifyOptions.notes");
+			}
+		}
+
 		return true;
 	}
 	
