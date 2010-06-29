@@ -50,7 +50,7 @@ DROP TABLE IF EXISTS videos CASCADE;
 
 CREATE TABLE aliases (
     id serial,
-    object_id bigint NOT NULL,
+    object_id integer NOT NULL,
     nickname_alias character varying(255) NOT NULL,
     lang character(3)
 );
@@ -62,12 +62,12 @@ COMMENT ON COLUMN aliases.lang IS 'alias preferred language, can be NULL';
 
 CREATE TABLE annotations (
     id integer NOT NULL,
-    object_id bigint NOT NULL,
+    object_id integer NOT NULL,
     author character varying(255),
     email character varying(255),
     url character varying(255),
     thread_path text,
-    rating bigint
+    rating integer
 );
 
 COMMENT ON COLUMN annotations.author IS 'annotation author';
@@ -171,7 +171,7 @@ CREATE TABLE cards (
     privacy_level boolean DEFAULT false NOT NULL,
     newsletter_email character varying(255),
     mail_status character varying(10) DEFAULT 'valid'::character varying NOT NULL,
-    mail_bounce bigint DEFAULT (0)::bigint NOT NULL,
+    mail_bounce integer DEFAULT 0 NOT NULL,
     mail_last_bounce_date timestamp without time zone,
     mail_html boolean DEFAULT true NOT NULL
 );
@@ -207,12 +207,12 @@ COMMENT ON COLUMN cards.mail_html IS 'html confirmation email on subscription, d
 
 CREATE TABLE categories (
     id serial,
-    area_id bigint,
+    area_id integer,
     label character varying(255) NOT NULL,
     name character varying(255) NOT NULL,
-    object_type_id bigint,
-    priority bigint,
-    parent_id bigint,
+    object_type_id integer,
+    priority integer,
+    parent_id integer,
     parent_path text,
     status character varying(10) DEFAULT 'on'::character varying NOT NULL
 );
@@ -231,7 +231,7 @@ CREATE TABLE contents (
     subject character varying(255),
     abstract text,
     body text,
-    duration bigint
+    duration integer
 );
 
 
@@ -240,7 +240,7 @@ COMMENT ON COLUMN contents.duration IS 'in seconds';
 
 CREATE TABLE date_items (
     id serial,
-    object_id bigint NOT NULL,
+    object_id integer NOT NULL,
     start_date timestamp without time zone,
     end_date timestamp without time zone
 );
@@ -269,7 +269,7 @@ COMMENT ON COLUMN event_logs.context IS 'event context';
 
 CREATE TABLE geo_tags (
     id serial,
-    object_id bigint NOT NULL,
+    object_id integer NOT NULL,
     latitude double precision,
     longitude double precision,
     address character varying(255),
@@ -299,15 +299,15 @@ COMMENT ON COLUMN groups.immutable IS 'group data immutable (default:false)';
 
 
 CREATE TABLE groups_users (
-    user_id bigint NOT NULL,
-    group_id bigint NOT NULL
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
 );
 
 
 CREATE TABLE hash_jobs (
     id serial,
     service_type character varying(255),
-    user_id bigint NOT NULL,
+    user_id integer NOT NULL,
     params text,
     hash character varying(255) NOT NULL,
     created timestamp without time zone NOT NULL,
@@ -325,10 +325,10 @@ COMMENT ON COLUMN hash_jobs.status IS 'job status, can be pending/expired/closed
 
 CREATE TABLE history (
     id serial,
-    user_id bigint,
-    object_id bigint,
+    user_id integer,
+    object_id integer,
     title character varying(255),
-    area_id bigint,
+    area_id integer,
     url character varying(255) NOT NULL,
     created timestamp without time zone
 );
@@ -340,8 +340,8 @@ COMMENT ON COLUMN history.url IS '???';
 
 CREATE TABLE images (
     id integer NOT NULL,
-    width bigint,
-    height bigint
+    width integer,
+    height integer
 );
 
 COMMENT ON COLUMN images.width IS 'image width, can be NULL';
@@ -349,7 +349,7 @@ COMMENT ON COLUMN images.height IS 'image height, can be NULL';
 
 CREATE TABLE lang_texts (
     id serial,
-    object_id bigint NOT NULL,
+    object_id integer NOT NULL,
     lang character(3) NOT NULL,
     name character varying(255),
     text text
@@ -377,8 +377,8 @@ COMMENT ON COLUMN links.source_type IS 'can be rss, wikipedia, archive.org, loca
 
 CREATE TABLE mail_group_cards (
     id serial,
-    mail_group_id bigint NOT NULL,
-    card_id bigint NOT NULL,
+    mail_group_id integer NOT NULL,
+    card_id integer NOT NULL,
     status character varying(10) DEFAULT 'pending'::character varying NOT NULL,
     created timestamp without time zone
 );
@@ -389,15 +389,15 @@ COMMENT ON COLUMN mail_group_cards.created IS '???';
 
 
 CREATE TABLE mail_group_messages (
-    mail_group_id bigint NOT NULL,
-    mail_message_id bigint NOT NULL
+    mail_group_id integer NOT NULL,
+    mail_message_id integer NOT NULL
 );
 
 
 
 CREATE TABLE mail_groups (
     id serial,
-    area_id bigint NOT NULL,
+    area_id integer NOT NULL,
     group_name character varying(255) NOT NULL,
     visible boolean DEFAULT true NOT NULL,
     security character varying(10) DEFAULT 'all'::character varying NOT NULL,
@@ -414,18 +414,18 @@ COMMENT ON COLUMN mail_groups.confirmation_out_message IS '???';
 
 CREATE TABLE mail_jobs (
     id serial,
-    mail_message_id bigint,
-    card_id bigint,
+    mail_message_id integer,
+    card_id integer,
     status character varying(10) DEFAULT 'unsent'::character varying NOT NULL,
     sending_date timestamp without time zone,
     created timestamp without time zone,
     modified timestamp without time zone,
-    priority bigint,
+    priority integer,
     mail_body text,
     recipient text,
     mail_params text,
     smtp_err text,
-    process_info bigint
+    process_info integer
 );
 
 
@@ -467,7 +467,7 @@ CREATE TABLE mail_messages (
     sender character varying(255) NOT NULL,
     reply_to character varying(255) NOT NULL,
     bounce_to character varying(255) NOT NULL,
-    priority bigint,
+    priority integer,
     signature character varying(255) NOT NULL,
     privacy_disclaimer text,
     stylesheet character varying(255)
@@ -553,16 +553,16 @@ COMMENT ON COLUMN modules.module_type IS '(core, plugin)';
 
 
 CREATE TABLE object_categories (
-    object_id bigint NOT NULL,
-    category_id bigint NOT NULL
+    object_id integer NOT NULL,
+    category_id integer NOT NULL
 );
 
 
 
 CREATE TABLE object_editors (
     id serial,
-    object_id bigint NOT NULL,
-    user_id bigint NOT NULL,
+    object_id integer NOT NULL,
+    user_id integer NOT NULL,
     last_access timestamp without time zone DEFAULT '1971-01-01 00:00:00'::timestamp without time zone NOT NULL
 );
 
@@ -570,16 +570,16 @@ CREATE TABLE object_editors (
 
 CREATE TABLE object_properties (
     id serial,
-    property_id bigint NOT NULL,
-    object_id bigint NOT NULL,
+    property_id integer NOT NULL,
+    object_id integer NOT NULL,
     property_value text NOT NULL
 );
 
 
 
 CREATE TABLE object_relations (
-    object_id bigint NOT NULL,
-    id serial,
+    object_id integer NOT NULL,
+    id serial integer NOT NULL,
     switch character varying(63) DEFAULT 'attach'::character varying NOT NULL,
     priority integer
 );
@@ -600,8 +600,8 @@ CREATE TABLE object_types (
 
 CREATE TABLE object_users (
     id serial,
-    object_id bigint NOT NULL,
-    user_id bigint NOT NULL,
+    object_id integer NOT NULL,
+    user_id integer NOT NULL,
     switch character varying(63) DEFAULT 'card'::character varying NOT NULL,
     priority integer,
     params text
@@ -616,7 +616,7 @@ COMMENT ON COLUMN object_users.params IS '???';
 
 CREATE TABLE objects (
     id serial,
-    object_type_id bigint NOT NULL,
+    object_type_id integer NOT NULL,
     status character varying(10) DEFAULT 'draft'::character varying,
     created timestamp without time zone,
     modified timestamp without time zone,
@@ -626,8 +626,8 @@ CREATE TABLE objects (
     valid boolean DEFAULT true,
     lang character(3),
     ip_created character varying(15),
-    user_created bigint,
-    user_modified bigint,
+    user_created integer,
+    user_modified integer,
     rights character varying(255),
     license character varying(255),
     creator character varying(255),
@@ -675,10 +675,10 @@ COMMENT ON COLUMN objects.comments IS 'define if an object is commentable (on, o
 
 CREATE TABLE permission_modules (
     id serial,
-    module_id bigint NOT NULL,
-    ugid bigint NOT NULL,
+    module_id integer NOT NULL,
+    ugid integer NOT NULL,
     switch character varying(10),
-    flag bigint
+    flag integer
 );
 
 
@@ -693,10 +693,10 @@ COMMENT ON COLUMN permission_modules.flag IS '???';
 
 CREATE TABLE permissions (
     id serial,
-    object_id bigint NOT NULL,
-    ugid bigint NOT NULL,
+    object_id integer NOT NULL,
+    ugid integer NOT NULL,
     switch character varying(10) NOT NULL,
-    flag bigint
+    flag integer
 );
 
 
@@ -788,7 +788,7 @@ COMMENT ON COLUMN products.production_place IS '???';
 CREATE TABLE properties (
     id serial,
     name character varying(255) NOT NULL,
-    object_type_id bigint,
+    object_type_id integer,
     property_type character varying(10) NOT NULL,
     multiple_choice boolean DEFAULT false
 );
@@ -805,7 +805,7 @@ COMMENT ON COLUMN properties.multiple_choice IS '???';
 
 CREATE TABLE property_options (
     id serial,
-    property_id bigint NOT NULL,
+    property_id integer NOT NULL,
     property_option text NOT NULL
 );
 
@@ -817,7 +817,7 @@ COMMENT ON COLUMN property_options.property_option IS '???';
 
 CREATE TABLE search_texts (
     id serial,
-    object_id bigint NOT NULL,
+    object_id integer NOT NULL,
     lang character varying(3) NOT NULL,
     content text NOT NULL,
     relevance smallint DEFAULT (1)::smallint NOT NULL
@@ -839,8 +839,8 @@ COMMENT ON COLUMN search_texts.relevance IS 'importance (1-10) range';
 
 CREATE TABLE section_types (
     id serial,
-    section_id bigint NOT NULL,
-    object_type_id bigint NOT NULL,
+    section_id integer NOT NULL,
+    object_type_id integer NOT NULL,
     restricted smallint,
     predefined smallint
 );
@@ -887,7 +887,7 @@ CREATE TABLE streams (
     uri character varying(255) NOT NULL,
     name character varying(255),
     mime_type character varying(60),
-    file_size bigint,
+    file_size integer,
     hash_file character varying(255)
 );
 
@@ -903,12 +903,12 @@ COMMENT ON COLUMN streams.hash_file IS '???';
 
 CREATE TABLE trees (
     id integer NOT NULL,
-    area_id bigint,
-    parent_id bigint,
+    area_id integer,
+    parent_id integer,
     object_path character varying(255) NOT NULL,
     parent_path character varying(255),
-    priority bigint,
-    menu bigint
+    priority integer,
+    menu integer
 );
 
 
@@ -931,8 +931,8 @@ COMMENT ON COLUMN trees.menu IS '???';
 
 CREATE TABLE user_properties (
     id serial,
-    property_id bigint NOT NULL,
-    user_id bigint NOT NULL,
+    property_id integer NOT NULL,
+    user_id integer NOT NULL,
     property_value text NOT NULL
 );
 
@@ -1001,9 +1001,9 @@ COMMENT ON COLUMN users.reports IS '???';
 
 CREATE TABLE versions (
     id serial,
-    object_id bigint NOT NULL,
-    revision bigint NOT NULL,
-    user_id bigint NOT NULL,
+    object_id integer NOT NULL,
+    revision integer NOT NULL,
+    user_id integer NOT NULL,
     created timestamp without time zone NOT NULL,
     diff text NOT NULL
 );
