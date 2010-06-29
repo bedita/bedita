@@ -513,7 +513,7 @@ class DbadminShell extends BeditaBaseShell {
 			$tables = $schema->tables;		
 		} else {
 			$db = ConnectionManager::getDataSource('default');
-			$this->out("Reading from database: [host=" . 
+			$this->out("Reading from database: ". $db->config['driver'] . " [host=" . 
 				$db->config['host'] .", database=". $db->config['database']."]");
 			$schema = new CakeSchema();
 			$schemaTabs = $schema->read();
