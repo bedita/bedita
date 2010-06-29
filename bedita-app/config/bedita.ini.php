@@ -488,10 +488,10 @@ $config['hashExpiredTime'] = 604800;
 
 
 /**
- * Reference for database VARCHAR fields with enumerated choiches
+ * Constraints for database VARCHAR fields with enumerated choiches
  * first item is the default
  */
-$config['referenceData'] = array(
+$config['checkConstraints'] = array(
 	"applications.text_dir" => array("ltr", "rtl"),
 	"banned_ips.status" => array("ban", "accept"),
 	"cards.mail_status" => array("valid", "blocked"),
