@@ -179,6 +179,9 @@ class Module extends BEAppModel {
 			throw new BeditaException(__("Error saving admin permission", true));
 		}
 		
+		clearCache(null, 'models');
+		clearCache(null, 'persistent');
+		
 		// recaching configuration
 		BeLib::getObject("BeConfigure")->cacheConfig();
 		
@@ -289,6 +292,9 @@ class Module extends BEAppModel {
 				$this->query($q);
 			}
 		}
+		
+		clearCache(null, 'models');
+		clearCache(null, 'persistent');
 		
 		// recaching configuration
 		BeLib::getObject("BeConfigure")->cacheConfig();
