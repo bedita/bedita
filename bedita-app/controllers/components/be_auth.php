@@ -161,9 +161,9 @@ class BeAuthComponent extends Object {
 		if($policy == null) {
 			$policy = array(); // load backend defaults
 			$config = Configure::getInstance() ;
-			$policy['maxLoginAttempts'] = $config->maxLoginAttempts;
-			$policy['maxNumDaysInactivity'] = $config->maxNumDaysInactivity;
-			$policy['maxNumDaysValidity'] = $config->maxNumDaysValidity;
+			$policy['maxLoginAttempts'] = $config->loginPolicy['maxLoginAttempts'];
+			$policy['maxNumDaysInactivity'] = $config->loginPolicy['maxNumDaysInactivity'];
+			$policy['maxNumDaysValidity'] = $config->loginPolicy['maxNumDaysValidity'];
 		}
 
 		// check activity & validity
@@ -312,13 +312,17 @@ class BeAuthComponent extends Object {
 			$this->log("User ".$userData['User']['userid']." already created");
 			throw new BeditaException(__("User already created",true));
 		}
-		if (!empty($userData['User']['passwd'])) {
-			$userData['User']['passwd'] = md5($userData['User']['passwd']);
-		}
 		
 		$this->userGroupModel($userData, $groups);
 		if ($notify) {
 			$user->Behaviors->attach('Notify');
+		}
+		
+		if(!$user->passwordValidation($userData['User'])) {
+			throw new BeditaException(__("Password not valid",true) . " - " . Configure::read("loginPolicy.passwordErrorMessage"));
+		}
+		if (!empty($userData['User']['passwd'])) {
+			$userData['User']['passwd'] = md5($userData['User']['passwd']);
 		}
 		if(!$user->save($userData))
 			throw new BeditaException(__("Error saving user",true), $user->validationErrors);
@@ -345,8 +349,6 @@ class BeAuthComponent extends Object {
 	}
 	
 	public function updateUser($userData, $groups=NULL)	{
-		if(isset($userData['User']['passwd']))
-			$userData['User']['passwd'] = md5($userData['User']['passwd']);
 		$this->userGroupModel($userData, $groups);
 		$user = ClassRegistry::init('User');
 		if($userData['User']['valid'] == '1') { // reset number of login error, if user is valid
@@ -354,6 +356,12 @@ class BeAuthComponent extends Object {
 		}
 		
 		$user->Behaviors->attach('Notify');
+		if(!$user->passwordValidation($userData['User'])) {
+			throw new BeditaException(__("Password not valid",true). " - " . Configure::read("loginPolicy.passwordErrorMessage"));
+		}
+		if (!empty($userData['User']['passwd'])) {
+			$userData['User']['passwd'] = md5($userData['User']['passwd']);
+		}
 		if(!$user->save($userData))
 			throw new BeditaException(__("Error updating user",true), $user->validationErrors);
 		return true;

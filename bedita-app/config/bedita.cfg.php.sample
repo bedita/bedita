@@ -55,11 +55,31 @@ if (!isset($config)) {
 // TinyMCE Rich Text Editor for long_text ['false' to disable - defaults true]
 // $config['mce'] = true;
 
+
+/**
+ ** ******************************************
+ **  Login (backend) and Security Policies
+ ** ******************************************
+ */
+//
+// A simple example with a simple password regexp rule, uncomment and change according to your needs
+//
+//$config['loginPolicy'] = array (
+//	"maxLoginAttempts" => 3,
+//	"maxNumDaysInactivity" => 60,
+//	"maxNumDaysValidity" => 10,
+//	"passwordRule" => "/\w{4,}/", // regexp to match for valid passwords (empty => no regexp)
+//	"passwordErrorMessage" => "Password must contain at least 4 valid alphanumeric characters", // error message for passwrds not matching given regexp
+//);
+
+
+
 /**
  ** ******************************************
  **  Local installation specific settings
  ** ******************************************
  */
+
  
 /**
  ** Relations - local objects' relation types

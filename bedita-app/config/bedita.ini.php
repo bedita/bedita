@@ -133,10 +133,14 @@ $config['media']['audio']['player'] 	 = "flowplayer.swf"; // flash player file (
  ** ******************************************
  */
 
-$config['maxLoginAttempts']     = 10;
-$config['maxNumDaysInactivity'] = 180;
-$config['maxNumDaysValidity']   = 60;
-
+// Here default settings, override settings in bedita.cfg.php
+$config['loginPolicy'] = array (
+	"maxLoginAttempts" => 10,
+	"maxNumDaysInactivity" => 180,
+	"maxNumDaysValidity" => 60,
+	"passwordRule" => "/\w{3,}/", // regexp to match for valid passwords (empty => no regexp)
+	"passwordErrorMessage" => "Password must contain at least 3 valid alphanumeric characters", // error message for passwrds not matching given regexp
+);
 
 /**
  ** ******************************************

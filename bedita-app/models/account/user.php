@@ -66,8 +66,18 @@ class User extends BEAppModel
 	);
 
 	private $hBTM = null; 
-		
-    function unbindGroups() {
+	
+	public function passwordValidation(array &$userData) {
+		$res = true;
+		$validationRegExp = Configure::read("loginPolicy.passwordRule");
+		if(!empty($validationRegExp) && !empty($userData["passwd"])) {
+			$res = preg_match($validationRegExp, $userData["passwd"]);
+			// change validation message on error??
+		}		
+		return $res;
+	}
+
+	function unbindGroups() {
         $this->hBTM = $this->hasAndBelongsToMany;
     	$this->unbindModel(array('hasAndBelongsToMany' => array('Group')), false);
     }
