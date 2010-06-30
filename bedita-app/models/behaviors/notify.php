@@ -48,6 +48,12 @@ class NotifyBehavior extends ModelBehavior {
 		$users = array();
 		$creator = array();
 		
+		$userField = $this->modelNameToUserField[$model->name];
+		// exit if comment has been modified (not created)
+		if(!$created && $userField == "comments") { 
+			return;
+		}
+		
 		if ($model->name == "Comment" || $model->name == "EditorNote") {
 			$c = ClassRegistry::init($model->name)->find("first", array(
 					"conditions" => array(
@@ -57,11 +63,6 @@ class NotifyBehavior extends ModelBehavior {
 				)
 			);
 			
-			$userField = $this->modelNameToUserField[$model->name];
-			// exit if comment has been modified (not created)
-			if(isset($data["user_modified"]) && $userField == "comments") { 
-				return;
-			}
 			$userModel = ClassRegistry::init("User");
 			$conditions = array("(" .$userField . "='all' 
 								OR (" .$userField . "='mine' AND id='". $c["ReferenceObject"]["user_created"] ."'
