@@ -27,9 +27,14 @@ class BeAuthTestData extends BeditaTestData {
 		'policy'  => array(
 			'maxLoginAttempts' => 5,
 			'maxNumDaysInactivity' => 30,
-			'maxNumDaysValidity' => 4
-			)
-		) ;
-	}
+			'maxNumDaysValidity' => 4,
+			"passwordRule" => "/\w{5,}/", // regexp to match for valid passwords (empty => no regexp)
+			"passwordMessage" => "Password must contain at least 5 valid alphanumeric characters", // error message for passwrds not matching given regexp
+	
+			),
+		'new.user.good.passwd'	=> array('User' => array('userid' => 'goodpassword', 'passwd' => 'goodpassword')),
+		'new.user.bad.passwd'	=> array('User' => array('userid' => 'badpassword', 'passwd' => 'bad')),
+	) ;
+}
 
 ?> 

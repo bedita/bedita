@@ -62,8 +62,6 @@ class BeAuthTestCase extends BeditaTestCase {
 		$id = $beAuth->saveGroup($this->data['new.group']);
 		$this->assertTrue(!empty($id));
 		$this->assertTrue($beAuth->createUser($this->data['new.user'], $this->data['new.user.groups']));
-        $this->assertFalse($beAuth->login($this->data['new.user']['User']['userid'], $this->data['new.user.bad.pass'], $this->data['policy']));
-		$this->assertTrue($beAuth->login($this->data['new.user']['User']['userid'], $this->data['new.user']['User']['passwd'], $this->data['policy']));
 
 		$group = ClassRegistry::init('Group');
 		$group->id = $id;
@@ -75,6 +73,28 @@ class BeAuthTestCase extends BeditaTestCase {
 		$this->assertTrue($beAuth->removeUser($this->data['new.user']['User']['userid']));
 		$this->assertTrue($beAuth->removeGroup($this->data['new.group']['Group']['name']));
 	}
+
+	
+	function testPassword() {
+		$this->requiredData(array("new.user.good.passwd","policy","new.user.bad.passwd"));
+		$beAuth = new BeAuthComponent();
+		$this->removeIfPresent($this->data['new.user.good.passwd'], $this->data['new.group']);
+		$id = $beAuth->saveGroup($this->data['new.group']);
+		$this->assertTrue(!empty($id));
+		// write test policy
+		Configure::write("loginPolicy", $this->data["policy"]);
+		$this->assertTrue($beAuth->createUser($this->data['new.user.good.passwd'], $this->data['new.group']));
+		$this->assertTrue($beAuth->removeUser($this->data['new.user.good.passwd']['User']['userid']));
+		try {
+			$beAuth->createUser($this->data['new.user.bad.passwd'], $this->data['new.group']);
+			$this->fail("Failed: bad password accepted");
+		} catch(BeditaException $be) {
+			$this->pass("Ok: bad password not accepted");
+		}
+		$this->assertTrue($beAuth->removeGroup($this->data['new.group']['Group']['name']));
+	}
+	
+	
 	
 	function testGroup() {
 		$this->requiredData(array("new.group","new.user","new.group.name"));
