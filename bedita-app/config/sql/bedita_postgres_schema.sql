@@ -579,7 +579,7 @@ CREATE TABLE object_properties (
 
 CREATE TABLE object_relations (
     object_id integer NOT NULL,
-    id serial integer NOT NULL,
+    id integer NOT NULL,
     switch character varying(63) DEFAULT 'attach'::character varying NOT NULL,
     priority integer
 );
