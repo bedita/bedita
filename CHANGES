@@ -1,4 +1,49 @@
-Version 3.1.alfa - ulmus
+Version 3.1.beta - ulmus
+ User-visible changes:
+	* #103 - fix revisions on multiple objects save, curr revision, tot revision number, user data in template
+	* #103 - fix revisions page link - added version info in revision.tpl
+	* #240 - "tree" attribute for objects that should be on tree
+	* #181 - alert on change unsaved pages
+	* #230 - bulk operations on selected objects: no submit when no check is selected, copy / category, section / category
+	* #240 - publish button added when status is 'draft': set 'ON' status object and save
+	* fixed empty object list click
+	* bugfix: user not valid have not to log in
+	* bugfix: clone button (on confirm, pressing "cancel": anyway following submit was clone...)
+	* bug fix: loading non multimedia objects in multimedia module throw exception
+	* #248 fix group module permissions, stats, tags, translations (partial), fix section delete
+	* no more shadow with img background in tabs
+	* saved notify defualt options form configuration when an user is created
+
+ Frontend changes:
+	* frontend bugfix: in bedita.cfg.php define $config = array() only if it's not already setted
+	* fix notification on comment save
+
+
+ Developer-visibile changes:
+	* removed jquery/jquery.treeview.js inclusion
+	* #249 - bad table/column names - dbadmin shell script method
+	* #249 - shell checkDbNames - use schema file or db connection directly (default)
+	* config: portable/working default media root
+	* #238 - shell: rebuildIndex call checkConsistency method if errors occures
+	* #249 - renamed fields that were keywords for some db
+	* #250 - custom properties for users
+	* mail support sent as mail job
+	* upgrade phpthumb to 1.7.9
+	* bug fix: fix json object returned in upload ajax and by url for compatibility with jquery 1.4
+	* #252 - BeSchema db schema handling class
+	* #252 - plugin schema handling: complete plug and unplug (shell script to generete schema files, small fixes), clear cache after module plug/unplug
+	* set primary key  to object_properties.id and user_properties.id
+	* #249 - partial postgres support, export/import available in postgres
+	* permission modules optimization
+	* bugfix: plugin objectTypes configuration was overwrited for any plugin module
+	* add plugin model path to plugin install procedure
+	* #248 unofficial sqlite3 driver, add sequence check to db shell scripts, fix postgres schema - use serial (autoincrement) only if needed
+	* method to create obj relations directly
+	* shell dbadmin: driver detail
+	* #225 - configurable password validation rule via regexp
+
+
+Version 3.1.alpha - ulmus
  User-visible changes:
 	* #234 - thumbnails error on category/tag
 	* #120 - external auth type services openid/shibboleth - user create/update
@@ -141,6 +186,7 @@ Version 3.1.alfa - ulmus
 	* added plugin jquery for trigger messages
 	* smarty: smarty.agent update
 	* update to CakePHP 1.2.7
+	* rename 'referenceData' to 'checkConstraints'
 
 
 
