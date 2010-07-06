@@ -18,7 +18,8 @@
 </script>
 {/literal}
 
-{$view->element('form_common_js')}
+{assign_associative var="params" currObjectTypeId=$conf->objectTypes.document.id}
+{$view->element('form_common_js', $params)}
 
 {$view->element('modulesmenu')}
 

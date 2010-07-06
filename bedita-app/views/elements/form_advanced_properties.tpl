@@ -11,7 +11,7 @@
 		</td>
 	</tr>
 	<tr>
-		<th>{t}nickname{/t}:</th>
+		<th>{t}unique name{/t}:</th>
 		<td>
 			{*<input type="text" id="nicknameBEObject" name="data[nickname]" style="width:280px" value="{$object.nickname|escape:'html'|escape:'quotes'}"/>*}
 			{$object.nickname}

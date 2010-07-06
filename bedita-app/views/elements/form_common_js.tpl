@@ -29,7 +29,7 @@ $(document).ready(function(){
 	function checkStatus() {
 		var objstatus = $("input[name='data[status]']:checked").val();
 		if (objstatus == "draft") { $("#saveBEObject").val("{/literal}{t}Save draft{/t}{literal}"); $("#publishBEObject").show(); }
-		if (objstatus == "off") { $("#saveBEObject").val("{/literal}{t}Save{/t}{literal}"); $("#publishBEObject").show(); }
+		if (objstatus == "off") { $("#saveBEObject").val("{/literal}{t}Save off{/t}{literal}"); $("#publishBEObject").show(); }
 		if (objstatus == "on") { $("#saveBEObject").val("{/literal}{t}Save{/t}{literal}"); $("#publishBEObject").hide(); }
 	}
 	
@@ -65,7 +65,7 @@ $(document).ready(function(){
 		$(".secondacolonna .modules label").addClass("submitForm");
 	});
 
-{/literal}{if (@in_array($object.object_type_id, $conf->objectTypes.tree.id))}{literal}
+{/literal}{if (@in_array($currObjectTypeId, $conf->objectTypes.tree.id))}{literal}
 
 	$("div.insidecol input[name='save']").click(function() {
 
