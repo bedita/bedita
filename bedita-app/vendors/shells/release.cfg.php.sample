@@ -8,8 +8,6 @@ $rel["releaseBaseName"]="BEdita-agpl";
 $rel["releaseCodeName"] = "ulmus";
 
 $rel["removeFiles"]= array(
-	"bedita-app".DS."config".DS."sql".DS."bedita_init_data.sql",
-	"bedita-app".DS."controllers".DS."modules".DS."questionnaires_controller.php",
 	"bedita-app".DS."vendors".DS."shells".DS."deploy.php",
 	"bedita-app".DS."vendors".DS."shells".DS."release.cfg.php.sample",
 );
@@ -36,7 +34,6 @@ $rel["createDirs"] = array(
 );
 
 $rel["renameFiles"]= array(
-	"bedita-app".DS."config".DS."sql".DS."bedita_init_agpl.sql" => "bedita-app".DS."config".DS."sql".DS."bedita_init_data.sql",
 	"bedita-app".DS."config".DS."core.php.sample" => "bedita-app".DS."config".DS."core.php",
 	"bedita-app".DS."config".DS."database.php.sample" => "bedita-app".DS."config".DS."database.php",
 	"bedita-app".DS."config".DS."bedita.cfg.php.sample" => "bedita-app".DS."config".DS."bedita.cfg.php",
