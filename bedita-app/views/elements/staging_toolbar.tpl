@@ -4,7 +4,7 @@
 $(document).ready(function(){
 	
 	var barstatus =  $.cookie('BEdita_staging');
-	$("#BEdita_staging_toolbar").attr('class',''+barstatus+'')
+	$("#BEdita_staging_toolbar").attr('class',''+barstatus+'');
 
 	//alert(barstatus);
 	
@@ -30,8 +30,6 @@ $(document).ready(function(){
 		var options = { path: '/', expires: 10 };
 		$.cookie('BEdita_staging', barstatus, options);
 	});
-	
-
 
 
 	$(".stagingsubmenu TR:has(TD A)").css("cursor","pointer").click(function(){
@@ -45,7 +43,32 @@ $(document).ready(function(){
       }
     );
 
+	/*
+	 * content editable
+	 * 
+	 * 
+	*/
+	/*
+	$(".inlinemodify").click(function() {
+		$(".contenteditable").attr("contenteditable","true").css("background-color","#ddd");
+		$(".pagesubmit").parent().show();
+		$(".pagecancel").parent().show();
+		$(this).parent().hide();
+	});
 
+	$(".pagecancel").click(function() {
+		$(".contenteditable").attr("contenteditable","false").css("background-color","#FFF");
+		$(".pagesubmit").parent().hide();
+		$(".inlinemodify").parent().show();
+		$(this).parent().hide();
+	});
+	
+	
+	$(".pagesubmit").click(function() {
+		var textosave = $(".contenteditable").html();	
+		alert (textosave);
+	});
+	*/
 });
 </script>
 
@@ -169,10 +192,21 @@ border-radius : 7px;
 		<li class="in">
 			<a rel="pageinfo">Edit this page</a>
 		</li>
-{*		<li class="in">
-			<a rel="pageedit">Edit this page</a>
-		</li>*}
+		
+		<!-- CONTENT EDITABLE !!!! 
+		<li class="in">
+			<input type="button" class="inlinemodify" value=" Activate inline modify " />
+		</li>
+		<li class="in" style="display:none">
+			<input type="button" class="pagesubmit" value=" Save this page " />
+		</li>
+		<li class="in" style="display:none">
+			<input type="button" class="pagecancel" value=" cancel " />
+		</li>
+		-->
+		
 		{/if}
+		
 		{if !empty($section.id)}
 		<li class="in">
 			<a rel="sectionedit">Edit this section</a>
