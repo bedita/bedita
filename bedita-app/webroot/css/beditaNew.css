@@ -154,7 +154,7 @@ UL UL {margin-left:20px;}
 
 .quartacolonna {
 	position:absolute; 
-	left:810px;
+	left:970px;
 	width:180px;
 	top:160px;
 	min-height:400px;
@@ -162,7 +162,7 @@ UL UL {margin-left:20px;}
 
 .main {
 	top:160px;
-	width: 500px; 
+	width: 660px; 
 }
 
 .mainfull, .main.full {
