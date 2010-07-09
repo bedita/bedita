@@ -161,34 +161,27 @@ class MultimediaController extends ModulesController {
 		$this->data["Category"] = $this->Category->saveTagList($this->params["form"]["tags"]);
 	
 		if (!empty($this->params['form']['Filedata']['name'])) {
+			unset($this->data['url']);
 			$this->Stream->id = $this->BeUploadToObj->upload($this->data) ;
 		} elseif (!empty($this->data['url'])) {
-			$this->Stream->id = $this->BeUploadToObj->uploadFromURL($this->data) ;	
+			$this->Stream->id = $this->BeUploadToObj->uploadFromURL($this->data) ;
 		} else {
+			unset($this->data['url']);
 			$model = (!empty($this->data["id"]))? $this->BEObject->getType($this->data["id"]) : "BEFile";
 			
 			if ($model == "Video") {
 				$this->data["thumbnail"] = $this->BeUploadToObj->getThumbnail($this->data);
 			}
 			
-			if(!$this->{$model}->save($this->data)) {
-				throw new BeditaException(__("Error saving multimedia", true), $this->{$model}->validationErrors);
-			}
-			$this->Stream->id = $this->{$model}->id;
-			
 			if (!empty($this->params['form']['mediatype'])) {
 				$objetc_type_id = Configure::read("objectTypes." . Inflector::underscore($model) . ".id");
 				$this->data['Category'] = array_merge($this->data['Category'], $this->Category->checkMediaType($objetc_type_id, $this->params['form']['mediatype']));
 			}
-			
-			// if it's new object set id just saved in $this->data["id"] to execute an update
-			if (empty($this->data["id"])) {
-				$this->data["id"] = $this->{$model}->id;
-			}
-			$this->{$model}->create();
+
 			if(!$this->{$model}->save($this->data)) {
 				throw new BeditaException(__("Error saving multimedia", true), $this->{$model}->validationErrors);
 			}
+			$this->Stream->id = $this->{$model}->id;
 		}
 
 		// update permissions

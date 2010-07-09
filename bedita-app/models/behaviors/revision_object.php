@@ -54,8 +54,16 @@ class RevisionObjectBehavior extends ModelBehavior {
 	public function afterSave($model, $created) {
 
 		if(!$created) {
+			$fieldsToRevison = $model->getColumnTypes();
+			// revision only object base tables
+			if (!empty($model->actsAs["ForeignDependenceSave"])) {
+				foreach ($model->actsAs["ForeignDependenceSave"] as $dependeceModelName) {
+					$fieldsToRevison = array_merge($fieldsToRevison, $model->{$dependeceModelName}->getColumnTypes());
+				}
+			}
+			$dataToRevision = array_intersect_key($model->data[$model->name], $fieldsToRevison);
 			$version = ClassRegistry::init("Version");
-			$version->addRevision($this->prevData[$model->id], $model->data[$model->name]);		
+			$version->addRevision($this->prevData[$model->id], $dataToRevision);
 		}
 	}
 	

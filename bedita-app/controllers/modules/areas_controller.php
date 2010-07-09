@@ -163,6 +163,7 @@ class AreasController extends ModulesController {
 		if (empty($this->data['parent_id'])) {
 			throw new BeditaException(__("No publication", true));
 		}
+
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave() ;
 		

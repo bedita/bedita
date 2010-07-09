@@ -30,6 +30,8 @@
 {assign_associative var="params" el=$object recursion=true}
 {$view->element('form_permissions', $params)}
 
+{$view->element('form_history')}
+
 </form>
 
 	{$view->element('form_print')}

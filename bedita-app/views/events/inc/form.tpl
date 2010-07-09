@@ -41,9 +41,11 @@
 	{$view->element('form_advanced_properties', $params)}
 	
 	{$view->element('form_custom_properties')}
-	
+
 	{assign_associative var="params" el=$object recursion=true}
 	{$view->element('form_permissions', $params)}
+
+	{$view->element('form_history')}
 	
 </form>
 

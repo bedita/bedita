@@ -72,7 +72,7 @@ class MailMessage extends BeditaContentModel
 									
 				"mailgroup" => array("MailGroup"),
 
-				"minimum" => array("BEObject" => array("ObjectType"))
+				"minimum" => array("BEObject" => array("ObjectType"), "Content")
 	);
 	
 	var $validate = array(

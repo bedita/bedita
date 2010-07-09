@@ -189,5 +189,6 @@ ________________________________
 	
 	</fieldset>
 
+{$view->element('form_history')}
 </form>
 

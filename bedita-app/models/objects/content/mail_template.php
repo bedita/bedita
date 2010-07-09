@@ -66,7 +66,7 @@ class MailTemplate extends BeditaContentModel
 									),
 				"default" => array("BEObject" => array("ObjectType"), "Content"),
 
-				"minimum" => array("BEObject" => array("ObjectType"))
+				"minimum" => array("BEObject" => array("ObjectType"), "Content")
 	);
 	
 }

@@ -691,6 +691,9 @@ class AppController extends Controller
 			array("Version.object_id" => $id, "Version.revision" => $rev)));
 		$this->set('version',	$versionRow[0]["Version"]);
 		$this->set('user',	$versionRow[0]["User"]);
+		$conf = Configure::getInstance();
+		$moduleName = $conf->objectTypes[Inflector::underscore($beModel->alias)]["module_name"];
+		$this->set('moduleName', $moduleName);
 	}
 	
 	

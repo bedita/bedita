@@ -167,4 +167,5 @@
 	{assign_associative var="params" el=$object|default:null recursion=true}
 	{$view->element('form_permissions', $params)}
 
+	{$view->element('form_history')}
 </fieldset>

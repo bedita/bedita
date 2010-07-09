@@ -757,8 +757,9 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'SearchTextSave'		=> array(),
+			'RevisionObject',
 			'ForeignDependenceSave' => array('BEObject', 'Content'),
-			'DeleteObject' 			=> 'objects',
+			'DeleteObject' 			=> 'objects'
 	); 
 
 	var $hasOne= array(
@@ -816,8 +817,9 @@ class BeditaStreamModel extends BEAppObjectModel {
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'SearchTextSave'		=> array(),
+			'RevisionObject',
 			'ForeignDependenceSave' => array('BEObject', 'Content', 'Stream'),
-			'DeleteObject' 			=> 'objects',
+			'DeleteObject' 			=> 'objects'
 	); 
 
 	var $hasOne= array(
@@ -913,6 +915,7 @@ class BeditaCollectionModel extends BEAppObjectModel {
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'SearchTextSave',
+			'RevisionObject',
 			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteDependentObject'	=> array('section'),
 			'DeleteObject' 			=> 'objects'

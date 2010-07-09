@@ -31,7 +31,6 @@
 /**
  * i18n - translation helper
  * 
- * @author ste@channelweb.it
  */
 class TrHelper extends AppHelper {
 	/**
@@ -40,6 +39,36 @@ class TrHelper extends AppHelper {
 	 * @var array
 	 */
 	var $helpers = array('Html');
+
+	/**
+	 * map fields in db in form fields for any module
+	 * @var array
+	 */
+	private $moduleFieldMap = array(
+		"commonFields" => array(
+			"title" => "title",
+			"description" => "description",
+			"nickname" => "unique name",
+			"start_date" => "scheduled from",
+			"end_date" => "to",
+			"abstract" => "short text",
+			"body" => "long text",
+			"creator" => "author",
+			"lang" => "main language",
+			"duration" => "duration in minutes",
+			"subject" => "subject"
+		),
+		"events" => array("creator" => "promoter"),
+		"areas" => array("creator" => "creator"),
+		"newsletter" => array(
+			"sender" => "sender email",
+			"reply_to" => "reply to",
+			"bounce_to" => "bounce to",
+			"privacy_disclaimer" => "privacy disclaimer",
+			"abstract" => "PLAIN TEXT version",
+			"body" => "HTML version"
+		)
+	);
 			
 	function t($s, $return = false) {
 		return __($s, $return);
@@ -65,6 +94,22 @@ class TrHelper extends AppHelper {
 	*/
 	function translatePlural($s, $plural, $count, $return = false) {
 		return __($s, $plural, $count, $return);
+	}
+
+	/**
+	 * return the field used in the module corresponding to a database field
+	 *
+	 * @param string $moduleName
+	 * @param string $dbFieldName
+	 */
+	function moduleField($moduleName, $dbFieldName) {
+		$fieldName = $dbFieldName;
+		if (array_key_exists($moduleName, $this->moduleFieldMap) && array_key_exists($dbFieldName, $this->moduleFieldMap[$moduleName])) {
+			$fieldName = $this->moduleFieldMap[$moduleName][$dbFieldName];
+		} elseif (array_key_exists($dbFieldName, $this->moduleFieldMap["commonFields"])) {
+			$fieldName = $this->moduleFieldMap["commonFields"][$dbFieldName];
+		}
+		return $this->output($fieldName);
 	}
 }
 ?>

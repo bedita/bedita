@@ -32,6 +32,8 @@
 	
 	{$view->element('form_custom_properties')}
 
+	{$view->element('form_history')}
+
 </form>
 
 

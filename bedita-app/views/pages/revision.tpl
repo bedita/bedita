@@ -12,7 +12,7 @@
 	<tbody>
 	{foreach from=$diff item=xdiff key=key}
 		<tr>
-			<td><b>{$key}</b></td>
+			<td><b>{t}{$tr->moduleField($moduleName, $key)}{/t}</b></td>
 			<td>{$revision[$key]|default:'<i>empty</i>'}</td>
 			{*<td>{$diff}</td>*}
 		</tr>

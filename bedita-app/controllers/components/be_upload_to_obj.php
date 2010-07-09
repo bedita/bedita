@@ -125,6 +125,8 @@ class BeUploadToObjComponent extends Object {
 			$dataURL['mediatype'] = $this->params['form']['mediatype'];
 		}
 		
+		unset($dataURL["url"]);
+
 		$id = $this->BeFileHandler->save($dataURL, $clone, $getInfoURL) ;
 		
 		return $id;

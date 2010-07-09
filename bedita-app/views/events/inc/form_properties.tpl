@@ -35,7 +35,7 @@
 			<label>{t}to{/t}: </label>&nbsp;
 			
 			<input size="10" type="text" 
-			class="dateinput" name="data[end]" id="end" 
+			class="dateinput" name="data[end_date]" id="end"
 			value="{if !empty($object.end_date)}{$object.end_date|date_format:$conf->datePattern}{/if}" />
 
 		</td>
