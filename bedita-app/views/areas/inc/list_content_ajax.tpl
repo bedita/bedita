@@ -121,29 +121,30 @@ $(document).ready(function() {
 	
 	</div>
 	
-	<div id="contents_nav_leafs">
 
-	{*
-	{if $contents.toolbar.prev > 0}
-		<a href="javascript:void(0);" rel="{$contents.toolbar.prev}" class="graced" style="font-size:3em">‹</a>
-	{/if}
-	{if $contents.toolbar.next > 0}
-		<a href="javascript:void(0);" rel="{$contents.toolbar.next}" class="graced" style="font-size:3em">›</a>
-	{/if}
-		
-	dim:
+{if !empty($contents.items)}
+	<div id="contents_nav_leafs" style="margin-top:10px;">
+	{t}show{/t} 
 	<select name="dimContentsPage" id="dimContentsPage">
 		<option value="5"{if $dim == 5} selected{/if}>5</option>
 		<option value="10"{if $dim == 10} selected{/if}>10</option>
 		<option value="20"{if $dim == 20} selected{/if}>20</option>
 		<option value="50"{if $dim == 50} selected{/if}>50</option>
-		<option value="1000000"{if $dim == 1000000} selected{/if}>tutti</option>
+		<option value="1000000"{if $dim == 1000000} selected{/if}>{t}all{/t}</option>
 	</select>
-	*}
+	{t}item(s){/t} 
+	
+		<div class="toolbar" style="text-align:right; padding-left:150px; float:right;">
+		{if $contents.toolbar.prev > 0}
+			<a href="javascript:void(0);" rel="{$contents.toolbar.prev}" class="" style="color:#000; font-size:1.5em">‹ prev</a>
+		{/if}
+		&nbsp;&nbsp;
+		{if $contents.toolbar.next > 0}
+			<a href="javascript:void(0);" rel="{$contents.toolbar.next}" class="" style="color:#000; font-size:1.5em">next ›</a>
+		{/if}
+		</div>
 	</div>
-
-
-
+{/if}
 
 
 
