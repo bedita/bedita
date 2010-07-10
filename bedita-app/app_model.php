@@ -228,11 +228,12 @@ class BEAppModel extends AppModel {
 		$this->contain($this->modelBindings[$level]);
 	}
 	
-	public function fieldsString($modelName, $alias = null) {
+	public function fieldsString($modelName, $alias = null, $excludeFields = array()) {
 		$s = $this->getStartQuote();
 		$e = $this->getEndQuote();
 		$model = ClassRegistry::init($modelName);
-		$k = array_keys($model->schema());
+		$kTmp = array_keys($model->schema());
+		$k = array_diff($kTmp, $excludeFields);
 		if(empty($alias)) {
 			$alias = $modelName;
 		}
@@ -272,7 +273,7 @@ class BEAppModel extends AppModel {
 		$e = $this->getEndQuote();
 		
 		$beObjFields = $this->fieldsString("BEObject");
-		$contentFields = $this->fieldsString("Content");
+		$contentFields = $this->fieldsString("Content", null, array("id"));
 		
 		$fields  = "DISTINCT {$beObjFields}, {$contentFields}" ;
 		$from = "{$s}objects{$e} as {$s}BEObject{$e} LEFT OUTER JOIN {$s}contents{$e} as {$s}Content{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}Content{$e}.{$s}id{$e}";
