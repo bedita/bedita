@@ -741,6 +741,7 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
 														"RelatedObject",
 														"Annotation",
 														"Category",
+														"LangText", 
 														"ObjectProperty",
 														"Alias",
 														"Version" => array("User.realname", "User.userid")
@@ -800,6 +801,7 @@ class BeditaStreamModel extends BEAppObjectModel {
 														"RelatedObject",
 														"Category",
 														"ObjectProperty",
+														"LangText", 
 														"Annotation",
 														"Alias",
 														"Version" => array("User.realname", "User.userid")
@@ -868,6 +870,8 @@ class BeditaProductModel extends BEAppObjectModel {
 														"UserCreated", 
 														"UserModified",
 														"RelatedObject",
+														"ObjectProperty", 
+														"LangText", 
 														"Category",
 														"Annotation",
 														"Alias",
