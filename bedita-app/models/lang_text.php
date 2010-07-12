@@ -182,9 +182,7 @@ class LangText extends BEAppModel
 		if ($d1 != $d2) {
 			return (LangText::$paginationDir)? strcmp($d1,$d2) : strcmp($d2,$d1);
 		}
-		$d1 = $e1["BEObject"]["modified"];
-		$d2 = $e2["BEObject"]["modified"];
-		return strcmp($d2,$d1);
+		return strcmp($e2["BEObject"]["modified"],$e1["BEObject"]["modified"]);
 	}
 
 }
