@@ -201,7 +201,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	
 	private function categoryFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
-		if (!strstr($this->from, Category) && !array_key_exists("mediatype", $this->filter))
+		if (!strstr($this->from, "Category") && !array_key_exists("mediatype", $this->filter))
 			$this->from .= ", {$s}categories{$s} AS {$s}Category{$s}, {$s}object_categories{$s} AS {$s}ObjectCategory{$s}";
 		$this->conditions[] = "{$s}Category{$e}.{$s}" . $cat_field . "{$e}='" . $value . "' 
 						AND {$s}ObjectCategory{$e}.{$s}object_id{$e}={$s}BEObject{$e}.{$s}id{$e}
@@ -211,7 +211,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	
 	private function tagFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
-		if (!strstr($this->from, Category) && !array_key_exists("mediatype", $this->filter))
+		if (!strstr($this->from, "Category") && !array_key_exists("mediatype", $this->filter))
 			$this->from .= ", {$s}categories{$e} AS {$s}Category{$e}, {$s}object_categories{$e} AS {$s}ObjectCategory{$e}";
 		$this->conditions[] = "{$s}Category{$e}.{$s}" . $cat_field . "{$e}='" . $value . "' 
 						AND {$s}ObjectCategory{$e}.{$s}object_id{$e}={$s}BEObject{$e}.{$s}id{$e}
