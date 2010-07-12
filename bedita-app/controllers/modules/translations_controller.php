@@ -36,6 +36,10 @@ class TranslationsController extends ModulesController {
 	protected $moduleName = 'translations';
 	
 	public function index($order = "", $dir = true, $page = 1, $dim = 20) {
+		if (empty($order)) {
+			$order = "LangText.status";
+			$dir = false;
+		}
 		$lt = $this->trPaginatedList($this->data,$order,$dir,$page,$dim);
 		$this->set("translations",		$lt['translations']);
 		$this->params['toolbar'] = &$lt['toolbar'] ;
@@ -183,14 +187,14 @@ class TranslationsController extends ModulesController {
 
 	private function trPaginatedList($data, $order, $dir, $page, $dim) {
 		$this->setup_args(
-			array("id", "integer", &$id),
+		//	array("id", "integer", &$id),
 			array("page", "integer", &$page),
 			array("dim", "integer", &$dim),
 			array("order", "string", &$order),
 			array("dir", "boolean", &$dir)
 		) ;
 		
-		$filter = array("lang" => null, "status" => null, "obj_id" => null);
+		$filter = array("lang" => null, "status" => null, "obj_id" => null, "object_type_id" => null);
 		
 		if (!empty($data['translation_lang'])) {
 			$filter['lang'] = $data['translation_lang'];
@@ -215,6 +219,14 @@ class TranslationsController extends ModulesController {
 			$filter['obj_id'] = $this->passedArgs["translation_object_id"];
 			$this->params["named"]["translation_object_id"] = $filter['obj_id'];
 		}
+
+		if (!empty($data['translation_object_type_id'])) {
+			$filter['object_type_id'] = $data['translation_object_type_id'];
+			$this->params["named"]["translation_object_id"] = $filter['object_type_id'];
+		} elseif (!empty($this->passedArgs["translation_object_type_id"])) {
+			$filter['object_type_id'] = $this->passedArgs["translation_object_type_id"];
+			$this->params["named"]["translation_object_type_id"] = $filter['object_type_id'];
+		}
 		
 		if(!empty($this->params["form"]["searchstring"])) {
 			$filter['query'] = $this->params["form"]["searchstring"];
@@ -227,6 +239,7 @@ class TranslationsController extends ModulesController {
 		$this->set("statusSelected",$filter['status']);
 		$this->set("langSelected",$filter['lang']);
 		$this->set("objectIdSelected",$filter['obj_id']);
+		$this->set("objectTypeIdSelected",$filter['object_type_id']);
 		
 		return $this->LangText->findObjs($filter,$order,$dir,$page,$dim);
 	}

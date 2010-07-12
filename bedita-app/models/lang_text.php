@@ -69,7 +69,7 @@ class LangText extends BEAppModel
 		$groupClausole = "GROUP BY {$beObjFields}, {$langTextFields}";
 		
 		$conditions = array("LangText.name = 'status'");
-		
+
 		if( !empty($filter['lang']) && ($filter['lang']!=null) ) {
 			$conditions[]="LangText.lang = '" . $filter['lang'] . "'";
 		}
@@ -79,6 +79,10 @@ class LangText extends BEAppModel
 		if( !empty($filter['obj_id'])  && ($filter['obj_id']!=null) ) {
 			$conditions[]="LangText.object_id = '" . $filter['obj_id'] . "'";
 		}
+		if( !empty($filter['object_type_id'])  && ($filter['object_type_id']!=null) ) {
+			$conditions[]="BEObject.object_type_id = '" . $filter['object_type_id'] . "'";
+		}
+		
 		if( !empty($order) && $order == "object_type_id")  {
 			$fields .= ", {$s}ObjectType.name{$e}";
 			$from .= ", {$s}object_types{$e} AS {$s}ObjectType{$e}";
@@ -141,7 +145,7 @@ class LangText extends BEAppModel
 		}
 
 		// #CUSTOM QUERY
-		$queryCount = "SELECT COUNT(DISTINCT {$s}BEObject{$e}.{$s}id{$e}) AS count FROM {$from} {$sqlClausole}";
+		$queryCount = "SELECT COUNT({$s}BEObject{$e}.{$s}id{$e}) AS count FROM {$from} {$sqlClausole}";
 		$tmpCount = $this->query($queryCount);
 		if ($tmpCount === false)
 			throw new BeditaException(__("Error counting translations", true));

@@ -91,6 +91,16 @@ function changeStatusTranslations() {
 	<option value="required"{if $statusSelected=='required'} selected="selected"{/if}>{t}required{/t}</option>
 	</select>
 	
+	&nbsp;{t}for object type{/t}: &nbsp;
+	<select name="data[translation_object_type_id]">
+	<option value=""></option>
+	{foreach from=$conf->objectTypes key="key" item="objectTypes"}
+	{if !empty($objectTypes.model) && is_numeric($key)}
+		<option value="{$objectTypes.id}" class="{$objectTypes.module_name}"{if $objectTypeIdSelected == $objectTypes.id} selected="selected"{/if}> {$objectTypes.name}</option>
+	{/if}
+	{/foreach}
+	</select>
+
 	&nbsp;{t}of master id{/t}:&nbsp;
 	<input type="text" name="data[translation_object_id]" style="width:25px"
 	value="{$objectIdSelected}"/>
