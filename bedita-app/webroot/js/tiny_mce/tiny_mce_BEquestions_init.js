@@ -14,7 +14,7 @@ tinyMCE.init({
 	//theme_advanced_statusbar_location : "bottom",
 	//theme_advanced_resizing : true,
 	theme_advanced_blockformats : "p,h1,h2,h3,h4,blockquote,address",
-	width : "380",
+	width : "550",
 
 	
 	// Example content CSS (should be your site CSS)
