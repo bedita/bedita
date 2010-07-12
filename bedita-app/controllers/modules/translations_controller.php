@@ -222,7 +222,7 @@ class TranslationsController extends ModulesController {
 
 		if (!empty($data['translation_object_type_id'])) {
 			$filter['object_type_id'] = $data['translation_object_type_id'];
-			$this->params["named"]["translation_object_id"] = $filter['object_type_id'];
+			$this->params["named"]["translation_object_type_id"] = $filter['object_type_id'];
 		} elseif (!empty($this->passedArgs["translation_object_type_id"])) {
 			$filter['object_type_id'] = $this->passedArgs["translation_object_type_id"];
 			$this->params["named"]["translation_object_type_id"] = $filter['object_type_id'];

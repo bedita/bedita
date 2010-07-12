@@ -92,7 +92,7 @@ class LangText extends BEAppModel
 		if (!empty($order) && strstr($order,"LangText.")) {
 			$t = explode(".", $order);
 			$langTextOrder = $t[1];
-			$order = null;
+			$order = "BEObject.modified";
 		}
 
 		$otherOrder = "";
@@ -169,7 +169,8 @@ class LangText extends BEAppModel
 	
 	/**
 	 * compare two array elements defined by $paginationOrder var and return -1,0,1 
-	 *	$paginationDir is used for define order of comparison 
+	 * $paginationDir is used for define LangText order of comparison
+	 * if LangText comparison item are equals, order by BEObject.modified DESC
 	 * 
 	 * @param array $e1
 	 * @param array $e2
@@ -178,7 +179,12 @@ class LangText extends BEAppModel
 	private static function reorderPagination($e1, $e2) {
 		$d1 = $e1["LangText"][LangText::$paginationOrder];
 		$d2 = $e2["LangText"][LangText::$paginationOrder];
-		return (LangText::$paginationDir)? strcmp($d1,$d2) : strcmp($d2,$d1);
+		if ($d1 != $d2) {
+			return (LangText::$paginationDir)? strcmp($d1,$d2) : strcmp($d2,$d1);
+		}
+		$d1 = $e1["BEObject"]["modified"];
+		$d2 = $e2["BEObject"]["modified"];
+		return strcmp($d2,$d1);
 	}
 
 }
