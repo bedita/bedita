@@ -6,7 +6,7 @@ tinyMCE.init({
 	plugins : "safari,pagebreak,paste,fullscreen",
 
 	// Theme options
-	theme_advanced_buttons1 : "sub, sup, bold,italic,underline,strikethrough, charmap, fontsizeselect, pastetext, link,unlink, code",
+	theme_advanced_buttons1 : "sub, sup, bold,italic,underline,strikethrough, charmap, fontsizeselect , pastetext, pasteword ,link,unlink, code",
 	theme_advanced_buttons2 : "",
 	theme_advanced_buttons3 : "", 
 	theme_advanced_toolbar_location : "bottom",
@@ -14,7 +14,7 @@ tinyMCE.init({
 	//theme_advanced_statusbar_location : "bottom",
 	//theme_advanced_resizing : true,
 	theme_advanced_blockformats : "p,h1,h2,h3,h4,blockquote,address",
-	width : "380",
+	width : "550",
 
 	
 	// Example content CSS (should be your site CSS)
