@@ -39,12 +39,21 @@ class ObjectRelation extends BEAppModel
 	 * @param int $objectId
 	 * @param string $switch
 	 * @param int $priority
-	 * @return unknown, $this->query() output
+	 * @return unknown, $this->query() output - false on error
 	 */
-	public function createRelation ($id, $objectId, $switch, $priority) {
+	public function createRelation ($id, $objectId, $switch, $priority, $bidirectional = true) {
 		// #CUSTOM QUERY - TODO: use cake, how??
 		$q = "INSERT INTO object_relations (id, object_id, switch, priority) VALUES ({$id}, {$objectId}, '{$switch}', {$priority})";
+		$res = $this->query($q);
+		if($res === false) {
+			return $res;
+		}
+		if(!$bidirectional) {
+			return $res;
+		}
+		$q = "INSERT INTO object_relations (id, object_id, switch, priority) VALUES ({$objectId}, {$id}, '{$switch}', {$priority})";
 		return $this->query($q);
+		
 	}
 }
 ?>
