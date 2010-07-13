@@ -447,8 +447,12 @@ class BeditaShell extends BeditaBaseShell {
 		$basePath = TMP;
     	if (isset($this->params['frontend'])) {
     		$basePath = $this->params['frontend'].DS."tmp".DS;
-            $this->out('Cleaning dir: '.$basePath);
-    		
+			if(!file_exists($basePath)) {
+    			$this->out("Directory $basePath not found");
+				return;
+			}
+    		$this->out('Cleaning dir: '.$basePath);
+            $this->__clean($basePath . 'cache', false);
     	}
         if (isset($this->params['logs'])) {
     	   $this->__clean($basePath . 'logs');
