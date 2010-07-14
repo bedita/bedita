@@ -1,0 +1,20 @@
+.version TH {
+		font-weight:bold;
+		line-height:1.15em;
+	}
+	
+.version .revision A {
+		color: blue;
+	}
+
+.version .revision em {
+		font-style:italic
+	}
+
+.version .revision strong {
+		font-weight:bold;
+	}
+
+.version .revision {
+		color:#666;
+	}

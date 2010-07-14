@@ -108,6 +108,6 @@ var url="{$html->url('/webmarks/checkUrl')}";
 
 {$view->element('form_tags')}
 
-{$view->element('form_history')}
+{$view->element('form_versions')}
 
 </form>

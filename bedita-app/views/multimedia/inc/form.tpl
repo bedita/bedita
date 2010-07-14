@@ -36,5 +36,5 @@
 {$view->element('form_file_exif')}
 
 </form>
-	{$view->element('form_history')}
+	{$view->element('form_versions')}
 	{$view->element('form_print')}

@@ -189,6 +189,6 @@ ________________________________
 	
 	</fieldset>
 
-{$view->element('form_history')}
+{$view->element('form_versions')}
 </form>
 

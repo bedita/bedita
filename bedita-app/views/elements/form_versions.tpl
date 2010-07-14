@@ -1,4 +1,4 @@
-<div class="tab"><h2>{t}History{/t}</h2></div>
+<div class="tab"><h2>{t}Versions{/t}</h2></div>
 <fieldset id="history">
 
 {if !empty($object.Version)}
@@ -17,7 +17,7 @@
 		</td>
 		<td>{$h.created|date_format:$conf->dateTimePattern}</td>
 		<td>{$h.User.realname|default:''} [ {$h.User.userid|default:''} ]</td>
-		<td><a class="modalbutton" rel="{$html->url('/pages/revision')}/{$object.id}/{$h.revision}">  edit  </a></td>
+		<td><a class="modalbutton" rel="{$html->url('/pages/revision')}/{$object.id}/{$h.revision}">  view  </a></td>
 	</tr>
 	{*
 	<tr id="diff-{$h.revision}" style="display:none">
@@ -34,7 +34,7 @@
 {/foreach}
 </table>
 {else}
-{t}No history set{/t}
+{t}No versions set{/t}
 {/if}
 
 
