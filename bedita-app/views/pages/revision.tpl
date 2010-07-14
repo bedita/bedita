@@ -14,6 +14,8 @@
 			
 			// change target content
 			$(target).val(content).css("backgroundColor","#ffccff").parents("fieldset").prev(".tab").BEtabsopen();
+			
+			//set page on to save/confirm on leave status
 			$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 
 			/*
