@@ -641,7 +641,7 @@ class BEObject extends BEAppModel
 			
 			if($session->valid() === false)
 				return null;
-			$user = $session->read($conf->session["sessionUserKey"]) ; 
+			$user = $session->read($conf->Session["sessionUserKey"]) ; 
 			if(!isset($user["id"])) 
 				return null ;
 			$userId = $user["id"];	
