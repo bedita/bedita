@@ -49,7 +49,7 @@ class BeAuthComponent extends Object {
 	function initialize(&$controller)
 	{
 		$conf = Configure::getInstance() ;		
-		$this->sessionKey = $conf->session["sessionUserKey"] ;
+		$this->sessionKey = $conf->Session["sessionUserKey"] ;
 		
 		$this->controller 	= $controller;
 		$this->Session 		= &$controller->Session;
