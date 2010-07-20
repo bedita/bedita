@@ -172,10 +172,17 @@ class NotifyBehavior extends ModelBehavior {
 						"signature" => $conf->mailOptions["signature"]
 			));
 			$data["mail_body"] = $this->getNotifyText($msgType, "mail_body", $params, $lang);			
-					
-			$jobModel->create();
-			if (!$jobModel->save($data)) {
-				throw new BeditaException(__("Error creating mail jobs"),true);
+			// skip creation if a duplicate mail is already present
+			$res = $jobModel->find("all", array(
+				"conditions" => array("recipient" => $data["recipient"], "status" => $data["status"], 
+				"mail_body" => $data["mail_body"])));
+			if(!empty($res)) {
+				$this->log("duplicate job for " . $data["recipient"], LOG_DEBUG);
+			} else {
+				$jobModel->create();
+				if (!$jobModel->save($data)) {
+					throw new BeditaException(__("Error creating mail jobs"),true);
+				}
 			}
 		}
 		
