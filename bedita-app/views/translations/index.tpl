@@ -153,7 +153,7 @@ function changeStatusTranslations() {
 
 		</tr>
 		{sectionelse}
-			<tr><td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td></tr>
+			<tr><td colspan="100" style="padding:30px">{t}No items found{/t}</td></tr>
 		{/section}
 
 {if ($smarty.section.i.total) >= 10}

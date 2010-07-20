@@ -81,7 +81,7 @@
 	
 		{sectionelse}
 		
-			<td colspan="100" style="padding:30px">{t}No {$moduleName} found{/t}</td>
+			<td colspan="100" style="padding:30px">{t}No items found{/t}</td>
 		
 		{/section}
 
