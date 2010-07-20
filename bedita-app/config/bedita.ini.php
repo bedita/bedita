@@ -531,6 +531,24 @@ $config["notifyOptions"] = array(
 );
 
 /**
+ * Specific licenses, to add in bedita.cfg
+ */
+$config["defaultLicenses"] = array(
+	"CC-BY" => array("title" => "Creative Commons Attribution", "url" => "http://creativecommons.org/licenses/by/3.0"),
+	"CC-BY-SA" => array("title" => "Creative Commons Attribution Share Alike", "url" => "http://creativecommons.org/licenses/by-sa/3.0"),
+	"CC-BY-ND" => array("title" => "Creative Commons Attribution No Derivatives", "url" => "http://creativecommons.org/licenses/by-nd/3.0"),
+	"CC-BY-NC" => array("title" => "Creative Commons Attribution Non-Commercial", "url" => "http://creativecommons.org/licenses/by-nc/3.0"),
+	"CC-BY-NC-SA" => array("title" => "Creative Commons Attribution Non-Commercial Share Alike", "url" => "http://creativecommons.org/licenses/by-nc-sa/3.0"),
+	"CC-BY-NC-ND" => array("title" => "Creative Commons Attribution Non-Commercial No Derivatives", "url" => "http://creativecommons.org/licenses/by-nc-nd/3.0"),
+	"RES" => array("title" => "All rights reserved", "url" => ""),
+);
+				
+/**
+ * Specific licenses, to add in bedita.cfg
+ */
+$config["cfgLicenses"] = array();
+
+/**
  * Specific System settings
  * ALWAYS AT THE END of bedita.ini.php
  */
