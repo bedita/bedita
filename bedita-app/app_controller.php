@@ -1005,9 +1005,20 @@ abstract class ModulesController extends AppController {
 	
 	public function autoSaveObject(BEAppObjectModel $model) {
 		$this->checkAutoSave();
-		$model->Behaviors->disable('RevisionObject');
+		// disable behaviors
+		$disableBhv = array("RevisionObject", "Notify");
+		$disabled = array();		
+		foreach ($disableBhv as $dis) {
+			if($model->Behaviors->enabled($dis)) {
+				$model->Behaviors->disable($dis);
+				$disabled[] = $dis;
+			}
+		}
 		$this->saveObject($model);
-		$model->Behaviors->enable('RevisionObject');
+		// re-enable behaviors
+		foreach ($disabled as $d) {
+			$model->Behaviors->enable($d);
+		}
 		$this->set('id', $model->id);
 	}
 
