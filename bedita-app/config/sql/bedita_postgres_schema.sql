@@ -1503,6 +1503,8 @@ CREATE INDEX property_id_index1 ON user_properties USING btree (property_id);
 CREATE INDEX recipient ON mail_logs USING btree (recipient);
 
 
+CREATE INDEX recipient_index ON mail_jobs USING btree (recipient);
+
 
 CREATE INDEX "related_objects_FKIndex1" ON object_relations USING btree (id);
 
@@ -1518,6 +1520,8 @@ CREATE INDEX section_id ON section_types USING btree (section_id);
 
 CREATE INDEX status_idx ON banned_ips USING btree (status);
 
+
+CREATE INDEX status_idx1 ON mail_jobs USING btree (status);
 
 
 CREATE INDEX type_index ON properties USING btree (object_type_id);

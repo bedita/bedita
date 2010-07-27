@@ -418,7 +418,7 @@ CREATE TABLE mail_jobs (
   modified DATETIME NULL COMMENT '???',
   priority INTEGER UNSIGNED NULL COMMENT '???',
   mail_body TEXT NULL COMMENT '???',
-  recipient MEDIUMTEXT NULL COMMENT 'used if card_is and mail_message_id are null, one or more comma separeted addresses',
+  recipient VARCHAR(255) NULL COMMENT 'email recipient, used if card_is and mail_message_id are null',
   mail_params TEXT NULL COMMENT 'serialized array with: reply-to, sender, subject, signature...',
   smtp_err TEXT NULL COMMENT 'SMTP error message on sending failure',
   process_info INTEGER UNSIGNED NULL COMMENT 'pid of process delegates to send this mail job',
@@ -426,6 +426,8 @@ CREATE TABLE mail_jobs (
   INDEX card_id_index(card_id),
   INDEX mail_message_id_index(mail_message_id),
   INDEX process_info_index(process_info),
+  INDEX status_index(status),
+  INDEX recipient_index(recipient),
   FOREIGN KEY(mail_message_id)
     REFERENCES mail_messages(id)
       ON DELETE CASCADE
