@@ -213,14 +213,14 @@ class NewsletterController extends ModulesController {
 	 /**
 	  * Get list detail
 	  */
-	public function view_mail_group($id=null) {
-		$obj = null;
+	public function viewMailGroup($id=null) {
+		$item = null;
 		if($id!=null) {
 			$this->MailGroup->containLevel("default");
 			$o = $this->MailGroup->find('first',
 							array("conditions" => "MailGroup.id=" . $id)
 						);
-			$obj = $o['MailGroup'];
+			$item = $o['MailGroup'];
 			
 			// get paginated subscribers
 			$filter = array(
@@ -233,7 +233,7 @@ class NewsletterController extends ModulesController {
 			$this->params['toolbar'] = &$card['toolbar'] ;
 			
 		}
-		$this->set('object',	$obj);
+		$this->set('item',	$item);
 		$this->set("areasList", $this->BEObject->find('list', array(
 										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
 										"order" => "title", 
@@ -667,8 +667,8 @@ class NewsletterController extends ModulesController {
 							"ERROR"	=> $this->referer()
 							),
 			"saveMailGroups"=> array(
-							"OK"	=> "/newsletter/view_mail_group/" . @$this->MailGroup->id,
-							"ERROR"	=> "/newsletter/view_mail_group/" . @$this->MailGroup->id
+							"OK"	=> "/newsletter/viewMailGroup/" . @$this->MailGroup->id,
+							"ERROR"	=> "/newsletter/viewMailGroup/" . @$this->MailGroup->id
 							),
 			"deleteMailGroups"=> array(
 							"OK"	=> "/newsletter/mailGroups",

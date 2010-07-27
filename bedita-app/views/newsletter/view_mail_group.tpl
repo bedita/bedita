@@ -13,7 +13,7 @@ var urlListSubscribers = "{$html->url('/newsletter/listSubscribers')}";
 function initSubscribers() {
 
 	$("#paginateSubscribers a, #orderSubscribers a").each(function() {
-		searched = "view_mail_group";
+		searched = "viewMailGroup";
 		specificParams = $(this).attr("href");
 		position = specificParams.indexOf(searched);
 		if (position == -1) {
@@ -64,17 +64,17 @@ $(document).ready(function() {
 	initSubscribers();
 	
 	$("#assocCard").click( function() {
-		submitSubscribers("{/literal}{$html->url('/newsletter/addCardToGroup/')}{$object.id|default:''}{literal}");		
+		submitSubscribers("{/literal}{$html->url('/newsletter/addCardToGroup/')}{$item.id|default:''}{literal}");		
 	});
 	
 	$("#changestatusSelected").click( function() {
-		submitSubscribers("{/literal}{$html->url('/newsletter/changeCardStatus/')}{$object.id|default:''}{literal}");
+		submitSubscribers("{/literal}{$html->url('/newsletter/changeCardStatus/')}{$item.id|default:''}{literal}");
 	});
 
 	$("#deleteSelected").bind("click", function() {
 		if(!confirm("{/literal}{t}Do you want unsubscribe selected items?{/t}{literal}")) 
 			return false ;	
-		submitSubscribers("{/literal}{$html->url('/newsletter/unlinkCard/')}{$object.id|default:''}{literal}");
+		submitSubscribers("{/literal}{$html->url('/newsletter/unlinkCard/')}{$item.id|default:''}{literal}");
 	});
 });
 {/literal}
@@ -91,7 +91,7 @@ $(document).ready(function() {
 
 <div class="head">
 	
-	<h1>{t}{$object.group_name|default:"New List"}{/t}</h1>
+	<h1>{t}{$item.group_name|default:"New List"}{/t}</h1>
 	
 </div>
 

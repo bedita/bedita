@@ -65,7 +65,7 @@ Menu a SX valido per tutte le pagine del controller.
 	{elseif $method eq "mailgroups"}
 	
 		<ul class="menuleft insidecol">
-			<li><a href="{$html->url('/newsletter/view_mail_group/')}">{t}Create new list{/t}</a></li>
+			<li><a href="{$html->url('/newsletter/viewMailGroup/')}">{t}Create new list{/t}</a></li>
 		</ul>
 	
 	{elseif $method eq "viewmailgroup"}

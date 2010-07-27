@@ -35,7 +35,7 @@ $(document).ready(function(){
 
 		{foreach from=$mailGroups item="grp" name="fc"}
 
-			<tr rel="{$html->url('/newsletter/view_mail_group/')}{$grp.id}">
+			<tr rel="{$html->url('/newsletter/viewMailGroup/')}{$grp.id}">
 				<td>
 					{$grp.group_name}
 				</td>

@@ -1,4 +1,4 @@
-{if !empty($object)}
+{if !empty($item)}
 
 <div class="tab"><h2>Subscribers</h2></div>
 
@@ -22,7 +22,7 @@
 		<select name="destination">
 			{if !empty($groups)}
 			{foreach from=$groups item="group"}
-				{if $group.MailGroup.id != $object.id}
+				{if $group.MailGroup.id != $item.id}
 				<option value="{$group.MailGroup.id}">{$group.MailGroup.group_name}</option>
 				{/if}
 			{/foreach}

@@ -24,7 +24,7 @@
 			<td style="padding-left:20px">
 				<ul style="list-style-type:disc">
 				{foreach from=$obj.MailGroup item="recipient"}
-					<li><a href="{$html->url('/newsletter/view_mail_group/')}{$recipient.id}">{$recipient.group_name}</li>
+					<li><a href="{$html->url('/newsletter/viewMailGroup/')}{$recipient.id}">{$recipient.group_name}</li>
 				{/foreach}
 				</ul>
 			</td>
