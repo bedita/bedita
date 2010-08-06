@@ -151,6 +151,58 @@ class NewsletterController extends ModulesController {
 		$this->set("templateByArea", $pub);
 	 }
 
+	function viewInvoice($id) {
+		if (empty($id)) {
+			throw new BeditaException(__("No invoice selected", true), "No invoice selected");
+		}
+
+		$this->helpers[] = "BeTime";
+
+		$this->viewObject($this->MailMessage, $id);
+
+		$mailJobModel = ClassRegistry::init("MailJobs");
+
+		$jobs = $mailJobModel->find("all", array(
+			"conditions" => array("mail_message_id" => $id)
+		));
+
+		$jobsFailed = $mailJobModel->find("count", array(
+			"conditions" => array(
+				"status" => array("error"),
+				"mail_message_id" => $id
+			)
+		));
+
+		$jobsOk = $mailJobModel->find("count", array(
+			"conditions" => array(
+				"status" => array("sent"),
+				"mail_message_id" => $id
+			)
+		));
+
+		$jobsPending = $mailJobModel->find("count", array(
+			"conditions" => array(
+				"status" => array("penidng"),
+				"mail_message_id" => $id
+			)
+		));
+
+		$jobsUnsent = $mailJobModel->find("count", array(
+			"conditions" => array(
+				"status" => array("unsent"),
+				"mail_message_id" => $id
+			)
+		));
+
+		$this->set("jobs", $jobs);
+		$this->set("totalJobs", count($jobs));
+		$this->set("jobsFailed", $jobsFailed);
+		$this->set("jobsOk", $jobsOk);
+		$this->set("jobsPending", $jobsPending);
+		$this->set("jobsUnsent", $jobsUnsent);
+
+	}
+
 	function newsletters($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$filter["object_type_id"] = Configure::read("objectTypes.mail_message.id");
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
@@ -422,33 +474,45 @@ class NewsletterController extends ModulesController {
 		}
 	}
 	
-	public function invoices() {
-
+	public function invoices($id = null, $order = "MailMessage.start_sending", $dir = false, $page = 1, $dim = 20) {
 		$msg = array();
-		$msg = $this->MailMessage->find("all", array(
-			"conditions" => array("MailMessage.mail_status" => array("pending", "injob")),
-			"contain"	=> array("BEObject" => array("RelatedObject"), "MailGroup")
-			)
+
+		$filter = array(
+			"MailMessage.*" => "",
+			"MailMessage.mail_status" => array('pending', 'injob', 'sent'),
+			"object_type_id" => Configure::read("objectTypes.mail_message.id")
 		);
-		
-		$this->modelBindings["MailTemplate"] = array("BEObject");
-		foreach ($msg as $k => $m) {
-			if (!empty($m["RelatedObject"])) {
-				$msg[$k]["relations"] = $this->objectRelationArray($m['RelatedObject']);
-			}	
+		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
+
+		foreach ($this->viewVars["objects"] as $k => $m) {
+			$mg = $this->MailMessage->find("first", array(
+				"contain" => array("MailGroup"),
+				"conditions" => array("id" => $m["id"])
+			));
+
+			$this->viewVars["objects"][$k]["MailGroup"] = $mg["MailGroup"];
 		}
-		unset($this->modelBindings["MailTemplate"]);
 		
 		$inJob = $this->MailMessage->find("count", array(
 			"conditions" => array("MailMessage.mail_status" => array("injob"))
 			)
 		);
+
+		$sent = $this->MailMessage->find("count", array(
+			"conditions" => array("MailMessage.mail_status" => array("sent"))
+			)
+		);
+
+		$scheduled = $this->MailMessage->find("count", array(
+			"conditions" => array("MailMessage.mail_status" => array("pending"))
+			)
+		);
 		
 		$nextInvoice = $this->MailMessage->field("start_sending", array("mail_status" => "pending"), "start_sending ASC");
 		
-		$this->set("objects", $msg);
-		$this->set("scheduled", count($msg));
+		$this->set("scheduled", $scheduled);
 		$this->set("inJob", $inJob);
+		$this->set("sent", $sent);
 		$this->set("nextInvoiceDate", $nextInvoice);
 
 	}
@@ -685,6 +749,9 @@ class NewsletterController extends ModulesController {
 			"unlinkCard" 	=> array(
 							"OK"	=> "/newsletter/listSubscribers/" . $this->MailGroup->id,
 							"ERROR"	=> "/newsletter/listSubscribers/" . $this->MailGroup->id
+							),
+			"viewInvoice" 	=> array(
+							"ERROR"	=> "/newsletter/invoices"
 							)
 		);
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

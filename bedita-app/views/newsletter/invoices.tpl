@@ -11,6 +11,7 @@
 		<h2>{t}Invoices{/t}</h2>
 		<table>
 			<tr>
+				<td><span class="evidence">{$sent}&nbsp;</span> {t}sent{/t}</td>
 				<td><span class="evidence">{$inJob}&nbsp;</span> {t}in job{/t}</td>
 				<td><span class="evidence"> {$scheduled} &nbsp;</span> {t}scheduled{/t}</td>
 				<td>
@@ -24,7 +25,7 @@
 				</td>
 			</tr>
 		</table>
-		
+
 	</div>
 
 </div>
@@ -32,5 +33,6 @@
 <div class="mainfull">
 
 	{include file="inc/list_invoices.tpl"}
-	
+
 </div>
+

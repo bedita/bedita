@@ -95,5 +95,29 @@ class BeTimeHelper extends TimeHelper {
 		return strftime($format, $date);
 	}
 
+	/**
+	 *	calculate the difference between two dates
+	 *
+	 * @param string $dateStart
+	 * @param string $dateEnd
+	 * @param string $period (units, default minutes)
+	 * @param bool $complete true return also $period
+	 * @return mixed
+	 */
+	public function dateDiff($dateStart, $dateEnd, $period="minutes", $complete=false) {
+		$secondsRatio = array(
+			"seconds" => 1,
+			"minutes" => 60,
+			"hours" => 3600,
+			"days" => 86400,
+			"years" => 31536000
+		);
+		$dateStart = $this->fromString($dateStart);
+		$dateEnd = $this->fromString($dateEnd);
+		$diff = $dateEnd - $dateStart;
+		$diffPeriod = round($diff/$secondsRatio[$period], 2);
+		return ($complete)? $diffPeriod . " " . __($period, true) : $diffPeriod;
+	}
+
 }
 ?>
