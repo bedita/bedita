@@ -164,12 +164,31 @@ class GettextShell extends Shell {
 				$this->out("Merging $poFile");
 				$mergeCmd = "msgmerge --backup=off -N -U " . $poFile . " " . $potFilename;
 				exec($mergeCmd);
+				$this->analyzePoFile($poFile);
 				$this->hr();
 			}
 		}
 		$this->out('Done');
 	}
 
+	private function analyzePoFile($poFileName) {
+		$lines = file($poFileName);
+		$numItems = $numNotTranslated = 0;
+		foreach ($lines as $k => $l) {
+			if(strpos($l, "msgid \"") === 0) {
+				$numItems++;
+			} if(strpos($l, "msgstr \"\"") === 0) {
+				if(!isset($lines[$k+1])) {
+					$numNotTranslated++;
+				} else if(strpos($lines[$k+1], "\"") !== 0){
+					$numNotTranslated++;
+				}
+			}
+		}
+		$perc = number_format((($numItems-$numNotTranslated)*100.)/$numItems, 1);
+		$this->out("Translated ". ($numItems-$numNotTranslated) . " of $numItems items - $perc %");
+	}
+	
 	function help() {
 		$this->out('Available functions:');
         $this->out('1. update [-frontend <frontend path>]: create master.pot and merge .po files');

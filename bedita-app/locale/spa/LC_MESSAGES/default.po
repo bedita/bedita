@@ -13,6 +13,9 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
+msgid "Add association"
+msgstr ""
+
 msgid "Add comma separated words"
 msgstr ""
 
@@ -31,10 +34,19 @@ msgstr ""
 msgid "Add selected items"
 msgstr ""
 
+msgid "Addons"
+msgstr ""
+
 msgid "Address"
 msgstr ""
 
 msgid "Advanced Properties"
+msgstr ""
+
+msgid "Alias"
+msgstr ""
+
+msgid "All unsaved changes will be lost"
 msgstr ""
 
 msgid "Annotation type or object_id missing"
@@ -50,6 +62,11 @@ msgid "Are you sure that you want to delete the item?"
 msgstr ""
 
 msgid "Are you sure that you want to delete the note?"
+msgstr ""
+
+msgid ""
+"Are you sure that you want to delete the property? this will also delete any "
+"properties data associated"
 msgstr ""
 
 msgid "Are you sure that you want to delete the tag?"
@@ -72,7 +89,7 @@ msgstr ""
 msgid "Area saved"
 msgstr ""
 
-msgid "Area tree saved"
+msgid "Authentication service"
 msgstr ""
 
 msgid "Author"
@@ -84,13 +101,25 @@ msgstr ""
 msgid "Auto-remove forbidden"
 msgstr ""
 
+msgid "Autosave disabled"
+msgstr ""
+
+msgid "Autosave enabled"
+msgstr ""
+
+msgid "Autosave turned off"
+msgstr ""
+
 msgid "BEdita contents statistics"
 msgstr ""
 
 msgid "BEdita editors activity statistics"
 msgstr ""
 
-msgid "Backend user restricted area"
+msgid "BEdita object type model disabled"
+msgstr ""
+
+msgid "BEdita object type model enabled"
 msgstr ""
 
 msgid "Bad data"
@@ -102,22 +131,7 @@ msgstr ""
 msgid "Bedita3 main dashboard"
 msgstr ""
 
-msgid "Bibliography deleted"
-msgstr ""
-
 msgid "Bit depth"
-msgstr ""
-
-msgid "Book deleted"
-msgstr ""
-
-msgid "Book details"
-msgstr ""
-
-msgid "Book saved"
-msgstr ""
-
-msgid "Books"
 msgstr ""
 
 msgid "Browse"
@@ -156,9 +170,6 @@ msgstr ""
 msgid "Category saved"
 msgstr ""
 
-msgid "Change"
-msgstr ""
-
 msgid "Change Password"
 msgstr ""
 
@@ -193,6 +204,12 @@ msgid "Communication error"
 msgstr ""
 
 msgid "Compile"
+msgstr ""
+
+msgid "Components"
+msgstr ""
+
+msgid "Concurrent editors:"
 msgstr ""
 
 msgid "Configuration"
@@ -240,10 +257,7 @@ msgstr ""
 msgid "Create new list"
 msgstr ""
 
-msgid "Create new publishing"
-msgstr ""
-
-msgid "Create new question"
+msgid "Create new publication"
 msgstr ""
 
 msgid "Create new section"
@@ -282,6 +296,10 @@ msgstr ""
 msgid "Dimensions"
 msgstr ""
 
+msgid ""
+"Disable object type will delete all related items. Do you want continue?"
+msgstr ""
+
 msgid "Display details in frontend"
 msgstr ""
 
@@ -294,13 +312,16 @@ msgstr ""
 msgid "Do you want unsubscribe selected items?"
 msgstr ""
 
+msgid "Document Saved on"
+msgstr ""
+
 msgid "Document saved"
 msgstr ""
 
 msgid "Documents deleted"
 msgstr ""
 
-msgid "Duplicate property name for the same object"
+msgid "Duplicate property name for the same type"
 msgstr ""
 
 msgid "Email"
@@ -319,9 +340,6 @@ msgid "Error adding subscriber "
 msgstr ""
 
 msgid "Error adding subscribers"
-msgstr ""
-
-msgid "Error changing password"
 msgstr ""
 
 msgid "Error checking url for link: "
@@ -381,10 +399,10 @@ msgstr ""
 msgid "Error loading area: %d"
 msgstr ""
 
-msgid "Error loading comment: %d"
+msgid "Error loading mail group detail: id="
 msgstr ""
 
-msgid "Error loading mail group detail: id="
+msgid "Error loading object"
 msgstr ""
 
 msgid "Error loading object: %d"
@@ -400,6 +418,12 @@ msgid "Error modifying permissions"
 msgstr ""
 
 msgid "Error on join between card and mail group"
+msgstr ""
+
+msgid "Error on sign up: an email is required"
+msgstr ""
+
+msgid "Error on sign up: no data"
 msgstr ""
 
 msgid "Error on subscribing: empty 'newsletter_email'"
@@ -429,6 +453,9 @@ msgstr ""
 msgid "Error saving custom property"
 msgstr ""
 
+msgid "Error saving data"
+msgstr ""
+
 msgid "Error saving group"
 msgstr ""
 
@@ -444,10 +471,16 @@ msgstr ""
 msgid "Error saving mail group card"
 msgstr ""
 
+msgid "Error saving module data"
+msgstr ""
+
 msgid "Error saving multimedia"
 msgstr ""
 
 msgid "Error saving note"
+msgstr ""
+
+msgid "Error saving object type"
 msgstr ""
 
 msgid "Error saving options"
@@ -471,13 +504,19 @@ msgstr ""
 msgid "Error saving tag"
 msgstr ""
 
-msgid "Error saving tree from _POST"
-msgstr ""
-
 msgid "Error saving user"
 msgstr ""
 
+msgid "Error saving user."
+msgstr ""
+
+msgid "Error setting on Card status"
+msgstr ""
+
 msgid "Error subscribing "
+msgstr ""
+
+msgid "Error updating password"
 msgstr ""
 
 msgid "Error updating user"
@@ -517,6 +556,9 @@ msgid "Exit"
 msgstr ""
 
 msgid "Export to"
+msgstr ""
+
+msgid "External auth component not found: "
 msgstr ""
 
 msgid "File"
@@ -573,6 +615,9 @@ msgstr ""
 msgid "HTML version"
 msgstr ""
 
+msgid "Hash isn't valid or user doesn't exist."
+msgstr ""
+
 msgid "Hash isn't valid."
 msgstr ""
 
@@ -580,6 +625,12 @@ msgid "Hash not valid or expired."
 msgstr ""
 
 msgid "Height"
+msgstr ""
+
+msgid "Helpers"
+msgstr ""
+
+msgid "Hi"
 msgstr ""
 
 msgid "Hide system tags"
@@ -612,16 +663,13 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-msgid "Insert code string"
+msgid "Incorrect hash command"
 msgstr ""
 
 msgid "Invoice"
 msgstr ""
 
 msgid "Invoices"
-msgstr ""
-
-msgid "Isbn/issn/bid"
 msgstr ""
 
 msgid "Item Type"
@@ -634,9 +682,6 @@ msgid "Last check"
 msgstr ""
 
 msgid "Last result"
-msgstr ""
-
-msgid "License is required (at least %1 alphanumerical char)"
 msgstr ""
 
 msgid "Link"
@@ -690,6 +735,15 @@ msgstr ""
 msgid "Message template"
 msgstr ""
 
+msgid "Missing data"
+msgstr ""
+
+msgid "Missing email to send recover instructions"
+msgstr ""
+
+msgid "Missing form data"
+msgstr ""
+
 msgid "Missing from field"
 msgstr ""
 
@@ -711,7 +765,10 @@ msgstr ""
 msgid "Missing parent"
 msgstr ""
 
-msgid "Missing publishing"
+msgid "Missing plugin path"
+msgstr ""
+
+msgid "Missing publication"
 msgstr ""
 
 msgid "Missing recipient"
@@ -741,9 +798,6 @@ msgstr ""
 msgid "Module access"
 msgstr ""
 
-msgid "More data"
-msgstr ""
-
 msgid "More properties"
 msgstr ""
 
@@ -771,13 +825,7 @@ msgstr ""
 msgid "Name is required (at least %1 alphanumerical char)"
 msgstr ""
 
-msgid "New Book"
-msgstr ""
-
 msgid "New Translation"
-msgstr ""
-
-msgid "New bibliography"
 msgstr ""
 
 msgid "New card"
@@ -790,9 +838,6 @@ msgid "New link"
 msgstr ""
 
 msgid "New password"
-msgstr ""
-
-msgid "New question"
 msgstr ""
 
 msgid "New tag"
@@ -870,6 +915,12 @@ msgstr ""
 msgid "No item found"
 msgstr ""
 
+msgid "No items found"
+msgstr ""
+
+msgid "No items selected"
+msgstr ""
+
 msgid "No mail group found"
 msgstr ""
 
@@ -888,10 +939,13 @@ msgstr ""
 msgid "No object id specified"
 msgstr ""
 
-msgid "No questionnaires found"
+msgid "No publication"
 msgstr ""
 
-msgid "No questions found"
+msgid "No publication set"
+msgstr ""
+
+msgid "No questionnaires found"
 msgstr ""
 
 msgid "No references"
@@ -927,6 +981,12 @@ msgstr ""
 msgid "No user data"
 msgstr ""
 
+msgid "No user with access privileges found"
+msgstr ""
+
+msgid "No versions set"
+msgstr ""
+
 msgid "No webmarks found"
 msgstr ""
 
@@ -945,7 +1005,7 @@ msgstr ""
 msgid "Number of objects"
 msgstr ""
 
-msgid "Objects that were produced"
+msgid "Objects production by editor"
 msgstr ""
 
 msgid "Objects with multiple relationships"
@@ -955,6 +1015,9 @@ msgid "Occurrences"
 msgstr ""
 
 msgid "Open Calendar"
+msgstr ""
+
+msgid "OpenID Authentication Redirect"
 msgstr ""
 
 msgid "Operations on"
@@ -972,6 +1035,9 @@ msgstr ""
 msgid "Original Title"
 msgstr ""
 
+msgid "Other Models"
+msgstr ""
+
 msgid "PLAIN TEXT version"
 msgstr ""
 
@@ -979,6 +1045,9 @@ msgid "Password"
 msgstr ""
 
 msgid "Password is required"
+msgstr ""
+
+msgid "Password not valid"
 msgstr ""
 
 msgid "Passwords mismatch"
@@ -993,9 +1062,6 @@ msgstr ""
 msgid "Person"
 msgstr ""
 
-msgid "Place and year"
-msgstr ""
-
 msgid "Please enter a valid date in the %1 format"
 msgstr ""
 
@@ -1004,6 +1070,9 @@ msgid ""
 msgstr ""
 
 msgid "Please enter a valid time in the %1 format"
+msgstr ""
+
+msgid "Plugged modules"
 msgstr ""
 
 msgid "Post comment disabled"
@@ -1030,43 +1099,13 @@ msgstr ""
 msgid "Public sites users statistics"
 msgstr ""
 
-msgid "Publisher"
+msgid "Publication tree"
+msgstr ""
+
+msgid "Publish"
 msgstr ""
 
 msgid "Publisher is required (at least %1 alphanumerical char)"
-msgstr ""
-
-msgid "Publishing tree"
-msgstr ""
-
-msgid "Question detail"
-msgstr ""
-
-msgid "Question properties"
-msgstr ""
-
-msgid "Question saved"
-msgstr ""
-
-msgid "Questionnaire saved"
-msgstr ""
-
-msgid "Questionnaires deleted"
-msgstr ""
-
-msgid "Questionnaires list"
-msgstr ""
-
-msgid "Questions"
-msgstr ""
-
-msgid "Questions and answers"
-msgstr ""
-
-msgid "Questions deleted"
-msgstr ""
-
-msgid "Questions list"
 msgstr ""
 
 msgid "Queue is empty"
@@ -1096,16 +1135,34 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
+msgid "Remove association"
+msgstr ""
+
+msgid "Remove selected from"
+msgstr ""
+
+msgid "Remove selected from category"
+msgstr ""
+
+msgid "Remove selected from section"
+msgstr ""
+
 msgid "Resource "
 msgstr ""
 
-msgid "Result"
+msgid "Rewrite password"
 msgstr ""
 
 msgid "Rights is required (at least %1 alphanumerical char)"
 msgstr ""
 
 msgid "Save"
+msgstr ""
+
+msgid "Save draft"
+msgstr ""
+
+msgid "Save off"
 msgstr ""
 
 msgid "Search"
@@ -1117,19 +1174,22 @@ msgstr ""
 msgid "Section saved"
 msgstr ""
 
+msgid "Select a category"
+msgstr ""
+
+msgid "Select a destination to 'copy to'"
+msgstr ""
+
+msgid "Select a mailgroup"
+msgstr ""
+
+msgid "Select a status"
+msgstr ""
+
 msgid "Select a user from the list"
 msgstr ""
 
 msgid "Select by category"
-msgstr ""
-
-msgid "Select by difficulty"
-msgstr ""
-
-msgid "Select by eduLevel"
-msgstr ""
-
-msgid "Select by tag"
 msgstr ""
 
 msgid "Select by template"
@@ -1186,9 +1246,6 @@ msgstr ""
 msgid "Subtitle, description"
 msgstr ""
 
-msgid "Summary"
-msgstr ""
-
 msgid "System events"
 msgstr ""
 
@@ -1241,6 +1298,9 @@ msgid ""
 "The content is fixed: it's not possible to change the position in the tree"
 msgstr ""
 
+msgid "This content is not on publishing tree. Continue?"
+msgstr ""
+
 msgid "This help page is under construction: coming soon"
 msgstr ""
 
@@ -1281,6 +1341,16 @@ msgid "URL unattainable"
 msgstr ""
 
 msgid "URLs and paths"
+msgstr ""
+
+msgid "Unique name"
+msgstr ""
+
+msgid "Unplugged modules"
+msgstr ""
+
+msgid ""
+"Unplugging the module will delete all related items. Do you want continue?"
 msgstr ""
 
 msgid "Unsubscribe selected items"
@@ -1348,6 +1418,9 @@ msgstr ""
 msgid "User not associated to mailgroup or he isn't in pending status"
 msgstr ""
 
+msgid "User not found"
+msgstr ""
+
 msgid "User not present"
 msgstr ""
 
@@ -1369,6 +1442,9 @@ msgstr ""
 msgid "Version"
 msgstr ""
 
+msgid "Versions"
+msgstr ""
+
 msgid "View all"
 msgstr ""
 
@@ -1382,9 +1458,6 @@ msgid "Width"
 msgstr ""
 
 msgid "Write here comma-separated email addresses"
-msgstr ""
-
-msgid "Write your answer. Max chars is"
 msgstr ""
 
 msgid "Write your email here"
@@ -1405,10 +1478,13 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
+msgid "You aren't authorized to access that item"
+msgstr ""
+
 msgid "You can't use remote file"
 msgstr ""
 
-msgid "abstract:"
+msgid "You have to be logged to access that item"
 msgstr ""
 
 msgid "accept this IP!"
@@ -1421,9 +1497,6 @@ msgid "access server log statistics"
 msgstr ""
 
 msgid "add"
-msgstr ""
-
-msgid "add by code"
 msgstr ""
 
 msgid "add by object ids"
@@ -1439,9 +1512,6 @@ msgid "add contents"
 msgstr ""
 
 msgid "add group"
-msgstr ""
-
-msgid "add item"
 msgstr ""
 
 msgid "add more tags"
@@ -1498,12 +1568,6 @@ msgstr ""
 msgid "all webmarks"
 msgstr ""
 
-msgid "and get data"
-msgstr ""
-
-msgid "answers"
-msgstr ""
-
 msgid "asc"
 msgstr ""
 
@@ -1514,6 +1578,9 @@ msgid "at"
 msgstr ""
 
 msgid "audio"
+msgstr ""
+
+msgid "authentication provided by"
 msgstr ""
 
 msgid "author"
@@ -1540,10 +1607,16 @@ msgstr ""
 msgid "browse your disk"
 msgstr ""
 
-msgid "by"
+msgid "card(s) associated to mailgroup"
 msgstr ""
 
 msgid "cards"
+msgstr ""
+
+msgid "category"
+msgstr ""
+
+msgid "change"
 msgstr ""
 
 msgid "change status"
@@ -1582,9 +1655,6 @@ msgstr ""
 msgid "close"
 msgstr ""
 
-msgid "code (ISBN/ISSN/BID)"
-msgstr ""
-
 msgid "comments"
 msgstr ""
 
@@ -1603,13 +1673,7 @@ msgstr ""
 msgid "contents"
 msgstr ""
 
-msgid "continue"
-msgstr ""
-
 msgid "copy"
-msgstr ""
-
-msgid "correct answer"
 msgstr ""
 
 msgid "country"
@@ -1666,9 +1730,6 @@ msgstr ""
 msgid "delete selected items"
 msgstr ""
 
-msgid "depth"
-msgstr ""
-
 msgid "desc"
 msgstr ""
 
@@ -1678,7 +1739,7 @@ msgstr ""
 msgid "details"
 msgstr ""
 
-msgid "difficulty"
+msgid "disable succesfully, all related objects are been deleted"
 msgstr ""
 
 msgid "documents"
@@ -1697,9 +1758,6 @@ msgid "edit"
 msgstr ""
 
 msgid "editor"
-msgstr ""
-
-msgid "edu level"
 msgstr ""
 
 msgid "email"
@@ -1726,6 +1784,9 @@ msgstr ""
 msgid "file"
 msgstr ""
 
+msgid "file is already used, please change it to avoid malfunctioning"
+msgstr ""
+
 msgid "filename"
 msgstr ""
 
@@ -1744,6 +1805,9 @@ msgstr ""
 msgid "first page"
 msgstr ""
 
+msgid "fixed object"
+msgstr ""
+
 msgid "for object type"
 msgstr ""
 
@@ -1754,9 +1818,6 @@ msgid "frontend access"
 msgstr ""
 
 msgid "galleries"
-msgstr ""
-
-msgid "get from list"
 msgstr ""
 
 msgid "go"
@@ -1771,13 +1832,10 @@ msgstr ""
 msgid "hashjob for unsubscribe already in use"
 msgstr ""
 
-msgid "height"
-msgstr ""
-
 msgid "help"
 msgstr ""
 
-msgid "illustrator"
+msgid "id"
 msgstr ""
 
 msgid "image"
@@ -1789,10 +1847,7 @@ msgstr ""
 msgid "in recipient groups"
 msgstr ""
 
-msgid "included in questionnaires"
-msgstr ""
-
-msgid "insert more questions"
+msgid "info"
 msgstr ""
 
 msgid "inserted on"
@@ -1801,7 +1856,7 @@ msgstr ""
 msgid "is user"
 msgstr ""
 
-msgid "isbn/issn"
+msgid "item(s)"
 msgstr ""
 
 msgid "items"
@@ -1852,9 +1907,6 @@ msgstr ""
 msgid "list name"
 msgstr ""
 
-msgid "location code"
-msgstr ""
-
 msgid "long text"
 msgstr ""
 
@@ -1862,6 +1914,9 @@ msgid "longitude"
 msgstr ""
 
 msgid "mail address"
+msgstr ""
+
+msgid "mailgroups"
 msgstr ""
 
 msgid "main language"
@@ -1927,9 +1982,6 @@ msgstr ""
 msgid "name"
 msgstr ""
 
-msgid "name and surname"
-msgstr ""
-
 msgid "new again"
 msgstr ""
 
@@ -1942,7 +1994,7 @@ msgstr ""
 msgid "new psw"
 msgstr ""
 
-msgid "new publishing"
+msgid "new publication"
 msgstr ""
 
 msgid "new section"
@@ -1976,6 +2028,9 @@ msgid "no comments"
 msgstr ""
 
 msgid "no custom properties defined"
+msgstr ""
+
+msgid "no items"
 msgstr ""
 
 msgid "no notes"
@@ -2044,9 +2099,6 @@ msgstr ""
 msgid "open answer"
 msgstr ""
 
-msgid "open file in a separate window"
-msgstr ""
-
 msgid "open in new window"
 msgstr ""
 
@@ -2089,7 +2141,13 @@ msgstr ""
 msgid "phone2"
 msgstr ""
 
-msgid "place"
+msgid "plug-in"
+msgstr ""
+
+msgid "plug-out"
+msgstr ""
+
+msgid "plugged succesfully"
 msgstr ""
 
 msgid "prev"
@@ -2134,6 +2192,9 @@ msgstr ""
 msgid "public url"
 msgstr ""
 
+msgid "publication"
+msgstr ""
+
 msgid "publisher"
 msgstr ""
 
@@ -2155,13 +2216,7 @@ msgstr ""
 msgid "referenced objects list"
 msgstr ""
 
-msgid "remove"
-msgstr ""
-
 msgid "remove from users"
-msgstr ""
-
-msgid "remove item"
 msgstr ""
 
 msgid "reply to"
@@ -2173,13 +2228,16 @@ msgstr ""
 msgid "reside in"
 msgstr ""
 
+msgid "restore all"
+msgstr ""
+
+msgid "restore selected"
+msgstr ""
+
 msgid "right to left"
 msgstr ""
 
 msgid "rights"
-msgstr ""
-
-msgid "role"
 msgstr ""
 
 msgid "save"
@@ -2212,12 +2270,6 @@ msgstr ""
 msgid "select from archive"
 msgstr ""
 
-msgid "select from author repository"
-msgstr ""
-
-msgid "select from books repository"
-msgstr ""
-
 msgid "select one"
 msgstr ""
 
@@ -2239,25 +2291,22 @@ msgstr ""
 msgid "sending date"
 msgstr ""
 
-msgid "serial number"
+msgid "set OFF"
 msgstr ""
 
-msgid "series"
+msgid "set ON"
 msgstr ""
 
 msgid "short text"
+msgstr ""
+
+msgid "show"
 msgstr ""
 
 msgid "signature"
 msgstr ""
 
 msgid "size"
-msgstr ""
-
-msgid "speaker"
-msgstr ""
-
-msgid "specify"
 msgstr ""
 
 msgid "staging url"
@@ -2287,9 +2336,6 @@ msgstr ""
 msgid "subscribing method"
 msgstr ""
 
-msgid "subtitle"
-msgstr ""
-
 msgid "surname"
 msgstr ""
 
@@ -2314,10 +2360,10 @@ msgstr ""
 msgid "to"
 msgstr ""
 
-msgid "to recipients"
+msgid "to change your password fill the following form"
 msgstr ""
 
-msgid "to:"
+msgid "to recipients"
 msgstr ""
 
 msgid "today"
@@ -2335,7 +2381,16 @@ msgstr ""
 msgid "translations"
 msgstr ""
 
-msgid "translator"
+msgid "turn off"
+msgstr ""
+
+msgid "turn on"
+msgstr ""
+
+msgid "turned off"
+msgstr ""
+
+msgid "turned on"
 msgstr ""
 
 msgid "type"
@@ -2344,10 +2399,19 @@ msgstr ""
 msgid "undo"
 msgstr ""
 
+msgid "unique name"
+msgstr ""
+
+msgid "unplugged succesfully"
+msgstr ""
+
 msgid "upload new items"
 msgstr ""
 
 msgid "url"
+msgstr ""
+
+msgid "url name"
 msgstr ""
 
 msgid "use template"
@@ -2365,13 +2429,13 @@ msgstr ""
 msgid "value"
 msgstr ""
 
+msgid "version"
+msgstr ""
+
 msgid "video"
 msgstr ""
 
 msgid "view"
-msgstr ""
-
-msgid "view results"
 msgstr ""
 
 msgid "web site"
@@ -2389,13 +2453,7 @@ msgstr ""
 msgid "website"
 msgstr ""
 
-msgid "weight"
-msgstr ""
-
 msgid "welcome"
-msgstr ""
-
-msgid "width"
 msgstr ""
 
 msgid "with email"
@@ -2410,10 +2468,7 @@ msgstr ""
 msgid "write"
 msgstr ""
 
-msgid "write new item"
-msgstr ""
-
-msgid "year"
+msgid "x"
 msgstr ""
 
 msgid "yes"
