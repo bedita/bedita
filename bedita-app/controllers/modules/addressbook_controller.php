@@ -181,7 +181,7 @@ class AddressbookController extends ModulesController {
 				}
 			}
 			$this->Transaction->commit() ;
-			$this->userInfoMessage(__("$counter card(s) associated to mailgroup", true) . " - " . $mailgroup);
+			$this->userInfoMessage("$counter" . __("card(s) associated to mailgroup", true) . " - " . $mailgroup);
 			$this->eventInfo("$counter card(s) associated to mailgroup " . $mailgroup);
 		}
 	}
