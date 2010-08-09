@@ -322,7 +322,7 @@ class NewsletterController extends ModulesController {
 		if(empty($this->data["MailGroup"]["group_name"])) 
 			throw new BeditaException( __("Missing list name", true));
 		if(empty($this->data["MailGroup"]["area_id"])) 
- 			throw new BeditaException( __("Missing publishing", true));
+ 			throw new BeditaException( __("Missing publication", true));
 		$this->Transaction->begin() ;
 		if(!$this->MailGroup->save($this->data)) {
 			throw new BeditaException(__("Error saving mail group", true), $this->MailGroup->validationErrors);
@@ -457,7 +457,7 @@ class NewsletterController extends ModulesController {
 	public function saveTemplate() {
 		$this->checkWriteModulePermission();
 		if(empty($this->data["destination"]))
-			throw new BeditaException( __("Missing publishing", true));
+			throw new BeditaException( __("Missing publication", true));
 		$this->Transaction->begin();
 		$this->saveObject($this->MailTemplate);
 	 	$this->Transaction->commit() ;
