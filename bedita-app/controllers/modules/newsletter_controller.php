@@ -34,8 +34,16 @@ class NewsletterController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Paginator');
 	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeMail');
 
-	var $uses = array('BEObject', 'Card', 'MailGroup', 'MailMessage', 'MailTemplate', 'MailGroupCard') ;
-	
+	var $uses = array('BEObject', 'Card', 'MailGroup', 'MailMessage', 'MailTemplate', 'MailGroupCard', 'MailJob') ;
+
+	var $paginate = array(
+		'MailJob' => array(
+			'limit' => 30,
+			'order' => array('MailJob.sending_date' => 'asc'),
+			'contain' => array("Card")
+		)
+    );
+
 	protected $moduleName = 'newsletter';
 	
     public function index() {
@@ -160,42 +168,44 @@ class NewsletterController extends ModulesController {
 
 		$this->viewObject($this->MailMessage, $id);
 
-		$mailJobModel = ClassRegistry::init("MailJobs");
-
-		$jobs = $mailJobModel->find("all", array(
+		$totalJobs = $this->MailJob->find("count", array(
 			"conditions" => array("mail_message_id" => $id)
 		));
 
-		$jobsFailed = $mailJobModel->find("count", array(
+		$jobsFailed = $this->MailJob->find("count", array(
 			"conditions" => array(
 				"status" => array("error"),
 				"mail_message_id" => $id
 			)
 		));
 
-		$jobsOk = $mailJobModel->find("count", array(
+		$jobsOk = $this->MailJob->find("count", array(
 			"conditions" => array(
 				"status" => array("sent"),
 				"mail_message_id" => $id
 			)
 		));
 
-		$jobsPending = $mailJobModel->find("count", array(
+		$jobsPending = $this->MailJob->find("count", array(
 			"conditions" => array(
 				"status" => array("penidng"),
 				"mail_message_id" => $id
 			)
 		));
 
-		$jobsUnsent = $mailJobModel->find("count", array(
+		$jobsUnsent = $this->MailJob->find("count", array(
 			"conditions" => array(
 				"status" => array("unsent"),
 				"mail_message_id" => $id
 			)
 		));
 
+		// MailJob paginated
+		$this->helpers[] = "Paginator";
+		$jobs = $this->paginate("MailJob", array("MailJob.mail_message_id" => $id));
+
 		$this->set("jobs", $jobs);
-		$this->set("totalJobs", count($jobs));
+		$this->set("totalJobs", $totalJobs);
 		$this->set("jobsFailed", $jobsFailed);
 		$this->set("jobsOk", $jobsOk);
 		$this->set("jobsPending", $jobsPending);
