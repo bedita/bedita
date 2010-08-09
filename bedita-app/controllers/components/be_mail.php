@@ -78,7 +78,7 @@ class BeMailComponent extends Object {
 			throw new BeditaException(__("Error finding mail message " . $msg_id, true));
 		
 		$data["to"] = $to;
-		$data["from"] = $res["sender"];
+		$data["from"] = (!empty($res["sender_name"]))? $mailMsgModel->getCompleteSender(null, $res["sender"], $res["sender_name"]) : $res["sender"];
 		$data["subject"] = $res["subject"];
 		$data["replyTo"] = $res["reply_to"];
 		$data["mailType"] = ($html)? "both" : "txt";
@@ -87,6 +87,7 @@ class BeMailComponent extends Object {
 		
 		$this->sendMail($data);
 	}
+	
 	
 	/**
 	 * Prepare mail body using template
@@ -346,6 +347,7 @@ class BeMailComponent extends Object {
 						);
 						
 		$messagesSent = array();
+		$mailMsgModel = ClassRegistry::init("MailMessage");
 		
 		foreach ($jobsToDo as $job) {
 			
@@ -355,7 +357,7 @@ class BeMailComponent extends Object {
 			
 			if ($job["Card"]["mail_status"] == "valid") {
 				$data["to"] = $job["Card"]["newsletter_email"];
-				$data["from"] = $job["MailMessage"]["sender"];
+				$data["from"] = (!empty($job["MailMessage"]["sender_name"]))? $mailMsgModel->getCompleteSender(null, $job["MailMessage"]["sender"], $job["MailMessage"]["sender_name"]) : $job["MailMessage"]["sender"];
 				$data["replyTo"] = $job["MailMessage"]["reply_to"];
 				$data["subject"] = $job["MailMessage"]["Content"]["subject"];
 				$data["mailType"] = (!empty($job["Card"]["mail_html"]))? "both" : "txt";			
@@ -423,10 +425,12 @@ class BeMailComponent extends Object {
 		}
 		
 		$data = array();
+		$mailMsgModel = ClassRegistry::init("MailMessage");
 		foreach ($jobsToSend as $job) {
 			$mailParams = unserialize($job['MailJob']['mail_params']);
 			$data["to"] = $job["MailJob"]["recipient"];
-			$data["from"] = $mailParams["sender"];
+
+			$data["from"] = (!empty($mailParams["sender_name"]))? $mailMsgModel->getCompleteSender(null, $mailParams["sender"], $mailParams["sender_name"]) : $mailParams["sender"];
 			$data["replyTo"] = $mailParams["reply_to"];
 			$data["subject"] = $mailParams["subject"];
 			$data["mailType"] = "txt";

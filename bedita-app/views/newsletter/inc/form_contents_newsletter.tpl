@@ -129,7 +129,7 @@ $(document).ready(function() {
 	
 	<label>{t}Title{/t}: </label>
 	{assign_concat var="default" 0="Newsletter | " 1=$smarty.now|date_format:"%B %Y"}
-	<input type="text" id="title" name="data[title]" 
+	<input type="text" id="title" name="data[title]" class="required"
 	value="{$object.title|default:$default|escape:'html'|escape:'quotes'}" id="titleBEObject"/>
 
 {*

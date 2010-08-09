@@ -17,12 +17,16 @@
 {$javascript->link("jquery/jquery.placement.below")}
 {$javascript->link("jquery/jquery.timepicker-list")}
 
+{$javascript->link("jquery/jquery.validate")}
+
 <script type="text/javascript">
 	{literal}
 	$(document).ready( function ()
 	{
 		openAtStart("#contents, #invoice");
 		$("#timeStart, #timeEnd").timePicker({startTime: "00:00", endTime: "23:30"});
+
+		$("#updateForm").validate();
 		
 	});
 	{/literal}

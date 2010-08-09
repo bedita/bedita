@@ -86,6 +86,16 @@ class MailMessage extends BeditaContentModel
 			"rule"	=> "email",
 			"required" => true,
 			"message"	=> "Please supply a valid email address."
+		),
+		"reply_to" => array(
+			"rule" => "email",
+			"allowEmpty" => true,
+			"message"	=> "Please supply a valid email address."
+		),
+		"bounce_to" => array(
+			"rule" => "email",
+			"allowEmpty" => true,
+			"message"	=> "Please supply a valid email address."
 		)
 	);
 	
@@ -104,6 +114,34 @@ class MailMessage extends BeditaContentModel
 			$data['subject'] = $data['title'];
 		}
         return true;
+	}
+
+	/**
+	 * return a complete sender email address "sender name <sender@bedita.com>
+	 *
+	 * @param int $id MailMessage.id (if not empty use MailMessage.id otherwise use the others parameters)
+	 * @param string $senderEmail
+	 * @param string $senderName
+	 * @return mixed, false if it's not find any email
+	 */
+	public function getCompleteSender($id=null, $senderEmail=null, $senderName=null) {
+		if (!empty($id)) {
+			$res = $this->find("first", array(
+				"conditions" => array("id" => $id),
+				"fields" => array("sender_name", "sender"),
+				"contain" => array()
+			));
+			if (empty($res)) {
+				return false;
+			}
+			$senderName = $res["sender_name"];
+			$senderEmail = $res["sender"];
+		}
+		if (empty($senderEmail)) {
+			return false;
+		}
+		$sender = (!empty($senderName))? $senderName . " <" . $senderEmail . ">" : $senderEmail;
+		return $sender;
 	}
 }
 ?>

@@ -464,6 +464,7 @@ CREATE TABLE mail_messages (
     mail_status character varying(10) DEFAULT 'unsent'::character varying NOT NULL,
     start_sending timestamp without time zone,
     end_sending timestamp without time zone,
+	sender_name character varying(255) NOT NULL,
     sender character varying(255) NOT NULL,
     reply_to character varying(255) NOT NULL,
     bounce_to character varying(255) NOT NULL,

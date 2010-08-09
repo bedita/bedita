@@ -53,6 +53,7 @@ ALTER TABLE `event_logs` ADD KEY userid_idx (`userid`);
 ALTER TABLE `mail_jobs` CHANGE `recipient` `recipient` VARCHAR( 255 ) NULL COMMENT 'email recipient, used if card_is and mail_message_id are null';
 ALTER TABLE `mail_jobs` ADD KEY recipient_index (`recipient`);
 ALTER TABLE `mail_jobs` ADD KEY status_index (`status`);
+ALTER TABLE `mail_messages` ADD `sender_name` VARCHAR( 255 ) NOT NULL;
 
 CREATE TABLE history (
   `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,

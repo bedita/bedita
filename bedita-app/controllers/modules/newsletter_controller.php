@@ -405,6 +405,7 @@ class NewsletterController extends ModulesController {
 		if (empty($this->data["subject"])) {
 			$this->data["subject"] = $this->data["title"];
 		}
+		
 		$this->Transaction->begin();
 		$this->saveObject($this->MailMessage);
 	 	$this->Transaction->commit() ;
