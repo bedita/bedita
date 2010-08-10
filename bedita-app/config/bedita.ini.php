@@ -496,29 +496,37 @@ $config['hashExpiredTime'] = 604800;
  * first item is the default
  */
 $config['checkConstraints'] = array(
-	"applications.text_dir" => array("ltr", "rtl"),
-	"banned_ips.status" => array("ban", "accept"),
-	"cards.mail_status" => array("valid", "blocked"),
-	"categories.status" => array("on", "off"),
-	"events.log_level" => array("debug", "info","warn", "err"),
-	"hash_job.status" => array("pending", "expired", "closed", "failed"),
-	"links.target" => array("_self", "_blank", "parent", "top", "popup"),
-	"mail_groups.security" => array("all", "none"),
-	"mail_group_cards.status" => array("pending", "confirmed"),
-	"mail_logs.log_level" => array("info","warn", "err"),
-	"mail_jobs.status" => array("unsent", "pending", "sent", "failed"),
-	"mail_messages.status" => array("unsent", "pending", "injob", "sent"),
-	"modules.status" => array("on", "off"),
-	"modules.module_type" => array("core", "plugin"),
-	"objects.status" => array("on", "off", "draft"),
-	"objects.comments" => array("on", "off", "moderated"),
-	"permissions.switch" => array("user","group"),
-	"permission_modules.switch" => array("user","group"),
-	"properties.property_type" => array("number", "date", "text", "options"),
-	"sections.syndicate" => array("on", "off"),
-	"sections.priority_order" => array("asc", "desc"),
-	"users.comments" => array("never", "mine", "all"),
-	"users.notes" => array("never", "mine", "all")
+	"applications" => array("text_dir" => array("ltr", "rtl")),
+	"banned_ips" => array("status" => array("ban", "accept")),
+	"cards" => array("mail_status" => array("valid", "blocked")),
+	"categories" => array("status" => array("on", "off")),
+	"events" => array("log_level" => array("debug", "info","warn", "err")),
+	"hash_job" => array("status" => array("pending", "expired", "closed", "failed")),
+	"links" => array("target" => array("_self", "_blank", "parent", "top", "popup")),
+	"mail_groups" => array("security" => array("all", "none")),
+	"mail_group_cards" => array("status" => array("pending", "confirmed")),
+	"mail_logs" => array("log_level" => array("info","warn", "err")),
+	"mail_jobs" => array("status" => array("unsent", "pending", "sent", "failed")),
+	"mail_messages" => array("status" => array("unsent", "pending", "injob", "sent")),
+	"modules" => array(
+		"status" => array("on", "off"),
+		"module_type" => array("core", "plugin")
+	),
+	"objects" => array(
+		"status" => array("on", "off", "draft"),
+		"comments" => array("on", "off", "moderated")
+	),
+	"permissions" => array("switch" => array("user","group")),
+	"permission_modules" => array("switch" => array("user","group")),
+	"properties" => array("property_type" => array("number", "date", "text", "options")),
+	"sections" => array(
+		"syndicate" => array("on", "off"),
+		"priority_order" => array("asc", "desc")
+	),
+	"users" => array(
+		"comments" => array("never", "mine", "all"),
+		"notes" => array("never", "mine", "all")
+	)
 );
 
 /**

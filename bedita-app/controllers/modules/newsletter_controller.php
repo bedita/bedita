@@ -202,7 +202,11 @@ class NewsletterController extends ModulesController {
 
 		// MailJob paginated
 		$this->helpers[] = "Paginator";
-		$jobs = $this->paginate("MailJob", array("MailJob.mail_message_id" => $id));
+		$conditions = array("MailJob.mail_message_id" => $id);
+		if (!empty($this->passedArgs["status"])) {
+			$conditions[] = array("MailJob.status" => $this->passedArgs["status"]);
+		}
+		$jobs = $this->paginate("MailJob", $conditions);
 
 		$this->set("jobs", $jobs);
 		$this->set("totalJobs", $totalJobs);

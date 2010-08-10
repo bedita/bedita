@@ -1,3 +1,13 @@
+<script type="text/javascript">
+{literal}
+$(document).ready(function() {
+	$("#selectMailStatus").change(function() {
+		location.href = $(this).val();
+	});
+});
+{/literal}
+</script>
+
 {$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl" method="invoices"}
@@ -80,6 +90,19 @@
 				{assign var='label_prev' value=$tr->t('prev',true)}
 				<td>{$paginator->next($label_next,null,$label_next,$optionsPagDisable)}  <span class="evidence"> &nbsp;</span></td>
 				<td>{$paginator->prev($label_prev,null,$label_prev,$optionsPagDisable)}  <span class="evidence"> &nbsp;</span></td>
+
+				<td>
+					{assign var="urlSelect" value=$view->passedArgs}
+					{array_add var="urlSelect" page=1 sort="MailJob.sending_date" direction="asc"}
+					<select id="selectMailStatus">
+						<option value="{$paginator->url($urlSelect)}"> -- </option>
+						{foreach from=$conf->checkConstraints.mail_jobs.status item="s"}
+						{array_add var="urlSelect" status=$s}
+						<option value="{$paginator->url($urlSelect)}"
+							{if !empty($view->passedArgs.status) && $view->passedArgs.status == $s} selected{/if}>{t}{$s}{/t}</option>
+						{/foreach}
+					</select>
+				</td>
 			</tr>
 		</table>
 		</div>
