@@ -49,7 +49,7 @@ class BeFrontHelper extends AppHelper {
 
 	public function title($order='asc') {
 		$pub = (!empty($this->_publication['public_name'])) ? $this->_publication['public_name'] : $this->_publication['title'];
-		if(empty($this->_section) || empty($this->_section['title'])) {
+		if(empty($this->_section) || empty($this->_section['title']) || $this->_section['nickname'] == $this->_publication['nickname']) {
 			return $pub;
 		}
 		$sec = $this->_section['title'];
@@ -173,6 +173,67 @@ class BeFrontHelper extends AppHelper {
 		}
 		return $content;
 	}
+
+	/**
+	 * return an innested unordered list
+	 *		<ul id="menuItem">
+	 *			<li class="$liClass"><a href="...">item 1</a></li>
+	 *			<li class="$liClass">
+	 *				<a href="...">item 2</a>
+	 *				<ul class="$ulClass">
+	 *					<li class="$liClass"><a href="...">item 3</a></li>
+	 *					...
+	 *				</ul>
+	 *			</li>
+	 *			....
+	 *		</ul>
+	 *
+	 * @param array $tree section's tree (structure from FrontendController::loadSectionsTree is aspected)
+	 * @param string $ulClass css class name for <ul> except for the first that has id="menuItem"
+	 * @param string $liClass css class name for all <li>
+	 */
+	public function menu(array $tree, $ulClass="children", $liClass="childItem") {
+		$htmlMenu = "<ul id='menuItem'>";
+		if (empty($tree)) {
+			return $htmlMenu . "<li class='" .$liClass . "'></li></ul>";
+		}
+
+		foreach ($tree as $section) {
+			$htmlMenu .= $this->menuBranch($section, $ulClass, $liClass);
+		}
+
+		return $htmlMenu;
+	}
+
+	/**
+	 * return an html <li></li> menu branch
+	 *
+	 * @param array $section
+	 * @param string $ulClass
+	 * @param string $liClass
+	 * @return string
+	 */
+	private function menuBranch(array $section, $ulClass, $liClass) {
+		$liClasses = $liClass;
+		if (!empty($this->_section['nickname']) && 
+				($this->_section["nickname"] == $section["nickname"] || strstr($this->_section["canonicalPath"], '/' . $section["nickname"] . '/'))) {
+			$liClasses .= " " . "on";
+		}
+		$htmlBranch = "<li class='" . $liClasses . "'>" .
+			"<a href='" . $this->Html->url($section["canonicalPath"]) . "' title='" . $section["title"] . "'>" . $section["title"] . "</a>";
+
+		if (!empty($section["sections"])) {
+			$htmlBranch .= "<ul class='" . $ulClass . "'>";
+			foreach ($section["sections"] as $subSection) {
+				$htmlBranch .= $this->menuBranch($subSection, $ulClass, $liClass);
+			}
+			$htmlBranch .= "</ul>";
+		}
+
+		$htmlBranch .= "</li>";
+		return $htmlBranch;
+	}
+
 }
  
 ?>
