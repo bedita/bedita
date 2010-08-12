@@ -640,6 +640,18 @@ abstract class FrontendController extends AppController {
 		$tplVar = (!empty($tplVar))? $tplVar : "publicationsList";
 		$this->set($tplVar, $publications);
 	}
+
+	/**
+	 * find first active section and load it as home page section
+	 * if any section was found load publication as home page section
+	 */
+	protected function homePage() {
+		$filter = array("object_type_id" => Configure::read("objectTypes.section.id"));
+		$child = $this->BeTree->getChildren($this->publication["id"], $this->getStatus(), $filter, null, true, 1, 1);
+		$homePageSectionId = (empty($child["items"]))? $this->publication["id"] : $child["items"][0]["id"];
+		$this->action = 'section';
+		$this->section($homePageSectionId);
+	}
 	
 	/**
 	 * prepare an XML containing sitemap specification
