@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: http://debug.example.com/sitemap.xml
