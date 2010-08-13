@@ -190,7 +190,7 @@ div.menu,
 }
 #site-generator {
 	float: right;
-	width: 220px;
+	width: 250px;
 }
 
 
@@ -1204,11 +1204,11 @@ h3#reply-title {
 	position: relative;
 }
 #site-generator a {
-	background: url(images/wordpress.png) center left no-repeat;
+	background: url(../img/bedita_grey.png) center left no-repeat;
 	color: #666;
 	display: inline-block;
 	line-height: 16px;
-	padding-left: 20px;
+	padding-left: 50px;
 	text-decoration: none;
 }
 #site-generator a:hover {

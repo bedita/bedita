@@ -4,11 +4,14 @@ class PagesController extends FrontendController {
 
 	var $helpers 	= array("BeFront");
 	var $uses = array() ;
+
 	protected $sectionOptions = array(
 		"showAllContents" => true, 
 		"itemsByType" => false, 
 		"childrenParams" => array("dim" => 10)
 	);
+
+	protected $searchOptions = array("order" => "title", "dir" => 1, "dim" => 10, "page" => 1, "filter" => false);
 	
 	/**
 	 * load common data, for all frontend pages...
@@ -27,6 +30,7 @@ class PagesController extends FrontendController {
 	}
 
 	protected function beditaBeforeRender() {
+		/** @todo: here it should get previous and next item when a content is requested. It dosen't work well **/
 		if (!empty($this->viewVars["section"]["contentRequested"]) && !empty($this->viewVars["section"]["childContents"])) {
 			for ($i=0; $i < count($this->viewVars["section"]["childContents"]); $i++) {
 				if ($this->viewVars["section"]["currentContent"]["id"] == $this->viewVars["section"]["childContents"][$i]["id"]) {
@@ -36,9 +40,16 @@ class PagesController extends FrontendController {
 					if (!empty($this->viewVars["section"]["childContents"][$i+1])) {
 						$this->set("nextItem", $this->viewVars["section"]["childContents"][$i+1]);
 					}
-
 					break;
 				}
+			}
+		}
+	}
+
+	protected function searchBeforeRender() {
+		if (!empty($this->viewVars["searchResult"]["items"])) {
+			foreach ($this->viewVars["searchResult"]["items"] as &$item) {
+				$item = $this->loadObj($item["id"]);
 			}
 		}
 	}

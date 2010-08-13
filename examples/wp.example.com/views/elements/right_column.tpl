@@ -4,7 +4,7 @@
 		<li id="search-2" class="widget-container widget_search">
 			{$view->element("form_search")}
 		</li>
-
+{*
 		<li id="recent-posts-2" class="widget-container widget_recent_entries">
 			<h3 class="widget-title">Recent Posts</h3>
 			<ul>
@@ -45,6 +45,7 @@
 				<li><a href="http://wordpress.org/" title="Powered by WordPress, state-of-the-art semantic personal publishing platform.">WordPress.org</a></li>
 			</ul>
 		</li>
-
+*}
 	</ul>
+
 </div><!-- #primary .widget-area -->
