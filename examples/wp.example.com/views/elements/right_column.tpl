@@ -4,6 +4,21 @@
 		<li id="search-2" class="widget-container widget_search">
 			{$view->element("form_search")}
 		</li>
+
+		{if !empty($listTags)}
+		<li id="tag_cloud" class="widget-container">
+			<h3 class="widget-title">Tag cloud</h3>
+			{foreach from=$listTags item="tag"}
+				<a title="{$tag.weight}" class="reverse moreAnchor {$tag.class|default:""}" href="{$html->url('/tag/')}{$tag.name|replace:' ':'+'}">
+				{$tag.label}
+				</a>
+			{/foreach}
+		</li>
+		{/if}
+
+
+
+
 {*
 		<li id="recent-posts-2" class="widget-container widget_recent_entries">
 			<h3 class="widget-title">Recent Posts</h3>

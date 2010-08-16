@@ -3,8 +3,15 @@
 
 	{if !empty($section.contentRequested) || (!empty($section.childContents) && count($section.childContents) == 1 && $section.toolbar.dim > 1)}
 		<div id="post-{$section.currentContent.id}" class="post-{$section.currentContent.id} page type-page hentry">
-									<h1 class="entry-title">{$section.currentContent.title}</h1>
+			<h1 class="entry-title">{$section.currentContent.title}</h1>
 
+			<script type="text/javascript">
+			{literal}
+			$(document).ready(function() {
+				$("a[rel='gallery']").colorbox();
+			});
+			{/literal}
+			</script>
 			
 			<div class="entry-meta">
 				<span class="meta-prep meta-prep-author">Posted on</span> <a href="http://localhost/workspace/wordpress/?p=1" title="12:51 pm" rel="bookmark"><span class="entry-date">{$section.currentContent.publication_date|date_format:"%B %e, %Y"}</span></a> <span class="meta-sep">by</span> <span class="author vcard"><a class="url fn n" href="" title="View all posts by bato">{$section.currentContent.author|default:$section.currentContent.UserCreated.realname}</a></span>
@@ -12,6 +19,14 @@
 
 			<div class="entry-content">
 				{$section.currentContent.body}
+				{if !empty($section.currentContent.relations.attach)}
+					{assign_associative var="options" mode="fill" width=100 height=100 modeparam="000000" upscale=true}
+					{assign_associative var="htmlAttr" style="float: left; width: 100px; height: 100px; margin: 10px 20px 10px 0"}
+					{assign_associative var="optionsBig" mode="fill" longside=600 URLonly=true}
+					{foreach from=$section.currentContent.relations.attach item="attach"}
+						<a rel="gallery" title="{$attach.title}" href="{$beEmbedMedia->object($attach, $optionsBig)}">{$beEmbedMedia->object($attach, $options, $htmlAttr)}</a>
+					{/foreach}
+				{/if}
 			</div><!-- .entry-content -->
 
 			<div class="entry-utility">

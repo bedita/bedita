@@ -1327,3 +1327,27 @@ code {
 		border: none;
 	}
 }
+
+
+/* BEDITA team */
+/*********** tags ********************/
+.smallestTag {
+	font-size:1em;
+}
+
+.smallTag {
+	font-size:1.2em;
+}
+
+.mediumTag {
+	font-size:1.4em;
+}
+
+
+.largeTag {
+	font-size:1.8em;
+}
+
+.largestTag {
+	font-size:2.2em;
+}

@@ -44,6 +44,9 @@ class PagesController extends FrontendController {
 				}
 			}
 		}
+
+		// load tags
+		$this->loadTags(null, true, true, 20);
 	}
 
 	protected function searchBeforeRender() {

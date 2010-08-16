@@ -10,6 +10,10 @@
 *}
 
 	{$html->css('twentyten')}
+	{$html->css('colorbox')}
+
+	{$javascript->link('jquery')}
+	{$javascript->link('jquery.colorbox-min')}
 	
 	{$scripts_for_layout}
 </head>
