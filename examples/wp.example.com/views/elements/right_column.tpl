@@ -5,11 +5,33 @@
 			{$view->element("form_search")}
 		</li>
 
+		{if !empty($section.contentRequested) && !empty($section.currentContent.relations.seealso)}
+		<li id="seealso_list" class="widget-container">
+			<h3 class="widget-title">See also</h3>
+			{foreach from=$section.currentContent.relations.seealso item="seealso"}
+				<a title="{$seealso.title}" href="{$html->url('/')}{$seealso.nickname}">
+				{$seealso.title}
+				</a>
+			{/foreach}
+		</li>
+		{/if}
+
+		{if !empty($section.contentRequested) && !empty($section.currentContent.relations.download)}
+		<li id="download_list" class="widget-container">
+			<h3 class="widget-title">Download</h3>
+			{foreach from=$section.currentContent.relations.download item="download"}
+				<a title="{$download.title}" href="{$html->url('/download/')}{$download.nickname}">
+				{$download.title}
+				</a>
+			{/foreach}
+		</li>
+		{/if}
+
 		{if !empty($listTags)}
 		<li id="tag_cloud" class="widget-container">
 			<h3 class="widget-title">Tag cloud</h3>
 			{foreach from=$listTags item="tag"}
-				<a title="{$tag.weight}" class="reverse moreAnchor {$tag.class|default:""}" href="{$html->url('/tag/')}{$tag.name|replace:' ':'+'}">
+				<a title="{$tag.weight}" class="{$tag.class|default:""}" href="{$html->url('/tag/')}{$tag.name|replace:' ':'+'}">
 				{$tag.label}
 				</a>
 			{/foreach}
