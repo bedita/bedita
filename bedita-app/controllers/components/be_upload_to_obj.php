@@ -57,6 +57,8 @@ class BeUploadToObjComponent extends Object {
 		}
 		$data['mime_type'] = $this->BeFileHandler->getMimeType($data);
 		unset($data['type']);
+		$data['file_size'] = $this->params['form'][$formFileName]['size'];
+		unset($data['size']);
 		
 		if (!empty($this->params['form']['mediatype'])) {
 			$data['mediatype'] = $this->params['form']['mediatype'];

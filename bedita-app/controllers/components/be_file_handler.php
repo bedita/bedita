@@ -27,8 +27,8 @@
  * 
  * 		path		temporary file path or URL
  * 		name		Name of original file
- * 		type		MIME type, if not set, try to get from file name (@todo)
- * 		size		file size, if URL, try to read remote file size
+ * 		mime_type		MIME type, if not set, try to get from file name (@todo)
+ * 		file_size		file size, if URL, try to read remote file size
  *  
  * Exceptions:
  * 		BEditaFileExistException		// File already exists (thrown in creation)
@@ -82,8 +82,8 @@ class BeFileHandlerComponent extends Object {
 	 * 	path: local path or URL (\.+//:\.+) [remote file]
 	 * 			if "allow_url_fopen" is not activated, remote file is not accepted
 	 * name		Name of file. Empty if path == URL
-	 * type		MIME type. Empty if path == URL
-	 * size		File size. Empty if path == URL
+	 * mime_type		MIME type. Empty if path == URL
+	 * file_size		File size. Empty if path == URL
 	 *
 	 * @param array $dati	object data
 	 *
