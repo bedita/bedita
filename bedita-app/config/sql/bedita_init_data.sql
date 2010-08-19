@@ -54,7 +54,7 @@ INSERT INTO modules (id,label, name, url, status, priority) VALUES ('26','multim
 
 
 -- --------------------------------------
--- default empty frontend/publishing
+-- default empty frontend/publication
 -- --------------------------------------
 
 INSERT INTO objects (object_type_id, status, title, nickname, lang, ip_created, user_created, user_modified) 
@@ -63,8 +63,18 @@ INSERT INTO areas (id, public_name)
 VALUES (1, 'bedita publication');
 INSERT INTO sections (id, syndicate, priority_order)
 VALUES (1, 'off', 'asc');
-INSERT INTO trees (id, parent_id, object_path, parent_path, priority) VALUES
-(1, NULL, '/1', '/', 1);
+INSERT INTO trees (id, area_id, parent_id, object_path, parent_path, priority) VALUES
+(1, 1, NULL, '/1', '/', 1);
+
+-- --------------------------------------
+-- default empty section (used as home page)
+-- --------------------------------------
+INSERT INTO objects (object_type_id, status, title, nickname, description, lang, ip_created, user_created, user_modified)
+VALUES (3, 'on', 'Section One', 'section-one', 'This is a section example. Remember that the first active section is loaded as home page by default. If any section is found then the publication is used as home page. Edit, move or delete this section as you wish.', 'eng', '127.0.0.1', 1, 1);
+INSERT INTO sections (id, syndicate, priority_order)
+VALUES (2, 'off', 'asc');
+INSERT INTO trees (id, area_id, parent_id, object_path, parent_path, priority) VALUES
+(2, 1, 1, '/1/2', '/1', 1);
 
 -- --------------------------------------
 -- administrator permissions
