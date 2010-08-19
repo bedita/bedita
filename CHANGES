@@ -1,3 +1,40 @@
+Version 3.1.RC - ulmus
+ User-visible changes:
+	* backend main container expanded to 1024px, optimal resolution now is 1280x1024
+	* pagination in Publications section
+	* #180 - module Translations: order by translation status (and by BEObject.modified DESC), added object_type filter
+	* #248 fix "Category" filter bug
+	* renamed history to versions
+	* "No items found" - instead of "No {$moduleName} found"
+	* skip duplicate mail notifications
+	* #70 - disable mail notifications on autosave
+	* #255 - viewMailGroup - bulk list operations
+	* #232 - list invoice now contains newsletter already sent too. Added invoice detail with paginated mail jobs. Add filter on mail_jobs.status.
+	* bugfix: right file size uploading file
+
+
+ Frontend changes:
+	* fix missing LangText for stream-type objects
+	* BeFront helper: added menu method to build simple innested unordered list menu from tree
+	* homePage method used to load first active section as home page
+	* frontend examples: home page route rule changed
+	* wordpress default theme sample
+
+
+ Developer-visibile changes:
+	* #103 - helper method and many adjustament to map database fields to module label
+	* #248 [postgres] fix findObjects - not extending Content (e.g. cards)
+	* object relations - extend method to support bidirectional relations
+	* fix bedita cleanup on frontends
+	* bugfix on be_auth
+	* #223 - license types in bedita.ini/cfg
+	* show translation percentage/status in gettext update
+	* i18n update
+	* #255 - addeded javascript validation on email and title fields for newsletter message view, added sender_name fields on db and handle it from be_mail component
+
+
+
+
 Version 3.1.beta - ulmus
  User-visible changes:
 	* #103 - fix revisions on multiple objects save, curr revision, tot revision number, user data in template

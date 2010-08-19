@@ -107,6 +107,15 @@ class DeployShell extends BeditaBaseShell {
 				throw new Exception("Error creating empty file " . $p);
 			}
 		}
+
+		foreach ($rel["moveDirs"] as $from => $to) {
+			$pathFrom = $exportPath.DS.$from;
+			$pathTo = $exportPath.DS.$to;
+			$this->out("move dir: $pathFrom => $pathTo");
+			if(!$folder->move(array("to" => $pathTo, "from" => $pathFrom))) {
+	        	throw new Exception("Error moving " . $pathFrom. " to " .$pathTo);
+			}
+		}
 		
 		// create version file
 		// release name is : base name + majorversione (like 3.0.beta1) + svn revision
