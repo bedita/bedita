@@ -1,11 +1,13 @@
 {$html->docType('xhtml-trans')}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">
 <head>
-	<title>{$publication.public_name|default:$publication.title}{if !empty($section)} | {$section.title}{/if}</title>
+	<title>{$beFront->title()}</title>
+	{$beFront->metaAll()}
+	{$beFront->metaDc()}
 	<link rel="icon" href="{$html->webroot}favicon.ico" type="image/x-icon" />
-	<link rel="shortcut icon" href="{$html->webroot}favicon.ico" type="image/x-icon" />
+	
+	{$beFront->feeds()}
 
-	{$html->charset('utf-8')}
 	{$scripts_for_layout}
 </head>
 

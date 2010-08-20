@@ -2,7 +2,7 @@
 
 class PagesController extends FrontendController {
 
-	var $helpers 	= array();
+	var $helpers = array("BeFront");
 	var $uses = array() ;
 	
 	/**
@@ -10,7 +10,9 @@ class PagesController extends FrontendController {
 	 */ 
 	protected function beditaBeforeFilter() {
 		// uncomment to use ctp file instead of tpl file for templates
-//		$this->view = "View"; 
+//		$this->view = "View";
+		$this->set('feedNames', $this->Section->feedsAvailable(Configure::read("frontendAreaId")));
+		$this->set('sectionsTree', $this->loadSectionsTree(Configure::read("frontendAreaId")));
 	}
 }
 
