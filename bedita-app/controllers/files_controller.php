@@ -39,8 +39,8 @@ class FilesController extends AppController {
 		header("Content-Type: application/json");
 		try {
 			$data=array();
-			if (!empty($_GET["userid"]))
-				$data = array("user_created" => $_GET["userid"], "user_modified" => $_GET["userid"]);
+			if (!empty($this->params["form"]["userid"]))
+				$data = array("user_created" => $this->params["form"]["userid"], "user_modified" => $this->params["form"]["userid"]);
 			$this->Transaction->begin() ;
 			$id = $this->BeUploadToObj->upload($data) ;
 			$this->Transaction->commit();
