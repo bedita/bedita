@@ -37,6 +37,7 @@ class BeFrontHelper extends AppHelper {
 	private $_publication;
 	private $_section;
 	private $_currentContent;
+	private $_feedNames;
 	private $_conf;
 
 	public function __construct() {
@@ -44,6 +45,7 @@ class BeFrontHelper extends AppHelper {
 		$this->_publication = (!empty($view->viewVars['publication'])) ? $view->viewVars['publication'] : null;
 		$this->_section =  (!empty($view->viewVars['section'])) ? $view->viewVars['section'] : null;
 		$this->_currentContent = (!empty($view->viewVars['section']['currentContent'])) ? $view->viewVars['section']['currentContent'] : null;
+		$this->_feedNames = (!empty($view->viewVars['feedNames']))? $view->viewVars['feedNames'] : null;
 		$this->_conf = Configure::getInstance();
 	}
 
@@ -67,53 +69,86 @@ class BeFrontHelper extends AppHelper {
 		if(empty($content)) {
 			return "";
 		}
-		return '<meta name="description" content="' . strip_tags($content) . '" />';
+		return $this->Html->meta("description", strip_tags($content));
 	}
 
 	public function metaDc() {
 		$object = (!empty($this->_currentContent)) ? $this->_currentContent : $this->_publication;
 		$title = (!empty($object['public_name'])) ? $object['public_name'] : $object['title'];
-		$html = '<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />';
-		$html.= "\n" . '<meta name="DC.title" 			content="' . $title . '" />';
+		$html = $this->Html->meta(array(
+			"rel" => "schema.DC",
+			'link' => "http://purl.org/dc/elements/1.1/"
+		));
+		$html .= "\n" . $this->Html->meta(array(
+			"name" => "DC.title",
+			"content" => $title
+		));
 		$content = $this->get_description();
-		if(!empty($content)) 
-			$html.= "\n" . '<meta name="DC.description" 	content="' . strip_tags($content) . '" />';
-		$content = $this->get_value_for_field("lang");
-		if(!empty($content)) 
-			$html.= "\n" . '<meta name="DC.language" 		content="' . strip_tags($content) . '" />';
-		$content = $this->get_value_for_field("creator");
-		if(!empty($content)) 
-			$html.= "\n" . '<meta name="DC.creator" 		content="' . strip_tags($content) . '" />';
-		$content = $this->get_value_for_field("publisher");
-		if(!empty($content)) 
-			$html.= "\n" . '<meta name="DC.publisher" 		content="' . strip_tags($content) . '" />';
-		$content = $this->get_value_for_field("date");
-		if(!empty($content)) 
-			$html.= "\n" . '<meta name="DC.date" 			content="' . strip_tags($content) . '" />';
-		$content = $this->get_value_for_field("modified");
-		if(!empty($content)) 
-			$html.= "\n" . '<meta name="DC.modified" 		content="' . strip_tags($content) . '" />';
-		$html.= "\n" . '<meta name="DC.format" 			content="text/html" />';
-		$content = $this->get_value_for_field("id");
-		if(!empty($content)) 
-			$html.= "\n" . '<meta name="DC.identifier" 		content="' . strip_tags($content) . '" />';
-		$content = $this->get_value_for_field("rights");
-		if(!empty($content)) 
-			$html.= "\n" . '<meta name="DC.rights" 			content="' . strip_tags($content) . '" />';
-		$content = $this->get_value_for_field("license");
-		if(!empty($content)) 
-			$html.= "\n" . '<meta name="DC.license" 		content="' . strip_tags($content) . '" />';
+		if(!empty($content)) {
+			//$html.= "\n" . '<meta name="DC.description" 	content="' . strip_tags($content) . '" />';
+			$html .= "\n" . $this->Html->meta(array(
+				"name" => "DC.description",
+				"content" => strip_tags($content)
+			));
+		}
+
+		$html .= "\n" . $this->Html->meta(array(
+			"name" => "DC.format",
+			"content" => "text/html"
+		));
+
+		$mapDCtagsToFields = array(
+			"DC.language" => "lang",
+			"DC.creator" => "creator",
+			"DC.publisher" => "publisher",
+			"DC.date" => "date",
+			"DC.modified" => "modified",
+			"DC.identifier" => "id",
+			"DC.rights" => "rights",
+			"DC.license" => "license"
+		);
+
+		foreach ($mapDCtagsToFields as $dcTag => $field) {
+			$content = $this->get_value_for_field($field);
+			if (!empty($content)) {
+				$html.= "\n" . $this->Html->meta(array(
+					"name" => $dcTag,
+					"content" => strip_tags($content)
+				));
+			}
+		}
+		
 		return $html;
 	}
 
 	public function metaAll() {
-		$html = $this->metaDescription();
+		$html = $this->Html->charset();
+		$html .= "\n" . $this->metaDescription();
 		$content = $this->get_value_for_field("license");
-		if(!empty($content))
-			$html.= "\n" . '<meta name="author" content="' . $this->_publication['creator'] . '" />';
-		$html.= "\n" . '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
-		$html.= "\n" . '<meta http-equiv="Content-Style-Type" content="text/css" />';
-		$html.= "\n" . '<meta name="generator" content="' . $this->_conf->userVersion . '" />';
+		if(!empty($content)) {
+			$html.= "\n" . $this->Html->meta(array(
+				"name" => "author",
+				"content" => $this->_publication['creator']
+			));
+		}
+		$html.= "\n" . $this->Html->meta(array(
+			"http-equiv" => "Content-Style-Type",
+			"content" => "text/css"
+		));
+		$html.= "\n" . $this->Html->meta(array(
+			"name" => "generator",
+			"content" => $this->_conf->userVersion
+		));
+		return $html;
+	}
+
+	public function feeds() {
+		$html = "";
+		if (!empty($this->_feedNames)) {
+			foreach ($this->_feedNames as $feed) {
+				$html .= "\n" . $this->Html->meta($feed["title"], "/rss/" . $feed["nickname"], array("type" => "rss"));
+			}
+		}
 		return $html;
 	}
 
