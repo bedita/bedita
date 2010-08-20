@@ -4,12 +4,13 @@
 	<title>{$beFront->title()}</title>
 	{$beFront->metaAll()}
 	{$beFront->metaDc()}
-{*
+
 	<link rel="icon" href="{$html->webroot}favicon.ico" type="image/x-icon" />
-	<link rel="shortcut icon" href="{$html->webroot}favicon.ico" type="image/x-icon" />
-*}
+
+	{$beFront->feeds()}
 
 	{$html->css('twentyten')}
+	{$html->css('adjustament')}
 	{$html->css('colorbox')}
 
 	{$javascript->link('jquery')}

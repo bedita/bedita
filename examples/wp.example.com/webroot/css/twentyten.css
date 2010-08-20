@@ -190,7 +190,7 @@ div.menu,
 }
 #site-generator {
 	float: right;
-	width: 250px;
+	width: 220px;
 }
 
 
@@ -441,11 +441,6 @@ div.menu li {
 * html #access ul li.current-menu-item a,
 * html #access ul li.current-menu-parent a,
 * html #access ul li a:hover {
-	color: #fff;
-}
-
-/* added by BEdita team */
-#access ul li.on > a {
 	color: #fff;
 }
 
@@ -1204,11 +1199,11 @@ h3#reply-title {
 	position: relative;
 }
 #site-generator a {
-	background: url(../img/bedita_grey.png) center left no-repeat;
+	background: url(images/wordpress.png) center left no-repeat;
 	color: #666;
 	display: inline-block;
 	line-height: 16px;
-	padding-left: 50px;
+	padding-left: 20px;
 	text-decoration: none;
 }
 #site-generator a:hover {
@@ -1326,28 +1321,4 @@ code {
 	.home .sticky {
 		border: none;
 	}
-}
-
-
-/* BEDITA team */
-/*********** tags ********************/
-.smallestTag {
-	font-size:1em;
-}
-
-.smallTag {
-	font-size:1.2em;
-}
-
-.mediumTag {
-	font-size:1.4em;
-}
-
-
-.largeTag {
-	font-size:1.8em;
-}
-
-.largestTag {
-	font-size:2.2em;
 }
