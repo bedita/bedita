@@ -1,4 +1,4 @@
-This is a frontend application example inspiring by the 2010 theme (http://wordpress.org/extend/themes/twentyten) for WordPress (http://www.wordpress.org).
+This is a frontend application example inspired by the 2010 theme (http://wordpress.org/extend/themes/twentyten) for WordPress (http://www.wordpress.org).
 The main stylesheet is the TwentyTen (twentyten.css) and an adjustament.css is used for some correction.
 
 Note:
