@@ -1,10 +1,12 @@
 {$html->docType('xhtml-trans')}
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{$currLang}" dir="ltr">
 <head>
 	<title>{$beFront->title()}</title>
+
+	<link rel="icon" href="{$html->webroot}favicon.png" type="image/png" />
+
 	{$beFront->metaAll()}
 	{$beFront->metaDc()}
-	<link rel="icon" href="{$html->webroot}favicon.ico" type="image/x-icon" />
 	
 	{$beFront->feeds()}
 

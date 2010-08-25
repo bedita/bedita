@@ -1,19 +1,17 @@
 {$html->docType('xhtml-trans')}
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{$currLang}" dir="ltr">
 <head>
 	<title>{$beFront->title()}</title>
 
-	<link rel="icon" href="{$session->webroot}favicon.ico" type="image/gif" />
-	<link rel="shortcut icon" href="{$session->webroot}favicon.gif" type="image/gif" />
+	<link rel="icon" href="{$html->webroot}favicon.png" type="image/png" />
+
 	{$beFront->metaAll()}
 	
 	<!-- RTF dublin core dataset -->
 	{$beFront->metaDc()}
 	<!-- end -->
 
-	{foreach from=$feedNames item=feed}
-	<link rel="alternate" type="application/rss+xml" title="{$feed.title}" href="{$html->url('/rss')}/{$feed.nickname}" />
-	{/foreach}
+	{$beFront->feeds()}
 	
 	{$html->css('beditaBase')}
 	{$html->css('thickbox.BEfrontend')}
