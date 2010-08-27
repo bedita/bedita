@@ -1,0 +1,11 @@
+2010-08-27 17:24:45 Error: BeditaException - Error: object type not found 
+File: /home/bato/workspace/bedita/bedita-app/models/objects/b_e_object.php - line: 522 
+Trace:
+#0 /home/bato/workspace/bedita/bedita-app/controllers/frontend_controller.php(1142): BEObject->getType(false)
+#1 [internal function]: FrontendController->section('section-one', 'img', 'loadingAnimatio...')
+#2 /home/bato/workspace/bedita/bedita-app/controllers/frontend_controller.php(1294): call_user_func_array(Array, Array)
+#3 /home/bato/workspace/bedita/cake/libs/object.php(121): FrontendController->route('section-one', 'img', 'loadingAnimatio...')
+#4 /home/bato/workspace/bedita/cake/dispatcher.php(226): Object->dispatchMethod('route', Array)
+#5 /home/bato/workspace/bedita/cake/dispatcher.php(193): Dispatcher->_invoke(Object(PagesController), Array)
+#6 /home/bato/workspace/bedita/examples/site.example.com/webroot/index.php(96): Dispatcher->dispatch(NULL)
+#7 {main}
