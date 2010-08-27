@@ -1,6 +1,7 @@
 {$html->docType('xhtml-trans')}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">
 <head>
+	{$html->charset()}
 	<title>{$beFront->title()}</title>
 	{$beFront->metaAll()}
 	{$beFront->metaDc()}
@@ -10,12 +11,6 @@
 	{$beFront->feeds()}
 	
 	{$html->css('base')}
-	
-	{if !empty($feedNames)}
-	{foreach from=$feedNames item=feed}
-		<link rel="alternate" type="application/rss+xml" title="{$feed.title}" href="{$html->url('/rss')}/{$feed.nickname}" />
-	{/foreach}
-	{/if}
 
 	{$javascript->link('jquery')}
 
@@ -38,9 +33,6 @@
 
 {$content_for_layout}
 
-<div id="footerPage">
-</div>
-
-{if empty($conf->staging) && !empty($publication.stats_code)}{$publication.stats_code}{/if}
+{$beFront->stats()}
 </body>
 </html>

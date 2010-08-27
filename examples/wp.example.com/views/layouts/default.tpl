@@ -34,6 +34,6 @@
 
 </div><!-- #wrapper -->
 
-{if empty($conf->staging) && !empty($publication.stats_code)}{$publication.stats_code}{/if}
+{$beFront->stats()}
 </body>
 </html>
