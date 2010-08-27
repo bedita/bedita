@@ -39,6 +39,7 @@ class BeFrontHelper extends AppHelper {
 	private $_currentContent;
 	private $_feedNames;
 	private $_conf;
+	private $_breadcrumbs;
 
 	public function __construct() {
 		$view = ClassRegistry::getObject('view');
@@ -122,8 +123,7 @@ class BeFrontHelper extends AppHelper {
 	}
 
 	public function metaAll() {
-		$html = $this->Html->charset();
-		$html .= "\n" . $this->metaDescription();
+		$html = "\n" . $this->metaDescription();
 		$content = $this->get_value_for_field("license");
 		if(!empty($content)) {
 			$html.= "\n" . $this->Html->meta(array(
@@ -267,6 +267,42 @@ class BeFrontHelper extends AppHelper {
 
 		$htmlBranch .= "</li>";
 		return $htmlBranch;
+	}
+
+	/**
+	 * return publication stats code only if frontend app isn't staging site
+	 * @return stats code or nothing
+	 */
+	public function stats() {
+		if (empty($this->_conf->staging) && !empty($this->_publication["stats_code"])) {
+			return $this->_publication["stats_code"];
+		}
+	}
+
+	/**
+	 * return the breadcrumb trail
+	 *
+	 * @param  string $separator Text to separate crumbs.
+	 * @param  string $startText This will be the first crumb, if false it defaults to first crumb in array
+	 * @param  string $classOn css class for current section
+	 * @return string
+	 */
+	public function breadcrumb($separator = '&raquo;', $startText = false, $classOn="crumbOn") {
+		$breadcrumb = $this->Html->getCrumbs($separator, $startText);
+		if (empty($breadcrumb)) {
+			$publication_name = (!empty($this->_publication["public_name"]))? $this->_publication["public_name"] : $this->_publication["title"];
+			$this->Html->addCrumb($publication_name, '/');
+			if (!empty($this->_section["pathSection"])) {
+				foreach ($this->_section["pathSection"] as $sec) {
+					$this->Html->addCrumb($sec["title"], $sec["canonicalPath"]);
+				}
+			}
+			if ($this->_section["id"] != $this->_publication["id"]) {
+				$this->Html->addCrumb($this->_section["title"], $this->_section["canonicalPath"], array("class" => $classOn));
+			}
+			$breadcrumb = $this->Html->getCrumbs($separator, $startText);
+		}
+		return $breadcrumb;
 	}
 
 }
