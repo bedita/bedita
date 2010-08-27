@@ -308,20 +308,20 @@ class BeEmbedMediaHelper extends AppHelper {
 		
 		$img = "iconset/88px/";
 		
-		if ( defined("BEDITA_CORE_PATH") ) {
+		if ( BACKEND_APP == false ) {
 			if (is_dir(APP."webroot".DS."img".DS."iconset") ) {
 				$img = "iconset".DS;
-			}else {
-				$img = Configure::read("beditaUrl")."/img/".$img;
+			} else {
+				$img = Configure::read("beditaUrl")."/bedita-app/webroot/img/".$img;
 			}
 		}
 		if (!empty($obj["mediatype"])) {
-			$img = $img . $obj["mediatype"] . ".png";
+			$img.= $obj["mediatype"] . ".png";
 		} elseif (!empty($obj["Category"])) {
 			$imgname = (!is_array($obj["Category"]))? $obj["Category"] : $obj["Category"][0]["name"];
-			$img = $img . $imgname . ".png";
+			$img.= $imgname . ".png";
 		}else {
-			$img = "iconset/88px/notype.png";
+			$img.= "notype.png";
 		}
 		return $img;
 	}
