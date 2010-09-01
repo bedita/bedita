@@ -58,11 +58,8 @@ class BeConfigure {
 		$conf = Configure::getInstance();
 		$configurations = array();
 				
-		if (file_exists(BEDITA_CORE_PATH . DS . 'plugins' . DS . 'addons' . DS . 'config' . DS . 'config.php')) {
-			include BEDITA_CORE_PATH . DS . 'plugins' . DS . 'addons' . DS . 'config' . DS .'config.php';
-		}
-		if (defined("BEDITA_PLUGINS_PATH") && file_exists(BEDITA_PLUGINS_PATH . DS . 'addons' . DS . 'config' . DS . 'config.php')) {
-			include BEDITA_PLUGINS_PATH . DS . 'addons' . DS . 'config' . DS . 'config.php';
+		if (file_exists(BEDITA_ADDONS_PATH . DS . 'config' . DS . 'config.php')) {
+			include BEDITA_ADDONS_PATH . DS . 'config' . DS . 'config.php';
 		}
 
 		$moduleModel = ClassRegistry::init("Module");
@@ -73,22 +70,19 @@ class BeConfigure {
 		if (!empty($modules)) {
 			$pluginConfig = array();
 			foreach ($modules as $m) {
-				foreach ($conf->pluginPaths as $pluginPath) {
-					$modulePath = $pluginPath . $m["Module"]["name"];
-					if (is_dir($modulePath)) {
-						if (file_exists($modulePath . DS . "config" . DS . "config.php")) {
-							include $modulePath . DS . "config" . DS . "config.php";
-							if (!empty($config["objRelationType"])) {
-								$pluginConfig["objRelationType"] = (empty($pluginConfig["objRelationType"]))? $config["objRelationType"] : array_merge($pluginConfig["objRelationType"], $config["objRelationType"]);
-							}
+				$modulePath = BEDITA_MODULES_PATH . DS . $m["Module"]["name"];
+				if (is_dir($modulePath)) {
+					if (file_exists($modulePath . DS . "config" . DS . "config.php")) {
+						include $modulePath . DS . "config" . DS . "config.php";
+						if (!empty($config["objRelationType"])) {
+							$pluginConfig["objRelationType"] = (empty($pluginConfig["objRelationType"]))? $config["objRelationType"] : array_merge($pluginConfig["objRelationType"], $config["objRelationType"]);
 						}
-						$pluginConfig["modules"][$m["Module"]["name"]] = array(
-							"id" => $m["Module"]["id"],
-							"label" => $m["Module"]["label"],
-							"pluginPath" => $modulePath
-						);
-						break;
 					}
+					$pluginConfig["modules"][$m["Module"]["name"]] = array(
+						"id" => $m["Module"]["id"],
+						"label" => $m["Module"]["label"],
+						"pluginPath" => $modulePath
+					);
 				}
 			}
 		}
@@ -150,32 +144,26 @@ class BeConfigure {
 	 */
 	public function setExtAuthTypes() {
 		$beLib = BeLib::getInstance();
-		$addons = $beLib->getAddonsPaths();
 		$authTypes = array();
-		if (!empty($addons)) {
-			$folder = new Folder();
-			foreach ($addons as $a) {
-				if ($folder->cd($a . DS . "components")) {
-					$list = $folder->read(true, true);
-					if (!empty($list[1])) {
-						foreach ($list[1] as $componentFile) {
-							if (strstr($componentFile, "be_auth_")) {
-								$componentFile = basename($componentFile, ".php");
-								$componentClass = Inflector::camelize($componentFile);
-								if (App::import("Component", $componentClass)) {
-									$componentClass .= "Component";
-									$authComp = new $componentClass();
-									if (!$authComp->disabled) {
-										$authTypes[] = str_replace("be_auth_", "", $componentFile);
-									}
-								}
+		$folder = new Folder();
+		if ($folder->cd(BEDITA_ADDONS_PATH . DS . "components")) {
+			$list = $folder->read(true, true);
+			if (!empty($list[1])) {
+				foreach ($list[1] as $componentFile) {
+					if (strstr($componentFile, "be_auth_")) {
+						$componentFile = basename($componentFile, ".php");
+						$componentClass = Inflector::camelize($componentFile);
+						if (App::import("Component", $componentClass)) {
+							$componentClass .= "Component";
+							$authComp = new $componentClass();
+							if (!$authComp->disabled) {
+								$authTypes[] = str_replace("be_auth_", "", $componentFile);
 							}
 						}
 					}
 				}
 			}
 		}
-		
 		Configure::write("extAuthTypes", $authTypes);
 		return $authTypes;
 	}
@@ -198,15 +186,13 @@ class BeConfigure {
 	}
 	
 	public function loadPluginLocalConfig($pluginName) {
-		$pluginPath = BeLib::getInstance()->getPluginPath($pluginName) . $pluginName;	
-		
+		$pluginPath = BEDITA_MODULES_PATH . DS . $pluginName;
 		if ( file_exists($pluginPath . DS . 'config' . DS . 'config_local.php' )){
 			include $pluginPath . DS . 'config' . DS . 'config_local.php';
 			if (!empty($config)) {
 				Configure::write($config);
 			}
 		}
-		
 	}
 
 }

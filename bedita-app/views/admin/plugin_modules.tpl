@@ -65,7 +65,6 @@ $(document).ready(function() {
 			<br/><br/>
 			<input type="hidden" value="{$mod.id}" name="data[id]"/>
 			<input type="hidden" value="{$mod.name}" name="pluginName"/>
-			<input type="hidden" value="{$mod.info.pluginPath}" name="pluginPath"/>
 			{if $mod.status == "on"}
 				<input type="hidden" value="off" name="data[status]"/>
 				<input type="button" rel="{$html->url('/admin/toggleModule')}" value="{t}turn off{/t}"/>
@@ -90,7 +89,6 @@ $(document).ready(function() {
 			<form action="{$html->url('/admin/plugModule')}" method="post">
 			{t}{$mod.publicName}{/t}<br/>
 			version {$mod.version}<br/><br/>
-			<input type="hidden" value="{$mod.pluginPath}" name="pluginPath"/>
 			<input type="hidden" value="{$mod.pluginName}" name="pluginName"/>
 			<input type="submit" value="{t}plug-in{/t}"/>
 			</form>

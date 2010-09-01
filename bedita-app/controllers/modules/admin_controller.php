@@ -385,14 +385,15 @@ class AdminController extends ModulesController {
 	 */
 	public function plugModule() {
 		$this->checkWriteModulePermission();
-		if (empty($this->params["form"]["pluginPath"])) {
-			throw new BeditaExceptions(__("Missing plugin path", true));
-		}
 		$moduleModel = ClassRegistry::init("Module");
 	 	$pluginName = $this->params["form"]["pluginName"];
-		include($this->params["form"]["pluginPath"] . $pluginName . DS . "config" . DS . "bedita_module_setup.php");
+		$filename = BEDITA_MODULES_PATH . DS . $pluginName . DS . "config" . DS . "bedita_module_setup.php";
+		if (!file_exists($filename)) {
+			throw new BeditaException(__("Something seems wrong. bedita_module_setup.php didn't found", true));
+		}
+		include($filename);
 		$this->Transaction->begin();
-	 	$moduleModel->plugModule($pluginName, $moduleSetup, $this->params["form"]["pluginPath"]);
+	 	$moduleModel->plugModule($pluginName, $moduleSetup);
 	 	$this->Transaction->commit();
 	 	$this->eventInfo("module ".$pluginName." plugged succesfully");
 		$this->userInfoMessage($pluginName . " " . __("plugged succesfully",true));
@@ -430,8 +431,11 @@ class AdminController extends ModulesController {
 		}
 		$moduleModel = ClassRegistry::init("Module");
 		$pluginName = $this->params["form"]["pluginName"];
-		$pluginPath = $this->params["form"]["pluginPath"];		
-		include($pluginPath . $pluginName . DS . "config" . DS . "bedita_module_setup.php");
+		$filename = BEDITA_MODULES_PATH . DS . $pluginName . DS . "config" . DS . "bedita_module_setup.php";
+		if (!file_exists($filename)) {
+			throw new BeditaException(__("Something seems wrong. bedita_module_setup.php didn't found", true));
+		}
+		include($filename);
 		$this->Transaction->begin();
 	 	$moduleModel->unplugModule($this->data["id"], $moduleSetup);
 	 	$this->Transaction->commit();
@@ -458,7 +462,7 @@ class AdminController extends ModulesController {
 	 	}
 	 	$filePath = $this->params["form"]["path"] . DS . $this->params["form"]["file"];
 	 	$beLib = BeLib::getInstance();
-	 	if ($beLib->isFileNameUsed($this->params["form"]["file"], "model", array($this->params["form"]["path"]))) {
+	 	if ($beLib->isFileNameUsed($this->params["form"]["file"], "model", array($this->params["form"]["path"] . DS))) {
 	 		throw new BeditaException(__($this->params["form"]["file"] . " model is already present in the system. Can't create a new object type", true));
 	 	}
 	 	if (!$beLib->isBeditaObjectType($this->params["form"]["model"], $this->params["form"]["path"])) {

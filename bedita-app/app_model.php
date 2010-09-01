@@ -591,7 +591,8 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 	
 	public $actsAs = array(
 		'CompactResult' => array(),
-		'SearchTextSave'
+		'SearchTextSave',
+		'DeleteObject' => 'objects'
 	);
 	
 	public $hasOne = array(

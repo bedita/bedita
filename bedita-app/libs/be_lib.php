@@ -95,7 +95,7 @@ class BeLib {
 	 * 
 	 * @param string $filename
 	 * @param string $type see Configure::*Paths
-	 * @param array of path to exclude from search
+	 * @param array of path to exclude from search (paths have to end with DS trailing slash)
 	 * @return boolean
 	 */
 	public function isFileNameUsed($filename, $type, $excludePaths=array()) {
@@ -114,42 +114,6 @@ class BeLib {
 			}
 		}
 		return false;
-	}
-	
-	/**
-	 * get plugin path from plugin name
-	 * 
-	 * @param string $pluginName
-	 * @return string
-	 */
-	public function getPluginPath($pluginName) {
-		$pluginPaths = Configure::getInstance()->pluginPaths;
-		$folder = new Folder();
-		foreach ($pluginPaths as $pluginsBasePath) {
-			$folder->cd($pluginsBasePath);
-			$ls = $folder->ls(true, true);
-			if (!empty($ls[0]) && in_array($pluginName, $ls[0])) {
-				return $pluginsBasePath;
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * get array of addons base paths
-	 * 
-	 * @return array
-	 */
-	public function getAddonsPaths() {
-		$addonsPaths = array();
-		if (is_dir(BEDITA_CORE_PATH . DS . 'plugins'.DS.'addons')) {
-			$addonsPaths[] = BEDITA_CORE_PATH . DS . 'plugins'.DS.'addons'; 
-		}
-		
-		if (defined("BEDITA_PLUGINS_PATH") && is_dir(BEDITA_PLUGINS_PATH . DS.'addons')) {
-			$addonsPaths[] = BEDITA_PLUGINS_PATH . DS.'addons';
-		}
-		return $addonsPaths;
 	}
 	
 	/**
@@ -190,50 +154,46 @@ class BeLib {
 	 */
 	public function getAddons() {
 		$conf = Configure::getInstance();
-		$addonsPaths = $this->getAddonsPaths();
 		$addons = array();
-		if (!empty($addonsPaths)) {
-			$folder = new Folder();
-			$items = array("models", "components", "helpers");
-			foreach ($addonsPaths as $ap) {
-				foreach ($items as $val) {
-					$folder->cd($ap . DS . $val);
-					$ls = $folder->ls(true, true);
-					if ($val == "models") {
-						foreach ($ls[1] as $modelFile) {
-							$m = new File($ap . DS . $val . DS . $modelFile);
-							$name = $m->name();
-							$modelName = Inflector::camelize($name);
-							if ($this->isBeditaObjectType($modelName, $ap . DS . $val)) {
-								$ot = array(
-									 	"model" => $modelName,
-									 	"file" => $modelFile,
-										"type" => $name,
-										"path" => $ap . DS . $val
-								);
-								$used = $this->isFileNameUsed($modelFile, $val, array($ap . DS . $val));
-								if (!empty($conf->objectTypes[$name]) && !$used) {
-									$addons[$val]["objectTypes"]["on"][] = $ot; 	
-								} else {
-									$ot["fileNameUsed"] = $used;
-									$addons[$val]["objectTypes"]["off"][] = $ot;
-								}
-							} else {
-								$addons[$val]["others"][] = array(
+		$folder = new Folder();
+		$items = array("models", "components", "helpers");
+		foreach ($items as $val) {
+			if ($folder->cd(BEDITA_ADDONS_PATH . DS . $val)) {
+				$ls = $folder->ls(true, true);
+				if ($val == "models") {
+					foreach ($ls[1] as $modelFile) {
+						$m = new File(BEDITA_ADDONS_PATH . DS . $val . DS . $modelFile);
+						$name = $m->name();
+						$modelName = Inflector::camelize($name);
+						if ($this->isBeditaObjectType($modelName, BEDITA_ADDONS_PATH . DS . $val)) {
+							$ot = array(
+									"model" => $modelName,
 									"file" => $modelFile,
-									"path" => $ap . DS . $val,
-									"fileNameUsed" => $this->isFileNameUsed($modelFile, $val, array($ap . DS . $val)) 
-								);
+									"type" => $name,
+									"path" => BEDITA_ADDONS_PATH . DS . $val
+							);
+							$used = $this->isFileNameUsed($modelFile, $val, array(BEDITA_ADDONS_PATH . DS . $val . DS));
+							if (!empty($conf->objectTypes[$name]) && !$used) {
+								$addons[$val]["objectTypes"]["on"][] = $ot;
+							} else {
+								$ot["fileNameUsed"] = $used;
+								$addons[$val]["objectTypes"]["off"][] = $ot;
 							}
-						}
-					} else {
-						foreach ($ls[1] as $addonFile) {
-							$addons[$val][] = array(
-								"file" => $addonFile,
-								"path" => $ap . DS . $val,
-								"fileNameUsed" => $this->isFileNameUsed($addonFile, $val, array($ap . DS . $val)) 
+						} else {
+							$addons[$val]["others"][] = array(
+								"file" => $modelFile,
+								"path" => BEDITA_ADDONS_PATH . DS . $val,
+								"fileNameUsed" => $this->isFileNameUsed($modelFile, $val, array(BEDITA_ADDONS_PATH . DS . $val . DS))
 							);
 						}
+					}
+				} else {
+					foreach ($ls[1] as $addonFile) {
+						$addons[$val][] = array(
+							"file" => $addonFile,
+							"path" => BEDITA_ADDONS_PATH . DS . $val,
+							"fileNameUsed" => $this->isFileNameUsed($addonFile, $val, array(BEDITA_ADDONS_PATH . DS . $val . DS))
+						);
 					}
 				}
 			}

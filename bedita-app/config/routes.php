@@ -36,4 +36,24 @@
  */
 	Router::connect('/lang/*', array('controller' => 'pages', 'action' => 'changeLang'));
 
+/**
+ * route for module plugins (controller must have the same name of module)
+ * example:
+ *		module name: sample_module
+ *		controller file name: sample_module_controller.php
+ */
+	$confCached = Cache::read('beConfig');
+	if (empty($confCached["plugged"]["modules"])) {
+		$folder = new Folder(BEDITA_MODULES_PATH);
+		$list = $folder->read();
+		$listModules = $list[0];
+	} else {
+		$listModules = array_keys($confCached["plugged"]["modules"]);
+	}
+
+	foreach ($listModules as $moduleName) {
+		Router::connect(
+			'/' . $moduleName . '/:action/*', array('plugin' => $moduleName, 'controller' => $moduleName)
+		);
+	}
 ?>

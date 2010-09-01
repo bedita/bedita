@@ -44,26 +44,22 @@ class Module extends BEAppModel {
 			)
 		);
 		
-		$pluginPaths = Configure::getInstance()->pluginPaths;
-		
 		$pluginModules = array("plugged" => array(), "unplugged" => array());
-		foreach ($pluginPaths as $pluginsBasePath) {
-			$folder = new Folder($pluginsBasePath);
-			$plugins = $folder->ls(true, true);
-			foreach ($plugins[0] as $plugin) {
-				if (file_exists($pluginsBasePath . $plugin . DS . "config" . DS . "bedita_module_setup.php")) {
-					include($pluginsBasePath . $plugin . DS . "config" . DS . "bedita_module_setup.php");
-					$moduleSetup["pluginPath"] = $pluginsBasePath;
-					if (!array_key_exists($plugin, $pluggedModulesList)) {
-						$moduleSetup["pluginName"] = $plugin;
-						$pluginModules["unplugged"][] = $moduleSetup;
-					} else {
-						$mod = $this->find("first", array(
-								"conditions" => array("id" => $pluggedModulesList[$plugin])
-							)
-						);
-						$pluginModules["plugged"][] = array_merge($mod["Module"], array("info" => $moduleSetup));
-					}
+		$folder = new Folder(BEDITA_MODULES_PATH);
+		$plugins = $folder->ls(true, true);
+		foreach ($plugins[0] as $plugin) {
+			if (file_exists(BEDITA_MODULES_PATH . DS . $plugin . DS . "config" . DS . "bedita_module_setup.php")) {
+				include(BEDITA_MODULES_PATH . DS . $plugin . DS . "config" . DS . "bedita_module_setup.php");
+				$moduleSetup["pluginPath"] = BEDITA_MODULES_PATH . DS . $plugin;
+				if (!array_key_exists($plugin, $pluggedModulesList)) {
+					$moduleSetup["pluginName"] = $plugin;
+					$pluginModules["unplugged"][] = $moduleSetup;
+				} else {
+					$mod = $this->find("first", array(
+							"conditions" => array("id" => $pluggedModulesList[$plugin])
+						)
+					);
+					$pluginModules["plugged"][] = array_merge($mod["Module"], array("info" => $moduleSetup));
 				}
 			}
 		}
@@ -83,6 +79,20 @@ class Module extends BEAppModel {
 		if (empty($pluginName) || empty($setup)) {
 			return false;
 		}
+
+		// check BEdita version compatibility
+		if (empty($setup["BEditaMinVersion"])) {
+			throw new BeditaException(__("Missing minimum BEdita version required to instal module" . " " . $pluginName, true));
+		}
+		preg_match('/^\d{1,}(\.\d){1,}/', Configure::read("majorVersion"), $matches);
+		$beditaVersion = $matches[0];
+		if ($setup["BEditaMinVersion"] > $beditaVersion) {
+			throw new BeditaException(__($pluginName . " " . "require at least BEdita " . $setup["BEditaMinVersion"], true));
+		}
+		if (!empty($setup["BEditaMaxVersion"]) && $setup["BEditaMaxVersion"] < $beditaVersion) {
+			throw new BeditaException(__($pluginName . " " . "is supported up to BEdita " . $setup["BEditaMaxVersion"], true));
+		}
+
 		$c = $this->find("count", array(
 				"conditions" => array("name" => $pluginName)
 			)
@@ -107,19 +117,15 @@ class Module extends BEAppModel {
 				$setup["BEditaObjects"] = array($setup["BEditaObjects"]);
 			}
 			$beLib = BeLib::getInstance();
-			if (empty($pluginPath)) {
-				$pluginPath = $beLib->getPluginPath($pluginName);
-			}
-			
 			$conf = Configure::getInstance();
-			if (!in_array($pluginPath . DS  . $pluginName . DS . "model" . DS, $conf->modelPaths)){
-				$conf->modelPaths[] = $pluginPath . DS  . $pluginName . DS . "models" . DS;
+			if (!in_array(BEDITA_MODULES_PATH . DS  . $pluginName . DS . "model" . DS, $conf->modelPaths)){
+				$conf->modelPaths[] = BEDITA_MODULES_PATH . DS  . $pluginName . DS . "models" . DS;
 			}
 			
 			// check db schema, create tables if needed
-			$this->handlePluginSchema($pluginName, $setup, $pluginPath);
+			$this->handlePluginSchema($pluginName, $setup, BEDITA_MODULES_PATH);
 			
-			$dirPath = $pluginPath . $pluginName . DS . "models" . DS;
+			$dirPath = BEDITA_MODULES_PATH . DS . $pluginName . DS . "models" . DS;
 			
 			$otModel = ClassRegistry::init("ObjectType");
 			$ot_id = $otModel->newPluggedId();  
@@ -130,7 +136,7 @@ class Module extends BEAppModel {
 					throw new BeditaException(__("File " . $filename . " doesn't find.", true));
 				}
 				
-				if ($beLib->isFileNameUsed($filename, "model", array($pluginPath . DS  . $pluginName . DS . "models" . DS))) {
+				if ($beLib->isFileNameUsed($filename, "model", array(BEDITA_MODULES_PATH . DS  . $pluginName . DS . "models" . DS))) {
 					throw new BeditaException(__($filename . " is already used. Please change your file and model name", true));
 				}
 				

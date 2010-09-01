@@ -113,19 +113,31 @@ if (!defined("BEDITA_CORE_PATH")) {
 /**
  * backend and frontend commons bootstrap operations
  */
-if (is_dir(BEDITA_CORE_PATH . DS . 'plugins'.DS.'addons')) {
-	$modelPaths[] = BEDITA_CORE_PATH . DS . 'plugins' . DS . 'addons' . DS .'models';
-	$componentPaths[] = BEDITA_CORE_PATH . DS . "plugins" . DS . "addons" . DS . "components"; 
-	$helperPaths[] = BEDITA_CORE_PATH . DS . "plugins" . DS . "addons" . DS . "helpers"; 
+if (!defined("BEDITA_ADDONS_PATH")) {
+	define("BEDITA_ADDONS_PATH", BEDITA_CORE_PATH . DS . ".." . DS . 'addons');
 }
 
-if (defined("BEDITA_PLUGINS_PATH")) {
-	$pluginPaths[] = BEDITA_PLUGINS_PATH . DS;
-	if (is_dir(BEDITA_PLUGINS_PATH . DS.'addons')) {
-		$modelPaths[] = BEDITA_PLUGINS_PATH . DS . 'addons' . DS . 'models';
-		$componentPaths[] = BEDITA_PLUGINS_PATH . DS . "addons" . DS . "components";
-		$helperPaths[] = BEDITA_PLUGINS_PATH . DS . "addons" . DS . "helpers";
-	}
+if (!defined("BEDITA_MODULES_PATH")) {
+	define("BEDITA_MODULES_PATH", BEDITA_CORE_PATH . DS . ".." . DS . 'modules');
+}
+
+if (!defined("BEDITA_FRONTENDS_PATH")) {
+	define("BEDITA_FRONTENDS_PATH", BEDITA_CORE_PATH . DS . ".." . DS . 'frontends');
+}
+
+// add addons models, components and helpers path
+if (is_dir(BEDITA_ADDONS_PATH . DS . 'models')) {
+	$modelPaths[] = BEDITA_ADDONS_PATH . DS . 'models' . DS;
+}
+if (is_dir(BEDITA_ADDONS_PATH . DS . 'components')) {
+	$componentPaths[] = BEDITA_ADDONS_PATH . DS . 'components' . DS;
+}
+if (is_dir(BEDITA_ADDONS_PATH . DS . 'helpers')) {
+	$helperPaths[] = BEDITA_ADDONS_PATH . DS . 'helpers' . DS;
+}
+
+if (BACKEND_APP) {
+	$pluginPaths[] = BEDITA_MODULES_PATH . DS;
 }
 
 enableSubFoldersOn(BEDITA_CORE_PATH . DS . 'models', $modelPaths, $excludedDirs);

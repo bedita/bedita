@@ -39,10 +39,12 @@ $moduleSetup = array(
 	// plugin module version
 	"version" => "0.1",
 	// minimum BEdita version required by this module
-	"BEditaVersion" => "3.1",
+	"BEditaMinVersion" => "3.1",
+	// maximum BEdita version supported by this module
+	//"BEditaMaxVersion" => "3.1",
 	// model names that are BEdita objects: i.e. extend BEAppObjectModel
 	// don't list other model names (simple models)
-	"BEditaObjects" => array("SampleObjects"),
+	"BEditaObjects" => array("SampleObject"),
 	// extra database tables used/needed by this module 
 //	"tables" => array("sample_objects"),
 );
