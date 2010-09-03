@@ -1773,6 +1773,12 @@ abstract class FrontendController extends AppController {
 					}
 				}
 				
+				// build thread path
+				if (!empty($this->params["form"]["thread_parent_id"])) {
+					$thread_path = $this->Comment->field("thread_path", array("id" => $this->params["form"]["thread_parent_id"]));
+					$this->data["thread_path"] = (!empty($thread_path))? $thread_path . "/" . $this->params["form"]["thread_parent_id"] : "/" . $this->params["form"]["thread_parent_id"];
+				}
+
 				$this->Transaction->begin();
 				if (!$this->Comment->save($this->data)) {
 					throw new BeditaException(__("Error saving comment", true), $this->Comment->validationErrors);
