@@ -126,7 +126,9 @@ class BeEmbedFlashHelper extends AppHelper {
 	 * @return html code
 	 */
 	public function embed($obj , $params, $htmlAttributes ) {
-		
+		if (empty($obj['uri'])) {
+			return __("No file to embed");
+		}
 		$flashvars = empty($params['flashvars']) ? array() : $params['flashvars'];	
 		$flashParams = empty($params['params']) ? array() : $params['params'];	
 		
