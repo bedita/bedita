@@ -49,6 +49,22 @@ class PagesController extends FrontendController {
 		$this->loadTags(null, true, true, 20);
 	}
 
+	protected function searchBeforeFilter() {
+		if (!empty($this->params["named"]["user_created"])) {
+			$this->searchOptions["filter"] = array(
+				"BEObject.user_created" => $this->params["named"]["user_created"],
+				"object_type_id" => Configure::read("objectTypes.leafs.id")
+			);
+			$userModel = ClassRegistry::init("User");
+			$u = $userModel->find("first", array(
+				"fields" => array("realname", "userid"),
+				"conditions" => array("id" => $this->params["named"]["user_created"]),
+				"contain" => array()
+			));
+			$this->set("user", $u);
+		}
+	}
+
 	protected function searchBeforeRender() {
 		if (!empty($this->viewVars["searchResult"]["items"])) {
 			foreach ($this->viewVars["searchResult"]["items"] as &$item) {
@@ -56,6 +72,7 @@ class PagesController extends FrontendController {
 			}
 		}
 	}
+
 }
 
 ?>

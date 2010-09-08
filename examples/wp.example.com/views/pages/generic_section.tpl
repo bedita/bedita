@@ -12,9 +12,14 @@
 			});
 			{/literal}
 			</script>
-			
+
+			{assign var="author" value=$section.currentContent.UserCreated.realname|default:$section.currentContent.UserCreated.userid}
 			<div class="entry-meta">
-				<span class="meta-prep meta-prep-author">Posted on</span> <a href="http://localhost/workspace/wordpress/?p=1" title="12:51 pm" rel="bookmark"><span class="entry-date">{$section.currentContent.publication_date|date_format:"%B %e, %Y"}</span></a> <span class="meta-sep">by</span> <span class="author vcard"><a class="url fn n" href="" title="View all posts by bato">{$section.currentContent.author|default:$section.currentContent.UserCreated.realname}</a></span>
+				<span class="meta-prep meta-prep-author">Posted on</span> <span class="entry-date">{$section.currentContent.publication_date|date_format:"%B %e, %Y"}</span>
+				{if !empty($author)}
+					<span class="meta-sep">by</span>
+					<span class="author vcard"><a class="url fn n" href="{$html->url('/search/user_created:')}{$section.currentContent.UserCreated.id}" title="View all posts by ">{$author}</a></span>
+				{/if}
 			</div><!-- .entry-meta -->
 
 			<div class="entry-content">

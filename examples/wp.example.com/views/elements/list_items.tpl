@@ -9,8 +9,13 @@
 
 		<h1 class="entry-title"><a href="{$html->url($baseUrl)}" title="Permalink to {$c.title}" rel="bookmark">{$c.title}</a></h1>
 
+		{assign var="author" value=$c.UserCreated.realname|default:$c.UserCreated.userid}
 		<div class="entry-meta">
-			<span class="meta-prep meta-prep-author">Posted on</span> <span class="entry-date">{$c.publication_date|date_format:"%B %e, %Y"}</span> <span class="meta-sep">by</span> <span class="author vcard"><a class="url fn n" href="" title="View all posts by bato">{$c.author|default:$c.UserCreated.realname}</a></span>
+			<span class="meta-prep meta-prep-author">Posted on</span> <span class="entry-date">{$c.publication_date|date_format:"%B %e, %Y"}</span>
+			{if !empty($author)}
+				<span class="meta-sep">by</span>
+				<span class="author vcard"><a class="url fn n" href="{$html->url('/authorItems/')}{$c.UserCreated.id}" title="View all posts by {$author}">{$author}</a></span>
+			{/if}
 		</div><!-- .entry-meta -->
 
 		<div class="entry-content">
