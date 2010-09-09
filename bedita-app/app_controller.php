@@ -519,6 +519,7 @@ class AppController extends Controller
 	protected function setupAnnotations(array &$objectArray, $status=array()) {
 		$typesCount = array();
 		$beObject = ClassRegistry::init("BEObject");
+		$annotationModel = ClassRegistry::init("Annotation");
 		foreach ($objectArray['Annotation'] as $obj) {	
 			$modelClass = $beObject->getType($obj['id']);
 			$this->{$modelClass} = $this->loadModelByType($modelClass);
@@ -527,7 +528,8 @@ class AppController extends Controller
 				continue ;
 			}
             if (empty($status) || in_array($objDetail["status"],$status)) {
-				$objectArray[$modelClass][] = $objDetail;
+				//$objectArray[$modelClass][] = $objDetail;
+				$annotationModel->putAnnotationInThread($objectArray[$modelClass], $objDetail);
 				if(!array_key_exists($modelClass, $typesCount)) {
 					$typesCount[$modelClass] = 1;
 				} else {

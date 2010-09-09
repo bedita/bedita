@@ -28,7 +28,53 @@
  * 
  * $Id$
  */
-class Annotation extends BEAppModel
-{
+class Annotation extends BEAppModel {
+
+	/**
+	 * build thread structure
+	 *
+	 * @param array $items
+	 * @return array
+	 */
+	public function buildThread($items) {
+		$thread = array();
+		foreach ($items as $annotation) {
+			$annotation['children']	= array() ;
+			$this->putAnnotationInThread($thread, $annotation);
+		}
+		return $thread;
+	}
+
+	/**
+	 *	put an annotation in the right position of thread
+	 *
+	 * @param array $thread
+	 * @param array $annotation (annotation object like Comment, EditorNote,...)
+	 * @param array $pathArr if it's empty it will be build from thread_path field
+	 * @return void
+	 */
+	public function putAnnotationInThread(&$thread, $annotation, $pathArr=null) {
+		if (empty($pathArr)) {
+			if (empty($annotation["thread_path"])) {
+				$thread[] = $annotation;
+				return;
+			}
+			$pathArr = explode("/", $annotation["thread_path"]);
+		}
+		$parent_id = end($pathArr);
+		foreach ($thread as $k => $v) {
+			if (empty($v["children"])) {
+				$thread[$k]["children"] = array();
+			}
+			if ($v["id"] == $parent_id) {
+				$thread[$k]["children"][] = $annotation;
+				return;
+			} elseif (in_array($v["id"], $pathArr)) {
+				$this->putAnnotationInThread($thread[$k]["children"], $annotation, $pathArr);
+				return;
+			}
+		}
+	}
+
 }
 ?>

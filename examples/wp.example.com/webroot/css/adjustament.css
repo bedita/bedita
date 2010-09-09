@@ -17,6 +17,12 @@
 	padding-left: 50px;
 }
 
+span#cancel-reply {
+	display: none;
+	font-weight: normal;
+	font-size: 0.6em;
+}
+
 /*********** tags ********************/
 .smallestTag {
 	font-size:1em;

@@ -2,7 +2,7 @@
 
 class PagesController extends FrontendController {
 
-	var $helpers 	= array("BeFront");
+	var $helpers 	= array("BeFront", "Wp");
 	var $uses = array() ;
 
 	protected $sectionOptions = array(
