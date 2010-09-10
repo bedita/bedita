@@ -15,8 +15,11 @@
 </head>
 
 <body>
+{$view->element('header')}
 
 {$content_for_layout}
+
+{$view->element('footer')}
 
 {$beFront->stats()}
 </body>
