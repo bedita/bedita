@@ -89,6 +89,13 @@ class SearchText extends BEAppModel
 		if(!empty($searchFields)) {
 			$indexFields = array_keys($searchFields);
 	        $lang = !empty($data['lang'])? $data["lang"] : Configure::read("defaultLang");
+			
+			// clean search text before save
+			$deleteRes = $this->deleteAll(array("object_id" => $data['id'], "SearchText.lang" => $lang), false);
+			if (!$deleteRes) {
+				throw new BeditaException(__("Error saving search text", true));
+			}
+
 			foreach ($data as $k => $v) {
 				if(in_array($k, $indexFields)) {
 	                if (!empty($v)) {
@@ -101,7 +108,7 @@ class SearchText extends BEAppModel
 	
 		                $this->create();
 		                if(!$this->save($sText)) 
-		                    throw new BeditaException("Error saving search text {$model}: $k => $v");
+		                    throw new BeditaException(__("Error saving search text {$model}: $k => $v", true));
 	                }
 				}
 			}
