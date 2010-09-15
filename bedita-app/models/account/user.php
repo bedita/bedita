@@ -101,6 +101,20 @@ class User extends BEAppModel
 		}
 		
 		unset($user['Group']) ;
+
+		if (!empty($user['UserProperty'])) {
+			$user["User"]["UserProperty"] = array();
+			foreach ($user['UserProperty'] as $up) {
+				if (empty($up["value"])) {
+					$value = false;
+				} elseif (!empty($up["value"]["property_value"])) {
+					$value = $up["value"]["property_value"];
+				} else {
+					$value = Set::extract("/value/property_value", $up);
+				}
+				$user["User"]["UserProperty"][$up["name"]] = $value;
+			}
+		}
 		
 		$user = $user['User'] ;
 	}
@@ -164,6 +178,7 @@ class User extends BEAppModel
 				}
 			}
 		}
+		
 		return $results;
 	}
 	

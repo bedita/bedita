@@ -87,7 +87,7 @@ class BeAuthComponent extends Object {
 		$user->create();
 		$conditions = array("User.userid" 	=> $userid, "User.auth_type" => $extAuthType );
 		$userModel->containLevel("default");
-		$u = $this->User->find($conditions);
+		$u = $userModel->find($conditions);
 		if(empty($u["User"])) {
 			$this->logout() ;
 			return false ;
@@ -111,25 +111,19 @@ class BeAuthComponent extends Object {
 	 * @return boolean 
 	 */
 	public function login($userid, $password, $policy=null, $auth_group_name=array()) {
-
-		$this->User = ClassRegistry::init('User');
-		$this->User->create();
+		$userModel = ClassRegistry::init('User');
 		$conditions = array(
 			"User.userid" 	=> $userid,
 			"User.passwd" 	=> md5($password),
 		);
 		
-		$this->User->containLevel("default");
-		$u = $this->User->find($conditions);
-
+		$userModel->containLevel("default");
+		$u = $userModel->find($conditions);
 		if(!$this->loginPolicy($userid, $u, $policy, $auth_group_name)) {
 			return false ;
 		}
-
-		$this->User->compact($u) ;
-		
+		$userModel->compact($u) ;
 		$this->user = $u;
-		
 		$this->setSessionVars();
 		
 		return true ;
@@ -140,22 +134,19 @@ class BeAuthComponent extends Object {
 	 * @return boolean
 	 */
 	private function loginPolicy($userid, $u, $policy, $auth_group_name=array()) {
-		$this->User = ClassRegistry::init('User');
-
+		$userModel = ClassRegistry::init("User");
 		// If fails, exit
 		if(empty($u["User"])) {
 			// look for existing user
-			$this->User->containLevel("default");
-			$u2 = $this->User->find(array("User.userid" => $userid));
-			if(!empty($u2["User"])) {
-				$u2["User"]["last_login_err"]= date('Y-m-d H:i:s');
-				$u2["User"]["num_login_err"]=$u2["User"]["num_login_err"]+1;
-                $this->User->unbindGroups();
-				$this->User->save($u2);
-                $this->User->rebindGroups();
+			$userModel->containLevel("minimum");
+			$u = $userModel->find(array("User.userid" => $userid));
+			if(!empty($u["User"])) {
+				$u["User"]["last_login_err"]= date('Y-m-d H:i:s');
+				$u["User"]["num_login_err"]=$u["User"]["num_login_err"]+1;
+				$userModel->save($u);
 			}
-			$this->logout() ;
-			return false ;
+			$this->logout();
+			return false;
 		}
 
 		if($policy == null) {
@@ -167,8 +158,9 @@ class BeAuthComponent extends Object {
 		}
 
 		// check activity & validity
-		if(!isset($u["User"]["last_login"])) 
+		if(!isset($u["User"]["last_login"])) {
 			$u["User"]["last_login"] = date('Y-m-d H:i:s');
+		}
 		$daysFromLastLogin = (time() - strtotime($u["User"]["last_login"]))/(86400000);
 		$this->isValid = $u['User']['valid'];
 		
@@ -203,13 +195,12 @@ class BeAuthComponent extends Object {
 		$u['User']['valid'] = $this->isValid; // validity may have changed
 		
 		if($this->isValid) {
-				$u["User"]["num_login_err"]=0;
-				$u["User"]["last_login"]=date('Y-m-d H:i:s');
+			$u["User"]["num_login_err"] = 0;
+			$u["User"]["last_login"] = date('Y-m-d H:i:s');
 		}		
         
-        $this->User->unbindGroups();
-        $this->User->save($u); //, true, array('num_login_err','last_login_err','valid','last_login'));
-        $this->User->rebindGroups();
+		$data["User"] = $u["User"];
+        $userModel->save($data); //, true, array('num_login_err','last_login_err','valid','last_login'));
         
 		if(!$this->isValid) {
 			$this->logout();
@@ -223,8 +214,8 @@ class BeAuthComponent extends Object {
 		if (empty($userid) || empty($password)) {
 			return false;
 		}
-		$this->User = ClassRegistry::init('User');
-		$u = $this->User->find("first", array(
+		$userModel = ClassRegistry::init('User');
+		$u = $userModel->find("first", array(
 			"conditions" => array(
 				"User.userid" => $userid
 			),
@@ -232,7 +223,7 @@ class BeAuthComponent extends Object {
 		));
 		$u["User"]["passwd"] = md5($password);
 		$u["User"]["num_login_err"]=0;
-		if (!$this->User->save($u)) {
+		if (!$userModel->save($u)) {
 			return false;
 		}
 		return true;
