@@ -3,7 +3,7 @@
 *}
 
 {$javascript->link("jquery/jquery.form", false)}
-{$javascript->link("jquery/ui/ui.datepicker.min", false)}
+{$javascript->link("jquery/ui/jquery.ui.datepicker", false)}
 
 <script type="text/javascript">
 <!--

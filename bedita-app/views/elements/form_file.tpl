@@ -52,15 +52,7 @@
 {/if}
 
 
-{if ($object.ObjectType.name != "image")}
-	<div style="clear:left;">
-	{t}thumbnail{/t}<br/>
-	<input type="text" name="data[thumbnail]" value="{$object.thumbnail|default:''}" style="width: 350px;"/>
-	{if !empty($object.thumbnail)}
-		<img src="{$object.thumbnail}" alt=""/>
-	{/if}
-	</div> 
-{/if}
+
 
 <table class="bordered" style="margin:10px auto; width:95%; border:1px solid #999; clear:both">
 
@@ -152,6 +144,19 @@
 		</td>
 	</tr>
 	{/if}
+
+	{if ($object.ObjectType.name != "image")}
+	<tr>
+		<th>{t}thumbnail{/t}</th>
+		<td colspan="3">
+		<input type="text" name="data[thumbnail]" value="{$object.thumbnail|default:''}" style="width: 350px;"/>
+		{*if !empty($object.thumbnail)}
+			<img src="{$object.thumbnail}" alt=""/>
+		{/if*}
+		</td>
+	</tr>
+	{/if}
+
 	</table>
 		
 </div>

@@ -417,9 +417,7 @@ jQuery.fn.BEmodal = function(){
 	var destination = $(this).attr("rel");
 	var title = $(this).attr("title");
 	
-	//var myTop = $(this).position().top;
-	var myTop = $(".secondacolonna").position().top;
-
+	var myTop = $(window).scrollTop() + 20;
 	
 	$("#modaloverlay").show().fadeTo("fast", 0.8).width(w).height(h).click(function () {
 		//$(this).hide();

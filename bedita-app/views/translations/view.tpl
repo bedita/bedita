@@ -2,7 +2,7 @@
 ** translations view template
 *}
 
-{$javascript->link("jquery/ui/ui.datepicker.min", false)}
+{$javascript->link("jquery/ui/jquery.ui.datepicker", false)}
 
 {if ($conf->mce|default:true)}
 	
