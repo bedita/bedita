@@ -4,14 +4,28 @@
 	font-size: 12px;
 	padding: 0;
 	margin: 0;
-	background: #ddd;
+	background: #666;
 	width: 185px;
 }
 #ui-datepicker-div {
 	display: none;
-	border: 5px solid #000;
+	border: 5px solid #333;
 	z-index: 9999; /*must have*/
 }
+
+#ui-datepicker-div table {
+	width:100%;
+	border-collapse:collapse;
+	border:0px solid red;
+}
+
+#ui-datepicker-div TD {
+	border-top:1px solid #333;
+	text-align:center;
+	font:normal 1.1em "Georgia", serif;
+	text-align:center;
+}
+
 .ui-datepicker-inline {
 	float: left;
 	display: block;
@@ -65,32 +79,32 @@ img.ui-datepicker-trigger {
 }
 .ui-datepicker-clear, .ui-datepicker-prev {
 	float: left;
-	width: 34%;
+	width: 40px !important;
 }
 .ui-datepicker-rtl .ui-datepicker-clear, .ui-datepicker-rtl .ui-datepicker-prev {
 	float: right;
 	text-align: right;
+
 }
 .ui-datepicker-current {
 	float: left;
-	width: 30%;
 	text-align: center;
 }
 .ui-datepicker-close, .ui-datepicker-next {
 	float: right;
-	width: 34%;
 	text-align: right;
+	width: 40px !important; 
 }
 .ui-datepicker-rtl .ui-datepicker-close, .ui-datepicker-rtl .ui-datepicker-next {
 	float: left;
-	text-align: left;
 }
 .ui-datepicker-header {
-	padding: 1px 0 3px;
-	background: #ddd;
+	padding: 0px 0 4px 0px;
+	background: #333;
 	text-align: center;
 	font-weight: normal;
 	height: 1.3em;
+	text-transform:lowercase !important;
 }
 .ui-datepicker-header select {
 	border: 0px;
@@ -111,18 +125,16 @@ img.ui-datepicker-trigger {
 .ui-datepicker-days-row {
 	background: #888;
 	color: #000;
+
 }
 .ui-datepicker-week-col {
 	background: #888;
 	color: #000;
 }
 .ui-datepicker-days-cell {
-	font:normal 1.1em "Georgia", serif;
-	text-align:center;
-	color: #000;
-	border: 1px solid #000;
+
 }
-.ui-datepicker-days-cell a{
+.ui-datepicker-days-cell a {
 	display: block;
 }
 .ui-datepicker-week-end-cell {
