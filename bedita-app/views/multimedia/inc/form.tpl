@@ -10,7 +10,7 @@
 <input  type="hidden" name="data[name]" value="{$object.name}" />
 <input  type="hidden" name="data[mime_type]" value="{$object.mime_type}" />
 
-{assign_associative var="params" publication=false}
+{assign_associative var="params" publication=false comments=true}
 {$view->element('form_properties', $params)}
 
 {$view->element('form_title_subtitle')}
