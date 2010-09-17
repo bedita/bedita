@@ -180,7 +180,6 @@ abstract class FrontendController extends AppController {
 					//$this->loginEvent('warn', $userid, "login not authorized");
 					$this->userErrorMessage(__("Wrong username/password or session expired", true));
 					$this->logged = false;
-					return false;
 				} else {
 					$this->eventInfo("FRONTEND logged in publication");
 				}
