@@ -1792,13 +1792,7 @@ abstract class FrontendController extends AppController {
 			}
 	
 		}
-		
-		if (!isset($this->RequestHandler)) {
-			App::import("Component", "RequestHandler");
-			$this->RequestHandler = new RequestHandlerComponent();
-			$this->RequestHandler->initialize($this);
-			$this->RequestHandler->startup($this);
-		}
+
 		// if it's ajax call no redirect by referer
 		if($this->RequestHandler->isAjax()) { 
 			$this->layout = "ajax";
@@ -1807,6 +1801,10 @@ abstract class FrontendController extends AppController {
 				$this->render(null, null, $this->params["form"]["render"]);
 			}
 		} else {
+			// saveCommentBeforeFilter
+			if (method_exists($this, "saveCommentBeforeRender")) {
+				$this->saveCommentBeforeRender();
+			}
 			$urlToRedirect = $this->referer();
 			if (!empty($error))
 				$urlToRedirect .= "/#error";
