@@ -49,6 +49,10 @@ class ObjectType extends BEAppModel
 	 */
 	public function purgeType($objectType) {
 		$ot_id = $this->field("id", array("name" => $objectType));
+		if (empty($ot_id)) {
+			throw new BeditaException(__("Object type not found: " . $objectType, true));
+		}
+
 		// delete all objects
 		$beObject = ClassRegistry::init("BEObject");
 		if (!$beObject->deleteAll(array("object_type_id" => $ot_id))) {
