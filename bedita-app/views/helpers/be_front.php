@@ -40,6 +40,7 @@ class BeFrontHelper extends AppHelper {
 	private $_feedNames;
 	private $_conf;
 	private $_breadcrumbs;
+	private $_viewExt;
 
 	public function __construct() {
 		$view = ClassRegistry::getObject('view');
@@ -47,6 +48,7 @@ class BeFrontHelper extends AppHelper {
 		$this->_section =  (!empty($view->viewVars['section'])) ? $view->viewVars['section'] : null;
 		$this->_currentContent = (!empty($view->viewVars['section']['currentContent'])) ? $view->viewVars['section']['currentContent'] : null;
 		$this->_feedNames = (!empty($view->viewVars['feedNames']))? $view->viewVars['feedNames'] : null;
+		$this->_viewExt = $view->ext;
 		$this->_conf = Configure::getInstance();
 	}
 
@@ -207,6 +209,44 @@ class BeFrontHelper extends AppHelper {
 			return "";
 		}
 		return $content;
+	}
+
+	/**
+	 * choose a view template verifying if file exists. Test follow the order:
+	 *		1) filename = currentContent nickname
+	 *		2) filename = section nickname
+	 *		3) filename = parent sections nickname
+	 *		4) filename = object type
+	 *		5) default
+	 *
+	 * @param string $default, default fallback template
+	 * @return void
+	 */
+	public function chooseTemplate($default="generic_section") {
+		$pagesPath = VIEWS . "pages" . DS;
+		$tplFiles = array($pagesPath . $this->_section["nickname"] . $this->_viewExt);
+		
+		if (!empty($this->_section["currentContent"])) {
+			array_unshift($tplFiles,  $pagesPath . $this->_section["currentContent"]["nickname"] . $this->_viewExt);
+			$typeTplFile = $pagesPath . $this->_conf->objectTypes[$this->_section["currentContent"]["object_type_id"]]["name"] . $this->_viewExt;
+		}
+
+		if (!empty($this->_section["pathSection"])) {
+			$parentFiles = array_reverse(Set::format($this->_section["pathSection"], $pagesPath . "{0}" . $this->_viewExt, array("{n}.nickname")));
+			$tplFiles = array_merge($tplFiles, $parentFiles);
+		}
+
+		if (!empty($typeTplFile)) {
+			$tplFiles[] = $typeTplFile;
+		}
+
+		$tplFiles[] = $pagesPath . $default . $this->_viewExt;
+
+		foreach ($tplFiles as $file) {
+			if (file_exists($file)) {
+				return $file;
+			}
+		}
 	}
 
 	/**
