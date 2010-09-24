@@ -49,6 +49,7 @@ $componentPaths = array();
 $behaviorPaths = array();
 $helperPaths = array();
 $pluginPaths = array();
+$vendorPaths = array();
 
 $excludedDirs = array("behaviors", "datasources", "components");
 
@@ -125,7 +126,7 @@ if (!defined("BEDITA_FRONTENDS_PATH")) {
 	define("BEDITA_FRONTENDS_PATH", BEDITA_CORE_PATH . DS . ".." . DS . 'frontends');
 }
 
-// add addons models, components and helpers path
+// add addons models, components, helpers and vendors path
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'models')) {
 	$modelPaths[] = BEDITA_ADDONS_PATH . DS . 'models' . DS;
 }
@@ -134,6 +135,9 @@ if (is_dir(BEDITA_ADDONS_PATH . DS . 'components')) {
 }
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'helpers')) {
 	$helperPaths[] = BEDITA_ADDONS_PATH . DS . 'helpers' . DS;
+}
+if (is_dir(BEDITA_ADDONS_PATH . DS . 'vendors')) {
+	$vendorPaths[] = BEDITA_ADDONS_PATH . DS . 'vendors' . DS;
 }
 
 if (BACKEND_APP) {
