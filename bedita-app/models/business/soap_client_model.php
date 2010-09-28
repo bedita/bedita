@@ -63,12 +63,13 @@ class SoapClientModel extends BEAppModel
 		if($this->useNuSoap()) {
 			App::import ('Vendor', 'nusoap', array ('file' => 'nusoap' . DS . 'nusoap.php') );
 			$this->client = new nusoap_client($this->soapParams["wsdl"], "wsdl");
-			if(!empty($this->soapParams["debugLeve"])) {
-				$this->client->setDebugLevel($this->soapParams["debugLeve"]);				
+			if(!empty($this->soapParams["debugLevel"])) {
+				$this->client->setDebugLevel($this->soapParams["debugLevel"]);				
 			}
 		} else {
-			// TODO:
-			throw new BeditaException("php soap module not supported!");
+			
+			$options = array_diff_key($this->soapParams, array("useLib" =>"", "wsdl"=> "", "debugLevel"=> ""));
+			$this->client = new SoapClient($this->soapParams["wsdl"], $options);
 		}
 	}
 	
@@ -77,8 +78,10 @@ class SoapClientModel extends BEAppModel
 		if($this->useNuSoap()) {
 			$res = $this->client->getDebug();
 		} else {
-			// TODO:
-			throw new BeditaException("php soap module not supported!");
+			$res = $this->client->__getLastRequestHeaders();
+			$res .= $this->client->__getLastRequest();
+			$res .= $this->client->__getLastResponseHeaders();
+			$res .= $this->client->__getLastResponse();
 		}		
 		return $res;
 	}
@@ -92,9 +95,9 @@ class SoapClientModel extends BEAppModel
 		if($this->useNuSoap()) {
 			$res = $this->client->call($method, $params);
 		} else {
-			// TODO:
-			throw new BeditaException("php soap module not supported!");
-		}		
+			$res = $this->client->$method($params);
+		}
+		return $res;		
 	}
 	
 }
