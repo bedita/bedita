@@ -88,19 +88,21 @@ class User extends BEAppModel
         
     /**
 	 * Compact and reformat result
-	 * 		id => ; passwd => ; realname => ; userid => ; groups => array({1..N} nomi_grupppi)
+	 * 		id => ; passwd => ; realname => ; userid => ; groups => array({1..N} nomi_grupppi) : UserProperty => array()
 	 *
 	 * @param array $user
 	 */
 	function compact(&$user) {
-		unset($user['Permission']) ;
+		unset($user['Permission']);
 		
-		$user['User']['groups'] = array() ;
-		foreach ($user['Group'] as $group) {
-			$user['User']['groups'][] = $group['name'] ;
+		$user['User']['groups'] = array();
+		if (!empty($user['Group'])) {
+			foreach ($user['Group'] as $group) {
+				$user['User']['groups'][] = $group['name'];
+			}
+
+			unset($user['Group']);
 		}
-		
-		unset($user['Group']) ;
 
 		if (!empty($user['UserProperty'])) {
 			$user["User"]["UserProperty"] = array();
