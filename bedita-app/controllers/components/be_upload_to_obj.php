@@ -32,7 +32,7 @@ class BeUploadToObjComponent extends Object {
 	var $components	= array('BeFileHandler', 'BeBlip', 'BeVimeo', 'BeYoutube') ;
 
 	function startup(&$controller) {
-		$this->params = $controller->params;
+		$this->params = &$controller->params;
 		$this->BeFileHandler->startup($controller) ;
 	}
 
