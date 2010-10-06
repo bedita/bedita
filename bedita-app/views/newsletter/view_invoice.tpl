@@ -38,19 +38,19 @@ $(document).ready(function() {
 	{/if}
 
 	<br/>
-	total mails: {$totalJobs}
+	{t}total mails{/t}: {$totalJobs}
 
 	<br/>
-	sent mails: {$jobsOk}
+	{t}sent mails{/t}: {$jobsOk}
 
 	<br/>
-	failed mails: {$jobsFailed}
+	{t}failed mails{/t}: {$jobsFailed}
 
 	<br/>
-	pending mails: {$jobsPending}
+	{t}pending mails{/t}: {$jobsPending}
 
 	<br/>
-	unsent mails: {$jobsUnsent}
+	{t}unsent mails{/t}: {$jobsUnsent}
 
 
 

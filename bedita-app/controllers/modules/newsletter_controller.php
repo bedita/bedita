@@ -174,7 +174,7 @@ class NewsletterController extends ModulesController {
 
 		$jobsFailed = $this->MailJob->find("count", array(
 			"conditions" => array(
-				"status" => array("error"),
+				"status" => array("failed"),
 				"mail_message_id" => $id
 			)
 		));
@@ -188,7 +188,7 @@ class NewsletterController extends ModulesController {
 
 		$jobsPending = $this->MailJob->find("count", array(
 			"conditions" => array(
-				"status" => array("penidng"),
+				"status" => array("pending"),
 				"mail_message_id" => $id
 			)
 		));
