@@ -47,6 +47,8 @@ $rel["renameFiles"]= array(
 
 $rel["createFiles"] = array("bedita-app".DS."webroot".DS."test.php");
 
+$rel["moveDirs"]= array("examples" => "frontends");
+
 $rel["versionFileName"]="bedita-app".DS."config".DS."bedita.version.php";
 
 ?>
