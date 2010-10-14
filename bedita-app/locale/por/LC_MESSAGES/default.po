@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2010-08-09 16:46:28\n"
+"POT-Creation-Date: 2010-10-13 10:45:47\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -690,6 +690,9 @@ msgstr "Tipo"
 msgid "Items"
 msgstr ""
 
+msgid "Jobs"
+msgstr ""
+
 msgid "Last check"
 msgstr ""
 
@@ -775,9 +778,6 @@ msgid "Missing options"
 msgstr ""
 
 msgid "Missing parent"
-msgstr ""
-
-msgid "Missing plugin path"
 msgstr ""
 
 msgid "Missing publication"
@@ -915,11 +915,17 @@ msgstr "Nenhum documento encontrado"
 msgid "No file in the form"
 msgstr ""
 
+msgid "No file to embed"
+msgstr ""
+
 msgid "No galleries found"
 msgstr "Nenhuma galeria encontrada"
 
 msgid "No gallery"
 msgstr "Nenhuma galeria"
+
+msgid "No invoice selected"
+msgstr ""
 
 msgid "No invoices"
 msgstr ""
@@ -1229,6 +1235,9 @@ msgid "Show translations in"
 msgstr ""
 
 msgid "Software"
+msgstr ""
+
+msgid "Something seems wrong. bedita_module_setup.php didn't found"
 msgstr ""
 
 msgid "Statistics"
@@ -1788,6 +1797,9 @@ msgstr ""
 msgid "events"
 msgstr "eventos"
 
+msgid "failed mails"
+msgstr ""
+
 msgid "fax"
 msgstr ""
 
@@ -1875,6 +1887,9 @@ msgstr ""
 msgid "items"
 msgstr ""
 
+msgid "jobs"
+msgstr ""
+
 msgid "lang"
 msgstr ""
 
@@ -1932,6 +1947,9 @@ msgstr ""
 msgid "mailgroups"
 msgstr ""
 
+msgid "mails for minute"
+msgstr ""
+
 msgid "main language"
 msgstr ""
 
@@ -1948,6 +1966,9 @@ msgid "message board"
 msgstr ""
 
 msgid "mime type"
+msgstr ""
+
+msgid "minutes"
 msgstr ""
 
 msgid "missing card id"
@@ -2017,9 +2038,6 @@ msgid "news"
 msgstr ""
 
 msgid "newsletter"
-msgstr ""
-
-msgid "newsletter title"
 msgstr ""
 
 msgid "next"
@@ -2141,6 +2159,9 @@ msgstr "outro"
 
 msgid "page"
 msgstr "página"
+
+msgid "pending mails"
+msgstr ""
 
 msgid "permission"
 msgstr ""
@@ -2301,7 +2322,13 @@ msgstr ""
 msgid "sender email"
 msgstr ""
 
-msgid "sending date"
+msgid "sender name"
+msgstr ""
+
+msgid "sent"
+msgstr ""
+
+msgid "sent mails"
 msgstr ""
 
 msgid "set OFF"
@@ -2358,9 +2385,6 @@ msgstr ""
 msgid "target"
 msgstr ""
 
-msgid "template"
-msgstr ""
-
 msgid "text"
 msgstr ""
 
@@ -2380,6 +2404,9 @@ msgid "to recipients"
 msgstr ""
 
 msgid "today"
+msgstr ""
+
+msgid "total mails"
 msgstr ""
 
 msgid "transgender"
@@ -2416,6 +2443,9 @@ msgid "unique name"
 msgstr ""
 
 msgid "unplugged succesfully"
+msgstr ""
+
+msgid "unsent mails"
 msgstr ""
 
 msgid "upload new items"

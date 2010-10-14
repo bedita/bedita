@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2010-08-09 16:46:28\n"
+"POT-Creation-Date: 2010-10-13 10:45:47\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -76,10 +76,9 @@ msgstr "Sicuro di voler eliminare l'elemento?"
 msgid "Are you sure that you want to delete the note?"
 msgstr "Sicuro di voler eliminare la nota?"
 
-msgid ""
-"Are you sure that you want to delete the property? this will also delete any "
+msgid "Are you sure that you want to delete the property? this will also delete any"
 "properties data associated"
-msgstr ""
+msgstr "Sicuro di voler eliminare la property? saranno eliminati tutti i dati associati alla property"
 
 msgid "Are you sure that you want to delete the tag?"
 msgstr "Sicuro di voler eliminare il tag?"
@@ -90,10 +89,9 @@ msgstr "Sicuro di voler accettare questo IP"
 msgid "Are you sure you want to ban this IP?"
 msgstr "Sicuro di voler interdire l'accesso a questo IP (ban)?"
 
-msgid ""
-"Are you sure you want to cancel and reload this document? All unsaved "
+msgid "Are you sure you want to cancel and reload this document? All unsaved"
 "changes will be lost"
-msgstr ""
+msgstr "Sicuro di ignorare le modifiche e ricaricare il documento? Tutte le modifiche non salvate andranno perse"
 
 msgid "Area deleted"
 msgstr "Area eliminata"
@@ -129,10 +127,10 @@ msgid "BEdita editors activity statistics"
 msgstr "Statistiche attività redattori BEdita"
 
 msgid "BEdita object type model disabled"
-msgstr ""
+msgstr "Tipo di oggetto model di BEdita disabilitato"
 
 msgid "BEdita object type model enabled"
-msgstr ""
+msgstr "Tipo di oggetto model di BEdita abilitato"
 
 msgid "Bad data"
 msgstr "Dati non validi"
@@ -153,7 +151,7 @@ msgid "Bulk actions on"
 msgstr "Operazioni su"
 
 msgid "Call to a protected or private method in a wrong context"
-msgstr ""
+msgstr "Chiamata a un metodo privato o protetto in un contesto errato"
 
 msgid "Cancel queue"
 msgstr "Cancella coda"
@@ -222,7 +220,7 @@ msgid "Components"
 msgstr "Componenti"
 
 msgid "Concurrent editors:"
-msgstr ""
+msgstr "Redattori concorrenti:"
 
 msgid "Configuration"
 msgstr "Configurazione"
@@ -308,9 +306,8 @@ msgstr "Dettagli"
 msgid "Dimensions"
 msgstr "Dimensione"
 
-msgid ""
-"Disable object type will delete all related items. Do you want continue?"
-msgstr ""
+msgid "Disable object type will delete all related items. Do you want continue?"
+msgstr "Disabilitando il tipo di oggetto eliminerai tutti i dati associati. Vuoi proseguire?"
 
 msgid "Display details in frontend"
 msgstr "Visualizza dettagli nel frontend"
@@ -325,7 +322,7 @@ msgid "Do you want unsubscribe selected items?"
 msgstr "Sicuro di voler disiscrivere gli elementi selezionati"
 
 msgid "Document Saved on"
-msgstr ""
+msgstr "Documento salvato su"
 
 msgid "Document saved"
 msgstr "Documento salvato"
@@ -574,7 +571,7 @@ msgid "External auth component not found: "
 msgstr ""
 
 msgid "File"
-msgstr ""
+msgstr "File"
 
 msgid "File already exists in the filesystem"
 msgstr "Il file esiste già nel sistema"
@@ -643,19 +640,19 @@ msgid "Helpers"
 msgstr ""
 
 msgid "Hi"
-msgstr ""
+msgstr "Ciao"
 
 msgid "Hide system tags"
 msgstr "Nascondi i Tag"
 
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
 msgid "Human readable type"
 msgstr "Tipo semplificato"
 
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
 msgid "IP accepted"
 msgstr "IP accettato"
@@ -689,6 +686,9 @@ msgstr "Tipo Elemento"
 
 msgid "Items"
 msgstr "Elementi"
+
+msgid "Jobs"
+msgstr ""
 
 msgid "Last check"
 msgstr "Ultima verifica"
@@ -748,7 +748,7 @@ msgid "Message template"
 msgstr "Template messaggio"
 
 msgid "Missing data"
-msgstr ""
+msgstr "Dati mancanti"
 
 msgid "Missing email to send recover instructions"
 msgstr ""
@@ -777,9 +777,6 @@ msgstr "Opzioni mancanti"
 msgid "Missing parent"
 msgstr "Parent mancante"
 
-msgid "Missing plugin path"
-msgstr ""
-
 msgid "Missing publication"
 msgstr ""
 
@@ -787,8 +784,7 @@ msgid "Missing recipient"
 msgstr "Destinatario mancante"
 
 msgid "Missing referenced object. Save new item before adding a note"
-msgstr ""
-"Manca l'oggetto referenziato. Salva il nuovo elemento prima di "
+msgstr "Manca l'oggetto referenziato. Salva il nuovo elemento prima di"
 "aggiungereunanota"
 
 msgid "Missing sending date"
@@ -816,13 +812,11 @@ msgid "More properties"
 msgstr "Altre proprietà"
 
 msgid "Multimedia Provider not found or error getting thumbnail"
-msgstr ""
-"Non è stato trovato il multimedia provider o "
+msgstr "Non è stato trovato il multimedia provider o"
 "sièverificatounerrorenell'ottenere la miniatura"
 
 msgid "Multimedia Provider not found or error preparing data to save"
-msgstr ""
-"Non è stato trovato il multimedia provider o "
+msgstr "Non è stato trovato il multimedia provider o"
 "sièverificatounerrorenellapreparazione dei dati da salvare"
 
 msgid "Multimedia deleted"
@@ -874,8 +868,7 @@ msgid "News saved"
 msgstr "News salvata"
 
 msgid "Newsletter sent. To schedule another invoice, please clone this object."
-msgstr ""
-"Newsletter inviata. Per programmare un altro invio clona questo elemento"
+msgstr "Newsletter inviata. Per programmare un altro invio clona questo elemento"
 
 msgid "Newsletter subscriptions"
 msgstr "Sottoscrizioni della Newsletter"
@@ -922,11 +915,17 @@ msgstr "Nessun documento trovato"
 msgid "No file in the form"
 msgstr "Nessun file nel form"
 
+msgid "No file to embed"
+msgstr ""
+
 msgid "No galleries found"
 msgstr "Nessuna galleria trovata"
 
 msgid "No gallery"
 msgstr "Nessuna galleria"
+
+msgid "No invoice selected"
+msgstr ""
 
 msgid "No invoices"
 msgstr "Nessun invio"
@@ -1084,10 +1083,8 @@ msgstr "Persona"
 msgid "Please enter a valid date in the %1 format"
 msgstr "Inserire una data valida nel formato %1"
 
-msgid ""
-"Please enter a valid date in the %1 format and greater than the previous date"
-msgstr ""
-"Inserire una data valida nel formato %"
+msgid "Please enter a valid date in the %1 format and greater than the previous date"
+msgstr "Inserire una data valida nel formato %"
 "1esuccessivaalladataprecedentementeinserita"
 
 msgid "Please enter a valid time in the %1 format"
@@ -1240,6 +1237,9 @@ msgstr "Mostra traduzioni in"
 msgid "Software"
 msgstr ""
 
+msgid "Something seems wrong. bedita_module_setup.php didn't found"
+msgstr ""
+
 msgid "Statistics"
 msgstr "Statistiche"
 
@@ -1315,10 +1315,8 @@ msgstr "Il testo non corrisponde all'immagine"
 msgid "Text lang"
 msgstr "Lingua testo"
 
-msgid ""
-"The content is fixed: it's not possible to change the position in the tree"
-msgstr ""
-"Contenuto immodificabile: non è possibile cambiarne la posizione nell'albero"
+msgid "The content is fixed: it's not possible to change the position in the tree"
+msgstr "Contenuto immodificabile: non è possibile cambiarne la posizione nell'albero"
 
 msgid "This content is not on publishing tree. Continue?"
 msgstr ""
@@ -1371,8 +1369,7 @@ msgstr ""
 msgid "Unplugged modules"
 msgstr ""
 
-msgid ""
-"Unplugging the module will delete all related items. Do you want continue?"
+msgid "Unplugging the module will delete all related items. Do you want continue?"
 msgstr ""
 
 msgid "Unsubscribe selected items"
@@ -1429,14 +1426,12 @@ msgstr "Login utente temporaneamente bloccato"
 msgid "User name"
 msgstr "Nome utente"
 
-msgid ""
-"User name is required (at least %1 chars, without white spaces and special "
+msgid "User name is required (at least %1 chars, without white spaces and special"
 "chars)"
 msgstr ""
 
 msgid "User not associated to mailgroup or he is in pending status"
-msgstr ""
-"L'utente non è associato al gruppo di posta o è in attesa di approvazione"
+msgstr "L'utente non è associato al gruppo di posta o è in attesa di approvazione"
 
 msgid "User not associated to mailgroup or he isn't in pending status"
 msgstr "L'utente"
@@ -1798,6 +1793,9 @@ msgstr "il campo Fine deve essere una data valida nel seguente formato:"
 msgid "events"
 msgstr "eventi"
 
+msgid "failed mails"
+msgstr ""
+
 msgid "fax"
 msgstr ""
 
@@ -1885,6 +1883,9 @@ msgstr ""
 msgid "items"
 msgstr "elementi"
 
+msgid "jobs"
+msgstr ""
+
 msgid "lang"
 msgstr "lingua"
 
@@ -1942,6 +1943,9 @@ msgstr "indirizzo di posta"
 msgid "mailgroups"
 msgstr ""
 
+msgid "mails for minute"
+msgstr ""
+
 msgid "main language"
 msgstr "lingua principale"
 
@@ -1958,6 +1962,9 @@ msgid "message board"
 msgstr "area messaggi"
 
 msgid "mime type"
+msgstr ""
+
+msgid "minutes"
 msgstr ""
 
 msgid "missing card id"
@@ -2028,9 +2035,6 @@ msgstr "notizie"
 
 msgid "newsletter"
 msgstr ""
-
-msgid "newsletter title"
-msgstr "titolo newsletter"
 
 msgid "next"
 msgstr "succ"
@@ -2151,6 +2155,9 @@ msgstr "altro"
 
 msgid "page"
 msgstr "pagina"
+
+msgid "pending mails"
+msgstr ""
 
 msgid "permission"
 msgstr "permesso"
@@ -2311,8 +2318,14 @@ msgstr "mittente"
 msgid "sender email"
 msgstr "email mittente"
 
-msgid "sending date"
-msgstr "data invio"
+msgid "sender name"
+msgstr ""
+
+msgid "sent"
+msgstr ""
+
+msgid "sent mails"
+msgstr ""
 
 msgid "set OFF"
 msgstr ""
@@ -2368,9 +2381,6 @@ msgstr "tag"
 msgid "target"
 msgstr "destinatario"
 
-msgid "template"
-msgstr ""
-
 msgid "text"
 msgstr "testo"
 
@@ -2391,6 +2401,9 @@ msgstr "ai destinatari"
 
 msgid "today"
 msgstr "oggi"
+
+msgid "total mails"
+msgstr ""
 
 msgid "transgender"
 msgstr ""
@@ -2426,6 +2439,9 @@ msgid "unique name"
 msgstr ""
 
 msgid "unplugged succesfully"
+msgstr ""
+
+msgid "unsent mails"
 msgstr ""
 
 msgid "upload new items"
@@ -2508,3 +2524,4 @@ msgstr "il tuo messaggio"
 
 msgid "your profile and preferences"
 msgstr "il tuo profilo e le tue preferenze"
+
