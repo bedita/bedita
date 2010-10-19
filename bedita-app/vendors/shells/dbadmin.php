@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2010 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -21,6 +21,7 @@
 
 App::import('Core', 'String');
 App::import('Core', 'Controller');
+App::import('Model', 'Schema');
 
 require_once 'bedita_base.php';
 
@@ -502,7 +503,6 @@ class DbadminShell extends BeditaBaseShell {
 		require_once($sqlReservedFile);
 		
 		// load schema data
-		App::import('Model', 'Schema');
 		$tables = array();
 		$badNames = array();
 		if(isset($this->params['schema'])) {		
@@ -548,6 +548,99 @@ class DbadminShell extends BeditaBaseShell {
 			$this->out("bad names found: $bad");		
 		}
 	}
+	
+	public function schemaDoc() {
+
+		$db = ConnectionManager::getDataSource('default');
+		$this->out("Reading from database: ". $db->config['driver'] . " [host=" . 
+			$db->config['host'] .", database=". $db->config['database']."]");
+		$beSchema = ClassRegistry::init("BeSchema");
+		$tables = $beSchema->tableList();		
+		$dbName = $db->config['database'];
+		$db2 = ConnectionManager::getDataSource('informationSchema');
+		$doc = array();
+		foreach ($tables as $t) {
+		  	$res = $db2->query("SELECT column_name, column_comment from columns where table_name='$t' and table_schema='$dbName'");
+			foreach ($res as $r) {
+				if(!empty($r["columns"]["column_comment"])) {
+					$colName = $r["columns"]["column_name"];
+					$doc[$t][$colName] = $r["columns"]["column_comment"];
+				}
+			}
+			  	
+			$res2 = $db2->query("SELECT table_comment from tables where table_name='$t' and table_schema='$dbName'");
+			$tComm = explode(';', $res2[0]['tables']['table_comment']);
+			$doc["tables"][$t] = $tComm[0];
+		}
+
+		$sqlPath = APP ."config" . DS . "sql";
+		$h = fopen($sqlPath . DS . "schema_doc.php", 'w');
+		fwrite($h, "<?php\n// BEdita DB schema documentation\n\$doc = array();\n\n");
+		foreach ($tables as $t) {
+			if(strpos($t, "cake_") === false) {
+				fwrite($h, "// table: $t\n");
+				fwrite($h, "\$doc['tables']['$t'] = '" . $doc["tables"][$t]. "';");
+				$colDoc = empty($doc[$t]) ? array() : $doc[$t]; 
+				fwrite($h, "\n\$doc['$t'] = " . var_export($colDoc, true) . ";");
+				fwrite($h, "\n\n");
+			}
+		}
+		fwrite($h, "?>");
+		fclose($h);
+	}
+	
+	function schemaComments() {
+		
+		$schemaDocPath = APP ."config" . DS . "sql" . DS . "schema_doc.php";
+		include_once ($schemaDocPath);
+		
+		$schema = file(APP ."config" . DS . "sql" . DS . "bedita_mysql_test.sql");
+		$currTable = null;
+		foreach ($schema as $line) {
+			$line = trim($line);
+			$out = $line;
+			if(empty($currTable)) {
+				$f = "CREATE TABLE";
+				$p = strpos($line, $f);
+				if($p !== false) {
+					$t = explode(" ", substr($line, $p+strlen($f)));
+					$currTable = $t[0]; 
+				}
+			} else {
+				$p = strpos($line, ")");
+				$p1 = strpos($line, ";");
+				if($p !== false && $p1 !== false) {
+					$t = explode(";", $line);
+					if(!empty($doc["tables"][$currTable])) {
+						$out = $t[0] . " COMMENT='" . $doc["tables"][$currTable] . "';";
+					}
+					$currTable = null; 
+				} else {
+					$t = explode(" ", trim($line));
+					if(!empty($doc[$currTable][$t[0]])) {
+						$c = $doc[$currTable][$t[0]];
+						$t1 = explode(",", $line);
+						$out = $t1[0] . " COMMENT '$c',";
+					}
+				}
+			}
+			$this->out($out);
+		}
+		
+		// POSTGRES
+/*		foreach ($doc["tables"] as $name => $comm) {
+			
+			$c = "COMMENT ON TABLE $name IS '$comm';";
+			$this->out($c);
+			foreach($doc[$name] as $col => $colComm) {
+				$c = "COMMENT ON COLUMN $name.$col IS '$colComm';";
+				$this->out($c);
+			}
+		}
+*/
+	
+	}
+	
 	
 	function help() {
 		$this->out('Available functions:');
