@@ -34,6 +34,7 @@ require_once 'bedita_base.php';
 class DeployShell extends BeditaBaseShell {
 	
 	const DEFAULT_RELEASE_FILE 	= 'release.cfg.php' ;
+	const DEFAULT_SVN_URL 	= 'https://svn.channelweb.it/bedita/trunk' ;
 	
     public function release() {
     	$scr = self::DEFAULT_RELEASE_FILE;
@@ -51,10 +52,22 @@ class DeployShell extends BeditaBaseShell {
        	$this->out("Using temp dir: $tmpBasePath");
 		$exportPath = $tmpBasePath . "bedita";
 		
+		$svnUrl = $this->in("SVN url, [" . self::DEFAULT_SVN_URL . "]");
+		if(empty($svnUrl)) {
+			$svnUrl = self::DEFAULT_SVN_URL;
+		}
+       	$this->out("Using SVN url: $svnUrl");
+		$svnUser = $this->in("SVN username: ");
+		$svnPassword = $this->in("SVN password: ");
+		$releaseDir = $this->in("release dir: ");
+		if(!file_exists($releaseDir)) {
+	        $this->out("release dir not found: $releaseDir");
+			return;
+		}
 		
     	$svnExport = "svn export --non-interactive --username ". 
-    			$rel['user'] . " --password " . $rel['password'] . 
-    			" " . $rel['url'] . " " . $exportPath;
+    			$svnUser . " --password " . $svnPassword . 
+    			" " . $svnUrl . " " . $exportPath;
 		$this->out("Svn command: $svnExport");
     	$res = system($svnExport);
 		$this->out("Result: $res");
@@ -126,7 +139,7 @@ class DeployShell extends BeditaBaseShell {
 		fwrite($handle, $versionFileContent);
 		fclose($handle);
 		
-		$releaseFile = $rel["releaseDir"]. DS . $rel["releaseBaseName"] . "-" . $releaseName . ".tar";
+		$releaseFile = $releaseDir. DS . $rel["releaseBaseName"] . "-" . $releaseName . ".tar";
 		
     	if(file_exists($releaseFile)) {
 			$res = $this->in("$releaseFile exists, overwrite? [y/n]");
