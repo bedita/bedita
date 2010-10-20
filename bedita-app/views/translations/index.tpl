@@ -145,7 +145,7 @@ function changeStatusTranslations() {
 			</td>
 			<td><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations[i].LangText.title|default:'<i>[no title]</i>'|truncate:38:true}</a></td>
 			<td>
-				<span class="listrecent {$conf->objectTypes[$ot].model|lower}">&nbsp;</span>
+				<span class="listrecent {$conf->objectTypes[$ot].name|lower}">&nbsp;</span>
 				{$conf->objectTypes[$ot].model}
 			</td>
 			<td>{$olang}</td>
