@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2010-10-13 10:45:47\n"
+"POT-Creation-Date: 2010-10-20 15:46:16\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -784,8 +784,8 @@ msgid "Missing recipient"
 msgstr "Destinatario mancante"
 
 msgid "Missing referenced object. Save new item before adding a note"
-msgstr "Manca l'oggetto referenziato. Salva il nuovo elemento prima di"
-"aggiungereunanota"
+msgstr "Manca l'oggetto referenziato. Salva il nuovo elemento prima di "
+"aggiungere una nota"
 
 msgid "Missing sending date"
 msgstr "Manca la data invio"
@@ -812,12 +812,12 @@ msgid "More properties"
 msgstr "Altre proprietà"
 
 msgid "Multimedia Provider not found or error getting thumbnail"
-msgstr "Non è stato trovato il multimedia provider o"
-"sièverificatounerrorenell'ottenere la miniatura"
+msgstr "Non è stato trovato il multimedia provider o "
+"si è verificato un errore nell'ottenere la miniatura"
 
 msgid "Multimedia Provider not found or error preparing data to save"
-msgstr "Non è stato trovato il multimedia provider o"
-"sièverificatounerrorenellapreparazione dei dati da salvare"
+msgstr "Non è stato trovato il multimedia provider o "
+"si è verificato un errore nella preparazione dei dati da salvare"
 
 msgid "Multimedia deleted"
 msgstr "Multimedia eliminato"
@@ -1084,8 +1084,8 @@ msgid "Please enter a valid date in the %1 format"
 msgstr "Inserire una data valida nel formato %1"
 
 msgid "Please enter a valid date in the %1 format and greater than the previous date"
-msgstr "Inserire una data valida nel formato %"
-"1esuccessivaalladataprecedentementeinserita"
+msgstr "Inserire una data valida nel formato %1 "
+"e successiva alla data precedentemente inserita"
 
 msgid "Please enter a valid time in the %1 format"
 msgstr "Inserire un orario valido nel formato %1"
@@ -2328,16 +2328,16 @@ msgid "sent mails"
 msgstr ""
 
 msgid "set OFF"
-msgstr ""
+msgstr "imposta OFF"
 
 msgid "set ON"
-msgstr ""
+msgstr "imposta ON"
 
 msgid "short text"
 msgstr "testo breve"
 
 msgid "show"
-msgstr ""
+msgstr "mostra"
 
 msgid "signature"
 msgstr "firma"
@@ -2394,7 +2394,7 @@ msgid "to"
 msgstr "al"
 
 msgid "to change your password fill the following form"
-msgstr ""
+msgstr "per modificare la tua password riempi questa form"
 
 msgid "to recipients"
 msgstr "ai destinatari"
@@ -2403,10 +2403,10 @@ msgid "today"
 msgstr "oggi"
 
 msgid "total mails"
-msgstr ""
+msgstr "totale messaggi"
 
 msgid "transgender"
-msgstr ""
+msgstr "transgender"
 
 msgid "translation of"
 msgstr "traduzione di"
@@ -2418,16 +2418,16 @@ msgid "translations"
 msgstr "traduzioni"
 
 msgid "turn off"
-msgstr ""
+msgstr "disattiva"
 
 msgid "turn on"
-msgstr ""
+msgstr "attiva"
 
 msgid "turned off"
-msgstr ""
+msgstr "disattivato"
 
 msgid "turned on"
-msgstr ""
+msgstr "attivato"
 
 msgid "type"
 msgstr "tipo"
@@ -2436,22 +2436,22 @@ msgid "undo"
 msgstr "annulla"
 
 msgid "unique name"
-msgstr ""
+msgstr "nome univoco"
 
 msgid "unplugged succesfully"
-msgstr ""
+msgstr "unplugged con successo"
 
 msgid "unsent mails"
-msgstr ""
+msgstr "mail non spedite"
 
 msgid "upload new items"
 msgstr "carica nuovi elementi"
 
 msgid "url"
-msgstr ""
+msgstr "url"
 
 msgid "url name"
-msgstr ""
+msgstr "nome url"
 
 msgid "use template"
 msgstr "usa template"
@@ -2469,10 +2469,10 @@ msgid "value"
 msgstr "valore"
 
 msgid "version"
-msgstr ""
+msgstr "versione"
 
 msgid "video"
-msgstr ""
+msgstr "video"
 
 msgid "view"
 msgstr "visualizza"
