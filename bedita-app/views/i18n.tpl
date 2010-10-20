@@ -4,7 +4,7 @@
 Strings to translate not present in .tpl/.php files
 
 // module names
-{t}publishing{/t}
+{t}publications{/t}
 {t}admin{/t}
 {t}translations{/t}
 {t}documents{/t}

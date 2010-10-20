@@ -176,7 +176,7 @@ $config['OBJ_PERMS_WRITE'] 	= OBJ_PERMS_WRITE ;
  * BEdita modules
  */
 $config['modules'] = array(
-	"areas" => array("id" => 1, "label" => "publishing"),
+	"areas" => array("id" => 1, "label" => "publications"),
 	"admin" => array("id" => 2, "label" => "admin"),
 	"translations" => array("id" => 3, "label" => "translations"),
 	"documents" => array("id" => 6, "label" => "documents"),
