@@ -34,6 +34,8 @@ class ObjectRelation extends BEAppModel
 	 * Create relation between objects
 	 *
 	 * TODO: sql query, not working with cake ->save() .. why??
+	 *
+	 * cake->save() doesn't work beacuse of table structure. It should be id primary key, object_id, related_object_id, switch, priority)
 	 * 
 	 * @param int $id
 	 * @param int $objectId
@@ -54,6 +56,37 @@ class ObjectRelation extends BEAppModel
 		$q = "INSERT INTO object_relations (id, object_id, switch, priority) VALUES ({$objectId}, {$id}, '{$switch}', {$priority})";
 		return $this->query($q);
 		
+	}
+
+	/**
+	 * delete relation between objects
+	 *
+	 * @param int $id
+	 * @param int $objectId
+	 * @param string $switch
+	 * @param bool $bidirectional
+	 * @return bool
+	 */
+	public function deleteRelation($id, $objectId=null, $switch=null, $bidirectional = true) {
+		// #CUSTOM QUERY - TODO: use cake, how?? changing table structure (id primary key, object_id, related_object_id, switch, priority)
+		$q = "DELETE FROM object_relations WHERE id={$id}";
+		$qReverse = "DELETE FROM object_relations WHERE object_id={$id}";
+		if ($objectId !== null) {
+			$q .= " AND object_id={$objectId}";
+			$qReverse .= " AND id={$objectId}";
+		}
+		if ($switch !== null) {
+			$q .= " AND switch='{$switch}'";
+			$qReverse .= " AND switch='{$switch}'";
+		}
+		$res = $this->query($q);
+		if ($res === false) {
+			return $res;
+		}
+		if(!$bidirectional) {
+			return $res;
+		}
+		return $this->query($qReverse);
 	}
 }
 ?>
