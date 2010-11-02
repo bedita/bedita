@@ -70,7 +70,7 @@ $(document).ready(function(){
 	$("div.insidecol input[name='save']").click(function() {
 
 		if ( $('.publishingtree input:checked').val() === undefined ) {	
-			var answer = confirm("{/literal}{t}This content is not on publishing tree. Continue?{/t}{literal}")
+			var answer = confirm("{/literal}{t}This content is not on publication tree. Continue?{/t}{literal}")
 			    if (answer){
 			       $("#updateForm").submit();
 			    }

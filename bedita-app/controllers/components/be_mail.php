@@ -94,7 +94,7 @@ class BeMailComponent extends Object {
 	 *
 	 * @param array $message, mail_message array from a find on MailMessage 
 	 * @param bool $html, mail type
-	 * @param int $mail_group_id used to get publishing public url and build unsubscribe link
+	 * @param int $mail_group_id used to get publication public url and build unsubscribe link
 	 * @param $card_id used to built unsubscribe link
 	 * @return body (html or txt) of the message
 	 */

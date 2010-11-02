@@ -97,7 +97,7 @@ class BeTreeHelper extends AppHelper {
 	 * output sitemap tree
 	 *
 	 * @param array $sections, sections tree
-	 * @param string $public_url, public url of publishing
+	 * @param string $public_url, public url of publication
 	 * @return html for sitemap
 	 */
 	public function sitemap($sections=array(),$public_url='/') {
