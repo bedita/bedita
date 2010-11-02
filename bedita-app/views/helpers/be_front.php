@@ -213,40 +213,94 @@ class BeFrontHelper extends AppHelper {
 
 	/**
 	 * choose a view template verifying if file exists. Test follow the order:
-	 *		1) filename = currentContent nickname
-	 *		2) filename = section nickname
-	 *		3) filename = parent sections nickname
-	 *		4) filename = object type
-	 *		5) default
+	 *		1) filename = frontendMap currentContent nickname
+	 *		2) filename = frontendMap section nickname
+	 * 		3) filename = currentContent nickname
+	 *		4) filename = section nickname
+	 *		5) filename = parent sections nickname
+	 *		6) filename = object type
+	 *		7) default
 	 *
 	 * @param string $default, default fallback template
 	 * @return void
 	 */
 	public function chooseTemplate($default="generic_section") {
+
 		$pagesPath = VIEWS . "pages" . DS;
-		$tplFiles = array($pagesPath . $this->_section["nickname"] . $this->_viewExt);
 		
+		$tplFile = null;
+		$cNick = null;
+		$cId = null;
 		if (!empty($this->_section["currentContent"])) {
-			array_unshift($tplFiles,  $pagesPath . $this->_section["currentContent"]["nickname"] . $this->_viewExt);
-			$typeTplFile = $pagesPath . $this->_conf->objectTypes[$this->_section["currentContent"]["object_type_id"]]["name"] . $this->_viewExt;
+			$cNick = $this->_section["currentContent"]["nickname"];
+			$cId = $this->_section["currentContent"]["id"];
 		}
 
-		if (!empty($this->_section["pathSection"])) {
-			$parentFiles = array_reverse(Set::format($this->_section["pathSection"], $pagesPath . "{0}" . $this->_viewExt, array("{n}.nickname")));
-			$tplFiles = array_merge($tplFiles, $parentFiles);
-		}
-
-		if (!empty($typeTplFile)) {
-			$tplFiles[] = $typeTplFile;
-		}
-
-		$tplFiles[] = $pagesPath . $default . $this->_viewExt;
-
-		foreach ($tplFiles as $file) {
-			if (file_exists($file)) {
-				return $file;
+		// 1. check frontendMap currentContent nickname
+		if (isset($cNick)) {
+			if(!empty($this->_conf->frontendMap[$cNick])) {
+				$tplFile = $pagesPath . $this->_conf->frontendMap[$cNick] . $this->_viewExt;
+				if (file_exists($tplFile)) {
+					return $tplFile;
+				}
+			} else if(!empty($this->_conf->frontendMap[$cId])) {
+				$tplFile = $pagesPath . $this->_conf->frontendMap[$cId] . $this->_viewExt;
+				if (file_exists($tplFile)) {
+					return $tplFile;
+				}
 			}
 		}
+		
+		// 2. check frontendMap currentContent nickname
+		$sNick = $this->_section["nickname"];
+		if (!empty($this->_conf->frontendMap[$sNick])) {
+			$tplFile = $pagesPath . $this->_conf->frontendMap[$sNick] . $this->_viewExt;
+			if (file_exists($tplFile)) {
+				return $tplFile;
+			}
+		}
+		$sId = $this->_section["id"];
+		if (!empty($this->_conf->frontendMap[$sId])) {
+			$tplFile = $pagesPath . $this->_conf->frontendMap[$sId] . $this->_viewExt;
+			if (file_exists($tplFile)) {
+				return $tplFile;
+			}
+		}
+		
+		// 3. template with same name as currentContent nickname
+		if (isset($cNick)) {
+			$tplFile =  $pagesPath . $this->_section["currentContent"]["nickname"] . $this->_viewExt;
+			if (file_exists($tplFile)) {
+				return $tplFile;
+			}
+		}
+		
+		// 4. template with same name as section nickname
+		$tplFile = $pagesPath . $sNick . $this->_viewExt;
+		if (file_exists($tplFile)) {
+			return $tplFile;
+		}
+		
+		// 5. parent sections nickname
+		if (!empty($this->_section["pathSection"])) {
+			$parentFiles = array_reverse(Set::format($this->_section["pathSection"], $pagesPath . "{0}" . $this->_viewExt, array("{n}.nickname")));
+			foreach ($parentFiles as $pFile) {
+				if(file_exists($pFile)) {
+					return $pFile;
+				}
+			}
+		}
+
+		// 6. object type template name
+		if (!empty($this->_section["currentContent"])) {
+			$tplFile = $pagesPath . $this->_conf->objectTypes[$this->_section["currentContent"]["object_type_id"]]["name"] . $this->_viewExt;
+			if (file_exists($tplFile)) {
+				return $tplFile;
+			}
+		}
+
+		// 7. default
+		return $pagesPath . $default . $this->_viewExt;
 	}
 
 	/**
