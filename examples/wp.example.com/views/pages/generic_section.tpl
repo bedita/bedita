@@ -22,6 +22,10 @@
 				{/if}
 			</div><!-- .entry-meta -->
 
+			<div class="entry-summary">
+				{$section.currentContent.abstract}
+			</div><!-- .entry-summary -->
+
 			<div class="entry-content">
 				{$section.currentContent.body}
 				{if !empty($section.currentContent.relations.attach)}

@@ -6,7 +6,7 @@
 		</div><!-- #site-info -->
 
 		<div id="site-generator">
-			<a href="http://bedita.com"	title="Semantic Content Management System" rel="generator">Proudly powered by BEdita.</a>
+			<a href="http://www.bedita.com"	title="Semantic Content Management Framework" rel="generator">Proudly powered by BEdita.</a>
 		</div><!-- #site-generator -->
 
 	</div><!-- #colophon -->
