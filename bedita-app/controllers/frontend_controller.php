@@ -64,7 +64,8 @@ abstract class FrontendController extends AppController {
 	 * 							 false to get only content selected
 	 * 		"itemsByType" => true to divide children by type (i.e. Document, Event,....)
 	 * 						 false to put all content type children in 'childContents' array and section type children in 'sectionChilds'
-	 * 		"childrenParams" array to define special filters and pagination options   
+	 * 		"childrenParams" => array to define special filters ('filter' array) and pagination options ("order", "dir", "dim", "page")
+	 * 							detail level ("detailed" => true, default false used only if "showAllContents" => true)
 	 * 
 	 * @var array
 	 */
@@ -1178,14 +1179,18 @@ abstract class FrontendController extends AppController {
 			}
 			
 			$section["contentRequested"] = true;
-			$section["contentPath"] = $section["canonicalPath"] . "/" . $section['currentContent']['nickname'];
+			$section["contentPath"] = ($section["canonicalPath"] !== "/") ? $section["canonicalPath"] : ""
+				. "/" . $section['currentContent']['nickname'];
 			$section['currentContent']['canonicalPath'] = $section["contentPath"];
 			
 			$this->historyItem["object_id"] = $content_id;
 			$this->historyItem["title"] = $section['currentContent']['title'];
 			
 			if ($this->sectionOptions["showAllContents"]) {
-				$this->baseLevel = true;
+				if(empty($this->sectionOptions["childrenParams"]["detailed"]) 
+					|| $this->sectionOptions["childrenParams"]["detailed"] === false) {
+					$this->baseLevel = true;
+				}
 				$checkPubDate = $this->checkPubDate;
 				$this->checkPubDate = array("start" => false, "end" => false);
 				$tmp = $this->loadSectionObjects($sectionId, $this->sectionOptions["childrenParams"]);
