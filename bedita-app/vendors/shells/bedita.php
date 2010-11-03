@@ -46,6 +46,8 @@ class BeditaShell extends BeditaBaseShell {
 
 	const DEFAULT_TAR_FILE 	= 'bedita-export.tar' ;
 	const DEFAULT_ARCHIVE_FILE 	= 'bedita-export.tar.gz' ;
+
+	var $tasks = array('Cleanup');
 	
 	/**
 	 * initialize BEdita
@@ -444,32 +446,10 @@ class BeditaShell extends BeditaBaseShell {
 	}    
     
     function cleanup() {
-		$basePath = TMP;
-    	if (isset($this->params['frontend'])) {
-    		$basePath = $this->params['frontend'].DS."tmp".DS;
-			if(!file_exists($basePath)) {
-    			$this->out("Directory $basePath not found");
-				return;
-			}
-    		$this->out('Cleaning dir: '.$basePath);
-            $this->__clean($basePath . 'cache', false);
-    	}
-        if (isset($this->params['logs'])) {
-    	   $this->__clean($basePath . 'logs');
-            $this->out('Logs cleaned.');
-        }
-        Cache::clear();
-        $this->__clean($basePath . 'cache' . DS . 'models');
-        $this->__clean($basePath . 'cache' . DS . 'persistent');        
-        $this->__clean($basePath . 'cache' . DS . 'views');        
-        $this->out('Cache cleaned.');
-        $this->__clean($basePath . 'smarty' . DS . 'compile');
-        $this->__clean($basePath . 'smarty' . DS . 'cache');
-        $this->out('Smarty compiled/cache cleaned.');
-
-        if (isset($this->params['media'])) {
-       		$this->removeMediaFiles();
-        }
+    	$this->loadTasks();
+		$this->Cleanup->params = array_merge($this->Cleanup->params, $this->params);
+        $this->Cleanup->execute();
+		$this->out("Done");        
     }    
 
     private function removeMediaFiles() {

@@ -36,6 +36,8 @@ class DeployShell extends BeditaBaseShell {
 	const DEFAULT_RELEASE_FILE 	= 'release.cfg.php' ;
 	const DEFAULT_SVN_URL 	= 'https://svn.channelweb.it/bedita/trunk' ;
 	
+	var $tasks = array('Cleanup');
+	
     public function release() {
     	$scr = self::DEFAULT_RELEASE_FILE;
     	if(!empty($this->params['script'])) {
@@ -182,6 +184,48 @@ class DeployShell extends BeditaBaseShell {
 		
     }
 
+    public function svnUpdate() {
+    	
+		$sel = array();
+		$this->out("1. BEdita core/backend");
+		$sel[1] = ROOT;
+		$folder = new Folder(BEDITA_FRONTENDS_PATH);
+		$ls = $folder->ls();
+		$count = 1;
+		foreach ($ls[0] as $dir) {
+			if($dir[0] !== '.' ) {
+				$count++;
+				$this->out("$count. $dir (frontend)");
+				$sel[$count] = BEDITA_FRONTENDS_PATH. DS .$dir;
+			}
+		}
+		$this->hr();
+		
+    	$selected = $sel[1];
+		$res = $this->in("select item: [1]");
+		if(!empty($res)) {
+			if($res >=  1 && $res <= $count) {
+				$selected = $sel[$res];
+			} else {
+				$this->out("wrong item $res , choose between 1 and $count");
+				return;
+			}
+		}
+		$svnCmd = "svn update $selected";
+		$this->out("Svn command: $svnCmd");
+    	$svnRes = system($svnCmd);
+    	if($svnRes === false) {
+			$this->out("Svn command failed");
+    	}
+    	$this->loadTasks();
+    	if($res > 1) {
+    		$this->Cleanup->params["frontend"] = $selected;
+    	} else {
+    		$this->updateVersion();
+    	}
+ 		$this->Cleanup->execute();
+		$this->out("Done");
+    }
 
     function help() {
         $this->out('Available functions:');
@@ -191,7 +235,9 @@ class DeployShell extends BeditaBaseShell {
         $this->out(' ');
         $this->out('2. updateVersion: updates version number from svn local info [if present]');
   		$this->out(' ');
-	}
+        $this->out('3. svnUpdate: updates from svn backend or frontends, with cleanup, version update...');
+  		$this->out(' ');
+    }
 }
 
 ?>
