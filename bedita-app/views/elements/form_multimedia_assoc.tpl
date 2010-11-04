@@ -171,7 +171,7 @@ $(document).ready(function(){
 			{foreach from=$items item='mobj' key='mkey'}	
 			<tr class="rowList" id="tr_{$mobj.id}">
 				
-				<td style="width:12px;"><input type="checkbox" value="{$mobj.id}" name="chk_bedita_item" class="itemCheck"/></td>
+				<td style="width:12px;"><input type="checkbox" value="{$mobj.id}" name="chk_bedita_item" class="objectCheck"/></td>
 				
 				<td style="width:{$thumbWidth}px;">
 				<a title="show details" href="{$html->url('/multimedia/view/')}{$mobj.id}" target="_blank">

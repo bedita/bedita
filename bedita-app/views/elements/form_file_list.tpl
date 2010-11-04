@@ -113,6 +113,24 @@ $(document).ready(function()
 		$("#ajaxSubcontainer").show();
 		$("#ajaxSubcontainer").load(urlGetAllItemNoAssoc, function() {
 			$("#loading").hide();
+			$('.selecteditems').text($(".objectCheck:checked").length);
+			$(".selectAll").bind("click", function(e) {
+				var status = this.checked;
+				$(".objectCheck").each(function() { 
+					this.checked = status; 
+					if (this.checked) $(this).parents('TR').addClass('overChecked');
+					else $(this).parents('TR').removeClass('overChecked');
+				});
+				$('.selecteditems').text($(".objectCheck:checked").length);
+			}) ;
+			$(".objectCheck").bind("click", function(e) {
+				var status = true;
+				$(".objectCheck").each(function() { 
+					if (!this.checked) return status = false;
+				});
+				$(".selectAll").each(function() { this.checked = status;});
+				$('.selecteditems').text($(".objectCheck:checked").length);
+			}) ;
 		});
 	});
 });
