@@ -17,11 +17,11 @@ function commitUploadItem(IDs) {
 
 	var currClass =  $(".multimediaitem:last").attr("class");
 	//alert(currClass);
-	var emptyDiv = "<div  class=\' " + currClass + " \ gold '><\/div>";
+	
 	for(var i=0 ; i < IDs.length ; i++)
 	{
 		var id = escape(IDs[i]) ;
-
+		var emptyDiv = "<div id='item_" + id + "' class=' " + currClass + " gold '><\/div>";
 		$(emptyDiv).load(
 			urlGetObj, {'id': id, 'relation':"attach"}, function (responseText, textStatus, XMLHttpRequest)
 			{

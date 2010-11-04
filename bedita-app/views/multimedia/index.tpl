@@ -27,11 +27,10 @@ $(document).ready(function() {
 			
 function commitUploadItem(IDs) {
 
-	var emptyDiv = "<div  class='multimediaitem itemBox gold'><\/div>";
 	for(var i=0 ; i < IDs.length ; i++)
 	{
 		var id = escape(IDs[i]) ;
-
+		var emptyDiv = "<div id='item_" + id + "' class='multimediaitem itemBox gold'><\/div>";
 		$(emptyDiv).load(
 			urlGetObj, {'id': id, 'relation':'attach', 'template':'elements/file_item.tpl'}, function (responseText, textStatus, XMLHttpRequest)
 			{
