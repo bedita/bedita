@@ -208,6 +208,9 @@ $(document).ready(function(){
 ...........................................*/
 
 	var currentclassmodule   = $(".secondacolonna .modules LABEL").attr("class");
+	if(!currentclassmodule) {
+		currentclassmodule = "";
+	}
 
 	jQuery.fn.BEtabstoggle = function() {
 			
