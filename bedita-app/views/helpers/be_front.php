@@ -55,6 +55,13 @@ class BeFrontHelper extends AppHelper {
 	public function title($order='asc') {
 		$pub = (!empty($this->_publication['public_name'])) ? $this->_publication['public_name'] : $this->_publication['title'];
 		if(empty($this->_section) || empty($this->_section['title']) || $this->_section['nickname'] == $this->_publication['nickname']) {
+			if(!empty($this->_section['contentRequested']) && ($this->_section['contentRequested'] == 1) ) {
+				$sec = $this->_currentContent['title'];
+				if($order=='asc') {
+					return $sec . " - " . $pub;
+				}
+				return $pub . " - " . $sec;
+			}
 			return $pub;
 		}
 		$sec = $this->_section['title'];
