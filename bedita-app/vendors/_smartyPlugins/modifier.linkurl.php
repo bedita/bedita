@@ -45,7 +45,7 @@ function smarty_modifier_linkurl($string, $length=50, $target="_blank", $link=tr
 		}
 	}
 	//UPDATE make sure there is an http:// on all URLs
-	$string = preg_replace("/([^www])(www\.[a-z0-9\-]+\.[a-z0-9\-]+)/i","http://$2", $string);
+	$string = preg_replace("/([^www])(www\.[a-z0-9\-]+\.[a-z0-9\-]+)/i"," http://$2", $string);
 	
 	if ($link == true)
 		{
