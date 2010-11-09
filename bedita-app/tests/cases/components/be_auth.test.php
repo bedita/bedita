@@ -117,8 +117,12 @@ class BeAuthTestCase extends BeditaTestCase {
 		}
 		
 		$this->assertTrue($beAuth->removeGroup($this->data['new.group.name']));
-		$this->expectException(new BeditaException("Error saving group"));
-		$beAuth->saveGroup($this->data['bad.group']);
+		try {
+			$beAuth->saveGroup($this->data['bad.group']);
+			$this->fail("Failed: saving group");
+		} catch(BeditaException $be) {
+			$this->pass("Ok: bad group, exception raised");
+		}
 	}
 	
 	function testImmutable() {

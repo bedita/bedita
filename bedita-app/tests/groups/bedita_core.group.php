@@ -41,12 +41,21 @@ class BeditaCoreGroupTest extends GroupTest {
 		$this->addTest('controllers' . DS . 'authentication_controller');
 		$this->addTest('components' . DS . 'be_auth');
 		$this->addTest('components' . DS . 'be_system');
-		$this->addTest('components' . DS . 'permission_module');
-		$this->addTest('datasources' . DS . 'schema');
-		$this->addTest('models' . DS . 'category');
-		$this->addTest('models' . DS . 'section');
-		$this->addTest('models' . DS . 'document');
 		$this->addTest('models' . DS . 'area');
+		$this->addTest('models' . DS . 'card');
+		$this->addTest('models' . DS . 'category');
+		$this->addTest('models' . DS . 'comment');
+		$this->addTest('models' . DS . 'document');
+		$this->addTest('models' . DS . 'event');
+		$this->addTest('models' . DS . 'gallery');
+		$this->addTest('models' . DS . 'generic_object');
+		$this->addTest('models' . DS . 'link');
+		$this->addTest('models' . DS . 'permission');
+		$this->addTest('models' . DS . 'permission_module');
+		$this->addTest('models' . DS . 'section');
+		$this->addTest('models' . DS . 'tree');
+		$this->addTest('models' . DS . 'user');
+		$this->addTest('models' . DS . 'version');
 	}
 }
 ?>
