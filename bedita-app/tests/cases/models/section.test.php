@@ -42,7 +42,8 @@ class SectionTestCase extends BeditaTestCase {
  	function testFeeds() {
 
  		$conf = Configure::getInstance();
-		$tree = $this->Tree->getAll(null, null, null, array($conf->objectTypes['area']['id'])) ;
+		$tree = $this->Tree->getAll(null, null, null, 
+			array("object_type_id" => array($conf->objectTypes['area']['id']))) ;
  		
 		foreach ($tree as $area) {
 			pr("Publication: ". $area['id'] . " - ". $area['title']);
