@@ -10,8 +10,8 @@
  */
 class SchemaTestData extends BeditaTestData {
 	var $data =  array(
-		'db1'	=> 'test',
-		'db2'	=> 'default'
+		'db1'	=> 'default',
+		'db2'	=> 'test'
 	);
 }
 

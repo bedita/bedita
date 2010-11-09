@@ -31,25 +31,28 @@
 require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
 class SchemaTestCase extends BeditaTestCase {
-	var $uses		= array('BEObject') ;
+	var $uses		= array('BeSchema') ;
  	var $components	= array('Transaction') ;
     var $dataSource	= 'test' ;
 	
     public function testDbDifference() {
 		$this->requiredData(array("db1","db2"));
 		$this->resetDefaultDataSource();
-    	$model = new BEObject();
+    	$beSchema = new BeSchema();
 		$db1 = $this->data['db1'];
 		$db2 = $this->data['db2'];
-		$model->setDataSource($db1);
-    	pr("using data source: ". $db1);
-    	$tables1 = $this->tableList($model);
-    	$tableDetails1 = $this->tableDetails($tables1, $model);
+    	pr("compare data source: ". $this->dbDetails($db1));
+    	pr("with data source: ". $this->dbDetails($db2));
+    	clearCache(null, 'models');
+		clearCache(null, 'persistent');
     	
-		$model->setDataSource($db2);
-	   	pr("using data source: ".$db2);
-    	$tables2 = $this->tableList($model);
-    	$tableDetails2 = $this->tableDetails($tables2, $model);
+    	$tableDetails1 = $beSchema->readTables(array("connection" => $db1));
+    	$tables1 = array_keys($tableDetails1);
+    	
+    	clearCache(null, 'models');
+		clearCache(null, 'persistent');
+    	$tableDetails2 = $beSchema->readTables(array("connection" => $db2));
+    	$tables2 = array_keys($tableDetails2);
 
     	$this->assertTrue(count($tables1) == count($tables2), "Number of tables is different!");
     	$diff = array_diff($tables1, $tables2);
@@ -92,28 +95,12 @@ class SchemaTestCase extends BeditaTestCase {
 		}
     }
 
-    private function tableList($model) {
-   		$tables = $model->query("show tables");
-    	$res = array();
-    	foreach ($tables as $k=>$v) {
-    		$t1 = array_values($v);
-    		$t2 = array_values($t1[0]);
-    		$res[]=$t2[0] ;
-    	}
-    	return $res;
-    }
-    
-    private function tableDetails($tables, $model) {
-    	$res = array();
-    	foreach ($tables as $t) {
-    		$fields = $model->query("describe $t");
-    		$columns = array();
-    		foreach($fields as $c) {
-    			$columns[$c['COLUMNS']['Field']] = $c['COLUMNS'];
-    		}
-    		$res[$t] = $columns;
-    	}
-    	return $res;
+    private function dbDetails($dbCfg) {
+    	$db = ConnectionManager::getDataSource($dbCfg);
+    	$hostName = $db->config['host'];
+    	$dbName = $db->config['database'];
+    	$driver = $db->config['driver'];
+    	return "$dbCfg - $driver [host=".$hostName.", database=".$dbName."]";
     }
     
     public   function __construct () {
