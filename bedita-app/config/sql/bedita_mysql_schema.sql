@@ -226,7 +226,7 @@ CREATE TABLE date_items (
 
 CREATE TABLE `event_logs` (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  `userid` VARCHAR(32) NOT NULL COMMENT 'event user',
+  `userid` VARCHAR(200) NOT NULL COMMENT 'event user',
   created datetime NOT NULL COMMENT 'event time',
   msg VARCHAR(100) NOT NULL COMMENT 'log content',
   `log_level` VARCHAR(10) NOT NULL default 'info' COMMENT 'log level (debug, info, warn, err)',
@@ -790,7 +790,7 @@ CREATE TABLE user_properties (
 
 CREATE TABLE users (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  userid VARCHAR(32) NOT NULL,
+  userid VARCHAR(200) NOT NULL,
   realname VARCHAR(255) NULL,
   passwd VARCHAR(255) NULL,
   email varchar(255) default NULL,

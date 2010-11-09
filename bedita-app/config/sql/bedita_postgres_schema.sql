@@ -252,7 +252,7 @@ COMMENT ON COLUMN date_items.end_date IS 'end time, can be NULL';
 
 CREATE TABLE event_logs (
     id serial,
-    userid character varying(32) NOT NULL,
+    userid character varying(200) NOT NULL,
     created timestamp without time zone NOT NULL,
     msg character varying(255) NOT NULL,
     log_level character varying(10) DEFAULT 'info'::character varying NOT NULL,
@@ -941,7 +941,7 @@ CREATE TABLE user_properties (
 
 CREATE TABLE users (
     id serial,
-    userid character varying(32) NOT NULL,
+    userid character varying(200) NOT NULL,
     realname character varying(255),
     passwd character varying(255),
     email character varying(255),
