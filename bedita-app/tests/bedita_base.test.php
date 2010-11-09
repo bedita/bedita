@@ -56,7 +56,7 @@ class BeditaTestCase extends CakeTestCase {
 				echo '<h2>Data file: '.$this->dataFile.'</h2>';
 			}
 		}
-		$db = ConnectionManager::getDataSource('default');
+		$db = ConnectionManager::getDataSource($this->dataSource);
 		echo '<h2>Using database: <b>'. $db->config['database'] .'</b></h2>';
 		echo '<hr/>';
 	}
