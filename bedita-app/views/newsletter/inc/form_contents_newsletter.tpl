@@ -42,7 +42,7 @@ function initializeTinyMCE(cssPath) {
 		theme_advanced_toolbar_align : "left",
 		//theme_advanced_resizing : true,
 		theme_advanced_blockformats : "p,h1,h2,h3,h4,blockquote,address",
-		width : "450",
+		//width : "450",
 		//http://wiki.moxiecode.com/index.php/TinyMCE:Control_reference
 		
 		// Example content CSS (should be your site CSS)
@@ -174,11 +174,11 @@ $(document).ready(function() {
 	<div class="htabcontainer" id="templatebody">
 		
 		<div class="htabcontent" id="html">
-			<textarea id="htmltextarea" name="data[body]" style="height:350px" class="mce">{$object.body|default:null}</textarea>
+			<textarea id="htmltextarea" name="data[body]" style="height:350px;  width:610px" class="mce">{$object.body|default:null}</textarea>
 		</div>
 		
 		<div class="htabcontent" id="txt">
-			<textarea id="txtarea" name="data[abstract]" style="height:350px; border:1px solid silver; width:450px">{$object.abstract|default:null}</textarea>
+			<textarea id="txtarea" name="data[abstract]" style="height:350px; border:1px solid silver; width:610px">{$object.abstract|default:null}</textarea>
 		</div>
 		
 	</div>
