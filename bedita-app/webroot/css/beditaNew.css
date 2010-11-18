@@ -1844,7 +1844,13 @@ INPUT[type=button], INPUT[type=submit]  {
 }
 
 
+/*...........................................    
 
+   validate
 
+...........................................*/
 
+label.error {
+	color:red;
+}
 
