@@ -19,7 +19,10 @@
 <script type="text/javascript">
 {literal}
 $(document).ready(function(){
-
+	
+	/* questo before server per i concurrenteditors */
+	$(".secondacolonna .insidecol #saveBEObject").before("<div id='concurrenteditors'></div>");
+	
 	$("#publishBEObject").hide().click(function() {
 			$("input[name='data[status]']").val("on");
 			$("#saveBEObject").click();
@@ -68,8 +71,15 @@ $(document).ready(function(){
 {/literal}{if (@in_array($currObjectTypeId, $conf->objectTypes.tree.id))}{literal}
 
 	$("div.insidecol input[name='save']").click(function() {
-
-		if ( $('.publishingtree input:checked').val() === undefined ) {	
+			
+		if ( $('#concurrenteditors #editorsList').children().size() > 0 ) {
+			var answer = confirm("{/literal}{t}More users are editing this object. Continue?{/t}{literal}")
+			    if (answer){
+			       $("#updateForm").submit();
+			    }
+    		return false;  
+		}
+		else if ( $('.publishingtree input:checked').val() === undefined ) {	
 			var answer = confirm("{/literal}{t}This content is not on publication tree. Continue?{/t}{literal}")
 			    if (answer){
 			       $("#updateForm").submit();
@@ -320,7 +330,7 @@ function updateEditors() {
 	var submitUrl = "{$html->url('/pages/updateEditor/')}"+"{$object.id|default:''}";
 	{literal}
 	
-	$("#editors").load(submitUrl);
+	$("#concurrenteditors").load(submitUrl);
 	chatTimer=setTimeout(updateEditors,checkTime);	
 }
 

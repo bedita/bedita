@@ -1,6 +1,4 @@
 
-<div id="editors" class="insidecol"></div>
-
 <div class="insidecol" style="margin-top:50px; padding-top:5px; padding-bottom:5px; border-top:5px solid gray; border-bottom:5px solid gray;">
 
 

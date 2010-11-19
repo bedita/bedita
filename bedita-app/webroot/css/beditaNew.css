@@ -1759,15 +1759,13 @@ P.editornotes {
 	background: transparent url(../img/loadingAnimation.gif) no-repeat center 200px ;
 }
 
+/*...........................................    
 
-/* bordi tondi? */
-/*
-.modules label, .modules LI {
+   Uploadify
 
--moz-border-radius : 70px; 
+...........................................*/
 
-}
-*/
+
 INPUT[type=text],INPUT[type=password], textarea {	
 	border-radius : 7px; 
 	-moz-border-radius : 7px; 
@@ -1824,15 +1822,19 @@ INPUT[type=button], INPUT[type=submit]  {
 
 
 .tip { 
-	background: transparent url(../img/black_arrow-up.png); 
-	padding:40px 20px 20px 20px; 
+	/*background: transparent url(../img/black_arrow-up.png); */
+	background-color:#FFF;
+	padding:20px; 
 	position:absolute;
 	z-index:100;
-	opacity:0.8;
-	width:169px;
-	height:62px;
-	font-size:14px;
-	color:#FFF;
+	opacity:1;
+	width:100px;
+	color:#333;
+	border:0px solid #999;
+
+	-moz-box-shadow: 0px 0px 10px #000;
+	-webkit-box-shadow: 0px 0px 10px #000;
+	box-shadow: 0px 0px 10px #000;
 }
 
 .viewport-right {
@@ -1854,3 +1856,22 @@ label.error {
 	color:red;
 }
 
+
+
+.shadow {
+	-moz-box-shadow: 0px 0px 5px #666;
+	-webkit-box-shadow: 0px 0px 5px #666;
+	box-shadow: 0px 0px 5px #666;
+}
+
+/*...........................................    
+
+   UI varie
+
+...........................................*/
+
+.shadow {
+	-moz-box-shadow: 0px 0px 5px #666;
+	-webkit-box-shadow: 0px 0px 5px #666;
+	box-shadow: 0px 0px 5px #666;
+}
