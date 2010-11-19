@@ -7,7 +7,7 @@ var URLBase = "{$html->url('index/')}" ;
 {literal}
 $(document).ready(function() {
 
-	$(".indexlist TD").not(".checklist").css("cursor","pointer").click(function(i) {
+	$(".indexlist TD").not(".checklist").not(".noclick").css("cursor","pointer").click(function(i) {
 		document.location = $(this).parent().find("a:first").attr("href"); 
 	} );
 
@@ -153,7 +153,7 @@ function changeStatusTranslations() {
 
 		</tr>
 		{sectionelse}
-			<tr><td colspan="100" style="padding:30px">{t}No items found{/t}</td></tr>
+			<tr><td colspan="100" class="noclick" style="padding:30px">{t}No items found{/t}</td></tr>
 		{/section}
 
 {if ($smarty.section.i.total) >= 10}
