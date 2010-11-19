@@ -162,9 +162,9 @@ $(document).ready(function() {
 {/literal}
 
 	{bedev}
-	<form action="#" style="margin-top:10px;" class="newcontenthere ignore">
+	<form action="#" style="margin-top:10px;" class="newcontenthere">
 	{t}create new{/t} &nbsp;
-	<select>
+	<select class="ignore">
 	{assign var=leafs value=$conf->objectTypes.leafs}
 		{foreach from=$conf->objectTypes item=type key=key}	
 			{if ( in_array($type.id,$leafs.id) && is_numeric($key) )}

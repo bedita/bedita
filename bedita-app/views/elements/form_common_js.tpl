@@ -234,7 +234,10 @@ $(document).ready(function(){
 /*
 	check sulle modifiche non salvate e variabile sul submit
 */
-	$("#updateForm *").change(function () {
+	$("#updateForm *").not(".ignore").change(function () {
+		
+		alert()
+		
 		$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 		$("#cancelBEObject").show();
 		{/literal}{if $autosave|default:false}{literal}
