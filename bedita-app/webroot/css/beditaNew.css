@@ -1853,7 +1853,12 @@ INPUT[type=button], INPUT[type=submit]  {
 ...........................................*/
 
 label.error {
+	margin-left:10px; 
 	color:red;
+}
+
+.required.error {
+	background-color:red !important;
 }
 
 
