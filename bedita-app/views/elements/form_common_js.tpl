@@ -13,12 +13,20 @@
 {assign var="user" value=$session->read('BEAuthUser')}
 {assign var="submiturl" value=$submiturl|default:$currentModule.url}
 
-
-
+{assign var=branch value=$html->params.named.branch}
 
 <script type="text/javascript">
 {literal}
 $(document).ready(function(){
+	
+	{/literal}
+	{if !empty($branch)}
+		// se passato branch apre con quel ramo checked
+		$('input[value="{$branch}"]').attr("checked",true);
+		$("#whereto").prev(".tab").BEtabsopen();
+			
+	{/if}
+	{literal}
 	
 	/* questo before server per i concurrenteditors */
 	$(".secondacolonna .insidecol #saveBEObject").before("<div id='concurrenteditors'></div>");

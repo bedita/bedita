@@ -615,8 +615,6 @@ function openAtStart(defaultOpen) {
 	var cookieTitle = document.title;
 	var openAtStart = $.cookie(cookieTitle);
 	
-	//alert(openAtStart);
-	
 	if (openAtStart == null) {
 		var openAtStart = defaultOpen;
 	}

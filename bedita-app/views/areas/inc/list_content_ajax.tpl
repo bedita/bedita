@@ -125,7 +125,7 @@ $(document).ready(function() {
 {if !empty($contents.items)}
 	<div id="contents_nav_leafs" style="margin-top:10px;">
 	{t}show{/t} 
-	<select name="dimContentsPage" id="dimContentsPage">
+	<select name="dimContentsPage" id="dimContentsPage" class="ignore">
 		<option value="5"{if $dim == 5} selected{/if}>5</option>
 		<option value="10"{if $dim == 10} selected{/if}>10</option>
 		<option value="20"{if $dim == 20} selected{/if}>20</option>
@@ -150,8 +150,35 @@ $(document).ready(function() {
 
 	<br />
 	<input style="width:220px" type="button" rel="{$html->url('/pages/showObjects/')}{$object.id|default:0}/0/0/leafs" class="modalbutton" value=" {t}add contents{/t} " />
-	
+
+{literal}
+<script>
+	$(".newcontenthere").submit(function(){
+		var urltogo = $('.newcontenthere :selected').attr("value");
+		window.location.href = urltogo;
+		return false;
+	});	
+</script>
+{/literal}
+
+	{bedev}
+	<form action="#" style="margin-top:10px;" class="newcontenthere ignore">
+	{t}create new{/t} &nbsp;
+	<select>
+	{assign var=leafs value=$conf->objectTypes.leafs}
+		{foreach from=$conf->objectTypes item=type key=key}	
+			{if ( in_array($type.id,$leafs.id) && is_numeric($key) )}
+			<option value="{$html->url('/')}{$type.module_name}/view/branch:{$html->params.pass.0}" {if ($type.model=="Document")} selected{/if}>	
+				{t}{$type.model}{/t}
+			</option>
+			{/if}
+		{/foreach}
+	</select>
+	 &nbsp;
+	{t}here{/t} ({$html->params.pass.0}) &nbsp;
+	<input type="submit" value="GO" />
+	</form>
+	{/bedev}
 	<hr />
 </div>	
-
 	
