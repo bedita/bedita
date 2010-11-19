@@ -101,7 +101,7 @@ tinyMCE.init({
 {include file="inc/menucommands.tpl" fixed = true}
 
 
-<div class="mainfull">	
+<div class="mainfull" style="width:700px; padding:0px;">	
 
 	{include file="inc/form.tpl"}
 
