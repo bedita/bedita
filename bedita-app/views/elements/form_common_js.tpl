@@ -13,7 +13,7 @@
 {assign var="user" value=$session->read('BEAuthUser')}
 {assign var="submiturl" value=$submiturl|default:$currentModule.url}
 
-{assign var=branch value=$html->params.named.branch}
+{assign var=branch value=$html->params.named.branch|default:''}
 
 <script type="text/javascript">
 {literal}
