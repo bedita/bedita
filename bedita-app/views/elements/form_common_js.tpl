@@ -236,7 +236,7 @@ $(document).ready(function(){
 */
 	$("#updateForm *").not(".ignore").change(function () {
 		
-		alert()
+		
 		
 		$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 		$("#cancelBEObject").show();
