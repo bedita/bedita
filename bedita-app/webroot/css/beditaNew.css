@@ -1233,11 +1233,11 @@ textarea#description, textarea#title, textarea#addtaglist, textarea.longtext {
 	width:480px; 
 }
 
-input#titleBEObject, input#title, textarea#subtitle {
+input#titleBEObject, input#title, textarea.subtitle {
 	width:380px;
 }
 
-#title input#titleBEObject, input#title, textarea#subtitle {
+#title input#titleBEObject, input#title, textarea.subtitle {
 	width:460px;
 }
 

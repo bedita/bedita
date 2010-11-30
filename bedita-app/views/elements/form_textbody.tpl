@@ -19,11 +19,11 @@
 {if (!empty($addshorttext)) or (!empty($object.abstract))}
 
 		<label>{t}short text{/t}:</label>
-		<textarea cols="" rows="" name="data[abstract]" style="height:200px" class="mce">{$object.abstract|default:''}</textarea>
+		<textarea cols="" rows="" name="data[abstract]" style="height:200px" class="mce abstract">{$object.abstract|default:''}</textarea>
 		
 		<label for="body">{t}long text{/t}:</label>
 
 {/if}		
-		<textarea cols="" rows="" name="data[body]" id="body" style="height:{$height|default:200}px" class="mce">{$object.body|default:''}</textarea>
+		<textarea cols="" rows="" name="data[body]" style="height:{$height|default:200}px" class="mce body">{$object.body|default:''}</textarea>
 
 </fieldset>

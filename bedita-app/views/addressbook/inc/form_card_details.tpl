@@ -461,5 +461,5 @@ $(".htab TD[rel:company]").click();
 <div class="tab"><h2>{t}Description{/t}</h2></div>
 
 <fieldset id="note">
-	<textarea name="data[description]" class="mce" style="font-size:13px; width:510px; height:150px;">{$object.description|default:''}</textarea>
+	<textarea name="data[description]" class="mce description" style="font-size:13px; width:510px; height:150px;">{$object.description|default:''}</textarea>
 </fieldset>
