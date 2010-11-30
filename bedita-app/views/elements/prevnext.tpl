@@ -12,6 +12,13 @@
 		›
 	</a> 
 	{else} › {/if}
-</div>
-{/if}
 
+	<div style="margin-top:5px; color:#666 !important; font-size:10px !important; text-align:center">
+		{foreach name=c from=$prevNext item=item key=key}
+			{if ($key==$object.id)}{$smarty.foreach.c.iteration} / {$prevNext|@count}{/if}
+		{/foreach}
+	</div>
+	
+</div>
+
+{/if}
