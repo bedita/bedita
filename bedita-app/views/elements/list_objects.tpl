@@ -219,7 +219,7 @@ $(document).ready(function(){
 	
 	{if !empty($tree)}
 		{assign var='named_arr' value=$view->params.named}
-		{if empty($named_arr.id)}
+		{if empty($sectionSel.id)}
 			{t}copy{/t}
 		{else}
 			<select id="areaSectionAssocOp" name="areaSectionAssocOp" style="width:75px">
@@ -233,12 +233,12 @@ $(document).ready(function(){
 		{$beTree->option($tree)}
 		</select>
 
-		<input type="hidden" name="data[source]" value="{$named_arr.id|default:''}" />
+		<input type="hidden" name="data[source]" value="{$sectionSel.id|default:''}" />
 		<input id="assocObjects" type="button" value=" ok " />
 		<hr />
 		
-		{if !empty($named_arr.id)}
-			{assign var='filter_section_id' value=$named_arr.id}
+		{if !empty($sectionSel.id)}
+			{assign var='filter_section_id' value=$sectionSel.id}
 			{assign var='filter_section_name' value=$pubSel.title|default:$sectionSel.title}
 			<input id="removeFromAreaSection" type="button" value="{t}Remove selected from{/t} '{$filter_section_name}'" class="opButton" />
 			<hr/>
