@@ -46,7 +46,9 @@
 		if ((status != 'on') && (status == newStatus))
 			switchAutosave("on");
 	}
-	$(".secondacolonna .modules label").removeClass("concurrentuser")
+	$(".secondacolonna .modules label").removeClass("concurrentuser").tooltip({
+			delay: 0
+	});
 	{/literal}
 	</script>
 {/if}
