@@ -166,7 +166,7 @@ class PagesController extends AppController {
 		
 		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
 		
-		$relationRulesClass = ucfirst($relation)."RelationRules";
+		$relationRulesClass = Inflector::camelize($relation)."RelationRules";
 		if (App::import("model", $relationRulesClass) ) {
 			$model = ClassRegistry::init($relationRulesClass);	
 			$params = array("object_type_id" => $main_object_type_id , "object_id" => $main_object_id );
