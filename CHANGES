@@ -1,3 +1,83 @@
+Version 3.1 - ulmus
+ User-visible changes:
+	* correction in wp.example.com/README.txt
+	* threaded annotation
+	* dummy.example.com: added base view and elements
+	* #257 - fixed errors on ui.(...).js references
+	* fixed: Modal windows don't work in Chorme/Safari
+	* #256 - Calendar style is broken
+	* fixed: in staging site pages were shown also if log in was wrong
+	* #232 - newsletter: invoice detail view
+	* fixed: publication, not publishing...
+	* fixed: dashboard - css for h2 tabs (expanded)
+	* fixed: "x" button on multimedia box, just uploaded
+	* #255 - newsletter: UI bugs, bulk op. and missing sender
+	* #180 - translations: list order, filter, various fixes
+	* fixed: translation list false href fix
+	* #258 - consistency in bulk operation menu
+	* fixed: now tooltip correctly disappear
+
+
+ Frontend changes:
+	* fixed: favicons (png) examples front
+	* dyanmic html lang="" attribute examples front
+	* examples (dummy and debug): used BeFrontHelper
+	* wp.example - license
+	* wp.example.com: added charset
+	* wp.example.com: search user items
+	* wp.example.com - minor fixes
+	* debug.example.com: added missing .ctp templates
+	* *.example.com: used BeFrontHelper::stats and BeFrontHelper::breadcumb
+	* bedita trunk: bug fix on embed media
+	* added BeFrontHelper::stats() and BeFrontHelper::breadcrumb() methods
+	* fixed: embed blip.tv flv video. Search for flv video if another format is
+	   setted as blip main source
+	* fixed: on embed_flash (modrewrite & no modrewrite url)
+	* comments thread_path saved when populated "thread_parent_id" in the frontend 
+	   view form
+	* added array UserProperty in user session
+	* added ObjectRelation::deleteRelation method
+	* dynamic frontend view mapping (via mapping.cfg.php)
+	* commments option in multimedia form
+	* add BeFront::chooseTemplate() metod to select  template available (file name    
+	   is choosed following the order: obj_nick, secion_nick, parent_sections_nick, object_type, default template)
+	* User::compact() check if array Group is empty
+	* BeUploadToObj::params are the Controlller::params (by reference)
+	* fixed: translations list - model color box in css missing (short news, 
+	   files)
+	* fixed: contentPath - canonicalPath for contents on publication root
+	* added sectionOptions ["childrenParams"]["detailed"] => if true details of 
+	   other section contents are loaded if a specific content is requesteed (default false)
+	* beFront - title - 'contentRequested' inside area
+	* custom relations in comments
+	* css validate label error
+
+
+ Developer-visibile changes:
+	* update to CakePHP 1.2.8
+	* moved default modules and addons folder outside bedita-app. Defined 2
+	   constants to map paths. Build route plugin modules connections on the fly. Generic refatcoring on plug/unplug module/addons to use only BEDITA_MODULES_PATH/BEDITA_ADDONS_PATH and not all plugin paths. Installing module check min and max version of BEdita required
+	* fixed: upload image by url
+	* fixed: deleting old search_texts fields when an item is updated
+	* added saveCommentBeforeRender when saveComment method isn't called with ajax
+	* check obj type existence before purge
+	* addons vendors path added $vendorPaths in bootsrap.php
+	* nusoap library added
+	* basic soap client model
+	* SoapClientModel - soap php module support
+	* schema documentation file
+	* release.cfg.php.sample update
+	* i18n update
+	* modified internal deploy script for release
+	* db schema doc shell functions
+	* fixed: on object/view, "(Un)Select all", in "select from archive" panel
+	* fixed: unit tests
+	* db: userid field update
+	* create new object here / bedev to test
+	* #103 - restore richtext editor in object versioning
+	* Introduced a custom realtion filter control when showing objects in relations tab
+
+
 Version 3.1.RC - ulmus
  User-visible changes:
 	* backend main container expanded to 1024px, optimal resolution now is 1280x1024
