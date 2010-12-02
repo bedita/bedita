@@ -165,8 +165,20 @@ class PagesController extends AppController {
 			$filter["query"] = addslashes($this->params["form"]["search"]);
 		
 		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
-			
-		$objects = $this->BeTree->getChildren($id, null, $filter, "modified", false, $page, $dim=20) ;
+		
+		$relationRulesClass = ucfirst($relation)."RelationRules";
+		if (App::import("model", $relationRulesClass) ) {
+			$model = ClassRegistry::init($relationRulesClass);	
+			$params = array("object_type_id" => $main_object_type_id , "object_id" => $main_object_id );
+			$model->connectFilter($params ,$filter);
+		}
+		
+		if ($filter !== null) {
+			$objects = $this->BeTree->getChildren($id, null, $filter, "modified", false, $page, $dim=20) ;
+		}else  {
+			$objects["items"] = array();
+		}
+		
 		
 		foreach ($objects["items"] as $key => $obj) {
 			if ($obj["id"] != $main_object_id)
