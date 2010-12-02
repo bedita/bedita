@@ -38,6 +38,7 @@
 	</ul>
 	
 {else}
+
 	<script type="text/javascript">
 	{literal}
 	if (autoSaveTimer === false) {
@@ -45,6 +46,7 @@
 		if ((status != 'on') && (status == newStatus))
 			switchAutosave("on");
 	}
+	$(".secondacolonna .modules label").removeClass("concurrentuser")
 	{/literal}
 	</script>
 {/if}

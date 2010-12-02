@@ -28,7 +28,7 @@ $(document).ready(function(){
 	{/if}
 	{literal}
 	
-	/* questo before server per i concurrenteditors */
+	/* questo before serve per i concurrenteditors */
 	$(".secondacolonna .insidecol #saveBEObject").before("<div id='concurrenteditors'></div>");
 	
 	$("#publishBEObject").hide().click(function() {
