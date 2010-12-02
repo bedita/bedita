@@ -241,7 +241,7 @@ H2 {font:normal 1.5em "Georgia", "Times New Roman", Times, serif; line-height:1e
 
 
 INPUT[type=text],INPUT[type=password], TEXTAREA {
-	font-size:12px; font-family: "Verdana", sans-serif; line-height:1.5em;
+	font-size:12px; font-family: "Arial", "Helvetica","Verdana", sans-serif; line-height:1.5em;
 }
 
 .modules {font-family: "Arial", "Helvetica", sans-serif}
