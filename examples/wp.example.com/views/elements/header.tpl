@@ -9,7 +9,7 @@
 				</span>
 			</div>
 			
-			<div id="site-description">Just another BEdita site</div>
+			<div id="site-description">Yet another BEdita site</div>
 
 			{*<img src="http://localhost/workspace/wordpress/wp-content/themes/twentyten/images/headers/path.jpg" width="940" height="198" alt="" />*}
 			{if !empty($headerImage)}
