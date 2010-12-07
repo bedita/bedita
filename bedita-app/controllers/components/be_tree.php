@@ -76,10 +76,14 @@ class BeTreeComponent extends Object {
 			$this->filter["tag"] = $this->controller->passedArgs["tag"];
 
 		if (!empty($this->controller->params["form"]["searchstring"])) {
+			App::import('Sanitize');
+			$this->controller->params["form"]["searchstring"] = Sanitize::html($this->controller->params["form"]["searchstring"], array('remove' => true));
 			$this->filter["query"] = addslashes($this->controller->params["form"]["searchstring"]);
 			$this->controller->params["named"]["query"] = urlencode($this->controller->params["form"]["searchstring"]);
 			$this->controller->set("stringSearched", $this->controller->params["form"]["searchstring"]);
 		} elseif (!empty($this->controller->passedArgs["query"])) {
+			App::import('Sanitize');
+			$this->controller->passedArgs["query"] = Sanitize::html($this->controller->passedArgs["query"], array('remove' => true));
 			$this->controller->params["named"]["query"] = urlencode($this->controller->passedArgs["query"]);
 			$this->filter["query"] = addslashes(urldecode($this->controller->passedArgs["query"]));
 			$this->controller->set("stringSearched", urldecode($this->controller->passedArgs["query"]));
