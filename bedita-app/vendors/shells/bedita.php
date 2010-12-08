@@ -202,7 +202,7 @@ class BeditaShell extends BeditaBaseShell {
        	
 		// check if media files are present
        	$tmpMediaDir = $tmpBasePath."media";
-       	if(!file_exists($tmpMediaDir)) {
+       	if(!file_exists($tmpMediaDir) && !$answerYes) {
 			$res = $this->in("ACHTUNG! Media files not present in import file, proceed? [y/n]");
 			if($res != "y") {
 	       		$this->out("Bye");
@@ -250,7 +250,7 @@ class BeditaShell extends BeditaBaseShell {
 		if (file_exists($newCfgFileName)) {
 			// overwrite current cfg file
 			$cfgFileName = APP ."config".DS."bedita.cfg.php";
-			if (file_exists($cfgFileName)) {
+			if (file_exists($cfgFileName) && !$answerYes) {
 				$res = $this->in($cfgFileName. " already exists, overwrite with new configuration? [y/n]");
 				if($res == "y") {
 	       			$this->importCfg($newCfgFileName, $cfgFileName);
