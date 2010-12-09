@@ -53,9 +53,8 @@ class Document extends BeditaContentModel
 				"minimum" => array("BEObject" => array("ObjectType"))		
 	);
 	
-	var $actsAs 	= array(
-		'CompactResult' 		=> array('GeoTag'),
-		'Notify',
+	var $actsAs = array(
+		'CompactResult' => array('GeoTag')
 	);
 
 	public $objectTypesGroups = array("leafs", "related", "tree");
