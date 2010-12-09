@@ -161,7 +161,6 @@ $(document).ready(function() {
 </script>
 {/literal}
 
-	{bedev}
 	<form action="#" style="margin-top:10px;" class="newcontenthere">
 	{t}create new{/t} &nbsp;
 	<select class="ignore">
@@ -178,7 +177,7 @@ $(document).ready(function() {
 	{t}here{/t} ({$html->params.pass.0}) &nbsp;
 	<input type="submit" value="GO" />
 	</form>
-	{/bedev}
+	
 	<hr />
 </div>	
 	
