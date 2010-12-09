@@ -33,8 +33,7 @@ class Comment extends BeditaAnnotationModel
 	var $useTable = 'annotations';
 
 	var $actsAs = array(
-		'CompactResult' => array('GeoTag'),
-		'Notify'
+		'CompactResult' => array('GeoTag')
 	); 
 	
 	protected $modelBindings = array( 

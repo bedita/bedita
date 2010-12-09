@@ -426,6 +426,7 @@ class BEAppObjectModel extends BEAppModel {
 			'RevisionObject',
 			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteObject' 			=> 'objects',
+			'Notify'
 	);
 	
 	var $hasOne= array(
@@ -582,7 +583,8 @@ class BeditaSimpleObjectModel extends BEAppObjectModel {
 	public $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'SearchTextSave',
-	); 
+			'Notify'
+	);
 	
 	public $hasOne= array();
 }
@@ -592,7 +594,8 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 	public $actsAs = array(
 		'CompactResult' => array(),
 		'SearchTextSave',
-		'DeleteObject' => 'objects'
+		'DeleteObject' => 'objects',
+		'Notify'
 	);
 	
 	public $hasOne = array(
@@ -713,6 +716,7 @@ class BeditaAnnotationModel extends BEAppObjectModel {
 			'SearchTextSave',
 			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteObject' 			=> 'objects',
+			'Notify'
 	); 
 	
 	protected $modelBindings = array( 
@@ -762,7 +766,8 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
 			'SearchTextSave'		=> array(),
 			'RevisionObject',
 			'ForeignDependenceSave' => array('BEObject', 'Content'),
-			'DeleteObject' 			=> 'objects'
+			'DeleteObject' 			=> 'objects',
+			'Notify'
 	); 
 
 	var $hasOne= array(
@@ -823,7 +828,8 @@ class BeditaStreamModel extends BEAppObjectModel {
 			'SearchTextSave'		=> array(),
 			'RevisionObject',
 			'ForeignDependenceSave' => array('BEObject', 'Content', 'Stream'),
-			'DeleteObject' 			=> 'objects'
+			'DeleteObject' 			=> 'objects',
+			'Notify'
 	); 
 
 	var $hasOne= array(
@@ -892,6 +898,7 @@ class BeditaProductModel extends BEAppObjectModel {
 			'SearchTextSave'		=> array(),
 			'ForeignDependenceSave' => array('BEObject', 'Product'),
 			'DeleteObject' 			=> 'objects',
+			'Notify'
 	); 
 
 	var $hasOne= array(
@@ -924,7 +931,8 @@ class BeditaCollectionModel extends BEAppObjectModel {
 			'RevisionObject',
 			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteDependentObject'	=> array('section'),
-			'DeleteObject' 			=> 'objects'
+			'DeleteObject' 			=> 'objects',
+			'Notify'
 	); 
 	var $recursive 	= 2;
 
