@@ -11,12 +11,11 @@
 			<th>{t}in recipient groups{/t}:</th>
 			<td colspan="2">
 			{if !empty($groupsByArea)}
-				{assign var="index" value=0}
 				{foreach from=$groupsByArea item="groups" key="pub"}
 					<ul>
 					{$pub}
-					
 					{foreach from=$groups item="group" name="fc"}
+					{assign var="index" value=$smarty.foreach.fc.index}
 						<li>
 						<input type="checkbox" name="data[joinGroup][{$index}][mail_group_id]" value="{$group.id}"{if !empty($group.subscribed)} checked{/if}/> {$group.group_name}
 						<input type="hidden" name="data[joinGroup][{$index}][id]" value="{$group.MailGroupCard.id|default:""}" />
