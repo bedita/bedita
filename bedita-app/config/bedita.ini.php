@@ -110,6 +110,7 @@ $config['media']['image']['thumbFill']   = "FFFFFF"; // hex - fill color when th
 $config['media']['image']['thumbCrop']   = "C";      // string, crop mode when thumb mode is crop/croponly 'C', 'T', 'B', 'L', 'R', 'TL', 'TR', 'BL', 'BR'
 $config['media']['image']['thumbQ']      = 75;       // int, JPEG thumbnail image quality [1-100]
 $config['media']['image']['thumbUpscale']= false;     // bool, allow thumbnail upscale
+$config['media']['image']['preferImagemagick'] = true;       // bool, use image_magick or not (even if available)
 $config['media']['image']['imagemagick'] = "";       // string, path to image_magick executable
 $config['media']['image']['over']        = "";       // string, path to overlay image
 $config['media']['image']['wmi']['f']    = "";       // string, path to watermark image file
