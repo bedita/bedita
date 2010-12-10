@@ -1367,11 +1367,18 @@ class phpthumb {
 							$wAll = intval(max($this->w, $this->wp, $this->wl, $this->ws)) - (2 * $borderThickness);
 							$hAll = intval(max($this->h, $this->hp, $this->hl, $this->hs)) - (2 * $borderThickness);
 							$imAR = $this->source_width / $this->source_height;
-							$zcAR = (($wAll && $hAll) ? $wAll / $hAll : 1);
-							$side  = phpthumb_functions::nonempty_min($this->source_width, $this->source_height, max($wAll, $hAll));
-							$sideX = phpthumb_functions::nonempty_min($this->source_width,                       $wAll, round($hAll * $zcAR));
-							$sideY = phpthumb_functions::nonempty_min(                     $this->source_height, $hAll, round($wAll / $zcAR));
-
+							if($this->iar)
+								$zcAR = (($wAll && $hAll) ? $wAll / $hAll : 1);
+							else
+								$zcAR = $imAR;
+							if ($zcAR == 1) {
+								$side  = phpthumb_functions::nonempty_min($this->source_width, $this->source_height, max($wAll, $hAll));
+								$sideX = $sideY = $side;
+							} else {
+								$sideX = phpthumb_functions::nonempty_min($this->source_width,                       $wAll, round($hAll * $zcAR));
+								$sideY = phpthumb_functions::nonempty_min(                     $this->source_height, $hAll, round($wAll / $zcAR));
+								$side = min($sideX, $sideY);
+							}
 							$thumbnailH = round(max($sideY, ($sideY * $zcAR) / $imAR));
 							if ($IMuseExplicitImageOutputDimensions) {
 								$commandline .= ' -'.$IMresizeParameter.' '.$thumbnailH.'x'.$thumbnailH;
@@ -1414,7 +1421,7 @@ class phpthumb {
 							if (($wAll > 0) && ($hAll > 0)) {
 								$commandline .= ' -crop '.$wAll.'x'.$hAll.'+0+0';
 							} else {
-								$commandline .= ' -crop '.$side.'x'.$side.'+0+0';
+								$commandline .= ' -crop '.$sideX.'x'.$sideY.'+0+0';
 							}
 							if ($this->ImageMagickSwitchAvailable('repage')) {
 								$commandline .= ' +repage';
@@ -3272,7 +3279,7 @@ exit;
 		}
 		$this->DebugMessage('starting SourceImageToGD()', __FILE__, __LINE__);
 
-		if ($this->ImageMagickThumbnailToGD()) {
+		if ($this->config_prefer_imagemagick && $this->ImageMagickThumbnailToGD()) {
 
 			// excellent, we have a thumbnailed source image
 			$this->DebugMessage('ImageMagickThumbnailToGD() succeeded', __FILE__, __LINE__);
