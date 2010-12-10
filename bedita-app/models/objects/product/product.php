@@ -30,5 +30,8 @@
  */
 class Product extends BEAppModel
 {
+	function beforeValidate() {
+        $this->checkDate('production_date');
+	}
 }
 ?>
