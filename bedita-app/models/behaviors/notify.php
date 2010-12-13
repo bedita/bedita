@@ -192,21 +192,16 @@ class NotifyBehavior extends ModelBehavior {
 	}
 	
 	protected function loadMessages() {
-		// load local messages if present
-		$localMsg = array();
-		if (!BACKEND_APP) {
-			$localMsg[] = APP . "config" . DS . "notify" . DS . "local.msg.php";
-		}
-		$localMsg[] = BEDITA_CORE_PATH.DS."config".DS."notify".DS."local.msg.php";
+		// merge default, backend local and frontend messages if present
 		$notify = array();
-		foreach ($localMsg as $msgFile) {
-			if (file_exists($msgFile) ) {
-				require($msgFile);
-				break;
-			}
+		require(BEDITA_CORE_PATH.DS."config".DS."notify".DS."default.msg.php");
+
+		if (file_exists(BEDITA_CORE_PATH.DS."config".DS."notify".DS."local.msg.php")) {
+			require(BEDITA_CORE_PATH.DS."config".DS."notify".DS."local.msg.php");
 		}
-		if (empty($notify)) {
-			require(BEDITA_CORE_PATH.DS."config".DS."notify".DS."default.msg.php");
+		
+		if (!BACKEND_APP && file_exists(APP . "config" . DS . "notify" . DS . "frontend.msg.php")) {
+			require(APP . "config" . DS . "notify" . DS . "frontend.msg.php");
 		}
 		$this->notifyMsg = &$notify;
 	}
