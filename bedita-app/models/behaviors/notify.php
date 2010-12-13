@@ -131,10 +131,12 @@ class NotifyBehavior extends ModelBehavior {
 		
 		$params = array("author" => $modData["author"],
 			"title" => $modData["object_title"],
-			"url" => Configure::read("beditaUrl") . "/view/" . $modData["url_id"],
+			"url" => $this->getContentUrl($modData),
 			"beditaUrl" => Configure::read("beditaUrl"),
 			"text" => $modData["description"],
 		);
+
+		
 		$this->createMailJob($users, $model, $msgType, $params);
 	}
 	
@@ -142,9 +144,10 @@ class NotifyBehavior extends ModelBehavior {
 		
 		$this->loadMessages();
 		$modData =& $model->data[$model->alias];
+		$modData["url_id"] =  $modData["id"];
 		$params = array("author" => $modData["author"],
 			"title" => $modData["title"],
-			"url" => Configure::read("beditaUrl") . "/view/" . $modData["id"],
+			"url" => $this->getContentUrl($modData),
 			"text" => $modData["description"],
 			"beditaUrl" => Configure::read("beditaUrl"),
 		);
@@ -190,11 +193,19 @@ class NotifyBehavior extends ModelBehavior {
 	
 	protected function loadMessages() {
 		// load local messages if present
-		$localMsg = BEDITA_CORE_PATH.DS."config".DS."notify".DS."local.msg.php";
+		$localMsg = array();
+		if (!BACKEND_APP) {
+			$localMsg[] = APP . "config" . DS . "notify" . DS . "local.msg.php";
+		}
+		$localMsg[] = BEDITA_CORE_PATH.DS."config".DS."notify".DS."local.msg.php";
 		$notify = array();
-		if (file_exists ($localMsg) ) {
-			require($localMsg);
-		} else {
+		foreach ($localMsg as $msgFile) {
+			if (file_exists($msgFile) ) {
+				require($msgFile);
+				break;
+			}
+		}
+		if (empty($notify)) {
 			require(BEDITA_CORE_PATH.DS."config".DS."notify".DS."default.msg.php");
 		}
 		$this->notifyMsg = &$notify;
@@ -215,6 +226,21 @@ class NotifyBehavior extends ModelBehavior {
 		$text = str_replace("[\$url]", $params["url"], $text);
 		$text = str_replace("[\$beditaUrl]", $params["beditaUrl"], $text);
 		return $text;		
+	}
+
+	/**
+	 * return notificated content url
+	 */
+	protected function getContentUrl($modData) {
+		$url = "";
+		if (!BACKEND_APP) {
+			if (!empty($modData["notification_content_url"])) {
+				$url = $modData["notification_content_url"];
+			}
+		} else {
+			$url = Configure::read("beditaUrl") . "/view/" . $modData["url_id"];
+		}
+		return $url;
 	}
 
 }
