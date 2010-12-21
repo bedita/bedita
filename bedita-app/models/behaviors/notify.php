@@ -113,7 +113,7 @@ class NotifyBehavior extends ModelBehavior {
 			);
 			
 			$users = array(0=>array("User" => $modData));
-			$this->createMailJob($users, $userModel, $msgType, $params);
+			$this->createMailJob($users, $msgType, $params);
 		}
 	}
 	
@@ -137,7 +137,7 @@ class NotifyBehavior extends ModelBehavior {
 		);
 
 		
-		$this->createMailJob($users, $model, $msgType, $params);
+		$this->createMailJob($users, $msgType, $params);
 	}
 	
 	public function prepareObjectChangeMail(array &$users, $model) {
@@ -151,16 +151,29 @@ class NotifyBehavior extends ModelBehavior {
 			"text" => $modData["description"],
 			"beditaUrl" => Configure::read("beditaUrl"),
 		);
-		$this->createMailJob($users, $model, "contentChange", $params);
+		$this->createMailJob($users, "contentChange", $params);
 	}
-	
-	protected function createMailJob(array &$users, $model, $msgType, array &$params) {
+
+	/**
+	 * create custom mail jobs using notify messages
+	 *
+	 * @param Model $model
+	 * @param array $users
+	 * @param String $msgType
+	 * @param array $params
+	 */
+	public function prepareCustomMail(&$model, array &$users, $msgType, array &$params) {
+		if (!empty($msgType)) {
+			$this->loadMessages();
+			$this->createMailJob($users, $msgType, $params);
+		}
+	}
+
+	protected function createMailJob(array &$users, $msgType, array &$params) {
 		$jobModel = ClassRegistry::init("MailJob");
 		$jobModel->containLevel("default");
 		$data = array();
 		$data["status"] = "unsent";
-
-		$modData =& $model->data[$model->alias];
 		$conf = Configure::getInstance();
 		foreach ($users as $u) {
 			
@@ -213,13 +226,16 @@ class NotifyBehavior extends ModelBehavior {
 		} else {
 			$text = $this->notifyMsg[$msgType]["eng"][$field]; // default fallback
 		}
+
+		// replace markplace as [$user], [$title], etc... with $params["user"], $params["title"], etc...
+		if (preg_match_all("/\[\\\$(.+?)\]/", $text, $matches)) {
+			foreach($matches[1] as $key => $m) {
+				if (!empty($params[$m])) {
+					$text = str_replace($matches[0][$key], $params[$m], $text);
+				}
+			}
+		}
 		
-		$text = str_replace("[\$user]", $params["user"], $text);
-		$text = str_replace("[\$author]", $params["author"], $text);
-		$text = str_replace("[\$title]", $params["title"], $text);
-		$text = str_replace("[\$text]", $params["text"], $text);
-		$text = str_replace("[\$url]", $params["url"], $text);
-		$text = str_replace("[\$beditaUrl]", $params["beditaUrl"], $text);
 		return $text;		
 	}
 
