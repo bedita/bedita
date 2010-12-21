@@ -63,7 +63,7 @@ $notify["contentChange"]["eng"] = array(
 	"subject" => "[BEdita] content '[\$title]' changed",
 
 	"mail_body" => "Hi [\$user], " .
-	"\ncontent [\$title]', created by you, has been modified by [\$author]" .
+	"\ncontent '[\$title]', created by you, has been modified by [\$author]" .
 	"\n Look at [\$url]" .
 	"\n BEdita system on [\$beditaUrl]"
 );
