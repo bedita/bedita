@@ -1,6 +1,6 @@
+{$javascript->link("jquery/jquery.tooltip.min")}
+	
 {if $editors|@count > 1}
-
-	{$javascript->link("jquery/jquery.tooltip.min")}
 
 	{literal}
 
