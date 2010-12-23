@@ -33,7 +33,43 @@
 		{/section}
 	{/if}
 
-	{if !$imageInfo.exif.main && !$imageInfo.exif.XMP}
+	{if $imageInfo.exif.GPS}
+		<h2 style="margin-top: 10px;">GPS data</h2>
+		{dump var=$imageInfo.exif.GPS}
+	{/if}
+	
+{*
+[GPS] => Array
+        (
+            [GPSLatitudeRef] => N
+            [GPSLatitude] => Array
+                (
+                    [0] => 45/1
+                    [1] => 2610/100
+                    [2] => 0/1
+                )
+
+            [GPSLongitudeRef] => E
+            [GPSLongitude] => Array
+                (
+                    [0] => 12/1
+                    [1] => 1954/100
+                    [2] => 0/1
+                )
+
+            [GPSTimeStamp] => Array
+                (
+                    [0] => 18/1
+                    [1] => 27/1
+                    [2] => 2508/100
+                )
+
+            [GPSImgDirectionRef] => T
+            [GPSImgDirection] => 124077/454
+        )
+*}
+
+	{if !$imageInfo.exif.main && !$imageInfo.exif.XMP && !$imageInfo.exif.GPS}
 	EXIF records are empty.
 	{/if}
 	</div>
