@@ -61,7 +61,7 @@
 			{/if}
 			
 			{assign var="downloads" value=$section.currentContent.relations.download|default:''}
-			{if !empty($download)}
+			{if !empty($downloads)}
 			<div class="related">
 			<h2>Download:</h2>
 			<ul>

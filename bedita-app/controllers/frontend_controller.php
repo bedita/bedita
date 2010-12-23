@@ -1782,7 +1782,12 @@ abstract class FrontendController extends AppController {
 					$thread_path = $this->Comment->field("thread_path", array("id" => $this->params["form"]["thread_parent_id"]));
 					$this->data["thread_path"] = (!empty($thread_path))? $thread_path . "/" . $this->params["form"]["thread_parent_id"] : "/" . $this->params["form"]["thread_parent_id"];
 				}
-				
+
+				// content url shown in notification
+				if (empty($this->data["notification_content_url"])) {
+					$this->data["notification_content_url"] = $this->publication["public_url"] . $this->referer();
+				}
+
 				$this->Transaction->begin();
 				if (!$this->Comment->save($this->data)) {
 					throw new BeditaException(__("Error saving comment", true), $this->Comment->validationErrors);
@@ -1860,6 +1865,10 @@ abstract class FrontendController extends AppController {
 			}
 			$modelName = (empty($modelName))? Configure::read("objectTypes.".$this->data["object_type_id"].".model") : $modelName;
 			$objectModel = ClassRegistry::init($modelName);
+			// content url shown in notification
+			if (empty($this->data["notification_content_url"])) {
+				$this->data["notification_content_url"] = $this->publication["public_url"] . $this->referer();
+			}
 			$this->Transaction->begin();
 			$this->saveObject($objectModel);
 			$this->Transaction->commit();
