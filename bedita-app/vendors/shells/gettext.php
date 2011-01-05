@@ -23,11 +23,11 @@
  * Gettext shell: methods to parse templates/php files, extract i18n entries and update
  * .po files (gettext files)
  * 
- * @version		$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
+ * @version		$Revision: 2937 $
+ * @modifiedby 		$LastChangedBy: ste $
+ * @lastmodified	$LastChangedDate: 2010-08-09 16:48:21 +0200 (Mon, 09 Aug 2010) $
  * 
- * $Id$
+ * $Id: gettext.php 2937 2010-08-09 14:48:21Z ste $
  */
 class GettextShell extends Shell {
 
@@ -139,13 +139,14 @@ class GettextShell extends Shell {
         $potFilename = $localePath."master.pot";
         $this->out("Writing new .pot file: $potFilename");
 		$pot = new File($potFilename, true);
-        $pot->write("msgid \"\"\nmsgstr \"\""
+		$headerPot = "msgid \"\"\nmsgstr \"\""
 			. "\n\"POT-Creation-Date: ". date("Y-m-d H:i:s") . "\\n\""
         	. "\n\"MIME-Version: 1.0\"\n\"Content-Transfer-Encoding: 8bit\\n\""
 			. "\n\"Language-Team: BEdita I18N & I10N Team\\n\""
 			. "\n\"Project-Id-Version: BEdita 3\\n\""
 			. "\n\"Plural-Forms: nplurals=2; plural=(n != 1);\\n\""
-			. "\n\"Content-Type: text/plain; charset=utf-8\\n\"\n");
+			. "\n\"Content-Type: text/plain; charset=utf-8\\n\"\n";
+        $pot->write($headerPot);
 		sort($this->poResult);
 		foreach ($this->poResult as $res) {
         	$pot->write("\n\nmsgid \"". $res ."\"");
@@ -155,12 +156,34 @@ class GettextShell extends Shell {
 		$this->hr();
 		$this->out("Merging master.pot with current .po files");
 		$this->hr();
+		$resCmd = array();
+		exec("which msgmerge 2>&1", $resCmd);
+		if (empty($resCmd[0])) {
+			$this->out("ERROR: msgmerge not available. Please install gettext utilities.");
+			return;
+		}
+		$headerPo = "msgid \"\"\nmsgstr \"\""
+			. "\n\"Project-Id-Version: BEdita 3\\n\""
+			. "\n\"POT-Creation-Date: ". date("Y-m-d H:i:s") . "\\n\""
+			. "\n\"PO-Revision-Date: \\n\""
+			. "\n\"Last-Translator: \\n\""
+			. "\n\"Language-Team: BEdita I18N & I10N Team\\n\""
+			. "\n\"Language: \\n\""
+        	. "\n\"MIME-Version: 1.0\\n\""
+			. "\n\"Content-Type: text/plain; charset=utf-8\\n\""
+			. "\n\"Content-Transfer-Encoding: 8bit\\n\""
+			. "\n\"Plural-Forms: nplurals=2; plural=(n != 1);\\n\"\n";
 		$folder = new Folder($localePath);
 		$ls = $folder->ls();
 		foreach ($ls[0] as $loc) {
 			if($loc[0] != '.') { // only "regular" dirs...
 				$this->out("Language: $loc");
 				$poFile = $localePath. $loc . DS . "LC_MESSAGES" . DS . "default.po";
+				if (!file_exists($poFile)) {
+					$newPoFile = new File($poFile, true);
+					$newPoFile->write($headerPo);
+					$newPoFile->close();
+				}
 				$this->out("Merging $poFile");
 				$mergeCmd = "msgmerge --backup=off -N -U " . $poFile . " " . $potFilename;
 				exec($mergeCmd);
