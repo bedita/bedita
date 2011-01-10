@@ -1,10 +1,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2010-10-20 15:46:16\n"
+"POT-Creation-Date: 2011-01-10 10:23:44\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -76,8 +77,10 @@ msgstr "Sicuro di voler eliminare l'elemento?"
 msgid "Are you sure that you want to delete the note?"
 msgstr "Sicuro di voler eliminare la nota?"
 
-msgid "Are you sure that you want to delete the property? this will also delete anyproperties data associated"
-msgstr "Sicuro di voler eliminare la property? saranno eliminati tutti i dati associati alla property"
+msgid ""
+"Are you sure that you want to delete the property? this will also delete any "
+"properties data associated"
+msgstr "Sei sicuro che vuoi eliminare la proprietà? Procedendo cancellerai anche tutti i valori associati"
 
 msgid "Are you sure that you want to delete the tag?"
 msgstr "Sicuro di voler eliminare il tag?"
@@ -88,8 +91,10 @@ msgstr "Sicuro di voler accettare questo IP"
 msgid "Are you sure you want to ban this IP?"
 msgstr "Sicuro di voler interdire l'accesso a questo IP (ban)?"
 
-msgid "Are you sure you want to cancel and reload this document? All unsavedchanges will be lost"
-msgstr "Sicuro di ignorare le modifiche e ricaricare il documento? Tutte le modifiche non salvate andranno perse"
+msgid ""
+"Are you sure you want to cancel and reload this document? All unsaved "
+"changes will be lost"
+msgstr "Sei sicuro che vuoi annullare e ricaricare il documento? Tutti i cambiamenti non salvati saranno persi"
 
 msgid "Area deleted"
 msgstr "Area eliminata"
@@ -304,8 +309,11 @@ msgstr "Dettagli"
 msgid "Dimensions"
 msgstr "Dimensione"
 
-msgid "Disable object type will delete all related items. Do you want continue?"
-msgstr "Disabilitando il tipo di oggetto eliminerai tutti i dati associati. Vuoi proseguire?"
+msgid ""
+"Disable object type will delete all related items. Do you want continue?"
+msgstr ""
+"Disabilitando il tipo di oggetto eliminerai tutti i dati associati. Vuoi "
+"proseguire?"
 
 msgid "Display details in frontend"
 msgstr "Visualizza dettagli nel frontend"
@@ -782,7 +790,9 @@ msgid "Missing recipient"
 msgstr "Destinatario mancante"
 
 msgid "Missing referenced object. Save new item before adding a note"
-msgstr "Manca l'oggetto referenziato. Salva il nuovo elemento prima di aggiungere una nota"
+msgstr ""
+"Manca l'oggetto referenziato. Salva il nuovo elemento prima di aggiungere "
+"una nota"
 
 msgid "Missing sending date"
 msgstr "Manca la data invio"
@@ -808,11 +818,18 @@ msgstr "Accesso al modulo"
 msgid "More properties"
 msgstr "Altre proprietà"
 
+msgid "More users are editing this object. Continue?"
+msgstr "Altri utenti stanno editando questo documento. Vuoi continuare?"
+
 msgid "Multimedia Provider not found or error getting thumbnail"
-msgstr "Non è stato trovato il multimedia provider o si è verificato un errore nell'ottenere la miniatura"
+msgstr ""
+"Non è stato trovato il multimedia provider o si è verificato un errore "
+"nell'ottenere la miniatura"
 
 msgid "Multimedia Provider not found or error preparing data to save"
-msgstr "Non è stato trovato il multimedia provider o si è verificato un errore nella preparazione dei dati da salvare"
+msgstr ""
+"Non è stato trovato il multimedia provider o si è verificato un errore nella "
+"preparazione dei dati da salvare"
 
 msgid "Multimedia deleted"
 msgstr "Multimedia eliminato"
@@ -863,7 +880,8 @@ msgid "News saved"
 msgstr "News salvata"
 
 msgid "Newsletter sent. To schedule another invoice, please clone this object."
-msgstr "Newsletter inviata. Per programmare un altro invio clona questo elemento"
+msgstr ""
+"Newsletter inviata. Per programmare un altro invio clona questo elemento"
 
 msgid "Newsletter subscriptions"
 msgstr "Sottoscrizioni della Newsletter"
@@ -1030,9 +1048,6 @@ msgstr "Occorrenze"
 msgid "Open Calendar"
 msgstr "Apri Calendario"
 
-msgid "OpenID Authentication Redirect"
-msgstr "Redirect di autenticazione OpenID"
-
 msgid "Operations on"
 msgstr "Operazioni su"
 
@@ -1078,8 +1093,11 @@ msgstr "Persona"
 msgid "Please enter a valid date in the %1 format"
 msgstr "Inserire una data valida nel formato %1"
 
-msgid "Please enter a valid date in the %1 format and greater than the previous date"
-msgstr "Inserire una data valida nel formato %1 e successiva alla data precedentemente inserita"
+msgid ""
+"Please enter a valid date in the %1 format and greater than the previous date"
+msgstr ""
+"Inserire una data valida nel formato %1 e successiva alla data "
+"precedentemente inserita"
 
 msgid "Please enter a valid time in the %1 format"
 msgstr "Inserire un orario valido nel formato %1"
@@ -1309,8 +1327,10 @@ msgstr "Il testo non corrisponde all'immagine"
 msgid "Text lang"
 msgstr "Lingua testo"
 
-msgid "The content is fixed: it's not possible to change the position in the tree"
-msgstr "Contenuto immodificabile: non è possibile cambiarne la posizione nell'albero"
+msgid ""
+"The content is fixed: it's not possible to change the position in the tree"
+msgstr ""
+"Contenuto immodificabile: non è possibile cambiarne la posizione nell'albero"
 
 msgid "This content is not on publication tree. Continue?"
 msgstr "Questo contenuto non è nell'albero della pubblicazione. Continuare?"
@@ -1363,8 +1383,11 @@ msgstr "Nome univoco"
 msgid "Unplugged modules"
 msgstr "Moduli scollegati"
 
-msgid "Unplugging the module will delete all related items. Do you want continue?"
-msgstr "Scollegando il modulo verranno eliminati tutti gli oggetti correlati. Vuoi continuare?"
+msgid ""
+"Unplugging the module will delete all related items. Do you want continue?"
+msgstr ""
+"Scollegando il modulo verranno eliminati tutti gli oggetti correlati. Vuoi "
+"continuare?"
 
 msgid "Unsubscribe selected items"
 msgstr "Disiscrivi gli elementi selezionati"
@@ -1420,11 +1443,14 @@ msgstr "Login utente temporaneamente bloccato"
 msgid "User name"
 msgstr "Nome utente"
 
-msgid "User name is required (at least %1 chars, without white spaces and specialchars)"
-msgstr "Nome utente richiesto (almeno %1 caratteri, senza spazi bianchi e caratteri speciali)"
+msgid ""
+"User name is required (at least %1 chars, without white spaces and special "
+"chars)"
+msgstr "Lo username è obbligatorio (deve avere almeno %1 caratteri, non deve contenere spazi e caratteri speciali)"
 
 msgid "User not associated to mailgroup or he is in pending status"
-msgstr "L'utente non è associato al gruppo di posta o è in attesa di approvazione"
+msgstr ""
+"L'utente non è associato al gruppo di posta o è in attesa di approvazione"
 
 msgid "User not associated to mailgroup or he isn't in pending status"
 msgstr "L'utente"
@@ -1699,6 +1725,9 @@ msgstr "crea e associa"
 msgid "create group"
 msgstr "crea gruppo"
 
+msgid "create new"
+msgstr "crea nuovo"
+
 msgid "create new translation"
 msgstr "nuova traduzione"
 
@@ -1751,7 +1780,9 @@ msgid "details"
 msgstr "dettagli"
 
 msgid "disable succesfully, all related objects are been deleted"
-msgstr "disabilitazione avvenuta con successo, tutti gli oggetti correlati sono stati eliminati"
+msgstr ""
+"disabilitazione avvenuta con successo, tutti gli oggetti correlati sono "
+"stati eliminati"
 
 msgid "documents"
 msgstr "documenti"
@@ -1786,8 +1817,8 @@ msgstr "il campo Fine deve essere una data valida nel seguente formato:"
 msgid "events"
 msgstr "eventi"
 
-msgid "failed mails"
-msgstr "mail non inviate"
+msgid "failed"
+msgstr "fallito"
 
 msgid "fax"
 msgstr "fax"
@@ -1809,6 +1840,9 @@ msgstr "file in coda"
 
 msgid "filesize"
 msgstr "dimensione file"
+
+msgid "filter:"
+msgstr "filtro:"
 
 msgid "filters"
 msgstr "filtri"
@@ -1848,6 +1882,9 @@ msgstr "hashjob per eliminare sottoscrizione già in uso"
 
 msgid "help"
 msgstr "aiuto"
+
+msgid "here"
+msgstr "qui"
 
 msgid "id"
 msgstr "id"
@@ -1936,8 +1973,8 @@ msgstr "indirizzo di posta"
 msgid "mailgroups"
 msgstr "mailgroups"
 
-msgid "mails for minute"
-msgstr "mail al minuto"
+msgid "mails / minute"
+msgstr "email / minuto"
 
 msgid "main language"
 msgstr "lingua principale"
@@ -2149,8 +2186,8 @@ msgstr "altro"
 msgid "page"
 msgstr "pagina"
 
-msgid "pending mails"
-msgstr "mail in attesa"
+msgid "pending"
+msgstr "in attesa"
 
 msgid "permission"
 msgstr "permesso"
@@ -2214,6 +2251,9 @@ msgstr "nome pubblico"
 
 msgid "public url"
 msgstr "url pubblico"
+
+msgid "publication"
+msgstr "pubblicazione"
 
 msgid "publications"
 msgstr "pubblicazioni"
@@ -2313,9 +2353,6 @@ msgstr "nome mittente"
 
 msgid "sent"
 msgstr "spedito"
-
-msgid "sent mails"
-msgstr "mail spedite"
 
 msgid "set OFF"
 msgstr "imposta OFF"
@@ -2431,8 +2468,8 @@ msgstr "nome univoco"
 msgid "unplugged succesfully"
 msgstr "unplugged con successo"
 
-msgid "unsent mails"
-msgstr "mail non spedite"
+msgid "unsent"
+msgstr "non inviato"
 
 msgid "upload new items"
 msgstr "carica nuovi elementi"
@@ -2514,3 +2551,42 @@ msgstr "il tuo messaggio"
 
 msgid "your profile and preferences"
 msgstr "il tuo profilo e le tue preferenze"
+
+#~ msgid ""
+#~ "Are you sure that you want to delete the property? this will also delete "
+#~ "anyproperties data associated"
+#~ msgstr ""
+#~ "Sicuro di voler eliminare la property? saranno eliminati tutti i dati "
+#~ "associati alla property"
+
+#~ msgid ""
+#~ "Are you sure you want to cancel and reload this document? All "
+#~ "unsavedchanges will be lost"
+#~ msgstr ""
+#~ "Sicuro di ignorare le modifiche e ricaricare il documento? Tutte le "
+#~ "modifiche non salvate andranno perse"
+
+#~ msgid "OpenID Authentication Redirect"
+#~ msgstr "Redirect di autenticazione OpenID"
+
+#~ msgid ""
+#~ "User name is required (at least %1 chars, without white spaces and "
+#~ "specialchars)"
+#~ msgstr ""
+#~ "Nome utente richiesto (almeno %1 caratteri, senza spazi bianchi e "
+#~ "caratteri speciali)"
+
+#~ msgid "failed mails"
+#~ msgstr "mail non inviate"
+
+#~ msgid "mails for minute"
+#~ msgstr "mail al minuto"
+
+#~ msgid "pending mails"
+#~ msgstr "mail in attesa"
+
+#~ msgid "sent mails"
+#~ msgstr "mail spedite"
+
+#~ msgid "unsent mails"
+#~ msgstr "mail non spedite"
