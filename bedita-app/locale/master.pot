@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2010-10-13 10:45:47\n"
+"POT-Creation-Date: 2011-01-10 10:31:49\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -807,6 +807,9 @@ msgstr ""
 msgid "More properties"
 msgstr ""
 
+msgid "More users are editing this object. Continue?"
+msgstr ""
+
 msgid "Multimedia Provider not found or error getting thumbnail"
 msgstr ""
 
@@ -1027,9 +1030,6 @@ msgid "Occurrences"
 msgstr ""
 
 msgid "Open Calendar"
-msgstr ""
-
-msgid "OpenID Authentication Redirect"
 msgstr ""
 
 msgid "Operations on"
@@ -1311,7 +1311,7 @@ msgstr ""
 msgid "The content is fixed: it's not possible to change the position in the tree"
 msgstr ""
 
-msgid "This content is not on publishing tree. Continue?"
+msgid "This content is not on publication tree. Continue?"
 msgstr ""
 
 msgid "This help page is under construction: coming soon"
@@ -1698,6 +1698,9 @@ msgstr ""
 msgid "create group"
 msgstr ""
 
+msgid "create new"
+msgstr ""
+
 msgid "create new translation"
 msgstr ""
 
@@ -1785,7 +1788,7 @@ msgstr ""
 msgid "events"
 msgstr ""
 
-msgid "failed mails"
+msgid "failed"
 msgstr ""
 
 msgid "fax"
@@ -1807,6 +1810,9 @@ msgid "files queued"
 msgstr ""
 
 msgid "filesize"
+msgstr ""
+
+msgid "filter:"
 msgstr ""
 
 msgid "filters"
@@ -1846,6 +1852,9 @@ msgid "hashjob for unsubscribe already in use"
 msgstr ""
 
 msgid "help"
+msgstr ""
+
+msgid "here"
 msgstr ""
 
 msgid "id"
@@ -1935,7 +1944,7 @@ msgstr ""
 msgid "mailgroups"
 msgstr ""
 
-msgid "mails for minute"
+msgid "mails / minute"
 msgstr ""
 
 msgid "main language"
@@ -2148,7 +2157,7 @@ msgstr ""
 msgid "page"
 msgstr ""
 
-msgid "pending mails"
+msgid "pending"
 msgstr ""
 
 msgid "permission"
@@ -2217,10 +2226,10 @@ msgstr ""
 msgid "publication"
 msgstr ""
 
-msgid "publisher"
+msgid "publications"
 msgstr ""
 
-msgid "publishing"
+msgid "publisher"
 msgstr ""
 
 msgid "pulldown single choice"
@@ -2314,9 +2323,6 @@ msgid "sender name"
 msgstr ""
 
 msgid "sent"
-msgstr ""
-
-msgid "sent mails"
 msgstr ""
 
 msgid "set OFF"
@@ -2433,7 +2439,7 @@ msgstr ""
 msgid "unplugged succesfully"
 msgstr ""
 
-msgid "unsent mails"
+msgid "unsent"
 msgstr ""
 
 msgid "upload new items"

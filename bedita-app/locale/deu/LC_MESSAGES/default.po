@@ -5,10 +5,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2010-10-13 10:45:47\n"
+"POT-Creation-Date: 2011-01-10 10:23:44\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -73,6 +74,7 @@ msgstr "Bist du dir sicher, dass du die gewählten Elemente löschen möchtest?"
 
 msgid "Are you sure that you want to delete selected tags?"
 msgstr "Bist du dir sicher, dass du die gewählten Schlüsselwörter löschen möchtest?"
+"Bist du dir sicher, dass du die gewählten Schlüsselwörter löschen möchtest?"
 
 msgid "Are you sure that you want to delete the item?"
 msgstr "Bist du dir sicher, dass du das Element löschen möchtest?"
@@ -82,6 +84,8 @@ msgstr "Bist du dir sicher, dass du die Notiz löschen möchtest?"
 
 msgid "Are you sure that you want to delete the property? this will also delete any properties data associated"
 msgstr "Bist du dir sicher, dass du die EIgenschaft löschen möchtest? Das wird auch alle Eigenschaften der verbundenen Daten löschen"
+"Bist du dir sicher, dass du die EIgenschaft löschen möchtest? Das wird auch "
+"alle Eigenschaften der verbundenen Daten löschen"
 
 msgid "Are you sure that you want to delete the tag?"
 msgstr "Bist du dir sicher, dass du dieses Schlüsselwort löschen möchtest?"
@@ -94,6 +98,8 @@ msgstr "Bist du dir sicher, dass du diese IP verbannen möchtest?"
 
 msgid "Are you sure you want to cancel and reload this document? All unsaved changes will be lost"
 msgstr "Bist du dir sicher, dass du die Aktion abbrechen und dieses Dokument erneut laden möchstest? Alle ungespeicherten Änderungen gehen dabei verloren"
+"Bist du dir sicher, dass du die Aktion abbrechen und dieses Dokument erneut "
+"laden möchstest? Alle ungespeicherten Änderungen gehen dabei verloren"
 
 msgid "Area deleted"
 msgstr "Bereich gelöscht"
@@ -154,6 +160,7 @@ msgstr "Stapelaktion für"
 
 msgid "Call to a protected or private method in a wrong context"
 msgstr "Aufruf einer geschützten oder privaten Methode in einem falschen Kontext"
+"Aufruf einer geschützten oder privaten Methode in einem falschen Kontext"
 
 msgid "Cancel queue"
 msgstr "Warteschlange abbrechen"
@@ -310,6 +317,8 @@ msgstr "Abmessungen"
 
 msgid "Disable object type will delete all related items. Do you want continue?"
 msgstr "Das Deaktivieren des Objekttyps wird alle verbundenen Elemente löschen. Wollen Sie fortfahren?"
+"Das Deaktivieren des Objekttyps wird alle verbundenen Elemente löschen. "
+"Wollen Sie fortfahren?"
 
 msgid "Display details in frontend"
 msgstr "Details im Frontend anzeigen"
@@ -322,6 +331,8 @@ msgstr "Bist du dir sicher, dass du den Benutzer löschen möchtest"
 
 msgid "Do you want unsubscribe selected items?"
 msgstr "Bist du dir sicher, dass du das Abonnement für die gewählten Elemente beenden möchtest?"
+"Bist du dir sicher, dass du das Abonnement für die gewählten Elemente "
+"beenden möchtest?"
 
 msgid "Document Saved on"
 msgstr "Dokument gespeichert am"
@@ -787,6 +798,8 @@ msgstr "Fehlender Empfänger"
 
 msgid "Missing referenced object. Save new item before adding a note"
 msgstr "Fehlendes referenziertes Objekt. Speichere ein neues Element, bevor du eine Notiz hinzufügst"
+"Fehlendes referenziertes Objekt. Speichere ein neues Element, bevor du eine "
+"Notiz hinzufügst"
 
 msgid "Missing sending date"
 msgstr "Fehlendes Sendedatum"
@@ -812,11 +825,17 @@ msgstr "Modulzugang"
 msgid "More properties"
 msgstr "Mehr Eigenschaften"
 
+msgid "More users are editing this object. Continue?"
+msgstr ""
+
 msgid "Multimedia Provider not found or error getting thumbnail"
 msgstr "Multimediaanbieter nicht gefunden oder Fehler beim Holen des Vorschaubilds"
+"Multimediaanbieter nicht gefunden oder Fehler beim Holen des Vorschaubilds"
 
 msgid "Multimedia Provider not found or error preparing data to save"
 msgstr "Multimediaanbieter nicht gefunden oder Fehler beim Vorbereiten der Daten zum Speichern"
+"Multimediaanbieter nicht gefunden oder Fehler beim Vorbereiten der Daten zum "
+"Speichern"
 
 msgid "Multimedia deleted"
 msgstr "Multimedia gelöscht"
@@ -868,6 +887,8 @@ msgstr "Neuigkeiten gespeichert"
 
 msgid "Newsletter sent. To schedule another invoice, please clone this object."
 msgstr "Newsletter gesendet. Um einen weiteren AUfruf zu planen, klone dieses Objekt einfach."
+"Newsletter gesendet. Um einen weiteren AUfruf zu planen, klone dieses Objekt "
+"einfach."
 
 msgid "Newsletter subscriptions"
 msgstr "Newsletter Abonnements"
@@ -1034,9 +1055,6 @@ msgstr "Auftreten"
 msgid "Open Calendar"
 msgstr "Kalender öffnen"
 
-msgid "OpenID Authentication Redirect"
-msgstr "OpenID Authentifizierungsweiterleitung"
-
 msgid "Operations on"
 msgstr "Operationen am"
 
@@ -1084,6 +1102,8 @@ msgstr "Bitte gib ein valides Datum im %1 Format ein"
 
 msgid "Please enter a valid date in the %1 format and greater than the previous date"
 msgstr "Bitte gib ein valides Datum im %1 Format ein und zwar ein späteres als das vorherige Datum"
+"Bitte gib ein valides Datum im %1 Format ein und zwar ein späteres als das "
+"vorherige Datum"
 
 msgid "Please enter a valid time in the %1 format"
 msgstr "Bitte gib eine valide Zeit im %1 Format ein"
@@ -1237,6 +1257,8 @@ msgstr "Software"
 
 msgid "Something seems wrong. bedita_module_setup.php didn't found"
 msgstr "Irgendetwas stimmt hier nicht. bedita_module_setup.php konnte nicht gefunden werden"
+"Irgendetwas stimmt hier nicht. bedita_module_setup.php konnte nicht gefunden "
+"werden"
 
 msgid "Statistics"
 msgstr "Statistiken"
@@ -1315,12 +1337,15 @@ msgstr "Textsprache"
 
 msgid "The content is fixed: it's not possible to change the position in the tree"
 msgstr "Der Inhalt ist fixiert: Es ist nicht möglich, seine Position im Baum zu verändern"
+"Der Inhalt ist fixiert: Es ist nicht möglich, seine Position im Baum zu "
+"verändern"
 
-msgid "This content is not on publishing tree. Continue?"
+msgid "This content is not on publication tree. Continue?"
 msgstr "Dieser INhalt befindet sich nicht im Veröffentlichungsbaum. Fortfahren?"
 
 msgid "This help page is under construction: coming soon"
 msgstr "Diese Hilfe-Seite befindet sich noch im Aufbau: Aber sie kommt sicher bald"
+"Diese Hilfe-Seite befindet sich noch im Aufbau: Aber sie kommt sicher bald"
 
 msgid "This object is fixed - some data is readonly"
 msgstr "Dieses Objekt ist fixiert - einige Daten besitzen nur Leserechte"
@@ -1369,6 +1394,8 @@ msgstr "Entfernte Module"
 
 msgid "Unplugging the module will delete all related items. Do you want continue?"
 msgstr "Das Entfernen des Moduls wird alle verbundenen Elemente löschen. Wollen Sie das wirklich?"
+"Das Entfernen des Moduls wird alle verbundenen Elemente löschen. Wollen Sie "
+"das wirklich?"
 
 msgid "Unsubscribe selected items"
 msgstr "Abonnement für gewählte Elemente beenden"
@@ -1426,12 +1453,16 @@ msgstr "Benutzername"
 
 msgid "User name is required (at least %1 chars, without white spaces and special chars)"
 msgstr "Benutzername wird benötigt (mindestens %1 Zeichen, ohne Leer- oder Sonderzeichen)"
+"Benutzername wird benötigt (mindestens %1 Zeichen, ohne Leer- oder "
+"Sonderzeichen)"
 
 msgid "User not associated to mailgroup or he is in pending status"
 msgstr "Benutzer nicht mit Mailgruppe verbunden oder er wartet noch auf Bestätigung"
+"Benutzer nicht mit Mailgruppe verbunden oder er wartet noch auf Bestätigung"
 
 msgid "User not associated to mailgroup or he isn't in pending status"
 msgstr "Benutzer nicht mit Mailgruppe verbunden oder er wartet nicht auf Bestätigung"
+"Benutzer nicht mit Mailgruppe verbunden oder er wartet nicht auf Bestätigung"
 
 msgid "User not found"
 msgstr "Benutzer nicht gefunden"
@@ -1495,6 +1526,7 @@ msgstr "Ja"
 
 msgid "You aren't authorized to access that item"
 msgstr "Du besitzt leider nicht die nötigen Rechte, um auf dieses Element zuzugreifen"
+"Du besitzt leider nicht die nötigen Rechte, um auf dieses Element zuzugreifen"
 
 msgid "You can't use remote file"
 msgstr "Du kannst Fern-Dateien nicht nutzen"
@@ -1703,6 +1735,9 @@ msgstr "erstellen und verbinden"
 msgid "create group"
 msgstr "erstellen"
 
+msgid "create new"
+msgstr ""
+
 msgid "create new translation"
 msgstr "neue Übersetzung erstellen"
 
@@ -1790,7 +1825,7 @@ msgstr "Ende muss ein valides Datum im folgenden Format sein:"
 msgid "events"
 msgstr "Ereignisse"
 
-msgid "failed mails"
+msgid "failed"
 msgstr "erfolglose Emails"
 
 msgid "fax"
@@ -1804,6 +1839,8 @@ msgstr "Datei"
 
 msgid "file is already used, please change it to avoid malfunctioning"
 msgstr "Datei wird bereits verwendet, bitte ändere sie, um eine Fehlfunktion zu vermeiden"
+"Datei wird bereits verwendet, bitte ändere sie, um eine Fehlfunktion zu "
+"vermeiden"
 
 msgid "filename"
 msgstr "Dateiname"
@@ -1813,6 +1850,9 @@ msgstr "Dateien in Warteschlange"
 
 msgid "filesize"
 msgstr "Dateigröße"
+
+msgid "filter:"
+msgstr ""
 
 msgid "filters"
 msgstr "Filter"
@@ -1852,6 +1892,9 @@ msgstr "Hashauftrag für Beendigung des Abonnements bereits in Gebrauch"
 
 msgid "help"
 msgstr "Hilfe"
+
+msgid "here"
+msgstr ""
 
 msgid "id"
 msgstr "ID"
@@ -1940,7 +1983,7 @@ msgstr "Emailadresse"
 msgid "mailgroups"
 msgstr "Emailgruppen"
 
-msgid "mails for minute"
+msgid "mails / minute"
 msgstr "Emails pro Minute"
 
 msgid "main language"
@@ -2153,7 +2196,7 @@ msgstr "andere"
 msgid "page"
 msgstr "Seite"
 
-msgid "pending mails"
+msgid "pending"
 msgstr "wartenden Emails"
 
 msgid "permission"
@@ -2222,11 +2265,11 @@ msgstr "öffentliche URL"
 msgid "publication"
 msgstr "Veröffentlichung"
 
+msgid "publications"
+msgstr ""
+
 msgid "publisher"
 msgstr "Redakteur"
-
-msgid "publishing"
-msgstr "veröffentliche"
 
 msgid "pulldown single choice"
 msgstr "pulldown Einzelwahl"
@@ -2321,8 +2364,6 @@ msgstr "Absendername"
 msgid "sent"
 msgstr "gesendet"
 
-msgid "sent mails"
-msgstr "gesendete Nachrichten"
 
 msgid "set OFF"
 msgstr "ausschalten"
@@ -2438,7 +2479,7 @@ msgstr "Einzigartiger Name"
 msgid "unplugged succesfully"
 msgstr "erfolgreich entfernt"
 
-msgid "unsent mails"
+msgid "unsent"
 msgstr "ungesendete Nachrichten"
 
 msgid "upload new items"
@@ -2521,6 +2562,31 @@ msgstr "deine Nachricht"
 
 msgid "your profile and preferences"
 msgstr "dein Profil und Einstellungen"
+
+#~ msgid "OpenID Authentication Redirect"
+#~ msgstr "OpenID Authentifizierungsweiterleitung"
+
+#~ msgid "This content is not on publishing tree. Continue?"
+#~ msgstr ""
+#~ "Dieser INhalt befindet sich nicht im Veröffentlichungsbaum. Fortfahren?"
+
+#~ msgid "failed mails"
+#~ msgstr "erfolglose Emails"
+
+#~ msgid "mails for minute"
+#~ msgstr "Emails pro Minute"
+
+#~ msgid "pending mails"
+#~ msgstr "wartenden Emails"
+
+#~ msgid "publishing"
+#~ msgstr "veröffentliche"
+
+#~ msgid "sent mails"
+#~ msgstr "gesendete Nachrichten"
+
+#~ msgid "unsent mails"
+#~ msgstr "ungesendete Nachrichten"
 
 #~ msgid "Backend user restricted area"
 #~ msgstr "Nur fur Backend Benutzer "
