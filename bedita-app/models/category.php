@@ -204,16 +204,7 @@ class Category extends BEAppModel {
 		$conditions = array();
 		$conditions[] = "Category.object_type_id IS NULL";
 		if(!empty($status)) {
-				if(is_array($status)) {
-					$c = "Category.status IN (";
-					for($i=0 ; $i < count($status); $i++) {
-						$c .= (($i > 0) ? "," : "") . "'$status[$i]'";
-					}
-					$c .= ")";
-				} else {
-					$c = "Category.status = '$status'";
-				}
-				$conditions[] = $c;
+			$conditions["Category.status"] = $status;
 		}
 		
 		$orderSql = ($order != "weight")? $order : "label";
@@ -233,9 +224,12 @@ class Category extends BEAppModel {
 		$sql = "SELECT categories.id, COUNT(object_categories.category_id) AS weight
 				FROM categories, object_categories
 				WHERE categories.object_type_id IS NULL
-				AND categories.id = object_categories.category_id
-				GROUP BY categories.id, categories.label
-				ORDER BY categories.label ASC";
+				AND categories.id = object_categories.category_id";
+		if (!empty($status)) {
+			$statusCond = (is_array($status))? implode("','", $status) : $status;
+			$sql .= " AND categories.status IN ('" . $statusCond . "')";
+		}
+		$sql .= " GROUP BY categories.id, categories.label ORDER BY categories.label ASC";
 		
 		$res = $this->query($sql);
 
