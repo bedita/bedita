@@ -199,6 +199,16 @@ class DeployShell extends BeditaBaseShell {
 				$sel[$count] = BEDITA_FRONTENDS_PATH. DS .$dir;
 			}
 		}
+		$modStartCount = $count;
+		$folder = new Folder(BEDITA_MODULES_PATH);
+		$ls = $folder->ls();
+		foreach ($ls[0] as $dir) {
+			if($dir[0] !== '.' ) {
+				$count++;
+				$this->out("$count. $dir (plugin module)");
+				$sel[$count] = BEDITA_MODULES_PATH. DS .$dir;
+			}
+		}
 		$this->hr();
 		
     	$selected = $sel[1];
@@ -218,13 +228,20 @@ class DeployShell extends BeditaBaseShell {
 			$this->out("Svn command failed");
     	}
     	$this->loadTasks();
-    	if($res > 1) {
-    		$this->Cleanup->params["frontend"] = $selected;
-    	} else {
+    	if($res == 1) {
     		$this->updateVersion();
+    	} else if($res <= $modStartCount) {
+    		$this->Cleanup->params["frontend"] = $selected;
     	}
- 		$this->Cleanup->execute();
+    	$this->Cleanup->execute();
 		$this->out("Done");
+		$res = $this->in("Do you want to continue with svnUpdate? [y/n]");
+		if($res != "y") {
+       		$this->out("Bye");
+			return;
+		} else {
+			$this->svnUpdate();
+		}
     }
 
     function help() {
