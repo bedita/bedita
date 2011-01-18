@@ -235,6 +235,13 @@ class DeployShell extends BeditaBaseShell {
     	}
     	$this->Cleanup->execute();
 		$this->out("Done");
+		$res = $this->in("Do you want to continue with svnUpdate? [y/n]");
+		if($res != "y") {
+       		$this->out("Bye");
+			return;
+		} else {
+			$this->svnUpdate();
+		}
     }
 
     function help() {
