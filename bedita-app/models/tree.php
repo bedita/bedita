@@ -298,7 +298,7 @@ class Tree extends BEAppModel
 			$filter["Tree.*"] = "";
 		}
 
-		$res = $this->findObjects($id, $userid, $status, $filter, "parent_path, priority",true,1,100000,true);
+		$res = $this->findObjects($id, $userid, $status, $filter, "parent_path, priority, title",true,1,100000,true);
 		$tree = $this->buildTree($res["items"]);
 		return $tree ;
 	}

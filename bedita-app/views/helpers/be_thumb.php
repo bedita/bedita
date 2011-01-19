@@ -538,7 +538,7 @@ class BeThumbHelper extends AppHelper {
 			case 0:
 			default:
 				$thumbnail->far = true;
-				$thumbnail->iar = false;
+				$thumbnail->iar = true;
 				$thumbnail->zc  = "C"; // zoom crop to center
 				break;
 		}

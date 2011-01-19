@@ -100,7 +100,7 @@ class BeEmbedFlashHelper extends AppHelper {
 		}
 		
 		$beditaUrl = Configure::read('beditaUrl');
-		$swfUrl = empty($attributes['src']) ? $beditaUrl."/bedita-app/webroot/swf/".Configure::read("media." . $fileType . ".player") : $beditaUrl."/swf/".$attributes['src'] ;
+		$swfUrl = empty($attributes['src']) ? $beditaUrl."/swf/".Configure::read("media." . $fileType . ".player") : $beditaUrl."/swf/".$attributes['src'] ;
 		
 		if (empty($attributes["width"]))
 			$attributes["width"] = Configure::read("media." . $fileType . ".width");
