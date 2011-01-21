@@ -94,6 +94,11 @@ class BEAppModel extends AppModel {
 		if(is_integer($value)) return date("Y-m-d", $value) ;
 		
 		if(is_string($value) && !empty($value)) {
+			// check if it's already in SQL format
+			$date = new DateTime($value);
+			if ($date->format("Y-m-d") == $value || $date->format("Y-m-d H:i:s") == $value) {
+				return $value;
+			}
 			$conf = Configure::getInstance() ;			
 			$d_pos = strpos($conf->dateFormatValidation,'dd');
 			$m_pos = strpos($conf->dateFormatValidation,'mm');
