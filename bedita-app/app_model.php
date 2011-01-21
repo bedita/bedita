@@ -95,16 +95,25 @@ class BEAppModel extends AppModel {
 		
 		if(is_string($value) && !empty($value)) {
 			// check if it's already in SQL format
-			$date = new DateTime($value);
-			if ($date->format("Y-m-d") == $value || $date->format("Y-m-d H:i:s") == $value) {
-				return $value;
+			try {
+				$date = new DateTime($value);
+				if ($date->format("Y-m-d") == $value || $date->format("Y-m-d H:i:s") == $value) {
+					return $value;
+				}
+			} catch (Exception $ex) {
+				// do nothing. Used simply to avoid exception error if $value is not in a parsable format as dd/mm/yyyy (DateTime accept only english format)
 			}
 			$conf = Configure::getInstance() ;			
 			$d_pos = strpos($conf->dateFormatValidation,'dd');
 			$m_pos = strpos($conf->dateFormatValidation,'mm');
 			$y_pos = strpos($conf->dateFormatValidation,'yyyy');
-			$value = substr($value, $y_pos, 4) . "-" . substr($value, $m_pos, 2) . "-" . substr($value, $d_pos, 2);
-			return $value ;
+			$formatvalue = substr($value, $y_pos, 4) . "-" . substr($value, $m_pos, 2) . "-" . substr($value, $d_pos, 2);
+			try {
+				$date = new DateTime($formatvalue);
+			} catch (Exception $ex) {
+				throw new BeditaException(__("Error parsing date. Wrong format", true), array("date" => $value));
+			}
+			return $formatvalue ;
 		}
 		
 		return null ;
