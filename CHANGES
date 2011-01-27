@@ -1,3 +1,39 @@
+Version 3.1.1 - ulmus
+ User-visible changes:
+	* added "create new object" button in publications module (tab content)
+	* #259 addressbook: newsletter subscription bug when a multiple newsletter list subscription is performed
+	* syntax correction in notify messages: default.msg.php
+	* fixed javascript error when no concurrent users are present
+	* newsletter: tinyMCE broken in template view. 'bedita' tinyMCE plugin for newsletter template restored
+	* locale: updated german (thanks to Nils-Christoph Fiedler)
+	* locale: translations updated
+	* add "title" as order filed in Tree::getAll, now publications are listed order by name
+	* newsletter: added images button in tinyMCE toolbar
+	* newsletter: improve performance in view mail groups
+
+
+ Frontend changes:
+	* notification improvement: changes in frontend apps show frontend url insetad of backend url
+	* merged all notifications messages: default.msg, local.msg and (in frontend) frontend.msg
+	* site.example.com bugfix: wrong variable name was used
+
+
+ Developer-visibile changes:
+	* Notify behavior attached to all BEdita objects
+	* field production_date bugfix (model Product)
+	* wqphpThumb class, solved wrong size calculation when using imagemagick (mode crop, "zoomcrop")
+	* added boolean option in bedita.ini to use or not imagemagick
+	* added method for custom notification and improved placeholder replacement with regexp in  notification messages
+	* added $config["langSystem"] to bedita.cfg to override bedita.ini default
+	* shell: in update function of gettext script added the creation of default.po file if doesn't exist
+	* fixed wrong query in Cateory::getTags() method
+	* BeThumb helper: set to true ignore aspect ratio in crop mode
+	* helper: fix url when get flowplayer.swf
+	* update sql data for upgrade (users.email=NULL WHERE email=''
+	* bedita objects dates aren't formatted if they are already in SQL format
+	* throw exception on wrong date format saving objects
+
+
 Version 3.1 - ulmus
  User-visible changes:
 	* threaded annotation
