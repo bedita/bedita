@@ -107,7 +107,7 @@ class Permission extends BEAppModel
 			return true;		
 		}
 		if (empty($perms)) {
-			$perms = $this->isPermissionSetted($objectId, OBJ_PERMS_WRITE);
+			$perms = $this->isPermissionSetted($objectId, Configure::read("objectPermissions.write"));
 		}
 		return $this->checkPermissionByUser($perms, $userData);
 	}
@@ -123,7 +123,10 @@ class Permission extends BEAppModel
 	 */
 	public function isAccessibleByFrontend($objectId, array &$userData, $perms=array()) {
 		if (empty($perms)) {
-			$perms = $this->isPermissionSetted($objectId, OBJ_PERMS_READ_FRONT);
+			$perms = $this->isPermissionSetted($objectId, array(
+				Configure::read("objectPermissions.frontend_access_with_block"),
+				Configure::read("objectPermissions.frontend_access_without_block")
+			));
 		}
 		return $this->checkPermissionByUser($perms, $userData);
 	}

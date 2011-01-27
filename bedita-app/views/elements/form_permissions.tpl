@@ -9,8 +9,9 @@ https://dev.channelweb.it/bedita/ticket/157
 var urlLoad = "{$html->url('/pages/loadUsersGroupsAjax')}";
 var permissionLoaded = false;
 var permissions = new Array();
-permissions[{$conf->OBJ_PERMS_READ_FRONT}] = "{t}frontend access{/t}";
-permissions[{$conf->OBJ_PERMS_WRITE}] = "{t}write{/t}";
+{foreach from=$conf->objectPermissions key="permKey" item="permItem"}
+	permissions[{$permItem}] = "{t}{$permKey}{/t}";
+{/foreach}
 
 {literal}
 $(document).ready(function(){
@@ -92,11 +93,8 @@ function loadUserGroupAjax(url) {
 		<tr id="permTR_{$i}">
 			<td>{$perm.name}</td>
 			<td>
-				{if $perm.flag == $conf->OBJ_PERMS_READ_FRONT}
-					{t}frontend access{/t}
-				{elseif $perm.flag == $conf->OBJ_PERMS_WRITE}
-					{t}write{/t}
-				{/if}
+			{assign var="objPermReverse" value=$conf->objectPermissions|@array_flip}
+			{t}{$objPermReverse[$perm.flag]}{/t}
 			</td>
 			<td>
 				<input type="hidden" name="data[Permission][{$i}][flag]" value="{$perm.flag}"/>
@@ -130,8 +128,9 @@ function loadUserGroupAjax(url) {
 
 	<td>
 		<select id="selectGroupPermission" name="groupPermission">
-			<option value="{$conf->OBJ_PERMS_READ_FRONT}">{t}frontend access{/t}</option>
-			<option value="{$conf->OBJ_PERMS_WRITE}">{t}write{/t}</option>
+			{foreach from=$conf->objectPermissions item="permVal" key="permLabel"}
+			<option value="{$permVal}">{t}{$permLabel}{/t}</option>
+			{/foreach}
 		</select>
 	</td>
 	

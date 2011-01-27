@@ -155,13 +155,11 @@ $config['loginPolicy'] = array (
 $config['DS']        = DS;
 
 /**
- * Modules/objects permissions
+ * Modules permissions
  */
 define("BEDITA_PERMS_READ",	0x1) ; // read-only module permission
 define("BEDITA_PERMS_MODIFY",	0x2) ;
 define("BEDITA_PERMS_READ_MODIFY",	BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) ; // read-write module permission
-define("OBJ_PERMS_READ_FRONT",	0x1) ; // frontend access permission
-define("OBJ_PERMS_WRITE",		0x2) ; // write permission on object
 
 /**
  * Permission params, for Smarty 
@@ -169,8 +167,15 @@ define("OBJ_PERMS_WRITE",		0x2) ; // write permission on object
 $config['BEDITA_PERMS_READ'] 	= BEDITA_PERMS_READ ;
 $config['BEDITA_PERMS_MODIFY'] 	= BEDITA_PERMS_MODIFY ;
 $config['BEDITA_PERMS_READ_MODIFY'] = BEDITA_PERMS_READ_MODIFY;
-$config['OBJ_PERMS_READ_FRONT'] 	= OBJ_PERMS_READ_FRONT ;
-$config['OBJ_PERMS_WRITE'] 	= OBJ_PERMS_WRITE ;
+
+/**
+ * object permissions
+ */
+$config["objectPermissions"] = array(
+	"write" => 1,
+	"frontend_access_with_block" => 2,
+	"frontend_access_without_block" => 3
+);
 
 
 /**
