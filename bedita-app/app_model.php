@@ -95,13 +95,9 @@ class BEAppModel extends AppModel {
 		
 		if(is_string($value) && !empty($value)) {
 			// check if it's already in SQL format
-			try {
-				$date = new DateTime($value);
-				if ($date->format("Y-m-d") == $value || $date->format("Y-m-d H:i:s") == $value) {
-					return $value;
-				}
-			} catch (Exception $ex) {
-				// do nothing. Used simply to avoid exception error if $value is not in a parsable format as dd/mm/yyyy (DateTime accept only english format)
+			$pattern = "/^[0-9]{4}-[0-9]{2}-[0-9]{2}$|^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/";
+			if (preg_match($pattern, $value)) {
+				return $value;
 			}
 			$conf = Configure::getInstance() ;			
 			$d_pos = strpos($conf->dateFormatValidation,'dd');
