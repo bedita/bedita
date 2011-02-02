@@ -642,6 +642,47 @@ class DbadminShell extends BeditaBaseShell {
 	}
 	
 	
+	/**
+	 * Cleanup old items (log/job tables)
+	 */
+	public function cleanup() {
+
+		if(empty($this->params['days'])) {
+			$this->out("Parameter -days mandatory");
+			return;
+		}
+		$days = $this->params['days'];		
+		$tsLimit = time() - ($days * 24 * 60 * 60);
+        $dateLimit = date('Y-m-d', $tsLimit);
+		$this->out("Removing items older than $days days, preserving from $dateLimit");
+
+		// remove event logs
+		$this->out("Removing from event_logs");
+		$eventLog = ClassRegistry::init("EventLog");
+		$res = $eventLog->deleteAll("created <= '$dateLimit'");
+		if($res == false) {
+			$this->out("Error removin items");
+			return;
+		}
+		$this->out("Removing from mail_jobs");
+		$mailJob = ClassRegistry::init("MailJob");
+		$res = $mailJob->deleteAll("created <= '$dateLimit'");
+		if($res == false) {
+			$this->out("Error removing items");
+			return;
+		}
+		$this->out("Removing from mail_logs");
+		$mailLog = ClassRegistry::init("MailLog");
+		$res = $mailLog->deleteAll("created <= '$dateLimit'");
+		if($res == false) {
+			$this->out("Error removing items");
+			return;
+		}
+		
+		$this->out("Done");
+		
+	}
+	
 	function help() {
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
@@ -699,6 +740,12 @@ class DbadminShell extends BeditaBaseShell {
         $this->out('    Usage: checkDbNames [-schema]');
         $this->out(' ');
         $this->out("    -schema \t use schema file - otherwise read directly from db (default)");
+        $this->out(' ');
+        $this->out("13. cleanup: remove old items from log/job tables");
+        $this->out(' ');
+        $this->out('    Usage: cleanup -days <num-of-days>');
+        $this->out(' ');
+        $this->out("    -days \t number of days to preserve from today in cleanup");
         $this->out(' ');
 	}
 	
