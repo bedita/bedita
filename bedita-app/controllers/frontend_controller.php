@@ -300,8 +300,10 @@ abstract class FrontendController extends AppController {
 		$pubStatus = $this->BEObject->field("status", array("id" => Configure::read("frontendAreaId")));
 				
 		if ($pubStatus != "on") {
+			$statusSaved = $this->status;
 			$this->status = array('on', 'off', 'draft');
 			$this->publication = $this->loadObj(Configure::read("frontendAreaId"), false);
+			$this->status = $statusSaved;
 			$this->set('publication', $this->publication);						
 			if (Configure::read("draft") == false or ($pubStatus == "off")) {
 				throw new BeditaPublicationException("Publication not ON", array("layout" => $pubStatus));
