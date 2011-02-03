@@ -1571,7 +1571,12 @@ abstract class FrontendController extends AppController {
 	public function loadTags($tplVar=null, $cloud=true, $shuffle=false, $tagShowed=null) {
 		$tplVar = (empty($tplVar))? "listTags" : $tplVar;
 		$category = ClassRegistry::init("Category");
-		$tags = $category->getTags(false, $this->status, $cloud);
+		$tags = $category->getTags(array(
+			"showOrphans" => false,
+			"status" => $this->status,
+			"cloud" => $cloud,
+			"area_id" => $this->publication["id"]
+		));
 		if ($shuffle) {
 			shuffle($tags);
 		}

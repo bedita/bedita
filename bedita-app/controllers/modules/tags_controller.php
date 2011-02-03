@@ -38,7 +38,11 @@ class TagsController extends ModulesController {
 	protected $moduleName = 'tags';
 
 	public function index($order = "label", $dir = 1) {
-		$data = $this->Category->getTags(true, null, true, 12, $order, $dir);
+		$data = $this->Category->getTags(array(
+			"cloud" => true,
+			"order" => $order,
+			"dir" => $dir
+		));
 		$this->set("numTags", count($data));
 		$this->set('tags', $data);
 		$this->set("order", $order);
@@ -117,7 +121,7 @@ class TagsController extends ModulesController {
 
 	public function listAllTags($href=false) {
 		$this->layout = "ajax";
-		$this->set("listTags",$this->Category->getTags(true, null, true));
+		$this->set("listTags",$this->Category->getTags(array("cloud" => true)));
 		if ($href) 
 			$this->set("href", true);
 	}
