@@ -1615,9 +1615,6 @@ abstract class FrontendController extends AppController {
 			$this->checkParentStatus($section_id);
 		}
 		
-		// remove '+' from $tag, if coming from url
-		$tag = strtolower(str_replace("+", " ", $tag));
-		
 		$tagDetail = ClassRegistry::init("Category")->find("first", array(
 					"conditions" => array("name" => $tag, "object_type_id IS NULL", "status" => $this->status)
 				)

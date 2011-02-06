@@ -51,7 +51,7 @@ class Category extends BEAppModel {
 	function afterFind($result) {
 		foreach ($result as &$res) {
 			if(isset($res['name']))
-				$res['url_label'] = $this->urlLabel($res['name']);
+				$res['url_label'] = $res['name'];
 		}
 		return $result;			
 	}
@@ -68,16 +68,32 @@ class Category extends BEAppModel {
 	}
 
 	/**
-	 * Define a unique name from label: lowercase, trimmed
-	 * TODO: handle cases with spaces and '+' mixed...
-	 * @param unknown_type $label
+	 * Define a unique name from label: lowercase, trimmed, etc...
+	 * 
+	 * @param string $label
 	 */
 	public function uniqueLabelName($label) {
-		return strtolower(trim($label));		
-	}
-
-	private function urlLabel($tagName) {
-		return str_replace(" ", "+", $tagName);		
+		$name = BeLib::getInstance()->friendlyUrlString($label);
+		// search for already used label
+		$conditions = array("name" => $name);
+		if (!empty($this->data[$this->alias]["object_type_id"])) {
+			$conditions["NOT"] = array("object_type_id" => $this->data[$this->alias]["object_type_id"]);
+			$conditions[] = "object_type_id IS NOT NULL";
+			$count = $this->find("count", array("conditions" => $conditions));
+			if ($count > 0) {
+				$i = 1;
+				$freeName = false;
+				while (!$freeName) {
+					$conditions["name"] = $name . "-" . $i++;
+					$count = $this->find("count", array("conditions" => $conditions));
+					if ($count == 0) {
+						$freeName = true;
+						$name = $conditions["name"];
+					}
+				}
+			}
+		}
+		return $name;
 	}
 	
 	/**
@@ -85,25 +101,9 @@ class Category extends BEAppModel {
 	 */		
 	function beforeValidate() {
 		$data = &$this->data[$this->name] ;
-		$data['label'] = trim($data['label']);
-		$data['name'] = $this->uniqueLabelName($data['label']);
+		$data['name'] = $this->uniqueLabelName($data["label"]);
 		return true;
 	}
-	 	
-//	private function checkLabel($label) {
-//		if(empty($label))
-//			return null;
-		
-//		$value = htmlentities( strtolower($label), ENT_NOQUOTES, "UTF-8" );
-		// replace accent, uml, tilde,... with letter after & in html entities
-//		$value = preg_replace("/&(.)(uml);/", "$1e", $value);
-//		$value = preg_replace("/&(.)(acute|grave|cedil|circ|ring|tilde|uml);/", "$1", $value);
-		// remove special chars (first decode html entities)
-//		$value = preg_replace("/[^a-z0-9\s]/i", "", html_entity_decode($value,ENT_NOQUOTES,"UTF-8" ) ) ;
-		// trim dashes in the beginning and in the end of nickname
-//		$value = trim($value);
-//		return $value;
-//	}
 	
 	/**
 	 * Get all categories of some object type and order them by area
@@ -284,7 +284,7 @@ class Category extends BEAppModel {
 			'joins' => $joins
 		));
 		
-		$weights = array();
+		$weights = array(0);
 		foreach ($res as $val) {
 			$weights[] = $val[0]["weight"];
 		}
@@ -316,7 +316,7 @@ class Category extends BEAppModel {
 		// remove orphans or set weight = 0, create the non-associative array
 		$tagsArray = array();
 		foreach ($tags as $k => $t) {
-			$tags[$k]['url_label'] = $this->urlLabel($t['name']);
+			$tags[$k]['url_label'] = $t['name'];
 			if(!isset($t['weight'])) {
 				if($options["showOrphans"] === false) {
 					unset($tags[$k]);		
