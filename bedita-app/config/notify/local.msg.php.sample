@@ -132,6 +132,14 @@ $notify["userSignUp"]["eng"] = array(
 	"viewsMsg" => "An email has been sent to you. Please, check your email and follow the instructions to activate your account."
 );
 
+$notify["userSignUpModerated"]["eng"] = array(
+	"subject" => "[BEdita] user registration",
+	"mail_body" => "Hi [\$user], " .
+					"\nyou have been registered at [\$title]." .
+					"\n\nYour subscription must be validated: please wait for user validation.",
+	"viewsMsg" => "An email has been sent to you. Your subscription must be validated: please wait for user validation."
+);
+
 $notify["userSignUpActivation"]["eng"] = array(
 	"subject" => "[BEdita] user activated",
 	"mail_body" => "Hi [\$user], " .

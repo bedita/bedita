@@ -73,6 +73,14 @@ $config['frontendAreaId'] 	= 1;
  */
 $config['authorizedGroups'] = array();
 
+
+/**
+ * user validation delegated to user himself with email confirm (false)
+ * or moderated by administrators in User module (true)
+ */
+$config['userModerateSignup'] = false;
+
+
 /**
  * default frontend language
  */

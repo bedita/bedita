@@ -233,26 +233,46 @@ class BeHashComponent extends Object {
 			}
 		}
 
-		$hash_job = ClassRegistry::init("HashJob");
-		$data["HashJob"]["user_id"] = $user_id;
-		$data["HashJob"]["command"] = 'activation';
-		$data["HashJob"]["hash"] = $hash_job->generateHash();
-		$data["HashJob"]["expired"] = $hash_job->getExpirationDate();
-		if (!$hash_job->save($data["HashJob"])) {
-			throw new BeditaException(__("Error generating hash confirmation for " . $user["User"]["userid"],true));
-		}
 
-		$mailParams = array(
-			"body" => $this->getNotifyText("userSignUp", "mail_body"),
-			"subject" => $this->getNotifyText("userSignUp", "subject"),
-			"viewsMsg" => $this->getNotifyText("userSignUp", "viewsMsg"),
-			"email" => $data["User"]["email"],
-			"params" => array(
-				"title" => $this->controller->viewVars["publication"]["public_name"],
-				"user" => $data["User"]["userid"],
-				"url" => Router::url("/hashjob/exec/" . $data["HashJob"]["hash"] . "/command:activation", true)
-			)
-		);
+		// if user subscription is moderated
+		$userModerateSignup = Configure::read("userModerateSignup");
+		if (!empty($userModerateSignup)) {
+
+			$mailParams = array(
+				"body" => $this->getNotifyText("userSignUpModerated", "mail_body"),
+				"subject" => $this->getNotifyText("userSignUpModerated", "subject"),
+				"viewsMsg" => $this->getNotifyText("userSignUpModerated", "viewsMsg"),
+				"email" => $data["User"]["email"],
+				"params" => array(
+					"title" => $this->controller->viewVars["publication"]["public_name"],
+					"user" => $data["User"]["userid"],
+				)
+			);
+
+		} else {
+
+			$hash_job = ClassRegistry::init("HashJob");
+			$data["HashJob"]["user_id"] = $user_id;
+			$data["HashJob"]["command"] = 'activation';
+			$data["HashJob"]["hash"] = $hash_job->generateHash();
+			$data["HashJob"]["expired"] = $hash_job->getExpirationDate();
+			if (!$hash_job->save($data["HashJob"])) {
+				throw new BeditaException(__("Error generating hash confirmation for " . $user["User"]["userid"],true));
+			}
+	
+			$mailParams = array(
+				"body" => $this->getNotifyText("userSignUp", "mail_body"),
+				"subject" => $this->getNotifyText("userSignUp", "subject"),
+				"viewsMsg" => $this->getNotifyText("userSignUp", "viewsMsg"),
+				"email" => $data["User"]["email"],
+				"params" => array(
+					"title" => $this->controller->viewVars["publication"]["public_name"],
+					"user" => $data["User"]["userid"],
+					"url" => Router::url("/hashjob/exec/" . $data["HashJob"]["hash"] . "/command:activation", true)
+				)
+			);
+
+		}
 
 		return $mailParams;
 	}
