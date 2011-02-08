@@ -145,6 +145,7 @@ $notify["recoverPasswordChange"]["eng"] = array(
 	"viewsMsg" => "<a href='[\$url]'>Your password has been changed. Click here to login</a>"
 );
 
+
 // Message for user sign up
 $notify["userSignUp"]["eng"] = array(
 	"subject" => "[BEdita] user registration",
@@ -159,8 +160,17 @@ $notify["userSignUpModerated"]["eng"] = array(
 	"subject" => "[BEdita] user registration",
 	"mail_body" => "Hi [\$user], " .
 					"\nyou have been registered at [\$title]." .
-					"\n\nYour subscription must be validated: please wait for user validation.",
-	"viewsMsg" => "An email has been sent to you. Your subscription must be validated: please wait for user validation."
+					"\n\nYour subscription must be validated: please wait for approval.",
+	"viewsMsg" => "An email has been sent to you. Your subscription must be validated: please wait for approval."
+);
+
+$notify["userSignUpModeratedToAdmin"]["eng"] = array(
+	"subject" => "[BEdita] user registration",
+	"mail_body" => "Hi administrator," .
+					"\n [\$user], a new user just registered on [\$title]." .
+					"\n\nThis subscription must be validated: follow the link below to activate the user (or use the User panel in BEdita User module)." .
+					"\n\n[\$url]",
+	"viewsMsg" => "Hi [\$user], your subscription has been recorded. An administrator should validate your subscription and an email will be sent to you soon after approval."
 );
 
 $notify["userSignUpActivation"]["eng"] = array(
@@ -169,6 +179,6 @@ $notify["userSignUpActivation"]["eng"] = array(
 					"\nyour account at [\$title] is now active." .
 					"\n\nTo login go to" .
 					"\n[\$url]",
-	"viewsMsg" => "<a href='[\$url]'>Your account is now active. Click here to login</a>"
+	"viewsMsg" => "<a href='[\$url]'>The account is now active. Click here to login</a>"
 );
 ?>

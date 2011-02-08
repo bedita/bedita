@@ -76,7 +76,7 @@ $config['authorizedGroups'] = array();
 
 /**
  * user validation delegated to user himself with email confirm (false)
- * or moderated by administrators in User module (true)
+ * or moderated by administrators in User module (true or administrator's email)
  */
 $config['userModerateSignup'] = false;
 

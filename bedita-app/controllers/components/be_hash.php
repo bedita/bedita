@@ -236,7 +236,7 @@ class BeHashComponent extends Object {
 
 		// if user subscription is moderated
 		$userModerateSignup = Configure::read("userModerateSignup");
-		if (!empty($userModerateSignup)) {
+		if ($userModerateSignup === true) { // true but not email, the user is created not valid and a mail is sent to the user
 
 			$mailParams = array(
 				"body" => $this->getNotifyText("userSignUpModerated", "mail_body"),
@@ -260,17 +260,33 @@ class BeHashComponent extends Object {
 				throw new BeditaException(__("Error generating hash confirmation for " . $user["User"]["userid"],true));
 			}
 	
-			$mailParams = array(
-				"body" => $this->getNotifyText("userSignUp", "mail_body"),
-				"subject" => $this->getNotifyText("userSignUp", "subject"),
-				"viewsMsg" => $this->getNotifyText("userSignUp", "viewsMsg"),
-				"email" => $data["User"]["email"],
-				"params" => array(
-					"title" => $this->controller->viewVars["publication"]["public_name"],
-					"user" => $data["User"]["userid"],
-					"url" => Router::url("/hashjob/exec/" . $data["HashJob"]["hash"] . "/command:activation", true)
-				)
-			);
+
+			// if is email, activation by email will be sent to this email (administators'))
+			if (filter_var($userModerateSignup, FILTER_VALIDATE_EMAIL)) {
+				$mailParams = array(
+					"body" => $this->getNotifyText("userSignUpModeratedToAdmin", "mail_body"),
+					"subject" => $this->getNotifyText("userSignUpModeratedToAdmin", "subject"),
+					"viewsMsg" => $this->getNotifyText("userSignUpModeratedToAdmin", "viewsMsg"),
+					"email" => $userModerateSignup,
+					"params" => array(
+						"title" => $this->controller->viewVars["publication"]["public_name"],
+						"user" => $data["User"]["userid"],
+						"url" => Router::url("/hashjob/exec/" . $data["HashJob"]["hash"] . "/command:activation", true)
+					)
+				);
+			} else { // if user is not moderated the auto-activation email will be sent to the user
+				$mailParams = array(
+					"body" => $this->getNotifyText("userSignUp", "mail_body"),
+					"subject" => $this->getNotifyText("userSignUp", "subject"),
+					"viewsMsg" => $this->getNotifyText("userSignUp", "viewsMsg"),
+					"email" => $data["User"]["email"],
+					"params" => array(
+						"title" => $this->controller->viewVars["publication"]["public_name"],
+						"user" => $data["User"]["userid"],
+						"url" => Router::url("/hashjob/exec/" . $data["HashJob"]["hash"] . "/command:activation", true)
+					)
+				);
+			}
 
 		}
 
@@ -281,7 +297,7 @@ class BeHashComponent extends Object {
 		$userModel = ClassRegistry::init("User");
 		$user = $userModel->find("first", array(
 			"conditions" => array("id" => $data["HashJob"]["user_id"]),
-			"contain" => array()
+			"contain" => array("ObjectUser.switch='card'")
 		));
 		if (empty($user)) {
 			throw new BeditaHashException(__("Hash isn't valid or user doesn't exist.",true));
@@ -292,6 +308,16 @@ class BeHashComponent extends Object {
 		if (!$userModel->save($user)) {
 			throw new BeditaException(__("Error saving user.",true));
 		}
+
+		if (!empty($user["ObjectUser"])) {
+			
+			$BEObjectModel = ClassRegistry::init("BEObject");
+			$BEObjectModel->id = $user["ObjectUser"][0]["object_id"];
+			if (!$BEObjectModel->saveField("status", "on")) {
+				throw new BeditaHashException(__("Error saving data", true));
+			}
+		}
+
 
 		$mailParams = array(
 			"body" => $this->getNotifyText("userSignUpActivation", "mail_body"),
