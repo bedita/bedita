@@ -105,7 +105,7 @@ class DboSource extends DataSource {
  * @param array $config An array defining the new configuration settings
  * @return boolean True on success, false on failure
  */
-	function reconnect($config = null) {
+	function reconnect($config = array()) {
 		$this->disconnect();
 		$this->setConfig($config);
 		$this->_sources = null;
@@ -1487,8 +1487,10 @@ class DboSource extends DataSource {
 					$noJoin = false;
 					break;
 				}
-				$conditions[$field] = $value;
-				unset($conditions[$originalField]);
+				if ($field !== $originalField) {
+					$conditions[$field] = $value;
+					unset($conditions[$originalField]);
+				}
 			}
 			if ($noJoin === true) {
 				return $this->conditions($conditions);
@@ -2229,7 +2231,7 @@ class DboSource extends DataSource {
 		}
 		return intval($length);
 	}
-	
+
 /**
  * Gets values for columns types like 'enum' or 'set'
  *

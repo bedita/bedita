@@ -32,7 +32,7 @@
 class DboMysqlBase extends DboSource {
 /**
  * Description property.
- * 
+ *
  * @var string
  */
 	var $description = "MySQL DBO Base Driver";
@@ -315,7 +315,7 @@ class DboMysqlBase extends DboSource {
  * @param string $table Table to alter indexes for
  * @param array $new Indexes to add and drop
  * @return array Index alteration statements
- */	
+ */
 	function _alterIndexes($table, $indexes) {
 		$alter = array();
 		if (isset($indexes['drop'])) {
