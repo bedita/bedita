@@ -94,12 +94,22 @@ class BEAppModel extends AppModel {
 		if(is_integer($value)) return date("Y-m-d", $value) ;
 		
 		if(is_string($value) && !empty($value)) {
+			// check if it's already in SQL format
+			$pattern = "/^[0-9]{4}-[0-9]{2}-[0-9]{2}$|^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/";
+			if (preg_match($pattern, $value)) {
+				return $value;
+			}
 			$conf = Configure::getInstance() ;			
 			$d_pos = strpos($conf->dateFormatValidation,'dd');
 			$m_pos = strpos($conf->dateFormatValidation,'mm');
 			$y_pos = strpos($conf->dateFormatValidation,'yyyy');
-			$value = substr($value, $y_pos, 4) . "-" . substr($value, $m_pos, 2) . "-" . substr($value, $d_pos, 2);
-			return $value ;
+			$formatvalue = substr($value, $y_pos, 4) . "-" . substr($value, $m_pos, 2) . "-" . substr($value, $d_pos, 2);
+			try {
+				$date = new DateTime($formatvalue);
+			} catch (Exception $ex) {
+				throw new BeditaException(__("Error parsing date. Wrong format", true), array("date" => $value));
+			}
+			return $formatvalue ;
 		}
 		
 		return null ;

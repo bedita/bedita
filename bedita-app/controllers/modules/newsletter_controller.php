@@ -307,8 +307,10 @@ class NewsletterController extends ModulesController {
 										)
 									)
 								);
-		$this->set("groups", $this->MailGroup->find("all", array("order" => "group_name ASC")));
-		
+		$this->set("groups", $this->MailGroup->find("all", array(
+			"contain" => array(),
+			"order" => "group_name ASC"
+		)));
 		$localMsg = APP."config".DS."notify".DS."local.msg.php";
 		if (file_exists ($localMsg) ) {
 			require($localMsg);

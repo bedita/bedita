@@ -51,7 +51,7 @@ class Category extends BEAppModel {
 	function afterFind($result) {
 		foreach ($result as &$res) {
 			if(isset($res['name']))
-				$res['url_label'] = $this->urlLabel($res['name']);
+				$res['url_label'] = $res['name'];
 		}
 		return $result;			
 	}
@@ -68,16 +68,32 @@ class Category extends BEAppModel {
 	}
 
 	/**
-	 * Define a unique name from label: lowercase, trimmed
-	 * TODO: handle cases with spaces and '+' mixed...
-	 * @param unknown_type $label
+	 * Define a unique name from label: lowercase, trimmed, etc...
+	 * 
+	 * @param string $label
 	 */
 	public function uniqueLabelName($label) {
-		return strtolower(trim($label));		
-	}
-
-	private function urlLabel($tagName) {
-		return str_replace(" ", "+", $tagName);		
+		$name = BeLib::getInstance()->friendlyUrlString($label);
+		// search for already used label
+		$conditions = array("name" => $name);
+		if (!empty($this->data[$this->alias]["object_type_id"])) {
+			$conditions["NOT"] = array("object_type_id" => $this->data[$this->alias]["object_type_id"]);
+			$conditions[] = "object_type_id IS NOT NULL";
+			$count = $this->find("count", array("conditions" => $conditions));
+			if ($count > 0) {
+				$i = 1;
+				$freeName = false;
+				while (!$freeName) {
+					$conditions["name"] = $name . "-" . $i++;
+					$count = $this->find("count", array("conditions" => $conditions));
+					if ($count == 0) {
+						$freeName = true;
+						$name = $conditions["name"];
+					}
+				}
+			}
+		}
+		return $name;
 	}
 	
 	/**
@@ -85,25 +101,9 @@ class Category extends BEAppModel {
 	 */		
 	function beforeValidate() {
 		$data = &$this->data[$this->name] ;
-		$data['label'] = trim($data['label']);
-		$data['name'] = $this->uniqueLabelName($data['label']);
+		$data['name'] = $this->uniqueLabelName($data["label"]);
 		return true;
 	}
-	 	
-//	private function checkLabel($label) {
-//		if(empty($label))
-//			return null;
-		
-//		$value = htmlentities( strtolower($label), ENT_NOQUOTES, "UTF-8" );
-		// replace accent, uml, tilde,... with letter after & in html entities
-//		$value = preg_replace("/&(.)(uml);/", "$1e", $value);
-//		$value = preg_replace("/&(.)(acute|grave|cedil|circ|ring|tilde|uml);/", "$1", $value);
-		// remove special chars (first decode html entities)
-//		$value = preg_replace("/[^a-z0-9\s]/i", "", html_entity_decode($value,ENT_NOQUOTES,"UTF-8" ) ) ;
-		// trim dashes in the beginning and in the end of nickname
-//		$value = trim($value);
-//		return $value;
-//	}
 	
 	/**
 	 * Get all categories of some object type and order them by area
@@ -195,58 +195,111 @@ class Category extends BEAppModel {
 	/**
 	 * return list of tags with their weight
 	 *
-	 * @param bool $cloud, if it's true return css class for cloud view
-	 * @param int $coeff, coeffiecient for calculate the distribution
+	 * @param array $options
+	 *				"showOrphans" => true,  show all tags also not associated
+	 *				"status" => null,		string or array (on, off, draft). if area_id is setted "status" is used also to related objects
+	 *				"cloud" => false,		true to set a css class for cloud view
+	 *				"coeff" => 12,			coeffiecient for calculate the distribution
+	 *				"order" => "label",		order by field
+	 *				"dir" => 1,				asc(1), desc(0)
+	 *				"area_id"=> null		get tags only associated to objects that are in "area_id" publication
+	 * 
 	 * @return array
 	 */
-	public function getTags($showOrphans=true, $status=null, $cloud=false, $coeff=12, $order="label", $dir=1) {
+	//public function getTags($showOrphans=true, $status=null, $cloud=false, $coeff=12, $order="label", $dir=1, $area_id=null) {
+	public function getTags(array $options = array()) {
+
+		$options = array_merge(
+			array("showOrphans" => true, "status" => null, "cloud" => false, "coeff" => 12, "order" => "label", "dir" => 1, "area_id"=> null),
+			(array)$options
+		);
 		
 		$conditions = array();
 		$conditions[] = "Category.object_type_id IS NULL";
-		if(!empty($status)) {
-			$conditions["Category.status"] = $status;
+		if(!empty($options["status"])) {
+			$conditions["Category.status"] = $options["status"];
 		}
 		
-		$orderSql = ($order != "weight")? $order : "label";
-		$dirSql = ($dir)? "ASC" : "DESC";
-		
+		$orderSql = ($options["order"] != "weight")? $options["order"] : "label";
+		$dirSql = ($options["dir"])? "ASC" : "DESC";
+
+		$joinsBEObject = array();
+		$joins = array();
+
+		// get tags associated to objects that are in $area_id publication
+		if (!empty($options["area_id"])) {
+			$joinsBEObject = array(
+					'table' => 'objects',
+					'alias' => 'BEObject',
+					'type' => 'inner',
+					'conditions'=> array(
+						'BEObject.id = ObjectCategory.object_id'
+					)
+				);
+			if (!empty($options["status"])) {
+				$joinsBEObject["conditions"]['BEObject.status'] = $options["status"];
+			}
+
+			$joins = array(
+				array(
+					'table' => 'object_categories',
+					'alias' => 'ObjectCategory',
+					'type' => 'inner',
+					'conditions'=> array('ObjectCategory.category_id = Category.id')
+				),
+				$joinsBEObject,
+				array(
+					'table' => 'trees',
+					'alias' => 'Tree',
+					'type' => 'inner',
+					'conditions'=> array(
+						'Tree.id = BEObject.id',
+						'Tree.area_id' => $options["area_id"]
+					)
+				)
+			);
+		}
+
 		$allTags = $this->find('all', array(
-										'conditions'=> $conditions,
-										'order' 	=> array("Category." . $orderSql => $dirSql)
-										)
-								);
+			'conditions'=> $conditions,
+			'order' 	=> array("Category." . $orderSql => $dirSql),
+			'group' => "Category.id",
+			'joins' => $joins
+		));
+		
 		$tags = array();
 		foreach ($allTags as $t) {
 			$tags[$t['id']] = $t;
 		}
 
-		// #CUSTOM QUERY
-		$sql = "SELECT categories.id, COUNT(object_categories.category_id) AS weight
-				FROM categories, object_categories
-				WHERE categories.object_type_id IS NULL
-				AND categories.id = object_categories.category_id";
-		if (!empty($status)) {
-			$statusCond = (is_array($status))? implode("','", $status) : $status;
-			$sql .= " AND categories.status IN ('" . $statusCond . "')";
-		}
-		$sql .= " GROUP BY categories.id, categories.label ORDER BY categories.label ASC";
+		$category_ids = Set::extract('/id', $allTags);
 		
-		$res = $this->query($sql);
+		$objCatModel = ClassRegistry::init("ObjectCategory");
 
-		if ($cloud) {
-			// #CUSTOM QUERY
-			$sqlMax = "SELECT MAX(weight) AS max, MIN(weight) AS min FROM (" . $sql . ") tab";
-			$maxmin = $this->query($sqlMax);
-			$max = $maxmin[0][0]["max"];		
-			$min = $maxmin[0][0]["min"];
-			$distribution = ($max - $min) / $coeff;
+		$joins = (empty($joinsBEObject))? array() : array($joinsBEObject);
+		$res = $objCatModel->find("all", array(
+			'fields' => array("ObjectCategory.category_id", "count(ObjectCategory.object_id) as weight"),
+			'conditions' => array("ObjectCategory.category_id" => $category_ids),
+			'group' => array("ObjectCategory.category_id"),
+			'joins' => $joins
+		));
+		
+		$weights = array(0);
+		foreach ($res as $val) {
+			$weights[] = $val[0]["weight"];
+		}
+
+		if ($options["cloud"]) {
+			$max = max($weights);
+			$min = min($weights);
+			$distribution = ($max - $min) / $options["coeff"];
 		}
 		
 		foreach ($res as $r) {
-			$key = !empty($r['categories']['id']) ? $r['categories']['id'] : $r[0]['id'] ;
+			$key = !empty($r['ObjectCategory']['category_id']) ? $r['ObjectCategory']['category_id'] : $r[0]['category_id'] ;
 			$w = $r[0]['weight'];
 			$tags[$key]['weight'] = $w;
-			if ($cloud) {
+			if ($options["cloud"]) {
 				if ($w == $min)
 					$tags[$key]['class'] = "smallestTag";
 				elseif ($w == $max)
@@ -255,17 +308,17 @@ class Category extends BEAppModel {
 					$tags[$key]['class']  = "largeTag";
 				elseif ($w > ($min + $distribution))
 					$tags[$key]['class']  = "mediumTag";
-				else 
+				else
 					$tags[$key]['class']  = "smallTag";
-			}	
+			}
 		}
 		
 		// remove orphans or set weight = 0, create the non-associative array
 		$tagsArray = array();
 		foreach ($tags as $k => $t) {
-			$tags[$k]['url_label'] = $this->urlLabel($t['name']);
+			$tags[$k]['url_label'] = $t['name'];
 			if(!isset($t['weight'])) {
-				if($showOrphans === false) {
+				if($options["showOrphans"] === false) {
 					unset($tags[$k]);		
 				} else {
 					$tags[$k]['weight'] = 0;		
@@ -277,12 +330,12 @@ class Category extends BEAppModel {
 		}
 		
 		// if order by weight reorder tags
-		if ($order == "weight") {
-			Category::$orderTag = $order;
-			Category::$dirTag = $dir;
+		if ($options["order"] == "weight") {
+			Category::$orderTag = $options["order"];
+			Category::$dirTag = $options["dir"];
 			usort($tagsArray, array('Category', 'reorderTag'));
 		}
-		
+//		pr($tagsArray);exit;
 		return $tagsArray;
 	}
 	

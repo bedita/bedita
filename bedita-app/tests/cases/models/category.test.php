@@ -38,23 +38,23 @@ class CategoryTestCase extends BeditaTestCase {
  	function testTags() {
 
 		// show orphans
- 		$result = $this->Category->getTags(true) ;
+ 		$result = $this->Category->getTags() ;
 		pr("Tags with orphans:");
  		pr($result);
  		
- 		$result = $this->Category->getTags(false) ;
+ 		$result = $this->Category->getTags(array("showOrphans" => false)) ;
 		pr("Tags without orphans:");
  		pr($result);
 
- 	 	$result = $this->Category->getTags(true, 'on') ;
+ 	 	$result = $this->Category->getTags(array("status" => 'on')) ;
 		pr("Tags with status: on");
  		pr($result);
  		
- 	 	$result = $this->Category->getTags(true, array('on', 'off', 'draft')) ;
+ 	 	$result = $this->Category->getTags(array("status" => array('on', 'off', 'draft'))) ;
 		pr("Tags with status: on/off/draft");
  		pr($result);
  	
- 	 	$result = $this->Category->getTags(true, null, true) ;
+ 	 	$result = $this->Category->getTags(array("cloud" => true)) ;
 		pr("Tags with cloud: ");
  		pr($result);
  	

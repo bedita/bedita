@@ -68,10 +68,18 @@ $config['filterPublicationDate'] = true;
 $config['frontendAreaId'] 	= 1;
 
 /**
- * array of frontend groups that can access frontend
- * leave empty to define permissions at object level
+ * user validation delegated to user himself with email confirm (false)
+ * or moderated by administrators in User module (true or administrator's email)
  */
 $config['authorizedGroups'] = array();
+
+
+/**
+ * user validation delegated to user himself with email confirm (false)
+ * or moderated by administrators in User module (true)
+ */
+$config['userModerateSignup'] = false;
+
 
 /**
  * default frontend language

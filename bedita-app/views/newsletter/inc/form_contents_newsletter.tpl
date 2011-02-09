@@ -35,7 +35,7 @@ function initializeTinyMCE(cssPath) {
 	
 		// Theme options
 		theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
-		theme_advanced_buttons2 : "sub,sup,fontsizeselect,forecolor,styleselect,justifyleft,justifycenter,justifyright,justifyfull",
+		theme_advanced_buttons2 : "sub,sup,fontsizeselect,forecolor,styleselect,justifyleft,justifycenter,justifyright,justifyfull,image",
 		theme_advanced_buttons3 : "",
 		//http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/template 
 		theme_advanced_toolbar_location : "top",

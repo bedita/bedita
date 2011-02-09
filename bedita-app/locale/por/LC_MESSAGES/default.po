@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2011-01-10 10:23:44\n"
+"POT-Creation-Date: 2011-01-27 14:59:17\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -1846,7 +1846,10 @@ msgstr ""
 msgid "from"
 msgstr ""
 
-msgid "frontend access"
+msgid "frontend_access_with_block"
+msgstr ""
+
+msgid "frontend_access_without_block"
 msgstr ""
 
 msgid "galleries"
@@ -2513,9 +2516,6 @@ msgid "with status"
 msgstr ""
 
 msgid "word"
-msgstr ""
-
-msgid "write"
 msgstr ""
 
 msgid "x"

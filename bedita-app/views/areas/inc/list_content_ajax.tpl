@@ -130,6 +130,7 @@ $(document).ready(function() {
 		<option value="10"{if $dim == 10} selected{/if}>10</option>
 		<option value="20"{if $dim == 20} selected{/if}>20</option>
 		<option value="50"{if $dim == 50} selected{/if}>50</option>
+		<option value="100"{if $dim == 100} selected{/if}>100</option>
 		<option value="1000000"{if $dim == 1000000} selected{/if}>{t}all{/t}</option>
 	</select>
 	{t}item(s){/t} 

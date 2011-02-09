@@ -379,7 +379,7 @@ class AreasController extends ModulesController {
 	private function loadContents($id) {
 		// set pagination
 		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
-		$dim = (!empty($this->params["form"]["dim"]))? $this->params["form"]["dim"] : 1000000; 
+		$dim = (!empty($this->params["form"]["dim"]))? $this->params["form"]["dim"] : 100; 
 		
 		// get content
 		$filter["object_type_id"] = Configure::read("objectTypes.leafs.id");

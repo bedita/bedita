@@ -1832,7 +1832,10 @@ msgstr ""
 msgid "from"
 msgstr ""
 
-msgid "frontend access"
+msgid "frontend_access_with_block"
+msgstr ""
+
+msgid "frontend_access_without_block"
 msgstr ""
 
 msgid "galleries"
@@ -2499,9 +2502,6 @@ msgid "with status"
 msgstr ""
 
 msgid "word"
-msgstr ""
-
-msgid "write"
 msgstr ""
 
 msgid "x"

@@ -14,14 +14,18 @@ class PermissionTestData extends BeditaTestData {
 	var $data =  array(
 		'min'	=> array('title' => 'Test title'),
 		'addPerms1' => array(
-				array('switch' => 'user', 'flag' => OBJ_PERMS_WRITE, 'name' => 'bedita'),
-				array('switch' => 'group', 'flag' => OBJ_PERMS_READ_FRONT, 'name' => 'reader'),
+				// write permission
+				array('switch' => 'user', 'flag' => 1, 'name' => 'bedita'),
+				// frontend_access_with_block
+				array('switch' => 'group', 'flag' => 2, 'name' => 'reader'),
 		),
 		'removePerms1' => array(
-				array('switch' => 'group', 'flag' => OBJ_PERMS_READ_FRONT, 'name' => 'reader'),
+				// frontend_access_with_block
+				array('switch' => 'group', 'flag' => 2, 'name' => 'reader'),
 		),
 		'resultDeletePerms1' => array(
-				array('switch' => 'user', 'flag' => OBJ_PERMS_WRITE, 'name' => 'bedita'),
+				// write permission
+				array('switch' => 'user', 'flag' => 1, 'name' => 'bedita'),
 		)
 	);
 

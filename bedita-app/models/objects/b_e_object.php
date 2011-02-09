@@ -541,31 +541,13 @@ class BEObject extends BEAppModel
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Setta i valori di default per i diversi campi
+	 * build object unique name
+	 * 
+	 * @param string $value
+	 * @return string 
 	 */
 	private function _getDefaultNickname($value) {
-		
-		if(is_null($value)) {
-			$value = "";
-		}
-		if (is_numeric($value)) {
-			$value = "n" . $value;
-		}
-		
-		$value = htmlentities( strtolower($value), ENT_NOQUOTES, "UTF-8" );
-		
-		// replace accent, uml, tilde,... with letter after & in html entities
-		$value = preg_replace("/&(.)(uml);/", "$1e", $value);
-		$value = preg_replace("/&(.)(acute|grave|cedil|circ|ring|tilde|uml);/", "$1", $value);
-		// replace special chars and space with dash (first decode html entities)
-		$value = preg_replace("/[^a-z0-9\-_]/i", "-", html_entity_decode($value,ENT_NOQUOTES,"UTF-8" ) ) ;
-		// remove digits and dashes in the beginning 
-		$value = preg_replace("/^[0-9\-]{1,}/", "", $value);
-		// replace two or more consecutive dashes with one dash
-		$value = preg_replace("/[\-]{2,}/", "-", $value);
-		// trim dashes in the beginning and in the end of nickname
-		$nickname = $nickname_base = trim($value,"-");
-
+		$nickname = $nickname_base = BeLib::getInstance()->friendlyUrlString($value);
 		$conf = Configure::getInstance() ;
 		$nickOk = false;
 		$countNick = 1;
