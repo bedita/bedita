@@ -32,11 +32,11 @@
 
 $config = array() ;
  
-$config["projectName"] = "BEdita 3.1"; // override in bedita.cfg
+$config["projectName"] = "BEdita 3.2"; // override in bedita.cfg
 
-$config["userVersion"] = "BEdita 3.1"; // don't override
+$config["userVersion"] = "BEdita 3.2 preaplha"; // don't override
 
-$config["majorVersion"] = "3.1.1"; // don't override -- admin/system
+$config["majorVersion"] = "3.2.prealpha"; // don't override -- admin/system
 
 $config["helpBaseUrl"] = "http://docs.bedita.com/behelp/v31"; // don't override --
 
@@ -266,7 +266,7 @@ $config["cfgOneWayRelation"] = array();
 
 // Default reserved words [avoided in nickname creation]
 $config["defaultReservedWords"] = array("section", "content", "rss", "feed", 
-	"download", "xml", "xmlobject", "sitemap", "sitemap.xml", "sitemap_xml", 
+	"download", "xml", "xmlobject", "sitemap", "sitemap.xml", "sitemap_xml", "files",
 	"json", "captchaImage", "saveComment", "search", "tag", "login", "logout", 
 	"hashjob", "subscribe", "printme", "homePage");
 
@@ -563,10 +563,13 @@ $config["defaultLicenses"] = array(
 $config["cfgLicenses"] = array();
 
 /**
- * Specific System settings
- * ALWAYS AT THE END of bedita.ini.php
+ * Specific application/instance related settings 
+ * (system/server independent)
  */
-if (file_exists (BEDITA_CORE_PATH. DS ."config".DS."bedita.sys.php") ) {
-	include_once(BEDITA_CORE_PATH. DS ."config".DS."bedita.sys.php") ;	
-}
+require BEDITA_CORE_PATH. DS ."config".DS."bedita.cfg.php";	
+
+/**
+ * Specific system/server related settings
+ */
+require BEDITA_CORE_PATH. DS ."config".DS."bedita.sys.php";	
 ?>

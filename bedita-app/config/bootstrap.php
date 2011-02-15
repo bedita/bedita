@@ -88,26 +88,19 @@ if (!defined("BEDITA_CORE_PATH")) {
 	// Register transaction shutdown function
 	register_shutdown_function('shutdownTransation');
 	
-	/**
-	 ** Load BEdita settings and define constants
-	 */
-	
-	// load defaults
+	// load BEdita configuration
+	// bedita.ini.php, bedita.cfg.php, bedita.sys.php
 	Configure::load("bedita.ini") ;
 	
-	// load local installation specific settings
-	if ( file_exists (BEDITA_CORE_PATH . DS . "config" . DS . "bedita.cfg.php") ) {
-		Configure::load("bedita.cfg") ;	
-	}
-
-// frontends specific bootstrap
 } else {
+	// frontends specific bootstrap
 	define("BACKEND_APP", false);
 	$modelPaths[]=BEDITA_CORE_PATH . DS . 'models' . DS;
 	$viewPaths=array(BEDITA_CORE_PATH . DS . 'views' . DS);
 	$componentPaths[] = BEDITA_CORE_PATH . DS . 'controllers' . DS . 'components' . DS;
 	$behaviorPaths[] = BEDITA_CORE_PATH . DS . 'models' . DS . 'behaviors' . DS;
 	$helperPaths[] = BEDITA_CORE_PATH . DS . 'views' . DS . 'helpers' . DS;
+	// frontend.ini.php, includes bedita.ini/cfg/sys
 	Configure::load("frontend.ini") ;
 }
 

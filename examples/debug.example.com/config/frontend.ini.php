@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2009 ChannelWeb Srl, Chialab Srl
+ * Copyright 2011 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -29,10 +29,7 @@
  * $Id: frontend.ini.php 2061 2009-07-03 14:44:07Z dante $
  */
 
-require_once(BEDITA_CORE_PATH . DS . "config" . DS . "bedita.ini.php") ;
-if (file_exists (BEDITA_CORE_PATH . DS . "config" . DS . "bedita.cfg.php") ) {
-	include(BEDITA_CORE_PATH . DS . "config" . DS . "bedita.cfg.php") ;	
-}
+require BEDITA_CORE_PATH . DS . "config" . DS . "bedita.ini.php";
 
 //////////////////////////////////////////////////////
 // EDITABLE STUFF         ///////////////
@@ -141,7 +138,7 @@ $config['modelBindings'] = array(
  * frontend cookie names 
  */
 $config["cookieName"] = array(
-	"langSelect" => "basicExampleLang"
+	"langSelect" => "debugExampleLang"
 );
 
 /**
