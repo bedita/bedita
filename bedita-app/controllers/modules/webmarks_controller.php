@@ -108,7 +108,7 @@ class WebmarksController extends ModulesController {
 		if(empty($this->data["id"])) 
 			throw new BeditaException( __("No data", true));
 		$this->Transaction->begin() ;
-		if(!$this->Category->del($this->data["id"])) {
+		if(!$this->Category->delete($this->data["id"])) {
 			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
 		}
 		$this->Transaction->commit();

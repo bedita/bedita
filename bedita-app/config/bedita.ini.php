@@ -38,10 +38,10 @@ $config["userVersion"] = "BEdita 3.2 preaplha"; // don't override
 
 $config["majorVersion"] = "3.2.prealpha"; // don't override -- admin/system
 
-$config["helpBaseUrl"] = "http://docs.bedita.com/behelp/v31"; // don't override --
+$config["helpBaseUrl"] = "http://docs.bedita.com/behelp/v32"; // don't override --
 
 // Multimedia - image file substituting missing content (as now used in BeThumb helper)
-$config['imgMissingFile'] = "/img/iconMissingImage_130x85.gif" ;
+$config['imgMissingFile'] = "/img/iconMissingImage_130x85.gif";
 
 /**
  ** ******************************************

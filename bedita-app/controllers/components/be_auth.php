@@ -364,7 +364,7 @@ class BeAuthComponent extends Object {
 		if ($g['Group']['immutable'] == 1) {
 			throw new BeditaException(sprintf(__("Immutable group %s", true),$groupName));
 		}
-		if(!$groupModel->del($g['Group']['id'])) {
+		if(!$groupModel->delete($g['Group']['id'])) {
 			throw new BeditaException(__("Error removing group",true));
 		}
 		return true;
@@ -408,12 +408,14 @@ class BeAuthComponent extends Object {
 		$sessionDb = Configure::read('Session.database');
 		if ( (Configure::read('Session.save') == "database") && !empty($sessionDb) ) {
 			$db =& ConnectionManager::getDataSource($sessionDb);
-			$table = $db->fullTableName(Configure::read('Session.table'), false);
-			// #CUSTOM QUERY
-			$res = $db->query("SELECT " . $db->name($table.'.data') . " FROM " . $db->name($table) . " WHERE " . $db->name($table.'.expires') . " >= " . time(), false);
+			$sessionModelName = Configure::read('Session.model');
+			$res = ClassRegistry::init($sessionModelName)->find("all", array(
+				"fields" => array("data"),
+				"conditions" => array("expires >= " . time())
+			));
 		}
 		foreach($res as $key => $val) {
-			$sessiondata = !empty($val[$table]['data']) ? $val[$table]['data'] : $val[0]['data'];
+			$sessiondata = !empty($val[$sessionModelName]['data']) ? $val[$sessionModelName]['data'] : $val[0]['data'];
 			$unserialized_data = $this->unserializesession($sessiondata);
 			if(!empty($unserialized_data) && !empty($unserialized_data['BEAuthUser']) && !empty($unserialized_data['BESession'])) {
 				$timeout = Configure::read('activityTimeout');

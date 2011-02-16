@@ -177,7 +177,7 @@ class NewsletterShell extends BeditaBaseShell {
 			$this->out("Bye");
 			return;
 		} else {
-			if(!$mailGroup->del($idFrom)) {
+			if(!$mailGroup->delete($idFrom)) {
 			 	throw new BeditaException("Error removing mail group $mailGroup");
 			}
 			$this->out("Done");

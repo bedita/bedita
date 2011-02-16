@@ -1,10 +1,10 @@
 
 {$html->css('hypertree')}
 
-{$javascript->link("hypertree/mootools-beta-1.2b2.js", false)}
-{$javascript->link("hypertree/Hypertree.js", false)}
-{$javascript->link("hypertree/infovis.js", false)}
-{$javascript->link("hypertree/example-hypertree.js", false)}
+{$html->script("hypertree/mootools-beta-1.2b2.js", false)}
+{$html->script("hypertree/Hypertree.js", false)}
+{$html->script("hypertree/infovis.js", false)}
+{$html->script("hypertree/example-hypertree.js", false)}
 
 
 <div id="header"></div>

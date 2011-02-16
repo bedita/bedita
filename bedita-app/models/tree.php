@@ -247,7 +247,7 @@ class Tree extends BEAppModel
 			"conditions" => array("object_path LIKE" => $oldPath."/%")
 		));
 
-		if (!$this->del($rowToMove["Tree"]["object_path"])) {
+		if (!$this->delete($rowToMove["Tree"]["object_path"])) {
 			return false;
 		}
 
@@ -266,7 +266,7 @@ class Tree extends BEAppModel
 		}
 
 		foreach ($children as $child) {
-			if (!$this->del($child["Tree"]["object_path"])) {
+			if (!$this->delete($child["Tree"]["object_path"])) {
 				return false;
 			}
 			$child["Tree"]["parent_path"] = str_replace($oldPath, $newPath, $child["Tree"]["parent_path"]);

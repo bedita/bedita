@@ -1,7 +1,7 @@
 <!-- start upload block-->
 {$html->css('swfupload')}
-{$javascript->link("swfupload/SWFUpload-src")}
-{$javascript->link("swfupload/callbacks")}
+{$html->script("swfupload/SWFUpload-src")}
+{$html->script("swfupload/callbacks")}
 
 <script type="text/javascript">
 <!--

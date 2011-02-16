@@ -1,8 +1,8 @@
 <fieldset id="properties">
 
-{$javascript->link("jquery/ui/jquery.ui.datepicker", false)}
+{$html->script("jquery/ui/jquery.ui.datepicker", false)}
 {if $currLang != "eng"}
-{$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
+{$html->script("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
 
 {$view->element('form_common_js')}

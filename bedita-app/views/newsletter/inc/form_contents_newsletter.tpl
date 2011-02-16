@@ -1,5 +1,5 @@
 {if ($conf->mce|default:true)}
-	{$javascript->link("tiny_mce/tiny_mce")}
+	{$html->script("tiny_mce/tiny_mce")}
 	
 <script language="javascript" type="text/javascript">
 

@@ -8,8 +8,8 @@
 <head>
 	<title>BEdita | Error 404 - Missing page</title>
 	{$html->css('beditaNew')}
-	{$javascript->link("jquery/jquery")}
-	{$javascript->link("beditaUI")}
+	{$html->script("jquery/jquery")}
+	{$html->script("beditaUI")}
 </head>
 <body>
 
@@ -38,3 +38,4 @@
 *}
 
 </body>
+</html>

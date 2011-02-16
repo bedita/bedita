@@ -375,7 +375,7 @@ class BEAppModel extends AppModel {
 		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
 		// #CUSTOM QUERY
 		$tmp  	= $this->query($query) ;
-
+		
 		if ($tmp === false)
 			throw new BeditaException(__("Error finding objects", true));
 		

@@ -43,38 +43,43 @@
  *
  */
 
-$modelPaths = array();
-$controllerPaths = array();
-$componentPaths = array();
-$behaviorPaths = array();
-$helperPaths = array();
-$pluginPaths = array();
-$vendorPaths = array();
+$additionalPaths =  array(
+	'models' => array(),
+	'behaviors' => array(),
+	'datasources' => array(),
+	'controllers' => array(),
+	'components' => array(),
+	'libs' => array(),
+	'views' => array(),
+	'helpers' => array(),
+	'locales' => array(),
+	'shells' => array(),
+	'vendors' => array(),
+	'plugins' => array()
+);
 
 $excludedDirs = array("behaviors", "datasources", "components");
 
 function enableSubFoldersOn($baseDir, &$var, &$exclude) {         
-  $cwd =getcwd();
-  chdir($baseDir);
-  $dirs = glob("*", GLOB_ONLYDIR);  
-  if(sizeof($dirs) > 0) { 
-    foreach($dirs as $dir) { 
-      if(!in_array($dir, $exclude)) {
-    	$var[] = $baseDir . DS . $dir . DS;
-       	enableSubFoldersOn($baseDir . DS .$dir, $var, $exclude) ;
-      }
-    }
-  }
-  chdir($cwd);
+	$cwd =getcwd();
+	chdir($baseDir);
+	$dirs = glob("*", GLOB_ONLYDIR);
+	if(sizeof($dirs) > 0) {
+		foreach($dirs as $dir) {
+			if(!in_array($dir, $exclude)) {
+				$var[] = $baseDir . DS . $dir . DS;
+				enableSubFoldersOn($baseDir . DS .$dir, $var, $exclude) ;
+			}
+		}
+	}
+	chdir($cwd);
 }
-
 
 // backend specific bootstrap
 if (!defined("BEDITA_CORE_PATH")) {
 	define("BEDITA_CORE_PATH", ROOT . DS . APP_DIR);
 	define("BACKEND_APP", true);
-	$controllerPaths = array();
-	enableSubFoldersOn(BEDITA_CORE_PATH .DS . 'controllers', $controllerPaths, $excludedDirs);
+	enableSubFoldersOn(BEDITA_CORE_PATH .DS . 'controllers', $additionalPaths["controllers"], $excludedDirs);
 	
 	function shutdownTransation() {
 		if(Configure::read("bedita.transaction") != null) {
@@ -90,19 +95,27 @@ if (!defined("BEDITA_CORE_PATH")) {
 	
 	// load BEdita configuration
 	// bedita.ini.php, bedita.cfg.php, bedita.sys.php
-	Configure::load("bedita.ini") ;
-	
+	require_once(CONFIGS . 'bedita.ini.php');	
+
+// frontends specific bootstrap
 } else {
 	// frontends specific bootstrap
 	define("BACKEND_APP", false);
-	$modelPaths[]=BEDITA_CORE_PATH . DS . 'models' . DS;
-	$viewPaths=array(BEDITA_CORE_PATH . DS . 'views' . DS);
-	$componentPaths[] = BEDITA_CORE_PATH . DS . 'controllers' . DS . 'components' . DS;
-	$behaviorPaths[] = BEDITA_CORE_PATH . DS . 'models' . DS . 'behaviors' . DS;
-	$helperPaths[] = BEDITA_CORE_PATH . DS . 'views' . DS . 'helpers' . DS;
+	
+	foreach ($additionalPaths as $keyPath => $val) {
+		$additionalPaths[$keyPath] = App::path($keyPath);
+	}
+	$additionalPaths["models"][] = BEDITA_CORE_PATH . DS . 'models' . DS;
+	$additionalPaths["views"][] = BEDITA_CORE_PATH . DS . 'views' . DS;
+	$additionalPaths["components"][] = BEDITA_CORE_PATH . DS . 'controllers' . DS . 'components' . DS;
+	$additionalPaths["behaviors"][] = BEDITA_CORE_PATH . DS . 'models' . DS . 'behaviors' . DS;
+	$additionalPaths["helpers"][] = BEDITA_CORE_PATH . DS . 'views' . DS . 'helpers' . DS;
+	$additionalPaths["libs"][] = BEDITA_CORE_PATH . DS .'libs';
 	// frontend.ini.php, includes bedita.ini/cfg/sys
-	Configure::load("frontend.ini") ;
+	require_once(CONFIGS . 'frontend.ini.php');
 }
+
+Configure::write($config);
 
 /**
  * backend and frontend commons bootstrap operations
@@ -121,29 +134,42 @@ if (!defined("BEDITA_FRONTENDS_PATH")) {
 
 // add addons models, components, helpers and vendors path
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'models')) {
-	$modelPaths[] = BEDITA_ADDONS_PATH . DS . 'models' . DS;
+	$additionalPaths["models"][] = BEDITA_ADDONS_PATH . DS . 'models' . DS;
 }
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'components')) {
-	$componentPaths[] = BEDITA_ADDONS_PATH . DS . 'components' . DS;
+	$additionalPaths["components"][] = BEDITA_ADDONS_PATH . DS . 'components' . DS;
 }
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'helpers')) {
-	$helperPaths[] = BEDITA_ADDONS_PATH . DS . 'helpers' . DS;
+	$additionalPaths["helpers"][] = BEDITA_ADDONS_PATH . DS . 'helpers' . DS;
 }
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'vendors')) {
-	$vendorPaths[] = BEDITA_ADDONS_PATH . DS . 'vendors' . DS;
+	$additionalPaths["vendors"][] = BEDITA_ADDONS_PATH . DS . 'vendors' . DS;
 }
+
+enableSubFoldersOn(BEDITA_CORE_PATH . DS . 'models', $additionalPaths["models"], $excludedDirs);
 
 if (BACKEND_APP) {
-	$pluginPaths[] = BEDITA_MODULES_PATH . DS;
+	$additionalPaths["plugins"][] = BEDITA_MODULES_PATH . DS;
+
+// reorder frontend paths (first watch frontend app paths then bedita core paths and finally cake core paths)
+} else {
+	$cakeCorePaths = App::core();
+	foreach ($additionalPaths as $type => $paths) {
+		if (!empty($cakeCorePaths[$type])) {
+			$additionalPaths[$type] = array_diff($paths, $cakeCorePaths[$type]);
+		}
+	}
 }
 
-enableSubFoldersOn(BEDITA_CORE_PATH . DS . 'models', $modelPaths, $excludedDirs);
 
-// common bedita libs path
-define('BEDITA_LIBS', BEDITA_CORE_PATH . DS .'libs');
+// add paths to cakePHP
+App::build($additionalPaths);
 
 // common exceptions definitions
 require_once BEDITA_CORE_PATH . DS . "bedita_exception.php";
+
+App::import('Lib', 'BeLib');
+BeLib::getObject("BeConfigure")->initConfig();
 
 //EOF
 ?>

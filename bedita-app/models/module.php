@@ -46,7 +46,7 @@ class Module extends BEAppModel {
 		
 		$pluginModules = array("plugged" => array(), "unplugged" => array());
 		$folder = new Folder(BEDITA_MODULES_PATH);
-		$plugins = $folder->ls(true, true);
+		$plugins = $folder->read(true, true);
 		foreach ($plugins[0] as $plugin) {
 			if (file_exists(BEDITA_MODULES_PATH . DS . $plugin . DS . "config" . DS . "bedita_module_setup.php")) {
 				include(BEDITA_MODULES_PATH . DS . $plugin . DS . "config" . DS . "bedita_module_setup.php");
@@ -117,9 +117,9 @@ class Module extends BEAppModel {
 				$setup["BEditaObjects"] = array($setup["BEditaObjects"]);
 			}
 			$beLib = BeLib::getInstance();
-			$conf = Configure::getInstance();
-			if (!in_array(BEDITA_MODULES_PATH . DS  . $pluginName . DS . "model" . DS, $conf->modelPaths)){
-				$conf->modelPaths[] = BEDITA_MODULES_PATH . DS  . $pluginName . DS . "models" . DS;
+			$modelPaths = App::path('models');
+			if (!in_array(BEDITA_MODULES_PATH . DS  . $pluginName . DS . "model" . DS, $modelPaths)){
+				App::build(array("models" => BEDITA_MODULES_PATH . DS  . $pluginName . DS . "models" . DS));
 			}
 			
 			// check db schema, create tables if needed
@@ -136,7 +136,7 @@ class Module extends BEAppModel {
 					throw new BeditaException(__("File " . $filename . " doesn't find.", true));
 				}
 				
-				if ($beLib->isFileNameUsed($filename, "model", array(BEDITA_MODULES_PATH . DS  . $pluginName . DS . "models" . DS))) {
+				if ($beLib->isFileNameUsed($filename, "models", array(BEDITA_MODULES_PATH . DS  . $pluginName . DS . "models" . DS))) {
 					throw new BeditaException(__($filename . " is already used. Please change your file and model name", true));
 				}
 				
@@ -197,7 +197,7 @@ class Module extends BEAppModel {
 	private function createPluginSchema($pluginName, $pluginPath) {
 		// load and check schema
 		$schemaClass = Inflector::camelize($pluginName). "Schema";
-		App::import('Model', 'Schema');
+		App::import('Model', 'CakeSchema');
 		$schemaPath = $pluginPath . DS  . $pluginName . DS . "config". DS. "sql" . DS;
 		$schemaFile = $schemaPath . "schema.php";
 		if(!file_exists($schemaFile)) {
@@ -273,7 +273,7 @@ class Module extends BEAppModel {
 	 * @return unknown_type
 	 */
 	public function unplugModule($id, array& $setup) {
-		if (!$this->del($id)) {
+		if (!$this->delete($id)) {
 			throw new BeditaException(__("Error deleting module " . $setup["publicName"], true));
 		}
 		

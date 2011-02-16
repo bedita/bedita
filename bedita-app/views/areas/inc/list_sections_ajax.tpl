@@ -1,4 +1,4 @@
-{$javascript->link("jquery/jquery.disable.text.select", true)}
+{$html->script("jquery/jquery.disable.text.select", true)}
 
 <script type="text/javascript">
 <!--

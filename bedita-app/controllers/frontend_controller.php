@@ -1350,12 +1350,23 @@ abstract class FrontendController extends AppController {
 			
 		$id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
 		$object_type_id = $this->BEObject->findObjectTypeId($id);
-		
-		if ($object_type_id == Configure::read("objectTypes.section.id") || $object_type_id == Configure::read("objectTypes.area.id")) {
-			$this->action = "section";
-			call_user_func_array(array($this, "section"), $args);
+
+		if (!empty($object_type_id)) {
+			if ($object_type_id == Configure::read("objectTypes.section.id") || $object_type_id == Configure::read("objectTypes.area.id")) {
+				$this->action = "section";
+				call_user_func_array(array($this, "section"), $args);
+			} else {
+				$this->content($id);
+			}
+
+		// try to use PagesController methods (PagesController::$args[1])
+		} elseif(!empty($args[1]) && $this->name == Inflector::camelize($name) && @method_exists($this, $args[1])) {
+			// check method
+			$methodName = $args[1];
+			array_shift($args);
+			call_user_func_array(array($this, $methodName), $args);
 		} else {
-			$this->content($id);
+			throw new BeditaException(__("Content not found", true));
 		}
 	}
 	

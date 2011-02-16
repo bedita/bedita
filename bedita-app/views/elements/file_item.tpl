@@ -10,7 +10,7 @@
 {assign_concat var="linkUrl" 0=$html->url('/multimedia/view/') 1=$item.id}
 
 {strip}
-
+	
 	<div style="overflow:hidden; height:{$thumbHeight}px" class="imagebox">
 
 	<a href="{$linkUrl}">

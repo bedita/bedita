@@ -1,14 +1,15 @@
-{$javascript->link("jquery/jquery.selectboxes.pack", false)}
+{$html->script("jquery/jquery.selectboxes.pack", false)}
 
-{$html->css('tree', null, null, false)}
-{$javascript->link("jquery/jquery.treeview", false)}
+{assign_associative var="cssOptions" inline=false}
+{$html->css('tree', null, $cssOptions)}
+{$html->script("jquery/jquery.treeview", false)}
 
-{$javascript->link("form", false)}
-{$javascript->link("jquery/jquery.changealert", false)}
-{$javascript->link("jquery/jquery.form", false)}
-{$javascript->link("jquery/jquery.selectboxes.pack", false)}
-{$javascript->link("jquery/jquery.cmxforms", false)}
-{$javascript->link("jquery/jquery.metadata", false)}
+{$html->script("form", false)}
+{$html->script("jquery/jquery.changealert", false)}
+{$html->script("jquery/jquery.form", false)}
+{$html->script("jquery/jquery.selectboxes.pack", false)}
+{$html->script("jquery/jquery.cmxforms", false)}
+{$html->script("jquery/jquery.metadata", false)}
 
 
 <script type="text/javascript">

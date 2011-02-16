@@ -1,8 +1,8 @@
-{$javascript->link("form", false)}
-{$javascript->link("jquery/jquery.form", false)}
-{$javascript->link("jquery/jquery.changealert", false)}
+{$html->script("form", false)}
+{$html->script("jquery/jquery.form", false)}
+{$html->script("jquery/jquery.changealert", false)}
 
-{*$javascript->link("jquery/jquery.MultiFile.pack", false)*}
+{*$html->script("jquery/jquery.MultiFile.pack", false)*}
 
 <script type="text/javascript">
 	
@@ -32,7 +32,7 @@ function commitUploadItem(IDs) {
 		var id = escape(IDs[i]) ;
 		var emptyDiv = "<div id='item_" + id + "' class='multimediaitem itemBox gold'><\/div>";
 		$(emptyDiv).load(
-			urlGetObj, {'id': id, 'relation':'attach', 'template':'elements/file_item.tpl'}, function (responseText, textStatus, XMLHttpRequest)
+			urlGetObj, {'id': id, 'relation':'attach', 'template':'/elements/file_item'}, function (responseText, textStatus, XMLHttpRequest)
 			{
 				$("#loading").hide();
 				$(containerItem).append(this); 

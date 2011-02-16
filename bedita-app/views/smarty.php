@@ -72,9 +72,9 @@
 		function __construct (&$controller)
 		{
 			parent::__construct($controller);
-
-			$this->ext = ".tpl";
 			
+			$this->ext = ".tpl";
+
 			$this->_sv_template_dir = array(
 				VIEWS . $this->viewPath . DS . $this->subDir,
 				VIEWS . $this->viewPath,
@@ -333,5 +333,21 @@
 		{
 			return;
 		}
+
+
+		/**
+		* Get the extensions that view files can use.
+		*
+		* @return array Array of extensions view files use.
+		* @access protected
+		*/
+		function _getExtensions() {
+			$exts = array($this->ext);
+			if ($this->ext !== '.tpl') {
+				array_push($exts, '.tpl');
+			}
+			return $exts;
+		}
+
 	}
 ?>

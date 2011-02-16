@@ -2,14 +2,14 @@
 
 {if ($conf->mce|default:true)}
 	
-	{$javascript->link("tiny_mce/tiny_mce", false)}
-	{$javascript->link("tiny_mce/tiny_mce_default_init", false)}
+	{$html->script("tiny_mce/tiny_mce", false)}
+	{$html->script("tiny_mce/tiny_mce_default_init", false)}
 
 
 {elseif ($conf->wymeditor|default:true)}
 
-	{$javascript->link("wymeditor/jquery.wymeditor.pack", false)}
-	{$javascript->link("wymeditor/wymeditor_default_init", false)}
+	{$html->script("wymeditor/jquery.wymeditor.pack", false)}
+	{$html->script("wymeditor/wymeditor_default_init", false)}
 
 {/if}
 

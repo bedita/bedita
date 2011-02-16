@@ -25,7 +25,10 @@ $(document).ready ( function () {literal} { {/literal}
 {/literal}
 </script>
 
-{if $session->flash('info')}
-{elseif $session->flash('warn')}
-{elseif $session->flash('error')}
+{if $session->check('Message.info')}
+	{$session->flash('info')}
+{elseif $session->check('Message.warn')}
+	{$session->flash('warn')}
+{elseif $session->check('Message.error')}
+	{$session->flash('error')}
 {/if}

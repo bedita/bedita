@@ -35,7 +35,6 @@ class TreeTestCase extends BeditaTestCase {
  	var $uses = array('Tree') ;
  	private $savedIds = array();
  	private $countStatus = array("on" => 0, "off" => 0, "draft" => 0);
- 	var $dataSource	= 'test' ;
  	
  	public function testBuildTree() {
  		$this->Tree->cacheQueries = false;
@@ -85,7 +84,7 @@ class TreeTestCase extends BeditaTestCase {
 	
 	public function testDeleteAppendedChild() {
 		$idDoc = $this->savedIds["Document 1"];
-		$res = ClassRegistry::init("Document")->del($idDoc);
+		$res = ClassRegistry::init("Document")->delete($idDoc);
 		if ($this->assertTrue($res)) {
 			pr("<span style='color: green'>Document 1 deleted</span>");
 		}
@@ -227,7 +226,7 @@ class TreeTestCase extends BeditaTestCase {
 		$descendants = $this->Tree->getDescendants($idSection);
 		$section = ClassRegistry::init("Section");
 			
-		$section->del($idSection);
+		$section->delete($idSection);
 
 		$treeRes = $this->Tree->find("all", array("conditions" => array("object_path LIKE '%/".$idSection."/%'")));
 		if ($this->assertEqual(array(), $treeRes)) {

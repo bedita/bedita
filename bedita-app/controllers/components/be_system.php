@@ -196,7 +196,7 @@
 	
 	function copyFolder($from,$to) {
 		$folder = new Folder($to);
-		$ls = $folder->ls();
+		$ls = $folder->read();
 		if(count($ls[0]) > 0 || count($dls[1]) > 0) {
 			$this->removeMediaFiles();
 		}
@@ -218,7 +218,7 @@
     private function removeMediaFiles() {
        $this->__clean(MEDIA_ROOT . DS. 'imgcache');
        $folder= new Folder(MEDIA_ROOT);
-       $dirs = $folder->ls();
+       $dirs = $folder->read();
        foreach ($dirs[0] as $d) {
        	    if($d !== 'imgcache') {
        	    	$folder->delete(MEDIA_ROOT . DS. $d);
@@ -266,7 +266,7 @@
             }
         }
         // check db
-		$allStream = $stream->findAll();
+		$allStream = $stream->find("all");
 		$mediaOk = true;
         foreach ($allStream as $v) {
         	$p = $v['Stream']['path'];

@@ -29,7 +29,7 @@
  * 
  * $Id$
  */
-class BeditaCoreGroupTest extends GroupTest {
+class BeditaCoreGroupTest extends TestSuite {
 
 	var $label = 'Bedita core tests';
 

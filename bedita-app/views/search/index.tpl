@@ -1,7 +1,8 @@
-{$html->css('tree', null, null, false)}
-{$javascript->link("jquery/jquery.treeview", false)}
-{$javascript->link("form", false)}
-{$javascript->link("jquery/jquery.changealert", false)}
+{assign_associative var="cssOptions" inline=false}
+{$html->css("tree", null, $cssOptions)}
+{$html->script("jquery/jquery.treeview", false)}
+{$html->script("form", false)}
+{$html->script("jquery/jquery.changealert", false)}
 
 
 <script type="text/javascript">

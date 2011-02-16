@@ -90,7 +90,7 @@ class AppError extends ErrorHandler {
 				$usrMsgParams = array();
 			} elseif ($messages['output'] == "json") {
 				header("Content-Type: application/json");
-				$this->controller->Session->del("Message.error");
+				$this->controller->Session->delete("Message.error");
 				$this->controller->set("errorMsg", array("errorMsg" => $messages['msg']));
 			}
 			$this->controller->set("output", $messages['output']);

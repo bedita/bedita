@@ -1,9 +1,9 @@
-{$javascript->link("form", false)}
-{$javascript->link("jquery/jquery.form", false)}
-{$javascript->link("jquery/jquery.cmxforms", false)}
-{$javascript->link("jquery/jquery.metadata", false)}
-{$javascript->link("jquery/jquery.validate", false)}
-{$javascript->link("jquery/jquery.changealert", false)}
+{$html->script("form", false)}
+{$html->script("jquery/jquery.form", false)}
+{$html->script("jquery/jquery.cmxforms", false)}
+{$html->script("jquery/jquery.metadata", false)}
+{$html->script("jquery/jquery.validate", false)}
+{$html->script("jquery/jquery.changealert", false)}
 
 <script type="text/javascript">
 var urlDelete = "{$html->url('deleteCustomProperties/')}";

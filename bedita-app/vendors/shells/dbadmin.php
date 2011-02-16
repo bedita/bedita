@@ -21,7 +21,7 @@
 
 App::import('Core', 'String');
 App::import('Core', 'Controller');
-App::import('Model', 'Schema');
+App::import('Model', 'CakeSchema');
 
 require_once 'bedita_base.php';
 
@@ -461,7 +461,7 @@ class DbadminShell extends BeditaBaseShell {
 				$res = $this->in("0 count for obj " . $data['BEObject']['id'] . " ($type). Do you want to delete object " . $data['BEObject']['id'] . "? [y/n]");
 				if($res == "y") {
 					$this->out("Deleting object " . $data['BEObject']['id'] . " ...");
-					$beObj->del($data['BEObject']['id']);
+					$beObj->delete($data['BEObject']['id']);
 					$this->out("Object " . $data['BEObject']['id'] . " deleted");
 					$deleted++;
 				}

@@ -1,8 +1,8 @@
 {*
 ** multimedia view template
 *}
-{$javascript->link("jquery/jquery.form", false)}
-{$javascript->link("jquery/ui/jquery.ui.datepicker", false)}
+{$html->script("jquery/jquery.form", false)}
+{$html->script("jquery/ui/jquery.ui.datepicker", false)}
 
 <script type="text/javascript">
 {if !empty($object.uri)}

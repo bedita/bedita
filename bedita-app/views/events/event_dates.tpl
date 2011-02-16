@@ -1,6 +1,6 @@
 {$html->css("jquery.timepicker.css")}
-{$javascript->link("jquery/jquery.placement.below")}
-{$javascript->link("jquery/jquery.timepicker-list")}
+{$html->script("jquery/jquery.placement.below")}
+{$html->script("jquery/jquery.timepicker-list")}
 
 {literal}
 <script type="text/javascript">

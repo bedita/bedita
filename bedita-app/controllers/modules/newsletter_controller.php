@@ -374,7 +374,7 @@ class NewsletterController extends ModulesController {
 		if(empty($this->data["MailGroup"]["id"])) 
  	 	    throw new BeditaException( __("No data", true));
  	 	$this->Transaction->begin() ;
-		if(!$this->MailGroup->del($this->data["MailGroup"]["id"])) {
+		if(!$this->MailGroup->delete($this->data["MailGroup"]["id"])) {
 			throw new BeditaException(__("Error saving mail group", true), $this->MailGroup->validationErrors);
 		}
 		$this->Transaction->commit();

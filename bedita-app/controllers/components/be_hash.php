@@ -625,7 +625,7 @@ class BeHashComponent extends Object {
 	 * @return array mail params
 	 */
 	private function recoverPassword($data) {
-		$this->controller->Session->del("userToChangePwd");
+		$this->controller->Session->delete("userToChangePwd");
 		if (empty($data["email"])) {
 			throw new BeditaHashException(__("Missing email to send recover instructions", true));
 		}
@@ -721,7 +721,7 @@ class BeHashComponent extends Object {
 				)
 			);
 
-			$this->controller->Session->del("userToChangePwd");
+			$this->controller->Session->delete("userToChangePwd");
 
 			return $mailParams;
 		}

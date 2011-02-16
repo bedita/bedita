@@ -190,7 +190,7 @@ class DeployShell extends BeditaBaseShell {
 		$this->out("1. BEdita core/backend");
 		$sel[1] = ROOT;
 		$folder = new Folder(BEDITA_FRONTENDS_PATH);
-		$ls = $folder->ls();
+		$ls = $folder->read();
 		$count = 1;
 		foreach ($ls[0] as $dir) {
 			if($dir[0] !== '.' ) {
@@ -201,7 +201,7 @@ class DeployShell extends BeditaBaseShell {
 		}
 		$modStartCount = $count;
 		$folder = new Folder(BEDITA_MODULES_PATH);
-		$ls = $folder->ls();
+		$ls = $folder->read();
 		foreach ($ls[0] as $dir) {
 			if($dir[0] !== '.' ) {
 				$count++;

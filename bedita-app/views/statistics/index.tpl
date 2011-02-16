@@ -1,7 +1,7 @@
 
-{$javascript->link("form", false)}
+{$html->script("form", false)}
 
-{$javascript->link("jquery/jquery.tablesorter.min",false)}
+{$html->script("jquery/jquery.tablesorter.min",false)}
 
 {literal}
 <script type="text/javascript">

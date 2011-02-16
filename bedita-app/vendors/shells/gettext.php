@@ -174,7 +174,7 @@ class GettextShell extends Shell {
 			. "\n\"Content-Transfer-Encoding: 8bit\\n\""
 			. "\n\"Plural-Forms: nplurals=2; plural=(n != 1);\\n\"\n";
 		$folder = new Folder($localePath);
-		$ls = $folder->ls();
+		$ls = $folder->read();
 		foreach ($ls[0] as $loc) {
 			if($loc[0] != '.') { // only "regular" dirs...
 				$this->out("Language: $loc");

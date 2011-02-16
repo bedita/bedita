@@ -127,12 +127,14 @@ class BeConfigure {
 	 * @param array $cachedConfig configuration cached
 	 */
 	public function addModulesPaths(array $cachedConfig) {
-		$conf = Configure::getInstance();
 		if (!empty($cachedConfig["plugged"]["modules"])) {
+			$additionalPaths["models"] = array();
+			$additionalPaths["components"] = array();
 			foreach ($cachedConfig["plugged"]["modules"] as $name => $m) {
-				$conf->modelPaths[] = $m["pluginPath"] . DS . "models" . DS;
-				$conf->componentPaths[] = $m["pluginPath"] . DS . "components" .DS;
+				$additionalPaths["models"][] = $m["pluginPath"] . DS . "models" . DS;
+				$additionalPaths["components"][] = $m["pluginPath"] . DS . "components" .DS;
 			}
+			App::build($additionalPaths);
 		}
 		Configure::write($cachedConfig);
 	}

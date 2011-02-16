@@ -269,7 +269,7 @@ class BeditaShell extends BeditaBaseShell {
 		
 		// update media root dir
 		$folder = new Folder($mediaRoot);
-		$ls = $folder->ls();
+		$ls = $folder->read();
 		if(count($ls[0]) > 0 || count($ls[1]) > 0) {
 			if($answerYes) {
        			$this->removeMediaFiles();
@@ -430,7 +430,7 @@ class BeditaShell extends BeditaBaseShell {
         }
         // check db
 		$this->out("checkMedia - checking database");
-        $allStream = $stream->findAll();
+        $allStream = $stream->find("all");
 		$mediaOk = true;
         foreach ($allStream as $v) {
         	$p = $v['Stream']['uri'];
@@ -455,7 +455,7 @@ class BeditaShell extends BeditaBaseShell {
     private function removeMediaFiles() {
 		$mediaRoot = Configure::read("mediaRoot");
 		$folder= new Folder($mediaRoot);
-        $dirs = $folder->ls();
+        $dirs = $folder->read();
         foreach ($dirs[0] as $d) {
             $folder->delete($mediaRoot . DS. $d);
         }

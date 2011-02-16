@@ -126,6 +126,10 @@ class BeditaTestCase extends CakeTestCase {
 		}
 		$this->data = $testData->getData() ;
 
+		// Set dataSource
+		if(isset($this->dataSource))
+			$this->setDefaultDataSource($this->dataSource) ;
+
 		// load Models
 		if (isset($this->uses)) {
 			if($this->uses !== null && $this->uses !== array()){
@@ -134,6 +138,9 @@ class BeditaTestCase extends CakeTestCase {
 
 				foreach($uses as $modelClass) {
 					$this->{$modelClass} = ClassRegistry::init($modelClass);
+//					$this->{$modelClass}->setDataSource($this->dataSource);
+//					pr($this->{$modelClass}->getDatasource());exit;
+//					$this->{$modelClass}->useDbConfig = $this->useDbConfig;
 					if($this->{$modelClass} === false) {
 						echo "Missing Model: $modelClass" ;
 						return ;
@@ -167,9 +174,6 @@ class BeditaTestCase extends CakeTestCase {
 				}
 			}
 		}
-		// Set dataSource
-		if(isset($this->dataSource))
-			$this->setDefaultDataSource($this->dataSource) ;
 		
 	}
 
@@ -178,10 +182,6 @@ class BeditaTestCase extends CakeTestCase {
 	 */
 	protected function setDefaultDataSource($name) {
 		$_this =& ConnectionManager::getInstance();
-
-		if (in_array($name, array_keys($_this->_dataSources))) {
-			return $_this->_dataSources[$name];
-		}
 
 		$connections = $_this->enumConnectionObjects();
 		if (in_array($name, array_keys($connections))) {

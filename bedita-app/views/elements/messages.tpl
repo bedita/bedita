@@ -2,7 +2,7 @@
 $(document).ready ( function () {literal} { {/literal}
 
 {if ($session->check('Message.error'))}
-
+	
 	$(".secondacolonna .modules label").addClass("error").attr("title","error");
 	$("#messagesDiv").triggerMessage("error");
 
@@ -23,10 +23,12 @@ $(document).ready ( function () {literal} { {/literal}
 </script>
 
 
-
 <div id="messagesDiv">
-	{if $session->flash('info')}
-	{elseif $session->flash('warn')}
-	{elseif $session->flash('error')}
+	{if $session->check('Message.info')}
+		{$session->flash('info')}
+	{elseif $session->check('Message.warn')}
+		{$session->flash('warn')}
+	{elseif $session->check('Message.error')}
+		{$session->flash('error')}
 	{/if}
 </div>

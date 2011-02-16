@@ -82,9 +82,6 @@ class CardTestCase extends BeditaTestCase {
 	//     END TEST METHODS
 	/////////////////////////////////////////////////
 
-	protected function cleanUp() {
-		$this->Transaction->rollback() ;
-	}
 	
 	public   function __construct () {
 		parent::__construct('Card', dirname(__FILE__)) ;

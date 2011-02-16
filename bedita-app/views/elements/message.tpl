@@ -10,6 +10,6 @@
 	{elseif $class == "error"}
 		<h2>{t}Error{/t}</h2>
 	{/if}
-	<p>{$content_for_layout}</p>
+	<p>{$message}</p>
 </div>
 {/strip}

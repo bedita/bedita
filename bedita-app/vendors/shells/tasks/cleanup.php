@@ -63,7 +63,7 @@ class CleanupTask extends BeditaBaseShell {
     private function removeMediaFiles() {
 		$mediaRoot = Configure::read("mediaRoot");
 		$folder= new Folder($mediaRoot);
-        $dirs = $folder->ls();
+        $dirs = $folder->read();
         foreach ($dirs[0] as $d) {
             $folder->delete($mediaRoot . DS. $d);
         }

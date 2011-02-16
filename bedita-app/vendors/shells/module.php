@@ -49,7 +49,7 @@ class ModuleShell extends BeditaBaseShell {
 			$unpluggedModules = array();
 			foreach ($pluginPaths as $pluginsBasePath) {
 				$folder = new Folder($pluginsBasePath);
-				$plugins = $folder->ls(true, true);
+				$plugins = $folder->read(true, true);
 				foreach ($plugins[0] as $plugin) {
 					if (file_exists($pluginsBasePath . $plugin . DS . "config" . DS . "bedita_module_setup.php") && !in_array($plugin, $pluggedModules)) {
 						$unpluggedModules[] = $plugin;
@@ -180,8 +180,9 @@ class ModuleShell extends BeditaBaseShell {
 		$beSchema = ClassRegistry::init("BeSchema");
 		$conf = Configure::getInstance();
 		
-		if (!in_array($pluginPath . DS  . $pluginName . DS . "model" . DS, $conf->modelPaths)){
-			$conf->modelPaths[] = $pluginPath . DS  . $pluginName . DS . "models" . DS;
+		$modelPaths = App::path('models');
+		if (!in_array($pluginPath . DS  . $pluginName . DS . "model" . DS, $modelPaths)){
+			App::build(array("models" => $pluginPath . DS  . $pluginName . DS . "model" . DS));
 		}
 		
 		foreach ($tables as $t) {

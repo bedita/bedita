@@ -48,16 +48,20 @@ class BeLib {
 	 * If class is not instantiated do it and put in CakePHP registry
 	 * 
 	 * @param string $name class name (file has to be underscorized MyClass => my_class.php)
-	 * @param string or array $paths paths where search class file
+	 * @param string or array $paths paths where search class file (search in libs folder by default)
 	 * @return class instance
 	 */
-	public static function &getObject($name, $paths=BEDITA_LIBS) {
+	public static function &getObject($name, $paths=null) {
 		if (!$libObject = ClassRegistry::getObject($name)) {
 			if (!class_exists($name)) {
 				$file = Inflector::underscore($name) . ".php";
-				$paths = (is_array($paths))? $paths : array($paths);
-				if (!App::import("File", $name, true, $paths, $file)) {
-					return false;
+				if (empty($paths)) {
+					App::import("Lib", $name);
+				} else {
+					$paths = (is_array($paths))? $paths : array($paths);
+					if (!App::import("File", $name, true, $paths, $file)) {
+						return false;
+					}
 				}
 			}
 			$libObject = new $name();
@@ -94,21 +98,20 @@ class BeLib {
 	 * check if a file name is already used in Configure::$type."Paths"
 	 * 
 	 * @param string $filename
-	 * @param string $type see Configure::*Paths
+	 * @param string $type (models, controllers, ...) see App::path
 	 * @param array of path to exclude from search (paths have to end with DS trailing slash)
 	 * @return boolean
 	 */
 	public function isFileNameUsed($filename, $type, $excludePaths=array()) {
-		$conf = Configure::getInstance();
-		$pathName = strtolower(Inflector::singularize($type)) . "Paths";
-		if (!isset($conf->{$pathName})) {
+		$typePaths = App::path($type);
+		if (empty($typePaths)) {
 			throw new BeditaException(__("No paths to search for " . $type, true));
 		}
-		$paths = array_diff($conf->{$pathName},$excludePaths);
+		$paths = array_diff($typePaths ,$excludePaths);
 		$folder = new Folder();
 		foreach ($paths as $p) {
 			$folder->cd($p);
-			$ls = $folder->ls(true, true);
+			$ls = $folder->read(true, true);
 			if (!empty($ls[1]) && in_array($filename, $ls[1])) {
 				return true;
 			}
@@ -159,7 +162,7 @@ class BeLib {
 		$items = array("models", "components", "helpers");
 		foreach ($items as $val) {
 			if ($folder->cd(BEDITA_ADDONS_PATH . DS . $val)) {
-				$ls = $folder->ls(true, true);
+				$ls = $folder->read(true, true);
 				if ($val == "models") {
 					foreach ($ls[1] as $modelFile) {
 						$m = new File(BEDITA_ADDONS_PATH . DS . $val . DS . $modelFile);

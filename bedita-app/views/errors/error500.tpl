@@ -6,8 +6,8 @@
 <head>
 	<title>BEdita | Error 500 - Internal Server Error</title>
 	{$html->css('beditaNew')}
-	{$javascript->link("jquery/jquery")}
-	{$javascript->link("beditaUI")}
+	{$html->script("jquery/jquery")}
+	{$html->script("beditaUI")}
 </head>
 <body>
 
@@ -24,5 +24,6 @@
 		</div>
 	</div>
 </div>
+</html>
 
 </body>

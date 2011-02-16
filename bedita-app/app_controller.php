@@ -20,8 +20,7 @@
  */
 
 App::import('Core', 'l10n');
-App::import("File", "BeLib", true, array(BEDITA_LIBS), "be_lib.php");
-BeLib::getObject("BeConfigure")->initConfig();
+
 
 /**
  * Controller base class for backends+frontends
@@ -1145,7 +1144,9 @@ abstract class ModulesController extends AppController {
 		$conf  = Configure::getInstance() ;
 		$type = $conf->objectTypes[Inflector::underscore($beModel->name)]["id"];
 		$categoryModel = ClassRegistry::init("Category");
-		$this->set("categories", $categoryModel->findAll("Category.object_type_id=".$type));
+		$this->set("categories", $categoryModel->find("all", array(
+			"conditions" => array("Category.object_type_id" => $type)
+		)));
 		$this->set("object_type_id", $type);
 		$this->set("areasList", ClassRegistry::init("BEObject")->find('list', array(
 										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 

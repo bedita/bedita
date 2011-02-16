@@ -147,7 +147,7 @@ class DeleteObjectBehavior extends ModelBehavior {
 
 					$model = ClassRegistry::init($modelClass);
 				
-					if (!$model->del($obj["object_id"])) 
+					if (!$model->delete($obj["object_id"]))
 						throw new BeditaException(__("Error deleting related object ", true), "id: ". $obj["object_id"] . ", switch: " . $obj["switch"]);
 				}
 				
@@ -177,7 +177,7 @@ class DeleteObjectBehavior extends ModelBehavior {
 
 				$model = ClassRegistry::init($modelClass);
 
-				if (!$model->del($id)) {
+				if (!$model->delete($id)) {
 					throw new BeditaException(__("Error deleting annotation " . $modelClass, true), "id: ". $id);
 				}
 			}

@@ -18,7 +18,7 @@
  * 
  *------------------------------------------------------------------->8-----
  */
-App::import('Model', 'Schema');
+App::import('Model', 'CakeSchema');
 class DumpModel extends AppModel {
 	var $useTable = "objects";
 };    

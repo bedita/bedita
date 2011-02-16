@@ -3,12 +3,13 @@
 <head>
 	<title>BEdita | {$title_for_layout} | {$html->action}</title>
 	{include file="inc/meta.tpl"}
-	
-	{$html->css('print', null, "media='all'")}
+
+	{assign_associative var="cssOptions" media=all}
+	{$html->css("print", null, $cssOptions)}
 	
 	{assign_concat var="cssfile" 0=$smarty.const.APP 1="webroot" 2=$smarty.const.DS 3="css" 4=$smarty.const.DS 5=$printLayout 6=".css"}
 	{if file_exists($cssfile)}
-		{$html->css($printLayout, null, "media='all'")}
+		{$html->css($printLayout, null, $cssOptions)}
 	{/if}
 
 	{$scripts_for_layout}

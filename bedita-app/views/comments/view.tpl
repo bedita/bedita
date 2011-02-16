@@ -1,4 +1,4 @@
-{$javascript->link("jquery/jquery.form", false)}
+{$html->script("jquery/jquery.form", false)}
 
 {literal}
 <script type="text/javascript">

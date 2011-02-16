@@ -1,13 +1,14 @@
 {*
 ** document view template
 *}
-{$html->css("ui.datepicker", null, null, false)}
-{$javascript->link("jquery/jquery.form", false)}
-{$javascript->link("jquery/jquery.selectboxes.pack", false)}
-{$javascript->link("jquery/ui/jquery.ui.sortable", true)}
-{$javascript->link("jquery/ui/jquery.ui.datepicker", false)}
+{assign_associative var="cssOptions" inline=false}
+{$html->css("ui.datepicker", null, $cssOptions)}
+{$html->script("jquery/jquery.form", false)}
+{$html->script("jquery/jquery.selectboxes.pack", false)}
+{$html->script("jquery/ui/jquery.ui.sortable", true)}
+{$html->script("jquery/ui/jquery.ui.datepicker", false)}
 {if $currLang != "eng"}
-{$javascript->link("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
+{$html->script("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
 
 {literal}

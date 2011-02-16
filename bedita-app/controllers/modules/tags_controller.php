@@ -95,7 +95,7 @@ class TagsController extends ModulesController {
 			
 		$this->Transaction->begin();
 		foreach ($this->params["form"]["tags_selected"] as $id) {
-			$this->Category->del($id); 
+			$this->Category->delete($id);
 		}
 		$this->Transaction->commit();
 		
@@ -111,7 +111,7 @@ class TagsController extends ModulesController {
 			throw new BeditaException( __("No tag selected", true));
 		$this->Transaction->begin();
 		foreach ($this->params["form"]["tags_selected"] as $id) {
-			$this->Category->del($id); 
+			$this->Category->delete($id);
 		}
 		$this->Transaction->commit();
 		$tagsListDeleted = implode(",", $this->params["form"]["tags_selected"]);

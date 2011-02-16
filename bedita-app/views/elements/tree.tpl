@@ -1,5 +1,6 @@
-{$html->css('../js/jquery/treeview/jquery.treeview', false)}
-{$javascript->link("jquery/treeview/jquery.treeview", false)}
+{assign_associative var="cssOptions" inline=false}
+{$html->css('../js/jquery/treeview/jquery.treeview', null, $cssOptions)}
+{$html->script("jquery/treeview/jquery.treeview", false)}
 
 {literal}
 <script type="text/javascript">

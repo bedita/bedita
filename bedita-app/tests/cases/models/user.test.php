@@ -71,10 +71,6 @@ class UserTestCase extends BeditaTestCase {
     /////////////////////////////////////////////////
 	//     END TEST METHODS
 	/////////////////////////////////////////////////
-
-	protected function cleanUp() {
-		$this->Transaction->rollback() ;
-	}
 	
 	public   function __construct () {
 		parent::__construct('User', dirname(__FILE__)) ;

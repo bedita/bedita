@@ -67,7 +67,7 @@ class DeleteDependentObjectBehavior extends ModelBehavior {
 		if (!empty($this->descendants["items"])) {
 			foreach ($this->descendants["items"] as $item) {
 				$modelDescName = Configure::read("objectTypes.".$item["object_type_id"].".model");
-				if(!ClassRegistry::init($modelDescName)->del($item["id"])) {
+				if(!ClassRegistry::init($modelDescName)->delete($item["id"])) {
 					throw new BeditaException(__("Error deleting depending object " . $item["title"], true));
 				}
 			}

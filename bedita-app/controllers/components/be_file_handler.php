@@ -114,7 +114,7 @@ class BeFileHandlerComponent extends Object {
 		}
 		$model = ClassRegistry::init("BEObject")->getType($id) ;
 		$mod = ClassRegistry::init($model);
-	 	if(!$mod->del($id)) {
+	 	if(!$mod->delete($id)) {
 			throw new BEditaDeleteStreamObjException(__("Error deleting stream object",true)) ;	
 	 	}
 	 	return true ;
@@ -255,7 +255,7 @@ class BeFileHandlerComponent extends Object {
 				// delete old data from specific table
 				$prevMediaModel = ClassRegistry::init($prevModel);
 				$prevMediaModel->Behaviors->disable('DeleteObject');
-				$prevMediaModel->del($data["id"], false);
+				$prevMediaModel->delete($data["id"], false);
 				$prevMediaModel->Behaviors->enable('DeleteObject');
 				
 				// delete file on filesystem

@@ -46,7 +46,7 @@ class AdminController extends ModulesController {
 	}
 	
 	function showUsers() {
-		$allGroups = $this->Group->findAll();
+		$allGroups = $this->Group->find("all");
 		$authGroups = array();
 		$userGroups = array();
 		if(isset($user)) {
@@ -63,7 +63,7 @@ class AdminController extends ModulesController {
 			if($g['Group']['backend_auth'] == 1)
 				$authGroups[] = $g['Group']['name'];
 		}
-		$this->set('users', $this->User->findAll());
+		$this->set('users', $this->User->find("all"));
 		$this->set('formGroups',  $formGroups);
 		$this->set('authGroups',  $authGroups);
 		$this->layout = null;
@@ -230,7 +230,7 @@ class AdminController extends ModulesController {
 	  }
 	 
 	  private function allModulesWithFlag() {
-		$modules = $this->Module->findAll();
+		$modules = $this->Module->find("all");
 		foreach ($modules as &$mod) 
 			$mod['Module']['flag'] = 0;
 	  	return $modules;
@@ -362,7 +362,7 @@ class AdminController extends ModulesController {
 	 function deleteCustomProperties() {
 	 	$this->checkWriteModulePermission();
 	 	if (!empty($this->data["Property"]["id"])) {
-	 		if (!ClassRegistry::init("Property")->del($this->data["Property"]["id"])) {
+	 		if (!ClassRegistry::init("Property")->delete($this->data["Property"]["id"])) {
 	 			throw new BeditaException(__("Error deleting custom property " . $this->data["Property"]["name"],true));
 	 		}
 	 	}
@@ -462,7 +462,7 @@ class AdminController extends ModulesController {
 	 	}
 	 	$filePath = $this->params["form"]["path"] . DS . $this->params["form"]["file"];
 	 	$beLib = BeLib::getInstance();
-	 	if ($beLib->isFileNameUsed($this->params["form"]["file"], "model", array($this->params["form"]["path"] . DS))) {
+	 	if ($beLib->isFileNameUsed($this->params["form"]["file"], "models", array($this->params["form"]["path"] . DS))) {
 	 		throw new BeditaException(__($this->params["form"]["file"] . " model is already present in the system. Can't create a new object type", true));
 	 	}
 	 	if (!$beLib->isBeditaObjectType($this->params["form"]["model"], $this->params["form"]["path"])) {

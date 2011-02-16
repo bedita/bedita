@@ -24,19 +24,19 @@
 		
 	<![endif]-->
 
-	{$javascript->link("jquery/jquery")}
-	{$javascript->link("jquery/jquery.cookie")}
-	{$javascript->link("jquery/jquery.autogrow")}
-	{$javascript->link("jquery/jquery.dimensions")}
-	{$javascript->link("beditaUI")}
+	{$html->script("jquery/jquery")}
+	{$html->script("jquery/jquery.cookie")}
+	{$html->script("jquery/jquery.autogrow")}
+	{$html->script("jquery/jquery.dimensions")}
+	{$html->script("beditaUI")}
 
 	{$beurl->addModuleScripts()}
 
 	{* collect linked scripts around *}
 	{$scripts_for_layout}
 
-	{$javascript->link("jquery/ui/jquery-ui-1.8rc3.custom")}
-	{$javascript->link("jquery/ui/jquery.ui.draggable")}
+	{$html->script("jquery/ui/jquery-ui-1.8rc3.custom")}
+	{$html->script("jquery/ui/jquery.ui.draggable")}
 
 	
 </head>
