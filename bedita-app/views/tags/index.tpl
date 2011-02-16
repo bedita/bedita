@@ -1,5 +1,5 @@
 
-{$javascript->link("form", false)}
+{$html->script("form", false)}
 
 <script type="text/javascript">
 <!--
