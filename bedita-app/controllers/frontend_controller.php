@@ -502,7 +502,7 @@ abstract class FrontendController extends AppController {
 	* @param array $exclude_nicknames	list exclude sections 
 	* @param integer $depth				tree's depth level (default=10000 => all levels)
 	* */
-	protected function loadSectionsTree($parentName,  $loadContents=false, array $exclude_nicknames=null, $depth=10000, $flatMode=false) {
+	protected function loadSectionsTree($parentName, $loadContents=false, array $exclude_nicknames=null, $depth=10000, $flatMode=false) {
 
 		$conf = Configure::getInstance(); 
 		$parent_id = is_numeric($parentName) ? $parentName: $this->BEObject->getIdFromNickname($parentName);
@@ -927,16 +927,29 @@ abstract class FrontendController extends AppController {
 			throw new BeditaException(__("Content not found", true));
 		}
 
-		$authorized = true;
-			
-		// check permissions
+		
+		// check permissions and set $authorized true/false
 		if (!$this->skipCheck) {
+
+			// get permissions set on this object
 			$permissionModel = ClassRegistry::init("Permission");
 			$perms = $permissionModel->isPermissionSetted($obj_id, array(
 				Configure::read("objectPermissions.frontend_access_with_block"),
 				Configure::read("objectPermissions.frontend_access_without_block")
 			));
-			if ($perms) {
+
+
+			// authorization defaults to false
+			$authorized = false;
+
+			if (!$perms) {
+
+				// even with check no perms found, set auth true
+				$authorized = true;
+
+			} else {
+
+				// divide perms by type (blocking or not)
 				$permsWithBlock = array();
 				$permsWithoutBlock = array();
 				foreach ($perms as $p) {
@@ -947,23 +960,36 @@ abstract class FrontendController extends AppController {
 					}
 				}
 				
-				if (!$this->logged) {
-					if (!empty($permsWithBlock) && $blockAccess) {
-						return self::UNLOGGED;
-					}
-					$authorized = false;
-				} else {
-					if (!$permissionModel->checkPermissionByUser($perms, $this->BeAuth->user)) {
-						$authorized = false;
-					}
-				}
 
-				if ($authorized == false && !empty($permsWithBlock) && $blockAccess && !$this->showUnauthorized) {
-					return self::UNAUTHORIZED;
+				// if user is not logged
+				if (!$this->logged) {
+					if (!empty($permsWithBlock)) {
+						if (!$this->showUnauthorized) {
+							if($blockAccess) {
+								return self::UNLOGGED;
+							}
+						}
+					}
+				} else {
+					if ($permissionModel->checkPermissionByUser($perms, $this->BeAuth->user)) {
+						$authorized = true;
+					} else {
+						if (!empty($permsWithBlock)) {
+							if (!$this->showUnauthorized) {
+								if($blockAccess) {
+									return self::UNAUTHORIZED;
+								}
+							}
+						}
+					}
 				}
 			}
+
+		} else {
+			$authorized = true;
 		}
 		
+
 		$modelType = $this->BEObject->getType($obj_id);
 		if(!isset($this->{$modelType})) {
 			$this->{$modelType} = $this->loadModelByType($modelType);
