@@ -585,8 +585,8 @@ class BeditaShell extends BeditaBaseShell {
     
     
     public function modules() {
-		if(!array_key_exists("add", $this->params) && 
-			!array_key_exists("del", $this->params)) {
+		if(!array_key_exists("enable", $this->params) && 
+			!array_key_exists("disable", $this->params)) {
 			$this->params['list'] = ""; // add default -list option
 		}
     	$module = ClassRegistry::init("Module");
@@ -610,13 +610,13 @@ class BeditaShell extends BeditaBaseShell {
 				$this->out("\nAll Modules present");
 			} else {
 				$this->hr();
-				$this->out("Modules not present in " . Configure::read("projectName") . ":");
+				$this->out("Modules disabled in " . Configure::read("projectName") . ":");
 				$this->hr();
 				print_r($modsNot);
 			}
 		}
-		if (isset($this->params['add'])) {
-			$modName = $this->params['add'];
+		if (isset($this->params['enable'])) {
+			$modName = $this->params['enable'];
 			if (empty($modName) || $modName == 1) {
 	        	$this->out("module name is mandatory");
 				return;
@@ -651,15 +651,15 @@ class BeditaShell extends BeditaBaseShell {
 			$perms =  array(
 				array(
 					"name" => "administrator",
-					"switch" => $bePermsMod->SWITCH_GROUP,
+					"switch" => PermissionModule::SWITCH_GROUP,
 					"flag" => BEDITA_PERMS_READ_MODIFY
 				)
 			);
 			$bePermsMod->add($modName, $perms);
 	        $this->out("Module " . $modName . " added/enabled");
 		}
-		if (isset($this->params['del'])) {
-			$modName = $this->params['del'];
+		if (isset($this->params['disable'])) {
+			$modName = $this->params['disable'];
 			if (empty($modName) || $modName == 1) {
 			   	$this->out("module name is mandatory");
 				return;
@@ -785,9 +785,9 @@ class BeditaShell extends BeditaBaseShell {
         $this->out(' ');
         $this->out("    -frontend \t check files in <frontend path> [use frontend /app path]");
         $this->out(' ');
-        $this->out('7. modules: simple operations on BEdita modules list/add/del');
+        $this->out('7. modules: simple operations on BEdita modules list/enable/disable');
   		$this->out(' ');
-  		$this->out('   Usage: modules [-list] [-add <module-name>] [-del <module-name>]');
+  		$this->out('   Usage: modules [-list] [-enable <module-name>] [-disable <module-name>]');
         $this->out(' ');
         $this->out('8. mimeTypes: update config/mime.types.php from standard mime.types file');
   		$this->out(' ');
