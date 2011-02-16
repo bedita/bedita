@@ -34,7 +34,7 @@
 	</p>
 	</form>
 
-{if $session->flash('error')}{/if}
+{$session->flash('error')}
 
 </div><!-- #respond -->
 

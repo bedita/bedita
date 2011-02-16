@@ -9,3 +9,25 @@ Trace:
 #5 /home/bato/workspace/bedita/cake/dispatcher.php(193): Dispatcher->_invoke(Object(PagesController), Array)
 #6 /home/bato/workspace/bedita/examples/site.example.com/webroot/index.php(96): Dispatcher->dispatch(NULL)
 #7 {main}
+2011-02-16 16:40:10 Error: BeditaException - Captcha image and text don't match 
+File: /home/bato/workspace/bedita/bedita-app/controllers/components/captcha.php - line: 120 
+Trace:
+#0 /home/bato/workspace/bedita/bedita-app/controllers/frontend_controller.php(1839): CaptchaComponent->checkCaptcha()
+#1 [internal function]: FrontendController->saveComment()
+#2 /home/bato/workspace/bedita/bedita-app/controllers/frontend_controller.php(1342): call_user_func_array(Array, Array)
+#3 [internal function]: FrontendController->route('saveComment')
+#4 /home/bato/workspace/bedita/cake/dispatcher.php(204): call_user_func_array(Array, Array)
+#5 /home/bato/workspace/bedita/cake/dispatcher.php(171): Dispatcher->_invoke(Object(PagesController), Array)
+#6 /home/bato/workspace/bedita/examples/site.example.com/webroot/index.php(96): Dispatcher->dispatch()
+#7 {main}
+2011-02-16 16:41:22 Error: BeditaException - Captcha image and text don't match 
+File: /home/bato/workspace/bedita/bedita-app/controllers/components/captcha.php - line: 120 
+Trace:
+#0 /home/bato/workspace/bedita/bedita-app/controllers/frontend_controller.php(1839): CaptchaComponent->checkCaptcha()
+#1 [internal function]: FrontendController->saveComment()
+#2 /home/bato/workspace/bedita/bedita-app/controllers/frontend_controller.php(1342): call_user_func_array(Array, Array)
+#3 [internal function]: FrontendController->route('saveComment')
+#4 /home/bato/workspace/bedita/cake/dispatcher.php(204): call_user_func_array(Array, Array)
+#5 /home/bato/workspace/bedita/cake/dispatcher.php(171): Dispatcher->_invoke(Object(PagesController), Array)
+#6 /home/bato/workspace/bedita/examples/site.example.com/webroot/index.php(96): Dispatcher->dispatch()
+#7 {main}

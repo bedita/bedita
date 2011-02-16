@@ -1,3 +1,3 @@
 <div class="message {$class}">
-	<p>{$content_for_layout}</p>
+	<p>{$message}</p>
 </div>

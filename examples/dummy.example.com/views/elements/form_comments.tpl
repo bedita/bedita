@@ -1,7 +1,7 @@
 <div class="commentform">
 
 	<a name="error"></a>
-	{if $session->flash('error')}{/if}
+	{$session->flash('error')}
 	
 	<h3>{t}Write a comment{/t}</h3>
 	

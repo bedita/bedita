@@ -29,12 +29,27 @@
  * Development Mode:
  * 	1: Errors and warnings shown, model caches refreshed, flash messages halted.
  * 	2: As in 1, but also with full debug messages and SQL output.
- * 	3: As in 2, but also with full controller dump.
  *
  * In production mode, flash messages redirect after a time interval.
  * In development mode, you need to click the flash message to continue.
  */
 	Configure::write('debug', 1);
+
+/**
+ * CakePHP Log Level:
+ *
+ * In case of Production Mode CakePHP gives you the possibility to continue logging errors.
+ *
+ * The following parameters can be used:
+ *  Boolean: Set true/false to activate/deactivate logging
+ *    Configure::write('log', true);
+ *
+ *  Integer: Use built-in PHP constants to set the error level (see error_reporting)
+ *    Configure::write('log', E_ERROR | E_WARNING);
+ *    Configure::write('log', E_ALL ^ E_NOTICE);
+ */
+	Configure::write('log', true);
+
 /**
  * Application wide charset encoding
  */

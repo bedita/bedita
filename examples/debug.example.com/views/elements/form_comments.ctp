@@ -1,7 +1,7 @@
 <div class="commentform">
 
 	<a name="error"></a>
-	<?php $session->flash('error');?>
+	<?php e($session->flash('error'));?>
 	
 	<h3><?php __("Write a comment", false);?></h3>
 	
