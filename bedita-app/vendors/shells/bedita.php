@@ -651,7 +651,7 @@ class BeditaShell extends BeditaBaseShell {
 			$perms =  array(
 				array(
 					"name" => "administrator",
-					"switch" => $bePermsMod->SWITCH_GROUP,
+					"switch" => $bePermsMod::SWITCH_GROUP,
 					"flag" => BEDITA_PERMS_READ_MODIFY
 				)
 			);
