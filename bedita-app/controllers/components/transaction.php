@@ -90,7 +90,9 @@ class TransactionComponent extends Object {
 		self::$transFS->commit() ;
 		if(!self::$db->execute('COMMIT')) return false ;
 		$this->status = self::COMMIT;
-		Configure::delete("bedita.transaction");
+		if (Configure::read("bedita.transaction")) {
+			Configure::delete("bedita.transaction");
+		}
 		return true;
 	}
 
@@ -115,8 +117,10 @@ class TransactionComponent extends Object {
         	$this->log($errTrace);
        	
         }
-					
-		Configure::delete("bedita.transaction");
+
+		if (Configure::read("bedita.transaction")) {
+			Configure::delete("bedita.transaction");
+		}
         return $ret;
 	}
 	
