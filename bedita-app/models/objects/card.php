@@ -284,6 +284,18 @@ class Card extends BEAppObjectModel {
 		foreach ($cards as $c) {
 			$this->create();
 			$data = array_merge($defaults, $c);
+			// check if card is present
+			$currdata = $this->find("first", array(
+						"conditions" => array("title" => $data["title"]),
+						"contain" => array("BEObject")));
+			if($currdata != false) {
+				if(!empty($data["modified"]) && $data["modified"] < $currdata["modified"]) {
+					$data = array_merge($data, $currdata);					
+				} else {
+					$data = array_merge($currdata, $data);					
+				}
+			}
+			
 			if(!$this->save($data)) {
 				throw new BeditaException(__("Error saving card"), print_r($c, true) . " \nvalidation: " . print_r($this->validationErrors, true));
 			}
@@ -342,11 +354,12 @@ class Card extends BEAppObjectModel {
 				$done = true;
 			} else {
 			
-				$property = $card->getProperty('N');
-				if (!$property) {
-					return "";
+				$nProp = $card->getProperty('N');
+				if (!empty($nProp)) {
+					$n = $nProp->getComponents();
 				}
-				$n = $property->getComponents();
+				$item["name"] = !empty($n[1]) ? trim($n[1]) : null;
+				$item["surname"] = !empty($n[0]) ? trim($n[0]) : null;
 				
 				$fnProp = $card->getProperty('FN');
 				
@@ -358,8 +371,6 @@ class Card extends BEAppObjectModel {
 				$item = array();
 				$item["title"] = !empty($nameProp->value) ? trim($nameProp->value) : (!empty($fnProp->value) ? trim($fnProp->value) : null );
 				
-				$item["name"] = !empty($n[1]) ? trim($n[1]) : null;
-				$item["surname"] = !empty($n[0]) ? trim($n[0]) : null;
 
 				$item["email"] = !empty($emailProp[0]->value) ? trim($emailProp[0]->value) : null;
 				$item["phone"] = !empty($telProp[0]->value) ? trim($telProp[0]->value) : null;
@@ -367,9 +378,18 @@ class Card extends BEAppObjectModel {
 				$item["phone2"] = !empty($telProp[1]->value) ? trim($telProp[1]->value) : null;
 							
 				if(empty($item["title"])) {
-					$item["title"] = $item["name"] . " " . $item["surname"];
+					$item["title"] = (!empty($item["name"]) ? $item["name"] : "") . 
+						(!empty($item["surname"]) ? " " . $item["surname"] : "");
 				}
 				$item["company_name"] = !empty($orgProp->value) ? trim($orgProp->value) : null;
+				// load revision time info if available
+				$revProp = $card->getProperty('REV');
+				if(!empty($revProp)) {
+					$d = date_create($revProp->value);
+					if($d !== false) {
+						$item["modified"] = $d->format("Y-m-d H:i");
+					}
+				}		
 				$cards[] = $item;
 			}
 		}
