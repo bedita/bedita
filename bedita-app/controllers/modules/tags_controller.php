@@ -59,7 +59,7 @@ class TagsController extends ModulesController {
 				throw new BeditaException(__("Error loading tag: ", true).$id);
 			}
 		
-			$referenced = $this->Category->getContentsByTag($tag["label"]);
+			$referenced = $this->Category->getContentsByTag($tag["name"]);
 			$tag["weight"] = count($referenced);
 		}
 		

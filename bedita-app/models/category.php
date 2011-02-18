@@ -57,9 +57,8 @@ class Category extends BEAppModel {
 	}
 
 	public function tagLabelPresent($label, $exclude_id=null) {
-		$name = $this->uniqueLabelName($label);
 		$tagDB = $this->find("first", 
-			array("conditions" => "object_type_id IS NULL AND name='".addslashes($name)."' " . $this->collateStatment() ) );
+			array("conditions" => "object_type_id IS NULL AND name='".addslashes($label)."' " . $this->collateStatment() ) );
 		
 		if (!empty($exclude_id) && $exclude_id == $tagDB["id"])
 			return false;
@@ -73,26 +72,49 @@ class Category extends BEAppModel {
 	 * @param string $label
 	 */
 	public function uniqueLabelName($label) {
-		$name = BeLib::getInstance()->friendlyUrlString($label);
+		$baseName = $name = BeLib::getInstance()->friendlyUrlString($label);
+
 		// search for already used label
-		$conditions = array("name" => $name);
+		
+		// suffix counter
+		$i = 1;
+		
+		// if it's a category
 		if (!empty($this->data[$this->alias]["object_type_id"])) {
+
 			$conditions["NOT"] = array("object_type_id" => $this->data[$this->alias]["object_type_id"]);
 			$conditions[] = "object_type_id IS NOT NULL";
-			$count = $this->find("count", array("conditions" => $conditions));
-			if ($count > 0) {
-				$i = 1;
-				$freeName = false;
-				while (!$freeName) {
-					$conditions["name"] = $name . "-" . $i++;
-					$count = $this->find("count", array("conditions" => $conditions));
-					if ($count == 0) {
-						$freeName = true;
-						$name = $conditions["name"];
-					}
+
+			// if not multimedia object_type_id and name is in mediaTypes change it
+			if (!in_array($this->data[$this->alias]["object_type_id"], Configure::read("objectTypes.multimedia.id"))
+					&& in_array($name, Configure::read("mediaTypes"))) {
+				$name = $baseName . "-" . $i++;
+			}
+		// if it's a tag
+		} else {
+			$conditions[] = "object_type_id IS NULL";
+		}
+
+		$conditions["name"] = $name;
+		// exclude itself if already present
+		if (!empty($this->data[$this->alias]["id"])) {
+			$conditions["NOT"]["id"] = $this->data[$this->alias]["id"];
+		}
+
+		$count = $this->find("count", array("conditions" => $conditions));
+		
+		if ($count > 0) {
+			$freeName = false;
+			while (!$freeName) {
+				$conditions["name"] = $baseName . "-" . $i++;
+				$count = $this->find("count", array("conditions" => $conditions));
+				if ($count == 0) {
+					$freeName = true;
+					$name = $conditions["name"];
 				}
 			}
 		}
+
 		return $name;
 	}
 	
@@ -167,11 +189,9 @@ class Category extends BEAppModel {
 				$tag = trim($tag);
 				
 				if (!empty($tag))  {
-					$name = $this->uniqueLabelName($tag);
-					
 					
 					$tagDB = $this->find("first", array(
-													"conditions" => "object_type_id IS NULL AND name='".addslashes($name)."' " . 
+													"conditions" => "object_type_id IS NULL AND label='".addslashes($tag)."' " .
 														$this->collateStatment()
 													)
 									);
@@ -342,7 +362,7 @@ class Category extends BEAppModel {
 	}
 	
 	
-	public function getContentsByTag($label) {
+	public function getContentsByTag($name) {
 		// bind association on the fly
 		$hasAndBelongsToMany = array(
 			'BEObject' =>
@@ -362,7 +382,6 @@ class Category extends BEAppModel {
 		
 		// don't compact find result
 		$this->bviorCompactResults = false;
-		$name = $this->uniqueLabelName($label);
 		$tag = $this->find("first", array(
 										"conditions" => "object_type_id IS NULL AND name='".addslashes($name)."' ". 
 												$this->collateStatment(), 
