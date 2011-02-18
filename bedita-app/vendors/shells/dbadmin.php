@@ -682,6 +682,33 @@ class DbadminShell extends BeditaBaseShell {
 		$this->out("Done");
 		
 	}
+
+	public function updateCategoryName() {
+		$categoryModel = ClassRegistry::init("Category");
+		$categoryModel->Behaviors->disable("CompactResult");
+		$categories = $categoryModel->find("all", array(
+			"order" => "Category.id ASC",
+		));
+
+		if (!empty($categories)) {
+			$this->out("Updating category unique name:");
+			$this->hr();
+			foreach ($categories as $cat) {
+				$text = "update unique name of ";
+				$text .= (!empty($cat["Category"]["object_type_id"]))? "category" : "tag";
+				$text .= " id:" . $cat["Category"]["id"] . " label:\"" . $cat["Category"]["label"] . "\"";
+				$categoryModel->create();
+				if ($categoryModel->save($cat)) {
+					$this->out($text . " done");
+				} else {
+					$this->out($text . " failed");
+				}
+			}
+		} else {
+			$this->out("No categories or tags found.");
+		}
+		$this->out("Done.");
+	}
 	
 	function help() {
 		$this->out('Available functions:');
@@ -746,6 +773,8 @@ class DbadminShell extends BeditaBaseShell {
         $this->out('    Usage: cleanup -days <num-of-days>');
         $this->out(' ');
         $this->out("    -days \t number of days to preserve from today in cleanup");
+        $this->out(' ');
+		$this->out("14. updateCategoryName: update all categories and tags unique name");
         $this->out(' ');
 	}
 	
