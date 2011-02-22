@@ -7,7 +7,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 
-		{assign_concat var="back" 0=$html->url('/') 1=$currentModule.url}
+		{assign_concat var="back" 1=$html->url('/') 2=$currentModule.url}
 
 	<div class="modules">
 		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
