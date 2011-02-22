@@ -30,7 +30,7 @@ function smarty_function_matchSimpleBooleanMysql($params, &$smarty)
 		$expression = $parse->parse($expression) ;
    }
 	
-	$vars = &$smarty->get_template_vars();
+	$vars = &$smarty->getTemplateVars();
 	$vars[$params["var"]] =  $expression ;
 }
 

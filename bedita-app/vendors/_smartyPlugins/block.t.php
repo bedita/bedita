@@ -74,7 +74,7 @@ function smarty_block_t($params, $text, &$smarty)
 {
 	$text = stripslashes($text);
 	
-	$trHelper = $smarty->get_template_vars('tr');
+	$trHelper = $smarty->getTemplateVars('tr');
 	
 	// set escape mode
 	if (isset($params['escape'])) {

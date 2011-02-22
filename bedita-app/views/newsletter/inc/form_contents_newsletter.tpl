@@ -128,7 +128,7 @@ $(document).ready(function() {
 <fieldset id="contents">
 	
 	<label>{t}Title{/t}: </label>
-	{assign_concat var="default" 0="Newsletter | " 1=$smarty.now|date_format:"%B %Y"}
+	{assign_concat var="default" 1="Newsletter | " 2=$smarty.now|date_format:"%B %Y"}
 	<input type="text" id="title" name="data[title]" class="required"
 	value="{$object.title|default:$default|escape:'html'|escape:'quotes'}" id="titleBEObject"/>
 

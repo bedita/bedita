@@ -14,7 +14,7 @@
 {if ($object.ObjectType.name == "image")}
 
 	{if strpos($object.uri,'/') === 0}
-		{assign_concat var="fileUrl"  0=$conf->mediaUrl  1=$object.uri}
+		{assign_concat var="fileUrl"  1=$conf->mediaUrl  2=$object.uri}
 	{else}
 		{assign var="fileUrl"  value=$object.uri}
 	{/if}
@@ -125,7 +125,7 @@
 		{if (substr($object.uri,0,7) == 'http://') or (substr($object.uri,0,8) == 'https://')}
 			{assign var="uri" value=$object.uri}
 		{else}
-			{assign_concat var="uri" 0=$conf->mediaUrl 1=$object.uri}
+			{assign_concat var="uri" 1=$conf->mediaUrl 2=$object.uri}
 		{/if}
 			<a target="_blank" id="mediaurl" href="{$uri}">
 				{$uri}

@@ -56,7 +56,7 @@ ajaxSectionObjectUrl 	= "{$html->url('/areas/loadSectionAjax')}";
 
 </div> 
 
-{assign_concat var="actionForm" 0="save" 1=$formToUse|capitalize|default:"Area"}
+{assign_concat var="actionForm" 1="save" 2=$formToUse|capitalize|default:"Area"}
 
 <form action="{$html->url('/areas/')}{$actionForm}" method="post" name="updateForm" id="updateForm" class="cmxform">
 

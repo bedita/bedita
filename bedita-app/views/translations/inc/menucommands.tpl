@@ -3,7 +3,7 @@ Template incluso.
 Menu a SX valido per tutte le pagine del controller.
 *}
 {if !empty($object_master)}
-{assign_concat var=back_url 0="/" 1=$object_master.ObjectType.module_name 2="/view/" 3=$object_master.id}
+{assign_concat var=back_url 1="/" 2=$object_master.ObjectType.module_name 3="/view/" 4=$object_master.id}
 <script type="text/javascript">
 {literal}
 $(document).ready(function(){

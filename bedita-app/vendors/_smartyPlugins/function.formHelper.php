@@ -19,7 +19,7 @@ function smarty_function_formHelper($params, &$smarty)
         return ;
     }
     if (@empty($args)) $args = "" ;
-	$vs = &$smarty->get_template_vars() ;
+	$vs = &$smarty->getTemplateVars() ;
 	$form = &$vs["form"] ;
 	
 	eval("echo \$form->$fnc($args);") ;

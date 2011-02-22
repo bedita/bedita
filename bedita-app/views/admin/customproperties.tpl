@@ -100,7 +100,7 @@ $(document).ready(function(){
 							{if $smarty.foreach.fcopt.iteration == 1}
 								{assign var="options" value=$opt.property_option}
 							{else}
-								{assign_concat var="options" 0=$options 1="," 2=$opt.property_option}
+								{assign_concat var="options" 1=$options 2="," 3=$opt.property_option}
 							{/if}
 						{/foreach}
 					{/if}

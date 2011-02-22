@@ -20,7 +20,7 @@ function smarty_function_javascriptHelper($params, &$smarty)
     }
     if (@empty($args)) $args = "" ;
 	
-	$vs = &$smarty->get_template_vars() ;
+	$vs = &$smarty->getTemplateVars() ;
 
 	$js = &$vs["javascript"] ;
 	

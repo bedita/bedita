@@ -20,7 +20,7 @@ function smarty_function_assign_associative($params, &$smarty)
 	$var = @$params["var"] ;
     unset($params["var"]);
 	
-	$vs = &$smarty->get_template_vars() ;
+	$vs = &$smarty->getTemplateVars() ;
 	$smarty->assign($var, $params );
 }
 

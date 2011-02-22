@@ -41,9 +41,9 @@ $(document).ready(function() {
 {foreach name=module1 from=$moduleList key=k item=mod}
 	{if ($mod.status == 'on')}
 	
-            {assign_concat var='linkPath' 0=$html->url('/') 1=$mod.url}
-
-            <li {if ($mod.flag & BEDITA_PERMS_READ) }
+            {assign_concat var='linkPath' 1=$html->url('/') 2=$mod.url}
+			
+            <li {if ($mod.flag & $conf->BEDITA_PERMS_READ)}
 					class="{$mod.name}" rel="{$linkPath}"
 				{else}
 					class="{$mod.name} off"
@@ -163,7 +163,7 @@ $(document).ready(function() {
 	{section name="i" loop=$connectedUser}
 		{foreach from=$connectedUser[i] key=usr item=usrdata}
 		<li>
-		{if isset($moduleList.admin) }
+		{if isset($moduleList.admin)}
 		<a title="{$usrdata.realname} | {$usrdata.userAgent} | {$usrdata.ipNumber}" href="{$html->url('/')}admin/viewUser/{$usrdata.id}">{$usr}</a>
 		{else}		
 		<a title="{$usrdata.realname}" href="#">{$usr}</a>

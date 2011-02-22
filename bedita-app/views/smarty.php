@@ -1,353 +1,219 @@
 <?php
-	/* 
-	 * This is a drop-in class to support smarty templating engine
-	 * from within CakePHP.
-	 * 
-	 * For more information on how to use this, please visit this page:
-	 *   http://projects.simpleteq.com/CakePHP/smarty.html
-	 *
-	 * Developed by: Mark John S. Buenconsejo <mjwork@simpleteq.com>
-	 * Last Updated: Feb. 2, 2006
-	 *
-	 * Feel free to use, re-distribute, hack, modify, or whatever you
-	 * feel like doing, just remember to give credit to whomever it is 
-	 * due. :D
-	 * 
-	 * Like any software you find on the Internet, i take no 
-	 * responsibility to problems that may arise by using this; 
-	 * you're on your own.
-	 * 
-	 * In case of problems, try the CakePHP mailing lists, or Smarty's.
-	 * 
-	 * 
-	 * *Quick installation*
-	 * 
-	 * 1. Download and install the smarty library, preferably on the 
-	 * 'vendors' directory of CakePHP. However you can place it 
-	 * anywhere you want; if you do, make sure to change the line 
-	 * below to include the smarty library properly.
-	 * 
-	 * 2. Place this file in the view directory of smarty, either on 
-	 * the app/views directory, or on cake/libs/view.
-	 * 
-	 * 3. That's it!
-	 * 
-	 * 
-	 * *How to use*
-	 * 
-	 * To invoke the smarty rendering engine, simply set the 
-	 * controller's 'view' attribute to 'Smarty', 
-	 * 
-	 * e.g. $this->view = 'Smarty';
-	 * 
-	 * You can change it at the end of the controller's action method, 
-	 * or change it in the constructor of your controller class.
-	 * 
-	 * Note, smarty templates have different extensions (.tpl), and 
-	 * they will look for the template and layout files with that 
-	 * extension (instead of .thtml). This is to distinguish smarty 
-	 * templates from the templates for CakePHP's built-in rendering 
-	 * engine. The smarty rendering engine will still look for files  
-	 * in the proper directories as mandated by the CakePHP design.
-	 * 
-	 * But if you prefer to use the .thtml extension, you can do so, 
-	 * by changing the view class's 'ext' attribute. You can find that 
-	 * in the constructor method of the 'SmartyView' class below.
-	 *
-	 */
+/*-----8<--------------------------------------------------------------------
+ *
+ * BEdita - a semantic content management framework
+ *
+ * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the Affero GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the Affero GNU General Public License for more details.
+ * You should have received a copy of the Affero GNU General Public License
+ * version 3 along with BEdita (see LICENSE.AGPL).
+ * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
+ *
+ *------------------------------------------------------------------->8-----
+ */
 
-	
-	class SmartyView extends View
-	{
-		var $_sv_template_dir;
-		var $_sv_layout_dir;
-		var $_sv_compile_dir;
-		var $_sv_cache_dir;
-		var $_sv_config_dir;
+/**
+ * SmartyView
+ *
+ *
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
+ *
+ * $Id$
+ *  */
+class SmartyView extends View {
+
+	private $template_dir;
+	private $layout_dir;
+
+	private $_smarty = null;
+
+	function __construct (&$controller)	{
+		parent::__construct($controller);
+
+		$this->ext = ".tpl";
+
+		$this->template_dir = array(
+			VIEWS . $this->viewPath . DS . $this->subDir,
+			VIEWS . $this->viewPath,
+			VIEWS
+		);
+
+		$this->layout_dir = array(
+			LAYOUTS . $this->subDir,
+			VIEWS
+		) ;
 		
-		var $_smarty = NULL;
+		App::import('Vendor', 'SmartyClass', array('file' => 'smarty'.DS.'libs'.DS.'Smarty.class.php'));
+		$this->_smarty = new Smarty();
 
-		var $sv_processedTpl = NULL;
-				
-		function __construct (&$controller)
-		{
-			parent::__construct($controller);
-			
-			$this->ext = ".tpl";
+		$this->_smarty->compile_dir = TMP . 'smarty' . DS . 'compile';
+		$this->_smarty->cache_dir 	= TMP . 'smarty' . DS . 'cache' . DS;
+		$this->_smarty->config_dir 	= ROOT . APP_DIR . DS . 'config' . DS . 'smarty' . DS;
+		$this->_smarty->compile_id	= $controller->name ;
 
-			$this->_sv_template_dir = array(
-				VIEWS . $this->viewPath . DS . $this->subDir,
-				VIEWS . $this->viewPath,
-				VIEWS
-			);
-			
-			$this->_sv_layout_dir = array(
-				LAYOUTS . $this->subDir,
-				VIEWS
-			) ;
-						
-			$this->_sv_compile_dir = TMP . 'smarty' . DS . 'compile' ;
-			$this->_sv_cache_dir = TMP . 'smarty' . DS . 'cache' . DS;
-			$this->_sv_config_dir = ROOT . APP_DIR . DS . 'config' . DS . 'smarty' . DS;
-			
-            App::import('vendor', "Smarty", true, array(), "smarty/libs/Smarty.class.php");
-            $this->_smarty = & new Smarty();
-
-			$this->_smarty->compile_dir = $this->_sv_compile_dir;
-			$this->_smarty->cache_dir 	= $this->_sv_cache_dir;
-			$this->_smarty->config_dir 	= $this->_sv_config_dir;
-			$this->_smarty->compile_id	= $controller->name ;
-			
-			// Add by BEdita team - Giangi
-			$this->_smarty->plugins_dir[] = ROOT . DS . APP_DIR . DS . 'vendors' . DS . '_smartyPlugins' ;
-			if(!BACKEND_APP)
-				$this->_smarty->plugins_dir[] = BEDITA_CORE_PATH . DS . 'vendors' . DS . '_smartyPlugins';
-			
-
-			// Add by BEdita team - xho
-			// inherit error_reporting level upon cake debug settings
-			// ("if condition" in first 3 lines is useless, it's there just for further customization/improvements)
-			if ( empty(Configure::getInstance()->debug) )
-				$this->_smarty->error_reporting = false ;
-			else
-				$this->_smarty->error_reporting = error_reporting () ;
-
-			// Add by BEdita team - xho
-			// change default delimiters
-//			$this->_smarty->left_delimiter = '<!--//{';
-//			$this->_smarty->right_delimiter = '}//-->';
-
-
-			$svckResFuncs = array(
-				__CLASS__ . "::svck_get_template",
-				__CLASS__ . "::svck_get_timestamp",
-				__CLASS__ . "::svck_get_secure",
-				__CLASS__ . "::svck_get_trusted");
-
-			$this->_smarty->register_resource("svck", $svckResFuncs);
-			$this->_smarty->register_function("svck_assign_assoc", __CLASS__ . "::svck_func_assign_assoc");
-
-			$this->_smarty->sv_this = &$this;
-			
-			return;
-		}
-		
-		// Add by BEdita team - Giangi
-		// Change template dir 
-		function setTemplateDir($path = VIEW) {
-			$old = $this->_sv_template_dir ;
-			$this->_sv_template_dir  = $path ;
-			
-			return $old ;
-		}
-		
-		function getTemplateDir() {
-			return $this->_sv_template_dir ;
-		}
-
-		
-		function _render($___viewFn, $___data_for_view, $loadHelpers = true, $cached = false)
-		{
-			// Add by BEdita team (modify) - used to restore smarty vars
-			$prevSmartyVars = $this->_smarty->get_template_vars();
-
-			$this->sv_processedTpl = NULL;
-			// clears all assigned variables to the smarty class
-			$this->_smarty->clear_all_assign();
-			
-            $loadedHelpers = array();
-            if ($this->helpers != false && $loadHelpers === true) {
-                $loadedHelpers = $this->_loadHelpers($loadedHelpers, $this->helpers);
-
-	            foreach (array_keys($loadedHelpers) as $helper) {
-	                $camelBackedHelper = Inflector::variable($helper);
-	                ${$camelBackedHelper} =& $loadedHelpers[$helper];
-	                $this->loaded[$camelBackedHelper] =& ${$camelBackedHelper};
-	                // this part loads the helpers are registered objects to smarty
-	                // good thing the register_object, passes the variable via reference :)
-	                $this->_smarty->assign_by_ref($camelBackedHelper, ${$camelBackedHelper});
-	            }
-	            foreach ($loadedHelpers as $helper) {
-                    if (is_object($helper)) {
-                        if (is_subclass_of($helper, 'Helper') || is_subclass_of($helper, 'helper')) {
-                            $helper->beforeRender();
-                        }
-                    }
-                }
-            }
-
-			// let's determine if this is a layout call or a template call
-			// and change the template dir accordingly
-			$layout = false;
-			if(isset($___data_for_view['content_for_layout']))
-			{
-				$this->_smarty->template_dir = $this->_sv_layout_dir;				
-				$layout = true;
-			} else
-			{
-				$this->_smarty->template_dir = $this->_sv_template_dir;
-			}
-			
-			// alright, let's load the data variables, being set by the controller
-			// this is pretty cheezy really. :D
-			// all by refs, to save on memory space
-			foreach(array_keys($___data_for_view) as $k) {
-				if (!is_object($k)) {
-					$this->_smarty->assign_by_ref($k, $___data_for_view[$k]);
-				}
-			}
-			$this->_smarty->assign_by_ref("view", $this);
-					
-			// Add by BEdita team (modify) - giangi
-			if($this->sv_processedTpl !== NULL)
-				$out = $this->_smarty->fetch('svck:' . basename($___viewFn));
-			else {
-				$out = $this->_smarty->fetch($___viewFn);
-			}
-	        if (!empty($loadedHelpers)) {
-	            foreach ($loadedHelpers as $helper) {
-	                if (is_object($helper)) {
-	                    if (is_subclass_of($helper, 'Helper') || is_subclass_of($helper, 'helper')) {
-	                        $helper->afterRender();
-	                    }
-	                }
-	            }
-	        }
-	        if (isset($this->loaded['cache']) && (($this->cacheAction != false)) && (Configure::read('Cache.check') === true)) {
-	            if (is_a($this->loaded['cache'], 'CacheHelper')) {
-	                $cache =& $this->loaded['cache'];
-	                $cache->base = $this->base;
-	                $cache->here = $this->here;
-	                $cache->helpers = $this->helpers;
-	                $cache->action = $this->action;
-	                $cache->controllerName = $this->name;
-	                $cache->layout  = $this->layout;
-	                $cache->cacheAction = $this->cacheAction;
-	                $cache->cache($___viewFn, $out, $cached);
-	            }
-	        }
-
-
-			// Add by BEdita team (modify) - unset local var (like $params in View::element)
-			foreach ($___data_for_view as $key => $value) {
-				if (!key_exists($key, $prevSmartyVars) && !key_exists($key, $this->loaded)) {
-					$this->_smarty->clear_assign($key);
-				}
-			}
-			// Add by BEdita team (modify) - restore smarty vars setted before clear_all_assign called
-			if (!empty($prevSmartyVars)) {
-				foreach ($prevSmartyVars as $k => $v) {
-					if ($this->_smarty->get_template_vars($k) === null) {
-						$this->_smarty->assign_by_ref($k, $prevSmartyVars[$k]);
-					}
-				}
-			}
-
-			// Add by BEdita team (modify) - force smarty template dir to _sv_template_dir
-			$this->_smarty->template_dir = $this->_sv_template_dir;
-
-			return $out;
-		}
-
-
-		/**
-		 * Add by BEdita team
-		 *
-		 * Override View::set to set Smarty var too
-		 *
-		 * @param mixed $one see View::set (cake/libs/view/view.php)
-		 * @param mixed $two see View::set
-		 * @return unknow
-		 */
-		public function set($one, $two = null) {
-			$data = null;
-			if (is_array($one)) {
-				if (is_array($two)) {
-					$data = array_combine($one, $two);
-				} else {
-					$data = $one;
-				}
-			} else {
-				$data = array($one => $two);
-			}
-
-			if ($data == null) {
-				return false;
-			}
-
-			foreach ($data as $name => $value) {
-				if ($name == 'title') {
-					$this->pageTitle = $value;
-				} else {
-					$this->viewVars[$name] = $value;
-					$this->_smarty->assign_by_ref($name, $this->viewVars[$name]);
-				}
-			}
-		}
-
-		function & getSmarty()
-		{
-			return ($this->smarty);
-		}
-
-		function svck_func_assign_assoc($params, &$smarty)
-		{
-			//extracts variables passed in
-			extract($params);
-			$assoc_array = array();
-			
-			if(!isset($value) || !isset($var))
-				return;
-			
-			if(!isset($glue))
-				$glue = ',';
-			
-			$key_val_pairs = explode($glue, $value);
-			foreach($key_val_pairs as $pair)
-			{
-				list($key,$val) = explode('=>', $pair);
-				$assoc_array[trim($key)] = trim($val);
-			}
-			
-			$smarty->assign($var, $assoc_array);
-		}
-		
-		function svck_get_template ($tpl_name, &$tpl_source, &$smarty_obj)
-		{
-			$tpl_source = $smarty_obj->sv_this->sv_processedTpl;
-			return true;
-		}
-	
-		function svck_get_timestamp($tpl_name, &$tpl_timestamp, &$smarty_obj)
-		{
-			$tpl_timestamp = time();
-			return true;
-		}
-	
-		function svck_get_secure($tpl_name, &$smarty_obj)
-		{
-			return true;
-		}
-		
-		function svck_get_trusted($tpl_name, &$smarty_obj)
-		{
-			return;
-		}
-
-
-		/**
-		* Get the extensions that view files can use.
-		*
-		* @return array Array of extensions view files use.
-		* @access protected
-		*/
-		function _getExtensions() {
-			$exts = array($this->ext);
-			if ($this->ext !== '.tpl') {
-				array_push($exts, '.tpl');
-			}
-			return $exts;
-		}
-
+		// add smarty plugins dir
+		$this->_smarty->plugins_dir[] = BEDITA_CORE_PATH . DS . 'vendors' . DS . '_smartyPlugins';
 	}
+
+	// Add by BEdita team - Giangi
+	// Change template dir
+	function setTemplateDir($path = VIEW) {
+		$old = $this->template_dir ;
+		$this->template_dir  = $path ;
+		return $old ;
+	}
+
+	function getTemplateDir() {
+		return $this->template_dir ;
+	}
+
+
+	function _render($___viewFn, $___data_for_view, $loadHelpers = true, $cached = false) {
+		// used to restore smarty vars
+		$prevSmartyVars = $this->_smarty->getTemplateVars();
+
+		// clears all assigned variables to the smarty class
+		$this->_smarty->clearAllAssign();
+
+		$loadedHelpers = array();
+		if ($this->helpers != false && $loadHelpers === true) {
+
+			$loadedHelpers = $this->_loadHelpers($loadedHelpers, $this->helpers);
+			$helpers = array_keys($loadedHelpers);
+			$helperNames = array_map(array('Inflector', 'variable'), $helpers);
+
+			for ($i = count($helpers) - 1; $i >= 0; $i--) {
+				$name = $helperNames[$i];
+				$helper =& $loadedHelpers[$helpers[$i]];
+
+				if (!isset($___dataForView[$name])) {
+					${$name} =& $helper;
+				}
+				$this->loaded[$helperNames[$i]] =& $helper;
+				$this->{$helpers[$i]} =& $helper;
+				$this->_smarty->assignByRef($helperNames[$i], ${$helperNames[$i]});
+			}
+			$this->_triggerHelpers('beforeRender');
+			unset($name, $loadedHelpers, $helpers, $i, $helperNames, $helper);
+		}
+
+		// if this is a layout call or a template call and change the template dir accordingly
+		if(isset($___data_for_view['content_for_layout'])) {
+			$this->_smarty->template_dir = $this->layout_dir;
+		} else {
+			$this->_smarty->template_dir = $this->template_dir;
+		}
+
+		// load the data variables, being set by controller
+		foreach(array_keys($___data_for_view) as $k) {
+			if (!is_object($k)) {
+				$this->_smarty->assignByRef($k, $___data_for_view[$k]);
+			}
+		}
+		$this->_smarty->assignByRef("view", $this);
+
+		$out = $this->_smarty->fetch($___viewFn);
+
+		if ($loadHelpers === true) {
+			$this->_triggerHelpers('afterRender');
+		}
+
+		$caching = (
+			isset($this->loaded['cache']) &&
+			(($this->cacheAction != false)) && (Configure::read('Cache.check') === true)
+		);
+
+		if ($caching) {
+			if (is_a($this->loaded['cache'], 'CacheHelper')) {
+				$cache =& $this->loaded['cache'];
+				$cache->base = $this->base;
+				$cache->here = $this->here;
+				$cache->helpers = $this->helpers;
+				$cache->action = $this->action;
+				$cache->controllerName = $this->name;
+				$cache->layout  = $this->layout;
+				$cache->cacheAction = $this->cacheAction;
+				$cache->cache($___viewFn, $out, $cached);
+			}
+		}
+
+		// unset local var (like $params in View::element)
+		foreach ($___data_for_view as $key => $value) {
+			if (!key_exists($key, $prevSmartyVars) && !key_exists($key, $this->loaded)) {
+				$this->_smarty->clearAssign($key);
+			}
+		}
+
+		// restore smarty vars setted before clear_all_assign called
+		if (!empty($prevSmartyVars)) {
+			foreach ($prevSmartyVars as $k => $v) {
+				if ($this->_smarty->getTemplateVars($k) === null) {
+					$this->_smarty->assignByRef($k, $prevSmartyVars[$k]);
+				}
+			}
+		}
+
+		// force smarty template dir to template_dir
+		$this->_smarty->template_dir = $this->template_dir;
+
+		return $out;
+	}
+
+
+	/**
+	 * Override View::set to set Smarty var too
+	 *
+	 * @param mixed $one see View::set (cake/libs/view/view.php)
+	 * @param mixed $two see View::set
+	 * @return unknow
+	 */
+	public function set($one, $two = null) {
+		$data = null;
+		if (is_array($one)) {
+			if (is_array($two)) {
+				$data = array_combine($one, $two);
+			} else {
+				$data = $one;
+			}
+		} else {
+			$data = array($one => $two);
+		}
+		if ($data == null) {
+			return false;
+		}
+		$this->viewVars = $data + $this->viewVars;
+
+		foreach ($data as $name => $value) {
+			$this->_smarty->assignByRef($name, $value);
+		}
+	}
+
+	function & getSmarty() {
+		return $this->_smarty;
+	}
+
+	/**
+	* Get the extensions that view files can use.
+	*
+	* @return array Array of extensions view files use.
+	* @access protected
+	*/
+	function _getExtensions() {
+		$exts = array($this->ext);
+		if ($this->ext !== '.tpl') {
+			array_push($exts, '.tpl');
+		}
+		return $exts;
+	}
+
+}
 ?>

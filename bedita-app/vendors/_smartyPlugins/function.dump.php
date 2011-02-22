@@ -13,7 +13,7 @@
  */
 function smarty_function_dump($params, &$smarty)
 {
-	$vars = &$smarty->get_template_vars();
+	$vars = &$smarty->getTemplateVars();
 	if (isset($params["var"])) {
 		$vars = &$params["var"] ;
 	}

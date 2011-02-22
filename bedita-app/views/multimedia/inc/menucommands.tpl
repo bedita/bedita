@@ -11,7 +11,7 @@ Menu a SX valido per tutte le pagine del controller.
 	{if !empty($view->action) && $view->action != "index"}
 		{assign var="back" value=$session->read("backFromView")}
 	{else}
-		{assign_concat var="back" 0=$html->url('/') 1=$currentModule.url}
+		{assign_concat var="back" 1=$html->url('/') 2=$currentModule.url}
 	{/if}
 
 	<div class="modules">

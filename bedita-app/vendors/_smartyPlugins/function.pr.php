@@ -13,7 +13,7 @@
  */
 function smarty_function_pr($params, &$smarty)
 {
-	$vars = &$smarty->get_template_vars();
+	$vars = &$smarty->getTemplateVars();
 	if (empty($params["var"])) return ;
 	
 	// Stampa

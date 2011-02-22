@@ -9,4 +9,3 @@
 {literal}{{/literal}userId:"{$userId|default:''}"{literal}}{/literal}
 {/if}
 {/strip}
-{php}exit;{/php}

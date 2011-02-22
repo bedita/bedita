@@ -76,7 +76,7 @@ $(document).ready(function(){
 		$(".secondacolonna .modules label").addClass("submitForm");
 	});
 
-{/literal}{if (@in_array($currObjectTypeId, $conf->objectTypes.tree.id))}{literal}
+{/literal}{if (in_array($currObjectTypeId|default:0, $conf->objectTypes.tree.id))}{literal}
 
 	$("div.insidecol input[name='save']").click(function() {
 			
@@ -197,11 +197,11 @@ $(document).ready(function(){
 		
 {/literal}{/if}{literal}
 
-{/literal}{if (@$object.mail_status == "sent")}{literal}
+{/literal}{if ($object.mail_status|default:'' == "sent")}{literal}
 
 		$(".secondacolonna .modules label").addClass("sent").attr("title","sent message");
 		
-{/literal}{elseif (@$object.mail_status == "injob")}{literal}
+{/literal}{elseif ($object.mail_status|default:'' == "injob")}{literal}
 		
 		$(".secondacolonna .modules label").addClass("injob").attr("title","in job");
 
@@ -209,19 +209,19 @@ $(document).ready(function(){
 {/literal}{elseif ( (!empty($object.start_sending)) && ($object.start_sending < ($smarty.now+3600|date_format:"%Y-%m-%d %T")) )}{literal}
 		
 		$(".secondacolonna .modules label").addClass("pendingAlert").attr("title","shortly scheduled invoice");	
-		{/literal}{if $object.start_sending > ($smarty.now|date_format:"%Y-%m-%d %T") }{literal}
+		{/literal}{if $object.start_sending > ($smarty.now|date_format:"%Y-%m-%d %T")}{literal}
 		alert('Attenzione! La newsletter sta per essere inviata oggi\nalle {/literal}{$object.start_sending|date_format:'%H:%M'}{literal}\nogni modifica che fai potrebbe non essere applicata se non salvi in tempo');
 		{/literal}{/if}{literal}
 	
-{/literal}{elseif (@$object.mail_status == "pending")}{literal}
+{/literal}{elseif ($object.mail_status|default:'' == "pending")}{literal}
 		
 		$(".secondacolonna .modules label").addClass("pending").attr("title","pending invoice");
 	
-{/literal}{elseif (@$object.mail_status == "unsent")}{literal}
+{/literal}{elseif ($object.mail_status|default:'' == "unsent")}{literal}
 
 		$(".secondacolonna .modules label").addClass("unsent").attr("title","unsent message");
 
-{/literal}{elseif (@$object.status == "draft")}{literal}
+{/literal}{elseif ($object.status|default:'' == "draft")}{literal}
 
 		$(".secondacolonna .modules label").addClass("draft").attr("title","draft message");
 		$(".head H1").css("color","#666");

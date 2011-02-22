@@ -20,7 +20,7 @@ function smarty_function_array_add($params, &$smarty)
 	$var = @$params["var"] ;
     unset($params["var"]);
 
-	$vs = &$smarty->get_template_vars() ;
+	$vs = &$smarty->getTemplateVars() ;
 	if(@is_array($vs[$var])) {
 		foreach($params as $key => $value) $vs[$var][$key] = $value ;
 	} else {

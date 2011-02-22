@@ -4,7 +4,7 @@
 		{if !empty($section)}
 			{assign var="baseUrl" value=$c.canonicalPath}
 		{else}
-			{assign_concat var="baseUrl" 0="/" 1=$c.nickname}
+			{assign_concat var="baseUrl" 1="/" 2=$c.nickname}
 		{/if}
 
 		<h1 class="entry-title"><a href="{$html->url($baseUrl)}" title="Permalink to {$c.title}" rel="bookmark">{$c.title}</a></h1>
@@ -19,7 +19,7 @@
 		</div><!-- .entry-meta -->
 
 		<div class="entry-content">
-			{assign_concat var="moreAnchor" 0='<a href="' 1=$html->url($baseUrl) 2='" class="more-link">Continue reading <span class="meta-nav">&rarr;</span></a>'}
+			{assign_concat var="moreAnchor" 1='<a href="' 2=$html->url($baseUrl) 3='" class="more-link">Continue reading <span class="meta-nav">&rarr;</span></a>'}
 			{$c.body|html_substr:200:$moreAnchor}
 		</div><!-- .entry-content -->
 

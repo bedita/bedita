@@ -4,16 +4,13 @@
 
 {assign var="thumbWidth" 		value = 130}
 {assign var="thumbHeight" 		value = 98}
-{assign var="filePath"			value = $item.uri}
-{assign var="fileName"			value = $item.filename|default:$item.name}
-{assign var="fileTitle"			value = $item.title}
-{assign var="newPriority"		value = $item.priority+1|default:$priority}
-{assign var="mediaPath"         value = $conf->mediaRoot}
-{assign var="mediaUrl"          value = $conf->mediaUrl}
+{if empty($relation)}
+	{$relation="attach"}
+{/if}
 
-{assign_concat var="linkUrl"            0=$html->url('/multimedia/view/') 1=$item.id}
+{assign_concat var="linkUrl"            1=$html->url('/multimedia/view/') 2=$item.id}
 
-{assign_concat var="imageAltAttribute"	0="alt='"  1=$item.title 2="'"}
+{assign_concat var="imageAltAttribute"	1="alt='"  2=$item.title 3="'"}
 
 {assign_associative var="params" presentation="thumb" width=$thumbWidth height=$thumbHeight longside=false mode="fill" modeparam="000000" type=null upscale=false}
 {assign_associative var="htmlAttr" alt=$item.title title=$item.name}
@@ -42,7 +39,7 @@ $(document).ready(function(){
 		
 	{elseif ($item.provider|default:false)}
 	
-		{assign_concat var="myStyle" 0="width:" 1=$conf->media.video.thumbWidth 2="px; " 3="height:" 4=$conf->media.video.thumbHeight 5="px;"}
+		{assign_concat var="myStyle" 1="width:" 2=$conf->media.video.thumbWidth 3="px; " 4="height:" 5=$conf->media.video.thumbHeight 6="px;"}
 		{assign_associative var="attributes" style=$myStyle}
 		{$beEmbedMedia->object($item,$params,$attributes)}
 	
@@ -62,7 +59,7 @@ $(document).ready(function(){
 	
 	<label class="evidence">
 		<input type="text" class="priority" style="text-align:left; margin-left:0px;"
-		name="data[RelatedObject][{$relation}][{$item.id}][priority]" value="{$item.priority|default:$priority}" size="3" maxlength="3"/>
+		name="data[RelatedObject][{$relation}][{$item.id}][priority]" value="{$item.priority|default:$priority|default:1}" size="3" maxlength="3"/>
 	</label>
 
 

@@ -1,4 +1,4 @@
-{if isset($moduleList.translations) }
+{if isset($moduleList.translations)}
 <div class="tab"><h2>{t}Translations{/t}</h2></div>
 <fieldset id="translations">
 

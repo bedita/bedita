@@ -107,7 +107,7 @@
 				{if isset($userdetail)}
 					{assign var='valid' value=$userdetail.valid}
 				{else}
-					{assign var='valid' value='1' }
+					{assign var='valid' value='1'}
 				{/if}
 			<td>
 				<input type="radio" name="data[User][valid]"  id="userValid" 

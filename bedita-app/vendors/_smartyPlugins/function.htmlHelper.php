@@ -20,7 +20,7 @@ function smarty_function_htmlHelper($params, &$smarty)
     }
     if (@empty($args)) $args = "" ;
 	
-	$vs = &$smarty->get_template_vars() ;
+	$vs = &$smarty->getTemplateVars() ;
 	$html = &$vs["html"] ;
 	
 	eval("echo \$html->$fnc($args);") ;

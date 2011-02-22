@@ -7,7 +7,7 @@
 	{assign_associative var="cssOptions" media=all}
 	{$html->css("print", null, $cssOptions)}
 	
-	{assign_concat var="cssfile" 0=$smarty.const.APP 1="webroot" 2=$smarty.const.DS 3="css" 4=$smarty.const.DS 5=$printLayout 6=".css"}
+	{assign_concat var="cssfile" 1=$smarty.const.APP 2="webroot" 3=$smarty.const.DS 4="css" 5=$smarty.const.DS 6=$printLayout 7=".css"}
 	{if file_exists($cssfile)}
 		{$html->css($printLayout, null, $cssOptions)}
 	{/if}

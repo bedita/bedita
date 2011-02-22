@@ -7,7 +7,7 @@
 {assign var="thumbWidth" 		value = 130}
 {assign var="thumbHeight" 		value = 98}
 {assign var="fileName"			value = $item.filename|default:$item.name|default:''}
-{assign_concat var="linkUrl" 0=$html->url('/multimedia/view/') 1=$item.id}
+{assign_concat var="linkUrl" 1=$html->url('/multimedia/view/') 2=$item.id}
 
 {strip}
 	
@@ -20,7 +20,7 @@
 		{assign_associative var="params" width=$thumbWidth height=$thumbHeight longside=false mode="fill" modeparam="000000" type=null upscale=false}
 		{assign_associative var="htmlAttr" alt=$item.title title=$item.name|default:''}
 		
-		{if !empty($fileName) }
+		{if !empty($fileName)}
 			
 			{$beEmbedMedia->object($item,$params,$htmlAttr)}
 			

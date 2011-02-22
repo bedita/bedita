@@ -3,7 +3,7 @@
 *}
 
 {if !empty($pub)}
-	{assign_concat var="templateCSS" 0=$pub.public_url 1="/css/" 2=$conf->newsletterCss}
+	{assign_concat var="templateCSS" 1=$pub.public_url 2="/css/" 3=$conf->newsletterCss}
 {else}
 	{assign var="templateCSS" value=$html->url('/css/newsletter.css')}
 {/if}

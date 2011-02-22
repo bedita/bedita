@@ -5,7 +5,7 @@
 {strip}
 {foreach from=$moduleListInv key=k item=mod}
 {if ($mod.status == 'on')}
-	{assign_concat var='link' 0=$html->url('/') 1=$mod.url}
+	{assign_concat var='link' 1=$html->url('/') 2=$mod.url}
 	<li rel="{$link}" title="{t}{$mod.label}{/t}" class="{$mod.name} {if ($mod.name == $moduleName)} on{/if}"></li>
 {/if}
 {/foreach}

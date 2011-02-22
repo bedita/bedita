@@ -124,11 +124,9 @@ class StreamsController extends AppController {
 		$imagePath 	= $this->BeFileHandler->path($id) ;
 		$imageURL 	= $this->BeFileHandler->url($id) ;
 		// data for template
-		$this->set('item',	@$obj);
-		$this->set('imagePath',	@$imagePath);
-		$this->set('imageUrl',	@$imageURL);
-		$this->set('priority',	@$priority);
-		$this->set('relation',	@$relation);
+		$this->set('item',	$obj);
+		$this->set('imagePath',	$imagePath);
+		$this->set('imageUrl',	$imageURL);
 		$this->layout = "ajax" ;
 	}
 	
