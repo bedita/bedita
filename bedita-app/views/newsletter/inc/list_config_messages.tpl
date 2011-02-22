@@ -2,7 +2,7 @@
 <fieldset id="configmessages">		
 	<table class="bordered">
 		<tr>
-			<td colspan="2">{assign var='mailgroup_opting_method' value=$object.security|default:''}
+			<td colspan="2">{assign var='mailgroup_opting_method' value=$item.security|default:''}
 				<label for="optingmethod">{t}subscribing method{/t}:</label>
 				&nbsp;&nbsp;
 				<select id="optingmethod" name="data[MailGroup][security]">
@@ -15,12 +15,12 @@
 			<td style="vertical-align:top">
 				<label for="confirmin">{t}Confirmation-In mail message{/t}:</label>
 				<br />
-				<textarea name="data[MailGroup][confirmation_in_message]" id="optinmessage" style="width:220px" class="autogrowarea">{$object.confirmation_in_message|default:$default_confirmation_in_message}</textarea>
+				<textarea name="data[MailGroup][confirmation_in_message]" id="optinmessage" style="width:220px" class="autogrowarea">{$item.confirmation_in_message|default:$default_confirmation_in_message}</textarea>
 			</td>
 			<td style="vertical-align:top">
 				<label for="confirmout">{t}Confirmation-Out mail message{/t}:</label>
 				<br />
-				<textarea name="data[MailGroup][confirmation_out_message]" id="optoutmessage" style="width:220px" class="autogrowarea">{$object.confirmation_out_message|default:$default_confirmation_out_message}</textarea>
+				<textarea name="data[MailGroup][confirmation_out_message]" id="optoutmessage" style="width:220px" class="autogrowarea">{$item.confirmation_out_message|default:$default_confirmation_out_message}</textarea>
 			</td>
 		</tr>
 	</table>
