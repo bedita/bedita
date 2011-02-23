@@ -190,7 +190,8 @@ class BeHashComponent extends Object {
 		}
 
 		if (!empty($data["groups"])) {
-			$groups = $data["groups"];
+			// exclude backend groups for avoid malicious data
+			$groups = ClassRegistry::init("Group")->getList(array("backend_auth" => 0, "name" => $data["groups"]));
 			unset($data["groups"]);
 		} else {
 			$groups = Configure::read('authorizedGroups');
