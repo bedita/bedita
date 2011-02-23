@@ -130,8 +130,8 @@ class BeConfigure {
 		$conf = Configure::getInstance();
 		if (!empty($cachedConfig["plugged"]["modules"])) {
 			foreach ($cachedConfig["plugged"]["modules"] as $name => $m) {
-				$conf->modelPaths[] = $m["pluginPath"] . DS . "models" . DS;
-				$conf->componentPaths[] = $m["pluginPath"] . DS . "components" .DS;
+				array_unshift($conf->modelPaths, $m["pluginPath"] . DS . "models" . DS);
+				array_unshift($conf->componentPaths, $m["pluginPath"] . DS . "components" .DS);
 			}
 		}
 		Configure::write($cachedConfig);
