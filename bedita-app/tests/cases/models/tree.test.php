@@ -64,7 +64,37 @@ class TreeTestCase extends BeditaTestCase {
 		$tree = $this->Tree->getAll(null, null, 'on') ;
 		echo $this->buildHtmlTree($tree);
  	}
- 	
+
+	function testIsParent() {
+		$idParent = $this->savedIds["Publication 1"];
+		$idChild = $this->savedIds["Section 1"];
+		$res = $this->Tree->isParent($idParent, $idChild);
+		if ($this->assertTrue($res, "Error verifying parent Publication 1 (id=". $idParent .") for Section 1 (id=" .$idChild .")")) {
+			pr("<span style='color: green'>Publication 1 (id=". $idParent .") is parent or ancestor of Section 1 (id=" .$idChild .")</span>");
+		}
+
+		$res = $this->Tree->isParent($idChild, $idParent);
+		if ($this->assertFalse($res, "Error verifying parent Section 1 (id=". $idChild .") for Publication 1 (id=" .$idParent .")")) {
+			pr("<span style='color: green'>Section 1 (id=". $idChild .") is not parent or ancestor of Publication 1 (id=" .$idParent .")</span>");
+		}
+
+		$idParent = $this->savedIds["Section 3"];
+		$idChild = $this->savedIds["Document 2"];
+		$res = $this->Tree->isParent($idParent, $idChild);
+		if ($this->assertTrue($res, "Error verifying parent Section 3 (id=". $idParent .") for Document 2 (id=" .$idChild .")")) {
+			pr("<span style='color: green'>Section 3 (id=". $idParent .") is parent or ancestor of Document 2 (id=" .$idChild .")</span>");
+		}
+	}
+
+	public function testAppendToItself() {
+		$idSection = $this->savedIds["Section 1"];
+		$res = $this->Tree->appendChild($idSection, $idSection);
+		pr("<h4>Try to append Section 1 to itself</h4>");
+		if ($this->assertFalse($res, "Error appending Section 1 (id=" .$idSection .") to itself")) {
+			pr("<span style='color: green'>Section 1 (id=" .$idSection .") can't be appended to itself</span>");
+		}
+	}
+
 	public function testAppendChild() {
 		$idParent = $this->savedIds["Section 1"];
 		$idParent2 = $this->savedIds["Section 12"];
@@ -96,6 +126,17 @@ class TreeTestCase extends BeditaTestCase {
 		} else {
 			pr("Tree:");
 			pr($res);
+		}
+	}
+
+	public function testRecursiveMove() {
+		$idToMove = $this->savedIds["Section 14"];
+		$idNewParent = $this->savedIds["Section 14"];
+		$idOldParent = $this->savedIds["Section 13"];
+		$result = $this->Tree->move($idNewParent, $idOldParent, $idToMove);
+		pr("<h4>Try to insert section 14 (id:".$idToMove.") inside itself</h4>");
+		if ($this->assertEqual(false, $result)) {
+			pr("<span style='color: green'>Section 14 (id:".$idToMove.") can't move inside itself</span>");
 		}
 	}
 

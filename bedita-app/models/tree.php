@@ -96,6 +96,10 @@ class Tree extends BEAppModel
 	 * @return boolean
 	 */
 	function appendChild($id, $idParent = null) {
+		// avoid to append item to itself
+		if ($id == $idParent) {
+			return false;
+		}
 		// root
 		if (empty($idParent)) {
 			$data["Tree"] = array(
@@ -221,6 +225,10 @@ class Tree extends BEAppModel
 	 * @return boolean
 	 */
 	function move($idNewParent, $idOldParent, $id) {
+		// avoid recursive move (item inside itself)
+		if ($id == $idNewParent) {
+			return false;
+		}
 		// Verify that new parent is not a descendant on the tree to move
 		if ($this->isParent($id, $idNewParent)) {
 			return false;
@@ -349,7 +357,7 @@ class Tree extends BEAppModel
 	function isParent($idParent, $id) {
 		$c = $this->find("count", array(
 			"conditions" => array(
-				"parent_path LIKE" => "%/" . $idParent . "/%",
+				"object_path LIKE" => "%/" . $idParent . "/%",
 				"id" => $id
 			)
 		));
