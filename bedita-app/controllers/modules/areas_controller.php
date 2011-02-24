@@ -193,7 +193,7 @@ class AreasController extends ModulesController {
 				$oldParent = $this->Tree->getParent($id) ;
 				if($oldParent != $this->data["parent_id"]) {
 					if(!$this->Tree->move($this->data["parent_id"], $oldParent, $id)) {
-						throw new BeditaException( __("Error saving section", true));
+						throw new BeditaException( __("Error moving section in the tree", true));
 					}
 				}
 			}

@@ -34,6 +34,45 @@ class Tree extends BEAppModel
 	public $primaryKey = "object_path";
 
 	function beforeSave() {
+
+		// check object_path and parent_path consistency if they are defined (no recursion)
+		$pathToCheck = array("object_path", "parent_path");
+		foreach ($pathToCheck as $path) {
+			if (isset($this->data["Tree"][$path])) {
+
+				// no empty path permitted
+				if (empty($this->data["Tree"][$path])) {
+					return false;
+				}
+
+				// check for duplicates ids in path and stop save if find it
+				$objectIds = explode("/", trim($this->data["Tree"][$path], "/"));
+				if (!empty($objectIds)) {
+					$countValues = array_count_values($objectIds);
+					$sumCountValues = array_sum($countValues);
+					if (count(array_unique($objectIds)) < $sumCountValues) {
+						return false;
+					}
+				}
+			}
+		}
+
+		if (!empty($this->data["Tree"]["id"])) {
+			// avoid object is parent of itself
+			if (isset($this->data["Tree"]["parent_id"]) && $this->data["Tree"]["id"] == $this->data["Tree"]["parent_id"]) {
+				return false;
+			}
+
+			// avoid object is ancestor of itself
+			if (isset($this->data["Tree"]["parent_path"]) && $this->data["Tree"]["parent_path"] != "/") {
+				$parents = explode("/", $this->data["Tree"]["parent_path"]);
+				foreach ($parents as $parent_id) {
+					if ($this->data["Tree"]["id"] == $parent_id) {
+						return false;
+					}
+				}
+			}
+		}
 		if (!empty($this->data["Tree"]) && empty($this->data["Tree"]["area_id"]) && !empty($this->data["Tree"]["object_path"])) {
 			$this->data["Tree"]["area_id"] = $this->getAreaIdByPath($this->data["Tree"]["object_path"]);
 		}
@@ -96,6 +135,10 @@ class Tree extends BEAppModel
 	 * @return boolean
 	 */
 	function appendChild($id, $idParent = null) {
+		// avoid to append item to itself
+		if ($id == $idParent) {
+			return false;
+		}
 		// root
 		if (empty($idParent)) {
 			$data["Tree"] = array(
@@ -221,6 +264,10 @@ class Tree extends BEAppModel
 	 * @return boolean
 	 */
 	function move($idNewParent, $idOldParent, $id) {
+		// avoid recursive move (item inside itself)
+		if ($id == $idNewParent) {
+			return false;
+		}
 		// Verify that new parent is not a descendant on the tree to move
 		if ($this->isParent($id, $idNewParent)) {
 			return false;
@@ -349,7 +396,7 @@ class Tree extends BEAppModel
 	function isParent($idParent, $id) {
 		$c = $this->find("count", array(
 			"conditions" => array(
-				"parent_path LIKE" => "%/" . $idParent . "/%",
+				"object_path LIKE" => "%/" . $idParent . "/%",
 				"id" => $id
 			)
 		));
