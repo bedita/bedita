@@ -1,31 +1,31 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the Affero GNU General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the Affero GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the Affero GNU General Public License for more details.
- * You should have received a copy of the Affero GNU General Public License 
+ * You should have received a copy of the Affero GNU General Public License
  * version 3 along with BEdita (see LICENSE.AGPL).
  * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
 /**
- * 
+ *
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class BeditaTestData extends Object {
@@ -33,9 +33,9 @@ class BeditaTestData extends Object {
 	function &getData() { return $this->data ;  }
 }
 
-App::import('Controller', 'App'); // base controller, beditaexcepion... 
+App::import('Controller', 'App'); // base controller, beditaexcepion...
 
-class BeditaTestController extends AppController{} 
+class BeditaTestController extends AppController{}
 
 class BeditaTestCase extends CakeTestCase {
 
@@ -46,7 +46,7 @@ class BeditaTestCase extends CakeTestCase {
 	var $testName = NULL;
 	var $dataFile	  = NULL ;
 	var $testController = NULL;
-	
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 	function startCase() {
@@ -85,7 +85,7 @@ class BeditaTestCase extends CakeTestCase {
 				throw new BeditaException("Missing required data: $n");
 		}
 	}
-	
+
 	/**
 	 * Default constructor, loads models, components, data....
 	 */
@@ -93,13 +93,13 @@ class BeditaTestCase extends CakeTestCase {
 		parent::__construct() ;
 
 		// setup unit test user id
-		$conf = Configure::getInstance() ;		
+		$conf = Configure::getInstance() ;
 		$conf->write("beditaTestUserId", $conf->unitTestUserId);
-		
+
 		$this->testName = $t;
 		if(!isset($t))
 			return;
-		
+
 		// example data
 		if($phpDataDir != NULL) {
 			$basePath= $phpDataDir . DS . Inflector::underscore($t);
@@ -108,8 +108,8 @@ class BeditaTestCase extends CakeTestCase {
 			else
 				$this->dataFile = $basePath.".data.php";
 			require_once($this->dataFile);
-		}	
-		
+		}
+
 		$dataClass = $this->testName."TestData";
 		if (!class_exists($dataClass)) {
 			echo "Missing Data: $dataClass" ;
@@ -125,6 +125,10 @@ class BeditaTestCase extends CakeTestCase {
 			return ;
 		}
 		$this->data = $testData->getData() ;
+
+		// Set dataSource
+		if(isset($this->dataSource))
+			$this->setDefaultDataSource($this->dataSource) ;
 
 		// load Models
 		if (isset($this->uses)) {
@@ -149,7 +153,7 @@ class BeditaTestCase extends CakeTestCase {
 				$components = is_array($this->components) ? $this->components : array($this->components);
 
 				$this->testController = new BeditaTestController();
-				
+
 				foreach($components as $componentClass) {
 					App::import('Component',$componentClass);
 
@@ -167,10 +171,7 @@ class BeditaTestCase extends CakeTestCase {
 				}
 			}
 		}
-		// Set dataSource
-		if(isset($this->dataSource))
-			$this->setDefaultDataSource($this->dataSource) ;
-		
+
 	}
 
 	/**
@@ -178,10 +179,6 @@ class BeditaTestCase extends CakeTestCase {
 	 */
 	protected function setDefaultDataSource($name) {
 		$_this =& ConnectionManager::getInstance();
-
-		if (in_array($name, array_keys($_this->_dataSources))) {
-			return $_this->_dataSources[$name];
-		}
 
 		$connections = $_this->enumConnectionObjects();
 		if (in_array($name, array_keys($connections))) {
@@ -206,7 +203,7 @@ class BeditaTestCase extends CakeTestCase {
 	 */
 	protected function resetDefaultDataSource() {
 		$_this =& ConnectionManager::getInstance();
-		
+
 		if(!isset($this->_originalDefaultDB)) return ;
 		$_this->_dataSources['default'] = &$this->_originalDefaultDB  ;
 
@@ -216,7 +213,7 @@ class BeditaTestCase extends CakeTestCase {
 	}
 
 	protected function cleanUp() {}
-	
+
 	/**
 	 * Check for duplicate entry in actsAs
 	 *
@@ -225,32 +222,32 @@ class BeditaTestCase extends CakeTestCase {
 	protected function checkDuplicateBehavior($model) {
 		if (empty($model->actsAs)) {
 			pr("actsAs attribute not defined for " . $model->name);
-			return;	
+			return;
 		}
-		
+
 		pr("actsAs attribute, check for duplicate entry:");
  		pr($model->actsAs);
- 		
+
  		// check in numeric array
  		foreach ($model->actsAs as $key => $value) {
  			if (is_numeric($key))
  				$numericActAs[] = $value;
  		}
  		$this->assertEqual($numericActAs, array_unique($numericActAs));
- 		
+
  		// specific associative array
  		if (!empty($model->actsAs["CompactResult"])) {
-	 		$this->assertEqual($model->actsAs["CompactResult"], 
+	 		$this->assertEqual($model->actsAs["CompactResult"],
 	 						   array_unique($model->actsAs["CompactResult"]));
  		}
- 		
+
  		if (!empty($model->actsAs["ForeignDependenceSave"])) {
-	 		$this->assertEqual($model->actsAs["ForeignDependenceSave"], 
+	 		$this->assertEqual($model->actsAs["ForeignDependenceSave"],
 	 						   array_unique($model->actsAs["ForeignDependenceSave"]));
  		}
 
  		if (!empty($model->actsAs["DeleteDependentObject"])) {
- 			$this->assertEqual($model->actsAs["DeleteDependentObject"], 
+ 			$this->assertEqual($model->actsAs["DeleteDependentObject"],
 	 						   array_unique($model->actsAs["DeleteDependentObject"]));
  		}
 	}
