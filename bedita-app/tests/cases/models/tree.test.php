@@ -65,6 +65,78 @@ class TreeTestCase extends BeditaTestCase {
 		echo $this->buildHtmlTree($tree);
  	}
 
+	function testSave() {
+		$object_path = "/" . $this->savedIds["Section 7"] . "/" . $this->savedIds["Section 9"] . "/" . $this->savedIds["Section 7"] . "/" . $this->savedIds["Event 1"];
+		$parent_path = "/" . $this->savedIds["Section 7"] . "/" . $this->savedIds["Section 9"] . "/" . $this->savedIds["Section 7"];
+		$id = $this->savedIds["Event 1"];
+		
+		// Saving with empty object_path
+		$data1["Tree"] = array(
+			"id" => $id,
+			"object_path" => ""
+		);
+		$res = $this->Tree->save($data1);
+		pr("<h4>Saving with empty object_path</h4>");
+		if ($this->assertFalse($res, "Error tree saved without object_path")) {
+			pr("<span style='color: green'>Save tree with empty object_path failed</span>");
+		}
+
+		// Saving with empty parent_path
+		$data2["Tree"] = array(
+			"id" => $id,
+			"parent_path" => ""
+		);
+		$res = $this->Tree->save($data2);
+		pr("<h4>Saving with empty parent_path</h4>");
+		if ($this->assertFalse($res, "Error tree saved without parent_path")) {
+			pr("<span style='color: green'>Save tree with empty parent_path failed</span>");
+		}
+
+		// Saving with inconsistent object_path (recursion on path)
+		$data3["Tree"] = array(
+			"id" => $id,
+			"object_path" => $object_path
+		);
+		$res = $this->Tree->save($data3);
+		pr("<h4>Saving with recursion on object_path</h4>");
+		if ($this->assertFalse($res, "Error tree saved recursion on  object_path")) {
+			pr("<span style='color: green'>Save tree with recursion on object_path (".$object_path.")failed</span>");
+		}
+
+		// Saving with inconsistent parent_path (recursion on path)
+		$data4["Tree"] = array(
+			"id" => $id,
+			"parent_path" => $parent_path
+		);
+		$res = $this->Tree->save($data4);
+		pr("<h4>Saving with recursion on parent_path</h4>");
+		if ($this->assertFalse($res, "Error tree saved recursion on  parent_path")) {
+			pr("<span style='color: green'>Save tree with recursion on parent_path (".$parent_path.") failed</span>");
+		}
+
+		// Saving with id = parent_id (recursion on itself)
+		$data5["Tree"] = array(
+			"id" => $id,
+			"parent_id" => $id
+		);
+		$res = $this->Tree->save($data5);
+		pr("<h4>Saving with id = parent_id (recursion on itself)</h4>");
+		if ($this->assertFalse($res, "Error tree saved recursion on itself id=parent_id")) {
+			pr("<span style='color: green'>Save tree with recursion failed: id=parent_id=".$id."</span>");
+		}
+
+		// Saving with id recursion on parent_path
+		$data6["Tree"] = array(
+			"id" => $id,
+			"parent_path" => "/" . $this->savedIds["Event 1"] . "/" . $this->savedIds["Section 9"] . "/" . $this->savedIds["Section 7"] . "/"
+		);
+		$res = $this->Tree->save($data6);
+		pr("<h4>Saving with id recursion on parent_path</h4>");
+		if ($this->assertFalse($res, "Error tree saved with id recursion on parent_path")) {
+			pr("<span style='color: green'>Save tree with recursion failed: id=".$id." is also in parent_path=".$data6["Tree"]["parent_path"]."</span>");
+		}
+	}
+
 	function testIsParent() {
 		$idParent = $this->savedIds["Publication 1"];
 		$idChild = $this->savedIds["Section 1"];
@@ -142,12 +214,12 @@ class TreeTestCase extends BeditaTestCase {
 
 	public function testMove() {
 		$idToMove = $this->savedIds["Section 14"];
-		$idNewParent = $this->savedIds["Section 11"];
+		$idNewParent = $this->savedIds["Section 7"];
 		$idOldParent = $this->savedIds["Section 13"];
 		$children = array($this->savedIds["Section 18"], $this->savedIds["ShortNews 1"], $this->savedIds["Card 1"]);
 		$result = $this->Tree->move($idNewParent, $idOldParent, $idToMove);
 		if ($this->assertNotEqual(false, $result)) {
-			pr("<span style='color: green'>Section 14 (id:".$idToMove.") and its content moved from Section 13 (id:".$idOldParent.") to Section 11 (id:".$idNewParent.")</span>");
+			pr("<span style='color: green'>Section 14 (id:".$idToMove.") and its content moved from Section 13 (id:".$idOldParent.") to Section 7 (id:".$idNewParent.")</span>");
 		}
 
 		$res = $this->Tree->find("first", array(

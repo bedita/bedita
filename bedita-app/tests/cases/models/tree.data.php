@@ -46,8 +46,8 @@ class TreeTestData extends BeditaTestData {
 							array('Section'	=> array('title' => 'Section 13', 'status' => 'off', 'children' => array(
 								array('Section'	=> array('title' => 'Section 14', 'status' => 'on', 'children' => array(
 									array('Section' => array('title' => 'Section 18', 'status' => 'on', 'children' => array(
-										array('Document' => array('title' => 'ShortNews 1', 'status' => 'on')),
-										array('Event' => array('title' => 'Card 1', 'status' => 'off'))
+										array('ShortNews' => array('title' => 'ShortNews 1', 'status' => 'on')),
+										array('Card' => array('title' => 'Card 1', 'status' => 'off'))
 									))))
 								)),
 								array('Section'	=> array('title' => 'Section 15', 'status' => 'draft', 'children' => array())),
