@@ -138,9 +138,6 @@ class BeditaTestCase extends CakeTestCase {
 
 				foreach($uses as $modelClass) {
 					$this->{$modelClass} = ClassRegistry::init($modelClass);
-//					$this->{$modelClass}->setDataSource($this->dataSource);
-//					pr($this->{$modelClass}->getDatasource());exit;
-//					$this->{$modelClass}->useDbConfig = $this->useDbConfig;
 					if($this->{$modelClass} === false) {
 						echo "Missing Model: $modelClass" ;
 						return ;
