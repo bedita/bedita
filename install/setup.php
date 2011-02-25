@@ -33,7 +33,7 @@
 	define('WIZ_ERR','ERROR');
 
 	require ROOT . DS . 'vendors' . DS . 'smarty' . DS . 'libs' . DS . 'Smarty.class.php';
-	require APP_DIR . DS . 'libs' . DS . 'be_system.php';
+	require ROOT . DS . APP_DIR . DS . 'libs' . DS . 'be_system.php';
 
 	class BeditaInstallationWizard {
 
@@ -77,9 +77,9 @@
 
 		private function initSmarty() {
 			$this->smarty = new Smarty();
-			$this->smarty->template_dir = APP_DIR . DS . 'views' . DS . 'install';
-			$this->smarty->compile_dir = APP_DIR . DS . 'tmp' . DS . 'smarty' . DS . 'compile';
-			$this->smarty->cache_dir = APP_DIR . DS . 'tmp' . DS . 'smarty' . DS . 'cache';
+			$this->smarty->template_dir = ROOT . DS . APP_DIR . DS . 'views' . DS . 'install';
+			$this->smarty->compile_dir = ROOT . DS . APP_DIR . DS . 'tmp' . DS . 'smarty' . DS . 'compile';
+			$this->smarty->cache_dir = ROOT . DS . APP_DIR . DS . 'tmp' . DS . 'smarty' . DS . 'cache';
 		}
 
 		private function page_envstart() {
@@ -163,8 +163,8 @@
 		}
 
 		private function page_beadmin() {
-			require(CORE_PATH . 'cake' . DS . 'bootstrap.php');
-			require(ROOT . DS . APP_DIR . DS . 'config' . DS . 'bedita.ini.php');
+			require_once(CORE_PATH . 'cake' . DS . 'bootstrap.php');
+			require_once(ROOT . DS . APP_DIR . DS . 'config' . DS . 'bedita.ini.php');
 			$this->initSmarty();
 			$this->smarty->assign('steps',$this->steps);
 			$config = Configure::getInstance();
@@ -214,8 +214,8 @@
 		}
 
 		private function page_finish() {
-			require(CORE_PATH . 'cake' . DS . 'bootstrap.php');
-			require(ROOT . DS . APP_DIR . DS . 'config' . DS . 'bedita.ini.php');
+			require_once(CORE_PATH . 'cake' . DS . 'bootstrap.php');
+			require_once(ROOT . DS . APP_DIR . DS . 'config' . DS . 'bedita.ini.php');
 			$this->initSmarty();
 			$this->smarty->assign('steps',$this->steps);
 			$this->smarty->display('finish.tpl');
