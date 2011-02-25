@@ -31,10 +31,16 @@
 
 {if ($is_connected == "y")}
 <p><span class="INFO">[INFO]</span>: <span>Database connection</span>: <span class="INFO">Cake is able to connect to database</span></p>
-<input type="hidden" id="p" name="page" />
+{if empty($database_sources)}
+<p><input type="hidden" name="action" value="initdb" /><input type="submit" value="Init Database Schema" /></p>
+{/if}
+<input type="hidden" id="p" name="page" value="2" />
 <input type="submit" value="< Back" onclick="javascript:document.getElementById('p').value = 1;" />
+{if empty($database_sources)}
+<input type="submit" value="Next >" disabled="disabled" />
+{else}
 <input type="submit" value="Next >" onclick="javascript:document.getElementById('p').value = 3;" />
-<input type="button" value="Finish" disabled="disabled" />
+{/if}
 {else}
 {if !empty($dbconfigupdated)}
 <p><span class="INFO">[INFO]</span>: <span>Database config</span>: <span class="INFO">Database configuration file updated.</span></p>
@@ -73,8 +79,7 @@
 <input type="submit" value="Save and Check again" onclick="javascript:document.getElementById('p').value=2;" />
 <hr/>
 <input type="submit" value="< Back" onclick="javascript:document.getElementById('p').value = 1;" />
-<input type="button" value="Next >" disabled="disabled"  />
-<input type="button" value="Finish" disabled="disabled" />
+<input type="button" value="Next >" disabled="disabled" />
 {/if}
 
 </fieldset>

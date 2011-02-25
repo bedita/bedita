@@ -53,15 +53,5 @@
 		define('CORE_PATH', CAKE_CORE_INCLUDE_PATH . DS);
 	}
 
-/**
- * Wizard install, if file setup.php does not exist.
- */
-// commento temporaneamente - wizard DA ULTIMARE
-//	if (file_exists('setup.php')) {
-//		require_once('setup.php');
-//		$wizzy = new BeditaInstallationWizard();
-//		$wizzy->start();
-//	} else {
-		require APP_DIR . DS . WEBROOT_DIR . DS . 'index.php';
-//	}
+	require APP_DIR . DS . WEBROOT_DIR . DS . 'index.php';
 ?>

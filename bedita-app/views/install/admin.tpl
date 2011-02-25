@@ -29,24 +29,78 @@
 <fieldset>
 
 <h3>Administrator</h3>
+
 <table>
-<tr><td><label>Admin user</label>:</td><td><input type="text"/></td></tr>
-<tr><td><label>Password</label>:</td><td><input type="password"/></td></tr>
-<tr><td><label>Confirm password</label>:</td><td><input type="password"/></td></tr>
+<tr>
+	<td><label>Admin user</label>*:</td>
+	<td>{if !empty($usercreationok)}{$userid}{else}<input type="text" name="data[admin][user]" />{/if}</td>
+	{if !empty($admin_user_empty)}<td><span class="ERROR">User cannot be empty</span></td>{/if}
+</tr>
+{if empty($usercreationok)}
+<tr>
+	<td><label>Password</label>*:</td>
+	<td><input type="password" name="data[admin][password]"/></td>
+	{if !empty($admin_pass_empty)}<td><span class="ERROR">Password cannot be empty</span></td>{/if}
+</tr>
+<tr>
+	<td><label>Confirm password</label>*:</td>
+	<td><input type="password" name="data[admin][cpassword]"/></td>
+	{if !empty($cpassworderr)}<td><span class="ERROR">Password and Confirm password must match</span></td>{/if}
+</tr>
+{/if}
 </table>
+
+{if !empty($usercreationok)}
+<p><span class="INFO">User created</span></p>
+{/if}
+{if !empty($usercreationerr)}
+<p><span class="ERROR">Error saving user data</span></p>
+{/if}
 
 <h3>Web settings</h3>
 
 <table>
-<tr><td><label>Media root</label>:</td><td><input type="text" size="50" value="/var/www/bedita/webroot/files" /></td></tr>
-<tr><td><label>Media url</label>:</td><td><input type="text" size="50" value="http://localhost/bedita/files"/></td></tr>
-<tr><td><label>Mod Rewrite</label>:</td><td><input type="radio" />yes <input type="radio" />no </td></tr>
+<tr>
+	<td><span class="{$bedita_url_check.severity}">[{$bedita_url_check.severity}]</span></td>
+	<td><label>Bedita url</label>:</td>
+	<td><code>{$bedita_url|default:'http://localhost/bedita'}</code></td>
+	<td><span class="{$bedita_url_check.severity}">{$bedita_url_check.status}</span></td>
+</tr>
+<tr>
+	<td><span class="{$media_root_check.severity}">[{$media_root_check.severity}]</span></td>
+	<td><label>Media root</label>:</td>
+	<td><code>{$media_root|default:'/var/www/bedita/webroot/files'}</code></td>
+	<td><span class="{$media_root_check.severity}">{$media_root_check.status}</span></td>
+</tr>
+<tr>
+	<td><span class="{$media_url_check.severity}">[{$media_url_check.severity}]</span></td>
+	<td><label>Media url</label>:</td>
+	<td><code>{$media_url|default:'http://localhost/bedita/files'}</code></td>
+	<td><span class="{$media_url_check.severity}">{$media_url_check.status}</span></td>
+</tr>
 </table>
 
-<input type="hidden" id="p" name="page" />
+<h3>Mod rewrite</h3>
+
+{if $mod_rewrite_php == $mod_rewrite_cakephp}
+<p><span class="INFO">[INFO]</span>: <span>Mod Rewrite for PHP and CakePhp</span>: <span class="INFO">{$mod_rewrite_php}</span></p>
+{else}
+<p><span class="ERROR">[ERROR]</span>: <span>Mod Rewrite is</span> <span class="ERROR">{$mod_rewrite_php}</span> for PHP and <span class="ERROR">{$mod_rewrite_cakephp}</span> for CakePhp</p>
+<p><span class="INFO">[INFO]</span>: The wizard will try to set CakePhp to {$mod_rewrite_php} [file <code>config/core.php</code> must be writable by php/webserver]</p>
+{/if}
+
+{if empty($usercreationok)}
+<p><input type="submit" value="Apply changes" /></p>
+{/if}
+
+<input type="hidden" name="p_from" value="3"/>
+<input type="hidden" id="p" name="page" value="3"/>
 <input type="submit" value="< Back" onclick="javascript:document.getElementById('p').value = 2;" />
+{if empty($usercreationok)}
 <input type="button" value="Next >" disabled="disabled"  />
-<input type="button" value="Finish" disabled="disabled" />
+{else}
+<input type="submit" value="Next >" onclick="javascript:document.getElementById('p').value = 4;" />
+{/if}
 
 </fieldset>
 </form>

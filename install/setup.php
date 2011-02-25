@@ -44,7 +44,6 @@
 			'Environment Settings',
 			'Database Configuration',
 			'Bedita Admin',
-			'Summary',
 			'Finish'
 		);
 
@@ -53,6 +52,7 @@
 		}
 
 		public function start() {
+			$wizard_finished = false;
 			$p = (empty($_POST['page'])) ? "1" : $_POST['page'];
 			switch ($p) {
 				default: case "1":
@@ -64,7 +64,15 @@
 				case "3":
 					$this->page_beadmin();
 					break;
+				case "4":
+					$this->page_finish();
+					break;
+				case "5":
+					$this->page_endinstall();
+					$wizard_finished = true;
+					break;
 			}
+			return $wizard_finished;
 		}
 
 		private function initSmarty() {
@@ -75,12 +83,14 @@
 		}
 
 		private function page_envstart() {
-			if($this->performSmartyCheck()) {
+			if($this->_checksmarty()) {
 				$this->initSmarty();
-				$this->performCakeCheck();
+				$this->_checkcakephp();
+				$this->_checkinstalldir();
 				$this->smarty->assign('steps',$this->steps);
 				$this->smarty->assign('results_smarty',$this->check_arr['smarty']);
 				$this->smarty->assign('results_cake',$this->check_arr['cake']);
+				$this->smarty->assign('results_install',$this->check_arr['install']);
 				$this->smarty->display('setup.tpl');
 			} else {
 				echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
@@ -138,9 +148,13 @@
 				}
 			}
 			$this->smarty->assign('steps',$this->steps);
-			include(CORE_PATH . 'cake' . DS . 'bootstrap.php');
+			require_once(CORE_PATH . 'cake' . DS . 'bootstrap.php');
 			App::import('ConnectionManager');
 			$db = ConnectionManager::getDataSource('default');
+			if(!empty($_POST['action']) && ($_POST['action'] == 'initdb')) {
+				$this->_initdb($db);
+			}
+			$this->smarty->assign('database_sources',$db->listSources());
 			$this->smarty->assign('database_config',$db->config);
 			$this->smarty->assign('is_connected',$db->isConnected() ? "y" : "n");
 			$this->smarty->assign('dbfile',$filename);
@@ -149,10 +163,94 @@
 		}
 
 		private function page_beadmin() {
+			require(CORE_PATH . 'cake' . DS . 'bootstrap.php');
+			require(ROOT . DS . APP_DIR . DS . 'config' . DS . 'bedita.ini.php');
 			$this->initSmarty();
 			$this->smarty->assign('steps',$this->steps);
-//			include(CORE_PATH . 'cake' . DS . 'bootstrap.php');
+			$config = Configure::getInstance();
+			$baseUrl = $config->read('App.baseUrl');
+			if(!empty($_POST['p_from'])) { // check form admin
+				$admin_data_ok = true;
+				if(empty($_POST['data']['admin']['user'])) {
+					$admin_data_ok = false;
+					$this->smarty->assign('admin_user_empty',true);
+				}
+				if(empty($_POST['data']['admin']['password'])) {
+					$admin_data_ok = false;
+					$this->smarty->assign('admin_pass_empty',true);
+				}
+				if($_POST['data']['admin']['password'] !== $_POST['data']['admin']['cpassword']) {
+					$admin_data_ok = false;
+					$this->smarty->assign('cpassworderr',true);
+				}
+				if($admin_data_ok) {
+					$userdata = array(
+						'id' => '1',
+						'realname' => trim($_POST['data']['admin']['user']),
+						'userid' => trim($_POST['data']['admin']['user']),
+						'passwd' => md5(trim($_POST['data']['admin']['password']))
+					);
+					if(!$this->_saveuser($userdata)) {
+						$this->smarty->assign('usercreationerr',true);
+					} else {
+						$this->smarty->assign('userid',$userdata['userid']);
+						$this->smarty->assign('usercreationok',true);
+					}
+				}
+				if($this->_checkmodrewritephp() != $this->_checkmodrewritecakephp($baseUrl)) {
+					$this->_applymodrewrite($this->_checkmodrewritephp($baseUrl));
+					$baseUrl = $config->read('App.baseUrl');
+				}
+			}
+			$this->smarty->assign('bedita_url',$config->read('beditaUrl'));
+			$this->smarty->assign('bedita_url_check',$this->_checkurl($config->read('beditaUrl')));
+			$this->smarty->assign('media_root',$config->read('mediaRoot'));
+			$this->smarty->assign('media_root_check',$this->_checkmediaroot($config->read('mediaRoot')));
+			$this->smarty->assign('media_url',$config->read('mediaUrl'));
+			$this->smarty->assign('media_url_check',$this->_checkurl($config->read('mediaUrl')));
+			$this->smarty->assign('mod_rewrite_php',$this->_checkmodrewritephp());
+			$this->smarty->assign('mod_rewrite_cakephp',$this->_checkmodrewritecakephp($baseUrl));
 			$this->smarty->display('admin.tpl');
+		}
+
+		private function page_finish() {
+			require(CORE_PATH . 'cake' . DS . 'bootstrap.php');
+			require(ROOT . DS . APP_DIR . DS . 'config' . DS . 'bedita.ini.php');
+			$this->initSmarty();
+			$this->smarty->assign('steps',$this->steps);
+			$this->smarty->display('finish.tpl');
+		}
+
+		private function _checkurl($url) {
+			$r = array();
+			$result = @get_headers($url);
+			if(empty($result) || !$result) {
+				$r['severity'] = WIZ_ERR;
+				$r['status'] = 'Invalid url';
+				return $r;
+			}
+			$status = (!empty($result) && !empty($result[0])) ? $result[0] : "";
+			$r['status'] = $status;
+			$error_400 = stristr($status,'HTTP/1.1 4');
+			$error_500 = stristr($status,'HTTP/1.1 5');
+			if(!empty($error_400) || !empty($error_500)) {
+				$r['severity'] = WIZ_ERR;
+			} else {
+				$r['severity'] = WIZ_INFO;
+			}
+			return $r;
+		}
+
+		private function _checkmediaroot($path) {
+			$r = array();
+			if($this->besys->checkAppDirPresence($path)) {
+				$r['severity'] = WIZ_INFO;
+				$r['status'] = 'found';
+			} else {
+				$r['severity'] = WIZ_ERR;
+				$r['status'] = 'not found';
+			}
+			return $r;
 		}
 		private function _checkdir($checklabel,$label,$path) {
 			$result = true;
@@ -165,12 +263,20 @@
 			return $result;
 		}
 
+		private function _checkmodrewritephp() {
+			return (in_array('mod_rewrite',apache_get_modules())) ? "enabled" : "disabled";
+		}
+
+		private function _checkmodrewritecakephp($appBaseUrl) {
+			return (empty($appBaseUrl)) ? "enabled" : "disabled";
+		}
+
 		private function _checkdirwriteable($checklabel,$label,$path) {
 			$result = $this->_checkdir($checklabel,$label,$path);
 			if($result) {
 				if(!$this->besys->checkWritable($path)) {
 					$result = false;
-					$this->check_arr[$checklabel][] = array('label' => $label, 'result' => $result, 'severity' => WIZ_INFO, 'description' => 'dir not writeable');
+					$this->check_arr[$checklabel][] = array('label' => $label, 'result' => $result, 'severity' => WIZ_ERR, 'description' => 'dir not writeable');
 				} else {
 					$this->check_arr[$checklabel][] = array('label' => $label, 'result' => $result, 'severity' => WIZ_INFO, 'description' => 'dir writeable');
 				}
@@ -200,7 +306,7 @@
 			}
 		}
 
-		private function performSmartyCheck() {
+		private function _checksmarty() {
 
 			// smarty temporary directory must be writable
 			$smarty_dir = ROOT . DS . APP_DIR . DS . 'tmp' . DS . 'smarty';
@@ -218,7 +324,7 @@
 			return $result;
 		}
 
-		private function performCakeCheck() {
+		private function _checkcakephp() {
 
 			// checking app dir
 			$appPath = ROOT . DS . APP_DIR;
@@ -238,6 +344,40 @@
 			}
 
 			return $result;
+		}
+
+		private function _checkinstalldir() {
+			$this->check_arr['install'] = array();
+			$result = true;
+			$confDir = ROOT . DS . 'install';
+			if(!$this->_checkdirwriteable('install','Check of install dir: '.$confDir,$confDir)) {
+				$result = false;
+			}
+			return $result;
+		}
+
+		private function _applymodrewrite($enable = "enabled") {
+			$filename = ROOT . DS . APP_DIR . DS . "config" . DS . "core.php";
+			$c = 1;
+			$done = false;
+			$filedata = array();
+			$filearr = file($filename);
+			$line_start = 0;
+			foreach($filearr as $line_num => $line) {
+				if(($line_start == 0) && (stripos($line,"Configure::write('App.baseUrl'")>0) ) {
+					$line_start = $line_num;
+				}
+				if($line_start > 0 && !$done) {
+					$line_end = $line_num;
+					$line_start = -1;
+					$done = true;
+					$filedata[]= ($enable == "enabled") ? "// Configure::write('App.baseUrl', env('SCRIPT_NAME'));" : "Configure::write('App.baseUrl', env('SCRIPT_NAME'));";
+					$done = true;
+				} else {
+					$filedata[]=$line;
+				}
+			}
+			return (file_put_contents($filename,$filedata) !== FALSE);
 		}
 
 		private function applyDatabaseConfiguration($filename,$db = array()) {
@@ -273,6 +413,28 @@
 				}
 			}
 			return (file_put_contents($filename,$filedata) !== FALSE);
+		}
+
+		private function _initdb($db) {
+			App::import('Model', 'BeSchema');
+			$beSchema = new BeSchema();
+			$script_schema = APP ."config" . DS . "sql" . DS . "bedita_" . $db->config['driver'] . "_schema.sql";
+			$beSchema->executeQuery($db, $script_schema);
+			$script_data = APP ."config" . DS . "sql" . DS . "bedita_init_data.sql";
+			$beSchema->executeQuery($db, $script_data);
+		}
+
+		private function _saveuser($userdata) {
+			$q = "UPDATE users SET userid = '" . $userdata['userid'] . "', realname = '" . $userdata['realname'] . "', passwd = '" . $userdata['passwd'] . "' WHERE id = " . $userdata['id'] . "";
+			$db = ConnectionManager::getDataSource('default');
+			$db->execute($q);
+			return true;
+		}
+
+		private function page_endinstall() {
+			$filename = ROOT . DS . "install" . DS . "install.done";
+			$filedata = array("BEdita installed on " . strtotime("now"));
+			file_put_contents($filename,$filedata);
 		}
 	}
 ?>

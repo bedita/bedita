@@ -34,6 +34,13 @@
 <p><span class="{$i.severity}">[{$i.severity}]</span>: <code>{$i.label}</code>: <span class="{$i.severity}">{$i.description}</span></p>
 {/foreach}
 
+{if !empty($results_install)}
+<h2>Installation</h2>
+{foreach from=$results_install item=i}
+<p><span class="{$i.severity}">[{$i.severity}]</span>: <code>{$i.label}</code>: <span class="{$i.severity}">{$i.description}</span></p>
+{/foreach}
+{/if}
+
 <form method="post" action='index.php'>
 <fieldset>
 	<input type="hidden" id="p" name="page" />
@@ -41,7 +48,6 @@
 <hr/>
 	<input type="button" value="< Back" disabled="disabled" />
 	<input type="submit" value="Next >" onclick="javascript:document.getElementById('p').value=2;" />
-	<input type="button" value="Finish" disabled="disabled" />
 </fieldset>
 </form>
 
