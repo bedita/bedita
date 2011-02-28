@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2011 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -349,7 +349,7 @@
 		private function _checkinstalldir() {
 			$this->check_arr['install'] = array();
 			$result = true;
-			$confDir = ROOT . DS . 'install';
+			$confDir = ROOT . DS . 'setup';
 			if(!$this->_checkdirwriteable('install','Check of install dir: '.$confDir,$confDir)) {
 				$result = false;
 			}
@@ -432,7 +432,7 @@
 		}
 
 		private function page_endinstall() {
-			$filename = ROOT . DS . "install" . DS . "install.done";
+			$filename = ROOT . DS . "setup" . DS . "install.done";
 			$filedata = array("BEdita installed on " . strtotime("now"));
 			file_put_contents($filename,$filedata);
 		}

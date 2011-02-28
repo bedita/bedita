@@ -77,8 +77,8 @@
 /**
 * Wizard install, if file setup.php does not exist.
 */
-	if (!file_exists(ROOT . DS . 'install' . DS . 'install.done')) {
-		require_once(ROOT . DS . 'install' . DS . 'setup.php');
+	if (!file_exists(ROOT . DS . 'setup' . DS . 'install.done')) {
+		require_once(ROOT . DS . 'setup' . DS . 'setup.php');
 		$wizzy = new BeditaInstallationWizard();
 		$wizard_finished = $wizzy->start();
 		if ($wizard_finished) {
