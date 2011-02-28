@@ -1639,6 +1639,10 @@ abstract class FrontendController extends AppController {
 		if (!empty($options["section"])) {
 			$section_id = (is_numeric($options["section"]))? $options["section"] : $this->BEObject->getIdFromNickname($options["section"]);
 			$this->checkParentStatus($section_id);
+			$searchMethod = "getChildren";
+		} else {
+			$section_id = $this->publication["id"];
+			$searchMethod = "getDescendants";
 		}
 		
 		$tagDetail = ClassRegistry::init("Category")->find("first", array(
@@ -1670,7 +1674,7 @@ abstract class FrontendController extends AppController {
 				$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR `Content`.end_date IS NULL";
 		}
 		
-		$contents = $this->BeTree->getChildren($section_id, $this->status, $filter, $order, $dir, $page, $dim);
+		$contents = $this->BeTree->{$searchMethod}($section_id, $this->status, $filter, $order, $dir, $page, $dim);
 		
 		$result = $tagDetail;
 
