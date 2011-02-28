@@ -262,6 +262,16 @@ class Category extends BEAppModel {
 				$joinsBEObject["conditions"]['BEObject.status'] = $options["status"];
 			}
 
+			$joinsTree = array(
+				'table' => 'trees',
+				'alias' => 'Tree',
+				'type' => 'inner',
+				'conditions'=> array(
+					'Tree.id = BEObject.id',
+					'Tree.area_id' => $options["area_id"]
+				)
+			);
+
 			$joins = array(
 				array(
 					'table' => 'object_categories',
@@ -270,15 +280,7 @@ class Category extends BEAppModel {
 					'conditions'=> array('ObjectCategory.category_id = Category.id')
 				),
 				$joinsBEObject,
-				array(
-					'table' => 'trees',
-					'alias' => 'Tree',
-					'type' => 'inner',
-					'conditions'=> array(
-						'Tree.id = BEObject.id',
-						'Tree.area_id' => $options["area_id"]
-					)
-				)
+				$joinsTree
 			);
 		}
 
@@ -297,18 +299,21 @@ class Category extends BEAppModel {
 		$category_ids = Set::extract('/id', $allTags);
 		
 		$objCatModel = ClassRegistry::init("ObjectCategory");
-
-		$joins = (empty($joinsBEObject))? array() : array($joinsBEObject);
+		$joins = (empty($joinsBEObject))? array() : array($joinsBEObject, $joinsTree);
 		$res = $objCatModel->find("all", array(
-			'fields' => array("ObjectCategory.category_id", "count(ObjectCategory.object_id) as weight"),
+			'fields' => array("DISTINCT ObjectCategory.category_id", "ObjectCategory.object_id"),
 			'conditions' => array("ObjectCategory.category_id" => $category_ids),
-			'group' => array("ObjectCategory.category_id"),
 			'joins' => $joins
 		));
 		
+		// calculate weights
 		$weights = array(0);
 		foreach ($res as $val) {
-			$weights[] = $val[0]["weight"];
+			if (empty($weights[$val["ObjectCategory"]["category_id"]])) {
+				$weights[$val["ObjectCategory"]["category_id"]] = 1;
+			} else {
+				$weights[$val["ObjectCategory"]["category_id"]]++;
+		}
 		}
 
 		if ($options["cloud"]) {
@@ -319,7 +324,7 @@ class Category extends BEAppModel {
 		
 		foreach ($res as $r) {
 			$key = !empty($r['ObjectCategory']['category_id']) ? $r['ObjectCategory']['category_id'] : $r[0]['category_id'] ;
-			$w = $r[0]['weight'];
+			$w = $weights[$r["ObjectCategory"]["category_id"]];
 			$tags[$key]['weight'] = $w;
 			if ($options["cloud"]) {
 				if ($w == $min)

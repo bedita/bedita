@@ -1649,6 +1649,10 @@ abstract class FrontendController extends AppController {
 		if (!empty($options["section"])) {
 			$section_id = (is_numeric($options["section"]))? $options["section"] : $this->BEObject->getIdFromNickname($options["section"]);
 			$this->checkParentStatus($section_id);
+			$searchMethod = "getChildren";
+		} else {
+			$section_id = $this->publication["id"];
+			$searchMethod = "getDescendants";
 		}
 		
 		$tagDetail = ClassRegistry::init("Category")->find("first", array(
