@@ -63,7 +63,7 @@ class BeSystem {
 	 * edit cakephp config file
 	 * 
 	 * @param type $filepath
-	 * @param array $dataToWrite
+	 * @param array $dataToWrite (see BeSystem::writePHPfile)
 	 * @param boolean $insertNewVar true to permitt writing new var (not already present in original file)
 	 * @return mixed true on success 
 	 */
@@ -79,6 +79,30 @@ class BeSystem {
 	 * 
 	 * @param string $filepath
 	 * @param array $dataToWrite
+	 *		example of $dataToWrite
+	 *		1)
+	 *			"config" => array(
+	 *				"beditaUrl" => "http://localhost/workspace/bedita",
+	 *				'smtpOptions'=> array(
+	 *					'port' => '25',
+	 *					'timeout' => '30',
+	 *					'host' => 'your.smtp.server',
+	 *					'username' => 'your_smtp_username',
+	 *					'password' => 'your_smtp_password'
+	 *				),
+	 *				...
+	 *			)
+	 * 
+	 *			will be generate var as
+	 *			$config['beditaUrl'] = 'http://localhost/workspace/bedita';
+	 *			...
+	 * 
+	 *		2)
+	 *			"myvar" => "this is my var"
+	 * 
+	 *			will be generate var as
+	 *			$myvar = 'this is my var';
+	 * 
 	 * @param boolean $insertNewVar true to permitt writing new var (not already present in original file)
 	 * @return mixed true on success 
 	 */
