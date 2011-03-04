@@ -20,7 +20,7 @@
  */
 
 if (!class_exists('BeditaException')) {
-	if (defined(BEDITA_CORE_PATH)) {
+	if (defined('BEDITA_CORE_PATH')) {
 		require_once BEDITA_CORE_PATH . DS . 'bedita_exception.php';
 	}
 	require_once ROOT . DS . 'bedita-app' . DS . 'bedita_exception.php';

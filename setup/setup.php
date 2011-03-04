@@ -91,6 +91,7 @@
 				$this->smarty->assign('results_smarty',$this->check_arr['smarty']);
 				$this->smarty->assign('results_cake',$this->check_arr['cake']);
 				$this->smarty->assign('results_install',$this->check_arr['install']);
+				$this->smarty->assign('n_errors',$this->_count_errors());
 				$this->smarty->display('setup.tpl');
 			} else {
 				echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
@@ -154,9 +155,11 @@
 			if(!empty($_POST['action']) && ($_POST['action'] == 'initdb')) {
 				$this->_initdb($db);
 			}
-			$this->smarty->assign('database_sources',$db->listSources());
-			$this->smarty->assign('database_config',$db->config);
-			$this->smarty->assign('is_connected',$db->isConnected() ? "y" : "n");
+			if(!empty($db)) {
+				$this->smarty->assign('database_sources',$db->listSources());
+				$this->smarty->assign('database_config',$db->config);
+				$this->smarty->assign('is_connected',$db->isConnected() ? "y" : "n");
+			}
 			$this->smarty->assign('dbfile',$filename);
 			$this->smarty->assign('dbfile_writable',$this->besys->checkWritable($filename) ? "y" : "n");
 			$this->smarty->display('database.tpl');
@@ -219,6 +222,12 @@
 			$this->initSmarty();
 			$this->smarty->assign('steps',$this->steps);
 			$this->smarty->display('finish.tpl');
+		}
+
+		private function page_endinstall() {
+			$filename = ROOT . DS . "setup" . DS . "install.done";
+			$filedata = array("BEdita installed on " . strtotime("now"));
+			file_put_contents($filename,$filedata);
 		}
 
 		private function _checkurl($url) {
@@ -431,10 +440,20 @@
 			return true;
 		}
 
-		private function page_endinstall() {
-			$filename = ROOT . DS . "setup" . DS . "install.done";
-			$filedata = array("BEdita installed on " . strtotime("now"));
-			file_put_contents($filename,$filedata);
+		private function _count_errors() {
+			$n_errors = 0;
+			foreach($this->check_arr as $label => $msg_arr) {
+				foreach($msg_arr as $key => $res_arr) {
+					if($res_arr['severity'] == WIZ_ERR) {
+						$n_errors++;
+					}
+				}
+			}
+			return $n_errors;
+		}
+
+		private function _debug($arr) {
+			echo '<pre>'; print_r($arr); echo '</pre>'; exit;
 		}
 	}
 ?>

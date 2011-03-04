@@ -41,13 +41,25 @@
 {/foreach}
 {/if}
 
+<hr/>
+{if $n_errors > 0}
+<p>{$n_errors} error(s) to resolve before continue</p>
+{else}
+<p>No error(s) found: you can continue</p>
+{/if}
+<hr/>
+
 <form method="post" action='index.php'>
 <fieldset>
 	<input type="hidden" id="p" name="page" />
-	<input type="submit" value="Refresh" onclick="javascript:document.getElementById('p').value=1;"/>
+	<input type="submit" value="Perform Check" onclick="javascript:document.getElementById('p').value=1;"/>
 <hr/>
 	<input type="button" value="< Back" disabled="disabled" />
+{if $n_errors > 0}
+	<input type="submit" value="Next >" disabled="disabled" />
+{else}
 	<input type="submit" value="Next >" onclick="javascript:document.getElementById('p').value=2;" />
+{/if}
 </fieldset>
 </form>
 
