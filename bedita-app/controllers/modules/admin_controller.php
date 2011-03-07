@@ -499,6 +499,53 @@ class AdminController extends ModulesController {
 		BeLib::getObject("BeConfigure")->cacheConfig();
 	}
 
+	public function viewConfig() {}
+
+	public function saveConfig() {
+		// sys and cfg array
+		$sys = $this->params["form"]["sys"];
+		$cfg = $this->params["form"]["cfg"];
+
+		if (empty($sys["mediaRoot"])) {
+			throw new BeditaException(__("media root can't be empty", true), $sys);
+		}
+		if (empty($sys["mediaUrl"])) {
+			throw new BeditaException(__("media url can't be empty", true), $sys);
+		}
+
+		$sys["mediaRoot"] = rtrim($sys["mediaRoot"], DS);
+		$sys["mediaUrl"] = rtrim($sys["mediaUrl"], "/");
+
+		$besys = BeLib::getObject("BeSystem");
+		if (!$besys->checkAppDirPresence($sys["mediaRoot"])) {
+			throw new BeditaException(__("media root folder doesn't exist", true), $sys);
+		}
+
+		if (!$besys->checkWritable($sys["mediaRoot"])) {
+			throw new BeditaException(__("media root folder is not writable", true), $sys);
+		}
+
+		$headerResponse = @get_headers($sys["mediaUrl"]);
+		if(empty($headerResponse) || !$headerResponse) {
+			throw new BeditaException(__("media url is unreachable", true), $sys);
+		}
+
+		if (stristr($headerResponse[0],'HTTP/1.1 4') || stristr($headerResponse[0],'HTTP/1.1 5')) {
+			throw new BeditaException(__("media url is unreachable", true) . ": " . $headerResponse[0] , $sys);
+		}
+
+		// write bedita.sys.php
+		$beditaSysPath = CONFIGS . "bedita.sys.php";
+		$besys->writeConfigFile($beditaSysPath, $sys);
+
+		// write bedita.cfg.php
+		$beditaCfgPath = CONFIGS . "bedita.cfg.php";
+		$besys->writeConfigFile($beditaCfgPath, $cfg);
+
+		$this->userInfoMessage(__("Configuration saved", true));
+
+	}
+
 	protected function forward($action, $esito) {
 	 	 	$REDIRECT = array(
 				"viewGroup" => 	array(
@@ -556,7 +603,11 @@ class AdminController extends ModulesController {
 				"disableAddon" => array(
 								"OK" => "/admin/addons",
 								"ERROR" => "/admin/addons",
-							)
+							),
+				"saveConfig" => 	array(
+	 							"OK"	=> "/admin/viewConfig",
+	 							"ERROR"	=> "/admin/viewConfig"
+	 						)
 	 			);
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 	 	return false;

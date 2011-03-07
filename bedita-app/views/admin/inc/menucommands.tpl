@@ -36,6 +36,11 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 			<form action="{$html->url('/admin/deleteEventLog')}" method="post">
 			<input type="submit" value="{t}delete all{/t}"/>
 			</form>
+
+		{elseif $view->action == "viewConfig"}
+
+			<input class="bemaincommands" type="button" name="save" onClick="$('#configForm').submit()"
+			value="{t}save{/t}" />
 		
 		
 		{/if}
