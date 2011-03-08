@@ -40,12 +40,14 @@
  ** ******************************************
  */
 
-// User Interface default language [see also 'multilang' below]
-//$config['Config']['language'] = "ita"; // or "eng", "spa", "por"
+// User Interface default language, choose between bedita-app/locale dir [see also 'multilang' below]
+//$config['Config']['language'] = "ita";
 
 // Set 'multilang' true for user choice [also set 'multilang' true if $config['Config']['language'] is set]
 // $config['multilang'] = true;
-// $config['defaultLang'] = "eng"; // default fallback
+
+// default object language
+// $config['defaultLang'] = "eng";
 
 // ISO-639-3 codes - User interface language options (backend)
 // $config['langsSystem'] = array(

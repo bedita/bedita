@@ -59,6 +59,31 @@
 						<input type="text" name="cfg[projectName]" value="{$conf->projectName}" style="width: 300px;"/>
 					</td>
 				</tr>
+				
+				<tr>
+					<th>{t}User Interface default language{/t}:</th>
+					<td>
+						<select name="cfg[Config][language]">
+							{foreach $conf->langsSystem as $langKey => $langLabel}
+							<option value="{$langKey}"{if $langKey == $conf->Config.language} selected{/if}>{$langLabel}</option>
+							{/foreach}
+						</select>
+					</td>
+				</tr>
+
+				<tr>
+					<th>{t}Objects default language{/t}:</th>
+					<td>
+						<select name="cfg[defaultLang]">
+							{foreach $conf->langOptions as $langKey => $langLabel}
+							<option value="{$langKey}" {if $langKey == $conf->defaultLang}selected="selected"{/if}>{$langLabel}</option>
+							{/foreach}
+							{foreach $conf->langsIso as $langKey => $langLabel}
+							<option value="{$langKey}" {if $langKey == $conf->defaultLang}selected="selected"{/if}>{$langLabel}</option>
+							{/foreach}
+						</select>
+					</td>
+				</tr>
 
 			</table>
 
