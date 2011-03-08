@@ -144,10 +144,15 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->filter = $filter;
 	}
 	
-	private function object_userFilter($s, $e) {
-		$this->fields .= ", {$s}ObjectUser{$e}.{$s}user_id{$e} AS user_id";
-		$this->from = " LEFT OUTER JOIN {$s}object_users{$e} AS {$s}ObjectUser{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}ObjectUser{$e}.{$s}object_id{$e}" . $this->from;
-		$this->group .= ", user_id";
+	private function object_userFilter($s, $e, $value = null) {
+		$this->fields .= ", {$s}UserOU{$e}.{$s}userid{$e} AS obj_userid";
+		$from = " LEFT OUTER JOIN {$s}object_users{$e} AS {$s}ObjectUser{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}ObjectUser{$e}.{$s}object_id{$e}";
+		if(!empty($value)) {
+			$from .= " AND {$s}ObjectUser{$e}.{$s}switch{$e} = '$value'";
+		}
+		$from .= " LEFT OUTER JOIN {$s}users{$e} AS {$s}UserOU{$e} ON {$s}ObjectUser{$e}.{$s}user_id{$e}={$s}UserOU{$e}.{$s}id{$e}";
+		$this->from = $from . $this->from;
+		$this->group .= ", {$s}ObjectUser{$e}.object_id";
 	}
 	
 	private function count_annotationFilter($s, $e, $value) {
