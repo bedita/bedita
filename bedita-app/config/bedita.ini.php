@@ -267,8 +267,9 @@ $config["cfgOneWayRelation"] = array();
 // Default reserved words [avoided in nickname creation]
 $config["defaultReservedWords"] = array("section", "content", "rss", "feed", 
 	"download", "xml", "xmlobject", "sitemap", "sitemap.xml", "sitemap_xml", 
-	"json", "captchaImage", "saveComment", "search", "tag", "login", "logout", 
-	"hashjob", "subscribe", "printme", "homePage");
+	"json", "captchaImage", "saveComment", "search", "tag", "login", "logout", "js",
+	"hashjob", "subscribe", "printme", "homePage", "img", "css", "files", 
+	"lang", "favicon.ico", "favicon.gif");
 
 // Cfg reserved words (override in bedita.cfg)
 $config["cfgReservedWords"] = array();
