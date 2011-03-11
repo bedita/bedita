@@ -411,7 +411,7 @@
 						$line_end = $line_num;
 						$line_start = -1;
 						$done = true;
-						$filedata[]= "\t\t" . 'var $default = array(';
+						$filedata[]= ' var $default = array(';
 						foreach($db as $k => $v) {
 							$l = "'$k' => '$v'";
 							if($c<$dbsize) {
