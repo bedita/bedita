@@ -31,6 +31,11 @@
 
 {if ($is_connected == "y")}
 <p><span class="INFO">[INFO]</span>: <span>Database connection</span>: <span class="INFO">Cake is able to connect to database</span></p>
+{if !empty($initdb_results)}
+{foreach from=$initdb_results item=i}
+<p><span class="{$i.severity}">[{$i.severity}]</span>: <code>{$i.label}</code>: <span class="{$i.severity}">{$i.description}</span></p>
+{/foreach}
+{/if}
 {if empty($database_sources)}
 <p><input type="hidden" name="action" value="initdb" /><input type="submit" value="Init Database Schema" /></p>
 {/if}

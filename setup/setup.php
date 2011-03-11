@@ -153,7 +153,13 @@
 			App::import('ConnectionManager');
 			$db = ConnectionManager::getDataSource('default');
 			if(!empty($_POST['action']) && ($_POST['action'] == 'initdb')) {
-				$this->_initdb($db);
+				$this->check_arr['dbinit'] = array();
+				if(!$this->_initdb($db)) {
+					$this->check_arr['dbinit'][] = array('label' => $label, 'result' => $result, 'severity' => WIZ_ERR, 'description' => 'error launching init db script');
+				} else {
+					$this->check_arr['dbinit'][] = array('label' => $label, 'result' => $result, 'severity' => WIZ_INFO, 'description' => 'db init successfull');
+				}
+				$this->smarty->assign('initdb_results',$this->check_arr['dbinit']);
 			}
 			if(!empty($db)) {
 				$this->smarty->assign('database_sources',$db->listSources());
@@ -405,7 +411,7 @@
 						$line_end = $line_num;
 						$line_start = -1;
 						$done = true;
-						$filedata[]= 'var $default = array(';
+						$filedata[]= "\t\t" . 'var $default = array(';
 						foreach($db as $k => $v) {
 							$l = "'$k' => '$v'";
 							if($c<$dbsize) {
@@ -431,6 +437,7 @@
 			$beSchema->executeQuery($db, $script_schema);
 			$script_data = APP ."config" . DS . "sql" . DS . "bedita_init_data.sql";
 			$beSchema->executeQuery($db, $script_data);
+			return true;
 		}
 
 		private function _saveuser($userdata) {
