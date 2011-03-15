@@ -1,4 +1,3 @@
-{$javascript->link("jquery/jquery.treeview", false)}
 {$javascript->link("form", false)}
 {$javascript->link("jquery/jquery.changealert", false)}
 

@@ -3,7 +3,6 @@
 *}
 {$html->css("ui.datepicker", null, null, false)}
 {$javascript->link("jquery/jquery.form", false)}
-{$javascript->link("jquery/jquery.treeview", false)}
 {$javascript->link("jquery/jquery.selectboxes.pack", false)}
 {$javascript->link("jquery/ui/jquery.ui.sortable", true)}
 {$javascript->link("jquery/ui/jquery.ui.datepicker", false)}
