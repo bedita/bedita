@@ -152,7 +152,7 @@ $(document).ready(function(){
 {*			<td>{$objects[i].company_name|default:''}</td>*}
 			<td style="text-align:center">{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
-			<td style="text-align:center">{if empty($objects[i].user_id)}{t}no{/t}{else}{t}yes{/t}{/if}</td>
+			<td style="text-align:center">{if empty($objects[i].obj_userid)}{t}no{/t}{else}{t}yes{/t}{/if}</td>
 			<td>{$objects[i].email|default:''}</td>
 			<td>{$objects[i].country}</td>
 			<td>{if $objects[i].num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>

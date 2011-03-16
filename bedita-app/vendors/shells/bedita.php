@@ -500,10 +500,22 @@ class BeditaShell extends BeditaBaseShell {
 		$this->out("Checking media dir and url");
 		$this->hr();
 		$mediaRoot = Configure::read("mediaRoot");
+		if(empty($mediaRoot)) {
+			$this->out("WARNING: empty 'mediaRoot' in config/bedita.sys.php");
+		}
 		@$this->checkAppDirPerms($mediaRoot, "mediaRoot: ");
+		
 		$mediaUrl = Configure::read("mediaUrl");
+		if(empty($mediaUrl)) {
+			$this->out("WARNING: empty 'mediaUrl' in config/bedita.sys.php");
+		}
 		@$this->checkAppUrl($mediaUrl, "mediaUrl: ");
-		@$this->checkAppUrl(Configure::read("beditaUrl"), "beditaUrl: ");
+		
+		$beUrl = Configure::read("beditaUrl");
+		if(empty($beUrl)) {
+			$this->out("WARNING: empty 'beditaUrl' in config/bedita.sys.php");
+		}
+		@$this->checkAppUrl($beUrl, "beditaUrl: ");
 		
 		// database connection
 		@$this->checkAppDbConnection();
@@ -513,7 +525,7 @@ class BeditaShell extends BeditaBaseShell {
 		$saveSess = Configure::read("Session.save");
 		$this->out("Cake session handling: " .$saveSess);
 		if($saveSess !== "database") {
-			$this->out("WARNIN: use 'database' as session handler in config/core.php - 'Session.save'");
+			$this->out("WARNING: use 'database' as session handler in config/core.php - 'Session.save'");
 		}
 		$appBaseUrl = Configure::read('App.baseUrl');
 		if(empty($appBaseUrl)) {

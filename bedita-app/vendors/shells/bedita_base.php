@@ -103,8 +103,29 @@ class BeditaBaseShell extends Shell {
     	} else {
     		$this->error("Missing parameters" , $errMsg);
     	}
-    }
+    } 
    
+    /**
+     * Read shell input argument from file, 
+     * through reerved argument -input
+     * input file in "properties" form:
+     * 
+     * param1=value
+     * param2=value
+     */
+    protected function readInputArgs() {
+    	if (isset($this->params["input"])) {
+            $inFile = $this->params["input"];
+            if(file_exists($inFile)) {
+            	$this->out("Read shell arguments from file $inFile");
+            	$ini = parse_ini_file($inFile);
+            	foreach ($ini as $k => $v) {
+           			$this->params[$k] = $v;
+            	}
+    		}
+    	}
+    }
+    
     public function test() {
 		pr($this->params);
 		pr($this->args);

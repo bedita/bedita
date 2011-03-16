@@ -1,6 +1,5 @@
 {$html->script("jquery/jquery.treeview", false)}
 {$html->script("form", false)}
-{$html->script("jquery/jquery.changealert", false)}
 
 {literal}
 <script type="text/javascript">

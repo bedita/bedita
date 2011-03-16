@@ -6,7 +6,6 @@
 {$html->css("ui.datepicker", null, $cssOptions)}
 
 {$html->script("jquery/jquery.form", false)}
-{$html->script("jquery/jquery.treeview", false)}
 {$html->script("jquery/jquery.selectboxes.pack", false)}
 
 {$html->script("jquery/ui/jquery.ui.sortable", true)}
