@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2011 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -177,21 +177,31 @@ class AppError extends ErrorHandler {
 	
 	function __outputMessage($template) {
 		$tpl = "";
-		$viewVars = $this->controller->viewVars;
 		if(empty($this->controller->viewVars["conf"])) {
 			$this->controller->set('conf', Configure::getInstance());
-		} else {
-			unset($viewVars['conf']);
 		}
-		
+		$vars = array();
 		if(in_array($template, $this->error404)) {
+			if(!empty($this->controller->viewVars["BEAuthUser"])) {
+				// remove unwanted data
+				$vars["userid"] = $this->controller->viewVars["BEAuthUser"]["userid"];
+			}
+			if(!empty($this->controller->viewVars["controller"])) {
+				$vars["controller"] = $this->controller->viewVars["controller"];
+			}
+			$vars["here"] = $this->controller->here;
+			$vars["action"] = $this->controller->action;
 			header('HTTP/1.1 404 Not Found');
 			$tpl = "error404.tpl";
-			$this->log(" 404 Not Found - $template: " . var_export($viewVars, TRUE));
+			$this->log(" 404 Not Found - $template: " . var_export($vars, TRUE));
 		} else {
+			$vars = $this->controller->viewVars;
+			if(!empty($vars["conf"])) {
+				unset($vars["conf"]);
+			}
 			header('HTTP/1.1 500 Internal Server Error');
 			$tpl = "error500.tpl";
-			$errMsg = " 500 Internal Error - $template: " . var_export($viewVars, TRUE);
+			$errMsg = " 500 Internal Error - $template: " . var_export($vars, TRUE);
 			$this->log($errMsg);
 			$this->sendMail($errMsg);
 		}

@@ -1684,7 +1684,7 @@ abstract class FrontendController extends AppController {
 				$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR `Content`.end_date IS NULL";
 		}
 		
-		$contents = $this->BeTree->getChildren($section_id, $this->status, $filter, $order, $dir, $page, $dim);
+		$contents = $this->BeTree->{$searchMethod}($section_id, $this->status, $filter, $order, $dir, $page, $dim);
 		
 		$result = $tagDetail;
 
