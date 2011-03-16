@@ -138,8 +138,8 @@ class BeSchema extends CakeSchema
 		return $chunks;
 	}
 
-	public function readTables() {
-		$schemaTabs = $this->read();
+	public function readTables($options = array()) {
+		$schemaTabs = $this->read($options);
 		if(isset($schemaTabs['tables']['missing'])) {
 			unset($schemaTabs['tables']['missing']);
 		}
