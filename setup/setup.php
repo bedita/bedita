@@ -150,6 +150,7 @@
 			}
 			$this->smarty->assign('steps',$this->steps);
 			require_once(CORE_PATH . 'cake' . DS . 'bootstrap.php');
+			Configure::write('debug', 1);
 			App::import('ConnectionManager');
 			$db = ConnectionManager::getDataSource('default');
 			if(!empty($_POST['action']) && ($_POST['action'] == 'initdb')) {
@@ -174,8 +175,9 @@
 		private function page_beadmin() {
 			require_once(CORE_PATH . 'cake' . DS . 'bootstrap.php');
 			require_once(ROOT . DS . APP_DIR . DS . 'config' . DS . 'bedita.ini.php');
+			Configure::write('debug', 1);
 			$this->initSmarty();
-			$this->smarty->assign('steps',$this->steps);
+			$this->smarty->assign('steps', $this->steps);
 			$config = Configure::getInstance();
 			$baseUrl = $config->read('App.baseUrl');
 			if(!empty($_POST['p_from'])) { // check form admin
@@ -225,6 +227,7 @@
 		private function page_finish() {
 			require_once(CORE_PATH . 'cake' . DS . 'bootstrap.php');
 			require_once(ROOT . DS . APP_DIR . DS . 'config' . DS . 'bedita.ini.php');
+			Configure::write('debug', 1);
 			$this->initSmarty();
 			$this->smarty->assign('steps',$this->steps);
 			$this->smarty->display('finish.tpl');
