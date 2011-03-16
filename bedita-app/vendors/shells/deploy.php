@@ -72,7 +72,11 @@ class DeployShell extends BeditaBaseShell {
     			" " . $svnUrl . " " . $exportPath;
 		$this->out("Svn command: $svnExport");
     	$res = system($svnExport);
-		$this->out("Result: $res");
+		if(empty($res)) {
+	        $this->out("Error in svn export. Bye.");
+			return;
+		}
+    	$this->out("Result: $res");
 		$s = split(" ", $res);
 		$svnRelease = $s[count($s)-1];
 		$this->out("Svn release: $svnRelease");
