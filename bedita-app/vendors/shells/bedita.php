@@ -505,16 +505,27 @@ class BeditaShell extends BeditaBaseShell {
         	$this->out('Checking backend app dir: '.$appPath);
         	$this->hr();
         	$this->checkAppFiles($appPath);
-			$folder = new Folder(BEDITA_FRONTENDS_PATH);
-			$ls = $folder->ls();
-			foreach ($ls[0] as $dir) {
-				if($dir[0] !== '.' ) {
-        			$this->hr();
-					$this->out('Checking frontend app dir: '. BEDITA_FRONTENDS_PATH. DS .$dir);
-        			$this->hr();
-        			$this->checkAppFiles(BEDITA_FRONTENDS_PATH. DS .$dir, true);
+        	if(!file_exists(BEDITA_FRONTENDS_PATH)) {
+        		$this->hr();
+        		$this->out("WARNING: frontend path " . BEDITA_FRONTENDS_PATH . " is missing");
+        	} else {
+				$folder = new Folder(BEDITA_FRONTENDS_PATH);
+				$ls = $folder->read();
+				$count = 0;
+				foreach ($ls[0] as $dir) {
+					if($dir[0] !== '.' ) {
+						$count++;
+	        			$this->hr();
+						$this->out('Checking frontend app dir: '. BEDITA_FRONTENDS_PATH. DS .$dir);
+	        			$this->hr();
+	        			$this->checkAppFiles(BEDITA_FRONTENDS_PATH. DS .$dir, true);
+					}
 				}
-			}
+				if($count === 0 ) {
+        			$this->hr();
+					$this->out("WARNING: no frontends found in " . BEDITA_FRONTENDS_PATH);
+				}
+        	}
         }
 		// mediaRoot, mediaUrl, beditaUrl
 		$this->hr();
