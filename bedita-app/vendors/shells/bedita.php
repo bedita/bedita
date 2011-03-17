@@ -463,18 +463,12 @@ class BeditaShell extends BeditaBaseShell {
     	
     }
 
-    public function checkApp() {
-        $appPath = $this->params['app'];
-        if (isset($this->params['frontend'])) {
-        	$appPath = $this->params['frontend'];
-        }
-        $this->out('Checking cake app dir: '.$appPath);
-        $this->hr();
+    private function checkAppFiles($appPath, $frontend = false) {
         // config/core.php
         $this->checkAppFile($appPath.DS."config".DS."core.php");
         // config/database.php
         $this->checkAppFile($appPath.DS."config".DS."database.php");
-        if (!isset($this->params['frontend'])) {
+        if (!$frontend) {
 	        //config/bedita.sys.php
         	$this->checkAppFile($appPath.DS."config".DS."bedita.sys.php");
         	// config/bedita.cfg.php
@@ -484,7 +478,7 @@ class BeditaShell extends BeditaBaseShell {
         $this->checkAppFile($appPath.DS."index.php");
         // webroot/index.php
         $this->checkAppFile($appPath.DS."webroot".DS."index.php");
-        if (!isset($this->params['frontend'])) {
+        if (!$frontend) {
 	        // webroot/test.php
 	        $this->checkAppFile($appPath.DS."webroot".DS."test.php");
         }
@@ -494,7 +488,34 @@ class BeditaShell extends BeditaBaseShell {
         $this->checkAppDirPerms($appPath.DS."tmp".DS."smarty".DS."compile");
         // tmp/logs
         $this->checkAppDirPerms($appPath.DS."tmp".DS."logs");
-
+    }
+    
+    public function checkApp() {
+        $frontend = false;
+    	$appPath = $this->params['app'];
+        if (isset($this->params['frontend'])) {
+        	$appPath = $this->params['frontend'];
+        	$frontend = true;
+        }
+        if($frontend) {
+        	$this->out('Checking frontend app dir: '.$appPath);
+        	$this->hr();
+        	$this->checkAppFiles($appPath, true);
+        } else {
+        	$this->out('Checking backend app dir: '.$appPath);
+        	$this->hr();
+        	$this->checkAppFiles($appPath);
+			$folder = new Folder(BEDITA_FRONTENDS_PATH);
+			$ls = $folder->ls();
+			foreach ($ls[0] as $dir) {
+				if($dir[0] !== '.' ) {
+        			$this->hr();
+					$this->out('Checking frontend app dir: '. BEDITA_FRONTENDS_PATH. DS .$dir);
+        			$this->hr();
+        			$this->checkAppFiles(BEDITA_FRONTENDS_PATH. DS .$dir, true);
+				}
+			}
+        }
 		// mediaRoot, mediaUrl, beditaUrl
 		$this->hr();
 		$this->out("Checking media dir and url");
