@@ -81,12 +81,17 @@
 </table>
 
 <h3>Mod rewrite</h3>
-
 {if $mod_rewrite_php == $mod_rewrite_cakephp}
 <p><span class="INFO">[INFO]</span>: <span>Mod Rewrite for PHP and CakePhp</span>: <span class="INFO">{$mod_rewrite_php}</span></p>
 {else}
-<p><span class="ERROR">[ERROR]</span>: <span>Mod Rewrite is</span> <span class="ERROR">{$mod_rewrite_php}</span> for PHP and <span class="ERROR">{$mod_rewrite_cakephp}</span> for CakePhp</p>
-<p><span class="INFO">[INFO]</span>: The wizard will try to set CakePhp to {$mod_rewrite_php} [file <code>config/core.php</code> must be writable by php/webserver]</p>
+<p><span class="ERROR">[ERROR]</span>: <span>Mod Rewrite is</span> <span class="ERROR">{if $mod_rewrite_php == "askuser"}?{else}{$mod_rewrite_php}{/if}</span> for PHP and <span class="ERROR">{$mod_rewrite_cakephp}</span> for CakePhp</p>
+	{if $mod_rewrite_php == "askuser"}
+	<p><span class="WARN">[WARN]</span>: <span>Not able to say if mod_rewrite is enabled.</span></p>
+	<p><span>Please check your webserver configuration and set properly the following preference.</span></p>
+	<p><label>mod_rewrite</label> is: <input type="radio" value="enabled" name="mod_rewrite_enabled" />enabled <input type="radio" value="disabled" name="mod_rewrite_enabled" />disabled </p>
+	{else}
+	<p><span class="INFO">[INFO]</span>: The wizard will try to set CakePhp to {$mod_rewrite_php} [file <code>config/core.php</code> must be writable by php/webserver]</p>
+	{/if}
 {/if}
 
 {if empty($usercreationok)}

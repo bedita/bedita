@@ -180,6 +180,7 @@
 			$this->smarty->assign('steps', $this->steps);
 			$config = Configure::getInstance();
 			$baseUrl = $config->read('App.baseUrl');
+			$check_mod_rewrite = $this->_checkmodrewritephp();
 			if(!empty($_POST['p_from'])) { // check form admin
 				$admin_data_ok = true;
 				if(empty($_POST['data']['admin']['user'])) {
@@ -208,9 +209,13 @@
 						$this->smarty->assign('usercreationok',true);
 					}
 				}
-				if($this->_checkmodrewritephp() != $this->_checkmodrewritecakephp($baseUrl)) {
-					$this->_applymodrewrite($this->_checkmodrewritephp($baseUrl));
-					$baseUrl = $config->read('App.baseUrl');
+				if($check_mod_rewrite != $this->_checkmodrewritecakephp($baseUrl)) {
+					if($check_mod_rewrite == "askuser") {
+						
+					} else {
+						$this->_applymodrewrite($this->_checkmodrewritephp($baseUrl));
+						$baseUrl = $config->read('App.baseUrl');
+					}
 				}
 			}
 			$this->smarty->assign('bedita_url',$config->read('beditaUrl'));
@@ -219,7 +224,7 @@
 			$this->smarty->assign('media_root_check',$this->_checkmediaroot($config->read('mediaRoot')));
 			$this->smarty->assign('media_url',$config->read('mediaUrl'));
 			$this->smarty->assign('media_url_check',$this->_checkurl($config->read('mediaUrl')));
-			$this->smarty->assign('mod_rewrite_php',$this->_checkmodrewritephp());
+			$this->smarty->assign('mod_rewrite_php',$check_mod_rewrite);
 			$this->smarty->assign('mod_rewrite_cakephp',$this->_checkmodrewritecakephp($baseUrl));
 			$this->smarty->display('admin.tpl');
 		}
@@ -282,6 +287,12 @@
 		}
 
 		private function _checkmodrewritephp() {
+			if(!function_exists("apache_get_modules")) {
+				if(!empty($_POST['mod_rewrite_enabled'])) {
+					return $_POST['mod_rewrite_enabled'];
+				}
+				return "askuser";
+			}
 			return (in_array('mod_rewrite',apache_get_modules())) ? "enabled" : "disabled";
 		}
 
