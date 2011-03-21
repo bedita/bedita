@@ -758,7 +758,7 @@ abstract class FrontendController extends AppController {
 		}
 
 		$this->setSectionPath($s, $s["id"]);
-		$channel = array( 'title' => $this->publication["public_name"] . " - " . $s['title'] ,
+		$channel = array( 'title' => htmlentities($this->publication["public_name"] . " - " . $s['title']) ,
 			'link' => "/section/".$sectionName,
 			//'url' => Router::url("/section/".$sectionName),
 			'description' => $s['description'],
@@ -766,7 +766,7 @@ abstract class FrontendController extends AppController {
 		);
 		$this->set('channelData', $channel);
 		$rssItems = array();
-		$items = $this->BeTree->getChildren($s['id'], $this->status, false, "priority", ($s['priority_order']=="asc"));
+		$items = $this->BeTree->getChildren($s['id'], $this->status, false, "priority", ($s['priority_order']=="asc"), 1, 50);
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);
