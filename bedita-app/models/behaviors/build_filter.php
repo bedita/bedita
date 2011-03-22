@@ -152,7 +152,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		}
 		$from .= " LEFT OUTER JOIN {$s}users{$e} AS {$s}UserOU{$e} ON {$s}ObjectUser{$e}.{$s}user_id{$e}={$s}UserOU{$e}.{$s}id{$e}";
 		$this->from = $from . $this->from;
-		$this->group .= ", {$s}ObjectUser{$e}.object_id";
+		$this->group .= ", {$s}ObjectUser{$e}.object_id, {$s}UserOU{$e}.{$s}userid{$e}";
 	}
 	
 	private function count_annotationFilter($s, $e, $value) {
