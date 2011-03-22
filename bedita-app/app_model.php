@@ -393,8 +393,6 @@ class BEAppModel extends AppModel {
 			"toolbar"	=> $this->toolbar($page, $dim, $size) );
 		for ($i =0; $i < count($tmp); $i++) {
 			$tmpToAdd = array();
-			if (!empty($tmp[$i]["Content"]) && empty($tmp[$i]["Content"]["id"]))
-				unset($tmp[$i]["Content"]);
 				
 			if (!empty($tmp[$i]["RelatedObject"])) {
 				$tmpToAdd["RelatedObject"] = $tmp[$i]["RelatedObject"];
