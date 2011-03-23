@@ -227,8 +227,9 @@ class BEAppModel extends AppModel {
 	 * @return string
 	 */
 	protected function getLimitClausole($page = 1, $dim = 100000) {
+		$dataSource = ConnectionManager::getDataSource($this->useDbConfig);
 		$offset = ($page > 1) ? (($page -1) * $dim) : null;
-		return isset($offset) ? "$offset, $dim" : "$dim" ;
+		return $dataSource->limit($dim, $offset);
 	}
 
 	public function containLevel($level = "minimum") {
@@ -372,7 +373,8 @@ class BEAppModel extends AppModel {
 		}
 		
 		$limit 	= $this->getLimitClausole($page, $dim) ;
-		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
+		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} {$limit}";
+		
 		// #CUSTOM QUERY
 		$tmp  	= $this->query($query) ;
 
