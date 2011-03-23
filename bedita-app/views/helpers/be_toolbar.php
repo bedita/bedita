@@ -158,7 +158,9 @@ class BeToolbarHelper extends AppHelper {
 		unset($data["page"]);
 		unset($data["dim"]);
 		$url = Router::url($data) ;
-		if($this->params["action"] == "index" && !preg_match("/\/index\//i", $url )) $url .= "/".$this->params["action"] ;
+		if($this->params["action"] == "index" && !preg_match("/\/(index$|index\/)/i", $url )) {
+			$url .= "/".$this->params["action"];
+		}
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/dim:'+ this[this.selectedIndex].value" ;
 
 		$tmp = array() ;
@@ -210,7 +212,9 @@ class BeToolbarHelper extends AppHelper {
 		$data = $this->getPassedArgs();
 		unset($data["page"]);
 		$url = Router::url($data) ;
-		if($this->params["action"] == "index" && !preg_match("/\/index\//i", $url )) $url .= "/".$this->params["action"] ;		
+		if($this->params["action"] == "index" && !preg_match("/\/(index$|index\/)/i", $url)) {
+			$url .= "/".$this->params["action"];
+		}
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/page:'+ this[this.selectedIndex].value" ;
 
 		// Define the number of pages available
