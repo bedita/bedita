@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2011-01-27 14:59:17\n"
+"POT-Creation-Date: 2011-03-24 14:43:49\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -443,6 +443,9 @@ msgstr "Fehler beim Laden des Schlüsselwortes:"
 
 msgid "Error modifying permissions"
 msgstr "Fehler beim Ändern der Berechtigungen"
+
+msgid "Error moving section in the tree"
+msgstr ""
 
 msgid "Error on join between card and mail group"
 msgstr "Fehler beim Teilnehmen zwischen Karte und Mailgruppe"

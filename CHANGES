@@ -24,7 +24,7 @@ Version 3.1.2 - ulmus
 	* Object permissions managed through configuration array instead of constants
 	* shell: dbadmin cleanup -days / removes old items from log/job tables
 	* check sql format with regexp instead of DateTime class for work correctly in PHP 5.2
-	* #261 - generate catgory and tag names like object nickname for friendly url
+	* #261 - generate category and tag names like object nickname for friendly url
 	* patched mysql schema (remove enum and set)
 	* minor fix on unit test
 	* remove duplicated Module model

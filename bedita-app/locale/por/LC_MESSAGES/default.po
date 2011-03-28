@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2011-01-27 14:59:17\n"
+"POT-Creation-Date: 2011-03-24 14:43:49\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -428,6 +428,9 @@ msgid "Error loading tag: "
 msgstr ""
 
 msgid "Error modifying permissions"
+msgstr ""
+
+msgid "Error moving section in the tree"
 msgstr ""
 
 msgid "Error on join between card and mail group"

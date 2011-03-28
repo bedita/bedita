@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2011-01-27 14:59:17\n"
+"POT-Creation-Date: 2011-03-24 14:43:49\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -435,6 +435,9 @@ msgstr "Errore in caricamento tag: "
 
 msgid "Error modifying permissions"
 msgstr "Errore in modifica permessi"
+
+msgid "Error moving section in the tree"
+msgstr "Errore spostando la sezione nell'albero"
 
 msgid "Error on join between card and mail group"
 msgstr "Errore su unione tra scheda e gruppo di posta"
@@ -1869,10 +1872,10 @@ msgid "from"
 msgstr "da"
 
 msgid "frontend_access_with_block"
-msgstr ""
+msgstr "visibile al gruppo, nascosto agli altri"
 
 msgid "frontend_access_without_block"
-msgstr ""
+msgstr "visibile al gruppo, anteprima agli altri"
 
 msgid "galleries"
 msgstr "gallerie"
