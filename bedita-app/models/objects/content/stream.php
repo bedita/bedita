@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2011 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -142,7 +142,11 @@ class Stream extends BEAppModel
 			$filename = basename($path);
 		}
 		if (function_exists("finfo_open")) {
-			$file_info = finfo_open(FILEINFO_MIME, APP_PATH.'config'.DS.'magic');
+			if(PHP_VERSION < 5.3) {
+				$file_info = finfo_open(FILEINFO_MIME, APP_PATH.'config'.DS.'magic');
+			} else {
+				$file_info = finfo_open(FILEINFO_MIME);
+			}
 			$mime_type = ($file_info)? finfo_file($file_info, $path) : $this->getMimeTypeByExtension($filename);
 		} else {
 			$mime_type = $this->getMimeTypeByExtension($filename);
