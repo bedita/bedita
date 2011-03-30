@@ -678,6 +678,10 @@ class XmlNode extends Object {
 						$multi[$key] = array($out[$child->name]);
 						unset($out[$child->name]);
 					}
+					if(isset($out[$key])) {
+						$multi[$key][] = $out[$key];
+						unset($out[$key]);
+					}
 					$multi[$key][] = $value;
 				} else {
 					$out[$child->name] = $value;
