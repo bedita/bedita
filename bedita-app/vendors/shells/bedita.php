@@ -50,10 +50,22 @@ class BeditaShell extends BeditaBaseShell {
 	var $tasks = array('Cleanup');
 	
 	/**
+	 * Overrides base startup(), don't call initConfig...
+	 * @see BeditaBaseShell::startup()
+	 */
+	function startup() {
+		Configure::write('debug', 1);
+	}
+	
+	/**
 	 * initialize BEdita
 	 *
 	 */
 	function init() {
+		$this->loadTasks();
+		$this->out("BEdita CLEANUP");
+        $this->Cleanup->execute();
+		$this->hr();
 		$this->out("CHECKING DATABASE CONNECTION");
 		$res = $this->checkAppDbConnection();
 		$this->hr();
@@ -269,7 +281,7 @@ class BeditaShell extends BeditaBaseShell {
 		
 		// update media root dir
 		$folder = new Folder($mediaRoot);
-		$ls = $folder->ls();
+		$ls = $folder->read();
 		if(count($ls[0]) > 0 || count($ls[1]) > 0) {
 			if($answerYes) {
        			$this->removeMediaFiles();
@@ -297,7 +309,8 @@ class BeditaShell extends BeditaBaseShell {
 
     
     public function export() {
-        $expFile = self::DEFAULT_ARCHIVE_FILE;
+		$this->initConfig();
+    	$expFile = self::DEFAULT_ARCHIVE_FILE;
     	if (isset($this->params['f'])) {
             $expFile = $this->params['f'];
     	} else if(isset($this->params['nocompress'])) {
@@ -404,8 +417,9 @@ class BeditaShell extends BeditaBaseShell {
 	public function checkMedia() {
 
 		$stream = ClassRegistry::init("Stream");
-        // check filesystem
-		$this->out("checkMedia - checking filesystem");
+        // FIXME: check filesystem, file layout has changed 
+        // files may not be present on db not in /imgcache/ dir - rewrite!!
+/*		$this->out("checkMedia - checking filesystem");
 		$mediaRoot = Configure::read("mediaRoot");
 		$folder = new Folder($mediaRoot);
         $tree= $folder->tree($mediaRoot, false);
@@ -428,6 +442,7 @@ class BeditaShell extends BeditaBaseShell {
         if($mediaOk) {
 			$this->out("checkMedia - filesystem OK");
         }
+*/        
         // check db
 		$this->out("checkMedia - checking database");
         $allStream = $stream->findAll();
@@ -629,7 +644,8 @@ class BeditaShell extends BeditaBaseShell {
     
     
     public function modules() {
-		if(!array_key_exists("enable", $this->params) && 
+		$this->initConfig();
+    	if(!array_key_exists("enable", $this->params) && 
 			!array_key_exists("disable", $this->params)) {
 			$this->params['list'] = ""; // add default -list option
 		}
@@ -762,7 +778,7 @@ class BeditaShell extends BeditaBaseShell {
     }
 
     public function updateObjectTypes() {
-	
+		$this->initConfig();
 		$objType = ClassRegistry::init("ObjectType");
 		// from 1 to 999 - core models
 		if(!$objType->deleteAll("id < 1000")){ 

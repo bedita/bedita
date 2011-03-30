@@ -19,9 +19,7 @@
  *------------------------------------------------------------------->8-----
  */
 
-// load cached configurations
 App::import("File", "BeLib", true, array(BEDITA_LIBS), "be_lib.php");
-BeLib::getObject("BeConfigure")->initConfig();
 
 /**
  * Base class for bedita shell scripts: provides common filesystem related methods.
@@ -34,6 +32,24 @@ BeLib::getObject("BeConfigure")->initConfig();
  */
 class BeditaBaseShell extends Shell {
 
+	/**
+	 * Init configuration for all bedita shells, called in startup()
+	 */
+	protected function initConfig() {
+		// load cached configurations
+		BeLib::getObject("BeConfigure")->initConfig();
+		// Configure::write('debug', 1);
+	}
+
+	/**
+	 * Default shell startup, call initConfig (may raise db/model errors!), to override
+	 * in subclasses
+	 * @see Shell::startup()
+	 */
+	function startup() {
+		$this->initConfig();
+	}
+	
 	protected function check_sys_get_temp_dir() {
 		if ( !function_exists('sys_get_temp_dir') ) {
 		    // Based on http://www.phpit.net/
@@ -152,7 +168,7 @@ class BeditaBaseShell extends Shell {
     protected function __clean($path, $removeDirs=true) {
         
         $folder = new Folder($path);
-        $list = $folder->ls();
+        $list = $folder->read();
 
 		if($removeDirs) {
 	        foreach ($list[0] as $d) {
