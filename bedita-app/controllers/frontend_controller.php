@@ -788,7 +788,65 @@ abstract class FrontendController extends AppController {
 		}
 		$this->layout = NULL;
 	}
-	
+
+	public function georss($sectionName) {
+		$gml = (!empty($this->params['named']['gml']));
+		$this->section($sectionName);
+		$s = $this->viewVars["section"];
+		$channel = array( 'title' => htmlentities($this->publication["public_name"] . " - " . $s['title']) ,
+			'link' => "/section/".$sectionName,
+			'description' => $s['description'],
+			'language' => $s['lang'],
+		);
+		
+		$this->set('channelData', $channel);
+		$rssItems = array();
+		$items = $s['childContents'];
+		if(!empty($items)) {
+			foreach($items as $index => $obj) {
+				$description = $obj['description'];
+				$description .= (!empty($obj['abstract']) && !empty($description))? "<hr/>" .  $obj['abstract'] : $obj['abstract'];
+				$description .= (!empty($obj['body']) && !empty($description))? "<hr/>" .  $obj['body'] : $obj['body'];
+				if(!empty($obj['GeoTag'][0]['latitude']) && !empty($obj['GeoTag'][0]['longitude'])) {
+					$position = $obj['GeoTag'][0]['latitude'] . ' ' . $obj['GeoTag'][0]['longitude'];
+					$item = array('item' => array(
+						'title' => $obj['title'],
+						'description' => $description,
+						'pubDate' => $obj['created'],
+						'link' => $s['canonicalPath']."/".$obj['nickname']
+					));
+					if($gml) { // geoRss GML
+						$item['georss:where'] = array(
+							0 => array(
+								'gml:Point' => array(
+									0 => array(
+										'gml:pos' => $position
+									)
+								)
+							)
+						);
+					} else { // geoRss simple
+						$item['georss:point'] = $position;
+					}
+					$rssItems[] = $item;
+				}
+			}
+		}
+		$this->set('items', array($rssItems));
+		$attrib = array(
+			"version" => "2.0",
+			"xmlns:georss" => "http://www.georss.org/georss",
+			"xmlns:gml" => "http://www.opengis.net/gml"
+		);
+		$this->set('attrib',$attrib);
+		$this->view = 'View';
+		// add RSS helper if not present
+		if(!in_array('Rss', $this->helpers)) {
+			$this->helpers[] = 'Rss';
+		}
+		$this->layout = NULL;
+	}
+
 	/**
 	 * output a json object of returned array by section or content method
 	 * @param $name

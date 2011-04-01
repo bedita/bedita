@@ -265,7 +265,7 @@ $config["defaultOneWayRelation"] = array();
 $config["cfgOneWayRelation"] = array();
 
 // Default reserved words [avoided in nickname creation]
-$config["defaultReservedWords"] = array("section", "content", "rss", "feed", 
+$config["defaultReservedWords"] = array("section", "content", "rss", "feed", "georss",
 	"download", "xml", "xmlobject", "sitemap", "sitemap.xml", "sitemap_xml", "files",
 	"json", "captchaImage", "saveComment", "search", "tag", "login", "logout", 
 	"hashjob", "subscribe", "printme", "homePage");
