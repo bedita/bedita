@@ -146,7 +146,7 @@ class BeSystem {
 						"varValue" => $varValue,
 						"insertNewVar" => $insertNewVar
 					);
-					$this->parsePHPFile(&$fileLines, $params);
+					$this->parsePHPFile($fileLines, $params);
 				}
 			// else if it's string or numeric array
 			} else {
@@ -155,7 +155,7 @@ class BeSystem {
 					"varValue" => $value,
 					"insertNewVar" => $insertNewVar
 				);
-				$this->parsePHPFile(&$fileLines, $params);
+				$this->parsePHPFile($fileLines, $params);
 			}
 		}
 				
