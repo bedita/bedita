@@ -17,18 +17,17 @@
 	{if !empty($entry.link)}<link rel="{$entry.link.rel}" type="{$entry.link.type}" href="{$entry.link.href}" />{/if}
 	{if !empty($entry.content)}
 	<content type="html">
-	<p>
-	<a href="{$entry.content.src}" title="{$entry.content.title}">
-		<img src="{$entry.content.src}" alt="{$entry.content.alt}" />
-	</a>
-	</p>
+	&lt;p&gt;
+	&lt;a href=&quot;{$entry.content.src}&quot; title=&quot;{$entry.content.title}&quot;&gt;
+		&lt;img src=&quot;{$entry.content.src}&quot; alt=&quot;{$entry.content.alt}&quot; width=&quot;240&quot; height=&quot;179&quot; /&gt;
+	&lt;/a&gt;
+	&lt;/p&gt;
 	</content>
 	<link rel="enclosure" type="image/jpeg" href="{$entry.content.src}" />
 	{/if}
 </entry>
 {/foreach}
 </feed>
-
 {else}
 {$rss->header()}
 {assign_associative var='options' format='tags' slug='false'}

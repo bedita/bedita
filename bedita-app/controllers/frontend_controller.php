@@ -811,7 +811,7 @@ abstract class FrontendController extends AppController {
 				if(!empty($obj['GeoTag'][0]['latitude']) && !empty($obj['GeoTag'][0]['longitude'])) {
 					$item = array();
 					$position = $obj['GeoTag'][0]['latitude'] . ' ' . $obj['GeoTag'][0]['longitude'];
-					if($format == "rss") { // rss
+					if($format == "rss2") { // rss
 						$item = array('item' => array(
 							'title' => $obj['title'],
 							'description' => $description,
