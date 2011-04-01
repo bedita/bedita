@@ -790,11 +790,11 @@ abstract class FrontendController extends AppController {
 	}
 
 	public function georss($sectionName) {
+		$gml = (!empty($this->params['named']['gml']));
 		$this->section($sectionName);
 		$s = $this->viewVars["section"];
 		$channel = array( 'title' => htmlentities($this->publication["public_name"] . " - " . $s['title']) ,
 			'link' => "/section/".$sectionName,
-			//'url' => Router::url("/section/".$sectionName),
 			'description' => $s['description'],
 			'language' => $s['lang'],
 		);
@@ -809,12 +809,14 @@ abstract class FrontendController extends AppController {
 				$description .= (!empty($obj['body']) && !empty($description))? "<hr/>" .  $obj['body'] : $obj['body'];
 				if(!empty($obj['GeoTag'][0]['latitude']) && !empty($obj['GeoTag'][0]['longitude'])) {
 					$position = $obj['GeoTag'][0]['latitude'] . ' ' . $obj['GeoTag'][0]['longitude'];
-					$rssItems['item'][] = array(
+					$item = array('item' => array(
 						'title' => $obj['title'],
 						'description' => $description,
 						'pubDate' => $obj['created'],
-						'link' => $s['canonicalPath']."/".$obj['nickname'],
-						'georss:where' => array(
+						'link' => $s['canonicalPath']."/".$obj['nickname']
+					));
+					if($gml) { // geoRss GML
+						$item['georss:where'] = array(
 							0 => array(
 								'gml:Point' => array(
 									0 => array(
@@ -822,8 +824,11 @@ abstract class FrontendController extends AppController {
 									)
 								)
 							)
-						)
 						);
+					} else { // geoRss simple
+						$item['georss:point'] = $position;
+					}
+					$rssItems[] = $item;
 				}
 			}
 		}
