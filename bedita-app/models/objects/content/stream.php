@@ -145,7 +145,7 @@ class Stream extends BEAppModel
 			if(PHP_VERSION < 5.3) {
 				$file_info = finfo_open(FILEINFO_MIME, APP_PATH.'config'.DS.'magic');
 			} else {
-				$file_info = finfo_open(FILEINFO_MIME);
+				$file_info = finfo_open(FILEINFO_MIME_TYPE);
 			}
 			$mime_type = ($file_info)? finfo_file($file_info, $path) : $this->getMimeTypeByExtension($filename);
 		} else {
