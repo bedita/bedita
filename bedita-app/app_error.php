@@ -196,7 +196,7 @@ class AppError extends ErrorHandler {
 			$tpl = "error404.tpl";
 			$this->log(" 404 Not Found - $template: " . var_export($vars, TRUE));
 		} else {
-			$vars = $this->controller->viewVars;
+			$vars = array_merge($vars, $this->controller->viewVars);
 			if(!empty($vars["conf"])) {
 				unset($vars["conf"]);
 			}
