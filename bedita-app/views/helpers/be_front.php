@@ -383,25 +383,39 @@ class BeFrontHelper extends AppHelper {
 	/**
 	 * return the breadcrumb trail
 	 *
-	 * @param  string $separator Text to separate crumbs.
-	 * @param  string $startText This will be the first crumb, if false it defaults to first crumb in array
-	 * @param  string $classOn css class for current section
+	 * @param  array options, possible values are:
+	 *				"separator" => '&raquo;' [default] text to separate crumbs
+	 *				"startText" => false [default] this will be the first crumb, if false it defaults to first crumb in array
+	 *				"classOn"	=> "crumbOn" [default]  css class for current section
+	 *				"showPublication" => true [default] choose if publication is shown in breadcrumb
+	 *
 	 * @return string
 	 */
-	public function breadcrumb($separator = '&raquo;', $startText = false, $classOn="crumbOn") {
-		$breadcrumb = $this->Html->getCrumbs($separator, $startText);
+	public function breadcrumb(array $options = array() ) {
+
+		$options = array_merge(
+			array("separator" => '&raquo;', "startText" => false, "classOn" => "crumbOn", "showPublication" => true),
+			(array)$options
+		);
+
+		$breadcrumb = $this->Html->getCrumbs($options["separator"], $options["startText"]);
+		
 		if (empty($breadcrumb)) {
-			$publication_name = (!empty($this->_publication["public_name"]))? $this->_publication["public_name"] : $this->_publication["title"];
-			$this->Html->addCrumb($publication_name, '/');
+
+			if ($options["showPublication"]) {
+				$publication_name = (!empty($this->_publication["public_name"]))? $this->_publication["public_name"] : $this->_publication["title"];
+				$this->Html->addCrumb($publication_name, '/');
+			}
+
 			if (!empty($this->_section["pathSection"])) {
 				foreach ($this->_section["pathSection"] as $sec) {
 					$this->Html->addCrumb($sec["title"], $sec["canonicalPath"]);
 				}
 			}
 			if ($this->_section["id"] != $this->_publication["id"]) {
-				$this->Html->addCrumb($this->_section["title"], $this->_section["canonicalPath"], array("class" => $classOn));
+				$this->Html->addCrumb($this->_section["title"], $this->_section["canonicalPath"], array("class" => $options["classOn"]));
 			}
-			$breadcrumb = $this->Html->getCrumbs($separator, $startText);
+			$breadcrumb = $this->Html->getCrumbs($options["separator"], $options["startText"]);
 		}
 		return $breadcrumb;
 	}
