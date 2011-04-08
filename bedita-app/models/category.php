@@ -82,14 +82,20 @@ class Category extends BEAppModel {
 		// if it's a category
 		if (!empty($this->data[$this->alias]["object_type_id"])) {
 
+			// if name is in mediaTypes
+			if (in_array($name, Configure::read("mediaTypes"))) {
+				// if multimedia object return baseName
+				if (in_array($this->data[$this->alias]["object_type_id"], Configure::read("objectTypes.multimedia.id"))) {
+					return $baseName;
+				} else {
+					$name = $baseName . "-" . $i++;
+				}
+			}
+
 			$conditions["NOT"] = array("object_type_id" => $this->data[$this->alias]["object_type_id"]);
 			$conditions[] = "object_type_id IS NOT NULL";
 
-			// if not multimedia object_type_id and name is in mediaTypes change it
-			if (!in_array($this->data[$this->alias]["object_type_id"], Configure::read("objectTypes.multimedia.id"))
-					&& in_array($name, Configure::read("mediaTypes"))) {
-				$name = $baseName . "-" . $i++;
-			}
+			
 		// if it's a tag
 		} else {
 			$conditions[] = "object_type_id IS NULL";
