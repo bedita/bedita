@@ -766,14 +766,18 @@ abstract class FrontendController extends AppController {
 		);
 		$this->set('channelData', $channel);
 		$rssItems = array();
-		$items = $this->BeTree->getChildren($s['id'], $this->status, false, "priority", ($s['priority_order']=="asc"), 1, 50);
+		$items = $this->BeTree->getChildren($s['id'], $this->status, false, "priority", ($s['priority_order']=="asc"), 1, 40);
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);
 				if ($obj !== self::UNLOGGED && $obj !== self::UNAUTHORIZED) {
 					$description = $obj['description'];
-					$description .= (!empty($obj['abstract']) && !empty($description))? "<hr/>" .  $obj['abstract'] : $obj['abstract'];
-					$description .= (!empty($obj['body']) && !empty($description))? "<hr/>" .  $obj['body'] : $obj['body'];
+					if (!empty($obj['abstract'])) {
+						$description .= "<hr/>" .  $obj['abstract'];
+					}
+					if (!empty($obj['body'])) {
+						$description .= "<hr/>" .  $obj['body'];
+					}
 					$rssItems[] = array( 'title' => $obj['title'], 'description' => $description,
 						'pubDate' => $obj['created'], 'link' => $s['canonicalPath']."/".$item['nickname']);
 				}
