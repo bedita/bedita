@@ -440,8 +440,8 @@ $config['media_providers'] = array(
 		"params" => array(
 			"width"		=> 300,
 			"height"	=> 250,
-			"urlinfo" 	=> "http://www.blip.tv/file/%s?skin=json",
-			"urlembed"	=> "http://blip.tv/oembed/?url=%s"
+			"urlinfo" 	=> "http://www.blip.tv/file/%s?skin=json&no_wrap=1",
+			"urlembed"	=> "http://blip.tv/oembed/?url=%sz"
 		)
 	),
 	"vimeo"	=> array(

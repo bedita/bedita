@@ -68,29 +68,19 @@ class BeBlipComponent extends Object {
 			$urlinfo .= "&amp;height=" . $conf->media_providers["blip"]["params"]["height"];  
 		
 		// Get info
-		$fp = fopen(sprintf($urlinfo, $id), "r") ;
-		$json = "" ;
-		while(!feof($fp)) {
-			$json .= fread($fp, 1024) ;
-		}	
-		@fclose($fp) ;
-		if(!$json) return false ;
-		
-		// format the string
-		// remove start and end, that are not part of the string
-		$json = preg_replace(array("/^\s*blip_ws_results\s*\(\s*\[\s*/m", "/\s*\]\s*\)\s*;\s*$/mi"), "", $json) ;
-	
-		// remove comments
-		$json = preg_replace('/(\/\*[\s\S]*?\*\/?[\r]?[\n]?[\r\n])/m', '', $json) ;
-		
-		// remove single quotes
-		$json = preg_replace("/\'/mi", "\"", $json) ;
+		$json = file_get_contents(sprintf($urlinfo, $id));
+
+		if(!$json) {
+			return false;
+		}
 
 		// get assoc array
 		$ret = json_decode($json, true) ;
-		if(!($ret = json_decode($json, true))) return false ;
+		if (empty($ret)) {
+			return false ;
+		}
 		
-		$this->info = $ret['Post'] ;
+		$this->info = $ret;
 		
 		return $this->info  ;
 	}
