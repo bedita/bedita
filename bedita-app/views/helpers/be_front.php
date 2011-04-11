@@ -165,18 +165,21 @@ class BeFrontHelper extends AppHelper {
 		return (!empty($this->_currentContent['relations']['seealso'])) ? $this->_currentContent['relations']['seealso'] : '';
 	}
 
+	/**
+	 * build <link rel="canonical"/> canonical path tag of content/section selected
+	 * 
+	 * @return string
+	 */
 	public function canonicalPath() {
-		$canonical_path = $this->_section["canonicalPath"];
+		$canonical_path = (empty($this->_section["contentRequested"]))? $this->_section["canonicalPath"] : $this->_section["currentContent"]["canonicalPath"];
+		
 		if(empty($canonical_path)) {
 			return "";
 		}
-		$current_path = $this->Html->here;
-		if(!strstr($canonical_path,$current_path)) {
+
+		if (Router::url($canonical_path) != $this->Html->here) {
 			$public_url = $this->_publication[($this->_conf->staging) ? 'staging_url' : 'public_url'];
-			if(substr($public_url,-1) == "/") {
-				$public_url = substr($public_url,0,strlen($public_url)-1);
-			}
-			return '<link rel="canonical" href="' . $public_url . $this->Html->base . $canonical_path .'" />';
+			return '<link rel="canonical" href="' . rtrim($public_url, "/") . $this->Html->base . $canonical_path .'" />';
 		}
 		return "";
 	}
