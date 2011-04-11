@@ -1338,9 +1338,8 @@ abstract class FrontendController extends AppController {
 			}
 			
 			$section["contentRequested"] = true;
-			$section["contentPath"] = ($section["canonicalPath"] !== "/") ? $section["canonicalPath"] : ""
-				. "/" . $section['currentContent']['nickname'];
-			$section['currentContent']['canonicalPath'] = $section["contentPath"];
+			$section["contentPath"] = ($section["canonicalPath"] !== "/") ? $section["canonicalPath"] : "";
+			$section['currentContent']['canonicalPath'] = $section["contentPath"] .= "/" . $section['currentContent']['nickname'];
 			
 			$this->historyItem["object_id"] = $content_id;
 			$this->historyItem["title"] = $section['currentContent']['title'];
