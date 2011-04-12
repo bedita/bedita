@@ -559,7 +559,11 @@ class NewsletterController extends ModulesController {
 					"conditions" => array("BEObject.id" => $id)
 				)
 			);
-			$obj["relations"] = $this->objectRelationArray($obj["RelatedObject"]);
+
+			if (!empty($obj["RelatedObject"])) {
+				$obj["relations"] = $this->objectRelationArray($obj["RelatedObject"]);
+			}
+
 			if (empty($obj["description"]))
 				$obj["description"] = "";
 			if (empty($obj["abstract"]))
