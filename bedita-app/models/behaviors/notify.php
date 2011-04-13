@@ -55,7 +55,7 @@ class NotifyBehavior extends ModelBehavior {
 			if(!$created && $userField == "comments") { 
 				return;
 			}
-		
+
 			$c = ClassRegistry::init($model->name)->find("first", array(
 					"conditions" => array(
 						"ReferenceObject.id" => $data["object_id"]
@@ -71,7 +71,20 @@ class NotifyBehavior extends ModelBehavior {
 			if($userField == "notes") { // don't send mail to editor itself
 				$conditions[] = "id <> " . $data["user_modified"];
 			}
+
 			$users = $userModel->getUsersToNotify($conditions);
+
+			// exclude editor note notifies for users without backend authorization
+			if($userField == "notes") {
+				foreach ($users as $key => $u) {
+					$backendAuth = Set::extract("/Group/backend_auth", $u);
+
+					if (array_sum($backendAuth) == 0) {
+						unset($users[$key]);
+					}
+				}
+			}
+			
 			if(empty($data['author'])) {
 				$data['author'] = $userModel->field("userid",
 					array("id" => $data["user_modified"]));

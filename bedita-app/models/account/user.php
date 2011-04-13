@@ -127,7 +127,7 @@ class User extends BEAppModel
 		return $this->find("all", array(
 				"fields" => array("id", "userid", "realname", "passwd", "email", "lang"),
 				"conditions" => $conditions,
-				"contain" => array()
+				"contain" => array("Group")
 				)
 			);
 	}
