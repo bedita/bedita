@@ -19,6 +19,10 @@
 
 {include file="inc/form_mediatype.tpl"}
 
+{if $object.Category == "spreadsheet"}
+	{$view->element('form_textbody')}
+{/if}
+
 {$view->element('form_file')}
 
 {if !empty($object)}
