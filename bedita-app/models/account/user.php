@@ -135,7 +135,7 @@ class User extends BEAppModel
 	function afterFind($results) {
 		if(!empty($results[0]) || !empty($results["User"])) {
 			foreach ($results as &$u) {
-				if (!empty($u['User']['auth_params'])) {
+				if (!empty($u['User']['auth_params']) && is_array($u['User']['auth_params'])) {
 					$u['User']['auth_params'] = unserialize($u['User']['auth_params']);
 				}
 			}
