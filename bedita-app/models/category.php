@@ -67,6 +67,18 @@ class Category extends BEAppModel {
 	}
 
 	/**
+	 * Get tag label from unique name
+	 * 
+	 * @param string $name
+	 */
+	public function tagLabelFromName($name) {
+		$tagDB = $this->find("first", 
+			array("conditions" => "object_type_id IS NULL AND name='$name'"));
+		return !empty($tagDB) ? $tagDB['label'] : "";
+	}
+	
+	
+	/**
 	 * Define a unique name from label: lowercase, trimmed, etc...
 	 * 
 	 * @param string $label
@@ -236,7 +248,8 @@ class Category extends BEAppModel {
 	public function getTags(array $options = array()) {
 
 		$options = array_merge(
-			array("showOrphans" => true, "status" => null, "cloud" => false, "coeff" => 12, "order" => "label", "dir" => 1, "area_id"=> null),
+			array("showOrphans" => true, "status" => null, "cloud" => false, 
+				"coeff" => 12, "order" => "label", "dir" => 1, "area_id"=> null, "section_id" => null),
 			(array)$options
 		);
 		
@@ -252,8 +265,8 @@ class Category extends BEAppModel {
 		$joinsBEObject = array();
 		$joins = array();
 
-		// get tags associated to objects that are in $area_id publication
-		if (!empty($options["area_id"])) {
+		// get tags associated to objects that are in $area_id publication or $section_id section
+		if (!empty($options["area_id"]) || !empty($options["section_id"])) {
 			$joinsBEObject = array(
 					'table' => 'objects',
 					'alias' => 'BEObject',
@@ -266,14 +279,18 @@ class Category extends BEAppModel {
 				$joinsBEObject["conditions"]['BEObject.status'] = $options["status"];
 			}
 
+			$treeCondition = array('Tree.id = BEObject.id');
+			if(!empty($options["section_id"])) {
+				$treeCondition['Tree.parent_id'] = $options["section_id"];
+			} else {
+				$treeCondition['Tree.area_id'] = $options["area_id"];
+			}
+			
 			$joinsTree = array(
 				'table' => 'trees',
 				'alias' => 'Tree',
 				'type' => 'inner',
-				'conditions'=> array(
-					'Tree.id = BEObject.id',
-					'Tree.area_id' => $options["area_id"]
-				)
+				'conditions'=> $treeCondition
 			);
 
 			$joins = array(
