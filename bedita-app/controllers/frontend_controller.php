@@ -471,15 +471,19 @@ abstract class FrontendController extends AppController {
 		} else {
 			
 			if($ex instanceof BeditaException) {
-				$errTrace =  $ex->errorTrace();   
+				$errTrace =  $ex->errorTrace();
+				$details = $ex->getDetails();
+				$result = $ex->result;
 			} else {
 				$errTrace =  get_class($ex)." -  ". $ex->getMessage().
 					"\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+				$details = "";
+				$result = "";
 			}
 			include_once (APP . 'app_error.php');
 			return new AppError('handleExceptionFrontend', 
-					array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
-					'result' => $ex->result), $errTrace);
+					array('details' => $details, 'msg' => $ex->getMessage(), 
+					'result' => $result), $errTrace);
 					
 		}
 	}
@@ -1433,6 +1437,9 @@ abstract class FrontendController extends AppController {
 			if(method_exists($this, $methodName)) {
 				array_shift($args);
 				call_user_func_array(array($this, $methodName), $args);
+			} else {
+				// launch 404 error
+				throw new BeditaException(__("Content not found", true));
 			}
 			// check before render method
 			if (method_exists($this, $methodName . "BeforeRender")) {
