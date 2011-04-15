@@ -793,9 +793,13 @@ abstract class FrontendController extends AppController {
 		$this->layout = NULL;
 	}
 
+	public function georssatom($sectionName) {
+		$this->section($sectionName);
+		$this->layout = 'ajax';
+		header("Content-type: application/atom+xml; charset=utf-8");
+	}
+
 	public function georss($sectionName) {
-		$format = (!empty($this->params['named']['format'])) ? $this->params['named']['format'] : "atom";
-		$this->set($format,$format);
 		$gml = (!empty($this->params['named']['gml']));
 		$this->section($sectionName);
 		$s = $this->viewVars["section"];
@@ -804,6 +808,7 @@ abstract class FrontendController extends AppController {
 			'description' => $s['description'],
 			'language' => $s['lang'],
 		);
+		
 		$this->set('channelData', $channel);
 		$rssItems = array();
 		$items = $s['childContents'];
@@ -813,50 +818,25 @@ abstract class FrontendController extends AppController {
 				$description .= (!empty($obj['abstract']) && !empty($description))? "<hr/>" .  $obj['abstract'] : $obj['abstract'];
 				$description .= (!empty($obj['body']) && !empty($description))? "<hr/>" .  $obj['body'] : $obj['body'];
 				if(!empty($obj['GeoTag'][0]['latitude']) && !empty($obj['GeoTag'][0]['longitude'])) {
-					$item = array();
 					$position = $obj['GeoTag'][0]['latitude'] . ' ' . $obj['GeoTag'][0]['longitude'];
-					if($format == "rss2") { // rss
-						$item = array('item' => array(
-							'title' => $obj['title'],
-							'description' => $description,
-							'pubDate' => $obj['created'],
-							'link' => $s['canonicalPath']."/".$obj['nickname']
-						));
-						if($gml) { // geoRss GML
-							$item['georss:where'] = array(
-								0 => array(
-									'gml:Point' => array(
-										0 => array(
-											'gml:pos' => $position
-										)
+					$item = array('item' => array(
+						'title' => $obj['title'],
+						'description' => $description,
+						'pubDate' => $obj['created'],
+						'link' => $s['canonicalPath']."/".$obj['nickname']
+					));
+					if($gml) { // geoRss GML
+						$item['georss:where'] = array(
+							0 => array(
+								'gml:Point' => array(
+									0 => array(
+										'gml:pos' => $position
 									)
 								)
-							);
-						} else { // geoRss simple
-							$item['georss:point'] = $position;
-						}
-					} else if($format == "atom") { // atom
-						$image = array();
-						if(!empty($obj['relations']['attach']) && ($obj['relations']['attach'][0]['object_type_id'] == Configure::read("objectTypes.image.id")) ) {
-							$content = $obj['relations']['attach'][0];
-							$image = array(
-								'title' => $content['title'],
-								'src' => Configure::read("mediaUrl") . $content['uri'],
-								'alt' => $content['description']
-							);
-						}
-						$item = array(
-							'title' => $obj['title'],
-							'description' => $description,
-							'updated' => $obj['created'],
-							'link' => array(
-								"rel" => "alternate",
-								"type" => "text/html",
-								"href" => $s['canonicalPath']."/".$obj['nickname']
-							),
-							'content' => $image,
-							'georss:point' => $position
+							)
 						);
+					} else { // geoRss simple
+						$item['georss:point'] = $position;
 					}
 					$rssItems[] = $item;
 				}
@@ -869,11 +849,13 @@ abstract class FrontendController extends AppController {
 			"xmlns:gml" => "http://www.opengis.net/gml"
 		);
 		$this->set('attrib',$attrib);
+		$this->view = 'View';
 		// add RSS helper if not present
 		if(!in_array('Rss', $this->helpers)) {
 			$this->helpers[] = 'Rss';
 		}
 		$this->layout = NULL;
+		header("Content-type: application/text+xml; charset=utf-8");
 	}
 
 	/**
@@ -1076,7 +1058,6 @@ abstract class FrontendController extends AppController {
 			$authorized = true;
 		}
 		
-
 		$modelType = $this->BEObject->getType($obj_id);
 		if(!isset($this->{$modelType})) {
 			$this->{$modelType} = $this->loadModelByType($modelType);
