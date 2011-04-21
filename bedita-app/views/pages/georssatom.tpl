@@ -10,22 +10,20 @@
 <generator uri="http://www.bedita.com/">Bedita</generator>
 {foreach from=$section.childContents item='item'}
 {if !empty($item.GeoTag.0.latitude) && !empty($item.GeoTag.0.longitude)}
-
 <entry>
 	<title>{$item.title}</title>
-	<link rel="alternate" type="text/html" href="{$html->url('/')}{$item.canonicalPath}" />
+	{if $publication.public_url}<link rel="alternate" type="text/html" href="{$publication.public_url}{$item.canonicalPath}" />
+{/if}
 	<id>{$item.id}</id>
 	<published>{$item.start_date|default:$item.created}</published>
 	<updated>{$item.modified|default:$item.created}</updated>
 	<content type="html">
 	{$item.body|escape}
-	{strip}{if !empty($item.relations.attach.0)}
-		{if strpos($item.relations.attach.0.uri,'/') === 0}
-			{assign_concat var="fileUrl"  0=$conf->mediaUrl  1=$item.relations.attach.0.uri}
-		{else}
-			{assign var="fileUrl"  value=$item.relations.attach.0.uri}
-		{/if}
-		&lt;img src="{$fileUrl}" alt="{$item.relations.attach.0.title|default:""}" width="600" /&gt;
+		{strip}{if !empty($item.relations.attach.0)}
+		{assign_associative var="mediaParams" presentation="thumb" width="500" mode="fill" URLonly=0}
+		{assign_associative var="htmlAttr" width="500"}
+		{$beEmbedMedia->object($item.relations.attach.0, $mediaParams, $htmlAttr)|escape}
+		&lt;p&gt;{$item.relations.attach.0.title|escape|default:""} [{$conf->objectTypes[$item.relations.attach.0.object_type_id].name|escape|default:""}]&lt;/p&gt;
 	{/if}{/strip}
 	</content>
 	{if $item.creator}
@@ -35,12 +33,8 @@
 	</author>
 	{/if}
 	{strip}{if !empty($item.relations.attach.0)}
-		{if strpos($item.relations.attach.0.uri,'/') === 0}
-			{assign_concat var="fileUrl"  0=$conf->mediaUrl  1=$item.relations.attach.0.uri}
-		{else}
-			{assign var="fileUrl"  value=$item.relations.attach.0.uri}
-		{/if}
-		<link rel="enclosure" type="{$item.relations.attach.0.mime_type}" href="{$fileUrl}" />
+		{assign_associative var="mediaParams" presentation="link" URLonly=1}
+		<link rel="enclosure" type="{$item.relations.attach.0.mime_type}" href="{$beEmbedMedia->object($item.relations.attach.0, $mediaParams)}" />
 	{/if}{/strip}
 	<georss:point>{$item.GeoTag.0.latitude} {$item.GeoTag.0.longitude}</georss:point>
 	<geo:lat>{$item.GeoTag.0.latitude}</geo:lat>
@@ -48,5 +42,4 @@
 </entry>
 {/if}
 {/foreach}
-
 </feed>
