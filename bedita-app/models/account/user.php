@@ -143,7 +143,7 @@ class User extends BEAppModel
 				}
 			}
 		}
-		pr($results);exit;
+		
 		foreach ($results as &$u) {
 			// format object properties
 			if(!empty($u['UserProperty']) && is_array($u['UserProperty'])) {
