@@ -1,5 +1,5 @@
 {*
-** news view template
+** default view template
 *}
 {$html->css("ui.datepicker", null, null, false)}
 {$html->script("jquery/jquery.form", false)}

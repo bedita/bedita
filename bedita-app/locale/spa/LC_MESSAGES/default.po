@@ -417,6 +417,9 @@ msgstr ""
 msgid "Error modifying permissions"
 msgstr ""
 
+msgid "Error moving section in the tree"
+msgstr ""
+
 msgid "Error on join between card and mail group"
 msgstr ""
 

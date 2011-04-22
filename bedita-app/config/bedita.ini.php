@@ -267,8 +267,9 @@ $config["cfgOneWayRelation"] = array();
 // Default reserved words [avoided in nickname creation]
 $config["defaultReservedWords"] = array("section", "content", "rss", "feed", "georss",
 	"download", "xml", "xmlobject", "sitemap", "sitemap.xml", "sitemap_xml", "files",
-	"json", "captchaImage", "saveComment", "search", "tag", "login", "logout", 
-	"hashjob", "subscribe", "printme", "homePage");
+	"json", "captchaImage", "saveComment", "search", "tag", "login", "logout", "js",
+	"hashjob", "subscribe", "printme", "homePage", "img", "css", "files", 
+	"lang", "favicon.ico", "favicon.gif");
 
 // Cfg reserved words (override in bedita.cfg)
 $config["cfgReservedWords"] = array();
@@ -439,8 +440,8 @@ $config['media_providers'] = array(
 		"params" => array(
 			"width"		=> 300,
 			"height"	=> 250,
-			"urlinfo" 	=> "http://www.blip.tv/file/%s?skin=json",
-			"urlembed"	=> "http://blip.tv/oembed/?url=%s"
+			"urlinfo" 	=> "http://www.blip.tv/file/%s?skin=json&no_wrap=1",
+			"urlembed"	=> "http://blip.tv/oembed/?url=%sz"
 		)
 	),
 	"vimeo"	=> array(

@@ -181,6 +181,9 @@ class AppError extends ErrorHandler {
 			$this->controller->set('conf', Configure::getInstance());
 		}
 		$vars = array();
+		if(!empty($_GET["url"])) {
+			$vars["url"] = $_GET["url"];
+		}
 		if(in_array($template, $this->error404)) {
 			if(!empty($this->controller->viewVars["BEAuthUser"])) {
 				// remove unwanted data
@@ -189,15 +192,16 @@ class AppError extends ErrorHandler {
 			if(!empty($this->controller->viewVars["controller"])) {
 				$vars["controller"] = $this->controller->viewVars["controller"];
 			}
-			$vars["here"] = $this->controller->here;
-			$vars["action"] = $this->controller->action;
 			header('HTTP/1.1 404 Not Found');
 			$tpl = "error404.tpl";
 			$this->log(" 404 Not Found - $template: " . var_export($vars, TRUE));
 		} else {
-			$vars = $this->controller->viewVars;
+			$vars = array_merge($vars, $this->controller->viewVars);
 			if(!empty($vars["conf"])) {
 				unset($vars["conf"]);
+			}
+			if(!empty($_POST)) {
+				$vars["post"] = $_POST;
 			}
 			header('HTTP/1.1 500 Internal Server Error');
 			$tpl = "error500.tpl";

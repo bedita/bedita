@@ -471,15 +471,19 @@ abstract class FrontendController extends AppController {
 		} else {
 			
 			if($ex instanceof BeditaException) {
-				$errTrace =  $ex->errorTrace();   
+				$errTrace =  $ex->errorTrace();
+				$details = $ex->getDetails();
+				$result = $ex->result;
 			} else {
 				$errTrace =  get_class($ex)." -  ". $ex->getMessage().
 					"\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+				$details = "";
+				$result = "";
 			}
 			include_once (APP . 'app_error.php');
 			return new AppError('handleExceptionFrontend', 
-					array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
-					'result' => $ex->result), $errTrace);
+					array('details' => $details, 'msg' => $ex->getMessage(), 
+					'result' => $result), $errTrace);
 					
 		}
 	}
@@ -758,7 +762,7 @@ abstract class FrontendController extends AppController {
 		}
 
 		$this->setSectionPath($s, $s["id"]);
-		$channel = array( 'title' => $this->publication["public_name"] . " - " . $s['title'] ,
+		$channel = array( 'title' => htmlentities($this->publication["public_name"] . " - " . $s['title']) ,
 			'link' => "/section/".$sectionName,
 			//'url' => Router::url("/section/".$sectionName),
 			'description' => $s['description'],
@@ -766,14 +770,18 @@ abstract class FrontendController extends AppController {
 		);
 		$this->set('channelData', $channel);
 		$rssItems = array();
-		$items = $this->BeTree->getChildren($s['id'], $this->status, false, "priority", ($s['priority_order']=="asc"));
+		$items = $this->BeTree->getChildren($s['id'], $this->status, false, "priority", ($s['priority_order']=="asc"), 1, 40);
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);
 				if ($obj !== self::UNLOGGED && $obj !== self::UNAUTHORIZED) {
 					$description = $obj['description'];
-					$description .= (!empty($obj['abstract']) && !empty($description))? "<hr/>" .  $obj['abstract'] : $obj['abstract'];
-					$description .= (!empty($obj['body']) && !empty($description))? "<hr/>" .  $obj['body'] : $obj['body'];
+					if (!empty($obj['abstract'])) {
+						$description .= "<hr/>" .  $obj['abstract'];
+					}
+					if (!empty($obj['body'])) {
+						$description .= "<hr/>" .  $obj['body'];
+					}
 					$rssItems[] = array( 'title' => $obj['title'], 'description' => $description,
 						'pubDate' => $obj['created'], 'link' => $s['canonicalPath']."/".$item['nickname']);
 				}
@@ -1315,9 +1323,8 @@ abstract class FrontendController extends AppController {
 			}
 			
 			$section["contentRequested"] = true;
-			$section["contentPath"] = ($section["canonicalPath"] !== "/") ? $section["canonicalPath"] : ""
-				. "/" . $section['currentContent']['nickname'];
-			$section['currentContent']['canonicalPath'] = $section["contentPath"];
+			$section["contentPath"] = ($section["canonicalPath"] !== "/") ? $section["canonicalPath"] : "";
+			$section['currentContent']['canonicalPath'] = $section["contentPath"] .= "/" . $section['currentContent']['nickname'];
 			
 			$this->historyItem["object_id"] = $content_id;
 			$this->historyItem["title"] = $section['currentContent']['title'];
@@ -1430,6 +1437,9 @@ abstract class FrontendController extends AppController {
 			if(method_exists($this, $methodName)) {
 				array_shift($args);
 				call_user_func_array(array($this, $methodName), $args);
+			} else {
+				// launch 404 error
+				throw new BeditaException(__("Content not found", true));
 			}
 			// check before render method
 			if (method_exists($this, $methodName . "BeforeRender")) {

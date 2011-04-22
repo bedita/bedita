@@ -1,3 +1,58 @@
+Version 3.1.2 - ulmus
+ User-visible changes:
+	* Publications module: default limit listed content to one hundred items
+	* newsletter: list detail, fixed errors in config messages tab
+	* #267 bugfix: avoided recursion on tree when trying to insert section inside itself. Added some unit test on tree
+	* ui: update object user filter on object list - display user name
+	* BeToolbar helper: correct some buggy regexp
+
+
+ Frontend changes:
+	* Added new object permissions for partial frontend access
+	* Refactoring FrontendController to handle new frontend permission
+	* bugfix: when publication status is draft and $config["draft"]=true, off objects were shown
+	* #260 - refactoring of Category::getTags($options) method. Now accept an array of parameters. Added filter by publication to see only tags used in a frontend app
+	* add moderated user signup with administrator's email as an option
+	* correct wrong <input type=email> with <input type=text> for name field in signup <form>
+	* #260 - FrontendController::tag() method get only objects from current frontend publication
+	* limit the number of elements in auto-generated RSS feeds (now 50 hard coded)
+	* htmlentities for rss items' titles
+	* security bugfix: frontend signup groups limited to frontend groups except if they are defined in frontend.ini.php authorizedGroups
+
+
+ Developer-visibile changes:
+	* Object permissions managed through configuration array instead of constants
+	* shell: dbadmin cleanup -days / removes old items from log/job tables
+	* check sql format with regexp instead of DateTime class for work correctly in PHP 5.2
+	* #261 - generate category and tag names like object nickname for friendly url
+	* patched mysql schema (remove enum and set)
+	* minor fix on unit test
+	* remove duplicated Module model
+	* shell: bedita modules fix/update
+	* permission flow in FrontendController::loadObj() revisited
+	* shell: bedita checkApp - check mediaRoot/mediaUrl/beditaUrl params presence
+	* card: fix merge/import from vcard file, avoid duplicates
+	* shell: add dbadmin::updateCategoryName() method to update categories and tags unique name as friendly url string
+	* Category/Tag unique name: add meditaTypes category as reserved words for categories
+	* fix model paths list order for plugins
+	* bugfix: unit test use "test" datasource from database.php
+	* core: reserved words update
+	* more clear and simple 404/500 error log
+	* remove bad js link - jquery/jquery.treeview.js
+	* error/log messages improvement
+	* shell: method to read arguments from ini file
+	* simple html dom library
+	* fix default $config mediaRoot/mediaUrl
+	* shell: check all frontends in checkApp / check frontends existence
+	* errors: add GET/POST data in log msg
+	* webservice - fixed wrong use of SoapClient PHP class in SoapClientModel
+	* fix wrong custom query for postreSQL in BuildFilter::object_userFilter() method
+	* remove unset Content array in BEAppModel::findObjects method
+	* postgres support: fixed wrong use of LIMIT clausole in BEAppModel::findObjects()
+	* update to CakePHP 1.2.10
+
+
+
 Version 3.1.1 - ulmus
  User-visible changes:
 	* added "create new object" button in publications module (tab content)

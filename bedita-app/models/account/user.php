@@ -127,7 +127,7 @@ class User extends BEAppModel
 		return $this->find("all", array(
 				"fields" => array("id", "userid", "realname", "passwd", "email", "lang"),
 				"conditions" => $conditions,
-				"contain" => array()
+				"contain" => array("Group")
 				)
 			);
 	}
@@ -136,7 +136,10 @@ class User extends BEAppModel
 		if(!empty($results[0]) || !empty($results["User"])) {
 			foreach ($results as &$u) {
 				if (!empty($u['User']['auth_params'])) {
-					$u['User']['auth_params'] = unserialize($u['User']['auth_params']);
+					$auth_params = @unserialize($u['User']['auth_params']);
+					if ($auth_params !== false) {
+						$u['User']['auth_params'] = $auth_params;
+					}
 				}
 			}
 		}

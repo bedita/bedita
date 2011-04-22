@@ -682,6 +682,39 @@ class DbadminShell extends BeditaBaseShell {
 		$this->out("Done");
 		
 	}
+
+	public function updateCategoryName() {
+		$categoryModel = ClassRegistry::init("Category");
+		$categoryModel->Behaviors->disable("CompactResult");
+		$conditions = array();
+		if (!empty($this->params["objectType"])) {
+			$conditions["object_type_id"] = Configure::read("objectTypes." . $this->params["objectType"] . ".id");
+		}
+		$categories = $categoryModel->find("all", array(
+			"order" => "Category.id ASC",
+			"conditions" => $conditions
+		));
+		
+		if (!empty($categories)) {
+			$this->out("Updating category unique name:");
+			$this->hr();
+			foreach ($categories as $cat) {
+				$text = "update unique name of ";
+				$text .= (!empty($cat["Category"]["object_type_id"]))? "category" : "tag";
+				$text .= " id:" . $cat["Category"]["id"] . " label:\"" . $cat["Category"]["label"] . "\"";
+				$categoryModel->create();
+				
+				if ($categoryModel->save($cat)) {
+					$this->out($text . " done");
+				} else {
+					$this->out($text . " failed");
+				}
+			}
+		} else {
+			$this->out("No categories or tags found.");
+		}
+		$this->out("Done.");
+	}
 	
 	/**
 	 * Cleanup old items (log/job tables)
@@ -816,6 +849,8 @@ class DbadminShell extends BeditaBaseShell {
         $this->out("    -days \t number of days to preserve from today in cleanup");
         $this->out(' ');
 		$this->out("14. updateCategoryName: update all categories and tags unique name");
+        $this->out(' ');
+		$this->out("    -objectType \t <object-type-name> update categories for a specific object type (for example: document)");
         $this->out(' ');
 	}
 	

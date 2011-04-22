@@ -19,6 +19,10 @@
 
 {include file="inc/form_mediatype.tpl"}
 
+{if $object.Category == "spreadsheet" or $object.Category == "text"}
+	{$view->element('form_textbody')}
+{/if}
+
 {$view->element('form_file')}
 
 {if !empty($object)}
@@ -36,6 +40,9 @@
 {$view->element('form_custom_properties')}
 
 {$view->element('form_file_exif')}
+
+{$view->element('form_notes')}
+
 
 </form>
 	{$view->element('form_versions')}

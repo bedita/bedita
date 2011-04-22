@@ -39,7 +39,7 @@ class Tree extends BEAppModel
 		$pathToCheck = array("object_path", "parent_path");
 		foreach ($pathToCheck as $path) {
 			if (isset($this->data["Tree"][$path])) {
-
+				
 				// no empty path permitted
 				if (empty($this->data["Tree"][$path])) {
 					return false;

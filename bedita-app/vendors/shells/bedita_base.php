@@ -30,6 +30,24 @@
  */
 class BeditaBaseShell extends Shell {
 
+	/**
+	 * Init configuration for all bedita shells, called in startup()
+	 */
+	protected function initConfig() {
+		// load cached configurations
+		BeLib::getObject("BeConfigure")->initConfig();
+		// Configure::write('debug', 1);
+	}
+
+	/**
+	 * Default shell startup, call initConfig (may raise db/model errors!), to override
+	 * in subclasses
+	 * @see Shell::startup()
+	 */
+	function startup() {
+		$this->initConfig();
+	}
+	
 	protected function check_sys_get_temp_dir() {
 		if ( !function_exists('sys_get_temp_dir') ) {
 		    // Based on http://www.phpit.net/

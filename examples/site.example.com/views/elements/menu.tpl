@@ -1,6 +1,7 @@
 {if ($section.id != $publication.id) && ($section.nickname != 'footer-docs')}
 <div class="breadcrumb">
-	{$beFront->breadcrumb("&nbsp;&gt;&nbsp;", false, "subon")}
+	{assign_associative var="options" classOn="subon" separator="&nbsp;&gt;&nbsp;"}
+	{$beFront->breadcrumb($options)}
 </div>
 {/if}
 

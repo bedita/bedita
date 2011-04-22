@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2011-01-27 14:59:17\n"
+"POT-Creation-Date: 2011-03-28 15:10:35\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -421,6 +421,9 @@ msgid "Error loading tag: "
 msgstr ""
 
 msgid "Error modifying permissions"
+msgstr ""
+
+msgid "Error moving section in the tree"
 msgstr ""
 
 msgid "Error on join between card and mail group"
