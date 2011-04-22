@@ -789,6 +789,12 @@ abstract class FrontendController extends AppController {
 		$this->layout = NULL;
 	}
 
+	public function georssatom($sectionName) {
+		$this->section($sectionName);
+		$this->layout = 'ajax';
+		header("Content-type: application/atom+xml; charset=utf-8");
+	}
+
 	public function georss($sectionName) {
 		$gml = (!empty($this->params['named']['gml']));
 		$this->section($sectionName);
@@ -845,6 +851,7 @@ abstract class FrontendController extends AppController {
 			$this->helpers[] = 'Rss';
 		}
 		$this->layout = NULL;
+		header("Content-type: application/text+xml; charset=utf-8");
 	}
 
 	/**
