@@ -73,6 +73,7 @@ function enableSubFoldersOn($baseDir, &$var, &$exclude) {
 if (!defined("BEDITA_CORE_PATH")) {
 	define("BEDITA_CORE_PATH", ROOT . DS . APP_DIR);
 	define("BACKEND_APP", true);
+	define('BEDITA_LOCAL_CFG_PATH', BEDITA_CORE_PATH . DS .'config' . DS . 'local');
 	$controllerPaths = array();
 	enableSubFoldersOn(BEDITA_CORE_PATH .DS . 'controllers', $controllerPaths, $excludedDirs);
 	
@@ -102,6 +103,7 @@ if (!defined("BEDITA_CORE_PATH")) {
 
 // frontends specific bootstrap
 } else {
+	define('BEDITA_LOCAL_CFG_PATH', BEDITA_CORE_PATH . DS .'config' . DS . 'local');
 	define("BACKEND_APP", false);
 	$modelPaths[]=BEDITA_CORE_PATH . DS . 'models' . DS;
 	$viewPaths=array(BEDITA_CORE_PATH . DS . 'views' . DS);
@@ -148,9 +150,6 @@ enableSubFoldersOn(BEDITA_CORE_PATH . DS . 'models', $modelPaths, $excludedDirs)
 
 // common bedita libs path
 define('BEDITA_LIBS', BEDITA_CORE_PATH . DS .'libs');
-
-// local configuration files path
-define('BEDITA_LOCAL_CFG_PATH', BEDITA_CORE_PATH . DS .'config' . DS . 'local');
 
 // common exceptions definitions
 require_once BEDITA_CORE_PATH . DS . "bedita_exception.php";
