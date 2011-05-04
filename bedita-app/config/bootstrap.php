@@ -149,6 +149,9 @@ enableSubFoldersOn(BEDITA_CORE_PATH . DS . 'models', $modelPaths, $excludedDirs)
 // common bedita libs path
 define('BEDITA_LIBS', BEDITA_CORE_PATH . DS .'libs');
 
+// local configuration files path
+define('BEDITA_LOCAL_CFG_PATH', BEDITA_CORE_PATH . DS .'config' . DS . 'local');
+
 // common exceptions definitions
 require_once BEDITA_CORE_PATH . DS . "bedita_exception.php";
 
