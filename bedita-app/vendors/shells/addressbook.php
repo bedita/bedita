@@ -37,6 +37,19 @@ class AddressbookShell extends BeditaBaseShell {
 			$this->out("Input file is mandatory");
 			return;
 		}
+		
+		$options = array();
+		$mail_group_id = null;
+		if (isset($this->params['m'])) {
+			$mailgroup = ClassRegistry::init("MailGroup");
+			$mail_group_id = $mailgroup->field("id", array("group_name" => $this->params['m']));
+			if(empty($mail_group_id)) {
+				$this->out("Mail group " . $this->params['m'] . " not found: import aborted");
+				return false;
+			}
+			$options["joinGroup"][0]["mail_group_id"] = $mail_group_id;
+			$options["joinGroup"][0]["status"] = "confirmed";
+		}
 
 		$cardFile = $this->params['f'];
 		if(!file_exists($cardFile)) {
@@ -45,7 +58,6 @@ class AddressbookShell extends BeditaBaseShell {
 		}
 
 		// categories
-		$options = array();
 		if (!isset($this->params['c'])) {
 			$this->out("No categories set");
 		} else {
@@ -53,7 +65,7 @@ class AddressbookShell extends BeditaBaseShell {
 			$catTmp = split(",", $categories);
 			$categoryModel = ClassRegistry::init("Category");
 			$cardTypeId = Configure::read("objectTypes.card.id");
-			$options = array("Category" => $categoryModel->findCreateCategories($catTmp, $cardTypeId));
+			$options["Category"] = $categoryModel->findCreateCategories($catTmp, $cardTypeId);
 		}
 
 		$ext = strtolower(substr($cardFile, strrpos($cardFile, ".")+1));
@@ -118,12 +130,13 @@ class AddressbookShell extends BeditaBaseShell {
 	function help() {
         $this->out('Available functions:');
   		$this->out(' ');
-        $this->out('1. import: import vcf/vcard or microsoft outlook csv file');
+        $this->out('1. import: import vcf/vcard or microsoft outlook csv file, or generic csv file');
   		$this->out(' ');
-        $this->out('    Usage: import -f <csv-cardfile> [-c <categories>]');
+        $this->out('    Usage: import -f <csv-cardfile> [-c <categories>] [-m <mail-group-name>]' );
   		$this->out(' ');
   		$this->out("    -f <csv-cardfile>\t vcf/vcard or csv file to import");
   		$this->out("    -c <categories> \t comma separated <categories> to use on import (created if not exist)");
+  		$this->out("    -m <mail-group-name> \t name of mail group to associate with imported cards");
   		$this->out(' ');
         $this->out('2. export: export to vcf/vcard or microsoft outlook csv file');
   		$this->out(' ');

@@ -190,8 +190,15 @@ class Card extends BEAppObjectModel {
 		$csvKeys = fgetcsv($handle, 1000, ",");
 		$numKeys = count($csvKeys);
 		$keys = array();
+		$beFields = array_values($this->csvFields);
 		foreach ($csvKeys as $f) {
-			$keys[] = (!empty($this->csvFields[$f])) ? $this->csvFields[$f] : null; 
+			$k = null;
+			if(!empty($this->csvFields[$f])) {
+				$k = $this->csvFields[$f];
+			} else if(in_array(strtolower($f), $beFields)) {
+				$k = strtolower($f);
+			}
+			$keys[] = $k; 
 		}
 		
 		$data = array();
