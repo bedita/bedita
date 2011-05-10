@@ -200,6 +200,7 @@ class DeployShell extends BeditaBaseShell {
 			}
 		}
 		
+		$frontEndCount = $count;
 		if(file_exists(BEDITA_ADDONS_PATH)) {
 			$folder = new Folder(BEDITA_ADDONS_PATH);
 			$ls = $folder->ls();
@@ -212,7 +213,6 @@ class DeployShell extends BeditaBaseShell {
 			}
 		}
 				
-		$modStartCount = $count;
 		$folder = new Folder(BEDITA_MODULES_PATH);
 		$ls = $folder->ls();
 		foreach ($ls[0] as $dir) {
@@ -243,7 +243,7 @@ class DeployShell extends BeditaBaseShell {
     	$this->loadTasks();
     	if($res == 1) {
     		$this->updateVersion();
-    	} else if($res <= $modStartCount) {
+    	} else if($res <= $frontEndCount) {
     		$this->Cleanup->params["frontend"] = $selected;
     	}
     	$this->Cleanup->execute();
