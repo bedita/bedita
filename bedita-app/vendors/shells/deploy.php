@@ -201,9 +201,15 @@ class DeployShell extends BeditaBaseShell {
 		}
 		
 		if(file_exists(BEDITA_ADDONS_PATH)) {
-			$count++;
-			$this->out("$count. addons");
-			$sel[$count] = BEDITA_ADDONS_PATH;
+			$folder = new Folder(BEDITA_ADDONS_PATH);
+			$ls = $folder->ls();
+			foreach ($ls[0] as $dir) {
+				if($dir[0] !== '.' ) {
+					$count++;
+					$this->out("$count. addons - ($dir)");
+					$sel[$count] = BEDITA_ADDONS_PATH. DS .$dir;
+				}
+			}
 		}
 				
 		$modStartCount = $count;
