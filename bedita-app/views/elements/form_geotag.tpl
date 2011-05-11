@@ -10,7 +10,6 @@ $(document).ready(function(){
 	
 	$("A.googlemaptest").css("cursor","pointer").click(function(){
 		var q = $(".lat").val()+","+$(".lng").val();
-		alert(q);
 		if (q == ""){
 			alert ("devi prima inserire lat e long"); return;
 		}
