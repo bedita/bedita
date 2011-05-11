@@ -9,10 +9,16 @@
 $(document).ready(function(){
 	
 	$("A.googlemaptest").css("cursor","pointer").click(function(){
-		var q = $(".lat").val()+","+$(".lng").val();
-		if (q == ""){
-			alert ("devi prima inserire lat e long"); return;
+		
+		
+		
+		if ( ( $(".lat").val() == "" ) ) {
+			alert ("you need the latitude value"); return;
+		} 
+		if ( ( $(".lng").val() == "" ) ) {
+			alert ("you need the longitude value"); return;
 		}
+		var q = $(".lat").val()+","+$(".lng").val();
 		window.open("http://maps.google.com/maps?q="+q+"")
 	});	
 	
