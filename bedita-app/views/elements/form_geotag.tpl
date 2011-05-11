@@ -9,9 +9,6 @@
 $(document).ready(function(){
 	
 	$("A.googlemaptest").css("cursor","pointer").click(function(){
-		
-		
-		
 		if ( ( $(".lat").val() == "" ) ) {
 			alert ("you need the latitude value"); return;
 		} 
