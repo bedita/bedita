@@ -4,7 +4,7 @@
 		<Style id="BEdefault">
 			<BalloonStyle>
 			</BalloonStyle>
-			<IconStyle><Icon><href>{$publication.public_url}/img/earth-point.png</href></Icon></IconStyle>
+			<IconStyle><Icon><href>{$conf->beditaUrl}/img/earth-point.png</href></Icon></IconStyle>
 		</Style>
 				
 		<name>{$beFront->title()}</name>
@@ -15,12 +15,11 @@
 		<Folder>
 			<name>{$section.title}</name>
   			<open>1</open>                        <!-- boolean -->
-			<atom:link href="{$publication.public_url}{$section.canonicalPath|default:"link"}"/>            <!-- xmlns:atom -->
 		{foreach from=$section.childContents item='item'}
 		{if !empty($item.GeoTag.0.latitude) && !empty($item.GeoTag.0.longitude)}
 			<Placemark id="{$item.nickname}">
 				<name>{$item.title|strip_tags:false}</name>
-				{if !empty($item.description)}<Snippet maxLines="2">{$item.description|strip_tags:false}</Snippet>{/if}
+				<Snippet maxLines="2">{if !empty($item.description)}{$item.description|strip_tags:false}{/if}</Snippet>
 				<description>
 					<![CDATA[
 					{if !empty($item.description)}<b>{$item.description|strip}</b>{/if}
@@ -37,6 +36,12 @@
 					<coordinates>{$item.GeoTag.0.longitude},{$item.GeoTag.0.latitude}</coordinates>
 				</Point>
 				<styleUrl>#BEdefault</styleUrl>
+				{if !empty($item.creator)}
+				<atom:author>            
+				 	<atom:name>{$item.creator}</atom:name>         
+    			</atom:author> 
+    			{/if}
+				<atom:link href="{$publication.public_url}{$section.canonicalPath|default:""}/{$item.nickname}"/>
 			</Placemark>
 		{/if} {* !empty($item.GeoTag.0.latitude) && !empty($item.GeoTag.0.longitude) *}
 		{/foreach}
@@ -44,7 +49,7 @@
 
 		<ScreenOverlay>
 			<name>Logo</name>
-			<Icon><href>{$publication.public_url}/img/earth-header.png</href></Icon>
+			<Icon><href>{$conf->beditaUrl}/img/earth-header.png</href></Icon>
 			<overlayXY x="0.5" y="1" xunits="fraction" yunits="fraction" />
 			<screenXY x="0.5" y="1" xunits="fraction" yunits="fraction" />
 			<size x="0" y="0" xunits="fraction" yunits="fraction" />
@@ -64,10 +69,7 @@ Da aggiungere  in qualche tag
 	<id>{$item.id}</id>
 	<published>{$item.start_date|default:$item.created}</published>
 	<updated>{$item.modified|default:$item.created}</updated>
-	<author>
-		<name>{$item.creator}</name>
-		<uri></uri>
-	</author>
+	
 	<link rel="enclosure" type="{$item.relations.attach.0.mime_type}" href="{$beEmbedMedia->object($item.relations.attach.0, $mediaParams)}" />
 </entry>
 *}
