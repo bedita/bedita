@@ -797,6 +797,19 @@ abstract class FrontendController extends AppController {
 		$this->layout = NULL;
 	}
 
+
+	/**
+	 * output a kml defined by a section
+	 * @param $sectionName
+	 * @return
+	 */
+	public function kml($sectionName) {
+		$this->section($sectionName);
+		$this->layout = 'ajax';
+		header("Content-type: application/vnd.google-earth.kml+xml");
+		header("Content-Disposition: attachment; filename=" . $sectionName . ".kml");
+	}
+
 	public function georssatom($sectionName) {
 		$this->section($sectionName);
 		$this->layout = 'ajax';
