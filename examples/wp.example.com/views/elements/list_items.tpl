@@ -20,7 +20,11 @@
 
 		<div class="entry-content">
 			{assign_concat var="moreAnchor" 1='<a href="' 2=$html->url($baseUrl) 3='" class="more-link">Continue reading <span class="meta-nav">&rarr;</span></a>'}
-			{$c.body|html_substr:200:$moreAnchor}
+			{if !empty($c.abstract)}
+				{$c.abstract} {$moreAnchor}
+			{else}
+				{$c.abstract|default:$c.body|html_substr:200:$moreAnchor}
+			{/if}
 		</div><!-- .entry-content -->
 
 		<div class="entry-utility">
