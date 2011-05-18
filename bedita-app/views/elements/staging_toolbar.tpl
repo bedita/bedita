@@ -20,7 +20,7 @@ $(document).ready(function(){
 	$("#BEdita_staging_toolbar.close .stagingmenu LI.in").hide();
 	$("#BEdita_staging_toolbar.close .openclose.arrow").text("›");
 	
-	$(".openclose").click(function(){
+	$("#BEdita_staging_toolbar .openclose").click(function(){
 		$("#BEdita_staging_toolbar").toggleClass('close');
 		$(".stagingsubmenu").hide();
 		$(".stagingmenu LI.in").toggle(800);
@@ -42,6 +42,13 @@ $(document).ready(function(){
         $(this).css("background-color","transparent");
       }
     );
+	
+	$("#BEdita_staging_toolbar .grid").click(function(){
+		$(this).toggleText("show grid","hide grid");
+		$("BODY").toggleClass("gridy");
+		
+	});
+	
 
 	/*
 	 * content editable
@@ -74,8 +81,9 @@ $(document).ready(function(){
 
 <style type="text/css">
 
+
 #BEdita_staging_toolbar {
-	font-size:13px !important;
+	font-size:11px !important;
 	font-family: 'Lucida grande', 'Segoe UI', Verdana, Arial, Helvetica, sans-serif !important; 
 	/*
 	font: normal 11px "Arial",sans-serif !important
@@ -105,7 +113,6 @@ opacity:0.8
 .stagingsubmenu {
 
 }
-
 
 
 #BEdita_staging_toolbar UL {
@@ -185,7 +192,7 @@ border-radius : 7px;
 <div id="BEdita_staging_toolbar">
 <div class="stagingmenu">
 	<ul>
-		<li class="openclose" style="font-size:16px; font-family:'Georgia', sans-serif; cursor:pointer; list-style:none">BE</li>
+		<li class="openclose" style="font-size:1.2em; font-family:'Georgia', sans-serif; cursor:pointer; list-style:none">BE</li>
 		<li class="in">STAGING non-public site</li>
 {*		<li class="in">{$publication.staging_url}</li>*}
 		{if !empty($section.currentContent.id)}
@@ -212,6 +219,11 @@ border-radius : 7px;
 			<a rel="sectionedit">Edit this section</a>
 		</li>
 		{/if}
+		
+		<li class="in">
+			<a rel="grid" class="grid" href="#">show grid</a>
+		</li>
+		
 		
 		{if !empty($BEAuthUser)}
 		<li class="in"><a href="{$html->url('/')}logout">logout</a></li>
