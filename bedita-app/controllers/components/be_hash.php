@@ -355,7 +355,22 @@ class BeHashComponent extends Object {
 		$c = $card->find('first', array('conditions' => array("Card.newsletter_email" => $newsletter_email),'contain'=>array()));
 		if(empty($c)) {
 			$data['email'] = $data['newsletter_email'];
-			$data['title'] = (!empty($data['name'])) ? $data['name'] : $data['newsletter_email'];
+			
+			if (empty($data['title'])) {
+				if (!empty($data['name'])) {
+					$data['title'] = $data['name'];
+				}
+				if (!empty($data['surname'])) {
+					$data['title'] .= " " . $data['surname'];
+				}
+				
+				$data['title'] = trim($data['title']);
+				
+				if (empty($data['title'])) {
+					$data['title'] = $data['newsletter_email'];
+				}
+			}
+			
 			$data['status'] = "draft";
 			$data['note'] = "public newsletter subscribe";
 			unset($data['joinGroup']);
