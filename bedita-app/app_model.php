@@ -953,6 +953,10 @@ class BeditaCollectionModel extends BEAppObjectModel {
 					'conditions'   => '',
 					'foreignKey'	=> 'id',
 					'dependent'		=> true
+				),
+			'Tree' =>
+				array(
+					'foreignKey'	=> 'id',
 				)
 	);
 

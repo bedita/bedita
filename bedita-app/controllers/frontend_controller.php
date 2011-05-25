@@ -526,7 +526,9 @@ abstract class FrontendController extends AppController {
 				$pathSection = $this->getPath($s['id']);
 				$sectionPath = "";
 				foreach ($pathSection as $ps) {
-					$sectionPath .= "/" . $ps["nickname"];
+					if($ps["menu"] !== '0') {
+						$sectionPath .= "/" . $ps["nickname"];
+					}
 				}
 				$sectionPath .= "/" . $sectionObject["nickname"];
 				$sectionObject["canonicalPath"] = $sectionPath;
@@ -1405,9 +1407,11 @@ abstract class FrontendController extends AppController {
 		$sectionPath = "";
 		$parentAuthorized = true;
 		foreach ($section["pathSection"] as $ps) {
-			$sectionPath .= "/" . $ps["nickname"];
 			if ($parentAuthorized && !$ps["authorized"]) {
 				$parentAuthorized = false;
+			}
+			if($ps["menu"] !== '0') {
+				$sectionPath .= "/" . $ps["nickname"];
 			}
 		}
 		if($section["object_type_id"] == Configure::read("objectTypes.area.id")) {
@@ -1546,8 +1550,11 @@ abstract class FrontendController extends AppController {
 			if($parents[0] != $this->publication["id"]) {
 				throw new BeditaException("Wrong publication: " . $parents[0]);
 			}
-			$oldBaseLevel = $this->baseLevel; 
-			$this->baseLevel = true;
+			$oldSectionBindings = null;
+			if(!empty($this->modelBindings["Section"])) {
+				$oldSectionBindings = $this->modelBindings["Section"];
+			}
+			$this->modelBindings["Section"] = array("BEObject" => array("LangText"), "Tree");
 			$currPath = "";
 			foreach ($parents as $p) {
 				if ($p != $this->publication["id"]) {
@@ -1555,11 +1562,18 @@ abstract class FrontendController extends AppController {
 					if ($pathArr[$p] === self::UNLOGGED || $pathArr[$p] === self::UNAUTHORIZED) {
 						$this->accessDenied($pathArr[$p]);
 					}
-					$currPath .= "/" . $pathArr[$p]["nickname"];
-					$pathArr[$p]["canonicalPath"] = $currPath;
+					if($pathArr[$p]["menu"] !== '0') {
+						$currPath .= "/" . $pathArr[$p]["nickname"];
+						$pathArr[$p]["canonicalPath"] = $currPath;
+					}
 				}
 			}
-			$this->baseLevel = $oldBaseLevel;
+
+			if(empty($oldSectionBindings)) {
+				unset($this->modelBindings["Section"]);
+			} else {
+				$this->modelBindings["Section"] = $oldSectionBindings;
+			}
 		}
 		return $pathArr;
 	}
