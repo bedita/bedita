@@ -138,12 +138,16 @@ class BeEmbedMediaHelper extends AppHelper {
 			$src = $this->getMediaTypeImage($obj);
 		}
 		
-		if (!empty($params["URLonly"]))
+		if (!empty($params["URLonly"])) {
 			return $src;
-		elseif ($params["presentation"] == "link")
+		} elseif ($params["presentation"] == "link") {
 			return $this->Html->link($obj['title'],$src, $htmlAttributes);
-		else
+		} else {
+			if (empty($htmlAttributes["alt"])) {
+				$htmlAttributes["alt"] = $obj["title"];
+			}
 			return $this->Html->image($src, $htmlAttributes);
+		}
 	}
 	
 	
@@ -175,6 +179,9 @@ class BeEmbedMediaHelper extends AppHelper {
 		}
 		$URLonly = (!empty($params["URLonly"]))? true : false;
 		if ($params["presentation"] == "thumb") {
+			if (empty($htmlAttributes["alt"])) {
+				$htmlAttributes["alt"] = $obj["title"];
+			}
 			if (!empty($obj["thumbnail"]) && preg_match(Configure::read("validate_resource.URL"), $obj["thumbnail"])) {
 				$output = ($URLonly)? $obj["thumbnail"] : $this->Html->image($obj["thumbnail"], $htmlAttributes); 
 			} else {
