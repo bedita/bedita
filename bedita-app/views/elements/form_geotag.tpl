@@ -1,8 +1,7 @@
-{if !empty($conf->googleApi.googleMaps.key)}
 {literal}
 <!-- Google Maps API key API 3.3 -->
 <script type="text/javascript"
-    src="http://maps.google.com/maps/api/js?sensor=false&amp;key={/literal}{$conf->googleApi.googleMaps.key}{literal}">
+    src="http://maps.google.com/maps/api/js?sensor=false">
 </script>
 
 <script>
@@ -42,7 +41,7 @@ $(document).ready(function(){
 });	
 </script>
 {/literal}
-{/if}
+
 <div class="tab"><h2>{t}{$title|default:'Geotag'}{/t}</h2></div>
 
 <fieldset id="geotag">
