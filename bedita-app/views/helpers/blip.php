@@ -53,18 +53,25 @@ class BlipHelper extends AppHelper {
 		if(!isset($this->conf->media_providers["blip"]["params"])) 
 			return "" ;
 		
-		if (empty($attributes["width"])) { 
-			$attributes["width"] = $this->conf->media_providers["blip"]["params"]["width"];
-		}
-		if (empty($attributes["height"])) { 
-			$attributes["height"] = $this->conf->media_providers["blip"]["params"]["height"];
-		}
-
 		$url = rawurlencode($obj["uri"]);
 		$url .= "&format=json";
 		$url = sprintf($this->conf->media_providers["blip"]["params"]["urlembed"], $url);
 		if (!$oEmbed = $this->oEmbedInfo($url)) {
 			return false;
+		}
+		
+		if (empty($attributes["width"]) && empty($attributes["height"])) { 
+			$attributes["width"] = $this->conf->media_providers["blip"]["params"]["width"];
+			$attributes["height"] = $this->conf->media_providers["blip"]["params"]["height"];
+		} else {
+			$ratio = $oEmbed["width"]/$oEmbed["height"];
+			// calculate height
+			if (!empty($attributes["width"])) {	
+				$attributes["height"] = $attributes["width"]* (1/$ratio);
+			// calculate width
+			} else {
+				$attributes["width"] = $attributes["height"]* ($ratio);
+			}
 		}
 		
 		$oEmbed["html"] = preg_replace('/width="\d*"/', 'width="'. $attributes["width"] . '"', $oEmbed["html"]);
