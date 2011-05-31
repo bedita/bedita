@@ -52,9 +52,16 @@ sub {
 	top: .5ex;
 }
 
+a[rel],a[target='modal'] {
+	color:#ff0000;
+}
 
-.placeholder {
-	background-color:#ff3300;
+a.placeholder {
+	background-color:#ff9966;
+	display:inline-block;
+	min-width:1em;
+	min-height:1em;
+	padding:2px;
 }
 
 .glossario {
@@ -65,3 +72,9 @@ sub {
 .formula {
 	color:#ff6600 !important;
 }
+
+/*
+ * qualsiasi classe aggiungerai qui. La ritroverai nelle opzioni di tinyMce! Fico.
+ * 
+ */
+
