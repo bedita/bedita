@@ -751,45 +751,63 @@ abstract class FrontendController extends AppController {
 	
 	/**
 	 * Publish RSS feed with contents inside section $sectionName
+	 * Use callback controller methods (if defined):
+	 * 	- $sectionName."RssChannel" to fetch channel data
+	 *  - $sectionName."RssItems" to fetch rss items
+	 *  
+	 * If callbacks methods are not defined (default) load section and object data
+	 * and build rss data with defaults
 	 *
-	 * @param string $sectionName, section's nickname
+	 * @param string $sectionName, section's nickname/unique name
 	 */
 	public function rss($sectionName) {
-		$s = $this->loadObjByNick($sectionName);
-		if ($s === self::UNLOGGED || $s === self::UNAUTHORIZED) {
-			$this->accessDenied($s);
-		}
-		if($s['syndicate'] === "off") {
-			throw new BeditaException(__("Content not found", true));
-		}
 
-		$this->setSectionPath($s, $s["id"]);
-		$channel = array( 'title' => htmlentities($this->publication["public_name"] . " - " . $s['title']) ,
-			'link' => "/section/".$sectionName,
-			//'url' => Router::url("/section/".$sectionName),
-			'description' => $s['description'],
-			'language' => $s['lang'],
-		);
+		$channel = array();
+		$s = array();
+		// fetch channel data, use $sectionName."RssChannel" method if exists
+		$methodName = $sectionName . "RssChannel";
+		if (method_exists($this, $methodName)) {
+			$channel = $this->{$methodName}();
+		} else {
+			// build channel data from section		
+			$s = $this->loadObjByNick($sectionName);
+			if ($s === self::UNLOGGED || $s === self::UNAUTHORIZED) {
+				$this->accessDenied($s);
+			}
+			if($s['syndicate'] === "off") {
+				throw new BeditaException(__("Content not found", true));
+			}
+	
+			$this->setSectionPath($s, $s["id"]);
+			$channel = array( 'title' => htmlentities($this->publication["public_name"] . " - " . $s['title']) ,
+				'link' => $s["canonicalPath"],
+				'description' => $s['description'],
+				'language' => $s['lang'],
+			);
+		}
 		$this->set('channelData', $channel);
+		
+		// fetch rss items, use 
 		$rssItems = array();
-		$items = $this->BeTree->getChildren($s['id'], $this->status, false, "priority", ($s['priority_order']=="asc"), 1, 40);
-		if(!empty($items) && !empty($items['items'])) {
-			foreach($items['items'] as $index => $item) {
-				$obj = $this->loadObj($item['id']);
-				if ($obj !== self::UNLOGGED && $obj !== self::UNAUTHORIZED) {
-					$description = $obj['description'];
-					if (!empty($obj['abstract'])) {
-						$description .= "<hr/>" .  $obj['abstract'];
+		$methodName = $sectionName . "RssItems";
+		// check before filter method
+		if (method_exists($this, $methodName)) {
+			$rssItems = $this->{$methodName}();
+		} else {
+			if(empty($s)) { // if channel data has been redefined
+				$s = $this->loadObjByNick($sectionName);
+				$this->setSectionPath($s, $s["id"]);
+			}
+			$items = $this->BeTree->getChildren($s['id'], $this->status, false, "priority", ($s['priority_order']=="asc"), 1, 40);
+			if(!empty($items) && !empty($items['items'])) {
+				foreach($items['items'] as $index => $item) {
+					$obj = $this->loadObj($item['id']);
+					if ($obj !== self::UNLOGGED && $obj !== self::UNAUTHORIZED) {
+						$rssItems[] = $this->buildRssItem($obj, $s['canonicalPath']);
 					}
-					if (!empty($obj['body'])) {
-						$description .= "<hr/>" .  $obj['body'];
-					}
-					$rssItems[] = array( 'title' => $obj['title'], 'description' => $description,
-						'pubDate' => $obj['created'], 'link' => $s['canonicalPath']."/".$item['nickname']);
 				}
 			}
 		}
-
 		$this->set('items', $rssItems);
 		$this->view = 'View';
 		// add RSS helper if not present
@@ -799,7 +817,29 @@ abstract class FrontendController extends AppController {
 		$this->layout = NULL;
 	}
 
-
+	/**
+	 * Build a single RSS item from a BE object array
+	 * If section "canonicalPath" is set, links are created with it
+	 * If not: use object canonicalPath if present, otherwise object unique name (nickname)
+	 * 
+	 * @param array $obj
+	 * @param string $canonicalPath
+	 */
+	protected function buildRssItem(array &$obj, $canonicalPath = null) {
+		$description = $obj['description'];
+		if (!empty($obj['abstract'])) {
+			$description .= "<hr/>" .  $obj['abstract'];
+		}
+		if (!empty($obj['body'])) {
+			$description .= "<hr/>" .  $obj['body'];
+		}
+		$link = !empty($canonicalPath) ? ($canonicalPath ."/". $obj['nickname']) : 
+			(!empty($obj['canonicalPath']) ? $obj['canonicalPath'] : $obj['nickname']);
+		return array( 'title' => $obj['title'], 'description' => $description,
+						'pubDate' => $obj['created'], 'link' => $link);
+	}
+	
+	
 	/**
 	 * output a kml defined by a section
 	 * @param $sectionName
@@ -1216,7 +1256,7 @@ abstract class FrontendController extends AppController {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);
 				if ($obj !== self::UNAUTHORIZED && $obj !== self::UNLOGGED) {
-					if(isset($options["sectionPath"])) {
+					if(isset($options["sectionPath"]) && empty($obj["canonicalPath"])) {
 						$obj["canonicalPath"] = (($options["sectionPath"] != "/") ? $options["sectionPath"] : "") 
 							. "/" . $obj["nickname"];
 					}
@@ -1339,8 +1379,9 @@ abstract class FrontendController extends AppController {
 			
 			$section["contentRequested"] = true;
 			$section["contentPath"] = ($section["canonicalPath"] !== "/") ? $section["canonicalPath"] : "";
-			$section['currentContent']['canonicalPath'] = $section["contentPath"] .= "/" . $section['currentContent']['nickname'];
-			
+			if(empty($section['currentContent']['canonicalPath'])) {
+				$section['currentContent']['canonicalPath'] = $section["contentPath"] .= "/" . $section['currentContent']['nickname'];
+			}
 			$this->historyItem["object_id"] = $content_id;
 			$this->historyItem["title"] = $section['currentContent']['title'];
 			
