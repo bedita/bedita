@@ -29,8 +29,7 @@ tinyMCE.init({
 	//theme_advanced_statusbar_location : "bottom",
 	//theme_advanced_resizing : true,
 	theme_advanced_blockformats : "p,h1,h2,h3,h4,blockquote,address,dt,dd,code,samp",
-	theme_advanced_link_targets: "modal",
-	
+	theme_advanced_link_targets: "modal=Open in modal window",
 	width : "100%",
 
 	remove_redundant_brs : true,
