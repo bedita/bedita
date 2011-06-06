@@ -1966,6 +1966,10 @@ abstract class FrontendController extends AppController {
 	public function saveComment() {
 		$this->historyItem = null;
 		if (!empty($this->data)) {
+			
+			// sanitize from scripts
+			$this->data = BeLib::getInstance()->stripData($this->data);
+			
 			if(!isset($this->Comment)) {
 				$this->Comment = $this->loadModelByType("Comment");
 			}
@@ -1982,7 +1986,7 @@ abstract class FrontendController extends AppController {
 			} else {
 				 throw new BeditaException(__("Post comment disabled", true));
 			}
-
+			
 			try {
 				// check IP
 				$bannedIP = ClassRegistry::init("BannedIp");
@@ -2104,6 +2108,9 @@ abstract class FrontendController extends AppController {
 			if (empty($this->data["notification_content_url"])) {
 				$this->data["notification_content_url"] = $this->publication["public_url"] . $this->referer();
 			}
+			// sanitize from scripts
+			$this->data = BeLib::getInstance()->stripData($this->data);
+			
 			$this->Transaction->begin();
 			$this->saveObject($objectModel);
 			$this->Transaction->commit();
