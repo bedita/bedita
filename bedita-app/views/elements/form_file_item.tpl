@@ -30,6 +30,8 @@ $(document).ready(function(){
 
 
 {strip}
+	
+	<input type="hidden" class="media_nickname" value="{$item.nickname}" />
 
 	<input type="hidden" name="data[RelatedObject][{$relation}][{$item.id}][id]" value="{$item.id}" />
 	
@@ -78,9 +80,8 @@ $(document).ready(function(){
 			<table style="width:100%; margin-top:5px" class="ultracondensed">
 				<tr>
 					<td><a title="info" rel="{$linkUrl} .multimediaiteminside" style="padding:2px 6px 2px 6px !important" class="BEbutton modalbutton">{t}info{/t}</a></td>
-					<td><a title="edit" href="{$linkUrl}" style="padding:2px 6px 2px 6px !important" class="BEbutton" target="_blank">{t}edit{/t}</a></td>
+					<td><a title="edit" href="{$linkUrl}" style="padding:2px 6px 2px 6px !important" class="BEbutton" target="_blank">{t}edit{/t}</a></td>		
 					<td><a title="remove" href="javascript: void(0);" style="padding:2px 6px 2px 6px !important" class="BEbutton" onclick="removeItem('item_{$item.id}')">{t}x{/t}</a></td>
-					
 				</tr>
 			</table>
 		</li>
