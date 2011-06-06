@@ -314,7 +314,7 @@ class BEAppModel extends AppModel {
 		if (!empty($id)) {
 			$treeFields = $this->fieldsString("Tree");
 			$fields .= "," . $treeFields;
-			$groupClausole .= "," . $treeFields;
+			$groupClausole .= ", {$s}Tree{$e}.{$s}id{$e}";
 			$from .= ", {$s}trees{$e} AS {$s}Tree{$e}";
 			$conditions[] = " {$s}Tree{$e}.{$s}id{$e}={$s}BEObject{$e}.{$s}id{$e}" ;
 //			if (!empty($userid))
