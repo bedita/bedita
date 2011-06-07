@@ -110,26 +110,29 @@ class BeTreeHelper extends AppHelper {
 	private function designsitemap($sections=array(),$public_url='/') {
 		$output = '';
 		if (!empty($sections)) {
-			foreach($sections as $section) {
-				$output .= '<li class="Section">';
-				$url = $public_url . $section['canonicalPath'];
-				$output .= '<a href="' . $url . '">';
-				$output .= $section['title'];
-				$output .= '</a>';
-				if(!empty($section['objects'])) {
-					$output .= '<ul class="contents">';
-					$children = $section['objects'];
-					foreach($children as $child) {
-						$output .= '<li class="' . Configure::read('objectTypes.' . $child['object_type_id'] . ".model") . '">';
-						$url = $public_url . $child['canonicalPath'];
-						$output .= '<a href="' . $url . '">';
-						$output .= $child['title'];
-						$output .= '</a>';
-						$output .= '</li>';
+			foreach($sections as $section) {			
+				$show = !isset($section["menu"]) ? true : (($section["menu"] === '0') ? false : true);
+				if($show) {
+					$output .= '<li class="Section">';
+					$url = $public_url . $section['canonicalPath'];
+					$output .= '<a href="' . $url . '">';
+					$output .= $section['title'];
+					$output .= '</a>';
+					if(!empty($section['objects'])) {
+						$output .= '<ul class="contents">';
+						$children = $section['objects'];
+						foreach($children as $child) {
+							$output .= '<li class="' . Configure::read('objectTypes.' . $child['object_type_id'] . ".model") . '">';
+							$url = $public_url . $child['canonicalPath'];
+							$output .= '<a href="' . $url . '">';
+							$output .= $child['title'];
+							$output .= '</a>';
+							$output .= '</li>';
+						}
+						$output .= '</ul>';
 					}
-					$output .= '</ul>';
+					$output .= '</li>';
 				}
-				$output .= '</li>';
 				if(!empty($section['sections'])) {
 					$output .= '<li><ul>' . $this->designsitemap($section['sections'],$public_url) . '</ul></li>';
 				}
