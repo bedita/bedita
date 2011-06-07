@@ -101,6 +101,14 @@ abstract class FrontendController extends AppController {
 	protected $annotationOptions = array("comment" => array());
 	
 	/**
+	 * BE obj internal cache
+	 * id => array(...)
+	 * 
+	 * @var array
+	 */
+	protected $objectCache = array();
+	
+	/**
 	 * tag options
 	 * 
 	 * @var array
@@ -523,16 +531,8 @@ abstract class FrontendController extends AppController {
 			$sectionObject = $this->loadObj($s['id']);
 			
 			if ($sectionObject !== self::UNLOGGED && $sectionObject !== self::UNAUTHORIZED) {
-				$pathSection = $this->getPath($s['id']);
-				$sectionPath = "";
-				foreach ($pathSection as $ps) {
-					if($ps["menu"] !== '0') {
-						$sectionPath .= "/" . $ps["nickname"];
-					}
-				}
-				$sectionPath .= "/" . $sectionObject["nickname"];
-				$sectionObject["canonicalPath"] = $sectionPath;
 
+				$this->setCanonicalPath($sectionObject);
 				if($loadContents) {
 					$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")),
 						"sectionPath" => $sectionObject["canonicalPath"]);
@@ -566,6 +566,62 @@ abstract class FrontendController extends AppController {
 		return $result;
 	}
 
+	/**
+	 * Set canonical path in object data array, check parent authorization
+	 *  - $obj["canonicalPath"] will contain new caclulated canonical path 
+	 *  - update  $this->objectCache
+	 *  - setup $obj["parentAuthorized"] 
+	 *  - setup $obj["pathSection"] for sections
+	 * 
+	 * @param array $obj, containing at least "id" and "nickname"
+	 */
+	protected function setCanonicalPath(array &$obj) {
+
+		$objectId = $obj["id"];
+		if(isset($this->objectCache[$objectId]["canonicalPath"])) {
+			$obj["canonicalPath"] = $this->objectCache[$objectId]["canonicalPath"];
+			return;
+		}
+		
+		if($obj["object_type_id"] == Configure::read("objectTypes.area.id")) {
+			$obj["canonicalPath"] = "/";
+			return;
+		}
+		$pathSection = $this->getPath($objectId);
+		if($obj["object_type_id"] == Configure::read("objectTypes.section.id")) {
+			$obj["pathSection"] = $pathSection;
+		}
+		
+		$parentAuthorized = true;
+		foreach ($pathSection as $ps) {
+			if ($parentAuthorized && !empty($ps["authorized"]) && !$ps["authorized"]) {
+				$parentAuthorized = false;
+			}
+		}
+		$obj["parentAuthorized"] = $parentAuthorized;
+		
+		$canPath = "";
+		if(!empty($pathSection)) {
+			$parentSec = end($pathSection);
+			$canPath = $parentSec["canonicalPath"];
+		}
+		
+		$canPath .= (($canPath === "/") ? "" : "/");
+		$menu = true;
+		if($obj["object_type_id"] == Configure::read("objectTypes.section.id")) {
+			$menu = !isset($obj["menu"]) ? true : (($obj["menu"] === '0') ? false : true);
+		}
+		if($menu) {
+			$canPath .= $obj["nickname"];
+		}
+		$obj["canonicalPath"] = $canPath;
+		if(isset($this->objectCache[$objectId])) {
+			$this->objectCache[$objectId]["canonicalPath"] = $canPath;
+			$this->objectCache[$objectId]["parentAuthorized"] = $parentAuthorized;
+		}
+		return;		
+	}
+	
 	/**
 	* Get sections levels
 	* 
@@ -778,7 +834,7 @@ abstract class FrontendController extends AppController {
 				throw new BeditaException(__("Content not found", true));
 			}
 	
-			$this->setSectionPath($s, $s["id"]);
+			$this->setCanonicalPath($s);
 			$channel = array( 'title' => htmlentities($this->publication["public_name"] . " - " . $s['title']) ,
 				'link' => $s["canonicalPath"],
 				'description' => $s['description'],
@@ -796,7 +852,7 @@ abstract class FrontendController extends AppController {
 		} else {
 			if(empty($s)) { // if channel data has been redefined
 				$s = $this->loadObjByNick($sectionName);
-				$this->setSectionPath($s, $s["id"]);
+				$this->setCanonicalPath($s);
 			}
 			$items = $this->BeTree->getChildren($s['id'], $this->status, false, "priority", ($s['priority_order']=="asc"), 1, 40);
 			if(!empty($items) && !empty($items['items'])) {
@@ -1055,6 +1111,10 @@ abstract class FrontendController extends AppController {
 			throw new BeditaException(__("Content not found", true));
 		}
 
+		// use object cache
+		if(isset($this->objectCache[$obj_id])) {
+			return $this->objectCache[$obj_id];
+		}
 		
 		// check permissions and set $authorized true/false
 		if (!$this->skipCheck) {
@@ -1169,6 +1229,7 @@ abstract class FrontendController extends AppController {
 		$obj['object_type'] = $modelType;
 		$obj['authorized'] = $authorized;
 		
+		$this->objectCache[$obj_id] = $obj;
 		return $obj;
 	}
 
@@ -1229,8 +1290,18 @@ abstract class FrontendController extends AppController {
 		}
 		
 		$this->checkParentStatus($parent_id);
-		
-		$priorityOrder = $this->Section->field("priority_order", array("id" => $parent_id));
+		if(isset($this->objectCache[$parent_id]["menu"])){
+			$menu = $this->objectCache[$parent_id]["menu"];
+			$priorityOrder = $this->objectCache[$parent_id]["priority_order"];
+		} else {
+			$menu = $this->Tree->field("menu", array("id" => $parent_id));
+			$priorityOrder = $this->Section->field("priority_order", array("id" => $parent_id));
+			if(isset($this->objectCache[$parent_id])) {
+				$this->objectCache[$parent_id]["menu"] = $menu;
+				$this->objectCache[$parent_id]["priority_order"] = $priorityOrder;
+			}
+		}
+		$findAltPath = ($menu === '0');
 		if(empty($priorityOrder)) {
 			$priorityOrder = "asc";
 		}
@@ -1256,9 +1327,13 @@ abstract class FrontendController extends AppController {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);
 				if ($obj !== self::UNAUTHORIZED && $obj !== self::UNLOGGED) {
-					if(isset($options["sectionPath"]) && empty($obj["canonicalPath"])) {
-						$obj["canonicalPath"] = (($options["sectionPath"] != "/") ? $options["sectionPath"] : "") 
-							. "/" . $obj["nickname"];
+					if(empty($obj["canonicalPath"])) {
+						if(empty($options["sectionPath"])) {
+							$this->setCanonicalPath($obj);
+						} else {				
+							$obj["canonicalPath"] = (($options["sectionPath"] != "/") ? $options["sectionPath"] : "") 
+								. "/" . $obj["nickname"];
+						}
 					}
 					if (isset($options["setAuthorizedTo"])) {
 						$obj["authorized"] = $options["setAuthorizedTo"];
@@ -1363,10 +1438,10 @@ abstract class FrontendController extends AppController {
 			$this->accessDenied($section);
 		}
 		
-		$parentAuthorized = $this->setSectionPath($section, $sectionId);
+		$this->setCanonicalPath($section);
 		$this->sectionOptions["childrenParams"] = array_merge($this->sectionOptions["childrenParams"], $this->params["named"]);
 		$this->sectionOptions["childrenParams"]["sectionPath"] = $section["canonicalPath"];
-		if (!$parentAuthorized || !$section["authorized"]) {
+		if (!$section["parentAuthorized"] || !$section["authorized"]) {
 			$section["authorized"] = false;
 			$this->sectionOptions["childrenParams"]["setAuthorizedTo"] = false;
 		}
@@ -1437,33 +1512,36 @@ abstract class FrontendController extends AppController {
 	}
 
 	/**
-	 * set section canonical path and set parent array in $section array
+	 * Set section canonical path and set parent array in $section array
 	 *
 	 * @param array $section
 	 * @param int $sectionId
 	 * @return boolean false if some parent sections is unauthorized for user
 	 */
+/*
 	protected function setSectionPath(array &$section, $sectionId) {
 		$section["pathSection"] = $this->getPath($sectionId);
 		$sectionPath = "";
 		$parentAuthorized = true;
 		foreach ($section["pathSection"] as $ps) {
-			if ($parentAuthorized && !$ps["authorized"]) {
+			if ($parentAuthorized && !empty($ps["authorized"]) && !$ps["authorized"]) {
 				$parentAuthorized = false;
-			}
-			if($ps["menu"] !== '0') {
-				$sectionPath .= "/" . $ps["nickname"];
 			}
 		}
 		if($section["object_type_id"] == Configure::read("objectTypes.area.id")) {
-			$sectionPath .= "/"; 
+			$currPath = "/"; 
 		} else {
-			$sectionPath .= "/" . $section["nickname"]; 
+			$currPath = (!empty($section["menu"]) && $section["menu"] === '0') ? "" : "/" . $section["nickname"];
+		}		
+		$parentPath = "";
+		if(!empty($section["pathSection"])) {
+			$parentSec = end($section["pathSection"]);
+			$parentPath = !empty($parentSec['canonicalPath']) ? $parentSec['canonicalPath'] : ""; 
 		}
-		$section["canonicalPath"] = $sectionPath;
+		$section["canonicalPath"] = $parentPath . $currPath;
 		return $parentAuthorized;
 	}
-	
+*/	
 	
 	/**
 	 * route to section, content or another method defined in reservedWords
@@ -1585,7 +1663,17 @@ abstract class FrontendController extends AppController {
 	 */
 	protected function getPath($object_id) {
 		$pathArr = array();
-		$path = $this->Tree->field("parent_path", array("id" => $object_id));
+		$path = "";
+		if(isset($this->objectCache[$object_id]["parent_path"])){
+			$path = $this->objectCache[$object_id]["parent_path"];
+		} else {
+			$row = $this->Tree->find("first", array("conditions" => array("id" => $object_id),
+				"limit" => 1, "order" => array("menu" => "desc", "parent_path" => "desc")));
+			$path = $row["Tree"]["parent_path"];
+			if(!empty($this->objectCache[$object_id])) {
+				$this->objectCache[$object_id] = array_merge($this->objectCache[$object_id], $row["Tree"]);
+			}
+		}
 		$parents = explode("/", trim($path,"/"));
 		if (!empty($parents[0])) {
 			if($parents[0] != $this->publication["id"]) {
@@ -1597,15 +1685,25 @@ abstract class FrontendController extends AppController {
 			}
 			$this->modelBindings["Section"] = array("BEObject" => array("LangText"), "Tree");
 			$currPath = "";
+			$parentPath = "";
 			foreach ($parents as $p) {
 				if ($p != $this->publication["id"]) {
-					$pathArr[$p] = $this->loadObj($p);
+					if(isset($this->objectCache[$p])) {
+						$pathArr[$p] = $this->objectCache[$p];
+					} else { 
+						$pathArr[$p] = $this->loadObj($p);
+					}	
+					if(!empty($pathArr[$p]["canonicalPath"])) {
+						$currPath = $pathArr[$p]["canonicalPath"];
+					} else {
+						if($pathArr[$p]["menu"] !== '0') {
+							$currPath .= (($currPath === "/") ? "" : "/") . $pathArr[$p]["nickname"];
+						}
+						$pathArr[$p]["canonicalPath"] = empty($currPath) ? "/" : $currPath;
+						$this->objectCache[$p]["canonicalPath"] = $pathArr[$p]["canonicalPath"];
+					}
 					if ($pathArr[$p] === self::UNLOGGED || $pathArr[$p] === self::UNAUTHORIZED) {
 						$this->accessDenied($pathArr[$p]);
-					}
-					if($pathArr[$p]["menu"] !== '0') {
-						$currPath .= "/" . $pathArr[$p]["nickname"];
-						$pathArr[$p]["canonicalPath"] = $currPath;
 					}
 				}
 			}
@@ -1766,17 +1864,40 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
-	 * return objects for a specific tag
+	 * find all objects for category $name and set results for view
+	 * 
+	 * @param string $name
+	 */
+	public function category($name) {
+		$this->baseLevel = true;
+		$this->set("category",$this->loadObjectsByCategory($name));
+		$this->baseLevel = false;
+	}
+	
+	/**
+	 * return objects for a specific category
 	 *
-	 * @param string $tag tag label
+	 * @param string $category category name (friendly url/unique name)
 	 * @params array $options search options
 	 * 				"section" => name or id section
 	 * 				"filter" => particular filter
 	 * 				"order", "dir", "dim", "page" used like pagination parameters
 	 * @return array
 	 */
-	protected function loadObjectsByTag($tag, $options=array()) {
-		
+	public function loadObjectsByCategory($categoryName, $options=array()) {
+		return $this->loadObjectsByTagCategory($categoryName, $options, "category");
+	}
+	
+	
+	/**
+	 * Internal method for loadObjectsByCategory loadObjectsByTag
+	 * 
+	 * @param string $name category/tag name (friendly url/unique name)
+	 * @param array $options search options (see loadObjectsByCategory)
+	 * @param string $type, "tag" (default), or "category"
+	 * @return array
+	 */
+	private function loadObjectsByTagCategory($name, $options=array(), $type = "tag") {
 		$section_id = null;
 		if (!empty($options["section"])) {
 			$section_id = (is_numeric($options["section"]))? $options["section"] : $this->BEObject->getIdFromNickname($options["section"]);
@@ -1787,17 +1908,36 @@ abstract class FrontendController extends AppController {
 			$searchMethod = "getDescendants";
 		}
 		
-		$tagDetail = ClassRegistry::init("Category")->find("first", array(
-					"conditions" => array("name" => $tag, "object_type_id IS NULL", "status" => $this->status)
-				)
-			);
-		
-		if (empty($tagDetail))
-			throw new BeditaException(__("No tag found", true));
-		
-		$options = array_merge($this->tagOptions, $options, $this->params["named"]);
 		$filter = (!empty($options["filter"]))? $options["filter"] : false;
-		$filter["tag"] = $tag;
+		if($type === "tag") {
+			$detail = ClassRegistry::init("Category")->find("first", array(
+						"conditions" => array("name" => $name, "object_type_id IS NULL", "status" => $this->status)
+					)
+				);
+			
+			if (empty($detail))
+				throw new BeditaException(__("No tag found", true). " - $name");
+		
+			$options = array_merge($this->tagOptions, $options, $this->params["named"]);
+			$filter["tag"] = $name;
+		
+		} else if ($type === "category"){
+			
+			$detail = ClassRegistry::init("Category")->find("first", array(
+						"conditions" => array("name" => $name, "object_type_id IS NOT NULL", "status" => $this->status)
+					)
+				);
+			
+			if (empty($detail))
+				throw new BeditaException(__("No category found", true) . " - $name");
+		
+			$options = array_merge($options, $this->params["named"]);
+			$filter["category"] = $name;
+			
+		} else {
+			throw new BeditaException(__("Unsupported type", true). " - $type");
+		}
+		
 		$order = "";
 		if (!empty($options["order"])) {
 			$order = $options["order"];
@@ -1818,7 +1958,7 @@ abstract class FrontendController extends AppController {
 		
 		$contents = $this->BeTree->{$searchMethod}($section_id, $this->status, $filter, $order, $dir, $page, $dim);
 		
-		$result = $tagDetail;
+		$result = $detail;
 
 		foreach ($contents["items"] as $c) {
 			$object = $this->loadObj($c["id"]);
@@ -1831,6 +1971,20 @@ abstract class FrontendController extends AppController {
 		}
 		
 		return array_merge($result, array("toolbar" => $contents["toolbar"]));
+	}
+	
+	/**
+	 * return objects for a specific tag
+	 *
+	 * @param string $tag tag name (friendly url/unique name)
+	 * @params array $options search options
+	 * 				"section" => name or id section
+	 * 				"filter" => particular filter
+	 * 				"order", "dir", "dim", "page" used like pagination parameters
+	 * @return array
+	 */
+	protected function loadObjectsByTag($tag, $options=array()) {
+		return $this->loadObjectsByTagCategory($tag, $options, "tag");
 	}
 	
 	/**
@@ -1986,7 +2140,7 @@ abstract class FrontendController extends AppController {
 			} else {
 				 throw new BeditaException(__("Post comment disabled", true));
 			}
-			
+
 			try {
 				// check IP
 				$bannedIP = ClassRegistry::init("BannedIp");
