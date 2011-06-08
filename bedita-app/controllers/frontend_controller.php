@@ -1667,8 +1667,11 @@ abstract class FrontendController extends AppController {
 		if(isset($this->objectCache[$object_id]["parent_path"])){
 			$path = $this->objectCache[$object_id]["parent_path"];
 		} else {
-			$row = $this->Tree->find("first", array("conditions" => array("id" => $object_id),
-				"limit" => 1, "order" => array("menu" => "desc", "parent_path" => "desc")));
+			$row = $this->Tree->find("first", array(
+				"conditions" => array("id" => $object_id, "area_id" => $this->publication["id"]),
+				"limit" => 1, 
+				"order" => array("menu" => "desc", "parent_path" => "desc")
+			));
 			$path = $row["Tree"]["parent_path"];
 			if(!empty($this->objectCache[$object_id])) {
 				$this->objectCache[$object_id] = array_merge($this->objectCache[$object_id], $row["Tree"]);
