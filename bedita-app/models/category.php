@@ -213,7 +213,6 @@ class Category extends BEAppModel {
 									);
 					if (empty($tagDB)) {
 						$tagDB["label"] = $tag;
-						$tagDB["name"] = $name;
 						$tagDB["status"] = "on";
 						$this->create();
 						if (!$this->save($tagDB)) {
