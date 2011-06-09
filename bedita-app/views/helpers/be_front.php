@@ -66,7 +66,8 @@ class BeFrontHelper extends AppHelper {
 		}
 		$sec = $this->_section['title'];
 		if(!empty($this->_section['contentRequested']) && ($this->_section['contentRequested'] == 1) ) {
-			$sec = $this->_currentContent['title'];
+			if(!empty($this->_currentContent['title'])) $sec = $this->_currentContent['title'];
+			else $sec = $this->_section['title'];
 		}
 		if($order=='asc') {
 			return $sec . " - " . $pub;
