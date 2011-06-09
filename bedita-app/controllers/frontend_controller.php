@@ -1458,7 +1458,9 @@ abstract class FrontendController extends AppController {
 				$section['currentContent']['canonicalPath'] = $section["contentPath"] .= "/" . $section['currentContent']['nickname'];
 			}
 			$this->historyItem["object_id"] = $content_id;
-			$this->historyItem["title"] = $section['currentContent']['title'];
+			if(!empty($section['currentContent']['title'])) $this->historyItem["title"] = $section['currentContent']['title'];
+			else $this->historyItem["title"] = $section['title'];
+			
 			
 			if ($this->sectionOptions["showAllContents"]) {
 				if(empty($this->sectionOptions["childrenParams"]["detailed"]) 
