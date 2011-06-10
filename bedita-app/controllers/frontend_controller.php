@@ -871,6 +871,7 @@ abstract class FrontendController extends AppController {
 			$this->helpers[] = 'Rss';
 		}
 		$this->layout = NULL;
+		header("Content-type: text/xml; charset=utf-8");
 	}
 
 	/**
