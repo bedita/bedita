@@ -1675,9 +1675,11 @@ abstract class FrontendController extends AppController {
 				"limit" => 1, 
 				"order" => array("menu" => "desc", "parent_path" => "desc")
 			));
-			$path = $row["Tree"]["parent_path"];
-			if(!empty($this->objectCache[$object_id])) {
-				$this->objectCache[$object_id] = array_merge($this->objectCache[$object_id], $row["Tree"]);
+			if (!empty($row["Tree"]["parent_path"])) {
+				$path = $row["Tree"]["parent_path"];
+				if(!empty($this->objectCache[$object_id])) {
+					$this->objectCache[$object_id] = array_merge($this->objectCache[$object_id], $row["Tree"]);
+				}
 			}
 		}
 		$parents = explode("/", trim($path,"/"));
