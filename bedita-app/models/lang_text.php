@@ -125,7 +125,7 @@ class LangText extends BEAppModel
 		
 		$limit 	= $this->getLimitClausole($page, $dim) ;
 		// #CUSTOM QUERY
-		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} LIMIT {$limit}";
+		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} {$limit}";
 		$tmp  	= $this->query($query) ;
 
 		if ($tmp === false)
