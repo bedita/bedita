@@ -122,7 +122,7 @@ class User extends BEAppModel
 	}
 	
 	public function getUsersToNotify($conditions) {
-		$conditionBase = array("email IS NOT NULL AND email <> '' AND valid=1");
+		$conditionBase = array("email IS NOT NULL AND email <> '' AND valid='1'");
 		$conditions = array_merge($conditionBase, $conditions);
 		return $this->find("all", array(
 				"fields" => array("id", "userid", "realname", "passwd", "email", "lang"),

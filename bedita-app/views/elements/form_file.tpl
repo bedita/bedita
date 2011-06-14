@@ -9,7 +9,7 @@
 
 <fieldset id="multimediaitem" style="margin-left:-10px;">
 
-<div id="multimediaiteminside">
+<div class="multimediaiteminside">
 
 {if ($object.ObjectType.name == "image")}
 

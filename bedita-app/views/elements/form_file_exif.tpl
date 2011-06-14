@@ -12,7 +12,8 @@
 		{/if}
 		{image_info var="imageInfo" file=$fileUrl}
 		
-{if $imageInfo.hrtype eq "JPG"}
+{if isset($imageInfo)}
+	{if $imageInfo.hrtype eq "JPG"}
 <div class="tab"><h2>{t}Exif - Main Data{/t}</h2></div>
 
 <fieldset id="exifdata">
@@ -76,5 +77,6 @@
 
 </fieldset>
 
+	{/if}
 {/if}
 {/if}

@@ -155,13 +155,12 @@ $(document).ready(function()
 <input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$relation}][0][switch]" value="{$relation}" />
 
 {foreach from=$attach item="item"}
-	<div class="multimediaitem itemBox {if $item.status != "on"} off{/if} disableSelection" id="item_{$item.id}">
+	<div class="multimediaitem itemBox {if $item.status != "on"} off{/if} XdisableSelection" id="item_{$item.id}">
 			{assign_associative var="params" item=$item}
 			{$view->element('form_file_item',$params)}
 			
 	</div>
 {/foreach}
-
 
 </fieldset>
 

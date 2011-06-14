@@ -66,7 +66,8 @@ class BeFrontHelper extends AppHelper {
 		}
 		$sec = $this->_section['title'];
 		if(!empty($this->_section['contentRequested']) && ($this->_section['contentRequested'] == 1) ) {
-			$sec = $this->_currentContent['title'];
+			if(!empty($this->_currentContent['title'])) $sec = $this->_currentContent['title'];
+			else $sec = $this->_section['title'];
 		}
 		if($order=='asc') {
 			return $sec . " - " . $pub;
@@ -412,11 +413,17 @@ class BeFrontHelper extends AppHelper {
 
 			if (!empty($this->_section["pathSection"])) {
 				foreach ($this->_section["pathSection"] as $sec) {
-					$this->Html->addCrumb($sec["title"], $sec["canonicalPath"]);
+					$show = !isset($sec["menu"]) ? true : (($sec["menu"] === '0') ? false : true);
+					if($show && !empty($sec["title"]) && !empty($sec["canonicalPath"])) {
+						$this->Html->addCrumb($sec["title"], $sec["canonicalPath"]);
+					}
 				}
 			}
 			if ($this->_section["id"] != $this->_publication["id"]) {
-				$this->Html->addCrumb($this->_section["title"], $this->_section["canonicalPath"], array("class" => $options["classOn"]));
+				$show = !isset($this->_section["menu"]) ? true : (($this->_section["menu"] === '0') ? false : true);
+				if($show && !empty($this->_section["title"]) && !empty($this->_section["canonicalPath"])) {
+					$this->Html->addCrumb($this->_section["title"], $this->_section["canonicalPath"], array("class" => $options["classOn"]));
+				}
 			}
 			$breadcrumb = $this->Html->getCrumbs($options["separator"], $options["startText"]);
 		}

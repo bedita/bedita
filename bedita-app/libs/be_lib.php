@@ -234,6 +234,39 @@ class BeLib {
 		return trim($value,"-");	
 	}
 	
+	/**
+	 * Strip scripts, images, whitespace or all together on $data
+	 * using Sanitize::stripScripts, Sanitize::stripImages, Sanitize::stripWhitespace, Sanitize::stripAll methods
+	 * see Sanitize class of cakephp for more info
+	 * 
+	 * @param mixed $data string or array
+	 * @param array $options, possible values are:
+	 *				"what" => "scripts" (default), "images", "whitespace", "all",
+	 *				"recursive" => true (default) strip recursively on $data
+	 * 
+	 * @return mixed 
+	 */
+	public function stripData($data, array $options = array()) {
+		$options = array_merge(array("what" => "scripts", "recursive" => true), $options);
+		$method = "strip".ucfirst($options["what"]);
+		App::import("Sanitize");
+		
+		if (method_exists("Sanitize", $method)) {
+			if (is_array($data)) {
+				foreach ($data as $key => $value) {
+					if (is_array($value) && $options["recursive"]) {
+						$data[$key] = $this->stripData($value, $options);
+					} else {
+						$data[$key] = Sanitize::$method($value);
+					}
+				}
+			} else {
+				$data = Sanitize::$method($value);
+			}
+		}
+		
+		return $data;
+	}
 }
 
 ?>

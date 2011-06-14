@@ -69,6 +69,9 @@ class SoapClientModel extends BEAppModel
 		} else {
 			
 			$options = array_diff_key($this->soapParams, array("useLib" =>"", "wsdl"=> "", "debugLevel"=> ""));
+			if(!empty($this->soapParams["debugMode"])) {
+				$options["trace"] = 1;
+			}
 			$this->client = new SoapClient($this->soapParams["wsdl"], $options);
 		}
 	}
@@ -78,10 +81,10 @@ class SoapClientModel extends BEAppModel
 		if($this->useNuSoap()) {
 			$res = $this->client->getDebug();
 		} else {
-			$res = $this->client->__getLastRequestHeaders();
-			$res .= $this->client->__getLastRequest();
-			$res .= $this->client->__getLastResponseHeaders();
-			$res .= $this->client->__getLastResponse();
+			$res = "REQUEST HEADERS:\n" . $this->client->__getLastRequestHeaders();
+			$res .= "\nREQUEST:\n" . html_entity_decode($this->client->__getLastRequest());
+			$res .= "\nRESPONSE HEADERS:\n" .$this->client->__getLastResponseHeaders();
+			$res .= "\nRESPONSE:\n" . html_entity_decode($this->client->__getLastResponse()) . "\n";
 		}		
 		return $res;
 	}
@@ -96,6 +99,10 @@ class SoapClientModel extends BEAppModel
 			$res = $this->client->call($method, $params);
 		} else {
 			$res = call_user_func_array(array($this->client, $method), $params);
+		}
+
+		if(!empty($this->soapParams["debugMode"])) {
+			$this->log($this->debugMsg(), LOG_DEBUG);
 		}
 		return $res;		
 	}

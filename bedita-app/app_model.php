@@ -314,7 +314,13 @@ class BEAppModel extends AppModel {
 		if (!empty($id)) {
 			$treeFields = $this->fieldsString("Tree");
 			$fields .= "," . $treeFields;
-			$groupClausole .= "," . $treeFields;
+			if($this->getDriver() == 'mysql') {
+				// #MYSQL
+				$groupClausole .= ", {$s}Tree{$e}.{$s}id{$e}";
+			} else {
+				// #POSTGRES (@TODO: this clausole do not exclude double results. To fix it)
+				$groupClausole .= "," . $this->fieldsString("Tree");
+			}
 			$from .= ", {$s}trees{$e} AS {$s}Tree{$e}";
 			$conditions[] = " {$s}Tree{$e}.{$s}id{$e}={$s}BEObject{$e}.{$s}id{$e}" ;
 //			if (!empty($userid))
@@ -953,6 +959,10 @@ class BeditaCollectionModel extends BEAppObjectModel {
 					'conditions'   => '',
 					'foreignKey'	=> 'id',
 					'dependent'		=> true
+				),
+			'Tree' =>
+				array(
+					'foreignKey'	=> 'id',
 				)
 	);
 

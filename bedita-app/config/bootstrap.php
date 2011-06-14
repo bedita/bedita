@@ -79,6 +79,7 @@ function enableSubFoldersOn($baseDir, &$var, &$exclude) {
 if (!defined("BEDITA_CORE_PATH")) {
 	define("BEDITA_CORE_PATH", ROOT . DS . APP_DIR);
 	define("BACKEND_APP", true);
+	define('BEDITA_LOCAL_CFG_PATH', BEDITA_CORE_PATH . DS .'config' . DS . 'local');
 	enableSubFoldersOn(BEDITA_CORE_PATH .DS . 'controllers', $additionalPaths["controllers"], $excludedDirs);
 	
 	function shutdownTransation() {
@@ -99,7 +100,7 @@ if (!defined("BEDITA_CORE_PATH")) {
 
 // frontends specific bootstrap
 } else {
-	// frontends specific bootstrap
+	define('BEDITA_LOCAL_CFG_PATH', BEDITA_CORE_PATH . DS .'config' . DS . 'local');
 	define("BACKEND_APP", false);
 	
 	foreach ($additionalPaths as $keyPath => $val) {

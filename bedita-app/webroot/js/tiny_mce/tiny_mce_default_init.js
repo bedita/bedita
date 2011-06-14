@@ -21,7 +21,7 @@ tinyMCE.init({
 	plugins : "safari,paste,fullscreen,xhtmlxtras,inlinepopups",
    	dialog_type : "modal",
 	// Theme options
-	theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext, | ,removeformat,charmap,code,fullscreen, | ,sub,sup,del,|,formula,dfn,glossary,|,attribs",
+	theme_advanced_buttons1 : "justifycenter,bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext, | ,removeformat,charmap,code,fullscreen, | ,sub,sup,del,|,formula,dfn,glossary,|,attribs",
 	theme_advanced_buttons2 : "",
 	theme_advanced_buttons3 : "",
 	theme_advanced_toolbar_location : "top",
@@ -29,6 +29,7 @@ tinyMCE.init({
 	//theme_advanced_statusbar_location : "bottom",
 	//theme_advanced_resizing : true,
 	theme_advanced_blockformats : "p,h1,h2,h3,h4,blockquote,address,dt,dd,code,samp",
+	theme_advanced_link_targets: "modal=Open in modal window",
 	width : "100%",
 
 	remove_redundant_brs : true,
@@ -90,7 +91,7 @@ tinyMCE.init({
 
 });
 
-
+// init for mcsSimple
 tinyMCE.init({
 	mode : "textareas",
 	theme : "advanced",
@@ -119,9 +120,3 @@ tinyMCE.init({
 	
 
 });
-
-
-
-
-		
-		

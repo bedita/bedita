@@ -1,7 +1,7 @@
 
 
 <div class="tab"><h2>{t}Advanced Properties{/t}</h2></div>
-<fieldset id="advancedproperties">
+<fieldset id="advancedproperties" class="multimediaiteminside">
 
 <table class="bordered">
 <tr>
