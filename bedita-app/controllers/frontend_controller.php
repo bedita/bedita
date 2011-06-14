@@ -737,13 +737,11 @@ abstract class FrontendController extends AppController {
 		$conf = Configure::getInstance() ;
 		$extract_all = (!empty($conf->sitemapAllContent)) ? $conf->sitemapAllContent : false;
 		
-		$this->baseLevel = true;
 		$itemsByType = $this->sectionOptions["itemsByType"];
 		$this->sectionOptions["itemsByType"] = false;
 		$flatMode = $xml_out? true : false;
 		$sectionsTree = $this->loadSectionsTree($conf->frontendAreaId,$extract_all, null, 10000, $flatMode) ;
 		$this->sectionOptions["itemsByType"] = $itemsByType;
-		$this->baseLevel = false;
 		
 		if($xml_out) {
 
