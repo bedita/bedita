@@ -1443,7 +1443,10 @@ abstract class FrontendController extends AppController {
 		
 		$this->setCanonicalPath($section);
 		$this->sectionOptions["childrenParams"] = array_merge($this->sectionOptions["childrenParams"], $this->params["named"]);
-		$this->sectionOptions["childrenParams"]["sectionPath"] = $section["canonicalPath"];
+		if (!isset($section["menu"]) || $section["menu"] !== "0") {
+			$this->sectionOptions["childrenParams"]["sectionPath"] = $section["canonicalPath"];
+		}
+		
 		if (!$section["parentAuthorized"] || !$section["authorized"]) {
 			$section["authorized"] = false;
 			$this->sectionOptions["childrenParams"]["setAuthorizedTo"] = false;
