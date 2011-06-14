@@ -835,7 +835,7 @@ abstract class FrontendController extends AppController {
 			}
 	
 			$this->setCanonicalPath($s);
-			$channel = array( 'title' => htmlentities($this->publication["public_name"] . " - " . $s['title']) ,
+			$channel = array( 'title' => $this->publication["public_name"] . " - " . $s['title'],
 				'link' => $s["canonicalPath"],
 				'description' => $s['description'],
 				'language' => $s['lang'],
@@ -919,7 +919,7 @@ abstract class FrontendController extends AppController {
 		$gml = (!empty($this->params['named']['gml']));
 		$this->section($sectionName);
 		$s = $this->viewVars["section"];
-		$channel = array( 'title' => htmlentities($this->publication["public_name"] . " - " . $s['title']) ,
+		$channel = array( 'title' => $this->publication["public_name"] . " - " . $s['title'] ,
 			'link' => "/section/".$sectionName,
 			'description' => $s['description'],
 			'language' => $s['lang'],
