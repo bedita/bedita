@@ -1314,12 +1314,14 @@ abstract class FrontendController extends AppController {
 		$page = (!empty($options["page"]))? $options["page"] : 1;
 		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
 		
+		$s = $this->BEObject->getStartQuote();
+		$e = $this->BEObject->getEndQuote();
 		// add rules for start and end pubblication date
 		if ($this->checkPubDate["start"] == true && empty($filter["Content.start_date"])) {
-				$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR `Content`.start_date IS NULL";
+				$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}start_date{$e} IS NULL";
 		}
 		if ($this->checkPubDate["end"] == true && empty($filter["Content.end_date"])) {
-				$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR `Content`.end_date IS NULL";
+				$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
 		}
 		
 		$items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
@@ -1605,12 +1607,14 @@ abstract class FrontendController extends AppController {
        		$this->helpers[] = 'BeToolbar';
 		}
 		$this->searchOptions = array_merge($this->searchOptions, $this->params["named"]);
+		$s = $this->BEObject->getStartQuote();
+		$e = $this->BEObject->getEndQuote();
 		// add rules for start and end pubblication date
 		if ($this->checkPubDate["start"] == true && empty($this->searchOptions["filter"]["Content.start_date"])) {
-				$this->searchOptions["filter"]["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR `Content`.start_date IS NULL";
+				$this->searchOptions["filter"]["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}start_date{$e} IS NULL";
 		}
 		if ($this->checkPubDate["end"] == true && empty($this->searchOptions["filter"]["Content.end_date"])) {
-				$this->searchOptions["filter"]["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR `Content`.end_date IS NULL";
+				$this->searchOptions["filter"]["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
 		}
 		$result = $this->BeTree->getDescendants($this->publication["id"], $this->status, $this->searchOptions["filter"], $this->searchOptions["order"], $this->searchOptions["dir"], $this->searchOptions["page"], $this->searchOptions["dim"]);
 		$this->set("searchResult", $result); 
@@ -1946,11 +1950,13 @@ abstract class FrontendController extends AppController {
 			throw new BeditaException(__("Unsupported type", true). " - $type");
 		}
 		
+		$s = $this->BEObject->getStartQuote();
+		$e = $this->BEObject->getEndQuote();
 		$order = "";
 		if (!empty($options["order"])) {
 			$order = $options["order"];
 		} elseif (!empty($section_id)) {
-			$order = "`Tree`.priority";
+			$order = "{$s}Tree{$e}.{$s}priority{$e}";
 		}
 		$dir = (isset($options["dir"]))? $options["dir"] : 1;
 		$page = (!empty($options["page"]))? $options["page"] : 1;
@@ -1958,10 +1964,10 @@ abstract class FrontendController extends AppController {
 		
 		// add rules for start and end pubblication date
 		if ($this->checkPubDate["start"] == true && empty($filter["Content.start_date"])) {
-				$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR `Content`.start_date IS NULL";
+				$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}start_date{$e} IS NULL";
 		}
 		if ($this->checkPubDate["end"] == true && empty($filter["Content.end_date"])) {
-				$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR `Content`.end_date IS NULL";
+				$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
 		}
 		
 		$contents = $this->BeTree->{$searchMethod}($section_id, $this->status, $filter, $order, $dir, $page, $dim);

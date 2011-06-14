@@ -243,7 +243,6 @@ class Category extends BEAppModel {
 	 * 
 	 * @return array
 	 */
-	//public function getTags($showOrphans=true, $status=null, $cloud=false, $coeff=12, $order="label", $dir=1, $area_id=null) {
 	public function getTags(array $options = array()) {
 
 		$options = array_merge(
@@ -307,7 +306,7 @@ class Category extends BEAppModel {
 		$allTags = $this->find('all', array(
 			'conditions'=> $conditions,
 			'order' 	=> array("Category." . $orderSql => $dirSql),
-			'group' => "Category.id",
+			'group' => $this->fieldsString("Category"),
 			'joins' => $joins
 		));
 		
