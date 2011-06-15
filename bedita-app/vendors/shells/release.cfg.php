@@ -15,7 +15,10 @@ $rel["removeDirs"]= array(
 	"bedita-doc".DS."view",
 	"bedita-app".DS."webroot".DS."js".DS."wymeditor",
 	"bedita-db",
-	"cake".DS."tests",
+	"cake".DS."tests".DS."cases",
+	"cake".DS."tests".DS."fixtures",
+	"cake".DS."tests".DS."groups",
+	"cake".DS."tests".DS."test_app",
 );
 
 $rel["createDirs"] = array(
@@ -42,7 +45,7 @@ $rel["renameFiles"]= array(
 	"examples".DS."wp.example.com".DS."config".DS."core.php.sample" => "examples".DS."wp.example.com".DS."config".DS."core.php"
 );
 
-$rel["createFiles"] = array("bedita-app".DS."webroot".DS."test.php");
+//$rel["createFiles"] = array("bedita-app".DS."webroot".DS."test.php");
 
 $rel["moveDirs"]= array(
 	"examples" => "frontends",
