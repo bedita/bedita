@@ -1,14 +1,15 @@
 Version 3.1.3 - ulmus
  User-visible changes:
 	* newsletter: images and videos content added properly to newsletter messages
-	* multimedia: filtering on tree BuildFilter::mediatypeFilter() found objects twice. Fixed
-	* multimedia: spreadsheet | specific view->element for BODY fields
 	* notify: avoid editor note notifications for users without backend authorization
 	* tags: filter tags on section (only tags in objects inside a section)
 	* tags: get label from tag unique name
-	* multimedia: added note element
 	* geotag tab: find, fill and test GeoCoords with GoogleMapsGeocoder
+	* multimedia: filtering on tree BuildFilter::mediatypeFilter() found objects twice. Fixed
+	* multimedia: spreadsheet | specific view->element for BODY fields
+	* multimedia: added note element
 	* multimedia: file detail - fix: not show "imageinfo" if not present
+	* multimedia: fix remote images display (height/width) in "Multimedia items"
 	* fix chrome multimediaitem drag & drop + advanced modal ajax infos on multimediaitems
 	* translation - images - replaced 'url' with 'uri'
 	* fix: remove "notice" in tag save, $name not initialized, defined in beforeValidate
