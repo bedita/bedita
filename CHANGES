@@ -1,3 +1,74 @@
+Version 3.1.3 - ulmus
+ User-visible changes:
+	* newsletter: images and videos content added properly to newsletter messages
+	* multimedia: filtering on tree BuildFilter::mediatypeFilter() found objects twice. Fixed
+	* multimedia: spreadsheet | specific view->element for BODY fields
+	* notify: avoid editor note notifications for users without backend authorization
+	* tags: filter tags on section (only tags in objects inside a section)
+	* tags: get label from tag unique name
+	* multimedia: added note element
+	* geotag tab: find, fill and test GeoCoords with GoogleMapsGeocoder
+	* multimedia: file detail - fix: not show "imageinfo" if not present
+	* fix chrome multimediaitem drag & drop + advanced modal ajax infos on multimediaitems
+	* translation - images - replaced 'url' with 'uri'
+	* fix: remove "notice" in tag save, $name not initialized, defined in beforeValidate
+	* #273 - Translations module: fix wrong limit clasuole in query
+
+
+ Frontend changes:
+	* added georss reachable from /georss/section-nickname (simple and atom)
+	* added kml  reachable from /kml/section-nickname 
+	* BeFront::breadcrumb() now accepts an array of options
+	* minor bug in rss feed creation (notice error when empty abstract and body)
+	* fix wrong canonicalPath in currentContent
+	* BeFront helper: fix canonicalPath() method
+	* fix generic exception error message
+	* 404 error if url is a reserved word and no handler is found (e.g. /js/.., /css/... )
+	* newsletter subscribe: fix Card.title value if Card.surname exists
+	* #210 - partial menu implementation - if tree.menu == 0 for a section, exclude it from "canonicalPath"
+	* #210 -beFront, breadcrumb - hide hidden sections (trees.menu == 0) 
+	* #210 - menu, new canonicalPath method, rule to select preferred canonical path for every object (mutlifiling)
+	* BeEmbedMedia helper - in mode=thumb generate alt with title object if no one is passed
+	* #270 - add callback methods convention to fetch custom rss channel and items not from a single section 
+	* #100 - strip <scripts> tag saving comments or generic object to avoid xss attack
+	* #274 category frontend method (like /tag)
+	* #104 cache: simple object cache array to avoid duplicate object load
+	* added Tree.area_id condition in FrontendController::setCanonicalPath() to get right path when there is more than one publication
+	* #210 - menu, use canonicalPath method in "virtual" section objects (trees.menu === '0')
+	* fix RSS feeds channel data
+	* #210 - sitemap - add "menu" info, fix html sitemap <ul><li> tags, remove hidden/virtual sections from sitemap.xml
+
+
+ Developer-visibile changes:
+	* model: streams, fix mime type detection for PHP 5.3
+	* shell: load cached config in startup, initConfig method
+	* bedita shell script: avoid cached config use in init, initDb, import methods
+	* cake php bug-fix, xml to array conversion
+	* remove users.userid from buildFilterBehavior::object_userFilter() - it got performance problems with large numbers of objects
+	* finfo_open() in Stream::getMimeType() useFILEINFO_MIME_TYPE instead of FILEINFO_MIME to intercept only the mime_type
+	* errors: add $_GET['url'] param in error 500 log
+	* update BeBlip component to fit changes in blip.tv api
+	* bugfix: construction of categories.name for multimedia objects was wrong
+	* shell: dbadmin::updateCategoryName accept -objectType <object-type-name> as parameter
+	* bugfix: auth_param field serialization only in case of array data
+	* User::afterFind() check if auth_params field is unserializable and if it is unserialize it
+	* XML::toArray patch http://cakephp.lighthouseapp.com/projects/42648/tickets/1667
+	* config/local default dir for local config files - svn ignore
+	* BEDITA_LOCAL_CFG_PATH, local configuration files path - not versioned
+	* soap: debug messages improvements, use "debugMode" to activate request/response log in debug.log
+	* shell:  #224 - addressbook import - set mailgroup, use custom csv file [header may contain BE fields]
+	* Blip Helper: calculate width or height respect original video ratio if only one parameter is defined
+	* tinyMce target="modal" setup in default config
+	* #272 - BEAppModel::findObjects(): changed "group by" clausole on Tree to avoid duplicated items
+	* media nickname input value in itembox
+	* nickname input value in see also list
+	* #274 - "category" reserved word
+	* postgres: fix query to get user to notificate, improved Postgres support
+	* BEAppModel::findObjects() - splitted Tree 'group by' for mysql and postgres to work properly in mysql. Actually Postgres return double results in some cases
+
+
+
+
 Version 3.1.2 - ulmus
  User-visible changes:
 	* Publications module: default limit listed content to one hundred items
