@@ -790,6 +790,7 @@ abstract class FrontendController extends AppController {
 					$urlset[$i]['lastmod'] = substr($v["modified"], 0, 10);
 					
 				}
+				$urlset[$i]['menu'] = $v["menu"];
 				$i++;
 			}
 			$this->set('urlset',$urlset);
