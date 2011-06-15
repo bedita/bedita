@@ -45,7 +45,7 @@ $rel["renameFiles"]= array(
 	"examples".DS."wp.example.com".DS."config".DS."core.php.sample" => "examples".DS."wp.example.com".DS."config".DS."core.php"
 );
 
-//$rel["createFiles"] = array("bedita-app".DS."webroot".DS."test.php");
+$rel["createFiles"] = array();
 
 $rel["moveDirs"]= array(
 	"examples" => "frontends",
