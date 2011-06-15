@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2011-03-28 15:10:35\n"
+"POT-Creation-Date: 2011-06-15 15:16:41\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -576,6 +576,9 @@ msgstr ""
 msgid "File already exists in the filesystem"
 msgstr ""
 
+msgid "Find and fill latlong coords"
+msgstr ""
+
 msgid "Find it"
 msgstr ""
 
@@ -901,6 +904,9 @@ msgid "No books found"
 msgstr ""
 
 msgid "No categories found"
+msgstr ""
+
+msgid "No category found"
 msgstr ""
 
 msgid "No comments found"
@@ -1296,6 +1302,9 @@ msgstr ""
 msgid "Test mail sent to "
 msgstr ""
 
+msgid "Test on GoogleMaps"
+msgstr ""
+
 msgid "Test stuff"
 msgstr ""
 
@@ -1369,6 +1378,9 @@ msgid "Unplugging the module will delete all related items. Do you want continue
 msgstr ""
 
 msgid "Unsubscribe selected items"
+msgstr ""
+
+msgid "Unsupported type"
 msgstr ""
 
 msgid "Upload"
