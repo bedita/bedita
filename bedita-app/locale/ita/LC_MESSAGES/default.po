@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2011-03-24 14:43:49\n"
+"POT-Creation-Date: 2011-06-15 15:13:22\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -589,6 +589,9 @@ msgstr "File"
 msgid "File already exists in the filesystem"
 msgstr "Il file esiste già nel sistema"
 
+msgid "Find and fill latlong coords"
+msgstr "Trova e inserisci latitudine e longitudine"
+
 msgid "Find it"
 msgstr "Trova"
 
@@ -921,6 +924,9 @@ msgid "No books found"
 msgstr "Nessun libro trovato"
 
 msgid "No categories found"
+msgstr "Nessuna categoria trovata"
+
+msgid "No category found"
 msgstr "Nessuna categoria trovata"
 
 msgid "No comments found"
@@ -1319,6 +1325,9 @@ msgstr "Template"
 msgid "Test mail sent to "
 msgstr "Test per invio posta a "
 
+msgid "Test on GoogleMaps"
+msgstr "Verifica su GoogleMaps"
+
 msgid "Test stuff"
 msgstr "Cosa di test"
 
@@ -1398,6 +1407,9 @@ msgstr ""
 
 msgid "Unsubscribe selected items"
 msgstr "Disiscrivi gli elementi selezionati"
+
+msgid "Unsupported type"
+msgstr "Tipo non supportato"
 
 msgid "Upload"
 msgstr "Upload"

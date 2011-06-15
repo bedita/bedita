@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2011-03-24 14:43:49\n"
+"POT-Creation-Date: 2011-06-15 15:13:22\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -597,6 +597,9 @@ msgstr "Datei"
 msgid "File already exists in the filesystem"
 msgstr "Datei existiert bereits im Dateisystem"
 
+msgid "Find and fill latlong coords"
+msgstr ""
+
 msgid "Find it"
 msgstr "Finden"
 
@@ -930,6 +933,9 @@ msgstr "Keine Bücher gefunden"
 
 msgid "No categories found"
 msgstr "Keine Kategorien gefunden"
+
+msgid "No category found"
+msgstr ""
 
 msgid "No comments found"
 msgstr "Keine Kommentare gefunden"
@@ -1329,6 +1335,9 @@ msgstr "Templates"
 msgid "Test mail sent to "
 msgstr "Testnachricht gesendet an"
 
+msgid "Test on GoogleMaps"
+msgstr ""
+
 msgid "Test stuff"
 msgstr "Testkram"
 
@@ -1410,6 +1419,9 @@ msgstr ""
 
 msgid "Unsubscribe selected items"
 msgstr "Abonnement für gewählte Elemente beenden"
+
+msgid "Unsupported type"
+msgstr ""
 
 msgid "Upload"
 msgstr "Hochladen"

@@ -570,6 +570,9 @@ msgstr ""
 msgid "File already exists in the filesystem"
 msgstr ""
 
+msgid "Find and fill latlong coords"
+msgstr ""
+
 msgid "Find it"
 msgstr ""
 
@@ -895,6 +898,9 @@ msgid "No books found"
 msgstr ""
 
 msgid "No categories found"
+msgstr ""
+
+msgid "No category found"
 msgstr ""
 
 msgid "No comments found"
@@ -1291,6 +1297,9 @@ msgstr ""
 msgid "Test mail sent to "
 msgstr ""
 
+msgid "Test on GoogleMaps"
+msgstr ""
+
 msgid "Test stuff"
 msgstr ""
 
@@ -1366,6 +1375,9 @@ msgid ""
 msgstr ""
 
 msgid "Unsubscribe selected items"
+msgstr ""
+
+msgid "Unsupported type"
 msgstr ""
 
 msgid "Upload"
