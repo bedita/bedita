@@ -499,7 +499,7 @@ class BeThumbHelper extends AppHelper {
 		$thumbnail->config_temp_directory        = $this->_conf['tmp'] ;
 		$thumbnail->cache_filename               = $this->_imageTarget['filename'];
 		$thumbnail->config_cache_directory       = $this->_imageInfo['cacheDirectory'];
-		$thumbnail->config_error_die_on_error    = true;
+		$thumbnail->config_error_die_on_error    = false;
 		$thumbnail->config_cache_disable_warning = true;
 		$thumbnail->config_prefer_imagemagick    = $this->_conf['image']['preferImagemagick'];
 		$thumbnail->config_imagemagick_path      = $this->_conf['image']['imagemagick'];
