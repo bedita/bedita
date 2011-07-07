@@ -534,8 +534,7 @@ abstract class FrontendController extends AppController {
 
 				$this->setCanonicalPath($sectionObject);
 				if($loadContents) {
-					$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")),
-						"sectionPath" => $sectionObject["canonicalPath"]);
+					$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")));
 					$objs = $this->loadSectionObjects($s['id'], $option);
 					$resultObjects = (!$this->sectionOptions["itemsByType"] && !empty($objs["childContents"]))? $objs["childContents"] : $objs;
 				}
