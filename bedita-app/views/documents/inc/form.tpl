@@ -7,9 +7,12 @@
 
 	{$view->element('form_title_subtitle')}
 
-	{assign_associative var="params" addshorttext=true height=500}
+	{assign_associative var="params" addshorttext=$conf->addshorttext|default:'' height=500}
 	{$view->element('form_textbody', $params)}
-		
+
+	{assign_associative var="params" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
+	{$view->element('form_file_list', $params)}
+			
 	{$view->element('form_previews')}
 	
 	{assign_associative var="params" comments=true}
@@ -19,9 +22,6 @@
 	
 	{$view->element('form_categories')}
 	
-	{assign_associative var="params" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
-	{$view->element('form_file_list', $params)}
-
 	{$view->element('form_tags')}
 	
 	{$view->element('form_links')}
