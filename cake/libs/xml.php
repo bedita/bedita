@@ -275,6 +275,9 @@ class XmlNode extends Object {
 
 							$node->normalize($val, $n, $options);
 						} elseif ($options['format'] == 'tags' && $this->__tagOptions($key) !== false) {
+							if ($options['slug'] == true) {
+								$key = Inflector::slug(Inflector::underscore($key));
+							}
 							$tmp =& $node->createElement($key);
 							if (!empty($val) || $val === 0 || $val === '0') {
 								$tmp->createTextNode($val);
@@ -700,12 +703,12 @@ class XmlNode extends Object {
 				if ($child->attributes) {
 					$value = array_merge(array('value' => $value), $child->attributes);
 				}
-				if(count($child->children) == 1) {
+				if (count($child->children) == 1) {
 					$leaf = true;
 				}
 			} elseif (count($child->children) === 0 && $child->value == '') {
 				$value = $child->attributes;
-				if(empty($value)) {
+				if (empty($value)) {
 					$leaf = true;
 				}
 			} else {
@@ -717,12 +720,12 @@ class XmlNode extends Object {
 					$out[$key] = array($out[$key]);
 				} 
 				$out[$key][] = $value;
-			} else if(isset($out[$child->name])) {
+			} elseif (isset($out[$child->name])) {
 				$t = $out[$child->name];
 				unset($out[$child->name]);
 				$out[$key] = array($t);
 				$out[$key][] = $value;
-			} else if($leaf) {
+			} elseif ($leaf) {
 				$out[$child->name] = $value;
 			} else {
 				$out[$key] = $value;

@@ -162,9 +162,6 @@ if (BACKEND_APP) {
 	}
 }
 
-// local configuration files path
-define('BEDITA_LOCAL_CFG_PATH', BEDITA_CORE_PATH . DS .'config' . DS . 'local');
-
 // add paths to cakePHP
 App::build($additionalPaths);
 

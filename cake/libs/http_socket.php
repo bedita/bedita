@@ -146,7 +146,7 @@ class HttpSocket extends CakeSocket {
  * You can use a url string to set the url and use default configurations for
  * all other options:
  *
- * `$http =& new HttpSockect('http://cakephp.org/');`
+ * `$http =& new HttpSocket('http://cakephp.org/');`
  *
  * Or use an array to configure multiple options:
  *
@@ -945,7 +945,7 @@ class HttpSocket extends CakeSocket {
  * Parses cookies in response headers.
  *
  * @param array $header Header array containing one ore more 'Set-Cookie' headers.
- * @return mixed Either false on no cookies, or an array of cookies recieved.
+ * @return mixed Either false on no cookies, or an array of cookies received.
  * @access public
  * @todo Make this 100% RFC 2965 confirm
  */
