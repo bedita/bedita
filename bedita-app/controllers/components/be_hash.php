@@ -34,14 +34,14 @@ class BeHashComponent extends Object {
 	 *
 	 * @var controller instance
 	 */
-	private $controller;
+	protected $controller;
 
 	/**
 	 * store notification messages
 	 *
 	 * @var array
 	 */
-	private $notifyMsg = null;
+	protected $notifyMsg = null;
 
 	/**
 	 * other components
@@ -55,14 +55,14 @@ class BeHashComponent extends Object {
 	 *
 	 * @var boolean
 	 */
-	private $closeHashJob = true;
+	protected $closeHashJob = true;
 
 	/**
 	 * say to handleHash where redirect. Set false to not execute redirect
 	 *
 	 * @var mixed
 	 */
-	private $redirectPath = false;
+	protected $redirectPath = false;
 	
 	/**
 	 * startup component
@@ -176,7 +176,7 @@ class BeHashComponent extends Object {
 	 * @param array $data
 	 * @return array
 	 */
-	private function userSignUp($data) {
+	protected function userSignUp($data) {
 		if (empty($data['User'])) {
 			throw new BeditaHashException(__("Error on sign up: no data",true));
 		}
@@ -294,7 +294,7 @@ class BeHashComponent extends Object {
 		return $mailParams;
 	}
 
-	private function userSignUpActivation($data) {
+	protected function userSignUpActivation($data) {
 		$userModel = ClassRegistry::init("User");
 		$user = $userModel->find("first", array(
 			"conditions" => array("id" => $data["HashJob"]["user_id"]),
@@ -338,7 +338,7 @@ class BeHashComponent extends Object {
 	/**
 	 * subscribe to a newsletter
 	 */
-	private function newsletterSubscribe($data) {
+	protected function newsletterSubscribe($data) {
 		if(empty($data)) {
 			throw new BeditaHashException(__("Error on subscribing: no data",true));
 		}
@@ -458,7 +458,7 @@ class BeHashComponent extends Object {
 	/**
 	 * confirm subscription to a newsletter
 	 */
-	private function newsletterSubscribeConfirm($data) {
+	protected function newsletterSubscribeConfirm($data) {
 		if ($data["HashJob"]["status"] != "pending")
 			throw new BeditaHashException(__("Hash isn't valid.",true));
 		
@@ -519,7 +519,7 @@ class BeHashComponent extends Object {
 	/**
 	 * unsubscribe from a newsletter
 	 */
-	private function newsletterUnsubscribe($data) {
+	protected function newsletterUnsubscribe($data) {
 		if (empty($data['mail_group_id']))
 			throw new BeditaHashException(__("missing mail group id", true));
 		if (empty($data['card_id']))
@@ -588,7 +588,7 @@ class BeHashComponent extends Object {
 		
 	}
 
-	private function newsletterUnsubscribeConfirm($data) {
+	protected function newsletterUnsubscribeConfirm($data) {
 		if ($data["HashJob"]["status"] != "pending") {
 			throw new BeditaHashException(__("Hash isn't valid.",true));
 		}
@@ -640,7 +640,7 @@ class BeHashComponent extends Object {
 	 * @param array $data
 	 * @return array mail params
 	 */
-	private function recoverPassword($data) {
+	protected function recoverPassword($data) {
 		$this->controller->Session->del("userToChangePwd");
 		if (empty($data["email"])) {
 			throw new BeditaHashException(__("Missing email to send recover instructions", true));
@@ -697,7 +697,7 @@ class BeHashComponent extends Object {
 		
 	}
 
-	private function recoverPasswordChange($data) {
+	protected function recoverPasswordChange($data) {
 		$userToChangePwd = $this->controller->Session->read("userToChangePwd");
 		if (empty($userToChangePwd) || $userToChangePwd["User"]["id"] != $data["HashJob"]["user_id"]) {
 			$user = ClassRegistry::init("User")->find("first", array(
@@ -743,7 +743,7 @@ class BeHashComponent extends Object {
 		}
 	}
 
-	private function sendNotificationMail(array $mailParams) {
+	protected function sendNotificationMail(array $mailParams) {
 		$mailOptions = Configure::read("mailOptions");
 		$mail_message_data['from'] = $mailOptions["sender"];
 		$mail_message_data['reply_to'] = $mailOptions["reply_to"];
