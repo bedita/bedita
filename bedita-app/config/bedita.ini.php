@@ -587,7 +587,7 @@ $config["geoTagOptions"] = array(
 		"k" => "satellite",
 		"h" => "hybrid",
 		"p" => "terrain",
-		"s" => "Google maps StreetView™",
+		"c" => "Google maps StreetView™",
 		"e" => "Google Earth™",
 	)
 );

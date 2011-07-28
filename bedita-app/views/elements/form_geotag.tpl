@@ -14,7 +14,16 @@ $(document).ready(function(){
 		if ( ( $(".lng").val() == "" ) ) {
 			alert ("you need the longitude value"); return;
 		}
-		var q = "q="+ $(".lat").val()+","+$(".lng").val() + "&t=" +  $("#mapType").val() + "&z=" + $("#mapZoom").val();
+		
+		var latitude = $.trim($(".lat").val());
+		var longitude = $.trim($(".lng").val());
+		var q = "q="+ latitude +","+ longitude + "&z=" + $("#mapZoom").val();
+		var mapType = $("#mapType").val();
+		if (mapType == "c") {
+			q += "&layer=" +  $("#mapType").val() + "&cbll=" + latitude +","+ longitude + "&cbp=12";
+		} else {
+			q += "&t=" +  $("#mapType").val();
+		}
 		window.open("http://maps.google.com/maps?"+q);
 	});	
 	
