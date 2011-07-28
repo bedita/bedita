@@ -1711,7 +1711,7 @@ msgid "checkbox single choice"
 msgstr "checkbox singola scelta"
 
 msgid "city"
-msgstr ""
+msgstr "città"
 
 msgid "city and zip code"
 msgstr "città e cap"
@@ -1741,7 +1741,7 @@ msgid "contents"
 msgstr "contenuti"
 
 msgid "continent"
-msgstr ""
+msgstr "continente"
 
 msgid "copy"
 msgstr "copia"
@@ -1926,7 +1926,7 @@ msgid "here"
 msgstr "qui"
 
 msgid "hybrid"
-msgstr ""
+msgstr "ibrido"
 
 msgid "id"
 msgstr "id"
@@ -2025,13 +2025,13 @@ msgid "male"
 msgstr "uomo"
 
 msgid "map"
-msgstr ""
+msgstr "mappa"
 
 msgid "map type"
-msgstr ""
+msgstr "tipo di mappa"
 
 msgid "map zoom"
-msgstr ""
+msgstr "zoom"
 
 msgid "master language"
 msgstr "lingua principale"
@@ -2040,7 +2040,7 @@ msgid "master title"
 msgstr "titolo principale"
 
 msgid "maximum"
-msgstr ""
+msgstr "massimo"
 
 msgid "message board"
 msgstr "area messaggi"
@@ -2097,7 +2097,7 @@ msgid "name"
 msgstr "nome"
 
 msgid "neighbourhood"
-msgstr ""
+msgstr "vicinato"
 
 msgid "new again"
 msgstr "ancora la nuova"
@@ -2322,7 +2322,7 @@ msgid "pulldown single choice"
 msgstr "menu scelta singola"
 
 msgid "quarter"
-msgstr ""
+msgstr "quartiere"
 
 msgid "questionnaires"
 msgstr "questionari"
@@ -2361,7 +2361,7 @@ msgid "rights"
 msgstr "diritti"
 
 msgid "satellite"
-msgstr ""
+msgstr "foto satellitare"
 
 msgid "save"
 msgstr "salva"
@@ -2472,7 +2472,7 @@ msgid "target"
 msgstr "destinatario"
 
 msgid "terrain"
-msgstr ""
+msgstr "rilievo"
 
 msgid "text"
 msgstr "testo"
@@ -2598,7 +2598,7 @@ msgid "word"
 msgstr "parola"
 
 msgid "world"
-msgstr ""
+msgstr "mondo"
 
 msgid "x"
 msgstr "x"
