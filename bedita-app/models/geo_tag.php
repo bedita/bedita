@@ -59,7 +59,12 @@ class GeoTag extends BEAppModel
 			}
 			
 			if (!empty($this->data["GeoTag"]["gmaps_lookat"])) {
-				$this->data["GeoTag"]["gmaps_lookat"] = json_encode($this->data["GeoTag"]["gmaps_lookat"]);
+				$recordsToString = trim( implode("", $this->data["GeoTag"]["gmaps_lookat"]) );
+				if (!empty( $recordsToString )) {
+					$this->data["GeoTag"]["gmaps_lookat"] = json_encode($this->data["GeoTag"]["gmaps_lookat"]);
+				} else {
+					$this->data["GeoTag"]["gmaps_lookat"] = null;
+				}
 			}
 		}
 		
