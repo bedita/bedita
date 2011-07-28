@@ -564,6 +564,36 @@ $config["defaultLicenses"] = array(
 $config["cfgLicenses"] = array();
 
 /**
+ * GeoTag options
+ * 
+ * zoom: keys are google maps zoom level
+ * 
+ * mapType: keys are google maps standard url parameters plus "s" for street view layer
+ * 
+ */
+$config["geoTagOptions"] = array(
+	"zoom" => array(
+		21 => "maximum",
+		18 => "neighbourhood",
+		16 => "quarter",
+		14 => "city",
+		9 => "district",
+		7 => "country",
+		4 => "continent",
+		1 => "world",
+	),
+	"mapType" => array(
+		"m" => "map",
+		"k" => "satellite",
+		"h" => "hybrid",
+		"p" => "terrain",
+		"s" => "Google maps StreetView™",
+		"e" => "Google Earth™",
+	)
+);
+
+
+/**
  * Specific System settings
  * ALWAYS AT THE END of bedita.ini.php
  */

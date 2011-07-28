@@ -603,6 +603,12 @@ msgstr ""
 msgid "Go to page"
 msgstr ""
 
+msgid "Google Earth"
+msgstr ""
+
+msgid "Google maps StreetView"
+msgstr ""
+
 msgid "Group "
 msgstr ""
 
@@ -1670,6 +1676,9 @@ msgstr ""
 msgid "checkbox single choice"
 msgstr ""
 
+msgid "city"
+msgstr ""
+
 msgid "city and zip code"
 msgstr ""
 
@@ -1695,6 +1704,9 @@ msgid "contact the project admin"
 msgstr ""
 
 msgid "contents"
+msgstr ""
+
+msgid "continent"
 msgstr ""
 
 msgid "copy"
@@ -1767,6 +1779,9 @@ msgid "details"
 msgstr ""
 
 msgid "disable succesfully, all related objects are been deleted"
+msgstr ""
+
+msgid "district"
 msgstr ""
 
 msgid "documents"
@@ -1874,6 +1889,9 @@ msgstr ""
 msgid "here"
 msgstr ""
 
+msgid "hybrid"
+msgstr ""
+
 msgid "id"
 msgstr ""
 
@@ -1970,10 +1988,22 @@ msgstr ""
 msgid "male"
 msgstr ""
 
+msgid "map"
+msgstr ""
+
+msgid "map type"
+msgstr ""
+
+msgid "map zoom"
+msgstr ""
+
 msgid "master language"
 msgstr ""
 
 msgid "master title"
+msgstr ""
+
+msgid "maximum"
 msgstr ""
 
 msgid "message board"
@@ -2028,6 +2058,9 @@ msgid "multiple choice"
 msgstr ""
 
 msgid "name"
+msgstr ""
+
+msgid "neighbourhood"
 msgstr ""
 
 msgid "new again"
@@ -2252,6 +2285,9 @@ msgstr ""
 msgid "pulldown single choice"
 msgstr ""
 
+msgid "quarter"
+msgstr ""
+
 msgid "questionnaires"
 msgstr ""
 
@@ -2286,6 +2322,9 @@ msgid "right to left"
 msgstr ""
 
 msgid "rights"
+msgstr ""
+
+msgid "satellite"
 msgstr ""
 
 msgid "save"
@@ -2394,6 +2433,9 @@ msgid "tags"
 msgstr ""
 
 msgid "target"
+msgstr ""
+
+msgid "terrain"
 msgstr ""
 
 msgid "text"
@@ -2517,6 +2559,9 @@ msgid "with status"
 msgstr ""
 
 msgid "word"
+msgstr ""
+
+msgid "world"
 msgstr ""
 
 msgid "x"

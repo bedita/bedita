@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2011-06-15 15:13:22\n"
+"POT-Creation-Date: 2011-07-28 15:38:40\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -629,6 +629,12 @@ msgstr "Gmaps LookaT"
 
 msgid "Go to page"
 msgstr "Gehe zu Seite"
+
+msgid "Google Earth"
+msgstr ""
+
+msgid "Google maps StreetView"
+msgstr ""
 
 msgid "Group "
 msgstr "Gruppe"
@@ -1718,6 +1724,9 @@ msgstr "URLs prüfen"
 msgid "checkbox single choice"
 msgstr "checkbox Einzelwahl"
 
+msgid "city"
+msgstr ""
+
 msgid "city and zip code"
 msgstr "Stadt und Postleitzahl"
 
@@ -1744,6 +1753,9 @@ msgstr "den Projektadministrator kontaktieren"
 
 msgid "contents"
 msgstr "Inhalte"
+
+msgid "continent"
+msgstr ""
 
 msgid "copy"
 msgstr "kopieren"
@@ -1816,6 +1828,9 @@ msgstr "Details"
 
 msgid "disable succesfully, all related objects are been deleted"
 msgstr "Deaktivierung erfolgreich, alle verbundenen Objekte wurden gelöscht"
+
+msgid "district"
+msgstr ""
 
 msgid "documents"
 msgstr "Dokumente"
@@ -1924,6 +1939,9 @@ msgstr "Hilfe"
 msgid "here"
 msgstr ""
 
+msgid "hybrid"
+msgstr ""
+
 msgid "id"
 msgstr "ID"
 
@@ -2020,11 +2038,23 @@ msgstr "Hauptsprache"
 msgid "male"
 msgstr "männlich"
 
+msgid "map"
+msgstr ""
+
+msgid "map type"
+msgstr ""
+
+msgid "map zoom"
+msgstr ""
+
 msgid "master language"
 msgstr "Vorlagensprache"
 
 msgid "master title"
 msgstr "Vorlagentitel"
+
+msgid "maximum"
+msgstr ""
 
 msgid "message board"
 msgstr "Nachrichtenboard"
@@ -2079,6 +2109,9 @@ msgstr "mehrfache Auswahl"
 
 msgid "name"
 msgstr "Name"
+
+msgid "neighbourhood"
+msgstr ""
 
 msgid "new again"
 msgstr "wiederholen"
@@ -2302,6 +2335,9 @@ msgstr "Redakteur"
 msgid "pulldown single choice"
 msgstr "pulldown Einzelwahl"
 
+msgid "quarter"
+msgstr ""
+
 msgid "questionnaires"
 msgstr "Umfragen"
 
@@ -2337,6 +2373,9 @@ msgstr "rechts nach links"
 
 msgid "rights"
 msgstr "Rechte"
+
+msgid "satellite"
+msgstr ""
 
 msgid "save"
 msgstr "speichern"
@@ -2445,6 +2484,9 @@ msgstr "Schlüsselwörter"
 
 msgid "target"
 msgstr "Ziel"
+
+msgid "terrain"
+msgstr ""
 
 msgid "text"
 msgstr "Text"
@@ -2568,6 +2610,9 @@ msgstr "mit Status"
 
 msgid "word"
 msgstr "Wort"
+
+msgid "world"
+msgstr ""
 
 msgid "x"
 msgstr "x"
