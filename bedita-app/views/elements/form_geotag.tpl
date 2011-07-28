@@ -14,8 +14,8 @@ $(document).ready(function(){
 		if ( ( $(".lng").val() == "" ) ) {
 			alert ("you need the longitude value"); return;
 		}
-		var q = $(".lat").val()+","+$(".lng").val();
-		window.open("http://maps.google.com/maps?q="+q+"")
+		var q = "q="+ $(".lat").val()+","+$(".lng").val() + "&t=" +  $("#mapType").val() + "&z=" + $("#mapZoom").val();
+		window.open("http://maps.google.com/maps?"+q);
 	});	
 	
 	geocoder = new google.maps.Geocoder();
@@ -64,7 +64,7 @@ $(document).ready(function(){
 <tr>
 	<th>{t}map zoom{/t}:</th>
 	<td>
-		<select name="data[GeoTag][0][gmaps_lookat][zoom]">
+		<select id="mapZoom" name="data[GeoTag][0][gmaps_lookat][zoom]">
 			<option></option>
 			{foreach from=$conf->geoTagOptions.zoom key="value" item="label"}
 				<option {if $d.gmaps_lookat.zoom|default:"" == $value}selected="selected"{/if} value="{$value}">{t}{$label}{/t}</option>
@@ -73,7 +73,7 @@ $(document).ready(function(){
 	</td>
 	<th>{t}map type{/t}:</th>
 	<td>
-		<select name="data[GeoTag][0][gmaps_lookat][mapType]">{* m" map, "k" satellite, "h" hybrid, "p" terrain, "e" GoogleEarth *}
+		<select id="mapType" name="data[GeoTag][0][gmaps_lookat][mapType]">{* m" map, "k" satellite, "h" hybrid, "p" terrain, "e" GoogleEarth *}
 			<option></option>
 			{foreach from=$conf->geoTagOptions.mapType key="value" item="label"}
 				<option {if $d.gmaps_lookat.mapType|default:"" == $value}selected="selected"{/if} value="{$value}">{t}{$label}{/t}</option>
