@@ -1818,7 +1818,7 @@ msgstr ""
 "stati eliminati"
 
 msgid "district"
-msgstr ""
+msgstr "regione"
 
 msgid "documents"
 msgstr "documenti"
