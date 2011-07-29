@@ -120,7 +120,7 @@ abstract class FrontendController extends AppController {
 	 * 
 	 * @var array
 	 */
-	protected $searchOptions = array("order" => "title", "dir" => 1, "dim" => 50, "page" => 1, "filter" => false);
+	protected $searchOptions = array("order" => false, "dir" => 1, "dim" => 50, "page" => 1, "filter" => false);
 	
 	/**
 	 * user logged in or not
