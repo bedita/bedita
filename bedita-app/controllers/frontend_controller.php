@@ -520,6 +520,9 @@ abstract class FrontendController extends AppController {
 		$parent_id = is_numeric($parentName) ? $parentName: $this->BEObject->getIdFromNickname($parentName);
 		$result = array();
 		$filter["object_type_id"] = $conf->objectTypes['section']["id"];
+		if (empty($parent_id)) {
+			throw new BeditaException(__("Error loading sections tree. Missing parent" . ": " . $parentName, true));
+		}
 		$sections = $this->BeTree->getChildren($parent_id, $this->status, 
 			$filter, "priority") ;
 
