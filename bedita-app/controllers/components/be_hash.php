@@ -124,7 +124,6 @@ class BeHashComponent extends Object {
 			throw new BeditaException(__("missing method to manage hash case", true));
 		}
 
-		$this->controller->Transaction->begin();
 		$mailParams = $this->{$method}($this->controller->data);
 		if ($this->closeHashJob && !empty($hashRow["status"]) && $hashRow["status"] == "pending") {
 			$hashModel = ClassRegistry::init("HashJob");
@@ -136,12 +135,6 @@ class BeHashComponent extends Object {
 		if (!empty($mailParams)) {
 			$this->sendNotificationMail($mailParams);
 		}
-		$this->controller->Transaction->commit();
-
-		if (!empty($this->redirectPath)) {
-			$this->controller->redirect($this->redirectPath);
-		}
-
 		return true;
 
 	}

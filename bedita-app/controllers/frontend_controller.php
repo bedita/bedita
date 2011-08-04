@@ -1656,12 +1656,15 @@ abstract class FrontendController extends AppController {
 	 */
 	public function hashjob($service_type=null, $hash=null) {
 		try {
-			$this->BeHash->handleHash($service_type, $hash, "/hashjob");
+			$this->Transaction->begin();
+			$this->BeHash->handleHash($service_type, $hash);
+			$this->Transaction->commit();
 		} catch (BeditaHashException $ex) {
 			$this->Transaction->rollback();
 			$this->userErrorMessage($ex->getMessage());
 			$this->eventError($ex->getDetails());
 		} catch (BeditaException $ex) {
+			$this->Transaction->rollback();
 			throw new BeditaRuntimeException($ex->getMessage(), $ex->getDetails());
 		}
 	}
