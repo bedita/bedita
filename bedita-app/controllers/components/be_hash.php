@@ -357,11 +357,11 @@ class BeHashComponent extends Object {
 					$data['title'] .= " " . $data['surname'];
 				}
 				
-				$data['title'] = trim($data['title']);
-				
 				if (empty($data['title'])) {
 					$data['title'] = $data['newsletter_email'];
 				}
+				
+				$data['title'] = trim($data['title']);
 			}
 			
 			$data['status'] = "draft";
