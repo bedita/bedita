@@ -72,8 +72,12 @@ class AuthenticationsController extends AppController {
 		$this->setupLocale();
 		if (!empty($service_type) || !empty($hash)) {
 			try {
-				$redirectTo = (empty($hash))? "/" : null;
-				if (!$this->BeHash->handleHash($service_type, $hash, $redirectTo)) {
+				$this->Transaction->begin();
+				if (!$this->BeHash->handleHash($service_type, $hash)) {
+					$this->redirect("/");
+				}
+				$this->Transaction->commit();
+				if (empty($hash)) {
 					$this->redirect("/");
 				}
 			} catch (BeditaHashException $ex) {

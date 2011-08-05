@@ -56,13 +56,6 @@ class BeHashComponent extends Object {
 	 * @var boolean
 	 */
 	protected $closeHashJob = true;
-
-	/**
-	 * say to handleHash where redirect. Set false to not execute redirect
-	 *
-	 * @var mixed
-	 */
-	protected $redirectPath = false;
 	
 	/**
 	 * startup component
@@ -79,15 +72,13 @@ class BeHashComponent extends Object {
 	 *
 	 * @param string $service_type
 	 * @param string $hash
-	 * @param string $redirectPath
 	 *
 	 * @return void
 	 */
-	public function handleHash($service_type, $hash=null, $redirectPath=false) {
+	public function handleHash($service_type, $hash=null) {
 		if (empty($service_type)) {
 			return false;
 		}
-		$this->redirectPath = $redirectPath;
 		$this->closeHashJob = true;
 		
 		if (!empty($hash)) {
