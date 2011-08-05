@@ -127,7 +127,7 @@ abstract class FrontendController extends AppController {
 	 * 
 	 * @var bool
 	 */
-	private $logged = false;
+	protected $logged = false;
 	
 	/**
 	 * path to redirect after login action
