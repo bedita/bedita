@@ -435,7 +435,9 @@ $config['media_providers'] = array(
 	"blip"	=> array(
 		"regexp" => array(
 			'/^http:\/\/\w{3}\.blip\.tv\/file\/(\d+)\?{0,1}.*/',
-			'/^http:\/\/blip\.tv\/file\/(\d+)\?{0,1}.*/'
+			'/^http:\/\/blip\.tv\/file\/(\d+)\?{0,1}.*/',
+			'/^http:\/\/blip\.tv\/[^"\&\?\/]+\/([^"\&\?\/]+)/',
+			'/^http:\/\/w{3}\.blip\.tv\/[^"\&\?\/]+\/([^"\&\?\/]+)/'
 		),
 		"params" => array(
 			"width"		=> 300,
