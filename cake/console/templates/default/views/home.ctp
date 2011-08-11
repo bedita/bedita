@@ -1,5 +1,9 @@
 <?php
-$output = "<h2>Sweet, \"" . Inflector::humanize($app) . "\" got Baked by CakePHP!</h2>\n";
+$output = "
+<iframe src=\"http://cakephp.org/bake-banner\" width=\"830\" height=\"160\" style=\"overflow:hidden; border:none;\">
+	<p>For updates and important announcements, visit http://cakefest.org</p>
+</iframe>\n";
+$output .= "<h2>Sweet, \"" . Inflector::humanize($app) . "\" got Baked by CakePHP!</h2>\n";
 $output .="
 <?php
 if (Configure::read() > 0):
@@ -19,7 +23,7 @@ endif;
 	endif;
 ?>
 </p>
-<div  style=\"background-color:#e32; color:#fff; padding:3px; margin: 20px 0\">
+<div id=\"url-rewriting-warning\" style=\"background-color:#e32; color:#fff; padding:3px; margin: 20px 0\">
 	<?php __('URL rewriting is not properly configured on your server. '); ?>
 	<ol style=\"padding-left:20px\">
 		<li>

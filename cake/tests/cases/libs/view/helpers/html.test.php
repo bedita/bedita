@@ -5,12 +5,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
- * Copyright 2006-2010, Cake Software Foundation, Inc.
+ * Copyright 2005-2011, Cake Software Foundation, Inc.
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2006-2010, Cake Software Foundation, Inc.
+ * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc.
  * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.view.helpers
@@ -589,6 +589,12 @@ class HtmlHelperTest extends CakeTestCase {
 		$result = $this->Html->script('test.json');
 		$expected = array(
 			'script' => array('type' => 'text/javascript', 'src' => 'js/test.json.js')
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Html->script('http://example.com/test.json');
+		$expected = array(
+			'script' => array('type' => 'text/javascript', 'src' => 'http://example.com/test.json.js')
 		);
 		$this->assertTags($result, $expected);
 
