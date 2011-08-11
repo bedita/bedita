@@ -36,6 +36,11 @@ $(document).ready(function(){
 	
 	<div style="width:{$thumbWidth}px; height:{$thumbHeight}px" class="imagebox">
 	{if strtolower($item.ObjectType.name) == "image"}
+		{if empty($item.file_size)}
+			{if ($thumbHeight < $item.height) || ($thumbWidth < $item.width)}
+				{array_add var="htmlAttr" width=$thumbWidth height=$thumbHeight}
+			{/if}
+		{/if}
 
 		{$beEmbedMedia->object($item,$params,$htmlAttr)}
 		

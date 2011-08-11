@@ -120,14 +120,14 @@ abstract class FrontendController extends AppController {
 	 * 
 	 * @var array
 	 */
-	protected $searchOptions = array("order" => "title", "dir" => 1, "dim" => 50, "page" => 1, "filter" => false);
+	protected $searchOptions = array("order" => false, "dir" => 1, "dim" => 50, "page" => 1, "filter" => false);
 	
 	/**
 	 * user logged in or not
 	 * 
 	 * @var bool
 	 */
-	private $logged = false;
+	protected $logged = false;
 	
 	/**
 	 * path to redirect after login action
@@ -520,6 +520,9 @@ abstract class FrontendController extends AppController {
 		$parent_id = is_numeric($parentName) ? $parentName: $this->BEObject->getIdFromNickname($parentName);
 		$result = array();
 		$filter["object_type_id"] = $conf->objectTypes['section']["id"];
+		if (empty($parent_id)) {
+			throw new BeditaException(__("Error loading sections tree. Missing parent" . ": " . $parentName, true));
+		}
 		$sections = $this->BeTree->getChildren($parent_id, $this->status, 
 			$filter, "priority") ;
 
@@ -534,8 +537,7 @@ abstract class FrontendController extends AppController {
 
 				$this->setCanonicalPath($sectionObject);
 				if($loadContents) {
-					$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")),
-						"sectionPath" => $sectionObject["canonicalPath"]);
+					$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")));
 					$objs = $this->loadSectionObjects($s['id'], $option);
 					$resultObjects = (!$this->sectionOptions["itemsByType"] && !empty($objs["childContents"]))? $objs["childContents"] : $objs;
 				}
@@ -737,13 +739,11 @@ abstract class FrontendController extends AppController {
 		$conf = Configure::getInstance() ;
 		$extract_all = (!empty($conf->sitemapAllContent)) ? $conf->sitemapAllContent : false;
 		
-		$this->baseLevel = true;
 		$itemsByType = $this->sectionOptions["itemsByType"];
 		$this->sectionOptions["itemsByType"] = false;
 		$flatMode = $xml_out? true : false;
 		$sectionsTree = $this->loadSectionsTree($conf->frontendAreaId,$extract_all, null, 10000, $flatMode) ;
 		$this->sectionOptions["itemsByType"] = $itemsByType;
-		$this->baseLevel = false;
 		
 		if($xml_out) {
 
@@ -792,6 +792,7 @@ abstract class FrontendController extends AppController {
 					$urlset[$i]['lastmod'] = substr($v["modified"], 0, 10);
 					
 				}
+				$urlset[$i]['menu'] = $v["menu"];
 				$i++;
 			}
 			$this->set('urlset',$urlset);
@@ -835,7 +836,7 @@ abstract class FrontendController extends AppController {
 			}
 	
 			$this->setCanonicalPath($s);
-			$channel = array( 'title' => htmlentities($this->publication["public_name"] . " - " . $s['title']) ,
+			$channel = array( 'title' => $this->publication["public_name"] . " - " . $s['title'],
 				'link' => $s["canonicalPath"],
 				'description' => $s['description'],
 				'language' => $s['lang'],
@@ -919,7 +920,7 @@ abstract class FrontendController extends AppController {
 		$gml = (!empty($this->params['named']['gml']));
 		$this->section($sectionName);
 		$s = $this->viewVars["section"];
-		$channel = array( 'title' => htmlentities($this->publication["public_name"] . " - " . $s['title']) ,
+		$channel = array( 'title' => $this->publication["public_name"] . " - " . $s['title'] ,
 			'link' => "/section/".$sectionName,
 			'description' => $s['description'],
 			'language' => $s['lang'],
@@ -1443,7 +1444,10 @@ abstract class FrontendController extends AppController {
 		
 		$this->setCanonicalPath($section);
 		$this->sectionOptions["childrenParams"] = array_merge($this->sectionOptions["childrenParams"], $this->params["named"]);
-		$this->sectionOptions["childrenParams"]["sectionPath"] = $section["canonicalPath"];
+		if (!isset($section["menu"]) || $section["menu"] !== "0") {
+			$this->sectionOptions["childrenParams"]["sectionPath"] = $section["canonicalPath"];
+		}
+		
 		if (!$section["parentAuthorized"] || !$section["authorized"]) {
 			$section["authorized"] = false;
 			$this->sectionOptions["childrenParams"]["setAuthorizedTo"] = false;
@@ -1663,12 +1667,15 @@ abstract class FrontendController extends AppController {
 	 */
 	public function hashjob($service_type=null, $hash=null) {
 		try {
-			$this->BeHash->handleHash($service_type, $hash, "/hashjob");
+			$this->Transaction->begin();
+			$this->BeHash->handleHash($service_type, $hash);
+			$this->Transaction->commit();
 		} catch (BeditaHashException $ex) {
 			$this->Transaction->rollback();
 			$this->userErrorMessage($ex->getMessage());
 			$this->eventError($ex->getDetails());
 		} catch (BeditaException $ex) {
+			$this->Transaction->rollback();
 			throw new BeditaRuntimeException($ex->getMessage(), $ex->getDetails());
 		}
 	}

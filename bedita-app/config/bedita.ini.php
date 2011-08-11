@@ -435,7 +435,9 @@ $config['media_providers'] = array(
 	"blip"	=> array(
 		"regexp" => array(
 			'/^http:\/\/\w{3}\.blip\.tv\/file\/(\d+)\?{0,1}.*/',
-			'/^http:\/\/blip\.tv\/file\/(\d+)\?{0,1}.*/'
+			'/^http:\/\/blip\.tv\/file\/(\d+)\?{0,1}.*/',
+			'/^http:\/\/blip\.tv\/[^"\&\?\/]+\/([^"\&\?\/]+)/',
+			'/^http:\/\/w{3}\.blip\.tv\/[^"\&\?\/]+\/([^"\&\?\/]+)/'
 		),
 		"params" => array(
 			"width"		=> 300,
@@ -564,8 +566,38 @@ $config["defaultLicenses"] = array(
 $config["cfgLicenses"] = array();
 
 /**
- * Specific application/instance related settings 
- * (system/server independent)
+ * GeoTag options
+ * 
+ * zoom: keys are google maps zoom level
+ * 
+ * mapType: keys are google maps standard url parameters plus "s" for street view layer
+ * 
+ */
+$config["geoTagOptions"] = array(
+	"zoom" => array(
+		21 => "maximum",
+		18 => "neighbourhood",
+		16 => "quarter",
+		14 => "city",
+		9 => "district",
+		7 => "country",
+		4 => "continent",
+		1 => "world",
+	),
+	"mapType" => array(
+		"m" => "map",
+		"k" => "satellite",
+		"h" => "hybrid",
+		"p" => "terrain",
+		"c" => "Google maps StreetView™",
+		"e" => "Google Earth™",
+	)
+);
+
+
+/**
+ * Specific System settings
+ * ALWAYS AT THE END of bedita.ini.php
  */
 require BEDITA_CORE_PATH. DS ."config".DS."bedita.cfg.php";	
 

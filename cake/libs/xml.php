@@ -698,14 +698,12 @@ class XmlNode extends Object {
 			if (is_a($child, 'XmlTextNode')) {
 				$out['value'] = $child->value;
 				continue;
-			} elseif (isset($child->children[0]) && is_a($child->children[0], 'XmlTextNode')) {
+			} elseif (isset($child->children[0]) && is_a($child->children[0], 'XmlTextNode') && count($child->children) === 1) {
 				$value = $child->children[0]->value;
 				if ($child->attributes) {
 					$value = array_merge(array('value' => $value), $child->attributes);
 				}
-				if (count($child->children) == 1) {
-					$leaf = true;
-				}
+				$leaf = true;
 			} elseif (count($child->children) === 0 && $child->value == '') {
 				$value = $child->attributes;
 				if (empty($value)) {

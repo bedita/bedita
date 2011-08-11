@@ -40,6 +40,71 @@ class GeoTag extends BEAppModel
 		return true;
 	}
 	
+	function beforeSave() {
+		
+		// convert gmaps_lookat array in json format
+		if (empty($this->data["GeoTag"]["gmaps_lookat"]) || is_array($this->data["GeoTag"]["gmaps_lookat"])) {	
+		
+			if (!empty($this->data["GeoTag"]["latitude"])) {
+				$this->data["GeoTag"]["gmaps_lookat"]["latitude"] = $this->data["GeoTag"]["latitude"];
+			}
+			
+			if (!empty($this->data["GeoTag"]["longitude"])) {
+				$this->data["GeoTag"]["gmaps_lookat"]["longitude"] = $this->data["GeoTag"]["longitude"];
+			}
+			
+			// calculate lookat.range from zoom = Math.round(26-(Math.log(range)/Math.log(2))) http://www.msa.mmu.ac.uk/~fraser/ge/viewinmaps/ 
+			if (empty($this->data["GeoTag"]["gmaps_lookat"]["range"]) && !empty($this->data["GeoTag"]["gmaps_lookat"]["zoom"])) {
+				$this->data["GeoTag"]["gmaps_lookat"]["range"] = exp(26 - $this->data["GeoTag"]["gmaps_lookat"]["zoom"] + log(2));
+			}
+			
+			if (!empty($this->data["GeoTag"]["gmaps_lookat"])) {
+				$recordsToString = trim( implode("", $this->data["GeoTag"]["gmaps_lookat"]) );
+				if (!empty( $recordsToString )) {
+					$this->data["GeoTag"]["gmaps_lookat"] = json_encode($this->data["GeoTag"]["gmaps_lookat"]);
+				} else {
+					$this->data["GeoTag"]["gmaps_lookat"] = null;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	function afterFind($results, $primary = false) {
+		// decode json gmaps_lookat field
+		if (!empty($results[0]["GeoTag"])) {
+			
+			foreach ($results as &$geotag) {
+				if (!empty($geotag["GeoTag"]["gmaps_lookat"])) {
+					$geotag["GeoTag"]["gmaps_lookat"] = $this->decodeLookat($geotag["GeoTag"]["gmaps_lookat"]);
+				}
+			}
+			
+		} else if (!empty($results["GeoTag"])) {
+			if (!empty($results["GeoTag"]["gmaps_lookat"])) {
+				$results["GeoTag"]["gmaps_lookat"] = $this->decodeLookat($results["GeoTag"]["gmaps_lookat"]);
+			}
+		}
+		
+		return $results;
+	}
+	
+	/**
+	 * try to decode json gmaps_lookat field
+	 * 
+	 * @param string $gmapsLookat json format
+	 * @return mixed string if decode fails, array otherwise
+	 */
+	public function decodeLookat($gmapsLookat) {
+		$lookatDecoded = json_decode($gmapsLookat, true);
+		if (empty($lookatDecoded)) {
+			$lookatDecoded = $gmapsLookat;
+		}
+		
+		return $lookatDecoded;
+	}
+	
 	// TODO: convert geo coordinates if necessary....es http://www.phpclasses.org/browse/file/10671.html
 	private function geoConvert($str) {
 		return $str;

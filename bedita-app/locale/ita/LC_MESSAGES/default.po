@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2011-03-24 14:43:49\n"
+"POT-Creation-Date: 2011-07-28 15:38:40\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -589,6 +589,9 @@ msgstr "File"
 msgid "File already exists in the filesystem"
 msgstr "Il file esiste già nel sistema"
 
+msgid "Find and fill latlong coords"
+msgstr "Trova e inserisci latitudine e longitudine"
+
 msgid "Find it"
 msgstr "Trova"
 
@@ -618,6 +621,12 @@ msgstr "Gmaps LookaT"
 
 msgid "Go to page"
 msgstr "Vai alla pagina"
+
+msgid "Google Earth"
+msgstr ""
+
+msgid "Google maps StreetView"
+msgstr ""
 
 msgid "Group "
 msgstr "Gruppo"
@@ -921,6 +930,9 @@ msgid "No books found"
 msgstr "Nessun libro trovato"
 
 msgid "No categories found"
+msgstr "Nessuna categoria trovata"
+
+msgid "No category found"
 msgstr "Nessuna categoria trovata"
 
 msgid "No comments found"
@@ -1319,6 +1331,9 @@ msgstr "Template"
 msgid "Test mail sent to "
 msgstr "Test per invio posta a "
 
+msgid "Test on GoogleMaps"
+msgstr "Verifica su GoogleMaps"
+
 msgid "Test stuff"
 msgstr "Cosa di test"
 
@@ -1398,6 +1413,9 @@ msgstr ""
 
 msgid "Unsubscribe selected items"
 msgstr "Disiscrivi gli elementi selezionati"
+
+msgid "Unsupported type"
+msgstr "Tipo non supportato"
 
 msgid "Upload"
 msgstr "Upload"
@@ -1692,6 +1710,9 @@ msgstr "verifica gli url"
 msgid "checkbox single choice"
 msgstr "checkbox singola scelta"
 
+msgid "city"
+msgstr "città"
+
 msgid "city and zip code"
 msgstr "città e cap"
 
@@ -1718,6 +1739,9 @@ msgstr "contatta l'amministratore del progetto"
 
 msgid "contents"
 msgstr "contenuti"
+
+msgid "continent"
+msgstr "continente"
 
 msgid "copy"
 msgstr "copia"
@@ -1792,6 +1816,9 @@ msgid "disable succesfully, all related objects are been deleted"
 msgstr ""
 "disabilitazione avvenuta con successo, tutti gli oggetti correlati sono "
 "stati eliminati"
+
+msgid "district"
+msgstr "regione"
 
 msgid "documents"
 msgstr "documenti"
@@ -1898,6 +1925,9 @@ msgstr "aiuto"
 msgid "here"
 msgstr "qui"
 
+msgid "hybrid"
+msgstr "ibrido"
+
 msgid "id"
 msgstr "id"
 
@@ -1994,11 +2024,23 @@ msgstr "lingua principale"
 msgid "male"
 msgstr "uomo"
 
+msgid "map"
+msgstr "mappa"
+
+msgid "map type"
+msgstr "tipo di mappa"
+
+msgid "map zoom"
+msgstr "zoom"
+
 msgid "master language"
 msgstr "lingua principale"
 
 msgid "master title"
 msgstr "titolo principale"
+
+msgid "maximum"
+msgstr "massimo"
 
 msgid "message board"
 msgstr "area messaggi"
@@ -2053,6 +2095,9 @@ msgstr "scelta multipla"
 
 msgid "name"
 msgstr "nome"
+
+msgid "neighbourhood"
+msgstr "vicinato"
 
 msgid "new again"
 msgstr "ancora la nuova"
@@ -2276,6 +2321,9 @@ msgstr "editore"
 msgid "pulldown single choice"
 msgstr "menu scelta singola"
 
+msgid "quarter"
+msgstr "quartiere"
+
 msgid "questionnaires"
 msgstr "questionari"
 
@@ -2311,6 +2359,9 @@ msgstr "da destra a sinistra"
 
 msgid "rights"
 msgstr "diritti"
+
+msgid "satellite"
+msgstr "foto satellitare"
 
 msgid "save"
 msgstr "salva"
@@ -2419,6 +2470,9 @@ msgstr "tag"
 
 msgid "target"
 msgstr "destinatario"
+
+msgid "terrain"
+msgstr "rilievo"
 
 msgid "text"
 msgstr "testo"
@@ -2542,6 +2596,9 @@ msgstr "con status"
 
 msgid "word"
 msgstr "parola"
+
+msgid "world"
+msgstr "mondo"
 
 msgid "x"
 msgstr "x"

@@ -134,7 +134,17 @@ class BeTreeHelper extends AppHelper {
 					$output .= '</li>';
 				}
 				if(!empty($section['sections'])) {
-					$output .= '<li><ul>' . $this->designsitemap($section['sections'],$public_url) . '</ul></li>';
+					$outMap = $this->designsitemap($section['sections'],$public_url);
+					if(!empty($outMap)) {
+						if($show) {
+							$output .= '<ul>' . $outMap . '</ul>';
+						} else {
+							$output .= '<li>' . $outMap . '</li>';
+						}
+					}
+				}
+				if ($show) {
+					$output .= '</li>';
 				}
 			}
 		}

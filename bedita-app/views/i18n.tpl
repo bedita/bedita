@@ -70,4 +70,21 @@ Strings to translate not present in .tpl/.php files
 // object permissions labels
 {t}frontend_access_with_block{/t}
 {t}frontend_access_without_block{/t}
+
+// geo tag options
+{t}maximum{/t}
+{t}neighbourhood{/t}
+{t}quarter{/t}
+{t}city{/t}
+{t}district{/t}
+{t}country{/t}
+{t}continent{/t}
+{t}world{/t}
+
+{t}map{/t}
+{t}satellite{/t}
+{t}hybrid{/t}
+{t}terrain{/t}
+{t}Google maps StreetView{/t}
+{t}Google Earth{/t}
 *}

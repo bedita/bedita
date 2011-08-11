@@ -55,9 +55,16 @@ class BeBlipComponent extends Object {
 		$conf = Configure::getInstance() ;
 		$this->info = null ;
 		
-		if(!isset($conf->media_providers["blip"]["params"])) return false ;
+		// if id is not numeric try to get info from uri
+		if (!is_numeric($id) && !empty($attributes["uri"])) {
+			$urlinfo = $attributes["uri"] . "?skin=json&no_wrap=1";
+		} else {
+			if(!isset($conf->media_providers["blip"]["params"])) {
+				return false;
+			}
+			$urlinfo = sprintf($conf->media_providers["blip"]["params"]['urlinfo'], $id);
+		}
 		
-		$urlinfo = $conf->media_providers["blip"]["params"]['urlinfo'];
 		if (!empty($attributes["width"]))
 			$urlinfo .= "&amp;width=" . $attributes["width"];
 		elseif (!empty($conf->media_providers["blip"]["params"]["width"]))
@@ -68,7 +75,7 @@ class BeBlipComponent extends Object {
 			$urlinfo .= "&amp;height=" . $conf->media_providers["blip"]["params"]["height"];  
 		
 		// Get info
-		$json = file_get_contents(sprintf($urlinfo, $id));
+		$json = file_get_contents($urlinfo);
 
 		if(!$json) {
 			return false;
@@ -80,9 +87,9 @@ class BeBlipComponent extends Object {
 			return false ;
 		}
 		
-		$this->info = $ret;
+		$this->info = (!empty($ret["Post"]))? $ret["Post"] : $ret;
 		
-		return $this->info  ;
+		return $this->info;
 	}
 	
 	/**
@@ -122,10 +129,12 @@ class BeBlipComponent extends Object {
 	 * @return boolean
 	 */
 	public function setInfoToSave(&$data) {
-		if(!$this->getInfoVideo($data["video_uid"])) {
+		if(!$this->getInfoVideo($data["video_uid"], array("uri" => $data["uri"]))) {
 			return false;
 		}
-		
+		if (!empty($this->info["item_id"]) && $data["video_uid"] != $this->info["item_id"]) {
+			$data["video_uid"] = $this->info["item_id"];
+		}
 		$data['title'] = (empty($data['title']))? $this->info['title'] : trim($data['title']);
 		$data['description'] = (empty($data['description']))? $this->info['description'] : $data['description'];
 		$data['url']		= $this->info['url'] ;
