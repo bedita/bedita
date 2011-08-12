@@ -5,37 +5,41 @@
 			{$view->element("form_search")}
 		</li>
 
-		{if (count($section.childContents) == 1 ||  !empty($section.contentRequested)) && !empty($section.currentContent.relations.seealso)}
-		<li id="seealso_list" class="widget-container">
-			<h3 class="widget-title">See also</h3>
-			{foreach from=$section.currentContent.relations.seealso item="seealso"}
-				<a title="{$seealso.title}" href="{$html->url('/')}{$seealso.nickname}">
-				{$seealso.title}
-				</a>
-			{/foreach}
-		</li>
-		{/if}
+		{if !empty($section.childContents)}
 
-		{if (count($section.childContents) == 1 || !empty($section.contentRequested)) && !empty($section.currentContent.relations.download)}
-		<li id="download_list" class="widget-container">
-			<h3 class="widget-title">Download</h3>
-			{foreach from=$section.currentContent.relations.download item="download"}
-				<a title="{$download.title}" href="{$html->url('/download/')}{$download.nickname}">
-				{$download.title}
-				</a>
-			{/foreach}
-		</li>
-		{/if}
+			{if (count($section.childContents) == 1 ||  !empty($section.contentRequested)) && !empty($section.currentContent.relations.seealso)}
+			<li id="seealso_list" class="widget-container">
+				<h3 class="widget-title">See also</h3>
+				{foreach from=$section.currentContent.relations.seealso item="seealso"}
+					<a title="{$seealso.title}" href="{$html->url('/')}{$seealso.nickname}">
+					{$seealso.title}
+					</a>
+				{/foreach}
+			</li>
+			{/if}
 
-		{if (count($section.childContents) == 1 || !empty($section.contentRequested)) && !empty($section.currentContent.relations.link)}
-		<li id="seealso_list" class="widget-container">
-			<h3 class="widget-title">Link a risorse esterne</h3>
-			{foreach from=$section.currentContent.relations.link item="link"}
-				<a title="{$link.title}" href="{$link.url}" terget=="_blank">
-				{$link.title}
-				</a>
-			{/foreach}
-		</li>
+			{if (count($section.childContents) == 1 || !empty($section.contentRequested)) && !empty($section.currentContent.relations.download)}
+			<li id="download_list" class="widget-container">
+				<h3 class="widget-title">Download</h3>
+				{foreach from=$section.currentContent.relations.download item="download"}
+					<a title="{$download.title}" href="{$html->url('/download/')}{$download.nickname}">
+					{$download.title}
+					</a>
+				{/foreach}
+			</li>
+			{/if}
+
+			{if (count($section.childContents) == 1 || !empty($section.contentRequested)) && !empty($section.currentContent.relations.link)}
+			<li id="seealso_list" class="widget-container">
+				<h3 class="widget-title">Link a risorse esterne</h3>
+				{foreach from=$section.currentContent.relations.link item="link"}
+					<a title="{$link.title}" href="{$link.url}" terget=="_blank">
+					{$link.title}
+					</a>
+				{/foreach}
+			</li>
+			{/if}
+
 		{/if}
 
 		{if !empty($listTags)}

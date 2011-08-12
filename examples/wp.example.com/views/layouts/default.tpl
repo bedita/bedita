@@ -15,13 +15,15 @@
 	{$html->css('adjustament')}
 	{$html->css('colorbox')}
 
-	{$javascript->link('jquery')}
-	{$javascript->link('jquery.colorbox-min')}
+	{$html->script('jquery')}
+	{$html->script('jquery.colorbox-min')}
 	
 	{$scripts_for_layout}
 </head>
 
 <body class="page page-id-23 page-parent page-child parent-pageid-20 page-template page-template-default logged-in">
+
+{$beFront->stagingToolbar()}
 
 <div id="wrapper" class="hfeed">
 

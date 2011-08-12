@@ -430,6 +430,44 @@ class BeFrontHelper extends AppHelper {
 		return $breadcrumb;
 	}
 
+	/**
+	 * If frontend is a staging app then it shows a toolbar on the top of the page
+	 */
+	public function stagingToolbar() {
+		if ($this->_conf->staging) {
+			echo ClassRegistry::getObject('view')->element("staging_toolbar");
+		}
+	}
+	
+	
+	public function beforeRender() {
+		
+		/* if staging load js e css for staging toolbar. 
+		 * Their are loaded here because in layout view doesn't work inline=false option.
+		 * In fact for the design of cakePHP layouts are simply parsed by PHP interpeter
+		 */
+		if ($this->_conf->staging) {
+			
+			// include js that staging toolbar needs
+			echo $this->Html->script(
+				array(
+					$this->_conf->beditaUrl . "/js/jquery/jquery.cookie.js", 
+					$this->_conf->beditaUrl . "/js/staging_toolbar.js"
+				),
+				array("inline" => false)
+			);
+			
+			// include css (backend and eventually frontend override)
+			$css = $this->_conf->beditaUrl . "/css/staging_toolbar.css";
+			echo $this->Html->css($css, null, array("inline" => false));
+			
+			// override css
+			if (file_exists(APP . "webroot" . DS . "css" . DS . "staging_toolbar.css")) {
+				echo $this->Html->css("staging_toolbar", null, array("inline" => false));
+			}
+		}
+		
+	}
 }
  
 ?>
