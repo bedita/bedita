@@ -6,7 +6,7 @@
 	<?php echo $beFront->metaAll();?>
 	<?php echo $beFront->metaDc();?>
 
-	<link rel="icon" href="<php echo $session->webroot; ?>favicon.ico" type="image/x-icon" />
+	<link rel="icon" href="<?php echo $session->webroot; ?>favicon.ico" type="image/x-icon" />
 	
 	<?php 
 	echo $beFront->feeds();
