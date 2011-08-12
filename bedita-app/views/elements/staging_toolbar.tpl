@@ -1,17 +1,3 @@
-{literal}	
-<script type="text/javascript">
-
-</script>
-
-<style type="text/css">
-
-
-
-
-</style>
-
-
-{/literal}
 
 <div id="BEdita_staging_toolbar">
 <div class="stagingmenu">
