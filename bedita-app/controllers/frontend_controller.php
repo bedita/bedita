@@ -1335,7 +1335,7 @@ abstract class FrontendController extends AppController {
 						
 						// if empty "sectionPath" calculate it
 						if(empty($options["sectionPath"])) {
-							$s = array("id" => $parent_id);							
+							$s = $this->loadObj($parent_id);
 							$this->setCanonicalPath($s);
 							$options["sectionPath"] = $s["canonicalPath"];
 						}				
