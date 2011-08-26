@@ -1332,12 +1332,17 @@ abstract class FrontendController extends AppController {
 				$obj = $this->loadObj($item['id']);
 				if ($obj !== self::UNAUTHORIZED && $obj !== self::UNLOGGED) {
 					if(empty($obj["canonicalPath"])) {
+						
+						// if empty "sectionPath" calculate it
 						if(empty($options["sectionPath"])) {
-							$this->setCanonicalPath($obj);
-						} else {				
-							$obj["canonicalPath"] = (($options["sectionPath"] != "/") ? $options["sectionPath"] : "") 
-								. "/" . $obj["nickname"];
-						}
+							$s = array("id" => $parent_id);							
+							$this->setCanonicalPath($s);
+							$options["sectionPath"] = $s["canonicalPath"];
+						}				
+						
+						$obj["canonicalPath"] = (($options["sectionPath"] != "/") ? $options["sectionPath"] : "") 
+							. "/" . $obj["nickname"];
+						
 					}
 					if (isset($options["setAuthorizedTo"])) {
 						$obj["authorized"] = $options["setAuthorizedTo"];
@@ -1686,6 +1691,7 @@ abstract class FrontendController extends AppController {
 				"limit" => 1, 
 				"order" => array("menu" => "desc", "parent_path" => "desc")
 			));
+			pr($row);
 			if (!empty($row["Tree"]["parent_path"])) {
 				$path = $row["Tree"]["parent_path"];
 				if(!empty($this->objectCache[$object_id])) {
