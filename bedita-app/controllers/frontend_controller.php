@@ -1691,7 +1691,6 @@ abstract class FrontendController extends AppController {
 				"limit" => 1, 
 				"order" => array("menu" => "desc", "parent_path" => "desc")
 			));
-			pr($row);
 			if (!empty($row["Tree"]["parent_path"])) {
 				$path = $row["Tree"]["parent_path"];
 				if(!empty($this->objectCache[$object_id])) {
