@@ -458,6 +458,15 @@ class DbadminShell extends BeditaBaseShell {
 		$treeModel = ClassRegistry::init("Tree");
 		
 		$nObj = 0;	
+		if(empty($parsed["Section"]["ChildContents"])) {
+			$this->out("No child contents found.");
+			return;
+		}
+
+		if(!is_int(key($parsed["Section"]["ChildContents"]))) {
+			$parsed["Section"]["ChildContents"] = array($parsed["Section"]["ChildContents"]);
+		} 
+		
 		foreach ($parsed["Section"]["ChildContents"] as $data) {
 			$modelType = Configure::read("objectTypes." . $data['object_type_id'] . ".model");
 			$model = ClassRegistry::init($modelType);
