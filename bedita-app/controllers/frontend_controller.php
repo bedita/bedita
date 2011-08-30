@@ -580,8 +580,11 @@ abstract class FrontendController extends AppController {
 	protected function setCanonicalPath(array &$obj) {
 
 		$objectId = $obj["id"];
-		if(isset($this->objectCache[$objectId]["canonicalPath"])) {
+
+		if(isset($this->objectCache[$objectId]["canonicalPath"]) && 
+			isset($this->objectCache[$objectId]["parentAuthorized"])) {
 			$obj["canonicalPath"] = $this->objectCache[$objectId]["canonicalPath"];
+			$obj["parentAuthorized"] = $this->objectCache[$objectId]["parentAuthorized"];
 			return;
 		}
 		
