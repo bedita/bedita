@@ -428,6 +428,52 @@ class DbadminShell extends BeditaBaseShell {
 		$this->out("Done. $nObj objects of type " . $type . " inserted.");
 	}
 	
+	public function importXml() {
+		if (!isset($this->params['f'])) {
+			$this->out("file to import is mandatory");
+			return;
+		}
+		if(!file_exists($this->params['f'])) {
+			$this->out("XML file " . $this->params['f'] . " not found");
+			return;
+		}
+		if (!isset($this->params['s'])) {
+			$this->out("section id is mandatory");
+			return;
+		}
+		$secId = $this->params['s'];
+		$defaults = array( 
+			"user_created" => "1",
+			"user_modified" => "1",
+			"ip_created" => "127.0.0.1",
+		);
+		
+		$this->out("Importing from " . $this->params['f']);
+		$this->out("........ ");
+		
+		App::import("Core", "Xml");
+		$xml = new XML(file_get_contents($this->params['f']));
+		$parsed = set::reverse($xml);		
+		
+		$treeModel = ClassRegistry::init("Tree");
+		
+		$nObj = 0;	
+		foreach ($parsed["Section"]["ChildContents"] as $data) {
+			$modelType = Configure::read("objectTypes." . $data['object_type_id'] . ".model");
+			$model = ClassRegistry::init($modelType);
+			$data = array_merge($data, $defaults);
+			unset($data["id"]);
+			$model->create();
+			if(!$model->save($data)) {
+				throw new BeditaException("Error saving object - " . print_r($data, true) . 
+					" - validation: " . print_r($model->validationErrors, true));
+			}
+			$treeModel->appendChild($model->id, $secId);
+			$nObj++;		
+		}
+		$this->out("Done. $nObj objects inserted.");
+	}	
+	
 	public function updateStreamFields() {
 		$streamModel = ClassRegistry::init("Stream");
 		$streams = $streamModel->find("all");
@@ -783,6 +829,13 @@ class DbadminShell extends BeditaBaseShell {
 		$this->out("14. updateCategoryName: update all categories and tags unique name");
         $this->out(' ');
 		$this->out("    -objectType \t <object-type-name> update categories for a specific object type (for example: document)");
+        $this->out(' ');
+		$this->out("15. importXml: import BE objects from XML in a section");
+        $this->out(' ');
+        $this->out('    Usage: importXml -f <xml-file> -s <section-id> ');
+        $this->out(' ');
+        $this->out("    -f \t xml file path");
+        $this->out("    -s \t section id to import");
         $this->out(' ');
 	}
 	
