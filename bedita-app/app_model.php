@@ -681,6 +681,7 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 			}
 		}
 		
+		$beObject->create();
 		if (!$res = $beObject->save($data, $validate, $fieldList)) {
 			return $res;
 		}
