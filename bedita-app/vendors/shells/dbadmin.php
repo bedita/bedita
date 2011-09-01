@@ -485,7 +485,7 @@ class DbadminShell extends BeditaBaseShell {
 			if(!empty($secId)) {
 				$treeModel->appendChild($model->id, $secId);
 			}
-			$this->out($modelType . " created - id : " . $model->id);
+			$this->out($modelType . " created - id " . $model->id . " - title '" . $data["title"] . "'");
 			$nObj++;		
 		}
 		$this->out("Done. $nObj objects inserted.");
