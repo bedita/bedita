@@ -437,11 +437,11 @@ class DbadminShell extends BeditaBaseShell {
 			$this->out("XML file " . $this->params['f'] . " not found");
 			return;
 		}
-		if (!isset($this->params['s'])) {
-			$this->out("section id is mandatory");
-			return;
+
+		$secId = null;
+		if (isset($this->params['s'])) {
+			$secId = $this->params['s'];
 		}
-		$secId = $this->params['s'];
 		$defaults = array( 
 			"user_created" => "1",
 			"user_modified" => "1",
@@ -458,16 +458,22 @@ class DbadminShell extends BeditaBaseShell {
 		$treeModel = ClassRegistry::init("Tree");
 		
 		$nObj = 0;	
-		if(empty($parsed["Section"]["ChildContents"])) {
-			$this->out("No child contents found.");
+
+		$objs = array();
+		if(!empty($parsed["Section"]["ChildContents"])) {
+			$objs = $parsed["Section"]["ChildContents"];
+		} else if(!empty($parsed["Bedita"]["Objects"])) {
+			$objs = $parsed["Bedita"]["Objects"];
+		} else {
+			$this->out("No contents found.");
 			return;
 		}
-
-		if(!is_int(key($parsed["Section"]["ChildContents"]))) {
-			$parsed["Section"]["ChildContents"] = array($parsed["Section"]["ChildContents"]);
+		
+		if(!is_int(key($objs))) {
+			$objs = array($objs);
 		} 
 		
-		foreach ($parsed["Section"]["ChildContents"] as $data) {
+		foreach ($objs as $data) {
 			$modelType = Configure::read("objectTypes." . $data['object_type_id'] . ".model");
 			$model = ClassRegistry::init($modelType);
 			$data = array_merge($data, $defaults);
@@ -477,11 +483,46 @@ class DbadminShell extends BeditaBaseShell {
 				throw new BeditaException("Error saving object - " . print_r($data, true) . 
 					" - validation: " . print_r($model->validationErrors, true));
 			}
-			$treeModel->appendChild($model->id, $secId);
+			if(!empty($secId)) {
+				$treeModel->appendChild($model->id, $secId);
+			}
 			$nObj++;		
 		}
 		$this->out("Done. $nObj objects inserted.");
 	}	
+	
+	public function exportXml() {
+		if (!isset($this->params['o'])) {
+			$this->out("output file is mandatory");
+			return;
+		}
+		if (!isset($this->params['t'])) {
+			$this->out("object type is mandatory");
+			return;
+		}
+		$conf = Configure::getInstance() ;
+		$type = $this->params['t'];
+		$model = ClassRegistry::init($conf->objectTypes[$type]['model']);
+		$this->out("Exporting to " . $this->params['o']);
+		$this->hr();
+		$model->containLevel("minimum");
+		$res = $model->find('all', array('conditions' => array(
+						'BEObject.object_type_id' => $conf->objectTypes[$type]['id']
+						)
+					)
+			);
+		$this->out("Found " . count($res) . " objects of type " . $this->params['t']);
+		$out = array();
+		$options = array('attributes' => false, 'format' => 'attributes', 'header' => false);
+		$out["Bedita"]["Objects"] = $res;
+		App::import("Core", "Xml");
+		$xml =& new Xml($out, $options);
+		$xmlOut = $xml->toString();
+		file_put_contents($this->params['o'], $xmlOut);
+		$this->out("Done.");
+	}	
+	
+	
 	
 	public function updateStreamFields() {
 		$streamModel = ClassRegistry::init("Stream");
@@ -839,12 +880,19 @@ class DbadminShell extends BeditaBaseShell {
         $this->out(' ');
 		$this->out("    -objectType \t <object-type-name> update categories for a specific object type (for example: document)");
         $this->out(' ');
-		$this->out("15. importXml: import BE objects from XML in a section");
+		$this->out("15. importXml: import BE objects from XML (in a section)");
         $this->out(' ');
-        $this->out('    Usage: importXml -f <xml-file> -s <section-id> ');
+        $this->out('    Usage: importXml -f <xml-file> [-s <section-id>] ');
         $this->out(' ');
         $this->out("    -f \t xml file path");
         $this->out("    -s \t section id to import");
+        $this->out(' ');
+		$this->out("16. exportXml: export BE objects to XML");
+        $this->out(' ');
+        $this->out('    Usage: importXml -o <xml-file> -t <obj-type> ');
+        $this->out(' ');
+        $this->out("    -o \t xml output file path");
+        $this->out("    -t \t object type: document, short_news, event,.....");
         $this->out(' ');
 	}
 	
