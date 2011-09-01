@@ -449,16 +449,13 @@ class DbadminShell extends BeditaBaseShell {
 		);
 		
 		$this->out("Importing from " . $this->params['f']);
-		$this->out("........ ");
+		$this->hr();
 		
 		App::import("Core", "Xml");
 		$xml = new XML(file_get_contents($this->params['f']));
-		$parsed = set::reverse($xml);		
-		
 		$treeModel = ClassRegistry::init("Tree");
-		
 		$nObj = 0;	
-
+		$parsed = set::reverse($xml);				
 		$objs = array();
 		if(!empty($parsed["Section"]["ChildContents"])) {
 			$objs = $parsed["Section"]["ChildContents"];
@@ -468,16 +465,18 @@ class DbadminShell extends BeditaBaseShell {
 			$this->out("No contents found.");
 			return;
 		}
-		
 		if(!is_int(key($objs))) {
 			$objs = array($objs);
 		} 
-		
 		foreach ($objs as $data) {
-			$modelType = Configure::read("objectTypes." . $data['object_type_id'] . ".model");
+
+			$objTypeId = isset($data['ObjectType']['name']) ?  
+				Configure::read("objectTypes." . $data['ObjectType']['name'] . ".id") : $data['object_type_id']; 
+			$modelType = Configure::read("objectTypes." . $objTypeId . ".model");
 			$model = ClassRegistry::init($modelType);
 			$data = array_merge($data, $defaults);
 			unset($data["id"]);
+			$data["object_type_id"] = $objTypeId;
 			$model->create();
 			if(!$model->save($data)) {
 				throw new BeditaException("Error saving object - " . print_r($data, true) . 
@@ -486,6 +485,7 @@ class DbadminShell extends BeditaBaseShell {
 			if(!empty($secId)) {
 				$treeModel->appendChild($model->id, $secId);
 			}
+			$this->out($modelType . " created - id : " . $model->id);
 			$nObj++;		
 		}
 		$this->out("Done. $nObj objects inserted.");
