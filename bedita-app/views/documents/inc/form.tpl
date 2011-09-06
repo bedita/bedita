@@ -7,7 +7,7 @@
 
 	{$view->element('form_title_subtitle')}
 
-	{assign_associative var="params" addshorttext=$conf->addshorttext|default:'' height=500}
+	{assign_associative var="params" addshorttext=$conf->addshorttext|default:true height=500}
 	{$view->element('form_textbody', $params)}
 
 	{assign_associative var="params" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
