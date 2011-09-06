@@ -124,7 +124,12 @@ class BeHashComponent extends Object {
 			}
 		}
 		if (!empty($mailParams)) {
-			$this->sendNotificationMail($mailParams);
+			try {
+				$this->sendNotificationMail($mailParams);
+			} catch (BeditaException $e) {
+				$this->log($e->errorTrace());
+				throw new BeditaHashException(__("Error sending notification mail",true));
+			}
 		}
 		return true;
 
