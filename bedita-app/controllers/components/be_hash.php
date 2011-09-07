@@ -738,7 +738,7 @@ class BeHashComponent extends Object {
 		$mail_message_data['reply_to'] = $mailOptions["reply_to"];
 		$mail_message_data['to'] = $mailParams["email"];
 		$mail_message_data['subject'] = $this->replacePlaceHolder($mailParams["subject"], $mailParams["params"]);
-		$mail_message_data['body'] = $this->replacePlaceHolder($mailParams["body"],$mailParams["params"]) . "\n\n\n" . $mailOptions["signature"];
+		$mail_message_data['body'] = $this->replacePlaceHolder($mailParams["body"],$mailParams["params"]) . "\n\n--\n" . $mailOptions["signature"];
 		if (strstr($mail_message_data['body'], "[[[--BOUNDARY--]]]")) {
 			$mail_message_data['mailType'] = "both";
 		}
