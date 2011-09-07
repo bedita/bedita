@@ -364,15 +364,19 @@ abstract class FrontendController extends AppController {
 				// HTTP autodetect
 				$l10n = new L10n();
 				$l10n->get();
-				$this->currLang = $l10n->lang;
-				if(!isset($this->currLang)) {
+				$lang = $l10n->lang;
+				if(!isset($lang)) {
 					$this->currLang = $conf->frontendLang;
-				} else if(!array_key_exists($this->currLang, $conf->frontendLangs)) {
-					if (!empty($conf->frontendLangsMap[$this->currLang])) {
-						$this->currLang = $conf->frontendLangsMap[$this->currLang];
-					} else {
-						$this->currLang = $conf->frontendLang;
+				} else if(array_key_exists($lang, $conf->frontendLangs)) {
+					$this->currLang = $lang;
+				} else if (!empty($conf->frontendLangsMap[$lang])) {
+					$lang = $conf->frontendLangsMap[$lang];
+					if(array_key_exists($lang, $conf->frontendLangs)) {
+						$this->currLang = $lang;
 					}
+				}
+				if(empty($this->currLang)) {
+					$this->currLang = $conf->frontendLang;
 				}
 			}
 
