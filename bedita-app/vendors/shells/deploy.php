@@ -222,13 +222,18 @@ class DeployShell extends BeditaBaseShell {
 				$sel[$count] = BEDITA_MODULES_PATH. DS .$dir;
 			}
 		}
+		$count++;
+		$this->out("$count. quit");
 		$this->hr();
 		
     	$selected = $sel[1];
 		$res = $this->in("select item: [1]");
 		if(!empty($res)) {
-			if($res >=  1 && $res <= $count) {
+			if($res >=  1 && $res < $count) {
 				$selected = $sel[$res];
+			} else if($res == $count){
+				$this->out("Bye");
+				return;
 			} else {
 				$this->out("wrong item $res , choose between 1 and $count");
 				return;
@@ -248,13 +253,7 @@ class DeployShell extends BeditaBaseShell {
     	}
     	$this->Cleanup->execute();
 		$this->out("Done");
-		$res = $this->in("Do you want to continue with svnUpdate? [y/n]");
-		if($res != "y") {
-       		$this->out("Bye");
-			return;
-		} else {
-			$this->svnUpdate();
-		}
+		$this->svnUpdate();
     }
 
     function help() {
