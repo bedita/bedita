@@ -365,14 +365,14 @@ abstract class FrontendController extends AppController {
 				$l10n = new L10n();
 				$l10n->get();
 				$lang = $l10n->lang;
-				if(!isset($lang)) {
-					$this->currLang = $conf->frontendLang;
-				} else if(array_key_exists($lang, $conf->frontendLangs)) {
-					$this->currLang = $lang;
-				} else if (!empty($conf->frontendLangsMap[$lang])) {
-					$lang = $conf->frontendLangsMap[$lang];
+				if(!empty($lang)) {
 					if(array_key_exists($lang, $conf->frontendLangs)) {
 						$this->currLang = $lang;
+					} else if (!empty($conf->frontendLangsMap[$lang])) {
+						$lang = $conf->frontendLangsMap[$lang];
+						if(array_key_exists($lang, $conf->frontendLangs)) {
+							$this->currLang = $lang;
+						}
 					}
 				}
 				if(empty($this->currLang)) {
