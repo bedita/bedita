@@ -358,7 +358,7 @@ abstract class FrontendController extends AppController {
 			if (isset($conf->cookieName["langSelect"])) {
 				$lang = $this->Cookie->read($conf->cookieName["langSelect"]);
 			}
-			if(!empty($lang)) {
+			if(!empty($lang) && array_key_exists($lang, $conf->frontendLangs)) {
 				$this->currLang = $lang;
 			} else {
 				// HTTP autodetect
