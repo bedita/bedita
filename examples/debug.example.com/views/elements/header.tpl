@@ -1,6 +1,6 @@
 <h3>{t}current language{/t}: {$currLang} - {t}other available{/t}: 
 {foreach from=$conf->frontendLangs item="g" key="k"}
-	{if $currLang != $k} <a title="{$g}" href="{$html->url('/')}lang/{$k}">{$k} - {$g}</a>
+	{if $currLang != $k} <a title="{$g[1]}" href="{$html->url('/')}lang/{$k}">{$k} - {$g[1]}</a>
 	{/if}
 {/foreach}
 </h3>

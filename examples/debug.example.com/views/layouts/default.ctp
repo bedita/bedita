@@ -1,5 +1,5 @@
 <?php echo $html->docType('xhtml-trans'); ?>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo $beFront->lang(); ?>" dir="ltr">
 <head>
 	<?php echo $html->charset(); ?>
 	<title><?php echo $beFront->title(); ?></title>

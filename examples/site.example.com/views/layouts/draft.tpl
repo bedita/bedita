@@ -1,5 +1,5 @@
 {$html->docType('xhtml-trans')}
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{$beFront->lang()}" dir="ltr">
 <head>
 	<title></title>
 	<link rel="icon" href="{$html->webroot}favicon.ico" type="image/x-icon" />

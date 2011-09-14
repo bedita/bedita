@@ -1,7 +1,7 @@
 <h3><?php __("current language", false); echo ": " . $currLang ." - " . __("other available", true);?>:
 <?php foreach ($conf->frontendLangs as $k => $g): ?>
 	<?php if ($currLang != $k): ?>
-		<a title="<?php e($g); ?>" href="<?php echo $html->url('/lang') . "/" . $k?>"><?php e($k)?> - <?php e($g);?></a>
+		<a title="<?php e($g[1]); ?>" href="<?php echo $html->url('/lang') . "/" . $k?>"><?php e($k)?> - <?php e($g[1]);?></a>
 	<?php endif; ?>
 <?php endforeach; ?>
 </h3>

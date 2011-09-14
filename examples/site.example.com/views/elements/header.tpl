@@ -5,7 +5,7 @@
 	<ul class="footel" style="border:0; margin:0; padding:0;">
 		{foreach from=$conf->frontendLangs item="g" key="k"}
 			<li>
-				<a {if $currLang == $k}style="color:white;"{/if} title="{$g}" href="{$html->url('/')}lang/{$k}">{$g}</a>
+				<a {if $currLang == $k}style="color:white;"{/if} title="{$g[1]}" href="{$html->url('/')}lang/{$k}">{$g[1]}</a>
 			</li>
 		{/foreach}
 

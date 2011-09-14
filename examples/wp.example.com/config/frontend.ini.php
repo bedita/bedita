@@ -86,13 +86,13 @@ $config['frontendLang']     = 'eng';
  * supported frontend languages
  */
 $config['frontendLangs']    = array (
-									"eng"	=> "english",
-									"ita"	=> "italiano",
+								 	"eng"	=> array("en", "english"),
+								 	"ita"	=> array("it", "italiano"),
 								/*	
-									"spa"	=> "espa&ntilde;ol",
-									"por"	=> "portugu&ecirc;s",
-									"fra"	=> "fran&ccedil;oise",
-									"deu"	=> "deutsch"
+									"spa"	=> array("es", "espa&ntilde;ol"),
+									"por"	=> array("pt", "portugu&ecirc;s"),
+									"fra"	=> array("fr", "fran&ccedil;oise"),
+									"deu"	=> array("de", "deutsch"),
 								*/
 								);
 

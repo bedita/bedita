@@ -50,6 +50,29 @@ class BeFrontHelper extends AppHelper {
 		$this->_feedNames = (!empty($view->viewVars['feedNames']))? $view->viewVars['feedNames'] : null;
 		$this->_viewExt = $view->ext;
 		$this->_conf = Configure::getInstance();
+		$this->_currLang = (!empty($view->viewVars['currLang'])) ? $view->viewVars['currLang'] : null;
+	}
+
+	/**
+	 * Show 639-1 code, two letters, for html lang
+	 * Value should be in "frontendLangs" config array
+	 * 
+	 * 	"eng"	=> array("en", "english"),
+	 *	"spa"	=> array("es", "espa&ntilde;ol"),
+	 * 	"ita"	=> array("it", "italiano"),
+	 *  .....
+	 *  
+	 *  @return 639-1 code if found, empty string otherwise
+	 */
+	public function lang() {
+		$res = "";
+		if(!empty($this->_currLang)) {
+			if(!empty($this->_conf->frontendLangs[$this->_currLang]) 
+					&& is_array($this->_conf->frontendLangs[$this->_currLang])) {
+				$res = $this->_conf->frontendLangs[$this->_currLang][0];
+			}
+		}
+		return $res;
 	}
 
 	public function title($order='asc') {
