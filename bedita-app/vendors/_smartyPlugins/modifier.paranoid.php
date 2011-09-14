@@ -25,6 +25,8 @@
              	foreach($allowed as $value) {
                  	$allow .= "\\$value";
              	}
+         } else {
+         	$allow = "";
          }
  
          if (is_array($string)) {

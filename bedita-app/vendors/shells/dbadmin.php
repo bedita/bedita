@@ -428,6 +428,102 @@ class DbadminShell extends BeditaBaseShell {
 		$this->out("Done. $nObj objects of type " . $type . " inserted.");
 	}
 	
+	public function importXml() {
+		if (!isset($this->params['f'])) {
+			$this->out("file to import is mandatory");
+			return;
+		}
+		if(!file_exists($this->params['f'])) {
+			$this->out("XML file " . $this->params['f'] . " not found");
+			return;
+		}
+
+		$secId = null;
+		if (isset($this->params['s'])) {
+			$secId = $this->params['s'];
+		}
+		$defaults = array( 
+			"user_created" => "1",
+			"user_modified" => "1",
+			"ip_created" => "127.0.0.1",
+		);
+		
+		$this->out("Importing from " . $this->params['f']);
+		$this->hr();
+		
+		App::import("Core", "Xml");
+		$xml = new XML(file_get_contents($this->params['f']));
+		$treeModel = ClassRegistry::init("Tree");
+		$nObj = 0;	
+		$parsed = set::reverse($xml);				
+		$objs = array();
+		if(!empty($parsed["Section"]["ChildContents"])) {
+			$objs = $parsed["Section"]["ChildContents"];
+		} else if(!empty($parsed["Bedita"]["Objects"])) {
+			$objs = $parsed["Bedita"]["Objects"];
+		} else {
+			$this->out("No contents found.");
+			return;
+		}
+		if(!is_int(key($objs))) {
+			$objs = array($objs);
+		} 
+		foreach ($objs as $data) {
+
+			$objTypeId = isset($data['ObjectType']['name']) ?  
+				Configure::read("objectTypes." . $data['ObjectType']['name'] . ".id") : $data['object_type_id']; 
+			$modelType = Configure::read("objectTypes." . $objTypeId . ".model");
+			$model = ClassRegistry::init($modelType);
+			$data = array_merge($data, $defaults);
+			unset($data["id"]);
+			$data["object_type_id"] = $objTypeId;
+			$model->create();
+			if(!$model->save($data)) {
+				throw new BeditaException("Error saving object - " . print_r($data, true) . 
+					" - validation: " . print_r($model->validationErrors, true));
+			}
+			if(!empty($secId)) {
+				$treeModel->appendChild($model->id, $secId);
+			}
+			$this->out($modelType . " created - id " . $model->id . " - title '" . $data["title"] . "'");
+			$nObj++;		
+		}
+		$this->out("Done. $nObj objects inserted.");
+	}	
+	
+	public function exportXml() {
+		if (!isset($this->params['o'])) {
+			$this->out("output file is mandatory");
+			return;
+		}
+		if (!isset($this->params['t'])) {
+			$this->out("object type is mandatory");
+			return;
+		}
+		$conf = Configure::getInstance() ;
+		$type = $this->params['t'];
+		$model = ClassRegistry::init($conf->objectTypes[$type]['model']);
+		$this->out("Exporting to " . $this->params['o']);
+		$this->hr();
+		$model->containLevel("minimum");
+		$res = $model->find('all', array('conditions' => array(
+						'BEObject.object_type_id' => $conf->objectTypes[$type]['id']
+						)
+					)
+			);
+		$this->out("Found " . count($res) . " objects of type " . $this->params['t']);
+		$out = array();
+		$options = array('attributes' => false, 'format' => 'attributes', 'header' => false);
+		$out["Bedita"]["Objects"] = $res;
+		App::import("Core", "Xml");
+		$xml =& new Xml($out, $options);
+		$xmlOut = $xml->toString();
+		file_put_contents($this->params['o'], $xmlOut);
+		$this->out("Done.");
+	}	
+	
+	
+	
 	public function updateStreamFields() {
 		$streamModel = ClassRegistry::init("Stream");
 		$streams = $streamModel->find("all");
@@ -851,6 +947,20 @@ class DbadminShell extends BeditaBaseShell {
 		$this->out("14. updateCategoryName: update all categories and tags unique name");
         $this->out(' ');
 		$this->out("    -objectType \t <object-type-name> update categories for a specific object type (for example: document)");
+        $this->out(' ');
+		$this->out("15. importXml: import BE objects from XML (in a section)");
+        $this->out(' ');
+        $this->out('    Usage: importXml -f <xml-file> [-s <section-id>] ');
+        $this->out(' ');
+        $this->out("    -f \t xml file path");
+        $this->out("    -s \t section id to import");
+        $this->out(' ');
+		$this->out("16. exportXml: export BE objects to XML");
+        $this->out(' ');
+        $this->out('    Usage: importXml -o <xml-file> -t <obj-type> ');
+        $this->out(' ');
+        $this->out("    -o \t xml output file path");
+        $this->out("    -t \t object type: document, short_news, event,.....");
         $this->out(' ');
 	}
 	

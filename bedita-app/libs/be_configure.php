@@ -187,6 +187,12 @@ class BeConfigure {
 		return ($tableName === $intersect)? true : false;
 	}
 	
+	/**
+	 * load local configuration of module plugged
+	 * file has to be named config_local.php and has to be in config folder of plugin
+	 * 
+	 * @param string $pluginName
+	 */
 	public function loadPluginLocalConfig($pluginName) {
 		$pluginPath = BEDITA_MODULES_PATH . DS . $pluginName;
 		if ( file_exists($pluginPath . DS . 'config' . DS . 'config_local.php' )){

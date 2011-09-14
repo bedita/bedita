@@ -358,21 +358,25 @@ abstract class FrontendController extends AppController {
 			if (isset($conf->cookieName["langSelect"])) {
 				$lang = $this->Cookie->read($conf->cookieName["langSelect"]);
 			}
-			if(!empty($lang)) {
+			if(!empty($lang) && array_key_exists($lang, $conf->frontendLangs)) {
 				$this->currLang = $lang;
 			} else {
 				// HTTP autodetect
 				$l10n = new L10n();
 				$l10n->get();
-				$this->currLang = $l10n->lang;
-				if(!isset($this->currLang)) {
-					$this->currLang = $conf->frontendLang;
-				} else if(!array_key_exists($this->currLang, $conf->frontendLangs)) {
-					if (!empty($conf->frontendLangsMap[$this->currLang])) {
-						$this->currLang = $conf->frontendLangsMap[$this->currLang];
-					} else {
-						$this->currLang = $conf->frontendLang;
+				$lang = $l10n->lang;
+				if(!empty($lang)) {
+					if(array_key_exists($lang, $conf->frontendLangs)) {
+						$this->currLang = $lang;
+					} else if (!empty($conf->frontendLangsMap[$lang])) {
+						$lang = $conf->frontendLangsMap[$lang];
+						if(array_key_exists($lang, $conf->frontendLangs)) {
+							$this->currLang = $lang;
+						}
 					}
+				}
+				if(empty($this->currLang)) {
+					$this->currLang = $conf->frontendLang;
 				}
 			}
 
@@ -580,8 +584,11 @@ abstract class FrontendController extends AppController {
 	protected function setCanonicalPath(array &$obj) {
 
 		$objectId = $obj["id"];
-		if(isset($this->objectCache[$objectId]["canonicalPath"])) {
+
+		if(isset($this->objectCache[$objectId]["canonicalPath"]) && 
+			isset($this->objectCache[$objectId]["parentAuthorized"])) {
 			$obj["canonicalPath"] = $this->objectCache[$objectId]["canonicalPath"];
+			$obj["parentAuthorized"] = $this->objectCache[$objectId]["parentAuthorized"];
 			return;
 		}
 		
@@ -1333,8 +1340,15 @@ abstract class FrontendController extends AppController {
 				if ($obj !== self::UNAUTHORIZED && $obj !== self::UNLOGGED) {
 					if(empty($obj["canonicalPath"])) {
 						if(empty($options["sectionPath"])) {
-							$this->setCanonicalPath($obj);
-						} else {				
+							if($findAltPath) {
+								$this->setCanonicalPath($obj);
+							} else {
+								$s = $this->loadObj($parent_id);
+								$this->setCanonicalPath($s);
+								$obj["canonicalPath"] = (($s["canonicalPath"] != "/") ? $s["canonicalPath"] : "") 
+									. "/" . $obj["nickname"];
+							}
+						} else {
 							$obj["canonicalPath"] = (($options["sectionPath"] != "/") ? $options["sectionPath"] : "") 
 								. "/" . $obj["nickname"];
 						}
