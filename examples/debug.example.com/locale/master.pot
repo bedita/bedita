@@ -39,6 +39,9 @@ msgstr ""
 msgid "current language"
 msgstr ""
 
+msgid "current locale"
+msgstr ""
+
 msgid "current section"
 msgstr ""
 

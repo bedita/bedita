@@ -73,6 +73,18 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
 //	"pub-nickname" => "http://user:passwd@awstatsurl",
 //);
 
+/**
+ ** ******************************************
+ **  System locales available
+ **  use locale strings or arrays for fallbacks
+ **  (see setLocale php function)
+ ** ******************************************
+ */
+
+$config["locales"] = array(
+	"eng" => array("en_US.utf8", "en_GB.utf8"),
+	"ita" => "it_IT.utf8",
+);
 
 /**
  ** ******************************************

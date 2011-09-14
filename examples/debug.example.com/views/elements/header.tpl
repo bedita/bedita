@@ -5,6 +5,9 @@
 {/foreach}
 </h3>
 <hr/>
+<h3>{t}current locale{/t}: {$currLocale}</h3>
+<em>{$smarty.now|date_format:"%A %e %B"}</em>
+<hr/>
 
 <h3>{t}section breadcrumb{/t}:  </h3>
 {$beFront->breadcrumb()}

@@ -28,6 +28,9 @@ msgstr "contenuto corrente"
 msgid "current language"
 msgstr "lingua corrente"
 
+msgid "current locale"
+msgstr "localizzazione corrente"
+
 msgid "current section"
 msgstr "sezione corrente"
 
