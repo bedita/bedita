@@ -3,31 +3,31 @@
 $doc = array();
 
 // table: aliases
-$doc['tables']['aliases'] = 'Object nickname aliases (mainly frontend URLs)';
+$doc['tables']['aliases'] = 'object unique name aliases (used mainly frontend URLs)';
 $doc['aliases'] = array (
-  'nickname_alias' => 'alternative nickname',
-  'lang' => 'alias preferred language, can be NULL',
+  'nickname_alias' => 'alternative nickname/unique name',
+  'lang' => 'alias preferred language',
 );
 
 // table: annotations
 $doc['tables']['annotations'] = 'object annotations, comments, notes';
 $doc['annotations'] = array (
-  'author' => 'annotation author',
-  'email' => 'annotation author email',
-  'url' => 'annotation url, can be NULL',
-  'thread_path' => 'path to thread, can be NULL',
-  'rating' => 'object rating, can be NULL',
+  'author' => 'author, if not a logged user',
+  'email' => 'email, if not a logged user',
+  'url' => 'author url',
+  'thread_path' => 'path to thread, in the form /12/23/34',
+  'rating' => 'numeric rating',
 );
 
 // table: applications
 $doc['tables']['applications'] = 'applications, for example flash, java applet, etc.';
 $doc['applications'] = array (
-  'application_name' => 'name of application, for example flash',
-  'application_label' => 'label for application, for example Adobe Flash, can be NULL',
-  'application_version' => 'version of application, can be NULL',
-  'application_type' => 'type of application, for example application/x-shockwave-flash',
-  'text_dir' => 'text orientation (ltr:left to right;rtl: right to left)',
-  'text_lang' => 'text language, can be NULL',
+  'application_name' => 'name, for example flash',
+  'application_label' => 'label for application, for example Adobe Flash',
+  'application_version' => 'app version',
+  'application_type' => 'mime type of application, for example application/x-shockwave-flash',
+  'text_dir' => 'text orientation (ltr: left to right - rtl: right to left)',
+  'text_lang' => 'text language',
   'width' => 'application window width in pixels',
   'height' => 'application window height in pixels',
 );
@@ -35,20 +35,20 @@ $doc['applications'] = array (
 // table: areas
 $doc['tables']['areas'] = 'publications (web sites, etc.)';
 $doc['areas'] = array (
-  'public_name' => 'public name for publication, can be NULL',
-  'public_url' => 'public url for publication, can be NULL',
-  'staging_url' => 'staging/test url for publication, can be NULL',
-  'email' => 'publication email, can be NULL',
-  'stats_code' => 'statistics code, for example google stats code. can be NULL',
-  'stats_provider' => 'statistics provider, for example google. can be NULL',
+  'public_name' => 'public name for publication',
+  'public_url' => 'public url for publication',
+  'staging_url' => 'staging/test url for publication',
+  'email' => 'owner/support email',
+  'stats_code' => 'statistics code for html, for example google stats code',
+  'stats_provider' => 'statistics provider, for example google',
   'stats_provider_url' => 'statistics provider url',
 );
 
 // table: authors
-$doc['tables']['authors'] = 'contents authors';
+$doc['tables']['authors'] = 'authors';
 $doc['authors'] = array (
-  'name' => 'author name, can be NULL',
-  'surname' => 'author surname, can be NULL',
+  'name' => 'author name',
+  'surname' => 'author surname',
 );
 
 // table: banned_ips
@@ -362,10 +362,10 @@ $doc['property_options'] = array (
 );
 
 // table: search_texts
-$doc['tables']['search_texts'] = 'search texts table';
+$doc['tables']['search_texts'] = 'searchable text, index table';
 $doc['search_texts'] = array (
-  'lang' => '???',
-  'content' => '???',
+  'lang' => 'text language',
+  'content' => 'actual text to index',
   'relevance' => 'importance (1-10) range',
 );
 
@@ -417,17 +417,18 @@ $doc['users'] = array (
 );
 
 // table: versions
-$doc['tables']['versions'] = '???';
+$doc['tables']['versions'] = 'object versioning data';
 $doc['versions'] = array (
-  'revision' => '???',
+  'revision' => 'revision number, from 1 to N-1',
+  'diff' => 'serialized incremental difference',
 );
 
 // table: videos
-$doc['tables']['videos'] = '???';
+$doc['tables']['videos'] = 'video contents';
 $doc['videos'] = array (
-  'provider' => '???',
-  'video_uid' => '???',
-  'thumbnail' => '???',
+  'provider' => 'provider name: youtube, vimeo,...',
+  'video_uid' => 'video identifier for provider',
+  'thumbnail' => 'thumbnail image url',
 );
 
 ?>
