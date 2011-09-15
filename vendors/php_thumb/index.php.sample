@@ -1,0 +1,40 @@
+<?php  
+
+require_once 'thumb/ThumbLib.inc.php';  
+
+//$thumb = PhpThumbFactory::create('xwing.jpg');  
+$thumb = PhpThumbFactory::create('millenium.jpg');  
+
+#parametri di default
+$dim   = $thumb->getCurrentDimensions();
+$h   = $dim['height'];   
+$w   = $dim['width'];   
+$up  = false;
+$pos = "CC";
+
+#parametri custom
+$w = 700;
+$h = 200;
+
+//Funzioni:
+
+
+//Parte 1:
+//Da costruire direttamente nell'helper be_thumb utilizzando funzioni di crop e di resize
+
+//Parte 2:
+//semplicemente questo metodo (con l'opzione resizeUp a true!)
+//effettua prima il ridimensionamento alle dimensioni più vicine e poi croppa
+//$thumb->setOptions(array("resizeUp" => true));
+//$thumb->adaptiveResize($w,$h);
+
+//Parte 3:
+// fill e stretch
+//$thumb->resizeFill($w,$h); 
+//$thumb->resizeStretch($w,$h);
+
+//Parte 4: (watermark)
+//$thumb->addLogo('wmark.jpg', 'center', 'center', 25, &$thumb);
+
+$thumb->show();
+?>
