@@ -268,7 +268,7 @@ $config["cfgOneWayRelation"] = array();
 $config["defaultReservedWords"] = array("section", "content", "rss", "feed", "georss", "georssatom", "kml",
 	"download", "xml", "xmlobject", "sitemap", "sitemap.xml", "sitemap_xml", 
 	"json", "captchaImage", "saveComment", "search", "tag", "category", "login", "logout", "js",
-	"hashjob", "subscribe", "printme", "homePage", "img", "css", "files", 
+	"hashjob", "subscribe", "printme", "homePage", "img", "css", "files", "swf", "webroot",
 	"lang", "favicon.ico", "favicon.gif");
 
 // Cfg reserved words (override in bedita.cfg)
