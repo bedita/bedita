@@ -1095,6 +1095,31 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
+	 * set model bindings for BEdita object
+	 * 
+	 * @param string $modelType model name of BE object
+	 * @return array that contains:
+	 *				"bindings_used" => multidimensional array of bindings used,
+	 *				"bindings_list" => one dimensional array with the simple list of bindings ordered using a "natural order" algorithm
+	 *				
+	 */
+	protected function setObjectBindings($modelType) {
+		if(!isset($this->{$modelType})) {
+			$this->{$modelType} = $this->loadModelByType($modelType);
+		}
+
+		if (!$this->baseLevel) {
+			$bindingsUsed = $this->modelBindings($this->{$modelType});
+		} else {
+			$bindingsUsed = array("BEObject" => array("LangText"));
+			$this->{$modelType}->contain($bindingsUsed);
+		}
+		$listOfBindings = BeLib::getInstance()->arrayValues($bindingsUsed, true);
+		natsort($listOfBindings);
+		return array("bindings_used" => $bindingsUsed, "bindings_list" => $listOfBindings);
+	}
+	
+	/**
 	 * Returns bedita Object
 	 * Throws Exception on errors
 	 *
@@ -1122,7 +1147,14 @@ abstract class FrontendController extends AppController {
 
 		// use object cache
 		if(isset($this->objectCache[$obj_id])) {
-			return $this->objectCache[$obj_id];
+			$modelType = $this->objectCache[$obj_id]["object_type"];
+			$bindings = $this->setObjectBindings($modelType);
+			$bindingsDiff = array_diff($this->objectCache[$obj_id]["bindings"]["bindings_list"], $bindings["bindings_list"]);
+			$isEqual = Set::isEqual($this->objectCache[$obj_id]["bindings"]["bindings_list"], $bindings["bindings_list"]);
+			// cached object is used only if its bindings contain more data or equal than those of the request
+			if (!empty($bindingsDiff) || $isEqual) {
+				return $this->objectCache[$obj_id];
+			}
 		}
 		
 		// check permissions and set $authorized true/false
@@ -1186,17 +1218,11 @@ abstract class FrontendController extends AppController {
 			$authorized = true;
 		}
 		
-		$modelType = $this->BEObject->getType($obj_id);
-		if(!isset($this->{$modelType})) {
-			$this->{$modelType} = $this->loadModelByType($modelType);
+		if (!isset($this->objectCache[$obj_id])) {
+			$modelType = $this->BEObject->getType($obj_id);
+			$bindings = $this->setObjectBindings($modelType);
 		}
-
-		if (!$this->baseLevel) {
-			$this->modelBindings($this->{$modelType});
-		} else {
-			$this->{$modelType}->contain(array("BEObject" => array("LangText")));
-		}
-			
+		
 		$obj = $this->{$modelType}->find("first", array(
 								"conditions" => array(
 									"BEObject.id" => $obj_id,
@@ -1237,6 +1263,9 @@ abstract class FrontendController extends AppController {
 		}
 		$obj['object_type'] = $modelType;
 		$obj['authorized'] = $authorized;
+		
+		// add bindings used
+		$obj['bindings'] = $bindings;
 		
 		$this->objectCache[$obj_id] = $obj;
 		return $obj;

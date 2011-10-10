@@ -457,16 +457,28 @@ class AppController extends Controller
 		return $model;
 	}
 	
-	public function modelBindings(Model $modelObj, $level = 'default') {
+	/**
+	 * set model bindings and return the array used
+	 * 
+	 * @param Model $modelObj
+	 * @param string $level binding level as defined in Model::modelBindings array
+	 * @return array 
+	 */
+	protected function modelBindings(Model $modelObj, $level = 'default') {
 		$conf = Configure::getInstance();
 		$name = $modelObj->name;
+		$bindings = array();
 		if(isset ($this->modelBindings[$name])) {
-			$modelObj->contain($this->modelBindings[$name]);
+			$bindings = $this->modelBindings[$name];
+			$modelObj->contain($bindings);
 		} else if(isset ($conf->modelBindings[$name])) {
-			$modelObj->contain($conf->modelBindings[$name]);
+			$bindings = $conf->modelBindings[$name];
+			$modelObj->contain($bindings);
 		} else {
 			$modelObj->containLevel($level);
+			$bindings = $modelObj->modelBindings[$level];
 		}
+		return $bindings;
 	}	
 		
 	/**

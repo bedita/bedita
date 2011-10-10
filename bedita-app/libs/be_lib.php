@@ -264,6 +264,56 @@ class BeLib {
 		
 		return $data;
 	}
+	
+	
+	/**
+	 * return values of multidimensional array
+	 *
+	 * @param array $array
+	 * @param boolean $addStringKeys if it's true add string keys to the returned array
+	 * @return array 
+	 */
+	public function arrayValues(array $array, $addStringKeys = false) {
+		$values = array();
+		array_walk_recursive($array , array($this, "arrayValuesCallback"), &$values);
+		if ($addStringKeys) {
+			$keys = $this->arrayKeys($array);
+			$values = array_merge($values, $keys);
+		}
+		return $values;
+	}
+	
+	/**
+	 * callback method used from BeLib::arrayValues
+	 * 
+	 * @param mixed $item
+	 * @param mixed $key
+	 * @param array $values 
+	 */
+	static private function arrayValuesCallback($item, $key, $values) {
+		$values[] = $item;
+	}
+	
+	/**
+	 * return keys of multidimensional array
+	 * 
+	 * @param array $ar
+	 * @param boolean $stringKeys if it's true add string keys to the returned array
+	 * @return array 
+	 */
+	public function arrayKeys(array $ar, $stringKeys = true) {
+		$keys = array();
+		foreach($ar as $k => $v) {
+			if (!$stringKeys || ($stringKeys && is_string($k))) { 
+				$keys[] = $k;
+			}
+			if (is_array($ar[$k])) {
+				$keys = array_merge($keys, $this->arrayKeys($ar[$k], $stringKeys));
+			}
+		}
+		return $keys;
+	} 
+	
 }
 
 ?>
