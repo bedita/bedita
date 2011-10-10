@@ -475,8 +475,7 @@ class AppController extends Controller
 			$bindings = $conf->modelBindings[$name];
 			$modelObj->contain($bindings);
 		} else {
-			$modelObj->containLevel($level);
-			$bindings = $modelObj->modelBindings[$level];
+			$bindings = $modelObj->containLevel($level);
 		}
 		return $bindings;
 	}	

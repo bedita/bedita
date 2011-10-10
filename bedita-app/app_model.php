@@ -237,6 +237,7 @@ class BEAppModel extends AppModel {
 			throw new BeditaException("Contain level not found: $level");
 		}
 		$this->contain($this->modelBindings[$level]);
+		return $this->modelBindings[$level];
 	}
 	
 	public function fieldsString($modelName, $alias = null, $excludeFields = array()) {
