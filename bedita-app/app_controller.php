@@ -1131,12 +1131,13 @@ abstract class ModulesController extends AppController {
 
 		$backURL = $this->Session->read('backFromView');
 		
+		$baseModuleUrl = rtrim($this->base,"/") . "/" . $modulePath;
 		// set backFromView session vars and reset prevNext if necessary		
-		if (!empty($this->here) && strstr($this->here, $modulePath . "/index")) {
-			$backURL = (empty($this->params["form"]["searchstring"]))? $this->here : rtrim($this->here,"/") . "/search:" . urlencode($this->params["form"]["searchstring"]);
+		if (!empty($this->here) && (strstr($this->here, $modulePath . "/index") || $this->here === $baseModuleUrl)) {
+			$backURL = (empty($this->params["form"]["searchstring"]))? $this->here : rtrim($this->here,"/") . "/query:" . urlencode($this->params["form"]["searchstring"]);
 			$this->Session->write('backFromView', $backURL);
 		} elseif (empty($backURL) || !strstr($backURL, $modulePath) || !strstr($this->referer(), $modulePath)) {
-			$this->Session->write('backFromView', rtrim($this->base,"/") . "/" . $modulePath);
+			$this->Session->write('backFromView', $baseModuleUrl);
 			$this->Session->write("prevNext", "");
 		}
 	}
