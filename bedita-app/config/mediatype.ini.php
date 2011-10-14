@@ -36,6 +36,7 @@ $config["mediaTypeMapping"] = array(
 	"application/pdf"								=>	"text",
 	"text/html"										=>	"text",
 	"application/vnd.ms-powerpoint"					=>	"text",
-	"application/rtf"								=>	"text"
+	"application/rtf"								=>	"text",
+	"text/plain"									=>	"text"
 );
 ?>
