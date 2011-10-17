@@ -233,6 +233,10 @@ class BEAppModel extends AppModel {
 	}
 
 	public function containLevel($level = "minimum") {
+		// try to fallback to default "minimum" modelBindings level if "frontend" level doesn't exist
+		if ($level == "frontend" && !isset($this->modelBindings[$level])) {
+			$level = "minimum";
+		}
 		if(!isset($this->modelBindings[$level])) {
 			throw new BeditaException("Contain level not found: $level");
 		}
@@ -776,7 +780,9 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
 														"Annotation",
 														"Category"), 
 									"Content"),
-				"minimum" => array("BEObject" => array("ObjectType","Category"), "Content")		
+				"minimum" => array("BEObject" => array("ObjectType","Category"), "Content"),
+		
+				"frontend" => array("BEObject" => array("LangText"), "Content")
 	);
 	
 	var $actsAs 	= array(
@@ -837,7 +843,9 @@ class BeditaStreamModel extends BEAppObjectModel {
 														"Category",
 														"Annotation"), 
 									"Content", "Stream"),
-				"minimum" => array("BEObject" => array("ObjectType","Category"),"Content", "Stream")		
+				"minimum" => array("BEObject" => array("ObjectType","Category"),"Content", "Stream"),
+		
+				"frontend" => array("BEObject" => array("LangText"), "Content", "Stream")
 	);
 	
 	

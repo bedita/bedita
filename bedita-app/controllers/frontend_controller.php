@@ -1109,7 +1109,7 @@ abstract class FrontendController extends AppController {
 		}
 
 		if (!$this->baseLevel) {
-			$bindingsUsed = $this->modelBindings($this->{$modelType});
+			$bindingsUsed = $this->modelBindings($this->{$modelType}, "frontend");
 		} else {
 			$bindingsUsed = array("BEObject" => array("LangText"));
 			$this->{$modelType}->contain($bindingsUsed);

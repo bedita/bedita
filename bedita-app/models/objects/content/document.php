@@ -50,7 +50,15 @@ class Document extends BeditaContentModel
 									"LangText", "ObjectType", "Annotation",
 									"Category", "RelatedObject" ), "GeoTag"),
 
-				"minimum" => array("BEObject" => array("ObjectType"))		
+				"minimum" => array("BEObject" => array("ObjectType")),
+		
+				"frontend" => array("BEObject" => array("LangText", 
+														"UserCreated",
+														"RelatedObject", 
+														"Category", 
+														"Annotation"
+														), 
+									"GeoTag")
 	);
 	
 	var $actsAs = array(

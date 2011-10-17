@@ -47,7 +47,9 @@ class Link extends BEAppObjectModel {
 
 				"default" => array("BEObject" => array("ObjectType", "RelatedObject", "Category", "Annotation")),
 
-				"minimum" => array("BEObject" => array("ObjectType"))
+				"minimum" => array("BEObject" => array("ObjectType")),
+		
+				"frontend" => array("BEObject" => array("LangText","RelatedObject"))
 		);
 		
 	public $objectTypesGroups = array("leafs");
