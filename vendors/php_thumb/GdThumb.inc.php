@@ -85,6 +85,7 @@ class GdThumb extends ThumbBase
 	 */
 	protected $percent;
 	
+	
 	/**
 	 * Class Constructor
 	 * 
@@ -175,13 +176,10 @@ class GdThumb extends ThumbBase
 		}
 		
 		// make sure we're not exceeding our image size if we're not supposed to
-		if ($this->options['resizeUp'] === false)
-		{
+		if ($this->options['resizeUp'] === false) {
 			$this->maxHeight	= (intval($maxHeight) > $this->currentDimensions['height']) ? $this->currentDimensions['height'] : $maxHeight;
 			$this->maxWidth		= (intval($maxWidth) > $this->currentDimensions['width']) ? $this->currentDimensions['width'] : $maxWidth;
-		}
-		else
-		{
+		} else {
 			$this->maxHeight	= intval($maxHeight);
 			$this->maxWidth		= intval($maxWidth);
 		}
@@ -192,11 +190,11 @@ class GdThumb extends ThumbBase
 		// create the working image
 		if (function_exists('imagecreatetruecolor'))
 		{
-			$this->workingImage = imagecreatetruecolor($maxWidth, $maxHeight);
+			$this->workingImage = imagecreatetruecolor($this->newDimensions['newWidth'], $this->newDimensions['newHeight']);
 		}
 		else
 		{
-			$this->workingImage = imagecreate($maxWidth, $maxHeight);
+			$this->workingImage = imagecreate($this->newDimensions['newWidth'], $this->newDimensions['newHeight']);
 		}
 		
 		$this->preserveAlpha();		
@@ -902,6 +900,7 @@ class GdThumb extends ThumbBase
 	 */
 	protected function calcWidth ($width, $height)
 	{
+	
 		$newWidthPercentage	= (100 * $this->maxWidth) / $width;
 		$newHeight			= ($height * $newWidthPercentage) / 100;
 		
@@ -921,6 +920,7 @@ class GdThumb extends ThumbBase
 	 */
 	protected function calcHeight ($width, $height)
 	{
+		
 		$newHeightPercentage	= (100 * $this->maxHeight) / $height;
 		$newWidth 				= ($width * $newHeightPercentage) / 100;
 		

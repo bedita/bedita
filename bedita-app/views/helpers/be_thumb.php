@@ -1,40 +1,9 @@
 <?php
-/*-----8<--------------------------------------------------------------------
- * 
- * BEdita - a semantic content management framework
- * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
- * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the Affero GNU General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the Affero GNU General Public License for more details.
- * You should have received a copy of the Affero GNU General Public License 
- * version 3 along with BEdita (see LICENSE.AGPL).
- * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
- * 
- *------------------------------------------------------------------->8-----
- */
 
-/**
- * 
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
- */
 class BeThumbHelper extends AppHelper {
 
-	private $_helpername = "BeThumb Helper";
+	private $_helpername = "BeThumb Helper 2";
 
-
-	// output template for sprintf non funziona e vai a fare in culo lo vedo dopo
-	// private $_html	= '<img src="%s" width="%d" height="%d" alt="%s" />';
 
 
 	// supported image types (order is important)
@@ -60,8 +29,7 @@ class BeThumbHelper extends AppHelper {
 	
 	
 	
-	function __construct()
-	{
+	function __construct() {
 		// get configuration parameters and defaults
 		$this->_conf = Configure::read('media') ;
 		$this->_conf['root']  = Configure::read('mediaRoot');
@@ -71,49 +39,52 @@ class BeThumbHelper extends AppHelper {
 	}
 
 
-
-
-
 	/*
 	 * image public method: embed an image after resample and cache
 	 * 
 	 * params: be_obj, required, object, BEdita Multimedia Object
 	 *         width, height, longside, at least one required, integer (if longside, w&h are ignored)
-	 *         mode, optional, 'crop'/'fill'/'croponly'/'stretch'
+	 *         
+	 *         mode, optional: crop, croponly, resize
+	 *         
 	 *         modeparam, optional, depends on mode:
-	 *             if fill, string representing hex color, ie 'FFFFFF'
-	 *             if croponly, string describing crop zone 'C', 'T', 'B', 'L', 'R', 'TL', 'TR', 'BL', 'BR'
-	 *             if stretch, bool to allow upscale (default false)
-	 *         type, optional, 'gif'/'png'/'jpg', force image target type
-	 *         upscale, optional, bool, allow or not upscale
+	 *             if resize: 'fill' or 'stretch', if empty do simple resize.
+	 *             if crop, a string describing crop zone 'C', 'T', 'B', 'L', 'R', 'TL', 'TR', 'BL', 'BR'
+	 *             
+	 *         cache, optional:		allow the caching of images, default in bedita.ini
+	 *         bgcolor, optional: 	string representing hex color, ie 'FFFFFF' for the background (show only on resize mode -> fill)
+	 *         upscale, optional: 	bool, allow or not upscale (only in general crop and resize->stretch)
+	 *         type, optional: 		'gif'/'png'/'jpg', force image target type
+	 *         watermark, optional: watermark?
 	 *         
 	 *         NB: optionally the second argument may be the associative array of said parameters
 	 *         
 	 * return: resampled and cached image URI (using $html helper)
 	 * 
 	 */
-	public function image ($be_obj, $params = null) 
-	//$width = false, $height = false, $longside = null, $mode = null, $modeparam = null, $type = null, $upscale = null)
-	{
+	
+	public function image ($be_obj, $params = null) { 
+		
+		// defaults?
+		// $width = false, $height = false, $longside = null, $mode = null, $modeparam = null, $type = null, $upscale = null, $cache = true
 		// this method is for image only, check bedita object type
-		if ( strpos($be_obj['mime_type'], "image") === false )
-		{
+
+		if ( strpos($be_obj['mime_type'], "image") === false ) {
 			$this->_triggerError ( $this->_helpername . ": '" . $be_obj['name'] . "' is not a valid Bedita image object (object type is " . $be_obj['mime_type'] . ")", E_USER_NOTICE ) ;
 			return $this->_conf['imgMissingFile'];
 		}
-		elseif (!in_array($be_obj["mime_type"], $this->_mimeType))
-		{
+		elseif (!in_array($be_obj["mime_type"], $this->_mimeType)) {
 			return false;
 		}
 		else $this->_resetObjects();
-
+	
 		// read params as an associative array or multiple variable
-		$expectedArgs = array ('width', 'height', 'longside', 'mode', 'modeparam', 'type', 'upscale');
-		if ( func_num_args() == 2 && is_array( func_get_arg(1) ) )
-		{
+		$expectedArgs = array ('width', 'height', 'longside', 'mode', 'modeparam', 'type', 'upscale', 'cache', "watermark");
+		if ( func_num_args() == 2 && is_array( func_get_arg(1) ) ) {
 			extract ($params);
 		}
-		else
+		
+		/*else
 		{
 			$argList = func_get_args() ;
 			array_shift($argList);
@@ -122,7 +93,7 @@ class BeThumbHelper extends AppHelper {
 		        if ( isset($argList[$i]) )
 					$$expectedArgs[$i] = $argList[$i];
 		    }
-		}
+		}*/
 
 
 		// filepath & name
@@ -138,55 +109,79 @@ class BeThumbHelper extends AppHelper {
 		$this->_imageInfo['cacheDirectory'] = dirname($this->_imageInfo['filepath']) . DS . 
 											  substr($this->_imageInfo['filenameBase'],0,5) . "_" . 
 											  $this->_imageInfo['filenameMD5'];
-
+		
 		// test source file
-		if ( !$this->_testForSource () )
-		{
+		if ( !$this->_testForSource () ) {
 			return $this->_conf['imgMissingFile'];
 		}
 
-
+		//Setting params:
+		//cache
+		if ( isset ($cache) )	$this->_imageTarget['cacheImages'] = $cache;
+		else 					$this->_imageTarget['cacheImages'] = $this->_conf['image']['cache'];
+		
 		// upscale
 		if ( isset ($upscale) )	$this->_imageTarget['upscale'] = $upscale;
 		else 					$this->_imageTarget['upscale'] = $this->_conf['image']['thumbUpscale'];
-
-
+		
+		//background
+		if ( isset ($bgcolor) )	$this->_imageTarget['fillcolor'] = $bgcolor;
+		else					$this->_imageTarget['fillcolor'] = $this->_conf['image']['background'];
+		
+		
 		// cropmode
 		$this->_imageTarget['cropmode'] = $this->_conf['image']['thumbCrop'];
 
-
 		// upscale, mode & fill
 		if ( !isset ($mode) ) $mode = $this->_conf['image']['thumbMode'];
-		switch ($mode)
-		{
-			case "fill":
+		switch ($mode) {
+			
+			case "croponly":  //general crop
+			default:
+				$this->_imageTarget['mode'] = 0;
+				if ( isset ($modeparam) ) {	
+					$this->_imageTarget['cropmode'] = $modeparam; // overwrite crop mode
+				}
+				break;
+			
+			case "crop": //adaptive crop
 				$this->_imageTarget['mode'] = 1;
-				if ( isset ($modeparam) )	$this->_imageTarget['fillcolor'] = $modeparam;
-				else						$this->_imageTarget['fillcolor'] = $this->_conf['image']['thumbFill'];
+				//if ( isset ($modeparam) )	$this->_imageTarget['cropmode'] = $modeparam; // overwrite crop mode
+				break;
+			
+			case "resize":
+			default:
+				$this->_imageTarget['mode'] = 2;
+				if ( isset ($modeparam) ) {	
+					$this->_imageTarget['resizetype'] = $modeparam;
+				}
+				
+				break;
+			
+			// legacy methods
+			case "fill":
+				$this->_imageTarget['mode'] = 2;
+				
+				if (empty($longside)) {
+					$this->_imageTarget['resizetype'] = 'fill';
+					if ( isset ($modeparam) )	$this->_imageTarget['fillcolor'] = $modeparam;
+					else						$this->_imageTarget['fillcolor'] = $this->_conf['image']['thumbFill'];
+				}
+				
 				break;
 			
 			case "stretch":
 				$this->_imageTarget['mode'] = 2;
-				break;
-			
-			case "croponly":
-				$this->_imageTarget['mode'] = 3;
-				if ( isset ($modeparam) )	$this->_imageTarget['cropmode'] = $modeparam; // overwrite
-				break;
-			
-			case "crop":
-			default:
-				$this->_imageTarget['mode'] = 0;
+				$this->_imageTarget['resizetype'] = 'stretch';
 				break;
 		}
 
 
 
 		// build _image_info with getimagesize() or available parameters
-		if ( empty($be_obj['width']) || empty($be_obj['height']) )
-		{
-			if ( !$_image_data =@ getimagesize($this->_imageInfo['filepath']) )
-			{
+		if ( empty($be_obj['width']) || empty($be_obj['height']) ) {
+			
+			if ( !$_image_data =@ getimagesize($this->_imageInfo['filepath']) ) {
 				$this->_triggerError ( $this->_helpername . ": '" . $this->_imageInfo['path'] . "' is not a valid image file", E_USER_NOTICE ) ;
 				return $this->_conf['imgMissingFile'];
 			}
@@ -196,70 +191,57 @@ class BeThumbHelper extends AppHelper {
 			$this->_imageInfo["h"]		= $_image_data [1];
 			$this->_imageInfo['type']	= $this->_imagetype[$_image_data [2]]; // 1=GIF, 2=JPG, 3=PNG
 			unset ($_image_data);
-		}
-		else
-		{
+		} else {
+			
 			$this->_imageInfo["w"] = $be_obj['width'];
 			$this->_imageInfo["h"] = $be_obj['height'];
 	
 			// since not using getimagesize(), try to get image type from object or extension
-			if ( !($this->_imageInfo['ntype'] =@ $this->array_isearch ( substr (strrchr ($be_obj['mime_type'], "/"), 1), $this->_imageInfo['ext'] ) ) )
-			{
-				if ( !( $this->_imageInfo['ntype'] =@ $this->_array_isearch ($this->_imageInfo['ext'], $this->_imagetype) ) )
-				{
+			if ( !($this->_imageInfo['ntype'] =@ $this->array_isearch ( substr (strrchr ($be_obj['mime_type'], "/"), 1), $this->_imageInfo['ext'] ) ) ) {
+				if ( !( $this->_imageInfo['ntype'] =@ $this->_array_isearch ($this->_imageInfo['ext'], $this->_imagetype) ) ) {
 					$this->_imageInfo['ntype'] = $this->_defaultimagetype; // defaults to 2 [= JPG]
 				}
 			}
 			
-			if ($this->_imageInfo['ntype'] == 4)
+			if ($this->_imageInfo['ntype'] == 4) {
 				$this->_imageInfo['ntype'] = 2; // JPEG == JPG
-			
+			}
 			// set string type
 			$this->_imageInfo['type'] = $this->_imagetype[ $this->_imageInfo['ntype'] ];
 		}
 
 
-
 		// target image type
-		if ( !@empty($type) )
-		{
+		if ( !@empty($type) ) {
 			$this->_imageTarget['type'] = $type;
 		} else {
 			$this->_imageTarget['type'] = $this->_imageInfo['type'];
 		}
 
 
-
 		// target size, _imageTarget['w'] &  _imageTarget['h']   [unused $this->_targetSize ($width, $height)]
 		// target image size
-		if ( empty($width) && empty($height) && !isset($longside) )
-		{
+		if ( empty($width) && empty($height) && !isset($longside) ) {
 			$width  = $this->_conf['image']['thumbWidth'];
 			$height = $this->_conf['image']['thumbHeight'];
 		}
-		else if ( !empty($longside) )
-		{
-			if ($this->_imageInfo["w"] > $this->_imageInfo["h"])
-			{
+		else if ( !empty($longside) ) {
+			if ($this->_imageInfo["w"] > $this->_imageInfo["h"]) {
 				$width  = $longside; 
-				$height = false;
+				$height = 0;
 			}
-			else
-			{
-				$width  = false;
+			else {
+				$width  = 0;
 				$height = $longside;
 			}
 		}
-		else
-		{
+		else {
 			// set the one missing
-			if ( empty($width) )  $width  = "";
-			if ( empty($height) ) $height = "";
+			if ( empty($width) )  $width  = 0;
+			if ( empty($height) ) $height = 0;
 		}
 		$this->_imageTarget['w'] = $width;
 		$this->_imageTarget['h'] = $height;
-
-
 
 		// target filename, filepath, uri
 		$this->_imageTarget['filename'] = $this->_targetFileName ();
@@ -268,23 +250,17 @@ class BeThumbHelper extends AppHelper {
 
 
 
-		// manage cache and resample if not cached
+		// Manage cache and resample if caching option is true 
+		// and the image it's not alredy cached
 		$this->_imageTarget['cached']   = $this->_testForCache ();
-
-		if ( empty($this->_imageTarget['cached']) )
-		{
-			if ( !$this->_resample() )
-			{
+		if ( empty($this->_imageTarget['cached']) || (!$this->_imageTarget['cacheImages']) ) {
+			if ( !$this->_resample() ) {
 				return $this->_conf['imgMissingFile'];
 			}
 		}
-		else
-		{
+		else {
 			// skip resample, it's cached
-			//pr ($this->_imageTarget);
 		}
-
-
 
 		// return HTML <img> tag
 		return $this->_imageTarget['uri'];
@@ -293,41 +269,81 @@ class BeThumbHelper extends AppHelper {
 
 
 
-
-	/*
-	 * public interface to phpThumb (da finire)
-	 */
-	public function phpThumb ($image, $params = array())
-	{
-		return;
-	}
-
-
-
-
-
-
-
 	/**************************************************************************
 	** private methods follow
 	**************************************************************************/
 
+	
+	/*
+	 * call PhpThumb and make all the work
+	 */
+	private function _resample () {
 
-
+		App::import ('Vendor', 'phpthumb', array ('file' => 'php_thumb' . DS . 'ThumbLib.inc.php') );
+		$thumbnail = PhpThumbFactory::create($this->_imageInfo['filepath']);  
+		
+		
+		// more params about resample mode
+		switch ( $this->_imageTarget['mode'] ) {
+			// general crop
+			case 0:
+				if ($this->_imageTarget['upscale']) {
+					$thumbnail->setOptions(array("resizeUp" => true));
+				}
+				list ($starX, $startY)  = $this->_getCropCoordinates ( $this->_imageInfo['w'], $this->_imageInfo['h'],$this->_imageTarget['w'], $this->_imageTarget['h'], $this->_imageTarget['cropmode'] );
+				$thumbnail->crop($starX, $startY, $this->_imageTarget['w'], $this->_imageTarget['h']);
+				
+				break;
+			//croponly: adaptive crop
+			case 1:
+			default:
+				$thumbnail->setOptions(array("resizeUp" => true));
+				$thumbnail->adaptiveResize($this->_imageTarget['w'], $this->_imageTarget['h']);
+				break;
+			
+			// resize
+			case 2:
+				//stretch or fill of simple resize
+				if (empty($this->_imageTarget['resizetype'])){
+					
+					$thumbnail->resize($this->_imageTarget['w'], $this->_imageTarget['h']);
+					
+				}else if ($this->_imageTarget['resizetype'] == 'stretch') {
+					
+					$thumbnail->resizeStretch($this->_imageTarget['w'], $this->_imageTarget['h']);
+					
+				} else if ($this->_imageTarget['resizetype'] == 'fill') {
+					
+					$thumbnail->resizeFill($this->_imageTarget['w'], $this->_imageTarget['h'],  $this->_imageTarget['fillcolor']);
+				}
+				break;
+				
+			
+		}
+		
+		if ( $thumbnail->save ( $this->_imageTarget['filepath'], $this->_imageTarget['type'] ) ) {
+			return true;
+		}else {
+			pr("BBB");exit;
+			$this->_triggerError ($this->_helpername . ": phpThumb error:\n" . $thumbnail->fatalerror . "\n" . implode("\n---", $thumbnail->debugmessages) );
+			return false;
+		}
+		
+	}
+	// end _resample
+	
+	
 
 	/*
 	 * test source file for existance and correctness
 	 */
-	private function _testForSource ()
-	{
-		if ( !file_exists($this->_imageInfo['filepath']) )
-		{
+	private function _testForSource () {
+		if ( !file_exists($this->_imageInfo['filepath']) ) {
 			// file does not exist
 			$this->_triggerError ($this->_helpername . ": file '" . $this->_imageInfo['filepath'] . "' does not exist");
 			return false;
 		}
-		elseif ( !is_readable ($this->_imageInfo['filepath']) )
-		{
+		elseif ( !is_readable ($this->_imageInfo['filepath']) ) {
 			// cannot access source file on filesystem
 			$this->_triggerError ($this->_helpername . ": cannot read file '" . $this->_imageInfo['filepath'] . "' on filesystem");
 			return false;
@@ -337,78 +353,12 @@ class BeThumbHelper extends AppHelper {
 
 
 
-	/*
-	 * image resize strategy, set $this->_imageTarget['w'] & $this->_imageTarget['h']
-	 * input param $width and/or height must be set
-	 * $this->_imageTarget['mode'] must be set (integer 0<i<4) if both width & height are
-	 * NB: IT'S UNUSED: DELEGATE TO PHPTHUMB
-	 */
-	private function _targetSize ($width = null, $height = null)
-	{
-		if ( !empty ($width) && !empty ($height) )
-		{
-			// upscaling
-			if ( ($width < $this->_imageInfo["w"]) && ($height < $this->_imageInfo["h"]) )
-			{
-				if (!$this->_imageTarget['upscale'])
-				{
-					$this->_imageTarget['w'] = $this->_imageInfo["w"];
-					$this->_imageTarget['h'] = $this->_imageInfo["h"];
-					return;
-				}
-			}
-
-
-			// special -> same ratio or mode croponly/stretch (2/3)
-			if ( ( $width / $height ) == ( $this->_imageInfo["w"] / $this->_imageInfo["h"] ) || $this->_imageTarget['mode'] > 1 )
-			{
-				$this->_imageTarget['w'] = $width;
-				$this->_imageTarget['h'] = $height;
-			}
-			else 
-			{
-				// compare target size ratio vs original size ratio
-				if ( ( $width / $height ) < ( $this->_imageInfo["w"] / $this->_imageInfo["h"] ) )
-					$_temp = 1;
-				else
-					$_temp = 0;
 	
-				// invert if fill
-				if ( $this->_imageTarget['mode'] )  $_temp = 1 - $_temp;
-	
-	
-				// set target size
-				if ( $_temp )
-				{
-					$this->_imageTarget['h'] = $height;
-					$this->_imageTarget['w'] = floor ( $this->_imageTarget['h'] * ( $this->_imageInfo["w"] / $this->_imageInfo["h"] ) );
-				}
-				else
-				{
-					$this->_imageTarget['w'] = $width;
-					$this->_imageTarget['h'] = floor ( $this->_imageTarget['w'] * ( $this->_imageInfo["h"] / $this->_imageInfo["w"] ) );
-				}
-			}
-		}
-		else if ( !empty ($width) )
-		{
-			$this->_imageTarget['w'] = $width;
-			$this->_imageTarget['h'] = round ( $this->_imageTarget['w'] * ( $this->_imageInfo["h"] / $this->_imageInfo["w"] ) );
-		}
-		else if ( !empty ($height) )
-		{
-			$this->_imageTarget['h'] = $height;
-			$this->_imageTarget['w'] = round ( $this->_imageTarget['h'] * ( $this->_imageInfo["w"] / $this->_imageInfo["h"] ) );
-		}
-	}
-
-
 
 	/*
 	 * build target filename
 	 */
-	private function _targetFileName ()
-	{
+	private function _targetFileName () {
 		// build hash on file path, modification time and mode
 		$this->_imageInfo['modified'] = filemtime ($this->_imageInfo['filepath']);
 		$this->_imageInfo['hash']     = md5 ( $this->_imageInfo['filename'] . $this->_imageInfo['modified'] . join($this->_imageTarget) );
@@ -424,27 +374,21 @@ class BeThumbHelper extends AppHelper {
 	/*
 	 * build target filepath
 	 */
-	private function _targetFilePath ()
-	{
+	private function _targetFilePath () {
 		// cached file is in the same folder as original
-		if ( $this->_imageTarget['filename']) 
-		{
-			if (!file_exists($this->_imageInfo['cacheDirectory']))
-			{
-				if (!mkdir($this->_imageInfo['cacheDirectory']))
-				{
+		if ( $this->_imageTarget['filename']) {
+			if (!file_exists($this->_imageInfo['cacheDirectory'])) {
+				if (!mkdir($this->_imageInfo['cacheDirectory'])) {
 					return false;
 				}
 			}
-			elseif (!is_dir($this->_imageInfo['cacheDirectory']))
-			{
+			elseif (!is_dir($this->_imageInfo['cacheDirectory'])) {
 				return false;
 			}
 			
 			return $this->_imageInfo['cacheDirectory'] . DS . $this->_imageTarget['filename'];
 		}
-		else
-		{
+		else {
 			return false;
 		}
 	}
@@ -454,8 +398,7 @@ class BeThumbHelper extends AppHelper {
 	/*
 	 * build target uri
 	 */
-	private function _targetUri ()
-	{
+	private function _targetUri () {
 		// set target image uri to resampled cached file (also urlencode filename here)
 		return $this->_conf['url'] . $this->_change_file_in_url ($this->_imageInfo['path'], rawurlencode($this->_imageTarget['filename']));
 	}
@@ -465,116 +408,22 @@ class BeThumbHelper extends AppHelper {
 	/*
 	 * verify existence of cached file, build and set target filename and filepath
 	 */
-	private function _testForCache ()
-	{
+	private function _testForCache () {
 		// if file exist (with same hash it's not been modified)
-		if ( file_exists ($this->_imageTarget['filepath']) )
-		{
+		if ( file_exists ($this->_imageTarget['filepath']) ) {
 			return true;
 		}
 		else return false;
 	}
 
 
-
-	/*
-	 * effectively call phpThumb class (vendor), resample image and cache file
-	 */
-	private function _resample ()
-	{
-		// import and instantiate phpThumb class from vendors
-		App::import ('Vendor', 'phpthumb', array ('file' => 'phpThumb' . DS . 'phpthumb.class.php') );
-		$thumbnail = new phpthumb;
-		$thumbnail->resetObject(); // important if calling the same object for multiple images
-
-
-		// set up phpThumb class parameters
-		$thumbnail->setSourceFilename( $this->_imageInfo['filepath'] );
-
-		$thumbnail->w   = $this->_imageTarget['w'];
-		$thumbnail->h   = $this->_imageTarget['h'];
-		$thumbnail->q   = $this->_conf['image']['thumbQ'];
-		$thumbnail->aoe = $this->_imageTarget['upscale'];
-		$thumbnail->config_output_format         = $this->_imageTarget['type'];
-		$thumbnail->config_temp_directory        = $this->_conf['tmp'] ;
-		$thumbnail->cache_filename               = $this->_imageTarget['filename'];
-		$thumbnail->config_cache_directory       = $this->_imageInfo['cacheDirectory'];
-		$thumbnail->config_error_die_on_error    = false;
-		$thumbnail->config_cache_disable_warning = true;
-		$thumbnail->config_prefer_imagemagick    = $this->_conf['image']['preferImagemagick'];
-		$thumbnail->config_imagemagick_path      = $this->_conf['image']['imagemagick'];
-
-		//$thumbnail->config_document_root         = $this->_conf['root'];
-		$thumbnail->config_allow_src_above_docroot = true; //important since bedita media are usually outside webroot
-
-
-		// more params about resample mode
-		switch ( $this->_imageTarget['mode'] )
-		{
-			// fill
-			case 1:
-				$thumbnail->far = $thumbnail->aoe;  // force aspect ratio
-				$thumbnail->iar = false; // ignore aspect ratio
-				$thumbnail->zc  = false; // zoom crop to center
-				$thumbnail->bg  = $this->_imageTarget['fillcolor']; // fill color
-				break;
-
-			// stretch
-			case 2:
-				$thumbnail->far = false;
-				$thumbnail->iar = true;
-				break;
-
-			// croponly
-			case 3:
-				list ($thumbnail->sx, $thumbnail->sy)  = $this->_getCropCoordinates ( $this->_imageInfo['w'], $this->_imageInfo['h'], $thumbnail->w, $thumbnail->h, $this->_imageTarget['cropmode'] );
-				$thumbnail->sw  = $thumbnail->w;
-				$thumbnail->sh  = $thumbnail->h;
-				$thumbnail->far = true;
-				$thumbnail->iar = false;
-				break;
-
-			// crop
-			case 0:
-			default:
-				$thumbnail->far = true;
-				$thumbnail->iar = true;
-				$thumbnail->zc  = "C"; // zoom crop to center
-				break;
-		}
-
-
-		// create image file and write to disk
-		if ( $thumbnail->GenerateThumbnail() )
-		{
-			if ( $thumbnail->RenderToFile ( $this->_imageTarget['filepath'] ) )
-				return true;
-			else
-			{
-				$this->_triggerError ($this->_helpername . ": phpThumb error:\n" . $thumbnail->fatalerror . "\n" . implode("\n---", $thumbnail->debugmessages) );
-				return false;
-			}
-		}
-		else
-		{
-			$this->_triggerError ($this->_helpername . ": phpThumb error:\n" . $thumbnail->fatalerror . "\n" . implode("\n---", $thumbnail->debugmessages) );
-			return false;
-		}
-	}
-	// end _resample
-
-
-
-
 	/*
 	 * calculate cropping coordinates (top, left)
 	 */
-	private function _getCropCoordinates ( $origW, $origH, $targetW, $targetH, $position )
-	{
+	private function _getCropCoordinates ( $origW, $origH, $targetW, $targetH, $position ) {
 		$coordinates = array ();
 
-		switch ($position)
-		{
+		switch ($position) {
 			case "TL":
 				$coordinates['x']  = 0;
 				$coordinates['y']  = 0;
@@ -631,8 +480,7 @@ class BeThumbHelper extends AppHelper {
 	/*
 	 * reset internal objects to empty defaults
 	 */
-	private function _resetObjects()
-	{
+	private function _resetObjects() {
 		$this->_imageInfo = array (
 									"filename"		=> "",
 									"path"			=> "", // path without file
@@ -670,8 +518,7 @@ class BeThumbHelper extends AppHelper {
 
 
 	// error reporting
-	private function _triggerError ($errorMsg) 
-	{
+	private function _triggerError ($errorMsg) {
 		// chiamare il dispatcher degli errori? chiedere a alb/ste
 		$this->log($errorMsg);
 		return;
@@ -679,16 +526,13 @@ class BeThumbHelper extends AppHelper {
 	
 	
 	
-
-
 	/**
 	 ** minor private functions
 	 */
 
 
 	// substitute file part only in a given url
-	private function _change_file_in_url ($url, $newfile)
-	{
+	private function _change_file_in_url ($url, $newfile) {
 		$_parsed = parse_url ($url);
 		$_parsedplus = $this->_parseURLplus ($url);
 	
@@ -710,8 +554,7 @@ class BeThumbHelper extends AppHelper {
 	
 	
 	// improved version of parse_url (returns also 'file' and 'dir')
-	private function _parseURLplus ($url)
-	{
+	private function _parseURLplus ($url) {
 		$URLpcs  = parse_url ($url);
 		$PathPcs = explode ("/", $URLpcs['path']);
 		$URLpcs['file'] = end ($PathPcs);
@@ -727,10 +570,8 @@ class BeThumbHelper extends AppHelper {
 	
 	
 	// case insensitive array search
-	private function _array_isearch ($str, $array)
-	{
-		foreach ($array as $k => $v)
-		{
+	private function _array_isearch ($str, $array) {
+		foreach ($array as $k => $v) {
 			if (strcasecmp ($str, $v) == 0) return $k;
 		}
 		return false;
