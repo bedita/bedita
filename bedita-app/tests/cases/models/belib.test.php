@@ -20,13 +20,11 @@
  */
 
 /**
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- *
- * @version			$Revision: 2487 $
- * @modifiedby 		$LastChangedBy: ste $
- * @lastmodified	$LastChangedDate: 2009-11-25 17:56:37 +0100 (mer, 25 nov 2009) $
- * 
- * $Id: event.test.php 2487 2009-11-25 16:56:37Z ste $
+ * $Id$
  */
 require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
