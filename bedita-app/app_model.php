@@ -90,42 +90,50 @@ class BEAppModel extends AppModel {
 	 * @param unknown_type $value
 	 * @return unknown
 	 */
-	public function getDefaultDateFormat($value = null) {
-		if(is_integer($value)) return date("Y-m-d", $value) ;
-		
+	public function getDefaultDateFormat($value = null, $throwOnError = false) {
+		if(is_integer($value)) {
+			return date("Y-m-d", $value) ;
+		}
+
+		$result = null;
 		if(is_string($value) && !empty($value)) {
-			// check if it's already in SQL format
-			$pattern = "/^[0-9]{4}-[0-9]{2}-[0-9]{2}$|^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/";
-			if (preg_match($pattern, $value)) {
-				return $value;
-			}
 			$conf = Configure::getInstance() ;			
 			$d_pos = strpos($conf->dateFormatValidation,'dd');
 			$m_pos = strpos($conf->dateFormatValidation,'mm');
 			$y_pos = strpos($conf->dateFormatValidation,'yyyy');
-			$formatvalue = substr($value, $y_pos, 4) . "-" . substr($value, $m_pos, 2) . "-" . substr($value, $d_pos, 2);
-			try {
-				$date = new DateTime($formatvalue);
-			} catch (Exception $ex) {
-				throw new BeditaException(__("Error parsing date. Wrong format", true), array("date" => $value));
+
+			$dateType = "little-endian"; // default dd/mm/yyyy
+			if($y_pos < $m_pos && $y_pos < $d_pos) {
+				$dateType = "big-endian"; // yyyy/mm/dd
+			} elseif ($m_pos < $d_pos) {
+				$dateType = "middle-endian"; // mm/dd/yyyy
 			}
-			return $formatvalue ;
+			try {
+				$result = BeLib::sqlDateFormat($value, $dateType);
+			} catch (Exception $ex) {
+				if($throwOnError) {
+					throw new BeditaException(__("Error parsing date. Wrong format", true), array("date" => $value));
+				} else {
+					$this->log("Date not recognized: " . $value . " - field left blank");				
+				}
+			}
 		}
 		
-		return null ;
+		return $result ;
 	}
 	
 	/**
 	 * Check date field in $this->data[ModelName][$key] -> set to null if empty or call getDefaultDateFormat
 	 *
 	 * @param string $key
+	 * @param bool $throwOnError, throw exception on error, default false
 	 */
-	protected function checkDate($key) {
+	protected function checkDate($key, $throwOnError = false) {
 		$data = &$this->data[$this->name];
 		if(empty($data[$key])) {
 			$data[$key] = null;
 		} else {
-			$data[$key] = $this->getDefaultDateFormat($data[$key]);
+			$data[$key] = $this->getDefaultDateFormat($data[$key], $throwOnError);
 		}
 	}
 
