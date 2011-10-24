@@ -570,9 +570,9 @@ class BEAppObjectModel extends BEAppModel {
 					$model->create(); 
 					$data 			 = &$this->data[$this->name][$name][$i] ;
 					$data[$foreignK] = $id ; 
-					if(!$model->save($data)) 
-						return false ;
-					
+					if(!$model->save($data)) {
+						throw new BeditaException(__("Error saving associated data", true), $data);
+					}
 				}
 			}
 		}
