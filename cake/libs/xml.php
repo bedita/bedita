@@ -206,7 +206,7 @@ class XmlNode extends Object {
 
 		if (isset($tagOpts['name'])) {
 			$name = $tagOpts['name'];
-		} elseif ($name != strtolower($name) && $options['slug'] !== false) {
+		} elseif ($name != strtolower($name) && !empty($options['slug']) && $options['slug'] !== false) {
 			$name = Inflector::slug(Inflector::underscore($name));
 		}
 
