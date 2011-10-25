@@ -383,7 +383,7 @@ class BeLib {
 			$pattern = "/^([0-9]{4})$/";
 			$match = array();
 			if (preg_match($pattern, $value, $match)) {
-				$d = $match[1];
+				$d = $match[1] . "-01-01";
 			}	
 		}
 
@@ -393,10 +393,10 @@ class BeLib {
 			if (preg_match($pattern, $value, $match)) {
 				$y = intval($match[1]);
 				$date = new DateTime();
-				// which year 08, 12, 18, 28 ??? - if near future add 2000, otherwise add 1900
-				$ylimit = intval($date->format("Y")) + 5;
-				$ys = strval($y + ((2000 + $y > $ylimit) ? 1900 : 2000));
-				$d = $ys . "-" . $date->format("m-d");				
+				// which year 08, 12, 18, 28 ??? - if earlier than current year add 2000, otherwise add 1900
+				$yNow = intval($date->format("Y"));
+				$ys = strval($y + ((2000 + $y > $yNow) ? 1900 : 2000));
+				$d = $ys . "-01-01";				
 			}
 		}
 
