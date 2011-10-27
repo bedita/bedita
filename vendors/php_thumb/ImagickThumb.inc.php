@@ -1,5 +1,11 @@
 <?php
 
+define('BASE_PATH', dirname(__FILE__));
+/**
+ * Include the PhImagick Class
+ */
+require_once BASE_PATH . '/phmagick/phmagick.php';
+
 /**
  * 
  * @package PhpThumb
@@ -60,6 +66,9 @@ class ImagickThumb extends ThumbBase
 	 */
 	protected $percent;
 	
+	protected $targetFile;
+	protected $targetType;
+	
 	/**
 	 * Class Constructor
 	 * 
@@ -71,9 +80,27 @@ class ImagickThumb extends ThumbBase
 
 		parent::__construct($fileName, $isDataStream);
 		$this->determineFormat();
-		$this->oldImage = new Imagick($fileName);
 		
-		//$this->setOptions($options);	
+		
+		/* TODO Compatibility COntrol
+		 * if ($this->isDataStream === false)
+		{
+			$this->verifyFormatCompatiblity();
+		}*/
+		
+		$this->oldImage = new phMagick($fileName);
+		$this->workingImage = new phMagick($fileName);
+		$this->workingImage->setImageQuality($this->options['jpegQuality']);
+		
+		list($w,$h) = $this->oldImage->getInfo($this->oldImage->getSource());
+		$this->currentDimensions = array
+		(
+			'width' 	=>$w,
+			'height'	=>$h
+		);
+		
+		$this->setOptions($options);
+			
 	}
 	
 	/**
@@ -111,11 +138,186 @@ class ImagickThumb extends ThumbBase
 	 */
 	public function resize ($maxWidth = 0, $maxHeight = 0)
 	{
-//echo imagick::INTERPOLATE_AVERAGE;
-//exit;
-		$this->oldImage->adaptiveResizeImage($maxWidth, $maxHeight);//, Imagick::FILTER_CATROM, 1);
+		
+		// make sure our arguments are valid
+		if (!is_numeric($maxWidth))
+		{
+			throw new InvalidArgumentException('$maxWidth must be numeric');
+		}
+		
+		if (!is_numeric($maxHeight))
+		{
+			throw new InvalidArgumentException('$maxHeight must be numeric');
+		}
+		
+		// make sure we're not exceeding our image size if we're not supposed to
+		if ($this->options['resizeUp'] === false) {
+			$this->maxHeight	= (intval($maxHeight) > $this->currentDimensions['height']) ? $this->currentDimensions['height'] : $maxHeight;
+			$this->maxWidth		= (intval($maxWidth) > $this->currentDimensions['width']) ? $this->currentDimensions['width'] : $maxWidth;
+		} else {
+			$this->maxHeight	= intval($maxHeight);
+			$this->maxWidth		= intval($maxWidth);
+		}
+		
+		$this->calcImageSize($this->currentDimensions['width'], $this->currentDimensions['height']);
+		
+		$this->workingImage->resize($this->newDimensions['newWidth'], $this->newDimensions['newHeight']); 
+		
+		
+		// update all the variables and resources to be correct
+		$this->oldImage 			= $this->workingImage;
+		$this->currentDimensions['width'] 	= $this->newDimensions['newWidth'];
+		$this->currentDimensions['height'] 	= $this->newDimensions['newHeight'];
+		
+		return $this;
+		
+	}
+	
+	/**
+	 * Adaptively Resizes the Image
+	 * 
+	 * This function attempts to get the image to as close to the provided dimensions as possible, and then crops the 
+	 * remaining overflow (from the center) to get the image to be the size specified
+	 * 
+	 * @param int $maxWidth
+	 * @param int $maxHeight
+	 * @return GdThumb
+	 */
+	public function adaptiveResize ($width, $height)
+	{
+		// make sure our arguments are valid
+		if (!is_numeric($width) || $width  == 0)
+		{
+			throw new InvalidArgumentException('$width must be numeric and greater than zero');
+		}
+		
+		if (!is_numeric($height) || $height == 0)
+		{
+			throw new InvalidArgumentException('$height must be numeric and greater than zero');
+		}
+		
+		
+		$this->workingImage->resizeExactly($width, $height); 
+		
+		
+		// update all the variables and resources to be correct
+		$this->oldImage 					= $this->workingImage;
+		$this->currentDimensions['width'] 	= $width;
+		$this->currentDimensions['height'] 	= $height;
+		
 		return $this;
 	}
+	
+    public function resizeFill($width, $height, $background ) {
+
+    	// make sure our arguments are valid
+		if (!is_numeric($width) || $width  == 0)
+		{
+			throw new InvalidArgumentException('$width must be numeric and greater than zero');
+		}
+		
+		if (!is_numeric($height) || $height == 0)
+		{
+			throw new InvalidArgumentException('$height must be numeric and greater than zero');
+		}
+		
+		
+		$this->workingImage->resizeExactlyNoCrop($width, $height, $background); 
+		
+		
+		// update all the variables and resources to be correct
+		$this->oldImage 					= $this->workingImage;
+		$this->currentDimensions['width'] 	= $width;
+		$this->currentDimensions['height'] 	= $height;
+		
+		return $this;
+
+    }
+    
+	public function resizeStretch($width, $height) 
+	{
+		    	// make sure our arguments are valid
+		if (!is_numeric($width) || $width  == 0)
+		{
+			throw new InvalidArgumentException('$width must be numeric and greater than zero');
+		}
+		
+		if (!is_numeric($height) || $height == 0)
+		{
+			throw new InvalidArgumentException('$height must be numeric and greater than zero');
+		}
+		
+		
+		$this->workingImage->resize($width, $height, TRUE); 
+		
+		
+		// update all the variables and resources to be correct
+		$this->oldImage 					= $this->workingImage;
+		$this->currentDimensions['width'] 	= $width;
+		$this->currentDimensions['height'] 	= $height;
+		
+		return $this;
+
+	}
+	
+	public function crop ($startX, $startY, $cropWidth, $cropHeight)
+	{
+		// validate input
+		if (!is_numeric($startX))
+		{
+			throw new InvalidArgumentException('$startX must be numeric');
+		}
+		
+		if (!is_numeric($startY))
+		{
+			throw new InvalidArgumentException('$startY must be numeric');
+		}
+		
+		if (!is_numeric($cropWidth))
+		{
+			throw new InvalidArgumentException('$cropWidth must be numeric');
+		}
+		
+		if (!is_numeric($cropHeight))
+		{
+			throw new InvalidArgumentException('$cropHeight must be numeric');
+		}
+		
+		// do some calculations
+		$cropWidth	= ($this->currentDimensions['width'] < $cropWidth) ? $this->currentDimensions['width'] : $cropWidth;
+		$cropHeight = ($this->currentDimensions['height'] < $cropHeight) ? $this->currentDimensions['height'] : $cropHeight;
+		
+		// ensure everything's in bounds
+		if (($startX + $cropWidth) > $this->currentDimensions['width'])
+		{
+			$startX = ($this->currentDimensions['width'] - $cropWidth);
+			
+		}
+		
+		if (($startY + $cropHeight) > $this->currentDimensions['height'])
+		{
+			$startY = ($this->currentDimensions['height'] - $cropHeight);
+		}
+		
+		if ($startX < 0) 
+		{
+			$startX = 0;
+		}
+		
+	    if ($startY < 0) 
+		{
+			$startY = 0;
+		}
+		
+		$this->workingImage->crop($cropWidth, $cropHeight, $startY, $startX, phMagickGravity::None); 
+		
+		$this->oldImage 					= $this->workingImage;
+		$this->currentDimensions['width'] 	= $cropWidth;
+		$this->currentDimensions['height'] 	= $cropHeight;
+		
+		return $this;
+	}
+	
 	
 	/**
 	 * Shows an image
@@ -212,5 +414,272 @@ class ImagickThumb extends ThumbBase
 				$this->triggerError('Image format not supported: ' . $mimeType);
 		}
 	}
+	
+	/**
+	 * Saves an image
+	 * for imagemagick is useless?
+	 * 
+	 */
+	public function save ($fileName, $format = null)
+	{
+		$validFormats = array('GIF', 'JPG', 'PNG');
+		$format = ($format !== null) ? strtoupper($format) : $this->format;
+		
+		if (!in_array($format, $validFormats))
+		{
+			throw new InvalidArgumentException ('Invalid format type specified in save function: ' . $format);
+		}
+		
+		// make sure the directory is writeable
+		if (!is_writeable(dirname($fileName)))
+		{
+			// try to correct the permissions
+			if ($this->options['correctPermissions'] === true)
+			{
+				@chmod(dirname($fileName), 0777);
+				
+				// throw an exception if not writeable
+				if (!is_writeable(dirname($fileName)))
+				{
+					throw new RuntimeException ('File is not writeable, and could not correct permissions: ' . $fileName);
+				}
+			}
+			// throw an exception if not writeable
+			else
+			{
+				throw new RuntimeException ('File not writeable: ' . $fileName);
+			}
+		}
+		
+		//Controllare l'estensione e nel caso convertire il file
+		
+		return $this;
+	}
+	
+	
+	
+	public function setDestination ($fileName, $format = null) {
+		$this->targetFile = $fileName;
+		$this->workingImage->setDestination($this->targetFile);
+		$this->targetType = $format;
+	}
+	
+	/**
+	 * Sets $this->options to $options
+	 * 
+	 * @param array $options
+	 */
+	public function setOptions ($options = array())
+	{
+		// make sure we've got an array for $this->options (could be null)
+		if (!is_array($this->options))
+		{
+			$this->options = array();
+		}
+		
+		// make sure we've gotten a proper argument
+		if (!is_array($options))
+		{
+			throw new InvalidArgumentException ('setOptions requires an array');
+		}
+		
+		// we've yet to init the default options, so create them here
+		if (sizeof($this->options) == 0)
+		{
+			$defaultOptions = array 
+			(
+				'resizeUp'			=> false,
+				'jpegQuality'			=> 100,
+				'correctPermissions'		=> false,
+				'preserveAlpha'			=> true,
+				'alphaMaskColor'		=> array (255, 255, 255),
+				'preserveTransparency'		=> true,
+				'transparencyMaskColor'		=> array (0, 0, 0)
+			);
+		}
+		// otherwise, let's use what we've got already
+		else
+		{
+			$defaultOptions = $this->options;
+		}
+		
+		$this->options = array_merge($defaultOptions, $options);
+	}
+	
+	
+	#################################
+	# ----- UTILITY FUNCTIONS ----- #
+	#################################
+	
+	/**
+	 * Calculates a new width and height for the image based on $this->maxWidth and the provided dimensions
+	 * 
+	 * @return array 
+	 * @param int $width
+	 * @param int $height
+	 */
+	protected function calcWidth ($width, $height)
+	{
+	
+		$newWidthPercentage	= (100 * $this->maxWidth) / $width;
+		$newHeight			= ($height * $newWidthPercentage) / 100;
+		
+		return array
+		(
+			'newWidth'	=> intval($this->maxWidth),
+			'newHeight'	=> intval($newHeight)
+		);
+	}
+	
+	/**
+	 * Calculates a new width and height for the image based on $this->maxWidth and the provided dimensions
+	 * 
+	 * @return array 
+	 * @param int $width
+	 * @param int $height
+	 */
+	protected function calcHeight ($width, $height)
+	{
+		
+		$newHeightPercentage	= (100 * $this->maxHeight) / $height;
+		$newWidth 				= ($width * $newHeightPercentage) / 100;
+		
+		return array
+		(
+			'newWidth'	=> ceil($newWidth),
+			'newHeight'	=> ceil($this->maxHeight)
+		);
+	}
+	
+	/**
+	 * Calculates a new width and height for the image based on $this->percent and the provided dimensions
+	 * 
+	 * @return array 
+	 * @param int $width
+	 * @param int $height
+	 */
+	protected function calcPercent ($width, $height)
+	{
+		$newWidth	= ($width * $this->percent) / 100;
+		$newHeight	= ($height * $this->percent) / 100;
+		
+		return array 
+		(
+			'newWidth'	=> ceil($newWidth),
+			'newHeight'	=> ceil($newHeight)
+		);
+	}
+	
+	/**
+	 * Calculates the new image dimensions
+	 * 
+	 * These calculations are based on both the provided dimensions and $this->maxWidth and $this->maxHeight
+	 * 
+	 * @param int $width
+	 * @param int $height
+	 */
+	protected function calcImageSize ($width, $height)
+	{
+		$newSize = array
+		(
+			'newWidth'	=> $width,
+			'newHeight'	=> $height
+		);
+		
+		if ($this->maxWidth > 0)
+		{
+			$newSize = $this->calcWidth($width, $height);
+			
+			if ($this->maxHeight > 0 && $newSize['newHeight'] > $this->maxHeight)
+			{
+				$newSize = $this->calcHeight($newSize['newWidth'], $newSize['newHeight']);
+			}
+		}
+		
+		if ($this->maxHeight > 0)
+		{
+			$newSize = $this->calcHeight($width, $height);
+			
+			if ($this->maxWidth > 0 && $newSize['newWidth'] > $this->maxWidth)
+			{
+				$newSize = $this->calcWidth($newSize['newWidth'], $newSize['newHeight']);
+			}
+		}
+		
+		$this->newDimensions = $newSize;
+	}
+	
+	/**
+	 * Calculates new image dimensions, not allowing the width and height to be less than either the max width or height 
+	 * 
+	 * @param int $width
+	 * @param int $height
+	 */
+	protected function calcImageSizeStrict ($width, $height)
+	{
+		// first, we need to determine what the longest resize dimension is..
+		if ($this->maxWidth >= $this->maxHeight)
+		{
+			// and determine the longest original dimension
+			if ($width > $height)
+			{
+				$newDimensions = $this->calcHeight($width, $height);
+				
+				if ($newDimensions['newWidth'] < $this->maxWidth)
+				{
+					$newDimensions = $this->calcWidth($width, $height);
+				}
+			}
+			elseif ($height >= $width)
+			{
+				$newDimensions = $this->calcWidth($width, $height);
+				
+				if ($newDimensions['newHeight'] < $this->maxHeight)
+				{
+					$newDimensions = $this->calcHeight($width, $height);
+				}
+			}
+		}
+		elseif ($this->maxHeight > $this->maxWidth)
+		{
+			if ($width >= $height)
+			{
+				$newDimensions = $this->calcWidth($width, $height);
+				
+				if ($newDimensions['newHeight'] < $this->maxHeight)
+				{
+					$newDimensions = $this->calcHeight($width, $height);
+				}
+			}
+			elseif ($height > $width)
+			{
+				$newDimensions = $this->calcHeight($width, $height);
+				
+				if ($newDimensions['newWidth'] < $this->maxWidth)
+				{
+					$newDimensions = $this->calcWidth($width, $height);
+				}
+			}
+		}
+		
+		$this->newDimensions = $newDimensions;
+	}
+	
+	/**
+	 * Calculates new dimensions based on $this->percent and the provided dimensions
+	 * 
+	 * @param int $width
+	 * @param int $height
+	 */
+	protected function calcImageSizePercent ($width, $height)
+	{
+		if ($this->percent > 0)
+		{
+			$this->newDimensions = $this->calcPercent($width, $height);
+		}
+	}
+	
+	
+	
 	
 }

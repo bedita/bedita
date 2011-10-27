@@ -1188,4 +1188,7 @@ class GdThumb extends ThumbBase
 			imagetruecolortopalette($this->workingImage, true, 256);
 		}
 	}
+	
+	//Fake for imageMagick
+	protected function setDestination () {}
 }

@@ -37,7 +37,7 @@ class BeThumbHelper extends AppHelper {
 		$this->_conf['tmp']   = Configure::read('tmp');
 		$this->_conf['imgMissingFile'] = Configure::read('imgMissingFile');
 	}
-
+	
 
 	/*
 	 * image public method: embed an image after resample and cache
@@ -280,12 +280,13 @@ class BeThumbHelper extends AppHelper {
 	private function _resample () {
 
 		App::import ('Vendor', 'phpthumb', array ('file' => 'php_thumb' . DS . 'ThumbLib.inc.php') );
-		$thumbnail = PhpThumbFactory::create($this->_imageInfo['filepath']);  
+		$thumbnail = PhpThumbFactory::create($this->_imageInfo['filepath'], $this->_conf['image']);  
 		
+		$thumbnail->setDestination ( $this->_imageTarget['filepath'], $this->_imageTarget['type'] );
 		
 		// more params about resample mode
 		switch ( $this->_imageTarget['mode'] ) {
-			// general crop
+			// croponly
 			case 0:
 				if ($this->_imageTarget['upscale']) {
 					$thumbnail->setOptions(array("resizeUp" => true));
@@ -294,7 +295,7 @@ class BeThumbHelper extends AppHelper {
 				$thumbnail->crop($starX, $startY, $this->_imageTarget['w'], $this->_imageTarget['h']);
 				
 				break;
-			//croponly: adaptive crop
+			//crop: adaptive crop
 			case 1:
 			default:
 				$thumbnail->setOptions(array("resizeUp" => true));
@@ -324,7 +325,6 @@ class BeThumbHelper extends AppHelper {
 		if ( $thumbnail->save ( $this->_imageTarget['filepath'], $this->_imageTarget['type'] ) ) {
 			return true;
 		}else {
-			pr("BBB");exit;
 			$this->_triggerError ($this->_helpername . ": phpThumb error:\n" . $thumbnail->fatalerror . "\n" . implode("\n---", $thumbnail->debugmessages) );
 			return false;
 		}
@@ -451,7 +451,7 @@ class BeThumbHelper extends AppHelper {
 
 			case "BL":
 				$coordinates['x']  = 0;
-				$coordinates['y']  = ($origH / 2) - ($targetH / 2);
+				$coordinates['y']  = $origH - $targetH;
 				break;
 
 			case "B":

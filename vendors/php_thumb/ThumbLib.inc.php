@@ -30,7 +30,7 @@
 // define some useful constants
 define('THUMBLIB_BASE_PATH', dirname(__FILE__));
 define('THUMBLIB_PLUGIN_PATH', THUMBLIB_BASE_PATH . '/thumb_plugins/');
-define('DEFAULT_THUMBLIB_IMPLEMENTATION', 'gd');
+define('DEFAULT_THUMBLIB_IMPLEMENTATION', 'imagick');
 
 /**
  * Include the PhpThumb Class
@@ -44,6 +44,11 @@ require_once THUMBLIB_BASE_PATH . '/ThumbBase.inc.php';
  * Include the GdThumb Class
  */
 require_once THUMBLIB_BASE_PATH . '/GdThumb.inc.php';
+
+/**
+ * Include the ImagickThumb Class
+ */
+require_once THUMBLIB_BASE_PATH . '/ImagickThumb.inc.php';
 
 /**
  * PhpThumbFactory Object
@@ -118,6 +123,13 @@ class PhpThumbFactory
 		$pt->loadPlugins(self::$pluginPath);
 		
 		$toReturn = null;
+		
+		if ($options['preferImagemagick']){
+			$defaultImplemenation = 'imagick';
+		}else {
+			$defaultImplemenation = 'gd';
+		}
+		
 		$implementation = self::$defaultImplemenation;
 		
 		// attempt to load the default implementation
