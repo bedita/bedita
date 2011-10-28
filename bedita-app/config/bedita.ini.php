@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2011 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -36,7 +36,7 @@ $config["projectName"] = "BEdita 3.1"; // override in bedita.cfg
 
 $config["userVersion"] = "BEdita 3.1"; // don't override
 
-$config["majorVersion"] = "3.1.3"; // don't override -- admin/system
+$config["majorVersion"] = "3.1.4"; // don't override -- admin/system
 
 $config["helpBaseUrl"] = "http://docs.bedita.com/behelp/v31"; // don't override --
 
