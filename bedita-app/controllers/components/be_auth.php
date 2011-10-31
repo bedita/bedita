@@ -315,8 +315,13 @@ class BeAuthComponent extends Object {
 		if (!empty($userData['User']['passwd'])) {
 			$userData['User']['passwd'] = md5($userData['User']['passwd']);
 		}
-		if(!$user->save($userData))
+		$user->create();
+		if(!$user->save($userData)) {
 			throw new BeditaException(__("Error saving user",true), $user->validationErrors);
+		}
+		if ($notify) {
+			$user->Behaviors->detach('Notify');
+		}
 		return $user->id;
 	}
 	

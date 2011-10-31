@@ -56,12 +56,15 @@ class BeAuthTestCase extends BeditaTestCase {
     }
     
 	function testLogin() {
-		$this->requiredData(array("new.user","policy","new.user.groups","new.group"));
+		$this->requiredData(array("new.user", "new.userWithEmail","new.userWithEmptyEmail", "new.userWithEmailPresent", "policy","new.user.groups","new.group"));
 		$beAuth = new BeAuthComponent();
 		$this->removeIfPresent($this->data['new.user'], $this->data['new.group']);
+		$this->removeIfPresent($this->data['new.userWithEmail'], $this->data['new.group']);
+		$this->removeIfPresent($this->data['new.userWithEmptyEmail'], $this->data['new.group']);
 		$id = $beAuth->saveGroup($this->data['new.group']);
 		$this->assertTrue(!empty($id));
 		$this->assertTrue($beAuth->createUser($this->data['new.user'], $this->data['new.user.groups']));
+		
 
 		$group = ClassRegistry::init('Group');
 		$group->id = $id;
@@ -72,6 +75,18 @@ class BeAuthTestCase extends BeditaTestCase {
 		
 		$this->assertTrue($beAuth->removeUser($this->data['new.user']['User']['userid']));
 		$this->assertTrue($beAuth->removeGroup($this->data['new.group']['Group']['name']));
+		
+		// create user with empty email field
+		$this->assertTrue($beAuth->createUser($this->data['new.userWithEmptyEmail'], $this->data['new.user.groups']));
+		// create user with email (disable notification)
+		$this->assertTrue($beAuth->createUser($this->data['new.userWithEmail'], $this->data['new.user.groups'], false));
+		
+		$this->expectException("BeditaException");
+		$beAuth->createUser($this->data['new.userWithEmailPresent'], $this->data['new.user.groups'], false);
+		
+		$this->assertTrue($beAuth->removeUser($this->data['new.userWithEmptyEmail']['User']['userid']));
+		$this->assertTrue($beAuth->removeUser($this->data['new.userWithEmail']['User']['userid']));
+		
 	}
 
 	

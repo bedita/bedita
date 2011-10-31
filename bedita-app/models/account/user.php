@@ -188,7 +188,7 @@ class User extends BEAppModel
 	}
 	
 	function beforeSave() {
-		if (isset($this->data["User"]["email"]) && empty($this->data["User"]["email"])) {
+		if (empty($this->data["User"]["email"])) {
 			$this->data["User"]["email"] = null;
 		} else {
 			$conditions = array("email" => $this->data["User"]["email"]);
@@ -200,6 +200,7 @@ class User extends BEAppModel
 				throw new BeditaException(__("Email already in use", true) . ": " . $email);
 			}
 		}
+		
 		if (!empty($this->data["User"]["auth_params"]) && is_array($this->data["User"]["auth_params"])) {
 			$this->data["User"]["auth_params"] = serialize($this->data["User"]["auth_params"]);
 		} elseif (!empty($this->data["User"][0])) {
