@@ -56,7 +56,6 @@ class BelibTestCase extends BeditaTestCase {
 		
 		// year
 		$date = new DateTime();
-		$mmdd = $date->format("m-d");
 		$year = $date->format("Y");
 		
 		$expect = $year . "-" .  $this->data["m-d"];
@@ -76,6 +75,8 @@ class BelibTestCase extends BeditaTestCase {
 		
 		// year
 		$count = 0;
+		$mmdd = "01-01";
+//		$mmdd = $date->format("m-d");
 		foreach ($this->data['year'] as $d) {
 			$result = BeLib::sqlDateFormat($d);
 			pr($d . " -- " . $result);
