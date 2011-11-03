@@ -110,15 +110,15 @@ $config['media']['image']['thumbFill']   = "FFFFFF"; // hex - fill color when th
 $config['media']['image']['background']	 = "FFFFFF"; // hex - background color 
 $config['media']['image']['thumbCrop']   = "C";      // string, crop mode when thumb mode is crop/croponly 'C', 'T', 'B', 'L', 'R', 'TL', 'TR', 'BL', 'BR'
 $config['media']['image']['thumbQ']      = 75;       // int, JPEG thumbnail image quality [1-100]
-$config['media']['image']['thumbUpscale']= false;     // bool, allow thumbnail upscale
-$config['media']['image']['preferImagemagick'] = true;       // bool, use image_magick or not (even if available)
+$config['media']['image']['thumbUpscale']= true;     // bool, allow thumbnail upscale
+$config['media']['image']['preferImagemagick'] = true;   // bool, use image_magick or not (even if available)
 $config['media']['image']['imagemagick'] = "";       // string, path to image_magick executable
 $config['media']['image']['over']        = "";       // string, path to overlay image
 $config['media']['image']['wmi'] 	 	 = false;    // enabel image watermaks on all images
 $config['media']['image']['wmi']['f']    = "";       // string, path to watermark image file
 $config['media']['image']['wmi']['a']    = "C";      // string, wm alignment B=bottom, T=top, L=left, R=right, C=centre, *=tile, 2 letters ie TL, or absolute position in px
 $config['media']['image']['wmi']['o']    = 100;      // int, wm opacity 0 (transparent) to 100 (opaque)
-$config['media']['image']['cache']  	 = false;     // image caching
+$config['media']['image']['cache']  	 = true;    // image caching
 
  
 $config['media']['video']['width']       = 300;      // px video player width
