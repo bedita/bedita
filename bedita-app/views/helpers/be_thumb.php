@@ -45,15 +45,17 @@ class BeThumbHelper extends AppHelper {
 	 * params: be_obj, required, object, BEdita Multimedia Object
 	 *         width, height, longside, at least one required, integer (if longside, w&h are ignored)
 	 *         
-	 *         mode, optional: crop, croponly, resize
+	 *         mode, optional: [crop, croponly, resize] if not specified default bedita.ini.php (['image']['thumbMode']) is used.
 	 *         
 	 *         modeparam, optional, depends on mode:
 	 *             if resize: 'fill' or 'stretch', if empty do simple resize.
 	 *             if crop, a string describing crop zone 'C', 'T', 'B', 'L', 'R', 'TL', 'TR', 'BL', 'BR'
 	 *             
+	 *         if only width or only height is specified, the mode and modeparam are ignored and forced to resize.    
+	 *             
 	 *         cache, optional:		allow the caching of images, default in bedita.ini
-	 *         bgcolor, optional: 	string representing hex color, ie 'FFFFFF' for the background (show only on resize mode -> fill)
-	 *         upscale, optional: 	bool, allow or not upscale (only in general crop and resize->stretch)
+	 *         bgcolor, optional: 	string representing hex color, i.e. 'FFFFFF' for the background (show only on resize mode -> fill)
+	 *         upscale, optional: 	bool, allow or not upscale default bedita.ini.php (['image']['thumbUpscale'])
 	 *         type, optional: 		'gif'/'png'/'jpg', force image target type
 	 *         watermark, optional: watermark?
 	 *         
@@ -84,18 +86,6 @@ class BeThumbHelper extends AppHelper {
 			extract ($params);
 		}
 		
-		/*else
-		{
-			$argList = func_get_args() ;
-			array_shift($argList);
-		    for ($i = 0; $i < sizeof($expectedArgs); $i++)
-			{
-		        if ( isset($argList[$i]) )
-					$$expectedArgs[$i] = $argList[$i];
-		    }
-		}*/
-
-
 		// filepath & name
 		$this->_imageInfo['path']		= $be_obj['uri'];
 		$this->_imageInfo['filename']	= $be_obj['name'];
@@ -128,56 +118,13 @@ class BeThumbHelper extends AppHelper {
 		if ( isset ($bgcolor) )	$this->_imageTarget['fillcolor'] = $bgcolor;
 		else					$this->_imageTarget['fillcolor'] = $this->_conf['image']['background'];
 		
-		
 		// cropmode
 		$this->_imageTarget['cropmode'] = $this->_conf['image']['thumbCrop'];
 
-		// upscale, mode & fill
+		// default mode, if not specified
 		if ( !isset ($mode) ) $mode = $this->_conf['image']['thumbMode'];
-		switch ($mode) {
-			
-			case "croponly":  //general crop
-			default:
-				$this->_imageTarget['mode'] = 0;
-				if ( isset ($modeparam) ) {	
-					$this->_imageTarget['cropmode'] = $modeparam; // overwrite crop mode
-				}
-				break;
-			
-			case "crop": //adaptive crop
-				$this->_imageTarget['mode'] = 1;
-				//if ( isset ($modeparam) )	$this->_imageTarget['cropmode'] = $modeparam; // overwrite crop mode
-				break;
-			
-			case "resize":
-			default:
-				$this->_imageTarget['mode'] = 2;
-				if ( isset ($modeparam) ) {	
-					$this->_imageTarget['resizetype'] = $modeparam;
-				}
-				
-				break;
-			
-			// legacy methods
-			case "fill":
-				$this->_imageTarget['mode'] = 2;
-				
-				if (empty($longside)) {
-					$this->_imageTarget['resizetype'] = 'fill';
-					if ( isset ($modeparam) )	$this->_imageTarget['fillcolor'] = $modeparam;
-					else						$this->_imageTarget['fillcolor'] = $this->_conf['image']['thumbFill'];
-				}
-				
-				break;
-			
-			case "stretch":
-				$this->_imageTarget['mode'] = 2;
-				$this->_imageTarget['resizetype'] = 'stretch';
-				break;
-		}
-
-
-
+		
+		
 		// build _image_info with getimagesize() or available parameters
 		if ( empty($be_obj['width']) || empty($be_obj['height']) ) {
 			
@@ -224,25 +171,75 @@ class BeThumbHelper extends AppHelper {
 		if ( empty($width) && empty($height) && !isset($longside) ) {
 			$width  = $this->_conf['image']['thumbWidth'];
 			$height = $this->_conf['image']['thumbHeight'];
-		}
-		else if ( !empty($longside) ) {
+			
+		}else if ( !empty($longside) && is_numeric($longside) ) { // 
 			if ($this->_imageInfo["w"] > $this->_imageInfo["h"]) {
 				$width  = $longside; 
 				$height = 0;
-			}
-			else {
+			}else {
 				$width  = 0;
 				$height = $longside;
 			}
+		}else { // set the one missing
+			if ( empty($width) ){  
+				$width  = 0;
+			}
+			if ( empty($height) ){ 
+				$height = 0;
+			}
 		}
-		else {
-			// set the one missing
-			if ( empty($width) )  $width  = 0;
-			if ( empty($height) ) $height = 0;
+		
+		if ( !is_numeric($width) || !is_numeric($height)) {
+			//forcing the mode to "resize" if one coordinate is empty
+			$mode = "resize";
+			$modeparam = null;
 		}
+		
 		$this->_imageTarget['w'] = $width;
 		$this->_imageTarget['h'] = $height;
+		
+		//Set the embed mode
+		switch ($mode) {	
+			case "croponly":  //general crop
 
+				$this->_imageTarget['mode'] = 0;
+				if ( isset ($modeparam) ) {	
+					$this->_imageTarget['cropmode'] = $modeparam; // overwrite crop mode
+				}
+				break;
+			
+			case "crop": //adaptive crop
+				$this->_imageTarget['mode'] = 1;
+				//if ( isset ($modeparam) )	$this->_imageTarget['cropmode'] = $modeparam; // overwrite crop mode
+				break;
+			
+			case "resize":
+			default:
+				$this->_imageTarget['mode'] = 2;
+				if ( isset ($modeparam) ) {	
+					$this->_imageTarget['resizetype'] = $modeparam;
+				}
+				
+				break;
+			
+			// legacy methods
+			case "fill":
+				$this->_imageTarget['mode'] = 2;
+				
+				if (empty($longside)) {
+					$this->_imageTarget['resizetype'] = 'fill';
+					if ( isset ($modeparam) )	$this->_imageTarget['fillcolor'] = $modeparam;
+					else						$this->_imageTarget['fillcolor'] = $this->_conf['image']['thumbFill'];
+				}
+				
+				break;
+			
+			case "stretch":
+				$this->_imageTarget['mode'] = 2;
+				$this->_imageTarget['resizetype'] = 'stretch';
+				break;
+		}
+		
 		// target filename, filepath, uri
 		$this->_imageTarget['filename'] = $this->_targetFileName ();
 		$this->_imageTarget['filepath'] = $this->_targetFilePath ();
@@ -284,13 +281,15 @@ class BeThumbHelper extends AppHelper {
 		
 		$thumbnail->setDestination ( $this->_imageTarget['filepath'], $this->_imageTarget['type'] );
 		
+		//set upscale  
+		if ($this->_imageTarget['upscale']) {
+			$thumbnail->setOptions(array("resizeUp" => true));
+		}
+		
 		// more params about resample mode
 		switch ( $this->_imageTarget['mode'] ) {
 			// croponly
 			case 0:
-				if ($this->_imageTarget['upscale']) {
-					$thumbnail->setOptions(array("resizeUp" => true));
-				}
 				list ($starX, $startY)  = $this->_getCropCoordinates ( $this->_imageInfo['w'], $this->_imageInfo['h'],$this->_imageTarget['w'], $this->_imageTarget['h'], $this->_imageTarget['cropmode'] );
 				$thumbnail->crop($starX, $startY, $this->_imageTarget['w'], $this->_imageTarget['h']);
 				
@@ -298,7 +297,6 @@ class BeThumbHelper extends AppHelper {
 			//crop: adaptive crop
 			case 1:
 			default:
-				$thumbnail->setOptions(array("resizeUp" => true));
 				$thumbnail->adaptiveResize($this->_imageTarget['w'], $this->_imageTarget['h']);
 				break;
 			
@@ -319,7 +317,6 @@ class BeThumbHelper extends AppHelper {
 				}
 				break;
 				
-			
 		}
 		
 		if ( $thumbnail->save ( $this->_imageTarget['filepath'], $this->_imageTarget['type'] ) ) {
