@@ -30,7 +30,7 @@
 // define some useful constants
 define('THUMBLIB_BASE_PATH', dirname(__FILE__));
 define('THUMBLIB_PLUGIN_PATH', THUMBLIB_BASE_PATH . '/thumb_plugins/');
-define('DEFAULT_THUMBLIB_IMPLEMENTATION', 'imagick');
+define('DEFAULT_THUMBLIB_IMPLEMENTATION', 'gd');
 
 /**
  * Include the PhpThumb Class
@@ -125,17 +125,16 @@ class PhpThumbFactory
 		$toReturn = null;
 		
 		if ($options['preferImagemagick']){
-			$defaultImplemenation = 'imagick';
+			$implementation = 'imagick';
 		}else {
-			$defaultImplemenation = 'gd';
+			$implementation = self::$defaultImplemenation;
 		}
 		
-		$implementation = self::$defaultImplemenation;
 		
 		// attempt to load the default implementation
-		if ($pt->isValidImplementation(self::$defaultImplemenation))
+		if ($pt->isValidImplementation($implementation))
 		{
-			$imp = $implementationMap[self::$defaultImplemenation];
+			$imp = $implementationMap[$implementation];
 			$toReturn = new $imp($filename, $options, $isDataStream);
 		}
 		// load the gd implementation if default failed
