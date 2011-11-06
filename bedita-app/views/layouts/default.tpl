@@ -1,7 +1,8 @@
-{agent var="agent"}{$html->docType('xhtml-trans')}
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">
+{agent var="agent"}
+<!DOCTYPE html>
+<html lang="it">
 <head>
-	<title>BEdita | {$currentModule.label|default:'home'} | {$html->action}</title>
+	<title>BEdita | {$currentModule.label|default:'home'} | {$html->action} | {if !empty($object)}{$object.title|default:"<i>[no title]</i>"}{/if}</title>
 
 	{if $agent.iPHONE or $agent.iPAD}
 		

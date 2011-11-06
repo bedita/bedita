@@ -1,5 +1,5 @@
-{agent var="agent"}{$html->docType('xhtml-trans')}
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">
+<!DOCTYPE html>
+<html lang="it">
 <head>
 	<title>BEdita | {$title_for_layout} | {$html->action}</title>
 	{include file="inc/meta.tpl"}

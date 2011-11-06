@@ -176,7 +176,7 @@ $(document).ready(function(){
 
 ...........................................*/
 
-	$(".modulesmenu li").mouseover(function (e) {		
+	$(".modulesmenu a").mouseover(function (e) {		
 
 		var rightpos = e.clientX;	
 
@@ -195,8 +195,8 @@ $(document).ready(function(){
 		$(".modulesmenucaption A").text("be");		
 
 	}).click(function () {
-		if ($(this).attr("rel")) {
-			window.location = ($(this).attr("rel"));
+		if ($(this).attr("href")) {
+			window.location = ($(this).attr("href"));
 		}
 	});
 		

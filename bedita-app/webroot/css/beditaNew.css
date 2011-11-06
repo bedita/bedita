@@ -51,7 +51,7 @@ q:before,q:after {
 abbr,acronym { border:0;
 }
 
-
+article, aside, figure, footer, header, hgroup, nav, section {display: block;}
 
 /*...........................................    
 
@@ -483,7 +483,7 @@ UL.modules {
 
 ...........................................*/
 
-UL.modulesmenu {
+NAV.modulesmenu {
 	top:0px;
 	margin-right:10px; 
 	width:685px;
@@ -492,7 +492,7 @@ UL.modulesmenu {
 	padding:20px 0px 10px 0px;
 }
 
-.modulesmenu LI {
+.modulesmenu A {
 	height:25px; width:15px;
 	float:right; margin-left:0px;
 	cursor:pointer;
