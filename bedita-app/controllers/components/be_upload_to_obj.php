@@ -55,6 +55,12 @@ class BeUploadToObjComponent extends Object {
 		} else {
 			$data = $this->params['form'][$formFileName];
 		}
+		$tmp = $this->BeFileHandler->splitFilename($data['name']);
+		if(!empty($tmp[1])) {
+			$data['name'] = BeLib::getInstance()->friendlyUrlString($tmp[0]) . '.' . $tmp[1];
+		} else {
+			$data['name'] = BeLib::getInstance()->friendlyUrlString($tmp[0]);
+		}
 		$data['mime_type'] = $this->BeFileHandler->getMimeType($data);
 		unset($data['type']);
 		$data['file_size'] = $this->params['form'][$formFileName]['size'];
@@ -186,6 +192,5 @@ class BeUploadToObjComponent extends Object {
 		}
 		return $thumbnail;
 	}
-		
 }
 ?>
