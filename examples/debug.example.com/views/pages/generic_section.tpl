@@ -60,7 +60,7 @@
 <a href="javascript:void(0)" class="open-close-link">{t}show/hide{/t}</a>
 <div style="display: none">
 <ol>
-{foreach from=$view->_smarty->_tpl_vars key="tplK" item="tplV"}
+{foreach from=$view->viewVars key="tplK" item="tplV"}
 <li> ${$tplK} - <em>{$tplV|get_type}</em> </li>
 {/foreach}
 </ol>
