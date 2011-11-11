@@ -55,6 +55,7 @@ class BeUploadToObjComponent extends Object {
 		} else {
 			$data = $this->params['form'][$formFileName];
 		}
+		$data['original_name'] = $data['name'];
 		$tmp = $this->BeFileHandler->splitFilename($data['name']);
 		if(!empty($tmp[1])) {
 			$data['name'] = BeLib::getInstance()->friendlyUrlString($tmp[0]) . '.' . $tmp[1];
@@ -73,7 +74,7 @@ class BeUploadToObjComponent extends Object {
 		$override = (isset($this->params['form']['override'])) ? ((boolean)$this->params['form']['override']) : false ;
 
 		if (empty($data['title']))
-			$data['title'] = $data['name'];
+			$data['title'] = $data['original_name'];
 
 		$data['uri']	= $data['tmp_name'] ;
 
