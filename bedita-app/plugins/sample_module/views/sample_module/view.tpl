@@ -1,9 +1,10 @@
 {*
 ** default view template
 *}
-{$html->css("ui.datepicker", null, null, false)}
+{assign_associative var="params" inline="false"}
+{$html->css("ui.datepicker", null, $params)}
 {$html->script("jquery/jquery.form", false)}
-{$html->script("jquery/jquery.treeview", false)}
+{$html->script("jquery/treeview/jquery.treeview", false)}
 {$html->script("jquery/jquery.selectboxes.pack", false)}
 {$html->script("jquery/ui/jquery.ui.sortable", true)}
 {$html->script("jquery/ui/jquery.ui.datepicker", false)}

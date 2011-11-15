@@ -1,7 +1,7 @@
 {*
 ** general form for content object type (i.e. document, short_news, ...)
 *}
-{assign_concat var="formUrl" 0="/" 1=$currentModule.url 2="/save"}
+{assign_concat var="formUrl" 1="/" 2=$currentModule.url 3="/save"}
 <form action="{$html->url($formUrl)}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
