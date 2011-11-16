@@ -3,32 +3,67 @@
                           A Quick Howto
                ======================================
 
+@version			$Revision$
+@modifiedby 		$LastChangedBy$
+@lastmodified		$LastChangedDate$
+
 $Id$
 
-BEdita is in strong and constant development and does not have a stable version yet, 
-altough the alpha version is pretty usable. There is not an automatic setup/install procedure 
-with a graphical user interface, but you have to follow some easy steps.
-Before installing BEdita
+BEdita is in constant development. there is not a graphical user interface for install
+procedure. Anyway, as long as you have access to the command line shell, it is quite
+simple. Instructions follow.
 
-First it is necessary that some preliminary requirements are satisfied. 
+
+
+MINIMUM REQUIREMENTS
+
+This requirements should be satisfied. 
 You will need a system with:
 
     * PHP 5.2 or newer with modules gd, mbstring, gettext (recommended)
     * MySQL 5.0.26 or newr version
     * Apache 2
-    * shell access
+    * access to the command line shell
 
-That's it: all third party libraries needed by BEdita are bundled in the source package.
-Download BEdita package
+All third party libraries needed by BEdita are bundled in the source package.
 
-If your system does support the requirements listed above you can download the package. 
-This package contains everything you need to setup and use BEdita.
 
-In particular you will find inside, the real BEdita application (bedita-app directory), 
-the SQL scripts needed to create tables/views (bedita-db dir), 
-the CakePHP framework (cake folder), the template engine Smarty (vendors/smarty dir) 
-and the phpThumb library (vendors/phpThumb dir).
-Intallation
+
+DOWNLOAD BEdita package
+
+You may download the latest stable release at
+http://www.bedita.com/download
+
+NB: Unstable releases are also available but not covered by this document. 
+
+
+
+WHAT IS IN THE PACKAGE
+
+The package contains everything needed to install BEdita.
+
+Once exapanded, you will find a bunch of files in the root folder: between others,
+INSTALL is this setup guide, LICENSE.AGPL contains the AGPL license under which
+BEdita open is relased, CHANGES is a log of latest CHANGES.
+
+You will also find the following folders:
+
+- bedita-app
+  is the main BEdita is the core application, deployed as a CakePHP application.
+
+- bedita-db
+  SQL scripts that are needed to initialize the SQL database.
+
+- cake
+  contains the CakePHP framework: please do not manually upgrade CakePHP, since the
+  version bundled is the only one tested with current BEdita application.
+  
+- vendors
+  third party libraries, like Smarty template engine and phpThumb for image processing.
+  
+
+
+INSTALL
 
 Now we can proceed to the real setup! Just copy the bedita directory (the content of the 
 compressed source package) in a directory served by the web server. Now you have just two 

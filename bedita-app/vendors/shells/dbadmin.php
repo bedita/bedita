@@ -53,17 +53,22 @@ class DbadminShell extends BeditaBaseShell {
 		foreach ($res as $r) {
 			$id = $r['BEObject']['id'];
 			$type = $beObj->getType($id);
-			$model = ClassRegistry::init($type);
-			$model->{$model->primaryKey}=$id;
-			$this->out("id: $id - type: $type");
-			$searchText->deleteAll("object_id=".$id);
-			try {
-				$searchText->createSearchText($model);
-			} catch (BeditaException $ex) {
-				$this->out("ERROR: " . $ex->getMessage());
-				$this->out("Probably there is an inconsistency in the tables that involve object with id " . $id);
-				$this->out("");
-				$failed[] = array("id" => $id, "error" => $ex->getMessage());
+			if(empty($type)) {
+				$this->out("Object type not found for object id ". $id);
+			} else {
+				$model = ClassRegistry::init($type);
+				
+				$model->{$model->primaryKey}=$id;
+				$this->out("id: $id - type: $type");
+				$searchText->deleteAll("object_id=".$id);
+				try {
+					$searchText->createSearchText($model);
+				} catch (BeditaException $ex) {
+					$this->out("ERROR: " . $ex->getMessage());
+					$this->out("Probably there is an inconsistency in the tables that involve object with id " . $id);
+					$this->out("");
+					$failed[] = array("id" => $id, "error" => $ex->getMessage());
+				}
 			}
 		}
 		// lang texts

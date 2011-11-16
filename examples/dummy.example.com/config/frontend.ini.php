@@ -105,35 +105,20 @@ $config['frontendLangsMap'] = array(
 	"en-us"	=> "eng",
 	"en_gb"	=> "eng"
 ) ;
-								
 
 /**
  * show all contents in sitemap. If it's false show only sections' tree
  */ 
 $config['sitemapAllContent'] = true;
 
-
 /**
- * default model bindings for BEdita objects
+ * custom model bindings for BEdita objects (defaults defined in Model of BEdita object)
  */
-$config['modelBindings'] = array(
-
-	'Area' => array("BEObject" => array("LangText")),
-	'Application' => array("BEObject" => array("LangText"), "Content", "Stream"),
-	'Audio' => array("BEObject" => array("LangText"), "Content"),
-	'BEFile' => array("BEObject" => array("LangText"), "Content"),
-	'Card' => array("BEObject" => array("LangText","RelatedObject"), "GeoTag"),
-	'Comment' => array("BEObject" => array("RelatedObject"), "GeoTag"),
-	'Document' => array("BEObject" => array("LangText", "UserCreated","RelatedObject", "Category", "Annotation"), "GeoTag"),
-	'Event' => array("BEObject" => array("LangText", "UserCreated", "RelatedObject", "Category", "Annotation"), "DateItem", "GeoTag"),
-	'Gallery' => array("BEObject" => array("LangText", "UserCreated", "RelatedObject", "Category", "Annotation")),
-	'Image' => array("BEObject" => array("LangText"), "Content", "Stream"),
-	'Link' => array("BEObject" => array("LangText","RelatedObject")),
-	'Section' => array("BEObject" => array("LangText"), "Tree"),
-	'ShortNews' => array("BEObject" => array("LangText", "UserCreated", "RelatedObject", "Category")),
-	'Video' => array("BEObject" => array("LangText"), "Content", "Stream"),
-
-) ;
+//$config['modelBindings'] = array(
+	//'Document' => array("BEObject" => array("LangText","RelatedObject"), "GeoTag"),
+	//'Event' => ...
+	//...
+//);
 
 /**
  * frontend cookie names 

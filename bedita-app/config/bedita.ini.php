@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2011 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -272,7 +272,7 @@ $config["cfgOneWayRelation"] = array();
 $config["defaultReservedWords"] = array("section", "content", "rss", "feed", "georss", "georssatom", "kml",
 	"download", "xml", "xmlobject", "sitemap", "sitemap.xml", "sitemap_xml", "files",
 	"json", "captchaImage", "saveComment", "search", "tag", "category", "login", "logout", "js",
-	"hashjob", "subscribe", "printme", "homePage", "img", "css", "files", 
+	"hashjob", "subscribe", "printme", "homePage", "img", "css", "files", "swf", "webroot",
 	"lang", "favicon.ico", "favicon.gif");
 
 // Cfg reserved words (override in bedita.cfg)

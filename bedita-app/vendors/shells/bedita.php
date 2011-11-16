@@ -1,3 +1,4 @@
+
 <?php 
 /*-----8<--------------------------------------------------------------------
  * 
@@ -446,6 +447,7 @@ class BeditaShell extends BeditaBaseShell {
         // check db
 		$this->out("checkMedia - checking database");
         $allStream = $stream->find("all");
+		$mediaRoot = Configure::read("mediaRoot");
 		$mediaOk = true;
         foreach ($allStream as $v) {
         	$p = $v['Stream']['uri'];

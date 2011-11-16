@@ -49,7 +49,9 @@ class Section extends BeditaCollectionModel
        			"default" => array("BEObject" => array("ObjectProperty", 
 									"LangText", "ObjectType")),
 
-				"minimum" => array("BEObject" => array("ObjectType"))		
+				"minimum" => array("BEObject" => array("ObjectType")),
+		
+				"frontend" => array("BEObject" => array("LangText"), "Tree")
 		);
 	
 	var $validate = array(

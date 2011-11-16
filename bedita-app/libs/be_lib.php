@@ -267,6 +267,148 @@ class BeLib {
 		
 		return $data;
 	}
+	
+	
+	/**
+	 * return values of multidimensional array
+	 *
+	 * @param array $array
+	 * @param boolean $addStringKeys if it's true add string keys to the returned array
+	 * @return array 
+	 */
+	public function arrayValues(array $array, $addStringKeys = false) {
+		$values = array();
+		array_walk_recursive($array , array($this, "arrayValuesCallback"), &$values);
+		if ($addStringKeys) {
+			$keys = $this->arrayKeys($array);
+			$values = array_merge($values, $keys);
+		}
+		return $values;
+	}
+	
+	/**
+	 * callback method used from BeLib::arrayValues
+	 * 
+	 * @param mixed $item
+	 * @param mixed $key
+	 * @param array $values 
+	 */
+	static private function arrayValuesCallback($item, $key, $values) {
+		$values[] = $item;
+	}
+	
+	/**
+	 * return keys of multidimensional array
+	 * 
+	 * @param array $ar
+	 * @param boolean $stringKeys if it's true add string keys to the returned array
+	 * @return array 
+	 */
+	public function arrayKeys(array $ar, $stringKeys = true) {
+		$keys = array();
+		foreach($ar as $k => $v) {
+			if (!$stringKeys || ($stringKeys && is_string($k))) { 
+				$keys[] = $k;
+			}
+			if (is_array($ar[$k])) {
+				$keys = array_merge($keys, $this->arrayKeys($ar[$k], $stringKeys));
+			}
+		}
+		return $keys;
+	} 
+
+	/**
+	 * Transform any numeric date in SQL date/datetime string format
+	 * Date types accepted: "little-endian"/"middle-endian"/"big-endian"
+	 * 
+	 * if little endian, expected format id dd/mm/yyyy format, or dd.mm.yyyy, or dd-mm-yyyy
+	 * if middle endian, expected format is mm/dd/yyyy format, or mm.dd.yyyy (USA standard)
+	 * if big endian ==> yyyy-mm-dd
+	 * Examples:
+	 * 
+	 *  Little endian
+	 *  "22/04/98", "22/04/1998", "22.4.1998", "22-4-98", "22 4 98", "1998", "98", "22.04", "22/4", "22 4"
+	 *  
+	 *  Middle endian
+	 *  "4/22/98", "02/22/1998", "4.22.1998", "4-22-98", "4/22", "04.22"
+	 * 
+	 * If format is not valid or string is not parsable, an exception maybe thrown
+	 * 
+	 * @param string $val, string in generic numeric form
+	 * @param string $dateType, "little-endian"/"middle-endian"/"big-endian"
+	 * 
+	 */
+	public function sqlDateFormat($value, $dateType = "little-endian") {
+		// check if it's already in SQL format
+		$pattern = "/^[0-9]{4}-[0-9]{2}-[0-9]{2}$|^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/";
+		if (preg_match($pattern, $value)) {
+			return $value;
+		}
+		$pattern = "/^[0-9]{4}-[0-9]{2}-[0-9]{2}$|^[0-9]{4}-[0-9]{2}-[0-9]{2}$/";
+		if (preg_match($pattern, $value)) {
+			return $value;
+		}
+		$d = false;
+		
+		if($dateType === "little-endian") {
+			// dd/mm/yyyy - dd.mm.yyy like formats			
+			$pattern = "/^([0-9]{1,2})(\/|-|\.|\s)([0-9]{1,2})(\/|-|\.|\s)([0-9]{1,4})$/";
+			$match = array();
+			if (preg_match($pattern, $value, $match)) {
+				$d = $match[5] . "-" . $match[3] . "-" . $match[1];
+			}	
+			// dd/mm - dd.mm like formats			
+			if($d === false) {
+				$pattern = "/^([0-9]{1,2})(\/|-|\.|\s)([0-9]{1,2})$/";
+				$match = array();
+				if (preg_match($pattern, $value, $match)) {
+					$d = $match[3] . "/" . $match[1];
+				}	
+			}
+		} elseif($dateType === "middle-endian") {
+			// mm/dd/yyyy - mm.dd.yyyy like formats			
+			$pattern = "/^([0-9]{1,2})(\/|-|\.|\s)([0-9]{1,2})(\/|-|\.|\s)([0-9]{1,4})$/";
+			$match = array();
+			if (preg_match($pattern, $value, $match)) {
+				$d = $match[5] . "-" . $match[1] . "-" . $match[3];
+			}
+			// dd/mm - dd.mm like formats			
+			if($d === false) {
+				$pattern = "/^([0-9]{1,2})(\/|-|\.|\s)([0-9]{1,2})$/";
+				$match = array();
+				if (preg_match($pattern, $value, $match)) {
+					$d = $match[1] . "/" . $match[3];
+				}	
+			}
+		}
+
+		if($d === false) {
+			$pattern = "/^([0-9]{4})$/";
+			$match = array();
+			if (preg_match($pattern, $value, $match)) {
+				$d = $match[1] . "-01-01";
+			}	
+		}
+
+		if($d === false) {
+			$pattern = "/^([0-9]{1,2})$/";
+			$match = array();
+			if (preg_match($pattern, $value, $match)) {
+				$y = intval($match[1]);
+				$date = new DateTime();
+				// which year 08, 12, 18, 28 ??? - if earlier than current year add 2000, otherwise add 1900
+				$yNow = intval($date->format("Y"));
+				$ys = strval($y + ((2000 + $y > $yNow) ? 1900 : 2000));
+				$d = $ys . "-01-01";				
+			}
+		}
+
+		if($d === false) {
+			$d = $value; // use $value if pattern not recognized
+		}
+		$date = new DateTime($d);
+		return $date->format('Y-m-d');
+	}
 }
 
 ?>

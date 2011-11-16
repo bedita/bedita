@@ -464,16 +464,27 @@ class AppController extends Controller
 		return $model;
 	}
 	
-	public function modelBindings(Model $modelObj, $level = 'default') {
+	/**
+	 * set model bindings and return the array used
+	 * 
+	 * @param Model $modelObj
+	 * @param string $level binding level as defined in Model::modelBindings array
+	 * @return array 
+	 */
+	protected function modelBindings(Model $modelObj, $level = 'default') {
 		$conf = Configure::getInstance();
 		$name = $modelObj->name;
+		$bindings = array();
 		if(isset ($this->modelBindings[$name])) {
-			$modelObj->contain($this->modelBindings[$name]);
+			$bindings = $this->modelBindings[$name];
+			$modelObj->contain($bindings);
 		} else if(isset ($conf->modelBindings[$name])) {
-			$modelObj->contain($conf->modelBindings[$name]);
+			$bindings = $conf->modelBindings[$name];
+			$modelObj->contain($bindings);
 		} else {
-			$modelObj->containLevel($level);
+			$bindings = $modelObj->containLevel($level);
 		}
+		return $bindings;
 	}	
 		
 	/**
@@ -1127,12 +1138,13 @@ abstract class ModulesController extends AppController {
 
 		$backURL = $this->Session->read('backFromView');
 		
+		$baseModuleUrl = rtrim($this->base,"/") . "/" . $modulePath;
 		// set backFromView session vars and reset prevNext if necessary		
-		if (!empty($this->here) && strstr($this->here, $modulePath . "/index")) {
-			$backURL = (empty($this->params["form"]["searchstring"]))? $this->here : rtrim($this->here,"/") . "/search:" . urlencode($this->params["form"]["searchstring"]);
+		if (!empty($this->here) && (strstr($this->here, $modulePath . "/index") || $this->here === $baseModuleUrl)) {
+			$backURL = (empty($this->params["form"]["searchstring"]))? $this->here : rtrim($this->here,"/") . "/query:" . urlencode($this->params["form"]["searchstring"]);
 			$this->Session->write('backFromView', $backURL);
 		} elseif (empty($backURL) || !strstr($backURL, $modulePath) || !strstr($this->referer(), $modulePath)) {
-			$this->Session->write('backFromView', rtrim($this->base,"/") . "/" . $modulePath);
+			$this->Session->write('backFromView', $baseModuleUrl);
 			$this->Session->write("prevNext", "");
 		}
 	}

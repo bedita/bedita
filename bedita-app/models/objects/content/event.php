@@ -50,7 +50,14 @@ class Event extends BeditaContentModel
 				"default" 	=> array("BEObject" => array("ObjectProperty", "LangText", 
 								"ObjectType", "Category", "RelatedObject", "Annotation"),
 								"DateItem", "GeoTag"),
-				"minimum" => array("BEObject" => array("ObjectType"))
+				"minimum" => array("BEObject" => array("ObjectType")),
+		
+				"frontend" => array("BEObject" => array("LangText", 
+														"UserCreated", 
+														"RelatedObject", 
+														"Category", 
+														"Annotation"), 
+									"DateItem", "GeoTag")
 	);
     
 	var $actsAs 	= array(

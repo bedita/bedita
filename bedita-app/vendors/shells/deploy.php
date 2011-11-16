@@ -39,6 +39,7 @@ class DeployShell extends BeditaBaseShell {
 	var $tasks = array('Cleanup');
 	
     public function release() {
+    	$this->readInputArgs();
     	$scr = self::DEFAULT_RELEASE_FILE;
     	if(!empty($this->params['script'])) {
     		$scr = $this->params['script'];
@@ -54,14 +55,33 @@ class DeployShell extends BeditaBaseShell {
        	$this->out("Using temp dir: $tmpBasePath");
 		$exportPath = $tmpBasePath . "bedita";
 		
-		$svnUrl = $this->in("SVN url, [" . self::DEFAULT_SVN_URL . "]");
-		if(empty($svnUrl)) {
-			$svnUrl = self::DEFAULT_SVN_URL;
-		}
+    	if(!empty($this->params['svnUrl'])) {
+    		$svnUrl = $this->params['svnUrl'];
+    	} else {
+			$svnUrl = $this->in("SVN url, [" . self::DEFAULT_SVN_URL . "]");
+			if(empty($svnUrl)) {
+				$svnUrl = self::DEFAULT_SVN_URL;
+			}
+    	}
        	$this->out("Using SVN url: $svnUrl");
-		$svnUser = $this->in("SVN username: ");
-		$svnPassword = $this->in("SVN password: ");
-		$releaseDir = $this->in("release dir: ");
+    	if(!empty($this->params['svnUser'])) {
+    		$svnUser = $this->params['svnUser'];
+    	} else {
+       		$svnUser = $this->in("SVN username: ");
+    	}
+
+    	if(!empty($this->params['svnPassword'])) {
+    		$svnPassword = $this->params['svnPassword'];
+    	} else {
+       		$svnPassword = $this->in("SVN password: ");
+    	}
+
+    	if(!empty($this->params['releaseDir'])) {
+    		$releaseDir = $this->params['releaseDir'];
+    	} else {
+       		$releaseDir = $this->in("release dir: ");
+    	}
+    	
 		if(!file_exists($releaseDir)) {
 	        $this->out("release dir not found: $releaseDir");
 			return;
@@ -262,9 +282,9 @@ class DeployShell extends BeditaBaseShell {
 
     function help() {
         $this->out('Available functions:');
-        $this->out('1. release: creates bedita release from svn');
+        $this->out('1. release: creates bedita release from svn, use custom script with -script, input args in ini file through -input');
   		$this->out(' ');
-  		$this->out('   Usage: release -script <release-config-script.php>');
+  		$this->out('   Usage: release [-script <release-config-script.php>] [-input <ini-file-params.php>');
         $this->out(' ');
         $this->out('2. updateVersion: updates version number from svn local info [if present]');
   		$this->out(' ');
