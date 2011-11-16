@@ -1157,9 +1157,8 @@ abstract class FrontendController extends AppController {
 			$modelType = $this->objectCache[$obj_id]["object_type"];
 			$bindings = $this->setObjectBindings($modelType);
 			$bindingsDiff = array_diff($this->objectCache[$obj_id]["bindings"]["bindings_list"], $bindings["bindings_list"]);
-			$isEqual = Set::isEqual($this->objectCache[$obj_id]["bindings"]["bindings_list"], $bindings["bindings_list"]);
 			// cached object is used only if its bindings contain more data or equal than those of the request
-			if (!empty($bindingsDiff) || $isEqual) {
+			if (!empty($bindingsDiff) || ($this->objectCache[$obj_id]["bindings"]["bindings_list"] == $bindings["bindings_list"])) {
 				return $this->objectCache[$obj_id];
 			}
 		}
