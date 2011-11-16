@@ -55,13 +55,13 @@ class SmartyView extends View {
 		App::import('Vendor', 'SmartyClass', array('file' => 'smarty'.DS.'libs'.DS.'Smarty.class.php'));
 		$this->_smarty = new Smarty();
 
-		$this->_smarty->compile_dir = TMP . 'smarty' . DS . 'compile';
-		$this->_smarty->cache_dir 	= TMP . 'smarty' . DS . 'cache' . DS;
-		$this->_smarty->config_dir 	= ROOT . APP_DIR . DS . 'config' . DS . 'smarty' . DS;
+		$this->_smarty->setCompileDir(TMP . 'smarty' . DS . 'compile');
+		$this->_smarty->setCacheDir(TMP . 'smarty' . DS . 'cache' . DS);
+		$this->_smarty->setConfigDir(ROOT . APP_DIR . DS . 'config' . DS . 'smarty' . DS);
 		$this->_smarty->compile_id	= $controller->name ;
 
 		// add smarty plugins dir
-		$this->_smarty->plugins_dir[] = BEDITA_CORE_PATH . DS . 'vendors' . DS . '_smartyPlugins';
+		$this->_smarty->addPluginsDir(BEDITA_CORE_PATH . DS . 'vendors' . DS . '_smartyPlugins');
 	}
 
 	// Add by BEdita team - Giangi
@@ -108,9 +108,9 @@ class SmartyView extends View {
 
 		// if this is a layout call or a template call and change the template dir accordingly
 		if(isset($___data_for_view['content_for_layout'])) {
-			$this->_smarty->template_dir = $this->layout_dir;
+			$this->_smarty->setTemplateDir($this->layout_dir);
 		} else {
-			$this->_smarty->template_dir = $this->template_dir;
+			$this->_smarty->setTemplateDir($this->template_dir);
 		}
 
 		// load the data variables, being set by controller
@@ -163,7 +163,7 @@ class SmartyView extends View {
 		}
 
 		// force smarty template dir to template_dir
-		$this->_smarty->template_dir = $this->template_dir;
+		$this->_smarty->setTemplateDir($this->template_dir);
 
 		return $out;
 	}
