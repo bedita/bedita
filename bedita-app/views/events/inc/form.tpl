@@ -14,9 +14,9 @@
 	{assign_associative var="params" title="Event Locations"}
 	{$view->element('form_geotag', $params)}
 
-	{include file="./inc/form_promoter.tpl" comments=true}
+	{include file="../inc/form_promoter.tpl" comments=true}
 	
-	{include file="./inc/form_properties.tpl" comments=true}
+	{include file="../inc/form_properties.tpl" comments=true}
 
 	{$view->element('form_tree')}
 	
