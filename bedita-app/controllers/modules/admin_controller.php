@@ -499,7 +499,51 @@ class AdminController extends ModulesController {
 		BeLib::getObject("BeConfigure")->cacheConfig();
 	}
 
-	public function viewConfig() {}
+	public function viewConfig() {
+		include CONFIGS . 'langs.iso.php';
+		$this->set('langs_iso',$config['langsIso']);
+
+		$besys = BeLib::getObject("BeSystem");
+		// check bedita.sys.php
+		$beditaSysPath = CONFIGS . "bedita.sys.php";
+		if (!file_exists($beditaSysPath)) {
+			$this->set("bedita_sys_err",__($beditaSysPath . " doesn't exist",true));
+		}
+		if (!$besys->checkWritable($beditaSysPath)) {
+			$this->set("bedita_sys_err",__($beditaSysPath . " is not writable: update file permits properly",true));
+		}
+
+		// check bedita.cfg.php
+		$beditaCfgPath = CONFIGS . "bedita.cfg.php";
+		if (!file_exists($beditaCfgPath)){
+			$this->set("bedita_cfg_err",__($beditaCfgPath . " doesn't exist",true));
+		}
+		if (!$besys->checkWritable($beditaCfgPath)) {
+			$this->set("bedita_cfg_err",__($beditaCfgPath . " is not writable: update file permits properly",true));
+		}
+
+		$conf = Configure::getInstance();
+		$mediaRoot = $conf->mediaRoot;
+		if(empty($mediaRoot)) {
+			$this->set("media_root_err",__("media root not set",true));
+		}
+		if (!$besys->checkAppDirPresence($mediaRoot)) {
+			$this->set("media_root_err",__("media root folder not found",true));
+		} else if (!$besys->checkWritable($mediaRoot)) {
+			$this->set("media_root_err",__("media root folder is not writable: update folder permits properly",true));
+		}
+
+		$mediaUrl = $conf->mediaUrl;
+		if(empty($mediaUrl)) {
+			$this->set("media_url_err",__("media url not set",true));
+		}
+		$headerResponse = @get_headers($mediaUrl);
+		if(empty($headerResponse) || !$headerResponse) {
+			$this->set("media_url_err",__("media url is unreachable",true));
+		} else if (stristr($headerResponse[0],'HTTP/1.1 4') || stristr($headerResponse[0],'HTTP/1.1 5')) {
+			$this->set("media_url_err",__("media url is unreachable",true));
+		}
+	}
 
 	public function saveConfig() {
 		// sys and cfg array
@@ -538,6 +582,8 @@ class AdminController extends ModulesController {
 		$beditaSysPath = CONFIGS . "bedita.sys.php";
 		$besys->writeConfigFile($beditaSysPath, $sys);
 
+		// order langs
+		sort($cfg['langOptions']);
 		// write bedita.cfg.php
 		$beditaCfgPath = CONFIGS . "bedita.cfg.php";
 		$besys->writeConfigFile($beditaCfgPath, $cfg);
