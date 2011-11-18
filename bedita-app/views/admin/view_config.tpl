@@ -68,6 +68,42 @@
 					{/if}
 				</tr>
 
+				<tr>
+					<th>{t}Bedita url{/t}:</th>
+					<td>
+						<input type="text" name="sys[beditaUrl]" value="{$conf->beditaUrl}" style="width: 300px;"/>
+					</td>
+					{if !empty($bedita_url_err)}
+					<td>
+						{$bedita_url_err}
+					</td>
+					{/if}
+				</tr>
+
+				<tr>
+					<th>{t}Date Pattern{/t}:</th>
+					<td>
+						<input type="text" name="sys[datePattern]" value="{$conf->datePattern}" style="width: 300px;"/>
+					</td>
+					{if !empty($date_pattern_err)}
+					<td>
+						{$date_pattern_err}
+					</td>
+					{/if}
+				</tr>
+
+				<tr>
+					<th>{t}Date Time Pattern{/t}:</th>
+					<td>
+						<input type="text" name="sys[dateTimePattern]" value="{$conf->dateTimePattern}" style="width: 300px;"/>
+					</td>
+					{if !empty($date_time_pattern_err)}
+					<td>
+						{$date_time_pattern_err}
+					</td>
+					{/if}
+				</tr>
+
 			</table>
 			{/if}
 

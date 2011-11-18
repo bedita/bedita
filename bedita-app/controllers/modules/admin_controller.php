@@ -543,6 +543,17 @@ class AdminController extends ModulesController {
 		} else if (stristr($headerResponse[0],'HTTP/1.1 4') || stristr($headerResponse[0],'HTTP/1.1 5')) {
 			$this->set("media_url_err",__("media url is unreachable",true));
 		}
+
+		$beditaUrl = $conf->beditaUrl;
+		if(empty($beditaUrl)) {
+			$this->set("bedita_url_err",__("bedita url not set",true));
+		}
+		$headerResponse = @get_headers($beditaUrl);
+		if(empty($headerResponse) || !$headerResponse) {
+			$this->set("bedita_url_err",__("bedita url is unreachable",true));
+		} else if (stristr($headerResponse[0],'HTTP/1.1 4') || stristr($headerResponse[0],'HTTP/1.1 5')) {
+			$this->set("bedita_url_err",__("bedita url is unreachable",true));
+		}
 	}
 
 	public function saveConfig() {
@@ -571,11 +582,20 @@ class AdminController extends ModulesController {
 
 		$headerResponse = @get_headers($sys["mediaUrl"]);
 		if(empty($headerResponse) || !$headerResponse) {
-			throw new BeditaException(__("media url is unreachable", true), $sys);
+			throw new BeditaException(__("bedita url is unreachable", true), $sys);
 		}
 
 		if (stristr($headerResponse[0],'HTTP/1.1 4') || stristr($headerResponse[0],'HTTP/1.1 5')) {
-			throw new BeditaException(__("media url is unreachable", true) . ": " . $headerResponse[0] , $sys);
+			throw new BeditaException(__("bedita url is unreachable", true) . ": " . $headerResponse[0] , $sys);
+		}
+
+		$headerResponse = @get_headers($sys["beditaUrl"]);
+		if(empty($headerResponse) || !$headerResponse) {
+			throw new BeditaException(__("bedita url is unreachable", true), $sys);
+		}
+
+		if (stristr($headerResponse[0],'HTTP/1.1 4') || stristr($headerResponse[0],'HTTP/1.1 5')) {
+			throw new BeditaException(__("bedita url is unreachable", true) . ": " . $headerResponse[0] , $sys);
 		}
 
 		// write bedita.sys.php
