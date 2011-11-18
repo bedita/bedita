@@ -88,9 +88,6 @@ $(document).ready(function() {
 	
 	setRemoveActions();
 	
-	$(".modalbutton").click(function () {
-		$(this).BEmodal();
-	});
 	
 });
 
@@ -154,30 +151,30 @@ $(document).ready(function() {
 
 {literal}
 <script>
-	$(".newcontenthere").submit(function(){
-		var urltogo = $('.newcontenthere :selected').attr("value");
+$(document).ready(function() {
+	$(".newcontenthere").click(function(){
+		var urltogo = $('.selectcontenthere').val();
 		window.location.href = urltogo;
 		return false;
 	});	
+});
 </script>
 {/literal}
 
-	<form action="#" style="margin-top:10px;" class="newcontenthere">
 	{t}create new{/t} &nbsp;
-	<select class="ignore">
+	<select class="ignore selectcontenthere">
 	{assign var=leafs value=$conf->objectTypes.leafs}
 		{foreach from=$conf->objectTypes item=type key=key}	
 			{if ( in_array($type.id,$leafs.id) && is_numeric($key) )}
-			<option value="{$html->url('/')}{$type.module_name}/view/branch:{$html->params.pass.0}" {if ($type.model=="Document")} selected{/if}>	
+			<option value="{$html->url('/')}{$type.module_name}/view/branch:{$object.id}" {if ($type.model=="Document")} selected="selected"{/if}>	
 				{t}{$type.model}{/t}
 			</option>
 			{/if}
 		{/foreach}
 	</select>
 	 &nbsp;
-	{t}here{/t} ({$html->params.pass.0}) &nbsp;
-	<input type="submit" value="GO" />
-	</form>
+	{t}here{/t} ({$object.id}) &nbsp;
+	<input type="button" class="newcontenthere" value="GO" />
 	
 	<hr />
 </div>	

@@ -38,20 +38,31 @@ class AreasController extends ModulesController {
 	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType') ;
 	protected $moduleName = 'areas';
 	 
-	function index() {
-		$tree = $this->BeTree->getSectionsTree() ;
+	function index($id = null) {
+		$tree = $this->BeTree->getSectionsTree() ;		
 		$this->set('tree',$tree);
-		$this->set("formToUse", "area");
+
+		if ($id == null && !empty($this->params["named"]["id"])) {
+			$id = $this->params["named"]["id"];
+		}
+		// if empty $id try to load first item of the tree (first publication)
+		if (empty($id) && !empty($tree)) {
+			$id = $tree[0]["id"];
+			$this->params["named"]["id"] = $id;
+		}
+		
+		if (!empty($id)) {
+			$this->view($id);
+		}
 	}
 
 	public function view($id) {
 		$this->action = "index";
-		$ot_id = $this->BEObject->field("object_type_id", array("BEObject.id" => $id));
-		$this->loadSectionDetails($id,$ot_id);
+		$objectTypeId = $this->BEObject->field("object_type_id", array("BEObject.id" => $id));
+		$this->loadSectionDetails($id,$objectTypeId);
 		$this->loadContents($id);
 		$this->loadSections($id);
-		$formToUse = strtolower(Configure::read("objectTypes.".$ot_id.".model"));
-		$this->set("formToUse", $formToUse);
+		$this->set("objectType", Configure::read("objectTypes.".$objectTypeId.".name"));
 	}
 	
 	function viewArea($id = null) {
@@ -254,35 +265,10 @@ class AreasController extends ModulesController {
 		$this->eventInfo("section [". $objectsListDeleted."] deleted");
 	}
 	
-			
-	/**
-	 * load section object
-	 *
-	 * @param int $id
-	 */
-	public function loadSectionAjax($id) {
-		// Load languages
-		if(Configure::read("langOptionsIso") == true) {
-			Configure::load('langs.iso') ;
-		}
-
-		$this->layout = null;
-		
-		$tplFile = "form_area.tpl";
-		
-		if (!empty($id)) {
-			$ot_id = $this->BEObject->field("object_type_id", array("BEObject.id" => $id));
-			$this->loadSectionDetails($id, $ot_id);
-			$tplFile = "form_" . strtolower(Configure::read("objectTypes.".$ot_id.".model")) . ".tpl";
-		}
-		
-		$this->render(null, null, VIEWS . "areas/inc/" . $tplFile);
-		
-	}
-
 
 	/**
 	 * load contents for a section
+	 * used for pagination
 	 *
 	 * @param int $id
 	 * 
@@ -291,6 +277,7 @@ class AreasController extends ModulesController {
 		$this->layout = null;
 		if (!empty($id)) {
 			$this->loadContents($id);
+			$this->set("object", array("id" => $id));
 		}
 		$this->render(null, null, VIEWS."areas/inc/list_content_ajax.tpl");
 	}
@@ -298,9 +285,11 @@ class AreasController extends ModulesController {
 	
 	/**
 	 * load children section 
-	 *
+	 * used for pagination
+	 * 
 	 * @param int $id
 	 * 
+	 * @todo we need it??
 	 */
 	public function listSectionAjax($id) {
 		$this->layout = null;
@@ -401,6 +390,11 @@ class AreasController extends ModulesController {
 		$this->set("selectedId", $id);
 	}
 	
+	/**
+	 * load sections that are children of area/section $id
+	 * 
+	 * @param int $id 
+	 */
 	private function loadSections($id) {
 		// set pagination
 		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;

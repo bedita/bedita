@@ -48,7 +48,7 @@ tinyMCE.init({
         ed.addButton('dfn', {
 			//label : 'dfn',
             title : 'definition',
-            image : '/img/editor_dfn.png',
+            image : '../../img/editor_dfn.png',
             onclick : function() {
 				// Add you own code to execute something on click
 				ed.focus();
@@ -58,7 +58,7 @@ tinyMCE.init({
         // Add a custom button
         ed.addButton('formula', {
             title : 'formula',
-            image : '/img/editor_formula.png',
+            image : '../../img/editor_formula.png',
             onclick : function() {
 				// Add you own code to execute something on click
 				ed.focus();
@@ -69,7 +69,7 @@ tinyMCE.init({
         // Add a custom button
         ed.addButton('glossary', {
             title : 'glossary',
-            image : '/img/editor_glossary.png',
+            image : '../../img/editor_glossary.png',
             onclick : function() {
 				// Add you own code to execute something on click
 				ed.focus();
@@ -116,7 +116,7 @@ tinyMCE.init({
 	toolbar_align : "right",
 	force_br_newlines : true,
     forced_root_block : '', // Needed for 3.x
-    onchange_callback : "onChangeHandler",
+    onchange_callback : "onChangeHandler"
 	
 
 });
