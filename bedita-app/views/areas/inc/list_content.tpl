@@ -48,12 +48,11 @@ function setRemoveActions() {
 
 $(document).ready(function() {
 
-	if ($("#areacontent").find("input[name*='[priority]']:first"))
+	if ($("#areacontent").find("input[name*='[priority]']:first")) {
 		var startPriority = $("#areacontent").find("input[name*='[priority]']:first").val();
-	else
+	} else {
 		var startPriority = 1;
-		
-	var urlC = ajaxContentsUrl + "/{/literal}{$selectedId|default:''}{literal}";
+	}
 
 	//$("#areacontent").sortable ({
 	$("#areacontent table").find("tbody").sortable ({
@@ -66,28 +65,14 @@ $(document).ready(function() {
 					$(this).fixItemsPriority(startPriority);
 				}
 	}).css("cursor","move");
-
-	$("#contents_nav_leafs a").click(function() {
-		$("#loading").show();
-		$("#areacontentC").load(urlC, 
-				{
-					page:$(this).attr("rel"),
-					dim:$("#dimContentsPage").val()
-				}
-				, function() {
-			$("#loading").hide();
-		});
-	});
-	
-	$("#dimContentsPage").change(function() {
-		$("#loading").show();
-		$("#areacontentC").load(urlC, {dim:$(this).val()}, function() {
-			$("#loading").hide();
-		});
-	});
 	
 	setRemoveActions();
 	
+	$(".newcontenthere").click(function(){
+		var urltogo = $('.selectcontenthere').val();
+		window.location.href = urltogo;
+		return false;
+	});	
 	
 });
 
@@ -109,7 +94,8 @@ $(document).ready(function() {
 	<table class="indexlist" style="width:100%; margin-bottom:10px;">
 		<tbody class="disableSelection">
 			<input type="hidden" name="contentsToRemove" id="contentsToRemove" value=""/>
-			{include file="inc/list_contents_for_section.tpl" objsRelated=$contents.items}
+			{include file="../inc/list_contents_for_section.tpl" objsRelated=$objects}
+			
 			<tr class="obj">
 				
 			</tr>
@@ -119,27 +105,33 @@ $(document).ready(function() {
 	</div>
 	
 
-{if !empty($contents.items)}
+{if !empty($objects)}
 	<div id="contents_nav_leafs" style="margin-top:10px;">
-	{t}show{/t} 
-	<select name="dimContentsPage" id="dimContentsPage" class="ignore">
-		<option value="5"{if $dim == 5} selected{/if}>5</option>
-		<option value="10"{if $dim == 10} selected{/if}>10</option>
-		<option value="20"{if $dim == 20} selected{/if}>20</option>
-		<option value="50"{if $dim == 50} selected{/if}>50</option>
-		<option value="100"{if $dim == 100} selected{/if}>100</option>
-		<option value="1000000"{if $dim == 1000000} selected{/if}>{t}all{/t}</option>
-	</select>
+	{t}show{/t}
+	{assign var="allLabel" value=$tr->t("all", true)}
+	{$beToolbar->changeDimSelect('selectTop', [], [5 => 5, 10 => 10, 20 => 20, 50 => 50, 100 => 100, 1000000 => $allLabel])} &nbsp;
+	
 	{t}item(s){/t} 
 	
 		<div class="toolbar" style="text-align:right; padding-left:150px; float:right;">
-		{if $contents.toolbar.prev > 0}
-			<a href="javascript:void(0);" rel="{$contents.toolbar.prev}" class="" style="color:#000; font-size:1.5em">‹ prev</a>
-		{/if}
-		&nbsp;&nbsp;
-		{if $contents.toolbar.next > 0}
-			<a href="javascript:void(0);" rel="{$contents.toolbar.next}" class="" style="color:#000; font-size:1.5em">next ›</a>
-		{/if}
+			
+			{$beToolbar->first('page','','page')}
+			<span class="evidence"> {$beToolbar->current()} </span> 
+			{t}of{/t}  &nbsp;
+			<span class="evidence">
+				{if ($beToolbar->pages()) > 0}
+				{$beToolbar->last($beToolbar->pages(),'',$beToolbar->pages())}
+				{else}1{/if}
+			</span>
+
+			<span class="evidence"> &nbsp;</span>
+			
+			{$beToolbar->prev('‹ prev','','‹ prev')}
+		
+			<span class="evidence"> &nbsp;</span>
+			
+			{$beToolbar->next('next ›','','next ›')}
+		
 		</div>
 	</div>
 {/if}
@@ -148,18 +140,6 @@ $(document).ready(function() {
 
 	<br />
 	<input style="width:220px" type="button" rel="{$html->url('/pages/showObjects/')}{$object.id|default:0}/0/0/leafs" class="modalbutton" value=" {t}add contents{/t} " />
-
-{literal}
-<script>
-$(document).ready(function() {
-	$(".newcontenthere").click(function(){
-		var urltogo = $('.selectcontenthere').val();
-		window.location.href = urltogo;
-		return false;
-	});	
-});
-</script>
-{/literal}
 
 	{t}create new{/t} &nbsp;
 	<select class="ignore selectcontenthere">

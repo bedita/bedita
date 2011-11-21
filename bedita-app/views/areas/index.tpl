@@ -17,11 +17,6 @@
 
 {include file="inc/menucommands.tpl" fixed=false}
 
-<script type="text/javascript">
-var ajaxContentsUrl = "{$html->url('/areas/listContentAjax')}";
-var ajaxSectionsUrl = "{$html->url('/areas/listSectionAjax')}";
-</script>
-
 <div class="head">
 
 	<h1>{$object.title|default:''}</h1>
@@ -66,13 +61,13 @@ var ajaxSectionsUrl = "{$html->url('/areas/listSectionAjax')}";
 
 				<div id="areacontentC" class="htabcontent">
 
-					{include file='./inc/list_content_ajax.tpl'}
+					{include file='./inc/list_content.tpl'}
 
 				</div>
 
 				<div id="areasectionsC" class="htabcontent">
 
-					{include file='./inc/list_sections_ajax.tpl'}
+					{include file='./inc/list_sections.tpl'}
 
 				</div>
 

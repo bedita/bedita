@@ -38,31 +38,57 @@ class AreasController extends ModulesController {
 	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType') ;
 	protected $moduleName = 'areas';
 	 
-	function index($id = null) {
-		$tree = $this->BeTree->getSectionsTree() ;		
-		$this->set('tree',$tree);
-
+	function index($id = null, $order = "priority", $dir = true, $page = 1, $dim = 20) {
 		if ($id == null && !empty($this->params["named"]["id"])) {
 			$id = $this->params["named"]["id"];
 		}
-		// if empty $id try to load first item of the tree (first publication)
-		if (empty($id) && !empty($tree)) {
-			$id = $tree[0]["id"];
-			$this->params["named"]["id"] = $id;
+		// if empty $id try to get first publication.id
+		if (empty($id)) {
+			$publication = $this->Area->find("first", array(
+				"order" => "BEObject.title asc",
+				"contain" => array("BEObject")
+			));
+			$this->params["named"]["id"] = $id = $publication["id"];
 		}
 		
 		if (!empty($id)) {
 			$this->view($id);
 		}
+		
+		
+		
 	}
 
 	public function view($id) {
 		$this->action = "index";
 		$objectTypeId = $this->BEObject->field("object_type_id", array("BEObject.id" => $id));
-		$this->loadSectionDetails($id,$objectTypeId);
-		$this->loadContents($id);
-		$this->loadSections($id);
+		$modelName = Configure::read("objectTypes.".$objectTypeId.".model");
+		$this->viewObject($this->{$modelName}, $id);
+		$dir = ($this->viewVars["object"]["priority_order"] == "asc")? true : false;
+		$this->loadChildren($id, "priority", $dir);
 		$this->set("objectType", Configure::read("objectTypes.".$objectTypeId.".name"));
+		$this->set('parent_id', $this->Tree->getParent($id));
+	}
+	
+	/**
+	 * load paginated contents and no paginated sections of $id publication/section
+	 * 
+	 * @param int $id
+	 * @param string $order
+	 * @param bool $dir
+	 * @param int $page
+	 * @param int $dim 
+	 */
+	protected function loadChildren($id, $order = "priority", $dir = true, $page = 1, $dim = 20) {
+		// get paginated children content (leaf objectTypes)
+		$filter["object_type_id"] = Configure::read("objectTypes.leafs.id");
+		$dir = ($this->viewVars["object"]["priority_order"] == "asc")? true : false;
+		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
+		
+		// get no paginated children sections
+		$filter["object_type_id"] = Configure::read("objectTypes.section.id");
+		$sections = $this->BeTree->getChildren($id, null, $filter, "priority", $dir, 1, 10000);
+		$this->set("sections", $sections["items"]);
 	}
 	
 	function viewArea($id = null) {
@@ -264,41 +290,6 @@ class AreasController extends ModulesController {
 		$this->userInfoMessage(__("Section deleted", true)." - ".$objectsListDeleted);
 		$this->eventInfo("section [". $objectsListDeleted."] deleted");
 	}
-	
-
-	/**
-	 * load contents for a section
-	 * used for pagination
-	 *
-	 * @param int $id
-	 * 
-	 */
-	public function listContentAjax($id) {
-		$this->layout = null;
-		if (!empty($id)) {
-			$this->loadContents($id);
-			$this->set("object", array("id" => $id));
-		}
-		$this->render(null, null, VIEWS."areas/inc/list_content_ajax.tpl");
-	}
-	
-	
-	/**
-	 * load children section 
-	 * used for pagination
-	 * 
-	 * @param int $id
-	 * 
-	 * @todo we need it??
-	 */
-	public function listSectionAjax($id) {
-		$this->layout = null;
-		if (!empty($id)) {
-			$this->loadSections($id);
-		}
-		$this->render(null, null, VIEWS."areas/inc/list_sections_ajax.tpl");
-	}
-	
 		
 	 /**
 	  * Return associative array representing publications/sections tree
@@ -335,79 +326,6 @@ class AreasController extends ModulesController {
 		unset($IDs) ;
 	}
 
-	
-	/**
-	 * get section details and set for template, get all tree
-	 *
-	 * @param int $id
-	 * 			
-	 */
-	private function loadSectionDetails($id, $objectTypeId) {
-			
-		$model = ClassRegistry::init(Configure::read("objectTypes.".$objectTypeId.".model"));
-		$model->containLevel("detailed");
-		if(!($collection = $model->findById($id))) {
-			throw new BeditaException(sprintf(__("Error loading section: %d", true), $id));
-		}
-		// additional control on id -- if a row on a table model is missing (e.g. sections) field id can be null
-		if(empty($collection['id'])) {
-			throw new BeditaException(sprintf(__("Error loading section: %d", true), $id));
-		}
-		
-		$this->set('objectProperty', $this->BeCustomProperty->setupForView($collection));
-		$this->set('object',$collection);
-		$this->set('tree', $this->BeTree->getSectionsTree());
-		$this->set('parent_id', $this->Tree->getParent($id));
-	}
-	
-	/**
-	 * get contents for a section/publication
-	 *
-	 * @param unknown_type $id
-	 */
-	private function loadContents($id) {
-		// set pagination
-		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
-		$dim = (!empty($this->params["form"]["dim"]))? $this->params["form"]["dim"] : 100; 
-		
-		// get content
-		$filter["object_type_id"] = Configure::read("objectTypes.leafs.id");
-
-		$priorityOrder = $this->Section->field("priority_order", array("id" => $id));
-		if(empty($priorityOrder))
-			$priorityOrder = "asc";
-		$contents = $this->BeTree->getChildren($id, null, $filter, "priority", ($priorityOrder == "asc"), $page, $dim);
-		
-		foreach ($contents["items"] as $key => $item) {
-			$contents["items"][$key]["module_name"]= $this->ObjectType->field("module_name",
-				array("id" => $item["object_type_id"]));
-		}
-		
-		$this->set("priorityOrder", $priorityOrder);
-		$this->set("contents", $contents);
-		$this->set("dim", $dim);
-		$this->set("page", $page);
-		$this->set("selectedId", $id);
-	}
-	
-	/**
-	 * load sections that are children of area/section $id
-	 * 
-	 * @param int $id 
-	 */
-	private function loadSections($id) {
-		// set pagination
-		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
-		$dim = (!empty($this->params["form"]["dim"]))? $this->params["form"]["dim"] : 20; 
-		$filter["object_type_id"] = Configure::read("objectTypes.section.id");
-		$priorityOrder = $this->Section->field("priority_order", array("id" => $id));
-		if(empty($priorityOrder))
-			$priorityOrder = "asc";
-		// get sections children
-		$this->set("sections", $this->BeTree->getChildren($id, null, $filter, "priority", ($priorityOrder == "asc"), $page, $dim));
-		$this->set("dimSec", $dim);
-		$this->set("pageSec", $page);
-	}
 	
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
