@@ -111,8 +111,6 @@ $(document).ready(function() {
 	</div>
 	
 
-{if !empty($objects)}
-	
 	{t}content type{/t}
 	<select id="selObjectType">
 		<option value=""{if empty($view->params.named.object_type_id)} selected="selected"{/if}>{t}all{/t}</option>
@@ -121,6 +119,8 @@ $(document).ready(function() {
 					{if !empty($view->params.named.object_type_id) && $view->params.named.object_type_id == $objectTypeId}selected="selected"{/if}> {$conf->objectTypes[$objectTypeId].name}</option>
 		{/foreach}
 	</select>
+			
+{if !empty($objects)}
 	
 	<div id="contents_nav_leafs" style="margin-top:10px;">
 		{t}show{/t}
