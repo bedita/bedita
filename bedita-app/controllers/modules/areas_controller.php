@@ -55,8 +55,6 @@ class AreasController extends ModulesController {
 			$this->view($id);
 		}
 		
-		
-		
 	}
 
 	public function view($id) {
@@ -80,8 +78,14 @@ class AreasController extends ModulesController {
 	 * @param int $dim 
 	 */
 	protected function loadChildren($id, $order = "priority", $dir = true, $page = 1, $dim = 20) {
-		// get paginated children content (leaf objectTypes)
-		$filter["object_type_id"] = Configure::read("objectTypes.leafs.id");
+		// get paginated children content (leaf objectTypes) if no other is passed
+		if (!empty($this->params["named"]["object_type_id"]) 
+				&& $this->params["named"]["object_type_id"] != Configure::read("objectTypes.area.id")
+				&& $this->params["named"]["object_type_id"] != Configure::read("objectTypes.section.id")) {
+			$filter["object_type_id"] = $this->params["named"]["object_type_id"];
+		} else {
+			$filter["object_type_id"] = Configure::read("objectTypes.leafs.id");
+		}
 		$dir = ($this->viewVars["object"]["priority_order"] == "asc")? true : false;
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 		
