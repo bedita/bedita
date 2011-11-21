@@ -150,7 +150,7 @@ class BeToolbarHelper extends AppHelper {
 		return $this->Form->select("", $options, $this->params['toolbar']['dim'], $htmlAttributes, false) ;
 	}
 
-	function changeDimSelect($selectId, $htmlAttributes = array(), $options = array(1, 5, 10, 20, 50, 100)) {
+	function changeDimSelect($selectId, $htmlAttributes = array(), $options = array(1 => 1, 5 => 5, 10 => 10, 20 => 20, 50 => 50, 100 => 100)) {
 		if(!isset($this->params['toolbar']['dim'])) return "" ;
 
 		// Define script for page change
@@ -162,10 +162,6 @@ class BeToolbarHelper extends AppHelper {
 			$url .= "/".$this->params["action"];
 		}
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/dim:'+ this[this.selectedIndex].value" ;
-
-		$tmp = array() ;
-		foreach ($options as $k) $tmp[$k] = $k ;
-		$options = $tmp ;
 
 		return $this->Form->select($selectId, $options, $this->params['toolbar']['dim'], $htmlAttributes, false) ;
 	}
@@ -287,7 +283,7 @@ class BeToolbarHelper extends AppHelper {
 	 * 									(if present, insert a tag SPAN)
 	 */
 	private function _scroll($where, $title, $options, $disabledTitle, $disabledOption) {
-		$page = (isset($this->params['toolbar'][$where]))?$this->params['toolbar'][$where]:false ;
+		$page = (isset($this->params['toolbar'][$where]))? $this->params['toolbar'][$where] : false ;
 
 		// Next page not found or toolbar not found, link disabled
 		if(!$page) {
