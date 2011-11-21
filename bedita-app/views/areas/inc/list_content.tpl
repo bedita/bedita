@@ -4,6 +4,7 @@
 <!--
 var urlAddObjToAss = "{$html->url('/pages/loadObjectToAssoc')}/{$object.id|default:0}/leafs/areas.inc.list_contents_for_section";
 var priorityOrder = "{$priorityOrder|default:'asc'}";
+var pageUrl = "{$beurl->getUrl('object_type_id')}";
 
 {literal}
 
@@ -72,7 +73,12 @@ $(document).ready(function() {
 		var urltogo = $('.selectcontenthere').val();
 		window.location.href = urltogo;
 		return false;
-	});	
+	});
+		
+	$("#selObjectType").change(function() {
+		var url = ($(this).val() != "")? pageUrl + "/object_type_id:" + $(this).val() : pageUrl;
+		location.href = url;
+	});
 	
 });
 
@@ -106,14 +112,24 @@ $(document).ready(function() {
 	
 
 {if !empty($objects)}
+	
+	{t}content type{/t}
+	<select id="selObjectType">
+		<option value=""{if empty($view->params.named.object_type_id)} selected="selected"{/if}>{t}all{/t}</option>
+		{foreach from=$conf->objectTypes.leafs.id item="objectTypeId"}
+			<option value="{$objectTypeId}" class="{$conf->objectTypes[$objectTypeId].module_name}" style="padding-left:5px"
+					{if !empty($view->params.named.object_type_id) && $view->params.named.object_type_id == $objectTypeId}selected="selected"{/if}> {$conf->objectTypes[$objectTypeId].name}</option>
+		{/foreach}
+	</select>
+	
 	<div id="contents_nav_leafs" style="margin-top:10px;">
-	{t}show{/t}
-	{assign var="allLabel" value=$tr->t("all", true)}
-	{$beToolbar->changeDimSelect('selectTop', [], [5 => 5, 10 => 10, 20 => 20, 50 => 50, 100 => 100, 1000000 => $allLabel])} &nbsp;
+		{t}show{/t}
+		{assign var="allLabel" value=$tr->t("all", true)}
+		{$beToolbar->changeDimSelect('selectTop', [], [5 => 5, 10 => 10, 20 => 20, 50 => 50, 100 => 100, 1000000 => $allLabel])} &nbsp;
+
+		{t}item(s){/t} 
 	
-	{t}item(s){/t} 
-	
-		<div class="toolbar" style="text-align:right; padding-left:150px; float:right;">
+		<div class="toolbar" style="text-align:right; padding-left:130px; float:right;">
 			
 			{$beToolbar->first('page','','page')}
 			<span class="evidence"> {$beToolbar->current()} </span> 
