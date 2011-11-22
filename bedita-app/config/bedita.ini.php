@@ -34,9 +34,9 @@ $config = array() ;
  
 $config["projectName"] = "BEdita 3.2"; // override in bedita.cfg
 
-$config["userVersion"] = "BEdita 3.2 preaplha"; // don't override
+$config["userVersion"] = "BEdita 3.2 alpha"; // don't override
 
-$config["majorVersion"] = "3.2.prealpha"; // don't override -- admin/system
+$config["majorVersion"] = "3.2.alpha"; // don't override -- admin/system
 
 $config["helpBaseUrl"] = "http://docs.bedita.com/behelp/v32"; // don't override --
 
