@@ -1,7 +1,7 @@
 <?php
 
-$rel["releaseBaseName"]="BEdita-agpl";
-$rel["releaseCodeName"] = "ulmus";
+$rel["releaseBaseName"]="BEdita";
+$rel["releaseCodeName"] = "popolus";
 
 $rel["removeFiles"]= array(
 	"bedita-app".DS."vendors".DS."shells".DS."deploy.php",
