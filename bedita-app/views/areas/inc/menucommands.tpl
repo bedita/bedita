@@ -14,10 +14,11 @@ Menu comandi a SX valido per tutte le pagine del controller.
 		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
 	</div> 
 	
-	{if !empty($view->action) && ($view->action == "viewArea" or $view->action == "viewSection")}
+	{if !empty($view->action)}
 	
 	<div class="insidecol">
 		<input class="bemaincommands" type="button" value=" {t}save{/t} " name="save" id="saveBEObject" />
+		<input class="bemaincommands" style="display:inline" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" />
 	</div>
 	
 	{/if}

@@ -81,20 +81,12 @@
 
 			</div>
 
-			<div class="insidecol" style="margin-top:0px; padding-top:0px; margin-left:8px">
-
-			<input class="bemaincommands" style="display:inline" type="button" value=" {t}save{/t} " name="save" id="saveBEObject" />
-			<input class="bemaincommands" style="display:inline" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" />
-
-			</div>
-
 		</fieldset>	
 
 	</div>
 
 	</form>
-	{*bedev}
+
 	{$view->element('menuright')}
-	{/bedev*}
 
 {/if}
