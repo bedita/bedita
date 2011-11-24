@@ -409,7 +409,7 @@ abstract class FrontendController extends AppController {
 	 * @param string $forward redirect action after changing language. If it's null redirect to refere
 	 * @return unknown_type
 	 */
-	public function changeLang($lang, $forward = null) {
+	public function lang($lang, $forward = null) {
 
 		if (empty($lang)) {
 			throw new BeditaException("No lang selected");
@@ -723,7 +723,7 @@ abstract class FrontendController extends AppController {
 	 * find first active section and load it as home page section
 	 * if any section was found load publication as home page section
 	 */
-	protected function homePage() {
+	public function homePage() {
 		$filter = array("object_type_id" => Configure::read("objectTypes.section.id"));
 		$child = $this->BeTree->getChildren($this->publication["id"], $this->getStatus(), $filter, null, true, 1, 1);
 		$homePageSectionId = (empty($child["items"]))? $this->publication["id"] : $child["items"][0]["id"];
@@ -1602,68 +1602,85 @@ abstract class FrontendController extends AppController {
 */	
 	
 	/**
-	 * route to section, content or another method defined in reservedWords
+	 * route to section, content or another method following the below rules
+	 * 
+	 * 1. if there aren't url arguments (i.e. /) => uses homePage reserved word
+	 * 2. if first url argument is a reserved words defined in configuration var 'defaultReservedWords'
+	 *	  and 'cfgReservedWords' => try to call the method itself
+	 * 3. if first url argument is a method of current controller => try to call the method itself
+	 * 4. if first url argugment is a valid nickname 
+	 *    and there is a method of current Controller with the name defined in BeLib::variableFromNickname => try to call the method itself
+	 *    example: www.example.com/my-nickname => calls PagesController::myNickname() method if it exists
+	 * 5. if first url argument is a valid nickname => calls the appropriate FrontendController::section() or FrontendController::content() method
+	 * 6. throw exception and 404 http error 
 	 *
 	 */
 	public function route() {
-
 		$args = func_get_args();
-		if(count($args) === 0 || empty($args[0]))
-			throw new BeditaException(__("Content not found", true));
+		if(count($args) === 0 || empty($args[0])) {
+			 $args[0] = "homePage";
+		}
 
 		$name = $args[0];
-		// look if reserverd 
-		if(in_array($name, Configure::read("defaultReservedWords")) ||
-			in_array($name, Configure::read("cfgReservedWords"))) {
-			$name = str_replace(".", "_", $name); // example: sitemap.xml => sitemap_xml
-			$this->action = $name;
-			// load object with nickname $name if exists
-			$id = $this->BEObject->getIdFromNickname($name);
+		
+		// generic methodName
+		$methodName = str_replace(".", "_", $name); // example: sitemap.xml => sitemap_xml
+		$methodName = BeLib::getInstance()->variableFromNickname($methodName);
+		
+		// define methodName to call and setup args: look if reserved 
+		if (in_array($name, Configure::read("defaultReservedWords")) || in_array($name, Configure::read("cfgReservedWords"))) {
+			// load object with nickname $methodName if exists
+			$id = $this->BEObject->getIdFromNickname($methodName);
 			if(!empty($id)) {
 				$this->loadAndSetObj($id, "object");
 			}
-			$methodName = $name[0] . substr(Inflector::camelize($name), 1);
-			// check before filter method
-			if (method_exists($this, $methodName . "BeforeFilter")) {
-				$this->{$methodName . "BeforeFilter"}();
-			}
-			// check method
-			if(method_exists($this, $methodName)) {
-				array_shift($args);
-				call_user_func_array(array($this, $methodName), $args);
-			} else {
-				// launch 404 error
-				throw new BeditaException(__("Content not found", true));
-			}
-			// check before render method
-			if (method_exists($this, $methodName . "BeforeRender")) {
-				$this->{$methodName . "BeforeRender"}();
-			}
-			return;
-		}
-			
-		$id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
-		$object_type_id = $this->BEObject->findObjectTypeId($id);
-
-		if (!empty($object_type_id)) {
-			if ($object_type_id == Configure::read("objectTypes.section.id") || $object_type_id == Configure::read("objectTypes.area.id")) {
-				$this->action = "section";
-				call_user_func_array(array($this, "section"), $args);
-			} else {
-				$this->content($id);
-			}
-
-		// try to use PagesController methods (PagesController::$args[1])
-		} elseif(!empty($args[1]) && $this->name == Inflector::camelize($name) && @method_exists($this, $args[1])) {
-			// check method
-			$methodName = $args[1];
 			array_shift($args);
+		// try to use current Controller method (example: PagesController::$methodName)
+		} elseif (method_exists($this, $name)) {
+			array_shift($args);
+			$methodName = $name;
+		} else {
+			$id = (is_numeric($name))? $name : $this->BEObject->getIdFromNickname($name);
+			
+			// if exists a BEdita object with nickname = $name and a method of current Controller (PagesController) with name equal to camelized nickname
+			if (is_string($name) && !empty($id) && method_exists($this, $methodName)) {
+				// load object with nickname $name if exists
+				if(!empty($id)) {
+					$this->loadAndSetObj($id, "object");
+				}
+				array_shift($args);
+			// try to use self::section or self::content methods
+			} elseif (!empty($id)) {
+				$object_type_id = $this->BEObject->findObjectTypeId($id);
+				if ($object_type_id == Configure::read("objectTypes.section.id") || $object_type_id == Configure::read("objectTypes.area.id")) {
+					$methodName = "section";
+				} else {
+					$methodName = "content";
+				}
+			} else {
+				$methodName = null;
+			}
+		}
+		
+		$this->action = $methodName;
+		
+		// check before filter method
+		if (method_exists($this, $methodName . "BeforeFilter")) {
+			$this->{$methodName . "BeforeFilter"}();
+		}
+		// check method
+		if(method_exists($this, $methodName)) {
 			call_user_func_array(array($this, $methodName), $args);
 		} else {
+			// launch 404 error
 			throw new BeditaException(__("Content not found", true));
 		}
+		// check before render method
+		if (method_exists($this, $methodName . "BeforeRender")) {
+			$this->{$methodName . "BeforeRender"}();
+		}
+		
 	}
-	
 	
 	public function search() {
 		$this->historyItem = null;

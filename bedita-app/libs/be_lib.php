@@ -409,6 +409,21 @@ class BeLib {
 		$date = new DateTime($d);
 		return $date->format('Y-m-d');
 	}
+	
+	/**
+	 * return conventional variable/method name starting from nickname
+	 * replacing '-' with '_' and camelizing (not first char)
+	 * 
+	 * example: this-is-my-nickname become thisIsMyNickName
+	 * 
+	 * @param string $nickname 
+	 * @return string
+	 */
+	public function variableFromNickname($nickname) {
+		$variableName = str_replace("-", "_", $nickname); // example: my-nickname => my_nickname
+		$variableName = Inflector::variable($variableName); // example => sitemapXml, myNickname
+		return $variableName;
+	}
 }
 
 ?>
