@@ -84,7 +84,17 @@ class BelibTestCase extends BeditaTestCase {
 			$this->assertEqual($result, $expect);
 			$count++;
 		}
-	} 
+	}
+	
+	function testVariableFromNickname() {
+		$this->requiredData(array("nickname"));
+		
+		foreach ($this->data["nickname"] as $nickname => $expectedVarName) {
+			$varName = BeLib::getInstance()->variableFromNickname($nickname);
+			pr($nickname . " => " . $varName);
+			$this->assertEqual($varName, $expectedVarName);
+		}
+	}
 		
 }
 ?>

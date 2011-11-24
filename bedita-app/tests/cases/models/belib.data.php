@@ -22,6 +22,12 @@ class BelibTestData extends BeditaTestData {
 	
 		"year" => array("98",   "1998", "08"),
 		"yyyy" => array("1998", "1998", "2008"),
+		
+		"nickname" => array(
+			"my-fantastic-nick-name" => "myFantasticNickName",
+			"another_nick-name" => "anotherNickName",
+			"another-1-nick-2-name" => "another1Nick2Name"
+		)
 	);
 }
  
