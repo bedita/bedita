@@ -16,13 +16,11 @@
 	{/if}
 		
 	{include file="inc/meta.tpl"}
-	
-	{$html->css('beditaNew')}
+
+	{$html->css('bedita.css?v=01')}
 	
 	<!--[if lte IE 6]>
-	
 		{$html->css('IE6fix')}
-		
 	<![endif]-->
 
 	{$html->script("jquery/jquery")}
@@ -42,7 +40,6 @@
 	
 </head>
 <body{if !empty($bodyClass)} class="{$bodyClass}"{/if}>
-
 
 {$content_for_layout}
 	

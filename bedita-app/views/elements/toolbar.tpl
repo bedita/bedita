@@ -36,6 +36,20 @@
 		
 		<table>
 		<tr>
+			
+			<td style="padding-top:20px;">
+				{if $view->viewVars.module_modify eq '1'}
+					<a href="{$html->url('/')}{$currentModule.url}/view">{t}Create new{/t} &nbsp;
+					{assign var=leafs value=$conf->objectTypes.leafs}
+					{foreach from=$conf->objectTypes item=type key=key}	
+						{if ( in_array($type.id,$leafs.id) && is_numeric($key) && $type.module_name == $currentModule.name )}
+							{t}{$type.model}{/t}
+						{/if}
+					{/foreach}
+					</a>
+				{/if}
+			</td>
+		
 			<td>
 			<span class="evidence">{$beToolbar->size()} &nbsp;</span> {t}{$itemName|default:$moduleName}{/t}
 			</td>
@@ -55,6 +69,7 @@
 			
 			<td> {$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span></td>
 			
+			<!--
 			<td> 
 			
 				<form action="{$html->url('/')}{$moduleName}/index{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">				
@@ -65,7 +80,7 @@
 				</form>
 				
 			</td>
-
+			-->
 		</tr>
 		</table>
 

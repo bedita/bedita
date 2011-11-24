@@ -1,6 +1,13 @@
 <div class="modulesmenucaption">go to: &nbsp;<a>be</a></div>
 
 <nav class="modulesmenu">
+	
+		<form style="display:inline-block; padding:2px 15px 0px 5px;" action="{$html->url('/')}{$moduleName}/index{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">				
+		
+		<input type="text" placeholder="{t}search{/t}" name="searchstring" value="{$stringSearched|default:""}"/>
+		<input type="submit" value=""/>
+		</form>
+		
 		<a title="{t}help{/t}" class="helptrigger">?</a>
 {strip}
 {foreach from=$moduleListInv key=k item=mod}

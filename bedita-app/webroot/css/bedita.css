@@ -485,20 +485,18 @@ UL.modules {
 
 NAV.modulesmenu {
 	top:0px;
-	margin-right:10px; 
-	width:685px;
-	/*background:transparent url(../img/shadowh2-small.png) no-repeat;*/
-	background-position: 520px 10px ;
 	padding:20px 0px 10px 0px;
+	text-align:right;
+	width:660px;
 }
 
 .modulesmenu A {
 	height:25px; width:15px;
 	float:right; margin-left:0px;
 	cursor:pointer;
-	background-image: url(../img/sfomodulo.png);
+	/*background-image: url(../img/sfomodulo.png);
 	background-repeat:repeat-x;
-	background-position: left -5px;
+	background-position: left -5px;*/
 	padding:0px 5px 0px 5px;
 	color:white;
 }
@@ -506,6 +504,16 @@ NAV.modulesmenu {
 .modulesmenu .bedita {
 	background-image: none !important;
 }
+
+.modulesmenu .search {
+	background: #ccc url(../img/iconSearch.png) center no-repeat;
+}
+
+.modulesmenu input[type='submit'] {
+	background: #ccc url(../img/iconSearch.png) center no-repeat;
+	width:30px;
+}
+
 
 .modulesmenu .over {
 	border-bottom:5px solid #CCCCCC;
@@ -1197,7 +1205,7 @@ UL#mediatypes  {
 INPUT, TEXTAREA, SELECT {
 	padding:2px;
 }
-INPUT[type=text], INPUT[type=file], TEXTAREA {
+INPUT[type=text], INPUT[type=file], INPUT[type=search], TEXTAREA {
 	border:1px solid silver;
 }
 
