@@ -196,8 +196,21 @@ class ImagickThumb extends ThumbBase
 			throw new InvalidArgumentException('$height must be numeric and greater than zero');
 		}
 		
+		// make sure we're not exceeding our image size if we're not supposed to
+		if ($this->options['resizeUp'] === false)
+		{
+			$this->maxHeight	= (intval($height) > $this->currentDimensions['height']) ? $this->currentDimensions['height'] : $height;
+			$this->maxWidth		= (intval($width) > $this->currentDimensions['width']) ? $this->currentDimensions['width'] : $width;
+		}
+		else
+		{
+			$this->maxHeight	= intval($height);
+			$this->maxWidth		= intval($width);
+		}
 		
-		$this->workingImage->resizeExactly($width, $height); 
+		$this->calcImageSizeStrict($this->currentDimensions['width'], $this->currentDimensions['height']);
+		
+		$this->workingImage->resizeExactly($this->newDimensions['newWidth'], $this->newDimensions['newHeight']); 
 		
 		
 		// update all the variables and resources to be correct
@@ -221,10 +234,22 @@ class ImagickThumb extends ThumbBase
 			throw new InvalidArgumentException('$height must be numeric and greater than zero');
 		}
 		
+    	// make sure we're not exceeding our image size if we're not supposed to
+		if ($this->options['resizeUp'] === false) {
+			$this->maxHeight	= (intval($height) > $this->currentDimensions['height']) ? $this->currentDimensions['height'] : $height;
+			$this->maxWidth		= (intval($width) > $this->currentDimensions['width']) ? $this->currentDimensions['width'] : $width;
+		} else {
+			$this->maxHeight	= intval($height);
+			$this->maxWidth		= intval($width);
+		}
+		
 		//Correct background hex
 		$background = '#'.$background;
 		
-		$this->workingImage->resizeExactlyNoCrop($width, $height, $background); 
+		// get the new dimensions...
+		$this->calcImageSize($this->currentDimensions['width'], $this->currentDimensions['height']);
+		
+		$this->workingImage->resizeExactlyNoCrop($this->newDimensions['newWidth'], $this->newDimensions['newHeight'], $background); 
 		
 		
 		// update all the variables and resources to be correct
@@ -249,8 +274,13 @@ class ImagickThumb extends ThumbBase
 			throw new InvalidArgumentException('$height must be numeric and greater than zero');
 		}
 		
+		// get the new dimensions...
+		$this->newDimensions = array (
+			'newWidth'	=> $width,
+			'newHeight'	=> $height
+		);
 		
-		$this->workingImage->resize($width, $height, TRUE); 
+		$this->workingImage->resize($this->newDimensions['newWidth'], $this->newDimensions['newHeight'], TRUE); 
 		
 		
 		// update all the variables and resources to be correct

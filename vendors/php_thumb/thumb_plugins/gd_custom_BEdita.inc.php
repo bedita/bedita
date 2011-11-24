@@ -49,9 +49,9 @@ class GdCustomBEdita extends GdThumb{
 		
 		// create the working image
 		if (function_exists('imagecreatetruecolor')) {
-			$this->workingImage = imagecreatetruecolor($width, $height);
+			$this->workingImage = imagecreatetruecolor($this->newDimensions['newWidth'], $this->newDimensions['newHeight']);
 		} else {
-			$this->workingImage = imagecreate($width, $height);
+			$this->workingImage = imagecreate($this->newDimensions['newWidth'], $this->newDimensions['newHeight']);
 		}
 		
 		//fill the background

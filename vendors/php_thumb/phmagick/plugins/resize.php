@@ -86,9 +86,9 @@ class phMagick_resize{
 	function resizeExactlyNoCrop(phmagick $p, $width, $height, $background='#FFFFFF'){
 		
 		$cmd = $p->getBinary('montage');
-		$cmd .= ' -background ' . $background;
+		$cmd .= ' -background ' . '"'. $background .'"';
 		$cmd .= ' -geometry '. $width .'x'. $height;
-		$cmd .= '"' . $p->getSource() .'""'. $p->getDestination().'"';
+		$cmd .= ' "' . $p->getSource() .'" "'. $p->getDestination().'"';
 		$p->execute($cmd);
 		$p->setSource($p->getDestination());
 		$p->setHistory($p->getDestination());
