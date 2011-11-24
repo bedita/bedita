@@ -211,16 +211,18 @@ class ImagickThumb extends ThumbBase
     public function resizeFill($width, $height, $background ) {
 
     	// make sure our arguments are valid
-		if (!is_numeric($width) || $width  == 0)
+		if (!is_numeric($width) )
 		{
 			throw new InvalidArgumentException('$width must be numeric and greater than zero');
 		}
 		
-		if (!is_numeric($height) || $height == 0)
+		if (!is_numeric($height) )
 		{
 			throw new InvalidArgumentException('$height must be numeric and greater than zero');
 		}
 		
+		//Correct background hex
+		$background = '#'.$background;
 		
 		$this->workingImage->resizeExactlyNoCrop($width, $height, $background); 
 		
@@ -237,12 +239,12 @@ class ImagickThumb extends ThumbBase
 	public function resizeStretch($width, $height) 
 	{
 		    	// make sure our arguments are valid
-		if (!is_numeric($width) || $width  == 0)
+		if (!is_numeric($width) )
 		{
 			throw new InvalidArgumentException('$width must be numeric and greater than zero');
 		}
 		
-		if (!is_numeric($height) || $height == 0)
+		if (!is_numeric($height) )
 		{
 			throw new InvalidArgumentException('$height must be numeric and greater than zero');
 		}
