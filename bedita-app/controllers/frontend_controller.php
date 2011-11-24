@@ -1472,10 +1472,10 @@ abstract class FrontendController extends AppController {
 			} elseif ( $this->Tree->find('count',array("conditions" => array("id" => $content_id, "parent_id" => $sectionId))) == 0 ) {	
 				throw new BeditaException(__("Content " . $contentName . " doesn't belong to " . $secName, true));
 			}
-			$contentNameFilter = str_replace("-","_",$contentName);
+			$contentNameFilter = BeLib::getInstance()->variableFromNickname($contentName);
 		}
 		
-		$secNameFilter = str_replace("-","_",$secName);
+		$secNameFilter = BeLib::getInstance()->variableFromNickname($secName);
 		// section before filter
 		if (method_exists($this, $secNameFilter . "BeforeFilter")) {
 			$this->{$secNameFilter . "BeforeFilter"}($contentName);
