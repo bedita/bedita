@@ -87,10 +87,9 @@ $(document).ready(function() {
 {/if}
 
 
-	<div style="text-align:right; padding-left:30px; padding-right:20px; float:right;"><a href="{$html->url('/')}areas/viewSection/branch:{$object.id}">
+	<a class="BEbutton" style="padding-left:30px; padding-right:20px;" href="{$html->url('/')}areas/viewSection/branch:{$object.id}">
 		{t}create{/t}  {t}new section{/t} {t}here{/t} &nbsp;
-		<input type="button" value="GO" /></a>
-	</div>
+	</a>
 	
 </div>
 
