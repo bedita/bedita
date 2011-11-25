@@ -139,6 +139,15 @@
 						{t}password{/t}: <input type="password" name="sys[smtpOptions][password]" />
 					</td>
 				</tr>
+				<tr>
+					<th>{t}Mail support{/t}:</th>
+					<td>
+						{t}from{/t}: <input type="text" name="sys[mailSupport][from]" value="{$conf->mailSupport.from|default:''}" /><br/>
+						{t}to{/t}: <input type="text" name="sys[mailSupport][to]" value="{$conf->mailSupport.to|default:''}" /><br/>
+						{t}subject{/t}: <input type="text" name="sys[mailSupport][subject]" value="{$conf->mailSupport.subject|default:''}" /><br/>
+					</td>
+				</tr>
+
 			</table>
 			{/if}
 
