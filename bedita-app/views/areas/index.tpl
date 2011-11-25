@@ -15,7 +15,7 @@
 
 {include file="inc/menuleft.tpl"}
 
-{include file="inc/menucommands.tpl" fixed=false}
+{include file="inc/menucommands.tpl" fixed=true}
 
 <div class="head">
 
@@ -51,8 +51,8 @@
 
 			<!-- questo è brutto ma cross-browser -->
 			<table class="htab">
-				<td rel="areacontentC">{t}contents{/t}</td>
-				<td rel="areasectionsC">{t}sections{/t}</td>
+				<td rel="areacontentC">{t}all contents{/t}</td>
+				<td rel="areasectionsC">{t}just sections{/t}</td>
 				<td rel="areapropertiesC">{t}properties{/t}</td>
 			</table>	
 			<!-- -->	
