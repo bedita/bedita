@@ -598,15 +598,21 @@ class AdminController extends ModulesController {
 			throw new BeditaException(__("bedita url is unreachable", true) . ": " . $headerResponse[0] , $sys);
 		}
 
+		// smtpOptions password
+		$conf = Configure::getInstance();
+		if(!empty($conf->smtpOptions['password']) && !empty($sys['smtpOptions']) && empty($sys['smtpOptions']['password'])) {
+			$sys['smtpOptions']['password'] = $conf->smtpOptions['password'];
+		}
+		
 		// write bedita.sys.php
 		$beditaSysPath = CONFIGS . "bedita.sys.php";
-		$besys->writeConfigFile($beditaSysPath, $sys);
+		$besys->writeConfigFile($beditaSysPath, $sys, true);
 
 		// order langs
 		sort($cfg['langOptions']);
 		// write bedita.cfg.php
 		$beditaCfgPath = CONFIGS . "bedita.cfg.php";
-		$besys->writeConfigFile($beditaCfgPath, $cfg);
+		$besys->writeConfigFile($beditaCfgPath, $cfg, true);
 
 		$this->userInfoMessage(__("Configuration saved", true));
 

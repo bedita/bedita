@@ -1,6 +1,6 @@
 {literal}
 <script type="text/javascript">
-	function delLang(elem) {
+	function delElems(elem) {
 		var prev = $(elem).prev("input");
 		$(elem).prev("input").remove();
 		$(elem).remove();
@@ -9,13 +9,21 @@
 	$(document).ready(function(){
 		$("#system_config").prev(".tab").BEtabstoggle();
 		$("#general_config").prev(".tab").BEtabstoggle();
-
+		$('#addLocale').click(function () {
+			var v = $('#localesV').attr('value');
+			if($('input[value="' + v + '"]').length == 0) {
+				var key = $('#localesK').attr('value');
+				var value = $('#localesV').attr('value');
+				var newinput = '<input type="text" name="sys[locales][' + key + ']" value="' + value + '" readonly="readonly" /><input type="button" value="-" onclick="delElems(this)" />'
+				$('#localesAdded').append(newinput);
+			}
+		});
 		$('#addTranslationLang').click(function () {
 			var label = $('#translationLangs option:selected').text();
 			if($('input[value="' + label + '"]').length == 0) {
 				var value = $('#translationLangs').attr('value');
 				var index = $('#translationLangs').attr("selectedIndex");
-				var newinput = '<input type="text" rel="' + index + '" title="' + value + '" name="cfg[langOptions][' + value + ']" value="' + label + '" readonly="readonly" /><input type="button" value="-" onclick="delLang(this)" />'
+				var newinput = '<input type="text" rel="' + index + '" title="' + value + '" name="cfg[langOptions][' + value + ']" value="' + label + '" readonly="readonly" /><input type="button" value="-" onclick="delElems(this)" />'
 				$('#translationLangsAdded').append(newinput);
 			}
 		});
@@ -31,9 +39,7 @@
 
 <div class="mainfull">
 
-
 	<form action="{$html->url('/admin/saveConfig')}" method="post" name="configForm" id="configForm">
-
 
 		<div class="tab"><h2>{t}System configuration{/t}</h2></div>
 
@@ -104,17 +110,43 @@
 					{/if}
 				</tr>
 
+				<tr>
+					<th>{t}Locales{/t}:</th>
+					<td>
+						{t}key{/t}: <input type="text" id="localesK" />
+						{t}value{/t}: <input type="text" id="localesV" />
+						<input type="button" value="{t}Add{/t}" id="addLocale"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<div id="localesAdded">
+						{if !empty($conf->locales)}
+						{foreach $conf->locales as $langKey => $langLabel name='lof'}
+						<input type="text" title="{$langLabel}" name="sys[locales][{$langKey}]" value="{$langLabel}" readonly="readonly" /><input type="button" value="-" onclick="delElems(this)" />
+						{/foreach}
+						{/if}
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>{t}Smtp Options{/t}:</th>
+					<td>
+						{t}port{/t}: <input type="text" name="sys[smtpOptions][port]" value="{$conf->smtpOptions.port|default:''}" /><br/>
+						{t}timeout{/t}: <input type="text" name="sys[smtpOptions][timeout]" value="{$conf->smtpOptions.timeout|default:''}" /><br/>
+						{t}host{/t}: <input type="text" name="sys[smtpOptions][host]" value="{$conf->smtpOptions.host|default:''}" /><br/>
+						{t}username{/t}: <input type="text" name="sys[smtpOptions][username]" value="{$conf->smtpOptions.username|default:''}" /><br/>
+						{t}password{/t}: <input type="password" name="sys[smtpOptions][password]" />
+					</td>
+				</tr>
 			</table>
 			{/if}
 
 		</fieldset>
 
-
-
 		<div class="tab"><h2>{t}General configuration{/t}</h2></div>
 
 		<fieldset id="general_config">
-
 
 			{if !empty($bedita_cfg_err)}
 				<p>{$bedita_cfg_err}</p>
@@ -167,7 +199,7 @@
 					<td colspan="2">
 						<div id="translationLangsAdded">
 						{foreach $conf->langOptions as $langKey => $langLabel name='lof'}
-						<input type="text" rel="{$smarty.foreach.lof.index}" title="{$langLabel}" name="cfg[langOptions][{$langKey}]" value="{$langLabel}" readonly="readonly" /><input type="button" value="-" onclick="delLang(this)" />
+						<input type="text" rel="{$smarty.foreach.lof.index}" title="{$langLabel}" name="cfg[langOptions][{$langKey}]" value="{$langLabel}" readonly="readonly" /><input type="button" value="-" onclick="delElems(this)" />
 						{/foreach}
 						</div>
 					</td>
@@ -175,7 +207,6 @@
 			</table>
 			{/if}
 		</fieldset>
-
 
 	</form>
 
