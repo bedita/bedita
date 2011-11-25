@@ -1190,5 +1190,5 @@ class GdThumb extends ThumbBase
 	}
 	
 	//Fake for imageMagick
-	protected function setDestination () {}
+	public function setDestination () {}
 }
