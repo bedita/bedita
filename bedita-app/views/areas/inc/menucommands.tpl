@@ -4,7 +4,7 @@ Menu comandi a SX valido per tutte le pagine del controller.
 *}
 
 
-<div class="secondacolonna" style="z-index:10">
+<div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 
 	{assign_concat var="back" 1=$html->url('/') 2=$currentModule.url}
