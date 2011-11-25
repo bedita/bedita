@@ -484,10 +484,11 @@ UL.modules {
 ...........................................*/
 
 NAV.modulesmenu {
+	left:300px;
 	top:0px;
 	padding:20px 0px 10px 0px;
 	text-align:right;
-	width:660px;
+	min-width:700px;
 }
 
 .modulesmenu A {
@@ -509,9 +510,13 @@ NAV.modulesmenu {
 	background: #ccc url(../img/iconSearch.png) center no-repeat;
 }
 
+.modulesmenu form {
+	display:inline-block; padding:2px 10px 0px 5px;
+}
+
 .modulesmenu input[type='submit'] {
 	background: #ccc url(../img/iconSearch.png) center no-repeat;
-	width:30px;
+	width:20px;
 }
 
 

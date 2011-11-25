@@ -2,7 +2,7 @@
 
 <nav class="modulesmenu">
 	
-		<form style="display:inline-block; padding:2px 15px 0px 5px;" action="{$html->url('/')}{$moduleName}/index{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">				
+		<form action="{$html->url('/')}{$moduleName}/index{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">				
 		
 		<input type="text" placeholder="{t}search{/t}" name="searchstring" value="{$stringSearched|default:""}"/>
 		<input type="submit" value=""/>
