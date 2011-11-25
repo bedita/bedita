@@ -133,25 +133,29 @@ $(document).ready(function() {
 		</select>
 		</div>
 		
-		<div class="toolbar" style="text-align:right; padding-left:30px; float:right;">
+		<div class="toolbar sans" style="text-align:right; padding-left:30px; float:right;">
 			
 			{$beToolbar->first('page','','page')}
-			<span class="evidence"> {$beToolbar->current()} </span> 
-			{t}of{/t}  &nbsp;
-			<span class="evidence">
+			 	
+				{$beToolbar->current()} 
+				&nbsp;{t}of{/t}&nbsp;
+			
 				{if ($beToolbar->pages()) > 0}
 				{$beToolbar->last($beToolbar->pages(),'',$beToolbar->pages())}
 				{else}1{/if}
-			</span>
-
-			<span class="evidence"> &nbsp;</span>
 			
-			{$beToolbar->prev('‹ prev','','‹ prev')}
-		
-			<span class="evidence"> &nbsp;</span>
+			{if ($beToolbar->pages()) > 1}
 			
-			{$beToolbar->next('next ›','','next ›')}
-		
+				&nbsp;
+				
+				{$beToolbar->prev('‹ prev','','‹ prev')}
+			
+				&nbsp;
+				
+				{$beToolbar->next('next ›','','next ›')}
+			
+			{/if}
+			
 		</div>
 		
 	</div>

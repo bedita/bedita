@@ -23,8 +23,10 @@ $(document).ready(function(){
 	{if !empty($branch)}
 		// se passato branch apre con quel ramo checked
 		$('input[value="{$branch}"]').attr("checked",true);
+		
+		$('option[value="{$branch}"]').attr("selected",true);
+		
 		$("#whereto").prev(".tab").BEtabsopen();
-			
 	{/if}
 	{literal}
 	

@@ -43,7 +43,7 @@
 					{assign var=leafs value=$conf->objectTypes.leafs}
 					{foreach from=$conf->objectTypes item=type key=key}	
 						{if ( in_array($type.id,$leafs.id) && is_numeric($key) && $type.module_name == $currentModule.name )}
-							{t}{$type.model}{/t}
+							{t}{$type.model|lower}{/t}
 						{/if}
 					{/foreach}
 					</a>

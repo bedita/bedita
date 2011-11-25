@@ -83,7 +83,17 @@ $(document).ready(function() {
 	
 
 {else}
-	&nbsp;&nbsp;<em>{t}no sections{/t}</em>
+	<em style="padding:20px;">{t}no sections{/t}</em>
 {/if}
 
+
+	<div style="text-align:right; padding-left:30px; padding-right:20px; float:right;"><a href="{$html->url('/')}areas/viewSection/branch:{$object.id}">
+		{t}create{/t}  {t}new section{/t} {t}here{/t} &nbsp;
+		<input type="button" value="GO" /></a>
+	</div>
+	
 </div>
+
+
+
+
