@@ -51,6 +51,17 @@
 			<table class="" border=0 style="margin-bottom:10px">
 
 				<tr>
+					<th style="text-transform:none">{t}BEdita url{/t}:</th>
+					<td>
+						<input type="text" name="sys[beditaUrl]" value="{$conf->beditaUrl}" style="width: 300px;"/>
+					</td>
+					{if !empty($bedita_url_err)}
+					<td>
+						{$bedita_url_err}
+					</td>
+					{/if}
+				</tr>
+				<tr>
 					<th>{t}Media root{/t}:</th>
 					<td>
 						<input type="text" name="sys[mediaRoot]" value="{$conf->mediaRoot}" style="width: 300px;"/>
@@ -70,18 +81,6 @@
 					{if !empty($media_url_err)}
 					<td>
 						{$media_url_err}
-					</td>
-					{/if}
-				</tr>
-
-				<tr>
-					<th>{t}Bedita url{/t}:</th>
-					<td>
-						<input type="text" name="sys[beditaUrl]" value="{$conf->beditaUrl}" style="width: 300px;"/>
-					</td>
-					{if !empty($bedita_url_err)}
-					<td>
-						{$bedita_url_err}
 					</td>
 					{/if}
 				</tr>
@@ -119,8 +118,9 @@
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2">
-						<div id="localesAdded">
+					<td></td>
+					<td>
+						<div id="localesAdded" style="width:180px;">
 						{if !empty($conf->locales)}
 						{foreach $conf->locales as $langKey => $langLabel name='lof'}
 						<input type="text" title="{$langLabel}" name="sys[locales][{$langKey}]" value="{$langLabel}" readonly="readonly" /><input type="button" value="-" onclick="delElems(this)" />
@@ -130,21 +130,25 @@
 					</td>
 				</tr>
 				<tr>
-					<th>{t}Smtp Options{/t}:</th>
+					<th style="padding-top:10px; vertical-align:top">{t}Smtp Options{/t}:</th>
 					<td>
-						{t}port{/t}: <input type="text" name="sys[smtpOptions][port]" value="{$conf->smtpOptions.port|default:''}" /><br/>
-						{t}timeout{/t}: <input type="text" name="sys[smtpOptions][timeout]" value="{$conf->smtpOptions.timeout|default:''}" /><br/>
-						{t}host{/t}: <input type="text" name="sys[smtpOptions][host]" value="{$conf->smtpOptions.host|default:''}" /><br/>
-						{t}username{/t}: <input type="text" name="sys[smtpOptions][username]" value="{$conf->smtpOptions.username|default:''}" /><br/>
-						{t}password{/t}: <input type="password" name="sys[smtpOptions][password]" />
+						<table class="simpleList">
+						<tr><th>{t}port{/t}:</th><td><input type="text" name="sys[smtpOptions][port]" value="{$conf->smtpOptions.port|default:''}" /></td></tr>
+						<tr><th>{t}timeout{/t}:</th><td><input type="text" name="sys[smtpOptions][timeout]" value="{$conf->smtpOptions.timeout|default:''}" /></td></tr>
+						<tr><th>{t}host{/t}:</th><td><input type="text" name="sys[smtpOptions][host]" value="{$conf->smtpOptions.host|default:''}" /></td></tr>
+						<tr><th>{t}username{/t}:</th><td><input type="text" name="sys[smtpOptions][username]" value="{$conf->smtpOptions.username|default:''}" /></td></tr>
+						<tr><th>{t}password{/t}:</th><td><input type="password" name="sys[smtpOptions][password]" /></td></tr>
+						</table>
 					</td>
 				</tr>
 				<tr>
-					<th>{t}Mail support{/t}:</th>
+					<th style="padding-top:10px; vertical-align:top">{t}Mail support{/t}:</th>
 					<td>
-						{t}from{/t}: <input type="text" name="sys[mailSupport][from]" value="{$conf->mailSupport.from|default:''}" /><br/>
-						{t}to{/t}: <input type="text" name="sys[mailSupport][to]" value="{$conf->mailSupport.to|default:''}" /><br/>
-						{t}subject{/t}: <input type="text" name="sys[mailSupport][subject]" value="{$conf->mailSupport.subject|default:''}" /><br/>
+						<table class="simpleList">
+							<tr><th>{t}from{/t}:</th><td><input type="text" name="sys[mailSupport][from]" value="{$conf->mailSupport.from|default:''}" /></td></tr>
+							<tr><th>{t}to{/t}:</th><td><input type="text" name="sys[mailSupport][to]" value="{$conf->mailSupport.to|default:''}" /></td></tr>
+							<tr><th>{t}subject{/t}:</th><td><input type="text" name="sys[mailSupport][subject]" value="{$conf->mailSupport.subject|default:''}" /></td></tr>
+						</table>
 					</td>
 				</tr>
 
@@ -197,6 +201,7 @@
 					<th>{t}Translation languages{/t}:</th>
 					<td>
 						<select id="translationLangs">
+							<option></option>
 							{foreach $langs_iso as $langKey => $langLabel}
 							<option value="{$langKey}">{$langLabel}</option>
 							{/foreach}
@@ -205,8 +210,9 @@
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2">
-						<div id="translationLangsAdded">
+					<td></td>
+					<td>
+						<div id="translationLangsAdded" style="width:200px;">
 						{foreach $conf->langOptions as $langKey => $langLabel name='lof'}
 						<input type="text" rel="{$smarty.foreach.lof.index}" title="{$langLabel}" name="cfg[langOptions][{$langKey}]" value="{$langLabel}" readonly="readonly" /><input type="button" value="-" onclick="delElems(this)" />
 						{/foreach}
