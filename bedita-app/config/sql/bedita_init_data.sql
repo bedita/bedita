@@ -31,6 +31,7 @@ INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('editor', true, fal
 INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('reader', true, false);
 INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('frontend', false, false);
 INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('translator', true, true);
+INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('manager', true, true);
 
 INSERT INTO groups_users ( user_id , group_id ) VALUES (1, 1);
 
@@ -40,6 +41,7 @@ INSERT INTO groups_users ( user_id , group_id ) VALUES (1, 1);
 INSERT INTO modules (id,label, name, url, status, priority) VALUES ('1','publications', 'areas', 'areas', 'on', '1');
 INSERT INTO modules (id,label, name, url, status, priority) VALUES ('2','admin', 'admin', 'admin', 'on', '15');
 INSERT INTO modules (id,label, name, url, status, priority) VALUES ('3','translations', 'translations', 'translations', 'on', '8');
+INSERT INTO modules (id,label, name, url, status, priority) VALUES ('4','users', 'users', 'users', 'on', '14');
 INSERT INTO modules (id,label, name, url, status, priority) VALUES ('6','documents', 'documents', 'documents', 'on', '2');
 INSERT INTO modules (id,label, name, url, status, priority) VALUES ('7','news', 'news', 'news', 'on', '9');
 INSERT INTO modules (id,label, name, url, status, priority) VALUES ('8','galleries', 'galleries', 'galleries', 'on', '5');
@@ -136,6 +138,9 @@ VALUES (25, 1, 'group', '3' );
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
 VALUES (26, 1, 'group', '3' );
 
+-- module users
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (4, 1, 'group', '3');
 
 -- --------------------------------------
 -- editor perms
@@ -258,3 +263,63 @@ VALUES (26, 3, 'group', '1' );
 -- module translations
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
 VALUES (3, 5, 'group', '3' );
+
+-- --------------------------------------
+-- manager permissions
+-- --------------------------------------
+
+-- module areas
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (1, 6, 'group', '3' );
+
+-- module translations
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (3, 6, 'group', '3' );
+
+-- module documents
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (6, 6, 'group', '3' );
+
+-- module news
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (7, 6, 'group', '3' );
+
+-- module galleries
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (8, 6, 'group', '3' );
+
+-- module events
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (10, 6, 'group', '3' );
+
+-- module webmarks
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (12, 6, 'group', '3' );
+
+-- module addressbook
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (16, 6, 'group', '3' );
+
+-- module newsletter
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (18, 6, 'group', '3' );
+
+-- module statistics
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (23, 6, 'group', '3' );
+
+-- module tags
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (24, 6, 'group', '3' );
+
+-- module comments
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (25, 6, 'group', '3' );
+
+-- module multimedia
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (26, 6, 'group', '3' );
+
+-- module users
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (4, 6, 'group', '3');

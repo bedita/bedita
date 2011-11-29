@@ -31,274 +31,49 @@
  */
 class AdminController extends ModulesController {
 
-	 var $uses = array('User', 'Group','Module') ;
-	 var $components = array('BeSystem');
-	 var $helpers = array('Paginator');
-	 var $paginate = array(
-	 	'User' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc')),
-		'Group' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc')),
-	 	'EventLog' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc'))
-	 ); 
-	 protected $moduleName = 'admin';
+	public $uses = array() ;
+	public $components = array('BeSystem');
+	public $helpers = array('Paginator');
+	public $paginate = array(
+	'EventLog' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc'))
+	); 
+	protected $moduleName = 'admin';
 	 
-	 function index() { 	
-		$this->set('users', $this->paginate('User'));
-	}
-	
-	function showUsers() {
-		$allGroups = $this->Group->find("all");
-		$authGroups = array();
-		$userGroups = array();
-		if(isset($user)) {
-			foreach ($user['Group'] as $g) {
-				array_push($userGroups, $g['name']);
-			}
-		}
-		$formGroups = array();
-		foreach ($allGroups as $g) {
-			$isGroup=false;
-			if(array_search($g['Group']['name'],$userGroups) !== false)
-				$isGroup = true;
-			$formGroups[$g['Group']['name']] = $isGroup;
-			if($g['Group']['backend_auth'] == 1)
-				$authGroups[] = $g['Group']['name'];
-		}
-		$this->set('users', $this->User->find("all"));
-		$this->set('formGroups',  $formGroups);
-		$this->set('authGroups',  $authGroups);
-		$this->layout = null;
-	}
-
-	 function saveUser() {
-
-	 	$this->checkWriteModulePermission();
-
-	 	$userGroups=array();
-		if(isset($this->data['groups'] )) {
-	 		foreach ($this->data['groups'] as $k=>$v)
-				array_push($userGroups, $k);
-		}
-		
-		// Format custom properties
-		$this->BeCustomProperty->setupUserPropertyForSave() ;
-		
-		if(!isset($this->data['User']['id'])) {
-			if (!$this->BeAuth->checkConfirmPassword($this->params['form']['pwd'], $this->data['User']['passwd'])) {
-				throw new BeditaException(__("Passwords mismatch",true));
-			}
-			$this->data['User']['passwd'] = trim($this->data['User']['passwd']);
-			$this->BeAuth->createUser($this->data, $userGroups);
-			$this->eventInfo("user ".$this->data['User']['userid']." created");
-			$this->userInfoMessage(__("User created",true));
-		} else {
-			$pass = trim($this->data['User']['passwd']);
-			$confirmPass = trim($this->params['form']['pwd']);
-			if(empty($pass) && empty($confirmPass)) {
-				unset($this->data['User']['passwd']);
-			} elseif (!$this->BeAuth->checkConfirmPassword($this->params['form']['pwd'], $this->data['User']['passwd'])) {
-				throw new BeditaException(__("Passwords mismatch",true));
-			}
-			$this->BeAuth->updateUser($this->data, $userGroups);
-			$this->eventInfo("user ".$this->data['User']['userid']." updated");
-			$this->userInfoMessage(__("User updated",true));
-		}
-	 }
-
-	 function saveUserAjax () {
-		$this->layout = null;
-		$this->checkWriteModulePermission();
-		try {
-			$this->Transaction->begin() ;
-			if(empty($this->data)) {
-				throw new BeditaException(__("Empty data",true));
-			}
-			$userGroups=array();
-			if(isset($this->data['groups'] )) {
-				foreach ($this->data['groups'] as $k=>$v)
-					array_push($userGroups, $k);
-			}
-			$this->data['User']['passwd'] = substr($this->data['User']['userid'],0,4) . "+pwd";
-			$this->BeAuth->createUser($this->data, $userGroups);
-			$u = $this->User->findByUserid($this->data['User']['userid']);
-			$this->eventInfo("user ".$this->data['User']['userid']." created");
-			$this->Transaction->commit();
-			$this->set("userId", $u['User']['id']);
-			$this->set("userCreated", true);
-		} catch(BeditaException $ex) {
-			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
-			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
-			$this->setResult(self::ERROR);
-			$this->set("errorMsg", $ex->getMessage());
-		}
-	}
-	
-	 function removeUser($id) {
-	 	$this->checkWriteModulePermission();
-	 	if(isset($id)) {
-	  		$u = $this->User->findById($id);
-		  	if(empty($u))
-		  		throw new BeditaException(__("Bad data",true));
-		  	$userid = $u['User']['userid'];
-		  	if($userid === $this->BeAuth->user["userid"])
-		  		throw new BeditaException(__("Auto-remove forbidden",true));
-		  	$this->BeAuth->removeUser($userid);
-	 		$this->eventInfo("user ".$userid." deleted");
-	 	}
-	  }
-
-	  function viewUser($id=NULL) {
-	  	
-	 	if(isset($id)) {
-	 		$userdetail = $this->User->findById($id) ;
-		  	if(empty($userdetail)) {
-		  		throw new BeditaException(__("Bad data",true));
-			}
-	 		$userdetailModules = ClassRegistry::init("PermissionModule")->getListModules($userdetail['User']['userid']);
-	 		
-		} else {
-			$userdetail = NULL;
-			$userdetailModules = NULL;
-		}
-
-		$allGroups = $this->Group->find("all", array(
-				"contain" => array()
-			)
-		);
-		$userGroups = array();
-		if(isset($userdetail)) {
-			foreach ($userdetail['Group'] as $g) {
-				array_push($userGroups, $g['name']);
-			}
-		}
-		$formGroups = array();
-		$authGroups = array();
-		foreach ($allGroups as $g) {
-			$isGroup=false;
-			if(array_search($g['Group']['name'],$userGroups) !== false)
-				$isGroup = true;
-			$formGroups[$g['Group']['name']] = $isGroup;
-			if($g['Group']['backend_auth'] == 1)
-				$authGroups[] = $g['Group']['name'];
-		}
-		
-		$this->set('userdetail',  $userdetail['User']);
-		if (is_array($userdetail["ObjectUser"])) {
-			$this->set('objectUser', $this->objectRelationArray($userdetail["ObjectUser"]));
-		}
-		$this->set('formGroups',  $formGroups);
-		$this->set('authGroups',  $authGroups);
-		$this->set('userdetailModules', $userdetailModules) ;
-		
-		$property = $this->BeCustomProperty->setupUserPropertyForView($userdetail);
-		$this->set('userProperty',  $property);
-		
-		BeLib::getObject("BeConfigure")->setExtAuthTypes();
-	 }
-
-	private function loadGroups() {
-		return $this->paginate('Group');
-	}
 	 
-	 function groups() { 	
-		$this->set('groups', $this->loadGroups());
-		$this->set('group',  NULL);
-		$this->set('modules', $this->allModulesWithFlag());
-	 }
-	 
-	  function viewGroup($id = null) {
-		$this->set('groups', $this->loadGroups());
-	  	$g = $this->Group->findById($id);
-	  	if(empty($g))
-	  		throw new BeditaException(__("Bad data",true));
-	  	foreach($g['User'] as &$user) {
-	  		$u = $this->User->findById($user['id']);
-	  		$user['userid'] = $u['User']['userid'];
-	  	}
-		$this->set('group', $g);
-		
-		$modules = $this->allModulesWithFlag();
-		$permsMod = ClassRegistry::init("PermissionModule")->getPermissionModulesForGroup($id);
-		foreach ($permsMod as $p) {
-			$modId = $p['PermissionModule']['module_id'];
-			foreach ($modules as &$mod) {
-				if($mod['Module']['id'] === $modId)
-					$mod['Module']['flag'] = $p['PermissionModule']['flag'];
-			}
-		}
-		$this->set('modules', $modules);
-	  
-	  }
-	 
-	  private function allModulesWithFlag() {
-		$modules = $this->Module->find("all");
-		foreach ($modules as &$mod) 
-			$mod['Module']['flag'] = 0;
-	  	return $modules;
-	  }
-	  
-	  function saveGroup() {
-	 	$this->checkWriteModulePermission();
-
-	  	$this->Transaction->begin();
-	  	$newGroup = false;
-		$groupId = $this->BeAuth->saveGroup($this->data);
-	  	if(!isset($this->data['Group']['id'])) {
-			$this->eventInfo("group ".$this->data['Group']['name']." created");
-	  		$newGroup = true;
-	  	} else {
-	  		$this->eventInfo("group ".$this->data['Group']['name']." update");
-		}
-		if(isset($this->data['ModuleFlags'])) {
-	  		ClassRegistry::init("PermissionModule")->updateGroupPermission($groupId, $this->data['ModuleFlags']);
-	  	}
-	  	
-	  	$this->userInfoMessage(__("Group ".($newGroup? "created":"updated"),true));
-	  	$this->Transaction->commit();
-	  }
-	  
-	  function removeGroup($id) {
-	 	$this->checkWriteModulePermission();
-	  	$groupName = $this->Group->field("name", array("id" => $id));
-	  	$this->BeAuth->removeGroup($groupName);
-		$this->eventInfo("group ".$groupName." deleted");
-		$this->userInfoMessage(__("Group deleted",true));
-	  }
-
-	 public function systemInfo() { 	
-	 	$this->beditaVersion();
+	public function systemInfo() { 	
+		$this->beditaVersion();
 		$this->set('sys', $this->BeSystem->systemInfo());
-	 }
+	}
 
-	 public function systemEvents() { 	
+	public function systemEvents() { 	
 		$this->set('events', $this->paginate('EventLog'));
-	 }
+	}
 	 
-	 private function beditaVersion() {
-	 	$c = Configure::getInstance();
+	private function beditaVersion() {
+		$c = Configure::getInstance();
 		if (!isset($c->Bedita['version'])) {
 			$versionFile = APP . 'config' . DS . 'bedita.version.php';
-			if(file_exists($versionFile))
+			if(file_exists($versionFile)) {
 				require($versionFile);
-			else
+			} else {
 				$config['Bedita.version'] = "--";
+			}
 			$c->write('Bedita.version', $config['Bedita.version']);
 		}
-	 }
+	}
 	 
-	 public function deleteEventLog() { 	
-	 	$this->checkWriteModulePermission();
-	 	$this->beditaVersion();
-	 	$this->EventLog->deleteAll("id > 0");
+	public function deleteEventLog() { 	
+		$this->checkWriteModulePermission();
+		$this->beditaVersion();
+		$this->EventLog->deleteAll("id > 0");
 		$this->set('events', $this->paginate('EventLog'));
 		$this->set('sys', $this->BeSystem->systemInfo());
-	 }
+	}
 
 	public function customproperties() { 	
 		$properties = ClassRegistry::init("Property")->find("all", array(
-							"contain" => "PropertyOption"
-						)
-					);
-		
+			"contain" => "PropertyOption"
+		));
 		$this->set("properties", $properties);
 	}
 	 
@@ -319,19 +94,21 @@ class AdminController extends ModulesController {
 	 				"object_type_id" => $this->data["Property"]["object_type_id"]
  				);
  				
- 		if (!empty($this->data["Property"]["id"]))
+ 		if (!empty($this->data["Property"]["id"])) {
  			$conditions[] = "id <> '" . $this->data["Property"]["id"] . "'";
+		}
 	 	
 	 	$countProperties = $propertyModel->find("count", array(
  				"conditions" => $conditions
- 			) 
- 		);
+ 		));
 		
- 		if ($countProperties > 0)
+ 		if ($countProperties > 0) {
  			throw new BeditaException(__("Duplicate property name for the same type",true));
+		}
 
-	 	if (empty($this->data["Property"]["multiple_choice"]) || $this->data["Property"]["property_type"] != "options")
+	 	if (empty($this->data["Property"]["multiple_choice"]) || $this->data["Property"]["property_type"] != "options") {
 	 		$this->data["Property"]["multiple_choice"] = 0;
+		}
 	 	
 	 	$this->Transaction->begin();
 	 	if (!$propertyModel->save($this->data)) {
@@ -341,8 +118,9 @@ class AdminController extends ModulesController {
 	 	// save options
 	 	$propertyModel->PropertyOption->deleteAll("property_id='" . $propertyModel->id . "'");
 	 	if ($this->data["Property"]["property_type"] == "options") {
-	 		if (empty($this->data["options"]))
+	 		if (empty($this->data["options"])) {
 	 			throw new BeditaException(__("Missing options",true));
+			}
 	 			
 	 		$optionArr = explode(",", trim($this->data["options"],","));
 	 		foreach ($optionArr as $opt) {
@@ -357,9 +135,9 @@ class AdminController extends ModulesController {
 	 	
 	 	$this->eventInfo("property ".$this->data['Property']['name']." saved");
 		$this->userInfoMessage(__("Custom property saved",true));	 	
-	 }
+	}
 
-	 function deleteCustomProperties() {
+	function deleteCustomProperties() {
 	 	$this->checkWriteModulePermission();
 	 	if (!empty($this->data["Property"]["id"])) {
 	 		if (!ClassRegistry::init("Property")->delete($this->data["Property"]["id"])) {
@@ -620,34 +398,10 @@ class AdminController extends ModulesController {
 
 	protected function forward($action, $esito) {
 	 	 	$REDIRECT = array(
-				"viewGroup" => 	array(
- 								"OK"	=> self::VIEW_FWD.'groups',
-	 							"ERROR"	=> self::VIEW_FWD.'groups'
-	 						),
-	 	 		"saveUser" => 	array(
- 								"OK"	=> "/admin/index",
-	 							"ERROR"	=> $this->referer() 
-	 						),
-				"removeUser" => 	array(
-	 							"OK"	=> "/admin",
-	 							"ERROR"	=> "/admin" 
-	 						),
- 				"saveGroup" => 	array(
- 								"OK"	=> "/admin/groups",
-	 							"ERROR"	=> "/admin/groups" 
-	 						),
 				"deleteEventLog" => 	array(
  								"OK"	=> self::VIEW_FWD.'systemEvents',
 	 							"ERROR"	=> self::VIEW_FWD.'systemEvents'
 	 						),
-	 			"removeGroup" => 	array(
- 								"OK"	=> "/admin/groups",
-	 							"ERROR"	=> "/admin/groups" 
-	 						),
-				"saveUserAjax" =>	array(
-					 			"OK"	=> self::VIEW_FWD.'save_user_ajax_response',
-								"ERROR"	=> self::VIEW_FWD.'save_user_ajax_response'
-							),
 				"saveCustomProperties" =>	array(
 					 			"OK"	=> '/admin/customproperties',
 								"ERROR"	=> '/admin/customproperties'

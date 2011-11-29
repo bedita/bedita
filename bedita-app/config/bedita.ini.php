@@ -189,6 +189,7 @@ $config['modules'] = array(
 	"areas" => array("id" => 1, "label" => "publications"),
 	"admin" => array("id" => 2, "label" => "admin"),
 	"translations" => array("id" => 3, "label" => "translations"),
+	"users" => array("id" => 4, "label" => "users"),
 	"documents" => array("id" => 6, "label" => "documents"),
 	"news" => array("id" => 7, "label" => "news"),
 	"galleries" => array("id" => 8, "label" => "galleries"),
