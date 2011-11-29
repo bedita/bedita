@@ -56,6 +56,9 @@
 		<td>
 			{$c.lang}
 		</td>
+		
+		<td>{if $c.num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
+		
 		<td class="commands" style="white-space:nowrap">
 			<input type="button" class="BEbutton golink" onClick="window.open($(this).attr('href'));" href="{$html->url('/')}{$conf->objectTypes[$c.object_type_id].module_name}/view/{$c.id}" name="details" value="››" />
 			{if !empty($c.fixed)}
@@ -67,9 +70,10 @@
 			{/if}
 		</td>
 	</tr>
+{foreachelse}
+
+	<tr>
+		<td><i>no items</i></td>
+	</tr>
+
 {/foreach}
-
-
-
-
-
