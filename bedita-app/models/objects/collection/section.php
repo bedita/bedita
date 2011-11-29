@@ -43,16 +43,17 @@ class Section extends BeditaCollectionModel
 										"LangText",
 										"Alias",
 										"Annotation",
+										"Category",
 										"Version" => array("User.realname", "User.userid")
 										)
 									),
 
        			"default" => array("BEObject" => array("ObjectProperty", 
-									"LangText", "ObjectType")),
+									"LangText", "ObjectType", "Category")),
 
 				"minimum" => array("BEObject" => array("ObjectType")),
 		
-				"frontend" => array("BEObject" => array("LangText"), "Tree")
+				"frontend" => array("BEObject" => array("LangText", "Category"), "Tree")
 		);
 	
 	var $validate = array(

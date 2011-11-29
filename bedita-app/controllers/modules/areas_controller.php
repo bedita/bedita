@@ -129,35 +129,17 @@ class AreasController extends ModulesController {
 	 
 	 /**
 	  * Add or modify area
-	  * URLOK and URLERROR should be defined
 	  */
 	function saveArea() {
 		$this->checkWriteModulePermission();
-		if(empty($this->data))
-			throw new BeditaException( __("No data", true));
-		$new = (empty($this->data['id'])) ? true : false ;
-		// Verify permissions for the object
-		if(!$new) { 
-			$this->checkObjectWritePermission($this->data['id']);
-		}
-		// Format custom properties
-		$this->BeCustomProperty->setupForSave() ;
-		// Format translations for fields
-
-		if(empty($this->data["syndicate"]))
+		$new = (empty($this->data['id'])) ? true : false;
+		$this->Transaction->begin();
+		if (empty($this->data["syndicate"])) {
 			$this->data["syndicate"] = 'off';
-			
-		if(!isset($this->data['Permission'])) 
-			$this->data['Permission'] = array() ;
+		}
+		$this->saveObject($this->Area);
 		
-		$this->Transaction->begin() ;
-		// Save data
-		if(!$this->Area->save($this->data))
-
-			throw new BeditaException( __("Error saving area", true),  $this->Area->validationErrors);
-		
-		$id = $this->Area->getID();
-		
+		$id = $this->Area->id;
 		if(!$new) {
 			
 			// remove children
@@ -181,57 +163,34 @@ class AreasController extends ModulesController {
 			}
 		}
 		
-		$this->Transaction->commit() ;
-		$this->userInfoMessage(__("Area saved", true)." - ".$this->data["title"]);
+	 	$this->Transaction->commit() ;
+ 		$this->userInfoMessage(__("Area saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("area ". $this->data["title"]."saved");
 	}
 
 	/**
 	 * Save/modify section.
-	 * URLOK and URLERROR should be defined.
 	 */
 	function saveSection() {
 		
 		$this->checkWriteModulePermission();
-		if(empty($this->data)) {
-			throw new BeditaException(__("No data", true));
-		}
-		$new = (empty($this->data['id'])) ? true : false ;
-		// Verify permissions for the object
-		if (!$new) {
-			$this->checkObjectWritePermission($this->data['id']);
-		}
-		if (empty($this->data['parent_id'])) {
-			throw new BeditaException(__("No publication", true));
-		}
-
-		// Format custom properties
-		$this->BeCustomProperty->setupForSave() ;
-		
-		if (!isset($this->data['Permission'])) {
-			$this->data['Permission'] = array();
-		}
-
+		$new = (empty($this->data['id'])) ? true : false;
+		$this->Transaction->begin();
 		if (empty($this->data["syndicate"])) {
 			$this->data["syndicate"] = 'off';
 		}
-		
 		if(empty($this->data["parent_id"])) {
 			throw new BeditaException( __("Missing parent", true));
 		}
+		$this->saveObject($this->Section);
 		
-		$this->Transaction->begin() ;
-			
-		if(!$this->Section->save($this->data)) {
-			throw new BeditaException( __("Error saving section", true), $this->Section->validationErrors );
-		}
+		$id = $this->Section->id;
 		
-		$id = $this->Section->getID();
 		// Move section in the right tree position, if necessary
 		if(!$new) {
 			
 			if (!$this->BEObject->isFixed($id)) {
-				$oldParent = $this->Tree->getParent($id) ;
+				$oldParent = $this->Tree->getParent($id);
 				if($oldParent != $this->data["parent_id"]) {
 					if(!$this->Tree->move($this->data["parent_id"], $oldParent, $id)) {
 						throw new BeditaException( __("Error moving section in the tree", true));
@@ -260,7 +219,7 @@ class AreasController extends ModulesController {
 			}
 		}
 		
-		$this->Transaction->commit() ;
+	 	$this->Transaction->commit() ;
 		$this->userInfoMessage(__("Section saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("section [". $this->data["title"]."] saved");
 	}

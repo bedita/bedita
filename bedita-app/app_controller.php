@@ -603,7 +603,8 @@ class AppController extends Controller
 			throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
 		}
 
-		if(!$fixed) {
+		// handle tree. Section and Area handled in AreaController
+		if(!$fixed && $beModel->name != "Section" &&  $beModel->name != "Area") {
 			if(!isset($this->data['destination'])) 
 				$this->data['destination'] = array() ;
 			$this->BeTree->updateTree($beModel->id, $this->data['destination']);
