@@ -2,13 +2,11 @@
 
 <nav class="modulesmenu">
 	
-		<form action="{$html->url('/')}{$moduleName}/index{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">				
 		
-		<input type="text" placeholder="{t}search{/t}" name="searchstring" value="{$stringSearched|default:""}"/>
-		<input type="submit" value=""/>
-		</form>
 		
-		<a title="{t}help{/t}" class="helptrigger">?</a>
+		<a title="{t}search{/t}" class="searchtrigger"></a>
+		
+		<!-- <a title="{t}help{/t}" class="helptrigger">?</a> -->
 {strip}
 {foreach from=$moduleListInv key=k item=mod}
 {if ($mod.status == 'on')}
@@ -21,3 +19,8 @@
 
 {/strip}
 </nav>
+
+	<form class="searchobjects" {if !empty($stringSearched)}style="display:block"{/if} 	action="{$html->url('/')}{$moduleName}/index{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">					
+	<input type="text" placeholder="{t}search{/t}" name="searchstring" value="{$stringSearched|default:""}"/>
+	<input type="submit" value="{t}GO{/t}"/>
+	</form>

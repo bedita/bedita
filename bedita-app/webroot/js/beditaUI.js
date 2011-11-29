@@ -540,6 +540,17 @@ $(".idtrigger").css("cursor","pointer").click(function() {
 
 /*...........................................    
 
+   search
+
+...........................................*/
+
+$(".searchtrigger").click(function() {
+	$(".searchobjects").toggle();
+});
+
+
+/*...........................................    
+
    versin / history
 
 ...........................................*/
@@ -556,8 +567,6 @@ $(".idtrigger").css("cursor","pointer").click(function() {
 
 /* end of document ready() */
 });
-
-
 
 
 /*...........................................    
@@ -666,4 +675,8 @@ function getFlashVersion(){
 
   	return false; 
 } 
-	
+
+
+
+
+
