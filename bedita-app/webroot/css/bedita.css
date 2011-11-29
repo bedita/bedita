@@ -221,24 +221,11 @@ width: 660px;
 
 ...........................................*/
 
-
-/*
-@font-face{
-font-family:'BEfont';
-src: url('../fonts/BellGothicStd-Black.otf') format('opentype');
-}
-*/
-
-BODY {font-size:12px; font-family: "Arial", "Helvetica", sans-serif; line-height:1.5em;}
+BODY {font-size:12px; font-family: "Helvetica Neue","Helvetica","Arial", sans-serif; line-height:1.5em;}
 
 H1 {font:normal 2em "Georgia", "Times New Roman", Times, serif; line-height:1em}
 
 H2 {font:normal 1.5em "Georgia", "Times New Roman", Times, serif; line-height:1em}
-
-.graced {font-family: "Georgia", "Times New Roman", Times, serif;}
-
-.monospaced {font-family: monospace;}
-
 
 INPUT[type=text],INPUT[type=password], TEXTAREA {
 	font-size:12px; font-family: "Arial", "Helvetica","Verdana", sans-serif; line-height:1.5em;
@@ -255,6 +242,15 @@ INPUT[type=text],INPUT[type=password], TEXTAREA {
 	font:normal 1.2em "Georgia", "Times New Roman", Times, serif;
 }
 
+.graced, .serif {font-family: "Georgia", "Times New Roman", Times, serif;}
+
+.sans {font-family: "Helvetica Neue","Helvetica","Arial", sans-serif;}
+
+.monospaced {font-family: monospace;}
+
+.toolbar.sans {
+	font-size:1em;	
+}
 
 /*...........................................
  
@@ -332,6 +328,7 @@ UL.modules {
 .multimedia, .image, .audio, .video, .b_e_file, .application	
 							{background-color:#ff0033 !important;}
 .admin 						{background-color:#333333 !important;}
+.users 						{background-color:#555 !important;}
 .tags 						{background-color:#336666 !important;}
 .comments, .comment			{background-color:#F08080 !important;}
 .translations				{background-color:#FF00FF !important;}
@@ -1211,6 +1208,7 @@ UL#mediatypes  {
 
 ...........................................*/
 
+
 INPUT, TEXTAREA, SELECT {
 	padding:2px;
 }
@@ -1280,6 +1278,29 @@ INPUT.objectCheck {
 	margin-top:5px;
 	
 }
+
+
+INPUT[type=text],INPUT[type=password], textarea {	
+	border-radius : 7px; 
+	-moz-border-radius : 7px; 
+	-webkit-border-radius : 7px;
+	-khtml-border-radius: 7px;
+	border:1px solid silver;
+}
+
+#pwd, #pwdagain, INPUT[type=password] {
+	letter-spacing:2px;	
+}
+
+INPUT.big {
+	font-size:1.315em;
+}
+
+INPUT[type=button], INPUT[type=submit]  {
+	text-transform:uppercase;
+}
+
+
 /*...........................................    
 
     Buttons
@@ -1576,6 +1597,16 @@ TABLE.areaform {
 	width:100px;
 }
 
+/*...........................................
+ 
+	 Specific template layout: admin/user
+
+...........................................*/
+
+#userForm INPUT[type=text] {
+	width:320px;
+}
+
 
 
 /*...........................................
@@ -1776,30 +1807,12 @@ P.editornotes {
 	background: transparent url(../img/loadingAnimation.gif) no-repeat center 200px ;
 }
 
+
 /*...........................................    
 
    Uploadify
 
 ...........................................*/
-
-
-INPUT[type=text],INPUT[type=password], textarea {	
-	border-radius : 7px; 
-	-moz-border-radius : 7px; 
-	-webkit-border-radius : 7px;
-	-khtml-border-radius: 7px;
-	border:1px solid silver;
-}
-
-INPUT.big {
-	font-size:1.315em;
-}
-
-INPUT[type=button], INPUT[type=submit]  {
-	text-transform:uppercase;
-}
-
-
 
 .uploadifyQueueItem {
 	border: 1px solid silver !important;

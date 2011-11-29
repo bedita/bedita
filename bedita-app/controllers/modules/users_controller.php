@@ -163,6 +163,8 @@ class UsersController extends ModulesController {
 			$userdetailModules = ClassRegistry::init("PermissionModule")->getListModules($userdetail['User']['userid']);
 
 		} else {
+			
+			$this->set('genpassword', substr( str_shuffle( 'abcdefghjkmnpqrstuvwxyz123456789' ) , 0 , 6 ));	
 			$userdetail = NULL;
 			$userdetailModules = NULL;
 		}

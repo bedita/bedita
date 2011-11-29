@@ -50,14 +50,14 @@
 			<tr>
 			 	<th>{t}New password{/t}</th>
 				<td>
-					<input type="password" name="pwd" value="" id="pwd"
+					<input type="{if !empty($userdetail.id)}password{else}text{/if}" name="pwd" value="{if empty($userdetail.id)}{$genpassword|default:''}{/if}" id="pwd"
 						class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}" 
 				    	title="{$tr->t($conf->passwdRegexMsg)|default:''}"/>&nbsp;</td>
 			</tr>
 			<tr>
 				<th>{t}Confirm password{/t}</th>
 				<td>
-					<input type="password" name="data[User][passwd]" value=""
+					<input type="{if !empty($userdetail.id)}password{else}text{/if}" name="data[User][passwd]" id="pwdagain" value=""
 				class="{literal}{equalTo:'#pwd'}{/literal}" title="{t}Passwords should be equal{/t}"/>&nbsp;</td>
 			</tr>
 		</tbody>
