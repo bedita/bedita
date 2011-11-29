@@ -432,7 +432,16 @@ class PagesController extends AppController {
 		$this->viewRevision($model, $id, $rev);
 	}
 	
-	
+
+	/**
+	 * Ajax modal for export
+	 *
+	 * @param int $objectId - object id
+	 */
+	public function export($objectId) {	
+		$this->set("objectId", $objectId);
+		$this->render(null, null, "form_export");
+	}
 	
 }
 
