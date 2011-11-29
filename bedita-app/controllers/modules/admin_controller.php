@@ -38,7 +38,11 @@ class AdminController extends ModulesController {
 	'EventLog' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc'))
 	); 
 	protected $moduleName = 'admin';
-	 
+	
+	public function index() {
+		$this->action = "systemInfo";
+		$this->systemInfo();
+	}
 	 
 	public function systemInfo() { 	
 		$this->beditaVersion();
