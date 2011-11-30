@@ -4,7 +4,7 @@
 	
 	
 		<label for="selectAll" style="padding-right:20px; float:left;">
-			<input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}
+			<input type="checkbox" class="selectAll" id="selectAll" /> {t}(un)select all{/t}
 		
 		</label>
 		
@@ -17,8 +17,14 @@
 	
 	{if !empty($tree)}
 		{assign var='named_arr' value=$view->params.named}
+		
 		{if empty($sectionSel.id)}
 			{t}copy{/t}
+		
+		{elseif $type=="section"}
+		
+			{t}move{/t}
+			
 		{else}
 			<select id="areaSectionAssocOp" name="areaSectionAssocOp" style="width:75px">
 				<option value="copy"> {t}copy{/t} </option>
@@ -35,12 +41,13 @@
 		<input id="assocObjects" type="button" value=" ok " />
 		<hr />
 		
-		{if !empty($sectionSel.id)}
+		{if $type!="section" && !empty($sectionSel.id)}
 			{assign var='filter_section_id' value=$sectionSel.id}
 			{assign var='filter_section_name' value=$pubSel.title|default:$sectionSel.title}
 			<input id="removeFromAreaSection" type="button" value="{t}Remove selected from{/t} '{$filter_section_name}'" class="opButton" />
 			<hr/>
 		{/if}
+		
 	{/if}
 
 	{if !empty($categories)}

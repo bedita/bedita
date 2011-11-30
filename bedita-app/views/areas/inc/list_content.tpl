@@ -154,9 +154,9 @@ $(document).ready(function() {
 
 	<br style="clear:both" />
 		
-	{include file="inc/tools_commands.tpl"}
+	{include file="inc/tools_commands.tpl" type="all"}
 
-	{include file="inc/bulk_actions.tpl"}
+	{include file="inc/bulk_actions.tpl" type="all"}
 
 
 </div>	

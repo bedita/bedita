@@ -2,7 +2,7 @@
 {foreach from=$objsRelated|default:'' item="c"}
 	<tr class="obj {$c.status}">
 		
-<td class="checklist">
+		<td class="checklist">
 			{if !empty($c.start_date) && ($c.start_date|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}
 			
 				<img title="{t}object scheduled in the future{/t}" src="{$html->webroot}img/iconFuture.png" style="height:28px; vertical-align:top;">
@@ -28,7 +28,7 @@
 			{/if}
 
 
-			</td	>	
+		</td>	
 		
 		<td style="width:25px">
 			<input type="hidden" class="id" name="reorder[{$c.id}][id]" value="{$c.id}" />

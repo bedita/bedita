@@ -35,7 +35,35 @@ $(document).ready(function() {
 		
 		{* children: sections *}
 		{foreach from=$sections item="s"}
+		
 			<tr class="obj {$s.status}">
+				
+				<td class="checklist">
+					{if !empty($s.start_date) && ($s.start_date|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}
+					
+						<img title="{t}object scheduled in the future{/t}" src="{$html->webroot}img/iconFuture.png" style="height:28px; vertical-align:top;">
+					
+					{elseif !empty($s.end_date) && ($s.end_date|date_format:"%Y%m%d") < ($smarty.now|date_format:"%Y%m%d")}
+					
+						<img title="{t}object expired{/t}" src="{$html->webroot}img/iconPast.png" style="height:28px; vertical-align:top;">
+					
+					{elseif (!empty($s.start_date) && (($s.start_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d"))) or ( !empty($s.end_date) && (($s.end_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d")))}
+					
+						<img title="{t}object scheduled today{/t}" src="{$html->webroot}img/iconToday.png" style="height:28px; vertical-align:top;">
+		
+					{/if}
+					
+					{if !empty($s.num_of_permission)}
+						<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="height:28px; vertical-align:top;">
+					{/if}
+					
+					{if (empty($s.fixed))}
+						<input style="margin-top:8px;" type="checkbox" name="objects_selected[]" class="objectCheck" title="{$s.id}" value="{$s.id}" />
+					{else}
+						<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="margin-top:8px; height:12px;" />
+					{/if}
+				</td>
+				
 				<td style="width:25px">
 					<input type="hidden" class="id" 	name="reorder[{$s.id}][id]" value="{$s.id}" />
 					<input type="text" class="priority"	name="reorder[{$s.id}][priority]" value="{$s.priority|default:""}" 
@@ -64,6 +92,9 @@ $(document).ready(function() {
 				<td>
 					{$s.lang}
 				</td>
+				
+				<td>{if $s.num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
+				
 				<td class="commands" style="white-space:nowrap">
 
 					<input type="button" class="BEbutton golink" onClick="window.location.href = ($(this).attr('href'));" 
@@ -81,16 +112,16 @@ $(document).ready(function() {
 	</table>
 	</div>		
 	
-
 {else}
 	<em style="padding:20px;">{t}no sections{/t}</em>
 {/if}
 
 
-	<a class="BEbutton" style="padding-left:30px; padding-right:20px;" href="{$html->url('/')}areas/viewSection/branch:{$object.id}">
-		{t}create{/t}  {t}new section{/t} {t}here{/t} &nbsp;
-	</a>
 	
+	{include file="inc/tools_commands.tpl" type="section"}
+	
+	{include file="inc/bulk_actions.tpl" type="section"}	
+		
 </div>
 
 
