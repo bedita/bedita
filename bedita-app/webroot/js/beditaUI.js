@@ -150,24 +150,21 @@ $(document).ready(function(){
 
 ...........................................*/	
 	
-	$(".modules *[rel]").css("cursor","pointer");
-
-	$(".modules *").mouseover(function () {
+	$(".modules *[rel]").css("cursor","pointer").mouseover(function () {
 
 			$(this).css("background-repeat","repeat");
-
 
 		}).mouseout(function(){
 
 			$(this).css("background-repeat","repeat-x");
-		
 
 		}).click(function () {
-
-			if ($(this).attr("rel")) {
+			
+			if ($(this).hasClass("bedita")) {
+				//
+			} else {
 				window.location = $(this).attr("rel");
 			}
-
 	});
 
 /*...........................................    
@@ -556,6 +553,30 @@ $(".searchtrigger").click(function() {
 ...........................................*/
 
 
+/*...........................................    
+
+   various acc
+
+...........................................*/
+
+
+$(".primacolonna .modules label.bedita").toggle(function() {
+	$(this).addClass("shadow");  
+	$(".pubtab").show();
+
+}, function() {
+
+  $(this).removeClass("shadow");  
+	$(".pubtab").hide();
+});
+
+$(".pubtab nav a").each(function() {
+
+	var classname = $(this).attr('class');
+	var color = $(".modulesmenu ."+classname).css('background-color');
+	$(this).css("border-right","25px solid "+color);
+	
+});
 
 /*...........................................    
 
