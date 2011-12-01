@@ -84,7 +84,13 @@
 					</td>
 					{/if}
 				</tr>
-
+				
+				</table>
+				
+				<hr />
+				
+				<table>
+{* <!--
 				<tr>
 					<th>{t}Date Pattern{/t}:</th>
 					<td>
@@ -129,8 +135,11 @@
 						</div>
 					</td>
 				</tr>
+				
+ -->
+*}
 				<tr>
-					<th style="padding-top:10px; vertical-align:top">{t}Smtp Options{/t}:</th>
+					<th style="padding-top:10px; vertical-align:top"><b>{t}Smtp Options{/t}</b>:</th>
 					<td>
 						<table class="simpleList">
 						<tr><th>{t}port{/t}:</th><td><input type="text" name="sys[smtpOptions][port]" value="{$conf->smtpOptions.port|default:''}" /></td></tr>
@@ -142,7 +151,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th style="padding-top:10px; vertical-align:top">{t}Mail support{/t}:</th>
+					<th style="padding-top:10px; vertical-align:top"><b>{t}Mail support{/t}</b>:</th>
 					<td>
 						<table class="simpleList">
 							<tr><th>{t}from{/t}:</th><td><input type="text" name="sys[mailSupport][from]" value="{$conf->mailSupport.from|default:''}" /></td></tr>
@@ -185,7 +194,7 @@
 				</tr>
 
 				<tr>
-					<th>{t}Objects default language{/t}:</th>
+					<th>{t}New objects default language{/t}:</th>
 					<td>
 						<select name="cfg[defaultLang]">
 							{foreach $conf->langOptions as $langKey => $langLabel}
@@ -198,7 +207,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th>{t}Translation languages{/t}:</th>
+					<th>{t}Objects available languages (default:all){/t}:</th>
 					<td>
 						<select id="translationLangs">
 							<option></option>
@@ -221,6 +230,27 @@
 				</tr>
 			</table>
 			{/if}
+			
+			<hr />
+			
+			<table>
+				<tr>
+					<th colspan="4"><label>{t}Notifications setup{/t}:</label></label></th>
+				</tr>
+				<tr>
+					<td>{t}From{/t} {t}name{/t}:</td>
+					<td><input type="text" name="" value="" /></td>
+					<td>{t}From{/t} {t}email{/t}</td>
+					<td><input type="text" name="" value="noreply@" /></td>
+				</tr>
+					<tr>
+					<td>{t}Subject prefix{/t}:</td>
+					<td><input type="text" name="" value="[BEdita]" /></td>
+				</tr>
+				
+				
+			</table>
+			
 		</fieldset>
 
 	</form>

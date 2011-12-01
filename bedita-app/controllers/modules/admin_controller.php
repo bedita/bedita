@@ -40,8 +40,8 @@ class AdminController extends ModulesController {
 	protected $moduleName = 'admin';
 	
 	public function index() {
-		$this->action = "systemInfo";
-		$this->systemInfo();
+		$this->action = "systemEvents";
+		$this->systemEvents();
 	}
 	 
 	public function systemInfo() { 	
