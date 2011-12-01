@@ -140,7 +140,10 @@ class UsersController extends ModulesController {
 	function removeUser($id) {
 		$this->checkWriteModulePermission();
 		if(isset($id)) {
-			$u = $this->User->findById($id);
+			$u = $this->isUserEditable($id);
+			if ($u === false) {
+				throw new BeditaException(__("You are not allowed to remove this users", true));
+			}
 			if(empty($u)) {
 				throw new BeditaException(__("Bad data",true));
 			}
@@ -153,10 +156,32 @@ class UsersController extends ModulesController {
 		}
 	}
 
+	/**
+	 * return user data if user in session can edit him
+	 * 
+	 * @param int $id
+	 * @return mixed 
+	 */
+	protected function isUserEditable($id) {
+		$userToEdit = $this->User->findById($id);
+		if (!empty($userToEdit)) {
+			$sessionUser = $this->BeAuth->getUserSession();
+			$userGroups = Set::classicExtract($userToEdit, 'Group.{n}.name');
+			if (!in_array("administrator", $sessionUser["groups"]) && in_array("administrator", $userGroups)) {
+				return false;
+			}
+		}
+		return $userToEdit;
+	}
+
+
 	function viewUser($id=NULL) {
 
 		if(isset($id)) {
-			$userdetail = $this->User->findById($id) ;
+			$userdetail = $this->isUserEditable($id);
+			if ($userdetail === false) {
+				throw new BeditaException(__("You are not allowed to edit this users", true));
+			}
 			if(empty($userdetail)) {
 				throw new BeditaException(__("Bad data",true));
 			}
@@ -169,15 +194,25 @@ class UsersController extends ModulesController {
 			$userdetailModules = NULL;
 		}
 
-		$allGroups = $this->Group->find("all", array(
-			"contain" => array()
-		));
 		$userGroups = array();
 		if(isset($userdetail)) {
 			foreach ($userdetail['Group'] as $g) {
 				array_push($userGroups, $g['name']);
 			}
 		}
+		
+		$sessionUser = $this->BeAuth->getUserSession();
+		$conditions = array();
+		if (!in_array("administrator", $sessionUser["groups"])) {
+			$conditions = array(
+				"NOT" => array("name" => "administrator")
+			);
+		}
+		$allGroups = $this->Group->find("all", array(
+			"contain" => array(),
+			"conditions" => $conditions
+		));
+		
 		$formGroups = array();
 		$authGroups = array();
 		foreach ($allGroups as $g) {
@@ -186,17 +221,19 @@ class UsersController extends ModulesController {
 				$isGroup = true;
 			}
 			$formGroups[$g['Group']['name']] = $isGroup;
-			if($g['Group']['backend_auth'] == 1)
-			$authGroups[] = $g['Group']['name'];
+			if($g['Group']['backend_auth'] == 1) {
+				$authGroups[] = $g['Group']['name'];
+			}
 		}
 
 		$this->set('userdetail',  $userdetail['User']);
 		if (is_array($userdetail["ObjectUser"])) {
 			$this->set('objectUser', $this->objectRelationArray($userdetail["ObjectUser"]));
 		}
+
 		$this->set('formGroups',  $formGroups);
 		$this->set('authGroups',  $authGroups);
-		$this->set('userdetailModules', $userdetailModules) ;
+		$this->set('userdetailModules', $userdetailModules);
 
 		$property = $this->BeCustomProperty->setupUserPropertyForView($userdetail);
 		$this->set('userProperty',  $property);
@@ -252,7 +289,19 @@ class UsersController extends ModulesController {
 			$this->eventInfo("group ".$this->data['Group']['name']." update");
 		}
 		if(isset($this->data['ModuleFlags'])) {
-			ClassRegistry::init("PermissionModule")->updateGroupPermission($groupId, $this->data['ModuleFlags']);
+			$permissionModule = ClassRegistry::init("PermissionModule");
+			// if user doesn't belong to administrator group then it adds admin flag to update module persmission with the same value
+			$user = $this->BeAuth->getUserSession();
+			if (!in_array("administrator", $user["groups"])) {
+				$adminModuleId = ClassRegistry::init("Module")->field("id", array("name" => "admin"));
+				$groupId = $this->Group->field("id", array("name" => "administrator"));
+				$this->data['ModuleFlags']["admin"] =  $permissionModule->field("flag", array(
+					"module_id" => $adminModuleId,
+					"ugid" => $groupId,
+					"switch" => $permissionModule::SWITCH_GROUP
+				));
+			}
+			$permissionModule->updateGroupPermission($groupId, $this->data['ModuleFlags']);
 		}
 
 		$this->userInfoMessage(__("Group ".($newGroup? "created":"updated"),true));
@@ -268,7 +317,17 @@ class UsersController extends ModulesController {
 	}
 	
 	private function allModulesWithFlag() {
-		$modules = ClassRegistry::init('Module')->find("all");
+		$user = $this->BeAuth->getUserSession();
+		$conditions = array();
+		// if user doesn't belong to administrator group then exclude admin module
+		if (!in_array("administrator", $user["groups"])) {
+			$conditions = array(
+				"NOT" => array("name" => array("admin"))
+			);
+		}
+		$modules = ClassRegistry::init('Module')->find("all", array(
+			"conditions" => $conditions
+		));
 		foreach ($modules as &$mod) {
 			$mod['Module']['flag'] = 0;
 		}
@@ -278,6 +337,9 @@ class UsersController extends ModulesController {
 	  
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
+			"viewUser" => 	array(
+				"ERROR"	=> $this->referer()
+			),
 			"viewGroup" => 	array(
 				"OK"	=> self::VIEW_FWD.'groups',
 				"ERROR"	=> self::VIEW_FWD.'groups'

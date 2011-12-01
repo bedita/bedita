@@ -27,10 +27,10 @@ INSERT INTO object_types (id, name, module_name) VALUES (39, 'editor_note', NULL
 INSERT INTO users (userid , realname , passwd ) VALUES ('bedita', 'BEdita', MD5( 'bedita' ));
 
 INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('administrator', true, true);
-INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('manager', true, true);
+INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('manager', true, false);
 INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('editor', true, false);
 INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('reader', true, false);
-INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('translator', true, true);
+INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('translator', true, false);
 INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('frontend', false, false);
 
 INSERT INTO groups_users ( user_id , group_id ) VALUES (1, 1);
