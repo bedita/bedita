@@ -283,20 +283,20 @@ class UsersController extends ModulesController {
 				"ERROR"	=> self::VIEW_FWD.'groups'
 			),
 			"saveUser" => 	array(
-				"OK"	=> "/admin/index",
+				"OK"	=> "/users/index",
 				"ERROR"	=> $this->referer() 
 			),
 			"removeUser" => 	array(
-				"OK"	=> "/admin",
-				"ERROR"	=> "/admin" 
+				"OK"	=> "/users",
+				"ERROR"	=> "/users" 
 			),
 			"saveGroup" => 	array(
-				"OK"	=> "/admin/groups",
-				"ERROR"	=> "/admin/groups" 
+				"OK"	=> "/users/groups",
+				"ERROR"	=> "/users/groups" 
 			),
 			"removeGroup" => 	array(
-				"OK"	=> "/admin/groups",
-				"ERROR"	=> "/admin/groups" 
+				"OK"	=> "/users/groups",
+				"ERROR"	=> "/users/groups" 
 			),
 			"saveUserAjax" =>	array(
 				"OK"	=> self::VIEW_FWD.'save_user_ajax_response',
