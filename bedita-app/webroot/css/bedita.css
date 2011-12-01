@@ -275,8 +275,10 @@ UL.modules {
 	padding:10px;
 	margin: 0px;
 	background-color:#CCCCCC; 
+/*
 	background-image: url(../img/sfomodulo.png);
 	background-repeat:repeat-x;
+*/
 	color:#FFFFFF;
 	float:left;
 	font-weight:normal;
@@ -1545,14 +1547,31 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover {
 
 
 .home UL.modules {
-	width:710px;
-	height:280px;
+	/*
+width:710px;
+*/
+	width:420px;
+	height:1280px;
 	margin-top:20px; 
 	margin-left:20px;
 }
 
+.home UL.modules LI {
+
+/*
+height:50px;
+*/
+
+}
+
+.home UL.modules LI.bedita {
+	height:120px;
+	width:120px;
+}
+
+
 LI.welcome {
-	width: 260px;
+	width: 260px !important;
 	background:transparent none;
 	font-size:1em; 
 	color:#000000;
@@ -1563,10 +1582,15 @@ LI.welcome {
 
 .dashboard {
 	position:absolute;
-	left:740px;
-	top:25px;
+	left:720px;
+	top:15px;
 	width: 240px;
 	height: 120px;
+}
+
+.dashboard.first {
+	left:460px;
+	top:20px;
 }
 
 .dashboard H1 {
@@ -1577,6 +1601,9 @@ LI.welcome {
 	background-color:#333;
 }
 
+.dashboard .bordered {
+ margin-bottom:10px;
+}
 
 /*...........................................
  

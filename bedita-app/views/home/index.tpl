@@ -1,10 +1,10 @@
 <script type="text/javascript">
 <!--
 var urlToSearch = "{$html->url('/home/search')}" 
-{literal}
+
 function loadSearch() {
-	$("#searchResult").load(urlToSearch, {searchstring: $("input[name='searchstring']").val()}, function() {
-			
+	$("#searchResult").load(urlToSearch, { searchstring: $("input[name='searchstring']").val() }, function() {
+		//			
 	});
 }
 
@@ -29,7 +29,7 @@ $(document).ready(function() {
 	
 //-->
 </script>
-{/literal}
+
 
 
 <ul class="modules">
@@ -52,22 +52,8 @@ $(document).ready(function() {
 				{*<br /><span style="font-size:1.5em" class="graced">{$mod.id}</span>*}
 			</li>	
 	{/if}
-		
-    {if $smarty.foreach.module1.iteration == 2}
-	
-	<li class="welcome">
-		<a href="javascript:void(0)" onClick="$('#userpreferences').BEtabstoggle();">
-		<h1>{t}welcome{/t}</h1>
-		{$BEAuthUser.realname}</a>
-		
-	</li>
-	
-	{/if}
 	
 {/foreach}
-
-
-
 
 	<li class="colophon">
 
@@ -89,31 +75,53 @@ $(document).ready(function() {
 
 <div style="position:absolute; left:580px; top:19px; z-index:400">{$view->element('messages')}</div>
 
-<div class="dashboard">
 
+<div class="dashboard first">
+	
+	<div class="welcome" style="margin-bottom:28px">
+		<a href="javascript:void(0)" onClick="$('#userpreferences').prev('.tab').click();">
+		<h1>{t}welcome{/t}</h1>
+		{$BEAuthUser.realname}</a>
+	</div>
 
+	<div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
+		<ul id="recent" class="bordered smallist">
+		{foreach from=$lastModBYUser item=item}
+			<li><span class="listrecent {$item.ObjectType.module_name}">&nbsp;</span>
+			<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module_name} | {t}modified on{/t} {$item.BEObject.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.ObjectType.module_name}/view/{$item.BEObject.id}">
+				{$item.BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
+		{foreachelse}
+			<li><i>{t}you have no recent items{/t}</i></li>
+		{/foreach}
+		</ul>
+		
+	<div class="tab"><h2>{t}your profile and preferences{/t}</h2></div>
+	
+	<div id="userpreferences">	
+		{include file="inc/userpreferences.tpl"}
+	</div>
 
-<h1>{*t}dashboard{/t*}</h1>
-
-
-<div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
-	<ul id="recent" class="bordered smallist">
-	{foreach from=$lastModBYUser item=item}
-		<li><span class="listrecent {$item.ObjectType.module_name}">&nbsp;</span>
-		<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module_name} | {t}modified on{/t} {$item.BEObject.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.ObjectType.module_name}/view/{$item.BEObject.id}">
-			{$item.BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
-	{foreachelse}
-		<li><i>{t}you have no recent items{/t}</i></li>
-	{/foreach}
+	<div class="tab"><h2>{t}connected user{/t}</h2></div>
+	<ul id="connected" class="bordered">
+	{section name="i" loop=$connectedUser}
+		{foreach from=$connectedUser[i] key=usr item=usrdata}
+		<li>
+		{if isset($moduleList.admin)}
+		<a title="{$usrdata.realname} | {$usrdata.userAgent} | {$usrdata.ipNumber}" href="{$html->url('/')}admin/viewUser/{$usrdata.id}">{$usr}</a>
+		{else}		
+		<a title="{$usrdata.realname}" href="#">{$usr}</a>
+		{/if}
+		</li>
+		{/foreach}
+	{/section}
 	</ul>
 	
-<div class="tab"><h2>{t}your profile and preferences{/t}</h2></div>
-<div id="userpreferences">
-	
-	{include file="inc/userpreferences.tpl"}
-
 </div>
+	
 
+<div class="dashboard">
+
+<h1>{*t}dashboard{/t*}</h1>
 
 <div class="tab"><h2>{t}search{/t}</h2></div>
 	<div id="search">
@@ -123,8 +131,7 @@ $(document).ready(function() {
 			&nbsp;<input id="searchButton" type="button" value="{t}go{/t}" />
 			<hr />
 		</form>
-	<div id="searchResult"></div>
-	
+		<div id="searchResult"></div>	
 	</div>
 
 
@@ -158,20 +165,6 @@ $(document).ready(function() {
 		{/foreach}
 	</ul>
 	
-<div class="tab"><h2>{t}connected user{/t}</h2></div>
-	<ul id="connected" class="bordered">
-	{section name="i" loop=$connectedUser}
-		{foreach from=$connectedUser[i] key=usr item=usrdata}
-		<li>
-		{if isset($moduleList.admin)}
-		<a title="{$usrdata.realname} | {$usrdata.userAgent} | {$usrdata.ipNumber}" href="{$html->url('/')}admin/viewUser/{$usrdata.id}">{$usr}</a>
-		{else}		
-		<a title="{$usrdata.realname}" href="#">{$usr}</a>
-		{/if}
-		</li>
-		{/foreach}
-	{/section}
-	</ul>
 
 {*include file="./inc/messageboard.tpl"*}
 
