@@ -12,9 +12,9 @@
 		{/if}
 		{/foreach}
 		
-			<a href="{$html->url('/')}" title="BEdita home" class="index" style="padding-right:10px;">
+			<a target="_blank" href="{$html->url('/')}" title="BEdita home" class="index" style="padding-right:10px;">
 				<img class="smallicon" src="{$html->url('/img/')}iconUrl.png"> www.publicurl1.it</a>
-			<a href="{$html->url('/')}" title="BEdita home" class="index"  style="padding-right:10px;">
+			<a target="_blank" href="{$html->url('/')}" title="BEdita home" class="index"  style="padding-right:10px;">
 				<img class="smallicon" src="{$html->url('/img/')}iconUrl.png"> www.publicco-lungop-dio-boa.it</a>
 			
 			<a href="{$html->url('/logout')}" title="Exit" class="index">exit</a>
