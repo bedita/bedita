@@ -27,11 +27,11 @@ INSERT INTO object_types (id, name, module_name) VALUES (39, 'editor_note', NULL
 INSERT INTO users (userid , realname , passwd ) VALUES ('bedita', 'BEdita', MD5( 'bedita' ));
 
 INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('administrator', true, true);
+INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('manager', true, true);
 INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('editor', true, false);
 INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('reader', true, false);
-INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('frontend', false, false);
 INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('translator', true, true);
-INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('manager', true, true);
+INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('frontend', false, false);
 
 INSERT INTO groups_users ( user_id , group_id ) VALUES (1, 1);
 
@@ -143,7 +143,7 @@ INSERT INTO permission_modules ( module_id , ugid , switch , flag )
 VALUES (4, 1, 'group', '3');
 
 -- --------------------------------------
--- editor perms
+-- manager permissions
 -- --------------------------------------
 
 -- module areas
@@ -198,6 +198,66 @@ VALUES (25, 2, 'group', '3' );
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
 VALUES (26, 2, 'group', '3' );
 
+-- module users
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (4, 2, 'group', '3');
+
+-- --------------------------------------
+-- editor perms
+-- --------------------------------------
+
+-- module areas
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (1, 3, 'group', '3' );
+
+-- module translations
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (3, 3, 'group', '3' );
+
+-- module documents
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (6, 3, 'group', '3' );
+
+-- module news
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (7, 3, 'group', '3' );
+
+-- module galleries
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (8, 3, 'group', '3' );
+
+-- module events
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (10, 3, 'group', '3' );
+
+-- module webmarks
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (12, 3, 'group', '3' );
+
+-- module addressbook
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (16, 3, 'group', '3' );
+
+-- module newsletter
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (18, 3, 'group', '3' );
+
+-- module statistics
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (23, 3, 'group', '3' );
+
+-- module tags
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (24, 3, 'group', '3' );
+
+-- module comments
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (25, 3, 'group', '3' );
+
+-- module multimedia
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (26, 3, 'group', '3' );
+
 
 -- --------------------------------------
 -- reader perms
@@ -205,55 +265,55 @@ VALUES (26, 2, 'group', '3' );
 
 -- module areas
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (1, 3, 'group', '1' );
+VALUES (1, 4, 'group', '1' );
 
 -- module translations
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (3, 3, 'group', '1' );
+VALUES (3, 4, 'group', '1' );
 
 -- module documents
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (6, 3, 'group', '1' );
+VALUES (6, 4, 'group', '1' );
 
 -- module news
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (7, 3, 'group', '1' );
+VALUES (7, 4, 'group', '1' );
 
 -- module galleries
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (8, 3, 'group', '1' );
+VALUES (8, 4, 'group', '1' );
 
 -- module events
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (10, 3, 'group', '1' );
+VALUES (10, 4, 'group', '1' );
 
 -- module webmarks
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (12, 3, 'group', '1' );
+VALUES (12, 4, 'group', '1' );
 
 -- module addressbook
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (16, 3, 'group', '1' );
+VALUES (16, 4, 'group', '1' );
 
 -- module newsletter
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (18, 3, 'group', '1' );
+VALUES (18, 4, 'group', '1' );
 
 -- module statistics
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (23, 3, 'group', '1' );
+VALUES (23, 4, 'group', '1' );
 
 -- module tags
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (24, 3, 'group', '1' );
+VALUES (24, 4, 'group', '1' );
 
 -- module comments
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (25, 3, 'group', '1' );
+VALUES (25, 4, 'group', '1' );
 
 -- module multimedia
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (26, 3, 'group', '1' );
+VALUES (26, 4, 'group', '1' );
 
 
 -- --------------------------------------
@@ -263,63 +323,3 @@ VALUES (26, 3, 'group', '1' );
 -- module translations
 INSERT INTO permission_modules ( module_id , ugid , switch , flag )
 VALUES (3, 5, 'group', '3' );
-
--- --------------------------------------
--- manager permissions
--- --------------------------------------
-
--- module areas
-INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (1, 6, 'group', '3' );
-
--- module translations
-INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (3, 6, 'group', '3' );
-
--- module documents
-INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (6, 6, 'group', '3' );
-
--- module news
-INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (7, 6, 'group', '3' );
-
--- module galleries
-INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (8, 6, 'group', '3' );
-
--- module events
-INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (10, 6, 'group', '3' );
-
--- module webmarks
-INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (12, 6, 'group', '3' );
-
--- module addressbook
-INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (16, 6, 'group', '3' );
-
--- module newsletter
-INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (18, 6, 'group', '3' );
-
--- module statistics
-INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (23, 6, 'group', '3' );
-
--- module tags
-INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (24, 6, 'group', '3' );
-
--- module comments
-INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (25, 6, 'group', '3' );
-
--- module multimedia
-INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (26, 6, 'group', '3' );
-
--- module users
-INSERT INTO permission_modules ( module_id , ugid , switch , flag )
-VALUES (4, 6, 'group', '3');
