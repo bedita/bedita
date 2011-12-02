@@ -254,15 +254,14 @@ class UsersController extends ModulesController {
 	function viewGroup($id = null) {
 		$this->set('groups', $this->loadGroups());
 		$g = $this->Group->findById($id);
-		if(empty($g)) {
-			throw new BeditaException(__("Bad data",true));
+		if(!empty($g)) {
+			
+			foreach($g['User'] as &$user) {
+				$u = $this->User->findById($user['id']);
+				$user['userid'] = $u['User']['userid'];
+			}
+			$this->set('group', $g);
 		}
-		foreach($g['User'] as &$user) {
-			$u = $this->User->findById($user['id']);
-			$user['userid'] = $u['User']['userid'];
-		}
-		$this->set('group', $g);
-
 		$modules = $this->allModulesWithFlag();
 		$permsMod = ClassRegistry::init("PermissionModule")->getPermissionModulesForGroup($id);
 		foreach ($permsMod as $p) {
@@ -341,7 +340,7 @@ class UsersController extends ModulesController {
 				"ERROR"	=> $this->referer()
 			),
 			"viewGroup" => 	array(
-				"OK"	=> self::VIEW_FWD.'groups',
+				//"OK"	=> self::VIEW_FWD.'groups',
 				"ERROR"	=> self::VIEW_FWD.'groups'
 			),
 			"saveUser" => 	array(
