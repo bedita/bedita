@@ -253,9 +253,11 @@ class UsersController extends ModulesController {
 	 
 	function viewGroup($id = null) {
 		$this->set('groups', $this->loadGroups());
-		$g = $this->Group->findById($id);
-		if(!empty($g)) {
-			
+		if(!empty($id)) {
+			$g = $this->Group->findById($id);
+			if (empty($g)) {
+				throw new BeditaException(__("No group found with id", true) . " " . $id);
+			}
 			foreach($g['User'] as &$user) {
 				$u = $this->User->findById($user['id']);
 				$user['userid'] = $u['User']['userid'];
@@ -340,8 +342,7 @@ class UsersController extends ModulesController {
 				"ERROR"	=> $this->referer()
 			),
 			"viewGroup" => 	array(
-				//"OK"	=> self::VIEW_FWD.'groups',
-				"ERROR"	=> self::VIEW_FWD.'groups'
+				"ERROR"	=> '/users/groups'
 			),
 			"saveUser" => 	array(
 				"OK"	=> "/users/index",
