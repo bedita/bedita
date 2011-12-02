@@ -3,6 +3,15 @@ INSERT INTO groups ( name, backend_auth, immutable ) VALUES ('manager', true, tr
 INSERT INTO modules (id,label, name, url, status, priority) VALUES ('4','users', 'users', 'users', 'on', '14');
 
 -- --------------------------------------
+-- new administrator permissions
+-- --------------------------------------
+
+-- module users
+INSERT INTO permission_modules ( module_id , ugid , switch , flag )
+VALUES (4, (SELECT id FROM groups WHERE name='administrator'), 'group', '3');
+
+
+-- --------------------------------------
 -- manager permissions
 -- --------------------------------------
 
