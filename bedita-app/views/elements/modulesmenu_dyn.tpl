@@ -12,12 +12,10 @@
 		{/if}
 		{/foreach}
 		
-		{*dump var=$publications*}
-			<a target="_blank" href="{$html->url('/')}" title="BEdita home" class="index" style="padding-right:10px;">
-				<img class="smallicon" src="{$html->webroot}img/iconUrl.png"> www.publicurl1.it</a>
-			<a target="_blank" href="{$html->url('/')}" title="BEdita home" class="index"  style="padding-right:10px;">
-				<img class="smallicon" src="{$html->webroot}img/iconUrl.png"> www.publicco-lungop-dio-boa.it</a>
-			
+			{foreach from=$publications item=item}
+			{if !empty($item.public_url)}<a target="_blank" href="{$item.public_url}" title="{$item.public_name} | {$item.public_url}" class="index" style="padding-right:10px;">
+				<img class="smallicon" src="{$html->webroot}img/iconUrl.png"> {$item.public_url|truncate:28}</a>
+			{/if}{/foreach}
 			<a href="{$html->url('/logout')}" title="Exit" class="index">exit</a>
 		</nav> 
 	</div>
