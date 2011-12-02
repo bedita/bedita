@@ -36,10 +36,12 @@ function delGroupDialog(name,objectid) {
 
 {include file="inc/menucommands.tpl" method="groups" fixed=true}
 
+
 <div class="main">
 
-	{include file="inc/form_groups.tpl"}
+	{include file="inc/index_groups.tpl"}
 
 </div>
+
 
 {$view->element('menuright')}

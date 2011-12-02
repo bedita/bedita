@@ -10,7 +10,9 @@ Menu a SX valido per tutte le pagine del controller.
 	<ul class="menuleft insidecol">
 		<li {if $view->action eq 'index'}class="on"{/if}>{$tr->link('Users', '/users/')}</li>
 		<li {if $view->action eq 'viewUser' && (empty($userdetail))}class="on"{/if}>{$tr->link('New user', '/users/viewUser')}</li>
-		<li {if $view->action eq 'groups'}class="on"{/if}>{$tr->link('User groups', '/users/groups')}</li>
+		<li {if $view->action eq 'groups' or !empty($group)}class="on"{/if}>{$tr->link('Groups', '/users/groups')}</li>
+		<li {if $view->action eq 'viewGroup' && empty($group)}class="on"{/if}>{$tr->link('New group', '/users/viewGroup/')}</li>
+		
 	</ul>
 
 	{$view->element('user_module_perms')}
