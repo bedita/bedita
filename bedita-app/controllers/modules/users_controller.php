@@ -298,7 +298,7 @@ class UsersController extends ModulesController {
 				$this->data['ModuleFlags']["admin"] =  $permissionModule->field("flag", array(
 					"module_id" => $adminModuleId,
 					"ugid" => $groupId,
-					"switch" => $permissionModule::SWITCH_GROUP
+					"switch" => $permissionModule->SWITCH_GROUP
 				));
 			}
 			$permissionModule->updateGroupPermission($groupId, $this->data['ModuleFlags']);
