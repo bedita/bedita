@@ -139,9 +139,19 @@ class AppController extends Controller
 		// check/setup localization
 		$this->setupLocale();
 		
-		// don't check logi on login/logout in backend application
-		if (BACKEND_APP && (isset($this->data["login"]) || $this->name === 'Authentications')) {
-			return;
+		// only backend
+		if (BACKEND_APP) {
+			// don't check if user is logged on login/logout operations
+			if (isset($this->data["login"]) || $this->name === 'Authentications') {
+				return;
+			}
+			
+			// load publications public url
+			$publications = ClassRegistry::init("Area")->find("all", array(
+				"contain" => array("BEObject")
+			));
+			
+			$this->set("publications", $publications);
 		}
 		
 		$this->checkLogin();
