@@ -37,12 +37,9 @@ class Group extends BEAppModel
 	        'rule' => 'notEmpty'
 		)
 	);
-
 	
-	function beforeFind($queryData) {
-		$this->bindModel( array("hasAndBelongsToMany" => array("User")) );
-		return true;
-	}
+	public $hasAndBelongsToMany = array("User");
+
 	
 	function getList($conditions=array()) {
 		$groups = $this->find("list", array(

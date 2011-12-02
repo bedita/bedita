@@ -37,7 +37,7 @@ class UsersController extends ModulesController {
 	 
 	public $paginate = array(
 	 	'User' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc')),
-		'Group' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc'))
+		'Group' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc') )//, 'contain' => array())
 	 );
 	
 	protected $moduleName = 'users';
@@ -47,7 +47,7 @@ class UsersController extends ModulesController {
 	}
 	
 	function showUsers() {
-		$allGroups = $this->Group->find("all");
+		$allGroups = $this->Group->find("all", array("contain" => array()));
 		$authGroups = array();
 		$userGroups = array();
 		if(isset($user)) {
@@ -242,7 +242,15 @@ class UsersController extends ModulesController {
 	}
 
 	private function loadGroups() {
-		return $this->paginate('Group');
+		$groups = $this->paginate('Group');
+//		foreach ($groups as &$g) {
+//			$u = $this->User->find("count", array(
+//				"contain" => array("Group.name = '".$g['Group']['name']."'")
+//			));
+//			$g['Group']['num_of_users'] = $u;
+//		}
+//		pr($groups);exit;
+		return $groups;
 	}
 
 	function groups() { 	
@@ -345,7 +353,7 @@ class UsersController extends ModulesController {
 				"ERROR"	=> '/users/groups'
 			),
 			"saveUser" => 	array(
-				"OK"	=> "/users/index",
+				"OK"	=> "/users/viewUser/" . @$this->User->id,
 				"ERROR"	=> $this->referer() 
 			),
 			"removeUser" => 	array(
@@ -353,8 +361,8 @@ class UsersController extends ModulesController {
 				"ERROR"	=> "/users" 
 			),
 			"saveGroup" => 	array(
-				"OK"	=> "/users/groups",
-				"ERROR"	=> "/users/groups" 
+				"OK"	=> "/users/viewGroup/" . @$this->Group->id,
+				"ERROR"	=> $this->referer() 
 			),
 			"removeGroup" => 	array(
 				"OK"	=> "/users/groups",

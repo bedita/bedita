@@ -337,9 +337,13 @@ class BeAuthComponent extends Object {
 			$userData['Group']= array();
 			$userData['Group']['Group']= array();
 			$groupModel = ClassRegistry::init('Group');
-			foreach ($groups as $g) {
-				$group =  $groupModel->findByName($g);
-				array_push($userData['Group']['Group'], $group['Group']['id']) ;
+			$group_ids = $groupModel->find("list", array(
+				"fields" => "id",
+				"conditions" => array("name" => $groups),
+				"order" => "id ASC"
+			));
+			if (!empty($group_ids)) {
+				$userData['Group']['Group'] = array_values($group_ids);
 			}
 		}
 	}
@@ -365,12 +369,15 @@ class BeAuthComponent extends Object {
 	
 	public function removeGroup($groupName) {
 		$groupModel = ClassRegistry::init('Group');
-		$g =  $groupModel->findByName($groupName);
+		$g =  $groupModel->find("first", array(
+				"conditions" => array("name" => $groupName),
+				"contain" => array()
+		));
 		if ($g['Group']['immutable'] == 1) {
-			throw new BeditaException(sprintf(__("Immutable group %s", true),$groupName));
+			throw new BeditaException(__("Immutable group", true) . " " . $groupName);
 		}
 		if(!$groupModel->delete($g['Group']['id'])) {
-			throw new BeditaException(__("Error removing group",true));
+			throw new BeditaException(__("Error removing group",true) . " " . $groupName);
 		}
 		return true;
 	}

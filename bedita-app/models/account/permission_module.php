@@ -308,6 +308,7 @@ class PermissionModule extends BEAppModel
 	public function updateGroupPermission($groupId, $moduleFlags) {
 		$conditions = array("ugid" => $groupId, "switch" => self::SWITCH_GROUP);
 		$this->deleteAll($conditions);
+		$this->Group->contain = array();
 		$g = $this->Group->findById($groupId);
 		$groupName = $g['Group']['name'];
 		foreach ($moduleFlags as $mod=>$flag) {
