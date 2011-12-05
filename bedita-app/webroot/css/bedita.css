@@ -268,7 +268,7 @@ UL.modules {
 	/*background:transparent url(../img/shadowh2-small.png) repeat-y top left ;*/
 }
 
-.modules LI, .modules label {
+.home .modules LI, .modules label {
 	display:block;
 	font-size: 1.16em ;
 	width:120px; height:120px; 
@@ -1945,38 +1945,84 @@ img.smallicon {
 
 /*...........................................    
 
-  	pubtab // modules menu
+  	modulesmenu_d // modules menu
 
 ...........................................*/
 
-	.pubtab {
+	.modulesmenu_d {
 		display:none; height:auto; position:absolute; z-index:800; top:20px; left:160px;
 	}
-	.pubtab .menu {
+	.modulesmenu_d nav {
 		overflow:auto; min-width:170px; padding-left:0px; min-height:140px;  background-color:#fff;
 	}
-	.pubtab nav {
+	.modulesmenu_d UL {
 		margin:0px 0px 0px 0px;
 	}
-	.pubtab nav a {
+	.modulesmenu_d LI {
 		background-color:transparent !important;
 		display:block;
 		border-top:0px solid #CCC;
 		padding:5px 0px 5px 25px;
+		border-right:25px solid transparent;
 	}
 	
-	.pubtab nav a:first-child {
+	.modulesmenu_d LI A {
+		display:block;
+		background-color:transparent !important;
+	}
+	
+	.modulesmenu_d nav LI:first-child {
 		border-top:0px solid #CCC;
 	}
 	
-	.pubtab nav a:nth-child(even) {
+	.modulesmenu_d LI:nth-child(even) {
 		background-color: #f0f0f0 !important;
 	}
 
-	.pubtab nav a:hover {
+	.modulesmenu_d LI:hover {
 		background-color: #ccc !important;
 	}	
 
-	.pubtab nav a img.smallicon {
+	.modulesmenu_d img.smallicon {
 		vertical-align:middle; margin-left:-25px
 	}
+	
+	.modulesmenu_d LI.index {
+	border-right:0px; padding-right:10px;
+	}
+	
+	.sub_modulesmenu_d {
+		display:none; 
+		background-color:#FFF; 
+		position:absolute;
+		z-index:700;
+		border-right:25px solid gold;
+	}
+	
+	.sub_modulesmenu_d li {
+		display:block;
+		border-top:0px solid #CCC;
+		padding:5px 0px 5px 25px;
+		border-right:25px solid transparent;
+	}
+	
+	.sub_modulesmenu_d nav LI:first-child {
+		border-top:0px solid #CCC;
+	}
+	
+	.sub_modulesmenu_d LI:nth-child(even) {
+		background-color: #f0f0f0 !important;
+	}
+
+	.sub_modulesmenu_d LI:hover {
+		background-color: #ccc !important;
+	}	
+
+	.sub_modulesmenu_d LI A {
+		display:block;
+	}
+	
+	
+	
+	
+	

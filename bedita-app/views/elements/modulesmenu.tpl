@@ -24,3 +24,8 @@
 	<input type="text" placeholder="{t}search{/t}" name="searchstring" value="{$stringSearched|default:""}"/>
 	<input type="submit" value="{t}GO{/t}"/>
 	</form>
+	
+	
+	
+	
+	{$view->element('modulesmenu_dyn')}

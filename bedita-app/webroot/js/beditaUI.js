@@ -555,28 +555,44 @@ $(".searchtrigger").click(function() {
 
 /*...........................................    
 
-   various acc
+  modulelist menu
 
 ...........................................*/
 
 
 $(".primacolonna .modules label.bedita").toggle(function() {
 	$(this).addClass("shadow");  
-	$(".pubtab").show();
+	$(".modulesmenu_d").show();
 
 }, function() {
 
   $(this).removeClass("shadow");  
-	$(".pubtab").hide();
+	$(".modulesmenu_d").hide();
 });
 
-$(".pubtab nav a").each(function() {
-
+$(".modulesmenu_d LI[class]").each(function() {
 	var classname = $(this).attr('class');
 	var color = $(".modulesmenu ."+classname).css('background-color');
-	$(this).css("border-right","25px solid "+color);
-	
+	$(this).css("border-color", color);
 });
+
+$(".modulesmenu_d LI[class]").hover(
+  function () {
+  	var classname = $(this).attr("class");
+	var position = $(this).position();
+	var topshift = position.top;
+	var leftshift = $(".modulesmenu_d").width();
+	$(".sub_modulesmenu_d."+classname+"").css({
+		"left": leftshift+160+"px",
+		"top":  topshift+20+"px"
+	}).show();
+	
+  }, 
+  function () {
+	$(".sub_modulesmenu_d").hide();
+  }
+);
+
 
 /*...........................................    
 
