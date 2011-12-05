@@ -20,7 +20,7 @@
  */
 
 /**
- * Administration: users, groups, eventlogs....
+ * Administration: system info, eventlogs, plug/unplug module, addons, utility....
  * 
  *
  * @version			$Revision$
