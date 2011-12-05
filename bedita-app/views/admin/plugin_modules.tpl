@@ -31,7 +31,7 @@ $(document).ready(function() {
 		background-color:#999 !important;
 	}
 
-	.modules LI {
+	.modules.block LI {
 		margin-right:10px;
 		margin-bottom:10px;
 	}
@@ -56,7 +56,7 @@ $(document).ready(function() {
 	
 	<div class="tab stayopen"><h2>{t}Plugged modules{/t}</h2></div>
 
-	<ul class="modules" id="plugged">
+	<ul class="modules block" id="plugged">
 	{foreach from=$pluginModules.plugged item="mod"}
 		<li class="{$mod.name} {$mod.status}">
 			<form action="{$html->url('/admin/plugModule')}" method="post">
@@ -83,7 +83,7 @@ $(document).ready(function() {
 	
 	<div class="tab stayopen"><h2>{t}Unplugged modules{/t}</h2></div>
 	
-	<ul class="modules" id="unplugged">
+	<ul class="modules block" id="unplugged">
 	{foreach from=$pluginModules.unplugged item="mod"}
 		<li>
 			<form action="{$html->url('/admin/plugModule')}" method="post">

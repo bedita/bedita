@@ -32,7 +32,7 @@ $(document).ready(function() {
 
 
 
-<ul class="modules">
+<ul class="modules block">
 
     <li class="bedita" rel="{$html->url('/')}">
 		{$conf->projectName|default:$conf->userVersion}

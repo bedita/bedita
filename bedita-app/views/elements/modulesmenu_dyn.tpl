@@ -14,8 +14,10 @@
 		{/foreach}
 		
 		{foreach from=$publications item=item}
+			{if !empty($item.public_url)}
 			<li class="index"><a target="_blank" href="{$item.public_url}" title="{$item.public_name} | {$item.public_url}">
 				<img class="smallicon" src="{$html->webroot}img/iconUrl.png">{$item.public_url|truncate:32}</a></li>
+			{/if}
 		{/foreach}
 			<li class="index"><a href="{$html->url('/logout')}" title="Exit">exit</a></li>
 		</ul> 

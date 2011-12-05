@@ -268,7 +268,7 @@ UL.modules {
 	/*background:transparent url(../img/shadowh2-small.png) repeat-y top left ;*/
 }
 
-.home .modules LI, .modules label {
+.modules.block LI, .modules label {
 	display:block;
 	font-size: 1.16em ;
 	width:120px; height:120px; 
