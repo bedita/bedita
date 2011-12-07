@@ -32,7 +32,94 @@
  */
 
 // BEdita instance name 
-//$config["projectName"] = "My Project Name";
+$config["projectName"] = "BEdita";
+
+
+//////////////////////////////////
+//								//
+//    START - SERVER SETTINGS	//
+//								//
+//////////////////////////////////
+
+
+/**
+ ** ******************************************
+ **  FileSystem Paths, URIs, Files defaults
+ ** ******************************************
+ */
+
+// BEdita URL
+$config['beditaUrl']="http://localhost/bedita";
+
+/** Multimedia - root folder on filesystem (use absolute path, if you need to change it)
+ **
+ **	On Linux could be /var/www/bedita/bedita-app/webroot/files
+ ** On Windows could be C:\\xampp\\htdocs\\bedita\\bedita-app\\webroot\\files
+ ** Or you can use DS as crossplatform directory separator as in default
+ ** BEDITA_CORE_PATH . DS . "webroot" . DS . "files"
+ ** where BEDITA_CORE_PATH points to bedita/bedita_app dir
+ */
+$config['mediaRoot'] = BEDITA_CORE_PATH . DS . "webroot" . DS . "files";
+
+// Multimedia - URL prefix (without trailing slash)
+$config['mediaUrl'] = $config['beditaUrl'] . '/files';
+
+// alternative frontends path (absolute path)
+//define('BEDITA_FRONTENDS_PATH', '/var/www/bedita/bedita-frontends');
+
+// alternative bedita modules path (absolute path)
+//define('BEDITA_MODULES_PATH', '/var/www/bedita/bedita-plugins');
+
+// alternative bedita addons path (absolute path)
+//define('BEDITA_ADDONS_PATH', '/var/www/bedita/bedita-addons');
+
+
+/**
+ ** ******************************************
+ **  System locales available
+ **  use locale strings or arrays for fallbacks
+ **  (see setLocale php function)
+ ** ******************************************
+ */
+
+$config["locales"] = array(
+	"eng" => array("en_US.utf8", "en_GB.utf8"),
+	"ita" => "it_IT.utf8",
+);
+
+/**
+ ** ******************************************
+ **  SMTP and mail support settings
+ ** ******************************************
+ */
+ 
+/** 
+ ** smtp server configuration used for any kind of mail (notifications, newsletters, etc...)
+ */
+//$config['smtpOptions'] = array(
+//	'port' => '25',
+//	'timeout' => '30',
+//	'host' => 'your.smtp.server',
+//	'username' => 'your_smtp_username',
+//	'password' => 'your_smtp_password'
+//);
+
+/**
+ * mail support configuration
+ * uncomment and fill to send error messages to your support
+ */
+//$config["mailSupport"] = array(
+//	"from" => "bedita-support@...",	
+//	'to' => "bedita-support@...",
+//	'subject' => "[bedita] error message",
+//);
+
+//////////////////////////////////
+//								//
+//     END - SERVER SETTINGS	//
+//								//
+//////////////////////////////////
+
 
 /**
  ** ******************************************
@@ -41,7 +128,7 @@
  */
 
 // User Interface default language, choose between bedita-app/locale dir [see also 'multilang' below]
-//$config['Config']['language'] = "ita";
+//$config['Config']['language'] = "eng";
 
 // Set 'multilang' true for user choice [also set 'multilang' true if $config['Config']['language'] is set]
 // $config['multilang'] = true;

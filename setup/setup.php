@@ -28,46 +28,67 @@
  * $Id$
  */
 
+	if(!defined('ROOT')) {
+		die;
+	}
+
 	define('WIZ_INFO','INFO');
 	define('WIZ_WARN','WARN');
 	define('WIZ_ERR','ERROR');
 
+	define('BE_APP', ROOT . DS . APP_DIR . DS);
+	
 	require ROOT . DS . 'vendors' . DS . 'smarty' . DS . 'libs' . DS . 'Smarty.class.php';
-	require ROOT . DS . APP_DIR . DS . 'libs' . DS . 'be_system.php';
+	require BE_APP . 'libs' . DS . 'be_system.php';
 
+	if(file_exists(BE_APP . 'config' . DS. 'bedita.cfg.php')) {
+		die;
+	}
+	
+	
 	class BeditaInstallationWizard {
 
 		var $smarty;
 		var $check_arr = array();
 		var $besys;
 		var $steps = array(
-			'Environment Settings',
-			'Database Configuration',
-			'Bedita Admin',
+			'Filesystem',
+			'Database',
+			'Admin User',
 			'Finish'
 		);
 
+		const PAGE_FILESYS = "1";
+		const PAGE_DBCONN = "2";
+		const PAGE_BEADMIN = "3";
+		const PAGE_FINISH = "4";
+		const PAGE_ENDINSTALL = "5";
+		
 		public function BeditaInstallationWizard() {
 			$this->besys = new BeSystem();
 		}
 
-		public function start() {
+		public function start($page = null) {
 			$wizard_finished = false;
-			$p = (empty($_POST['page'])) ? "1" : $_POST['page'];
+			if($page != null) {
+				$p = $page;
+			} else {
+				$p = (empty($_POST['page'])) ? "1" : $_POST['page'];
+			}
 			switch ($p) {
-				default: case "1":
-					$this->page_envstart();
+				default: case self::PAGE_FILESYS:
+					$this->page_filesys();
 					break;
-				case "2":
+				case self::PAGE_DBCONN:
 					$this->page_dbconn();
 					break;
-				case "3":
+				case self::PAGE_BEADMIN:
 					$this->page_beadmin();
 					break;
-				case "4":
+				case self::PAGE_FINISH:
 					$this->page_finish();
 					break;
-				case "5":
+				case self::PAGE_ENDINSTALL:
 					$this->page_endinstall();
 					$wizard_finished = true;
 					break;
@@ -77,63 +98,103 @@
 
 		private function initSmarty() {
 			$this->smarty = new Smarty();
-			$this->smarty->template_dir = ROOT . DS . APP_DIR . DS . 'views' . DS . 'install';
-			$this->smarty->compile_dir = ROOT . DS . APP_DIR . DS . 'tmp' . DS . 'smarty' . DS . 'compile';
-			$this->smarty->cache_dir = ROOT . DS . APP_DIR . DS . 'tmp' . DS . 'smarty' . DS . 'cache';
+			$this->smarty->template_dir = ROOT . DS . "setup" . DS. 'views';
+			$this->smarty->compile_dir = BE_APP . 'tmp' . DS . 'smarty' . DS . 'compile';
+			$this->smarty->cache_dir = BE_APP . 'tmp' . DS . 'smarty' . DS . 'cache';
 		}
 
-		private function page_envstart() {
-			if($this->_checksmarty()) {
-				$this->initSmarty();
-				$this->_checkcakephp();
-				$this->_checkinstalldir();
-				$this->smarty->assign('steps',$this->steps);
-				$this->smarty->assign('results_smarty',$this->check_arr['smarty']);
-				$this->smarty->assign('results_cake',$this->check_arr['cake']);
-				$this->smarty->assign('results_install',$this->check_arr['install']);
-				$this->smarty->assign('n_errors',$this->_count_errors());
-				$this->smarty->display('setup.tpl');
+		private function page_filesys() {
+			if($this->_checkFileSystem()) {
+				$this->start(self::PAGE_DBCONN);
 			} else {
-				echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-				echo '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it" dir="ltr">';
-				echo '<head>';
-				echo '<title>BEdita installation wizard</title>';
-				echo '<style>';
-				echo 'ul { list-style: none; }';
-				echo '.INFO { color:green}';
-				echo '.WARN { color:yellow }';
-				echo '.ERROR { color:red }';
-				echo 'li.done { color: green; }';
-				echo 'li.curr { color: blue; }';
-				echo 'li.todo { color: orange; }';
-				echo 'div { margin:10px }';
-				echo '</style>';
-				echo '</head>';
-				echo '<body>';
-				echo '<h1>BEdita installation wizard</h1>';
-				echo '<div id="map" style="float:left">';
-				echo '<ul>';
-				foreach($this->steps as $key => $value) {
-					$c = ($key > 0) ? "todo" : "curr";
-					echo '<li class="' . $c . '">' . $value . '</li>';
+				$out = file_get_contents(ROOT . DS . "setup" . DS. "views" . DS . "filesys.html");
+				$css = file_get_contents(ROOT . DS . "setup" . DS. "css" . DS . "setup.css");
+				$out = 	str_replace("{\$css}", $css, $out);	
+				$errors = "";
+				foreach($this->check_arr['fileSys'] as $k => $v) {
+					if($v['severity'] !== 'INFO') {
+						$errors .= '<p><span class="' . $v['severity'] . '">[' . $v['severity'] . ']</span>: <code>' . $v['label'] . '</code>: <span class="' . $v['severity'] . '">' . $v['description'] . '</span></p>';
+					}
 				}
-				echo '</ul>';
-				echo '</div>';
-				echo '<div style="float:left">';
-				echo '<h1>Smarty Php</h1>';
-				echo '<h2>Directory Permits Error</h2>';
-				foreach($this->check_arr['smarty'] as $k => $v) {
-					echo '<p><span class="' . $v['severity'] . '">[' . $v['severity'] . ']</span>: <code>' . $v['label'] . '</code>: <span class="' . $v['severity'] . '">' . $v['description'] . '</span></p>';
-				}
-				echo '<p>Please check directories permits. Smarty temporary directories must be writeable.</p>';
-				echo '<form method="post" action="index.php"><input type="submit" value="Refresh" /></form>';
-				echo '</div>';
-				echo '</body>';
-				echo '</html>';
+				$out = 	str_replace("{\$errors}", $errors, $out);			
+				echo $out;				
 			}
 			
 		}
 
+		private function _checkFileSystem() {
+			$this->check_arr['fileSys'] = array();
+			$result = true;
+			// check /tmp dir
+			$tmpDir = BE_APP . 'tmp';
+			if(!$this->_checkdirwriteable('fileSys','Check directory: '.$tmpDir, $tmpDir)) {
+				$result = false;
+			} else { 
+				// check or create subdirs of /tmp
+				$subdirs = array("cache", "logs", "sessions", "smarty", "tests");
+				if(!$this->_checkSubDirsExistWritable($subdirs, $tmpDir)) {
+					$result = false;
+				}
+				
+				// check or create subdirs of /tmp/cache
+				$subdirs = array("models", "persistent", "views");
+				if(!$this->_checkSubDirsExistWritable($subdirs, $tmpDir .DS . "cache")) {
+					$result = false;
+				}
+				
+				// check or create subdirs of /tmp/smarty
+				$subdirs = array("cache", "compile");
+				if(!$this->_checkSubDirsExistWritable($subdirs, $tmpDir .DS . "smarty")) {
+					$result = false;
+				}
+				
+			}
+
+			// check /webroot/files dir
+			$fDir = BE_APP . 'webroot' . DS . 'files';
+			if(!$this->_checkdirwriteable('fileSys','Check directory: '.$fDir, $fDir)) {
+				$result = false;
+			}
+			
+			// check /config dir
+			$confDir = BE_APP . 'config';
+			if(!$this->_checkdirwriteable('fileSys','Check directory: '.$confDir, $confDir)) {
+				$result = false;
+			}
+
+			// checking config file /config/database.php
+			$confFile = $confDir.DS."database.php";
+			if(!$this->_checkfileconfig('fileSys','Check config file: '.$confFile, $confFile, $confDir)) {
+				$result = false;
+			}
+			
+			// checking config file /config/database.php
+			$confFile = $confDir.DS."core.php";
+			if(!$this->_checkfileconfig('fileSys','Check config file: '.$confFile, $confFile, $confDir)) {
+				$result = false;
+			}
+
+			return $result;			
+		}
+
+		private function _checkSubDirsExistWritable(array $subdirs, $basePath) {
+			$result = true;
+			foreach ($subdirs as $d) {
+				$path = $basePath . DS . $d;
+				$label = 'Check directory: '.$path;
+				if(!$this->besys->checkAppDirPresence($path)) {
+					if(!mkdir($path)) {
+						$result = false;
+						$this->check_arr['fileSys'][] = array('label' => $label, 'result' => $result, 
+							'severity' => WIZ_ERR, 'description' => 'unable to create directory');
+					} 
+				} else {
+					$this->_checkdirwriteable('fileSys', $label, $path);
+				}
+			}
+			return $result;
+		}
+		
 		private function page_dbconn() {
 			$this->initSmarty();
 			$filename = ROOT . DS . APP_DIR . DS ."config" . DS . "database.php";
@@ -150,7 +211,7 @@
 			}
 			$this->smarty->assign('steps',$this->steps);
 			require_once(CORE_PATH . 'cake' . DS . 'bootstrap.php');
-			Configure::write('debug', 1);
+			Configure::write('debug', 0);
 			App::import('ConnectionManager');
 			$db = ConnectionManager::getDataSource('default');
 			if(!empty($_POST['action']) && ($_POST['action'] == 'initdb')) {
@@ -174,7 +235,6 @@
 
 		private function page_beadmin() {
 			require_once(CORE_PATH . 'cake' . DS . 'bootstrap.php');
-			require_once(ROOT . DS . APP_DIR . DS . 'config' . DS . 'bedita.ini.php');
 			Configure::write('debug', 1);
 			$this->initSmarty();
 			$this->smarty->assign('steps', $this->steps);
@@ -205,8 +265,10 @@
 					if(!$this->_saveuser($userdata)) {
 						$this->smarty->assign('usercreationerr',true);
 					} else {
-						$this->smarty->assign('userid',$userdata['userid']);
+						$this->smarty->assign('userid', $userdata['userid']);
 						$this->smarty->assign('usercreationok',true);
+						$this->start(self::PAGE_FINISH);
+						return;
 					}
 				}
 				if($check_mod_rewrite != $this->_checkmodrewritecakephp($baseUrl)) {
@@ -218,6 +280,7 @@
 					}
 				}
 			}
+			
 			$this->smarty->assign('bedita_url',$config->read('beditaUrl'));
 			$this->smarty->assign('bedita_url_check',$this->_checkurl($config->read('beditaUrl')));
 			$this->smarty->assign('media_root',$config->read('mediaRoot'));
@@ -230,18 +293,24 @@
 		}
 
 		private function page_finish() {
-			require_once(CORE_PATH . 'cake' . DS . 'bootstrap.php');
-			require_once(ROOT . DS . APP_DIR . DS . 'config' . DS . 'bedita.ini.php');
-			Configure::write('debug', 1);
 			$this->initSmarty();
+			
+			$confDir = BE_APP . 'config';
+			$confFile = $confDir.DS."bedita.cfg.php";
+			if(!$this->_checkfileconfig('fileSys','Creating config file: '.$confFile, $confFile, $confDir)) {
+				$this->smarty->assign('endinstallfileerr', true);
+			} else {
+				$p = strrpos($_SERVER['REQUEST_URI'], "/");
+				$url1 = substr($_SERVER['REQUEST_URI'], 0, $p);
+				$url2 = str_replace("index.php", "", substr($_SERVER['REQUEST_URI'], $p));
+				$beUrl = "http://" . $_SERVER['HTTP_HOST'] . $url1 . $url2;
+				$this->besys->writeConfigFile($confFile, array('beditaUrl' => $beUrl), true);
+			}
 			$this->smarty->assign('steps',$this->steps);
 			$this->smarty->display('finish.tpl');
 		}
 
 		private function page_endinstall() {
-			$filename = ROOT . DS . "setup" . DS . "install.done";
-			$filedata = array("BEdita installed on " . strtotime("now"));
-			file_put_contents($filename,$filedata);
 		}
 
 		private function _checkurl($url) {
@@ -279,9 +348,9 @@
 			$result = true;
 			if(!$this->besys->checkAppDirPresence($path)) {
 				$result = false;
-				$this->check_arr[$checklabel][] = array('label' => $label, 'result' => $result, 'severity' => WIZ_ERR, 'description' => 'dir not found');
+				$this->check_arr[$checklabel][] = array('label' => $label, 'result' => $result, 'severity' => WIZ_ERR, 'description' => 'directory not found');
 			} else {
-				$this->check_arr[$checklabel][] = array('label' => $label, 'result' => $result, 'severity' => WIZ_INFO, 'description' => 'dir found');
+				$this->check_arr[$checklabel][] = array('label' => $label, 'result' => $result, 'severity' => WIZ_INFO, 'description' => 'directory found');
 			}
 			return $result;
 		}
@@ -305,81 +374,63 @@
 			if($result) {
 				if(!$this->besys->checkWritable($path)) {
 					$result = false;
-					$this->check_arr[$checklabel][] = array('label' => $label, 'result' => $result, 'severity' => WIZ_ERR, 'description' => 'dir not writeable');
+					$this->check_arr[$checklabel][] = array('label' => $label, 'result' => $result, 'severity' => WIZ_ERR, 'description' => 'directory not writable');
 				} else {
-					$this->check_arr[$checklabel][] = array('label' => $label, 'result' => $result, 'severity' => WIZ_INFO, 'description' => 'dir writeable');
+					$this->check_arr[$checklabel][] = array('label' => $label, 'result' => $result, 'severity' => WIZ_INFO, 'description' => 'directory writable');
 				}
 			}
 			return $result;
 		}
 
 		private function _checkfileconfig($checklabel,$label,$filename,$confdir) {
+			$result = true;
 			if(!$this->besys->checkAppFilePresence($filename)) {
-				$this->check_arr[$checklabel][] = array('label' => $label, 'result' => false, 'severity' => WIZ_ERR, 'description' => 'file not found');
 				$filesample = $filename.'.sample';
 				if(!$this->besys->checkAppFilePresence($filesample)) {
-					$this->check_arr[$checklabel][] = array('label' => 'Check presence of sample file: '.$filesample, 'result' => false, 'severity' => WIZ_ERR, 'description' => 'file not found');
+					$result = false;
+					$this->check_arr[$checklabel][] = array('label' => 'Check presence of sample file: '.$filesample, 
+						'result' => $result, 'severity' => WIZ_ERR, 'description' => 'file not found');
 				} else {
 					if(!$this->besys->checkWritable($confdir)) {
-						$this->check_arr[$checklabel][] = array('label' => 'Trying to create from .sample:', 'result' => false, 'severity' => WIZ_ERR, 'description' => 'directory ' . $confdir . ' is not writable');
+						$result = false;
+						$this->check_arr[$checklabel][] = array('label' => 'Trying to create from .sample:', 
+							'result' => $result, 'severity' => WIZ_ERR, 'description' => 'directory ' . $confdir . ' is not writable');
 					} else {
 						if(!$this->besys->createFileFromSample($filename)) {
-							$this->check_arr[$checklabel][] = array('label' => 'Trying to create from .sample:', 'result' => false, 'severity' => WIZ_ERR, 'description' => 'permission denied');
+							$result = false;
+							$this->check_arr[$checklabel][] = array('label' => 'Trying to create from .sample:', 
+								'result' => $result, 'severity' => WIZ_ERR, 'description' => 'permission denied');
 						} else {
-							$this->check_arr[$checklabel][] = array('label' => 'Trying to create from .sample:', 'result' => true, 'severity' => WIZ_INFO, 'description' => 'done');
+							$this->check_arr[$checklabel][] = array('label' => 'Trying to create from .sample:', 
+								'result' => $result, 'severity' => WIZ_INFO, 'description' => 'done');
 						}
 					}
 				}
 			} else {
-				$this->check_arr[$checklabel][] = array('label' => $label, 'result' => true, 'severity' => WIZ_INFO, 'description' => 'file found');
+				if(!$this->besys->checkWritable($filename)) {
+					$result = false;
+					$this->check_arr[$checklabel][] = array('label' => $label, 
+						'result' => $result, 'severity' => WIZ_ERR, 'description' => 'file not writable');
+				} else {
+					$this->check_arr[$checklabel][] = array('label' => $label, 'severity' => WIZ_INFO, 'description' => 'file found');
+				}
 			}
+			return $result;
 		}
 
 		private function _checksmarty() {
 
 			// smarty temporary directory must be writable
 			$smarty_dir = ROOT . DS . APP_DIR . DS . 'tmp' . DS . 'smarty';
-			$result = $this->_checkdirwriteable('smarty','Check of smarty dir: '.$smarty_dir,$smarty_dir);
+			$result = $this->_checkdirwriteable('smarty','Checking smarty directory: '.$smarty_dir,$smarty_dir);
 
 			$smarty_cache_dir = $smarty_dir . DS . 'cache';
-			if(!$this->_checkdirwriteable('smarty','Check of smarty cache dir: '.$smarty_cache_dir,$smarty_cache_dir)) {
+			if(!$this->_checkdirwriteable('smarty','Checking smarty cache directory: '.$smarty_cache_dir,$smarty_cache_dir)) {
 				$result = false;
 			}
 
 			$smarty_compile_dir = $smarty_dir . DS . 'compile';
-			if(!$this->_checkdirwriteable('smarty','Check of smarty compile dir: '.$smarty_compile_dir,$smarty_compile_dir)) {
-				$result = false;
-			}
-			return $result;
-		}
-
-		private function _checkcakephp() {
-
-			// checking app dir
-			$appPath = ROOT . DS . APP_DIR;
-			$result = $this->_checkdir('cake','Check of cake app dir: '.$appPath,$appPath);
-
-			$confDir = $appPath.DS."config";
-
-			// checking config files
-			$confFile = $confDir.DS."core.php";
-			if(!$this->_checkfileconfig('cake','Check of cake config file: '.$confFile,$confFile,$confDir)) {
-				$result = false;
-			}
-
-			$confFile = $confDir.DS."database.php";
-			if(!$this->_checkfileconfig('cake','Check of cake config file: '.$confFile,$confFile,$confDir)) {
-				$result = false;
-			}
-
-			return $result;
-		}
-
-		private function _checkinstalldir() {
-			$this->check_arr['install'] = array();
-			$result = true;
-			$confDir = ROOT . DS . 'setup';
-			if(!$this->_checkdirwriteable('install','Check of install dir: '.$confDir,$confDir)) {
+			if(!$this->_checkdirwriteable('smarty','Checking smarty compile directory: '.$smarty_compile_dir,$smarty_compile_dir)) {
 				$result = false;
 			}
 			return $result;

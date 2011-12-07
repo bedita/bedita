@@ -601,13 +601,16 @@ $config["geoTagOptions"] = array(
 
 
 /**
- * Specific System settings
- * ALWAYS AT THE END of bedita.ini.php
+ * User configurations - handled in admin/config
  */
-require BEDITA_CORE_PATH. DS ."config".DS."bedita.cfg.php";	
+if(file_exists(BEDITA_CORE_PATH. DS ."config".DS."bedita.cfg.php")) {
+	include BEDITA_CORE_PATH. DS ."config".DS."bedita.cfg.php";	
+}
 
 /**
- * Specific system/server related settings
+ * @deprecated system/server file specific settings 
  */
-require BEDITA_CORE_PATH. DS ."config".DS."bedita.sys.php";	
+if(file_exists(BEDITA_CORE_PATH. DS ."config".DS."bedita.sys.php")) {
+	include BEDITA_CORE_PATH. DS ."config".DS."bedita.sys.php";	
+}
 ?>
