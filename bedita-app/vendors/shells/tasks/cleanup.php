@@ -31,45 +31,111 @@
  */
 class CleanupTask extends BeditaBaseShell {
 
-   public function execute() {
+	public function execute() {
 		$basePath = TMP;
-    	if (isset($this->params['frontend'])) {
-    		$basePath = $this->params['frontend'].DS."tmp".DS;
+		if (isset($this->params['frontend'])) {
+			$basePath = $this->params['frontend'].DS."tmp".DS;
 			if(!file_exists($basePath)) {
-    			$this->out("Directory $basePath not found");
+				$this->out("Directory $basePath not found");
 				return;
 			}
-    		$this->out('Cleaning dir: '.$basePath);
-            $this->__clean($basePath . 'cache', false);
-    	}
-        if (isset($this->params['logs'])) {
-    	   $this->__clean($basePath . 'logs');
-            $this->out('Logs cleaned.');
-        }
-        Cache::clear();
-        $this->__clean($basePath . 'cache' . DS . 'models');
-        $this->__clean($basePath . 'cache' . DS . 'persistent');        
-        $this->__clean($basePath . 'cache' . DS . 'views');        
-        $this->out('Cache cleaned.');
-        $this->__clean($basePath . 'smarty' . DS . 'compile');
-        $this->__clean($basePath . 'smarty' . DS . 'cache');
-        $this->out('Smarty compiled/cache cleaned.');
+			$this->out('Cleaning dir: '.$basePath);
+			$this->__clean($basePath . 'cache', false);
+		}
+		if (isset($this->params['logs'])) {
+			$this->__clean($basePath . 'logs');
+			$this->out('Logs cleaned.');
+		}
+		Cache::clear();
+		$this->__clean($basePath . 'cache' . DS . 'models');
+		$this->__clean($basePath . 'cache' . DS . 'persistent');        
+		$this->__clean($basePath . 'cache' . DS . 'views');        
+		$this->out('Cache cleaned.');
+		$this->__clean($basePath . 'smarty' . DS . 'compile');
+		$this->__clean($basePath . 'smarty' . DS . 'cache');
+		$this->out('Smarty compiled/cache cleaned.');
 
-        if (isset($this->params['media'])) {
-       		$this->removeMediaFiles();
-        }
-    }    
-
-    private function removeMediaFiles() {
+		if (isset($this->params['media'])) {
+			$this->removeMediaFiles();
+		}
+	}
+	
+	/**
+	 * clean PHP files from:
+	 * 1) leading spaces
+	 * 2) trailing spaces
+	 * 3) php tag closed and reopened sequentially
+	 * 
+	 * @param string $item file or dir path
+	 * @param bool $recursive if it follows subdirectories
+	 */
+	public function cleanPHPFiles($item, $recursive = true) {
+		clearstatcache();
+		// is file
+		if (file_exists($item) && is_file($item)) {
+			$ext = pathinfo($item, PATHINFO_EXTENSION);
+			if ($ext == "php") {
+				$this->removeSpaces($item);
+			} else {
+				$this->out($item . " is not a php file.");
+			}
+		// is dir
+		} elseif (is_dir($item)) {
+			$folder = new Folder($item);
+			$phpfiles = $folder->findRecursive(".*\.php");
+			if (!empty($phpfiles)) {
+				foreach ($phpfiles as $f) {
+					$this->removeSpaces($f);
+				}
+			}
+		} else {
+			$this->out("Error: " . $item . " is not a valid directory or php file.");
+		}
+	}
+	
+	private function removeSpaces($file) {
+		$filename = basename($file);
+		if (!is_readable($file)) {
+			$this->out($filename . " is not readable.");
+			return;
+		}
+		
+		//Regex Express to test leading and trailing spaces
+		$regExpPre = "/^[\n\r|\n\r|\n|\r|\s]+<\?php/";
+		$regExpPost = "/\?>[\n\r|\n\r|\n|\r|\s]+$/";
+		$regExpIn = "/^\?>.*<\?php/s";
+		
+		$data = $originalData = file_get_contents($file);
+		
+		$data = preg_replace($regExpPre, "<?php", $data);
+		$data = preg_replace($regExpPost, "?>", $data);
+		$data = preg_replace($regExpIn, "", $data);
+		
+		if ($data !== $originalData) {
+			if (!is_writable($file)) {
+				$this->out($filename . "has leading or trailing spaces but it is not writable.");
+				return;
+			}
+			$this->out("Found trailing/leading spaces in " . $filename);
+			if (file_put_contents($file, $data)) {
+				$this->out($filename . " cleaned");
+			} else {
+				$this->out("ERROR: error writing " . $filename);
+			}
+			
+		}
+	}
+	
+	
+	private function removeMediaFiles() {
 		$mediaRoot = Configure::read("mediaRoot");
 		$folder= new Folder($mediaRoot);
-        $dirs = $folder->read();
-        foreach ($dirs[0] as $d) {
-            $folder->delete($mediaRoot . DS. $d);
-        }
-        $this->out('Media files cleaned.');
-    	
-    }
+		$dirs = $folder->read();
+		foreach ($dirs[0] as $d) {
+			$folder->delete($mediaRoot . DS. $d);
+		}
+		$this->out('Media files cleaned.');
+	}
 
 }
 ?>

@@ -1,4 +1,3 @@
-
 <?php 
 /*-----8<--------------------------------------------------------------------
  * 
@@ -800,6 +799,19 @@ class BeditaShell extends BeditaBaseShell {
 		$this->out("done");
 	}
 	
+	
+	public function cleanphp() {
+		if (!isset($this->params["f"])) {
+			$this->out("Missing -f parameter");
+			return;
+		}
+		$recursive = (isset($this->params["r"]))? true : false;
+		$this->hr();
+		$this->out("Clean PHP files from leading and trailing spaces");
+		$this->hr();
+		$this->Cleanup->cleanPHPFiles($this->params["f"], $recursive);
+		$this->out("done");
+	}
     
 	function help() {
         $this->out('Available functions:');
@@ -857,6 +869,13 @@ class BeditaShell extends BeditaBaseShell {
         $this->out(' ');
         $this->out('9. updateObjectTypes: update object_types table');
   		$this->out(' ');
+		$this->out('10. cleanphp: clean php files from leading and trailing spaces');
+  		$this->out(' ');
+		$this->out('   Usage: cleanuphp [-f <file/dir-path>] [-r]');
+		$this->out(' ');
+		$this->out("    -f <file-or-directory-path>");
+        $this->out("    -r recusrion on directory");
+		$this->out(' ');
 	}
 }
 
