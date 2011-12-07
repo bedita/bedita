@@ -40,4 +40,4 @@ class BeAuthTestData extends BeditaTestData {
 	) ;
 }
 
-?> 
+?>

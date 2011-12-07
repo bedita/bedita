@@ -225,4 +225,4 @@ class PermissionModuleTestCase extends BeditaTestCase {
 		parent::__construct('PermissionModule', dirname(__FILE__)) ;
 	}		
 }
-?> 
+?>

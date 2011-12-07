@@ -77,4 +77,4 @@ class UserTestCase extends BeditaTestCase {
 	}	
 }
 
-?> 
+?>

@@ -26,4 +26,4 @@ class SectionTestData extends BeditaTestData {
 	);
 }
 
-?> 
+?>

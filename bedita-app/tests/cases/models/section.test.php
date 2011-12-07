@@ -134,4 +134,4 @@ class SectionTestCase extends BeditaTestCase {
 	}	
 }
 
-?> 
+?>

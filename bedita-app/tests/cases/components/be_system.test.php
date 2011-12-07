@@ -46,4 +46,4 @@ class BeSystemTestCase extends BeditaTestCase {
 		parent::__construct('BeSystem', dirname(__FILE__)) ;
 	}
 }
-?> 
+?>

@@ -14,4 +14,4 @@ class BeSystemTestData extends BeditaTestData {
 	);
 }
 
-?> 
+?>

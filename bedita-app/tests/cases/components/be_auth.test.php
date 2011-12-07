@@ -167,4 +167,4 @@ class BeAuthTestCase extends BeditaTestCase {
 		parent::__construct('BeAuth', dirname(__FILE__)) ;
 	}
 }
-?> 
+?>

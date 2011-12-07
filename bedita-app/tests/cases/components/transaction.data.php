@@ -30,4 +30,4 @@ class TransactionTestData extends BeditaTestData {
 		) ;
 }
 
-?> 
+?>

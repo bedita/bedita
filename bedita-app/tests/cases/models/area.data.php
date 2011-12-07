@@ -18,4 +18,4 @@ class AreaTestData extends BeditaTestData {
 	);
 }
 
-?> 
+?>

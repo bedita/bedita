@@ -215,4 +215,4 @@ class TransactionTestCase extends BeditaTestCase {
 		parent::__construct('Transaction', dirname(__FILE__)) ;
 	}	
 }
-?> 
+?>

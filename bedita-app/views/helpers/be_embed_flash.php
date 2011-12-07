@@ -276,16 +276,4 @@ class BeEmbedFlashHelper extends AppHelper {
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 ?>

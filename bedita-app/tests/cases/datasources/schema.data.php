@@ -15,4 +15,4 @@ class SchemaTestData extends BeditaTestData {
 	);
 }
 
-?> 
+?>

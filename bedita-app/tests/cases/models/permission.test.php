@@ -332,4 +332,4 @@ class PermissionTestCase extends BeditaTestCase {
 		parent::__construct('Permission', dirname(__FILE__)) ;
 	}
 }
-?> 
+?>

@@ -57,4 +57,3 @@ function smarty_function_png_imagepx($params, &$smarty)
 }
 
 ?>
-

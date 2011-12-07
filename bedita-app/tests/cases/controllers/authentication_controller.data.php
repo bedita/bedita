@@ -16,4 +16,4 @@ class AuthenticationControllerTestData extends BeditaTestData {
 	) ;
 }
 
-?> 
+?>

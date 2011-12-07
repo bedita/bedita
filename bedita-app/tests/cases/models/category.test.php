@@ -65,4 +65,4 @@ class CategoryTestCase extends BeditaTestCase {
 	}	
 }
 
-?> 
+?>

@@ -31,6 +31,3 @@ function smarty_modifier_sortby($arrData, $sortfields) {
 
 
 ?>
-
-
-

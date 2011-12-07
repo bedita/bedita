@@ -13,4 +13,4 @@ class CategoryTestData extends BeditaTestData {
 	);
 }
 
-?> 
+?>
