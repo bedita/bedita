@@ -1,0 +1,254 @@
+// {literal}
+
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
+	margin:0;
+	padding:0;
+	outline:0
+}
+table {
+	border-collapse:collapse;
+	border-spacing:0;
+}
+fieldset,img { 
+	border:0;
+}
+address,caption,cite,code,dfn,em,strong,th,var {
+	font-style:normal;
+	font-weight:normal;
+}
+ol,ul {
+	list-style:none;
+}
+caption,th {
+	text-align:left;
+}
+h1,h2,h3,h4,h5,h6 {
+	font-size:100%;
+	font-weight:normal;
+}
+q:before,q:after {
+	content:'';
+}
+abbr,acronym { border:0;
+}
+
+article, aside, figure, footer, header, hgroup, nav, section {display: block;}
+
+BODY, .bodybg {
+	background:#cccccc url(../img/sfomain.png) repeat-x fixed;
+}
+
+
+TD {padding:2px; vertical-align:middle}
+
+HR {height:0px; border:0px; margin:10px 0px 10px 0px; border-top:1px solid gray}
+
+A {color:#000000}
+
+a img {border:0px;}
+
+a:focus, a:active {outline:0px;}
+
+a:link, a:visited, a:active {text-decoration: none; }
+
+a:hover {text-decoration: none;}
+
+UL {list-style:none;}
+
+UL UL {margin-left:20px;}
+
+.on, LI.on {font-weight:bold;}
+.info {color:green}
+.warn {color:yellow}
+.err  {color:red}
+
+.modulesmenu, .head, .main, .mainfull  {position:absolute; left:300px; margin-right:0px;}
+
+
+.head {
+	top:50px;
+	height:110px;
+	padding-left:20px; width: 660px;
+}
+
+
+.primacolonna {
+	position:absolute; 
+	top:20px;
+	left:20px;
+	z-index:100;
+	width:140px;
+}
+
+
+.secondacolonna {
+	position:absolute;
+	top:20px;
+	left:160px;
+	z-index:100;
+	width:140px;
+	}
+
+
+.insidecol {
+	margin: 10px 10px 0px 10px;
+}
+
+.terzacolonna {
+	position:absolute;
+	width:180px;
+	left:280px;
+	}
+	
+
+.fixed {
+	
+	position:fixed;
+	
+}
+
+
+.quartacolonna {
+	position:absolute; 
+	left:970px;
+	width:180px;
+	top:160px;
+	min-height:400px;
+}
+
+.main {
+	top:160px;
+	width: 660px; 
+}
+
+.mainfull, .main.full {
+	top:160px;
+	min-width: 660px;
+	padding-right:20px;
+}
+
+.mainfull .tab, .main.full .tab {
+	/*
+width: 660px;
+*/
+}
+
+.mainhalf, .main.half {
+	width: 340px;
+	margin-right:10px;
+	float:left;
+}
+
+BODY {font-size:12px; font-family: "Arial", "Helvetica", sans-serif; line-height:1.5em;}
+
+H1 {font:normal 2em "Georgia", "Times New Roman", Times, serif; line-height:1em}
+
+H2 {font:normal 1.5em "Georgia", "Times New Roman", Times, serif; line-height:1em}
+
+.graced {font-family: "Georgia", "Times New Roman", Times, serif;}
+
+.monospaced {font-family: monospace;}
+
+INPUT[type=text],INPUT[type=password], TEXTAREA {
+	font-size:12px; font-family: "Arial", "Helvetica","Verdana", sans-serif; line-height:1.5em;
+}
+
+.tab H2,  .tab2 H2 {
+	font-family: "Arial", "Helvetica", sans-serif;
+	font-size:1em; font-weight:normal; 
+}
+
+.toolbar {
+	font:normal 1.2em "Georgia", "Times New Roman", Times, serif;
+}
+
+
+.default 		{background-color:#CCCCCC !important; color:#000000 !important}
+
+
+TABLE {empty-cells:show; border-spacing:0px;  border-collapse:collapse; }
+
+TD, TH {padding:5px; text-align:left}
+
+TH {text-transform:lowercase}
+
+TD.center, TH.center {
+	text-align:center;
+	vertical-align:middle;
+}
+
+TABLE.bordered {
+	width:100%;
+}
+
+.bordered TD, .bordered TH  {
+	border-color:#999999; 
+	border-style:solid;
+	border-width:0px 0px 1px 1px; 
+}
+
+
+.bordered TD:first-child, .bordered TH:first-child {
+	border-left:0px;
+	padding-left:10px;
+}
+
+
+TABLE.indexlist {
+	width:100%;
+}
+ 
+.indexlist TH  {
+	background-color:#FFFFFF;
+}
+
+.indexlist TD  {
+	border-bottom:1px solid #d8d8d8;
+	vertical-align:top;
+}
+
+.indexlist TD .description  {
+	display:none; font-style:italic; width:300px; color:gray;
+}
+
+.indexlist TR[rel] {
+	cursor:pointer;
+}
+
+.indexlist.bordered TH {
+	background-color:transparent;
+}
+
+.indexlist TD.checklist {
+	width:15px; padding:0px 0px 0px 0px;
+	vertical-align:top;
+	text-align:right;
+	white-space:nowrap;
+}
+
+TABLE.indexlist TH.on * {
+	color:red !important;
+}
+
+.indexlist TR.overChecked,.indexlist TR.overChecked:Hover {
+	background-color:#ffffff !important;
+}
+
+.condensed TD, .condensed TH {
+	padding:2px;
+}
+
+.valigntop TD {vertical-align:top}
+
+
+		ul { list-style: none; }
+		.INFO { color:green}
+		.WARN { color:yellow }
+		.ERROR { color:red }
+		li.done { color: green; }
+		li.curr { color: blue; }
+		li.todo { color: orange; }
+		div { margin:10px }
+
+// {/literal}
+		
