@@ -322,12 +322,7 @@ abstract class FrontendController extends AppController {
 		
 		// set publication data for template
 		$this->set('publication', $this->publication);
-		
-		// workaround to avoid direct access to protected and private methods from url
-		$method = new ReflectionMethod($this, $this->action);
-		if (!$method->isPublic()) {
-			throw new BeditaException(__("Call to a protected or private method in a wrong context", true)); 
-		}
+
 		// set filterPublicationDate
 		$filterPubDate = Configure::read("filterPublicationDate");
 		if (isset($filterPubDate)) {
@@ -1040,23 +1035,19 @@ abstract class FrontendController extends AppController {
 	 * @param $data
 	 */
 	private function outputXML($data) {
-		header("content-type: text/xml; charset=utf-8");
-		if(!in_array('Xml', $this->helpers)) {
-       		$this->helpers[] = 'Xml';
-		}
-		
+		$this->RequestHandler->setContent("xml", "text/xml");
+		$this->RequestHandler->respondAs("xml", array("charset" => "utf-8"));
+		$this->RequestHandler->renderAs($this, "xml");
 		$availableFormat = array("attributes", "tags");
 		if (!empty($this->passedArgs["format"]) && in_array($this->passedArgs["format"],$availableFormat)) {
 			$options = array("format" => $this->passedArgs["format"]);
 		} else {
 			$options = array("format" => $this->xmlFormat);
 		}
-		
 		$this->set("options", $options);
 		$this->set("data", $data);
 		$this->action = "xml";
 		$this->view = 'View';
-		$this->layout = NULL;
 	}
 	
 	/**
@@ -1627,59 +1618,73 @@ abstract class FrontendController extends AppController {
 		$methodName = str_replace(".", "_", $name); // example: sitemap.xml => sitemap_xml
 		$methodName = BeLib::getInstance()->variableFromNickname($methodName);
 		
-		// define methodName to call and setup args: look if reserved 
+		$reflectionClass = new ReflectionClass($this);
+		
+		$id = (is_numeric($name))? $name : $this->BEObject->getIdFromNickname($name);
+
+		// setup args: look if $name is reserved
 		if (in_array($name, Configure::read("defaultReservedWords")) || in_array($name, Configure::read("cfgReservedWords"))) {
 			// load object with nickname $methodName if exists
-			$id = $this->BEObject->getIdFromNickname($methodName);
 			if(!empty($id)) {
 				$this->loadAndSetObj($id, "object");
 			}
 			array_shift($args);
-		// try to use current Controller method (example: PagesController::$methodName)
-		} elseif (method_exists($this, $name)) {
-			array_shift($args);
-			$methodName = $name;
-		} else {
-			$id = (is_numeric($name))? $name : $this->BEObject->getIdFromNickname($name);
-			
-			// if exists a BEdita object with nickname = $name and a method of current Controller (PagesController) with name equal to camelized nickname
-			if (is_string($name) && !empty($id) && method_exists($this, $methodName)) {
-				// load object with nickname $name if exists
-				if(!empty($id)) {
-					$this->loadAndSetObj($id, "object");
+		} else {		
+			$currentClassName = $reflectionClass->getName();
+			$methods = array($name, $methodName);
+
+			// try to use current Controller method (PagesController::$name or PagesController::$methodName)
+			while (count($methods) > 0) {
+				$m = array_shift($methods);
+				try {
+					// check method belongs to PagesController to avoid to call AppController, FrontendController public methods
+					$methodClassName = $reflectionClass->getMethod($m)->class;
+					if ($currentClassName == $methodClassName) {
+						array_shift($args);
+						$methodName = $m;
+						if (is_string($name) && !empty($id)) {
+							// load object with nickname $name if exists
+							if(!empty($id)) {
+								$this->loadAndSetObj($id, "object");
+							}
+						}
+						$methods = array();
+					}
+				} catch (ReflectionException $ex) {
+				 	$methodName = null;
 				}
-				array_shift($args);
+			}
+					
 			// try to use self::section or self::content methods
-			} elseif (!empty($id)) {
+			if ($methodName === null && is_string($name) && !empty($id)) {
 				$object_type_id = $this->BEObject->findObjectTypeId($id);
 				if ($object_type_id == Configure::read("objectTypes.section.id") || $object_type_id == Configure::read("objectTypes.area.id")) {
 					$methodName = "section";
 				} else {
 					$methodName = "content";
 				}
-			} else {
-				$methodName = null;
-			}
+			}	
 		}
 		
 		$this->action = $methodName;
 		
-		// check before filter method
-		if (method_exists($this, $methodName . "BeforeFilter")) {
-			$this->{$methodName . "BeforeFilter"}();
-		}
-		// check method
-		if(method_exists($this, $methodName)) {
-			call_user_func_array(array($this, $methodName), $args);
-		} else {
+		try {
+			// check before filter method
+			if ($reflectionClass->hasMethod($methodName . "BeforeFilter")) {
+				$this->{$methodName . "BeforeFilter"}();
+			}
+			// call method
+			$reflectionMethod = $reflectionClass->getMethod($methodName);
+			$reflectionMethod->invokeArgs($this, $args);
+			// check before render method
+			if ($reflectionClass->hasMethod($methodName . "BeforeRender")) {
+				$this->{$methodName . "BeforeRender"}();
+			}
+		} catch (ReflectionException $ex) {
 			// launch 404 error
-			throw new BeditaException(__("Content not found", true));
+			throw new BeditaException(__("Content not found", true), $ex->getMessage());
 		}
-		// check before render method
-		if (method_exists($this, $methodName . "BeforeRender")) {
-			$this->{$methodName . "BeforeRender"}();
-		}
-		
+
 	}
 	
 	public function search() {
@@ -2448,4 +2453,3 @@ abstract class FrontendController extends AppController {
 	}
 }
 
-?>
