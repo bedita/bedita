@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2011 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -64,7 +64,7 @@ class BeSystem {
 	 * 
 	 * @param type $filepath
 	 * @param array $dataToWrite (see BeSystem::writePHPfile)
-	 * @param boolean $insertNewVar true to permitt writing new var (not already present in original file)
+	 * @param boolean $insertNewVar, if 'true' write new var (if not already in config file)
 	 * @return mixed true on success 
 	 */
 	public function writeConfigFile($filepath, array $dataToWrite, $insertNewVar=false) {
@@ -225,7 +225,7 @@ class BeSystem {
 				$params["patternVar"] = "/\\$" . $params["varName"] . "\s*=/";
 			// else search for "$varName[$keyName] ="
 			} else {
-				$params["patternVar"] = "/\\$" . $params["varName"] . "\[\s*[\"|']" . $params["keyName"] . "[\"|']\s*\]/";
+				$params["patternVar"] = "/\\$" . $params["varName"] . "\[\s*[\"|']" . $params["keyName"] . "[\"|']\s*\]\s*=/";
 			}
 		}
 		
