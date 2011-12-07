@@ -287,13 +287,13 @@ class AdminController extends ModulesController {
 
 		$besys = BeLib::getObject("BeSystem");
 		// check bedita.sys.php
-		$beditaSysPath = CONFIGS . "bedita.sys.php";
-		if (!file_exists($beditaSysPath)) {
-			$this->set("bedita_sys_err", __("Path not found",true) . ": " . $beditaSysPath);
-		}
-		if (!$besys->checkWritable($beditaSysPath)) {
-			$this->set("bedita_sys_err", __("File not writable, update properly file permits for",true) . " " . $beditaSysPath);
-		}
+//		$beditaSysPath = CONFIGS . "bedita.sys.php";
+//		if (!file_exists($beditaSysPath)) {
+//			$this->set("bedita_sys_err", __("Path not found",true) . ": " . $beditaSysPath);
+//		}
+//		if (!$besys->checkWritable($beditaSysPath)) {
+//			$this->set("bedita_sys_err", __("File not writable, update properly file permits for",true) . " " . $beditaSysPath);
+//		}
 
 		// check bedita.cfg.php
 		$beditaCfgPath = CONFIGS . "bedita.cfg.php";
@@ -341,7 +341,6 @@ class AdminController extends ModulesController {
 	public function saveConfig() {
 		// sys and cfg array
 		$sys = $this->params["form"]["sys"];
-		$cfg = $this->params["form"]["cfg"];
 
 		if (empty($sys["mediaRoot"])) {
 			throw new BeditaException(__("media root can't be empty", true), $sys);
@@ -386,10 +385,16 @@ class AdminController extends ModulesController {
 			$sys['smtpOptions']['password'] = $conf->smtpOptions['password'];
 		}
 		
-		// write bedita.sys.php
-		$beditaSysPath = CONFIGS . "bedita.sys.php";
-		$besys->writeConfigFile($beditaSysPath, $sys, true);
-
+		// prepare cfg array
+		$cfg = array_merge($this->params["form"]["cfg"], $sys);
+		
+		// check if configs already set
+		foreach ($cfg as $k => $v) {
+			if(!empty($conf->$k) && ($conf->$k === $v)) {
+				unset($cfg[$k]);
+			}
+		}
+		
 		// order langs
 		sort($cfg['langOptions']);
 		// write bedita.cfg.php
@@ -397,7 +402,6 @@ class AdminController extends ModulesController {
 		$besys->writeConfigFile($beditaCfgPath, $cfg, true);
 
 		$this->userInfoMessage(__("Configuration saved", true));
-
 	}
 
 	protected function forward($action, $esito) {
