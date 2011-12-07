@@ -1490,7 +1490,14 @@ abstract class FrontendController extends AppController {
 		if (!isset($section["menu"]) || $section["menu"] !== "0") {
 			$this->sectionOptions["childrenParams"]["sectionPath"] = $section["canonicalPath"];
 		}
-		
+    
+    if (empty($section["pathSection"])){
+      $pathSection = $this->getPath($sectionId);
+      if($section["object_type_id"] == Configure::read("objectTypes.section.id")) {
+        $section["pathSection"] = $pathSection;
+      }
+		}
+    
 		if (!$section["parentAuthorized"] || !$section["authorized"]) {
 			$section["authorized"] = false;
 			$this->sectionOptions["childrenParams"]["setAuthorizedTo"] = false;
