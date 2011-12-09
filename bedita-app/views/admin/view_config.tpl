@@ -27,6 +27,10 @@
 				$('#translationLangsAdded').append(newinput);
 			}
 		});
+		$("#backendExtraLangs").click(function (){
+			var nextDiv = $(this).next("div");
+			nextDiv.show();
+		});
 	});
 </script>
 {/literal}
@@ -182,6 +186,23 @@
 					</td>
 				</tr>
 				
+				<tr>
+					<th>{t}Backend langs{/t}:</th>
+					<td>
+						{if !empty($po_langs)}
+						{foreach $po_langs as $langKey name='lof'}
+						<input name="sys[langsSystem][{$langKey}]" type="checkbox" {foreach key=key item=item name=l from=$conf->langsSystem}{if $key == $langKey} checked="checked"{/if}{/foreach} value="{$conf->langOptions[$langKey]}" />{$conf->langOptions[$langKey]}
+						{/foreach}
+						{/if}
+						<br/><a id="backendExtraLangs">{t}more languages{/t}</a>
+						<div style="display:none">
+						{foreach $langs_iso as $langKey => $langVal name='lof'}
+						<br/><input name="sys[langsSystem][{$langKey}]" type="checkbox" {foreach key=key item=item name=l from=$conf->langsSystem}{if $key == $langKey} checked="checked"{/if}{/foreach} value="{$langVal}" />{$langVal}
+						{/foreach}
+						</div>
+					</td>
+				</tr>
+
 				<tr>
 					<th>{t}User Interface default language{/t}:</th>
 					<td>

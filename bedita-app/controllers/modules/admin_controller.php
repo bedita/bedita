@@ -336,6 +336,18 @@ class AdminController extends ModulesController {
 		} else if (stristr($headerResponse[0],'HTTP/1.1 4') || stristr($headerResponse[0],'HTTP/1.1 5')) {
 			$this->set("bedita_url_err",__("bedita url is unreachable",true));
 		}
+
+		// .po
+		$poLangs = array();
+		$localePath = APP."locale".DS;
+		$folder = new Folder($localePath);
+		$ls = $folder->read();
+		foreach ($ls[0] as $loc) {
+			if($loc[0] != '.') { // only "regular" dirs...
+				$poLangs[] = $loc;
+			}
+		}
+		$this->set("po_langs",$poLangs);
 	}
 
 	public function saveConfig() {
@@ -396,7 +408,10 @@ class AdminController extends ModulesController {
 		}
 		
 		// order langs
-		sort($cfg['langOptions']);
+		if(!empty($cfg['langOptions'])) {
+			sort($cfg['langOptions']);
+		}
+
 		// write bedita.cfg.php
 		$beditaCfgPath = CONFIGS . "bedita.cfg.php";
 		$besys->writeConfigFile($beditaCfgPath, $cfg, true);
