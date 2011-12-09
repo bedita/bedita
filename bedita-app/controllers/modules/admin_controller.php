@@ -399,17 +399,21 @@ class AdminController extends ModulesController {
 		
 		// prepare cfg array
 		$cfg = array_merge($this->params["form"]["cfg"], $sys);
-		
+
+		if($cfg["langOptionsIso"] == "true") {
+			$cfg["langOptions"] = $conf->langOptionsDefault;
+		}
+
+		// order langs
+		if(!empty($cfg["langOptions"])) {
+			sort($cfg["langOptions"]);
+		}
+
 		// check if configs already set
 		foreach ($cfg as $k => $v) {
 			if(!empty($conf->$k) && ($conf->$k === $v)) {
 				unset($cfg[$k]);
 			}
-		}
-		
-		// order langs
-		if(!empty($cfg['langOptions'])) {
-			sort($cfg['langOptions']);
 		}
 
 		// write bedita.cfg.php

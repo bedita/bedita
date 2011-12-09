@@ -306,7 +306,7 @@ $config['statusOptions'] = array(
 /**
  * Lang selection options ISO-639-3 - Default language options for contents
  */
-$config['langOptions'] = array(
+$config['langOptionsDefault'] = array(
 		"ara" => "Arabic",
 		"bul" => "Bulgarian",
 		"cat" => "Catalan",
@@ -340,6 +340,8 @@ $config['langOptions'] = array(
 		"ukr" => "Ukrainian",
 		"vie" => "Vietnamese"
 ) ;
+
+$config['langOptions'] = $config['langOptionsDefault'];
 
 // ISO-639-3 codes - User interface language options (backend)
 $config['langsSystem'] = array(

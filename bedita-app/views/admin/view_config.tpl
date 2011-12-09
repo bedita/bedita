@@ -20,17 +20,25 @@
 		});
 		$('#addTranslationLang').click(function () {
 			var label = $('#translationLangs option:selected').text();
-			if($('input[value="' + label + '"]').length == 0) {
+			if(!($('input[title="' + label + '"]')) || ($('input[title="' + label + '"]').length == 0)) {
 				var value = $('#translationLangs').attr('value');
 				var index = $('#translationLangs').attr("selectedIndex");
 				var newinput = '<input type="text" rel="' + index + '" title="' + value + '" name="cfg[langOptions][' + value + ']" value="' + label + '" readonly="readonly" /><input type="button" value="-" onclick="delElems(this)" />'
 				$('#translationLangsAdded').append(newinput);
 			}
 		});
+		$('#translationLangsTr').hide();
 		$("#backendExtraLangs").click(function (){
 			var nextDiv = $(this).next("div");
 			nextDiv.show();
 		});
+		$("#allLangsY").click(function (){
+			$("#translationLangsTr").hide();
+		});
+		$("#allLangsN").click(function (){
+			$("#translationLangsTr").show();
+		});
+		{/literal}{if ($conf->langOptionsIso == 'false')}{literal}$("#translationLangsTr").show();{/literal}{/if}{literal}
 	});
 </script>
 {/literal}
@@ -191,7 +199,7 @@
 					<td>
 						{if !empty($po_langs)}
 						{foreach $po_langs as $langKey name='lof'}
-						<input name="sys[langsSystem][{$langKey}]" type="checkbox" {foreach key=key item=item name=l from=$conf->langsSystem}{if $key == $langKey} checked="checked"{/if}{/foreach} value="{$conf->langOptions[$langKey]}" />{$conf->langOptions[$langKey]}
+						<input name="sys[langsSystem][{$langKey}]" type="checkbox" {foreach key=key item=item name=l from=$conf->langsSystem}{if $key == $langKey} checked="checked"{/if}{/foreach} value="{$conf->langOptionsDefault[$langKey]}" />{$conf->langOptionsDefault[$langKey]}
 						{/foreach}
 						{/if}
 						<br/><a id="backendExtraLangs">{t}more languages{/t}</a>
@@ -228,7 +236,13 @@
 					</td>
 				</tr>
 				<tr>
-					<th>{t}Objects available languages (default:all){/t}:</th>
+					<th>{t}Use all available languages{/t}:</th>
+					<td>
+						<input id="allLangsY" name="cfg[langOptionsIso]" type="radio" value="true" {if ($conf->langOptionsIso == 'true')}checked="checked"{/if} />{t}Yes{/t}
+						<input id="allLangsN" name="cfg[langOptionsIso]" type="radio" value="false" {if ($conf->langOptionsIso == 'false')}checked="checked"{/if} />{t}No{/t}
+					</td>
+				</tr>
+				<tr id="translationLangsTr">
 					<td>
 						<select id="translationLangs">
 							<option></option>
@@ -237,13 +251,10 @@
 							{/foreach}
 						</select>
 						<input type="button" value="{t}Add{/t}" id="addTranslationLang"/>
-					</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td>
+						<br/>
 						<div id="translationLangsAdded" style="width:200px;">
-						{foreach $conf->langOptions as $langKey => $langLabel name='lof'}
+						{assign var='lopts' value=$conf->langOptions|default:$conf->langOptionsDefault}
+						{foreach $lopts as $langKey => $langLabel name='lof'}
 						<input type="text" rel="{$smarty.foreach.lof.index}" title="{$langLabel}" name="cfg[langOptions][{$langKey}]" value="{$langLabel}" readonly="readonly" /><input type="button" value="-" onclick="delElems(this)" />
 						{/foreach}
 						</div>
