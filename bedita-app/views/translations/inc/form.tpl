@@ -58,12 +58,19 @@
 		<input type="text" id="title" name="data[LangText][1][text]" value="{if !empty($object_translation.title)}{$object_translation.title}{/if}"/><br />
 		<input type="hidden" name="data[LangText][1][name]" value="title"/>
 		{if !empty($object_translation.id.title)}<input type="hidden" name="data[LangText][1][id]" value="{$object_translation.id.title}"/>{/if}
-		
+
+		{if !empty($object_master.public_name)}
+		<label>{t}public name{/t}:</label><br />
+		<input type="text" name="data[LangText][2][text]" value="{if !empty($object_translation.public_name)}{$object_translation.public_name}{/if}"/>
+		<input type="hidden" name="data[LangText][2][name]" value="public_name"/>
+		{if !empty($object_translation.id.public_name)}<input type="hidden" name="data[LangText][2][id]" value="{$object_translation.id.public_name}"/>{/if}
+		{/if}
+
 		{if !empty($object_master.description)}
 		<label>{t}description{/t}:</label><br />
-		<textarea id="subtitle" style="height:30px" class="mceSimple" name="data[LangText][2][text]">{if !empty($object_translation.description)}{$object_translation.description}{/if}</textarea>
-		<input type="hidden" name="data[LangText][2][name]" value="description"/>
-		{if !empty($object_translation.id.description)}<input type="hidden" name="data[LangText][2][id]" value="{$object_translation.id.description}"/>{/if}
+		<textarea id="subtitle" style="height:30px" class="mceSimple" name="data[LangText][3][text]">{if !empty($object_translation.description)}{$object_translation.description}{/if}</textarea>
+		<input type="hidden" name="data[LangText][3][name]" value="description"/>
+		{if !empty($object_translation.id.description)}<input type="hidden" name="data[LangText][3][id]" value="{$object_translation.id.description}"/>{/if}
 		{/if}
 	</fieldset>
 
@@ -73,16 +80,16 @@
 	<fieldset id="tlong_desc_langs_container" rel="long_desc_langs_container">
 		{if !empty($object_master.abstract)}
 		<label>{t}short text{/t}:</label><br />
-		<textarea name="data[LangText][3][text]" style="height:200px" class="mcet">{if !empty($object_translation.abstract)}{$object_translation.abstract}{/if}</textarea>
-		<input type="hidden" name="data[LangText][3][name]" value="abstract"/>
-		{if !empty($object_translation.id.abstract)}<input type="hidden" name="data[LangText][3][id]" value="{$object_translation.id.abstract}"/>{/if}
+		<textarea name="data[LangText][4][text]" style="height:200px" class="mcet">{if !empty($object_translation.abstract)}{$object_translation.abstract}{/if}</textarea>
+		<input type="hidden" name="data[LangText][4][name]" value="abstract"/>
+		{if !empty($object_translation.id.abstract)}<input type="hidden" name="data[LangText][4][id]" value="{$object_translation.id.abstract}"/>{/if}
 		<br />
 		{/if}
 		{if !empty($object_master.body)}
 		<label>{t}long text{/t}:</label><br />
-		<textarea name="data[LangText][4][text]" style="height:400px" class="mcet">{if !empty($object_translation.body)}{$object_translation.body}{/if}</textarea>
-		<input type="hidden" name="data[LangText][4][name]" value="body"/>
-		{if !empty($object_translation.id.body)}<input type="hidden" name="data[LangText][4][id]" value="{$object_translation.id.body}"/>{/if}
+		<textarea name="data[LangText][5][text]" style="height:400px" class="mcet">{if !empty($object_translation.body)}{$object_translation.body}{/if}</textarea>
+		<input type="hidden" name="data[LangText][5][name]" value="body"/>
+		{if !empty($object_translation.id.body)}<input type="hidden" name="data[LangText][5][id]" value="{$object_translation.id.body}"/>{/if}
 		{/if}
 	</fieldset>
 	{/if}
@@ -152,36 +159,36 @@
 			<th>{t}created on{/t}:</th>
 			<td>
 				{if !empty($object_translation.created_on)}{$object_translation.created_on|date_format:$conf->dateTimePattern}{else}-{/if}
-				<input type="hidden" name="data[LangText][5][text]" value="{if !empty($object_translation.created_on)}{$object_translation.created_on}{/if}"/>
-				<input type="hidden" name="data[LangText][5][name]" value="created_on"/>
-				{if !empty($object_translation.id.created_on)}<input type="hidden" name="data[LangText][5][id]" value="{$object_translation.id.created_on}"/>{/if}
+				<input type="hidden" name="data[LangText][6][text]" value="{if !empty($object_translation.created_on)}{$object_translation.created_on}{/if}"/>
+				<input type="hidden" name="data[LangText][6][name]" value="created_on"/>
+				{if !empty($object_translation.id.created_on)}<input type="hidden" name="data[LangText][6][id]" value="{$object_translation.id.created_on}"/>{/if}
 			</td>
 		</tr>
 		<tr>
 			<th>{t}last modified on{/t}:</th>
 			<td>
 				{if !empty($object_translation.modified_on)}{$object_translation.modified_on|date_format:$conf->dateTimePattern}{else}-{/if}
-				<input type="hidden" name="data[LangText][6][text]" value="{if !empty($object_translation.modified_on)}{$object_translation.modified_on}{/if}"/>
-				<input type="hidden" name="data[LangText][6][name]" value="modified_on"/>
-				{if !empty($object_translation.id.modified_on)}<input type="hidden" name="data[LangText][6][id]" value="{$object_translation.id.modified_on}"/>{/if}
+				<input type="hidden" name="data[LangText][7][text]" value="{if !empty($object_translation.modified_on)}{$object_translation.modified_on}{/if}"/>
+				<input type="hidden" name="data[LangText][7][name]" value="modified_on"/>
+				{if !empty($object_translation.id.modified_on)}<input type="hidden" name="data[LangText][7][id]" value="{$object_translation.id.modified_on}"/>{/if}
 			</td>
 		</tr>
 		<tr>
 			<th>{t}created by{/t}:</th>
 			<td>
 				{if !empty($object_translation.created_by)}{$object_translation.created_by}{else}-{/if}
-				<input type="hidden" name="data[LangText][7][text]" value="{if !empty($object_translation.created_by)}{$object_translation.created_by}{/if}"/>
-				<input type="hidden" name="data[LangText][7][name]" value="created_by"/>
-				{if !empty($object_translation.id.created_by)}<input type="hidden" name="data[LangText][7][id]" value="{$object_translation.id.created_by}"/>{/if}
+				<input type="hidden" name="data[LangText][8][text]" value="{if !empty($object_translation.created_by)}{$object_translation.created_by}{/if}"/>
+				<input type="hidden" name="data[LangText][8][name]" value="created_by"/>
+				{if !empty($object_translation.id.created_by)}<input type="hidden" name="data[LangText][8][id]" value="{$object_translation.id.created_by}"/>{/if}
 			</td>
 		</tr>
 		<tr>
 			<th>{t}last modified by{/t}:</th>
 			<td>
 				{if !empty($object_translation.modified_by)}{$object_translation.modified_by}{else}-{/if}
-				<input type="hidden" name="data[LangText][8][text]" value="{if !empty($object_translation.modified_by)}{$object_translation.modified_by}{/if}"/>
-				<input type="hidden" name="data[LangText][8][name]" value="modified_by"/>
-				{if !empty($object_translation.id.modified_by)}<input type="hidden" name="data[LangText][8][id]" value="{$object_translation.id.modified_by}"/>{/if}
+				<input type="hidden" name="data[LangText][9][text]" value="{if !empty($object_translation.modified_by)}{$object_translation.modified_by}{/if}"/>
+				<input type="hidden" name="data[LangText][9][name]" value="modified_by"/>
+				{if !empty($object_translation.id.modified_by)}<input type="hidden" name="data[LangText][9][id]" value="{$object_translation.id.modified_by}"/>{/if}
 			</td>
 		</tr>
 	</table>
@@ -212,6 +219,12 @@
 	<fieldset rel="title">
 		<label>{t}title{/t}:</label><br />
 		<input type="text" id="title_master" name="" value="{$object_master.title}" readonly="readonly"/><br />
+
+		{if !empty($object_master.public_name)}
+		<label>{t}public name{/t}:</label><br />
+		<input type="text" name="" value="{$object_master.public_name}"/>
+		{/if}
+
 		{if !empty($object_master.description)}
 		<label>{t}description{/t}:</label><br />
 		<textarea class="mceSimple" name="">{$object_master.description}</textarea>

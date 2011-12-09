@@ -88,9 +88,6 @@ class TranslationsController extends ModulesController {
 		if(empty($this->data)) 
 			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
-		// Verify object permits
-//		if($new && !$this->Permission->verify($this->data['master_id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-//			throw new BeditaException(__("Error: bad permissions", true));
 		foreach($this->data['LangText'] as $k => $v) {
 			$this->data['LangText'][$k]['lang'] = $this->data['translation_lang'];
 			if(empty($this->data['LangText'][$k]['object_id'])) { // if object_id is defined => it's a translation for an attach
