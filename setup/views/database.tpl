@@ -42,7 +42,6 @@
 {/if}
 
 {else}
-
 {if !empty($dbconfigupdated)}
 <p><span class="INFO">[INFO]</span>: <span>Database config</span>: <span class="INFO">Database configuration file updated.</span></p>
 {/if}
@@ -67,7 +66,7 @@
 										<option {if ($database_config.driver == "postgres")}selected="selected"{/if}>postgres</option>
 									 </select></td></tr>
 </table>
-<p>Advanced settings</p>
+<h3>Advanced settings</h3>
 <table>
 <tr><td><label>Host</label>:</td><td><input type="text" name="data[database][host]" value="{$database_config.host|default:''}" {if ($dbfile_writable == "n")}readonly="readonly"{/if}/></td></tr>
 <tr><td><label>Port</label>:</td><td><input type="text" name="data[database][port]" value="{$database_config.port|default:''}" {if ($dbfile_writable == "n")}readonly="readonly"{/if}/></td></tr>
