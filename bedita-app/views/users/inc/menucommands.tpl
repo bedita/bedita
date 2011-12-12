@@ -21,10 +21,6 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 			<input class="bemaincommands" type="button" name="save" onClick="$('#userForm').submit()" 
 			value="{if isset($userdetail)}{t}Save{/t}{else}{t}create{/t}{/if}" />
 
-		{elseif $view->action == "groups"}
-		
-			<input class="bemaincommands" type="button" value="{t}new group{/t}" />
-
 		{elseif $view->action == "viewGroup"}
 		
 			<input class="bemaincommands" type="button" name="save" onClick="$('#groupForm').submit()" 
