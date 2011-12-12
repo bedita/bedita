@@ -25,7 +25,7 @@ $(document).ready(function(){
 		<td>{if $g.Group.backend_auth}{t}Authorized{/t}{else}{t}Not Authorized{/t}{/if}</td>
 		
 		<td style="text-align:center">
-			{$g.User|@count}
+			{$g.Group.num_of_users}
 		</td>
 		
 		{if $g.Group.immutable}	

@@ -49,6 +49,31 @@ class Group extends BEAppModel
 		);
 		return $groups;
 	}
+	
+	/**
+	 * return the number of users inside a group
+	 * 
+	 * @param int $group_id
+	 * @return int 
+	 */
+	public function countUsersInGroup($group_id) {
+		$users = $this->User->find("count", array(
+			"joins" => array(
+				array(
+					'table' => 'groups_users',
+					'alias' => 'GroupUser',
+					'type' => 'inner',
+					'conditions'=> array(
+						'GroupUser.user_id = User.id',
+						'GroupUser.group_id' => $group_id
+					)
+				)
+			),
+			'recursive' => -1
+		));
+		
+		return $users;
+	}
 
 }
 ?>

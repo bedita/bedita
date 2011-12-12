@@ -1,5 +1,4 @@
 <?php
-
 /* -----8<--------------------------------------------------------------------
  * 
  * BEdita - a semantic content management framework
@@ -241,15 +240,16 @@ class UsersController extends ModulesController {
 		BeLib::getObject("BeConfigure")->setExtAuthTypes();
 	}
 
-	private function loadGroups() {
-		$groups = $this->paginate('Group');
-//		foreach ($groups as &$g) {
-//			$u = $this->User->find("count", array(
-//				"contain" => array("Group.name = '".$g['Group']['name']."'")
-//			));
-//			$g['Group']['num_of_users'] = $u;
-//		}
-//		pr($groups);exit;
+	private function loadGroups($userDetails = false) {
+		if ($userDetails) {
+			$groups = $this->paginate('Group');
+		} else {
+			$this->Group->recursive = -1;
+			$groups = $this->paginate('Group');
+			foreach ($groups as &$g) {
+				$g['Group']['num_of_users'] = $this->Group->countUsersInGroup($g["Group"]["id"]);
+			}
+		}
 		return $groups;
 	}
 
@@ -260,7 +260,7 @@ class UsersController extends ModulesController {
 	}
 	 
 	function viewGroup($id = null) {
-		$this->set('groups', $this->loadGroups());
+		$this->set('groups', $this->loadGroups(true));
 		if(!empty($id)) {
 			$g = $this->Group->findById($id);
 			if (empty($g)) {
