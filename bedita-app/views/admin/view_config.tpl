@@ -38,7 +38,7 @@
 		$("#allLangsN").click(function (){
 			$("#translationLangsTr").show();
 		});
-		{/literal}{if ($conf->langOptionsIso == 'false')}{literal}$("#translationLangsTr").show();{/literal}{/if}{literal}
+		{/literal}{if !$conf->langOptionsIso}{literal}$("#translationLangsTr").show();{/literal}{/if}{literal}
 	});
 </script>
 {/literal}
@@ -193,37 +193,38 @@
 						<input type="text" name="cfg[projectName]" value="{$conf->projectName}" style="width: 300px;"/>
 					</td>
 				</tr>
-				
+			</table>
+
+			<hr />
+			
+			<table>
 				<tr>
-					<th>{t}Backend langs{/t}:</th>
+					<th colspan="4"><label>{t}Languages configuration{/t}</label></th>
+				</tr>
+				<tr>
+					<th>{t}Backend languages{/t}:</th>
 					<td>
 						{if !empty($po_langs)}
 						{foreach $po_langs as $langKey name='lof'}
 						<input name="sys[langsSystem][{$langKey}]" type="checkbox" {foreach key=key item=item name=l from=$conf->langsSystem}{if $key == $langKey} checked="checked"{/if}{/foreach} value="{$conf->langOptionsDefault[$langKey]}" />{$conf->langOptionsDefault[$langKey]}
 						{/foreach}
 						{/if}
-						<br/><a id="backendExtraLangs">{t}more languages{/t}</a>
-						<div style="display:none">
-						{foreach $langs_iso as $langKey => $langVal name='lof'}
-						<br/><input name="sys[langsSystem][{$langKey}]" type="checkbox" {foreach key=key item=item name=l from=$conf->langsSystem}{if $key == $langKey} checked="checked"{/if}{/foreach} value="{$langVal}" />{$langVal}
-						{/foreach}
-						</div>
 					</td>
 				</tr>
 
 				<tr>
 					<th>{t}User Interface default language{/t}:</th>
 					<td>
-						<select name="cfg[Config][language]">
+						<select name="cfg[defaultUILang]">
 							{foreach $conf->langsSystem as $langKey => $langLabel}
-							<option value="{$langKey}"{if $langKey == $conf->Config.language} selected{/if}>{$langLabel}</option>
+							<option value="{$langKey}"{if $langKey == $conf->defaultUILang} selected{/if}>{$langLabel}</option>
 							{/foreach}
 						</select>
 					</td>
 				</tr>
 
 				<tr>
-					<th>{t}New objects default language{/t}:</th>
+					<th>{t}New contents default language{/t}:</th>
 					<td>
 						<select name="cfg[defaultLang]">
 							{foreach $conf->langOptions as $langKey => $langLabel}
@@ -236,10 +237,10 @@
 					</td>
 				</tr>
 				<tr>
-					<th>{t}Use all available languages{/t}:</th>
+					<th>{t}Use all available languages for contents{/t}:</th>
 					<td>
-						<input id="allLangsY" name="cfg[langOptionsIso]" type="radio" value="true" {if ($conf->langOptionsIso == 'true')}checked="checked"{/if} />{t}Yes{/t}
-						<input id="allLangsN" name="cfg[langOptionsIso]" type="radio" value="false" {if ($conf->langOptionsIso == 'false')}checked="checked"{/if} />{t}No{/t}
+						<input id="allLangsY" name="cfg[langOptionsIso]" type="radio" value="true" {if $conf->langOptionsIso}checked="checked"{/if} />{t}Yes{/t}
+						<input id="allLangsN" name="cfg[langOptionsIso]" type="radio" value="false" {if !$conf->langOptionsIso}checked="checked"{/if} />{t}No{/t}
 					</td>
 				</tr>
 				<tr id="translationLangsTr">
@@ -253,8 +254,7 @@
 						<input type="button" value="{t}Add{/t}" id="addTranslationLang"/>
 						<br/>
 						<div id="translationLangsAdded" style="width:200px;">
-						{assign var='lopts' value=$conf->langOptions|default:$conf->langOptionsDefault}
-						{foreach $lopts as $langKey => $langLabel name='lof'}
+						{foreach from=$conf->langOptions key="langKey" item="langLabel" name="lof"}
 						<input type="text" rel="{$smarty.foreach.lof.index}" title="{$langLabel}" name="cfg[langOptions][{$langKey}]" value="{$langLabel}" readonly="readonly" /><input type="button" value="-" onclick="delElems(this)" />
 						{/foreach}
 						</div>
@@ -267,7 +267,7 @@
 			
 			<table>
 				<tr>
-					<th colspan="4"><label>{t}Notifications setup{/t}:</label></label></th>
+					<th colspan="4"><label>{t}Notifications setup{/t}</label></label></th>
 				</tr>
 				<tr>
 					<td>{t}From{/t} {t}name{/t}:</td>
