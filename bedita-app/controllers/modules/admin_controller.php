@@ -354,11 +354,12 @@ class AdminController extends ModulesController {
 		// sys and cfg array
 		$sys = $this->params["form"]["sys"];
 
+		$warnMsg = array();		
 		if (empty($sys["mediaRoot"])) {
-			throw new BeditaException(__("media root can't be empty", true), $sys);
+			$warnMsg[] = __("media root can't be empty", true);
 		}
 		if (empty($sys["mediaUrl"])) {
-			throw new BeditaException(__("media url can't be empty", true), $sys);
+			$warnMsg[] = __("media url can't be empty", true);
 		}
 
 		$sys["mediaRoot"] = rtrim($sys["mediaRoot"], DS);
@@ -366,29 +367,29 @@ class AdminController extends ModulesController {
 
 		$besys = BeLib::getObject("BeSystem");
 		if (!$besys->checkAppDirPresence($sys["mediaRoot"])) {
-			throw new BeditaException(__("media root folder doesn't exist", true), $sys);
+			$warnMsg[] = __("media root folder doesn't exist", true);
 		}
 
 		if (!$besys->checkWritable($sys["mediaRoot"])) {
-			throw new BeditaException(__("media root folder is not writable", true), $sys);
+			$warnMsg[] = __("media root folder is not writable", true);
 		}
 
 		$headerResponse = @get_headers($sys["mediaUrl"]);
 		if(empty($headerResponse) || !$headerResponse) {
-			throw new BeditaException(__("bedita url is unreachable", true), $sys);
+			$warnMsg[] = __("bedita url is unreachable", true);
 		}
 
 		if (stristr($headerResponse[0],'HTTP/1.1 4') || stristr($headerResponse[0],'HTTP/1.1 5')) {
-			throw new BeditaException(__("bedita url is unreachable", true) . ": " . $headerResponse[0] , $sys);
+			$warnMsg[] = __("bedita url is unreachable", true) . ": " . $headerResponse[0];
 		}
 
 		$headerResponse = @get_headers($sys["beditaUrl"]);
 		if(empty($headerResponse) || !$headerResponse) {
-			throw new BeditaException(__("bedita url is unreachable", true), $sys);
+			$warnMsg[] = __("bedita url is unreachable", true);
 		}
 
 		if (stristr($headerResponse[0],'HTTP/1.1 4') || stristr($headerResponse[0],'HTTP/1.1 5')) {
-			throw new BeditaException(__("bedita url is unreachable", true) . ": " . $headerResponse[0] , $sys);
+			$warnMsg[] = __("bedita url is unreachable", true) . ": " . $headerResponse[0];
 		}
 
 		// smtpOptions password
@@ -400,13 +401,16 @@ class AdminController extends ModulesController {
 		// prepare cfg array
 		$cfg = array_merge($this->params["form"]["cfg"], $sys);
 
-		if($cfg["langOptionsIso"] == "true") {
+		// from string to boolean - $cfg["langOptionsIso"]
+		$cfg["langOptionsIso"] = ($cfg["langOptionsIso"] === "true") ? true : false; 
+		
+		if($cfg["langOptionsIso"]) {
 			$cfg["langOptions"] = $conf->langOptionsDefault;
 		}
 
 		// order langs
 		if(!empty($cfg["langOptions"])) {
-			sort($cfg["langOptions"]);
+			ksort($cfg["langOptions"]);
 		}
 
 		// check if configs already set
@@ -415,12 +419,21 @@ class AdminController extends ModulesController {
 				unset($cfg[$k]);
 			}
 		}
-
+		
 		// write bedita.cfg.php
 		$beditaCfgPath = CONFIGS . "bedita.cfg.php";
 		$besys->writeConfigFile($beditaCfgPath, $cfg, true);
-
-		$this->userInfoMessage(__("Configuration saved", true));
+		
+		foreach ($warnMsg as $w) {
+			$this->userWarnMessage($w);
+			$this->eventWarn($w);
+		}
+		if(!empty($warnMsg)) {
+			$this->log("Warnings saving configuration, params " . var_export($cfg, true));
+		} else {
+			$this->userInfoMessage(__("Configuration saved", true));
+		}
+		
 	}
 
 	protected function forward($action, $esito) {
