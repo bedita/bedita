@@ -36,7 +36,6 @@ class BeditaBaseShell extends Shell {
 	protected function initConfig() {
 		// load cached configurations
 		BeLib::getObject("BeConfigure")->initConfig();
-		// Configure::write('debug', 1);
 	}
 
 	/**
@@ -46,6 +45,8 @@ class BeditaBaseShell extends Shell {
 	 */
 	function startup() {
 		$this->initConfig();
+		// default debug = 1, get error/debug messages
+		Configure::write('debug', 1);
 	}
 	
 	protected function check_sys_get_temp_dir() {

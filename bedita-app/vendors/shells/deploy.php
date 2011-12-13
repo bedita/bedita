@@ -180,7 +180,18 @@ class DeployShell extends BeditaBaseShell {
 		}
 		$this->out("Creating: $releaseFile");
 		
-		$command = "cd " . $tmpBasePath . " && " . "tar cfp " . $releaseFile . " bedita";
+		$command = "rm -fr " . $exportPath . DS . "bedita-app" . DS . "tmp" . DS . "*";
+       	$this->out("Executing shell command: " . $command);
+       	$this->out(shell_exec($command));
+
+       	$writable = array("tmp", "config", "webroot" . DS . "files");
+       	foreach ($writable as $wrDir) {
+			$command = "chmod 777 " . $exportPath . DS . "bedita-app" . DS . $wrDir;
+	       	$this->out("Executing shell command: " . $command);
+	       	$this->out(shell_exec($command));
+       	}
+       	
+       	$command = "cd " . $tmpBasePath . " && " . "tar cfp " . $releaseFile . " bedita";
        	$this->out("Executing shell command: " . $command);
        	$this->out(shell_exec($command));
        	
