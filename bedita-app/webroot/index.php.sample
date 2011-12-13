@@ -79,6 +79,7 @@
 */
 	if (!file_exists(ROOT . DS . APP_DIR . DS. 'config' . DS . 'bedita.cfg.php')) {
 		require_once(ROOT . DS . 'setup' . DS . 'setup.php');
+		define('BEDITA_IGNORE_CFG', true);
 		$wizzy = new BeditaInstallationWizard();
 		$wizard_finished = $wizzy->start();
 		if ($wizard_finished) {
