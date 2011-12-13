@@ -165,7 +165,7 @@ class AppController extends Controller
 		if($this->currLang === null || empty($this->currLang)) {
 			// read Cookie
 			$lang = $this->Cookie->read('bedita.lang');
-			if(isset($lang) && $conf->multilang === true) {
+			if(isset($lang)) {
 				$this->Session->write('Config.language', $lang);
 				$this->currLang = $lang;
 			} else {
@@ -174,12 +174,12 @@ class AppController extends Controller
 				$l10n->get();		
 				$this->currLang = $l10n->lang;
 				if(!isset($this->currLang)) {
-					$this->currLang = $conf->defaultLang;
+					$this->currLang = $conf->defaultUILang;
 				} else if(!array_key_exists($this->currLang, $conf->langsSystem)) {
 					if(isset( $conf->langsSystemMap[$this->currLang])) {
 						$this->currLang = $conf->langsSystemMap[$this->currLang];
 					} else { // use default
-						$this->currLang = $conf->defaultLang;
+						$this->currLang = $conf->defaultUILang;
 					}
 				}
 			}
@@ -296,6 +296,7 @@ class AppController extends Controller
 		$u = isset($this->BeAuth->user["userid"])? $this->BeAuth->user["userid"] : "-";
 		$event = array('EventLog'=>array("log_level"=>$level, 
 			"userid"=>$u, "msg"=>$msg, "context"=>strtolower($this->name)));
+		$this->EventLog->create();
 		$this->EventLog->save($event);
 	}
 	
