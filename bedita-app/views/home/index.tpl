@@ -57,12 +57,10 @@ $(document).ready(function() {
 
 	<li class="colophon">
 
-		{if !empty($conf->multilang) && $conf->multilang}
 			{foreach key=key item=item name=l from=$conf->langsSystem}
 				<a {if $session->read('Config.language') == $key}class="on"{/if} href="{$html->base}/lang/{$key}">› {$item}</a>
 				<br />
 			{/foreach} 
-		{/if}	
 		<hr />
 		{$view->element('colophon')}
 		<hr />

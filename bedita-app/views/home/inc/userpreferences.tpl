@@ -18,14 +18,12 @@
 <tr>
 	<td><label>{t}language{/t}</label></td>
 	<td>
-{if !empty($conf->multilang) && $conf->multilang}
 	<select name="data[User][lang]">
 		<option value="">--</option>
 	{foreach key=key item=item name=l from=$conf->langsSystem}
 		<option value="{$key}" {if $key == $BEAuthUser.lang}selected{/if}>{$item}</option>
 	{/foreach}
 	</select>
-{/if}
 	</td>
 </tr>
 
