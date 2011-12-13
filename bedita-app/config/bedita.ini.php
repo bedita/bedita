@@ -45,16 +45,57 @@ $config['imgMissingFile'] = "/img/iconMissingImage_130x85.gif";
 
 /**
  ** ******************************************
- **  Content and UI Elements defaults
+ **  Language and locale settings/defaults
+ **  i18n - l10n
  ** ******************************************
  */
 
-// User Interface default language [see also 'multilang' below]
-$config['Config']['language'] = "eng"; // or "ita", "eng", "spa", "por"
+// ISO-639-3 codes - User interface language options (backend)
+$config['langsSystem'] = array(
+	"eng"	=> "english",
+//	"ita"	=> "italiano",
+//	"deu"	=> "deutsch",
+//	"por"	=> "portuguěs"
 
-// Set 'multilang' true for user choice [also set 'multilang' true if $config['Config']['language'] is set]
-$config['multilang'] = true;
-$config['defaultLang'] = "eng"; // default fallback
+) ;
+
+// Default user interface lang (backend) - must be in 'langsSystem'
+$config['defaultUILang'] = "eng";
+
+// Default contents lang - must be in 'langOptions' if 'langOptionsIso' is false
+$config['defaultLang'] = "eng";
+
+/**
+ * Lang selection options ISO-639-3 - Default language options for contents
+ */
+$config['langOptionsDefault'] = array(
+		"zho" => "Chinese",
+		"eng" => "English",
+		"fra" => "French",
+		"deu" => "German",
+		"ita" => "Italian",
+		"por" => "Portuguese",
+		"spa" => "Spanish",
+) ;
+
+$config['langOptions'] = $config['langOptionsDefault'];
+
+
+// maps ISO-639-2 known codes to ISO-639-3
+$config['langsSystemMap'] = array(
+	"it"	=> "ita",
+	"en"	=> "eng",
+	"en_us"	=> "eng",
+	"en_gb"	=> "eng",
+	"es"	=> "spa",
+	"pt"	=> "por",
+	"pt_br"	=> "por"
+) ;
+
+// 'langsIso' empty, overridden if 'langOptionsIso' is true
+$config['langsIso'] = array();
+// add langs.iso.php to language options for content 
+$config['langOptionsIso'] = false;
 
 
 /* Dates - default presentation format [syntax used by strftime php function]
@@ -75,6 +116,12 @@ $config['dateTimePattern'] 	= "%m-%d-%Y  %H:%M";  //
 $config['dateTimePatternLocale'] = array(
 	"ita"	=> "%d/%m/%Y %H:%M" 
 );
+
+/**
+ ** ******************************************
+ **  Content and UI Elements defaults
+ ** ******************************************
+ */
 
 
 // Default status of new objects
@@ -302,71 +349,6 @@ $config['statusOptions'] = array(
 	"off"	=> "OFF",
 	"draft"	=> "DRAFT"
 ) ;
-
-/**
- * Lang selection options ISO-639-3 - Default language options for contents
- */
-$config['langOptionsDefault'] = array(
-		"ara" => "Arabic",
-		"bul" => "Bulgarian",
-		"cat" => "Catalan",
-		"zho" => "Chinese",
-		"hrv" => "Croatian",
-		"ces" => "Czech",
-		"dan" => "Danish",
-		"nld" => "Dutch",
-		"eng" => "English",
-		"fin" => "Finnish",
-		"fra" => "French",
-		"deu" => "German",
-		"ell" => "Greek",
-		"heb" => "Hebrew",
-		"hin" => "Hindi",
-		"ita" => "Italian",
-		"jpn" => "Japanese",
-		"kor" => "Korean",
-		"lav" => "Latvian",
-		"lit" => "Lithuanian",
-		"nor" => "Norwegian",
-		"pol" => "Polish",
-		"por" => "Portuguese",
-		"ron" => "Romanian",
-		"rus" => "Russian",
-		"srp" => "Serbian",
-		"slk" => "Slovak",
-		"slv" => "Slovenian",
-		"spa" => "Spanish",
-		"swe" => "Swedish",
-		"ukr" => "Ukrainian",
-		"vie" => "Vietnamese"
-) ;
-
-$config['langOptions'] = $config['langOptionsDefault'];
-
-// ISO-639-3 codes - User interface language options (backend)
-$config['langsSystem'] = array(
-	"eng"	=> "english",
-	"ita"	=> "italiano",
-//	"deu"	=> "deutsch",
-//	"por"	=> "portuguěs"
-
-) ;
-
-// maps ISO-639-2 known codes to ISO-639-3
-$config['langsSystemMap'] = array(
-	"it"	=> "ita",
-	"en"	=> "eng",
-	"en_us"	=> "eng",
-	"en_gb"	=> "eng",
-	"es"	=> "spa",
-	"pt"	=> "por",
-	"pt_br"	=> "por"
-) ;
-
-// 'langsIso' empty, overridden if 'langOptionsIso' is true
-$config['langsIso'] = array();
-// add langs.iso.php to language options for content 
-$config['langOptionsIso'] = false;
 
 // media types for objects in multimedia module
 $config['mediaTypes'] = array('image','video','audio','text','spreadsheet','presentation','drawing','chart','formula','application');
@@ -604,9 +586,10 @@ $config["geoTagOptions"] = array(
 
 /**
  * User configurations - handled in admin/config
+ * ignore during install
  */
-if(file_exists(BEDITA_CORE_PATH. DS ."config".DS."bedita.cfg.php")) {
-	include BEDITA_CORE_PATH. DS ."config".DS."bedita.cfg.php";	
+if(!defined('BEDITA_IGNORE_CFG')) {
+	require BEDITA_CORE_PATH. DS ."config".DS."bedita.cfg.php";	
 }
 
 /**

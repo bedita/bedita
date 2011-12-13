@@ -127,11 +127,8 @@ $config["locales"] = array(
  ** ******************************************
  */
 
-// User Interface default language, choose between bedita-app/locale dir [see also 'multilang' below]
-//$config['Config']['language'] = "eng";
-
-// Set 'multilang' true for user choice [also set 'multilang' true if $config['Config']['language'] is set]
-// $config['multilang'] = true;
+// default user interface lang - backend
+//$config['defaultUILang'] = "eng";
 
 // default object language
 // $config['defaultLang'] = "eng";
@@ -143,6 +140,23 @@ $config["locales"] = array(
 //	"deu"	=> "deutsch",
 //	"por"	=> "portuguěs"
 // );
+
+/**
+ * Lang selection options ISO-639-3 - Language options for contents
+ */
+//$config['langOptions'] = array(
+//	"ita"	=> "italiano",
+//	"eng"	=> "english",
+//	"spa"	=> "espa&ntilde;ol",
+//	"por"	=> "portugu&ecirc;s",
+//	"fra"	=> "fran&ccedil;ais",
+//	"deu"	=> "deutsch"
+//) ;
+
+
+// add langs.iso.php to language options for content 
+//$config['langOptionsIso'] = false; 
+
 
 // Status of new objects
 //$config['defaultStatus'] = "draft" ;
@@ -189,23 +203,6 @@ $config["locales"] = array(
 
 // Reserved words [avoided in nickname creation]
 // $config["cfgReservedWords"] = array();
-
-/**
- * Lang selection options ISO-639-3 - Language options for contents
- */
-//$config['langOptions'] = array(
-//	"ita"	=> "italiano",
-//	"eng"	=> "english",
-//	"spa"	=> "espa&ntilde;ol",
-//	"por"	=> "portugu&ecirc;s",
-//	"fra"	=> "fran&ccedil;ais",
-//	"deu"	=> "deutsch"
-//) ;
-
-
-// add langs.iso.php to language options for content 
-//$config['langOptionsIso'] = false; 
-
 
 // default values for fulltext search
 // $config['searchFields'] = array(
