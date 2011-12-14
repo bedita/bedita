@@ -816,75 +816,7 @@ class DbadminShell extends BeditaBaseShell {
 		}
 		$this->out("Done.");
 	}
-	
-	/**
-	 * Cleanup old items (log/job tables)
-	 */
-	public function cleanup() {
-
-		if(empty($this->params['days'])) {
-			$this->out("Parameter -days mandatory");
-			return;
-		}
-		$days = $this->params['days'];		
-		$tsLimit = time() - ($days * 24 * 60 * 60);
-        $dateLimit = date('Y-m-d', $tsLimit);
-		$this->out("Removing items older than $days days, preserving from $dateLimit");
-
-		// remove event logs
-		$this->out("Removing from event_logs");
-		$eventLog = ClassRegistry::init("EventLog");
-		$res = $eventLog->deleteAll("created <= '$dateLimit'");
-		if($res == false) {
-			$this->out("Error removin items");
-			return;
-		}
-		$this->out("Removing from mail_jobs");
-		$mailJob = ClassRegistry::init("MailJob");
-		$res = $mailJob->deleteAll("created <= '$dateLimit'");
-		if($res == false) {
-			$this->out("Error removing items");
-			return;
-		}
-		$this->out("Removing from mail_logs");
-		$mailLog = ClassRegistry::init("MailLog");
-		$res = $mailLog->deleteAll("created <= '$dateLimit'");
-		if($res == false) {
-			$this->out("Error removing items");
-			return;
-		}
 		
-		$this->out("Done");
-		
-	}
-
-	public function updateCategoryName() {
-		$categoryModel = ClassRegistry::init("Category");
-		$categoryModel->Behaviors->disable("CompactResult");
-		$categories = $categoryModel->find("all", array(
-			"order" => "Category.id ASC",
-		));
-
-		if (!empty($categories)) {
-			$this->out("Updating category unique name:");
-			$this->hr();
-			foreach ($categories as $cat) {
-				$text = "update unique name of ";
-				$text .= (!empty($cat["Category"]["object_type_id"]))? "category" : "tag";
-				$text .= " id:" . $cat["Category"]["id"] . " label:\"" . $cat["Category"]["label"] . "\"";
-				$categoryModel->create();
-				if ($categoryModel->save($cat)) {
-					$this->out($text . " done");
-				} else {
-					$this->out($text . " failed");
-				}
-			}
-		} else {
-			$this->out("No categories or tags found.");
-		}
-		$this->out("Done.");
-	}
-	
 	function help() {
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
