@@ -784,6 +784,39 @@ class DbadminShell extends BeditaBaseShell {
 		
 	}
 
+	/**
+	 * Clears media cache
+	 */
+	public function clearMediaCache() {
+		
+		$streamModel = ClassRegistry::init("Stream");
+		$streams = $streamModel->find("all");
+		if (empty($streams)) {
+			$this->out("No streams found");
+			return;
+		}
+		$folder = new Folder();
+		foreach ($streams as $s) {
+			if(!empty($s["Stream"]["uri"])) {
+				$filePath = Configure::read("mediaRoot") . $s["Stream"]["uri"];
+				if (DS != "/") {
+					$filePath = str_replace("/", DS, $filePath);
+				}
+				if(file_exists($filePath)) {
+					$filenameBase = pathinfo($filePath, PATHINFO_FILENAME);
+					$filenameMD5 = md5($s["Stream"]["name"]);
+					$cacheDir = dirname($filePath) . DS . substr($filenameBase, 0, 5) . "_" . $filenameMD5;
+					if(file_exists($cacheDir)) {
+		        		if(!$folder->delete($cacheDir)) {
+		                	throw new BeditaException("Error deleting dir $cacheDir");
+		            	}
+	        		}
+	        	}
+			}
+		}
+		$this->out("Done");
+	}
+	
 	public function updateCategoryName() {
 		$categoryModel = ClassRegistry::init("Category");
 		$categoryModel->Behaviors->disable("CompactResult");
@@ -899,6 +932,8 @@ class DbadminShell extends BeditaBaseShell {
         $this->out("    -o \t xml output file path");
         $this->out("    -t \t object type: document, short_news, event,.....");
         $this->out(' ');
+		$this->out('17. clearMediaCache: clears media cache files/directories');
+  		$this->out(' ');
 	}
 	
 }
