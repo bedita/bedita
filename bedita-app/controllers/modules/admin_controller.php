@@ -367,29 +367,29 @@ class AdminController extends ModulesController {
 
 		$besys = BeLib::getObject("BeSystem");
 		if (!$besys->checkAppDirPresence($sys["mediaRoot"])) {
-			$warnMsg[] = __("media root folder doesn't exist", true);
+			$warnMsg[] = __("media root folder doesn't exist", true) . " - " . $sys["mediaRoot"];
 		}
 
 		if (!$besys->checkWritable($sys["mediaRoot"])) {
-			$warnMsg[] = __("media root folder is not writable", true);
+			$warnMsg[] = __("media root folder is not writable", true) . " - " . $sys["mediaRoot"];
 		}
 
 		$headerResponse = @get_headers($sys["mediaUrl"]);
 		if(empty($headerResponse) || !$headerResponse) {
-			$warnMsg[] = __("bedita url is unreachable", true);
+			$warnMsg[] = __("media url is unreachable", true) . " - " . $sys["mediaUrl"];
 		}
 
 		if (stristr($headerResponse[0],'HTTP/1.1 4') || stristr($headerResponse[0],'HTTP/1.1 5')) {
-			$warnMsg[] = __("bedita url is unreachable", true) . ": " . $headerResponse[0];
+			$warnMsg[] = __("media url is unreachable", true) . ": " . $headerResponse[0] . " - " . $sys["mediaUrl"];
 		}
 
 		$headerResponse = @get_headers($sys["beditaUrl"]);
 		if(empty($headerResponse) || !$headerResponse) {
-			$warnMsg[] = __("bedita url is unreachable", true);
+			$warnMsg[] = __("bedita url is unreachable", true) . " - " . $sys["beditaUrl"];
 		}
 
 		if (stristr($headerResponse[0],'HTTP/1.1 4') || stristr($headerResponse[0],'HTTP/1.1 5')) {
-			$warnMsg[] = __("bedita url is unreachable", true) . ": " . $headerResponse[0];
+			$warnMsg[] = __("bedita url is unreachable", true) . ": " . $headerResponse[0] . " - " . $sys["beditaUrl"];
 		}
 
 		// smtpOptions password
@@ -429,11 +429,10 @@ class AdminController extends ModulesController {
 			$this->eventWarn($w);
 		}
 		if(!empty($warnMsg)) {
-			$this->log("Warnings saving configuration, params " . var_export($cfg, true));
+			$this->log("Warnings saving configuration, params " . var_export($warnMsg, true));
 		} else {
 			$this->userInfoMessage(__("Configuration saved", true));
 		}
-		
 	}
 
 	protected function forward($action, $esito) {
