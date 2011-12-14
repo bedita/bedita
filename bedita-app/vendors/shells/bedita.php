@@ -461,13 +461,6 @@ class BeditaShell extends BeditaBaseShell {
         }
 	}    
     
-    function cleanup() {
-    	$this->loadTasks();
-		$this->Cleanup->params = array_merge($this->Cleanup->params, $this->params);
-        $this->Cleanup->execute();
-		$this->out("Done");        
-    }    
-
     private function removeMediaFiles() {
 		$mediaRoot = Configure::read("mediaRoot");
 		$folder= new Folder($mediaRoot);

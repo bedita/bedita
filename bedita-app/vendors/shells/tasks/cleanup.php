@@ -35,9 +35,33 @@ class CleanupTask extends BeditaBaseShell {
 	}
 	
 	public function execute() {
-		$basePath = TMP;
-		if (isset($this->params['frontend'])) {
-			$basePath = $this->params['frontend'].DS."tmp".DS;
+		$this->hr();
+        $this->out("BEdita core cleanup: " . TMP);     
+        $this->cleanUpTmpDir(TMP);
+		$this->hr();
+        if (isset($this->params['frontend'])) {
+       		$this->out("BEdita frontends cleanup: " . $this->params['frontend']);     
+			$this->cleanUpTmpDir($this->params['frontend'].DS."tmp".DS);
+		} else {
+			// cycle through frontends
+        	$this->out("BEdita frontends cleanup: " . BEDITA_FRONTENDS_PATH);     
+			$folder= new Folder(BEDITA_FRONTENDS_PATH);
+	        $dirs = $folder->read();
+	        foreach ($dirs[0] as $d) {
+	        	if($d[0] !== ".") {
+	            	$this->cleanUpTmpDir(BEDITA_FRONTENDS_PATH . DS . $d . DS . "tmp" . DS);
+	        	}
+	        }
+		}
+		$this->hr();
+		if (isset($this->params['media'])) {
+			$this->removeMediaFiles();
+		}
+        $this->out("Done");        
+	}
+
+	private function cleanUpTmpDir($basePath) {
+		if($basePath !== TMP) {
 			if(!file_exists($basePath)) {
 				$this->out("Directory $basePath not found");
 				return;
@@ -57,11 +81,9 @@ class CleanupTask extends BeditaBaseShell {
 		$this->__clean($basePath . 'smarty' . DS . 'compile');
 		$this->__clean($basePath . 'smarty' . DS . 'cache');
 		$this->out('Smarty compiled/cache cleaned.');
-
-		if (isset($this->params['media'])) {
-			$this->removeMediaFiles();
-		}
 	}
+	
+	
 	
 	/**
 	 * clean PHP files from:
