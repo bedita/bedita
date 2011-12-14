@@ -71,8 +71,31 @@ class Stream extends BEAppModel
 		if (!empty($stream["Stream"]["uri"])) {
 			$isURL = (preg_match($conf->validate_resource['URL'], $stream["Stream"]["uri"]))? true : false;
 			
-			if (!$isURL && !file_exists($conf->mediaRoot . $stream["Stream"]["uri"])) {
+			$uri = $stream["Stream"]["uri"];
+			$hasFile = file_exists($conf->mediaRoot . $uri);
+			if (!$isURL && !$hasFile) {
 				return false;
+			}
+			
+			if($hasFile) {
+				// check & correct file name
+				$oldName = $stream["Stream"]["name"];
+				$p = strrpos($stream["Stream"]["name"], ".");
+				if($p === false) {
+					$newName = BeLib::getInstance()->friendlyUrlString($oldName);
+				} else {
+					$newName = BeLib::getInstance()->friendlyUrlString(substr($oldName, 0, $p));
+					$newName .=  "." . BeLib::getInstance()->friendlyUrlString(substr($oldName, $p+1)); 
+				}
+				if($newName !== $oldName) {
+					$stream["Stream"]["name"] = $newName;
+					$slash = strrpos($uri, "/"); 
+					$newUri = substr($uri, 0, $slash+1) . $newName;
+					if(rename($conf->mediaRoot . $uri, $conf->mediaRoot . $newUri) === false) {
+						throw new BeditaException(__("Error renaming stream", true) . " id: " . $id . " file: " . $fileName);
+					}
+					$stream["Stream"]["uri"] = $newUri;
+				}
 			}
 			
 			if ($isURL && ($mediaProvider = $this->getMediaProvider($stream["Stream"]["uri"]))) {
