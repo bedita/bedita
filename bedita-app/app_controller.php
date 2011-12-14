@@ -20,7 +20,8 @@
  */
 
 App::import('Core', 'l10n');
-
+App::import('Lib', 'BeLib');
+BeLib::getObject("BeConfigure")->initConfig();
 
 /**
  * Controller base class for backends+frontends

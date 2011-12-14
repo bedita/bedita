@@ -19,6 +19,8 @@
  *------------------------------------------------------------------->8-----
  */
 
+App::import('Lib', 'BeLib');
+
 /**
  * Base class for bedita shell scripts: provides common filesystem related methods.
  * 

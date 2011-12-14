@@ -31,6 +31,9 @@
  */
 class CleanupTask extends BeditaBaseShell {
 
+	function startup() {
+	}
+	
 	public function execute() {
 		$basePath = TMP;
 		if (isset($this->params['frontend'])) {

@@ -168,8 +168,5 @@ App::build($additionalPaths);
 // common exceptions definitions
 require_once BEDITA_CORE_PATH . DS . "bedita_exception.php";
 
-App::import('Lib', 'BeLib');
-BeLib::getObject("BeConfigure")->initConfig();
-
 //EOF
 ?>
