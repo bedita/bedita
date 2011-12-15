@@ -57,8 +57,8 @@
 
 		<fieldset id="system_config">
 
-			{if !empty($bedita_sys_err)}
-				<p>{$bedita_sys_err}</p>
+			{if !empty($bedita_cfg_err)}
+				<p>{$bedita_cfg_err}</p>
 			{else}
 			<table class="" border=0 style="margin-bottom:10px">
 

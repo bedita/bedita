@@ -286,14 +286,6 @@ class AdminController extends ModulesController {
 		$this->set('langs_iso',$config['langsIso']);
 
 		$besys = BeLib::getObject("BeSystem");
-		// check bedita.sys.php
-//		$beditaSysPath = CONFIGS . "bedita.sys.php";
-//		if (!file_exists($beditaSysPath)) {
-//			$this->set("bedita_sys_err", __("Path not found",true) . ": " . $beditaSysPath);
-//		}
-//		if (!$besys->checkWritable($beditaSysPath)) {
-//			$this->set("bedita_sys_err", __("File not writable, update properly file permits for",true) . " " . $beditaSysPath);
-//		}
 
 		// check bedita.cfg.php
 		$beditaCfgPath = CONFIGS . "bedita.cfg.php";
