@@ -54,11 +54,9 @@ class AppHelper extends Helper {
 			 * see file cake/libs/view/view.php
 			 * class View
 			 * method _loadHelpers
-			 * line 749
+			 * line 809
 			 */
-			$vars = array(
-				'base', 'webroot', 'here', 'params', 'action', 'data', 'themeWeb', 'plugin'
-			);
+			$vars = array('base', 'webroot', 'here', 'params', 'action', 'data', 'theme', 'plugin');
 			$c = count($vars);
 			for ($j = 0; $j < $c; $j++) {
 				$helperObject->{$vars[$j]} = $this->{$vars[$j]};
