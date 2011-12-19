@@ -95,13 +95,12 @@ class AppController extends Controller
 	}
 
 	public static function defaultError(Exception $ex) {
-
-		$errTrace =  get_class($ex)." -  ". $ex->getMessage()."\nFile: ".$ex->getFile().
-					" - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
 		include_once (APP . 'app_error.php');
-		return new AppError('handleException', array('details' => $ex->getMessage(), 
-				'msg' => $ex->getMessage(), 
-				'result' => self::ERROR), $errTrace);
+		$errTrace =  get_class($ex)." -  ". $ex->getMessage()."\nFile: ".$ex->getFile().
+					" - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();
+		$messages = array('details' => $ex->getMessage(), 'msg' => $ex->getMessage(), 'result' => self::ERROR);
+		$handleMethod = ($ex instanceof SmartyException)? 'handleSmartyException' : 'handleException';
+		return new AppError($handleMethod, $messages, $errTrace);
 	}
 	
 	public function handleError($eventMsg, $userMsg, $errTrace, $usrMsgParams=array()) {
@@ -114,6 +113,7 @@ class AppController extends Controller
 		$this->eventError($eventMsg);
 		$layout = (!isset($usrMsgParams["layout"]))? "message" : $usrMsgParams["layout"];
 		$params = (!isset($usrMsgParams["params"]))? array("class" => "error") : $usrMsgParams["params"];
+		$params['detail'] = $eventMsg;
 		$this->userErrorMessage($userMsg, $layout, $params);
 	}
 	

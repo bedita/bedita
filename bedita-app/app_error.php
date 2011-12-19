@@ -82,6 +82,11 @@ class AppError extends ErrorHandler {
 		}
 		echo $this->controller->output;		
 	}
+	
+	public function handleSmartyException(array $messages) {
+		$messages['msg'] = 'Smarty error';
+		$this->handleException($messages);
+	}
 
 	public function handleAjaxException(array $messages) {
 		$usrMsgParams = array("layout" => "", "params" => array());

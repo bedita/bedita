@@ -105,36 +105,29 @@ jQuery.fn.extend({
 	},
 
 	triggerMessage: function(type, pause) {
+		var $_this = $(this);
 		if (pause == undefined) {
 			pause = 4;
 		}
 		if (type == "error") {
-			$(this)
-				.show()
-				.click( function() {
-					$(this).fadeOut('slow');
-				});
+			$_this.show();
 		} else if (type == "info") {
-			$(this)
+			$_this
 				.show()
 				.animate({opacity: 1.0}, pause)
 				.fadeOut(1000);
 		} else if (type == "warn") {
-			$(this)
-				.show()
-				.animate({opacity: 1.0}, pause)
-				.fadeOut(1000);
+			$_this
+				.show();
 		}
-
-		$(this).hover(
-			function() {
-				//$(this).addClass('messagesDivOver');
-				$(this).fadeOut('slow')
-			},
-			function() {
-				//$(this).removeClass('messagesDivOver');
-			}
-		);
+			
+		$_this.find(".closemessage").click(function() {
+			$_this.fadeOut('slow');
+		});
+		
+		$_this.find(".messagedetail").click(function() {
+			$(this).next().toggle();
+		});
 	}
 
 
