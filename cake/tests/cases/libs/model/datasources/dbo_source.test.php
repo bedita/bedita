@@ -1461,6 +1461,7 @@ class DboSourceTest extends CakeTestCase {
 			'order' => array(),
 			'group' => null
 		);
+		$queryData['joins'][0]['table'] = $this->testDb->fullTableName($queryData['joins'][0]['table']);
 		$this->assertEqual($queryData, $expected);
 
 		$result = $this->testDb->generateAssociationQuery($this->Model, $null, null, null, null, $queryData, false, $null);
@@ -2395,6 +2396,12 @@ class DboSourceTest extends CakeTestCase {
 		$result = $this->testDb->conditions($conditions);
 		$expected = " WHERE `Artist`.`name` = 'JUDY AND MARY'";
 		$this->assertEqual($result, $expected);
+
+		$conditions = array('Company.name similar to ' => 'a word');
+		$result = $this->testDb->conditions($conditions);
+		$expected = " WHERE `Company`.`name` similar to 'a word'";
+		$this->assertEqual($result, $expected);
+
 	}
 
 /**
@@ -2548,11 +2555,11 @@ class DboSourceTest extends CakeTestCase {
 		$this->assertEqual($result, $expected);
 
 		$result = $this->testDb->conditions(array('score BETWEEN ? AND ?' => array(90.1, 95.7)));
-		$expected = " WHERE `score` BETWEEN 90.100000 AND 95.700000";
+		$expected = " WHERE `score` BETWEEN 90.1 AND 95.7";
 		$this->assertEqual($result, $expected);
 
 		$result = $this->testDb->conditions(array('Post.title' => 1.1));
-		$expected = " WHERE `Post`.`title` = 1.100000";
+		$expected = " WHERE `Post`.`title` = 1.1";
 		$this->assertEqual($result, $expected);
 
 		$result = $this->testDb->conditions(array('Post.title' => 1.1), true, true, new Post());
@@ -2565,6 +2572,10 @@ class DboSourceTest extends CakeTestCase {
 
 		$result = $this->testDb->conditions(array('MAX(Post.rating) >' => '50'));
 		$expected = " WHERE MAX(`Post`.`rating`) > '50'";
+		$this->assertEqual($result, $expected);
+
+		$result = $this->testDb->conditions(array('lower(Article.title)' =>  'secrets'));
+		$expected = " WHERE lower(`Article`.`title`) = 'secrets'";
 		$this->assertEqual($result, $expected);
 
 		$result = $this->testDb->conditions(array('title LIKE' => '%hello'));
@@ -4166,7 +4177,6 @@ class DboSourceTest extends CakeTestCase {
 		Configure::write('debug', 2);
 
 		$this->testDb->error = true;
-		$this->expectError();
 		ob_start();
 		$this->testDb->showQuery('Error 2');
 		$contents = ob_get_clean();

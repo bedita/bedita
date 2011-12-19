@@ -1037,7 +1037,7 @@ class Model extends Overloadable {
 		}
 		if (strpos($field, '.') !== false) {
 			list($model, $field) = explode('.', $field);
-			if (isset($this->virtualFields[$field])) {
+			if ($model == $this->alias && isset($this->virtualFields[$field])) {
 				return true;
 			}
 		}
@@ -1687,7 +1687,10 @@ class Model extends Overloadable {
 					$type = $associations[$association];
 					switch ($type) {
 						case 'hasOne':
-							$values[$this->{$type}[$association]['foreignKey']] = $this->id;
+							if (!$validating) {
+								$values[$this->{$type}[$association]['foreignKey']] = $this->id;
+							}
+
 							if (!$this->{$association}->__save($values, $options)) {
 								$validationErrors[$association] = $this->{$association}->validationErrors;
 								$validates = false;
@@ -1697,9 +1700,12 @@ class Model extends Overloadable {
 							}
 						break;
 						case 'hasMany':
-							foreach ($values as $i => $value) {
-								$values[$i][$this->{$type}[$association]['foreignKey']] =  $this->id;
+							if (!$validating) {
+								foreach ($values as $i => $value) {
+									$values[$i][$this->{$type}[$association]['foreignKey']] =  $this->id;
+								}
 							}
+
 							$_options = array_merge($options, array('atomic' => false));
 
 							if ($_options['validate'] === 'first') {
@@ -2056,6 +2062,9 @@ class Model extends Overloadable {
  *  - If three fields are specified, they are used (in order) for key, value and group.
  *  - Otherwise, first and second fields are used for key and value.
  *
+ *  Note: find(list) + database views have issues with MySQL 5.0. Try upgrading to MySQL 5.1 if you 
+ *  have issues with database views.
+ *
  * @param array $conditions SQL conditions array, or type of find operation (all / first / count /
  *    neighbors / list / threaded)
  * @param mixed $fields Either a single string of a field name, or an array of field names, or
@@ -2123,7 +2132,6 @@ class Model extends Overloadable {
 		if (!$db =& ConnectionManager::getDataSource($this->useDbConfig)) {
 			return false;
 		}
-
 		$results = $db->read($this, $query);
 		$this->resetAssociations();
 

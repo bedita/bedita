@@ -188,6 +188,9 @@ class DboMysqli extends DboMysqlBase {
 				if ($data === '') {
 					return 'NULL';
 				}
+				if (is_float($data)) {
+					return str_replace(',', '.', strval($data));
+				}
 				if ((is_int($data) || is_float($data) || $data === '0') || (
 					is_numeric($data) && strpos($data, ',') === false &&
 					$data[0] != '0' && strpos($data, 'e') === false)) {
@@ -269,7 +272,7 @@ class DboMysqli extends DboMysqlBase {
 		$j = 0;
 		while ($j < $numFields) {
 			$column = mysqli_fetch_field_direct($results, $j);
-			if (!empty($column->table)) {
+			if (!empty($column->table) && strpos($column->name, $this->virtualFieldSeparator) === false) {
 				$this->map[$index++] = array($column->table, $column->name);
 			} else {
 				$this->map[$index++] = array(0, $column->name);

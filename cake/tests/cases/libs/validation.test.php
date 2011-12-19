@@ -1447,6 +1447,7 @@ class ValidationTest extends CakeTestCase {
 		$this->assertTrue(Validation::date('Dec 27 2006', array('Mdy')));
 		$this->assertFalse(Validation::date('27 Dec 2006', array('Mdy')));
 		$this->assertFalse(Validation::date('2006 December 27', array('Mdy')));
+		$this->assertTrue(Validation::date('Sep 12, 2011', array('Mdy')));
 	}
 
 /**
@@ -1508,6 +1509,8 @@ class ValidationTest extends CakeTestCase {
 		$this->assertTrue(Validation::time('12:01am'));
 		$this->assertTrue(Validation::time('12:01pm'));
 		$this->assertTrue(Validation::time('1pm'));
+		$this->assertTrue(Validation::time('1 pm'));
+		$this->assertTrue(Validation::time('1 PM'));
 		$this->assertTrue(Validation::time('01:00'));
 		$this->assertFalse(Validation::time('1:00'));
 		$this->assertTrue(Validation::time('1:00pm'));

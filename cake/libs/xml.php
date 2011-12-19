@@ -216,7 +216,7 @@ class XmlNode extends Object {
 
 		if (isset($tagOpts['name'])) {
 			$name = $tagOpts['name'];
-		} elseif ($name != strtolower($name) && !empty($options['slug']) && $options['slug'] !== false) {
+		} elseif ($name != strtolower($name) && $options['slug'] !== false) {
 			$name = Inflector::slug(Inflector::underscore($name));
 		}
 
@@ -698,12 +698,14 @@ class XmlNode extends Object {
 			if (is_a($child, 'XmlTextNode')) {
 				$out['value'] = $child->value;
 				continue;
-			} elseif (isset($child->children[0]) && is_a($child->children[0], 'XmlTextNode') && count($child->children) === 1) {
+			} elseif (isset($child->children[0]) && is_a($child->children[0], 'XmlTextNode')) {
 				$value = $child->children[0]->value;
 				if ($child->attributes) {
 					$value = array_merge(array('value' => $value), $child->attributes);
 				}
-				$leaf = true;
+				if (count($child->children) == 1) {
+					$leaf = true;
+				}
 			} elseif (count($child->children) === 0 && $child->value == '') {
 				$value = $child->attributes;
 				if (empty($value)) {

@@ -939,7 +939,7 @@ class SetTest extends CakeTestCase {
 		$result = Set::extract('/ParentNode/name', $hasMany);
 		$expected = array('Second');
 		$this->assertEqual($result, $expected);
-		
+
 		$data = array(
 			array(
 				'Category' => array(
@@ -972,6 +972,32 @@ class SetTest extends CakeTestCase {
 			)
 		);
 		$result = Set::extract('/Category[id=1]/..', $data);
+		$this->assertEqual($result, $expected);
+
+		$data = array(
+			array(
+				'ChildNode' => array('id' => 1),
+				array('name' => 'Item 1')
+			),
+			array(
+				'ChildNode' => array('id' => 2),
+				array('name' => 'Item 2')
+			),
+		);
+
+		$expected = array(
+			'Item 1',
+			'Item 2'
+		);
+		$result = Set::extract('/0/name', $data);
+		$this->assertEqual($result, $expected);
+
+		$data = array(
+			array('A1', 'B1'),
+			array('A2', 'B2')
+		);
+		$expected = array('A1', 'A2');
+		$result =  Set::extract('/0', $data);
 		$this->assertEqual($result, $expected);
 	}
 
@@ -1180,7 +1206,7 @@ class SetTest extends CakeTestCase {
 		$expected = array(1, 2, 3);
 		$r = Set::extract('/User/id', $nonZero);
 		$this->assertEqual($r, $expected);
-		
+
 		$expected = array(
 			array('User' => array('id' => 1, 'name' => 'John')),
 			array('User' => array('id' => 2, 'name' => 'Bob')),
@@ -2227,6 +2253,26 @@ class SetTest extends CakeTestCase {
 		$result = Set::format($data, '%1$s, %2$d', array('{n}.Person.first_name', '{n}.Person.something'));
 		$expected = array('Nate, 42', 'Larry, 0', 'Garrett, 0');
 		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * testFormattingNullValues method
+ *
+ * @return void
+ */
+	public function testFormattingNullValues() {
+		$data = array(
+			array('Person' => array('first_name' => 'Nate', 'last_name' => 'Abele', 'city' => 'Boston', 'state' => 'MA', 'something' => '42')),
+			array('Person' => array('first_name' => 'Larry', 'last_name' => 'Masters', 'city' => 'Boondock', 'state' => 'TN', 'something' => null)),
+			array('Person' => array('first_name' => 'Garrett', 'last_name' => 'Woodworth', 'city' => 'Venice Beach', 'state' => 'CA', 'something' => null)));
+
+		$result = Set::format($data, '%s', array('{n}.Person.something'));
+		$expected = array('42', '', '');
+		$this->assertEqual($expected, $result);
+
+		$result = Set::format($data, '{0}, {1}', array('{n}.Person.city', '{n}.Person.something'));
+		$expected = array('Boston, 42', 'Boondock, ', 'Venice Beach, ');
+		$this->assertEqual($expected, $result);
 	}
 
 /**
