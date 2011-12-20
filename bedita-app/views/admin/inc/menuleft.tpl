@@ -19,7 +19,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 	<ul class="menuleft insidecol">
 		<li {if $view->action eq 'customproperties'}class="on"{/if}>{$tr->link('Custom properties', '/admin/customproperties')}</li>
-		<li {if $view->action eq 'customrelations'}class="on"{/if}>{$tr->link('Custom relations', '/admin/relations')}</li>
+		{bedev}<li {if $view->action eq 'customrelations'}class="on"{/if}>{$tr->link('Custom relations', '/admin/relations')}</li>{/bedev}
 	</ul>
 		
 	<ul class="menuleft insidecol">

@@ -156,7 +156,9 @@ $(document).ready(function() {
 		
 	{include file="inc/tools_commands.tpl" type="all"}
 
+	{bedev}
 	{include file="inc/bulk_actions.tpl" type="all"}
+	{/bedev}
 
 
 </div>	
