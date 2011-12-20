@@ -71,8 +71,15 @@ class BeTreeHelper extends AppHelper {
 					}
 				}
 				
-				$output .= "<div class='pub'><h2 id='pub_" . $publication['id'] . "'>";
-				
+				// add publication's permission icon
+				if (!empty($publication["num_of_permission"])) {
+					$h2Class = "protected";
+				}
+				$output .= "<div class='pub'><h2 id='pub_" . $publication['id'] . "'";
+				if (!empty($h2Class)) {
+					$output .= " class='" . $h2Class . "'";
+				}
+				$output .= ">";
 				$output .= "<a ".$class." rel='" . $url . "'>";
 				
 				if (!empty($inputType) && !empty($this->tags[$inputType])) {
@@ -80,7 +87,8 @@ class BeTreeHelper extends AppHelper {
 					$output .= sprintf($this->tags[$inputType], $publication["id"], $checked) ;
 				}
 				
-				$output .= $publication["title"] . "</a></h2>";
+				$output .= $publication["title"] . "</a>";
+				$output .= "</h2>";
 				
 				if (!empty($publication["children"])) {
 					$output .= $this->designBranch($publication["children"], $inputType, $parent_ids);
@@ -205,7 +213,14 @@ class BeTreeHelper extends AppHelper {
 				}
 			}
 			
-			$res .= "<li class='sec_".$section['status']."' id='pub_" . $section['id'] . "'><a " . $class . " rel='" . $url . "'>";
+			$liClass = "sec_" . $section['status'];
+			// check if it's a protecetd section
+			if (!empty($section["num_of_permission"])) {
+				$liClass .= " protected";
+			}
+			
+			$res .= "<li class='" . $liClass . "' id='pub_" . $section['id'] . "'>";			
+			$res .= "<a " . $class . " rel='" . $url . "'>";
 			
 			if (!empty($inputType) && !empty($this->tags[$inputType])) {
 				$checked = (in_array($section["id"], $parent_ids))? "checked='checked'" : "";

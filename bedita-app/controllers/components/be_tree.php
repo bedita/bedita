@@ -104,7 +104,8 @@ class BeTreeComponent extends Object {
 		// Get connected user
 		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : '' ;
 		$filter = array(
-			"object_type_id" => array($conf->objectTypes['area']['id'],$conf->objectTypes['section']['id']) 
+			"object_type_id" => array($conf->objectTypes['area']['id'],$conf->objectTypes['section']['id']) ,
+			"count_permission" => true
 		);
 		$tree = $this->Tree->getAll(null, $userid, null, $filter) ;
 		
