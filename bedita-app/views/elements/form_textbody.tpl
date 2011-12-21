@@ -1,7 +1,8 @@
 {if ($conf->mce|default:true)}
 	
 	{$javascript->link("tiny_mce/tiny_mce", false)}
-	{$javascript->link("tiny_mce/tiny_mce_default_init", false)}
+	{assign_concat var='initfile' 1="tiny_mce/tiny_mce_" 2=$conf->mce.init}
+	{$javascript->link($initfile, false)}
 
 
 {elseif ($conf->wymeditor|default:true)}

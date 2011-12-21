@@ -81,7 +81,9 @@ $config['dateTimePatternLocale'] = array(
 $config['defaultStatus'] = "draft" ;
 
 // TinyMCE Rich Text Editor for long_text ['true' to enable]
-$config['mce'] = true;
+$config['mce'] = array(
+	'init' => 'default_init'
+);
 
 // Application messages - temporary messages duration
 $config['msgPause'] = 3000;		// milliseconds

@@ -60,8 +60,14 @@ if (!isset($config)) {
 // Status of new objects
 //$config['defaultStatus'] = "draft" ;
 
-// TinyMCE Rich Text Editor for long_text ['false' to disable - defaults true]
-// $config['mce'] = true;
+/* TinyMCE Rich Text Editor for long_text
+ * 'false' to disable
+ * 'init' => suffix tinymce init file you can find in webroot/js/tiny_mce directory
+ * 
+ */
+//$config['mce'] = array(
+//	'init' => 'default_init'
+//);
 
 
 /**
