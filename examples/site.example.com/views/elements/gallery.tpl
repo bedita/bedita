@@ -14,7 +14,7 @@
 			{$beEmbedMedia->object($item[g],$params)}
 			</a>
 			<div style="font-size:12px; width:135px;">
-				{$item[g].title}
+				{$item[g].title|truncate:20:'...'}
 			</div>
 		{/if}
 	</div>
