@@ -1,3 +1,97 @@
+Version 3.2 - popolus
+ User-visible changes:
+	* #137 - installation wizard
+		- setup: force cake debug=1
+		- installer BEDITA_IGNORE_CFG to avoid bedita.cfg.php load
+	* #268 - Admin module - some configuration can be edit through user interface
+		- BEdita url, project name
+		- media url and media root
+		- default UI language
+		- content default language
+		- content languages
+		- smtpOptions
+		- mail support
+		- ...
+	* #259 addressbook: newsletter subscription bug
+	* multimedia module: introduced GPS info in exif data view
+	* tags module: fix views for cake 1.3
+	* #291 - url friendly file names
+	* #293 Sample module: updated to cakephp 1.3 plugin conventions
+	* Events module - fix smarty include wrong path in form.tpl
+	* Addressbook module - fix smarty include wrong path in form.tpl
+	* #239 - Publication module: removed ajax behavior
+	* Publication module
+		- added filter for object_type_id
+		- new section form features
+		- sections: "create new section here"
+		- added tags and notes
+	* modules menu with search field / search input removed from toolbar
+	* new object command in toolbar
+	* modules menu css + search
+	* #296 - Users module
+		- create users module, moved users and groups from admin to users module, update sql initialization nad upgrade
+		- random passw for new user
+		- css color module / menuLeft on admin
+		- fixed wrong redirect path
+		- reordered groups and fix module_permission in  bedita_init_data.sql for the introduction of manager group
+		- "manager" groups have not permission to create groups with access to "admin" module and to edit "administrator" users
+		- dedicated page for view/edit/new group
+		- when list groups count number of users belongs to any group
+	* alternative module list menu
+	* load publications in every backend page (AppController::beforeFilter()) to have url for frontend site
+	* #282 translations: publication public name / description translatable
+	* EventLog => allow multiple logs
+	* Helper #233, #243 - BeTreeHelper::view() added class="protected" to publications/sections with some permission (on the tree)
+
+
+ Frontend changes:
+	* sample frontends adjustments for upgrade to CakePHP
+	* frontend debug.example.com: wrong php tag in default.ctp
+	* #263 added BeFront::stagingToolbar() method to load the staging toolbar in frontend apps
+	* #286 - lang codes for HTML 639-1 => BeFront::lang() method
+	* #90 set locale in $currLocale, reading from config "locales"
+	* debug.example.com - Replaced $view->_smarty->_tpl_vars (not in Smarty anymore) with $view->viewVars
+	* FrontendController: removed Set::isEqual() because it has been removed in Cake 1.3
+	* #278 - Improve routing rules in frontend applications
+		- security: if first url args is a method of PagesController check that it aren't a ForntendController/AppController method
+	* FrontendController - change nickname callbacks name:
+		- before with this-is-my-nick it called this_is_my_nickBeforeFilter(), ....
+		- now with this-is-my-nick it calls thisIsMyNickBeforeFilter(), ....
+
+ Developer-visibile changes:
+	* shell: dbadmin cleanup -days / removes old items from log/job tables
+	* change bedita cfg files load chain - now bedita.ini requires bedita.cfg
+	* upgrade cake to 1.3.13
+	* #265 - upgrade to Smarty 3.1.7
+	* shell: bedita modules fix/update
+	* small fix in TransactionComponent for upgrade to CakePHP
+	* read schema tables with options
+	* shell: check all frontends in checkApp / check frontends existence
+	* XML::toArray patch http://cakephp.lighthouseapp.com/projects/42648/tickets/1667
+	* add BEDITA_LOCAL_CFG_PATH constant, local configuration files path
+	* schema doc update
+	* #285 replaced php_thumb with new php_thumb library
+	* UI: general modulesmenu in standard html5 NAV element + general HTML5 declaration + CSS html5 elements block definition
+	* helper: BeToolbarHelper::changeDimSelect() - added keys to $options array params to create tag select with value different from text
+	* css declaration with var argument (to prevent caching)
+	* beditaNew renamed to bedita.css
+	* unit test: add test for BeLib::variableFromName()
+	* Area and Section model: added Annotation to $modelBindings["default"] to get EditorNote
+	* add Tag and Annotation to Section and Annotation to Area models. Now Section and Area saves use AppController::saveObject() method
+	* #268, #137 - fix config write regexp => ignore $config[] after =
+	* #268 - bedita.cfg.php / only one main config file (bedita.sys.php deprecated)
+	* config: remove 'config''language', 'multilang' - add 'defaultUILang'
+	* bedita shell: add cleanphp method to clean php files from leadind and trailing spaces
+	* #291 - Stream::updateStreamFields - add filename modification
+	* shell: fix dbadmin error
+	* be_lib: allow start digits in nickname / friendlyUrlString
+	* shell/core: move BeLib::initConfig() in AppController - allow shell scripts launch with config errors
+	* shell: fix for cake 1.3 / cleanup automatic in frontends also
+	* shell: dbadmin clearMediaCache method
+	* helper AppHelper::getHelper() - changed var name 'themeWeb'  in 'theme' (due to cake 1.3 upgrade)
+
+
+
 Version 3.1.4 - ulmus
  User-visible changes:
 	* geotag tab: lookat zoom and type in view
