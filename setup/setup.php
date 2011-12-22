@@ -214,6 +214,7 @@
 			Configure::write('debug', 0);
 			App::import('ConnectionManager');
 			$db = ConnectionManager::getDataSource('default');
+			$db->cacheSources = false;
 			if(!empty($_POST['action']) && ($_POST['action'] == 'initdb')) {
 				$this->check_arr['dbinit'] = array();
 				if(!$this->_initdb($db)) {
@@ -478,7 +479,10 @@
 						$done = true;
 						$filedata[]= ' var $default = array(';
 						foreach($db as $k => $v) {
-							$l = "'$k' => '$v'";
+							if ($k == 'persistent') {
+								$v = (!empty($v) && $v == 'true')? true : false;
+							}
+							$l = "'$k' => " . var_export($v, true);
 							if($c<$dbsize) {
 								$l.= ",";
 							}
