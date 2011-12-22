@@ -263,6 +263,7 @@
 			</table>
 			{/if}
 			
+			{bedev}
 			<hr />
 			
 			<table>
@@ -282,6 +283,7 @@
 				
 				
 			</table>
+			{/bedev}
 			
 		</fieldset>
 
