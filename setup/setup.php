@@ -484,12 +484,12 @@
 							}
 							$l = "'$k' => " . var_export($v, true);
 							if($c<$dbsize) {
-								$l.= ",";
+								$l.= "," . PHP_EOL;
 							}
 							$c++;
 							$filedata[]=$l;
 						}
-						$filedata[]= ');';
+						$filedata[]= ');' . PHP_EOL . PHP_EOL;
 						$done = true;
 					}
 				} else {
