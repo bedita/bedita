@@ -32,8 +32,13 @@
 					{assign_associative var="options" mode="fill" width=100 height=100 modeparam="000000" upscale=true}
 					{assign_associative var="htmlAttr" style="float: left; width: 100px; height: 100px; margin: 10px 20px 10px 0"}
 					{assign_associative var="optionsBig" mode="fill" longside=600 URLonly=true}
+					{assign_associative var="htmlVideo"  width=500}
 					{foreach from=$section.currentContent.relations.attach item="attach"}
-						<a rel="gallery" title="{$attach.title}" href="{$beEmbedMedia->object($attach, $optionsBig)}">{$beEmbedMedia->object($attach, $options, $htmlAttr)}</a>
+						{if $attach.object_type_id == $conf->objectTypes.image.id}
+							<a rel="gallery" title="{$attach.title}" href="{$beEmbedMedia->object($attach, $optionsBig)}">{$beEmbedMedia->object($attach, $options, $htmlAttr)}</a>
+						{elseif $attach.object_type_id == $conf->objectTypes.video.id}
+							<div style="clear: left; margin: 10px 20px 0 0;">{$beEmbedMedia->object($attach, null, $htmlVideo)}</div>
+						{/if}
 					{/foreach}
 				{/if}
 			</div><!-- .entry-content -->
