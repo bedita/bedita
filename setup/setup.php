@@ -510,9 +510,10 @@
 		}
 
 		private function _saveuser($userdata) {
-			$q = "UPDATE users SET userid = '" . $userdata['userid'] . "', realname = '" . $userdata['realname'] . "', passwd = '" . $userdata['passwd'] . "' WHERE id = " . $userdata['id'] . "";
-			$db = ConnectionManager::getDataSource('default');
-			$db->execute($q);
+			$userModel = ClassRegistry::init('User');
+			if (!$userModel->save($userdata)) {
+				return false;
+			}
 			return true;
 		}
 
