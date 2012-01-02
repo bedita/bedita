@@ -1,4 +1,4 @@
-Version 3.2 - popolus
+Version 3.2.alpha - popolus
  User-visible changes:
 	* #137 - installation wizard
 		- setup: force cake debug=1
