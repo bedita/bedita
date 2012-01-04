@@ -91,7 +91,7 @@ class AreasController extends ModulesController {
 		
 		// get no paginated children sections
 		$filter["object_type_id"] = Configure::read("objectTypes.section.id");
-		$sections = $this->BeTree->getChildren($id, null, $filter, "priority", $dir, 1, 10000);
+		$sections = $this->BeTree->getChildren($id, null, $filter, "priority", $dir);
 		$this->set("sections", $sections["items"]);
 	}
 	

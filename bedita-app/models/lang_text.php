@@ -123,7 +123,7 @@ class LangText extends BEAppModel
 			$ordClausole = "ORDER BY {$otherOrder}";
 		}
 		
-		$limit 	= $this->getLimitClausole($page, $dim) ;
+		$limit 	= $this->getLimitClausole($dim, $page) ;
 		// #CUSTOM QUERY
 		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} {$limit}";
 		$tmp  	= $this->query($query) ;

@@ -345,7 +345,7 @@ class Tree extends BEAppModel
 			$filter["Tree.*"] = "";
 		}
 
-		$res = $this->findObjects($id, $userid, $status, $filter, "parent_path, priority, title",true,1,100000,true);
+		$res = $this->findObjects($id, $userid, $status, $filter, "parent_path, priority, title", true, 1, null, true);
 		$tree = $this->buildTree($res["items"]);
 		return $tree ;
 	}
@@ -443,7 +443,7 @@ class Tree extends BEAppModel
 	 * @param integer $page		Page number (for pagination)
 	 * @param integer $dim		Page dim (for pagination)
 	 */
-	function getChildren($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir  = true, $page = 1, $dim = 100000) {
+	function getChildren($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir  = true, $page = 1, $dim = null) {
 		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, false) ;
 	}
 
@@ -464,7 +464,7 @@ class Tree extends BEAppModel
 	 * @param integer $page		Page number (for pagination)
 	 * @param integer $dim		Page dim (for pagination)
 	 */
-	function getDescendants($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir  = true, $page = 1, $dim = 100000) {
+	function getDescendants($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir  = true, $page = 1, $dim = null) {
 		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, true) ;
 	}
 

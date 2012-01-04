@@ -518,9 +518,9 @@ abstract class FrontendController extends AppController {
 	* @param integer $parentName		parent nickname or id 
 	* @param bool $loadContents			if it's true load all contents too. Default false
 	* @param array $exclude_nicknames	list exclude sections 
-	* @param integer $depth				tree's depth level (default=10000 => all levels)
+	* @param integer $depth				tree's depth level (default=null => all levels)
 	* */
-	protected function loadSectionsTree($parentName, $loadContents=false, array $exclude_nicknames=null, $depth=10000, $flatMode=false) {
+	protected function loadSectionsTree($parentName, $loadContents = false, array $exclude_nicknames = array(), $depth = null, $flatMode = false) {
 
 		$conf = Configure::getInstance(); 
 		$parent_id = is_numeric($parentName) ? $parentName: $this->BEObject->getIdFromNickname($parentName);
@@ -529,13 +529,13 @@ abstract class FrontendController extends AppController {
 		if (empty($parent_id)) {
 			throw new BeditaException(__("Error loading sections tree. Missing parent" . ": " . $parentName, true));
 		}
-		$sections = $this->BeTree->getChildren($parent_id, $this->status, 
-			$filter, "priority") ;
+		$sections = $this->BeTree->getChildren($parent_id, $this->status, $filter, "priority");
 
 		foreach ($sections['items'] as $s) {
 			
-			if(!empty($exclude_nicknames) && in_array($s['nickname'], $exclude_nicknames)) 
-				continue ;
+			if(!empty($exclude_nicknames) && in_array($s['nickname'], $exclude_nicknames)) {
+				continue;
+			}
 			
 			$sectionObject = $this->loadObj($s['id']);
 			
@@ -547,8 +547,11 @@ abstract class FrontendController extends AppController {
 					$objs = $this->loadSectionObjects($s['id'], $option);
 					$resultObjects = (!$this->sectionOptions["itemsByType"] && !empty($objs["childContents"]))? $objs["childContents"] : $objs;
 				}
-				if ($depth > 1) {
-					$resultSections = $this->loadSectionsTree($s['id'], $loadContents, $exclude_nicknames, $depth-1, $flatMode);
+				if ($depth === null || $depth > 1) {
+					if ($depth > 1) {
+						$depth--;
+					}
+					$resultSections = $this->loadSectionsTree($s['id'], $loadContents, $exclude_nicknames, $depth, $flatMode);
 				}
 				if(!$flatMode) {
 					if(!empty($resultObjects)) {
@@ -663,8 +666,7 @@ abstract class FrontendController extends AppController {
 		$level = 0;
 		$filter["object_type_id"] = $conf->objectTypes['section']["id"];
 		foreach ($parents as $p_id) {
-			$sections = $this->BeTree->getChildren($p_id, $this->status, 
-				$filter, "priority") ;
+			$sections = $this->BeTree->getChildren($p_id, $this->status, $filter, "priority");
 
 			foreach ($sections["items"] as $s) {
 				

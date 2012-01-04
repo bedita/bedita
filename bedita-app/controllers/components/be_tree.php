@@ -141,7 +141,7 @@ class BeTreeComponent extends Object {
 	 *
 	 * @param integer $id		node ID
 	 */
-	function getChildren($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
+	function getChildren($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = null) {
 		$conf  = Configure::getInstance() ;
 		
 		// Get user connected
@@ -159,7 +159,7 @@ class BeTreeComponent extends Object {
 	 *
 	 * @param integer $id		node ID
 	 */
-	function getDescendants($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = 100000) {
+	function getDescendants($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = null) {
 		$conf  = Configure::getInstance() ;
 		// Get user data
 		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : null ;

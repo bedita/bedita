@@ -52,7 +52,7 @@ class DeleteDependentObjectBehavior extends ModelBehavior {
 		}
 		
 		// get descendants
-		$this->descendants = $model->findObjects($model->id, null, null, $filter, "priority", true, 1, 100000, true);
+		$this->descendants = $model->findObjects($model->id, null, null, $filter, "priority", true, 1, null, true);
 		
 		return true ;
 	}

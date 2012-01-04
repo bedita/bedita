@@ -173,68 +173,86 @@ class BEAppModel extends AppModel {
 	/**
 	 * Object search Toolbar
 	 *
-	 * @param integer 	$page		
-	 * @param integer 	$dimPage	
-	 * @param mixed 	$sqlCondition	sql search condition
-	 * @param boolean 	$recursive	TRUE, retrieve connected objects
-	 * @param mixed 	$sqlCondition	sql search condition
-	 * @return array
+	 * @param integer $page
+	 * @param integer $dimPage page dimension (limit sql)
+	 * @param integer $size	count of all records
+	 * 
+	 * @return array for pagination
+	 *			"first" => first page; if there is only one page its value is 0 else 1
+	 *			"prev" => previous page; 0 if there isn't previous page
+	 *			"next" => next page; 0 if there isn't next page
+	 *			"last" => last page; 0 if it's the last page
+	 *			"size" => number of all records
+	 *			"pages" => total number of pages
+	 *			"page" => number of current page
+	 *			"dim" => number of records per page
+	 *			"start" => number of the record with which the page begins counting from the first page
+	 *			"end" => number of the record with which the page ends counting from the first page
+	 *			
 	 */
-	function toolbar($page = null, $dimPage = null, $size=0) {
+	function toolbar($page, $dimPage, $size) {
 						
-		$toolbar = array("first" => 0, "prev" => 0, "next" => 0, "last" => 0, "size" => 0, "pages" => 0, "page" => 0, "dim" => 0) ;
+		$toolbar = array("first" => 0, "prev" => 0, "next" => 0, "last" => 0, "size" => 0, "pages" => 0, "page" => 0, "dim" => 0, "start" => 0, "end" => 0) ;
 		
-		if(!$page || empty($page)) $page = 1 ;
-		if(!$dimPage || empty($dimPage)) $dimPage = $size ;
+		if (empty($size)) {
+			$size = 0;
+		}
 		
-		$pageCount = $size / $dimPage ;
-		settype($pageCount,"integer");
-		if($size % $dimPage) $pageCount++ ;
+		if (empty($dimPage)) {
+			$dimPage = 0;
+			$pageCount = 1;
+		} else {
+			$pageCount = $size / $dimPage;
+			settype($pageCount,"integer");
+			if($size % $dimPage) {
+				$pageCount++;
+			}
+		}
 		
-		$toolbar["pages"] 	= $pageCount ;
-		$toolbar["page"]  	= $page ;
-		$toolbar["dim"]  	= $dimPage ;
+		$toolbar["pages"] 	= $pageCount;
+		$toolbar["page"]  	= $page;
+		$toolbar["dim"]  	= $dimPage;
 		
-		if($page == 1) {
-			if($page >= $pageCount) {
-				// Una sola
-				
-			} else {
-				// Prima pagina
-				$toolbar["next"] = $page+1 ;
-				$toolbar["last"] = $pageCount ;
+		if ($page == 1) {
+			if($page < $pageCount) {
+				// first page
+				$toolbar["next"] = $page + 1;
+				$toolbar["last"] = $pageCount;
 			} 
 		} else {
-			if($page >= $pageCount) {
-				// Ultima
-				$toolbar["first"] = 1 ;
-				$toolbar["prev"] = $page-1 ;
+			if ($page >= $pageCount) {
+				// last page
+				$toolbar["first"] = 1;
+				$toolbar["prev"] = $page - 1;
 			} else {
-				// Pagina di mezzo
-				$toolbar["next"] = $page+1 ;
-				$toolbar["last"] = $pageCount ;
-				$toolbar["first"] = 1 ;
-				$toolbar["prev"] = $page-1 ;
+				// generic page
+				$toolbar["next"] = $page + 1;
+				$toolbar["last"] = $pageCount;
+				$toolbar["first"] = 1;
+				$toolbar["prev"] = $page - 1;
 			}
 		}
 
-		$toolbar["start"]	= (($page-1)*$dimPage)+1 ;
-		$toolbar["end"] 	= $page * $dimPage ;
-		if($toolbar["end"] > $size) $toolbar["end"] = $size ;
+		if ($page <= $pageCount) {
+			$toolbar["start"] = (($page - 1) * $dimPage) + 1;
+			$toolbar["end"] = $page * $dimPage ;
+			if ($toolbar["end"] > $size) {
+				$toolbar["end"] = $size;
+			}
+		}
+		$toolbar["size"] = $size;
 		
-		$toolbar["size"] = $size ;
-		
-		return $toolbar ;	
+		return $toolbar;	
 	}
 
 	/**
 	 * SQL limit clausole
 	 *
-	 * @param int $page, page num
 	 * @param int $dim, global size/count
+	 * @param int $page, page num
 	 * @return string
 	 */
-	protected function getLimitClausole($page = 1, $dim = 100000) {
+	protected function getLimitClausole($dim , $page = 1) {
 		$dataSource = ConnectionManager::getDataSource($this->useDbConfig);
 		$offset = ($page > 1) ? (($page -1) * $dim) : null;
 		return $dataSource->limit($dim, $offset);
@@ -285,13 +303,13 @@ class BEAppModel extends AppModel {
 	 *							see all in BuildFilter behavior
 	 *
 	 * @param string $order		field to order result (id, status, modified..)
-	 * @param boolean $dir		true (default), ascending, otherwiese descending.
+	 * @param boolean $dir		true (default), ascending, otherwise descending.
 	 * @param integer $page		Page number (for pagination)
-	 * @param integer $dim		Page dim (for pagination)
+	 * @param integer $dim		Page dim (for pagination). Default get all
 	 * @param boolean $all		true: all tree levels (discendents), false: only first level (children)
 	 * @param array $excludeIds Array of id's to exclude
 	 */
-	public function findObjects($id=null, $userid=null, $status=null, $filter=array(), $order=null, $dir=true, $page=1, $dim=100000, $all=false, $excludeIds=array()) {
+	public function findObjects($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir = true, $page = 1, $dim = null, $all = false, $excludeIds = array()) {
 		
 		$s = $this->getStartQuote();
 		$e = $this->getEndQuote();
@@ -391,7 +409,7 @@ class BEAppModel extends AppModel {
 			$ordClausole = "ORDER BY {$otherOrder}";
 		}
 		
-		$limit 	= $this->getLimitClausole($page, $dim) ;
+		$limit 	= (!empty($dim))? $this->getLimitClausole($dim, $page) : '';
 		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} {$limit}";
 		
 		// #CUSTOM QUERY
