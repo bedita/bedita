@@ -15,9 +15,6 @@ class PagesController extends FrontendController {
 //		$this->view = "View"; 
 	}
 	
-//	protected function beditaBeforeRender() {
-//		pr($this->output);exit;
-//	}
 }
 
 ?>
