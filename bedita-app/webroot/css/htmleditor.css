@@ -64,6 +64,10 @@ a.placeholder {
 	padding:2px;
 }
 
+.placeref {
+	background-color:#ff9966;
+}
+
 .glossario {
 	color:#336633 !important;
 	text-decoration:underline;
@@ -78,3 +82,39 @@ a.placeholder {
  * 
  */
 
+
+/*...........................................    
+
+  text trittici e dittici
+
+...........................................*/
+
+.dittico {
+overflow:hidden;
+border-top:1px solid silver; 
+margin:10px 0px 5px 0px;
+padding:10px 0px 0px 0px; 
+clear:both;
+}
+
+.dittico LI {
+	text-indent:10px;
+display:block;
+width:48%;
+margin:0px 2% 0px 0px;
+padding:0px 0px 0px 0px; 
+float:left;
+border-bottom:1px solid silver; 
+}
+
+.dittico LI:nth-child(odd) {
+margin-left:0px;
+}
+
+.trittico {
+
+}
+
+.definizione {
+	background-color:#ffff99;
+}
