@@ -67,6 +67,7 @@
 
 {/if}
 
+{$view->element('sql_dump')}
 
 {* HTML document's end *}
 </body>
