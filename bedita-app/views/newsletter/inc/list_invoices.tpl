@@ -1,5 +1,7 @@
+
 <table class="indexlist vtop">
-	{capture name="theader}
+	{capture name="theader"}
+
 	<tr>
 		<th>{$beToolbar->order('start_sending', 'sending date')}</th>
 		<th>{$beToolbar->order('mail_status', 'status')}</th>
@@ -67,4 +69,5 @@
 	{$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span>
 </div>
 {/if}
+
 {*dump var=$objects*}
