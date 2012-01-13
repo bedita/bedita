@@ -889,7 +889,8 @@ CREATE TABLE streams (
     name character varying(255),
     mime_type character varying(60),
     file_size integer,
-    hash_file character varying(255)
+    hash_file character varying(255),
+    original_name character varying(255) NULL
 );
 
 
@@ -899,6 +900,7 @@ COMMENT ON COLUMN streams.name IS '???';
 COMMENT ON COLUMN streams.mime_type IS '???';
 COMMENT ON COLUMN streams.file_size IS '???';
 COMMENT ON COLUMN streams.hash_file IS '???';
+COMMENT ON COLUMN streams.original_name IS 'original name for uploaded file';
 
 
 

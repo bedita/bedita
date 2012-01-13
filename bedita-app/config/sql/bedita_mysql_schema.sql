@@ -739,6 +739,7 @@ CREATE TABLE streams (
   mime_type VARCHAR(60) NULL COMMENT '???',
   file_size INTEGER UNSIGNED NULL COMMENT '???',
   hash_file VARCHAR(255) NULL COMMENT '???',
+  original_name VARCHAR(255) NULL COMMENT 'original name for uploaded file',
   PRIMARY KEY(id),
   INDEX hash_file_index(hash_file),
   FOREIGN KEY(id)
