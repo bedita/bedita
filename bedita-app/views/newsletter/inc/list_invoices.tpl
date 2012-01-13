@@ -1,5 +1,5 @@
 <table class="indexlist vtop">
-	{capture name="theader}
+	{capture name="theader"}
 	<tr>
 		<th>{$beToolbar->order('start_sending', 'sending date')}</th>
 		<th>{$beToolbar->order('mail_status', 'status')}</th>
