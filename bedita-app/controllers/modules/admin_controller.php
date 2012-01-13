@@ -31,11 +31,12 @@
  */
 class AdminController extends ModulesController {
 
-	public $uses = array() ;
+	public $uses = array('MailJob','MailLog') ;
 	public $components = array('BeSystem');
 	public $helpers = array('Paginator');
 	public $paginate = array(
-	'EventLog' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc'))
+		'EventLog' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc')),
+		'MailJob' => array('limit' => 100, 'page' => 1, 'order'=>array('created'=>'desc'))
 	); 
 	protected $moduleName = 'admin';
 	
@@ -52,7 +53,42 @@ class AdminController extends ModulesController {
 	public function systemEvents() { 	
 		$this->set('events', $this->paginate('EventLog'));
 	}
-	 
+
+	public function deleteMailJob($id) { 	
+		$this->checkWriteModulePermission();
+		$this->MailJob->delete($id);
+		$this->loadMailData();
+		$this->userInfoMessage(__("MailJob deleted", true) . " -  " . $id);
+		$this->eventInfo("mail job $id deleted");
+	}
+
+	public function deleteMailLog($id) { 	
+		$this->checkWriteModulePermission();
+		$this->MailLog->delete($id);
+		$this->loadMailData();
+		$this->userInfoMessage(__("MailLog deleted", true) . " -  " . $id);
+		$this->eventInfo("mail log $id deleted");
+	}
+
+	public function emailInfo() {
+		$this->loadMailData();
+	}
+
+	private function loadMailData() {
+		$mailJob = ClassRegistry::init("MailJob");
+		$mailLog = ClassRegistry::init("MailLog");
+
+		$this->set('jobs',$this->paginate('MailJob'));
+		$this->set('logs',$this->paginate('MailLog'));
+
+		$this->set('totalJobs',  $mailJob->find("count", array("conditions" => array())));
+		$this->set('jobsFailed', $mailJob->find("count", array("conditions" => array("status" => array("failed")))));
+		$this->set('jobsSent',   $mailJob->find("count", array("conditions" => array("status" => array("sent")))));
+		$this->set('jobsPending',$mailJob->find("count", array("conditions" => array("status" => array("pending")))));
+		$this->set('jobsUnsent', $mailJob->find("count", array("conditions" => array("status" => array("unsent")))));
+		
+	}
+
 	private function beditaVersion() {
 		$c = Configure::getInstance();
 		if (!isset($c->Bedita['version'])) {
@@ -65,7 +101,7 @@ class AdminController extends ModulesController {
 			$c->write('Bedita.version', $config['Bedita.version']);
 		}
 	}
-	 
+
 	public function deleteEventLog() { 	
 		$this->checkWriteModulePermission();
 		$this->beditaVersion();
@@ -428,8 +464,16 @@ class AdminController extends ModulesController {
 	}
 
 	protected function forward($action, $esito) {
-	 	 	$REDIRECT = array(
-				"deleteEventLog" => 	array(
+			$REDIRECT = array(
+				"deleteMailJob" => 	array(
+								"OK"	=> self::VIEW_FWD.'emailInfo',
+								"ERROR"	=> self::VIEW_FWD.'emailInfo'
+							),
+				"deleteMailLog" => 	array(
+								"OK"	=> self::VIEW_FWD.'emailInfo',
+								"ERROR"	=> self::VIEW_FWD.'emailInfo'
+							),
+	 	 		"deleteEventLog" => 	array(
  								"OK"	=> self::VIEW_FWD.'systemEvents',
 	 							"ERROR"	=> self::VIEW_FWD.'systemEvents'
 	 						),
