@@ -34,7 +34,7 @@ class PagesController extends FrontendController {
 	function beditaBeforeFilter() {
 
 		// first menu level
-		$menu1 = $this->loadSectionsTree(Configure::read("frontendAreaId"), false, null, 1);
+		$menu1 = $this->loadSectionsTree(Configure::read("frontendAreaId"), false, array(), 1);
 		$this->set("menu", $menu1);
 				
 		// setup rss feeds
