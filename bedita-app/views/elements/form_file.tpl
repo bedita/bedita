@@ -61,6 +61,10 @@
 		<td colspan="3">{$object.name|default:""}</td>
 	</tr>
 	<tr>
+		<th>{t}original filename{/t}:</th>
+		<td colspan="3">{$object.original_name|default:""}</td>
+	</tr>
+	<tr>
 		<th>{t}mime type{/t}:</th>
 		<td>{$object.mime_type|default:""}</td>
 		<th>{t}filesize{/t}:</th>
