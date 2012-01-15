@@ -434,13 +434,18 @@ class PagesController extends AppController {
 	
 
 	/**
-	 * Ajax modal for export
+	 * Ajax modal for export 
 	 *
-	 * @param int $objectId - object id
+	 * @param int $objectId - object id / all TODO
 	 */
 	public function export($objectId) {	
 		$this->set("objectId", $objectId);
 		$this->render(null, null, "form_export");
+	}
+	
+	public function import($objectId) {	
+		$this->set("objectId", $objectId);
+		$this->render(null, null, "form_import");
 	}
 	
 }
