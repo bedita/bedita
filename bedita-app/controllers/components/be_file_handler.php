@@ -315,14 +315,8 @@ class BeFileHandlerComponent extends Object {
 			if($modelType != "BEFile") {
 				$data['mediatype'] = Inflector::underscore($modelType);
 			} else {
-				if (BACKEND_APP || file_exists(APP . DS . "config" . DS . "mediatype.ini.php")) {
-					$c = Configure::getInstance();
-					Configure::load('mediatype.ini');
-					$data['mediatype'] = $c->mediaTypeMapping[$data['mime_type']];
-				} else {
-					include(BEDITA_CORE_PATH . DS . "config" . DS . "mediatype.ini.php");
-					$data['mediatype'] = $config["mediaTypeMapping"][$data['mime_type']];
-				}
+				include(BEDITA_CORE_PATH . DS . "config" . DS . "mediatype.ini.php");
+				$data['mediatype'] = $config["mediaTypeMapping"][$data['mime_type']];
 			}
 		}
 		
