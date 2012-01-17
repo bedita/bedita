@@ -1,16 +1,19 @@
 <?php
 
-class XmlInFilterComponent extends Object {
-	var $controller	;
+class XmlImportFilter extends BEAppModel 
+{
+	var $useTable = false;
 
-	function startup(&$controller) {
-		$this->controller = $controller;
-	}
-	
-	function createObjects($fileName, array $options = array()) {
+	/**
+	 * Import BE objects from XML source string
+	 * @param string $source, XML source
+	 * @param array $options, import options: "sectionId" => import objects in this section 
+	 * @throws BeditaException
+	 */
+	function import($source, array $options = array()) {
 		
 		App::import("Core", "Xml");
-		$xml = new XML(file_get_contents($fileName));
+		$xml = new XML($source);
 		$treeModel = ClassRegistry::init("Tree");
 		$nObj = 0;	
 		$parsed = set::reverse($xml);				
@@ -32,8 +35,13 @@ class XmlInFilterComponent extends Object {
 				Configure::read("objectTypes." . $data['ObjectType']['name'] . ".id") : $data['object_type_id']; 
 			$modelType = Configure::read("objectTypes." . $objTypeId . ".model");
 			$model = ClassRegistry::init($modelType);
-			// $data = array_merge($data, $defaults);
-			unset($data["id"]);
+			
+			// remove fields to recreate
+			$remove = array("id", "user_created", "user_modified", "created", "modified", "ip_created");
+			foreach ($remove as $r) {
+				unset($data[$r]);
+			}
+
 			$data["object_type_id"] = $objTypeId;
 			$model->create();
 			if(!$model->save($data)) {

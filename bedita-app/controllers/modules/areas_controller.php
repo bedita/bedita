@@ -33,8 +33,7 @@ class AreasController extends ModulesController {
 	var $name = 'Areas';
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeUploadToObj', "XmlOutFilter", 
-		"XmlInFilter");
+	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeUploadToObj');
 
 	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType') ;
 	protected $moduleName = 'areas';
@@ -237,14 +236,35 @@ class AreasController extends ModulesController {
 		}
 	}
 	
+	/**
+	 * Export section objects to a specific file format
+	 */
 	public function export() {
 		$this->autoRender = false;
 		$objects = $this->BeTree->getChildren($this->data["id"]);
-		$metaOut = array("filename" => $this->data["filename"]);	
-		$filterClass = Inflector::camelize( $this->data["type"]) . "OutFilter";
-		$this->$filterClass->writeData($objects["items"], $metaOut);
+		$filterClass = Inflector::camelize($this->data["type"]) . "ExportFilter";
+		$filterModel = ClassRegistry::init($filterClass);
+		$result = $filterModel->export($objects["items"]);
+				
+		Configure::write('debug', 0);
+		// TODO: optimizations!!! use cake tools
+		header('Content-Description: File Transfer');
+		header("Content-type: " . $result["contentType"]);
+		header('Content-Disposition: attachment; filename='.$this->data["filename"]);
+		header('Content-Transfer-Encoding: binary');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		header('Pragma: public');
+		header('Content-Length: ' . $result["size"]);
+		ob_clean();
+   		flush();
+		echo $result["content"];
+		exit();
 	}
 
+	/**
+	 * Import objects from file in current section
+	 */
 	public function import() {
 		$this->checkWriteModulePermission();
 		if (!empty($this->params['form']['Filedata']['name'])) {
@@ -255,10 +275,11 @@ class AreasController extends ModulesController {
 		}		
 		$stream = ClassRegistry::init("Stream");
 		$path = $stream->field("uri", array("id" => $streamId));
-		$contents = file_get_contents(Configure::read("mediaRoot") . $path);
-		$filterClass = Inflector::camelize( $this->data["type"]) . "InFilter";
+		$filterClass = Inflector::camelize( $this->data["type"]) . "ImportFilter";
+		$filterModel = ClassRegistry::init($filterClass);
 		$options = array("sectionId" => $this->data['sectionId']);
-		$nObj = $this->$filterClass->createObjects(Configure::read("mediaRoot") . $path, $options);
+		$content = file_get_contents(Configure::read("mediaRoot") . $path);
+		$nObj = $filterModel->import($content, $options);
 		$this->Section->id = $this->data['sectionId'];
 		$this->userInfoMessage(__("Objects imported", true).": ". $nObj);
 		$this->eventInfo($nObj . " objects imported in section " . $this->Section->id . " from " . $path);
