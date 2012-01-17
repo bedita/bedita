@@ -33,7 +33,8 @@ class AreasController extends ModulesController {
 	var $name = 'Areas';
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText');
+	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeUploadToObj', "XmlOutFilter", 
+		"XmlInFilter");
 
 	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType') ;
 	protected $moduleName = 'areas';
@@ -116,14 +117,10 @@ class AreasController extends ModulesController {
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
 	}
 
-	function viewSection($id=null) {
-		if (!empty($id)) {
-			$this->loadSectionDetails($id,Configure::read("objectTypes.section.id"));
-		} else {
-			$sec = null;
-			$this->set('objectProperty', $this->BeCustomProperty->setupForView($sec, Configure::read("objectTypes.section.id"))) ;
-			$this->set('tree',$this->BeTree->getSectionsTree());
-		}
+	function viewSection() {
+		$sec = null;
+		$this->set('objectProperty', $this->BeCustomProperty->setupForView($sec, Configure::read("objectTypes.section.id"))) ;
+		$this->set('tree',$this->BeTree->getSectionsTree());
 	}
 	
 	 
@@ -240,6 +237,34 @@ class AreasController extends ModulesController {
 		}
 	}
 	
+	public function export() {
+		$this->autoRender = false;
+		$objects = $this->BeTree->getChildren($this->data["id"]);
+		$metaOut = array("filename" => $this->data["filename"]);	
+		$filterClass = Inflector::camelize( $this->data["type"]) . "OutFilter";
+		$this->$filterClass->writeData($objects["items"], $metaOut);
+	}
+
+	public function import() {
+		$this->checkWriteModulePermission();
+		if (!empty($this->params['form']['Filedata']['name'])) {
+			unset($this->data['url']);
+			$streamId = $this->BeUploadToObj->upload($this->data) ;
+		} elseif (!empty($this->data['url'])) {
+			$streamId = $this->BeUploadToObj->uploadFromURL($this->data) ;
+		}		
+		$stream = ClassRegistry::init("Stream");
+		$path = $stream->field("uri", array("id" => $streamId));
+		$contents = file_get_contents(Configure::read("mediaRoot") . $path);
+		$filterClass = Inflector::camelize( $this->data["type"]) . "InFilter";
+		$options = array("sectionId" => $this->data['sectionId']);
+		$nObj = $this->$filterClass->createObjects(Configure::read("mediaRoot") . $path, $options);
+		$this->Section->id = $this->data['sectionId'];
+		$this->userInfoMessage(__("Objects imported", true).": ". $nObj);
+		$this->eventInfo($nObj . " objects imported in section " . $this->Section->id . " from " . $path);
+	}
+	
+	
 	private function deleteArea() {
 		$this->checkWriteModulePermission();
 		$objectsListDeleted = $this->deleteObjects("Area");
@@ -307,7 +332,11 @@ class AreasController extends ModulesController {
 			"deleteSection"	=> 	array(
 									"OK"	=> "./",
 									"ERROR"	=> $this->referer() 
-								)
+								),
+			"import"	=> 	array(
+									"OK"	=> "/areas/view/{$this->Section->id}",
+									"ERROR"	=> $this->referer()
+								), 
 		) ;
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;

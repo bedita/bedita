@@ -1,5 +1,8 @@
 
-<form>
+<form action="{$html->url('/areas/export')}" method="post" name="exportForm" id="exportForm">
+
+<input type="hidden" name="data[id]" value="{$objectId|default:''}"/>
+
 <fieldset id="export" style="padding:20px">
 
 	<label>{t}export{/t} object {$objectId|default:''}</label>
@@ -9,11 +12,11 @@
 	<hr />
 	
 	<div>
-		<input name="exportype" type="radio" />HTML5 &nbsp;
-		<input name="exportype" type="radio" />ePUB3 &nbsp;
-		<input name="exportype" type="radio" />XML &nbsp;
-		<input name="exportype" type="radio" />PDF &nbsp;
-		<input name="exportype" type="radio" />RTF &nbsp;
+		<input name="data[type]" type="radio" />HTML5 &nbsp;
+		<input name="data[type]" type="radio" />ePUB3 &nbsp;
+		<input name="data[type]" type="radio" value="xml" checked="checked" />XML &nbsp;
+		<input name="data[type]" type="radio" />PDF &nbsp;
+		<input name="data[type]" type="radio" />RTF &nbsp;
 		<hr />
 		<input type="checkbox" /> include media files
 		&nbsp;&nbsp;&nbsp;
@@ -22,12 +25,10 @@
 
 	<hr />
 		
-		filename: <input type="text" value="bedita_export_{$objectId|default:''}">
+		filename: <input type="text" name="data[filename]" value="bedita_export_{$objectId|default:''}">
 	
 	<hr />
-	<input type="button" value="{t}export{/t}" />
-
-
+	<input type="submit" value="{t}export{/t}" />
 
 </fieldset>
 
