@@ -79,7 +79,6 @@
 
 </div>
 </fieldset>
-{dump var=$jobs}
 
 <div class="tab"><h2>{t}Email log{/t}</h2></div>
 <fieldset id="single_emails">
