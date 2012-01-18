@@ -224,26 +224,14 @@
 				</tr>
 
 				<tr>
-					<th>{t}New contents default language{/t}:</th>
-					<td>
-						<select name="cfg[defaultLang]">
-							{foreach $conf->langOptions as $langKey => $langLabel}
-							<option value="{$langKey}" {if $langKey == $conf->defaultLang}selected="selected"{/if}>{$langLabel}</option>
-							{/foreach}
-							{foreach $langs_iso as $langKey => $langLabel}
-							<option value="{$langKey}" {if $langKey == $conf->defaultLang}selected="selected"{/if}>{$langLabel}</option>
-							{/foreach}
-						</select>
-					</td>
-				</tr>
-				<tr>
 					<th>{t}Use all available languages for contents{/t}:</th>
 					<td>
 						<input id="allLangsY" name="cfg[langOptionsIso]" type="radio" value="true" {if $conf->langOptionsIso}checked="checked"{/if} />{t}Yes{/t}
-						<input id="allLangsN" name="cfg[langOptionsIso]" type="radio" value="false" {if !$conf->langOptionsIso}checked="checked"{/if} />{t}No{/t}
+						<input id="allLangsN" name="cfg[langOptionsIso]" type="radio" value="false" {if !$conf->langOptionsIso}checked="checked"{/if} />{t}No, use custom list{/t}
 					</td>
 				</tr>
 				<tr id="translationLangsTr">
+					<th>{t}Select content languages{/t}:</th>
 					<td>
 						<select id="translationLangs">
 							<option></option>
@@ -258,6 +246,20 @@
 						<input type="text" rel="{$smarty.foreach.lof.index}" title="{$langLabel}" name="cfg[langOptions][{$langKey}]" value="{$langLabel}" readonly="readonly" /><input type="button" value="-" onclick="delElems(this)" />
 						{/foreach}
 						</div>
+					</td>
+				</tr>
+				
+				<tr>
+					<th>{t}New contents default language{/t}:</th>
+					<td>
+						<select name="cfg[defaultLang]">
+							{foreach $conf->langOptions as $langKey => $langLabel}
+							<option value="{$langKey}" {if $langKey == $conf->defaultLang}selected="selected"{/if}>{$langLabel}</option>
+							{/foreach}
+							{foreach $langs_iso as $langKey => $langLabel}
+							<option value="{$langKey}" {if $langKey == $conf->defaultLang}selected="selected"{/if}>{$langLabel}</option>
+							{/foreach}
+						</select>
 					</td>
 				</tr>
 			</table>
