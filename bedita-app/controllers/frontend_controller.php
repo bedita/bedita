@@ -1987,7 +1987,7 @@ abstract class FrontendController extends AppController {
 	 * 				"order", "dir", "dim", "page" used like pagination parameters
 	 * @return array
 	 */
-	public function loadObjectsByCategory($categoryName, $options=array()) {
+	protected function loadObjectsByCategory($categoryName, $options=array()) {
 		return $this->loadObjectsByTagCategory($categoryName, $options, "category");
 	}
 	
