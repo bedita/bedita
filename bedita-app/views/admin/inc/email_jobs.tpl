@@ -24,7 +24,6 @@
 </script>
 
 <div class="tab"><h2>{t}Mail queues{/t}</h2></div>
-
 <fieldset id="email_jobs">
 <div>
 {assign var='label_id' value=$tr->t('id',true)}
@@ -64,6 +63,7 @@
 </fieldset>
 
 <div class="tab"><h2>{t}Mail queue summary{/t}</h2></div>
+<fieldset id="email_summary">
 <table class="bordered" style="width:100%">
 <tr>
 	<td>{t}Total{/t}</td>
@@ -80,6 +80,7 @@
 	<td>{$jobsFailed}</td>
 </tr>
 </table>
+</fieldset>
 
 <div class="tab"><h2>{t}Email log{/t}</h2></div>
 <fieldset id="single_emails">

@@ -3,8 +3,9 @@
 
 <script type="text/javascript">
 	$(document).ready(function() { 
-		var openAtStart ="#email_jobs";
-		$(openAtStart).prev(".tab").BEtabstoggle();
+		$("#email_jobs").prev(".tab").BEtabstoggle();
+		$("#email_summary").prev(".tab").BEtabstoggle();
+		$("#single_emails").prev(".tab").BEtabstoggle();
 	} );
 </script>
 
