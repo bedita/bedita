@@ -2,8 +2,18 @@
 {$html->script("form", false)}
 
 <script type="text/javascript">
+	var message = "{t}Are you sure that you want to delete the item?{/t}";
+	var delLogUrl = '{$html->url('/admin/deleteMailLog')}';
+
 	$(document).ready(function() { 
 		$("#email_logs").prev(".tab").BEtabstoggle();
+		$(".delLog").bind("click", function() { 
+			if(!confirm(message))
+				return false ;
+			var logId = $(this).attr("title");
+			$("#form_log_"+logId).attr("action", delLogUrl + '/' + logId).submit();
+			return false;
+		} );
 	} );
 </script>
 
