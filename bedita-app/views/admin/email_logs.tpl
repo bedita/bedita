@@ -43,6 +43,7 @@
 			<th>{$paginator->sort($label_msg,'mail_body')}</th>
 			<td>-</td>
 		</tr>
+		{if !empty($logs)}
 		{foreach from=$logs item=j}
 		<form id="form_log_{$j.MailLog.id}" method="post" action="">
 		<tr>
@@ -55,6 +56,7 @@
 			<td><input type="button" class="delLog" value="{t}Delete{/t}" title="{$j.MailLog.id}" /></td>
 		</tr>
 		{/foreach}
+		{/if}
 	</table>
 
 	</div>

@@ -78,6 +78,14 @@ class AdminController extends ModulesController {
 		$this->eventInfo("all mail job deleted");
 	}
 
+	public function deleteAllMailLogs() {
+		$this->checkWriteModulePermission();
+		$this->MailLog->deleteAll("id > 0");
+		$this->loadMailData();
+		$this->userInfoMessage(__("MailLog deleted", true));
+		$this->eventInfo("all mail log deleted");
+	}
+
 	public function emailLogs() {
 		$mailLog = ClassRegistry::init("MailLog");
 		$this->set('logs',$this->paginate('MailLog'));
@@ -476,6 +484,10 @@ class AdminController extends ModulesController {
 				"deleteAllMailUnsent" => 	array(
 								"OK"	=> self::VIEW_FWD.'emailInfo',
 								"ERROR"	=> self::VIEW_FWD.'emailInfo'
+							),
+				"deleteAllMailLogs" => 	array(
+								"OK"	=> self::VIEW_FWD.'emailLogs',
+								"ERROR"	=> self::VIEW_FWD.'emailLogs'
 							),
 				"deleteMailJob" => 	array(
 								"OK"	=> self::VIEW_FWD.'emailInfo',

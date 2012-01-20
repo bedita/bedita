@@ -44,6 +44,12 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 			<br/>[{t}Not newsletter mail{/t}]
 			</form>
 
+		{elseif $view->action == "emailLogs"}
+
+			<form action="{$html->url('/admin/deleteAllMailLogs')}" method="post">
+			<input type="submit" value="{t}delete all{/t}"/>
+			</form>
+
 		{elseif $view->action == "viewConfig"}
 
 			<input class="bemaincommands" type="button" name="save" onClick="$('#configForm').submit()"
