@@ -494,8 +494,8 @@ class AdminController extends ModulesController {
 								"ERROR"	=> self::VIEW_FWD.'emailInfo'
 							),
 				"deleteMailLog" => 	array(
-								"OK"	=> self::VIEW_FWD.'emailInfo',
-								"ERROR"	=> self::VIEW_FWD.'emailInfo'
+								"OK"	=> self::VIEW_FWD.'emailLogs',
+								"ERROR"	=> self::VIEW_FWD.'emailLogs'
 							),
 	 	 		"deleteEventLog" => 	array(
  								"OK"	=> self::VIEW_FWD.'systemEvents',

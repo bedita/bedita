@@ -1,9 +1,7 @@
 
 <script type="text/javascript">
-
 	var message = "{t}Are you sure that you want to delete the item?{/t}";
 	var delJobUrl = '{$html->url('/admin/deleteMailJob')}';
-	var delLogUrl = '{$html->url('/admin/deleteMailLog')}';
 
 	$(document).ready(function() { 
 		$(".delJob").bind("click", function() { 
@@ -11,13 +9,6 @@
 				return false ;
 			var jobId = $(this).attr("title");
 			$("#form_job_"+jobId).attr("action", delJobUrl + '/' + jobId).submit();
-			return false;
-		} );
-		$(".delLog").bind("click", function() { 
-			if(!confirm(message))
-				return false ;
-			var logId = $(this).attr("title");
-			$("#form_log_"+logId).attr("action", delLogUrl + '/' + logId).submit();
 			return false;
 		} );
 	} );
