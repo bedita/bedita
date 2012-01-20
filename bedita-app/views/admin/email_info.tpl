@@ -5,7 +5,6 @@
 	$(document).ready(function() { 
 		$("#email_jobs").prev(".tab").BEtabstoggle();
 		$("#email_summary").prev(".tab").BEtabstoggle();
-		$("#single_emails").prev(".tab").BEtabstoggle();
 	} );
 </script>
 

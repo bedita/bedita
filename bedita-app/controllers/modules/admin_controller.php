@@ -78,23 +78,23 @@ class AdminController extends ModulesController {
 		$this->eventInfo("all mail job deleted");
 	}
 
+	public function emailLogs() {
+		$mailLog = ClassRegistry::init("MailLog");
+		$this->set('logs',$this->paginate('MailLog'));
+	}
+
 	public function emailInfo() {
 		$this->loadMailData();
 	}
 
 	private function loadMailData() {
 		$mailJob = ClassRegistry::init("MailJob");
-		$mailLog = ClassRegistry::init("MailLog");
-
 		$this->set('jobs',$this->paginate('MailJob'));
-		$this->set('logs',$this->paginate('MailLog'));
-
 		$this->set('totalJobs',  $mailJob->find("count", array("conditions" => array())));
 		$this->set('jobsFailed', $mailJob->find("count", array("conditions" => array("status" => array("failed")))));
 		$this->set('jobsSent',   $mailJob->find("count", array("conditions" => array("status" => array("sent")))));
 		$this->set('jobsPending',$mailJob->find("count", array("conditions" => array("status" => array("pending")))));
 		$this->set('jobsUnsent', $mailJob->find("count", array("conditions" => array("status" => array("unsent")))));
-		
 	}
 
 	private function beditaVersion() {
