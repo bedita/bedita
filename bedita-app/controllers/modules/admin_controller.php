@@ -96,27 +96,25 @@ class AdminController extends ModulesController {
 	}
 
 	public function testSmtp($to) {
-		$this->saveMessage($to);
-		$this->BeMail->sendMailById($this->MailMessage->id,$to, false); // send txt test
-		$this->userInfoMessage(__("Test mail sent to ", true) . $to);
-		$this->eventInfo("test mail [". $this->data["title"]."] sent");
-	}
-
-	private function saveMessage($to) {
 		$this->checkWriteModulePermission();
 		$mailOptions = Configure::read("mailOptions");
-		$this->data['sender'] = $mailOptions["sender"];
-		$this->data['from'] = $mailOptions["sender"];
-		$this->data['reply_to'] = $mailOptions["reply_to"];
-		$this->data['to'] = $to;
-		$this->data['subject'] = "Test mail BEdita";
-		$this->data['abstract'] = "Test mail BEdita" . "\n\n--\n" . $mailOptions["signature"];
-		$this->data['body'] = "Test mail BEdita" . "\n\n--\n" . $mailOptions["signature"];
-		$this->data["MailGroup"] = array();
-		$this->Transaction->begin();
-		$this->saveObject($this->MailMessage);
-	 	$this->Transaction->commit() ;
-	}	
+		$mailData = array();
+		$mailData['sender'] = $mailOptions["sender"];
+		$mailData['from'] = $mailOptions["sender"];
+		$mailData['to'] = $to;
+		$mailData['subject'] = "Test mail BEdita";
+		$mailData['body'] = "Test mail BEdita" . "\n\n--\n" . $mailOptions["signature"];
+		$this->BeMail->Email->smtpOptions['port'] = $this->params['form']['sys']['smtpOptions']['port'];
+		$this->BeMail->Email->smtpOptions['timeout'] = $this->params['form']['sys']['smtpOptions']['timeout'];
+		$this->BeMail->Email->smtpOptions['host'] = $this->params['form']['sys']['smtpOptions']['host'];
+		$this->BeMail->Email->smtpOptions['username'] = $this->params['form']['sys']['smtpOptions']['username'];
+		if(!empty($this->params['form']['sys']['smtpOptions']['password'])) {
+			$this->BeMail->Email->smtpOptions['password'] = $this->params['form']['sys']['smtpOptions']['password'];
+		}
+		$this->BeMail->sendMail($mailData);
+		$this->userInfoMessage(__("Test mail sent to ", true) . $to);
+		$this->eventInfo("test mail [". $mailData["title"]."] sent");
+	}
 
 	private function loadMailData() {
 		$mailJob = ClassRegistry::init("MailJob");
