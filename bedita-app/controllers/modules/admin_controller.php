@@ -31,8 +31,8 @@
  */
 class AdminController extends ModulesController {
 
-	public $uses = array('MailJob','MailLog') ;
-	public $components = array('BeSystem');
+	public $uses = array('MailJob','MailLog','MailMessage') ;
+	public $components = array('BeSystem','BeMail');
 	public $helpers = array('Paginator');
 	public $paginate = array(
 		'EventLog' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc')),
@@ -94,6 +94,29 @@ class AdminController extends ModulesController {
 	public function emailInfo() {
 		$this->loadMailData();
 	}
+
+	public function testSmtp($to) {
+		$this->saveMessage($to);
+		$this->BeMail->sendMailById($this->MailMessage->id,$to, false); // send txt test
+		$this->userInfoMessage(__("Test mail sent to ", true) . $to);
+		$this->eventInfo("test mail [". $this->data["title"]."] sent");
+	}
+
+	private function saveMessage($to) {
+		$this->checkWriteModulePermission();
+		$mailOptions = Configure::read("mailOptions");
+		$this->data['sender'] = $mailOptions["sender"];
+		$this->data['from'] = $mailOptions["sender"];
+		$this->data['reply_to'] = $mailOptions["reply_to"];
+		$this->data['to'] = $to;
+		$this->data['subject'] = "Test mail BEdita";
+		$this->data['abstract'] = "Test mail BEdita" . "\n\n--\n" . $mailOptions["signature"];
+		$this->data['body'] = "Test mail BEdita" . "\n\n--\n" . $mailOptions["signature"];
+		$this->data["MailGroup"] = array();
+		$this->Transaction->begin();
+		$this->saveObject($this->MailMessage);
+	 	$this->Transaction->commit() ;
+	}	
 
 	private function loadMailData() {
 		$mailJob = ClassRegistry::init("MailJob");
@@ -530,6 +553,10 @@ class AdminController extends ModulesController {
 								"ERROR" => "/admin/addons",
 							),
 				"saveConfig" => 	array(
+	 							"OK"	=> "/admin/viewConfig",
+	 							"ERROR"	=> "/admin/viewConfig"
+	 						),
+	 			"testSmtp" => 	array(
 	 							"OK"	=> "/admin/viewConfig",
 	 							"ERROR"	=> "/admin/viewConfig"
 	 						)

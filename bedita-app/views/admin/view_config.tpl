@@ -1,47 +1,52 @@
-{literal}
 <script type="text/javascript">
-	function delElems(elem) {
+	var testSmtpUrl = "{$html->url('/admin/testSmtp')}";
+
+	function delElems(elem) { 
 		var prev = $(elem).prev("input");
 		$(elem).prev("input").remove();
 		$(elem).remove();
-	}
+	} 
 
-	$(document).ready(function(){
+	$(document).ready(function() { 
 		$("#system_config").prev(".tab").BEtabstoggle();
 		$("#general_config").prev(".tab").BEtabstoggle();
-		$('#addLocale').click(function () {
+		$('#addLocale').click(function () { 
 			var v = $('#localesV').attr('value');
-			if($('input[value="' + v + '"]').length == 0) {
+			if($('input[value="' + v + '"]').length == 0) { 
 				var key = $('#localesK').attr('value');
 				var value = $('#localesV').attr('value');
 				var newinput = '<input type="text" name="sys[locales][' + key + ']" value="' + value + '" readonly="readonly" /><input type="button" value="-" onclick="delElems(this)" />'
 				$('#localesAdded').append(newinput);
-			}
-		});
-		$('#addTranslationLang').click(function () {
+			} 
+		} );
+		$('#addTranslationLang').click(function () { 
 			var label = $('#translationLangs option:selected').text();
-			if(!($('input[title="' + label + '"]')) || ($('input[title="' + label + '"]').length == 0)) {
+			if(!($('input[title="' + label + '"]')) || ($('input[title="' + label + '"]').length == 0)) { 
 				var value = $('#translationLangs').attr('value');
 				var index = $('#translationLangs').attr("selectedIndex");
 				var newinput = '<input type="text" rel="' + index + '" title="' + value + '" name="cfg[langOptions][' + value + ']" value="' + label + '" readonly="readonly" /><input type="button" value="-" onclick="delElems(this)" />'
 				$('#translationLangsAdded').append(newinput);
-			}
-		});
+			} 
+		} );
 		$('#translationLangsTr').hide();
-		$("#backendExtraLangs").click(function (){
+		$("#backendExtraLangs").click(function () { 
 			var nextDiv = $(this).next("div");
 			nextDiv.show();
-		});
-		$("#allLangsY").click(function (){
+		} );
+		$("#allLangsY").click(function () { 
 			$("#translationLangsTr").hide();
-		});
-		$("#allLangsN").click(function (){
+		} );
+		$("#allLangsN").click(function () { 
 			$("#translationLangsTr").show();
-		});
-		{/literal}{if !$conf->langOptionsIso}{literal}$("#translationLangsTr").show();{/literal}{/if}{literal}
-	});
+		} );
+		{if !$conf->langOptionsIso}$("#translationLangsTr").show();{/if}
+		$("#testSmtp").click(function() { 
+			to = prompt("{t}Send email to{/t}");
+			$("#configForm").attr("action", testSmtpUrl + "/" + to);
+			$("#configForm").submit();
+		} );
+	} );
 </script>
-{/literal}
 
 {$view->element('modulesmenu')}
 
@@ -159,6 +164,13 @@
 						<tr><th>{t}host{/t}:</th><td><input type="text" name="sys[smtpOptions][host]" value="{$conf->smtpOptions.host|default:''}" /></td></tr>
 						<tr><th>{t}username{/t}:</th><td><input type="text" name="sys[smtpOptions][username]" value="{$conf->smtpOptions.username|default:''}" /></td></tr>
 						<tr><th>{t}password{/t}:</th><td><input type="password" name="sys[smtpOptions][password]" /></td></tr>
+						<tr>
+							<td colspan="2">
+								<div class="modalcommands administration">
+									<input type="button" id="testSmtp" value="  test smtp  " /> 
+								</div>
+							</td>
+						</tr>
 						</table>
 					</td>
 				</tr>
@@ -172,9 +184,9 @@
 						</table>
 					</td>
 				</tr>
-
 			</table>
 			{/if}
+
 
 		</fieldset>
 
