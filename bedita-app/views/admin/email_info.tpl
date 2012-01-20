@@ -1,14 +1,12 @@
 {$html->script("jquery/jquery.treeview", false)}
 {$html->script("form", false)}
 
-{literal}
 <script type="text/javascript">
-	$(document).ready(function(){
-		var openAtStart ="#email_info";
+	$(document).ready(function() { 
+		var openAtStart ="#email_jobs";
 		$(openAtStart).prev(".tab").BEtabstoggle();
-	});
+	} );
 </script>
-{/literal}
 
 {$view->element('modulesmenu')}
 
@@ -16,8 +14,13 @@
 
 {include file="inc/menucommands.tpl" method="emailInfo" fixed=true}
 
+<div class="head">
+	<div class="toolbar" style="white-space:nowrap">
+		<h2>{t}Mail Jobs{/t}</h2>
+		{include file="./inc/toolbar.tpl" label_items='jobs'}
+	</div>
+</div>
+
 <div class="mainfull">
-
 	{include file="inc/email_jobs.tpl" method="emailInfo" fixed=true}
-
 </div>

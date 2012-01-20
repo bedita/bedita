@@ -36,7 +36,7 @@ class AdminController extends ModulesController {
 	public $helpers = array('Paginator');
 	public $paginate = array(
 		'EventLog' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc')),
-		'MailJob' => array('limit' => 100, 'page' => 1, 'order'=>array('created'=>'desc'))
+		'MailJob' => array('limit' => 10, 'page' => 1, 'order'=>array('created'=>'desc'))
 	); 
 	protected $moduleName = 'admin';
 	
@@ -54,7 +54,7 @@ class AdminController extends ModulesController {
 		$this->set('events', $this->paginate('EventLog'));
 	}
 
-	public function deleteMailJob($id) { 	
+	public function deleteMailJob($id) {
 		$this->checkWriteModulePermission();
 		$this->MailJob->delete($id);
 		$this->loadMailData();
@@ -62,12 +62,20 @@ class AdminController extends ModulesController {
 		$this->eventInfo("mail job $id deleted");
 	}
 
-	public function deleteMailLog($id) { 	
+	public function deleteMailLog($id) {
 		$this->checkWriteModulePermission();
 		$this->MailLog->delete($id);
 		$this->loadMailData();
 		$this->userInfoMessage(__("MailLog deleted", true) . " -  " . $id);
 		$this->eventInfo("mail log $id deleted");
+	}
+
+	public function deleteAllMailUnsent() {
+		$this->checkWriteModulePermission();
+		$this->MailJob->deleteAll("mail_message_id IS NULL");
+		$this->loadMailData();
+		$this->userInfoMessage(__("MailJob deleted", true));
+		$this->eventInfo("all mail job deleted");
 	}
 
 	public function emailInfo() {
@@ -465,6 +473,10 @@ class AdminController extends ModulesController {
 
 	protected function forward($action, $esito) {
 			$REDIRECT = array(
+				"deleteAllMailUnsent" => 	array(
+								"OK"	=> self::VIEW_FWD.'emailInfo',
+								"ERROR"	=> self::VIEW_FWD.'emailInfo'
+							),
 				"deleteMailJob" => 	array(
 								"OK"	=> self::VIEW_FWD.'emailInfo',
 								"ERROR"	=> self::VIEW_FWD.'emailInfo'

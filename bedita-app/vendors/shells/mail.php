@@ -49,6 +49,7 @@ class MailShell extends BeditaBaseShell {
 	 * @return 
 	 */
 	function startup() {
+		$this->initConfig();
 		if (!empty($this->Dispatch->shellCommand) && $this->Dispatch->shellCommand != "main") {
 			$this->_welcome();
 		}
