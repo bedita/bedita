@@ -109,7 +109,7 @@ abstract class FrontendController extends AppController {
 	protected $objectCache = array();
 	
 	/**
-	 * tag options
+	 * tag and category options
 	 * 
 	 * @var array
 	 */
@@ -1961,9 +1961,7 @@ abstract class FrontendController extends AppController {
 	 * @param string $name
 	 */
 	public function tag($name) {
-		$this->baseLevel = true;
 		$this->set("tag",$this->loadObjectsByTag($name));
-		$this->baseLevel = false;
 	}
 	
 	/**
@@ -1972,9 +1970,7 @@ abstract class FrontendController extends AppController {
 	 * @param string $name
 	 */
 	public function category($name) {
-		$this->baseLevel = true;
 		$this->set("category",$this->loadObjectsByCategory($name));
-		$this->baseLevel = false;
 	}
 	
 	/**
@@ -1984,7 +1980,8 @@ abstract class FrontendController extends AppController {
 	 * @params array $options search options
 	 * 				"section" => name or id section
 	 * 				"filter" => particular filter
-	 * 				"order", "dir", "dim", "page" used like pagination parameters
+	 * 				"order", "dir", "dim", "page" used like pagination parameters,
+	 *				"baseLevel" => true to use $this->baseLevel = true for model bindings
 	 * @return array
 	 */
 	protected function loadObjectsByCategory($categoryName, $options=array()) {
@@ -2034,7 +2031,7 @@ abstract class FrontendController extends AppController {
 			if (empty($detail))
 				throw new BeditaException(__("No category found", true) . " - $name");
 		
-			$options = array_merge($options, $this->params["named"]);
+			$options = array_merge($this->tagOptions, $options, $this->params["named"]);
 			$filter["category"] = $name;
 			
 		} else {
@@ -2065,14 +2062,23 @@ abstract class FrontendController extends AppController {
 		
 		$result = $detail;
 
+		if (!empty($options['baseLevel'])) {
+			$oldBaseLevel = $this->baseLevel;
+			$this->baseLevel = true;
+		}
 		foreach ($contents["items"] as $c) {
 			$object = $this->loadObj($c["id"]);
 			if ($object !== self::UNLOGGED && $object !== self::UNAUTHORIZED) {
-				if ($this->sectionOptions["itemsByType"])
+				$this->setCanonicalPath($object);
+				if ($this->sectionOptions["itemsByType"]) {
 					$result[$object['object_type']][] = $object;
-				else
+				} else {
 					$result["items"][] = $object;
+				}
 			}
+		}
+		if (!empty($options['baseLevel'])) {
+			$this->baseLevel = $oldBaseLevel;
 		}
 		
 		return array_merge($result, array("toolbar" => $contents["toolbar"]));
@@ -2086,6 +2092,7 @@ abstract class FrontendController extends AppController {
 	 * 				"section" => name or id section
 	 * 				"filter" => particular filter
 	 * 				"order", "dir", "dim", "page" used like pagination parameters
+	 *				"baseLevel" => true to use $this->baseLevel = true for model bindings
 	 * @return array
 	 */
 	protected function loadObjectsByTag($tag, $options=array()) {
