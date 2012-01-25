@@ -338,7 +338,7 @@ class BeFrontHelper extends AppHelper {
 	}
 
 	/**
-	 * return an innested unordered list
+	 * return an nested unordered list
 	 *		<ul id="menuItem">
 	 *			<li class="$liClass"><a href="...">item 1</a></li>
 	 *			<li class="$liClass">
