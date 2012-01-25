@@ -109,7 +109,7 @@ abstract class FrontendController extends AppController {
 	protected $objectCache = array();
 	
 	/**
-	 * tag options
+	 * tag and category options
 	 * 
 	 * @var array
 	 */
@@ -1927,9 +1927,7 @@ abstract class FrontendController extends AppController {
 	 * @param string $name
 	 */
 	public function tag($name) {
-		$this->baseLevel = true;
 		$this->set("tag",$this->loadObjectsByTag($name));
-		$this->baseLevel = false;
 	}
 	
 	/**
@@ -1938,9 +1936,7 @@ abstract class FrontendController extends AppController {
 	 * @param string $name
 	 */
 	public function category($name) {
-		$this->baseLevel = true;
 		$this->set("category",$this->loadObjectsByCategory($name));
-		$this->baseLevel = false;
 	}
 	
 	/**
@@ -2000,7 +1996,7 @@ abstract class FrontendController extends AppController {
 			if (empty($detail))
 				throw new BeditaException(__("No category found", true) . " - $name");
 		
-			$options = array_merge($options, $this->params["named"]);
+			$options = array_merge($this->tagOptions, $options, $this->params["named"]);
 			$filter["category"] = $name;
 			
 		} else {
@@ -2021,24 +2017,33 @@ abstract class FrontendController extends AppController {
 		
 		// add rules for start and end pubblication date
 		if ($this->checkPubDate["start"] == true && empty($filter["Content.start_date"])) {
-				$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}start_date{$e} IS NULL";
+			$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}start_date{$e} IS NULL";
 		}
 		if ($this->checkPubDate["end"] == true && empty($filter["Content.end_date"])) {
-				$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
+			$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
 		}
 		
 		$contents = $this->BeTree->{$searchMethod}($section_id, $this->status, $filter, $order, $dir, $page, $dim);
 		
 		$result = $detail;
 
+		if (!empty($options['baseLevel'])) {
+			$oldBaseLevel = $this->baseLevel;
+			$this->baseLevel = true;
+		}
 		foreach ($contents["items"] as $c) {
 			$object = $this->loadObj($c["id"]);
 			if ($object !== self::UNLOGGED && $object !== self::UNAUTHORIZED) {
-				if ($this->sectionOptions["itemsByType"])
+				$this->setCanonicalPath($object);
+				if ($this->sectionOptions["itemsByType"]) {
 					$result[$object['object_type']][] = $object;
-				else
+				} else {
 					$result["items"][] = $object;
+				}
 			}
+		}
+		if (!empty($options['baseLevel'])) {
+			$this->baseLevel = $oldBaseLevel;
 		}
 		
 		return array_merge($result, array("toolbar" => $contents["toolbar"]));
