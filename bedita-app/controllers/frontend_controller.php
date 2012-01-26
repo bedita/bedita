@@ -2069,11 +2069,18 @@ abstract class FrontendController extends AppController {
 		foreach ($contents["items"] as $c) {
 			$object = $this->loadObj($c["id"]);
 			if ($object !== self::UNLOGGED && $object !== self::UNAUTHORIZED) {
-				$this->setCanonicalPath($object);
-				if ($this->sectionOptions["itemsByType"]) {
-					$result[$object['object_type']][] = $object;
-				} else {
-					$result["items"][] = $object;
+				try {
+					$this->setCanonicalPath($object);
+					if ($this->sectionOptions["itemsByType"]) {
+						$result[$object['object_type']][] = $object;
+					} else {
+						$result["items"][] = $object;
+					}
+				} catch (BeditaException $ex) {
+					// do nothing, just esclude object from final result if no canonical path was found
+					if (Configure::read('debug') > 0) {
+						$this->log("Valid canonicalPath isn't found for object with nickname " . $object["nickname"], LOG_DEBUG);
+					}
 				}
 			}
 		}
