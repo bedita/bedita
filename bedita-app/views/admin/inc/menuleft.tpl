@@ -11,6 +11,7 @@ Menu a SX valido per tutte le pagine del controller.
 	<ul class="menuleft insidecol">
 		<li {if $view->action eq 'systemEvents'}class="on"{/if}>{$tr->link('System Events', '/admin/systemEvents')}</li>
 		<li {if $view->action eq 'systemInfo'}class="on"{/if}>{$tr->link('System Info', '/admin/systemInfo')}</li>
+		<li {if $view->action eq 'systemLogs'}class="on"{/if}>{$tr->link('System Logs', '/admin/systemLogs')}</li>
 		<li {if $view->action eq 'emailInfo'}class="on"{/if}>{$tr->link('Email Info', '/admin/emailInfo')}</li>
 		<li {if $view->action eq 'emailLogs'}class="on"{/if}>{$tr->link('Email Logs', '/admin/emailLogs')}</li>
 	</ul>

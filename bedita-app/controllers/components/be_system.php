@@ -77,7 +77,103 @@
 		$res['cakePath'] = CAKE_CORE_INCLUDE_PATH;
 		return $res;
 	}
-	
+
+	public function systemLogs($maxRows = 10) {
+		$res = array();
+		$fd = $this->logFiles();
+		for($i=0;$i<sizeof($fd);$i++) {
+			$res[$fd[$i]] = $this->readLogEntries($fd[$i],$maxRows);
+		}
+		return $res;
+	}
+
+	public function emptyFile($fileName) {
+		$handle = fopen($fileName,"w");
+		if($handle === FALSE) {
+			throw new SocException("Error opening file: ".$fileName);
+		}
+		fclose($handle);
+	}
+
+	public function isFileReadable($fileName) {
+		$handle = @fopen($fileName,"r");
+		if($handle === FALSE) {
+			return false;;
+		}
+		fclose($handle);
+		return true;
+	}
+
+	public function logFiles() {
+		$res = array();
+		if($this->isFileReadable(APP_DIR . DS . "tmp" . DS . "logs" . DS . "error.log")) {
+			$res[] = APP_DIR . DS . "tmp" . DS . "logs" . DS . "error.log";
+		}
+		if($this->isFileReadable(APP_DIR . DS . "tmp" . DS . "logs" . DS . "debug.log")) {
+			$res[] = APP_DIR . DS . "tmp" . DS . "logs" . DS . "debug.log";
+		}
+		if(file_exists(BEDITA_FRONTENDS_PATH)) {
+			if (is_dir(BEDITA_FRONTENDS_PATH)) {
+				if ($dh = opendir(BEDITA_FRONTENDS_PATH)) {
+					while (($file = readdir($dh)) !== false) {
+						if(is_dir(BEDITA_FRONTENDS_PATH . DS . $file)) {
+							if($this->isFileReadable(BEDITA_FRONTENDS_PATH . DS . $file . DS . "tmp" . DS . "logs" . DS . "error.log")) {
+								$res[] = BEDITA_FRONTENDS_PATH . DS . $file . DS . "tmp" . DS . "logs" . DS . "error.log";
+							}
+							if($this->isFileReadable(BEDITA_FRONTENDS_PATH . DS . $file . DS . "tmp" . DS . "logs" . DS . "debug.log")) {
+								$res[] = BEDITA_FRONTENDS_PATH . DS . $file . DS . "tmp" . DS . "logs" . DS . "debug.log";
+							}
+						}
+					}
+					closedir($dh);
+				}
+			}
+		}
+		
+		return $res;
+	}
+
+	private function readLogEntries($fileName,$limit) {
+		$result = array();
+		$handle = fopen($fileName,"r");
+		if($handle === FALSE) {
+			throw new BeditaException("Error opening file: ".$fileName);
+		}
+		return $this->readFileLastLinesReversed($fileName,$limit);
+	}
+
+	/**
+	 * Tail of file
+	 * @param unknown_type $file
+	 * @param unknown_type $lines
+	 */
+	private function readFileLastLinesReversed($file, $lines) {
+		$handle = fopen($file, "r");
+		$linecounter = $lines;
+		$pos = -2;
+		$beginning = false;
+		$text = array();
+		while ($linecounter > 0) {
+			$t = " ";
+			while ($t != PHP_EOL) {
+				if(fseek($handle, $pos, SEEK_END) == -1) {
+					$beginning = true; 
+					break; 
+				}
+				$t = fgetc($handle);
+				$pos --;
+			}
+			$linecounter --;
+			if ($beginning) {
+				rewind($handle);
+			}
+			$text[$lines-$linecounter-1] = fgets($handle);
+			if ($beginning) break;
+		}
+		fclose ($handle);
+		return $text;
+	}
+
 /*	
 	public function update($sqlDataFile=null,$media=null) {
 	}

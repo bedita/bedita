@@ -37,6 +37,12 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 			<input type="submit" value="{t}delete all{/t}"/>
 			</form>
 
+		{elseif $view->action == "systemLogs"}
+		
+			<form action="{$html->url('/admin/emptySystemLog')}" method="post">
+			<input type="submit" value="{t}empty all{/t}"/>
+			</form>
+
 		{elseif $view->action == "emailInfo"}
 
 			<form action="{$html->url('/admin/deleteAllMailUnsent')}" method="post">

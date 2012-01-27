@@ -54,6 +54,26 @@ class AdminController extends ModulesController {
 		$this->set('events', $this->paginate('EventLog'));
 	}
 
+	public function systemLogs($maxRows = 10) {
+		$this->set('logs', $this->BeSystem->systemLogs($maxRows));
+		$this->set('maxRows',$maxRows);
+	}
+
+	public function emptyFile() {
+		$this->BeSystem->emptyFile($this->data["fileToEmpty"]);
+		$this->set('logs', $this->BeSystem->systemLogs(10));
+		$this->set('maxRows',10);
+	}
+
+	public function emptySystemLog() {
+		$logFiles = $this->BeSystem->logFiles();
+		foreach($logFiles as $fileName) {
+			$this->BeSystem->emptyFile($fileName);
+		}
+		$this->set('logs', $this->BeSystem->systemLogs(10));
+		$this->set('maxRows',10);
+	}
+
 	public function deleteMailJob($id) {
 		$this->checkWriteModulePermission();
 		$this->MailJob->delete($id);
@@ -517,6 +537,14 @@ class AdminController extends ModulesController {
 				"deleteMailLog" => 	array(
 								"OK"	=> self::VIEW_FWD.'emailLogs',
 								"ERROR"	=> self::VIEW_FWD.'emailLogs'
+							),
+				"emptyFile" => 	array(
+								"OK"	=> self::VIEW_FWD.'systemLogs',
+								"ERROR"	=> self::VIEW_FWD.'systemLogs'
+							),
+				"emptySystemLog" => 	array(
+								"OK"	=> self::VIEW_FWD.'systemLogs',
+								"ERROR"	=> self::VIEW_FWD.'systemLogs'
 							),
 	 	 		"deleteEventLog" => 	array(
  								"OK"	=> self::VIEW_FWD.'systemEvents',
