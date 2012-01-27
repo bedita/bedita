@@ -50,9 +50,10 @@ class Card extends BEAppObjectModel {
 															"Annotation",
 															"User",
 															"Alias",
-															"Version" => array("User.realname", "User.userid")
+															"Version" => array("User.realname", "User.userid"),
+															"GeoTag"
 														),
-									"MailGroup", "GeoTag"),
+									"MailGroup"),
 
 				"default" => array("BEObject" => array("ObjectProperty", 
 									"LangText", "ObjectType", 
@@ -60,7 +61,7 @@ class Card extends BEAppObjectModel {
 
 				"minimum" => array("BEObject" => array("ObjectType")),
 		
-				"frontend" => array("BEObject" => array("LangText","RelatedObject"), "GeoTag")
+				"frontend" => array("BEObject" => array("LangText","RelatedObject", "GeoTag"))
 		);
 		
 	public $objectTypesGroups = array("leafs", "related");
@@ -72,15 +73,8 @@ class Card extends BEAppObjectModel {
 						)
 		);
 	
-	var $hasMany = array(
-			'GeoTag' =>
-				array(
-					'foreignKey'	=> 'object_id',
-					'dependent'		=> true
-				)
-		) ;
+//	var $hasMany = array() ;
 
-	
 	var $validate = array(
 		'email' => array(
 			'rule' => 'email',
@@ -159,9 +153,8 @@ class Card extends BEAppObjectModel {
 			}
 			
 		}
-		
-		// save geotag
-		return $this->updateHasManyAssoc();
+
+		return true;
 	}
 	
 	/**

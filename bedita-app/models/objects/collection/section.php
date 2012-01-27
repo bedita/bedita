@@ -44,12 +44,13 @@ class Section extends BeditaCollectionModel
 										"Alias",
 										"Annotation",
 										"Category",
-										"Version" => array("User.realname", "User.userid")
+										"Version" => array("User.realname", "User.userid"),
+										"GeoTag"
 										)
 									),
 
        			"default" => array("BEObject" => array("ObjectProperty", 
-									"LangText", "ObjectType", "Category")),
+									"LangText", "ObjectType", "Category", "GeoTag")),
 
 				"minimum" => array("BEObject" => array("ObjectType")),
 		

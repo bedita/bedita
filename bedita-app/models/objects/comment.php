@@ -32,9 +32,7 @@ class Comment extends BeditaAnnotationModel
 {
 	var $useTable = 'annotations';
 
-	var $actsAs = array(
-		'CompactResult' => array('GeoTag')
-	); 
+//	var $actsAs = array(); 
 	
 	protected $modelBindings = array( 
 		"detailed" =>  array("BEObject" => array(
@@ -42,12 +40,13 @@ class Comment extends BeditaAnnotationModel
 												"UserCreated",
 												"UserModified",
 												"RelatedObject",
-												"Version" => array("User.realname", "User.userid")
-											), "ReferenceObject", "GeoTag"),
-		"default" =>  array("BEObject" => array("ObjectType"), "ReferenceObject", "GeoTag"),
+												"Version" => array("User.realname", "User.userid"),
+												"GeoTag"
+											), "ReferenceObject"),
+		"default" =>  array("BEObject" => array("ObjectType", "GeoTag"), "ReferenceObject"),
 		"minimum" => array("BEObject" => array("ObjectType")),
 		
-		"frontend" => array("BEObject" => array("RelatedObject"), "GeoTag")
+		"frontend" => array("BEObject" => array("RelatedObject", "GeoTag"))
 	);
 	
 	var $validate = array(
@@ -70,13 +69,7 @@ class Comment extends BeditaAnnotationModel
 	   		)
 	   );
 
-	var $hasMany = array(
-		'GeoTag' =>
-			array(
-				'foreignKey'	=> 'object_id',
-				'dependent'		=> true
-			)
-	) ;
+//	var $hasMany = array() ;
 	   
 	function beforeValidate() {
        	$data = &$this->data[$this->name] ;
@@ -84,9 +77,5 @@ class Comment extends BeditaAnnotationModel
         	unset($data['url']);
         }
    	}
-   	
-	function afterSave() {
-		return $this->updateHasManyAssoc();
-	}
 }
 ?>

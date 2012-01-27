@@ -117,7 +117,7 @@ $config['sitemapAllContent'] = true;
  * custom model bindings for BEdita objects (defaults defined in Model of BEdita object)
  */
 //$config['modelBindings'] = array(
-	//'Document' => array("BEObject" => array("LangText","RelatedObject"), "GeoTag"),
+	//'Document' => array("BEObject" => array("LangText","RelatedObject", "GeoTag")),
 	//'Event' => ...
 	//...
 //);

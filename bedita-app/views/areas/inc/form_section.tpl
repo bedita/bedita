@@ -6,7 +6,9 @@
 
 	{assign_associative var="params" object=$object|default:null}
 	{$view->element('form_categories')}
-		
+
+	{$view->element('form_geotag')}
+
 	{assign_associative var="params" object=$object|default:null}
 	{$view->element('form_translations', $params)}
 

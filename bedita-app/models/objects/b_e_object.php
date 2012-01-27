@@ -114,7 +114,13 @@ class BEObject extends BEAppModel
 				'associationForeignKey'	=> 'object_id',
 				'order'					=> 'priority'
 			),
-		'Alias'
+		'Alias',
+		'GeoTag' =>
+			array(
+				'foreignKey'	=> 'object_id',
+				'dependent'		=> true
+			)
+			
 		);
 	
 	var $hasAndBelongsToMany = array(

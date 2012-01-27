@@ -43,12 +43,14 @@ class Document extends BeditaContentModel
 															"Annotation",
 															"Category",
 															"Alias",
-															"Version" => array("User.realname", "User.userid")
-															),
-									"GeoTag"),
+															"Version" => array("User.realname", "User.userid"),
+															"GeoTag"
+															)
+									),
 				"default" => array("BEObject" => array("ObjectProperty", 
 									"LangText", "ObjectType", "Annotation",
-									"Category", "RelatedObject" ), "GeoTag"),
+									"Category", "RelatedObject", "GeoTag" )
+									),
 
 				"minimum" => array("BEObject" => array("ObjectType")),
 		
@@ -56,30 +58,17 @@ class Document extends BeditaContentModel
 														"UserCreated",
 														"RelatedObject", 
 														"Category", 
-														"Annotation"
-														), 
-									"GeoTag")
+														"Annotation",
+														"GeoTag"
+														)
+									)
 	);
 	
-	var $actsAs = array(
-		'CompactResult' => array('GeoTag')
-	);
+	//var $actsAs = array();
 
 	public $objectTypesGroups = array("leafs", "related", "tree");
 
-	var $hasMany = array(
-		'GeoTag' =>
-			array(
-				'foreignKey'	=> 'object_id',
-				'dependent'		=> true
-			)
-	) ;
-
-	function afterSave() {
-		return $this->updateHasManyAssoc();
-	}
-
-	
+	//var $hasMany = array() ;
 }
 
 
