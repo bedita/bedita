@@ -639,7 +639,13 @@ UL.menuleft {
 	background:#808080 url(../img/piumeno.gif) no-repeat;
 	background-position:right 0px ;
 	height:20px; padding:5px 10px 0px 10px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
 
+.tab H2 A,  .tab2 H2 A{
+	color: white; 
 }
 
 .tab.stayopen H2 {
@@ -722,14 +728,30 @@ UL.menuleft {
 
 ...........................................*/
 
-.publishingtree {
-	width:260px;
+
+
+
+/*
+.publishingtree LI  {
+	padding:2px; margin:0px;
+	list-style-type:none;
+	list-style-position: outside;
+	border-left:0px dotted #666666;
+	border-top:0px dashed #999999;
 }
+*/
+.publishingtree LI A {
+	padding:5px;
+}
+
+
+
 
 .publishingtree DIV.pub {
 	margin: 0px 0px 0px 0px;
 	clear:both;
 	/*border:1px solid red;*/
+	word-wrap: break-word; /* or "normal" */
 }
 
 .publishingtree H2 A {
@@ -1246,8 +1268,8 @@ textarea {
 	overflow:auto;
 }
 
-textarea#description, textarea#title, textarea#addtaglist, textarea.longtext {
-	width:480px; 
+textarea#description, textarea#title, textarea#addtaglist, textarea.longtext, textarea.mce, textarea.mceSimple {
+	width:640px; 
 }
 
 input#titleBEObject, input#title, textarea.subtitle {
@@ -1545,12 +1567,11 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover {
 
 ...........................................*/
 
-
 .home UL.modules {
 	/*
 width:710px;
 */
-	width:420px;
+	width:300px;
 	height:1280px;
 	margin-top:20px; 
 	margin-left:20px;
@@ -1558,9 +1579,9 @@ width:710px;
 
 .home UL.modules LI {
 
-/*
+
 height:50px;
-*/
+
 
 }
 
@@ -1582,28 +1603,35 @@ LI.welcome {
 
 .dashboard {
 	position:absolute;
-	left:720px;
-	top:15px;
-	width: 240px;
+	left:180px;
+	top:60px;
+	width: 260px;
 	height: 120px;
 }
 
 .dashboard.first {
 	left:460px;
-	top:20px;
+	top:60px;
 }
+
+.dashboard.second {
+	left:740px;
+	top:60px;
+}
+
 
 .dashboard H1 {
 	margin-bottom:5px;
 }
 
 .dashboard H2.open {
-	background-color:#333;
+	background-color:#666;
 }
 
 .dashboard .bordered {
  margin-bottom:10px;
 }
+
 
 /*...........................................
  
@@ -1952,6 +1980,7 @@ img.smallicon {
 	.modulesmenu_d {
 		display:none; height:auto; position:absolute; z-index:800; top:20px; left:160px;
 	}
+
 	.modulesmenu_d nav {
 		overflow:auto; min-width:170px; padding-left:0px; min-height:140px;  background-color:#fff;
 	}

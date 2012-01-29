@@ -137,6 +137,21 @@ jQuery.fn.extend({
 
 $(document).ready(function(){
 
+
+/*...........................................    
+
+   home
+
+...........................................*/
+
+	$(".pub H2",".hometree").wrap("<div class='tab' />"); 
+
+	$("LI A[rel]",".hometree").css("cursor","pointer").click(function () {
+		window.location = $(this).attr("rel");
+	});
+	
+	//$(".publishingtree LI A.on",".home").parents("DIV:first").find("UL").show();
+	
 /*...........................................    
 
    moduloni
@@ -203,7 +218,6 @@ $(document).ready(function(){
 	}
 
 	jQuery.fn.BEtabstoggle = function() {
-			
 		$(this).next().toggle('fast') ;	
 		$("h2",this).toggleClass("open").toggleClass(currentclassmodule);
 	
@@ -595,8 +609,12 @@ $(".modulesmenu_d LI[class]").hover(
 
 	//var objstatus = $(".secondacolonna .modules label").attr("class");
 
-/* end of document ready() */
+
+
+
 });
+
+/* end of document ready() */
 
 
 /*...........................................    
@@ -705,8 +723,4 @@ function getFlashVersion(){
 
   	return false; 
 } 
-
-
-
-
 

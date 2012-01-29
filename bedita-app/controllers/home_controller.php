@@ -31,9 +31,11 @@
  *  */
 class HomeController extends AppController {
 
-	var $uses = array("BEObject");
-	var $helpers = array();
-
+	var $uses = array('BEObject', 'Tree') ;
+	var $helpers 	= array('BeTree');
+	var $components = array('BeTree', 'BeUploadToObj');
+	
+	
 	 function index() {
 	 	$conf  = Configure::getInstance();
 	 	
@@ -85,6 +87,7 @@ class HomeController extends AppController {
 	 	$this->set("connectedUser", $connectedUser);
 		$this->set("noFooter", true);
 		$this->set("bodyClass", "home");
+		$this->set('tree',$this->BeTree->getSectionsTree());
 	 }
 
 	/**

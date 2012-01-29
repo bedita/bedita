@@ -30,102 +30,29 @@ $(document).ready(function() {
 //-->
 </script>
 
+{$view->element('modulesmenu')}
 
+{include file="inc/menuleft.tpl"}
 
-<ul class="modules block">
-
-    <li class="bedita" rel="{$html->url('/')}">
-		{$conf->projectName|default:$conf->userVersion}
-	</li>
-	
-{foreach name=module1 from=$moduleList key=k item=mod}
-	{if ($mod.status == 'on')}
-	
-            {assign_concat var='linkPath' 1=$html->url('/') 2=$mod.url}
-			
-            <li {if ($mod.flag & $conf->BEDITA_PERMS_READ)}
-					class="{$mod.name}" rel="{$linkPath}"
-				{else}
-					class="{$mod.name} off"
-				{/if}>
-            	{t}{$mod.label}{/t}
-				{*<br /><span style="font-size:1.5em" class="graced">{$mod.id}</span>*}
-			</li>	
-	{/if}
-	
-{/foreach}
-
-	<li class="colophon">
-
-			{foreach key=key item=item name=l from=$conf->langsSystem}
-				<a {if $session->read('Config.language') == $key}class="on"{/if} href="{$html->base}/lang/{$key}">› {$item}</a>
-				<br />
-			{/foreach} 
-		<hr />
-		{$view->element('colophon')}
-		<hr />
-		<a href="{$html->url('/authentications/logout')}">› {t}Exit{/t}</a>
-	</li>
-	
-
-	
-</ul> 
-
-<div style="position:absolute; left:580px; top:19px; z-index:400">{$view->element('messages')}</div>
-
-
-<div class="dashboard first">
-	
-	<div class="welcome" style="margin-bottom:28px">
-		<a href="javascript:void(0)" onClick="$('#userpreferences').prev('.tab').click();">
-		<h1>{t}welcome{/t}</h1>
-		{$BEAuthUser.realname}</a>
-	</div>
-
-	<div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
-		<ul id="recent" class="bordered smallist">
-		{foreach from=$lastModBYUser item=item}
-			<li><span class="listrecent {$item.ObjectType.module_name}">&nbsp;</span>
-			<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module_name} | {t}modified on{/t} {$item.BEObject.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.ObjectType.module_name}/view/{$item.BEObject.id}">
-				{$item.BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
-		{foreachelse}
-			<li><i>{t}you have no recent items{/t}</i></li>
-		{/foreach}
-		</ul>
+	<div class="welcome" style="position:absolute; top:20px; left:180px">
 		
-	<div class="tab"><h2>{t}your profile and preferences{/t}</h2></div>
-	
-	<div id="userpreferences">	
-		{include file="inc/userpreferences.tpl"}
+		<h1><span a style="font-size:0.6em">{t}welcome{/t}</span>
+			<a style="font-size:0.8em" href="javascript:void(0)" onClick="$('#userpreferences').prev('.tab').click();">{$BEAuthUser.realname}</a>
+		</h1>
 	</div>
-
-	<div class="tab"><h2>{t}connected user{/t}</h2></div>
-	<ul id="connected" class="bordered">
-	{section name="i" loop=$connectedUser}
-		{foreach from=$connectedUser[i] key=usr item=usrdata}
-		<li>
-		{if isset($moduleList.admin)}
-		<a title="{$usrdata.realname} | {$usrdata.userAgent} | {$usrdata.ipNumber}" href="{$html->url('/')}admin/viewUser/{$usrdata.id}">{$usr}</a>
-		{else}		
-		<a title="{$usrdata.realname}" href="#">{$usr}</a>
-		{/if}
-		</li>
-		{/foreach}
-	{/section}
-	</ul>
 	
-</div>
-	
-
 <div class="dashboard">
+	
+	<span class="hometree">
+	{assign_associative var="options" home=true}
+	{$view->element('tree',$options)}
+	</span>
 
-<h1>{*t}dashboard{/t*}</h1>
-
-<div class="tab"><h2>{t}search{/t}</h2></div>
+	<div class="tab"><h2>{t}search{/t}</h2></div>
 	<div id="search">
 		<form action="">
 			{*<label class="block" for="searchstring">{t}search string{/t}:</label>*}
-			<input type="text" name="searchstring" id="searchstring" value=""/>
+			<input type="text" style="width:210px" name="searchstring" id="searchstring" value=""/>
 			&nbsp;<input id="searchButton" type="button" value="{t}go{/t}" />
 			<hr />
 		</form>
@@ -133,7 +60,7 @@ $(document).ready(function() {
 	</div>
 
 
-<div class="tab"><h2>{t}all recent items{/t}</h2></div>
+	<div class="tab"><h2>{t}all recent items{/t}</h2></div>
 	<ul id="allrecent" class="bordered smallist">
 	{foreach from=$lastMod item=item}
 		<li>
@@ -142,8 +69,53 @@ $(document).ready(function() {
 				{$item.BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
 	{/foreach}
 	</ul>
+	
+</div>
 
-<div class="tab"><h2>{t}last notes{/t}</h2></div>
+<div class="dashboard first">
+
+	{if !empty($html->params.named.id)}
+	<div class="tab"><h2>{t}items{/t} in nomesezione ({$html->params.named.id})</h2></div>
+	<ul id="allrecent" class="bordered smallist">
+	{foreach from=$lastMod item=item}
+		<li>
+			<span class="listrecent {$item.ObjectType.module_name}">&nbsp;&nbsp;</span>
+			&nbsp;<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module_name} | {t}modified on{/t} {$item.BEObject.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.ObjectType.module_name}/view/{$item.BEObject.id}">
+				{$item.BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
+	{/foreach}
+	</ul>
+	{/if}
+	
+	<div class="tab"><h2>{t}quick item{/t}</h2></div>
+	<div id="new" class="bordered smallist">
+		<form>
+			<label>{t}Title{/t}</label>
+			<input type="text" style="width:250px">
+			<label>{t}Text{/t}</label>
+			<textarea style="width:250px"></textarea>
+			<label >{t}Object type{/t}</label>		
+			<select style="width:250px">
+			{assign var=leafs value=$conf->objectTypes.leafs}
+			{foreach from=$conf->objectTypes item=type key=key}	
+				{if ( in_array($type.id,$leafs.id) && is_numeric($key) )}
+				<option>	
+					{t}{$type.model}{/t}
+				</option>
+				{/if}
+			{/foreach}
+			</select>
+			
+			<br />
+			<label>Position</label>
+			<select style="width:250px">
+				<option>Tree</option>
+			</select>
+			<hr />
+			<input type="submit" value="publish"/> <input type="submit" value="save draft"/>
+		</form>
+	</div>
+
+	<div class="tab"><h2>{t}last notes{/t}</h2></div>
 	<ul id="lastnotes" class="bordered">
 		{foreach from=$lastNotes item="note"}
 			<li>{$note.realname|default:$note.userid}, 
@@ -153,7 +125,7 @@ $(document).ready(function() {
 		{/foreach}
 	</ul>
 
-<div class="tab"><h2>{t}last comments{/t}</h2></div>
+	<div class="tab"><h2>{t}last comments{/t}</h2></div>
 	<ul id="lastcomments" class="bordered">
 		{foreach from=$lastComments item="cmt"}
 			<li>{$cmt.author|default:''}, 
@@ -162,10 +134,6 @@ $(document).ready(function() {
 			<li>{t}no comments{/t}</li>
 		{/foreach}
 	</ul>
-	
-
-{*include file="./inc/messageboard.tpl"*}
-
 
 {literal}
 <script type="text/javascript">
@@ -196,21 +164,50 @@ $(document).ready(function(){
 //-->
 </script>
 {/literal}
-
-<div class="tab"><h2 id="callTags">{t}tags{/t}</h2></div>
-<div id="tags">
-	<div id="loadingTags" class="generalLoading" title="{t}Loading data{/t}">&nbsp;</div>	
-	<div id="listExistingTags" class="tag graced" style="display: none; text-align:justify;"></div>
+	
+	<div class="tab"><h2 id="callTags">{t}tags{/t}</h2></div>
+	<div id="tags">
+		<div id="loadingTags" class="generalLoading" title="{t}Loading data{/t}">&nbsp;</div>	
+		<div id="listExistingTags" class="tag graced" style="display: none; text-align:justify;"></div>
+	</div>
+	
 </div>
 
+<div class="dashboard second">
 
+	<div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
+	<ul id="recent" class="bordered smallist">
+	{foreach from=$lastModBYUser item=item}
+		<li><span class="listrecent {$item.ObjectType.module_name}">&nbsp;</span>
+		<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module_name} | {t}modified on{/t} {$item.BEObject.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.ObjectType.module_name}/view/{$item.BEObject.id}">
+			{$item.BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
+	{foreachelse}
+		<li><i>{t}you have no recent items{/t}</i></li>
+	{/foreach}
+	</ul>
+			
+	<div class="tab"><h2>{t}your profile and preferences{/t}</h2></div>
+	
+	<div id="userpreferences">	
+		{include file="inc/userpreferences.tpl"}
+	</div>
 
-
-
-</div>
-
-
-		
+	<div class="tab"><h2>{t}connected user{/t}</h2></div>
+	<ul id="connected" class="bordered">
+	{section name="i" loop=$connectedUser}
+		{foreach from=$connectedUser[i] key=usr item=usrdata}
+		<li>
+		{if isset($moduleList.admin)}
+		<a title="{$usrdata.realname} | {$usrdata.userAgent} | {$usrdata.ipNumber}" href="{$html->url('/')}admin/viewUser/{$usrdata.id}">{$usr}</a>
+		{else}		
+		<a title="{$usrdata.realname}" href="#">{$usr}</a>
+		{/if}
+		</li>
+		{/foreach}
+	{/section}
+	</ul>
+	
+</div>	
 		
 		
 <p style="clear:both; margin-bottom:20px;" />
