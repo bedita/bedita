@@ -303,7 +303,7 @@ class BeFrontHelper extends AppHelper {
 		}
 
 		// 6. object type template name
-		if (!empty($this->_section["currentContent"])) {
+		if (isset($cNick)) {
 			$tplFile = $pagesPath . $this->_conf->objectTypes[$this->_section["currentContent"]["object_type_id"]]["name"] . $this->_viewExt;
 			if (file_exists($tplFile)) {
 				return $tplFile;
