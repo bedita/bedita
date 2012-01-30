@@ -265,7 +265,7 @@ class BeFrontHelper extends AppHelper {
 		$tplFile = null;
 		$cNick = null;
 		$cId = null;
-		if (!empty($this->_section["currentContent"])) {
+		if (!empty($this->_section["currentContent"]) && !empty($this->_section['contentRequested'])) {
 			$cNick = $this->_section["currentContent"]["nickname"];
 			$cId = $this->_section["currentContent"]["id"];
 		}
@@ -285,7 +285,7 @@ class BeFrontHelper extends AppHelper {
 			}
 		}
 		
-		// 2. check frontendMap currentContent nickname
+		// 2. check frontendMap section nickname
 		$sNick = $this->_section["nickname"];
 		if (!empty($this->_conf->frontendMap[$sNick])) {
 			$tplFile = $pagesPath . $this->_conf->frontendMap[$sNick] . $this->_viewExt;
