@@ -18,11 +18,11 @@ tinyMCE.init({
 	mode : "textareas",
 	theme : "advanced",
 	editor_selector : "mce",
-	plugins : "safari,paste,fullscreen,xhtmlxtras,inlinepopups",
+	plugins : "syntaxhighlighter,|,safari,paste,fullscreen,xhtmlxtras,inlinepopups",
    	dialog_type : "modal",
 	extended_valid_elements: "iframe[src|style|width|height|scrolling|marginwidth|marginheight|frameborder]",
 	// Theme options
-	theme_advanced_buttons1 : "justifycenter,bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext, | ,removeformat,charmap,code,fullscreen, | ,sub,sup,del,|,formula,dfn,glossary,|,attribs",
+	theme_advanced_buttons1 : "syntaxhighlighter,justifycenter,bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext, | ,removeformat,charmap,code,fullscreen, | ,sub,sup,del,|,formula,dfn,glossary,|,attribs",
 	theme_advanced_buttons2 : "",
 	theme_advanced_buttons3 : "",
 	theme_advanced_toolbar_location : "top",
@@ -118,7 +118,7 @@ tinyMCE.init({
 	toolbar_align : "right",
 	force_br_newlines : true,
     forced_root_block : '', // Needed for 3.x
-    onchange_callback : "onChangeHandler",
+    onchange_callback : "onChangeHandler"
 	
 
 });
