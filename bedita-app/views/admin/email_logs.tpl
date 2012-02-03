@@ -3,7 +3,7 @@
 
 <script type="text/javascript">
 	var message = "{t}Are you sure that you want to delete the item?{/t}";
-	var delLogUrl = '{$html->url('/admin/deleteMailLog')}';
+	var delLogUrl = "{$html->url('/admin/deleteMailLog')}";
 
 	$(document).ready(function() { 
 		$("#email_logs").prev(".tab").BEtabstoggle();
@@ -12,7 +12,6 @@
 				return false ;
 			var logId = $(this).attr("title");
 			$("#form_log_"+logId).attr("action", delLogUrl + '/' + logId).submit();
-			return false;
 		} );
 	} );
 </script>
@@ -65,6 +64,7 @@
 			<td>{$j.MailLog.mail_body|default:''|truncate:64}</td>
 			<td><input type="button" class="delLog" value="{t}Delete{/t}" title="{$j.MailLog.id}" /></td>
 		</tr>
+		</form>
 		{/foreach}
 		{/if}
 	</table>

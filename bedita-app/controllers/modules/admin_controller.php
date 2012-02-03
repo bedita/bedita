@@ -85,7 +85,7 @@ class AdminController extends ModulesController {
 	public function deleteMailLog($id) {
 		$this->checkWriteModulePermission();
 		$this->MailLog->delete($id);
-		$this->loadMailData();
+		$this->loadMailLogData();
 		$this->userInfoMessage(__("MailLog deleted", true) . " -  " . $id);
 		$this->eventInfo("mail log $id deleted");
 	}
@@ -101,14 +101,13 @@ class AdminController extends ModulesController {
 	public function deleteAllMailLogs() {
 		$this->checkWriteModulePermission();
 		$this->MailLog->deleteAll("id > 0");
-		$this->loadMailData();
+		$this->loadMailLogData();
 		$this->userInfoMessage(__("MailLog deleted", true));
 		$this->eventInfo("all mail log deleted");
 	}
 
 	public function emailLogs() {
-		$mailLog = ClassRegistry::init("MailLog");
-		$this->set('logs',$this->paginate('MailLog'));
+		$this->loadMailLogData();
 	}
 
 	public function emailInfo() {
@@ -138,12 +137,21 @@ class AdminController extends ModulesController {
 
 	private function loadMailData() {
 		$mailJob = ClassRegistry::init("MailJob");
+		$this->passedArgs["sort"] = "id";
+		$this->passedArgs["direction"] = "desc";
 		$this->set('jobs',$this->paginate('MailJob'));
 		$this->set('totalJobs',  $mailJob->find("count", array("conditions" => array())));
 		$this->set('jobsFailed', $mailJob->find("count", array("conditions" => array("status" => array("failed")))));
 		$this->set('jobsSent',   $mailJob->find("count", array("conditions" => array("status" => array("sent")))));
 		$this->set('jobsPending',$mailJob->find("count", array("conditions" => array("status" => array("pending")))));
 		$this->set('jobsUnsent', $mailJob->find("count", array("conditions" => array("status" => array("unsent")))));
+	}
+
+	private function loadMailLogData() {
+		$mailLog = ClassRegistry::init("MailLog");
+		$this->passedArgs["sort"] = "id";
+		$this->passedArgs["direction"] = "desc";
+		$this->set('logs',$this->paginate('MailLog'));
 	}
 
 	private function beditaVersion() {

@@ -9,7 +9,6 @@
 				return false ;
 			var jobId = $(this).attr("title");
 			$("#form_job_"+jobId).attr("action", delJobUrl + '/' + jobId).submit();
-			return false;
 		} );
 	} );
 </script>
