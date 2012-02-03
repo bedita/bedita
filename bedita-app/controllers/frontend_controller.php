@@ -1232,7 +1232,27 @@ abstract class FrontendController extends AppController {
 		if(empty($obj)) {
 			throw new BeditaException(__("Content not found", true));
 		}
-							
+		// #304 status filter for Category and Tag
+		if(!empty($obj['Category'])) {
+			$cc = array();
+			foreach($obj['Category'] as $k => $v) {
+				if(in_array($v['status'],$this->status)) {
+					$cc[] = $v;
+				}
+			}
+			unset($obj['Category']);
+			$obj['Category'] = $cc;
+		}
+		if(!empty($obj['Tag'])) {
+			$tt = array();
+			foreach($obj['Tag'] as $k => $v) {
+				if(in_array($v['status'],$this->status)) {
+					$tt[] = $v;
+				}
+			}
+			unset($obj['Tag']);
+			$obj['Tag'] = $tt;
+					}
 		if(!$this->checkPubblicationDate($obj)) {
 			throw new BeditaException(__("Content not found", true));
 		}
