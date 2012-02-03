@@ -1252,7 +1252,7 @@ abstract class FrontendController extends AppController {
 			}
 			unset($obj['Tag']);
 			$obj['Tag'] = $tt;
-					}
+		}
 		if(!$this->checkPubblicationDate($obj)) {
 			throw new BeditaException(__("Content not found", true));
 		}
