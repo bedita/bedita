@@ -56,15 +56,20 @@ class YoutubeHelper extends AppHelper {
 		if (empty($attributes["height"])) { 
 			$attributes["height"] = $this->conf->media_providers["youtube"]["params"]["height"];
 		}
+		
+		// object / embed
+		$url = 'https://www.youtube.com/v/'.$obj['video_uid'].'?version=3&feature=player_embedded&feature=player_embedded';//&autoplay=1'
+		$html  = '<object style="height: '.$attributes["height"].'px; width: '.$attributes["width"].'px">';
+		$html .= '	<param name="movie" value="'.$url.'">';
+		$html .= '	<param name="allowFullScreen" value="true">';
+		$html .= '	<param name="allowScriptAccess" value="always">';
+		$html .= '	<embed src="'.$url.'" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="'.$attributes["width"].'" height="'.$attributes["height"].'">';
+		$html .= '</object>';
 
-		$url = rawurlencode($obj["uri"]);
-		$url .= "&format=json&maxwidth=" . $attributes["width"] . "&maxheight=" . $attributes["height"];
-		$url = sprintf($this->conf->media_providers["youtube"]["params"]["urlembed"], $url);
-		if (!$oEmbed = $this->oEmbedInfo($url)) {
-			return false;
-		}
-						
-		return $oEmbed["html"] ;
+		// iFrame
+		//$html = '<iframe width="'.$attributes["width"].'" height="'.$attributes["height"].'" src="http://www.youtube.com/embed/'.$obj['video_uid'].'" frameborder="0" allowfullscreen></iframe>';
+		
+		return $html;
 	}
 	
 	/**
