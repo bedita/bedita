@@ -1,7 +1,11 @@
 <script type="text/javascript">
+	var refreshUrl = "{$html->here}";
 	$(document).ready(function() { 
-		$("#pageDim").bind("change", function() { 
-			document.location = "{$html->here}/limit:" + this.value;
+		$("#pageDim").bind("change", function() {
+			if(refreshUrl.match(/admin$/)) {
+				refreshUrl += "/systemEvents";
+			}
+			document.location = refreshUrl + "/limit:" + this.value;
 		} );
 	} );
 </script>
