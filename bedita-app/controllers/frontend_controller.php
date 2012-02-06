@@ -599,6 +599,7 @@ abstract class FrontendController extends AppController {
 		
 		if($obj["object_type_id"] == Configure::read("objectTypes.area.id")) {
 			$obj["canonicalPath"] = "/";
+			$obj["parentAuthorized"] = $obj["authorized"];
 			return;
 		}
 		$pathSection = $this->getPath($objectId);
