@@ -594,6 +594,7 @@ abstract class FrontendController extends AppController {
 		
 		if($obj["object_type_id"] == Configure::read("objectTypes.area.id")) {
 			$obj["canonicalPath"] = "/";
+			$obj["parentAuthorized"] = $obj["authorized"];
 			return;
 		}
 		$pathSection = $this->getPath($objectId);
@@ -1511,13 +1512,13 @@ abstract class FrontendController extends AppController {
 			$this->sectionOptions["childrenParams"]["sectionPath"] = $section["canonicalPath"];
 		}
     
-    if (empty($section["pathSection"])){
-      $pathSection = $this->getPath($sectionId);
-      if($section["object_type_id"] == Configure::read("objectTypes.section.id")) {
-        $section["pathSection"] = $pathSection;
-      }
+		if (empty($section["pathSection"])){
+			$pathSection = $this->getPath($sectionId);
+			if($section["object_type_id"] == Configure::read("objectTypes.section.id")) {
+				$section["pathSection"] = $pathSection;
+			}
 		}
-    
+		
 		if (!$section["parentAuthorized"] || !$section["authorized"]) {
 			$section["authorized"] = false;
 			$this->sectionOptions["childrenParams"]["setAuthorizedTo"] = false;
