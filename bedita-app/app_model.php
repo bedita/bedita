@@ -650,7 +650,14 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 									"LangText", "ObjectType", "Annotation",
 									"Category", "RelatedObject" )),
 
-				"minimum" => array("BEObject" => array("ObjectType"))		
+				"minimum" => array("BEObject" => array("ObjectType")),
+
+				"frontend" => array("BEObject" => array("LangText", 
+														"UserCreated",
+														"RelatedObject", 
+														"Category", 
+														"Annotation"
+														)),
 	);
 	
 	public function save($data = null, $validate = true, $fieldList = array()) {
