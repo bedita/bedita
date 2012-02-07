@@ -667,6 +667,9 @@ class AppController extends Controller
 		if (!empty($pluggedObjRel)) {
 			foreach($pluggedObjRel as $relation => $rules) {
 				if (isset($defaultObjRel[$relation])) {
+					if(isset($rules["hidden"])) {
+						$defaultObjRel[$relation]["hidden"] = $rules["hidden"];
+					}
 					$defaultObjRel[$relation]["left"] = array_merge($defaultObjRel[$relation]["left"], $rules["left"]);
 					$defaultObjRel[$relation]["right"] = array_merge($defaultObjRel[$relation]["right"], $rules["right"]);
 				} else {
