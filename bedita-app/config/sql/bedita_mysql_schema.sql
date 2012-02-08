@@ -755,7 +755,7 @@ CREATE TABLE trees (
   object_path VARCHAR(255) NOT NULL COMMENT '???',
   parent_path VARCHAR(255) NULL COMMENT '???',
   priority INTEGER UNSIGNED NULL COMMENT '???',
-  menu INTEGER UNSIGNED NULL COMMENT '???',
+  menu INTEGER UNSIGNED NOT NULL default '0',
   INDEX id_idx(id),
   INDEX parent_idx(parent_id),
   INDEX area_idx(area_id),

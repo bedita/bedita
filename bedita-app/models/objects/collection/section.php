@@ -46,11 +46,11 @@ class Section extends BeditaCollectionModel
 										"Category",
 										"Version" => array("User.realname", "User.userid"),
 										"GeoTag"
-										)
+										), "Tree"
 									),
 
        			"default" => array("BEObject" => array("ObjectProperty", 
-									"LangText", "ObjectType", "Category", "GeoTag")),
+									"LangText", "ObjectType", "Category", "GeoTag"), "Tree"),
 
 				"minimum" => array("BEObject" => array("ObjectType")),
 		

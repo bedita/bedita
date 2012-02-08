@@ -58,8 +58,8 @@
 		<tr>
 			<th>{t}order{/t}:</th>
 			<td>
-				<input type="radio" name="data[priority_order]" value="asc" {if $object.priority_order|default:'asc'=="asc"}checked{/if} />{t}asc{/t}
-				<input type="radio" name="data[priority_order]" value="desc" {if $object.priority_order|default:'asc'=="desc"}checked{/if} />{t}desc{/t}
+				<input type="radio" name="data[priority_order]" value="asc" {if $object.priority_order|default:'asc'=="asc"}checked{/if} />{t}Insertion order, oldest contents first{/t}
+				<input type="radio" name="data[priority_order]" value="desc" {if $object.priority_order|default:'asc'=="desc"}checked{/if} />{t}Latest/newest contents first{/t}
 			</td>
 		</tr>
 	</table>

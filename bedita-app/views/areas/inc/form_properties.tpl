@@ -21,7 +21,7 @@
 {/if}
 
 <input type="hidden" name="data[id]" value="{$object.id|default:null}"/>
-	
+
 	<table class="areaform">
 
 			<tr>
@@ -92,26 +92,29 @@
 				</select>
 				</td>
 			</tr>
-			<tr>
-				<th>
-					syndicate:
-				</th>
-				<td>
+		<tr>
+			<th>{t}visibility{/t}:</th>
+			<td>
+				<input type="checkbox" name="data[menu]" value="1" {if $object.menu != '0'}checked{/if}/>{t}Visible in menu and canonical paths{/t}
+			</td>
+		</tr>
+		<tr>
+			<th>syndicate:</th>
+			<td>
 					<div class="ico_rss {if $object.syndicate|default:'off'=='on'}on{/if}" 
 					style="float:left; vertical-align:middle; margin-right:10px; width:24px; height:24px;">&nbsp;</div>
 					<input style="margin-top:4px" type="checkbox" 
 					onclick="$('.ico_rss').toggleClass('on')"
 					name="data[syndicate]" value="on" {if $object.syndicate|default:'off'=='on'}checked{/if} />
-				</td>
-			</tr>
-			<tr>
-			
-					<th>{t}order{/t}:</th>
-					<td>
-						<input type="radio" name="data[priority_order]" value="asc" {if $object.priority_order|default:'asc'=="asc"}checked{/if} />{t}asc{/t}
-						<input type="radio" name="data[priority_order]" value="desc" {if $object.priority_order|default:'asc'=="desc"}checked{/if} />{t}desc{/t}
-					</td>
-			</tr>
+			</td>
+		</tr>
+		<tr>
+			<th>{t}order{/t}:</th>
+			<td>
+				<input type="radio" name="data[priority_order]" value="asc" {if $object.priority_order|default:'asc'=="asc"}checked{/if} />{t}Insertion order, oldest contents first{/t}
+				<input type="radio" name="data[priority_order]" value="desc" {if $object.priority_order|default:'asc'=="desc"}checked{/if} />{t}Latest/newest contents first{/t}
+			</td>
+		</tr>
 	</table>
 	
 </fieldset>

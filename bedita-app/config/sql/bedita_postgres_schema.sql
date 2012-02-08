@@ -911,7 +911,7 @@ CREATE TABLE trees (
     object_path character varying(255) NOT NULL,
     parent_path character varying(255),
     priority integer,
-    menu integer
+    menu integer default 0 NOT NULL
 );
 
 
