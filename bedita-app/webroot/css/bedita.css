@@ -728,8 +728,10 @@ UL.menuleft {
 
 ...........................................*/
 
-
-
+.publishingtree {
+	width:285px;
+	margin-left:-5px;
+}
 
 /*
 .publishingtree LI  {
@@ -744,9 +746,6 @@ UL.menuleft {
 	padding:5px;
 }
 
-
-
-
 .publishingtree DIV.pub {
 	margin: 0px 0px 0px 0px;
 	clear:both;
@@ -759,8 +758,6 @@ UL.menuleft {
 	padding:2px 0px 5px 5px;
 	margin-left:10px;
 }
-
-
 
 .publishingtree H2 A.on {
 	font-weight:normal;
@@ -798,15 +795,6 @@ UL.menuleft {
 	margin-left:10px;
 }
 
-/*
-.publishingtree LI  {
-	padding:2px; margin:0px;
-	list-style-type:none;
-	list-style-position: outside;
-	border-left:0px dotted #666666;
-	border-top:0px dashed #999999;
-}
-*/
 .publishingtree LI A {
 	padding:5px;
 }
