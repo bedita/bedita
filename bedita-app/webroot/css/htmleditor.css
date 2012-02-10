@@ -1,4 +1,25 @@
-﻿@charset "utf-8";
+.placeholder {
+	background-color:#ff9966;
+	display:inline-block;
+	min-width:1em;
+	min-height:1em;
+	padding:2px;
+}
+
+.glossario {
+	color:#336633 !important;
+	text-decoration:underline;
+}
+
+.formula {
+	color:#ff6600 !important;
+}
+
+/*
+ * qualsiasi classe aggiungerai qui. La ritroverai nelle opzioni di tinyMce! Fico.
+ * 
+ */
+ 
 /* CSS Document */
 
 body, td {
@@ -56,25 +77,5 @@ a[rel],a[target='modal'] {
 	color:#ff0000;
 }
 
-a.placeholder {
-	background-color:#ff9966;
-	display:inline-block;
-	min-width:1em;
-	min-height:1em;
-	padding:2px;
-}
 
-.glossario {
-	color:#336633 !important;
-	text-decoration:underline;
-}
-
-.formula {
-	color:#ff6600 !important;
-}
-
-/*
- * qualsiasi classe aggiungerai qui. La ritroverai nelle opzioni di tinyMce! Fico.
- * 
- */
 
