@@ -71,13 +71,10 @@ class BeTreeHelper extends AppHelper {
 					}
 				}
 				
+				$output .= "<div class='pub'><h2 id='pub_" . $publication['id'] . "'";
 				// add publication's permission icon
 				if (!empty($publication["num_of_permission"])) {
-					$h2Class = "protected";
-				}
-				$output .= "<div class='pub'><h2 id='pub_" . $publication['id'] . "'";
-				if (!empty($h2Class)) {
-					$output .= " class='" . $h2Class . "'";
+					$output .= " class='protected'";
 				}
 				$output .= ">";
 				$output .= "<a ".$class." rel='" . $url . "'>";
