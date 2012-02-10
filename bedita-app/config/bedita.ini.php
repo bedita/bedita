@@ -127,8 +127,10 @@ $config['dateTimePatternLocale'] = array(
 // Default status of new objects
 $config['defaultStatus'] = "draft" ;
 
-// TinyMCE Rich Text Editor for long_text ['true' to enable]
-$config['mce'] = true;
+// Rich Text Editor ['true' to enable]
+$config['mce'] = false;
+$config['ckeditor'] = true;
+$config['wymeditor'] = false;
 
 // Application messages - temporary messages duration
 $config['msgPause'] = 3000;		// milliseconds
