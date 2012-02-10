@@ -1,6 +1,6 @@
 {*
 *	return a JSON object for ajax response
-*	if fileUploaded setted put JSON object into textarea (trick for file upload)
+*	if fileUploaded is set put JSON object into textarea (trick for file upload)
 *}
 
 {strip}
