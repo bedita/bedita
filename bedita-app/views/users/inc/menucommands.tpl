@@ -11,7 +11,7 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
 	</div> 
 	
- 	{$view->element('messages')}
+ 	
 	
 	{if $module_modify eq '1'}
 	<div class="insidecol">

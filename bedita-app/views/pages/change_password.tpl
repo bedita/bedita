@@ -17,7 +17,7 @@
 	   <label class="admin">{t}Change Password{/t}</label>
 	</div>
 
-	{$view->element('messages')}
+	
 
 
 </div>

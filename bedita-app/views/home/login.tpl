@@ -39,7 +39,7 @@ $().ready(function() {
 	   <label class="admin">{t}Login{/t}</label>
 	</div> 
 	
-	{$view->element('messages')}
+	
 	
 
 </div>
