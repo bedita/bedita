@@ -1,6 +1,5 @@
-{if ($conf->mce|default:true)}
-	{$html->script("tiny_mce/tiny_mce", false)}
-{/if}
+{$view->element('texteditor')}
+
 <script type="text/javascript">
 {literal}
 $(document).ready(function(){

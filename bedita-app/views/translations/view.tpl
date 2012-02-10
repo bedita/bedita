@@ -4,19 +4,7 @@
 
 {$html->script("jquery/ui/jquery.ui.datepicker", false)}
 
-{if ($conf->mce|default:true)}
-	
-	{$html->script("tiny_mce/tiny_mce", false)}
-	{$html->script("tiny_mce/tiny_mce_default_init", false)}
-
-
-{elseif ($conf->wymeditor|default:true)}
-
-	{$html->script("wymeditor/jquery.wymeditor.pack", false)}
-	{$html->script("wymeditor/wymeditor_default_init", false)}
-
-{/if}
-
+{$view->element('texteditor')}
 
 {literal}
 <style type="text/css">

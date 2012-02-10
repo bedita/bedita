@@ -8,7 +8,6 @@
 	{assign var="templateCSS" value=$html->url('/css/newsletter.css')}
 {/if}
 
-
 {if ($conf->mce|default:true)}
 	{$html->script("tiny_mce/tiny_mce")}
 {literal}

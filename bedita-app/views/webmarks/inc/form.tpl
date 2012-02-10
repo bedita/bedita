@@ -19,18 +19,7 @@ var url="{$html->url('/webmarks/checkUrl')}";
 {/literal}
 </script>
 
-{if ($conf->mce|default:true)}
-	
-	{$html->script("tiny_mce/tiny_mce", false)}
-	{$html->script("tiny_mce/tiny_mce_default_init", false)}
-
-
-{elseif ($conf->wymeditor|default:true)}
-
-	{$html->script("wymeditor/jquery.wymeditor.pack", false)}
-	{$html->script("wymeditor/wymeditor_default_init", false)}
-
-{/if}
+{$view->element('texteditor')}
 
 
 <form action="{$html->url('/webmarks/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
