@@ -483,7 +483,7 @@ class BEObject extends BEAppModel
 		// format custom properties data type
 		if (!empty($data["ObjectProperty"])) {
 			foreach ($data["ObjectProperty"] as $key => $val) {
-				if ($val["property_type"] == "date")
+				if (!empty($val["property_type"]) && $val["property_type"] == "date")
 					$data["ObjectProperty"][$key]["property_value"] = $this->getDefaultDateFormat($val["property_value"]);
 			}
 		}
