@@ -838,7 +838,7 @@ UL.menuleft {
 
 }
 
-.publishingtree .protected > A {
+.publishingtree .protected > A[rel] {
 	padding-left:24px; 
 	background: transparent url('../img/iconLocked.png') center left no-repeat;
 	background-size: 24px;
