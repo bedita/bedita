@@ -41,6 +41,8 @@
 </head>
 <body{if !empty($bodyClass)} class="{$bodyClass}"{/if}>
 
+{$view->element('messages')}
+
 {$content_for_layout}
 	
 {*
