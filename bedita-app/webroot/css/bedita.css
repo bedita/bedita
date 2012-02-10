@@ -834,6 +834,21 @@ UL.menuleft {
 }
 	
 
+.publishingtree .protected {
+
+}
+
+.publishingtree .protected > A {
+	padding-left:24px; 
+	background: transparent url('../img/iconLocked.png') center left no-repeat;
+	background-size: 24px;
+}
+
+.publishingtree .protected > A:after {
+	
+}
+
+
 /*...........................................    
 
    Toolbar
@@ -1049,7 +1064,7 @@ th.headerSortUp , th.headerSortDown {
 	padding:2px 0px 0px 0px;
 }
 
-.multimediaitem LI:last-child{
+.multimediaitem LI:last-child {
 	border-width:0px; padding-bottom:0px;
 }
 
@@ -1081,6 +1096,23 @@ th.headerSortUp , th.headerSortDown {
 
 
 .multimediaitem.small .info_file_item {
+	display:none;
+}
+
+
+
+.multimediaitem.list {
+	border-bottom:1px solid red;
+	width:640px;
+	display:table-cell;
+	height:auto;
+}
+
+.multimediaitem.list .imagebox, .multimediaitem.list textarea {
+	display:none;
+}
+
+.multimediaitem.list table.ultracondensed {
 	display:none;
 }
 
