@@ -33,7 +33,7 @@ $(document).ready(function(){
 		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
 	</div> 
 	
-	{$view->element('messages')}
+	
 	
 	
 	{if !empty($view->action) && $view->action != "index" && $module_modify eq '1'}
