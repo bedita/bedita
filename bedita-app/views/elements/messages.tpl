@@ -1,9 +1,8 @@
 <script type="text/javascript" charset="utf-8">
-$(document).ready ( function () {literal} { {/literal}
+$(document).ready ( function ()  { 
 
 {if ($session->check('Message.error'))}
-	
-	$(".secondacolonna .modules label").addClass("error").attr("title","error");
+
 	$("#messagesDiv").triggerMessage("error");
 
 {elseif ($session->check('Message.warn'))}
@@ -16,14 +15,13 @@ $(document).ready ( function () {literal} { {/literal}
 
 {/if}
 
-{literal}
-
 });
-{/literal}
+
 </script>
 
 
 <div id="messagesDiv">
+	
 	{if $session->check('Message.info')}
 		{$session->flash('info')}
 	{elseif $session->check('Message.warn')}
@@ -31,4 +29,5 @@ $(document).ready ( function () {literal} { {/literal}
 	{elseif $session->check('Message.error')}
 		{$session->flash('error')}
 	{/if}
+	
 </div>

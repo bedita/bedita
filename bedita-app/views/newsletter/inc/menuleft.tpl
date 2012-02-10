@@ -6,7 +6,7 @@
 		<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->userVersion}</label></div>
 
 	
-		{$view->element('messages')}
+		
 	
 		<ul class="menuleft insidecol">
 

@@ -10,13 +10,26 @@
 	{elseif $class == "error"}
 		<h2>{t}Error{/t}</h2>
 	{/if}
-	<div class="closemessage"><a href="javascript: void(0);">{t}close{/t}</a></div>
-	<p>{$message}</p>
+	<p style="display:block; margin-top:10px">
+		{$message}
+	</p>
+	<hr />
 	{if !empty($detail)}
-	<div>
-		<a href="javascript: void(0);" class="messagedetail">{t}see error detail{/t}</a>
-		<p style="display: none;">{$detail}</p>
-	</div>
+		<a class="close" href="javascript:void(0)" onclick="$('.messageDetail').toggle()">
+			{t}see error detail{/t}</a>
 	{/if}
+		<a class="close" href="javascript:void(0)" onClick="$('#messagesDiv').fadeOut()">
+			{t}close{/t}</a>	
 </div>
+	
+{if !empty($detail)}
+<div class="messageDetail shadow" style="display:none">	
+	<p style="font-family:monospace;">{$detail}</p>
+	<hr />
+	<a class="close" href="javascript:void(0)" onClick="$('.messageDetail').fadeOut()">
+		{t}close{/t}</a>	
+</div>
+{/if}
+	
+
 {/strip}

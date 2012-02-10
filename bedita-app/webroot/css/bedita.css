@@ -1391,21 +1391,35 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover {
 
 #messagesDiv {
 	/*background:transparent url(../img/shadowpattern160.png);*/
-	padding:10px; 
-	width:140px; height:auto; 
-	display: block;
-	top:10px; left:10px;
-	position:fixed !important;
-}
-
-.message {
+	top:20px; 
+	left:20px;
+	position:absolute !important;
+	z-index:9999;
 	line-height:1.2em;
+}
+			
+.message {
 	width:120px; height:120px; 
 	padding:10px;
 	background-color:#333;
 	color:#FFF;
-
 }
+
+.message .close {
+	margin-top:10px; color:#FFF; display:block;
+}
+
+.messageDetail {
+	width:340px; 
+	min-height:120px; 
+	padding:10px;
+	background-color:#FFF;
+	color:#000;
+	position:absolute !important;
+	left:140px;
+	top:0px
+}
+
 
 .message.error H2 {
 	color:red;

@@ -3,10 +3,8 @@ Template incluso.
 Menu a SX valido per tutte le pagine del controller.
 *}
 <div class="primacolonna">
-
+	
 	<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->userVersion}</label></div>
-
-	{$view->element('messages')}
 	
 	<ul class="menuleft insidecol">
 		<li {if $view->action eq 'index'}class="on"{/if}>{$tr->link('Documents', '/documents')}</li>
@@ -27,6 +25,5 @@ Menu a SX valido per tutte le pagine del controller.
 	{/if}
 
 {$view->element('user_module_perms')}
-	
 	
 </div>

@@ -36,7 +36,7 @@ Menu a SX valido per tutte le pagine del controller.
 	{/if}
 	
 	<div style="margin-top:40px;">
-	{$view->element('messages')}
+	
 	</div>
 	
 
