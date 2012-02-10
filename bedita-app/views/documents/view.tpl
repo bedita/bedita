@@ -34,7 +34,7 @@
 
 {include file="inc/menucommands.tpl" fixed = true}
 
-{$t
+
 <div class="main">
     {include file="inc/form.tpl"}
 </div>
