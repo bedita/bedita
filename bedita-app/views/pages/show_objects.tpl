@@ -1,19 +1,19 @@
 <script type="text/javascript">
 <!--
 var urlShowObj = "{$html->here}";
-{literal}
-if (typeof urlAddObjToAss{/literal}{$relation|default:'norelation'|capitalize}{literal} == "string") {
-	var urlToAdd = urlAddObjToAss{/literal}{$relation|capitalize}{literal}
+
+if (typeof urlAddObjToAss{$relation|default:'norelation'|capitalize} == "string") {
+	var urlToAdd = urlAddObjToAss{$relation|capitalize}
 } else if (typeof urlAddObjToAss == "string") { 
 	var urlToAdd = urlAddObjToAss;
 } else {
-	var urlToAdd = "{/literal}{$html->url('/pages/loadObjectToAssoc')}{literal}";
+	var urlToAdd = "{$html->url('/pages/loadObjectToAssoc')}";
 }
-{/literal}
+
 var relType = "{$relation|default:""}";
 var suffix = "{$relation|default:""|capitalize}";
 
-{literal}
+
 function loadObjToAssoc(page) {
 	$("#loadObjInModal").show();
 	$("#assocObjContainer").empty().load(urlShowObj, 
@@ -71,7 +71,7 @@ $(document).ready(function() {
 	});
 
 });
-{/literal}
+
 //-->
 </script>
 

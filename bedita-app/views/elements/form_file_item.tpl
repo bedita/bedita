@@ -15,7 +15,6 @@
 {assign_associative var="params" presentation="thumb" width=$thumbWidth height=$thumbHeight longside=false mode="fill" modeparam="000000" type=null upscale=false}
 {assign_associative var="htmlAttr" alt=$item.title title=$item.name}
 
-{literal}
 <script type="text/javascript">
 $(document).ready(function(){
 	$(".info_file_item").change(function() {
@@ -23,8 +22,6 @@ $(document).ready(function(){
 	})
 });
 </script>
-{/literal}
-
 
 {strip}
 	

@@ -1,13 +1,9 @@
 <script type="text/javascript">
-{literal}
 $(document).ready(function(){
-
 	$(".indexlist TD").not(".checklist").not(".go").css("cursor","pointer").click(function(i) {
 		document.location = $(this).parent().find("a:first").attr("href"); 
 	} );
 });
-
-{/literal}
 //-->
 </script>	
 

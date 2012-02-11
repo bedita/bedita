@@ -4,8 +4,8 @@
 *}
 {strip}
 {if $errorMsg|default:""}
-{literal}{{/literal}SaveErrorMsg: "{$errorMsg}"{literal}}{/literal}
+{SaveErrorMsg: "{$errorMsg}"}
 {else}
-{literal}{{/literal}userId:"{$userId|default:''}"{literal}}{/literal}
+{userId:"{$userId|default:''}"}
 {/if}
 {/strip}

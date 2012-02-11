@@ -10,7 +10,7 @@ var urlDelete = "{$html->url('delete/')}" ;
 var message = "{t}Are you sure that you want to delete the tag?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected tags?{/t}" ;
 var URLBase = "{$html->url('index/')}" ;
-{literal}
+
 $(document).ready(function() {
 
 	$("#deleteSelected").bind("click", delObjects);
@@ -37,7 +37,7 @@ function delObjects() {
 	$("#formObject").get(0).submit() ;
 	return false ;
 }
-{/literal}
+
 //-->
 </script>
 

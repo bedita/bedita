@@ -8,7 +8,7 @@
 {$view->element('toolbar')}
 
 <div class="mainfull">
-	
+
 	{$view->element('list_objects')}
 	
 </div>

@@ -9,12 +9,12 @@ var urlDelNote = "{$html->url('/pages/deleteNote')}";
 var comunicationErrorMsg = "{t}Communication error{/t}";
 var confirmDelNoteMsg = "{t}Are you sure that you want to delete the note?{/t}";
 
-{literal}
+
 $(document).ready( function (){
 	$("#editornotes").prev(".tab").BEtabsopen();
 
 	var optionsNoteForm = {
-		beforeSubmit: function() {$("#noteloader").show();},
+		beforeSubmit: function() { $("#noteloader").show();},
 		success: showNoteResponse,
 		dataType: "json",
 		resetForm: true,
@@ -48,16 +48,16 @@ function showNoteResponse(data) {
 
 function refreshNoteList(delButton) {
 	var div = delButton.parents("div:first");
-	var postdata = {id: delButton.attr("rel")};
+	var postdata = { id: delButton.attr("rel")};
 	if (confirm(confirmDelNoteMsg)) {
-		$.ajax({
+		$.ajax({ 
 			type: "POST",
 			url: urlDelNote,
 			data: postdata,
 			dataType: "json",
-			beforeSend: function() {$("#noteloader").show();},
-			success: function(data){
-				if (data.errorMsg) {
+			beforeSend: function() { $("#noteloader").show();},
+			success: function(data){ 
+				if (data.errorMsg) { 
 					alert(data.errorMsg);
 					$("#noteloader").hide();
 				} else {
@@ -72,7 +72,7 @@ function refreshNoteList(delButton) {
 		});
 	}
 }
-{/literal}
+
 </script>
 
 
@@ -122,9 +122,4 @@ function refreshNoteList(delButton) {
 		</div>
 	{/bedev}
 
-
-
-
 </div>
-
-

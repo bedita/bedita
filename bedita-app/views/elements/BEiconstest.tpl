@@ -1,15 +1,11 @@
-
-{literal}
 <script type="text/javascript">
 $(document).ready(function(){
-	
 	$(".icons LI").css("cursor","pointer").mouseover(function() {
 		var myclass = $(this).attr("rel");
-		$(".secondacolonna .modules label").removeClass().addClass("{/literal}{$moduleName}{literal}").addClass(""+myclass+"");
+		$(".secondacolonna .modules label").removeClass().addClass("{$moduleName}").addClass(""+myclass+"");
 	});
 });
 </script>
-{/literal}
 
 <ul class="icons">
 	<li>ecco le varie icone di stato:</li>

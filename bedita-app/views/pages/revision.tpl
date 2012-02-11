@@ -1,7 +1,6 @@
 {$html->css('bedita4Modal')}
-{literal}
-<script>
-	
+
+<script>	
 
 	$("#restoreselected").click(function (){
 		
@@ -40,12 +39,11 @@
 		}); 
 		
 		$(".close").click();
-
-		
+	
 	});
 	
 </script>
-{/literal}
+
 <div>
 	<table class="version bordered">
 	<thead>
@@ -72,4 +70,3 @@
 	</tbody>
 	</table>
 </div>
-

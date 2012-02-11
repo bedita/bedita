@@ -74,17 +74,10 @@
 
 </div>
 
-
-
 {*
 <pre>
 {dump var=$object}
 *}
-
-
-{literal}
 	<script type="text/javascript">
 		print();
 	</script>
-{/literal}
-

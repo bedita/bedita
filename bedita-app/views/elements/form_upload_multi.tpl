@@ -11,11 +11,11 @@ var multiUploadUrl = "{$html->url('/')}files/upload";
 var u_id = "{$session->read("BEAuthUser.id")}";
 var uploadIdSuffix = "{$uploadIdSuffix}";
 
-{literal}
+
 $(document).ready(function() {
 
 	if (getFlashVersion() !== false) {
-		$('#inputFiledata{/literal}{$uploadIdSuffix}{literal}').uploadify({
+		$('#inputFiledata{$uploadIdSuffix}').uploadify({ 
 			'uploader': webroot + 'swf/uploadify.swf',
 			'script':    multiUploadUrl,
 			multi: true,
@@ -26,46 +26,43 @@ $(document).ready(function() {
 			wmode:"transparent",
 			buttonText : 'browssssse',
 			displayData: 'percentage',
-			onComplete: completeUpload{/literal}{$uploadIdSuffix}{literal},
-			scriptData: {userid: u_id}
+			onComplete: completeUpload{$uploadIdSuffix},
+			scriptData: { userid: u_id}
 		});
 
-		$("#flashUploadContainer{/literal}{$uploadIdSuffix}{literal} a").click(function() {
-			$("#ajaxUploadContainer{/literal}{$uploadIdSuffix}{literal}").show();
-			$("#flashUploadContainer{/literal}{$uploadIdSuffix}{literal}").hide();
+		$("#flashUploadContainer{$uploadIdSuffix} a").click(function() {
+			$("#ajaxUploadContainer{$uploadIdSuffix}").show();
+			$("#flashUploadContainer{$uploadIdSuffix}").hide();
 		});
 
-		$("#ajaxUploadContainer{/literal}{$uploadIdSuffix}{literal} a").click(function() {
-			$("#ajaxUploadContainer{/literal}{$uploadIdSuffix}{literal}").hide();
-			$("#flashUploadContainer{/literal}{$uploadIdSuffix}{literal}").show();
+		$("#ajaxUploadContainer{$uploadIdSuffix} a").click(function() {
+			$("#ajaxUploadContainer{$uploadIdSuffix}").hide();
+			$("#flashUploadContainer{$uploadIdSuffix}").show();
 		});
 		
 	} else {
-		$("#flashUploadContainer{/literal}{$uploadIdSuffix}{literal}").hide();
-		$("#ajaxUploadContainer{/literal}{$uploadIdSuffix}{literal}").show();
-		$("#ajaxUploadContainer{/literal}{$uploadIdSuffix}{literal} a").hide();
+		$("#flashUploadContainer{$uploadIdSuffix}").hide();
+		$("#ajaxUploadContainer{$uploadIdSuffix}").show();
+		$("#ajaxUploadContainer{$uploadIdSuffix} a").hide();
 	}
 
 	
 });
 
-function completeUpload{/literal}{$uploadIdSuffix}{literal}(event, queueID, fileObj,response) {
-	if (isNaN(parseInt(response))) {
-		$("#inputFiledata{/literal}{$uploadIdSuffix}{literal}" + queueID + " .fileName").text(" Error - " + fileObj.name + " - " + response);
-		$("#inputFiledata{/literal}{$uploadIdSuffix}{literal}" + queueID).css({'border': '3px solid #FBCBBC', 'background-color': '#FDE5DD'});
+function completeUpload{$uploadIdSuffix}(event, queueID, fileObj,response) {
+	if (isNaN(parseInt(response))) { 
+		$("#inputFiledata{$uploadIdSuffix}" + queueID + " .fileName").text(" Error - " + fileObj.name + " - " + response);
+		$("#inputFiledata{$uploadIdSuffix}" + queueID).css({ 'border': '3px solid #FBCBBC', 'background-color': '#FDE5DD'});
 		return false;
 	} else {
 		objids = new Array();
 		objids[0] = response;
-		$("#loading{/literal}{$uploadIdSuffix}{literal}").show();
-		commitUploadItem{/literal}{$uploadIdSuffix}{literal}(objids);
+		$("#loading{$uploadIdSuffix}").show();
+		commitUploadItem{$uploadIdSuffix}(objids);
 		return true;
 	}
 }
 
-
-
-{/literal}
 //-->
 </script>
 

@@ -2,10 +2,9 @@
 {$html->script("jquery/jquery.placement.below")}
 {$html->script("jquery/jquery.timepicker-list")}
 
-{literal}
 <script type="text/javascript">
 $(document).ready(function(){
-	$(".timeStart, .timeEnd").timePicker({startTime: "00:00", endTime: "23:30"});
+	$(".timeStart, .timeEnd").timePicker({ startTime: "00:00", endTime: "23:30"});
 		
 		$(".dateadd").click(function (){
 			var row = $(this).parent(".daterow");
@@ -19,7 +18,7 @@ $(document).ready(function(){
 });
 
 </script>
-{/literal}
+
 <div class="tab"><h2>{t}Event calendar{/t}</h2></div>
 <fieldset id="eventDates">
 

@@ -2,11 +2,10 @@
 {$html->css('../js/jquery/treeview/jquery.treeview', null, $cssOptions)}
 {$html->script("jquery/treeview/jquery.treeview", false)}
 
-{literal}
 <script type="text/javascript">
-$(document).ready(function(){
+$(document).ready(function(){ 
 	// third example
-	$(".menutree").treeview({
+	$(".menutree").treeview({ 
 		animated: "normal",
 		collapsed: true,
 		unique: false,
@@ -15,10 +14,8 @@ $(document).ready(function(){
 
 $(".menutree input:checked").parent().css("background-color","#dedede").parents("ul, li").show();
 
-
 });
 </script>
-{/literal}
 
 {if !empty($checkbox)}			
 	
@@ -28,4 +25,4 @@ $(".menutree input:checked").parent().css("background-color","#dedede").parents(
 		
 	{$beTree->view($tree)}
 	
-{/if}	
+{/if}

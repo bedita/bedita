@@ -1,7 +1,7 @@
 <script type="text/javascript">
 var urlDelete = "{$html->url('deleteMailGroups/')}";
 var message = "{t}Are you sure that you want to delete the item?{/t}";
-{literal}
+
 $(document).ready(function(){
 	$(".delete").bind("click", function(){
 		if(!confirm(message)) return false ;
@@ -20,7 +20,7 @@ $(document).ready(function(){
 	});
 	
 });
-{/literal}
+
 </script>
 
 	<table class="indexlist">
@@ -61,7 +61,7 @@ $(document).ready(function(){
 
 			<tr>
 				<td>
-					<input type="text" style="width:220px" name="data[group_name]" value="{$grp.group_name}" class="{literal}{required:true}{/literal}"/>
+					<input type="text" style="width:220px" name="data[group_name]" value="{$grp.group_name}" class="{required:true}"/>
 				</td>
 				<td>
 					<input type="radio" name="data[visible]" value="1" {if $grp.visible == "1"}checked="true"{/if}/>on
@@ -85,13 +85,7 @@ $(document).ready(function(){
 			
 		</form>
 		*}
-		{foreachelse}
-		
+		{foreachelse}	
 			<tr><td colspan="5">{t}No mail group found{/t}</td></tr>
-		
-		{/foreach}
-		
+		{/foreach}		
 		</table>
-		
-		
-	

@@ -1,4 +1,3 @@
-
 {$html->script("form", false)}
 
 <script type="text/javascript">
@@ -10,7 +9,7 @@ var URLBase = "{$html->url('index/')}";
 var urlAddMultipleTags = "{$html->url('addMultipleTags/')}";
 var urlChangeStatus = "{$html->url('changeStatus/')}";
 var no_items_checked_msg = "{t}No items selected{/t}";
-{literal}
+
 function count_check_selected() {
 	var checked = 0;
 	$('input[type=checkbox].objectCheck').each(function(){
@@ -63,7 +62,6 @@ $(document).ready(function() {
 
 //-->
 </script>
-{/literal}
 
 {$view->element('modulesmenu')}
 

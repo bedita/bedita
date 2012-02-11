@@ -1,9 +1,7 @@
-<script type="text/javascript">
-{literal}
+<script type="text/javascript"
 $(document).ready(function(){
 	$('#properties_langs_container > ul').tabs();
 });
-{/literal}
 </script>
 <h2 class="showHideBlockButton">{t}Properties{/t}</h2>
 <div class="blockForm" id="properties">
@@ -23,7 +21,7 @@ $(document).ready(function(){
 		<tr>
 			<td class="label">{t}title{/t}:</td>
 			<td class="field">
-				<input {if $val==$object_lang}class="{literal}{required:true,minLength:1}{/literal}" title="{t}Title is required{/t}"{/if}
+				<input {if $val==$object_lang}class="{ required:true,minLength:1}" title="{t}Title is required{/t}"{/if}
 					type="text" name="data[LangText][{$val}][title]"
 					value="{$object.LangText.title[$val]|default:''|escape:'html'|escape:'quotes'}"/>&nbsp;
 			</td>

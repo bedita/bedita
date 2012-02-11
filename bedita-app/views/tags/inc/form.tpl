@@ -11,7 +11,7 @@
 			<th>{t}Name{/t}:</th>
 			<td>
 				<input type="text" name="data[label]" value="{$tag.label|default:''|escape:'html'|escape:'quotes'}"
-				class="{literal}{required:true,minLength:1}{/literal}" title="{t 1='1'}Name is required (at least %1 alphanumerical char){/t}"/>
+				class="{ required:true,minLength:1}" title="{t 1='1'}Name is required (at least %1 alphanumerical char){/t}"/>
 			</td>
 		</tr>
 		<tr>
@@ -47,5 +47,3 @@
 	</table>
 
 </fieldset>
-
-

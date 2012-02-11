@@ -6,20 +6,17 @@
 {$html->script("jquery/jquery.cmxforms", false)}
 {$html->script("jquery/jquery.metadata", false)}
 
-
 <script type="text/javascript">
-{literal}
 $(document).ready( function ()
 {
 	openAtStart("#tagdetails");
 
 	$("#delBEObject").submitConfirm({
-		action: "{/literal}{$html->url('delete/')}{literal}",
-		message: "{/literal}{t}Are you sure that you want to delete the tag?{/t}{literal}"
+		action: "{$html->url('delete/')}",
+		message: "{t}Are you sure that you want to delete the tag?{/t}"
 	});
 });
 
-{/literal}
 </script>
 
 {$view->element('modulesmenu')}

@@ -1,5 +1,5 @@
 <script type="text/javascript" charset="utf-8">
-$(document).ready ( function () {literal} { {/literal}
+$(document).ready ( function () { 
 
 {if !empty($id)}
 	$("input[name=data\\[id\\]]").attr('value', {$id});
@@ -20,9 +20,8 @@ $(document).ready ( function () {literal} { {/literal}
 
 {/if}
 
-{literal}
 });
-{/literal}
+
 </script>
 
 {if $session->check('Message.info')}

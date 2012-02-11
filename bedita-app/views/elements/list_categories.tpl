@@ -1,7 +1,6 @@
 <script type="text/javascript">
 var urlDelete = "{$html->url('deleteCategories/')}";
 var message = "{t}Are you sure that you want to delete the item?{/t}";
-{literal}
 $(document).ready(function(){
 	$(".delete").bind("click", function(){
 		if(!confirm(message)) return false ;
@@ -20,10 +19,7 @@ $(document).ready(function(){
 	});
 	
 });
-{/literal}
 </script>
-
-
 	
 	<table class="indexlist">
 
@@ -34,15 +30,13 @@ $(document).ready(function(){
 			<th>Id</th>
 			<th>&nbsp;</th>
 		</tr>
-
-			
+		
 		{foreach from=$categories item="cat" name="fc"}
 		<form id="form_{$cat.id}" method="post" action="{$html->url('saveCategories')}">
 
 			<tr>
-
 				<td>
-					<input type="text" style="width:220px" name="data[label]" value="{$cat.label}" class="{literal}{required:true}{/literal}"/>
+					<input type="text" style="width:220px" name="data[label]" value="{$cat.label}" class="{required:true}"/>
 				</td>
 				<td style="white-space:nowrap;">
 				
@@ -78,15 +72,11 @@ $(document).ready(function(){
 		
 		{/foreach}
 		
-		</table>
-		
-		
+		</table>		
 		
 		<br />
 		
-		<div class="tab"><h2>{t}Add new category{/t}</h2></div>
-		
-		
+		<div class="tab"><h2>{t}Add new category{/t}</h2></div>	
 		
 		<form method="post" id="addCat" action="{$html->url('saveCategories')}">
 		
@@ -120,4 +110,3 @@ $(document).ready(function(){
 		</table>
 		
 		</form>
-	

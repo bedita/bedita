@@ -1,11 +1,11 @@
 <script type="text/javascript">
-{literal}
+
 var langs = {
-{/literal}
+
 	{foreach name=i from=$conf->langOptions key=lang item=label}
 	"{$lang}":	"{$label}" {if !($smarty.foreach.i.last)},{/if}
 	{/foreach}
-{literal}
+
 } ;
 
 var validate = null ;
@@ -20,14 +20,14 @@ $.validator.setDefaults({
 $(document).ready(function(){
 	$("#updateform").validate();
 	$("#delBEObject").submitConfirm({
-		{/literal}
+		
 		action: "{$html->url('delete/')}",
 		message: "{t}Are you sure that you want to delete the tag?{/t}"
-		{literal}
+		
 	});
 });
 
-{/literal}
+
 </script>
 
 
@@ -40,7 +40,7 @@ $(document).ready(function(){
 			<th>{t}Name{/t}:</th>
 			<td>
 				<input type="text" name="data[label]" value="{$object.label|default:''|escape:'html'|escape:'quotes'}"
-				class="{literal}{required:true,minLength:1}{/literal}" title="{t 1='1'}Name is required (at least %1 alphanumerical char){/t}"/>
+				class="{ required:true,minLength:1}" title="{t 1='1'}Name is required (at least %1 alphanumerical char){/t}"/>
 			</td>
 		</tr>
 		<tr>
@@ -60,7 +60,6 @@ $(document).ready(function(){
 			<td>
 				<ul class="bulleted">
 					<li>Mi sembra un paravaneto</li>
-					<li>Ma è una nerchia mostruosa</li>
 					<li>Tappetti</li>
 					<li>Suricati in fila per 2</li>
 					<li>Sedici file di bava</li>

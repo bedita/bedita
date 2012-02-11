@@ -16,10 +16,10 @@
 {assign var=branch value=$html->params.named.branch|default:''}
 
 <script type="text/javascript">
-{literal}
+
 $(document).ready(function(){
 	
-	{/literal}
+	
 	{if !empty($branch)}
 		// se passato branch apre con quel ramo checked
 		$('input[value="{$branch}"]').attr("checked",true);
@@ -28,7 +28,7 @@ $(document).ready(function(){
 		
 		$("#whereto").prev(".tab").BEtabsopen();
 	{/if}
-	{literal}
+
 	
 	/* questo before serve per i concurrenteditors */
 	$(".secondacolonna .insidecol #saveBEObject").before("<div id='concurrenteditors'></div>");
@@ -41,9 +41,9 @@ $(document).ready(function(){
 	
 	function checkStatus() {
 		var objstatus = $("input[name='data[status]']:checked").val();
-		if (objstatus == "draft") { $("#saveBEObject").val("{/literal}{t}Save draft{/t}{literal}"); $("#publishBEObject").show(); }
-		if (objstatus == "off") { $("#saveBEObject").val("{/literal}{t}Save off{/t}{literal}"); $("#publishBEObject").show(); }
-		if (objstatus == "on") { $("#saveBEObject").val("{/literal}{t}Save{/t}{literal}"); $("#publishBEObject").hide(); }
+		if (objstatus == "draft") { $("#saveBEObject").val("{t}Save draft{/t}"); $("#publishBEObject").show(); }
+		if (objstatus == "off") { $("#saveBEObject").val("{t}Save off{/t}"); $("#publishBEObject").show(); }
+		if (objstatus == "on") { $("#saveBEObject").val("{t}Save{/t}"); $("#publishBEObject").hide(); }
 	}
 	
 	checkStatus();
@@ -54,23 +54,23 @@ $(document).ready(function(){
 
 
 	$("#cancelBEObject").hide().click(function() {
-		//if(confirm("{/literal}{t}Are you sure you want to cancel and reload this document? All unsaved changes will be lost{/t}{literal}")) {
+		//if(confirm("{t}Are you sure you want to cancel and reload this document? All unsaved changes will be lost{/t}")) {
 			window.location.reload();
 		//};
 	});
 	
 	$("#delBEObject").submitConfirm({
-		{/literal}
+		
 		action: "{if !empty($delparam)}{$html->url($delparam)}{else}{$html->url('delete/')}{/if}",
 		message: "{t}Are you sure that you want to delete the item?{/t}",
 		formId: "updateForm"
-		{literal}
+		
 	});
 	
 
 	window.onbeforeunload = function () {
 		if ( !$(".secondacolonna .modules label").hasClass("submitForm") && $(".secondacolonna .modules label").hasClass("save")) {
-			return "{/literal}{t}All unsaved changes will be lost{/t}{literal}";
+			return "{t}All unsaved changes will be lost{/t}";
 		}
 	};
 
@@ -78,19 +78,19 @@ $(document).ready(function(){
 		$(".secondacolonna .modules label").addClass("submitForm");
 	});
 
-{/literal}{if (in_array($currObjectTypeId|default:0, $conf->objectTypes.tree.id))}{literal}
+{if (in_array($currObjectTypeId|default:0, $conf->objectTypes.tree.id))}
 
 	$("div.insidecol input[name='save']").click(function() {
 			
 		if ( $('#concurrenteditors #editorsList').children().size() > 0 ) {
-			var answer = confirm("{/literal}{t}More users are editing this object. Continue?{/t}{literal}")
+			var answer = confirm("{t}More users are editing this object. Continue?{/t}")
 			    if (answer){
 			       $("#updateForm").submit();
 			    }
     		return false;  
 		}
 		else if ( $('.publishingtree input:checked').val() === undefined ) {	
-			var answer = confirm("{/literal}{t}This content is not on publication tree. Continue?{/t}{literal}")
+			var answer = confirm("{t}This content is not on publication tree. Continue?{/t}")
 			    if (answer){
 			       $("#updateForm").submit();
 			    }
@@ -101,20 +101,20 @@ $(document).ready(function(){
 		}
 	});
 
-{/literal}{else}{literal}
+{else}
 	
 	$("div.insidecol input[name='save']").click(function() {
 		$("#updateForm").submit();
 	});
 	
-{/literal}{/if}{literal}	
+{/if}
 
 		
 	$("div.insidecol input[name='clone']").click(function() {
-		var cloneTitle=prompt("{/literal}{t}Title{/t}{literal}",$("input[name='data[title]']").val()+"-copy");
+		var cloneTitle=prompt("{t}Title{/t}",$("input[name='data[title]']").val()+"-copy");
 		if (cloneTitle) {
 			$("input[name='data[title]']").attr("value",cloneTitle);
-			$("#updateForm").attr("action","{/literal}{$html->url('/')}{$submiturl}{literal}/cloneObject");
+			$("#updateForm").attr("action","{$html->url('/')}{$submiturl}/cloneObject");
 			$("#updateForm").submit();
 		}
 	});
@@ -124,72 +124,72 @@ $(document).ready(function(){
 		showOn: 'both',
 		closeAtTop: false, 
 		buttonImageOnly: true, 
-	    buttonImage: '{/literal}{$html->webroot}img/iconCalendar.gif{literal}', 
+	    buttonImage: '{$html->webroot}img/iconCalendar.gif', 
 	    buttonText: '{t}Open Calendar{/t}',
-	    dateFormat: '{/literal}{$conf->dateFormatValidation|replace:'yyyy':'yy'}{literal}',
+	    dateFormat: '{$conf->dateFormatValidation|replace:'yyyy':'yy'}',
 		firstDay: 1,
 	    beforeShow: customRange
-	}, $.datepicker.regional['{/literal}{$currLang}{literal}']);
+	}, $.datepicker.regional['{$currLang}']);
 	
 	$("input.dateinput").datepicker();
 
-{/literal}
 
-{if empty($object.id)}{literal}
+
+{if empty($object.id)}
 
 		$("#delBEObject,#cloneBEObject").hide();
 
-{/literal}{/if}{literal}
+{/if}
 
-{/literal}{if (!empty($module_modify) && ($module_modify != 1))}{literal}
+{if (!empty($module_modify) && ($module_modify != 1))}
 		
 		$("#saveBEObject,#delBEObject,#publishBEObject").attr("disabled",true);
 		$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");
 
-{/literal}{/if}{literal}
+{/if}
 
 
-{/literal}{if !empty($object.Permission)}{literal}
+{if !empty($object.Permission)}
 
 		$(".secondacolonna .modules label").addClass("lock").attr("title","object with limited permissions");
 	
-{/literal}{/if}{literal}
+{/if}
 
-{/literal}{*  {if !($perms->isWritable($user.userid,$user.groups,$object.Permission))}{literal}
+{*  {if !($perms->isWritable($user.userid,$user.groups,$object.Permission))}
 		//$("#delBEObject").attr("disabled",true);
 		//$("#saveBEObject,#cloneBEObject,#delBEObject").attr("disabled",true);
 		//$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");
 	
-{/literal}{/if}*}{literal}
+{/if}*}
 
 
-{/literal}{if !empty($object.start_date) && ($object.start_date > ($smarty.now|date_format:"%Y-%m-%d %T"))}{literal}
+{if !empty($object.start_date) && ($object.start_date > ($smarty.now|date_format:"%Y-%m-%d %T"))}
 		
 		$(".secondacolonna .modules label").addClass("future").attr("title","object scheduled in the future");
 
-{/literal}{/if}{literal}
+{/if}
 
-{/literal}{if !empty($object.end_date) && ($object.end_date < ($smarty.now|date_format:"%Y-%m-%d %T"))}{literal}
+{if !empty($object.end_date) && ($object.end_date < ($smarty.now|date_format:"%Y-%m-%d %T"))}
 		
 		$(".secondacolonna .modules label").addClass("expired").attr("title","expired object");
 
-{/literal}{/if}{literal}
+{/if}
 
 
-{/literal}{if !empty($object.start_date) && ($object.start_date|date_format:"%Y-%m-%d" == ($smarty.now|date_format:"%Y-%m-%d"))}{literal}
+{if !empty($object.start_date) && ($object.start_date|date_format:"%Y-%m-%d" == ($smarty.now|date_format:"%Y-%m-%d"))}
 		
 		$(".secondacolonna .modules label").addClass("today").attr("title","object scheduled to start today");
 
-{/literal}{/if}{literal}
+{/if}
 
-{/literal}{if !empty($object.end_date) && ($object.end_date|date_format:"%Y-%m-%d" == ($smarty.now|date_format:"%Y-%m-%d"))}{literal}
+{if !empty($object.end_date) && ($object.end_date|date_format:"%Y-%m-%d" == ($smarty.now|date_format:"%Y-%m-%d"))}
 		
 		$(".secondacolonna .modules label").addClass("today").attr("title","object scheduled to end today");
 
-{/literal}{/if}{literal}
+{/if}
 
 
-{/literal}{if !empty($object.fixed) && ($object.fixed == 1)}{literal}
+{if !empty($object.fixed) && ($object.fixed == 1)}
 
 		$("#nicknameBEObject,#start,#end").attr("readonly",true);
 		$("#status input").attr("readonly",true);
@@ -197,39 +197,39 @@ $(document).ready(function(){
 		$("#areaSectionAssoc").attr("disabled",true);
 		$(".secondacolonna .modules label").addClass("fixedobject").attr("title","fixed object");
 		
-{/literal}{/if}{literal}
+{/if}
 
-{/literal}{if ($object.mail_status|default:'' == "sent")}{literal}
+{if ($object.mail_status|default:'' == "sent")}
 
 		$(".secondacolonna .modules label").addClass("sent").attr("title","sent message");
 		
-{/literal}{elseif ($object.mail_status|default:'' == "injob")}{literal}
+{elseif ($object.mail_status|default:'' == "injob")}
 		
 		$(".secondacolonna .modules label").addClass("injob").attr("title","in job");
 
 		//un'ora prima dell'invio avverte 
-{/literal}{elseif ( (!empty($object.start_sending)) && ($object.start_sending < ($smarty.now+3600|date_format:"%Y-%m-%d %T")) )}{literal}
+{elseif ( (!empty($object.start_sending)) && ($object.start_sending < ($smarty.now+3600|date_format:"%Y-%m-%d %T")) )}
 		
 		$(".secondacolonna .modules label").addClass("pendingAlert").attr("title","shortly scheduled invoice");	
-		{/literal}{if $object.start_sending > ($smarty.now|date_format:"%Y-%m-%d %T")}{literal}
-		alert('Attenzione! La newsletter sta per essere inviata oggi\nalle {/literal}{$object.start_sending|date_format:'%H:%M'}{literal}\nogni modifica che fai potrebbe non essere applicata se non salvi in tempo');
-		{/literal}{/if}{literal}
+		{if $object.start_sending > ($smarty.now|date_format:"%Y-%m-%d %T")}
+		alert('Attenzione! La newsletter sta per essere inviata oggi\nalle {$object.start_sending|date_format:'%H:%M'}\nogni modifica che fai potrebbe non essere applicata se non salvi in tempo');
+		{/if}
 	
-{/literal}{elseif ($object.mail_status|default:'' == "pending")}{literal}
+{elseif ($object.mail_status|default:'' == "pending")}
 		
 		$(".secondacolonna .modules label").addClass("pending").attr("title","pending invoice");
 	
-{/literal}{elseif ($object.mail_status|default:'' == "unsent")}{literal}
+{elseif ($object.mail_status|default:'' == "unsent")}
 
 		$(".secondacolonna .modules label").addClass("unsent").attr("title","unsent message");
 
-{/literal}{elseif ($object.status|default:'' == "draft")}{literal}
+{elseif ($object.status|default:'' == "draft")}
 
 		$(".secondacolonna .modules label").addClass("draft").attr("title","draft message");
 		$(".head H1").css("color","#666");
 
 							
-{/literal}{/if}{literal}
+{/if}
 
 
 
@@ -242,16 +242,16 @@ $(document).ready(function(){
 		
 		$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 		$("#cancelBEObject").show();
-		{/literal}{if $autosave|default:false}{literal}
+		{if $autosave|default:false}
 		if (autoSaveTimer == undefined || ( $(this).attr("name") == "data[status]" && autoSaveTimer !== false ) ){
 			autoSave();
 		}
-		{/literal}{/if}{literal}
+		{/if}
 	});
 
-{/literal}{if !empty($object.id)}{literal}
+{if !empty($object.id)}
 	updateEditors();
-{/literal}{/if}{literal}
+{/if}
 
 	status = $("input[name=data\\[status\\]]:checked").attr('value');
 	if (status == "on") {
@@ -263,22 +263,22 @@ $(document).ready(function(){
 function onChangeHandler(inst) {
 	$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 	$("#cancelBEObject").show();
-	{/literal}{if $autosave|default:false}{literal}
+	{if $autosave|default:false}
 	if (autoSaveTimer == undefined || ( $(this).attr("name") == "data[status]" && autoSaveTimer !== false ) ){
 		autoSave();
 	}
-	{/literal}{/if}{literal}
+	{/if}
 }
 
 var status;
 var autoSaveTimer; //Set to false to turn off autosave.
 
 function autoSave() {
-	{/literal}
+	
 	var submitUrl = "{$html->url('/')}{$view->params.controller}/autosave/";
-	{literal}
+	
 
-	var optionsForm = {target: '#messagesDiv'};
+	var optionsForm = { target: '#messagesDiv' };
 
 	var newStatus = $("input[name=data\\[status\\]]:checked").attr('value');
 
@@ -305,10 +305,10 @@ function autoSave() {
 }
 
 function switchAutosave(action, triggerMsg) {
-	{/literal}
+	
 	var checkTime = {$conf->autoSaveTime};
 	var submitUrl = "{$html->url('/pages/showAjaxMessage/')}";
-	{literal}
+	
 
 	if (checkTime <= 0 || (autoSaveTimer === false && action != "on")) {
 		action = "off";
@@ -319,35 +319,35 @@ function switchAutosave(action, triggerMsg) {
 		case "disable":
 			clearTimeout(autoSaveTimer);
 			autoSaveTimer = undefined;
-			var message = {/literal}'{t}Autosave disabled{/t}'{literal};
+			var message = '{t}Autosave disabled{/t}';
 			break;
 		case "enable":
 		case "on":
 			autoSaveTimer = setTimeout(autoSave,checkTime);
-			var message = {/literal}'{t}Autosave enabled{/t}'{literal};
+			var message = '{t}Autosave enabled{/t}';
 			break;
 		case "off":
 			clearTimeout(autoSaveTimer);
 			autoSaveTimer = false;
-			var message = {/literal}'{t}Autosave turned off{/t}'{literal};
+			var message = '{t}Autosave turned off{/t}';
 			break;
 	}
 	if (triggerMsg !== false) {
-		$("#messagesDiv").load(submitUrl,{msg:message,type:'info'});
+		$("#messagesDiv").load(submitUrl,{ msg:message,type:'info' });
 	}
 }
 
 function updateEditors() {
-	{/literal}
+	
 	var checkTime = {$conf->concurrentCheckTime};
 	var submitUrl = "{$html->url('/pages/updateEditor/')}"+"{$object.id|default:''}";
-	{literal}
+	
 	
 	$("#concurrenteditors").load(submitUrl);
 	chatTimer=setTimeout(updateEditors,checkTime);	
 }
 
 
-{/literal}
+
 </script>
 

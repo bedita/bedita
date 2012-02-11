@@ -14,13 +14,11 @@
 	{$html->script("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
 
-{literal}
 <script type="text/javascript">
     $(document).ready(function(){
 		openAtStart("#title,#multimedia");
     });
 </script>
-{/literal}
 
 {$view->element('form_common_js')}
 

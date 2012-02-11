@@ -9,8 +9,6 @@ var urlAddObjToAss = urlAddObjToAssBase;
 	urlAddObjToAss += "/{$relObjects.template.0.id}";
 {/if}
 
-{literal}
-
 function addObjToAssoc(url, postdata) {
 	$("#loaderContent").show();
     $.post(url, postdata, function(html){
@@ -86,7 +84,7 @@ function initializeTinyMCE(cssPath) {
 	
 }
 
-initializeTinyMCE("{/literal}{$cssUrl|default:$html->url('/css/newsletter.css')}{literal}");
+initializeTinyMCE("{$cssUrl|default:$html->url('/css/newsletter.css')}");
 
 $(document).ready(function() {
 	$("#changeTemplate").change(function() {
@@ -98,7 +96,7 @@ $(document).ready(function() {
 		if (template_id != "") {
 			$("#msgDetailsLoader").show();
 			
-			$("#msgDetails").load("{/literal}{$html->url('/newsletter/showTemplateDetailsAjax/')}{literal}" + template_id, function() {
+			$("#msgDetails").load("{$html->url('/newsletter/showTemplateDetailsAjax/')}" + template_id, function() {
 				$("#msgDetailsLoader").hide();	
 			})
 		}
@@ -108,9 +106,9 @@ $(document).ready(function() {
 		mce.remove();
 		cssBaseUrl = $(this).find("option:selected").attr("rel");
 		if (cssBaseUrl === undefined)
-			cssPath = "{/literal}{$html->url('/css/newsletter.css')}{literal}";
+			cssPath = "{$html->url('/css/newsletter.css')}";
 		else
-			cssPath =  cssBaseUrl + "/css/{/literal}{$conf->newsletterCss}{literal}";
+			cssPath =  cssBaseUrl + "/css/{$conf->newsletterCss}";
 
 		initializeTinyMCE(cssPath);
 		
@@ -119,7 +117,7 @@ $(document).ready(function() {
 
 
 	</script>
-{/literal}
+
 {/if}
 
 

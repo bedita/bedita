@@ -9,7 +9,7 @@ urls['copyItemsSelectedToAreaSection'] = "{$html->url('addItemsToAreaSection/')}
 urls['moveItemsSelectedToAreaSection'] = "{$html->url('moveItemsToAreaSection/')}";
 urls['removeFromAreaSection'] = "{$html->url('removeItemsFromAreaSection/')}";
 var no_items_checked_msg = "{t}No items selected{/t}";
-{literal}
+
 function count_check_selected() {
 	var checked = 0;
 	$('input[type=checkbox].objectCheck').each(function(){
@@ -52,14 +52,11 @@ $(document).ready(function(){
 	});
 });
 
-{/literal}
 //-->
 </script>	
 
 <style>
-	{literal}
-	.vlist {display:none}
-	{/literal}
+	.vlist { display:none }
 </style>
 
 

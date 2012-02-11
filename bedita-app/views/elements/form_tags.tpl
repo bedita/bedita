@@ -1,4 +1,3 @@
-{literal}
 <script type="text/javascript">
 <!--
 $(document).ready(function(){
@@ -8,20 +7,20 @@ $(document).ready(function(){
 	$("#callTags").bind("click", function() {
 		if (!showTagsFirst) {
 			$("#loadingTags").show();
-			$("#listExistingTags").load("{/literal}{$html->url('/tags/listAllTags')}{literal}", function() {
+			$("#listExistingTags").load("{$html->url('/tags/listAllTags')}", function() {
 				$("#loadingTags").slideUp("fast");
 				$("#listExistingTags").slideDown("fast");
-				$("#callTags").text("{/literal}{t}Hide system tags{/t}{literal}");
+				$("#callTags").text("{t}Hide system tags{/t}");
 				showTagsFirst = true;
 				showTags = true;
 			});
 		} else {
 			if (showTags) {
 				$("#listExistingTags").slideUp("fast");
-				$("#callTags").text("{/literal}{t}Show system tags{/t}{literal}");
+				$("#callTags").text("{t}Show system tags{/t}");
 			} else {
 				$("#listExistingTags").slideDown("fast");
-				$("#callTags").text("{/literal}{t}Hide system tags{/t}{literal}");
+				$("#callTags").text("{t}Hide system tags{/t}");
 			}
 			showTags = !showTags;
 		}
@@ -29,7 +28,7 @@ $(document).ready(function(){
 });
 //-->
 </script>
-{/literal}
+
 
 <div class="tab"><h2>{t}Tags{/t}</h2></div>
 <fieldset id="tags">

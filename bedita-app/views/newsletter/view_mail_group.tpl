@@ -9,7 +9,6 @@
 <!--
 var urlListSubscribers = "{$html->url('/newsletter/listSubscribers')}";
 
-{literal}
 function initSubscribers() {
 
 	$("#paginateSubscribers a, #orderSubscribers a").each(function() {
@@ -64,20 +63,20 @@ $(document).ready(function() {
 	initSubscribers();
 	
 	$("#assocCard").click( function() {
-		submitSubscribers("{/literal}{$html->url('/newsletter/addCardToGroup/')}{$item.id|default:''}{literal}");		
+		submitSubscribers("{$html->url('/newsletter/addCardToGroup/')}{$item.id|default:''}");		
 	});
 	
 	$("#changestatusSelected").click( function() {
-		submitSubscribers("{/literal}{$html->url('/newsletter/changeCardStatus/')}{$item.id|default:''}{literal}");
+		submitSubscribers("{$html->url('/newsletter/changeCardStatus/')}{$item.id|default:''}");
 	});
 
 	$("#deleteSelected").bind("click", function() {
-		if(!confirm("{/literal}{t}Do you want unsubscribe selected items?{/t}{literal}")) 
+		if(!confirm("{t}Do you want unsubscribe selected items?{/t}")) 
 			return false ;	
-		submitSubscribers("{/literal}{$html->url('/newsletter/unlinkCard/')}{$item.id|default:''}{literal}");
+		submitSubscribers("{$html->url('/newsletter/unlinkCard/')}{$item.id|default:''}");
 	});
 });
-{/literal}
+
 //-->
 </script>
 

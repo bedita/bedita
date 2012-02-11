@@ -11,9 +11,8 @@
 </tr>
 <tr>
 	<td><label class="simple" id="lemail" for="email">{t}email{/t}</label></td>
-	<td><input type="text" id="email" name="data[User][email]" value="{$BEAuthUser.email}" class="{literal}{email:true}{/literal}" title="{t}Use a valid email{/t}"/></td>
+	<td><input type="text" id="email" name="data[User][email]" value="{$BEAuthUser.email}" class="{ email:true}" title="{t}Use a valid email{/t}"/></td>
 </tr>
-
 
 <tr>
 	<td><label>{t}language{/t}</label></td>
@@ -31,22 +30,21 @@
 
 <tr>
 	<td><label class="simple">{t}old psw{/t}</label></td>
-	<td><input type="password" name="oldpwd" value="" id="oldpwd" class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}"/></td>
+	<td><input type="password" name="oldpwd" value="" id="oldpwd" class="{if isset($userdetail)}{ password:true}{else}{ required:true,password:true}{/if}"/></td>
 </tr>
 <tr>
 	<td><label class="simple">{t}new psw{/t}</label></td>
-	<td><input type="password" name="pwd" value="" id="pwd" class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}"></td>
+	<td><input type="password" name="pwd" value="" id="pwd" class="{if isset($userdetail)}{ password:true}{else}{ required:true,password:true}{/if}"></td>
 </tr>
 <tr>
 	<td><label class="simple">{t}new again{/t}</label></td>
-	<td><input type="password" name="data[User][passwd]" value="" class="{literal}{equalTo:'#pwd'}{/literal}" title="{t}Passwords should be equal{/t}"/></td>
+	<td><input type="password" name="data[User][passwd]" value="" class="{ equalTo:'#pwd'}" title="{t}Passwords should be equal{/t}"/></td>
 </tr>
 
 <tr><td colspan=2><hr /></td></tr>
 
 </table>
 
-{literal}
 <script type="text/javascript">
 $(document).ready(function(){
 $(".checko").change(function(){
@@ -59,7 +57,6 @@ $(".checko").change(function(){
 });
 });
 </script>
-{/literal}
 
 <table class="condensed">
 <tr>

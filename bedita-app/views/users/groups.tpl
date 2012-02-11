@@ -3,23 +3,20 @@
 {$html->script("jquery/jquery.cmxforms", false)}
 {$html->script("jquery/jquery.metadata", false)}
 
-
 <script type="text/javascript">
 <!--
-{literal}
+
 function viewGroup(objectid) {
-	document.location = "{/literal}{$html->url('/users/viewGroup')}{literal}/" + objectid;
+	document.location = "{$html->url('/users/viewGroup')}/" + objectid;
 }
 function delGroupDialog(name,objectid) {
-	if(!confirm("{/literal}{t}Do you really want to remove group{/t}{literal} " + name + "?")) {
+	if(!confirm("{t}Do you really want to remove group{/t} " + name + "?")) {
 		return false ;
 	}
-	document.location = "{/literal}{$html->url('/users/removeGroup')}{literal}/" + objectid;
+	document.location = "{$html->url('/users/removeGroup')}/" + objectid;
 }
-{/literal}
 //-->
 </script>
-
 
 {$view->element('modulesmenu')}
 

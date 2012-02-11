@@ -1,4 +1,3 @@
-{literal}
 <script type="text/javascript">
 	$(document).ready( function ()
 	{
@@ -13,7 +12,6 @@
 	}
 
 </style>
-{/literal}
 
 {$view->element('modulesmenu')}
 

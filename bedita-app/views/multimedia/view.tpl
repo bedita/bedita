@@ -6,19 +6,13 @@
 
 <script type="text/javascript">
 {if !empty($object.uri)}
-{literal}
-
     $(document).ready(function(){
 		openAtStart("#multimediaitem");
     });
-{/literal}
 {else}
-{literal}
-
     $(document).ready(function(){
 		openAtStart("#title,#mediatypes");
     });
-{/literal}
 {/if}
 </script>
 

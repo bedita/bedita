@@ -1,23 +1,13 @@
-
 {$html->script("form", false)}
 
 {$html->script("jquery/jquery.tablesorter.min",false)}
 
-{literal}
 <script type="text/javascript">
-    $(document).ready(function(){
-		
+    $(document).ready(function(){	
 		openAtStart("#objects");
-		
-	
-		$(".sortableTable").tablesorter( {sortList: [[1,1]]} ); 
-
-
+		$(".sortableTable").tablesorter( { sortList: [[1,1]]} ); 
     });
 </script>
-{/literal}
-
-
 
 {$view->element('modulesmenu')}
 

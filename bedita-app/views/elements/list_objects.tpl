@@ -1,4 +1,3 @@
-
 <script type="text/javascript">
 <!--
 var message = "{t}Are you sure that you want to delete the item?{/t}" ;
@@ -15,7 +14,7 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 var sel_status_msg = "{t}Select a status{/t}";
 var sel_category_msg = "{t}Select a category{/t}";
 var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
-{literal}
+
 function count_check_selected() {
 	var checked = 0;
 	$('input[type=checkbox].objectCheck').each(function(){
@@ -82,12 +81,8 @@ $(document).ready(function(){
 	});
 });
 
-
-{/literal}
-
 //-->
 </script>	
-
 	
 <form method="post" action="" id="formObject">
 
@@ -270,8 +265,6 @@ $(document).ready(function(){
 {/if}
 
 </form>
-
-
 
 <br />
 <br />

@@ -10,18 +10,13 @@
 {if $currLang != "eng"}
 	{$html->script("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
-{literal}
 <script type="text/javascript">
-    $(document).ready(function(){
-		
-		openAtStart("#title");
-		
+    $(document).ready(function(){	
+		openAtStart("#title");		
     });
 </script>
-{/literal}
 
 {$view->element('form_common_js')}
-
 
 	{$view->element('modulesmenu')}
     

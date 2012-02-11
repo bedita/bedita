@@ -14,18 +14,14 @@
 	{$html->script("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
 
-
 <script type="text/javascript">
-	{literal}
 	$(document).ready( function (){
 		openAtStart("#details");
 	});
-	{/literal}
 </script>
 
 {assign_associative var="params"  submiturl=""}
 {$view->element('form_common_js', $params)}
-
 
 {$view->element('modulesmenu')}
 
@@ -46,4 +42,3 @@
 </div>
 
 {$view->element('menuright')}
-

@@ -1,4 +1,4 @@
-{literal}
+
 <script type="text/javascript">
 $(document).ready(function(){
 	var cw = $("#cw").html();
@@ -10,7 +10,6 @@ $(document).ready(function(){
 	}
 });
 </script>
-{/literal}
 
 <span class="belinks">
 <a href="http://www.bedita.com/who-are-we" title="Chialab&Channelweb" target="besite">BEdita {$conf->majorVersion} © </a>

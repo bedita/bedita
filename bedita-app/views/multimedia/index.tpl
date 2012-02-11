@@ -6,17 +6,15 @@
 
 <script type="text/javascript">
 	
-	
 var urlGetObj		= '{$html->url("/streams/get_item_form_by_id")}' ;
 var containerItem = "#multimediaItems";
 
-{literal}
 $(document).ready(function() {  
 	var optionsForm = {
 		beforeSubmit:	resetError,
 		success:		showResponse,  // post-submit callback  
 		dataType:		'json',        // 'xml', 'script', or 'json' (expected server response type)
-		url: "{/literal}{$html->url('/files/uploadAjax')}{literal}"
+		url: "{$html->url('/files/uploadAjax')}"
 	};
 
 	$("#uploadForm").click(function() {
@@ -32,7 +30,7 @@ function commitUploadItem(IDs) {
 		var id = escape(IDs[i]) ;
 		var emptyDiv = "<div id='item_" + id + "' class='multimediaitem itemBox gold'><\/div>";
 		$(emptyDiv).load(
-			urlGetObj, {'id': id, 'relation':'attach', 'template':'/elements/file_item'}, function (responseText, textStatus, XMLHttpRequest)
+			urlGetObj, { 'id': id, 'relation':'attach', 'template':'/elements/file_item'}, function (responseText, textStatus, XMLHttpRequest)
 			{
 				$("#loading").hide();
 				$(containerItem).append(this); 
@@ -65,9 +63,7 @@ function resetError() {
 	$("#loading").show();
 }
 
-{/literal}
 </script>
-
 
 {$view->element('modulesmenu')}
 

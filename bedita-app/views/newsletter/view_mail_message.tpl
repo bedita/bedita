@@ -21,16 +21,12 @@
 {$html->script("jquery/jquery.validate")}
 
 <script type="text/javascript">
-	{literal}
 	$(document).ready( function ()
 	{
 		openAtStart("#contents, #invoice");
 		$("#timeStart, #timeEnd").timePicker({startTime: "00:00", endTime: "23:30"});
-
 		$("#updateForm").validate();
-		
 	});
-	{/literal}
 </script>
 
 {$view->element('form_common_js')}

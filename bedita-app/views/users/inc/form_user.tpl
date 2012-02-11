@@ -1,4 +1,4 @@
-{literal}
+
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("input[type=password]").val("");
@@ -17,7 +17,6 @@
 			
 		});
 	</script>
-{/literal}
 
 <form action="{$html->url('/users/saveUser')}" method="post" name="userForm" id="userForm" class="cmxform">
 			
@@ -43,7 +42,7 @@
 			</th>
 			<td>
 				<input type="text" id="username" name="data[User][userid]" value="{$userdetail.userid}" onkeyup="cutBlank(this);" 
-					class="{literal}{required:true,lettersnumbersonly:true,minLength:6}{/literal}" title="{t 1='6'}User name is required (at least %1 chars, without white spaces and special chars){/t}"/>&nbsp;</td>
+					class="{ required:true,lettersnumbersonly:true,minLength:6}" title="{t 1='6'}User name is required (at least %1 chars, without white spaces and special chars){/t}"/>&nbsp;</td>
 		</tr>
 		
 		<tbody id="defaultAuth" {if ($userdetail.auth_type|default:'')}style="display:none"{/if}>
@@ -51,14 +50,14 @@
 			 	<th>{t}New password{/t}</th>
 				<td>
 					<input type="{if !empty($userdetail.id)}password{else}text{/if}" name="pwd" value="{if empty($userdetail.id)}{$genpassword|default:''}{/if}" id="pwd"
-						class="{if isset($userdetail)}{literal}{password:true}{/literal}{else}{literal}{required:true,password:true}{/literal}{/if}" 
+						class="{if isset($userdetail)}{ password:true}{else}{required:true,password:true}{/if}" 
 				    	title="{$tr->t($conf->passwdRegexMsg)|default:''}"/>&nbsp;</td>
 			</tr>
 			<tr>
 				<th>{t}Confirm password{/t}</th>
 				<td>
 					<input type="{if !empty($userdetail.id)}password{else}text{/if}" name="data[User][passwd]" id="pwdagain" value=""
-				class="{literal}{equalTo:'#pwd'}{/literal}" title="{t}Passwords should be equal{/t}"/>&nbsp;</td>
+				class="{ equalTo:'#pwd'}" title="{t}Passwords should be equal{/t}"/>&nbsp;</td>
 			</tr>
 		</tbody>
 
@@ -91,13 +90,13 @@
 			<th><label id="lrealname" for="realname">{t}Real name{/t}</label></th>
 			<td>
 				<input type="text" id="realname" name="data[User][realname]" value="{$userdetail.realname}"
-					class="{literal}{required:true,minLength:6}{/literal}" title="{t 1='6'}Real name is required (at least %1 alphanumerical chars){/t}"/>&nbsp;</td>
+					class="{ required:true,minLength:6}" title="{t 1='6'}Real name is required (at least %1 alphanumerical chars){/t}"/>&nbsp;</td>
 		</tr>
 		<tr>
 			<th><label id="lemail" for="email">{t}Email{/t}</label></th>
 			<td>
 				<input type="text" id="email" name="data[User][email]" value="{$userdetail.email|default:''}"
-			class="{literal}{email:true}{/literal}" title="{t}Use a valid email{/t}"/>&nbsp;</td>
+			class="{ email:true}" title="{t}Use a valid email{/t}"/>&nbsp;</td>
 
 		</tr>
 		
@@ -154,7 +153,7 @@
 <fieldset id="groups">	
 
 <input type="hidden" name="groups" id="groups" 
-class="{literal}{required:true}{/literal}" title="{t}Check at least one group{/t}"/>	
+class="{ required:true}" title="{t}Check at least one group{/t}"/>	
 	
 	<table class="bordered">	
 		{if !empty($formGroups)}

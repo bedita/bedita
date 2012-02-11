@@ -4,7 +4,7 @@ var message = "{t}Are you sure that you want to delete the item?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
 var URLBase = "{$html->url('index/')}" ;
 
-{literal}
+
 $(document).ready(function() {
 
 	$(".indexlist TD").not(".checklist").not(".noclick").css("cursor","pointer").click(function(i) {
@@ -46,12 +46,12 @@ function changeStatusTranslations() {
 		for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
 		oToDel = (oToDel=="") ? "" : oToDel.substring(1);
 		$("#objects_selected").attr("value",oToDel);
-		$("#formObject").attr("action", '{/literal}{$html->url('changeStatusTranslations/')}{literal}' + status) ;
+		$("#formObject").attr("action", '{$html->url('changeStatusTranslations/')}' + status) ;
 		$("#formObject").get(0).submit() ;
 		return false ;
 	}
 }
-{/literal}
+
 </script>
 
 {$view->element('modulesmenu')}
@@ -69,7 +69,6 @@ function changeStatusTranslations() {
 	<input type="hidden" name="data[id]" value="{$object_translation.id.status|default:''}"/>
 	<input type="hidden" name="data[master_id]" value="{$object_master.id|default:''}"/>
 	<input type="hidden" name="objects_selected" id="objects_selected"/>
-	
 
 	
 <div class="tab"><h2>{t}filters{/t}</h2></div>

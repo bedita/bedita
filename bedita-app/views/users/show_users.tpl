@@ -1,7 +1,7 @@
 <script type="text/javascript">
 <!--
 var g_msg = "{t}Check at least one group{/t}";
-{literal}
+
 
 function showResponse(data) {
 	if (data.SaveErrorMsg) {
@@ -33,7 +33,7 @@ $(document).ready(function() {
 	
 	$("#createUser").click(function() {
 		if($(".ugroup:checked").size() > 0 ) {
-			optionsUcardForm.url = "{/literal}{$html->url('/users/saveUserAjax')}{literal}"; // override form action
+			optionsUcardForm.url = "{$html->url('/users/saveUserAjax')}"; // override form action
 			$('#ucardForm').ajaxSubmit(optionsUcardForm);
 		} else {
 			alert(g_msg);
@@ -53,7 +53,7 @@ $(document).ready(function() {
 
 	
 });
-{/literal}
+
 //-->
 </script>
 

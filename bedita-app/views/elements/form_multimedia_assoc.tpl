@@ -1,7 +1,7 @@
 <!-- start upload block-->
 <script type="text/javascript">
 <!--
-{literal}
+
 function addItemsToParent() {
 	var itemsIds = new Array() ;
 	$(":checkbox").each(function() {
@@ -13,7 +13,7 @@ function addItemsToParent() {
 	for(i=0;i<itemsIds.length;i++) {
 		$("#tr_"+itemsIds[i]).remove();
 	}
-	commitUploadItem(itemsIds, '{/literal}{$relation}{literal}');
+	commitUploadItem(itemsIds, '{$relation}');
 }
 
 function loadMultimediaAssoc(urlSearch, showAll) {
@@ -36,7 +36,7 @@ $(document).ready(function(){
 	$("#searchMultimedia").bind("click", function() {
 		var textToSearch = escape($("#searchMultimediaText").val());
 		loadMultimediaAssoc(
-			"{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{literal}" + textToSearch,
+			"{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/" + textToSearch,
 			true
 		);
 	});
@@ -45,14 +45,14 @@ $(document).ready(function(){
 	});
 	$("#searchMultimediaShowAll").click(function() {
 		loadMultimediaAssoc(
-			"{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}{literal}",
+			"{$html->url("/streams/showStreams")}/{$object_id|default:'0'}",
 			false
 		);
 	});
 	
-	{/literal}
+	
 	{if $toolbar|default:""}
-	{literal}
+	
 		$("#streamPagList").tablesorter({
 			headers: {  
 				0: {sorter: false},
@@ -61,31 +61,31 @@ $(document).ready(function(){
 		});
 		 
 		$("#streamNextPage").click(function() {
-			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.next}/{$toolbar.dim}{literal}";
+			urlReq = "{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.next}/{$toolbar.dim}";
 			loadMultimediaAssoc(urlReq,	false);
 		});
 		$("#streamPrevPage").click(function() {
-			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.prev}/{$toolbar.dim}{literal}";
+			urlReq = "{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.prev}/{$toolbar.dim}";
 			loadMultimediaAssoc(urlReq,	false);
 		});
 		$("#streamFirstPage").click(function() {
-			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.first}/{$toolbar.dim}{literal}";
+			urlReq = "{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.first}/{$toolbar.dim}";
 			loadMultimediaAssoc(urlReq,	false);
 		});
 		$("#streamLastPage").click(function() {
-			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.last}/{$toolbar.dim}{literal}";
+			urlReq = "{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.last}/{$toolbar.dim}";
 			loadMultimediaAssoc(urlReq,	false);
 		});
 		$("#streamPagDim").change(function() {
-			urlReq = "{/literal}{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.first}/{literal}" + $(this).val();
+			urlReq = "{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.first}/" + $(this).val();
 			loadMultimediaAssoc(urlReq,	false);
 		});
-	{/literal}
+	
 	{/if}
-	{literal}
+	
 });
 //-->
-{/literal}
+
 </script>
 
 <div id="formMultimediaAssoc">

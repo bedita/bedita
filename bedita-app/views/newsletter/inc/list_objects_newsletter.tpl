@@ -8,8 +8,6 @@ var URLBase = "{$html->url('index/')}" ;
 var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
 var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 
-
-{literal}
 $(document).ready(function(){
 	
 	$("#deleteSelected").bind("click", function() {
@@ -30,9 +28,6 @@ $(document).ready(function(){
 		$("#formObject").submit() ;
 	});
 });
-
-
-{/literal}
 
 //-->
 </script>	

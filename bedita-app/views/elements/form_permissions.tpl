@@ -1,19 +1,17 @@
 {*
-
 https://dev.channelweb.it/bedita/ticket/156
 https://dev.channelweb.it/bedita/ticket/157
-
 *}
 
 <script type="text/javascript">
 var urlLoad = "{$html->url('/pages/loadUsersGroupsAjax')}";
 var permissionLoaded = false;
 var permissions = new Array();
+
 {foreach from=$conf->objectPermissions key="permKey" item="permItem"}
 	permissions[{$permItem}] = "{t}{$permKey}{/t}";
 {/foreach}
 
-{literal}
 $(document).ready(function(){
 	
 	$("#permissionsTab").click(function() {
@@ -63,13 +61,11 @@ function refreshRemovePermButton() {
 
 function loadUserGroupAjax(url) {
 	$("#loaderug").show();
-	$("#inputAddPermGroup").load(url, {itype:'group'}, function() {
+	$("#inputAddPermGroup").load(url, { itype:'group' }, function() {
 		$("#loaderug").hide();
 		permissionLoaded = true;
 	});
 }
-
-{/literal}
 </script>
 
 

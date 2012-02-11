@@ -3,8 +3,6 @@
 
 var urlBaseAddLink = "{$html->url('/pages/addLink')}";
 
-{literal}
-
 function addItem() {
 	
 	var divToFill = "#listExistingLinks";
@@ -14,7 +12,7 @@ function addItem() {
 	var linkUrl=$("#linkUrl").val();
 	var target=$("#linkTarget").val();
 	
-	$(emptyLI).load(urlBaseAddLink, {'title': linkTitle, 'url':linkUrl, 'target':target }, function () {
+	$(emptyLI).load(urlBaseAddLink, { 'title': linkTitle, 'url':linkUrl, 'target':target }, function () {
 		
 		$("#listExistingLinks").append(this).fixItemsPriority() ; 
 	
@@ -50,7 +48,6 @@ $(document).ready(function() {
 	
 });
 
-{/literal}
 //-->
 </script>
 
@@ -93,9 +90,5 @@ $(document).ready(function() {
 			</tr>
 		</tfoot>	
 	</table>
-
-
-
-
 	
 </fieldset>

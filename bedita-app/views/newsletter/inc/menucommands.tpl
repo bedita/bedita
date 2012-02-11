@@ -3,7 +3,6 @@ Template incluso.
 Menu a SX valido per tutte le pagine del controller.
 *}
 
-
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 	{if !empty($method) && $method != "index"}
@@ -14,8 +13,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 	<div class="modules">
 		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
-	</div>
-	
+	</div>	
 	
 	{if $method eq "templates"}
 
@@ -24,8 +22,7 @@ Menu a SX valido per tutte le pagine del controller.
 		</ul>
 
 	{elseif $method eq "newsletters"}
-	
-		{literal}
+		
 		<style>
 			UL#templates {
 				margin-left:0px; 
@@ -42,7 +39,7 @@ Menu a SX valido per tutte le pagine del controller.
 			}
 			
 		</style>
-		{/literal}
+		
 		
 		<ul class="menuleft insidecol">
 			<li {if $method eq "view"}class="on"{/if}><a href="{$html->url('/newsletter/viewMailMessage')}">{t}Create new{/t}</a></li>
@@ -98,14 +95,8 @@ Menu a SX valido per tutte le pagine del controller.
 		
 		{/if}
 
-
 		</div>
-	
 	
 	{/if}
 
-
-	
-
 </div>
-

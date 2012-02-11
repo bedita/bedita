@@ -7,13 +7,13 @@
 *}
 {$html->script("jquery/jquery.changealert", false)}
 
-{literal}
+
 <script type="text/javascript">
 	$(document).ready(function(){
 		openAtStart("#details");
 	});
 </script>
-{/literal}
+
 
 {$view->element('form_common_js')}
 

@@ -1,6 +1,5 @@
 <script type="text/javascript">
 <!--
-
 // select page to visualize
 {if !empty($objects.toolbar) && $objects.toolbar.next > 0 && $objects.toolbar.dim > 5}
 	page = {$objects.toolbar.next};
@@ -10,17 +9,15 @@
 
 urlToSearchPag = urlToSearch +  "/" + page + "/10";
 
-{literal}
 $(document).ready(function() {
 
 	$("#moreRes").click(function() {
-		$("#searchResult").load(urlToSearchPag, {searchstring: $("input[name='searchstring']").val()}, function() {
+		$("#searchResult").load(urlToSearchPag, { searchstring: $("input[name='searchstring']").val()}, function() {
 			
 		});
 	});
 	
 });
-{/literal}
 //-->
 </script>
 

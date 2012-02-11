@@ -1,18 +1,14 @@
 {$html->script("jquery/jquery.disable.text.select", true)}
 
-{literal}
 <script type="text/javascript">
-	
     $(function() {
         $('.disableSelection').disableTextSelect();
     });	
-{/literal}
 	
 var urlGetObj		= '{$html->url("/streams/get_item_form_by_id")}' ;
 var urlGetAllItemNoAssoc = '{$html->url("/streams/showStreams")}/{$object.id|default:'0'}';
 var containerItem = "#multimediaItems";
 
-{literal}
 function commitUploadItem(IDs) {
 
 	var currClass =  $(".multimediaitem:last").attr("class");
@@ -23,7 +19,7 @@ function commitUploadItem(IDs) {
 		var id = escape(IDs[i]) ;
 		var emptyDiv = "<div id='item_" + id + "' class=' " + currClass + " gold '><\/div>";
 		$(emptyDiv).load(
-			urlGetObj, {'id': id, 'relation':"attach"}, function (responseText, textStatus, XMLHttpRequest)
+			urlGetObj, { 'id': id, 'relation':"attach" }, function (responseText, textStatus, XMLHttpRequest)
 			{
 				$("#loading").hide();
 				$(containerItem).append(this).fixItemsPriority(); 
@@ -56,12 +52,12 @@ function showResponse(data) {
 }
 
 function showMultimediaAjaxError(XMLHttpRequest, textStatus, errorThrown) {
-	var submitUrl = "{/literal}{$html->url('/pages/showAjaxMessage/')}{literal}";
+	var submitUrl = "{$html->url('/pages/showAjaxMessage/')}";
 	var errorMsg = textStatus;
 	if (XMLHttpRequest != null && XMLHttpRequest.responseText) {
 		errorMsg += "<br/><br/> " + XMLHttpRequest.responseText;
 	}
-	$("#messagesDiv").load(submitUrl,{"msg":errorMsg,"type":"error"}, function() {
+	$("#messagesDiv").load(submitUrl,{ "msg":errorMsg,"type":"error" }, function() {
 		$("#loading").hide();
 	});
 }
@@ -90,13 +86,13 @@ $(document).ready(function()
 	};
 
 	$("#uploadForm").click(function() {
-		optionsForm.url = "{/literal}{$html->url('/files/uploadAjax')}{literal}"; // override form action
+		optionsForm.url = "{$html->url('/files/uploadAjax')}"; // override form action
 		$('#updateForm').ajaxSubmit(optionsForm);
 		return false;
 	});
 
 	$("#uploadFormMedia").click(function() {
-		optionsForm.url = "{/literal}{$html->url('/files/uploadAjaxMediaProvider')}{literal}"; // override form action
+		optionsForm.url = "{$html->url('/files/uploadAjaxMediaProvider')}"; // override form action
 		$('#updateForm').ajaxSubmit(optionsForm);
 		return false;
 	});
@@ -134,7 +130,6 @@ $(document).ready(function()
 		});
 	});
 });
-{/literal}
 </script>
 
 {$view->set('containerId',$containerId)}

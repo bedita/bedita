@@ -11,17 +11,14 @@
 {$html->script("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
 
-{literal}
 <script type="text/javascript">
     $(document).ready(function(){	
 		openAtStart("#title,#long_desc_langs_container");
     });
 </script>
-{/literal}
 
 {assign_associative var="params" currObjectTypeId=$conf->objectTypes.short_news.id}
 {$view->element('form_common_js', $params)}
-
 
 {$view->element('modulesmenu')}
 

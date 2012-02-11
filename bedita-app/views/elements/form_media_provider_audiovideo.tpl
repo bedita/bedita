@@ -1,8 +1,7 @@
 <script type="text/javascript">
-{literal}
 
 function commitFileUpload(tmp) {
-	{/literal}{$relation}CommitUploadItem(tmp, '{$relation}'){literal} ;
+	{$relation}CommitUploadItem(tmp, '{$relation}') ;
 }
 
 function showResponse(data) {
@@ -46,7 +45,7 @@ $(document).ready(function() {
 	var optionsForm = {
 		beforeSubmit:	resetError,
         success:    	showResponse,  // post-submit callback 
-        url:       		"{/literal}{$html->url('/files/uploadAjax')}{literal}",       // override for form's 'action' attribute 
+        url:       		"{$html->url('/files/uploadAjax')}",       // override for form's 'action' attribute 
         dataType:  		'json'        // 'xml', 'script', or 'json' (expected server response type) 
     }; 
 
@@ -59,7 +58,7 @@ $(document).ready(function() {
 	var optionsFormMedia = {
 		beforeSubmit:		resetError,
        		 success:    	showResponseMedia,  // post-submit callback 
-        		url:       	"{/literal}{$html->url('/files/uploadAjaxMediaProvider')}{literal}",       // override for form's 'action' attribute 
+        		url:       	"{$html->url('/files/uploadAjaxMediaProvider')}",       // override for form's 'action' attribute 
         		dataType:  	'json'        // 'xml', 'script', or 'json' (expected server response type) 
     }; 
 
@@ -101,7 +100,7 @@ $(document).ready(function() {
 		}
 	})
 });
-{/literal}
+
 </script>
 <div id="uploadMediaProvider">
 	<div style="float: left; width: 140px;"><span class="label">{t}Item Type{/t}</span>

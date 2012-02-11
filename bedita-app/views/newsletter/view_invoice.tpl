@@ -1,5 +1,4 @@
 <script type="text/javascript">
-{literal}
 $(document).ready(function() {
 	
 	openAtStart("#details");
@@ -8,7 +7,6 @@ $(document).ready(function() {
 		location.href = $(this).val();
 	});
 });
-{/literal}
 </script>
 
 {$view->element('modulesmenu')}

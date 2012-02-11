@@ -2,8 +2,6 @@
 	
 {if $editors|@count > 1}
 
-	{literal}
-
 	<script type="text/javascript">
 		if ((autoSaveTimer !== false) && (autoSaveTimer != undefined))
 			switchAutosave("off", false);
@@ -22,8 +20,6 @@
 		});
 	</script>
 
-	{/literal}
-
 	{t}Warning{/t}.<br/>
 	{t}Concurrent editors:{/t}
 
@@ -40,7 +36,6 @@
 {else}
 
 	<script type="text/javascript">
-	{literal}
 	if (autoSaveTimer === false) {
 		var newStatus = $("input[name=data\\[status\\]]:checked").attr('value');
 		if ((status != 'on') && (status == newStatus))
@@ -49,6 +44,5 @@
 	$(".secondacolonna .modules label").removeClass("concurrentuser").tooltip({
 			delay: 0
 	});
-	{/literal}
 	</script>
 {/if}

@@ -10,13 +10,11 @@
 {if $currLang != "eng"}
 {$html->script("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
 {/if}
-{literal}
 <script type="text/javascript">
     $(document).ready(function(){
 		openAtStart("#title,#eventDates,#geotag,#promoter");
     });
 </script>
-{/literal}
 
 {assign_associative var="params" currObjectTypeId=$conf->objectTypes.event.id}
 {$view->element('form_common_js', $params)}

@@ -1,4 +1,4 @@
-{literal}
+
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#listTags a").bind("click", function() {
@@ -25,7 +25,6 @@
 		});
 	});
 </script>
-{/literal}
 
 <div id="listTags" class="tag graced" style="text-align:justify; line-height:1.5em;">
 {if !empty($listTags)}

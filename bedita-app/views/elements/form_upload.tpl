@@ -9,17 +9,17 @@
 var title_dialog	= '{t}files queued{/t}' ;
 var postappend_info	= '{t}files queued{/t}' ;
 var URLDelete		= '{$html->url('/files/deleteFile')}' ;
-{literal}
+
 
 var swfu;			// upload object
 var files = {} ;	// file queue
 
 function commitFileUpload(tmp) {
-	{/literal}{$relation}CommitUploadItem(tmp, '{$relation}'){literal} ;
+	{$relation}CommitUploadItem(tmp, '{$relation}') ;
 }
 
 function rollbackFileUpload() {
-	{/literal}{$relation}{literal}RollbackUploadItem() ;
+	{$relation}RollbackUploadItem() ;
 }
 
 function createThumbnails() {
@@ -56,7 +56,7 @@ function closeEsc() {
 				var fileName= files[id] ;
 				// Delete file
 				counter++ ;
-				jQuery.post( URLDelete, {'filename': fileName}, function (data, textStatus) {
+				jQuery.post( URLDelete, { 'filename': fileName }, function (data, textStatus) {
 					$(item).remove() ;
 					files[id] = '' ;
 					counter-- ;
@@ -83,7 +83,7 @@ function localShowHideBox(boxToShowId) {
 function uploadProgress(file, bytesLoaded) {
 	var progress = document.getElementById(file.id + "progress");
 	var percent = Math.ceil((bytesLoaded / file.size) * 200);
-	progress.style.background = "#f0f0f0 url({/literal}{$session->webroot}{literal}img/swfupload/progressbar.png) no-repeat -" + (200 - percent) + "px 0";
+	progress.style.background = "#f0f0f0 url({$session->webroot}img/swfupload/progressbar.png) no-repeat -" + (200 - percent) + "px 0";
 }
 
 function errorsFunction(errcode, file, msg) {
@@ -96,11 +96,11 @@ function fileCompletedFunction(file) {
 
 window.onload = function() {
 	swfu = new SWFUpload({
-		upload_script : "{/literal}{$html->url('/files/upload')}{literal}",
+		upload_script : "{$html->url('/files/upload')}",
 		target : "SWFUploadTarget",
-		flash_path : "{/literal}{$session->webroot}{literal}js/swfupload/SWFUpload.swf",
-		browse_link_innerhtml : "{/literal}{t}Browse{/t}{literal}",
-		upload_link_innerhtml : "{/literal}{t}Upload queue{/t}{literal}",
+		flash_path : "{$session->webroot}js/swfupload/SWFUpload.swf",
+		browse_link_innerhtml : "{t}Browse{/t}",
+		upload_link_innerhtml : "{t}Upload queue{/t}",
 		browse_link_class : "swfuploadbtn browsebtn",
 		upload_link_class : "swfuploadbtn uploadbtn",
 		flash_loaded_callback : 'swfu.flashLoaded',
@@ -141,7 +141,7 @@ function beuploadFileCancelled(file, queuelength) {
 // start upload
 function beuploadFileStart(file, position, queuelength) {
 	$("#"+file.id+"").attr("class", $("#"+file.id+"").attr("class") + " fileUploading") ;
-	$("#queueinfo").html("{/literal}{t}Uploading file{/t}{literal} " + position + "/" + queuelength) ;
+	$("#queueinfo").html("{t}Uploading file{/t} " + position + "/" + queuelength) ;
 }
 
 function beuploadFileComplete(file) {
@@ -199,10 +199,10 @@ function beUploadQueueComplete(file) {
 	}) ;
 	
 	if(ok>0) {
-		$("#queueinfo").html("{/literal}{t}Upload end{/t}{literal}") ;
+		$("#queueinfo").html("{t}Upload end{/t}") ;
 		createThumbnails();
 	} else {
-		$("#queueinfo").html("{/literal}{t}Errors during upload{/t}{literal}") ;
+		$("#queueinfo").html("{t}Errors during upload{/t}") ;
 	}
 }
 
@@ -214,16 +214,14 @@ function beCancelQueue() {
 }
  
 //-->
-{/literal}
+
 </script>
 
 
 		<div id="uploadBox" style="border:5px solid red; padding:5px;">
 			<div id="wrapper">
 				<div id="content">
-					
-
-					
+						
 					<p id="queueinfo">{t}Queue is empty{/t}</p>
 					
 					<div style="border:5px solid gold" id="SWFUploadFileListingFiles"></div>

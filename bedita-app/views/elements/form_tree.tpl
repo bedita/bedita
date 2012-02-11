@@ -1,17 +1,10 @@
 <script type="text/javascript">
 <!--
-{literal}
+{if $object.fixed}
 $(document).ready(function(){
-	
-	{/literal}
-	{if $object.fixed}
 		$("#whereto input[type=checkbox]").attr("disabled","disabled");
-	{/if}
-	
-	{literal}
-	
 });
-{/literal}
+{/if}
 //-->
 </script>
 

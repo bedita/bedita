@@ -3,7 +3,6 @@
 <script type="text/javascript">
 var urlAddObjToAss= "{$html->url('/pages/loadObjectToAssoc/')}{$object.id}";
 <!--
-{literal}
 
 function relatedRefreshButton() {
 	$("#relationContainer").find("input[name='details']").click(function() {
@@ -97,7 +96,7 @@ $(document).ready(function() {
 		beforeSubmit:	resetErrorDownloadRel,
 		success:		showResponseDownloadRel,  // post-submit callback  
 		dataType:		'json',        // 'xml', 'script', or 'json' (expected server response type)
-		url: "{/literal}{$html->url('/files/uploadAjax/DownloadRel')}{literal}"
+		url: "{$html->url('/files/uploadAjax/DownloadRel')}"
 	};
 
 	$("#uploadFormDownloadRel").click(function() {
@@ -110,8 +109,7 @@ $(document).ready(function() {
 $(function() {
     $('.disableSelection').disableTextSelect();
 });
-	
-{/literal}
+
 //-->
 </script>
 

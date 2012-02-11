@@ -4,7 +4,7 @@
 
 <script type="text/javascript">
 var url="{$html->url('/webmarks/checkUrl')}";
-{literal}
+
 	function callback(data) {
 		$('#http_code_result').text(data.http_code);
 	}
@@ -15,12 +15,9 @@ var url="{$html->url('/webmarks/checkUrl')}";
 			$.post(url, postdata, callback, "json");
 		});
 	});
-	
-{/literal}
 </script>
 
 {$view->element('texteditor')}
-
 
 <form action="{$html->url('/webmarks/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>

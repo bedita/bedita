@@ -135,7 +135,7 @@ $(document).ready(function() {
 		{/foreach}
 	</ul>
 
-{literal}
+
 <script type="text/javascript">
 <!--
 $(document).ready(function(){
@@ -145,7 +145,7 @@ $(document).ready(function(){
 	$("#callTags").bind("click", function() {
 		if (!showTagsFirst) {
 			$("#loadingTags").show();
-			$("#listExistingTags").load("{/literal}{$html->url('/tags/listAllTags/1')}{literal}", function() {
+			$("#listExistingTags").load("{$html->url('/tags/listAllTags/1')}", function() {
 				$("#loadingTags").slideUp("fast");
 				$("#listExistingTags").slideDown("fast");
 				showTagsFirst = true;
@@ -163,7 +163,7 @@ $(document).ready(function(){
 });
 //-->
 </script>
-{/literal}
+
 	
 	<div class="tab"><h2 id="callTags">{t}tags{/t}</h2></div>
 	<div id="tags">

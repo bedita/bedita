@@ -4,19 +4,16 @@
 
 <script type="text/javascript">
 <!--
-{literal}
 $(document).ready(function() {
 
 	$("#contents_nav a").click(function() {
 		loadObjToAssoc($(this).attr("rel"));
 	});
 
-	 $("#objtable").tablesorter(); 
-		
+	 $("#objtable").tablesorter(); 	
 	 $("#objtable thead TH").css("cursor","pointer"); 
 
 });
-{/literal}
 //-->
 </script>
 

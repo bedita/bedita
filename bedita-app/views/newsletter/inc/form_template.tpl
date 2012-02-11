@@ -10,7 +10,7 @@
 
 {if ($conf->mce|default:true)}
 	{$html->script("tiny_mce/tiny_mce")}
-{literal}
+
 <script language="javascript" type="text/javascript">
 
 function initializeTinyMCE(cssPath) {
@@ -42,7 +42,7 @@ function initializeTinyMCE(cssPath) {
 	});
 }
 
-initializeTinyMCE("{/literal}{$templateCSS}{literal}");
+initializeTinyMCE("{$templateCSS}");
 
 $(document).ready(function() {
 	$("#changeCss").change(function() {
@@ -50,16 +50,16 @@ $(document).ready(function() {
 		mce.remove();
 		cssBaseUrl = $(this).find("option:selected").attr("rel");
 		if (cssBaseUrl === undefined)
-			cssPath = "{/literal}{$html->url('/css/newsletter.css')}{literal}";
+			cssPath = "{$html->url('/css/newsletter.css')}";
 		else
-			cssPath =  cssBaseUrl + "/css/{/literal}{$conf->newsletterCss}{literal}";
+			cssPath =  cssBaseUrl + "/css/{$conf->newsletterCss}";
 
 		initializeTinyMCE(cssPath);	
 	});
 });
 	
 </script>
-{/literal}
+
 {/if}
 
 <form action="{$html->url('/newsletter/saveTemplate')}" method="post" name="updateForm" id="updateForm" class="">
@@ -184,10 +184,7 @@ ________________________________
 		
 	</div>
 	
-
-	
 	</fieldset>
 
 {$view->element('form_versions')}
 </form>
-

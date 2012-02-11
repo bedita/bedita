@@ -1,21 +1,20 @@
 <script type="text/javascript">
 var sendNewsletterUrl = "{$html->url('/newsletter/sendNewsletter')}";
 var testNewsletterUrl = "{$html->url('/newsletter/testNewsletter')}";
-{literal}
+
 $(document).ready(function() {
 	$("#sendNewsletter").click(function() {
 		$("#updateForm").attr("action", sendNewsletterUrl).submit();
 	});
 	
 	$("#testNewsletter").click(function() {
-		to = prompt("{/literal}{t}Send email to{/t}{literal}");
+		to = prompt("{t}Send email to{/t}");
 		$("#updateForm").attr("action", testNewsletterUrl + "/" + to);
 		$("#updateForm").submit();
 	});
 });
-{/literal}
-</script>
 
+</script>
 
 <div class="tab"><h2>{t}Invoice{/t}</h2></div>
 

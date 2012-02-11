@@ -1,4 +1,3 @@
-{literal}
 <!-- Google Maps API key API 3.3 -->
 <script type="text/javascript"
     src="http://maps.google.com/maps/api/js?sensor=false">
@@ -49,7 +48,6 @@ $(document).ready(function(){
 	});	
 });	
 </script>
-{/literal}
 
 <div class="tab"><h2>{t}{$title|default:'Geotag'}{/t}</h2></div>
 

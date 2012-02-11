@@ -1,17 +1,16 @@
-
 <script type="text/javascript">
 <!--
-{literal}
+
 	function viewUser(objectid) {
-		document.location = "{/literal}{$html->url('/users/viewUser')}{literal}/" + objectid;
+		document.location = "{$html->url('/users/viewUser')}/" + objectid;
 	}
 	function delUserDialog(userid,objectid) {
-		if(!confirm("{/literal}{t}Do you really want to remove user{/t}{literal} " + userid + "?")) {
+		if(!confirm("{t}Do you really want to remove user{/t} " + userid + "?")) {
 			return false ;
 		}
-		document.location = "{/literal}{$html->url('/users/removeUser')}{literal}/" + objectid;
+		document.location = "{$html->url('/users/removeUser')}/" + objectid;
 	}
-{/literal}
+
 //-->
 </script>
 
@@ -21,15 +20,12 @@
 
 {include file="inc/menucommands.tpl"}
 
-
 <div class="head">
 	<div class="toolbar" style="white-space:nowrap">
 		<h2>{t}System users{/t}</h2>
 		{include file="./inc/toolbar.tpl" label_items='users'}
 	</div>
 </div>
-
-
 
 <div class="mainfull">
 
