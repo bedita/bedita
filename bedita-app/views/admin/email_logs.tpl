@@ -50,7 +50,7 @@
 			<th>{$paginator->sort($label_recipient,'recipient')}</th>
 			<th>{$paginator->sort($label_subject,'subject')}</th>
 			<th>{$paginator->sort($label_msg,'mail_body')}</th>
-			<td>-</td>
+			<th></th>
 		</tr>
 		{if !empty($logs)}
 		{foreach from=$logs item=j}

@@ -65,12 +65,12 @@
 			{if !empty($bedita_cfg_err)}
 				<p>{$bedita_cfg_err}</p>
 			{else}
-			<table class="" border=0 style="margin-bottom:10px">
+			<table border=0 style="margin-bottom:10px">
 
 				<tr>
 					<th style="text-transform:none">{t}BEdita url{/t}:</th>
 					<td>
-						<input type="text" name="sys[beditaUrl]" value="{$conf->beditaUrl}" style="width: 300px;"/>
+						<input type="text" name="sys[beditaUrl]" value="{$conf->beditaUrl}" style="width: 480px;"/>
 					</td>
 					{if !empty($bedita_url_err)}
 					<td>
@@ -81,7 +81,7 @@
 				<tr>
 					<th>{t}Media root{/t}:</th>
 					<td>
-						<input type="text" name="sys[mediaRoot]" value="{$conf->mediaRoot}" style="width: 300px;"/>
+						<input type="text" name="sys[mediaRoot]" value="{$conf->mediaRoot}" style="width: 480px;"/>
 					</td>
 					{if !empty($media_root_err)}
 					<td>
@@ -93,7 +93,7 @@
 				<tr>
 					<th>{t}Media url{/t}:</th>
 					<td>
-						<input type="text" name="sys[mediaUrl]" value="{$conf->mediaUrl}" style="width: 300px;"/>
+						<input type="text" name="sys[mediaUrl]" value="{$conf->mediaUrl}" style="width: 480px;"/>
 					</td>
 					{if !empty($media_url_err)}
 					<td>
@@ -104,11 +104,10 @@
 				
 				</table>
 				
-				<hr />
 				
-				<table>
 {* <!--
-				<tr>
+		<table>		
+			<tr>
 					<th>{t}Date Pattern{/t}:</th>
 					<td>
 						<input type="text" name="sys[datePattern]" value="{$conf->datePattern}" style="width: 300px;"/>
@@ -152,39 +151,11 @@
 						</div>
 					</td>
 				</tr>
-				
+		</table>	
  -->
 *}
-				<tr>
-					<th style="padding-top:10px; vertical-align:top"><b>{t}Smtp Options{/t}</b>:</th>
-					<td>
-						<table class="simpleList">
-						<tr><th>{t}port{/t}:</th><td><input type="text" name="sys[smtpOptions][port]" value="{$conf->smtpOptions.port|default:''}" /></td></tr>
-						<tr><th>{t}timeout{/t}:</th><td><input type="text" name="sys[smtpOptions][timeout]" value="{$conf->smtpOptions.timeout|default:''}" /></td></tr>
-						<tr><th>{t}host{/t}:</th><td><input type="text" name="sys[smtpOptions][host]" value="{$conf->smtpOptions.host|default:''}" /></td></tr>
-						<tr><th>{t}username{/t}:</th><td><input type="text" name="sys[smtpOptions][username]" value="{$conf->smtpOptions.username|default:''}" /></td></tr>
-						<tr><th>{t}password{/t}:</th><td><input type="password" name="sys[smtpOptions][password]" /></td></tr>
-						<tr>
-							<td colspan="2">
-								<div class="modalcommands administration">
-									<input type="button" id="testSmtp" value="  test smtp  " /> 
-								</div>
-							</td>
-						</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<th style="padding-top:10px; vertical-align:top"><b>{t}Mail support{/t}</b>:</th>
-					<td>
-						<table class="simpleList">
-							<tr><th>{t}from{/t}:</th><td><input type="text" name="sys[mailSupport][from]" value="{$conf->mailSupport.from|default:''}" /></td></tr>
-							<tr><th>{t}to{/t}:</th><td><input type="text" name="sys[mailSupport][to]" value="{$conf->mailSupport.to|default:''}" /></td></tr>
-							<tr><th>{t}subject{/t}:</th><td><input type="text" name="sys[mailSupport][subject]" value="{$conf->mailSupport.subject|default:''}" /></td></tr>
-						</table>
-					</td>
-				</tr>
-			</table>
+				
+
 			{/if}
 
 
@@ -206,19 +177,24 @@
 					</td>
 				</tr>
 			</table>
-
-			<hr />
+			{/if}
+		</fieldset>
 			
-			<table>
-				<tr>
-					<th colspan="4"><label>{t}Languages configuration{/t}</label></th>
-				</tr>
+		<div class="tab"><h2>{t}Language configuration{/t}</h2></div>
+
+		<fieldset id="general_config">
+
+			{if !empty($bedita_cfg_err)}
+				<p>{$bedita_cfg_err}</p>
+			{else}
+			<table class="bordered">
 				<tr>
 					<th>{t}Backend languages{/t}:</th>
 					<td>
 						{if !empty($po_langs)}
 						{foreach $po_langs as $langKey name='lof'}
-						<input name="sys[langsSystem][{$langKey}]" type="checkbox" {foreach key=key item=item name=l from=$conf->langsSystem}{if $key == $langKey} checked="checked"{/if}{/foreach} value="{$conf->langOptionsDefault[$langKey]}" />{$conf->langOptionsDefault[$langKey]}
+						<input name="sys[langsSystem][{$langKey}]" type="checkbox" {foreach key=key item=item name=l from=$conf->langsSystem}{if $key == $langKey} checked="checked"{/if}{/foreach} value="{$conf->langOptionsDefault[$langKey]}" />
+							{$conf->langOptionsDefault[$langKey]}
 						{/foreach}
 						{/if}
 					</td>
@@ -276,29 +252,46 @@
 				</tr>
 			</table>
 			{/if}
-			
-			{bedev}
-			<hr />
-			
-			<table>
+		</fieldset>
+		
+		<div class="tab"><h2>{t}Mail configuration{/t}</h2></div>
+		<fieldset>
+			<table class="bordered">
 				<tr>
-					<th colspan="4"><label>{t}Notifications setup{/t}</label></label></th>
+					<th rowspan=4 style="padding-top:10px; vertical-align:top"><b>{t}Smtp Options{/t}</b>:</th>
+					<th>{t}port{/t}:</th>
+					<td><input type="text" name="sys[smtpOptions][port]" value="{$conf->smtpOptions.port|default:''}" /></td>
+					<th>{t}timeout{/t}:</th>
+					<td><input type="text" name="sys[smtpOptions][timeout]" value="{$conf->smtpOptions.timeout|default:''}" /></td>
 				</tr>
 				<tr>
-					<td>{t}From{/t} {t}name{/t}:</td>
-					<td><input type="text" name="" value="" /></td>
-					<td>{t}From{/t} {t}email{/t}</td>
-					<td><input type="text" name="" value="noreply@" /></td>
+					<th>{t}host{/t}:</th>
+					<td colspan="3"><input type="text" name="sys[smtpOptions][host]" value="{$conf->smtpOptions.host|default:''}" /></td>
 				</tr>
-					<tr>
-					<td>{t}Subject prefix{/t}:</td>
-					<td><input type="text" name="" value="[BEdita]" /></td>
+				<tr>
+					<th>{t}username{/t}:</th>
+					<td><input type="text" name="sys[smtpOptions][username]" value="{$conf->smtpOptions.username|default:''}" /></td>
+					<th>{t}password{/t}:</th>
+					<td><input type="password" name="sys[smtpOptions][password]" /></td>
 				</tr>
-				
-				
-			</table>
-			{/bedev}
-			
+				<tr>
+					<td colspan="4">
+						<div class="modalcommands administration">
+							<input type="button" id="testSmtp" value="  test smtp  " /> 
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th rowspan=2 style="padding-top:10px; vertical-align:top"><b>{t}Mail support{/t}</b>:</th>
+					<th>{t}from{/t}:</th>
+					<td><input type="text" name="sys[mailSupport][from]" value="{$conf->mailSupport.from|default:''}" /></td>
+					<th>{t}to{/t}:</th>
+					<td><input type="text" name="sys[mailSupport][to]" value="{$conf->mailSupport.to|default:''}" /></td></tr>
+				<tr>
+					<th>{t}subject{/t}:</th>
+					<td colspan=3><input type="text" name="sys[mailSupport][subject]" value="{$conf->mailSupport.subject|default:''}" /></td>
+				</tr>
+				</table>
 		</fieldset>
 
 	</form>

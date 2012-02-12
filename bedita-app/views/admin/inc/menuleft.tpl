@@ -12,12 +12,15 @@ Menu a SX valido per tutte le pagine del controller.
 		<li {if $view->action eq 'systemEvents'}class="on"{/if}>{$tr->link('System Events', '/admin/systemEvents')}</li>
 		<li {if $view->action eq 'systemInfo'}class="on"{/if}>{$tr->link('System Info', '/admin/systemInfo')}</li>
 		<li {if $view->action eq 'systemLogs'}class="on"{/if}>{$tr->link('System Logs', '/admin/systemLogs')}</li>
-		<li {if $view->action eq 'emailInfo'}class="on"{/if}>{$tr->link('Mail Queue', '/admin/emailInfo')}</li>
-		<li {if $view->action eq 'emailLogs'}class="on"{/if}>{$tr->link('Mail Logs', '/admin/emailLogs')}</li>
 	</ul>
 
 	<ul class="menuleft insidecol">
 		<li {if $view->action eq 'viewConfig'}class="on"{/if}>{$tr->link('Configuration', '/admin/viewConfig')}</li>
+	</ul>
+	
+	<ul class="menuleft insidecol">
+		<li {if $view->action eq 'emailInfo'}class="on"{/if}>{$tr->link('Mail Queue', '/admin/emailInfo')}</li>
+		<li {if $view->action eq 'emailLogs'}class="on"{/if}>{$tr->link('Mail Logs', '/admin/emailLogs')}</li>
 	</ul>
 
 	<ul class="menuleft insidecol">

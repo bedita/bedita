@@ -31,7 +31,7 @@
 		<th>{t}Newsletter{/t}</th>
 		<th>{$paginator->sort($label_mail_body,'mail_body')}</th>
 		<th>{$paginator->sort($label_status,'status')}</th>
-		<td>-</td>
+		<th></th>
 	</tr>
 	{foreach from=$jobs item=j}	
 	<form id="form_job_{$j.MailJob.id}" method="post" action="">
@@ -39,8 +39,16 @@
 		<td style="white-space:nowrap">{$j.MailJob.id}</td>
 		<td style="white-space:nowrap">{$j.MailJob.created|date_format:$conf->dateTimePattern}</td>
 		<td style="white-space:nowrap">{$j.MailJob.recipient}</td>
-		<td style="white-space:nowrap">{$j.MailJob.sending_date|date_format:$conf->dateTimePattern}</td>
-		<td>{if !empty($j.MailJob.mail_message_id)}<a href="{$html->url('/newsletter/view/')}{$j.MailJob.mail_message_id}">{$j.MailJob.mail_message_id}</a>{else}-{/if}</td>
+		<td style="text-align:center; white-space:nowrap">
+			{$j.MailJob.sending_date|date_format:$conf->dateTimePattern|default:'no'}
+		</td>
+		<td style="text-align:center">
+			{if !empty($j.MailJob.mail_message_id)}
+			<a href="{$html->url('/newsletter/view/')}{$j.MailJob.mail_message_id}">{$j.MailJob.mail_message_id}</a>
+			{else}
+				
+			{/if}
+		</td>
 		<td>{$j.MailJob.mail_body|truncate:64}</td>
 		<td>{$j.MailJob.status}</td>
 		<td>{if $j.MailJob.status != 'pending'}<input type="button" class="delJob" value="{t}Delete{/t}" title="{$j.MailJob.id}" />{/if}</td>
