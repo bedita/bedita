@@ -47,7 +47,7 @@ $(document).ready(function() {
 	});
 	
 	$("#addButton").click(function() {
-		obj_sel = {relation: relType};
+		obj_sel = { relation: relType};
 		obj_sel.object_selected = "";
 		
 		$("#assocObjContainer :checked").each(function() {
@@ -132,7 +132,6 @@ padding:5px 0px 5px 30px; margin-bottom:1px; font-weight:bold; cursor:pointer;">
 		</tr>
 	</table>
 
-
 </div>
 	
 	<div id="loadObjInModal" class="loader"><span></span></div>
@@ -147,7 +146,3 @@ padding:5px 0px 5px 30px; margin-bottom:1px; font-weight:bold; cursor:pointer;">
 	
 	</div>
 </div>
-
-
-
-	
