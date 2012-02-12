@@ -11,13 +11,9 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 	<div class="modules">
 		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
 	</div> 
-	
- 	
-	
+		
 	{if $module_modify eq '1'}
 	<div class="insidecol">
-
-
 
 	
 		{if $view->action == "viewUser"}
@@ -46,10 +42,12 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 		{elseif $view->action == "emailInfo"}
 
 			<form action="{$html->url('/admin/deleteAllMailUnsent')}" method="post">
-			<input type="submit" value="{t}delete all{/t}"/>
-			<br/>[{t}Not newsletter mail{/t}]
+			<input type="submit" value="{t}delete all{/t}*"/>
+				<p style="margin:10px; padding:10px; border-top:1px solid gray; border-bottom:1px solid gray; font-style:italic">
+					* {t}does not affect email newsletter{/t}
+				</p>
 			</form>
-
+		
 		{elseif $view->action == "emailLogs"}
 
 			<form action="{$html->url('/admin/deleteAllMailLogs')}" method="post">
@@ -60,8 +58,7 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 
 			<input class="bemaincommands" type="button" name="save" onClick="$('#configForm').submit()"
 			value="{t}save{/t}" />
-		
-		
+
 		{/if}
 	</div>
 	{/if}
