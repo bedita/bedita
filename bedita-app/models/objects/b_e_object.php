@@ -343,6 +343,14 @@ class BEObject extends BEAppModel
 			// set one-way relation
 			$oneWayRelation = array_merge( Configure::read("defaultOneWayRelation"), Configure::read("cfgOneWayRelation") );
 			
+			$allRelations = BeLib::getObject("BeConfigure")->mergeAllRelations();
+			$inverseRel = array();
+			foreach ($allRelations as $n => $r) {
+				if(!empty($r["inverse"])) {
+					$inverseRel[$r["inverse"]] = $n;
+				}
+			}
+			
 			$assoc 	= $this->hasMany['RelatedObject'] ;
 			$table 	= $db->name($db->fullTableName($assoc['joinTable']));
 			$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch, priority"  ;
@@ -363,23 +371,30 @@ class BEObject extends BEAppModel
 						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
 						
 						if(!in_array($switch,$oneWayRelation)) {
+							
+							$inverseSwitch = $switch;
+							if(!empty($allRelations[$switch]) && !empty($allRelations[$switch]["inverse"])){
+								$inverseSwitch = $allRelations[$switch]["inverse"];
+							} else if(!empty($inverseRel[$switch])) {
+								$inverseSwitch = $inverseRel[$switch];
+							}
 							// find priority of inverse relation
 							// #CUSTOM QUERY
 							$inverseRel = $this->query("SELECT priority 
 														  FROM {$table} 
 														  WHERE id={$obj_id} 
 														  AND object_id={$this->id} 
-														  AND switch='{$switch}'");
+														  AND switch='{$inverseSwitch}'");
 							
 							if (empty($inverseRel[0]["content_objects"]["priority"])) {
 								// #CUSTOM QUERY
-								$inverseRel = $this->query("SELECT MAX(priority)+1 AS priority FROM {$table} WHERE id={$obj_id} AND switch='{$switch}'");
+								$inverseRel = $this->query("SELECT MAX(priority)+1 AS priority FROM {$table} WHERE id={$obj_id} AND switch='{$inverseSwitch}'");
 								$inversePriority = (empty($inverseRel[0][0]["priority"]))? 1 : $inverseRel[0][0]["priority"];
 							} else {
 								$inversePriority = $inverseRel[0]["content_objects"]["priority"];
 							}						
 							// #CUSTOM QUERY
-							$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$switch}', ". $inversePriority  .")" ;
+							$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$inverseSwitch}', ". $inversePriority  .")" ;
 						}
 						
 						/**

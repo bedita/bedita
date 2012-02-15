@@ -201,5 +201,39 @@ class BeConfigure {
 		}
 	}
 
+	
+	/**
+	 * Returns array with all relations, merging defaultObjRelationType, objRelationType, plugged.objRelationType
+	 * 
+	 * @return array
+	 */
+	public function mergeAllRelations() {
+		$defaultObjRel = Configure::read("defaultObjRelationType");
+		$cfgObjRel = Configure::read("objRelationType");
+		$pluggedObjRel = Configure::read("plugged.objRelationType");
+		if (!empty($cfgObjRel)) {
+			foreach($cfgObjRel as $relation => $rules) {
+				if (isset($defaultObjRel[$relation])) {
+					$defaultObjRel[$relation]["left"] = array_merge($defaultObjRel[$relation]["left"], $rules["left"]);
+					$defaultObjRel[$relation]["right"] = array_merge($defaultObjRel[$relation]["right"], $rules["right"]);
+				} else {
+					$defaultObjRel[$relation] = $rules;
+				}
+			}
+		}
+		if (!empty($pluggedObjRel)) {
+			foreach($pluggedObjRel as $relation => $rules) {
+				if (isset($defaultObjRel[$relation])) {
+					$defaultObjRel[$relation]["left"] = array_merge($defaultObjRel[$relation]["left"], $rules["left"]);
+					$defaultObjRel[$relation]["right"] = array_merge($defaultObjRel[$relation]["right"], $rules["right"]);
+				} else {
+					$defaultObjRel[$relation] = $rules;
+				}
+			}
+		}
+		return $defaultObjRel;
+	}
+
+	
 }
 ?>
