@@ -666,38 +666,6 @@ class AppController extends Controller
 	}
 	
 	/**
-	 * return an array with all relations merging defaultObjRelationType, objRelationType, plugged.objRelationType
-	 * 
-	 * @return array
-	 */
-	protected function mergeAllRelations() {
-		$defaultObjRel = Configure::read("defaultObjRelationType");
-		$cfgObjRel = Configure::read("objRelationType");
-		$pluggedObjRel = Configure::read("plugged.objRelationType");
-		if (!empty($cfgObjRel)) {
-			foreach($cfgObjRel as $relation => $rules) {
-				if (isset($defaultObjRel[$relation])) {
-					$defaultObjRel[$relation]["left"] = array_merge($defaultObjRel[$relation]["left"], $rules["left"]);
-					$defaultObjRel[$relation]["right"] = array_merge($defaultObjRel[$relation]["right"], $rules["right"]);
-				} else {
-					$defaultObjRel[$relation] = $rules;
-				}
-			}
-		}
-		if (!empty($pluggedObjRel)) {
-			foreach($pluggedObjRel as $relation => $rules) {
-				if (isset($defaultObjRel[$relation])) {
-					$defaultObjRel[$relation]["left"] = array_merge($defaultObjRel[$relation]["left"], $rules["left"]);
-					$defaultObjRel[$relation]["right"] = array_merge($defaultObjRel[$relation]["right"], $rules["right"]);
-				} else {
-					$defaultObjRel[$relation] = $rules;
-				}
-			}
-		}
-		return $defaultObjRel;
-	}
-
-	/**
 	 * View revision data for a specific object and revision number:
 	 *  * all data as in revision in $revision array
 	 *  * array of changed fields in $diff
@@ -1191,14 +1159,16 @@ abstract class ModulesController extends AppController {
 	}
 	
 	/**
-	 * return an array of available relations for common object defined from $objectType
-	 * relations with "hidden" set to true are excluded from array  
+	 * Returns array of available relations for an $objectType
+	 * relations with "hidden" => true are excluded
+	 * If "inverse" relation is defined ("inverse" => "inverseName"), then types on "right" side
+	 *  will have "inverseName" relation
 	 * 
 	 * @param string $objectType
 	 * @return array
 	 */
 	protected function getAvailableRelations($objectType) {
-		$allRelations = $this->mergeAllRelations();
+		$allRelations = BeLib::getObject("BeConfigure")->mergeAllRelations();
 		$availableRelations = array();
 		foreach ($allRelations as $relation => $rule) {
 			if (empty($rule["hidden"])) {
@@ -1209,21 +1179,28 @@ abstract class ModulesController extends AppController {
 				} elseif (!empty($rule[$objectType])) {
 					$availableRelations[] = $relation;
 				// rule on sideA / sideB
-				} elseif (key_exists("left", $rule) 
-							&& key_exists("right", $rule)
-							&& is_array($rule["left"])
-							&& is_array($rule["right"])
-							) {
-					if ( (in_array($objectType, $rule["left"]) || in_array($objectType, $rule["right"])) 
-							|| (empty($rule["left"]) || empty($rule["right"]))) {
-						$availableRelations[] = $relation;
-					}
 				} else {
-					$availableRelations[] = $relation;
+					$addRelation = array();
+					if (key_exists("left", $rule)) {
+						if(is_array($rule["left"]) && (in_array($objectType, $rule["left"]) || (empty($rule["left"])))) {
+							$addRelation[] = $relation;
+						} else if($rule["left"] === $objectType) {
+							$addRelation[] = $relation;
+						}
+					}
+					if (key_exists("right", $rule)) {
+						$rightRel = !empty($rule["inverse"]) ? $rule["inverse"] : $relation;
+						if(is_array($rule["right"]) && (in_array($objectType, $rule["right"]) || (empty($rule["right"])))) {
+							$addRelation[] = $rightRel;
+						} else if($rule["right"] === $objectType) {
+							$addRelation[] = $rightRel;
+						}
+					}
+					$availableRelations= array_merge($availableRelations, $addRelation);
 				}
 			}
 		}
-		return $availableRelations;
+		return array_unique($availableRelations);
 	}
 	
 	

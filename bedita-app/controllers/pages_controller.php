@@ -106,9 +106,17 @@ class PagesController extends AppController {
 		
 		if (!empty($relation)) {
 			
-			$relTypes = $this->mergeAllRelations();
-			
-			if (!empty($relTypes[$relation])) {
+			$relTypes = BeLib::getObject("BeConfigure")->mergeAllRelations();
+			$usedRelation = $relation;
+			if(empty($relTypes[$relation])) {
+				foreach ($relTypes as $n => $r) {
+					if(!empty($r["inverse"]) && $r["inverse"] == $relation) {
+						$usedRelation = $n;
+					}
+				}
+			}
+						
+			if (!empty($relTypes[$usedRelation])) {
 				
 				if (!empty($main_object_id)) {
 					$main_object_type_id = ClassRegistry::init("BEObject")->field("object_type_id", array("id" => $main_object_id));
@@ -116,35 +124,44 @@ class PagesController extends AppController {
 				
 				$objectTypeName = Configure::read("objectTypes." . $main_object_type_id . ".name");
 
-				if (!empty($relTypes[$relation][$objectTypeName])) {
-					$ot = $relTypes[$relation][$objectTypeName];
-				} elseif (key_exists("left", $relTypes[$relation]) 
-							&& key_exists("right", $relTypes[$relation])
-							&& is_array($relTypes[$relation]["left"])
-							&& is_array($relTypes[$relation]["right"])
-							) {
-				
-					if (in_array($objectTypeName, $relTypes[$relation]["left"])) {
-						if (!empty($relTypes[$relation]["right"]))
-							$ot = $relTypes[$relation]["right"];
-					} elseif (in_array($objectTypeName, $relTypes[$relation]["right"])) {
-						if (!empty($relTypes[$relation]["left"]))
-							$ot = $relTypes[$relation]["left"];
-					} elseif (empty($relTypes[$relation]["left"]) && !empty($relTypes[$relation]["right"])) { 
-						$ot = $relTypes[$relation]["right"];
-					} elseif (empty($relTypes[$relation]["right"]) && !empty($relTypes[$relation]["left"])) {
-						$ot = $relTypes[$relation]["left"];
+				if (!empty($relTypes[$usedRelation][$objectTypeName])) {
+					$ot = $relTypes[$usedRelation][$objectTypeName];
+				} else {
+					$addRight = array();
+					if (key_exists("left", $relTypes[$usedRelation])) {
+						if((is_array($relTypes[$usedRelation]["left"]) && in_array($objectTypeName, $relTypes[$usedRelation]["left"])) 
+							|| $relTypes[$usedRelation]["left"] === $objectTypeName) {
+							if (!empty($relTypes[$usedRelation]["right"])) {
+								$addRight = $relTypes[$usedRelation]["right"];
+							}
+						}
 					}
+
+					$addLeft = array();
+					if (key_exists("right", $relTypes[$usedRelation])) {
+						if((is_array($relTypes[$usedRelation]["right"]) && in_array($objectTypeName, $relTypes[$usedRelation]["right"])) 
+							|| $relTypes[$usedRelation]["right"] === $objectTypeName) {
+							if (!empty($relTypes[$usedRelation]["left"])) {
+								$addLeft = $relTypes[$usedRelation]["left"];
+							}
+						}
+					}
+					
+					if(!is_array($addRight)) {
+						$addRight = array($addRight);
+					}
+					if(!is_array($addLeft)) {
+						$addLeft = array($addLeft);
+					}
+					$ot = array_unique(array_merge($addRight, $addLeft));
 				}
-				
-				if (!empty($ot)) {
-					$objectTypeIds = array();
-					foreach ($ot as $val) {
-						$objectTypeIds[] = $conf->objectTypes[$val]["id"];
-					}
+
+				$objectTypeIds = array();
+				foreach ($ot as $val) {
+					$objectTypeIds[] = $conf->objectTypes[$val]["id"];
 				}
 			}
-			
+						
 		} else {
 			$objectTypeIds = Configure::read("objectTypes." . $objectType . ".id");
 		}
