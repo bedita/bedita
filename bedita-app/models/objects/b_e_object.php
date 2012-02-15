@@ -384,6 +384,10 @@ class BEObject extends BEAppModel
 							} else if(!empty($inverseRel[$switch])) {
 								$inverseSwitch = $inverseRel[$switch];
 							}
+							if($inverseSwitch !== $switch) {
+								$queriesDelete[$inverseSwitch] = "DELETE FROM {$table} WHERE ({$assoc['foreignKey']} = '{$this->id}' 
+										OR {$assoc['associationForeignKey']} = '{$this->id}') AND switch = '{$inverseSwitch}' ";
+							}
 							// find priority of inverse relation
 							// #CUSTOM QUERY
 							$inverseRel = $this->query("SELECT priority 
