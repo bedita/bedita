@@ -1,0 +1,2 @@
+<div id="collision">
+</div>

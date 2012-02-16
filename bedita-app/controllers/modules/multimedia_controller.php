@@ -142,6 +142,47 @@ class MultimediaController extends ModulesController {
 		$this->setSessionForObjectDetail();
 	 }
 
+	function saveAjax() {
+		$this->layout = "ajax";
+		try {
+			if(!empty($this->data['upload_choice'])) {
+				if($this->data['upload_choice'] == 'new_file_new_obj') {
+					$this->data['uri'] = $this->Stream->field('uri',array('id'=>$this->data['upload_other_obj_id']));
+					$this->data['name'] = $this->params['form']['Filedata']['name'];
+					$this->data['mime_type'] = $this->Stream->field('mime_type',array('id'=>$this->data['upload_other_obj_id']));
+					$id = $this->BeUploadToObj->cloneMediaObject($this->data);
+					$this->set("redirUrl","/multimedia/view/".$id);
+				} else { // new_file_old_obj
+					unset($this->params['form']['Filedata']);
+					$id = $this->data['upload_other_obj_id'];
+					$this->data['id'] = $id;
+					$oldObj = $this->Stream->findById($id);
+					$this->data['object_type_id'] = $oldObj['Stream']['object_type_id'];
+					$this->data['uri'] = $oldObj['Stream']['uri'];
+					$this->data['name'] = $oldObj['Stream']['name'];
+					$this->data['mime_type'] = $oldObj['Stream']['mime_type'];
+					$this->save();
+					$this->set("redirUrl","/multimedia/view/".$id);
+				}
+			} else {
+				$this->save();
+				$this->set("redirUrl","/multimedia/view/".$this->Stream->id);
+			}
+		} catch(BEditaFileExistException $ex) {
+			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();
+			$this->setResult(self::ERROR);
+			$this->set("errorFileExist","true");
+			$this->set("errorMsg", $ex->getMessage());
+			$this->set("objectId", $ex->getObjectId());
+			$this->set("objectTitle", $this->BEObject->field("title", array("id" => $ex->getObjectId())));
+		} catch(BeditaException $ex) {
+			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();
+			$this->setResult(self::ERROR);
+			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
+			$this->set("errorMsg", $ex->getMessage());
+		}
+	}
+
 	function save() {
 		$this->checkWriteModulePermission();
 		if(empty($this->data)) 
@@ -277,6 +318,10 @@ class MultimediaController extends ModulesController {
 			"save"  =>  array(
 							"OK"    => "/multimedia/view/".@$this->Stream->id,
 							"ERROR" => "/multimedia/view/".@$this->data['id'] 
+							),
+			"saveAjax" =>	array(
+							"OK"	=> self::VIEW_FWD.'upload_ajax_response',
+							"ERROR"	=> self::VIEW_FWD.'upload_ajax_response'
 							),
 			"view"	=> 	array(
 							"ERROR"	=> "/multimedia"

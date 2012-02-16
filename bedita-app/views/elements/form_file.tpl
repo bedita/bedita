@@ -180,7 +180,8 @@
 	</h2></div>
 
 <fieldset id="add">
-	
+
+{$view->element('upload_choices')}
 
 <table class="htab">
 	<td rel="uploadItems">{t}browse your disk{/t}</td>

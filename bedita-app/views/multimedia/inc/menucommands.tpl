@@ -5,6 +5,48 @@ Template incluso.
 Menu a SX valido per tutte le pagine del controller.
 *}
 
+{if !empty($view->action) && $view->action == "view"}
+<script type="text/javascript">
+	var urlView = '{$html->url("/multimedia/view/")}' ;
+
+	$(document).ready(function() { 
+
+		$("#collision").hide();
+		var optionsForm = { 
+			error:		showResponse,  // post-submit callback  
+			success:		showResponse,  // post-submit callback  
+			dataType:		'html',        // 'xml', 'script', or 'json' (expected server response type)
+			url: "{$html->url('/multimedia/saveAjax')}"
+		} ;
+	
+		$("div.insidecol input[name='saveMedia']").click(function() { 
+			if ( $('#concurrenteditors #editorsList').children().size() > 0 ) { 
+				var answer = confirm("{t}More users are editing this object. Continue?{/t}");
+			    if (answer) { 
+			    	$(".secondacolonna .modules label").addClass("submitForm");
+			    	$('#updateForm').ajaxSubmit(optionsForm);
+			    } 
+			} else if ( $('.publishingtree input:checked').val() === undefined ) {	
+				var answer = confirm("{t}This content is not on publication tree. Continue?{/t}");
+			    if (answer) { 
+			    	$(".secondacolonna .modules label").addClass("submitForm");
+			    	$('#updateForm').ajaxSubmit(optionsForm);
+			    } 
+			} else { 
+		    	$(".secondacolonna .modules label").addClass("submitForm");
+				$('#updateForm').ajaxSubmit(optionsForm);
+			} 
+    		return false;  
+		} );
+
+	} );
+
+	function showResponse(data) { 
+		$("#collision").html(data);
+		$("#collision").show();
+	} 
+</script>
+{/if}
 
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
@@ -20,7 +62,7 @@ Menu a SX valido per tutte le pagine del controller.
 	
 	{if !empty($view->action) && $view->action != "index"}
 	<div class="insidecol">
-		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="save" id="saveBEObject" />
+		<input class="bemaincommands" type="button" value=" {t}Save{/t} " name="saveMedia" id="saveBEObject" />
 		<input class="bemaincommands" type="button" value=" {t}clone{/t} " name="clone" id="cloneBEObject" />
 		<input class="bemaincommands" type="button" value="{t}Delete{/t}" name="delete" id="delBEObject" />
 	</div>
