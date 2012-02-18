@@ -249,16 +249,21 @@ class BeToolbarHelper extends AppHelper {
 		
 		if(isset($data['order']) && $data['order'] == $field) {
 			if(!isset($dir)) $dir = (isset($data['dir']))  ? (!$data['dir']) : true  ;
-			$class = "SortUp";
+			if ($dir == 1) {
+				$class = "SortUp desc";	
+			}
+			else {
+				$class = "SortUp asc";
+			}
 		}  else {
 			if(!isset($dir)) $dir = true ;
 			$class = "";
 		}
-
+		
 		// Crea l'url
 		$data['order'] 	= $field ;
 		$data['dir'] 	= (integer)$dir ;
-
+		
 		$url = Router::url($data) ;
 		
 		if (!empty($image)) {

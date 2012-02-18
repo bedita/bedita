@@ -980,16 +980,16 @@ TABLE.indexlist TH.on * {
 	color:red !important;
 }
 
-TH A.asc, TH A.desc {
+A.asc, A.desc {
 	color:red !important;
 }
 
-TABLE.indexlist TH A.asc:after {
-	content: " ↓";
+A.asc:after {
+	content: " ↑";
 }
 
-TABLE.indexlist TH A.desc:after {
-	content: " ↑";
+A.desc:after {
+	content: " ↓";
 }
 
 .indexlist TR.overChecked,.indexlist TR.overChecked:Hover {
