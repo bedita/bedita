@@ -1340,7 +1340,7 @@ INPUT.big {
 	font-size:1.315em;
 }
 
-INPUT[type=button], INPUT[type=submit]  {
+INPUT[type=button], INPUT[type=submit], button  {
 	text-transform:uppercase;
 }
 
@@ -1362,7 +1362,7 @@ A.BEbutton  {
 	margin:5px 0px 0px 0px !important;
 }
 
-.bemaincommands, .modalbutton, .BEbutton, input[type=submit], input[type=button] {
+.bemaincommands, .modalbutton, .BEbutton, input[type=submit], input[type=button], button {
 
 	/* background:#F2F2F2 url(../images/BEbutton_dark.gif) repeat-x scroll left top; */
 	background-color:#F2F2F2;
@@ -1384,7 +1384,7 @@ A.BEbutton  {
 	text-decoration:none;
 }
 
-input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover {
+input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hover {
 	background-color:#666;
 	color:#FFF;
 	outline:0px;

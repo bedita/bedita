@@ -44,7 +44,15 @@ class AdminController extends ModulesController {
 		$this->action = "systemEvents";
 		$this->systemEvents();
 	}
-	 
+
+	public function importData() { 	
+		
+	}
+
+	public function utility() { 	
+		
+	}
+	
 	public function systemInfo() { 	
 		$this->beditaVersion();
 		$this->set('sys', $this->BeSystem->systemInfo());

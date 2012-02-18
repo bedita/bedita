@@ -33,7 +33,11 @@ Menu a SX valido per tutte le pagine del controller.
 		<li {if $view->action eq 'addons'}class="on"{/if}>{$tr->link('Addons', '/admin/addons')}</li>
 	</ul>
 
-
+	<ul class="menuleft insidecol">
+		<li {if $view->action eq 'importData'}class="on"{/if}>{$tr->link('Import Data', '/admin/importData')}</li>
+		<li {if $view->action eq 'utility'}class="on"{/if}>{$tr->link('Utility', '/admin/utility')}</li>
+	</ul>
+	
 	{$view->element('user_module_perms')}
 
 </div>
