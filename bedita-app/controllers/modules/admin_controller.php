@@ -46,11 +46,15 @@ class AdminController extends ModulesController {
 	}
 
 	public function importData() { 	
-		
+		// TODO
 	}
 
 	public function utility() { 	
-		
+		// TODO
+	}
+
+	public function coreModules() {
+		// TODO
 	}
 	
 	public function systemInfo() { 	
