@@ -1,22 +1,21 @@
-
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$("input[type=password]").val("");
-			
-			$("#authselect").change(function() {
-				var au = $(this).val();
-				if (au != "") {
-					$("#authType").show();
-					$("#defaultAuth").hide();
-					$("#authType .auth_name").text(au);
-				} else {
-					$("#authType").hide();
-					$("#defaultAuth").show();
-				};
-			});
-			
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("input[type=password]").val("");
+		
+		$("#authselect").change(function() {
+			var au = $(this).val();
+			if (au != "") {
+				$("#authType").show();
+				$("#defaultAuth").hide();
+				$("#authType .auth_name").text(au);
+			} else {
+				$("#authType").hide();
+				$("#defaultAuth").show();
+			};
 		});
-	</script>
+		
+	});
+</script>
 
 <form action="{$html->url('/users/saveUser')}" method="post" name="userForm" id="userForm" class="cmxform">
 			
@@ -42,7 +41,8 @@
 			</th>
 			<td>
 				<input type="text" id="username" name="data[User][userid]" value="{$userdetail.userid}" onkeyup="cutBlank(this);" 
-					class="{ required:true,lettersnumbersonly:true,minLength:6}" title="{t 1='6'}User name is required (at least %1 chars, without white spaces and special chars){/t}"/>&nbsp;</td>
+					class="{ required:true,lettersnumbersonly:true,minLength:6}" 
+					title="{t 1='6'}User name is required (at least %1 chars, without white spaces and special chars){/t}"/>&nbsp;</td>
 		</tr>
 		
 		<tbody id="defaultAuth" {if ($userdetail.auth_type|default:'')}style="display:none"{/if}>
@@ -50,7 +50,7 @@
 			 	<th>{t}New password{/t}</th>
 				<td>
 					<input type="{if !empty($userdetail.id)}password{else}text{/if}" name="pwd" value="{if empty($userdetail.id)}{$genpassword|default:''}{/if}" id="pwd"
-						class="{if isset($userdetail)}{ password:true}{else}{required:true,password:true}{/if}" 
+						class="{if isset($userdetail)}{ password:true}{else}{ required:true,password:true}{/if}" 
 				    	title="{$tr->t($conf->passwdRegexMsg)|default:''}"/>&nbsp;</td>
 			</tr>
 			<tr>

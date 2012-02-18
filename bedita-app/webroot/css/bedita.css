@@ -980,6 +980,18 @@ TABLE.indexlist TH.on * {
 	color:red !important;
 }
 
+TH A.asc, TH A.desc {
+	color:red !important;
+}
+
+TABLE.indexlist TH A.asc:after {
+	content: " ↓";
+}
+
+TABLE.indexlist TH A.desc:after {
+	content: " ↑";
+}
+
 .indexlist TR.overChecked,.indexlist TR.overChecked:Hover {
 	background-color:#ffffff !important;
 }
@@ -1388,6 +1400,15 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 	background-color:#666;
 	color:#FFF;
 	outline:0px;
+}
+
+*[disabled] {
+	opacity:0.4;	
+}
+
+*[disabled]:hover {
+	background-color:#F2F2F2 !important;
+	color:#333 !important;
 }
 
 :focus { outline: none; }

@@ -6,10 +6,10 @@
 		<table>
 			<tr>
 				<th><label id="lgroupname" for="groupname">{t}Group Name{/t}</label></th>
-				<td><input style="width:300px;" type="text" id="groupname" name="data[Group][name]" value="{$group.Group.name|default:''}" onkeyup="cutBlank(this);"/>
+				<td><input {if (!empty($group) && $group.Group.immutable == 1)}disabled=disabled{/if} style="width:300px;" type="text" id="groupname" name="data[Group][name]" value="{$group.Group.name|default:''}" onkeyup="cutBlank(this);"/>
 				</td>
 				<td>
-					<input type="checkbox" name="data[Group][backend_auth]" value="1"
+					<input {if (!empty($group) && $group.Group.immutable == 1)}disabled=disabled{/if} type="checkbox" name="data[Group][backend_auth]" value="1"
 						{if isset($group) && $group.Group.backend_auth == 1} checked="checked"{/if} /> {t}Access to Backend{/t}
 				</td>
 			</tr>
@@ -42,15 +42,17 @@
 
 				</td>				
 				<td class="center">
-					<input type="radio" 
+					<input type="radio" {if (!empty($group) && $group.Group.immutable == 1)}disabled=disabled{/if}
 						name="data[ModuleFlags][{$mod.Module.name}]" value="" {if !isset($group)}checked="checked"{elseif ($mod.Module.flag == 0)}checked="checked"{/if}/>
 				</td>
 				<td class="center">
-					<input type="radio" name="data[ModuleFlags][{$mod.Module.name}]" value="{$conf->BEDITA_PERMS_READ}" 
+					<input type="radio" {if (!empty($group) && $group.Group.immutable == 1)}disabled=disabled{/if}
+						name="data[ModuleFlags][{$mod.Module.name}]" value="{$conf->BEDITA_PERMS_READ}" 
 							{if ($mod.Module.flag == $conf->BEDITA_PERMS_READ)}checked="checked"{/if}/>
 				</td>
 				<td class="center">
-					<input type="radio" name="data[ModuleFlags][{$mod.Module.name}]" value="{$conf->BEDITA_PERMS_READ_MODIFY}" 
+					<input type="radio" {if (!empty($group) && $group.Group.immutable == 1)}disabled=disabled{/if}
+					name="data[ModuleFlags][{$mod.Module.name}]" value="{$conf->BEDITA_PERMS_READ_MODIFY}" 
 							{if ($mod.Module.flag & $conf->BEDITA_PERMS_MODIFY)}checked="checked"{/if} />
 				</td>
 			</tr>
