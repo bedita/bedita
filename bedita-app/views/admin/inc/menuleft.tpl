@@ -34,7 +34,7 @@ Menu a SX valido per tutte le pagine del controller.
 	</ul>
 
 	<ul class="menuleft insidecol">
-		<li {if $view->action eq 'importData'}class="on"{/if}>{$tr->link('Import Data', '/admin/importData')}</li>
+		{bedev}<li {if $view->action eq 'importData'}class="on"{/if}>{$tr->link('Import Data', '/admin/importData')}</li>{/bedev}
 		<li {if $view->action eq 'utility'}class="on"{/if}>{$tr->link('Utility', '/admin/utility')}</li>
 	</ul>
 	
