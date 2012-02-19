@@ -36,7 +36,7 @@ $(document).ready(function(){
 
 			<tr>
 				<td>
-					<input type="text" style="width:220px" name="data[label]" value="{$cat.label}" class="{required:true}"/>
+					<input type="text" style="width:220px" name="data[label]" value="{$cat.label}" class="{ required:true }"/>
 				</td>
 				<td style="white-space:nowrap;">
 				
