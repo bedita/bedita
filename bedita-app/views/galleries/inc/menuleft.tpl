@@ -10,13 +10,13 @@ Menu a SX valido per tutte le pagine del controller.
 	{$view->element('messages')}
 
 	<ul class="menuleft insidecol">
-	{if $module_modify eq '1'}
-
+		<li {if $view->action eq 'index'}class="on"{/if}>{$tr->link('Galleries', '/galleries')}</li>
+		<li {if $view->action eq 'categories'}class="on"{/if}>{$tr->link('Categories', '/galleries/categories')}</li>
+		{if $view->viewVars.module_modify eq '1'}
 		<li><a href="{$html->url('/')}{$currentModule.url}/view">{t}Create new gallery{/t}</a></li>
-
-	{/if}
+		{/if}
 	</ul>
-
+	
 {$view->element('export')}
 
 	{if (!empty($view->action)) && $view->action eq "index"}

@@ -16,7 +16,8 @@ Menu a SX valido per tutte le pagine del controller.
 		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
 	</div> 
 	
-	{if !empty($view->action) && $view->action != "index"}
+	{if !empty($view->action) && $view->action != "index" && $view->action != "categories"}
+	
 	<div class="insidecol">
 		<input class="bemaincommands" type="button" value=" {t}save{/t} " name="save" id="saveBEObject" />
 		<input class="bemaincommands" type="button" value=" {t}Publish{/t} " style="display:none" name="publish" id="publishBEObject" />

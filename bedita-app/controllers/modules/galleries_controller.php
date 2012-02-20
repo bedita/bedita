@@ -40,6 +40,7 @@ class GalleriesController extends ModulesController {
 		$filter["object_type_id"] = $conf->objectTypes['gallery']["id"];
 		$filter["count_annotation"] = array("Comment","EditorNote");
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
+		$this->loadCategories($filter["object_type_id"]);
 	}
 
     public function view($id = null) {
@@ -71,6 +72,36 @@ class GalleriesController extends ModulesController {
 		$this->eventInfo("galleries $objectsListDeleted deleted");
 	}
 
+	public function categories() {
+		$this->showCategories($this->Gallery);
+	}
+	
+	public function saveCategories() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data["label"])) 
+			throw new BeditaException( __("No data", true));
+		$this->Transaction->begin() ;
+		if(!$this->Category->save($this->data)) {
+			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
+		}
+		$this->Transaction->commit();
+		$this->userInfoMessage(__("Category saved", true)." - ".$this->data["label"]);
+		$this->eventInfo("category [" .$this->data["label"] . "] saved");
+	}
+
+	public function deleteCategories() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data["id"])) 
+			throw new BeditaException( __("No data", true));
+		$this->Transaction->begin() ;
+		if(!$this->Category->del($this->data["id"])) {
+			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
+		}
+		$this->Transaction->commit();
+		$this->userInfoMessage(__("Category deleted", true) . " -  " . $this->data["label"]);
+		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
+	}
+	
 	protected function forward($action, $esito) {
 		$REDIRECT = array("cloneObject"	=> 	array(
 							"OK"	=> "/galleries/view/".@$this->Gallery->id,
@@ -79,6 +110,14 @@ class GalleriesController extends ModulesController {
 						"save"	=> 	array(
 							"OK"	=> "./view/{$this->Gallery->id}",
 							"ERROR"	=> "./view/{$this->Gallery->id}"
+							),
+						"saveCategories" 	=> array(
+							"OK"	=> "/galleries/categories",
+							"ERROR"	=> "/galleries/categories"
+							),
+						"deleteCategories" 	=> array(
+							"OK"	=> "/galleries/categories",
+							"ERROR"	=> "/galleries/categories"
 							),
 						"delete"	=> 	array(
 							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
