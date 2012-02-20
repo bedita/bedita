@@ -836,7 +836,7 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
 class BeditaStreamModel extends BEAppObjectModel {
 
 	public $searchFields = array("title" => 10 , "description" => 6, 
-		"subject" => 4, "abstract" => 4, "body" => 4, "name" => 6);	
+		"subject" => 4, "abstract" => 4, "body" => 4, "name" => 6, "rights" => 3, "note" => 3);	
 	
 	protected $modelBindings = array( 
 				"detailed" => array("BEObject" => array("ObjectType",
