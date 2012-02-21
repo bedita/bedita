@@ -369,25 +369,23 @@ class BEObject extends BEAppModel
 					
 					// Delete old associations
 					// #CUSTOM QUERY
-					$queriesDelete[$switch] = "DELETE FROM {$table} 
-											   WHERE ({$assoc['foreignKey']} = '{$this->id}' OR {$assoc['associationForeignKey']} = '{$this->id}')  
-											   AND switch = '{$switch}' ";
-					if (!empty($obj_id)) {
-						// #CUSTOM QUERY
-						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
+					$queriesDelete[] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND switch = '{$switch}' ";
 						
-						if(!in_array($switch,$oneWayRelation)) {
-							
-							$inverseSwitch = $switch;
-							if(!empty($allRelations[$switch]) && !empty($allRelations[$switch]["inverse"])){
-								$inverseSwitch = $allRelations[$switch]["inverse"];
-							} else if(!empty($inverseRel[$switch])) {
-								$inverseSwitch = $inverseRel[$switch];
-							}
-							if($inverseSwitch !== $switch) {
-								$queriesDelete[$inverseSwitch] = "DELETE FROM {$table} WHERE ({$assoc['foreignKey']} = '{$this->id}' 
-										OR {$assoc['associationForeignKey']} = '{$this->id}') AND switch = '{$inverseSwitch}' ";
-							}
+					if(!in_array($switch,$oneWayRelation)) {
+						$inverseSwitch = $switch;
+						if(!empty($allRelations[$switch]) && !empty($allRelations[$switch]["inverse"])){
+							$inverseSwitch = $allRelations[$switch]["inverse"];
+						} else if(!empty($inverseRel[$switch])) {
+							$inverseSwitch = $inverseRel[$switch];
+						}
+
+						$queriesDelete[] = "DELETE FROM {$table} WHERE {$assoc['associationForeignKey']} = '{$this->id}'
+											AND switch = '{$inverseSwitch}' ";
+					
+						if (!empty($obj_id)) {
+							// #CUSTOM QUERY
+							$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
+						
 							// find priority of inverse relation
 							// #CUSTOM QUERY
 							$inverseRel = $this->query("SELECT priority 
