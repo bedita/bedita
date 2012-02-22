@@ -620,12 +620,14 @@ function openAtStart(defaultOpen) {
 	}
 	$(openAtStart).prev(".tab").BEtabstoggle();
 	
-
 	$(window).unload(function(){
 		openAtStart = new Array();
 		$(".tab").each(function(i){
 			if ($(this).next().is(":visible")) {
-				openAtStart.push("#" + $(this).next().attr("id"));
+				idAttr = $(this).next().attr("id");
+				if(idAttr != "") {
+					openAtStart.push("#" + idAttr);
+				}
 			}
 		});
 		$.cookie(cookieTitle, openAtStart);
