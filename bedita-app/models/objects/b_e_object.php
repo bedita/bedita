@@ -344,10 +344,10 @@ class BEObject extends BEAppModel
 			$oneWayRelation = array_merge( Configure::read("defaultOneWayRelation"), Configure::read("cfgOneWayRelation") );
 			
 			$allRelations = BeLib::getObject("BeConfigure")->mergeAllRelations();
-			$inverseRel = array();
+			$inverseRelations = array();
 			foreach ($allRelations as $n => $r) {
 				if(!empty($r["inverse"])) {
-					$inverseRel[$r["inverse"]] = $n;
+					$inverseRelations[$r["inverse"]] = $n;
 				}
 			}
 			
@@ -369,8 +369,8 @@ class BEObject extends BEAppModel
 						$inverseSwitch = $switch;
 						if(!empty($allRelations[$switch]) && !empty($allRelations[$switch]["inverse"])){
 							$inverseSwitch = $allRelations[$switch]["inverse"];
-						} else if(!empty($inverseRel[$switch])) {
-							$inverseSwitch = $inverseRel[$switch];
+						} else if(!empty($inverseRelations[$switch])) {
+							$inverseSwitch = $inverseRelations[$switch];
 						}
 
 						$queriesDelete[] = "DELETE FROM {$table} WHERE {$assoc['associationForeignKey']} = '{$this->id}'
@@ -421,6 +421,7 @@ class BEObject extends BEAppModel
 				}
 			}
 
+			$queriesDelete = array_unique($queriesDelete);
 			foreach ($queriesDelete as $qDel) {
 				if ($db->query($qDel) === false)
 					throw new BeditaException(__("Error deleting associations", true), $qDel);
