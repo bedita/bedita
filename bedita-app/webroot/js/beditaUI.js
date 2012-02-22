@@ -682,7 +682,10 @@ function openAtStart(defaultOpen) {
 		openAtStart = new Array();
 		$(".tab").each(function(i){
 			if ($(this).next().is(":visible")) {
-				openAtStart.push("#" + $(this).next().attr("id"));
+				idAttr = $(this).next().attr("id");
+				if(idAttr != "") {
+					openAtStart.push("#" + idAttr);
+				}
 			}
 		});
 		$.cookie(cookieTitle, openAtStart);
