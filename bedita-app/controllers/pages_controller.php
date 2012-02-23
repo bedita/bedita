@@ -101,8 +101,6 @@ class PagesController extends AppController {
 		$id = (!empty($this->params["form"]["parent_id"]))? $this->params["form"]["parent_id"] : null;
 		
 		$conf = Configure::getInstance();
-		// default
-		$objectTypeIds = $conf->objectTypes["related"]["id"];
 		
 		if (!empty($relation)) {
 			
@@ -129,20 +127,30 @@ class PagesController extends AppController {
 				} else {
 					$addRight = array();
 					if (key_exists("left", $relTypes[$usedRelation])) {
-						if((is_array($relTypes[$usedRelation]["left"]) && in_array($objectTypeName, $relTypes[$usedRelation]["left"])) 
-							|| $relTypes[$usedRelation]["left"] === $objectTypeName) {
+						// if 'left' is empty means that in the 'left' you have all objects in 'related' group => get right relations
+						// or if $objectTypeName is in the 'left' => get right relations
+						if (empty($relTypes[$usedRelation]["left"])
+								|| (is_array($relTypes[$usedRelation]["left"]) && in_array($objectTypeName, $relTypes[$usedRelation]["left"]))
+								|| $relTypes[$usedRelation]["left"] === $objectTypeName) {
 							if (!empty($relTypes[$usedRelation]["right"])) {
 								$addRight = $relTypes[$usedRelation]["right"];
+							} else {
+								$addRight = $conf->objectTypes["related"]["id"];
 							}
 						}
 					}
 
 					$addLeft = array();
 					if (key_exists("right", $relTypes[$usedRelation])) {
-						if((is_array($relTypes[$usedRelation]["right"]) && in_array($objectTypeName, $relTypes[$usedRelation]["right"])) 
-							|| $relTypes[$usedRelation]["right"] === $objectTypeName) {
+						// if 'right' is empty means that in the 'right' you have all objects in 'related' group => get left relations
+						// or if $objectTypeName is in the 'right' => get left relations
+						if (empty($relTypes[$usedRelation]["right"])
+								|| (is_array($relTypes[$usedRelation]["right"]) && in_array($objectTypeName, $relTypes[$usedRelation]["right"]))
+								|| $relTypes[$usedRelation]["right"] === $objectTypeName) {
 							if (!empty($relTypes[$usedRelation]["left"])) {
 								$addLeft = $relTypes[$usedRelation]["left"];
+							} else {
+								$addLeft = $conf->objectTypes["related"]["id"];
 							}
 						}
 					}
