@@ -139,8 +139,7 @@ class PagesController extends AppController {
 							} else {
 								$addRight = $conf->objectTypes["related"]["id"];
 							}
-						}
-						
+						}				
 					}
 
 					$addLeft = array();
@@ -156,7 +155,6 @@ class PagesController extends AppController {
 								$addLeft = $conf->objectTypes["related"]["id"];
 							}
 						}
-					
 					}
 					
 					if(!is_array($addRight)) {
