@@ -38,6 +38,11 @@ class RestClientModel extends BEAppModel {
 	public $useCurl = false;
 	public $curlOptions = array();
 	
+	/**
+	 * setup rest client
+	 * if curl available setup RestClientModel to use it
+	 * else setup RestClientModel to use CakePHP HttpSocket class
+	 */
 	public function setup() {
 		if(!$this->httpReady) {	
 			
