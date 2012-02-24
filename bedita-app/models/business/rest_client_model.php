@@ -81,9 +81,12 @@ class RestClientModel extends BEAppModel {
 	 * @param string $uri URL to GET
 	 * @param array $params, URL query parameters
 	 * @param string $outType, can be "xml" or "json", if present output will be parsed 
-	 * 	if "xml" => php array, if "json" => json_decode is called
+	 *			if "xml" => php array, if "json" => json_decode is called
+	 * @param boolean $camelize, used if $outType = 'xml'
+	 *			true (default) camelize array keys corresponding to xml items that contain other xml items (CakePHP default behavior)
+	 *			false leave array keys equal to xml items
 	 */
-	public function get($uri, array $params = array(), $outType = null) {
+	public function get($uri, array $params = array(), $outType = null, $camelize = true) {
 		if(Configure::read('debug') > 0) {
 			$this->log("HTTP REQUEST:\nuri " . $uri . "\nparams " . print_r($params, true), LOG_DEBUG);
 		}
@@ -107,7 +110,7 @@ class RestClientModel extends BEAppModel {
 		if($outType != null) {
 			if($outType === "xml") {
 				$xml = new Xml($out);
-				$out = $xml->toArray();	
+				$out = $xml->toArray($camelize);	
 			} else if ($outType === "json") {
 				$out = json_decode($out);
 			}
@@ -123,8 +126,11 @@ class RestClientModel extends BEAppModel {
 	 * @param array $params, POST query parameters
 	 * @param string $outType, can be "xml" or "json", if present output will be parsed 
 	 * 	if "xml" => php array, if "json" => json_decode is called
+	 * @param boolean $camelize, used if $outType = 'xml'
+	 *			true (default) camelize array keys corresponding to xml items that contain other xml items (CakePHP default behavior)
+	 *			false leave array keys equal to xml items
 	 */
-	public function post($uri, array $params = array(), $outType = null) {
+	public function post($uri, array $params = array(), $outType = null, $camelize = true) {
 		if(Configure::read('debug') > 0) {
 			$this->log("HTTP REQUEST:\nuri " . $uri . "\nparams " . print_r($params, true), LOG_DEBUG);
 		}
@@ -147,7 +153,7 @@ class RestClientModel extends BEAppModel {
 		if($outType != null) {
 			if($outType === "xml") {
 				$xml = new Xml($out);
-				$out = $xml->toArray();	
+				$out = $xml->toArray($camelize);	
 			} else if ($outType === "json") {
 				$out = json_decode($out);
 			}
