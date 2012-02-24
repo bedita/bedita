@@ -33,7 +33,12 @@ class Tree extends BEAppModel
 
 	public $primaryKey = "object_path";
 
-	function beforeSave() {
+	/**
+	 * check object_path and parent_path, avoid object is parent or ancestor of itself
+	 * 
+	 * @return boolean
+	 */
+	public function beforeSave() {
 
 		// check object_path and parent_path consistency if they are defined (no recursion)
 		$pathToCheck = array("object_path", "parent_path");
@@ -89,7 +94,7 @@ class Tree extends BEAppModel
 	 * 					array, if two or more parents founded
 	 * 					false, error or none parent founded
 	 */
-	function getParent($id, $area_id=null) {
+	public function getParent($id, $area_id=null) {
 		if (empty($id)) {
 			return false;
 		}
@@ -122,7 +127,13 @@ class Tree extends BEAppModel
 		}
 	}
 
-	function getRootForSection($id) {
+	/**
+	 * Return id of publication that contains the section, by id
+	 * 
+	 * @param int $id
+	 * @return int
+	 */
+	public function getRootForSection($id) {
 		$area_id = $this->field("area_id", array("id"=>$id));
 		return $area_id;
 	}
@@ -134,7 +145,7 @@ class Tree extends BEAppModel
 	 * @param int $idParent parent object id
 	 * @return boolean
 	 */
-	function appendChild($id, $idParent = null) {
+	public function appendChild($id, $idParent = null) {
 		// avoid to append item to itself
 		if ($id == $idParent) {
 			return false;
@@ -170,6 +181,12 @@ class Tree extends BEAppModel
 
 	}
 
+	/**
+	 * Return id of publication by path
+	 * 
+	 * @param string $path
+	 * @return int
+	 */
 	public function getAreaIdByPath($path) {
 		$pathArr = explode("/", trim($path, "/"));
 		return $pathArr[0];
@@ -226,20 +243,48 @@ class Tree extends BEAppModel
 		return true;
 	}
 
+	/**
+	 * move up a leaf tree inside a branch
+	 * 
+	 * @param int $id to move
+	 * @param int $idParent parent object (branch)
+	 * @return boolean
+	 */
 	public function movePriorityUp($id, $idParent) {
 		return $this->movePriority($id, $idParent);
 	}
 
+	/**
+	 * move down a leaf tree inside a branch
+	 * 
+	 * @param int $id to move
+	 * @param int $idParent parent object (branch)
+	 * @return boolean
+	 */
 	public function movePriorityDown($id, $idParent) {
 		return $this->movePriority($id, $idParent, false);
 	}
-	
-	function removeChild($id, $idParent) {
+
+	/**
+	 * remove a leaf tree from a branch
+	 * 
+	 * @param int $id to remove
+	 * @param int $idParent parent object (branch)
+	 * @return boolean
+	 */
+	public function removeChild($id, $idParent) {
 		$ret = $this->deleteAll(array("id" => $id, "parent_id" => $idParent));
 		return (($ret === false)?false:true) ;
 	}
 
-	function setPriority($id, $priority, $idParent) {
+	/**
+	 * set position for a leaf tree in a branch
+	 * 
+	 * @param int $id to move
+	 * @param int $idParent parent object (branch)
+	 * @return boolean
+	 */
+	public function setPriority($id, $priority, $idParent) {
 		$row = $this->find("first", array(
 			"conditions" => array(
 				"id" => $id,
@@ -263,7 +308,7 @@ class Tree extends BEAppModel
 	 * @param int $id
 	 * @return boolean
 	 */
-	function move($idNewParent, $idOldParent, $id) {
+	public function move($idNewParent, $idOldParent, $id) {
 		// avoid recursive move (item inside itself)
 		if ($id == $idNewParent) {
 			return false;
@@ -334,8 +379,9 @@ class Tree extends BEAppModel
 	 * @param string $userid	user. if null: no permission check (default); if '': guest user
 	 * @param string $status	only objs with this status 
 	 * @param array $filter		see BEAppModel::findObjects
+	 * @return array
 	 */
-	function getAll($id = null, $userid = null, $status = null, $filter = array()) {
+	public function getAll($id = null, $userid = null, $status = null, $filter = array()) {
 
 		// build tree
 		$roots 	= array() ;
@@ -350,6 +396,12 @@ class Tree extends BEAppModel
 		return $tree ;
 	}
 
+	/**
+	 * Return a tree build for the items passed
+	 * 
+	 * @param array $items
+	 * @return array
+	 */
 	public function buildTree($items) {
 		$tree = array();
 		foreach ($items as $root) {
@@ -393,7 +445,7 @@ class Tree extends BEAppModel
 	 * @param integer $id
 	 * @return boolean
 	 */
-	function isParent($idParent, $id) {
+	public function isParent($idParent, $id) {
 		$c = $this->find("count", array(
 			"conditions" => array(
 				"object_path LIKE" => "%/" . $idParent . "/%",
@@ -442,6 +494,7 @@ class Tree extends BEAppModel
 	 * @param boolean $dir		true (default), ascending, otherwiese descending.
 	 * @param integer $page		Page number (for pagination)
 	 * @param integer $dim		Page dim (for pagination)
+	 * @return array
 	 */
 	function getChildren($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir  = true, $page = 1, $dim = null) {
 		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, false) ;
@@ -463,6 +516,7 @@ class Tree extends BEAppModel
 	 * @param boolean $dir		true (default), ascending, otherwiese descending.
 	 * @param integer $page		Page number (for pagination)
 	 * @param integer $dim		Page dim (for pagination)
+	 * @return array
 	 */
 	function getDescendants($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir  = true, $page = 1, $dim = null) {
 		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, true) ;

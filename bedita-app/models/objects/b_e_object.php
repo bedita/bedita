@@ -144,7 +144,7 @@ class BEObject extends BEAppModel
 	);	
 
 	/**
-	 * Formatta i dati specifici dopo la ricerca
+	 * Format object data (ObjectProperty, Tag, Category, LangText, Permission)
 	 */	
 	function afterFind($result) {
 		
@@ -252,7 +252,7 @@ class BEObject extends BEAppModel
 	}
 	
 	/**
-	 * Salva i dati delle associazioni tipo hasMany
+	 * Save hasMany relations data
 	 */
 	function afterSave() {
 		
@@ -446,7 +446,7 @@ class BEObject extends BEAppModel
 	}
 	
 	/**
-	 * Definisce i valori di default.
+	 * Define default values.
 	 */		
 	function beforeValidate() {
 		if(isset($this->data[$this->name])) 

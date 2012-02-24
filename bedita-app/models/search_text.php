@@ -38,6 +38,13 @@ class SearchText extends BEAppModel
 			)
 	);
 
+	/**
+	 * Save search data for a model
+	 * 
+	 * @param object $model
+	 * @throws BeditaException
+	 * @return boolean
+	 */
 	public function createSearchText($model) {
 		
 		$bviorCompactResults = null;
@@ -65,7 +72,13 @@ class SearchText extends BEAppModel
 		}
 		return $searchFields;
 	}
-	
+
+	/**
+	 * Save search data multilang
+	 * 
+	 * @param array $dataLangText
+	 * @throws BeditaException
+	 */
 	public function saveLangTexts(array &$dataLangText) {
 		$objectId = $dataLangText[0]['object_id'];
 		$beObject = ClassRegistry::init("BEObject");

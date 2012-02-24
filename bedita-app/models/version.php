@@ -104,6 +104,14 @@ class Version extends BEAppModel
 		return $res;
 	}
 	
+	/**
+	 * Return revision data for a specified model, by id and revision number
+	 * 
+	 * @param int $id
+	 * @param int $revNum
+	 * @param BEAppModel $model
+	 * @return array
+	 */
 	public function revisionData($id, $revNum, BEAppModel $model) {
 		$model->containLevel('minimum');
 		$currData = $model->findById($id);
@@ -115,7 +123,13 @@ class Version extends BEAppModel
 		$diff = $this->diffData($id, $revNum);	
 		return array_merge($currData, $diff);
 	}
-	
+
+	/**
+	 * Return number of revisions for specified object id
+	 * 
+	 * @param int $id
+	 * @return int
+	 */
 	public function numRevisions($id) {
 		$count = $this->find("count", array(
 				"conditions" => array("Version.object_id" => $id)
