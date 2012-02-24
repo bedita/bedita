@@ -1,4 +1,80 @@
-Version 3.2.alpha - popolus
+Version 3.2.beta - populus
+ User-visible changes:
+	* #137 - installation wizard
+		- setup: partially formatted database.php
+	* #279 admin: mail queue and mail check
+		- email info page
+		- change menu labels
+	* #283 basic XML export/import from publications module
+		- import/export filter models
+	* #268 admin: configuration page
+		- lang selection layout
+		- added button "test smtp"
+	* #301 admin: view backend and frontends log files
+	* #276 Sections enhancement
+		- GeoTag
+	* #303 new BE home
+	* #210 frontend menu - backend interface
+		- trees.menu not nullable, view in publications module
+		- icon for hidden sections
+	* #233 highlight objects with permissions
+		- wrong protected class set to publications fixed
+		- locked icon on .protected elements in .publishingtree
+		- fixed double icon in detail doc
+	* #307 relations: handle inverse relations
+		- handle inverse relations in obj save and in obj view
+		- delete inverse relations before insert
+		- fix "inverse" relations delete
+		- fix "inverse" relations priority
+	* #117 multimedia: handle existing file/url
+	* #295 admin: add utility functions
+		- UI for admin / utility module
+		- core modules management (on-off)
+	* #296 Create new Users module to manage users and groups
+		- immutable groups + asc desc in user list
+	* #150 ui: show ascending/descending order for columns object lists
+	* other:
+		- editor css
+		- ckeditor
+		- error display / new view
+		- bigger pub tree area
+
+ Frontend changes:
+
+	* #304 category 'off' should not be visible in frontend
+	* frontends - debug.example.com: removed comment
+	* fixes on dummy.example.com, site.example.com, pages_controller
+	* add tag_cloud element in dummy.example.com and debug.example.com
+	* set parentAuthorized = authorized in FrontendController::setCanonicalPath() for publication to avoid warning in FrontendController::section() method (merged from ulmus)
+	* FrontendController::loadObjectsByCategory changed from public to protected
+	* FrontendController - add setCanonicalPath in objects selected by tag or category and removed forced baseLevel for bindings
+	* FrontendController::loadObjectsByTagCategory() - add try catch block to avoid 404 error when get contents on draft branch tree
+	* BeFront::menu() - comment corrected
+	* BeFront::chooseTemplate() fix 'Check frontendMap currentContent nickname' when currentContent is populated but no content has been selected
+	* BeFront::chooseTemplate() fix 'object type template' choose  when currentContent is populated but no content has been selected
+
+ Developer-visibile changes:
+
+	* #291 multimedia: url friendly file names
+		- added field 'original_name' to streams table
+	* #274 frontend: generic /category method to load categorized objects
+		- added category tpl to examples
+	* #305 apidoc corrections/improvements
+	* added alpha suffix in changelog
+	* changed default limit value $dim = 100000 in BEAppModel::findObjects()  to $dim = null (get all objects with no limit)
+	* add sql_dump.tpl for Smarty to show SQL output
+	* upload: fix mediaType detection
+	* texteditor script in a separate element view
+	* BEObject::beforeValidate() - check that property_type is not empty before check if its value is 'date' to format property_value to avoid warning (merged from ulmus)
+	* de{literal}ize smarty/javascript code
+	* removed space in .htaccess
+	* ui: fix js bug - write open fieldset cookie only if "id" is set
+	* fixed PagesController::showObject() to get correctely objects in relations tab
+
+
+
+
+Version 3.2.alpha - populus
  User-visible changes:
 	* #137 - installation wizard
 		- setup: force cake debug=1
