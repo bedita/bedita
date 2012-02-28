@@ -39,8 +39,7 @@ function smarty_function_image_info ($params, &$smarty)
 
 	if ( empty($file) )
 	{
-		$smarty->trigger_error ($pluginName . ": missing 'file' parameter", E_USER_NOTICE);
-		return;
+		throw new SmartyException($pluginName . ": missing 'file' parameter", E_USER_NOTICE);
 	}
 
 
