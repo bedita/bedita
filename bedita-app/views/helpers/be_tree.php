@@ -216,6 +216,11 @@ class BeTreeHelper extends AppHelper {
 				$liClass .= " protected";
 			}
 			
+			// check it's a hidden section (from menu and canonical path)
+			if ($section["menu"] == 0) {
+				$liClass .= " menuhidden";
+			}
+			
 			$res .= "<li class='" . $liClass . "' id='pub_" . $section['id'] . "'>";			
 			$res .= "<a " . $class . " rel='" . $url . "'>";
 			
