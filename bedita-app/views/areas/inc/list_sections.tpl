@@ -40,7 +40,7 @@ $(document).ready(function() {
 				
 				<td class="checklist">
 					
-					{if ($s.menu == 1)}
+					{if $s.menu == 0}
 					<img title="{t}hidden from menu and canonical path{/t}" src="{$html->webroot}img/iconHidden.png" style="height:30px; vertical-align:top;">
 					{/if}
 					
