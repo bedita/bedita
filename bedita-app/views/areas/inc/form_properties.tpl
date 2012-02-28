@@ -84,7 +84,7 @@
 			<tr>
 			<th>{t}visibility{/t}:</th>
 			<td>
-				<input type="checkbox" name="data[menu]" value="1" {if $object.menu != '0'}checked{/if}/>
+				<input type="checkbox" name="data[menu]" value="1" {if $object.menu|default:1 != '0'}checked{/if}/>
 				 {t}Visible in menu and canonical paths{/t}
 			</td>
 		</tr>

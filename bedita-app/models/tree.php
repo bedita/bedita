@@ -521,6 +521,39 @@ class Tree extends BEAppModel
 	function getDescendants($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir  = true, $page = 1, $dim = null) {
 		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, true) ;
 	}
+	
+	/**
+	 * save Tree.menu field to set menu and canonical path visibility
+	 * 
+	 * @param mixed $ids, id or array of ids on which save menu field.
+	 *			if it's an array cycles on ids and save $menu value foreach of them
+	 * @param int $parent_id
+	 * @param mixed $menu, can be 1, 0 or null 
+	 *			if it's null the default value for every object is used (section = 1, other objects = 0)
+	 * @throws BeditaException 
+	 */
+	public function saveMenuVisibility($ids, $parent_id, $menu = null) {
+		if (empty($ids) || empty($parent_id)) {
+			throw new BeditaException(__("Missing mandatory data id and/or parent_id to save menu visibility", true), array("ids" => $ids, "parent_id" => $parent_id));
+		}
+		if (is_numeric($ids)) {
+			$ids = array($ids);
+		}
+		foreach ($ids as $id) {
+			// set default value for every object (section = 1, other objects = 0)
+			if ($menu === null) {
+				$objectTypeId = ClassRegistry::init("BEObject")->findObjectTypeId($id);
+				$menu = ($objectTypeId == Configure::read("objectTypes.section.id"))? 1 : 0;
+			}
+			$this->id = $this->field($this->primaryKey, array('id' => $id, 'parent_id' => $parent_id));
+			if (!$this->id) {
+				throw new BeditaException( __("Error saving visibility in menu and canonical paths", true), "Error retrieving Tree model primary key " . $this->primaryKey . " for id=" . $id);
+			}
+			if (!$this->saveField('menu', $menu)) {
+				throw new BeditaException( __("Error saving visibility in menu and canonical paths", true), "Error saving Tree.menu field " . $menu . " for object " . $id);
+			}			
+		}
+	}
 
 }
 

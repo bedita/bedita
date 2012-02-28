@@ -178,8 +178,8 @@ class AreasController extends ModulesController {
 		if(empty($this->data["parent_id"])) {
 			throw new BeditaException( __("Missing parent", true));
 		}
+	
 		$this->saveObject($this->Section);
-		
 		$id = $this->Section->id;
 		
 		// Move section in the right tree position, if necessary
@@ -193,6 +193,10 @@ class AreasController extends ModulesController {
 					}
 				}
 			}
+			
+			// save Tree.menu
+			$menu = (!empty($this->data['menu']))? 1 : 0;
+			$this->Tree->saveMenuVisibility($id, $this->data["parent_id"], $menu);
 			
 			// remove children
 			if (!empty($this->params["form"]["contentsToRemove"])) {
