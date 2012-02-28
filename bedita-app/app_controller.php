@@ -1146,7 +1146,7 @@ abstract class ModulesController extends AppController {
 		$type = $conf->objectTypes[Inflector::underscore($beModel->name)]["id"];
 		$categoryModel = ClassRegistry::init("Category");
 		$this->set("categories", $categoryModel->find("all", array(
-			"conditions" => array("Category.object_type_id" => $type)
+			"conditions" => array("Category.object_type_id" => $type), "order" => "label"
 		)));
 		$this->set("object_type_id", $type);
 		$this->set("areasList", ClassRegistry::init("BEObject")->find('list', array(
