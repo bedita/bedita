@@ -12,13 +12,11 @@ function smarty_function_append($params, &$smarty)
 {
 	extract($params);
     if (empty($var)) {
-        $smarty->trigger_error("append: missing 'var' parameter");
-        return;
+        throw new SmartyException("append: missing 'var' parameter");
     }
 
     if (!in_array('value', array_keys($params))) {
-        $smarty->trigger_error("append: missing 'value' parameter");
-        return;
+        throw new SmartyException("append: missing 'value' parameter");
     }
 
     $smarty->append($var, $value);

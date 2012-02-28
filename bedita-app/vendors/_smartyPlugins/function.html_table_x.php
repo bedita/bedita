@@ -62,8 +62,7 @@ function smarty_function_html_table_x($params, &$smarty)
 	$tr_spec_attr = '';
 
     if (!isset($params['loop'])) {
-        $smarty->trigger_error("html_table: missing 'loop' parameter");
-        return;
+        throw new SmartyException("html_table: missing 'loop' parameter");
     }
 
     foreach ($params as $_key=>$_value) {

@@ -18,8 +18,7 @@ function smarty_function_matchSimpleBooleanMysql($params, &$smarty)
 {
 	// setup variables
    if (@empty($params["var"])) {
-       $smarty->trigger_error("assign: missing 'var' parameter");
-       return;
+       throw new SmartyException("assign: missing 'var' parameter");
    }
 	
 	// parsing

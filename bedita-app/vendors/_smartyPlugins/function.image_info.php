@@ -34,8 +34,7 @@ function smarty_function_image_info ($params, &$smarty)
 
     if (empty($var))
 	{
-        $smarty->trigger_error($pluginName . ": missing 'var' parameter");
-        return;
+        throw new SmartyException($pluginName . ": missing 'var' parameter");
     }
 
 	if ( empty($file) )

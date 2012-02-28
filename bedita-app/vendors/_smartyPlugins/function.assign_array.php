@@ -26,13 +26,11 @@ function smarty_function_assign_array($params, &$smarty)
   }
 
     if (empty($var)) {
-        $smarty->trigger_error("assign_array: missing 'var' parameter");
-        return;
+        throw new SmartyException("assign_array: missing 'var' parameter");
     }
 
     if (!in_array('values', array_keys($params))) {
-        $smarty->trigger_error("assign_array: missing 'values' parameter");
-        return;
+        throw new SmartyException("assign_array: missing 'values' parameter");
     }
 
     $smarty->assign($var, explode($delimiter,$values) );

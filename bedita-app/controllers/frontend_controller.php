@@ -482,6 +482,10 @@ abstract class FrontendController extends AppController {
 			return new AppError('handleExceptionRuntime', 
 					array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
 					'result' => $ex->result), $ex->errorTrace());
+		} elseif ($ex instanceof SmartyException) {
+			include_once (APP . 'app_error.php');
+			$trace = $ex->getFile()." - line: ". $ex->getLine()." \nTrace:\n". $ex->getTraceAsString();
+			return new AppError('handleExceptionRuntime', array('msg' => $ex->getMessage(), 'details' => ''), $trace);
 		} else {
 			
 			if($ex instanceof BeditaException) {

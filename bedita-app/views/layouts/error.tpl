@@ -29,6 +29,8 @@
 </head>
 <body{if !empty($bodyClass)} class="{$bodyClass}"{/if}>
 
+{$view->element('messages')}
+
 {$view->element('modulesmenu')}
 
 <div class="primacolonna">

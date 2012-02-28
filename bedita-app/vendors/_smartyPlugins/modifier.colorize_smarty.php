@@ -15,8 +15,7 @@
 function smarty_modifier_colorize_smarty($string, $color="red") {
 
     if ( empty($string)) {
-        $smarty->trigger_error("modifier_colorizeSmarty: missing argument");
-        return;
+        throw new SmartyException("modifier_colorizeSmarty: missing argument");
     }
 
 	// define variables
