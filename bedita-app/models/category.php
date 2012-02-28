@@ -157,7 +157,9 @@ class Category extends BEAppModel {
 	 */
 	public function getCategoriesByArea($objectType) {
 		
-		$categories = $this->findAll("Category.object_type_id=$objectType");
+		$categories = $this->find("all", array(
+			"conditions" => array("Category.object_type_id" => $objectType), "order" => "label"
+		));
 		
 		$objModel = ClassRegistry::init("BEObject");
 		$areaList = $objModel->find('list', array(
