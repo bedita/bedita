@@ -269,6 +269,7 @@ class AreasController extends ModulesController {
 		$this->checkWriteModulePermission();
 		if (!empty($this->params['form']['Filedata']['name'])) {
 			unset($this->data['url']);
+			$this->params['form']['forceupload'] = true;
 			$streamId = $this->BeUploadToObj->upload($this->data) ;
 		} elseif (!empty($this->data['url'])) {
 			$streamId = $this->BeUploadToObj->uploadFromURL($this->data) ;
