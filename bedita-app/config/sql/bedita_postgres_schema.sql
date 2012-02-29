@@ -254,7 +254,7 @@ CREATE TABLE event_logs (
     id serial,
     userid character varying(200) NOT NULL,
     created timestamp without time zone NOT NULL,
-    msg character varying(255) NOT NULL,
+    msg text NOT NULL,
     log_level character varying(10) DEFAULT 'info'::character varying NOT NULL,
     context character varying(32)
 );
@@ -1347,7 +1347,7 @@ CREATE INDEX card_id_index1 ON mail_jobs USING btree (card_id);
 
 
 
-CREATE INDEX content ON search_texts USING btree (content);
+CREATE INDEX content ON search_texts USING gin(to_tsvector('english', content));
 
 
 
