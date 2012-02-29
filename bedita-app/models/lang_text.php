@@ -59,14 +59,23 @@ class LangText extends BEAppModel
 		$s = $this->getStartQuote();
 		$e = $this->getEndQuote();
 		
-		$beObjFields = $this->fieldsString("BEObject");
-		$langTextFields = $this->fieldsString("LangText");
+		// build sql conditions
+		$db =& ConnectionManager::getDataSource($this->useDbConfig);
+		$beObject = ClassRegistry::init("BEObject");
+		$beObjFields = $db->fields($beObject);
+		$beObjFields = implode(",", $beObjFields);
+		
+		$langTextFields = $db->fields($this);
+		$langTextFields = implode(",", $langTextFields);
 		
 		$fields  = "DISTINCT {$beObjFields}, {$langTextFields}" ;
 		$from = "{$s}lang_texts{$e} as {$s}LangText{$e} LEFT OUTER JOIN {$s}objects{$e} 
 			as {$s}BEObject{$e} ON {$s}LangText{$e}.{$s}object_id{$e}={$s}BEObject{$e}.{$s}id{$e}";
 		$conditions = array();
-		$groupClausole = "GROUP BY {$beObjFields}, {$langTextFields}";
+		
+		$beObjGroupBy = $this->fieldsString("BEObject");
+		$langTextGroupBy = $this->fieldsString("LangText");
+		$groupClausole = "GROUP BY {$beObjGroupBy}, {$langTextGroupBy}";
 		
 		$conditions = array("LangText.name = 'status'");
 
@@ -87,12 +96,12 @@ class LangText extends BEAppModel
 			$fields .= ", {$s}ObjectType.name{$e}";
 			$from .= ", {$s}object_types{$e} AS {$s}ObjectType{$e}";
 			$conditions[]="ObjectType.id = BEObject.object_type_id";
-			$order = "ObjectType.name";
+			$order = "{$s}ObjectType{$e}.{$s}name{$e}";
 		}
 		if (!empty($order) && strstr($order,"LangText.")) {
 			$t = explode(".", $order);
 			$langTextOrder = $t[1];
-			$order = "BEObject.modified";
+			$order = "{$s}BEObject{$e}.{$s}modified{$e}";
 		}
 
 		$otherOrder = "";
@@ -104,15 +113,14 @@ class LangText extends BEAppModel
 			unset($filter["query"]);	
 		}
 		
-		// build sql conditions
-		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$sqlClausole = $db->conditions($conditions, true, true) ;
 
 		$ordClausole = "";
 		if(is_string($order) && strlen($order)) {
 			$beObject = ClassRegistry::init("BEObject");
-			if ($beObject->hasField($order))
+			if ($beObject->hasField($order)) {
 				$order = "{$s}BEObject{$e}.{$s}" . $order . $e;
+			}
 			$ordItem = "{$order} " . ((!$dir)? " DESC " : "");
 			if(!empty($otherOrder)) {
 				$ordClausole = "ORDER BY " . $ordItem .", " . $otherOrder;
