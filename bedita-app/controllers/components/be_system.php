@@ -52,8 +52,12 @@
 	}
 	
 	private function postgresInfo($db, array& $res) {
-	    if ($cid = @pg_connect("host=" .$db->config['host'] . " dbname=" . $db->config['database'] . 
-	    	" user=" . $db->config['login'] . " password=" . $db->config['password'])) {
+	    $connStr = "host=" .$db->config['host'] . " dbname=" . $db->config['database'] . 
+	    	" user=" . $db->config['login'] . " password=" . $db->config['password'];
+	    if(!empty($db->config['port'])) {
+	    	$connStr .= " port=" . $db->config['port'];
+	    }
+		if ($cid = @pg_connect($connStr)) {
 	    	$info = @pg_version($cid);
 	    	$res['dbServer'] = $info["server"];
 			$res['dbClient'] = $info["client"];
