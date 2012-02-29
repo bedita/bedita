@@ -385,7 +385,7 @@ class BEAppModel extends AppModel {
 		}
 		
 		// if $order is empty and not performing search then set a default order
-		if (empty($order) && empty($filter["search"])) {
+		if (empty($order) && empty($filter["query"])) {
 			$order = "{$s}BEObject{$e}.{$s}id{$e}";
 			$dir = false;
 		}
