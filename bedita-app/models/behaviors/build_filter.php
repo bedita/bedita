@@ -201,17 +201,25 @@ class BuildFilterBehavior extends ModelBehavior {
 	}
 	
 	private function queryFilter($s, $e, $value) {
-		// #MYSQL
 		App::import('Sanitize');
 		$value = Sanitize::html($value, array('remove' => true));
 		if($this->driver === "mysql") {
+			// #MYSQL
 			$this->fields .= ", SearchText.object_id AS oid, SUM( MATCH (SearchText.content) AGAINST ('" . $value . "') * SearchText.relevance ) AS points";
 			$this->from .= ", search_texts AS SearchText";
 			$this->conditions[] = "SearchText.object_id = BEObject.id AND SearchText.lang = BEObject.lang AND MATCH (SearchText.content) AGAINST ('" . $value . "')";
 			$this->order .= "points DESC ";
 		} else if ($this->driver === "postgres"){
+			$expr = explode(" ", $value);
+			$ts = "";
+			for($i = 0; $i < count($expr); $i++) {
+				if(!empty($expr[$i])) {
+					$ts .= (empty($ts) ? "" : " | ") . trim($expr[$i]);
+				}
+			}
+			// #POSTGRES
 			$this->fields .= ", {$s}SearchText{$e}.{$s}object_id{$e} AS oid, SUM(ts_rank(to_tsvector({$s}SearchText{$e}.{$s}content{$e}), query) * {$s}SearchText{$e}.{$s}relevance{$e}) as points";
-			$this->from .= ", {$s}search_texts{$s} AS {$s}SearchText{$e}, plainto_tsquery('" . $value . "') query";
+			$this->from .= ", {$s}search_texts{$s} AS {$s}SearchText{$e}, to_tsquery('" . $ts . "') query";
 			$this->conditions[] = "{$s}SearchText{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e} AND {$s}SearchText{$e}.{$s}lang{$e} = {$s}BEObject{$e}.{$s}lang{$e} AND {$s}SearchText{$e}.{$s}content{$e} @@ query ";
 			$this->order .= "points DESC ";
 			$this->group .= ", {$s}SearchText{$e}.{$s}object_id{$e}, query";
