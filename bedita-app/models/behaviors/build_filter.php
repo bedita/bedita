@@ -210,11 +210,11 @@ class BuildFilterBehavior extends ModelBehavior {
 			$this->conditions[] = "SearchText.object_id = BEObject.id AND SearchText.lang = BEObject.lang AND MATCH (SearchText.content) AGAINST ('" . $value . "')";
 			$this->order .= "points DESC ";
 		} else if ($this->driver === "postgres"){
-			$this->fields .= ", {$s}SearchText{$e}.{$s}object_id{$e} AS oid, (ts_rank(to_tsvector({$s}SearchText{$e}.{$s}content{$e}), query) * {$s}SearchText{$e}.{$s}relevance{$e}) as points";
+			$this->fields .= ", {$s}SearchText{$e}.{$s}object_id{$e} AS oid, SUM(ts_rank(to_tsvector({$s}SearchText{$e}.{$s}content{$e}), query) * {$s}SearchText{$e}.{$s}relevance{$e}) as points";
 			$this->from .= ", {$s}search_texts{$s} AS {$s}SearchText{$e}, plainto_tsquery('" . $value . "') query";
-			$this->conditions[] = "{$s}SearchText{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e} AND {$s}SearchText{$e}.{$s}lang{$e} = {$s}BEObject{$e}.{$s}lang{$e} AND query @@ to_tsvector({$s}SearchText{$e}.{$s}content{$e})";
+			$this->conditions[] = "{$s}SearchText{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e} AND {$s}SearchText{$e}.{$s}lang{$e} = {$s}BEObject{$e}.{$s}lang{$e} AND {$s}SearchText{$e}.{$s}content{$e} @@ query ";
 			$this->order .= "points DESC ";
-			$this->group .= ", {$s}SearchText{$e}.{$s}object_id{$e}, {$s}SearchText{$e}.{$s}content{$e}, query, {$s}SearchText{$e}.{$s}relevance{$e}";
+			$this->group .= ", {$s}SearchText{$e}.{$s}object_id{$e}, query";
 		}
 	}
 	
