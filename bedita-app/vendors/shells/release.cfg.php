@@ -42,6 +42,7 @@ $rel["renameFiles"]= array(
 	"examples".DS."debug.example.com".DS."config".DS."core.php.sample" => "examples".DS."debug.example.com".DS."config".DS."core.php",
 	"examples".DS."site.example.com".DS."config".DS."core.php.sample" => "examples".DS."site.example.com".DS."config".DS."core.php",
 	"examples".DS."dummy.example.com".DS."config".DS."core.php.sample" => "examples".DS."dummy.example.com".DS."config".DS."core.php",
+	"examples".DS."html5.example.com".DS."config".DS."core.php.sample" => "examples".DS."html5.example.com".DS."config".DS."core.php",
 	"examples".DS."wp.example.com".DS."config".DS."core.php.sample" => "examples".DS."wp.example.com".DS."config".DS."core.php"
 );
 
