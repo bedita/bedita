@@ -1,3 +1,47 @@
+Version 3.1.5 - ulmus
+ User-visible changes:
+	* Added SyntaxHighlighter plugin for TinyMCE
+	* Fixed Youtube embed code (Dropped oEmbed)
+	* #307
+		- handle "inverse" relations in obj save and in obj view
+		- delete inverse relations before insert
+		- fix "inverse" relations priority
+	* #308 view categories in alphabetical order
+	* added rights and notes field to searchFields index
+	* added categories for galleries
+
+ Frontend changes:
+	* #304 category 'off' should not be visible in frontend + tag [same issue]
+	* set parentAuthorized = authorized in FrontendController::setCanonicalPath() for publication to avoid warning in FrontendController::section() method
+	* fixed PagesController::showObject() to get correctly objects in relations tab
+	* PagesController::showObject() remove empty lines
+
+ Developer-visibile changes:
+	* fix some errors on user creation and unitest
+	* shell: dbadmin rebuildIndex - check for bad obj types
+	* FrontendController::section() - load pathSection if it's not defined
+	* choice of which init file tinymce uses from config
+	* issue #4 googlecode - site.example.com - truncate title if it's over 20 characters
+	* issue #3 googlecode - site.example.com - set charset to utf-8
+	* issue #2 googlecode - wp.example.com - display video correctly
+	* issue #2 googlecode - site.example.com - display video correctly in gallery
+	* #274 frontend: generic /category method to load categorized objects - added category tpl to examples
+	* fix wrong img links in tiniMCE configuration files
+	* FrontendController - add setCanonicalPath in objects selected by tag or category and removed forced baseLevel for bindings
+	* FrontendController::loadObjectsByTagCategory() - add try catch block to avoid 404 error when get contents on draft branch tree
+	* BeFront::chooseTemplate() fix 'Check frontendMap currentContent nickname' when currentContent is populated but no content has been selected
+	* BeFront::chooseTemplate() fix 'object type template' choose  when currentContent is populated but no content has been selected
+	* moved tinyMCE code button in specific configuration file to activate in bedita.cfg
+	* plugins: use "hidden" attribute for obj relations
+	* models: add default "frontend" binding to BeditaObjectModel
+	* Added a dummy HTML5 fronted based on h5BP (http://html5boilerplate.com/)
+	* BEObject::beforeValidate() - check that property_type is not empty before check if its value is 'date' to format property_value to avoid warning
+	* ui: fix js bug - write open fieldset cookie only if "id" is set
+	* added RestClientModel + comments, svnkeywords, $camelize param to camelize or not array keys according to CakePHP Xml::toArray() method
+	* fix search bug: don't use "id" in order by!
+
+
+
 Version 3.1.4 - ulmus
  User-visible changes:
 	* geotag tab: lookat zoom and type in view
