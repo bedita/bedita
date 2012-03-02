@@ -54,15 +54,15 @@ class BeFrontHelper extends AppHelper {
 	}
 
 	/**
-	 * Show 639-1 code, two letters, for html lang
-	 * Value should be in "frontendLangs" config array
+	 * show 639-1 code, two letters, for html lang
+	 * value should be in "frontendLangs" config array
 	 * 
 	 * 	"eng"	=> array("en", "english"),
 	 *	"spa"	=> array("es", "espa&ntilde;ol"),
 	 * 	"ita"	=> array("it", "italiano"),
 	 *  .....
-	 *  
-	 *  @return 639-1 code if found, empty string otherwise
+	 * 
+	 * @return 639-1 code if found, empty string otherwise
 	 */
 	public function lang() {
 		$res = "";
@@ -75,6 +75,15 @@ class BeFrontHelper extends AppHelper {
 		return $res;
 	}
 
+	/**
+	 * return title for current page
+	 * if page is publication root => return <publication title> (if 'contentRequested' return <publication title> - <content title>)
+	 * if page is a section => return <publication title> - <section title> [$order 'desc'] or <section title> - <publication title> [$order 'asc' default]
+	 *  (if 'contentRequested' return <section title> - <content title> [$order 'desc'] or <content title> - <section title> [$order 'asc' default])
+	 * 
+	 * @param string $order can be 'asc' or 'desc'
+	 * @return string
+	 */
 	public function title($order='asc') {
 		$pub = (!empty($this->_publication['public_name'])) ? $this->_publication['public_name'] : $this->_publication['title'];
 		if(empty($this->_section) || empty($this->_section['title']) || $this->_section['nickname'] == $this->_publication['nickname']) {
@@ -98,6 +107,16 @@ class BeFrontHelper extends AppHelper {
 		return $pub . " - " . $sec;
 	}
 
+	/**
+	 * return html meta description.
+	 * try to get description from:
+	 *  _currentContent ('description' or 'abstract' or 'body')
+	 *  _section['description']
+	 *  _publication['description']
+	 * 
+	 * @see HtmlHelper
+	 * @return string
+	 */
 	public function metaDescription() {
 		$content = $this->get_description();
 		if(empty($content)) {
@@ -106,6 +125,25 @@ class BeFrontHelper extends AppHelper {
 		return $this->Html->meta("description", strip_tags($content));
 	}
 
+	/**
+	 * return html meta of dublin core meta data for current content (if present) or publication
+	 * 
+	 * DC fields:
+	 * 
+	 *    DC.description
+	 *    DC.format
+	 *    DC.language
+	 *    DC.creator
+	 *    DC.publisher
+	 *    DC.date
+	 *    DC.modified
+	 *    DC.identifier
+	 *    DC.rights
+	 *    DC.license
+	 * 
+	 * @see HtmlHelper
+	 * @return string
+	 */
 	public function metaDc() {
 		$object = (!empty($this->_currentContent)) ? $this->_currentContent : $this->_publication;
 		$title = (!empty($object['public_name'])) ? $object['public_name'] : $object['title'];
@@ -155,6 +193,13 @@ class BeFrontHelper extends AppHelper {
 		return $html;
 	}
 
+	/**
+	 * return all html meta
+	 * all meta = description, author, content, generator
+	 * 
+	 * @see HtmlHelper
+	 * @return string
+	 */
 	public function metaAll() {
 		$html = "\n" . $this->metaDescription();
 		$content = $this->get_value_for_field("license");
@@ -175,6 +220,12 @@ class BeFrontHelper extends AppHelper {
 		return $html;
 	}
 
+	/**
+	 * return html meta for rss feeds
+	 * 
+	 * @see HtmlHelper
+	 * @return string
+	 */
 	public function feeds() {
 		$html = "";
 		if (!empty($this->_feedNames)) {
@@ -185,6 +236,11 @@ class BeFrontHelper extends AppHelper {
 		return $html;
 	}
 
+	/**
+	 * return currentContent seealso relation, if present.
+	 * 
+	 * @return string
+	 */
 	public function seealso()  {
 		return (!empty($this->_currentContent['relations']['seealso'])) ? $this->_currentContent['relations']['seealso'] : '';
 	}
@@ -339,6 +395,7 @@ class BeFrontHelper extends AppHelper {
 
 	/**
 	 * return an nested unordered list
+	 * 
 	 *		<ul id="menuItem">
 	 *			<li class="$liClass"><a href="...">item 1</a></li>
 	 *			<li class="$liClass">
@@ -354,6 +411,7 @@ class BeFrontHelper extends AppHelper {
 	 * @param array $tree section's tree (structure from FrontendController::loadSectionsTree is aspected)
 	 * @param string $ulClass css class name for <ul> except for the first that has id="menuItem"
 	 * @param string $liClass css class name for all <li>
+	 * @return string
 	 */
 	public function menu(array $tree, $ulClass="children", $liClass="childItem") {
 		$htmlMenu = "<ul id='menuItem'>";
@@ -399,6 +457,7 @@ class BeFrontHelper extends AppHelper {
 
 	/**
 	 * return publication stats code only if frontend app isn't staging site
+	 * 
 	 * @return stats code or nothing
 	 */
 	public function stats() {
@@ -454,17 +513,23 @@ class BeFrontHelper extends AppHelper {
 	}
 
 	/**
-	 * If frontend is a staging app then it shows a toolbar on the top of the page
+	 * if frontend is a staging app then it shows a toolbar on the top of the page
+	 * 
+	 * @return void
 	 */
 	public function stagingToolbar() {
 		if ($this->_conf->staging) {
 			echo ClassRegistry::getObject('view')->element("staging_toolbar");
 		}
 	}
-	
-	
+
+	/**
+	 * helper beforeRender.
+	 * include js that staging toolbar needs, include css (backend and eventually frontend override), override css
+	 * 
+	 * @return void
+	 */
 	public function beforeRender() {
-		
 		/* if staging load js e css for staging toolbar. 
 		 * Their are loaded here because in layout view doesn't work inline=false option.
 		 * In fact for the design of cakePHP layouts are simply parsed by PHP interpeter
@@ -492,5 +557,4 @@ class BeFrontHelper extends AppHelper {
 		
 	}
 }
- 
 ?>

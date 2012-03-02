@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Helper class to embed media contents
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
@@ -51,8 +51,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	 * @var array
 	 */
 	var $helpers = array('Html', 'BeThumb', 'MediaProvider', 'BeEmbedFlash');
-	
-	
+
 	function __construct()
 	{
 		// get configuration parameters
@@ -63,12 +62,9 @@ class BeEmbedMediaHelper extends AppHelper {
 		$this->_conf['imgMissingFile'] = Configure::read('imgMissingFile');
 	}
 
-
-
-
-
 	/**
 	 * object public method: embed a generic bedita multimedia object
+	 * return html for object $obj with options $params and html attributes $htmlAttributes
 	 * 
 	 * @param array obj, BEdita Multimedia Object
 	 * @param array params, optional, parameters used by external helpers such as BeThumb->image
@@ -91,8 +87,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	 * @return string, output complete html tag
 	 * 
 	 */
-	public function object ( $obj, $params = null, $htmlAttributes=array() )
-	{
+	public function object ( $obj, $params = null, $htmlAttributes=array() ) {
 		// get object type
 		$model = $this->getType ($obj);
 		$params["presentation"] = (!empty($params["presentation"]))? $params["presentation"] : $this->defaultPresentation[$model];
@@ -110,29 +105,34 @@ class BeEmbedMediaHelper extends AppHelper {
 		return $output;
 	}
 
-
-
 	/******************************
 	 * private functions
 	 *****************************/
 
-
-	/*
-	 * return object model
+	/**
+	 * return object model for $obj, getting it from configuration, by object_type_id
+	 *
+	 * @param array $obj, object
+	 * @return string
 	 */
-	private function getType ($obj)
-	{
+	private function getType ($obj) {
 		$model = Configure::read("objectTypes." . $obj['object_type_id'] . ".model");
 		return (!empty($model))? $model : "";
 	}
 
-
-
-	/*
-	 * produce html tag
+	/**
+	 * produce html tag for image
+	 * 
+	 * if present $params["URLonly"], return uri of $obj
+	 * if present $params["presentation"]=="link", return html link for $obj uri
+	 * else return html image for $obj uri (@see HtmlHelper)
+	 * 
+	 * @param array $obj, object
+	 * @param array $params, specific parameters
+	 * @param array $htmlAttributes, html attributes
+	 * @return string
 	 */
-	private function showImage ($obj, $params, $htmlAttributes)
-	{
+	private function showImage ($obj, $params, $htmlAttributes) {
 		$src = $this->getImageSrc($obj, $params);
 		if (!$src) {
 			$src = $this->getMediaTypeImage($obj);
@@ -149,8 +149,15 @@ class BeEmbedMediaHelper extends AppHelper {
 			return $this->Html->image($src, $htmlAttributes);
 		}
 	}
-	
-	
+
+	/**
+	 * return image $obj uri
+	 * if $params["presentation"] == "thumb", return image thumb (@see BeThumbHelper)
+	 * 
+	 * @param array $obj, object
+	 * @param array $params, specific parameters
+	 * @return string
+	 */
 	private function getImageSrc($obj, $params) {
 		// not local file
 		if(preg_match(Configure::read("validate_resource.URL"), $obj["uri"])) {
@@ -162,18 +169,20 @@ class BeEmbedMediaHelper extends AppHelper {
 		return $src;
 	}
 
-	
 	/**
 	 * html video output
+	 * return html or uri for video $obj, with options $params and html attributes $htmlAttributes
+	 * if $params["presentation"] == "thumb" => return html thumb through MediaProvider ($params["URLonly"] not present) or thumb uri ($params["URLonly"] is present)
+	 * if $params["presentation"] == "full" => return embed object through MediaProvider
+	 * if $params["presentation"] == "link" => return object link through MediaProvider
 	 *
+	 * @see MediaProviderHelper
 	 * @param array $obj, object
 	 * @param array $params, specific parameters
 	 * @param array $htmlAttributes, html attributes
-	 * @return string, html
+	 * @return string
 	 */
-	private function showVideo($obj, $params, $htmlAttributes)
-	{
-	
+	private function showVideo($obj, $params, $htmlAttributes) {
 		if (!preg_match(Configure::read("validate_resource.URL"), $obj["uri"])) {
 			$obj['uri'] = $this->_conf["url"] . $obj["uri"];
 		}
@@ -205,17 +214,20 @@ class BeEmbedMediaHelper extends AppHelper {
 		return $output;
 	}
 
-	
 	/**
 	 * html audio output
+	 * return html or uri for audio $obj, with options $params and html attributes $htmlAttributes
+	 * if present $params["URLonly"], return $obj uri
+	 * if $params["presentation"] == "link" => return html link for $obj
+	 * if $params["presentation"] == "full" => return embed object throgh MediaProvider (@see MediaProviderHelper)
+	 * else return html image for $obj (@see HtmlHelper)
 	 *
 	 * @param array $obj, object
 	 * @param array $params, specific parameters
 	 * @param array $htmlAttributes, html attributes
-	 * @return string, html
+	 * @return string
 	 */
-	private function showAudio($obj, $params, $htmlAttributes)
-	{
+	private function showAudio($obj, $params, $htmlAttributes) {
 		if (!preg_match(Configure::read("validate_resource.URL"), $obj["uri"])) {
 			$obj['uri'] = $this->_conf["url"] . $obj["uri"];
 		}
@@ -236,10 +248,13 @@ class BeEmbedMediaHelper extends AppHelper {
 			return $this->Html->image($img, $htmlAttributes);
 		}
 	}
-	
-	
+
 	/**
 	 * html befile output
+	 * return html or uri for file $obj, with options $params and html attributes $htmlAttributes
+	 * if present $params["URLonly"], return $obj uri
+	 * if $params["presentation"] == "thumb" => return html image for $obj (@see HtmlHelper)
+	 * else return html link for $obj (@see HtmlHelper)
 	 *
 	 * @param array $obj, object
 	 * @param array $params, specific parameters
@@ -261,60 +276,61 @@ class BeEmbedMediaHelper extends AppHelper {
 			return $this->Html->link($obj['title'],$obj['uri'], $htmlAttributes);
 		}
 	}
-	
-	private function showApplication($obj, $params, $htmlAttributes) {		
 
-		
+	/**
+	 * application show for $obj
+	 * if $params["presentation"] == "full" && $obj["application_name"] == "flash" => return embed flash (@see BeEmbedFlashHelper)
+	 * if $params["presentation"] == "thumb" => return html image for $obj (@see HtmlHelper)
+	 * 
+	 * @param array $obj, object
+	 * @param array $params, specific parameters
+	 * @param array $htmlAttributes, html attributes
+	 * @return string
+	 */
+	private function showApplication($obj, $params, $htmlAttributes) {
 		if ($params["presentation"] == "full") {
-			
 			if ($obj["application_name"] == "flash") {
-				
 				if (!preg_match(Configure::read("validate_resource.URL"), $obj["uri"])) {
 					$obj['uri'] = $this->_conf["url"] . $obj["uri"];
 				}
-				
 				if (empty($htmlAttributes["width"]) && !empty($obj["width"])) {
 					$htmlAttributes["width"] = $obj["width"];
 				} elseif (empty($htmlAttributes["width"])) {
 					$htmlAttributes["width"] = 320;
 				}
-				
 				if (empty($htmlAttributes["height"]) && !empty($obj["height"])) {
 					$htmlAttributes["height"] = $obj["height"];
 				} elseif (empty($htmlAttributes["height"])) {
 					$htmlAttributes["height"] = 200;
 				}
-				
 				if (empty($htmlAttributes["application_version"]) && !empty($obj["application_version"])) {
 					$htmlAttributes["application_version"] = $obj["application_version"];
 				}
-		
 				if (empty($htmlAttributes["dir"]) && !empty($obj["text_dir"])) {
 					$htmlAttributes["dir"] = $obj["text_dir"];
 				}
-				
 				if (empty($htmlAttributes["lang"]) && !empty($obj["text_lang"])) {
 					$htmlAttributes["lang"] = $obj["text_lang"];
 				}
-				
 				$output = $this->BeEmbedFlash->embed($obj, $params, $htmlAttributes);
 			}
 		} elseif ($params["presentation"] == "thumb") {
-			
 			$imgThumb = $this->getMediaTypeImage($obj);
 			$output = $this->Html->image($imgThumb, $htmlAttributes);
 		}
-		
 		return $output;
-		
 	}
-	
-	
-	
+
+	/**
+	 * media type image
+	 * return path for object type image
+	 * if BACKEND_APP => try to find image in /webroot/img/iconset, then /webroot/img/
+	 * 
+	 * @param array $obj, object
+	 * @return string, object type image
+	 */
 	protected function getMediaTypeImage($obj) {
-		
 		$img = "iconset/88px/";
-		
 		if ( BACKEND_APP == false ) {
 			if (is_dir(APP."webroot".DS."img".DS."iconset") ) {
 				$img = "iconset".DS;
@@ -332,6 +348,5 @@ class BeEmbedMediaHelper extends AppHelper {
 		}
 		return $img;
 	}
-
 }
 ?>
