@@ -54,7 +54,12 @@ class AdminController extends ModulesController {
 	}
 
 	public function coreModules() {
-		// TODO
+		$modules = ClassRegistry::init("Module")->find("all", array(
+			"conditions" => array("module_type" => "core"),
+			"order" => "priority ASC"
+		));
+		$modules = Set::classicExtract($modules,'{n}.Module');
+		$this->set("moduleList", $modules);
 	}
 	
 	public function systemInfo() { 	
@@ -583,8 +588,8 @@ class AdminController extends ModulesController {
 								"ERROR" => "/admin/pluginModules",
 							),
 				"toggleModule" => array(
-								"OK" => "/admin/pluginModules",
-								"ERROR" => "/admin/pluginModules",
+								"OK" => $this->referer(),
+								"ERROR" => $this->referer(),
 							),
 				"unplugModule" => array(
 								"OK" => "/admin/pluginModules",
